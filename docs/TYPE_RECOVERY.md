@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,847 / 80 |
+| Raw offset candidates | 4,040 / 86 | 2,846 / 80 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3153,3 +3153,15 @@ and 0x24-byte resource stride. The former `remaining` array is replaced by
 named encoded end, correction start and correction-count metadata through
 the shared type. Ownership stays with the cache and resident tables; the
 record remains private. All isolated conversions preserve strict objects.
+
+### Shared actor asset-cache lifecycle
+
+`actor_assets.h` consolidates cache initialization, read-queue teardown,
+request/wait operations and borrowed storage lookup. The contracts distinguish
+reserved storage from read completion and corrected decompression readiness.
+Ghidra 0x8001E190 confirms the cached-pointer lookup. Runtime and drawing
+consume canonical declarations; drawing names the object kind directly.
+The private storage table has thirty-six pointer slots, initialization derives
+its clear extent from that bound, and staging/read destinations use pointers.
+The lookup's retained address temporary preserves its existing control flow.
+Every isolated provider and consumer conversion preserves strict objects.

@@ -1,3 +1,4 @@
+#include "actor_assets.h"
 #include "story_milestones.h"
 #include "progress_storage.h"
 #include "progress_fields.h"
@@ -1011,8 +1012,6 @@ void textureCacheDestroy(void);
 void actionInitializeTransitionMap(void);
 void overlayLoadFromRom(void *romStart, void *romEnd, void *destination, void *textStart, void *textEnd,
                         void *dataStart, void *dataEnd, void *bssStart, void *bssEnd);
-void actorAssetCacheInitialize(void);
-void actorAssetReadQueueDestroy(void);
 void hudProgramInitializeNoOp(void);
 void messageBarInitialize(void);
 void messageBarResetAndReleaseImages(void);

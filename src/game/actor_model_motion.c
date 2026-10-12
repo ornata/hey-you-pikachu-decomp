@@ -1,3 +1,4 @@
+#include "actor_assets.h"
 #include "actor_behavior.h"
 #include "matrix_point.h"
 #include "matrix_orientation.h"
@@ -175,7 +176,6 @@ void actorReleaseChildMotionState(u8 *actor) {
     heapFreeLocal(&gGameHeap, obj);
 }
 
-s32 actorAssetGetCachedStorage(s32);
 
 /// Prepare the model drawing setup for its textures, lighting, and environment color.
 /// \param actor Actor whose model drawing setup is prepared.
@@ -187,7 +187,7 @@ void actorPrepareModelLightingDrawList(u8 *actor, ActorScriptState *model, s32 b
     Gfx *g;
 
     g = model->modelDrawLists[buffer];
-    gSPSegment(g++, 0x0A, osVirtualToPhysical((void *)actorAssetGetCachedStorage(*(u16 *)(actor + 0x34))));
+    gSPSegment(g++, 0x0A, osVirtualToPhysical(actorAssetGetCachedStorage(((RuntimeObjectPrefix *)actor)->kind)));
     gSPSetLights2(g++, (*(Lights2 *)&model->directionAnimation.poses[model->directionAnimation.poseIndex]));
     gDPPipeSync(g++);
     gDPSetEnvColor(g++, model->environmentColor[0], model->environmentColor[1], model->environmentColor[2],

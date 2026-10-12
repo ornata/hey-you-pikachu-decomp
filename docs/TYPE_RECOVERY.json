@@ -51,7 +51,7 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 2847,
+      "occurrences": 2846,
       "unique_spellings": 1070,
       "files": 80
     }
@@ -384,6 +384,7 @@
     },
     "src/game/actor_configuration.c": {
       "known_views": [
+        "actor_assets.h",
         "actor_create.h",
         "actor_part_config.h",
         "actor_parts.h",
@@ -416,121 +417,121 @@
       "locations": {
         "raw_offset_candidates": {
           "p + 0x18": [
-            "156:14"
-          ],
-          "p + 0x1C": [
             "157:14"
           ],
-          "p + 0x20": [
+          "p + 0x1C": [
             "158:14"
           ],
-          "p + 0x44": [
+          "p + 0x20": [
             "159:14"
           ],
-          "p + 0x48": [
+          "p + 0x44": [
             "160:14"
           ],
-          "p + 0x4C": [
+          "p + 0x48": [
             "161:14"
           ],
-          "p + 0x8": [
+          "p + 0x4C": [
             "162:14"
           ],
-          "p + 0x4": [
+          "p + 0x8": [
             "163:14"
           ],
-          "p + 0x0": [
+          "p + 0x4": [
             "164:14"
           ],
-          "p + 0x24": [
+          "p + 0x0": [
             "165:14"
           ],
+          "p + 0x24": [
+            "166:14"
+          ],
           "effectState + 1": [
-            "180:60"
+            "181:60"
           ],
           "effect + 0x54": [
-            "181:15",
-            "201:28",
-            "238:20",
-            "252:28"
+            "182:15",
+            "202:28",
+            "239:20",
+            "253:28"
           ],
           "gPikachuActor + 0x44": [
-            "207:35"
-          ],
-          "effect + 0x44": [
-            "207:68",
-            "223:49"
-          ],
-          "gPikachuActor + 0x48": [
             "208:35"
           ],
-          "effect + 0x48": [
+          "effect + 0x44": [
             "208:68",
-            "223:74"
+            "224:49"
           ],
-          "gPikachuActor + 0x4C": [
+          "gPikachuActor + 0x48": [
             "209:35"
           ],
-          "effect + 0x4C": [
+          "effect + 0x48": [
             "209:68",
-            "223:99"
+            "224:74"
+          ],
+          "gPikachuActor + 0x4C": [
+            "210:35"
+          ],
+          "effect + 0x4C": [
+            "210:68",
+            "224:99"
           ],
           "effect + 0x24": [
-            "210:23"
+            "211:23"
           ],
           "gPikachuActor + 0x24": [
-            "210:55"
+            "211:55"
           ],
           "state + 1": [
-            "212:68",
-            "215:59"
+            "213:68",
+            "216:59"
           ],
           "obj + 0xC": [
-            "239:63"
+            "240:63"
           ],
           "effect + 0x30": [
-            "240:21"
+            "241:21"
           ],
           "effectState + 4": [
-            "257:68"
+            "258:68"
           ],
           "actor + 0x54": [
-            "291:21"
+            "292:21"
           ],
           "actor + 0x18": [
-            "295:18",
-            "299:43"
-          ],
-          "sp24 + 0x1EC": [
-            "295:43"
-          ],
-          "actor + 0x1C": [
             "296:18",
-            "298:18",
-            "298:68",
             "300:43"
           ],
-          "sp24 + 0x1F0": [
+          "sp24 + 0x1EC": [
             "296:43"
           ],
-          "actor + 0x20": [
+          "actor + 0x1C": [
             "297:18",
+            "299:18",
+            "299:68",
             "301:43"
           ],
-          "sp24 + 0x1F4": [
+          "sp24 + 0x1F0": [
             "297:43"
           ],
-          "actor + 0x24": [
+          "actor + 0x20": [
+            "298:18",
+            "302:43"
+          ],
+          "sp24 + 0x1F4": [
             "298:43"
           ],
-          "actor + 0x44": [
-            "299:18"
+          "actor + 0x24": [
+            "299:43"
           ],
-          "actor + 0x48": [
+          "actor + 0x44": [
             "300:18"
           ],
-          "actor + 0x4C": [
+          "actor + 0x48": [
             "301:18"
+          ],
+          "actor + 0x4C": [
+            "302:18"
           ],
           "kind - 1": [
             "639:72",
@@ -546,6 +547,7 @@
       "known_views": [
         "action_query.h",
         "action_script_playback.h",
+        "actor_assets.h",
         "actor_behavior.h",
         "actor_color.h",
         "actor_part_config.h",
@@ -578,8 +580,8 @@
       "locations": {
         "raw_offset_candidates": {
           "actor + 0x54": [
-            "80:18",
-            "170:20",
+            "81:18",
+            "171:20",
             "285:20",
             "307:20",
             "398:38",
@@ -590,11 +592,10 @@
             "1084:38"
           ],
           "k + 1": [
-            "91:51"
+            "92:51"
           ],
           "actor + 0x34": [
-            "93:18",
-            "190:91"
+            "94:18"
           ],
           "allocation + 0x18": [
             "220:22"
@@ -4422,6 +4423,7 @@
     },
     "src/game/runtime.c": {
       "known_views": [
+        "actor_assets.h",
         "audio_cue.h",
         "camera_overlay.h",
         "controller_types.h",
@@ -4447,13 +4449,13 @@
       "locations": {
         "raw_offset_candidates": {
           "gPikachuActor + 0x54": [
-            "606:31"
+            "607:31"
           ],
           "actorState + 0x1B8": [
-            "607:50"
+            "608:50"
           ],
           "gRuntimePromptPanelLineCount - 1": [
-            "1098:75"
+            "1097:75"
           ]
         }
       }
