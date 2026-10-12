@@ -585,3 +585,21 @@ the actual channel array, with named fields for controller and note operations.
 Pan evaluation and refresh share an EngineSequence pointer rather than mixing
 integer and record arguments. The full 483-object baseline remains identical
 after each accepted source mutation; no scheduling or arithmetic was changed.
+
+The sequence-voice continuation shares one checked 0x50-byte SequenceVoice
+record across engine playback and audio-supplied pool storage. Active/free links,
+borrowed instrument and sound pointers, native voice, note/channel/velocity,
+sustain deferral, modulation, pitch and envelope state replace the opaque pool
+and two private partial records. Unknown words/bytes remain offset-named. Ghidra
+at 0x80005C1C corroborates active-list unlinking and free-pool return; note setup,
+note-off, sustain and lifetime consumers establish the remaining roles. Native
+voice, channel and pitch offsets have target-compatible compile-time checks.
+
+`sequence_driver.h` reconciles registration and output controls across producer
+and audio initialization. The synthesizer is a borrowed N_ALGlobals pointer,
+and the registered callback now directly satisfies the SDK void-pointer
+ALVoiceHandler contract. Most voice offset accesses use the shared fields. The
+pitch-ratio expression retains its prior byte views: a typed-access trial changed
+IDO scheduling only in that function, and restoring its matching representation
+restored all 483 baseline objects. This exception is documented in its Doxygen
+comment. No arithmetic, compiler settings or comparison rules changed.

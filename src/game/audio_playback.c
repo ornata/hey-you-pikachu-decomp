@@ -2,7 +2,7 @@
 #include "common.h"
 #include "sound_effect_player.h"
 #include "n_synthInternals.h"
-#include "sequence_driver_types.h"
+#include "sequence_driver.h"
 typedef struct {
     u8 pad[0x5D8];
 } SeqPlayer;
@@ -141,7 +141,6 @@ s32 audioShutdown(void) {
     return -1;
 }
 
-s32 sequenceEngineSetOutputMode(u8 *, s32);            /* extern */
 /// Selected output mode shared by sequence and sound-effect playback.
 /// \note Original identifier: \c D_80088EE8 (0x80088EE8).
 extern s32 gAudioOutputMode;
@@ -155,7 +154,7 @@ extern VoicePlayer gAudioSequenceDriver;
 /// \note Original decompilation identifier: \c func_8001FA28 (0x8001FA28).
 void audioSetOutputMode(s32 mode) {
     gAudioOutputMode = mode;
-    sequenceEngineSetOutputMode((u8 *)&gAudioSequenceDriver, mode);
+    sequenceEngineSetOutputMode(&gAudioSequenceDriver, mode);
     soundEffectPlayerSetOutputMode(gSoundEffectPlayer, mode);
 }
 
@@ -169,11 +168,10 @@ s32 audioGetOutputMode(void) {
 
 /// Voice storage supplied to the game sequence driver.
 /// \note Original identifier: \c D_800EEA18 (0x800EEA18).
-extern Voice50 gAudioSequenceVoices[];
+extern SequenceVoice gAudioSequenceVoices[];
 
 void sequenceControlInitialize(SeqPlayer *);
 void sequenceEngineRegisterSequence(SeqSlot *, u8 *, s32, s32, u8 *, SeqPlayer *, void *);
-void sequenceEngineInitializeDriver(VoicePlayer *, s32, s32, s32, Voice50 *);
 s32 sequenceControlReadEvent(u8 *, u8 *, s32, f64 *);
 
 /// Initialize the shared sequence synthesizer and its four playback slots.
@@ -185,7 +183,7 @@ void audioInitializeSequencePlayers(s32 heap, u8 *bankFile) {
     s32 i;
     SeqSlot *p;
 
-    sequenceEngineInitializeDriver(&gAudioSequenceDriver, (s32)n_alGlobals, 2, 0x28, gAudioSequenceVoices);
+    sequenceEngineInitializeDriver(&gAudioSequenceDriver, n_alGlobals, 2, 0x28, gAudioSequenceVoices);
     for (i = 0; i < 4; i++) {
         p = &gAudioSequenceSlots[i];
         sequenceControlInitialize(&gAudioSequenceSlots[i].player);
@@ -390,7 +388,6 @@ f64 audioGetSequenceRate(s32 id) {
     return -1.0;
 }
 
-s32 sequenceEngineSetMasterVolume(u8 *, f64);              /* extern */
 
 /// Set the master level for selected audio categories.
 /// \param categories Category mask: bit zero selects sound effects and bit one selects sequences.
@@ -399,7 +396,7 @@ s32 sequenceEngineSetMasterVolume(u8 *, f64);              /* extern */
 /// \note Original decompilation identifier: \c func_8002006C (0x8002006C).
 void audioSetCategoryVolume(s32 categories, s32 volume) {
     if (categories & 2) {
-        sequenceEngineSetMasterVolume((u8 *)&gAudioSequenceDriver, (f64)volume / 65535.0);
+        sequenceEngineSetMasterVolume(&gAudioSequenceDriver, (f64)volume / 65535.0);
     }
     if (categories & 1) {
         soundEffectPlayerSetMasterVolume(gSoundEffectPlayer, volume);
