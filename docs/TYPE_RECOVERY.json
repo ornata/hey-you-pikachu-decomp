@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 3900,
-      "unique_spellings": 1434,
+      "occurrences": 3895,
+      "unique_spellings": 1433,
       "files": 83
     }
   },
@@ -2182,18 +2182,19 @@
     "src/game/audio_playback.c": {
       "known_views": [
         "n_synthInternals.h",
-        "sequence_driver_types.h"
+        "sequence_driver_types.h",
+        "sound_effect_player.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "return -1": [
-            "152:5",
-            "401:9",
-            "408:5"
+            "141:5",
+            "383:9",
+            "390:5"
           ],
           "bankFile + 4": [
-            "205:81"
+            "193:81"
           ]
         }
       }
@@ -6305,22 +6306,14 @@
     },
     "src/game/sound_effect_player.c": {
       "known_views": [
-        "n_synthInternals.h"
+        "n_synthInternals.h",
+        "sound_effect_player.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
-          "pad + 4": [
-            "121:45",
-            "122:45",
-            "150:45",
-            "151:45"
-          ],
           "duration + 10000": [
-            "394:48"
-          ],
-          "player + 4": [
-            "481:38"
+            "340:48"
           ]
         }
       }

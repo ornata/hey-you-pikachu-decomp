@@ -508,3 +508,15 @@ The microphone configuration message retains a distinct private record because
 its command-dependent payload has different semantics despite a similar extent.
 The unused local EepromArgs view is removed. Every unit matched all 483 objects
 independently before the next source mutation.
+
+The sound-effect continuation consolidates five duplicate player/slot views into
+one private SoundEffectPlayer and SoundEffectVoice layout. Ghidra at 0x8002138C
+corroborates the 0x28-byte player and 0x50-byte slot allocations; compile-time
+size and offset checks cover the shared interpretation. Playback, volume, pan,
+lifetime and destruction consumers reuse the same voice record. The trailing
+slot word at 0x4C stays explicitly unresolved. `sound_effect_player.h` exposes
+an opaque player and documented playback/registration contracts, while audio
+initialization retains an actual synthesizer pointer and sound-effect player
+pointer. Borrowed definitions and sample data remain live throughout playback;
+unregistering does not release voices or audio-heap storage. Both source units
+matched all 483 immutable baseline objects independently.

@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "sound_effect_player.h"
 #include "n_synthInternals.h"
 #include "sequence_driver_types.h"
 typedef struct {
@@ -15,7 +16,6 @@ typedef struct {
     u8 tail[0x14];    /* 0x7DC */
 } SeqSlot;
 s32 sequenceEngineIsStopped(SeqPlayer *);
-s32 soundEffectPlayerCountActive(s32);
 /// Four sequence playback slots retaining control state and playback handles.
 /// \note Original identifier: \c D_800EC9F0 (0x800EC9F0).
 extern SeqSlot gAudioSequenceSlots[4];
@@ -49,7 +49,7 @@ extern N_ALGlobals gGameAudioSynthesizer;
 extern ALBankFile *gAudioBankFile;
 /// Owned sound-effect player allocated during game audio initialization.
 /// \note Original identifier: \c D_800EC960 (0x800EC960).
-extern s32 gSoundEffectPlayer;
+extern SoundEffectPlayer *gSoundEffectPlayer;
 /// ROM start of the audio bank definitions.
 /// \note Original identifier: \c D_84F5F0 (0x84F5F0).
 extern u8 gAudioBankRomStart[];
@@ -68,17 +68,6 @@ void n_alInit(N_ALGlobals *, ALSynConfig *);
 Acmd *n_alAudioFrame(Acmd *, s32 *, s16 *, s32);
 u8 *audioBankLoad(ALHeap *, s32, s32, s32);
 void audioInitializeSequencePlayers(s32, u8 *);
-typedef struct {
-    s32 first;
-    u8 pad[0x4C];
-} InitVoiceEntry;
-typedef struct {
-    s32 synth;
-    ALPlayer player;
-    s32 count, mode, volume;
-    InitVoiceEntry *arr;
-} InitVoicePlayer;
-InitVoicePlayer *soundEffectPlayerCreate(s32, ALHeap *, s32);
 void audioWorkerStart(s32, ALHeap *, OSId, OSPri, s32, s32, s32, s32, s32);
 
 /// Initialize game audio resources, playback services, and the audio worker.
@@ -124,7 +113,7 @@ s32 audioInitialize(s32 scheduler, s32 threadId, s32 priority, u32 frequency) {
     gAudioBankFile = (ALBankFile *)audioBankLoad(
         &heap, (s32)gAudioBankRomStart, (s32)(gAudioBankRomStart + AUDIO_BANK_SIZE), (s32)gAudioSamplesRomStart);
     audioInitializeSequencePlayers((s32)&heap, (u8 *)gAudioBankFile);
-    gSoundEffectPlayer = (s32)soundEffectPlayerCreate((s32)&gGameAudioSynthesizer, &heap, 32);
+    gSoundEffectPlayer = soundEffectPlayerCreate(&gGameAudioSynthesizer, &heap, 32);
     audioWorkerStart(scheduler, &heap, threadId, priority, (s32)n_alAudioFrame, (s32)gAudioRspMicrocodeTextStart,
                      (s32)gAudioRspMicrocodeDataStart, 0xB8, 0x200);
     gAudioInitialized = 1;
@@ -153,7 +142,6 @@ s32 audioShutdown(void) {
 }
 
 s32 sequenceEngineSetOutputMode(u8 *, s32);            /* extern */
-s32 soundEffectPlayerSetOutputMode(s32, s32); /* extern */
 /// Selected output mode shared by sequence and sound-effect playback.
 /// \note Original identifier: \c D_80088EE8 (0x80088EE8).
 extern s32 gAudioOutputMode;
@@ -233,7 +221,6 @@ s32 audioPlaySequence(s32 data) {
 }
 
 s32 audioStopPlayback(s32, f64);
-s32 soundEffectPlayerStopAll(s32);
 
 /// Stop selected categories of game audio.
 /// \param categories Category mask: bit zero selects sound effects and bit one selects sequences.
@@ -273,7 +260,6 @@ s32 audioCountActive(s32 categories) {
     return var_s1;
 }
 
-s32 soundEffectPlayerCountPlayback(s32, s32);
 
 /// Count active playback slots associated with an audio identifier.
 /// \param id Playback identifier; zero selects no playback.
@@ -313,7 +299,6 @@ ALSound *audioGetSoundDefinition(s32 id) {
     return NULL;
 }
 
-s32 soundEffectPlayerPlay(s32, s32); /* extern */
 
 /// Start a sound effect using its bank index.
 /// \param soundId Valid sound-effect index in the loaded bank.
@@ -323,7 +308,6 @@ s32 audioPlaySoundEffect(s32 soundId) {
     return soundEffectPlayerPlay(gSoundEffectPlayer, audioGetSoundDefinition(soundId));
 }
 
-s32 soundEffectPlayerSetVolume(s32, s32, s32, s32); /* extern */
 
 /// Adjust a sound effect's volume immediately when newly started, or over ten milliseconds otherwise.
 /// \param id Playback identifier; zero selects no playback.
@@ -344,7 +328,6 @@ void audioSetSoundEffectPan(s32 id, s32 pan) {
     soundEffectPlayerSetPan(gSoundEffectPlayer, id, pan);
 }
 
-s32 soundEffectPlayerSetPitch(s32, s32, f64); /* extern */
 
 /// Transpose a sound effect relative to its original pitch.
 /// \param id Playback identifier; zero selects no playback.
@@ -355,7 +338,6 @@ void audioSetSoundEffectPitch(s32 id, f32 semitones) {
     soundEffectPlayerSetPitch(gSoundEffectPlayer, id, (f64)alCents2Ratio((s32)(semitones * 100.0f)));
 }
 
-s32 soundEffectPlayerSetEffectMix(s32, s32, s32); /* extern */
 
 /// Set the synthesizer effect mix for a sound effect.
 /// \param id Playback identifier; zero selects no playback.
@@ -409,7 +391,6 @@ f64 audioGetSequenceRate(s32 id) {
 }
 
 s32 sequenceEngineSetMasterVolume(u8 *, f64);              /* extern */
-s32 soundEffectPlayerSetMasterVolume(s32, s32); /* extern */
 
 /// Set the master level for selected audio categories.
 /// \param categories Category mask: bit zero selects sound effects and bit one selects sequences.
@@ -481,7 +462,6 @@ s32 audioFadeOutSequence(s32 id, f64 fadeSeconds) {
 }
 // clang-format on
 
-void soundEffectPlayerStop(s32, s32);
 s32 audioFadeOutSequence(s32, f64);
 
 /// Stop sound effects or fade out a sequence associated with an audio identifier.
