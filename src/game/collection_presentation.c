@@ -1,3 +1,4 @@
+#include "progress_value.h"
 #include "presentation_focus.h"
 #include "vector3_types.h"
 #include "matrix_types.h"
@@ -1203,7 +1204,6 @@ void presentationUpdateCollectionResultsMode(void) {
     }
 }
 
-s32 progressGetValue(s32);
 s32 progressAddValue(s32, s32);
 void playerSetChaseStage(s32);
 /// Selected eye-catch group index, or minus one when no interlude is selected.
@@ -1420,7 +1420,6 @@ s32 presentationSelectArea5Card(s32 *actorAction, s32 *audioCue) {
     }
 }
 
-s32 progressGetValue(s32); /* extern */
 
 /// Selects the card presentation for areas 6 through 8 according to game progress.
 /// \param actorAction Receives the active actor’s presentation action ID.

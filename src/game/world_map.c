@@ -1,3 +1,4 @@
+#include "progress_value.h"
 #include "vector_interpolation.h"
 #include "presentation_focus.h"
 #include "vector3_types.h"
@@ -112,12 +113,10 @@ void presentationUpdateFocusPoint(Vec3f *point) {
 }
 
 u8 playerGetChaseStage(void);
-s32 progressGetValue(); /* extern */
 
 /// Check whether a map destination can be selected at the current difficulty.
 /// \param destination Valid index in the map-destination table.
 /// \returns Nonzero if the destination exists and its progress requirement is satisfied, or zero otherwise.
-/// \note Portability: the unprototyped progress lookup passes an extra argument ignored by the original ABI.
 /// \note Original decompilation identifier: \c func_8002D3DC (0x8002D3DC).
 s32 wholeMapIsDestinationAvailable(s32 destination) {
     s32 availabilityFlag;
@@ -127,7 +126,7 @@ s32 wholeMapIsDestinationAvailable(s32 destination) {
     }
     availabilityFlag = gWorldMapDestinations[destination].availabilityFlag;
     if (availabilityFlag != -1) {
-        return progressGetValue(availabilityFlag, destination);
+        return progressGetValue(availabilityFlag);
     }
     return 1;
 }

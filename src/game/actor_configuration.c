@@ -1,3 +1,4 @@
+#include "progress_value.h"
 #include "actor_rotation.h"
 #include "object_transform.h"
 #include "object_bounds.h"
@@ -37,7 +38,6 @@ extern u8 gActorKindFirstAttachmentPartEntries[];
 /// Actor-kind table viewed at ground-reference part lists, with eighty-four bytes per kind.
 /// \note Original identifier: \c D_80087FE4 (0x80087FE4).
 extern u8 gActorKindGroundReferencePartEntries[];
-s32 progressGetValue(u32);
 s32 progressGetMaximum(s32);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).

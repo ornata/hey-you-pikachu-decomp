@@ -1,3 +1,4 @@
+#include "progress_value.h"
 #include "player_camera.h"
 #include "vector_interpolation.h"
 #include "camera_overlay.h"
@@ -1078,7 +1079,6 @@ void playerResumeNormalControl(void) {
     gPlayerPermissions = gPlayerSavedPermissions;
 }
 
-s32 progressGetValue();                       /* extern */
 void toolboxOpen(s32, s32); /* extern */
 u8 playerGetChaseStage(void);                  /* extern */
 void systemMenuEnter();                 /* extern */
@@ -2491,11 +2491,10 @@ extern u8 gPlayerChaseStage;
 /// progress uses the full value.
 /// \returns Nothing.
 ///
-/// \note Portability: the unprototyped progress lookup passes an extra argument ignored by the original ABI.
 /// \note Original decompilation identifier: \c func_801127DC (0x801127DC).
 void playerSetChaseStage(s32 stage) {
     gPlayerChaseStage = stage;
-    if (stage >= progressGetValue(0xC, stage)) {
+    if (stage >= progressGetValue(0xC)) {
         progressSetValue(0xC, stage);
     }
 }

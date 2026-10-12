@@ -1,3 +1,4 @@
+#include "progress_value.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "vector_direction.h"

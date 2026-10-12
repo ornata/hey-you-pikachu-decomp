@@ -1,3 +1,4 @@
+#include "progress_value.h"
 #include "common.h"
 #include "item_object.h"
 #include "actor_create.h"
@@ -9,7 +10,6 @@ void runtimeCheckResetCheckpoint(s32, s32);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
-s32 progressGetValue(u32); /* extern */
 /// Packed actor-script data borrowed from the scene ROM.
 extern u8 D_80142E90_scene_cobalt_fishing[];
 /// Packed actor-script data borrowed from the scene ROM.

@@ -2623,3 +2623,16 @@ record stride. Original table identifier and address remain documented.
 Two identical private texture-rectangle layouts in the unit are consolidated,
 removing casts between those records. No global data definition or linker layout
 changes; both recovery steps preserve all 483 strict object comparisons.
+
+### Saved progress-value interface
+
+`progress_value.h` supplies the provider's unsigned field-selector and signed
+value-return contract to fifteen caller units. The selector accepts a saved
+field ID or an area-relative selector. Ghidra 0x80032C1C confirms resolution
+followed by the saved-field read; the provider source establishes the types.
+Two unused trailing arguments in world-map and companion calls are removed,
+with their obsolete portability notes.
+
+Toolbox retains its local signed-selector declaration: adopting the unsigned
+shared prototype changes ROM bytes. Its compatibility contract and the ledger
+record the exception and the need for IDO scheduling/conversion evidence.

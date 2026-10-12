@@ -1,3 +1,4 @@
+#include "progress_value.h"
 #include "matrix_point.h"
 #include "camera_visibility.h"
 #include "object_flags.h"
@@ -2188,7 +2189,6 @@ void *areaLoadNextOverlay(void) {
                               ovl->dataEnd, ovl->bssStart, ovl->bssEnd);
 }
 
-s32 progressGetValue(u32);
 /// Per-kind item motion, rendering, response and description configuration.
 /// \note Original identifier: \c D_80125A40 (0x80125A40).
 extern u8 gItemKinds[];

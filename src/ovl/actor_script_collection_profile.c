@@ -1,3 +1,4 @@
+#include "progress_value.h"
 #include "player_camera.h"
 #include "actor_script_action.h"
 #include "camera_overlay.h"
@@ -449,7 +450,6 @@ s32 actorScriptSetProgressValue(u8 *actor) {
     return 0;
 }
 
-s32 progressGetValue(s32);    /* extern */
 /// Provide the current saved value of a progress field.
 /// \param actor Actor whose script VM supplies a valid progress-field ID or area-relative selector and receives its current value.
 /// \returns Zero, allowing script execution to continue.

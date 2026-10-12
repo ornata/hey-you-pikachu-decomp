@@ -1,3 +1,4 @@
+#include "progress_value.h"
 #include "camera_overlay.h"
 #include "heap_free.h"
 #include "common.h"
@@ -416,7 +417,6 @@ s32 eyeCatchUpdate(void) {
     return 0;
 }
 
-s32 progressGetValue(s32);
 
 /// Choose an eye-catch group using the current selection weights.
 /// \returns The selected group index from zero through five.

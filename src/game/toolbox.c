@@ -727,7 +727,13 @@ void toolboxConfirmItemTransfer(u8 *player) {
     messageBarEnqueue(0, 2.0f, "There isn't anything there.");
 }
 
-s32 progressGetValue(s32);
+/// Reads a saved progress field for toolbox supply restoration.
+/// \param field Saved progress-field selector.
+/// \returns The current field value.
+/// \note Matching: the signed selector declaration preserves IDO code generation;
+/// the shared unsigned declaration changes the ROM bytes in this caller.
+/// \note Original decompilation identifier: \c __osSpSetPc (0x80032C1C).
+s32 progressGetValue(s32 field);
 /// Recreate stored toolbox items and populate available supplies from story progress.
 /// \param table Address of the shared toolbox table containing valid saved item kinds and cleared object handles; current scene and item resources must be initialized.
 /// \returns Nothing.

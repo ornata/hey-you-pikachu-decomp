@@ -1,3 +1,4 @@
+#include "progress_value.h"
 #include "landmark.h"
 #include "object_lifecycle.h"
 #include "door.h"
@@ -6,7 +7,6 @@
 #include "actor_create.h"
 void doorRegistryReset(void);
 u32 randomNext(void);
-s32 progressGetValue(s32);
 s32 progressSetValue(s32, s32);
 /// Entrance index used to initialize the player and companion in the current area.
 /// \note Original identifier: \c D_800AE4F4 (0x800AE4F4).

@@ -1,3 +1,4 @@
+#include "progress_value.h"
 #include "action_script_playback.h"
 #include "object_distance.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -440,5 +441,3 @@ extern s32 gCollectionPresentationItem;
 /// Interior collection-value view of the item catalog, with a 116-byte stride.
 /// \note Original identifier: \c D_80125AAC (0x80125AAC).
 extern s32 gItemKindCollectionValueEntries[];
-
-s32 progressGetValue(u32); /* extern */

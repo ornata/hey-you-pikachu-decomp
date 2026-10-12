@@ -1,3 +1,4 @@
+#include "progress_value.h"
 #include "matrix_types.h"
 #include "matrix_point.h"
 #include "camera_interface.h"
@@ -1081,7 +1082,6 @@ void systemMenuAppendMemoryDetails(void) {
     systemMenuAppendDetailText(buf);
 }
 
-s32 progressGetValue(s32);
 /// Append debug objective flags and visit counters to the menu details.
 /// The formatted report must fit in 79 bytes.
 /// \returns Nothing.
@@ -1096,7 +1096,6 @@ void systemMenuAppendProgressDetails(void) {
     systemMenuAppendDetailText((u8 *)buffer);
 }
 
-s32 progressGetValue();    /* extern */
 /// Append the number of days spent with Pikachu to the menu details.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8011AC40 (0x8011AC40).

@@ -1,3 +1,4 @@
+#include "progress_value.h"
 #include "action_continuation.h"
 #include "action_script_stop.h"
 #include "action_script_playback.h"
@@ -54,7 +55,6 @@ void playerSetChaseStage(); /* extern */
 
 
 
-s32 progressGetValue(u32); /* extern */
 
 
 /// Dispatch the next registered command for an actor script.
