@@ -1,3 +1,4 @@
+#include "item_participation.h"
 #include "item_search.h"
 #include "actor_action_cue.h"
 #include "actor_appearance.h"
@@ -341,7 +342,6 @@ u8 *linkedEffectCreateChain(s32, f32, f32, f32, f32, s32, f32, f32, f32, f32, f3
 f32 vector3Normalize(u8 *);
 f32 mathSinDegrees(f32);
 f32 mathCosDegrees(f32);
-void itemThrow(s32, f32 *, f32 *, f32 *, s32);
 
 typedef struct Launch {
     s32 kind;

@@ -1,3 +1,4 @@
+#include "item_participation.h"
 #include "item_mode.h"
 #include "item_queries.h"
 #include "camera_pose.h"
@@ -632,7 +633,6 @@ void pinataUpdateWriggle(u8 *item) {
 }
 
 void actorGetConfiguredAttachmentPosition(s32, f32, f32 *);
-s32 itemTryRelease(u8 *, s32);
 void pinataUpdateWriggle(u8 *);
 /// Update an actor-held item attachment, or release it when its holder is absent.
 /// \param object Actor-held item to update.

@@ -1,3 +1,4 @@
+#include "item_participation.h"
 #include "item_queries.h"
 #include "action_continuation.h"
 #include "player_friendship.h"
@@ -178,7 +179,6 @@ s32 scriptCommandGetItemAvailabilityFlag(u8 *object) {
     return 0;
 }
 
-s32 itemTryRelease(s32, s32); /* extern */
 
 /// Force release of the item identified by the script handle argument and provide its success status as the script result.
 /// \param object Actor whose script supplies the item handle and receives the release
@@ -192,7 +192,7 @@ s32 scriptCommandReleaseItem(u8 *object) {
     sp1C = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
     resolvedObject = objectResolveAvailableHandle(scriptVmPopInteger(sp1C));
     if (resolvedObject != 0) {
-        scriptVmPushInteger(sp1C, itemTryRelease((s32)resolvedObject, 1));
+        scriptVmPushInteger(sp1C, itemTryRelease(resolvedObject, 1));
     } else {
         scriptVmPushInteger(sp1C, 0);
     }

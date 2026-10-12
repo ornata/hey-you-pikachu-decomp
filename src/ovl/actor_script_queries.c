@@ -1,3 +1,4 @@
+#include "item_participation.h"
 #include "item_queries.h"
 #include "item_search.h"
 #include "action_script_playback.h"
@@ -1214,7 +1215,6 @@ s32 itemHasPlayerPickupHistory(u8 *item) {
     return 0;
 }
 
-s32 itemTryRelease(u8 *, s32); /* extern */
 
 /// Force release of the actor's held item and report its kind.
 /// \param actor Actor with initialized state whose held handle identifies an item when live.

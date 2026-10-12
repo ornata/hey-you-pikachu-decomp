@@ -2768,3 +2768,16 @@ Pickup and cooperation queries now share `item_queries.h` contracts across
 registry, actor queries, companion and target interaction. Every source-unit
 conversion and shared-header dependent preserves all 483 strict objects. Mode
 values without sufficiently established semantics retain numeric spelling.
+
+### Item release, launch and participation interfaces
+
+`item_participation.h` consolidates release, throw, search registration and
+search/collision exclusion across eight units. The script release caller now
+passes its resolved object pointer through the provider's actual contract.
+
+Release uses shared item fields and the actor's checked held-item handle rather
+than raw offsets. Ghidra 0x80114044 confirms owner lookup, holder clearing,
+release callback and reset fields. Hold-state dispatch retains an unsigned byte
+view of the named signed member because a value cast changes IDO output; the
+source note and ledger record that exception. All changed units preserve the
+complete strict object baseline.

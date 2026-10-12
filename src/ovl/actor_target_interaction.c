@@ -1,3 +1,4 @@
+#include "item_participation.h"
 #include "item_queries.h"
 #include "item_mode.h"
 #include "actor_appearance.h"
@@ -201,7 +202,6 @@ void actorPostItemImpactMessage(s32 actor, u8 *item) {
     actorPostScriptMessage(actor, msg, 0);
 }
 
-s32 itemTryRelease(u8 *, s32);
 /// Borrowed reference to the active Pikachu actor created for the current area.
 /// \note Original identifier: \c D_800760A8 (0x800760A8).
 extern u8 *gPikachuActor;

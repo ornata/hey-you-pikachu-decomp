@@ -1,3 +1,4 @@
+#include "item_participation.h"
 #include "item_queries.h"
 #include "item_mode.h"
 #include "story_chapter.h"
@@ -759,7 +760,6 @@ block_14:
 
 f32 mathSinDegrees(f32);
 f32 mathCosDegrees(f32);
-void itemThrow(s32, f32 *, f32 *, f32 *, s32);
 /// Interior motion-coefficient view of the item catalog, with a 116-byte stride.
 /// \note Original identifier: \c D_80125A68 (0x80125A68).
 extern f32 gItemKindMotionCoefficientEntries[];
@@ -2446,7 +2446,6 @@ void playerPrepareCameraTransition(f32 *eye, f32 *target, f32 duration) {
         (f32)((PlayerControlPrefix *)&gPlayerState)->modeState.cameraDuration;
 }
 
-s32 itemTryRelease(u8 *, s32);  /* extern */
 /// Separate symbol view of the primary player record's held item handle.
 /// \note Original identifier: \c D_800EF724 (0x800EF724).
 extern s32 gPlayerHeldItemHandle; /* the held item's id */

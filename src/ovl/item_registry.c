@@ -1,3 +1,5 @@
+#include "actor_script.h"
+#include "item_participation.h"
 #include "item_mode.h"
 #include "item_search.h"
 #include "item_queries.h"
@@ -2177,7 +2179,6 @@ u8 *itemCreate(f32 x, f32 y, f32 z, f32 pitch, f32 yaw, s32 kind) {
     return object;
 }
 
-s32 itemTryRelease(u8 *, s32);   /* extern */
 /// Number of live registered items in the current area.
 /// \note Original identifier: \c D_80134040 (0x80134040).
 extern s32 gLiveItemCount;
@@ -2366,6 +2367,7 @@ void itemRegisterForSearch(s32 objectId) {
 /// another item cannot be released.
 /// \returns One if the item is free after release, or zero if release is refused.
 ///
+/// \note Matching: hold-state dispatch reads the unsigned byte representation; a cast from the signed field changes IDO code generation.
 /// \note Portability: the release callback receives the former holder address as a 32-bit integer, or zero
 /// when no live holder is found.
 /// \note Original decompilation identifier: \c func_80114044 (0x80114044).
@@ -2373,43 +2375,43 @@ s32 itemTryRelease(u8 *object, s32 force) {
     u8 *state;
     u8 *other;
     u8 *found;
-    void (*callback)(u8 *, s32);
-    state = *(u8 **)(object + 0x54);
+    ItemReleaseCallback callback;
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
     other = NULL;
-    switch (*(u8 *)(state + 6)) {
+    switch (*(u8 *)&((ItemStatePrefix *)state)->state) {
     case 0:
         break;
     case 5:
         return 0;
     case 1:
-        if (force == 0 && !(*(s32 *)state & 0x40000000))
+        if (force == 0 && !(((ItemStatePrefix *)state)->flags & 0x40000000))
             return 0;
         gPlayerHeldItemHandle = 0;
         break;
     case 2:
     case 3:
-        found = objectFindLiveByHandle(*(s32 *)(state + 8));
+        found = objectFindLiveByHandle(((ItemStatePrefix *)state)->owner);
         other = found;
         if (found != NULL) {
-            if (force == 0 && !(*(s32 *)state & 0x40000000))
+            if (force == 0 && !(((ItemStatePrefix *)state)->flags & 0x40000000))
                 return 0;
-            *(s32 *)(*(u8 **)(found + 0x54) + 0x190) = 0;
+            ((RuntimeObjectPrefix *)found)->state.actor->heldItemHandle = 0;
         }
         break;
     case 4:
         return 0;
     default:
-        TRACE("Error: Unknown hold_type(%d) in item(%p)\n", state[6], object);
+        TRACE("Error: Unknown hold_type(%d) in item(%p)\n", ((ItemStatePrefix *)state)->state, object);
         break;
     }
-    callback = gItemKinds[*(s16 *)(state + 4)].release;
+    callback = gItemKinds[((ItemStatePrefix *)state)->kind].release;
     if (callback != NULL)
         callback(object, (s32)other);
-    state[6] = 0;
-    *(s32 *)(state + 8) = 0;
-    *(f32 *)(state + 0x2C) = 0.0f;
+    ((ItemStatePrefix *)state)->state = 0;
+    ((ItemStatePrefix *)state)->owner = 0;
+    ((ItemStatePrefix *)state)->modeTime = 0.0f;
     itemSetMode(object, 0);
-    *(s32 *)state &= 0xBFFFFFFF;
+    ((ItemStatePrefix *)state)->flags &= 0xBFFFFFFF;
     return 1;
 }
 
