@@ -2781,3 +2781,15 @@ release callback and reset fields. Hold-state dispatch retains an unsigned byte
 view of the named signed member because a value cast changes IDO output; the
 source note and ledger record that exception. All changed units preserve the
 complete strict object baseline.
+
+### Item launch motion and transform accesses
+
+The launch path now names object rotation, radius and position; item velocity,
+rotation rates and spin; the primary actor handle; the private-state pointer;
+and its shared launch callback type. Ghidra 0x8011418C confirms the placement
+and velocity sequence without changing control flow or floating expressions.
+
+Isolated trials show that direct owner, hold-state, flags and kind members each
+change ROM bytes in this routine. Those four read patterns remain explicit
+matching exceptions in the source and ledger pending IDO scheduling evidence.
+All accepted member conversions preserve the full 483-object strict baseline.

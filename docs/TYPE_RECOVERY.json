@@ -51,7 +51,7 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 3067,
+      "occurrences": 3052,
       "unique_spellings": 1114,
       "files": 80
     }
@@ -7056,7 +7056,8 @@
         "search_tree_traversal.h"
       ],
       "matching_exceptions": {
-        "itemTryRelease": "Hold-state switch uses an unsigned-byte view of the named signed state member. Casting the signed member value to u8 changes IDO output; the explicit byte view matches. Other release fields and the actor held-item handle use shared members."
+        "itemTryRelease": "Hold-state switch uses an unsigned-byte view of the named signed state member. Casting the signed member value to u8 changes IDO output; the explicit byte view matches. Other release fields and the actor held-item handle use shared members.",
+        "itemThrow": "Object transform and item motion fields use shared members. Owner at 8, hold state at 6, flags at 0 and kind at 4 retain raw reads: isolated direct-member trials each change ROM bytes. Their layouts are checked by shared types; further recovery needs IDO allocation/load-scheduling evidence."
       },
       "locations": {
         "raw_offset_candidates": {
@@ -7064,15 +7065,14 @@
             "1857:37"
           ],
           "object + 0x54": [
-            "2021:22",
-            "2443:22"
+            "2021:22"
           ],
           "state + 6": [
             "2024:17",
             "2031:24",
             "2035:20",
             "2066:17",
-            "2446:24"
+            "2447:24"
           ],
           "object + 0x2C": [
             "2025:37",
@@ -7107,10 +7107,10 @@
           ],
           "state + 4": [
             "2059:41",
-            "2462:64",
-            "2463:65",
-            "2464:64",
-            "2471:36"
+            "2463:79",
+            "2464:87",
+            "2465:79",
+            "2472:36"
           ],
           "state + 0x38": [
             "2060:18",
@@ -7138,36 +7138,30 @@
             "2154:34",
             "2156:45",
             "2158:45",
-            "2165:23",
-            "2456:23"
+            "2165:23"
           ],
           "object + 0xC": [
-            "2167:14",
-            "2451:14"
+            "2167:14"
           ],
           "object + 0x10": [
             "2168:14"
           ],
           "object + 0x14": [
-            "2169:14",
-            "2452:14"
+            "2169:14"
           ],
           "object + 0x18": [
-            "2170:14",
-            "2459:14"
+            "2170:14"
           ],
           "object + 0x1C": [
-            "2171:14",
-            "2460:14"
+            "2171:14"
           ],
           "object + 0x20": [
-            "2172:14",
-            "2461:14"
+            "2172:14"
           ],
           "object + 0x44": [
             "2173:14",
-            "2718:53",
-            "2740:49"
+            "2719:53",
+            "2741:49"
           ],
           "object + 0x48": [
             "2174:14"
@@ -7191,43 +7185,21 @@
           "itemState + 0x54": [
             "2361:53"
           ],
-          "gPikachuActor + 0x38": [
-            "2444:24"
-          ],
           "state + 8": [
-            "2444:58"
-          ],
-          "state + 0x14": [
-            "2462:14"
-          ],
-          "state + 0x10": [
-            "2463:14"
-          ],
-          "state + 0x18": [
-            "2464:14"
-          ],
-          "state + 0x1C": [
-            "2465:14"
-          ],
-          "state + 0x20": [
-            "2466:14"
-          ],
-          "state + 0x28": [
-            "2468:18",
-            "2470:18"
+            "2445:68"
           ],
           "replacement + 0x44": [
-            "2774:53",
-            "2779:53",
-            "2782:53",
-            "2786:53"
+            "2775:53",
+            "2780:53",
+            "2783:53",
+            "2787:53"
           ],
           "sp20 + 0x50": [
-            "2821:63"
+            "2822:63"
           ],
           "rec + 0x70": [
-            "2915:49",
-            "2917:39"
+            "2916:49",
+            "2918:39"
           ]
         }
       }

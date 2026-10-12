@@ -2430,9 +2430,10 @@ s32 terrainConstrainMovement(s32, f32, f32, f32, f32, f32, f32, f32 *, f32 *, f3
 ///
 /// \note Requires initialized terrain and valid item-kind resources. Launch vectors must remain readable
 /// throughout the call and must not overlap item fields modified before they are consumed.
+/// \note Matching: owner, hold-state, flags and kind reads retain offset views because direct members change IDO scheduling.
 /// \note Original decompilation identifier: \c func_8011418C (0x8011418C).
 void itemThrow(s32 id, f32 *origin, f32 *target, f32 *velocity, s32 effect) {
-    void (*callback)(u8 *);
+    ItemLaunchCallback callback;
     f32 radius;
     f32 delta[3];
     u8 *state;
@@ -2440,34 +2441,34 @@ void itemThrow(s32 id, f32 *origin, f32 *target, f32 *velocity, s32 effect) {
     TRACE("itemThrow itemID:%d\norgPos  (%.2f, %.2f, %.2f)\nthrowPos(%.2f, %.2f, %.2f)\nthrowVel(%.2f, %.2f, %.2f)\n",
           id, origin[0], origin[1], origin[2], target[0], target[1], target[2], velocity[0], velocity[1], velocity[2]);
     object = objectFindLiveByHandle(id);
-    state = *(u8 **)(object + 0x54);
-    if (*(s32 *)((u8 *)gPikachuActor + 0x38) == *(s32 *)(state + 8)) {
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
+    if (((RuntimeObjectPrefix *)gPikachuActor)->handle == *(s32 *)(state + 8)) {
         *(s32 *)state |= 0x08000000;
     } else if (*(s8 *)(state + 6) == 1) {
         *(s32 *)state |= 0x04000000;
     }
     itemTryRelease(object, 1);
     *(s32 *)state |= 0x01000000;
-    *(f32 *)(object + 0xC) = 0.0f;
-    *(f32 *)(object + 0x14) = 0.0f;
+    ((RuntimeObjectPrefix *)object)->rotation[0] = 0.0f;
+    ((RuntimeObjectPrefix *)object)->rotation[2] = 0.0f;
     delta[0] = target[0] - origin[0];
     delta[1] = target[1] - origin[1];
     delta[2] = target[2] - origin[2];
-    radius = *(f32 *)(object + 0x24);
+    radius = ((RuntimeObjectPrefix *)object)->radius;
     terrainConstrainMovement(7, origin[0], origin[1] - radius, origin[2], radius * 2, radius * 2, radius, &delta[0], &delta[1],
                   &delta[2], 0);
-    *(f32 *)(object + 0x18) = origin[0] + delta[0];
-    *(f32 *)(object + 0x1C) = origin[1] + delta[1];
-    *(f32 *)(object + 0x20) = origin[2] + delta[2];
-    *(f32 *)(state + 0x14) = velocity[0] * gItemKinds[*(s16 *)(state + 4)].speed;
-    *(f32 *)(state + 0x10) = -velocity[1] * gItemKinds[*(s16 *)(state + 4)].speed;
-    *(f32 *)(state + 0x18) = velocity[2] * gItemKinds[*(s16 *)(state + 4)].speed;
-    *(f32 *)(state + 0x1C) = 0.0f;
-    *(f32 *)(state + 0x20) = 0.0f;
+    ((RuntimeObjectPrefix *)object)->position[0] = origin[0] + delta[0];
+    ((RuntimeObjectPrefix *)object)->position[1] = origin[1] + delta[1];
+    ((RuntimeObjectPrefix *)object)->position[2] = origin[2] + delta[2];
+    ((ItemStatePrefix *)state)->velocityX = velocity[0] * gItemKinds[*(s16 *)(state + 4)].speed;
+    ((ItemStatePrefix *)state)->downwardVelocity = -velocity[1] * gItemKinds[*(s16 *)(state + 4)].speed;
+    ((ItemStatePrefix *)state)->velocityZ = velocity[2] * gItemKinds[*(s16 *)(state + 4)].speed;
+    ((ItemStatePrefix *)state)->rotationVelocityX = 0.0f;
+    ((ItemStatePrefix *)state)->rotationVelocityY = 0.0f;
     if (*(s32 *)state & 0x20)
-        *(f32 *)(state + 0x28) = 8.0f;
+        ((ItemStatePrefix *)state)->spinSpeed = 8.0f;
     else
-        *(f32 *)(state + 0x28) = 0.0f;
+        ((ItemStatePrefix *)state)->spinSpeed = 0.0f;
     callback = gItemKinds[*(s16 *)(state + 4)].launch;
     if (callback != NULL)
         callback(object);
