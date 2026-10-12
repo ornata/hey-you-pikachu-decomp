@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "actor_target.h"
 #include "actor_script.h"
 #include "object_types.h"
 extern float fabsf(float);
@@ -11,7 +12,6 @@ s32 actorAdvanceWithGroundClearance(s32, f32);
 s32 actorTurnAwayFromPlayer(s32, f32);
 s32 actorBackstepTowardTarget(s32, f32);
 void actorAddRotationAxisDegrees(u8 *, f32, s32);
-s32 actorPivotTowardTarget(s32, f32);
 void actionRequestLoopExit(s32);
 void objectGetPendingLocalMovement(f32 *);
 void objectSetPendingLocalMovement(f32 *);
@@ -112,8 +112,6 @@ void actorPrepareSlowestApproachCompletion(s32 actor) {
     actorPrepareApproachCompletion(actor, 1.27f);
 }
 
-s32 actorTurnTowardTarget(u8 *, f32); /* extern */
-void actorRefreshTrackingTargetPosition(u8 *);     /* extern */
 u8 *actorFindPart(u8 *, s32);
 extern double sqrt(double);
 #pragma intrinsic(sqrt)
@@ -287,7 +285,7 @@ s32 actorTurnToTrackedTargetAndExitLoop(s32 actor) {
 /// \returns Always zero; the loop-exit request controls action completion.
 /// \note Original decompilation identifier: \c func_8000FDF0 (0x8000FDF0).
 s32 actorPivotToTargetAndExitLoop(s32 actor) {
-    if (actorPivotTowardTarget(actor, 100.0f) != 0) {
+    if (actorPivotTowardTarget((u8 *)actor, 100.0f) != 0) {
         actionRequestLoopExit(actor);
     }
     return 0;
@@ -392,9 +390,9 @@ s32 actorSelectAlternateAlignedOrLeftTargetContinuation(u8 *actor) {
 s32 actorUpdateAdaptiveTargetPivot(u8 *actor) {
     u8 *actorState = *(u8 **)(actor + 0x54);
     if (*(s32 *)(actorState + 0x1BC) != 0) {
-        actorPivotTowardTarget(actor, 720.0f);
+        actorPivotTowardTarget((u8 *)actor, 720.0f);
     } else {
-        actorPivotTowardTarget(actor, 240.0f);
+        actorPivotTowardTarget((u8 *)actor, 240.0f);
     }
     return 0;
 }
@@ -1151,7 +1149,7 @@ s32 actorAdvanceWithScaleOscillation(f32 *object, f32 speed) {
 /// \param actor Actor executing the movement behavior.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800117B4 (0x800117B4).
-void actorAdvanceWithSlowScaleOscillation(s32 actor) {
+void actorAdvanceWithSlowScaleOscillation(u8 *actor) {
     actorAdvanceWithScaleOscillation((f32 *)actor, 150.0f);
 }
 
@@ -1183,7 +1181,7 @@ s32 actorApproachTargetWithSlowScaleOscillation(u8 *actor) {
 /// \param actor Actor executing the movement behavior.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80011878 (0x80011878).
-void actorAdvanceWithMediumScaleOscillation(s32 actor) {
+void actorAdvanceWithMediumScaleOscillation(u8 *actor) {
     actorAdvanceWithScaleOscillation((f32 *)actor, 300.0f);
 }
 
@@ -1215,7 +1213,7 @@ s32 actorApproachTargetWithMediumScaleOscillation(u8 *actor) {
 /// \param actor Actor executing the movement behavior.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80011934 (0x80011934).
-void actorAdvanceWithFastScaleOscillation(s32 actor) {
+void actorAdvanceWithFastScaleOscillation(u8 *actor) {
     actorAdvanceWithScaleOscillation((f32 *)actor, 900.0f);
 }
 
@@ -1279,7 +1277,6 @@ s32 actorAdvanceWhileTrackingTarget(u8 *actor) {
 void matrixFixedTo34(Mtx, f32 *);
 void matrix33TransformVector(f32 *, f32 *, f32 *);
 void vector3GetLookAnglesDegrees(f32 *, f32 *, f32 *);
-u8 *actorResolveStoredTarget(u8 *);
 f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
 /// Borrowed reference to the active Pikachu actor created for the current area.
 /// \note Original identifier: \c D_800760A8 (0x800760A8).

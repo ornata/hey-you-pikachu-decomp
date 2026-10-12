@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "actor_target.h"
 #include "integer_animation.h"
 #include "object_types.h"
 #include "actor_script.h"
@@ -396,7 +397,6 @@ void actionUpdatePlayback(u8 *);
 void actorUpdateTrackedSoundSpatialization(u8 *, s32 *);
 s32 actionGetAttributes(u8 *);
 void actorUpdateGroundSlopePitch(u8 *);
-void actorRefreshTrackingTargetPosition();
 void objectUpdateHierarchyInteractionVisibility(u8 *);
 s32 collisionGridRegisterObject(u8 *);
 void directionAnimationUpdate(u8 *);
@@ -490,7 +490,6 @@ typedef struct CamRec {
     f32 z;
     u8 pad[0xD4];
 } CamRec;
-u8 *actorResolveStoredTarget(u8 *);
 
 /// Resolve the parent tracking position, including camera targets and the stored-position fallback.
 /// \param child Child object with a valid parent matching parentState.

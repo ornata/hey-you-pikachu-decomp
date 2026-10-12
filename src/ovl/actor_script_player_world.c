@@ -1,4 +1,5 @@
 #include "common.h"
+#include "actor_target.h"
 #include "player_control.h"
 #include "object_lookup.h"
 #include "player_types.h"
@@ -9,7 +10,6 @@
 #include "object_types.h"
 
 /// Unprototyped compatibility declaration for the retained extra argument in actorScriptPushSelfHandle.
-void actorSetMessengerContactMode(u8 *, s32); /* extern */
 
 /// Select how messenger objects respond to contact with the actor.
 /// \param actor Actor whose script VM supplies the messenger contact mode and receives zero.

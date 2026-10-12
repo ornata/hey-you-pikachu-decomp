@@ -6,6 +6,7 @@
 
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "actor_target.h"
 #include "object_lookup.h"
 #include "player_types.h"
 #include "item_types.h"
@@ -64,18 +65,18 @@ s32 actorTurnTowardTarget(u8 *object, f32 speed) {
     f32 direction[3];
     f32 angle;
     f32 heading;
-    state = *(u8 **)(object + 0x54);
-    direction[0] = *(f32 *)(state + 0x1EC) - *(f32 *)(object + 0x44);
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
+    direction[0] = ((ActorScriptState *)state)->targetPosition[0] - ((RuntimeObjectPrefix *)object)->worldPosition[0];
     direction[1] = 0.0f;
-    direction[2] = *(f32 *)(state + 0x1F4) - *(f32 *)(object + 0x4C);
+    direction[2] = ((ActorScriptState *)state)->targetPosition[2] - ((RuntimeObjectPrefix *)object)->worldPosition[2];
     heading = vector3GetYawDegrees(direction);
     angle = actorConstrainFacingHeading(object, heading);
     actorAddRotationAxisDegrees(
         object,
-        mathApproachAngleDegrees(*(f32 *)(state + 0x10), angle, 1.0f, 90.0f, speed * gRuntimeFrameSeconds) -
-            *(f32 *)(state + 0x10),
+        mathApproachAngleDegrees(((ActorScriptState *)state)->orientation[1], angle, 1.0f, 90.0f, speed * gRuntimeFrameSeconds) -
+            ((ActorScriptState *)state)->orientation[1],
         1);
-    if (fabsf(mathWrapSignedDegrees(angle - *(f32 *)(state + 0x10))) < 1.0f)
+    if (fabsf(mathWrapSignedDegrees(angle - ((ActorScriptState *)state)->orientation[1])) < 1.0f)
         return 1;
     return 0;
 }
@@ -102,14 +103,14 @@ s32 actorPivotTowardTarget(u8 *object, f32 speed) {
     f32 error;
     f32 vector[3];
     f32 magnitude;
-    state = *(u8 **)(object + 0x54);
-    direction[0] = *(f32 *)(state + 0x1EC) - *(f32 *)(object + 0x44);
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
+    direction[0] = ((ActorScriptState *)state)->targetPosition[0] - ((RuntimeObjectPrefix *)object)->worldPosition[0];
     direction[1] = 0.0f;
-    direction[2] = *(f32 *)(state + 0x1F4) - *(f32 *)(object + 0x4C);
+    direction[2] = ((ActorScriptState *)state)->targetPosition[2] - ((RuntimeObjectPrefix *)object)->worldPosition[2];
     heading = vector3GetYawDegrees(direction);
     angle = actorConstrainFacingHeading(object, heading);
-    turn = mathApproachAngleDegrees(*(f32 *)(state + 0x10), angle, 1.0f, 90.0f, speed * gRuntimeFrameSeconds) -
-           *(f32 *)(state + 0x10);
+    turn = mathApproachAngleDegrees(((ActorScriptState *)state)->orientation[1], angle, 1.0f, 90.0f, speed * gRuntimeFrameSeconds) -
+           ((ActorScriptState *)state)->orientation[1];
     sine = mathSinDegrees(turn);
     cosine = mathCosDegrees(turn);
     offset = (1.0f - cosine) * 90.0f;
@@ -119,7 +120,7 @@ s32 actorPivotTowardTarget(u8 *object, f32 speed) {
     vector[2] = lateral * sine + offset * cosine;
     objectSetPendingLocalMovement(vector);
     actorAddRotationAxisDegrees(object, turn, 1);
-    error = mathWrapSignedDegrees(angle - *(f32 *)(state + 0x10));
+    error = mathWrapSignedDegrees(angle - ((ActorScriptState *)state)->orientation[1]);
     magnitude = fabsf(error);
     if (magnitude < 1.0f)
         return 1;

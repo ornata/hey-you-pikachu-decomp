@@ -484,3 +484,15 @@ and paired-panel destruction. The unused word at 0x68 remains explicitly
 unresolved. The destructor takes a model pointer instead of OSTimer, and redundant
 local forward declarations following definitions are removed. All 483 objects
 remain identical to the immutable baseline.
+
+The actor-target continuation shares lookup, tracking, messenger-contact mode,
+turning and pivot contracts through `actor_target.h` across eight source units.
+Target results are borrowed live objects, and turning requires the actor to be
+the current object update because movement is accumulated through global state.
+Ghidra at 0x80118C80 corroborates destination, orientation and pending movement
+use. The turning producer reuses checked ActorScriptState destination/orientation
+fields and RuntimeObjectPrefix worldPosition, rather than local position. A trial
+using local position was rejected by object comparison and corrected; the
+immutable baseline and comparator were unchanged. Slow, medium and fast scale
+oscillation wrappers now accept actor pointers, matching their action consumers.
+Every source unit was built and compared independently before the next changed.

@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "actor_target.h"
 #include "object_lookup.h"
 #include "object_types.h"
 #include "actor_script.h"
@@ -340,7 +341,6 @@ f32 vector3Normalize(u8 *);
 f32 mathSinDegrees(f32);
 f32 mathCosDegrees(f32);
 void itemThrow(s32, f32 *, f32 *, f32 *, s32);
-u8 *actorResolveStoredTarget(u8 *);
 
 typedef struct Launch {
     s32 kind;
@@ -510,7 +510,6 @@ void effectCreateVerticalStack(u8 *position) {
     wispEffectCreate(1, ((f32 *)position)[0], ((f32 *)position)[1] + 39.5f, ((f32 *)position)[2]);
 }
 
-u8 *actorGetTrackingTarget(u8 *);
 
 /// Gets the position to use when directing an actor’s effects toward its target.
 /// \param actor Actor whose target position is requested.

@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "actor_target.h"
 #include "player_control.h"
 #include "object_lookup.h"
 #include "actor_script.h"
@@ -323,7 +324,6 @@ void actorChooseEscapePositionFromPlayer(u8 *actor) {
     actorChooseEscapePosition(actor, &gPlayerState);
 }
 
-u8 *actorResolveStoredTarget(u8 *); /* extern */
 
 /// Get the handle of an actor's available target.
 /// \param object Actor whose target is requested.

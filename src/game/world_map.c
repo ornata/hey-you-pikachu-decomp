@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "actor_target.h"
 #include "actor_script.h"
 
 /* Debug trace: compiled out in this build, but each format string is still
@@ -705,7 +706,6 @@ void micRequestDictionary(s32);      /* extern */
 void micRequestRecognitionOverride(s32);      /* extern */
 void micRequestRecognitionFollowsTrigger(s32);      /* extern */
 void hudSetFeatureMask(s32);      /* extern */
-void actorSetMessengerContactMode(s32, s32); /* extern */
 /// Whether gameplay exposes microphone interaction and its HUD indicator.
 /// \note Original identifier: \c D_800722D0 (0x800722D0).
 extern s32 gGameplayMicrophoneAvailable;
@@ -720,7 +720,7 @@ extern s32 gGameplayVoiceCommandsAllowed;
 void wholeMapConfigureVoiceInput(void) {
     TRACE("restart skit.\n");
     micRequestDictionary(0x1F);
-    actorSetMessengerContactMode(gPikachuActor, 2);
+    actorSetMessengerContactMode((u8 *)gPikachuActor, 2);
     hudSetFeatureMask(4);
     micRequestRecognitionOverride(1);
     micRequestRecognitionFollowsTrigger(1);

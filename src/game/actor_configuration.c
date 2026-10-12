@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "actor_target.h"
 #include "heap_diagnostics.h"
 #include "integer_animation.h"
 #include "object_lookup.h"
@@ -70,7 +71,6 @@ extern s32 gContactEffectTriggeredAnimation;
 /// Borrowed reference to the active Pikachu actor created for the current area.
 /// \note Original identifier: \c D_800760A8 (0x800760A8).
 extern s32 gPikachuActor;
-u8 *actorResolveStoredTarget(u8 *);
 void actorUpdateModel(u8 *);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
