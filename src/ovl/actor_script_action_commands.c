@@ -9,6 +9,7 @@
 #include "object_types.h"
 #include "actor_script.h"
 #include "script_vm.h"
+#include "script_vm_stack.h"
 
 /// Shared 80-byte text used by actor-script text and message commands.
 /// \note NONPORTABLE: buffer accesses span separate declarations whose contiguous target layout is retained for matching.
@@ -89,7 +90,6 @@ void stringPrependBounded(u8 *destination, s32 capacity, u8 *prefix) {
 }
 
 /// Compatibility declaration retaining the extra actor argument in a native command call.
-void scriptVmPushInteger(); /* extern */
 /// Yield actor script execution with a zero script result.
 /// \param actor Actor whose script VM receives zero.
 /// \returns One, yielding script execution.
@@ -154,7 +154,6 @@ s32 actorScriptStartItemAcquisition(s32 actor) {
     return 2;
 }
 
-s32 scriptVmPopInteger();     /* extern */
 /// Select how the actor attachment position is determined.
 /// \param actor Actor whose script VM supplies an attachment mode from zero through five and receives zero.
 /// \returns Zero, allowing script execution to continue.
@@ -205,7 +204,7 @@ s32 actorScriptBuildSharedText(u8 *actor) {
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     gActorScriptSharedTextBuffer = 0;
-    var_s0 = scriptVmReadIntegerOperand(vmAddress) - 1;
+    var_s0 = scriptVmReadIntegerOperand((u8 *)vmAddress) - 1;
     if (var_s0 >= 0) {
         do {
             stringPrependBounded((u8 *)&gActorScriptSharedTextBuffer, 0x50, (u8 *)scriptVmPopString(vmAddress));
@@ -227,7 +226,7 @@ s32 actorScriptBuildSharedTextAlternate(u8 *actor) {
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     gActorScriptSharedTextBuffer = 0;
-    var_s0 = scriptVmReadIntegerOperand(vmAddress) - 1;
+    var_s0 = scriptVmReadIntegerOperand((u8 *)vmAddress) - 1;
     if (var_s0 >= 0) {
         do {
             stringPrependBounded((u8 *)&gActorScriptSharedTextBuffer, 0x50, (u8 *)scriptVmPopString(vmAddress));
@@ -247,7 +246,6 @@ s32 actorScriptPushZero(u8 *actor) {
     return 0;
 }
 
-void scriptVmPushFloat(u8 *, f32); /* extern */
 u32 randomNext(void);          /* extern */
 
 /// Provide a random floating-point value in the unit interval.
@@ -257,7 +255,7 @@ u32 randomNext(void);          /* extern */
 s32 actorScriptPushRandomUnitFloat(u8 *actor) {
     u8 *vm = (u8 *)((ActorScriptObject *)actor)->scriptState->vmAddress;
 
-    scriptVmPushFloat(vm, randomNext() * 2.3283064365386963e-10);
+    scriptVmPushFloat((s32)vm, randomNext() * 2.3283064365386963e-10);
     return 0;
 }
 
@@ -299,7 +297,6 @@ s32 actorScriptPassThroughInteger(u8 *actor) {
     return 0;
 }
 
-f32 scriptVmPopFloat();              /* extern */
 
 /// Provide the supplied floating-point value as the script result.
 /// \param actor Actor whose script VM supplies a floating-point value and receives that same value.
@@ -308,7 +305,7 @@ f32 scriptVmPopFloat();              /* extern */
 s32 actorScriptPassThroughFloat(u8 *actor) {
     u8 *vm = (u8 *)((ActorScriptObject *)actor)->scriptState->vmAddress;
 
-    scriptVmPushFloat(vm, scriptVmPopFloat(vm));
+    scriptVmPushFloat((s32)vm, scriptVmPopFloat((s32)vm));
     return 0;
 }
 
@@ -321,7 +318,7 @@ s32 actorScriptResetTimer(u8 *actor) {
 
     vmBytes = (u8 *)((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->vmAddress;
     ((ScriptVm *)vmBytes)->elapsed = 0.0f;
-    scriptVmPushInteger(vmBytes, 0);
+    scriptVmPushInteger((s32)vmBytes, 0);
     return 0;
 }
 
@@ -334,7 +331,7 @@ s32 actorScriptPushTimer(u8 *actor) {
     u8 *vmBytes;
 
     vmBytes = (u8 *)((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->vmAddress;
-    scriptVmPushFloat(vmBytes, ((ScriptVm *)vmBytes)->elapsed);
+    scriptVmPushFloat((s32)vmBytes, ((ScriptVm *)vmBytes)->elapsed);
     return 0;
 }
 
@@ -359,7 +356,7 @@ s32 actorScriptEnqueueMessage(u8 *actor) {
     }
     messageBarEnqueue(((ScriptVm *)vmBytes)->messageStyle, ((ScriptVm *)vmBytes)->messageDuration,
                       &gActorScriptSharedTextBuffer);
-    scriptVmPushInteger(vmBytes, 0);
+    scriptVmPushInteger((s32)vmBytes, 0);
     return 0;
 }
 
@@ -385,8 +382,8 @@ s32 actorScriptSetMessageStyle(u8 *actor) {
     u8 *sp1C;
 
     sp1C = (u8 *)((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->vmAddress;
-    ((ScriptVm *)sp1C)->messageStyle = scriptVmPopInteger(sp1C);
-    scriptVmPushInteger(sp1C, 0);
+    ((ScriptVm *)sp1C)->messageStyle = scriptVmPopInteger((s32)sp1C);
+    scriptVmPushInteger((s32)sp1C, 0);
     return 0;
 }
 
@@ -398,8 +395,8 @@ s32 actorScriptSetMessageDuration(u8 *actor) {
     u8 *sp1C;
 
     sp1C = (u8 *)((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->vmAddress;
-    ((ScriptVm *)sp1C)->messageDuration = scriptVmPopFloat(sp1C);
-    scriptVmPushInteger(sp1C, 0);
+    ((ScriptVm *)sp1C)->messageDuration = scriptVmPopFloat((s32)sp1C);
+    scriptVmPushInteger((s32)sp1C, 0);
     return 0;
 }
 
@@ -415,7 +412,7 @@ s32 actorScriptAppendWindowText(u8 *actor) {
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     gActorScriptSharedTextBuffer = 0;
-    var_s0 = scriptVmReadIntegerOperand(vmAddress) - 1;
+    var_s0 = scriptVmReadIntegerOperand((u8 *)vmAddress) - 1;
     if (var_s0 >= 0) {
         do {
             stringPrependBounded((u8 *)&gActorScriptSharedTextBuffer, 0x50, (u8 *)scriptVmPopString(vmAddress));
@@ -515,7 +512,7 @@ s32 actorScriptPushTargetApproachDistance(u8 *actor) {
     if (d < 0.0f) {
         d = 0.0f;
     }
-    scriptVmPushFloat(vm, d);
+    scriptVmPushFloat((s32)vm, d);
     return 0;
 }
 
@@ -532,7 +529,7 @@ s32 actorScriptSetTargetToFallbackObject(u8 *actor) {
     actorSetTargetToFallbackObject(actor);
     ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetMode = 0;
     ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetDistanceAllowance = 0.0f;
-    scriptVmPushInteger(sp1C, 0, actor);
+    scriptVmPushInteger(sp1C, 0);
     return 0;
 }
 

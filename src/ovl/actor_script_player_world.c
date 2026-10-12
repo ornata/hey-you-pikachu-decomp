@@ -2,12 +2,11 @@
 #include "player_types.h"
 #include "item_types.h"
 #include "script_vm.h"
+#include "script_vm_stack.h"
 #include "actor_script.h"
 #include "object_types.h"
 
 /// Unprototyped compatibility declaration for the retained extra argument in actorScriptPushSelfHandle.
-void scriptVmPushInteger();            /* extern */
-s32 scriptVmPopInteger();              /* extern */
 void actorSetMessengerContactMode(u8 *, s32); /* extern */
 
 /// Select how messenger objects respond to contact with the actor.
@@ -303,7 +302,7 @@ s32 actorScriptPushPikachuHandle(u8 *actor) {
 /// \note Portability: The unprototyped push call passes an extra argument ignored by the original ABI.
 /// \note Original decompilation identifier: \c func_8011E6A8 (0x8011E6A8).
 s32 actorScriptPushSelfHandle(u8 *actor) {
-    scriptVmPushInteger(((RuntimeObjectPrefix *)actor)->state.actor->vmAddress, ((RuntimeObjectPrefix *)actor)->handle, actor);
+    scriptVmPushInteger(((RuntimeObjectPrefix *)actor)->state.actor->vmAddress, ((RuntimeObjectPrefix *)actor)->handle);
     return 0;
 }
 
@@ -321,7 +320,6 @@ s32 actorScriptGetAreaPathPointCount(u8 *actor) {
     return 0;
 }
 
-void scriptVmPushFloat(s32, f32);                    /* extern */
 f32 areaGetPathPointCoordinate(s32 arg0, s32 arg1, s32 arg2); /* extern */
 /// Read one world-space coordinate of a current-area path point.
 /// \param actor Actor whose script VM supplies a valid path index, a nonnegative point index, then a nonnegative axis (zero for X, one for Y, two for Z), and receives the coordinate or -65536 if the point or axis exceeds its range.
@@ -341,7 +339,6 @@ s32 actorScriptGetAreaPathPointCoordinate(u8 *actor) {
     return 0;
 }
 
-f32 scriptVmPopFloat(s32);                        /* extern */
 s32 actorFindNearestHandleFromPosition(u8 *, f32 *, s32, s32, f32); /* extern */
 
 /// Find the nearest creature to a world position, excluding the executing actor.
@@ -1341,7 +1338,7 @@ s32 actorScriptSetTargetFacingSuppressed(u8 *actor) {
     u8 *updatedActorState;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    if (scriptVmPopInteger(sp1C, actor) != 0) {
+    if (scriptVmPopInteger(sp1C) != 0) {
         actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
         ((ActorScriptState *)actorState)->behaviorInhibitFlags =
             (u16)(((ActorScriptState *)actorState)->behaviorInhibitFlags | 1);

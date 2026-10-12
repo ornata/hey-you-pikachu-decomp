@@ -51,7 +51,7 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 3964,
+      "occurrences": 3962,
       "unique_spellings": 1440,
       "files": 83
     }
@@ -7493,7 +7493,8 @@
       "known_views": [
         "actor_script.h",
         "object_types.h",
-        "script_vm.h"
+        "script_vm.h",
+        "script_vm_stack.h"
       ],
       "matching_exceptions": {
         "scriptVmPushInteger calls": "A native command supplies an unused third actor argument; a void compatibility declaration retains the original argument setup."
@@ -7501,11 +7502,11 @@
       "locations": {
         "raw_offset_candidates": {
           "capacity - 1": [
-            "80:72",
-            "88:17"
+            "81:72",
+            "89:17"
           ],
           "prefixLength - 1": [
-            "82:70"
+            "83:70"
           ]
         }
       }
@@ -7515,7 +7516,8 @@
         "actor_script.h",
         "item_types.h",
         "object_types.h",
-        "script_vm.h"
+        "script_vm.h",
+        "script_vm_stack.h"
       ],
       "matching_exceptions": {
         "actorConsumeHeldItem": "The item transformation result and cause are s32. The caller retains an unused third object pointer through a compatibility declaration."
@@ -7523,27 +7525,25 @@
       "locations": {
         "raw_offset_candidates": {
           "object + 0x54": [
-            "269:22"
+            "267:22"
           ],
           "state + 0x1B8": [
-            "270:19",
-            "273:46",
-            "286:38"
+            "268:19"
           ],
           "vm + 0x2C4": [
-            "271:18"
+            "269:18"
           ],
           "state + 0x3F4": [
-            "275:74"
+            "273:74"
           ],
           "state + 0x3F0": [
-            "276:22",
-            "281:22",
-            "286:63"
+            "274:22",
+            "279:22",
+            "284:78"
           ],
           "state + 0x3EC": [
-            "277:22",
-            "282:22"
+            "275:22",
+            "280:22"
           ]
         }
       }
@@ -7579,7 +7579,8 @@
       "known_views": [
         "actor_script.h",
         "object_types.h",
-        "player_types.h"
+        "player_types.h",
+        "script_vm_stack.h"
       ],
       "matching_exceptions": {
         "scriptVmPushInteger calls": "The mailbox acknowledgement command supplies an unused third actor argument; a void compatibility declaration retains the original argument setup."
@@ -7587,10 +7588,10 @@
       "locations": {
         "raw_offset_candidates": {
           "actor + 0xC": [
-            "669:38"
+            "665:38"
           ],
           "gPlayerCompanionTarget - 0x50": [
-            "1383:57"
+            "1379:57"
           ]
         }
       }

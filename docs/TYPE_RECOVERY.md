@@ -362,3 +362,13 @@ misidentifies the return as void; the C definition and callers establish the
 integer return. Demo maze-block effects now reuse RuntimeObjectPrefix and
 SceneConfigurationPrefix for object kind, radius, position and scene scale.
 Each of the three source units passed strict object comparison independently.
+
+Message/item commands, action-wait handlers, player/world commands and action
+commands now share the scalar stack contracts too. Their original unused extra
+stack-operation arguments can be removed without changing objects. Pointer views
+needed for context fields and integer addresses needed by the stack ABI have
+explicit conversions. The action-command operand reader continues to use its
+established byte-pointer interface. A duplicate player-types include is removed.
+Each source unit was independently compared against the immutable baseline
+before the next unit changed. Remaining unrelated object, player and toolbox
+interface mismatches remain in the compiler-diagnostic inventory for later audit.

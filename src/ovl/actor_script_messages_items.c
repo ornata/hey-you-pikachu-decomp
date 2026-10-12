@@ -9,10 +9,9 @@
 #include "player_types.h"
 #include "object_types.h"
 #include "actor_script.h"
-#include "player_types.h"
+#include "script_vm_stack.h"
 
 /// Compatibility declaration retaining the extra actor argument in the mailbox-acknowledgement call.
-void scriptVmPushInteger(); /* extern */
 void actorTrackPlayerPrimaryObject(u8 *);
 
 /// Track the player's primary object as the actor's movement destination.
@@ -26,7 +25,7 @@ s32 actorScriptTrackPlayerPrimaryObject(u8 *actor) {
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
     actorTrackPlayerPrimaryObject(actor);
     ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetDistanceAllowance = 0.0f;
-    scriptVmPushInteger(sp1C, 0, actor);
+    scriptVmPushInteger(sp1C, 0);
     return 0;
 }
 
@@ -120,7 +119,6 @@ s32 actorScriptPushMessageArgument4(u8 *actor) {
     return 0;
 }
 
-s32 scriptVmPopInteger(s32);
 
 u8 *attachedEffectCreate(u8 *, s32, s32); /* extern */
 s32 progressAddValue(s32, s32);       /* extern */
@@ -154,7 +152,6 @@ s32 actorScriptCreateAttachedEffect(u8 *actor) {
     return 0;
 }
 
-f32 scriptVmPopFloat(s32);                      /* extern */
 s32 actorFindNearestHandleInFacingCone(u8 *, s32, s32, f32, f32); /* extern */
 
 /// Find the nearest actor in the current actor's facing cone.
@@ -191,7 +188,6 @@ s32 actorScriptReleaseHeldItem(u8 *actor) {
     return 0;
 }
 
-void scriptVmPushFloat(s32, f32); /* extern */
 f32 objectGetPlayerDistance(u8 *);         /* extern */
 
 /// Push the actor's approximate distance from the player.
