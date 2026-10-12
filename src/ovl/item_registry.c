@@ -1704,19 +1704,22 @@ ItemCategoryRange gItemCategoryRanges[19] = {
 /// prototype changes IDO allocation. See search_tree_lookup.h and TYPE_RECOVERY.md.
 void searchTreeFind(void *, void *); /* extern */
 
-typedef struct {
-    /* 0x00 */ s32 unk0;
-    /* 0x04 */ s16 id;
-    /* 0x06 */ u8 pad6[0xEE];
-} ItemMsg; /* size 0xF4 */
+/// Temporary item-state key; retained storage extent preserves the ROM stack layout.
+/// Only the shared state kind is initialized and read by the comparator.
+typedef union ItemSearchStateKey {
+    ItemStatePrefix state;
+    u8 storage[0xF4];
+} ItemSearchStateKey;
 
-typedef struct {
-    /* 0x00 */ u8 pad0[0x38];
-    /* 0x38 */ s32 mode;
-    /* 0x3C */ u8 pad3C[0x18];
-    /* 0x54 */ ItemMsg *msg;
-    /* 0x58 */ s32 unk58;
-} ItemReq; /* size 0x5C */
+/// Temporary object key borrowing a state key during synchronous tree lookup.
+/// Only handle and state are initialized; this is not a live runtime object.
+typedef struct ItemSearchObjectKey {
+    RuntimeObjectPrefix object;
+    u8 retainedStackPadding[4];
+} ItemSearchObjectKey;
+
+typedef char ItemSearchStateKeySizeCheck[(sizeof(ItemSearchStateKey) == 0xF4) ? 1 : -1];
+typedef char ItemSearchObjectKeySizeCheck[(sizeof(ItemSearchObjectKey) == 0x5C) ? 1 : -1];
 
 /// Prepare the item registry for searching from a requested item kind.
 /// \param kind Starting item kind from zero through 165; 165 requests the beginning of the kind range.
@@ -1725,19 +1728,19 @@ typedef struct {
 /// \note Requires an initialized item registry. Searching changes the shared registry traversal state.
 /// \note Original decompilation identifier: \c func_80112F60 (0x80112F60).
 void itemPrepareKindSearch(s32 kind) {
-    ItemReq req;
-    ItemMsg msg;
+    ItemSearchObjectKey objectKey;
+    ItemSearchStateKey stateKey;
 
     if (kind == 0xA5) {
-        msg.id = 0;
+        stateKey.state.kind = 0;
     } else {
-        msg.id = kind;
+        stateKey.state.kind = kind;
     }
-    req.msg = &msg;
-    req.mode = -1;
-    searchTreeFind(&gItemSearchTree, &req);
-    req.mode = 0;
-    searchTreeFind(&gItemSearchTree, &req);
+    objectKey.object.state.pointer = &stateKey;
+    objectKey.object.handle = -1;
+    searchTreeFind(&gItemSearchTree, &objectKey);
+    objectKey.object.handle = 0;
+    searchTreeFind(&gItemSearchTree, &objectKey);
 }
 
 /// Separate interior view of the nearest-item query world-space origin.
@@ -2199,11 +2202,11 @@ void itemDestroy(u8 *item) {
 
 /// Compare an item with a registered item by kind, then by unsigned object handle.
 /// \param node Search node containing the registered item to compare against.
-/// \param itemAddress Target-width address of the live item being compared.
+/// \param itemAddress Target-width address of a live item or a temporary object key with a readable kind and handle.
 /// \returns Minus one if the item precedes the node's item, one if it follows, or zero if they have equal
 /// kind and handle.
 ///
-/// \note Both items must have initialized state. Portability: the otherwise unused handle read preserves the
+/// \note The node item must be live; temporary keys initialize only the compared fields. Portability: the otherwise unused handle read preserves the
 /// original IDO register allocation.
 /// \note Original decompilation identifier: \c func_80113C04 (0x80113C04).
 s32 itemCompareSearchOrder(TreeNode *node, s32 itemAddress) {

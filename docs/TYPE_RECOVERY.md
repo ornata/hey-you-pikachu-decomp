@@ -2741,3 +2741,17 @@ Ghidra 0x80114FD4 confirms the twelve-byte stride and bound offsets four/eight.
 The private nearest-query state documents score versus raw distance, copied
 origin, angular transform and filters, with checks for size 0x5C and retained
 interior-symbol offsets. All changed units preserve the strict object baseline.
+
+### Item-search temporary comparator keys
+
+The kind-search helper now reuses `RuntimeObjectPrefix` and `ItemStatePrefix`
+inside explicitly temporary key storage. Its former message/request names
+misrepresented the comparator inputs: offset 0x38 is the object handle and
+0x54 is the private-state pointer; the compared kind is at state offset four.
+Ghidra 0x80112F60 confirms the two handle boundary searches and state pointer.
+
+Checked 0x5C/0xF4 storage extents preserve the original stack allocation. Only
+kind, handle and state pointer are initialized, and the comparator contract
+now distinguishes a temporary key from the live registered item. The existing
+noncanonical lookup declaration remains the recorded IDO matching exception.
+The shared-prefix representation preserves all 483 strict object comparisons.
