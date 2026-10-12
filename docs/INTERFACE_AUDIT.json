@@ -80,34 +80,6 @@
       "expression": "v->dl[0] = heapAllocLocal(&gGameHeap, v->len * sizeof(Gfx) * 2, 0x4B8);"
     },
     {
-      "code": 709,
-      "file": "src/game/title_screen.c",
-      "line": 790,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "titleScreenSetMessage(gTitleControllerMissingMessage, 5, 0x28);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/title_screen.c",
-      "line": 796,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "titleScreenSetMessage(gTitleMicrophoneMissingMessage, 7, 0x28);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/title_screen.c",
-      "line": 956,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "titleScreenSetMessage(gTitleOverwriteMessage, 4, 0x40);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/title_screen.c",
-      "line": 986,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "titleScreenSetMessage(gTitleSaveLoadErrorMessage, 7, 0x28);"
-    },
-    {
       "code": 712,
       "file": "src/game/graphics_text.c",
       "line": 1243,
@@ -134,20 +106,6 @@
       "line": 175,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "rp = romCacheRead(&gTextureRomCache, texture.pal + gTextureArchiveRomStart, 0x20, palette);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/object_hierarchy.c",
-      "line": 1598,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "searchTreeInitialize(&gObjectSearchTree, &objectCompareSearchTreeOrder);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/object_hierarchy.c",
-      "line": 1888,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "matrix34Identity(&gObjectNearestTargetSearch.facing);"
     },
     {
       "code": 709,

@@ -715,16 +715,16 @@ extern u8 *gPikachuActor;
 extern s32 gTitleDemoBackdropIds[];
 /// Text entries displayed when an EEPROM game-record load fails.
 /// \note Original identifier: \c D_8009B408 (0x8009B408).
-extern s32 gTitleSaveLoadErrorMessage[];
+extern void *gTitleSaveLoadErrorMessage[7];
 /// Text entries displayed when the primary standard controller is unavailable.
 /// \note Original identifier: \c D_8009B424 (0x8009B424).
-extern s32 gTitleControllerMissingMessage[];
+extern void *gTitleControllerMissingMessage[5];
 /// Text entries displayed when the required microphone is unavailable.
 /// \note Original identifier: \c D_8009B438 (0x8009B438).
-extern s32 gTitleMicrophoneMissingMessage[];
+extern void *gTitleMicrophoneMissingMessage[7];
 /// Text entries displayed before confirming replacement of an occupied save file.
 /// \note Original identifier: \c D_8009B454 (0x8009B454).
-extern s32 gTitleOverwriteMessage[];
+extern void *gTitleOverwriteMessage[4];
 /// Remaining duration of the primary camera secondary overlay transition.
 /// \note Original identifier: \c D_800ABDCC (0x800ABDCC).
 extern f32 gPrimarySecondaryOverlayRemainingSeconds;

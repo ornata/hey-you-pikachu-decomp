@@ -93,7 +93,7 @@ extern u8 gObjectKindDestroyEntries[];
 extern KeyedPool gObjectHandlePool;
 /// Search tree indexing registered runtime objects by kind and handle order.
 /// \note Original identifier: \c D_800AE3C0 (0x800AE3C0).
-extern u8 gObjectSearchTree[];
+extern SearchTree gObjectSearchTree;
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
@@ -518,7 +518,7 @@ void objectPrepareSearchTreeAtKey(u16 kind, s32 handle) {
     _bzero(msg, 0x5C);
     *(u16 *)(msg + 0x34) = kind;
     *(s32 *)(msg + 0x38) = handle;
-    searchTreeFind(gObjectSearchTree, msg);
+    searchTreeFind(&gObjectSearchTree, msg);
 }
 
 s32 objectGetNextHandle(void);
@@ -952,7 +952,7 @@ void objectRegisterHierarchyInSearchTree(u8 *object) {
             if (firstChild != NULL) {
                 objectRegisterHierarchyInSearchTree(firstChild);
             }
-            searchTreeInsert(gObjectSearchTree, ((ManagedObject *)var_s0)->entry, (s32)var_s0);
+            searchTreeInsert((u8 *)&gObjectSearchTree, ((ManagedObject *)var_s0)->entry, (s32)var_s0);
             var_s0 = ((RuntimeObjectPrefix *)var_s0)->sibling.bytes;
         } while (var_s0 != NULL);
     }
@@ -1006,7 +1006,7 @@ void objectDestroy(u8 *object) {
     if (destroyCallback != NULL) {
         destroyCallback(object);
     }
-    searchTreeRemove(gObjectSearchTree, object);
+    searchTreeRemove((u8 *)&gObjectSearchTree, object);
     if (*(u16 *)(object + 0x36) & 4) {
         matrixStorage = *(u8 **)(object + 0x3C);
         if (matrixStorage != NULL) {
@@ -1804,9 +1804,9 @@ void objectPrepareKindSearch(s32 kind) {
     _bzero(msg, 0x5C);
     *(s16 *)(msg + 0x34) = kind;
     *(s32 *)(msg + 0x38) = -1;
-    searchTreeFind(gObjectSearchTree, msg);
+    searchTreeFind(&gObjectSearchTree, msg);
     *(s32 *)(msg + 0x38) = 0;
-    searchTreeFind(gObjectSearchTree, msg);
+    searchTreeFind(&gObjectSearchTree, msg);
 }
 
 /* Target picker: the candidate in reach, its distance, the search origin and facing. */
@@ -1815,12 +1815,14 @@ typedef struct TargetPick {
     /* 0x04 */ u8 *best;
     /* 0x08 */ Vec3f origin;
     /* 0x14 */ f32 dist;
-    /* 0x18 */ Vec3f facing;
-    /* 0x24 */ u8 pad24[0x24];
+    /* 0x18 */ Matrix34 facing;
     /* 0x48 */ f32 cone;
     /* 0x4C */ s32 minKind;
     /* 0x50 */ s32 maxKind;
 } TargetPick;
+
+typedef char TargetPickSizeCheck[(sizeof(TargetPick) == 0x54) ? 1 : -1];
+typedef char TargetPickConeOffsetCheck[((u32)&((TargetPick *)0)->cone == 0x48) ? 1 : -1];
 /// Shared nearest-target search context, including origin, facing, kind range and best candidate.
 /// \note Original identifier: \c D_800AE3D8 (0x800AE3D8).
 extern TargetPick gObjectNearestTargetSearch;

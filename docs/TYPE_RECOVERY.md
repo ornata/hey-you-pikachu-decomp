@@ -879,3 +879,18 @@ callback throughout its callers. Independent-root lookup returns a borrowed
 TreeNode pointer. Existing paired detach/link statements and traversal behavior
 remain unchanged, and all affected units match the strict baseline. Generic
 stored keys remain signed target-width values rather than invented object types.
+
+### Nearest-target context and title message tables
+
+The object search-tree global uses SearchTree rather than an unbounded byte
+array, so its initialization agrees with the canonical interface. Existing
+legacy insert/remove boundaries retain explicit byte views. Nearest-target
+search owns a complete Matrix34 at 0x18, replacing a vector plus padding.
+Its 0x54-byte context and cone at 0x48 are checked. Ghidra at 0x80009ED4 confirms
+the identity/view-matrix destination and following search fields.
+
+Four title-screen message tables are borrowed text-pointer arrays with fixed
+entry counts (7, 5, 7 and 4), agreeing with the existing text-panel input contract.
+Ghidra bytes at 0x8009B408 through 0x8009B463 confirm the pointer table extents;
+no text encoding or ownership beyond the panel's established contract is inferred.
+All changes match the immutable object baseline.
