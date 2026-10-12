@@ -1,3 +1,4 @@
+#include "actor_target.h"
 #include "story_milestones.h"
 #include "progress_value.h"
 #include "action_continuation.h"
@@ -499,7 +500,6 @@ s32 actorScriptSetTargetPosition(u8 *actor) {
     return 0;
 }
 
-f32 actorGetTargetDistance(u8 *); /* extern */
 
 /// Report the remaining distance to approach the target.
 /// \param actor Actor whose script VM receives the approximate three-dimensional target distance minus its distance allowance, clamped to zero.
@@ -517,7 +517,6 @@ s32 actorScriptPushTargetApproachDistance(u8 *actor) {
     return 0;
 }
 
-void actorSetTargetToFallbackObject(u8 *);
 
 /// Select the fallback object position as a fixed target with no distance allowance.
 /// \param actor Actor with a live fallback object whose current position supplies the target; tracked-target selection is cleared and its script VM receives zero.

@@ -1107,7 +1107,6 @@ void actorSetTargetPosition(u8 *actor, u8 *position) {
 
 f32 vector3Normalize(u8 *);
 u32 randomBelow(s32);
-void actorSetTargetToFallbackObject(u8 *);
 /// Choose a target position away from the supplied threat position.
 /// \param object Actor whose escape target is changed; its fallback target handle must be live when the positions coincide.
 /// \param target Three-component world-space threat position; the pointer is not retained.
@@ -1120,10 +1119,10 @@ void actorChooseEscapePosition(u8 *object, f32 *target) {
     f32 distance;
     f32 angle;
     f32 trig;
-    state = *(u8 **)(object + 0x54);
-    direction[0] = target[0] - *(f32 *)(object + 0x44);
-    direction[1] = target[1] - *(f32 *)(object + 0x48);
-    direction[2] = target[2] - *(f32 *)(object + 0x4C);
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
+    direction[0] = target[0] - ((RuntimeObjectPrefix *)object)->worldPosition[0];
+    direction[1] = target[1] - ((RuntimeObjectPrefix *)object)->worldPosition[1];
+    direction[2] = target[2] - ((RuntimeObjectPrefix *)object)->worldPosition[2];
     if (vector3Normalize((u8 *)direction) == 0.0f) {
         actorSetTargetToFallbackObject(object);
         return;
@@ -1138,9 +1137,9 @@ void actorChooseEscapePosition(u8 *object, f32 *target) {
     rotated[0] *= distance;
     rotated[1] *= distance;
     rotated[2] *= distance;
-    *(f32 *)(state + 0x1EC) = *(f32 *)(object + 0x44) - rotated[0];
-    *(f32 *)(state + 0x1F0) = *(f32 *)(object + 0x48) - rotated[1];
-    *(f32 *)(state + 0x1F4) = *(f32 *)(object + 0x4C) - rotated[2];
+    ((ActorScriptState *)state)->targetPosition[0] = ((RuntimeObjectPrefix *)object)->worldPosition[0] - rotated[0];
+    ((ActorScriptState *)state)->targetPosition[1] = ((RuntimeObjectPrefix *)object)->worldPosition[1] - rotated[1];
+    ((ActorScriptState *)state)->targetPosition[2] = ((RuntimeObjectPrefix *)object)->worldPosition[2] - rotated[2];
 }
 
 /// Measure the distance from the actor's local position to its stored target position.

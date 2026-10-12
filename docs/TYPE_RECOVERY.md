@@ -2907,3 +2907,15 @@ and kind aliases. Returned handles use the shared object member. Ghidra
 lookup. Direct named player-angle reads change ROM code generation; those
 float-array reads remain a recorded matching exception. Provider and caller
 changes preserve all strict objects and the clean ROM match.
+
+### Actor destination fields and contracts
+
+Escape-position selection now names the shared object world position and
+actor target-position fields instead of raw offsets. Ghidra 0x8011866C
+confirms the source and destination coordinates, randomized escape direction
+and fallback behavior. `actor_target.h` also owns target-distance and fallback
+position contracts; command callers use those declarations and the unused
+menu declaration is removed. Each changed unit preserves all strict objects.
+The separate target setter and escape wrappers still supply unused trailing
+arguments in several original callers; those interfaces need a matching
+call-representation investigation before consolidation.

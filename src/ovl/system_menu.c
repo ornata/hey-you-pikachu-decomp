@@ -1913,6 +1913,3 @@ void messageBarClear(); /* extern */
 void textWindowAppendText(s8 *);               /* extern */
 
 void textWindowEnterMode(); /* extern */
-
-
-void actorSetTargetToFallbackObject(); /* extern */

@@ -39,4 +39,16 @@ s32 actorPivotTowardTarget(u8 *actor, f32 speed);
 /// \returns Nothing.
 void actorRefreshTrackingTargetPosition(u8 *actor);
 
+/// Measure the distance from the actor's local position to its stored target position.
+/// \param actor Actor whose target distance is queried.
+/// \returns The approximate three-dimensional distance to the target position.
+/// \note Original decompilation identifier: \c func_801187E4 (0x801187E4).
+f32 actorGetTargetDistance(u8 *actor);
+
+/// Set an actor's target position to its fallback object's current position.
+/// \param actor Actor with a live fallback object whose position supplies the destination.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_80118890 (0x80118890).
+void actorSetTargetToFallbackObject(u8 *actor);
+
 #endif

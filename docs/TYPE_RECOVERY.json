@@ -51,7 +51,7 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 2987,
+      "occurrences": 2977,
       "unique_spellings": 1103,
       "files": 80
     }
@@ -6170,6 +6170,7 @@
         "action_script_stop.h",
         "actor_script.h",
         "actor_script_action.h",
+        "actor_target.h",
         "object_types.h",
         "progress_value.h",
         "script_vm.h",
@@ -6182,11 +6183,11 @@
       "locations": {
         "raw_offset_candidates": {
           "capacity - 1": [
-            "86:72",
-            "94:17"
+            "87:72",
+            "95:17"
           ],
           "prefixLength - 1": [
-            "88:70"
+            "89:70"
           ]
         }
       }
@@ -6350,9 +6351,7 @@
           ],
           "object + 0x44": [
             "156:25",
-            "1124:41",
-            "1141:40",
-            "1252:67"
+            "1251:67"
           ],
           "target + 0x44": [
             "239:35"
@@ -6377,31 +6376,11 @@
           "offset + 8": [
             "952:64"
           ],
-          "object + 0x54": [
-            "1123:22"
-          ],
-          "object + 0x48": [
-            "1125:41",
-            "1142:40"
-          ],
-          "object + 0x4C": [
-            "1126:41",
-            "1143:40"
-          ],
-          "state + 0x1EC": [
-            "1141:14"
-          ],
-          "state + 0x1F0": [
-            "1142:14"
-          ],
-          "state + 0x1F4": [
-            "1143:14"
-          ],
           "object + 0x18": [
-            "1167:24"
+            "1166:24"
           ],
           "object + 0xC": [
-            "1252:101"
+            "1251:101"
           ]
         }
       }
