@@ -4,13 +4,6 @@
   "records": [
     {
       "code": 709,
-      "file": "src/game/flipbook_messenger.c",
-      "line": 958,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "messengerAdvancePosition(object);"
-    },
-    {
-      "code": 709,
       "file": "src/game/doors_object_responses.c",
       "line": 160,
       "diagnostic": "Incompatible pointer type assignment",
@@ -50,6 +43,13 @@
       "line": 175,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "sprintf(gDoorAccessDescriptionBuffer, \"\\nYou can't get by for some reason.\");"
+    },
+    {
+      "code": 709,
+      "file": "src/game/flipbook_messenger.c",
+      "line": 958,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "messengerAdvancePosition(object);"
     },
     {
       "code": 712,
@@ -115,13 +115,6 @@
       "expression": "systemMenuAppendDetailText(buf);"
     },
     {
-      "code": 709,
-      "file": "src/ovl/area_terrain_maze.c",
-      "line": 1611,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "(*(SceneCellType *)((u8 *)((ModelConfigD658 *)gCurrentAreaConfiguration)->kinds + offset)).initialize(node);"
-    },
-    {
       "code": 712,
       "file": "src/ovl/area_terrain_maze.c",
       "line": 1746,
@@ -134,34 +127,6 @@
       "line": 1812,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "model = objectRegisterActiveHierarchy(objectCreateHierarchyFromTemplate(modelId));"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/area_terrain_maze.c",
-      "line": 2008,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "areaUpdateNodeVisibility(gAreaMazeRoot);"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/area_terrain_maze.c",
-      "line": 2092,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "objectRegisterActiveHierarchy(objectMakeHierarchyRoot(mazeObject));"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/area_terrain_maze.c",
-      "line": 2094,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "mazePrepareNodeObjects(gAreaMazeRoot);"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/area_terrain_maze.c",
-      "line": 2126,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "mazeDestroyNodeHierarchy(gAreaMazeRoot);"
     }
   ]
 }

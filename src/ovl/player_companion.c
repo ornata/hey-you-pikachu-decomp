@@ -182,9 +182,6 @@ void objectPrepareDistributedKindSearches(u16, s32);   /* extern */
 void mazeInitializeRoot();                   /* extern */
 void mazeBuildNodeHierarchy(s32, s32, s32);  /* extern */
 void mazeConfigureEventLinks();                   /* extern */
-/// Owned root of the current area spatial hierarchy, cleared when the maze is destroyed.
-/// \note Original identifier: \c D_80133DE0 (0x80133DE0).
-extern s32 gAreaMazeRoot;
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;

@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "area_maze.h"
 #include "actor_parts.h"
 #include "actor_target.h"
 #include "actor_script.h"
@@ -819,9 +820,6 @@ typedef struct {
     u8 unknown[0x1A4];
     f32 radius;
 } MovementState;
-/// Owned root of the current area spatial hierarchy, cleared when the maze is destroyed.
-/// \note Original identifier: \c D_80133DE0 (0x80133DE0).
-extern u8 *gAreaMazeRoot;
 #define MOVE_MAX(a, b) ((a) < (b) ? (b) : (a))
 #define MOVE_MIN(a, b) ((a) < (b) ? (a) : (b))
 
@@ -830,6 +828,7 @@ extern u8 *gAreaMazeRoot;
 /// \returns One when the target is within the actor arrival radius; otherwise zero.
 ///
 /// \note NONPORTABLE: IDO schedules the vertical sign and speed by source line.
+/// Maze bounds retain byte views because direct members change generated code.
 /// \note Original decompilation identifier: \c func_80010BA0 (0x80010BA0).
 s32 actorApproachTargetInThreeDimensions(u8 *object) {
     u8 *state;
@@ -901,16 +900,16 @@ s32 actorApproachTargetWithinSceneBounds(u8 *object) {
 
     state = *(u8 **)(object + 0x54);
     actorRefreshTrackingTargetPosition(object);
-    if (*(f32 *)(state + 0x1EC) < *(f32 *)(gAreaMazeRoot + 8)) {
-        *(f32 *)(state + 0x1EC) = *(f32 *)(gAreaMazeRoot + 8);
-    } else if (*(f32 *)(state + 0x1EC) > *(f32 *)(gAreaMazeRoot + 0x14) + *(f32 *)(gAreaMazeRoot + 8)) {
-        *(f32 *)(state + 0x1EC) = *(f32 *)(gAreaMazeRoot + 0x14) + *(f32 *)(gAreaMazeRoot + 8);
+    if (*(f32 *)(state + 0x1EC) < *(f32 *)((u8 *)gAreaMazeRoot + 8)) {
+        *(f32 *)(state + 0x1EC) = *(f32 *)((u8 *)gAreaMazeRoot + 8);
+    } else if (*(f32 *)(state + 0x1EC) > *(f32 *)((u8 *)gAreaMazeRoot + 0x14) + *(f32 *)((u8 *)gAreaMazeRoot + 8)) {
+        *(f32 *)(state + 0x1EC) = *(f32 *)((u8 *)gAreaMazeRoot + 0x14) + *(f32 *)((u8 *)gAreaMazeRoot + 8);
     }
     *(f32 *)(state + 0x1F0) = *(f32 *)(object + 0x48);
-    if (*(f32 *)(state + 0x1F4) < *(f32 *)(gAreaMazeRoot + 0x10)) {
-        *(f32 *)(state + 0x1F4) = *(f32 *)(gAreaMazeRoot + 0x10);
-    } else if (*(f32 *)(state + 0x1F4) > *(f32 *)(gAreaMazeRoot + 0x1C) + *(f32 *)(gAreaMazeRoot + 0x10)) {
-        *(f32 *)(state + 0x1F4) = *(f32 *)(gAreaMazeRoot + 0x1C) + *(f32 *)(gAreaMazeRoot + 0x10);
+    if (*(f32 *)(state + 0x1F4) < *(f32 *)((u8 *)gAreaMazeRoot + 0x10)) {
+        *(f32 *)(state + 0x1F4) = *(f32 *)((u8 *)gAreaMazeRoot + 0x10);
+    } else if (*(f32 *)(state + 0x1F4) > *(f32 *)((u8 *)gAreaMazeRoot + 0x1C) + *(f32 *)((u8 *)gAreaMazeRoot + 0x10)) {
+        *(f32 *)(state + 0x1F4) = *(f32 *)((u8 *)gAreaMazeRoot + 0x1C) + *(f32 *)((u8 *)gAreaMazeRoot + 0x10);
     }
     direction[0] = *(f32 *)(state + 0x1EC) - *(f32 *)(object + 0x44);
     direction[1] = *(f32 *)(state + 0x1F0) - *(f32 *)(object + 0x48);

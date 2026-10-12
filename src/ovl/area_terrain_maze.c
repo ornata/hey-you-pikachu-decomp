@@ -5,6 +5,7 @@
 #include "item_spawn.h"
 #include "heap_alloc.h"
 #include "scene_types.h"
+#include "area_maze.h"
 #include "object_types.h"
 
 // clang-format off
@@ -197,7 +198,7 @@ s32 gTerrainCollisionPolicySurfaceMasks[10] = {0, 32, 0, 16, 64, 0, 0, 0, 0, 0};
 /* .bss 0x80133DE0..0x80133E10, in address order (IDO lays globals out in declaration order) */
 /// Owned root of the current area spatial hierarchy, cleared when the maze is destroyed.
 /// \note Original identifier: \c D_80133DE0 (0x80133DE0).
-s32 gAreaMazeRoot;
+MazeNode *gAreaMazeRoot;
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 u8 *gCurrentAreaConfiguration;
@@ -1531,14 +1532,13 @@ typedef struct {
 /// \returns Nothing; requires a loaded area configuration and no existing maze root to replace.
 ///
 /// \note Configured cell dimensions must be positive; the nonnegative maze depth must keep all integer-power
-/// intermediate products within the signed integer range. Portability: the root address is stored in a 32-bit
-/// integer.
+/// intermediate products within the signed integer range.
 /// \note Original decompilation identifier: \c func_8010D540 (0x8010D540).
 void mazeInitializeRoot(void) {
     s32 integerScale;
     MazeDimensions540 dims;
     f32 length;
-    gAreaMazeRoot = (s32)areaAllocateNode();
+    gAreaMazeRoot = (MazeNode *)areaAllocateNode();
     integerScale = integerPower(2, *(s32 *)(gCurrentAreaConfiguration + 0x10));
     ((MazeGeometry540 *)gAreaMazeRoot)->x = 0.0f;
     ((MazeGeometry540 *)gAreaMazeRoot)->y = 0.0f;
@@ -1546,7 +1546,7 @@ void mazeInitializeRoot(void) {
     ((MazeGeometry540 *)gAreaMazeRoot)->w = (f32)integerScale * ((MazeDimensions540 *)gCurrentAreaConfiguration)->x;
     ((MazeGeometry540 *)gAreaMazeRoot)->h = (f32)integerScale * ((MazeDimensions540 *)gCurrentAreaConfiguration)->y;
     ((MazeGeometry540 *)gAreaMazeRoot)->d = (f32)integerScale * ((MazeDimensions540 *)gCurrentAreaConfiguration)->z;
-    *(s16 *)(gAreaMazeRoot + 0x40) = *(s32 *)(gCurrentAreaConfiguration + 0x10);
+    gAreaMazeRoot->depth = *(s32 *)(gCurrentAreaConfiguration + 0x10);
     dims.x = ((MazeDimensions540 *)gCurrentAreaConfiguration)->x;
     dims.y = ((MazeDimensions540 *)gCurrentAreaConfiguration)->y;
     dims.z = ((MazeDimensions540 *)gCurrentAreaConfiguration)->z;
@@ -1608,7 +1608,7 @@ void mazeConfigureNodeModel(MazeNode *node, s32 kind) {
         }
     }
     if ((*(SceneCellType *)((u8 *)((ModelConfigD658 *)gCurrentAreaConfiguration)->kinds + offset)).initialize != NULL) {
-        (*(SceneCellType *)((u8 *)((ModelConfigD658 *)gCurrentAreaConfiguration)->kinds + offset)).initialize(node);
+        (*(SceneCellType *)((u8 *)((ModelConfigD658 *)gCurrentAreaConfiguration)->kinds + offset)).initialize((u8 *)node);
     }
 }
 
@@ -1947,9 +1947,6 @@ void mazeDestroyNodeHierarchy(u8 *node) {
 void objectPrepareDistributedKindSearches(u16, s32);    /* extern */
 void mazeInitializeRoot(void);        /* extern */
 void mazeConfigureEventLinks(void); /* extern */
-/// Owned root of the current area spatial hierarchy, cleared when the maze is destroyed.
-/// \note Original identifier: \c D_80133DE0 (0x80133DE0).
-extern s32 gAreaMazeRoot;
 
 /// Construct the current area's maze, its models, and configured event links.
 /// \returns Nothing; requires a loaded area configuration and no existing maze to replace.
@@ -2005,7 +2002,7 @@ void areaUpdateNodeVisibility(u8 *arg0); /* extern */
 /// \note Original decompilation identifier: \c func_8010E360 (0x8010E360).
 void mazeUpdateVisibility(s32 unused) {
     areaRefreshVisibilityDistances(gRenderCameraIndex);
-    areaUpdateNodeVisibility(gAreaMazeRoot);
+    areaUpdateNodeVisibility((u8 *)gAreaMazeRoot);
 }
 
 /// Stop hierarchy updates for static maze object kinds after initial preparation.
@@ -2069,7 +2066,7 @@ void mazePrepareNodeObjects(u8 *node) {
 }
 
 u8 *objectCreateDefault();             /* extern */
-s32 objectMakeHierarchyRoot(u8 *);         /* extern */
+u8 *objectMakeHierarchyRoot(u8 *);         /* extern */
 void mazeBuild(void);        /* extern */
 void mazeSpawnConfiguredItems(void);        /* extern */
 void mazePrepareNodeObjects(u8 *arg0);    /* extern */
@@ -2091,7 +2088,7 @@ void mazeInitialize(void) {
     ((RuntimeObjectPrefix *)mazeObject)->kind = 0x83;
     objectRegisterActiveHierarchy(objectMakeHierarchyRoot(mazeObject));
     mazeBuild();
-    mazePrepareNodeObjects(gAreaMazeRoot);
+    mazePrepareNodeObjects((u8 *)gAreaMazeRoot);
     runtimeCheckResetCheckpoint("aft-calcMazeFirst", 1);
     TRACE("totalBlockNum = %d\n", gMazeDiagnosticBlockCount);
     TRACE("sizeof(mazeBlockT) = %d\n", 0x50);
@@ -2123,7 +2120,7 @@ void mazeDestroyNodeHierarchy(u8 *arg0); /* extern */
 /// \returns Nothing; requires an initialized maze root.
 /// \note Original decompilation identifier: \c func_8010E570 (0x8010E570).
 void mazeDestroy(void) {
-    mazeDestroyNodeHierarchy(gAreaMazeRoot);
+    mazeDestroyNodeHierarchy((u8 *)gAreaMazeRoot);
     gAreaMazeRoot = 0;
 }
 

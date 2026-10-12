@@ -923,3 +923,17 @@ pointer result. It remains unprototyped solely for documented unused trailing
 arguments in other callers. Animated-state allocation uses a typed pointer,
 and the release call retains its original unused third argument. All changes
 preserve allocated object bytes, layout and strict relocation identities.
+
+### Current-area maze root ownership
+
+The current maze root is a shared MazeNode pointer declared in area_maze.h,
+owned by the area hierarchy and cleared on destruction. Its producer and actor
+movement consumer agree on the type. Ghidra at 0x8010D540 confirms the root
+allocation, bounds and depth stores. An unused integer declaration in companion
+code and a redundant producer declaration were removed.
+
+Actor movement retains explicit byte views of the established x/w/z/d bounds:
+direct members change IDO output, so that exception is documented in its Doxygen
+contract and ledger. Scene-cell initialization uses the existing byte-address
+callback boundary explicitly. Hierarchy-root creation now has the producer's
+pointer return type. All affected units match the preserved object baseline.
