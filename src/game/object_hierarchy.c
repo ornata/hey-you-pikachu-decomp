@@ -899,14 +899,14 @@ s32 objectCompareSearchTreeOrder(TreeNode *entry, s32 objectAddress) {
     u8 *v0;
     u32 d;
     v0 = (u8 *)entry->value;
-    if (*(u16 *)(object + 0x34) < *(u16 *)(v0 + 0x34)) {
+    if (((RuntimeObjectPrefix *)object)->kind < ((RuntimeObjectPrefix *)v0)->kind) {
         return -1;
     }
-    if (*(u16 *)(v0 + 0x34) < *(u16 *)(object + 0x34)) {
+    if (((RuntimeObjectPrefix *)v0)->kind < ((RuntimeObjectPrefix *)object)->kind) {
         return 1;
     }
-    entry = (TreeNode *)*(u32 *)(object + 0x38);
-    d = *(u32 *)(v0 + 0x38);
+    entry = (TreeNode *)(u32)((RuntimeObjectPrefix *)object)->handle;
+    d = (u32)((RuntimeObjectPrefix *)v0)->handle;
     if ((u32)entry < d) {
         return -1;
     }
@@ -916,7 +916,6 @@ s32 objectCompareSearchTreeOrder(TreeNode *entry, s32 objectAddress) {
     return 0;
 }
 
-TreeNode *searchTreeInsert(u8 *, TreeNode *, s32); /* extern */
 
 /// Register objects throughout a hierarchy in the runtime object search tree.
 /// \param object First object whose siblings and descendants are registered, or null.
@@ -933,7 +932,7 @@ void objectRegisterHierarchyInSearchTree(u8 *object) {
             if (firstChild != NULL) {
                 objectRegisterHierarchyInSearchTree(firstChild);
             }
-            searchTreeInsert((u8 *)&gObjectSearchTree, ((ManagedObject *)var_s0)->entry, (s32)var_s0);
+            searchTreeInsert(&gObjectSearchTree, ((ManagedObject *)var_s0)->entry, (s32)var_s0);
             var_s0 = ((RuntimeObjectPrefix *)var_s0)->sibling.bytes;
         } while (var_s0 != NULL);
     }

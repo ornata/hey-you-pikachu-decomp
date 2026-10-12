@@ -35,4 +35,12 @@ s32 searchTreeLocateRoot(TreeNode **rootAddress, s32 minimum, TreeCompare compar
 /// \note Original decompilation identifier: \c func_800411C8 (0x800411C8).
 TreeNode *searchTreeFindAtRoot(TreeNode **rootAddress, TreeCompare compare, s32 key);
 
+/// Insert a caller-owned node into an initialized search tree.
+/// \param tree Tree receiving the entry and retaining its node storage.
+/// \param node Detached writable node, valid until removed from the tree.
+/// \param key Key interpreted by the tree comparator.
+/// \returns The supplied borrowed node, now linked into the tree.
+/// \note Original decompilation identifier: \c func_80041290 (0x80041290).
+TreeNode *searchTreeInsert(SearchTree *tree, TreeNode *node, s32 key);
+
 #endif

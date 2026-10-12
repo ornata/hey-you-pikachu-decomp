@@ -149,14 +149,14 @@ s32 searchTreeFindMinimum(u8 *tree) {
 /// \param key Key used to order the entry.
 /// \returns The inserted node.
 /// \note Original decompilation identifier: \c func_80041290 (0x80041290).
-TreeNode *searchTreeInsert(u8 *tree, TreeNode *node, s32 key) {
+TreeNode *searchTreeInsert(SearchTree *tree, TreeNode *node, s32 key) {
     s32 idx;
     s32 other;
     TreeNode *cur;
 
     node->value = key;
-    idx = searchTreeLocateRoot(&((SearchTree *)tree)->root, 0, ((SearchTree *)tree)->compare, key) < 1;
-    cur = *(TreeNode **)(tree + 4);
+    idx = searchTreeLocateRoot(&tree->root, 0, tree->compare, key) < 1;
+    cur = tree->root;
     other = idx == 0;
     if (cur != NULL) {
         node->links[idx] = cur;
@@ -166,7 +166,7 @@ TreeNode *searchTreeInsert(u8 *tree, TreeNode *node, s32 key) {
         node->links[1] = NULL;
         node->links[0] = NULL;
     }
-    *(TreeNode **)(tree + 4) = node;
+    tree->root = node;
     if (!idx) {
     }
     return node;

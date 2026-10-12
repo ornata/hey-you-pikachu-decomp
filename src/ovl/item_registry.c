@@ -2091,7 +2091,6 @@ void itemInitializeState(u8 *item) {
     ((RuntimeObjectPrefix *)item)->state.bytes = itemAllocateState();
 }
 
-TreeNode *searchTreeInsert(u8 *, TreeNode *, s32);
 f32 terrainGetWorldHeight(f32, f32, f32, u8 **);
 /// Shared integer animation programs selecting texture frames for actors, effects and interface elements.
 /// \note Original identifier: \c D_8006B090 (0x8006B090).
@@ -2143,7 +2142,7 @@ u8 *itemCreate(f32 x, f32 y, f32 z, f32 pitch, f32 yaw, s32 kind) {
     if (gItemKinds[kind].radiusZ == -100000.0f)
         gItemKinds[kind].radiusZ = *(f32 *)(object + 0x24) * 0.5f;
     objectRegisterActiveHierarchy(object);
-    searchTreeInsert((u8 *)&gItemSearchTree, &state->registryNode, (s32)object);
+    searchTreeInsert(&gItemSearchTree, &state->registryNode, (s32)object);
     TRACE("itemType %d has a sibling\n", kind);
     itemSetScale(object, 1.0f);
     if (y < 0.0f) {
@@ -2346,7 +2345,7 @@ void itemRegisterForSearch(s32 objectId) {
 
     liveObject = objectFindLiveByHandle(objectId);
     itemState = ((RuntimeObjectPrefix *)liveObject)->state.bytes;
-    searchTreeInsert((u8 *)&gItemSearchTree, (TreeNode *)(itemState + 0x54), (s32)liveObject);
+    searchTreeInsert(&gItemSearchTree, (TreeNode *)(itemState + 0x54), (s32)liveObject);
 }
 
 void itemSetMode();

@@ -1709,3 +1709,12 @@ nonoverlapping traversal. Its traversal provider uses checked object flags, kind
 local transforms, world positions and child/sibling links; matrix translation
 storage retains its existing representation. All source-unit changes preserve
 all 483 objects and strict relocation addends.
+
+### Search-tree insertion and object ordering contracts
+
+The shared tree header now declares insertion with a checked `SearchTree` pointer,
+caller-owned detached node and retained key. The provider uses the typed root;
+object and item registries share the declaration. Object ordering uses shared
+kind/handle fields and explicitly retains unsigned handle comparisons, confirmed
+by Ghidra 0x800085A4. Each source-unit change preserves all 483 objects and strict
+relocation addends.
