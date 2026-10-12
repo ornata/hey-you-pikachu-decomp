@@ -24,7 +24,9 @@ typedef struct ActorScriptState {
     Gfx *modelDrawLists[2]; ///< Two drawing lists sharing one owned allocation.
     u8 unknown05C[4];
     DirectionAnimation directionAnimation; ///< Owned paired lighting poses and their angular playback state.
-    u8 unknown0DC[0x18];
+    u8 unknown0DC[4];
+    u8 environmentColor[4]; ///< Model environment red, green, blue and alpha components.
+    u8 unknown0E4[0x10];
     f32 actionDuration;   ///< Duration supplied by the selected action definition.
     s32 actionAttributes; ///< Behavior flags supplied by the selected action.
     s16 motionId;         ///< Selected motion-data identifier.
@@ -136,6 +138,7 @@ ACTOR_SCRIPT_OFFSET_CHECK(ActorStateGroundReferenceOffsetCheck, ActorScriptState
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePartTableOffsetCheck, ActorScriptState, partTable, 0x4C);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateDrawListsOffsetCheck, ActorScriptState, modelDrawLists, 0x54);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateDirectionAnimationOffsetCheck, ActorScriptState, directionAnimation, 0x60);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateEnvironmentColorOffsetCheck, ActorScriptState, environmentColor, 0xE0);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePlaybackModeOffsetCheck, ActorScriptState, playbackMode, 0x11A);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePendingActionOffsetCheck, ActorScriptState, pendingAction, 0x120);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateMovementScaleOffsetCheck, ActorScriptState, movementScale, 0x130);

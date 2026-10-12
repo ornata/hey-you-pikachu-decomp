@@ -33,18 +33,6 @@ typedef char AnimatedTextureStateSizeCheck[(sizeof(AnimatedTextureState) == 0x4C
 typedef char
     AnimatedTextureStateListsOffsetCheck[(((u32) & (((AnimatedTextureState *)0)->displayLists)) == 0x40) ? 1 : -1];
 
-/* Lit model state: two display-list buffers, two light sets, the active set, env colour. */
-typedef struct LitModel {
-    /* 0x00 */ u8 pad0[0x54];
-    /* 0x54 */ Gfx *dl[2];
-    /* 0x5C */ u8 pad5C[4];
-    /* 0x60 */ Lights2 lights[2];
-    /* 0xB0 */ u8 padB0[0x22];
-    /* 0xD2 */ u16 light;
-    /* 0xD4 */ u8 padD4[0xC];
-    /* 0xE0 */ u8 env[4];
-} LitModel;
-
 void heapFreeLocal();
 /// Per-actor-kind part-table slot counts, including the root slot.
 /// \note Original identifier: \c D_800B687C (0x800B687C).
@@ -197,18 +185,19 @@ s32 actorAssetGetCachedStorage(s32);
 /// \param buffer Drawing buffer to prepare, zero or one.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80014EA0 (0x80014EA0).
-void actorPrepareModelLightingDrawList(u8 *actor, LitModel *model, s32 buffer) {
+void actorPrepareModelLightingDrawList(u8 *actor, ActorScriptState *model, s32 buffer) {
     Gfx *g;
 
-    g = model->dl[buffer];
+    g = model->modelDrawLists[buffer];
     gSPSegment(g++, 0x0A, osVirtualToPhysical((void *)actorAssetGetCachedStorage(*(u16 *)(actor + 0x34))));
-    gSPSetLights2(g++, model->lights[model->light]);
+    gSPSetLights2(g++, (*(Lights2 *)&model->directionAnimation.poses[model->directionAnimation.poseIndex]));
     gDPPipeSync(g++);
-    gDPSetEnvColor(g++, model->env[0], model->env[1], model->env[2], model->env[3]);
+    gDPSetEnvColor(g++, model->environmentColor[0], model->environmentColor[1], model->environmentColor[2],
+                   model->environmentColor[3]);
     gSPEndDisplayList(g++);
 }
 
-void actorPrepareModelLightingDrawList(u8 *, LitModel *, s32);
+void actorPrepareModelLightingDrawList(u8 *, ActorScriptState *, s32);
 void matrix34Identity(u8 *); /* extern */
 
 /// Allocate and initialize actor model state and its drawing resources.
@@ -246,7 +235,7 @@ void actorInitializeModelState(u8 *actor) {
     ((ActorScriptState *)allocation)->modelDrawLists[1] = (Gfx *)(drawListStorage + 0x40);
     var_s0 = 0;
     do {
-        actorPrepareModelLightingDrawList(actor, (LitModel *)allocation, var_s0);
+        actorPrepareModelLightingDrawList(actor, (ActorScriptState *)allocation, var_s0);
         var_s0 += 1;
     } while (var_s0 != 2);
     ((RuntimeObjectPrefix *)actor)->state.bytes = allocation;
@@ -424,8 +413,8 @@ void actorUpdateModel(u8 *actor) {
     }
     *(s32 *)(obj + 0x210) = collisionGridRegisterObject(actor);
     directionAnimationUpdate((u8 *)&((ActorScriptState *)obj)->directionAnimation);
-    colorAdvanceTransition(obj + 0xE0, obj + 0xE4, obj + 0xE8);
-    actorPrepareModelLightingDrawList(actor, (LitModel *)obj, ((*(u16 *)(actor + 0x36) & 0x8000) ? 1 : 0) ^ 1);
+    colorAdvanceTransition(((ActorScriptState *)obj)->environmentColor, obj + 0xE4, obj + 0xE8);
+    actorPrepareModelLightingDrawList(actor, (ActorScriptState *)obj, ((*(u16 *)(actor + 0x36) & 0x8000) ? 1 : 0) ^ 1);
 }
 
 /// Request a timed transition to a new actor model environment color.
@@ -460,10 +449,10 @@ void actorSetModelEnvironmentColor(u8 *actor, u8 r, u8 g, u8 b, u8 a) {
     u8 *v;
 
     v = *(u8 **)(actor + 0x54);
-    v[0xE0] = r;
-    v[0xE1] = g;
-    v[0xE2] = b;
-    v[0xE3] = a;
+    ((ActorScriptState *)v)->environmentColor[0] = r;
+    ((ActorScriptState *)v)->environmentColor[1] = g;
+    ((ActorScriptState *)v)->environmentColor[2] = b;
+    ((ActorScriptState *)v)->environmentColor[3] = a;
 }
 
 void motionUpdateChildPlayback(u8 *);

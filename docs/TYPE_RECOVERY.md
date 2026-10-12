@@ -1831,3 +1831,14 @@ update and action-command consumers select the same field. An offset check
 supplements the existing enclosing-size checks. The following 0x18 bytes retain
 explicit unknown storage pending further ownership/field evidence. Both changed
 source units and all header dependents preserve all 483 objects and relocations.
+
+### Actor lighting draw-state layout reuse
+
+The private lighting model view is removed in favor of shared actor-state draw
+lists, direction poses and selected pose index. Packed direction poses retain an
+explicit SDK `Lights2` view for drawing commands. The shared state now exposes
+model environment RGBA at 0xE0 with an offset check, used by drawing, immediate
+color updates and transition output. Ghidra 0x80014EA0 confirms draw-list slots,
+pose stride/index and color components. Transition inputs after 0xE4 remain
+unresolved storage pending their own record audit. All objects and relocations
+match after rebuilding header dependents.
