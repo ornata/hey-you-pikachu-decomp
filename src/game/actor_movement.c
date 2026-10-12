@@ -1,3 +1,4 @@
+#include "object_movement.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "vector_direction.h"
@@ -17,12 +18,9 @@ s32 actorTurnAwayFromPlayer(s32, f32);
 s32 actorBackstepTowardTarget(s32, f32);
 void actorAddRotationAxisDegrees(u8 *, f32, s32);
 void actionRequestLoopExit(s32);
-void objectGetPendingLocalMovement(f32 *);
-void objectSetPendingLocalMovement(f32 *);
 void actorSetRotationAxisDegrees(s32, f32, s32);
 f32 vector3Length(f32 *);
 f32 mathWrapSignedDegrees(f32);
-void objectAddPendingLocalMovement(f32 *);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;

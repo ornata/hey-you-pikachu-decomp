@@ -1,3 +1,4 @@
+#include "object_movement.h"
 #include "interaction.h"
 #include "object_target_search.h"
 #include "object_flags.h"
@@ -616,30 +617,30 @@ void objectTransformStackDiscardTop(void) {
 /// \param movement Receives the pending three-component movement in object-local coordinates.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80008060 (0x80008060).
-void objectGetPendingLocalMovement(u8 *movement) {
-    ((Vec3f *)movement)->x = (f32)gObjectPendingLocalMovement.x;
-    ((Vec3f *)movement)->y = (f32)gObjectPendingLocalMovement.y;
-    ((Vec3f *)movement)->z = (f32)gObjectPendingLocalMovement.z;
+void objectGetPendingLocalMovement(f32 *movement) {
+    movement[0] = (f32)gObjectPendingLocalMovement.x;
+    movement[1] = (f32)gObjectPendingLocalMovement.y;
+    movement[2] = (f32)gObjectPendingLocalMovement.z;
 }
 
 /// Replace the movement pending for the current object update.
 /// \param movement Three-component movement in object-local coordinates.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80008084 (0x80008084).
-void objectSetPendingLocalMovement(u8 *movement) {
-    gObjectPendingLocalMovement.x = (f32)((Vec3f *)movement)->x;
-    gObjectPendingLocalMovement.y = (f32)((Vec3f *)movement)->y;
-    gObjectPendingLocalMovement.z = (f32)((Vec3f *)movement)->z;
+void objectSetPendingLocalMovement(f32 *movement) {
+    gObjectPendingLocalMovement.x = (f32)movement[0];
+    gObjectPendingLocalMovement.y = (f32)movement[1];
+    gObjectPendingLocalMovement.z = (f32)movement[2];
 }
 
 /// Add movement to the current object update.
 /// \param movement Three-component movement to add in object-local coordinates.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800080A8 (0x800080A8).
-void objectAddPendingLocalMovement(Vec3f *movement) {
-    gObjectPendingLocalMovement.x += movement->x;
-    gObjectPendingLocalMovement.y += movement->y;
-    gObjectPendingLocalMovement.z += movement->z;
+void objectAddPendingLocalMovement(f32 *movement) {
+    gObjectPendingLocalMovement.x += movement[0];
+    gObjectPendingLocalMovement.y += movement[1];
+    gObjectPendingLocalMovement.z += movement[2];
 }
 
 /// Find the final object in a sibling chain.

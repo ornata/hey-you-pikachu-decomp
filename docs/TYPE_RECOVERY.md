@@ -1617,3 +1617,14 @@ The main provider uses float-array indexing; interaction and HUD callers share
 canonical declarations with the area visibility provider. An unused duplicate
 region in the controller unit is removed. All five units preserve all 483 objects
 and strict relocation addends.
+
+### Pending movement and camera-facing interfaces
+
+`object_movement.h` consolidates pending local movement get/set/add and
+camera-facing orientation across the provider and nine callers. Movement uses
+three float components consistently instead of byte, vector and integer argument
+contracts. Ghidra 0x800080A8 confirms independent component accumulation. The
+header documents shared traversal-state lifetime and active-camera requirements.
+The integer motion-state boundary retains an explicit float-pointer conversion;
+the marker passes its existing component-array view. Every source-unit change
+preserves all 483 objects and strict relocation addends.

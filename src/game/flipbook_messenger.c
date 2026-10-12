@@ -1,3 +1,4 @@
+#include "object_movement.h"
 #include "object_flags.h"
 #include "object_create.h"
 #include "object_hierarchy_create.h"
@@ -919,7 +920,6 @@ void messengerUpdateRebound(u8 *object, s32 unused) {
     }
 }
 
-void objectOrientAlongCameraView(u8 *);
 void messengerUpdateHoming(u8 *, s32);
 void messengerUpdateDissipation(u8 *, s32);
 

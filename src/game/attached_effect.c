@@ -1,3 +1,4 @@
+#include "object_movement.h"
 #include "object_flags.h"
 #include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
@@ -83,7 +84,6 @@ void attachedEffectInitialize(u8 *object) {
     *(u8 **)(object + 0x54) = obj;
 }
 
-void objectOrientAlongCameraView(u8 *);
 f32 vector3Length(f32 *);
 /// Minimum view-dependent scale factor for an attached effect.
 /// \note Original identifier: \c D_800A26A0 (0x800A26A0).

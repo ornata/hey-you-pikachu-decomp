@@ -1,3 +1,4 @@
+#include "object_movement.h"
 /* harvested: matched m2c drafts; pending style pass */
 /* Action and motion state machine. The unit starts at motionExtractHeadingFromMatrix: its
  * .rodata opens with the debug-trace strings and ends with the float
@@ -25,7 +26,6 @@ void motionResetPlayback(u8 *);
 void motionSetPlaybackMode(u8 *, s32);
 void actionCancelPendingRequest(u8 *);
 s32 actionRequestMotionData(s32);
-void objectAddPendingLocalMovement(s32);
 struct Track3;
 struct Track3b;
 s32 animationTrack3Evaluate(struct Track3 *, f32 *, f32 *, f32);
@@ -252,7 +252,7 @@ void motionEvaluateRootTracks(s32 object, s32 state, f32 time) {
     animationTrack3Evaluate((struct Track3 *)(state + 0x23C), position, NULL, time);
     animationDeltaTrack3Evaluate((struct Track3b *)(state + 0x2B4), (f32 *)(state + 0x1C0), (f32 *)(state + 0x1CC), time);
     motionApplyRootOrientation(position, object);
-    objectAddPendingLocalMovement(state + 0x1C0);
+    objectAddPendingLocalMovement((f32 *)(state + 0x1C0));
 }
 
 /// Evaluate a child rotation track and end playback when the track finishes.

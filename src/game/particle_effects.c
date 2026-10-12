@@ -1,3 +1,4 @@
+#include "object_movement.h"
 #include "object_create.h"
 #include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
@@ -116,7 +117,6 @@ s32 wispEffectUpdateDrawAnimation(u8 *effect, s32 buffer) {
     return 0;
 }
 
-void objectOrientAlongCameraView(u8 *); /* extern */
 
 /// Keep a wisp effect facing the current view.
 /// \param effect Live wisp effect whose orientation is updated.

@@ -1,3 +1,4 @@
+#include "object_movement.h"
 #include "object_create.h"
 #include "object_lifecycle.h"
 #include "heap_free.h"
@@ -148,7 +149,6 @@ void linkedEffectUpdateMotion(u8 *object) {
     }
 }
 
-void objectOrientAlongCameraView(u8 *);                              /* extern */
 void linkedEffectUpdateMotion(u8 *);                      /* extern */
 f32 mathSinDegrees(f32);                                  /* extern */
 

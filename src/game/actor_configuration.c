@@ -1,3 +1,4 @@
+#include "object_movement.h"
 #include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
 #include "heap_free.h"
@@ -134,7 +135,6 @@ void contactEffectInitialize(u8 *effect) {
     *(s32 **)(effect + 0x54) = savedEffectState;
 }
 
-void objectOrientAlongCameraView(u8 *);
 s32 actorGetPartObjectHandle(u8 *, s32);
 u8 *linkedEffectCreateChain(s32, f32, f32, f32, f32, s32, f32, f32, f32, f32, f32, s32, s32, s32);
 f32 vector3Length(f32 *);

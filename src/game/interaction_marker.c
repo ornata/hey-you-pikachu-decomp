@@ -1,3 +1,4 @@
+#include "object_movement.h"
 #include "camera_visibility.h"
 #include "item_kind.h"
 #include "item_types.h"
@@ -174,8 +175,6 @@ extern f32 gInteractionMarkerTrackUnitScale;
 extern f32 gInteractionMarkerActorTrackUnitScale;
 s32 playerClassifyInteractionTarget(u8 *, u8 *, s32);
 s32 audioPlaySoundEffect(s32);
-void objectOrientAlongCameraView(u8 *);
-void objectAddPendingLocalMovement(Vec3f *);
 /// Update the marker target, animation, and placement, then clear the current candidate scan.
 /// \param object Initialized interaction marker object.
 /// \returns Nothing.
@@ -266,7 +265,7 @@ void interactionMarkerUpdate(u8 *object) {
             (f32) * (s16 *)(state + 0x34) * unit + gInteractionMarkerStyles[mode].height * offset.vector.y;
         offset.vector.z = (f32) - ((InteractionMarkerState *)state)->tracks[2].value * unit -
                           gInteractionMarkerStyles[mode].depth * offset.vector.z;
-        objectAddPendingLocalMovement(&offset.vector);
+        objectAddPendingLocalMovement(offset.components);
     }
     ((InteractionMarkerState *)state)->targetHandle = gInteractionCandidateHandle;
     ((InteractionMarkerState *)state)->mode = mode;

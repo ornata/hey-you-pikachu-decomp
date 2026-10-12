@@ -1,3 +1,4 @@
+#include "object_movement.h"
 /// \file
 /// Actor targeting, interaction, and script-message delivery.
 /// \ingroup ActorScriptVm
@@ -81,8 +82,6 @@ s32 actorTurnTowardTarget(u8 *object, f32 speed) {
     return 0;
 }
 
-void objectGetPendingLocalMovement(f32 *);
-void objectSetPendingLocalMovement(f32 *);
 f32 mathSinDegrees(f32);
 f32 mathCosDegrees(f32);
 /// Turn an actor toward its target with a compensating movement around its turning pivot.
