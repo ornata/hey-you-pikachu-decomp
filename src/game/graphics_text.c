@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "text_draw.h"
 #include "heap_alloc.h"
 #include "text_image.h"
 #include "heap_types.h"
@@ -613,11 +614,11 @@ void textDrawSetColor(s32 red, s32 green, s32 blue, s32 alpha) {
 }
 
 /// Select the palette used for indexed text images.
-/// \param paletteAddress Borrowed sixteen-entry RGBA5551 palette, valid until all drawing commands that use it finish.
+/// \param palette Borrowed sixteen-entry RGBA5551 palette, valid until all drawing commands that use it finish.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8003D580 (0x8003D580).
-void textDrawSetPalette(s32 paletteAddress) {
-    gTextDrawPalette = paletteAddress;
+void textDrawSetPalette(const u16 *palette) {
+    gTextDrawPalette = palette;
 }
 
 

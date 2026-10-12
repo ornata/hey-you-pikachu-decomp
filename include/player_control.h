@@ -1,5 +1,5 @@
 /// \file
-/// Declares player view permissions and companion-control selection interfaces.
+/// Declares player view permissions, companion selection and tracked audio interfaces.
 
 #ifndef PLAYER_CONTROL_H
 #define PLAYER_CONTROL_H
@@ -34,5 +34,16 @@ s32 playerIsPitchControlEnabled(u8 *player);
 /// Read the primary player's companion-control selection.
 /// \returns Current CompanionControlMode value for the primary player.
 s32 playerQueryInteractionMode(void);
+
+/// Start a sound effect and retain its playback handle for later stopping.
+/// \param player Borrowed initialized player record receiving the playback handle.
+/// \param soundId Valid sound-effect identifier whose resources remain loaded during playback.
+/// \returns Nothing.
+void playerPlayTrackedSoundEffect(u8 *player, s32 soundId);
+
+/// Stop the player's tracked sound effect and clear its selection.
+/// \param player Borrowed initialized player record; no effect when no playback is selected.
+/// \returns Nothing.
+void playerStopTrackedSoundEffect(u8 *player);
 
 #endif

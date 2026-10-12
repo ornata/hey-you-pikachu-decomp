@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "text_draw.h"
 #include "object_lookup.h"
 #include "heap_alloc.h"
 #include "object_types.h"
@@ -306,13 +307,9 @@ void messageBarClear(void) {
 f32 mathCosDegrees(f32);
 void textDrawBegin(Gfx *);
 void textDrawReset(void);
-void textDrawSetPalette(s32);
 void textDrawSetColor(s32, s32, s32, s32);
 void textDrawGetDisplayListCursor(Gfx **);
 void textImageDrawRectangle(Gfx **, TextImage *, s32, s32, s32, s32, s32, s32, f32, f32);
-/// Shared default sixteen-entry RGBA5551 palette for indexed text drawing.
-/// \note Original identifier: \c D_80063800 (0x80063800).
-extern u8 gDefaultTextPalette[];
 /// Write cursor for the active graphics command list; also marks the camera-storage end.
 /// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
 extern Gfx *gRenderDisplayListCursor;
@@ -370,7 +367,7 @@ s32 messageBarUpdateAndDraw(void) {
     gDPFillRectangle(gRenderDisplayListCursor++, 20, 20, 299, 40);
     textDrawBegin(gRenderDisplayListCursor);
     textDrawReset();
-    textDrawSetPalette((s32)gDefaultTextPalette);
+    textDrawSetPalette(gDefaultTextPalette);
     textDrawSetColor(255, 255, 255, 255);
     textDrawGetDisplayListCursor(&gRenderDisplayListCursor);
     gSPTexture(gRenderDisplayListCursor++, 0x7FFF, 0, 0, 0, G_ON);

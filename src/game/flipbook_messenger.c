@@ -6,6 +6,7 @@
 
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "text_draw.h"
 #include "text_panel.h"
 #include "integer_animation.h"
 #include "object_lookup.h"
@@ -269,10 +270,6 @@ Gfx *flipbookPrepareDraw(Flipbook *f) {
     return f->displayList;
 }
 
-/// Shared default sixteen-entry RGBA5551 palette for indexed text drawing.
-/// \note Original identifier: \c D_80063800 (0x80063800).
-extern u8 gDefaultTextPalette[];
-void textDrawSetPalette(s32);
 void textImageLoadTexture(Gfx **, u8 *);
 /// Prepare updated text-image drawing commands for the next model draw.
 /// \param object Initialized text-display model with valid owned drawing and text storage.
@@ -288,7 +285,7 @@ void flipbookBuildImageDisplayLists(u8 *object) {
     TextImage **images;
     s32 index;
     s32 bank;
-    textDrawSetPalette((s32)gDefaultTextPalette);
+    textDrawSetPalette(gDefaultTextPalette);
     bank = ((Flipbook *)object)->cur ^ 1;
     branches = ((Flipbook *)object)->dl[bank];
     commands = ((Flipbook *)object)->commands[bank];

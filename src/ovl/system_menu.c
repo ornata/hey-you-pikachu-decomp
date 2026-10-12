@@ -1,4 +1,5 @@
 #include "common.h"
+#include "text_draw.h"
 #include "scene_types.h"
 #include "heap_alloc.h"
 #include "player_types.h"
@@ -544,11 +545,7 @@ void systemMenuRefreshSelectedDetails(u8 *state) {
     systemMenuPrepareDetailText();
 }
 
-/// Shared default sixteen-entry RGBA5551 palette for indexed text drawing.
-/// \note Original identifier: \c D_80063800 (0x80063800).
-extern u8 gDefaultTextPalette[];
 void textDrawReset(void);
-void textDrawSetPalette(s32);
 void textDrawBegin(Gfx *);
 void textDrawGetDisplayListCursor(Gfx **);
 void textDrawSetArea(s32, s32, s32, s32);
@@ -570,7 +567,7 @@ void systemMenuDrawDetails(Gfx **displayList) {
     textDrawBegin(*displayList);
     textDrawSetFont(0);
     textDrawReset();
-    textDrawSetPalette((s32)&gDefaultTextPalette);
+    textDrawSetPalette(gDefaultTextPalette);
     textDrawSetSpacingMode(1);
     textDrawSetScale(1.0f, 1.0f);
     textDrawSetArea(0, 0, 319, 239);
@@ -659,7 +656,7 @@ void systemMenuDrawItemList(Gfx **displayList) {
     textDrawBegin(*displayList);
     textDrawSetFont(0);
     textDrawReset();
-    textDrawSetPalette((s32)&gDefaultTextPalette);
+    textDrawSetPalette(gDefaultTextPalette);
     textDrawSetSpacingMode(1);
     textDrawSetScale(1.0f, 1.0f);
     textDrawSetArea(0, 0, 319, 239);
@@ -715,7 +712,7 @@ void systemMenuDrawClosingEffect(Gfx **displayList) {
         }
         textDrawBegin(*displayList);
         textDrawReset();
-        textDrawSetPalette((s32)&gDefaultTextPalette);
+        textDrawSetPalette(gDefaultTextPalette);
         textDrawSetSpacingMode(1);
         textDrawSetScale(1.0f, 1.0f);
         textDrawSetArea(0, 0, 319, 239);
@@ -779,7 +776,7 @@ void systemMenuDrawFrame(s32 displayList) {
         break;
     }
     textDrawReset();
-    textDrawSetPalette((s32)&gDefaultTextPalette);
+    textDrawSetPalette(gDefaultTextPalette);
 }
 
 void playerRecenterWalkingView(u8 *);

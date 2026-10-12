@@ -1,4 +1,6 @@
 #include "common.h"
+#include "player_control.h"
+#include "text_draw.h"
 #include "toolbox_types.h"
 #include "item_kind.h"
 #include "object_lookup.h"
@@ -456,9 +458,6 @@ void presentationPrepareActiveActor(void *point) {
     actorSetBehaviorInhibitFlags((u8 *)gPikachuActor, 0xC);
 }
 
-/// Shared default sixteen-entry RGBA5551 palette for indexed text drawing.
-/// \note Original identifier: \c D_80063800 (0x80063800).
-extern u8 gDefaultTextPalette[];
 /// Owned text image for the current area region name, or null if unavailable.
 /// \note Original identifier: \c D_800F0BE0 (0x800F0BE0).
 extern TextImage *gPresentationAreaLabelImage;
@@ -961,7 +960,6 @@ extern ToolboxState gToolboxState;
 /// \note Original identifier: \c D_800AD54C (0x800AD54C).
 extern s32 gControllerPrimaryRepeatedButtons;
 s32 audioPlayCue(s32);
-void playerPlayTrackedSoundEffect(u8 *, s32);
 void presentationChooseActorResponseToItem(s32);
 
 /// Advance the presentation and scoring of collected items, removing each eligible item from its kept slot.

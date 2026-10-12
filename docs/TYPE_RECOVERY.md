@@ -544,3 +544,15 @@ Fault notification storage likewise uses OSMesg and its entry point uses the
 SDK's void-pointer callback parameter. The ROM-I/O deallocator calls explicitly
 convert the heap view at the existing byte-oriented boundary. All four source
 units independently matched the immutable 483-object baseline.
+
+The text-drawing continuation shares the indexed palette selector and the
+sixteen-entry RGBA5551 default palette through `text_draw.h`. The producer retains
+a borrowed const-u16 palette pointer rather than an integer; all ten consumers
+use the same contract without integer-address casts. Ghidra at 0x8003D580 confirms
+the retained drawing-state value, and the TLUT consumer establishes entry width
+and count. Palette storage must survive execution of the submitted graphics
+commands. The separate built-in graphics-text palette keeps its own symbol.
+Tracked player playback start/stop contracts join `player_control.h` across the
+producer and all declaring consumers. Runtime's unused secondary input hook now
+accepts its borrowed address as a pointer. Every source mutation matched all
+483 baseline objects before moving on.

@@ -1079,7 +1079,6 @@ void playerResumeNormalControl(void) {
 
 s32 progressGetValue();                       /* extern */
 void toolboxOpen(s32, s32); /* extern */
-void playerStopTrackedSoundEffect(u8 *);                /* extern */
 u8 playerGetChaseStage(void);                  /* extern */
 void systemMenuEnter();                 /* extern */
 

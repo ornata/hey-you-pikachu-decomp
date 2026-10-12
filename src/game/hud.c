@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "text_draw.h"
 #include "integer_animation.h"
 #include "player_control.h"
 #include "object_types.h"
@@ -709,12 +710,8 @@ void textDrawReset(void);
 void textDrawSetArea(s32, s32, s32, s32);
 void textDrawSetCursor(s32, s32);
 void textDrawSetColor(s32, s32, s32, s32);
-void textDrawSetPalette(u8 *);
 void textDrawSetFont(s32);
 void textDrawImageAtCursor(u8 *);
-/// Shared default sixteen-entry RGBA5551 palette for indexed text drawing.
-/// \note Original identifier: \c D_80063800 (0x80063800).
-extern u8 gDefaultTextPalette[];
 /// Nonzero when the prepared current-area label is visible.
 /// \note Original identifier: \c D_800F0278 (0x800F0278).
 extern s32 gHudAreaLabelVisible;

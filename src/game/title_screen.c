@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "text_draw.h"
 #include "asset_loader.h"
 #include "text_panel.h"
 #include "text_image.h"
@@ -210,13 +211,9 @@ extern s32 gTitleMenuSelection;
 /// Currently displayed text frame of the animated title-menu cursor.
 /// \note Original identifier: \c D_800F25A8 (0x800F25A8).
 extern s32 gTitleCursorFrame;
-/// Shared default sixteen-entry RGBA5551 palette for indexed text drawing.
-/// \note Original identifier: \c D_80063800 (0x80063800).
-extern u8 gDefaultTextPalette[];
 void textDrawBegin(Gfx *);
 void textDrawGetDisplayListCursor(Gfx **);
 void textDrawReset(void);
-void textDrawSetPalette(s32);
 void textDrawSetSpacingMode(s32);
 void textDrawSetScale(f32, f32);
 void textDrawSetArea(s32, s32, s32, s32);
@@ -257,7 +254,7 @@ void titleScreenDrawMenu(s32 cursor, s32 *items, s32 enabled, s32 unavailableRed
         gDPFillRectangle((*gdl)++, x - 10, y - 4, x + maxWidth + 10, 204);
         textDrawBegin(*gdl);
         textDrawReset();
-        textDrawSetPalette((s32)gDefaultTextPalette);
+        textDrawSetPalette(gDefaultTextPalette);
         textDrawSetSpacingMode(1);
         textDrawSetScale(1.0f, 1.0f);
         textDrawSetArea(0, 0, 319, 239);

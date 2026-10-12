@@ -1,5 +1,7 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "player_control.h"
+#include "text_draw.h"
 #include "eeprom_io.h"
 #include "text_panel.h"
 #include "heap_diagnostics.h"
@@ -580,7 +582,7 @@ void runtimeRequestProgramChange(s32 program) {
 /// \param unused Address of the secondary player input state, unused in this build.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000B234 (0x8000B234).
-void runtimeSecondaryPlayerInputNoOp(s32 unused) {
+void runtimeSecondaryPlayerInputNoOp(void *unused) {
 }
 
 /// Add newly elapsed play time to the recorded play-time total.
@@ -633,7 +635,6 @@ void titleScreenUpdate();                   /* extern */
 void eyeCatchBegin();                   /* extern */
 s32 eyeCatchUpdate();                       /* extern */
 void areaSetNextDestination(s32, s32);   /* extern */
-void playerPlayTrackedSoundEffect(u8 *, s32); /* extern */
 void playerUpdateInput(s32);                /* extern */
 void pikachuUpdateScriptAndTriggers();                   /* extern */
 void systemMenuHandleInput();                   /* extern */
@@ -791,7 +792,7 @@ void runtimeUpdateGameMode(void) {
         break;
     case 15:
         if (gRuntimeGameModeEntryPending != 0) {
-            playerPlayTrackedSoundEffect(&gPlayerState, 0x86);
+            playerPlayTrackedSoundEffect((u8 *)&gPlayerState, 0x86);
             progressSaveRecordToEeprom(*(s32 *)gRuntimeSaveParameters);
             gRuntimeGameModeEntryPending = 0;
             textPanelInitialize((TextPanel *)&gRuntimePromptPanelLineCount, 5);
@@ -1025,14 +1026,10 @@ void messageBarResetAndReleaseImages(void);
 void heapInitializeGlobal(s32);
 s32 graphicsTaskInitialize(s32, void *, void *, s32, s32);
 void textDrawInitialize(s32, s32, s32);
-void textDrawSetPalette(u8 *);
 s32 schedulerGetGraphicsCommandQueue(s32);
 void schedulerAddClient(void *, void *, void *);
 void *areaLoadNextOverlay(void);
 void messengerResetTrackedObject(void);
-/// Shared default sixteen-entry RGBA5551 palette for indexed text drawing.
-/// \note Original identifier: \c D_80063800 (0x80063800).
-extern u8 gDefaultTextPalette[];
 extern u8 D_B140C0[];
 
 /// Run the main runtime thread through successive program lifecycles.
@@ -1056,7 +1053,7 @@ void runtimeMainThreadEntry(void *scheduler) {
             heapInitializeGlobal((s32)areaLoadNextOverlay());
             runtimeCheckResetCheckpoint("aft-heapInit", 0);
             textDrawInitialize(0x140, 0xF0, 0xDA);
-            textDrawSetPalette(&gDefaultTextPalette);
+            textDrawSetPalette(gDefaultTextPalette);
             TRACE("unknown program number(%d).\n", gRuntimeCurrentProgram);
         }
         audioSelectCueBank(&D_B140C0);

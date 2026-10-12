@@ -1,5 +1,7 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "player_control.h"
+#include "text_draw.h"
 #include "object_lookup.h"
 #include "object_types.h"
 #include "item_types.h"
@@ -633,7 +635,6 @@ void toolboxSetMode(u8 *table, s32 mode) {
     *(s64 *)(table + 0x20) = runtimeGetElapsedMilliseconds();
 }
 
-void playerPlayTrackedSoundEffect(u8 *, s32);
 /// Separate view of the selected Collection or Item Storage row.
 /// \note Original identifier: \c D_800F1BF4 (0x800F1BF4).
 extern s32 gToolboxSelectedRow;
@@ -1007,16 +1008,12 @@ void textDrawBegin(Gfx *);
 void textDrawGetDisplayListCursor(Gfx **);
 void textDrawReset(void);
 void textDrawSetFont(s32);
-void textDrawSetPalette(s32);
 void textDrawSetSpacingMode(s32);
 void textDrawSetScale(f32, f32);
 void textDrawSetArea(s32, s32, s32, s32);
 void textDrawSetColor(s32, s32, s32, s32);
 void textDrawSetCursor(s32, s32);
 void textDrawImageAtCursor(u8 *);
-/// Shared default sixteen-entry RGBA5551 palette for indexed text drawing.
-/// \note Original identifier: \c D_80063800 (0x80063800).
-extern u8 gDefaultTextPalette[];
 /// Draw the current toolbox row title and its translucent background.
 /// \param address Address of the display-list cursor to append to and advance.
 /// \returns Nothing; requires an initialized row-title image.
@@ -1033,7 +1030,7 @@ void toolboxDrawRowTitle(s32 address) {
     textDrawBegin(*gdl);
     textDrawSetFont(0);
     textDrawReset();
-    textDrawSetPalette((s32)gDefaultTextPalette);
+    textDrawSetPalette(gDefaultTextPalette);
     textDrawSetSpacingMode(1);
     textDrawSetScale(1.0f, 1.0f);
     textDrawSetArea(0, 0, 319, 239);

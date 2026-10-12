@@ -6,6 +6,7 @@
 
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "text_draw.h"
 #include "object_lookup.h"
 #include "text_panel.h"
 #include "heap_alloc.h"
@@ -286,15 +287,11 @@ void textDrawGetDefaultArea(s32 *, s32 *, s32 *, s32 *);
 void textDrawSetScale(f32, f32);
 Gfx *textureDrawScaledRegion(Gfx **, void *, u32, u32, u32, u32, u32, u32, u32, u32, f32, f32);
 void textDrawBegin(Gfx *);
-void textDrawSetPalette(s32);
 void textDrawSetCursor(s32, s32);
 void textDrawSetColor(s32, s32, s32, s32);
 void textDrawImageAtCursor(u8 *);
 void textDrawPrintf(const char *, ...);
 void textDrawGetDisplayListCursor(Gfx **);
-/// Shared default sixteen-entry RGBA5551 palette for indexed text drawing.
-/// \note Original identifier: \c D_80063800 (0x80063800).
-extern u8 gDefaultTextPalette[];
 /// Line-break text emitted between scrolling text-panel entries.
 /// \note Original identifier: \c D_800A2688 (0x800A2688).
 extern char gTextPanelLineBreakText[];
@@ -343,7 +340,7 @@ void textPanelDraw(TextPanel *panel, Gfx **gdl, s32 mode) {
         }
     }
     textDrawBegin(*gdl);
-    textDrawSetPalette((s32)gDefaultTextPalette);
+    textDrawSetPalette(gDefaultTextPalette);
     image = panel->images + 1;
     for (i = 1; i < panel->count; i++, image++) {
         if (*image != NULL) {

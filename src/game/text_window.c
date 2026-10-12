@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "text_draw.h"
 #include "integer_animation.h"
 #include "text_image.h"
 
@@ -250,12 +251,8 @@ void textWindowDrawPageAt(Gfx **list, s32 x, s32 y, s32 alpha) {
     }
 }
 
-/// Shared default sixteen-entry RGBA5551 palette for indexed text drawing.
-/// \note Original identifier: \c D_80063800 (0x80063800).
-extern u8 gDefaultTextPalette[];
 void textDrawBegin(Gfx *);
 void textDrawReset(void);
-void textDrawSetPalette(u8 *);
 void textDrawGetDisplayListCursor(Gfx **);
 void textWindowDrawPageAt(Gfx **, s32, s32, s32);
 f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
