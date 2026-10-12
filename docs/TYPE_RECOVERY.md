@@ -2636,3 +2636,16 @@ with their obsolete portability notes.
 Toolbox retains its local signed-selector declaration: adopting the unsigned
 shared prototype changes ROM bytes. Its compatibility contract and the ledger
 record the exception and the need for IDO scheduling/conversion evidence.
+
+### Shared progress-field limits and updates
+
+`progress_fields.h` consolidates minimum/maximum queries, bounded set/add
+operations and current-area selector availability across the provider and
+eleven consumer units. Contracts identify valid selectors, signed adjustments
+and the stored-value return after limits are applied. Original identifiers
+and addresses remain attached to each declaration.
+
+Provider reads, writes and selector resolution establish the interface types;
+Ghidra 0x80032C44 confirms the resolver-to-store call chain. Each source-unit
+conversion preserves all 483 objects with strict relocation comparison. The
+separate read header keeps the documented toolbox signed-read exception local.

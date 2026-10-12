@@ -1,3 +1,4 @@
+#include "progress_fields.h"
 #include "progress_value.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -50,7 +51,6 @@ typedef struct {
 /// Per-kind item motion, rendering, response and description configuration.
 /// \note Original identifier: \c D_80125A40 (0x80125A40).
 extern Unk74 gItemKinds[];
-s32 progressSetValue(s32, s32);
 
 void toolboxScaleCurrentRow(s32 *);           /* extern */
 u8 *toolboxTakeObject(s32, s32); /* extern */

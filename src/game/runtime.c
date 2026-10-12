@@ -1,3 +1,4 @@
+#include "progress_fields.h"
 #include "camera_overlay.h"
 #include "graphics_tasks.h"
 #include "scheduler.h"
@@ -229,7 +230,6 @@ void controllerRequestRumbleReset(s32); /* extern */
 void actionScriptInitializeHook();        /* extern */
 void hudInitialize();        /* extern */
 void randomSeedFromSystem();        /* extern */
-s32 progressAddValue(s32, s32);
 void runtimeAccumulatePlayTime(void);
 void runtimeShutdownAndHalt(void);
 void runtimeRequestGameModeChange(s32);
@@ -361,7 +361,6 @@ void objectSystemInitialize();                          /* extern */
 void presentationInitializeForCurrentArea();                          /* extern */
 void textWindowInitialize();                          /* extern */
 void toolboxCreateDisplayObjects();                          /* extern */
-s32 progressHasFieldInCurrentArea(s32);                       /* extern */
 void backdropAllocateViewBuffer(s32, u32, u32); /* extern */
 void backdropSelectForView(s32, s32, s32);     /* extern */
 void mazeInitialize();                          /* extern */

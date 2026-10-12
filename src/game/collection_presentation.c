@@ -1,3 +1,4 @@
+#include "progress_fields.h"
 #include "progress_value.h"
 #include "presentation_focus.h"
 #include "vector3_types.h"
@@ -28,7 +29,6 @@
 #include "heap_alloc.h"
 #include "text_image.h"
 
-s32 progressSetValue(s32, s32);
 void presentationDrawAreaLabel(Gfx **);
 
 /* Debug trace: compiled out in this build, but each format string is still
@@ -1204,7 +1204,6 @@ void presentationUpdateCollectionResultsMode(void) {
     }
 }
 
-s32 progressAddValue(s32, s32);
 void playerSetChaseStage(s32);
 /// Selected eye-catch group index, or minus one when no interlude is selected.
 /// \note Original identifier: \c D_8009B580 (0x8009B580).

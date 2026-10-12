@@ -1,3 +1,4 @@
+#include "progress_fields.h"
 #include "progress_value.h"
 #include "matrix_types.h"
 #include "matrix_point.h"
@@ -1178,8 +1179,6 @@ void systemMenuDrawSlider(Gfx **displayList, s32 x, s32 y, s32 selected, f32 val
     gDPFillRectangle((*displayList)++, selected - 2, top - 3, selected + 2, bottom + 3);
 }
 
-s32 progressGetMaximum(s32);
-s32 progressSetValue(s32, s32);
 void audioApplySavedMusicVolume(f32);
 void audioApplySavedSoundEffectVolume(f32);
 

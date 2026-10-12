@@ -1,3 +1,4 @@
+#include "progress_fields.h"
 #include "action_script_playback.h"
 #include "actor_script_action.h"
 #include "actor_sound.h"
@@ -128,7 +129,6 @@ s32 actorScriptPushMessageArgument4(u8 *actor) {
 
 
 u8 *attachedEffectCreate(u8 *, s32, s32); /* extern */
-s32 progressAddValue(s32, s32);       /* extern */
 u32 randomNext(void);               /* extern */
 /// Borrowed reference to the active Pikachu actor created for the current area.
 /// \note Original identifier: \c D_800760A8 (0x800760A8).

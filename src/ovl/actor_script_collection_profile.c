@@ -1,3 +1,4 @@
+#include "progress_fields.h"
 #include "progress_value.h"
 #include "player_camera.h"
 #include "actor_script_action.h"
@@ -416,7 +417,6 @@ s32 actorScriptPushMessengerHandle(u8 *actor) {
     return 0;
 }
 
-s32 progressAddValue(s32, s32); /* extern */
 /// Adjust a saved progress value within its permitted range.
 /// \param actor Actor whose script VM supplies a valid progress-field ID or area-relative selector followed by a signed amount whose sum with the current value fits a signed 32-bit integer, and receives the resulting stored value after applying the field limits.
 /// \returns Zero, allowing script execution to continue.
@@ -433,7 +433,6 @@ s32 actorScriptAddProgressValue(u8 *actor) {
     return 0;
 }
 
-s32 progressSetValue(s32, s32); /* extern */
 /// Set a saved progress value within its permitted range.
 /// \param actor Actor whose script VM supplies a valid progress-field ID or area-relative selector followed by the requested value, and receives the stored value after applying the field limits.
 /// \returns Zero, allowing script execution to continue.
@@ -462,7 +461,6 @@ s32 actorScriptGetProgressValue(u8 *actor) {
     return 0;
 }
 
-s32 progressGetMaximum(s32);  /* extern */
 /// Provide the maximum permitted value of a progress field.
 /// \param actor Actor whose script VM supplies a valid progress-field ID or area-relative selector and receives its maximum permitted value.
 /// \returns Zero, allowing script execution to continue.
@@ -475,7 +473,6 @@ s32 actorScriptGetProgressMaximum(u8 *actor) {
     return 0;
 }
 
-s32 progressGetMinimum(s32);  /* extern */
 /// Provide the minimum permitted value of a progress field.
 /// \param actor Actor whose script VM supplies a valid progress-field ID or area-relative selector and receives its minimum permitted value.
 /// \returns Zero, allowing script execution to continue.

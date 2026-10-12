@@ -1,3 +1,4 @@
+#include "progress_fields.h"
 #include "landmark.h"
 #include "object_lifecycle.h"
 #include "common.h"
@@ -9,7 +10,6 @@ s32 randomBelow(s32);
 f32 mathPowInteger(f32, s32);
 void runtimeCheckResetCheckpoint(u8 *, s32);
 void mazeScatterItems(u8 *, s32, u8 *, f32);
-s32 progressSetValue(s32, s32);
 typedef struct {
     u8 unknown[12];
     f32 scale;

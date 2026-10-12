@@ -1,3 +1,4 @@
+#include "progress_fields.h"
 #include "progress_value.h"
 #include "player_camera.h"
 #include "vector_interpolation.h"
@@ -2358,7 +2359,6 @@ s32 playerGetFriendshipMilestoneFlag(s32 milestone) {
     return gFriendshipMilestoneProgressFlags[milestone];
 }
 
-s32 progressSetValue(s32, s32); /* extern */
 /// Award an unearned friendship milestone and advance the player friendship level when appropriate.
 /// \param player Player record receiving the friendship award.
 /// \param milestone Friendship milestone index from zero through nineteen; zero records the initial meeting
@@ -2605,7 +2605,6 @@ void audioSetMusicDuckingInhibitFlags(s32 flags) {
 }
 
 void audioSetCategoryVolume(s32, s32); /* extern */
-s32 progressGetMaximum(s32);          /* extern */
 
 /// Apply the saved music-volume setting with a temporary volume multiplier.
 /// \param multiplier Finite multiplier of the saved volume; the scaled value must fit a signed integer before

@@ -1,3 +1,4 @@
+#include "progress_fields.h"
 #include "vector3_types.h"
 #include "matrix_types.h"
 #include "matrix_point.h"
@@ -489,7 +490,6 @@ void toolboxStorePurchasedObject(u8 *object) {
 /// Per-kind item motion, rendering, response and description configuration.
 /// \note Original identifier: \c D_80125A40 (0x80125A40).
 extern ItemKind gItemKinds[];
-s32 progressSetValue(s32, s32);
 
 /// Record acquisition of a supply item in persistent progress.
 /// \param itemKind Valid item catalog kind whose acquisition is being recorded.
