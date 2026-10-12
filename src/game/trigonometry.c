@@ -1,3 +1,4 @@
+#include "matrix_translation.h"
 #include "matrix_orientation.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"

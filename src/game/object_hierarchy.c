@@ -1,3 +1,4 @@
+#include "matrix_translation.h"
 #include "matrix_orientation.h"
 #include "collision_registration.h"
 #include "object_billboard.h"
@@ -64,7 +65,6 @@ extern Vec3f gObjectPendingLocalMovement;
 /// Current affine world transform shared by hierarchy traversal and actor motion consumers.
 /// \note Original identifier: \c D_800AD9E0 (0x800AD9E0).
 extern Matrix34 gObjectTraversalTransform;
-void matrix34TranslateLocal(void *, f32, f32, f32);          /* extern */
 void matrix33ScaleLocal(void *, f32, f32, f32);              /* extern */
 void matrix33KeepScaleOnly(f32 *);                    /* extern */
 s32 romByteReaderInitialize(u8 *);
@@ -1239,7 +1239,7 @@ void objectUpdateHierarchyWorldPositions(u8 *object) {
         do {
             if (!((((RuntimeObjectPrefix *)object)->flags) & 0x1C0)) {
                 objectTransformStackPush(&gObjectTraversalTransform);
-                matrix34TranslateLocal(&gObjectTraversalTransform, ((RuntimeObjectPrefix *)object)->position[0],
+                matrix34TranslateLocal(gObjectTraversalTransform.m, ((RuntimeObjectPrefix *)object)->position[0],
                                        ((RuntimeObjectPrefix *)object)->position[1], ((RuntimeObjectPrefix *)object)->position[2]);
                 if ((((RuntimeObjectPrefix *)object)->flags) & 0x1000) {
                     matrix33KeepScaleOnly(gObjectTraversalTransform.m[0]);
@@ -1312,7 +1312,7 @@ void objectUpdateHierarchyFromCurrentTransform(u8 *object) {
                 gObjectKindCallbacks[*(u16 *)(object + 0x34)].update(object);
             }
             if (!(*(u16 *)(object + 0x36) & 0x100)) {
-                matrix34TranslateLocal(&gObjectTraversalTransform, *(f32 *)(object + 0x18), *(f32 *)(object + 0x1C),
+                matrix34TranslateLocal(gObjectTraversalTransform.m, *(f32 *)(object + 0x18), *(f32 *)(object + 0x1C),
                                        *(f32 *)(object + 0x20));
                 if (*(u16 *)(object + 0x36) & 0x1000) {
                     matrix33KeepScaleOnly(gObjectTraversalTransform.m[0]);

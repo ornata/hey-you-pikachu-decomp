@@ -2513,3 +2513,15 @@ The same header now supplies world-Y affine rotation and motion Euler extraction
 to their providers and motion consumer. It documents degree units, in-place
 translation behavior and writable output destinations. Integer address boundaries
 in unrelated camera interfaces remain for separate evidence and matching trials.
+
+### Shared affine translation contract
+
+`matrix_translation.h` declares local-space translation with the provider's
+four-by-three float matrix and floating-point displacement parameters. Ghidra
+0x8003973C confirms this contract. The interface-camera builder now reads its
+position components as floats instead of passing integer bit patterns through
+a conflicting local declaration. Hierarchy calls name the transform array,
+and the view-builder call explicitly converts its retained address boundary.
+
+Provider and all C declarations use the shared header. Five source units were
+rebuilt and strictly compared one at a time; all 483 objects remain identical.

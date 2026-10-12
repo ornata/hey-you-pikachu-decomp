@@ -1,3 +1,4 @@
+#include "matrix_translation.h"
 #include "matrix_orientation.h"
 #include "actor_script_time.h"
 #include "camera_overlay.h"
@@ -153,7 +154,6 @@ void matrix34TransformPointVector(void *, f32 *, f32 *);
 /// Scale converting an overlay alpha byte to a blend weight.
 /// \note Original identifier: \c D_8009FC90 (0x8009FC90).
 extern f32 gOverlayAlphaWeightScale;
-void matrix34TranslateLocal(s32, s32, s32, s32);
 /* 3A058 copies the twelve words of an affine 3-by-4 matrix. */
 typedef struct {
     s32 w[12];
@@ -342,7 +342,7 @@ void cameraBuildInterfaceTransform(s32 output) {
 
     sp1C = gRenderCameras + gRenderCameraIndex * 0xE0;
     matrix34Identity((MatrixBlock00800 *)output);
-    matrix34TranslateLocal(output, *(s32 *)(sp1C + 0), *(s32 *)(sp1C + 4), *(s32 *)(sp1C + 8));
+    matrix34TranslateLocal((f32 (*)[3])output, *(f32 *)(sp1C + 0), *(f32 *)(sp1C + 4), *(f32 *)(sp1C + 8));
     matrix33ApplyRotationXYZDegrees((f32 *)output, -(gPlayerPitch + gPlayerPitchOffset),
                                     gPlayerViewShake + gPlayerYaw + 180.0f, 0.0f);
 }

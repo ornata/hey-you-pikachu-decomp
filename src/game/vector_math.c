@@ -1,3 +1,4 @@
+#include "matrix_translation.h"
 #include "matrix_orientation.h"
 #include "audio_spatial.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -506,7 +507,6 @@ void vector2RotateComponentsDegrees(f32 angle, f32 *x, f32 *y) {
     *y = (originalX * sine) + (originalY * cosine);
 }
 
-void matrix34TranslateLocal(s32, f32, f32, f32); /* extern */
 void matrix34MakeRotationZYXDegrees(s32, f32, f32, f32); /* extern */
 
 /// Construct a view transform from a position and Euler orientation.
@@ -517,7 +517,7 @@ void matrix34MakeRotationZYXDegrees(s32, f32, f32, f32); /* extern */
 /// \note Original decompilation identifier: \c func_8000D6D8 (0x8000D6D8).
 void matrix34MakeViewFromEulerDegrees(f32 *position, f32 *angles, s32 matrix) {
     matrix34MakeRotationZYXDegrees(matrix, -angles[0], -angles[1], -angles[2]);
-    matrix34TranslateLocal(matrix, -position[0], -position[1], -position[2]);
+    matrix34TranslateLocal((f32 (*)[3])matrix, -position[0], -position[1], -position[2]);
 }
 
 /// Rotate an affine transform about the world Y axis.

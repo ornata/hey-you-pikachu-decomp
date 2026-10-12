@@ -3442,6 +3442,7 @@
         "keyed_pool.h",
         "keyed_pool_types.h",
         "matrix_orientation.h",
+        "matrix_translation.h",
         "matrix_types.h",
         "midi_sequence_types.h",
         "node_pool.h",
@@ -3578,11 +3579,11 @@
             "1337:37"
           ],
           "object + 0x18": [
-            "1315:77",
+            "1315:78",
             "1344:30"
           ],
           "object + 0x1C": [
-            "1315:102",
+            "1315:103",
             "1345:30"
           ],
           "object + 0x20": [
@@ -5582,6 +5583,7 @@
     "src/game/trigonometry.c": {
       "known_views": [
         "matrix_orientation.h",
+        "matrix_translation.h",
         "matrix_types.h",
         "vector_direction.h"
       ],
@@ -5589,39 +5591,39 @@
       "locations": {
         "address_globals": {
           "D_800A6D30": [
-            "30:11"
+            "31:11"
           ]
         },
         "raw_offset_candidates": {
           "return -1": [
-            "84:9",
-            "126:9",
-            "1232:9"
+            "85:9",
+            "127:9",
+            "1233:9"
           ],
           "m + 16": [
-            "544:23",
-            "565:22"
+            "545:23",
+            "566:22"
           ],
           "vector + 0": [
-            "812:53"
+            "813:53"
           ],
           "vector + 4": [
-            "812:75"
+            "813:75"
           ],
           "vector + 8": [
-            "812:98"
+            "813:98"
           ],
           "angle - 360": [
-            "1287:13"
+            "1288:13"
           ],
           "t + 0": [
-            "1685:13"
+            "1686:13"
           ],
           "t - 0": [
-            "1687:13"
+            "1688:13"
           ],
           "angle + 90": [
-            "1710:27"
+            "1711:27"
           ]
         }
       }
@@ -5630,35 +5632,36 @@
       "known_views": [
         "audio_spatial.h",
         "matrix_orientation.h",
+        "matrix_translation.h",
         "vector_direction.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "matrix + 0x20": [
-            "27:27",
-            "54:18"
+            "28:27",
+            "55:18"
           ],
           "matrix + 0x14": [
-            "28:27"
+            "29:27"
           ],
           "matrix + 4": [
-            "49:23"
-          ],
-          "matrix + 0": [
             "50:23"
           ],
+          "matrix + 0": [
+            "51:23"
+          ],
           "matrix + 8": [
-            "51:32"
+            "52:32"
           ],
           "vector + 0": [
-            "69:18"
-          ],
-          "vector + 4": [
             "70:18"
           ],
+          "vector + 4": [
+            "71:18"
+          ],
           "return -1": [
-            "201:13",
+            "202:13",
             "684:9"
           ],
           "out + 3": [
@@ -5953,6 +5956,7 @@
         "heap_free.h",
         "heap_tail.h",
         "matrix_orientation.h",
+        "matrix_translation.h",
         "render_assets.h",
         "rom_dma.h",
         "runtime_program.h",
@@ -5990,13 +5994,13 @@
             "324:39"
           ],
           "sp1C + 0": [
-            "345:45"
+            "345:57"
           ],
           "sp1C + 4": [
-            "345:65"
+            "345:77"
           ],
           "sp1C + 8": [
-            "345:85"
+            "345:97"
           ],
           "gPlayerYaw + 180": [
             "347:56"
@@ -6045,6 +6049,7 @@
         "heap_alloc.h",
         "heap_tail.h",
         "matrix_orientation.h",
+        "matrix_translation.h",
         "runtime_program.h",
         "scheduler.h"
       ],
