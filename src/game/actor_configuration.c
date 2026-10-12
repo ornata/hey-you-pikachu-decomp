@@ -302,15 +302,24 @@ void actorUpdateScriptAndModelFollowingTarget(u8 *actor) {
     }
 }
 
+/// Owned roll-motion state, separate from actor and child playback state.
+typedef struct ObjectRollMotionState {
+    f32 initialRoll; ///< Object roll in degrees captured during initialization.
+    f32 velocity; ///< Roll change in degrees per second; reset before the current update.
+} ObjectRollMotionState;
+
+typedef char ObjectRollMotionStateSizeCheck[(sizeof(ObjectRollMotionState) == 8) ? 1 : -1];
+typedef char ObjectRollVelocityOffsetCheck[((u32)&((ObjectRollMotionState *)0)->velocity == 4) ? 1 : -1];
+
 /// Initialize roll motion state using the object's current roll.
 /// \param object Object receiving roll motion state.
 /// \returns The input object.
 /// \note Original decompilation identifier: \c func_8001DADC (0x8001DADC).
 u8 *objectInitializeRollMotionState(u8 *object) {
-    f32 *rollState = heapAllocLocal(&gGameHeap, 8, 0x61);
-    _bzero(rollState, 8);
-    *rollState = *(f32 *)(object + 0x14);
-    *(f32 **)(object + 0x54) = rollState;
+    ObjectRollMotionState *rollState = heapAllocLocal(&gGameHeap, sizeof(ObjectRollMotionState), 0x61);
+    _bzero(rollState, sizeof(ObjectRollMotionState));
+    rollState->initialRoll = ((RuntimeObjectPrefix *)object)->rotation[2];
+    ((RuntimeObjectPrefix *)object)->state.pointer = rollState;
     return object;
 }
 
@@ -319,13 +328,13 @@ u8 *objectInitializeRollMotionState(u8 *object) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001DB30 (0x8001DB30).
 void objectResetRollVelocity(u8 *object) {
-    u8 *v = *(u8 **)(object + 0x54);
+    ObjectRollMotionState *rollState = ((RuntimeObjectPrefix *)object)->state.pointer;
 
-    *(f32 *)(v + 4) = 0.0f;
-    if (fabsf(*(f32 *)(v + 4)) < 1.0f) {
-        *(f32 *)(v + 4) = 0.0;
+    rollState->velocity = 0.0f;
+    if (fabsf(rollState->velocity) < 1.0f) {
+        rollState->velocity = 0.0;
     } else {
-        *(f32 *)(object + 0x14) += *(f32 *)(v + 4) * gRuntimeFrameSeconds;
+        ((RuntimeObjectPrefix *)object)->rotation[2] += rollState->velocity * gRuntimeFrameSeconds;
     }
 }
 
@@ -422,32 +431,23 @@ extern f32 gActorChildSwayYawPhaseStep;
 /// \note Original identifier: \c D_800A4778 (0x800A4778).
 extern f32 gActorChildSwayRollPhaseStep;
 f32 mathSinDegrees(f32);
-typedef struct SwayObject {
-    u8 pad0[0xC];
-    struct {
-        f32 x, y, z;
-    } rotation;
-    u8 pad18[0x14];
-    struct SwayObject *linked;
-} SwayObject;
-
 /// Advance child motion, pass its orientation to the first child, and apply yaw and roll sway to the object.
 /// \param object Object to update; must have a first child to receive the motion orientation.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001DE24 (0x8001DE24).
-void actorUpdateChildMotionWithSway(SwayObject *object) {
+void actorUpdateChildMotionWithSway(u8 *object) {
     static f32 yawPhase = 0.0f;
     static f32 rollPhase = 0.0f;
-    SwayObject *linked;
+    RuntimeObjectPrefix *linked;
 
-    actorUpdateChildMotion((u8 *)object);
-    linked = object->linked;
-    linked->rotation.x = object->rotation.x;
-    linked->rotation.y = object->rotation.y;
-    linked->rotation.z = object->rotation.z;
-    object->rotation.x = 0.0f;
-    object->rotation.y = mathSinDegrees(yawPhase) * 20.0f;
-    object->rotation.z = mathSinDegrees(rollPhase) * 5.0f;
+    actorUpdateChildMotion(object);
+    linked = ((RuntimeObjectPrefix *)object)->child.object;
+    linked->rotation[0] = ((RuntimeObjectPrefix *)object)->rotation[0];
+    linked->rotation[1] = ((RuntimeObjectPrefix *)object)->rotation[1];
+    linked->rotation[2] = ((RuntimeObjectPrefix *)object)->rotation[2];
+    ((RuntimeObjectPrefix *)object)->rotation[0] = 0.0f;
+    ((RuntimeObjectPrefix *)object)->rotation[1] = mathSinDegrees(yawPhase) * 20.0f;
+    ((RuntimeObjectPrefix *)object)->rotation[2] = mathSinDegrees(rollPhase) * 5.0f;
     yawPhase += gActorChildSwayYawPhaseStep;
     rollPhase += gActorChildSwayRollPhaseStep;
     while (yawPhase < 0.0f) {

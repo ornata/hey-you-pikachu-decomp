@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,858 / 80 |
+| Raw offset candidates | 4,040 / 86 | 2,850 / 80 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3121,3 +3121,13 @@ symbols and strict relocation identities. Creation reads the orbit follower's
 handle through the shared object field. The source-quality summary is updated
 to current counts, with uncertain globals and raw candidates still explicit.
 All isolated conversions preserve strict objects and the clean ROM.
+
+### Sway and roll state recovery
+
+Sway updates now reuse `RuntimeObjectPrefix` for rotation and the first-child
+link, removing a duplicate private object view. The separate eight-byte
+`ObjectRollMotionState` names the initial roll and velocity, with checked
+size and velocity offset. Ghidra 0x8001DADC confirms allocation, clearing and
+captured roll. The reset/update ordering and arithmetic are retained exactly;
+no unreachable-looking branch is removed. These private layouts remain local
+to configuration, and both isolated conversions preserve strict objects.
