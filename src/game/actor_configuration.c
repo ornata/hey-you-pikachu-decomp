@@ -573,18 +573,44 @@ extern u8 gActorCreationCompleteHeapLabel[];
 /// \note Original identifier: \c D_800A477C (0x800A477C).
 extern f32 gActorShadowSegmentRadiusScale;
 
-typedef struct {
-    s32 metadata[6];
-    u8 *template;
-    s32 unknown1C;
-    s32 *parts;
-    f32 radius;
-    f32 bounds[5];
-    s32 segments;
-    s32 reserved[3];
-    s32 flags;
-    s32 resourceIndex;
-} SpawnSpec;
+/// Persistent actor-kind configuration used by actor creation.
+/// Pointer fields borrow templates, text and part lists from resident resources.
+/// Interior linker views elsewhere retain the original per-field relocations.
+typedef struct ActorKindConfig {
+    char *alternateName;           ///< Preferred inspection name when alternate text is requested.
+    char *alternateDescription;    ///< Preferred inspection description when alternate text is requested.
+    char *defaultName;             ///< Default inspection name.
+    char *defaultDescription;      ///< Default inspection description.
+    u32 unknown10;                 ///< Unresolved configuration word; its consumers are not yet identified.
+    u32 unknown14;                 ///< Unresolved configuration word; its consumers are not yet identified.
+    u8 *hierarchyTemplate;         ///< Borrowed actor hierarchy cloned during creation.
+    const s32 *groundReferenceIds; ///< Positive part IDs terminated by a nonpositive value.
+    s32 *animatedTextureParts;     ///< Borrowed part list for texture-animation initialization.
+    f32 visibilityRadius;          ///< Unscaled actor visibility and segmented-shadow radius.
+    f32 collisionDepth;            ///< Unscaled vertical span used by horizontal clearance queries.
+    f32 clearanceHeight;           ///< Unscaled permitted clearance height.
+    f32 collisionWidth;            ///< Unscaled horizontal collision width.
+    f32 unknown34;                 ///< Unresolved dimension copied to actor state at 0x208.
+    f32 groundOffset;              ///< Unscaled ground-reference offset.
+    s32 shadowSegmentCount;        ///< Number of ground-shadow segments, or nonpositive to omit the shadow.
+    s32 defaultPartId;             ///< Default reference part identifier.
+    s32 firstAttachmentPartId;     ///< First attachment reference part identifier.
+    s32 secondAttachmentPartId;    ///< Second attachment reference part identifier.
+    s32 initialBehaviorFlags;      ///< Initial actor behavior flags.
+    s32 resourceIndex;             ///< Actor resource-table index.
+} ActorKindConfig;
+
+typedef char ActorKindConfigSizeCheck[(sizeof(ActorKindConfig) == 0x54) ? 1 : -1];
+#define ACTOR_KIND_OFFSET_CHECK(name, member, offset)                                                                  \
+    typedef char name[(((u32) & ((ActorKindConfig *)0)->member) == (offset)) ? 1 : -1]
+ACTOR_KIND_OFFSET_CHECK(ActorKindTemplateOffsetCheck, hierarchyTemplate, 0x18);
+ACTOR_KIND_OFFSET_CHECK(ActorKindGroundReferencesOffsetCheck, groundReferenceIds, 0x1C);
+ACTOR_KIND_OFFSET_CHECK(ActorKindTexturePartsOffsetCheck, animatedTextureParts, 0x20);
+ACTOR_KIND_OFFSET_CHECK(ActorKindCollisionDepthOffsetCheck, collisionDepth, 0x28);
+ACTOR_KIND_OFFSET_CHECK(ActorKindDefaultPartOffsetCheck, defaultPartId, 0x40);
+ACTOR_KIND_OFFSET_CHECK(ActorKindFlagsOffsetCheck, initialBehaviorFlags, 0x4C);
+ACTOR_KIND_OFFSET_CHECK(ActorKindResourceOffsetCheck, resourceIndex, 0x50);
+#undef ACTOR_KIND_OFFSET_CHECK
 
 /// Create and register an actor of the requested kind with its resources ready for use.
 /// \param kind Valid actor kind to create.
@@ -600,7 +626,7 @@ typedef struct {
 /// \note Original decompilation identifier: \c func_8001E1C4 (0x8001E1C4).
 /// \note An unused local word retains the target compiler stack layout required by the ROM.
 u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 scale, u8 *script, s32 scriptArgument) {
-    SpawnSpec *spawnSpec;
+    ActorKindConfig *kindConfig;
     s32 shadowSegments;
     s32 reservedCreationSlot;
     u8 *sp50;
@@ -613,21 +639,21 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
     heapDebugReportFreeSpace(&gGameHeap, (const char *)gActorCreationStartHeapLabel);
     actorAssetQueueLoadForKind(kind);
     heapDebugReportFreeSpace(&gGameHeap, (const char *)gActorResourcesRequestedHeapLabel);
-    spawnSpec = &((SpawnSpec *)gActorKindConfigurationsFromOne)[kind - 1];
-    actor = objectCloneTemplateHierarchy(spawnSpec->template, 0);
+    kindConfig = &((ActorKindConfig *)gActorKindConfigurationsFromOne)[kind - 1];
+    actor = objectCloneTemplateHierarchy(kindConfig->hierarchyTemplate, 0);
     actorState = *(u8 **)(actor + 0x54);
     heapDebugReportFreeSpace(&gGameHeap, (const char *)gActorHierarchyAllocatedHeapLabel);
-    *(s32 *)(actorState + 0x194) = spawnSpec->flags;
+    *(s32 *)(actorState + 0x194) = kindConfig->initialBehaviorFlags;
     *(s32 *)(actorState + 0x238) = scriptArgument;
     sp50 = objectCreateDefault();
     *(u8 **)(sp50 + 0x50) = actor;
     *(u8 **)(objectGetLastSibling(actor) + 0x28) = sp50;
     *(u8 **)(actorState + 0x0) = sp50;
-    if (spawnSpec->segments > 0) {
+    if (kindConfig->shadowSegmentCount > 0) {
         sp48 = objectGetLastSibling(actor);
-        shadowSegments = spawnSpec->segments;
+        shadowSegments = kindConfig->shadowSegmentCount;
         part = groundShadowCreate(shadowSegments,
-                                  (spawnSpec->radius / (f32)shadowSegments) * gActorShadowSegmentRadiusScale);
+                                  (kindConfig->visibilityRadius / (f32)shadowSegments) * gActorShadowSegmentRadiusScale);
         *(u8 **)(part + 0x50) = actor;
         *(u8 **)(sp48 + 0x28) = part;
     }
@@ -643,8 +669,8 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
     *(f32 *)(actor + 0x0) = scale;
     actorAddRotationAxisDegrees(actor, pitch, 0);
     actorAddRotationAxisDegrees(actor, yaw, 1);
-    *(f32 *)(actor + 0x24) = (f32)spawnSpec->radius;
-    if (spawnSpec == (SpawnSpec *)gPikachuKindConfiguration) {
+    *(f32 *)(actor + 0x24) = (f32)kindConfig->visibilityRadius;
+    if (kindConfig == (ActorKindConfig *)gPikachuKindConfiguration) {
         part = actorFindPart(actor, 0x2F);
         if (part != NULL) {
             *(f32 *)(part + 0x24) = 80.0f;
@@ -654,15 +680,15 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
             *(f32 *)(part + 0x24) = 80.0f;
         }
     }
-    *(f32 *)(actorState + 0x1FC) = (f32)(spawnSpec->bounds[0] * scale);
-    *(f32 *)(actorState + 0x200) = (f32)(spawnSpec->bounds[1] * scale);
-    *(f32 *)(actorState + 0x204) = (f32)(spawnSpec->bounds[2] * scale);
-    *(f32 *)(actorState + 0x208) = (f32)(spawnSpec->bounds[3] * scale);
-    *(f32 *)(actorState + 0x20C) = (f32)(spawnSpec->bounds[4] * scale);
+    *(f32 *)(actorState + 0x1FC) = (f32)(kindConfig->collisionDepth * scale);
+    *(f32 *)(actorState + 0x200) = (f32)(kindConfig->clearanceHeight * scale);
+    *(f32 *)(actorState + 0x204) = (f32)(kindConfig->collisionWidth * scale);
+    *(f32 *)(actorState + 0x208) = (f32)(kindConfig->unknown34 * scale);
+    *(f32 *)(actorState + 0x20C) = (f32)(kindConfig->groundOffset * scale);
     objectScaleHierarchyBounds(actor, 1.0f);
     objectRefreshHierarchyWorldPositions((s32)actor);
-    if (spawnSpec->parts != NULL) {
-        actorInitializeAnimatedTextures(actor, spawnSpec->parts);
+    if (kindConfig->animatedTextureParts != NULL) {
+        actorInitializeAnimatedTextures(actor, kindConfig->animatedTextureParts);
     }
     objectRegisterActiveHierarchy(actor);
     objectPrepareDistributedKindSearches(0x64, 4);
@@ -677,10 +703,10 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
     }
     actorAssetWaitForQueuedReads();
     if ((u8 *)gActorCompressedAssetStaging != NULL) {
-        asset = &gActorAssetResources[spawnSpec->resourceIndex];
+        asset = &gActorAssetResources[kindConfig->resourceIndex];
         if (asset->compressed == 1) {
-            sp50 = (void *)gActorAssetResources[spawnSpec->resourceIndex].dataStart;
-            assetDecompressAndPatch((u8 *)gActorAssetStorage[spawnSpec->resourceIndex],
+            sp50 = (void *)gActorAssetResources[kindConfig->resourceIndex].dataStart;
+            assetDecompressAndPatch((u8 *)gActorAssetStorage[kindConfig->resourceIndex],
                                     (u8 *)gActorCompressedAssetStaging, asset->remaining[0] - (s32)sp50,
                                     asset->dataEnd - (s32)sp50, asset->remaining[1] - (s32)sp50,
                                     asset->remaining[2] - (s32)sp50);

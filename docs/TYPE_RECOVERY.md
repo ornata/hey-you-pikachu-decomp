@@ -1160,3 +1160,19 @@ producer's s32 kind parameter, correcting narrower local declarations without
 changing the existing u16 object-kind loads. Both source units preserve strict
 object matching. The registry interior symbol views remain intentional until
 full kind-table recovery establishes a matching shared record representation.
+
+### Actor-kind creation record
+
+The private ActorKindConfig record replaces the generic SpawnSpec in actor
+creation. Its 0x54-byte size and key offsets are checked at target compile time.
+The resident kind-one record at 0x8008801C, interior symbol addresses, lookup
+functions and Ghidra at 0x8001E1C4 establish text pointers, hierarchy template,
+ground-reference IDs, animated-texture parts, visibility radius, collision
+dimensions, shadow segment count, reference IDs, initial flags and resource
+index. Creation now names those fields directly instead of bounds/reserved
+arrays. Existing interior linker views remain unchanged for strict relocations.
+The words at 0x10/0x14 lack identified consumers, and dimension 0x34 only has
+a confirmed copy into actor state 0x208. Find additional consumers before
+assigning semantics or changing their representation. The record remains local
+because only creation currently consumes this complete view; no unrelated
+records were merged. The changed object matches the immutable baseline.
