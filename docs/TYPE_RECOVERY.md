@@ -2859,3 +2859,16 @@ degrees, drifting-flight elapsed seconds and held light-bulb countdown seconds.
 The union remains four bytes at checked offset 0x30. Flight, balloon launch,
 piñata and light-bulb consumers use their corresponding views; the countdown
 pointer also uses its named member. No additional state storage is introduced.
+
+### Shared held-item and collision callback contracts
+
+Physics now reuses `ItemHeldCallback` and `ItemCollisionCallback` from the
+shared catalog instead of private function-pointer types. The held wrapper
+accepts an object pointer and supplies only that pointer to the callback;
+removing the unused state argument preserves all object bytes. Ghidra
+0x80122A6C confirms callback lookup by the item's signed kind.
+
+Collision dispatch names private state, kind, flags and world position. Both
+callback lookups use the checked catalog size for their stride while retaining
+interior symbols to preserve strict relocation identities. The impact-message
+legacy return declaration remains its existing matching exception.

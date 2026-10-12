@@ -307,7 +307,6 @@ void itemPlayImpactSounds(u8 *object, s32 contactFlags, s32 surface) {
                          *((s16 *)((u8 *)&gItemKindSecondarySoundEntries + (((ItemStatePrefix *)sp1C)->kind * 0x74))));
 }
 
-typedef s32 (*ObjectCollisionCallback)(u8 *, u16);
 /// Separate terrain-collision callback view of the item catalog, with a 116-byte stride.
 /// \note Original identifier: \c D_80125A90 (0x80125A90).
 extern u8 gItemKindCollisionCallbackEntries[];
@@ -327,16 +326,16 @@ s32 areaDispatchPositionEvent(f32 *, s32);
 /// \note Original decompilation identifier: \c func_80122184 (0x80122184).
 s32 itemDispatchCollisionResponse(u8 *object, s32 flags) {
     u8 *state;
-    ObjectCollisionCallback callback;
+    ItemCollisionCallback callback;
 
-    state = *(u8 **)(object + 0x54);
-    callback = *(ObjectCollisionCallback *)(gItemKindCollisionCallbackEntries + *(s16 *)(state + 4) * 0x74);
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
+    callback = *(ItemCollisionCallback *)(gItemKindCollisionCallbackEntries + ((ItemStatePrefix *)state)->kind * sizeof(ItemKind));
     if (flags & 0x40) {
         actorPostItemImpactMessage(gPikachuActor, object);
     }
-    if (!(flags & 0x40) && !(*(s32 *)state & 0x10000000)) {
-        if (areaDispatchPositionEvent((f32 *)(object + 0x44), 6) != 0) {
-            *(s32 *)state |= 0x10000000;
+    if (!(flags & 0x40) && !(((ItemStatePrefix *)state)->flags & 0x10000000)) {
+        if (areaDispatchPositionEvent(((RuntimeObjectPrefix *)object)->worldPosition, 6) != 0) {
+            ((ItemStatePrefix *)state)->flags |= 0x10000000;
         }
     }
     if (callback != NULL) {
@@ -524,15 +523,15 @@ extern u8 gItemKindHeldCallbackEntries;
 
 /// Run the held-item behavior supplied by the item kind, when present.
 /// \param object Address of the held item.
-/// \param state Item state identifying its kind and supplied to the callback.
+/// \param state Borrowed initialized item state identifying the callback kind.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80122A6C (0x80122A6C).
-void itemRunHeldKindCallback(s32 object, u8 *state) {
-    void (*heldCallback)(s32, u8 *);
+void itemRunHeldKindCallback(u8 *object, u8 *state) {
+    ItemHeldCallback heldCallback;
 
-    heldCallback = *(void (**)(s32, u8 *))(&gItemKindHeldCallbackEntries + ((ItemStatePrefix *)state)->kind * 0x74);
+    heldCallback = *(ItemHeldCallback *)(&gItemKindHeldCallbackEntries + ((ItemStatePrefix *)state)->kind * sizeof(ItemKind));
     if (heldCallback != NULL) {
-        heldCallback(object, state);
+        heldCallback(object);
     }
 }
 
@@ -557,7 +556,7 @@ void itemUpdatePlayerHeld(u8 *object) {
     f32 *pos;
     u8 *state = ((RuntimeObjectPrefix *)object)->state.bytes;
 
-    itemRunHeldKindCallback((s32)object, state);
+    itemRunHeldKindCallback(object, state);
     ((ItemStatePrefix *)state)->modeTime += gRuntimeFrameSeconds;
     pos = ((RuntimeObjectPrefix *)object)->position;
     pos[0] = 1.25f;
@@ -651,7 +650,7 @@ void itemUpdateActorHeld(u8 *object) {
         itemTryRelease(object, 1);
         return;
     }
-    itemRunHeldKindCallback((s32)object, state);
+    itemRunHeldKindCallback(object, state);
     ((ItemStatePrefix *)state)->modeTime += gRuntimeFrameSeconds;
     parentState = ((RuntimeObjectPrefix *)parent)->state.bytes;
     actorGetConfiguredAttachmentPosition((s32)parent, ((RuntimeObjectPrefix *)object)->radius, ((RuntimeObjectPrefix *)object)->position);

@@ -51,7 +51,7 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 2993,
+      "occurrences": 2990,
       "unique_spellings": 1105,
       "files": 80
     }
@@ -6927,31 +6927,26 @@
           "state + 0x18": [
             "177:64"
           ],
-          "object + 0x54": [
-            "332:22",
-            "678:23"
-          ],
-          "state + 4": [
-            "333:90"
-          ],
           "object + 0x44": [
-            "338:47",
-            "445:51"
+            "444:51"
           ],
           "bounceCount - 1U": [
-            "458:98"
+            "457:98"
           ],
           "wriggleAngle + 360": [
-            "597:114"
+            "596:114"
           ],
           "wriggleAngle - 360": [
-            "602:114"
+            "601:114"
           ],
           "spinSpeed + 360": [
-            "613:87"
+            "612:87"
           ],
           "spinSpeed - 360": [
-            "618:87"
+            "617:87"
+          ],
+          "object + 0x54": [
+            "677:23"
           ]
         }
       }
