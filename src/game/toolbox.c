@@ -1,3 +1,5 @@
+#include "toolbox_items.h"
+#include "item_object.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "player_control.h"
@@ -179,7 +181,6 @@ extern ToolboxSlot gToolboxBonusSlot;
 /// Separate view of the stored bonus item handle.
 /// \note Original identifier: \c D_800F1CD4 (0x800F1CD4).
 extern s32 gToolboxBonusHandle;
-void itemDestroy(u8 *); /* extern */
 /// Owned toolbox display state, item rows, placeholders and special storage slots.
 /// \note Original identifier: \c D_800F1BE0 (0x800F1BE0).
 extern ToolboxState gToolboxState;
@@ -462,7 +463,7 @@ s32 toolboxStoreObjectInRow(s32 object, s32 row) {
 /// \param object Address of a live initialized item distinct from the previous bonus item.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002F2F0 (0x8002F2F0).
-void toolboxStoreBonusObject(s32 object) {
+void toolboxStoreBonusObject(u8 *object) {
     s32 *storedHandle = &gToolboxBonusHandle;
     if (*storedHandle != 0) {
         itemDestroy(objectFindLiveByHandle(*storedHandle));
@@ -475,7 +476,7 @@ void toolboxStoreBonusObject(s32 object) {
 /// \param object Address of a live initialized item distinct from the previous purchase item.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002F338 (0x8002F338).
-void toolboxStorePurchasedObject(s32 object) {
+void toolboxStorePurchasedObject(u8 *object) {
     s32 *storedHandle = &gToolboxPurchaseHandle;
     if (*storedHandle != 0) {
         itemDestroy(objectFindLiveByHandle(*storedHandle));
@@ -758,13 +759,13 @@ void toolboxRestoreStoredObjects(u8 *table) {
     if (*(s32 *)slot != 0) {
         object = itemCreate(1000.0f, 1000.0f, 1000.0f, 0.0f, 0.0f, *(s32 *)slot);
         *(s32 *)slot = 0;
-        toolboxStoreBonusObject((s32)object);
+        toolboxStoreBonusObject(object);
     }
     slot = table + 0xF8;
     if (*(s32 *)slot != 0) {
         object = itemCreate(1000.0f, 1000.0f, 1000.0f, 0.0f, 0.0f, *(s32 *)slot);
         *(s32 *)slot = 0;
-        toolboxStorePurchasedObject((s32)object);
+        toolboxStorePurchasedObject(object);
     }
     toolboxNoOp((s32)table);
 }

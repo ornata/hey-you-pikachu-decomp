@@ -1,3 +1,5 @@
+#include "item_object.h"
+#include "toolbox_items.h"
 #include "common.h"
 #include "actor_target.h"
 #include "player_control.h"
@@ -8,8 +10,6 @@
 #include "script_vm_stack.h"
 #include "actor_script.h"
 #include "object_types.h"
-
-/// Unprototyped compatibility declaration for the retained extra argument in actorScriptPushSelfHandle.
 
 /// Select how messenger objects respond to contact with the actor.
 /// \param actor Actor whose script VM supplies the messenger contact mode and receives zero.
@@ -953,14 +953,13 @@ s32 actorScriptCreateStationaryItem(u8 *actor) {
     return 0;
 }
 
-void itemDestroy(s32); /* extern */
 /// Remove an available item from the scene.
 /// \param actor Actor whose script VM supplies an item handle and receives zero; unavailable handles have no effect, and other object kinds are unsupported.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011F3C0 (0x8011F3C0).
 s32 actorScriptDestroyItem(u8 *actor) {
     s32 sp1C;
-    s32 resolvedObject;
+    u8 *resolvedObject;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     resolvedObject = objectResolveAvailableHandle(scriptVmPopInteger(sp1C));
@@ -1008,7 +1007,6 @@ s32 actorScriptMoveObjectAndReleaseHeldItem(u8 *actor) {
 /// \param actor Actor whose script VM supplies an item handle followed by a valid replacement kind, and receives the new item handle or zero for an unavailable original; other object kinds are unsupported.
 /// \returns Zero, allowing script execution to continue.
 ///
-/// \note Portability: The resolved object address is carried in an s32, requiring 32-bit pointers.
 /// \note Original decompilation identifier: \c func_8011F4B8 (0x8011F4B8).
 s32 actorScriptReplaceItemKind(u8 *actor) {
     s32 vm;
@@ -1032,7 +1030,7 @@ s32 actorScriptReplaceItemKind(u8 *actor) {
         z = ((RuntimeObjectPrefix *)obj)->worldPosition[2];
         dir = ((RuntimeObjectPrefix *)obj)->rotation[0];
         speed = ((RuntimeObjectPrefix *)obj)->rotation[1];
-        itemDestroy((s32)obj);
+        itemDestroy(obj);
         item = itemCreate(x, y, z, dir, speed, kind);
         scriptVmPushInteger(vm, ((RuntimeObjectPrefix *)item)->handle);
     }
@@ -1076,25 +1074,24 @@ s32 actorScriptTryHoldItem(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011F5F4 (0x8011F5F4).
 s32 actorScriptGetItemState(u8 *actor) {
-    u8 *sp1C;
+    s32 vmAddress;
     u8 *liveObject;
 
-    sp1C = (u8 *)((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    liveObject = objectFindLiveByHandle(scriptVmPopInteger(sp1C));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    liveObject = objectFindLiveByHandle(scriptVmPopInteger(vmAddress));
     if (liveObject != NULL) {
         if ((u16)((RuntimeObjectPrefix *)liveObject)->kind == 0x86) {
-            scriptVmPushInteger((s32)sp1C,
+            scriptVmPushInteger(vmAddress,
                                 (s32)((ItemStatePrefix *)((RuntimeObjectPrefix *)liveObject)->state.bytes)->state);
         } else {
-            scriptVmPushInteger((s32)sp1C, -1);
+            scriptVmPushInteger(vmAddress, -1);
         }
     } else {
-        scriptVmPushInteger((s32)sp1C, -1);
+        scriptVmPushInteger(vmAddress, -1);
     }
     return 0;
 }
 
-void itemStartMaterialAnimation(s32, s32); /* extern */
 /// Select an animation for an available item.
 /// \param actor Actor whose script VM supplies an item handle followed by a valid animation identifier and receives zero; unavailable handles have no effect, and other object kinds are unsupported.
 /// \returns Zero, allowing script execution to continue.
@@ -1103,7 +1100,7 @@ s32 actorScriptSetItemAnimation(u8 *actor) {
     s32 vmAddress;
     s32 sp24;
     s32 sp1C;
-    s32 resolvedObject;
+    u8 *resolvedObject;
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     sp24 = vmAddress;
@@ -1116,7 +1113,6 @@ s32 actorScriptSetItemAnimation(u8 *actor) {
     return 0;
 }
 
-void itemSetMaterialFrame(s32, s32); /* extern */
 /// Select a fixed material frame for an available item and stop its material animation.
 /// \param actor Actor whose script VM supplies an item handle followed by a valid material texture frame identifier that fits in signed 16 bits and receives zero; unavailable handles have no effect, and other object kinds are unsupported.
 /// \returns Zero, allowing script execution to continue.
@@ -1125,7 +1121,7 @@ s32 actorScriptSetItemMaterialFrame(u8 *actor) {
     s32 vmAddress;
     s32 sp24;
     s32 sp1C;
-    s32 resolvedObject;
+    u8 *resolvedObject;
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     sp24 = vmAddress;
@@ -1180,7 +1176,6 @@ s32 actorScriptSetItemTint(u8 *actor) {
     return 0;
 }
 
-void toolboxStoreBonusObject(s32); /* extern */
 /// Replace the toolbox bonus item, removing any previously stored bonus item.
 /// \param actor Actor whose script VM supplies a valid available item handle distinct from the previously stored bonus item and receives zero.
 /// \returns Zero, allowing script execution to continue.
@@ -1194,14 +1189,13 @@ s32 actorScriptStoreBonusItem(u8 *actor) {
     return 0;
 }
 
-void toolboxStorePurchasedObject(s32); /* extern */
 /// Replace the toolbox purchase item, removing any previously stored purchase item; the replacement must be distinct from the previous item.
 /// \param actor Actor whose script VM supplies an item handle and receives zero; unavailable handles have no effect, and other object kinds are unsupported.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011F850 (0x8011F850).
 s32 actorScriptStorePurchasedItem(u8 *actor) {
     s32 sp1C;
-    s32 resolvedObject;
+    u8 *resolvedObject;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     resolvedObject = objectResolveAvailableHandle(scriptVmPopInteger(sp1C));

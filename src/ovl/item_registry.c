@@ -1,3 +1,4 @@
+#include "item_object.h"
 #include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
 /* Item objects. .rodata is the item-kind text (initializer order), then the

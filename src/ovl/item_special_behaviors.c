@@ -1,3 +1,4 @@
+#include "item_object.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "scene_types.h"
@@ -17,7 +18,6 @@ void baseballCapResetReleasedScale(u8 *object, s32 unused) {
     }
 }
 
-void itemStartMaterialAnimation(u8 *arg0, s32 arg1); /* extern */
 f32 actorAdjustActionMeter(s32, f32);        /* extern */
 /// Borrowed reference to the active Pikachu actor created for the current area.
 /// \note Original identifier: \c D_800760A8 (0x800760A8).

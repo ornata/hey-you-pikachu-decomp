@@ -1,6 +1,6 @@
+#include "item_object.h"
 #include "common.h"
 u8 *toolboxTakeObject(s32, s32);
-void itemDestroy(u8 *);
 
 /// Remove the removable items held in the tracked scene-item slots.
 /// \returns Nothing.

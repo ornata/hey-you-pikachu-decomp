@@ -690,3 +690,18 @@ ROM data at `0x8009B464` contains `[0, 1, -1]`, followed at `0x8009B470` by
 by `[7, 6, -1]`. Their declarations retain those lengths and read-only ownership.
 The renderer borrows the arrays and their negative terminators. All retained
 source-unit changes pass strict comparison against the 483-object baseline.
+
+### Script item references and toolbox replacement
+
+`item_object.h` shares item destruction and material animation/frame contracts
+across every definition and declaring caller. Script handlers retain resolved
+objects as `u8 *` and the established VM address as `s32`, separating live RAM
+pointers from script integer values without changing control flow. Replacement
+of an item kind no longer converts the pointer to an integer for destruction.
+
+`toolbox_items.h` shares bonus and purchase replacement contracts. These receive
+a live initialized item pointer, retain its handle, and request destruction of
+the previous item. Ghidra at `0x8002F2F0` confirms the previous-handle lookup,
+destruction request and replacement slot operation. Existing validity and
+distinctness preconditions remain explicit. Every changed source unit passes
+strict comparison against the preserved 483-object baseline.

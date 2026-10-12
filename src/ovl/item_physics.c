@@ -1,3 +1,4 @@
+#include "item_object.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "object_lookup.h"
@@ -345,7 +346,6 @@ u8 *wispEffectCreate(s32, f32, f32, f32);
 u32 randomNext(void);
 s32 areaIsPositionOutsideBounds(f32, f32, f32);
 s32 terrainConstrainMovement(s32, f32, f32, f32, f32, f32, f32, f32 *, f32 *, f32 *, u8 **);
-void itemDestroy(u8 *);
 s32 itemUpdateGroundVelocity(u8 *, u8 *, s32, s32 *);
 s32 itemDispatchCollisionResponse(u8 *, s32);
 #pragma intrinsic(fabsf)
