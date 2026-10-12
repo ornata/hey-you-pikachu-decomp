@@ -2270,3 +2270,17 @@ retain direct casts: adding local view pointers changes stack slots or frame
 size. Direct casts preserve all objects while providing a canonical actor
 parameter. The callback field and playback consumer use the shared typedef.
 All 483 objects and strict relocation addends remain identical.
+
+### Shared ROM action-definition layout
+
+`action_definition_types.h` describes the 0x2C-byte action resource copied
+into actor-state bytes 0xEC through 0x117. It shares initializer, update and
+cue-program types and checks size plus motion, continuation, scale, callback
+and cue offsets. Unresolved bytes at resource 0x16 remain explicit. Actor state
+now names the selected ID and borrowed name. Ghidra 0x8000EBA0 confirms the
+44-byte copy and continuation overwrite; the ROM table and prior callback
+audits establish callback/resource fields. Motion requests, synthetic pose
+transitions, continuation traversal and table validation use recovered fields.
+Word-oriented aggregate copies retain their existing representation to preserve
+the compiler's copy behavior. Header dependents and the changed source unit
+preserve all 483 objects and strict relocation addends.

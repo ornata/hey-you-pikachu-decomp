@@ -104,12 +104,12 @@ s32 actionRequestMotionData(s32 actionId) {
     } else {
         var_v0 = (actionId * 0x2C) + gActionDefinitions;
     }
-    if ((var_v0 == NULL) || ((*(s32 *)(var_v0 + 0xC) & 7) != 1)) {
+    if ((var_v0 == NULL) || ((((ActionDefinition *)var_v0)->attributes & 7) != 1)) {
         return 0;
     }
     {
         s32 sp18;
-        motionCacheRead(&gMotionRomCache, *(s16 *)(var_v0 + 0x10), &sp18);
+        motionCacheRead(&gMotionRomCache, ((ActionDefinition *)var_v0)->motionId, &sp18);
         return sp18;
     }
 }
@@ -194,16 +194,16 @@ void motionStartTrackPlayback(u8 *object) {
     f32 duration;
 
     state = *(u8 **)(object + 0x54);
-    TRACE("motionNum:%d\n", *(s16 *)(state + 0xFC));
-    TRACE("  %s\n", *(char **)(state + 0xF0));
+    TRACE("motionNum:%d\n", ((ActorScriptState *)state)->motionId);
+    TRACE("  %s\n", ((ActorScriptState *)state)->actionName);
     motionSetPlaybackMode(object, 0);
     *(f32 *)(state + 0x130) = ((ActorScriptState *)state)->actionMovementScale;
-    duration = gMotionDurations[*(s16 *)(state + 0xFC)];
+    duration = gMotionDurations[((ActorScriptState *)state)->motionId];
     *(f32 *)(state + 0x134) = duration;
     *(f32 *)(state + 0x138) = duration;
-    base = motionCacheReadBlocking(&gMotionRomCache, *(s16 *)(state + 0xFC));
-    entry = (s32 *)(gMotionTrackTableOffsets[*(s16 *)(state + 0xFC)] + base);
-    *(f32 *)(state + 8) = *(f32 *)(base + gMotionArchiveOffsets[*(s16 *)(state + 0xFC)]) * *(f32 *)(object + 4);
+    base = motionCacheReadBlocking(&gMotionRomCache, ((ActorScriptState *)state)->motionId);
+    entry = (s32 *)(gMotionTrackTableOffsets[((ActorScriptState *)state)->motionId] + base);
+    *(f32 *)(state + 8) = *(f32 *)(base + gMotionArchiveOffsets[((ActorScriptState *)state)->motionId]) * *(f32 *)(object + 4);
     *(f32 *)(state + 4) = *(f32 *)(state + 8);
     while (entry[0] > 0) {
         if (entry[0] > 0 && entry[0] < 0x26) {
@@ -326,15 +326,15 @@ void motionStartPoseTransition(u8 *object) {
     f32 transformTime = 0.0f;
 
     state = *(u8 **)(object + 0x54);
-    motionCacheRead(&gMotionRomCache, *(s16 *)(state + 0xFC), &base);
-    entry = (Pair8 *)(gMotionTrackTableOffsets[*(s16 *)(state + 0xFC)] + base);
+    motionCacheRead(&gMotionRomCache, ((ActorScriptState *)state)->motionId, &base);
+    entry = (Pair8 *)(gMotionTrackTableOffsets[((ActorScriptState *)state)->motionId] + base);
     duration = ((ActorScriptState *)state)->actionMovementScale;
     *(f32 *)(state + 0x134) = duration;
     *(f32 *)(state + 0x138) = duration;
     *(f32 *)(state + 0x130) = blendWeight;
     motionSetPlaybackMode(object, 0);
-    motionCacheReadBlocking(&gMotionRomCache, *(s16 *)(state + 0xFC));
-    *(f32 *)(state + 8) = *(f32 *)(base + gMotionArchiveOffsets[*(s16 *)(state + 0xFC)]) * *(f32 *)(object + 4);
+    motionCacheReadBlocking(&gMotionRomCache, ((ActorScriptState *)state)->motionId);
+    *(f32 *)(state + 8) = *(f32 *)(base + gMotionArchiveOffsets[((ActorScriptState *)state)->motionId]) * *(f32 *)(object + 4);
     while (entry->a > 0) {
         if (entry->a > 0 && entry->a < rootKindLimit) {
             *(s16 *)(state + 0x11A) = rotationMode;
@@ -361,8 +361,8 @@ void motionStartPoseTransition(u8 *object) {
         }
         entry++;
     }
-    TRACE("motionNum:%d\n", *(s16 *)(state + 0xFC));
-    TRACE("  %s\n", *(char **)(state + 0xF0));
+    TRACE("motionNum:%d\n", ((ActorScriptState *)state)->motionId);
+    TRACE("  %s\n", ((ActorScriptState *)state)->actionName);
     TRACE("bias:%p\n", base);
     TRACE("fcvNode:%p\n", entry);
 }
@@ -502,14 +502,14 @@ void actionConfigurePoseTransition(u8 *state, s32 nextAction, f32 duration) {
     } else {
         var_v0 = (u8 *)&((Rec2C *)gActionDefinitions)[nextAction];
     }
-    *(s32 *)(state + 0xEC) = -2 - nextAction;
-    *(char **)(state + 0xF0) = "\xCA\xE4\xB4\xD6"; /* EUC-JP "interpolation" */
-    TRACE("_setInterAct:  next-motion:%s  next-action:%s\n", *(char **)(var_v0 + 4), *(char **)(state + 0xF0));
-    *(f32 *)(state + 0xF4) = *(f32 *)(var_v0 + 8);
-    *(s32 *)(state + 0xF8) = (*(s32 *)(var_v0 + 0xC) & 0x20100000) | 0x04010003;
-    *(s16 *)(state + 0xFC) = *(s16 *)(var_v0 + 0x10);
+    ((ActorScriptState *)state)->actionId = -2 - nextAction;
+    ((ActorScriptState *)state)->actionName = "\xCA\xE4\xB4\xD6"; /* EUC-JP "interpolation" */
+    TRACE("_setInterAct:  next-motion:%s  next-action:%s\n", *(char **)(var_v0 + 4), ((ActorScriptState *)state)->actionName);
+    ((ActorScriptState *)state)->actionDuration = ((ActionDefinition *)var_v0)->duration;
+    ((ActorScriptState *)state)->actionAttributes = (((ActionDefinition *)var_v0)->attributes & 0x20100000) | 0x04010003;
+    ((ActorScriptState *)state)->motionId = ((ActionDefinition *)var_v0)->motionId;
     ((ActorScriptState *)state)->previousPoseId = ((ActorScriptState *)state)->currentPoseId;
-    ((ActorScriptState *)state)->currentPoseId = var_v0[0x12];
+    ((ActorScriptState *)state)->currentPoseId = ((ActionDefinition *)var_v0)->initialPoseId;
     ((ActorScriptState *)state)->continuationAction = nextAction;
     ((ActorScriptState *)state)->actionInitializer = NULL;
     *(s32 *)(state + 0x10C) = 0;
@@ -1043,8 +1043,8 @@ loop_1:
     } else {
         continuationRecord = gActionDefinitions + (continuationId * 0x2C);
     }
-    if ((continuationRecord != NULL) && (*(s32 *)(continuationRecord + 0xC) & 8)) {
-        ((ActorScriptState *)actionState)->continuationAction = *(s16 *)(continuationRecord + 0x14);
+    if ((continuationRecord != NULL) && (((ActionDefinition *)continuationRecord)->attributes & 8)) {
+        ((ActorScriptState *)actionState)->continuationAction = ((ActionDefinition *)continuationRecord)->continuationAction;
         TRACE("next:%s\n", actionGetName(((ActorScriptState *)actionState)->continuationAction));
         goto loop_1;
     }
@@ -1058,9 +1058,9 @@ void actionValidateTableIndices(void) {
     u8 *p;
 
     for (i = 0, p = gActionDefinitions; i < 0x14A; i++, p += 0x2C) {
-        if (*(s32 *)p != i) {
-            TRACE("Invalid action table.\n actIdx(%d) != %d\n", i, *(s32 *)p);
-            TRACE(" action:%s\n", *(char **)(p + 4));
+        if (((ActionDefinition *)p)->id != i) {
+            TRACE("Invalid action table.\n actIdx(%d) != %d\n", i, ((ActionDefinition *)p)->id);
+            TRACE(" action:%s\n", ((ActionDefinition *)p)->name);
         }
     }
 }

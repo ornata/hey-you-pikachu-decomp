@@ -8,13 +8,9 @@
 #include "action_script_types.h"
 #include "actor_action_cue.h"
 #include "actor_action_callbacks.h"
+#include "action_definition_types.h"
 #include "direction_animation_types.h"
 #include "matrix_types.h"
-
-/// Initialize a selected action for an actor.
-/// \param actor Actor whose selected action is initialized.
-/// \returns Zero to accept the selected action, or nonzero to select its continuation immediately.
-typedef s32 (*ActorActionInitializer)(u8 *actor);
 
 /// Recovered prefix of actor state used by script-message consumers.
 /// \ingroup ActorScriptVm
@@ -36,7 +32,8 @@ typedef struct ActorScriptState {
     u8 environmentColor[4]; ///< Model environment red, green, blue and alpha components.
     u8 targetEnvironmentColor[4]; ///< Requested model environment RGBA components.
     f32 environmentColorTimeRemaining; ///< Seconds remaining in the environment-color transition.
-    u8 unknown0EC[8];
+    s32 actionId; ///< Selected action identifier; negative values identify synthetic transitions.
+    char *actionName; ///< Borrowed display/debug name of the selected action.
     f32 actionDuration;   ///< Duration supplied by the selected action definition.
     s32 actionAttributes; ///< Behavior flags supplied by the selected action.
     s16 motionId;         ///< Selected motion-data identifier.
@@ -177,6 +174,8 @@ ACTOR_SCRIPT_OFFSET_CHECK(ActorStateEnvironmentColorTimeOffsetCheck, ActorScript
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePlaybackModeOffsetCheck, ActorScriptState, playbackMode, 0x11A);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePendingActionOffsetCheck, ActorScriptState, pendingAction, 0x120);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateMovementScaleOffsetCheck, ActorScriptState, movementScale, 0x130);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorSelectedActionIdOffsetCheck, ActorScriptState, actionId, 0xEC);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorSelectedActionNameOffsetCheck, ActorScriptState, actionName, 0xF0);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorActionInitializerOffsetCheck, ActorScriptState, actionInitializer, 0x108);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorActionMovementScaleOffsetCheck, ActorScriptState, actionMovementScale, 0x104);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorPrimaryCueProgramOffsetCheck, ActorScriptState, primaryCueProgram, 0x110);
