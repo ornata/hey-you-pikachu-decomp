@@ -1,3 +1,4 @@
+#include "scheduler.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "scheduler_types.h"
@@ -63,19 +64,19 @@ void schedulerInitialize(GameScheduler *s, s32 id, s32 priority, u8 mode, u8 ret
 }
 
 /// Get the queue used to submit audio tasks.
-/// \param schedulerAddress RAM address of initialized scheduler state.
-/// \returns Borrowed RAM address of the scheduler's audio command queue.
+/// \param schedulerAddress Initialized scheduler whose command queue is borrowed.
+/// \returns Borrowed audio command queue, valid for the scheduler lifetime.
 /// \note Original decompilation identifier: \c func_8003FE34 (0x8003FE34).
-s32 schedulerGetAudioCommandQueue(s32 schedulerAddress) {
-    return schedulerAddress + 4;
+OSMesgQueue *schedulerGetAudioCommandQueue(GameScheduler *schedulerAddress) {
+    return &schedulerAddress->audioCommand.queue;
 }
 
 /// Get the queue used to submit graphics tasks.
-/// \param schedulerAddress RAM address of initialized scheduler state.
-/// \returns Borrowed RAM address of the scheduler's graphics command queue.
+/// \param schedulerAddress Initialized scheduler whose command queue is borrowed.
+/// \returns Borrowed graphics command queue, valid for the scheduler lifetime.
 /// \note Original decompilation identifier: \c func_8003FE3C (0x8003FE3C).
-s32 schedulerGetGraphicsCommandQueue(s32 schedulerAddress) {
-    return schedulerAddress + 0x3C;
+OSMesgQueue *schedulerGetGraphicsCommandQueue(GameScheduler *schedulerAddress) {
+    return &schedulerAddress->graphicsCommand.queue;
 }
 
 /// Count of messages consumed by the display-event thread, including pre-NMI notifications.
@@ -110,17 +111,17 @@ void schedulerRetraceThread(void *scheduler) {
 /// Register a client to receive scheduler event notifications.
 /// \param scheduler Scheduler that will notify the client.
 /// \param client Writable client registration, kept valid until it is removed.
-/// \param queueAddress RAM address of an initialized client message queue,
+/// \param queueAddress Borrowed initialized client message queue,
 /// kept valid until the registration is removed.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8003FF3C (0x8003FF3C).
-void schedulerAddClient(u8 *scheduler, u8 *client, s32 queueAddress) {
+void schedulerAddClient(GameScheduler *scheduler, SchedulerClient *client, OSMesgQueue *queueAddress) {
     u32 previousInterruptMask;
 
     previousInterruptMask = osSetIntMask(1U);
-    ((SchedulerClient *)client)->queue = (OSMesgQueue *)queueAddress;
-    ((SchedulerClient *)client)->next = ((GameScheduler *)scheduler)->clients;
-    ((GameScheduler *)scheduler)->clients = (SchedulerClient *)client;
+    client->queue = queueAddress;
+    client->next = scheduler->clients;
+    scheduler->clients = client;
     osSetIntMask(previousInterruptMask);
 }
 
@@ -129,23 +130,23 @@ void schedulerAddClient(u8 *scheduler, u8 *client, s32 queueAddress) {
 /// \param client Client registration to remove.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8003FF8C (0x8003FF8C).
-void schedulerRemoveClient(u8 *scheduler, void **client) {
-    void **p = *(void ***)(scheduler + 0x668);
-    void **prev = NULL;
+void schedulerRemoveClient(GameScheduler *scheduler, SchedulerClient *client) {
+    SchedulerClient *p = scheduler->clients;
+    SchedulerClient *prev = NULL;
     u32 mask;
 
     mask = osSetIntMask(1);
     while (p != NULL) {
         if (p == client) {
             if (prev != NULL) {
-                *prev = *client;
+                prev->next = client->next;
             } else {
-                *(void **)(scheduler + 0x668) = *client;
+                scheduler->clients = client->next;
             }
             break;
         }
         prev = p;
-        p = (void **)*p;
+        p = p->next;
     }
     osSetIntMask(mask);
 }
@@ -264,13 +265,13 @@ loop_1:
 /// \note Original decompilation identifier: \c func_80040374 (0x80040374).
 void schedulerWaitForFramebuffer(GameScheduler *scheduler, SchedulerTask *task) {
     OSMesg msg = NULL;
-    void *link[2];
+    SchedulerClient link;
     void *buf = task->framebuffer;
 
     while (osViGetCurrentFramebuffer() == buf || osViGetNextFramebuffer() == buf) {
-        schedulerAddClient((u8 *)scheduler, (u8 *)link, (s32)&scheduler->reply.queue);
+        schedulerAddClient(scheduler, &link, &scheduler->reply.queue);
         osRecvMesg(&scheduler->reply.queue, &msg, OS_MESG_BLOCK);
-        schedulerRemoveClient((u8 *)scheduler, link);
+        schedulerRemoveClient(scheduler, &link);
     }
 }
 

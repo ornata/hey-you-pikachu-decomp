@@ -169,8 +169,6 @@ void controllerThreadMain(void *);
 extern OSThread gControllerThread;
 /// Controller scheduler-client registration; its address also marks the controller-thread stack top.
 /// \note Original identifier: \c D_800ACE70 (0x800ACE70).
-extern u8 gControllerSchedulerClient[];
-void schedulerAddClient(s32, void *, s32);
 OSMesgQueue *controllerGetCommandQueue(void);
 /// Primary camera additional overlay blend target RGBA color.
 /// \note Original identifier: \c D_800ABDB8 (0x800ABDB8).
@@ -867,9 +865,10 @@ extern Gfx D_100C7E0[];
 extern s32 gRuntimeGameMode;
 /// Scheduler event queue consumed by the runtime thread.
 /// \note Original identifier: \c D_800AE4C0 (0x800AE4C0).
+extern OSMesgQueue gRuntimeEventQueue;
 /// Shared ROM cache owning loaded texture images, palettes and pending reads.
 /// \note Original identifier: \c D_800B67B0 (0x800B67B0).
-extern u8 gTextureRomCache[], gRuntimeEventQueue[];
+extern u8 gTextureRomCache[];
 /// Start of the current graphics command-list submission.
 /// \note Original identifier: \c D_800ABDD4 (0x800ABDD4).
 extern Gfx *gRenderDisplayListStart;
@@ -957,7 +956,7 @@ void renderDrawCurrentMode(void) {
     }
     fontCacheReleaseUses();
     romCacheReleaseUses(gTextureRomCache);
-    graphicsTaskSubmit(0, 0, &gRenderDisplayListStart, &gRenderDisplayListCursor, gRuntimeEventQueue);
+    graphicsTaskSubmit(0, 0, &gRenderDisplayListStart, &gRenderDisplayListCursor, &gRuntimeEventQueue);
 }
 
 /// Identifier of the currently active runtime program.
@@ -1014,7 +1013,7 @@ void renderBeginFrame(void) {
 extern s32 gRenderOptionalFrameHookEnabled;
 /// Scheduler event queue consumed by the runtime thread.
 /// \note Original identifier: \c D_800AE4C0 (0x800AE4C0).
-extern u8 gRuntimeEventQueue[];
+extern OSMesgQueue gRuntimeEventQueue;
 /// Draw the frame’s right and bottom border and submit the finishing graphics task.
 /// \returns Nothing; requires an active display list and initialized rendering resources.
 void renderSubmitFrameBorder(void) {
@@ -1030,7 +1029,7 @@ void renderSubmitFrameBorder(void) {
     gDPSetScissor(gRenderDisplayListCursor++, G_SC_NON_INTERLACE, 0, 0, 319, 239);
     gDPFillRectangle(gRenderDisplayListCursor++, 299, 20, 300, 220);
     gDPFillRectangle(gRenderDisplayListCursor++, 20, 219, 300, 220);
-    graphicsTaskSubmit(1, 64, &gRenderDisplayListStart, &gRenderDisplayListCursor, gRuntimeEventQueue);
+    graphicsTaskSubmit(1, 64, &gRenderDisplayListStart, &gRenderDisplayListCursor, &gRuntimeEventQueue);
 }
 
 typedef struct CullRect {

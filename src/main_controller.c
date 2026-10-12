@@ -1,3 +1,4 @@
+#include "scheduler.h"
 #include "heap_tail.h"
 /* Controller startup thread and event handlers, ROM 0x3250..0x3FD0.
  * Separate original object: pass-1 startup strings precede the event jump table.
@@ -122,8 +123,7 @@ void controllerThreadMain(void *);
 extern OSThread gControllerThread;
 /// Controller scheduler-client registration; its address also marks the controller-thread stack top.
 /// \note Original identifier: \c D_800ACE70 (0x800ACE70).
-extern u8 gControllerSchedulerClient[];
-void schedulerAddClient(s32, void *, s32);
+extern SchedulerClient gControllerSchedulerClient;
 OSMesgQueue *controllerGetCommandQueue(void);
 /// Primary camera additional overlay blend target RGBA color.
 /// \note Original identifier: \c D_800ABDB8 (0x800ABDB8).
@@ -250,11 +250,9 @@ extern Gfx D_100C7E0[];
 /// Current gameplay, menu or transition mode.
 /// \note Original identifier: \c D_800AE504 (0x800AE504).
 extern s32 gRuntimeGameMode;
-/// Scheduler event queue consumed by the runtime thread.
-/// \note Original identifier: \c D_800AE4C0 (0x800AE4C0).
 /// Shared ROM cache owning loaded texture images, palettes and pending reads.
 /// \note Original identifier: \c D_800B67B0 (0x800B67B0).
-extern u8 gTextureRomCache[], gRuntimeEventQueue[];
+extern u8 gTextureRomCache[];
 /// Start of the current graphics command-list submission.
 /// \note Original identifier: \c D_800ABDD4 (0x800ABDD4).
 extern Gfx *gRenderDisplayListStart;
@@ -283,9 +281,6 @@ void renderPrepareDisplayList(void);
 /// Whether final frame submission invokes the optional rendering hook.
 /// \note Original identifier: \c D_80088F18 (0x80088F18).
 extern s32 gRenderOptionalFrameHookEnabled;
-/// Scheduler event queue consumed by the runtime thread.
-/// \note Original identifier: \c D_800AE4C0 (0x800AE4C0).
-extern u8 gRuntimeEventQueue[];
 
 typedef struct CullRect {
     f32 minV;
@@ -378,11 +373,11 @@ typedef struct MainThreadArgs {
 void controllerStartThread(s32 scheduler, s32 channelCount, s32 microphonePortMask) {
     MainThreadArgs args;
 
-    schedulerAddClient(scheduler, gControllerSchedulerClient, (s32)controllerGetCommandQueue());
+    schedulerAddClient((GameScheduler *)scheduler, &gControllerSchedulerClient, controllerGetCommandQueue());
     args.ready = 0;
     args.arg1 = channelCount;
     args.arg2 = microphonePortMask;
-    osCreateThread(&gControllerThread, 0x28, controllerThreadMain, &args, gControllerSchedulerClient, 0x3C);
+    osCreateThread(&gControllerThread, 0x28, controllerThreadMain, &args, &gControllerSchedulerClient, 0x3C);
     osStartThread(&gControllerThread);
     while (args.ready == 0) {
         osYieldThread();

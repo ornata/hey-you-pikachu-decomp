@@ -1,3 +1,4 @@
+#include "scheduler.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 void memoryFillBytes(u8 *p, s32 n, u8 c);
@@ -147,7 +148,6 @@ void audioWorkerStopAndWait(void) {
     osRecvMesg(&gAudioWorkerStopQueue, NULL, 1);
 }
 
-s32 schedulerGetAudioCommandQueue(s32);
 void audioWorkerThreadMain(void *);
 /// Shared audio worker storage containing its stack, thread and rendering state.
 /// \note Original identifier: \c D_800F8F30 (0x800F8F30).
@@ -196,7 +196,7 @@ void audioWorkerStart(s32 scheduler, ALHeap *heap, OSId id, OSPri pri, s32 rende
     *(s32 *)(gAudioWorkerStorage + 0x2210) = ucode;
     *(s32 *)(gAudioWorkerStorage + 0x2214) = ucodeData;
     *(void **)(gAudioWorkerStorage + 0x221C) = alHeapDBAlloc(NULL, 0, heap, 1, maxCommands * 8);
-    *(s32 *)(gAudioWorkerStorage + 0x2220) = schedulerGetAudioCommandQueue(scheduler);
+    *(OSMesgQueue **)(gAudioWorkerStorage + 0x2220) = schedulerGetAudioCommandQueue((GameScheduler *)scheduler);
     for (i = 0; i < 2; i++) {
         ((void **)(gAudioWorkerStorage + 0x2224))[i] = alHeapDBAlloc(NULL, 0, heap, 1, samples * 4);
     }

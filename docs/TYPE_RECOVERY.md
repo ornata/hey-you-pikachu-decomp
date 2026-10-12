@@ -737,3 +737,21 @@ traversal now uses `SchedulerClient *`; framebuffer waiting uses typed scheduler
 and task parameters. The existing public client registration and queue-access
 interfaces still need their separate producer/consumer audit. All retained
 changes pass comparison against the preserved 483-object baseline.
+
+### Shared scheduler initialization and event registrations
+
+`scheduler.h` shares scheduler initialization, typed audio/graphics submission
+queues, client registration/removal and reset queries across definitions and
+all declaring callers. Registrations use `SchedulerClient *` and retain their
+queues until removal; pending notifications remain queued after removal.
+Ghidra at `0x8003FF8C` confirms the client link at offset zero and the scheduler
+list at `0x668`. Framebuffer waiting now uses a real temporary client record.
+
+Runtime event storage is an `OSMesgQueue`, its registration a `SchedulerClient`,
+and its borrowed graphics submission queue an `OSMesgQueue *`, preserving BSS
+layout and symbols. Controller registration uses the same shared record while
+retaining its stack-top symbol identity. Audio worker storage retains a queue
+pointer at its established offset. Legacy runtime/audio entry points retain
+explicit integer-address conversions at their existing boundaries; the graphics
+initializer interface still needs its producer/consumer audit. Every affected
+source unit passes strict comparison against the preserved 483-object baseline.

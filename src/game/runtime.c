@@ -1,3 +1,4 @@
+#include "scheduler.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "audio_cue.h"
@@ -29,13 +30,13 @@
  * after D_800B6798 as in the ROM. */
 /// Scheduler event queue consumed by the runtime thread.
 /// \note Original identifier: \c D_800AE4C0 (0x800AE4C0).
-u8 gRuntimeEventQueue[0x18];
+OSMesgQueue gRuntimeEventQueue;
 /// Runtime thread registration in the scheduler client list.
 /// \note Original identifier: \c D_800AE4D8 (0x800AE4D8).
-u8 gRuntimeSchedulerClient[0x8];
+SchedulerClient gRuntimeSchedulerClient;
 /// Borrowed scheduler queue address used to submit graphics tasks.
 /// \note Original identifier: \c D_800AE4E0 (0x800AE4E0).
-s32 gRuntimeGraphicsCommandQueue;
+OSMesgQueue *gRuntimeGraphicsCommandQueue;
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 f32 gRuntimeFrameSeconds;
@@ -227,7 +228,6 @@ void randomSeedFromSystem();        /* extern */
 s32 progressAddValue(s32, s32);
 u64 runtimeGetElapsedMilliseconds(void);
 void runtimeAccumulatePlayTime(void);
-s32 schedulerIsResetPending(void);
 void runtimeShutdownAndHalt(void);
 void runtimeRequestGameModeChange(s32);
 void runtimeCheckResetCheckpoint(const char *, s32);
@@ -280,7 +280,7 @@ void runtimeOsInfoReportNoOp(void) {
     TRACE("none\n");
     TRACE("4K\n");
     TRACE("16K\n");
-    TRACE("unknown(%d)\n", osEepromProbe((OSMesgQueue *)gRuntimeEventQueue));
+    TRACE("unknown(%d)\n", osEepromProbe(&gRuntimeEventQueue));
     TRACE("\n");
 }
 
@@ -292,7 +292,6 @@ void playerResetProfile(void);
 void toolboxReset(void);
 void eyeCatchInitialize(void);
 void videoConfigureMode(OSViMode, s32, s32, s32);
-void schedulerInitialize(s32, s32, s32, u8, s32);
 void faultStartHandler(s32, s32);
 /// Canonical SDK video-interface mode table indexed by runtime and scheduler mode selection.
 /// \note Original identifier: \c D_8009DCB0 (0x8009DCB0).
@@ -326,7 +325,7 @@ void runtimeInitializePlatform(s32 schedulerAddress) {
         mode = 0;
         break;
     }
-    schedulerInitialize(schedulerAddress, 100, 100, mode, 1);
+    schedulerInitialize((GameScheduler *)schedulerAddress, 100, 100, mode, 1);
     audioInitialize(schedulerAddress, 50, 50, 0x7D00);
     videoConfigureMode(osViModeTable[mode], 320, 240, 16);
     osViSetMode(&osViModeTable[mode]);
@@ -888,7 +887,7 @@ void runtimeShutdownAndHalt(void) {
     audioShutdown();
     if (gRuntimePendingGraphicsTasks != 0) {
         do {
-            osRecvMesg((OSMesgQueue *)gRuntimeEventQueue, (OSMesg *)&message, OS_MESG_BLOCK);
+            osRecvMesg(&gRuntimeEventQueue, (OSMesg *)&message, OS_MESG_BLOCK);
             switch (*message) {
             case 1:
             case 3:
@@ -903,7 +902,7 @@ void runtimeShutdownAndHalt(void) {
     for (;;) {
         if (rspTryResetProgramCounter() == 0)
             break;
-        osRecvMesg((OSMesgQueue *)gRuntimeEventQueue, (OSMesg *)&message, OS_MESG_BLOCK);
+        osRecvMesg(&gRuntimeEventQueue, (OSMesg *)&message, OS_MESG_BLOCK);
     }
     for (;;) {
     }
@@ -948,7 +947,7 @@ void runtimeRunProgramEventLoop(void) {
     static s16 *message = NULL;
     startupFrames = 1;
     for (;;) {
-        osRecvMesg((OSMesgQueue *)gRuntimeEventQueue, (OSMesg *)&message, OS_MESG_BLOCK);
+        osRecvMesg(&gRuntimeEventQueue, (OSMesg *)&message, OS_MESG_BLOCK);
         switch (*message) {
         case 1:
             if (gRuntimePendingGraphicsTasks == 0) {
@@ -1026,8 +1025,6 @@ void messageBarResetAndReleaseImages(void);
 void heapInitializeGlobal(s32);
 s32 graphicsTaskInitialize(s32, void *, void *, s32, s32);
 void textDrawInitialize(s32, s32, s32);
-s32 schedulerGetGraphicsCommandQueue(s32);
-void schedulerAddClient(void *, void *, void *);
 void *areaLoadNextOverlay(void);
 void messengerResetTrackedObject(void);
 extern u8 D_B140C0[];
@@ -1041,9 +1038,9 @@ extern u8 D_B140C0[];
 /// \note Original decompilation identifier: \c func_8000BD70 (0x8000BD70).
 void runtimeMainThreadEntry(void *scheduler) {
     runtimeInitializePlatform((s32)scheduler);
-    osCreateMesgQueue((OSMesgQueue *)gRuntimeEventQueue, (OSMesg *)gRuntimeThreadStorage, 8);
+    osCreateMesgQueue(&gRuntimeEventQueue, (OSMesg *)gRuntimeThreadStorage, 8);
     schedulerAddClient(scheduler, &gRuntimeSchedulerClient, &gRuntimeEventQueue);
-    gRuntimeGraphicsCommandQueue = schedulerGetGraphicsCommandQueue((s32)scheduler);
+    gRuntimeGraphicsCommandQueue = schedulerGetGraphicsCommandQueue(scheduler);
     for (;;) {
         if (gRuntimeCurrentProgram == 0) {
             runtimeCheckResetCheckpoint("pre-overlay", 0);
@@ -1068,7 +1065,7 @@ void runtimeMainThreadEntry(void *scheduler) {
         actionInitializeTransitionMap();
         messengerResetTrackedObject();
         runtimeCheckResetCheckpoint("aft-initMessengerSystem", 1);
-        graphicsTaskInitialize(gRuntimeGraphicsCommandQueue, gColorFramebuffer0, gColorFramebuffer1, 0xC, 0x1000);
+        graphicsTaskInitialize((s32)gRuntimeGraphicsCommandQueue, gColorFramebuffer0, gColorFramebuffer1, 0xC, 0x1000);
         runtimeInitializeCurrentProgram();
         objectPrepareDistributedKindSearches(0, 0xA);
         objectPrepareDistributedKindSearches(0xB3, 0xA);
