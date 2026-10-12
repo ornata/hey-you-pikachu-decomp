@@ -2227,3 +2227,16 @@ clocks, cursors and retained primary program at 0x144 through 0x154. Checked
 offsets and shared start/update/stop consumers establish borrowing and repeated
 program selection. Every changed unit and header dependent preserves all 483
 objects and strict relocation addends.
+
+### Selected action cue resources and scale/duration word
+
+Actor state names borrowed primary/secondary cue programs at 0x110/0x114
+and the action scale-or-transition-duration word at 0x104, with checked offsets.
+Selection, transition setup, fallback preparation and motion startup share
+these fields. Ghidra 0x8000EC7C confirms pending-to-selected request/kind
+transfer and primary-program fallback. The fallback resource and local program
+pointer now use ActorActionCueCommand directly; the preparation helper accepts
+that pointer rather than an integer address. The initializer word at 0x108
+remains unresolved as an interface: its legacy no-argument callback convention
+requires a separate caller/ABI audit. All header dependents and the source
+unit preserve all 483 objects and strict relocation addends.

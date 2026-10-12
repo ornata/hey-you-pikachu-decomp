@@ -197,7 +197,7 @@ void motionStartTrackPlayback(u8 *object) {
     TRACE("motionNum:%d\n", *(s16 *)(state + 0xFC));
     TRACE("  %s\n", *(char **)(state + 0xF0));
     motionSetPlaybackMode(object, 0);
-    *(f32 *)(state + 0x130) = *(f32 *)(state + 0x104);
+    *(f32 *)(state + 0x130) = ((ActorScriptState *)state)->actionMovementScale;
     duration = gMotionDurations[*(s16 *)(state + 0xFC)];
     *(f32 *)(state + 0x134) = duration;
     *(f32 *)(state + 0x138) = duration;
@@ -328,7 +328,7 @@ void motionStartPoseTransition(u8 *object) {
     state = *(u8 **)(object + 0x54);
     motionCacheRead(&gMotionRomCache, *(s16 *)(state + 0xFC), &base);
     entry = (Pair8 *)(gMotionTrackTableOffsets[*(s16 *)(state + 0xFC)] + base);
-    duration = *(f32 *)(state + 0x104);
+    duration = ((ActorScriptState *)state)->actionMovementScale;
     *(f32 *)(state + 0x134) = duration;
     *(f32 *)(state + 0x138) = duration;
     *(f32 *)(state + 0x130) = blendWeight;
@@ -392,7 +392,7 @@ void motionStartTimedPlayback(u8 *object) {
 
     motionState = *(u8 **)(object + 0x54);
     motionSetPlaybackMode(object, 0);
-    duration = *(f32 *)(motionState + 0x104);
+    duration = ((ActorScriptState *)motionState)->actionMovementScale;
     TRACE("interTime:%f\n", duration);
     *(s16 *)(motionState + 0x11A) = 2;
     *(f32 *)(motionState + 0x130) = 1.0f;
@@ -439,10 +439,10 @@ void actionStartPlayback(u8 *object) {
     *(s16 *)(v + 0x118) = 0;
     ((ActorScriptState *)v)->secondaryCueClock = 0.0f;
     ((ActorScriptState *)v)->secondaryCueCommand =
-        actorSelectActionScript(object, *(ActorActionCueCommand **)(v + 0x114), 0);
+        actorSelectActionScript(object, ((ActorScriptState *)v)->secondaryCueProgram, 0);
     if (*(s16 *)(v + 0x11C) == 0) {
         *(s16 *)(v + 0x11C) = 1;
-        anim = actorSelectActionScript(object, *(ActorActionCueCommand **)(v + 0x110), 1);
+        anim = actorSelectActionScript(object, ((ActorScriptState *)v)->primaryCueProgram, 1);
         if (anim != 0 && (anim != ((ActorScriptState *)v)->lastPrimaryCueProgram ||
                           (1.2f < ((ActorScriptState *)v)->primaryCueClock && !(*(s32 *)(v + 0xF8) & 8)))) {
             TRACE("lastAfcKey:%p\n    afcKey:%p\n", ((ActorScriptState *)v)->lastPrimaryCueProgram, anim);
@@ -513,9 +513,9 @@ void actionConfigurePoseTransition(u8 *state, s32 nextAction, f32 duration) {
     ((ActorScriptState *)state)->continuationAction = nextAction;
     *(s32 *)(state + 0x108) = 0;
     *(s32 *)(state + 0x10C) = 0;
-    *(f32 *)(state + 0x104) = duration;
-    *(s32 *)(state + 0x110) = 0;
-    *(s32 *)(state + 0x114) = 0;
+    ((ActorScriptState *)state)->actionMovementScale = duration;
+    ((ActorScriptState *)state)->primaryCueProgram = 0;
+    ((ActorScriptState *)state)->secondaryCueProgram = 0;
 }
 
 /// Load an indexed action record and configure its continuation.
@@ -537,10 +537,10 @@ s32 actionLoadRecordByIndex(u8 *state, s32 actionId, s32 nextAction) {
     }
     *(Rec2CW *)(state + 0xEC) = *a;
     ((ActorScriptState *)state)->continuationAction = nextAction;
-    if ((*(u32 *)(state + 0xF8) & 7) == 1 && ((*(u32 *)(state + 0xF8) & 0x20000) || *(s32 *)(state + 0x110) == 0)) {
-        *(s32 *)(state + 0x110) = 0;
-        *(s32 *)(state + 0x114) = 0;
-        *(f32 *)(state + 0x104) = 2.0f;
+    if ((*(u32 *)(state + 0xF8) & 7) == 1 && ((*(u32 *)(state + 0xF8) & 0x20000) || ((ActorScriptState *)state)->primaryCueProgram == 0)) {
+        ((ActorScriptState *)state)->primaryCueProgram = 0;
+        ((ActorScriptState *)state)->secondaryCueProgram = 0;
+        ((ActorScriptState *)state)->actionMovementScale = 2.0f;
     }
     *(u32 *)(state + 0xF8) &= 0xF9FFFFF7;
     return 1;
@@ -551,15 +551,15 @@ s32 actionLoadRecordByIndex(u8 *state, s32 actionId, s32 nextAction) {
 /// \param sequence Borrowed default sequence address used when the action supplies no sequence; it must remain valid throughout playback.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000EC7C (0x8000EC7C).
-void actionPrepareSelectedContext(u8 *state, s32 sequence) {
+void actionPrepareSelectedContext(u8 *state, ActorActionCueCommand *sequence) {
     *(s16 *)(state + 0x11E) = 0;
     *(s16 *)(state + 0x120) = -1;
     *(s32 *)(state + 0x128) = *(s32 *)(state + 0x12C);
     *(s32 *)(state + 0x12C) = 0;
     ((ActorScriptState *)state)->selectedActionKind = ((ActorScriptState *)state)->pendingActionKind;
     *(s16 *)(state + 0x140) = 0;
-    if (*(s32 *)(state + 0x110) == 0) {
-        *(s32 *)(state + 0x110) = sequence;
+    if (((ActorScriptState *)state)->primaryCueProgram == 0) {
+        ((ActorScriptState *)state)->primaryCueProgram = sequence;
     }
 }
 
@@ -577,14 +577,14 @@ extern WordMap gActionPoseTransitionMap;
 
 /// Fallback command sequence used when an action has no configured sequence.
 /// \note Original identifier: \c D_80091D18 (0x80091D18).
-extern u8 gActionDefaultCommandSequence[];
+extern ActorActionCueCommand gActionDefaultCommandSequence[];
 /// Select and initialize the next compatible action or pose transition.
 /// \param object Actor with initialized action state and transition map; initializer callbacks must eventually accept an action, and fallback action identifiers must be valid.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000ECB4 (0x8000ECB4).
 void actionResolveNextTransition(u8 *object) {
     u8 *state;
-    u8 *sequence;
+    ActorActionCueCommand *sequence;
     f32 blendTime;
     s32 nextIndex;
     s32 prevIndex;
@@ -620,12 +620,12 @@ void actionResolveNextTransition(u8 *object) {
         if (next == NULL || (previous != NULL && (*(s32 *)(previous + 0xC) & 0x04000000))) {
             *(Rec2CW *)(state + 0xEC) = *(Rec2CW *)previous;
         } else {
-            sequence = *(u8 **)(next + 0x24);
+            sequence = *(ActorActionCueCommand **)(next + 0x24);
             if (sequence == NULL) {
                 sequence = gActionDefaultCommandSequence;
             }
             if (actionTryApplyCompatibleRecord(state, next)) {
-                actionPrepareSelectedContext(state, (s32)sequence);
+                actionPrepareSelectedContext(state, sequence);
             } else if ((*(s32 *)(next + 0xC) & 0x02000000) && *(s16 *)(next + 0x14) != -1) {
                 nextIndex = *(s16 *)(next + 0x14);
                 if (nextIndex < 0 || nextIndex >= 0x14A) {
@@ -634,7 +634,7 @@ void actionResolveNextTransition(u8 *object) {
                     next = (u8 *)&((Rec2CW *)gActionDefinitions)[nextIndex];
                 }
                 if (actionTryApplyCompatibleRecord(state, next)) {
-                    actionPrepareSelectedContext(state, (s32)sequence);
+                    actionPrepareSelectedContext(state, sequence);
                 } else {
                     goto find_transition;
                 }
@@ -645,15 +645,15 @@ void actionResolveNextTransition(u8 *object) {
                 animation = transition - 0x100;
                 if (transition == 0xFE) {
                     actionConfigurePoseTransition(state, nextIndex, blendTime);
-                    actionPrepareSelectedContext(state, (s32)sequence);
+                    actionPrepareSelectedContext(state, sequence);
                 } else if (animation == -3) {
                     *(Rec2CW *)(state + 0xEC) = *(Rec2CW *)next;
-                    actionPrepareSelectedContext(state, (s32)sequence);
+                    actionPrepareSelectedContext(state, sequence);
                 } else if (actionLoadRecordByIndex(state, animation, nextIndex)) {
-                    actionPrepareSelectedContext(state, (s32)sequence);
+                    actionPrepareSelectedContext(state, sequence);
                 } else if (previous == NULL) {
                     actionConfigurePoseTransition(state, nextIndex, blendTime);
-                    actionPrepareSelectedContext(state, (s32)sequence);
+                    actionPrepareSelectedContext(state, sequence);
                 } else {
                     *(Rec2CW *)(state + 0xEC) = *(Rec2CW *)previous;
                 }

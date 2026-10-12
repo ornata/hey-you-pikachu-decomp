@@ -37,9 +37,12 @@ typedef struct ActorScriptState {
     u8 previousPoseId; ///< Source pose selector used when composing an action transition.
     u8 currentPoseId; ///< Destination pose selector used for action compatibility and transition lookup.
     s16 continuationAction; ///< Next action identifier; values outside the action table end continuation.
-    u8 unknown102[0xA];
+    u8 unknown102[2];
+    f32 actionMovementScale; ///< Movement scale supplied by an action, or duration supplied by a pose transition.
+    u8 unknown108[4];
     s32 (*actionCallback)(u8 *); ///< Per-frame action callback; one ends playback.
-    u8 unknown110[8];
+    ActorActionCueCommand *primaryCueProgram; ///< Borrowed primary cue program or action-kind selection collection.
+    ActorActionCueCommand *secondaryCueProgram; ///< Borrowed secondary cue program or action-kind selection collection.
     s16 actionStartPending; ///< Nonzero when action playback must start or restart.
     s16 playbackMode;       ///< Zero disables playback; other modes select tracks, time or blending.
     s16 loopCount;          ///< Completed loop count for current playback.
@@ -168,6 +171,9 @@ ACTOR_SCRIPT_OFFSET_CHECK(ActorStateEnvironmentColorTimeOffsetCheck, ActorScript
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePlaybackModeOffsetCheck, ActorScriptState, playbackMode, 0x11A);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePendingActionOffsetCheck, ActorScriptState, pendingAction, 0x120);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateMovementScaleOffsetCheck, ActorScriptState, movementScale, 0x130);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorActionMovementScaleOffsetCheck, ActorScriptState, actionMovementScale, 0x104);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorPrimaryCueProgramOffsetCheck, ActorScriptState, primaryCueProgram, 0x110);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorSecondaryCueProgramOffsetCheck, ActorScriptState, secondaryCueProgram, 0x114);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorSelectedActionKindOffsetCheck, ActorScriptState, selectedActionKind, 0x13E);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorPrimaryCueClockOffsetCheck, ActorScriptState, primaryCueClock, 0x144);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorSecondaryCueClockOffsetCheck, ActorScriptState, secondaryCueClock, 0x148);
