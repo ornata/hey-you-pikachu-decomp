@@ -1,3 +1,4 @@
+#include "audio_spatial.h"
 /* harvested: matched m2c drafts; pending style pass */
 /* Vector, angle and interpolation helpers. The unit ends at randomBelowWithHistory:
  * its .rodata is float literals only, padded to 16 bytes before motion_playback. */

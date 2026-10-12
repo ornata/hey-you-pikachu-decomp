@@ -1,3 +1,4 @@
+#include "audio_spatial.h"
 #include "object_create.h"
 #include "object_lifecycle.h"
 #include "heap_free.h"
@@ -80,7 +81,6 @@ extern s32 gRenderCameraIndex;
 /// Gain applied to the combined spatial volume of an ambient emitter.
 /// \note Original identifier: \c D_800A61E8 (0x800A61E8).
 extern f32 gAmbientAudioMixGain;
-void audioGetPositionVolumeAndPan(f32 *, Mtx, s32 *, s32 *, f32, f32);
 
 /// Determine the volume and stereo pan for an ambient emitter.
 /// \param ext Emitter state with a positive source count and valid source positions.

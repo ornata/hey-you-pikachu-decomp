@@ -1874,3 +1874,15 @@ stop every forgotten handle. `actor_sound.h` supplies the actor-pointer contract
 to the provider and all four caller units, replacing an integer actor declaration
 and integer argument casts. Each source unit preserves all 483 objects and strict
 relocation addends.
+
+### Shared positional-audio evaluation contract
+
+`audio_spatial.h` unifies the floating-point world-position interface and retains
+the SDK matrix's by-value calling convention across the provider and all three
+consumers. Ghidra 0x8000C944 confirms matrix copying and output writes, while source
+and matching objects establish the aggregate ABI omitted by its inferred signature.
+The contract records nonzero camera-space distance and ordered attenuation bounds.
+Object playback and actor tracked-sound spatialization now use shared world-position
+fields; the actor helper accepts float coordinates directly. Camera record views
+remain private pending a full producer/consumer layout audit. Every changed unit
+preserves all 483 objects and strict relocation addends.

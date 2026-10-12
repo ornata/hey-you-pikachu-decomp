@@ -1,3 +1,4 @@
+#include "audio_spatial.h"
 #include "actor_sound.h"
 #include "actor_color.h"
 #include "color_transition.h"
@@ -111,7 +112,6 @@ extern u32 gRenderCameraIndex;
 /// Identifier of the currently active runtime program.
 /// \note Original identifier: \c D_800AE4F0 (0x800AE4F0).
 extern s32 gRuntimeCurrentProgram;
-void audioGetPositionVolumeAndPan(f32 *, Mtx, s32 *, s32 *, f32, f32);
 void audioSetSoundEffectPan(s32, s32);
 void audioSetSoundEffectVolume(s32, s32);
 
@@ -120,7 +120,7 @@ void audioSetSoundEffectVolume(s32, s32);
 /// \param voices Four tracked playback handles, updated to clear completed sounds.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80014C7C (0x80014C7C).
-void actorUpdateTrackedSoundSpatialization(u8 *position, s32 *voices) {
+void actorUpdateTrackedSoundSpatialization(f32 *position, s32 *voices) {
     s32 i;
     s32 volume;
     s32 pan;
@@ -131,7 +131,7 @@ void actorUpdateTrackedSoundSpatialization(u8 *position, s32 *voices) {
                 if (((CameraVoiceView *)gRenderCameras)[gRenderCameraIndex].matrix == NULL) {
                     continue;
                 }
-                audioGetPositionVolumeAndPan((f32 *)position,
+                audioGetPositionVolumeAndPan(position,
                                              *((CameraVoiceView *)gRenderCameras)[gRenderCameraIndex].matrix, &volume,
                                              &pan, 20.0f, 100.0f);
                 audioSetSoundEffectPan(*voices, pan);
@@ -388,7 +388,7 @@ void actorDrawModelLightingSetup(u8 *actor) {
 void actorUpdateObjectRotationFromState(u8 *);
 s32 actionScriptUpdate(u8 *);
 void actionUpdatePlayback(u8 *);
-void actorUpdateTrackedSoundSpatialization(u8 *, s32 *);
+void actorUpdateTrackedSoundSpatialization(f32 *, s32 *);
 void actorUpdateGroundSlopePitch(u8 *);
 void objectUpdateHierarchyInteractionVisibility(u8 *);
 s32 collisionGridRegisterObject(u8 *);
@@ -405,7 +405,7 @@ void actorUpdateModel(u8 *actor) {
     collisionGridUnregisterObject(actor, obj + 0x210);
     actionScriptUpdate(actor);
     actionUpdatePlayback(actor);
-    actorUpdateTrackedSoundSpatialization(actor + 0x44, ((ActorScriptState *)obj)->soundHandles);
+    actorUpdateTrackedSoundSpatialization(((RuntimeObjectPrefix *)actor)->worldPosition, ((ActorScriptState *)obj)->soundHandles);
     if (!(actionGetAttributes(actor) & 0x20000000) && !(*(u16 *)(obj + 0x1E8) & 8)) {
         actorUpdateGroundSlopePitch(actor);
     }

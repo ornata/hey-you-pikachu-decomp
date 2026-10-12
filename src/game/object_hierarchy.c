@@ -1,3 +1,4 @@
+#include "audio_spatial.h"
 #include "object_distance.h"
 #include "search_tree_traversal.h"
 #include "object_transform.h"
@@ -1690,7 +1691,6 @@ extern CamSlot gRenderCameraMatrixEntries[];
 s32 audioPlaySoundEffect(s32);
 void audioSetSoundEffectPan(s32, s32);
 void audioSetSoundEffectVolume(s32, s32);
-void audioGetPositionVolumeAndPan(u8 *, Mtx, s32 *, s32 *, f32, f32);
 
 
 /// Play a sound effect at an object position with spatial volume and panning.
@@ -1709,7 +1709,7 @@ s32 objectPlaySpatialSound(u8 *obj, s32 kind, f32 near, f32 far) {
     if (gRenderCameraMatrixEntries[gRenderCameraIndex].mtx == NULL) {
         return h;
     }
-    audioGetPositionVolumeAndPan(obj + 0x44, *gRenderCameraMatrixEntries[gRenderCameraIndex].mtx, &vol, &pan, near,
+    audioGetPositionVolumeAndPan(((RuntimeObjectPrefix *)obj)->worldPosition, *gRenderCameraMatrixEntries[gRenderCameraIndex].mtx, &vol, &pan, near,
                                  far);
     audioSetSoundEffectPan(h, pan);
     audioSetSoundEffectVolume(h, vol);
