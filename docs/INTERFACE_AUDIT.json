@@ -4,6 +4,13 @@
   "records": [
     {
       "code": 709,
+      "file": "src/game/flipbook_messenger.c",
+      "line": 958,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "messengerAdvancePosition(object);"
+    },
+    {
+      "code": 709,
       "file": "src/game/doors_object_responses.c",
       "line": 160,
       "diagnostic": "Incompatible pointer type assignment",
@@ -43,13 +50,6 @@
       "line": 175,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "sprintf(gDoorAccessDescriptionBuffer, \"\\nYou can't get by for some reason.\");"
-    },
-    {
-      "code": 709,
-      "file": "src/game/flipbook_messenger.c",
-      "line": 958,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "messengerAdvancePosition(object);"
     },
     {
       "code": 709,
@@ -263,76 +263,6 @@
     },
     {
       "code": 709,
-      "file": "src/game/scheduler.c",
-      "line": 235,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "osRecvMesg(scheduler + 0x3C, &sp40, 1);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/scheduler.c",
-      "line": 235,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "osRecvMesg(scheduler + 0x3C, &sp40, 1);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/scheduler.c",
-      "line": 239,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "osRecvMesg(scheduler + 0x11C, &sp44, 1);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/scheduler.c",
-      "line": 239,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "osRecvMesg(scheduler + 0x11C, &sp44, 1);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/scheduler.c",
-      "line": 243,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "osSpTaskLoad(sp40 + 0x10);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/scheduler.c",
-      "line": 244,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "osSpTaskStartGo(sp40 + 0x10);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/scheduler.c",
-      "line": 245,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "osRecvMesg(scheduler + 0xAC, &sp44, 1);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/scheduler.c",
-      "line": 245,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "osRecvMesg(scheduler + 0xAC, &sp44, 1);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/scheduler.c",
-      "line": 247,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "osRecvMesg(scheduler + 0xE4, &sp44, 1);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/scheduler.c",
-      "line": 247,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "osRecvMesg(scheduler + 0xE4, &sp44, 1);"
-    },
-    {
-      "code": 709,
       "file": "src/game/voice_commands_text_panel.c",
       "line": 185,
       "diagnostic": "Incompatible pointer type assignment",
@@ -344,6 +274,13 @@
       "line": 442,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "textImageDestroy(oldImage);"
+    },
+    {
+      "code": 709,
+      "file": "src/game/node_pool.c",
+      "line": 19,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "pool->nodes = (PoolNode *)heapAllocLocal(gGameHeap, count * sizeof(PoolNode), 0x13);"
     },
     {
       "code": 709,
@@ -438,13 +375,6 @@
     },
     {
       "code": 709,
-      "file": "src/game/node_pool.c",
-      "line": 19,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "pool->nodes = (PoolNode *)heapAllocLocal(gGameHeap, count * sizeof(PoolNode), 0x13);"
-    },
-    {
-      "code": 709,
       "file": "src/game/keyed_pool.c",
       "line": 20,
       "diagnostic": "Incompatible pointer type assignment",
@@ -501,17 +431,17 @@
     },
     {
       "code": 709,
-      "file": "src/game/player_profile.c",
-      "line": 33,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "stringCopy(gPlayerProfileName, \"You\");"
-    },
-    {
-      "code": 709,
       "file": "src/game/motion_playback.c",
       "line": 713,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "wordMapDestroy(&gActionPoseTransitionMap);"
+    },
+    {
+      "code": 709,
+      "file": "src/game/player_profile.c",
+      "line": 33,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "stringCopy(gPlayerProfileName, \"You\");"
     },
     {
       "code": 712,
@@ -519,6 +449,20 @@
       "line": 362,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "{\t\t\t\t\t\t\t\t\t\tGfx *_g = (Gfx *)((gRenderDisplayListCursor++));\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t_g->words.w0 = (((unsigned int) (((unsigned int)(( 0xdb)) & ((0x01 << ( 8)) - 1)) << ( 24)))  | ((unsigned int) (((unsigned int)((  0x06)) & ((0x01 << ( 8)) - 1)) << ( 16)))  |\t\t\t\t((unsigned int) (((unsigned int)((  ( 1)*4)) & ((0x01 << ( 16)) - 1)) << ( 0))) );\t\t\t\t\t_g->words.w1 = (unsigned int)(   osVirtualToPhysical(gSharedRenderAssets));\t\t\t\t}   ;"
+    },
+    {
+      "code": 709,
+      "file": "src/ovl/system_menu.c",
+      "line": 1086,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "systemMenuAppendDetailText(buf);"
+    },
+    {
+      "code": 709,
+      "file": "src/ovl/system_menu.c",
+      "line": 1124,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "systemMenuAppendDetailText(buf);"
     },
     {
       "code": 709,
@@ -568,20 +512,6 @@
       "line": 2126,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "mazeDestroyNodeHierarchy(gAreaMazeRoot);"
-    },
-    {
-      "code": 709,
-      "file": "src/ovl/system_menu.c",
-      "line": 1086,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "systemMenuAppendDetailText(buf);"
-    },
-    {
-      "code": 709,
-      "file": "src/ovl/system_menu.c",
-      "line": 1124,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "systemMenuAppendDetailText(buf);"
     },
     {
       "code": 712,

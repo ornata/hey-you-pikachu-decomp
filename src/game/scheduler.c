@@ -16,9 +16,9 @@ extern OSViMode osViModeTable[];
 /// Graphics thread stack storage; its base is also the audio thread stack top.
 /// \note Original identifier: \c D_800F6AC0 (0x800F6AC0).
 extern u8 gSchedulerAudioStack[], gSchedulerGraphicsStack[], gVoiceRecognitionDevicePort[];
-void schedulerRetraceThread(u8 *);
-void schedulerAudioThread(u8 *);
-void schedulerGraphicsThread(u8 *);
+void schedulerRetraceThread(void *);
+void schedulerAudioThread(void *);
+void schedulerGraphicsThread(void *);
 
 /// Initialize and start audio, graphics, and display-event scheduling.
 /// \param s Scheduler state to initialize; must remain valid while its threads run.
@@ -52,13 +52,13 @@ void schedulerInitialize(GameScheduler *s, s32 id, s32 priority, u8 mode, u8 ret
     osSetEventMesg(OS_EVENT_SP, &s->rsp.queue, (OSMesg)0x29B);
     osSetEventMesg(OS_EVENT_DP, &s->rdp.queue, (OSMesg)0x29C);
     osSetEventMesg(OS_EVENT_PRENMI, &s->retrace.queue, (OSMesg)0x29D);
-    osCreateThread(&s->retraceThread, id + 2, (void (*)(void *))schedulerRetraceThread, s, gSchedulerAudioStack,
+    osCreateThread(&s->retraceThread, id + 2, schedulerRetraceThread, s, gSchedulerAudioStack,
                    priority + 10);
     osStartThread(&s->retraceThread);
-    osCreateThread(&s->audioThread, id + 1, (void (*)(void *))schedulerAudioThread, s, gSchedulerGraphicsStack,
+    osCreateThread(&s->audioThread, id + 1, schedulerAudioThread, s, gSchedulerGraphicsStack,
                    priority + 5);
     osStartThread(&s->audioThread);
-    osCreateThread(&s->graphicsThread, id, (void (*)(void *))schedulerGraphicsThread, s, gVoiceRecognitionDevicePort, priority);
+    osCreateThread(&s->graphicsThread, id, schedulerGraphicsThread, s, gVoiceRecognitionDevicePort, priority);
     osStartThread(&s->graphicsThread);
 }
 
@@ -81,7 +81,7 @@ s32 schedulerGetGraphicsCommandQueue(s32 schedulerAddress) {
 /// Count of messages consumed by the display-event thread, including pre-NMI notifications.
 /// \note Original identifier: \c D_8009D520 (0x8009D520).
 extern s32 gSchedulerDisplayEventCount;
-void schedulerNotifyClients(u8 *, u8 *);
+void schedulerNotifyClients(GameScheduler *, OSMesg);
 
 /// Process display retraces and notify clients of display and reset events.
 /// \param scheduler Scheduler state owned by this thread.
@@ -89,11 +89,11 @@ void schedulerNotifyClients(u8 *, u8 *);
 ///
 /// \note NONPORTABLE: for (;;) leaves IDO's dead epilogue in place
 /// \note Original decompilation identifier: \c func_8003FE44 (0x8003FE44).
-void schedulerRetraceThread(u8 *scheduler) {
+void schedulerRetraceThread(void *scheduler) {
     OSMesg msg = NULL;
 
     for (;;) {
-        osRecvMesg((OSMesgQueue *)(scheduler + 0x74), &msg, OS_MESG_BLOCK);
+        osRecvMesg((OSMesgQueue *)((u8 *)scheduler + 0x74), &msg, OS_MESG_BLOCK);
         gSchedulerDisplayEventCount++;
         switch ((s32)msg) {
         case 0x29A:
@@ -101,7 +101,7 @@ void schedulerRetraceThread(u8 *scheduler) {
             break;
         case 0x29D:
             gSchedulerResetPending = 1;
-            schedulerNotifyClients(scheduler, scheduler + 2);
+            schedulerNotifyClients(scheduler, (u8 *)scheduler + 2);
             break;
         }
     }
@@ -156,15 +156,15 @@ void schedulerRemoveClient(u8 *scheduler, void **client) {
 /// finish using it. Delivery is skipped for a full client queue.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80040014 (0x80040014).
-void schedulerNotifyClients(u8 *scheduler, u8 *message) {
-    u8 *var_s0;
+void schedulerNotifyClients(GameScheduler *scheduler, OSMesg message) {
+    SchedulerClient *client;
 
-    var_s0 = (u8 *)((GameScheduler *)scheduler)->clients;
-    if (var_s0 != NULL) {
+    client = scheduler->clients;
+    if (client != NULL) {
         do {
-            osSendMesg(((SchedulerClient *)var_s0)->queue, message, 0);
-            var_s0 = (u8 *)((SchedulerClient *)var_s0)->next;
-        } while (var_s0 != NULL);
+            osSendMesg(client->queue, message, 0);
+            client = client->next;
+        } while (client != NULL);
     }
 }
 
@@ -172,89 +172,88 @@ void schedulerNotifyClients(u8 *scheduler, u8 *message) {
 /// \param scheduler Scheduler state owned by this thread.
 /// \returns Does not return.
 ///
-/// \note NONPORTABLE: the running task is an s32; the loop never exits.
 /// \note Original decompilation identifier: \c func_80040064 (0x80040064).
-void schedulerAudioThread(u8 *scheduler) {
-    u8 *sp5C;
-    u8 *sp58;
+void schedulerAudioThread(void *scheduler) {
+    OSMesg completionMessage;
+    OSMesg taskMessage;
     OSMesgQueue *q;
     OSTask *t;
-    s32 yt;
+    SchedulerTask *graphicsTask;
     u32 state;
 
-    sp5C = NULL;
-    sp58 = NULL;
+    completionMessage = NULL;
+    taskMessage = NULL;
     state = 0;
     for (;;) {
-        osRecvMesg((OSMesgQueue *)(scheduler + 4), (OSMesg *)&sp58, OS_MESG_BLOCK);
-        osWritebackDCache(*(u8 **)(sp58 + 0x40), *(s32 *)(sp58 + 0x44));
-        yt = *(s32 *)(scheduler + 0x66C);
-        if (yt != 0) {
+        osRecvMesg(&((GameScheduler *)scheduler)->audioCommand.queue, &taskMessage, OS_MESG_BLOCK);
+        osWritebackDCache(((SchedulerTask *)taskMessage)->task.t.data_ptr, ((SchedulerTask *)taskMessage)->task.t.data_size);
+        graphicsTask = ((GameScheduler *)scheduler)->graphicsTask;
+        if (graphicsTask != 0) {
             osSpTaskYield();
-            osRecvMesg((OSMesgQueue *)(scheduler + 0xAC), (OSMesg *)&sp5C, OS_MESG_BLOCK);
-            if (osSpTaskYielded((OSTask *)(yt + 0x10)) != 0) {
+            osRecvMesg(&((GameScheduler *)scheduler)->rsp.queue, &completionMessage, OS_MESG_BLOCK);
+            if (osSpTaskYielded(&graphicsTask->task) != 0) {
                 state = 1;
             } else {
                 state = 2;
             }
         }
-        q = (OSMesgQueue *)(scheduler + 0xAC);
-        *(u8 **)(scheduler + 0x670) = sp58;
-        osSpTaskLoad((OSTask *)(sp58 + 0x10));
-        osSpTaskStartGo((OSTask *)(sp58 + 0x10));
-        osRecvMesg(q, (OSMesg *)&sp5C, OS_MESG_BLOCK);
-        *(u8 **)(scheduler + 0x670) = NULL;
-        if (*(s32 *)(scheduler + 0x674) != 0) {
-            osSendMesg((OSMesgQueue *)(scheduler + 0x11C), (OSMesg)&sp5C, OS_MESG_BLOCK);
+        q = &((GameScheduler *)scheduler)->rsp.queue;
+        ((GameScheduler *)scheduler)->audioTask = taskMessage;
+        osSpTaskLoad(&((SchedulerTask *)taskMessage)->task);
+        osSpTaskStartGo(&((SchedulerTask *)taskMessage)->task);
+        osRecvMesg(q, &completionMessage, OS_MESG_BLOCK);
+        ((GameScheduler *)scheduler)->audioTask = NULL;
+        if (((GameScheduler *)scheduler)->waitingGraphicsTask != 0) {
+            osSendMesg(&((GameScheduler *)scheduler)->reply.queue, (OSMesg)&completionMessage, OS_MESG_BLOCK);
         }
         if (state == 1) {
-            t = (OSTask *)(yt + 0x10);
+            t = &graphicsTask->task;
             osSpTaskLoad(t);
             osSpTaskStartGo(t);
         } else if (state == 2) {
-            osSendMesg(q, (OSMesg)&sp5C, OS_MESG_BLOCK);
+            osSendMesg(q, (OSMesg)&completionMessage, OS_MESG_BLOCK);
         }
-        osSendMesg(*(OSMesgQueue **)(sp58 + 0x50), *(OSMesg *)(sp58 + 0x54), OS_MESG_BLOCK);
+        osSendMesg(((SchedulerTask *)taskMessage)->reply, ((SchedulerTask *)taskMessage)->message, OS_MESG_BLOCK);
         state = 0;
     }
 }
 
-void schedulerWaitForFramebuffer(u8 *, u8 *);
+void schedulerWaitForFramebuffer(GameScheduler *, SchedulerTask *);
 
 /// Run submitted graphics tasks, present completed frames, and report completion.
 /// \param scheduler Scheduler state owned by this thread.
 /// \returns Does not return.
 /// \note Original decompilation identifier: \c func_80040200 (0x80040200).
-void schedulerGraphicsThread(u8 *scheduler) {
-    u8 *sp44;
-    u8 *sp40;
+void schedulerGraphicsThread(void *scheduler) {
+    OSMesg completionMessage;
+    OSMesg taskMessage;
 
-    sp44 = NULL;
-    sp40 = NULL;
+    completionMessage = NULL;
+    taskMessage = NULL;
 loop_1:
-    osRecvMesg(scheduler + 0x3C, &sp40, 1);
-    schedulerWaitForFramebuffer(scheduler, sp40);
+    osRecvMesg(&((GameScheduler *)scheduler)->graphicsCommand.queue, &taskMessage, 1);
+    schedulerWaitForFramebuffer(scheduler, taskMessage);
     if (((GameScheduler *)scheduler)->audioTask != 0) {
-        ((GameScheduler *)scheduler)->waitingGraphicsTask = sp40;
-        osRecvMesg(scheduler + 0x11C, &sp44, 1);
+        ((GameScheduler *)scheduler)->waitingGraphicsTask = taskMessage;
+        osRecvMesg(&((GameScheduler *)scheduler)->reply.queue, &completionMessage, 1);
         ((GameScheduler *)scheduler)->waitingGraphicsTask = NULL;
     }
-    ((GameScheduler *)scheduler)->graphicsTask = sp40;
-    osSpTaskLoad(sp40 + 0x10);
-    osSpTaskStartGo(sp40 + 0x10);
-    osRecvMesg(scheduler + 0xAC, &sp44, 1);
+    ((GameScheduler *)scheduler)->graphicsTask = taskMessage;
+    osSpTaskLoad(&((SchedulerTask *)taskMessage)->task);
+    osSpTaskStartGo(&((SchedulerTask *)taskMessage)->task);
+    osRecvMesg(&((GameScheduler *)scheduler)->rsp.queue, &completionMessage, 1);
     ((GameScheduler *)scheduler)->graphicsTask = NULL;
-    osRecvMesg(scheduler + 0xE4, &sp44, 1);
-    if (((SchedulerTask *)sp40)->flags & 0x40) {
+    osRecvMesg(&((GameScheduler *)scheduler)->rdp.queue, &completionMessage, 1);
+    if (((SchedulerTask *)taskMessage)->flags & 0x40) {
         ((GameScheduler *)scheduler)->frameCount = (u32)(((GameScheduler *)scheduler)->frameCount + 1);
-        osViSwapBuffer(((SchedulerTask *)sp40)->framebuffer);
+        osViSwapBuffer(((SchedulerTask *)taskMessage)->framebuffer);
         if ((((GameScheduler *)scheduler)->startupBlack != 0) &&
             ((u32)((GameScheduler *)scheduler)->frameCount >= 0x15U)) {
             osViBlack(0U);
             ((GameScheduler *)scheduler)->startupBlack = 0;
         }
     }
-    osSendMesg(((SchedulerTask *)sp40)->reply, ((SchedulerTask *)sp40)->message, 1);
+    osSendMesg(((SchedulerTask *)taskMessage)->reply, ((SchedulerTask *)taskMessage)->message, 1);
     goto loop_1;
 }
 
@@ -263,15 +262,15 @@ loop_1:
 /// \param task Graphics task whose framebuffer must be available.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80040374 (0x80040374).
-void schedulerWaitForFramebuffer(u8 *scheduler, u8 *task) {
+void schedulerWaitForFramebuffer(GameScheduler *scheduler, SchedulerTask *task) {
     OSMesg msg = NULL;
     void *link[2];
-    void *buf = *(void **)(task + 0xC);
+    void *buf = task->framebuffer;
 
     while (osViGetCurrentFramebuffer() == buf || osViGetNextFramebuffer() == buf) {
-        schedulerAddClient(scheduler, (u8 *)link, (s32)(scheduler + 0x11C));
-        osRecvMesg((OSMesgQueue *)(scheduler + 0x11C), &msg, OS_MESG_BLOCK);
-        schedulerRemoveClient(scheduler, link);
+        schedulerAddClient((u8 *)scheduler, (u8 *)link, (s32)&scheduler->reply.queue);
+        osRecvMesg(&scheduler->reply.queue, &msg, OS_MESG_BLOCK);
+        schedulerRemoveClient((u8 *)scheduler, link);
     }
 }
 

@@ -31,24 +31,24 @@ typedef struct SchedulerQueue {
 /// Retained queues, worker threads and task ownership for the game scheduler.
 /// The scheduler and all borrowed client/task records must outlive the workers.
 typedef struct GameScheduler {
-    u16 retraceMessage;             ///< Client notification value for a display retrace.
-    u16 preNmiMessage;              ///< Client notification value for impending reset.
-    SchedulerQueue audioCommand;    ///< Queue accepting submitted audio tasks.
-    SchedulerQueue graphicsCommand; ///< Queue accepting submitted graphics tasks.
-    SchedulerQueue retrace;         ///< Queue receiving display and reset events.
-    SchedulerQueue rsp;             ///< Queue receiving RSP completion events.
-    SchedulerQueue rdp;             ///< Queue receiving RDP completion events.
-    SchedulerQueue reply;           ///< Queue used while waiting for framebuffer availability.
-    OSThread retraceThread;         ///< Worker distributing display and reset notifications.
-    OSThread audioThread;           ///< Worker servicing audio submissions.
-    OSThread graphicsThread;        ///< Worker servicing graphics submissions.
-    SchedulerClient *clients;       ///< Borrowed head of the event-client registrations.
-    u8 *graphicsTask;               ///< Borrowed graphics task currently using the RSP.
-    u8 *audioTask;                  ///< Borrowed audio task currently using the RSP.
-    u8 *waitingGraphicsTask;        ///< Borrowed graphics task waiting for RSP availability.
-    s32 startupBlack;               ///< Nonzero while startup display blanking remains enabled.
-    u32 frameCount;                 ///< Number of completed frame presentations.
-    s32 retraceCount;               ///< Display retraces between client notifications.
+    u16 retraceMessage;                 ///< Client notification value for a display retrace.
+    u16 preNmiMessage;                  ///< Client notification value for impending reset.
+    SchedulerQueue audioCommand;        ///< Queue accepting submitted audio tasks.
+    SchedulerQueue graphicsCommand;     ///< Queue accepting submitted graphics tasks.
+    SchedulerQueue retrace;             ///< Queue receiving display and reset events.
+    SchedulerQueue rsp;                 ///< Queue receiving RSP completion events.
+    SchedulerQueue rdp;                 ///< Queue receiving RDP completion events.
+    SchedulerQueue reply;               ///< Queue used while waiting for framebuffer availability.
+    OSThread retraceThread;             ///< Worker distributing display and reset notifications.
+    OSThread audioThread;               ///< Worker servicing audio submissions.
+    OSThread graphicsThread;            ///< Worker servicing graphics submissions.
+    SchedulerClient *clients;           ///< Borrowed head of the event-client registrations.
+    SchedulerTask *graphicsTask;        ///< Borrowed graphics task currently using the RSP.
+    SchedulerTask *audioTask;           ///< Borrowed audio task currently using the RSP.
+    SchedulerTask *waitingGraphicsTask; ///< Borrowed graphics task waiting for RSP availability.
+    s32 startupBlack;                   ///< Nonzero while startup display blanking remains enabled.
+    u32 frameCount;                     ///< Number of completed frame presentations.
+    s32 retraceCount;                   ///< Display retraces between client notifications.
 } GameScheduler;
 
 #define SCHEDULER_OFFSET_CHECK(name, type, member, offset)                                                             \
@@ -57,6 +57,13 @@ typedef char SchedulerClientSizeCheck[(sizeof(SchedulerClient) == 8) ? 1 : -1];
 typedef char SchedulerTaskSizeCheck[(sizeof(SchedulerTask) == 0x58) ? 1 : -1];
 SCHEDULER_OFFSET_CHECK(SchedulerTaskSdkOffsetCheck, SchedulerTask, task, 0x10);
 SCHEDULER_OFFSET_CHECK(SchedulerTaskReplyOffsetCheck, SchedulerTask, reply, 0x50);
+SCHEDULER_OFFSET_CHECK(SchedulerAudioQueueOffsetCheck, GameScheduler, audioCommand.queue, 4);
+SCHEDULER_OFFSET_CHECK(SchedulerGraphicsQueueOffsetCheck, GameScheduler, graphicsCommand.queue, 0x3C);
+SCHEDULER_OFFSET_CHECK(SchedulerRetraceQueueOffsetCheck, GameScheduler, retrace.queue, 0x74);
+SCHEDULER_OFFSET_CHECK(SchedulerRspQueueOffsetCheck, GameScheduler, rsp.queue, 0xAC);
+SCHEDULER_OFFSET_CHECK(SchedulerRdpQueueOffsetCheck, GameScheduler, rdp.queue, 0xE4);
+SCHEDULER_OFFSET_CHECK(SchedulerReplyQueueOffsetCheck, GameScheduler, reply.queue, 0x11C);
+
 SCHEDULER_OFFSET_CHECK(SchedulerClientsOffsetCheck, GameScheduler, clients, 0x668);
 SCHEDULER_OFFSET_CHECK(SchedulerGraphicsTaskOffsetCheck, GameScheduler, graphicsTask, 0x66C);
 SCHEDULER_OFFSET_CHECK(SchedulerFrameCountOffsetCheck, GameScheduler, frameCount, 0x67C);

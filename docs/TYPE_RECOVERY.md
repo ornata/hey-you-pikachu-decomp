@@ -720,3 +720,20 @@ and returns a borrowed persistent string. Ghidra at `0x801125AC` confirms the
 level byte at `0xF6`, milestone word at `0xF8`, and no repeated award. Both menu
 and script consumers share the declarations. All affected source units match
 the preserved 483-object baseline.
+
+### Scheduler task and completion-message views
+
+Audio and graphics workers now receive submissions and completion events through
+`OSMesg` storage and the shared queue fields. Active, suspended and waiting tasks
+use `SchedulerTask *`; SDK descriptors, command buffers and completion replies
+use that record's established members. Ghidra at `0x80040200` confirms the
+graphics command, reply, RSP and RDP queues and the task descriptor offset.
+Queue offsets now have target compile-time checks alongside task size and offsets.
+
+All three scheduler threads use the SDK `void *` entry signature, removing
+function-pointer casts at registration. Typed task/context views preserve the
+original worker sequencing and borrowed-resource lifetimes. Client notification
+traversal now uses `SchedulerClient *`; framebuffer waiting uses typed scheduler
+and task parameters. The existing public client registration and queue-access
+interfaces still need their separate producer/consumer audit. All retained
+changes pass comparison against the preserved 483-object baseline.
