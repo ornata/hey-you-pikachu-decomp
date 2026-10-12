@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "item_text.h"
 #include "object_lookup.h"
 #include "scene_types.h"
 #include "actor_script.h"
@@ -162,7 +163,6 @@ s32 actorScriptPushPlayerName(u8 *actor) {
     return 0;
 }
 
-s32 itemGetDisplayName(s32, s32); /* extern */
 /// Provide the display name for an item kind.
 /// \param actor Actor whose script VM supplies a valid item kind followed by a name selector of zero or one and receives a borrowed reference to the selected name string; zero prefers the alternate name when present, while one selects the default name.
 /// \returns Zero, allowing script execution to continue.
@@ -175,7 +175,7 @@ s32 actorScriptGetItemDisplayName(u8 *actor) {
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     sp24 = vmAddress;
     sp1C = scriptVmPopInteger(vmAddress);
-    scriptVmPushStringPointer(vmAddress, itemGetDisplayName(scriptVmPopInteger(vmAddress), sp1C));
+    scriptVmPushStringPointer(vmAddress, (s32)itemGetDisplayName(scriptVmPopInteger(vmAddress), sp1C));
     return 0;
 }
 

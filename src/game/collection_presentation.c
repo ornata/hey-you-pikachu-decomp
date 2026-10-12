@@ -1,5 +1,6 @@
 #include "backdrop_draw.h"
 #include "common.h"
+#include "item_text.h"
 #include "runtime_clock.h"
 #include "text_image_create.h"
 
@@ -198,7 +199,6 @@ extern s32 gMessageBarWorkImageIndex;
 /// \note Original identifier: \c D_80125AB2 (0x80125AB2).
 extern u8 gItemKindAvailabilityFlagEntries[];
 
-s32 itemGetDisplayName(s32, s32);
 
 /// Record the configured progress flag for a live item in a kept-item slot.
 /// \param slot Readable kept-item slot; any live handle must identify an initialized item with a valid catalog kind.

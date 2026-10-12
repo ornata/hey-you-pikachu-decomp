@@ -2,6 +2,7 @@
 #include "item_object.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "item_text.h"
 #include "runtime_clock.h"
 #include "text_image_create.h"
 #include "player_control.h"
@@ -52,7 +53,6 @@ typedef struct {
     f32 x, y, z;
 } HomePosEDBC;
 
-s32 itemGetDisplayName(s32, s32);
 
 /* This object's .data, 0x8009A3F0..0x8009A6B0, in address order. */
 
@@ -1383,8 +1383,6 @@ s32 textWindowOpen(s32, s32, s32);
 s32 textWindowShowFirstPage(void);
 void textWindowDeactivate(void);
 void toolboxConfirmItemTransfer(u8 *);
-u8 *itemGetClassLabelSuffix(s32);
-s32 itemGetHelpText(s32, s32);
 /// Primary controller new and auto-repeated button presses; aliases the repeated word of the processed sample.
 /// \note Original identifier: \c D_800AD54C (0x800AD54C).
 extern s32 gControllerPrimaryRepeatedButtons;

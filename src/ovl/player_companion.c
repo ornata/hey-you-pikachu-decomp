@@ -1,6 +1,7 @@
 #include "player_friendship.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "item_text.h"
 #include "string_bytes.h"
 #include "actor_parts.h"
 #include "player_control.h"
@@ -961,7 +962,6 @@ void playerPickUpInteractionTarget(u8 *player) {
 
 s32 itemAllowsCooperation(u8 *); /* extern */
 s32 actorConfigGetDisplayName(s32, s32);
-s32 itemGetDisplayName(s32, s32);
 
 /// Request Pikachu cooperation with an eligible interaction target.
 /// \param player Player record containing the current interaction target.
@@ -1469,8 +1469,6 @@ s32 actorConfigGetDescription(s32, s32);
 s8 *landmarkGetCannonDescription(s32);
 s8 *caveGetDescription(u8 *);
 void playerSetInteractionHelpText(u8 *);
-u8 *itemGetClassLabelSuffix(s32);
-s32 itemGetHelpText(s32, s32);
 /* Item records are 0x74 bytes; the class byte is at +1. */
 /// Separate classification-byte view of the item catalog, with a 116-byte stride.
 /// \note Original identifier: \c D_80125AB1 (0x80125AB1).

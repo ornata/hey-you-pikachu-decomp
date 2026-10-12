@@ -4,6 +4,7 @@
 /* Item objects. .rodata is the item-kind text (initializer order), then the
  * debug-trace formats in function order, then the late float/jump tables. */
 #include "common.h"
+#include "item_text.h"
 #include "search_tree.h"
 #include "object_audio.h"
 #include "item_audio.h"

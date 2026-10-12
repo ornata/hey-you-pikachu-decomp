@@ -1123,3 +1123,15 @@ were simple pointer reads with no side effects; removing them preserved strict
 object matching. The unused save-progress declaration was removed. Existing
 32-bit snapshots, explicit truncation and mixed-width elapsed-time arithmetic
 remain unchanged and are not claimed recovered by this interface correction.
+
+### Item name and help-text interfaces
+
+item_text.h declares the registry's borrowed persistent name, class suffix and
+help-text results. Callers no longer declare name/help pointers as s32. The
+script caller explicitly converts the name to the VM's existing target-width
+string address, preserving that separate VM representation. Ghidra at
+0x80114E74 confirms alternate-name selection with default fallback; the existing
+ItemText entries establish persistent name/help storage. Null results for missing
+text and unsupported selectors remain documented. All five producer/consumer
+units preserve strict object matching; no string ownership or lookup behavior
+changed. The class suffix retains its established encoded-byte pointer type.
