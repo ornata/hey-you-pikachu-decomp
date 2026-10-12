@@ -2001,6 +2001,7 @@ extern s32 gPlayerHeldItemHandle;
 ///
 /// \note Requires initialized area, interaction, and collision systems and valid per-kind resources. The
 /// inactive lighting buffer must be available for writing.
+/// \note Matching: search-priority arithmetic retains its offset view to preserve floating-point scheduling.
 /// \note Original decompilation identifier: \c func_801135D4 (0x801135D4).
 void itemUpdate(u8 *object) {
     s32 flags;
@@ -2008,58 +2009,58 @@ void itemUpdate(u8 *object) {
     u8 *child;
     u8 *state;
     s32 changed;
-    u8 *record;
+    ItemKind *record;
     u8 *subject;
-    state = *(u8 **)(object + 0x54);
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
 
     TRACE("player->holdItem = %d\n", gPlayerHeldItemHandle);
-    if (*(s8 *)(state + 6) == 4) {
-        subject = *(u8 **)(*(u8 **)(object + 0x2C) + 0x54);
+    if (((ItemStatePrefix *)state)->state == 4) {
+        subject = *(u8 **)(((RuntimeObjectPrefix *)object)->child.bytes + 0x54);
         if (subject == NULL) {
             TRACE("Hold subject has been deleted.\n");
         } else if (*(s8 *)(subject + 6) != 4) {
             TRACE("subject->holdItem = %d\n", *(s32 *)(subject + 0x190));
         }
-    } else if (*(s8 *)(state + 6) != 0) {
+    } else if (((ItemStatePrefix *)state)->state != 0) {
         TRACE("ERROR: Strange state.\n");
     }
-    collisionGridUnregisterObject(object, (s32 *)(state + 0x50));
-    mode = *(s8 *)(state + 6);
-    if ((mode != 5 && !(*(u16 *)(object + 0x36) & 0x2000)) || mode == 1) {
+    collisionGridUnregisterObject(object, &((ItemStatePrefix *)state)->collisionKey);
+    mode = ((ItemStatePrefix *)state)->state;
+    if ((mode != 5 && !(((RuntimeObjectPrefix *)object)->flags & 0x2000)) || mode == 1) {
         if (interactionConsiderObject(object) != 0)
             objectClearHierarchyFlags(object, 2);
         else
             objectSetHierarchyFlags(object, 2);
     }
-    *(f32 *)(state + 0x68) -= gRuntimeFrameSeconds;
-    if (*(f32 *)(state + 0x68) < 0.0f)
+    ((ItemStatePrefix *)state)->idleMotionDelay -= gRuntimeFrameSeconds;
+    if (((ItemStatePrefix *)state)->idleMotionDelay < 0.0f)
         itemStartDirectionMotion(object, 0.5f, 0.0f, 720.0f);
     directionAnimationUpdate((u8 *)&((ItemState *)state)->direction);
-    if (*(s32 *)state & 0x20000000)
+    if (((ItemStatePrefix *)state)->flags & 0x20000000)
         itemShrink(object, 0.12f);
-    if (!(*(u16 *)(object + 0x36) & 2) &&
-        ((flags = *(s32 *)state, (*(s16 *)(state + 0x3C) != 0 && (flags & 0x200))) || (flags & 0x100000))) {
+    if (!(((RuntimeObjectPrefix *)object)->flags & 2) &&
+        ((flags = ((ItemStatePrefix *)state)->flags, (((ItemStatePrefix *)state)->materialAnimationActive != 0 && (flags & 0x200))) || (flags & 0x100000))) {
         animationIntegerTrackEvaluate(&((ItemStatePrefix *)state)->materialTrack, &changed, gRuntimeFrameSeconds);
-        child = *(u8 **)(object + 0x2C);
-        if (child != NULL && !(*(u16 *)(object + 0x36) & 2) && (*(s32 *)state & 0x100000)) {
+        child = ((RuntimeObjectPrefix *)object)->child.bytes;
+        if (child != NULL && !(((RuntimeObjectPrefix *)object)->flags & 2) && (((ItemStatePrefix *)state)->flags & 0x100000)) {
             if (changed != 0)
                 objectClearHierarchyFlags(child, 2);
             else
                 objectSetHierarchyFlags(child, 2);
         }
     }
-    record = (u8 *)&gItemKinds[*(s16 *)(state + 4)];
-    if (*(f32 *)(state + 0x38) < *(f32 *)(record + 0x10)) {
-        *(f32 *)(state + 0x38) = *(f32 *)(record + 0x14) * gRuntimeFrameSeconds + *(f32 *)(state + 0x38);
-        if (*(f32 *)(record + 0x10) < *(f32 *)(state + 0x38))
-            *(f32 *)(state + 0x38) = *(f32 *)(record + 0x10);
+    record = &gItemKinds[((ItemStatePrefix *)state)->kind];
+    if (*(f32 *)(state + 0x38) < record->growthMax) {
+        *(f32 *)(state + 0x38) = record->growthRate * gRuntimeFrameSeconds + *(f32 *)(state + 0x38);
+        if (record->growthMax < *(f32 *)(state + 0x38))
+            *(f32 *)(state + 0x38) = record->growthMax;
     }
     itemUpdateModeAndOrientation(object);
-    if (*(s8 *)(state + 6) == 0 && !(*(u16 *)(object + 0x36) & 0x2000) && !(*(s32 *)state & 0x10000) &&
+    if (((ItemStatePrefix *)state)->state == 0 && !(((RuntimeObjectPrefix *)object)->flags & 0x2000) && !(((ItemStatePrefix *)state)->flags & 0x10000) &&
         (collisionGridFindOverlap(object), itemCanBePickedUp(object, 1) != 0 || itemCanBePickedUp(object, 0) != 0)) {
-        *(s32 *)(state + 0x50) = collisionGridRegisterObject(object);
+        ((ItemStatePrefix *)state)->collisionKey = collisionGridRegisterObject(object);
     }
-    itemBuildLightingDisplayList(state, ((*(u16 *)(object + 0x36) & 0x8000) ? 1 : 0) ^ 1);
+    itemBuildLightingDisplayList(state, ((((RuntimeObjectPrefix *)object)->flags & 0x8000) ? 1 : 0) ^ 1);
 }
 
 void _bzero();                                         /* extern */

@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 3048,
-      "unique_spellings": 1111,
+      "occurrences": 3027,
+      "unique_spellings": 1109,
       "files": 80
     }
   },
@@ -7058,139 +7058,105 @@
       ],
       "matching_exceptions": {
         "itemTryRelease": "Hold-state switch uses an unsigned-byte view of the named signed state member. Casting the signed member value to u8 changes IDO output; the explicit byte view matches. Other release fields and the actor held-item handle use shared members.",
-        "itemThrow": "Object transform and item motion fields use shared members. Owner at 8, hold state at 6, flags at 0 and kind at 4 retain raw reads: isolated direct-member trials each change ROM bytes. Their layouts are checked by shared types; further recovery needs IDO allocation/load-scheduling evidence."
+        "itemThrow": "Object transform and item motion fields use shared members. Owner at 8, hold state at 6, flags at 0 and kind at 4 retain raw reads: isolated direct-member trials each change ROM bytes. Their layouts are checked by shared types; further recovery needs IDO allocation/load-scheduling evidence.",
+        "itemUpdate": "Search-priority arithmetic at state offset 0x38 retains a raw float view: a direct searchPriority member changes ROM bytes in an isolated forced-rebuild trial. Kind growth bounds and rate, object links/flags, hold state, material state, collision key and idle timer use named fields. Further conversion needs IDO floating scheduling evidence."
       },
       "locations": {
         "raw_offset_candidates": {
           "state + 0x54": [
             "1858:37"
           ],
-          "object + 0x54": [
-            "2013:22"
-          ],
-          "state + 6": [
-            "2016:17",
-            "2023:24",
-            "2027:20",
-            "2058:17",
-            "2439:24"
-          ],
-          "object + 0x2C": [
-            "2017:37",
-            "2043:26"
+          "bytes + 0x54": [
+            "2018:67"
           ],
           "subject + 6": [
-            "2020:28"
+            "2021:28"
           ],
           "subject + 0x190": [
-            "2021:56"
-          ],
-          "state + 0x50": [
-            "2026:51",
-            "2060:18"
-          ],
-          "object + 0x36": [
-            "2028:34",
-            "2040:20",
-            "2044:41",
-            "2058:47",
-            "2062:52"
-          ],
-          "state + 0x68": [
-            "2034:14",
-            "2035:18"
-          ],
-          "state + 0x3C": [
-            "2041:44"
-          ],
-          "state + 4": [
-            "2051:41",
-            "2455:79",
-            "2456:87",
-            "2457:79",
-            "2464:36"
+            "2022:56"
           ],
           "state + 0x38": [
-            "2052:18",
             "2053:18",
-            "2053:92",
-            "2054:48",
-            "2055:22"
-          ],
-          "record + 0x10": [
-            "2052:43",
-            "2054:22",
-            "2055:47"
-          ],
-          "record + 0x14": [
-            "2053:43"
+            "2054:18",
+            "2054:87",
+            "2055:42",
+            "2056:22"
           ],
           "lightingStorage + 0x38": [
-            "2084:60"
+            "2085:60"
           ],
           "object + 0x24": [
-            "2145:18",
-            "2146:34",
-            "2148:45",
-            "2150:45",
-            "2157:23"
+            "2146:18",
+            "2147:34",
+            "2149:45",
+            "2151:45",
+            "2158:23"
           ],
           "object + 0xC": [
-            "2159:14"
-          ],
-          "object + 0x10": [
             "2160:14"
           ],
-          "object + 0x14": [
+          "object + 0x10": [
             "2161:14"
           ],
-          "object + 0x18": [
+          "object + 0x14": [
             "2162:14"
           ],
-          "object + 0x1C": [
+          "object + 0x18": [
             "2163:14"
           ],
-          "object + 0x20": [
+          "object + 0x1C": [
             "2164:14"
           ],
+          "object + 0x20": [
+            "2165:14"
+          ],
           "object + 0x44": [
-            "2165:14",
-            "2711:53",
-            "2733:49"
+            "2166:14",
+            "2712:53",
+            "2734:49"
           ],
           "object + 0x48": [
-            "2166:14"
-          ],
-          "object + 0x4C": [
             "2167:14"
           ],
+          "object + 0x4C": [
+            "2168:14"
+          ],
           "gLiveItemCount + 1U": [
-            "2168:33"
+            "2169:33"
           ],
           "gLiveItemCount - 1": [
-            "2185:45"
+            "2186:45"
           ],
           "return -1": [
-            "2217:9",
-            "2225:9"
+            "2218:9",
+            "2226:9"
           ],
           "state + 0x4C": [
-            "2314:40"
+            "2315:40"
           ],
           "itemState + 0x54": [
-            "2353:53"
+            "2354:53"
           ],
           "state + 8": [
-            "2437:68"
+            "2438:68"
+          ],
+          "state + 6": [
+            "2440:24"
+          ],
+          "state + 4": [
+            "2456:79",
+            "2457:87",
+            "2458:79",
+            "2465:36"
           ],
           "replacement + 0x44": [
-            "2767:53",
-            "2772:53",
-            "2775:53",
-            "2779:53"
+            "2768:53",
+            "2773:53",
+            "2776:53",
+            "2780:53"
           ],
           "sp20 + 0x50": [
-            "2814:63"
+            "2815:63"
           ]
         }
       }

@@ -2807,3 +2807,15 @@ complete size, while lighting, reset, update and timed-motion consumers address
 the named direction member. Prefix users retain their partial-view contract;
 unknown bytes have no invented names or semantics. All conversions preserve
 the complete strict object baseline.
+
+### Item update state and kind configuration
+
+The frame update now uses shared object links/flags and item hold state, flags,
+kind, material activation, collision key and idle timer. Its kind configuration
+pointer is typed and names the search-priority growth limit and rate. Ghidra
+0x801135D4 confirms these widths and update stages.
+
+Search-priority arithmetic at 0x38 retains an explicit raw float view because
+the named member changes IDO floating scheduling. Forced source-unit rebuilds
+isolate that exception; accepted conversions preserve all 483 strict objects.
+The original debug-only subject branch remains unchanged.
