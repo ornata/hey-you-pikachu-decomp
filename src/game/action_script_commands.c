@@ -1,3 +1,4 @@
+#include "item_search.h"
 #include "actor_action_cue.h"
 #include "actor_appearance.h"
 #include "actor_part_texture.h"
@@ -441,7 +442,6 @@ void actionCommandLaunchHeldItem(u8 *actor, u8 *state, ActorActionCueCommand *co
     *(u64 *)(state + 0x1A8) = runtimeGetElapsedMilliseconds();
 }
 
-u8 *itemFindNearest(f32 *, f32, f32, f32, f32, s32, s32, s32, s32);
 void actorTryHoldItem(u8 *, s32, s32);
 
 /// Selects a nearby matching item for the actor to hold when it has no live held item.

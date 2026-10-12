@@ -2728,3 +2728,16 @@ The kind's checked float at 0x28 is now `motionCoefficient`: the accessor's
 result controls downward acceleration and horizontal friction, with a state
 flag reducing the coefficient by half. Shared-header dependents and every
 converted caller preserve all 483 strict object comparisons.
+
+### Nearest-item and category-query contracts
+
+`item_search.h` consolidates the nearest-item provider and two script callers,
+including borrowed result lifetime, inclusive kind bounds, hold-state filtering,
+angular limits and shared-state non-reentrancy. A stale integer view-transform
+argument note is removed; the existing call already uses the float contract.
+
+Private `ItemCategoryRange` now names its category and inclusive kind bounds.
+Ghidra 0x80114FD4 confirms the twelve-byte stride and bound offsets four/eight.
+The private nearest-query state documents score versus raw distance, copied
+origin, angular transform and filters, with checks for size 0x5C and retained
+interior-symbol offsets. All changed units preserve the strict object baseline.

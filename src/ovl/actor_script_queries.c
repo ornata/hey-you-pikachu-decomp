@@ -1,3 +1,4 @@
+#include "item_search.h"
 #include "action_script_playback.h"
 #include "camera_pose.h"
 #include "action_query.h"
@@ -19,7 +20,6 @@
 #include "scene_types.h"
 #include "object_types.h"
 
-u8 *itemFindNearest(f32 *, f32, f32, f32, f32, s32, s32, s32, s32); /* extern */
 s32 itemCanBePickedUp(u8 *, s32);                                     /* extern */
 
 

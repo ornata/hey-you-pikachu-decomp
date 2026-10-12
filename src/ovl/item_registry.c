@@ -1,3 +1,4 @@
+#include "item_search.h"
 #include "item_queries.h"
 #include "camera_view.h"
 #include "collision_registration.h"
@@ -42,20 +43,25 @@ SearchTree gItemSearchTree;
 /// \note Original identifier: \c D_80134040 (0x80134040).
 s32 gLiveItemCount;
 s32 D_80134040_0;
-/* Search state initialized by 80113130 and consumed by 80112FC0. The
- * 0x30-byte transform is also addressed through the interior symbol 80134060. */
-typedef struct {
-    /* 0x00 */ u8 *best;
-    /* 0x04 */ f32 bestDistance;
-    /* 0x08 */ f32 origin[3];
-    /* 0x14 */ f32 maxDistance;
-    /* 0x18 */ f32 transform[12];
-    /* 0x48 */ f32 cone;
-    /* 0x4C */ s32 minKind;
-    /* 0x50 */ s32 maxKind;
-    /* 0x54 */ s32 filter;
-    /* 0x58 */ s32 weightEnabled;
+/// Shared traversal state for a single nearest-item query.
+/// Origin and view transform also have retained interior linker symbols.
+typedef struct ItemQueryState {
+    /* 0x00 */ u8 *best; ///< Borrowed best eligible live item, or null.
+    /* 0x04 */ f32 bestDistance; ///< Best score after optional search-priority adjustment.
+    /* 0x08 */ f32 origin[3]; ///< Copied world-space query origin.
+    /* 0x14 */ f32 maxDistance; ///< Maximum unweighted approximate distance.
+    /* 0x18 */ f32 transform[12]; ///< View transform for angular eligibility.
+    /* 0x48 */ f32 cone; ///< Maximum absolute viewing yaw offset in degrees.
+    /* 0x4C */ s32 minKind; ///< Inclusive lower kind bound.
+    /* 0x50 */ s32 maxKind; ///< Inclusive upper kind bound.
+    /* 0x54 */ s32 filter; ///< Required hold state, or six to accept every state.
+    /* 0x58 */ s32 weightEnabled; ///< Nonzero enables search-priority adjustment.
 } ItemQueryState;
+
+typedef char ItemQueryStateSizeCheck[(sizeof(ItemQueryState) == 0x5C) ? 1 : -1];
+typedef char ItemQueryOriginOffsetCheck[(((u32)&((ItemQueryState *)0)->origin) == 8) ? 1 : -1];
+typedef char ItemQueryTransformOffsetCheck[(((u32)&((ItemQueryState *)0)->transform) == 0x18) ? 1 : -1];
+typedef char ItemQueryWeightOffsetCheck[(((u32)&((ItemQueryState *)0)->weightEnabled) == 0x58) ? 1 : -1];
 /// Shared nearest-item query context; traversal must not be reentered.
 /// \note Original identifier: \c D_80134048 (0x80134048).
 ItemQueryState gItemNearestSearch;
@@ -66,12 +72,16 @@ ItemQueryState gItemNearestSearch;
 
 
 
-/* Kind-number range per category, tested by itemKindIsInCategory. */
-typedef struct {
-    /* 0x0 */ s32 unk0;
-    /* 0x4 */ s32 lo;
-    /* 0x8 */ s32 hi;
-} ItemRange;
+/// Inclusive item-kind bounds associated with a category identifier.
+typedef struct ItemCategoryRange {
+    s32 category; ///< Category identifier corresponding to the table index.
+    s32 minimumKind; ///< Inclusive first item kind in the category.
+    s32 maximumKind; ///< Inclusive last item kind in the category.
+} ItemCategoryRange;
+
+typedef char ItemCategoryRangeSizeCheck[(sizeof(ItemCategoryRange) == 0xC) ? 1 : -1];
+typedef char ItemCategoryMinimumOffsetCheck[(((u32)&((ItemCategoryRange *)0)->minimumKind) == 4) ? 1 : -1];
+typedef char ItemCategoryMaximumOffsetCheck[(((u32)&((ItemCategoryRange *)0)->maximumKind) == 8) ? 1 : -1];
 
 void baseballCapUpdateHeldVisibility(u8 *);
 void baseballCapResetReleasedScale(u8 *, s32);
@@ -1667,7 +1677,7 @@ ItemKind gItemKinds[166] = {
 
 /// Inclusive item-kind ranges used by category membership queries.
 /// \note Original identifier: \c D_8012A578 (0x8012A578).
-ItemRange gItemCategoryRanges[19] = {
+ItemCategoryRange gItemCategoryRanges[19] = {
     { 0x0, 0x0, 0x0 },
     { 0x1, 0x1, 0x8 },
     { 0x2, 0x1, 0x4 },
@@ -1796,8 +1806,7 @@ void matrix34Identity(void *);
 /// live.
 ///
 /// \note Requires an initialized registry and finite query values. Uses shared query state and must not be
-/// reentered during traversal. Portability: the view-transform address is passed as a 32-bit integer; the
-/// selected-state assignment preserves the original IDO register allocation.
+/// reentered during traversal. The selected-state assignment preserves the original IDO register allocation.
 /// \note Original decompilation identifier: \c func_80113130 (0x80113130).
 u8 *itemFindNearest(f32 *origin, f32 maxDistance, f32 pitch, f32 yaw, f32 cone, s32 minKind, s32 maxKind, s32 filter,
                   s32 weightEnabled) {
@@ -2988,9 +2997,9 @@ s32 itemGetAvailableSlots(void) {
 /// \returns One if the kind belongs to the category, or zero otherwise.
 /// \note Original decompilation identifier: \c func_80114FD4 (0x80114FD4).
 s32 itemKindIsInCategory(s32 kind, s32 category) {
-    ItemRange *r = &gItemCategoryRanges[category];
+    ItemCategoryRange *r = &gItemCategoryRanges[category];
 
-    if ((kind >= r->lo) && (r->hi >= kind)) {
+    if ((kind >= r->minimumKind) && (r->maximumKind >= kind)) {
         return 1;
     }
     return 0;
