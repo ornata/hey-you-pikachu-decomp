@@ -166,6 +166,15 @@ extern s32 gMotionArchiveOffsets[];
 /// Archive-relative offsets of per-motion object track tables.
 /// \note Original identifier: \c D_80077048 (0x80077048).
 extern s32 gMotionTrackTableOffsets[];
+/// Archive entry selecting one object's motion channels.
+/// Entries end with a nonpositive object kind; offsets are relative to the cached archive base.
+typedef struct MotionPartTrackEntry {
+    s32 objectKind; ///< Positive object kind; kinds below 0x26 select root motion, others identify child parts.
+    s32 curvesOffset; ///< Archive-relative offset of three rotation descriptors, followed by three movement descriptors for roots.
+} MotionPartTrackEntry;
+
+typedef char MotionPartTrackEntrySizeCheck[(sizeof(MotionPartTrackEntry) == 8) ? 1 : -1];
+
 /// Start the current motion for an object and its animated children.
 /// \param object Object with initialized motion and part state and a valid selected motion; the shared motion cache must be initialized.
 /// \returns Nothing.
@@ -173,7 +182,7 @@ extern s32 gMotionTrackTableOffsets[];
 void motionStartTrackPlayback(u8 *object) {
     u8 *state;
     s32 base;
-    s32 *entry;
+    MotionPartTrackEntry *entry;
     u8 *childState;
     f32 rotation[3];
     u8 *child;
@@ -184,49 +193,49 @@ void motionStartTrackPlayback(u8 *object) {
     TRACE("motionNum:%d\n", ((ActorScriptState *)state)->motionId);
     TRACE("  %s\n", ((ActorScriptState *)state)->actionName);
     motionSetPlaybackMode(object, MOTION_PLAYBACK_DISABLED);
-    *(f32 *)(state + 0x130) = ((ActorScriptState *)state)->actionMovementScale;
+    ((ActorScriptState *)state)->movementScale = ((ActorScriptState *)state)->actionMovementScale;
     duration = gMotionDurations[((ActorScriptState *)state)->motionId];
-    *(f32 *)(state + 0x134) = duration;
-    *(f32 *)(state + 0x138) = duration;
+    ((ActorScriptState *)state)->motionDuration = duration;
+    ((ActorScriptState *)state)->motionRemaining = duration;
     base = motionCacheReadBlocking(&gMotionRomCache, ((ActorScriptState *)state)->motionId);
-    entry = (s32 *)(gMotionTrackTableOffsets[((ActorScriptState *)state)->motionId] + base);
-    *(f32 *)(state + 8) = *(f32 *)(base + gMotionArchiveOffsets[((ActorScriptState *)state)->motionId]) * *(f32 *)(object + 4);
-    *(f32 *)(state + 4) = *(f32 *)(state + 8);
-    while (entry[0] > 0) {
-        if (entry[0] > 0 && entry[0] < 0x26) {
+    entry = (MotionPartTrackEntry *)(gMotionTrackTableOffsets[((ActorScriptState *)state)->motionId] + base);
+    ((ActorScriptState *)state)->defaultPoseOffset = *(f32 *)(base + gMotionArchiveOffsets[((ActorScriptState *)state)->motionId]) * *(f32 *)(object + 4);
+    ((ActorScriptState *)state)->verticalPoseOffset = ((ActorScriptState *)state)->defaultPoseOffset;
+    while (entry->objectKind > 0) {
+        if (entry->objectKind > 0 && entry->objectKind < 0x26) {
             ((ActorScriptState *)state)->playbackMode = MOTION_PLAYBACK_TRACKS;
             {
                 u8 *data = (u8 *)base;
-                data += entry[1];
+                data += entry->curvesOffset;
                 animationTrack3Initialize(&((ActorScriptState *)state)->rootPlayback.orientationTrack, (AnimationCurveDescriptor *)data, base);
             }
             {
                 u8 *data = (u8 *)base;
-                data += entry[1];
+                data += entry->curvesOffset;
                 data += 0x18;
                 animationDeltaTrack3Initialize(&((ActorScriptState *)state)->rootMovementTrack, (AnimationCurveDescriptor *)data, base);
             }
             rotation[0] = 0.0f;
             rotation[1] = 0.0f;
             rotation[2] = 0.0f;
-            _bzero(state + 0x2E4, 0xC);
+            _bzero(((ActorScriptState *)state)->rootMovementTrack.previousValues, sizeof(((ActorScriptState *)state)->rootMovementTrack.previousValues));
             animationDeltaTrack3Evaluate(&((ActorScriptState *)state)->rootMovementTrack, rotation, NULL, 0.0f);
             animationTrack3Evaluate(&((ActorScriptState *)state)->rootPlayback.orientationTrack, position, NULL, 0.0f);
             matrix34MakeRotationXYZDegrees((f32 *)&((ActorScriptState *)state)->rootMotionTransform, position[0], position[1], position[2]);
             motionExtractHeadingFromMatrix((f32 *)&((ActorScriptState *)state)->rootMotionTransform, &((ActorScriptState *)state)->rootMotionHeading);
         } else {
-            child = actorFindPart(object, entry[0]);
+            child = actorFindPart(object, entry->objectKind);
             if (child != NULL) {
                 childState = *(u8 **)(child + 0x54);
                 ((ChildMotionState *)childState)->playbackMode = MOTION_PLAYBACK_TRACKS;
                 {
                     u8 *data = (u8 *)base;
-                    data += entry[1];
+                    data += entry->curvesOffset;
                     animationTrack3Initialize(&((ChildMotionState *)childState)->playback.rotationTrack, (AnimationCurveDescriptor *)data, base);
                 }
             }
         }
-        entry += 2;
+        entry++;
     }
     actionRequestMotionData(((ActorScriptState *)state)->continuationAction);
 }
@@ -278,9 +287,6 @@ void motionEvaluateChildRotation(u8 *obj, u8 *track, f32 step) {
     }
 }
 
-typedef struct Pair8 {
-    s32 a, b;
-} Pair8;
 /// Start a transition from the current pose to the initial pose of the selected motion.
 /// \param object Object with initialized motion and part state, a valid selected motion, and a positive transition duration in seconds.
 /// \returns Nothing.
@@ -291,7 +297,7 @@ void motionStartPoseTransition(u8 *object) {
     u8 *state;
     s32 base;
     f32 rotation[3];
-    Pair8 *entry;
+    MotionPartTrackEntry *entry;
     f32 angles[3];
     Matrix34 *from;
     Matrix34 *current;
@@ -305,20 +311,20 @@ void motionStartPoseTransition(u8 *object) {
 
     state = *(u8 **)(object + 0x54);
     motionCacheRead(&gMotionRomCache, ((ActorScriptState *)state)->motionId, &base);
-    entry = (Pair8 *)(gMotionTrackTableOffsets[((ActorScriptState *)state)->motionId] + base);
+    entry = (MotionPartTrackEntry *)(gMotionTrackTableOffsets[((ActorScriptState *)state)->motionId] + base);
     duration = ((ActorScriptState *)state)->actionMovementScale;
-    *(f32 *)(state + 0x134) = duration;
-    *(f32 *)(state + 0x138) = duration;
-    *(f32 *)(state + 0x130) = blendWeight;
+    ((ActorScriptState *)state)->motionDuration = duration;
+    ((ActorScriptState *)state)->motionRemaining = duration;
+    ((ActorScriptState *)state)->movementScale = blendWeight;
     motionSetPlaybackMode(object, MOTION_PLAYBACK_DISABLED);
     motionCacheReadBlocking(&gMotionRomCache, ((ActorScriptState *)state)->motionId);
-    *(f32 *)(state + 8) = *(f32 *)(base + gMotionArchiveOffsets[((ActorScriptState *)state)->motionId]) * *(f32 *)(object + 4);
-    while (entry->a > 0) {
-        if (entry->a > 0 && entry->a < rootKindLimit) {
+    ((ActorScriptState *)state)->defaultPoseOffset = *(f32 *)(base + gMotionArchiveOffsets[((ActorScriptState *)state)->motionId]) * *(f32 *)(object + 4);
+    while (entry->objectKind > 0) {
+        if (entry->objectKind > 0 && entry->objectKind < rootKindLimit) {
             ((ActorScriptState *)state)->playbackMode = rotationMode;
             from = ((ActorScriptState *)state)->rootPlayback.posePair;
             current = (Matrix34 *)&((ActorScriptState *)state)->rootMotionTransform;
-            animationTrack3Initialize(&track, (AnimationCurveDescriptor *)((u8 *)base + entry->b), base);
+            animationTrack3Initialize(&track, (AnimationCurveDescriptor *)((u8 *)base + entry->curvesOffset), base);
             animationTrack3Evaluate(&track, rotation, 0, transformTime);
             *from = *current;
             current = from + 1;
@@ -326,11 +332,11 @@ void motionStartPoseTransition(u8 *object) {
             motionExtractHeadingFromMatrix((f32 *)current, angles);
             ((ActorScriptState *)state)->rootMotionHeading = 0.0f;
         } else {
-            child = actorFindPart(object, entry->a);
+            child = actorFindPart(object, entry->objectKind);
             if (child != NULL) {
                 childState = *(u8 **)(child + 0x54);
                 ((ChildMotionState *)childState)->playbackMode = rotationMode;
-                animationTrack3Initialize(&track, (AnimationCurveDescriptor *)((u8 *)base + entry->b), base);
+                animationTrack3Initialize(&track, (AnimationCurveDescriptor *)((u8 *)base + entry->curvesOffset), base);
                 animationTrack3Evaluate(&track, childRotation, 0, transformTime);
                 from = ((ChildMotionState *)childState)->playback.posePair;
                 matrix34MakeRotationXYZDegrees((f32 *)from, *(f32 *)(child + 0xC), *(f32 *)(child + 0x10), *(f32 *)(child + 0x14));

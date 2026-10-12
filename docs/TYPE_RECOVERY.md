@@ -2449,3 +2449,17 @@ and the fallback coordinates at actor offsets 0x1EC through 0x1F4. The lifecycle
 functions have no external C callers in the current tree; no additional shared
 header is required for those private interfaces. All converted accesses match
 the immutable 483-object baseline.
+
+### Motion archive part entries
+
+Track playback and pose transitions now share a private, checked eight-byte
+`MotionPartTrackEntry` with object kind and archive-relative curve offset.
+Nonpositive kinds terminate the table, root kinds are below 0x26, and child
+kinds select model parts. This record remains distinct from curve descriptors.
+Ghidra 0x8000E208 confirms the entry stride and root movement descriptors
+following the rotation descriptors at +0x18.
+
+Playback timing, vertical/default pose offsets and movement-history clearing
+now use checked actor fields throughout the affected motion unit. These changes
+preserve the complete strict object baseline without changing expressions or
+playback control flow.
