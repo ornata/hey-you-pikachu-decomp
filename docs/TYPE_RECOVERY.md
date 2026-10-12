@@ -1918,3 +1918,14 @@ relocation boundaries. The provider uses named shared eye, target and up fields
 while retaining its grouped position stores for matching scheduling. Ghidra
 0x800009C4 confirms coordinate stores and angle consumers. All three source units
 preserve all 483 objects and strict relocation addends.
+
+### Camera overlay layout recovery
+
+The shared camera record now names the primary blended output, base transition,
+additional blend transition and independently drawn secondary transition, including
+RGBA targets and remaining-time fields. The existing 0xE0 size and added offsets
+check the drawing colors at 0xB8, 0xC0, 0xCC and 0xD8. Set/reset, update and drawing
+consumers use these fields without changing their expression ordering. Ghidra
+0x8000114C confirms the three transition calls and final color blend; source
+producers establish their distinct roles. Existing primary-camera interior aliases
+retain their symbol boundaries. All 483 objects and strict relocations match.

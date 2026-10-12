@@ -550,17 +550,17 @@ void cameraUpdateOverlayColors(s32 cameraIndex, s32 advanceBlend) {
     u8 *cameraState;
 
     cameraState = gRenderCameras + cameraIndex * 0xE0;
-    colorAdvanceTransition(cameraState + 0xD8, cameraState + 0xD4, (f32 *)(cameraState + 0xDC));
-    colorAdvanceTransition(cameraState + 0xC0, cameraState + 0xBC, (f32 *)(cameraState + 0xC4));
+    colorAdvanceTransition(((MatrixCamera *)cameraState)->secondaryOverlayColor, ((MatrixCamera *)cameraState)->targetSecondaryOverlayColor, &((MatrixCamera *)cameraState)->secondaryOverlayTimeRemaining);
+    colorAdvanceTransition(((MatrixCamera *)cameraState)->baseOverlayColor, ((MatrixCamera *)cameraState)->targetBaseOverlayColor, &((MatrixCamera *)cameraState)->baseOverlayTimeRemaining);
     if (advanceBlend != 0) {
-        colorAdvanceTransition(cameraState + 0xCC, cameraState + 0xC8, (f32 *)(cameraState + 0xD0));
+        colorAdvanceTransition(((MatrixCamera *)cameraState)->blendOverlayColor, ((MatrixCamera *)cameraState)->targetBlendOverlayColor, &((MatrixCamera *)cameraState)->blendOverlayTimeRemaining);
     }
-    cameraState[0xB8] = cameraState[0xC0];
-    cameraState[0xB9] = cameraState[0xC1];
-    cameraState[0xBA] = cameraState[0xC2];
-    cameraState[0xBB] = cameraState[0xC3];
-    colorBlendToward(cameraState + 0xB8, cameraState + 0xCC,
-                     (f32)(0xFF - cameraState[0xCF]) * gOverlayAlphaWeightScale);
+    ((MatrixCamera *)cameraState)->overlayColor[0] = ((MatrixCamera *)cameraState)->baseOverlayColor[0];
+    ((MatrixCamera *)cameraState)->overlayColor[1] = ((MatrixCamera *)cameraState)->baseOverlayColor[1];
+    ((MatrixCamera *)cameraState)->overlayColor[2] = ((MatrixCamera *)cameraState)->baseOverlayColor[2];
+    ((MatrixCamera *)cameraState)->overlayColor[3] = ((MatrixCamera *)cameraState)->baseOverlayColor[3];
+    colorBlendToward(((MatrixCamera *)cameraState)->overlayColor, ((MatrixCamera *)cameraState)->blendOverlayColor,
+                     (f32)(0xFF - ((MatrixCamera *)cameraState)->blendOverlayColor[3]) * gOverlayAlphaWeightScale);
 }
 
 /// Segmented shared display list drawing the camera overlay rectangle.
@@ -571,12 +571,12 @@ extern Gfx gCameraOverlayRectangleDisplayList[];
 /// \returns Nothing.
 void cameraDrawOverlay(s32 index) {
     u8 *camera = gRenderCameras + index * 0xE0;
-    if (camera[0xBB] != 0) {
+    if (((MatrixCamera *)camera)->overlayColor[3] != 0) {
         gDPPipeSync(gRenderDisplayListCursor++);
         gDPSetCycleType(gRenderDisplayListCursor++, G_CYC_1CYCLE);
         gDPSetRenderMode(gRenderDisplayListCursor++, G_RM_AA_XLU_SURF, G_RM_AA_XLU_SURF2);
         gDPSetCombineMode(gRenderDisplayListCursor++, G_CC_PRIMITIVE, G_CC_PRIMITIVE);
-        gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, camera[0xB8], camera[0xB9], camera[0xBA], camera[0xBB]);
+        gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, ((MatrixCamera *)camera)->overlayColor[0], ((MatrixCamera *)camera)->overlayColor[1], ((MatrixCamera *)camera)->overlayColor[2], ((MatrixCamera *)camera)->overlayColor[3]);
         gSPDisplayList(gRenderDisplayListCursor++, gCameraOverlayRectangleDisplayList);
     }
 }
@@ -586,12 +586,12 @@ void cameraDrawOverlay(s32 index) {
 /// \returns Nothing.
 void cameraDrawSecondaryOverlay(s32 index) {
     u8 *camera = gRenderCameras + index * 0xE0;
-    if (camera[0xDB] != 0) {
+    if (((MatrixCamera *)camera)->secondaryOverlayColor[3] != 0) {
         gDPPipeSync(gRenderDisplayListCursor++);
         gDPSetCycleType(gRenderDisplayListCursor++, G_CYC_1CYCLE);
         gDPSetRenderMode(gRenderDisplayListCursor++, G_RM_AA_XLU_SURF, G_RM_AA_XLU_SURF2);
         gDPSetCombineMode(gRenderDisplayListCursor++, G_CC_PRIMITIVE, G_CC_PRIMITIVE);
-        gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, camera[0xD8], camera[0xD9], camera[0xDA], camera[0xDB]);
+        gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, ((MatrixCamera *)camera)->secondaryOverlayColor[0], ((MatrixCamera *)camera)->secondaryOverlayColor[1], ((MatrixCamera *)camera)->secondaryOverlayColor[2], ((MatrixCamera *)camera)->secondaryOverlayColor[3]);
         gSPDisplayList(gRenderDisplayListCursor++, gCameraOverlayRectangleDisplayList);
     }
 }

@@ -22,8 +22,17 @@ typedef struct {
     CameraMatrix scaled; ///< World-to-view transform scaled for view-region queries.
     f32 distance;        ///< Area-dependent distance used for view-region scaling.
     u8 unknown08C[0x1C];
-    s32 viewport[4]; ///< Pixel rectangle used to construct the viewport.
-    u8 unknown0B8[0x28];
+    s32 viewport[4];                   ///< Pixel rectangle used to construct the viewport.
+    u8 overlayColor[4];                ///< Blended primary overlay RGBA used for drawing.
+    u8 targetBaseOverlayColor[4];      ///< Requested base overlay RGBA.
+    u8 baseOverlayColor[4];            ///< Current base overlay RGBA.
+    f32 baseOverlayTimeRemaining;      ///< Seconds remaining in the base overlay transition.
+    u8 targetBlendOverlayColor[4];     ///< Requested additional blend RGBA.
+    u8 blendOverlayColor[4];           ///< Current additional blend RGBA; alpha controls its contribution.
+    f32 blendOverlayTimeRemaining;     ///< Seconds remaining in the additional blend transition.
+    u8 targetSecondaryOverlayColor[4]; ///< Requested independently drawn secondary RGBA.
+    u8 secondaryOverlayColor[4];       ///< Current independently drawn secondary RGBA.
+    f32 secondaryOverlayTimeRemaining; ///< Seconds remaining in the secondary overlay transition.
 } MatrixCamera;
 
 typedef char CameraMatrixSizeCheck[(sizeof(CameraMatrix) == 0x30) ? 1 : -1];
@@ -31,5 +40,11 @@ typedef char MatrixCameraSizeCheck[(sizeof(MatrixCamera) == 0xE0) ? 1 : -1];
 typedef char MatrixCameraMatricesOffsetCheck[(((u32) & (((MatrixCamera *)0)->matrices)) == 0x24) ? 1 : -1];
 typedef char MatrixCameraViewOffsetCheck[(((u32) & (((MatrixCamera *)0)->view)) == 0x28) ? 1 : -1];
 typedef char MatrixCameraViewportOffsetCheck[(((u32) & (((MatrixCamera *)0)->viewport)) == 0xA8) ? 1 : -1];
+
+typedef char MatrixCameraOverlayOffsetCheck[(((u32) & (((MatrixCamera *)0)->overlayColor)) == 0xB8) ? 1 : -1];
+typedef char MatrixCameraBaseOverlayOffsetCheck[(((u32) & (((MatrixCamera *)0)->baseOverlayColor)) == 0xC0) ? 1 : -1];
+typedef char MatrixCameraBlendOverlayOffsetCheck[(((u32) & (((MatrixCamera *)0)->blendOverlayColor)) == 0xCC) ? 1 : -1];
+typedef char
+    MatrixCameraSecondaryOverlayOffsetCheck[(((u32) & (((MatrixCamera *)0)->secondaryOverlayColor)) == 0xD8) ? 1 : -1];
 
 #endif

@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 3432,
-      "unique_spellings": 1284,
+      "occurrences": 3421,
+      "unique_spellings": 1274,
       "files": 80
     }
   },
@@ -6633,37 +6633,6 @@
           ],
           "gPlayerYaw + 180": [
             "348:56"
-          ],
-          "cameraState + 0xD8": [
-            "553:28"
-          ],
-          "cameraState + 0xD4": [
-            "553:48"
-          ],
-          "cameraState + 0xDC": [
-            "553:76"
-          ],
-          "cameraState + 0xC0": [
-            "554:28"
-          ],
-          "cameraState + 0xBC": [
-            "554:48"
-          ],
-          "cameraState + 0xC4": [
-            "554:76"
-          ],
-          "cameraState + 0xCC": [
-            "556:32",
-            "562:42"
-          ],
-          "cameraState + 0xC8": [
-            "556:52"
-          ],
-          "cameraState + 0xD0": [
-            "556:80"
-          ],
-          "cameraState + 0xB8": [
-            "562:22"
           ],
           "sp20 + 0xC4": [
             "678:51"
