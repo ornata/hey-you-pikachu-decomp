@@ -1,3 +1,4 @@
+#include "actor_movement.h"
 #include "object_transform.h"
 #include "item_search.h"
 #include "object_distance.h"
@@ -661,7 +662,6 @@ s32 actorScriptGetRotationCoordinate(u8 *actor) {
     return 0;
 }
 
-f32 actionScriptGetElapsedTime(u8 *);         /* extern */
 
 /// Push the elapsed time of the actor's current action script.
 /// \param actor Actor whose script VM receives elapsed action time in seconds.
@@ -675,7 +675,6 @@ s32 actorScriptPushActionElapsedTime(u8 *actor) {
     return 0;
 }
 
-f32 actionScriptGetDuration(u8 *);         /* extern */
 
 /// Push the time limit of the actor's current action script.
 /// \param actor Actor whose script VM receives the action time limit in seconds; a negative value indicates no limit.
@@ -689,7 +688,6 @@ s32 actorScriptPushActionDuration(u8 *actor) {
     return 0;
 }
 
-s32 actionScriptGetId(u8 *); /* extern */
 
 /// Push the identifier of the actor's current action script.
 /// \param actor Actor whose script VM receives the action script identifier, or -1 when stopped.
@@ -703,7 +701,6 @@ s32 actorScriptPushActionId(u8 *actor) {
     return 0;
 }
 
-u16 actorGetMovementCollisionFlags(u8 *); /* extern */
 
 /// Push the actor's latest movement collision status.
 /// \param actor Actor whose script VM receives the collision flags, or zero when no collision was reported.

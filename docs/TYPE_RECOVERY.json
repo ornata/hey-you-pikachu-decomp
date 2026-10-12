@@ -6278,6 +6278,7 @@
       "known_views": [
         "action_script_playback.h",
         "actor_held_item.h",
+        "actor_movement.h",
         "actor_rotation.h",
         "actor_script.h",
         "actor_script_action.h",
@@ -6301,10 +6302,10 @@
       "locations": {
         "raw_offset_candidates": {
           "actor + 0xC": [
-            "660:38"
+            "661:38"
           ],
           "gPlayerCompanionTarget - 0x50": [
-            "1360:57"
+            "1357:57"
           ]
         }
       }
@@ -6314,6 +6315,7 @@
         "action_query.h",
         "action_script_playback.h",
         "actor_held_item.h",
+        "actor_movement.h",
         "actor_script.h",
         "actor_target.h",
         "camera_pose.h",
@@ -6343,30 +6345,30 @@
       "locations": {
         "raw_offset_candidates": {
           "return -1": [
-            "82:9"
+            "83:9"
           ],
           "return -65536": [
-            "149:5",
-            "161:5",
-            "611:9",
-            "617:5",
-            "832:5",
-            "917:5",
-            "968:5",
-            "989:5",
-            "1008:5"
+            "150:5",
+            "162:5",
+            "612:9",
+            "618:5",
+            "833:5",
+            "918:5",
+            "969:5",
+            "990:5",
+            "1009:5"
           ],
           "gPlayerControllerPort + 4": [
-            "551:14"
+            "552:14"
           ],
           "gPlayerControllerPort + 6": [
-            "559:21"
+            "560:21"
           ],
           "offset + 4": [
-            "948:64"
+            "949:64"
           ],
           "offset + 8": [
-            "949:64"
+            "950:64"
           ]
         }
       }

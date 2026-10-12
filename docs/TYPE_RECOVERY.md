@@ -2972,3 +2972,13 @@ confirms the signed upper-bound check: negative axes remain unsupported,
 not silently accepted by the documented contract. Both object-coordinate
 providers now name world-position members. Message and world-script users
 share canonical declarations; all changed units preserve strict objects.
+
+### Action-script and movement-result status contracts
+
+`action_script_playback.h` consolidates elapsed time, duration and current
+script ID queries, preserving seconds, the negative unlimited-duration
+convention and stopped ID of minus one. `actor_movement.h` owns the unsigned
+halfword movement-collision result query. Ghidra 0x80117500 confirms the
+halfword at actor-state offset 0x1EA; this interface preserves its bits rather
+than inventing flag semantics. Message commands share provider declarations.
+All affected units preserve strict allocated bytes and relocations.

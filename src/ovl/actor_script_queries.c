@@ -1,3 +1,4 @@
+#include "actor_movement.h"
 #include "object_transform.h"
 #include "object_distance.h"
 #include "actor_held_item.h"

@@ -46,4 +46,22 @@ void actionScriptStartWithDurationBits(u8 *object, s32 scriptId, f32 duration);
 /// \see actorScriptStartActionAndWait
 s32 actionScriptUpdate(u8 *object);
 
+/// Get the elapsed time of an object's current action script.
+/// \param object Object whose action script is queried.
+/// \returns The elapsed script time in seconds.
+/// \note Original decompilation identifier: \c func_801174DC (0x801174DC).
+f32 actionScriptGetElapsedTime(u8 *object);
+
+/// Get the time limit of an object's current action script.
+/// \param object Object whose action script is queried.
+/// \returns The script time limit in seconds; a negative value indicates no limit.
+/// \note Original decompilation identifier: \c func_801174E8 (0x801174E8).
+f32 actionScriptGetDuration(u8 *object);
+
+/// Get the identifier of an object's current action script.
+/// \param object Object whose action script is queried.
+/// \returns The current script identifier, or -1 when the script is stopped.
+/// \note Original decompilation identifier: \c func_801174F4 (0x801174F4).
+s32 actionScriptGetId(u8 *object);
+
 #endif
