@@ -849,3 +849,19 @@ canonical pointer prototype changes ROM bytes. Ground-shadow default-part lookup
 retains an unused second argument from the ROM. Both exceptions are recorded
 rather than hidden by casts or changed compiler flags. All accepted units match
 the preserved object baseline.
+
+### Shared affine matrices and hierarchy queue boundaries
+
+Hierarchy traversal, actor motion and matrix math now use one checked Matrix34
+layout: 0x30 bytes with translation at 0x24. The traversal global is the full
+affine matrix rather than a three-component vector. Saved traversal entries use
+the same type; Ghidra at 0x80007F34 confirms the 0x30-byte stack copy stride.
+The matrix identity declaration agrees with its producer, and scale-only calls
+pass the linear-basis storage explicitly. All changed units match the baseline.
+
+The private buffered cartridge reader passes its typed completion queue and
+message fields to libultra. Their 0x418 and 0x430 offsets are now checked, in
+addition to the existing total-size and buffer-offset checks. Ghidra at
+0x800076E0 confirms these SDK boundary addresses. Optional object-state release
+uses the pointer union view, preserving its existing ownership and invalidation
+contract.

@@ -1,6 +1,7 @@
 #include "keyed_pool.h"
 #include "heap_free.h"
 #include "common.h"
+#include "matrix_types.h"
 #include "object_audio.h"
 #include "integer_animation.h"
 #include "keyed_pool_types.h"
@@ -20,7 +21,7 @@
 typedef struct Vec3f {
     f32 x, y, z;
 } Vec3f;
-void matrix34Identity(Vec3f *);
+void matrix34Identity(Matrix34 *);
 f32 vector3LengthApprox(Vec3f *);
 
 
@@ -42,7 +43,7 @@ void searchTreeFind(void *, void *);
 extern Vec3f gObjectPendingLocalMovement;
 /// Current affine world transform shared by hierarchy traversal and actor motion consumers.
 /// \note Original identifier: \c D_800AD9E0 (0x800AD9E0).
-extern Vec3f gObjectTraversalTransform;
+extern Matrix34 gObjectTraversalTransform;
 void matrix34TranslateLocal(void *, f32, f32, f32);          /* extern */
 void matrix33ApplyRotationXYZDegrees(void *, f32, f32, f32); /* extern */
 void matrix33ScaleLocal(void *, f32, f32, f32);              /* extern */
@@ -52,19 +53,16 @@ void objectAllocateHierarchyMatrixBuffers(s32);
 /// Segmented shared display list preparing object hierarchy drawing.
 /// \note Original identifier: \c D_100C890 (0x100C890).
 extern u8 gObjectDrawSetupDisplayList[];
-typedef struct Mtx48 {
-    s32 w[12];
-} Mtx48;
 /// Saved affine transforms for nested object hierarchy traversal.
 /// \note Original identifier: \c D_800ADA20 (0x800ADA20).
-extern Mtx48 gObjectTransformStack[];
+extern Matrix34 gObjectTransformStack[];
 /// Number of saved object traversal transforms.
 /// \note Original identifier: \c D_800AE380 (0x800AE380).
 extern s32 gObjectTransformStackDepth;
 void objectResetTraversalTransformAndMovement(void);
-void objectTransformStackPush(Mtx48 *);
-void objectTransformStackPop(Mtx48 *);
-void objectTransformStackPeek(Mtx48 *);
+void objectTransformStackPush(Matrix34 *);
+void objectTransformStackPop(Matrix34 *);
+void objectTransformStackPeek(Matrix34 *);
 s32 objectAccumulateHierarchyCount(u8 *, s32);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
@@ -158,6 +156,8 @@ typedef struct ManagedObject {
 } ManagedObject;
 
 typedef char RomByteReaderSizeCheck[(sizeof(RomByteReader) == 0x438) ? 1 : -1];
+typedef char RomReaderQueueOffsetCheck[((u32)&((RomByteReader *)0)->queue == 0x418) ? 1 : -1];
+typedef char RomReaderCompletionOffsetCheck[((u32)&((RomByteReader *)0)->completion == 0x430) ? 1 : -1];
 typedef char RomReaderBufferOffsetCheck[((u32)&((RomByteReader *)0)->alignedBuffer == 0x414) ? 1 : -1];
 typedef char ManagedObjectSizeCheck[(sizeof(ManagedObject) == 0x68) ? 1 : -1];
 typedef char ManagedObjectEntryOffsetCheck[((u32)&((ManagedObject *)0)->entry == 0x58) ? 1 : -1];
@@ -193,7 +193,7 @@ u8 *romTableResolveEntry(u8 *base, s32 idx) {
 s32 romByteReaderInitialize(u8 *reader) {
     ((RomByteReader *)reader)->windowStart = 0x80000000;
     ((RomByteReader *)reader)->alignedBuffer = (s32)(((u32)(reader + 0x13) >> 4) * 0x10);
-    osCreateMesgQueue(reader + 0x418, reader + 0x430, 1);
+    osCreateMesgQueue(&((RomByteReader *)reader)->queue, &((RomByteReader *)reader)->completion, 1);
     return 0;
 }
 
@@ -585,7 +585,7 @@ s32 objectAccumulateHierarchyCount(u8 *object, s32 count) {
 /// \param transform Transform to save; the stack must have available capacity.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80007F34 (0x80007F34).
-void objectTransformStackPush(Mtx48 *transform) {
+void objectTransformStackPush(Matrix34 *transform) {
     gObjectTransformStack[gObjectTransformStackDepth] = *transform;
     gObjectTransformStackDepth += 1;
 }
@@ -594,7 +594,7 @@ void objectTransformStackPush(Mtx48 *transform) {
 /// \param transform Output receiving the saved transform; the stack must be nonempty.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80007F90 (0x80007F90).
-void objectTransformStackPop(Mtx48 *transform) {
+void objectTransformStackPop(Matrix34 *transform) {
     gObjectTransformStackDepth -= 1;
     *transform = gObjectTransformStack[gObjectTransformStackDepth];
 }
@@ -603,7 +603,7 @@ void objectTransformStackPop(Mtx48 *transform) {
 /// \param transform Output receiving the saved transform; the stack must be nonempty.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80007FF0 (0x80007FF0).
-void objectTransformStackPeek(Mtx48 *transform) {
+void objectTransformStackPeek(Matrix34 *transform) {
     *transform = gObjectTransformStack[gObjectTransformStackDepth - 1];
 }
 
@@ -983,9 +983,9 @@ u8 *objectRegisterActiveHierarchy(u8 *object) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800086E0 (0x800086E0).
 void objectReleaseStateAllocation(u8 *object) {
-    s32 objectState;
+    void *objectState;
 
-    objectState = ((RuntimeObjectPrefix *)object)->state.address;
+    objectState = ((RuntimeObjectPrefix *)object)->state.pointer;
     if (objectState != 0) {
         heapFreeLocal(&gGameHeap, objectState);
     }
@@ -1264,7 +1264,7 @@ void objectUpdateHierarchyWorldPositions(u8 *object) {
                 matrix34TranslateLocal(&gObjectTraversalTransform, *((f32 *)(((s8 *)object) + 0x18)),
                                        *((f32 *)(((s8 *)object) + 0x1C)), *((f32 *)(((s8 *)object) + 0x20)));
                 if ((*((u16 *)(((s8 *)object) + 0x36))) & 0x1000) {
-                    matrix33KeepScaleOnly(&gObjectTraversalTransform);
+                    matrix33KeepScaleOnly(gObjectTraversalTransform.m[0]);
                 }
                 if ((*((u16 *)(((s8 *)object) + 0x34))) != 0x64) {
                     matrix33ApplyRotationXYZDegrees(&gObjectTraversalTransform, *((f32 *)(((s8 *)object) + 0xC)),
@@ -1327,7 +1327,7 @@ void objectUpdateHierarchyFromCurrentTransform(u8 *object) {
     f32 offset[3];
     while (object != NULL) {
         if (!(*(u16 *)(object + 0x36) & 0xC0)) {
-            objectTransformStackPush((Mtx48 *)&gObjectTraversalTransform);
+            objectTransformStackPush((Matrix34 *)&gObjectTraversalTransform);
             if (*(u16 *)(object + 0x36) & 0x800) {
                 objectResponsesDispatchAndClear((s32)object);
             }
@@ -1338,7 +1338,7 @@ void objectUpdateHierarchyFromCurrentTransform(u8 *object) {
                 matrix34TranslateLocal(&gObjectTraversalTransform, *(f32 *)(object + 0x18), *(f32 *)(object + 0x1C),
                                        *(f32 *)(object + 0x20));
                 if (*(u16 *)(object + 0x36) & 0x1000) {
-                    matrix33KeepScaleOnly(&gObjectTraversalTransform);
+                    matrix33KeepScaleOnly(gObjectTraversalTransform.m[0]);
                 }
                 if (*(u16 *)(object + 0x34) != 0x64) {
                     matrix33ApplyRotationXYZDegrees(&gObjectTraversalTransform, *(f32 *)(object + 0xC),
@@ -1389,7 +1389,7 @@ void objectUpdateHierarchyFromCurrentTransform(u8 *object) {
             if (*(u8 **)(object + 0x2C) != NULL) {
                 objectUpdateHierarchyFromCurrentTransform(*(u8 **)(object + 0x2C));
             }
-            objectTransformStackPop((Mtx48 *)&gObjectTraversalTransform);
+            objectTransformStackPop((Matrix34 *)&gObjectTraversalTransform);
         }
         object = *(u8 **)(object + 0x28);
     }
@@ -1661,7 +1661,7 @@ f32 objectOrientAlongWorldSegment(u8 *object, u8 *start, u8 *end) {
 /// \note Original decompilation identifier: \c func_800099F4 (0x800099F4).
 f32 objectAdjustPitchAlongWorldSegment(u8 *object, u8 *start, u8 *end) {
     f32 len;
-    Mtx48 m;
+    Matrix34 m;
     f32 v[3];
 
     v[0] = *(f32 *)(end + 0) - *(f32 *)(start + 0);

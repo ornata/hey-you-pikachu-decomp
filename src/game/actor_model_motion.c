@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "matrix_types.h"
 #include "actor_parts.h"
 #include "object_audio.h"
 #include "actor_target.h"
@@ -53,7 +54,7 @@ void matrix33Multiply(u8 *, f32 *, f32 *);
 void matrix33GetFoldedEulerDegrees(f32 *, u8 *, u8 *, u8 *);
 /// Current affine world transform shared by hierarchy traversal and actor motion consumers.
 /// \note Original identifier: \c D_800AD9E0 (0x800AD9E0).
-extern u8 gObjectTraversalTransform[];
+extern Matrix34 gObjectTraversalTransform;
 s32 actorFindPartIndex(s32, s32);
 void actorUpdateAnimatedTextureDrawLists(u8 *, s32);
 void actorSetRotationAxisDegrees(u8 *, f32, s32);
@@ -519,10 +520,6 @@ void actorGetParentTrackingPosition(u8 *child, u8 *parentState, f32 *position) {
     position[2] = *(f32 *)(parentState + 0x1F4);
 }
 
-/* The current 3x4 transform (rotation rows, then translation). */
-typedef struct Matrix34 {
-    f32 m[4][3];
-} Matrix34;
 
 void vector3FromZAxisPitchYawDegrees(f32, f32, f32 *);
 void matrix33Transpose(f32 *);
@@ -579,7 +576,7 @@ void actorUpdateTargetFacingChild(u8 *object) {
         delta[1] = position[1] - *(f32 *)(object + 0x48);
         delta[2] = position[2] - *(f32 *)(object + 0x4C);
         do {
-            matrix = *(Matrix34 *)gObjectTraversalTransform;
+            matrix = gObjectTraversalTransform;
         } while (0);
         matrix33Transpose(&matrix.m[0][0]);
         matrix.m[3][0] = 0.0f;
@@ -674,7 +671,7 @@ void actorUpdateCameraFacingChild(u8 *object) {
         direction.z = ((CamRec *)gRenderCameras)[gRenderCameraIndex].z - *(f32 *)(object + 0x4C);
         matrix34TransformPointVector((f32 *)gActorCameraFacingDirectionTransform, &direction.x, &direction.x);
         do {
-            matrix = *(Matrix34 *)gObjectTraversalTransform;
+            matrix = gObjectTraversalTransform;
         } while (0);
         matrix33Transpose(&matrix.m[0][0]);
         matrix.m[3][0] = 0.0f;
@@ -1262,7 +1259,7 @@ void actorUpdateMotionDisplacement(u8 *state, s32 status) {
     f32 movementScale;
     f32 var_f0;
 
-    matrix33TransformVector((f32 *)gObjectTraversalTransform, (f32 *)(state + 0x1CC), (f32 *)(state + 0x1D8), state);
+    matrix33TransformVector((f32 *)&gObjectTraversalTransform, (f32 *)(state + 0x1CC), (f32 *)(state + 0x1D8), state);
     movementScale = ((ActorScriptState *)state)->movementScale;
     ((ActorScriptState *)state)->worldMotion[0] = (f32)(((ActorScriptState *)state)->worldMotion[0] * movementScale);
     ((ActorScriptState *)state)->worldMotion[1] = (f32)(((ActorScriptState *)state)->worldMotion[1] * movementScale);
@@ -1289,7 +1286,7 @@ void actorUpdateMotionDisplacement(u8 *state, s32 status) {
 /// \note Original decompilation identifier: \c func_80016D58 (0x80016D58).
 void actorUpdateGroundReferencePose(u8 *actor, u8 *reference, u8 *pose) {
     u8 *v;
-    f32(*m)[3] = (f32(*)[3])gObjectTraversalTransform;
+    f32(*m)[3] = gObjectTraversalTransform.m;
     f32 *w;
     f32 dy;
 

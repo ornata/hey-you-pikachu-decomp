@@ -4,13 +4,6 @@
   "records": [
     {
       "code": 709,
-      "file": "src/game/flipbook_messenger.c",
-      "line": 958,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "messengerAdvancePosition(object);"
-    },
-    {
-      "code": 709,
       "file": "src/game/doors_object_responses.c",
       "line": 160,
       "diagnostic": "Incompatible pointer type assignment",
@@ -53,29 +46,36 @@
     },
     {
       "code": 709,
+      "file": "src/game/flipbook_messenger.c",
+      "line": 958,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "messengerAdvancePosition(object);"
+    },
+    {
+      "code": 709,
       "file": "src/game/actor_model_motion.c",
-      "line": 259,
+      "line": 260,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "allocation = heapAllocLocal(&gGameHeap, 0x80, 0xFC);"
     },
     {
       "code": 712,
       "file": "src/game/actor_model_motion.c",
-      "line": 1047,
+      "line": 1044,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "allocation = heapAllocLocal(&gGameHeap, 0x4C, 0x463);"
     },
     {
       "code": 712,
       "file": "src/game/actor_model_motion.c",
-      "line": 1049,
+      "line": 1046,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "_bzero(allocation, 0x4C);"
     },
     {
       "code": 709,
       "file": "src/game/actor_model_motion.c",
-      "line": 1132,
+      "line": 1129,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "v->dl[0] = heapAllocLocal(&gGameHeap, v->len * sizeof(Gfx) * 2, 0x4B8);"
     },
@@ -137,66 +137,17 @@
     },
     {
       "code": 709,
-      "file": "src/game/object_hierarchy.c",
-      "line": 196,
+      "file": "src/game/voice_commands_text_panel.c",
+      "line": 185,
       "diagnostic": "Incompatible pointer type assignment",
-      "expression": "osCreateMesgQueue(reader + 0x418, reader + 0x430, 1);"
+      "expression": "if (*(gVoiceCommandDisplayName = voiceDictionaryGetWordName(((u16 *)&gVoiceCommandResultIndex)[1])) == 0) {"
     },
     {
       "code": 709,
-      "file": "src/game/object_hierarchy.c",
-      "line": 196,
+      "file": "src/game/voice_commands_text_panel.c",
+      "line": 442,
       "diagnostic": "Incompatible pointer type assignment",
-      "expression": "osCreateMesgQueue(reader + 0x418, reader + 0x430, 1);"
-    },
-    {
-      "code": 712,
-      "file": "src/game/object_hierarchy.c",
-      "line": 990,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "heapFreeLocal(&gGameHeap, objectState);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/object_hierarchy.c",
-      "line": 1263,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "objectTransformStackPush(&gObjectTraversalTransform);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/object_hierarchy.c",
-      "line": 1267,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "matrix33KeepScaleOnly(&gObjectTraversalTransform);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/object_hierarchy.c",
-      "line": 1285,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "objectTransformStackPop(&gObjectTraversalTransform);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/object_hierarchy.c",
-      "line": 1301,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "objectTransformStackPush(&gObjectTraversalTransform);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/object_hierarchy.c",
-      "line": 1310,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "objectTransformStackPop(&gObjectTraversalTransform);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/object_hierarchy.c",
-      "line": 1341,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "matrix33KeepScaleOnly(&gObjectTraversalTransform);"
+      "expression": "textImageDestroy(oldImage);"
     },
     {
       "code": 712,
@@ -228,17 +179,10 @@
     },
     {
       "code": 709,
-      "file": "src/game/voice_commands_text_panel.c",
-      "line": 185,
+      "file": "src/game/object_hierarchy.c",
+      "line": 1888,
       "diagnostic": "Incompatible pointer type assignment",
-      "expression": "if (*(gVoiceCommandDisplayName = voiceDictionaryGetWordName(((u16 *)&gVoiceCommandResultIndex)[1])) == 0) {"
-    },
-    {
-      "code": 709,
-      "file": "src/game/voice_commands_text_panel.c",
-      "line": 442,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "textImageDestroy(oldImage);"
+      "expression": "matrix34Identity(&gObjectNearestTargetSearch.facing);"
     },
     {
       "code": 709,

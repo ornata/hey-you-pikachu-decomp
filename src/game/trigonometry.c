@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "matrix_types.h"
 
 /* Debug trace: compiled out in this build, but each format string is still
  * emitted to .rodata and the dead branch still ends a scheduling block. */
@@ -7,9 +8,6 @@
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-typedef struct {
-    f32 m[4][3];
-} Matrix34;
 
 /// Retained four-by-four floating-point identity matrix; no reader is identified.
 /// \note Original identifier: \c D_800A6CC0 (0x800A6CC0).
