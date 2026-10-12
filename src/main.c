@@ -36,6 +36,7 @@
  */
 #include <ultra64.h>
 #include "common.h"
+#include "asset_loader.h"
 #include "runtime_program.h"
 #include "heap_alloc.h"
 
@@ -305,7 +306,6 @@ extern u8 *gCurrentAreaConfiguration;
 /// \note Original identifier: \c D_800ABDE0 (0x800ABDE0).
 extern s32 gAreaRenderAssets;
 void *heapAllocTailLocal(void *, s32, s32);
-void assetLoadAndPatchFromRom(s32, s32, s32, s32, s32, s32, s32);
 void heapFreeLocal(u8 *, s32);
 /// Load the current area’s rendering assets for use by its scene.
 /// \returns Nothing; requires a loaded area configuration and no existing area asset allocation to replace.
@@ -319,7 +319,7 @@ void renderLoadAreaAssets(void) {
     scratchSize = (s32)(*(u32 *)(gCurrentAreaConfiguration + 0x60) - *(u32 *)(gCurrentAreaConfiguration + 0x50)) * 8 +
                   (s32)(*(u32 *)(gCurrentAreaConfiguration + 0x58) - *(u32 *)(gCurrentAreaConfiguration + 0x50));
     temporary = (s32)heapAllocTailLocal(&gGameHeap, scratchSize, 0x14C);
-    assetLoadAndPatchFromRom(*(u32 *)(gCurrentAreaConfiguration + 0x48), gAreaRenderAssets, temporary,
+    assetLoadAndPatchFromRom(*(u32 *)(gCurrentAreaConfiguration + 0x48), (u8 *)gAreaRenderAssets, (u8 *)temporary,
                              *(u32 *)(gCurrentAreaConfiguration + 0x58) - *(u32 *)(gCurrentAreaConfiguration + 0x50),
                              *(u32 *)(gCurrentAreaConfiguration + 0x54) - *(u32 *)(gCurrentAreaConfiguration + 0x50),
                              *(u32 *)(gCurrentAreaConfiguration + 0x5C) - *(u32 *)(gCurrentAreaConfiguration + 0x50),

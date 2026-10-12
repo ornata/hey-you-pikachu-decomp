@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "asset_loader.h"
 #include "heap_types.h"
 /// Backdrop sources, fill colors, dimensions and scrolling settings indexed by backdrop identifier.
 /// \note Original identifier: \c D_8009B048 (0x8009B048).
@@ -285,7 +286,6 @@ s32 backdropLoadRomRange(s32 romStart, s32 romEnd) {
 }
 
 void *heapAllocTailLocal(HpHdr *, u32, u16);
-void assetLoadAndPatchFromRom(s32, s32, s32, s32, s32, s32, s32);
 void heapFreeLocal(u8 *, s32);
 
 /// Load a backdrop asset into an allocated view buffer.
@@ -293,13 +293,14 @@ void heapFreeLocal(u8 *, s32);
 /// \param info Asset descriptor supplying the ROM source, encoded and decoded sizes, and correction metadata.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80033854 (0x80033854).
-void backdropLoadAsset(s32 idx, s32 *info) {
+void backdropLoadAsset(s32 idx, AssetDescriptor *info) {
     s32 pad; /* unused, sizes the frame */
     s32 buf;
 
-    buf = (s32)heapAllocTailLocal(&gGameHeap, info[4] - info[2], 0x2C8);
-    assetLoadAndPatchFromRom(info[0], gRenderCameraBackdropImages[idx][0], buf, info[4] - info[2], info[3] - info[2],
-                             info[5] - info[2], info[6] - info[2]);
+    buf = (s32)heapAllocTailLocal(&gGameHeap, info->encodedEnd - info->rangeBase, 0x2C8);
+    assetLoadAndPatchFromRom(info->romAddress, (u8 *)gRenderCameraBackdropImages[idx][0], (u8 *)buf,
+                             info->encodedEnd - info->rangeBase, info->decodedEnd - info->rangeBase,
+                             info->patchStart - info->rangeBase, info->patchCountValue - info->rangeBase);
     heapFreeLocal(&gGameHeap, buf);
 }
 
@@ -312,7 +313,7 @@ extern u8 gDepthBuffer[];
 /// \param info Asset descriptor supplying the ROM source, encoded and decoded sizes, and correction metadata.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80033904 (0x80033904).
-void backdropLoadAssetWithSharedScratch(s32 idx, s32 *info) {
+void backdropLoadAssetWithSharedScratch(s32 idx, AssetDescriptor *info) {
     s32 pad[2]; /* unused, sizes the frame */
     u64 deadline;
     s32 i;
@@ -321,10 +322,10 @@ void backdropLoadAssetWithSharedScratch(s32 idx, s32 *info) {
     for (i = 0; osGetTime() < deadline && i != 10000; i++) {
         osYieldThread();
     }
-    assetLoadAndPatchFromRom(info[0], gRenderCameraBackdropImages[idx][0], (s32)gDepthBuffer, info[4] - info[2],
-                             info[3] - info[2], info[5] - info[2], info[6] - info[2]);
+    assetLoadAndPatchFromRom(info->romAddress, (u8 *)gRenderCameraBackdropImages[idx][0], gDepthBuffer,
+                             info->encodedEnd - info->rangeBase, info->decodedEnd - info->rangeBase,
+                             info->patchStart - info->rangeBase, info->patchCountValue - info->rangeBase);
 }
-
 
 /// Load a raw backdrop ROM image into an allocated view buffer.
 /// \param viewIndex Valid view index with an allocated backdrop buffer.
@@ -337,8 +338,8 @@ void backdropLoadRawImage(s32 viewIndex, s32 romStart, s32 romEnd) {
     romDmaReadBlocking(romStart, gRenderCameraBackdropImages[viewIndex][0], romEnd - romStart, romStart);
 }
 
-void backdropLoadAsset(s32, s32 *);
-void backdropLoadAssetWithSharedScratch(s32, s32 *);
+void backdropLoadAsset(s32, AssetDescriptor *);
+void backdropLoadAssetWithSharedScratch(s32, AssetDescriptor *);
 void backdropLoadRawImage(s32, s32, s32); /* extern */
 
 /// Raw backdrop data stored in an uncompressed ROM interval.
@@ -372,7 +373,7 @@ typedef char BackdropViewScrollOffsetCheck[((u32) & ((Ent33784 *)0)->horizontalS
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80033A70 (0x80033A70).
 void backdropSelectForView(s32 viewIndex, s32 backdropId, s32 sharedScratch) {
-    u8 *assetDescriptor;
+    AssetDescriptor *assetDescriptor;
     u8 *viewState;
     u8 *romRange;
     u8 *backdropDescriptor;
@@ -386,7 +387,7 @@ void backdropSelectForView(s32 viewIndex, s32 backdropId, s32 sharedScratch) {
         romRange = ((BackdropDescriptor *)backdropDescriptor)->source;
         backdropLoadRawImage(viewIndex, ((BackdropRomRange *)romRange)->start, ((BackdropRomRange *)romRange)->end);
     } else {
-        assetDescriptor = ((BackdropDescriptor *)backdropDescriptor)->source;
+        assetDescriptor = (AssetDescriptor *)((BackdropDescriptor *)backdropDescriptor)->source;
         if (sharedScratch != 0) {
             backdropLoadAssetWithSharedScratch(viewIndex, assetDescriptor);
         } else {

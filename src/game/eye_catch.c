@@ -1,4 +1,5 @@
 #include "common.h"
+#include "asset_loader.h"
 #include "integer_animation.h"
 #include "heap_alloc.h"
 #include "heap_types.h"
@@ -75,10 +76,9 @@ void eyeCatchInitialize(void) {
 void cameraUpdateOverlayColors(s32, s32);                     /* extern */
 void cameraFadePrimarySecondaryOverlay(s32, s32, s32, s32, f32);      /* extern */
 void controllerRequestRumbleReset(s32);           /* extern */
-void *assetAllocateAndLoad(s32 *);                /* extern */
 /// Asset descriptor used to load the eye-catch foreground image.
 /// \note Original identifier: \c D_8009B588 (0x8009B588).
-extern s32 gEyeCatchForegroundAssetDescriptor[7];
+extern AssetDescriptor gEyeCatchForegroundAssetDescriptor;
 /// Screen coordinates of the four eye-catch backdrop corners.
 /// \note Original identifier: \c D_8009C3A4 (0x8009C3A4).
 extern s16 gEyeCatchBackdropCorners[4][2];
@@ -124,7 +124,7 @@ void eyeCatchBegin(void) {
             animationIntegerTrackInitialize((ValueTrack *)EYE_TRACKS(group)[5], (ValueKey *)EYE_GROUP->keys[group][5]);
         }
     }
-    gEyeCatchForegroundImage = (s32)assetAllocateAndLoad(gEyeCatchForegroundAssetDescriptor);
+    gEyeCatchForegroundImage = (s32)assetAllocateAndLoad(&gEyeCatchForegroundAssetDescriptor);
     gEyeCatchBackdropVertices = (s32)heapAllocLocal((HpHdr *)&gGameHeap, 4 * sizeof(Vtx), 0x521);
     for (corner = 0; corner < 4; corner++) {
         ((Vtx *)gEyeCatchBackdropVertices)[corner].v.ob[0] = gEyeCatchBackdropCorners[corner][0];
@@ -148,7 +148,6 @@ void eyeCatchBegin(void) {
 #undef EYE_TRACKS
 #undef EYE_GROUP
 
-void assetFree(s32);              /* extern */
 void heapFreeLocal(u8 *, void *); /* extern */
 /// Whether foreground drawing and its fade-in are enabled.
 /// \note Original identifier: \c D_800F2604 (0x800F2604).
@@ -166,7 +165,7 @@ void eyeCatchRelease(void) {
     heapFreeLocal((u8 *)&gGameHeap, (void *)gEyeCatchModelViewMatrix);
     heapFreeLocal((u8 *)&gGameHeap, (void *)gEyeCatchProjectionMatrix);
     heapFreeLocal((u8 *)&gGameHeap, (void *)gEyeCatchBackdropVertices);
-    assetFree(gEyeCatchForegroundImage);
+    assetFree((void *)gEyeCatchForegroundImage);
     tracks = (void *)gEyeCatchAnimationTracks;
     if (tracks != NULL) {
         heapFreeLocal((u8 *)&gGameHeap, tracks);

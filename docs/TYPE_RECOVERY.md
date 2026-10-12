@@ -520,3 +520,15 @@ initialization retains an actual synthesizer pointer and sound-effect player
 pointer. Borrowed definitions and sample data remain live throughout playback;
 unregistering does not release voices or audio-heap storage. Both source units
 matched all 483 immutable baseline objects independently.
+
+The corrected-asset continuation shares the checked seven-word AssetDescriptor
+record and pointer-based load/free contracts through `asset_loader.h`. Ghidra at
+0x8002D160 confirms normalized range and correction arguments. Resident bytes
+at 0x8009B390 and 0x8009B588 corroborate ROM start/end, segmented range bias,
+encoded/decoded sizes and zero correction counts for title and eye-catch assets.
+Backdrop consumers use the same descriptor fields. The unused controller-local
+asset loader declaration is removed; actor decompression uses the shared API.
+The allocating loader requests staging for encoded bytes while the DMA interface
+also includes correction records. Capacity for nonzero counts is not established
+and is explicitly documented, without changing gameplay or allocation behavior.
+All seven source units matched the immutable 483-object baseline independently.

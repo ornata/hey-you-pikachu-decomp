@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "asset_loader.h"
 #include "text_panel.h"
 #include "text_image.h"
 
@@ -26,7 +27,7 @@ extern s32 gTitleMenuSelection, gTitleLoadGameSelected;
 /// \note Original identifier: \c D_8009B3AC (0x8009B3AC).
 /// Asset descriptor used to load the startup silhouette artwork.
 /// \note Original identifier: \c D_8009B3C8 (0x8009B3C8).
-extern s32 gTitleLogoAsset[], gTitleStartupPanelAsset[], gTitleSilhouetteAsset[];
+extern AssetDescriptor gTitleLogoAsset, gTitleStartupPanelAsset, gTitleSilhouetteAsset;
 /// Loaded title logo image used by logo drawing.
 /// \note Original identifier: \c D_8009B3EC (0x8009B3EC).
 /// Loaded artwork image used by startup panel drawing.
@@ -42,7 +43,6 @@ extern TextImage *gTitleCursorImages[4], *gTitleMenuImages[8];
 /// Shared text-image configurations selected by text panels, menus and message styles.
 /// \note Original identifier: \c D_80074DE0 (0x80074DE0).
 extern u8 gTextImageConfigurations[];
-void *assetAllocateAndLoad(s32 *);
 void textImageCreateFromText(u8 **, u8 *, s32 *);
 /// Load title-screen artwork and menu text and reset menu selections.
 /// \returns Nothing.
@@ -55,9 +55,9 @@ void titleScreenInitialize(void) {
     u8 **end;
     gTitleMenuSelection = 0;
     gTitleLoadGameSelected = 0;
-    gTitleLogoImage = (s32)assetAllocateAndLoad(gTitleLogoAsset);
-    gTitleStartupPanelImage = (s32)assetAllocateAndLoad(gTitleStartupPanelAsset);
-    gTitleSilhouetteImage = (s32)assetAllocateAndLoad(gTitleSilhouetteAsset);
+    gTitleLogoImage = (s32)assetAllocateAndLoad(&gTitleLogoAsset);
+    gTitleStartupPanelImage = (s32)assetAllocateAndLoad(&gTitleStartupPanelAsset);
+    gTitleSilhouetteImage = (s32)assetAllocateAndLoad(&gTitleSilhouetteAsset);
     for (source = four.words, dest = gTitleCursorImages; source < four.words + 4; source++, dest++) {
         textImageCreateFromText((u8 **)dest, *source, (s32 *)gTextImageConfigurations);
     }

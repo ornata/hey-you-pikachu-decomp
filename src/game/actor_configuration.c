@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "asset_loader.h"
 #include "actor_target.h"
 #include "heap_diagnostics.h"
 #include "integer_animation.h"
@@ -536,7 +537,6 @@ void actorInitializeAnimatedTextures(u8 *, s32 *);
 void actorPopulatePartTable(u8 *, u8 *);
 void actorAssetQueueLoadForKind(s32);
 u8 *orbitFollowerCreate(u8 *, f32, f32, f32);
-s32 assetDecompressAndPatch(u8 *, u8 *, s32, s32, s32, s32);
 u8 *groundShadowCreate(s32, f32);
 void heapFreeLocal(u8 *, void *);
 u8 *scriptVmCreate(u8 *);

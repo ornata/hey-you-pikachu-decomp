@@ -1,5 +1,7 @@
 #include "common.h"
 #include "heap_alloc.h"
+#include "asset_loader.h"
+#include "rom_dma.h"
 
 typedef struct {
     s32 offset;
@@ -29,8 +31,6 @@ s32 assetDecompressAndPatch(u8 *destination, u8 *source, s32 size, s32 outputSiz
     return result;
 }
 
-s32 assetDecompressAndPatch(u8 *, u8 *, s32, s32, s32, s32);
-void romDmaReadBlocking(s32 romAddress, s32 destination, s32 byteCount); /* extern */
 
 /// Load a corrected asset from cartridge ROM into caller-provided storage.
 /// \param romAddress Cartridge address of the encoded asset.
@@ -42,7 +42,7 @@ void romDmaReadBlocking(s32 romAddress, s32 destination, s32 byteCount); /* exte
 /// \param patchCount Number of correction records accompanying the asset.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002D104 (0x8002D104).
-void assetLoadAndPatchFromRom(s32 romAddress, s32 destination, s32 scratch, s32 encodedSize, s32 outputSize,
+void assetLoadAndPatchFromRom(s32 romAddress, u8 *destination, u8 *scratch, s32 encodedSize, s32 outputSize,
                               s32 patchOffset, s32 patchCount) {
     romDmaReadBlocking(romAddress, scratch, (patchCount * 8) + encodedSize);
     assetDecompressAndPatch((u8 *)destination, (u8 *)scratch, encodedSize, outputSize, patchOffset, patchCount);
@@ -58,19 +58,22 @@ extern u8 gGameHeap[];
 /// \param info Asset descriptor containing its ROM address, decoded range,
 /// encoded range, and correction range.
 /// \returns Loaded asset allocation; release it with assetFree.
+/// \note Bounds: staging capacity for nonzero correction counts is not established;
+/// the title and eye-catch descriptors used here have zero corrections.
 /// \note Original decompilation identifier: \c func_8002D160 (0x8002D160).
-void *assetAllocateAndLoad(s32 *info) {
+void *assetAllocateAndLoad(AssetDescriptor *info) {
     /* Two unrecovered words preserve the original 0x40-byte stack frame. */
     s32 reserved[2];
     void *temporary;
     void *result;
     s32 size;
 
-    size = info[3] - info[2];
+    size = info->decodedEnd - info->rangeBase;
     result = heapAllocLocal(gGameHeap, size, 0x5D);
-    temporary = heapAllocTailLocal(gGameHeap, info[4] - info[2], 0x63);
-    assetLoadAndPatchFromRom(info[0], (s32)result, (s32)temporary, info[4] - info[2], info[3] - info[2],
-                             info[5] - info[2], info[6] - info[2]);
+    temporary = heapAllocTailLocal(gGameHeap, info->encodedEnd - info->rangeBase, 0x63);
+    assetLoadAndPatchFromRom(info->romAddress, result, temporary, info->encodedEnd - info->rangeBase,
+                             info->decodedEnd - info->rangeBase, info->patchStart - info->rangeBase,
+                             info->patchCountValue - info->rangeBase);
     heapFreeLocal(gGameHeap, temporary);
     return result;
 }
@@ -79,7 +82,7 @@ void *assetAllocateAndLoad(s32 *info) {
 /// \param asset Address of an allocation returned by assetAllocateAndLoad.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002D214 (0x8002D214).
-void assetFree(s32 asset) {
+void assetFree(void *asset) {
     heapFreeLocal(gGameHeap, (void *)asset);
 }
 

@@ -178,7 +178,6 @@ extern u8 *gCurrentAreaConfiguration;
 /// \note Original identifier: \c D_800ABDE0 (0x800ABDE0).
 extern s32 gAreaRenderAssets;
 void *heapAllocTailLocal(void *, s32, s32);
-void assetLoadAndPatchFromRom(s32, s32, s32, s32, s32, s32, s32);
 void heapFreeLocal(u8 *, s32);
 
 /// Whether the next display-list setup must emit the one-time initial render state.
