@@ -2362,3 +2362,16 @@ The motion archive entry remains a distinct private record: equal two-word
 layouts do not establish equal field meanings. Scalar curve helpers still carry
 32-bit key-index addresses and raw descriptor views; those interfaces need
 separate matching trials before changing their pointer contracts.
+
+### Scalar animation pointer contracts
+
+The scalar key advancement, cubic and linear evaluation, and curve dispatch
+now pass writable key indices as `s32 *` throughout. Ghidra 0x8000A000 confirms
+the fourth parameter is dereferenced and incremented. Curve dispatch uses
+`AnimationCurveDescriptor *` and its named kind and value/reference members.
+The key-slot alias view remains explicitly documented.
+
+Direct array-member expressions for the channel descriptor, time and index
+changed the generated ROM under IDO. Their byte-offset expressions are retained
+against the checked shared layouts. Pointer contracts and descriptor member
+accesses independently pass the strict object comparator.

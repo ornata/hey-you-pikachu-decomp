@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 3162,
-      "unique_spellings": 1158,
+      "occurrences": 3160,
+      "unique_spellings": 1157,
       "files": 80
     }
   },
@@ -1678,12 +1678,8 @@
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
-          "curve + 1": [
-            "148:59",
-            "150:60"
-          ],
           "key + 1": [
-            "313:26"
+            "311:26"
           ]
         }
       }

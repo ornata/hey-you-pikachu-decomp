@@ -27,10 +27,10 @@ typedef struct Key16 {
 /// \param step Time step in seconds.
 /// \returns 0 for an active key, 1 for a hold key, or 2 for an absent track.
 ///
-/// \note NONPORTABLE: idx carries a writable s32 pointer in the original 32-bit ABI. UB: keys is a
-/// Key16 pointer slot exposed through the existing f32 ** interface.
+/// \note The key pointer slot retains a float-pointer view of the common key record;
+/// this representation relies on the original compiler's aliasing behavior.
 /// \note Original decompilation identifier: \c func_8000A000 (0x8000A000).
-s32 animationTrackAdvanceKey(f32 *t, f32 **keys, f32 *out, s32 idx, f32 step) {
+s32 animationTrackAdvanceKey(f32 *t, f32 **keys, f32 *out, s32 *idx, f32 step) {
     Key16 **kp = (Key16 **)keys;
     f32 tick;
     f32 d;
@@ -52,12 +52,11 @@ s32 animationTrackAdvanceKey(f32 *t, f32 **keys, f32 *out, s32 idx, f32 step) {
         }
         *t -= d;
         (*kp)++;
-        (*(s32 *)idx)++;
+        (*idx)++;
     }
     return 0;
 }
 
-s32 animationTrackAdvanceKey(f32 *, f32 **, f32 *, s32, f32);
 
 /// Advance and evaluate a cubic scalar animation track.
 /// \param t Current key time in seconds, advanced before evaluation.
@@ -68,7 +67,7 @@ s32 animationTrackAdvanceKey(f32 *, f32 **, f32 *, s32, f32);
 /// \param step Time step in seconds.
 /// \returns 0 for an active key, 1 for a hold key, or 2 for an absent track.
 /// \note Original decompilation identifier: \c func_8000A0F4 (0x8000A0F4).
-s32 animationTrackEvaluateCubic(f32 *t, f32 **keys, f32 *out, f32 *vel, s32 idx, f32 step) {
+s32 animationTrackEvaluateCubic(f32 *t, f32 **keys, f32 *out, f32 *vel, s32 *idx, f32 step) {
     s32 r;
     Key16 *k;
     f32 x;
@@ -104,7 +103,7 @@ s32 animationTrackEvaluateCubic(f32 *t, f32 **keys, f32 *out, f32 *vel, s32 idx,
 /// \param step Time step in seconds.
 /// \returns 0 for an active key, 1 for a hold key, or 2 for an absent track.
 /// \note Original decompilation identifier: \c func_8000A1F0 (0x8000A1F0).
-s32 animationTrackEvaluateLinear(f32 *t, f32 **keys, f32 *out, f32 *vel, s32 idx, f32 step) {
+s32 animationTrackEvaluateLinear(f32 *t, f32 **keys, f32 *out, f32 *vel, s32 *idx, f32 step) {
     s32 r;
     f32 x;
     f32 a;
@@ -124,7 +123,6 @@ s32 animationTrackEvaluateLinear(f32 *t, f32 **keys, f32 *out, f32 *vel, s32 idx
     return 0;
 }
 
-s32 animationTrackEvaluateCubic(f32 *, f32 **, f32 *, f32 *, s32, f32);
 
 /// Advance and evaluate an animation curve according to its curve type.
 /// \param curve Curve descriptor; keyed curves advance their current key pointer.
@@ -135,21 +133,21 @@ s32 animationTrackEvaluateCubic(f32 *, f32 **, f32 *, f32 *, s32, f32);
 /// \param step Time step in seconds.
 /// \returns 0 for an active key, 1 for a hold key, or 2 for a constant, absent, or unsupported curve.
 /// \note Original decompilation identifier: \c func_8000A26C (0x8000A26C).
-s32 animationCurveEvaluate(s32 *curve, f32 *time, f32 *value, f32 *velocity, s32 keyIndex, f32 step) {
-    switch (curve[0]) {
+s32 animationCurveEvaluate(AnimationCurveDescriptor *curve, f32 *time, f32 *value, f32 *velocity, s32 *keyIndex, f32 step) {
+    switch (curve->kind) {
     case 0:
         *time += step;
-        *value = curve[1] * (1.0f / 65536.0f);
+        *value = curve->valueOrAddress * (1.0f / 65536.0f);
         if (velocity != NULL) {
             *velocity = 0.0f;
         }
         return 2;
     case 1:
-        return animationTrackEvaluateCubic(time, (f32 **)(curve + 1), value, velocity, keyIndex, step);
+        return animationTrackEvaluateCubic(time, (f32 **)&curve->valueOrAddress, value, velocity, keyIndex, step);
     case 2:
-        return animationTrackEvaluateLinear(time, (f32 **)(curve + 1), value, velocity, keyIndex, step);
+        return animationTrackEvaluateLinear(time, (f32 **)&curve->valueOrAddress, value, velocity, keyIndex, step);
     default:
-        TRACE("error: calcAnime: Illegal keyType(%d)\n", curve[0]);
+        TRACE("error: calcAnime: Illegal keyType(%d)\n", curve->kind);
         return 2;
     }
 }
@@ -214,8 +212,8 @@ s32 animationTrack3Evaluate(AnimationTrack3 *track, f32 *output, f32 *velocities
     allConstant = 1;
     do {
         status = animationCurveEvaluate(
-            (s32 *)((u8 *)track + (channel << 3)), (f32 *)((u8 *)track + (channel << 2) + 0x18),
-            (f32 *)((u8 *)output + (channel << 2)), velocity, (s32)((u8 *)track + (channel << 2) + 0x24), step);
+            (AnimationCurveDescriptor *)((u8 *)track + (channel << 3)), (f32 *)((u8 *)track + (channel << 2) + 0x18),
+            (f32 *)((u8 *)output + (channel << 2)), velocity, (s32 *)((u8 *)track + (channel << 2) + 0x24), step);
         channel++;
         if (status != 2) {
             allConstant = 0;
@@ -249,8 +247,8 @@ s32 animationDeltaTrack3Evaluate(AnimationDeltaTrack3 *track, f32 *output, f32 *
     allConstant = 1;
     do {
         previous = *value;
-        if (animationCurveEvaluate((s32 *)((u8 *)track + (channel << 3)), (f32 *)((u8 *)track + (channel << 2) + 0x18),
-                                   value, velocity, (s32)((u8 *)track + (channel << 2) + 0x24), step) != 2) {
+        if (animationCurveEvaluate((AnimationCurveDescriptor *)((u8 *)track + (channel << 3)), (f32 *)((u8 *)track + (channel << 2) + 0x18),
+                                   value, velocity, (s32 *)((u8 *)track + (channel << 2) + 0x24), step) != 2) {
             allConstant = 0;
             output[channel] += *value - previous;
         }
