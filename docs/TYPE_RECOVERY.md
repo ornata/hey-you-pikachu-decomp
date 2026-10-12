@@ -2375,3 +2375,16 @@ Direct array-member expressions for the channel descriptor, time and index
 changed the generated ROM under IDO. Their byte-offset expressions are retained
 against the checked shared layouts. Pointer contracts and descriptor member
 accesses independently pass the strict object comparator.
+
+### Scalar animation key records
+
+The private `AnimationScalarKey` now documents the shared 16-byte keyed-curve
+record, including cubic coefficients, linear slope/intercept, held value and
+30 Hz duration. Size and duration-offset checks preserve the archive layout.
+Ghidra 0x8000A000 establishes the common duration/hold fields and 16-byte stride;
+0x8000A1F0 establishes the linear interpretation of the first two floats.
+
+Advancement and both evaluators now use the same typed key-pointer cursor,
+removing the incompatible float-pointer slot between those functions. The
+archive descriptor's integer address word still requires a target-specific
+pointer-slot view, documented at curve dispatch rather than hidden in helpers.

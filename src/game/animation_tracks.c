@@ -8,16 +8,18 @@
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-/* One cubic keyframe: value = ((a*t + b)*t + c)*t + base + frac/256; lasts len ticks (0xFF = hold). */
-typedef struct Key16 {
-    f32 a;
-    f32 b;
-    f32 c;
-    s16 base;
-    u8 frac;
-    u8 len;
-} Key16;
+/// Scalar animation key shared by cubic, linear and held curves.
+typedef struct AnimationScalarKey {
+    f32 a;    ///< Cubic coefficient, or linear slope.
+    f32 b;    ///< Quadratic coefficient, or linear intercept.
+    f32 c;    ///< Cubic curve's linear coefficient.
+    s16 base; ///< Integral portion of the cubic offset or held value.
+    u8 frac;  ///< Fractional portion of the cubic offset or held value, in units of 1/256.
+    u8 len;   ///< Duration in 30 Hz ticks; 0xFF holds indefinitely.
+} AnimationScalarKey;
 
+typedef char AnimationScalarKeySizeCheck[(sizeof(AnimationScalarKey) == 0x10) ? 1 : -1];
+typedef char AnimationScalarKeyDurationOffsetCheck[((u32) & ((AnimationScalarKey *)0)->len == 0xF) ? 1 : -1];
 
 /// Advance a scalar animation track to the key for the updated time.
 /// \param t Current key time in seconds, updated by the step.
@@ -27,11 +29,9 @@ typedef struct Key16 {
 /// \param step Time step in seconds.
 /// \returns 0 for an active key, 1 for a hold key, or 2 for an absent track.
 ///
-/// \note The key pointer slot retains a float-pointer view of the common key record;
-/// this representation relies on the original compiler's aliasing behavior.
 /// \note Original decompilation identifier: \c func_8000A000 (0x8000A000).
-s32 animationTrackAdvanceKey(f32 *t, f32 **keys, f32 *out, s32 *idx, f32 step) {
-    Key16 **kp = (Key16 **)keys;
+s32 animationTrackAdvanceKey(f32 *t, AnimationScalarKey **keys, f32 *out, s32 *idx, f32 step) {
+    AnimationScalarKey **kp = keys;
     f32 tick;
     f32 d;
 
@@ -67,9 +67,9 @@ s32 animationTrackAdvanceKey(f32 *t, f32 **keys, f32 *out, s32 *idx, f32 step) {
 /// \param step Time step in seconds.
 /// \returns 0 for an active key, 1 for a hold key, or 2 for an absent track.
 /// \note Original decompilation identifier: \c func_8000A0F4 (0x8000A0F4).
-s32 animationTrackEvaluateCubic(f32 *t, f32 **keys, f32 *out, f32 *vel, s32 *idx, f32 step) {
+s32 animationTrackEvaluateCubic(f32 *t, AnimationScalarKey **keys, f32 *out, f32 *vel, s32 *idx, f32 step) {
     s32 r;
-    Key16 *k;
+    AnimationScalarKey *k;
     f32 x;
     f32 a;
     f32 b;
@@ -81,7 +81,7 @@ s32 animationTrackEvaluateCubic(f32 *t, f32 **keys, f32 *out, f32 *vel, s32 *idx
         return r;
     }
     x = *t;
-    k = *(Key16 **)keys;
+    k = *keys;
     a = k->a;
     b = k->b;
     c = k->c;
@@ -103,7 +103,7 @@ s32 animationTrackEvaluateCubic(f32 *t, f32 **keys, f32 *out, f32 *vel, s32 *idx
 /// \param step Time step in seconds.
 /// \returns 0 for an active key, 1 for a hold key, or 2 for an absent track.
 /// \note Original decompilation identifier: \c func_8000A1F0 (0x8000A1F0).
-s32 animationTrackEvaluateLinear(f32 *t, f32 **keys, f32 *out, f32 *vel, s32 *idx, f32 step) {
+s32 animationTrackEvaluateLinear(f32 *t, AnimationScalarKey **keys, f32 *out, f32 *vel, s32 *idx, f32 step) {
     s32 r;
     f32 x;
     f32 a;
@@ -114,8 +114,8 @@ s32 animationTrackEvaluateLinear(f32 *t, f32 **keys, f32 *out, f32 *vel, s32 *id
         return r;
     }
     x = *t;
-    a = (*keys)[0];
-    b = (*keys)[1];
+    a = (*keys)->a;
+    b = (*keys)->b;
     *out = a * x + b;
     if (vel != NULL) {
         *vel = a;
@@ -132,6 +132,8 @@ s32 animationTrackEvaluateLinear(f32 *t, f32 **keys, f32 *out, f32 *vel, s32 *id
 /// \param keyIndex Address of the writable key index.
 /// \param step Time step in seconds.
 /// \returns 0 for an active key, 1 for a hold key, or 2 for a constant, absent, or unsupported curve.
+/// \note Keyed descriptors retain a 32-bit address word exposed as a writable key-pointer slot;
+/// this view relies on the target pointer width and original compiler aliasing behavior.
 /// \note Original decompilation identifier: \c func_8000A26C (0x8000A26C).
 s32 animationCurveEvaluate(AnimationCurveDescriptor *curve, f32 *time, f32 *value, f32 *velocity, s32 *keyIndex, f32 step) {
     switch (curve->kind) {
@@ -143,9 +145,9 @@ s32 animationCurveEvaluate(AnimationCurveDescriptor *curve, f32 *time, f32 *valu
         }
         return 2;
     case 1:
-        return animationTrackEvaluateCubic(time, (f32 **)&curve->valueOrAddress, value, velocity, keyIndex, step);
+        return animationTrackEvaluateCubic(time, (AnimationScalarKey **)&curve->valueOrAddress, value, velocity, keyIndex, step);
     case 2:
-        return animationTrackEvaluateLinear(time, (f32 **)&curve->valueOrAddress, value, velocity, keyIndex, step);
+        return animationTrackEvaluateLinear(time, (AnimationScalarKey **)&curve->valueOrAddress, value, velocity, keyIndex, step);
     default:
         TRACE("error: calcAnime: Illegal keyType(%d)\n", curve->kind);
         return 2;
