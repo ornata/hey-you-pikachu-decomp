@@ -2388,3 +2388,17 @@ Advancement and both evaluators now use the same typed key-pointer cursor,
 removing the incompatible float-pointer slot between those functions. The
 archive descriptor's integer address word still requires a target-specific
 pointer-slot view, documented at curve dispatch rather than hidden in helpers.
+
+### Actor root playback workspace
+
+Actor state now names the 0x78-byte root playback workspace at 0x23C and the
+0x3C-byte movement delta track at 0x2B4. The former has distinct orientation-track
+and consecutive pose-matrix views selected by playback mode, with its remaining
+extent retained explicitly rather than assigned unsupported fields. Shared
+size and actor-offset checks preserve both boundaries and the 0x408-byte actor.
+
+Ghidra 0x80014FE4 confirms the two cleared extents; 0x8000E408 confirms the
+orientation and delta-track evaluation addresses. Motion setup, root evaluation,
+pose setup and pose blending now use the named views. Actor initialization clears
+the records by address and checked size. Each source-unit conversion passes the
+strict comparison of all 483 objects.

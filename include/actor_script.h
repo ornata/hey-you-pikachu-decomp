@@ -12,6 +12,18 @@
 #include "direction_animation_types.h"
 #include "matrix_types.h"
 #include "motion_playback_types.h"
+#include "animation_tracks.h"
+
+/// Root playback workspace whose active view follows the motion playback mode.
+/// Track mode borrows curve keys; pose-blend mode stores two consecutive transforms.
+/// The full cleared extent is known, but bytes beyond these views remain unresolved.
+typedef union ActorRootPlaybackWorkspace {
+    AnimationTrack3 orientationTrack; ///< Root orientation channels in track mode.
+    Matrix34 posePair[2]; ///< Source and destination transforms in pose-blend mode.
+    u8 storage[0x78]; ///< Preserves the full workspace extent cleared at initialization.
+} ActorRootPlaybackWorkspace;
+
+typedef char ActorRootPlaybackWorkspaceSizeCheck[(sizeof(ActorRootPlaybackWorkspace) == 0x78) ? 1 : -1];
 
 /// Recovered prefix of actor state used by script-message consumers.
 /// \ingroup ActorScriptVm
@@ -111,7 +123,8 @@ typedef struct ActorScriptState {
     ScriptMessage message;    ///< Last accepted message, retained after acknowledgement.
     s32 fallbackObjectHandle; ///< Object whose position supplies the fallback target.
     s32 creationScriptArgument; ///< Script argument retained from actor creation.
-    u8 unknown23C[0xB4];
+    ActorRootPlaybackWorkspace rootPlayback; ///< Mode-dependent root orientation workspace.
+    AnimationDeltaTrack3 rootMovementTrack; ///< Incremental movement channels borrowing motion key data.
     s32 appearanceVariants[2]; ///< Model variant per appearance slot; zero selects its default model.
     s32 unknown2F8; ///< Relative-part controller word initialized to one; precise policy unresolved.
     u8 unknown2FC[0x30];
@@ -213,6 +226,8 @@ ACTOR_SCRIPT_OFFSET_CHECK(ActorStateBehaviorFlagsOffsetCheck, ActorScriptState, 
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateTargetPositionOffsetCheck, ActorScriptState, targetPosition, 0x1EC);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateCollisionDepthOffsetCheck, ActorScriptState, collisionDepth, 0x1FC);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateCollisionRegistrationOffsetCheck, ActorScriptState, collisionRegistration, 0x210);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorRootPlaybackOffsetCheck, ActorScriptState, rootPlayback, 0x23C);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorRootMovementTrackOffsetCheck, ActorScriptState, rootMovementTrack, 0x2B4);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateAppearanceVariantsOffsetCheck, ActorScriptState, appearanceVariants, 0x2F0);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateSecondaryPoseTransformOffsetCheck, ActorScriptState, secondaryPoseTransform, 0x32C);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateSecondaryPoseAnglesOffsetCheck, ActorScriptState, secondaryPoseAngles, 0x35C);

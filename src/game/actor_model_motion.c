@@ -219,8 +219,8 @@ void actorInitializeModelState(u8 *actor) {
     ((ActorScriptState *)allocation)->motionRemaining = 0.0f;
     ((ActorScriptState *)allocation)->movementScale = 1.0f;
     matrix34Identity(allocation + 0x18);
-    _bzero(allocation + 0x23C, 0x78);
-    _bzero(allocation + 0x2B4, 0x3C);
+    _bzero(&((ActorScriptState *)allocation)->rootPlayback, sizeof(ActorRootPlaybackWorkspace));
+    _bzero(&((ActorScriptState *)allocation)->rootMovementTrack, sizeof(AnimationDeltaTrack3));
     ((ActorScriptState *)allocation)->airborne = 0;
     ((ActorScriptState *)allocation)->nextSoundSlot = 0;
     _bzero(((ActorScriptState *)allocation)->soundHandles, 0x10);
