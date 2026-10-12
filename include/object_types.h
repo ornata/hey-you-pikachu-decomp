@@ -44,7 +44,7 @@ typedef struct RuntimeObjectPrefix {
     u16 kind;                 ///< Runtime object kind selecting lifecycle callbacks.
     u16 flags;                ///< Object and hierarchy flags.
     s32 handle;               ///< Object-manager lookup handle.
-    u8 *matrixBuffers[2];     ///< Owned hierarchy transform buffers at the root.
+    u8 *matrixBuffers[2];     ///< Root slot zero owns both buffers; other slots borrow interior transform storage.
     f32 worldPosition[3];     ///< Position produced by hierarchy traversal.
     ObjectReference root;     ///< Root owning this object's hierarchy.
     ObjectPrivateState state; ///< Kind-specific state managed by lifecycle callbacks.

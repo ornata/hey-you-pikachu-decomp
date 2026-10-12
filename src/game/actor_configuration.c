@@ -1,3 +1,4 @@
+#include "object_matrix_buffers.h"
 #include "object_movement.h"
 #include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
@@ -527,7 +528,6 @@ s32 actorAssetGetCachedStorage(s32 kind) {
 }
 
 void objectPrepareDistributedKindSearches(u16, s32);
-void objectAllocateHierarchyMatrixBuffers(s32);
 void objectScaleHierarchyBounds(u8 *, f32);
 s32 objectRefreshHierarchyWorldPositions(s32);
 void actorAddRotationAxisDegrees(u8 *, f32, s32);
@@ -654,7 +654,7 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
         ((RuntimeObjectPrefix *)part)->root.bytes = actor;
         ((RuntimeObjectPrefix *)sp48)->sibling.bytes = part;
     }
-    objectAllocateHierarchyMatrixBuffers((s32)actor);
+    objectAllocateHierarchyMatrixBuffers(actor);
     heapDebugReportFreeSpace(&gGameHeap, (const char *)gActorMatricesAllocatedHeapLabel);
     actorPopulatePartTable(actor, actor);
     heapDebugReportFreeSpace(&gGameHeap, (const char *)gActorPartTablePreparedHeapLabel);

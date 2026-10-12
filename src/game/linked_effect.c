@@ -1,3 +1,4 @@
+#include "object_matrix_buffers.h"
 #include "object_movement.h"
 #include "object_create.h"
 #include "object_lifecycle.h"
@@ -397,7 +398,6 @@ void linkedEffectInitializeVelocity(s32 kind, u8 *object) {
 
 #define SET_MOTION_VECTOR(v, x, y, z) ((v)[0] = (x), (v)[1] = (y), (v)[2] = (z))
 
-void objectAllocateHierarchyMatrixBuffers(u8 *);
 void linkedEffectInitializeVelocity(s32, u8 *);
 /// Model display list used by linked effect objects.
 /// \note Original identifier: \c D_1000B08 (0x01000B08).

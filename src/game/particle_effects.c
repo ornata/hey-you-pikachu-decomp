@@ -1,3 +1,4 @@
+#include "object_matrix_buffers.h"
 #include "object_movement.h"
 #include "object_create.h"
 #include "object_hierarchy_create.h"
@@ -653,7 +654,6 @@ s32 ribbonEffectControllerPrepareDraw(u8 *controller) {
     return *(s32 *)(controller + 0x30);
 }
 
-void objectAllocateHierarchyMatrixBuffers(u8 *);
 f32 mathSinDegrees(f32);
 Gfx *ribbonEffectCreateDisplayList(s32);
 /// Object template for the ribbon hierarchy anchor.

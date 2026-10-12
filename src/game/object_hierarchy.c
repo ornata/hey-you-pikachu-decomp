@@ -1,3 +1,4 @@
+#include "object_matrix_buffers.h"
 #include "object_movement.h"
 #include "interaction.h"
 #include "object_target_search.h"
@@ -56,7 +57,6 @@ void matrix33ApplyRotationXYZDegrees(void *, f32, f32, f32); /* extern */
 void matrix33ScaleLocal(void *, f32, f32, f32);              /* extern */
 void matrix33KeepScaleOnly(f32 *);                    /* extern */
 s32 romByteReaderInitialize(u8 *);
-void objectAllocateHierarchyMatrixBuffers(s32);
 /// Segmented shared display list preparing object hierarchy drawing.
 /// \note Original identifier: \c D_100C890 (0x100C890).
 extern u8 gObjectDrawSetupDisplayList[];
@@ -778,14 +778,14 @@ s32 objectAssignHierarchyMatrixSlots(u8 *object, s32 index) {
 /// \param root Live, acyclic hierarchy with assigned roots and no unreleased transform buffers; its required allocation size must fit in signed 32 bits.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80008338 (0x80008338).
-void objectAllocateHierarchyMatrixBuffers(s32 root) {
+void objectAllocateHierarchyMatrixBuffers(u8 *root) {
     s32 i;
     s32 n;
 
     n = objectAccumulateHierarchyCount((u8 *)root, 0);
-    *(u8 **)(root + 0x3C) = heapAllocLocal(&gGameHeap, n << 7, 0x2F4);
+    ((RuntimeObjectPrefix *)root)->matrixBuffers[0] = heapAllocLocal(&gGameHeap, n << 7, 0x2F4);
     for (i = 1; i < 2; i++) {
-        ((s32 *)(root + 0x3C))[i] = *(s32 *)(root + 0x3C) + ((n * i) << 6);
+        ((RuntimeObjectPrefix *)root)->matrixBuffers[i] = ((RuntimeObjectPrefix *)root)->matrixBuffers[0] + ((n * i) << 6);
     }
     objectAssignHierarchyMatrixSlots((u8 *)root, 0);
 }
@@ -827,7 +827,7 @@ u8 *objectCloneTemplateHierarchy(ObjectTemplate *src, u8 *root) {
 /// \note Original decompilation identifier: \c func_80008450 (0x80008450).
 u8 *objectCreateHierarchyFromTemplate(ObjectTemplate *definition) {
     u8 *root = objectCloneTemplateHierarchy(definition, NULL);
-    objectAllocateHierarchyMatrixBuffers((s32)root);
+    objectAllocateHierarchyMatrixBuffers(root);
     return root;
 }
 

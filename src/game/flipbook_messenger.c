@@ -1,3 +1,4 @@
+#include "object_matrix_buffers.h"
 #include "object_movement.h"
 #include "object_flags.h"
 #include "object_create.h"
@@ -545,7 +546,6 @@ void scrollBoardSetSpeed(u8 *object, f32 speed) {
     *(f32 *)(boardState + 0x10) = speed;
 }
 
-void objectAllocateHierarchyMatrixBuffers(u8 *);                           /* extern */
 s32 scrollBoardCreateObject(s32, s32, u8, u8, u8, u8, s32, s32); /* extern */
 
 /// Create and register a hierarchy containing a scrolling text board.

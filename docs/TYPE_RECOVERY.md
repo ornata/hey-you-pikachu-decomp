@@ -1668,3 +1668,14 @@ The creation header explicitly documents transfer of any existing script context
 to the runtime-registered replacement. The action caller continues using that
 same context after replacement. Provider and dependent rebuilds preserve all
 483 objects and strict relocation addends.
+
+### Hierarchy transform-buffer allocation ownership
+
+`object_matrix_buffers.h` consolidates pointer-based allocation across the
+provider and five callers. Ghidra 0x80008338 confirms one allocation of 128 bytes
+per hierarchy object, with the second buffer starting 64 bytes per object into
+that allocation. Root slot zero owns the base; the second buffer and descendant
+slots borrow interior storage. The shared object field comment reflects this
+ownership. The provider uses checked buffer fields and callers no longer carry
+integer object-address declarations. All six units preserve all 483 objects
+and strict relocation addends.
