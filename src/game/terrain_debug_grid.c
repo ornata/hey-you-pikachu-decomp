@@ -1,3 +1,4 @@
+#include "object_transform.h"
 #include "object_matrix_buffers.h"
 #include "object_create.h"
 #include "object_lifecycle.h"
@@ -251,7 +252,6 @@ extern GridTemplate gTerrainDebugGridRootTemplate;
 /// Object template for individual terrain diagnostic grid cells.
 /// \note Original identifier: \c D_80099D5C (0x80099D5C).
 extern GridTemplate gTerrainDebugGridCellTemplate;
-s32 objectRefreshHierarchyWorldPositions(s32);
 void terrainDebugGridSetEnabled(u8 *, s32);
 /// Create a terrain diagnostic grid in front of the player.
 /// \param size Number of diagnostic cells along each grid side.
@@ -294,7 +294,7 @@ u8 *terrainDebugGridCreate(s32 size) {
     objectAllocateHierarchyMatrixBuffers(root);
     objectRegisterActiveHierarchy(root);
     terrainDebugGridUpdatePosition((f32 *)root);
-    objectRefreshHierarchyWorldPositions((s32)root);
+    objectRefreshHierarchyWorldPositions(root);
     terrainDebugGridSetEnabled(root, 1);
     TRACE("meshNum:%d\n", index);
     return root;

@@ -1,3 +1,4 @@
+#include "object_transform.h"
 #include "object_bounds.h"
 #include "object_matrix_buffers.h"
 #include "object_movement.h"
@@ -529,7 +530,6 @@ s32 actorAssetGetCachedStorage(s32 kind) {
 }
 
 void objectPrepareDistributedKindSearches(u16, s32);
-s32 objectRefreshHierarchyWorldPositions(s32);
 void actorAddRotationAxisDegrees(u8 *, f32, s32);
 void actorInitializeAnimatedTextures(u8 *, s32 *);
 void actorPopulatePartTable(u8 *, u8 *);
@@ -683,7 +683,7 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
     ((ActorScriptState *)actorState)->unknown208 = (f32)(kindConfig->unknown34 * scale);
     ((ActorScriptState *)actorState)->groundOffset = (f32)(kindConfig->groundOffset * scale);
     objectScaleHierarchyBounds(actor, 1.0f);
-    objectRefreshHierarchyWorldPositions((s32)actor);
+    objectRefreshHierarchyWorldPositions(actor);
     if (kindConfig->animatedTextureParts != NULL) {
         actorInitializeAnimatedTextures(actor, kindConfig->animatedTextureParts);
     }

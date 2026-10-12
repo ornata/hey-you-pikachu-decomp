@@ -1,3 +1,4 @@
+#include "object_transform.h"
 #include "object_bounds.h"
 #include "object_matrix_buffers.h"
 #include "object_movement.h"
@@ -1237,32 +1238,32 @@ void objectUpdateHierarchyWorldPositions(u8 *object) {
     u8 *firstChild;
     if (object != 0) {
         do {
-            if (!((*((u16 *)(((s8 *)object) + 0x36))) & 0x1C0)) {
+            if (!((((RuntimeObjectPrefix *)object)->flags) & 0x1C0)) {
                 objectTransformStackPush(&gObjectTraversalTransform);
-                matrix34TranslateLocal(&gObjectTraversalTransform, *((f32 *)(((s8 *)object) + 0x18)),
-                                       *((f32 *)(((s8 *)object) + 0x1C)), *((f32 *)(((s8 *)object) + 0x20)));
-                if ((*((u16 *)(((s8 *)object) + 0x36))) & 0x1000) {
+                matrix34TranslateLocal(&gObjectTraversalTransform, ((RuntimeObjectPrefix *)object)->position[0],
+                                       ((RuntimeObjectPrefix *)object)->position[1], ((RuntimeObjectPrefix *)object)->position[2]);
+                if ((((RuntimeObjectPrefix *)object)->flags) & 0x1000) {
                     matrix33KeepScaleOnly(gObjectTraversalTransform.m[0]);
                 }
-                if ((*((u16 *)(((s8 *)object) + 0x34))) != 0x64) {
-                    matrix33ApplyRotationXYZDegrees(&gObjectTraversalTransform, *((f32 *)(((s8 *)object) + 0xC)),
-                                                    *((f32 *)(((s8 *)object) + 0x10)),
-                                                    *((f32 *)(((s8 *)object) + 0x14)));
-                    matrix33ScaleLocal(&gObjectTraversalTransform, *((f32 *)(((s8 *)object) + 0)),
-                                       *((f32 *)(((s8 *)object) + 4)), *((f32 *)(((s8 *)object) + 8)));
+                if ((((RuntimeObjectPrefix *)object)->kind) != 0x64) {
+                    matrix33ApplyRotationXYZDegrees(&gObjectTraversalTransform, ((RuntimeObjectPrefix *)object)->rotation[0],
+                                                    ((RuntimeObjectPrefix *)object)->rotation[1],
+                                                    ((RuntimeObjectPrefix *)object)->rotation[2]);
+                    matrix33ScaleLocal(&gObjectTraversalTransform, ((RuntimeObjectPrefix *)object)->scale[0],
+                                       ((RuntimeObjectPrefix *)object)->scale[1], ((RuntimeObjectPrefix *)object)->scale[2]);
                 }
-                firstChild = *((u8 **)(((s8 *)object) + 0x2C));
+                firstChild = ((RuntimeObjectPrefix *)object)->child.bytes;
                 {
-                    *((f32 *)(((s8 *)object) + 0x44)) = (f32)(*((f32 *)(((s8 *)(&gObjectTraversalTransform)) + 0x24)));
+                    ((RuntimeObjectPrefix *)object)->worldPosition[0] = (f32)(*((f32 *)(((s8 *)(&gObjectTraversalTransform)) + 0x24)));
                 }
-                *((f32 *)(((s8 *)object) + 0x48)) = (f32)(*((f32 *)(((s8 *)(&gObjectTraversalTransform)) + 0x28)));
-                *((f32 *)(((s8 *)object) + 0x4C)) = (f32)(*((f32 *)(((s8 *)(&gObjectTraversalTransform)) + 0x2C)));
+                ((RuntimeObjectPrefix *)object)->worldPosition[1] = (f32)(*((f32 *)(((s8 *)(&gObjectTraversalTransform)) + 0x28)));
+                ((RuntimeObjectPrefix *)object)->worldPosition[2] = (f32)(*((f32 *)(((s8 *)(&gObjectTraversalTransform)) + 0x2C)));
                 if (firstChild != 0) {
                     objectUpdateHierarchyWorldPositions(firstChild);
                 }
                 objectTransformStackPop(&gObjectTraversalTransform);
             }
-            object = *((u8 **)(((s8 *)object) + 0x28));
+            object = ((RuntimeObjectPrefix *)object)->sibling.bytes;
         } while (object != 0);
     }
 }
@@ -1271,7 +1272,7 @@ void objectUpdateHierarchyWorldPositions(u8 *object) {
 /// \param object First object whose siblings and descendants are refreshed, or zero.
 /// \returns Supplied object address.
 /// \note Original decompilation identifier: \c func_80008FAC (0x80008FAC).
-s32 objectRefreshHierarchyWorldPositions(s32 object) {
+u8 *objectRefreshHierarchyWorldPositions(u8 *object) {
     f32 sp24;
     f32 sp20;
     f32 sp1C;
@@ -1281,7 +1282,7 @@ s32 objectRefreshHierarchyWorldPositions(s32 object) {
     sp20 = gObjectPendingLocalMovement.y;
     sp24 = gObjectPendingLocalMovement.z;
     objectResetTraversalTransformAndMovement();
-    objectUpdateHierarchyWorldPositions((u8 *)object);
+    objectUpdateHierarchyWorldPositions(object);
     gObjectPendingLocalMovement.x = sp1C;
     gObjectPendingLocalMovement.y = sp20;
     gObjectPendingLocalMovement.z = sp24;

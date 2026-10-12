@@ -1698,3 +1698,14 @@ Ghidra 0x80008520 confirms local X-scale inheritance and recursive radius update
 its inferred integer scale parameter is not adopted. Bounds and hierarchy counting
 use checked child/sibling links, with shared scale/radius fields for bounds.
 All four source units preserve all 483 objects and strict relocation addends.
+
+### World-position refresh contracts and traversal fields
+
+`object_transform.h` consolidates the world-position refresh pointer contract
+with actor creation and terrain debug callers. Ghidra 0x80008FAC confirms the
+returned input address and preservation of surrounding transform/movement state.
+The header requires an acyclic hierarchy, sufficient transform-stack capacity and
+nonoverlapping traversal. Its traversal provider uses checked object flags, kind,
+local transforms, world positions and child/sibling links; matrix translation
+storage retains its existing representation. All source-unit changes preserve
+all 483 objects and strict relocation addends.
