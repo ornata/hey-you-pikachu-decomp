@@ -6,6 +6,7 @@
 
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "text_panel.h"
 #include "integer_animation.h"
 #include "object_lookup.h"
 #include "heap_alloc.h"
@@ -52,7 +53,6 @@ void heapFreeLocal(u8 *, void *);
 extern HpHdr gGameHeap;
 
 void flipbookInitializeGeometry(u8 *object, u8 red, u8 green, u8 blue, u8 alpha);
-void textPanelInitialize(u8 *, s32);
 void flipbookBuildGeometryDisplayList(u8 *);
 void flipbookResetImageDisplayLists(u8 *);
 
@@ -76,8 +76,8 @@ void flipbookInitialize(u8 *object, s32 columns, s32 lines, u8 red, u8 green, u8
 
     TRACE("sbdInit(%p, %d, %d)\n", object, columns, lines);
     TRACE("sbd->line:%d\n", lines);
-    textPanelInitialize(object, lines);
-    textPanelInitialize(object + 0x20, lines);
+    textPanelInitialize((TextPanel *)object, lines);
+    textPanelInitialize((TextPanel *)(object + 0x20), lines);
     ((Flipbook *)object)->width = columns * 0xC;
     ((Flipbook *)object)->stripCount = lines;
     ((Flipbook *)object)->flip = 0;
@@ -115,8 +115,8 @@ void flipbookInitialize(u8 *object, s32 columns, s32 lines, u8 red, u8 green, u8
 /// \note Original decompilation identifier: \c func_80025170 (0x80025170).
 void flipbookDestroy(OSTimer *object) {
     heapFreeLocal((u8 *)&gGameHeap, (void *)*(s32 *)((u8 *)object + 0x50));
-    textPanelReleaseEntries(object);
-    textPanelReleaseEntries(object + 1);
+    textPanelReleaseEntries((TextPanel *)object);
+    textPanelReleaseEntries((TextPanel *)((u8 *)object + 0x20));
 }
 
 /// Initialize the text-display model surface with the requested color.
@@ -340,19 +340,6 @@ void flipbookBuildImageDisplayLists(u8 *object) {
     lists->flip = 1;
 }
 
-/* The list helpers in voice_commands_text_panel read this 0x20-byte buffer record. */
-typedef struct FlipbookBuffer {
-    s32 count;
-    s32 unknown04;
-    s16 origin[2];
-    u8 *colors;
-    s32 colorCount;
-    void **entries;
-    u32 *status;
-    void *style;
-} FlipbookBuffer;
-s32 textPanelAppend(u8 *, void *);
-void textPanelClear(u8 *);
 void image4BitAddOffsetOutline(u8 *, s32, s32, s32, s32);
 void flipbookBuildImageDisplayLists(u8 *);
 /// Replace the model text using its configured outline appearance.
@@ -366,11 +353,11 @@ void flipbookSetText(u8 *object, s32 *text, s32 count) {
     s32 activeBuffer;
     s8 leadingOutline;
     s8 trailingOutline;
-    u8 *inactivePanel;
+    TextPanel *inactivePanel;
 
     TRACE("sbdApply(%p, %p, %d)\n", object, text, count);
     activeBuffer = *(s32 *)(object + 0x4C);
-    inactivePanel = (u8 *)&((FlipbookBuffer *)object)[activeBuffer ^ 1];
+    inactivePanel = &((TextPanel *)object)[activeBuffer ^ 1];
     textPanelClear(inactivePanel);
     if (count != 0) {
         do {
@@ -542,7 +529,6 @@ s32 scrollBoardCreateObject(s32 columns, s32 lines, u8 red, u8 green, u8 blue, u
     return (s32)boardObject;
 }
 
-void textPanelSetTextConfiguration(u8 *, s32);
 
 /// Assign scrolling text-board content and return to the beginning of non-null text, preserving scrolling speed.
 /// \param object Initialized scrolling text board with valid model state.
@@ -569,8 +555,8 @@ void scrollBoardSetText(u8 *object, s32 *list, s32 style) {
     *(s32 *)(v + 4) = 0;
     *(f32 *)(v + 0xC) = 0.0f;
     *(f32 *)(object + 0x1C) = 0.0f;
-    textPanelSetTextConfiguration(v + 0x14, style);
-    textPanelSetTextConfiguration(v + 0x34, style);
+    textPanelSetTextConfiguration((TextPanel *)(v + 0x14), style);
+    textPanelSetTextConfiguration((TextPanel *)(v + 0x34), style);
     flipbookSetText(v + 0x14, list, *(s32 *)(v + 0x58));
 }
 

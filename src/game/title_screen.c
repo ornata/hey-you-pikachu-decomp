@@ -1,6 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
-#include "text_panel_types.h"
+#include "text_panel.h"
 #include "text_image.h"
 
 typedef struct {
@@ -305,7 +305,6 @@ void titleScreenClearScreen(Gfx **gdl) {
 /// \note Original identifier: \c D_800F25B8 (0x800F25B8).
 extern TextPanel gTitleMessagePanel;
 extern s32 profile_data_0000;
-void textPanelDraw(TextPanel *, Gfx **, s32);
 /// Draw the active title-screen message panel, if one is available.
 /// \param gdl Display-list cursor to append drawing commands to and advance.
 /// \returns Nothing.
@@ -542,10 +541,6 @@ void titleScreenSetMusicVolume(f32 level) {
     audioSetCategoryVolume(2, clampedVolume);
 }
 
-void textPanelInitialize(u8 *, s32);
-void textPanelSetTextConfiguration(u8 *, s32);
-void textPanelSetPosition(u8 *, s32, s32);
-s32 textPanelAppend(u8 *, void *);
 /// Prepare the title-screen message panel from a list of text entries.
 /// \pre Any previous message entries must already be released.
 /// \param list List of at least count null-terminated text entries, read during this call.
@@ -555,11 +550,11 @@ s32 textPanelAppend(u8 *, void *);
 /// \note Original decompilation identifier: \c func_80035314 (0x80035314).
 void titleScreenSetMessage(void **list, s32 count, s32 y) {
     s32 i;
-    textPanelInitialize((u8 *)&gTitleMessagePanel, count);
-    textPanelSetTextConfiguration((u8 *)&gTitleMessagePanel, 0);
-    textPanelSetPosition((u8 *)&gTitleMessagePanel, 0, y);
+    textPanelInitialize(&gTitleMessagePanel, count);
+    textPanelSetTextConfiguration(&gTitleMessagePanel, 0);
+    textPanelSetPosition(&gTitleMessagePanel, 0, y);
     for (i = 0; i < count; i++)
-        textPanelAppend((u8 *)&gTitleMessagePanel, list[i]);
+        textPanelAppend(&gTitleMessagePanel, list[i]);
 }
 
 

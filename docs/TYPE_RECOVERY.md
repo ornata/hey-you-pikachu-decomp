@@ -464,3 +464,13 @@ confirms the free-space call; the label is unused in retail code, so source
 provides the label contract absent from inferred binary arguments. The scene
 consumer's scalar heap view now uses the actual heap type. All seven source units
 were built and compared independently before the next changed.
+
+The text-panel continuation shares initialization, release, append, configuration,
+color and rendering contracts through `text_panel.h`. All three consumers use
+TextPanel pointers; flipbook buffering reuses the checked 0x20-byte TextPanel
+layout instead of a duplicate record. The runtime's split symbols remain intact,
+with its target-specific cross-symbol view documented. Release has a void result
+and retains the separate color allocation. Ghidra at 0x80012730 corroborates the
+entry allocation, pointer tables and capacity. An unsigned allocation-size local
+preserves the established allocator contract and original instruction selection.
+Each producer and consumer matched all 483 baseline objects individually.

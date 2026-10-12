@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "text_panel.h"
 #include "heap_diagnostics.h"
 #include "runtime_program.h"
 #include "scene_types.h"
@@ -113,6 +114,7 @@ s32 gRuntimeGameModeEntryPending;
 /// \note Original identifier: \c D_800B6774 (0x800B6774).
 s32 gRuntimePromptPanelReservedPadding;
 /// Runtime prompt panel base and retained line count; adjacent words retain the TextPanel layout.
+/// \note Typed panel views rely on the target linker layout across these separate symbols.
 /// \note Original identifier: \c D_800B6778 (0x800B6778).
 s32 gRuntimePromptPanelLineCount;
 /// Runtime prompt panel circular replacement index.
@@ -230,8 +232,6 @@ void runtimeMainThreadEntry(void *);
 /// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
 extern Gfx *gRenderDisplayListCursor;
 s32 runtimeGetUiPulseAlpha(void);
-void textPanelDraw(s32 *, Gfx **, s32);
-void textPanelSetLineColor(s32 *, s32, s32, s32, s32, s32);
 
 f32 mathSinDegrees(f32);
 
@@ -619,10 +619,6 @@ s32 eepromIsRequestOrTransferBusy();                                            
 s32 eepromGetQueuedTransferState(void);
 void objectUpdateGroup(s32);                     /* extern */
 void objectSweepDeferredHierarchyDestruction();                            /* extern */
-void textPanelInitialize(OSTimer *, s32);          /* extern */
-void textPanelSetPosition(OSTimer *, s32, s32); /* extern */
-void textPanelSetTextConfiguration(OSTimer *, s32);          /* extern */
-s32 textPanelAppend(OSTimer *, const char *);     /* extern */
 void audioStopCategories(s32, f64);
 void hudPlayerUpdateNoOp(s32);                /* extern */
 void presentationUpdateCardMode();                   /* extern */
@@ -757,18 +753,18 @@ void runtimeUpdateGameMode(void) {
         break;
     case 14:
         if (gRuntimeGameModeEntryPending != 0) {
-            textPanelInitialize(&gRuntimePromptPanelLineCount, 5);
-            textPanelSetTextConfiguration(&gRuntimePromptPanelLineCount, 0);
-            textPanelSetPosition(&gRuntimePromptPanelLineCount, 0, 0x64);
+            textPanelInitialize((TextPanel *)&gRuntimePromptPanelLineCount, 5);
+            textPanelSetTextConfiguration((TextPanel *)&gRuntimePromptPanelLineCount, 0);
+            textPanelSetPosition((TextPanel *)&gRuntimePromptPanelLineCount, 0, 0x64);
             savePrompt = gSaveConfirmationPromptLines;
             do {
-                textPanelAppend(&gRuntimePromptPanelLineCount, *savePrompt);
+                textPanelAppend((TextPanel *)&gRuntimePromptPanelLineCount, (void *)*savePrompt);
                 savePrompt++;
             } while (savePrompt != gSaveSuccessPromptLines);
             runtimeResetUiPulse();
             gRuntimeGameModeEntryPending = 0;
         } else if (gControllerInputState[1] & 0x8000) {
-            textPanelReleaseEntries(&gRuntimePromptPanelLineCount);
+            textPanelReleaseEntries((TextPanel *)&gRuntimePromptPanelLineCount);
             gRuntimePromptPanelImages = 0;
             runtimeRequestGameModeChange(0x10);
         }
@@ -799,9 +795,9 @@ void runtimeUpdateGameMode(void) {
             playerPlayTrackedSoundEffect(&gPlayerState, 0x86);
             progressSaveRecordToEeprom(*(s32 *)gRuntimeSaveParameters);
             gRuntimeGameModeEntryPending = 0;
-            textPanelInitialize(&gRuntimePromptPanelLineCount, 5);
-            textPanelSetTextConfiguration(&gRuntimePromptPanelLineCount, 0);
-            textPanelSetPosition(&gRuntimePromptPanelLineCount, 0, 0x64);
+            textPanelInitialize((TextPanel *)&gRuntimePromptPanelLineCount, 5);
+            textPanelSetTextConfiguration((TextPanel *)&gRuntimePromptPanelLineCount, 0);
+            textPanelSetPosition((TextPanel *)&gRuntimePromptPanelLineCount, 0, 0x64);
         } else {
             status = eepromGetQueuedTransferState();
             switch (status) {
@@ -810,7 +806,7 @@ void runtimeUpdateGameMode(void) {
             case 0:
                 savedPrompt = gSaveSuccessPromptLines;
                 do {
-                    textPanelAppend(&gRuntimePromptPanelLineCount, *savedPrompt);
+                    textPanelAppend((TextPanel *)&gRuntimePromptPanelLineCount, (void *)*savedPrompt);
                     savedPrompt++;
                 } while (savedPrompt != gSaveFailurePromptLines);
                 runtimeResetUiPulse();
@@ -819,7 +815,7 @@ void runtimeUpdateGameMode(void) {
                 break;
             case 5:
                 for (i = 0; i < 5; i++) {
-                    textPanelAppend(&gRuntimePromptPanelLineCount, gSaveFailurePromptLines[i]);
+                    textPanelAppend((TextPanel *)&gRuntimePromptPanelLineCount, (void *)gSaveFailurePromptLines[i]);
                 }
                 runtimeResetUiPulse();
                 gRuntimeSaveAcknowledgeButtons = 0x1000;
@@ -836,7 +832,7 @@ void runtimeUpdateGameMode(void) {
         if (gRuntimeSaveAcknowledgeButtons & gControllerInputState[1]) {
             audioStopCategories(3, 0.10000000149011612);
             cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.0f);
-            textPanelReleaseEntries(&gRuntimePromptPanelLineCount);
+            textPanelReleaseEntries((TextPanel *)&gRuntimePromptPanelLineCount);
             gRuntimePromptPanelImages = 0;
             if (gRuntimeResetProfileAfterSave != 0) {
                 areaSetNextDestination(0x16, 0);
@@ -1114,10 +1110,10 @@ void runtimeStartMainThread(void *scheduler) {
 /// \note Original decompilation identifier: \c func_8000C094 (0x8000C094).
 void runtimeDrawPromptPanel(void) {
     if (gRuntimePromptPanelImages != 0) {
-        textPanelSetLineColor(&gRuntimePromptPanelLineCount, gRuntimePromptPanelLineCount - 1, 0xFF, 0xFF, 0xFF,
+        textPanelSetLineColor((TextPanel *)&gRuntimePromptPanelLineCount, gRuntimePromptPanelLineCount - 1, 0xFF, 0xFF, 0xFF,
                               runtimeGetUiPulseAlpha());
         gDPPipeSync(gRenderDisplayListCursor++);
         gDPSetCycleType(gRenderDisplayListCursor++, G_CYC_1CYCLE);
-        textPanelDraw(&gRuntimePromptPanelLineCount, &gRenderDisplayListCursor, 2);
+        textPanelDraw((TextPanel *)&gRuntimePromptPanelLineCount, &gRenderDisplayListCursor, 2);
     }
 }

@@ -7,24 +7,21 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "object_lookup.h"
-#include "text_panel_types.h"
+#include "text_panel.h"
+#include "heap_alloc.h"
 #include "voice_commands.h"
 /// Shared text-image configurations selected by text panels, menus and message styles.
 /// \note Original identifier: \c D_80074DE0 (0x80074DE0).
 extern u8 gTextImageConfigurations[];
-s32 heapFreeLocal(void *, s32);
+void heapFreeLocal(u8 *, void *);
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern u8 gGameHeap[];
-void textPanelSetLineColor(u8 *, s32, s32, s32, s32, s32);
+extern HpHdr gGameHeap;
 void _bzero(s32, s32);
-struct TextPanel;
-s32 textPanelAppend(struct TextPanel *, void *);
 void textImageDestroy(TextImage *);
 /// Empty text used to reset a scrolling text panel.
 /// \note Original identifier: \c D_800A268C (0x800A268C).
 extern u8 gTextPanelClearedEmptyText[];
-void textPanelClear(u8 *);
 
 u8 *actorFindPart(u8 *, s32);
 u8 *objectFindNearestTargetInView(u8 *, f32 *, f32, u8 *, f32, s32, s32);
@@ -235,8 +232,6 @@ void voiceCommandUpdate(void) {
     }
 }
 
-void textPanelSetColor(u8 *, s32, s32, s32, s32);
-s32 heapAllocLocal(void *, s32, s32);
 void textureImageInitialize(void *, void *, void *, s32, s32, s32, s32);
 /// Pixel data for the scrolling text-panel backdrop strip.
 /// \note Original identifier: \c D_80074EE0 (0x80074EE0).
@@ -254,23 +249,23 @@ extern u8 gTextPanelBackdropPixels[], gTextPanelBackdropPalette[], gTextPanelIni
 /// \param visibleLines Nonnegative maximum number of visible text lines.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80012730 (0x80012730).
-void textPanelInitialize(u8 *panel, s32 visibleLines) {
-    s32 allocationSize;
-    s32 allocation;
+void textPanelInitialize(TextPanel *panel, s32 visibleLines) {
+    u32 allocationSize;
+    u8 *allocation;
 
     visibleLines += 1;
     _bzero((s32)panel, 0x20);
     allocationSize = visibleLines * 8;
-    allocation = heapAllocLocal(gGameHeap, allocationSize, 0x33);
-    *(s32 *)(panel + 0x14) = allocation;
-    _bzero(allocation, allocationSize);
-    *(s32 **)(panel + 0x18) = *(s32 **)(panel + 0x14) + visibleLines;
+    allocation = heapAllocLocal(&gGameHeap, allocationSize, 0x33);
+    panel->images = (u8 **)allocation;
+    _bzero((s32)allocation, allocationSize);
+    panel->entries = panel->images + visibleLines;
     allocationSize = visibleLines * 4;
-    allocation = heapAllocLocal(gGameHeap, allocationSize, 0x3F);
-    *(s32 *)(panel + 0xC) = allocation;
-    _bzero(allocation, allocationSize);
-    *(s32 *)(panel + 0x10) = visibleLines;
-    *(s32 *)(panel + 0x1C) = 0;
+    allocation = heapAllocLocal(&gGameHeap, allocationSize, 0x3F);
+    panel->colors = (u8 (*)[4])allocation;
+    _bzero((s32)allocation, allocationSize);
+    panel->capacity = visibleLines;
+    panel->configuration = NULL;
     textPanelSetColor(panel, 0xFF, 0xFF, 0xFF, 0xFF);
     textureImageInitialize(gTextPanelBackdropImage, gTextPanelBackdropPixels, gTextPanelBackdropPalette, 2, 0, 0x114,
                            0x1C);
@@ -279,11 +274,11 @@ void textPanelInitialize(u8 *panel, s32 visibleLines) {
 
 /// Clear a text panel and release its image-entry storage, retaining its color storage.
 /// \param panel Initialized text panel to release.
-/// \returns Unspecified; callers must ignore the result.
+/// \returns Nothing.
 /// \note Original decompilation identifier: \c osStopTimer (0x8001282C).
-int textPanelReleaseEntries(OSTimer *panel) {
+void textPanelReleaseEntries(TextPanel *panel) {
     textPanelClear(panel);
-    return heapFreeLocal(gGameHeap, *(s32 *)((u8 *)panel + 0x14));
+    heapFreeLocal((u8 *)&gGameHeap, panel->images);
 }
 
 void textDrawSetArea(s32, s32, s32, s32);
@@ -371,14 +366,14 @@ void textPanelDraw(TextPanel *panel, Gfx **gdl, s32 mode) {
 /// \param alpha Opacity from zero to 255.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80012C10 (0x80012C10).
-void textPanelSetLineColor(u8 *panel, s32 line, s32 red, s32 green, s32 blue, s32 alpha) {
+void textPanelSetLineColor(TextPanel *panel, s32 line, s32 red, s32 green, s32 blue, s32 alpha) {
     s32 off;
 
     off = line * 4;
-    (*(u8 **)(panel + 0xC))[off] = red;
-    (*(u8 **)(panel + 0xC))[off + 1] = green;
-    (*(u8 **)(panel + 0xC))[off + 2] = blue;
-    (*(u8 **)(panel + 0xC))[off + 3] = alpha;
+    (*(u8 **)((u8 *)panel + 0xC))[off] = red;
+    (*(u8 **)((u8 *)panel + 0xC))[off + 1] = green;
+    (*(u8 **)((u8 *)panel + 0xC))[off + 2] = blue;
+    (*(u8 **)((u8 *)panel + 0xC))[off + 3] = alpha;
 }
 
 /// Set the display color of every text-panel line.
@@ -389,7 +384,7 @@ void textPanelSetLineColor(u8 *panel, s32 line, s32 red, s32 green, s32 blue, s3
 /// \param alpha Opacity from zero to 255.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80012C50 (0x80012C50).
-void textPanelSetColor(u8 *panel, s32 red, s32 green, s32 blue, s32 alpha) {
+void textPanelSetColor(TextPanel *panel, s32 red, s32 green, s32 blue, s32 alpha) {
     s32 var_s0;
 
     var_s0 = 0;
@@ -407,9 +402,9 @@ void textPanelSetColor(u8 *panel, s32 red, s32 green, s32 blue, s32 alpha) {
 /// \param y Vertical offset in screen pixels.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80012CE4 (0x80012CE4).
-void textPanelSetPosition(u8 *panel, s32 x, s32 y) {
-    *(s16 *)(panel + 8) = x;
-    *(s16 *)(panel + 0xA) = y;
+void textPanelSetPosition(TextPanel *panel, s32 x, s32 y) {
+    panel->x = x;
+    panel->y = y;
 }
 
 /// Select the configuration used to prepare subsequent text entries.
@@ -417,12 +412,12 @@ void textPanelSetPosition(u8 *panel, s32 x, s32 y) {
 /// \param configuration Configuration index from zero through two; other values select the default configuration.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80012CF0 (0x80012CF0).
-void textPanelSetTextConfiguration(u8 *panel, s32 configuration) {
+void textPanelSetTextConfiguration(TextPanel *panel, s32 configuration) {
     if ((configuration >= 0) && (configuration < 3)) {
-        *(u8 **)(panel + 0x1C) = gTextImageConfigurations + (configuration * 0x10);
+        panel->configuration = gTextImageConfigurations + (configuration * 0x10);
         return;
     }
-    *(u8 **)(panel + 0x1C) = NULL;
+    panel->configuration = NULL;
 }
 
 void textDrawSetFont(s32);
@@ -488,7 +483,7 @@ s32 textPanelAppend(TextPanel *panel, void *text) {
 /// \param panel Initialized text panel to clear.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80012EE4 (0x80012EE4).
-void textPanelClear(u8 *panel) {
+void textPanelClear(TextPanel *panel) {
     s32 imageAddress;
     s32 imageByteOffset;
     s32 lineIndex;
@@ -499,18 +494,18 @@ void textPanelClear(u8 *panel) {
     lineIndex = 0;
     if (lineCount > 0) {
         do {
-            imageAddress = *(s32 *)(*(u8 **)(panel + 0x14) + imageByteOffset);
+            imageAddress = *(s32 *)(*(u8 **)((u8 *)panel + 0x14) + imageByteOffset);
             if (imageAddress != 0) {
                 textImageDestroy((TextImage *)imageAddress);
-                *(s32 *)(*(u8 **)(panel + 0x14) + imageByteOffset) = 0;
+                *(s32 *)(*(u8 **)((u8 *)panel + 0x14) + imageByteOffset) = 0;
                 lineCount = *(s32 *)panel;
             }
             lineIndex += 1;
             imageByteOffset += 4;
         } while (lineIndex < lineCount);
     }
-    _bzero(*(s32 *)(panel + 0x18), (s32)(*(s32 *)(panel + 0x10) * 4));
-    *(s32 *)(panel + 4) = 0;
+    _bzero(*(s32 *)((u8 *)panel + 0x18), (s32)(*(s32 *)((u8 *)panel + 0x10) * 4));
+    *(s32 *)((u8 *)panel + 4) = 0;
     *(s32 *)panel = 0;
     textPanelAppend((struct TextPanel *)panel, gTextPanelClearedEmptyText);
 }
