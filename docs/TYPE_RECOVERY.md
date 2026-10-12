@@ -1960,3 +1960,13 @@ The provider reads the shared camera affine view and eye fields. Ghidra 0x800025
 confirms the single input, in-place transform and active-camera data. Both changed
 source units preserve all 483 objects and strict relocation addends; no legacy
 extra-argument exception is needed for this interface.
+
+### Camera-relative object orientation layout reuse
+
+Four camera-relative orientation helpers now obtain eye/target coordinates from
+the shared camera record. Horizontal billboarding also uses its eye field,
+removing the duplicate padded `CamRec` layout. Ghidra 0x80009AB8 confirms the active
+camera target selection; the established segment helper and matching objects
+confirm endpoint order. Camera interior matrix aliases and the billboard yaw
+helper's existing extra-argument exception remain unchanged pending their own
+interface audits. All 483 objects and strict relocation addends match.
