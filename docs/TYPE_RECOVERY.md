@@ -1302,3 +1302,14 @@ the provider copies their values and retains no pointer to the caller's storage.
 The existing byte-storage animation parameters retain the enclosing actor/item
 views while their documentation requires a complete initialized animation.
 Each of the four source-unit changes independently preserves all 483 objects.
+
+### Direction-animation field consumers
+
+The playback provider now uses the shared selector, mode, duration, remaining-time
+and angular-motion fields. Timed motion reads the selected pose through the shared
+pose array instead of a shifted local frame type. The dispatcher explicitly
+converts its signed mode field to u16, preserving its original unsigned load.
+All 483 objects remain identical. Reset retains a documented word-aligned
+`DirectionPoseCopy` view: substituting the byte-aligned shared `DirectionPose`
+changes IDO's aggregate-copy code and the ROM layout. This is an alignment
+constraint on the copy expression, not evidence of a different record layout.
