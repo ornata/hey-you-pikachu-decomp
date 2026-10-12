@@ -1,4 +1,5 @@
 #include "common.h"
+#include "heap_diagnostics.h"
 #include "scene_types.h"
 u8 *ambientAudioCreate(f32 *, s32, f32, f32, s32, s32, f32, s32, s32);
 void doorRegistryReset(void);
@@ -106,10 +107,9 @@ s32 ochreDeepTryCreateProgressEncounter(void) {
 s32 ochreDeepTryCreateProgressEncounter(void);
 void mazeScatterItems(u8 *, s32, u8 *, f32);
 void sceneRegionCreate(f32 *, f32, f32, u8 *);
-void heapDebugReportFreeSpace(void *, void *);
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern u8 gGameHeap;
+extern HpHdr gGameHeap;
 extern u8 D_801475C8_scene_ochre_deep;
 extern u8 D_80147AE0_scene_ochre_deep;
 extern u8 D_80147AF4_scene_ochre_deep;
@@ -140,7 +140,7 @@ void ochreDeepInitializeObjects(void) {
                            ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
                            &D_80147AE0_scene_ochre_deep, 0);
     }
-    heapDebugReportFreeSpace(&gGameHeap, &D_8014AB48_scene_ochre_deep);
+    heapDebugReportFreeSpace(&gGameHeap, (const char *)&D_8014AB48_scene_ochre_deep);
     if (playerGetChaseStage() == 0) {
         mazeScatterItems(&D_80147AF4_scene_ochre_deep, 0x22, &D_8014807C_scene_ochre_deep, 0.7f);
     } else if (playerGetChaseStage() == 1) {
@@ -151,7 +151,7 @@ void ochreDeepInitializeObjects(void) {
         mazeScatterItems(&D_80147C8C_scene_ochre_deep, 0x24, &D_8014807C_scene_ochre_deep, 0.3f);
         mazeScatterItems(&D_80147E3C_scene_ochre_deep, 0x22, &D_8014807C_scene_ochre_deep, 0.5f);
     }
-    heapDebugReportFreeSpace(&gGameHeap, &D_8014AB54_scene_ochre_deep);
+    heapDebugReportFreeSpace(&gGameHeap, (const char *)&D_8014AB54_scene_ochre_deep);
     position[0] = 130.0f;
     position[1] = D_8014AB94_scene_ochre_deep;
     position[2] = D_8014AB98_scene_ochre_deep;

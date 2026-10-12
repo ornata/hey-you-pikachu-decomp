@@ -36,6 +36,7 @@
  */
 #include <ultra64.h>
 #include "common.h"
+#include "runtime_program.h"
 #include "heap_alloc.h"
 
 /* Idle thread control block + stack live in BSS (see pikachu.ld /
@@ -964,9 +965,6 @@ void renderDrawCurrentMode(void) {
 /// Number of startup frames whose full framebuffer has been cleared, capped at two.
 /// \note Original identifier: \c D_800633EC (0x800633EC).
 extern s32 gRenderInitialClearCount, gRuntimeCurrentProgram;
-/// Program callback table viewed at the drawing slot, with sixteen bytes per program.
-/// \note Original identifier: \c D_80063824 (0x80063824).
-extern u8 gRuntimeProgramDrawEntries[];
 void renderPrepareDisplayList(void);
 
 /// Begin a frame with the current background and camera, then invoke the active runtime drawing callback.
@@ -1006,8 +1004,8 @@ void renderBeginFrame(void) {
         renderDrawBackground(*(s32 *)(gRenderCameras + gRenderCameraIndex * 0xE0 + 0xA4));
     }
     cameraApplyRenderingState(gRenderCameraIndex);
-    if (*(void (**)(void))(gRuntimeProgramDrawEntries + gRuntimeCurrentProgram * 16) != NULL) {
-        (*(void (**)(void))(gRuntimeProgramDrawEntries + gRuntimeCurrentProgram * 16))();
+    if (gRuntimeProgramDrawEntries[gRuntimeCurrentProgram].callback != NULL) {
+        (gRuntimeProgramDrawEntries[gRuntimeCurrentProgram].callback)();
     }
 }
 

@@ -3,6 +3,7 @@
  * Compiler pin: Makefile IDO 5.3, -O2 -mips2. */
 #include <ultra64.h>
 #include "common.h"
+#include "runtime_program.h"
 #include "heap_alloc.h"
 
 /* Idle thread control block + stack live in BSS (see pikachu.ld /
@@ -281,9 +282,6 @@ void graphicsTaskSubmit(s32, s32, Gfx **, Gfx **, void *);
 /// Number of startup frames whose full framebuffer has been cleared, capped at two.
 /// \note Original identifier: \c D_800633EC (0x800633EC).
 extern s32 gRenderInitialClearCount, gRuntimeCurrentProgram;
-/// Program callback table viewed at the drawing slot, with sixteen bytes per program.
-/// \note Original identifier: \c D_80063824 (0x80063824).
-extern u8 gRuntimeProgramDrawEntries[];
 void renderPrepareDisplayList(void);
 
 /// Whether final frame submission invokes the optional rendering hook.

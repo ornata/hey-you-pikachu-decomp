@@ -5,7 +5,7 @@
     {
       "code": 709,
       "file": "src/main_controller.c",
-      "line": 488,
+      "line": 486,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "osContGetQuery(&gControllerPortStatus);"
     },
@@ -61,177 +61,93 @@
     {
       "code": 709,
       "file": "src/game/runtime.c",
-      "line": 402,
+      "line": 760,
       "diagnostic": "Incompatible pointer type assignment",
-      "expression": "heapDebugReportFreeSpace(&gGameHeap, \"after loadAreaDlist\");"
+      "expression": "textPanelInitialize(&gRuntimePromptPanelLineCount, 5);"
     },
     {
       "code": 709,
       "file": "src/game/runtime.c",
-      "line": 405,
+      "line": 761,
       "diagnostic": "Incompatible pointer type assignment",
-      "expression": "heapDebugReportFreeSpace(&gGameHeap, \"after initItemSystem\");"
-    },
-    {
-      "code": 709,
-      "file": "src/game/runtime.c",
-      "line": 408,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "heapDebugReportFreeSpace(&gGameHeap, \"after initObjects()\");"
-    },
-    {
-      "code": 709,
-      "file": "src/game/runtime.c",
-      "line": 411,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "heapDebugReportFreeSpace(&gGameHeap, \"after initMaze()\");"
-    },
-    {
-      "code": 709,
-      "file": "src/game/runtime.c",
-      "line": 414,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "heapDebugReportFreeSpace(&gGameHeap, \"after initPlayerParameters()\");"
-    },
-    {
-      "code": 709,
-      "file": "src/game/runtime.c",
-      "line": 416,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "heapDebugReportFreeSpace(&gGameHeap, \"after initPikachu()\");"
-    },
-    {
-      "code": 709,
-      "file": "src/game/runtime.c",
-      "line": 420,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "heapDebugReportFreeSpace(&gGameHeap, \"after createItemBox()\");"
-    },
-    {
-      "code": 709,
-      "file": "src/game/runtime.c",
-      "line": 431,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "heapDebugReportFreeSpace(&gGameHeap, \"after initMessageMode()\");"
-    },
-    {
-      "code": 709,
-      "file": "src/game/runtime.c",
-      "line": 446,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "heapDebugReportFreeSpace(&gGameHeap, \"entry_initGame()\");"
-    },
-    {
-      "code": 709,
-      "file": "src/game/runtime.c",
-      "line": 457,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "heapDebugReportFreeSpace(&gGameHeap, \"finish_initGame()\");"
+      "expression": "textPanelSetTextConfiguration(&gRuntimePromptPanelLineCount, 0);"
     },
     {
       "code": 709,
       "file": "src/game/runtime.c",
       "line": 762,
       "diagnostic": "Incompatible pointer type assignment",
-      "expression": "textPanelInitialize(&gRuntimePromptPanelLineCount, 5);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/runtime.c",
-      "line": 763,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "textPanelSetTextConfiguration(&gRuntimePromptPanelLineCount, 0);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/runtime.c",
-      "line": 764,
-      "diagnostic": "Incompatible pointer type assignment",
       "expression": "textPanelSetPosition(&gRuntimePromptPanelLineCount, 0, 0x64);"
     },
     {
       "code": 709,
       "file": "src/game/runtime.c",
-      "line": 767,
+      "line": 765,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "textPanelAppend(&gRuntimePromptPanelLineCount, *savePrompt);"
     },
     {
       "code": 709,
       "file": "src/game/runtime.c",
-      "line": 801,
+      "line": 799,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "playerPlayTrackedSoundEffect(&gPlayerState, 0x86);"
     },
     {
       "code": 709,
       "file": "src/game/runtime.c",
-      "line": 804,
+      "line": 802,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "textPanelInitialize(&gRuntimePromptPanelLineCount, 5);"
     },
     {
       "code": 709,
       "file": "src/game/runtime.c",
-      "line": 805,
+      "line": 803,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "textPanelSetTextConfiguration(&gRuntimePromptPanelLineCount, 0);"
     },
     {
       "code": 709,
       "file": "src/game/runtime.c",
-      "line": 806,
+      "line": 804,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "textPanelSetPosition(&gRuntimePromptPanelLineCount, 0, 0x64);"
     },
     {
       "code": 709,
       "file": "src/game/runtime.c",
-      "line": 815,
+      "line": 813,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "textPanelAppend(&gRuntimePromptPanelLineCount, *savedPrompt);"
     },
     {
       "code": 709,
       "file": "src/game/runtime.c",
-      "line": 824,
+      "line": 822,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "textPanelAppend(&gRuntimePromptPanelLineCount, gSaveFailurePromptLines[i]);"
     },
     {
       "code": 712,
       "file": "src/game/runtime.c",
-      "line": 878,
+      "line": 876,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "runtimeSecondaryPlayerInputNoOp(pad);"
     },
     {
       "code": 709,
       "file": "src/game/runtime.c",
-      "line": 1069,
+      "line": 1064,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "textDrawSetPalette(&gDefaultTextPalette);"
     },
     {
       "code": 712,
       "file": "src/game/runtime.c",
-      "line": 1072,
+      "line": 1067,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "audioSelectCueBank(&D_B140C0);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/runtime.c",
-      "line": 1073,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "heapDebugReportFreeSpace(&gGameHeap, \"after songbuffinit()\");"
-    },
-    {
-      "code": 709,
-      "file": "src/game/runtime.c",
-      "line": 1075,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "heapDebugReportFreeSpace(&gGameHeap, \"after gfxInit()\");"
     },
     {
       "code": 709,
@@ -316,13 +232,6 @@
       "line": 684,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "gEepromRecordBlockOffsets[progressGetBackupRecordIndex(record)], gProgressSaveRecord, 0x74);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/flipbook_messenger.c",
-      "line": 1000,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "messengerAdvancePosition(object);"
     },
     {
       "code": 709,
@@ -414,6 +323,13 @@
       "line": 327,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "allocation = heapAllocLocal(&gObjectResponseHeap, 0xC, 0xC6);"
+    },
+    {
+      "code": 709,
+      "file": "src/game/flipbook_messenger.c",
+      "line": 1000,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "messengerAdvancePosition(object);"
     },
     {
       "code": 709,
@@ -661,18 +577,18 @@
       "expression": "titleScreenSetMessage(gTitleOverwriteMessage, 4, 0x40);"
     },
     {
-      "code": 709,
-      "file": "src/game/title_screen.c",
-      "line": 993,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "titleScreenSetMessage(gTitleSaveLoadErrorMessage, 7, 0x28);"
-    },
-    {
       "code": 712,
       "file": "src/game/linked_effect.c",
       "line": 46,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "allocation = heapAllocLocal(&gGameHeap, 0x58, 0x38);"
+    },
+    {
+      "code": 709,
+      "file": "src/game/title_screen.c",
+      "line": 993,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "titleScreenSetMessage(gTitleSaveLoadErrorMessage, 7, 0x28);"
     },
     {
       "code": 709,
@@ -773,11 +689,18 @@
       "expression": "romCacheWaitForReads(cache);"
     },
     {
-      "code": 709,
-      "file": "src/game/actor_configuration.c",
-      "line": 496,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "romDmaReadQueued((s32 *)&gActorAssetReadQueue, gActorAssetResources[index].romStart, source, size);"
+      "code": 712,
+      "file": "src/game/terrain_debug_grid.c",
+      "line": 107,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "((RuntimeObjectPrefix *)object)->state.address = heapAllocLocal(&gGameHeap, 4, 0x38);"
+    },
+    {
+      "code": 712,
+      "file": "src/game/terrain_debug_grid.c",
+      "line": 151,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "((RuntimeObjectPrefix *)object)->state.address = heapAllocLocal(&gGameHeap, 0x18, 0x59);"
     },
     {
       "code": 709,
@@ -850,18 +773,11 @@
       "expression": "osRecvMesg(scheduler + 0xE4, &sp44, 1);"
     },
     {
-      "code": 712,
-      "file": "src/game/terrain_debug_grid.c",
-      "line": 107,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "((RuntimeObjectPrefix *)object)->state.address = heapAllocLocal(&gGameHeap, 4, 0x38);"
-    },
-    {
-      "code": 712,
-      "file": "src/game/terrain_debug_grid.c",
-      "line": 151,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "((RuntimeObjectPrefix *)object)->state.address = heapAllocLocal(&gGameHeap, 0x18, 0x59);"
+      "code": 709,
+      "file": "src/game/actor_configuration.c",
+      "line": 497,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "romDmaReadQueued((s32 *)&gActorAssetReadQueue, gActorAssetResources[index].romStart, source, size);"
     },
     {
       "code": 709,
@@ -1075,6 +991,13 @@
     },
     {
       "code": 709,
+      "file": "src/main.c",
+      "line": 327,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "heapFreeLocal(&gGameHeap, temporary);"
+    },
+    {
+      "code": 709,
       "file": "src/game/motion_playback.c",
       "line": 713,
       "diagnostic": "Incompatible pointer type assignment",
@@ -1083,21 +1006,14 @@
     {
       "code": 709,
       "file": "src/main.c",
-      "line": 326,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "heapFreeLocal(&gGameHeap, temporary);"
-    },
-    {
-      "code": 709,
-      "file": "src/main.c",
-      "line": 333,
+      "line": 334,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "heapFreeLocal(&gGameHeap, gAreaRenderAssets);"
     },
     {
       "code": 712,
       "file": "src/main.c",
-      "line": 358,
+      "line": 359,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "{\t\t\t\t\t\t\t\t\t\tGfx *_g = (Gfx *)((gRenderDisplayListCursor++));\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t_g->words.w0 = (((unsigned int) (((unsigned int)(( 0xdb)) & ((0x01 << ( 8)) - 1)) << ( 24)))  | ((unsigned int) (((unsigned int)((  0x06)) & ((0x01 << ( 8)) - 1)) << ( 16)))  |\t\t\t\t((unsigned int) (((unsigned int)((  ( 1)*4)) & ((0x01 << ( 16)) - 1)) << ( 0))) );\t\t\t\t\t_g->words.w1 = (unsigned int)(   osVirtualToPhysical(gSharedRenderAssets));\t\t\t\t}   ;"
     },
@@ -1228,58 +1144,16 @@
       "expression": "liveObject = objectFindLiveByHandle(scriptVmPopInteger(sp1C));"
     },
     {
-      "code": 712,
-      "file": "src/ovl/actor_script_player_world.c",
-      "line": 966,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "resolvedObject = objectResolveAvailableHandle(scriptVmPopInteger(sp1C));"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/actor_script_player_world.c",
-      "line": 1083,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "liveObject = objectFindLiveByHandle(scriptVmPopInteger(sp1C));"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/actor_script_player_world.c",
-      "line": 1111,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "resolvedObject = objectResolveAvailableHandle(scriptVmPopInteger(vmAddress));"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/actor_script_player_world.c",
-      "line": 1133,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "resolvedObject = objectResolveAvailableHandle(scriptVmPopInteger(vmAddress));"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/actor_script_player_world.c",
-      "line": 1192,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "toolboxStoreBonusObject(objectResolveAvailableHandle(scriptVmPopInteger(sp1C)));"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/actor_script_player_world.c",
-      "line": 1207,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "resolvedObject = objectResolveAvailableHandle(scriptVmPopInteger(sp1C));"
-    },
-    {
       "code": 709,
       "file": "src/ovl/area_terrain_maze.c",
-      "line": 1609,
+      "line": 1610,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "(*(SceneCellType *)((u8 *)((ModelConfigD658 *)gCurrentAreaConfiguration)->kinds + offset)).initialize(node);"
     },
     {
       "code": 712,
       "file": "src/ovl/area_terrain_maze.c",
-      "line": 1744,
+      "line": 1745,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "blockHierarchy = objectCreateHierarchyFromTemplate(objectTemplate);"
     },
@@ -1326,53 +1200,95 @@
       "expression": "mazeDestroyNodeHierarchy(gAreaMazeRoot);"
     },
     {
+      "code": 712,
+      "file": "src/ovl/actor_script_player_world.c",
+      "line": 966,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "resolvedObject = objectResolveAvailableHandle(scriptVmPopInteger(sp1C));"
+    },
+    {
+      "code": 712,
+      "file": "src/ovl/actor_script_player_world.c",
+      "line": 1083,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "liveObject = objectFindLiveByHandle(scriptVmPopInteger(sp1C));"
+    },
+    {
+      "code": 712,
+      "file": "src/ovl/actor_script_player_world.c",
+      "line": 1111,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "resolvedObject = objectResolveAvailableHandle(scriptVmPopInteger(vmAddress));"
+    },
+    {
+      "code": 712,
+      "file": "src/ovl/actor_script_player_world.c",
+      "line": 1133,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "resolvedObject = objectResolveAvailableHandle(scriptVmPopInteger(vmAddress));"
+    },
+    {
+      "code": 712,
+      "file": "src/ovl/actor_script_player_world.c",
+      "line": 1192,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "toolboxStoreBonusObject(objectResolveAvailableHandle(scriptVmPopInteger(sp1C)));"
+    },
+    {
+      "code": 712,
+      "file": "src/ovl/actor_script_player_world.c",
+      "line": 1207,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "resolvedObject = objectResolveAvailableHandle(scriptVmPopInteger(sp1C));"
+    },
+    {
+      "code": 712,
+      "file": "src/ovl/item_physics.c",
+      "line": 294,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "itemPlayTrackedSound(object, sp1C, surfaceSoundId);"
+    },
+    {
+      "code": 712,
+      "file": "src/ovl/item_physics.c",
+      "line": 294,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "itemPlayTrackedSound(object, sp1C, surfaceSoundId);"
+    },
+    {
+      "code": 712,
+      "file": "src/ovl/item_physics.c",
+      "line": 299,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "object, sp1C, *((s16 *)((u8 *)&gItemKindPrimarySoundEntries + (((ItemStatePrefix *)sp1C)->kind * 0x74))));"
+    },
+    {
+      "code": 712,
+      "file": "src/ovl/item_physics.c",
+      "line": 299,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "object, sp1C, *((s16 *)((u8 *)&gItemKindPrimarySoundEntries + (((ItemStatePrefix *)sp1C)->kind * 0x74))));"
+    },
+    {
+      "code": 712,
+      "file": "src/ovl/item_physics.c",
+      "line": 302,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "itemPlayTrackedSound(object, sp1C,"
+    },
+    {
+      "code": 712,
+      "file": "src/ovl/item_physics.c",
+      "line": 302,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "itemPlayTrackedSound(object, sp1C,"
+    },
+    {
       "code": 709,
       "file": "src/ovl/script_vm.c",
       "line": 782,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "scriptVmApplyComparisonOperator(vm, op);"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/item_physics.c",
-      "line": 294,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "itemPlayTrackedSound(object, sp1C, surfaceSoundId);"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/item_physics.c",
-      "line": 294,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "itemPlayTrackedSound(object, sp1C, surfaceSoundId);"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/item_physics.c",
-      "line": 299,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "object, sp1C, *((s16 *)((u8 *)&gItemKindPrimarySoundEntries + (((ItemStatePrefix *)sp1C)->kind * 0x74))));"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/item_physics.c",
-      "line": 299,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "object, sp1C, *((s16 *)((u8 *)&gItemKindPrimarySoundEntries + (((ItemStatePrefix *)sp1C)->kind * 0x74))));"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/item_physics.c",
-      "line": 302,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "itemPlayTrackedSound(object, sp1C,"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/item_physics.c",
-      "line": 302,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "itemPlayTrackedSound(object, sp1C,"
     },
     {
       "code": 709,

@@ -1,5 +1,7 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "heap_diagnostics.h"
+#include "runtime_program.h"
 #include "scene_types.h"
 #include "heap_types.h"
 #include "player_types.h"
@@ -216,9 +218,6 @@ void controllerRequestRumbleReset(s32); /* extern */
 void actionScriptInitializeHook();        /* extern */
 void hudInitialize();        /* extern */
 void randomSeedFromSystem();        /* extern */
-/// Program callback table viewed at the initialization slot, with sixteen bytes per program.
-/// \note Original identifier: \c D_80063828 (0x80063828).
-extern u8 gRuntimeProgramInitializeEntries[];
 s32 progressAddValue(s32, s32);
 u64 runtimeGetElapsedMilliseconds(void);
 void runtimeAccumulatePlayTime(void);
@@ -359,7 +358,6 @@ void toolboxCreateDisplayObjects();                          /* extern */
 s32 progressHasFieldInCurrentArea(s32);                       /* extern */
 void backdropAllocateViewBuffer(s32, u32, u32); /* extern */
 void backdropSelectForView(s32, s32, s32);     /* extern */
-void heapDebugReportFreeSpace(u8 *, const char *);   /* extern */
 void mazeInitialize();                          /* extern */
 void mazeRunAreaUpdateCallback();                          /* extern */
 void areaActivateDestination();                          /* extern */
@@ -446,7 +444,7 @@ void runtimeInitializeCurrentProgram(void) {
     heapDebugReportFreeSpace(&gGameHeap, "entry_initGame()");
     runtimeResetTiming();
     controllerRequestRumbleReset(0);
-    initializeProgram = *(void (**)(void))(gRuntimeProgramInitializeEntries + (gRuntimeCurrentProgram * 0x10));
+    initializeProgram = gRuntimeProgramInitializeEntries[gRuntimeCurrentProgram].callback;
     if (initializeProgram != NULL) {
         initializeProgram();
     }
@@ -943,9 +941,6 @@ void audioUpdateGameplayMusicDucking(void);
 /// Shared ROM cache owning loaded motion data and pending reads.
 /// \note Original identifier: \c D_800B6930 (0x800B6930).
 extern u8 gMotionRomCache[];
-/// Program callback table viewed at the update slot, with sixteen bytes per program.
-/// \note Original identifier: \c D_80063820 (0x80063820).
-extern u8 gRuntimeProgramUpdateEntries[];
 /// Service runtime events and frames until a requested program transition is ready.
 /// \returns Nothing when the current program can be left; halts on system reset.
 /// \note Original decompilation identifier: \c func_8000BB8C (0x8000BB8C).
@@ -972,7 +967,7 @@ void runtimeRunProgramEventLoop(void) {
                     }
                     romCacheReleaseUses(gMotionRomCache);
                     gRuntimeRenderPrimed = 1;
-                    callback = *(void (**)(void))(gRuntimeProgramUpdateEntries + gRuntimeCurrentProgram * 16);
+                    callback = gRuntimeProgramUpdateEntries[gRuntimeCurrentProgram].callback;
                     if (callback != NULL)
                         callback();
                     audioUpdateGameplayMusicDucking();

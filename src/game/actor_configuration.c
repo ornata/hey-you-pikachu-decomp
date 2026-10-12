@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "heap_diagnostics.h"
 #include "integer_animation.h"
 #include "object_lookup.h"
 #include "actor_script.h"
@@ -538,7 +539,6 @@ u8 *orbitFollowerCreate(u8 *, f32, f32, f32);
 s32 assetDecompressAndPatch(u8 *, u8 *, s32, s32, s32, s32);
 u8 *groundShadowCreate(s32, f32);
 void heapFreeLocal(u8 *, void *);
-void heapDebugReportFreeSpace(u8 *, s32);
 u8 *scriptVmCreate(u8 *);
 /// Separate symbol view of the actor-kind configuration for Pikachu, kind 0x25.
 /// \note Original identifier: \c D_80088BEC (0x80088BEC).
@@ -608,13 +608,13 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
     ObjectAsset *asset;
     u8 *part;
 
-    heapDebugReportFreeSpace((u8 *)&gGameHeap, (s32)gActorCreationStartHeapLabel);
+    heapDebugReportFreeSpace(&gGameHeap, (const char *)gActorCreationStartHeapLabel);
     actorAssetQueueLoadForKind(kind);
-    heapDebugReportFreeSpace((u8 *)&gGameHeap, (s32)gActorResourcesRequestedHeapLabel);
+    heapDebugReportFreeSpace(&gGameHeap, (const char *)gActorResourcesRequestedHeapLabel);
     spawnSpec = &((SpawnSpec *)gActorKindConfigurationsFromOne)[kind - 1];
     actor = objectCloneTemplateHierarchy(spawnSpec->template, 0);
     actorState = *(u8 **)(actor + 0x54);
-    heapDebugReportFreeSpace((u8 *)&gGameHeap, (s32)gActorHierarchyAllocatedHeapLabel);
+    heapDebugReportFreeSpace(&gGameHeap, (const char *)gActorHierarchyAllocatedHeapLabel);
     *(s32 *)(actorState + 0x194) = spawnSpec->flags;
     *(s32 *)(actorState + 0x238) = scriptArgument;
     sp50 = objectCreateDefault();
@@ -630,9 +630,9 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
         *(u8 **)(sp48 + 0x28) = part;
     }
     objectAllocateHierarchyMatrixBuffers((s32)actor);
-    heapDebugReportFreeSpace((u8 *)&gGameHeap, (s32)gActorMatricesAllocatedHeapLabel);
+    heapDebugReportFreeSpace(&gGameHeap, (const char *)gActorMatricesAllocatedHeapLabel);
     actorPopulatePartTable(actor, actor);
-    heapDebugReportFreeSpace((u8 *)&gGameHeap, (s32)gActorPartTablePreparedHeapLabel);
+    heapDebugReportFreeSpace(&gGameHeap, (const char *)gActorPartTablePreparedHeapLabel);
     *(f32 *)(actor + 0x18) = x;
     *(f32 *)(actor + 0x1C) = y;
     *(f32 *)(actor + 0x20) = z;
@@ -682,13 +682,13 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
                                     (u8 *)gActorCompressedAssetStaging, asset->remaining[0] - (s32)sp50,
                                     asset->dataEnd - (s32)sp50, asset->remaining[1] - (s32)sp50,
                                     asset->remaining[2] - (s32)sp50);
-            heapDebugReportFreeSpace((u8 *)&gGameHeap, (s32)gActorStagingReleaseStartHeapLabel);
+            heapDebugReportFreeSpace(&gGameHeap, (const char *)gActorStagingReleaseStartHeapLabel);
             heapFreeLocal((u8 *)&gGameHeap, (void *)gActorCompressedAssetStaging);
             gActorCompressedAssetStaging = 0;
-            heapDebugReportFreeSpace((u8 *)&gGameHeap, (s32)gActorStagingReleasedHeapLabel);
+            heapDebugReportFreeSpace(&gGameHeap, (const char *)gActorStagingReleasedHeapLabel);
         }
     }
-    heapDebugReportFreeSpace((u8 *)&gGameHeap, (s32)gActorCreationCompleteHeapLabel);
+    heapDebugReportFreeSpace(&gGameHeap, (const char *)gActorCreationCompleteHeapLabel);
     return actor;
 }
 

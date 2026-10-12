@@ -449,3 +449,18 @@ individually with the immutable baseline. An early incorrect cast placement was
 rejected by verification and corrected before acceptance; no comparison rules or
 baseline files changed. The track owns no key storage: borrowed keys must remain
 valid for playback, and evaluation reports active, held/absent and one-shot values.
+
+The runtime continuation shares the dispatcher-established 16-byte callback-slot
+stride through `runtime_program.h`. Initialization, update and drawing keep their
+separate interior symbols and relocation addends. The view deliberately skips
+adjacent storage and does not establish a complete program allocation. Resident
+bytes at 0x80063820 contain runtimeUpdateGameMode, renderDrawCurrentMode,
+runtimeInitializeSceneGameplay and a retained zero word; source dispatchers
+establish the stride and no-argument void callback contract.
+
+`heap_diagnostics.h` reconciles heapDebugReportFreeSpace with HpHdr pointers and
+borrowed diagnostic strings across all declaring consumers. Ghidra at 0x80038690
+confirms the free-space call; the label is unused in retail code, so source
+provides the label contract absent from inferred binary arguments. The scene
+consumer's scalar heap view now uses the actual heap type. All seven source units
+were built and compared independently before the next changed.

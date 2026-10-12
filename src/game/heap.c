@@ -1,6 +1,7 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "heap_types.h"
+#include "heap_diagnostics.h"
 
 /* Debug trace: compiled out in this build, but each format string is still emitted
  * to .rodata and the dead do/if blocks still shape uopt's flow graph. */
@@ -396,12 +397,12 @@ loop_1:
 /// \param label Diagnostic report label; unused in this build.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80038690 (0x80038690).
-void heapDebugReportFreeSpace(u8 *heap, char *label) {
+void heapDebugReportFreeSpace(HpHdr *heap, const char *label) {
     u32 max;
     s32 total;
 
-    total = heapGetFreeSpace(heap, &max);
-    if (heap != (u8 *)&gGameHeap) {
+    total = heapGetFreeSpace((u8 *)heap, &max);
+    if (heap != &gGameHeap) {
         TRACE(("heapRegion:%p ", heap));
     } else {
         TRACE(("globalHeap "));

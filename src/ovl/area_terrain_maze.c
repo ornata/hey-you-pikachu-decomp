@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "heap_diagnostics.h"
 #include "item_spawn.h"
 #include "heap_alloc.h"
 #include "scene_types.h"
@@ -1771,7 +1772,6 @@ void mazeRemoveBlockObject(u8 *object) {
     objectRequestHierarchyDestruction(object);
 }
 
-void heapDebugReportFreeSpace(u8 *, s32);
 void mazeBuildNodeHierarchy(u8 *, s32, s32);
 void mazePrepareNodeObjects(u8 *);
 
@@ -1791,7 +1791,7 @@ void mazeReplaceBlock(u8 *pos, s32 modelId, s32 terrain, s32 level) {
     u8 *model;
     u8 *child;
 
-    heapDebugReportFreeSpace((u8 *)&gGameHeap, (s32) "pre_changeMazeBlock");
+    heapDebugReportFreeSpace(&gGameHeap, (const char *) "pre_changeMazeBlock");
     node = areaFindPositionNode(*(f32 *)(gCurrentAreaConfiguration + 0x0) / 2 + *(f32 *)(pos + 0x0),
                                 *(f32 *)(gCurrentAreaConfiguration + 0x4) / 2 + *(f32 *)(pos + 0x4),
                                 *(f32 *)(gCurrentAreaConfiguration + 0x8) / 2 + *(f32 *)(pos + 0x8));
@@ -1835,7 +1835,7 @@ void mazeReplaceBlock(u8 *pos, s32 modelId, s32 terrain, s32 level) {
             } while (child != NULL);
         }
         mazePrepareNodeObjects(node);
-        heapDebugReportFreeSpace((u8 *)&gGameHeap, (s32) "aft_changeMazeBlock");
+        heapDebugReportFreeSpace(&gGameHeap, (const char *) "aft_changeMazeBlock");
     }
 }
 
