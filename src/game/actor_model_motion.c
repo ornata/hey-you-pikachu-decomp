@@ -1,3 +1,4 @@
+#include "collision_registration.h"
 #include "camera_types.h"
 #include "audio_spatial.h"
 #include "actor_sound.h"
@@ -137,7 +138,6 @@ void actorUpdateTrackedSoundSpatialization(f32 *position, s32 *voices) {
     }
 }
 
-void collisionGridUnregisterObject(u8 *, u8 *); /* extern */
 void scriptVmDestroy(s32);        /* extern */
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
@@ -152,7 +152,7 @@ void actorReleaseModelResources(u8 *actor) {
 
     actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
     heapFreeLocal(&gGameHeap, (u8 *)((ActorScriptState *)actorState)->modelDrawLists[0]);
-    collisionGridUnregisterObject(actor, actorState + 0x210);
+    collisionGridUnregisterObject(actor, &((ActorScriptState *)actorState)->collisionRegistration);
     scriptVmDestroy(((ActorScriptState *)actorState)->vmAddress);
     heapFreeLocal(&gGameHeap, ((ActorScriptState *)actorState)->partTable);
     heapFreeLocal(&gGameHeap, actorState);
@@ -385,7 +385,6 @@ void actionUpdatePlayback(u8 *);
 void actorUpdateTrackedSoundSpatialization(f32 *, s32 *);
 void actorUpdateGroundSlopePitch(u8 *);
 void objectUpdateHierarchyInteractionVisibility(u8 *);
-s32 collisionGridRegisterObject(u8 *);
 
 
 /// Update actor behavior, animation, spatial state, and model drawing setup.
@@ -396,7 +395,7 @@ void actorUpdateModel(u8 *actor) {
     u8 *obj;
 
     obj = *(u8 **)(actor + 0x54);
-    collisionGridUnregisterObject(actor, obj + 0x210);
+    collisionGridUnregisterObject(actor, &((ActorScriptState *)obj)->collisionRegistration);
     actionScriptUpdate(actor);
     actionUpdatePlayback(actor);
     actorUpdateTrackedSoundSpatialization(((RuntimeObjectPrefix *)actor)->worldPosition, ((ActorScriptState *)obj)->soundHandles);
@@ -408,7 +407,7 @@ void actorUpdateModel(u8 *actor) {
     if ((gRuntimeCurrentProgram == 0) && !(*(u16 *)(obj + 0x1E8) & 0x20)) {
         objectUpdateHierarchyInteractionVisibility(actor);
     }
-    *(s32 *)(obj + 0x210) = collisionGridRegisterObject(actor);
+    ((ActorScriptState *)obj)->collisionRegistration = collisionGridRegisterObject(actor);
     directionAnimationUpdate((u8 *)&((ActorScriptState *)obj)->directionAnimation);
     colorAdvanceTransition(((ActorScriptState *)obj)->environmentColor, ((ActorScriptState *)obj)->targetEnvironmentColor,
                            &((ActorScriptState *)obj)->environmentColorTimeRemaining);

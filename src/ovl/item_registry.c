@@ -1,3 +1,4 @@
+#include "collision_registration.h"
 #include "object_distance.h"
 #include "search_tree_traversal.h"
 #include "object_bounds.h"
@@ -1922,7 +1923,6 @@ void itemShrink(u8 *item, f32 rate) {
     }
 }
 
-void collisionGridUnregisterObject(s32, s32 *);         /* extern */
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
@@ -1939,7 +1939,7 @@ void itemDestroyState(u8 *item) {
     ItemStatePrefix *state;
 
     state = (ItemStatePrefix *)((RuntimeObjectPrefix *)item)->state.bytes;
-    collisionGridUnregisterObject((s32)item, &state->collisionKey);
+    collisionGridUnregisterObject(item, &state->collisionKey);
     heapFreeLocal(&gGameHeap, state->lighting[0]);
     heapFreeLocal(&gGameHeap, state);
 }
@@ -1979,7 +1979,6 @@ void itemBuildLightingDisplayList(u8 *state, s32 index) {
 void itemUnusedUpdateHook(void) {
 }
 
-s32 collisionGridRegisterObject(u8 *);
 u8 *collisionGridFindOverlap(u8 *);
 
 s32 itemCanBePickedUp(u8 *, s32);
@@ -2018,7 +2017,7 @@ void itemUpdate(u8 *object) {
     } else if (*(s8 *)(state + 6) != 0) {
         TRACE("ERROR: Strange state.\n");
     }
-    collisionGridUnregisterObject((s32)object, (s32 *)(state + 0x50));
+    collisionGridUnregisterObject(object, (s32 *)(state + 0x50));
     mode = *(s8 *)(state + 6);
     if ((mode != 5 && !(*(u16 *)(object + 0x36) & 0x2000)) || mode == 1) {
         if (interactionConsiderObject(object) != 0)
@@ -2183,7 +2182,7 @@ void itemDestroy(u8 *item) {
     if ((state->owner != 0) || (state->state == 1)) {
         itemTryRelease(item, 1);
     }
-    collisionGridUnregisterObject((s32)item, &state->collisionKey);
+    collisionGridUnregisterObject(item, &state->collisionKey);
     searchTreeRemove(&gItemSearchTree, (s32)item);
     objectRequestHierarchyDestruction(item);
     gLiveItemCount -= 1;
@@ -2329,7 +2328,7 @@ void itemRemoveFromSearchAndCollision(s32 objectId) {
     liveObject = objectFindLiveByHandle(objectId);
     sp1C = liveObject;
     searchTreeRemove(&gItemSearchTree, (s32)liveObject);
-    collisionGridUnregisterObject((s32)sp1C,
+    collisionGridUnregisterObject(sp1C,
                                   &((ItemStatePrefix *)((RuntimeObjectPrefix *)sp1C)->state.pointer)->collisionKey);
 }
 
@@ -2807,7 +2806,7 @@ void itemHideAndSuspend(s32 objectId) {
         sp20 = ((RuntimeObjectPrefix *)liveObject)->state.bytes;
         TRACE("checkin %p(%s)\n", liveObject, gItemKinds[((ItemStatePrefix *)sp20)->kind].text[0].name);
         if (((ItemStatePrefix *)sp20)->state != 4) {
-            collisionGridUnregisterObject((s32)liveObject, (s32 *)(sp20 + 0x50));
+            collisionGridUnregisterObject(liveObject, (s32 *)(sp20 + 0x50));
             itemTryRelease(liveObject, 1);
             itemSetMode(liveObject, 2);
             objectSetHierarchyFlags(liveObject, 2);

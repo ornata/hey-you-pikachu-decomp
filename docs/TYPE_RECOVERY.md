@@ -1991,3 +1991,15 @@ the horizontal callback locally. Ghidra 0x800088BC confirms the orientation help
 and conditional flag update. No additional flag semantics are inferred from the
 numeric mask. Provider and caller preserve all 483 objects and strict relocation
 addends.
+
+### Collision registration key and shared lifetime contract
+
+The actor slot at 0x210 is a signed registration key, not a storage pointer.
+The shared actor field now reflects that width and role, and model update/release
+use its address explicitly. `collision_registration.h` supplies object-pointer
+and writable-key contracts to the provider, actor model, actor parts and item
+registry. Ghidra 0x8002CCB4 confirms key testing/clearing; the registration provider
+returns the keyed-pool spatial hash. Model-part release no longer passes an unused
+third argument. The contract requires removing a retained registration before
+replacement or object destruction. Every changed unit preserves all 483 objects
+and strict relocation addends.

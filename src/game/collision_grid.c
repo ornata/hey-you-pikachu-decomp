@@ -1,3 +1,4 @@
+#include "collision_registration.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "object_response.h"
@@ -145,12 +146,12 @@ s32 keyedPoolRemoveKeyAndValue(KeyedPool *, s32, s32, s32 *); /* extern */
 /// \param registrationKey Stored registration key, cleared by this operation; zero means no registration.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002CCB4 (0x8002CCB4).
-void collisionGridUnregisterObject(s32 object, s32 *registrationKey) {
+void collisionGridUnregisterObject(u8 *object, s32 *registrationKey) {
     s32 registeredKey;
 
     registeredKey = *registrationKey;
     if (registeredKey != 0) {
-        keyedPoolRemoveKeyAndValue(&gCollisionCandidateRegistry, object, registeredKey, registrationKey);
+        keyedPoolRemoveKeyAndValue(&gCollisionCandidateRegistry, (s32)object, registeredKey, registrationKey);
         *registrationKey = 0;
     }
 }

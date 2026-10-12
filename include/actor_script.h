@@ -86,7 +86,7 @@ typedef struct ActorScriptState {
     f32 collisionWidth;  ///< Horizontal width used by terrain constraints.
     f32 unknown208;
     f32 groundOffset;          ///< Vertical offset subtracted from the ground-reference pose.
-    u8 *collisionRegistration; ///< Collision-grid registration storage.
+    s32 collisionRegistration; ///< Collision-grid registration key, or zero when unregistered.
 
     s32 messengerContactMode; ///< Policy used when a messenger contacts the actor.
     s32 messagePending;       ///< Nonzero while a posted message awaits acknowledgement.

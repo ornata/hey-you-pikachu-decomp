@@ -1,3 +1,4 @@
+#include "collision_registration.h"
 #include "action_query.h"
 #include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -18,8 +19,6 @@ extern s32 gActorAppearanceSlot1Models[];
 /// Borrowed reference to the active Pikachu actor created for the current area.
 /// \note Original identifier: \c D_800760A8 (0x800760A8).
 extern u8 *gPikachuActor;
-void collisionGridUnregisterObject();
-s32 collisionGridRegisterObject(s32);
 /// Model-part identifiers controlled by each actor appearance slot.
 /// \note Original identifier: \c D_800760E8 (0x800760E8).
 extern s32 gActorAppearancePartIds[];
@@ -198,7 +197,7 @@ void actorPartInitializeAnimatedTextures(u8 *object) {
 /// \note Original decompilation identifier: \c func_80013968 (0x80013968).
 void actorPartReleaseAnimatedTextures(u8 *object) {
     s32 textureStateAddress = *(s32 *)(object + 0x54);
-    collisionGridUnregisterObject(object, textureStateAddress + 0x554, textureStateAddress);
+    collisionGridUnregisterObject(object, (s32 *)(textureStateAddress + 0x554));
     heapFreeLocal(&gGameHeap, (void *)textureStateAddress);
 }
 
@@ -450,8 +449,8 @@ void actorPartUpdateCollisionRegistration(u8 *object) {
     u8 *obj;
 
     obj = *(u8 **)(object + 0x54);
-    collisionGridUnregisterObject(object, obj + 0x554);
-    *(s32 *)(obj + 0x554) = collisionGridRegisterObject((s32)object);
+    collisionGridUnregisterObject(object, (s32 *)(obj + 0x554));
+    *(s32 *)(obj + 0x554) = collisionGridRegisterObject(object);
 }
 
 void matrix34MakeRotationXYZDegrees(f32 *, f32, f32, f32);
