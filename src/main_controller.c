@@ -94,7 +94,6 @@ s32 cameraBuildViewProjection(s32, u8 *, u8 *);
 extern s32 gRenderCameraIndex;
 void matrix33Transpose(void *);
 void matrix34TransformPointVector(void *, f32 *, f32 *);
-void colorAdvanceTransition(s32, s32, f32 *);
 /// Scale converting an overlay alpha byte to a blend weight.
 /// \note Original identifier: \c D_8009FC90 (0x8009FC90).
 extern f32 gOverlayAlphaWeightScale;

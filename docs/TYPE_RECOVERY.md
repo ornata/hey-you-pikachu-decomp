@@ -1842,3 +1842,14 @@ color updates and transition output. Ghidra 0x80014EA0 confirms draw-list slots,
 pose stride/index and color components. Transition inputs after 0xE4 remain
 unresolved storage pending their own record audit. All objects and relocations
 match after rebuilding header dependents.
+
+### Shared RGBA transition contract and actor target state
+
+`color_transition.h` declares the transition helper with byte-component pointers
+and a writable floating-point countdown, replacing conflicting integer and byte
+pointer declarations. Ghidra 0x800010C0 confirms the countdown access; the blend
+consumer establishes the four RGBA components. Actor setter 0x80015588 establishes
+target components at 0xE4 and duration at 0xE8. These checked shared actor fields
+now serve both request and update consumers. Storage at 0xEC remains unresolved;
+no broader transition record or ownership is inferred. Provider and consumer
+changes preserve all 483 objects, including strict relocation addends.

@@ -26,7 +26,9 @@ typedef struct ActorScriptState {
     DirectionAnimation directionAnimation; ///< Owned paired lighting poses and their angular playback state.
     u8 unknown0DC[4];
     u8 environmentColor[4]; ///< Model environment red, green, blue and alpha components.
-    u8 unknown0E4[0x10];
+    u8 targetEnvironmentColor[4]; ///< Requested model environment RGBA components.
+    f32 environmentColorTimeRemaining; ///< Seconds remaining in the environment-color transition.
+    u8 unknown0EC[8];
     f32 actionDuration;   ///< Duration supplied by the selected action definition.
     s32 actionAttributes; ///< Behavior flags supplied by the selected action.
     s16 motionId;         ///< Selected motion-data identifier.
@@ -139,6 +141,8 @@ ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePartTableOffsetCheck, ActorScriptState, part
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateDrawListsOffsetCheck, ActorScriptState, modelDrawLists, 0x54);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateDirectionAnimationOffsetCheck, ActorScriptState, directionAnimation, 0x60);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateEnvironmentColorOffsetCheck, ActorScriptState, environmentColor, 0xE0);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateTargetEnvironmentColorOffsetCheck, ActorScriptState, targetEnvironmentColor, 0xE4);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateEnvironmentColorTimeOffsetCheck, ActorScriptState, environmentColorTimeRemaining, 0xE8);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePlaybackModeOffsetCheck, ActorScriptState, playbackMode, 0x11A);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePendingActionOffsetCheck, ActorScriptState, pendingAction, 0x120);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateMovementScaleOffsetCheck, ActorScriptState, movementScale, 0x130);

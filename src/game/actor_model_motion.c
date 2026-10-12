@@ -1,3 +1,4 @@
+#include "color_transition.h"
 #include "action_query.h"
 #include "actor_rotation.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -389,7 +390,7 @@ void actorUpdateTrackedSoundSpatialization(u8 *, s32 *);
 void actorUpdateGroundSlopePitch(u8 *);
 void objectUpdateHierarchyInteractionVisibility(u8 *);
 s32 collisionGridRegisterObject(u8 *);
-void colorAdvanceTransition(u8 *, u8 *, u8 *);
+
 
 /// Update actor behavior, animation, spatial state, and model drawing setup.
 /// \param actor Actor with initialized model, action, hierarchy, and collision state.
@@ -413,7 +414,8 @@ void actorUpdateModel(u8 *actor) {
     }
     *(s32 *)(obj + 0x210) = collisionGridRegisterObject(actor);
     directionAnimationUpdate((u8 *)&((ActorScriptState *)obj)->directionAnimation);
-    colorAdvanceTransition(((ActorScriptState *)obj)->environmentColor, obj + 0xE4, obj + 0xE8);
+    colorAdvanceTransition(((ActorScriptState *)obj)->environmentColor, ((ActorScriptState *)obj)->targetEnvironmentColor,
+                           &((ActorScriptState *)obj)->environmentColorTimeRemaining);
     actorPrepareModelLightingDrawList(actor, (ActorScriptState *)obj, ((*(u16 *)(actor + 0x36) & 0x8000) ? 1 : 0) ^ 1);
 }
 
@@ -430,11 +432,11 @@ void actorTransitionModelEnvironmentColor(u8 *actor, u8 r, u8 g, u8 b, u8 a, f32
     u8 *v;
 
     v = *(u8 **)(actor + 0x54);
-    v[0xE4] = r;
-    v[0xE5] = g;
-    v[0xE6] = b;
-    v[0xE7] = a;
-    *(f32 *)(v + 0xE8) = duration;
+    ((ActorScriptState *)v)->targetEnvironmentColor[0] = r;
+    ((ActorScriptState *)v)->targetEnvironmentColor[1] = g;
+    ((ActorScriptState *)v)->targetEnvironmentColor[2] = b;
+    ((ActorScriptState *)v)->targetEnvironmentColor[3] = a;
+    ((ActorScriptState *)v)->environmentColorTimeRemaining = duration;
 }
 
 /// Set the actor model environment color immediately.

@@ -1,3 +1,4 @@
+#include "color_transition.h"
 #include "camera_visibility.h"
 #include "graphics_tasks.h"
 #include "title_screen.h"
@@ -144,7 +145,7 @@ s32 cameraBuildViewProjection(s32, u8 *, u8 *);
 extern s32 gRenderCameraIndex;
 void matrix33Transpose(void *);
 void matrix34TransformPointVector(void *, f32 *, f32 *);
-void colorAdvanceTransition(s32, s32, f32 *);
+
 /// Scale converting an overlay alpha byte to a blend weight.
 /// \note Original identifier: \c D_8009FC90 (0x8009FC90).
 extern f32 gOverlayAlphaWeightScale;
@@ -519,11 +520,12 @@ void colorBlendToward(u8 *dest, u8 *source, f32 weight) {
 }
 
 /// Advance a timed RGBA color transition by the current frame duration.
-/// \param color Address of the four-byte RGBA color to update.
-/// \param target Address of the four-byte target RGBA color.
+/// \param color Four writable RGBA components to update.
+/// \param target Four target RGBA components, each from zero to 255.
 /// \param remaining Remaining transition time in seconds, updated toward zero.
 /// \returns Nothing.
-void colorAdvanceTransition(s32 color, s32 target, f32 *remaining) {
+/// \note Original decompilation identifier: \c func_800010C0 (0x800010C0).
+void colorAdvanceTransition(u8 *color, u8 *target, f32 *remaining) {
     f32 var_f12;
 
     *remaining -= gRuntimeFrameSeconds;
@@ -535,7 +537,7 @@ void colorAdvanceTransition(s32 color, s32 target, f32 *remaining) {
     } else {
         var_f12 = 1.0f - (gRuntimeFrameSeconds / *remaining);
     }
-    colorBlendToward((u8 *)color, (u8 *)target, var_f12);
+    colorBlendToward(color, target, var_f12);
 }
 
 /// Advance camera overlay transitions and refresh the blended overlay color for the current frame.
@@ -546,10 +548,10 @@ void cameraUpdateOverlayColors(s32 cameraIndex, s32 advanceBlend) {
     u8 *cameraState;
 
     cameraState = gRenderCameras + cameraIndex * 0xE0;
-    colorAdvanceTransition((s32)(cameraState + 0xD8), (s32)(cameraState + 0xD4), (f32 *)(cameraState + 0xDC));
-    colorAdvanceTransition((s32)(cameraState + 0xC0), (s32)(cameraState + 0xBC), (f32 *)(cameraState + 0xC4));
+    colorAdvanceTransition(cameraState + 0xD8, cameraState + 0xD4, (f32 *)(cameraState + 0xDC));
+    colorAdvanceTransition(cameraState + 0xC0, cameraState + 0xBC, (f32 *)(cameraState + 0xC4));
     if (advanceBlend != 0) {
-        colorAdvanceTransition((s32)(cameraState + 0xCC), (s32)(cameraState + 0xC8), (f32 *)(cameraState + 0xD0));
+        colorAdvanceTransition(cameraState + 0xCC, cameraState + 0xC8, (f32 *)(cameraState + 0xD0));
     }
     cameraState[0xB8] = cameraState[0xC0];
     cameraState[0xB9] = cameraState[0xC1];
