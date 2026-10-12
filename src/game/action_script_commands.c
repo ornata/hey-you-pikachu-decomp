@@ -1,3 +1,4 @@
+#include "actor_part_texture.h"
 #include "actor_sound.h"
 #include "item_object.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -200,7 +201,6 @@ u8 romWindowReadByte(RomWindow *w, s32 addr) {
     return *(w->buf + addr - w->base);
 }
 
-void actorSetPartTextureAnimation(u8 *, s32, s32, s32);
 
 /// Configures an actor part animation from an action command.
 /// \param actor Actor with an initialized tinted model part whose texture animation is configured.
@@ -210,7 +210,7 @@ void actorSetPartTextureAnimation(u8 *, s32, s32, s32);
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80023480 (0x80023480).
 void actionCommandConfigureActorPartAnimation(u8 *actor, u8 *state, u8 *command, f32 *elapsed) {
-    actorSetPartTextureAnimation(actor, *(s32 *)(command + 0xC), *(s32 *)(command + 0x10), *(s32 *)(command + 8));
+    actorSetPartTextureAnimation(actor, *(f32 *)(command + 0xC), *(s32 *)(command + 0x10), *(s32 *)(command + 8));
 }
 
 
@@ -307,7 +307,6 @@ void actionCommandConfigureActorPartScale(s32 actor, u8 *state, u8 *command, f32
     actorAppearanceSetScale(actor, *(s32 *)p, *(f32 *)(p + 4), command);
 }
 
-void actorSetPartTint(s32, u8, u8, u8);
 
 /// Sets the actor’s rendered color from an action command.
 /// \param actor Actor with an initialized tinted model part.
@@ -317,7 +316,7 @@ void actorSetPartTint(s32, u8, u8, u8);
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800236C8 (0x800236C8).
 void actionCommandSetActorTint(s32 actor, s32 state, u8 *command, s32 elapsed) {
-    actorSetPartTint(actor, command[0xB], *(f32 *)(command + 0xC), command[0x13]);
+    actorSetPartTint((u8 *)actor, command[0xB], *(f32 *)(command + 0xC), command[0x13]);
 }
 
 /// Per-mode vertical launch factors, negated and multiplied by command speed.

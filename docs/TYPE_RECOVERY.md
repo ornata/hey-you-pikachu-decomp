@@ -2040,3 +2040,14 @@ tint setters/drawing, playback-rate updates and collision lifecycle use these
 fields; unresolved gaps remain explicit. Command-writing byte cursors retain
 their buffer-offset form. The type stays local because no other unit owns or
 consumes this record. All 483 objects and strict relocation addends match.
+
+### Shared actor part tint and texture controls
+
+`actor_part_texture.h` documents the three control interfaces, channel bounds,
+borrowed animation-program lifetime and actor-pointer parameters. The action
+command's speed uses a floating-point load and provider-compatible prototype,
+replacing the previous integer bit-transport declaration without changing bytes.
+Motion playback no longer supplies the unused second tint-reset argument. Ghidra
+0x80014960 confirms channel stride and program selection; the matching provider
+establishes the floating-point speed type. All three changed units preserve all
+483 objects and strict relocation addends.

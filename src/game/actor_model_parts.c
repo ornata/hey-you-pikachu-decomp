@@ -1,3 +1,4 @@
+#include "actor_part_texture.h"
 #include "collision_registration.h"
 #include "action_query.h"
 #include "heap_free.h"
@@ -43,7 +44,6 @@ extern u8 *gPikachuActor;
 /// \note Original identifier: \c D_800760E8 (0x800760E8).
 extern s32 gActorAppearancePartIds[];
 f32 *actorAppearanceGetPart(s32, s32);
-void actorSetPartTint(s32, u8, u8, u8);
 void actorComposePartOrientation(void *, s32, s32 *, s32);
 void matrix34Identity(void *);
 void matrix34Concatenate(void *, void *, void *);
@@ -394,10 +394,10 @@ void actorPartFollowBlendedOrientation(u8 *object) {
 /// \param blue Blue color component, from 0 through 255.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80013E6C (0x80013E6C).
-void actorSetPartTint(s32 actor, u8 red, u8 green, u8 blue) {
+void actorSetPartTint(u8 *actor, u8 red, u8 green, u8 blue) {
     u8 *obj;
 
-    obj = *(u8 **)(actorFindPart((u8 *)actor, 0x79) + 0x54);
+    obj = *(u8 **)(actorFindPart(actor, 0x79) + 0x54);
     ((ActorPartTextureState *)obj)->tint[0] = red;
     ((ActorPartTextureState *)obj)->tint[1] = green;
     ((ActorPartTextureState *)obj)->tint[2] = blue;
@@ -407,7 +407,7 @@ void actorSetPartTint(s32 actor, u8 red, u8 green, u8 blue) {
 /// \param actor Actor containing an initialized tinted model part.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80013EB4 (0x80013EB4).
-void actorResetPartTint(s32 actor) {
+void actorResetPartTint(u8 *actor) {
     actorSetPartTint(actor, 0xBE, 0x28, 0x14);
 }
 
