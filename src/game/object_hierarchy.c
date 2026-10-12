@@ -46,6 +46,8 @@ u8 midiReaderReadByte(u8 *);
 s32 midiReaderReadU16(u8 *);
 s32 midiReaderReadU32(u8 *);
 void _bzero(void *, u32);
+/// Matching exception: the node result is discarded here; the canonical pointer-return
+/// prototype changes IDO allocation. See search_tree_lookup.h and TYPE_RECOVERY.md.
 void searchTreeFind(void *, void *);
 
 /// Pending local movement accumulated during hierarchy traversal.

@@ -1,3 +1,4 @@
+#include "search_tree_lookup.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "search_tree.h"
@@ -100,11 +101,11 @@ s32 searchTreeLocateRoot(TreeNode **rootAddress, s32 minimum, TreeCompare compar
 /// \param key Key to locate.
 /// \returns The matching node address, or zero when absent.
 /// \note Original decompilation identifier: \c func_80041184 (0x80041184).
-s32 searchTreeFind(u8 *tree, s32 key) {
-    if (searchTreeLocateRoot(&((SearchTree *)tree)->root, 0, ((SearchTree *)tree)->compare, key) != 0) {
+TreeNode *searchTreeFind(SearchTree *tree, s32 key) {
+    if (searchTreeLocateRoot(&tree->root, 0, tree->compare, key) != 0) {
         return 0;
     }
-    return (s32)((SearchTree *)tree)->root;
+    return tree->root;
 }
 
 /// Find a matching entry through an independently supplied root and comparator.
@@ -125,21 +126,21 @@ TreeNode *searchTreeFindAtRoot(TreeNode **rootAddress, TreeCompare compare, s32 
 /// \param key Existing key whose successor is requested.
 /// \returns The successor node address, or zero if the key or its successor is absent.
 /// \note Original decompilation identifier: \c func_80041208 (0x80041208).
-s32 searchTreeFindSuccessor(u8 *tree, s32 key) {
+TreeNode *searchTreeFindSuccessor(SearchTree *tree, s32 key) {
     if (searchTreeFind(tree, key) == 0) {
         return 0;
     }
-    searchTreeLocateRoot(&((SearchTree *)tree)->root->links[1], 1, 0, 0);
-    return (s32)((SearchTree *)tree)->root->links[1];
+    searchTreeLocateRoot(&tree->root->links[1], 1, 0, 0);
+    return tree->root->links[1];
 }
 
 /// Find the minimum entry in a search tree.
 /// \param tree Tree to search; its root may change.
 /// \returns The minimum node address, or zero for an empty tree.
 /// \note Original decompilation identifier: \c func_8004125C (0x8004125C).
-s32 searchTreeFindMinimum(u8 *tree) {
-    searchTreeLocateRoot(&((SearchTree *)tree)->root, 1, 0, 0);
-    return (s32)((SearchTree *)tree)->root;
+TreeNode *searchTreeFindMinimum(SearchTree *tree) {
+    searchTreeLocateRoot(&tree->root, 1, 0, 0);
+    return tree->root;
 }
 
 /// Insert a caller-owned entry into a search tree.

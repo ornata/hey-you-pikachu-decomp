@@ -1718,3 +1718,14 @@ object and item registries share the declaration. Object ordering uses shared
 kind/handle fields and explicitly retains unsigned handle comparisons, confirmed
 by Ghidra 0x800085A4. Each source-unit change preserves all 483 objects and strict
 relocation addends.
+
+### Node-returning tree lookup contracts and caller exception
+
+`search_tree_lookup.h` declares typed tree and borrowed-node results for exact,
+successor and minimum lookup. The provider uses shared root/comparator fields.
+Ghidra 0x80041184 confirms exact lookup returns the matching root or zero.
+Both object and item registry callers discard the result: adopting the canonical
+pointer-return declaration changes their generated objects. Their legacy void
+boundary remains explicitly documented; IDO allocation evidence or a minimal
+matching caller representation is needed before removing it. Provider changes
+preserve all 483 objects and strict relocations with these caller exceptions.

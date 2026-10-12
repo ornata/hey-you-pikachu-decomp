@@ -1685,6 +1685,8 @@ ItemRange gItemCategoryRanges[19] = {
 };
 // clang-format on
 
+/// Matching exception: the node result is discarded here; the canonical pointer-return
+/// prototype changes IDO allocation. See search_tree_lookup.h and TYPE_RECOVERY.md.
 void searchTreeFind(void *, void *); /* extern */
 
 typedef struct {
