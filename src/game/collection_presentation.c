@@ -1,3 +1,4 @@
+#include "actor_behavior.h"
 #include "story_chapter.h"
 #include "story_milestones.h"
 #include "progress_fields.h"
@@ -424,7 +425,6 @@ extern s32 gRenderCameraIndex;
 /// \note Original identifier: \c D_800F106C (0x800F106C).
 extern f32 gPresentationActorJointMidpointHeight;
 f32 vector3GetYawDegrees(f32 *);
-void actorSetBehaviorInhibitFlags(u8 *, u16);
 void presentationPlaceActiveActor(void *);
 /// Place the active actor for a camera-facing presentation and begin its presentation pose.
 /// \param point Three-component position in the current presentation coordinate system.
@@ -463,7 +463,7 @@ void presentationPrepareActiveActor(void *point) {
     secondJoint = actorFindPart((u8 *)gPikachuActor, secondJointId);
     secondHeight = *(f32 *)(secondJoint + 0x48);
     gPresentationActorJointMidpointHeight = (h + secondHeight) / 2;
-    actorSetBehaviorInhibitFlags((u8 *)gPikachuActor, 0xC);
+    actorSetBehaviorInhibitFlags((u8 *)gPikachuActor, ACTOR_INHIBIT_HORIZONTAL_MOVEMENT | ACTOR_INHIBIT_TERRAIN_AND_GRAVITY);
 }
 
 /// Owned text image for the current area region name, or null if unavailable.

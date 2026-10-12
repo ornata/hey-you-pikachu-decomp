@@ -1,3 +1,4 @@
+#include "actor_behavior.h"
 #include "progress_value.h"
 #include "vector_interpolation.h"
 #include "presentation_focus.h"
@@ -423,7 +424,6 @@ extern s32 gWorldMapDirectionHeldFrames;
 extern u8 gRenderCameras[];
 void wholeMapUpdateActorPlacement(void);
 f32 vector3GetYawDegrees(f32 *);
-void actorSetBehaviorInhibitFlags(u8 *, u16);
 
 /// Prepare the active actor to face the camera and track the selected map destination.
 /// \pre Requires an active actor, camera, and selected map destination.

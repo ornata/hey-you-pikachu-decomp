@@ -1,3 +1,4 @@
+#include "actor_behavior.h"
 #include "player_view_search.h"
 #include "profile_counters.h"
 #include "item_participation.h"
@@ -38,11 +39,11 @@ s32 actorScriptSetHorizontalMovementSuppressed(u8 *actor) {
     if (scriptVmPopInteger(sp1C) != 0) {
         actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
         ((ActorScriptState *)actorState)->behaviorInhibitFlags =
-            (u16)(((ActorScriptState *)actorState)->behaviorInhibitFlags | 4);
+            (u16)(((ActorScriptState *)actorState)->behaviorInhibitFlags | ACTOR_INHIBIT_HORIZONTAL_MOVEMENT);
     } else {
         updatedActorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
         ((ActorScriptState *)updatedActorState)->behaviorInhibitFlags =
-            (u16)(((ActorScriptState *)updatedActorState)->behaviorInhibitFlags & 0xFFFB);
+            (u16)(((ActorScriptState *)updatedActorState)->behaviorInhibitFlags & ~ACTOR_INHIBIT_HORIZONTAL_MOVEMENT);
     }
     scriptVmPushInteger(sp1C, 0);
     return 0;

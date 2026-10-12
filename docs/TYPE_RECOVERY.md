@@ -3063,3 +3063,14 @@ updates name pose displacement, accumulated vertical offset, actor ground
 offset, orientation and output transform fields. Original floating expression
 order is unchanged. Both isolated conversion groups preserve all strict
 allocated bytes and relocations without new matching exceptions.
+
+### Actor behavior inhibition contracts
+
+`actor_behavior.h` names the four established inhibition bits for target
+facing, camera facing, horizontal movement and terrain/gravity updates.
+Other bits retain unresolved roles. Producer script toggles, presentation
+setup and motion consumers use the constants; storage and helper parameters
+remain unsigned halfwords. Ghidra 0x80017190 confirms the flag update at
+actor-state offset 0x1E8. Setter/clearer providers use the shared field and
+presentation/map callers share canonical declarations. Each changed unit
+preserves all strict object bytes and relocations.
