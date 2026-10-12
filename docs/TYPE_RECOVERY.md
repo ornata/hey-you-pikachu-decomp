@@ -2463,3 +2463,17 @@ Playback timing, vertical/default pose offsets and movement-history clearing
 now use checked actor fields throughout the affected motion unit. These changes
 preserve the complete strict object baseline without changing expressions or
 playback control flow.
+
+### Motion playback state consumers
+
+The motion unit now uses checked fields for action attributes, startup state,
+loop count, pending action, callback reset and behavior inhibition. Root
+track outputs name pose displacement and local motion. Child frame updates
+read named parent timing fields, and child rotation normalization uses the
+shared runtime object's rotation array.
+
+Mode propagation uses the actor part count/table, runtime object kind and
+child playback mode. Ghidra 0x8000E190 confirms this traversal and the child
+kind interval 0x26 through 0x63. The part table retains its existing byte-pointer
+representation at the shared boundary. All these consumers match the complete
+strict object baseline; previously documented pose-read exceptions remain.
