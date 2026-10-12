@@ -1,3 +1,4 @@
+#include "object_distance.h"
 #include "search_tree_traversal.h"
 #include "object_transform.h"
 #include "object_bounds.h"
@@ -1724,9 +1725,9 @@ s32 objectPlaySpatialSound(u8 *obj, s32 kind, f32 near, f32 far) {
 f32 objectGetApproxDistanceToPoint(u8 *object, Vec3f *point) {
     Vec3f d;
 
-    d.x = *(f32 *)(object + 0x44) - point->x;
-    d.y = *(f32 *)(object + 0x48) - point->y;
-    d.z = *(f32 *)(object + 0x4C) - point->z;
+    d.x = ((RuntimeObjectPrefix *)object)->worldPosition[0] - point->x;
+    d.y = ((RuntimeObjectPrefix *)object)->worldPosition[1] - point->y;
+    d.z = ((RuntimeObjectPrefix *)object)->worldPosition[2] - point->z;
     return vector3LengthApprox(&d);
 }
 
@@ -1739,9 +1740,9 @@ f32 objectGetApproxDistanceToPoint(u8 *object, Vec3f *point) {
 f32 objectGetApproxDistance(u8 *first, u8 *second) {
     Vec3f d;
 
-    d.x = *(f32 *)(first + 0x44) - *(f32 *)(second + 0x44);
-    d.y = *(f32 *)(first + 0x48) - *(f32 *)(second + 0x48);
-    d.z = *(f32 *)(first + 0x4C) - *(f32 *)(second + 0x4C);
+    d.x = ((RuntimeObjectPrefix *)first)->worldPosition[0] - ((RuntimeObjectPrefix *)second)->worldPosition[0];
+    d.y = ((RuntimeObjectPrefix *)first)->worldPosition[1] - ((RuntimeObjectPrefix *)second)->worldPosition[1];
+    d.z = ((RuntimeObjectPrefix *)first)->worldPosition[2] - ((RuntimeObjectPrefix *)second)->worldPosition[2];
     return vector3LengthApprox(&d);
 }
 

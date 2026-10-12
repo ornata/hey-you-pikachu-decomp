@@ -1780,3 +1780,13 @@ confirms root association and ownership designation; its inferred void return is
 not adopted over the source's established pointer result. Clone and destruction
 use the same ownership flag. Provider and header-dependent rebuilds preserve all
 483 objects and strict relocation addends.
+
+### Approximate object-distance interfaces
+
+`object_distance.h` consolidates object-to-point and object-to-object distance
+queries across the provider, item search, voice spinner and VM distance caller.
+The provider uses checked world positions and shared `Vec3f`; existing scalar-array
+and camera-storage consumers explicitly select the vector view. Ghidra 0x80009CA4
+confirms component differences and the approximate-length call; its inferred void
+return is contradicted by the source and result-consuming callers. All four units
+preserve all 483 objects and strict relocation addends.

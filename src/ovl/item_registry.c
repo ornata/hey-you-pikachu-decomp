@@ -1,3 +1,4 @@
+#include "object_distance.h"
 #include "search_tree_traversal.h"
 #include "object_bounds.h"
 #include "interaction.h"
@@ -1732,7 +1733,6 @@ extern f32 gItemSearchOrigin[];
 /// Separate interior view of the nearest-item query view transform.
 /// \note Original identifier: \c D_80134060 (0x80134060).
 extern f32 gItemSearchViewTransform[];
-f32 objectGetApproxDistanceToPoint(u8 *, f32 *);
 f32 matrix34GetTransformedPointYawDegrees(f32 *, f32 *);
 f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
 f32 mathWrapSignedDegrees(f32);
@@ -1762,7 +1762,7 @@ s32 itemConsiderSearchCandidate(u8 *node, s32 context) {
         gItemNearestSearch.cone < fabsf(mathWrapSignedDegrees(matrix34GetTransformedPointYawDegrees(
                                       gItemSearchViewTransform, ((RuntimeObjectPrefix *)item)->worldPosition))))
         return 0;
-    rawDistance = objectGetApproxDistanceToPoint(item, gItemSearchOrigin);
+    rawDistance = objectGetApproxDistanceToPoint(item, (Vec3f *)gItemSearchOrigin);
     distance = rawDistance;
     if (gItemNearestSearch.maxDistance < rawDistance)
         return 0;

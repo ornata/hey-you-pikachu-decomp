@@ -1,3 +1,4 @@
+#include "object_distance.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "text_image_create.h"
@@ -96,7 +97,6 @@ extern s32 gRenderCameraIndex;
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
 s32 voiceRecognitionGetCommandStatus(void);
-f32 objectGetApproxDistanceToPoint(u8 *, u8 *);
 f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
 
 /// Update an object spinner in response to voice activity and viewer distance.
@@ -109,7 +109,7 @@ void voiceReactiveSpinnerUpdate(u8 *object) {
 
     if (voiceRecognitionGetCommandStatus() == 5) {
         *speed += mathMapRangeClamped(0.0f, 2000.0f, 40.0f, 0.0f,
-                                      objectGetApproxDistanceToPoint(object, gRenderCameras[gRenderCameraIndex].raw)) *
+                                      objectGetApproxDistanceToPoint(object, (Vec3f *)gRenderCameras[gRenderCameraIndex].raw)) *
                   *dt;
         if (*speed > 600.0f) {
             *speed = 600.0f;

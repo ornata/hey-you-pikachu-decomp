@@ -1,3 +1,4 @@
+#include "object_distance.h"
 #include "object_flags.h"
 #include "door.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -612,7 +613,6 @@ s32 actorScriptStartKindTransformation(s32 actor) {
     return 2;
 }
 
-f32 objectGetApproxDistance(u8 *, u8 *);   /* extern */
 
 /// Measure the distance between two available objects.
 /// \param actor Actor whose script VM supplies two object handles and receives their approximate three-dimensional distance, or minus one if either object is unavailable.
