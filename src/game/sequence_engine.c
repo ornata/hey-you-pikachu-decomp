@@ -4,9 +4,23 @@
 
 /// Per-channel controller storage owned by a registered sequence.
 typedef struct EngineChannel {
-    ALInstrument *instrument;
-    s16 pitchBend;
-    u8 unknown6[0x16];
+    ALInstrument *instrument; ///< Borrowed current bank instrument.
+    s16 pitchBend;            ///< Retained fourteen-bit bend value, centered at 0x2000.
+    u16 pitchBendRange;       ///< Pitch bend sensitivity in 1/128-semitone units.
+    u16 pan;                  ///< Fourteen-bit stereo pan control.
+    u8 unknown0A;             ///< Unresolved controller byte.
+    u8 volume;                ///< Seven-bit channel volume.
+    u8 fxMix;                 ///< Seven-bit synthesizer effect mix.
+    u8 sustain;               ///< Sustain pedal; values at least 64 hold note releases.
+    u16 expression;           ///< Fourteen-bit expression level.
+    u16 bank;                 ///< Fourteen-bit bank selection.
+    u8 rpnHigh, rpnLow;       ///< Registered parameter selector bytes.
+    u8 lastKey;               ///< Retained note used by portamento.
+    u8 portamentoEnabled;     ///< Nonzero enables a previous-note pitch transition.
+    u8 portamentoTime;        ///< Controller scaling the transition duration.
+    u8 vibratoDepth;          ///< Pitch-modulation amount.
+    u8 tremoloDepth;          ///< Volume-modulation amount.
+    u8 unknown019[3];         ///< Unresolved channel tail.
 } EngineChannel;
 
 /// Callback and channel state for one registered sequence.
@@ -29,6 +43,9 @@ typedef struct EngineSequence {
     f64 eventDelay;
 } EngineSequence;
 
+typedef char EngineChannelPanOffsetCheck[(((u32)&((EngineChannel *)0)->pan) == 8) ? 1 : -1];
+typedef char EngineChannelEffectsOffsetCheck[(((u32)&((EngineChannel *)0)->fxMix) == 0xC) ? 1 : -1];
+typedef char EngineChannelVibratoOffsetCheck[(((u32)&((EngineChannel *)0)->vibratoDepth) == 0x17) ? 1 : -1];
 typedef char EngineChannelSizeCheck[(sizeof(EngineChannel) == 0x1C) ? 1 : -1];
 typedef char EngineSequenceSizeCheck[(sizeof(EngineSequence) == 0x200) ? 1 : -1];
 typedef char EngineSequenceVoicesOffsetCheck[((u32) & ((EngineSequence *)0)->voices == 0x10) ? 1 : -1];
@@ -38,9 +55,6 @@ typedef char EngineDriverVoicesOffsetCheck[((u32) & ((VoicePlayer *)0)->voices =
 struct N_ALVoice_s;
 void n_alSynSetVol(struct N_ALVoice_s *, s16, ALMicroTime);
 
-typedef struct SeqChan {
-    u8 pad[0x1C];
-} SeqChan;
 void sequenceEngineReleaseVoice(s32, u8 *, u8 *);
 void sequenceEngineReadNextEvent(u8 *);
 void sequenceEngineDispatchMidiEvent(s32, u8 *); /* extern */
@@ -51,7 +65,7 @@ void n_alSynStopVoice(struct N_ALVoice_s *);
 s32 midiSequenceSetRate(u8 *, f64);
 s32 sequenceEngineSetSustain(s32, u8 *, s32, s32);
 u8 midiSequenceIsStopped(u8 *);
-s32 sequenceEngineGetVoicePan();
+s32 sequenceEngineGetVoicePan(u8 *, EngineSequence *, u8 *);
 s32 sequenceEngineResetControllers(u8 *, u8 *);
 void sequenceEngineStopVoice(s32, s32, s32);
 f64 sequenceEngineGetVoiceUpdateInterval(s32);
@@ -190,7 +204,7 @@ void sequenceEngineReleaseVoice(s32 driver, u8 *sequence, u8 *voice) {
 s32 sequenceEngineSetSustain(s32 driver, u8 *sequence, s32 channelIndex, s32 sustain) {
     u8 *var_s0;
 
-    if ((((SeqChan *)sequence)[channelIndex].pad[0x21] >= 0x40) && (sustain < 0x40)) {
+    if ((((EngineSequence *)sequence)->channels[channelIndex].sustain >= 0x40) && (sustain < 0x40)) {
         var_s0 = *(u8 **)(sequence + 0x10);
         if (var_s0 != NULL) {
             do {
@@ -201,19 +215,10 @@ s32 sequenceEngineSetSustain(s32 driver, u8 *sequence, s32 channelIndex, s32 sus
             } while (var_s0 != NULL);
         }
     }
-    ((SeqChan *)sequence)[channelIndex].pad[0x21] = sustain;
+    ((EngineSequence *)sequence)->channels[channelIndex].sustain = sustain;
     return 0;
 }
 
-typedef struct SndVoiceItem {
-    u16 pan;
-    u8 pad[26];
-} SndVoiceItem;
-
-typedef struct SndVoiceTab {
-    u8 pad[0x1C];
-    SndVoiceItem items[1];
-} SndVoiceTab;
 
 /// Determine the effective stereo pan for a sequence voice.
 /// \param driver Sequence driver supplying the output mode.
@@ -221,13 +226,13 @@ typedef struct SndVoiceTab {
 /// \param voice Sequence voice whose pan is evaluated.
 /// \returns The pan value from zero through 127, or 64 in mono mode.
 /// \note Original decompilation identifier: \c func_80005E14 (0x80005E14).
-s32 sequenceEngineGetVoicePan(u8 *driver, SndVoiceTab *sequence, u8 *voice) {
+s32 sequenceEngineGetVoicePan(u8 *driver, EngineSequence *sequence, u8 *voice) {
     s32 v;
 
     if (*(u8 *)(driver + 0x1C) == 1) {
         return 0x40;
     }
-    v = *(u8 *)(*(u8 **)(voice + 0x10) + 0xC) + (sequence->items[*(u8 *)(voice + 0x30)].pan >> 7) - 0x40;
+    v = *(u8 *)(*(u8 **)(voice + 0x10) + 0xC) + (sequence->channels[*(u8 *)(voice + 0x30)].pan >> 7) - 0x40;
     if (v < 0) {
         v = 0;
     }
@@ -243,7 +248,7 @@ s32 sequenceEngineGetVoicePan(u8 *driver, SndVoiceTab *sequence, u8 *voice) {
 /// \param voice Sequence voice whose pan is evaluated.
 /// \returns Zero.
 /// \note Original decompilation identifier: \c func_80005E80 (0x80005E80).
-s32 sequenceEngineUpdateVoicePan(u8 *driver, s32 sequence, u8 *voice) {
+s32 sequenceEngineUpdateVoicePan(u8 *driver, EngineSequence *sequence, u8 *voice) {
     s32 pan;
 
     pan = sequenceEngineGetVoicePan(driver, sequence, voice);
@@ -261,29 +266,20 @@ s32 sequenceEngineUpdateVoicePan(u8 *driver, s32 sequence, u8 *voice) {
 /// \returns Zero.
 /// \note Original decompilation identifier: \c func_80005EC4 (0x80005EC4).
 s32 sequenceEngineResetChannelControllers(s32 driver, u8 *sequence, s32 channelIndex) {
-    u8 *p;
+    EngineChannel *p;
 
     sequenceEngineSetSustain(driver, sequence, channelIndex, 0);
-    p = (u8 *)&((SeqChan *)sequence)[channelIndex];
-    *(s16 *)(p + 0x18) = 0x2000;
-    p[0x29] = 0;
-    p[0x2B] = 0;
-    p[0x2C] = 0;
-    p[0x26] = 0x7F;
-    p[0x27] = 0x7F;
-    *(s16 *)(p + 0x22) = 0x3F80;
+    p = &((EngineSequence *)sequence)->channels[channelIndex];
+    p->pitchBend = 0x2000;
+    p->portamentoEnabled = 0;
+    p->vibratoDepth = 0;
+    p->tremoloDepth = 0;
+    p->rpnHigh = 0x7F;
+    p->rpnLow = 0x7F;
+    p->expression = 0x3F80;
     return 0;
 }
 
-typedef struct ResetChannel {
-    u8 pad[0xC];
-    u8 fxMix;
-    u8 tail[0xF];
-} ResetChannel;
-typedef struct ResetSequence {
-    u8 header[0x14];
-    ResetChannel channels[16];
-} ResetSequence;
 struct N_ALVoice_s;
 void n_alSynSetFXMix(struct N_ALVoice_s *, u8);
 /// Restore sequence and channel playback defaults and refresh active voice pan and effects.
@@ -317,8 +313,8 @@ s32 sequenceEngineResetControllers(u8 *driver, u8 *seq) {
     voice = *(u8 **)(seq + 0x10);
     if (voice != NULL) {
         do {
-            sequenceEngineUpdateVoicePan(driver, (s32)seq, voice);
-            n_alSynSetFXMix((struct N_ALVoice_s *)(voice + 0x14), ((ResetSequence *)seq)->channels[voice[0x30]].fxMix);
+            sequenceEngineUpdateVoicePan(driver, (EngineSequence *)seq, voice);
+            n_alSynSetFXMix((struct N_ALVoice_s *)(voice + 0x14), ((EngineSequence *)seq)->channels[voice[0x30]].fxMix);
             voice = *(u8 **)voice;
         } while (voice != NULL);
     }
@@ -357,19 +353,13 @@ void sequenceEngineRegisterSequence(u8 *sequence, u8 *driver, s32 instrumentBank
     *(s8 *)(sequence + 0x1F1) = eventCapacity;
     *(s32 *)(sequence + 0x1F4) = eventBuffer;
     for (i = 0; i < 16; i++) {
-        ((SeqChan *)sequence)[i].pad[0x21] = 0;
+        ((EngineSequence *)sequence)->channels[i].sustain = 0;
     }
     sequenceEngineResetControllers(driver, sequence);
     sequenceEngineReadNextEvent(sequence);
     *(u8 **)(driver + 0x18) = sequence;
 }
 
-/* The sequence's 0x1C-byte channel records start at seq + 0x14; each one
- * begins with the channel's current instrument. */
-typedef struct SeqChanState {
-    ALInstrument *instrument;
-    u8 pad[0x18];
-} SeqChanState;
 
 /// Select the channel instrument sound matching a note and velocity.
 /// \param seq Sequence with a valid channel instrument whose sound definitions are ordered by note and velocity range.
@@ -379,7 +369,7 @@ typedef struct SeqChanState {
 /// \returns A borrowed sound definition from the instrument bank, or null when no sound covers the note and velocity.
 /// \note Original decompilation identifier: \c func_80006140 (0x80006140).
 ALSound *sequenceEngineFindSound(u8 *seq, u8 channel, u8 key, u8 velocity) {
-    SeqChanState *channels = (SeqChanState *)(seq + 0x14);
+    EngineChannel *channels = ((EngineSequence *)seq)->channels;
     s32 low = 0;
     s32 high = channels[channel].instrument->soundCount - 1;
     ALSound **sounds = channels[channel].instrument->soundArray;
@@ -513,25 +503,25 @@ void sequenceEngineNoteOn(u8 *driver, u8 *seq, s32 channel, s32 key, s32 velocit
                  (((Voice658 *)voice)->sound->envelope->decayVolume == 0))
                     ? (f64) - *(s32 *)(voice + 0x48) / (0.000001 * ((Voice658 *)voice)->sound->envelope->decayTime)
                     : 0.0;
-            *(s32 *)(voice + 0xC) = *(s32 *)(((u8 *)&((SeqChan *)seq)[channel]) + 0x14);
+            *(s32 *)(voice + 0xC) = (s32)((EngineSequence *)seq)->channels[channel].instrument;
             voice[0x31] = key;
             voice[0x30] = channel;
             voice[0x32] = velocity;
             *(s16 *)(voice + 0x38) = 0;
             *(s16 *)(voice + 0x3A) = 0;
             *(s16 *)(voice + 0x34) = sequenceEngineGetVoiceVolume(driver, seq, voice);
-            if (((u8 *)&((SeqChan *)seq)[channel])[0x29]) {
-                *(s16 *)(voice + 0x3C) = (((u8 *)&((SeqChan *)seq)[channel])[0x28] - voice[0x31]) * 100;
+            if (((EngineSequence *)seq)->channels[channel].portamentoEnabled) {
+                *(s16 *)(voice + 0x3C) = (((EngineSequence *)seq)->channels[channel].lastKey - voice[0x31]) * 100;
             } else {
                 *(s16 *)(voice + 0x3C) = 0;
             }
-            ((u8 *)&((SeqChan *)seq)[channel])[0x28] = key;
+            ((EngineSequence *)seq)->channels[channel].lastKey = key;
             *(f64 *)(voice + 0x40) = sequenceEngineGetVoicePitchRatio(seq, voice);
-            voice[0x36] = sequenceEngineGetVoicePan(driver, (SndVoiceTab *)seq, voice);
+            voice[0x36] = sequenceEngineGetVoicePan(driver, (EngineSequence *)seq, voice);
             n_alSynAllocVoice((struct N_ALVoice_s *)(voice + 0x14), &config);
             n_alSynStartVoiceParams((struct N_ALVoice_s *)(voice + 0x14), ((Voice658 *)voice)->sound->wavetable,
                                     *(f64 *)(voice + 0x40), *(s16 *)(voice + 0x34), voice[0x36],
-                                    ((ResetSequence *)seq)->channels[voice[0x30]].fxMix, 0);
+                                    ((EngineSequence *)seq)->channels[voice[0x30]].fxMix, 0);
             if (*(s32 *)(voice + 0x4C) != 0) {
                 n_alSynSetVol((struct N_ALVoice_s *)(voice + 0x14), 0, ((Voice658 *)voice)->sound->envelope->decayTime);
             }
@@ -626,71 +616,71 @@ void sequenceEngineControlChange(u8 *driver, u8 *seq, s32 channel, s32 controlle
     u8 *current;
     switch (controller) {
     case 0:
-        *(u16 *)((u8 *)&((SeqChan *)seq)[channel] + 0x24) = value << 7;
+        ((EngineSequence *)seq)->channels[channel].bank = value << 7;
         break;
     case 32:
-        *(u16 *)((u8 *)&((SeqChan *)seq)[channel] + 0x24) =
-            (*(u16 *)((u8 *)&((SeqChan *)seq)[channel] + 0x24) & 0x3F80) | value;
+        ((EngineSequence *)seq)->channels[channel].bank =
+            (((EngineSequence *)seq)->channels[channel].bank & 0x3F80) | value;
         break;
     case 1:
-        seq[channel * 0x1C + 0x2B] = value;
-        seq[channel * 0x1C + 0x2C] = value;
+        ((EngineSequence *)seq)->channels[channel].vibratoDepth = value;
+        ((EngineSequence *)seq)->channels[channel].tremoloDepth = value;
         break;
     case 5:
-        seq[channel * 0x1C + 0x2A] = value;
+        ((EngineSequence *)seq)->channels[channel].portamentoTime = value;
         break;
     case 6:
-        sequenceEngineApplyDataEntry((u8 *)&((SeqChan *)seq)[channel] + 0x14, 0, value);
+        sequenceEngineApplyDataEntry((u8 *)&((EngineSequence *)seq)->channels[channel], 0, value);
         break;
     case 38:
-        sequenceEngineApplyDataEntry((u8 *)&((SeqChan *)seq)[channel] + 0x14, 1, value);
+        sequenceEngineApplyDataEntry((u8 *)&((EngineSequence *)seq)->channels[channel], 1, value);
         break;
     case 7:
-        seq[channel * 0x1C + 0x1F] = value;
+        ((EngineSequence *)seq)->channels[channel].volume = value;
         break;
     case 10:
-        *(u16 *)((u8 *)&((SeqChan *)seq)[channel] + 0x1C) = value << 7;
+        ((EngineSequence *)seq)->channels[channel].pan = value << 7;
         for (voice = *(u8 **)(seq + 0x10); voice != NULL; voice = *(u8 **)voice) {
             if (channel == voice[0x30]) {
-                sequenceEngineUpdateVoicePan(driver, (s32)seq, voice);
+                sequenceEngineUpdateVoicePan(driver, (EngineSequence *)seq, voice);
             }
         }
         break;
     case 42:
-        *(u16 *)((u8 *)&((SeqChan *)seq)[channel] + 0x1C) =
-            (*(u16 *)((u8 *)&((SeqChan *)seq)[channel] + 0x1C) & 0x3F80) | value;
+        ((EngineSequence *)seq)->channels[channel].pan =
+            (((EngineSequence *)seq)->channels[channel].pan & 0x3F80) | value;
         for (voice = *(u8 **)(seq + 0x10); voice != NULL; voice = *(u8 **)voice) {
             if (channel == voice[0x30]) {
-                sequenceEngineUpdateVoicePan(driver, (s32)seq, voice);
+                sequenceEngineUpdateVoicePan(driver, (EngineSequence *)seq, voice);
             }
         }
         break;
     case 11:
-        *(u16 *)((u8 *)&((SeqChan *)seq)[channel] + 0x22) = value << 7;
+        ((EngineSequence *)seq)->channels[channel].expression = value << 7;
         break;
     case 64:
         sequenceEngineSetSustain((s32)driver, seq, channel, value);
         break;
     case 65:
-        seq[channel * 0x1C + 0x29] = value;
+        ((EngineSequence *)seq)->channels[channel].portamentoEnabled = value;
         break;
     case 84:
-        seq[channel * 0x1C + 0x28] = value;
+        ((EngineSequence *)seq)->channels[channel].lastKey = value;
         break;
     case 91:
-        seq[channel * 0x1C + 0x20] = value;
+        ((EngineSequence *)seq)->channels[channel].fxMix = value;
         for (voice = *(u8 **)(seq + 0x10); voice != NULL; voice = *(u8 **)voice) {
             if (channel == voice[0x30]) {
                 n_alSynSetFXMix((struct N_ALVoice_s *)(voice + 0x14),
-                                ((ResetSequence *)seq)->channels[voice[0x30]].fxMix);
+                                ((EngineSequence *)seq)->channels[voice[0x30]].fxMix);
             }
         }
         break;
     case 100:
-        seq[channel * 0x1C + 0x27] = value;
+        ((EngineSequence *)seq)->channels[channel].rpnLow = value;
         break;
     case 101:
-        seq[channel * 0x1C + 0x26] = value;
+        ((EngineSequence *)seq)->channels[channel].rpnHigh = value;
         break;
     case 120:
         for (current = *(u8 **)(seq + 0x10); current != NULL; current = voice) {
@@ -906,22 +896,22 @@ void sequenceEngineUpdateVoices(u8 *driver, u8 *seq, f64 elapsed) {
             sequenceEngineStopVoice((s32)driver, (s32)seq, (s32)voice);
             return;
         }
-        if (((ResetSequence *)seq)->channels[voice->channel].tail[0xA] != 0) {
+        if (((EngineSequence *)seq)->channels[voice->channel].vibratoDepth != 0) {
             vibRate = voice->instrument->vibRate;
             voice->vibratoPhase += step * vibRate / 16;
         }
-        if (((ResetSequence *)seq)->channels[voice->channel].tail[0xB] != 0) {
+        if (((EngineSequence *)seq)->channels[voice->channel].tremoloDepth != 0) {
             tremRate = voice->instrument->tremRate;
             voice->tremoloPhase += step * tremRate / 16;
         }
         if (voice->portamento > 0) {
-            voice->portamento -= 768 / (((ResetSequence *)seq)->channels[voice->channel].tail[9] + 1);
+            voice->portamento -= 768 / (((EngineSequence *)seq)->channels[voice->channel].portamentoTime + 1);
             if (voice->portamento < 0) {
                 voice->portamento = 0;
             }
         }
         if (voice->portamento < 0) {
-            voice->portamento += 768 / (((ResetSequence *)seq)->channels[voice->channel].tail[9] + 1);
+            voice->portamento += 768 / (((EngineSequence *)seq)->channels[voice->channel].portamentoTime + 1);
             if (voice->portamento > 0) {
                 voice->portamento = 0;
             }

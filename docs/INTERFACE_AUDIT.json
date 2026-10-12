@@ -10,25 +10,11 @@
       "expression": "osContGetQuery(&gControllerPortStatus);"
     },
     {
-      "code": 712,
-      "file": "src/game/sequence_engine.c",
-      "line": 249,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "pan = sequenceEngineGetVoicePan(driver, sequence, voice);"
-    },
-    {
       "code": 709,
       "file": "src/game/backdrop.c",
       "line": 304,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "heapFreeLocal(&gGameHeap, buf);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/actor_model_parts.c",
-      "line": 201,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "heapFreeLocal(&gGameHeap, textureStateAddress);"
     },
     {
       "code": 709,
@@ -127,6 +113,13 @@
       "line": 958,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "messengerAdvancePosition(object);"
+    },
+    {
+      "code": 709,
+      "file": "src/game/actor_model_parts.c",
+      "line": 201,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "heapFreeLocal(&gGameHeap, textureStateAddress);"
     },
     {
       "code": 709,
@@ -410,17 +403,17 @@
     },
     {
       "code": 709,
-      "file": "src/game/cave.c",
-      "line": 42,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "v = heapAllocLocal(gGameHeap, 0x20, 0x32);"
-    },
-    {
-      "code": 709,
       "file": "src/game/attached_effect.c",
       "line": 78,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "obj = heapAllocLocal(gGameHeap, 0x2C, 0x7A);"
+    },
+    {
+      "code": 709,
+      "file": "src/game/cave.c",
+      "line": 42,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "v = heapAllocLocal(gGameHeap, 0x20, 0x32);"
     },
     {
       "code": 709,
@@ -697,13 +690,6 @@
     },
     {
       "code": 709,
-      "file": "src/game/scene_region.c",
-      "line": 48,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "state = heapAllocLocal(gGameHeap, 0x10, 0x33);"
-    },
-    {
-      "code": 709,
       "file": "src/game/keyed_pool.c",
       "line": 20,
       "diagnostic": "Incompatible pointer type assignment",
@@ -750,6 +736,13 @@
       "line": 420,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "keyedPoolUnlinkOrderedEntry(poolAddress, entry);"
+    },
+    {
+      "code": 709,
+      "file": "src/game/scene_region.c",
+      "line": 48,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "state = heapAllocLocal(gGameHeap, 0x10, 0x33);"
     },
     {
       "code": 709,
@@ -1011,53 +1004,53 @@
       "expression": "resolvedObject = objectResolveAvailableHandle(scriptVmPopInteger(sp1C));"
     },
     {
+      "code": 712,
+      "file": "src/ovl/item_physics.c",
+      "line": 294,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "itemPlayTrackedSound(object, sp1C, surfaceSoundId);"
+    },
+    {
+      "code": 712,
+      "file": "src/ovl/item_physics.c",
+      "line": 294,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "itemPlayTrackedSound(object, sp1C, surfaceSoundId);"
+    },
+    {
+      "code": 712,
+      "file": "src/ovl/item_physics.c",
+      "line": 299,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "object, sp1C, *((s16 *)((u8 *)&gItemKindPrimarySoundEntries + (((ItemStatePrefix *)sp1C)->kind * 0x74))));"
+    },
+    {
+      "code": 712,
+      "file": "src/ovl/item_physics.c",
+      "line": 299,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "object, sp1C, *((s16 *)((u8 *)&gItemKindPrimarySoundEntries + (((ItemStatePrefix *)sp1C)->kind * 0x74))));"
+    },
+    {
+      "code": 712,
+      "file": "src/ovl/item_physics.c",
+      "line": 302,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "itemPlayTrackedSound(object, sp1C,"
+    },
+    {
+      "code": 712,
+      "file": "src/ovl/item_physics.c",
+      "line": 302,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "itemPlayTrackedSound(object, sp1C,"
+    },
+    {
       "code": 709,
       "file": "src/ovl/script_vm.c",
       "line": 782,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "scriptVmApplyComparisonOperator(vm, op);"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/item_physics.c",
-      "line": 294,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "itemPlayTrackedSound(object, sp1C, surfaceSoundId);"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/item_physics.c",
-      "line": 294,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "itemPlayTrackedSound(object, sp1C, surfaceSoundId);"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/item_physics.c",
-      "line": 299,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "object, sp1C, *((s16 *)((u8 *)&gItemKindPrimarySoundEntries + (((ItemStatePrefix *)sp1C)->kind * 0x74))));"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/item_physics.c",
-      "line": 299,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "object, sp1C, *((s16 *)((u8 *)&gItemKindPrimarySoundEntries + (((ItemStatePrefix *)sp1C)->kind * 0x74))));"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/item_physics.c",
-      "line": 302,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "itemPlayTrackedSound(object, sp1C,"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/item_physics.c",
-      "line": 302,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "itemPlayTrackedSound(object, sp1C,"
     },
     {
       "code": 709,

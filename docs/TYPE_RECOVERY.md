@@ -570,3 +570,18 @@ initialization now uses the named fields. Sixteen-byte-aligned reader storage
 keeps the full 1024-byte transfer inside the embedded data area. The signed
 address comparisons and 0x80000000 empty sentinel remain unchanged. Every source
 unit matched all 483 baseline objects before the next mutation.
+
+The sequence-channel continuation consolidates pan, effect, instrument and
+modulation views into one private checked EngineChannel record. Producer resets,
+controller dispatch and pitch/volume consumers establish sustain, bank selection,
+expression, registered-parameter selection, portamento and modulation fields.
+The byte at 0xA and three trailing bytes remain explicitly unresolved. Ghidra at
+0x80005E14 corroborates fourteen-bit pan at channel offset 8 and the 0x1C stride.
+Size and pan/effect/vibrato offset checks guard the interpretation.
+
+The generic SeqChan byte-array view is removed: its accesses crossed the nominal
+record boundary to compensate for the sequence header. Consumers now address
+the actual channel array, with named fields for controller and note operations.
+Pan evaluation and refresh share an EngineSequence pointer rather than mixing
+integer and record arguments. The full 483-object baseline remains identical
+after each accepted source mutation; no scheduling or arithmetic was changed.
