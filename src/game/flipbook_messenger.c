@@ -1,3 +1,4 @@
+#include "actor_part_shake.h"
 #include "collision_registration.h"
 #include "action_query.h"
 #include "object_bounds.h"
@@ -732,7 +733,6 @@ void messengerUpdateLaunch(u8 *object, s32 unused) {
     }
 }
 
-void actorStartPartShake(s32, s32);
 f32 actorAdjustSecondaryMeter(u8 *, f32);
 void messengerBeginRebound(u8 *);
 u32 randomNext(void);
@@ -778,7 +778,7 @@ void messengerDeliver(u8 *object, u8 *source, u8 *target, s32 mode) {
         else {
             animation = randomNext() * 2.3283064365386963e-10 > 0.5 ? 0x2C : 0x2E;
         }
-        actorStartPartShake((s32)gPikachuActor, animation);
+        actorStartPartShake((u8 *)gPikachuActor, animation);
     }
     if (mode == 1) {
         messengerBeginRebound(object);

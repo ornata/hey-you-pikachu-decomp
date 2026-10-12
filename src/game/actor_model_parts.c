@@ -1,3 +1,4 @@
+#include "actor_part_shake.h"
 #include "actor_appearance.h"
 #include "actor_part_texture.h"
 #include "collision_registration.h"
@@ -571,25 +572,25 @@ void actorUpdatePartShake(u8 *object) {
     u8 *child;
     u16 *childState;
     f32 rotation[3];
-    if (*(u8 **)(state + 0x3D8) != NULL) {
-        child = *(u8 **)(state + 0x3D8);
+    if (((ActorScriptState *)state)->shakingPart != NULL) {
+        child = ((ActorScriptState *)state)->shakingPart;
         childState = *(u16 **)(child + 0x54);
-        *(f32 *)(state + 0x3DC) -= gRuntimeFrameSeconds;
-        if (*(f32 *)(state + 0x3DC) <= 0.0f) {
-            *(u8 **)(state + 0x3D8) = NULL;
+        ((ActorScriptState *)state)->partShakeTimeRemaining -= gRuntimeFrameSeconds;
+        if (((ActorScriptState *)state)->partShakeTimeRemaining <= 0.0f) {
+            ((ActorScriptState *)state)->shakingPart = NULL;
             if (*childState == 0) {
-                *(f32 *)(child + 0xC) = *(f32 *)(state + 0x3E0);
-                *(f32 *)(child + 0x10) = *(f32 *)(state + 0x3E4);
-                *(f32 *)(child + 0x14) = *(f32 *)(state + 0x3E8);
+                *(f32 *)(child + 0xC) = ((ActorScriptState *)state)->partShakeReferenceAngles[0];
+                *(f32 *)(child + 0x10) = ((ActorScriptState *)state)->partShakeReferenceAngles[1];
+                *(f32 *)(child + 0x14) = ((ActorScriptState *)state)->partShakeReferenceAngles[2];
             }
         } else {
-            rotation[0] = mathSinDegrees(*(f32 *)(state + 0x3DC) * 1200.0f) * 3.0f;
-            rotation[1] = mathSinDegrees(*(f32 *)(state + 0x3DC) * 2400.0f) * 8.0f;
+            rotation[0] = mathSinDegrees(((ActorScriptState *)state)->partShakeTimeRemaining * 1200.0f) * 3.0f;
+            rotation[1] = mathSinDegrees(((ActorScriptState *)state)->partShakeTimeRemaining * 2400.0f) * 8.0f;
             rotation[2] = 0.0f;
             if (*childState == 0) {
-                rotation[0] += *(f32 *)(state + 0x3E0);
-                rotation[1] += *(f32 *)(state + 0x3E4);
-                rotation[2] += *(f32 *)(state + 0x3E8);
+                rotation[0] += ((ActorScriptState *)state)->partShakeReferenceAngles[0];
+                rotation[1] += ((ActorScriptState *)state)->partShakeReferenceAngles[1];
+                rotation[2] += ((ActorScriptState *)state)->partShakeReferenceAngles[2];
                 *(f32 *)(child + 0xC) = rotation[0];
                 *(f32 *)(child + 0x10) = rotation[1];
                 *(f32 *)(child + 0x14) = rotation[2];
@@ -612,19 +613,19 @@ extern f64 gActorPartShakeMaximumSeconds;
 /// \param part Identifier of an existing model part with initialized behavior state that remains valid throughout the shake.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800144D4 (0x800144D4).
-void actorStartPartShake(s32 actor, s32 part) {
+void actorStartPartShake(u8 *actor, s32 part) {
     u8 *obj;
     u8 *t;
 
-    obj = *(u8 **)(actor + 0x54);
-    t = actorFindPart((u8 *)actor, part);
-    if (t != *(u8 **)(obj + 0x3D8)) {
-        *(f32 *)(obj + 0x3E0) = *(f32 *)(t + 0xC);
-        *(f32 *)(obj + 0x3E4) = *(f32 *)(t + 0x10);
-        *(f32 *)(obj + 0x3E8) = *(f32 *)(t + 0x14);
+    obj = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    t = actorFindPart(actor, part);
+    if (t != ((ActorScriptState *)obj)->shakingPart) {
+        ((ActorScriptState *)obj)->partShakeReferenceAngles[0] = *(f32 *)(t + 0xC);
+        ((ActorScriptState *)obj)->partShakeReferenceAngles[1] = *(f32 *)(t + 0x10);
+        ((ActorScriptState *)obj)->partShakeReferenceAngles[2] = *(f32 *)(t + 0x14);
     }
-    *(u8 **)(obj + 0x3D8) = t;
-    *(f32 *)(obj + 0x3DC) =
+    ((ActorScriptState *)obj)->shakingPart = t;
+    ((ActorScriptState *)obj)->partShakeTimeRemaining =
         (f32)((((f64)randomNext() * 2.3283064365386963e-10 * 0.5) + 0.5) * gActorPartShakeMaximumSeconds);
 }
 

@@ -2084,3 +2084,15 @@ production and model-part orientation/scale followers use these shared fields.
 The adjacent relative-part controller records remain explicit unresolved storage;
 no layout is inferred merely from adjacency. All header dependents and the changed
 source unit preserve all 483 objects and strict relocation addends.
+
+### Shared temporary model-part shake state
+
+Actor state now names the borrowed shaking part, remaining seconds and captured
+reference-angle triple, with checked offsets 0x3D8, 0x3DC and 0x3E0. Start/update
+consumers share these fields. Ghidra 0x80014360 confirms countdown, conditional
+restoration and additive shake behavior; the child behavior word remains unresolved.
+`actor_part_shake.h` provides the actor-pointer request contract to the messenger.
+A focused header avoids changing unrelated default-part lookup declarations in
+that unit: adopting the broader part header required an unrelated prototype change
+that altered its object bytes. Those declarations are restored for separate audit.
+All 483 objects and strict relocation addends match.

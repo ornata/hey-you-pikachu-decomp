@@ -104,7 +104,10 @@ typedef struct ActorScriptState {
     u8 unknown36C[0x30];
     Matrix34 primaryPoseTransform; ///< Relative transform of the primary signed part sequence.
     f32 primaryPoseAngles[3]; ///< Folded primary pose pitch, yaw and roll in degrees.
-    u8 unknown3D8[0x18];
+    u8 *shakingPart; ///< Borrowed selected model part, or null when no shake is active.
+    f32 partShakeTimeRemaining; ///< Seconds remaining in the temporary part shake.
+    f32 partShakeReferenceAngles[3]; ///< Part rotation captured when selected for shaking.
+    u8 unknown3EC[4];
     s32 unknown3F0;     ///< Action-command response flag; precise behavior remains unresolved.
     f32 actionResource; ///< Action resource clamped to zero through 100.
     f32 secondaryMeter; ///< Secondary gameplay meter clamped to zero through 100.
@@ -176,6 +179,9 @@ ACTOR_SCRIPT_OFFSET_CHECK(ActorStateSecondaryPoseTransformOffsetCheck, ActorScri
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateSecondaryPoseAnglesOffsetCheck, ActorScriptState, secondaryPoseAngles, 0x35C);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePrimaryPoseTransformOffsetCheck, ActorScriptState, primaryPoseTransform, 0x39C);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePrimaryPoseAnglesOffsetCheck, ActorScriptState, primaryPoseAngles, 0x3CC);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateShakingPartOffsetCheck, ActorScriptState, shakingPart, 0x3D8);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePartShakeTimeOffsetCheck, ActorScriptState, partShakeTimeRemaining, 0x3DC);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePartShakeAnglesOffsetCheck, ActorScriptState, partShakeReferenceAngles, 0x3E0);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateCreationArgumentOffsetCheck, ActorScriptState, creationScriptArgument, 0x238);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateFirstPartControllerOffsetCheck, ActorScriptState, unknown2F8, 0x2F8);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateSecondPartControllerOffsetCheck, ActorScriptState, unknown368, 0x368);
