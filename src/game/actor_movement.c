@@ -1,3 +1,4 @@
+#include "action_continuation.h"
 #include "action_request.h"
 #include "actor_rotation.h"
 #include "object_movement.h"
@@ -26,7 +27,6 @@ extern f32 gRuntimeFrameSeconds;
 /// Pending vertical movement applied by the airborne action until landing.
 /// \note Original identifier: \c D_800A25D0 (0x800A25D0).
 extern f32 gActorAirborneVerticalStep;
-void actionSetContinuation();
 f32 vector3GetYawDegrees(f32 *);
 
 /// Complete an actor action immediately.
@@ -115,7 +115,6 @@ void actorPrepareSlowestApproachCompletion(s32 actor) {
 
 extern double sqrt(double);
 #pragma intrinsic(sqrt)
-void actionSkipLoopingContinuations(s32);
 /// Approach-speed preset selecting the special completion continuation.
 /// \note Original identifier: \c D_800A25C8 (0x800A25C8).
 extern f32 gActorSpecialApproachSpeed;
@@ -148,12 +147,12 @@ s32 actorPrepareApproachCompletion(s32 object, f32 speed) {
     *(f32 *)(state + 0x1A0) = roll - 15;
     if ((distance / speed) < 1.5f) {
         if (speed == gActorSpecialApproachSpeed) {
-            actionSetContinuation(object, 0xC6);
+            actionSetContinuation((u8 *)object, 0xC6);
             return 1;
         }
         actorRefreshTrackingTargetPosition((u8 *)object);
         actorTurnTowardTarget((u8 *)object, 300.0f);
-        actionSkipLoopingContinuations(object);
+        actionSkipLoopingContinuations((u8 *)object);
         actionRequestLoopExit((u8 *)object);
         *(f32 *)(state + 0x1F8) = (distance / speed);
     }
@@ -261,7 +260,7 @@ s32 actorChooseAlignedTargetContinuation(u8 *actor) {
     v[1] = 0.0f;
     v[2] = *(f32 *)(obj + 0x1F4) - *(f32 *)(actor + 0x4C);
     if (fabsf(mathWrapSignedDegrees(vector3GetYawDegrees(v) - *(f32 *)(obj + 0x10))) < 10.0f) {
-        actionSetContinuation(actor, (0.5 < (f64)randomNext() * 2.3283064365386963e-10) ? 0xBF : 0xC0);
+        actionSetContinuation((u8 *)actor, (0.5 < (f64)randomNext() * 2.3283064365386963e-10) ? 0xBF : 0xC0);
         return 1;
     }
     return 0;
@@ -310,7 +309,7 @@ s32 actorSelectLeftTargetContinuation(u8 *actor) {
     v[1] = 0.0f;
     v[2] = *(f32 *)(obj + 0x1F4) - *(f32 *)(actor + 0x4C);
     if (mathWrapSignedDegrees(vector3GetYawDegrees(v) - *(f32 *)(obj + 0x10)) < 0.0f) {
-        actionSetContinuation(actor, 0x22);
+        actionSetContinuation((u8 *)actor, 0x22);
         return 1;
     }
     return 0;
@@ -331,11 +330,11 @@ s32 actorSelectAlignedOrLeftTargetContinuation(u8 *actor) {
     v[2] = *(f32 *)(obj + 0x1F4) - *(f32 *)(actor + 0x4C);
     d = mathWrapSignedDegrees(vector3GetYawDegrees(v) - *(f32 *)(obj + 0x10));
     if (fabsf(d) < 20.0f) {
-        actionSetContinuation(actor, 0xBE);
+        actionSetContinuation((u8 *)actor, 0xBE);
         return 1;
     }
     if (d < 0.0f) {
-        actionSetContinuation(actor, 0xC4);
+        actionSetContinuation((u8 *)actor, 0xC4);
         return 1;
     }
     return 0;
@@ -373,11 +372,11 @@ s32 actorSelectAlternateAlignedOrLeftTargetContinuation(u8 *actor) {
     v[2] = *(f32 *)(obj + 0x1F4) - *(f32 *)(actor + 0x4C);
     d = mathWrapSignedDegrees(vector3GetYawDegrees(v) - *(f32 *)(obj + 0x10));
     if (fabsf(d) < 20.0f) {
-        actionSetContinuation(actor, 0xC1);
+        actionSetContinuation((u8 *)actor, 0xC1);
         return 1;
     }
     if (d < 0.0f) {
-        actionSetContinuation(actor, 0xC5);
+        actionSetContinuation((u8 *)actor, 0xC5);
         return 1;
     }
     return 0;
@@ -450,7 +449,7 @@ s32 actorUpdateTurnAwayFromPlayer(s32 actor) {
 s32 actorFinishOnLandingOrMovementConstraint(u8 *actor) {
     u8 *actorState = *(u8 **)(actor + 0x54);
     if (*(u16 *)(actorState + 0x1EA) != 0) {
-        actionSetContinuation(actor, 0x3D);
+        actionSetContinuation((u8 *)actor, 0x3D);
         return 1;
     }
     if (*(s32 *)(actorState + 0x1BC) == 0) {

@@ -2199,3 +2199,18 @@ providers now use checked actor fields, preserving the unsigned playback-mode
 test and existing signed request representation. Movement callers pass actor
 pointers explicitly. The provider and all three declaration consumers preserve
 all 483 objects and strict relocation addends.
+
+### Action continuation and transition-pose selectors
+
+Actor state names the previous/current pose selectors at 0xFE/0xFF and signed
+continuation action at 0x100, with compile-time offset checks. Ghidra
+0x8000EAF8 confirms source/destination pose selection and continuation assignment.
+The playback-stop provider uses checked start, loop-exit, request and pose fields;
+0x8000F4D4 confirms its resets. `action_continuation.h` shares stopping and
+continuation-chain contracts across the provider and all four caller units.
+Two current-pose reads retain byte views: typed access in
+`actionTryApplyCompatibleRecord` changes load order, and the transition-map key
+in `actionResolveNextTransition` changes register allocation. Disassembly
+isolated both differences; restoring those reads preserves all 483 objects and
+strict relocation addends. Further compiler scheduling evidence is needed for
+those two replacements. Other recovered field consumers remain typed.

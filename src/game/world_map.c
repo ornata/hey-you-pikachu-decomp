@@ -1,3 +1,4 @@
+#include "action_continuation.h"
 #include "action_script_stop.h"
 #include "action_script_playback.h"
 #include "action_script_query.h"
@@ -415,7 +416,6 @@ extern s32 gWorldMapDirectionHeldFrames;
 /// \note Original identifier: \c D_800ABCF0 (0x800ABCF0).
 extern u8 gRenderCameras[];
 void wholeMapUpdateActorPlacement(void);
-void actionStopPlayback(u8 *);
 f32 vector3GetYawDegrees(f32 *);
 void actorSetBehaviorInhibitFlags(u8 *, u16);
 

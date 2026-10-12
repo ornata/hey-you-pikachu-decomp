@@ -1,3 +1,4 @@
+#include "action_continuation.h"
 #include "action_request.h"
 #include "actor_appearance.h"
 #include "actor_part_texture.h"
@@ -43,7 +44,6 @@ void motionExtractHeadingFromMatrix(f32 *, f32 *);
 void matrix34MakeRotationXYZDegrees(f32 *, f32, f32, f32);
 void matrix34BlendOrientation(f32, f32 *, f32 *, f32 *);
 void motionRequestCurrentData(u8 *);
-void actionStopPlayback(u8 *);
 void actionResolveNextTransition(u8 *);
 /// Separate view of fallback action identifiers in the action definitions, with a 0x2C-byte stride.
 /// \note Original identifier: \c D_8006B5A4 (0x8006B5A4).
@@ -240,7 +240,7 @@ void motionStartTrackPlayback(u8 *object) {
         }
         entry += 2;
     }
-    actionRequestMotionData(*(s16 *)(state + 0x100));
+    actionRequestMotionData(((ActorScriptState *)state)->continuationAction);
 }
 
 /// Evaluate and apply the root orientation and movement of a motion.
@@ -506,9 +506,9 @@ void actionConfigurePoseTransition(u8 *state, s32 nextAction, f32 duration) {
     *(f32 *)(state + 0xF4) = *(f32 *)(var_v0 + 8);
     *(s32 *)(state + 0xF8) = (*(s32 *)(var_v0 + 0xC) & 0x20100000) | 0x04010003;
     *(s16 *)(state + 0xFC) = *(s16 *)(var_v0 + 0x10);
-    state[0xFE] = state[0xFF];
-    state[0xFF] = var_v0[0x12];
-    *(s16 *)(state + 0x100) = nextAction;
+    ((ActorScriptState *)state)->previousPoseId = ((ActorScriptState *)state)->currentPoseId;
+    ((ActorScriptState *)state)->currentPoseId = var_v0[0x12];
+    ((ActorScriptState *)state)->continuationAction = nextAction;
     *(s32 *)(state + 0x108) = 0;
     *(s32 *)(state + 0x10C) = 0;
     *(f32 *)(state + 0x104) = duration;
@@ -534,7 +534,7 @@ s32 actionLoadRecordByIndex(u8 *state, s32 actionId, s32 nextAction) {
         return 0;
     }
     *(Rec2CW *)(state + 0xEC) = *a;
-    *(s16 *)(state + 0x100) = nextAction;
+    ((ActorScriptState *)state)->continuationAction = nextAction;
     if ((*(u32 *)(state + 0xF8) & 7) == 1 && ((*(u32 *)(state + 0xF8) & 0x20000) || *(s32 *)(state + 0x110) == 0)) {
         *(s32 *)(state + 0x110) = 0;
         *(s32 *)(state + 0x114) = 0;
@@ -593,13 +593,13 @@ void actionResolveNextTransition(u8 *object) {
 
     state = *(u8 **)(object + 0x54);
     if (*(u16 *)(state + 0x11A) == 0) {
-        *(s16 *)(state + 0x100) = -1;
+        ((ActorScriptState *)state)->continuationAction = -1;
     }
     *(s16 *)(state + 0x11C) = 0;
     *(s16 *)(state + 0x118) = 1;
     blendTime = 0.2f;
     for (;;) {
-        prevIndex = *(s16 *)(state + 0x100);
+        prevIndex = ((ActorScriptState *)state)->continuationAction;
         if (prevIndex < 0 || prevIndex >= 0x14A) {
             previous = NULL;
         } else {
@@ -870,13 +870,13 @@ void actionStopPlayback(u8 *object) {
     u8 *actionState;
 
     actionState = *(u8 **)(object + 0x54);
-    *(s16 *)(actionState + 0x118) = 0;
-    *(s16 *)(actionState + 0x11E) = 0;
-    *(s32 *)(actionState + 0x128) = 0;
+    ((ActorScriptState *)actionState)->actionStartPending = 0;
+    ((ActorScriptState *)actionState)->loopExitRequested = 0;
+    ((ActorScriptState *)actionState)->activeRequestId = 0;
     *(s32 *)(actionState + 0x150) = 0;
     *(s32 *)(actionState + 0x14C) = 0;
     *(s32 *)(actionState + 0x154) = 0;
-    actionState[0xFF] = 0;
+    ((ActorScriptState *)actionState)->currentPoseId = 0;
     motionResetPlayback(object);
     actionCancelPendingRequest(object);
 }
@@ -908,7 +908,7 @@ void actionBeginPoseTransition(u8 *object, s32 actionId, f32 duration) {
     *(s16 *)(obj + 0x11C) = 0;
     *(s16 *)(obj + 0x118) = 1;
     actionConfigurePoseTransition(obj, actionId, duration);
-    *(s16 *)(obj + 0x100) = -1;
+    ((ActorScriptState *)obj)->continuationAction = -1;
     motionRequestCurrentData(object);
 }
 
@@ -1016,11 +1016,11 @@ void actionSetContinuation(u8 *object, s32 actionId) {
     actionState = *(u8 **)(object + 0x54);
     TRACE("actSetNext:%s\n", actionGetName(actionId));
     if ((actionId < 0) || (actionId >= 0x14A)) {
-        *(s16 *)(actionState + 0x100) = actionId;
+        ((ActorScriptState *)actionState)->continuationAction = actionId;
         actionRequestLoopExit(object);
         return;
     }
-    *(s16 *)(actionState + 0x100) = actionId;
+    ((ActorScriptState *)actionState)->continuationAction = actionId;
     actionRequestMotionData(actionId);
 }
 
@@ -1035,15 +1035,15 @@ void actionSkipLoopingContinuations(u8 *object) {
     u8 *continuationRecord;
     actionState = *(u8 **)(object + 0x54);
 loop_1:
-    continuationId = *(s16 *)(actionState + 0x100);
+    continuationId = ((ActorScriptState *)actionState)->continuationAction;
     if ((continuationId < 0) || (continuationId >= 0x14A)) {
         continuationRecord = NULL;
     } else {
         continuationRecord = gActionDefinitions + (continuationId * 0x2C);
     }
     if ((continuationRecord != NULL) && (*(s32 *)(continuationRecord + 0xC) & 8)) {
-        *(s16 *)(actionState + 0x100) = *(s16 *)(continuationRecord + 0x14);
-        TRACE("next:%s\n", actionGetName(*(s16 *)(actionState + 0x100)));
+        ((ActorScriptState *)actionState)->continuationAction = *(s16 *)(continuationRecord + 0x14);
+        TRACE("next:%s\n", actionGetName(((ActorScriptState *)actionState)->continuationAction));
         goto loop_1;
     }
 }

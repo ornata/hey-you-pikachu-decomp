@@ -1,3 +1,4 @@
+#include "action_continuation.h"
 #include "player_friendship.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -200,7 +201,6 @@ s32 scriptCommandReleaseItem(u8 *object) {
     return 0;
 }
 
-void actionStopPlayback(u8 *); /* extern */
 /// Stop the calling actor action playback and provide a zero script result.
 /// \param object Actor whose action is stopped and whose script receives zero;
 /// no script arguments are required.

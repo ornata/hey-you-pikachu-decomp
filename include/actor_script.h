@@ -33,7 +33,10 @@ typedef struct ActorScriptState {
     f32 actionDuration;   ///< Duration supplied by the selected action definition.
     s32 actionAttributes; ///< Behavior flags supplied by the selected action.
     s16 motionId;         ///< Selected motion-data identifier.
-    u8 unknown0FE[0xE];
+    u8 previousPoseId; ///< Source pose selector used when composing an action transition.
+    u8 currentPoseId; ///< Destination pose selector used for action compatibility and transition lookup.
+    s16 continuationAction; ///< Next action identifier; values outside the action table end continuation.
+    u8 unknown102[0xA];
     s32 (*actionCallback)(u8 *); ///< Per-frame action callback; one ends playback.
     u8 unknown110[8];
     s16 actionStartPending; ///< Nonzero when action playback must start or restart.
@@ -141,6 +144,9 @@ typedef char ActorScriptObjectPrefixSizeCheck[(sizeof(ActorScriptObject) == 0x58
 #define ACTOR_SCRIPT_OFFSET_CHECK(name, type, member, offset)                                                          \
     typedef char name[(((u32) & ((type *)0)->member) == (offset)) ? 1 : -1]
 ACTOR_SCRIPT_OFFSET_CHECK(ActorScriptObjectScriptStateOffsetCheck, ActorScriptObject, scriptState, 0x54);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorPreviousPoseIdOffsetCheck, ActorScriptState, previousPoseId, 0xFE);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorCurrentPoseIdOffsetCheck, ActorScriptState, currentPoseId, 0xFF);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorContinuationActionOffsetCheck, ActorScriptState, continuationAction, 0x100);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorScriptStateVmAddressOffsetCheck, ActorScriptState, vmAddress, 0x1B8);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorScriptStateMessengerContactModeOffsetCheck, ActorScriptState, messengerContactMode,
                           0x214);

@@ -1,3 +1,4 @@
+#include "action_continuation.h"
 #include "action_script_playback.h"
 #include "action_script_query.h"
 #include "camera_overlay.h"
@@ -421,7 +422,6 @@ extern s32 gRenderCameraIndex;
 /// \note Original identifier: \c D_800F106C (0x800F106C).
 extern f32 gPresentationActorJointMidpointHeight;
 f32 vector3GetYawDegrees(f32 *);
-void actionStopPlayback(u8 *);
 void actorSetBehaviorInhibitFlags(u8 *, u16);
 void presentationPlaceActiveActor(void *);
 void presentationResetFocusPoint(u8 *);
