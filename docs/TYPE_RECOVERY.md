@@ -2755,3 +2755,16 @@ kind, handle and state pointer are initialized, and the comparator contract
 now distinguishes a temporary key from the live registered item. The existing
 noncanonical lookup declaration remains the recorded IDO matching exception.
 The shared-prefix representation preserves all 483 strict object comparisons.
+
+### Item mode and interaction eligibility contracts
+
+`item_mode.h` consolidates the setter across its provider and eight consumers.
+The setter uses shared state flags and the signed-byte mode field instead of
+word/byte offset views. Ghidra 0x8011443C confirms flags at state offset zero
+and mode at offset seven. Removing the velocity helper's unused third setter
+argument preserves the ROM and strict objects; its obsolete ABI note is removed.
+
+Pickup and cooperation queries now share `item_queries.h` contracts across
+registry, actor queries, companion and target interaction. Every source-unit
+conversion and shared-header dependent preserves all 483 strict objects. Mode
+values without sufficiently established semantics retain numeric spelling.

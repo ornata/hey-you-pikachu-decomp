@@ -1,3 +1,5 @@
+#include "item_queries.h"
+#include "item_mode.h"
 #include "actor_appearance.h"
 #include "actor_rotation.h"
 #include "object_movement.h"
@@ -199,9 +201,7 @@ void actorPostItemImpactMessage(s32 actor, u8 *item) {
     actorPostScriptMessage(actor, msg, 0);
 }
 
-s32 itemCanBePickedUp(u8 *, s32);
 s32 itemTryRelease(u8 *, s32);
-void itemSetMode(u8 *, s32);
 /// Borrowed reference to the active Pikachu actor created for the current area.
 /// \note Original identifier: \c D_800760A8 (0x800760A8).
 extern u8 *gPikachuActor;

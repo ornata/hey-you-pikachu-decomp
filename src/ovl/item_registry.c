@@ -1,3 +1,4 @@
+#include "item_mode.h"
 #include "item_search.h"
 #include "item_queries.h"
 #include "camera_view.h"
@@ -1993,7 +1994,6 @@ void itemUnusedUpdateHook(void) {
 }
 
 
-s32 itemCanBePickedUp(u8 *, s32);
 void itemUpdateModeAndOrientation(u8 *);
 /// Separate symbol view of the primary player record's held item handle.
 /// \note Original identifier: \c D_800EF724 (0x800EF724).
@@ -2360,7 +2360,6 @@ void itemRegisterForSearch(s32 objectId) {
     searchTreeInsert(&gItemSearchTree, (TreeNode *)(itemState + 0x54), (s32)liveObject);
 }
 
-void itemSetMode();
 /// Release an item from its current holder when its lifecycle permits release.
 /// \param object Live initialized item with valid hold state and item-kind callbacks.
 /// \param force Nonzero bypasses the holder's release restriction; suspended items and items attached to
@@ -2480,7 +2479,6 @@ void itemThrow(s32 id, f32 *origin, f32 *target, f32 *velocity, s32 effect) {
 /// the modified item state.
 /// \returns Nothing.
 ///
-/// \note Portability: the unprototyped mode-change call passes an extra argument ignored by the original ABI.
 /// \note Original decompilation identifier: \c func_801143BC (0x801143BC).
 void itemAddVelocity(s32 objectId, f32 *velocity) {
     u8 *liveObject;
@@ -2492,7 +2490,7 @@ void itemAddVelocity(s32 objectId, f32 *velocity) {
         ((ItemStatePrefix *)itemState)->velocityX += velocity[0];
         ((ItemStatePrefix *)itemState)->downwardVelocity -= velocity[1];
         ((ItemStatePrefix *)itemState)->velocityZ += velocity[2];
-        itemSetMode(liveObject, 0, velocity);
+        itemSetMode(liveObject, 0);
     }
 }
 
@@ -2503,18 +2501,18 @@ void itemAddVelocity(s32 objectId, f32 *velocity) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8011443C (0x8011443C).
 void itemSetMode(u8 *item, s32 mode) {
-    s32 *rec = ((RuntimeObjectPrefix *)item)->state.words;
+    ItemStatePrefix *state = (ItemStatePrefix *)((RuntimeObjectPrefix *)item)->state.pointer;
 
     if (mode == 6) {
-        rec[0] &= 0x1FFFFEFF;
-        rec[0] |= 0x8000C0;
+        state->flags &= 0x1FFFFEFF;
+        state->flags |= 0x8000C0;
     }
-    if ((mode == 2) && !(rec[0] & 2)) {
+    if ((mode == 2) && !(state->flags & 2)) {
         objectSetHierarchyFlags(item, 0x400);
     } else if (((RuntimeObjectPrefix *)item)->flags & 0x700) {
         objectClearHierarchyFlags(item, 0x700);
     }
-    ((s8 *)rec)[7] = mode;
+    state->mode = mode;
 }
 
 /// Check whether an item's current state permits pickup by the requested holder.

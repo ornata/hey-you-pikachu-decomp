@@ -1,3 +1,4 @@
+#include "item_mode.h"
 #include "item_queries.h"
 #include "camera_pose.h"
 #include "item_object.h"
@@ -10,7 +11,6 @@
 #include "item_kind.h"
 #include "object_types.h"
 
-void itemSetMode(u8 *, s32);      /* extern */
 
 /// Start item disposal with its transition sound.
 /// \param object Item to begin disposing of.

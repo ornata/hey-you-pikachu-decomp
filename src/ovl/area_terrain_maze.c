@@ -1,3 +1,4 @@
+#include "item_mode.h"
 #include "item_kind.h"
 #include "maze_scatter.h"
 #include "weighted_choice.h"
@@ -1968,7 +1969,6 @@ void mazeBuild(void) {
     runtimeCheckResetCheckpoint("aft-setMazeEvent", 1);
 }
 
-void itemSetMode(u8 *arg0, s32 arg1);          /* extern */
 
 /// Spawn the initial items listed in the current area's maze configuration.
 /// \returns Nothing.

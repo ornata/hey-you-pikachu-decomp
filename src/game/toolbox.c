@@ -1,3 +1,4 @@
+#include "item_mode.h"
 #include "progress_field_types.h"
 #include "progress_fields.h"
 #include "vector3_types.h"
@@ -380,7 +381,6 @@ void toolboxShowObjects(void) {
 
 void itemRemoveFromSearchAndCollision(s32);              /* extern */
 s32 itemTryRelease(u8 *, s32); /* extern */
-void itemSetMode(u8 *, s32);    /* extern */
 
 /// Place an item in a toolbox slot and remove it from active scene interaction.
 /// \param slot Writable eight-byte entry receiving the item kind and handle; any prior entry is overwritten without destroying its item.
@@ -503,7 +503,6 @@ s32 toolboxRecordSupplyItem(s32 itemKind) {
     return 1;
 }
 
-void itemSetMode(u8 *, s32);
 void itemRegisterForSearch(s32);
 
 /// Remove an eligible item from the toolbox and restore it to active scene interaction.

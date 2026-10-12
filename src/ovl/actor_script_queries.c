@@ -1,3 +1,4 @@
+#include "item_queries.h"
 #include "item_search.h"
 #include "action_script_playback.h"
 #include "camera_pose.h"
@@ -20,7 +21,6 @@
 #include "scene_types.h"
 #include "object_types.h"
 
-s32 itemCanBePickedUp(u8 *, s32);                                     /* extern */
 
 
 /// Find an eligible item of the requested kind near an actor's facing direction, honoring its interaction cooldown.

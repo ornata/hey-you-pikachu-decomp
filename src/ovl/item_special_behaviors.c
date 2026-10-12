@@ -1,3 +1,4 @@
+#include "item_mode.h"
 #include "actor_meters.h"
 #include "object_billboard.h"
 #include "object_movement.h"
@@ -85,7 +86,6 @@ void balloonUpdateHeldInflation(u8 *object) {
     }
 }
 
-void itemSetMode(u8 *arg0, s32 arg1); /* extern */
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;

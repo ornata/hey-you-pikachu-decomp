@@ -1,3 +1,5 @@
+#include "item_queries.h"
+#include "item_mode.h"
 #include "story_chapter.h"
 #include "progress_fields.h"
 #include "progress_value.h"
@@ -966,7 +968,6 @@ void playerPickUpInteractionTarget(u8 *player) {
     playerPickUpItem(((PlayerControlPrefix *)player)->interactionTarget);
 }
 
-s32 itemAllowsCooperation(u8 *); /* extern */
 
 /// Request Pikachu cooperation with an eligible interaction target.
 /// \param player Player record containing the current interaction target.
@@ -1833,7 +1834,6 @@ void playerUpdateCameraTransition(u8 *player, u8 *unused) {
 void playerUnusedModeUpdate(u8 *arg0, u8 *arg1) {
 }
 
-s32 itemCanBePickedUp(u8 *, s32);
 /// Select the player interaction target and action, and determine its interaction-marker style.
 /// \param player Player record receiving target, reachability, and action selection.
 /// \param object Live candidate with valid per-kind state, or null to clear the selection.
@@ -2447,7 +2447,6 @@ void playerPrepareCameraTransition(f32 *eye, f32 *target, f32 duration) {
 }
 
 s32 itemTryRelease(u8 *, s32);  /* extern */
-void itemSetMode(u8 *, s32); /* extern */
 /// Separate symbol view of the primary player record's held item handle.
 /// \note Original identifier: \c D_800EF724 (0x800EF724).
 extern s32 gPlayerHeldItemHandle; /* the held item's id */

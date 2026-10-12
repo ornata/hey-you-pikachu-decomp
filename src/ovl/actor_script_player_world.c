@@ -1,3 +1,4 @@
+#include "item_mode.h"
 #include "actor_meters.h"
 #include "interaction.h"
 #include "object_target_search.h"
@@ -913,7 +914,6 @@ s32 actorScriptCreateItem(u8 *actor) {
     return 0;
 }
 
-void itemSetMode(u8 *, s32);            /* extern */
 
 /// Create an item at a requested position and orientation without autonomous movement.
 /// \param actor Actor whose script VM supplies X, Y, Z, pitch, yaw in degrees, then a valid item kind, and receives the created item handle; negative Y requests ground placement using its magnitude as the query height, with item size added to the ground height.

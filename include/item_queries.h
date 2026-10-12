@@ -36,4 +36,17 @@ s16 itemGetAvailabilityFlag(s32 kind);
 /// \note Original decompilation identifier: \c func_80114B84 (0x80114B84).
 f32 itemGetMotionCoefficient(u8 *item);
 
+/// Check whether an item's current state permits pickup by the requested holder.
+/// \param item Initialized item object to query.
+/// \param byPlayer Nonzero checks player pickup rules; zero checks actor pickup rules.
+/// \returns One if pickup is permitted, or zero otherwise.
+/// \note Original decompilation identifier: \c func_801144EC (0x801144EC).
+s32 itemCanBePickedUp(u8 *item, s32 byPlayer);
+
+/// Check whether an item permits requesting Pikachu cooperation.
+/// \param item Initialized item object to query.
+/// \returns One if cooperation is permitted, or zero otherwise.
+/// \note Original decompilation identifier: \c func_801145A0 (0x801145A0).
+s32 itemAllowsCooperation(u8 *item);
+
 #endif
