@@ -6,15 +6,26 @@
 
 #include <ultra64.h>
 
+/// Timed command selectors in the action sequencer resource format.
+/// These values are separate from actor VM bytecode opcodes.
+typedef enum ActionScriptOpcode {
+    ACTION_SCRIPT_START_ACTION = 0, ///< Request the action and playback mode supplied by the command.
+    ACTION_SCRIPT_PLAY_SOUND = 1, ///< Start the positive sound identifier supplied by the command.
+    ACTION_SCRIPT_STOP_AFTER_ITERATIONS = 2, ///< Request loop exit once the iteration threshold is reached.
+    ACTION_SCRIPT_WAIT_FOR_ITERATIONS = 3, ///< Wait for the iteration threshold or the last action to end.
+    ACTION_SCRIPT_END = 4 ///< End command execution.
+} ActionScriptOpcode;
+
 /// Fixed-size command borrowed from an action-script resource.
 /// Argument meanings depend on the opcode; this is separate from actor VM bytecode.
 typedef struct ActionScriptCommand {
-    s32 opcode; ///< Command handler selector; four terminates command execution.
+    s32 opcode; ///< ActionScriptOpcode selector.
     f32 time; ///< Earliest command time in seconds.
     s32 args[2]; ///< Opcode-specific operands, including action and sound identifiers.
 } ActionScriptCommand;
 
 /// Actor-owned sequencer state beginning at actor-state offset 0x158.
+/// This is an interior view of ActorScriptState, not a separately allocated record.
 /// The command cursor borrows its resource and does not own command storage.
 /// Stopping command execution does not imply that the last requested action ended.
 typedef struct ActionScriptState {
@@ -40,6 +51,9 @@ typedef s32 (*ActionScriptCommandHandler)(u8 *object, struct ActorScriptState *s
 typedef char ActionScriptCommandSizeCheck[(sizeof(ActionScriptCommand) == 0x10) ? 1 : -1];
 typedef char ActionScriptStateSizeCheck[(sizeof(ActionScriptState) == 0x20) ? 1 : -1];
 #define ACTION_SCRIPT_OFFSET(field) ((u32) & (((ActionScriptState *)0)->field))
+typedef char ActionScriptElapsedOffsetCheck[(ACTION_SCRIPT_OFFSET(elapsed) == 0x4) ? 1 : -1];
+typedef char ActionScriptDurationOffsetCheck[(ACTION_SCRIPT_OFFSET(duration) == 0x8) ? 1 : -1];
+typedef char ActionScriptCommandTimeOffsetCheck[(ACTION_SCRIPT_OFFSET(commandTime) == 0xC) ? 1 : -1];
 typedef char ActionScriptCursorOffsetCheck[(ACTION_SCRIPT_OFFSET(command) == 0x10) ? 1 : -1];
 typedef char ActionScriptSoundOffsetCheck[(ACTION_SCRIPT_OFFSET(soundHandle) == 0x14) ? 1 : -1];
 typedef char ActionScriptLastRequestOffsetCheck[(ACTION_SCRIPT_OFFSET(lastRequestId) == 0x18) ? 1 : -1];

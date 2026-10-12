@@ -1,3 +1,4 @@
+#include "action_script_playback.h"
 #include "collision_registration.h"
 #include "camera_types.h"
 #include "audio_spatial.h"
@@ -380,7 +381,6 @@ void actorDrawModelLightingSetup(u8 *actor) {
 }
 
 void actorUpdateObjectRotationFromState(u8 *);
-s32 actionScriptUpdate(u8 *);
 void actionUpdatePlayback(u8 *);
 void actorUpdateTrackedSoundSpatialization(f32 *, s32 *);
 void actorUpdateGroundSlopePitch(u8 *);

@@ -157,6 +157,8 @@ ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePlaybackModeOffsetCheck, ActorScriptState, p
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePendingActionOffsetCheck, ActorScriptState, pendingAction, 0x120);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateMovementScaleOffsetCheck, ActorScriptState, movementScale, 0x130);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionScriptIdOffsetCheck, ActorScriptState, actionScriptId, 0x158);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionElapsedOffsetCheck, ActorScriptState, actionScriptElapsed, 0x15C);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionDurationOffsetCheck, ActorScriptState, actionScriptDuration, 0x160);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionCommandTimeOffsetCheck, ActorScriptState, actionScriptCommandTime, 0x164);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionCommandOffsetCheck, ActorScriptState, actionScriptCommand, 0x168);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionSoundOffsetCheck, ActorScriptState, actionScriptSoundHandle, 0x16C);

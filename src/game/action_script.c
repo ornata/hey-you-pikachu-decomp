@@ -16,7 +16,7 @@ void actionCancelPendingRequest(u8 *);
 void actionRequestLoopExit(u8 *);
 /// Action-script command stream addresses indexed by script identifier.
 /// \note Original identifier: \c D_80071D00 (0x80071D00).
-extern s32 gActionScriptPrograms[];
+extern ActionScriptCommand *gActionScriptPrograms[];
 s32 actionGetStoredRequestId(u8 *);
 
 s32 actionRequestPlayback(u8 *, s32, s32, s32 *);
@@ -149,7 +149,7 @@ s32 actionScriptUpdate(u8 *object) {
     script->commandTime += step;
     while (script->command->time <= script->commandTime) {
         opcode = script->command->opcode;
-        if (opcode == 4) {
+        if (opcode == ACTION_SCRIPT_END) {
             script->command = NULL;
             return -1;
         }
@@ -160,7 +160,7 @@ s32 actionScriptUpdate(u8 *object) {
             break;
         }
     }
-    if ((script->command->opcode == 4) && (audioCountPlayback(script->soundHandle) == 0) &&
+    if ((script->command->opcode == ACTION_SCRIPT_END) && (audioCountPlayback(script->soundHandle) == 0) &&
         (actionScriptHasLastActionEnded(object) != 0)) {
         script->soundHandle = 0;
         script->command = NULL;
@@ -178,7 +178,7 @@ void actionScriptStart(u8 *object, s32 scriptId) {
     u8 *actorState;
 
     actorState = *(u8 **)(object + 0x54);
-    ((ActorScriptState *)actorState)->actionScriptCommand = (ActionScriptCommand *)gActionScriptPrograms[scriptId];
+    ((ActorScriptState *)actorState)->actionScriptCommand = gActionScriptPrograms[scriptId];
     ((ActorScriptState *)actorState)->actionScriptLastRequestId = 0;
     ((ActorScriptState *)actorState)->actionScriptPendingRequestId = 0;
     ((ActorScriptState *)actorState)->actionScriptSoundHandle = 0;

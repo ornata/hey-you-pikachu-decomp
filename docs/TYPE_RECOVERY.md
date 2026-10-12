@@ -2176,3 +2176,15 @@ prototype and removing its unused presentation-state argument passed the ROM
 gate but changed allocated object bytes. That trial is restored. Further
 compiler scheduling evidence is required; the declaration records the exception.
 All accepted changes preserve all 483 objects and strict relocation addends.
+
+### Timed action command format and update interface
+
+`ActionScriptOpcode` records the four handler selectors and the terminal
+selector. The ROM-derived dispatch table at 0x8006EE50 establishes their order;
+Ghidra 0x80011E6C confirms terminal-command handling and callback arguments.
+`ActionScriptState` is explicitly an interior actor-state view at 0x158,
+not an independent allocation. Additional clock offset checks cover elapsed,
+duration and command time in both views. The program table now contains typed
+command pointers and the model updater shares the documented sequencer update
+interface. Header dependents and both changed units preserve all 483 objects
+and strict relocation addends.

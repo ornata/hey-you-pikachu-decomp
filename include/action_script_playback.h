@@ -36,4 +36,14 @@ void actionScriptSetDuration(u8 *object, f32 duration);
 /// \note Original decompilation identifier: \c func_80117AA0 (0x80117AA0).
 void actionScriptStartWithDurationBits(u8 *object, s32 scriptId, f32 duration);
 
+/// Advance an object action script for the current frame.
+/// \param object Object whose action script is updated.
+/// \returns -1 when command execution has ended, or 0 while the script remains active.
+/// \note Original decompilation identifier: \c func_80011E6C (0x80011E6C).
+/// \note This sequencer has its own command-completion contract; its return
+/// values are not the actor VM's continue, yield, and action-wait statuses.
+/// \see actorUpdateScriptVm
+/// \see actorScriptStartActionAndWait
+s32 actionScriptUpdate(u8 *object);
+
 #endif
