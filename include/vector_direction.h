@@ -36,4 +36,10 @@ void vector3EvaluateOppositeLookAngles(f32 *direction, f32 *pitch, f32 *yaw);
 /// \returns Nothing.
 void vector3FromPitchYawDegrees(f32 pitch, f32 yaw, f32 *direction);
 
+/// Get horizontal direction relative to positive X.
+/// \param vector Three-component direction whose X and Z determine the result.
+/// \returns Degrees in [0, 360), increasing toward negative Z; near-zero horizontal vectors return 270.
+/// \note Original decompilation identifier: \c func_8000CB1C (0x8000CB1C).
+f32 vector3GetYawFromPositiveXDegrees(f32 *vector);
+
 #endif

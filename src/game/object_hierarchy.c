@@ -1,3 +1,4 @@
+#include "vector_direction.h"
 #include "camera_types.h"
 #include "audio_spatial.h"
 #include "object_distance.h"
@@ -92,7 +93,6 @@ s32 objectDrawSearchTreeEntry();
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;
-f32 vector3GetYawFromPositiveXDegrees(f32 *, u8 *);
 /// Ordered traversal pool of registered active hierarchy roots.
 /// \note Original identifier: \c D_800AE3A8 (0x800AE3A8).
 extern NodePool gActiveObjectHierarchies;
@@ -1031,17 +1031,16 @@ void objectDestroyHierarchy(u8 *object) {
 /// Orient an object horizontally toward the active camera for drawing.
 /// \param object Object whose orientation is updated.
 /// \returns Nothing.
-/// \note Portability: The local yaw-helper declaration passes an extra argument ignored by the original ABI.
 /// \note Original decompilation identifier: \c func_80008830 (0x80008830).
 void objectFaceCameraHorizontally(u8 *object) {
     f32 d[3];
 
-    d[0] = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[0] - *(f32 *)(object + 0x44);
+    d[0] = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[0] - ((RuntimeObjectPrefix *)object)->worldPosition[0];
     d[1] = 0.0f;
-    d[2] = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[2] - *(f32 *)(object + 0x4C);
-    *(f32 *)(object + 0x10) = vector3GetYawFromPositiveXDegrees(d, object);
-    if (!(*(u16 *)(object + 0x36) & 0x1008)) {
-        *(u16 *)(object + 0x36) = *(u16 *)(object + 0x36) | 0x1000;
+    d[2] = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[2] - ((RuntimeObjectPrefix *)object)->worldPosition[2];
+    ((RuntimeObjectPrefix *)object)->rotation[1] = vector3GetYawFromPositiveXDegrees(d);
+    if (!(((RuntimeObjectPrefix *)object)->flags & 0x1008)) {
+        ((RuntimeObjectPrefix *)object)->flags = ((RuntimeObjectPrefix *)object)->flags | 0x1000;
     }
 }
 

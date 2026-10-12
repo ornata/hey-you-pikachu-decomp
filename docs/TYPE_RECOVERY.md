@@ -1970,3 +1970,14 @@ camera target selection; the established segment helper and matching objects
 confirm endpoint order. Camera interior matrix aliases and the billboard yaw
 helper's existing extra-argument exception remain unchanged pending their own
 interface audits. All 483 objects and strict relocation addends match.
+
+### Billboard yaw contract recovery
+
+The horizontal billboard helper now uses the provider's single-vector yaw
+contract from `vector_direction.h`, eliminating its unused object argument and
+local conflicting declaration. Its object accesses use shared world-position,
+rotation and flag fields. Ghidra 0x8000CB1C confirms angle normalization; its
+inferred zero-argument signature omits the forwarded vector that the matching C
+provider establishes. This supersedes the extra-argument exception recorded in
+the preceding camera-layout audit. The actual one-argument interface and typed
+fields preserve all 483 objects and strict relocation addends.
