@@ -15,10 +15,10 @@ extern HpHdr gGameHeap;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8003F700 (0x8003F700).
 void romCacheInitialize(RomCache *cache, s32 heapBytes, s32 entryCount, s32 queueCapacity) {
-    s32 storageAddress;
-    storageAddress = (s32)heapAllocLocal(&gGameHeap, heapBytes, 0x15);
-    cache->storageAddress = storageAddress;
-    heapInitializeRegion(&cache->heap, storageAddress, heapBytes);
+    u8 *storage;
+    storage = heapAllocLocal(&gGameHeap, heapBytes, 0x15);
+    cache->storage = storage;
+    heapInitializeRegion(&cache->heap, (s32)storage, heapBytes);
     keyedPoolInitialize(&cache->index, entryCount);
     romDmaInitializeQueue(&cache->reads, queueCapacity);
 }
@@ -30,35 +30,35 @@ void romCacheInitialize(RomCache *cache, s32 heapBytes, s32 entryCount, s32 queu
 void romCacheDestroy(RomCache *cache) {
     romDmaDestroyQueue(&cache->reads);
     keyedPoolDestroy(&cache->index);
-    heapFreeLocal(&gGameHeap, (u8 *)cache->storageAddress);
+    heapFreeLocal(&gGameHeap, cache->storage);
 }
 
 /// Allocate an unindexed cache entry and its data storage.
-/// \param cacheAddress RAM address of the initialized cache.
+/// \param cache Initialized cache supplying the entry storage.
 /// \param byteCount Number of data bytes to reserve.
 /// \returns Allocated entry, or NULL if its storage is unavailable.
 /// \note Original decompilation identifier: \c func_8003F7B4 (0x8003F7B4).
-u8 *romCacheAllocateEntry(s32 cacheAddress, s32 byteCount) {
+CacheEnt *romCacheAllocateEntry(RomCache *cache, s32 byteCount) {
     CacheEnt *entry;
-    entry = heapAllocLocal(&((RomCache *)cacheAddress)->heap, byteCount + 0x10, 0x32);
+    entry = heapAllocLocal(&cache->heap, byteCount + 0x10, 0x32);
     if (entry == NULL) {
         return NULL;
     }
     entry->flags = 0;
     entry->size = byteCount;
     entry->key = 0;
-    entry->data = (s32)((u8 *)entry + 0x10);
-    return (u8 *)entry;
+    entry->data = (u8 *)(entry + 1);
+    return entry;
 }
 
 /// Remove an indexed cache entry and release its storage.
-/// \param cacheAddress RAM address of the initialized cache.
+/// \param cache Initialized cache supplying the entry storage.
 /// \param entry Indexed entry that is no longer in use or awaiting a read.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8003F80C (0x8003F80C).
-void romCacheRemoveEntry(s32 cacheAddress, u8 *entry) {
-    keyedPoolRemoveFirstForKey(&((RomCache *)cacheAddress)->index, ((CacheEnt *)entry)->key);
-    heapFreeLocal(&((RomCache *)cacheAddress)->heap, entry);
+void romCacheRemoveEntry(RomCache *cache, CacheEnt *entry) {
+    keyedPoolRemoveFirstForKey(&cache->index, entry->key);
+    heapFreeLocal(&cache->heap, entry);
 }
 
 /// Acquire cached cartridge data, starting a ROM read when necessary.
@@ -74,24 +74,24 @@ s32 romCacheRead(RomCache *c, s32 key, u32 size, s32 *out) {
     if (e != NULL) {
         if (e->size >= size) {
             e->flags |= 1;
-            *out = e->data;
+            *out = (s32)e->data;
             if (e->flags & 2) {
                 return 4;
             }
             return 3;
         }
-        romCacheRemoveEntry((s32)c, (u8 *)e);
+        romCacheRemoveEntry(c, e);
     }
-    e = (CacheEnt *)romCacheReclaimAndAllocateEntry(c, size);
+    e = romCacheReclaimAndAllocateEntry(c, size);
     if (e == NULL) {
         keyedPoolHasAvailableEntry(&c->index);
     }
     e->size = size;
     e->key = key;
-    romDmaReadQueued(&c->reads, key, (u8 *)e->data, size);
+    romDmaReadQueued(&c->reads, key, e->data, size);
     keyedPoolInsert(&c->index, (s32)e, key);
     e->flags |= 3;
-    *out = e->data;
+    *out = (s32)e->data;
     return 4;
 }
 
@@ -117,7 +117,7 @@ s32 romCacheReserveBuffer(RomCache *c, s32 key, u32 size, s32 *out) {
         }
     } else {
         status = 0;
-        e = (CacheEnt *)romCacheReclaimAndAllocateEntry(c, size);
+        e = romCacheReclaimAndAllocateEntry(c, size);
         if (e == NULL) {
             keyedPoolHasAvailableEntry(&c->index);
         }
@@ -126,34 +126,34 @@ s32 romCacheReserveBuffer(RomCache *c, s32 key, u32 size, s32 *out) {
         keyedPoolInsert(&c->index, (s32)e, key);
     }
     e->flags |= 1;
-    *out = e->data;
+    *out = (s32)e->data;
     return status;
 }
 
 /// Acquire a cache entry, reclaiming unused entries when storage is needed.
 /// \param cache Initialized cache to allocate from.
 /// \param byteCount Number of data bytes to reserve.
-/// \returns RAM address of the allocated entry, or zero if storage cannot be reclaimed.
+/// \returns Allocated entry, or NULL if storage cannot be reclaimed.
 /// \note Original decompilation identifier: \c func_8003FA3C (0x8003FA3C).
-s32 romCacheReclaimAndAllocateEntry(RomCache *cache, s32 byteCount) {
+CacheEnt *romCacheReclaimAndAllocateEntry(RomCache *cache, s32 byteCount) {
     KeyedPool *index;
-    u8 *v;
-    u8 *r;
+    CacheEnt *v;
+    CacheEnt *r;
 
     index = &cache->index;
-    v = (u8 *)keyedPoolIterateFirst(index);
+    v = (CacheEnt *)keyedPoolIterateFirst(index);
     while (1) {
         if (keyedPoolHasAvailableEntry(index) != 0) {
-            r = romCacheAllocateEntry((s32)cache, byteCount);
+            r = romCacheAllocateEntry(cache, byteCount);
             if (r != NULL) {
-                return (s32)r;
+                return r;
             }
         }
-        if (v == NULL || (*(s32 *)v & 3)) {
+        if (v == NULL || (v->flags & 3)) {
             return 0;
         }
-        romCacheRemoveEntry((s32)cache, v);
-        v = (u8 *)keyedPoolIterateNext(index);
+        romCacheRemoveEntry(cache, v);
+        v = (CacheEnt *)keyedPoolIterateNext(index);
     }
 }
 

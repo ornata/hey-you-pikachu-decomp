@@ -791,3 +791,18 @@ and traversal-value types agree with the implementation. The response registry's
 reserved trailing storage remains unchanged and recorded for further evidence.
 All affected units match the preserved 483-object baseline, including strict
 relocation addends and the legacy destruction-call argument setup.
+
+### Cache storage and motion archive contracts
+
+ROM cache entries now expose owned byte buffers and typed allocation/removal
+interfaces. The cache heap backing region is an owned pointer; its size and
+index/read offsets remain checked. Motion cache readers and their runtime and
+playback consumers share a documented header and the same cache-pointer type.
+Ghidra at 0x80017228 confirms the archive-relative base adjustment. That result
+remains a target-width integer because it is an address bias, potentially before
+the loaded allocation, rather than a pointer to an allocated object.
+
+Motion cartridge addresses use an explicit numeric linker-address boundary.
+The analogous texture expression changes IDO instructions and relocations; its
+original representation is retained with a matching exception in the ledger.
+Every retained unit matches the immutable object baseline.

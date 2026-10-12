@@ -3,6 +3,7 @@
  * .rodata opens with the debug-trace strings and ends with the float
  * literals IDO emits after every string of the file. */
 #include "common.h"
+#include "motion_cache.h"
 #include "actor_script.h"
 #include "object_types.h"
 #include "word_map_types.h"
@@ -20,10 +21,6 @@ typedef struct Rec2C {
 void actionRequestLoopExit(u8 *);
 void motionResetPlayback(u8 *);
 void motionSetPlaybackMode(u8 *, s32);
-s32 motionCacheRead(void *, s32, s32 *);
-/// Shared ROM cache owning loaded motion data and pending reads.
-/// \note Original identifier: \c D_800B6930 (0x800B6930).
-extern u8 gMotionRomCache[];
 void actionCancelPendingRequest(u8 *);
 s32 actionRequestMotionData(s32);
 void objectAddPendingLocalMovement(s32);
@@ -123,7 +120,7 @@ void motionRequestCurrentData(u8 *object) {
     motionState = *(u8 **)(object + 0x54);
     if (((*(s32 *)(motionState + 0xF8) & 7) == 1) || ((*(s32 *)(motionState + 0xF8) & 7) == 3)) {
         TRACE("_requestCurMotion:%d\n", *(s16 *)(motionState + 0xFC));
-        motionCacheRead(gMotionRomCache, *(s16 *)(motionState + 0xFC), &sp20);
+        motionCacheRead(&gMotionRomCache, *(s16 *)(motionState + 0xFC), &sp20);
     }
 }
 
@@ -169,7 +166,6 @@ struct Pair8;
 void animationTrack3Initialize(struct Track3 *, struct Pair8 *, s32);
 void animationDeltaTrack3Initialize(struct Track3b *, struct Pair8 *, s32);
 u8 *actorFindPart(u8 *, s32);
-s32 motionCacheReadBlocking(s32, s32);
 /// Playback duration indexed by motion identifier.
 /// \note Original identifier: \c D_800773E0 (0x800773E0).
 extern f32 gMotionDurations[];
@@ -201,7 +197,7 @@ void motionStartTrackPlayback(u8 *object) {
     duration = gMotionDurations[*(s16 *)(state + 0xFC)];
     *(f32 *)(state + 0x134) = duration;
     *(f32 *)(state + 0x138) = duration;
-    base = motionCacheReadBlocking((s32)gMotionRomCache, *(s16 *)(state + 0xFC));
+    base = motionCacheReadBlocking(&gMotionRomCache, *(s16 *)(state + 0xFC));
     entry = (s32 *)(gMotionTrackTableOffsets[*(s16 *)(state + 0xFC)] + base);
     *(f32 *)(state + 8) = *(f32 *)(base + gMotionArchiveOffsets[*(s16 *)(state + 0xFC)]) * *(f32 *)(object + 4);
     *(f32 *)(state + 4) = *(f32 *)(state + 8);
@@ -326,14 +322,14 @@ void motionStartPoseTransition(u8 *object) {
     f32 transformTime = 0.0f;
 
     state = *(u8 **)(object + 0x54);
-    motionCacheRead(gMotionRomCache, *(s16 *)(state + 0xFC), &base);
+    motionCacheRead(&gMotionRomCache, *(s16 *)(state + 0xFC), &base);
     entry = (Pair8 *)(gMotionTrackTableOffsets[*(s16 *)(state + 0xFC)] + base);
     duration = *(f32 *)(state + 0x104);
     *(f32 *)(state + 0x134) = duration;
     *(f32 *)(state + 0x138) = duration;
     *(f32 *)(state + 0x130) = blendWeight;
     motionSetPlaybackMode(object, 0);
-    motionCacheReadBlocking((s32)gMotionRomCache, *(s16 *)(state + 0xFC));
+    motionCacheReadBlocking(&gMotionRomCache, *(s16 *)(state + 0xFC));
     *(f32 *)(state + 8) = *(f32 *)(base + gMotionArchiveOffsets[*(s16 *)(state + 0xFC)]) * *(f32 *)(object + 4);
     while (entry->a > 0) {
         if (entry->a > 0 && entry->a < rootKindLimit) {
@@ -750,7 +746,7 @@ void actionUpdatePlayback(u8 *object) {
         case 2:
             break;
         case 1:
-            motionCacheReadBlocking((s32)gMotionRomCache, ((ActorScriptState *)state)->motionId);
+            motionCacheReadBlocking(&gMotionRomCache, ((ActorScriptState *)state)->motionId);
             motionEvaluateRootTracks((s32)object, (s32)state, step);
             break;
         case 3:

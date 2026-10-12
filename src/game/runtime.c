@@ -2,6 +2,7 @@
 #include "scheduler.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "motion_cache.h"
 #include "audio_cue.h"
 #include "player_control.h"
 #include "text_draw.h"
@@ -933,11 +934,7 @@ void controllerUpdateInputState(void);
 #include "voice_commands.h"
 void renderBeginFrame(void);
 void renderSubmitFrameBorder(void);
-void romCacheReleaseUses(u8 *);
 void audioUpdateGameplayMusicDucking(void);
-/// Shared ROM cache owning loaded motion data and pending reads.
-/// \note Original identifier: \c D_800B6930 (0x800B6930).
-extern u8 gMotionRomCache[];
 /// Service runtime events and frames until a requested program transition is ready.
 /// \returns Nothing when the current program can be left; halts on system reset.
 /// \note Original decompilation identifier: \c func_8000BB8C (0x8000BB8C).
@@ -962,7 +959,7 @@ void runtimeRunProgramEventLoop(void) {
                         renderBeginFrame();
                         resumed = 1;
                     }
-                    romCacheReleaseUses(gMotionRomCache);
+                    romCacheReleaseUses(&gMotionRomCache);
                     gRuntimeRenderPrimed = 1;
                     callback = gRuntimeProgramUpdateEntries[gRuntimeCurrentProgram].callback;
                     if (callback != NULL)
@@ -1016,8 +1013,6 @@ void textureCacheDestroy(void);
 void actionInitializeTransitionMap(void);
 void overlayLoadFromRom(void *romStart, void *romEnd, void *destination, void *textStart, void *textEnd,
                         void *dataStart, void *dataEnd, void *bssStart, void *bssEnd);
-void motionCacheInitialize(void);
-void motionCacheDestroy(void);
 void actorAssetCacheInitialize(void);
 void actorAssetReadQueueDestroy(void);
 void hudProgramInitializeNoOp(void);

@@ -93,6 +93,9 @@
     },
     "src/ovl/system_menu.c": {
       "systemMenuAppendDetailText": "The detail accumulator interface retains an unsigned byte-string view. Trials using const char *, including a local unsigned-byte view, changed allocated code. Isolate the compiler scheduling/register effect before changing the text interface; menu record and callback typing independently matches."
+    },
+    "src/game/texture_cache.c": {
+      "texture ROM address expressions": "Texture image and palette offsets are cartridge byte offsets added to the archive linker address. Explicitly casting the archive symbol to s32 changes allocated instructions and relocations under IDO; retain the original byte-pointer addition at the numeric romCacheRead key boundary. A matching explicit numeric representation remains to be recovered."
     }
   },
   "baseline_totals": {

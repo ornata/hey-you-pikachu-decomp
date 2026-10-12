@@ -186,17 +186,17 @@
     },
     {
       "code": 709,
-      "file": "src/game/attached_effect.c",
-      "line": 78,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "obj = heapAllocLocal(gGameHeap, 0x2C, 0x7A);"
-    },
-    {
-      "code": 709,
       "file": "src/game/cave.c",
       "line": 42,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "v = heapAllocLocal(gGameHeap, 0x20, 0x32);"
+    },
+    {
+      "code": 709,
+      "file": "src/game/attached_effect.c",
+      "line": 78,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "obj = heapAllocLocal(gGameHeap, 0x2C, 0x7A);"
     },
     {
       "code": 709,
@@ -225,27 +225,6 @@
       "line": 175,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "rp = romCacheRead(&gTextureRomCache, texture.pal + gTextureArchiveRomStart, 0x20, palette);"
-    },
-    {
-      "code": 712,
-      "file": "src/game/motion_cache.c",
-      "line": 51,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "ret = romCacheRead(cache, archiveOffset + gMotionArchiveRomStart,"
-    },
-    {
-      "code": 712,
-      "file": "src/game/motion_cache.c",
-      "line": 51,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "ret = romCacheRead(cache, archiveOffset + gMotionArchiveRomStart,"
-    },
-    {
-      "code": 712,
-      "file": "src/game/motion_cache.c",
-      "line": 66,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "romCacheWaitForReads(cache);"
     },
     {
       "code": 712,
@@ -368,13 +347,6 @@
     },
     {
       "code": 709,
-      "file": "src/game/scene_region.c",
-      "line": 48,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "state = heapAllocLocal(gGameHeap, 0x10, 0x33);"
-    },
-    {
-      "code": 709,
       "file": "src/game/player_profile.c",
       "line": 33,
       "diagnostic": "Incompatible pointer type assignment",
@@ -382,8 +354,15 @@
     },
     {
       "code": 709,
+      "file": "src/game/scene_region.c",
+      "line": 48,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "state = heapAllocLocal(gGameHeap, 0x10, 0x33);"
+    },
+    {
+      "code": 709,
       "file": "src/game/motion_playback.c",
-      "line": 713,
+      "line": 709,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "wordMapDestroy(&gActionPoseTransitionMap);"
     },
