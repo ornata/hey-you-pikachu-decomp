@@ -2535,3 +2535,16 @@ a signed integer. Its original 0x80000800 identifier is preserved in Doxygen.
 Ghidra confirms the output flows through affine initialization, camera-position
 translation and player-view rotation. Each affected source unit was rebuilt
 and compared before moving to the next; all 483 objects match.
+
+### Directional-search view interfaces
+
+`camera_view.h` supplies the view builder's three-component position, Euler
+angles and writable float-matrix contract. The provider no longer accepts its
+output as an integer. Object and item searches use the shared declaration.
+The object relative-yaw consumer no longer passes an unused fourth argument;
+this correction preserves strict matching and removes that ABI exception.
+
+`matrix_orientation.h` also supplies the ZYX rotation constructor to its provider
+and all C callers. Ghidra 0x8000D6D8 confirms the view output is passed to that
+constructor and local translation. All dependent units rebuild with the canonical
+contracts and preserve all 483 objects.

@@ -489,7 +489,6 @@ void actorPartUpdateCollisionRegistration(u8 *object) {
     ((ActorPartTextureState *)obj)->collisionKey = collisionGridRegisterObject(object);
 }
 
-void matrix34MakeRotationZYXDegrees(f32 *, f32, f32, f32);
 /// Evaluate the combined orientation of a signed sequence of actor model parts.
 /// \param matrix Output 3-by-4 orientation matrix; identity when no listed parts are available.
 /// \param owner Address of the actor containing the listed model parts.

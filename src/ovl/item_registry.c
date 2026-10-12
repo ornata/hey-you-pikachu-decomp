@@ -1,3 +1,4 @@
+#include "camera_view.h"
 #include "collision_registration.h"
 #include "object_distance.h"
 #include "search_tree_traversal.h"
@@ -1778,7 +1779,6 @@ s32 itemConsiderSearchCandidate(u8 *node, s32 context) {
 }
 
 void matrix34Identity(void *);
-void matrix34MakeViewFromEulerDegrees(u8 *, u8 *, s32);
 
 /// Find the best nearby item satisfying the requested kind, hold-state, and viewing constraints.
 /// \param origin Readable query world position in X, Y, Z order; copied during this call.
@@ -1827,7 +1827,7 @@ u8 *itemFindNearest(f32 *origin, f32 maxDistance, f32 pitch, f32 yaw, f32 cone, 
         rotation[0] = pitch;
         rotation[1] = yaw;
         rotation[2] = 0.0f;
-        matrix34MakeViewFromEulerDegrees((u8 *)origin, (u8 *)rotation, (s32)gItemSearchViewTransform);
+        matrix34MakeViewFromEulerDegrees(origin, rotation, (f32 *)gItemSearchViewTransform);
         gItemNearestSearch.cone = cone;
     }
     itemPrepareKindSearch(minKind);

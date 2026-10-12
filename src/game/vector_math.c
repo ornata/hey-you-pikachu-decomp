@@ -1,3 +1,4 @@
+#include "camera_view.h"
 #include "matrix_translation.h"
 #include "matrix_orientation.h"
 #include "audio_spatial.h"
@@ -507,7 +508,6 @@ void vector2RotateComponentsDegrees(f32 angle, f32 *x, f32 *y) {
     *y = (originalX * sine) + (originalY * cosine);
 }
 
-void matrix34MakeRotationZYXDegrees(s32, f32, f32, f32); /* extern */
 
 /// Construct a view transform from a position and Euler orientation.
 /// \param position Three-component viewing position.
@@ -515,7 +515,7 @@ void matrix34MakeRotationZYXDegrees(s32, f32, f32, f32); /* extern */
 /// \param matrix Address of the twelve-component destination affine matrix.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000D6D8 (0x8000D6D8).
-void matrix34MakeViewFromEulerDegrees(f32 *position, f32 *angles, s32 matrix) {
+void matrix34MakeViewFromEulerDegrees(f32 *position, f32 *angles, f32 *matrix) {
     matrix34MakeRotationZYXDegrees(matrix, -angles[0], -angles[1], -angles[2]);
     matrix34TranslateLocal((f32 (*)[3])matrix, -position[0], -position[1], -position[2]);
 }

@@ -1,3 +1,4 @@
+#include "camera_view.h"
 #include "matrix_translation.h"
 #include "matrix_orientation.h"
 #include "collision_registration.h"
@@ -44,7 +45,6 @@ void matrix34Identity(Matrix34 *);
 f32 vector3LengthApprox(Vec3f *);
 
 
-void matrix34MakeViewFromEulerDegrees();
 f32 matrix34GetTransformedPointYawDegrees(f32 *, f32 *);
 /// Write cursor for the active graphics command list; also marks the camera-storage end.
 /// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
@@ -121,7 +121,6 @@ s32 objectCompareSearchTreeOrder(TreeNode *, s32);
 void objectRegisterHierarchyInSearchTree(u8 *);
 f32 vector3Normalize(f32 *);
 f32 mathUnitDirectionDegrees(f32, f32);
-void matrix34MakeRotationZYXDegrees(void *, f32, f32, f32);
 void vector3GetEulerDegrees(f32 *, f32 *, f32 *, f32 *);
 void matrix34TransformPointVector(void *, f32 *, f32 *);
 
@@ -1632,7 +1631,7 @@ f32 objectAdjustPitchAlongWorldSegment(u8 *object, f32 *start, f32 *end) {
     if (len == 0.0f) {
         return 0.0f;
     }
-    matrix34MakeRotationZYXDegrees(&m, 0.0f, -((RuntimeObjectPrefix *)object)->rotation[1], -((RuntimeObjectPrefix *)object)->rotation[2]);
+    matrix34MakeRotationZYXDegrees((f32 *)&m, 0.0f, -((RuntimeObjectPrefix *)object)->rotation[1], -((RuntimeObjectPrefix *)object)->rotation[2]);
     matrix34TransformPointVector(&m, v, v);
     ((RuntimeObjectPrefix *)object)->rotation[0] = mathUnitDirectionDegrees(v[1], v[2]);
     return len;
@@ -1744,12 +1743,12 @@ f32 objectGetApproxDistance(u8 *first, u8 *second) {
 /// \param pointAddress Address of the three-component world-space point, represented as an integer.
 /// \returns Nothing.
 ///
-/// \note Portability: The unprototyped view-matrix call passes an extra argument ignored by the original ABI; pointAddress requires 32-bit pointers.
+/// \note Portability: pointAddress requires 32-bit pointers.
 /// \note Original decompilation identifier: \c func_80009D44 (0x80009D44).
 void objectEvaluatePointRelativeYaw(u8 *object, s32 pointAddress) {
     u8 v[0x30];
 
-    matrix34MakeViewFromEulerDegrees(object + 0x44, object + 0xC, (Vec3f *)v, object);
+    matrix34MakeViewFromEulerDegrees((f32 *)(object + 0x44), (f32 *)(object + 0xC), (f32 *)v);
 
     matrix34GetTransformedPointYawDegrees((f32 *)v, (f32 *)pointAddress);
 }
@@ -1844,7 +1843,7 @@ u8 *objectFindNearestTargetInView(u8 *self, Vec3f *origin, f32 dist, f32 *rot, f
     gObjectNearestTargetSearch.minKind = minKind;
     gObjectNearestTargetSearch.maxKind = maxKind;
     if (cone < 360.0f) {
-        matrix34MakeViewFromEulerDegrees(origin, rot, &gObjectNearestTargetSearch.facing);
+        matrix34MakeViewFromEulerDegrees((f32 *)origin, rot, (f32 *)&gObjectNearestTargetSearch.facing);
         gObjectNearestTargetSearch.cone = cone;
     } else {
         matrix34Identity(&gObjectNearestTargetSearch.facing);

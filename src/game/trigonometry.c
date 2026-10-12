@@ -374,7 +374,6 @@ void matrix33ApplyRotationXYZDegrees(f32 *matrixAddress, f32 xDegrees, f32 yDegr
     }
 }
 
-void matrix34MakeRotationZYXDegrees(f32 *, f32, f32, f32);
 
 /// Apply a local Euler rotation in Z, then Y, then X order.
 /// \param matrixAddress Matrix whose linear transform is updated in place.

@@ -75,4 +75,13 @@ void matrix34RotateWorldYDegrees(f32 angle, f32 *m);
 /// \note Original decompilation identifier: \c func_8000D2E4 (0x8000D2E4).
 void matrix3GetEulerAnglesDegrees(f32 *matrix, f32 *roll, f32 *pitch, f32 *yaw);
 
+/// Build an affine rotation applying Z, then Y, then X rotations.
+/// \param m Output affine matrix.
+/// \param x Rotation about the X axis in degrees.
+/// \param y Rotation about the Y axis in degrees.
+/// \param z Rotation about the Z axis in degrees.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_80039B04 (0x80039B04).
+void matrix34MakeRotationZYXDegrees(f32 *m, f32 x, f32 y, f32 z);
+
 #endif
