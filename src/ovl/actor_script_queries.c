@@ -232,10 +232,10 @@ s32 actorTrackObjectPosition(u8 *actor, s32 handle, f32 distanceAllowance) {
 
     if ((target == NULL) || ((((RuntimeObjectPrefix *)target)->kind == 0x86) &&
                              (((ItemStatePrefix *)((RuntimeObjectPrefix *)target)->state.bytes)->state == 4))) {
-        ((ActorScriptState *)state)->targetMode = 0;
+        ((ActorScriptState *)state)->targetMode = ACTOR_TARGET_FIXED;
         return 0;
     }
-    ((ActorScriptState *)state)->targetMode = 1;
+    ((ActorScriptState *)state)->targetMode = ACTOR_TARGET_FOLLOW;
     ((ActorScriptState *)state)->targetHandle = handle;
     ((ActorScriptState *)state)->targetDistanceAllowance = distanceAllowance;
     actorSetTargetPosition(actor, ((RuntimeObjectPrefix *)target)->worldPosition);
@@ -256,7 +256,7 @@ s32 actorSetDestinationFromObject(u8 *actor, s32 handle, f32 distanceAllowance) 
     resolvedObject = objectResolveAvailableHandle(handle);
     targetObject = resolvedObject;
     actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    ((ActorScriptState *)actorState)->targetMode = 0;
+    ((ActorScriptState *)actorState)->targetMode = ACTOR_TARGET_FIXED;
     if ((resolvedObject == NULL) ||
         ((((RuntimeObjectPrefix *)resolvedObject)->kind == 0x86) &&
          (((ItemStatePrefix *)((RuntimeObjectPrefix *)resolvedObject)->state.bytes)->state == 4))) {
@@ -281,10 +281,10 @@ s32 actorTrackEscapeFromObject(u8 *actor, s32 handle) {
     if ((resolvedObject == NULL) ||
         ((((RuntimeObjectPrefix *)resolvedObject)->kind == 0x86) &&
          (((ItemStatePrefix *)((RuntimeObjectPrefix *)resolvedObject)->state.bytes)->state == 4))) {
-        ((ActorScriptState *)sp1C)->targetMode = 0;
+        ((ActorScriptState *)sp1C)->targetMode = ACTOR_TARGET_FIXED;
         return 0;
     }
-    ((ActorScriptState *)sp1C)->targetMode = 2;
+    ((ActorScriptState *)sp1C)->targetMode = ACTOR_TARGET_ESCAPE;
     ((ActorScriptState *)sp1C)->targetHandle = handle;
     ((ActorScriptState *)sp1C)->targetDistanceAllowance = 0.0f;
     actorChooseEscapePosition(actor, ((RuntimeObjectPrefix *)resolvedObject)->worldPosition);
@@ -304,7 +304,7 @@ s32 actorChooseEscapePositionFromHandle(u8 *actor, s32 handle) {
     resolvedObject = objectResolveAvailableHandle(handle);
     targetObject = resolvedObject;
     actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    ((ActorScriptState *)actorState)->targetMode = 0;
+    ((ActorScriptState *)actorState)->targetMode = ACTOR_TARGET_FIXED;
     if ((resolvedObject == NULL) ||
         ((((RuntimeObjectPrefix *)resolvedObject)->kind == 0x86) &&
          (((ItemStatePrefix *)((RuntimeObjectPrefix *)resolvedObject)->state.bytes)->state == 4))) {
@@ -327,7 +327,7 @@ void actorChooseEscapePositionFromPlayer(u8 *actor) {
     u8 *actorState;
 
     actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    ((ActorScriptState *)actorState)->targetMode = 0;
+    ((ActorScriptState *)actorState)->targetMode = ACTOR_TARGET_FIXED;
     ((ActorScriptState *)actorState)->targetDistanceAllowance = 0.0f;
     actorChooseEscapePosition(actor, (f32 *)&gPlayerState);
 }
@@ -1267,7 +1267,7 @@ void actorTrackEscapeFromPlayerSecondaryObject(u8 *actor) {
 
     actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
     ((ActorScriptState *)actorState)->targetHandle = gPlayerModeState[1];
-    ((ActorScriptState *)actorState)->targetMode = 2;
+    ((ActorScriptState *)actorState)->targetMode = ACTOR_TARGET_ESCAPE;
 }
 
 
@@ -1280,7 +1280,7 @@ void actorTrackPlayerPrimaryObject(u8 *actor) {
 
     actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
     ((ActorScriptState *)actorState)->targetHandle = gPlayerModeState[0];
-    ((ActorScriptState *)actorState)->targetMode = 1;
+    ((ActorScriptState *)actorState)->targetMode = ACTOR_TARGET_FOLLOW;
 }
 
 f32 scriptVmPopFloat(s32);                   /* extern */

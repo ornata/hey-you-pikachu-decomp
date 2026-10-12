@@ -6,6 +6,14 @@
 
 #include <ultra64.h>
 
+/// Supported interpretations of an actor's retained target.
+/// Stored and script-supplied modes retain their signed 32-bit representation.
+typedef enum ActorTargetMode {
+    ACTOR_TARGET_FIXED = 0,  ///< Keep the stored destination without following a target.
+    ACTOR_TARGET_FOLLOW = 1, ///< Refresh the destination toward the retained object.
+    ACTOR_TARGET_ESCAPE = 2  ///< Refresh the destination away from the retained object.
+} ActorTargetMode;
+
 /// Resolve the actor's retained target handle.
 /// \param actor Actor with initialized script state.
 /// \returns Borrowed live target, or null if the handle is unavailable; no ownership is transferred.
@@ -111,5 +119,44 @@ s32 actorTrackObjectPosition(u8 *actor, s32 handle, f32 distanceAllowance);
 /// \returns The target script category, or zero when the target is unavailable or has no supported category.
 /// \note Original decompilation identifier: \c func_80117624 (0x80117624).
 s32 actorSetDestinationFromObject(u8 *actor, s32 handle, f32 distanceAllowance);
+
+/// Track an available object as the source of an actor's escape destination. Otherwise disable target tracking.
+/// \param actor Actor whose destination is changed.
+/// \param handle Handle of the target object.
+/// \returns The target script category, or zero when the target is unavailable or has no supported category.
+/// \note Original decompilation identifier: \c func_801176A8 (0x801176A8).
+s32 actorTrackEscapeFromObject(u8 *actor, s32 handle);
+
+/// Choose an escape destination away from an available object and disable ongoing target tracking.
+/// \param actor Actor whose destination is changed.
+/// \param handle Handle of the target object.
+/// \returns The target script category, or zero when the target is unavailable or has no supported category.
+/// \note Original decompilation identifier: \c func_80117744 (0x80117744).
+s32 actorChooseEscapePositionFromHandle(u8 *actor, s32 handle);
+
+/// Choose an escape destination away from the player and disable ongoing target tracking.
+/// \param actor Actor whose escape destination is selected.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_801177C8 (0x801177C8).
+void actorChooseEscapePositionFromPlayer(u8 *actor);
+
+/// Get the handle of an actor's available target.
+/// \param object Actor whose target is requested.
+/// \returns The target handle, or zero when no target is available.
+/// \note Original decompilation identifier: \c func_801177FC (0x801177FC).
+s32 actorGetAvailableTargetHandle(u8 *object);
+
+/// Get an actor's target tracking mode.
+/// \param actor Actor whose tracking mode is requested.
+/// \returns The current target tracking mode.
+/// \note Original decompilation identifier: \c func_80117828 (0x80117828).
+s32 actorGetTargetTrackingMode(u8 *actor);
+
+/// Set how an actor tracks its target.
+/// \param actor Actor whose tracking mode is changed.
+/// \param mode Target tracking mode: zero disables tracking, one follows the target, and two moves away from it.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_80117834 (0x80117834).
+void actorSetTargetTrackingMode(u8 *actor, s32 mode);
 
 #endif

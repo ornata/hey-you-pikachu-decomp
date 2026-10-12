@@ -496,7 +496,7 @@ void actorUpdateChildMotionCallback(u8 *object) {
 void actorGetParentTrackingPosition(u8 *child, u8 *parentState, f32 *position) {
     u8 *t;
 
-    if (((ActorScriptState *)parentState)->targetMode == 1) {
+    if (((ActorScriptState *)parentState)->targetMode == ACTOR_TARGET_FOLLOW) {
         t = actorResolveStoredTarget(*(u8 **)(child + 0x50));
         if (t != NULL) {
             if (*(u16 *)(t + 0x34) == 0x7F) {

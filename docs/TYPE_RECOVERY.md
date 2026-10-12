@@ -2982,3 +2982,14 @@ halfword movement-collision result query. Ghidra 0x80117500 confirms the
 halfword at actor-state offset 0x1EA; this interface preserves its bits rather
 than inventing flag semantics. Message commands share provider declarations.
 All affected units preserve strict allocated bytes and relocations.
+
+### Actor target modes and remaining tracking contracts
+
+`ActorTargetMode` names fixed destination, follow and escape values proven
+by tracking producers and destination-refresh consumers. All explicit mode
+assignments and comparisons in six units use these constants. Storage and
+script-supplied values retain their signed 32-bit representation; the enum
+does not impose a new validity check. Ghidra 0x80117834 confirms the word
+setter at actor-state offset 0x19C. `actor_target.h` now also consolidates
+escape selection, available-target lookup and mode get/set contracts.
+Each affected unit preserves all strict objects and relocations.

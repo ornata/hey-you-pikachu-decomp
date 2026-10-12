@@ -268,7 +268,6 @@ s32 actorScriptTrackEscapeFromPlayerSecondaryObject(u8 *actor) {
     return 0;
 }
 
-void actorChooseEscapePositionFromPlayer(u8 *);
 
 /// Choose a fixed escape destination away from the player.
 /// \param actor Actor whose escape destination is selected and ongoing tracking disabled; requires a live fallback target when the positions coincide. Its script VM receives zero.
@@ -968,7 +967,7 @@ s32 actorScriptSetDestination(u8 *actor) {
     pos[1] = scriptVmPopFloat(vm);
     pos[0] = scriptVmPopFloat(vm);
     actorSetTargetPosition(actor, pos);
-    ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetMode = 0;
+    ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetMode = ACTOR_TARGET_FIXED;
     ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetDistanceAllowance = speed;
     scriptVmPushInteger(vm, 0);
     return 0;
@@ -1007,7 +1006,6 @@ s32 actorScriptSetDestinationFromObject(u8 *actor) {
     return 0;
 }
 
-s32 actorTrackEscapeFromObject(u8 *, s32); /* extern */
 
 /// Select an object as the actor's tracked escape source.
 /// \param actor Actor whose script VM supplies a target handle and receives its script category, or zero for an unavailable or unsupported target.
@@ -1021,7 +1019,6 @@ s32 actorScriptTrackEscapeFromObject(u8 *actor) {
     return 0;
 }
 
-s32 actorChooseEscapePositionFromHandle(u8 *, s32); /* extern */
 
 /// Choose a fixed escape destination away from an object.
 /// \param actor Actor whose script VM supplies a target handle and receives its script category, or zero for an unavailable or unsupported target.
@@ -1049,7 +1046,6 @@ s32 actorScriptPushTargetDistanceAllowance(u8 *actor) {
     return 0;
 }
 
-s32 actorGetAvailableTargetHandle(u8 *); /* extern */
 
 /// Push the handle of the actor's available target.
 /// \param actor Actor whose script VM receives its target handle, or zero when unavailable.
@@ -1063,7 +1059,6 @@ s32 actorScriptPushTargetHandle(u8 *actor) {
     return 0;
 }
 
-s32 actorGetTargetTrackingMode(u8 *); /* extern */
 
 /// Push the actor's current target tracking mode.
 /// \param actor Actor whose script VM receives its target tracking mode.
@@ -1077,7 +1072,6 @@ s32 actorScriptPushTrackingMode(u8 *actor) {
     return 0;
 }
 
-void actorSetTargetTrackingMode(u8 *, s32); /* extern */
 
 /// Set the actor's target tracking mode from a script argument.
 /// \param actor Actor whose script VM supplies a mode (zero disables tracking, one follows, two escapes) and receives zero.

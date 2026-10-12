@@ -35,7 +35,7 @@ u8 *actorResolveStoredTarget(u8 *actor) {
 u8 *actorGetTrackingTarget(u8 *actor) {
     u8 *actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
 
-    if (((ActorScriptState *)actorState)->targetMode == 0) {
+    if (((ActorScriptState *)actorState)->targetMode == ACTOR_TARGET_FIXED) {
         return 0;
     }
     return actorResolveStoredTarget(actor);
@@ -139,12 +139,12 @@ void actorRefreshTrackingTargetPosition(u8 *actor) {
     u8 *state = ((RuntimeObjectPrefix *)actor)->state.bytes;
     u8 *target;
 
-    if ((((ActorScriptState *)state)->targetMode != 0) && (((ActorScriptState *)state)->targetHandle != 0)) {
+    if ((((ActorScriptState *)state)->targetMode != ACTOR_TARGET_FIXED) && (((ActorScriptState *)state)->targetHandle != 0)) {
         target = actorResolveStoredTarget(actor);
         if (target != NULL) {
-            if (((ActorScriptState *)state)->targetMode == 1) {
+            if (((ActorScriptState *)state)->targetMode == ACTOR_TARGET_FOLLOW) {
                 actorSetTargetPosition(actor, ((RuntimeObjectPrefix *)target)->worldPosition);
-            } else if (((ActorScriptState *)state)->targetMode == 2) {
+            } else if (((ActorScriptState *)state)->targetMode == ACTOR_TARGET_ESCAPE) {
                 actorChooseEscapePosition(actor, ((RuntimeObjectPrefix *)target)->worldPosition);
             }
         }

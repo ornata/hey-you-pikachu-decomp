@@ -1,3 +1,4 @@
+#include "actor_target.h"
 #include "story_chapter.h"
 #include "door.h"
 #include "common.h"
@@ -52,7 +53,7 @@ void frontYardInitializeObjects(void) {
             ((ActorScriptState *)state)->targetPosition[1] = (f32)((RuntimeObjectPrefix *)companion)->worldPosition[1];
             ((ActorScriptState *)state)->targetPosition[2] = (f32)((RuntimeObjectPrefix *)companion)->worldPosition[2];
             ((ActorScriptState *)state)->targetHandle = (s32)((RuntimeObjectPrefix *)companion)->handle;
-            ((ActorScriptState *)state)->targetMode = 1;
+            ((ActorScriptState *)state)->targetMode = ACTOR_TARGET_FOLLOW;
         } else {
             frontYardInitializeRegularObjects();
         }

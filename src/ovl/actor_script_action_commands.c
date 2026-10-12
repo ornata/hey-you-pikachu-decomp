@@ -493,7 +493,7 @@ s32 actorScriptSetTargetPosition(u8 *actor) {
     pos[1] = scriptVmPopFloat(vm);
     pos[0] = scriptVmPopFloat(vm);
     actorSetTargetPosition(actor, pos);
-    ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetMode = 0;
+    ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetMode = ACTOR_TARGET_FIXED;
     ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetDistanceAllowance = 0.0f;
     scriptVmPushInteger(vm, 0);
     return 0;
@@ -526,7 +526,7 @@ s32 actorScriptSetTargetToFallbackObject(u8 *actor) {
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     actorSetTargetToFallbackObject(actor);
-    ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetMode = 0;
+    ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetMode = ACTOR_TARGET_FIXED;
     ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetDistanceAllowance = 0.0f;
     scriptVmPushInteger(sp1C, 0);
     return 0;

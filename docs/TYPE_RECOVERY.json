@@ -6302,10 +6302,10 @@
       "locations": {
         "raw_offset_candidates": {
           "actor + 0xC": [
-            "661:38"
+            "660:38"
           ],
           "gPlayerCompanionTarget - 0x50": [
-            "1357:57"
+            "1351:57"
           ]
         }
       }
