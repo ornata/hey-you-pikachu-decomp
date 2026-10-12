@@ -1908,3 +1908,13 @@ stores use shared eye, target and up fields. Ghidra 0x80000AD4 confirms the 0xE0
 stride, copied coordinates and world-up values; 0x80112698 confirms the primary
 camera snapshot. Inputs are borrowed and copied during the setter call. Each
 changed source unit preserves all 483 objects and strict relocation addends.
+
+### Camera position-and-angle contract
+
+`camera_pose.h` now also declares the position-and-angle setter for both callers.
+The presentation unit's X and Z symbol views are floating-point coordinates, not
+integer values; their corrected declarations preserve the original symbol and
+relocation boundaries. The provider uses named shared eye, target and up fields
+while retaining its grouped position stores for matching scheduling. Ghidra
+0x800009C4 confirms coordinate stores and angle consumers. All three source units
+preserve all 483 objects and strict relocation addends.

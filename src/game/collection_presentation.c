@@ -1,3 +1,4 @@
+#include "camera_pose.h"
 #include "actor_rotation.h"
 #include "backdrop_draw.h"
 #include "common.h"
@@ -281,13 +282,13 @@ typedef struct {
 } Blk30;
 /// Primary player control record and base of the player records with a 256-byte stride.
 /// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
-extern s32 gPlayerState;
+extern f32 gPlayerState;
 /// Separate symbol view of the primary player record's position Y.
 /// \note Original identifier: \c D_800EF6A4 (0x800EF6A4).
 extern f32 gPlayerPositionY;
 /// Separate symbol view of the primary player record's position Z.
 /// \note Original identifier: \c D_800EF6A8 (0x800EF6A8).
-extern s32 gPlayerPositionZ;
+extern f32 gPlayerPositionZ;
 /// Separate symbol view of the primary player record's view yaw.
 /// \note Original identifier: \c D_800EF6AC (0x800EF6AC).
 extern f32 gPlayerYaw;
@@ -307,7 +308,6 @@ void playerRestoreState(void);
 u8 *actionScriptStop();
 void actionBeginPoseTransition(s32, s32, f32);
 void objectClearHierarchyFlags(u8 *, u16);
-void cameraSetPositionAndAngles(s32, s32, f32, s32, f32, f32, f32);
 
 #define ACT_F(i) (((f32 *)gPikachuActor)[i])
 #define EXT_F(i) (((f32 *)&gPresentationSavedActorState)[i])

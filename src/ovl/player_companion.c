@@ -1976,7 +1976,6 @@ void playerRestoreState(void) {
     playerUpdateViewCamera(&gPlayerState);
 }
 
-void cameraSetPositionAndAngles(s32, f32, f32, f32, f32, f32, f32); /* extern */
 
 /// Update the primary view camera from a player pose when player camera updates are enabled.
 /// \param player Player record providing world position, eye height, and view orientation.

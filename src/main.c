@@ -388,12 +388,12 @@ f32 mathCosDegrees(f32);
 /// \param roll Camera up-vector angle in degrees, measured from positive Y toward positive X.
 /// \returns Nothing.
 void cameraSetPositionAndAngles(s32 index, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 roll) {
-    f32 *camera = (f32 *)(gRenderCameras + index * 0xE0);
+    MatrixCamera *camera = (MatrixCamera *)(gRenderCameras + index * 0xE0);
     f32 denominator;
     f32 slope;
     /* IDO schedules these three position stores together. */
     // clang-format off
-    camera[0] = x; camera[1] = y; camera[2] = z;
+    camera->eye[0] = x; camera->eye[1] = y; camera->eye[2] = z;
     // clang-format on
     denominator = mathCosDegrees(pitch);
     if (denominator < gCameraPitchCosineUpperTolerance && gCameraPitchCosineLowerTolerance < denominator) {
@@ -401,12 +401,12 @@ void cameraSetPositionAndAngles(s32 index, f32 x, f32 y, f32 z, f32 pitch, f32 y
     } else {
         slope = mathSinDegrees(pitch) / denominator;
     }
-    camera[3] = mathSinDegrees(yaw) + x;
-    camera[4] = y - slope;
-    camera[5] = mathCosDegrees(yaw) + z;
-    camera[6] = mathSinDegrees(roll);
-    camera[7] = mathCosDegrees(roll);
-    camera[8] = 0.0f;
+    camera->target[0] = mathSinDegrees(yaw) + x;
+    camera->target[1] = y - slope;
+    camera->target[2] = mathCosDegrees(yaw) + z;
+    camera->up[0] = mathSinDegrees(roll);
+    camera->up[1] = mathCosDegrees(roll);
+    camera->up[2] = 0.0f;
 }
 
 /// Aim a camera from a world-space eye position toward a target with world-up orientation.
