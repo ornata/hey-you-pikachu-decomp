@@ -527,7 +527,6 @@ s32 actorAssetGetCachedStorage(s32 kind) {
 }
 
 void objectPrepareDistributedKindSearches(u16, s32);
-u8 *objectGetLastSibling(u8 *);
 void objectAllocateHierarchyMatrixBuffers(s32);
 void objectScaleHierarchyBounds(u8 *, f32);
 s32 objectRefreshHierarchyWorldPositions(s32);
@@ -644,16 +643,16 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
     *(s32 *)(actorState + 0x194) = kindConfig->initialBehaviorFlags;
     *(s32 *)(actorState + 0x238) = scriptArgument;
     sp50 = objectCreateDefault();
-    *(u8 **)(sp50 + 0x50) = actor;
-    *(u8 **)(objectGetLastSibling(actor) + 0x28) = sp50;
+    ((RuntimeObjectPrefix *)sp50)->root.bytes = actor;
+    ((RuntimeObjectPrefix *)objectGetLastSibling(actor))->sibling.bytes = sp50;
     *(u8 **)(actorState + 0x0) = sp50;
     if (kindConfig->shadowSegmentCount > 0) {
         sp48 = objectGetLastSibling(actor);
         shadowSegments = kindConfig->shadowSegmentCount;
         part = groundShadowCreate(shadowSegments,
                                   (kindConfig->visibilityRadius / (f32)shadowSegments) * gActorShadowSegmentRadiusScale);
-        *(u8 **)(part + 0x50) = actor;
-        *(u8 **)(sp48 + 0x28) = part;
+        ((RuntimeObjectPrefix *)part)->root.bytes = actor;
+        ((RuntimeObjectPrefix *)sp48)->sibling.bytes = part;
     }
     objectAllocateHierarchyMatrixBuffers((s32)actor);
     heapDebugReportFreeSpace(&gGameHeap, (const char *)gActorMatricesAllocatedHeapLabel);

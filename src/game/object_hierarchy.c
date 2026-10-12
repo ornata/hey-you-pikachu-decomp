@@ -646,8 +646,8 @@ void objectAddPendingLocalMovement(f32 *movement) {
 /// \returns Last sibling, including the supplied object when it has no following sibling.
 /// \note Original decompilation identifier: \c func_800080E4 (0x800080E4).
 u8 *objectGetLastSibling(u8 *object) {
-    while (*(u8 **)(object + 0x28) != NULL) {
-        object = *(u8 **)(object + 0x28);
+    while (((RuntimeObjectPrefix *)object)->sibling.bytes != NULL) {
+        object = ((RuntimeObjectPrefix *)object)->sibling.bytes;
     }
     return object;
 }
@@ -882,7 +882,7 @@ void objectScaleHierarchyBounds(u8 *object, f32 parentScale) {
             if (firstChild != NULL) {
                 objectScaleHierarchyBounds(firstChild, combinedScale);
             }
-            object = *(u8 **)(object + 0x28);
+            object = ((RuntimeObjectPrefix *)object)->sibling.bytes;
         } while (object != NULL);
     }
 }
@@ -1367,7 +1367,7 @@ void objectUpdateHierarchyFromCurrentTransform(u8 *object) {
             }
             objectTransformStackPop((Matrix34 *)&gObjectTraversalTransform);
         }
-        object = *(u8 **)(object + 0x28);
+        object = ((RuntimeObjectPrefix *)object)->sibling.bytes;
     }
 }
 

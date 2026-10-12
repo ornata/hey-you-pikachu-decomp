@@ -42,4 +42,10 @@ void objectRequestHierarchyDestruction(u8 *object);
 /// \returns Nothing.
 void objectDestroyHierarchy(u8 *object);
 
+/// Retrieve the final sibling in an object chain.
+/// \param object Live nonnull object starting an acyclic sibling chain.
+/// \returns Borrowed final sibling, including object when it has no successor.
+/// \note Original decompilation identifier: \c func_800080E4 (0x800080E4).
+u8 *objectGetLastSibling(u8 *object);
+
 #endif

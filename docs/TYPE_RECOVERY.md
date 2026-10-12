@@ -1639,3 +1639,11 @@ handling and rotation writes. The provider uses shared rotation/world-position
 fields; byte-backed camera storage retains explicit float-pointer boundaries.
 Three external caller units share these declarations. All four changed units
 preserve all 483 objects and strict relocation addends.
+
+### Sibling traversal and actor attachment links
+
+The lifecycle header declares final-sibling lookup with live, acyclic-chain and
+borrowed-result requirements. Ghidra 0x800080E4 confirms traversal through offset
+0x28. The provider uses the shared sibling field; actor creation uses checked
+root and sibling links for its ground-reference and shadow attachments. Both
+source units preserve all 483 objects and strict relocation addends.
