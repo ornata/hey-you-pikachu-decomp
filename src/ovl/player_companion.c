@@ -1,6 +1,7 @@
 #include "player_friendship.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "string_bytes.h"
 #include "actor_parts.h"
 #include "player_control.h"
 #include "object_lookup.h"
@@ -2276,7 +2277,6 @@ void playerUpdateInput(s32 idx) {
     playerUpdateViewCamera(p);
 }
 
-u8 *stringCopy(u8 *, u8 *); /* extern */
 s32 strlen();                                /* extern */
 /// Borrowed cursor into shared player help text while lines are consumed.
 /// \note Original identifier: \c D_80134020 (0x80134020).

@@ -981,3 +981,17 @@ Glyph bytes 6 and 7 retain offset names: no consumer has established their role;
 recovering resource generation or an additional reader is the next evidence
 needed. Their original storage is preserved. All changes match the strict
 object baseline and preserve the original unsupported-character constraints.
+
+### Encoded byte-string copy contract
+
+All stringCopy callers share string_bytes.h with the producer: writable byte
+destination, borrowed const byte source and the original destination pointer as
+the return value. Ghidra at 0x80049A78 confirms terminator-inclusive copying and
+the destination return. The contract requires sufficient destination capacity
+and nonoverlapping storage.
+
+Profile, message-bar, companion-help and presentation callers use the same
+declaration. The presentation caller's former void return and integer source
+declaration were removed; its packed address source has an explicit byte view.
+The profile's ASCII literal likewise crosses the encoded-byte boundary
+explicitly. Every affected unit preserves allocated bytes and strict relocations.

@@ -1,10 +1,10 @@
 #include "common.h"
+#include "string_bytes.h"
 #include "player_types.h"
 
 void _bzero(void *, s32);                                     /* extern */
 void progressSetChapterAndUnlockMilestones(s32);              /* extern */
 void progressInitializeSaveStorage();                     /* extern */
-u8 *stringCopy(u8 *, u8 *); /* extern */
 /// Current gameplay, menu or transition mode.
 /// \note Original identifier: \c D_800AE504 (0x800AE504).
 extern s32 gRuntimeGameMode;
@@ -30,7 +30,7 @@ void playerResetProfile(void) {
     _bzero(&gScriptVmGlobalValues, 0x9C4);
     _bzero(&gProfilePackedCounters, 0x53);
     progressInitializeSaveStorage();
-    stringCopy(gPlayerProfileName, "You");
+    stringCopy(gPlayerProfileName, (const u8 *)"You");
     ((PlayerControlPrefix *)&gPlayerState)->points = 0x12C;
     ((PlayerControlPrefix *)&gPlayerState)->unknown0F4 = 6;
     ((PlayerControlPrefix *)&gPlayerState)->unknown0F5 = 8;

@@ -1,5 +1,6 @@
 #include "backdrop_draw.h"
 #include "common.h"
+#include "string_bytes.h"
 #include "actor_parts.h"
 #include "audio_cue.h"
 #include "player_control.h"
@@ -1591,7 +1592,6 @@ s32 presentationSelectArea22Card(s32 *actorAction, s32 *audioCue) {
     }
 }
 
-void stringCopy(void *, s32);
 s8 *areaGetRegionName(u32);
 /// Entrance index used to initialize the player and companion in the current area.
 /// \note Original identifier: \c D_800AE4F4 (0x800AE4F4).
@@ -1710,7 +1710,7 @@ void presentationInitializeForCurrentArea(void) {
     if (collectionTitleTableAddress != 0) {
         collectionTitleAddress = ((s32 *)collectionTitleTableAddress)[gAreaScenarioIndex];
         if (collectionTitleAddress != 0) {
-            stringCopy(gCollectionPresentationTitleText, collectionTitleAddress);
+            stringCopy(gCollectionPresentationTitleText, (const u8 *)collectionTitleAddress);
         }
     }
     regionName = areaGetRegionName(gRuntimeCurrentArea);

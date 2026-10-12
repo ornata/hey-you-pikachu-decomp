@@ -1,6 +1,7 @@
 #include "scheduler.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "string_bytes.h"
 void memoryFillBytes(u8 *p, s32 n, u8 c);
 /// Number of sample DMA reads whose completions must be collected this frame.
 /// \note Original identifier: \c D_800F8EF0 (0x800F8EF0).
@@ -342,7 +343,7 @@ u8 *memorySetBytes(u8 *destination, u8 value, s32 count) {
 /// \param src Null-terminated source string.
 /// \returns The original destination pointer.
 /// \note Original decompilation identifier: \c func_80049A78 (0x80049A78).
-u8 *stringCopy(u8 *dst, u8 *src) {
+u8 *stringCopy(u8 *dst, const u8 *src) {
     u8 *d = dst;
 
     while ((*dst++ = *src++) != 0) {

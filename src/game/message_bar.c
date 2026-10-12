@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "string_bytes.h"
 #include "text_draw.h"
 #include "object_lookup.h"
 #include "heap_alloc.h"
@@ -149,7 +150,6 @@ void messageBarPrepareImage(s32 index, QueuedMessage msg) {
 /// Retained displayed message text used to coalesce repeated message requests.
 /// \note Original identifier: \c D_800F0B2C (0x800F0B2C).
 extern u8 gMessageBarCurrentText[];
-u8 *stringCopy(u8 *, u8 *);
 
 /// Activate the next queued message after its text image has been prepared.
 /// Requires a queued message with a prepared image.
