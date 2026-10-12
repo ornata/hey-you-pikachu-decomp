@@ -38,7 +38,7 @@ typedef struct ItemStatePrefix {
     u8 tint[4];                  ///< Red, green, blue and alpha material components.
     s32 collisionKey;            ///< Collision-grid registration key, or zero when unregistered.
     TreeNode registryNode;       ///< Embedded node linked into the item search tree.
-    Gfx *lighting[2];            ///< Owned lighting command buffers for alternate frames.
+    Gfx *lighting[2];            ///< Alternate command-buffer views into one owned allocation; lighting[0] owns the base.
     f32 idleMotionDelay;         ///< Countdown before another idle direction motion may begin.
 } ItemStatePrefix;
 
@@ -49,6 +49,7 @@ typedef char ItemDownwardVelocityOffsetCheck[(ITEM_OFFSET(downwardVelocity) == 0
 typedef char ItemSpinOffsetCheck[(ITEM_OFFSET(spinSpeed) == 0x28) ? 1 : -1];
 typedef char ItemMaterialTrackOffsetCheck[(ITEM_OFFSET(materialTrack) == 0x40) ? 1 : -1];
 typedef char ItemMaterialFrameOffsetCheck[(ITEM_OFFSET(materialTrack.value) == 0x48) ? 1 : -1];
+typedef char ItemCollisionKeyOffsetCheck[(ITEM_OFFSET(collisionKey) == 0x50) ? 1 : -1];
 typedef char ItemRegistryNodeOffsetCheck[(ITEM_OFFSET(registryNode) == 0x54) ? 1 : -1];
 typedef char ItemLightingOffsetCheck[(ITEM_OFFSET(lighting) == 0x60) ? 1 : -1];
 #undef ITEM_OFFSET

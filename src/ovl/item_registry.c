@@ -1929,12 +1929,12 @@ extern HpHdr gGameHeap;
 /// uses its resources. Portability: collision registration uses a 32-bit integer object address.
 /// \note Original decompilation identifier: \c func_80113464 (0x80113464).
 void itemDestroyState(u8 *item) {
-    u8 *sp1C;
+    ItemStatePrefix *state;
 
-    sp1C = ((RuntimeObjectPrefix *)item)->state.bytes;
-    collisionGridUnregisterObject((s32)item, (s32 *)(sp1C + 0x50));
-    heapFreeLocal(&gGameHeap, (u8 *)((ItemStatePrefix *)sp1C)->lighting[0]);
-    heapFreeLocal(&gGameHeap, sp1C);
+    state = (ItemStatePrefix *)((RuntimeObjectPrefix *)item)->state.bytes;
+    collisionGridUnregisterObject((s32)item, &state->collisionKey);
+    heapFreeLocal(&gGameHeap, state->lighting[0]);
+    heapFreeLocal(&gGameHeap, state);
 }
 
 typedef struct {
@@ -1954,8 +1954,8 @@ typedef struct {
 void itemBuildLightingDisplayList(u8 *state, s32 index) {
     Gfx *g;
     u8 *color;
-    g = ((Gfx **)(state + 0x60))[index];
-    color = gItemKinds[*(s16 *)(state + 4)].color;
+    g = ((ItemStatePrefix *)state)->lighting[index];
+    color = gItemKinds[((ItemStatePrefix *)state)->kind].color;
     gSPSetLights2(g++, ((ItemLights *)state)->lights[((ItemLights *)state)->lightIndex]);
     gDPPipeSync(g++);
     gDPSetEnvColor(g++, color[0], color[1], color[2], color[3]);
@@ -2059,7 +2059,7 @@ void itemBuildLightingDisplayList(u8 *, s32);                  /* extern */
 /// \returns Newly allocated item state, owned by the item that receives it.
 /// \note Original decompilation identifier: \c func_8011386C (0x8011386C).
 u8 *itemAllocateState(void) {
-    s32 var_s0;
+    s32 bufferIndex;
     u8 *allocation;
     u8 *lightingStorage;
 
@@ -2072,11 +2072,11 @@ u8 *itemAllocateState(void) {
     lightingStorage = heapAllocLocal(&gGameHeap, 0x70, 0x2D4);
     ((ItemStatePrefix *)allocation)->lighting[0] = (Gfx *)lightingStorage;
     ((ItemStatePrefix *)allocation)->lighting[1] = (Gfx *)(lightingStorage + 0x38);
-    var_s0 = 0;
+    bufferIndex = 0;
     do {
-        itemBuildLightingDisplayList(allocation, var_s0);
-        var_s0 += 1;
-    } while (var_s0 != 2);
+        itemBuildLightingDisplayList(allocation, bufferIndex);
+        bufferIndex += 1;
+    } while (bufferIndex != 2);
     return allocation;
 }
 
@@ -2176,14 +2176,14 @@ extern s32 gLiveItemCount;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80113B78 (0x80113B78).
 void itemDestroy(u8 *item) {
-    u8 *sp24;
+    ItemStatePrefix *state;
 
     TRACE("destroy item. item rest = %d\n", gLiveItemCount - 1);
-    sp24 = ((RuntimeObjectPrefix *)item)->state.bytes;
-    if ((((ItemStatePrefix *)sp24)->owner != 0) || (((ItemStatePrefix *)sp24)->state == 1)) {
+    state = (ItemStatePrefix *)((RuntimeObjectPrefix *)item)->state.bytes;
+    if ((state->owner != 0) || (state->state == 1)) {
         itemTryRelease(item, 1);
     }
-    collisionGridUnregisterObject((s32)item, (s32 *)(sp24 + 0x50));
+    collisionGridUnregisterObject((s32)item, &state->collisionKey);
     searchTreeRemove((u8 *)&gItemSearchTree, item);
     objectRequestHierarchyDestruction(item);
     gLiveItemCount -= 1;

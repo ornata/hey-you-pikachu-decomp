@@ -1249,3 +1249,17 @@ The actor-script destruction path no longer passes an unused third object
 argument; the two-argument call preserves strict matching. Existing numeric
 response categories remain explicit pending complete semantic evidence for
 each category. All affected units preserve the object baseline.
+
+### Item collision-key and lighting ownership
+
+Item destruction and state release use typed collisionKey and lighting fields;
+lighting command construction reads the same prefix's kind and buffer views.
+Ghidra at 0x80113464 confirms collision unregistration at state 0x50, release
+of the lighting base at 0x60 and release of the full state allocation. The two
+lighting pointers are alternate views into one 0x70-byte allocation, not two
+independently owned allocations; the shared field documentation now states
+that ownership and a new offset check protects collisionKey. The allocator's
+lighting-buffer index is named explicitly. Full state allocation remains 0xF0;
+the 0x6C prefix must not determine allocation size. The later lighting and
+direction-animation views remain separate pending evidence of their complete
+relationship. All retained changes preserve strict matching.
