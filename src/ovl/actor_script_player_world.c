@@ -1,4 +1,5 @@
 #include "common.h"
+#include "player_control.h"
 #include "object_lookup.h"
 #include "player_types.h"
 #include "item_types.h"
@@ -112,7 +113,6 @@ s32 actorScriptSetPlayerInteractionMode(u8 *actor) {
     return 0;
 }
 
-s32 playerQueryInteractionMode();     /* extern */
 
 /// Query the current player interaction mode.
 /// \param actor Actor whose script VM receives an unspecified legacy result from the interaction-mode query.
@@ -127,7 +127,6 @@ s32 actorScriptQueryPlayerInteractionMode(u8 *actor) {
     return 0;
 }
 
-s32 playerIsPitchControlEnabled(u8 *); /* extern */
 /// Primary player control record and base of the player records with a 256-byte stride.
 /// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
 extern PlayerControlPrefix gPlayerState;
@@ -140,7 +139,7 @@ s32 actorScriptPushPlayerPitchControlEnabled(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushInteger(sp1C, playerIsPitchControlEnabled(&gPlayerState));
+    scriptVmPushInteger(sp1C, playerIsPitchControlEnabled((u8 *)&gPlayerState));
     return 0;
 }
 

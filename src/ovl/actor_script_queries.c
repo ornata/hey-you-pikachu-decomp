@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "player_control.h"
 #include "object_lookup.h"
 #include "actor_script.h"
 #include "item_types.h"
@@ -557,7 +558,6 @@ u16 playerGetBlockedInput(void) {
     return *(u16 *)(gPlayerControllerPort + 6) & 0xFFFF;
 }
 
-void playerSetCompanionControlMode(u8 *, s32, s32, s32); /* extern */
 
 /// Request a player interaction mode targeting an actor.
 /// \param actor Actor to use as the interaction target.
@@ -565,16 +565,15 @@ void playerSetCompanionControlMode(u8 *, s32, s32, s32); /* extern */
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80117B30 (0x80117B30).
 void playerSetActorInteractionMode(u8 *actor, s32 mode) {
-    playerSetCompanionControlMode(&gPlayerState, mode, 0, ((RuntimeObjectPrefix *)actor)->handle);
+    playerSetCompanionControlMode((u8 *)&gPlayerState, mode, 0, ((RuntimeObjectPrefix *)actor)->handle);
 }
 
-s32 playerGetCompanionControlMode(u8 *); /* extern */
 
 /// Query the player's current interaction mode.
-/// \returns Nothing through the declared interface.
+/// \returns The primary player companion-control selection.
 /// \note Original decompilation identifier: \c func_80117B64 (0x80117B64).
-void playerQueryInteractionMode(void) {
-    playerGetCompanionControlMode(&gPlayerState);
+s32 playerQueryInteractionMode(void) {
+    return playerGetCompanionControlMode((u8 *)&gPlayerState);
 }
 
 /// Partial path-object state exposing the borrowed, sentinel-terminated points.

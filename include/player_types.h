@@ -13,6 +13,17 @@ typedef enum CompanionControlMode {
     COMPANION_CONTROL_FOLLOW = 2
 } CompanionControlMode;
 
+/// Advance a player behavior mode for one input update.
+/// \param player Borrowed player record whose active mode is being serviced.
+/// \param controller Borrowed processed input sample, valid only for the call.
+/// \returns Nothing.
+typedef void (*PlayerModeUpdate)(u8 *player, u8 *controller);
+
+/// Complete a player behavior mode before switching to another mode.
+/// \param player Borrowed player record leaving the active mode.
+/// \returns Nothing.
+typedef void (*PlayerModeLeave)(u8 *player);
+
 /// Retained control hierarchy, interaction selection and camera-transition state.
 /// This block begins at offset 0x88 in the player record.
 typedef struct PlayerModeState {
@@ -26,8 +37,8 @@ typedef struct PlayerModeState {
     f32 cameraEndTarget[3];    ///< Requested look-at point at completion.
     f32 cameraRemaining;       ///< Remaining camera-transition time.
     f32 cameraDuration;        ///< Total requested camera-transition time.
-    void (*update)();          ///< Active mode update; called with player and processed input addresses.
-    void (*leave)();           ///< Optional mode completion callback, called with the player address.
+    PlayerModeUpdate update;  ///< Active mode update; must be callable while the mode is active.
+    PlayerModeLeave leave;    ///< Optional callback completing the mode before a transition.
 } PlayerModeState;
 
 /// Recovered prefix of the player control record, distinct from scene objects.
@@ -76,6 +87,8 @@ typedef struct PlayerControlPrefix {
     s32 unknown0FC;          ///< Profile word reset to zero; interpretation remains unresolved.
 } PlayerControlPrefix;
 
+typedef char PlayerModeStateSizeCheck[(sizeof(PlayerModeState) == 0x58) ? 1 : -1];
+
 typedef char PlayerControlPrefixSizeCheck[(sizeof(PlayerControlPrefix) == 0x100) ? 1 : -1];
 #define PLAYER_OFFSET(field) ((u32) & (((PlayerControlPrefix *)0)->field))
 typedef char PlayerPermissionsOffsetCheck[(PLAYER_OFFSET(permissions) == 0x24) ? 1 : -1];
@@ -83,6 +96,7 @@ typedef char PlayerCompanionModeOffsetCheck[(PLAYER_OFFSET(companionMode) == 0x4
 typedef char PlayerInteractionTargetOffsetCheck[(PLAYER_OFFSET(interactionTarget) == 0x5C) ? 1 : -1];
 typedef char PlayerModeStateOffsetCheck[(PLAYER_OFFSET(modeState) == 0x88) ? 1 : -1];
 typedef char PlayerModeCallbackOffsetCheck[(PLAYER_OFFSET(modeState.update) == 0xD8) ? 1 : -1];
+typedef char PlayerModeLeaveOffsetCheck[(PLAYER_OFFSET(modeState.leave) == 0xDC) ? 1 : -1];
 typedef char PlayerPointsOffsetCheck[(PLAYER_OFFSET(points) == 0xF0) ? 1 : -1];
 typedef char PlayerMovementClassOffsetCheck[(PLAYER_OFFSET(movementClass) == 0x78) ? 1 : -1];
 #undef PLAYER_OFFSET

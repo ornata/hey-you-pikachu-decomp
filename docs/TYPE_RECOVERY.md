@@ -402,3 +402,19 @@ reads. Its slot writer accepts ToolboxSlot pointers, and frame drawing retains
 object pointers until integer-address drawing calls. Ghidra at 0x8002F088 confirms
 kind/handle writes and removal from active item search. Both source units, and
 the subsequent typed slot-writer change, independently match all 483 objects.
+
+The player-control continuation gives mode update and leave callbacks explicit
+shared signatures. All mode table entries now agree on borrowed player and input
+pointers, including eight handlers formerly using integer address parameters.
+The input sample is temporary call storage, corroborated by Ghidra at 0x80112344.
+PlayerModeState size and both callback offsets are checked. Existing angle-read
+matching exceptions remain intact.
+
+`player_control.h` shares view-angle, companion selection and pitch-permission
+contracts across their producer and all declaring consumers. The primary-player
+query at 0x80117B64 formerly declared void despite its script caller consuming an
+integer. Linked assembly preserves the getter result in v0 through return, and
+an explicit integer return matches every object. This corrects the source
+contract without changing the ROM. Ghidra's inferred void return is weaker than
+the caller, getter definition and linked instruction evidence here. Each source
+unit passed the strict immutable-baseline comparator before the next changed.

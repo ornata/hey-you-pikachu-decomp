@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "player_control.h"
 #include "object_types.h"
 #include "text_image.h"
 #include "integer_animation_types.h"
@@ -586,8 +587,6 @@ extern s32 gHudStationaryLookActionAnimations[], gHudCompanionActionAnimations[]
 /// Sprite descriptors updated with the selected action-indicator animation.
 /// \note Original identifier: \c D_80089408 (0x80089408).
 extern DrawRecord gHudVerticalMotionSprites[], gHudHorizontalMotionSprites[], gHudActionIndicatorSprites[];
-s32 playerIsPitchControlEnabled(u8 *);
-s32 playerGetCompanionControlMode(u8 *);
 s32 playerCanToggleCompanionControl(void);
 s32 playerCanEnterStationaryLook(void);
 

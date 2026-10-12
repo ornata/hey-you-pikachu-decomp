@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "player_control.h"
 #include "object_lookup.h"
 #include "heap_alloc.h"
 #include "scene_types.h"
@@ -98,29 +99,29 @@ s32 (*gPlayerInteractionActionHandlers[10])() = {
 
 /* A player mode: per-frame handler (player, pad), leave handler, and the player flags it sets. */
 typedef struct {
-    /* 0x0 */ void (*update)();
-    /* 0x4 */ void (*leave)();
+    /* 0x0 */ PlayerModeUpdate update;
+    /* 0x4 */ PlayerModeLeave leave;
     /* 0x8 */ s32 flags;
 } PlayerMode; /* size 0xC */
 
-void playerUpdateNormalControl(s32, u8 *);
+void playerUpdateNormalControl(u8 *, u8 *);
 void playerUpdateStationaryLook(u8 *, u8 *);
 void playerUpdateMenuOnly(u8 *, u8 *);
 void playerFinishStun(u8 *);
 void playerUpdateStun(u8 *, u8 *);
-void playerUpdateBriefViewShake(u8 *, s32);
-void playerFinishHelpDisplay(s32);
+void playerUpdateBriefViewShake(u8 *, u8 *);
+void playerFinishHelpDisplay(u8 *);
 void playerUpdateHelpDisplay(u8 *, u8 *);
 void playerFinishTargetFocus(u8 *);
 void playerUpdateTargetFocus(u8 *, u8 *);
 void playerUpdateRestrictedMovement(u8 *, u8 *);
 void playerUpdateRestrictedControl(u8 *, u8 *);
 void playerUpdateViewOnlyControl(u8 *, u8 *);
-void playerUpdateMovementWithoutActions(s32, s32);
-void playerUpdateEmptyHandInteraction(u8 *, s32);
-void playerUpdateHeldItemInspection(u8 *, s32);
-void playerUpdateCameraTransition(u8 *, s32);
-void playerUnusedModeUpdate(s32, s32);
+void playerUpdateMovementWithoutActions(u8 *, u8 *);
+void playerUpdateEmptyHandInteraction(u8 *, u8 *);
+void playerUpdateHeldItemInspection(u8 *, u8 *);
+void playerUpdateCameraTransition(u8 *, u8 *);
+void playerUnusedModeUpdate(u8 *, u8 *);
 
 PlayerMode gPlayerModes[32] = {
     {playerUnusedModeUpdate, NULL, 0x08004003},
@@ -219,7 +220,6 @@ void playerSaveCompanionControlMode(u8 *player) {
     ((PlayerControlPrefix *)player)->savedCompanionMode = (s32)((PlayerControlPrefix *)player)->companionMode;
 }
 
-void playerSetCompanionControlMode(); /* extern */
 /// Restore the saved companion-control selection without a status message, if the mode is currently
 /// permitted.
 /// \param player Player record with a previously saved companion-control selection.
@@ -1029,7 +1029,7 @@ void playerChangeMode(s32 mode) {
     u8 *mc = gPlayerModeState; /* the player's mode block (player + 0x88) */
 
     if (((PlayerControlPrefix *)&gPlayerState)->modeState.leave != 0) {
-        ((PlayerModeState *)gPlayerModeState)->leave(&gPlayerState);
+        ((PlayerModeState *)gPlayerModeState)->leave((u8 *)&gPlayerState);
     }
     if (mode == 9) {
         controllerRequestRumblePattern(0, 1.5f, 0.2f, 0.15f);
@@ -1320,14 +1320,13 @@ s32 playerToggleCompanionControl(u8 *arg0, u8 *arg1); /* extern */
 s32 playerUpdateAreaEvents(u8 *arg0);           /* extern */
 s32 playerUpdateCompanionControl();             /* extern */
 /// Advance normal player movement, view control, interactions, and permitted menu requests.
-/// \param player Player record address represented as an integer.
+/// \param player Player record to update.
 /// \param controller Controller state address.
 /// \returns Nothing.
 ///
-/// \note Portability: the player address is passed as a 32-bit integer to pointer-taking helpers.
 /// \note A checked member-offset angle read preserves the original IDO floating-point operand order.
 /// \note Original decompilation identifier: \c func_801107F0 (0x801107F0).
-void playerUpdateNormalControl(s32 player, u8 *controller) {
+void playerUpdateNormalControl(u8 *player, u8 *controller) {
     f32 sp24;
     f32 sp20;
 
@@ -1341,7 +1340,6 @@ void playerUpdateNormalControl(s32 player, u8 *controller) {
 }
 
 f32 playerCalculatePitchInput(u8 *, u8 *, s32);
-void playerSetViewAngles(u8 *, f32, f32);
 /// Advance stationary view control and permitted interactions, returning to normal control when this mode
 /// ends.
 /// \param player Player record whose stationary view mode is updated.
@@ -1435,7 +1433,7 @@ void playerUpdateStun(u8 *player, u8 *controller) {
 /// \param unused Unused mode-update argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80110B04 (0x80110B04).
-void playerUpdateBriefViewShake(u8 *player, s32 unused) {
+void playerUpdateBriefViewShake(u8 *player, u8 *unused) {
     if (((PlayerControlPrefix *)player)->modeElapsed < 1.5f) {
         playerToggleViewShake(player);
     }
@@ -1592,7 +1590,7 @@ s32 playerPrepareInteractionDescription(InspectObject *player) {
 /// \param unused Unused mode-exit argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_801110D8 (0x801110D8).
-void playerFinishHelpDisplay(s32 unused) {
+void playerFinishHelpDisplay(u8 *unused) {
     cameraFadeOverlayToColor(0, 0, 0, 0, 0, 0.0f);
 }
 
@@ -1764,13 +1762,12 @@ void playerUpdateViewOnlyControl(u8 *player, u8 *pad) {
 }
 
 /// Advance player movement and view control while allowing inspection and menus.
-/// \param player Player record address represented as an integer.
-/// \param controller Controller state address represented as an integer.
+/// \param player Player record to update.
+/// \param controller Processed controller sample for the current update.
 /// \returns Nothing.
 ///
-/// \note Portability: the player address is passed as a 32-bit integer to pointer-taking helpers.
 /// \note Original decompilation identifier: \c func_801115C0 (0x801115C0).
-void playerUpdateMovementWithoutActions(s32 player, s32 controller) {
+void playerUpdateMovementWithoutActions(u8 *player, u8 *controller) {
     f32 sp24;
     f32 sp20;
 
@@ -1784,12 +1781,11 @@ void playerUpdateMovementWithoutActions(s32 player, s32 controller) {
 
 /// Service permitted interactions and menu requests while the player has no available held item.
 /// \param player Player record providing held-item selection and interaction permissions.
-/// \param controller Controller state address represented as an integer.
+/// \param controller Processed controller sample for the current update.
 /// \returns Nothing.
 ///
-/// \note Portability: the player address is passed as a 32-bit integer to pointer-taking helpers.
 /// \note Original decompilation identifier: \c func_80111638 (0x80111638).
-void playerUpdateEmptyHandInteraction(u8 *player, s32 controller) {
+void playerUpdateEmptyHandInteraction(u8 *player, u8 *controller) {
     if ((objectFindLiveByHandle(((PlayerControlPrefix *)player)->heldItemHandle) == 0) &&
         (playerTryOpenMenu(player, controller) == 0) && (playerTryActivateInteraction(player, controller) == 0)) {
         playerTryInspectTarget(player, controller);
@@ -1798,12 +1794,11 @@ void playerUpdateEmptyHandInteraction(u8 *player, s32 controller) {
 
 /// Service permitted inspection and menu requests while the player has an available held item.
 /// \param player Player record providing held-item selection and inspection permissions.
-/// \param controller Controller state address represented as an integer.
+/// \param controller Processed controller sample for the current update.
 /// \returns Nothing.
 ///
-/// \note Portability: the player address is passed as a 32-bit integer to pointer-taking helpers.
 /// \note Original decompilation identifier: \c func_80111690 (0x80111690).
-void playerUpdateHeldItemInspection(u8 *player, s32 controller) {
+void playerUpdateHeldItemInspection(u8 *player, u8 *controller) {
     if ((objectFindLiveByHandle(((PlayerControlPrefix *)player)->heldItemHandle) != 0) &&
         (playerTryOpenMenu(player, controller) == 0)) {
         playerTryInspectTarget(player, controller);
@@ -1822,7 +1817,7 @@ s32 vector3InterpolateSmoothTimed(u8 *, u8 *, f32 *, f32, f32); /* extern */
 /// interpolation declaration passes its duration as an integer to a helper defined with a floating-point
 /// parameter.
 /// \note Original decompilation identifier: \c func_801116D8 (0x801116D8).
-void playerUpdateCameraTransition(u8 *player, s32 unused) {
+void playerUpdateCameraTransition(u8 *player, u8 *unused) {
     f32 sp3C[3];
     f32 sp30[3];
 
@@ -1845,7 +1840,7 @@ void playerUpdateCameraTransition(u8 *player, s32 unused) {
 /// \param arg1 Unused callback argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80111778 (0x80111778).
-void playerUnusedModeUpdate(s32 arg0, s32 arg1) {
+void playerUnusedModeUpdate(u8 *arg0, u8 *arg1) {
 }
 
 s32 itemCanBePickedUp(u8 *, s32);
@@ -2280,7 +2275,7 @@ void playerUpdateInput(s32 idx) {
         ((PlayerControlPrefix *)p)->handledButtons =
             playerFilterControllerInput(((PlayerControlPrefix *)p)->keptButtons, &pad);
     }
-    ((PlayerControlPrefix *)p)->modeState.update(p, &pad);
+    ((PlayerControlPrefix *)p)->modeState.update(p, (u8 *)&pad);
     playerUpdateViewCamera(p);
 }
 
@@ -2332,7 +2327,7 @@ void playerSetWorldPosition(u8 *position) {
 /// value.
 /// \note Original decompilation identifier: \c func_801124C8 (0x801124C8).
 void playerSetViewYaw(f32 yaw) {
-    playerSetViewAngles(&gPlayerState, yaw, ((PlayerControlPrefix *)&gPlayerState)->pitch);
+    playerSetViewAngles((u8 *)&gPlayerState, yaw, ((PlayerControlPrefix *)&gPlayerState)->pitch);
 }
 
 /// Set the primary player view pitch when view-angle changes are enabled.
@@ -2344,7 +2339,7 @@ void playerSetViewYaw(f32 yaw) {
 /// value.
 /// \note Original decompilation identifier: \c func_801124F4 (0x801124F4).
 void playerSetViewPitch(f32 pitch) {
-    playerSetViewAngles(&gPlayerState, ((PlayerControlPrefix *)&gPlayerState)->yaw, pitch);
+    playerSetViewAngles((u8 *)&gPlayerState, ((PlayerControlPrefix *)&gPlayerState)->yaw, pitch);
 }
 
 
