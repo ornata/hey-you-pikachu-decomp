@@ -1,3 +1,4 @@
+#include "player_friendship.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "object_lookup.h"
@@ -214,7 +215,6 @@ s32 scriptCommandStopAction(u8 *object) {
     return 0;
 }
 
-s32 playerAwardFriendshipMilestone(PlayerControlPrefix *, s32); /* extern */
 /// Primary player control record and base of the player records with a 256-byte stride.
 /// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
 extern PlayerControlPrefix gPlayerState;

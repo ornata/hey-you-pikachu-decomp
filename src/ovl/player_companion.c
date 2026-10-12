@@ -1,3 +1,4 @@
+#include "player_friendship.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "player_control.h"
@@ -2373,14 +2374,13 @@ s32 playerGetFriendshipMilestoneFlag(s32 milestone) {
 }
 
 s32 progressSetValue(s32, s32); /* extern */
-s32 playerGetFriendshipMilestoneFlag(s32 arg0);         /* extern */
 /// Award an unearned friendship milestone and advance the player friendship level when appropriate.
 /// \param player Player record receiving the friendship award.
 /// \param milestone Friendship milestone index from zero through nineteen; zero records the initial meeting
 /// without increasing the friendship level.
 /// \returns The awarded progress flag identifier, or minus one if the milestone was already earned.
 /// \note Original decompilation identifier: \c func_801125AC (0x801125AC).
-s32 playerAwardFriendshipMilestone(u8 *player, s32 milestone) {
+s32 playerAwardFriendshipMilestone(PlayerControlPrefix *player, s32 milestone) {
     s32 sp1C;
     s32 milestoneFlag;
 
@@ -2390,11 +2390,11 @@ s32 playerAwardFriendshipMilestone(u8 *player, s32 milestone) {
         return -1;
     }
     progressSetValue(sp1C, 1);
-    TRACE("level %d -> %d\n", ((PlayerControlPrefix *)player)->friendshipMilestone, milestone);
+    TRACE("level %d -> %d\n", player->friendshipMilestone, milestone);
     if (milestone != 0) {
-        ((PlayerControlPrefix *)player)->friendshipLevel = (u8)(((PlayerControlPrefix *)player)->friendshipLevel + 1);
+        player->friendshipLevel = (u8)(player->friendshipLevel + 1);
     }
-    ((PlayerControlPrefix *)player)->friendshipMilestone = milestone;
+    player->friendshipMilestone = milestone;
     return sp1C;
 }
 
@@ -2402,7 +2402,7 @@ s32 playerAwardFriendshipMilestone(u8 *player, s32 milestone) {
 /// \param player Player record with a friendship level from zero through nineteen.
 /// \returns The persistent friendship title string, including display line breaks.
 /// \note Original decompilation identifier: \c func_80112620 (0x80112620).
-char *playerGetFriendshipTitle(u8 *player) {
+const char *playerGetFriendshipTitle(const PlayerControlPrefix *player) {
     char *titles[20] = {
         "You've\n      just met",        "Getting to\nknow PIKACHU",       "PIKACHU's\n        playmate",
         "PIKACHU's\n      companion",    "PIKACHU's\n          friend",    "PIKACHU's\n    roommate",
@@ -2413,7 +2413,7 @@ char *playerGetFriendshipTitle(u8 *player) {
         "Friends\n        forever!",     "Pi-pika\n  pika-Pikachu",
     };
 
-    return titles[((PlayerControlPrefix *)player)->friendshipLevel];
+    return titles[player->friendshipLevel];
 }
 
 

@@ -1,3 +1,5 @@
+#include "heap_diagnostics.h"
+#include "player_friendship.h"
 #include "backdrop_draw.h"
 #include "system_menu.h"
 #include "common.h"
@@ -1067,7 +1069,6 @@ void systemMenuExit(void) {
     objectSetHierarchyFlags(gSystemMenuInteractiveModel, 2);
 }
 
-s32 heapGetFreeSpace(u8 *, s32 *); /* extern */
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
@@ -1078,10 +1079,10 @@ extern HpHdr gGameHeap;
 void systemMenuAppendMemoryDetails(void) {
     char buf[80];
     s32 total;
-    s32 max;
+    u32 max;
 
     total = heapGetFreeSpace(&gGameHeap, &max);
-    sprintf(buf, "\nTotal\n%d\nMax\n%d\n", total, max);
+    sprintf(buf, "\nTotal\n%d\nMax\n%d\n", total, (s32)max);
     systemMenuAppendDetailText(buf);
 }
 
@@ -1123,7 +1124,6 @@ void systemMenuAppendDaysDetails(void) {
     systemMenuAppendDetailText(buf);
 }
 
-char *playerGetFriendshipTitle(u8 *);
 /// Separate symbol view of the primary player profile points balance.
 /// \note Original identifier: \c D_800EF790 (0x800EF790).
 extern s32 gPlayerProfilePoints;
@@ -1138,7 +1138,7 @@ extern s32 gPlayerVoiceMessageCount;
 void systemMenuAppendPlayerStatusDetails(void) {
     char buf[48];
 
-    sprintf(buf, "%s\n", playerGetFriendshipTitle((u8 *)&gPlayerState));
+    sprintf(buf, "%s\n", playerGetFriendshipTitle(&gPlayerState));
     systemMenuAppendDetailText((u8 *)buf);
     sprintf(buf, "@Y@Z\n");
     systemMenuAppendDetailText((u8 *)buf);
@@ -1299,7 +1299,6 @@ void systemMenuSelectEyeCatchGroup(s32 group) {
     systemMenuExit();
 }
 
-s32 playerAwardFriendshipMilestone(u8 *, s32); /* extern */
 
 /// Award an unearned friendship milestone and return home.
 /// \param milestone Friendship milestone index from zero through nineteen; an already earned milestone has no effect on friendship progress.

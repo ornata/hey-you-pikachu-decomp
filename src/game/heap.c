@@ -361,7 +361,7 @@ s32 heapValidateBlock(u8 *, char *, u8 *, s32); /* extern */
 /// \param largest Receives the largest free payload size in bytes when validation succeeds.
 /// \returns Total free payload bytes, or zero if block validation fails.
 /// \note Original decompilation identifier: \c func_800385D0 (0x800385D0).
-s32 heapGetFreeSpace(u8 *heap, u32 *largest) {
+s32 heapGetFreeSpace(HpHdr *heap, u32 *largest) {
     static char *name = "heapGetSize";
     char *diagnosticName;
     s32 freeBytes;
@@ -371,10 +371,10 @@ s32 heapGetFreeSpace(u8 *heap, u32 *largest) {
 
     *largest = 0;
     freeBytes = 0;
-    block = (u8 *)((HpHdr *)heap)->last;
+    block = (u8 *)heap->last;
     diagnosticName = name;
 loop_1:
-    if (heapValidateBlock(heap, diagnosticName, block, -1) == 0) {
+    if (heapValidateBlock((u8 *)heap, diagnosticName, block, -1) == 0) {
         return 0;
     }
     if (((HpBlk *)block)->tag == 0) {
@@ -388,7 +388,7 @@ loop_1:
         }
     }
     block = (u8 *)((HpBlk *)block)->next;
-    if (block == (u8 *)((HpHdr *)heap)->last) {
+    if (block == (u8 *)heap->last) {
         return freeBytes;
     }
     goto loop_1;
@@ -403,7 +403,7 @@ void heapDebugReportFreeSpace(HpHdr *heap, const char *label) {
     u32 max;
     s32 total;
 
-    total = heapGetFreeSpace((u8 *)heap, &max);
+    total = heapGetFreeSpace(heap, &max);
     if (heap != &gGameHeap) {
         TRACE(("heapRegion:%p ", heap));
     } else {

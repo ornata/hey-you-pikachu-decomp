@@ -705,3 +705,18 @@ the previous item. Ghidra at `0x8002F2F0` confirms the previous-handle lookup,
 destruction request and replacement slot operation. Existing validity and
 distinctness preconditions remain explicit. Every changed source unit passes
 strict comparison against the preserved 483-object baseline.
+
+### Heap measurements and player friendship progress
+
+`heap_diagnostics.h` now shares free-space measurement using the canonical
+`HpHdr *` and unsigned largest-block output. Validation failure can leave a
+partial maximum, which the contract documents. Ghidra at `0x800385D0` confirms
+the unsigned block-size comparison and initialized output. The menu uses a
+matching unsigned result, converting only for its retained signed display format.
+
+`player_friendship.h` shares milestone lookup, award and display-title interfaces.
+Awarding uses `PlayerControlPrefix *`; title lookup borrows a const player record
+and returns a borrowed persistent string. Ghidra at `0x801125AC` confirms the
+level byte at `0xF6`, milestone word at `0xF8`, and no repeated award. Both menu
+and script consumers share the declarations. All affected source units match
+the preserved 483-object baseline.
