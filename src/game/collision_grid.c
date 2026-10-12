@@ -1,3 +1,4 @@
+#include "object_types.h"
 #include "collision_registration.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -122,11 +123,11 @@ s32 collisionGridRegisterObject(u8 *object) {
     s32 key;
     s32 h;
 
-    if ((*(u16 *)(object + 0x36) & 0xF0) || *(f32 *)(object + 0x24) < 0.001f) {
+    if ((((RuntimeObjectPrefix *)object)->flags & 0xF0) || ((RuntimeObjectPrefix *)object)->radius < 0.001f) {
         return 0;
     }
-    h = (s32)((*(f32 *)(object + 0x44) + gCollisionGridAlignmentX) * 0.125f) * 0xAD +
-        (s32)((*(f32 *)(object + 0x4C) + gCollisionGridAlignmentZ) * 0.125f) * 0x8B + 0x1E240;
+    h = (s32)((((RuntimeObjectPrefix *)object)->worldPosition[0] + gCollisionGridAlignmentX) * 0.125f) * 0xAD +
+        (s32)((((RuntimeObjectPrefix *)object)->worldPosition[2] + gCollisionGridAlignmentZ) * 0.125f) * 0x8B + 0x1E240;
     if (h == 0) {
         key = 1;
     } else {

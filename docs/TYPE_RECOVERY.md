@@ -2003,3 +2003,16 @@ returns the keyed-pool spatial hash. Model-part release no longer passes an unus
 third argument. The contract requires removing a retained registration before
 replacement or object destruction. Every changed unit preserves all 483 objects
 and strict relocation addends.
+
+### Collision overlap query contract and matching boundary
+
+The shared collision interface now documents overlap results as borrowed objects,
+early termination on response exhaustion and shared keyed-pool iteration state.
+Both query callers use it. Registration uses shared radius, flags and world-position
+fields. Ghidra 0x8002CCF8 confirms overlap accesses and candidate traversal, and the
+keyed-pool provider establishes its mutable cursor. The overlap function itself
+retains raw object accesses: converting all fields failed the ROM gate and strict
+object comparison; a reduced conversion of radius/kind/flags also failed. Restoring
+those accesses restores all 483 objects. Next evidence needed is compiler-decision
+analysis of the changed function before choosing a minimal matching typed view.
+No comparison rule or baseline was changed.

@@ -1,3 +1,4 @@
+#include "collision_registration.h"
 #include "action_query.h"
 #include "object_bounds.h"
 #include "object_matrix_buffers.h"
@@ -54,7 +55,6 @@ typedef char FlipbookVerticesOffsetCheck[(((u32)&((Flipbook *)0)->vertices) == 0
 void messengerBeginHoming(u8 *);
 s32 messengerGetActorContactMode(u8 *);
 void messengerDeliver(u8 *, u8 *, u8 *, s32);
-u8 *collisionGridFindOverlap(u8 *);
 void messengerBeginDissipation(f32 *);
 /// Integer appearance animation used while a messenger dissipates.
 /// \note Original identifier: \c D_8009999C (0x8009999C).

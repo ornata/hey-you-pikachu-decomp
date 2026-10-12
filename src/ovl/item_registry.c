@@ -1979,7 +1979,6 @@ void itemBuildLightingDisplayList(u8 *state, s32 index) {
 void itemUnusedUpdateHook(void) {
 }
 
-u8 *collisionGridFindOverlap(u8 *);
 
 s32 itemCanBePickedUp(u8 *, s32);
 void itemUpdateModeAndOrientation(u8 *);

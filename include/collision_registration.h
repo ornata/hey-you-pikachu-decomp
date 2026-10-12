@@ -1,5 +1,5 @@
 /// \file
-/// Declares spatial collision-candidate registration and removal for runtime objects.
+/// Declares runtime-object collision-candidate registration, removal and overlap queries.
 
 #ifndef COLLISION_REGISTRATION_H
 #define COLLISION_REGISTRATION_H
@@ -19,5 +19,14 @@ s32 collisionGridRegisterObject(u8 *object);
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002CCB4 (0x8002CCB4).
 void collisionGridUnregisterObject(u8 *object, s32 *registrationKey);
+
+/// Find an overlapping registered candidate and request applicable collision responses.
+/// \param object Live object with initialized collision radius and world position.
+/// \returns Borrowed last overlapping candidate visited, or null when no eligible overlap is found.
+/// \pre The collision registry is initialized and its objects remain live during the query.
+/// \note The query may stop early when response capacity is exhausted.
+/// \note Queries share registry iteration state and must not nest.
+/// \note Original decompilation identifier: \c func_8002CCF8 (0x8002CCF8).
+u8 *collisionGridFindOverlap(u8 *object);
 
 #endif
