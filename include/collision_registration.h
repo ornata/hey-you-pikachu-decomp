@@ -29,4 +29,22 @@ void collisionGridUnregisterObject(u8 *object, s32 *registrationKey);
 /// \note Original decompilation identifier: \c func_8002CCF8 (0x8002CCF8).
 u8 *collisionGridFindOverlap(u8 *object);
 
+/// Initialize storage and alignment for the collision candidate registry.
+/// \returns Nothing.
+/// \pre The game heap is initialized and no live registry allocation is being replaced.
+/// \note Original decompilation identifier: \c func_8002CFA8 (0x8002CFA8).
+void collisionGridInitialize(void);
+
+/// Release the collision candidate registry's storage.
+/// \returns Nothing.
+/// \pre Object registrations have been retired and the registry will not be queried until reinitialized.
+/// \note Original decompilation identifier: \c func_8002CFE0 (0x8002CFE0).
+void collisionGridDestroy(void);
+
+/// Randomize the spatial-hash alignment for subsequent registrations and queries.
+/// \returns Nothing.
+/// \note Existing registration keys remain unchanged; object updates refresh registrations for the new alignment.
+/// \note Original decompilation identifier: \c func_8002CED0 (0x8002CED0).
+void collisionGridRandomizeAlignment(void);
+
 #endif

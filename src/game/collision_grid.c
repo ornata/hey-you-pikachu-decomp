@@ -1,3 +1,4 @@
+#include "keyed_pool.h"
 #include "object_types.h"
 #include "collision_registration.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -113,7 +114,6 @@ extern f32 gCollisionGridAlignmentX;
 /// Z-axis alignment offset used by collision spatial hashing.
 /// \note Original identifier: \c D_800F1B44 (0x800F1B44).
 extern f32 gCollisionGridAlignmentZ;
-s32 keyedPoolInsert(KeyedPool *, s32, u32);
 
 /// Register an eligible object for collision candidate queries.
 /// \param object Object with collision size, flags, and position to register.
@@ -139,8 +139,6 @@ s32 collisionGridRegisterObject(u8 *object) {
     return 0;
 }
 
-/// Compatibility declaration retaining the unused registration-key pointer argument.
-s32 keyedPoolRemoveKeyAndValue(KeyedPool *, s32, s32, s32 *); /* extern */
 
 /// Remove an object collision registration and clear its registration key.
 /// \param object Address of the registered object.
@@ -152,7 +150,7 @@ void collisionGridUnregisterObject(u8 *object, s32 *registrationKey) {
 
     registeredKey = *registrationKey;
     if (registeredKey != 0) {
-        keyedPoolRemoveKeyAndValue(&gCollisionCandidateRegistry, (s32)object, registeredKey, registrationKey);
+        keyedPoolRemoveKeyAndValue(&gCollisionCandidateRegistry, (s32)object, registeredKey);
         *registrationKey = 0;
     }
 }
@@ -162,10 +160,7 @@ void collisionGridUnregisterObject(u8 *object, s32 *registrationKey) {
 /// Z-axis alignment offset used by collision spatial hashing.
 /// \note Original identifier: \c D_800F1B44 (0x800F1B44).
 extern f32 gCollisionGridAlignmentX, gCollisionGridAlignmentZ;
-s32 collisionRequestImpulse(u8 *, u8 *, f32 *, f32);
 f32 vector3Length(f32 *);
-s32 keyedPoolIterateFirstForKey(void *, s32);
-s32 keyedPoolIterateNextForKey(void *, s32);
 
 /* Advance a spatial-hash bucket iterator to the next entry with the same key. */
 #define HASH_NEXT(var, table, key)                                                                                     \
@@ -233,7 +228,6 @@ void collisionGridRandomizeAlignment(void) {
     gCollisionGridAlignmentZ = (0.5 - randomNext() * 2.3283064365386963e-10) * 8.0;
 }
 
-void keyedPoolInitialize(KeyedPool *, u32); /* extern */
 
 /// Initialize the collision candidate registry.
 /// \returns Nothing.
@@ -244,7 +238,6 @@ void collisionGridInitialize(void) {
     gCollisionGridAlignmentZ = 0.0f;
 }
 
-void keyedPoolDestroy(KeyedPool *); /* extern */
 
 /// Release the collision candidate registry.
 /// \returns Nothing.

@@ -1,3 +1,4 @@
+#include "collision_registration.h"
 #include "object_billboard.h"
 #include "vector_direction.h"
 #include "camera_types.h"
@@ -1382,7 +1383,6 @@ void objectUpdateHierarchy(u8 *object) {
     }
 }
 
-void collisionGridRandomizeAlignment(void);
 void cameraBuildViewProjection(s32, u8 *, u8 *);
 /// Viewport storage prepared for object hierarchy updates.
 /// \note Original identifier: \c D_800AE430 (0x800AE430).
@@ -1544,7 +1544,6 @@ void objectResetTraversalTransformAndMovement(void) {
 
 void actorInitializePartRegistry();                            /* extern */
 void objectResponsesInitialize(s32, s32);            /* extern */
-void collisionGridInitialize();                            /* extern */
 
 /// Initialize the runtime object system and its supporting registries.
 /// \returns Nothing.
@@ -1564,7 +1563,6 @@ void objectSystemInitialize(void) {
 
 void actorDestroyPartIdMap();                  /* extern */
 void objectResponsesDestroy();                  /* extern */
-void collisionGridDestroy();                  /* extern */
 
 /// Destroy registered object hierarchies and release the runtime object system.
 /// \returns Nothing.

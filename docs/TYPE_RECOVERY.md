@@ -2016,3 +2016,15 @@ object comparison; a reduced conversion of radius/kind/flags also failed. Restor
 those accesses restores all 483 objects. Next evidence needed is compiler-decision
 analysis of the changed function before choosing a minimal matching typed view.
 No comparison rule or baseline was changed.
+
+### Collision registry lifecycle and keyed-pool interface
+
+The collision provider now includes the existing keyed-pool contract for allocation,
+iteration, insertion and removal. Its unused fourth removal argument and duplicate
+impulse declaration are removed; the actual three-argument pool interface matches.
+The shared collision header now declares initialization, destruction and alignment
+refresh for the object-system caller. Alignment changes do not rewrite retained
+keys; object updates unregister with stored keys before registering new positions.
+Ghidra 0x8002C8B0 was also checked against the private impulse provider; no new shared
+impulse API is introduced because it has no external source callers. All changed
+units preserve all 483 objects and strict relocation addends.
