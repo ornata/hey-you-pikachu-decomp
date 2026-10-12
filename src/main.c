@@ -1,3 +1,4 @@
+#include "system_menu.h"
 #include "heap_free.h"
 #include "heap_tail.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -881,7 +882,6 @@ void presentationDrawCollectionScreen(Gfx **);
 void eyeCatchDraw(Gfx **);
 void runtimeDrawPromptPanel(void);
 void toolboxDrawFrame(s32);
-void systemMenuDrawFrame(s32);
 void textWindowDrawFrame(void);
 void wholeMapDraw(Gfx **);
 void fontCacheReleaseUses(void);
@@ -946,7 +946,7 @@ void renderDrawCurrentMode(void) {
         messageBarUpdateAndDraw();
         break;
     case 2:
-        systemMenuDrawFrame((s32)&gRenderDisplayListCursor);
+        systemMenuDrawFrame(&gRenderDisplayListCursor);
         break;
     case 3:
         textWindowDrawFrame();

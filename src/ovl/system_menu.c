@@ -1,3 +1,4 @@
+#include "system_menu.h"
 #include "common.h"
 #include "audio_cue.h"
 #include "text_draw.h"
@@ -21,11 +22,13 @@ f64 gSystemMenuSavedAudioRate;
 /// \note Original identifier: \c D_801340E0 (0x801340E0).
 s32 gSystemMenuSoundPreviewHandle;
 s32 D_801340E0_0;
+struct MenuList;
+struct MenuItem;
 /// Owned menu navigation state with borrowed menu-tree links and retained model handles.
 typedef struct MenuState {
-    u8 *menu;
-    u8 *history[3];
-    u8 *selected;
+    struct MenuList *menu;       ///< Borrowed current menu list.
+    struct MenuList *history[3]; ///< Borrowed parent lists, retained while navigating.
+    struct MenuItem *selected;   ///< Borrowed item whose details and row are displayed.
     s32 depth;
     s32 phase;
     s32 model;
@@ -39,28 +42,37 @@ MenuState gSystemMenuState;
 
 /// Menu title, item chain and retained selection indices.
 typedef struct MenuList {
-    char *title;
-    struct MenuItem *head;
-    void (*action)();
-    s32 selectedIndex; ///< Index used to resolve the selected menu item.
-    s32 cursor;
-    s32 unk14;
-    s32 count;
-    s32 unk1C;
+    char *title;                           ///< Borrowed display title, retained while the list is displayed.
+    struct MenuItem *head;                 ///< Borrowed acyclic item chain.
+    void (*action)(struct MenuList *menu); ///< Optional list-specific drawing and input callback.
+    s32 selectedIndex;                     ///< Index used to resolve the selected menu item.
+    s32 confirmedIndex;       ///< Confirmed setting row, or a negative value when confirmation is not tracked.
+    s32 firstVisibleIndex;    ///< First item represented by the visible item rows.
+    s32 count;                ///< Number of entries in the item chain.
+    s32 suppressConfirmSound; ///< Nonzero when the list supplies its own selection feedback.
 } MenuList;
 /// Menu entry with optional selection action, detail callback and submenu.
 typedef struct MenuItem {
-    char *label;
-    void (*action)();
-    s32 value;
-    char *text;
-    void (*appendDetails)(); ///< Optional callback appending details for the selected item.
-    struct MenuItem *next;
-    MenuList *submenu;
+    char *label;                 ///< Borrowed row label, retained while the item is displayed.
+    void (*action)(s32 value);   ///< Optional selection callback receiving value.
+    s32 value;                   ///< Argument supplied to the selection callback.
+    char *text;                  ///< Optional borrowed detail message.
+    void (*appendDetails)(void); ///< Optional callback appending details for the selected item.
+    struct MenuItem *next;       ///< Next item in the containing list.
+    MenuList *submenu;           ///< Optional borrowed list entered on selection.
 } MenuItem;
 typedef char MenuStateSizeCheck[(sizeof(MenuState) == 0x30) ? 1 : -1];
 typedef char MenuListSizeCheck[(sizeof(MenuList) == 0x20) ? 1 : -1];
 typedef char MenuItemSizeCheck[(sizeof(MenuItem) == 0x1C) ? 1 : -1];
+#define MENU_OFFSET_CHECK(Name, Type, Field, Offset)                                                                   \
+    typedef char Name[(((u32) & ((Type *)0)->Field) == (Offset)) ? 1 : -1]
+MENU_OFFSET_CHECK(MenuStateSelectionOffsetCheck, MenuState, selected, 0x10);
+MENU_OFFSET_CHECK(MenuStateTimeOffsetCheck, MenuState, started, 0x28);
+MENU_OFFSET_CHECK(MenuListHeadOffsetCheck, MenuList, head, 4);
+MENU_OFFSET_CHECK(MenuListVisibleOffsetCheck, MenuList, firstVisibleIndex, 0x14);
+MENU_OFFSET_CHECK(MenuItemNextOffsetCheck, MenuItem, next, 0x14);
+MENU_OFFSET_CHECK(MenuItemSubmenuOffsetCheck, MenuItem, submenu, 0x18);
+#undef MENU_OFFSET_CHECK
 
 /// Interior view at offset 0xA0 of a rendering view, borrowed by the menu.
 /// This pair is not the complete view and cannot be allocated independently.
@@ -93,7 +105,7 @@ void systemMenuOpenWorldMap(s32 arg0);
 void systemMenuSetAudioOutputMode(s32 arg0);
 void systemMenuSetVerticalLookMode(s32 arg0);
 void systemMenuAppendSaveStatusDetails(void);
-void systemMenuRequestSaveTransfer(u32 arg0);
+void systemMenuRequestSaveTransfer(s32 arg0);
 void systemMenuSyncLookSettingSelection(s32 arg0);
 void systemMenuSyncSoundSettingSelection(s32 arg0);
 /// Linked secondary model template in the menu transition hierarchy.
@@ -398,10 +410,10 @@ extern MenuList gSystemMenuRootList;
 /// \note Original decompilation identifier: \c func_80119670 (0x80119670).
 void systemMenuPopHistory(void) {
     MenuState *state = &gSystemMenuState;
-    u8 **menu = &gSystemMenuState.menu;
+    MenuList **menu = &gSystemMenuState.menu;
     if (--state->depth < 0) {
         gSystemMenuHistoryDepth = 0;
-        *menu = (u8 *)&gSystemMenuRootList;
+        *menu = &gSystemMenuRootList;
         return;
     }
     *menu = state->history[gSystemMenuHistoryDepth];
@@ -411,15 +423,15 @@ void systemMenuPopHistory(void) {
 /// \param menu Live menu list with an acyclic item chain; its current selection is queried.
 /// \returns Borrowed selected menu item, valid while its list remains alive, or null when the cursor has no corresponding item.
 /// \note Original decompilation identifier: \c func_801196C8 (0x801196C8).
-u8 *systemMenuGetSelectedItem(u8 *menu) {
-    u8 *item = ((MenuList *)menu)->head;
+MenuItem *systemMenuGetSelectedItem(MenuList *menu) {
+    MenuItem *item = menu->head;
     s32 i = 0;
 
     while (item != NULL) {
-        if (i == ((MenuList *)menu)->selectedIndex) {
+        if (i == menu->selectedIndex) {
             return item;
         }
-        item = ((MenuItem *)item)->next;
+        item = item->next;
         i++;
     }
     return NULL;
@@ -429,19 +441,19 @@ u8 *systemMenuGetSelectedItem(u8 *menu) {
 /// \param menu Live menu list with an acyclic item chain and an item count that fits in signed 32 bits.
 /// \returns The number of menu items.
 /// \note Original decompilation identifier: \c func_80119708 (0x80119708).
-s32 systemMenuRefreshItemCount(u8 *menu) {
+s32 systemMenuRefreshItemCount(MenuList *menu) {
     s32 var_v1;
-    u8 *var_v0;
+    MenuItem *var_v0;
 
-    var_v0 = ((MenuList *)menu)->head;
+    var_v0 = menu->head;
     var_v1 = 0;
     if (var_v0 != NULL) {
         do {
-            var_v0 = ((MenuItem *)var_v0)->next;
+            var_v0 = var_v0->next;
             var_v1 += 1;
         } while (var_v0 != NULL);
     }
-    ((MenuList *)menu)->count = var_v1;
+    menu->count = var_v1;
     return var_v1;
 }
 
@@ -523,20 +535,20 @@ extern s32 gSystemMenuDetailTextLength;
 /// \param state Initialized menu state with a live, selected item whose detail text is requested.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80119908 (0x80119908).
-void systemMenuRefreshSelectedDetails(u8 *state) {
-    void (*appendDetails)();
-    u8 *detailText;
-    u8 *var_v0;
+void systemMenuRefreshSelectedDetails(MenuState *state) {
+    void (*appendDetails)(void);
+    char *detailText;
+    MenuItem *var_v0;
 
     gSystemMenuDetailTextLength = 0;
     gSystemMenuDetailText[0] = 0;
-    var_v0 = ((MenuState *)state)->selected;
-    detailText = ((MenuItem *)var_v0)->text;
+    var_v0 = state->selected;
+    detailText = var_v0->text;
     if (detailText != NULL) {
-        systemMenuAppendDetailText(detailText);
-        var_v0 = ((MenuState *)state)->selected;
+        systemMenuAppendDetailText((u8 *)detailText);
+        var_v0 = state->selected;
     }
-    appendDetails = ((MenuItem *)var_v0)->appendDetails;
+    appendDetails = var_v0->appendDetails;
     if (appendDetails != NULL) {
         appendDetails();
     }
@@ -561,7 +573,7 @@ void textDrawSetFont(s32);
 void systemMenuDrawDetails(Gfx **displayList) {
     u8 *(*row)[2];
     s32 y;
-    systemMenuRefreshSelectedDetails((u8 *)&gSystemMenuState);
+    systemMenuRefreshSelectedDetails(&gSystemMenuState);
     textDrawBegin(*displayList);
     textDrawSetFont(0);
     textDrawReset();
@@ -622,7 +634,7 @@ void systemMenuRefreshItemDisplay(MenuState *state) {
     textImageCreateFromText((s32)(u8 **)((u8 *)gSystemMenuRowImages + row * 8 + gSystemMenuRowImageBuffer * 4),
                             (s32)menu->title, (s32)font);
     item = menu->head;
-    for (i = 0; i < menu->unk14; i++) {
+    for (i = 0; i < menu->firstVisibleIndex; i++) {
         item = item->next;
     }
     for (i = row + 1; i != 6; i++) {
@@ -630,8 +642,8 @@ void systemMenuRefreshItemDisplay(MenuState *state) {
             textImageCreateFromText((s32)(u8 **)((u8 *)gSystemMenuRowImages + i * 8 + gSystemMenuRowImageBuffer * 4),
                                     (s32) "", (s32)font);
         } else {
-            if ((i - 1) + menu->unk14 == menu->selectedIndex) {
-                state->selected = (u8 *)item;
+            if ((i - 1) + menu->firstVisibleIndex == menu->selectedIndex) {
+                state->selected = item;
             }
             textImageCreateFromText((s32)(u8 **)((u8 *)gSystemMenuRowImages + i * 8 + gSystemMenuRowImageBuffer * 4),
                                     (s32)item->label, (s32)font);
@@ -649,7 +661,7 @@ void systemMenuDrawItemList(Gfx **displayList) {
     s32 index;
     s32 y;
     MenuList *menu;
-    void (*callback)(u8 *);
+    void (*callback)(MenuList *);
     menu = (MenuList *)gSystemMenuState.menu;
     textDrawBegin(*displayList);
     textDrawSetFont(0);
@@ -660,12 +672,12 @@ void systemMenuDrawItemList(Gfx **displayList) {
     textDrawSetArea(0, 0, 319, 239);
     y = 54;
     for (index = 0; index < 5; index++, y += 16) {
-        if (menu->unk14 + index == menu->selectedIndex) {
+        if (menu->firstVisibleIndex + index == menu->selectedIndex) {
             textDrawSetCursor(40, y);
             textDrawSetColor(0, 0, 0, 254);
             textDrawImageAtCursor((u8 *)gSystemMenuSelectedRowMarkerImage);
         }
-        if (menu->unk14 + index == menu->cursor) {
+        if (menu->firstVisibleIndex + index == menu->confirmedIndex) {
             textDrawSetCursor(40, y);
             textDrawSetColor(255, 0, 0, 254);
             textDrawImageAtCursor((u8 *)gSystemMenuSettingRowMarkerImage);
@@ -680,7 +692,7 @@ void systemMenuDrawItemList(Gfx **displayList) {
             textDrawSetColor(0, 0, 0, 254);
         } else {
             textDrawSetCursor(52, y);
-            if ((index - 1) + menu->unk14 == menu->cursor) {
+            if ((index - 1) + menu->firstVisibleIndex == menu->confirmedIndex) {
                 textDrawSetColor(255, 0, 0, 254);
             } else {
                 textDrawSetColor(0, 0, 0, 254);
@@ -689,9 +701,9 @@ void systemMenuDrawItemList(Gfx **displayList) {
         textDrawImageAtCursor(gSystemMenuRowImages[index][gSystemMenuRowImageBuffer]);
     }
     textDrawGetDisplayListCursor(displayList);
-    callback = (void (*)(u8 *))menu->action;
+    callback = menu->action;
     if (callback != NULL)
-        callback((u8 *)menu);
+        callback(menu);
 }
 
 /// Draw the brief system-menu closing effect while it remains active.
@@ -727,7 +739,7 @@ void cameraDrawSecondaryOverlay(s32);            /* extern */
 void renderDrawColorOverlayWithDepth(u8, u8, u8, u8); /* extern */
 void objectDrawGroup(s32);        /* extern */
 void objectDrawHierarchyGroup(s32, s32);   /* extern */
-void backdropDraw(s32);            /* extern */
+void backdropDraw(Gfx **);            /* extern */
 void systemMenuDrawDetails(Gfx **);            /* extern */
 void systemMenuDrawItemList(Gfx **);            /* extern */
 void systemMenuDrawClosingEffect(Gfx **);            /* extern */
@@ -745,17 +757,16 @@ extern s32 gSystemMenuTransitionModel;
 extern s32 gSystemMenuInteractiveModel;
 
 /// Draw the system menu and its surrounding scene for the current menu phase.
-/// \param displayList Address of the display-list cursor, represented as an integer; receives drawing commands and advances past them.
+/// \param displayList Writable display-list cursor with sufficient command capacity; advances past appended commands.
 /// \returns Nothing.
-/// \note Portability: The display-list cursor address is carried in an s32, requiring 32-bit pointers.
 /// \note Original decompilation identifier: \c func_80119FC4 (0x80119FC4).
-void systemMenuDrawFrame(s32 displayList) {
+void systemMenuDrawFrame(Gfx **displayList) {
     switch (gSystemMenuPhase) { /* irregular */
     case 1:
         backdropDraw(displayList);
         objectDrawHierarchyGroup(gSystemMenuInteractiveModel, 0x2000);
-        systemMenuDrawItemList((Gfx **)displayList);
-        systemMenuDrawDetails((Gfx **)displayList);
+        systemMenuDrawItemList(displayList);
+        systemMenuDrawDetails(displayList);
         break;
     case 2:
         backdropDraw(displayList);
@@ -798,7 +809,7 @@ void systemMenuHandleInput(void) {
 
     playerRecenterWalkingView((u8 *)&gPlayerState);
     playerUpdateViewCamera((u8 *)&gPlayerState);
-    menu = (MenuList **)&gSystemMenuState.menu;
+    menu = &gSystemMenuState.menu;
     pressed = &gControllerPrimaryRepeatedButtons;
     state = &gSystemMenuState;
     if ((gSystemMenuPhase == 1) && (*pressed != 0)) {
@@ -821,13 +832,13 @@ void systemMenuHandleInput(void) {
             }
         }
         if (*pressed & 0x8000) {
-            if ((*menu)->unk1C == 0) {
+            if ((*menu)->suppressConfirmSound == 0) {
                 audioPlaySoundEffect(0xC1);
             }
-            item = (MenuItem *)systemMenuGetSelectedItem((u8 *)*menu);
+            item = (MenuItem *)systemMenuGetSelectedItem(*menu);
             if (item != NULL) {
-                if ((*menu)->cursor >= 0) {
-                    (*menu)->cursor = (*menu)->selectedIndex;
+                if ((*menu)->confirmedIndex >= 0) {
+                    (*menu)->confirmedIndex = (*menu)->selectedIndex;
                 }
                 if (item->action != NULL) {
                     item->action(item->value);
@@ -835,7 +846,7 @@ void systemMenuHandleInput(void) {
                 if (item->submenu != NULL) {
                     systemMenuPushHistory();
                     *menu = item->submenu;
-                    systemMenuRefreshItemCount((u8 *)*menu);
+                    systemMenuRefreshItemCount(*menu);
                 }
             }
         } else if (*pressed & 0x4000) {
@@ -849,14 +860,14 @@ void systemMenuHandleInput(void) {
             }
             systemMenuPopHistory();
         }
-        if ((*menu)->selectedIndex < (*menu)->unk14) {
-            (*menu)->unk14 = (*menu)->selectedIndex;
+        if ((*menu)->selectedIndex < (*menu)->firstVisibleIndex) {
+            (*menu)->firstVisibleIndex = (*menu)->selectedIndex;
         }
-        if ((*menu)->selectedIndex >= (*menu)->unk14 + 4) {
-            (*menu)->unk14 = (*menu)->selectedIndex - 4;
+        if ((*menu)->selectedIndex >= (*menu)->firstVisibleIndex + 4) {
+            (*menu)->firstVisibleIndex = (*menu)->selectedIndex - 4;
         }
-        TRACE("current menu item = %s\n", ((MenuItem *)systemMenuGetSelectedItem((u8 *)*menu))->label);
-        TRACE("sel = %d, max = %d, from = %d\n", (*menu)->selectedIndex, (*menu)->count, (*menu)->unk14);
+        TRACE("current menu item = %s\n", ((MenuItem *)systemMenuGetSelectedItem(*menu))->label);
+        TRACE("sel = %d, max = %d, from = %d\n", (*menu)->selectedIndex, (*menu)->count, (*menu)->firstVisibleIndex);
         systemMenuRefreshItemDisplay(state);
     }
 }
@@ -1008,7 +1019,7 @@ void controllerConfigureStickButtons(s32 enabled, s32 upThreshold, s32 downThres
 void objectClearHierarchyFlags(s32, u16);                            /* extern */
 void runtimeRequestGameModeChange(s32);                                 /* extern */
 void systemMenuSetPhase(s32 arg0);                                   /* extern */
-void systemMenuRefreshSelectedDetails(u8 *arg0);                                   /* extern */
+void systemMenuRefreshSelectedDetails(MenuState *arg0);                                   /* extern */
 void systemMenuRefreshItemDisplay(MenuState *);                                /* extern */
 void systemMenuUpdateAnimation(void);                                       /* extern */
 /// Audio cue retained on menu entry for restoration.
@@ -1036,7 +1047,7 @@ void systemMenuEnter(void) {
     objectClearHierarchyFlags(gSystemMenuState.tertiary, 2);
     systemMenuUpdateAnimation();
     gSystemMenuState.depth = 0;
-    gSystemMenuState.menu = (u8 *)&gSystemMenuRootList;
+    gSystemMenuState.menu = &gSystemMenuRootList;
     systemMenuRefreshItemDisplay(&gSystemMenuState);
     systemMenuRefreshSelectedDetails(&gSystemMenuState);
     controllerConfigureStickButtons(1, 0x1E, 0x1E, 0x1E, 0x1E);
@@ -1490,7 +1501,7 @@ void progressLoadRecordFromEeprom(s32);  /* extern */
 /// \param operation Zero or one loads saved-game file one or two; two or three saves file one or two; four loads control data and five saves control data. Other values request no transfer.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8011B6F8 (0x8011B6F8).
-void systemMenuRequestSaveTransfer(u32 operation) {
+void systemMenuRequestSaveTransfer(s32 operation) {
     switch (operation) {
     case 0:
         progressLoadRecordFromEeprom(gRuntimeSaveParameters = 1);
@@ -1517,15 +1528,15 @@ void systemMenuRequestSaveTransfer(u32 operation) {
 void _bzero(void *, s32); /* extern */
 
 /// Create an empty menu item ready for configuration.
-/// \returns Owned, empty menu item address, represented as an integer; its strings and callbacks still need configuration.
-/// \note Portability: The allocated item address is carried in an s32, requiring 32-bit pointers.
+/// \pre The game heap has room for one menu item.
+/// \returns Owned, empty menu item; its strings and callbacks still need configuration.
 /// \note Original decompilation identifier: \c func_8011B7B8 (0x8011B7B8).
-s32 systemMenuCreateItem(void) {
-    s32 sp1C;
+MenuItem *systemMenuCreateItem(void) {
+    MenuItem *item;
 
-    sp1C = heapAllocLocal(&gGameHeap, 0x1C, 0x736);
-    _bzero((void *)sp1C, 0x1C);
-    return sp1C;
+    item = heapAllocLocal(&gGameHeap, 0x1C, 0x736);
+    _bzero(item, 0x1C);
+    return item;
 }
 
 /// Append a menu item after the existing items in a menu.
@@ -1533,19 +1544,19 @@ s32 systemMenuCreateItem(void) {
 /// \param item Item to append, distinct from existing items; its previous successor is discarded.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8011B7F8 (0x8011B7F8).
-void systemMenuAppendItem(u8 *menu, u8 *item) {
-    u8 *node;
+void systemMenuAppendItem(MenuList *menu, MenuItem *item) {
+    MenuItem *node;
 
-    if (((MenuList *)menu)->head == NULL) {
-        ((MenuList *)menu)->head = item;
+    if (menu->head == NULL) {
+        menu->head = item;
     } else {
-        node = ((MenuList *)menu)->head;
-        while (((MenuItem *)node)->next != NULL) {
-            node = ((MenuItem *)node)->next;
+        node = menu->head;
+        while (node->next != NULL) {
+            node = node->next;
         }
-        ((MenuItem *)node)->next = item;
+        node->next = item;
     }
-    ((MenuItem *)item)->next = NULL;
+    item->next = NULL;
 }
 
 /* .data 0x8012AD08..0x8012B020: nine debug submenus, each followed by an empty
@@ -1715,15 +1726,15 @@ MenuItem *systemMenuBuildMusicMenu(void) {
 
     list.head = NULL;
     list.selectedIndex = 0;
-    list.cursor = 0;
+    list.confirmedIndex = 0;
     for (i = 0; i < 45; i++) {
-        entry = (MenuItem *)systemMenuCreateItem();
+        entry = systemMenuCreateItem();
         entry->label = gSystemMenuMusicCueLabels[i];
         entry->value = i;
         entry->action = systemMenuPreviewMusic;
-        systemMenuAppendItem((u8 *)&list, (u8 *)entry);
+        systemMenuAppendItem(&list, entry);
     }
-    systemMenuRefreshItemCount((u8 *)&list);
+    systemMenuRefreshItemCount(&list);
     return &item;
 }
 
@@ -1778,13 +1789,13 @@ MenuItem *systemMenuBuildSoundMenu(void) {
     list.selectedIndex = 0;
     menu = &list;
     for (i = 0; i < 201; i++) {
-        entry = (MenuItem *)systemMenuCreateItem();
+        entry = systemMenuCreateItem();
         entry->label = labels[i];
         entry->value = i;
         entry->action = systemMenuPreviewSoundEffect;
-        systemMenuAppendItem((u8 *)menu, (u8 *)entry);
+        systemMenuAppendItem(menu, entry);
     }
-    systemMenuRefreshItemCount((u8 *)menu);
+    systemMenuRefreshItemCount(menu);
     return &item;
 }
 
@@ -1798,9 +1809,9 @@ MenuItem *systemMenuBuildExtrasMenu(void) {
 
     list.head = NULL;
     list.selectedIndex = 0;
-    systemMenuAppendItem((u8 *)&list, (u8 *)systemMenuBuildMusicMenu());
-    systemMenuAppendItem((u8 *)&list, (u8 *)systemMenuBuildSoundMenu());
-    systemMenuRefreshItemCount((u8 *)&list);
+    systemMenuAppendItem(&list, systemMenuBuildMusicMenu());
+    systemMenuAppendItem(&list, systemMenuBuildSoundMenu());
+    systemMenuRefreshItemCount(&list);
     return &item;
 }
 
@@ -1816,7 +1827,7 @@ void systemMenuSyncLookSettingSelection(s32 unused) {
     s32 lookSetting;
 
     lookSetting = progressGetValue(7);
-    gSystemMenuControlList.cursor = lookSetting;
+    gSystemMenuControlList.confirmedIndex = lookSetting;
     gSystemMenuControlList.selectedIndex = lookSetting;
 }
 
@@ -1832,7 +1843,7 @@ void systemMenuSyncSoundSettingSelection(s32 unused) {
     s32 soundSetting;
 
     soundSetting = progressGetValue(9);
-    gSystemMenuSoundList.cursor = soundSetting;
+    gSystemMenuSoundList.confirmedIndex = soundSetting;
     gSystemMenuSoundList.selectedIndex = soundSetting;
 }
 
@@ -1884,15 +1895,15 @@ void systemMenuInitialize(void) {
     model->transform[2] = model->transform[1] = model->transform[0] = 0.0f;
     scene = progressGetCurrentChapter();
     if (scene != 4 && scene != 6 && scene != 8 && gRuntimeCurrentArea >= 3 && progressGetValue(0x12) == 0) {
-        systemMenuAppendItem((u8 *)&gSystemMenuRootList, (u8 *)&gSystemMenuGoHomeEntry);
+        systemMenuAppendItem(&gSystemMenuRootList, &gSystemMenuGoHomeEntry);
     }
     if (progressGetValue(0xE)) {
-        systemMenuAppendItem((u8 *)&gSystemMenuRootList, (u8 *)systemMenuBuildExtrasMenu());
+        systemMenuAppendItem(&gSystemMenuRootList, systemMenuBuildExtrasMenu());
     }
-    gSystemMenuRootList.unk14 = 0;
+    gSystemMenuRootList.firstVisibleIndex = 0;
     gSystemMenuRootList.selectedIndex = 0;
-    systemMenuRefreshItemCount((u8 *)&gSystemMenuRootList);
-    gSystemMenuState.menu = (u8 *)&gSystemMenuRootList;
+    systemMenuRefreshItemCount(&gSystemMenuRootList);
+    gSystemMenuState.menu = &gSystemMenuRootList;
 }
 
 

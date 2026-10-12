@@ -7251,170 +7251,171 @@
         "heap_alloc.h",
         "heap_free.h",
         "heap_tail.h",
-        "runtime_program.h"
+        "runtime_program.h",
+        "system_menu.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "camera + 0xA8": [
-            "282:18"
-          ],
-          "camera + 0xAC": [
             "283:18"
           ],
-          "camera + 0xB0": [
+          "camera + 0xAC": [
             "284:18"
           ],
-          "camera + 0xB4": [
+          "camera + 0xB0": [
             "285:18"
           ],
+          "camera + 0xB4": [
+            "286:18"
+          ],
           "gCurrentAreaConfiguration + 0x54": [
-            "316:27",
-            "324:39"
-          ],
-          "gCurrentAreaConfiguration + 0x50": [
-            "316:72",
-            "319:79",
-            "320:79",
-            "323:84",
-            "324:84",
-            "325:84",
-            "326:84"
-          ],
-          "gCurrentAreaConfiguration + 0x60": [
-            "319:34",
-            "326:39"
-          ],
-          "gCurrentAreaConfiguration + 0x58": [
-            "320:34",
-            "323:39"
-          ],
-          "gCurrentAreaConfiguration + 0x48": [
-            "322:39"
-          ],
-          "gCurrentAreaConfiguration + 0x5C": [
+            "317:27",
             "325:39"
           ],
+          "gCurrentAreaConfiguration + 0x50": [
+            "317:72",
+            "320:79",
+            "321:79",
+            "324:84",
+            "325:84",
+            "326:84",
+            "327:84"
+          ],
+          "gCurrentAreaConfiguration + 0x60": [
+            "320:34",
+            "327:39"
+          ],
+          "gCurrentAreaConfiguration + 0x58": [
+            "321:34",
+            "324:39"
+          ],
+          "gCurrentAreaConfiguration + 0x48": [
+            "323:39"
+          ],
+          "gCurrentAreaConfiguration + 0x5C": [
+            "326:39"
+          ],
           "sp1C + 0": [
-            "346:45"
+            "347:45"
           ],
           "sp1C + 4": [
-            "346:65"
+            "347:65"
           ],
           "sp1C + 8": [
-            "346:85"
+            "347:85"
           ],
           "gPlayerYaw + 180": [
-            "348:56"
+            "349:56"
           ],
           "cameraState + 0": [
-            "421:14"
-          ],
-          "eye + 0": [
-            "421:42"
-          ],
-          "cameraState + 4": [
             "422:14"
           ],
-          "eye + 4": [
+          "eye + 0": [
             "422:42"
           ],
-          "cameraState + 8": [
+          "cameraState + 4": [
             "423:14"
           ],
-          "eye + 8": [
+          "eye + 4": [
             "423:42"
           ],
-          "cameraState + 0xC": [
+          "cameraState + 8": [
             "424:14"
           ],
-          "target + 0": [
-            "424:44"
+          "eye + 8": [
+            "424:42"
           ],
-          "cameraState + 0x10": [
+          "cameraState + 0xC": [
             "425:14"
           ],
-          "target + 4": [
-            "425:45"
+          "target + 0": [
+            "425:44"
           ],
-          "cameraState + 0x14": [
+          "cameraState + 0x10": [
             "426:14"
           ],
-          "target + 8": [
+          "target + 4": [
             "426:45"
           ],
-          "cameraState + 0x20": [
+          "cameraState + 0x14": [
             "427:14"
           ],
-          "cameraState + 0x18": [
+          "target + 8": [
+            "427:45"
+          ],
+          "cameraState + 0x20": [
             "428:14"
           ],
-          "cameraState + 0x1C": [
+          "cameraState + 0x18": [
             "429:14"
           ],
+          "cameraState + 0x1C": [
+            "430:14"
+          ],
           "cameraState + 0xD8": [
-            "553:34"
-          ],
-          "cameraState + 0xD4": [
-            "553:61"
-          ],
-          "cameraState + 0xDC": [
-            "553:90"
-          ],
-          "cameraState + 0xC0": [
             "554:34"
           ],
-          "cameraState + 0xBC": [
+          "cameraState + 0xD4": [
             "554:61"
           ],
-          "cameraState + 0xC4": [
+          "cameraState + 0xDC": [
             "554:90"
           ],
+          "cameraState + 0xC0": [
+            "555:34"
+          ],
+          "cameraState + 0xBC": [
+            "555:61"
+          ],
+          "cameraState + 0xC4": [
+            "555:90"
+          ],
           "cameraState + 0xCC": [
-            "556:38",
-            "562:42"
+            "557:38",
+            "563:42"
           ],
           "cameraState + 0xC8": [
-            "556:65"
+            "557:65"
           ],
           "cameraState + 0xD0": [
-            "556:94"
+            "557:94"
           ],
           "cameraState + 0xB8": [
-            "562:22"
+            "563:22"
           ],
           "sp20 + 0xC4": [
-            "678:51"
+            "679:51"
           ],
           "sp20 + 0xBC": [
-            "679:52"
+            "680:52"
           ],
           "sp20 + 0xB8": [
-            "705:52"
-          ],
-          "sp20 + 0xC0": [
             "706:52"
           ],
+          "sp20 + 0xC0": [
+            "707:52"
+          ],
           "sp20 + 0xCC": [
-            "707:39"
+            "708:39"
           ],
           "buffer + 1": [
-            "777:19"
+            "778:19"
           ],
           "gCurrentAreaConfiguration + 0x2C": [
-            "782:25"
+            "783:25"
           ],
           "sp1C + 0x80000000": [
-            "807:43"
+            "808:43"
           ],
           "gCurrentAreaConfiguration + 0x30": [
-            "821:38",
-            "822:77",
-            "825:81"
+            "822:38",
+            "823:77",
+            "826:81"
           ],
           "gCurrentAreaConfiguration + 0x34": [
-            "822:32",
-            "825:36"
+            "823:32",
+            "826:36"
           ],
           "point + 8": [
             "1053:30"
@@ -7439,52 +7440,52 @@
       "locations": {
         "raw_offset_candidates": {
           "control + 0": [
-            "524:14"
+            "523:14"
           ],
           "control + 0x10": [
-            "525:14"
+            "524:14"
           ],
           "control + 8": [
-            "526:14"
+            "525:14"
           ],
           "p + 8": [
-            "565:18",
-            "574:26",
-            "618:33"
+            "564:18",
+            "573:26",
+            "617:33"
           ],
           "p + 0x10": [
-            "569:22",
-            "572:28",
-            "603:24",
-            "620:18",
-            "645:14"
+            "568:22",
+            "571:28",
+            "602:24",
+            "619:18",
+            "644:14"
           ],
           "request + 4": [
-            "743:54"
+            "742:54"
           ],
           "request + 8": [
-            "744:24"
+            "743:24"
           ],
           "timer + 8": [
-            "748:18"
+            "747:18"
           ],
           "request + 0xC": [
-            "750:46"
+            "749:46"
           ],
           "timer + 0x10": [
-            "751:18"
+            "750:18"
           ],
           "timer + 0x18": [
-            "752:18"
+            "751:18"
           ],
           "request + 0x10": [
-            "753:46"
+            "752:46"
           ],
           "timer + 0x20": [
-            "754:18"
+            "753:18"
           ],
           "request + 0x14": [
-            "755:46"
+            "754:46"
           ]
         }
       }
@@ -8909,95 +8910,98 @@
         "heap_alloc.h",
         "player_types.h",
         "scene_types.h",
+        "system_menu.h",
         "text_draw.h"
       ],
-      "matching_exceptions": {},
+      "matching_exceptions": {
+        "systemMenuAppendDetailText": "The detail accumulator interface retains an unsigned byte-string view. Trials using const char *, including a local unsigned-byte view, changed allocated code. Isolate the compiler scheduling/register effect before changing the text interface; menu record and callback typing independently matches."
+      },
       "locations": {
         "raw_offset_candidates": {
           "depth + 1": [
-            "389:47"
+            "401:47"
           ],
           "row + 1": [
-            "628:14"
+            "640:14"
           ],
           "i - 1": [
-            "633:18"
+            "645:18"
           ],
           "index - 1": [
-            "683:18"
+            "695:18"
           ],
           "count - 1": [
-            "818:51"
+            "829:51"
           ],
-          "unk14 + 4": [
-            "855:48"
+          "firstVisibleIndex + 4": [
+            "866:48"
           ],
           "selectedIndex - 4": [
-            "856:39"
+            "867:51"
           ],
           "model + 0x18": [
-            "895:99",
-            "925:99"
+            "906:99",
+            "936:99"
           ],
           "model + 0x10": [
-            "896:37",
-            "926:37"
+            "907:37",
+            "937:37"
           ],
           "gPlayerYaw + 180": [
-            "896:72",
-            "926:72",
-            "963:50"
+            "907:72",
+            "937:72",
+            "974:50"
           ],
           "model + 0xC": [
-            "897:37",
-            "927:37"
+            "908:37",
+            "938:37"
           ],
           "secondary + 0x10": [
-            "898:37",
-            "928:37"
+            "909:37",
+            "939:37"
           ],
           "object + 0x18": [
-            "961:76"
+            "972:76"
           ],
           "object + 0xC": [
-            "962:14",
-            "965:14"
+            "973:14",
+            "976:14"
           ],
           "object + 0x10": [
-            "963:14",
-            "966:14"
+            "974:14",
+            "977:14"
           ],
           "object + 0x14": [
-            "964:14"
+            "975:14"
           ],
           "gCurrentAreaConfiguration + 0x64": [
-            "993:47"
+            "1004:47"
           ],
           "y + 3": [
-            "1159:14"
+            "1170:14"
           ],
           "x + 80": [
-            "1160:13"
+            "1171:13"
           ],
           "selected - 2": [
-            "1173:40"
+            "1184:40"
           ],
           "top - 3": [
-            "1173:54"
+            "1184:54"
           ],
           "selected + 2": [
-            "1173:63"
+            "1184:63"
           ],
           "bottom + 3": [
-            "1173:77"
+            "1184:77"
           ],
           "gCurrentAreaConfiguration + 0xC": [
-            "1865:32",
-            "1866:32",
-            "1867:32",
-            "1880:32",
-            "1881:32",
-            "1882:32"
+            "1876:32",
+            "1877:32",
+            "1878:32",
+            "1891:32",
+            "1892:32",
+            "1893:32"
           ]
         }
       }

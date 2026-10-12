@@ -656,3 +656,21 @@ actor model motion, particle effects and the word map. Their existing unused
 third arguments remain documented matching exceptions rather than being folded
 into the two-argument public contract. The unused controller declaration was removed.
 Every changed source unit passes strict comparison against all 483 baseline objects.
+
+### System-menu links and callback contracts
+
+The private `MenuState`, `MenuList` and `MenuItem` records now retain typed
+menu links, history, selected items and callback signatures. List callbacks
+receive their menu, selection callbacks receive the signed item value, and
+detail callbacks take no arguments. Allocation and linked-list operations
+use `MenuItem *` throughout. Menu construction, setting synchronization and
+drawing establish the confirmed-row index, first visible index and optional
+confirmation-sound suppression flag. Size checks are supplemented with offset
+checks for selection, timing, item links and submenu links. Ghidra at
+`0x8011B7F8` confirms the item-chain and successor offsets.
+
+`system_menu.h` shares the `Gfx **` drawing cursor contract with its caller;
+the unused controller declaration is removed. Private records stay local.
+Unsigned byte text accumulation remains a recorded matching constraint: both
+signed-character interface trials changed allocated code and were rejected.
+All retained changes match the preserved 483-object baseline.

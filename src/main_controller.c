@@ -269,7 +269,6 @@ void presentationDrawCollectionScreen(Gfx **);
 void eyeCatchDraw(Gfx **);
 void runtimeDrawPromptPanel(void);
 void toolboxDrawFrame(s32);
-void systemMenuDrawFrame(s32);
 void textWindowDrawFrame(void);
 void wholeMapDraw(Gfx **);
 void fontCacheReleaseUses(void);
