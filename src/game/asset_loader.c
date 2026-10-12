@@ -1,3 +1,4 @@
+#include "heap_tail.h"
 #include "common.h"
 #include "heap_alloc.h"
 #include "asset_loader.h"
@@ -48,11 +49,10 @@ void assetLoadAndPatchFromRom(s32 romAddress, u8 *destination, u8 *scratch, s32 
     assetDecompressAndPatch((u8 *)destination, (u8 *)scratch, encodedSize, outputSize, patchOffset, patchCount);
 }
 
-void *heapAllocTailLocal(void *, s32, s32);
 void heapFreeLocal(void *, void *);
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern u8 gGameHeap[];
+extern HpHdr gGameHeap;
 
 /// Allocate and load a corrected asset described by a ROM asset record.
 /// \param info Asset descriptor containing its ROM address, decoded range,
@@ -69,12 +69,12 @@ void *assetAllocateAndLoad(AssetDescriptor *info) {
     s32 size;
 
     size = info->decodedEnd - info->rangeBase;
-    result = heapAllocLocal(gGameHeap, size, 0x5D);
-    temporary = heapAllocTailLocal(gGameHeap, info->encodedEnd - info->rangeBase, 0x63);
+    result = heapAllocLocal(&gGameHeap, size, 0x5D);
+    temporary = heapAllocTailLocal(&gGameHeap, info->encodedEnd - info->rangeBase, 0x63);
     assetLoadAndPatchFromRom(info->romAddress, result, temporary, info->encodedEnd - info->rangeBase,
                              info->decodedEnd - info->rangeBase, info->patchStart - info->rangeBase,
                              info->patchCountValue - info->rangeBase);
-    heapFreeLocal(gGameHeap, temporary);
+    heapFreeLocal(&gGameHeap, temporary);
     return result;
 }
 
@@ -83,7 +83,7 @@ void *assetAllocateAndLoad(AssetDescriptor *info) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002D214 (0x8002D214).
 void assetFree(void *asset) {
-    heapFreeLocal(gGameHeap, (void *)asset);
+    heapFreeLocal(&gGameHeap, (void *)asset);
 }
 
 /// Provide an inactive asset operation.

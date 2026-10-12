@@ -1,3 +1,4 @@
+#include "heap_tail.h"
 /* harvested: matched m2c drafts; pending style pass */
 /**
  *  ─────────────────────────────────────────────────────────────────────────
@@ -305,7 +306,6 @@ extern u8 *gCurrentAreaConfiguration;
 /// Owned RAM allocation containing the current area rendering assets, or zero when unloaded.
 /// \note Original identifier: \c D_800ABDE0 (0x800ABDE0).
 extern s32 gAreaRenderAssets;
-void *heapAllocTailLocal(void *, s32, s32);
 void heapFreeLocal(u8 *, s32);
 /// Load the current area’s rendering assets for use by its scene.
 /// \returns Nothing; requires a loaded area configuration and no existing area asset allocation to replace.

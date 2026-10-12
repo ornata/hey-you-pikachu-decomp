@@ -1,3 +1,4 @@
+#include "heap_tail.h"
 /* Controller startup thread and event handlers, ROM 0x3250..0x3FD0.
  * Separate original object: pass-1 startup strings precede the event jump table.
  * Compiler pin: Makefile IDO 5.3, -O2 -mips2. */
@@ -177,7 +178,6 @@ extern u8 *gCurrentAreaConfiguration;
 /// Owned RAM allocation containing the current area rendering assets, or zero when unloaded.
 /// \note Original identifier: \c D_800ABDE0 (0x800ABDE0).
 extern s32 gAreaRenderAssets;
-void *heapAllocTailLocal(void *, s32, s32);
 void heapFreeLocal(u8 *, s32);
 
 /// Whether the next display-list setup must emit the one-time initial render state.

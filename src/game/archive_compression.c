@@ -1,3 +1,4 @@
+#include "heap_tail.h"
 #include "common.h"
 #include "heap_types.h"
 void romDmaReadBlocking(u32 romAddress, u8 *destination, s32 byteCount);
@@ -95,7 +96,6 @@ void archiveReadHeaderWordDiscard(s32 archiveAddress) {
 }
 
 #include "heap_types.h"
-void *heapAllocTailLocal(HpHdr *, u32, u16);
 s32 archiveGetMemberDecodedSize(s32 memberIndex, s32 *archiveAddress);
 s32 archiveDecompressMember(u8 *input, u8 *output);
 /// Load and decompress one archive member from ROM into a game-heap buffer.

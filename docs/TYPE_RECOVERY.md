@@ -627,3 +627,14 @@ N64 ABI value throughout stack operations. The interpreter comparison dispatch
 explicitly exposes its context as the byte view expected by the private operator
 helper, consistently with the other operator dispatches. These changes preserve
 all allocated object bytes, layouts, symbols and relocation addends.
+
+### Heap tail allocation contract
+
+`heap_tail.h` shares the tail allocator's `HpHdr *`, unsigned byte count,
+16-bit allocation label and owned payload result across its definition and all
+six declaring consumers. Ghidra at `0x800381D4` confirms the label store width
+and payload return. The asset loader now declares the shared heap as `HpHdr`
+rather than a byte array. Each source-unit change matches the preserved object
+baseline. The separate header avoids imposing the regular allocator prototype
+on consumers that still retain documented extra-argument matching constraints.
+Heap release declarations and their extra-argument call sites remain under audit.

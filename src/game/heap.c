@@ -1,3 +1,4 @@
+#include "heap_tail.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "heap_types.h"

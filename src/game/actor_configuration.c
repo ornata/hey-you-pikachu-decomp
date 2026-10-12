@@ -1,3 +1,4 @@
+#include "heap_tail.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "object_audio.h"
@@ -470,7 +471,6 @@ void actorAssetReadQueueDestroy(void) {
 /// Pending compressed actor asset storage address, or zero when none is retained.
 /// \note Original identifier: \c D_800B6C48 (0x800B6C48).
 extern s32 gActorCompressedAssetStaging;
-void *heapAllocTailLocal(HpHdr *, u32, u16);
 
 /// Reserve storage and request a read for an actor kind's asset if it is not already cached.
 /// Complete any outstanding compressed-asset load before requesting another uncached asset.

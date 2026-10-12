@@ -1,3 +1,4 @@
+#include "heap_tail.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "asset_loader.h"
@@ -285,7 +286,6 @@ s32 backdropLoadRomRange(s32 romStart, s32 romEnd) {
     return buf;
 }
 
-void *heapAllocTailLocal(HpHdr *, u32, u16);
 void heapFreeLocal(u8 *, s32);
 
 /// Load a backdrop asset into an allocated view buffer.
