@@ -1,3 +1,6 @@
+#include "item_kind.h"
+#include "item_types.h"
+#include "actor_script.h"
 #include "interaction.h"
 #include "vector3_types.h"
 #include "object_hierarchy_create.h"
@@ -142,12 +145,14 @@ void interactionMarkerInitialize(u8 *object) {
     ((RuntimeObjectPrefix *)object)->state.bytes = allocation;
 }
 
+/// Marker-mode animation programs, sound and target-relative placement factors.
 typedef struct SelectionStyle {
-    s32 tracks[6];
-    s32 sound;
-    f32 depth;
-    f32 height;
+    s32 tracks[6]; ///< Texture, opacity, depth, height, Z-scale and Y-scale program indices.
+    s32 sound;     ///< Sound played when this mode becomes active.
+    f32 depth;     ///< Fraction of target depth used for marker placement.
+    f32 height;    ///< Fraction of target height used for marker placement.
 } SelectionStyle;
+typedef char SelectionStyleSizeCheck[(sizeof(SelectionStyle) == 0x24) ? 1 : -1];
 /// Animation, sound and target-relative placement settings indexed by marker mode.
 /// \note Original identifier: \c D_80088CB0 (0x80088CB0).
 extern SelectionStyle gInteractionMarkerStyles[];
@@ -160,18 +165,12 @@ extern u8 *gOpacityAnimationPrograms[];
 /// Integer animation programs controlling marker position offsets and scale axes.
 /// \note Original identifier: \c D_8006B4EC (0x8006B4EC).
 extern u8 *gInteractionMarkerTransformPrograms[];
-typedef struct SpeciesInfo {
-    u8 pad0[0x34];
-    f32 depth;
-    f32 height;
-    u8 pad3C[0x38];
-} SpeciesInfo;
 /// Primary player control record and base of the player records with a 256-byte stride.
 /// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
 extern u8 gPlayerState[];
 /// Per-kind item motion, rendering, response and description configuration.
 /// \note Original identifier: \c D_80125A40 (0x80125A40).
-extern SpeciesInfo gItemKinds[];
+extern ItemKind gItemKinds[];
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
@@ -258,8 +257,8 @@ void interactionMarkerUpdate(u8 *object) {
         if (((RuntimeObjectPrefix *)target)->kind == 0x86) {
             species = ((RuntimeObjectPrefix *)target)->state.bytes;
             offset.vector.x = 0.0f;
-            offset.vector.y = gItemKinds[*(s16 *)(species + 4)].height * ((RuntimeObjectPrefix *)target)->scale[1];
-            offset.vector.z = gItemKinds[*(s16 *)(species + 4)].depth * ((RuntimeObjectPrefix *)target)->scale[2];
+            offset.vector.y = gItemKinds[((ItemStatePrefix *)species)->kind].radiusZ * ((RuntimeObjectPrefix *)target)->scale[1];
+            offset.vector.z = gItemKinds[((ItemStatePrefix *)species)->kind].radiusX * ((RuntimeObjectPrefix *)target)->scale[2];
         } else if (((RuntimeObjectPrefix *)target)->kind > 0 && ((RuntimeObjectPrefix *)target)->kind < 0x26) {
             actorConfigGetInteractionMarkerDimensions(((RuntimeObjectPrefix *)target)->kind, offset.components);
             unit = gInteractionMarkerActorTrackUnitScale;
@@ -303,7 +302,7 @@ s32 interactionMarkerPrepareDraw(u8 *object) {
     textureLoadForDraw(&gRenderDisplayListCursor, 5, ((InteractionMarkerState *)d)->tracks[0].value, d);
     gDPPipeSync(gRenderDisplayListCursor++);
     gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0xFF, 0xFF, 0xFF, ((InteractionMarkerState *)d)->tracks[1].value);
-    if (((InteractionMarkerState *)d)->targetHandle == *(s32 *)(*(u8 **)(gPikachuActor + 0x54) + 0x190)) {
+    if (((InteractionMarkerState *)d)->targetHandle == ((ActorScriptState *)*(u8 **)(gPikachuActor + 0x54))->heldItemHandle) {
         gDPSetRenderMode(gRenderDisplayListCursor++, 0x504240, 0);
     } else {
         gDPSetRenderMode(gRenderDisplayListCursor++, 0x504A50, 0);

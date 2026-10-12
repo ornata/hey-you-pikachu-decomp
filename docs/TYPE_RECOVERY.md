@@ -1594,3 +1594,14 @@ uses shared local/world positions, scales, kind, radius and private-state pointe
 Remaining item configuration and actor-selected-handle views still require their
 own producer/consumer audit. The marker unit preserves all 483 objects and strict
 relocation addends.
+
+### Marker item and held-item views
+
+The marker now reads the shared `ItemKind` table and `ItemStatePrefix.kind`,
+removing its duplicate 0x74-byte item configuration view. The original 0x34/0x38
+extent accesses remain `radiusX`/`radiusZ`; no new dimensional meaning is assigned
+to the shared fields. Ghidra 0x8001EAF4 confirms table stride and access offsets.
+Drawing reads the actor's checked `heldItemHandle` at 0x190. Using the runtime
+object's typed actor-state member changes generated code here; retaining the
+original byte-pointer state load with a typed actor-state consumer matches.
+The private marker style has documented fields and a checked 0x24-byte stride.
