@@ -4,6 +4,25 @@
 #include "heap_alloc.h"
 #include "object_types.h"
 
+/// Emit particles from a live emitter during its update.
+/// \param emitter Borrowed emitter object with initialized state.
+/// \returns Nothing.
+typedef void (*EffectEmissionCallback)(u8 *emitter);
+
+/// State owned by a timed, target-following effect emitter.
+/// Targets are handles rather than retained object pointers. The callback must remain callable until destruction.
+typedef struct EffectEmitterState {
+    f32 remaining; ///< Remaining lifetime; nonpositive initial values disable automatic expiry.
+    s32 targetHandle; ///< Object to follow, or an unavailable handle to use the fallback position.
+    s32 referenceHandle; ///< Object defining the offset direction when both targets are available.
+    f32 offset; ///< Signed horizontal distance from the target away from the reference.
+    f32 cooldown; ///< Seconds until the emission callback may emit again.
+    EffectEmissionCallback emit; ///< Optional per-update emission callback.
+} EffectEmitterState;
+
+typedef char EffectEmitterStateSizeCheck[(sizeof(EffectEmitterState) == 0x18) ? 1 : -1];
+typedef char EffectEmitterCallbackOffsetCheck[((u32)&((EffectEmitterState *)0)->emit == 0x14) ? 1 : -1];
+
 u32 randomBelow(s32);
 void objectRequestHierarchyDestruction(u8 *);
 u32 randomNext(void);
@@ -11,10 +30,10 @@ void animationIntegerTrackInitialize(u8 *, s32);
 /// Default opacity animation used when wisp state is initialized.
 /// \note Original identifier: \c D_8006B4C4 (0x8006B4C4).
 extern s32 gWispDefaultOpacityAnimation;
-s32 heapFreeLocal();
+void heapFreeLocal();
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern u8 gGameHeap[];
+extern HpHdr gGameHeap;
 void objectAdjustPitchAlongCameraView(u8 *);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
@@ -504,8 +523,8 @@ void ribbonEffectControllerDestroy(u8 *controller) {
     s32 sp1C;
 
     sp1C = *(s32 *)(controller + 0x54);
-    heapFreeLocal(gGameHeap, *(s32 *)(controller + 0x30), controller);
-    heapFreeLocal(gGameHeap, sp1C);
+    heapFreeLocal(&gGameHeap, *(s32 *)(controller + 0x30), controller);
+    heapFreeLocal(&gGameHeap, sp1C);
 }
 
 void vector3GetZAxisAnglesDegrees(f32 *, f32 *, f32 *);
@@ -793,8 +812,8 @@ void effectEmitterEmitBlackWisps(u8 *emitter) {
     u8 *obj;
 
     obj = *(u8 **)(emitter + 0x54);
-    if (*(f32 *)(obj + 0x10) == 0.0f) {
-        *(f32 *)(obj + 0x10) =
+    if (((EffectEmitterState *)obj)->cooldown == 0.0f) {
+        ((EffectEmitterState *)obj)->cooldown =
             (f32)(((f64)randomNext() * 2.3283064365386963e-10 * 0.10000000149011612) + 0.10000000149011612);
         wispEffectCreate(2, *(f32 *)(emitter + 0x44), *(f32 *)(emitter + 0x48), *(f32 *)(emitter + 0x4C));
     }
@@ -808,8 +827,8 @@ void effectEmitterEmitWhiteWisps(u8 *emitter) {
     u8 *obj;
 
     obj = *(u8 **)(emitter + 0x54);
-    if (*(f32 *)(obj + 0x10) == 0.0f) {
-        *(f32 *)(obj + 0x10) =
+    if (((EffectEmitterState *)obj)->cooldown == 0.0f) {
+        ((EffectEmitterState *)obj)->cooldown =
             (f32)(((f64)randomNext() * 2.3283064365386963e-10 * 0.6000000238418579) + 0.800000011920929);
         wispEffectCreate(5, *(f32 *)(emitter + 0x44), *(f32 *)(emitter + 0x48), *(f32 *)(emitter + 0x4C));
     }
@@ -824,8 +843,8 @@ void effectEmitterEmitScatteredParticles(u8 *emitter) {
     s32 n;
 
     v = *(u8 **)(emitter + 0x54);
-    if (*(f32 *)(v + 0x10) == 0.0f) {
-        *(f32 *)(v + 0x10) =
+    if (((EffectEmitterState *)v)->cooldown == 0.0f) {
+        ((EffectEmitterState *)v)->cooldown =
             (f64)randomNext() * 2.3283064365386963e-10 * 0.009999999776482582 + 0.009999999776482582;
         for (n = randomBelow(3); n != 0; n--) {
             wispEffectCreate(3, *(f32 *)(emitter + 0x44) + ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * 5.0,
@@ -853,9 +872,9 @@ void effectEmitterEmitAudibleBurst(u8 *emitter) {
     s32 i;
 
     state = *(u8 **)(emitter + 0x54);
-    if (*(f32 *)(state + 0x10) == 0.0f) {
+    if (((EffectEmitterState *)state)->cooldown == 0.0f) {
         n = randomBelow(3);
-        *(f32 *)(state + 0x10) =
+        ((EffectEmitterState *)state)->cooldown =
             (f64)randomNext() * 2.3283064365386963e-10 * 0.009999999776482582 + 0.009999999776482582;
         count = n + 1;
         sound = objectPlaySpatialSound(emitter, 0xA3, (f32)count * 20.0f, (f32)count * 100.0f);
@@ -897,8 +916,8 @@ void effectEmitterEmitColoredParticle(u8 *emitter, f32 intervalRange, f32 minimu
     f32 half;
 
     v = *(u8 **)(emitter + 0x54);
-    if (*(f32 *)(v + 0x10) == 0.0f) {
-        *(f32 *)(v + 0x10) = (f64)randomNext() * 2.3283064365386963e-10 * intervalRange + minimumInterval;
+    if (((EffectEmitterState *)v)->cooldown == 0.0f) {
+        ((EffectEmitterState *)v)->cooldown = (f64)randomNext() * 2.3283064365386963e-10 * intervalRange + minimumInterval;
         half = 0.5f * spread;
         e = wispEffectCreate(2, *(f32 *)(emitter + 0x44) + ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * spread,
                           *(f32 *)(emitter + 0x48) + (f64)randomNext() * 2.3283064365386963e-10 * half,
@@ -945,7 +964,7 @@ void effectEmitterEmitGrayParticles(u8 *emitter) {
     effectEmitterEmitColoredParticle(emitter, 0.15f, 0.04f, 1.0f, 0xE0, 0xE0, 0xE0);
 }
 
-void effectEmitterCreateWithCallback(f32 *, f32, s32, s32, f32, s32);
+void effectEmitterCreateWithCallback(f32 *, f32, s32, s32, f32, EffectEmissionCallback);
 void effectEmitterEmitAudibleBurst(u8 *);
 
 /// Create a target-following effect emitter with the selected visual style.
@@ -963,28 +982,28 @@ void effectEmitterEmitAudibleBurst(u8 *);
 void effectEmitterCreateForStyle(u32 kind, f32 *position, f32 lifetime, s32 targetHandle, s32 referenceHandle, f32 offset) {
     switch (kind) {
     case 0:
-        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, (s32)effectEmitterEmitBlackWisps);
+        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, effectEmitterEmitBlackWisps);
         break;
     case 1:
-        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, (s32)effectEmitterEmitPaleGreenParticles);
+        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, effectEmitterEmitPaleGreenParticles);
         break;
     case 2:
-        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, (s32)effectEmitterEmitYellowParticles);
+        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, effectEmitterEmitYellowParticles);
         break;
     case 3:
-        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, (s32)effectEmitterEmitPinkParticles);
+        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, effectEmitterEmitPinkParticles);
         break;
     case 4:
-        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, (s32)effectEmitterEmitGrayParticles);
+        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, effectEmitterEmitGrayParticles);
         break;
     case 5:
-        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, (s32)effectEmitterEmitWhiteWisps);
+        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, effectEmitterEmitWhiteWisps);
         break;
     case 6:
-        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, (s32)effectEmitterEmitScatteredParticles);
+        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, effectEmitterEmitScatteredParticles);
         break;
     case 7:
-        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, (s32)effectEmitterEmitAudibleBurst);
+        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, effectEmitterEmitAudibleBurst);
         break;
     }
 }
@@ -1000,23 +1019,22 @@ extern u8 gEffectEmitterObjectTemplate[];
 /// \param referenceHandle Object defining the horizontal offset direction, if available.
 /// \param offset Signed horizontal offset from the target, positive away from the reference object; used when
 /// both objects are available.
-/// \param callback Address of a void callback taking the live emitter pointer, or zero to disable emissions;
+/// \param callback Emission callback, or null to disable emissions;
 /// must remain callable throughout the emitter lifetime.
 /// \returns Nothing.
 ///
-/// \note Portability: the callback address is stored as a 32-bit integer and converted to a function pointer.
 /// \note Original decompilation identifier: \c func_800195B0 (0x800195B0).
-void effectEmitterCreateWithCallback(f32 *position, f32 lifetime, s32 targetHandle, s32 referenceHandle, f32 offset, s32 callback) {
+void effectEmitterCreateWithCallback(f32 *position, f32 lifetime, s32 targetHandle, s32 referenceHandle, f32 offset, EffectEmissionCallback callback) {
     u8 *o = objectCreateFromTemplate(gEffectEmitterObjectTemplate);
     u8 *v = *(u8 **)(o + 0x54);
     u8 *t;
 
-    *(f32 *)(v + 0) = lifetime;
-    *(s32 *)(v + 4) = targetHandle;
-    *(s32 *)(v + 8) = referenceHandle;
-    *(f32 *)(v + 0xC) = offset;
-    *(s32 *)(v + 0x14) = callback;
-    *(f32 *)(v + 0x10) = 0.0f;
+    ((EffectEmitterState *)v)->remaining = lifetime;
+    ((EffectEmitterState *)v)->targetHandle = targetHandle;
+    ((EffectEmitterState *)v)->referenceHandle = referenceHandle;
+    ((EffectEmitterState *)v)->offset = offset;
+    ((EffectEmitterState *)v)->emit = callback;
+    ((EffectEmitterState *)v)->cooldown = 0.0f;
     t = objectResolveAvailableHandle(targetHandle);
     if (t != NULL) {
         *(f32 *)(o + 0x18) = *(f32 *)(t + 0x44);
@@ -1041,13 +1059,13 @@ void _bzero(void *, s32); /* extern */
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001968C (0x8001968C).
 void effectEmitterInitialize(void *emitter) {
-    s32 sp1C;
-    s32 allocation;
+    u8 *sp1C;
+    u8 *allocation;
 
     allocation = heapAllocLocal(&gGameHeap, 0x18, 0x548);
     sp1C = allocation;
     _bzero((void *)allocation, 0x18);
-    ((RuntimeObjectPrefix *)emitter)->state.address = sp1C;
+    ((RuntimeObjectPrefix *)emitter)->state.bytes = sp1C;
 }
 
 f32 vector2NormalizeComponentsApprox(f32 *, f32 *);
@@ -1064,34 +1082,34 @@ void effectEmitterUpdate(u8 *emitter) {
     f32 dz;
 
     v = *(u8 **)(emitter + 0x54);
-    a = objectResolveAvailableHandle(*(s32 *)(v + 4));
+    a = objectResolveAvailableHandle(((EffectEmitterState *)v)->targetHandle);
     if (a != NULL) {
         *(f32 *)(emitter + 0x18) = *(f32 *)(a + 0x44);
         *(f32 *)(emitter + 0x1C) = *(f32 *)(a + 0x48);
         *(f32 *)(emitter + 0x20) = *(f32 *)(a + 0x4C);
-        b = objectResolveAvailableHandle(*(s32 *)(v + 8));
+        b = objectResolveAvailableHandle(((EffectEmitterState *)v)->referenceHandle);
         if (b != NULL) {
             dx = *(f32 *)(a + 0x44) - *(f32 *)(b + 0x44);
             dz = *(f32 *)(a + 0x4C) - *(f32 *)(b + 0x4C);
             vector2NormalizeComponentsApprox(&dx, &dz);
-            dx *= *(f32 *)(v + 0xC);
-            dz *= *(f32 *)(v + 0xC);
+            dx *= ((EffectEmitterState *)v)->offset;
+            dz *= ((EffectEmitterState *)v)->offset;
             *(f32 *)(emitter + 0x18) += dx;
             *(f32 *)(emitter + 0x20) += dz;
         }
     }
-    if (*(void (**)(u8 *))(v + 0x14) != NULL) {
-        (*(void (**)(u8 *))(v + 0x14))(emitter);
+    if (((EffectEmitterState *)v)->emit != NULL) {
+        (((EffectEmitterState *)v)->emit)(emitter);
     }
-    if (*(f32 *)(v + 0) > 0.0f) {
-        *(f32 *)(v + 0) -= gRuntimeFrameSeconds;
-        if (*(f32 *)(v + 0) <= 0.0f) {
+    if (((EffectEmitterState *)v)->remaining > 0.0f) {
+        ((EffectEmitterState *)v)->remaining -= gRuntimeFrameSeconds;
+        if (((EffectEmitterState *)v)->remaining <= 0.0f) {
             objectRequestHierarchyDestruction(emitter);
         }
     }
-    *(f32 *)(v + 0x10) -= gRuntimeFrameSeconds;
-    if (*(f32 *)(v + 0x10) < 0.0f) {
-        *(f32 *)(v + 0x10) = 0.0f;
+    ((EffectEmitterState *)v)->cooldown -= gRuntimeFrameSeconds;
+    if (((EffectEmitterState *)v)->cooldown < 0.0f) {
+        ((EffectEmitterState *)v)->cooldown = 0.0f;
     }
 }
 
@@ -1100,13 +1118,13 @@ void effectEmitterUpdate(u8 *emitter) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80019834 (0x80019834).
 void particleClusterRendererInitialize(void *renderer) {
-    s32 sp1C;
-    s32 allocation;
+    u8 *sp1C;
+    u8 *allocation;
 
     allocation = heapAllocLocal(&gGameHeap, 0xC, 0x59A);
     sp1C = allocation;
     animationIntegerTrackInitialize(allocation, gRibbonAndClusterFrameAnimation);
-    ((RuntimeObjectPrefix *)renderer)->state.address = sp1C;
+    ((RuntimeObjectPrefix *)renderer)->state.bytes = sp1C;
 }
 
 /// Release the resources owned by a particle cluster renderer.
@@ -1121,8 +1139,8 @@ void particleClusterRendererDestroy(u8 *renderer) {
     s32 sp1C;
 
     sp1C = *(s32 *)(renderer + 0x54);
-    heapFreeLocal(gGameHeap, *(s32 *)(renderer + 0x30), renderer);
-    heapFreeLocal(gGameHeap, sp1C);
+    heapFreeLocal(&gGameHeap, *(s32 *)(renderer + 0x30), renderer);
+    heapFreeLocal(&gGameHeap, sp1C);
 }
 
 /// Advance a particle cluster's animated appearance and keep it aligned with the view.
@@ -1130,10 +1148,10 @@ void particleClusterRendererDestroy(u8 *renderer) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800198C8 (0x800198C8).
 void particleClusterRendererUpdate(u8 *renderer) {
-    s32 t;
+    void *t;
     s32 sp18[1];
 
-    t = *(s32 *)(renderer + 0x54);
+    t = ((RuntimeObjectPrefix *)renderer)->state.pointer;
     animationIntegerTrackEvaluate(t, sp18, gRuntimeFrameSeconds);
     objectAdjustPitchAlongCameraView(renderer);
 }
@@ -1295,13 +1313,13 @@ u8 *fallingParticleCreate(s32 kind, s32 motionStyle, f32 *position, f32 *velocit
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80019DA0 (0x80019DA0).
 void fallingParticleInitialize(void *particle) {
-    s32 sp1C;
-    s32 allocation;
+    u8 *sp1C;
+    u8 *allocation;
 
     allocation = heapAllocLocal(&gGameHeap, 0x24, 0x675);
     sp1C = allocation;
     _bzero((void *)allocation, 0x24);
-    ((RuntimeObjectPrefix *)particle)->state.address = sp1C;
+    ((RuntimeObjectPrefix *)particle)->state.bytes = sp1C;
 }
 
 f32 mathCosDegrees(f32);
@@ -1400,13 +1418,13 @@ void fallingParticleUpdate(u8 *particle) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001A228 (0x8001A228).
 void convergingParticleEffectInitialize(void *effect) {
-    s32 sp1C;
-    s32 allocation;
+    u8 *sp1C;
+    u8 *allocation;
 
     allocation = heapAllocLocal(&gGameHeap, 0x2C, 0x6BB);
     sp1C = allocation;
     _bzero((void *)allocation, 0x2C);
-    ((RuntimeObjectPrefix *)effect)->state.address = sp1C;
+    ((RuntimeObjectPrefix *)effect)->state.bytes = sp1C;
 }
 
 /// Release the resources owned by a converging particle effect.
@@ -1420,8 +1438,8 @@ void convergingParticleEffectDestroy(u8 *effect) {
     u8 *obj;
 
     obj = *(u8 **)(effect + 0x54);
-    heapFreeLocal(gGameHeap, *(u8 **)obj, obj);
-    heapFreeLocal(gGameHeap, obj);
+    heapFreeLocal(&gGameHeap, *(u8 **)obj, obj);
+    heapFreeLocal(&gGameHeap, obj);
 }
 
 void vector3FromPitchYawDegrees(f32, f32, f32 *);
@@ -1627,13 +1645,13 @@ u8 *convergingParticleEffectCreate(s32 targetId, f32 lifetime, s32 count, s32 st
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001AB6C (0x8001AB6C).
 void flickeringEffectInitialize(void *effect) {
-    s32 sp1C;
-    s32 allocation;
+    u8 *sp1C;
+    u8 *allocation;
 
     allocation = heapAllocLocal(&gGameHeap, 0xC, 0x7A2);
     sp1C = allocation;
     _bzero((void *)allocation, 0xC);
-    ((RuntimeObjectPrefix *)effect)->state.address = sp1C;
+    ((RuntimeObjectPrefix *)effect)->state.bytes = sp1C;
 }
 
 /// Release the resources owned by a flickering effect.
@@ -1647,8 +1665,8 @@ void flickeringEffectDestroy(u8 *effect) {
     u8 *obj;
 
     obj = *(u8 **)(effect + 0x54);
-    heapFreeLocal(gGameHeap, *(u8 **)obj, obj);
-    heapFreeLocal(gGameHeap, obj);
+    heapFreeLocal(&gGameHeap, *(u8 **)obj, obj);
+    heapFreeLocal(&gGameHeap, obj);
 }
 
 /// Update a flickering effect as it follows its target, ending it when its lifetime or target ends.
@@ -1796,13 +1814,13 @@ u8 *flickeringEffectCreate(s32 targetId, f32 duration, s32 count) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001B3A0 (0x8001B3A0).
 void animatedRadialEffectInitialize(void *effect) {
-    s32 sp1C;
-    s32 allocation;
+    u8 *sp1C;
+    u8 *allocation;
 
     allocation = heapAllocLocal(&gGameHeap, 0x24, 0x84F);
     sp1C = allocation;
     _bzero((void *)allocation, 0x24);
-    ((RuntimeObjectPrefix *)effect)->state.address = sp1C;
+    ((RuntimeObjectPrefix *)effect)->state.bytes = sp1C;
 }
 
 /// Release the resources owned by an animated radial effect.
@@ -1816,8 +1834,8 @@ void animatedRadialEffectDestroy(u8 *effect) {
     u8 *obj;
 
     obj = *(u8 **)(effect + 0x54);
-    heapFreeLocal(gGameHeap, *(u8 **)obj, obj);
-    heapFreeLocal(gGameHeap, obj);
+    heapFreeLocal(&gGameHeap, *(u8 **)obj, obj);
+    heapFreeLocal(&gGameHeap, obj);
 }
 
 
@@ -1983,13 +2001,13 @@ u8 *expandingOrangeEffectCreate(s32 targetHandle, f32 lifetime) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001BA6C (0x8001BA6C).
 void expandingOrangeEffectInitialize(void *effect) {
-    s32 sp1C;
-    s32 allocation;
+    u8 *sp1C;
+    u8 *allocation;
 
     allocation = heapAllocLocal(&gGameHeap, 0x18, 0x923);
     sp1C = allocation;
     _bzero((void *)allocation, 0x18);
-    ((RuntimeObjectPrefix *)effect)->state.address = sp1C;
+    ((RuntimeObjectPrefix *)effect)->state.bytes = sp1C;
 }
 
 /// Advance an expanding orange effect and follow its target until its lifetime expires.
@@ -2052,13 +2070,13 @@ s32 expandingOrangeEffectPrepareDraw(u8 *effect) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001BD04 (0x8001BD04).
 void orangePulseEmitterInitialize(void *emitter) {
-    s32 sp1C;
-    s32 allocation;
+    u8 *sp1C;
+    u8 *allocation;
 
     allocation = heapAllocLocal(&gGameHeap, 0xC, 0x95E);
     sp1C = allocation;
     _bzero((void *)allocation, 0xC);
-    ((RuntimeObjectPrefix *)emitter)->state.address = sp1C;
+    ((RuntimeObjectPrefix *)emitter)->state.bytes = sp1C;
 }
 
 

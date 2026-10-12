@@ -418,3 +418,19 @@ an explicit integer return matches every object. This corrects the source
 contract without changing the ROM. Ghidra's inferred void return is weaker than
 the caller, getter definition and linked instruction evidence here. Each source
 unit passed the strict immutable-baseline comparator before the next changed.
+
+The particle-effects continuation recovers the private 0x18-byte timed emitter
+state and its void emission callback. Initialization, creation, target following,
+lifetime expiry and cooldown consumers establish all six fields; Ghidra at
+0x8001968C and 0x800196D8 corroborates allocation and callback invocation. The
+callback remains callable for the emitter lifetime, and target references remain
+handles resolved per update. Callback addresses no longer travel through integer
+parameters or fields. The record stays private because no external consumer
+requires its layout.
+
+Effect allocations retain pointer locals and use the established HpHdr heap
+record. The deallocator return now agrees with its void definition; unprototyped
+calls still preserve documented unused trailing arguments. This is an explicit
+remaining ABI exception, not a claim that deallocation interfaces are finished.
+The cluster animation evaluator receives a pointer rather than an integer. Every
+step matches the immutable 483-object baseline.
