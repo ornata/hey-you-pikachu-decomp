@@ -1,3 +1,4 @@
+#include "actor_sound.h"
 #include "actor_rotation.h"
 /// \file
 /// Native script commands for messages, items, and microphone configuration.
@@ -859,7 +860,6 @@ s32 actorScriptPlayCue(u8 *actor) {
     return 0;
 }
 
-s32 actorPlayTrackedSound(u8 *, s32); /* extern */
 
 /// Play a spatial sound for the actor and track its playback.
 /// \param actor Actor whose script VM supplies an actor sound kind and receives the playback handle, or zero if playback could not start.

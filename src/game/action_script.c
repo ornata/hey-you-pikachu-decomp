@@ -1,3 +1,4 @@
+#include "actor_sound.h"
 /// \file
 /// Timed action sequencing beneath actor behavior programs.
 /// \ingroup ActorScriptVm
@@ -11,7 +12,6 @@
 void actionScriptStart(u8 *, s32);
 void actionCancelPendingRequest(u8 *);
 void actionRequestLoopExit(u8 *);
-s32 actorPlayTrackedSound(s32, s32);
 /// Action-script command stream addresses indexed by script identifier.
 /// \note Original identifier: \c D_80071D00 (0x80071D00).
 extern s32 gActionScriptPrograms[];
@@ -98,7 +98,7 @@ s32 actionScriptCommandPlaySound(u8 *object, ActorScriptState *state, ActionScri
     ActionScriptCommand *command;
     command = script->command;
     if (script->command->args[0] > 0) {
-        script->soundHandle = actorPlayTrackedSound((s32)object, command->args[0]);
+        script->soundHandle = actorPlayTrackedSound(object, command->args[0]);
     }
     return 1;
 }

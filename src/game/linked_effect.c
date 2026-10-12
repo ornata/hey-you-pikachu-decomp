@@ -1,3 +1,4 @@
+#include "actor_sound.h"
 #include "object_matrix_buffers.h"
 #include "object_movement.h"
 #include "object_create.h"
@@ -206,7 +207,6 @@ s32 linkedEffectPrepareDraw(u8 *object) {
 }
 
 f32 actorAdjustActionMeter(u8 *, f32);
-s32 actorPlayTrackedSound(u8 *, s32);
 /// Borrowed reference to the active Pikachu actor created for the current area.
 /// \note Original identifier: \c D_800760A8 (0x800760A8).
 extern u8 *gPikachuActor;

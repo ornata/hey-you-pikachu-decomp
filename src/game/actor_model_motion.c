@@ -1,3 +1,4 @@
+#include "actor_sound.h"
 #include "actor_color.h"
 #include "color_transition.h"
 #include "action_query.h"
@@ -75,21 +76,21 @@ s32 actorPlayTrackedSound(u8 *actor, s32 kind) {
     v = *(u8 **)(actor + 0x54);
     h = objectPlaySpatialSound(actor, kind, 20.0f, 200.0f);
     if (h != 0) {
-        for (i = 0, k = *(s32 *)(v + 0x188); i < 4; i++) {
-            if (audioCountPlayback(((s32 *)(v + 0x178))[k]) == 0) {
+        for (i = 0, k = ((ActorScriptState *)v)->nextSoundSlot; i < 4; i++) {
+            if (audioCountPlayback(((ActorScriptState *)v)->soundHandles[k]) == 0) {
                 break;
             }
             k++;
             k %= 4;
         }
-        ((s32 *)(v + 0x178))[k] = h;
-        *(s32 *)(v + 0x188) = (k + 1) % 4;
+        ((ActorScriptState *)v)->soundHandles[k] = h;
+        ((ActorScriptState *)v)->nextSoundSlot = (k + 1) % 4;
     }
     if (*(u16 *)(actor + 0x34) == 0x25 && kind >= 30 && kind < 125) {
-        if (audioCountPlayback(*(s32 *)(v + 0x18C)) != 0) {
-            audioStopPlayback(*(s32 *)(v + 0x18C), 0.0);
+        if (audioCountPlayback(((ActorScriptState *)v)->trackedVoice) != 0) {
+            audioStopPlayback(((ActorScriptState *)v)->trackedVoice, 0.0);
         }
-        *(s32 *)(v + 0x18C) = h;
+        ((ActorScriptState *)v)->trackedVoice = h;
     }
     return h;
 }
@@ -226,7 +227,7 @@ void actorInitializeModelState(u8 *actor) {
     _bzero(allocation + 0x2B4, 0x3C);
     ((ActorScriptState *)allocation)->airborne = 0;
     ((ActorScriptState *)allocation)->nextSoundSlot = 0;
-    _bzero(allocation + 0x178, 0x10);
+    _bzero(((ActorScriptState *)allocation)->soundHandles, 0x10);
     ((ActorScriptState *)allocation)->trackedVoice = 0;
     ((ActorScriptState *)allocation)->actionScriptId = -1;
     ((ActorScriptState *)allocation)->searchItemKind = 0x43;
@@ -404,7 +405,7 @@ void actorUpdateModel(u8 *actor) {
     collisionGridUnregisterObject(actor, obj + 0x210);
     actionScriptUpdate(actor);
     actionUpdatePlayback(actor);
-    actorUpdateTrackedSoundSpatialization(actor + 0x44, (s32 *)(obj + 0x178));
+    actorUpdateTrackedSoundSpatialization(actor + 0x44, ((ActorScriptState *)obj)->soundHandles);
     if (!(actionGetAttributes(actor) & 0x20000000) && !(*(u16 *)(obj + 0x1E8) & 8)) {
         actorUpdateGroundSlopePitch(actor);
     }

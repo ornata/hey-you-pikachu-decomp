@@ -1,3 +1,4 @@
+#include "actor_sound.h"
 #include "item_object.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -229,7 +230,6 @@ void actionCommandChangeHeldItemAnimation(s32 actor, u8 *state, u8 *command, f32
     }
 }
 
-s32 actorPlayTrackedSound(u8 *, s32); /* extern */
 void audioSetSoundEffectPitch(s32, f32);
 
 /// Plays a tracked actor sound with the pitch requested by an action command.
@@ -278,7 +278,7 @@ void actionCommandPlayGroundContactEffects(u8 *object, u8 *state, Cmd14 *command
             type = 4;
         sound = terrainGetMaterialSound(type, ground);
         if (sound >= 0) {
-            handle = actorPlayTrackedSound((s32)object, sound);
+            handle = actorPlayTrackedSound(object, sound);
             random = randomNext();
             audioSetSoundEffectPitch(handle, (random * 2.3283064365386963e-10 - 0.5) * args->amount * 3.0);
         }

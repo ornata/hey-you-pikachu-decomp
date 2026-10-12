@@ -1862,3 +1862,15 @@ alpha parameter now uses the provider's unsigned byte type rather than a signed
 word. Ghidra 0x800155B8 confirms that immediate updates touch only current RGBA;
 they leave the target and countdown pending. Each caller was rebuilt and compared
 before moving to the next source unit; all 483 objects and relocations match.
+
+### Actor tracked-sound state and playback contract
+
+The model provider now uses shared `soundHandles`, `nextSoundSlot` and
+`trackedVoice` fields in initialization, playback and spatial updates. Offset
+checks cover the replacement cursor at 0x188 and voice handle at 0x18C as well as
+the four-handle table at 0x178. Ghidra 0x80014B60 confirms their access widths and
+selection behavior. The table tracks playback; it does not own or automatically
+stop every forgotten handle. `actor_sound.h` supplies the actor-pointer contract
+to the provider and all four caller units, replacing an integer actor declaration
+and integer argument casts. Each source unit preserves all 483 objects and strict
+relocation addends.

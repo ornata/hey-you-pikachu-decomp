@@ -59,7 +59,7 @@ typedef struct ActorScriptState {
     s32 actionScriptSoundHandle; ///< Sound playback tracked by the sequencer, or zero.
     u32 actionScriptLastRequestId; ///< Last recorded action request, or zero before a request.
     u32 actionScriptPendingRequestId; ///< Action request awaited by the command, or zero.
-    s32 soundHandles[4]; ///< Recent spatial playback handles owned by the actor.
+    s32 soundHandles[4]; ///< Four tracked spatial playback handles; zero denotes an empty slot.
     s32 nextSoundSlot;   ///< Next slot to consider for tracked spatial playback.
     s32 trackedVoice;    ///< Separately tracked character voice playback handle.
     s32 heldItemHandle;  ///< Object handle of the actor's held item, or zero.
@@ -153,6 +153,8 @@ ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionSoundOffsetCheck, ActorScriptState, ac
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionLastRequestOffsetCheck, ActorScriptState, actionScriptLastRequestId, 0x170);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionPendingRequestOffsetCheck, ActorScriptState, actionScriptPendingRequestId, 0x174);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateSoundHandlesOffsetCheck, ActorScriptState, soundHandles, 0x178);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateNextSoundSlotOffsetCheck, ActorScriptState, nextSoundSlot, 0x188);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateTrackedVoiceOffsetCheck, ActorScriptState, trackedVoice, 0x18C);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateHeldItemOffsetCheck, ActorScriptState, heldItemHandle, 0x190);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateAttachmentModeOffsetCheck, ActorScriptState, attachmentMode, 0x194);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateTargetHandleOffsetCheck, ActorScriptState, targetHandle, 0x198);
