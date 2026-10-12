@@ -1,3 +1,4 @@
+#include "actor_meters.h"
 #include "actor_part_shake.h"
 #include "actor_appearance.h"
 #include "actor_part_texture.h"
@@ -632,7 +633,6 @@ void actorStartPartShake(u8 *actor, s32 part) {
 void actorUpdateScriptVm(u8 *);
 void actorUpdateModel(u8 *);
 void actorUpdatePartShake(u8 *);
-f32 actorAdjustActionMeter(u8 *, f32);
 /// Signed part-identifier sequence defining the actor primary tracked pose.
 /// \note Original identifier: \c D_800A2794 (0x800A2794).
 extern u8 gActorPrimaryPosePartSequence[];
@@ -823,13 +823,13 @@ f32 actorAdjustSecondaryMeter(u8 *object, f32 delta) {
     u8 *actorState;
 
     actorState = *(u8 **)(*(u8 **)(object + 0x50) + 0x54);
-    *(f32 *)(actorState + 0x3F8) = *(f32 *)(actorState + 0x3F8) + delta;
-    if (*(f32 *)(actorState + 0x3F8) < 0.0f) {
-        *(f32 *)(actorState + 0x3F8) = 0.0f;
-    } else if (*(f32 *)(actorState + 0x3F8) > 100.0f) {
-        *(f32 *)(actorState + 0x3F8) = 100.0f;
+    ((ActorScriptState *)actorState)->secondaryMeter = ((ActorScriptState *)actorState)->secondaryMeter + delta;
+    if (((ActorScriptState *)actorState)->secondaryMeter < 0.0f) {
+        ((ActorScriptState *)actorState)->secondaryMeter = 0.0f;
+    } else if (((ActorScriptState *)actorState)->secondaryMeter > 100.0f) {
+        ((ActorScriptState *)actorState)->secondaryMeter = 100.0f;
     }
-    return *(f32 *)(actorState + 0x3F8);
+    return ((ActorScriptState *)actorState)->secondaryMeter;
 }
 
 extern float fabsf(float);
@@ -852,18 +852,18 @@ f32 actorAdjustActionMeter(u8 *object, f32 delta) {
     f32 meter;
 
     state = *(u8 **)(*(u8 **)(object + 0x50) + 0x54);
-    meter = *(f32 *)(state + 0x3F4) + delta;
+    meter = ((ActorScriptState *)state)->actionResource + delta;
     if (meter < 0.0f) {
         meter = 0.0f;
     } else if (meter > 100.0f) {
         meter = 100.0f;
     }
-    if ((fabsf(delta) >= 1.0f) || ((meter != *(f32 *)(state + 0x3F4)) &&
+    if ((fabsf(delta) >= 1.0f) || ((meter != ((ActorScriptState *)state)->actionResource) &&
                                    ((gActorActionMeterDisplayDeltaThreshold <= fabsf(delta)) ||
                                     (meter <= gActorActionMeterDisplayLowThreshold) || (meter == 100.0f)))) {
         hudExtendHorizontalMotionDisplay(3.0f);
     }
-    *(f32 *)(state + 0x3F4) = meter;
+    ((ActorScriptState *)state)->actionResource = meter;
     return meter;
 }
 

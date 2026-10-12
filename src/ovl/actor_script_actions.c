@@ -1,3 +1,4 @@
+#include "actor_meters.h"
 #include "camera_overlay.h"
 #include "actor_color.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -19,7 +20,6 @@
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-f32 actorAdjustActionMeter(u8 *, f32);              /* extern */
 /// Compatibility declaration retaining an unused third argument from the original call.
 
 /// Consume an eligible held item and replenish the actor action resource.

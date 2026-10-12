@@ -1,3 +1,4 @@
+#include "actor_meters.h"
 #include "object_billboard.h"
 #include "object_movement.h"
 #include "item_object.h"
@@ -21,7 +22,6 @@ void baseballCapResetReleasedScale(u8 *object, s32 unused) {
     }
 }
 
-f32 actorAdjustActionMeter(s32, f32);        /* extern */
 /// Borrowed reference to the active Pikachu actor created for the current area.
 /// \note Original identifier: \c D_800760A8 (0x800760A8).
 extern s32 gPikachuActor;
@@ -46,7 +46,7 @@ void lightBulbUpdateHeldGlow(u8 *object) {
         *timer -= gRuntimeFrameSeconds;
         if (*timer <= 0.0f) {
             *timer = 1.0f;
-            actorAdjustActionMeter(gPikachuActor, -10.0f);
+            actorAdjustActionMeter((u8 *)gPikachuActor, -10.0f);
         }
     }
 }

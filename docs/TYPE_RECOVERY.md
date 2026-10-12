@@ -2107,3 +2107,13 @@ Ghidra 0x80116BC4 confirms this producer/result contract. Both fields have check
 offsets and shared producers/consumers. Numeric result values remain explicit
 rather than inventing an exhaustive enum for unobserved outcomes. Both source
 units and header dependents preserve all 483 objects and strict relocations.
+
+### Shared actor resource-meter adjustments
+
+`actor_meters.h` declares both bounded actor-meter adjustments for the provider
+and all five caller units. The light-bulb consumer now passes its actor handle
+through the pointer contract rather than declaring an integer parameter. Both
+providers use the checked `ActorScriptState` meter fields at 0x3F4 and 0x3F8.
+Ghidra 0x800149D0 and 0x80014A3C confirm the owning-root state, bounds and HUD
+request behavior. Each source-unit change preserves all 483 objects and strict
+relocation addends.

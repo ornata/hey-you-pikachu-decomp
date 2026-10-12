@@ -1,3 +1,4 @@
+#include "actor_meters.h"
 #include "interaction.h"
 #include "object_target_search.h"
 #include "path_query.h"
@@ -818,7 +819,6 @@ s32 actorScriptConfigureMicrophone(u8 *actor) {
     return 1;
 }
 
-f32 actorAdjustSecondaryMeter(u8 *, f32); /* extern */
 
 /// Adjust the active Pikachu secondary gameplay meter.
 /// \param actor Actor whose script VM supplies a signed adjustment and receives the updated meter value clamped to zero through 100; requires an active Pikachu actor.
@@ -864,7 +864,6 @@ s32 actorScriptPushPikachuSecondaryMeter(u8 *actor) {
     return 0;
 }
 
-f32 actorAdjustActionMeter(u8 *, f32); /* extern */
 
 /// Adjust the active Pikachu action resource and request its HUD display when appropriate.
 /// \param actor Actor whose script VM supplies a signed adjustment and receives the updated action resource clamped to zero through 100; requires an active Pikachu actor.

@@ -1,3 +1,4 @@
+#include "actor_meters.h"
 #include "actor_part_shake.h"
 #include "collision_registration.h"
 #include "action_query.h"
@@ -733,7 +734,6 @@ void messengerUpdateLaunch(u8 *object, s32 unused) {
     }
 }
 
-f32 actorAdjustSecondaryMeter(u8 *, f32);
 void messengerBeginRebound(u8 *);
 u32 randomNext(void);
 /// Borrowed reference to the active Pikachu actor created for the current area.
