@@ -270,7 +270,6 @@ Gfx *flipbookPrepareDraw(Flipbook *f) {
     return f->displayList;
 }
 
-void textImageLoadTexture(Gfx **, u8 *);
 /// Prepare updated text-image drawing commands for the next model draw.
 /// \param object Initialized text-display model with valid owned drawing and text storage.
 /// \returns Nothing.
@@ -296,7 +295,7 @@ void flipbookBuildImageDisplayLists(u8 *object) {
         if (image != NULL) {
             if (image->width == 100 || image->height == 100) {
             }
-            textImageLoadTexture(&commands, (u8 *)image);
+            textImageLoadTexture(&commands, image);
             if ((*images)->format == G_IM_FMT_CI) {
                 gDPSetCombine(commands++, 0x40C3FF, 0xFFFFFE38);
             } else {

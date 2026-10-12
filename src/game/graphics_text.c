@@ -673,7 +673,6 @@ void textDrawGetDefaultArea(s32 *left, s32 *top, s32 *right, s32 *bottom) {
     *bottom = gTextDrawDefaultBottom;
 }
 
-void textImageLoadTexture(Gfx **, u8 *);
 /// Draw an image at the text cursor using the current text scale.
 /// \param image Text image to draw.
 /// \returns Nothing.
@@ -682,7 +681,7 @@ void textDrawImageAtCursor(TextImage *image) {
     s32 width = image->width;
     s32 height = image->height;
     s32 dx, dy;
-    textImageLoadTexture(&gTextDrawDisplayListCursor, (u8 *)image);
+    textImageLoadTexture(&gTextDrawDisplayListCursor, image);
     dx = (s32)(1024.0f / gTextDrawScaleX + 0.5);
     dy = (s32)(1024.0f / gTextDrawScaleY + 0.5);
     gSPTextureRectangle(gTextDrawDisplayListCursor++, gTextDrawCursorX * 4, gTextDrawCursorY * 4,
@@ -690,7 +689,6 @@ void textDrawImageAtCursor(TextImage *image) {
                         (gTextDrawCursorY + (s32)(height * gTextDrawScaleY)) * 4, G_TX_RENDERTILE, 0, 0, dx, dy);
 }
 
-void textImageLoadRectangle(Gfx **, u8 *, s32, s32, s32, s32);
 /// Draw part of a text image in a screen rectangle with scaling and clipping.
 /// \param gfx Display-list cursor to append to and advance.
 /// \param image Text image to draw.
@@ -749,7 +747,7 @@ void textImageDrawRectangle(Gfx **gfx, TextImage *image, s32 x0, s32 y0, s32 x1,
             rows = height;
         }
         TRACE(" width:%d height:%d ht:%d  uly:%d ult:%d\n", width, height, rows, y0, t);
-        textImageLoadRectangle(gfx, (u8 *)image, s, t, s + width - 1, t + rows - 1);
+        textImageLoadRectangle(gfx, image, s, t, s + width - 1, t + rows - 1);
         height -= rows;
         gSPTextureRectangle((*gfx)++, x0 << 2, y0 << 2, (x0 + width) << 2, (y0 + rows) << 2, G_TX_RENDERTILE, s << 5,
                             t << 5, dsdx, dtdy);
@@ -767,8 +765,8 @@ void textImageDrawRectangle(Gfx **gfx, TextImage *image, s32 x0, s32 y0, s32 x1,
 /// \param y1 Inclusive vertical coordinate of the opposite source corner.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8003DA3C (0x8003DA3C).
-void textImageLoadRectangle(Gfx **dl, u8 *image, s32 x0, s32 y0, s32 x1, s32 y1) {
-    TextImage *img = (TextImage *)image;
+void textImageLoadRectangle(Gfx **dl, TextImage *image, s32 x0, s32 y0, s32 x1, s32 y1) {
+    TextImage *img = image;
     s32 t;
 
     if (x1 < x0) {
@@ -810,8 +808,8 @@ void textImageLoadRectangle(Gfx **dl, u8 *image, s32 x0, s32 y0, s32 x1, s32 y1)
 /// \param image Text image to prepare.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8003DD84 (0x8003DD84).
-void textImageLoadTexture(Gfx **cursor, u8 *image) {
-    textImageLoadRectangle(cursor, image, 0, 0, *(s32 *)(image + 4) - 1, *(s32 *)(image + 8) - 1);
+void textImageLoadTexture(Gfx **cursor, TextImage *image) {
+    textImageLoadRectangle(cursor, image, 0, 0, image->width - 1, image->height - 1);
 }
 
 void textImageCreateSystemFont(TextImage **, u8 *, s32);

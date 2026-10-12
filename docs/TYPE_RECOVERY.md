@@ -1049,3 +1049,14 @@ prototype, with explicit descriptor views at legacy byte/address slots. Pixel
 storage is borrowed until the emitted drawing commands finish. Each unit
 preserved the strict object baseline before the shared declaration was added.
 Legacy image table representations remain separate recovery targets.
+
+### Text-image texture preparation
+
+The texture and rectangle preparation APIs share TextImage parameters through
+text_draw.h. The renderer and flipbook consumer no longer cast descriptors to
+byte pointers at these interfaces. Ghidra at 0x8003DD84 confirms the complete
+image bounds from the descriptor's width and height. Rectangle preparation
+uses the same descriptor fields and pixel storage; its image parameter is
+nonnull even though a later internal check tests it. Both source units
+preserve strict object matching. The header documents borrowed pixel lifetime
+through completion of drawing commands.
