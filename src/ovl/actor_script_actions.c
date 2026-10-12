@@ -1,3 +1,4 @@
+#include "action_request.h"
 #include "action_script_stop.h"
 #include "action_script_playback.h"
 #include "action_script_query.h"
@@ -418,7 +419,6 @@ s32 actorScriptOpenTextWindow(u8 *actor) {
     return 1;
 }
 
-void actionRequestLoopExit(u8 *);
 s32 actorScriptTransformKind(u8 *);
 /// Advance the actor currently selected script action handler.
 /// \param object Actor whose script action handler is dispatched.

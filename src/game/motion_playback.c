@@ -1,3 +1,4 @@
+#include "action_request.h"
 #include "actor_appearance.h"
 #include "actor_part_texture.h"
 #include "action_query.h"
@@ -25,10 +26,8 @@ typedef struct Rec2C {
     u8 pad[0x2C];
 } Rec2C;
 
-void actionRequestLoopExit(u8 *);
 void motionResetPlayback(u8 *);
 void motionSetPlaybackMode(u8 *, s32);
-void actionCancelPendingRequest(u8 *);
 s32 actionRequestMotionData(s32);
 struct Track3;
 struct Track3b;
@@ -839,18 +838,18 @@ s32 actionRequestPlayback(u8 *object, s32 id, s32 kind, s32 *out) {
     if (actionRequestMotionData(id) == 0) {
         actionRequestMotionData(*(s16 *)(gActionFallbackEntries + id * 0x2C));
     }
-    *(s16 *)(v + 0x120) = id;
-    *(s16 *)(v + 0x140) = kind;
-    *out = *(s32 *)(v + 0x124);
-    *(s32 *)(v + 0x12C) = *out;
-    (*(s32 *)(v + 0x124))++;
-    if (*(u16 *)(v + 0x11A) == 0) {
+    ((ActorScriptState *)v)->pendingAction = id;
+    ((ActorScriptState *)v)->pendingActionKind = kind;
+    *out = ((ActorScriptState *)v)->nextRequestId;
+    ((ActorScriptState *)v)->pendingRequestId = *out;
+    (((ActorScriptState *)v)->nextRequestId)++;
+    if ((u16)((ActorScriptState *)v)->playbackMode == 0) {
         TRACE("play ID: %d\n", *out);
         actionResolveNextTransition(object);
         return 1;
     }
     TRACE("request to slot: ID: %d\n", *out);
-    *(s16 *)(v + 0x11E) = 1;
+    ((ActorScriptState *)v)->loopExitRequested = 1;
     return 0;
 }
 
@@ -860,7 +859,7 @@ s32 actionRequestPlayback(u8 *object, s32 id, s32 kind, s32 *out) {
 /// \note Original decompilation identifier: \c func_8000F4C4 (0x8000F4C4).
 void actionRequestLoopExit(u8 *object) {
     u8 *actionState = *(u8 **)(object + 0x54);
-    *(s16 *)(actionState + 0x11E) = 1;
+    ((ActorScriptState *)actionState)->loopExitRequested = 1;
 }
 
 /// Stop action playback and clear pending action requests.
@@ -1003,7 +1002,7 @@ s32 actionGetStoredRequestId(u8 *object) {
     u8 *obj;
 
     obj = *(u8 **)(object + 0x54);
-    return *(s32 *)(obj + 0x128);
+    return ((ActorScriptState *)obj)->activeRequestId;
 }
 
 /// Set the continuation action for current playback.

@@ -1,3 +1,4 @@
+#include "action_request.h"
 #include "actor_rotation.h"
 #include "object_movement.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -17,7 +18,6 @@ s32 actorAdvanceWithScaleOscillation(f32 *, f32);
 s32 actorAdvanceWithGroundClearance(s32, f32);
 s32 actorTurnAwayFromPlayer(s32, f32);
 s32 actorBackstepTowardTarget(s32, f32);
-void actionRequestLoopExit(s32);
 f32 vector3Length(f32 *);
 f32 mathWrapSignedDegrees(f32);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
@@ -154,7 +154,7 @@ s32 actorPrepareApproachCompletion(s32 object, f32 speed) {
         actorRefreshTrackingTargetPosition((u8 *)object);
         actorTurnTowardTarget((u8 *)object, 300.0f);
         actionSkipLoopingContinuations(object);
-        actionRequestLoopExit(object);
+        actionRequestLoopExit((u8 *)object);
         *(f32 *)(state + 0x1F8) = (distance / speed);
     }
     return 0;
@@ -275,7 +275,7 @@ s32 actorChooseAlignedTargetContinuation(u8 *actor) {
 s32 actorTurnToTrackedTargetAndExitLoop(s32 actor) {
     actorRefreshTrackingTargetPosition((u8 *)actor);
     if (actorTurnTowardTarget((u8 *)actor, 100.0f) != 0) {
-        actionRequestLoopExit(actor);
+        actionRequestLoopExit((u8 *)actor);
     }
     return 0;
 }
@@ -286,7 +286,7 @@ s32 actorTurnToTrackedTargetAndExitLoop(s32 actor) {
 /// \note Original decompilation identifier: \c func_8000FDF0 (0x8000FDF0).
 s32 actorPivotToTargetAndExitLoop(s32 actor) {
     if (actorPivotTowardTarget((u8 *)actor, 100.0f) != 0) {
-        actionRequestLoopExit(actor);
+        actionRequestLoopExit((u8 *)actor);
     }
     return 0;
 }

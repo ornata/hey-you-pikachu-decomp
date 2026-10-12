@@ -2188,3 +2188,14 @@ duration and command time in both views. The program table now contains typed
 command pointers and the model updater shares the documented sequencer update
 interface. Header dependents and both changed units preserve all 483 objects
 and strict relocation addends.
+
+### Shared actor action-request contracts
+
+`action_request.h` shares request submission, pending-request cancellation,
+loop-exit requests and active/stored request-ID queries. Ghidra 0x8000F404
+confirms assigned IDs, pending action/kind, the next-ID counter and idle
+acceptance; 0x8000F6C0 confirms the retained selected ID at 0x128. These
+providers now use checked actor fields, preserving the unsigned playback-mode
+test and existing signed request representation. Movement callers pass actor
+pointers explicitly. The provider and all three declaration consumers preserve
+all 483 objects and strict relocation addends.

@@ -1,3 +1,4 @@
+#include "action_request.h"
 #include "action_script_stop.h"
 #include "action_script_playback.h"
 #include "action_script_query.h"
@@ -12,14 +13,10 @@
 #include "common.h"
 #include "action_script_types.h"
 #include "actor_script.h"
-void actionCancelPendingRequest(u8 *);
-void actionRequestLoopExit(u8 *);
 /// Action-script command stream addresses indexed by script identifier.
 /// \note Original identifier: \c D_80071D00 (0x80071D00).
 extern ActionScriptCommand *gActionScriptPrograms[];
-s32 actionGetStoredRequestId(u8 *);
 
-s32 actionRequestPlayback(u8 *, s32, s32, s32 *);
 /// Request the action specified by the current script command.
 /// \param object Object executing the action script.
 /// \param state Action state belonging to the object.
