@@ -1,3 +1,4 @@
+#include "actor_action_cue.h"
 #include "actor_appearance.h"
 #include "actor_part_texture.h"
 #include "actor_sound.h"
@@ -29,12 +30,6 @@ typedef struct {
 /// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
 extern PlayerPosition23 gPlayerState;
 
-/* A script command (0x14 bytes); handlers read their arguments at args. */
-typedef struct Cmd14 {
-    s32 op;
-    f32 time;
-    u8 args[0xC];
-} Cmd14;
 
 /// Common scalar argument pair in action bytecode; interpretation depends on the opcode.
 typedef struct ActionScalarArguments {
@@ -262,8 +257,8 @@ typedef struct {
 /// \param elapsed Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80023534 (0x80023534).
-void actionCommandPlayGroundContactEffects(u8 *object, u8 *state, Cmd14 *command, f32 *elapsed) {
-    Cmd14 **source = &command;
+void actionCommandPlayGroundContactEffects(u8 *object, u8 *state, ActorActionCueCommand *command, f32 *elapsed) {
+    ActorActionCueCommand **source = &command;
     s32 ground;
     f64 random;
     s32 handle;
@@ -362,8 +357,8 @@ typedef struct Launch {
 ///
 /// \note Portability: matching this function requires the accepted assembler-input boundary insertion declared in tools/binasm_patches/action_script_commands.json.
 /// \note Original decompilation identifier: \c func_80023788 (0x80023788).
-void actionCommandLaunchHeldItem(u8 *actor, u8 *state, Cmd14 *command, f32 *elapsed) {
-    Cmd14 **source = &command;
+void actionCommandLaunchHeldItem(u8 *actor, u8 *state, ActorActionCueCommand *command, f32 *elapsed) {
+    ActorActionCueCommand **source = &command;
     u8 *obj;
     f32 speed;
     f32 ang;
@@ -482,8 +477,8 @@ typedef struct SpawnChoice {
 /// \param unused Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80023ECC (0x80023ECC).
-void actionCommandCreateRandomHeldItem(u8 *object, u8 *state, Cmd14 *command, f32 *unused) {
-    Cmd14 **source = &command;
+void actionCommandCreateRandomHeldItem(u8 *object, u8 *state, ActorActionCueCommand *command, f32 *unused) {
+    ActorActionCueCommand **source = &command;
     s32 count;
     struct {
         f32 x, y, z;
@@ -618,7 +613,7 @@ typedef struct {
 /// \param unused2 Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002436C (0x8002436C).
-void actionCommandEmitParticlesAtTarget(u8 *object, u8 *unused, Cmd14 *command, f32 *unused2) {
+void actionCommandEmitParticlesAtTarget(u8 *object, u8 *unused, ActorActionCueCommand *command, f32 *unused2) {
     EmitArgs *args = (EmitArgs *)command->args;
     u8 *target;
     switch (args->target) {
@@ -784,7 +779,7 @@ typedef struct {
 /// \param unused Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800246E8 (0x800246E8).
-void actionCommandEmitEffectAtSelectedAttachment(u8 *object, u8 *state, Cmd14 *command, f32 *unused) {
+void actionCommandEmitEffectAtSelectedAttachment(u8 *object, u8 *state, ActorActionCueCommand *command, f32 *unused) {
     EmitArgs246 *args;
     u8 *other;
     s32 target;
@@ -891,7 +886,7 @@ typedef struct ArgsSpawn {
 /// \param elapsed Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80024948 (0x80024948).
-void actionCommandStunPlayerInRange(u8 *actor, u8 *state, Cmd14 *command, s32 elapsed) {
+void actionCommandStunPlayerInRange(u8 *actor, u8 *state, ActorActionCueCommand *command, s32 elapsed) {
     u8 *o;
     ArgsSpawn *a;
     f32 dist;
@@ -1018,7 +1013,7 @@ typedef struct ArgsMsg {
 /// \param unusedTiming Unused timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80024C30 (0x80024C30).
-void actionCommandNotifyStoredTarget(u8 *actor, s32 unusedState, Cmd14 *command, s32 unusedTiming) {
+void actionCommandNotifyStoredTarget(u8 *actor, s32 unusedState, ActorActionCueCommand *command, s32 unusedTiming) {
     ArgsMsg *args;
     ScriptMessage m;
     u8 *o = actorResolveStoredTarget(actor);
@@ -1064,10 +1059,10 @@ void actionCommandAdvanceClockRandomly(s32 unusedActor, s32 unusedState, u8 *com
 }
 
 typedef struct CmdJump {
-    Cmd14 *target;
+    ActorActionCueCommand *target;
     f32 reset;
 } CmdJump;
-typedef void (*CmdFn)(u8 *, u8 *, Cmd14 *, f32 *);
+typedef void (*CmdFn)(u8 *, u8 *, ActorActionCueCommand *, f32 *);
 /// Timed action-command handlers indexed by opcode minus nineteen.
 /// \note Original identifier: \c D_80089490 (0x80089490).
 extern CmdFn gTimedActionCommandHandlers[];
@@ -1082,9 +1077,9 @@ extern f32 gRuntimeFrameSeconds;
 /// \param clock Writable elapsed script time in seconds, updated as the script advances.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80024DD0 (0x80024DD0).
-void actorUpdateActionScript(u8 *actor, Cmd14 **nextCommand, f32 *clock) {
+void actorUpdateActionScript(u8 *actor, ActorActionCueCommand **nextCommand, f32 *clock) {
     u8 *st = *(u8 **)(actor + 0x54);
-    Cmd14 *c;
+    ActorActionCueCommand *c;
     CmdJump *j;
     s32 op;
     f32 d;
@@ -1095,7 +1090,7 @@ void actorUpdateActionScript(u8 *actor, Cmd14 **nextCommand, f32 *clock) {
         return;
     }
     while (c->time <= *clock) {
-        op = c->op;
+        op = c->opcode;
         if (op < 19) {
             c++;
             continue;
@@ -1131,10 +1126,6 @@ out:
     *nextCommand = c;
 }
 
-typedef struct Ent14 {
-    s32 id;
-    s32 w[4];
-} Ent14;
 
 /// Select an action script for the actor's current action state.
 /// \param actor Actor whose action state selects the script.
@@ -1142,12 +1133,12 @@ typedef struct Ent14 {
 /// \param unusedFlag Legacy flag that does not affect the selection.
 /// \returns A borrowed selected script, the supplied list when no state selection is needed, or null if no script matches.
 /// \note Original decompilation identifier: \c func_80024F9C (0x80024F9C).
-Ent14 *actorSelectActionScript(u8 *actor, Ent14 *list, s32 unusedFlag) {
+ActorActionCueCommand *actorSelectActionScript(u8 *actor, ActorActionCueCommand *list, s32 unusedFlag) {
     u8 *o = *(u8 **)(actor + 0x54);
-    Ent14 *p;
+    ActorActionCueCommand *p;
     s32 st;
 
-    if (*(s16 *)(o + 0x13E) == 0x12) {
+    if (((ActorScriptState *)o)->selectedActionKind == 0x12) {
         if (unusedFlag != 0) {
             return list;
         }
@@ -1157,9 +1148,9 @@ Ent14 *actorSelectActionScript(u8 *actor, Ent14 *list, s32 unusedFlag) {
     if (p == NULL) {
         return NULL;
     }
-    st = *(s16 *)(o + 0x13E);
-    for (; p->id != 0x31; p++) {
-        if (p->id == 0x12 || p->id == st) {
+    st = ((ActorScriptState *)o)->selectedActionKind;
+    for (; p->opcode != 0x31; p++) {
+        if (p->opcode == 0x12 || p->opcode == st) {
             return p + 1;
         }
     }

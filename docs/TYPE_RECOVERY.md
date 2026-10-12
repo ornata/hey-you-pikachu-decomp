@@ -2214,3 +2214,16 @@ in `actionResolveNextTransition` changes register allocation. Disassembly
 isolated both differences; restoring those reads preserves all 483 objects and
 strict relocation addends. Further compiler scheduling evidence is needed for
 those two replacements. Other recovered field consumers remain typed.
+
+### Shared actor action-cue records and playback state
+
+`actor_action_cue.h` recovers the 0x14-byte cue/tag record and selection/update
+contracts shared by motion playback and action-command execution. Ghidra
+0x80024F9C confirms tag selection and 20-byte stride; 0x80024DD0 confirms timed
+commands, jump handling and cursor updates. This is distinct from the 0x10-byte
+action-sequencer command. The old Cmd14 and Ent14 views now share the record.
+Actor state names the selected action kind at 0x13E and primary/secondary cue
+clocks, cursors and retained primary program at 0x144 through 0x154. Checked
+offsets and shared start/update/stop consumers establish borrowing and repeated
+program selection. Every changed unit and header dependent preserves all 483
+objects and strict relocation addends.

@@ -6,6 +6,7 @@
 
 #include "script_message.h"
 #include "action_script_types.h"
+#include "actor_action_cue.h"
 #include "direction_animation_types.h"
 #include "matrix_types.h"
 
@@ -52,9 +53,14 @@ typedef struct ActorScriptState {
     f32 motionDuration;    ///< Total duration of current motion or pose blending.
     f32 motionRemaining;   ///< Remaining motion time, scaled by playback speed.
     s16 defaultActionMode; ///< Default action mode selected by scripts.
-    u8 unknown13E[2];
+    s16 selectedActionKind; ///< Kind of the selected action used to select its cue program.
     s16 pendingActionKind; ///< Kind supplied by the pending action request.
-    u8 unknown142[0x16];
+    u8 unknown142[2];
+    f32 primaryCueClock; ///< Elapsed time of the retained primary action-cue program.
+    f32 secondaryCueClock; ///< Elapsed time of the current secondary action-cue program.
+    ActorActionCueCommand *primaryCueCommand; ///< Borrowed pending command in the primary cue program.
+    ActorActionCueCommand *lastPrimaryCueProgram; ///< Borrowed primary program retained to detect repeated selection.
+    ActorActionCueCommand *secondaryCueCommand; ///< Borrowed pending command in the secondary cue program.
     s32 actionScriptId;       ///< Current action-script identifier, or -1 when stopped.
     f32 actionScriptElapsed;  ///< Elapsed action-script time in seconds.
     f32 actionScriptDuration; ///< Time limit in seconds; negative means unlimited.
@@ -162,6 +168,12 @@ ACTOR_SCRIPT_OFFSET_CHECK(ActorStateEnvironmentColorTimeOffsetCheck, ActorScript
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePlaybackModeOffsetCheck, ActorScriptState, playbackMode, 0x11A);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePendingActionOffsetCheck, ActorScriptState, pendingAction, 0x120);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateMovementScaleOffsetCheck, ActorScriptState, movementScale, 0x130);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorSelectedActionKindOffsetCheck, ActorScriptState, selectedActionKind, 0x13E);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorPrimaryCueClockOffsetCheck, ActorScriptState, primaryCueClock, 0x144);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorSecondaryCueClockOffsetCheck, ActorScriptState, secondaryCueClock, 0x148);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorPrimaryCueCommandOffsetCheck, ActorScriptState, primaryCueCommand, 0x14C);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorLastPrimaryCueProgramOffsetCheck, ActorScriptState, lastPrimaryCueProgram, 0x150);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorSecondaryCueCommandOffsetCheck, ActorScriptState, secondaryCueCommand, 0x154);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionScriptIdOffsetCheck, ActorScriptState, actionScriptId, 0x158);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionElapsedOffsetCheck, ActorScriptState, actionScriptElapsed, 0x15C);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionDurationOffsetCheck, ActorScriptState, actionScriptDuration, 0x160);

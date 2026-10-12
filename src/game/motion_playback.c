@@ -1,3 +1,4 @@
+#include "actor_action_cue.h"
 #include "action_continuation.h"
 #include "action_request.h"
 #include "actor_appearance.h"
@@ -419,7 +420,6 @@ s32 actionInvokeInitializer(u8 *object) {
     return 0;
 }
 
-s32 actorSelectActionScript(u8 *, s32, s32);
 void motionStartTrackPlayback(u8 *);
 void motionStartTimedPlayback(u8 *);
 void motionStartPoseTransition(u8 *);
@@ -431,28 +431,30 @@ void motionStartPoseTransition(u8 *);
 void actionStartPlayback(u8 *object) {
     u8 *v;
     s32 mode;
-    s32 anim;
+    ActorActionCueCommand *anim;
 
     v = *(u8 **)(object + 0x54);
     mode = *(s32 *)(v + 0xF8) & 7;
     TRACE("_startAction: actionType:%d\n", mode);
     *(s16 *)(v + 0x118) = 0;
-    *(f32 *)(v + 0x148) = 0.0f;
-    *(s32 *)(v + 0x154) = actorSelectActionScript(object, *(s32 *)(v + 0x114), 0);
+    ((ActorScriptState *)v)->secondaryCueClock = 0.0f;
+    ((ActorScriptState *)v)->secondaryCueCommand =
+        actorSelectActionScript(object, *(ActorActionCueCommand **)(v + 0x114), 0);
     if (*(s16 *)(v + 0x11C) == 0) {
         *(s16 *)(v + 0x11C) = 1;
-        anim = actorSelectActionScript(object, *(s32 *)(v + 0x110), 1);
-        if (anim != 0 && (anim != *(s32 *)(v + 0x150) || (1.2f < *(f32 *)(v + 0x144) && !(*(s32 *)(v + 0xF8) & 8)))) {
-            TRACE("lastAfcKey:%p\n    afcKey:%p\n", *(s32 *)(v + 0x150), anim);
+        anim = actorSelectActionScript(object, *(ActorActionCueCommand **)(v + 0x110), 1);
+        if (anim != 0 && (anim != ((ActorScriptState *)v)->lastPrimaryCueProgram ||
+                          (1.2f < ((ActorScriptState *)v)->primaryCueClock && !(*(s32 *)(v + 0xF8) & 8)))) {
+            TRACE("lastAfcKey:%p\n    afcKey:%p\n", ((ActorScriptState *)v)->lastPrimaryCueProgram, anim);
             if (*(u16 *)(object + 0x34) == 0x25) {
                 if (!(*(u16 *)(v + 0x1E8) & 0x40)) {
                     actorAppearanceReset(object);
                 }
                 actorResetPartTint(object);
             }
-            *(s32 *)(v + 0x14C) = anim;
-            *(s32 *)(v + 0x150) = anim;
-            *(f32 *)(v + 0x144) = 0.0f;
+            ((ActorScriptState *)v)->primaryCueCommand = anim;
+            ((ActorScriptState *)v)->lastPrimaryCueProgram = anim;
+            ((ActorScriptState *)v)->primaryCueClock = 0.0f;
         }
     }
     switch (mode) {
@@ -554,7 +556,7 @@ void actionPrepareSelectedContext(u8 *state, s32 sequence) {
     *(s16 *)(state + 0x120) = -1;
     *(s32 *)(state + 0x128) = *(s32 *)(state + 0x12C);
     *(s32 *)(state + 0x12C) = 0;
-    *(s16 *)(state + 0x13E) = *(s16 *)(state + 0x140);
+    ((ActorScriptState *)state)->selectedActionKind = ((ActorScriptState *)state)->pendingActionKind;
     *(s16 *)(state + 0x140) = 0;
     if (*(s32 *)(state + 0x110) == 0) {
         *(s32 *)(state + 0x110) = sequence;
@@ -706,8 +708,6 @@ void actionDestroyTransitionMap(void) {
     wordMapDestroy(&gActionPoseTransitionMap);
 }
 
-struct Cmd14;
-void actorUpdateActionScript(u8 *, struct Cmd14 **, f32 *);
 /// Advance the current action, its motion, callbacks, and transitions.
 /// \param object Actor with initialized action state, part state, and transition map; pose blending requires a positive total transition duration.
 /// \returns Nothing.
@@ -730,8 +730,10 @@ void actionUpdatePlayback(u8 *object) {
         actionStartPlayback(object);
     }
     if ((u16)((ActorScriptState *)state)->playbackMode != 0) {
-        actorUpdateActionScript(object, (struct Cmd14 **)(state + 0x14C), (f32 *)(state + 0x144));
-        actorUpdateActionScript(object, (struct Cmd14 **)(state + 0x154), (f32 *)(state + 0x148));
+        actorUpdateActionScript(object, &((ActorScriptState *)state)->primaryCueCommand,
+                                &((ActorScriptState *)state)->primaryCueClock);
+        actorUpdateActionScript(object, &((ActorScriptState *)state)->secondaryCueCommand,
+                                &((ActorScriptState *)state)->secondaryCueClock);
         step = ((ActorScriptState *)state)->movementScale * gRuntimeFrameSeconds;
         ((ActorScriptState *)state)->motionRemaining = (f32)(((ActorScriptState *)state)->motionRemaining - step);
         remaining = ((ActorScriptState *)state)->motionRemaining;
@@ -873,9 +875,9 @@ void actionStopPlayback(u8 *object) {
     ((ActorScriptState *)actionState)->actionStartPending = 0;
     ((ActorScriptState *)actionState)->loopExitRequested = 0;
     ((ActorScriptState *)actionState)->activeRequestId = 0;
-    *(s32 *)(actionState + 0x150) = 0;
-    *(s32 *)(actionState + 0x14C) = 0;
-    *(s32 *)(actionState + 0x154) = 0;
+    ((ActorScriptState *)actionState)->lastPrimaryCueProgram = NULL;
+    ((ActorScriptState *)actionState)->primaryCueCommand = NULL;
+    ((ActorScriptState *)actionState)->secondaryCueCommand = NULL;
     ((ActorScriptState *)actionState)->currentPoseId = 0;
     motionResetPlayback(object);
     actionCancelPendingRequest(object);
