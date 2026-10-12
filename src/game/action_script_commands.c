@@ -325,7 +325,6 @@ const f32 gActionLaunchHeadingOffsets[8] = {0.0f, 0.0f, 240.0f, 0.0f, 0.0f, 0.0f
 /// \note Original identifier: \c D_800A4978 (0x800A4978).
 const s32 gActionLaunchThrowFlags[8] = {1, 1, 1, 1, 1, 1, 1, 0};
 
-void actorGetConfiguredAttachmentPosition(u8 *, f32, f32 *);
 u32 randomBelow(s32);
 /// Per-mode vertical launch factors, negated and multiplied by command speed.
 /// \note Original identifier: \c D_800A4938 (0x800A4938).
@@ -336,7 +335,6 @@ extern const f32 gActionLaunchHeadingOffsets[];
 /// Per-mode flags passed to the held-item throw interface.
 /// \note Original identifier: \c D_800A4978 (0x800A4978).
 extern const s32 gActionLaunchThrowFlags[];
-s32 actorGetPartObjectHandle(u8 *, s32);
 u8 *fallingParticleCreate(s32, s32, f32 *, f32 *, f32);
 u8 *linkedEffectCreateChain(s32, f32, f32, f32, f32, s32, f32, f32, f32, f32, f32, s32, s32, s32);
 f32 vector3Normalize(u8 *);

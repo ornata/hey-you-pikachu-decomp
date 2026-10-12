@@ -3038,3 +3038,16 @@ Allocation derives its extent from the pointer element size, and population
 names object kinds, child/sibling links and shared actor state. Default-part
 lookup and part world-position reads use object members. All dependent units
 and isolated consumer conversions preserve strict objects and relocations.
+
+### Attachment selection and part-table lifecycle contracts
+
+`actor_parts.h` consolidates part-handle lookup, configured attachment
+position, empty table allocation and hierarchy population across motion,
+configuration, model setup, action commands and item physics. Physics passes
+the actor pointer directly instead of carrying it as an integer address.
+Attachment selection reads the checked state member with its original
+unsigned switch interpretation. Ghidra 0x800164FC confirms the midpoint,
+configured first/second parts and fixed part-ID cases; uncertain anatomical
+meanings remain numeric. Contracts document borrowed parts, allocation
+ownership, output extents and unsupported-mode behavior. All conversions
+preserve strict allocated objects and relocations.

@@ -57,7 +57,6 @@ void _bzero(void *, u32);
 extern Matrix34 gObjectTraversalTransform;
 s32 actorFindPartIndex(s32, s32);
 void actorUpdateAnimatedTextureDrawLists(u8 *, s32);
-void actorPopulatePartTable(u8 *, u8 *);
 void actorInitializeChildMotionState(void *);
 /// Framebuffer and command-buffer index for the current frame.
 /// \note Original identifier: \c D_800F298C (0x800F298C).
@@ -988,8 +987,8 @@ void actorGetConfiguredAttachmentPosition(u8 *actor, f32 heightOffset, f32 *posi
     f32 first[3];
     f32 second[3];
 
-    state = *(u8 **)(actor + 0x54);
-    switch (*(u32 *)(state + 0x194)) {
+    state = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    switch ((u32)((ActorScriptState *)state)->attachmentMode) {
     case 0:
         actorGetPartWorldPosition(actor, actorConfigGetFirstAttachmentPartId(((RuntimeObjectPrefix *)actor)->kind), first);
         actorGetPartWorldPosition(actor, actorConfigGetSecondAttachmentPartId(((RuntimeObjectPrefix *)actor)->kind), second);

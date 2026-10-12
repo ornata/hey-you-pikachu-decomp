@@ -1,3 +1,4 @@
+#include "actor_parts.h"
 #include "item_size.h"
 #include "item_participation.h"
 #include "item_mode.h"
@@ -632,7 +633,6 @@ void pinataUpdateWriggle(u8 *item) {
     } while (index != 3);
 }
 
-void actorGetConfiguredAttachmentPosition(s32, f32, f32 *);
 void pinataUpdateWriggle(u8 *);
 /// Update an actor-held item attachment, or release it when its holder is absent.
 /// \param object Actor-held item to update.
@@ -654,7 +654,7 @@ void itemUpdateActorHeld(u8 *object) {
     itemRunHeldKindCallback(object, state);
     ((ItemStatePrefix *)state)->modeTime += gRuntimeFrameSeconds;
     parentState = ((RuntimeObjectPrefix *)parent)->state.bytes;
-    actorGetConfiguredAttachmentPosition((s32)parent, ((RuntimeObjectPrefix *)object)->radius, ((RuntimeObjectPrefix *)object)->position);
+    actorGetConfiguredAttachmentPosition(parent, ((RuntimeObjectPrefix *)object)->radius, ((RuntimeObjectPrefix *)object)->position);
     ((RuntimeObjectPrefix *)object)->worldPosition[0] = ((RuntimeObjectPrefix *)object)->position[0];
     ((RuntimeObjectPrefix *)object)->worldPosition[1] = ((RuntimeObjectPrefix *)object)->position[1];
     ((RuntimeObjectPrefix *)object)->worldPosition[2] = ((RuntimeObjectPrefix *)object)->position[2];

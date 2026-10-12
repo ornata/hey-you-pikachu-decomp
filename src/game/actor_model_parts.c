@@ -102,7 +102,6 @@ void actorDebugReportLinkedObjectNoOp(u8 *actor, s32 unused) {
 }
 
 void actorInitializeModelState(u8 *);
-void actorAllocatePartTable(u8 *);
 
 /// Initialize actor model resources, parts, and default gameplay model settings.
 /// \param actor Actor whose model is initialized.

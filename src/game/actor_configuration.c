@@ -138,7 +138,6 @@ void contactEffectInitialize(u8 *effect) {
     *(s32 **)(effect + 0x54) = savedEffectState;
 }
 
-s32 actorGetPartObjectHandle(u8 *, s32);
 u8 *linkedEffectCreateChain(s32, f32, f32, f32, f32, s32, f32, f32, f32, f32, f32, s32, s32, s32);
 f32 vector3Length(f32 *);
 /// Attraction strength between adjacent effects in the contact reaction chain.
@@ -218,7 +217,6 @@ void contactEffectHandleActorResponse(u8 *effect, s32 *response) {
 }
 
 void actorInitializeModelState(u8 *);
-void actorAllocatePartTable(u8 *);
 
 /// Initialize an actor model and its part lookup storage.
 /// \param actor Actor to initialize.
@@ -532,7 +530,6 @@ s32 actorAssetGetCachedStorage(s32 kind) {
 
 void objectPrepareDistributedKindSearches(u16, s32);
 void actorInitializeAnimatedTextures(u8 *, s32 *);
-void actorPopulatePartTable(u8 *, u8 *);
 void actorAssetQueueLoadForKind(s32);
 u8 *orbitFollowerCreate(u8 *, f32, f32, f32);
 u8 *groundShadowCreate(s32, f32);
