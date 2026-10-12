@@ -1,3 +1,4 @@
+#include "maze_scatter.h"
 #include "scene_region.h"
 #include "door.h"
 #include "common.h"
@@ -6,6 +7,20 @@
 #include "area_maze.h"
 #include "heap_diagnostics.h"
 #include "scene_types.h"
+
+/// Mutable weighted item-kind choices retained by the scene overlay.
+/// \note Original identifier: \c D_8014807C_scene_ochre_deep (0x8014807C).
+extern WeightedChoiceTable D_8014807C_scene_ochre_deep;
+/// Borrowed world-position triples for scene item scattering.
+/// \note Original identifier: \c D_80147E3C_scene_ochre_deep (0x80147E3C).
+extern f32 D_80147E3C_scene_ochre_deep[];
+/// Borrowed world-position triples for scene item scattering.
+/// \note Original identifier: \c D_80147C8C_scene_ochre_deep (0x80147C8C).
+extern f32 D_80147C8C_scene_ochre_deep[];
+/// Borrowed world-position triples for scene item scattering.
+/// \note Original identifier: \c D_80147AF4_scene_ochre_deep (0x80147AF4).
+extern f32 D_80147AF4_scene_ochre_deep[];
+
 u8 *ambientAudioCreate(f32 *, s32, f32, f32, s32, s32, f32, s32, s32);
 void doorRegistryReset(void);
 extern f32 D_8014A188_scene_ochre_deep[];
@@ -112,16 +127,13 @@ s32 ochreDeepTryCreateProgressEncounter(void) {
 }
 
 s32 ochreDeepTryCreateProgressEncounter(void);
-void mazeScatterItems(u8 *, s32, u8 *, f32);
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
 extern u8 D_801475C8_scene_ochre_deep;
 extern u8 D_80147AE0_scene_ochre_deep;
-extern u8 D_80147AF4_scene_ochre_deep;
-extern u8 D_80147C8C_scene_ochre_deep;
-extern u8 D_80147E3C_scene_ochre_deep;
-extern u8 D_8014807C_scene_ochre_deep;
+
+
 extern u8 D_8014A0EC_scene_ochre_deep;
 extern u8 D_8014A110_scene_ochre_deep;
 extern u8 D_8014A134_scene_ochre_deep;
@@ -148,14 +160,14 @@ void ochreDeepInitializeObjects(void) {
     }
     heapDebugReportFreeSpace(&gGameHeap, (const char *)&D_8014AB48_scene_ochre_deep);
     if (playerGetChaseStage() == 0) {
-        mazeScatterItems(&D_80147AF4_scene_ochre_deep, 0x22, &D_8014807C_scene_ochre_deep, 0.7f);
+        mazeScatterItems(D_80147AF4_scene_ochre_deep, 0x22, &D_8014807C_scene_ochre_deep, 0.7f);
     } else if (playerGetChaseStage() == 1) {
-        mazeScatterItems(&D_80147AF4_scene_ochre_deep, 0x22, &D_8014807C_scene_ochre_deep, 0.4f);
-        mazeScatterItems(&D_80147C8C_scene_ochre_deep, 0x24, &D_8014807C_scene_ochre_deep, 0.7f);
+        mazeScatterItems(D_80147AF4_scene_ochre_deep, 0x22, &D_8014807C_scene_ochre_deep, 0.4f);
+        mazeScatterItems(D_80147C8C_scene_ochre_deep, 0x24, &D_8014807C_scene_ochre_deep, 0.7f);
     } else if (playerGetChaseStage() == 2) {
-        mazeScatterItems(&D_80147AF4_scene_ochre_deep, 0x22, &D_8014807C_scene_ochre_deep, 0.2f);
-        mazeScatterItems(&D_80147C8C_scene_ochre_deep, 0x24, &D_8014807C_scene_ochre_deep, 0.3f);
-        mazeScatterItems(&D_80147E3C_scene_ochre_deep, 0x22, &D_8014807C_scene_ochre_deep, 0.5f);
+        mazeScatterItems(D_80147AF4_scene_ochre_deep, 0x22, &D_8014807C_scene_ochre_deep, 0.2f);
+        mazeScatterItems(D_80147C8C_scene_ochre_deep, 0x24, &D_8014807C_scene_ochre_deep, 0.3f);
+        mazeScatterItems(D_80147E3C_scene_ochre_deep, 0x22, &D_8014807C_scene_ochre_deep, 0.5f);
     }
     heapDebugReportFreeSpace(&gGameHeap, (const char *)&D_8014AB54_scene_ochre_deep);
     position[0] = 130.0f;

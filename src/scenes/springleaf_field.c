@@ -1,3 +1,4 @@
+#include "maze_scatter.h"
 #include "story_chapter.h"
 #include "progress_fields.h"
 #include "progress_value.h"
@@ -7,6 +8,14 @@
 #include "common.h"
 #include "item_object.h"
 #include "actor_create.h"
+
+/// Mutable weighted item-kind choices retained by the scene overlay.
+/// \note Original identifier: \c D_80157CEC_scene_springleaf_field (0x80157CEC).
+extern WeightedChoiceTable D_80157CEC_scene_springleaf_field;
+/// Borrowed world-position triples for scene item scattering.
+/// \note Original identifier: \c D_80157CF4_scene_springleaf_field (0x80157CF4).
+extern f32 D_80157CF4_scene_springleaf_field[];
+
 void doorRegistryReset(void);
 u32 randomNext(void);
 /// Entrance index used to initialize the player and companion in the current area.
@@ -108,14 +117,11 @@ void springleafFieldResetCompletedGrowth(void) {
 
 s32 randomBelow(s32);
 void runtimeCheckResetCheckpoint(u8 *, s32);
-void mazeScatterItems(u8 *, s32, u8 *, f32);
 typedef struct {
     s32 used[27];
 } FieldOccupancy;
 extern FieldOccupancy D_80157F70_scene_springleaf_field;
-extern u8 D_801571E4_scene_springleaf_field[], D_80157B58_scene_springleaf_field[], D_80157C78_scene_springleaf_field[],
-    D_8014E354_scene_springleaf_field[], D_80159474_scene_springleaf_field[], D_80157CF4_scene_springleaf_field[],
-    D_80157CEC_scene_springleaf_field[];
+extern u8 D_801571E4_scene_springleaf_field[], D_80157B58_scene_springleaf_field[], D_80157C78_scene_springleaf_field[], D_8014E354_scene_springleaf_field[], D_80159474_scene_springleaf_field[];
 extern f32 D_801594F0_scene_springleaf_field, D_801594F4_scene_springleaf_field, D_801594F8_scene_springleaf_field,
     D_801594FC_scene_springleaf_field;
 extern f32 D_80134BE0_scene_springleaf_field[][3];
@@ -182,7 +188,7 @@ void springleafFieldInitializeObjects(void) {
             i++;
         }
     } while (i < 7);
-    mazeScatterItems(D_80157CF4_scene_springleaf_field, 0x35, D_80157CEC_scene_springleaf_field, 0.7f);
+    mazeScatterItems(D_80157CF4_scene_springleaf_field, 0x35, &D_80157CEC_scene_springleaf_field, 0.7f);
     if (progressGetValue(0x12) == 0) {
         landmarkCreate(D_801594F4_scene_springleaf_field, 10.5f, 35.97f, 0x90);
         landmarkCreate(D_801594F8_scene_springleaf_field, D_801594FC_scene_springleaf_field, 91.0f, 0x8E);

@@ -1,3 +1,4 @@
+#include "maze_scatter.h"
 #include "story_chapter.h"
 #include "progress_fields.h"
 #include "landmark.h"
@@ -5,11 +6,18 @@
 #include "common.h"
 #include "item_object.h"
 #include "actor_create.h"
+
+/// Mutable weighted item-kind choices retained by the scene overlay.
+/// \note Original identifier: \c D_80157DB4_scene_oddish_meadow (0x80157DB4).
+extern WeightedChoiceTable D_80157DB4_scene_oddish_meadow;
+/// Borrowed world-position triples for scene item scattering.
+/// \note Original identifier: \c D_80157DBC_scene_oddish_meadow (0x80157DBC).
+extern f32 D_80157DBC_scene_oddish_meadow[];
+
 u32 randomNext(void);
 s32 randomBelow(s32);
 f32 mathPowInteger(f32, s32);
 void runtimeCheckResetCheckpoint(u8 *, s32);
-void mazeScatterItems(u8 *, s32, u8 *, f32);
 typedef struct {
     u8 unk0[12];
     f32 scale;
@@ -120,8 +128,8 @@ extern u8 D_8014E5D0_scene_oddish_meadow;
 extern u8 D_8014EEA0_scene_oddish_meadow;
 extern u8 D_8014F0BC_scene_oddish_meadow;
 extern u8 D_80157D40_scene_oddish_meadow;
-extern u8 D_80157DB4_scene_oddish_meadow;
-extern u8 D_80157DBC_scene_oddish_meadow;
+
+
 extern u8 D_80159404_scene_oddish_meadow;
 extern f64 D_80159480_scene_oddish_meadow;
 extern f32 D_80159488_scene_oddish_meadow;
@@ -199,9 +207,9 @@ void oddishMeadowInitializeRegularObjects(void) {
         }
     } while (i < 0xA);
     if (progressGetCurrentChapter() != 8) {
-        mazeScatterItems(&D_80157DBC_scene_oddish_meadow, 0x1C, &D_80157DB4_scene_oddish_meadow, 0.7f);
+        mazeScatterItems(D_80157DBC_scene_oddish_meadow, 0x1C, &D_80157DB4_scene_oddish_meadow, 0.7f);
     } else {
-        mazeScatterItems(&D_80157DBC_scene_oddish_meadow, 0x1C, &D_80157DB4_scene_oddish_meadow, 0.3f);
+        mazeScatterItems(D_80157DBC_scene_oddish_meadow, 0x1C, &D_80157DB4_scene_oddish_meadow, 0.3f);
     }
     if (progressGetValue(0x12) == 0) {
         landmarkCreate(D_80159488_scene_oddish_meadow, 8.0f, 137.47f, 0x90);

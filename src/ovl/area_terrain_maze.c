@@ -1,3 +1,5 @@
+#include "maze_scatter.h"
+#include "weighted_choice.h"
 #include "progress_value.h"
 #include "matrix_point.h"
 #include "camera_visibility.h"
@@ -2220,14 +2222,6 @@ void mazeSpawnAvailableItems(ItemSpawn *spawn) {
     }
 }
 
-typedef struct {
-    s32 key, off;
-} ScatterEntry;
-typedef struct {
-    ScatterEntry *entries;
-    s32 count;
-} ScatterTable;
-s32 weightedChoiceSelectKey(ScatterTable *);
 /// Scatter weighted item choices across a random selection of candidate positions, optionally adding contact
 /// effects at unused positions.
 /// \param positions Readable array of count consecutive world positions in X, Y, Z order.
@@ -2238,7 +2232,7 @@ s32 weightedChoiceSelectKey(ScatterTable *);
 /// rounded down.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8010E768 (0x8010E768).
-void mazeScatterItems(f32 *positions, s32 count, ScatterTable *table, f32 fraction) {
+void mazeScatterItems(f32 *positions, s32 count, WeightedChoiceTable *table, f32 fraction) {
     s32 quota;
     s32 index;
     s32 remaining;

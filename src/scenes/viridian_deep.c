@@ -1,9 +1,18 @@
+#include "maze_scatter.h"
 #include "story_chapter.h"
 #include "landmark.h"
 #include "item_object.h"
 #include "common.h"
 #include "actor_create.h"
 #include "scene_types.h"
+
+/// Mutable weighted item-kind choices retained by the scene overlay.
+/// \note Original identifier: \c D_80149DB8_scene_viridian_deep (0x80149DB8).
+extern WeightedChoiceTable D_80149DB8_scene_viridian_deep;
+/// Borrowed world-position triples for scene item scattering.
+/// \note Original identifier: \c D_8014993C_scene_viridian_deep (0x8014993C).
+extern f32 D_8014993C_scene_viridian_deep[];
+
 u8 *toolboxTakeObject(s32, s32);
 /// Remove the removable items held in the tracked scene-item slots.
 /// \returns Nothing.
@@ -75,9 +84,8 @@ void viridianDeepSpawnResidentGroup(Position *position, s32 index) {
     }
 }
 
-void mazeScatterItems(u8 *, s32, u8 *, f32);
 void viridianDeepSpawnResidentGroup(Position *, s32);
-extern u8 D_80149888_scene_viridian_deep[], D_8014993C_scene_viridian_deep[], D_80149DB8_scene_viridian_deep[];
+extern u8 D_80149888_scene_viridian_deep[];
 extern f32 D_8014B024_scene_viridian_deep, D_8014B028_scene_viridian_deep, D_8014B02C_scene_viridian_deep;
 /// Populate the deep forest with resident groups and progress-dependent items and landmarks.
 /// \returns Nothing.
@@ -94,7 +102,7 @@ void viridianDeepInitializeObjects(void) {
         actorCreateForKind(14, 160.0f, 5.0f, 145.0f, 0.0f, D_8014B024_scene_viridian_deep,
                            ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
                            D_80149888_scene_viridian_deep, 0);
-        mazeScatterItems(D_8014993C_scene_viridian_deep, 0x5B, D_80149DB8_scene_viridian_deep, 0.5f);
+        mazeScatterItems(D_8014993C_scene_viridian_deep, 0x5B, &D_80149DB8_scene_viridian_deep, 0.5f);
         landmarkCreate(162.0f, 1.25f, 151.0f, 0x8D);
         landmarkCreate(D_8014B028_scene_viridian_deep, D_8014B02C_scene_viridian_deep, 175.27f, 0x8E);
     } else

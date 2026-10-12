@@ -2690,3 +2690,17 @@ Ghidra 0x8002AD04 confirms the signed chapter input and milestone writes. The
 system-menu legacy callback still omits that input; its existing portability
 note and recovery ledger preserve the unresolved ABI requirement without
 inventing a chapter value. Every converted unit preserves the strict baseline.
+
+### Shared weighted-choice records and scene scattering
+
+`weighted_choice.h` replaces the provider and maze consumer's duplicate records.
+Entries carry keys and mutable weights/cumulative thresholds; the table stores
+the last selectable index rather than a count. Eight-byte sizes and offset-four
+fields are checked. Preparation requires at least two choices, a writable
+terminator, nonnegative weights and a positive total fitting the signed range.
+Ghidra 0x80032490 confirms mutation through the terminator and the cached index.
+
+`maze_scatter.h` carries this table type through the maze provider and five scene
+callers. Borrowed scene position arrays now use float elements and table symbols
+use the shared record; original identifiers and addresses remain documented.
+All seven source units preserve the complete strict object baseline.

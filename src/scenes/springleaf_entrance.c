@@ -1,3 +1,4 @@
+#include "maze_scatter.h"
 #include "story_chapter.h"
 #include "progress_fields.h"
 #include "landmark.h"
@@ -6,11 +7,18 @@
 #include "item_object.h"
 #include "actor_create.h"
 #include "scene_types.h"
+
+/// Mutable weighted item-kind choices retained by the scene overlay.
+/// \note Original identifier: \c D_80157660_scene_springleaf_entrance (0x80157660).
+extern WeightedChoiceTable D_80157660_scene_springleaf_entrance;
+/// Borrowed world-position triples for scene item scattering.
+/// \note Original identifier: \c D_80157668_scene_springleaf_entrance (0x80157668).
+extern f32 D_80157668_scene_springleaf_entrance[];
+
 u32 randomNext(void);
 s32 randomBelow(s32);
 f32 mathPowInteger(f32, s32);
 void runtimeCheckResetCheckpoint(u8 *, s32);
-void mazeScatterItems(u8 *, s32, u8 *, f32);
 typedef struct {
     u8 unknown[12];
     f32 scale;
@@ -134,8 +142,8 @@ extern f32 D_80134BB0_scene_springleaf_entrance[][3];
 extern u8 D_8014E62C_scene_springleaf_entrance;
 extern u8 D_801574CC_scene_springleaf_entrance;
 extern u8 D_801575EC_scene_springleaf_entrance;
-extern u8 D_80157660_scene_springleaf_entrance;
-extern u8 D_80157668_scene_springleaf_entrance;
+
+
 extern u8 D_80158DE4_scene_springleaf_entrance;
 extern f32 D_80158E60_scene_springleaf_entrance;
 extern f32 D_80158E64_scene_springleaf_entrance;
@@ -195,7 +203,7 @@ void springleafEntranceInitializeObjects(void) {
             i += 1;
         }
     } while (i < 5);
-    mazeScatterItems(&D_80157668_scene_springleaf_entrance, 0x3C, &D_80157660_scene_springleaf_entrance, 0.7f);
+    mazeScatterItems(D_80157668_scene_springleaf_entrance, 0x3C, &D_80157660_scene_springleaf_entrance, 0.7f);
     if (progressGetValue(0x12) == 0) {
         landmarkCreate(D_80158E60_scene_springleaf_entrance, 10.5f, 239.56f, 0x90);
         landmarkCreate(115.0f, D_80158E64_scene_springleaf_entrance, 267.0f, 0x8E);

@@ -1,3 +1,4 @@
+#include "weighted_choice.h"
 #include "story_milestones.h"
 #include "progress_field_types.h"
 #include "progress_storage.h"
@@ -244,32 +245,24 @@ void directionAnimationUpdate(u8 *animation) {
     }
 }
 
-typedef struct {
-    s32 key;
-    s32 off;
-} OffEntry;
-typedef struct {
-    OffEntry *entries;
-    s32 count;
-} OffTable;
 /// Prepares a weighted selection table for repeated random choices.
 /// \param t Mutable selection table with a zero-key terminator; prepared tables are left unchanged.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80032490 (0x80032490).
-void weightedChoicePrepareTable(OffTable *t) {
+void weightedChoicePrepareTable(WeightedChoiceTable *t) {
     s32 n = 0;
-    OffEntry *e;
+    WeightedChoiceEntry *e;
 
-    if (t->count == 0) {
+    if (t->lastChoiceIndex == 0) {
         e = t->entries + 1;
         while (1) {
-            e->off += e[-1].off;
+            e->weight += e[-1].weight;
             e++;
             if (e[-1].key == 0)
                 break;
             n++;
         }
-        t->count = n;
+        t->lastChoiceIndex = n;
     }
 }
 
@@ -279,20 +272,20 @@ u32 randomBelow(s32);
 /// \param t Mutable selection table with a zero-key terminator and a positive total weight.
 /// \returns The selected nonzero key, or zero if the table yields no selection.
 /// \note Original decompilation identifier: \c func_800324D8 (0x800324D8).
-s32 weightedChoiceSelectKey(OffTable *t) {
+s32 weightedChoiceSelectKey(WeightedChoiceTable *t) {
     s32 pad[2]; /* unused: sizes the frame to 0x28 */
-    OffEntry *e;
+    WeightedChoiceEntry *e;
     s32 r;
 
     weightedChoicePrepareTable(t);
     e = t->entries;
-    r = randomBelow(e[t->count].off);
+    r = randomBelow(e[t->lastChoiceIndex].weight);
     for (; e->key != 0; e++) {
-        if (e->off >= r) {
+        if (e->weight >= r) {
             return e->key;
         }
     }
-    TRACE("invalid array of itemFreqT:%d > %d\n", r, t->entries[t->count].off);
+    TRACE("invalid array of itemFreqT:%d > %d\n", r, t->entries[t->lastChoiceIndex].weight);
     return 0;
 }
 
