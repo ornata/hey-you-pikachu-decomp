@@ -14,21 +14,26 @@
 #include "actor_script.h"
 #include "heap_types.h"
 
-/* Flipbook model: double-buffered display lists and a primitive colour. */
+/// Private text model owning two panels and drawing storage.
+/// Panel colors survive destruction; caller-owned model storage remains valid.
 typedef struct Flipbook {
-    /* 0x00 */ u8 pad0[0x40];
-    /* 0x40 */ s32 width;
-    /* 0x44 */ s32 stripCount;
-    /* 0x48 */ s32 flip;
-    /* 0x4C */ s32 cur;
-    /* 0x50 */ Gfx *displayList;
-    /* 0x54 */ Gfx *dl[2];
-    /* 0x5C */ Gfx *commands[2];
-    /* 0x64 */ Vtx *vertices;
-    /* 0x68 */ u8 pad68[4];
-    /* 0x6C */ u8 prim[4];
-    /* 0x70 */ u8 flags[2];
+    /* 0x00 */ TextPanel panels[2]; ///< Displayed and prepared text banks.
+    /* 0x40 */ s32 width; ///< Surface width in pixels.
+    /* 0x44 */ s32 stripCount; ///< Number of visible sixteen-pixel rows.
+    /* 0x48 */ s32 flip; ///< Nonzero when the next draw must select prepared text.
+    /* 0x4C */ s32 cur; ///< Currently displayed panel and command bank.
+    /* 0x50 */ Gfx *displayList; ///< Owned drawing allocation and surface display list.
+    /* 0x54 */ Gfx *dl[2]; ///< Per-bank row branches within the drawing allocation.
+    /* 0x5C */ Gfx *commands[2]; ///< Per-bank text commands within the drawing allocation.
+    /* 0x64 */ Vtx *vertices; ///< Surface vertices within the drawing allocation.
+    /* 0x68 */ u8 pad68[4]; ///< Unresolved storage; no semantic interpretation established.
+    /* 0x6C */ u8 prim[4]; ///< RGBA modulation color.
+    /* 0x70 */ u8 flags[2]; ///< Leading and trailing outline indices; 255 disables an outline.
 } Flipbook;
+
+typedef char FlipbookSizeCheck[(sizeof(Flipbook) == 0x74) ? 1 : -1];
+typedef char FlipbookDrawingOffsetCheck[(((u32)&((Flipbook *)0)->displayList) == 0x50) ? 1 : -1];
+typedef char FlipbookVerticesOffsetCheck[(((u32)&((Flipbook *)0)->vertices) == 0x64) ? 1 : -1];
 
 /* Debug trace: compiled out in this build, but each format string is still
  * emitted to .rodata. */
@@ -113,10 +118,10 @@ void flipbookInitialize(u8 *object, s32 columns, s32 lines, u8 red, u8 green, u8
 /// \param object Initialized text-display model with valid owned drawing and text storage.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80025170 (0x80025170).
-void flipbookDestroy(OSTimer *object) {
-    heapFreeLocal((u8 *)&gGameHeap, (void *)*(s32 *)((u8 *)object + 0x50));
-    textPanelReleaseEntries((TextPanel *)object);
-    textPanelReleaseEntries((TextPanel *)((u8 *)object + 0x20));
+void flipbookDestroy(Flipbook *object) {
+    heapFreeLocal((u8 *)&gGameHeap, object->displayList);
+    textPanelReleaseEntries(&object->panels[0]);
+    textPanelReleaseEntries(&object->panels[1]);
 }
 
 /// Initialize the text-display model surface with the requested color.
@@ -264,32 +269,6 @@ Gfx *flipbookPrepareDraw(Flipbook *f) {
     return f->displayList;
 }
 
-typedef struct FlipbookImage {
-    void *pixels;
-    s32 width;
-    s32 height;
-    s32 format;
-} FlipbookImage;
-typedef struct FlipbookListBuffer {
-    s32 count;
-    s32 unknown04;
-    s16 origin[2];
-    u8 *colors;
-    s32 colorCount;
-    FlipbookImage **entries;
-    u32 *status;
-    void *style;
-} FlipbookListBuffer;
-typedef struct FlipbookLists {
-    FlipbookListBuffer buffers[2];
-    s32 width;
-    s32 stripCount;
-    s32 flip;
-    s32 current;
-    s32 result;
-    Gfx *branches[2];
-    Gfx *commands[2];
-} FlipbookLists;
 /// Shared default sixteen-entry RGBA5551 palette for indexed text drawing.
 /// \note Original identifier: \c D_80063800 (0x80063800).
 extern u8 gDefaultTextPalette[];
@@ -302,19 +281,19 @@ void textImageLoadTexture(Gfx **, u8 *);
 /// \note Portability: the compiled-out size check retains an IDO saved register; its original bound is unrecoverable, so the source uses a placeholder.
 /// \note Original decompilation identifier: \c func_800256C8 (0x800256C8).
 void flipbookBuildImageDisplayLists(u8 *object) {
-    FlipbookLists *lists;
-    FlipbookImage *image;
+    Flipbook *lists;
+    TextImage *image;
     Gfx *commands;
     Gfx *branches;
-    FlipbookImage **images;
+    TextImage **images;
     s32 index;
     s32 bank;
     textDrawSetPalette((s32)gDefaultTextPalette);
-    bank = ((FlipbookLists *)object)->current ^ 1;
-    branches = ((FlipbookLists *)object)->branches[bank];
-    commands = ((FlipbookLists *)object)->commands[bank];
-    images = ((FlipbookLists *)object)->buffers[bank].entries + 1;
-    for (index = 0; index < ((FlipbookLists *)object)->stripCount; index++) {
+    bank = ((Flipbook *)object)->cur ^ 1;
+    branches = ((Flipbook *)object)->dl[bank];
+    commands = ((Flipbook *)object)->commands[bank];
+    images = (TextImage **)((Flipbook *)object)->panels[bank].images + 1;
+    for (index = 0; index < ((Flipbook *)object)->stripCount; index++) {
         gSPBranchList(branches++, commands);
         image = *images;
         if (image != NULL) {
@@ -335,13 +314,12 @@ void flipbookBuildImageDisplayLists(u8 *object) {
         images++;
     }
     TRACE("workIdx:%d\n", bank);
-    TRACE("ERROR: gpSize over:%d\n", commands - ((FlipbookLists *)object)->commands[bank]);
-    lists = (FlipbookLists *)object;
+    TRACE("ERROR: gpSize over:%d\n", commands - ((Flipbook *)object)->commands[bank]);
+    lists = (Flipbook *)object;
     lists->flip = 1;
 }
 
 void image4BitAddOffsetOutline(u8 *, s32, s32, s32, s32);
-void flipbookBuildImageDisplayLists(u8 *);
 /// Replace the model text using its configured outline appearance.
 /// \param object Initialized text-display model with valid owned drawing and text storage.
 /// \param text At least count null-terminated text-entry addresses, read during this call; entries must be nonempty when outlines are enabled.
@@ -418,11 +396,10 @@ void scrollBoardInitializeObject(u8 *object) {
 void scrollBoardDestroyObject(u8 *object) {
     u8 *p = *(u8 **)(object + 0x54);
 
-    flipbookDestroy((OSTimer *)(p + 0x14));
+    flipbookDestroy((Flipbook *)(p + 0x14));
     heapFreeLocal((u8 *)&gGameHeap, p);
 }
 
-void flipbookSetText(u8 *, s32 *, s32);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
@@ -482,7 +459,6 @@ void scrollBoardUpdate(u8 *object) {
     }
 }
 
-Gfx *flipbookPrepareDraw(Flipbook *);
 
 /// Prepare the current scrolling text-board content for drawing.
 /// \param object Initialized scrolling text board with valid model state.
@@ -499,7 +475,6 @@ Gfx *scrollBoardPrepareDraw(u8 *object) {
 }
 
 u8 *objectCreateFromTemplate(u8 *); /* extern */
-void flipbookInitialize(u8 *, s32, s32, u8, u8, u8, u8, s32, s32);
 /// Object template used to create scrolling text boards.
 /// \note Original identifier: \c D_80099920 (0x80099920).
 extern u8 gScrollBoardObjectTemplate[];

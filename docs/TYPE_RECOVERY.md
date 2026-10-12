@@ -474,3 +474,13 @@ and retains the separate color allocation. Ghidra at 0x80012730 corroborates the
 entry allocation, pointer tables and capacity. An unsigned allocation-size local
 preserves the established allocator contract and original instruction selection.
 Each producer and consumer matched all 483 baseline objects individually.
+
+The flipbook layout continuation consolidates the drawing and initialization
+views into one private checked 0x74-byte model. Its two embedded TextPanel banks
+replace a second duplicate panel definition; drawing uses the existing TextImage
+record instead of a duplicate image layout. Initialization allocation partitions,
+draw bank selection and Ghidra at 0x80025170 establish the drawing allocation
+and paired-panel destruction. The unused word at 0x68 remains explicitly
+unresolved. The destructor takes a model pointer instead of OSTimer, and redundant
+local forward declarations following definitions are removed. All 483 objects
+remain identical to the immutable baseline.
