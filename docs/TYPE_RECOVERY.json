@@ -1967,6 +1967,8 @@
         "progress_value.h",
         "runtime_clock.h",
         "scene_types.h",
+        "story_chapter.h",
+        "story_milestones.h",
         "string_bytes.h",
         "text_draw.h",
         "text_image.h",
@@ -1980,149 +1982,149 @@
       "locations": {
         "raw_offset_candidates": {
           "slot + 4": [
-            "220:50",
-            "257:22"
+            "222:50",
+            "259:22"
           ],
           "liveObject + 0x54": [
-            "222:22",
-            "870:18"
+            "224:22",
+            "872:18"
           ],
           "p + 4": [
-            "223:71",
-            "224:82",
-            "871:71"
+            "225:71",
+            "226:82",
+            "873:71"
           ],
           "gToolboxBonusSlot + 4": [
-            "263:18"
+            "265:18"
           ],
           "gToolboxPurchaseSlot + 4": [
-            "267:19"
+            "269:19"
           ],
           "ext + 0x18": [
-            "350:16"
+            "352:16"
           ],
           "ext + 0x1E8": [
-            "352:14"
+            "354:14"
           ],
           "gPresentationSavedActorState + 0x1E8": [
-            "352:45"
+            "354:45"
           ],
           "gPikachuActor + 0x54": [
-            "392:32",
-            "442:24"
+            "394:32",
+            "444:24"
           ],
           "state + 0x1EC": [
-            "394:76"
+            "396:76"
           ],
           "player + 0x48": [
-            "403:28"
+            "405:28"
           ],
           "player + 0x54": [
-            "403:65"
+            "405:65"
           ],
           "player + 0x18": [
-            "406:14"
+            "408:14"
           ],
           "gPikachuActor + 0x1C": [
-            "407:20"
+            "409:20"
           ],
           "gPikachuActor + 0x20": [
-            "408:20"
+            "410:20"
           ],
           "gPikachuActor + 0x44": [
-            "409:20",
-            "449:41"
-          ],
-          "gPikachuActor + 0x48": [
-            "410:20",
-            "450:41"
-          ],
-          "gPikachuActor + 0x4C": [
             "411:20",
             "451:41"
           ],
+          "gPikachuActor + 0x48": [
+            "412:20",
+            "452:41"
+          ],
+          "gPikachuActor + 0x4C": [
+            "413:20",
+            "453:41"
+          ],
           "tgt + 0": [
-            "449:21"
-          ],
-          "tgt + 4": [
-            "450:21"
-          ],
-          "tgt + 8": [
             "451:21"
           ],
+          "tgt + 4": [
+            "452:21"
+          ],
+          "tgt + 8": [
+            "453:21"
+          ],
           "ext + 0xC": [
-            "453:64"
+            "455:64"
           ],
           "ext + 0x10": [
-            "454:69"
+            "456:69"
           ],
           "ext + 0x19C": [
-            "455:14"
+            "457:14"
           ],
           "ext + 0x1EC": [
-            "456:126"
+            "458:126"
           ],
           "firstJoint + 0x48": [
-            "460:18"
+            "462:18"
           ],
           "secondJoint + 0x48": [
-            "462:29"
+            "464:29"
           ],
           "gCurrentAreaConfiguration + 0x74": [
-            "521:23",
-            "538:18",
-            "592:25",
-            "605:25",
-            "625:29"
+            "523:23",
+            "540:18",
+            "594:25",
+            "607:25",
+            "627:29"
           ],
           "object + 0x54": [
-            "723:26",
-            "915:22"
+            "725:26",
+            "917:22"
           ],
           "state + 4": [
-            "724:75",
-            "725:68",
-            "916:58"
+            "726:75",
+            "727:68",
+            "918:58"
           ],
           "liveObject + 0x34": [
-            "867:18"
+            "869:18"
           ],
           "item + 0x18": [
-            "887:94"
+            "889:94"
           ],
           "item + 0x10": [
-            "888:14"
-          ],
-          "item + 0": [
-            "889:14"
-          ],
-          "gCurrentAreaConfiguration + 0xC": [
-            "889:35",
-            "890:35",
-            "891:35"
-          ],
-          "item + 4": [
             "890:14"
           ],
-          "item + 8": [
+          "item + 0": [
             "891:14"
           ],
+          "gCurrentAreaConfiguration + 0xC": [
+            "891:35",
+            "892:35",
+            "893:35"
+          ],
+          "item + 4": [
+            "892:14"
+          ],
+          "item + 8": [
+            "893:14"
+          ],
           "gCurrentAreaConfiguration + 0x64": [
-            "1235:18",
-            "1260:14",
-            "1324:18",
-            "1328:18",
-            "1332:18",
-            "1340:22"
+            "1237:18",
+            "1262:14",
+            "1326:18",
+            "1330:18",
+            "1334:18",
+            "1342:22"
           ],
           "gCurrentAreaConfiguration + 0x78": [
-            "1704:44"
+            "1706:44"
           ],
           "gItemKind8FCollectionValue + 0x64": [
-            "1795:47"
+            "1796:47"
           ],
           "currentChapter + 1": [
-            "1813:18"
+            "1814:18"
           ]
         }
       }
@@ -4655,6 +4657,7 @@
         "runtime_program.h",
         "scene_types.h",
         "scheduler.h",
+        "story_milestones.h",
         "text_draw.h",
         "text_panel.h",
         "voice_commands.h"
@@ -4663,10 +4666,10 @@
       "locations": {
         "raw_offset_candidates": {
           "gPikachuActor + 0x54": [
-            "605:31"
+            "606:31"
           ],
           "actorState + 0x1B8": [
-            "606:50"
+            "607:50"
           ],
           "gRuntimePromptPanelLineCount - 1": [
             "1098:75"
@@ -4682,37 +4685,38 @@
         "progress_fields.h",
         "progress_storage.h",
         "progress_value.h",
+        "story_milestones.h",
         "vector_direction.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "address_globals": {
           "D_8009ADC0": [
-            "28:5"
+            "29:5"
           ]
         },
         "raw_offset_candidates": {
           "pose + 0x10": [
-            "63:34"
+            "64:34"
           ],
           "animation + 0x28": [
-            "180:28"
+            "181:28"
           ],
           "rec + 1": [
-            "219:59"
+            "220:59"
           ],
           "entries + 1": [
-            "263:16"
+            "264:16"
           ],
           "width + 7": [
-            "373:18"
+            "374:18"
           ],
           "bytes - 1": [
-            "374:29"
+            "375:29"
           ],
           "bitWidth + 31": [
-            "421:53",
-            "465:80"
+            "422:53",
+            "466:80"
           ]
         }
       }
@@ -5327,6 +5331,8 @@
         "object_flags.h",
         "progress_storage.h",
         "runtime_clock.h",
+        "story_chapter.h",
+        "story_milestones.h",
         "text_draw.h",
         "text_image.h",
         "text_image_create.h",
@@ -5337,22 +5343,22 @@
       "locations": {
         "raw_offset_candidates": {
           "words + 4": [
-            "70:72"
+            "72:72"
           ],
           "words + 8": [
-            "75:44"
+            "77:44"
           ],
           "x - 10": [
-            "254:36"
+            "256:36"
           ],
           "y - 4": [
-            "254:44"
+            "256:44"
           ],
           "maxWidth + 10": [
-            "254:55"
+            "256:55"
           ],
           "x + 16": [
-            "261:17"
+            "263:17"
           ],
           "gCurrentAreaConfiguration + 0x64": [
             "980:47"
@@ -6161,7 +6167,8 @@
         "object_types.h",
         "progress_value.h",
         "script_vm.h",
-        "script_vm_stack.h"
+        "script_vm_stack.h",
+        "story_milestones.h"
       ],
       "matching_exceptions": {
         "scriptVmPushInteger calls": "A native command supplies an unused third actor argument; a void compatibility declaration retains the original argument setup."
@@ -6229,24 +6236,25 @@
         "progress_value.h",
         "scene_types.h",
         "script_vm_stack.h",
+        "story_chapter.h",
         "voice_recognition.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "actor + 0x54": [
-            "370:32",
-            "816:32",
-            "895:32",
-            "1000:32"
+            "371:32",
+            "817:32",
+            "896:32",
+            "1001:32"
           ],
           "created + 0x38": [
-            "836:42",
-            "840:42"
+            "837:42",
+            "841:42"
           ],
           "gCurrentAreaConfiguration + 0xC": [
-            "839:40",
-            "906:40"
+            "840:40",
+            "907:40"
           ]
         }
       }
@@ -7260,6 +7268,7 @@
         "progress_fields.h",
         "progress_value.h",
         "scene_types.h",
+        "story_chapter.h",
         "string_bytes.h",
         "vector_interpolation.h"
       ],
@@ -7272,244 +7281,244 @@
       "locations": {
         "raw_offset_candidates": {
           "gRuntimeFrameSeconds + 8": [
-            "372:35"
+            "373:35"
           ],
           "normal + 2": [
-            "630:80"
+            "631:80"
           ],
           "currentGround + 0": [
-            "658:38"
+            "659:38"
           ],
           "dy + 0": [
-            "666:64",
-            "686:86"
+            "667:64",
+            "687:86"
           ],
           "nextX + 0": [
-            "669:79",
-            "675:79"
+            "670:79",
+            "676:79"
           ],
           "nextZ + 0": [
-            "672:93",
-            "675:100"
+            "673:93",
+            "676:100"
           ],
           "nextGround + 0": [
-            "679:22"
+            "680:22"
           ],
           "player + 0x84": [
-            "778:46",
-            "1853:45"
+            "779:46",
+            "1854:45"
           ],
           "object + 0x54": [
-            "781:22",
-            "1854:31",
-            "1869:26",
-            "1891:26",
-            "1909:36",
-            "2753:22"
-          ],
-          "player + 0x18": [
-            "782:20"
-          ],
-          "player + 0xC": [
-            "782:46"
-          ],
-          "player + 0x10": [
-            "783:22",
-            "785:22"
-          ],
-          "player + 0x14": [
-            "783:48",
-            "785:48"
-          ],
-          "player + 0x1C": [
-            "788:26"
-          ],
-          "player + 4": [
-            "788:52"
-          ],
-          "player + 8": [
-            "789:26"
-          ],
-          "object + 0x38": [
-            "793:24",
-            "797:25",
-            "1850:40",
-            "1853:18"
-          ],
-          "object + 0x18": [
-            "793:56"
-          ],
-          "state + 4": [
-            "795:94",
-            "1896:30",
-            "2130:18"
-          ],
-          "gPlayerCompanionTarget - 0x50": [
-            "1046:36"
-          ],
-          "gPlayerControllerPort - 0x2C": [
-            "1063:37",
-            "1064:37"
-          ],
-          "gPlayerHelpTextCursor + 1": [
-            "1457:46",
-            "1461:46"
-          ],
-          "player + 0x60": [
-            "1845:14"
-          ],
-          "player + 0x98": [
-            "1846:14",
-            "1855:22",
-            "1871:22",
-            "1877:18",
-            "1882:22",
-            "1887:18",
-            "1894:18",
-            "1910:18"
-          ],
-          "player + 0x5C": [
-            "1847:14",
-            "1850:14"
-          ],
-          "player + 0x24": [
-            "1848:38",
-            "1863:36"
-          ],
-          "object + 0x34": [
-            "1858:21",
-            "1907:21"
-          ],
-          "state + 0x1E8": [
-            "1870:22"
-          ],
-          "state + 0xC": [
-            "1892:22",
-            "2133:18"
-          ],
-          "resultState + 4": [
-            "1911:25"
-          ],
-          "gPlayerEyeHeight - 0x1C": [
-            "1922:37",
-            "2515:42",
-            "2527:42"
-          ],
-          "y + 0": [
-            "2085:52"
-          ],
-          "origin + 0x20": [
-            "2085:89"
-          ],
-          "origin + 0x1C": [
-            "2086:34"
-          ],
-          "gCurrentAreaConfiguration + 0x20": [
-            "2127:35"
-          ],
-          "state + 0": [
-            "2128:18",
-            "2130:97"
-          ],
-          "state + 8": [
-            "2129:18",
-            "2131:105"
-          ],
-          "state + 0x1C": [
-            "2132:18"
-          ],
-          "state + 0x10": [
-            "2134:18"
-          ],
-          "state + 0x14": [
-            "2135:18",
-            "2182:18",
-            "2183:18",
-            "2183:43",
-            "2184:22",
-            "2185:22",
-            "2187:25",
-            "2188:18",
-            "2188:43",
-            "2189:22",
-            "2190:22"
-          ],
-          "state + 0x18": [
-            "2136:18",
-            "2170:18",
-            "2171:18",
-            "2171:43",
-            "2172:22",
-            "2173:22",
-            "2175:25",
-            "2176:18",
-            "2176:43",
-            "2177:22",
-            "2178:22"
-          ],
-          "state + 0x2C": [
-            "2139:18"
-          ],
-          "state + 0x30": [
-            "2140:18"
-          ],
-          "state + 0x32": [
-            "2141:18"
-          ],
-          "state + 0x4C": [
-            "2142:18"
-          ],
-          "state + 0x50": [
-            "2143:18"
-          ],
-          "state + 0x64": [
-            "2144:18"
-          ],
-          "state + 0x68": [
-            "2145:18"
-          ],
-          "state + 0x20": [
-            "2146:18"
-          ],
-          "state + 0x84": [
-            "2147:18"
-          ],
-          "state + 0x78": [
-            "2148:18"
-          ],
-          "state + 0x80": [
-            "2149:18"
-          ],
-          "state + 0x88": [
-            "2151:18"
-          ],
-          "model + 0x38": [
-            "2151:43"
-          ],
-          "state + 0x8C": [
-            "2152:18"
-          ],
-          "model + 0x28": [
-            "2152:52",
-            "2153:61"
-          ],
-          "state + 0x90": [
-            "2153:18"
-          ],
-          "state + 0x98": [
-            "2154:18"
-          ],
-          "return -1": [
-            "2375:9"
-          ],
-          "friendshipLevel + 1": [
-            "2380:48"
-          ],
-          "state + 0x1EA": [
+            "782:22",
+            "1855:31",
+            "1870:26",
+            "1892:26",
+            "1910:36",
             "2754:22"
           ],
+          "player + 0x18": [
+            "783:20"
+          ],
+          "player + 0xC": [
+            "783:46"
+          ],
+          "player + 0x10": [
+            "784:22",
+            "786:22"
+          ],
+          "player + 0x14": [
+            "784:48",
+            "786:48"
+          ],
+          "player + 0x1C": [
+            "789:26"
+          ],
+          "player + 4": [
+            "789:52"
+          ],
+          "player + 8": [
+            "790:26"
+          ],
+          "object + 0x38": [
+            "794:24",
+            "798:25",
+            "1851:40",
+            "1854:18"
+          ],
+          "object + 0x18": [
+            "794:56"
+          ],
+          "state + 4": [
+            "796:94",
+            "1897:30",
+            "2131:18"
+          ],
+          "gPlayerCompanionTarget - 0x50": [
+            "1047:36"
+          ],
+          "gPlayerControllerPort - 0x2C": [
+            "1064:37",
+            "1065:37"
+          ],
+          "gPlayerHelpTextCursor + 1": [
+            "1458:46",
+            "1462:46"
+          ],
+          "player + 0x60": [
+            "1846:14"
+          ],
+          "player + 0x98": [
+            "1847:14",
+            "1856:22",
+            "1872:22",
+            "1878:18",
+            "1883:22",
+            "1888:18",
+            "1895:18",
+            "1911:18"
+          ],
+          "player + 0x5C": [
+            "1848:14",
+            "1851:14"
+          ],
+          "player + 0x24": [
+            "1849:38",
+            "1864:36"
+          ],
+          "object + 0x34": [
+            "1859:21",
+            "1908:21"
+          ],
+          "state + 0x1E8": [
+            "1871:22"
+          ],
+          "state + 0xC": [
+            "1893:22",
+            "2134:18"
+          ],
+          "resultState + 4": [
+            "1912:25"
+          ],
+          "gPlayerEyeHeight - 0x1C": [
+            "1923:37",
+            "2516:42",
+            "2528:42"
+          ],
+          "y + 0": [
+            "2086:52"
+          ],
+          "origin + 0x20": [
+            "2086:89"
+          ],
+          "origin + 0x1C": [
+            "2087:34"
+          ],
+          "gCurrentAreaConfiguration + 0x20": [
+            "2128:35"
+          ],
+          "state + 0": [
+            "2129:18",
+            "2131:97"
+          ],
+          "state + 8": [
+            "2130:18",
+            "2132:105"
+          ],
+          "state + 0x1C": [
+            "2133:18"
+          ],
+          "state + 0x10": [
+            "2135:18"
+          ],
+          "state + 0x14": [
+            "2136:18",
+            "2183:18",
+            "2184:18",
+            "2184:43",
+            "2185:22",
+            "2186:22",
+            "2188:25",
+            "2189:18",
+            "2189:43",
+            "2190:22",
+            "2191:22"
+          ],
+          "state + 0x18": [
+            "2137:18",
+            "2171:18",
+            "2172:18",
+            "2172:43",
+            "2173:22",
+            "2174:22",
+            "2176:25",
+            "2177:18",
+            "2177:43",
+            "2178:22",
+            "2179:22"
+          ],
+          "state + 0x2C": [
+            "2140:18"
+          ],
+          "state + 0x30": [
+            "2141:18"
+          ],
+          "state + 0x32": [
+            "2142:18"
+          ],
+          "state + 0x4C": [
+            "2143:18"
+          ],
+          "state + 0x50": [
+            "2144:18"
+          ],
+          "state + 0x64": [
+            "2145:18"
+          ],
+          "state + 0x68": [
+            "2146:18"
+          ],
+          "state + 0x20": [
+            "2147:18"
+          ],
+          "state + 0x84": [
+            "2148:18"
+          ],
+          "state + 0x78": [
+            "2149:18"
+          ],
+          "state + 0x80": [
+            "2150:18"
+          ],
+          "state + 0x88": [
+            "2152:18"
+          ],
+          "model + 0x38": [
+            "2152:43"
+          ],
+          "state + 0x8C": [
+            "2153:18"
+          ],
+          "model + 0x28": [
+            "2153:52",
+            "2154:61"
+          ],
+          "state + 0x90": [
+            "2154:18"
+          ],
+          "state + 0x98": [
+            "2155:18"
+          ],
+          "return -1": [
+            "2376:9"
+          ],
+          "friendshipLevel + 1": [
+            "2381:48"
+          ],
+          "state + 0x1EA": [
+            "2755:22"
+          ],
           "gPikachuActor + 0x44": [
-            "2810:35"
+            "2811:35"
           ]
         }
       }
@@ -7596,99 +7605,101 @@
         "progress_value.h",
         "runtime_clock.h",
         "scene_types.h",
+        "story_chapter.h",
         "system_menu.h",
         "text_draw.h",
         "text_image_create.h"
       ],
       "matching_exceptions": {
-        "systemMenuAppendDetailText": "The detail accumulator interface retains an unsigned byte-string view. Trials using const char *, including a local unsigned-byte view, changed allocated code. Isolate the compiler scheduling/register effect before changing the text interface; menu record and callback typing independently matches."
+        "systemMenuAppendDetailText": "The detail accumulator interface retains an unsigned byte-string view. Trials using const char *, including a local unsigned-byte view, changed allocated code. Isolate the compiler scheduling/register effect before changing the text interface; menu record and callback typing independently matches.",
+        "systemMenuInvokeChapterUpdate": "The legacy no-argument menu callback calls the one-argument chapter setter without supplying a chapter. Preserve its explicitly documented unprototyped call; a canonical setter prototype requires an invented argument or recovery of the menu callback ABI. The chapter-query header remains canonical."
       },
       "locations": {
         "raw_offset_candidates": {
           "depth + 1": [
-            "414:47"
+            "415:47"
           ],
           "row + 1": [
-            "643:14"
+            "644:14"
           ],
           "i - 1": [
-            "649:18"
+            "650:18"
           ],
           "index - 1": [
-            "700:18"
+            "701:18"
           ],
           "count - 1": [
-            "833:51"
+            "834:51"
           ],
           "firstVisibleIndex + 4": [
-            "870:48"
+            "871:48"
           ],
           "selectedIndex - 4": [
-            "871:51"
+            "872:51"
           ],
           "model + 0x18": [
-            "909:125",
-            "939:125"
+            "910:125",
+            "940:125"
           ],
           "model + 0x10": [
-            "910:37",
-            "940:37"
-          ],
-          "gPlayerYaw + 180": [
-            "910:72",
-            "940:72",
-            "977:50"
-          ],
-          "model + 0xC": [
             "911:37",
             "941:37"
           ],
-          "secondary + 0x10": [
+          "gPlayerYaw + 180": [
+            "911:72",
+            "941:72",
+            "978:50"
+          ],
+          "model + 0xC": [
             "912:37",
             "942:37"
           ],
+          "secondary + 0x10": [
+            "913:37",
+            "943:37"
+          ],
           "object + 0x18": [
-            "975:102"
+            "976:102"
           ],
           "object + 0xC": [
-            "976:14",
-            "979:14"
-          ],
-          "object + 0x10": [
             "977:14",
             "980:14"
           ],
+          "object + 0x10": [
+            "978:14",
+            "981:14"
+          ],
           "object + 0x14": [
-            "978:14"
+            "979:14"
           ],
           "gCurrentAreaConfiguration + 0x64": [
-            "1006:47"
+            "1007:47"
           ],
           "y + 3": [
-            "1166:14"
+            "1167:14"
           ],
           "x + 80": [
-            "1167:13"
+            "1168:13"
           ],
           "selected - 2": [
-            "1180:40"
+            "1181:40"
           ],
           "top - 3": [
-            "1180:54"
+            "1181:54"
           ],
           "selected + 2": [
-            "1180:63"
+            "1181:63"
           ],
           "bottom + 3": [
-            "1180:77"
+            "1181:77"
           ],
           "gCurrentAreaConfiguration + 0xC": [
-            "1865:32",
             "1866:32",
             "1867:32",
-            "1880:32",
+            "1868:32",
             "1881:32",
-            "1882:32"
+            "1882:32",
+            "1883:32"
           ]
         }
       }
@@ -7696,37 +7707,38 @@
     "src/scenes/abra_shop.c": {
       "known_views": [
         "actor_create.h",
-        "item_object.h"
+        "item_object.h",
+        "story_chapter.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "state + 0x1EC": [
-            "36:18"
-          ],
-          "companion + 0x44": [
-            "36:44"
-          ],
-          "state + 0x1F0": [
             "37:18"
           ],
-          "companion + 0x48": [
+          "companion + 0x44": [
             "37:44"
           ],
-          "state + 0x1F4": [
+          "state + 0x1F0": [
             "38:18"
           ],
-          "companion + 0x4C": [
+          "companion + 0x48": [
             "38:44"
           ],
-          "state + 0x198": [
+          "state + 0x1F4": [
             "39:18"
           ],
-          "companion + 0x38": [
+          "companion + 0x4C": [
             "39:44"
           ],
-          "state + 0x19C": [
+          "state + 0x198": [
             "40:18"
+          ],
+          "companion + 0x38": [
+            "40:44"
+          ],
+          "state + 0x19C": [
+            "41:18"
           ]
         }
       }
@@ -7853,21 +7865,22 @@
         "item_object.h",
         "landmark.h",
         "object_lifecycle.h",
-        "progress_fields.h"
+        "progress_fields.h",
+        "story_chapter.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "residentIndex + 0x6A": [
-            "40:30"
+            "41:30"
           ],
           "state - 2": [
-            "63:50"
+            "64:50"
           ],
           "i + 0x6A": [
-            "104:30",
-            "109:30",
-            "183:30"
+            "105:30",
+            "110:30",
+            "184:30"
           ]
         }
       }
@@ -7879,21 +7892,22 @@
         "landmark.h",
         "object_lifecycle.h",
         "progress_fields.h",
-        "scene_types.h"
+        "scene_types.h",
+        "story_chapter.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "residentIndex + 0x65": [
-            "42:30"
+            "43:30"
           ],
           "state - 2": [
-            "64:50"
+            "65:50"
           ],
           "i + 0x65": [
-            "119:30",
-            "124:30",
-            "180:30"
+            "120:30",
+            "125:30",
+            "181:30"
           ]
         }
       }
@@ -7906,21 +7920,22 @@
         "landmark.h",
         "object_lifecycle.h",
         "progress_fields.h",
-        "progress_value.h"
+        "progress_value.h",
+        "story_chapter.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "residentIndex + 0x70": [
-            "39:30"
+            "40:30"
           ],
           "state - 2": [
-            "61:50"
+            "62:50"
           ],
           "i + 0x70": [
-            "99:30",
-            "104:30",
-            "168:30"
+            "100:30",
+            "105:30",
+            "169:30"
           ]
         }
       }
@@ -7930,25 +7945,26 @@
         "actor_create.h",
         "item_object.h",
         "landmark.h",
-        "scene_types.h"
+        "scene_types.h",
+        "story_chapter.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "index + 0x77": [
-            "50:31"
+            "51:31"
           ],
           "index + 0x7C": [
-            "51:30"
+            "52:30"
           ],
           "index + 5": [
-            "52:19"
+            "53:19"
           ],
           "index + 0x81": [
-            "53:31"
+            "54:31"
           ],
           "angle + 180": [
-            "62:102"
+            "63:102"
           ]
         }
       }

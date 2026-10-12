@@ -1,3 +1,4 @@
+#include "story_milestones.h"
 #include "progress_field_types.h"
 #include "progress_storage.h"
 #include "progress_fields.h"
@@ -644,7 +645,6 @@ void playerSetChaseStage(s32);
 void audioApplySavedMusicVolume(f32);
 void audioApplySavedSoundEffectVolume(f32);
 void audioSetOutputMode(s32);
-void progressSetChapterAndUnlockMilestones(s32);
 
 /// Applies the loaded progress record to the active gameplay state and settings.
 /// \returns Nothing.

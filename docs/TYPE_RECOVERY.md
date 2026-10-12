@@ -2676,3 +2676,17 @@ Ghidra 0x8003267C confirms the twelve-byte limits stride and eight-byte location
 stride, including shift at offset four. Layout construction and signed/unsigned
 read/write cases establish the field roles without changing packed arithmetic.
 Both units preserve every allocated object and strict relocation identity.
+
+### Story-chapter and milestone interfaces
+
+`story_chapter.h` declares the chapter query and visit-driven chapter update;
+`story_milestones.h` supplies the chapter setter and unlock contract. Sixteen
+units include the appropriate game-owned headers. The locally supplied SDK
+system header also contains a historical declaration of the chapter query.
+That checksummed external input remains unchanged; game callers now include
+the explicit game-owned contract rather than relying on that declaration.
+
+Ghidra 0x8002AD04 confirms the signed chapter input and milestone writes. The
+system-menu legacy callback still omits that input; its existing portability
+note and recovery ledger preserve the unresolved ABI requirement without
+inventing a chapter value. Every converted unit preserves the strict baseline.

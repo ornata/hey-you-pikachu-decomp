@@ -1,3 +1,5 @@
+#include "story_chapter.h"
+#include "story_milestones.h"
 #include "progress_storage.h"
 #include "camera_overlay.h"
 #include "object_flags.h"
@@ -741,8 +743,6 @@ void controllerConfigureStickButtons(s32 enabled, s32 upThreshold, s32 downThres
 s32 controllerIsStandardPad(s32 port);
 void runtimeRequestProgramChange(s32);
 void runtimeRequestGameModeChange(s32);
-void progressSetChapterAndUnlockMilestones(s32);
-s32 progressUpdateChapterAfterVisit(void);
 void backdropSelectForView(s32, s32, s32);
 void titleScreenInitialize(void);
 void titleScreenResetLogoFade(void);

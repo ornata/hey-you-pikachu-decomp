@@ -1,3 +1,4 @@
+#include "story_milestones.h"
 #include "progress_value.h"
 #include "action_continuation.h"
 #include "action_script_stop.h"
@@ -45,7 +46,6 @@ void areaRequestTransition(s32, s32);          /* extern */
 /// \note Original identifier: \c D_8009B580 (0x8009B580).
 extern s32 gEyeCatchSelectedGroup;
 
-void progressSetChapterAndUnlockMilestones(); /* extern */
 
 
 void playerSetChaseStage(); /* extern */

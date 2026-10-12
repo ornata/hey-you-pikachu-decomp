@@ -1,3 +1,4 @@
+#include "story_milestones.h"
 #include "progress_storage.h"
 #include "progress_fields.h"
 #include "camera_overlay.h"
@@ -626,7 +627,6 @@ void audioStopCategories(s32, f64);
 void hudPlayerUpdateNoOp(s32);                /* extern */
 void presentationUpdateCardMode();                   /* extern */
 void presentationUpdateCollectionResultsMode();                   /* extern */
-void progressSetChapterAndUnlockMilestones(s32);            /* extern */
 void textWindowUpdate();                   /* extern */
 void wholeMapUpdate();                   /* extern */
 void toolboxHandleInput();                   /* extern */

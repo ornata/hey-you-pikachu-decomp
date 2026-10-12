@@ -1,3 +1,4 @@
+#include "story_chapter.h"
 #include "progress_fields.h"
 #include "progress_value.h"
 #include "player_camera.h"
@@ -1181,7 +1182,6 @@ s32 actorScriptPushCurrentChapter(u8 *actor) {
     return 0;
 }
 
-s32 progressUpdateChapterAfterVisit();     /* extern */
 /// Update the story chapter and unlock milestones according to completed visit objectives.
 /// \param actor Actor whose script VM receives the resulting chapter number, which may remain unchanged or return to an earlier chapter.
 /// \returns Zero, allowing script execution to continue.

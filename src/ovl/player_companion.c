@@ -1,3 +1,4 @@
+#include "story_chapter.h"
 #include "progress_fields.h"
 #include "progress_value.h"
 #include "player_camera.h"

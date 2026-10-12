@@ -1,3 +1,4 @@
+#include "story_chapter.h"
 #include "common.h"
 #include "item_object.h"
 #include "actor_create.h"

@@ -1,3 +1,5 @@
+#include "story_chapter.h"
+#include "story_milestones.h"
 #include "progress_fields.h"
 #include "progress_value.h"
 #include "presentation_focus.h"
@@ -1757,7 +1759,6 @@ void progressSetChapterAndUnlockMilestones(s32 chapter) {
     }
 }
 
-void progressSetChapterAndUnlockMilestones(s32);
 /// Separate symbol view of the primary player profile points balance.
 /// \note Original identifier: \c D_800EF790 (0x800EF790).
 extern s32 gPlayerProfilePoints;

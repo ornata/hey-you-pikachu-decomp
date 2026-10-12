@@ -1,3 +1,4 @@
+#include "story_chapter.h"
 #include "landmark.h"
 #include "item_object.h"
 #include "common.h"
