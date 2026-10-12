@@ -1,3 +1,4 @@
+#include "object_template.h"
 #include "object_lifecycle.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -10,13 +11,10 @@ extern s8 gCaveDescriptionFormat[];
 /// \note Original identifier: \c D_800B6D30 (0x800B6D30).
 extern s8 gCaveDescriptionBuffer[];
 
-typedef struct ObjTemplate38 {
-    s32 w[14];
-} ObjTemplate38;
 /// Hierarchy template used to create cave interaction objects.
 /// \note Original identifier: \c D_80088EA0 (0x80088EA0).
-extern ObjTemplate38 gCaveObjectTemplate;
-u8 *objectCreateHierarchyFromTemplate(ObjTemplate38 *);
+extern ObjectTemplate gCaveObjectTemplate;
+u8 *objectCreateHierarchyFromTemplate(ObjectTemplate *);
 
 /// Create and register a cave interaction object with its scene anchors.
 /// \param position Three-component world position of the cave interaction point.
@@ -26,7 +24,7 @@ u8 *objectCreateHierarchyFromTemplate(ObjTemplate38 *);
 /// \returns The registered cave object.
 /// \note Original decompilation identifier: \c func_8001F4F0 (0x8001F4F0).
 u8 *caveCreate(f32 *position, f32 *anchorA, f32 *anchorB, u8 kind) {
-    ObjTemplate38 tmpl = gCaveObjectTemplate;
+    ObjectTemplate tmpl = gCaveObjectTemplate;
     u8 *obj;
     u8 *v;
 

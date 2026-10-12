@@ -1,3 +1,4 @@
+#include "object_template.h"
 #include "object_lifecycle.h"
 #include "common.h"
 #include "heap_alloc.h"
@@ -21,16 +22,13 @@ typedef struct SceneRegionState {
 typedef char SceneRegionStateSizeCheck[(sizeof(SceneRegionState) == 0x10) ? 1 : -1];
 typedef char SceneRegionStateDataOffsetCheck[(((u32) & (((SceneRegionState *)0)->sceneData)) == 0xC) ? 1 : -1];
 
-typedef struct PartTemplate {
-    s32 words[14];
-} PartTemplate;
 /// Hierarchy template used to create rectangular scene interaction regions.
 /// \note Original identifier: \c D_80088E60 (0x80088E60).
-extern PartTemplate gSceneRegionObjectTemplate;
+extern ObjectTemplate gSceneRegionObjectTemplate;
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
-u8 *objectCreateHierarchyFromTemplate(PartTemplate *);
+u8 *objectCreateHierarchyFromTemplate(ObjectTemplate *);
 
 /// Create a rectangular scene region with its associated scene data.
 /// \param position Three-component world-space region center.
@@ -40,7 +38,7 @@ u8 *objectCreateHierarchyFromTemplate(PartTemplate *);
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001F1F0 (0x8001F1F0).
 void sceneRegionCreate(f32 *position, f32 width, f32 depth, s32 sceneData) {
-    PartTemplate tmpl;
+    ObjectTemplate tmpl;
     u8 *obj;
     SceneRegionState *state;
 

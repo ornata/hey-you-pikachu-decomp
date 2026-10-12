@@ -3,19 +3,10 @@
 #ifndef ITEM_KIND_H
 #define ITEM_KIND_H
 #include <ultra64.h>
+#include "object_template.h"
 
-/// Borrowed item model hierarchy template cloned when creating an item.
-typedef struct ItemModel {
-    /* 0x00 */ f32 scale[3];              ///< Local model scale.
-    /* 0x0C */ f32 rotation[3];           ///< Local model rotation in degrees.
-    /* 0x18 */ f32 position[3];           ///< Local model position.
-    /* 0x24 */ f32 radius;                ///< Model visibility radius.
-    /* 0x28 */ struct ItemModel *sibling; ///< Borrowed next sibling template.
-    /* 0x2C */ struct ItemModel *child;   ///< Borrowed first child template.
-    /* 0x30 */ Gfx *displayList;          ///< Borrowed model drawing commands.
-    /* 0x34 */ u16 type;                  ///< Initial runtime object kind.
-    /* 0x36 */ u16 flags;                 ///< Initial object flags.
-} ItemModel;                              /* size 0x38 */
+/// Borrowed object hierarchy template used by an item kind.
+typedef ObjectTemplate ItemModel;
 
 /// Persistent item name and interaction-help text.
 typedef struct {

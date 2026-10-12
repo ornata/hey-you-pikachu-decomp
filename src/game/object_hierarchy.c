@@ -1,3 +1,4 @@
+#include "object_template.h"
 #include "object_lifecycle.h"
 #include "keyed_pool.h"
 #include "heap_free.h"
@@ -709,11 +710,6 @@ s32 objectDetachChildLink(u8 *previous, u8 *object) {
     return firstChildAddress;
 }
 
-typedef struct ObjHead38 {
-    u32 w[13];
-    u16 kind;
-    u16 flags;
-} ObjHead38;
 /// Per-kind object initialization, destruction, update and drawing callbacks.
 /// \note Original identifier: \c D_80078140 (0x80078140).
 extern ObjectKindCallbacks gObjectKindCallbacks[];
@@ -725,12 +721,12 @@ extern ObjectKindCallbacks gObjectKindCallbacks[];
 /// \returns Newly owned object; release it with objectDestroy when it is no longer in an active hierarchy.
 /// \note Original decompilation identifier: \c func_80008160 (0x80008160).
 u8 *objectCreateFromTemplate(u8 *definition) {
-    ObjHead38 *tmpl = (ObjHead38 *)definition;
+    ObjectTemplate *tmpl = (ObjectTemplate *)definition;
     u8 *o = heapAllocLocal(&gGameHeap, 0x68, 0x275);
     void (*init)(u8 *);
 
     _bzero(o, 0x5C);
-    *(ObjHead38 *)o = *tmpl;
+    *(ObjectTemplate *)o = *tmpl;
     *(s16 *)(o + 0x36) = 1;
     *(u8 **)(o + 0x58) = o + 0x5C;
     *(s32 *)(o + 0x38) = keyedPoolInsertWithNextId(&gObjectHandlePool, (s32)o);
@@ -741,18 +737,15 @@ u8 *objectCreateFromTemplate(u8 *definition) {
     return o;
 }
 
-typedef struct ObjTemplate38 {
-    s32 w[14];
-} ObjTemplate38;
 /// Template copied when creating a default runtime object.
 /// \note Original identifier: \c D_80063660 (0x80063660).
-extern ObjTemplate38 gDefaultObjectTemplate;
+extern ObjectTemplate gDefaultObjectTemplate;
 
 /// Create an object from the default object template.
 /// \returns Newly owned object; release it with objectDestroy when it is no longer in an active hierarchy.
 /// \note Original decompilation identifier: \c func_8000823C (0x8000823C).
 u8 *objectCreateDefault(void) {
-    ObjTemplate38 tmpl = gDefaultObjectTemplate;
+    ObjectTemplate tmpl = gDefaultObjectTemplate;
 
     return objectCreateFromTemplate((u8 *)&tmpl);
 }
@@ -822,10 +815,10 @@ u8 *objectCloneTemplateHierarchy(u8 *src, u8 *root) {
             *(u16 *)(root + 0x36) |= 4;
         }
         *(u8 **)(*link + 0x50) = root;
-        if (*(u8 **)(src + 0x2C) != NULL) {
-            *(u8 **)(*link + 0x2C) = objectCloneTemplateHierarchy(*(u8 **)(src + 0x2C), root);
+        if ((u8 *)((ObjectTemplate *)src)->child != NULL) {
+            *(u8 **)(*link + 0x2C) = objectCloneTemplateHierarchy((u8 *)((ObjectTemplate *)src)->child, root);
         }
-        src = *(u8 **)(src + 0x28);
+        src = (u8 *)((ObjectTemplate *)src)->sibling;
         link = (u8 **)(*link + 0x28);
     } while (src != NULL);
     return head;

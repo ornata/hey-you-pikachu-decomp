@@ -1406,3 +1406,16 @@ provider, value-consuming callers and unchanged objects establish the pointer
 return contract. Ownership comments require removing retained active/sibling
 links before destruction. Each source unit was rebuilt and all 483 objects
 strictly compared before proceeding to the next mutation.
+
+### Shared object hierarchy template layout
+
+`object_template.h` defines the checked 0x38 template copied by runtime creation:
+scale, rotation, local position, radius, sibling/child definitions, display list,
+kind and flags. The runtime object's shared prefix has the same leading fields,
+but the template remains a separate borrowed definition rather than a live object.
+Ghidra at 0x80008160 confirms the complete 0x38 copy and kind-selected initializer;
+creation replaces flags and establishes runtime handle and ownership state.
+The default, cave and scene-region copies now use this layout, and hierarchy
+cloning uses its sibling and child fields. `ItemModel` aliases the same evidenced
+layout instead of maintaining a duplicate structure. The shared-header dependent
+build and each source mutation preserve all 483 objects and relocation addends.
