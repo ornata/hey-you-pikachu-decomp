@@ -3,7 +3,7 @@
 #include "node_pool.h"
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern u8 gGameHeap[];
+extern HpHdr gGameHeap;
 
 /// Initialize an empty ordered value pool.
 /// \param pool Pool to initialize.
@@ -16,7 +16,7 @@ void nodePoolInitialize(NodePool *pool, s32 count) {
     PoolNode *node;
     s32 i;
     pool->count = count;
-    pool->nodes = (PoolNode *)heapAllocLocal(gGameHeap, count * sizeof(PoolNode), 0x13);
+    pool->nodes = (PoolNode *)heapAllocLocal(&gGameHeap, count * sizeof(PoolNode), 0x13);
     i = 0;
     node = pool->nodes;
     while (i != count) {

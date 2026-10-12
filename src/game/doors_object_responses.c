@@ -44,7 +44,7 @@ void objectResponsesClearWithCallback(s32, s32);
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
 void heapInitializeRegion(void *, s32, s32);
-void keyedPoolInitialize(void *, s32);
+void keyedPoolInitialize(KeyedPool *, u32);
 
 /// Reset the registry of created door objects.
 /// \returns Nothing.
@@ -197,7 +197,7 @@ void objectResponsesInitialize(s32 capacity, s32 heapBytes) {
     heapBytes = (heapBytes + 0xF) & ~0xF;
     gObjectResponseHeapStorage = heapAllocLocal(&gGameHeap, heapBytes, 0x33);
     heapInitializeRegion(&gObjectResponseHeap, (s32)gObjectResponseHeapStorage, heapBytes);
-    keyedPoolInitialize(&gObjectResponseRegistry, capacity);
+    keyedPoolInitialize((KeyedPool *)&gObjectResponseRegistry, capacity);
 }
 
 void keyedPoolDestroy(KeyedPool *); /* extern */
@@ -243,9 +243,9 @@ void objectResponseDispatch(s32 object, u8 *response) {
     gObjectResponseHandlers[response[6]](object, response);
 }
 
-u8 *keyedPoolIterateFirstForKey(u8 *, s32);
-u8 *keyedPoolIterateNextForKey(u8 *, s32);
-void keyedPoolRemoveAllForKey(u8 *, s32);
+s32 keyedPoolIterateFirstForKey(KeyedPool *, s32);
+s32 keyedPoolIterateNextForKey(KeyedPool *, s32);
+void keyedPoolRemoveAllForKey(KeyedPool *, s32);
 
 /// Consume an object's pending responses, optionally invoking a callback for each.
 /// \param object Target object address whose pending responses are cleared.
@@ -257,7 +257,7 @@ void objectResponsesClearWithCallback(s32 object, s32 callback) {
     u8 *n;
 
     key = *(s32 *)(object + 0x38);
-    n = keyedPoolIterateFirstForKey(gObjectResponseRegistry, key);
+    n = (u8 *)keyedPoolIterateFirstForKey((KeyedPool *)gObjectResponseRegistry, key);
     if (n != NULL) {
         do {
             if (callback != 0) {
@@ -267,9 +267,9 @@ void objectResponsesClearWithCallback(s32 object, s32 callback) {
                 heapFreeLocal(&gObjectResponseHeap, *(void **)(n + 8));
             }
             heapFreeLocal(&gObjectResponseHeap, n);
-        } while ((n = keyedPoolIterateNextForKey(gObjectResponseRegistry, key)) != NULL);
+        } while ((n = (u8 *)keyedPoolIterateNextForKey((KeyedPool *)gObjectResponseRegistry, key)) != NULL);
     }
-    keyedPoolRemoveAllForKey(gObjectResponseRegistry, key);
+    keyedPoolRemoveAllForKey((KeyedPool *)gObjectResponseRegistry, key);
     *(u16 *)(object + 0x36) = *(u16 *)(object + 0x36) & 0xF7FF;
 }
 

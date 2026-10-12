@@ -774,3 +774,20 @@ addends. Its unused trailing bytes are explicitly stride storage spanning the
 next descriptor, rather than asserted unknown semantic fields. All declaring
 callers now share the graphics API; the unused controller declaration is removed.
 Every retained source-unit change matches the preserved 483-object baseline.
+
+### Keyed-pool entry and predecessor contracts
+
+Keyed lookup, removal and value-query APIs now share `KeyedPool *`,
+`KeyedPoolEntry *` and writable predecessor-pointer results. Entry lookup with
+a value returns a borrowed entry pointer; stored values remain generic signed
+32-bit values, with explicit pointer conversions in object/cache consumers.
+Ghidra at `0x80041D98` confirms the removed value, chain link and relocation
+behavior. Existing documentation retains entry invalidation on pool mutation.
+
+The cache and object-handle registry use the shared header. Node and keyed pool
+allocation use the canonical heap pointer. Collision removal and response
+insertion retain their documented unused extra arguments, while their pool
+and traversal-value types agree with the implementation. The response registry's
+reserved trailing storage remains unchanged and recorded for further evidence.
+All affected units match the preserved 483-object baseline, including strict
+relocation addends and the legacy destruction-call argument setup.

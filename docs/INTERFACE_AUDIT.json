@@ -4,13 +4,6 @@
   "records": [
     {
       "code": 709,
-      "file": "src/game/flipbook_messenger.c",
-      "line": 958,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "messengerAdvancePosition(object);"
-    },
-    {
-      "code": 709,
       "file": "src/game/doors_object_responses.c",
       "line": 160,
       "diagnostic": "Incompatible pointer type assignment",
@@ -50,6 +43,13 @@
       "line": 175,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "sprintf(gDoorAccessDescriptionBuffer, \"\\nYou can't get by for some reason.\");"
+    },
+    {
+      "code": 709,
+      "file": "src/game/flipbook_messenger.c",
+      "line": 958,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "messengerAdvancePosition(object);"
     },
     {
       "code": 709,
@@ -186,17 +186,17 @@
     },
     {
       "code": 709,
-      "file": "src/game/cave.c",
-      "line": 42,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "v = heapAllocLocal(gGameHeap, 0x20, 0x32);"
-    },
-    {
-      "code": 709,
       "file": "src/game/attached_effect.c",
       "line": 78,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "obj = heapAllocLocal(gGameHeap, 0x2C, 0x7A);"
+    },
+    {
+      "code": 709,
+      "file": "src/game/cave.c",
+      "line": 42,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "v = heapAllocLocal(gGameHeap, 0x20, 0x32);"
     },
     {
       "code": 709,
@@ -263,99 +263,92 @@
     },
     {
       "code": 709,
-      "file": "src/game/node_pool.c",
-      "line": 19,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "pool->nodes = (PoolNode *)heapAllocLocal(gGameHeap, count * sizeof(PoolNode), 0x13);"
-    },
-    {
-      "code": 709,
       "file": "src/game/object_hierarchy.c",
-      "line": 197,
+      "line": 196,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "osCreateMesgQueue(reader + 0x418, reader + 0x430, 1);"
     },
     {
       "code": 709,
       "file": "src/game/object_hierarchy.c",
-      "line": 197,
+      "line": 196,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "osCreateMesgQueue(reader + 0x418, reader + 0x430, 1);"
     },
     {
       "code": 712,
       "file": "src/game/object_hierarchy.c",
-      "line": 992,
+      "line": 990,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "heapFreeLocal(&gGameHeap, objectState);"
     },
     {
       "code": 709,
       "file": "src/game/object_hierarchy.c",
-      "line": 1265,
+      "line": 1263,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "objectTransformStackPush(&gObjectTraversalTransform);"
     },
     {
       "code": 709,
       "file": "src/game/object_hierarchy.c",
-      "line": 1269,
+      "line": 1267,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "matrix33KeepScaleOnly(&gObjectTraversalTransform);"
     },
     {
       "code": 709,
       "file": "src/game/object_hierarchy.c",
-      "line": 1287,
+      "line": 1285,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "objectTransformStackPop(&gObjectTraversalTransform);"
     },
     {
       "code": 709,
       "file": "src/game/object_hierarchy.c",
-      "line": 1303,
+      "line": 1301,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "objectTransformStackPush(&gObjectTraversalTransform);"
     },
     {
       "code": 709,
       "file": "src/game/object_hierarchy.c",
-      "line": 1312,
+      "line": 1310,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "objectTransformStackPop(&gObjectTraversalTransform);"
     },
     {
       "code": 709,
       "file": "src/game/object_hierarchy.c",
-      "line": 1343,
+      "line": 1341,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "matrix33KeepScaleOnly(&gObjectTraversalTransform);"
     },
     {
       "code": 712,
       "file": "src/game/object_hierarchy.c",
-      "line": 1551,
+      "line": 1549,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "objectDrawSearchTreeEntry((s32)((ManagedObject *)var_s0)->entry, 0);"
     },
     {
       "code": 709,
       "file": "src/game/object_hierarchy.c",
-      "line": 1601,
+      "line": 1598,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "searchTreeInitialize(&gObjectSearchTree, &objectCompareSearchTreeOrder);"
     },
     {
       "code": 712,
       "file": "src/game/object_hierarchy.c",
-      "line": 1601,
+      "line": 1598,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "searchTreeInitialize(&gObjectSearchTree, &objectCompareSearchTreeOrder);"
     },
     {
       "code": 712,
       "file": "src/game/object_hierarchy.c",
-      "line": 1620,
+      "line": 1616,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "objectDestroyHierarchy(sp2C);"
     },
@@ -372,55 +365,6 @@
       "line": 442,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "textImageDestroy(oldImage);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/keyed_pool.c",
-      "line": 20,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "pool->entries = (KeyedPoolEntry *)heapAllocLocal((u8 *)&gGameHeap, count * sizeof(KeyedPoolEntry), 0x27);"
-    },
-    {
-      "code": 712,
-      "file": "src/game/keyed_pool.c",
-      "line": 302,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "keyedPoolUnlinkOrderedEntry((KeyedPool *)poolAddress, entryAddress);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/keyed_pool.c",
-      "line": 306,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "t = ((KeyedPoolEntry *)entryAddress)->chain;"
-    },
-    {
-      "code": 712,
-      "file": "src/game/keyed_pool.c",
-      "line": 312,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "keyedPoolReleaseEntry((KeyedPool *)poolAddress, entryAddress);"
-    },
-    {
-      "code": 712,
-      "file": "src/game/keyed_pool.c",
-      "line": 360,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "keyedPoolUnlinkOrderedEntry(tab, e);"
-    },
-    {
-      "code": 712,
-      "file": "src/game/keyed_pool.c",
-      "line": 362,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "keyedPoolReleaseEntry(tab, e);"
-    },
-    {
-      "code": 712,
-      "file": "src/game/keyed_pool.c",
-      "line": 420,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "keyedPoolUnlinkOrderedEntry(poolAddress, entry);"
     },
     {
       "code": 709,

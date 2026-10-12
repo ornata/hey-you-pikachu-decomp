@@ -79,67 +79,67 @@ s32 keyedPoolInsertWithNextId(KeyedPool *pool, s32 value);
 s32 keyedPoolHasAvailableEntry(KeyedPool *pool);
 
 /// Find an entry by its lookup key.
-/// \param poolAddress RAM address of the pool header.
+/// \param pool Initialized pool header.
 /// \param lookupKey Key to find.
-/// \param predecessor Receives the preceding searched entry address, or zero if none was visited.
+/// \param predecessor Writable result receiving the preceding searched entry, or NULL if none was visited.
 /// \returns A borrowed matching entry, or NULL if the key is absent.
 /// Entry addresses may change when the pool is modified.
 /// \note Original decompilation identifier: \c func_80041C14 (0x80041C14).
-KeyedPoolEntry *keyedPoolFindEntry(s32 poolAddress, s32 lookupKey, s32 *predecessor);
+KeyedPoolEntry *keyedPoolFindEntry(KeyedPool *pool, s32 lookupKey, KeyedPoolEntry **predecessor);
 
 /// Find an entry matching both a key and a value.
-/// \param poolAddress RAM address of the pool header.
+/// \param pool Initialized pool header.
 /// \param val Value that the entry must contain.
 /// \param lookupKey Key that the entry must match.
-/// \param predecessor Receives the preceding searched entry address, or zero if none was visited.
-/// \returns The borrowed matching entry address, or zero if no entry matches.
+/// \param predecessor Writable result receiving the preceding searched entry, or NULL if none was visited.
+/// \returns Borrowed matching entry, or NULL if no entry matches.
 /// Entry addresses may change when the pool is modified.
 /// \note Original decompilation identifier: \c func_80041CD0 (0x80041CD0).
-s32 keyedPoolFindEntryWithValue(s32 poolAddress, s32 val, s32 lookupKey, s32 *predecessor);
+KeyedPoolEntry *keyedPoolFindEntryWithValue(KeyedPool *pool, s32 val, s32 lookupKey, KeyedPoolEntry **predecessor);
 
 /// Remove a known entry and release its pool storage.
-/// \param poolAddress RAM address of the pool header.
-/// \param entryAddress RAM address of the live entry to remove.
-/// \param predecessorAddress Address of its lookup predecessor, or zero for the first entry.
+/// \param pool Initialized pool header.
+/// \param entry Live entry to remove from the pool.
+/// \param predecessor Lookup predecessor, or NULL for the first entry.
 /// \returns Value stored in the removed entry.
 /// \note Original decompilation identifier: \c func_80041D98 (0x80041D98).
-s32 keyedPoolRemoveEntry(s32 poolAddress, s32 entryAddress, s32 predecessorAddress);
+s32 keyedPoolRemoveEntry(KeyedPool *pool, KeyedPoolEntry *entry, KeyedPoolEntry *predecessor);
 
 /// Remove the first entry matching a lookup key.
-/// \param poolAddress RAM address of the pool header.
+/// \param pool Initialized pool header.
 /// \param key Lookup key to remove.
 /// \returns Removed value, or zero if the key is absent.
 /// \note Original decompilation identifier: \c func_80041E14 (0x80041E14).
-s32 keyedPoolRemoveFirstForKey(s32 poolAddress, s32 key);
+s32 keyedPoolRemoveFirstForKey(KeyedPool *pool, s32 key);
 
 /// Remove all entries matching a lookup key.
-/// \param tab RAM address of the pool header.
+/// \param tab Initialized pool header.
 /// \param key Lookup key whose entries are to be removed.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80041E54 (0x80041E54).
-void keyedPoolRemoveAllForKey(s32 tab, s32 key);
+void keyedPoolRemoveAllForKey(KeyedPool *tab, s32 key);
 
 /// Remove the first entry matching both a key and a value.
-/// \param poolAddress RAM address of the pool header.
+/// \param pool Initialized pool header.
 /// \param value Value that the entry must contain.
 /// \param key Key that the entry must match.
 /// \returns Removed value, or zero if no entry matches.
 /// \note Original decompilation identifier: \c func_80041F3C (0x80041F3C).
-s32 keyedPoolRemoveKeyAndValue(s32 poolAddress, s32 value, s32 key);
+s32 keyedPoolRemoveKeyAndValue(KeyedPool *pool, s32 value, s32 key);
 
 /// Get the value of the first entry matching a key.
-/// \param poolAddress RAM address of the pool header.
+/// \param pool Initialized pool header.
 /// \param key Lookup key to find.
 /// \returns Matching value, or zero if the key is absent.
 /// \note Original decompilation identifier: \c func_80041F7C (0x80041F7C).
-s32 keyedPoolGetValue(s32 poolAddress, s32 key);
+s32 keyedPoolGetValue(KeyedPool *pool, s32 key);
 
 /// Get a keyed value and move its entry to the end of the traversal order.
-/// \param poolAddress RAM address of the pool header.
+/// \param pool Initialized pool header.
 /// \param key Lookup key to find.
 /// \returns Matching value, or zero if the key is absent.
 /// \note Original decompilation identifier: \c func_80041FB0 (0x80041FB0).
-s32 keyedPoolGetValueAndMoveToEnd(s32 poolAddress, s32 key);
+s32 keyedPoolGetValueAndMoveToEnd(KeyedPool *pool, s32 key);
 
 /// Start traversal at the first ordered entry, replacing the pool shared traversal position.
 /// \param pool Pool to operate on.

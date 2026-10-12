@@ -57,7 +57,7 @@ u8 *romCacheAllocateEntry(s32 cacheAddress, s32 byteCount) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8003F80C (0x8003F80C).
 void romCacheRemoveEntry(s32 cacheAddress, u8 *entry) {
-    keyedPoolRemoveFirstForKey((s32) & ((RomCache *)cacheAddress)->index, ((CacheEnt *)entry)->key);
+    keyedPoolRemoveFirstForKey(&((RomCache *)cacheAddress)->index, ((CacheEnt *)entry)->key);
     heapFreeLocal(&((RomCache *)cacheAddress)->heap, entry);
 }
 
@@ -69,7 +69,7 @@ void romCacheRemoveEntry(s32 cacheAddress, u8 *entry) {
 /// \returns 3 for reusable cached data, or 4 when read completion must be synchronized.
 /// \note Original decompilation identifier: \c func_8003F848 (0x8003F848).
 s32 romCacheRead(RomCache *c, s32 key, u32 size, s32 *out) {
-    CacheEnt *e = (CacheEnt *)keyedPoolGetValueAndMoveToEnd((s32)&c->index, key);
+    CacheEnt *e = (CacheEnt *)keyedPoolGetValueAndMoveToEnd(&c->index, key);
 
     if (e != NULL) {
         if (e->size >= size) {
@@ -106,7 +106,7 @@ s32 romCacheReserveBuffer(RomCache *c, s32 key, u32 size, s32 *out) {
     CacheEnt *e;
     s32 status;
 
-    e = (CacheEnt *)keyedPoolGetValueAndMoveToEnd((s32)&c->index, key);
+    e = (CacheEnt *)keyedPoolGetValueAndMoveToEnd(&c->index, key);
     if (e != NULL) {
         if (e->flags & 1) {
             status = 2;

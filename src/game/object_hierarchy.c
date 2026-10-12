@@ -1,3 +1,4 @@
+#include "keyed_pool.h"
 #include "heap_free.h"
 #include "common.h"
 #include "object_audio.h"
@@ -33,7 +34,6 @@ u8 romByteReaderRead();
 u8 midiReaderReadByte(u8 *);
 s32 midiReaderReadU16(u8 *);
 s32 midiReaderReadU32(u8 *);
-u8 *keyedPoolGetValue(void *, s32);
 void _bzero(void *, u32);
 void searchTreeFind(void *, void *);
 
@@ -87,13 +87,12 @@ void objectRequestHierarchyDestruction(u8 *);
 extern NodePool gActiveObjectHierarchies;
 void objectResponsesDiscard(s32);
 void searchTreeRemove(void *, u8 *);
-void keyedPoolRemoveFirstForKey(void *, s32);
 /// Object callback table viewed at destruction callbacks, with twenty-four bytes per kind.
 /// \note Original identifier: \c D_80078144 (0x80078144).
 extern u8 gObjectKindDestroyEntries[];
 /// Owned keyed pool mapping runtime handles to live object addresses.
 /// \note Original identifier: \c D_800AE388 (0x800AE388).
-extern u8 gObjectHandlePool[];
+extern KeyedPool gObjectHandlePool;
 /// Search tree indexing registered runtime objects by kind and handle order.
 /// \note Original identifier: \c D_800AE3C0 (0x800AE3C0).
 extern u8 gObjectSearchTree[];
@@ -557,7 +556,7 @@ s32 objectGetNextHandle(void) {
 /// \returns Borrowed object with the requested handle, valid until its destruction, or null if absent or pending destruction.
 /// \note Original decompilation identifier: \c func_80007E8C (0x80007E8C).
 u8 *objectFindLiveByHandle(s32 handle) {
-    u8 *r = keyedPoolGetValue(gObjectHandlePool, handle);
+    u8 *r = (u8 *)keyedPoolGetValue(&gObjectHandlePool, handle);
 
     if (r == NULL || (((RuntimeObjectPrefix *)r)->flags & 0x30)) {
         return NULL;
@@ -727,7 +726,6 @@ typedef struct ObjKind18 {
 /// Per-kind object initialization, destruction, update and drawing callbacks.
 /// \note Original identifier: \c D_80078140 (0x80078140).
 extern ObjKind18 gObjectKindCallbacks[];
-s32 keyedPoolInsertWithNextId(u8 *, u8 *);
 
 
 
@@ -744,7 +742,7 @@ u8 *objectCreateFromTemplate(u8 *definition) {
     *(ObjHead38 *)o = *tmpl;
     *(s16 *)(o + 0x36) = 1;
     *(u8 **)(o + 0x58) = o + 0x5C;
-    *(s32 *)(o + 0x38) = keyedPoolInsertWithNextId(gObjectHandlePool, o);
+    *(s32 *)(o + 0x38) = keyedPoolInsertWithNextId(&gObjectHandlePool, (s32)o);
     init = gObjectKindCallbacks[tmpl->kind].init;
     if (init != NULL) {
         init(o);
@@ -1014,7 +1012,7 @@ void objectDestroy(u8 *object) {
             heapFreeLocal(&gGameHeap, matrixStorage);
         }
     }
-    keyedPoolRemoveFirstForKey(gObjectHandlePool, *(s32 *)(object + 0x38));
+    keyedPoolRemoveFirstForKey(&gObjectHandlePool, *(s32 *)(object + 0x38));
     heapFreeLocal(&gGameHeap, object);
 }
 
@@ -1584,7 +1582,6 @@ void objectResponsesInitialize(s32, s32);            /* extern */
 s32 interactionMarkerCreate();                            /* extern */
 void collisionGridInitialize();                            /* extern */
 void searchTreeInitialize(u8 *, s32); /* extern */
-void keyedPoolInitialize(KeyedPool *, u32); /* extern */
 
 /// Initialize the runtime object system and its supporting registries.
 /// \returns Nothing.
@@ -1596,7 +1593,7 @@ void objectSystemInitialize(void) {
     actorInitializePartRegistry();
     objectResponsesInitialize(0xC7, 0x2000);
     collisionGridInitialize();
-    keyedPoolInitialize((KeyedPool *)gObjectHandlePool, 0x8F9);
+    keyedPoolInitialize(&gObjectHandlePool, 0x8F9);
     nodePoolInitialize(&gActiveObjectHierarchies, 0x761);
     searchTreeInitialize(&gObjectSearchTree, &objectCompareSearchTreeOrder);
     interactionMarkerCreate();
@@ -1605,7 +1602,6 @@ void objectSystemInitialize(void) {
 void actorDestroyPartIdMap();                  /* extern */
 void objectResponsesDestroy();                  /* extern */
 void collisionGridDestroy();                  /* extern */
-void keyedPoolDestroy(KeyedPool *);           /* extern */
 
 /// Destroy registered object hierarchies and release the runtime object system.
 /// \returns Nothing.
@@ -1624,7 +1620,7 @@ void objectSystemDestroy(void) {
         } while (sp2C != 0);
     }
     nodePoolDestroy(&gActiveObjectHierarchies);
-    keyedPoolDestroy((KeyedPool *)gObjectHandlePool);
+    keyedPoolDestroy(&gObjectHandlePool);
     collisionGridDestroy();
     objectResponsesDestroy();
     actorDestroyPartIdMap();

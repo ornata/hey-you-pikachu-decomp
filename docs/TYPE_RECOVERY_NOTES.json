@@ -89,7 +89,7 @@
       "scriptVmReadIntegerOperand": "scriptValueGetInteger returns s32. Operand decoding retains an unused second VM context argument through an unprototyped compatibility declaration."
     },
     "src/game/doors_object_responses.c": {
-      "objectResponsesAttach": "The keyed-pool insert call retains an unused fourth object pointer from the ROM; map, value, key and return types match the implementation. Pool storage retains the existing byte-array linker symbol."
+      "objectResponsesAttach": "The keyed insertion call retains the ROM caller's unused fourth object pointer. Its pool, integer value and key match the canonical implementation; the response registry retains 0x28 bytes of storage for a 0x20-byte pool header. Inspect a3 setup and trailing storage before consolidating the compatibility declaration or changing the global definition."
     },
     "src/ovl/system_menu.c": {
       "systemMenuAppendDetailText": "The detail accumulator interface retains an unsigned byte-string view. Trials using const char *, including a local unsigned-byte view, changed allocated code. Isolate the compiler scheduling/register effect before changing the text interface; menu record and callback typing independently matches."

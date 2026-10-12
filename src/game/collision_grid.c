@@ -150,7 +150,7 @@ s32 collisionGridRegisterObject(u8 *object) {
 }
 
 /// Compatibility declaration retaining the unused registration-key pointer argument.
-s32 keyedPoolRemoveKeyAndValue(s32, s32, s32, s32 *); /* extern */
+s32 keyedPoolRemoveKeyAndValue(KeyedPool *, s32, s32, s32 *); /* extern */
 
 /// Remove an object collision registration and clear its registration key.
 /// \param object Address of the registered object.
@@ -162,7 +162,7 @@ void collisionGridUnregisterObject(s32 object, s32 *registrationKey) {
 
     registeredKey = *registrationKey;
     if (registeredKey != 0) {
-        keyedPoolRemoveKeyAndValue((s32)&gCollisionCandidateRegistry, object, registeredKey, registrationKey);
+        keyedPoolRemoveKeyAndValue(&gCollisionCandidateRegistry, object, registeredKey, registrationKey);
         *registrationKey = 0;
     }
 }
