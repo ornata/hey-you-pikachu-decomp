@@ -26,4 +26,11 @@ void cameraSetEyeAndTarget(s32 cameraIndex, f32 *eye, f32 *target);
 /// \note Original decompilation identifier: \c func_800009C4 (0x800009C4).
 void cameraSetPositionAndAngles(s32 index, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 roll);
 
+/// Convert a position from the active camera's view space to world space.
+/// \param point Three camera-space coordinates, replaced with world-space coordinates.
+/// \returns Nothing.
+/// \pre The active camera has prepared transforms.
+/// \note Original decompilation identifier: \c func_8000258C (0x8000258C).
+void cameraViewPointToWorld(f32 *point);
+
 #endif

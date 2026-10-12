@@ -1049,14 +1049,14 @@ void cameraViewPointToWorld(f32 *point) {
     f32 *in = point;
     f32 *out = point;
 
-    matrix = *(CameraMatrix *)(gRenderCameras + gRenderCameraIndex * 0xE0 + 0x28);
+    matrix = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].view;
     /* Build the view transform in its own block, like the transform
      * snapshots in actor_model_motion.c. */
     do {
         matrix33Transpose(&matrix);
-        matrix.values[9] = *(f32 *)(gRenderCameras + gRenderCameraIndex * 0xE0);
-        matrix.values[10] = *(f32 *)(gRenderCameras + gRenderCameraIndex * 0xE0 + 4);
-        matrix.values[11] = *(f32 *)(gRenderCameras + gRenderCameraIndex * 0xE0 + 8);
+        matrix.values[9] = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[0];
+        matrix.values[10] = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[1];
+        matrix.values[11] = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[2];
     } while (0);
     matrix34TransformPointVector(&matrix, in, out);
 }

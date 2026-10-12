@@ -1950,3 +1950,13 @@ word at 0xA4 is exposed with an offset check and a contract derived from its
 Ghidra 0x80002058 confirms the viewport reads and backdrop dispatch. This change
 preserves initialization and graphics-command expression ordering and all 483
 objects, including strict relocations.
+
+### Camera-space point conversion contract
+
+`camera_pose.h` declares the in-place camera-to-world point conversion with its
+actual single coordinate-pointer argument. The held-item caller no longer passes
+unused state and object arguments and uses the shared local-position field.
+The provider reads the shared camera affine view and eye fields. Ghidra 0x8000258C
+confirms the single input, in-place transform and active-camera data. Both changed
+source units preserve all 483 objects and strict relocation addends; no legacy
+extra-argument exception is needed for this interface.

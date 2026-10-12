@@ -1,3 +1,4 @@
+#include "camera_pose.h"
 #include "item_object.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -533,7 +534,6 @@ void itemRunHeldKindCallback(s32 object, u8 *state) {
     }
 }
 
-void cameraViewPointToWorld(f32 *, u8 *, u8 *); /* extern */
 /// Separate symbol view of the primary player record's view yaw.
 /// \note Original identifier: \c D_800EF6AC (0x800EF6AC).
 extern f32 gPlayerYaw;
@@ -557,11 +557,11 @@ void itemUpdatePlayerHeld(u8 *object) {
 
     itemRunHeldKindCallback((s32)object, state);
     ((ItemStatePrefix *)state)->modeTime += gRuntimeFrameSeconds;
-    pos = (f32 *)(object + 0x18);
+    pos = ((RuntimeObjectPrefix *)object)->position;
     pos[0] = 1.25f;
     pos[1] = -0.9f;
     pos[2] = -3.0f;
-    cameraViewPointToWorld(pos, state, object);
+    cameraViewPointToWorld(pos);
     ((RuntimeObjectPrefix *)object)->worldPosition[0] = ((RuntimeObjectPrefix *)object)->position[0];
     ((RuntimeObjectPrefix *)object)->worldPosition[1] = ((RuntimeObjectPrefix *)object)->position[1];
     ((RuntimeObjectPrefix *)object)->worldPosition[2] = ((RuntimeObjectPrefix *)object)->position[2];
