@@ -1354,3 +1354,17 @@ pointer-based visual-motion interfaces. The response handler explicitly converts
 its legacy integer callback address at that boundary. The provider's extra
 mode-change argument remains the previously documented ABI constraint.
 Each source-unit change preserved all 483 objects and strict relocation addends.
+
+### Object-kind hooks and response callback lifetime
+
+The shared `ObjectKindCallbacks` layout replaces the hierarchy unit's private
+24-byte table view. Existing destroy lookup at table+4 and response lookup at
++0x14 establish the two previously anonymous words as lifecycle and response
+hooks. Initialization, update and drawing consumers establish the other slots.
+Size and response-offset checks protect this shared layout.
+Response dispatch and clearing now use `ObjectResponseHandler` with a typed
+borrowed record, including the optional callback parameter. Ghidra 0x8001C5E4
+confirms callback invocation precedes owned-payload and record release. The target
+still uses its explicit original 32-bit object-address representation. The typed
+strided response interior view preserves D_80078154 and strict relocation addends;
+it is not an independently allocated record array. All changed units match.

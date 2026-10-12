@@ -21,6 +21,12 @@ typedef struct ObjectResponse {
     } payload;
 } ObjectResponse;
 
+/// Handle one borrowed response before the response system releases it.
+/// \param object Initialized target object address in the original 32-bit representation.
+/// \param response Borrowed response; neither it nor its payload may be retained.
+/// \returns Nothing.
+typedef void (*ObjectResponseHandler)(s32 object, ObjectResponse *response);
+
 typedef char ObjectImpulseSizeCheck[(sizeof(ObjectImpulse) == 4) ? 1 : -1];
 typedef char ObjectResponseSizeCheck[(sizeof(ObjectResponse) == 0xC) ? 1 : -1];
 typedef char ObjectResponsePayloadOffsetCheck[(((u32) & ((ObjectResponse *)0)->payload) == 8) ? 1 : -1];

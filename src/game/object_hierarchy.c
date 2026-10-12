@@ -1,6 +1,7 @@
 #include "keyed_pool.h"
 #include "heap_free.h"
 #include "common.h"
+#include "object_kind_callbacks.h"
 #include "runtime_clock.h"
 #include "matrix_types.h"
 #include "object_audio.h"
@@ -715,18 +716,9 @@ typedef struct ObjHead38 {
     u16 kind;
     u16 flags;
 } ObjHead38;
-/* Per-kind object hooks. */
-typedef struct ObjKind18 {
-    /* 0x00 */ void (*init)(u8 *);
-    /* 0x04 */ s32 pad4;
-    /* 0x08 */ void (*update)(u8 *);
-    /* 0x0C */ Gfx *(*draw)(u8 *);
-    /* 0x10 */ void (*drawChild)(u8 *, u8 *);
-    /* 0x14 */ s32 pad14;
-} ObjKind18;
 /// Per-kind object initialization, destruction, update and drawing callbacks.
 /// \note Original identifier: \c D_80078140 (0x80078140).
-extern ObjKind18 gObjectKindCallbacks[];
+extern ObjectKindCallbacks gObjectKindCallbacks[];
 
 
 

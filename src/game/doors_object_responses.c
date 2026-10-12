@@ -3,6 +3,7 @@
 #include "common.h"
 #include "item_object.h"
 #include "object_response.h"
+#include "object_kind_callbacks.h"
 #include "vector_direction.h"
 #include "object_lookup.h"
 #include "keyed_pool_types.h"
@@ -39,9 +40,9 @@ HpHdr gObjectResponseHeap;
 u8 gObjectResponseRegistry[0x28];
 /// Per-kind response callback view of the object callback table, with a twenty-four-byte stride.
 /// \note Original identifier: \c D_80078154 (0x80078154).
-extern u8 gObjectKindResponseEntries[];
+extern ObjectKindResponseEntry gObjectKindResponseEntries[];
 s32 keyedPoolInsert(KeyedPool *, s32, u32, u8 *);
-void objectResponsesClearWithCallback(s32, s32);
+void objectResponsesClearWithCallback(s32, ObjectResponseHandler);
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
@@ -218,28 +219,28 @@ void objectResponsesDestroy(void) {
 /// \param response Impulse response containing a packed direction and strength.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001C504 (0x8001C504).
-void objectResponseApplyImpulse(s32 object, u8 *response) {
+void objectResponseApplyImpulse(s32 object, ObjectResponse *response) {
     f32 v[3];
 
-    vector3UnpackNormalBytes((s8 *)((ObjectResponse *)response)->payload.impulse.bytes, v);
-    v[0] = (f32)(s8)((ObjectResponse *)response)->payload.impulse.bytes[3] * v[0];
-    v[1] = (f32)(s8)((ObjectResponse *)response)->payload.impulse.bytes[3] * v[1];
-    v[2] = (f32)(s8)((ObjectResponse *)response)->payload.impulse.bytes[3] * v[2];
+    vector3UnpackNormalBytes((s8 *)response->payload.impulse.bytes, v);
+    v[0] = (f32)(s8)response->payload.impulse.bytes[3] * v[0];
+    v[1] = (f32)(s8)response->payload.impulse.bytes[3] * v[1];
+    v[2] = (f32)(s8)response->payload.impulse.bytes[3] * v[2];
     itemAddVelocity(*(s32 *)(object + 0x38), v);
     itemStartDirectionMotion((u8 *)object, 0.5f, 1000.0f, 0.0f);
 }
 
 /// Response callbacks indexed by response kind.
 /// \note Original identifier: \c D_80078130 (0x80078130).
-void (*gObjectResponseHandlers[])(s32, u8 *) = {objectResponseApplyImpulse};
+ObjectResponseHandler gObjectResponseHandlers[] = {objectResponseApplyImpulse};
 
 /// Dispatch a queued response according to its response kind.
 /// \param object Target object address.
 /// \param response Response record with a supported kind.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001C5B0 (0x8001C5B0).
-void objectResponseDispatch(s32 object, u8 *response) {
-    gObjectResponseHandlers[((ObjectResponse *)response)->kind](object, response);
+void objectResponseDispatch(s32 object, ObjectResponse *response) {
+    gObjectResponseHandlers[response->kind](object, response);
 }
 
 s32 keyedPoolIterateFirstForKey(KeyedPool *, s32);
@@ -248,25 +249,25 @@ void keyedPoolRemoveAllForKey(KeyedPool *, s32);
 
 /// Consume an object's pending responses, optionally invoking a callback for each.
 /// \param object Target object address whose pending responses are cleared.
-/// \param callback Optional callback address receiving the target object and each response before it is released; zero skips dispatch.
+/// \param callback Optional callback receiving the target object and each response before it is released; zero skips dispatch.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001C5E4 (0x8001C5E4).
-void objectResponsesClearWithCallback(s32 object, s32 callback) {
+void objectResponsesClearWithCallback(s32 object, ObjectResponseHandler callback) {
     s32 key;
-    u8 *n;
+    ObjectResponse *n;
 
     key = *(s32 *)(object + 0x38);
-    n = (u8 *)keyedPoolIterateFirstForKey((KeyedPool *)gObjectResponseRegistry, key);
+    n = (ObjectResponse *)keyedPoolIterateFirstForKey((KeyedPool *)gObjectResponseRegistry, key);
     if (n != NULL) {
         do {
             if (callback != 0) {
-                ((void (*)(s32, u8 *))callback)(object, n);
+                callback(object, n);
             }
-            if (((ObjectResponse *)n)->flags & 1) {
-                heapFreeLocal(&gObjectResponseHeap, ((ObjectResponse *)n)->payload.owned);
+            if (n->flags & 1) {
+                heapFreeLocal(&gObjectResponseHeap, n->payload.owned);
             }
             heapFreeLocal(&gObjectResponseHeap, n);
-        } while ((n = (u8 *)keyedPoolIterateNextForKey((KeyedPool *)gObjectResponseRegistry, key)) != NULL);
+        } while ((n = (ObjectResponse *)keyedPoolIterateNextForKey((KeyedPool *)gObjectResponseRegistry, key)) != NULL);
     }
     keyedPoolRemoveAllForKey((KeyedPool *)gObjectResponseRegistry, key);
     *(u16 *)(object + 0x36) = *(u16 *)(object + 0x36) & 0xF7FF;
@@ -278,7 +279,7 @@ void objectResponsesClearWithCallback(s32 object, s32 callback) {
 /// \note Original decompilation identifier: \c func_8001C6BC (0x8001C6BC).
 void objectResponsesDispatchAndClear(s32 object) {
     objectResponsesClearWithCallback(object,
-                                     *(s32 *)(gObjectKindResponseEntries + (*(u16 *)((u8 *)object + 0x34) * 0x18)));
+                                     gObjectKindResponseEntries[((RuntimeObjectPrefix *)object)->kind].response);
 }
 
 /// Release an object's pending responses without dispatching them.
