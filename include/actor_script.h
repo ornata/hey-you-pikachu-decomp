@@ -7,6 +7,7 @@
 #include "script_message.h"
 #include "action_script_types.h"
 #include "direction_animation_types.h"
+#include "matrix_types.h"
 
 /// Recovered prefix of actor state used by script-message consumers.
 /// \ingroup ActorScriptVm
@@ -96,9 +97,14 @@ typedef struct ActorScriptState {
     u8 unknown23C[0xB4];
     s32 appearanceVariants[2]; ///< Model variant per appearance slot; zero selects its default model.
     s32 unknown2F8; ///< Relative-part controller word initialized to one; precise policy unresolved.
-    u8 unknown2FC[0x6C];
+    u8 unknown2FC[0x30];
+    Matrix34 secondaryPoseTransform; ///< Relative transform of the secondary signed part sequence.
+    f32 secondaryPoseAngles[3]; ///< Folded secondary pose pitch, yaw and roll in degrees.
     s32 unknown368; ///< Second relative-part controller word initialized to one; precise policy unresolved.
-    u8 unknown36C[0x84];
+    u8 unknown36C[0x30];
+    Matrix34 primaryPoseTransform; ///< Relative transform of the primary signed part sequence.
+    f32 primaryPoseAngles[3]; ///< Folded primary pose pitch, yaw and roll in degrees.
+    u8 unknown3D8[0x18];
     s32 unknown3F0;     ///< Action-command response flag; precise behavior remains unresolved.
     f32 actionResource; ///< Action resource clamped to zero through 100.
     f32 secondaryMeter; ///< Secondary gameplay meter clamped to zero through 100.
@@ -166,6 +172,10 @@ ACTOR_SCRIPT_OFFSET_CHECK(ActorStateTargetPositionOffsetCheck, ActorScriptState,
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateCollisionDepthOffsetCheck, ActorScriptState, collisionDepth, 0x1FC);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateCollisionRegistrationOffsetCheck, ActorScriptState, collisionRegistration, 0x210);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateAppearanceVariantsOffsetCheck, ActorScriptState, appearanceVariants, 0x2F0);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateSecondaryPoseTransformOffsetCheck, ActorScriptState, secondaryPoseTransform, 0x32C);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateSecondaryPoseAnglesOffsetCheck, ActorScriptState, secondaryPoseAngles, 0x35C);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePrimaryPoseTransformOffsetCheck, ActorScriptState, primaryPoseTransform, 0x39C);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePrimaryPoseAnglesOffsetCheck, ActorScriptState, primaryPoseAngles, 0x3CC);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateCreationArgumentOffsetCheck, ActorScriptState, creationScriptArgument, 0x238);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateFirstPartControllerOffsetCheck, ActorScriptState, unknown2F8, 0x2F8);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateSecondPartControllerOffsetCheck, ActorScriptState, unknown368, 0x368);

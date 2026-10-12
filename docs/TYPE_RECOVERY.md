@@ -2074,3 +2074,13 @@ also use shared object kind, root and state fields. Axis-based rotation byte
 accesses and the original configuration-symbol view remain explicit. The state
 stays local because its producer and consumer are in the same unit. All 483
 objects and strict relocation addends match.
+
+### Shared primary and secondary gameplay poses
+
+Actor state now exposes checked affine transforms and folded Euler-angle triples
+for the primary and secondary signed part sequences. Ghidra 0x80014590 confirms
+transform production at 0x39C/0x32C and angle output at 0x3CC/0x35C. Gameplay pose
+production and model-part orientation/scale followers use these shared fields.
+The adjacent relative-part controller records remain explicit unresolved storage;
+no layout is inferred merely from adjacency. All header dependents and the changed
+source unit preserve all 483 objects and strict relocation addends.

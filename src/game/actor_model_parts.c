@@ -299,7 +299,7 @@ void actorPartFollowPrimaryRoll(u8 *object) {
     data = *(u8 **)(sub + 0x54);
     *(f32 *)(object + 0x10) = 0;
     *(f32 *)(object + 0xC) = 0;
-    partRoll = mathLerpAngleDegrees(0.0f, *(f32 *)(data + 0x3D4), 0.45f);
+    partRoll = mathLerpAngleDegrees(0.0f, ((ActorScriptState *)data)->primaryPoseAngles[2], 0.45f);
     *(f32 *)(object + 0x14) = partRoll;
     *(f32 *)(object + 4) = mathMapRangeClamped(0.0f, 1.0f, 30.0f, 1.1f, mathAngleDistanceDegrees(0.0f, partRoll));
 }
@@ -322,9 +322,9 @@ void actorPartFollowPrimaryOrientation(u8 *object) {
 
     sub = *(u8 **)(object + 0x50);
     data = *(u8 **)(sub + 0x54);
-    *(f32 *)(object + 0xC) = mathLerpAngleDegrees(0.0f, *(f32 *)(data + 0x3CC), 0.8f);
-    *(f32 *)(object + 0x10) = mathLerpAngleDegrees(0.0f, *(f32 *)(data + 0x3D0), 0.8f);
-    partRoll = mathLerpAngleDegrees(0.0f, *(f32 *)(data + 0x3D4), 0.8f);
+    *(f32 *)(object + 0xC) = mathLerpAngleDegrees(0.0f, ((ActorScriptState *)data)->primaryPoseAngles[0], 0.8f);
+    *(f32 *)(object + 0x10) = mathLerpAngleDegrees(0.0f, ((ActorScriptState *)data)->primaryPoseAngles[1], 0.8f);
+    partRoll = mathLerpAngleDegrees(0.0f, ((ActorScriptState *)data)->primaryPoseAngles[2], 0.8f);
     *(f32 *)(object + 0x14) = partRoll;
     *(f32 *)(object + 4) = mathMapRangeClamped(0.0f, 1.0f, 55.0f, 1.35f, mathAngleDistanceDegrees(0.0f, partRoll));
 }
@@ -338,14 +338,14 @@ void actorPartFollowSecondaryOrientation(u8 *object) {
     u8 *state = *(u8 **)(parent + 0x54);
     f32 factor;
     f32 scale;
-    *(f32 *)(object + 0xC) = mathLerpAngleDegrees(0.0f, *(f32 *)(state + 0x35C), 0.35f);
-    *(f32 *)(object + 0x10) = mathLerpAngleDegrees(0.0f, *(f32 *)(state + 0x360), 0.5f);
-    *(f32 *)(object + 0x14) = mathLerpAngleDegrees(0.0f, *(f32 *)(state + 0x364), 0.5f);
+    *(f32 *)(object + 0xC) = mathLerpAngleDegrees(0.0f, ((ActorScriptState *)state)->secondaryPoseAngles[0], 0.35f);
+    *(f32 *)(object + 0x10) = mathLerpAngleDegrees(0.0f, ((ActorScriptState *)state)->secondaryPoseAngles[1], 0.5f);
+    *(f32 *)(object + 0x14) = mathLerpAngleDegrees(0.0f, ((ActorScriptState *)state)->secondaryPoseAngles[2], 0.5f);
     scale = mathMapRangeClamped(0.0f, 1.0f, 70.0f, 0.8f, mathAngleDistanceDegrees(0, *(f32 *)(object + 0x14)));
-    factor = mathMapRangeClamped(0.0f, 1.0f, 55.0f, 0.8f, mathAngleDistanceDegrees(0, *(f32 *)(state + 0x3D4)));
+    factor = mathMapRangeClamped(0.0f, 1.0f, 55.0f, 0.8f, mathAngleDistanceDegrees(0, ((ActorScriptState *)state)->primaryPoseAngles[2]));
     *(f32 *)object = factor * scale;
     scale = mathMapRangeClamped(0.0f, 1.0f, 80.0f, 0.8f, mathAngleDistanceDegrees(0, *(f32 *)(object + 0xC)));
-    factor = mathMapRangeClamped(0.0f, 1.0f, 55.0f, 0.8f, mathAngleDistanceDegrees(0, *(f32 *)(state + 0x3CC)));
+    factor = mathMapRangeClamped(0.0f, 1.0f, 55.0f, 0.8f, mathAngleDistanceDegrees(0, ((ActorScriptState *)state)->primaryPoseAngles[0]));
     *(f32 *)(object + 8) = factor * scale;
 }
 
@@ -647,12 +647,12 @@ void actorUpdateGameplayModel(u8 *object) {
     if (object != gPikachuActor)
         actorUpdateScriptVm(object);
     actorUpdateModel(object);
-    actorEvaluateRelativePartOrientation((s32 *)(state + 0x368), state + 0x39C, (s32)object,
+    actorEvaluateRelativePartOrientation((s32 *)(state + 0x368), (u8 *)&((ActorScriptState *)state)->primaryPoseTransform, (s32)object,
                                          (s32)gActorPrimaryPosePartSequence);
-    matrix33GetFoldedEulerDegrees(state + 0x39C, state + 0x3CC, state + 0x3D0, (f32 *)(state + 0x3D4));
-    actorEvaluateRelativePartOrientation((s32 *)(state + 0x2F8), state + 0x32C, (s32)object,
+    matrix33GetFoldedEulerDegrees((u8 *)&((ActorScriptState *)state)->primaryPoseTransform, &((ActorScriptState *)state)->primaryPoseAngles[0], &((ActorScriptState *)state)->primaryPoseAngles[1], &((ActorScriptState *)state)->primaryPoseAngles[2]);
+    actorEvaluateRelativePartOrientation((s32 *)(state + 0x2F8), (u8 *)&((ActorScriptState *)state)->secondaryPoseTransform, (s32)object,
                                          (s32)gActorSecondaryPosePartSequence);
-    matrix33GetFoldedEulerDegrees(state + 0x32C, state + 0x35C, state + 0x360, (f32 *)(state + 0x364));
+    matrix33GetFoldedEulerDegrees((u8 *)&((ActorScriptState *)state)->secondaryPoseTransform, &((ActorScriptState *)state)->secondaryPoseAngles[0], &((ActorScriptState *)state)->secondaryPoseAngles[1], &((ActorScriptState *)state)->secondaryPoseAngles[2]);
     actorUpdatePartShake(object);
     switch (actionGetAttributes(object) & 0xC0000000) {
     case 0:
