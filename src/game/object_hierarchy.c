@@ -151,8 +151,8 @@ typedef struct RomByteReader {
 /// The entry pointer initially selects the embedded node at offset 0x5C.
 typedef struct ManagedObject {
     RuntimeObjectPrefix base;
-    TreeNode *entry;
-    TreeNode node;
+    TreeNode *entry; ///< Borrowed active search entry, initially the embedded node.
+    TreeNode node;   ///< Embedded caller-owned node, initialized when registered.
 } ManagedObject;
 
 typedef char RomByteReaderSizeCheck[(sizeof(RomByteReader) == 0x438) ? 1 : -1];
@@ -161,6 +161,7 @@ typedef char RomReaderCompletionOffsetCheck[((u32)&((RomByteReader *)0)->complet
 typedef char RomReaderBufferOffsetCheck[((u32)&((RomByteReader *)0)->alignedBuffer == 0x414) ? 1 : -1];
 typedef char ManagedObjectSizeCheck[(sizeof(ManagedObject) == 0x68) ? 1 : -1];
 typedef char ManagedObjectEntryOffsetCheck[((u32)&((ManagedObject *)0)->entry == 0x58) ? 1 : -1];
+typedef char ManagedObjectNodeOffsetCheck[((u32)&((ManagedObject *)0)->node == 0x5C) ? 1 : -1];
 
 /// Resolve an indexed ROM table entry to its data address.
 /// \param base Cartridge address of a valid ROM table; its selected entry must identify readable data.
@@ -726,9 +727,9 @@ u8 *objectCreateFromTemplate(ObjectTemplate *definition) {
 
     _bzero(o, 0x5C);
     *(ObjectTemplate *)o = *tmpl;
-    *(s16 *)(o + 0x36) = 1;
-    *(u8 **)(o + 0x58) = o + 0x5C;
-    *(s32 *)(o + 0x38) = keyedPoolInsertWithNextId(&gObjectHandlePool, (s32)o);
+    ((RuntimeObjectPrefix *)o)->flags = 1;
+    ((ManagedObject *)o)->entry = &((ManagedObject *)o)->node;
+    ((RuntimeObjectPrefix *)o)->handle = keyedPoolInsertWithNextId(&gObjectHandlePool, (s32)o);
     init = gObjectKindCallbacks[tmpl->kind].init;
     if (init != NULL) {
         init(o);
@@ -983,18 +984,18 @@ void objectDestroy(u8 *object) {
     u8 *matrixStorage;
 
     objectResponsesDiscard(object);
-    destroyCallback = *(void (**)(u8 *))(gObjectKindDestroyEntries + *(u16 *)(object + 0x34) * 0x18);
+    destroyCallback = *(void (**)(u8 *))(gObjectKindDestroyEntries + ((RuntimeObjectPrefix *)object)->kind * 0x18);
     if (destroyCallback != NULL) {
         destroyCallback(object);
     }
     searchTreeRemove(&gObjectSearchTree, (s32)object);
-    if (*(u16 *)(object + 0x36) & 4) {
-        matrixStorage = *(u8 **)(object + 0x3C);
+    if (((RuntimeObjectPrefix *)object)->flags & 4) {
+        matrixStorage = ((RuntimeObjectPrefix *)object)->matrixBuffers[0];
         if (matrixStorage != NULL) {
             heapFreeLocal(&gGameHeap, matrixStorage);
         }
     }
-    keyedPoolRemoveFirstForKey(&gObjectHandlePool, *(s32 *)(object + 0x38));
+    keyedPoolRemoveFirstForKey(&gObjectHandlePool, ((RuntimeObjectPrefix *)object)->handle);
     heapFreeLocal(&gGameHeap, object);
 }
 
@@ -1864,8 +1865,8 @@ u8 *objectFindNearestTargetInView(u8 *self, Vec3f *origin, f32 dist, f32 *rot, f
         return NULL;
     }
     if (*(u16 *)(first + 0x34) >= minKind) {
-        objectConsiderNearestTargetEntry(*(u8 **)(first + 0x58), 0);
+        objectConsiderNearestTargetEntry((u8 *)((ManagedObject *)first)->entry, 0);
     }
-    searchTreeVisitAscending(*(TreeNode **)(*(u8 **)(first + 0x58) + 4), objectConsiderNearestTargetEntry);
+    searchTreeVisitAscending(((ManagedObject *)first)->entry->links[1], objectConsiderNearestTargetEntry);
     return gObjectNearestTargetSearch.best;
 }

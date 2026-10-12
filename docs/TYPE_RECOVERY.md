@@ -1759,3 +1759,13 @@ selected buffer offsets. Object nearest-target callbacks use `TreeNode.value`
 and shared object kind/world position; item candidates use the same world-position
 field. Both source-unit changes preserve all 483 objects and strict relocation
 addends, including the existing fixed-matrix command address representation.
+
+### Runtime object manager allocation consumers
+
+The private `ManagedObject` remains a proven 0x68-byte manager allocation rather
+than extending every prefix user to assume a complete object. Ghidra 0x80008160
+confirms the 0x58 entry pointer and embedded node at 0x5C; the latter now has an
+offset check. Creation initializes the checked entry, flags and handle fields.
+Destruction and nearest-search consumers use shared management/object fields.
+The embedded node is initialized during registration, not by the creation clear
+that ends at 0x5C. All changes preserve all 483 objects and strict relocations.
