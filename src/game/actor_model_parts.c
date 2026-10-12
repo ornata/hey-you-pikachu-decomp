@@ -1,3 +1,4 @@
+#include "actor_appearance.h"
 #include "actor_part_texture.h"
 #include "collision_registration.h"
 #include "action_query.h"
@@ -43,7 +44,6 @@ extern u8 *gPikachuActor;
 /// Model-part identifiers controlled by each actor appearance slot.
 /// \note Original identifier: \c D_800760E8 (0x800760E8).
 extern s32 gActorAppearancePartIds[];
-f32 *actorAppearanceGetPart(s32, s32);
 void actorComposePartOrientation(void *, s32, s32 *, s32);
 void matrix34Identity(void *);
 void matrix34Concatenate(void *, void *, void *);
@@ -67,8 +67,6 @@ extern Gfx *gRenderDisplayListCursor;
 /// \note Original identifier: \c D_800F298C (0x800F298C).
 extern s32 gGraphicsFramebufferIndex;
 extern u8 D_1049F80[];
-void actorAppearanceSetScale(s32, s32, f32);
-void actorAppearanceSetVariant(u8 *, s32, s32);
 
 /// Invoke the inactive actor and linked-object diagnostic reports for this build.
 /// \param actor Actor whose linked object is included in the diagnostic request.
@@ -673,8 +671,8 @@ s32 actorPartPrepareAnimatedTextureDraw(u8 *object) {
 /// \param slot Appearance slot: 0 for part 0x36, or 1 for part 0x3D.
 /// \returns A borrowed model part owned by the actor, or null when absent.
 /// \note Original decompilation identifier: \c func_80014760 (0x80014760).
-f32 *actorAppearanceGetPart(s32 actor, s32 slot) {
-    return (f32 *)actorFindPart((u8 *)actor, gActorAppearancePartIds[slot]);
+f32 *actorAppearanceGetPart(u8 *actor, s32 slot) {
+    return (f32 *)actorFindPart(actor, gActorAppearancePartIds[slot]);
 }
 
 /// Set the uniform scale of an actor appearance part.
@@ -683,7 +681,7 @@ f32 *actorAppearanceGetPart(s32 actor, s32 slot) {
 /// \param scale Uniform scale applied to the selected part, which must exist.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001478C (0x8001478C).
-void actorAppearanceSetScale(s32 actor, s32 slot, f32 scale) {
+void actorAppearanceSetScale(u8 *actor, s32 slot, f32 scale) {
     f32 *p;
 
     p = actorAppearanceGetPart(actor, slot);
@@ -697,7 +695,7 @@ void actorAppearanceSetScale(s32 actor, s32 slot, f32 scale) {
 /// \param slot Appearance slot: 0 for part 0x36, or 1 for part 0x3D.
 /// \returns The selected part scale along its first axis; the part must exist.
 /// \note Original decompilation identifier: \c func_800147C0 (0x800147C0).
-f32 actorAppearanceGetScale(s32 actor, s32 slot) {
+f32 actorAppearanceGetScale(u8 *actor, s32 slot) {
     return *actorAppearanceGetPart(actor, slot);
 }
 
@@ -709,7 +707,7 @@ f32 actorAppearanceGetScale(s32 actor, s32 slot) {
 /// \note Original decompilation identifier: \c func_800147E4 (0x800147E4).
 void actorAppearanceSetVariant(u8 *actor, s32 slot, s32 variant) {
     u8 *actorState = *(u8 **)(actor + 0x54);
-    ((s32 *)(actorState + 0x2F0))[slot] = variant;
+    ((ActorScriptState *)actorState)->appearanceVariants[slot] = variant;
 }
 
 /// Query the model variant selected for an actor appearance slot.
@@ -719,20 +717,20 @@ void actorAppearanceSetVariant(u8 *actor, s32 slot, s32 variant) {
 /// \note Original decompilation identifier: \c func_800147F8 (0x800147F8).
 s32 actorAppearanceGetVariant(u8 *actor, s32 slot) {
     u8 *actorState = *(u8 **)(actor + 0x54);
-    return ((s32 *)(actorState + 0x2F0))[slot];
+    return ((ActorScriptState *)actorState)->appearanceVariants[slot];
 }
 
 /// Restore default model variants and unit scale for both actor appearance slots.
 /// \param actor Address of the actor whose appearance is queried or changed.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001480C (0x8001480C).
-void actorAppearanceReset(s32 actor) {
+void actorAppearanceReset(u8 *actor) {
     s32 var_s0;
 
     var_s0 = 0;
     do {
         actorAppearanceSetScale(actor, var_s0, 1.0f);
-        actorAppearanceSetVariant((u8 *)actor, var_s0, 0);
+        actorAppearanceSetVariant(actor, var_s0, 0);
         var_s0 += 1;
     } while (var_s0 != 2);
 }
@@ -743,7 +741,7 @@ void actorAppearanceReset(s32 actor) {
 /// \note Original decompilation identifier: \c func_80014880 (0x80014880).
 s32 actorPartGetAppearanceSlot1Model(u8 *object) {
     u8 *actorState = *(u8 **)(*(u8 **)(object + 0x50) + 0x54);
-    s32 variant = *(s32 *)(actorState + 0x2F4);
+    s32 variant = ((ActorScriptState *)actorState)->appearanceVariants[1];
     if (variant == 0) {
         return *(s32 *)(object + 0x30);
     }
@@ -756,7 +754,7 @@ s32 actorPartGetAppearanceSlot1Model(u8 *object) {
 /// \note Original decompilation identifier: \c func_800148B0 (0x800148B0).
 s32 actorPartGetAppearanceSlot0Model(u8 *object) {
     u8 *actorState = *(u8 **)(*(u8 **)(object + 0x50) + 0x54);
-    s32 variant = *(s32 *)(actorState + 0x2F0);
+    s32 variant = ((ActorScriptState *)actorState)->appearanceVariants[0];
     if (variant == 0) {
         return *(s32 *)(object + 0x30);
     }

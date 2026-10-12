@@ -2051,3 +2051,14 @@ Motion playback no longer supplies the unused second tint-reset argument. Ghidra
 0x80014960 confirms channel stride and program selection; the matching provider
 establishes the floating-point speed type. All three changed units preserve all
 483 objects and strict relocation addends.
+
+### Shared actor appearance controls and variant slots
+
+`actor_appearance.h` consolidates lookup, scale and model-variant contracts with
+actor-pointer parameters and explicit slot bounds. The lookup retains its
+established floating-point scale-component view of a borrowed actor-owned part.
+Action commands and motion playback no longer pass unused arguments to variant,
+scale and reset functions. Actor state exposes two checked variant words at
+0x2F0, shared by set/query and drawing consumers. Ghidra 0x800147E4 confirms the
+slot-indexed writes. All four changed source units and header dependents preserve
+all 483 objects and strict relocation addends.

@@ -1,3 +1,4 @@
+#include "actor_appearance.h"
 #include "actor_part_texture.h"
 #include "actor_sound.h"
 #include "item_object.h"
@@ -288,9 +289,7 @@ void actionCommandPlayGroundContactEffects(u8 *object, u8 *state, Cmd14 *command
 }
 
 /// ABI compatibility declaration: the ROM caller supplies an unused command pointer.
-void actorAppearanceSetScale(s32, s32, f32, u8 *);
 /// ABI compatibility declaration: the ROM caller supplies an unused command pointer.
-void actorAppearanceSetVariant(u8 *, s32, s32, u8 *);
 
 /// Updates an actor part’s scale and configuration from an action command.
 /// \param actor Actor whose appearance is updated.
@@ -303,8 +302,8 @@ void actionCommandConfigureActorPartScale(s32 actor, u8 *state, u8 *command, f32
     u8 *p;
 
     p = command + 8;
-    actorAppearanceSetVariant((u8 *)actor, *(s32 *)(command + 8), *(s32 *)(command + 0x10), command);
-    actorAppearanceSetScale(actor, *(s32 *)p, *(f32 *)(p + 4), command);
+    actorAppearanceSetVariant((u8 *)actor, *(s32 *)(command + 8), *(s32 *)(command + 0x10));
+    actorAppearanceSetScale((u8 *)actor, *(s32 *)p, *(f32 *)(p + 4));
 }
 
 

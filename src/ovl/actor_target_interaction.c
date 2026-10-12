@@ -1,3 +1,4 @@
+#include "actor_appearance.h"
 #include "actor_rotation.h"
 #include "object_movement.h"
 /// \file
@@ -325,7 +326,6 @@ s32 actorAcknowledgeScriptMessage(u8 *actor) {
     return previousPending;
 }
 
-void actorAppearanceSetVariant(u8 *, s32, s32); /* extern */
 
 /// Select both actor appearance variants and whether they persist across action changes.
 /// \param actor Actor whose appearance is changed.

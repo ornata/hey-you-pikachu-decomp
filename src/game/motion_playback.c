@@ -1,3 +1,4 @@
+#include "actor_appearance.h"
 #include "actor_part_texture.h"
 #include "action_query.h"
 #include "actor_rotation.h"
@@ -420,7 +421,6 @@ s32 actionInvokeInitializer(u8 *object) {
 }
 
 s32 actorSelectActionScript(u8 *, s32, s32);
-void actorAppearanceReset(u8 *, s32);
 void motionStartTrackPlayback(u8 *);
 void motionStartTimedPlayback(u8 *);
 void motionStartPoseTransition(u8 *);
@@ -447,7 +447,7 @@ void actionStartPlayback(u8 *object) {
             TRACE("lastAfcKey:%p\n    afcKey:%p\n", *(s32 *)(v + 0x150), anim);
             if (*(u16 *)(object + 0x34) == 0x25) {
                 if (!(*(u16 *)(v + 0x1E8) & 0x40)) {
-                    actorAppearanceReset(object, anim);
+                    actorAppearanceReset(object);
                 }
                 actorResetPartTint(object);
             }

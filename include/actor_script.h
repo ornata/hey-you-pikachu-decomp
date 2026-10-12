@@ -93,7 +93,8 @@ typedef struct ActorScriptState {
     ScriptMessage message;    ///< Last accepted message, retained after acknowledgement.
     s32 fallbackObjectHandle; ///< Object whose position supplies the fallback target.
     s32 creationScriptArgument; ///< Script argument retained from actor creation.
-    u8 unknown23C[0xBC];
+    u8 unknown23C[0xB4];
+    s32 appearanceVariants[2]; ///< Model variant per appearance slot; zero selects its default model.
     s32 unknown2F8; ///< Relative-part controller word initialized to one; precise policy unresolved.
     u8 unknown2FC[0x6C];
     s32 unknown368; ///< Second relative-part controller word initialized to one; precise policy unresolved.
@@ -164,6 +165,7 @@ ACTOR_SCRIPT_OFFSET_CHECK(ActorStateBehaviorFlagsOffsetCheck, ActorScriptState, 
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateTargetPositionOffsetCheck, ActorScriptState, targetPosition, 0x1EC);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateCollisionDepthOffsetCheck, ActorScriptState, collisionDepth, 0x1FC);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateCollisionRegistrationOffsetCheck, ActorScriptState, collisionRegistration, 0x210);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateAppearanceVariantsOffsetCheck, ActorScriptState, appearanceVariants, 0x2F0);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateCreationArgumentOffsetCheck, ActorScriptState, creationScriptArgument, 0x238);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateFirstPartControllerOffsetCheck, ActorScriptState, unknown2F8, 0x2F8);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateSecondPartControllerOffsetCheck, ActorScriptState, unknown368, 0x368);
