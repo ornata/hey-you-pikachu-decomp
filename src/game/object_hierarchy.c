@@ -93,7 +93,6 @@ f32 vector3GetYawFromPositiveXDegrees(f32 *, u8 *);
 /// Ordered traversal pool of registered active hierarchy roots.
 /// \note Original identifier: \c D_800AE3A8 (0x800AE3A8).
 extern NodePool gActiveObjectHierarchies;
-void searchTreeRemove(void *, u8 *);
 /// Object callback table viewed at destruction callbacks, with twenty-four bytes per kind.
 /// \note Original identifier: \c D_80078144 (0x80078144).
 extern u8 gObjectKindDestroyEntries[];
@@ -988,7 +987,7 @@ void objectDestroy(u8 *object) {
     if (destroyCallback != NULL) {
         destroyCallback(object);
     }
-    searchTreeRemove((u8 *)&gObjectSearchTree, object);
+    searchTreeRemove(&gObjectSearchTree, (s32)object);
     if (*(u16 *)(object + 0x36) & 4) {
         matrixStorage = *(u8 **)(object + 0x3C);
         if (matrixStorage != NULL) {

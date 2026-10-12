@@ -2166,7 +2166,6 @@ u8 *itemCreate(f32 x, f32 y, f32 z, f32 pitch, f32 yaw, s32 kind) {
     return object;
 }
 
-u8 *searchTreeRemove(u8 *, u8 *); /* extern */
 s32 itemTryRelease(u8 *, s32);   /* extern */
 /// Number of live registered items in the current area.
 /// \note Original identifier: \c D_80134040 (0x80134040).
@@ -2185,7 +2184,7 @@ void itemDestroy(u8 *item) {
         itemTryRelease(item, 1);
     }
     collisionGridUnregisterObject((s32)item, &state->collisionKey);
-    searchTreeRemove((u8 *)&gItemSearchTree, item);
+    searchTreeRemove(&gItemSearchTree, (s32)item);
     objectRequestHierarchyDestruction(item);
     gLiveItemCount -= 1;
 }
@@ -2329,7 +2328,7 @@ void itemRemoveFromSearchAndCollision(s32 objectId) {
 
     liveObject = objectFindLiveByHandle(objectId);
     sp1C = liveObject;
-    searchTreeRemove((u8 *)&gItemSearchTree, liveObject);
+    searchTreeRemove(&gItemSearchTree, (s32)liveObject);
     collisionGridUnregisterObject((s32)sp1C,
                                   &((ItemStatePrefix *)((RuntimeObjectPrefix *)sp1C)->state.pointer)->collisionKey);
 }

@@ -43,4 +43,11 @@ TreeNode *searchTreeFindAtRoot(TreeNode **rootAddress, TreeCompare compare, s32 
 /// \note Original decompilation identifier: \c func_80041290 (0x80041290).
 TreeNode *searchTreeInsert(SearchTree *tree, TreeNode *node, s32 key);
 
+/// Detach a matching node without releasing caller-owned storage.
+/// \param tree Initialized tree whose root may change during removal.
+/// \param key Key interpreted by the tree comparator.
+/// \returns Removed caller-owned node, or null when absent; its link fields are not cleared.
+/// \note Original decompilation identifier: \c func_8004131C (0x8004131C).
+TreeNode *searchTreeRemove(SearchTree *tree, s32 key);
+
 #endif

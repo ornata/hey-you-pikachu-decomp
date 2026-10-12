@@ -178,23 +178,23 @@ TreeNode *searchTreeInsert(SearchTree *tree, TreeNode *node, s32 key) {
 /// \param key Key identifying the entry.
 /// \returns The removed node, whose storage remains caller-owned, or NULL when absent.
 /// \note Original decompilation identifier: \c func_8004131C (0x8004131C).
-u8 *searchTreeRemove(u8 *tree, s32 key) {
-    u8 *node;
-    u8 *next;
-    u8 *rest;
+TreeNode *searchTreeRemove(SearchTree *tree, s32 key) {
+    TreeNode *node;
+    TreeNode *next;
+    TreeNode *rest;
 
-    if (searchTreeLocateRoot(&((SearchTree *)tree)->root, 0, ((SearchTree *)tree)->compare, key) != 0) {
+    if (searchTreeLocateRoot(&tree->root, 0, tree->compare, key) != 0) {
         return NULL;
     }
-    node = (u8 *)((SearchTree *)tree)->root;
-    next = (u8 *)((TreeNode *)node)->links[1];
-    rest = (u8 *)((TreeNode *)node)->links[0];
+    node = tree->root;
+    next = node->links[1];
+    rest = node->links[0];
     if (next != NULL) {
-        ((SearchTree *)tree)->root = (TreeNode *)next;
-        searchTreeLocateRoot(&((SearchTree *)tree)->root, 1, 0, 0);
-        ((SearchTree *)tree)->root->links[0] = (TreeNode *)rest;
+        tree->root = next;
+        searchTreeLocateRoot(&tree->root, 1, 0, 0);
+        tree->root->links[0] = rest;
     } else {
-        ((SearchTree *)tree)->root = (TreeNode *)rest;
+        tree->root = rest;
     }
     return node;
 }

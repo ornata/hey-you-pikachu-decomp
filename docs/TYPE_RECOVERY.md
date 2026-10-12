@@ -1729,3 +1729,12 @@ pointer-return declaration changes their generated objects. Their legacy void
 boundary remains explicitly documented; IDO allocation evidence or a minimal
 matching caller representation is needed before removing it. Provider changes
 preserve all 483 objects and strict relocations with these caller exceptions.
+
+### Search-tree removal and caller ownership
+
+The shared tree interface now declares removal with a `SearchTree` pointer,
+comparator key and caller-owned `TreeNode` result. Ghidra 0x8004131C confirms
+root replacement, retained node storage and unchanged removed-node links. The
+provider uses typed root and link fields; object and item registry callers use
+explicit target-width object-address keys. All three units preserve all 483
+objects and strict relocation addends.
