@@ -3,9 +3,10 @@
 #include "actor_script.h"
 #include "object_types.h"
 #include "player_types.h"
+#include "script_vm_stack.h"
+#include "scene_types.h"
 
 void titleScreenBeginDemoTransition(void); /* extern */
-void scriptVmPushInteger();                /* extern */
 /// Begin the title-screen demo transition and provide a zero script result.
 /// \param object Actor whose script receives a zero result; no script arguments are required.
 /// \returns Zero after handling the script command.
@@ -33,7 +34,6 @@ s32 scriptCommandGetDemoIndex(u8 *object) {
 }
 
 u8 *objectFindLiveByHandle(s32);
-s32 scriptVmPopInteger(s32);
 void effectEmitterCreateForStyle(u32, f32 *, f32, s32, s32, f32);
 void mazeRemoveBlockObject(u8 *);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
@@ -52,15 +52,15 @@ s32 scriptCommandRemoveMazeBlock(u8 *object) {
     f32 center[3];
     f32 edge[3];
     u8 *target;
-    script = *(s32 *)(*(u8 **)(object + 0x54) + 0x1B8);
+    script = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
     id = scriptVmPopInteger(script);
     target = objectFindLiveByHandle(id);
-    if (target != NULL && *(u16 *)(target + 0x34) == 0x88) {
-        center[0] = *(f32 *)(target + 0x44);
-        center[1] = *(f32 *)(target + 0x48);
-        center[2] = *(f32 *)(target + 0x4C);
-        center[0] += *(f32 *)(target + 0x24) * *(f32 *)(gCurrentAreaConfiguration + 0xC) * 0.5f;
-        center[2] += *(f32 *)(target + 0x24) * *(f32 *)(gCurrentAreaConfiguration + 0xC) * 0.5f;
+    if (target != NULL && ((RuntimeObjectPrefix *)target)->kind == 0x88) {
+        center[0] = ((RuntimeObjectPrefix *)target)->worldPosition[0];
+        center[1] = ((RuntimeObjectPrefix *)target)->worldPosition[1];
+        center[2] = ((RuntimeObjectPrefix *)target)->worldPosition[2];
+        center[0] += ((RuntimeObjectPrefix *)target)->radius * ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale * 0.5f;
+        center[2] += ((RuntimeObjectPrefix *)target)->radius * ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale * 0.5f;
         edge[0] = center[0];
         edge[1] = center[1];
         edge[2] = center[2];
@@ -83,7 +83,6 @@ s32 scriptCommandRemoveMazeBlock(u8 *object) {
 
 u8 *particleClusterCreate(s32, f32, f32, f32, s32);   /* extern */
 void itemStartDirectionMotion(s32, f32, f32, f32);    /* extern */
-f32 scriptVmPopFloat(s32);                            /* extern */
 s32 objectResolveAvailableHandle(s32);                            /* extern */
 
 /// Animate the item identified by the script arguments and create its requested particle cluster, then provide a zero script result.

@@ -347,3 +347,18 @@ four definitions. Their actor-state, sequencer and command accesses now use
 established fields. The remaining integer-address sound interface is explicit
 at the call boundary. No expressions, handler ordering or command semantics
 change, and strict comparison still accepts all 483 objects.
+
+The scalar-stack continuation introduces `script_vm_stack.h` for the existing
+integer-address ABI of numeric and borrowed-string stack operations. Profile
+and demo/item commands reuse these declarations, while the VM implementation
+uses the established packed ScriptValue record for all five wrappers. String
+addresses are converted explicitly at the API boundary. The profile unit's
+redundant VM pointer casts are removed; its horizontal-movement command's unused
+second pop argument can also be removed with no object change.
+
+The source definitions at 0x8011601C through 0x801160DC establish the scalar
+signatures. Ghidra's 0x801160B4 analysis confirms the single context argument but
+misidentifies the return as void; the C definition and callers establish the
+integer return. Demo maze-block effects now reuse RuntimeObjectPrefix and
+SceneConfigurationPrefix for object kind, radius, position and scene scale.
+Each of the three source units passed strict object comparison independently.

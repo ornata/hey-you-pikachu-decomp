@@ -24,6 +24,7 @@
 #include "object_types.h"
 #include "heap_types.h"
 #include "script_vm.h"
+#include "script_vm_stack.h"
 
 /// Shared 32-byte numeric conversion text, overwritten by the next numeric string conversion.
 /// \note Original identifier: \c D_801340B0 (0x801340B0).
@@ -609,10 +610,10 @@ void scriptVmApplyComparisonOperator(u8 *vm, u8 op) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8011601C (0x8011601C).
 void scriptVmPushInteger(s32 vm, s32 value) {
-    s8 sp18[5];
+    ScriptValue valueBox;
 
-    scriptValueSetInteger(sp18, value);
-    scriptVmPushValue(vm, sp18);
+    scriptValueSetInteger((s8 *)&valueBox, value);
+    scriptVmPushValue((u8 *)vm, &valueBox);
 }
 
 void scriptValueSetFloat(s8 *arg0, f32 arg1);  /* extern */
@@ -622,10 +623,10 @@ void scriptValueSetFloat(s8 *arg0, f32 arg1);  /* extern */
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8011604C (0x8011604C).
 void scriptVmPushFloat(s32 vm, f32 value) {
-    s8 sp18[5];
+    ScriptValue valueBox;
 
-    scriptValueSetFloat(sp18, value);
-    scriptVmPushValue(vm, sp18);
+    scriptValueSetFloat((s8 *)&valueBox, value);
+    scriptVmPushValue((u8 *)vm, &valueBox);
 }
 
 /// Push a string pointer onto the script value stack.
@@ -634,10 +635,10 @@ void scriptVmPushFloat(s32 vm, f32 value) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80116084 (0x80116084).
 void scriptVmPushStringPointer(s32 vm, s32 text) {
-    s8 sp18[5];
+    ScriptValue valueBox;
 
-    scriptValueSetStringPointer(sp18, text);
-    scriptVmPushValue(vm, sp18);
+    scriptValueSetStringPointer((s8 *)&valueBox, text);
+    scriptVmPushValue((u8 *)vm, &valueBox);
 }
 
 void scriptVmPopValue(u8 *arg0, ScriptValue *arg1); /* extern */
@@ -646,10 +647,10 @@ void scriptVmPopValue(u8 *arg0, ScriptValue *arg1); /* extern */
 /// \returns The popped integer value, with any floating-point fraction discarded.
 /// \note Original decompilation identifier: \c func_801160B4 (0x801160B4).
 s32 scriptVmPopInteger(s32 vm) {
-    s8 sp18[5];
+    ScriptValue valueBox;
 
-    scriptVmPopValue(vm, sp18);
-    return scriptValueGetInteger(sp18);
+    scriptVmPopValue((u8 *)vm, &valueBox);
+    return scriptValueGetInteger((s8 *)&valueBox);
 }
 
 f32 scriptValueGetFloat(s8 *arg0);             /* extern */
@@ -659,10 +660,10 @@ f32 scriptValueGetFloat(s8 *arg0);             /* extern */
 /// \returns The popped floating-point value.
 /// \note Original decompilation identifier: \c func_801160DC (0x801160DC).
 f32 scriptVmPopFloat(s32 vm) {
-    s8 sp18[5];
+    ScriptValue valueBox;
 
-    scriptVmPopValue(vm, sp18);
-    return scriptValueGetFloat(sp18);
+    scriptVmPopValue((u8 *)vm, &valueBox);
+    return scriptValueGetFloat((s8 *)&valueBox);
 }
 
 /// Pop a script value and obtain its string representation.

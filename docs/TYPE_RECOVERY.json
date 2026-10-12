@@ -51,9 +51,9 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 3973,
+      "occurrences": 3964,
       "unique_spellings": 1440,
-      "files": 84
+      "files": 83
     }
   },
   "policies": {
@@ -7552,24 +7552,25 @@
       "known_views": [
         "actor_script.h",
         "object_types.h",
-        "scene_types.h"
+        "scene_types.h",
+        "script_vm_stack.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "actor + 0x54": [
-            "365:32",
-            "824:32",
-            "903:32",
-            "1008:32"
+            "362:32",
+            "820:32",
+            "899:32",
+            "1004:32"
           ],
           "created + 0x38": [
-            "844:42",
-            "848:42"
+            "840:42",
+            "844:42"
           ],
           "gCurrentAreaConfiguration + 0xC": [
-            "847:40",
-            "914:40"
+            "843:40",
+            "910:40"
           ]
         }
       }
@@ -8846,50 +8847,14 @@
         }
       }
     },
-    "src/ovl/script_demo_item_commands.c": {
-      "known_views": [
-        "actor_script.h",
-        "object_types.h",
-        "player_types.h"
-      ],
-      "matching_exceptions": {
-        "scriptCommandCreateItemParticles": "The motion helper uses its established float parameters with 100.0f and 1000.0f. This isolated correction preserves all allocated bytes; the former broad-sweep exception no longer applies."
-      },
-      "locations": {
-        "raw_offset_candidates": {
-          "object + 0x54": [
-            "55:32"
-          ],
-          "target + 0x34": [
-            "58:36"
-          ],
-          "target + 0x44": [
-            "59:30"
-          ],
-          "target + 0x48": [
-            "60:30"
-          ],
-          "target + 0x4C": [
-            "61:30"
-          ],
-          "target + 0x24": [
-            "62:31",
-            "63:31"
-          ],
-          "gCurrentAreaConfiguration + 0xC": [
-            "62:57",
-            "63:57"
-          ]
-        }
-      }
-    },
     "src/ovl/script_vm.c": {
       "known_views": [
         "actor_script.h",
         "heap_alloc.h",
         "heap_types.h",
         "object_types.h",
-        "script_vm.h"
+        "script_vm.h",
+        "script_vm_stack.h"
       ],
       "matching_exceptions": {
         "scriptVmReadIntegerOperand": "scriptValueGetInteger returns s32. Operand decoding retains an unused second VM context argument through an unprototyped compatibility declaration."
@@ -8897,46 +8862,46 @@
       "locations": {
         "raw_offset_candidates": {
           "vm + 0x28": [
-            "60:16"
+            "61:16"
           ],
           "vm + 0x12C": [
-            "62:16"
+            "63:16"
           ],
           "vm + 0x22C": [
-            "63:16",
-            "351:24"
+            "64:16",
+            "352:24"
           ],
           "savedDepthCount + 1": [
-            "163:65"
+            "164:65"
           ],
           "returnCount + 1": [
-            "181:61"
+            "182:61"
           ],
           "value + 1": [
-            "220:15",
-            "223:11",
-            "242:15",
-            "245:11",
-            "256:20",
-            "266:20",
-            "276:18"
+            "221:15",
+            "224:11",
+            "243:15",
+            "246:11",
+            "257:20",
+            "267:20",
+            "277:18"
           ],
           "operandOffset + 5": [
-            "329:43"
+            "330:43"
           ],
           "vm + 8": [
-            "692:29"
+            "693:29"
           ],
           "actor + 0x54": [
-            "740:22"
+            "741:22"
           ],
           "owner + 0x1B8": [
-            "741:25"
+            "742:25"
           ],
           "instructionOffset + 5": [
-            "791:43",
-            "842:47",
-            "860:43"
+            "792:43",
+            "843:47",
+            "861:43"
           ]
         }
       }
