@@ -2993,3 +2993,14 @@ does not impose a new validity check. Ghidra 0x80117834 confirms the word
 setter at actor-state offset 0x19C. `actor_target.h` now also consolidates
 escape selection, available-target lookup and mode get/set contracts.
 Each affected unit preserves all strict objects and relocations.
+
+### Parent tracking and target-facing motion fields
+
+Parent tracking and target-facing child updates now use shared hierarchy-root,
+private-state, object-kind, world-position and rotation fields. Ghidra
+0x80015620 confirms the target lookup through offset 0x50 and camera-eye
+special case. Contracts identify that link as the hierarchy root rather
+than assuming an immediate parent. The target-facing update names the child
+playback-mode field and existing mode constants, retaining its unsigned
+halfword interpretation. The target local is descriptive. Both isolated
+field and mode conversions preserve all strict object bytes and relocations.

@@ -488,25 +488,25 @@ void actorUpdateChildMotionCallback(u8 *object) {
 
 
 /// Resolve the parent tracking position, including camera targets and the stored-position fallback.
-/// \param child Child object with a valid parent matching parentState.
+/// \param child Child object whose hierarchy root is the actor described by parentState.
 /// \param parentState Parent actor state containing tracking settings and the fallback position.
 /// \param position Output array receiving three world-space coordinates.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80015620 (0x80015620).
 void actorGetParentTrackingPosition(u8 *child, u8 *parentState, f32 *position) {
-    u8 *t;
+    u8 *targetObject;
 
     if (((ActorScriptState *)parentState)->targetMode == ACTOR_TARGET_FOLLOW) {
-        t = actorResolveStoredTarget(*(u8 **)(child + 0x50));
-        if (t != NULL) {
-            if (*(u16 *)(t + 0x34) == 0x7F) {
+        targetObject = actorResolveStoredTarget(((RuntimeObjectPrefix *)child)->root.bytes);
+        if (targetObject != NULL) {
+            if (((RuntimeObjectPrefix *)targetObject)->kind == 0x7F) {
                 position[0] = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[0];
                 position[1] = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[1];
                 position[2] = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[2];
             } else {
-                position[0] = *(f32 *)(t + 0x44);
-                position[1] = *(f32 *)(t + 0x48);
-                position[2] = *(f32 *)(t + 0x4C);
+                position[0] = ((RuntimeObjectPrefix *)targetObject)->worldPosition[0];
+                position[1] = ((RuntimeObjectPrefix *)targetObject)->worldPosition[1];
+                position[2] = ((RuntimeObjectPrefix *)targetObject)->worldPosition[2];
             }
             return;
         }
@@ -522,7 +522,7 @@ void matrix33Transpose(f32 *);
 void vector3GetEulerDegrees(f32 *, f32 *, f32 *, f32 *);
 
 /// Update child animation and blend its orientation toward the parent target when tracking is enabled.
-/// \param object Child object with initialized target-facing state and a valid parent.
+/// \param object Child object with initialized target-facing state and a valid actor hierarchy root.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80015704 (0x80015704).
 void actorUpdateTargetFacingChild(u8 *object) {
@@ -542,10 +542,10 @@ void actorUpdateTargetFacingChild(u8 *object) {
     f32 length;
     s32 i;
 
-    state = *(u8 **)(object + 0x54);
-    parent = *(u8 **)(object + 0x50);
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
+    parent = ((RuntimeObjectPrefix *)object)->root.bytes;
     follow = ((ChildMotionState *)state)->facingController;
-    parentState = *(u8 **)(parent + 0x54);
+    parentState = ((RuntimeObjectPrefix *)parent)->state.bytes;
     motionUpdateChildPlayback(object);
     weight = &follow->weight;
     if ((actionGetAttributes(parent) & 0x400000) && !(((ActorScriptState *)parentState)->behaviorInhibitFlags & 1)) {
@@ -559,17 +559,18 @@ void actorUpdateTargetFacingChild(u8 *object) {
             *weight = 0.0f;
         }
     }
-    if (*(u16 *)state == 1 || *(u16 *)state == 3) {
-        follow->motionAngles[0] = *(f32 *)(object + 0xC);
-        follow->motionAngles[1] = *(f32 *)(object + 0x10);
-        follow->motionAngles[2] = *(f32 *)(object + 0x14);
+    if ((u16)((ChildMotionState *)state)->playbackMode == MOTION_PLAYBACK_TRACKS ||
+        (u16)((ChildMotionState *)state)->playbackMode == MOTION_PLAYBACK_POSE_BLEND) {
+        follow->motionAngles[0] = ((RuntimeObjectPrefix *)object)->rotation[0];
+        follow->motionAngles[1] = ((RuntimeObjectPrefix *)object)->rotation[1];
+        follow->motionAngles[2] = ((RuntimeObjectPrefix *)object)->rotation[2];
     } else {
     }
     if (*weight > 0.0f) {
         actorGetParentTrackingPosition(object, parentState, position);
-        delta[0] = position[0] - *(f32 *)(object + 0x44);
-        delta[1] = position[1] - *(f32 *)(object + 0x48);
-        delta[2] = position[2] - *(f32 *)(object + 0x4C);
+        delta[0] = position[0] - ((RuntimeObjectPrefix *)object)->worldPosition[0];
+        delta[1] = position[1] - ((RuntimeObjectPrefix *)object)->worldPosition[1];
+        delta[2] = position[2] - ((RuntimeObjectPrefix *)object)->worldPosition[2];
         do {
             matrix = gObjectTraversalTransform;
         } while (0);
@@ -604,13 +605,13 @@ void actorUpdateTargetFacingChild(u8 *object) {
         while (roll >= fullTurn) {
             roll -= fullTurn;
         }
-        *(f32 *)(object + 0xC) = roll;
-        *(f32 *)(object + 0x10) = pitch;
-        *(f32 *)(object + 0x14) = yaw;
+        ((RuntimeObjectPrefix *)object)->rotation[0] = roll;
+        ((RuntimeObjectPrefix *)object)->rotation[1] = pitch;
+        ((RuntimeObjectPrefix *)object)->rotation[2] = yaw;
     }
-    follow->previousAngles[0] = *(f32 *)(object + 0xC);
-    follow->previousAngles[1] = *(f32 *)(object + 0x10);
-    follow->previousAngles[2] = *(f32 *)(object + 0x14);
+    follow->previousAngles[0] = ((RuntimeObjectPrefix *)object)->rotation[0];
+    follow->previousAngles[1] = ((RuntimeObjectPrefix *)object)->rotation[1];
+    follow->previousAngles[2] = ((RuntimeObjectPrefix *)object)->rotation[2];
 }
 
 /// Fixed direction transform used when blending child orientation toward the camera.
