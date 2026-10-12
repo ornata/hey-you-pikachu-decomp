@@ -1749,3 +1749,13 @@ confirms the shared callback lifetime. The object caller's unprototyped integer
 return declaration is corrected to void and its diagnostic callback accepts a
 node pointer. Item traversal passes its checked registry link directly. All
 three units preserve all 483 objects and strict relocation addends.
+
+### Search-tree drawing and nearest-candidate layout reuse
+
+The object draw callback now reuses `RuntimeObjectPrefix` instead of a duplicate
+private draw layout, including the root reference and matrix-buffer views.
+Ghidra 0x80009548 confirms node payload, drawing callbacks, root kind lookup and
+selected buffer offsets. Object nearest-target callbacks use `TreeNode.value`
+and shared object kind/world position; item candidates use the same world-position
+field. Both source-unit changes preserve all 483 objects and strict relocation
+addends, including the existing fixed-matrix command address representation.

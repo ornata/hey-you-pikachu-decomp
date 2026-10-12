@@ -1760,7 +1760,7 @@ s32 itemConsiderSearchCandidate(u8 *node, s32 context) {
         return 0;
     if (gItemNearestSearch.cone < 360.0f &&
         gItemNearestSearch.cone < fabsf(mathWrapSignedDegrees(matrix34GetTransformedPointYawDegrees(
-                                      gItemSearchViewTransform, (f32 *)(item + 0x44)))))
+                                      gItemSearchViewTransform, ((RuntimeObjectPrefix *)item)->worldPosition))))
         return 0;
     rawDistance = objectGetApproxDistanceToPoint(item, gItemSearchOrigin);
     distance = rawDistance;

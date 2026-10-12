@@ -1458,17 +1458,6 @@ void objectRequestGroupDestruction(s32 group) {
     }
 }
 
-/* Draw a tree payload with its kind hooks and active matrix buffer. */
-typedef struct DrawObject {
-    u8 header[0x30];
-    Gfx *displayList;
-    u16 kind;
-    u16 flags;
-    u32 unk38;
-    Mtx *matrices[2];
-    u8 unk44[0xC];
-    struct DrawObject *parent;
-} DrawObject;
 extern u8 D_100C858[];
 
 /// Draw an eligible object from a search-tree entry for the current draw group.
@@ -1477,11 +1466,11 @@ extern u8 D_100C858[];
 /// \returns Always zero, allowing traversal to continue.
 /// \note Original decompilation identifier: \c func_80009548 (0x80009548).
 s32 objectDrawSearchTreeEntry(u8 *node, s32 unused) {
-    DrawObject *object;
+    RuntimeObjectPrefix *object;
     Gfx *displayList;
-    DrawObject *parent;
+    RuntimeObjectPrefix *parent;
 
-    object = *(DrawObject **)(node + 8);
+    object = (RuntimeObjectPrefix *)((TreeNode *)node)->value;
     if (gObjectDrawGroup != (object->flags & 0x2000) || (object->flags & 0xB3)) {
         return 0;
     }
@@ -1489,14 +1478,14 @@ s32 objectDrawSearchTreeEntry(u8 *node, s32 unused) {
     if (gObjectKindCallbacks[object->kind].draw != NULL) {
         displayList = gObjectKindCallbacks[object->kind].draw((u8 *)object);
     }
-    if (object->matrices[0] != NULL && displayList != NULL) {
-        parent = object->parent;
+    if (object->matrixBuffers[0] != NULL && displayList != NULL) {
+        parent = object->root.object;
         if (gObjectKindCallbacks[parent->kind].drawChild != NULL) {
             gObjectKindCallbacks[parent->kind].drawChild((u8 *)parent, (u8 *)object);
         } else if (object->kind != 0x98 && object->kind != 0x95 && object->kind != 0x97) {
             gSPDisplayList(gRenderDisplayListCursor++, D_100C858);
         }
-        gSPMatrix(gRenderDisplayListCursor++, (u32)object->matrices[(object->flags & 0x8000) ? 1 : 0] + 0x80000000,
+        gSPMatrix(gRenderDisplayListCursor++, (u32)object->matrixBuffers[(object->flags & 0x8000) ? 1 : 0] + 0x80000000,
                   G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
         gSPDisplayList(gRenderDisplayListCursor++, displayList);
     }
@@ -1816,8 +1805,8 @@ s32 objectConsiderNearestTargetEntry(u8 *node, s32 depth) {
     u8 *obj;
     f32 d;
 
-    obj = *(u8 **)(node + 8);
-    if (gObjectNearestTargetSearch.maxKind < *(u16 *)(obj + 0x34)) {
+    obj = (u8 *)((TreeNode *)node)->value;
+    if (gObjectNearestTargetSearch.maxKind < ((RuntimeObjectPrefix *)obj)->kind) {
         return 1;
     }
     if (obj == gObjectNearestTargetSearch.self) {
@@ -1825,7 +1814,7 @@ s32 objectConsiderNearestTargetEntry(u8 *node, s32 depth) {
     }
     if (gObjectNearestTargetSearch.cone < 360.0f &&
         gObjectNearestTargetSearch.cone < fabsf(mathWrapSignedDegrees(matrix34GetTransformedPointYawDegrees(
-                                              (f32 *)&gObjectNearestTargetSearch.facing, (f32 *)(obj + 0x44))))) {
+                                              (f32 *)&gObjectNearestTargetSearch.facing, ((RuntimeObjectPrefix *)obj)->worldPosition)))) {
         return 0;
     }
     d = objectGetApproxDistanceToPoint(obj, &gObjectNearestTargetSearch.origin);
