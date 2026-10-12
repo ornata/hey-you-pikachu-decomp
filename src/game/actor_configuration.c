@@ -38,7 +38,6 @@ s32 progressGetMaximum(s32);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
-void objectOrientTowardCamera(u8 *);
 /// Integer animation program used before the contact effect is triggered.
 /// \note Original identifier: \c D_8006B390 (0x8006B390).
 extern s32 gContactEffectIdleAnimation;

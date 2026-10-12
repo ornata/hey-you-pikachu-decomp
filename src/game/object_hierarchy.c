@@ -118,8 +118,6 @@ extern s32 gActiveObjectHierarchyCount;
 s32 objectCompareSearchTreeOrder(TreeNode *, s32);
 void objectRegisterHierarchyInSearchTree(u8 *);
 f32 vector3Normalize(f32 *);
-f32 objectOrientAlongWorldSegment(u8 *, u8 *, u8 *);
-f32 objectAdjustPitchAlongWorldSegment(u8 *, u8 *, u8 *);
 f32 mathUnitDirectionDegrees(f32, f32);
 void matrix34MakeRotationZYXDegrees(void *, f32, f32, f32);
 void vector3GetEulerDegrees(f32 *, f32 *, f32 *, f32 *);
@@ -1047,7 +1045,6 @@ void objectFaceCameraHorizontally(u8 *object) {
     }
 }
 
-void objectOrientTowardCamera(u8 *); /* extern */
 
 /// Orient an object toward the active camera for drawing.
 /// \param object Object whose orientation is updated.
@@ -1609,24 +1606,24 @@ void objectSystemDestroy(void) {
 /// \param end Three-component world-space segment end.
 /// \returns Segment length, or zero for coincident endpoints.
 /// \note Original decompilation identifier: \c func_80009948 (0x80009948).
-f32 objectOrientAlongWorldSegment(u8 *object, u8 *start, u8 *end) {
+f32 objectOrientAlongWorldSegment(u8 *object, f32 *start, f32 *end) {
     f32 sp34;
     f32 sp30;
     f32 sp2C;
     f32 len;
     f32 v[3];
 
-    v[0] = *(f32 *)(end + 0) - *(f32 *)(start + 0);
-    v[1] = *(f32 *)(end + 4) - *(f32 *)(start + 4);
-    v[2] = *(f32 *)(end + 8) - *(f32 *)(start + 8);
+    v[0] = end[0] - start[0];
+    v[1] = end[1] - start[1];
+    v[2] = end[2] - start[2];
     len = vector3Normalize(v);
     if (len == 0.0f) {
         return 0.0f;
     }
     vector3GetEulerDegrees(v, &sp34, &sp30, &sp2C);
-    *(f32 *)(object + 0xC) = sp34;
-    *(f32 *)(object + 0x10) = sp30;
-    *(f32 *)(object + 0x14) = sp2C;
+    ((RuntimeObjectPrefix *)object)->rotation[0] = sp34;
+    ((RuntimeObjectPrefix *)object)->rotation[1] = sp30;
+    ((RuntimeObjectPrefix *)object)->rotation[2] = sp2C;
     return len;
 }
 
@@ -1636,21 +1633,21 @@ f32 objectOrientAlongWorldSegment(u8 *object, u8 *start, u8 *end) {
 /// \param end Three-component world-space segment end.
 /// \returns Segment length, or zero for coincident endpoints.
 /// \note Original decompilation identifier: \c func_800099F4 (0x800099F4).
-f32 objectAdjustPitchAlongWorldSegment(u8 *object, u8 *start, u8 *end) {
+f32 objectAdjustPitchAlongWorldSegment(u8 *object, f32 *start, f32 *end) {
     f32 len;
     Matrix34 m;
     f32 v[3];
 
-    v[0] = *(f32 *)(end + 0) - *(f32 *)(start + 0);
-    v[1] = *(f32 *)(end + 4) - *(f32 *)(start + 4);
-    v[2] = *(f32 *)(end + 8) - *(f32 *)(start + 8);
+    v[0] = end[0] - start[0];
+    v[1] = end[1] - start[1];
+    v[2] = end[2] - start[2];
     len = vector3Normalize(v);
     if (len == 0.0f) {
         return 0.0f;
     }
-    matrix34MakeRotationZYXDegrees(&m, 0.0f, -*(f32 *)(object + 0x10), -*(f32 *)(object + 0x14));
+    matrix34MakeRotationZYXDegrees(&m, 0.0f, -((RuntimeObjectPrefix *)object)->rotation[1], -((RuntimeObjectPrefix *)object)->rotation[2]);
     matrix34TransformPointVector(&m, v, v);
-    *(f32 *)(object + 0xC) = mathUnitDirectionDegrees(v[1], v[2]);
+    ((RuntimeObjectPrefix *)object)->rotation[0] = mathUnitDirectionDegrees(v[1], v[2]);
     return len;
 }
 
@@ -1661,7 +1658,7 @@ f32 objectAdjustPitchAlongWorldSegment(u8 *object, u8 *start, u8 *end) {
 void objectOrientAlongCameraView(u8 *object) {
     u8 *cameraView;
     cameraView = (gRenderCameraIndex * 0xE0) + gRenderCameras;
-    objectOrientAlongWorldSegment(object, cameraView + 0xC, cameraView);
+    objectOrientAlongWorldSegment(object, (f32 *)(cameraView + 0xC), (f32 *)cameraView);
 }
 
 /// Align object pitch with the active camera's viewing direction while retaining its other orientation angles.
@@ -1671,7 +1668,7 @@ void objectOrientAlongCameraView(u8 *object) {
 void objectAdjustPitchAlongCameraView(u8 *object) {
     u8 *cameraView;
     cameraView = (gRenderCameraIndex * 0xE0) + gRenderCameras;
-    objectAdjustPitchAlongWorldSegment(object, cameraView + 0xC, cameraView);
+    objectAdjustPitchAlongWorldSegment(object, (f32 *)(cameraView + 0xC), (f32 *)cameraView);
 }
 
 /// Orient an object toward the active camera position.
@@ -1679,7 +1676,7 @@ void objectAdjustPitchAlongCameraView(u8 *object) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80009B38 (0x80009B38).
 void objectOrientTowardCamera(u8 *object) {
-    objectOrientAlongWorldSegment(object, object + 0x44, (gRenderCameraIndex * 0xE0) + gRenderCameras);
+    objectOrientAlongWorldSegment(object, ((RuntimeObjectPrefix *)object)->worldPosition, (f32 *)((gRenderCameraIndex * 0xE0) + gRenderCameras));
 }
 
 /// Adjust object pitch toward the active camera while retaining its other orientation angles.
@@ -1687,7 +1684,7 @@ void objectOrientTowardCamera(u8 *object) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80009B78 (0x80009B78).
 void objectAdjustPitchTowardCamera(u8 *object) {
-    objectAdjustPitchAlongWorldSegment(object, object + 0x44, (gRenderCameraIndex * 0xE0) + gRenderCameras);
+    objectAdjustPitchAlongWorldSegment(object, ((RuntimeObjectPrefix *)object)->worldPosition, (f32 *)((gRenderCameraIndex * 0xE0) + gRenderCameras));
 }
 
 typedef struct CamSlot {

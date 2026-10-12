@@ -1628,3 +1628,14 @@ header documents shared traversal-state lifetime and active-camera requirements.
 The integer motion-state boundary retains an explicit float-pointer conversion;
 the marker passes its existing component-array view. Every source-unit change
 preserves all 483 objects and strict relocation addends.
+
+### World-segment and camera orientation contracts
+
+The shared movement header now covers full orientation and pitch-only adjustment
+along world segments and toward/along the active camera. Segment arguments are
+three-float positions, returns are segment lengths, and coincident endpoints leave
+orientation unchanged. Ghidra 0x80009948 confirms component differences, length
+handling and rotation writes. The provider uses shared rotation/world-position
+fields; byte-backed camera storage retains explicit float-pointer boundaries.
+Three external caller units share these declarations. All four changed units
+preserve all 483 objects and strict relocation addends.
