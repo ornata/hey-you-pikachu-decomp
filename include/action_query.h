@@ -4,6 +4,11 @@
 #define ACTION_QUERY_H
 #include <ultra64.h>
 
+/// Recovered action permissions; other attribute bits retain numeric forms.
+typedef enum ActionAttribute {
+    ACTION_ATTRIBUTE_ALLOW_TURNING = 0x100000 ///< Allows action-controlled orientation updates.
+} ActionAttribute;
+
 /// Retrieve the current action's behavior attributes.
 /// \param object Live actor with initialized action state.
 /// \returns Current attributes, or the default mask 0x20100400 when playback is inactive.

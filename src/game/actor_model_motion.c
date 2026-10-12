@@ -789,13 +789,14 @@ void actorAddRotationAxisDegrees(u8 *actor, f32 angle, s32 axis) {
 /// \param angle Finite angular displacement in degrees.
 /// \param axis Orientation component: zero for pitch, one for yaw, or two for roll.
 /// \returns Nothing.
+/// \pre Updated angles must remain finite and allow full-turn adjustments to change their floating-point values.
 /// \note Original decompilation identifier: \c func_80016030 (0x80016030).
 void actorAddActionRotationAxisDegrees(u8 *actor, f32 angle, s32 axis) {
     u8 *obj;
     f32 *p;
 
-    if (actionGetAttributes(actor) & 0x100000) {
-        obj = *(u8 **)(actor + 0x54);
+    if (actionGetAttributes(actor) & ACTION_ATTRIBUTE_ALLOW_TURNING) {
+        obj = ((RuntimeObjectPrefix *)actor)->state.bytes;
         p = &((f32 *)obj)[axis];
         p[3] = p[3] + angle;
         while (p[3] < 0.0f) {
@@ -811,25 +812,26 @@ void actorAddActionRotationAxisDegrees(u8 *actor, f32 angle, s32 axis) {
 /// \param actor Actor whose orientation is updated.
 /// \param angles Two finite pitch and yaw displacements in degrees, in that order.
 /// \returns Nothing.
+/// \pre Updated angles must remain finite and allow full-turn adjustments to change their floating-point values.
 /// \note Original decompilation identifier: \c func_800160FC (0x800160FC).
 void actorAddActionPitchAndYawDegrees(u8 *actor, f32 *angles) {
     u8 *v;
 
-    if (actionGetAttributes(actor) & 0x100000) {
-        v = *(u8 **)(actor + 0x54);
-        *(f32 *)(v + 0xC) += angles[0];
-        while (*(f32 *)(v + 0xC) < 0.0f) {
-            *(f32 *)(v + 0xC) += 360.0f;
+    if (actionGetAttributes(actor) & ACTION_ATTRIBUTE_ALLOW_TURNING) {
+        v = ((RuntimeObjectPrefix *)actor)->state.bytes;
+        ((ActorScriptState *)v)->orientation[0] += angles[0];
+        while (((ActorScriptState *)v)->orientation[0] < 0.0f) {
+            ((ActorScriptState *)v)->orientation[0] += 360.0f;
         }
-        while (*(f32 *)(v + 0xC) >= 360.0f) {
-            *(f32 *)(v + 0xC) -= 360.0f;
+        while (((ActorScriptState *)v)->orientation[0] >= 360.0f) {
+            ((ActorScriptState *)v)->orientation[0] -= 360.0f;
         }
-        *(f32 *)(v + 0x10) += angles[1];
-        while (*(f32 *)(v + 0x10) < 0.0f) {
-            *(f32 *)(v + 0x10) += 360.0f;
+        ((ActorScriptState *)v)->orientation[1] += angles[1];
+        while (((ActorScriptState *)v)->orientation[1] < 0.0f) {
+            ((ActorScriptState *)v)->orientation[1] += 360.0f;
         }
-        while (*(f32 *)(v + 0x10) >= 360.0f) {
-            *(f32 *)(v + 0x10) -= 360.0f;
+        while (((ActorScriptState *)v)->orientation[1] >= 360.0f) {
+            ((ActorScriptState *)v)->orientation[1] -= 360.0f;
         }
     }
 }

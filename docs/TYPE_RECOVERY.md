@@ -1811,3 +1811,13 @@ state and documents inactive-playback defaults (0x20100400 and one). Ghidra
 The permission masks at consumers retain numeric forms until each meaning has
 producer/consumer evidence. All six source units preserve all 483 objects and
 strict relocation addends.
+
+### Action-controlled orientation fields and permission
+
+Action-controlled pitch/yaw updates use shared actor-state orientation fields,
+while both conditional rotation helpers use the named proven turning-permission
+bit. Ghidra 0x800160FC confirms the attribute gate and pitch/yaw offsets. The
+indexed single-axis helper retains its matching scalar view. Rotation contracts
+now require finite results and magnitudes for which full-turn adjustments change
+the floating-point value, avoiding a false termination promise for huge angles.
+Provider and dependent rebuilds preserve all 483 objects and strict relocations.
