@@ -2663,3 +2663,16 @@ progress records 1/2 and their backups 4/5. Progress read/write parameters now
 document indices one and two rather than including the control record. Ghidra
 0x80032DC4 confirms the fixed progress payload and backup lookup. Each unit
 retains all 483 allocated objects and strict relocation identities.
+
+### Progress-field representation records
+
+`ProgressFieldTypeLimits` replaces the duplicate twelve-byte private range
+record in save progress and toolbox. Its shared header documents bit width,
+minimum and maximum with size and member-offset checks, preserving the original
+table identifier and address. The eight-byte `ProgressFieldStorage` remains
+private to save progress and names its byte offset and packed-bit shift.
+
+Ghidra 0x8003267C confirms the twelve-byte limits stride and eight-byte location
+stride, including shift at offset four. Layout construction and signed/unsigned
+read/write cases establish the field roles without changing packed arithmetic.
+Both units preserve every allocated object and strict relocation identity.

@@ -1,3 +1,4 @@
+#include "progress_field_types.h"
 #include "progress_fields.h"
 #include "vector3_types.h"
 #include "matrix_types.h"
@@ -164,15 +165,6 @@ TextureDrawC354 gToolboxNavigationSprites[2] = {
 /// RGBA color of the depth-aware overlay behind the toolbox.
 /// \note Original identifier: \c D_8009A6AC (0x8009A6AC).
 u8 gToolboxBackdropColor[4] = {0, 0, 0, 0x80};
-typedef struct {
-    s32 f0;
-    s32 f4;
-    s32 f8;
-} Unk0C;
-
-/// Storage widths and permitted value ranges indexed by progress field type.
-/// \note Original identifier: \c D_8009A6F4 (0x8009A6F4).
-extern Unk0C gProgressFieldTypeLimits[];
 /// Storage type identifiers indexed by resolved progress field ID.
 /// \note Original identifier: \c D_8009A754 (0x8009A754).
 extern s32 gProgressFieldTypes[];

@@ -1,3 +1,4 @@
+#include "progress_field_types.h"
 #include "progress_storage.h"
 #include "progress_fields.h"
 #include "progress_value.h"
@@ -28,15 +29,6 @@ s32 D_8009ADC0 = -1;
 /// Payload byte counts used to place primary EEPROM records and their backup copies.
 /// \note Original identifier: \c D_8009ADC4 (0x8009ADC4).
 Unk2F760Image gEepromRecordPayloadSizes = {{1, 0x74, 0x74, 1, 0x74, 0x74}};
-typedef struct {
-    s32 f0;
-    s32 f4;
-    s32 f8;
-} Unk0C;
-
-/// Storage widths and permitted value ranges indexed by progress field type.
-/// \note Original identifier: \c D_8009A6F4 (0x8009A6F4).
-extern Unk0C gProgressFieldTypeLimits[];
 /// Storage type identifiers indexed by resolved progress field ID.
 /// \note Original identifier: \c D_8009A754 (0x8009A754).
 extern s32 gProgressFieldTypes[];
@@ -351,13 +343,17 @@ void progressStorageBeginInitializationHook(void) {
 void progressStorageFinishFieldLayoutHook(void) {
 }
 
-typedef struct {
-    s32 off;
-    s32 shift;
-} Unk8;
+/// Location of one field within the owned packed progress-record buffer.
+typedef struct ProgressFieldStorage {
+    s32 byteOffset; ///< Byte offset from the progress-record start.
+    s32 bitShift; ///< Low-bit position within a byte for packed sub-byte fields.
+} ProgressFieldStorage;
+
+typedef char ProgressFieldStorageSizeCheck[(sizeof(ProgressFieldStorage) == 8) ? 1 : -1];
+typedef char ProgressFieldShiftOffsetCheck[(((u32)&((ProgressFieldStorage *)0)->bitShift) == 4) ? 1 : -1];
 /// Byte offsets and bit shifts used to access packed progress fields.
 /// \note Original identifier: \c D_800F1D30 (0x800F1D30).
-extern Unk8 gProgressFieldStorageLayout[];
+extern ProgressFieldStorage gProgressFieldStorageLayout[];
 /// Prepares the storage layout required to read and write saved progress fields.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8003267C (0x8003267C).
@@ -369,7 +365,7 @@ void progressInitializeFieldStorageLayout(void) {
     s32 width;
     s32 bytes;
     for (type = 0; type < 8; type++) {
-        width = gProgressFieldTypeLimits[type].f0;
+        width = gProgressFieldTypeLimits[type].bitWidth;
         if (bit != 0) {
             bit = 0;
             offset++;
@@ -378,9 +374,9 @@ void progressInitializeFieldStorageLayout(void) {
         offset = ((offset + bytes - 1) / bytes) * bytes;
         for (i = 0; i < 244; i++) {
             if (type == gProgressFieldTypes[i]) {
-                gProgressFieldStorageLayout[i].shift = bit;
+                gProgressFieldStorageLayout[i].bitShift = bit;
                 bit += width;
-                gProgressFieldStorageLayout[i].off = offset;
+                gProgressFieldStorageLayout[i].byteOffset = offset;
                 if (bit >= 8) {
                     offset += bit / 8;
                     bit = 0;
@@ -403,26 +399,26 @@ s32 fieldId;
 s32 type;
 {
     s32 v;
-    Unk8 *f;
+    ProgressFieldStorage *f;
 
     type = gProgressFieldTypes[fieldId];
     f = &gProgressFieldStorageLayout[fieldId];
     switch (type) {
     case 0:
-        return *(s32 *)(gProgressSaveRecord + f->off);
+        return *(s32 *)(gProgressSaveRecord + f->byteOffset);
     case 1:
-        return *(s16 *)(gProgressSaveRecord + f->off);
+        return *(s16 *)(gProgressSaveRecord + f->byteOffset);
     case 2:
-        return *(u16 *)(gProgressSaveRecord + f->off);
+        return *(u16 *)(gProgressSaveRecord + f->byteOffset);
     case 3:
-        return *(s8 *)(gProgressSaveRecord + f->off);
+        return *(s8 *)(gProgressSaveRecord + f->byteOffset);
     case 4:
-        return *(u8 *)(gProgressSaveRecord + f->off);
+        return *(u8 *)(gProgressSaveRecord + f->byteOffset);
     case 5:
     case 6:
     case 7:
-        v = gProgressSaveRecord[f->off] >> f->shift;
-        v &= ((1 << (gProgressFieldTypeLimits[type].f0 + 31)) << 1) - 1;
+        v = gProgressSaveRecord[f->byteOffset] >> f->bitShift;
+        v &= ((1 << (gProgressFieldTypeLimits[type].bitWidth + 31)) << 1) - 1;
         return v;
     default:
         TRACE("Unknown type:%d\n", type);
@@ -437,40 +433,40 @@ s32 type;
 /// \returns The value stored after applying the field’s limits.
 /// \note Original decompilation identifier: \c func_80032968 (0x80032968).
 s32 progressStoreFieldValue(s32 fieldId, s32 value) {
-    Unk0C *limits = &gProgressFieldTypeLimits[gProgressFieldTypes[fieldId]];
+    ProgressFieldTypeLimits *limits = &gProgressFieldTypeLimits[gProgressFieldTypes[fieldId]];
     u8 *save = gProgressSaveRecord;
-    Unk8 *field = &gProgressFieldStorageLayout[fieldId];
+    ProgressFieldStorage *field = &gProgressFieldStorageLayout[fieldId];
     u8 *byte;
     u8 mask;
     u8 bits;
-    if (value < gProgressFieldTypeLimits[gProgressFieldTypes[fieldId]].f4)
-        value = gProgressFieldTypeLimits[gProgressFieldTypes[fieldId]].f4;
-    else if (value > limits->f8)
-        value = limits->f8;
+    if (value < gProgressFieldTypeLimits[gProgressFieldTypes[fieldId]].minimum)
+        value = gProgressFieldTypeLimits[gProgressFieldTypes[fieldId]].minimum;
+    else if (value > limits->maximum)
+        value = limits->maximum;
     switch (gProgressFieldTypes[fieldId]) {
     case 0:
-        *(s32 *)(save + field->off) = value;
+        *(s32 *)(save + field->byteOffset) = value;
         break;
     case 1:
-        *(s16 *)(save + field->off) = value;
+        *(s16 *)(save + field->byteOffset) = value;
         break;
     case 2:
-        *(u16 *)(save + field->off) = value;
+        *(u16 *)(save + field->byteOffset) = value;
         break;
     case 3:
-        *(s8 *)(save + field->off) = value;
+        *(s8 *)(save + field->byteOffset) = value;
         break;
     case 4:
-        *(u8 *)(save + field->off) = value;
+        *(u8 *)(save + field->byteOffset) = value;
         break;
     case 5:
     case 6:
     case 7:
-        mask = (((1 << (gProgressFieldTypeLimits[gProgressFieldTypes[fieldId]].f0 + 31)) << 1) - 1) << field->shift;
-        bits = value << field->shift;
-        byte = &gProgressSaveRecord[field->off];
+        mask = (((1 << (gProgressFieldTypeLimits[gProgressFieldTypes[fieldId]].bitWidth + 31)) << 1) - 1) << field->bitShift;
+        bits = value << field->bitShift;
+        byte = &gProgressSaveRecord[field->byteOffset];
         *byte &= ~mask;
-        byte = &gProgressSaveRecord[field->off];
+        byte = &gProgressSaveRecord[field->byteOffset];
         *byte |= bits;
         break;
     default:
@@ -485,9 +481,9 @@ s32 progressStoreFieldValue(s32 fieldId, s32 value) {
 /// \returns The field’s minimum permitted value.
 /// \note Original decompilation identifier: \c func_80032B18 (0x80032B18).
 s32 progressGetFieldMinimum(s32 fieldId) {
-    Unk0C *p = &gProgressFieldTypeLimits[gProgressFieldTypes[fieldId]];
+    ProgressFieldTypeLimits *p = &gProgressFieldTypeLimits[gProgressFieldTypes[fieldId]];
 
-    return p->f4;
+    return p->minimum;
 }
 
 /// Gets the maximum permitted value for a progress field.
@@ -495,9 +491,9 @@ s32 progressGetFieldMinimum(s32 fieldId) {
 /// \returns The field’s maximum permitted value.
 /// \note Original decompilation identifier: \c func_80032B48 (0x80032B48).
 s32 progressGetFieldMaximum(s32 fieldId) {
-    Unk0C *p = &gProgressFieldTypeLimits[gProgressFieldTypes[fieldId]];
+    ProgressFieldTypeLimits *p = &gProgressFieldTypeLimits[gProgressFieldTypes[fieldId]];
 
-    return p->f8;
+    return p->maximum;
 }
 
 /// Area-indexed field IDs used to resolve area-relative progress selectors.
