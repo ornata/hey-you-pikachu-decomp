@@ -1,5 +1,5 @@
 /// \file
-/// Defines integer animation keys and retained playback state used by UI indicators.
+/// Defines integer animation keys and retained playback state used by UI indicators and animated object textures.
 
 #ifndef INTEGER_ANIMATION_TYPES_H
 #define INTEGER_ANIMATION_TYPES_H

@@ -10,6 +10,7 @@
 /// \param track Writable track state.
 /// \param keys Borrowed first key, or null for a held zero value; keys must outlive playback.
 /// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000A5CC (0x8000A5CC).
 void animationIntegerTrackInitialize(ValueTrack *track, ValueKey *keys);
 
 /// Evaluate an integer animation track and advance its time.
@@ -17,6 +18,7 @@ void animationIntegerTrackInitialize(ValueTrack *track, ValueKey *keys);
 /// \param out Writable destination for the current or emitted value.
 /// \param step Time step in seconds applied after evaluation.
 /// \returns Zero for an active value, one for a held or absent track, or two for a one-shot value.
+/// \note Original decompilation identifier: \c func_8000A600 (0x8000A600).
 s32 animationIntegerTrackEvaluate(ValueTrack *state, s32 *out, f32 step);
 
 #endif

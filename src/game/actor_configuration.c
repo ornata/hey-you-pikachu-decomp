@@ -382,20 +382,20 @@ void actorUpdateChildWithPositiveYawSpin(u8 *child) {
 
 /// Integer texture animation program used by animated billboards.
 /// \note Original identifier: \c D_8006B384 (0x8006B384).
-extern s32 gBillboardTextureAnimation;
+extern ValueKey *gBillboardTextureAnimation;
 
 /// Initialize texture animation for a billboard object.
-/// \param object Object receiving texture-animation state.
+/// \param object Object receiving an owned integer-animation track; the borrowed key program must outlive playback.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001DCFC (0x8001DCFC).
 void objectInitializeBillboardTextureAnimation(u8 *object) {
-    s32 *sp1C;
-    s32 *allocation;
+    ValueTrack *track;
+    ValueTrack *allocation;
 
-    allocation = heapAllocLocal(&gGameHeap, 0xC, 0x93);
-    sp1C = allocation;
-    animationIntegerTrackInitialize((ValueTrack *)((f32 *)allocation), (ValueKey *)(gBillboardTextureAnimation));
-    ((RuntimeObjectPrefix *)object)->state.words = sp1C;
+    allocation = heapAllocLocal(&gGameHeap, sizeof(ValueTrack), 0x93);
+    track = allocation;
+    animationIntegerTrackInitialize(allocation, gBillboardTextureAnimation);
+    ((RuntimeObjectPrefix *)object)->state.pointer = track;
 }
 
 /// Orient a billboard object toward the active camera.
@@ -404,7 +404,7 @@ void objectInitializeBillboardTextureAnimation(u8 *object) {
 /// \note Original decompilation identifier: \c func_8001DD4C (0x8001DD4C).
 void objectUpdateCameraFacingBillboard(u8 *object) {
     objectOrientTowardCamera(object);
-    *(u16 *)(object + 0x36) |= 0x1000;
+    ((RuntimeObjectPrefix *)object)->flags |= 0x1000;
 }
 
 /// Advance a billboard's texture animation and prepare its current frame for drawing.
@@ -412,16 +412,16 @@ void objectUpdateCameraFacingBillboard(u8 *object) {
 /// \returns Borrowed object model display-list address represented as an integer.
 /// \note Original decompilation identifier: \c func_8001DD7C (0x8001DD7C).
 s32 objectDrawAnimatedBillboardTexture(u8 *object) {
-    s32 t;
-    s32 sp28;
+    ValueTrack *track;
+    s32 textureFrame;
 
-    t = *(s32 *)(object + 0x54);
-    animationIntegerTrackEvaluate((ValueTrack *)((void *)t), &sp28, gRuntimeFrameSeconds);
+    track = ((RuntimeObjectPrefix *)object)->state.pointer;
+    animationIntegerTrackEvaluate(track, &textureFrame, gRuntimeFrameSeconds);
     gDPPipeSync(gRenderDisplayListCursor++);
     gSPSetOtherMode(gRenderDisplayListCursor++, G_SETOTHERMODE_L, 3, 29, 0x1049D8);
     gDPSetCombine(gRenderDisplayListCursor++, 0xFFFEAC, 0xF0FCF238);
-    textureLoadForDraw(&gRenderDisplayListCursor, 5, sp28);
-    return *(s32 *)(object + 0x30);
+    textureLoadForDraw(&gRenderDisplayListCursor, 5, textureFrame);
+    return (s32)((RuntimeObjectPrefix *)object)->displayList;
 }
 
 /// Yaw sway phase increment in degrees per child-motion update.

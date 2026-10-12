@@ -51,7 +51,7 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 2850,
+      "occurrences": 2847,
       "unique_spellings": 1070,
       "files": 80
     }
@@ -531,15 +531,6 @@
           ],
           "actor + 0x4C": [
             "301:18"
-          ],
-          "object + 0x36": [
-            "407:14"
-          ],
-          "object + 0x54": [
-            "418:18"
-          ],
-          "object + 0x30": [
-            "424:21"
           ],
           "kind - 1": [
             "638:72",
