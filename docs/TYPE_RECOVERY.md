@@ -496,3 +496,15 @@ using local position was rejected by object comparison and corrected; the
 immutable baseline and comparator were unchanged. Slow, medium and fast scale
 oscillation wrappers now accept actor pointers, matching their action consumers.
 Every source unit was built and compared independently before the next changed.
+
+The EEPROM continuation unifies the queued producer and controller-thread
+dispatcher through the checked 0x20-byte EepromRequest record in `eeprom_io.h`.
+Ghidra at 0x80003938 confirms command, acknowledgment, result, page, buffer and
+size offsets. Request APIs carry RAM pointers rather than integer addresses,
+and all five producer/consumer units share fully prototyped transfer and query
+interfaces. Read buffers remain borrowed until completion; write payloads are
+staged before acknowledgment. Request acknowledgment is not transfer completion.
+The microphone configuration message retains a distinct private record because
+its command-dependent payload has different semantics despite a similar extent.
+The unused local EepromArgs view is removed. Every unit matched all 483 objects
+independently before the next source mutation.

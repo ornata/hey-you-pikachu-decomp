@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "eeprom_io.h"
 
 /* Debug trace: compiled out in this build, but each format string is still
  * emitted to .rodata. */
@@ -621,7 +622,6 @@ s32 progressHasFieldInCurrentArea(s32 field) {
     return 1;
 }
 
-s32 eepromRequestWrite(u8, u8, s32, s32); /* extern */
 /// Save-control byte transferred independently from the progress records.
 /// \note Original identifier: \c D_8009A6F0 (0x8009A6F0).
 extern u8 gEepromSaveControl;
@@ -635,7 +635,6 @@ void progressSaveControlDataToEeprom(void) {
     TRACE("pdSaveFCB_EEPROM: eepromWrite ans:%d\n", ans);
 }
 
-s32 eepromRequestRead(u8, u8, s32, s32); /* extern */
 
 /// Requests save control data from EEPROM.
 /// \returns Nothing.

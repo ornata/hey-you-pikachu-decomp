@@ -1,4 +1,5 @@
 #include "common.h"
+#include "eeprom_io.h"
 
 /* Debug trace: compiled out in this build, but each format string is still
  * emitted to .rodata in source order. */
@@ -29,28 +30,8 @@ extern s32 gEepromDeviceType;
 void _bzero(void *, u32);
 s32 checksumCrc32(s32, void *);
 
-/* queued request: dispatched by eepromDispatchRequest */
-typedef struct EepromReq {
-    s32 unk0;
-    s32 cmd; /* 0 read, 1 write */
-    s32 busy;
-    s32 result;
-    s32 page;
-    s32 pageNext;
-    void *buf;
-    s32 size;
-} EepromReq;
 
 OSMesgQueue *serialGetMessageQueue();
-s32 eepromIsTransferBusy();
-typedef struct EepromArgs {
-    s32 page;
-    s32 pageNext;
-    void *buf;
-    s32 size;
-} EepromArgs;
-s32 eepromStartRead();
-s32 eepromStartWrite();
 
 /// Check whether the current EEPROM payload passes checksum validation.
 /// \returns 1 when the checksums match, 0 otherwise.
@@ -251,19 +232,19 @@ void eepromUpdateTransfer(void) {
 /// after dispatch, not after completion of the underlying EEPROM transfer.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c eepromDispatchRequest (0x80003938).
-void eepromDispatchRequest(EepromReq *req) {
-    switch (req->cmd) {
+void eepromDispatchRequest(EepromRequest *req) {
+    switch (req->command) {
     case 0:
-        req->result = eepromStartRead(req->page, req->pageNext, req->buf, req->size);
+        req->result = eepromStartRead(req->page, req->backupPage, req->buffer, req->byteCount);
         break;
     case 1:
-        req->result = eepromStartWrite(req->page, req->pageNext, req->buf, req->size);
+        req->result = eepromStartWrite(req->page, req->backupPage, req->buffer, req->byteCount);
         break;
     default:
-        TRACE("ERROR: Unknown command:%d\n", req->cmd);
+        TRACE("ERROR: Unknown command:%d\n", req->command);
         break;
     }
-    req->busy = 0;
+    req->pending = 0;
 }
 
 /// Query the current EEPROM transfer state.
@@ -284,7 +265,6 @@ s32 eepromGetDeviceType(void) {
     return gEepromDeviceType;
 }
 
-s32 eepromGetTransferState(); /* extern */
 
 /// Test whether the EEPROM transfer state is nonterminal.
 /// \returns 1 while a transfer is busy, 0 when idle, unavailable, or failed.

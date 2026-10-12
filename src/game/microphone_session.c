@@ -6,6 +6,7 @@
 
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "eeprom_io.h"
 #include "voice_recognition.h"
 
 /* Debug trace: compiled out in this build, but each format string is still
@@ -88,17 +89,18 @@ s32 micSessionIsDictionaryUploadActive(void);
 s32 micSessionIsDeviceConnected(s32);
 void voiceRecognitionPoll(void);
 OSMesgQueue *controllerGetCommandQueue();
-void eepromWaitForIdle(void);
-typedef struct {
-    s16 type;
-    s32 unk4;
-    s32 pending;
-    s32 result;
-    s32 args[4];
-} Unk63430Req;
+/// Controller-thread microphone configuration message; distinct from EEPROM payloads.
+/// Command-dependent values retain their established slots without claiming a common meaning.
+typedef struct MicSessionRequest {
+    s16 type;    ///< Controller message type, six for microphone requests.
+    s32 command; ///< Microphone configuration operation selected by the sender.
+    s32 pending; ///< Nonzero until the controller thread acknowledges the request.
+    s32 result;  ///< Command-dependent configuration value supplied by the sender.
+    s32 args[4]; ///< Command-dependent configuration arguments.
+} MicSessionRequest;
 /// Persistent EEPROM request shared with the controller thread until acknowledgment.
 /// \note Original identifier: \c D_80063430 (0x80063430).
-Unk63430Req gEepromQueuedRequest = {0};
+EepromRequest gEepromQueuedRequest = {0};
 s32 controllerReadCachedPad(OSContPad *pad, s32 port);
 /// Whether session policy requests an active recognition read.
 /// \note Original identifier: \c D_800F8AC8 (0x800F8AC8).
@@ -349,8 +351,8 @@ void micSessionUpdate(void) {
 /// \param request Configuration request to apply and acknowledge.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000432C (0x8000432C).
-void micSessionDispatchRequest(Unk63430Req *request) {
-    switch (request->unk4) {
+void micSessionDispatchRequest(MicSessionRequest *request) {
+    switch (request->command) {
     case 0:
         gMicSessionAmplifierOffRequested = 1;
         break;
@@ -383,7 +385,7 @@ void micSessionDispatchRequest(Unk63430Req *request) {
         TRACE("ERROR: mic64SetWordDic() is not supported.\n");
         break;
     default:
-        TRACE("ERROR: Unknown command:%d\n", request->unk4);
+        TRACE("ERROR: Unknown command:%d\n", request->command);
         break;
     }
     request->pending = 0;
@@ -405,7 +407,6 @@ void micSessionInitialize(s32 portMask) {
     micSessionResetAndFindDevice();
 }
 
-s32 eepromGetDeviceType(); /* extern */
 
 /// Query the EEPROM device type without exposing the result.
 /// \returns Nothing.
@@ -414,7 +415,6 @@ void eepromQueryDeviceTypeNoResult(void) {
     eepromGetDeviceType();
 }
 
-s32 eepromIsTransferBusy(void);
 
 /// Check whether an EEPROM request or transfer is outstanding.
 /// \returns 1 while a request or transfer is busy, or 0 otherwise.
@@ -436,7 +436,6 @@ void eepromWaitForIdle(void) {
     }
 }
 
-s32 eepromGetTransferState(void);
 
 /// Get the state of the EEPROM transfer managed by queued requests.
 /// \returns 0 when idle or unavailable, 1/2 for read/write in progress, or 3/4/5 for read/checksum/write failure.
@@ -454,15 +453,15 @@ s32 eepromGetQueuedTransferState(void) {
 /// checksum; the rounded-up payload and checksum must fit in the EEPROM page range.
 /// \returns 0 if started, 3 if a 4-Kbit EEPROM is unavailable, or a busy transfer state. The transfer may still be in progress.
 /// \note Original decompilation identifier: \c func_8000451C (0x8000451C).
-s32 eepromRequestRead(s32 page, s32 backupPage, s32 destination, s32 byteCount) {
+s32 eepromRequestRead(s32 page, s32 backupPage, void *destination, s32 byteCount) {
     eepromWaitForIdle();
     gEepromQueuedRequest.pending = 1;
     gEepromQueuedRequest.type = 5;
-    gEepromQueuedRequest.unk4 = 0;
-    gEepromQueuedRequest.args[0] = page;
-    gEepromQueuedRequest.args[1] = backupPage;
-    gEepromQueuedRequest.args[2] = destination;
-    gEepromQueuedRequest.args[3] = byteCount;
+    gEepromQueuedRequest.command = 0;
+    gEepromQueuedRequest.page = page;
+    gEepromQueuedRequest.backupPage = backupPage;
+    gEepromQueuedRequest.buffer = destination;
+    gEepromQueuedRequest.byteCount = byteCount;
     osSendMesg(controllerGetCommandQueue(), &gEepromQueuedRequest, 1);
     if (gEepromQueuedRequest.pending != 0) {
         do {
@@ -483,17 +482,17 @@ s32 eepromRequestRead(s32 page, s32 backupPage, s32 destination, s32 byteCount) 
 /// \returns 0 if started, 5 if a 4-Kbit EEPROM is unavailable, or a busy transfer state. The transfer may still be in progress.
 /// \note Portability: the empty statement break preserves the original IDO register allocation.
 /// \note Original decompilation identifier: \c func_800045C0 (0x800045C0).
-s32 eepromRequestWrite(s32 page, s32 backupPage, s32 source, s32 byteCount) {
+s32 eepromRequestWrite(s32 page, s32 backupPage, void *source, s32 byteCount) {
     eepromWaitForIdle();
     do {
     } while (0);
     gEepromQueuedRequest.pending = 1;
     gEepromQueuedRequest.type = 5;
-    gEepromQueuedRequest.unk4 = 1;
-    gEepromQueuedRequest.args[0] = page;
-    gEepromQueuedRequest.args[1] = backupPage;
-    gEepromQueuedRequest.args[2] = source;
-    gEepromQueuedRequest.args[3] = byteCount;
+    gEepromQueuedRequest.command = 1;
+    gEepromQueuedRequest.page = page;
+    gEepromQueuedRequest.backupPage = backupPage;
+    gEepromQueuedRequest.buffer = source;
+    gEepromQueuedRequest.byteCount = byteCount;
     osSendMesg(controllerGetCommandQueue(), &gEepromQueuedRequest, 1);
     while (gEepromQueuedRequest.pending != 0) {
         osYieldThread();

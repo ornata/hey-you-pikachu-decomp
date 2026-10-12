@@ -2672,15 +2672,17 @@
       }
     },
     "src/game/eeprom_transfer.c": {
-      "known_views": [],
+      "known_views": [
+        "eeprom_io.h"
+      ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "size + 4": [
-            "142:55",
-            "176:55",
-            "208:71",
-            "231:71"
+            "123:55",
+            "157:55",
+            "189:71",
+            "212:71"
           ]
         }
       }
@@ -3848,13 +3850,14 @@
     },
     "src/game/microphone_session.c": {
       "known_views": [
+        "eeprom_io.h",
         "voice_recognition.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "gMicSessionUploadingDictionary + 1": [
-            "272:13"
+            "274:13"
           ]
         }
       }
@@ -5764,6 +5767,7 @@
     "src/game/runtime.c": {
       "known_views": [
         "controller_types.h",
+        "eeprom_io.h",
         "heap_diagnostics.h",
         "heap_types.h",
         "player_types.h",
@@ -5776,78 +5780,80 @@
       "locations": {
         "raw_offset_candidates": {
           "gPikachuActor + 0x54": [
-            "599:31"
+            "600:31"
           ],
           "actorState + 0x1B8": [
-            "600:50"
+            "601:50"
           ],
           "gRuntimePromptPanelLineCount - 1": [
-            "1113:75"
+            "1112:75"
           ]
         }
       }
     },
     "src/game/save_progress.c": {
-      "known_views": [],
+      "known_views": [
+        "eeprom_io.h"
+      ],
       "matching_exceptions": {},
       "locations": {
         "address_globals": {
           "D_8009ADC0": [
-            "21:5"
+            "22:5"
           ]
         },
         "raw_offset_candidates": {
           "pose + 0x10": [
-            "69:34"
+            "70:34"
           ],
           "animation + 0x72": [
-            "80:25",
-            "223:14",
-            "266:76",
-            "289:18",
-            "290:75"
+            "81:25",
+            "224:14",
+            "267:76",
+            "290:18",
+            "291:75"
           ],
           "animation + 0x50": [
-            "132:30",
-            "179:34",
-            "260:19"
+            "133:30",
+            "180:34",
+            "261:19"
           ],
           "animation + 0x78": [
-            "175:14",
-            "176:18",
-            "178:18",
-            "264:14"
+            "176:14",
+            "177:18",
+            "179:18",
+            "265:14"
           ],
           "animation + 0x70": [
-            "177:18",
-            "222:14",
-            "259:14",
-            "287:27"
+            "178:18",
+            "223:14",
+            "260:14",
+            "288:27"
           ],
           "animation + 0x28": [
-            "220:16"
+            "221:16"
           ],
           "animation + 0x74": [
-            "263:14"
+            "264:14"
           ],
           "animation + 0x10": [
-            "266:48"
+            "267:48"
           ],
           "rec + 1": [
-            "267:52"
+            "268:52"
           ],
           "entries + 1": [
-            "311:16"
+            "312:16"
           ],
           "width + 7": [
-            "417:18"
+            "418:18"
           ],
           "bytes - 1": [
-            "418:29"
+            "419:29"
           ],
           "f0 + 31": [
-            "465:53",
-            "509:80"
+            "466:53",
+            "510:80"
           ]
         }
       }
@@ -7416,6 +7422,7 @@
     },
     "src/main_controller.c": {
       "known_views": [
+        "eeprom_io.h",
         "heap_alloc.h",
         "runtime_program.h"
       ],
@@ -7423,52 +7430,52 @@
       "locations": {
         "raw_offset_candidates": {
           "control + 0": [
-            "528:14"
+            "526:14"
           ],
           "control + 0x10": [
-            "529:14"
+            "527:14"
           ],
           "control + 8": [
-            "530:14"
+            "528:14"
           ],
           "p + 8": [
-            "569:18",
-            "578:26",
-            "622:33"
+            "567:18",
+            "576:26",
+            "620:33"
           ],
           "p + 0x10": [
-            "573:22",
-            "576:28",
-            "607:24",
-            "624:18",
-            "649:14"
+            "571:22",
+            "574:28",
+            "605:24",
+            "622:18",
+            "647:14"
           ],
           "request + 4": [
-            "747:54"
+            "745:54"
           ],
           "request + 8": [
-            "748:24"
+            "746:24"
           ],
           "timer + 8": [
-            "752:18"
+            "750:18"
           ],
           "request + 0xC": [
-            "754:46"
+            "752:46"
           ],
           "timer + 0x10": [
-            "755:18"
+            "753:18"
           ],
           "timer + 0x18": [
-            "756:18"
+            "754:18"
           ],
           "request + 0x10": [
-            "757:46"
+            "755:46"
           ],
           "timer + 0x20": [
-            "758:18"
+            "756:18"
           ],
           "request + 0x14": [
-            "759:46"
+            "757:46"
           ]
         }
       }

@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "eeprom_io.h"
 #include "text_panel.h"
 #include "heap_diagnostics.h"
 #include "runtime_program.h"
@@ -615,8 +616,6 @@ void runtimeRequestGameModeChange(s32 mode) {
 }
 
 void cameraFadePrimarySecondaryOverlay(s32, s32, s32, s32, f32); /* extern */
-s32 eepromIsRequestOrTransferBusy();                                            /* extern */
-s32 eepromGetQueuedTransferState(void);
 void objectUpdateGroup(s32);                     /* extern */
 void objectSweepDeferredHierarchyDestruction();                            /* extern */
 void audioStopCategories(s32, f64);

@@ -3,6 +3,7 @@
  * Compiler pin: Makefile IDO 5.3, -O2 -mips2. */
 #include <ultra64.h>
 #include "common.h"
+#include "eeprom_io.h"
 #include "runtime_program.h"
 #include "heap_alloc.h"
 
@@ -311,14 +312,11 @@ typedef struct {
 void controllerInitializeDevices(s32);
 void controllerClearPadCache(void);
 void micSessionInitialize(s32);
-void eepromInitializeTransfers(void);
 void controllerInitializeRumbleState(void);
 void controllerQueryDevices(void);
 void controllerPollPads(void);
-void eepromUpdateTransfer(void);
 void micSessionUpdate(void);
 void controllerUpdateRumble(void);
-void eepromDispatchRequest(void *req);
 void micSessionDispatchRequest(void *);
 void controllerDispatchRumbleRequest(u8 *);
 /* Orphan strings of the compiled-out mpak error traces. */
