@@ -71,7 +71,7 @@ s32 romDmaPollQueue(DmaQueue *queueState);
 /// \param byteCount Number of bytes in this DMA request.
 /// \returns Number of outstanding requests after submitting the read.
 /// \note Original decompilation identifier: \c romDmaSubmitRead (0x80037D40).
-s32 romDmaSubmitRead(DmaQueue *queue, s32 romAddress, s32 destination, u32 byteCount);
+s32 romDmaSubmitRead(DmaQueue *queue, u32 romAddress, u8 *destination, u32 byteCount);
 
 /// Queue an asynchronous ROM read.
 /// May wait for queue slots; does not wait for all submitted reads to finish.
@@ -82,7 +82,7 @@ s32 romDmaSubmitRead(DmaQueue *queue, s32 romAddress, s32 destination, u32 byteC
 /// \param byteCount Number of bytes to copy; zero submits no requests.
 /// \returns Current outstanding-request count after submission.
 /// \note Original decompilation identifier: \c romDmaReadQueued (0x80037E14).
-s32 romDmaReadQueued(DmaQueue *queueState, s32 romAddress, s32 destination, u32 byteCount);
+s32 romDmaReadQueued(DmaQueue *queueState, u32 romAddress, u8 *destination, u32 byteCount);
 
 /// Block until all outstanding requests in a DMA queue have completed.
 /// \param queueState Initialized DMA-queue state with a valid pending count.

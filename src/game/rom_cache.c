@@ -88,7 +88,7 @@ s32 romCacheRead(RomCache *c, s32 key, u32 size, s32 *out) {
     }
     e->size = size;
     e->key = key;
-    romDmaReadQueued(&c->reads, key, e->data, size);
+    romDmaReadQueued(&c->reads, key, (u8 *)e->data, size);
     keyedPoolInsert(&c->index, (s32)e, key);
     e->flags |= 3;
     *out = e->data;

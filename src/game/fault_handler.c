@@ -254,7 +254,7 @@ extern OSMesgQueue gFaultEventQueue;
 /// \param unused Unused thread-entry argument.
 /// \returns Does not return.
 /// \note Original decompilation identifier: \c func_800426B4 (0x800426B4).
-void faultHandlerThread(u8 *unused) {
+void faultHandlerThread(void *unused) {
     OSMesg message;
     char buffer[12];
     OSThread *faulted;
@@ -283,13 +283,12 @@ void faultHandlerThread(u8 *unused) {
     }
 }
 
-void faultHandlerThread(u8 *); /* extern */
 /// Thread record for the fault-reporting handler.
 /// \note Original identifier: \c D_800F8B20 (0x800F8B20).
 extern OSThread gFaultHandlerThread;
 /// Single-message backing storage for the fault notification queue.
 /// \note Original identifier: \c D_800F8EE8 (0x800F8EE8).
-extern u8 *gFaultEventMessageStorage;
+extern OSMesg gFaultEventMessageStorage;
 
 /// Start the fault-reporting thread.
 /// \param threadId Identifier assigned to the fault-reporting thread.

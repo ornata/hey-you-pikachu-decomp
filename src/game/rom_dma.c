@@ -14,13 +14,13 @@ void romDmaInitializeHook(void) {
 extern OSMesgQueue gRomPiManagerQueue;
 /// Backing storage for the peripheral-interface manager message queue.
 /// \note Original identifier: \c D_800F2638 (0x800F2638).
-extern u8 *gRomPiManagerMessages;
+extern OSMesg gRomPiManagerMessages[200];
 
 /// Initialize the peripheral-interface manager for cartridge transfers.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c romDmaCreatePiManager (0x80037AE8).
 void romDmaCreatePiManager(void) {
-    osCreatePiManager(0x96, &gRomPiManagerQueue, &gRomPiManagerMessages, 0xC8);
+    osCreatePiManager(0x96, &gRomPiManagerQueue, gRomPiManagerMessages, 0xC8);
 }
 
 /// Read ROM into RAM and wait until the entire read completes.
@@ -31,7 +31,7 @@ void romDmaCreatePiManager(void) {
 /// \note Original decompilation identifier: \c romDmaReadBlocking (0x80037B1C).
 void romDmaReadBlocking(u32 romAddress, u8 *destination, s32 byteCount) {
     OSMesgQueue completionQueue;
-    u8 *completionMessage;
+    OSMesg completionMessage;
     OSIoMesg ioMessage;
     s32 chunkBytes;
     s32 remainingBytes;
@@ -82,8 +82,8 @@ void heapFreeLocal(u8 *, void *);
 /// \note Original decompilation identifier: \c romDmaDestroyQueue (0x80037C74).
 void romDmaDestroyQueue(DmaQueue *queueState) {
     romDmaWaitForQueue(queueState);
-    heapFreeLocal(&gGameHeap, queueState->messages);
-    heapFreeLocal(&gGameHeap, queueState->queue.msg);
+    heapFreeLocal((u8 *)&gGameHeap, queueState->messages);
+    heapFreeLocal((u8 *)&gGameHeap, queueState->queue.msg);
     queueState->pending = 0;
     queueState->cursor = 0;
     queueState->capacity = 0;
@@ -119,7 +119,7 @@ s32 romDmaPollQueue(DmaQueue *queueState) {
 /// \param byteCount Number of bytes in this DMA request.
 /// \returns Number of outstanding requests after submitting the read.
 /// \note Original decompilation identifier: \c romDmaSubmitRead (0x80037D40).
-s32 romDmaSubmitRead(DmaQueue *queue, s32 romAddress, s32 destination, u32 byteCount) {
+s32 romDmaSubmitRead(DmaQueue *queue, u32 romAddress, u8 *destination, u32 byteCount) {
     /* The ROM gives this saved completion-queue pointer its own stack home.
      * A one-element array reproduces that inferred local shape; only index 0 is used. */
     OSMesgQueue *completionQueue[1];
@@ -148,9 +148,9 @@ s32 romDmaSubmitRead(DmaQueue *queue, s32 romAddress, s32 destination, u32 byteC
 /// \param byteCount Number of bytes to copy; zero submits no requests.
 /// \returns Current outstanding-request count after submission.
 /// \note Original decompilation identifier: \c romDmaReadQueued (0x80037E14).
-s32 romDmaReadQueued(DmaQueue *queueState, s32 romAddress, s32 destination, u32 byteCount) {
-    s32 sourceCursor;
-    s32 destinationCursor;
+s32 romDmaReadQueued(DmaQueue *queueState, u32 romAddress, u8 *destination, u32 byteCount) {
+    u32 sourceCursor;
+    u8 *destinationCursor;
     u32 chunkBytes;
     u32 remainingBytes;
 

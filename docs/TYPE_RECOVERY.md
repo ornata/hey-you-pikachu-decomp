@@ -532,3 +532,15 @@ The allocating loader requests staging for encoded bytes while the DMA interface
 also includes correction records. Capacity for nonzero counts is not established
 and is explicitly documented, without changing gameplay or allocation behavior.
 All seven source units matched the immutable 483-object baseline independently.
+
+The ROM-I/O continuation types queued read destinations and advancing RAM
+cursors as byte pointers, with unsigned cartridge addresses. Ghidra at
+0x80037D40 corroborates the queue's request slots and completion processing.
+Both cache and actor asset consumers use the same queue interface, retaining
+explicit conversions where existing storage still holds target-width addresses.
+The PI manager's 200 message slots and blocking read's completion slot now use
+OSMesg; the reserved PI backing extent is 0x328 bytes, sufficient for 200 slots.
+Fault notification storage likewise uses OSMesg and its entry point uses the
+SDK's void-pointer callback parameter. The ROM-I/O deallocator calls explicitly
+convert the heap view at the existing byte-oriented boundary. All four source
+units independently matched the immutable 483-object baseline.

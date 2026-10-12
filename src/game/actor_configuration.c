@@ -495,7 +495,7 @@ void actorAssetQueueLoadForKind(s32 kind) {
             gActorAssetStorage[index] = (s32)heapAllocLocal(
                 &gGameHeap, gActorAssetResources[index].dataEnd - gActorAssetResources[index].dataStart, 0x113);
         }
-        romDmaReadQueued((s32 *)&gActorAssetReadQueue, gActorAssetResources[index].romStart, source, size);
+        romDmaReadQueued(&gActorAssetReadQueue, gActorAssetResources[index].romStart, (u8 *)source, size);
     }
 }
 
