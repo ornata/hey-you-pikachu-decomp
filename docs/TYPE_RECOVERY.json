@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 3466,
-      "unique_spellings": 1311,
+      "occurrences": 3462,
+      "unique_spellings": 1308,
       "files": 80
     }
   },
@@ -385,10 +385,6 @@
           "state + 0x198": [
             "909:91"
           ],
-          "state + 0x60": [
-            "937:45",
-            "939:35"
-          ],
           "state + 0x194": [
             "964:22"
           ],
@@ -696,9 +692,6 @@
           "allocation + 0x178": [
             "238:12"
           ],
-          "allocation + 0x60": [
-            "243:29"
-          ],
           "drawListStorage + 0x40": [
             "246:67"
           ],
@@ -781,9 +774,6 @@
           "obj + 0x1E8": [
             "417:66",
             "422:53"
-          ],
-          "obj + 0x60": [
-            "426:30"
           ],
           "obj + 0xE0": [
             "427:28"

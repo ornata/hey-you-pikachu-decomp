@@ -6,6 +6,7 @@
 
 #include "script_message.h"
 #include "action_script_types.h"
+#include "direction_animation_types.h"
 
 /// Recovered prefix of actor state used by script-message consumers.
 /// \ingroup ActorScriptVm
@@ -21,7 +22,9 @@ typedef struct ActorScriptState {
     u8 *partTable;          ///< Owned part-lookup table released with model state.
     s32 partCount;          ///< Number of slots in the owned part-lookup table.
     Gfx *modelDrawLists[2]; ///< Two drawing lists sharing one owned allocation.
-    u8 unknown05C[0x98];
+    u8 unknown05C[4];
+    DirectionAnimation directionAnimation; ///< Owned paired lighting poses and their angular playback state.
+    u8 unknown0DC[0x18];
     f32 actionDuration;   ///< Duration supplied by the selected action definition.
     s32 actionAttributes; ///< Behavior flags supplied by the selected action.
     s16 motionId;         ///< Selected motion-data identifier.
@@ -132,6 +135,7 @@ ACTOR_SCRIPT_OFFSET_CHECK(ActorScriptStateMessageOffsetCheck, ActorScriptState, 
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateGroundReferenceOffsetCheck, ActorScriptState, groundReference, 0x0);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePartTableOffsetCheck, ActorScriptState, partTable, 0x4C);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateDrawListsOffsetCheck, ActorScriptState, modelDrawLists, 0x54);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateDirectionAnimationOffsetCheck, ActorScriptState, directionAnimation, 0x60);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePlaybackModeOffsetCheck, ActorScriptState, playbackMode, 0x11A);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePendingActionOffsetCheck, ActorScriptState, pendingAction, 0x120);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateMovementScaleOffsetCheck, ActorScriptState, movementScale, 0x130);

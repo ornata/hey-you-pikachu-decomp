@@ -1821,3 +1821,13 @@ indexed single-axis helper retains its matching scalar view. Rotation contracts
 now require finite results and magnitudes for which full-turn adjustments change
 the floating-point value, avoiding a false termination promise for huge angles.
 Provider and dependent rebuilds preserve all 483 objects and strict relocations.
+
+### Actor-owned direction animation layout
+
+The checked actor-state view now embeds the existing shared `DirectionAnimation`
+at 0x60 instead of leaving its 0x7C-byte extent in unknown storage. Ghidra
+0x80014FE4 confirms initialization at this offset within the 0x408 allocation;
+update and action-command consumers select the same field. An offset check
+supplements the existing enclosing-size checks. The following 0x18 bytes retain
+explicit unknown storage pending further ownership/field evidence. Both changed
+source units and all header dependents preserve all 483 objects and relocations.

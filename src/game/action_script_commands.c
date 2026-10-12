@@ -934,9 +934,9 @@ void actionCommandStartDirectionMotion(s32 actor, u8 *state, u8 *command, s32 el
     for (i = 0; i < 2; i++) {
         pts[i].pitch = p->start;
         pts[i].yaw = p->end;
-        directionAnimationSetNextPoseAngles(state + 0x60, -40.0f, 0.0f, i);
+        directionAnimationSetNextPoseAngles((u8 *)&((ActorScriptState *)state)->directionAnimation, -40.0f, 0.0f, i);
     }
-    directionAnimationStartMotion(state + 0x60, p->duration, pts);
+    directionAnimationStartMotion((u8 *)&((ActorScriptState *)state)->directionAnimation, p->duration, pts);
 }
 
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
