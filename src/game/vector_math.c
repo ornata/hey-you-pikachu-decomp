@@ -1,3 +1,4 @@
+#include "matrix_orientation.h"
 #include "audio_spatial.h"
 /* harvested: matched m2c drafts; pending style pass */
 /* Vector, angle and interpolation helpers. The unit ends at randomBelowWithHistory:

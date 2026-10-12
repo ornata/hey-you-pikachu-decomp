@@ -1,3 +1,4 @@
+#include "matrix_orientation.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "vector_direction.h"
@@ -355,7 +356,6 @@ void matrix34TranslateLocal(f32 mf[4][3], f32 x, f32 y, f32 z) {
     }
 }
 
-void matrix34MakeRotationXYZDegrees(f32 *, f32, f32, f32);
 
 /// Apply a local Euler rotation in X, then Y, then Z order.
 /// \param matrixAddress RAM address of the matrix whose linear transform is to be updated.

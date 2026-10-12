@@ -2477,3 +2477,16 @@ child playback mode. Ghidra 0x8000E190 confirms this traversal and the child
 kind interval 0x26 through 0x63. The part table retains its existing byte-pointer
 representation at the shared boundary. All these consumers match the complete
 strict object baseline; previously documented pose-read exceptions remain.
+
+### Shared matrix orientation interfaces
+
+`matrix_orientation.h` supplies the documented XYZ-degree construction and
+orientation-blending contracts to both providers and every C caller. Ghidra
+0x80039994 confirms all three rotation parameters are floating point. The
+model-motion caller now reads its two angles as floats rather than passing
+integer bit patterns through an incompatible local declaration; the corrected
+prototype and caller preserve the original allocated object bytes.
+
+The six affected source units were rebuilt and compared individually. The
+shared contracts retain flat twelve-float matrix storage at the helper boundary
+and document output and blending weight semantics without implementation detail.

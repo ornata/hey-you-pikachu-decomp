@@ -1,3 +1,4 @@
+#include "matrix_orientation.h"
 #include "actor_script_time.h"
 #include "script_vm.h"
 #include "actor_meters.h"
@@ -372,7 +373,6 @@ void actorPartFollowRelativeRoll(u8 *object) {
     *(f32 *)object = mathMapRangeClamped(0.0f, 1.0f, 90.0f, 1.25f, mathAngleDistanceDegrees(0.0f, z));
 }
 
-void matrix34BlendOrientation(f32, f32 *, f32 *, f32 *);
 f32 mathWrapSignedDegrees(f32);
 /// First signed part-identifier sequence used by paired orientation followers.
 /// \note Original identifier: \c D_800A277C (0x800A277C).
@@ -490,7 +490,6 @@ void actorPartUpdateCollisionRegistration(u8 *object) {
     ((ActorPartTextureState *)obj)->collisionKey = collisionGridRegisterObject(object);
 }
 
-void matrix34MakeRotationXYZDegrees(f32 *, f32, f32, f32);
 void matrix34MakeRotationZYXDegrees(f32 *, f32, f32, f32);
 void matrix33ApplyRotationXYZDegrees(s32, f32, f32, f32);
 void matrix33ApplyRotationZYXDegrees(s32, f32, f32, f32);

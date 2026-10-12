@@ -1,3 +1,4 @@
+#include "matrix_orientation.h"
 #include "object_flags.h"
 #include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
@@ -214,7 +215,6 @@ typedef struct {
 /// Primary player control record and base of the player records with a 256-byte stride.
 /// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
 extern Cam6A0 gPlayerState;
-void matrix34MakeRotationXYZDegrees(f32 *, f32, f32, f32);
 void matrix33ApplyRotationZYXDegrees(f32 *, f32, f32, f32);
 void matrix33GetFoldedEulerDegrees(f32 *, u8 *, u8 *, u8 *);
 

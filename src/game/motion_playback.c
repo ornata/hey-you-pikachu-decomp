@@ -1,3 +1,4 @@
+#include "matrix_orientation.h"
 #include "animation_tracks.h"
 #include "motion_playback.h"
 #include "actor_action_cue.h"
@@ -34,8 +35,6 @@ extern ActionDefinition gActionDefinitions[];
 f32 mathUnitDirectionDegrees(f32, f32);
 void matrix34RotateWorldYDegrees(f32, f32 *);
 void motionExtractHeadingFromMatrix(f32 *, f32 *);
-void matrix34MakeRotationXYZDegrees(f32 *, f32, f32, f32);
-void matrix34BlendOrientation(f32, f32 *, f32 *, f32 *);
 void motionRequestCurrentData(u8 *);
 void actionResolveNextTransition(u8 *);
 /// Separate view of fallback action identifiers in the action definitions, with a 0x2C-byte stride.
