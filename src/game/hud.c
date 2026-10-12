@@ -1,3 +1,4 @@
+#include "hud_draw.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "audio_cue.h"
@@ -15,7 +16,6 @@
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-void hudDrawMicrophoneIndicators(Gfx **);
 void hudDrawAlternateOverlay(Gfx **);
 void hudDrawAuxiliaryIcon(Gfx **);
 void hudDrawMotionIndicators(Gfx **);

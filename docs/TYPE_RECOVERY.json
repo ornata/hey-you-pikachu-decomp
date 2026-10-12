@@ -2249,6 +2249,7 @@
     "src/game/backdrop.c": {
       "known_views": [
         "asset_loader.h",
+        "backdrop_draw.h",
         "heap_free.h",
         "heap_tail.h",
         "heap_types.h"
@@ -2259,33 +2260,33 @@
       "locations": {
         "raw_offset_candidates": {
           "gRenderCameras + 0x8C": [
-            "38:20",
-            "39:65",
-            "170:20"
+            "39:20",
+            "40:65",
+            "171:20"
           ],
           "gRenderCameras + 0xA0": [
-            "68:14",
-            "69:18"
+            "69:14",
+            "70:18"
           ],
           "gCurrentAreaConfiguration + 0x68": [
-            "143:30"
+            "144:30"
           ],
           "view + 4": [
-            "144:92"
+            "145:92"
           ],
           "view + 0x98": [
-            "145:14",
-            "149:14",
-            "149:68"
+            "146:14",
+            "150:14",
+            "150:68"
           ],
           "view + 0x9C": [
-            "146:14"
+            "147:14"
           ],
           "view + 0xA0": [
-            "149:44"
+            "150:44"
           ],
           "top - 1": [
-            "200:57"
+            "201:57"
           ]
         }
       }
@@ -2355,6 +2356,7 @@
     "src/game/collection_presentation.c": {
       "known_views": [
         "audio_cue.h",
+        "backdrop_draw.h",
         "heap_alloc.h",
         "item_kind.h",
         "object_lookup.h",
@@ -3388,6 +3390,7 @@
     "src/game/hud.c": {
       "known_views": [
         "audio_cue.h",
+        "hud_draw.h",
         "integer_animation.h",
         "integer_animation_types.h",
         "object_types.h",
@@ -3840,32 +3843,32 @@
       "locations": {
         "raw_offset_candidates": {
           "object + 0x54": [
-            "105:28"
+            "104:28"
           ],
           "object + 0x10": [
-            "119:22",
-            "120:29",
-            "121:26",
-            "123:29",
-            "124:26"
+            "118:22",
+            "119:29",
+            "120:26",
+            "122:29",
+            "123:26"
           ],
           "e + 0x18": [
-            "168:40"
+            "167:40"
           ],
           "f8 + 1": [
-            "276:29"
+            "275:29"
           ],
           "ent + 0x3C": [
-            "286:14"
+            "285:14"
           ],
           "ent + 0x40": [
-            "287:14"
+            "286:14"
           ],
           "f4 - 2": [
-            "336:37"
+            "335:37"
           ],
           "width - 271": [
-            "388:57"
+            "387:57"
           ]
         }
       }
@@ -6331,95 +6334,95 @@
       "locations": {
         "raw_offset_candidates": {
           "gPlayerPositionY + 0": [
-            "141:17"
+            "140:17"
           ],
           "obj + 0x50": [
-            "168:23"
+            "167:23"
           ],
           "obj + 0x54": [
-            "169:21"
+            "168:21"
           ],
           "obj + 0x1C": [
-            "171:14"
+            "170:14"
           ],
           "obj + 0x44": [
-            "171:59",
-            "173:50"
+            "170:59",
+            "172:50"
           ],
           "parent + 0x1C": [
-            "171:81",
-            "172:37",
-            "173:72"
+            "170:81",
+            "171:37",
+            "172:72"
           ],
           "obj + 0x4C": [
-            "171:106",
-            "173:97"
+            "170:106",
+            "172:97"
           ],
           "object + 0x54": [
-            "222:22",
-            "311:33"
+            "221:22",
+            "310:33"
           ],
           "object + 0x50": [
-            "223:22"
+            "222:22"
           ],
           "d + 0": [
-            "227:18"
+            "226:18"
           ],
           "o + 0x3C": [
-            "233:28"
+            "232:28"
           ],
           "o + 0x36": [
-            "233:49"
+            "232:49"
           ],
           "d + 4": [
-            "233:90"
+            "232:90"
           ],
           "d + 0x14": [
-            "237:18"
+            "236:18"
           ],
           "root + 0x54": [
-            "274:28"
+            "273:28"
           ],
           "size + 1": [
-            "278:25",
-            "279:29",
-            "285:31",
-            "318:18",
-            "319:29"
+            "277:25",
+            "278:29",
+            "284:31",
+            "317:18",
+            "318:29"
           ],
           "cell + 0x54": [
-            "281:30"
+            "280:30"
           ],
           "cell + 0x18": [
-            "282:22"
+            "281:22"
           ],
           "cell + 0x20": [
-            "283:22"
+            "282:22"
           ],
           "size + 2": [
-            "286:31"
+            "285:31"
           ],
           "index + 1": [
-            "287:23"
+            "286:23"
           ],
           "tail + 0x28": [
-            "288:22"
+            "287:22"
           ],
           "root + 0x2C": [
-            "293:14"
+            "292:14"
           ],
           "root + 0x28": [
-            "293:38",
-            "294:14"
+            "292:38",
+            "293:14"
           ],
           "object + 0x2C": [
-            "313:25"
+            "312:25"
           ],
           "node + 0x54": [
-            "320:30"
+            "319:30"
           ],
           "node + 0x28": [
-            "325:29"
+            "324:29"
           ]
         }
       }
@@ -6645,33 +6648,36 @@
       "known_views": [
         "asset_loader.h",
         "audio_cue.h",
+        "backdrop_draw.h",
+        "hud_draw.h",
         "text_draw.h",
         "text_image.h",
-        "text_panel.h"
+        "text_panel.h",
+        "title_screen.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "words + 4": [
-            "63:72"
+            "66:72"
           ],
           "words + 8": [
-            "67:44"
+            "70:44"
           ],
           "x - 10": [
-            "255:36"
+            "258:36"
           ],
           "y - 4": [
-            "255:44"
+            "258:44"
           ],
           "maxWidth + 10": [
-            "255:55"
+            "258:55"
           ],
           "x + 16": [
-            "262:17"
+            "265:17"
           ],
           "gCurrentAreaConfiguration + 0x64": [
-            "989:47"
+            "990:47"
           ]
         }
       }
@@ -7154,29 +7160,31 @@
       "known_views": [
         "actor_script.h",
         "actor_target.h",
-        "audio_cue.h"
+        "audio_cue.h",
+        "backdrop_draw.h",
+        "hud_draw.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "x - 27": [
-            "194:46"
-          ],
-          "x + 55": [
             "196:46"
           ],
+          "x + 55": [
+            "198:46"
+          ],
           "x - 16": [
-            "264:31",
-            "288:27"
+            "266:31",
+            "290:27"
           ],
           "y + 8": [
-            "265:31"
+            "267:31"
           ],
           "y - 8": [
-            "289:27"
+            "291:27"
           ],
           "counter + 5U": [
-            "296:25"
+            "298:25"
           ],
           "gPikachuActor + 0x54": [
             "382:28",
@@ -7248,174 +7256,176 @@
     "src/main.c": {
       "known_views": [
         "asset_loader.h",
+        "backdrop_draw.h",
         "heap_alloc.h",
         "heap_free.h",
         "heap_tail.h",
         "runtime_program.h",
-        "system_menu.h"
+        "system_menu.h",
+        "title_screen.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "camera + 0xA8": [
-            "283:18"
-          ],
-          "camera + 0xAC": [
-            "284:18"
-          ],
-          "camera + 0xB0": [
             "285:18"
           ],
-          "camera + 0xB4": [
+          "camera + 0xAC": [
             "286:18"
           ],
+          "camera + 0xB0": [
+            "287:18"
+          ],
+          "camera + 0xB4": [
+            "288:18"
+          ],
           "gCurrentAreaConfiguration + 0x54": [
-            "317:27",
-            "325:39"
-          ],
-          "gCurrentAreaConfiguration + 0x50": [
-            "317:72",
-            "320:79",
-            "321:79",
-            "324:84",
-            "325:84",
-            "326:84",
-            "327:84"
-          ],
-          "gCurrentAreaConfiguration + 0x60": [
-            "320:34",
+            "319:27",
             "327:39"
           ],
+          "gCurrentAreaConfiguration + 0x50": [
+            "319:72",
+            "322:79",
+            "323:79",
+            "326:84",
+            "327:84",
+            "328:84",
+            "329:84"
+          ],
+          "gCurrentAreaConfiguration + 0x60": [
+            "322:34",
+            "329:39"
+          ],
           "gCurrentAreaConfiguration + 0x58": [
-            "321:34",
-            "324:39"
-          ],
-          "gCurrentAreaConfiguration + 0x48": [
-            "323:39"
-          ],
-          "gCurrentAreaConfiguration + 0x5C": [
+            "323:34",
             "326:39"
           ],
+          "gCurrentAreaConfiguration + 0x48": [
+            "325:39"
+          ],
+          "gCurrentAreaConfiguration + 0x5C": [
+            "328:39"
+          ],
           "sp1C + 0": [
-            "347:45"
+            "349:45"
           ],
           "sp1C + 4": [
-            "347:65"
+            "349:65"
           ],
           "sp1C + 8": [
-            "347:85"
+            "349:85"
           ],
           "gPlayerYaw + 180": [
-            "349:56"
+            "351:56"
           ],
           "cameraState + 0": [
-            "422:14"
-          ],
-          "eye + 0": [
-            "422:42"
-          ],
-          "cameraState + 4": [
-            "423:14"
-          ],
-          "eye + 4": [
-            "423:42"
-          ],
-          "cameraState + 8": [
             "424:14"
           ],
-          "eye + 8": [
+          "eye + 0": [
             "424:42"
           ],
-          "cameraState + 0xC": [
+          "cameraState + 4": [
             "425:14"
           ],
-          "target + 0": [
-            "425:44"
+          "eye + 4": [
+            "425:42"
           ],
-          "cameraState + 0x10": [
+          "cameraState + 8": [
             "426:14"
           ],
-          "target + 4": [
-            "426:45"
+          "eye + 8": [
+            "426:42"
           ],
-          "cameraState + 0x14": [
+          "cameraState + 0xC": [
             "427:14"
           ],
-          "target + 8": [
-            "427:45"
+          "target + 0": [
+            "427:44"
           ],
-          "cameraState + 0x20": [
+          "cameraState + 0x10": [
             "428:14"
           ],
-          "cameraState + 0x18": [
+          "target + 4": [
+            "428:45"
+          ],
+          "cameraState + 0x14": [
             "429:14"
           ],
-          "cameraState + 0x1C": [
+          "target + 8": [
+            "429:45"
+          ],
+          "cameraState + 0x20": [
             "430:14"
           ],
+          "cameraState + 0x18": [
+            "431:14"
+          ],
+          "cameraState + 0x1C": [
+            "432:14"
+          ],
           "cameraState + 0xD8": [
-            "554:34"
-          ],
-          "cameraState + 0xD4": [
-            "554:61"
-          ],
-          "cameraState + 0xDC": [
-            "554:90"
-          ],
-          "cameraState + 0xC0": [
             "555:34"
           ],
-          "cameraState + 0xBC": [
+          "cameraState + 0xD4": [
             "555:61"
           ],
-          "cameraState + 0xC4": [
+          "cameraState + 0xDC": [
             "555:90"
           ],
+          "cameraState + 0xC0": [
+            "556:34"
+          ],
+          "cameraState + 0xBC": [
+            "556:61"
+          ],
+          "cameraState + 0xC4": [
+            "556:90"
+          ],
           "cameraState + 0xCC": [
-            "557:38",
-            "563:42"
+            "558:38",
+            "564:42"
           ],
           "cameraState + 0xC8": [
-            "557:65"
+            "558:65"
           ],
           "cameraState + 0xD0": [
-            "557:94"
+            "558:94"
           ],
           "cameraState + 0xB8": [
-            "563:22"
+            "564:22"
           ],
           "sp20 + 0xC4": [
-            "679:51"
+            "680:51"
           ],
           "sp20 + 0xBC": [
-            "680:52"
+            "681:52"
           ],
           "sp20 + 0xB8": [
-            "706:52"
-          ],
-          "sp20 + 0xC0": [
             "707:52"
           ],
+          "sp20 + 0xC0": [
+            "708:52"
+          ],
           "sp20 + 0xCC": [
-            "708:39"
+            "709:39"
           ],
           "buffer + 1": [
-            "778:19"
+            "779:19"
           ],
           "gCurrentAreaConfiguration + 0x2C": [
-            "783:25"
+            "784:25"
           ],
           "sp1C + 0x80000000": [
-            "808:43"
+            "809:43"
           ],
           "gCurrentAreaConfiguration + 0x30": [
-            "822:38",
-            "823:77",
-            "826:81"
+            "823:38",
+            "824:77",
+            "827:81"
           ],
           "gCurrentAreaConfiguration + 0x34": [
-            "823:32",
-            "826:36"
+            "824:32",
+            "827:36"
           ],
           "point + 8": [
             "1053:30"
@@ -7440,52 +7450,52 @@
       "locations": {
         "raw_offset_candidates": {
           "control + 0": [
-            "523:14"
+            "521:14"
           ],
           "control + 0x10": [
-            "524:14"
+            "522:14"
           ],
           "control + 8": [
-            "525:14"
+            "523:14"
           ],
           "p + 8": [
-            "564:18",
-            "573:26",
-            "617:33"
+            "562:18",
+            "571:26",
+            "615:33"
           ],
           "p + 0x10": [
-            "568:22",
-            "571:28",
-            "602:24",
-            "619:18",
-            "644:14"
+            "566:22",
+            "569:28",
+            "600:24",
+            "617:18",
+            "642:14"
           ],
           "request + 4": [
-            "742:54"
+            "740:54"
           ],
           "request + 8": [
-            "743:24"
+            "741:24"
           ],
           "timer + 8": [
-            "747:18"
+            "745:18"
           ],
           "request + 0xC": [
-            "749:46"
+            "747:46"
           ],
           "timer + 0x10": [
-            "750:18"
+            "748:18"
           ],
           "timer + 0x18": [
-            "751:18"
+            "749:18"
           ],
           "request + 0x10": [
-            "752:46"
+            "750:46"
           ],
           "timer + 0x20": [
-            "753:18"
+            "751:18"
           ],
           "request + 0x14": [
-            "754:46"
+            "752:46"
           ]
         }
       }
@@ -8907,6 +8917,7 @@
     "src/ovl/system_menu.c": {
       "known_views": [
         "audio_cue.h",
+        "backdrop_draw.h",
         "heap_alloc.h",
         "player_types.h",
         "scene_types.h",
@@ -8919,16 +8930,16 @@
       "locations": {
         "raw_offset_candidates": {
           "depth + 1": [
-            "401:47"
+            "402:47"
           ],
           "row + 1": [
-            "640:14"
+            "641:14"
           ],
           "i - 1": [
-            "645:18"
+            "646:18"
           ],
           "index - 1": [
-            "695:18"
+            "696:18"
           ],
           "count - 1": [
             "829:51"

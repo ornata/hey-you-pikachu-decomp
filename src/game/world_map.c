@@ -1,3 +1,5 @@
+#include "hud_draw.h"
+#include "backdrop_draw.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "audio_cue.h"
@@ -324,11 +326,9 @@ void wholeMapDrawDifficultyOverlay(Gfx **gdl) {
 void cameraUpdateOverlayColors(s32, s32); /* extern */
 void cameraDrawSecondaryOverlay(s32);      /* extern */
 void objectDrawGroup(s32);      /* extern */
-void hudDrawMicrophoneIndicators(Gfx **);       /* extern */
 void wholeMapDrawDestinations(Gfx **);          /* extern */
 void wholeMapDrawLockedDestinations(Gfx **);          /* extern */
 void wholeMapDrawDifficultyOverlay(Gfx **);          /* extern */
-void backdropDraw(Gfx **);          /* extern */
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;

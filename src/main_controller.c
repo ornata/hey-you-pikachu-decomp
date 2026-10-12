@@ -200,7 +200,6 @@ extern s32 gGraphicsFramebufferIndex;
 /// \note Original identifier: \c D_803B5000 (0x803B5000).
 extern u8 gColorFramebuffer0[];
 
-void backdropDraw(Gfx **); /* extern */
 
 /// Physical depth-buffer address used in graphics commands.
 /// \note Original identifier: \c D_38F800 (0x38F800).
@@ -263,7 +262,6 @@ void objectDrawGroup(s32);
 void hudDraw(Gfx **);
 s32 messageBarUpdateAndDraw(void);
 void hudDrawAreaLabel(Gfx **);
-void titleScreenDrawFrame(s32);
 void presentationDrawCardScreen(Gfx **);
 void presentationDrawCollectionScreen(Gfx **);
 void eyeCatchDraw(Gfx **);

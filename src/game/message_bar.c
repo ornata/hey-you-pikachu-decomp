@@ -41,7 +41,6 @@ void objectDrawHierarchyGroup(s32, s32);
 void presentationDrawAreaLabel(Gfx **);
 void presentationDrawCardDecorations(Gfx **);
 void presentationDrawCurrentCardPanels(Gfx **);
-void backdropDraw();
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;

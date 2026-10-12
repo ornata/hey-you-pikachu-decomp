@@ -1,3 +1,4 @@
+#include "backdrop_draw.h"
 #include "common.h"
 #include "audio_cue.h"
 #include "player_control.h"
@@ -162,7 +163,6 @@ void cameraDrawSecondaryOverlay(s32);
 void objectDrawHierarchyGroup(s32, s32);
 void presentationDrawCardDecorations(Gfx **);
 void presentationDrawCurrentCardPanels(Gfx **);
-void backdropDraw(Gfx **);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;

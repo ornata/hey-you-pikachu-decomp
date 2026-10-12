@@ -1,3 +1,4 @@
+#include "backdrop_draw.h"
 #include "heap_free.h"
 #include "heap_tail.h"
 /* harvested: matched m2c drafts; pending style pass */

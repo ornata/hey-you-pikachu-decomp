@@ -1,3 +1,5 @@
+#include "title_screen.h"
+#include "backdrop_draw.h"
 #include "system_menu.h"
 #include "heap_free.h"
 #include "heap_tail.h"
@@ -461,7 +463,6 @@ void renderFillFramebufferRectangle(u32 left, u32 top, u32 right, u32 bottom, u8
     }
 }
 
-void backdropDraw(Gfx **); /* extern */
 
 /// Draw the configured backdrop or clear the framebuffer to black.
 /// \param useBackdrop Nonzero draws the configured backdrop; zero fills the screen with opaque black.
@@ -876,7 +877,6 @@ void objectDrawGroup(s32);
 void hudDraw(Gfx **);
 s32 messageBarUpdateAndDraw(void);
 void hudDrawAreaLabel(Gfx **);
-void titleScreenDrawFrame(s32);
 void presentationDrawCardScreen(Gfx **);
 void presentationDrawCollectionScreen(Gfx **);
 void eyeCatchDraw(Gfx **);
@@ -903,7 +903,7 @@ void renderDrawCurrentMode(void) {
         hudDrawAreaLabel(&gRenderDisplayListCursor);
         break;
     case 18:
-        titleScreenDrawFrame((s32)&gRenderDisplayListCursor);
+        titleScreenDrawFrame(&gRenderDisplayListCursor);
         break;
     case 4:
         presentationDrawCardScreen(&gRenderDisplayListCursor);

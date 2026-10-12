@@ -1,3 +1,4 @@
+#include "backdrop_draw.h"
 #include "system_menu.h"
 #include "common.h"
 #include "audio_cue.h"
@@ -739,7 +740,6 @@ void cameraDrawSecondaryOverlay(s32);            /* extern */
 void renderDrawColorOverlayWithDepth(u8, u8, u8, u8); /* extern */
 void objectDrawGroup(s32);        /* extern */
 void objectDrawHierarchyGroup(s32, s32);   /* extern */
-void backdropDraw(Gfx **);            /* extern */
 void systemMenuDrawDetails(Gfx **);            /* extern */
 void systemMenuDrawItemList(Gfx **);            /* extern */
 void systemMenuDrawClosingEffect(Gfx **);            /* extern */

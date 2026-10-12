@@ -1,3 +1,6 @@
+#include "backdrop_draw.h"
+#include "title_screen.h"
+#include "hud_draw.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "audio_cue.h"
@@ -229,8 +232,8 @@ void textDrawImageAtCursor(u8 *);
 /// \param unavailableRed Nonzero to show unselected unavailable choices in red; zero to use the alternate unavailable color.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80034910 (0x80034910).
-void titleScreenDrawMenu(s32 cursor, s32 *items, s32 enabled, s32 unavailableRed) {
-    Gfx **gdl = (Gfx **)cursor;
+void titleScreenDrawMenu(Gfx **cursor, const s32 *items, s32 enabled, s32 unavailableRed) {
+    Gfx **gdl = cursor;
     s32 maxWidth = 0;
     s32 count = 0;
     s32 width;
@@ -345,12 +348,10 @@ void cameraUpdateOverlayColors(s32, s32);
 void cameraDrawOverlay(s32);
 void cameraDrawSecondaryOverlay(s32);
 void objectDrawGroup(s32);
-void hudDrawMicrophoneIndicators(s32);
-void backdropDraw(s32);
 void titleScreenDrawLogo(Gfx **);
 void titleScreenDrawStartupPanel(Gfx **);
 void titleScreenDrawStartPrompt(Gfx **);
-void titleScreenDrawMenu(s32, s32 *, s32, s32);
+void titleScreenDrawMenu(Gfx **, const s32 *, s32, s32);
 void titleScreenClearScreen(Gfx **);
 void titleScreenDrawStartupSilhouette(Gfx **);
 /// Current startup, title-menu or demonstration-transition state.
@@ -361,16 +362,16 @@ extern s32 gTitleScreenState;
 extern u8 gEepromSaveControl;
 /// Text-image indices for the New Game and Continue menu.
 /// \note Original identifier: \c D_8009B464 (0x8009B464).
-extern u8 gTitleMainMenuItems[];
+extern const s32 gTitleMainMenuItems[3];
 /// Text-image indices for new-game file selection and cancellation.
 /// \note Original identifier: \c D_8009B470 (0x8009B470).
-extern u8 gTitleNewGameFileMenuItems[];
+extern const s32 gTitleNewGameFileMenuItems[4];
 /// Text-image indices for existing-game file selection and cancellation.
 /// \note Original identifier: \c D_8009B480 (0x8009B480).
-extern u8 gTitleLoadGameFileMenuItems[];
+extern const s32 gTitleLoadGameFileMenuItems[4];
 /// Text-image indices for confirmation of overwriting an occupied file.
 /// \note Original identifier: \c D_8009B490 (0x8009B490).
-extern u8 gTitleOverwriteMenuItems[];
+extern const s32 gTitleOverwriteMenuItems[3];
 /// Nonzero when the file-selection menu loads an existing game.
 /// \note Original identifier: \c D_800F25A4 (0x800F25A4).
 extern s32 gTitleLoadGameSelected;
@@ -382,7 +383,7 @@ extern s32 gTitleEnabledFileChoices;
 /// \param cursor Address of the display-list cursor to append drawing commands to and advance.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80034F6C (0x80034F6C).
-void titleScreenDrawFrame(s32 cursor) {
+void titleScreenDrawFrame(Gfx **cursor) {
     switch (gTitleScreenState) {
     case 0:
     case 1:

@@ -674,3 +674,19 @@ the unused controller declaration is removed. Private records stay local.
 Unsigned byte text accumulation remains a recorded matching constraint: both
 signed-character interface trials changed allocated code and were rejected.
 All retained changes match the preserved 483-object baseline.
+
+### Scene, title and microphone-status drawing cursors
+
+`backdrop_draw.h`, `title_screen.h` and `hud_draw.h` provide canonical `Gfx **`
+drawing cursor contracts across definitions and every active declaring caller.
+Unused declarations were removed. The title drawing dispatcher and its menu
+renderer now retain pointer cursors throughout, including their shared caller
+in `main.c`. Ghidra at `0x80033B78` confirms the fixed/scrolling backdrop dispatch;
+the C drawing implementations establish the cursor mutation contract.
+
+The four title-menu label tables are signed 32-bit arrays rather than byte arrays.
+ROM data at `0x8009B464` contains `[0, 1, -1]`, followed at `0x8009B470` by
+`[2, 3, 6, -1]`, at `0x8009B480` by `[4, 5, 6, -1]`, and at `0x8009B490`
+by `[7, 6, -1]`. Their declarations retain those lengths and read-only ownership.
+The renderer borrows the arrays and their negative terminators. All retained
+source-unit changes pass strict comparison against the 483-object baseline.
