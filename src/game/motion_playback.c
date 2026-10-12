@@ -24,9 +24,6 @@
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-typedef struct Rec2C {
-    u8 pad[0x2C];
-} Rec2C;
 
 void motionResetPlayback(u8 *);
 void motionSetPlaybackMode(u8 *, s32);
@@ -38,7 +35,7 @@ s32 animationDeltaTrack3Evaluate(struct Track3b *, f32 *, f32 *, f32);
 void motionApplyRootOrientation(void *, s32);
 /// Action records containing playback flags, motion identifiers and transition settings.
 /// \note Original identifier: \c D_8006B590 (0x8006B590).
-extern u8 gActionDefinitions[];
+extern ActionDefinition gActionDefinitions[];
 f32 mathUnitDirectionDegrees(f32, f32);
 void matrix34RotateWorldYDegrees(f32, f32 *);
 void motionExtractHeadingFromMatrix(f32 *, f32 *);
@@ -98,18 +95,18 @@ void motionApplyRootOrientation(void *angles, s32 object) {
 /// \returns A borrowed archive-relative base supplied by the motion cache, or zero for an invalid action or unsupported action type; data must be awaited before use and retained through cache use requests.
 /// \note Original decompilation identifier: \c func_8000E08C (0x8000E08C).
 s32 actionRequestMotionData(s32 actionId) {
-    u8 *var_v0;
+    ActionDefinition *var_v0;
     if ((actionId < 0) || (actionId >= 0x14A)) {
         var_v0 = NULL;
     } else {
-        var_v0 = (actionId * 0x2C) + gActionDefinitions;
+        var_v0 = &gActionDefinitions[actionId];
     }
-    if ((var_v0 == NULL) || ((((ActionDefinition *)var_v0)->attributes & 7) != 1)) {
+    if ((var_v0 == NULL) || ((var_v0->attributes & 7) != 1)) {
         return 0;
     }
     {
         s32 sp18;
-        motionCacheRead(&gMotionRomCache, ((ActionDefinition *)var_v0)->motionId, &sp18);
+        motionCacheRead(&gMotionRomCache, var_v0->motionId, &sp18);
         return sp18;
     }
 }
@@ -470,21 +467,18 @@ void actionStartPlayback(u8 *object) {
     }
 }
 
-typedef struct Rec2CW {
-    s32 w[11];
-} Rec2CW;
 
 /// Apply an action record when it is compatible with the current motion state.
 /// \param state Actor action state receiving the record.
 /// \param record Action record whose referenced names, scripts, and callbacks remain valid while selected.
 /// \returns One when the record is applied; zero when its motion state is incompatible.
 /// \note Original decompilation identifier: \c func_8000EA88 (0x8000EA88).
-s32 actionTryApplyCompatibleRecord(u8 *state, u8 *record) {
-    if ((*(s32 *)(record + 0xC) & 7) != 1 || record[0x12] == state[0xFF]) {
-        *(Rec2CW *)(state + 0xEC) = *(Rec2CW *)record;
+s32 actionTryApplyCompatibleRecord(u8 *state, ActionDefinition *record) {
+    if ((record->attributes & 7) != 1 || record->initialPoseId == state[0xFF]) {
+        *(ActionDefinition *)&((ActorScriptState *)state)->actionId = *record;
         return 1;
     }
-    TRACE("error: _setAction(%p): unknown action_type(%d)\n", state, *(s32 *)(record + 0xC) & 7);
+    TRACE("error: _setAction(%p): unknown action_type(%d)\n", state, record->attributes & 7);
     return 0;
 }
 
@@ -495,21 +489,21 @@ s32 actionTryApplyCompatibleRecord(u8 *state, u8 *record) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000EAF8 (0x8000EAF8).
 void actionConfigurePoseTransition(u8 *state, s32 nextAction, f32 duration) {
-    u8 *var_v0;
+    ActionDefinition *var_v0;
 
     if ((nextAction < 0) || (nextAction >= 0x14A)) {
         var_v0 = NULL;
     } else {
-        var_v0 = (u8 *)&((Rec2C *)gActionDefinitions)[nextAction];
+        var_v0 = &gActionDefinitions[nextAction];
     }
     ((ActorScriptState *)state)->actionId = -2 - nextAction;
     ((ActorScriptState *)state)->actionName = "\xCA\xE4\xB4\xD6"; /* EUC-JP "interpolation" */
     TRACE("_setInterAct:  next-motion:%s  next-action:%s\n", *(char **)(var_v0 + 4), ((ActorScriptState *)state)->actionName);
-    ((ActorScriptState *)state)->actionDuration = ((ActionDefinition *)var_v0)->duration;
-    ((ActorScriptState *)state)->actionAttributes = (((ActionDefinition *)var_v0)->attributes & 0x20100000) | 0x04010003;
-    ((ActorScriptState *)state)->motionId = ((ActionDefinition *)var_v0)->motionId;
+    ((ActorScriptState *)state)->actionDuration = var_v0->duration;
+    ((ActorScriptState *)state)->actionAttributes = (var_v0->attributes & 0x20100000) | 0x04010003;
+    ((ActorScriptState *)state)->motionId = var_v0->motionId;
     ((ActorScriptState *)state)->previousPoseId = ((ActorScriptState *)state)->currentPoseId;
-    ((ActorScriptState *)state)->currentPoseId = ((ActionDefinition *)var_v0)->initialPoseId;
+    ((ActorScriptState *)state)->currentPoseId = var_v0->initialPoseId;
     ((ActorScriptState *)state)->continuationAction = nextAction;
     ((ActorScriptState *)state)->actionInitializer = NULL;
     *(s32 *)(state + 0x10C) = 0;
@@ -525,17 +519,17 @@ void actionConfigurePoseTransition(u8 *state, s32 nextAction, f32 duration) {
 /// \returns One when the record is loaded; zero when the action identifier is invalid.
 /// \note Original decompilation identifier: \c func_8000EBA0 (0x8000EBA0).
 s32 actionLoadRecordByIndex(u8 *state, s32 actionId, s32 nextAction) {
-    Rec2CW *a;
+    ActionDefinition *a;
 
     if (actionId < 0 || actionId >= 330) {
         a = NULL;
     } else {
-        a = &((Rec2CW *)gActionDefinitions)[actionId];
+        a = &gActionDefinitions[actionId];
     }
     if (a == NULL) {
         return 0;
     }
-    *(Rec2CW *)(state + 0xEC) = *a;
+    *(ActionDefinition *)&((ActorScriptState *)state)->actionId = *a;
     ((ActorScriptState *)state)->continuationAction = nextAction;
     if ((*(u32 *)(state + 0xF8) & 7) == 1 && ((*(u32 *)(state + 0xF8) & 0x20000) || ((ActorScriptState *)state)->primaryCueProgram == 0)) {
         ((ActorScriptState *)state)->primaryCueProgram = 0;
@@ -588,8 +582,8 @@ void actionResolveNextTransition(u8 *object) {
     f32 blendTime;
     s32 nextIndex;
     s32 prevIndex;
-    u8 *previous;
-    u8 *next;
+    ActionDefinition *previous;
+    ActionDefinition *next;
     s32 transition;
     s32 animation;
 
@@ -605,33 +599,33 @@ void actionResolveNextTransition(u8 *object) {
         if (prevIndex < 0 || prevIndex >= 0x14A) {
             previous = NULL;
         } else {
-            previous = (u8 *)&((Rec2CW *)gActionDefinitions)[prevIndex];
+            previous = &gActionDefinitions[prevIndex];
         }
         nextIndex = *(s16 *)(state + 0x120);
         if (nextIndex < 0 || nextIndex >= 0x14A) {
             next = NULL;
         } else {
-            next = (u8 *)&((Rec2CW *)gActionDefinitions)[nextIndex];
+            next = &gActionDefinitions[nextIndex];
         }
         if (previous == NULL && next == NULL) {
             actionStopPlayback(object);
             return;
         }
-        if (next == NULL || (previous != NULL && (*(s32 *)(previous + 0xC) & 0x04000000))) {
-            *(Rec2CW *)(state + 0xEC) = *(Rec2CW *)previous;
+        if (next == NULL || (previous != NULL && (previous->attributes & 0x04000000))) {
+            *(ActionDefinition *)&((ActorScriptState *)state)->actionId = *previous;
         } else {
-            sequence = *(ActorActionCueCommand **)(next + 0x24);
+            sequence = next->primaryCueProgram;
             if (sequence == NULL) {
                 sequence = gActionDefaultCommandSequence;
             }
             if (actionTryApplyCompatibleRecord(state, next)) {
                 actionPrepareSelectedContext(state, sequence);
-            } else if ((*(s32 *)(next + 0xC) & 0x02000000) && *(s16 *)(next + 0x14) != -1) {
-                nextIndex = *(s16 *)(next + 0x14);
+            } else if ((next->attributes & 0x02000000) && next->continuationAction != -1) {
+                nextIndex = next->continuationAction;
                 if (nextIndex < 0 || nextIndex >= 0x14A) {
                     next = NULL;
                 } else {
-                    next = (u8 *)&((Rec2CW *)gActionDefinitions)[nextIndex];
+                    next = &gActionDefinitions[nextIndex];
                 }
                 if (actionTryApplyCompatibleRecord(state, next)) {
                     actionPrepareSelectedContext(state, sequence);
@@ -641,13 +635,13 @@ void actionResolveNextTransition(u8 *object) {
             } else {
                 sequence = NULL;
             find_transition:
-                transition = wordMapLookup(&gActionPoseTransitionMap, next[0x12] + (state[0xFF] << 8));
+                transition = wordMapLookup(&gActionPoseTransitionMap, next->initialPoseId + (state[0xFF] << 8));
                 animation = transition - 0x100;
                 if (transition == 0xFE) {
                     actionConfigurePoseTransition(state, nextIndex, blendTime);
                     actionPrepareSelectedContext(state, sequence);
                 } else if (animation == -3) {
-                    *(Rec2CW *)(state + 0xEC) = *(Rec2CW *)next;
+                    *(ActionDefinition *)&((ActorScriptState *)state)->actionId = *next;
                     actionPrepareSelectedContext(state, sequence);
                 } else if (actionLoadRecordByIndex(state, animation, nextIndex)) {
                     actionPrepareSelectedContext(state, sequence);
@@ -655,7 +649,7 @@ void actionResolveNextTransition(u8 *object) {
                     actionConfigurePoseTransition(state, nextIndex, blendTime);
                     actionPrepareSelectedContext(state, sequence);
                 } else {
-                    *(Rec2CW *)(state + 0xEC) = *(Rec2CW *)previous;
+                    *(ActionDefinition *)&((ActorScriptState *)state)->actionId = *previous;
                 }
             }
         }
@@ -672,27 +666,27 @@ void actionResolveNextTransition(u8 *object) {
 void actionInitializeTransitionMap(void) {
     s32 i;
     s32 key;
-    u8 *e;
+    ActionDefinition *e;
     GlyphPair *p;
 
     wordMapInitialize(&gActionPoseTransitionMap, 0x125);
     TRACE("apply action_joint_pose from actJointPose\n");
     for (p = gActionExplicitPoseTransitions; p->hi != '0'; p++) {
         key = (p->hi << 8) + p->lo;
-        TRACE("firstPose:%d lastPose:%d act:%s\n", p->hi, p->lo, *(char **)(gActionDefinitions + p->id * 0x2C + 4));
+        TRACE("firstPose:%d lastPose:%d act:%s\n", p->hi, p->lo, gActionDefinitions[p->id].name);
         if (wordMapLookup(&gActionPoseTransitionMap, key) == 0) {
             TRACE("firstPose:%d lastPose:%d act:%s apply:%d\n", p->hi, p->lo,
-                  *(char **)(gActionDefinitions + p->id * 0x2C + 4), p->id);
+                  gActionDefinitions[p->id].name, p->id);
             wordMapInsert(&gActionPoseTransitionMap, p->id + 0x100, key);
         }
     }
     TRACE("apply action_joint_pose from action\n");
-    for (i = 0, e = gActionDefinitions; i < 0x14A; i++, e += 0x2C) {
-        if (*(s32 *)(e + 0xC) & 0x40000) {
-            key = e[0x13];
-            key = (e[0x12] << 8) + key;
-            if (e[0x13] != e[0x12] && wordMapLookup(&gActionPoseTransitionMap, key) == 0) {
-                TRACE("firstPose:%d lastPose:%d act:%s apply:%d\n", e[0x12], e[0x13], *(char **)(e + 4), i);
+    for (i = 0, e = gActionDefinitions; i < 0x14A; i++, e++) {
+        if (e->attributes & 0x40000) {
+            key = e->finalPoseId;
+            key = (e->initialPoseId << 8) + key;
+            if (e->initialPoseId != e->finalPoseId && wordMapLookup(&gActionPoseTransitionMap, key) == 0) {
+                TRACE("firstPose:%d lastPose:%d act:%s apply:%d\n", e->initialPoseId, e->finalPoseId, e->name, i);
                 wordMapInsert(&gActionPoseTransitionMap, i + 0x100, key);
             }
         }
@@ -961,14 +955,14 @@ s16 actionGetCurrentMotionId(u8 *object) {
 /// \returns The stored action name, a sentinel name, or an invalid-action marker; ownership remains with the action system.
 /// \note Original decompilation identifier: \c func_8000F60C (0x8000F60C).
 char *actionGetName(s32 actionId) {
-    u8 *var_v1;
+    ActionDefinition *var_v1;
     if ((actionId < 0) || (actionId >= 0x14A)) {
         var_v1 = NULL;
     } else {
-        var_v1 = (actionId * 0x2C) + gActionDefinitions;
+        var_v1 = &gActionDefinitions[actionId];
     }
     if (var_v1 != NULL) {
-        return *(char **)(var_v1 + 4);
+        return var_v1->name;
     }
     switch (actionId) {
     case -3:
@@ -1034,17 +1028,17 @@ void actionSetContinuation(u8 *object, s32 actionId) {
 void actionSkipLoopingContinuations(u8 *object) {
     s16 continuationId;
     u8 *actionState;
-    u8 *continuationRecord;
+    ActionDefinition *continuationRecord;
     actionState = *(u8 **)(object + 0x54);
 loop_1:
     continuationId = ((ActorScriptState *)actionState)->continuationAction;
     if ((continuationId < 0) || (continuationId >= 0x14A)) {
         continuationRecord = NULL;
     } else {
-        continuationRecord = gActionDefinitions + (continuationId * 0x2C);
+        continuationRecord = &gActionDefinitions[continuationId];
     }
-    if ((continuationRecord != NULL) && (((ActionDefinition *)continuationRecord)->attributes & 8)) {
-        ((ActorScriptState *)actionState)->continuationAction = ((ActionDefinition *)continuationRecord)->continuationAction;
+    if ((continuationRecord != NULL) && (continuationRecord->attributes & 8)) {
+        ((ActorScriptState *)actionState)->continuationAction = continuationRecord->continuationAction;
         TRACE("next:%s\n", actionGetName(((ActorScriptState *)actionState)->continuationAction));
         goto loop_1;
     }
@@ -1055,12 +1049,12 @@ loop_1:
 /// \note Original decompilation identifier: \c func_8000F77C (0x8000F77C).
 void actionValidateTableIndices(void) {
     s32 i;
-    u8 *p;
+    ActionDefinition *p;
 
-    for (i = 0, p = gActionDefinitions; i < 0x14A; i++, p += 0x2C) {
-        if (((ActionDefinition *)p)->id != i) {
-            TRACE("Invalid action table.\n actIdx(%d) != %d\n", i, ((ActionDefinition *)p)->id);
-            TRACE(" action:%s\n", ((ActionDefinition *)p)->name);
+    for (i = 0, p = gActionDefinitions; i < 0x14A; i++, p++) {
+        if (p->id != i) {
+            TRACE("Invalid action table.\n actIdx(%d) != %d\n", i, p->id);
+            TRACE(" action:%s\n", p->name);
         }
     }
 }

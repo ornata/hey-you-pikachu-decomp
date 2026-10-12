@@ -2284,3 +2284,17 @@ transitions, continuation traversal and table validation use recovered fields.
 Word-oriented aggregate copies retain their existing representation to preserve
 the compiler's copy behavior. Header dependents and the changed source unit
 preserve all 483 objects and strict relocation addends.
+
+### Typed action table, selection and aggregate copies
+
+The action table is now an ActionDefinition array. Resource selection,
+compatibility checks, transition resolution, name queries, continuation walks
+and transition-map iteration use the recovered record directly. Ghidra
+0x8000EA88 confirms compatibility testing and the complete resource copy.
+Copies into the actor's selected-action region use ActionDefinition and the
+checked actionId field address, eliminating both placeholder 0x2C records.
+The previously retained word-copy representation is no longer necessary.
+One transition-map comparison needs initial-pose before final-pose in the
+source expression to retain the original branch operand encoding; the values
+and condition are unchanged. The actor current-pose byte-view exceptions from
+the earlier audit remain. All 483 objects and strict relocations match.
