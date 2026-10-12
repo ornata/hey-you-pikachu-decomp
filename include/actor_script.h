@@ -23,7 +23,8 @@ typedef struct ActorScriptState {
     f32 verticalPoseOffset; ///< Accumulated vertical offset of the animated pose.
     f32 defaultPoseOffset;  ///< Default vertical offset supplied by motion data.
     f32 orientation[3];     ///< Actor orientation in degrees, separate from child poses.
-    u8 unknown018[0x34];
+    Matrix34 rootMotionTransform; ///< Root-motion orientation with heading separated into actor yaw.
+    f32 rootMotionHeading; ///< Last extracted root-motion heading in degrees.
     u8 *partTable;          ///< Owned part-lookup table released with model state.
     s32 partCount;          ///< Number of slots in the owned part-lookup table.
     Gfx *modelDrawLists[2]; ///< Two drawing lists sharing one owned allocation.
@@ -160,6 +161,8 @@ ACTOR_SCRIPT_OFFSET_CHECK(ActorScriptObjectScriptStateOffsetCheck, ActorScriptOb
 ACTOR_SCRIPT_OFFSET_CHECK(ActorPreviousPoseIdOffsetCheck, ActorScriptState, previousPoseId, 0xFE);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorCurrentPoseIdOffsetCheck, ActorScriptState, currentPoseId, 0xFF);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorContinuationActionOffsetCheck, ActorScriptState, continuationAction, 0x100);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorRootMotionTransformOffsetCheck, ActorScriptState, rootMotionTransform, 0x18);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorRootMotionHeadingOffsetCheck, ActorScriptState, rootMotionHeading, 0x48);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorScriptStateVmAddressOffsetCheck, ActorScriptState, vmAddress, 0x1B8);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorScriptStateMessengerContactModeOffsetCheck, ActorScriptState, messengerContactMode,
                           0x214);

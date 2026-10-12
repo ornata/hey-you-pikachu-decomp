@@ -35,4 +35,19 @@ void actionUpdatePlayback(u8 *object);
 /// \note Original decompilation identifier: \c func_8000F33C (0x8000F33C).
 void motionUpdateChildPlayback(u8 *object);
 
+/// Apply a motion root orientation and its heading change to an object.
+/// \param angles Three root rotation angles in degrees whose orientation has a nonzero horizontal heading projection.
+/// \param object Object with initialized motion state receiving the root orientation.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000E00C (0x8000E00C).
+void motionApplyRootOrientation(f32 *angles, u8 *object);
+
+/// Evaluate and apply the root orientation and movement of a motion.
+/// \param object Object receiving the root motion.
+/// \param state Initialized motion state containing root tracks and writable pending movement and velocity.
+/// \param time Nonnegative time step in seconds by which to advance the root tracks.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000E408 (0x8000E408).
+void motionEvaluateRootTracks(u8 *object, u8 *state, f32 time);
+
 #endif

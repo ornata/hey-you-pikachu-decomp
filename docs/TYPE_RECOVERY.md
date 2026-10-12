@@ -2321,3 +2321,15 @@ request and action-kind fields; current motion requests use checked attributes
 and motion ID. `action_query.h` also documents the motion-ID sentinel and
 borrowed-name query contracts. All changed source units and header dependents
 preserve all 483 objects and strict relocation addends.
+
+### Shared root-motion transform and heading
+
+Actor state now describes the Matrix34 root-motion transform at 0x18 and
+extracted heading at 0x48, with checked offsets. Root-track startup, orientation
+application and pose blending share these fields. Ghidra 0x8000E00C confirms
+orientation construction, heading extraction, yaw delta and retained heading.
+The root-orientation interface uses float angles and an actor pointer; root
+track evaluation uses actor/state pointers rather than integer addresses.
+Both contracts are documented in motion_playback.h. Existing float transform
+views preserve matrix-helper calling conventions. All header dependents and
+the changed unit preserve all 483 objects and strict relocation addends.

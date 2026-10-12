@@ -31,7 +31,6 @@ struct Track3;
 struct Track3b;
 s32 animationTrack3Evaluate(struct Track3 *, f32 *, f32 *, f32);
 s32 animationDeltaTrack3Evaluate(struct Track3b *, f32 *, f32 *, f32);
-void motionApplyRootOrientation(void *, s32);
 /// Action records containing playback flags, motion identifiers and transition settings.
 /// \note Original identifier: \c D_8006B590 (0x8006B590).
 extern ActionDefinition gActionDefinitions[];
@@ -77,15 +76,15 @@ void motionExtractHeadingFromMatrix(f32 *matrix, f32 *heading) {
 /// \param object Object with initialized motion state receiving the root orientation.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000E00C (0x8000E00C).
-void motionApplyRootOrientation(void *angles, s32 object) {
+void motionApplyRootOrientation(f32 *angles, u8 *object) {
     u8 *v;
     f32 y;
 
     v = *(u8 **)(object + 0x54);
-    matrix34MakeRotationXYZDegrees((f32 *)(v + 0x18), ((f32 *)angles)[0], ((f32 *)angles)[1], ((f32 *)angles)[2]);
-    motionExtractHeadingFromMatrix((f32 *)(v + 0x18), &y);
-    actorAddRotationAxisDegrees((u8 *)object, y - *(f32 *)(v + 0x48), 1);
-    *(f32 *)(v + 0x48) = y;
+    matrix34MakeRotationXYZDegrees((f32 *)&((ActorScriptState *)v)->rootMotionTransform, angles[0], angles[1], angles[2]);
+    motionExtractHeadingFromMatrix((f32 *)&((ActorScriptState *)v)->rootMotionTransform, &y);
+    actorAddRotationAxisDegrees((u8 *)object, y - ((ActorScriptState *)v)->rootMotionHeading, 1);
+    ((ActorScriptState *)v)->rootMotionHeading = y;
 }
 
 /// Request cached motion data associated with an action.
@@ -220,8 +219,8 @@ void motionStartTrackPlayback(u8 *object) {
             _bzero(state + 0x2E4, 0xC);
             animationDeltaTrack3Evaluate((struct Track3b *)(state + 0x2B4), rotation, NULL, 0.0f);
             animationTrack3Evaluate((struct Track3 *)(state + 0x23C), position, NULL, 0.0f);
-            matrix34MakeRotationXYZDegrees((f32 *)(state + 0x18), position[0], position[1], position[2]);
-            motionExtractHeadingFromMatrix((f32 *)(state + 0x18), (f32 *)(state + 0x48));
+            matrix34MakeRotationXYZDegrees((f32 *)&((ActorScriptState *)state)->rootMotionTransform, position[0], position[1], position[2]);
+            motionExtractHeadingFromMatrix((f32 *)&((ActorScriptState *)state)->rootMotionTransform, &((ActorScriptState *)state)->rootMotionHeading);
         } else {
             child = actorFindPart(object, entry[0]);
             if (child != NULL) {
@@ -245,7 +244,7 @@ void motionStartTrackPlayback(u8 *object) {
 /// \param time Nonnegative time step in seconds by which to advance the root tracks.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000E408 (0x8000E408).
-void motionEvaluateRootTracks(s32 object, s32 state, f32 time) {
+void motionEvaluateRootTracks(u8 *object, u8 *state, f32 time) {
     f32 position[3];
     animationTrack3Evaluate((struct Track3 *)(state + 0x23C), position, NULL, time);
     animationDeltaTrack3Evaluate((struct Track3b *)(state + 0x2B4), (f32 *)(state + 0x1C0), (f32 *)(state + 0x1CC), time);
@@ -334,14 +333,14 @@ void motionStartPoseTransition(u8 *object) {
         if (entry->a > 0 && entry->a < rootKindLimit) {
             ((ActorScriptState *)state)->playbackMode = rotationMode;
             from = (BlendMatrix *)(state + 0x23C);
-            current = (BlendMatrix *)(state + 0x18);
+            current = (BlendMatrix *)&((ActorScriptState *)state)->rootMotionTransform;
             animationTrack3Initialize(&track, (Pair8 *)((u8 *)base + entry->b), base);
             animationTrack3Evaluate(&track, rotation, 0, transformTime);
             *from = *current;
             current = from + 1;
             matrix34MakeRotationXYZDegrees(current->values, rotation[0], rotation[1], rotation[2]);
             motionExtractHeadingFromMatrix((f32 *)current, angles);
-            *(f32 *)(state + 0x48) = 0.0f;
+            ((ActorScriptState *)state)->rootMotionHeading = 0.0f;
         } else {
             child = actorFindPart(object, entry->a);
             if (child != NULL) {
@@ -738,7 +737,7 @@ void actionUpdatePlayback(u8 *object) {
             break;
         case MOTION_PLAYBACK_TRACKS:
             motionCacheReadBlocking(&gMotionRomCache, ((ActorScriptState *)state)->motionId);
-            motionEvaluateRootTracks((s32)object, (s32)state, step);
+            motionEvaluateRootTracks(object, state, step);
             break;
         case MOTION_PLAYBACK_POSE_BLEND:
             step = remaining / ((ActorScriptState *)state)->motionDuration;
@@ -747,7 +746,7 @@ void actionUpdatePlayback(u8 *object) {
                       ((*(f32 *)((s8 *)state + (u32) & ((ActorScriptState *)0)->verticalPoseOffset)) * step));
             TRACE("rate:%f  centerHeight:%f  default:%f\n", step, ((ActorScriptState *)state)->verticalPoseOffset,
                   ((ActorScriptState *)state)->defaultPoseOffset);
-            motionBlendPosePair(state + 0x23C, (f32 *)(state + 0x18), step);
+            motionBlendPosePair(state + 0x23C, (f32 *)&((ActorScriptState *)state)->rootMotionTransform, step);
             break;
         default:
             TRACE("error: actHara(%p): unknown action_type(%d)\n", object, mode);
