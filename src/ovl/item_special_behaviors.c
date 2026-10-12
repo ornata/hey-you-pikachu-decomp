@@ -1,6 +1,7 @@
 #include "item_object.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "item_response.h"
 #include "scene_types.h"
 #include "item_types.h"
 #include "object_types.h"
@@ -105,7 +106,6 @@ void balloonBeginReleasedFlight(u8 *object) {
     }
 }
 
-s32 itemTransform(s32, s32);           /* extern */
 s8 terrainGetSurfaceAttributes(f32, f32, f32, s32);  /* extern */
 void terrainCreateContactEffect(u8 *, s32);      /* extern */
 void itemPlayImpactSounds(u8 *, u16, s32); /* extern */

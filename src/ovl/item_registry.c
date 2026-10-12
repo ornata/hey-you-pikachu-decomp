@@ -4,6 +4,7 @@
 /* Item objects. .rodata is the item-kind text (initializer order), then the
  * debug-trace formats in function order, then the late float/jump tables. */
 #include "common.h"
+#include "item_response.h"
 #include "item_text.h"
 #include "search_tree.h"
 #include "object_audio.h"
@@ -2640,7 +2641,6 @@ u8 itemGetKindResponse(s32 responseType, s32 kind) {
     }
 }
 
-u8 itemGetKindResponse(s32 arg0, s32 arg1); /* extern */
 /// Look up the interaction response of an item that permits responses.
 /// \param responseType Interaction response category from one through five.
 /// \param objectId Item object handle.
@@ -2649,17 +2649,17 @@ u8 itemGetKindResponse(s32 arg0, s32 arg1); /* extern */
 /// \note Original decompilation identifier: \c func_80114788 (0x80114788).
 s32 itemGetResponse(s32 responseType, s32 objectId) {
     u8 *liveObject;
-    u8 *itemState;
+    ItemStatePrefix *itemState;
 
     liveObject = objectFindLiveByHandle(objectId);
     if (liveObject == NULL) {
         return 0;
     }
-    itemState = ((RuntimeObjectPrefix *)liveObject)->state.bytes;
-    if (((ItemStatePrefix *)itemState)->flags & 0x800000) {
+    itemState = (ItemStatePrefix *)((RuntimeObjectPrefix *)liveObject)->state.bytes;
+    if (itemState->flags & 0x800000) {
         return 0;
     }
-    return itemGetKindResponse(responseType, ((ItemStatePrefix *)itemState)->kind);
+    return itemGetKindResponse(responseType, itemState->kind);
 }
 
 u8 *wispEffectCreate(s32, f32, f32, f32);

@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "item_response.h"
 #include "actor_create.h"
 #include "actor_parts.h"
 #include "audio_cue.h"
@@ -18,7 +19,6 @@
 
 f32 actorAdjustActionMeter(u8 *, f32);              /* extern */
 /// Compatibility declaration retaining an unused third argument from the original call.
-s32 itemTransform(s32, s32, u8 *); /* extern */
 
 /// Consume an eligible held item and replenish the actor action resource.
 /// \param actor Actor whose held item is consumed.
@@ -37,7 +37,7 @@ s32 actorConsumeHeldItem(u8 *actor) {
     if (*itemFlags & 0x800000) {
         return 0;
     }
-    itemTransform(((RuntimeObjectPrefix *)liveObject)->handle, 0, liveObject);
+    itemTransform(((RuntimeObjectPrefix *)liveObject)->handle, 0);
     actorAdjustActionMeter(actor, 10.0f);
     return 1;
 }

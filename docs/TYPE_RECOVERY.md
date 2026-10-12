@@ -1237,3 +1237,15 @@ caller no longer declares alpha as s32 when the implementation accepts u8.
 Ghidra at 0x80114654 confirms four byte stores at 0x4C through 0x4F and
 missing-object no-op behavior. The caller already retains byte-sized channel
 values, and the canonical declaration preserves strict matching.
+
+### Item interaction-response and transformation contracts
+
+item_response.h declares kind-response lookup, live-handle response lookup
+and transformation. Ghidra at 0x801146A4 confirms byte-sized configured
+responses; the script caller now shares the u8 result rather than declaring
+s32. Live lookup uses typed item flags and kind fields. Six source units
+share the transformation contract and its returned-handle lifetime rule.
+The actor-script destruction path no longer passes an unused third object
+argument; the two-argument call preserves strict matching. Existing numeric
+response categories remain explicit pending complete semantic evidence for
+each category. All affected units preserve the object baseline.

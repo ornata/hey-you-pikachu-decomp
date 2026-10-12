@@ -1,6 +1,7 @@
 #include "item_object.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "item_response.h"
 #include "runtime_clock.h"
 #include "actor_parts.h"
 #include "object_audio.h"
@@ -531,7 +532,6 @@ s32 actorGetEffectTargetPosition(u8 *actor) {
     return actorStateAddress + 0x1EC;
 }
 
-s32 itemTransform(s32, s32); /* extern */
 
 /// Attempts to transform an item into its configured replacement.
 /// \param id Handle of the item to transform.

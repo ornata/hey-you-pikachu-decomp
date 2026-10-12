@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "item_response.h"
 #include "actor_text.h"
 #include "voice_recognition.h"
 #include "item_text.h"
@@ -32,7 +33,6 @@ s32 actorScriptSetHorizontalMovementSuppressed(u8 *actor) {
     return 0;
 }
 
-s32 itemTransform(s32, s32); /* extern */
 /// Apply a selected transformation cause to an item.
 /// \param actor Actor whose script VM supplies an item handle followed by a supported transformation-cause selector from zero through five; the VM receives the surviving item handle, which may identify a replacement, or zero if the item is absent or removed.
 /// \returns Zero, allowing script execution to continue.

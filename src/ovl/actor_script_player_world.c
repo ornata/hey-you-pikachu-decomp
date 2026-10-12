@@ -1,6 +1,7 @@
 #include "item_object.h"
 #include "toolbox_items.h"
 #include "common.h"
+#include "item_response.h"
 #include "actor_target.h"
 #include "player_control.h"
 #include "object_lookup.h"
@@ -1282,7 +1283,6 @@ s32 actorScriptGetGroundHeightAtPosition(u8 *actor) {
     return 0;
 }
 
-s32 itemGetResponse(s32, s32); /* extern */
 /// Read the enabled response of a live item.
 /// \param actor Actor whose script VM supplies a response type followed by an item handle and receives its configured response code, or zero for a missing handle, suppressed responses, or a response type outside one through five; other object kinds are unsupported.
 /// \returns Zero, allowing script execution to continue.
@@ -1299,7 +1299,6 @@ s32 actorScriptGetLiveItemResponse(u8 *actor) {
     return 0;
 }
 
-s32 itemGetKindResponse(s32, s32); /* extern */
 /// Read a response configured for an item kind.
 /// \param actor Actor whose script VM supplies a response type followed by a valid item kind and receives its response code, or zero for a response type outside one through five.
 /// \returns Zero, allowing script execution to continue.
