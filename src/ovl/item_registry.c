@@ -2027,7 +2027,7 @@ void itemUpdate(u8 *object) {
         itemShrink(object, 0.12f);
     if (!(*(u16 *)(object + 0x36) & 2) &&
         ((flags = *(s32 *)state, (*(s16 *)(state + 0x3C) != 0 && (flags & 0x200))) || (flags & 0x100000))) {
-        animationIntegerTrackEvaluate((ValueTrack *)(state + 0x40), &changed, gRuntimeFrameSeconds);
+        animationIntegerTrackEvaluate(&((ItemStatePrefix *)state)->materialTrack, &changed, gRuntimeFrameSeconds);
         child = *(u8 **)(object + 0x2C);
         if (child != NULL && !(*(u16 *)(object + 0x36) & 2) && (*(s32 *)state & 0x100000)) {
             if (changed != 0)
@@ -2118,30 +2118,30 @@ extern s32 gItemCreationHierarchyFlag2Enabled;
 /// \note Original decompilation identifier: \c func_80113944 (0x80113944).
 u8 *itemCreate(f32 x, f32 y, f32 z, f32 pitch, f32 yaw, s32 kind) {
     u8 *object;
-    u8 *state;
+    ItemStatePrefix *state;
     TRACE("makeItem(%.2f, %.2f, %.2f, %d) ", x, y, z, kind);
     TRACE("(%s)\n", gItemKinds[kind].text[0].name);
     object = objectCreateHierarchyFromTemplate(gItemKinds[kind].model);
     SET_OBJECT_TYPE(object, 0x86);
     itemInitializeState(object);
-    state = *(u8 **)(object + 0x54);
-    *(s16 *)(state + 4) = kind;
-    *(s32 *)state = gItemKinds[kind].stateFlags | 0x1000000;
-    *(s32 *)(state + 0x34) = gItemKinds[kind].unk8;
-    *(f32 *)(state + 0x38) = gItemKinds[kind].growthMax;
-    state[6] = 0;
-    *(s32 *)(state + 8) = 0;
-    state[7] = 0;
-    animationIntegerTrackInitialize((ValueTrack *)((f32 *)(state + 0x40)), (ValueKey *)(((s32 *)&gTextureFrameAnimationPrograms)[gItemKinds[kind].animation]));
+    state = (ItemStatePrefix *)((RuntimeObjectPrefix *)object)->state.bytes;
+    state->kind = kind;
+    state->flags = gItemKinds[kind].stateFlags | 0x1000000;
+    state->bounceCount = gItemKinds[kind].unk8;
+    state->searchPriority = gItemKinds[kind].growthMax;
+    state->state = 0;
+    state->owner = 0;
+    state->mode = 0;
+    animationIntegerTrackInitialize(&state->materialTrack, (ValueKey *)(((s32 *)&gTextureFrameAnimationPrograms)[gItemKinds[kind].animation]));
     if (gItemKinds[kind].size != -100000.0f)
         *(f32 *)(object + 0x24) = gItemKinds[kind].size;
-    *(f32 *)(state + 0xC) = *(f32 *)(object + 0x24);
+    state->baseRadius = *(f32 *)(object + 0x24);
     if (gItemKinds[kind].radiusX == -100000.0f)
         gItemKinds[kind].radiusX = *(f32 *)(object + 0x24) * 0.5f;
     if (gItemKinds[kind].radiusZ == -100000.0f)
         gItemKinds[kind].radiusZ = *(f32 *)(object + 0x24) * 0.5f;
     objectRegisterActiveHierarchy(object);
-    searchTreeInsert((u8 *)&gItemSearchTree, (TreeNode *)(state + 0x54), (s32)object);
+    searchTreeInsert((u8 *)&gItemSearchTree, &state->registryNode, (s32)object);
     TRACE("itemType %d has a sibling\n", kind);
     itemSetScale(object, 1.0f);
     if (y < 0.0f) {
@@ -2271,7 +2271,7 @@ s32 itemPrepareMaterial(u8 *item) {
     u8 *state;
     state = ((RuntimeObjectPrefix *)item)->state.bytes;
     if (((ItemStatePrefix *)state)->flags & ITEM_STATE_MATERIAL_ENABLED) {
-        textureLoadForDraw(&gRenderDisplayListCursor, 8, ((ItemStatePrefix *)state)->materialFrame);
+        textureLoadForDraw(&gRenderDisplayListCursor, 8, ((ItemStatePrefix *)state)->materialTrack.value);
         switch (((ItemStatePrefix *)state)->renderMode) {
         case 0:
             gDPSetRenderMode(gRenderDisplayListCursor++, 0xCB026238, 0);
@@ -2562,7 +2562,7 @@ void itemStartMaterialAnimation(u8 *item, s32 animation) {
 
     TRACE("itemChangeAnime(%p, %d)\n", item, animation);
     sp1C = ((RuntimeObjectPrefix *)item)->state.bytes;
-    animationIntegerTrackInitialize((ValueTrack *)((f32 *)(sp1C + 0x40)), (ValueKey *)(*((s32 *)((u8 *)&gTextureFrameAnimationPrograms + (animation * 4)))));
+    animationIntegerTrackInitialize(&((ItemStatePrefix *)sp1C)->materialTrack, (ValueKey *)(*((s32 *)((u8 *)&gTextureFrameAnimationPrograms + (animation * 4)))));
     ((ItemStatePrefix *)sp1C)->materialAnimationActive = 1;
 }
 
@@ -2576,7 +2576,7 @@ void itemSetMaterialFrame(u8 *item, s32 frame) {
 
     TRACE("itemChangeMat(%p, %d)\n", item, frame);
     itemState = ((RuntimeObjectPrefix *)item)->state.bytes;
-    ((ItemStatePrefix *)itemState)->materialFrame = frame;
+    ((ItemStatePrefix *)itemState)->materialTrack.value = frame;
     ((ItemStatePrefix *)itemState)->materialAnimationActive = 0;
 }
 

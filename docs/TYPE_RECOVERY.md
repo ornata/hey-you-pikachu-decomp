@@ -1212,3 +1212,17 @@ and registration. Its inferred argument list is inaccurate, so source call sites
 and the matching producer remain the authority for the six-argument ABI.
 The shared Doxygen preserves initialization, lifetime, item-limit and target
 address portability contracts. Each changed unit matches the strict baseline.
+
+### Typed item creation and material playback state
+
+Item creation initializes ItemStatePrefix fields for kind, flags, lifecycle
+state, mode, owner, base radius, bounce count and search priority, and links
+the named registry node. Access widths and initialization order are unchanged.
+The partial bytes at 0x40 are now the existing ValueTrack, including the
+retained material frame at 0x48. New offset checks protect both locations.
+Initialization, animation advancement, material-animation changes, drawing and
+fixed-frame selection share this view. Ghidra at 0x801145D0 confirms track
+initialization at 0x40 and the active flag at 0x3C. All dependent objects match
+the preserved baseline. The prefix remains a partial view, not an allocation
+size; raw object-transform and later kind-specific state views remain separate
+recovery targets.
