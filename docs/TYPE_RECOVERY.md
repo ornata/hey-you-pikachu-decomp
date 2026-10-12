@@ -372,3 +372,18 @@ established byte-pointer interface. A duplicate player-types include is removed.
 Each source unit was independently compared against the immutable baseline
 before the next unit changed. Remaining unrelated object, player and toolbox
 interface mismatches remain in the compiler-diagnostic inventory for later audit.
+
+The object-lookup continuation consolidates every local declaration of
+objectFindLiveByHandle and objectResolveAvailableHandle into `object_lookup.h`.
+All 26 affected source units were built and compared sequentially. The core
+lookup filters object flags 0x30; the gameplay resolver additionally rejects
+zero handles and kind-0x86 objects whose item state is four. Ghidra at 0x80007E8C
+and 0x80118ACC corroborates these separate policies. Borrowed results remain
+valid only until object destruction; lookup does not confer ownership.
+
+The core lookup now uses the checked RuntimeObjectPrefix flags field. Three
+units with integer-return declarations adopt the canonical pointer result; demo
+and profile consumers retain pointer locals and convert explicitly where legacy
+item helpers take integer addresses. Other consumers' integer-address locals
+remain visible diagnostics for the next interface pass. No local declarations
+of either lookup remain, and no lookup or filtering behavior changes.

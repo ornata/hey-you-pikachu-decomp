@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_lookup.h"
 #include "actor_script.h"
 #include "heap_alloc.h"
 #include "object_types.h"
@@ -62,7 +63,6 @@ extern u8 gActorKindConfigurationsFromOne[];
 /// \note Original identifier: \c D_800B6B90 (0x800B6B90).
 extern DmaQueue gActorAssetReadQueue;
 void _bzero(void *, u32);
-s32 objectFindLiveByHandle(s32);
 /// Integer animation program used after contact triggers the effect.
 /// \note Original identifier: \c D_8006B394 (0x8006B394).
 extern s32 gContactEffectTriggeredAnimation;
@@ -202,7 +202,7 @@ void contactEffectHandleActorResponse(u8 *effect, s32 *response) {
     effectState = *(u8 **)(effect + 0x54);
     if (*(s32 *)effectState == 0) {
         savedEffectState = effectState;
-        if (objectFindLiveByHandle(*response) == gPikachuActor) {
+        if (objectFindLiveByHandle(*response) == (u8 *)gPikachuActor) {
             *(s32 *)effectState = 1;
             animationIntegerTrackInitialize((f32 *)(effectState + 4), gContactEffectTriggeredAnimation);
         }

@@ -1,4 +1,5 @@
 #include "common.h"
+#include "object_lookup.h"
 #include "heap_alloc.h"
 
 void animationIntegerTrackInitialize(void *, s32);
@@ -33,7 +34,6 @@ extern s32 gTextureFrameAnimationPrograms[];
 u8 *objectCreateHierarchyFromTemplate(u8 *);
 void objectSetHierarchyFlags(u8 *, u16);
 u8 *objectRegisterActiveHierarchy(u8 *);
-u8 *objectFindLiveByHandle(s32);
 void objectRequestHierarchyDestruction(u8 *);
 /// Create an animated effect for an owner, replacing its previous attached effect.
 /// \param owner Object that owns and anchors the effect.

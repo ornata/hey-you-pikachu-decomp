@@ -1,4 +1,5 @@
 #include "common.h"
+#include "object_lookup.h"
 #include "player_types.h"
 #include "item_types.h"
 #include "script_vm.h"
@@ -199,7 +200,6 @@ s32 actorScriptSetHudGuideStyle(u8 *actor) {
     return 0;
 }
 
-u8 *objectFindLiveByHandle(s32);  /* extern */
 /// Control ordinary release of the held item and its HUD guide.
 /// \param actor Actor whose script VM supplies nonzero to permit ordinary held-item release and select guide style four, or zero to prevent ordinary release and disable the guide, and receives zero; no live held item disables the guide, and any live held-item handle must identify initialized item state.
 /// \returns Zero, allowing script execution to continue.
@@ -955,7 +955,6 @@ s32 actorScriptCreateStationaryItem(u8 *actor) {
 }
 
 void itemDestroy(s32); /* extern */
-u8 *objectResolveAvailableHandle();    /* extern */
 /// Remove an available item from the scene.
 /// \param actor Actor whose script VM supplies an item handle and receives zero; unavailable handles have no effect, and other object kinds are unsupported.
 /// \returns Zero, allowing script execution to continue.

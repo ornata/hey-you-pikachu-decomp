@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_lookup.h"
 #include "heap_alloc.h"
 #include "object_types.h"
 
@@ -204,7 +205,6 @@ void objectRequestHierarchyDestruction(u8 *);
 s32 objectPlaySpatialSound(u8 *, s32, f32, f32);
 f32 actorAdjustActionMeter(u8 *, f32);
 s32 actorPlayTrackedSound(u8 *, s32);
-u8 *objectResolveAvailableHandle(s32);
 /// Borrowed reference to the active Pikachu actor created for the current area.
 /// \note Original identifier: \c D_800760A8 (0x800760A8).
 extern u8 *gPikachuActor;

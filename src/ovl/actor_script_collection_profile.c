@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_lookup.h"
 #include "scene_types.h"
 #include "actor_script.h"
 #include "object_types.h"
@@ -558,7 +559,6 @@ s32 actorScriptPushCreationScriptArgument(u8 *actor) {
     return 0;
 }
 
-u8 *objectFindLiveByHandle(); /* extern */
 /// Provide the creation script argument of a selected actor.
 /// \param actor Actor whose script VM supplies a handle identifying initialized actor state when live, and receives its creation script argument or minus one when the handle is not live.
 /// \returns Zero, allowing script execution to continue.
@@ -612,7 +612,6 @@ s32 actorScriptStartKindTransformation(s32 actor) {
     return 2;
 }
 
-s32 objectResolveAvailableHandle(s32);          /* extern */
 f32 objectGetApproxDistance(u8 *, u8 *);   /* extern */
 
 /// Measure the distance between two available objects.
@@ -629,8 +628,8 @@ s32 actorScriptGetAvailableObjectDistance(u8 *actor) {
     vm = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     idA = scriptVmPopInteger(vm);
     idB = scriptVmPopInteger(vm);
-    objB = (u8 *)objectResolveAvailableHandle(idB);
-    objA = (u8 *)objectResolveAvailableHandle(idA);
+    objB = objectResolveAvailableHandle(idB);
+    objA = objectResolveAvailableHandle(idA);
     if ((objB == NULL) || (objA == NULL)) {
         scriptVmPushFloat(vm, -1.0f);
     } else {
@@ -1141,13 +1140,13 @@ void itemSetScale(s32, f32); /* extern */
 s32 actorScriptSetItemScale(u8 *actor) {
     s32 sp1C;
     f32 sp18;
-    s32 resolvedObject;
+    u8 *resolvedObject;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     sp18 = scriptVmPopFloat(sp1C);
     resolvedObject = objectResolveAvailableHandle(scriptVmPopInteger(sp1C));
     if (resolvedObject != 0) {
-        itemSetScale(resolvedObject, sp18);
+        itemSetScale((s32)resolvedObject, sp18);
     }
     scriptVmPushInteger(sp1C, 0);
     return 0;

@@ -2,6 +2,7 @@
 /* Item objects. .rodata is the item-kind text (initializer order), then the
  * debug-trace formats in function order, then the late float/jump tables. */
 #include "common.h"
+#include "object_lookup.h"
 #include "heap_alloc.h"
 #include "scene_types.h"
 #include "item_types.h"
@@ -2313,7 +2314,6 @@ s32 itemPrepareMaterial(u8 *item) {
     return (s32)((RuntimeObjectPrefix *)item)->displayList;
 }
 
-u8 *objectFindLiveByHandle(s32);                 /* extern */
 
 /// Exclude a live item from item searches and world collision queries.
 /// \param objectId Handle of a live item to exclude.

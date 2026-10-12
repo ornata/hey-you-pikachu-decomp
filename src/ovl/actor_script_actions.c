@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_lookup.h"
 #include "item_types.h"
 #include "script_vm.h"
 #include "script_vm_stack.h"
@@ -12,7 +13,6 @@
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-u8 *objectFindLiveByHandle(s32);                    /* extern */
 f32 actorAdjustActionMeter(u8 *, f32);              /* extern */
 /// Compatibility declaration retaining an unused third argument from the original call.
 s32 itemTransform(s32, s32, u8 *); /* extern */

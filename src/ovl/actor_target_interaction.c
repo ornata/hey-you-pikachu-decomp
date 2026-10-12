@@ -6,12 +6,12 @@
 
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_lookup.h"
 #include "player_types.h"
 #include "item_types.h"
 #include "object_types.h"
 #include "actor_script.h"
 
-u8 *objectResolveAvailableHandle(s32); /* extern */
 /// Resolve the actor stored target identifier to an object.
 /// \param actor Actor whose target identifier is resolved.
 /// \returns The resolved target object, or null when it cannot be resolved.
@@ -200,7 +200,6 @@ void actorPostItemImpactMessage(s32 actor, u8 *item) {
 
 s32 itemCanBePickedUp(u8 *, s32);
 s32 itemTryRelease(u8 *, s32);
-u8 *objectFindLiveByHandle(s32);
 void itemSetMode(u8 *, s32);
 /// Borrowed reference to the active Pikachu actor created for the current area.
 /// \note Original identifier: \c D_800760A8 (0x800760A8).

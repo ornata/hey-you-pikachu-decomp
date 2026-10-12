@@ -6,6 +6,7 @@
 
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_lookup.h"
 #include "text_panel_types.h"
 #include "voice_commands.h"
 /// Shared text-image configurations selected by text panels, menus and message styles.
@@ -25,7 +26,6 @@ void textImageDestroy(TextImage *);
 extern u8 gTextPanelClearedEmptyText[];
 void textPanelClear(u8 *);
 
-u8 *objectFindLiveByHandle(s32);
 u8 *actorFindPart(u8 *, s32);
 u8 *objectFindNearestTargetInView(u8 *, f32 *, f32, u8 *, f32, s32, s32);
 f32 mathMapRangeClamped(f32, f32, f32, f32, f32);

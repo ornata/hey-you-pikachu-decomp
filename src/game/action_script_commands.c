@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_lookup.h"
 #include "object_types.h"
 #include "actor_script.h"
 
@@ -200,7 +201,6 @@ void actionCommandConfigureActorPartAnimation(u8 *actor, u8 *state, u8 *command,
     actorSetPartTextureAnimation(actor, *(s32 *)(command + 0xC), *(s32 *)(command + 0x10), *(s32 *)(command + 8));
 }
 
-u8 *objectFindLiveByHandle(s32);        /* extern */
 void itemStartMaterialAnimation(u8 *, s32); /* extern */
 
 /// Changes the animation of the actor’s held item when that item is available.

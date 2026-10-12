@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_lookup.h"
 #include "heap_alloc.h"
 #include "object_types.h"
 void presentationDrawAreaLabel(Gfx **);
@@ -62,7 +63,6 @@ extern s32 gMessageBarWorkImageIndex;
 /// \note Original identifier: \c D_800F0B20 (0x800F0B20).
 extern s32 gMessageBarImageHandles[];
 
-u8 *objectFindLiveByHandle();
 /// Interior availability progress-flag view of the item catalog, with a 116-byte stride.
 /// \note Original identifier: \c D_80125AB2 (0x80125AB2).
 extern u8 gItemKindAvailabilityFlagEntries[];

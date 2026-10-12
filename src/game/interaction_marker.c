@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_lookup.h"
 #include "heap_alloc.h"
 #include "object_types.h"
 s32 objectCreateHierarchyFromTemplate(void *);
@@ -177,7 +178,6 @@ extern f32 gInteractionMarkerTrackUnitScale;
 /// Scale converting marker animation offsets for actor targets from tenths to coordinate units.
 /// \note Original identifier: \c D_800A47AC (0x800A47AC).
 extern f32 gInteractionMarkerActorTrackUnitScale;
-u8 *objectResolveAvailableHandle(s32);
 s32 playerClassifyInteractionTarget(u8 *, u8 *, s32);
 void animationIntegerTrackInitialize(u8 *, u8 *);
 s32 animationIntegerTrackEvaluate(u8 *, s32 *, f32);

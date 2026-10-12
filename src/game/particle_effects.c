@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_lookup.h"
 #include "heap_alloc.h"
 #include "object_types.h"
 
@@ -991,7 +992,6 @@ void effectEmitterCreateForStyle(u32 kind, f32 *position, f32 lifetime, s32 targ
 /// Object template for callback-driven particle emitters.
 /// \note Original identifier: \c D_80077FF8 (0x80077FF8).
 extern u8 gEffectEmitterObjectTemplate[];
-u8 *objectResolveAvailableHandle(s32);
 
 /// Create a target-following effect emitter with a custom emission callback.
 /// \param position Readable three-component fallback world position, copied when the target is unavailable.

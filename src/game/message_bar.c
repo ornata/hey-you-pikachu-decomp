@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_lookup.h"
 #include "heap_alloc.h"
 #include "object_types.h"
 #include "text_image.h"
@@ -421,7 +422,6 @@ s32 messageBarUpdateAndDraw(void) {
     return 1;
 }
 
-u8 *objectFindLiveByHandle();
 /// Interior availability progress-flag view of the item catalog, with a 116-byte stride.
 /// \note Original identifier: \c D_80125AB2 (0x80125AB2).
 extern u8 gItemKindAvailabilityFlagEntries[];

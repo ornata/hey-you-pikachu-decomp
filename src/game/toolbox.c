@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_lookup.h"
 #include "object_types.h"
 #include "item_types.h"
 #include "player_types.h"
@@ -196,7 +197,6 @@ extern Slot1BE0 gToolboxBonusSlot;
 /// Separate view of the stored bonus item handle.
 /// \note Original identifier: \c D_800F1CD4 (0x800F1CD4).
 extern s32 gToolboxBonusHandle;
-u8 *objectFindLiveByHandle(s32);   /* extern */
 void itemDestroy(u8 *); /* extern */
 /// Owned toolbox display state, item rows, placeholders and special storage slots.
 /// \note Original identifier: \c D_800F1BE0 (0x800F1BE0).

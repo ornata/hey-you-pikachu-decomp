@@ -6,6 +6,7 @@
 
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_lookup.h"
 #include "heap_alloc.h"
 #include "object_types.h"
 #include "actor_script.h"
@@ -825,7 +826,6 @@ void messengerDeliver(u8 *object, u8 *source, u8 *target, s32 mode) {
     gTrackedMessengerHandle = 0;
 }
 
-u8 *objectResolveAvailableHandle(s32);
 s32 actionGetAttributes(u8 *);
 f32 vector3Length(u8 *);
 f32 vector3Normalize(u8 *);
@@ -1086,7 +1086,6 @@ void messengerResetTrackedObject(void) {
 u8 *objectCreateHierarchyFromTemplate(void *);
 void objectScaleHierarchyBounds(u8 *, f32);
 void objectSetHierarchyFlags(u8 *, u16);
-u8 *objectFindLiveByHandle(s32);
 /// Hierarchy template used to create script-message projectiles.
 /// \note Original identifier: \c D_80099964 (0x80099964).
 extern u8 gMessengerObjectTemplate[];

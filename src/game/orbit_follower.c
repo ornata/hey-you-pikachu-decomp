@@ -1,4 +1,5 @@
 #include "common.h"
+#include "object_lookup.h"
 #include "heap_alloc.h"
 #include "object_types.h"
 
@@ -54,7 +55,6 @@ typedef struct OrbitObject {
     OrbitState *state;
 } OrbitObject;
 
-u8 *objectFindLiveByHandle(s32);
 void objectRequestHierarchyDestruction(u8 *);
 f32 vector2NormalizeComponentsApprox(f32 *, f32 *);
 u32 randomBelow(s32);

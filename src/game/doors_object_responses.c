@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_lookup.h"
 #include "keyed_pool_types.h"
 #include "scene_types.h"
 #include "keyed_pool_types.h"
@@ -39,7 +40,6 @@ s32 objectResponsesGetFreeCapacity(void);
 extern u8 gObjectKindResponseEntries[];
 s32 keyedPoolInsert(KeyedPool *, s32, u32, u8 *);
 void objectResponsesClearWithCallback(s32, s32);
-u8 *objectFindLiveByHandle(s32);
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern u8 gGameHeap[];

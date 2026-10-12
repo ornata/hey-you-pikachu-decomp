@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_lookup.h"
 #include "actor_script.h"
 #include "item_types.h"
 #include "item_kind.h"
@@ -629,7 +630,6 @@ void pinataUpdateWriggle(u8 *item) {
     } while (index != 3);
 }
 
-u8 *objectFindLiveByHandle(s32);
 void actorGetConfiguredAttachmentPosition(s32, f32, f32 *);
 s32 itemTryRelease(u8 *, s32);
 void pinataUpdateWriggle(u8 *);

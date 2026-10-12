@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_lookup.h"
 #include "actor_script.h"
 #include "item_types.h"
 #include "player_types.h"
@@ -50,7 +51,6 @@ f32 objectGetOriginDistance(u8 *object) {
     return vector3LengthApprox(pos);
 }
 
-u8 *objectResolveAvailableHandle(s32); /* extern */
 
 
 /// Measure the distance between an object and an available target.
@@ -775,7 +775,6 @@ f32 voiceReactiveSpinnerGetSpeedByHandle(s32 handle) {
     return 0.0f;
 }
 
-u8 *objectFindLiveByHandle(s32);  /* extern */
 s32 actionGetAttributes(u8 *); /* extern */
 
 

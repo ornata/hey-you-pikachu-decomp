@@ -3,6 +3,7 @@
 #include "heap_alloc.h"
 #include "node_pool.h"
 #include "object_types.h"
+#include "object_lookup.h"
 #include "search_tree_types.h"
 #include "midi_sequence_types.h"
 
@@ -557,7 +558,7 @@ s32 objectGetNextHandle(void) {
 u8 *objectFindLiveByHandle(s32 handle) {
     u8 *r = keyedPoolGetValue(gObjectHandlePool, handle);
 
-    if (r == NULL || (*(u16 *)(r + 0x36) & 0x30)) {
+    if (r == NULL || (((RuntimeObjectPrefix *)r)->flags & 0x30)) {
         return NULL;
     }
     return r;

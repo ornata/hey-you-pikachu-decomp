@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_lookup.h"
 #include "heap_alloc.h"
 #include "scene_types.h"
 #include "player_types.h"
@@ -411,7 +412,6 @@ void playerSetViewAngles(u8 *player, f32 x, f32 z) {
 }
 
 u8 *actorFindPart(u8 *, s32); /* extern */
-u8 *objectResolveAvailableHandle(s32);           /* extern */
 
 /// Resolve the companion-control target used for player view tracking.
 /// \param player Player record containing the target selection.
@@ -748,7 +748,6 @@ block_14:
     ((PlayerControlPrefix *)motion)->downwardVelocity = (f32)-dy;
 }
 
-u8 *objectFindLiveByHandle(s32);
 f32 mathSinDegrees(f32);
 f32 mathCosDegrees(f32);
 void itemThrow(s32, f32 *, f32 *, f32 *, s32);

@@ -6,6 +6,7 @@
 
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_lookup.h"
 #include "player_types.h"
 #include "object_types.h"
 #include "actor_script.h"
@@ -492,7 +493,6 @@ s32 actorScriptPushVoiceCommandStatus(u8 *actor) {
 }
 
 
-u8 *objectFindLiveByHandle(s32);                  /* extern */
 
 
 /// Post a script message to another actor without replacing a pending message.

@@ -1,10 +1,10 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_lookup.h"
 #include "actor_script.h"
 #include "heap_alloc.h"
 #include "object_types.h"
 void objectDebugReportNoOp(u8 *);
-u8 *objectFindLiveByHandle(s32);
 void heapFreeLocal(u8 *, s32);
 /// Model display-list addresses indexed by appearance slot zero variant.
 /// \note Original identifier: \c D_800760C4 (0x800760C4).
@@ -46,7 +46,6 @@ extern Gfx *gRenderDisplayListCursor;
 /// Framebuffer and command-buffer index for the current frame.
 /// \note Original identifier: \c D_800F298C (0x800F298C).
 extern s32 gGraphicsFramebufferIndex;
-u8 *objectResolveAvailableHandle(s32);
 extern u8 D_1049F80[];
 void actorAppearanceSetScale(s32, s32, f32);
 void actorAppearanceSetVariant(u8 *, s32, s32);

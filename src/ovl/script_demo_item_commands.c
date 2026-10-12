@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_lookup.h"
 #include "actor_script.h"
 #include "object_types.h"
 #include "player_types.h"
@@ -33,7 +34,6 @@ s32 scriptCommandGetDemoIndex(u8 *object) {
     return 0;
 }
 
-u8 *objectFindLiveByHandle(s32);
 void effectEmitterCreateForStyle(u32, f32 *, f32, s32, s32, f32);
 void mazeRemoveBlockObject(u8 *);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
@@ -83,7 +83,6 @@ s32 scriptCommandRemoveMazeBlock(u8 *object) {
 
 u8 *particleClusterCreate(s32, f32, f32, f32, s32);   /* extern */
 void itemStartDirectionMotion(s32, f32, f32, f32);    /* extern */
-s32 objectResolveAvailableHandle(s32);                            /* extern */
 
 /// Animate the item identified by the script arguments and create its requested particle cluster, then provide a zero script result.
 /// \param object Actor whose script supplies an item handle, particle count, lifetime
@@ -97,7 +96,7 @@ s32 scriptCommandCreateItemParticles(u8 *object) {
     f32 sp38;
     f32 sp34;
     f32 sp30;
-    s32 sp2C;
+    u8 *sp2C;
 
     vmAddress = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
     sp30 = scriptVmPopFloat(vmAddress);
@@ -107,8 +106,8 @@ s32 scriptCommandCreateItemParticles(u8 *object) {
     sp_pop = scriptVmPopInteger(vmAddress);
     sp2C = objectResolveAvailableHandle(sp_pop);
     if (sp2C != 0) {
-        itemStartDirectionMotion(sp2C, sp38, 100.0f, 1000.0f);
-        particleClusterCreate(sp3C, sp38, sp34, sp30, sp2C);
+        itemStartDirectionMotion((s32)sp2C, sp38, 100.0f, 1000.0f);
+        particleClusterCreate(sp3C, sp38, sp34, sp30, (s32)sp2C);
     }
     scriptVmPushInteger(vmAddress, 0);
     return 0;
@@ -188,12 +187,12 @@ s32 itemTryRelease(s32, s32); /* extern */
 /// \note Original decompilation identifier: \c func_801216D4 (0x801216D4).
 s32 scriptCommandReleaseItem(u8 *object) {
     s32 sp1C;
-    s32 resolvedObject;
+    u8 *resolvedObject;
 
     sp1C = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
     resolvedObject = objectResolveAvailableHandle(scriptVmPopInteger(sp1C));
     if (resolvedObject != 0) {
-        scriptVmPushInteger(sp1C, itemTryRelease(resolvedObject, 1));
+        scriptVmPushInteger(sp1C, itemTryRelease((s32)resolvedObject, 1));
     } else {
         scriptVmPushInteger(sp1C, 0);
     }
