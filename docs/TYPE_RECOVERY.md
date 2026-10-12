@@ -1419,3 +1419,14 @@ The default, cave and scene-region copies now use this layout, and hierarchy
 cloning uses its sibling and child fields. `ItemModel` aliases the same evidenced
 layout instead of maintaining a duplicate structure. The shared-header dependent
 build and each source mutation preserve all 483 objects and relocation addends.
+
+### Typed actor hierarchy cloning
+
+The clone provider accepts `ObjectTemplate *` and traverses typed sibling/child
+links. Actor-kind configuration now stores the same borrowed template pointer,
+and its caller uses the shared lifecycle declaration. Ghidra at 0x800083C0
+confirms recursive child cloning, sibling traversal and common-root assignment.
+The contract separates this operation from transform-buffer allocation: cloning
+alone does not prepare the hierarchy for drawing. Existing runtime byte-pointer
+results remain compatible with kind-specific object views. Both source-unit
+changes preserve all 483 objects and strict relocations.

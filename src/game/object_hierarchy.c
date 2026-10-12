@@ -101,7 +101,6 @@ extern SearchTree gObjectSearchTree;
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
 u8 *objectCreateFromTemplate(u8 *);
-u8 *objectCloneTemplateHierarchy(u8 *, u8 *);
 typedef struct CamRec {
     f32 x;
     f32 y;
@@ -801,24 +800,24 @@ void objectAllocateHierarchyMatrixBuffers(s32 root) {
 /// \param root Existing hierarchy root, or null to make the first new object the root.
 /// \returns Owned first object in the cloned hierarchy; release the new objects with objectDestroyHierarchy.
 /// \note Original decompilation identifier: \c func_800083C0 (0x800083C0).
-u8 *objectCloneTemplateHierarchy(u8 *src, u8 *root) {
+u8 *objectCloneTemplateHierarchy(ObjectTemplate *src, u8 *root) {
     u8 *head;
     u8 **link;
     u8 *n;
 
     link = &head;
     do {
-        n = objectCreateFromTemplate(src);
+        n = objectCreateFromTemplate((u8 *)src);
         *link = n;
         if (root == NULL) {
             root = n;
             *(u16 *)(root + 0x36) |= 4;
         }
         *(u8 **)(*link + 0x50) = root;
-        if ((u8 *)((ObjectTemplate *)src)->child != NULL) {
-            *(u8 **)(*link + 0x2C) = objectCloneTemplateHierarchy((u8 *)((ObjectTemplate *)src)->child, root);
+        if (src->child != NULL) {
+            *(u8 **)(*link + 0x2C) = objectCloneTemplateHierarchy(src->child, root);
         }
-        src = (u8 *)((ObjectTemplate *)src)->sibling;
+        src = src->sibling;
         link = (u8 **)(*link + 0x28);
     } while (src != NULL);
     return head;

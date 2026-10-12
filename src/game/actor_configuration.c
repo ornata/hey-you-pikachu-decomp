@@ -531,7 +531,6 @@ s32 actorAssetGetCachedStorage(s32 kind) {
 void objectPrepareDistributedKindSearches(u16, s32);
 u8 *objectGetLastSibling(u8 *);
 void objectAllocateHierarchyMatrixBuffers(s32);
-u8 *objectCloneTemplateHierarchy(u8 *, u8 *);
 void objectScaleHierarchyBounds(u8 *, f32);
 s32 objectRefreshHierarchyWorldPositions(s32);
 void actorAddRotationAxisDegrees(u8 *, f32, s32);
@@ -582,7 +581,7 @@ typedef struct ActorKindConfig {
     char *defaultDescription;      ///< Default inspection description.
     f32 markerDepth;               ///< Unscaled depth used to place an interaction marker.
     f32 markerHeight;              ///< Unscaled height used to place an interaction marker.
-    u8 *hierarchyTemplate;         ///< Borrowed actor hierarchy cloned during creation.
+    ObjectTemplate *hierarchyTemplate;         ///< Borrowed actor hierarchy cloned during creation.
     const s32 *groundReferenceIds; ///< Positive part IDs terminated by a nonpositive value.
     s32 *animatedTextureParts;     ///< Borrowed part list for texture-animation initialization.
     f32 visibilityRadius;          ///< Unscaled actor visibility and segmented-shadow radius.
