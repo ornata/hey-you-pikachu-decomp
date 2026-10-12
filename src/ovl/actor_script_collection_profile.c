@@ -1,3 +1,5 @@
+#include "item_participation.h"
+#include "item_size.h"
 #include "item_queries.h"
 #include "story_chapter.h"
 #include "progress_fields.h"
@@ -107,7 +109,6 @@ s32 actorScriptRequestSavePrompt(u8 *actor) {
     return 1;
 }
 
-void itemHideAndSuspend(s32); /* extern */
 /// Hide an eligible item and suspend its world interaction.
 /// \param actor Actor whose script VM supplies an item handle and receives zero; missing items and items in state four are unchanged.
 /// \returns Zero, allowing script execution to continue.
@@ -121,7 +122,6 @@ s32 actorScriptHideAndSuspendItem(u8 *actor) {
     return 0;
 }
 
-void itemRestoreToWorld(s32); /* extern */
 /// Restore an item to its ordinary world state and enable its visibility.
 /// \param actor Actor whose script VM supplies an item handle and receives zero; missing items are unchanged.
 /// \returns Zero, allowing script execution to continue.
@@ -1130,7 +1130,6 @@ s32 actorScriptGetTargetFacingError(u8 *actor) {
     return 0;
 }
 
-void itemSetScale(s32, f32); /* extern */
 
 /// Set an available item size relative to its kind and scene scale.
 /// \param actor Actor whose script VM supplies a handle identifying an initialized item when available, followed by a floating-point relative scale, and receives zero; unavailable handles are unchanged.
@@ -1145,7 +1144,7 @@ s32 actorScriptSetItemScale(u8 *actor) {
     sp18 = scriptVmPopFloat(sp1C);
     resolvedObject = objectResolveAvailableHandle(scriptVmPopInteger(sp1C));
     if (resolvedObject != 0) {
-        itemSetScale((s32)resolvedObject, sp18);
+        itemSetScale(resolvedObject, sp18);
     }
     scriptVmPushInteger(sp1C, 0);
     return 0;

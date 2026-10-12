@@ -2872,3 +2872,16 @@ Collision dispatch names private state, kind, flags and world position. Both
 callback lookups use the checked catalog size for their stride while retaining
 interior symbols to preserve strict relocation identities. The impact-message
 legacy return declaration remains its existing matching exception.
+
+### Shared item sizing and suspension contracts
+
+`item_size.h` consolidates uniform sizing, incremental shrinking and enabling
+shrink updates across six units. The script sizing caller now passes the
+resolved object pointer directly. Ghidra 0x80113348 confirms the shared radius,
+scene/kind scale and bounds-refresh behavior. Function contracts describe
+relative units, valid resources and return behavior.
+
+The participation header now also owns hide/suspend and restore declarations
+for script and scene users. Suspension addresses the checked collision-key
+member instead of a raw offset. Every converted source unit and shared-header
+dependent preserves all 483 strict object comparisons.

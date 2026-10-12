@@ -1,3 +1,4 @@
+#include "item_size.h"
 #include "item_participation.h"
 #include "item_mode.h"
 #include "item_queries.h"
@@ -704,7 +705,6 @@ void itemUpdateShrinkingDisposal(u8 *object) {
 void itemUpdateStationaryMode(u8 *unused) {
 }
 
-void itemSetScale(u8 *arg0, f32 arg1); /* extern */
 
 /// Update baseball-cap visibility for the primary actor held-item appearance.
 /// \param object Baseball-cap item to update.

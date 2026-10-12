@@ -1,3 +1,4 @@
+#include "item_size.h"
 #include "item_state.h"
 #include "actor_script.h"
 #include "item_participation.h"
@@ -2811,7 +2812,7 @@ void itemHideAndSuspend(s32 objectId) {
         sp20 = ((RuntimeObjectPrefix *)liveObject)->state.bytes;
         TRACE("checkin %p(%s)\n", liveObject, gItemKinds[((ItemStatePrefix *)sp20)->kind].text[0].name);
         if (((ItemStatePrefix *)sp20)->state != 4) {
-            collisionGridUnregisterObject(liveObject, (s32 *)(sp20 + 0x50));
+            collisionGridUnregisterObject(liveObject, &((ItemStatePrefix *)sp20)->collisionKey);
             itemTryRelease(liveObject, 1);
             itemSetMode(liveObject, ITEM_MODE_STATIONARY);
             objectSetHierarchyFlags(liveObject, 2);

@@ -48,4 +48,18 @@ void itemRemoveFromSearchAndCollision(s32 objectId);
 /// \note Original decompilation identifier: \c func_8011400C (0x8011400C).
 void itemRegisterForSearch(s32 objectId);
 
+/// Hide an item and suspend its participation in the world when its lifecycle permits it.
+/// \param objectId Item handle; a missing item is ignored.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_80114C00 (0x80114C00).
+void itemHideAndSuspend(s32 objectId);
+
+/// Restore an item to visible, unheld participation in the world.
+/// \param objectId Item handle; a missing item is ignored.
+/// \returns Nothing.
+///
+/// \note Use for an initialized suspended item whose former holder relationship has already been cleared.
+/// \note Original decompilation identifier: \c func_80114C80 (0x80114C80).
+void itemRestoreToWorld(s32 objectId);
+
 #endif

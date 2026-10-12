@@ -1,3 +1,4 @@
+#include "item_size.h"
 #include "item_participation.h"
 #include "item_mode.h"
 #include "progress_field_types.h"
@@ -228,7 +229,6 @@ void toolboxSetObjectCameraRotation(u8 *object, f32 pitch, f32 yaw) {
     matrix33GetFoldedEulerDegrees(sp1C, (f32 *)(object + 0xC), (f32 *)(object + 0x10), (f32 *)(object + 0x14));
 }
 
-void itemSetScale(u8 *, f32);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;

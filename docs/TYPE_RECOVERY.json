@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 2990,
-      "unique_spellings": 1105,
+      "occurrences": 2989,
+      "unique_spellings": 1104,
       "files": 80
     }
   },
@@ -5376,6 +5376,7 @@
         "item_mode.h",
         "item_object.h",
         "item_participation.h",
+        "item_size.h",
         "item_text.h",
         "item_types.h",
         "matrix_orientation.h",
@@ -5405,17 +5406,17 @@
       "locations": {
         "raw_offset_candidates": {
           "object + 0xC": [
-            "228:49",
+            "229:49",
             "805:18",
             "941:22"
           ],
           "object + 0x10": [
-            "228:72",
+            "229:72",
             "806:18",
             "942:22"
           ],
           "object + 0x14": [
-            "228:96",
+            "229:96",
             "807:18",
             "943:22"
           ],
@@ -6205,6 +6206,7 @@
         "audio_cue.h",
         "camera_overlay.h",
         "item_response.h",
+        "item_size.h",
         "item_types.h",
         "object_lookup.h",
         "object_types.h",
@@ -6230,8 +6232,10 @@
         "actor_text.h",
         "camera_overlay.h",
         "door.h",
+        "item_participation.h",
         "item_queries.h",
         "item_response.h",
+        "item_size.h",
         "item_text.h",
         "object_distance.h",
         "object_flags.h",
@@ -6903,6 +6907,7 @@
         "item_object.h",
         "item_participation.h",
         "item_queries.h",
+        "item_size.h",
         "item_types.h",
         "object_lookup.h",
         "object_types.h"
@@ -6915,38 +6920,38 @@
       "locations": {
         "raw_offset_candidates": {
           "direction + 8": [
-            "39:49"
+            "40:49"
           ],
           "gItemKindFrictionEntries - 0x30": [
-            "165:29",
-            "168:23"
+            "166:29",
+            "169:23"
           ],
           "state + 0x14": [
-            "177:41"
+            "178:41"
           ],
           "state + 0x18": [
-            "177:64"
+            "178:64"
           ],
           "object + 0x44": [
-            "444:51"
+            "445:51"
           ],
           "bounceCount - 1U": [
-            "457:98"
+            "458:98"
           ],
           "wriggleAngle + 360": [
-            "596:114"
+            "597:114"
           ],
           "wriggleAngle - 360": [
-            "601:114"
+            "602:114"
           ],
           "spinSpeed + 360": [
-            "612:87"
+            "613:87"
           ],
           "spinSpeed - 360": [
-            "617:87"
+            "618:87"
           ],
           "object + 0x54": [
-            "677:23"
+            "678:23"
           ]
         }
       }
@@ -6969,6 +6974,7 @@
         "item_queries.h",
         "item_response.h",
         "item_search.h",
+        "item_size.h",
         "item_state.h",
         "item_text.h",
         "item_types.h",
@@ -6992,99 +6998,96 @@
       "locations": {
         "raw_offset_candidates": {
           "state + 0x54": [
-            "1858:37"
+            "1859:37"
           ],
           "bytes + 0x54": [
-            "2017:67"
+            "2018:67"
           ],
           "subject + 6": [
-            "2020:28"
+            "2021:28"
           ],
           "subject + 0x190": [
-            "2021:56"
+            "2022:56"
           ],
           "state + 0x38": [
-            "2052:18",
             "2053:18",
-            "2053:87",
-            "2054:42",
-            "2055:22"
+            "2054:18",
+            "2054:87",
+            "2055:42",
+            "2056:22"
           ],
           "lightingStorage + 0x38": [
-            "2084:60"
+            "2085:60"
           ],
           "object + 0x24": [
-            "2145:18",
-            "2146:34",
-            "2148:45",
-            "2150:45",
-            "2157:23"
+            "2146:18",
+            "2147:34",
+            "2149:45",
+            "2151:45",
+            "2158:23"
           ],
           "object + 0xC": [
-            "2159:14"
-          ],
-          "object + 0x10": [
             "2160:14"
           ],
-          "object + 0x14": [
+          "object + 0x10": [
             "2161:14"
           ],
-          "object + 0x18": [
+          "object + 0x14": [
             "2162:14"
           ],
-          "object + 0x1C": [
+          "object + 0x18": [
             "2163:14"
           ],
-          "object + 0x20": [
+          "object + 0x1C": [
             "2164:14"
           ],
+          "object + 0x20": [
+            "2165:14"
+          ],
           "object + 0x44": [
-            "2165:14",
-            "2711:53",
-            "2733:49"
+            "2166:14",
+            "2712:53",
+            "2734:49"
           ],
           "object + 0x48": [
-            "2166:14"
-          ],
-          "object + 0x4C": [
             "2167:14"
           ],
+          "object + 0x4C": [
+            "2168:14"
+          ],
           "gLiveItemCount + 1U": [
-            "2168:33"
+            "2169:33"
           ],
           "gLiveItemCount - 1": [
-            "2185:45"
+            "2186:45"
           ],
           "return -1": [
-            "2217:9",
-            "2225:9"
+            "2218:9",
+            "2226:9"
           ],
           "state + 0x4C": [
-            "2314:40"
+            "2315:40"
           ],
           "itemState + 0x54": [
-            "2353:53"
+            "2354:53"
           ],
           "state + 8": [
-            "2437:68"
+            "2438:68"
           ],
           "state + 6": [
-            "2439:24"
+            "2440:24"
           ],
           "state + 4": [
-            "2455:79",
-            "2456:87",
-            "2457:79",
-            "2464:36"
+            "2456:79",
+            "2457:87",
+            "2458:79",
+            "2465:36"
           ],
           "replacement + 0x44": [
-            "2767:53",
-            "2772:53",
-            "2775:53",
-            "2779:53"
-          ],
-          "sp20 + 0x50": [
-            "2814:63"
+            "2768:53",
+            "2773:53",
+            "2776:53",
+            "2780:53"
           ]
         }
       }
@@ -7095,6 +7098,7 @@
         "item_mode.h",
         "item_object.h",
         "item_response.h",
+        "item_size.h",
         "item_types.h",
         "object_billboard.h",
         "object_movement.h",
@@ -7105,7 +7109,7 @@
       "locations": {
         "raw_offset_candidates": {
           "object + 0x18": [
-            "136:32"
+            "135:32"
           ]
         }
       }
@@ -7664,6 +7668,7 @@
         "door.h",
         "heap_diagnostics.h",
         "item_object.h",
+        "item_participation.h",
         "maze_scatter.h",
         "scene_region.h",
         "scene_types.h"

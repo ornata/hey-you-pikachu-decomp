@@ -1,3 +1,4 @@
+#include "item_size.h"
 #include "item_mode.h"
 #include "actor_meters.h"
 #include "object_billboard.h"
@@ -10,7 +11,6 @@
 #include "item_types.h"
 #include "object_types.h"
 
-void itemSetScale(u8 *arg0, f32 arg1); /* extern */
 /// Restore the baseball cap normal size when released by an actor.
 /// \param object Item to update.
 /// \param unused Unused release callback argument.
@@ -65,7 +65,6 @@ void lightBulbResetReleasedGlow(u8 *object, s32 unused) {
 }
 
 f32 mathMapRangeClamped(f32, f32, f32, f32, f32); /* extern */
-void itemSetScale(u8 *, f32);              /* extern */
 
 /// Inflate an actor-held balloon and update its inflated state.
 /// \param object Item to update.

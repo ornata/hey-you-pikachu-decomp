@@ -1,3 +1,4 @@
+#include "item_size.h"
 #include "action_request.h"
 #include "action_script_stop.h"
 #include "action_script_playback.h"
@@ -184,7 +185,6 @@ block_6:
     return 2;
 }
 
-void itemEnableShrinking(u8 *); /* extern */
 s32 itemHasPlayerPickupHistory(u8 *);     /* extern */
 
 /// Run the script-selected eating action, consume its held item, and handle any remaining item.
