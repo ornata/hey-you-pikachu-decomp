@@ -1,3 +1,4 @@
+#include "actor_held_item.h"
 #include "player_view_search.h"
 #include "item_participation.h"
 #include "item_queries.h"
@@ -1202,8 +1203,8 @@ s16 actorGetHeldItemKind(u8 *actor) {
 /// \returns One when player pickup is recorded, or zero otherwise.
 /// \note Original decompilation identifier: \c func_80118910 (0x80118910).
 s32 itemHasPlayerPickupHistory(u8 *item) {
-    s32 *itemState = ((RuntimeObjectPrefix *)item)->state.words;
-    if (*itemState & 0x02000000) {
+    ItemStatePrefix *itemState = (ItemStatePrefix *)((RuntimeObjectPrefix *)item)->state.bytes;
+    if (itemState->flags & 0x02000000) {
         return 1;
     }
     return 0;

@@ -49,4 +49,10 @@ s32 itemCanBePickedUp(u8 *item, s32 byPlayer);
 /// \note Original decompilation identifier: \c func_801145A0 (0x801145A0).
 s32 itemAllowsCooperation(u8 *item);
 
+/// Check whether an item has been marked as picked up by the player.
+/// \param item Initialized item whose pickup history is queried.
+/// \returns One when player pickup is recorded, or zero otherwise.
+/// \note Original decompilation identifier: \c func_80118910 (0x80118910).
+s32 itemHasPlayerPickupHistory(u8 *item);
+
 #endif

@@ -1,3 +1,5 @@
+#include "item_queries.h"
+#include "actor_held_item.h"
 #include "item_size.h"
 #include "action_request.h"
 #include "action_script_stop.h"
@@ -152,7 +154,6 @@ s32 actorScriptThrowHeldItem(u8 *actor) {
     return actorScriptWaitForActionResult(actor);
 }
 
-s16 actorGetHeldItemKind(u8 *arg0);   /* extern */
 
 /// Run the script-selected item acquisition action and report the held item kind.
 /// \param actor Actor whose script supplies the acquisition action and settings.
@@ -185,7 +186,6 @@ block_6:
     return 2;
 }
 
-s32 itemHasPlayerPickupHistory(u8 *);     /* extern */
 
 /// Run the script-selected eating action, consume its held item, and handle any remaining item.
 /// \param actor Actor whose script supplies the eating action.

@@ -1,3 +1,4 @@
+#include "actor_held_item.h"
 #include "actor_target.h"
 #include "progress_fields.h"
 #include "action_script_playback.h"
@@ -182,7 +183,6 @@ s32 actorScriptFindNearestInFacingCone(u8 *actor) {
     return 0;
 }
 
-s16 actorReleaseHeldItem(u8 *); /* extern */
 
 /// Force release of the actor's held item and report its kind.
 /// \param actor Actor whose held handle identifies an initialized item when live; its script VM receives the resolved kind or zero when the handle is not live.
@@ -447,7 +447,6 @@ s32 actorScriptPushPlayerViewPitch(u8 *actor) {
     return 0;
 }
 
-s16 actorGetHeldItemKind(u8 *); /* extern */
 
 /// Push the kind of item held by the actor.
 /// \param actor Actor whose held handle identifies an initialized item when live; its script VM receives the item kind or zero when the handle is not live.

@@ -2929,3 +2929,13 @@ longer needed. Interaction, command and message consumers use the same
 contracts and pass named world positions or their existing float arrays.
 Ghidra 0x80118644 confirms the three copied coordinates; escape selection
 retains its documented live-fallback precondition and original arithmetic.
+
+### Held-item and pickup-history queries
+
+`actor_held_item.h` consolidates signed-halfword kind queries and forced
+release across three script units, correcting one private `s32` declaration.
+Contracts retain the live-item precondition and stack-padding matching note.
+Ghidra 0x80118938 confirms held-handle lookup, forced release and signed kind
+return. `item_queries.h` owns the pickup-history predicate; its provider uses
+the checked item flags member instead of a raw state word. Every converted
+unit preserves all strict object bytes and relocations.

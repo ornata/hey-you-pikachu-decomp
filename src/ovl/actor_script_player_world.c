@@ -1,3 +1,4 @@
+#include "actor_held_item.h"
 #include "item_mode.h"
 #include "actor_meters.h"
 #include "interaction.h"
@@ -961,7 +962,6 @@ s32 actorScriptDestroyItem(u8 *actor) {
     return 0;
 }
 
-s16 actorReleaseHeldItem(u8 *); /* extern */
 /// Move an available object to a requested position and release the actor held item.
 /// \param actor Actor whose script VM supplies X, Y, Z, then an object handle and receives zero; unavailable handles leave both the target and held item unchanged.
 /// \returns Zero, allowing script execution to continue.
@@ -1040,7 +1040,6 @@ s32 actorScriptPushHeldItemHandle(u8 *actor) {
     return 0;
 }
 
-s32 actorGetHeldItemKind(u8 *);                   /* extern */
 void actorTryHoldItem(u8 *, s32, s32); /* extern */
 
 /// Attempt to hold a requested item, forcing release from its current holder.
