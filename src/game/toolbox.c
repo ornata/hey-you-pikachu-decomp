@@ -1,3 +1,4 @@
+#include "vector3_types.h"
 #include "matrix_types.h"
 #include "matrix_point.h"
 #include "camera_interface.h"
@@ -45,9 +46,6 @@ typedef struct PartNode {
     u32 unk34;
 } PartNode;
 
-typedef struct Vec3_301B0 {
-    f32 x, y, z;
-} Vec3_301B0;
 
 /* Item seeded into the Item Storage row unless its story flag is clear
  * (-1: always). */
@@ -111,7 +109,7 @@ PartNode gToolboxPlaceholderTemplate[2] = {
 
 /// Base-object anchor positions indexed by Collection or Item Storage row.
 /// \note Original identifier: \c D_8009A5B0 (0x8009A5B0).
-Vec3_301B0 gToolboxRowAnchors[2] = {
+Vec3f gToolboxRowAnchors[2] = {
     {-1.5f, -2.5f, -20.0f},
     {0.0f, -2.5f, -20.0f},
 };
@@ -913,7 +911,7 @@ void toolboxLayoutCurrentRow(f32 angle, f32 height, f32 depth) {
     f32 direction;
     f32 rotation;
     f32 *spin = &gToolboxRowRotation;
-    Vec3_301B0 position;
+    Vec3f position;
     {
         u8 *row = (u8 *)&gToolboxState + gToolboxState.row * 0x50;
         slot = (ToolboxSlot *)(row + 0x28);
@@ -963,7 +961,7 @@ void toolboxLayoutCurrentRow(f32 angle, f32 height, f32 depth) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800301B0 (0x800301B0).
 void toolboxPlaceBaseForRow(ToolboxState *t, f32 dy) {
-    Vec3_301B0 v;
+    Vec3f v;
 
     v.x = gToolboxRowAnchors[t->row].x;
     v.y = gToolboxRowAnchors[t->row].y;

@@ -1,3 +1,5 @@
+#include "presentation_focus.h"
+#include "vector3_types.h"
 #include "matrix_types.h"
 #include "matrix_point.h"
 #include "camera_interface.h"
@@ -63,9 +65,6 @@ char *gChapterFriendshipMessages[20] = {
     "You gazed at the stars\nwith ^6PIKACHU^^!\n\n^6PIKACHU^^ had no idea there\nwere so many stars in the sky.\n",
 };
 
-typedef struct Vec3_295BC {
-    f32 x, y, z;
-} Vec3_295BC;
 
 /* One sprite of a textureDrawRectangles draw list; texture < 0 ends the list and a
  * negative width/height means the texture's own size. */
@@ -90,13 +89,13 @@ typedef struct {
 
 /// Camera-relative position of the item shown in collection results.
 /// \note Original identifier: \c D_80099A40 (0x80099A40).
-Vec3_295BC gCollectionItemPresentationPosition = {2.5f, -0.5f, -10.0f};
+Vec3f gCollectionItemPresentationPosition = {2.5f, -0.5f, -10.0f};
 /// Camera-relative actor position for the card presentation.
 /// \note Original identifier: \c D_80099A4C (0x80099A4C).
-Vec3_295BC gCardPresentationActorPosition = {-2.6f, -4.0f, -11.0f};
+Vec3f gCardPresentationActorPosition = {-2.6f, -4.0f, -11.0f};
 /// Camera-relative actor position for collection results.
 /// \note Original identifier: \c D_80099A58 (0x80099A58).
-Vec3_295BC gCollectionPresentationActorPosition = {-4.5f, -4.0f, -12.7f};
+Vec3f gCollectionPresentationActorPosition = {-4.5f, -4.0f, -12.7f};
 /// Current stage of the collection results presentation.
 /// \note Original identifier: \c D_80099A64 (0x80099A64).
 u32 gCollectionPresentationStage = 0;
@@ -105,7 +104,7 @@ u32 gCollectionPresentationStage = 0;
 s32 gCardPresentationStage = 0;
 /// Presentation-space focus targets used by the actor during cards and collection results.
 /// \note Original identifier: \c D_80099A6C (0x80099A6C).
-Vec3_295BC gPresentationActorFocusTargets[3] = {
+Vec3f gPresentationActorFocusTargets[3] = {
     {0.0f, 0.0f, 0.0f},
     {-3.0f, 1.0f, -5.0f},
     {3.0f, 1.0f, -5.0f},
@@ -375,17 +374,16 @@ void presentationSaveActiveActor(void) {
 /// \note Original identifier: \c D_800F0BA8 (0x800F0BA8).
 extern Matrix34 gPresentationToWorldTransform;
 void objectUpdateHierarchy(u8 *);
-void presentationUpdateFocusPoint(Vec3_295BC *);
 /// Place the active actor at a presentation-space point while retaining its ground-clearance offset.
 /// \param point Three-component position in the current presentation coordinate system.
 /// \returns Nothing; requires an initialized active actor, its live ground-reference object, and a valid presentation transform.
 /// \note Original decompilation identifier: \c func_800285B8 (0x800285B8).
 void presentationPlaceActiveActor(void *point) {
-    Vec3_295BC world;
+    Vec3f world;
     u8 *player;
     f32 heightDelta;
     f32 *src;
-    Vec3_295BC input;
+    Vec3f input;
     u8 *output;
     f32 worldHeight;
     f32 newHeight;
@@ -425,7 +423,6 @@ extern f32 gPresentationActorJointMidpointHeight;
 f32 vector3GetYawDegrees(f32 *);
 void actorSetBehaviorInhibitFlags(u8 *, u16);
 void presentationPlaceActiveActor(void *);
-void presentationResetFocusPoint(u8 *);
 /// Place the active actor for a camera-facing presentation and begin its presentation pose.
 /// \param point Three-component position in the current presentation coordinate system.
 /// \returns Nothing; requires an initialized active actor with both presentation camera joints and a valid presentation transform.
@@ -456,7 +453,7 @@ void presentationPrepareActiveActor(void *point) {
     actorAddRotationAxisDegrees((u8 *)gPikachuActor, yaw - *(f32 *)(ext + 0x10), 1);
     *(s32 *)(ext + 0x19C) = 0;
     matrix34TransformPointVector((f32 *)&gPresentationToWorldTransform, (f32 *)(&gPresentationActorFocusTargets[1]), (f32 *)(ext + 0x1EC));
-    presentationResetFocusPoint((u8 *)&gPresentationActorFocusTargets[1]);
+    presentationResetFocusPoint(&gPresentationActorFocusTargets[1]);
     actionScriptStartWithMode((u8 *)gPikachuActor, 0x57, 2);
     firstJoint = actorFindPart((u8 *)gPikachuActor, firstJointId);
     h = *(f32 *)(firstJoint + 0x48);
@@ -554,7 +551,6 @@ void controllerRequestRumbleReset(s32);
 void runtimeRequestGameModeChange(s32);
 void hudSetAreaLabelVisible(s32);
 void presentationPrepareActiveActor(void *);
-void presentationSetFocusTarget(void *);
 void backdropSelectForView(s32, s32, s32);
 void playerResetViewOrientation(void);
 u8 playerGetChaseStage(void);
@@ -881,7 +877,7 @@ s32 presentationGetItemCollectionValue(s32 id) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800295BC (0x800295BC).
 void presentationPlaceCollectionItem(u8 *item, f32 heightOffset) {
-    Vec3_295BC v;
+    Vec3f v;
 
     v.x = gCollectionItemPresentationPosition.x;
     v.y = gCollectionItemPresentationPosition.y;

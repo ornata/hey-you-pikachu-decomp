@@ -1,3 +1,5 @@
+#include "presentation_focus.h"
+#include "vector3_types.h"
 #include "matrix_types.h"
 #include "matrix_point.h"
 #include "camera_interface.h"
@@ -25,11 +27,6 @@
 // clang-format on
 
 typedef struct {
-    f32 x;
-    f32 y;
-    f32 z;
-} Vec3f_;
-typedef struct {
     s32 w[0x13];
 } Row4C;
 /// Destination records containing area choices, unlock requirements, actor focus points and artwork.
@@ -38,13 +35,13 @@ extern Row4C gWorldMapDestinations[];
 
 /// Presentation focus point at the start of the current transition.
 /// \note Original identifier: \c D_800F1BB0 (0x800F1BB0).
-extern Vec3f_ gPresentationFocusStart;
+extern Vec3f gPresentationFocusStart;
 /// Requested presentation focus point at the end of the current transition.
 /// \note Original identifier: \c D_800F1BC0 (0x800F1BC0).
-extern Vec3f_ gPresentationFocusTarget;
+extern Vec3f gPresentationFocusTarget;
 /// Most recently evaluated presentation focus point.
 /// \note Original identifier: \c D_800F1BD0 (0x800F1BD0).
-extern Vec3f_ gPresentationFocusCurrent;
+extern Vec3f gPresentationFocusCurrent;
 /// Elapsed-millisecond checkpoint for the current focus transition.
 /// \note Original identifier: \c D_800F1BDC (0x800F1BDC).
 extern u32 gPresentationFocusTransitionStartMilliseconds;
@@ -53,7 +50,7 @@ extern u32 gPresentationFocusTransitionStartMilliseconds;
 /// \param target Target point in presentation coordinates.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002D260 (0x8002D260).
-void presentationSetFocusTarget(Vec3f_ *target) {
+void presentationSetFocusTarget(Vec3f *target) {
     gPresentationFocusStart.x = gPresentationFocusCurrent.x;
     gPresentationFocusStart.y = gPresentationFocusCurrent.y;
     gPresentationFocusStart.z = gPresentationFocusCurrent.z;
@@ -67,7 +64,7 @@ void presentationSetFocusTarget(Vec3f_ *target) {
 /// \param point Focus point in presentation coordinates.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002D2C8 (0x8002D2C8).
-void presentationResetFocusPoint(Vec3f_ *point) {
+void presentationResetFocusPoint(Vec3f *point) {
     gPresentationFocusStart.x = point->x;
     gPresentationFocusStart.y = point->y;
     gPresentationFocusStart.z = point->z;
@@ -80,13 +77,13 @@ void presentationResetFocusPoint(Vec3f_ *point) {
     gPresentationFocusTransitionStartMilliseconds = (u32)runtimeGetElapsedMilliseconds();
 }
 
-s32 vector3InterpolateSmoothTimed(Vec3f_ *, Vec3f_ *, Vec3f_ *, f32, f32); /* extern */
+s32 vector3InterpolateSmoothTimed(Vec3f *, Vec3f *, Vec3f *, f32, f32); /* extern */
 
 /// Update and obtain the shared presentation focus point during its transition.
 /// \param point Receives the current point in presentation coordinates.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002D348 (0x8002D348).
-void presentationUpdateFocusPoint(Vec3f_ *point) {
+void presentationUpdateFocusPoint(Vec3f *point) {
     vector3InterpolateSmoothTimed(&gPresentationFocusStart, &gPresentationFocusTarget, point, 600.0f,
                                   (f32)runtimeGetElapsedMilliseconds() -
                                       (f32)gPresentationFocusTransitionStartMilliseconds);
@@ -371,18 +368,18 @@ extern s32 gPikachuActor;
 extern Matrix34 gWorldMapToWorldTransform;
 /// Camera-relative actor position on the world-map screen.
 /// \note Original identifier: \c D_8009A104 (0x8009A104).
-extern Vec3f_ gWorldMapActorPresentationPosition;
+extern Vec3f gWorldMapActorPresentationPosition;
 
 /// Update the map actor's position and focus while preserving its ground clearance.
 /// \pre Requires an active actor and the map presentation transform.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002DD70 (0x8002DD70).
 void wholeMapUpdateActorPlacement(void) {
-    Vec3f_ position;
+    Vec3f position;
     s32 firstJointId = 0x47;
     s32 secondJointId = 0x4C;
     f32 averageDivisor = 2.0f;
-    Vec3f_ reference;
+    Vec3f reference;
     f32 height;
     f32 otherHeight;
     u8 *firstJoint;
@@ -449,7 +446,7 @@ void wholeMapPrepareActor(void) {
     actorAddRotationAxisDegrees((u8 *)gPikachuActor, angle - *(f32 *)(state + 0x10), 1);
     *(s32 *)(state + 0x19C) = 0;
     matrix34TransformPointVector((f32 *)(&gWorldMapToWorldTransform), (f32 *)((u8 *)&gWorldMapDestinations[gWorldMapSelectedDestination] + 0x10), (f32 *)(state + 0x1EC));
-    presentationResetFocusPoint((Vec3f_ *)((u8 *)&gWorldMapDestinations[gWorldMapSelectedDestination] + 0x10));
+    presentationResetFocusPoint((Vec3f *)((u8 *)&gWorldMapDestinations[gWorldMapSelectedDestination] + 0x10));
     gWorldMapDirectionHeldFrames = 0;
     actionScriptStartWithMode((u8 *)gPikachuActor, action, actionMode);
     actorSetBehaviorInhibitFlags((u8 *)gPikachuActor, animation);
@@ -557,10 +554,10 @@ extern s32 gControllerPrimaryRepeatedButtons;
 extern s32 gWorldMapDirectionHeldFrames;
 /// Presentation focus target for the special destination selected by voice.
 /// \note Original identifier: \c D_8009A3A8 (0x8009A3A8).
-extern Vec3f_ gWorldMapSpecialDestinationFocus;
+extern Vec3f gWorldMapSpecialDestinationFocus;
 /// Presentation focus target used for actor messages other than destination selection.
 /// \note Original identifier: \c D_8009A3B4 (0x8009A3B4).
-extern Vec3f_ gWorldMapOtherMessageFocus;
+extern Vec3f gWorldMapOtherMessageFocus;
 /// Last destination whose selection change updated the actor focus and highlight.
 /// \note Original identifier: \c D_8009A3C0 (0x8009A3C0).
 extern s32 gWorldMapPreviousDestination;
@@ -585,8 +582,8 @@ void wholeMapHandleInput(void) {
     s32 direction;
     MenuInput *input;
     s32 selection;
-    Vec3f_ specialPosition;
-    Vec3f_ defaultPosition;
+    Vec3f specialPosition;
+    Vec3f defaultPosition;
     s32 confirmMask;
     pressed = &gControllerPrimaryRepeatedButtons;
     if (*pressed & 0x4000) {
@@ -654,7 +651,7 @@ void wholeMapHandleInput(void) {
     wholeMapEnsureAvailableSelection(0, 8, direction);
     if (gWorldMapPreviousDestination != *selected) {
         TRACE("index = %d, map = %d\n", *selected, gWorldMapDestinations[*selected].w[0]);
-        presentationSetFocusTarget((Vec3f_ *)&gWorldMapDestinations[*selected].w[4]);
+        presentationSetFocusTarget((Vec3f *)&gWorldMapDestinations[*selected].w[4]);
         gWorldMapPreviousDestination = gWorldMapSelectedDestination;
         gWorldMapSelectionAlpha = 0xFF;
     }

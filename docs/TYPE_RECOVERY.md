@@ -2574,3 +2574,15 @@ The system-menu transform definition also reuses `Matrix34` instead of a private
 twelve-word record. Its Doxygen description now precedes the declaration. All
 four source-unit changes preserve BSS layout, symbol attributes and relocation
 identities across the complete 483-object comparison.
+
+### Shared presentation vectors and focus interface
+
+World-map, collection and toolbox positions now reuse checked `Vec3f` rather
+than three duplicate private coordinate records. This includes initialized
+presentation positions, focus arrays, anchors and local placement vectors.
+Their allocated layouts and global relocation identities are preserved.
+
+`presentation_focus.h` documents immediate reset, timed target changes and
+current-point evaluation using the same vector type for provider and consumer.
+Ghidra 0x8002D348 confirms the output is three coordinates and retained as the
+current focus. Each source-unit conversion passes all 483 strict object checks.
