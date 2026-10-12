@@ -1,7 +1,7 @@
 #include "common.h"
+#include "item_object.h"
 #include "actor_create.h"
 
-void *itemCreate(f32, f32, f32, f32, f32, s32);
 typedef struct {
     u8 unknown[12];
     f32 scale;

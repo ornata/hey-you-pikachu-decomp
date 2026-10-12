@@ -2664,7 +2664,6 @@ s32 itemGetResponse(s32 responseType, s32 objectId) {
 
 u8 *wispEffectCreate(s32, f32, f32, f32);
 void effectEmitterCreateForStyle(u32, f32 *, f32, s32, s32, f32);
-u8 *itemCreate(f32, f32, f32, f32, f32, s32);
 void actorTryHoldItem(u8 *, s32, s32);
 
 /// Apply a transformation cause to an item, retaining, replacing, or removing it as appropriate.

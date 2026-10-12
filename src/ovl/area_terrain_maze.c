@@ -1,6 +1,7 @@
 #include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "item_object.h"
 #include "runtime_clock.h"
 #include "heap_diagnostics.h"
 #include "item_spawn.h"
@@ -247,7 +248,6 @@ s32 areaIsPositionOutsideBounds(f32 x, f32 y, f32 z) {
 }
 
 u32 randomNext();                             /* extern */
-u8 *itemCreate(f32, f32, f32, f32, f32, s32); /* extern */
 
 /// Create an item at a random horizontal position near a supplied center.
 /// \param center Center world position in X, Y, Z order; its Y coordinate is passed to item creation.

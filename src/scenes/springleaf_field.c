@@ -1,10 +1,10 @@
 #include "common.h"
+#include "item_object.h"
 #include "actor_create.h"
 void objectRequestHierarchyDestruction(u8 *);
 void doorRegistryReset(void);
 u8 *doorCreate(f32 *, s32, s32, s32, s32);
 u32 randomNext(void);
-u8 *itemCreate(f32, f32, f32, f32, f32, s32);
 s32 progressGetValue(s32);
 s32 progressSetValue(s32, s32);
 /// Entrance index used to initialize the player and companion in the current area.

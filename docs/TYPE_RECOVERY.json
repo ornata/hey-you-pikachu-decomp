@@ -193,8 +193,8 @@
           "command + 0xC": [
             "210:50",
             "318:52",
-            "672:69",
-            "1065:24"
+            "671:69",
+            "1064:24"
           ],
           "command + 0x10": [
             "210:75",
@@ -208,58 +208,58 @@
             "303:9",
             "304:53",
             "467:61",
-            "660:18",
-            "696:33",
-            "718:42",
-            "741:13",
-            "754:42",
+            "659:18",
+            "695:33",
+            "717:42",
+            "740:13",
+            "753:42",
+            "771:65",
             "772:65",
-            "773:65",
-            "836:53",
-            "839:64",
-            "847:68",
-            "869:66",
-            "870:64",
-            "935:46",
-            "963:34",
-            "999:31",
-            "1053:48",
-            "1064:22"
+            "835:53",
+            "838:64",
+            "846:68",
+            "868:66",
+            "869:64",
+            "934:46",
+            "962:34",
+            "998:31",
+            "1052:48",
+            "1063:22"
           ],
           "object + 0x44": [
             "270:51",
-            "669:28",
-            "670:50",
-            "672:44",
-            "798:57",
-            "803:57",
-            "806:57"
+            "668:28",
+            "669:50",
+            "671:44",
+            "797:57",
+            "802:57",
+            "805:57"
           ],
           "object + 0x48": [
             "270:76",
-            "670:75"
+            "669:75"
           ],
           "object + 0x4C": [
             "270:101",
-            "670:100",
-            "671:28"
+            "669:100",
+            "670:28"
           ],
           "p + 4": [
             "305:56",
-            "743:88"
+            "742:88"
           ],
           "state + 0x190": [
             "381:49",
             "464:41",
-            "494:41",
-            "973:52"
+            "493:41",
+            "972:52"
           ],
           "obj + 0x24": [
             "387:58"
           ],
           "state + 0x19C": [
             "390:22",
-            "909:39"
+            "908:39"
           ],
           "p + 0x34": [
             "390:103"
@@ -278,7 +278,7 @@
           ],
           "state + 0x1EC": [
             "434:27",
-            "815:61"
+            "814:61"
           ],
           "obj + 0x44": [
             "434:53"
@@ -312,113 +312,113 @@
             "469:52"
           ],
           "spawned + 0x38": [
-            "501:47"
+            "500:47"
           ],
           "trackingTarget + 0x44": [
-            "530:22"
+            "529:22"
           ],
           "actorStateAddress + 0x1EC": [
-            "532:12"
+            "531:12"
           ],
           "state + 0x3EC": [
-            "583:36",
-            "583:76",
-            "585:18"
+            "582:36",
+            "582:76",
+            "584:18"
           ],
           "particles + 10": [
-            "593:32",
-            "599:32"
+            "592:32",
+            "598:32"
           ],
           "object + 0x10": [
-            "594:54",
-            "600:66"
+            "593:54",
+            "599:66"
           ],
           "object + 0x14": [
-            "595:36",
-            "601:36"
+            "594:36",
+            "600:36"
           ],
           "other + 0x34": [
-            "604:39"
+            "603:39"
           ],
           "other + 0x38": [
-            "604:103",
-            "812:101"
+            "603:103",
+            "811:101"
           ],
           "state + 0x3F0": [
-            "605:22"
+            "604:22"
           ],
           "object + 0x38": [
-            "672:97",
-            "798:106",
-            "803:106",
-            "806:106",
-            "813:36",
-            "815:105"
+            "671:97",
+            "797:106",
+            "802:106",
+            "805:106",
+            "812:36",
+            "814:105"
           ],
           "effectOwner + 0x38": [
-            "702:45"
+            "701:45"
           ],
           "actor + 0x44": [
-            "758:31"
+            "757:31"
           ],
           "object + 0x24": [
-            "799:32",
-            "804:32",
-            "807:32",
-            "813:61",
-            "816:36"
+            "798:32",
+            "803:32",
+            "806:32",
+            "812:61",
+            "815:36"
           ],
           "other + 0x44": [
-            "812:61"
+            "811:61"
           ],
           "o + 0": [
-            "903:21"
+            "902:21"
           ],
           "o + 4": [
-            "904:21"
+            "903:21"
           ],
           "o + 8": [
-            "905:21"
+            "904:21"
           ],
           "state + 0x198": [
-            "909:91"
+            "908:91"
           ],
           "state + 0x60": [
-            "942:45",
-            "944:35"
+            "941:45",
+            "943:35"
           ],
           "state + 0x194": [
-            "969:22"
+            "968:22"
           ],
           "gCurrentAreaConfiguration + 0xC": [
-            "975:26"
+            "974:26"
           ],
           "o + 0x34": [
-            "1034:31",
-            "1034:57"
+            "1033:31",
+            "1033:57"
           ],
           "actor + 0x38": [
-            "1040:27"
+            "1039:27"
           ],
           "actor + 0x54": [
-            "1093:23",
-            "1153:22"
+            "1092:23",
+            "1152:22"
           ],
           "st + 0x134": [
-            "1119:26"
+            "1118:26"
           ],
           "st + 0x138": [
-            "1119:49"
+            "1118:49"
           ],
           "op - 19": [
-            "1132:41"
+            "1131:41"
           ],
           "o + 0x13E": [
-            "1157:18",
-            "1167:19"
+            "1156:18",
+            "1166:19"
           ],
           "p + 1": [
-            "1170:20"
+            "1169:20"
           ]
         }
       }
@@ -6600,18 +6600,18 @@
         "raw_offset_candidates": {
           "object + 0xC": [
             "231:41",
-            "816:18",
-            "953:22"
+            "815:18",
+            "952:22"
           ],
           "object + 0x10": [
             "231:55",
-            "817:18",
-            "954:22"
+            "816:18",
+            "953:22"
           ],
           "object + 0x14": [
             "231:70",
-            "818:18",
-            "955:22"
+            "817:18",
+            "954:22"
           ],
           "liveObject + 0x34": [
             "249:22"
@@ -6623,12 +6623,12 @@
             "253:45",
             "254:45",
             "255:45",
+            "797:37",
             "798:37",
             "799:37",
-            "800:37",
+            "821:41",
             "822:41",
-            "823:41",
-            "824:41"
+            "823:41"
           ],
           "liveObject + 4": [
             "254:18"
@@ -6641,23 +6641,23 @@
             "332:22",
             "340:18",
             "347:18",
-            "819:18",
-            "932:77",
-            "952:81"
+            "818:18",
+            "931:77",
+            "951:81"
           ],
           "object + 0x1C": [
             "323:26",
             "333:22",
             "341:18",
             "348:18",
-            "820:18"
+            "819:18"
           ],
           "object + 0x20": [
             "324:26",
             "334:22",
             "342:18",
             "349:18",
-            "821:18"
+            "820:18"
           ],
           "object + 0x54": [
             "423:25",
@@ -6698,7 +6698,7 @@
           ],
           "held + 0x54": [
             "690:29",
-            "1307:26"
+            "1306:26"
           ],
           "other + 0x54": [
             "695:43"
@@ -6707,110 +6707,110 @@
             "696:56"
           ],
           "slot + 0x7C": [
-            "749:22"
+            "748:22"
           ],
           "slot + 0x78": [
-            "750:22"
+            "749:22"
           ],
           "slot + 0x28": [
-            "755:22",
-            "756:98"
+            "754:22",
+            "755:98"
           ],
           "table + 0xF0": [
-            "759:12"
+            "758:12"
           ],
           "table + 0xF8": [
-            "765:12"
+            "764:12"
           ],
           "object + 0": [
+            "797:14",
+            "821:18"
+          ],
+          "object + 4": [
             "798:14",
             "822:18"
           ],
-          "object + 4": [
+          "object + 8": [
             "799:14",
             "823:18"
           ],
-          "object + 8": [
-            "800:14",
-            "824:18"
-          ],
           "object + 0x2C": [
-            "802:34"
+            "801:34"
           ],
           "objects + 0x28": [
-            "803:43"
+            "802:43"
           ],
           "object + 0x38": [
-            "825:46"
+            "824:46"
           ],
           "o + 0xC": [
-            "878:22"
+            "877:22"
           ],
           "o + 0x10": [
-            "879:22"
+            "878:22"
           ],
           "o + 0x14": [
-            "880:22"
+            "879:22"
           ],
           "row + 0x28": [
-            "921:32"
+            "920:32"
           ],
           "object + 0x34": [
-            "933:32"
+            "932:32"
           ],
           "cur + 1": [
-            "993:14"
+            "992:14"
           ],
           "width + 40": [
-            "1021:41"
+            "1020:41"
           ],
           "width - 1": [
-            "1068:61"
+            "1067:61"
           ],
           "height - 1": [
-            "1069:37"
+            "1068:37"
           ],
           "scaleX + 0": [
-            "1070:68"
+            "1069:68"
           ],
           "scaleX - 0": [
-            "1070:94"
+            "1069:94"
           ],
           "scaleY + 0": [
-            "1071:70"
+            "1070:70"
           ],
           "scaleY - 0": [
-            "1071:97"
+            "1070:97"
           ],
           "phase - 0": [
-            "1129:31",
-            "1129:47",
-            "1159:39",
-            "1159:55",
-            "1175:39",
-            "1175:55"
+            "1128:31",
+            "1128:47",
+            "1158:39",
+            "1158:55",
+            "1174:39",
+            "1174:55"
           ],
           "object + 0x24": [
-            "1192:42"
+            "1191:42"
           ],
           "state + 4": [
-            "1309:48"
+            "1308:48"
           ],
           "now - 0xBB8": [
-            "1336:39"
+            "1335:39"
           ],
           "i - 1": [
-            "1502:26"
+            "1501:26"
           ],
           "i + 1": [
-            "1508:26"
+            "1507:26"
           ],
           "k + 1": [
-            "1564:57",
-            "1590:57"
+            "1563:57",
+            "1589:57"
           ],
           "k - 1": [
-            "1568:49"
+            "1567:49"
           ]
         }
       }
@@ -7674,6 +7674,7 @@
         "heap_alloc.h",
         "heap_diagnostics.h",
         "heap_free.h",
+        "item_object.h",
         "item_spawn.h",
         "object_types.h",
         "runtime_clock.h",
@@ -7690,7 +7691,7 @@
       "locations": {
         "address_globals": {
           "D_80133DE8": [
-            "209:5",
+            "210:5",
             "2072:12",
             "2095:14",
             "2096:14",
@@ -7699,79 +7700,79 @@
         },
         "raw_offset_candidates": {
           "scene_bedroom_DATA_START + 0x21314": [
-            "119:5"
-          ],
-          "scene_entryway_DATA_START + 0x5A6C": [
             "120:5"
           ],
-          "scene_front_yard_DATA_START + 0x24A20": [
+          "scene_entryway_DATA_START + 0x5A6C": [
             "121:5"
           ],
-          "scene_viridian_entrance_DATA_START + 0x18904": [
+          "scene_front_yard_DATA_START + 0x24A20": [
             "122:5"
           ],
-          "scene_viridian_forest_DATA_START + 0x60C4": [
+          "scene_viridian_entrance_DATA_START + 0x18904": [
             "123:5"
           ],
-          "scene_viridian_deep_DATA_START + 0x15680": [
+          "scene_viridian_forest_DATA_START + 0x60C4": [
             "124:5"
           ],
-          "scene_springleaf_entrance_DATA_START + 0x22E9C": [
+          "scene_viridian_deep_DATA_START + 0x15680": [
             "125:5"
           ],
-          "scene_oddish_meadow_DATA_START + 0x23368": [
+          "scene_springleaf_entrance_DATA_START + 0x22E9C": [
             "126:5"
           ],
-          "scene_springleaf_field_DATA_START + 0x234B8": [
+          "scene_oddish_meadow_DATA_START + 0x23368": [
             "127:5"
           ],
-          "scene_olivine_lakeshore_DATA_START + 0xCC94": [
+          "scene_springleaf_field_DATA_START + 0x234B8": [
             "128:5"
           ],
-          "scene_olivine_lake_DATA_START + 0xCCE8": [
+          "scene_olivine_lakeshore_DATA_START + 0xCC94": [
             "129:5"
           ],
-          "scene_ochre_entrance_DATA_START + 0x9858": [
+          "scene_olivine_lake_DATA_START + 0xCCE8": [
             "130:5"
           ],
-          "scene_ochre_deep_DATA_START + 0x157A4": [
+          "scene_ochre_entrance_DATA_START + 0x9858": [
             "131:5"
           ],
-          "scene_cobalt_island_DATA_START + 0x1C698": [
+          "scene_ochre_deep_DATA_START + 0x157A4": [
             "132:5"
           ],
-          "scene_cobalt_coast_DATA_START + 0x12284": [
+          "scene_cobalt_island_DATA_START + 0x1C698": [
             "133:5"
           ],
-          "scene_abra_shop_DATA_START + 0xF114": [
+          "scene_cobalt_coast_DATA_START + 0x12284": [
             "134:5"
           ],
-          "scene_wilderness_camp_DATA_START + 0x64DC": [
+          "scene_abra_shop_DATA_START + 0xF114": [
             "135:5"
           ],
-          "scene_ochre_fishing_DATA_START + 0x111E0": [
+          "scene_wilderness_camp_DATA_START + 0x64DC": [
             "136:5"
           ],
-          "scene_olivine_fishing_DATA_START + 0x10DB0": [
+          "scene_ochre_fishing_DATA_START + 0x111E0": [
             "137:5"
           ],
-          "scene_cobalt_fishing_DATA_START + 0x10F50": [
+          "scene_olivine_fishing_DATA_START + 0x10DB0": [
             "138:5"
           ],
-          "scene_viridian_edge_DATA_START + 0xF2A8": [
+          "scene_cobalt_fishing_DATA_START + 0x10F50": [
             "139:5"
           ],
-          "scene_playground_DATA_START + 0xAA3C": [
+          "scene_viridian_edge_DATA_START + 0xF2A8": [
             "140:5"
           ],
-          "scene_credits_DATA_START + 0xF4DC": [
+          "scene_playground_DATA_START + 0xAA3C": [
             "141:5"
           ],
+          "scene_credits_DATA_START + 0xF4DC": [
+            "142:5"
+          ],
           "w + 10": [
-            "242:47"
+            "243:47"
           ],
           "d + 10": [
-            "243:97"
+            "244:97"
           ],
           "node + 0x48": [
             "362:45",
@@ -8404,8 +8405,8 @@
           ],
           "object + 0x44": [
             "2157:14",
-            "2708:53",
-            "2730:49"
+            "2707:53",
+            "2729:49"
           ],
           "object + 0x48": [
             "2158:14"
@@ -8464,17 +8465,17 @@
             "2565:60"
           ],
           "replacement + 0x44": [
-            "2764:53",
-            "2769:53",
-            "2772:53",
-            "2776:53"
+            "2763:53",
+            "2768:53",
+            "2771:53",
+            "2775:53"
           ],
           "sp20 + 0x50": [
-            "2811:68"
+            "2810:68"
           ],
           "rec + 0x70": [
-            "2907:49",
-            "2909:39"
+            "2906:49",
+            "2908:39"
           ]
         }
       }
@@ -8948,7 +8949,8 @@
     },
     "src/scenes/abra_shop.c": {
       "known_views": [
-        "actor_create.h"
+        "actor_create.h",
+        "item_object.h"
       ],
       "matching_exceptions": {},
       "locations": {
@@ -9007,7 +9009,8 @@
     "src/scenes/cobalt_island.c": {
       "known_views": [
         "actor_create.h",
-        "area_maze.h"
+        "area_maze.h",
+        "item_object.h"
       ],
       "matching_exceptions": {},
       "locations": {
@@ -9026,6 +9029,7 @@
         "actor_create.h",
         "area_maze.h",
         "heap_diagnostics.h",
+        "item_object.h",
         "scene_types.h"
       ],
       "matching_exceptions": {},
@@ -9096,7 +9100,8 @@
     },
     "src/scenes/oddish_meadow.c": {
       "known_views": [
-        "actor_create.h"
+        "actor_create.h",
+        "item_object.h"
       ],
       "matching_exceptions": {},
       "locations": {
@@ -9118,6 +9123,7 @@
     "src/scenes/springleaf_entrance.c": {
       "known_views": [
         "actor_create.h",
+        "item_object.h",
         "scene_types.h"
       ],
       "matching_exceptions": {},
@@ -9139,7 +9145,8 @@
     },
     "src/scenes/springleaf_field.c": {
       "known_views": [
-        "actor_create.h"
+        "actor_create.h",
+        "item_object.h"
       ],
       "matching_exceptions": {},
       "locations": {

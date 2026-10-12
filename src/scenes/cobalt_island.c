@@ -1,8 +1,8 @@
 #include "common.h"
+#include "item_object.h"
 #include "actor_create.h"
 #include "area_maze.h"
 
-u8 *itemCreate(f32, f32, f32, f32, f32, s32);
 void itemSetMode(u8 *, s32);
 u8 playerGetChaseStage(void);
 u32 randomNext(void);

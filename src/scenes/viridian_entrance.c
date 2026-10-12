@@ -1,9 +1,9 @@
 #include "common.h"
+#include "item_object.h"
 #include "actor_create.h"
 #include "area_maze.h"
 #include "scene_types.h"
 u8 *interactionProxyCreate(u8 *, s32, s32, s32, s32);
-u8 *itemCreate(f32, f32, f32, f32, f32, s32);
 s32 toolboxStoreObjectInRow(s32, s32);
 
 extern u8 D_80144BC4_scene_viridian_entrance[];

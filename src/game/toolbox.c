@@ -728,7 +728,6 @@ void toolboxConfirmItemTransfer(u8 *player) {
 }
 
 s32 progressGetValue(s32);
-u8 *itemCreate(f32, f32, f32, f32, f32, s32);
 /// Recreate stored toolbox items and populate available supplies from story progress.
 /// \param table Address of the shared toolbox table containing valid saved item kinds and cleared object handles; current scene and item resources must be initialized.
 /// \returns Nothing.

@@ -896,7 +896,6 @@ s32 actorScriptPushPikachuActionResource(u8 *actor) {
     return 0;
 }
 
-u8 *itemCreate(f32, f32, f32, f32, f32, s32); /* extern */
 
 /// Create an item at a requested position and orientation.
 /// \param actor Actor whose script VM supplies X, Y, Z, pitch, yaw in degrees, then a valid item kind, and receives the created item handle; negative Y requests ground placement using its magnitude as the query height, with item size added to the ground height.

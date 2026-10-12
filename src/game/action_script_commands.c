@@ -475,7 +475,6 @@ typedef struct SpawnChoice {
     s32 firstKind;
     f32 kindCount;
 } SpawnChoice;
-u8 *itemCreate(f32, f32, f32, f32, f32, s32);
 /// Creates an item of a randomly selected kind for the actor to hold when it has no live held item.
 /// \param object Actor that will hold the created item.
 /// \param state Actor state identifying its current held item.

@@ -1200,3 +1200,15 @@ confirms replacement transfers script state, clears the original reference and
 requests original hierarchy destruction. Header contracts state runtime-managed
 hierarchy lifetime and script resource lifetime. Every unit was rebuilt and
 compared before proceeding to the next; all preserve strict object matching.
+
+### Item creation interface
+
+item_object.h now declares creation alongside destruction and material
+selection. All sixteen producer/consumer units share the five f32 position/
+orientation arguments, s32 kind and u8 object-pointer result; generic void
+results in Front Yard and Abra Shop are removed. Ghidra for 0x80113944
+confirms world/local position writes, X/Y rotations, negative-Y ground placement
+and registration. Its inferred argument list is inaccurate, so source call sites
+and the matching producer remain the authority for the six-argument ABI.
+The shared Doxygen preserves initialization, lifetime, item-limit and target
+address portability contracts. Each changed unit matches the strict baseline.

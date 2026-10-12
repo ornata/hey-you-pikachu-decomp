@@ -1,4 +1,5 @@
 #include "common.h"
+#include "item_object.h"
 #include "actor_create.h"
 #include "area_maze.h"
 #include "heap_diagnostics.h"
@@ -74,7 +75,6 @@ void ochreDeepCreateAlternateVariantProps(void) {
 }
 
 u8 playerGetChaseStage(void);
-u8 *itemCreate(f32, f32, f32, f32, f32, s32);
 void itemHideAndSuspend(s32);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
