@@ -1519,3 +1519,13 @@ still unresolved; allocation/initialization evidence is needed before extending
 the view. Byte offsets within the packed point sequence remain explicit to retain
 matching expression ordering. Adjacent coordinate differences are unchanged.
 Both changed units strictly match all 483 objects, including relocation addends.
+
+### Scene path-table query contracts
+
+The path-query header also covers current-scene point counts and coordinates,
+separately documenting indexed counted paths and sentinel-terminated path objects.
+Ghidra 0x80117BA4 confirms the configuration's path table at 0x70, eight-byte
+count/pointer entries and twelve-byte point stride. The shared declarations
+preserve signed index checks: path indices must be valid, and point/axis indices
+must be nonnegative; out-of-range upper indices produce -65536. Provider and VM
+caller rebuilds preserve all 483 objects and strict relocations.

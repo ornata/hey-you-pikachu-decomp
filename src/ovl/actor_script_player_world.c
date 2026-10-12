@@ -309,7 +309,6 @@ s32 actorScriptPushSelfHandle(u8 *actor) {
     return 0;
 }
 
-s32 areaGetPathPointCount(s32);  /* extern */
 
 /// Read the number of points in a current-area path.
 /// \param actor Actor whose script VM supplies a valid current-area path index and receives its point count.
@@ -323,7 +322,6 @@ s32 actorScriptGetAreaPathPointCount(u8 *actor) {
     return 0;
 }
 
-f32 areaGetPathPointCoordinate(s32 arg0, s32 arg1, s32 arg2); /* extern */
 /// Read one world-space coordinate of a current-area path point.
 /// \param actor Actor whose script VM supplies a valid path index, a nonnegative point index, then a nonnegative axis (zero for X, one for Y, two for Z), and receives the coordinate or -65536 if the point or axis exceeds its range.
 /// \returns Zero, allowing script execution to continue.
