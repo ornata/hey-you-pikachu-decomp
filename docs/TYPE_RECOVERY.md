@@ -2793,3 +2793,17 @@ Isolated trials show that direct owner, hold-state, flags and kind members each
 change ROM bytes in this routine. Those four read patterns remain explicit
 matching exceptions in the source and ledger pending IDO scheduling evidence.
 All accepted member conversions preserve the full 483-object strict baseline.
+
+### Complete item-owned state allocation
+
+`item_state.h` defines the allocator's 0xF0-byte state as the existing shared
+prefix, unresolved bytes at 0x6C, owned direction animation at 0x70 and an
+unresolved four-byte tail at 0xEC. Size and direction/pose-index/tail offsets
+are checked. Ghidra 0x8011386C confirms allocation and clearing of 0xF0 bytes,
+direction reset at 0x70 and separately owned lighting allocation.
+
+The registry's private direction view is removed. Allocation/clearing use the
+complete size, while lighting, reset, update and timed-motion consumers address
+the named direction member. Prefix users retain their partial-view contract;
+unknown bytes have no invented names or semantics. All conversions preserve
+the complete strict object baseline.

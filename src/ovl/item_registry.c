@@ -1,3 +1,4 @@
+#include "item_state.h"
 #include "actor_script.h"
 #include "item_participation.h"
 #include "item_mode.h"
@@ -1960,15 +1961,6 @@ void itemDestroyState(u8 *item) {
     heapFreeLocal(&gGameHeap, state);
 }
 
-/// Partial view of the direction animation embedded in item state.
-/// This view excludes the allocation tail and must not determine allocation size.
-typedef struct ItemDirectionView {
-    u8 prefix[0x70];
-    DirectionAnimation direction;
-} ItemDirectionView;
-typedef char ItemDirectionOffsetCheck[((u32) & ((ItemDirectionView *)0)->direction == 0x70) ? 1 : -1];
-typedef char
-    ItemDirectionPoseIndexOffsetCheck[((u32) & ((ItemDirectionView *)0)->direction.poseIndex == 0xE2) ? 1 : -1];
 /// Prepare an item lighting and environment color for rendering.
 /// \param state Initialized state with allocated drawing resources, a valid item kind, and lighting index
 /// zero or one.
@@ -1981,8 +1973,8 @@ void itemBuildLightingDisplayList(u8 *state, s32 index) {
     u8 *color;
     g = ((ItemStatePrefix *)state)->lighting[index];
     color = gItemKinds[((ItemStatePrefix *)state)->kind].color;
-    gSPSetLights2(g++, (*(Lights2 *)((ItemDirectionView *)state)
-                             ->direction.poses[((ItemDirectionView *)state)->direction.poseIndex]
+    gSPSetLights2(g++, (*(Lights2 *)((ItemState *)state)
+                             ->direction.poses[((ItemState *)state)->direction.poseIndex]
                              .raw));
     gDPPipeSync(g++);
     gDPSetEnvColor(g++, color[0], color[1], color[2], color[3]);
@@ -2042,7 +2034,7 @@ void itemUpdate(u8 *object) {
     *(f32 *)(state + 0x68) -= gRuntimeFrameSeconds;
     if (*(f32 *)(state + 0x68) < 0.0f)
         itemStartDirectionMotion(object, 0.5f, 0.0f, 720.0f);
-    directionAnimationUpdate(state + 0x70);
+    directionAnimationUpdate((u8 *)&((ItemState *)state)->direction);
     if (*(s32 *)state & 0x20000000)
         itemShrink(object, 0.12f);
     if (!(*(u16 *)(object + 0x36) & 2) &&
@@ -2081,11 +2073,11 @@ u8 *itemAllocateState(void) {
     u8 *allocation;
     u8 *lightingStorage;
 
-    allocation = heapAllocLocal(&gGameHeap, 0xF0, 0x2C7);
-    _bzero(allocation, 0xF0);
+    allocation = heapAllocLocal(&gGameHeap, sizeof(ItemState), 0x2C7);
+    _bzero(allocation, sizeof(ItemState));
     ((ItemStatePrefix *)allocation)->kind = 0;
     ((ItemStatePrefix *)allocation)->renderMode = 0;
-    directionAnimationReset(allocation + 0x70);
+    directionAnimationReset((u8 *)&((ItemState *)allocation)->direction);
     ((ItemStatePrefix *)allocation)->idleMotionDelay = 5.5f;
     lightingStorage = heapAllocLocal(&gGameHeap, 0x70, 0x2D4);
     ((ItemStatePrefix *)allocation)->lighting[0] = (Gfx *)lightingStorage;
@@ -2913,9 +2905,9 @@ void itemStartDirectionMotion(u8 *item, f32 duration, f32 pitchRate, f32 yawRate
         for (i = 0; i < 2; i++) {
             pts[i].pitch = pitchRate;
             pts[i].yaw = yawRate;
-            directionAnimationSetNextPoseAngles(rec + 0x70, -40.0f, 0.0f, i);
+            directionAnimationSetNextPoseAngles((u8 *)&((ItemState *)rec)->direction, -40.0f, 0.0f, i);
         }
-        directionAnimationStartMotion(rec + 0x70, duration, pts);
+        directionAnimationStartMotion((u8 *)&((ItemState *)rec)->direction, duration, pts);
     }
 }
 
