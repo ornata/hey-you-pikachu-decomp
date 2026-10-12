@@ -1,3 +1,4 @@
+#include "progress_storage.h"
 #include "camera_overlay.h"
 #include "object_flags.h"
 #include "backdrop_draw.h"
@@ -581,7 +582,6 @@ void pikachuUpdateScriptAndTriggers(void);
 void objectUpdateGroup(s32);
 s32 audioCountActive(s32);
 s32 audioPlaySoundEffect(s32);
-void progressLoadRecordFromEeprom(s32);
 /// Primary controller new and auto-repeated button presses; aliases the repeated word of the processed sample.
 /// \note Original identifier: \c D_800AD54C (0x800AD54C).
 extern s32 gControllerPrimaryRepeatedButtons;
@@ -743,9 +743,6 @@ void runtimeRequestProgramChange(s32);
 void runtimeRequestGameModeChange(s32);
 void progressSetChapterAndUnlockMilestones(s32);
 s32 progressUpdateChapterAfterVisit(void);
-void progressLoadControlDataFromEeprom(void);
-void progressApplyLoadedRecord(void);
-void progressResetRecordToDefaults(void);
 void backdropSelectForView(s32, s32, s32);
 void titleScreenInitialize(void);
 void titleScreenResetLogoFade(void);

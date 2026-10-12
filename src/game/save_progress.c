@@ -1,3 +1,4 @@
+#include "progress_storage.h"
 #include "progress_fields.h"
 #include "progress_value.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -614,7 +615,7 @@ extern u8 gPlayerFriendshipLevel;
 extern s32 gPlayerVoiceMessageCount;
 
 /// Captures current gameplay progress and requests that its save record be written to EEPROM.
-/// \param record Primary EEPROM record index from zero through two, each with a backup record.
+/// \param record Progress record index, one or two, each with a backup record.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80032D44 (0x80032D44).
 void progressSaveRecordToEeprom(s32 record) {
@@ -632,7 +633,7 @@ void progressSaveRecordToEeprom(s32 record) {
 s32 progressGetBackupRecordIndex(s32); /* extern */
 
 /// Requests a saved progress record from EEPROM into the progress buffer.
-/// \param record Primary EEPROM record index from zero through two, each with a backup record.
+/// \param record Progress record index, one or two, each with a backup record.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80032DC4 (0x80032DC4).
 void progressLoadRecordFromEeprom(s32 record) {
@@ -678,7 +679,6 @@ void progressResetRecordToDefaults(void) {
 }
 
 void progressInitializeEepromRecordLocations(void);
-void progressResetRecordToDefaults(void);
 
 /// Initializes progress storage and prepares a default save record.
 /// \returns Nothing.

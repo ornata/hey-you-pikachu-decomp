@@ -4650,6 +4650,7 @@
         "player_control.h",
         "player_types.h",
         "progress_fields.h",
+        "progress_storage.h",
         "runtime_clock.h",
         "runtime_program.h",
         "scene_types.h",
@@ -4662,13 +4663,13 @@
       "locations": {
         "raw_offset_candidates": {
           "gPikachuActor + 0x54": [
-            "604:31"
+            "605:31"
           ],
           "actorState + 0x1B8": [
-            "605:50"
+            "606:50"
           ],
           "gRuntimePromptPanelLineCount - 1": [
-            "1099:75"
+            "1098:75"
           ]
         }
       }
@@ -4678,6 +4679,7 @@
         "direction_animation.h",
         "eeprom_io.h",
         "progress_fields.h",
+        "progress_storage.h",
         "progress_value.h",
         "vector_direction.h"
       ],
@@ -4685,31 +4687,31 @@
       "locations": {
         "address_globals": {
           "D_8009ADC0": [
-            "26:5"
+            "27:5"
           ]
         },
         "raw_offset_candidates": {
           "pose + 0x10": [
-            "70:34"
+            "71:34"
           ],
           "animation + 0x28": [
-            "187:28"
+            "188:28"
           ],
           "rec + 1": [
-            "226:59"
+            "227:59"
           ],
           "entries + 1": [
-            "270:16"
+            "271:16"
           ],
           "width + 7": [
-            "376:18"
+            "377:18"
           ],
           "bytes - 1": [
-            "377:29"
+            "378:29"
           ],
           "f0 + 31": [
-            "424:53",
-            "468:80"
+            "425:53",
+            "469:80"
           ]
         }
       }
@@ -5322,6 +5324,7 @@
         "camera_overlay.h",
         "hud_draw.h",
         "object_flags.h",
+        "progress_storage.h",
         "runtime_clock.h",
         "text_draw.h",
         "text_image.h",
@@ -5333,25 +5336,25 @@
       "locations": {
         "raw_offset_candidates": {
           "words + 4": [
-            "69:72"
+            "70:72"
           ],
           "words + 8": [
-            "74:44"
+            "75:44"
           ],
           "x - 10": [
-            "253:36"
+            "254:36"
           ],
           "y - 4": [
-            "253:44"
+            "254:44"
           ],
           "maxWidth + 10": [
-            "253:55"
+            "254:55"
           ],
           "x + 16": [
-            "260:17"
+            "261:17"
           ],
           "gCurrentAreaConfiguration + 0x64": [
-            "983:47"
+            "980:47"
           ]
         }
       }
@@ -7587,6 +7590,7 @@
         "player_friendship.h",
         "player_types.h",
         "progress_fields.h",
+        "progress_storage.h",
         "progress_value.h",
         "runtime_clock.h",
         "scene_types.h",
@@ -7600,89 +7604,89 @@
       "locations": {
         "raw_offset_candidates": {
           "depth + 1": [
-            "413:47"
+            "414:47"
           ],
           "row + 1": [
-            "642:14"
+            "643:14"
           ],
           "i - 1": [
-            "648:18"
+            "649:18"
           ],
           "index - 1": [
-            "699:18"
+            "700:18"
           ],
           "count - 1": [
-            "832:51"
+            "833:51"
           ],
           "firstVisibleIndex + 4": [
-            "869:48"
+            "870:48"
           ],
           "selectedIndex - 4": [
-            "870:51"
+            "871:51"
           ],
           "model + 0x18": [
-            "908:125",
-            "938:125"
+            "909:125",
+            "939:125"
           ],
           "model + 0x10": [
-            "909:37",
-            "939:37"
-          ],
-          "gPlayerYaw + 180": [
-            "909:72",
-            "939:72",
-            "976:50"
-          ],
-          "model + 0xC": [
             "910:37",
             "940:37"
           ],
-          "secondary + 0x10": [
+          "gPlayerYaw + 180": [
+            "910:72",
+            "940:72",
+            "977:50"
+          ],
+          "model + 0xC": [
             "911:37",
             "941:37"
           ],
+          "secondary + 0x10": [
+            "912:37",
+            "942:37"
+          ],
           "object + 0x18": [
-            "974:102"
+            "975:102"
           ],
           "object + 0xC": [
-            "975:14",
-            "978:14"
-          ],
-          "object + 0x10": [
             "976:14",
             "979:14"
           ],
+          "object + 0x10": [
+            "977:14",
+            "980:14"
+          ],
           "object + 0x14": [
-            "977:14"
+            "978:14"
           ],
           "gCurrentAreaConfiguration + 0x64": [
-            "1005:47"
+            "1006:47"
           ],
           "y + 3": [
-            "1165:14"
+            "1166:14"
           ],
           "x + 80": [
-            "1166:13"
+            "1167:13"
           ],
           "selected - 2": [
-            "1179:40"
+            "1180:40"
           ],
           "top - 3": [
-            "1179:54"
+            "1180:54"
           ],
           "selected + 2": [
-            "1179:63"
+            "1180:63"
           ],
           "bottom + 3": [
-            "1179:77"
+            "1180:77"
           ],
           "gCurrentAreaConfiguration + 0xC": [
-            "1868:32",
-            "1869:32",
-            "1870:32",
-            "1883:32",
-            "1884:32",
-            "1885:32"
+            "1865:32",
+            "1866:32",
+            "1867:32",
+            "1880:32",
+            "1881:32",
+            "1882:32"
           ]
         }
       }

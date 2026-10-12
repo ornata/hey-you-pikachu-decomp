@@ -2649,3 +2649,17 @@ Provider reads, writes and selector resolution establish the interface types;
 Ghidra 0x80032C44 confirms the resolver-to-store call chain. Each source-unit
 conversion preserves all 483 objects with strict relocation comparison. The
 separate read header keeps the documented toolbox signed-read exception local.
+
+### Progress-record persistence contract
+
+`progress_storage.h` unifies initialization, reset, gameplay restoration and
+EEPROM request declarations across save storage, player profile, runtime, title
+and system menu. Requests require initialized storage and an idle EEPROM
+interface; setup acknowledgment is separate from transfer completion and errors.
+Applying loaded state requires a valid record and a successfully completed read.
+
+The payload-size table distinguishes one-byte control records 0/3 from 0x74-byte
+progress records 1/2 and their backups 4/5. Progress read/write parameters now
+document indices one and two rather than including the control record. Ghidra
+0x80032DC4 confirms the fixed progress payload and backup lookup. Each unit
+retains all 483 allocated objects and strict relocation identities.

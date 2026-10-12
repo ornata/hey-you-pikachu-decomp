@@ -1,3 +1,4 @@
+#include "progress_storage.h"
 #include "progress_fields.h"
 #include "camera_overlay.h"
 #include "graphics_tasks.h"
@@ -630,8 +631,6 @@ void textWindowUpdate();                   /* extern */
 void wholeMapUpdate();                   /* extern */
 void toolboxHandleInput();                   /* extern */
 void toolboxUpdateDisplay();                   /* extern */
-void progressSaveControlDataToEeprom();                   /* extern */
-void progressSaveRecordToEeprom(s32);                /* extern */
 void titleScreenUpdate();                   /* extern */
 void eyeCatchBegin();                   /* extern */
 s32 eyeCatchUpdate();                       /* extern */

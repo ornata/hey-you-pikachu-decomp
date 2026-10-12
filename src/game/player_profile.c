@@ -1,10 +1,10 @@
+#include "progress_storage.h"
 #include "common.h"
 #include "string_bytes.h"
 #include "player_types.h"
 
 void _bzero(void *, s32);                                     /* extern */
 void progressSetChapterAndUnlockMilestones(s32);              /* extern */
-void progressInitializeSaveStorage();                     /* extern */
 /// Current gameplay, menu or transition mode.
 /// \note Original identifier: \c D_800AE504 (0x800AE504).
 extern s32 gRuntimeGameMode;

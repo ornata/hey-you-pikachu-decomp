@@ -1,3 +1,4 @@
+#include "progress_storage.h"
 #include "progress_fields.h"
 #include "progress_value.h"
 #include "matrix_types.h"
@@ -1484,10 +1485,6 @@ void systemMenuAppendSaveStatusDetails(void) {
     systemMenuAppendDetailText((u8 *)buffer);
 }
 
-void progressSaveControlDataToEeprom(void); /* extern */
-void progressLoadControlDataFromEeprom(void); /* extern */
-void progressSaveRecordToEeprom(s32);  /* extern */
-void progressLoadRecordFromEeprom(s32);  /* extern */
 
 /// Request a selected saved-game or control-data transfer to or from EEPROM.
 /// \param operation Zero or one loads saved-game file one or two; two or three saves file one or two; four loads control data and five saves control data. Other values request no transfer.
