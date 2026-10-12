@@ -3,6 +3,7 @@
 #include "backdrop_draw.h"
 #include "system_menu.h"
 #include "common.h"
+#include "runtime_clock.h"
 #include "text_image_create.h"
 #include "audio_cue.h"
 #include "text_draw.h"
@@ -381,7 +382,6 @@ void systemMenuRestoreAudio(void) {
     }
 }
 
-u64 runtimeGetElapsedMilliseconds(void); /* extern */
 /// Owned menu navigation state with borrowed menu-tree links and retained model handles.
 /// \note Original identifier: \c D_801340E8 (0x801340E8).
 extern MenuState gSystemMenuState;

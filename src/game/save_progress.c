@@ -38,7 +38,6 @@ extern s32 gProgressFieldTypes[];
 /// Owned toolbox display state, item rows, placeholders and special storage slots.
 /// \note Original identifier: \c D_800F1BE0 (0x800F1BE0).
 extern s32 gToolboxState;
-s64 runtimeGetElapsedMilliseconds(void);
 
 typedef struct {
     u8 pad0[0x71];

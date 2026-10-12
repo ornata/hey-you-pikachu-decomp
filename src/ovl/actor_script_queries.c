@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "runtime_clock.h"
 #include "object_script_query.h"
 #include "actor_target.h"
 #include "player_control.h"
@@ -11,7 +12,6 @@
 #include "object_types.h"
 
 u8 *itemFindNearest(f32 *, f32, f32, f32, f32, s32, s32, s32, s32); /* extern */
-u64 runtimeGetElapsedMilliseconds(void);                                          /* extern */
 s32 itemCanBePickedUp(u8 *, s32);                                     /* extern */
 
 

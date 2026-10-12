@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "runtime_clock.h"
 #include "area_maze.h"
 #include "actor_parts.h"
 #include "actor_target.h"
@@ -1110,7 +1111,6 @@ s32 actorUpdateDampedVerticalScalePulses(f32 *object) {
     return 0;
 }
 
-s64 runtimeGetElapsedMilliseconds(void);
 
 /// Advance an actor with rhythmic body deformation and slight lateral variation.
 /// \param object Actor currently being updated, with a nonzero base scale.

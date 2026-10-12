@@ -2,6 +2,7 @@
 #include "item_object.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "runtime_clock.h"
 #include "text_image_create.h"
 #include "player_control.h"
 #include "text_draw.h"
@@ -191,7 +192,6 @@ extern s32 gToolboxItemSlots;
 /// Separate view of the Item Storage row beginning at its first kind word.
 /// \note Original identifier: \c D_800F1C58 (0x800F1C58).
 extern s32 gToolboxStorageRow;
-u64 runtimeGetElapsedMilliseconds(void);
 
 /// Provide a toolbox hook that performs no action.
 /// \param unused Unused argument.

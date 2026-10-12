@@ -3,6 +3,7 @@
 #include "hud_draw.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "runtime_clock.h"
 #include "text_image_create.h"
 #include "audio_cue.h"
 #include "text_draw.h"
@@ -172,7 +173,6 @@ extern u32 gTitleIntroductionMilliseconds;
 /// Angular phase controlling the pulsing Start prompt opacity.
 /// \note Original identifier: \c D_800F2564 (0x800F2564).
 extern f32 gTitleStartPromptPhase;
-u64 runtimeGetElapsedMilliseconds(void);
 void textureDrawRectangles(s32, u8 *, Gfx **);
 f32 mathSinDegrees(f32);
 

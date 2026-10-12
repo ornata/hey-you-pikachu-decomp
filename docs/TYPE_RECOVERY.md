@@ -1110,3 +1110,16 @@ the two stored scale values, and drawing consumers establish their float use.
 Initialization and formatting preconditions and the original variadic stack
 layout limitation remain documented at the shared boundary. Header changes and
 each local declaration removal preserve the strict object baseline.
+
+### Runtime clock return contract
+
+runtime_clock.h declares the resettable millisecond and whole-second readings
+as unsigned 64-bit values, matching the runtime's counters. Ghidra at
+0x8000B0FC confirms the paired-word millisecond return. All consumers use the
+canonical declaration, including actor movement and terrain maze callers that
+previously declared signed results. World-map focus transitions no longer pass
+unused target/point arguments to the zero-argument clock getter. Their arguments
+were simple pointer reads with no side effects; removing them preserved strict
+object matching. The unused save-progress declaration was removed. Existing
+32-bit snapshots, explicit truncation and mixed-width elapsed-time arithmetic
+remain unchanged and are not claimed recovered by this interface correction.

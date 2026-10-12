@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "runtime_clock.h"
 #include "text_window_images.h"
 #include "text_image_create.h"
 #include "keyed_pool_types.h"
@@ -13,7 +14,6 @@
 void runtimeRequestGameModeChange(s32);
 void playerSetControllerPort(s32);
 
-u64 runtimeGetElapsedMilliseconds(); /* extern */
 /// Current shared text-window transition state; four is inactive.
 /// \note Original identifier: \c D_800F1AC0 (0x800F1AC0).
 extern s32 gTextWindowState;

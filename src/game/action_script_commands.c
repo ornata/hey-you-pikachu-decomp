@@ -1,6 +1,7 @@
 #include "item_object.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "runtime_clock.h"
 #include "actor_parts.h"
 #include "object_audio.h"
 #include "audio_cue.h"
@@ -338,7 +339,6 @@ extern const f32 gActionLaunchHeadingOffsets[];
 /// Per-mode flags passed to the held-item throw interface.
 /// \note Original identifier: \c D_800A4978 (0x800A4978).
 extern const s32 gActionLaunchThrowFlags[];
-u64 runtimeGetElapsedMilliseconds(void);
 s32 actorGetPartObjectHandle(u8 *, s32);
 u8 *fallingParticleCreate(s32, s32, f32 *, f32 *, f32);
 u8 *linkedEffectCreateChain(s32, f32, f32, f32, f32, s32, f32, f32, f32, f32, f32, s32, s32, s32);

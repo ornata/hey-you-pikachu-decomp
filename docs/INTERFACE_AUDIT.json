@@ -5,7 +5,7 @@
     {
       "code": 712,
       "file": "src/game/collection_presentation.c",
-      "line": 472,
+      "line": 473,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "textDrawBegin(*(s32 *)gdl);"
     },

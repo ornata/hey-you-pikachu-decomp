@@ -2,6 +2,7 @@
 #include "backdrop_draw.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "runtime_clock.h"
 #include "actor_parts.h"
 #include "audio_cue.h"
 #include "actor_target.h"
@@ -25,7 +26,6 @@ typedef struct {
 /// \note Original identifier: \c D_80099DC0 (0x80099DC0).
 extern Row4C gWorldMapDestinations[];
 
-u64 runtimeGetElapsedMilliseconds();
 /// Presentation focus point at the start of the current transition.
 /// \note Original identifier: \c D_800F1BB0 (0x800F1BB0).
 extern Vec3f_ gPresentationFocusStart;
@@ -50,7 +50,7 @@ void presentationSetFocusTarget(Vec3f_ *target) {
     gPresentationFocusTarget.x = target->x;
     gPresentationFocusTarget.y = target->y;
     gPresentationFocusTarget.z = target->z;
-    gPresentationFocusTransitionStartMilliseconds = (u32)runtimeGetElapsedMilliseconds(target);
+    gPresentationFocusTransitionStartMilliseconds = (u32)runtimeGetElapsedMilliseconds();
 }
 
 /// Set the shared presentation focus point immediately.
@@ -67,7 +67,7 @@ void presentationResetFocusPoint(Vec3f_ *point) {
     gPresentationFocusCurrent.x = point->x;
     gPresentationFocusCurrent.y = point->y;
     gPresentationFocusCurrent.z = point->z;
-    gPresentationFocusTransitionStartMilliseconds = (u32)runtimeGetElapsedMilliseconds(point);
+    gPresentationFocusTransitionStartMilliseconds = (u32)runtimeGetElapsedMilliseconds();
 }
 
 s32 vector3InterpolateSmoothTimed(Vec3f_ *, Vec3f_ *, Vec3f_ *, f32, f32); /* extern */

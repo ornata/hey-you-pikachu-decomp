@@ -1,6 +1,7 @@
 #include "keyed_pool.h"
 #include "heap_free.h"
 #include "common.h"
+#include "runtime_clock.h"
 #include "matrix_types.h"
 #include "object_audio.h"
 #include "integer_animation.h"
@@ -1130,7 +1131,6 @@ void objectInitializeTextureMotion(u8 *object) {
     *(TextureMotion **)(object + 0x54) = extent;
 }
 
-u64 runtimeGetElapsedMilliseconds(void);
 s32 objectApplySceneEnvironmentColorForDraw(u8 *);
 
 

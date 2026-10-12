@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "runtime_clock.h"
 #include "text_window_images.h"
 #include "text_image_create.h"
 #include "text_draw.h"
@@ -117,7 +118,6 @@ s32 textWindowPopPage(void) {
     return gTextWindowPageHistory[gTextWindowHistoryWriteIndex];
 }
 
-u64 runtimeGetElapsedMilliseconds(); /* extern */
 /// Elapsed-time checkpoint recorded when the text-window state changes.
 /// \note Original identifier: \c D_800F1AC4 (0x800F1AC4).
 extern u32 gTextWindowStateStartMilliseconds;

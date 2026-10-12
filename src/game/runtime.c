@@ -2,6 +2,7 @@
 #include "scheduler.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "runtime_clock.h"
 #include "motion_cache.h"
 #include "audio_cue.h"
 #include "player_control.h"
@@ -228,7 +229,6 @@ void actionScriptInitializeHook();        /* extern */
 void hudInitialize();        /* extern */
 void randomSeedFromSystem();        /* extern */
 s32 progressAddValue(s32, s32);
-u64 runtimeGetElapsedMilliseconds(void);
 void runtimeAccumulatePlayTime(void);
 void runtimeShutdownAndHalt(void);
 void runtimeRequestGameModeChange(s32);

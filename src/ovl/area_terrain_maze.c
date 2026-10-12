@@ -1,6 +1,7 @@
 #include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "runtime_clock.h"
 #include "heap_diagnostics.h"
 #include "item_spawn.h"
 #include "heap_alloc.h"
@@ -338,7 +339,6 @@ s32 integerPower(s32 base, s32 exp) {
     return result;
 }
 
-s64 runtimeGetElapsedMilliseconds(void);
 u8 *areaFindPositionNode(f32, f32, f32);
 /// Dispatch a position-based area event, suppressing repeat events within the same node for one second.
 /// \param position Readable world event position in X, Y, Z order; borrowed by the callback during this call.

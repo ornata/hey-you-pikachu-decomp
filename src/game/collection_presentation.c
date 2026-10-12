@@ -1,5 +1,6 @@
 #include "backdrop_draw.h"
 #include "common.h"
+#include "runtime_clock.h"
 #include "text_image_create.h"
 
 #include "string_bytes.h"
@@ -547,7 +548,6 @@ void cameraBuildInterfaceTransform(void *);
 void cameraResetOverlayColor(s32, s32, s32, s32, s32);
 void cameraFadePrimarySecondaryOverlay(s32, s32, s32, s32, f32);
 void controllerRequestRumbleReset(s32);
-u64 runtimeGetElapsedMilliseconds(void);
 void runtimeRequestGameModeChange(s32);
 s32 actionScriptIsStopped(s32);
 void hudSetAreaLabelVisible(s32);
@@ -1102,7 +1102,6 @@ void presentationShowChapterFriendshipResult(void) {
     gPlayerFriendshipMilestone = -1;
 }
 
-u64 runtimeGetElapsedMilliseconds();
 void runtimeRequestProgramChange(s32);
 void audioStopCategories(s32, f64);
 void areaSetNextDestination(s32, s32);
