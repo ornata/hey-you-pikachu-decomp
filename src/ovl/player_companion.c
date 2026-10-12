@@ -1,3 +1,4 @@
+#include "actor_behavior.h"
 #include "item_participation.h"
 #include "item_queries.h"
 #include "item_mode.h"
@@ -988,7 +989,7 @@ s32 playerRequestTargetCooperation(u8 *player) {
     kind = ((RuntimeObjectPrefix *)obj)->kind;
     if (kind == 0x10) {
         state = ((RuntimeObjectPrefix *)obj)->state.bytes;
-        if (!(((ActorScriptState *)state)->behaviorInhibitFlags & 0x10)) {
+        if (!(((ActorScriptState *)state)->behaviorInhibitFlags & ACTOR_BEHAVIOR_COOPERATION_ENABLED)) {
             return 0;
         }
         TRACE("coop - model:%p(%s)\n", obj, actorConfigGetDisplayName(kind, 1));

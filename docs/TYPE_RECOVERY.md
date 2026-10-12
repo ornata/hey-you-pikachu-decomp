@@ -3074,3 +3074,14 @@ remain unsigned halfwords. Ghidra 0x80017190 confirms the flag update at
 actor-state offset 0x1E8. Setter/clearer providers use the shared field and
 presentation/map callers share canonical declarations. Each changed unit
 preserves all strict object bytes and relocations.
+
+### Positive actor behavior controls
+
+The shared behavior enum also names cooperation enablement for actor kind
+sixteen and preservation of appearance variants across action changes.
+The former is written by object activation and checked by cooperation
+requests; the latter is written by appearance selection and checked before
+action-start appearance reset. Ghidra 0x80119210 confirms the preservation
+bit update. The enum description distinguishes these positive settings from
+inhibition bits without changing the stored halfword or legacy field name.
+All producers and consumers preserve strict object bytes and relocations.

@@ -1,18 +1,20 @@
 /// \file
-/// Declares selective actor behavior inhibition and the established flag meanings.
+/// Declares actor behavior flags and operations for enabling or clearing them.
 
 #ifndef ACTOR_BEHAVIOR_H
 #define ACTOR_BEHAVIOR_H
 
 #include "ultra64.h"
 
-/// Independently suppressible actor behaviors; other bits retain unresolved roles.
-typedef enum ActorBehaviorInhibitFlag {
-    ACTOR_INHIBIT_TARGET_FACING = 1,       ///< Suppress child orientation toward the actor target.
-    ACTOR_INHIBIT_CAMERA_FACING = 2,       ///< Suppress child orientation toward the active camera.
-    ACTOR_INHIBIT_HORIZONTAL_MOVEMENT = 4, ///< Clear horizontal displacement during terrain updates.
-    ACTOR_INHIBIT_TERRAIN_AND_GRAVITY = 8  ///< Bypass terrain constraints and gravity updates.
-} ActorBehaviorInhibitFlag;
+/// Established actor behavior controls; positive settings and inhibition bits share this word.
+typedef enum ActorBehaviorFlag {
+    ACTOR_INHIBIT_TARGET_FACING = 1,           ///< Suppress child orientation toward the actor target.
+    ACTOR_INHIBIT_CAMERA_FACING = 2,           ///< Suppress child orientation toward the active camera.
+    ACTOR_INHIBIT_HORIZONTAL_MOVEMENT = 4,     ///< Clear horizontal displacement during terrain updates.
+    ACTOR_INHIBIT_TERRAIN_AND_GRAVITY = 8,     ///< Bypass terrain constraints and gravity updates.
+    ACTOR_BEHAVIOR_COOPERATION_ENABLED = 0x10, ///< Permit cooperation requests for actor kind sixteen.
+    ACTOR_BEHAVIOR_PRESERVE_APPEARANCE = 0x40  ///< Retain selected appearance variants across action changes.
+} ActorBehaviorFlag;
 
 /// Enable actor behavior inhibition flags.
 /// \param actor Actor whose behavior inhibition flags are changed.

@@ -1,3 +1,4 @@
+#include "actor_behavior.h"
 #include "matrix_orientation.h"
 #include "animation_tracks.h"
 #include "motion_playback.h"
@@ -429,7 +430,7 @@ void actionStartPlayback(u8 *object) {
                           (1.2f < ((ActorScriptState *)v)->primaryCueClock && !(((ActorScriptState *)v)->actionAttributes & 8)))) {
             TRACE("lastAfcKey:%p\n    afcKey:%p\n", ((ActorScriptState *)v)->lastPrimaryCueProgram, anim);
             if (*(u16 *)(object + 0x34) == 0x25) {
-                if (!(((ActorScriptState *)v)->behaviorInhibitFlags & 0x40)) {
+                if (!(((ActorScriptState *)v)->behaviorInhibitFlags & ACTOR_BEHAVIOR_PRESERVE_APPEARANCE)) {
                     actorAppearanceReset(object);
                 }
                 actorResetPartTint(object);
