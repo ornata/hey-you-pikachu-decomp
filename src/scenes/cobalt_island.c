@@ -1,3 +1,4 @@
+#include "landmark.h"
 #include "common.h"
 #include "item_object.h"
 #include "actor_create.h"
@@ -93,7 +94,6 @@ void cobaltIslandCreateAmbientAudio(void) {
                   (s32)D_80150D80_scene_cobalt_island);
 }
 
-u8 *landmarkCreate(f32, f32, f32, s32);
 extern f32 D_80134A34_scene_cobalt_island[][3];
 extern u8 D_8014E12C_scene_cobalt_island[];
 typedef struct {

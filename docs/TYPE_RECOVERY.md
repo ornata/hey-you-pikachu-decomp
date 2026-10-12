@@ -1560,3 +1560,13 @@ Ghidra 0x8003CE24 confirms writable command storage and a retained command curso
 Playground and entryway creation pass their declared byte-array script addresses
 directly to the canonical actor creation interface. Each source-unit change
 preserves all 483 objects, including strict relocation addends.
+
+### Landmark creation and description contracts
+
+`landmark.h` gives the provider and seven callers one creation return type and
+shared description lifetime contract. Scene callers previously disagreed between
+void and object-pointer returns. Creation now uses the checked runtime-object
+prefix for scale, local/world positions and kind. Ghidra 0x8001F110 confirms these
+offsets, hierarchy creation and active registration; its inferred floating-point
+argument list is not authoritative. Each changed unit preserves all 483 objects
+and strict relocation addends. Description storage remains borrowed and shared.

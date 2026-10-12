@@ -1,6 +1,7 @@
+#include "landmark.h"
+#include "object_types.h"
 #include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
-/* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 
 /* Debug trace: compiled out in this build, but each format string is still
@@ -12,7 +13,6 @@
 /// Hierarchy template used to create selectable landmarks.
 /// \note Original identifier: \c D_80088E20 (0x80088E20).
 extern u8 gLandmarkObjectTemplate[];
-u8 *landmarkCreate(f32, f32, f32, s32);
 
 /// Create and activate a landmark at a world position.
 /// \param x World-space horizontal coordinate.
@@ -27,16 +27,16 @@ u8 *landmarkCreate(f32 x, f32 y, f32 z, s32 landmarkId) {
 
     obj = objectCreateHierarchyFromTemplate((ObjectTemplate *)gLandmarkObjectTemplate);
     s = 0.1f;
-    *(f32 *)(obj + 8) = s;
-    *(f32 *)(obj + 4) = s;
-    *(f32 *)(obj + 0) = s;
-    *(f32 *)(obj + 0x18) = x;
-    *(f32 *)(obj + 0x44) = x;
-    *(f32 *)(obj + 0x1C) = y;
-    *(f32 *)(obj + 0x48) = y;
-    *(f32 *)(obj + 0x20) = z;
-    *(f32 *)(obj + 0x4C) = z;
-    *(s16 *)(obj + 0x34) = landmarkId;
+    ((RuntimeObjectPrefix *)obj)->scale[2] = s;
+    ((RuntimeObjectPrefix *)obj)->scale[1] = s;
+    ((RuntimeObjectPrefix *)obj)->scale[0] = s;
+    ((RuntimeObjectPrefix *)obj)->position[0] = x;
+    ((RuntimeObjectPrefix *)obj)->worldPosition[0] = x;
+    ((RuntimeObjectPrefix *)obj)->position[1] = y;
+    ((RuntimeObjectPrefix *)obj)->worldPosition[1] = y;
+    ((RuntimeObjectPrefix *)obj)->position[2] = z;
+    ((RuntimeObjectPrefix *)obj)->worldPosition[2] = z;
+    ((RuntimeObjectPrefix *)obj)->kind = landmarkId;
     objectRegisterActiveHierarchy(obj);
     TRACE("landMarkNew(%f,%f,%f)\n", x, y, z);
     return obj;

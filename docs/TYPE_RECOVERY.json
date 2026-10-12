@@ -51,9 +51,9 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 3670,
+      "occurrences": 3660,
       "unique_spellings": 1358,
-      "files": 81
+      "files": 80
     }
   },
   "policies": {
@@ -3466,47 +3466,6 @@
           ],
           "nextId + 1": [
             "228:30"
-          ]
-        }
-      }
-    },
-    "src/game/landmark.c": {
-      "known_views": [
-        "object_hierarchy_create.h",
-        "object_lifecycle.h"
-      ],
-      "matching_exceptions": {},
-      "locations": {
-        "raw_offset_candidates": {
-          "obj + 8": [
-            "30:14"
-          ],
-          "obj + 4": [
-            "31:14"
-          ],
-          "obj + 0": [
-            "32:14"
-          ],
-          "obj + 0x18": [
-            "33:14"
-          ],
-          "obj + 0x44": [
-            "34:14"
-          ],
-          "obj + 0x1C": [
-            "35:14"
-          ],
-          "obj + 0x48": [
-            "36:14"
-          ],
-          "obj + 0x20": [
-            "37:14"
-          ],
-          "obj + 0x4C": [
-            "38:14"
-          ],
-          "obj + 0x34": [
-            "39:14"
           ]
         }
       }
@@ -8284,6 +8243,7 @@
         "heap_alloc.h",
         "item_text.h",
         "item_types.h",
+        "landmark.h",
         "object_hierarchy_create.h",
         "object_lifecycle.h",
         "object_lookup.h",
@@ -8303,35 +8263,35 @@
       "locations": {
         "raw_offset_candidates": {
           "gRuntimeFrameSeconds + 8": [
-            "369:35"
+            "370:35"
           ],
           "normal + 2": [
-            "627:80"
+            "628:80"
           ],
           "currentGround + 0": [
-            "655:38"
+            "656:38"
           ],
           "dy + 0": [
-            "663:64",
-            "683:86"
+            "664:64",
+            "684:86"
           ],
           "nextX + 0": [
-            "666:79",
-            "672:79"
+            "667:79",
+            "673:79"
           ],
           "nextZ + 0": [
-            "669:93",
-            "672:100"
+            "670:93",
+            "673:100"
           ],
           "nextGround + 0": [
-            "676:22"
+            "677:22"
           ],
           "player + 0x84": [
-            "775:46",
+            "776:46",
             "1857:45"
           ],
           "object + 0x54": [
-            "778:22",
+            "779:22",
             "1858:31",
             "1873:26",
             "1895:26",
@@ -8339,52 +8299,52 @@
             "2764:22"
           ],
           "player + 0x18": [
-            "779:20"
+            "780:20"
           ],
           "player + 0xC": [
-            "779:46"
+            "780:46"
           ],
           "player + 0x10": [
-            "780:22",
-            "782:22"
+            "781:22",
+            "783:22"
           ],
           "player + 0x14": [
-            "780:48",
-            "782:48"
+            "781:48",
+            "783:48"
           ],
           "player + 0x1C": [
-            "785:26"
-          ],
-          "player + 4": [
-            "785:52"
-          ],
-          "player + 8": [
             "786:26"
           ],
+          "player + 4": [
+            "786:52"
+          ],
+          "player + 8": [
+            "787:26"
+          ],
           "object + 0x38": [
-            "790:24",
-            "794:25",
+            "791:24",
+            "795:25",
             "1854:40",
             "1857:18"
           ],
           "object + 0x18": [
-            "790:56"
+            "791:56"
           ],
           "state + 4": [
-            "792:94",
+            "793:94",
             "1900:30",
             "2136:18"
           ],
           "gPlayerCompanionTarget - 0x50": [
-            "1043:36"
+            "1044:36"
           ],
           "gPlayerControllerPort - 0x2C": [
-            "1060:37",
-            "1061:37"
+            "1061:37",
+            "1062:37"
           ],
           "gPlayerHelpTextCursor + 1": [
-            "1456:46",
-            "1460:46"
+            "1457:46",
+            "1461:46"
           ],
           "player + 0xAC": [
             "1822:35"
@@ -8790,15 +8750,16 @@
       "known_views": [
         "actor_create.h",
         "area_maze.h",
-        "item_object.h"
+        "item_object.h",
+        "landmark.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "gCurrentAreaConfiguration + 0xC": [
-            "38:33",
-            "46:75",
-            "57:33",
+            "39:33",
+            "47:75",
+            "58:33",
             "123:77"
           ]
         }
@@ -8884,6 +8845,7 @@
       "known_views": [
         "actor_create.h",
         "item_object.h",
+        "landmark.h",
         "object_lifecycle.h"
       ],
       "matching_exceptions": {},
@@ -8907,6 +8869,7 @@
       "known_views": [
         "actor_create.h",
         "item_object.h",
+        "landmark.h",
         "object_lifecycle.h",
         "scene_types.h"
       ],
@@ -8932,20 +8895,21 @@
         "actor_create.h",
         "door.h",
         "item_object.h",
+        "landmark.h",
         "object_lifecycle.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "residentIndex + 0x70": [
-            "38:30"
+            "39:30"
           ],
           "state - 2": [
-            "60:50"
+            "61:50"
           ],
           "i + 0x70": [
-            "98:30",
-            "103:30",
+            "99:30",
+            "104:30",
             "168:30"
           ]
         }
@@ -8955,25 +8919,26 @@
       "known_views": [
         "actor_create.h",
         "item_object.h",
+        "landmark.h",
         "scene_types.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "index + 0x77": [
-            "49:31"
+            "50:31"
           ],
           "index + 0x7C": [
-            "50:30"
+            "51:30"
           ],
           "index + 5": [
-            "51:19"
+            "52:19"
           ],
           "index + 0x81": [
-            "52:31"
+            "53:31"
           ],
           "angle + 180": [
-            "61:102"
+            "62:102"
           ]
         }
       }

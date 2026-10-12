@@ -1,3 +1,4 @@
+#include "landmark.h"
 #include "cave.h"
 #include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
@@ -1464,7 +1465,6 @@ s32 playerShowNextHelpLine(void) {
     return 0;
 }
 
-s8 *landmarkGetCannonDescription(s32);
 void playerSetInteractionHelpText(u8 *);
 /* Item records are 0x74 bytes; the class byte is at +1. */
 /// Separate classification-byte view of the item catalog, with a 116-byte stride.

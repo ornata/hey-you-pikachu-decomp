@@ -1,3 +1,4 @@
+#include "landmark.h"
 #include "item_object.h"
 #include "common.h"
 #include "actor_create.h"
@@ -73,7 +74,6 @@ void viridianDeepSpawnResidentGroup(Position *position, s32 index) {
     }
 }
 
-void landmarkCreate(f32, f32, f32, s32);
 void mazeScatterItems(u8 *, s32, u8 *, f32);
 void viridianDeepSpawnResidentGroup(Position *, s32);
 extern u8 D_80149888_scene_viridian_deep[], D_8014993C_scene_viridian_deep[], D_80149DB8_scene_viridian_deep[];

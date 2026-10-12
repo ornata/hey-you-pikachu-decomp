@@ -1,3 +1,4 @@
+#include "landmark.h"
 #include "object_lifecycle.h"
 #include "door.h"
 #include "common.h"
@@ -107,7 +108,6 @@ void springleafFieldResetCompletedGrowth(void) {
 s32 randomBelow(s32);
 void runtimeCheckResetCheckpoint(u8 *, s32);
 void mazeScatterItems(u8 *, s32, u8 *, f32);
-void landmarkCreate(f32, f32, f32, s32);
 typedef struct {
     s32 used[27];
 } FieldOccupancy;
