@@ -1,3 +1,4 @@
+#include "action_query.h"
 #include "object_bounds.h"
 #include "object_matrix_buffers.h"
 #include "object_movement.h"
@@ -788,7 +789,6 @@ void messengerDeliver(u8 *object, u8 *source, u8 *target, s32 mode) {
     gTrackedMessengerHandle = 0;
 }
 
-s32 actionGetAttributes(u8 *);
 f32 vector3Length(u8 *);
 f32 vector3Normalize(u8 *);
 f32 mathMapRangeClamped(f32, f32, f32, f32, f32);

@@ -1,3 +1,4 @@
+#include "action_query.h"
 #include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -595,7 +596,6 @@ void actorStartPartShake(s32 actor, s32 part) {
         (f32)((((f64)randomNext() * 2.3283064365386963e-10 * 0.5) + 0.5) * gActorPartShakeMaximumSeconds);
 }
 
-s32 actionGetAttributes(u8 *);
 void actorUpdateScriptVm(u8 *);
 void actorUpdateModel(u8 *);
 void actorUpdatePartShake(u8 *);

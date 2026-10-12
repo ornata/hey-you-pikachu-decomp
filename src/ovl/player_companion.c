@@ -1,3 +1,4 @@
+#include "action_query.h"
 #include "landmark.h"
 #include "cave.h"
 #include "object_hierarchy_create.h"
@@ -2746,7 +2747,6 @@ void pikachuSpawnForArea(void) {
         ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale, (u8 *)kind, 0);
 }
 
-s32 actionGetAttributes(u8 *); /* extern */
 
 /// Constrain a requested actor heading according to the active action facing restrictions.
 /// \param object Live actor with initialized action state and facing restrictions.

@@ -1,3 +1,4 @@
+#include "action_query.h"
 #include "interaction.h"
 #include "object_target_search.h"
 #include "path_query.h"
@@ -771,7 +772,6 @@ f32 voiceReactiveSpinnerGetSpeedByHandle(s32 handle) {
     return 0.0f;
 }
 
-s32 actionGetAttributes(u8 *); /* extern */
 
 
 /// Get the compact action status exposed to actor scripts for a creature.

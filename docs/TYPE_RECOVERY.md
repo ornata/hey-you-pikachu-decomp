@@ -1801,3 +1801,13 @@ The provider uses the shared object state pointer. Replacing its shifted scalar
 views with direct `ActorScriptState.orientation` accesses changes generated code;
 those views remain a matching exception pending IDO allocation evidence. Each
 accepted source-unit change preserves all 483 objects and strict relocations.
+
+### Shared action-state query contracts
+
+`action_query.h` consolidates current-action attributes and movement-scale
+queries across the provider and five callers. It requires initialized live actor
+state and documents inactive-playback defaults (0x20100400 and one). Ghidra
+0x8000F594 confirms the playback-mode test and retained action-attribute field.
+The permission masks at consumers retain numeric forms until each meaning has
+producer/consumer evidence. All six source units preserve all 483 objects and
+strict relocation addends.

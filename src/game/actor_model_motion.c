@@ -1,3 +1,4 @@
+#include "action_query.h"
 #include "actor_rotation.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -396,7 +397,6 @@ void actorUpdateObjectRotationFromState(u8 *);
 s32 actionScriptUpdate(u8 *);
 void actionUpdatePlayback(u8 *);
 void actorUpdateTrackedSoundSpatialization(u8 *, s32 *);
-s32 actionGetAttributes(u8 *);
 void actorUpdateGroundSlopePitch(u8 *);
 void objectUpdateHierarchyInteractionVisibility(u8 *);
 s32 collisionGridRegisterObject(u8 *);
@@ -1299,7 +1299,6 @@ void actorUpdateGroundReferencePose(u8 *actor, u8 *reference, u8 *pose) {
 /// Borrowed reference to the active Pikachu actor created for the current area.
 /// \note Original identifier: \c D_800760A8 (0x800760A8).
 extern u8 *gPikachuActor;
-f32 actionGetMovementScale(u8 *);
 s32 areaIsPositionOutsideBounds(f32, f32, f32);
 s32 terrainGetSurfaceAttributes(f32, f32, f32, u8 **);
 s32 terrainConstrainMovement(s32, f32, f32, f32, f32, f32, f32, f32 *, f32 *, f32 *, u8 **);

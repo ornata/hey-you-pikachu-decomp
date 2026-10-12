@@ -1,3 +1,4 @@
+#include "action_query.h"
 #include "actor_rotation.h"
 #include "object_movement.h"
 /* harvested: matched m2c drafts; pending style pass */
