@@ -409,26 +409,26 @@ void objectUpdateHierarchyInteractionVisibility(u8 *);
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80015488 (0x80015488).
 void actorUpdateModel(u8 *actor) {
-    u8 *obj;
+    u8 *actorState;
 
-    obj = *(u8 **)(actor + 0x54);
-    collisionGridUnregisterObject(actor, &((ActorScriptState *)obj)->collisionRegistration);
+    actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    collisionGridUnregisterObject(actor, &((ActorScriptState *)actorState)->collisionRegistration);
     actionScriptUpdate(actor);
     actionUpdatePlayback(actor);
-    actorUpdateTrackedSoundSpatialization(((RuntimeObjectPrefix *)actor)->worldPosition, ((ActorScriptState *)obj)->soundHandles);
-    if (!(actionGetAttributes(actor) & 0x20000000) && !(*(u16 *)(obj + 0x1E8) & 8)) {
+    actorUpdateTrackedSoundSpatialization(((RuntimeObjectPrefix *)actor)->worldPosition, ((ActorScriptState *)actorState)->soundHandles);
+    if (!(actionGetAttributes(actor) & 0x20000000) && !(*(u16 *)(actorState + 0x1E8) & 8)) {
         actorUpdateGroundSlopePitch(actor);
     }
     actorUpdateObjectRotationFromState(actor);
     actorRefreshTrackingTargetPosition(actor);
-    if ((gRuntimeCurrentProgram == 0) && !(*(u16 *)(obj + 0x1E8) & 0x20)) {
+    if ((gRuntimeCurrentProgram == 0) && !(*(u16 *)(actorState + 0x1E8) & 0x20)) {
         objectUpdateHierarchyInteractionVisibility(actor);
     }
-    ((ActorScriptState *)obj)->collisionRegistration = collisionGridRegisterObject(actor);
-    directionAnimationUpdate((u8 *)&((ActorScriptState *)obj)->directionAnimation);
-    colorAdvanceTransition(((ActorScriptState *)obj)->environmentColor, ((ActorScriptState *)obj)->targetEnvironmentColor,
-                           &((ActorScriptState *)obj)->environmentColorTimeRemaining);
-    actorPrepareModelLightingDrawList(actor, (ActorScriptState *)obj, ((*(u16 *)(actor + 0x36) & 0x8000) ? 1 : 0) ^ 1);
+    ((ActorScriptState *)actorState)->collisionRegistration = collisionGridRegisterObject(actor);
+    directionAnimationUpdate((u8 *)&((ActorScriptState *)actorState)->directionAnimation);
+    colorAdvanceTransition(((ActorScriptState *)actorState)->environmentColor, ((ActorScriptState *)actorState)->targetEnvironmentColor,
+                           &((ActorScriptState *)actorState)->environmentColorTimeRemaining);
+    actorPrepareModelLightingDrawList(actor, (ActorScriptState *)actorState, ((*(u16 *)(actor + 0x36) & 0x8000) ? 1 : 0) ^ 1);
 }
 
 /// Request a timed transition to a new actor model environment color.
@@ -620,7 +620,7 @@ extern u8 gActorCameraFacingDirectionTransform[];
 
 
 /// Update child animation and blend its orientation toward the active camera when tracking is enabled.
-/// \param object Child object with initialized camera-facing state and a valid parent.
+/// \param object Child object with initialized camera-facing state and a valid actor hierarchy root.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80015AE8 (0x80015AE8).
 void actorUpdateCameraFacingChild(u8 *object) {
@@ -636,12 +636,12 @@ void actorUpdateCameraFacingChild(u8 *object) {
     f32 x;
     f32 *weight;
 
-    state = *(u16 **)(object + 0x54);
+    state = (u16 *)((RuntimeObjectPrefix *)object)->state.bytes;
     orientation = ((ChildMotionState *)state)->facingController;
     motionUpdateChildPlayback(object);
     weight = &orientation->weight;
-    if ((actionGetAttributes(*(u8 **)(object + 0x50)) & 0x800000) &&
-        !(*(u16 *)(*(u8 **)(*(u8 **)(object + 0x50) + 0x54) + 0x1E8) & 2)) {
+    if ((actionGetAttributes(((RuntimeObjectPrefix *)object)->root.bytes) & 0x800000) &&
+        !(((RuntimeObjectPrefix *)object)->root.object->state.actor->behaviorInhibitFlags & 2)) {
         *weight += 2.0f * gRuntimeFrameSeconds;
         if (*weight > maxWeight) {
             *weight = maxWeight;
@@ -652,15 +652,16 @@ void actorUpdateCameraFacingChild(u8 *object) {
             *weight = 0.0f;
         }
     }
-    if (*state == 1 || *state == 3) {
-        orientation->angles[0] = *(f32 *)(object + 0xC);
-        orientation->angles[1] = *(f32 *)(object + 0x10);
-        orientation->angles[2] = *(f32 *)(object + 0x14);
+    if ((u16)((ChildMotionState *)state)->playbackMode == MOTION_PLAYBACK_TRACKS ||
+        (u16)((ChildMotionState *)state)->playbackMode == MOTION_PLAYBACK_POSE_BLEND) {
+        orientation->angles[0] = ((RuntimeObjectPrefix *)object)->rotation[0];
+        orientation->angles[1] = ((RuntimeObjectPrefix *)object)->rotation[1];
+        orientation->angles[2] = ((RuntimeObjectPrefix *)object)->rotation[2];
     }
     if (*weight > 0.0f) {
-        direction.x = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[0] - *(f32 *)(object + 0x44);
-        direction.y = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[1] - *(f32 *)(object + 0x48);
-        direction.z = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[2] - *(f32 *)(object + 0x4C);
+        direction.x = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[0] - ((RuntimeObjectPrefix *)object)->worldPosition[0];
+        direction.y = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[1] - ((RuntimeObjectPrefix *)object)->worldPosition[1];
+        direction.z = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[2] - ((RuntimeObjectPrefix *)object)->worldPosition[2];
         matrix34TransformPointVector((f32 *)gActorCameraFacingDirectionTransform, &direction.x, &direction.x);
         do {
             matrix = gObjectTraversalTransform;
@@ -698,9 +699,9 @@ void actorUpdateCameraFacingChild(u8 *object) {
             }
         }
         vector3GetEulerDegrees(&direction.x, &pitch, &yaw, &roll);
-        *(f32 *)(object + 0xC) = -180.0f;
-        *(f32 *)(object + 0x10) = yaw;
-        *(f32 *)(object + 0x14) = roll;
+        ((RuntimeObjectPrefix *)object)->rotation[0] = -180.0f;
+        ((RuntimeObjectPrefix *)object)->rotation[1] = yaw;
+        ((RuntimeObjectPrefix *)object)->rotation[2] = roll;
     }
 }
 
@@ -720,12 +721,12 @@ s32 actorBindReferencedObjectMatrixForDraw(u8 *actor) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80015EB8 (0x80015EB8).
 void actorUpdateObjectRotationFromState(u8 *actor) {
-    u8 *obj;
-    f32 sp1C[12];
-    obj = *(u8 **)(actor + 0x54);
-    matrix34MakeRotationXYZDegrees(sp1C, *(f32 *)(obj + 0xC), *(f32 *)(obj + 0x10), 0.0f);
-    matrix33Multiply((f32 *)(obj + 0x18), sp1C, sp1C);
-    matrix33GetFoldedEulerDegrees(sp1C, (f32 *)(actor + 0xC), (f32 *)(actor + 0x10), (f32 *)(actor + 0x14));
+    u8 *actorState;
+    f32 rotationMatrix[12];
+    actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    matrix34MakeRotationXYZDegrees(rotationMatrix, ((ActorScriptState *)actorState)->orientation[0], ((ActorScriptState *)actorState)->orientation[1], 0.0f);
+    matrix33Multiply(&((ActorScriptState *)actorState)->rootMotionTransform.m[0][0], rotationMatrix, rotationMatrix);
+    matrix33GetFoldedEulerDegrees(rotationMatrix, &((RuntimeObjectPrefix *)actor)->rotation[0], &((RuntimeObjectPrefix *)actor)->rotation[1], &((RuntimeObjectPrefix *)actor)->rotation[2]);
 }
 
 /// Set one actor orientation angle in degrees.

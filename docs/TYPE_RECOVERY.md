@@ -3004,3 +3004,14 @@ than assuming an immediate parent. The target-facing update names the child
 playback-mode field and existing mode constants, retaining its unsigned
 halfword interpretation. The target local is descriptive. Both isolated
 field and mode conversions preserve all strict object bytes and relocations.
+
+### Camera-facing and actor orientation fields
+
+Camera-facing child updates now name the hierarchy root, actor inhibit flags,
+child playback mode, world position and rotation. Ghidra 0x80015AE8 confirms
+the root actor's camera-facing attribute and inhibit test, active-camera eye
+coordinates and child mode selection. The unsigned mode interpretation and
+original arithmetic remain intact. The adjacent actor orientation helper
+uses actor orientation, root-motion transform and object rotation members,
+with descriptive state/matrix locals. Every conversion preserves strict
+allocated bytes and relocations without a new matching exception.
