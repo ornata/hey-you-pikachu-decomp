@@ -19,7 +19,7 @@
 /// \note Original decompilation identifier: \c func_801217C0 (0x801217C0).
 void itemBeginShrinkingDisposal(u8 *object) {
     itemPlayTrackedSound(object, (ItemStatePrefix *)((RuntimeObjectPrefix *)object)->state.bytes, 0xB7);
-    itemSetMode(object, 6);
+    itemSetMode(object, ITEM_MODE_SHRINKING_DISPOSAL);
 }
 
 f32 vector3Normalize(u8 *); /* extern */
@@ -469,7 +469,7 @@ void itemUpdateGroundAndAirMotion(u8 *object) {
                               ((RuntimeObjectPrefix *)object)->position[2]);
                 return;
             }
-            itemSetMode(object, 2);
+            itemSetMode(object, ITEM_MODE_STATIONARY);
         }
         if (flags & 0x10) {
             ((ItemStatePrefix *)state)->flags &= 0xF2FFFFFF;
@@ -497,7 +497,7 @@ void itemUpdateDriftingFlight(u8 *object) {
     node = NULL;
     *(f32 *)(state + 0x30) += gRuntimeFrameSeconds;
     if (*(f32 *)(state + 0x30) > 10.0f) {
-        itemSetMode(object, 6);
+        itemSetMode(object, ITEM_MODE_SHRINKING_DISPOSAL);
         return;
     }
     wave = 2.0f * mathCosDegrees(*(f32 *)(state + 0x30) * 120.0f);
@@ -510,7 +510,7 @@ void itemUpdateDriftingFlight(u8 *object) {
                       diameter, radius, &dx, &dy, &dz, &node) &
         0x12) {
         itemPlayTrackedSound(object, (ItemStatePrefix *)state, 0xBD);
-        itemSetMode(object, 6);
+        itemSetMode(object, ITEM_MODE_SHRINKING_DISPOSAL);
         return;
     }
     *(f32 *)(object + 0x18) += dx;
@@ -666,16 +666,12 @@ void itemUpdateActorHeld(u8 *object) {
         pinataUpdateWriggle(object);
 }
 
-typedef struct {
-    f32 scale[3];
-    f32 rotation[3];
-} ShrinkTransform22ED8;
 /// Animate an item shrinking away and remove it when finished.
 /// \param object Item being disposed of.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80122ED8 (0x80122ED8).
 void itemUpdateShrinkingDisposal(u8 *object) {
-    ShrinkTransform22ED8 *transform = (ShrinkTransform22ED8 *)object;
+    RuntimeObjectPrefix *transform = (RuntimeObjectPrefix *)object;
     u8 *state;
     f32 value;
     transform->scale[0] -= gRuntimeFrameSeconds * 0.01f;
@@ -706,7 +702,7 @@ void itemUpdateShrinkingDisposal(u8 *object) {
 /// \param unused Unused item callback argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80122FF8 (0x80122FF8).
-void itemUpdateStationaryMode(s32 unused) {
+void itemUpdateStationaryMode(u8 *unused) {
 }
 
 void itemSetScale(u8 *arg0, f32 arg1); /* extern */

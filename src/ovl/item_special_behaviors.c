@@ -153,12 +153,6 @@ void itemInitializeFlightSpin(u8 *object) {
     ((ItemStatePrefix *)objectState)->rotationVelocityY = 600.0f;
 }
 
-typedef void (*ModeFn)(u8 *);
-
-/// Item behavior update callbacks indexed by the current item mode.
-/// \note Original identifier: \c D_8012B950 (0x8012B950).
-extern ModeFn gItemModeUpdateHandlers[];
-
 /// Advance the item current behavior and apply its orientation rules.
 /// \param object Item to update.
 /// \returns Nothing.

@@ -1988,7 +1988,6 @@ void itemUnusedUpdateHook(void) {
 }
 
 
-void itemUpdateModeAndOrientation(u8 *);
 /// Separate symbol view of the primary player record's held item handle.
 /// \note Original identifier: \c D_800EF724 (0x800EF724).
 extern s32 gPlayerHeldItemHandle;

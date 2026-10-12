@@ -2819,3 +2819,17 @@ Search-priority arithmetic at 0x38 retains an explicit raw float view because
 the named member changes IDO floating scheduling. Forced source-unit rebuilds
 isolate that exception; accepted conversions preserve all 483 strict objects.
 The original debug-only subject branch remains unchanged.
+
+### Item behavior mode dispatch
+
+`ItemMode` names the seven ROM callback slots: ground/air, drifting flight,
+stationary world placement, player-held, actor-held, stored and shrinking
+disposal. The callback table at 0x8012B950 and its resolved function addresses
+establish the mapping; Ghidra 0x80123390 confirms signed-byte mode dispatch.
+The field remains signed-byte storage and the setter retains its integer ABI.
+
+`item_mode.h` owns the update-handler type, table and dispatcher declaration.
+The stationary handler now takes the common unused item pointer. Disposal
+reuses `RuntimeObjectPrefix` instead of a duplicate scale/rotation view, and
+physics transitions use named established modes. Shared-header dependents and
+each source change preserve the complete strict object baseline.
