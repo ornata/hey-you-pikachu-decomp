@@ -2062,3 +2062,15 @@ scale and reset functions. Actor state exposes two checked variant words at
 0x2F0, shared by set/query and drawing consumers. Ghidra 0x800147E4 confirms the
 slot-indexed writes. All four changed source units and header dependents preserve
 all 483 objects and strict relocation addends.
+
+### Linked model-part rotation follower layout
+
+A private 0x10-byte `ActorPartLinkedRotationState` links initializer and update
+consumers through named part identifier, axis, borrowed resolved part, captured
+reference angle and response factor. Ghidra 0x800139B8 confirms the cached pointer
+and one-time reference capture; the initializer establishes the allocation and
+configured factor. Size and pointer/factor offsets are checked. Both consumers
+also use shared object kind, root and state fields. Axis-based rotation byte
+accesses and the original configuration-symbol view remain explicit. The state
+stays local because its producer and consumer are in the same unit. All 483
+objects and strict relocation addends match.

@@ -31,6 +31,21 @@ typedef char ActorPartTextureTintOffsetCheck[(((u32) & ((ActorPartTextureState *
 typedef char
     ActorPartTextureCollisionOffsetCheck[(((u32) & ((ActorPartTextureState *)0)->collisionKey) == 0x554) ? 1 : -1];
 
+/// Owned rotation-follower state borrowing another part from the same actor.
+typedef struct ActorPartLinkedRotationState {
+    u16 linkedPartId;   ///< Identifier resolved within the owning actor.
+    u16 axis;           ///< Rotation component from zero through two.
+    u8 *linkedPart;     ///< Borrowed resolved part, or null before the first update.
+    f32 referenceAngle; ///< Linked-part angle captured when its reference is resolved.
+    f32 responseFactor; ///< Angular response factor for deviation from the reference angle.
+} ActorPartLinkedRotationState;
+typedef char ActorPartLinkedRotationSizeCheck[(sizeof(ActorPartLinkedRotationState) == 0x10) ? 1 : -1];
+typedef char
+    ActorPartLinkedRotationReferenceOffsetCheck[(((u32) & ((ActorPartLinkedRotationState *)0)->linkedPart) == 4) ? 1
+                                                                                                                 : -1];
+typedef char ActorPartLinkedRotationFactorOffsetCheck
+    [(((u32) & ((ActorPartLinkedRotationState *)0)->responseFactor) == 0xC) ? 1 : -1];
+
 void objectDebugReportNoOp(u8 *);
 /// Model display-list addresses indexed by appearance slot zero variant.
 /// \note Original identifier: \c D_800760C4 (0x800760C4).
@@ -156,13 +171,13 @@ void actorPartInitializeLinkedRotation(u8 *object) {
     u8 *record;
     state = (u8 *)heapAllocLocal(&gGameHeap, 0x10, 0xD6);
     _bzero(state, 0x10);
-    record = gActorPartLinkedRotationDefinitions + (*(u16 *)(object + 0x34) * 8) - 0x348;
-    *(u16 *)(state) = *(u16 *)record;
-    *(u16 *)(state + 2) = *(u16 *)(record + 2);
-    *(f32 *)(state + 12) = *(f32 *)(record + 4);
-    *(s32 *)(state + 4) = 0;
-    *(f32 *)(state + 8) = 0.0f;
-    *(u8 **)(object + 0x54) = state;
+    record = gActorPartLinkedRotationDefinitions + (((RuntimeObjectPrefix *)object)->kind * 8) - 0x348;
+    ((ActorPartLinkedRotationState *)state)->linkedPartId = *(u16 *)record;
+    ((ActorPartLinkedRotationState *)state)->axis = *(u16 *)(record + 2);
+    ((ActorPartLinkedRotationState *)state)->responseFactor = *(f32 *)(record + 4);
+    ((ActorPartLinkedRotationState *)state)->linkedPart = 0;
+    ((ActorPartLinkedRotationState *)state)->referenceAngle = 0.0f;
+    ((RuntimeObjectPrefix *)object)->state.bytes = state;
 }
 
 /// Default integer animation program for the first two actor texture channels.
@@ -253,21 +268,21 @@ void actorPartUpdateLinkedRotation(u8 *object) {
     f32 diff;
     s32 off;
 
-    d = *(u8 **)(object + 0x54);
-    p = *(u8 **)(d + 4);
-    k = *(u16 *)(d + 2);
+    d = ((RuntimeObjectPrefix *)object)->state.bytes;
+    p = ((ActorPartLinkedRotationState *)d)->linkedPart;
+    k = ((ActorPartLinkedRotationState *)d)->axis;
     if (p != NULL) {
         o = p;
         off = k * 4;
     } else {
-        p = actorFindPart(*(u8 **)(object + 0x50), *(u16 *)(d + 0));
+        p = actorFindPart(((RuntimeObjectPrefix *)object)->root.bytes, ((ActorPartLinkedRotationState *)d)->linkedPartId);
         o = p;
         off = k * 4;
-        *(u8 **)(d + 4) = p;
-        *(f32 *)(d + 8) = *(f32 *)(p + off + 0xC);
+        ((ActorPartLinkedRotationState *)d)->linkedPart = p;
+        ((ActorPartLinkedRotationState *)d)->referenceAngle = *(f32 *)(p + off + 0xC);
     }
-    diff = *(f32 *)(o + off + 0xC) - *(f32 *)(d + 8);
-    r = mathLerpAngleDegrees(0.0f, diff, *(f32 *)(d + 0xC));
+    diff = *(f32 *)(o + off + 0xC) - ((ActorPartLinkedRotationState *)d)->referenceAngle;
+    r = mathLerpAngleDegrees(0.0f, diff, ((ActorPartLinkedRotationState *)d)->responseFactor);
     *(f32 *)(object + off + 0xC) = r;
 }
 
