@@ -1,3 +1,4 @@
+#include "object_distance.h"
 #include "actor_held_item.h"
 #include "player_view_search.h"
 #include "item_participation.h"
@@ -41,7 +42,7 @@ s16 actorFindInteractableItemKind(u8 *actor, s32 kind, f32 distance) {
     if (runtimeGetElapsedMilliseconds() - ((ActorScriptState *)state)->lastInteractionMilliseconds < 500) {
         return 0;
     }
-    item = itemFindNearest((f32 *)(actor + 0x44), distance, ((ActorScriptState *)state)->orientation[0],
+    item = itemFindNearest(((RuntimeObjectPrefix *)actor)->worldPosition, distance, ((ActorScriptState *)state)->orientation[0],
                            ((ActorScriptState *)state)->orientation[1], 45.0f, kind, kind, 0, 0);
     if ((item == NULL) || (itemCanBePickedUp(item, 0) == 0)) {
         return 0;
@@ -208,7 +209,7 @@ u16 actorGetMovementCollisionFlags(u8 *actor) {
 /// \note Original decompilation identifier: \c func_8011750C (0x8011750C).
 s32 actorFindItemHandleInFacingCone(u8 *actor, f32 distance, f32 cone, s32 minKind, s32 maxKind, s32 filter, s32 weighted) {
     u8 *rec = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    u8 *item = itemFindNearest((f32 *)(actor + 0x44), distance, ((ActorScriptState *)rec)->orientation[0],
+    u8 *item = itemFindNearest(((RuntimeObjectPrefix *)actor)->worldPosition, distance, ((ActorScriptState *)rec)->orientation[0],
                                ((ActorScriptState *)rec)->orientation[1], cone, minKind, maxKind, filter, weighted);
 
     if (item == NULL) {
@@ -1158,7 +1159,7 @@ f32 actorGetTargetDistance(u8 *actor) {
 f32 objectGetPlayerDistance(u8 *object) {
     f32 dir[3];
     f32 *target = (f32 *)&gPlayerState;
-    f32 *pos = (f32 *)(object + 0x18);
+    f32 *pos = ((RuntimeObjectPrefix *)object)->position;
 
     dir[0] = target[0] - pos[0];
     dir[1] = target[1] - pos[1];

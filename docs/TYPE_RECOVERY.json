@@ -51,7 +51,7 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 2969,
+      "occurrences": 2966,
       "unique_spellings": 1102,
       "files": 80
     }
@@ -6284,6 +6284,8 @@
         "actor_sound.h",
         "actor_target.h",
         "audio_cue.h",
+        "item_search.h",
+        "object_distance.h",
         "object_lookup.h",
         "object_script_query.h",
         "object_target_search.h",
@@ -6298,10 +6300,10 @@
       "locations": {
         "raw_offset_candidates": {
           "actor + 0xC": [
-            "666:38"
+            "662:38"
           ],
           "gPlayerCompanionTarget - 0x50": [
-            "1368:57"
+            "1364:57"
           ]
         }
       }
@@ -6320,6 +6322,7 @@
         "item_queries.h",
         "item_search.h",
         "item_types.h",
+        "object_distance.h",
         "object_lookup.h",
         "object_script_query.h",
         "object_target_search.h",
@@ -6337,44 +6340,37 @@
       },
       "locations": {
         "raw_offset_candidates": {
-          "actor + 0x44": [
-            "44:36",
-            "211:40"
-          ],
           "return -1": [
-            "80:9"
+            "81:9"
           ],
           "return -65536": [
-            "147:5",
-            "159:5",
-            "609:9",
-            "615:5",
-            "830:5",
-            "915:5",
-            "966:5",
-            "987:5",
-            "1006:5"
+            "148:5",
+            "160:5",
+            "610:9",
+            "616:5",
+            "831:5",
+            "916:5",
+            "967:5",
+            "988:5",
+            "1007:5"
           ],
           "object + 0x44": [
-            "157:25"
+            "158:25"
           ],
           "gPlayerControllerPort + 4": [
-            "549:14"
+            "550:14"
           ],
           "gPlayerControllerPort + 6": [
-            "557:21"
+            "558:21"
           ],
           "resolvedObject + 0x44": [
-            "828:25"
+            "829:25"
           ],
           "offset + 4": [
-            "946:64"
-          ],
-          "offset + 8": [
             "947:64"
           ],
-          "object + 0x18": [
-            "1161:24"
+          "offset + 8": [
+            "948:64"
           ]
         }
       }

@@ -24,6 +24,14 @@
 /// reentered during traversal. The selected-state assignment preserves the original IDO register allocation.
 /// \note Original decompilation identifier: \c func_80113130 (0x80113130).
 u8 *itemFindNearest(f32 *origin, f32 maxDistance, f32 pitch, f32 yaw, f32 cone, s32 minKind, s32 maxKind, s32 filter,
-                  s32 weightEnabled);
+                    s32 weightEnabled);
+
+/// Find an eligible item of the requested kind near an actor's facing direction, honoring its interaction cooldown.
+/// \param actor Actor supplying the reference position, facing, and cooldown.
+/// \param kind Item kind to search for.
+/// \param distance Inclusive maximum approximate search distance.
+/// \returns The qualifying item kind, or zero during the cooldown or when no eligible item is found.
+/// \note Original decompilation identifier: \c func_80117210 (0x80117210).
+s16 actorFindInteractableItemKind(u8 *actor, s32 kind, f32 distance);
 
 #endif

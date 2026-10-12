@@ -2949,3 +2949,15 @@ coordinate pointers and returned handle. `actor_target.h` consolidates player
 primary-object tracking, secondary-object escape tracking and moving to the
 stored destination for message consumers. All declarations retain original
 function/address notes and each conversion preserves strict object bytes.
+
+### Object distance and interactable-item query contracts
+
+`object_distance.h` consolidates origin, player, target-handle distance,
+relative height and horizontal-distance queries. Contracts preserve their
+separate unavailable-target results and distinguish local-position player
+distance from world-position searches. Ghidra 0x80118838 confirms the local
+position offsets; the provider now uses the checked position member.
+`item_search.h` owns the signed-halfword interactable-item kind query, fixing
+the message caller's wider private return declaration. Item searches name
+their world-position input. All converted providers and consumers preserve
+strict object bytes and relocations.

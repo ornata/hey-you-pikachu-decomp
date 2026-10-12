@@ -1,3 +1,5 @@
+#include "item_search.h"
+#include "object_distance.h"
 #include "object_target_search.h"
 #include "actor_held_item.h"
 #include "actor_target.h"
@@ -195,7 +197,6 @@ s32 actorScriptReleaseHeldItem(u8 *actor) {
     return 0;
 }
 
-f32 objectGetPlayerDistance(u8 *);         /* extern */
 
 /// Push the actor's approximate distance from the player.
 /// \param actor Actor whose script VM receives the approximate distance from its local position to the player position.
@@ -523,7 +524,6 @@ s32 actorScriptPostMessage(u8 *actor) {
     return 0;
 }
 
-s32 actorFindInteractableItemKind(u8 *, s32, f32); /* extern */
 
 /// Search for an eligible nearby item of a script-specified kind.
 /// \param actor Actor whose script VM supplies item kind followed by maximum distance and receives the qualifying kind, or zero during cooldown or when none qualifies.
@@ -541,7 +541,6 @@ s32 actorScriptFindInteractableItem(u8 *actor) {
     return 0;
 }
 
-f32 objectGetOriginDistance(u8 *);         /* extern */
 
 /// Push the actor's approximate distance from the world origin.
 /// \param actor Actor whose script VM receives the three-dimensional distance.
@@ -555,7 +554,6 @@ s32 actorScriptPushOriginDistance(u8 *actor) {
     return 0;
 }
 
-f32 objectGetDistanceToHandle(u8 *, s32);    /* extern */
 
 /// Replace a target handle on the script stack with its approximate distance from the actor.
 /// \param actor Actor whose script VM supplies a target handle and receives the distance, or -1 for an unavailable target.
@@ -569,7 +567,6 @@ s32 actorScriptGetObjectDistance(u8 *actor) {
     return 0;
 }
 
-f32 objectGetHeightDifferenceToHandle(u8 *, s32);    /* extern */
 
 /// Replace a target handle on the script stack with its height relative to the actor.
 /// \param actor Actor whose script VM supplies a target handle and receives target height minus actor height, or zero for an unavailable target.
@@ -598,7 +595,6 @@ s32 actorScriptPushTargetHeightDifference(u8 *actor) {
     return 0;
 }
 
-f32 objectGetHorizontalDistanceToHandle(u8 *, s32);    /* extern */
 
 /// Replace a target handle on the script stack with its horizontal distance from the actor.
 /// \param actor Actor whose script VM supplies a target handle and receives the approximate horizontal distance, or zero for an unavailable target.
