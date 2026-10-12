@@ -1,3 +1,4 @@
+#include "object_transform.h"
 #include "object_distance.h"
 #include "actor_held_item.h"
 #include "player_view_search.h"
@@ -155,7 +156,7 @@ f32 actorGetTargetCoordinate(u8 *actor, s32 axis) {
 /// \note Original decompilation identifier: \c func_801174B0 (0x801174B0).
 f32 objectGetWorldCoordinate(u8 *object, s32 axis) {
     if (axis < 3) {
-        return ((f32 *)(object + 0x44))[axis];
+        return ((RuntimeObjectPrefix *)object)->worldPosition[axis];
     }
     return -65536.0f;
 }
@@ -826,7 +827,7 @@ f32 objectGetWorldCoordinateByHandle(s32 handle, s32 axis) {
         return 0.0f;
     }
     if (axis < 3) {
-        return ((f32 *)(resolvedObject + 0x44))[axis];
+        return ((RuntimeObjectPrefix *)resolvedObject)->worldPosition[axis];
     }
     return -65536.0f;
 }

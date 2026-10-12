@@ -1,3 +1,4 @@
+#include "object_transform.h"
 #include "item_search.h"
 #include "object_distance.h"
 #include "object_target_search.h"
@@ -608,7 +609,6 @@ s32 actorScriptGetObjectHorizontalDistance(u8 *actor) {
     return 0;
 }
 
-f32 actorGetHorizontalTargetDistance(u8 *);         /* extern */
 
 /// Push the actor's approximate horizontal distance to its stored target position.
 /// \param actor Actor whose script VM receives the target distance.
@@ -622,7 +622,6 @@ s32 actorScriptPushHorizontalTargetDistance(u8 *actor) {
     return 0;
 }
 
-f32 actorGetTargetCoordinate(u8 *, s32);    /* extern */
 
 /// Replace a coordinate axis on the script stack with a stored target coordinate.
 /// \param actor Actor whose script VM supplies a nonnegative axis (zero for X, one for Y, two for Z) and receives the target coordinate, or -65536 for an axis greater than two.
@@ -636,7 +635,6 @@ s32 actorScriptGetTargetCoordinate(u8 *actor) {
     return 0;
 }
 
-f32 objectGetWorldCoordinate(u8 *, s32);    /* extern */
 
 /// Replace a coordinate axis on the script stack with an actor world coordinate.
 /// \param actor Actor whose script VM supplies a nonnegative axis (zero for X, one for Y, two for Z) and receives the world coordinate, or -65536 for an axis greater than two.
@@ -719,7 +717,6 @@ s32 actorScriptPushMovementCollisionFlags(u8 *actor) {
     return 0;
 }
 
-s32 actorTrackObjectPosition(u8 *arg0, s32 arg1, f32 arg2); /* extern */
 /// Separate symbol view of the primary player record's mode and camera-transition state.
 /// \note Original identifier: \c D_800EF728 (0x800EF728).
 extern s32 gPlayerModeState;
@@ -996,7 +993,6 @@ s32 actorScriptTrackObject(u8 *actor) {
     return 0;
 }
 
-s32 actorSetDestinationFromObject(u8 *, s32, f32); /* extern */
 
 /// Choose an object's current position as a fixed destination.
 /// \param actor Actor whose script VM supplies a target handle followed by a distance allowance, and receives the target script category or zero for an unavailable or unsupported target.

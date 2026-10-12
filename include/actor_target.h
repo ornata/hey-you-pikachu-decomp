@@ -83,4 +83,33 @@ void actorTrackEscapeFromPlayerSecondaryObject(u8 *actor);
 /// \note Original decompilation identifier: \c func_80118A94 (0x80118A94).
 void actorMoveToTargetPosition(u8 *actor);
 
+/// Measure the horizontal distance to an actor's stored target position.
+/// \param actor Actor whose target distance is measured.
+/// \returns The approximate horizontal distance to the target position.
+/// \note Original decompilation identifier: \c func_80117434 (0x80117434).
+f32 actorGetHorizontalTargetDistance(u8 *actor);
+
+/// Get one world-space coordinate of an actor's stored target position.
+/// \param actor Actor whose target position is queried.
+/// \param axis Nonnegative coordinate axis: zero for X, one for Y, or two for Z.
+/// \returns The coordinate, or -65536 when the axis is greater than two.
+/// \note Original decompilation identifier: \c func_80117480 (0x80117480).
+f32 actorGetTargetCoordinate(u8 *actor, s32 axis);
+
+/// Track an available object as an actor's movement destination. Otherwise disable target tracking.
+/// \param actor Actor whose destination is changed.
+/// \param handle Handle of the target object.
+/// \param distanceAllowance Distance allowance used when approaching the destination.
+/// \returns The target script category, or zero when the target is unavailable or has no supported category.
+/// \note Original decompilation identifier: \c func_80117584 (0x80117584).
+s32 actorTrackObjectPosition(u8 *actor, s32 handle, f32 distanceAllowance);
+
+/// Choose an available object's current position as an actor's destination and disable ongoing tracking.
+/// \param actor Actor whose destination is changed.
+/// \param handle Handle of the target object.
+/// \param distanceAllowance Distance allowance used when approaching the destination.
+/// \returns The target script category, or zero when the target is unavailable or has no supported category.
+/// \note Original decompilation identifier: \c func_80117624 (0x80117624).
+s32 actorSetDestinationFromObject(u8 *actor, s32 handle, f32 distanceAllowance);
+
 #endif

@@ -2961,3 +2961,14 @@ position offsets; the provider now uses the checked position member.
 the message caller's wider private return declaration. Item searches name
 their world-position input. All converted providers and consumers preserve
 strict object bytes and relocations.
+
+### Target tracking and world-coordinate query contracts
+
+`actor_target.h` owns horizontal target distance, target coordinate and
+object-handle destination/tracking operations. `object_transform.h` owns
+world-coordinate queries by pointer and available handle, including their
+distinct unavailable-handle and invalid-axis results. Ghidra 0x80117480
+confirms the signed upper-bound check: negative axes remain unsupported,
+not silently accepted by the documented contract. Both object-coordinate
+providers now name world-position members. Message and world-script users
+share canonical declarations; all changed units preserve strict objects.

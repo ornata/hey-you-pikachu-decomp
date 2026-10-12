@@ -1,3 +1,4 @@
+#include "object_transform.h"
 #include "actor_held_item.h"
 #include "item_mode.h"
 #include "actor_meters.h"
@@ -510,7 +511,6 @@ s32 actorScriptGetCreatureActionFlags(u8 *actor) {
     return 0;
 }
 
-f32 objectGetWorldCoordinateByHandle(s32, s32);  /* extern */
 
 /// Read one world-space coordinate of an available object.
 /// \param actor Actor whose script VM supplies an object handle followed by a nonnegative axis (zero for X, one for Y, two for Z), and receives the coordinate, zero for an unavailable handle, or -65536 for an axis greater than two.
