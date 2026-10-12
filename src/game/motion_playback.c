@@ -33,7 +33,6 @@ s32 actionRequestMotionData(s32);
 /// \note Original identifier: \c D_8006B590 (0x8006B590).
 extern ActionDefinition gActionDefinitions[];
 f32 mathUnitDirectionDegrees(f32, f32);
-void matrix34RotateWorldYDegrees(f32, f32 *);
 void motionExtractHeadingFromMatrix(f32 *, f32 *);
 void motionRequestCurrentData(u8 *);
 void actionResolveNextTransition(u8 *);
@@ -770,7 +769,6 @@ void actionUpdatePlayback(u8 *object) {
 
 void motionEvaluateChildRotation(u8 *, u8 *, f32);
 void motionBlendPosePair(u8 *, f32 *, f32);
-void matrix3GetEulerAnglesDegrees(f32 *, f32 *, f32 *, f32 *);
 
 /// Advance child motion playback using its parent action timing.
 /// \param object Animated child part with initialized playback state and a valid parent action state; pose blending requires a positive parent transition duration.

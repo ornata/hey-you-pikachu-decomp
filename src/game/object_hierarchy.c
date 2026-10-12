@@ -1,3 +1,4 @@
+#include "matrix_orientation.h"
 #include "collision_registration.h"
 #include "object_billboard.h"
 #include "vector_direction.h"
@@ -64,7 +65,6 @@ extern Vec3f gObjectPendingLocalMovement;
 /// \note Original identifier: \c D_800AD9E0 (0x800AD9E0).
 extern Matrix34 gObjectTraversalTransform;
 void matrix34TranslateLocal(void *, f32, f32, f32);          /* extern */
-void matrix33ApplyRotationXYZDegrees(void *, f32, f32, f32); /* extern */
 void matrix33ScaleLocal(void *, f32, f32, f32);              /* extern */
 void matrix33KeepScaleOnly(f32 *);                    /* extern */
 s32 romByteReaderInitialize(u8 *);
@@ -1245,7 +1245,7 @@ void objectUpdateHierarchyWorldPositions(u8 *object) {
                     matrix33KeepScaleOnly(gObjectTraversalTransform.m[0]);
                 }
                 if ((((RuntimeObjectPrefix *)object)->kind) != 0x64) {
-                    matrix33ApplyRotationXYZDegrees(&gObjectTraversalTransform, ((RuntimeObjectPrefix *)object)->rotation[0],
+                    matrix33ApplyRotationXYZDegrees((f32 *)&gObjectTraversalTransform, ((RuntimeObjectPrefix *)object)->rotation[0],
                                                     ((RuntimeObjectPrefix *)object)->rotation[1],
                                                     ((RuntimeObjectPrefix *)object)->rotation[2]);
                     matrix33ScaleLocal(&gObjectTraversalTransform, ((RuntimeObjectPrefix *)object)->scale[0],
@@ -1318,7 +1318,7 @@ void objectUpdateHierarchyFromCurrentTransform(u8 *object) {
                     matrix33KeepScaleOnly(gObjectTraversalTransform.m[0]);
                 }
                 if (*(u16 *)(object + 0x34) != 0x64) {
-                    matrix33ApplyRotationXYZDegrees(&gObjectTraversalTransform, *(f32 *)(object + 0xC),
+                    matrix33ApplyRotationXYZDegrees((f32 *)&gObjectTraversalTransform, *(f32 *)(object + 0xC),
                                                     *(f32 *)(object + 0x10), *(f32 *)(object + 0x14));
                     matrix33ScaleLocal(&gObjectTraversalTransform, *(f32 *)object, *(f32 *)(object + 4),
                                        *(f32 *)(object + 8));

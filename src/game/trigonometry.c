@@ -358,36 +358,36 @@ void matrix34TranslateLocal(f32 mf[4][3], f32 x, f32 y, f32 z) {
 
 
 /// Apply a local Euler rotation in X, then Y, then Z order.
-/// \param matrixAddress RAM address of the matrix whose linear transform is to be updated.
+/// \param matrixAddress Matrix whose linear transform is updated in place.
 /// \param xDegrees Rotation about the X axis in degrees.
 /// \param yDegrees Rotation about the Y axis in degrees.
 /// \param zDegrees Rotation about the Z axis in degrees.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80039814 (0x80039814).
-void matrix33ApplyRotationXYZDegrees(s32 matrixAddress, f32 xDegrees, f32 yDegrees, f32 zDegrees) {
+void matrix33ApplyRotationXYZDegrees(f32 *matrixAddress, f32 xDegrees, f32 yDegrees, f32 zDegrees) {
     f32 sp18[12];
 
     if ((xDegrees != 0.0f) || (yDegrees != 0.0f) || (zDegrees != 0.0f)) {
         matrix34MakeRotationXYZDegrees(sp18, xDegrees, yDegrees, zDegrees);
-        matrix33Multiply(sp18, (f32 *)matrixAddress, (f32 *)matrixAddress);
+        matrix33Multiply(sp18, matrixAddress, matrixAddress);
     }
 }
 
 void matrix34MakeRotationZYXDegrees(f32 *, f32, f32, f32);
 
 /// Apply a local Euler rotation in Z, then Y, then X order.
-/// \param matrixAddress RAM address of the matrix whose linear transform is to be updated.
+/// \param matrixAddress Matrix whose linear transform is updated in place.
 /// \param xDegrees Rotation about the X axis in degrees.
 /// \param yDegrees Rotation about the Y axis in degrees.
 /// \param zDegrees Rotation about the Z axis in degrees.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8003988C (0x8003988C).
-void matrix33ApplyRotationZYXDegrees(s32 matrixAddress, f32 xDegrees, f32 yDegrees, f32 zDegrees) {
+void matrix33ApplyRotationZYXDegrees(f32 *matrixAddress, f32 xDegrees, f32 yDegrees, f32 zDegrees) {
     f32 sp18[12];
 
     if ((xDegrees != 0.0f) || (yDegrees != 0.0f) || (zDegrees != 0.0f)) {
         matrix34MakeRotationZYXDegrees(sp18, xDegrees, yDegrees, zDegrees);
-        matrix33Multiply(sp18, (f32 *)matrixAddress, (f32 *)matrixAddress);
+        matrix33Multiply(sp18, matrixAddress, matrixAddress);
     }
 }
 

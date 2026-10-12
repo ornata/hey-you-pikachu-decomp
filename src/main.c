@@ -1,3 +1,4 @@
+#include "matrix_orientation.h"
 #include "actor_script_time.h"
 #include "camera_overlay.h"
 #include "camera_pose.h"
@@ -170,7 +171,6 @@ extern f32 gPlayerPitch;
 /// Separate symbol view of the primary player record's horizontal view shake.
 /// \note Original identifier: \c D_800EF6B8 (0x800EF6B8).
 extern f32 gPlayerViewShake;
-void matrix33ApplyRotationXYZDegrees(s32, f32, f32, f32);
 void controllerThreadMain(void *);
 /// Thread record for controller polling, voice requests and rumble servicing.
 /// \note Original identifier: \c D_800AC4C0 (0x800AC4C0).
@@ -343,7 +343,7 @@ void cameraBuildInterfaceTransform(s32 output) {
     sp1C = gRenderCameras + gRenderCameraIndex * 0xE0;
     matrix34Identity((MatrixBlock00800 *)output);
     matrix34TranslateLocal(output, *(s32 *)(sp1C + 0), *(s32 *)(sp1C + 4), *(s32 *)(sp1C + 8));
-    matrix33ApplyRotationXYZDegrees(output, -(gPlayerPitch + gPlayerPitchOffset),
+    matrix33ApplyRotationXYZDegrees((f32 *)output, -(gPlayerPitch + gPlayerPitchOffset),
                                     gPlayerViewShake + gPlayerYaw + 180.0f, 0.0f);
 }
 

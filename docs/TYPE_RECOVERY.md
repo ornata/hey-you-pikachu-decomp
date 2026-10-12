@@ -2500,3 +2500,16 @@ confirms the three writable angle destinations. Existing Doxygen contracts
 describe composition order, permitted input/output aliasing and output angles.
 The shared-header conversion rebuilt every dependent unit and preserves all
 483 objects, including relocation identities.
+
+### Local rotation pointer contracts
+
+Local XYZ and ZYX rotation helpers now receive writable float matrix pointers
+instead of integer RAM addresses. Ghidra 0x80039814 confirms the input matrix
+is passed as both source and destination of composition. Hierarchy, model-part,
+toolbox and interface-camera consumers use the shared contracts; the provider
+conversion and dependent rebuilds preserve all 483 objects.
+
+The same header now supplies world-Y affine rotation and motion Euler extraction
+to their providers and motion consumer. It documents degree units, in-place
+translation behavior and writable output destinations. Integer address boundaries
+in unrelated camera interfaces remain for separate evidence and matching trials.

@@ -1,3 +1,4 @@
+#include "matrix_orientation.h"
 #include "actor_script_time.h"
 #include "camera_overlay.h"
 #include "scheduler.h"
@@ -116,7 +117,6 @@ extern f32 gPlayerPitch;
 /// Separate symbol view of the primary player record's horizontal view shake.
 /// \note Original identifier: \c D_800EF6B8 (0x800EF6B8).
 extern f32 gPlayerViewShake;
-void matrix33ApplyRotationXYZDegrees(s32, f32, f32, f32);
 void controllerThreadMain(void *);
 /// Thread record for controller polling, voice requests and rumble servicing.
 /// \note Original identifier: \c D_800AC4C0 (0x800AC4C0).

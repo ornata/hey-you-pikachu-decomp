@@ -41,4 +41,38 @@ void matrix33Multiply(f32 *a, f32 *b, f32 *c);
 /// \note Original decompilation identifier: \c func_8003B764 (0x8003B764).
 void matrix33GetFoldedEulerDegrees(f32 *matrix, f32 *roll, f32 *pitch, f32 *yaw);
 
+/// Apply a local Euler rotation in X, then Y, then Z order.
+/// \param matrixAddress Matrix whose linear transform is updated in place.
+/// \param xDegrees Rotation about the X axis in degrees.
+/// \param yDegrees Rotation about the Y axis in degrees.
+/// \param zDegrees Rotation about the Z axis in degrees.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_80039814 (0x80039814).
+void matrix33ApplyRotationXYZDegrees(f32 *matrixAddress, f32 xDegrees, f32 yDegrees, f32 zDegrees);
+
+/// Apply a local Euler rotation in Z, then Y, then X order.
+/// \param matrixAddress Matrix whose linear transform is updated in place.
+/// \param xDegrees Rotation about the X axis in degrees.
+/// \param yDegrees Rotation about the Y axis in degrees.
+/// \param zDegrees Rotation about the Z axis in degrees.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8003988C (0x8003988C).
+void matrix33ApplyRotationZYXDegrees(f32 *matrixAddress, f32 xDegrees, f32 yDegrees, f32 zDegrees);
+
+/// Rotate an affine transform about the world Y axis.
+/// \param angle Rotation angle in degrees.
+/// \param m Twelve-component affine matrix updated in place, including its translation.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000D764 (0x8000D764).
+void matrix34RotateWorldYDegrees(f32 angle, f32 *m);
+
+/// Extract roll, pitch, and yaw from a rotation matrix.
+/// \param matrix Input nine-component rotation matrix.
+/// \param roll Receives roll in degrees.
+/// \param pitch Receives pitch in degrees.
+/// \param yaw Receives yaw in degrees.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000D2E4 (0x8000D2E4).
+void matrix3GetEulerAnglesDegrees(f32 *matrix, f32 *roll, f32 *pitch, f32 *yaw);
+
 #endif

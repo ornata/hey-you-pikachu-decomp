@@ -490,8 +490,6 @@ void actorPartUpdateCollisionRegistration(u8 *object) {
 }
 
 void matrix34MakeRotationZYXDegrees(f32 *, f32, f32, f32);
-void matrix33ApplyRotationXYZDegrees(s32, f32, f32, f32);
-void matrix33ApplyRotationZYXDegrees(s32, f32, f32, f32);
 /// Evaluate the combined orientation of a signed sequence of actor model parts.
 /// \param matrix Output 3-by-4 orientation matrix; identity when no listed parts are available.
 /// \param owner Address of the actor containing the listed model parts.
@@ -536,9 +534,9 @@ void actorComposePartOrientation(void *matrix, s32 owner, s32 *cursor, s32 forwa
                 else
                     matrix34MakeRotationZYXDegrees(matrix, -*(f32 *)(node + 0xC), -*(f32 *)(node + 0x10), -*(f32 *)(node + 0x14));
             } else if (id * direction > 0)
-                matrix33ApplyRotationXYZDegrees((s32)matrix, *(f32 *)(node + 0xC), *(f32 *)(node + 0x10), *(f32 *)(node + 0x14));
+                matrix33ApplyRotationXYZDegrees(matrix, *(f32 *)(node + 0xC), *(f32 *)(node + 0x10), *(f32 *)(node + 0x14));
             else
-                matrix33ApplyRotationZYXDegrees((s32)matrix, -*(f32 *)(node + 0xC), -*(f32 *)(node + 0x10), -*(f32 *)(node + 0x14));
+                matrix33ApplyRotationZYXDegrees(matrix, -*(f32 *)(node + 0xC), -*(f32 *)(node + 0x10), -*(f32 *)(node + 0x14));
         }
     }
     if (first)

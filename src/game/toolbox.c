@@ -215,7 +215,6 @@ typedef struct {
 /// Primary player control record and base of the player records with a 256-byte stride.
 /// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
 extern Cam6A0 gPlayerState;
-void matrix33ApplyRotationZYXDegrees(f32 *, f32, f32, f32);
 
 /// Orient a toolbox object relative to the current camera.
 /// \param object Object whose local rotation is updated.
