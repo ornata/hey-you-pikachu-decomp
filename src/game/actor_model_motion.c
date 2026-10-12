@@ -1,3 +1,4 @@
+#include "motion_playback.h"
 #include "action_script_playback.h"
 #include "collision_registration.h"
 #include "camera_types.h"
@@ -381,7 +382,6 @@ void actorDrawModelLightingSetup(u8 *actor) {
 }
 
 void actorUpdateObjectRotationFromState(u8 *);
-void actionUpdatePlayback(u8 *);
 void actorUpdateTrackedSoundSpatialization(f32 *, s32 *);
 void actorUpdateGroundSlopePitch(u8 *);
 void objectUpdateHierarchyInteractionVisibility(u8 *);
@@ -452,7 +452,6 @@ void actorSetModelEnvironmentColor(u8 *actor, u8 r, u8 g, u8 b, u8 a) {
     ((ActorScriptState *)v)->environmentColor[3] = a;
 }
 
-void motionUpdateChildPlayback(u8 *);
 
 /// Advance motion playback for an actor child object.
 /// \param object Child object whose motion playback is updated.

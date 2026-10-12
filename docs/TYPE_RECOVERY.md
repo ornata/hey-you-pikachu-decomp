@@ -2298,3 +2298,15 @@ One transition-map comparison needs initial-pose before final-pose in the
 source expression to retain the original branch operand encoding; the values
 and condition are unchanged. The actor current-pose byte-view exceptions from
 the earlier audit remain. All 483 objects and strict relocations match.
+
+### Shared motion playback modes and frame interfaces
+
+`motion_playback_types.h` names disabled, track, timed and pose-blend modes
+without changing the signed 16-bit actor storage or unsigned mode tests.
+Root/child dispatch and startup use the same values. Ghidra 0x8000E190 confirms
+mode propagation to animated model parts; the startup/update bodies establish
+the four policies. Reset and mode setters use checked actor fields, with new
+loop-count, duration and remaining-time offset checks. `motion_playback.h`
+shares reset, mode selection and root/child frame-update contracts with model
+consumers. Both source units and all header dependents preserve all 483 objects
+and strict relocation addends.

@@ -11,6 +11,7 @@
 #include "action_definition_types.h"
 #include "direction_animation_types.h"
 #include "matrix_types.h"
+#include "motion_playback_types.h"
 
 /// Recovered prefix of actor state used by script-message consumers.
 /// \ingroup ActorScriptVm
@@ -47,7 +48,7 @@ typedef struct ActorScriptState {
     ActorActionCueCommand *primaryCueProgram; ///< Borrowed primary cue program or action-kind selection collection.
     ActorActionCueCommand *secondaryCueProgram; ///< Borrowed secondary cue program or action-kind selection collection.
     s16 actionStartPending; ///< Nonzero when action playback must start or restart.
-    s16 playbackMode;       ///< Zero disables playback; other modes select tracks, time or blending.
+    s16 playbackMode;       ///< MotionPlaybackMode value stored as a signed 16-bit word.
     s16 loopCount;          ///< Completed loop count for current playback.
     s16 loopExitRequested;  ///< Nonzero requests transition out of the current loop.
     s16 pendingAction;      ///< Requested next action identifier, or -1 when absent.
@@ -171,6 +172,9 @@ ACTOR_SCRIPT_OFFSET_CHECK(ActorStateDirectionAnimationOffsetCheck, ActorScriptSt
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateEnvironmentColorOffsetCheck, ActorScriptState, environmentColor, 0xE0);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateTargetEnvironmentColorOffsetCheck, ActorScriptState, targetEnvironmentColor, 0xE4);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateEnvironmentColorTimeOffsetCheck, ActorScriptState, environmentColorTimeRemaining, 0xE8);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorMotionLoopCountOffsetCheck, ActorScriptState, loopCount, 0x11C);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorMotionDurationOffsetCheck, ActorScriptState, motionDuration, 0x134);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorMotionRemainingOffsetCheck, ActorScriptState, motionRemaining, 0x138);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePlaybackModeOffsetCheck, ActorScriptState, playbackMode, 0x11A);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePendingActionOffsetCheck, ActorScriptState, pendingAction, 0x120);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateMovementScaleOffsetCheck, ActorScriptState, movementScale, 0x130);

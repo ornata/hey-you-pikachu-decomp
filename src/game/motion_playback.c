@@ -1,3 +1,4 @@
+#include "motion_playback.h"
 #include "actor_action_cue.h"
 #include "action_continuation.h"
 #include "action_request.h"
@@ -25,8 +26,6 @@
 // clang-format on
 
 
-void motionResetPlayback(u8 *);
-void motionSetPlaybackMode(u8 *, s32);
 s32 actionRequestMotionData(s32);
 struct Track3;
 struct Track3b;
@@ -133,10 +132,10 @@ void motionRequestCurrentData(u8 *object) {
 void motionResetPlayback(u8 *object) {
     u8 *motionState;
     motionState = *(u8 **)(object + 0x54);
-    *(s16 *)(motionState + 0x11C) = 0;
-    *(f32 *)(motionState + 0x134) = 0.0f;
-    *(f32 *)(motionState + 0x138) = 0.0f;
-    motionSetPlaybackMode(object, 0);
+    ((ActorScriptState *)motionState)->loopCount = 0;
+    ((ActorScriptState *)motionState)->motionDuration = 0.0f;
+    ((ActorScriptState *)motionState)->motionRemaining = 0.0f;
+    motionSetPlaybackMode(object, MOTION_PLAYBACK_DISABLED);
 }
 
 /// Set the motion playback mode for an object and its animated children.
@@ -150,7 +149,7 @@ void motionSetPlaybackMode(u8 *object, s32 mode) {
     u8 *e;
     u16 t;
 
-    *(s16 *)(v + 0x11A) = mode;
+    ((ActorScriptState *)v)->playbackMode = mode;
     for (i = 1; i < *(s32 *)(v + 0x50); i++) {
         e = (*(u8 ***)(v + 0x4C))[i];
         if (e == NULL) {
@@ -193,7 +192,7 @@ void motionStartTrackPlayback(u8 *object) {
     state = *(u8 **)(object + 0x54);
     TRACE("motionNum:%d\n", ((ActorScriptState *)state)->motionId);
     TRACE("  %s\n", ((ActorScriptState *)state)->actionName);
-    motionSetPlaybackMode(object, 0);
+    motionSetPlaybackMode(object, MOTION_PLAYBACK_DISABLED);
     *(f32 *)(state + 0x130) = ((ActorScriptState *)state)->actionMovementScale;
     duration = gMotionDurations[((ActorScriptState *)state)->motionId];
     *(f32 *)(state + 0x134) = duration;
@@ -204,7 +203,7 @@ void motionStartTrackPlayback(u8 *object) {
     *(f32 *)(state + 4) = *(f32 *)(state + 8);
     while (entry[0] > 0) {
         if (entry[0] > 0 && entry[0] < 0x26) {
-            *(s16 *)(state + 0x11A) = 1;
+            ((ActorScriptState *)state)->playbackMode = MOTION_PLAYBACK_TRACKS;
             {
                 u8 *data = (u8 *)base;
                 data += entry[1];
@@ -228,7 +227,7 @@ void motionStartTrackPlayback(u8 *object) {
             child = actorFindPart(object, entry[0]);
             if (child != NULL) {
                 childState = *(u8 **)(child + 0x54);
-                *(s16 *)childState = 1;
+                *(s16 *)childState = MOTION_PLAYBACK_TRACKS;
                 {
                     u8 *data = (u8 *)base;
                     data += entry[1];
@@ -319,7 +318,7 @@ void motionStartPoseTransition(u8 *object) {
     u8 *childState;
     f32 blendWeight = 1.0f;
     s32 rootKindLimit = 0x26;
-    s32 rotationMode = 3;
+    s32 rotationMode = MOTION_PLAYBACK_POSE_BLEND;
     f32 transformTime = 0.0f;
 
     state = *(u8 **)(object + 0x54);
@@ -329,12 +328,12 @@ void motionStartPoseTransition(u8 *object) {
     *(f32 *)(state + 0x134) = duration;
     *(f32 *)(state + 0x138) = duration;
     *(f32 *)(state + 0x130) = blendWeight;
-    motionSetPlaybackMode(object, 0);
+    motionSetPlaybackMode(object, MOTION_PLAYBACK_DISABLED);
     motionCacheReadBlocking(&gMotionRomCache, ((ActorScriptState *)state)->motionId);
     *(f32 *)(state + 8) = *(f32 *)(base + gMotionArchiveOffsets[((ActorScriptState *)state)->motionId]) * *(f32 *)(object + 4);
     while (entry->a > 0) {
         if (entry->a > 0 && entry->a < rootKindLimit) {
-            *(s16 *)(state + 0x11A) = rotationMode;
+            ((ActorScriptState *)state)->playbackMode = rotationMode;
             from = (BlendMatrix *)(state + 0x23C);
             current = (BlendMatrix *)(state + 0x18);
             animationTrack3Initialize(&track, (Pair8 *)((u8 *)base + entry->b), base);
@@ -388,13 +387,13 @@ void motionStartTimedPlayback(u8 *object) {
     f32 duration;
 
     motionState = *(u8 **)(object + 0x54);
-    motionSetPlaybackMode(object, 0);
+    motionSetPlaybackMode(object, MOTION_PLAYBACK_DISABLED);
     duration = ((ActorScriptState *)motionState)->actionMovementScale;
     TRACE("interTime:%f\n", duration);
-    *(s16 *)(motionState + 0x11A) = 2;
+    ((ActorScriptState *)motionState)->playbackMode = MOTION_PLAYBACK_TIMED;
     *(f32 *)(motionState + 0x130) = 1.0f;
-    *(f32 *)(motionState + 0x134) = duration;
-    *(f32 *)(motionState + 0x138) = duration;
+    ((ActorScriptState *)motionState)->motionDuration = duration;
+    ((ActorScriptState *)motionState)->motionRemaining = duration;
 }
 
 /// Invoke the current action initialization callback when present.
@@ -455,13 +454,13 @@ void actionStartPlayback(u8 *object) {
         }
     }
     switch (mode) {
-    case 1:
+    case MOTION_PLAYBACK_TRACKS:
         motionStartTrackPlayback(object);
         break;
-    case 2:
+    case MOTION_PLAYBACK_TIMED:
         motionStartTimedPlayback(object);
         break;
-    case 3:
+    case MOTION_PLAYBACK_POSE_BLEND:
         motionStartPoseTransition(object);
         break;
     }
@@ -588,7 +587,7 @@ void actionResolveNextTransition(u8 *object) {
     s32 animation;
 
     state = *(u8 **)(object + 0x54);
-    if (*(u16 *)(state + 0x11A) == 0) {
+    if ((u16)((ActorScriptState *)state)->playbackMode == MOTION_PLAYBACK_DISABLED) {
         ((ActorScriptState *)state)->continuationAction = -1;
     }
     *(s16 *)(state + 0x11C) = 0;
@@ -723,7 +722,7 @@ void actionUpdatePlayback(u8 *object) {
     if (((ActorScriptState *)state)->actionStartPending != 0) {
         actionStartPlayback(object);
     }
-    if ((u16)((ActorScriptState *)state)->playbackMode != 0) {
+    if ((u16)((ActorScriptState *)state)->playbackMode != MOTION_PLAYBACK_DISABLED) {
         actorUpdateActionScript(object, &((ActorScriptState *)state)->primaryCueCommand,
                                 &((ActorScriptState *)state)->primaryCueClock);
         actorUpdateActionScript(object, &((ActorScriptState *)state)->secondaryCueCommand,
@@ -736,13 +735,13 @@ void actionUpdatePlayback(u8 *object) {
         }
         mode = (u16)((ActorScriptState *)state)->playbackMode;
         switch (mode) {
-        case 2:
+        case MOTION_PLAYBACK_TIMED:
             break;
-        case 1:
+        case MOTION_PLAYBACK_TRACKS:
             motionCacheReadBlocking(&gMotionRomCache, ((ActorScriptState *)state)->motionId);
             motionEvaluateRootTracks((s32)object, (s32)state, step);
             break;
-        case 3:
+        case MOTION_PLAYBACK_POSE_BLEND:
             step = remaining / ((ActorScriptState *)state)->motionDuration;
             ((ActorScriptState *)state)->verticalPoseOffset =
                 (f32)(((*(f32 *)((s8 *)state + (u32) & ((ActorScriptState *)0)->defaultPoseOffset)) * (1.0f - step)) +
@@ -799,16 +798,16 @@ void motionUpdateChildPlayback(u8 *object) {
     f32 v[3];
 
     obj = *(u8 **)(object + 0x54);
-    if (*(u16 *)obj != 0) {
+    if (*(u16 *)obj != MOTION_PLAYBACK_DISABLED) {
         tgt = *(u8 **)(*(u8 **)(object + 0x50) + 0x54);
         switch (*(u16 *)obj) {
-        case 1:
+        case MOTION_PLAYBACK_TRACKS:
             motionEvaluateChildRotation(object, obj, *(f32 *)(tgt + 0x130) * gRuntimeFrameSeconds);
             break;
-        case 2:
-            *(u16 *)obj = 0;
+        case MOTION_PLAYBACK_TIMED:
+            *(u16 *)obj = MOTION_PLAYBACK_DISABLED;
             break;
-        case 3:
+        case MOTION_PLAYBACK_POSE_BLEND:
             motionBlendPosePair(obj + 4, v, *(f32 *)(tgt + 0x138) / *(f32 *)(tgt + 0x134));
             matrix3GetEulerAnglesDegrees(v, (f32 *)(object + 0xC), (f32 *)(object + 0x10), (f32 *)(object + 0x14));
             break;
@@ -839,7 +838,7 @@ s32 actionRequestPlayback(u8 *object, s32 id, s32 kind, s32 *out) {
     *out = ((ActorScriptState *)v)->nextRequestId;
     ((ActorScriptState *)v)->pendingRequestId = *out;
     (((ActorScriptState *)v)->nextRequestId)++;
-    if ((u16)((ActorScriptState *)v)->playbackMode == 0) {
+    if ((u16)((ActorScriptState *)v)->playbackMode == MOTION_PLAYBACK_DISABLED) {
         TRACE("play ID: %d\n", *out);
         actionResolveNextTransition(object);
         return 1;
@@ -916,7 +915,7 @@ s32 actionGetAttributes(u8 *object) {
     u8 *objectState;
 
     objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
-    if ((u16)((ActorScriptState *)objectState)->playbackMode == 0) {
+    if ((u16)((ActorScriptState *)objectState)->playbackMode == MOTION_PLAYBACK_DISABLED) {
         return 0x20100400;
     }
     return ((ActorScriptState *)objectState)->actionAttributes;
@@ -930,7 +929,7 @@ f32 actionGetMovementScale(u8 *object) {
     u8 *objectState;
 
     objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
-    if ((u16)((ActorScriptState *)objectState)->playbackMode == 0) {
+    if ((u16)((ActorScriptState *)objectState)->playbackMode == MOTION_PLAYBACK_DISABLED) {
         return 1.0f;
     }
     return ((ActorScriptState *)objectState)->actionDuration;
@@ -944,7 +943,7 @@ s16 actionGetCurrentMotionId(u8 *object) {
     u8 *objectState;
 
     objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
-    if ((u16)((ActorScriptState *)objectState)->playbackMode == 0) {
+    if ((u16)((ActorScriptState *)objectState)->playbackMode == MOTION_PLAYBACK_DISABLED) {
         return -1;
     }
     return ((ActorScriptState *)objectState)->motionId;
@@ -984,7 +983,7 @@ s32 actionGetActiveRequestId(u8 *object) {
     u8 *objectState;
 
     objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
-    if ((u16)((ActorScriptState *)objectState)->playbackMode == 0) {
+    if ((u16)((ActorScriptState *)objectState)->playbackMode == MOTION_PLAYBACK_DISABLED) {
         return 0;
     }
     return ((ActorScriptState *)objectState)->activeRequestId;
