@@ -7,6 +7,7 @@
 
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "text_image_create.h"
 #include "actor_parts.h"
 #include "text_draw.h"
 #include "object_lookup.h"
@@ -421,7 +422,6 @@ void textPanelSetTextConfiguration(TextPanel *panel, s32 configuration) {
 
 void textDrawSetFont(s32);
 void textDrawSetSpacingMode(s32);
-void textImageCreateFromText(s32, s32, s32);
 
 /// Append a text entry, discarding the oldest entry when the panel is full.
 /// \param panel Initialized text panel receiving the entry.
@@ -445,7 +445,7 @@ s32 textPanelAppend(TextPanel *panel, void *text) {
         *slot = 0;
     }
     if (*(u8 *)text != 0)
-        textImageCreateFromText((s32)slot, (s32)text, (s32)panel->configuration);
+        textImageCreateFromText((TextImage **)((s32)slot), (u8 *)((s32)text), (FontImage *)((s32)panel->configuration));
     panel->count += 1;
     if (capacity < panel->count)
         panel->count = capacity;

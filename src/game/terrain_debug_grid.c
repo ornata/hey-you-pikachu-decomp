@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "text_image_create.h"
 #include "object_lookup.h"
 #include "heap_alloc.h"
 #include "game_heap.h"
@@ -64,7 +65,6 @@ extern s32 gMessageBarImageHandles[];
 /// \note Original identifier: \c D_80125AB2 (0x80125AB2).
 extern u8 gItemKindAvailabilityFlagEntries[];
 
-void textImageCreateFromText(s32 *, s8 *, s32); /* extern */
 /// Format string used to create the collection title text image.
 /// \note Original identifier: \c D_800A558C (0x800A558C).
 extern s8 gCollectionTitleTextFormat;

@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "text_image_create.h"
 #include "string_bytes.h"
 #include "text_draw.h"
 #include "object_lookup.h"
@@ -127,7 +128,6 @@ void voiceReactiveSpinnerUpdate(u8 *object) {
     }
 }
 
-void textImageCreateFromText(s32 *, s8 *, s32);
 /// Shared text-image configurations selected by text panels, menus and message styles.
 /// \note Original identifier: \c D_80074DE0 (0x80074DE0).
 extern u8 gTextImageConfigurations[];
@@ -144,7 +144,8 @@ void messageBarPrepareImage(s32 index, QueuedMessage msg) {
         textImageDestroy(*slot);
     }
     TRACE("_setSprite:(%s) idx:%d\n", msg.text, index);
-    textImageCreateFromText(slot, (s8 *)msg.text, (s32)(gTextImageConfigurations + msg.style * 16));
+    textImageCreateFromText((TextImage **)(slot), (u8 *)((s8 *)msg.text),
+                            (FontImage *)((s32)(gTextImageConfigurations + msg.style * 16)));
 }
 
 /// Retained displayed message text used to coalesce repeated message requests.

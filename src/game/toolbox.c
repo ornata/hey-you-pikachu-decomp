@@ -2,6 +2,7 @@
 #include "item_object.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "text_image_create.h"
 #include "player_control.h"
 #include "text_draw.h"
 #include "object_lookup.h"
@@ -773,7 +774,6 @@ void toolboxRestoreStoredObjects(u8 *table) {
 u8 *objectCreateHierarchyFromTemplate(PartNode *);
 u8 *objectRegisterActiveHierarchy(u8 *);
 void toolboxRestoreStoredObjects(u8 *);
-void textImageCreateFromText(TextImage **, char *, s32 *);
 /// Shared text-image configurations selected by text panels, menus and message styles.
 /// \note Original identifier: \c D_80074DE0 (0x80074DE0).
 extern s32 gTextImageConfigurations[];
@@ -826,7 +826,8 @@ void toolboxCreateDisplayObjects(void) {
     }
     for (i = 0; i < 2; i++) {
         gToolboxRowTitleImages[i] = 0;
-        textImageCreateFromText(&gToolboxRowTitleImages[i], gToolboxRowTitles[i], gTextImageConfigurations);
+        textImageCreateFromText((TextImage **)(&gToolboxRowTitleImages[i]), (u8 *)(gToolboxRowTitles[i]),
+                                (FontImage *)(gTextImageConfigurations));
     }
     toolboxRestoreStoredObjects((u8 *)&gToolboxState);
 }

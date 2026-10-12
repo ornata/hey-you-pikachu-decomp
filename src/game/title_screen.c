@@ -3,6 +3,7 @@
 #include "hud_draw.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "text_image_create.h"
 #include "audio_cue.h"
 #include "text_draw.h"
 #include "asset_loader.h"
@@ -48,7 +49,6 @@ extern TextImage *gTitleCursorImages[4], *gTitleMenuImages[8];
 /// Shared text-image configurations selected by text panels, menus and message styles.
 /// \note Original identifier: \c D_80074DE0 (0x80074DE0).
 extern u8 gTextImageConfigurations[];
-void textImageCreateFromText(u8 **, u8 *, s32 *);
 /// Load title-screen artwork and menu text and reset menu selections.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800341C0 (0x800341C0).
@@ -64,11 +64,13 @@ void titleScreenInitialize(void) {
     gTitleStartupPanelImage = (s32)assetAllocateAndLoad(&gTitleStartupPanelAsset);
     gTitleSilhouetteImage = (s32)assetAllocateAndLoad(&gTitleSilhouetteAsset);
     for (source = four.words, dest = gTitleCursorImages; source < four.words + 4; source++, dest++) {
-        textImageCreateFromText((u8 **)dest, *source, (s32 *)gTextImageConfigurations);
+        textImageCreateFromText((TextImage **)((u8 **)dest), (u8 *)(*source),
+                                (FontImage *)((s32 *)gTextImageConfigurations));
     }
     dest = gTitleMenuImages;
     for (source = eight.words, end = eight.words + 8; source != end; source++, dest++) {
-        textImageCreateFromText((u8 **)dest, *source, (s32 *)gTextImageConfigurations);
+        textImageCreateFromText((TextImage **)((u8 **)dest), (u8 *)(*source),
+                                (FontImage *)((s32 *)gTextImageConfigurations));
     }
 }
 

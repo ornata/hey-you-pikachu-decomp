@@ -45,13 +45,6 @@
       "expression": "sprintf(gDoorAccessDescriptionBuffer, \"\\nYou can't get by for some reason.\");"
     },
     {
-      "code": 709,
-      "file": "src/game/collection_presentation.c",
-      "line": 1720,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "textImageCreateFromText(&gPresentationAreaLabelImage, regionName, gTextImageConfigurations);"
-    },
-    {
       "code": 712,
       "file": "src/game/texture_cache.c",
       "line": 170,
@@ -75,14 +68,14 @@
     {
       "code": 709,
       "file": "src/ovl/system_menu.c",
-      "line": 1086,
+      "line": 1090,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "systemMenuAppendDetailText(buf);"
     },
     {
       "code": 709,
       "file": "src/ovl/system_menu.c",
-      "line": 1124,
+      "line": 1128,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "systemMenuAppendDetailText(buf);"
     }

@@ -1010,3 +1010,18 @@ Ghidra at 0x80025FAC confirms the object-state reference and three velocity
 components multiplied by frame duration. Existing homing phase and countdown
 consumers establish their field roles. The pending message remains a value
 copy, not borrowed payload storage. All changes preserve strict object matching.
+
+### Text-image creation ownership interface
+
+All textImageCreateFromText declarations now share text_image_create.h:
+a writable TextImage output slot, encoded text and an optional borrowed
+FontImage. Empty text produces a null image; generated images own their
+descriptor and pixels until textImageDestroy. TextImage and its target-width
+queue handle now have size checks and field documentation.
+
+Ghidra at 0x8003DDC0 confirms custom-versus-system font dispatch. Ten caller
+units were rebuilt and compared separately. Existing integer-address slots
+and encoded string representations cross the interface through explicit pointer
+views rather than inconsistent function prototypes. Those representations
+remain recovery targets; this interface change does not claim complete recovery
+of every caller's image table. All retained units match the strict baseline.

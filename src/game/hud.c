@@ -1,6 +1,7 @@
 #include "hud_draw.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "text_image_create.h"
 #include "audio_cue.h"
 #include "text_draw.h"
 #include "integer_animation.h"
@@ -683,7 +684,6 @@ void hudDrawMotionIndicators(Gfx **gdl) {
     textureDrawRectangles(5, (void *)gHudVerticalMotionSprites, gdl);
 }
 
-void textImageCreateFromText(s32 *, char *, s32); /* extern */
 char *areaGetDisplayName(s32);                        /* extern */
 /// Shared text-image configurations selected by text panels, menus and message styles.
 /// \note Original identifier: \c D_80074DE0 (0x80074DE0).
@@ -700,8 +700,8 @@ extern s32 gRuntimeCurrentArea;
 /// \note Original decompilation identifier: \c func_80022D78 (0x80022D78).
 void hudInitializeAreaLabel(void) {
     gHudAreaLabelImage = 0;
-    textImageCreateFromText(&gHudAreaLabelImage, areaGetDisplayName(gRuntimeCurrentArea),
-                            (s32)gTextImageConfigurations);
+    textImageCreateFromText((TextImage **)(&gHudAreaLabelImage), (u8 *)(areaGetDisplayName(gRuntimeCurrentArea)),
+                            (FontImage *)((s32)gTextImageConfigurations));
 }
 
 void textDrawBegin(Gfx *);

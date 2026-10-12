@@ -2,6 +2,7 @@
 #include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "text_image_create.h"
 #include "font_image.h"
 #include "text_draw.h"
 #include "heap_alloc.h"
@@ -817,17 +818,17 @@ void textImageCreateSystemFont(TextImage **, u8 *, s32);
 s32 textImageCreateCustomFont(TextImage **, u8 *, s32 *);
 
 /// Create a text image using the system font or a supplied font.
-/// \param outAddress Address of the pointer receiving an owned image to release with textImageDestroy, or null for empty text.
-/// \param textAddress Address of the null-terminated text to render.
-/// \param fontAddress Address of the custom font, or zero to use the system font.
+/// \param out Receives an owned image to release with textImageDestroy, or null for empty text.
+/// \param text Null-terminated encoded text to render.
+/// \param font Borrowed custom font, or NULL to use the system font.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8003DDC0 (0x8003DDC0).
-void textImageCreateFromText(s32 outAddress, s32 textAddress, s32 fontAddress) {
-    if (fontAddress == 0) {
-        textImageCreateSystemFont((TextImage **)outAddress, (u8 *)textAddress, fontAddress);
+void textImageCreateFromText(TextImage **out, u8 *text, FontImage *font) {
+    if (font == NULL) {
+        textImageCreateSystemFont(out, text, (s32)font);
     }
-    if (fontAddress != 0) {
-        textImageCreateCustomFont((TextImage **)outAddress, (u8 *)textAddress, (s32 *)fontAddress);
+    if (font != NULL) {
+        textImageCreateCustomFont(out, text, (s32 *)font);
     }
 }
 

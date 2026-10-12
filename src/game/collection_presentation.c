@@ -1,5 +1,6 @@
 #include "backdrop_draw.h"
 #include "common.h"
+#include "text_image_create.h"
 #include "string_bytes.h"
 #include "actor_parts.h"
 #include "audio_cue.h"
@@ -678,7 +679,6 @@ void presentationUpdateCardMode(void) {
     }
 }
 
-void textImageCreateFromText(s32 *, s8 *, u8 *); /* extern */
 /// Shared text-image configurations selected by text panels, menus and message styles.
 /// \note Original identifier: \c D_80074DE0 (0x80074DE0).
 extern u8 gTextImageConfigurations[];
@@ -698,7 +698,8 @@ void presentationCreateCollectionTitleText(void) {
 
     sprintf(sp18, "%s", gCollectionPresentationTitleText);
     gCollectionPresentationTitleImage = 0;
-    textImageCreateFromText(&gCollectionPresentationTitleImage, sp18, gTextImageConfigurations);
+    textImageCreateFromText((TextImage **)(&gCollectionPresentationTitleImage), (u8 *)(sp18),
+                            (FontImage *)(gTextImageConfigurations));
 }
 
 /// Interior collection-value view of the item catalog, with a 116-byte stride.
@@ -733,7 +734,7 @@ void presentationSetCollectionItemText(u8 *object) {
             textImageDestroy(*slot);
             *slot = NULL;
         }
-        textImageCreateFromText((s32 *)slot, buffer, gTextImageConfigurations);
+        textImageCreateFromText((TextImage **)((s32 *)slot), (u8 *)(buffer), (FontImage *)(gTextImageConfigurations));
     }
 }
 
@@ -784,7 +785,8 @@ void presentationRefreshCollectionScoreText(void) {
         textImageDestroy(gCollectionPresentationScoreImage);
         gCollectionPresentationScoreImage = 0;
     }
-    textImageCreateFromText(&gCollectionPresentationScoreImage, sp20, gTextImageConfigurations);
+    textImageCreateFromText((TextImage **)(&gCollectionPresentationScoreImage), (u8 *)(sp20),
+                            (FontImage *)(gTextImageConfigurations));
 }
 
 /// Draws the current collection score when its text is available.
@@ -1717,7 +1719,8 @@ void presentationInitializeForCurrentArea(void) {
     if (regionName == 0) {
         gPresentationAreaLabelImage = 0;
     } else {
-        textImageCreateFromText(&gPresentationAreaLabelImage, regionName, gTextImageConfigurations);
+        textImageCreateFromText((TextImage **)(&gPresentationAreaLabelImage), (u8 *)(regionName),
+                                (FontImage *)(gTextImageConfigurations));
     }
     presentationCreateCollectionTitleText();
     gCollectionPresentationScore = 0;

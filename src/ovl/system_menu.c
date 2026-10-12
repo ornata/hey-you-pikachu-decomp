@@ -3,6 +3,7 @@
 #include "backdrop_draw.h"
 #include "system_menu.h"
 #include "common.h"
+#include "text_image_create.h"
 #include "audio_cue.h"
 #include "text_draw.h"
 #include "scene_types.h"
@@ -479,7 +480,6 @@ void systemMenuAppendDetailText(u8 *text) {
 }
 
 void textImageDestroy(void *);
-void textImageCreateFromText(s32, s32, s32);
 /// Shared text-image configurations selected by text panels, menus and message styles.
 /// \note Original identifier: \c D_80074DE0 (0x80074DE0).
 extern u8 gTextImageConfigurations[];
@@ -520,8 +520,8 @@ void systemMenuPrepareDetailText(void) {
         }
         line[count] = 0;
         if (line[0] != 0)
-            textImageCreateFromText((s32)&gSystemMenuDetailImages[row][gSystemMenuDetailImageBuffer], (s32)line,
-                                    (s32)gTextImageConfigurations);
+            textImageCreateFromText((TextImage **)((s32)&gSystemMenuDetailImages[row][gSystemMenuDetailImageBuffer]),
+                                    (u8 *)((s32)line), (FontImage *)((s32)gTextImageConfigurations));
     }
 }
 
@@ -629,27 +629,31 @@ void systemMenuRefreshItemDisplay(MenuState *state) {
     if (state->phase == 2) {
         gSystemMenuClosingEffectRow = randomBelow(6);
         textImageCreateFromText(
-            (s32)(u8 **)((u8 *)gSystemMenuRowImages + gSystemMenuClosingEffectRow * 8 + gSystemMenuRowImageBuffer * 4),
-            (s32) "@j@j@j@j@j@j@j@j@j", (s32)font);
+            (TextImage **)((s32)(u8 **)((u8 *)gSystemMenuRowImages + gSystemMenuClosingEffectRow * 8 +
+                                        gSystemMenuRowImageBuffer * 4)),
+            (u8 *)((s32) "@j@j@j@j@j@j@j@j@j"), (FontImage *)((s32)font));
         return;
     }
     row = 0;
-    textImageCreateFromText((s32)(u8 **)((u8 *)gSystemMenuRowImages + row * 8 + gSystemMenuRowImageBuffer * 4),
-                            (s32)menu->title, (s32)font);
+    textImageCreateFromText(
+        (TextImage **)((s32)(u8 **)((u8 *)gSystemMenuRowImages + row * 8 + gSystemMenuRowImageBuffer * 4)),
+        (u8 *)((s32)menu->title), (FontImage *)((s32)font));
     item = menu->head;
     for (i = 0; i < menu->firstVisibleIndex; i++) {
         item = item->next;
     }
     for (i = row + 1; i != 6; i++) {
         if (item == NULL) {
-            textImageCreateFromText((s32)(u8 **)((u8 *)gSystemMenuRowImages + i * 8 + gSystemMenuRowImageBuffer * 4),
-                                    (s32) "", (s32)font);
+            textImageCreateFromText(
+                (TextImage **)((s32)(u8 **)((u8 *)gSystemMenuRowImages + i * 8 + gSystemMenuRowImageBuffer * 4)),
+                (u8 *)((s32) ""), (FontImage *)((s32)font));
         } else {
             if ((i - 1) + menu->firstVisibleIndex == menu->selectedIndex) {
                 state->selected = item;
             }
-            textImageCreateFromText((s32)(u8 **)((u8 *)gSystemMenuRowImages + i * 8 + gSystemMenuRowImageBuffer * 4),
-                                    (s32)item->label, (s32)font);
+            textImageCreateFromText(
+                (TextImage **)((s32)(u8 **)((u8 *)gSystemMenuRowImages + i * 8 + gSystemMenuRowImageBuffer * 4)),
+                (u8 *)((s32)item->label), (FontImage *)((s32)font));
             item = item->next;
         }
     }
@@ -1863,8 +1867,10 @@ void systemMenuInitialize(void) {
 
     state = &gSystemMenuState;
     _bzero(&gSystemMenuState, 0x30);
-    textImageCreateFromText((s32)&gSystemMenuSelectedRowMarkerImage, (s32) "@d", (s32)gTextImageConfigurations);
-    textImageCreateFromText((s32)&gSystemMenuSettingRowMarkerImage, (s32) "@b", (s32)gTextImageConfigurations);
+    textImageCreateFromText((TextImage **)((s32)&gSystemMenuSelectedRowMarkerImage), (u8 *)((s32) "@d"),
+                            (FontImage *)((s32)gTextImageConfigurations));
+    textImageCreateFromText((TextImage **)((s32)&gSystemMenuSettingRowMarkerImage), (u8 *)((s32) "@b"),
+                            (FontImage *)((s32)gTextImageConfigurations));
     gSystemMenuRowImageBuffer = 0;
     gSystemMenuDetailImageBuffer = 0;
     _bzero(gSystemMenuRowImages, 0x30);

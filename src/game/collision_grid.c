@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "text_image_create.h"
 #include "keyed_pool_types.h"
 
 /* Debug trace: compiled out in this build, but each format string is still
@@ -22,7 +23,6 @@ extern s32 gTextWindowState;
 /// \note Original identifier: \c D_800F1AC4 (0x800F1AC4).
 extern u32 gTextWindowStateStartMilliseconds;
 
-void textImageCreateFromText(s32 *, s32, s32);
 /// Owned text image used for the shared window input prompt.
 /// \note Original identifier: \c D_800F10A8 (0x800F10A8).
 extern s32 gTextWindowPromptImage;

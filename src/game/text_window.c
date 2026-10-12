@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "text_image_create.h"
 #include "text_draw.h"
 #include "integer_animation.h"
 #include "text_image.h"
@@ -298,7 +299,6 @@ void textWindowDrawPrompt(Gfx **gdl) {
     textDrawSetPalette(gDefaultTextPalette);
 }
 
-void textImageCreateFromText(s32 *, s32, s32);
 /// Shared text-image configurations selected by text panels, menus and message styles.
 /// \note Original identifier: \c D_80074DE0 (0x80074DE0).
 extern u8 gTextImageConfigurations[];
@@ -315,8 +315,8 @@ void textWindowSetLine(s32 row, u8 *text, s32 style) {
         gTextWindowPageImages[row][gTextWindowPageImageBuffer] = 0;
     }
     if (text != NULL && *text != 0) {
-        textImageCreateFromText(&gTextWindowPageImages[row][gTextWindowPageImageBuffer], (s32)text,
-                                (s32)(gTextImageConfigurations + style * 16));
+        textImageCreateFromText((TextImage **)(&gTextWindowPageImages[row][gTextWindowPageImageBuffer]),
+                                (u8 *)((s32)text), (FontImage *)((s32)(gTextImageConfigurations + style * 16)));
     }
 }
 
@@ -330,7 +330,8 @@ void textWindowSetPrompt(s32 textAddress) {
         textImageDestroy(gTextWindowPromptImage);
         gTextWindowPromptImage = 0;
     }
-    textImageCreateFromText((s32 *)&gTextWindowPromptImage, textAddress, (s32)gTextImageConfigurations);
+    textImageCreateFromText((TextImage **)((s32 *)&gTextWindowPromptImage), (u8 *)(textAddress),
+                            (FontImage *)((s32)gTextImageConfigurations));
 }
 
 /// Prepare a page of text for display using the requested text style.
