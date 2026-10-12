@@ -288,9 +288,9 @@ s32 objectSetOnState(s32 on, s32 id) {
     if (((RuntimeObjectPrefix *)obj)->kind == 0x10) {
         st = ((RuntimeObjectPrefix *)obj)->state.bytes;
         if (on) {
-            ((ActorScriptState *)st)->behaviorInhibitFlags |= ACTOR_BEHAVIOR_COOPERATION_ENABLED;
+            ((ActorScriptState *)st)->behaviorFlags |= ACTOR_BEHAVIOR_COOPERATION_ENABLED;
         } else {
-            ((ActorScriptState *)st)->behaviorInhibitFlags &= ~ACTOR_BEHAVIOR_COOPERATION_ENABLED;
+            ((ActorScriptState *)st)->behaviorFlags &= ~ACTOR_BEHAVIOR_COOPERATION_ENABLED;
         }
     } else if (((RuntimeObjectPrefix *)obj)->kind == 0x86) {
         st = ((RuntimeObjectPrefix *)obj)->state.bytes;
@@ -339,9 +339,9 @@ void actorSetAppearanceVariants(u8 *actor, s32 slot0Variant, s32 slot1Variant, s
     actorAppearanceSetVariant(actor, 0, slot0Variant);
     actorAppearanceSetVariant(actor, 1, slot1Variant);
     if (preserve != 0) {
-        ((ActorScriptState *)state)->behaviorInhibitFlags |= ACTOR_BEHAVIOR_PRESERVE_APPEARANCE;
+        ((ActorScriptState *)state)->behaviorFlags |= ACTOR_BEHAVIOR_PRESERVE_APPEARANCE;
     } else {
-        ((ActorScriptState *)state)->behaviorInhibitFlags &= ~ACTOR_BEHAVIOR_PRESERVE_APPEARANCE;
+        ((ActorScriptState *)state)->behaviorFlags &= ~ACTOR_BEHAVIOR_PRESERVE_APPEARANCE;
     }
 }
 

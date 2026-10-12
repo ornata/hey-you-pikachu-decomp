@@ -3085,3 +3085,15 @@ action-start appearance reset. Ghidra 0x80119210 confirms the preservation
 bit update. The enum description distinguishes these positive settings from
 inhibition bits without changing the stored halfword or legacy field name.
 All producers and consumers preserve strict object bytes and relocations.
+
+### Unified actor behavior-word naming
+
+The mixed-control halfword is now `ActorScriptState.behaviorFlags`, covering
+inhibition, cooperation enablement and appearance persistence without
+implying that every set bit disables behavior. All named consumers use the
+new field. The visibility producer and model-update consumer establish
+`ACTOR_INHIBIT_INTERACTION_VISIBILITY`; Ghidra 0x80015488 confirms its update
+gate. Remaining cooperation and presentation save/restore raw reads use the
+checked member. Cooperation permission also applies to actor candidates in
+the interaction classifier, so its contract is not restricted to the single
+activation producer's kind. All dependent and isolated conversions match.

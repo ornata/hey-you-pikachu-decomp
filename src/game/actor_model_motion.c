@@ -415,12 +415,12 @@ void actorUpdateModel(u8 *actor) {
     actionScriptUpdate(actor);
     actionUpdatePlayback(actor);
     actorUpdateTrackedSoundSpatialization(((RuntimeObjectPrefix *)actor)->worldPosition, ((ActorScriptState *)actorState)->soundHandles);
-    if (!(actionGetAttributes(actor) & 0x20000000) && !(((ActorScriptState *)actorState)->behaviorInhibitFlags & 8)) {
+    if (!(actionGetAttributes(actor) & 0x20000000) && !(((ActorScriptState *)actorState)->behaviorFlags & ACTOR_INHIBIT_TERRAIN_AND_GRAVITY)) {
         actorUpdateGroundSlopePitch(actor);
     }
     actorUpdateObjectRotationFromState(actor);
     actorRefreshTrackingTargetPosition(actor);
-    if ((gRuntimeCurrentProgram == 0) && !(((ActorScriptState *)actorState)->behaviorInhibitFlags & 0x20)) {
+    if ((gRuntimeCurrentProgram == 0) && !(((ActorScriptState *)actorState)->behaviorFlags & ACTOR_INHIBIT_INTERACTION_VISIBILITY)) {
         objectUpdateHierarchyInteractionVisibility(actor);
     }
     ((ActorScriptState *)actorState)->collisionRegistration = collisionGridRegisterObject(actor);
@@ -547,7 +547,7 @@ void actorUpdateTargetFacingChild(u8 *object) {
     parentState = ((RuntimeObjectPrefix *)parent)->state.bytes;
     motionUpdateChildPlayback(object);
     weight = &follow->weight;
-    if ((actionGetAttributes(parent) & 0x400000) && !(((ActorScriptState *)parentState)->behaviorInhibitFlags & ACTOR_INHIBIT_TARGET_FACING)) {
+    if ((actionGetAttributes(parent) & 0x400000) && !(((ActorScriptState *)parentState)->behaviorFlags & ACTOR_INHIBIT_TARGET_FACING)) {
         *weight += 2.0f * gRuntimeFrameSeconds;
         if (*weight > 2.0f) {
             *weight = 2.0f;
@@ -640,7 +640,7 @@ void actorUpdateCameraFacingChild(u8 *object) {
     motionUpdateChildPlayback(object);
     weight = &orientation->weight;
     if ((actionGetAttributes(((RuntimeObjectPrefix *)object)->root.bytes) & 0x800000) &&
-        !(((RuntimeObjectPrefix *)object)->root.object->state.actor->behaviorInhibitFlags & ACTOR_INHIBIT_CAMERA_FACING)) {
+        !(((RuntimeObjectPrefix *)object)->root.object->state.actor->behaviorFlags & ACTOR_INHIBIT_CAMERA_FACING)) {
         *weight += 2.0f * gRuntimeFrameSeconds;
         if (*weight > maxWeight) {
             *weight = maxWeight;
@@ -1314,7 +1314,7 @@ void actorConstrainMovementToTerrain(u8 *object, f32 *displacement) {
 
     state = ((RuntimeObjectPrefix *)object)->state.bytes;
     surface = 0;
-    if (((ActorScriptState *)state)->behaviorInhibitFlags & ACTOR_INHIBIT_HORIZONTAL_MOVEMENT) {
+    if (((ActorScriptState *)state)->behaviorFlags & ACTOR_INHIBIT_HORIZONTAL_MOVEMENT) {
         ((f32 *)displacement)[2] = 0.0f;
         ((f32 *)displacement)[0] = 0.0f;
     }
@@ -1322,7 +1322,7 @@ void actorConstrainMovementToTerrain(u8 *object, f32 *displacement) {
     pose = ((ActorScriptState *)state)->groundReference;
     actorUpdateGroundReferencePose(object, reference, pose);
     status = actionGetAttributes(object);
-    if (((ActorScriptState *)state)->behaviorInhibitFlags & ACTOR_INHIBIT_TERRAIN_AND_GRAVITY) {
+    if (((ActorScriptState *)state)->behaviorFlags & ACTOR_INHIBIT_TERRAIN_AND_GRAVITY) {
         status |= 0x20000000;
     }
     if (!(status & 0x20000000)) {
@@ -1406,7 +1406,7 @@ void actorSetBehaviorInhibitFlags(u8 *actor, u16 flags) {
     u8 *actorState;
 
     actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    ((ActorScriptState *)actorState)->behaviorInhibitFlags |= flags;
+    ((ActorScriptState *)actorState)->behaviorFlags |= flags;
 }
 
 /// Disable actor behavior inhibition flags.
@@ -1418,5 +1418,5 @@ void actorClearBehaviorInhibitFlags(u8 *actor, u16 flags) {
     u8 *actorState;
 
     actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    ((ActorScriptState *)actorState)->behaviorInhibitFlags &= ~flags;
+    ((ActorScriptState *)actorState)->behaviorFlags &= ~flags;
 }

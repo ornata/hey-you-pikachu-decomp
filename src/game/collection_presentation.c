@@ -1,3 +1,4 @@
+#include "actor_script.h"
 #include "actor_behavior.h"
 #include "story_chapter.h"
 #include "story_milestones.h"
@@ -352,7 +353,7 @@ void presentationRestoreActiveActor(void) {
     ((f32 *)ext)[5] = EXT_F(5);
     *(Blk30 *)(ext + 0x18) = *(Blk30 *)&EXT_F(6);
     ((f32 *)ext)[0x12] = EXT_F(0x12);
-    *(u16 *)(ext + 0x1E8) = *(u16 *)((u8 *)&gPresentationSavedActorState + 0x1E8);
+    ((ActorScriptState *)ext)->behaviorFlags = ((ActorScriptState *)&gPresentationSavedActorState)->behaviorFlags;
     actionScriptStop(gPikachuActor, &gPresentationSavedActorState);
     actionBeginPoseTransition((u8 *)gPikachuActor, 0x4A, 0.1f);
     objectClearHierarchyFlags((u8 *)gPikachuActor, 0x2000);

@@ -989,7 +989,7 @@ s32 playerRequestTargetCooperation(u8 *player) {
     kind = ((RuntimeObjectPrefix *)obj)->kind;
     if (kind == 0x10) {
         state = ((RuntimeObjectPrefix *)obj)->state.bytes;
-        if (!(((ActorScriptState *)state)->behaviorInhibitFlags & ACTOR_BEHAVIOR_COOPERATION_ENABLED)) {
+        if (!(((ActorScriptState *)state)->behaviorFlags & ACTOR_BEHAVIOR_COOPERATION_ENABLED)) {
             return 0;
         }
         TRACE("coop - model:%p(%s)\n", obj, actorConfigGetDisplayName(kind, 1));
@@ -1869,7 +1869,7 @@ s32 playerClassifyInteractionTarget(u8 *player, u8 *object, s32 flags) {
     }
     if (kind > 0 && kind < 0x26) {
         state = *(u8 **)(object + 0x54);
-        if (*(u16 *)(state + 0x1E8) & 0x10) {
+        if (((ActorScriptState *)state)->behaviorFlags & ACTOR_BEHAVIOR_COOPERATION_ENABLED) {
             *(s32 *)(player + 0x98) = 2;
             return 4;
         }

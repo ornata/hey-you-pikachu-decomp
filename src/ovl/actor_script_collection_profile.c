@@ -38,12 +38,12 @@ s32 actorScriptSetHorizontalMovementSuppressed(u8 *actor) {
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     if (scriptVmPopInteger(sp1C) != 0) {
         actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-        ((ActorScriptState *)actorState)->behaviorInhibitFlags =
-            (u16)(((ActorScriptState *)actorState)->behaviorInhibitFlags | ACTOR_INHIBIT_HORIZONTAL_MOVEMENT);
+        ((ActorScriptState *)actorState)->behaviorFlags =
+            (u16)(((ActorScriptState *)actorState)->behaviorFlags | ACTOR_INHIBIT_HORIZONTAL_MOVEMENT);
     } else {
         updatedActorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-        ((ActorScriptState *)updatedActorState)->behaviorInhibitFlags =
-            (u16)(((ActorScriptState *)updatedActorState)->behaviorInhibitFlags & ~ACTOR_INHIBIT_HORIZONTAL_MOVEMENT);
+        ((ActorScriptState *)updatedActorState)->behaviorFlags =
+            (u16)(((ActorScriptState *)updatedActorState)->behaviorFlags & ~ACTOR_INHIBIT_HORIZONTAL_MOVEMENT);
     }
     scriptVmPushInteger(sp1C, 0);
     return 0;
@@ -234,11 +234,11 @@ s32 actorScriptSetInteractionVisibilitySuppressed(u8 *actor) {
     if (scriptVmPopInteger(sp18) != 0) {
         sp1C = sp1C;
         objectSetHierarchyFlags(actor, 2);
-        ((ActorScriptState *)sp1C)->behaviorInhibitFlags =
-            (u16)(((ActorScriptState *)sp1C)->behaviorInhibitFlags | 0x20);
+        ((ActorScriptState *)sp1C)->behaviorFlags =
+            (u16)(((ActorScriptState *)sp1C)->behaviorFlags | ACTOR_INHIBIT_INTERACTION_VISIBILITY);
     } else {
-        ((ActorScriptState *)sp1C)->behaviorInhibitFlags =
-            (u16)(((ActorScriptState *)sp1C)->behaviorInhibitFlags & 0xFFDF);
+        ((ActorScriptState *)sp1C)->behaviorFlags =
+            (u16)(((ActorScriptState *)sp1C)->behaviorFlags & ~ACTOR_INHIBIT_INTERACTION_VISIBILITY);
     }
     scriptVmPushInteger(sp18, 0);
     return 0;

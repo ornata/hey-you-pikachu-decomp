@@ -1319,12 +1319,12 @@ s32 actorScriptSetTargetFacingSuppressed(u8 *actor) {
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     if (scriptVmPopInteger(sp1C) != 0) {
         actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-        ((ActorScriptState *)actorState)->behaviorInhibitFlags =
-            (u16)(((ActorScriptState *)actorState)->behaviorInhibitFlags | ACTOR_INHIBIT_TARGET_FACING);
+        ((ActorScriptState *)actorState)->behaviorFlags =
+            (u16)(((ActorScriptState *)actorState)->behaviorFlags | ACTOR_INHIBIT_TARGET_FACING);
     } else {
         updatedActorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-        ((ActorScriptState *)updatedActorState)->behaviorInhibitFlags =
-            (u16)(((ActorScriptState *)updatedActorState)->behaviorInhibitFlags & ~ACTOR_INHIBIT_TARGET_FACING);
+        ((ActorScriptState *)updatedActorState)->behaviorFlags =
+            (u16)(((ActorScriptState *)updatedActorState)->behaviorFlags & ~ACTOR_INHIBIT_TARGET_FACING);
     }
     scriptVmPushInteger(sp1C, 0);
     return 0;

@@ -107,7 +107,7 @@ typedef struct ActorScriptState {
     f32 localMotion[3];         ///< Motion vector before transformation into world space.
     f32 worldMotion[3];         ///< Transformed and scaled motion vector.
     f32 gravityVelocity;        ///< Additional vertical velocity accumulated under gravity.
-    u16 behaviorInhibitFlags;   ///< Flags suppressing selected actor behaviors.
+    u16 behaviorFlags;   ///< Flags controlling inhibition, cooperation and appearance persistence.
     s16 movementCollisionFlags; ///< Result of the latest constrained movement.
     f32 targetPosition[3];      ///< Stored target position in world coordinates.
     u8 unknown1F8[4];
@@ -222,7 +222,7 @@ ACTOR_SCRIPT_OFFSET_CHECK(ActorStateAttachmentModeOffsetCheck, ActorScriptState,
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateTargetHandleOffsetCheck, ActorScriptState, targetHandle, 0x198);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateAirborneOffsetCheck, ActorScriptState, airborne, 0x1BC);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateWorldMotionOffsetCheck, ActorScriptState, worldMotion, 0x1D8);
-ACTOR_SCRIPT_OFFSET_CHECK(ActorStateBehaviorFlagsOffsetCheck, ActorScriptState, behaviorInhibitFlags, 0x1E8);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateBehaviorFlagsOffsetCheck, ActorScriptState, behaviorFlags, 0x1E8);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateTargetPositionOffsetCheck, ActorScriptState, targetPosition, 0x1EC);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateCollisionDepthOffsetCheck, ActorScriptState, collisionDepth, 0x1FC);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateCollisionRegistrationOffsetCheck, ActorScriptState, collisionRegistration, 0x210);
