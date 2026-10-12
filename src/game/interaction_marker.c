@@ -1,3 +1,4 @@
+#include "camera_visibility.h"
 #include "item_kind.h"
 #include "item_types.h"
 #include "actor_script.h"
@@ -26,20 +27,11 @@ typedef struct InteractionMarkerState {
 typedef char InteractionMarkerStateSizeCheck[(sizeof(InteractionMarkerState) == 0x50) ? 1 : -1];
 typedef char InteractionMarkerTracksOffsetCheck[((u32) & ((InteractionMarkerState *)0)->tracks == 8) ? 1 : -1];
 
-typedef struct CullRect {
-    f32 minV;
-    f32 maxV;
-    f32 scaleX;
-    f32 scaleY;
-    f32 margin;
-} CullRect;
-s32 cameraTestViewPoint(CullRect, u8 *);
-s32 areaTestCameraVisibility(f32, f32 *, f32 *);
 f32 fabsf(f32);
 #pragma intrinsic(fabsf)
 /// Primary and secondary view-space regions used to classify interaction candidates.
 /// \note Original identifier: \c D_80088C88 (0x80088C88).
-extern CullRect gInteractionRegions[2];
+extern CameraViewRegion gInteractionRegions[2];
 /// Classification bits associated with the two interaction regions.
 /// \note Original identifier: \c D_800A4780 (0x800A4780).
 extern s32 gInteractionRegionFlags[2];
@@ -89,7 +81,7 @@ s32 interactionConsiderObject(u8 *object) {
         if (flags == 0)
             return 0;
         for (i = 0; i < 2; i++) {
-            if (cameraTestViewPoint(gInteractionRegions[i], (u8 *)projected)) {
+            if (cameraTestViewPoint(gInteractionRegions[i], projected)) {
                 flags |= gInteractionRegionFlags[i];
             }
         }

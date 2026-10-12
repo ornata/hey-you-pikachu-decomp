@@ -1605,3 +1605,15 @@ Drawing reads the actor's checked `heldItemHandle` at 0x190. Using the runtime
 object's typed actor-state member changes generated code here; retaining the
 original byte-pointer state load with a typed actor-state consumer matches.
 The private marker style has documented fields and a checked 0x24-byte stride.
+
+### Camera visibility region and position contracts
+
+`camera_visibility.h` consolidates the by-value 0x14-byte viewing region and
+three-float position interfaces. The region documents inclusive forward-depth
+limits, coordinate scales and lateral allowance, with size and margin-offset
+checks. Ghidra 0x800024C8 confirms negative-Z forward depth and strict lateral
+limits; its scalarized aggregate signature is not used as a C prototype.
+The main provider uses float-array indexing; interaction and HUD callers share
+canonical declarations with the area visibility provider. An unused duplicate
+region in the controller unit is removed. All five units preserve all 483 objects
+and strict relocation addends.

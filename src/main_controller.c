@@ -274,13 +274,6 @@ void renderPrepareDisplayList(void);
 /// \note Original identifier: \c D_80088F18 (0x80088F18).
 extern s32 gRenderOptionalFrameHookEnabled;
 
-typedef struct CullRect {
-    f32 minV;
-    f32 maxV;
-    f32 scaleX;
-    f32 scaleY;
-    f32 margin;
-} CullRect;
 
 /* NONMATCHING: three used translation scalars reproduce frame 0x58 and
  * matrix offset 0x28 (carry /tmp/258c-scalars.c). Remaining differences are

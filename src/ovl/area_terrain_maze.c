@@ -1,3 +1,4 @@
+#include "camera_visibility.h"
 #include "object_flags.h"
 #include "object_hierarchy_create.h"
 #include "object_lifecycle.h"

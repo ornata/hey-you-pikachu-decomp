@@ -1,3 +1,4 @@
+#include "camera_visibility.h"
 #include "hud_draw.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -106,7 +107,6 @@ typedef struct {
 void textureGetDescriptor(s32, s32, HudTexture *);
 void textureImageInitialize(s32 *, s32, s32, s32, s32, s32, s32);
 void textureDrawScaledRepeated(Gfx **, s32 *, s32, s32, s32, s32, s32, s32, f32, f32, s32, s32);
-s32 areaTestCameraVisibility(f32, f32 *, f32 *);
 /// Borrowed reference to the active Pikachu actor created for the current area.
 /// \note Original identifier: \c D_800760A8 (0x800760A8).
 extern u8 *gPikachuActor;

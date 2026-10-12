@@ -1,3 +1,4 @@
+#include "camera_visibility.h"
 #include "graphics_tasks.h"
 #include "title_screen.h"
 #include "backdrop_draw.h"
@@ -1026,29 +1027,22 @@ void renderSubmitFrameBorder(void) {
     graphicsTaskSubmit(1, 64, &gRenderDisplayListStart, &gRenderDisplayListCursor, &gRuntimeEventQueue);
 }
 
-typedef struct CullRect {
-    f32 minV;
-    f32 maxV;
-    f32 scaleX;
-    f32 scaleY;
-    f32 margin;
-} CullRect;
 
 /// Test whether a camera-space point lies within a configured viewing region.
 /// \param r Viewing region with inclusive forward-depth limits, horizontal and vertical scale factors, and lateral margin.
 /// \param point Three-component camera-space point in X, Y, Z order; forward depth is negative Z.
 /// \returns One when the point satisfies the depth limits and lies strictly inside the lateral limits, or zero otherwise.
-s32 cameraTestViewPoint(CullRect r, u8 *point) {
+s32 cameraTestViewPoint(CameraViewRegion r, f32 *point) {
     f32 forwardLimit;
     f32 scaledY;
     f32 scaledX;
 
-    forwardLimit = -*(f32 *)(point + 8);
-    if ((r.maxV < forwardLimit) || (forwardLimit < r.minV)) {
+    forwardLimit = -point[2];
+    if ((r.maximumDepth < forwardLimit) || (forwardLimit < r.minimumDepth)) {
         return 0;
     }
-    scaledX = *(f32 *)(point + 0) * r.scaleX;
-    scaledY = *(f32 *)(point + 4) * r.scaleY;
+    scaledX = point[0] * r.scaleX;
+    scaledY = point[1] * r.scaleY;
     forwardLimit = forwardLimit + r.margin;
     if ((scaledX < forwardLimit) && (-scaledX < forwardLimit) && (scaledY < forwardLimit) &&
         (-scaledY < forwardLimit)) {
