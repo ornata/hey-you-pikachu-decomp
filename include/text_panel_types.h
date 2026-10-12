@@ -14,8 +14,8 @@ typedef struct TextPanel {
     s16 x, y;            ///< Display offset in screen pixels.
     u8 (*colors)[4];     ///< Owned per-line RGBA color table.
     s32 capacity;        ///< Number of entry slots, including the additional scroll line.
-    u8 **images;         ///< Display-order image pointers in the shared entry allocation.
-    u8 **entries;        ///< Circular image-entry pointers in the shared entry allocation.
+    TextImage **images;         ///< Display-order image pointers in the shared entry allocation.
+    TextImage **entries;        ///< Circular image-entry pointers in the shared entry allocation.
     void *configuration; ///< Borrowed font/text configuration, or null for defaults.
 } TextPanel;
 

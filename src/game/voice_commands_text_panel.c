@@ -143,11 +143,13 @@ void voiceCommandLaunchEffect(ScriptMessage message) {
 }
 
 void micRequestAmplifierOff(void);
-/// Borrowed display name retained by voice-command translation.
+/// Borrowed encoded display name retained by voice-command translation.
+/// \note The unsigned byte view preserves the ROM's text-byte load convention.
 /// \note Original identifier: \c D_800722D8 (0x800722D8).
+extern u8 *gVoiceCommandDisplayName;
 /// Borrowed fallback display text used when a recognized word has no display name.
 /// \note Original identifier: \c D_800722EC (0x800722EC).
-extern u8 *gVoiceCommandDisplayName, *gVoiceCommandUnrecognizedName;
+extern u8 *gVoiceCommandUnrecognizedName;
 /// Recognition command status sampled by the most recent gameplay voice update.
 /// \note Original identifier: \c D_800722DC (0x800722DC).
 /// Dictionary lookup index retained by translation, including its legacy distance-based fallback.
@@ -182,7 +184,7 @@ s32 voiceCommandTakeMessage(ScriptMessage *out) {
     micRequestAmplifierOff();
     index = 1;
     while (1) {
-        if (*(gVoiceCommandDisplayName = voiceDictionaryGetWordName(((u16 *)&gVoiceCommandResultIndex)[1])) == 0) {
+        if (*(gVoiceCommandDisplayName = (u8 *)voiceDictionaryGetWordName(((u16 *)&gVoiceCommandResultIndex)[1])) == 0) {
             gVoiceCommandDisplayName = gVoiceCommandUnrecognizedName;
             return 0;
         }
@@ -258,7 +260,7 @@ void textPanelInitialize(TextPanel *panel, s32 visibleLines) {
     _bzero((s32)panel, 0x20);
     allocationSize = visibleLines * 8;
     allocation = heapAllocLocal(&gGameHeap, allocationSize, 0x33);
-    panel->images = (u8 **)allocation;
+    panel->images = (TextImage **)allocation;
     _bzero((s32)allocation, allocationSize);
     panel->entries = panel->images + visibleLines;
     allocationSize = visibleLines * 4;
@@ -306,7 +308,7 @@ extern f32 gTextPanelBackdropHorizontalScale;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80012860 (0x80012860).
 void textPanelDraw(TextPanel *panel, Gfx **gdl, s32 mode) {
-    u8 **image;
+    TextImage **image;
     u8 *color;
     s32 x0, y0, x1, y1;
     s32 i;
@@ -347,7 +349,7 @@ void textPanelDraw(TextPanel *panel, Gfx **gdl, s32 mode) {
             textDrawSetCursor(panel->x + x0, panel->y + y0 + i * 16 - 16);
             color = panel->colors[i];
             textDrawSetColor(color[0], color[1], color[2], color[3]);
-            textDrawImageAtCursor(*image);
+            textDrawImageAtCursor((u8 *)*image);
         }
         textDrawPrintf(gTextPanelLineBreakText);
     }
@@ -428,9 +430,9 @@ void textImageCreateFromText(s32, s32, s32);
 /// The image remains valid until discarded by an append, clear, or entry release.
 /// \note Original decompilation identifier: \c func_80012D20 (0x80012D20).
 s32 textPanelAppend(TextPanel *panel, void *text) {
-    u8 *oldImage;
+    TextImage *oldImage;
     s32 index;
-    u8 **slot;
+    TextImage **slot;
     s32 capacity;
     s32 i;
     capacity = panel->capacity;

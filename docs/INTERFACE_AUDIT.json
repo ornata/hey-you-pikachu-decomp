@@ -109,20 +109,6 @@
     },
     {
       "code": 709,
-      "file": "src/game/voice_commands_text_panel.c",
-      "line": 185,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "if (*(gVoiceCommandDisplayName = voiceDictionaryGetWordName(((u16 *)&gVoiceCommandResultIndex)[1])) == 0) {"
-    },
-    {
-      "code": 709,
-      "file": "src/game/voice_commands_text_panel.c",
-      "line": 442,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "textImageDestroy(oldImage);"
-    },
-    {
-      "code": 709,
       "file": "src/game/player_profile.c",
       "line": 33,
       "diagnostic": "Incompatible pointer type assignment",
