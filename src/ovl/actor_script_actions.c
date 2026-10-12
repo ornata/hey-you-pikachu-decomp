@@ -1,3 +1,4 @@
+#include "actor_script_action.h"
 #include "actor_meters.h"
 #include "camera_overlay.h"
 #include "actor_color.h"
@@ -73,7 +74,6 @@ s32 actorScriptWaitForActionResult(u8 *actor) {
     return 2;
 }
 
-s32 actorScriptWaitForActionResult(u8 *arg0);   /* extern */
 void actionScriptStart(u8 *, s32); /* extern */
 
 /// Start the action supplied by the script and wait for it to stop.
@@ -112,7 +112,6 @@ s32 actorScriptWaitForActionOrMessage(u8 *actor) {
     return actorScriptWaitForActionResult(actor);
 }
 
-s32 actorScriptWaitForActionOrMessage(u8 *arg0);   /* extern */
 
 /// Start the script-selected action and wait for completion or a pending message.
 /// \param actor Actor whose script supplies the action and receives its completion result.
@@ -230,7 +229,7 @@ s32 actorScriptEatHeldItem(u8 *actor) {
         actorConsumeHeldItem(actor);
         if (objectFindLiveByHandle(((ActorScriptState *)state)->heldItemHandle) != NULL) {
             actionScriptStart(actor, 0x4F);
-            actorBeginScriptActionHandler(actor, 1);
+            actorBeginScriptActionHandler(actor, ACTOR_SCRIPT_ACTION_POLL_ACTION_STOPPED);
             return 2;
         }
         return 1;
@@ -314,7 +313,6 @@ s32 actorScriptSelectControlScheme(u8 *actor) {
 }
 
 void hudSetAreaLabelVisible(s32);                                 /* extern */
-void actorBeginScriptActionHandler(u8 *arg0, s32 arg1);                         /* extern */
 /// Show the area label and begin the area-transition fade when its delay has elapsed.
 /// \param actor Actor whose script context controls the transition.
 /// \returns Two while this handler or its selected successor waits for the transition.
@@ -328,7 +326,7 @@ s32 actorScriptBeginAreaTransition(u8 *actor) {
         hudSetAreaLabelVisible(1);
     } else if (((ScriptVm *)vmBytes)->totalElapsed > 1.5f) {
         cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 0.6f);
-        actorBeginScriptActionHandler(actor, 0xC);
+        actorBeginScriptActionHandler(actor, ACTOR_SCRIPT_ACTION_FINISH_AREA_TRANSITION);
     }
     return 2;
 }
@@ -432,40 +430,40 @@ s32 actorScriptDispatchActionHandler(u8 *object) {
 
     state = ((RuntimeObjectPrefix *)object)->state.bytes;
     switch (((ScriptVm *)((ActorScriptState *)state)->vmAddress)->actionHandler) {
-    case 0:
+    case ACTOR_SCRIPT_ACTION_DEFAULT_ACTION:
         if (actionScriptIsStopped(object) != 0) {
             actionScriptStart(object, 0x57);
         }
         scriptVmPushInteger(((ActorScriptState *)state)->vmAddress, 0);
         return 1;
-    case 1:
+    case ACTOR_SCRIPT_ACTION_POLL_ACTION_STOPPED:
         return actorScriptPollActionStopped(object);
-    case 2:
+    case ACTOR_SCRIPT_ACTION_PLAY_ACTION:
         return actorScriptPlayAction(object);
-    case 3:
+    case ACTOR_SCRIPT_ACTION_EXIT_ACTION_LOOP:
         actionRequestLoopExit(object);
         return actorScriptWaitForActionResult(object);
-    case 4:
+    case ACTOR_SCRIPT_ACTION_WAIT_FOR_ACTION_OR_MESSAGE:
         return actorScriptWaitForActionOrMessage(object);
-    case 5:
+    case ACTOR_SCRIPT_ACTION_PLAY_INTERRUPTIBLE_ACTION:
         return actorScriptPlayInterruptibleAction(object);
-    case 6:
+    case ACTOR_SCRIPT_ACTION_THROW_HELD_ITEM:
         return actorScriptThrowHeldItem(object);
-    case 7:
+    case ACTOR_SCRIPT_ACTION_ACQUIRE_ITEM:
         return actorScriptAcquireItem(object);
-    case 8:
+    case ACTOR_SCRIPT_ACTION_EAT_HELD_ITEM:
         return actorScriptEatHeldItem(object);
-    case 9:
+    case ACTOR_SCRIPT_ACTION_PERFORM_COSTED_ACTION:
         return actorScriptPerformCostedAction(object);
-    case 10:
+    case ACTOR_SCRIPT_ACTION_SELECT_CONTROL_SCHEME:
         return actorScriptSelectControlScheme(object);
-    case 11:
+    case ACTOR_SCRIPT_ACTION_BEGIN_AREA_TRANSITION:
         return actorScriptBeginAreaTransition(object);
-    case 12:
+    case ACTOR_SCRIPT_ACTION_FINISH_AREA_TRANSITION:
         return actorScriptFinishAreaTransition(object);
-    case 13:
+    case ACTOR_SCRIPT_ACTION_OPEN_TEXT_WINDOW:
         return actorScriptOpenTextWindow(object);
-    case 14:
+    case ACTOR_SCRIPT_ACTION_TRANSFORM_KIND:
         return actorScriptTransformKind(object);
     default:
         TRACE("ERROR: Unknown nerve routine. Nerve number %d\n",

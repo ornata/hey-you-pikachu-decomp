@@ -6564,6 +6564,7 @@
     "src/ovl/actor_script_action_commands.c": {
       "known_views": [
         "actor_script.h",
+        "actor_script_action.h",
         "object_types.h",
         "script_vm.h",
         "script_vm_stack.h"
@@ -6574,11 +6575,11 @@
       "locations": {
         "raw_offset_candidates": {
           "capacity - 1": [
-            "81:72",
-            "89:17"
+            "82:72",
+            "90:17"
           ],
           "prefixLength - 1": [
-            "83:70"
+            "84:70"
           ]
         }
       }
@@ -6590,6 +6591,7 @@
         "actor_meters.h",
         "actor_parts.h",
         "actor_script.h",
+        "actor_script_action.h",
         "audio_cue.h",
         "camera_overlay.h",
         "item_response.h",
@@ -6605,7 +6607,7 @@
       "locations": {
         "raw_offset_candidates": {
           "object + 0x54": [
-            "272:22"
+            "271:22"
           ]
         }
       }
@@ -6614,6 +6616,7 @@
       "known_views": [
         "actor_color.h",
         "actor_script.h",
+        "actor_script_action.h",
         "actor_text.h",
         "camera_overlay.h",
         "door.h",
@@ -6631,7 +6634,7 @@
       "locations": {
         "raw_offset_candidates": {
           "actor + 0x54": [
-            "366:32",
+            "367:32",
             "819:32",
             "898:32",
             "1003:32"
@@ -6651,6 +6654,7 @@
       "known_views": [
         "actor_rotation.h",
         "actor_script.h",
+        "actor_script_action.h",
         "actor_sound.h",
         "audio_cue.h",
         "object_lookup.h",
@@ -7914,6 +7918,7 @@
     "src/ovl/script_vm.c": {
       "known_views": [
         "actor_script.h",
+        "actor_script_action.h",
         "heap_alloc.h",
         "heap_free.h",
         "heap_types.h",
@@ -7927,46 +7932,46 @@
       "locations": {
         "raw_offset_candidates": {
           "vm + 0x28": [
-            "62:16"
+            "63:16"
           ],
           "vm + 0x12C": [
-            "64:16"
+            "65:16"
           ],
           "vm + 0x22C": [
-            "65:16",
-            "352:24"
+            "66:16",
+            "353:24"
           ],
           "savedDepthCount + 1": [
-            "164:65"
+            "165:65"
           ],
           "returnCount + 1": [
-            "182:61"
+            "183:61"
           ],
           "value + 1": [
-            "221:15",
-            "224:11",
-            "243:15",
-            "246:11",
-            "257:20",
-            "267:20",
-            "277:18"
+            "222:15",
+            "225:11",
+            "244:15",
+            "247:11",
+            "258:20",
+            "268:20",
+            "278:18"
           ],
           "operandOffset + 5": [
-            "330:43"
+            "331:43"
           ],
           "vm + 8": [
-            "693:29"
+            "694:29"
           ],
           "actor + 0x54": [
-            "741:22"
+            "742:22"
           ],
           "owner + 0x1B8": [
-            "742:25"
+            "743:25"
           ],
           "instructionOffset + 5": [
-            "792:43",
-            "843:47",
-            "861:43"
+            "793:43",
+            "844:47",
+            "862:43"
           ]
         }
       }

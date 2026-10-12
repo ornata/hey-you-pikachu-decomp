@@ -1,3 +1,4 @@
+#include "actor_script_action.h"
 #include "camera_overlay.h"
 #include "actor_color.h"
 #include "object_distance.h"
@@ -603,13 +604,12 @@ s32 actorScriptConfigureCameraTransition(u8 *actor) {
     return 0;
 }
 
-void actorBeginScriptActionHandler(u8 *arg0, s32 arg1); /* extern */
 /// Begin a scripted actor-kind transformation with visual and audio effects.
 /// \param actor Actor address whose script VM supplies the destination kind and later receives the replacement actor handle.
 /// \returns Two, transferring execution to the transformation action handler.
 /// \note Original decompilation identifier: \c func_80120664 (0x80120664).
 s32 actorScriptStartKindTransformation(s32 actor) {
-    actorBeginScriptActionHandler((u8 *)actor, 0xE);
+    actorBeginScriptActionHandler((u8 *)actor, ACTOR_SCRIPT_ACTION_TRANSFORM_KIND);
     return 2;
 }
 

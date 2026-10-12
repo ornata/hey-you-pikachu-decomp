@@ -1,3 +1,4 @@
+#include "actor_script_action.h"
 #include "actor_sound.h"
 #include "actor_rotation.h"
 /// \file
@@ -312,13 +313,12 @@ s32 actorScriptSetRotationAxis(u8 *actor) {
     return 0;
 }
 
-void actorBeginScriptActionHandler(u8 *arg0, s32 arg1); /* extern */
 /// Begin a scripted change of player control scheme and controller assignment.
 /// \param actor Actor address whose script VM supplies a control-scheme identifier from zero through twenty-seven and later receives zero.
 /// \returns Two, transferring script execution to the action handler.
 /// \note Original decompilation identifier: \c func_8011CD94 (0x8011CD94).
 s32 actorScriptStartControlSchemeChange(s32 actor) {
-    actorBeginScriptActionHandler((u8 *)actor, 0xA);
+    actorBeginScriptActionHandler((u8 *)actor, ACTOR_SCRIPT_ACTION_SELECT_CONTROL_SCHEME);
     return 2;
 }
 
@@ -327,7 +327,7 @@ s32 actorScriptStartControlSchemeChange(s32 actor) {
 /// \returns Two, transferring script execution to the action handler.
 /// \note Original decompilation identifier: \c func_8011CDB8 (0x8011CDB8).
 s32 actorScriptStartAreaTransition(s32 actor) {
-    actorBeginScriptActionHandler((u8 *)actor, 0xB);
+    actorBeginScriptActionHandler((u8 *)actor, ACTOR_SCRIPT_ACTION_BEGIN_AREA_TRANSITION);
     return 2;
 }
 

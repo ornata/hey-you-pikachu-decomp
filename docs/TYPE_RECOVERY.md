@@ -2127,3 +2127,14 @@ shared actor/VM fields rather than raw offsets. The costed-action handler
 also uses the shared VM address, first-update flag and action-resource field;
 Ghidra 0x80116BC4 confirms those consumers. Every changed source unit preserves
 all 483 objects and strict relocation addends.
+
+### Shared actor script action-handler selectors
+
+`actor_script_action.h` names all fifteen selectors observed in the action
+dispatcher and shares the scheduling/dispatch contracts across their provider,
+the VM and three script-command consumers. Ghidra 0x801167A0 confirms the
+initialization request and retained selector; 0x80117098 confirms the dispatch
+map. All scheduling calls and dispatch cases use the shared enum constants,
+while the existing signed argument and unsigned VM storage retain their ABI.
+Redundant declarations of the two private wait helpers are removed. Every
+source-unit change preserves all 483 objects and strict relocation addends.

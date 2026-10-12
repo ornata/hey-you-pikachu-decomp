@@ -1,3 +1,4 @@
+#include "actor_script_action.h"
 #include "heap_free.h"
 /// \file
 /// Cooperative actor behavior interpreter and script-value operations.
@@ -905,7 +906,6 @@ loop_3:
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
-s32 actorScriptDispatchActionHandler(u8 *); /* extern */
 s32 actorRunScriptVm(u8 *); /* extern */
 
 /// Advance the actor script execution and timers for the current frame.
