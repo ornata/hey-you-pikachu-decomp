@@ -216,13 +216,11 @@ s32 actorFindItemHandleInFacingCone(u8 *actor, f32 distance, f32 cone, s32 minKi
     return ((RuntimeObjectPrefix *)item)->handle;
 }
 
-void actorSetTargetPosition();                      /* extern */
 /// Track an available object as an actor's movement destination. Otherwise disable target tracking.
 /// \param actor Actor whose destination is changed.
 /// \param handle Handle of the target object.
 /// \param distanceAllowance Distance allowance used when approaching the destination.
 /// \returns The target script category, or zero when the target is unavailable or has no supported category.
-/// \note Portability: The unprototyped target-position helper call retains an extra argument ignored by the original ABI.
 /// \note Original decompilation identifier: \c func_80117584 (0x80117584).
 s32 actorTrackObjectPosition(u8 *actor, s32 handle, f32 distanceAllowance) {
     u8 *state = ((RuntimeObjectPrefix *)actor)->state.bytes;
@@ -236,7 +234,7 @@ s32 actorTrackObjectPosition(u8 *actor, s32 handle, f32 distanceAllowance) {
     ((ActorScriptState *)state)->targetMode = 1;
     ((ActorScriptState *)state)->targetHandle = handle;
     ((ActorScriptState *)state)->targetDistanceAllowance = distanceAllowance;
-    actorSetTargetPosition(actor, target + 0x44, target);
+    actorSetTargetPosition(actor, ((RuntimeObjectPrefix *)target)->worldPosition);
     return objectGetScriptCategory(actor, handle);
 }
 
@@ -245,7 +243,6 @@ s32 actorTrackObjectPosition(u8 *actor, s32 handle, f32 distanceAllowance) {
 /// \param handle Handle of the target object.
 /// \param distanceAllowance Distance allowance used when approaching the destination.
 /// \returns The target script category, or zero when the target is unavailable or has no supported category.
-/// \note Portability: The unprototyped target-position helper call retains an extra argument ignored by the original ABI.
 /// \note Original decompilation identifier: \c func_80117624 (0x80117624).
 s32 actorSetDestinationFromObject(u8 *actor, s32 handle, f32 distanceAllowance) {
     u8 *targetObject;
@@ -262,16 +259,14 @@ s32 actorSetDestinationFromObject(u8 *actor, s32 handle, f32 distanceAllowance) 
         return 0;
     }
     ((ActorScriptState *)actorState)->targetDistanceAllowance = distanceAllowance;
-    actorSetTargetPosition(actor, targetObject + 0x44, targetObject);
+    actorSetTargetPosition(actor, ((RuntimeObjectPrefix *)targetObject)->worldPosition);
     return objectGetScriptCategory(actor, handle);
 }
 
-void actorChooseEscapePosition();                      /* extern */
 /// Track an available object as the source of an actor's escape destination. Otherwise disable target tracking.
 /// \param actor Actor whose destination is changed.
 /// \param handle Handle of the target object.
 /// \returns The target script category, or zero when the target is unavailable or has no supported category.
-/// \note Portability: The unprototyped target-position helper call retains an extra argument ignored by the original ABI.
 /// \note Original decompilation identifier: \c func_801176A8 (0x801176A8).
 s32 actorTrackEscapeFromObject(u8 *actor, s32 handle) {
     u8 *sp1C;
@@ -288,7 +283,7 @@ s32 actorTrackEscapeFromObject(u8 *actor, s32 handle) {
     ((ActorScriptState *)sp1C)->targetMode = 2;
     ((ActorScriptState *)sp1C)->targetHandle = handle;
     ((ActorScriptState *)sp1C)->targetDistanceAllowance = 0.0f;
-    actorChooseEscapePosition(actor, resolvedObject + 0x44, resolvedObject);
+    actorChooseEscapePosition(actor, ((RuntimeObjectPrefix *)resolvedObject)->worldPosition);
     return objectGetScriptCategory(actor, handle);
 }
 
@@ -296,7 +291,6 @@ s32 actorTrackEscapeFromObject(u8 *actor, s32 handle) {
 /// \param actor Actor whose destination is changed.
 /// \param handle Handle of the target object.
 /// \returns The target script category, or zero when the target is unavailable or has no supported category.
-/// \note Portability: The unprototyped target-position helper call retains an extra argument ignored by the original ABI.
 /// \note Original decompilation identifier: \c func_80117744 (0x80117744).
 s32 actorChooseEscapePositionFromHandle(u8 *actor, s32 handle) {
     u8 *targetObject;
@@ -313,7 +307,7 @@ s32 actorChooseEscapePositionFromHandle(u8 *actor, s32 handle) {
         return 0;
     }
     ((ActorScriptState *)actorState)->targetDistanceAllowance = 0.0f;
-    actorChooseEscapePosition(actor, targetObject + 0x44, targetObject);
+    actorChooseEscapePosition(actor, ((RuntimeObjectPrefix *)targetObject)->worldPosition);
     return objectGetScriptCategory(actor, handle);
 }
 
@@ -331,7 +325,7 @@ void actorChooseEscapePositionFromPlayer(u8 *actor) {
     actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
     ((ActorScriptState *)actorState)->targetMode = 0;
     ((ActorScriptState *)actorState)->targetDistanceAllowance = 0.0f;
-    actorChooseEscapePosition(actor, &gPlayerState);
+    actorChooseEscapePosition(actor, (f32 *)&gPlayerState);
 }
 
 
@@ -1099,10 +1093,10 @@ s32 objectFindNearestFromPlayerView(u8 *self, s32 minKind, s32 maxKind, f32 dist
 /// \param position Three world-space coordinates to copy; the pointer is not retained.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80118644 (0x80118644).
-void actorSetTargetPosition(u8 *actor, u8 *position) {
-    ((RuntimeObjectPrefix *)actor)->state.actor->targetPosition[0] = (f32)((f32 *)position)[0];
-    ((RuntimeObjectPrefix *)actor)->state.actor->targetPosition[1] = (f32)((f32 *)position)[1];
-    ((RuntimeObjectPrefix *)actor)->state.actor->targetPosition[2] = (f32)((f32 *)position)[2];
+void actorSetTargetPosition(u8 *actor, f32 *position) {
+    ((RuntimeObjectPrefix *)actor)->state.actor->targetPosition[0] = position[0];
+    ((RuntimeObjectPrefix *)actor)->state.actor->targetPosition[1] = position[1];
+    ((RuntimeObjectPrefix *)actor)->state.actor->targetPosition[2] = position[2];
 }
 
 f32 vector3Normalize(u8 *);

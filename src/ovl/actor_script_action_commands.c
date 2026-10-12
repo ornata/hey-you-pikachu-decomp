@@ -479,7 +479,6 @@ s32 actorScriptStopActionScript(u8 *actor) {
     return 0;
 }
 
-s32 actorSetTargetPosition(u8 *, u8 *); /* extern */
 
 /// Set a fixed target position with no target-distance allowance.
 /// \param actor Actor whose script VM supplies the target X, Y, and Z coordinates as floating-point values and receives zero; tracked-target selection is cleared.
@@ -493,7 +492,7 @@ s32 actorScriptSetTargetPosition(u8 *actor) {
     pos[2] = scriptVmPopFloat(vm);
     pos[1] = scriptVmPopFloat(vm);
     pos[0] = scriptVmPopFloat(vm);
-    actorSetTargetPosition(actor, (u8 *)pos);
+    actorSetTargetPosition(actor, pos);
     ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetMode = 0;
     ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetDistanceAllowance = 0.0f;
     scriptVmPushInteger(vm, 0);

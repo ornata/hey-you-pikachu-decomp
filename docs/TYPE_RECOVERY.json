@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 2977,
-      "unique_spellings": 1103,
+      "occurrences": 2971,
+      "unique_spellings": 1102,
       "files": 80
     }
   },
@@ -6279,6 +6279,7 @@
         "actor_script.h",
         "actor_script_action.h",
         "actor_sound.h",
+        "actor_target.h",
         "audio_cue.h",
         "object_lookup.h",
         "object_script_query.h",
@@ -6293,10 +6294,10 @@
       "locations": {
         "raw_offset_candidates": {
           "actor + 0xC": [
-            "669:38"
+            "670:38"
           ],
           "gPlayerCompanionTarget - 0x50": [
-            "1371:57"
+            "1372:57"
           ]
         }
       }
@@ -6341,46 +6342,38 @@
           "return -65536": [
             "146:5",
             "158:5",
-            "614:9",
-            "620:5",
-            "835:5",
-            "920:5",
-            "971:5",
-            "992:5",
-            "1011:5"
+            "608:9",
+            "614:5",
+            "829:5",
+            "914:5",
+            "965:5",
+            "986:5",
+            "1005:5"
           ],
           "object + 0x44": [
             "156:25",
-            "1251:67"
-          ],
-          "target + 0x44": [
-            "239:35"
-          ],
-          "targetObject + 0x44": [
-            "265:35",
-            "316:38"
-          ],
-          "resolvedObject + 0x44": [
-            "291:38",
-            "833:25"
+            "1245:67"
           ],
           "gPlayerControllerPort + 4": [
-            "554:14"
+            "548:14"
           ],
           "gPlayerControllerPort + 6": [
-            "562:21"
+            "556:21"
+          ],
+          "resolvedObject + 0x44": [
+            "827:25"
           ],
           "offset + 4": [
-            "951:64"
+            "945:64"
           ],
           "offset + 8": [
-            "952:64"
+            "946:64"
           ],
           "object + 0x18": [
-            "1166:24"
+            "1160:24"
           ],
           "object + 0xC": [
-            "1251:101"
+            "1245:101"
           ]
         }
       }
@@ -6403,12 +6396,8 @@
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
-          "target + 0x44": [
-            "148:47",
-            "150:50"
-          ],
           "return -1": [
-            "423:9"
+            "421:9"
           ]
         }
       }

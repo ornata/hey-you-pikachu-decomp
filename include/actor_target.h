@@ -51,4 +51,18 @@ f32 actorGetTargetDistance(u8 *actor);
 /// \note Original decompilation identifier: \c func_80118890 (0x80118890).
 void actorSetTargetToFallbackObject(u8 *actor);
 
+/// Set the actor's stored target position.
+/// \param actor Actor whose target position is changed.
+/// \param position Three world-space coordinates to copy; the pointer is not retained.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_80118644 (0x80118644).
+void actorSetTargetPosition(u8 *actor, f32 *position);
+
+/// Choose a target position away from the supplied threat position.
+/// \param object Actor whose escape target is changed; its fallback target handle must be live when the positions coincide.
+/// \param target Three-component world-space threat position; the pointer is not retained.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8011866C (0x8011866C).
+void actorChooseEscapePosition(u8 *object, f32 *target);
+
 #endif

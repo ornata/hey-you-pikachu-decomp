@@ -1,3 +1,4 @@
+#include "actor_target.h"
 #include "progress_fields.h"
 #include "action_script_playback.h"
 #include "actor_script_action.h"
@@ -980,7 +981,7 @@ s32 actorScriptSetDestination(u8 *actor) {
     pos[2] = scriptVmPopFloat(vm);
     pos[1] = scriptVmPopFloat(vm);
     pos[0] = scriptVmPopFloat(vm);
-    actorSetTargetPosition(actor, (u8 *)pos);
+    actorSetTargetPosition(actor, pos);
     ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetMode = 0;
     ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetDistanceAllowance = speed;
     scriptVmPushInteger(vm, 0);

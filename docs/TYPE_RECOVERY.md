@@ -2916,6 +2916,16 @@ confirms the source and destination coordinates, randomized escape direction
 and fallback behavior. `actor_target.h` also owns target-distance and fallback
 position contracts; command callers use those declarations and the unused
 menu declaration is removed. Each changed unit preserves all strict objects.
-The separate target setter and escape wrappers still supply unused trailing
-arguments in several original callers; those interfaces need a matching
-call-representation investigation before consolidation.
+The target setter and escape wrappers were subsequently consolidated as
+described below.
+
+### Canonical actor destination updates
+
+`actor_target.h` now also owns the target-position copy and escape-position
+contracts with three-float input positions and `void` returns. Removing the
+unused trailing object arguments in query wrappers preserves all 483 strict
+objects; the former unprototyped declarations and portability notes are no
+longer needed. Interaction, command and message consumers use the same
+contracts and pass named world positions or their existing float arrays.
+Ghidra 0x80118644 confirms the three copied coordinates; escape selection
+retains its documented live-fallback precondition and original arithmetic.

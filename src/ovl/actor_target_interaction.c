@@ -130,8 +130,6 @@ s32 actorPivotTowardTarget(u8 *object, f32 speed) {
     return 0;
 }
 
-s32 actorSetTargetPosition(u8 *, u8 *); /* extern */
-s32 actorChooseEscapePosition(u8 *, u8 *); /* extern */
 
 /// Refresh the actor destination for pursuit or escape from its tracked target.
 /// \param actor Actor whose tracked target position is refreshed.
@@ -145,9 +143,9 @@ void actorRefreshTrackingTargetPosition(u8 *actor) {
         target = actorResolveStoredTarget(actor);
         if (target != NULL) {
             if (((ActorScriptState *)state)->targetMode == 1) {
-                actorSetTargetPosition(actor, target + 0x44);
+                actorSetTargetPosition(actor, ((RuntimeObjectPrefix *)target)->worldPosition);
             } else if (((ActorScriptState *)state)->targetMode == 2) {
-                actorChooseEscapePosition(actor, target + 0x44);
+                actorChooseEscapePosition(actor, ((RuntimeObjectPrefix *)target)->worldPosition);
             }
         }
     }
