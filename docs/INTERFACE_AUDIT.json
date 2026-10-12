@@ -3,48 +3,6 @@
   "baseline": "d5ea983",
   "records": [
     {
-      "code": 709,
-      "file": "src/game/doors_object_responses.c",
-      "line": 160,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "sprintf(gDoorAccessDescriptionBuffer, \"\\nPress @I@J to go on.\");"
-    },
-    {
-      "code": 709,
-      "file": "src/game/doors_object_responses.c",
-      "line": 163,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "sprintf(gDoorAccessDescriptionBuffer, \"\\nIt's locked.\");"
-    },
-    {
-      "code": 709,
-      "file": "src/game/doors_object_responses.c",
-      "line": 166,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "sprintf(gDoorAccessDescriptionBuffer, \"\\nYou can't go through here yet.\");"
-    },
-    {
-      "code": 709,
-      "file": "src/game/doors_object_responses.c",
-      "line": 169,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "sprintf(gDoorAccessDescriptionBuffer, \"\\nYou can go through\\nwhen ^6PIKACHU^^ is near.\");"
-    },
-    {
-      "code": 709,
-      "file": "src/game/doors_object_responses.c",
-      "line": 172,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "sprintf(gDoorAccessDescriptionBuffer, \"\\n^4SQUIRTLE^^ is blocking the way.\");"
-    },
-    {
-      "code": 709,
-      "file": "src/game/doors_object_responses.c",
-      "line": 175,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "sprintf(gDoorAccessDescriptionBuffer, \"\\nYou can't get by for some reason.\");"
-    },
-    {
       "code": 712,
       "file": "src/game/texture_cache.c",
       "line": 170,
@@ -57,13 +15,6 @@
       "line": 175,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "rp = romCacheRead(&gTextureRomCache, texture.pal + gTextureArchiveRomStart, 0x20, palette);"
-    },
-    {
-      "code": 712,
-      "file": "src/main.c",
-      "line": 361,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "{\t\t\t\t\t\t\t\t\t\tGfx *_g = (Gfx *)((gRenderDisplayListCursor++));\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t_g->words.w0 = (((unsigned int) (((unsigned int)(( 0xdb)) & ((0x01 << ( 8)) - 1)) << ( 24)))  | ((unsigned int) (((unsigned int)((  0x06)) & ((0x01 << ( 8)) - 1)) << ( 16)))  |\t\t\t\t((unsigned int) (((unsigned int)((  ( 1)*4)) & ((0x01 << ( 16)) - 1)) << ( 0))) );\t\t\t\t\t_g->words.w1 = (unsigned int)(   osVirtualToPhysical(gSharedRenderAssets));\t\t\t\t}   ;"
     },
     {
       "code": 709,

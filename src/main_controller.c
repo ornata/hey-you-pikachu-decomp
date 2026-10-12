@@ -149,13 +149,9 @@ extern CameraDefaults gRenderCameraDefaults;
 /// Cartridge ROM end address of the shared rendering asset segment.
 /// \note Original identifier: \c D_505090 (0x505090).
 extern u8 gSharedRenderAssetsRomStart[], gSharedRenderAssetsRomEnd[];
-/// Owned RAM allocation containing shared rendering assets.
-/// \note Original identifier: \c D_800ABDDC (0x800ABDDC).
-/// Owned RAM allocation containing the current area rendering assets, or zero when unloaded.
-/// \note Original identifier: \c D_800ABDE0 (0x800ABDE0).
 /// Pair of owned command-buffer addresses indexed by framebuffer.
 /// \note Original identifier: \c D_800ABDE8 (0x800ABDE8).
-extern s32 gSharedRenderAssets, gAreaRenderAssets, gRenderCommandBuffers[];
+extern s32 gRenderCommandBuffers[];
 /// Whether the elapsed-script tint needs its initial script-time origin.
 /// \note Original identifier: \c D_800AC4B0 (0x800AC4B0).
 /// Whether the primary-actor elapsed-script camera tint is enabled.
@@ -175,9 +171,6 @@ void cameraFadePrimarySecondaryOverlay(s32, s32, s32, s32, f32);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
-/// Owned RAM allocation containing the current area rendering assets, or zero when unloaded.
-/// \note Original identifier: \c D_800ABDE0 (0x800ABDE0).
-extern s32 gAreaRenderAssets;
 
 /// Whether the next display-list setup must emit the one-time initial render state.
 /// \note Original identifier: \c D_800633E4 (0x800633E4).

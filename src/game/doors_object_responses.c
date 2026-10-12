@@ -24,7 +24,7 @@ s32 gDoorObjectCount;
 s8 gDoorDescriptionBuffer[0xC8];
 /// Shared passage-access text overwritten by the next access-description request.
 /// \note Original identifier: \c D_800B6A88 (0x800B6A88).
-u8 gDoorAccessDescriptionBuffer[0xC8];
+char gDoorAccessDescriptionBuffer[0xC8];
 /// Owned storage backing the object-response heap.
 /// \note Original identifier: \c D_800B6B50 (0x800B6B50).
 u8 *gObjectResponseHeapStorage;
@@ -153,9 +153,9 @@ s8 *doorGetDescription(u8 *object) {
 /// \returns Shared access-description text, overwritten by the next access-description request.
 /// \note Original decompilation identifier: \c func_8001C35C (0x8001C35C).
 u8 *doorGetAccessDescription(u8 *object) {
-    u8 *state = *(u8 **)(object + 0x54);
+    PassageState *state = ((RuntimeObjectPrefix *)object)->state.pointer;
 
-    switch (*(u32 *)(state + 0xC)) {
+    switch ((u32)state->accessState) {
     case 0:
         sprintf(gDoorAccessDescriptionBuffer, "\nPress @I@J to go on.");
         break;
@@ -175,7 +175,7 @@ u8 *doorGetAccessDescription(u8 *object) {
         sprintf(gDoorAccessDescriptionBuffer, "\nYou can't get by for some reason.");
         break;
     }
-    return gDoorAccessDescriptionBuffer;
+    return (u8 *)gDoorAccessDescriptionBuffer;
 }
 
 s32 interactionConsiderObject(u8 *);

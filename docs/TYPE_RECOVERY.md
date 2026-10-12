@@ -1025,3 +1025,17 @@ and encoded string representations cross the interface through explicit pointer
 views rather than inconsistent function prototypes. Those representations
 remain recovery targets; this interface change does not claim complete recovery
 of every caller's image table. All retained units match the strict baseline.
+
+### Door text and owned rendering allocations
+
+Door access descriptions use character storage at the sprintf boundary and
+an explicit encoded-byte return view. Passage access is read through the
+established PassageState field. Ghidra at 0x8001C35C confirms the state selector,
+shared output buffer and borrowed return lifetime.
+
+Shared and area rendering allocations are u8 pointers declared in
+render_assets.h, with their original linker addresses and ownership lifetimes.
+Loading uses the canonical ROM DMA declaration and a RAM destination pointer;
+segment setup consumes that same allocation. Unused integer redeclarations in
+controller code were removed. All changed units match the preserved object
+baseline; command-buffer address representations are not claimed recovered.

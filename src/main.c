@@ -42,6 +42,8 @@
  */
 #include <ultra64.h>
 #include "common.h"
+#include "render_assets.h"
+#include "rom_dma.h"
 #include "asset_loader.h"
 #include "runtime_program.h"
 #include "heap_alloc.h"
@@ -243,13 +245,9 @@ extern CameraDefaults gRenderCameraDefaults;
 /// Cartridge ROM end address of the shared rendering asset segment.
 /// \note Original identifier: \c D_505090 (0x505090).
 extern u8 gSharedRenderAssetsRomStart[], gSharedRenderAssetsRomEnd[];
-/// Owned RAM allocation containing shared rendering assets.
-/// \note Original identifier: \c D_800ABDDC (0x800ABDDC).
-/// Owned RAM allocation containing the current area rendering assets, or zero when unloaded.
-/// \note Original identifier: \c D_800ABDE0 (0x800ABDE0).
 /// Pair of owned command-buffer addresses indexed by framebuffer.
 /// \note Original identifier: \c D_800ABDE8 (0x800ABDE8).
-extern s32 gSharedRenderAssets, gAreaRenderAssets, gRenderCommandBuffers[];
+extern s32 gRenderCommandBuffers[];
 /// Whether the elapsed-script tint needs its initial script-time origin.
 /// \note Original identifier: \c D_800AC4B0 (0x800AC4B0).
 /// Whether the primary-actor elapsed-script camera tint is enabled.
@@ -262,7 +260,6 @@ extern f32 gCameraElapsedTintInitialSeconds;
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
 void heapDebugNoOp();
-void romDmaReadBlocking(s32 romAddress, s32 destination, s32 byteCount);
 void cameraResetOverlayColor(s32, s32, s32, s32, s32);
 void cameraFadePrimarySecondaryOverlay(s32, s32, s32, s32, f32);
 /// Load shared rendering assets and initialize camera and display-list resources.
@@ -271,7 +268,7 @@ void renderInitializeResources(void) {
     s32 size = gSharedRenderAssetsRomEnd - gSharedRenderAssetsRomStart;
     u8 *camera;
     s32 *buffer;
-    gSharedRenderAssets = (s32)heapAllocLocal(&gGameHeap, size, 0xFA);
+    gSharedRenderAssets = heapAllocLocal(&gGameHeap, size, 0xFA);
     heapDebugNoOp(&gGameHeap, gSharedRenderAssets);
     romDmaReadBlocking((s32)gSharedRenderAssetsRomStart, gSharedRenderAssets, size);
     gRenderCameraIndex = 0;
@@ -306,9 +303,6 @@ void renderInitializeResources(void) {
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
-/// Owned RAM allocation containing the current area rendering assets, or zero when unloaded.
-/// \note Original identifier: \c D_800ABDE0 (0x800ABDE0).
-extern s32 gAreaRenderAssets;
 /// Load the current area’s rendering assets for use by its scene.
 /// \returns Nothing; requires a loaded area configuration and no existing area asset allocation to replace.
 void renderLoadAreaAssets(void) {
@@ -316,7 +310,7 @@ void renderLoadAreaAssets(void) {
     s32 scratchSize;
     u8 *temporary;
     outputSize = *(u32 *)(gCurrentAreaConfiguration + 0x54) - *(u32 *)(gCurrentAreaConfiguration + 0x50);
-    gAreaRenderAssets = (s32)heapAllocLocal(&gGameHeap, outputSize, 0x140);
+    gAreaRenderAssets = heapAllocLocal(&gGameHeap, outputSize, 0x140);
     heapDebugNoOp(&gGameHeap, gAreaRenderAssets);
     scratchSize = (s32)(*(u32 *)(gCurrentAreaConfiguration + 0x60) - *(u32 *)(gCurrentAreaConfiguration + 0x50)) * 8 +
                   (s32)(*(u32 *)(gCurrentAreaConfiguration + 0x58) - *(u32 *)(gCurrentAreaConfiguration + 0x50));
