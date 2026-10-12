@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "actor_part_config.h"
 #include "matrix_types.h"
 #include "actor_parts.h"
 #include "object_audio.h"
@@ -42,7 +43,6 @@ typedef struct LitModel {
 } LitModel;
 
 void heapFreeLocal();
-s32 actorConfigGetDefaultPartId(u16);
 /// Per-actor-kind part-table slot counts, including the root slot.
 /// \note Original identifier: \c D_800B687C (0x800B687C).
 extern s32 gActorPartCounts[];
@@ -988,8 +988,6 @@ void actorGetPartWorldPosition(u8 *actor, s32 partId, f32 *position) {
     position[2] = *(f32 *)(var_v0 + 0x4C);
 }
 
-s32 actorConfigGetFirstAttachmentPartId(u16); /* extern */
-s32 actorConfigGetSecondAttachmentPartId(u16); /* extern */
 
 /// Get the world-space attachment position selected by the actor attachment mode.
 /// \param actor Actor whose attachment mode and parts determine the position.
@@ -1196,7 +1194,6 @@ void actorUpdateNamedPartFlags(u8 *actor, s32 set, s32 clear, s32 *ids) {
     }
 }
 
-s32 actorConfigGetGroundReferencePartIds(s32);
 
 /// Find the lowest world height among the actor configured reference parts.
 /// \param actor Actor with a valid default reference part.
@@ -1204,7 +1201,7 @@ s32 actorConfigGetGroundReferencePartIds(s32);
 /// \note Original decompilation identifier: \c func_80016B1C (0x80016B1C).
 f32 actorGetLowestReferencePartHeight(u8 *actor) {
     f32 min = *(f32 *)(actorGetDefaultPart(actor) + 0x48);
-    s32 *ids = (s32 *)actorConfigGetGroundReferencePartIds(*(u16 *)(actor + 0x34));
+    const s32 *ids = actorConfigGetGroundReferencePartIds(*(u16 *)(actor + 0x34));
     s32 i;
     u8 *o;
 
@@ -1230,13 +1227,13 @@ f32 terrainGetWorldHeightForQuery(s32, f32, f32, f32, u8 **);
 /// \note Original decompilation identifier: \c func_80016BA8 (0x80016BA8).
 f32 actorMeasureGroundClearance(u8 *actor, s32 collisionMode, u8 *reference, f32 *displacement, f32 *groundHeight, u8 **surface) {
     u8 *v;
-    s32 *p;
+    const s32 *p;
     u8 *e;
     f32 top;
 
     v = *(u8 **)(actor + 0x54);
     top = *(f32 *)(reference + 0x48);
-    for (p = (s32 *)actorConfigGetGroundReferencePartIds(*(u16 *)(actor + 0x34)); *p > 0; p++) {
+    for (p = actorConfigGetGroundReferencePartIds(*(u16 *)(actor + 0x34)); *p > 0; p++) {
         e = actorFindPart(actor, *p);
         if (e != NULL && *(f32 *)(e + 0x48) < top) {
             top = *(f32 *)(e + 0x48);

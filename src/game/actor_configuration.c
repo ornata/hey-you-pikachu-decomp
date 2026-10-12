@@ -2,6 +2,7 @@
 #include "heap_tail.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "actor_part_config.h"
 #include "actor_text.h"
 #include "actor_parts.h"
 #include "object_audio.h"
@@ -711,10 +712,10 @@ u8 *actorReplaceKindPreservingScript(u8 *actor, s32 kind) {
 
 /// Get the configured parts used to measure an actor's ground clearance.
 /// \param kind Valid actor kind whose configuration is queried.
-/// \returns Address of the part-ID list, represented as an integer; positive IDs end at a nonpositive value.
+/// \returns Borrowed part-ID list; positive IDs end at a nonpositive value.
 /// \note Original decompilation identifier: \c func_8001E5F0 (0x8001E5F0).
-s32 actorConfigGetGroundReferencePartIds(s32 kind) {
-    return *(s32 *)(gActorKindGroundReferencePartEntries + (kind * 0x54));
+const s32 *actorConfigGetGroundReferencePartIds(s32 kind) {
+    return *(const s32 **)(gActorKindGroundReferencePartEntries + (kind * 0x54));
 }
 
 /// Get the first configured part used for actor attachment positions.

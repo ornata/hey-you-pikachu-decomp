@@ -1148,3 +1148,15 @@ index contract. Retaining an integer bit-mask expression at the narrowed call
 changed generated code; an explicit u16 cast expresses the same low-bit
 selection and matches the preserved object. All retained changes match strictly.
 Registry-wide field recovery remains separate from these string interfaces.
+
+### Actor part-selection interfaces
+
+actor_part_config.h declares configured attachment/default part IDs and the
+borrowed ground-reference list. The list returns const s32 pointers rather
+than integer addresses; both clearance consumers read signed 32-bit entries
+and stop at a nonpositive value. Ghidra at 0x8001E5F0 confirms the registry
+pointer load at the 0x54-byte kind stride. Attachment/default queries keep the
+producer's s32 kind parameter, correcting narrower local declarations without
+changing the existing u16 object-kind loads. Both source units preserve strict
+object matching. The registry interior symbol views remain intentional until
+full kind-table recovery establishes a matching shared record representation.
