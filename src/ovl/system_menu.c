@@ -1,3 +1,4 @@
+#include "matrix_point.h"
 #include "camera_interface.h"
 #include "action_script_stop.h"
 #include "action_script_query.h"
@@ -875,7 +876,6 @@ void systemMenuHandleInput(void) {
 
 f32 mathSinDegrees(f32);
 f32 mathCosDegrees(f32);
-void matrix34TransformPointVector(void *, f32 *, void *);
 void objectUpdateHierarchy(u8 *);
 void backdropSelectForView(s32, s32, s32);
 /// Separate symbol view of the primary player record's view yaw.
@@ -904,7 +904,7 @@ void systemMenuUpdateOpeningAnimation(void) {
     position[1] += 10.0f * mathSinDegrees(90.0f * progress);
     angle = 90.0f * progress;
     position[2] -= 10.0f * mathCosDegrees(angle);
-    matrix34TransformPointVector(&gSystemMenuInterfaceTransform, position, (u8 *)gSystemMenuState.model + 0x18);
+    matrix34TransformPointVector((f32 *)(&gSystemMenuInterfaceTransform), (f32 *)(position), (f32 *)((u8 *)gSystemMenuState.model + 0x18));
     *(f32 *)((u8 *)gSystemMenuState.model + 0x10) = gPlayerViewShake + gPlayerYaw + 180.0f;
     *(f32 *)((u8 *)gSystemMenuState.model + 0xC) = (1.0f - progress) * -90.0f;
     *(f32 *)((u8 *)gSystemMenuState.secondary + 0x10) = angle;
@@ -934,7 +934,7 @@ void systemMenuUpdateClosingAnimation(void) {
     position[1] += 10.0f * mathSinDegrees((1.0f - progress) * 90.0f);
     angle = (1.0f - progress) * 90.0f;
     position[2] -= 10.0f * mathCosDegrees(angle);
-    matrix34TransformPointVector(&gSystemMenuInterfaceTransform, position, (u8 *)gSystemMenuState.model + 0x18);
+    matrix34TransformPointVector((f32 *)(&gSystemMenuInterfaceTransform), (f32 *)(position), (f32 *)((u8 *)gSystemMenuState.model + 0x18));
     *(f32 *)((u8 *)gSystemMenuState.model + 0x10) = gPlayerViewShake + gPlayerYaw + 180.0f;
     *(f32 *)((u8 *)gSystemMenuState.model + 0xC) = -90.0f * progress;
     *(f32 *)((u8 *)gSystemMenuState.secondary + 0x10) = (1.0 - progress) * 90.0;
@@ -970,7 +970,7 @@ void systemMenuUpdateModelTilt(void) {
     position[1] = -3.15f;
     object = (u8 *)gSystemMenuInteractiveModel;
     position[2] = -15.0f;
-    matrix34TransformPointVector(&gSystemMenuInterfaceTransform, position, object + 0x18);
+    matrix34TransformPointVector((f32 *)(&gSystemMenuInterfaceTransform), (f32 *)(position), (f32 *)(object + 0x18));
     *(f32 *)(object + 0xC) = basePitch;
     *(f32 *)(object + 0x10) = gPlayerViewShake + gPlayerYaw + 180.0f + 23.0f;
     *(f32 *)(object + 0x14) = 0.0f;

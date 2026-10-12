@@ -2548,3 +2548,16 @@ this correction preserves strict matching and removes that ABI exception.
 and all C callers. Ghidra 0x8000D6D8 confirms the view output is passed to that
 constructor and local translation. All dependent units rebuild with the canonical
 contracts and preserve all 483 objects.
+
+### Shared affine point-transform interface
+
+`matrix_point.h` replaces ten local declarations with one documented float
+matrix, input position and output position contract. Ghidra 0x8003FB90 confirms
+twelve matrix components, three point components and input/output aliasing.
+Existing byte and private-record views convert explicitly at this interface;
+their global definitions and linker identities are unchanged.
+
+Rendering, motion, terrain, interface and search callers were rebuilt and
+compared one source unit at a time. Every conversion preserves all 483 allocated
+objects and strict relocation identities. The locally generated implementation
+was not edited or added to the repository.

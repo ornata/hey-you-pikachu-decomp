@@ -578,6 +578,7 @@
         "heap_types.h",
         "integer_animation.h",
         "matrix_orientation.h",
+        "matrix_point.h",
         "matrix_types.h",
         "motion_playback.h",
         "object_audio.h",
@@ -593,14 +594,14 @@
       "locations": {
         "raw_offset_candidates": {
           "actor + 0x54": [
-            "79:18",
-            "169:20",
-            "284:20",
-            "306:20",
-            "397:38",
-            "413:20",
-            "445:18",
-            "464:18",
+            "80:18",
+            "170:20",
+            "285:20",
+            "307:20",
+            "398:38",
+            "414:20",
+            "446:18",
+            "465:18",
             "724:20",
             "933:21",
             "993:22",
@@ -615,11 +616,11 @@
             "1422:27"
           ],
           "k + 1": [
-            "90:51"
+            "91:51"
           ],
           "actor + 0x34": [
-            "92:18",
-            "189:91",
+            "93:18",
+            "190:91",
             "934:45",
             "961:70",
             "1133:21",
@@ -628,95 +629,95 @@
             "1226:60"
           ],
           "allocation + 0x18": [
-            "219:22"
+            "220:22"
           ],
           "drawListStorage + 0x40": [
-            "232:67"
+            "233:67"
           ],
           "actor + 0xC": [
-            "286:37",
-            "289:39",
-            "308:31",
-            "727:49"
-          ],
-          "actor + 0x10": [
             "287:37",
             "290:39",
             "309:31",
-            "727:71"
+            "727:49"
           ],
-          "actor + 0x14": [
+          "actor + 0x10": [
             "288:37",
             "291:39",
             "310:31",
+            "727:71"
+          ],
+          "actor + 0x14": [
+            "289:37",
+            "292:39",
+            "311:31",
             "727:94"
           ],
           "object + 0x54": [
-            "342:22",
+            "343:22",
             "545:22",
             "638:23"
           ],
           "state + 0x10": [
-            "344:40",
-            "345:40"
+            "345:40",
+            "346:40"
           ],
           "object + 0x44": [
-            "346:45",
-            "347:22",
+            "347:45",
+            "348:22",
             "570:43",
             "660:94"
           ],
           "object + 0x48": [
-            "346:70",
-            "348:56",
+            "347:70",
+            "349:56",
             "571:43",
             "661:94"
           ],
           "object + 0x4C": [
-            "346:95",
-            "348:81",
+            "347:95",
+            "349:81",
             "572:43",
             "662:94"
           ],
           "heightDelta + 1": [
-            "352:34"
+            "353:34"
           ],
           "state + 0xC": [
-            "361:43",
-            "362:22"
+            "362:43",
+            "363:22"
           ],
           "actor + 0x18": [
-            "384:50"
+            "385:50"
           ],
           "actor + 0x1C": [
-            "384:74",
+            "385:74",
             "1284:38"
           ],
           "actor + 0x20": [
-            "384:98"
+            "385:98"
           ],
           "actor + 0x36": [
-            "397:71",
-            "430:82"
+            "398:71",
+            "431:82"
           ],
           "obj + 0x1E8": [
-            "418:66",
-            "423:53"
+            "419:66",
+            "424:53"
           ],
           "child + 0x50": [
-            "499:47"
+            "500:47"
           ],
           "t + 0x34": [
-            "501:26"
+            "502:26"
           ],
           "t + 0x44": [
-            "506:40"
-          ],
-          "t + 0x48": [
             "507:40"
           ],
-          "t + 0x4C": [
+          "t + 0x48": [
             "508:40"
+          ],
+          "t + 0x4C": [
+            "509:40"
           ],
           "object + 0x50": [
             "546:23",
@@ -1955,6 +1956,7 @@
         "heap_alloc.h",
         "item_kind.h",
         "item_text.h",
+        "matrix_point.h",
         "object_lookup.h",
         "player_control.h",
         "runtime_clock.h",
@@ -1971,39 +1973,39 @@
       "locations": {
         "raw_offset_candidates": {
           "slot + 4": [
-            "218:50",
-            "255:22"
+            "219:50",
+            "256:22"
           ],
           "liveObject + 0x54": [
-            "220:22",
+            "221:22",
             "872:18"
           ],
           "p + 4": [
-            "221:71",
-            "222:82",
+            "222:71",
+            "223:82",
             "873:71"
           ],
           "gToolboxBonusSlot + 4": [
-            "261:18"
+            "262:18"
           ],
           "gToolboxPurchaseSlot + 4": [
-            "265:19"
+            "266:19"
           ],
           "ext + 0x18": [
-            "348:16"
+            "349:16"
           ],
           "ext + 0x1E8": [
-            "350:14"
+            "351:14"
           ],
           "gPresentationSavedActorState + 0x1E8": [
-            "350:45"
+            "351:45"
           ],
           "gPikachuActor + 0x54": [
             "392:32",
             "443:24"
           ],
           "state + 0x1EC": [
-            "394:50"
+            "394:76"
           ],
           "player + 0x48": [
             "403:28"
@@ -2051,7 +2053,7 @@
             "456:14"
           ],
           "ext + 0x1EC": [
-            "457:101"
+            "457:127"
           ],
           "firstJoint + 0x48": [
             "461:18"
@@ -2079,7 +2081,7 @@
             "869:18"
           ],
           "item + 0x18": [
-            "889:69"
+            "889:95"
           ],
           "item + 0x10": [
             "890:14"
@@ -3444,6 +3446,7 @@
         "keyed_pool.h",
         "keyed_pool_types.h",
         "matrix_orientation.h",
+        "matrix_point.h",
         "matrix_translation.h",
         "matrix_types.h",
         "midi_sequence_types.h",
@@ -5348,6 +5351,7 @@
         "item_text.h",
         "item_types.h",
         "matrix_orientation.h",
+        "matrix_point.h",
         "object_flags.h",
         "object_hierarchy_create.h",
         "object_lifecycle.h",
@@ -5367,158 +5371,158 @@
       "locations": {
         "raw_offset_candidates": {
           "object + 0xC": [
-            "233:49",
-            "813:18",
+            "234:49",
+            "814:18",
             "950:22"
           ],
           "object + 0x10": [
-            "233:72",
-            "814:18",
+            "234:72",
+            "815:18",
             "951:22"
           ],
           "object + 0x14": [
-            "233:96",
-            "815:18",
+            "234:96",
+            "816:18",
             "952:22"
           ],
           "liveObject + 0x34": [
-            "251:22"
+            "252:22"
           ],
           "liveObject + 0": [
-            "255:18"
-          ],
-          "gCurrentAreaConfiguration + 0xC": [
-            "255:45",
-            "256:45",
-            "257:45",
-            "795:37",
-            "796:37",
-            "797:37",
-            "819:41",
-            "820:41",
-            "821:41"
-          ],
-          "liveObject + 4": [
             "256:18"
           ],
-          "liveObject + 8": [
+          "gCurrentAreaConfiguration + 0xC": [
+            "256:45",
+            "257:45",
+            "258:45",
+            "796:37",
+            "797:37",
+            "798:37",
+            "820:41",
+            "821:41",
+            "822:41"
+          ],
+          "liveObject + 4": [
             "257:18"
           ],
-          "object + 0x18": [
-            "323:26",
-            "333:22",
-            "341:18",
-            "348:18",
-            "816:18",
-            "929:77",
-            "949:81"
+          "liveObject + 8": [
+            "258:18"
           ],
-          "object + 0x1C": [
+          "object + 0x18": [
             "324:26",
             "334:22",
             "342:18",
             "349:18",
-            "817:18"
+            "817:18",
+            "929:103",
+            "949:107"
           ],
-          "object + 0x20": [
+          "object + 0x1C": [
             "325:26",
             "335:22",
             "343:18",
             "350:18",
             "818:18"
           ],
+          "object + 0x20": [
+            "326:26",
+            "336:22",
+            "344:18",
+            "351:18",
+            "819:18"
+          ],
           "object + 0x54": [
-            "423:25",
-            "453:72",
-            "472:77",
-            "485:80",
-            "599:19",
-            "612:22"
+            "424:25",
+            "454:72",
+            "473:77",
+            "486:80",
+            "600:19",
+            "613:22"
           ],
           "data + 4": [
-            "424:31",
-            "431:40",
-            "696:34"
+            "425:31",
+            "432:40",
+            "697:34"
           ],
           "obj + 0x54": [
-            "544:20"
+            "545:20"
           ],
           "ext + 6": [
-            "545:13"
+            "546:13"
           ],
           "ext + 8": [
-            "546:14"
+            "547:14"
           ],
           "obj + 0x38": [
-            "550:36"
+            "551:36"
           ],
           "p + 4": [
-            "613:43"
+            "614:43"
           ],
           "table + 0x18": [
-            "636:14"
-          ],
-          "table + 0x20": [
             "637:14"
           ],
+          "table + 0x20": [
+            "638:14"
+          ],
           "player + 0x84": [
-            "677:44"
+            "678:44"
           ],
           "held + 0x54": [
-            "690:29",
+            "691:29",
             "1304:26"
           ],
           "other + 0x54": [
-            "695:43"
+            "696:43"
           ],
           "otherState + 4": [
-            "696:56"
+            "697:56"
           ],
           "slot + 0x7C": [
-            "748:22"
-          ],
-          "slot + 0x78": [
             "749:22"
           ],
+          "slot + 0x78": [
+            "750:22"
+          ],
           "slot + 0x28": [
-            "754:22",
-            "755:98"
+            "755:22",
+            "756:98"
           ],
           "table + 0xF0": [
-            "758:12"
+            "759:12"
           ],
           "table + 0xF8": [
-            "764:12"
+            "765:12"
           ],
           "object + 0": [
-            "795:14",
-            "819:18"
-          ],
-          "object + 4": [
             "796:14",
             "820:18"
           ],
-          "object + 8": [
+          "object + 4": [
             "797:14",
             "821:18"
           ],
+          "object + 8": [
+            "798:14",
+            "822:18"
+          ],
           "object + 0x2C": [
-            "799:34"
+            "800:34"
           ],
           "objects + 0x28": [
-            "800:43"
+            "801:43"
           ],
           "object + 0x38": [
-            "822:46"
+            "823:46"
           ],
           "o + 0xC": [
-            "875:22"
-          ],
-          "o + 0x10": [
             "876:22"
           ],
-          "o + 0x14": [
+          "o + 0x10": [
             "877:22"
+          ],
+          "o + 0x14": [
+            "878:22"
           ],
           "row + 0x28": [
             "918:32"
@@ -5636,6 +5640,7 @@
         "audio_spatial.h",
         "camera_view.h",
         "matrix_orientation.h",
+        "matrix_point.h",
         "matrix_translation.h",
         "vector_direction.h"
       ],
@@ -5854,6 +5859,7 @@
         "camera_interface.h",
         "camera_overlay.h",
         "hud_draw.h",
+        "matrix_point.h",
         "object_flags.h",
         "runtime_clock.h"
       ],
@@ -5861,33 +5867,33 @@
       "locations": {
         "raw_offset_candidates": {
           "x - 27": [
-            "205:46"
+            "206:46"
           ],
           "x + 55": [
-            "207:46"
+            "208:46"
           ],
           "x - 16": [
-            "275:31",
-            "299:27"
-          ],
-          "y + 8": [
-            "276:31"
-          ],
-          "y - 8": [
+            "276:31",
             "300:27"
           ],
+          "y + 8": [
+            "277:31"
+          ],
+          "y - 8": [
+            "301:27"
+          ],
           "counter + 5U": [
-            "307:25"
+            "308:25"
           ],
           "gPikachuActor + 0x54": [
             "390:28",
             "437:28",
-            "612:46",
-            "787:27"
+            "611:46",
+            "786:27"
           ],
           "state + 0x1EC": [
-            "392:74",
-            "451:101"
+            "392:100",
+            "450:155"
           ],
           "gPikachuActor + 0x48": [
             "398:29",
@@ -5937,11 +5943,11 @@
             "449:14"
           ],
           "PLAYER + 0x54": [
-            "493:27"
+            "492:27"
           ],
           "sp24 + 0x13C": [
-            "794:22",
-            "798:25"
+            "793:22",
+            "797:25"
           ]
         }
       }
@@ -5962,6 +5968,7 @@
         "heap_free.h",
         "heap_tail.h",
         "matrix_orientation.h",
+        "matrix_point.h",
         "matrix_translation.h",
         "render_assets.h",
         "rom_dma.h",
@@ -6055,6 +6062,7 @@
         "heap_alloc.h",
         "heap_tail.h",
         "matrix_orientation.h",
+        "matrix_point.h",
         "matrix_translation.h",
         "runtime_program.h",
         "scheduler.h"
@@ -6378,6 +6386,7 @@
         "heap_free.h",
         "item_object.h",
         "item_spawn.h",
+        "matrix_point.h",
         "object_flags.h",
         "object_hierarchy_create.h",
         "object_lifecycle.h",
@@ -6396,7 +6405,7 @@
       "locations": {
         "address_globals": {
           "D_80133DE8": [
-            "214:5",
+            "215:5",
             "2069:12",
             "2092:14",
             "2093:14",
@@ -6405,178 +6414,178 @@
         },
         "raw_offset_candidates": {
           "scene_bedroom_DATA_START + 0x21314": [
-            "124:5"
-          ],
-          "scene_entryway_DATA_START + 0x5A6C": [
             "125:5"
           ],
-          "scene_front_yard_DATA_START + 0x24A20": [
+          "scene_entryway_DATA_START + 0x5A6C": [
             "126:5"
           ],
-          "scene_viridian_entrance_DATA_START + 0x18904": [
+          "scene_front_yard_DATA_START + 0x24A20": [
             "127:5"
           ],
-          "scene_viridian_forest_DATA_START + 0x60C4": [
+          "scene_viridian_entrance_DATA_START + 0x18904": [
             "128:5"
           ],
-          "scene_viridian_deep_DATA_START + 0x15680": [
+          "scene_viridian_forest_DATA_START + 0x60C4": [
             "129:5"
           ],
-          "scene_springleaf_entrance_DATA_START + 0x22E9C": [
+          "scene_viridian_deep_DATA_START + 0x15680": [
             "130:5"
           ],
-          "scene_oddish_meadow_DATA_START + 0x23368": [
+          "scene_springleaf_entrance_DATA_START + 0x22E9C": [
             "131:5"
           ],
-          "scene_springleaf_field_DATA_START + 0x234B8": [
+          "scene_oddish_meadow_DATA_START + 0x23368": [
             "132:5"
           ],
-          "scene_olivine_lakeshore_DATA_START + 0xCC94": [
+          "scene_springleaf_field_DATA_START + 0x234B8": [
             "133:5"
           ],
-          "scene_olivine_lake_DATA_START + 0xCCE8": [
+          "scene_olivine_lakeshore_DATA_START + 0xCC94": [
             "134:5"
           ],
-          "scene_ochre_entrance_DATA_START + 0x9858": [
+          "scene_olivine_lake_DATA_START + 0xCCE8": [
             "135:5"
           ],
-          "scene_ochre_deep_DATA_START + 0x157A4": [
+          "scene_ochre_entrance_DATA_START + 0x9858": [
             "136:5"
           ],
-          "scene_cobalt_island_DATA_START + 0x1C698": [
+          "scene_ochre_deep_DATA_START + 0x157A4": [
             "137:5"
           ],
-          "scene_cobalt_coast_DATA_START + 0x12284": [
+          "scene_cobalt_island_DATA_START + 0x1C698": [
             "138:5"
           ],
-          "scene_abra_shop_DATA_START + 0xF114": [
+          "scene_cobalt_coast_DATA_START + 0x12284": [
             "139:5"
           ],
-          "scene_wilderness_camp_DATA_START + 0x64DC": [
+          "scene_abra_shop_DATA_START + 0xF114": [
             "140:5"
           ],
-          "scene_ochre_fishing_DATA_START + 0x111E0": [
+          "scene_wilderness_camp_DATA_START + 0x64DC": [
             "141:5"
           ],
-          "scene_olivine_fishing_DATA_START + 0x10DB0": [
+          "scene_ochre_fishing_DATA_START + 0x111E0": [
             "142:5"
           ],
-          "scene_cobalt_fishing_DATA_START + 0x10F50": [
+          "scene_olivine_fishing_DATA_START + 0x10DB0": [
             "143:5"
           ],
-          "scene_viridian_edge_DATA_START + 0xF2A8": [
+          "scene_cobalt_fishing_DATA_START + 0x10F50": [
             "144:5"
           ],
-          "scene_playground_DATA_START + 0xAA3C": [
+          "scene_viridian_edge_DATA_START + 0xF2A8": [
             "145:5"
           ],
-          "scene_credits_DATA_START + 0xF4DC": [
+          "scene_playground_DATA_START + 0xAA3C": [
             "146:5"
           ],
+          "scene_credits_DATA_START + 0xF4DC": [
+            "147:5"
+          ],
           "w + 10": [
-            "247:47"
+            "248:47"
           ],
           "d + 10": [
-            "248:97"
+            "249:97"
           ],
           "node + 0x48": [
-            "366:45",
+            "367:45",
             "1711:18",
             "1870:19"
           ],
           "return -1": [
-            "370:5",
+            "371:5",
             "1675:29"
           ],
           "node + 0x20": [
-            "400:26",
+            "401:26",
             "1346:30",
             "2061:45"
           ],
           "w - 1": [
-            "489:79",
-            "490:72",
-            "511:79",
-            "512:72",
-            "537:39",
-            "546:15",
+            "490:79",
+            "491:72",
+            "512:79",
+            "513:72",
+            "538:39",
             "547:15",
-            "658:58"
+            "548:15",
+            "659:58"
           ],
           "h - 1": [
-            "494:79",
-            "495:72",
-            "516:79",
-            "517:72",
-            "538:33",
-            "660:58",
-            "907:28"
+            "495:79",
+            "496:72",
+            "517:79",
+            "518:72",
+            "539:33",
+            "661:58",
+            "908:28"
           ],
           "node + 8": [
-            "537:25",
-            "591:19",
+            "538:25",
+            "592:19",
             "1460:45"
           ],
           "node + 0x14": [
-            "537:58",
-            "909:75",
+            "538:58",
+            "910:75",
             "1459:26"
           ],
           "node + 0x10": [
-            "540:25",
-            "592:19",
-            "849:27",
-            "910:33",
+            "541:25",
+            "593:19",
+            "850:27",
+            "911:33",
             "1457:49",
             "1815:43",
             "1826:30"
           ],
           "node + 0x1C": [
-            "540:55",
-            "910:73",
+            "541:55",
+            "911:73",
             "1457:18"
           ],
           "ix + 1": [
-            "542:10",
-            "663:41",
-            "665:41",
-            "672:39",
-            "674:39"
+            "543:10",
+            "664:41",
+            "666:41",
+            "673:39",
+            "675:39"
           ],
           "iz + 1": [
-            "543:10",
-            "664:45",
-            "665:49",
-            "673:43",
-            "674:47"
+            "544:10",
+            "665:45",
+            "666:49",
+            "674:43",
+            "675:47"
           ],
           "node + 0xC": [
-            "736:23",
-            "772:32",
+            "737:23",
+            "773:32",
             "1462:57",
             "1814:43",
             "1824:30"
           ],
           "node + 0x8": [
-            "847:27",
-            "909:33",
+            "848:27",
+            "910:33",
             "1813:43",
             "1822:30"
           ],
           "count - 1": [
-            "908:25"
+            "909:25"
           ],
           "kind + 3": [
-            "1027:39"
+            "1028:39"
           ],
           "gPikachuActor + 0x44": [
-            "1107:29"
-          ],
-          "gPikachuActor + 0x48": [
             "1108:29"
           ],
-          "gPikachuActor + 0x4C": [
+          "gPikachuActor + 0x48": [
             "1109:29"
+          ],
+          "gPikachuActor + 0x4C": [
+            "1110:29"
           ],
           "gCurrentAreaConfiguration + 0x24": [
             "1312:20",
@@ -7548,6 +7557,7 @@
         "camera_interface.h",
         "heap_alloc.h",
         "heap_diagnostics.h",
+        "matrix_point.h",
         "object_flags.h",
         "object_hierarchy_create.h",
         "object_lifecycle.h",
@@ -7565,29 +7575,29 @@
       "locations": {
         "raw_offset_candidates": {
           "depth + 1": [
-            "411:47"
+            "412:47"
           ],
           "row + 1": [
-            "640:14"
+            "641:14"
           ],
           "i - 1": [
-            "646:18"
+            "647:18"
           ],
           "index - 1": [
-            "697:18"
+            "698:18"
           ],
           "count - 1": [
-            "830:51"
+            "831:51"
           ],
           "firstVisibleIndex + 4": [
-            "867:48"
+            "868:48"
           ],
           "selectedIndex - 4": [
-            "868:51"
+            "869:51"
           ],
           "model + 0x18": [
-            "907:99",
-            "937:99"
+            "907:125",
+            "937:125"
           ],
           "model + 0x10": [
             "908:37",
@@ -7607,7 +7617,7 @@
             "940:37"
           ],
           "object + 0x18": [
-            "973:76"
+            "973:102"
           ],
           "object + 0xC": [
             "974:14",

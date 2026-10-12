@@ -1,3 +1,4 @@
+#include "matrix_point.h"
 #include "camera_interface.h"
 #include "matrix_orientation.h"
 #include "object_flags.h"
@@ -886,7 +887,6 @@ void toolboxResetRowRotation(ToolboxState *t) {
 extern f32 gToolboxRowRotation;
 f32 mathSinDegrees(f32);
 f32 mathCosDegrees(f32);
-void matrix34TransformPointVector(u8 *, Vec3_301B0 *, u8 *);
 void objectUpdateHierarchy(u8 *);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
@@ -926,7 +926,7 @@ void toolboxLayoutCurrentRow(f32 angle, f32 height, f32 depth) {
         position.x = 2.0f * mathCosDegrees(direction);
         position.y = mathSinDegrees(direction) * 0.5f + height;
         position.z = (-6.0f + depth) - mathSinDegrees(direction) * 1.5f;
-        matrix34TransformPointVector(gToolboxInterfaceTransform, &position, object + 0x18);
+        matrix34TransformPointVector((f32 *)(gToolboxInterfaceTransform), (f32 *)(&position), (f32 *)(object + 0x18));
         if (i != 0 || *(u16 *)(object + 0x34) != 0x86) {
             toolboxSetObjectCameraRotation(object, -5.0f, 180.0f);
         } else {
@@ -946,7 +946,7 @@ void toolboxLayoutCurrentRow(f32 angle, f32 height, f32 depth) {
         object = objectFindLiveByHandle(gPlayerHeldItemHandle);
         if (object != NULL) {
             VEC3_SET(position, 0, -1.5f, -4.0f);
-            matrix34TransformPointVector(gToolboxInterfaceTransform, &position, object + 0x18);
+            matrix34TransformPointVector((f32 *)(gToolboxInterfaceTransform), (f32 *)(&position), (f32 *)(object + 0x18));
             *(f32 *)(object + 0xC) = 0.0f;
             *(f32 *)(object + 0x10) = 0.0f;
             *(f32 *)(object + 0x14) = 0.0f;
@@ -968,7 +968,7 @@ void toolboxPlaceBaseForRow(ToolboxState *t, f32 dy) {
     v.y = gToolboxRowAnchors[t->row].y;
     v.z = gToolboxRowAnchors[t->row].z;
     v.y += dy;
-    matrix34TransformPointVector(gToolboxInterfaceTransform, &v, t->objects[0] + 0x18);
+    matrix34TransformPointVector((f32 *)(gToolboxInterfaceTransform), (f32 *)(&v), (f32 *)(t->objects[0] + 0x18));
     if (t->row == 0) {
         toolboxSetObjectCameraRotation(t->objects[0], -5.0f, 210.0f);
     } else {

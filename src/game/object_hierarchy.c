@@ -1,3 +1,4 @@
+#include "matrix_point.h"
 #include "camera_view.h"
 #include "matrix_translation.h"
 #include "matrix_orientation.h"
@@ -122,7 +123,6 @@ void objectRegisterHierarchyInSearchTree(u8 *);
 f32 vector3Normalize(f32 *);
 f32 mathUnitDirectionDegrees(f32, f32);
 void vector3GetEulerDegrees(f32 *, f32 *, f32 *, f32 *);
-void matrix34TransformPointVector(void *, f32 *, f32 *);
 
 
 
@@ -1632,7 +1632,7 @@ f32 objectAdjustPitchAlongWorldSegment(u8 *object, f32 *start, f32 *end) {
         return 0.0f;
     }
     matrix34MakeRotationZYXDegrees((f32 *)&m, 0.0f, -((RuntimeObjectPrefix *)object)->rotation[1], -((RuntimeObjectPrefix *)object)->rotation[2]);
-    matrix34TransformPointVector(&m, v, v);
+    matrix34TransformPointVector((f32 *)&m, v, v);
     ((RuntimeObjectPrefix *)object)->rotation[0] = mathUnitDirectionDegrees(v[1], v[2]);
     return len;
 }

@@ -1,3 +1,4 @@
+#include "matrix_point.h"
 #include "matrix_orientation.h"
 #include "motion_playback.h"
 #include "action_script_playback.h"
@@ -519,7 +520,6 @@ void actorGetParentTrackingPosition(u8 *child, u8 *parentState, f32 *position) {
 void vector3FromZAxisPitchYawDegrees(f32, f32, f32 *);
 void matrix33Transpose(f32 *);
 void vector3GetEulerDegrees(f32 *, f32 *, f32 *, f32 *);
-void matrix34TransformPointVector(f32 *, f32 *, f32 *);
 
 /// Update child animation and blend its orientation toward the parent target when tracking is enabled.
 /// \param object Child object with initialized target-facing state and a valid parent.

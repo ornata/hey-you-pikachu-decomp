@@ -1,3 +1,4 @@
+#include "matrix_point.h"
 #include "camera_interface.h"
 #include "action_continuation.h"
 #include "action_script_stop.h"
@@ -370,7 +371,6 @@ extern s32 gWorldMapToWorldTransform;
 /// Camera-relative actor position on the world-map screen.
 /// \note Original identifier: \c D_8009A104 (0x8009A104).
 extern Vec3f_ gWorldMapActorPresentationPosition;
-void matrix34TransformPointVector(void *, void *, void *);
 
 /// Update the map actor's position and focus while preserving its ground clearance.
 /// \pre Requires an active actor and the map presentation transform.
@@ -389,11 +389,11 @@ void wholeMapUpdateActorPlacement(void) {
     u8 *state;
     state = *(u8 **)((u8 *)gPikachuActor + 0x54);
     presentationUpdateFocusPoint(&reference);
-    matrix34TransformPointVector(&gWorldMapToWorldTransform, &reference, state + 0x1EC);
+    matrix34TransformPointVector((f32 *)(&gWorldMapToWorldTransform), (f32 *)(&reference), (f32 *)(state + 0x1EC));
     reference.x = gWorldMapActorPresentationPosition.x;
     reference.y = gWorldMapActorPresentationPosition.y;
     reference.z = gWorldMapActorPresentationPosition.z;
-    matrix34TransformPointVector(&gWorldMapToWorldTransform, &reference, &position);
+    matrix34TransformPointVector((f32 *)(&gWorldMapToWorldTransform), (f32 *)(&reference), (f32 *)(&position));
     firstJoint = actorFindPart((u8 *)gPikachuActor, firstJointId);
     height = *(f32 *)((u8 *)gPikachuActor + 0x48) - *(f32 *)(firstJoint + 0x48);
     secondJoint = actorFindPart((u8 *)gPikachuActor, secondJointId);
@@ -447,8 +447,7 @@ void wholeMapPrepareActor(void) {
     actorAddRotationAxisDegrees((u8 *)gPikachuActor, -*(f32 *)(state + 0xC), pitchAxis);
     actorAddRotationAxisDegrees((u8 *)gPikachuActor, angle - *(f32 *)(state + 0x10), 1);
     *(s32 *)(state + 0x19C) = 0;
-    matrix34TransformPointVector(&gWorldMapToWorldTransform,
-                                 (u8 *)&gWorldMapDestinations[gWorldMapSelectedDestination] + 0x10, state + 0x1EC);
+    matrix34TransformPointVector((f32 *)(&gWorldMapToWorldTransform), (f32 *)((u8 *)&gWorldMapDestinations[gWorldMapSelectedDestination] + 0x10), (f32 *)(state + 0x1EC));
     presentationResetFocusPoint((Vec3f_ *)((u8 *)&gWorldMapDestinations[gWorldMapSelectedDestination] + 0x10));
     gWorldMapDirectionHeldFrames = 0;
     actionScriptStartWithMode((u8 *)gPikachuActor, action, actionMode);

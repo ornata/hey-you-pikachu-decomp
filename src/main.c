@@ -1,3 +1,4 @@
+#include "matrix_point.h"
 #include "camera_interface.h"
 #include "matrix_translation.h"
 #include "matrix_orientation.h"
@@ -150,7 +151,6 @@ s32 cameraBuildViewProjection(s32, u8 *, u8 *);
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;
 void matrix33Transpose(void *);
-void matrix34TransformPointVector(void *, f32 *, f32 *);
 
 /// Scale converting an overlay alpha byte to a blend weight.
 /// \note Original identifier: \c D_8009FC90 (0x8009FC90).
@@ -1060,7 +1060,7 @@ void cameraViewPointToWorld(f32 *point) {
         matrix.values[10] = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[1];
         matrix.values[11] = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[2];
     } while (0);
-    matrix34TransformPointVector(&matrix, in, out);
+    matrix34TransformPointVector((f32 *)&matrix, in, out);
 }
 
 /* Start-up handshake for the controllerThreadMain thread: the thread sets ready

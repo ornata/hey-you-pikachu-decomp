@@ -1,3 +1,4 @@
+#include "matrix_point.h"
 #include "camera_visibility.h"
 #include "object_flags.h"
 #include "object_hierarchy_create.h"
@@ -1297,7 +1298,6 @@ extern u8 gRenderCameras[];
 /// Camera storage viewed at retained matrix pointers, with 224 bytes per camera.
 /// \note Original identifier: \c D_800ABD14 (0x800ABD14).
 extern u8 gRenderCameraMatrixEntries[];
-void matrix34TransformPointVector(f32 *, f32 *, f32 *);
 /// Transform a world position for the active camera and test the current area's view limits.
 /// \param margin Allowance beyond the camera view boundaries.
 /// \param position World position in X, Y, Z order.

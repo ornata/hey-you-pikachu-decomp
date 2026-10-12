@@ -1,3 +1,4 @@
+#include "matrix_point.h"
 #include "camera_interface.h"
 #include "action_continuation.h"
 #include "action_script_playback.h"
@@ -372,7 +373,6 @@ void presentationSaveActiveActor(void) {
 /// Transform from camera-relative presentation coordinates to world coordinates.
 /// \note Original identifier: \c D_800F0BA8 (0x800F0BA8).
 extern u8 gPresentationToWorldTransform[];
-void matrix34TransformPointVector(u8 *, Vec3_295BC *, u8 *);
 void objectUpdateHierarchy(u8 *);
 void presentationUpdateFocusPoint(Vec3_295BC *);
 /// Place the active actor at a presentation-space point while retaining its ground-clearance offset.
@@ -391,13 +391,13 @@ void presentationPlaceActiveActor(void *point) {
     u8 *matrix = gPresentationToWorldTransform;
     u8 *state = *(u8 **)((u8 *)gPikachuActor + 0x54);
     presentationUpdateFocusPoint(&input);
-    matrix34TransformPointVector(matrix, &input, state + 0x1EC);
+    matrix34TransformPointVector((f32 *)(matrix), (f32 *)(&input), (f32 *)(state + 0x1EC));
     src = point;
     input.x = src[0];
     input.y = src[1];
     input.z = src[2];
     output = (u8 *)&world;
-    matrix34TransformPointVector(matrix, &input, output);
+    matrix34TransformPointVector((f32 *)(matrix), (f32 *)(&input), (f32 *)(output));
     player = (u8 *)gPikachuActor;
     worldHeight = world.y;
     heightDelta = *(f32 *)(player + 0x48) - *(f32 *)(**(u8 ***)(player + 0x54) + 0x48);
@@ -454,7 +454,7 @@ void presentationPrepareActiveActor(void *point) {
     actorAddRotationAxisDegrees((u8 *)gPikachuActor, -*(f32 *)(ext + 0xC), 0);
     actorAddRotationAxisDegrees((u8 *)gPikachuActor, yaw - *(f32 *)(ext + 0x10), 1);
     *(s32 *)(ext + 0x19C) = 0;
-    matrix34TransformPointVector(gPresentationToWorldTransform, &gPresentationActorFocusTargets[1], ext + 0x1EC);
+    matrix34TransformPointVector((f32 *)(gPresentationToWorldTransform), (f32 *)(&gPresentationActorFocusTargets[1]), (f32 *)(ext + 0x1EC));
     presentationResetFocusPoint((u8 *)&gPresentationActorFocusTargets[1]);
     actionScriptStartWithMode((u8 *)gPikachuActor, 0x57, 2);
     firstJoint = actorFindPart((u8 *)gPikachuActor, firstJointId);
@@ -886,7 +886,7 @@ void presentationPlaceCollectionItem(u8 *item, f32 heightOffset) {
     v.y = gCollectionItemPresentationPosition.y;
     v.z = gCollectionItemPresentationPosition.z;
     v.y += heightOffset;
-    matrix34TransformPointVector(gPresentationToWorldTransform, &v, item + 0x18);
+    matrix34TransformPointVector((f32 *)(gPresentationToWorldTransform), (f32 *)(&v), (f32 *)(item + 0x18));
     *(f32 *)(item + 0x10) += 3.0;
     *(f32 *)(item + 0) = *(f32 *)(gCurrentAreaConfiguration + 0xC);
     *(f32 *)(item + 4) = *(f32 *)(gCurrentAreaConfiguration + 0xC);

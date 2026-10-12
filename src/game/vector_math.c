@@ -1,3 +1,4 @@
+#include "matrix_point.h"
 #include "camera_view.h"
 #include "matrix_translation.h"
 #include "matrix_orientation.h"
@@ -10,7 +11,6 @@
 
 extern float fabsf(float);
 #pragma intrinsic(fabsf)
-void matrix34TransformPointVector(f32 *, f32 *, f32 *);
 f32 mathSinDegrees(f32);
 f32 mathCosDegrees(f32);
 f32 mathUnitDirectionDegrees(f32, f32);
