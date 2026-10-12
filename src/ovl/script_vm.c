@@ -779,7 +779,7 @@ loop_3:
     case 16:
     case 18:
     case 19:
-        scriptVmApplyComparisonOperator(vm, op);
+        scriptVmApplyComparisonOperator((u8 *)vm, op);
         goto loop_2;
     case 20:
     case 21:

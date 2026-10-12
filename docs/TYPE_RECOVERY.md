@@ -617,3 +617,13 @@ registry and physics pass real object/state pointers, preserving original sound
 selection and playback ownership. The camera-space nonzero-position requirement
 is retained at the interface. All eleven changed source units were built and
 compared independently with the immutable 483-object baseline.
+
+### Controller status and VM address boundaries
+
+Controller queries now pass the first `OSContStatus` in the existing four-port
+array, matching the SDK interface and the initialization/reset callers. The
+creation-argument script query retains its VM address as the established `s32`
+N64 ABI value throughout stack operations. The interpreter comparison dispatch
+explicitly exposes its context as the byte view expected by the private operator
+helper, consistently with the other operator dispatches. These changes preserve
+all allocated object bytes, layouts, symbols and relocation addends.

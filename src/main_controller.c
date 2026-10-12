@@ -480,7 +480,7 @@ void controllerInitializeDevices(s32 count) {
 void controllerQueryDevices(void) {
     osContStartQuery(&gSerialCompletionQueue);
     osRecvMesg(&gSerialCompletionQueue, NULL, 1);
-    osContGetQuery(&gControllerPortStatus);
+    osContGetQuery(gControllerPortStatus);
     controllerRefreshConnectionState();
 }
 

@@ -564,15 +564,15 @@ s32 actorScriptPushCreationScriptArgument(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8012056C (0x8012056C).
 s32 actorScriptGetCreationScriptArgument(u8 *actor) {
-    u8 *sp1C;
+    s32 vmAddress;
     u8 *liveObject;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    liveObject = objectFindLiveByHandle(scriptVmPopInteger(sp1C));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    liveObject = objectFindLiveByHandle(scriptVmPopInteger(vmAddress));
     if (liveObject != NULL) {
-        scriptVmPushInteger((s32)sp1C, ((RuntimeObjectPrefix *)liveObject)->state.actor->creationScriptArgument);
+        scriptVmPushInteger(vmAddress, ((RuntimeObjectPrefix *)liveObject)->state.actor->creationScriptArgument);
     } else {
-        scriptVmPushInteger((s32)sp1C, -1);
+        scriptVmPushInteger(vmAddress, -1);
     }
     return 0;
 }
