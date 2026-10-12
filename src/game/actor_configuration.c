@@ -1,3 +1,4 @@
+#include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
 #include "heap_free.h"
 #include "heap_tail.h"
@@ -84,7 +85,6 @@ void actorUpdateModel(u8 *);
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
 
-u8 *objectCreateHierarchyFromTemplate(void *);
 f32 terrainGetWorldHeight(f32, f32, f32, s32);
 /// Initial uniform scale of a contact-reactive effect.
 /// \note Original identifier: \c D_800A3A68 (0x800A3A68).
@@ -100,7 +100,7 @@ extern u8 gContactEffectHierarchyTemplate[];
 /// \returns Newly initialized and registered effect.
 /// \note Original decompilation identifier: \c func_8001D6C0 (0x8001D6C0).
 u8 *contactEffectCreate(f32 x, f32 y, f32 z) {
-    u8 *p = objectCreateHierarchyFromTemplate(&gContactEffectHierarchyTemplate);
+    u8 *p = objectCreateHierarchyFromTemplate((ObjectTemplate *)&gContactEffectHierarchyTemplate);
     f32 s;
 
     if (y < 0.0f) {

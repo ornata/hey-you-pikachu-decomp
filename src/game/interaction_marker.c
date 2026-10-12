@@ -1,3 +1,4 @@
+#include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -6,7 +7,6 @@
 #include "object_lookup.h"
 #include "heap_alloc.h"
 #include "object_types.h"
-s32 objectCreateHierarchyFromTemplate(void *);
 /// Model hierarchy template cloned to create an interaction marker.
 /// \note Original identifier: \c D_80088C50 (0x80088C50).
 extern u8 gInteractionMarkerModelTemplate[];
@@ -112,7 +112,7 @@ s32 interactionConsiderObject(u8 *object) {
 /// \returns The created marker object address.
 /// \note Original decompilation identifier: \c func_8001EA78 (0x8001EA78).
 s32 interactionMarkerCreate(void) {
-    s32 markerAddress = objectCreateHierarchyFromTemplate(gInteractionMarkerModelTemplate);
+    s32 markerAddress = (s32)objectCreateHierarchyFromTemplate((ObjectTemplate *)gInteractionMarkerModelTemplate);
     objectRegisterActiveHierarchy((u8 *)markerAddress);
     return markerAddress;
 }

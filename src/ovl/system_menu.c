@@ -1,3 +1,4 @@
+#include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
 #include "heap_diagnostics.h"
 #include "player_friendship.h"
@@ -1840,7 +1841,6 @@ void systemMenuSyncSoundSettingSelection(s32 unused) {
     gSystemMenuSoundList.selectedIndex = soundSetting;
 }
 
-u8 *objectCreateHierarchyFromTemplate(void *);
 /// Identifier of the currently loaded area.
 /// \note Original identifier: \c D_800AE4F8 (0x800AE4F8).
 extern s32 gRuntimeCurrentArea;
@@ -1864,7 +1864,7 @@ void systemMenuInitialize(void) {
     gSystemMenuDetailImageBuffer = 0;
     _bzero(gSystemMenuRowImages, 0x30);
     _bzero(gSystemMenuDetailImages, 0x30);
-    model = (MenuModel *)objectCreateHierarchyFromTemplate(&gSystemMenuTransitionModelTemplate);
+    model = (MenuModel *)objectCreateHierarchyFromTemplate((ObjectTemplate *)&gSystemMenuTransitionModelTemplate);
     objectSetHierarchyFlags((s32)model, 0x2002);
     objectRegisterActiveHierarchy((u8 *)model);
     model->scale[0] = *(f32 *)(gCurrentAreaConfiguration + 0xC) * 5.0;
@@ -1879,7 +1879,7 @@ void systemMenuInitialize(void) {
     ((MenuModel *)state->secondary)->transform[1] = 0.0f;
     ((MenuModel *)state->secondary)->transform[2] = 0.0f;
     ((MenuModel *)state->secondary)->transform[1] = 90.0f;
-    model = (MenuModel *)objectCreateHierarchyFromTemplate(&gSystemMenuInteractiveModelTemplate);
+    model = (MenuModel *)objectCreateHierarchyFromTemplate((ObjectTemplate *)&gSystemMenuInteractiveModelTemplate);
     objectSetHierarchyFlags((s32)model, 0x2002);
     objectRegisterActiveHierarchy((u8 *)model);
     model->scale[0] = *(f32 *)(gCurrentAreaConfiguration + 0xC);

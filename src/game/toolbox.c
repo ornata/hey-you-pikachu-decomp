@@ -1,3 +1,4 @@
+#include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
 #include "toolbox_items.h"
 #include "item_object.h"
@@ -771,7 +772,6 @@ void toolboxRestoreStoredObjects(u8 *table) {
     toolboxNoOp((s32)table);
 }
 
-u8 *objectCreateHierarchyFromTemplate(PartNode *);
 void toolboxRestoreStoredObjects(u8 *);
 /// Shared text-image configurations selected by text panels, menus and message styles.
 /// \note Original identifier: \c D_80074DE0 (0x80074DE0).
@@ -791,7 +791,7 @@ void toolboxCreateDisplayObjects(void) {
     s32 i;
     u8 **objects = &gToolboxState.objects[1];
 
-    object = objectCreateHierarchyFromTemplate(gToolboxModelTemplate);
+    object = objectCreateHierarchyFromTemplate((ObjectTemplate *)gToolboxModelTemplate);
     objectSetHierarchyFlags(object, 0x2000);
     objectRegisterActiveHierarchy(object);
     *(f32 *)(object + 0) = *(f32 *)(gCurrentAreaConfiguration + 0xC);
@@ -809,7 +809,7 @@ void toolboxCreateDisplayObjects(void) {
     gToolboxBonusHandle = 0;
     gToolboxPurchaseHandle = 0;
     for (i = 0; i < 10; i++) {
-        object = objectCreateHierarchyFromTemplate(gToolboxPlaceholderTemplate);
+        object = objectCreateHierarchyFromTemplate((ObjectTemplate *)gToolboxPlaceholderTemplate);
         objectSetHierarchyFlags(object, 0x2000);
         objectRegisterActiveHierarchy(object);
         *(f32 *)(object + 0xC) = 0.0f;

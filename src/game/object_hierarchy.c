@@ -1,3 +1,4 @@
+#include "object_hierarchy_create.h"
 #include "object_template.h"
 #include "object_lifecycle.h"
 #include "keyed_pool.h"
@@ -828,7 +829,7 @@ u8 *objectCloneTemplateHierarchy(ObjectTemplate *src, u8 *root) {
 /// \param definition Non-null, acyclic object hierarchy template with valid runtime kinds and resources.
 /// \returns Owned hierarchy root, released with objectDestroyHierarchy after removal from active processing.
 /// \note Original decompilation identifier: \c func_80008450 (0x80008450).
-u8 *objectCreateHierarchyFromTemplate(void *definition) {
+u8 *objectCreateHierarchyFromTemplate(ObjectTemplate *definition) {
     u8 *root = objectCloneTemplateHierarchy(definition, NULL);
     objectAllocateHierarchyMatrixBuffers((s32)root);
     return root;

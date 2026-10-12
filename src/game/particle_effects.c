@@ -1,3 +1,4 @@
+#include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -49,7 +50,6 @@ u8 *objectCreateFromTemplate(void *);
 /// Object template for emitters of expanding orange effects.
 /// \note Original identifier: \c D_80077E30 (0x80077E30).
 extern u8 gOrangePulseEmitterObjectTemplate[];
-u8 *objectCreateHierarchyFromTemplate(void *);
 /// Hierarchy template for expanding orange effects.
 /// \note Original identifier: \c D_80077E68 (0x80077E68).
 extern u8 gExpandingOrangeEffectTemplate[];
@@ -307,7 +307,7 @@ u8 *wispEffectCreate(s32 kind, f32 x, f32 y, f32 z) {
     s32 i;
     EffectObject *allocated;
 
-    allocated = (EffectObject *)objectCreateHierarchyFromTemplate(gWispObjectTemplates[kind]);
+    allocated = (EffectObject *)objectCreateHierarchyFromTemplate((ObjectTemplate *)gWispObjectTemplates[kind]);
     allocated->position[0] = x;
     allocated->world[0] = x;
     allocated->position[1] = y;
@@ -1279,7 +1279,7 @@ u8 *fallingParticleCreate(s32 kind, s32 motionStyle, f32 *position, f32 *velocit
     u8 *v;
     f32 scale;
 
-    obj = objectCreateHierarchyFromTemplate(gFallingParticleObjectTemplate);
+    obj = objectCreateHierarchyFromTemplate((ObjectTemplate *)gFallingParticleObjectTemplate);
     v = *(u8 **)(obj + 0x54);
     *(f32 *)(obj + 0x18) = position[0];
     *(f32 *)(obj + 0x1C) = position[1];
@@ -1979,7 +1979,7 @@ u8 *expandingOrangeEffectCreate(s32 targetHandle, f32 lifetime) {
     u8 *sp1C;
     u8 *sp18;
 
-    sp1C = objectCreateHierarchyFromTemplate(gExpandingOrangeEffectTemplate);
+    sp1C = objectCreateHierarchyFromTemplate((ObjectTemplate *)gExpandingOrangeEffectTemplate);
     sp18 = *(u8 **)(sp1C + 0x54);
     *(f32 *)(sp18 + 0x10) = lifetime;
     *(s32 *)sp18 = targetHandle;

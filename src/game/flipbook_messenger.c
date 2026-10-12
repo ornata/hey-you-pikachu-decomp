@@ -1,3 +1,4 @@
+#include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
 #include "heap_free.h"
 /// \file
@@ -1041,7 +1042,6 @@ void messengerResetTrackedObject(void) {
     gTrackedMessengerHandle = 0;
 }
 
-u8 *objectCreateHierarchyFromTemplate(void *);
 void objectScaleHierarchyBounds(u8 *, f32);
 void objectSetHierarchyFlags(u8 *, u16);
 /// Hierarchy template used to create script-message projectiles.
@@ -1067,7 +1067,7 @@ void messengerCreate(s32 id, f32 *position, f32 *velocity, f32 scale, ScriptMess
     u8 *object;
     MessengerFlightState *state;
     u8 *previous;
-    object = objectCreateHierarchyFromTemplate(gMessengerObjectTemplate);
+    object = objectCreateHierarchyFromTemplate((ObjectTemplate *)gMessengerObjectTemplate);
     if (flags != 0)
         objectSetHierarchyFlags(object, 0x6000);
     *(f32 *)(object + 0) = scale;

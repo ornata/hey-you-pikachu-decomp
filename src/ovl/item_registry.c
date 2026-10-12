@@ -1,3 +1,4 @@
+#include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
 #include "item_object.h"
 #include "heap_free.h"
@@ -2091,7 +2092,6 @@ void itemInitializeState(u8 *item) {
     ((RuntimeObjectPrefix *)item)->state.bytes = itemAllocateState();
 }
 
-u8 *objectCreateHierarchyFromTemplate(void *);
 TreeNode *searchTreeInsert(u8 *, TreeNode *, s32);
 f32 terrainGetWorldHeight(f32, f32, f32, u8 **);
 /// Shared integer animation programs selecting texture frames for actors, effects and interface elements.
@@ -2124,7 +2124,7 @@ u8 *itemCreate(f32 x, f32 y, f32 z, f32 pitch, f32 yaw, s32 kind) {
     ItemStatePrefix *state;
     TRACE("makeItem(%.2f, %.2f, %.2f, %d) ", x, y, z, kind);
     TRACE("(%s)\n", gItemKinds[kind].text[0].name);
-    object = objectCreateHierarchyFromTemplate(gItemKinds[kind].model);
+    object = objectCreateHierarchyFromTemplate((ObjectTemplate *)gItemKinds[kind].model);
     SET_OBJECT_TYPE(object, 0x86);
     itemInitializeState(object);
     state = (ItemStatePrefix *)((RuntimeObjectPrefix *)object)->state.bytes;

@@ -1,3 +1,4 @@
+#include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
 #include "common.h"
 #include "actor_parts.h"
@@ -31,7 +32,6 @@ extern s32 gRuntimeGameMode;
 /// Shared integer animation programs selecting texture frames for actors, effects and interface elements.
 /// \note Original identifier: \c D_8006B090 (0x8006B090).
 extern s32 gTextureFrameAnimationPrograms[];
-u8 *objectCreateHierarchyFromTemplate(u8 *);
 void objectSetHierarchyFlags(u8 *, u16);
 void objectRequestHierarchyDestruction(u8 *);
 /// Create an animated effect for an owner, replacing its previous attached effect.
@@ -46,7 +46,7 @@ u8 *attachedEffectCreate(u8 *owner, s32 kind, s32 track) {
     u8 *ov;
     PartDef *def;
     def = &gAttachedEffectDefinitions[kind];
-    obj = objectCreateHierarchyFromTemplate(def->tmpl);
+    obj = objectCreateHierarchyFromTemplate((ObjectTemplate *)def->tmpl);
     if (gRuntimeGameMode == 8 || gRuntimeGameMode == 0x12) {
         objectSetHierarchyFlags(obj, 0x6000);
     }

@@ -1430,3 +1430,16 @@ The contract separates this operation from transform-buffer allocation: cloning
 alone does not prepare the hierarchy for drawing. Existing runtime byte-pointer
 results remain compatible with kind-specific object views. Both source-unit
 changes preserve all 483 objects and strict relocations.
+
+### Canonical complete-hierarchy creation
+
+`object_hierarchy_create.h` supplies a typed `ObjectTemplate *` creation contract
+to the provider and all fifteen calling source units. Existing model-specific
+and byte-storage template views convert explicitly at this boundary. The marker's
+former integer-return declaration now uses the canonical pointer result and an
+explicit address conversion at its existing integer API. Ghidra at 0x80008450
+confirms cloning followed by transform-buffer allocation and returning the root.
+The comments distinguish borrowed template storage from model display-list
+lifetime and owned runtime hierarchy storage. Each source unit preserves all
+483 objects and strict relocation addends. Single-object creation, including
+ambient audio's extra-argument call, remains a separate recovery target.

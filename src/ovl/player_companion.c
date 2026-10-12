@@ -1,3 +1,4 @@
+#include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
 #include "door.h"
 #include "player_friendship.h"
@@ -2560,7 +2561,6 @@ void interactionProxyInitialize(u8 *object) {
     ((RuntimeObjectPrefix *)object)->state.bytes = sp1C;
 }
 
-u8 *objectCreateHierarchyFromTemplate(void *); /* extern */
 /// Unit-scale object template for descriptive interaction proxies of kind 0x8A.
 /// \note Original identifier: \c D_80123F50 (0x80123F50).
 struct {
@@ -2585,7 +2585,7 @@ u8 *interactionProxyCreate(u8 *position, s32 context, s32 interactionResult, s32
     u8 *sp24;
     u8 *proxyState;
 
-    sp24 = objectCreateHierarchyFromTemplate((u8 *)&gInteractionProxyObjectTemplate);
+    sp24 = objectCreateHierarchyFromTemplate((ObjectTemplate *)(u8 *)&gInteractionProxyObjectTemplate);
     proxyState = ((RuntimeObjectPrefix *)sp24)->state.bytes;
     ((RuntimeObjectPrefix *)sp24)->position[0] = (f32)((f32 *)position)[0];
     ((RuntimeObjectPrefix *)sp24)->position[1] = (f32)((f32 *)position)[1];

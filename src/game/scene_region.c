@@ -1,3 +1,4 @@
+#include "object_hierarchy_create.h"
 #include "object_template.h"
 #include "object_lifecycle.h"
 #include "common.h"
@@ -28,7 +29,6 @@ extern ObjectTemplate gSceneRegionObjectTemplate;
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
-u8 *objectCreateHierarchyFromTemplate(ObjectTemplate *);
 
 /// Create a rectangular scene region with its associated scene data.
 /// \param position Three-component world-space region center.
@@ -43,7 +43,7 @@ void sceneRegionCreate(f32 *position, f32 width, f32 depth, s32 sceneData) {
     SceneRegionState *state;
 
     tmpl = gSceneRegionObjectTemplate;
-    obj = objectCreateHierarchyFromTemplate(&tmpl);
+    obj = objectCreateHierarchyFromTemplate((ObjectTemplate *)&tmpl);
     *(f32 *)(obj + 0) = *(f32 *)(gCurrentAreaConfiguration + 0xC) * width;
     *(f32 *)(obj + 4) = *(f32 *)(gCurrentAreaConfiguration + 0xC);
     *(f32 *)(obj + 8) = *(f32 *)(gCurrentAreaConfiguration + 0xC) * depth;

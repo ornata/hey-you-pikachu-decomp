@@ -1,3 +1,4 @@
+#include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -8,7 +9,6 @@
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-u8 *objectCreateHierarchyFromTemplate(void *);
 /// Hierarchy template used to create selectable landmarks.
 /// \note Original identifier: \c D_80088E20 (0x80088E20).
 extern u8 gLandmarkObjectTemplate[];
@@ -25,7 +25,7 @@ u8 *landmarkCreate(f32 x, f32 y, f32 z, s32 landmarkId) {
     u8 *obj;
     f32 s;
 
-    obj = objectCreateHierarchyFromTemplate(gLandmarkObjectTemplate);
+    obj = objectCreateHierarchyFromTemplate((ObjectTemplate *)gLandmarkObjectTemplate);
     s = 0.1f;
     *(f32 *)(obj + 8) = s;
     *(f32 *)(obj + 4) = s;

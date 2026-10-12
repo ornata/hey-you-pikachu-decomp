@@ -1,3 +1,4 @@
+#include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
 #include "common.h"
 #include "object_lookup.h"
@@ -148,7 +149,6 @@ void orbitFollowerUpdate(OrbitObject *obj) {
     obj->rotation[1] = mathUnitDirectionDegrees(targetZ, targetX);
 }
 
-u8 *objectCreateHierarchyFromTemplate(void *);
 /// Hierarchy template used to create objects that orbit a creature owner.
 /// \note Original identifier: \c D_800999B0 (0x800999B0).
 extern u8 gOrbitFollowerObjectTemplate[];
@@ -165,7 +165,7 @@ u8 *orbitFollowerCreate(u8 *owner, f32 radius, f32 height, f32 ceiling) {
     u8 *src = owner;
     u8 *d;
 
-    obj = objectCreateHierarchyFromTemplate(gOrbitFollowerObjectTemplate);
+    obj = objectCreateHierarchyFromTemplate((ObjectTemplate *)gOrbitFollowerObjectTemplate);
     d = *(u8 **)(obj + 0x54);
     *(s32 *)(d + 0) = *(s32 *)(src + 0x38);
     *(f32 *)(d + 0xC) = radius;

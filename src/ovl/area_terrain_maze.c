@@ -1,3 +1,4 @@
+#include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
 #include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -1565,7 +1566,6 @@ typedef struct {
     s32 depth;
     SceneCellType *kinds;
 } ModelConfigD658;
-u8 *objectCreateHierarchyFromTemplate(u8 *);
 
 /// Configure a maze node for its selected kind, creating its model and running the configured initializer
 /// when present.
@@ -1580,7 +1580,7 @@ void mazeConfigureNodeModel(MazeNode *node, s32 kind) {
     node->terrain = (*(SceneCellType *)((u8 *)((ModelConfigD658 *)gCurrentAreaConfiguration)->kinds + offset)).terrain;
     if ((*(SceneCellType *)((u8 *)((ModelConfigD658 *)gCurrentAreaConfiguration)->kinds + offset)).objectTemplate !=
         NULL) {
-        root = objectCreateHierarchyFromTemplate(
+        root = objectCreateHierarchyFromTemplate((ObjectTemplate *)
             (*(SceneCellType *)((u8 *)((ModelConfigD658 *)gCurrentAreaConfiguration)->kinds + offset)).objectTemplate);
         root = objectRegisterActiveHierarchy(root);
         node->objects[1].bytes = root;
@@ -1725,7 +1725,6 @@ void mazeBuildNodeHierarchy(u8 *node, s32 depth, s32 forceSplit) {
     }
 }
 
-u8 *objectCreateHierarchyFromTemplate();                             /* extern */
 u8 *areaFindPositionNode(f32 arg0, f32 arg1, f32 arg2); /* extern */
 
 /// Create and register a block object in the maze region selected by a world position.
@@ -1742,7 +1741,7 @@ void mazePlaceBlockObject(u8 *position, u8 *objectTemplate) {
     u8 *registeredHierarchy;
 
     sp1C = areaFindPositionNode(((f32 *)position)[0], ((f32 *)position)[1], ((f32 *)position)[2]);
-    blockHierarchy = objectCreateHierarchyFromTemplate(objectTemplate);
+    blockHierarchy = objectCreateHierarchyFromTemplate((ObjectTemplate *)objectTemplate);
     ((RuntimeObjectPrefix *)blockHierarchy)->kind = 0x88;
     registeredHierarchy = objectRegisterActiveHierarchy(blockHierarchy);
     ((RuntimeObjectPrefix *)registeredHierarchy)->position[0] = (f32)((MazeNode *)sp1C)->x;
@@ -1807,7 +1806,7 @@ void mazeReplaceBlock(u8 *pos, u8 *modelTemplate, MazeGrid *terrain, s32 level) 
     }
     ((MazeNode *)node)->terrain = terrain;
     if (modelTemplate != NULL) {
-        model = objectRegisterActiveHierarchy(objectCreateHierarchyFromTemplate(modelTemplate));
+        model = objectRegisterActiveHierarchy(objectCreateHierarchyFromTemplate((ObjectTemplate *)modelTemplate));
         *(u8 **)(node + 0x4) = model;
         *(f32 *)(model + 0x14) = 0.0f;
         *(f32 *)(model + 0x10) = 0.0f;

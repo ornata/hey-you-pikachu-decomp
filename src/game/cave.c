@@ -1,3 +1,4 @@
+#include "object_hierarchy_create.h"
 #include "object_template.h"
 #include "object_lifecycle.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -14,7 +15,6 @@ extern s8 gCaveDescriptionBuffer[];
 /// Hierarchy template used to create cave interaction objects.
 /// \note Original identifier: \c D_80088EA0 (0x80088EA0).
 extern ObjectTemplate gCaveObjectTemplate;
-u8 *objectCreateHierarchyFromTemplate(ObjectTemplate *);
 
 /// Create and register a cave interaction object with its scene anchors.
 /// \param position Three-component world position of the cave interaction point.
@@ -28,7 +28,7 @@ u8 *caveCreate(f32 *position, f32 *anchorA, f32 *anchorB, u8 kind) {
     u8 *obj;
     u8 *v;
 
-    obj = objectCreateHierarchyFromTemplate(&tmpl);
+    obj = objectCreateHierarchyFromTemplate((ObjectTemplate *)&tmpl);
     *(f32 *)(obj + 0x18) = position[0];
     *(f32 *)(obj + 0x1C) = position[1];
     *(f32 *)(obj + 0x20) = position[2];
