@@ -26,4 +26,31 @@ u8 *objectFindNearestTargetInView(u8 *self, Vec3f *origin, f32 distance, f32 *ro
 /// \param maxKind Inclusive maximum kind; 38 selects Pikachu.
 /// \returns Borrowed live actor, or null when no target qualifies.
 u8 *actorFindNearestInRange(u8 *self, Vec3f *origin, f32 distance, f32 *rotation, f32 cone, s32 minKind, s32 maxKind);
+/// Find an actor near a supplied position, using script kind aliases.
+/// \param object Live object excluded from the search.
+/// \param position Three world-space search coordinates.
+/// \param minKind Inclusive minimum kind; 38 selects the first creature kind.
+/// \param maxKind Inclusive maximum kind; 38 selects Pikachu.
+/// \param distance Exclusive maximum approximate distance.
+/// \returns Nearest qualifying handle, or zero when none qualifies.
+s32 actorFindNearestHandleFromPosition(u8 *object, f32 *position, s32 minKind, s32 maxKind, f32 distance);
+
+/// Find an object within the supplied object's facing cone.
+/// \param object Live object supplying position and facing, excluded from the search.
+/// \param minKind Inclusive minimum runtime kind.
+/// \param maxKind Inclusive maximum runtime kind.
+/// \param distance Exclusive maximum approximate distance.
+/// \param cone Maximum horizontal angle in degrees; at least 360 disables filtering.
+/// \returns Nearest qualifying handle, or zero when none qualifies.
+s32 objectFindNearestHandleInFacingCone(u8 *object, s32 minKind, s32 maxKind, f32 distance, f32 cone);
+
+/// Find an object near a supplied position.
+/// \param object Live object excluded from the search.
+/// \param position Three world-space search coordinates.
+/// \param minKind Inclusive minimum runtime kind.
+/// \param maxKind Inclusive maximum runtime kind.
+/// \param distance Exclusive maximum approximate distance.
+/// \returns Nearest qualifying handle, or zero when none qualifies.
+s32 objectFindNearestHandleFromPosition(u8 *object, f32 *position, s32 minKind, s32 maxKind, f32 distance);
+
 #endif

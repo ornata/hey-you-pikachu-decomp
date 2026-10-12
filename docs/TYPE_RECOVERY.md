@@ -1540,3 +1540,14 @@ the three-component origin copy, optional view setup, kind bounds and shared
 result state. The interface explicitly prohibits overlapping searches and returns
 a borrowed object. Script kind aliases remain handled by the actor wrapper.
 All four changed source units preserve all 483 objects and strict relocations.
+
+### VM-facing nearest-handle contracts
+
+Actor-near-position, object-near-position and object-facing-cone wrappers now
+accept object and coordinate pointers consistently with their VM callers.
+The shared search header replaces the caller's independent prototypes. The
+providers use shared rotation/world-position fields, retaining numeric object
+handles only for their results. Ghidra 0x80117C18 confirms the position/facing
+forwarding and handle extraction. The live excluded-object precondition avoids
+promising unsupported null-address arithmetic. Both changed units preserve all
+483 objects and strict relocation identities.

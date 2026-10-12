@@ -629,8 +629,8 @@ f32 areaGetPathPointCoordinate(s32 path, s32 point, s32 axis) {
 /// \param distance Exclusive upper limit on approximate target distance.
 /// \returns The nearest qualifying object handle, or zero when none is found.
 /// \note Original decompilation identifier: \c func_80117C18 (0x80117C18).
-s32 actorFindNearestHandleFromPosition(s32 object, s32 position, s32 minKind, s32 maxKind, f32 distance) {
-    u8 *spawned = actorFindNearestInRange((u8 *)object, (Vec3f *)position, distance, (f32 *)(object + 0xC), 360.0f, minKind, maxKind);
+s32 actorFindNearestHandleFromPosition(u8 *object, f32 *position, s32 minKind, s32 maxKind, f32 distance) {
+    u8 *spawned = actorFindNearestInRange(object, (Vec3f *)position, distance, ((RuntimeObjectPrefix *)object)->rotation, 360.0f, minKind, maxKind);
 
     if (spawned == NULL) {
         return 0;
@@ -666,8 +666,8 @@ s32 itemFindHandleNearPosition(f32 *position, f32 distance, s32 minKind, s32 max
 /// \param cone Maximum absolute horizontal angle in degrees; 360 or greater allows all directions.
 /// \returns The nearest qualifying object handle, or zero when none is found.
 /// \note Original decompilation identifier: \c func_80117CEC (0x80117CEC).
-s32 objectFindNearestHandleInFacingCone(s32 object, s32 minKind, s32 maxKind, f32 distance, f32 cone) {
-    u8 *spawned = objectFindNearestTargetInView((u8 *)object, (Vec3f *)(object + 0x44), distance, (f32 *)(object + 0xC), cone, minKind, maxKind);
+s32 objectFindNearestHandleInFacingCone(u8 *object, s32 minKind, s32 maxKind, f32 distance, f32 cone) {
+    u8 *spawned = objectFindNearestTargetInView(object, (Vec3f *)((RuntimeObjectPrefix *)object)->worldPosition, distance, ((RuntimeObjectPrefix *)object)->rotation, cone, minKind, maxKind);
 
     if (spawned == NULL) {
         return 0;
@@ -685,8 +685,8 @@ s32 objectFindNearestHandleInFacingCone(s32 object, s32 minKind, s32 maxKind, f3
 /// \param distance Exclusive upper limit on approximate target distance.
 /// \returns The nearest qualifying object handle, or zero when none is found.
 /// \note Original decompilation identifier: \c func_80117D4C (0x80117D4C).
-s32 objectFindNearestHandleFromPosition(s32 object, s32 position, s32 minKind, s32 maxKind, f32 distance) {
-    u8 *spawned = objectFindNearestTargetInView((u8 *)object, (Vec3f *)position, distance, (f32 *)(object + 0xC), 360.0f, minKind, maxKind);
+s32 objectFindNearestHandleFromPosition(u8 *object, f32 *position, s32 minKind, s32 maxKind, f32 distance) {
+    u8 *spawned = objectFindNearestTargetInView(object, (Vec3f *)position, distance, ((RuntimeObjectPrefix *)object)->rotation, 360.0f, minKind, maxKind);
 
     if (spawned == NULL) {
         return 0;

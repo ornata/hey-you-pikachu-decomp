@@ -1,3 +1,4 @@
+#include "object_target_search.h"
 #include "path_query.h"
 #include "scene_region.h"
 #include "cave.h"
@@ -340,7 +341,6 @@ s32 actorScriptGetAreaPathPointCoordinate(u8 *actor) {
     return 0;
 }
 
-s32 actorFindNearestHandleFromPosition(u8 *, f32 *, s32, s32, f32); /* extern */
 
 /// Find the nearest creature to a world position, excluding the executing actor.
 /// \param actor Actor whose script VM supplies X, Y, Z, inclusive minimum and maximum creature kinds (38 selects the respective range endpoint), then an exclusive maximum approximate distance, and receives the nearest handle or zero.
@@ -398,7 +398,6 @@ s32 actorScriptFindItemNearPosition(u8 *actor) {
     return 0;
 }
 
-s32 objectFindNearestHandleInFacingCone(u8 *, s32, s32, f32, f32); /* extern */
 
 /// Find the nearest object in a facing cone, excluding the executing actor.
 /// \param actor Actor whose script VM supplies inclusive minimum and maximum kinds, exclusive maximum approximate distance, then maximum absolute horizontal angle in degrees (360 or greater permits all directions), and receives the nearest handle or zero.
@@ -420,7 +419,6 @@ s32 actorScriptFindObjectInFacingCone(u8 *actor) {
     return 0;
 }
 
-s32 objectFindNearestHandleFromPosition(u8 *, f32 *, s32, s32, f32); /* extern */
 
 /// Find the nearest object to a world position, excluding the executing actor.
 /// \param actor Actor whose script VM supplies X, Y, Z, inclusive minimum and maximum kinds, then an exclusive maximum approximate distance, and receives the nearest handle or zero.
