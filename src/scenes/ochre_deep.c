@@ -1,10 +1,10 @@
 #include "common.h"
+#include "area_maze.h"
 #include "heap_diagnostics.h"
 #include "scene_types.h"
 u8 *ambientAudioCreate(f32 *, s32, f32, f32, s32, s32, f32, s32, s32);
 void doorRegistryReset(void);
 u8 *doorCreate(f32 *, s32, s32, s32, s32);
-void mazeReplaceBlock(u8 *, u8 *, u8 *, s32);
 extern f32 D_8014A188_scene_ochre_deep[];
 extern f32 D_80134C80_scene_ochre_deep[];
 extern u8 D_80134C98_scene_ochre_deep[];
@@ -45,25 +45,31 @@ void ochreDeepInitializeDoor(void) {
 void ochreDeepCreateVariantTwoProps(void) {
     s32 i;
     for (i = 0; i < 3; i++) {
-        mazeReplaceBlock(D_80134C98_scene_ochre_deep + i * 12, D_80148084_scene_ochre_deep, D_801481AC_scene_ochre_deep,
-                      0);
+        mazeReplaceBlock(D_80134C98_scene_ochre_deep + i * 12, D_80148084_scene_ochre_deep,
+                         (MazeGrid *)D_801481AC_scene_ochre_deep, 0);
     }
 }
 
 /// Create the props for the first deep-forest scene variant.
 /// \returns Nothing.
 void ochreDeepCreateVariantZeroProps(void) {
-    mazeReplaceBlock(D_80134CBC_scene_ochre_deep, D_801481BC_scene_ochre_deep, D_8014859C_scene_ochre_deep, 1);
-    mazeReplaceBlock(D_80134CC8_scene_ochre_deep, D_801485AC_scene_ochre_deep, D_801490E4_scene_ochre_deep, 1);
-    mazeReplaceBlock(D_80134CD4_scene_ochre_deep, D_801490F4_scene_ochre_deep, D_80149BBC_scene_ochre_deep, 1);
+    mazeReplaceBlock(D_80134CBC_scene_ochre_deep, D_801481BC_scene_ochre_deep, (MazeGrid *)D_8014859C_scene_ochre_deep,
+                     1);
+    mazeReplaceBlock(D_80134CC8_scene_ochre_deep, D_801485AC_scene_ochre_deep, (MazeGrid *)D_801490E4_scene_ochre_deep,
+                     1);
+    mazeReplaceBlock(D_80134CD4_scene_ochre_deep, D_801490F4_scene_ochre_deep, (MazeGrid *)D_80149BBC_scene_ochre_deep,
+                     1);
 }
 
 /// Create the props shared by the later deep-forest scene variants.
 /// \returns Nothing.
 void ochreDeepCreateAlternateVariantProps(void) {
-    mazeReplaceBlock(D_80134CBC_scene_ochre_deep, D_80149BCC_scene_ochre_deep, D_80149C54_scene_ochre_deep, 1);
-    mazeReplaceBlock(D_80134CC8_scene_ochre_deep, D_80149C64_scene_ochre_deep, D_8014A044_scene_ochre_deep, 1);
-    mazeReplaceBlock(D_80134CD4_scene_ochre_deep, D_8014A054_scene_ochre_deep, D_8014A0DC_scene_ochre_deep, 1);
+    mazeReplaceBlock(D_80134CBC_scene_ochre_deep, D_80149BCC_scene_ochre_deep, (MazeGrid *)D_80149C54_scene_ochre_deep,
+                     1);
+    mazeReplaceBlock(D_80134CC8_scene_ochre_deep, D_80149C64_scene_ochre_deep, (MazeGrid *)D_8014A044_scene_ochre_deep,
+                     1);
+    mazeReplaceBlock(D_80134CD4_scene_ochre_deep, D_8014A054_scene_ochre_deep, (MazeGrid *)D_8014A0DC_scene_ochre_deep,
+                     1);
 }
 
 u8 playerGetChaseStage(void);

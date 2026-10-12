@@ -1735,9 +1735,9 @@ u8 *areaFindPositionNode(f32 arg0, f32 arg1, f32 arg2); /* extern */
 /// \param objectTemplate Address of a valid object hierarchy template for the new block.
 /// \returns Nothing.
 ///
-/// \note Requires an initialized maze. Portability: template addresses are passed as 32-bit integers.
+/// \pre The maze is initialized.
 /// \note Original decompilation identifier: \c func_8010DB68 (0x8010DB68).
-void mazePlaceBlockObject(u8 *position, s32 objectTemplate) {
+void mazePlaceBlockObject(u8 *position, u8 *objectTemplate) {
     u8 *sp1C;
     u8 *blockHierarchy;
     u8 *registeredHierarchy;
@@ -1778,16 +1778,15 @@ void mazePrepareNodeObjects(u8 *);
 
 /// Replace the model and terrain of a maze block at the requested subdivision level.
 /// \param pos World-space XYZ origin of the block to replace.
-/// \param modelId Replacement object template address, or zero to create no new model.
+/// \param modelTemplate Replacement object template, or NULL to create no new model.
 /// \param terrain Borrowed terrain definition address, or zero for no terrain; must remain live while the
 /// block uses it.
 /// \param level Requested remaining subdivision depth, within the configured maze depth.
 /// \returns Nothing.
 ///
-/// \note Requires an initialized maze. Portability: model and terrain addresses are passed as 32-bit
-/// integers.
+/// \pre The maze is initialized.
 /// \note Original decompilation identifier: \c func_8010DC88 (0x8010DC88).
-void mazeReplaceBlock(u8 *pos, s32 modelId, s32 terrain, s32 level) {
+void mazeReplaceBlock(u8 *pos, u8 *modelTemplate, MazeGrid *terrain, s32 level) {
     u8 *node;
     u8 *model;
     u8 *child;
@@ -1807,9 +1806,9 @@ void mazeReplaceBlock(u8 *pos, s32 modelId, s32 terrain, s32 level) {
     if (*(u8 **)(node + 0x4) != NULL) {
         objectRequestHierarchyDestruction(*(u8 **)(node + 0x4));
     }
-    *(s32 *)(node + 0x44) = terrain;
-    if (modelId != 0) {
-        model = objectRegisterActiveHierarchy(objectCreateHierarchyFromTemplate(modelId));
+    ((MazeNode *)node)->terrain = terrain;
+    if (modelTemplate != NULL) {
+        model = objectRegisterActiveHierarchy(objectCreateHierarchyFromTemplate(modelTemplate));
         *(u8 **)(node + 0x4) = model;
         *(f32 *)(model + 0x14) = 0.0f;
         *(f32 *)(model + 0x10) = 0.0f;

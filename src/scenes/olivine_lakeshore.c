@@ -1,9 +1,9 @@
 #include "common.h"
+#include "area_maze.h"
 #include "scene_types.h"
 u8 *actorCreateForKind(s32, f32, f32, f32, f32, f32, f32, u8 *, s32);
 u32 randomNext(void);
 s32 randomBelow(s32);
-void mazeReplaceBlock(u8 *, u8 *, u8 *, s32);
 void actorTransitionModelEnvironmentColor(u8 *, u8, u8, u8, u8, f32);
 void doorRegistryReset(void);
 void runtimeCheckResetCheckpoint(s32, s32);
@@ -37,7 +37,8 @@ extern f64 D_801420E8_scene_olivine_lakeshore;
 /// \param style Valid index into the scene prop-style tables.
 /// \returns Nothing.
 void lakeshorePlaceSceneProp(u8 *position, s32 style) {
-    mazeReplaceBlock(position, D_8014142C_scene_olivine_lakeshore[style], D_80141438_scene_olivine_lakeshore[style], 0);
+    mazeReplaceBlock(position, D_8014142C_scene_olivine_lakeshore[style],
+                     (MazeGrid *)D_80141438_scene_olivine_lakeshore[style], 0);
 }
 
 /// Provide a lakeshore scene callback that requires no action.

@@ -1,9 +1,9 @@
 #include "common.h"
+#include "area_maze.h"
 
 u8 *actorCreateForKind(s32, f32, f32, f32, f32, f32, f32, u8 *, s32);
 u8 *itemCreate(f32, f32, f32, f32, f32, s32);
 void itemSetMode(u8 *, s32);
-void mazeReplaceBlock(u8 *, u8 *, u8 *, s32);
 u8 playerGetChaseStage(void);
 u32 randomNext(void);
 u8 *ambientAudioCreate(f32 *, s32, f32, f32, s32, s32, f32, s32, s32);
@@ -72,14 +72,16 @@ extern u8 D_80150D70_scene_cobalt_island[];
 /// \returns Nothing.
 void cobaltIslandCreateSceneProps(void) {
     if (playerGetChaseStage() < 2) {
-        mazeReplaceBlock(D_80134A1C_scene_cobalt_island, D_8014E140_scene_cobalt_island, D_8014EC40_scene_cobalt_island,
-                      0);
-        mazeReplaceBlock(D_80134A28_scene_cobalt_island, D_8014EC50_scene_cobalt_island, D_8014F750_scene_cobalt_island,
-                      0);
+        mazeReplaceBlock(D_80134A1C_scene_cobalt_island, D_8014E140_scene_cobalt_island,
+                         (MazeGrid *)D_8014EC40_scene_cobalt_island, 0);
+        mazeReplaceBlock(D_80134A28_scene_cobalt_island, D_8014EC50_scene_cobalt_island,
+                         (MazeGrid *)D_8014F750_scene_cobalt_island, 0);
         return;
     }
-    mazeReplaceBlock(D_80134A1C_scene_cobalt_island, D_8014F760_scene_cobalt_island, D_80150260_scene_cobalt_island, 0);
-    mazeReplaceBlock(D_80134A28_scene_cobalt_island, D_80150270_scene_cobalt_island, D_80150D70_scene_cobalt_island, 0);
+    mazeReplaceBlock(D_80134A1C_scene_cobalt_island, D_8014F760_scene_cobalt_island,
+                     (MazeGrid *)D_80150260_scene_cobalt_island, 0);
+    mazeReplaceBlock(D_80134A28_scene_cobalt_island, D_80150270_scene_cobalt_island,
+                     (MazeGrid *)D_80150D70_scene_cobalt_island, 0);
 }
 
 extern f32 D_80150D80_scene_cobalt_island[];

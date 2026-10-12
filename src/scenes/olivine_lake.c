@@ -1,9 +1,9 @@
 #include "common.h"
+#include "area_maze.h"
 #include "scene_types.h"
 u8 *actorCreateForKind(s32, f32, f32, f32, f32, f32, f32, u8 *, s32);
 u32 randomNext(void);
 s32 randomBelow(s32);
-void mazeReplaceBlock(u8 *, u8 *, u8 *, s32);
 void actorTransitionModelEnvironmentColor(u8 *, u8, u8, u8, u8, f32);
 void doorRegistryReset(void);
 void runtimeCheckResetCheckpoint(s32, s32);
@@ -34,7 +34,8 @@ extern char D_80142304_scene_olivine_lake[];
 /// \param style Prop-style index selecting the appearance and behavior.
 /// \returns Nothing.
 void olivineLakeCreateProp(u8 *position, s32 style) {
-    mazeReplaceBlock(position, D_8014162C_scene_olivine_lake[style], D_80141638_scene_olivine_lake[style], 0);
+    mazeReplaceBlock(position, D_8014162C_scene_olivine_lake[style], (MazeGrid *)D_80141638_scene_olivine_lake[style],
+                     0);
 }
 
 /// Populate the selected lake prop groups with randomized styles.

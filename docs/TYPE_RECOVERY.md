@@ -937,3 +937,17 @@ direct members change IDO output, so that exception is documented in its Doxygen
 contract and ledger. Scene-cell initialization uses the existing byte-address
 callback boundary explicitly. Hierarchy-root creation now has the producer's
 pointer return type. All affected units match the preserved object baseline.
+
+### Maze block resource interfaces
+
+Maze block placement and replacement share area_maze.h with all five scene
+callers. Template arguments are borrowed byte-addressed hierarchy resources;
+replacement terrain is an established MazeGrid pointer stored in MazeNode.
+Ghidra at 0x8010DC88 confirms the terrain assignment at 0x44 and template
+creation/registration. The template is consumed during creation; terrain must
+remain live while the region uses it.
+
+Scene resource blobs retain explicit MazeGrid views rather than inventing
+complete packed resource declarations. The former integer template parameters
+and inconsistent local scene prototypes were removed. Each source unit was
+rebuilt and compared independently against the preserved baseline.

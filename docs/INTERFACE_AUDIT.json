@@ -4,6 +4,13 @@
   "records": [
     {
       "code": 709,
+      "file": "src/game/flipbook_messenger.c",
+      "line": 958,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "messengerAdvancePosition(object);"
+    },
+    {
+      "code": 709,
       "file": "src/game/doors_object_responses.c",
       "line": 160,
       "diagnostic": "Incompatible pointer type assignment",
@@ -43,13 +50,6 @@
       "line": 175,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "sprintf(gDoorAccessDescriptionBuffer, \"\\nYou can't get by for some reason.\");"
-    },
-    {
-      "code": 709,
-      "file": "src/game/flipbook_messenger.c",
-      "line": 958,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "messengerAdvancePosition(object);"
     },
     {
       "code": 712,
@@ -113,20 +113,6 @@
       "line": 1124,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "systemMenuAppendDetailText(buf);"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/area_terrain_maze.c",
-      "line": 1746,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "blockHierarchy = objectCreateHierarchyFromTemplate(objectTemplate);"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/area_terrain_maze.c",
-      "line": 1812,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "model = objectRegisterActiveHierarchy(objectCreateHierarchyFromTemplate(modelId));"
     }
   ]
 }

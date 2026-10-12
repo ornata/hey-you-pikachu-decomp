@@ -1,7 +1,6 @@
 #include "common.h"
+#include "area_maze.h"
 #include "scene_types.h"
-void mazePlaceBlockObject(u8 *, s32);
-void mazeReplaceBlock(u8 *, u8 *, u8 *, s32);
 u8 *interactionProxyCreate(u8 *, s32, s32, s32, s32);
 u8 *itemCreate(f32, f32, f32, f32, f32, s32);
 s32 toolboxStoreObjectInRow(s32, s32);
@@ -13,7 +12,7 @@ extern u8 D_8014CF50_scene_viridian_entrance[];
 /// Create the forest-entrance scenery object.
 /// \returns Nothing.
 void viridianEntranceCreateSceneryObject(void) {
-    mazePlaceBlockObject(D_8014CF50_scene_viridian_entrance, (s32)D_80144BC4_scene_viridian_entrance);
+    mazePlaceBlockObject(D_8014CF50_scene_viridian_entrance, D_80144BC4_scene_viridian_entrance);
 }
 
 extern u8 D_801346C0_scene_viridian_entrance[];
@@ -24,7 +23,7 @@ extern u8 D_80144FDC_scene_viridian_entrance[];
 /// \returns Nothing.
 void viridianEntranceCreateSceneProp(void) {
     mazeReplaceBlock(D_801346C0_scene_viridian_entrance, D_80144F1C_scene_viridian_entrance,
-                  D_80144FDC_scene_viridian_entrance, 0);
+                     (MazeGrid *)D_80144FDC_scene_viridian_entrance, 0);
 }
 
 extern u8 D_8014E9F4_scene_viridian_entrance[];
