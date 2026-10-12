@@ -1,3 +1,4 @@
+#include "object_bounds.h"
 #include "interaction.h"
 #include "object_flags.h"
 #include "object_hierarchy_create.h"
@@ -1870,7 +1871,6 @@ void itemEnableShrinking(u8 *item) {
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
-void objectScaleHierarchyBounds(u8 *, f32); /* extern */
 
 /// Set an item uniform size relative to its kind and area scale, updating its bounds.
 /// \param item Initialized item object to resize.

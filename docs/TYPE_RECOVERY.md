@@ -1689,3 +1689,12 @@ contract retains nonnegative, allocation-bounded indices and representable signe
 offsets. Template cloning uses shared flags and root/child/sibling fields without
 changing ownership or traversal order. Both incremental changes preserve all
 483 objects and strict relocation addends.
+
+### Hierarchy bounds and count traversal
+
+`object_bounds.h` consolidates inherited-scale bound adjustment with its three
+callers, documenting live acyclic links and in-place compounding of stored bounds.
+Ghidra 0x80008520 confirms local X-scale inheritance and recursive radius updates;
+its inferred integer scale parameter is not adopted. Bounds and hierarchy counting
+use checked child/sibling links, with shared scale/radius fields for bounds.
+All four source units preserve all 483 objects and strict relocation addends.

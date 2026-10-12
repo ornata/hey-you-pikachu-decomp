@@ -1,3 +1,4 @@
+#include "object_bounds.h"
 #include "object_matrix_buffers.h"
 #include "object_movement.h"
 #include "interaction.h"
@@ -570,10 +571,10 @@ s32 objectAccumulateHierarchyCount(u8 *object, s32 count) {
     u8 *p = object;
     while (p != NULL) {
         count += 1;
-        if (*(u8 **)(p + 0x2C) != NULL) {
-            count = objectAccumulateHierarchyCount(*(u8 **)(p + 0x2C), count);
+        if (((RuntimeObjectPrefix *)p)->child.bytes != NULL) {
+            count = objectAccumulateHierarchyCount(((RuntimeObjectPrefix *)p)->child.bytes, count);
         }
-        p = *(u8 **)(p + 0x28);
+        p = ((RuntimeObjectPrefix *)p)->sibling.bytes;
     }
     return count;
 }
@@ -876,9 +877,9 @@ void objectScaleHierarchyBounds(u8 *object, f32 parentScale) {
     u8 *firstChild;
     if (object != NULL) {
         do {
-            firstChild = *(u8 **)(object + 0x2C);
-            combinedScale = *(f32 *)(object + 0) * parentScale;
-            *(f32 *)(object + 0x24) *= combinedScale * 0.5f;
+            firstChild = ((RuntimeObjectPrefix *)object)->child.bytes;
+            combinedScale = ((RuntimeObjectPrefix *)object)->scale[0] * parentScale;
+            ((RuntimeObjectPrefix *)object)->radius *= combinedScale * 0.5f;
             if (firstChild != NULL) {
                 objectScaleHierarchyBounds(firstChild, combinedScale);
             }

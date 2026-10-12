@@ -1,3 +1,4 @@
+#include "object_bounds.h"
 #include "object_matrix_buffers.h"
 #include "object_movement.h"
 #include "object_flags.h"
@@ -1042,7 +1043,6 @@ void messengerResetTrackedObject(void) {
     gTrackedMessengerHandle = 0;
 }
 
-void objectScaleHierarchyBounds(u8 *, f32);
 /// Hierarchy template used to create script-message projectiles.
 /// \note Original identifier: \c D_80099964 (0x80099964).
 extern u8 gMessengerObjectTemplate[];
