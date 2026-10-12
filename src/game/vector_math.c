@@ -2,6 +2,7 @@
 /* Vector, angle and interpolation helpers. The unit ends at randomBelowWithHistory:
  * its .rodata is float literals only, padded to 16 bytes before motion_playback. */
 #include "common.h"
+#include "vector_direction.h"
 
 extern float fabsf(float);
 #pragma intrinsic(fabsf)
@@ -9,7 +10,6 @@ void matrix34TransformPointVector(f32 *, f32 *, f32 *);
 f32 mathSinDegrees(f32);
 f32 mathCosDegrees(f32);
 f32 mathUnitDirectionDegrees(f32, f32);
-void vector3GetLookAnglesDegrees(f32 *);
 void motionExtractHeadingFromMatrix(f32 *, f32 *);
 f32 vector3Normalize(f32 *);
 
@@ -110,17 +110,19 @@ void audioGetPositionVolumeAndPan(f32 *pos, Mtx cam, s32 *vol, s32 *pan, f32 nea
     *pan = p;
 }
 
-/// Evaluate look angles for the opposite of an input direction without exposing outputs through this interface.
+/// Get elevation and heading for the opposite of an input direction.
 /// \param direction Input three-component direction.
-/// \returns Nothing.
+/// \param pitch Receives opposite-direction elevation in degrees.
+/// \param yaw Receives opposite-direction heading from negative Z toward negative X in degrees.
+/// \returns Nothing; both outputs are zero for a near-zero direction.
 /// \note Original decompilation identifier: \c func_8000CA60 (0x8000CA60).
-void vector3EvaluateOppositeLookAngles(f32 *direction) {
+void vector3EvaluateOppositeLookAngles(f32 *direction, f32 *pitch, f32 *yaw) {
     f32 v[3];
 
     v[0] = -direction[0];
     v[1] = -direction[1];
     v[2] = -direction[2];
-    vector3GetLookAnglesDegrees(v);
+    vector3GetLookAnglesDegrees(v, pitch, yaw);
 }
 
 /// Get the horizontal direction of a three-dimensional vector.

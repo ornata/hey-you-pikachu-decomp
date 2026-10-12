@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "vector_direction.h"
 #include "direction_animation.h"
 #include "eeprom_io.h"
 
@@ -54,7 +55,6 @@ void toolboxScaleCurrentRow(s32 *);           /* extern */
 u8 *toolboxTakeObject(s32, s32); /* extern */
 
 void vector3FromPitchYawDegrees(f32, f32, f32 *);
-void vector3PackNormalBytes(f32 *, u8 *);
 
 /// Sets one direction in a pose from pitch and yaw angles.
 /// \param pitch Direction pitch in degrees.
@@ -120,14 +120,9 @@ void directionAnimationAdvancePose(u8 *animation, s32 poseIndex) {
 typedef struct {
     f32 x, y, z, w;
 } Rec16;
-typedef struct {
-    f32 x, y, z;
-} V3_32148;
 /// Interior view of the two packed directions in the default direction-animation pose.
 /// \note Original identifier: \c D_8009A6C0 (0x8009A6C0).
 extern Rec16 gDirectionAnimationDefaultDirections[2];
-void vector3UnpackNormalBytes();
-void vector3EvaluateOppositeLookAngles();
 f32 mathWrapSignedDegrees(f32);
 
 /// Advances direction motion and periodically retargets it toward the default pose.
@@ -138,7 +133,7 @@ f32 mathWrapSignedDegrees(f32);
 void directionAnimationUpdateRetargetingMotion(u8 *animation, s32 poseIndex) {
     DirectionAngularMotion *s;
     s32 i;
-    V3_32148 dir;
+    f32 direction[3];
     f32 a;
     f32 b;
 
@@ -147,8 +142,8 @@ void directionAnimationUpdateRetargetingMotion(u8 *animation, s32 poseIndex) {
         ((DirectionAnimation *)animation)->mode = 2;
         ((DirectionAnimation *)animation)->remaining = 0.5f;
         for (i = 0, s = ((DirectionAnimation *)animation)->directions; i < 2; i++, s++) {
-            vector3UnpackNormalBytes(&gDirectionAnimationDefaultDirections[i], &dir);
-            vector3EvaluateOppositeLookAngles(&dir, &a, &b);
+            vector3UnpackNormalBytes((s8 *)&gDirectionAnimationDefaultDirections[i], direction);
+            vector3EvaluateOppositeLookAngles(direction, &a, &b);
             s->pitchRate = mathWrapSignedDegrees(a - s->pitch) * 2;
             s->yawRate = mathWrapSignedDegrees(b - s->yaw) * 2;
         }
@@ -202,11 +197,6 @@ void directionAnimationStop(u8 *animation) {
     ((DirectionAnimation *)animation)->mode = 0;
 }
 
-typedef struct Vec3_32384 {
-    f32 x, y, z;
-} Vec3_32384;
-void vector3UnpackNormalBytes(s8 *, Vec3_32384 *);
-void vector3EvaluateOppositeLookAngles(Vec3_32384 *, f32 *, f32 *);
 
 /// Starts timed direction motion from the current pose.
 /// \param animation Direction animation state to configure.
@@ -216,7 +206,7 @@ void vector3EvaluateOppositeLookAngles(Vec3_32384 *, f32 *, f32 *);
 /// \note Original decompilation identifier: \c func_80032384 (0x80032384).
 void directionAnimationStartMotion(u8 *animation, f32 duration, DirectionAngularRates *rates) {
     s32 pad[2]; /* unused, sizes the frame */
-    Vec3_32384 v;
+    f32 direction[3];
     f32 *rec;
     s32 off;
     DirectionAngularRates *p;
@@ -231,8 +221,8 @@ void directionAnimationStartMotion(u8 *animation, f32 duration, DirectionAngular
         vector3UnpackNormalBytes((s8 *)&((DirectionAnimation *)animation)
                                      ->poses[((DirectionAnimation *)animation)->poseIndex]
                                      .raw[0x10 + off],
-                                 &v);
-        vector3EvaluateOppositeLookAngles(&v, rec, rec + 1);
+                                 direction);
+        vector3EvaluateOppositeLookAngles(direction, rec, rec + 1);
         off += 0x10;
         rec[2] = p->pitch;
         rec[3] = p->yaw;

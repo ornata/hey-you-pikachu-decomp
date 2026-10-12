@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "vector_direction.h"
 #include "matrix_types.h"
 
 /* Debug trace: compiled out in this build, but each format string is still

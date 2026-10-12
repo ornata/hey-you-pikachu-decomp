@@ -1313,3 +1313,16 @@ All 483 objects remain identical. Reset retains a documented word-aligned
 `DirectionPoseCopy` view: substituting the byte-aligned shared `DirectionPose`
 changes IDO's aggregate-copy code and the ROM layout. This is an alignment
 constraint on the copy expression, not evidence of a different record layout.
+
+### Packed normal and opposite-direction angle contracts
+
+`vector_direction.h` consolidates packed normal conversion and look-angle APIs
+across their providers, actor movement, queued item responses and direction
+animation. Floating directions use three-component float arrays; packed normal
+inputs use signed bytes. Direction animation no longer declares incompatible
+local vector-pointer prototypes or unprototyped angle calls.
+Disassembly of 0x8000CA60 proves a1/a2 remain intact while a0 is replaced with the
+negated local vector before the call to 0x8003BFA0. Explicit pitch/yaw parameters
+and forwarding preserve all 483 objects, recovering outputs omitted by Ghidra's
+one-argument inference. The function documentation now describes those outputs.
+Each affected source unit was rebuilt and strictly compared before the next edit.

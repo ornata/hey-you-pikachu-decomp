@@ -1,6 +1,7 @@
 #include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "vector_direction.h"
 #include "object_lookup.h"
 #include "keyed_pool_types.h"
 #include "scene_types.h"
@@ -210,7 +211,6 @@ void objectResponsesDestroy(void) {
     heapFreeLocal(&gGameHeap, gObjectResponseHeapStorage);
 }
 
-void vector3UnpackNormalBytes(u8 *, f32 *);
 void itemAddVelocity(s32, f32 *);
 void itemStartDirectionMotion(s32, f32, f32, f32);
 
@@ -222,7 +222,7 @@ void itemStartDirectionMotion(s32, f32, f32, f32);
 void objectResponseApplyImpulse(s32 object, u8 *response) {
     f32 v[3];
 
-    vector3UnpackNormalBytes(response + 8, v);
+    vector3UnpackNormalBytes((s8 *)(response + 8), v);
     v[0] = (f32) * (s8 *)(response + 0xB) * v[0];
     v[1] = (f32) * (s8 *)(response + 0xB) * v[1];
     v[2] = (f32) * (s8 *)(response + 0xB) * v[2];

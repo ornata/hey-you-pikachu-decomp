@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "vector_direction.h"
 #include "runtime_clock.h"
 #include "area_maze.h"
 #include "actor_parts.h"
@@ -1275,7 +1276,6 @@ s32 actorAdvanceWhileTrackingTarget(u8 *actor) {
 
 void matrixFixedTo34(Mtx, f32 *);
 void matrix33TransformVector(f32 *, f32 *, f32 *);
-void vector3GetLookAnglesDegrees(f32 *, f32 *, f32 *);
 f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
 /// Borrowed reference to the active Pikachu actor created for the current area.
 /// \note Original identifier: \c D_800760A8 (0x800760A8).
