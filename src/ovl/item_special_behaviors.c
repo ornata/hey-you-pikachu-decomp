@@ -41,9 +41,9 @@ void lightBulbUpdateHeldGlow(u8 *object) {
     if (((ItemStatePrefix *)rec)->state == 2) {
         if (!((ItemStatePrefix *)rec)->modeTime) {
             itemStartMaterialAnimation(object, 0xF4);
-            ((ItemStatePrefix *)rec)->wriggleAngle = 0.0f;
+            ((ItemStatePrefix *)rec)->motionPhase.glowCountdown = 0.0f;
         }
-        timer = (f32 *)(rec + 0x30);
+        timer = &((ItemStatePrefix *)rec)->motionPhase.glowCountdown;
         *timer -= gRuntimeFrameSeconds;
         if (*timer <= 0.0f) {
             *timer = 1.0f;
@@ -101,7 +101,7 @@ void balloonBeginReleasedFlight(u8 *object) {
     if ((((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale * 7.0f) <
         ((RuntimeObjectPrefix *)object)->scale[0]) {
         itemSetMode(object, ITEM_MODE_DRIFTING_FLIGHT);
-        ((ItemStatePrefix *)sp1C)->wriggleAngle = 0.0f;
+        ((ItemStatePrefix *)sp1C)->motionPhase.flightElapsed = 0.0f;
         ((ItemStatePrefix *)sp1C)->velocityZ = 0.0f;
         ((ItemStatePrefix *)sp1C)->velocityX = 0.0f;
         ((ItemStatePrefix *)sp1C)->downwardVelocity = -4.0f;

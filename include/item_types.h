@@ -11,6 +11,15 @@
 /// Proven item-state flags; other bits retain their numeric representation.
 typedef enum ItemStateFlag { ITEM_STATE_SPIN_ENABLED = 0x20, ITEM_STATE_MATERIAL_ENABLED = 0x200 } ItemStateFlag;
 
+/// Kind- and mode-specific storage reused for angular motion and timers.
+typedef union ItemMotionPhase {
+    f32 wriggleAngle; ///< Piñata phase in degrees.
+    f32 glowCountdown; ///< Seconds until the next held light-bulb glow update.
+    f32 flightElapsed; ///< Seconds elapsed in drifting-flight mode.
+} ItemMotionPhase;
+
+typedef char ItemMotionPhaseSizeCheck[(sizeof(ItemMotionPhase) == 4) ? 1 : -1];
+
 /// Recovered item state prefix, ending before direction-animation state.
 /// Unknown fields remain offset-named. This prefix is not the full allocation
 /// and must not be used to allocate, copy, or clear an item state.
@@ -29,7 +38,7 @@ typedef struct ItemStatePrefix {
     s32 soundHandle;             ///< Last tracked spatial sound handle.
     f32 spinSpeed;               ///< Spin magnitude used by terrain response.
     f32 modeTime;                ///< Elapsed time used by the active item mode.
-    f32 wriggleAngle;            ///< Phase angle used by pinata motion.
+    ItemMotionPhase motionPhase; ///< Phase or elapsed time selected by item kind and mode.
     s32 bounceCount;             ///< Remaining automatic bounce attempts.
     f32 searchPriority;          ///< Replenishing priority consumed by weighted item searches.
     s16 materialAnimationActive; ///< Nonzero while the material track controls the frame.
@@ -46,6 +55,7 @@ typedef char ItemStatePrefixSizeCheck[(sizeof(ItemStatePrefix) == 0x6C) ? 1 : -1
 #define ITEM_OFFSET(field) ((u32) & (((ItemStatePrefix *)0)->field))
 typedef char ItemKindOffsetCheck[(ITEM_OFFSET(kind) == 4) ? 1 : -1];
 typedef char ItemDownwardVelocityOffsetCheck[(ITEM_OFFSET(downwardVelocity) == 0x10) ? 1 : -1];
+typedef char ItemMotionPhaseOffsetCheck[(ITEM_OFFSET(motionPhase) == 0x30) ? 1 : -1];
 typedef char ItemSpinOffsetCheck[(ITEM_OFFSET(spinSpeed) == 0x28) ? 1 : -1];
 typedef char ItemMaterialTrackOffsetCheck[(ITEM_OFFSET(materialTrack) == 0x40) ? 1 : -1];
 typedef char ItemMaterialFrameOffsetCheck[(ITEM_OFFSET(materialTrack.value) == 0x48) ? 1 : -1];

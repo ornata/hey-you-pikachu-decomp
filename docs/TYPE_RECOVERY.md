@@ -2846,3 +2846,16 @@ state, actor orientation, and object radius, position, world position, rotation
 and scale. Ghidra 0x80122DE0 confirms holder lookup and attachment placement.
 The shared-field representation preserves all 483 strict objects without a
 new matching exception.
+
+### Drifting flight and overloaded item phase storage
+
+Drifting flight now uses named private state, velocity, radius and position
+fields. Ghidra 0x801228F4 confirms the elapsed-time limit, oscillation and
+terrain-constrained displacement. All converted accesses preserve strict
+allocated-object bytes and relocations.
+
+`ItemMotionPhase` documents the proven reuse of offset 0x30: piñata angle in
+degrees, drifting-flight elapsed seconds and held light-bulb countdown seconds.
+The union remains four bytes at checked offset 0x30. Flight, balloon launch,
+piñata and light-bulb consumers use their corresponding views; the countdown
+pointer also uses its named member. No additional state storage is introduced.

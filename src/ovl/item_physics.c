@@ -493,29 +493,29 @@ void itemUpdateDriftingFlight(u8 *object) {
     u8 *node;
     f32 diameter;
     u8 *state;
-    state = *(u8 **)(object + 0x54);
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
     node = NULL;
-    *(f32 *)(state + 0x30) += gRuntimeFrameSeconds;
-    if (*(f32 *)(state + 0x30) > 10.0f) {
+    ((ItemStatePrefix *)state)->motionPhase.flightElapsed += gRuntimeFrameSeconds;
+    if (((ItemStatePrefix *)state)->motionPhase.flightElapsed > 10.0f) {
         itemSetMode(object, ITEM_MODE_SHRINKING_DISPOSAL);
         return;
     }
-    wave = 2.0f * mathCosDegrees(*(f32 *)(state + 0x30) * 120.0f);
-    dx = (*(f32 *)(state + 0x14) + wave) * gRuntimeFrameSeconds;
-    dz = (*(f32 *)(state + 0x18) + wave) * gRuntimeFrameSeconds;
-    dy = -*(f32 *)(state + 0x10) * gRuntimeFrameSeconds;
-    radius = *(f32 *)(object + 0x24);
+    wave = 2.0f * mathCosDegrees(((ItemStatePrefix *)state)->motionPhase.flightElapsed * 120.0f);
+    dx = (((ItemStatePrefix *)state)->velocityX + wave) * gRuntimeFrameSeconds;
+    dz = (((ItemStatePrefix *)state)->velocityZ + wave) * gRuntimeFrameSeconds;
+    dy = -((ItemStatePrefix *)state)->downwardVelocity * gRuntimeFrameSeconds;
+    radius = ((RuntimeObjectPrefix *)object)->radius;
     diameter = radius * 2;
-    if (terrainConstrainMovement(5, *(f32 *)(object + 0x18), *(f32 *)(object + 0x1C) - radius, *(f32 *)(object + 0x20), diameter,
+    if (terrainConstrainMovement(5, ((RuntimeObjectPrefix *)object)->position[0], ((RuntimeObjectPrefix *)object)->position[1] - radius, ((RuntimeObjectPrefix *)object)->position[2], diameter,
                       diameter, radius, &dx, &dy, &dz, &node) &
         0x12) {
         itemPlayTrackedSound(object, (ItemStatePrefix *)state, 0xBD);
         itemSetMode(object, ITEM_MODE_SHRINKING_DISPOSAL);
         return;
     }
-    *(f32 *)(object + 0x18) += dx;
-    *(f32 *)(object + 0x1C) += dy;
-    *(f32 *)(object + 0x20) += dz;
+    ((RuntimeObjectPrefix *)object)->position[0] += dx;
+    ((RuntimeObjectPrefix *)object)->position[1] += dy;
+    ((RuntimeObjectPrefix *)object)->position[2] += dz;
 }
 
 /// Separate held-item callback view of the item catalog, with a 116-byte stride.
@@ -591,19 +591,19 @@ void pinataUpdateWriggle(u8 *item) {
     if ((randomBelow(0x64) == 0) || (((ItemStatePrefix *)state)->rotationVelocityX < 10.0f)) {
         ((ItemStatePrefix *)state)->rotationVelocityX = (f32)(s32)(randomBelow(0x32) + 0xA);
     }
-    ((ItemStatePrefix *)state)->wriggleAngle += ((ItemStatePrefix *)state)->rotationVelocityX * gRuntimeFrameSeconds;
-    if (((ItemStatePrefix *)state)->wriggleAngle < 0.0f) {
+    ((ItemStatePrefix *)state)->motionPhase.wriggleAngle += ((ItemStatePrefix *)state)->rotationVelocityX * gRuntimeFrameSeconds;
+    if (((ItemStatePrefix *)state)->motionPhase.wriggleAngle < 0.0f) {
         do {
-            ((ItemStatePrefix *)state)->wriggleAngle = (f32)(((ItemStatePrefix *)state)->wriggleAngle + 360.0f);
-        } while (((ItemStatePrefix *)state)->wriggleAngle < 0.0f);
+            ((ItemStatePrefix *)state)->motionPhase.wriggleAngle = (f32)(((ItemStatePrefix *)state)->motionPhase.wriggleAngle + 360.0f);
+        } while (((ItemStatePrefix *)state)->motionPhase.wriggleAngle < 0.0f);
     }
-    if (((ItemStatePrefix *)state)->wriggleAngle >= 360.0f) {
+    if (((ItemStatePrefix *)state)->motionPhase.wriggleAngle >= 360.0f) {
         do {
-            ((ItemStatePrefix *)state)->wriggleAngle = (f32)(((ItemStatePrefix *)state)->wriggleAngle - 360.0f);
-        } while (((ItemStatePrefix *)state)->wriggleAngle >= 360.0f);
+            ((ItemStatePrefix *)state)->motionPhase.wriggleAngle = (f32)(((ItemStatePrefix *)state)->motionPhase.wriggleAngle - 360.0f);
+        } while (((ItemStatePrefix *)state)->motionPhase.wriggleAngle >= 360.0f);
     }
     ((RuntimeObjectPrefix *)model)->rotation[1] =
-        (f32)(mathSinDegrees(((ItemStatePrefix *)state)->wriggleAngle) * 40.0f);
+        (f32)(mathSinDegrees(((ItemStatePrefix *)state)->motionPhase.wriggleAngle) * 40.0f);
     if ((randomBelow(0x64) == 0) || (((ItemStatePrefix *)state)->rotationVelocityY < 10.0f)) {
         ((ItemStatePrefix *)state)->rotationVelocityY = (f32)(s32)(randomBelow(0x64) + 0x190);
     }
