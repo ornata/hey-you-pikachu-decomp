@@ -31,6 +31,12 @@ typedef struct DirectionAnimation {
     f32 remaining; ///< Seconds until the current motion phase ends.
 } DirectionAnimation;
 
+/// Advance a direction-animation mode for one selected pose.
+/// \param animation Borrowed initialized direction-animation storage.
+/// \param poseIndex Selected pose, zero or one.
+/// \returns Nothing.
+typedef void (*DirectionAnimationUpdateHandler)(u8 *animation, s32 poseIndex);
+
 typedef char DirectionPoseSizeCheck[(sizeof(DirectionPose) == 0x28) ? 1 : -1];
 typedef char DirectionAnimationSizeCheck[(sizeof(DirectionAnimation) == 0x7C) ? 1 : -1];
 #define DIRECTION_OFFSET_CHECK(name, member, offset)                                                                   \

@@ -1275,5 +1275,18 @@ selector at 0x72. Reset copies the same default pose into both slots, and
 pose-angle writes update packed directions consumed by the renderer.
 The provider and item renderer preserve strict object matching. The private
 partial item view excludes the tail; the 0xF0 state allocation remains explicit.
-Legacy K&R advancement calls remain a documented calling-convention recovery
-target; this layout change does not alter those calls.
+The subsequent callback-contract recovery below resolves the legacy K&R
+advancement calls without altering the ROM.
+
+### Direction-animation callback argument forwarding
+
+Both motion callbacks now explicitly accept and forward the selected pose
+index to a normal two-argument directionAnimationAdvancePose declaration.
+The shared callback typedef matches the dispatcher table. Disassembly confirms
+the dispatcher supplies the selector in a1; retargeting's advance branch and
+timed motion's advance branch preserve that incoming register through the call.
+Ghidra at 0x80032148 omits the forwarded argument in its inferred signature,
+so register flow and the unchanged object bytes provide the stronger evidence.
+Explicit parameter forwarding produces exactly the original code, removing the
+K&R missing-argument UB rather than retaining an unnecessary compatibility
+exception. The former UB comment is replaced by the valid pose-index contract.

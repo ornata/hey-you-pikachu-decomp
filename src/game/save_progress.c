@@ -91,16 +91,10 @@ extern f32 gRuntimeFrameSeconds;
 
 /// Advances the animated directions and updates the selected pose for the current frame.
 /// \param animation Direction animation state to advance.
-/// \param poseIndex Pose to update, zero or one; legacy callers may omit this parameter.
+/// \param poseIndex Pose to update, zero or one.
 /// \returns Nothing.
-///
-/// \note UB: K&R definition; directionAnimationUpdateRetargetingMotion and
-/// directionAnimationUpdateTimedMotion call it with one argument, so arg1 is whatever the caller
-/// left in a1
 /// \note Original decompilation identifier: \c func_80031FD0 (0x80031FD0).
-void directionAnimationAdvancePose(animation, poseIndex) u8 *animation;
-s32 poseIndex;
-{
+void directionAnimationAdvancePose(u8 *animation, s32 poseIndex) {
     DirectionAngularMotion *s;
     s32 i;
 
@@ -138,9 +132,10 @@ f32 mathWrapSignedDegrees(f32);
 
 /// Advances direction motion and periodically retargets it toward the default pose.
 /// \param animation Direction animation state to update.
+/// \param poseIndex Selected pose to update, zero or one.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80032148 (0x80032148).
-void directionAnimationUpdateRetargetingMotion(u8 *animation) {
+void directionAnimationUpdateRetargetingMotion(u8 *animation, s32 poseIndex) {
     DirectionAngularMotion *s;
     s32 i;
     V3_32148 dir;
@@ -158,7 +153,7 @@ void directionAnimationUpdateRetargetingMotion(u8 *animation) {
             s->yawRate = mathWrapSignedDegrees(b - s->yaw) * 2;
         }
     } else {
-        directionAnimationAdvancePose(animation);
+        directionAnimationAdvancePose(animation, poseIndex);
     }
 }
 
@@ -166,16 +161,17 @@ void directionAnimationReset(u8 *);
 
 /// Advances direction motion until its duration expires, then restores the default pose.
 /// \param animation Direction animation state to update.
+/// \param poseIndex Selected pose to update, zero or one.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8003225C (0x8003225C).
-void directionAnimationUpdateTimedMotion(u8 *animation) {
+void directionAnimationUpdateTimedMotion(u8 *animation, s32 poseIndex) {
     ((DirectionAnimation *)animation)->remaining =
         (f32)(((DirectionAnimation *)animation)->remaining - gRuntimeFrameSeconds);
     if (((DirectionAnimation *)animation)->remaining < 0.0f) {
         directionAnimationReset(animation);
         return;
     }
-    directionAnimationAdvancePose(animation);
+    directionAnimationAdvancePose(animation, poseIndex);
 }
 
 typedef struct Blk28 {
@@ -250,7 +246,7 @@ void directionAnimationStartMotion(u8 *animation, f32 duration, Pt2_32384 *rates
 
 /// Direction-animation update callbacks indexed by nonzero motion mode.
 /// \note Original identifier: \c D_8009A6D8 (0x8009A6D8).
-extern void (*gDirectionAnimationUpdateHandlers[])(u8 *, s32);
+extern DirectionAnimationUpdateHandler gDirectionAnimationUpdateHandlers[];
 
 /// Advances an active direction animation for the current frame.
 /// \param animation Direction animation state to update.
