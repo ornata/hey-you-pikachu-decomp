@@ -951,3 +951,18 @@ Scene resource blobs retain explicit MazeGrid views rather than inventing
 complete packed resource declarations. The former integer template parameters
 and inconsistent local scene prototypes were removed. Each source unit was
 rebuilt and compared independently against the preserved baseline.
+
+### Word-map ownership and lookup interfaces
+
+Motion and actor registries share WordMap initialization, insertion and
+destruction declarations. Destruction takes the established map record directly,
+releases its owned slot allocation and clears its fields. Ghidra at 0x80048D44
+confirms those ownership operations. The original unused deallocator argument
+remains explicit and documented.
+
+The canonical two-argument lookup declaration lives in word_map_lookup.h and
+is shared by its producer and motion caller. Actor part-index lookup retains
+its already recorded four-argument compatibility declaration because the ROM
+supplies two unused trailing integers. The focused lookup header lets that
+caller share ownership APIs without conflicting declarations. No compiler
+flags or call argument setup were changed; all affected units match the baseline.

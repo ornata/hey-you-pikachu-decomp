@@ -7,7 +7,8 @@
 #include "motion_cache.h"
 #include "actor_script.h"
 #include "object_types.h"
-#include "word_map_types.h"
+#include "word_map.h"
+#include "word_map_lookup.h"
 
 /* Debug trace: compiled out in this build, but each format string is still
  * emitted to .rodata. */
@@ -571,9 +572,6 @@ extern GlyphPair gActionExplicitPoseTransitions[];
 /// Owned lookup map from source/destination pose pairs to compatible transitions.
 /// \note Original identifier: \c D_800B6830 (0x800B6830).
 extern WordMap gActionPoseTransitionMap;
-void wordMapInitialize(WordMap *, s32);
-s32 wordMapLookup(WordMap *, u32);
-s32 wordMapInsert(WordMap *, s32, u32);
 
 /// Fallback command sequence used when an action has no configured sequence.
 /// \note Original identifier: \c D_80091D18 (0x80091D18).
@@ -700,7 +698,6 @@ void actionInitializeTransitionMap(void) {
     TRACE("total %d joint_actions applied\n", i);
 }
 
-void wordMapDestroy(u8 *); /* extern */
 
 /// Release the action pose-transition lookup map.
 /// \returns Nothing.

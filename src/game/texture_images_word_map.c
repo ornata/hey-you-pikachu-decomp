@@ -1,6 +1,7 @@
 #include "common.h"
 #include "heap_types.h"
-#include "word_map_types.h"
+#include "word_map.h"
+#include "word_map_lookup.h"
 
 /* Tile loads used by textureUploadTile. Like the SDK gDPLoadTextureTile(_4b), but the tile line size is written as a
  * texel-count shift, ((texels << siz##_LINE_SHIFT) >> 1) bytes, instead of a multiply by siz##_LINE_BYTES. */
@@ -1311,11 +1312,11 @@ void heapFreeLocal(HpHdr *, void *, u8 *);
 /// \returns Nothing.
 /// \note Portability: The deallocator call passes an extra argument ignored by the original ABI.
 /// \note Original decompilation identifier: \c func_80048D44 (0x80048D44).
-void wordMapDestroy(u8 *map) {
-    heapFreeLocal(&gGameHeap, (void *)((WordMap *)map)->slots, map);
-    ((WordMap *)map)->slots = NULL;
-    ((WordMap *)map)->size = 0;
-    ((WordMap *)map)->count = 0;
+void wordMapDestroy(WordMap *map) {
+    heapFreeLocal(&gGameHeap, map->slots, (u8 *)map);
+    map->slots = NULL;
+    map->size = 0;
+    map->count = 0;
 }
 
 /// Add a key and nonzero word value to an initialized map.

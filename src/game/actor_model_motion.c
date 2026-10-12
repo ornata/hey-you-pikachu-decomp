@@ -8,7 +8,7 @@
 #include "object_types.h"
 #include "actor_script.h"
 #include "heap_types.h"
-#include "word_map_types.h"
+#include "word_map.h"
 
 /* Diagnostic format strings whose callers were compiled out. */
 static const char sUnknownHoldPosFmt[] = "Unknown holdPos:%d\n";
@@ -852,7 +852,6 @@ void actorCopyObjectRotationToState(u8 *actor) {
 /// Owned lookup mapping packed actor-kind and part identifiers to part-table slots.
 /// \note Original identifier: \c D_800B6918 (0x800B6918).
 extern WordMap gActorPartIndexMap;
-s32 wordMapInsert(WordMap *, s32, u32);
 
 /// Register the named parts belonging to an actor type.
 /// \param bank Nonnegative actor type within the part-count table and the 15-bit actor-type range.
@@ -877,7 +876,6 @@ s32 *actorRegisterPartIds(s32 bank, s32 *ids) {
 /// \note Original identifier: \c D_800760F0 (0x800760F0).
 extern s32 gActorPartRegistrationData;
 
-void wordMapInitialize(WordMap *, s32);
 s32 *actorRegisterPartIds(s32, s32 *);
 
 /// Initialize the actor part lookup from the configured actor types.
@@ -905,7 +903,6 @@ void actorInitializePartRegistry(void) {
     actorInitializePartIdMap();
 }
 
-void wordMapDestroy(void *); /* extern */
 
 /// Release the actor part identifier lookup.
 /// \returns Nothing.

@@ -87,13 +87,6 @@
       "expression": "stringCopy(gPlayerProfileName, \"You\");"
     },
     {
-      "code": 709,
-      "file": "src/game/motion_playback.c",
-      "line": 709,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "wordMapDestroy(&gActionPoseTransitionMap);"
-    },
-    {
       "code": 712,
       "file": "src/main.c",
       "line": 361,
