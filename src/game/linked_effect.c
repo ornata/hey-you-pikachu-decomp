@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "integer_animation.h"
 #include "object_lookup.h"
 #include "heap_alloc.h"
 #include "object_types.h"
@@ -145,7 +146,6 @@ void linkedEffectUpdateMotion(u8 *object) {
 }
 
 void objectOrientAlongCameraView(u8 *);                              /* extern */
-s32 animationIntegerTrackEvaluate(f32 *, s32 *, f32); /* extern */
 void linkedEffectUpdateMotion(u8 *);                      /* extern */
 f32 mathSinDegrees(f32);                                  /* extern */
 
@@ -177,8 +177,8 @@ void linkedEffectUpdate(u8 *object) {
         } while (((RuntimeObjectPrefix *)object)->rotation[0] >= 360.0f);
     }
     step = ((MotionState *)state)->rate * gRuntimeFrameSeconds;
-    animationIntegerTrackEvaluate((f32 *)(state + 0x38), &channelValue, step);
-    animationIntegerTrackEvaluate((f32 *)(state + 0x44), &channelValue, step);
+    animationIntegerTrackEvaluate((ValueTrack *)(f32 *)(state + 0x38), &channelValue, step);
+    animationIntegerTrackEvaluate((ValueTrack *)(f32 *)(state + 0x44), &channelValue, step);
     ((MotionState *)state)->color[3] = (s8)channelValue;
     ((MotionState *)state)->elapsed = (f32)(((MotionState *)state)->elapsed + gRuntimeFrameSeconds);
 }
@@ -401,7 +401,6 @@ u8 *objectCreateFromTemplate(void *);
 void objectAllocateHierarchyMatrixBuffers(u8 *);
 void objectMakeHierarchyRoot(u8 *);
 void objectRegisterActiveHierarchy(u8 *);
-void animationIntegerTrackInitialize(f32 *, s32);
 void linkedEffectInitializeVelocity(s32, u8 *);
 /// Model display list used by linked effect objects.
 /// \note Original identifier: \c D_1000B08 (0x01000B08).
@@ -461,8 +460,8 @@ u8 *linkedEffectCreateChain(s32 kind, f32 x, f32 y, f32 z, f32 scale, s32 target
     initial.target = target;
     initial.speed = speed;
     initial.rate = 1.0f;
-    animationIntegerTrackInitialize(initial.channelA, gTextureFrameAnimationPrograms[channelA]);
-    animationIntegerTrackInitialize(initial.channelB, gOpacityAnimationPrograms[channelB]);
+    animationIntegerTrackInitialize((ValueTrack *)initial.channelA, (ValueKey *)gTextureFrameAnimationPrograms[channelA]);
+    animationIntegerTrackInitialize((ValueTrack *)initial.channelB, (ValueKey *)gOpacityAnimationPrograms[channelB]);
     initial.color[0] = 255;
     initial.color[1] = 255;
     initial.color[2] = 255;

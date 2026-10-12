@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "integer_animation.h"
 #include "object_types.h"
 #include "actor_script.h"
 #include "heap_types.h"
@@ -1063,7 +1064,6 @@ void actorReleaseAnimatedTextureState(u8 *actor) {
     heapFreeLocal(&gGameHeap, obj);
 }
 
-s32 animationIntegerTrackEvaluate(void *, s32 *, f32);
 Gfx *textureLoadForDraw(Gfx **, s32, s32);
 
 /// Advance animated textures and prepare their drawing commands.
@@ -1088,7 +1088,7 @@ void actorUpdateAnimatedTextureDrawLists(u8 *actor, s32 buffer) {
         gSPBranchList(dl++, gfx);
         track = (u8 *)v->track[i];
         frame = *(s16 *)(track + 8);
-        animationIntegerTrackEvaluate(track, &frame, v->speed[i] * gRuntimeFrameSeconds);
+        animationIntegerTrackEvaluate((ValueTrack *)track, &frame, v->speed[i] * gRuntimeFrameSeconds);
         textureLoadForDraw(&gfx, v->frame[i], frame);
         gSPEndDisplayList(gfx++);
     }
@@ -1110,7 +1110,6 @@ s32 actorBindAnimatedTexturesForDraw(u8 *actor) {
 /// Shared integer animation programs selecting texture frames for actors, effects and interface elements.
 /// \note Original identifier: \c D_8006B090 (0x8006B090).
 extern s32 gTextureFrameAnimationPrograms[];
-void animationIntegerTrackInitialize(void *, s32);
 
 /// Configure an actor animated texture component from texture and animation definitions.
 /// \param actor Actor with part 0x78 and allocated texture state; existing drawing buffers are not released.
@@ -1128,7 +1127,7 @@ void actorInitializeAnimatedTextures(u8 *actor, s32 *parts) {
     for (; (frame = parts[0]) >= 0; parts += 2) {
         v->frame[v->count] = frame;
         v->speed[v->count] = 1.0f;
-        animationIntegerTrackInitialize(v->track[v->count], gTextureFrameAnimationPrograms[parts[1]]);
+        animationIntegerTrackInitialize((ValueTrack *)v->track[v->count], (ValueKey *)gTextureFrameAnimationPrograms[parts[1]]);
         v->count++;
     }
     v->len = v->count * 20;

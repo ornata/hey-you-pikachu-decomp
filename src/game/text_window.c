@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "integer_animation.h"
 #include "text_image.h"
 
 /* Debug trace: compiled out in this build, but each format string is still
@@ -16,7 +17,6 @@ void playerSetControllerPort(s32);
 extern s32 gTextWindowPageImages[6][2];
 
 void _bzero(void *, s32);
-void animationIntegerTrackInitialize(void *, s32);
 /// Shared integer animation programs selecting texture frames for actors, effects and interface elements.
 /// \note Original identifier: \c D_8006B090 (0x8006B090).
 extern s32 gTextureFrameAnimationPrograms[];
@@ -78,8 +78,7 @@ void textWindowInitialize(void) {
     gTextWindowIndicator = 1;
     gTextWindowState = 4;
     for (i = 0; i < 6; i++) {
-        animationIntegerTrackInitialize(&gTextWindowInitializedIndicatorTracks[i],
-                                        gTextureFrameAnimationPrograms[gTextWindowIndicatorAnimationIds[i]]);
+        animationIntegerTrackInitialize((ValueTrack *)&gTextWindowInitializedIndicatorTracks[i], (ValueKey *)gTextureFrameAnimationPrograms[gTextWindowIndicatorAnimationIds[i]]);
     }
 }
 
@@ -146,7 +145,6 @@ typedef struct DrawRectangle {
     s32 s, t;
     f32 scaleX, scaleY;
 } DrawRectangle;
-s32 animationIntegerTrackEvaluate(void *, s32 *, f32);
 void textureDrawRectangles(s32, DrawRectangle *, Gfx **);
 /// Separate indicator-indexed animation view; initialized tracks begin at index one.
 /// \note Original identifier: \c D_800F1AC8 (0x800F1AC8).
@@ -183,7 +181,7 @@ void textWindowDrawIndicator(Gfx **gdl, s32 alpha) {
         gSPTexture((*gdl)++, 0x7FFF, 0, 0, G_TX_RENDERTILE, G_ON);
         gMoveWd((*gdl)++, G_MW_FOG, 0x10, 0x7FFF);
         gDPPipeSync((*gdl)++);
-        animationIntegerTrackEvaluate(&gTextWindowIndicatorTrackIndexBase[gTextWindowIndicator], &texture,
+        animationIntegerTrackEvaluate((ValueTrack *)&gTextWindowIndicatorTrackIndexBase[gTextWindowIndicator], &texture,
                                       gRuntimeFrameSeconds);
         rectangles[0].texture = texture;
         rectangles[0].x = origin;

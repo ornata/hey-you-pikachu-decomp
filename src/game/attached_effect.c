@@ -1,8 +1,8 @@
 #include "common.h"
+#include "integer_animation.h"
 #include "object_lookup.h"
 #include "heap_alloc.h"
 
-void animationIntegerTrackInitialize(void *, s32);
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern u8 gGameHeap[];
@@ -54,8 +54,8 @@ u8 *attachedEffectCreate(u8 *owner, s32 kind, s32 track) {
     v = *(u8 **)(obj + 0x54);
     v[0] = kind;
     *(f32 *)(v + 0x28) = def->scale;
-    animationIntegerTrackInitialize(v + 0x18, (&gOpacityAnimationPrograms)[def->track]);
-    animationIntegerTrackInitialize(v + 0xC, gTextureFrameAnimationPrograms[track]);
+    animationIntegerTrackInitialize((ValueTrack *)(v + 0x18), (ValueKey *)((&gOpacityAnimationPrograms)[def->track]));
+    animationIntegerTrackInitialize((ValueTrack *)(v + 0xC), (ValueKey *)(gTextureFrameAnimationPrograms[track]));
     *(u8 **)(v + 4) = owner;
     v[1] = 0;
     objectRegisterActiveHierarchy(obj);
@@ -76,8 +76,8 @@ void attachedEffectInitialize(u8 *object) {
     u8 *obj;
 
     obj = heapAllocLocal(gGameHeap, 0x2C, 0x7A);
-    animationIntegerTrackInitialize(obj + 0xC, gAttachedEffectDefaultFrameProgram);
-    animationIntegerTrackInitialize(obj + 0x18, gOpacityAnimationPrograms);
+    animationIntegerTrackInitialize((ValueTrack *)(obj + 0xC), (ValueKey *)(gAttachedEffectDefaultFrameProgram));
+    animationIntegerTrackInitialize((ValueTrack *)(obj + 0x18), (ValueKey *)(gOpacityAnimationPrograms));
     obj[0x24] = obj[0x25] = obj[0x26] = obj[0x27] = 0xFF;
     *(s32 *)(obj + 4) = 0;
     *(f32 *)(obj + 8) = 1.0f;
@@ -88,7 +88,6 @@ void attachedEffectInitialize(u8 *object) {
 void objectOrientAlongCameraView(u8 *);
 u8 *actorFindPart(u8 *, s32);
 f32 vector3Length(f32 *);
-s32 animationIntegerTrackEvaluate(void *, s32 *, f32);
 /// Minimum view-dependent scale factor for an attached effect.
 /// \note Original identifier: \c D_800A26A0 (0x800A26A0).
 extern f32 gAttachedEffectMinimumViewScale;
@@ -155,8 +154,8 @@ void attachedEffectUpdate(u8 *obj) {
             *(f32 *)(obj + 0x10) -= 360.0f;
         }
     }
-    animationIntegerTrackEvaluate(state + 0xC, &value, step);
-    if (animationIntegerTrackEvaluate(state + 0x18, &value, step) == 1) {
+    animationIntegerTrackEvaluate((ValueTrack *)(state + 0xC), &value, step);
+    if (animationIntegerTrackEvaluate((ValueTrack *)(state + 0x18), &value, step) == 1) {
         objectRequestHierarchyDestruction(obj);
         return;
     }

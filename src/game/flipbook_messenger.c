@@ -6,6 +6,7 @@
 
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "integer_animation.h"
 #include "object_lookup.h"
 #include "heap_alloc.h"
 #include "object_types.h"
@@ -39,7 +40,6 @@ void messengerDeliver(u8 *, u8 *, u8 *, s32);
 u8 *collisionGridFindOverlap(u8 *);
 void messengerBeginDissipation(f32 *);
 s32 objectPlaySpatialSound(u8 *, s32, f32, f32);
-void animationIntegerTrackInitialize(u8 *, s32);
 /// Integer appearance animation used while a messenger dissipates.
 /// \note Original identifier: \c D_8009999C (0x8009999C).
 extern u8 gMessengerDissipationAnimation[];
@@ -742,7 +742,7 @@ void messengerInitializeObject(u8 *object) {
     _bzero(allocation, 0x40);
     ((ProjectileState262 *)sp1C)->time = 0.0f;
     ((ProjectileState262 *)sp1C)->phase = 0.0f;
-    animationIntegerTrackInitialize(sp1C + 0x10, gMessengerFlightAnimation);
+    animationIntegerTrackInitialize((ValueTrack *)(sp1C + 0x10), (ValueKey *)(gMessengerFlightAnimation));
     ((RuntimeObjectPrefix *)object)->state.bytes = sp1C;
 }
 
@@ -959,7 +959,6 @@ void messengerUpdateRebound(u8 *object, s32 unused) {
     }
 }
 
-s32 animationIntegerTrackEvaluate(void *, void *, f32);
 void objectOrientAlongCameraView(u8 *);
 void messengerUpdateHoming(u8 *, s32);
 void messengerUpdateDissipation(u8 *, s32);
@@ -975,7 +974,7 @@ void messengerUpdate(u8 *object) {
 
     sp2C = *(u8 **)(object + 0x54);
     *(f32 *)(sp2C + 4) = *(f32 *)(sp2C + 4) - gRuntimeFrameSeconds;
-    animationStatus = animationIntegerTrackEvaluate(sp2C + 0x10, &sp28, gRuntimeFrameSeconds);
+    animationStatus = animationIntegerTrackEvaluate((ValueTrack *)(sp2C + 0x10), &sp28, gRuntimeFrameSeconds);
     switch (*(u32 *)sp2C) {
     case 0:
         messengerUpdateLaunch(object, animationStatus);
@@ -1037,7 +1036,7 @@ void messengerBeginDissipation(f32 *object) {
     projectileState = *(u8 **)((u8 *)object + 0x54);
     *(s32 *)(projectileState + 0) = 2;
     *(f32 *)(projectileState + 4) = 0.35f;
-    animationIntegerTrackInitialize(projectileState + 0x10, (s32)gMessengerDissipationAnimation);
+    animationIntegerTrackInitialize((ValueTrack *)(projectileState + 0x10), (ValueKey *)((s32)gMessengerDissipationAnimation));
     objectPlaySpatialSound((u8 *)object, 0xBD, 0.0f, 500.0f);
     if (gTrackedMessengerHandle == *(s32 *)((u8 *)object + 0x38)) {
         gTrackedMessengerHandle = 0;

@@ -1,5 +1,5 @@
 #include "common.h"
-#include "integer_animation_types.h"
+#include "integer_animation.h"
 
 /* Debug trace: compiled out in this build, but each format string is still
  * emitted to .rodata in source order. */
@@ -17,7 +17,6 @@ typedef struct Key16 {
     u8 len;
 } Key16;
 
-s32 animationIntegerTrackEvaluate(void *, s32 *, f32);
 
 /// Advance a scalar animation track to the key for the updated time.
 /// \param t Current key time in seconds, updated by the step.
@@ -284,11 +283,11 @@ s32 animationDeltaTrack3Evaluate(Track3b *track, f32 *output, f32 *velocities, f
 /// must remain valid while the track uses it.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000A5CC (0x8000A5CC).
-void animationIntegerTrackInitialize(f32 *track, s32 keys) {
+void animationIntegerTrackInitialize(ValueTrack *track, ValueKey *keys) {
     s32 sp1C;
-    *(s32 *)((u8 *)track + 4) = keys;
-    *(s16 *)((u8 *)track + 8) = 0;
-    track[0] = 0.0f;
+    track->key = keys;
+    track->value = 0;
+    track->time = 0.0f;
     animationIntegerTrackEvaluate(track, &sp1C, 0.0f);
 }
 
@@ -298,7 +297,7 @@ void animationIntegerTrackInitialize(f32 *track, s32 keys) {
 /// \param step Time step in seconds, applied after evaluation.
 /// \returns 0 for an active value, 1 for a held or absent track, or 2 for a one-shot value.
 /// \note Original decompilation identifier: \c func_8000A600 (0x8000A600).
-s32 animationIntegerTrackEvaluate(void *state, s32 *out, f32 step) {
+s32 animationIntegerTrackEvaluate(ValueTrack *state, s32 *out, f32 step) {
     ValueTrack *track = (ValueTrack *)state;
     ValueKey *key = track->key;
     f32 duration;

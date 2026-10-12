@@ -434,3 +434,18 @@ calls still preserve documented unused trailing arguments. This is an explicit
 remaining ABI exception, not a claim that deallocation interfaces are finished.
 The cluster animation evaluator receives a pointer rather than an integer. Every
 step matches the immutable 483-object baseline.
+
+The integer-animation continuation shares fully prototyped ValueTrack/ValueKey
+initialization and evaluation through `integer_animation.h`. The producer uses
+checked fields for key, retained value and time. Ghidra at 0x8000A5CC corroborates
+initialization and initial evaluation. Every consumer now uses the same contract;
+embedded tracks and retained integer resource addresses have explicit typed views
+at the boundary, with byte-offset expressions preserved before conversion.
+
+The actor-part texture-animation caller's unused third argument is removable
+without changing its object, so its old unprototyped compatibility declaration
+and portability exception are removed. All consumer source units were compared
+individually with the immutable baseline. An early incorrect cast placement was
+rejected by verification and corrected before acceptance; no comparison rules or
+baseline files changed. The track owns no key storage: borrowed keys must remain
+valid for playback, and evaluation reports active, held/absent and one-shot values.

@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "integer_animation.h"
 #include "player_control.h"
 #include "object_types.h"
 #include "text_image.h"
@@ -59,7 +60,6 @@ void hudUnusedArgumentNoOp(s32 unused) {
 void hudUnusedNoOp(void) {
 }
 
-void animationIntegerTrackInitialize(f32 *, s32);
 /// Shared integer animation programs selecting texture frames for actors, effects and interface elements.
 /// \note Original identifier: \c D_8006B090 (0x8006B090).
 extern s32 gTextureFrameAnimationPrograms[];
@@ -86,12 +86,12 @@ extern ValueTrack gHudVerticalDirectionInnerTrack;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800215C0 (0x800215C0).
 void hudInitializeDirectionIndicators(void) {
-    animationIntegerTrackInitialize((f32 *)&gHudHorizontalDirectionTracks, gTextureFrameAnimationPrograms[221]);
-    animationIntegerTrackInitialize((f32 *)&gHudHorizontalDirectionMiddleTrack, gTextureFrameAnimationPrograms[222]);
-    animationIntegerTrackInitialize((f32 *)&gHudHorizontalDirectionInnerTrack, gTextureFrameAnimationPrograms[223]);
-    animationIntegerTrackInitialize((f32 *)&gHudVerticalDirectionTracks, gTextureFrameAnimationPrograms[224]);
-    animationIntegerTrackInitialize((f32 *)&gHudVerticalDirectionMiddleTrack, gTextureFrameAnimationPrograms[225]);
-    animationIntegerTrackInitialize((f32 *)&gHudVerticalDirectionInnerTrack, gTextureFrameAnimationPrograms[226]);
+    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudHorizontalDirectionTracks, (ValueKey *)gTextureFrameAnimationPrograms[221]);
+    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudHorizontalDirectionMiddleTrack, (ValueKey *)gTextureFrameAnimationPrograms[222]);
+    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudHorizontalDirectionInnerTrack, (ValueKey *)gTextureFrameAnimationPrograms[223]);
+    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalDirectionTracks, (ValueKey *)gTextureFrameAnimationPrograms[224]);
+    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalDirectionMiddleTrack, (ValueKey *)gTextureFrameAnimationPrograms[225]);
+    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalDirectionInnerTrack, (ValueKey *)gTextureFrameAnimationPrograms[226]);
 }
 
 /* Texture descriptor shared by the animated HUD renderers. */
@@ -101,7 +101,6 @@ typedef struct {
     u8 size, format;
     u8 pad[2];
 } HudTexture;
-s32 animationIntegerTrackEvaluate(void *, s32 *, f32);
 void textureGetDescriptor(s32, s32, HudTexture *);
 void textureImageInitialize(s32 *, s32, s32, s32, s32, s32, s32);
 void textureDrawScaledRepeated(Gfx **, s32 *, s32, s32, s32, s32, s32, s32, f32, f32, s32, s32);
@@ -141,7 +140,7 @@ void hudDrawDirectionIndicators(Gfx **gdl) {
         if (limit <= direction[0] || limit <= -direction[0]) {
             offset = 0;
             do {
-                animationIntegerTrackEvaluate(anim, &frame, gRuntimeFrameSeconds);
+                animationIntegerTrackEvaluate((ValueTrack *)anim, &frame, gRuntimeFrameSeconds);
                 textureGetDescriptor(5, frame, &desc);
                 textureImageInitialize(tex, desc.image, desc.palette, desc.format, desc.size, desc.width, desc.height);
                 if (direction[0] > 0.0f)
@@ -159,7 +158,7 @@ void hudDrawDirectionIndicators(Gfx **gdl) {
         offset = 0;
         if (limit <= direction[1] || limit <= -direction[1]) {
             do {
-                animationIntegerTrackEvaluate(verticalAnim, &frame, gRuntimeFrameSeconds);
+                animationIntegerTrackEvaluate((ValueTrack *)verticalAnim, &frame, gRuntimeFrameSeconds);
                 textureGetDescriptor(5, frame, &desc);
                 textureImageInitialize(tex, desc.image, desc.palette, desc.format, desc.size, desc.width, desc.height);
                 if (direction[1] > 0.0f)
@@ -338,10 +337,9 @@ void hudDrawRecognitionIndicator(Gfx **gdl) {
         if (state != gHudRecognitionIndicatorState) {
             gHudRecognitionIndicatorState = state;
             gHudRecognitionScale = gHudRecognitionPresentations[state].scale;
-            animationIntegerTrackInitialize((f32 *)&gHudRecognitionTrack,
-                                            gHudRecognitionPresentations[state].animation);
+            animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudRecognitionTrack, (ValueKey *)gHudRecognitionPresentations[state].animation);
         }
-        animationIntegerTrackEvaluate(&gHudRecognitionTrack, &frame, gRuntimeFrameSeconds);
+        animationIntegerTrackEvaluate((ValueTrack *)&gHudRecognitionTrack, &frame, gRuntimeFrameSeconds);
         if (frame >= 0) {
             gp = *gdl;
             scale = gHudRecognitionScale;
@@ -436,12 +434,10 @@ void hudDrawMicrophoneIndicators(Gfx **gdl) {
             gHudMicrophoneIndicatorState = state;
             if (state == 4)
                 audioPlaySoundEffect(0xBF);
-            animationIntegerTrackInitialize(
-                (f32 *)&gHudMicrophoneTrack,
-                gTextureFrameAnimationPrograms[gHudMicrophoneAnimationIds[gHudMicrophoneIndicatorState]]);
+            animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudMicrophoneTrack, (ValueKey *)gTextureFrameAnimationPrograms[gHudMicrophoneAnimationIds[gHudMicrophoneIndicatorState]]);
         }
         previousFrame = gHudMicrophoneTrackFrame;
-        animationIntegerTrackEvaluate(&gHudMicrophoneTrack, &frame, gRuntimeFrameSeconds);
+        animationIntegerTrackEvaluate((ValueTrack *)&gHudMicrophoneTrack, &frame, gRuntimeFrameSeconds);
         gp = *gdl;
         gDPPipeSync(gp++);
         if (gHudMicrophoneIndicatorState == 6 && frame != 0x50) {
@@ -553,9 +549,8 @@ extern s32 gHudHorizontalMotionTrack;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80022838 (0x80022838).
 void hudInitializeMotionIndicators(void) {
-    animationIntegerTrackInitialize((f32 *)&gHudVerticalMotionTrack,
-                                    gTextureFrameAnimationPrograms[hudGetVerticalMotionAnimation(0)]);
-    animationIntegerTrackInitialize((f32 *)&gHudHorizontalMotionTrack, gHudHorizontalMotionAnimation);
+    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalMotionTrack, (ValueKey *)gTextureFrameAnimationPrograms[hudGetVerticalMotionAnimation(0)]);
+    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudHorizontalMotionTrack, (ValueKey *)gHudHorizontalMotionAnimation);
     gHudHorizontalMotionRemaining = 5.0f;
 }
 
@@ -564,7 +559,7 @@ void hudInitializeMotionIndicators(void) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80022894 (0x80022894).
 void hudSetActionIndicatorAnimation(s32 animation) {
-    animationIntegerTrackInitialize((f32 *)&gHudMotionIndicatorTrack, gTextureFrameAnimationPrograms[animation]);
+    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudMotionIndicatorTrack, (ValueKey *)gTextureFrameAnimationPrograms[animation]);
     gHudMotionIndicatorAnimation = animation;
 }
 
@@ -626,7 +621,7 @@ void hudDrawMotionIndicators(Gfx **gdl) {
     if (showSelected) {
         if (selected != gHudMotionIndicatorAnimation)
             hudSetActionIndicatorAnimation(selected);
-        animationIntegerTrackEvaluate(&gHudMotionIndicatorTrack, &gHudActionIndicatorSprites[0].texture,
+        animationIntegerTrackEvaluate((ValueTrack *)&gHudMotionIndicatorTrack, &gHudActionIndicatorSprites[0].texture,
                                       gRuntimeFrameSeconds);
         gDPPipeSync((*gdl)++);
         gSPSetOtherMode((*gdl)++, G_SETOTHERMODE_L, G_MDSFT_RENDERMODE, 29, 0x504240);
@@ -658,7 +653,7 @@ void hudDrawMotionIndicators(Gfx **gdl) {
         motion->y += dy;
         newBand = hudGetVerticalMotionAnimation((s32)motion->y);
         if (oldBand != newBand)
-            animationIntegerTrackInitialize((f32 *)&gHudVerticalMotionTrack, gTextureFrameAnimationPrograms[newBand]);
+            animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalMotionTrack, (ValueKey *)gTextureFrameAnimationPrograms[newBand]);
     }
     x = (s32)(motion->x + 0.5f);
     y = (s32)(motion->y + 0.5f);
@@ -670,8 +665,8 @@ void hudDrawMotionIndicators(Gfx **gdl) {
         y = 0;
     else if (y >= 32)
         y = 31;
-    animationIntegerTrackEvaluate(&gHudVerticalMotionTrack, &frameY, gRuntimeFrameSeconds);
-    animationIntegerTrackEvaluate(&gHudHorizontalMotionTrack, &frameX, gRuntimeFrameSeconds);
+    animationIntegerTrackEvaluate((ValueTrack *)&gHudVerticalMotionTrack, &frameY, gRuntimeFrameSeconds);
+    animationIntegerTrackEvaluate((ValueTrack *)&gHudHorizontalMotionTrack, &frameX, gRuntimeFrameSeconds);
     gDPPipeSync((*gdl)++);
     gSPSetOtherMode((*gdl)++, G_SETOTHERMODE_L, G_MDSFT_RENDERMODE, 29, 0x504240);
     gDPSetCombineMode((*gdl)++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);

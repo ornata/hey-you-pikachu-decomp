@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "integer_animation.h"
 #include "object_lookup.h"
 #include "actor_script.h"
 #include "heap_alloc.h"
@@ -35,7 +36,6 @@ void actorEvaluateRelativePartOrientation();
 f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
 f32 mathAngleDistanceDegrees(f32, f32);
 f32 mathLerpAngleDegrees(f32, f32, f32);
-void animationIntegerTrackInitialize();
 /// Shared integer animation programs selecting texture frames for actors, effects and interface elements.
 /// \note Original identifier: \c D_8006B090 (0x8006B090).
 extern s32 gTextureFrameAnimationPrograms[];
@@ -169,9 +169,9 @@ void actorPartInitializeAnimatedTextures(u8 *object) {
     *(f32 *)(state) = 1.0f;
     *(f32 *)(state + 4) = 1.0f;
     *(f32 *)(state + 8) = 1.0f;
-    animationIntegerTrackInitialize(state + 0x14, gActorPartDefaultTextureAnimation);
-    animationIntegerTrackInitialize(state + 0x20, gActorPartDefaultTextureAnimation);
-    animationIntegerTrackInitialize(state + 0x2C, gActorPartDefaultThirdTextureAnimation);
+    animationIntegerTrackInitialize((ValueTrack *)(state + 0x14), (ValueKey *)(gActorPartDefaultTextureAnimation));
+    animationIntegerTrackInitialize((ValueTrack *)(state + 0x20), (ValueKey *)(gActorPartDefaultTextureAnimation));
+    animationIntegerTrackInitialize((ValueTrack *)(state + 0x2C), (ValueKey *)(gActorPartDefaultThirdTextureAnimation));
     /* Initialize both command buffers directly; macro temporaries change the original frame. */
     for (i = 0, buffer = state; i != 2; i++, buffer += 0x280) {
         ((Gfx *)(buffer + 0x50))->words.w0 = (u32)G_ENDDL << 24;
@@ -391,7 +391,6 @@ void actorResetPartTint(s32 actor) {
     actorSetPartTint(actor, 0xBE, 0x28, 0x14);
 }
 
-s32 animationIntegerTrackEvaluate(void *, s32 *, f32);
 Gfx *textureLoadForDraw(Gfx **, s32, s32);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
@@ -424,7 +423,7 @@ void actorPartBuildAnimatedTextureCommands(u8 *object, s32 buffer) {
     commands = (Gfx *)(state + buffer + 0x78);
     for (segment = 0; segment < 3; segment++) {
         value = *(s16 *)(animation + 0x1C);
-        animationIntegerTrackEvaluate(frame, &value, *speed * gRuntimeFrameSeconds);
+        animationIntegerTrackEvaluate((ValueTrack *)(frame), &value, *speed * gRuntimeFrameSeconds);
         gSPBranchList(branches++, commands);
         gDPPipeSync(commands++);
         textureLoadForDraw(&commands, segments.value[segment], value);
@@ -772,7 +771,6 @@ u8 *actorPartGetLinkedItemModel(u8 *object) {
 /// \param animation Valid animation identifier for the selected channel.
 /// \returns Nothing.
 ///
-/// \note Portability: the animation initializer takes two arguments; this caller supplies an unused third argument through an unprototyped declaration.
 /// \note Original decompilation identifier: \c func_80014960 (0x80014960).
 void actorSetPartTextureAnimation(u8 *actor, f32 speed, s32 channel, s32 animation) {
     int off;
@@ -780,8 +778,7 @@ void actorSetPartTextureAnimation(u8 *actor, f32 speed, s32 channel, s32 animati
     textureState = *(u8 **)(actorFindPart(actor, 0x79) + 0x54);
     *(f32 *)(textureState + (channel * 4)) = speed;
     off = channel * 0xC;
-    animationIntegerTrackInitialize((textureState + off) + 0x14, gTextureFrameAnimationPrograms[animation],
-                                    channel & 0xFFFFFFFF);
+    animationIntegerTrackInitialize((ValueTrack *)((textureState + off) + 0x14), (ValueKey *)(gTextureFrameAnimationPrograms[animation]));
 }
 
 /// Adjust the actor secondary gameplay meter within its allowed range.

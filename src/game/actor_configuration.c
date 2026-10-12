@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "integer_animation.h"
 #include "object_lookup.h"
 #include "actor_script.h"
 #include "heap_alloc.h"
@@ -27,7 +28,6 @@ extern u8 *gCurrentAreaConfiguration;
 void objectOrientTowardCamera(u8 *);
 void objectRequestHierarchyDestruction(u8 *);
 u8 *actorCreateForKind(s32, f32, f32, f32, f32, f32, f32, u8 *, s32);
-void animationIntegerTrackInitialize(f32 *, s32);
 /// Integer animation program used before the contact effect is triggered.
 /// \note Original identifier: \c D_8006B390 (0x8006B390).
 extern s32 gContactEffectIdleAnimation;
@@ -71,7 +71,6 @@ extern s32 gContactEffectTriggeredAnimation;
 extern s32 gPikachuActor;
 u8 *actorResolveStoredTarget(u8 *);
 void actorUpdateModel(u8 *);
-s32 animationIntegerTrackEvaluate(void *, s32 *, f32);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
@@ -124,7 +123,7 @@ void contactEffectInitialize(u8 *effect) {
     effectState = heapAllocLocal(&gGameHeap, 0x10, 0x46);
     savedEffectState = effectState;
     *effectState = 0;
-    animationIntegerTrackInitialize((f32 *)(effectState + 1), gContactEffectIdleAnimation);
+    animationIntegerTrackInitialize((ValueTrack *)((f32 *)(effectState + 1)), (ValueKey *)(gContactEffectIdleAnimation));
     *(s32 **)(effect + 0x54) = savedEffectState;
 }
 
@@ -159,10 +158,10 @@ void contactEffectUpdate(u8 *effect) {
         delta[2] = *(f32 *)((u8 *)gPikachuActor + 0x4C) - *(f32 *)(effect + 0x4C);
         if ((*(f32 *)(effect + 0x24) + *(f32 *)((u8 *)gPikachuActor + 0x24)) > vector3Length(delta)) {
             *state = 1;
-            animationIntegerTrackInitialize((f32 *)(state + 1), gContactEffectTriggeredAnimation);
+            animationIntegerTrackInitialize((ValueTrack *)((f32 *)(state + 1)), (ValueKey *)(gContactEffectTriggeredAnimation));
         }
     }
-    result = animationIntegerTrackEvaluate(state + 1, &frame, gRuntimeFrameSeconds);
+    result = animationIntegerTrackEvaluate((ValueTrack *)(state + 1), &frame, gRuntimeFrameSeconds);
     if (*state != 0) {
         if (result == 1) {
             objectRequestHierarchyDestruction(effect);
@@ -204,7 +203,7 @@ void contactEffectHandleActorResponse(u8 *effect, s32 *response) {
         savedEffectState = effectState;
         if (objectFindLiveByHandle(*response) == (u8 *)gPikachuActor) {
             *(s32 *)effectState = 1;
-            animationIntegerTrackInitialize((f32 *)(effectState + 4), gContactEffectTriggeredAnimation);
+            animationIntegerTrackInitialize((ValueTrack *)((f32 *)(effectState + 4)), (ValueKey *)(gContactEffectTriggeredAnimation));
         }
     }
 }
@@ -336,7 +335,7 @@ void objectInitializeBillboardTextureAnimation(u8 *object) {
 
     allocation = heapAllocLocal(&gGameHeap, 0xC, 0x93);
     sp1C = allocation;
-    animationIntegerTrackInitialize((f32 *)allocation, gBillboardTextureAnimation);
+    animationIntegerTrackInitialize((ValueTrack *)((f32 *)allocation), (ValueKey *)(gBillboardTextureAnimation));
     ((RuntimeObjectPrefix *)object)->state.words = sp1C;
 }
 
@@ -358,7 +357,7 @@ s32 objectDrawAnimatedBillboardTexture(u8 *object) {
     s32 sp28;
 
     t = *(s32 *)(object + 0x54);
-    animationIntegerTrackEvaluate((void *)t, &sp28, gRuntimeFrameSeconds);
+    animationIntegerTrackEvaluate((ValueTrack *)((void *)t), &sp28, gRuntimeFrameSeconds);
     gDPPipeSync(gRenderDisplayListCursor++);
     gSPSetOtherMode(gRenderDisplayListCursor++, G_SETOTHERMODE_L, 3, 29, 0x1049D8);
     gDPSetCombine(gRenderDisplayListCursor++, 0xFFFEAC, 0xF0FCF238);

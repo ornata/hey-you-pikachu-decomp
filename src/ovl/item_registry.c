@@ -2,6 +2,7 @@
 /* Item objects. .rodata is the item-kind text (initializer order), then the
  * debug-trace formats in function order, then the late float/jump tables. */
 #include "common.h"
+#include "integer_animation.h"
 #include "object_lookup.h"
 #include "heap_alloc.h"
 #include "scene_types.h"
@@ -1965,7 +1966,6 @@ void itemUnusedUpdateHook(void) {
 
 void objectSetHierarchyFlags(u8 *, u16);
 void objectClearHierarchyFlags(u8 *, u16);
-s32 animationIntegerTrackEvaluate(void *, s32 *, f32);
 s32 interactionConsiderObject(u8 *);
 s32 collisionGridRegisterObject(u8 *);
 u8 *collisionGridFindOverlap(u8 *);
@@ -2024,7 +2024,7 @@ void itemUpdate(u8 *object) {
         itemShrink(object, 0.12f);
     if (!(*(u16 *)(object + 0x36) & 2) &&
         ((flags = *(s32 *)state, (*(s16 *)(state + 0x3C) != 0 && (flags & 0x200))) || (flags & 0x100000))) {
-        animationIntegerTrackEvaluate(state + 0x40, &changed, gRuntimeFrameSeconds);
+        animationIntegerTrackEvaluate((ValueTrack *)(state + 0x40), &changed, gRuntimeFrameSeconds);
         child = *(u8 **)(object + 0x2C);
         if (child != NULL && !(*(u16 *)(object + 0x36) & 2) && (*(s32 *)state & 0x100000)) {
             if (changed != 0)
@@ -2087,7 +2087,6 @@ void itemInitializeState(u8 *item) {
 
 u8 *objectCreateHierarchyFromTemplate(void *);
 u8 *objectRegisterActiveHierarchy(u8 *);
-void animationIntegerTrackInitialize(f32 *, s32);
 TreeNode *searchTreeInsert(u8 *, TreeNode *, s32);
 f32 terrainGetWorldHeight(f32, f32, f32, u8 **);
 /// Shared integer animation programs selecting texture frames for actors, effects and interface elements.
@@ -2131,8 +2130,7 @@ u8 *itemCreate(f32 x, f32 y, f32 z, f32 pitch, f32 yaw, s32 kind) {
     state[6] = 0;
     *(s32 *)(state + 8) = 0;
     state[7] = 0;
-    animationIntegerTrackInitialize((f32 *)(state + 0x40),
-                                    ((s32 *)&gTextureFrameAnimationPrograms)[gItemKinds[kind].animation]);
+    animationIntegerTrackInitialize((ValueTrack *)((f32 *)(state + 0x40)), (ValueKey *)(((s32 *)&gTextureFrameAnimationPrograms)[gItemKinds[kind].animation]));
     if (gItemKinds[kind].size != -100000.0f)
         *(f32 *)(object + 0x24) = gItemKinds[kind].size;
     *(f32 *)(state + 0xC) = *(f32 *)(object + 0x24);
@@ -2563,8 +2561,7 @@ void itemStartMaterialAnimation(u8 *item, s32 animation) {
 
     TRACE("itemChangeAnime(%p, %d)\n", item, animation);
     sp1C = ((RuntimeObjectPrefix *)item)->state.bytes;
-    animationIntegerTrackInitialize((f32 *)(sp1C + 0x40),
-                                    *((s32 *)((u8 *)&gTextureFrameAnimationPrograms + (animation * 4))));
+    animationIntegerTrackInitialize((ValueTrack *)((f32 *)(sp1C + 0x40)), (ValueKey *)(*((s32 *)((u8 *)&gTextureFrameAnimationPrograms + (animation * 4)))));
     ((ItemStatePrefix *)sp1C)->materialAnimationActive = 1;
 }
 

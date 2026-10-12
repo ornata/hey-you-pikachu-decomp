@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "integer_animation.h"
 #include "object_lookup.h"
 #include "heap_alloc.h"
 #include "object_types.h"
@@ -179,8 +180,6 @@ extern f32 gInteractionMarkerTrackUnitScale;
 /// \note Original identifier: \c D_800A47AC (0x800A47AC).
 extern f32 gInteractionMarkerActorTrackUnitScale;
 s32 playerClassifyInteractionTarget(u8 *, u8 *, s32);
-void animationIntegerTrackInitialize(u8 *, u8 *);
-s32 animationIntegerTrackEvaluate(u8 *, s32 *, f32);
 s32 audioPlaySoundEffect(s32);
 void objectOrientAlongCameraView(u8 *);
 void actorConfigGetInteractionMarkerDimensions(s32, f32 *);
@@ -213,29 +212,23 @@ void interactionMarkerUpdate(u8 *object) {
     }
     if (mode != 0 && target != NULL) {
         if (mode != *(s32 *)state || gInteractionCandidateHandle != *(s32 *)(state + 4)) {
-            animationIntegerTrackInitialize(state + 8,
-                                            gTextureFrameAnimationPrograms[gInteractionMarkerStyles[mode].tracks[0]]);
-            animationIntegerTrackInitialize(state + 0x14,
-                                            gOpacityAnimationPrograms[gInteractionMarkerStyles[mode].tracks[1]]);
-            animationIntegerTrackInitialize(
-                state + 0x20, gInteractionMarkerTransformPrograms[gInteractionMarkerStyles[mode].tracks[2]]);
-            animationIntegerTrackInitialize(
-                state + 0x2C, gInteractionMarkerTransformPrograms[gInteractionMarkerStyles[mode].tracks[3]]);
-            animationIntegerTrackInitialize(
-                state + 0x38, gInteractionMarkerTransformPrograms[gInteractionMarkerStyles[mode].tracks[4]]);
-            animationIntegerTrackInitialize(
-                state + 0x44, gInteractionMarkerTransformPrograms[gInteractionMarkerStyles[mode].tracks[5]]);
+            animationIntegerTrackInitialize((ValueTrack *)(state + 8), (ValueKey *)(gTextureFrameAnimationPrograms[gInteractionMarkerStyles[mode].tracks[0]]));
+            animationIntegerTrackInitialize((ValueTrack *)(state + 0x14), (ValueKey *)(gOpacityAnimationPrograms[gInteractionMarkerStyles[mode].tracks[1]]));
+            animationIntegerTrackInitialize((ValueTrack *)(state + 0x20), (ValueKey *)(gInteractionMarkerTransformPrograms[gInteractionMarkerStyles[mode].tracks[2]]));
+            animationIntegerTrackInitialize((ValueTrack *)(state + 0x2C), (ValueKey *)(gInteractionMarkerTransformPrograms[gInteractionMarkerStyles[mode].tracks[3]]));
+            animationIntegerTrackInitialize((ValueTrack *)(state + 0x38), (ValueKey *)(gInteractionMarkerTransformPrograms[gInteractionMarkerStyles[mode].tracks[4]]));
+            animationIntegerTrackInitialize((ValueTrack *)(state + 0x44), (ValueKey *)(gInteractionMarkerTransformPrograms[gInteractionMarkerStyles[mode].tracks[5]]));
             audioPlaySoundEffect(gInteractionMarkerStyles[mode].sound);
             gInteractionMarkerStyles[1].tracks[0] = gInteractionMarkerStyles[mode].tracks[0];
             gInteractionMarkerStyles[1].depth = gInteractionMarkerStyles[mode].depth;
             gInteractionMarkerStyles[1].height = gInteractionMarkerStyles[mode].height;
         }
-        animationIntegerTrackEvaluate(state + 8, &event, gRuntimeFrameSeconds);
-        animationIntegerTrackEvaluate(state + 0x14, &event, gRuntimeFrameSeconds);
-        animationIntegerTrackEvaluate(state + 0x20, &event, gRuntimeFrameSeconds);
-        animationIntegerTrackEvaluate(state + 0x2C, &event, gRuntimeFrameSeconds);
-        animationIntegerTrackEvaluate(state + 0x38, &event, gRuntimeFrameSeconds);
-        animationIntegerTrackEvaluate(state + 0x44, &event, gRuntimeFrameSeconds);
+        animationIntegerTrackEvaluate((ValueTrack *)(state + 8), &event, gRuntimeFrameSeconds);
+        animationIntegerTrackEvaluate((ValueTrack *)(state + 0x14), &event, gRuntimeFrameSeconds);
+        animationIntegerTrackEvaluate((ValueTrack *)(state + 0x20), &event, gRuntimeFrameSeconds);
+        animationIntegerTrackEvaluate((ValueTrack *)(state + 0x2C), &event, gRuntimeFrameSeconds);
+        animationIntegerTrackEvaluate((ValueTrack *)(state + 0x38), &event, gRuntimeFrameSeconds);
+        animationIntegerTrackEvaluate((ValueTrack *)(state + 0x44), &event, gRuntimeFrameSeconds);
         *(f32 *)(object + 0x18) = *(f32 *)(target + 0x44);
         *(f32 *)(object + 0x1C) = *(f32 *)(target + 0x48);
         *(f32 *)(object + 0x20) = *(f32 *)(target + 0x4C);

@@ -1,4 +1,5 @@
 #include "common.h"
+#include "integer_animation.h"
 #include "keyed_pool_types.h"
 #include "heap_alloc.h"
 #include "node_pool.h"
@@ -45,7 +46,6 @@ void matrix33ApplyRotationXYZDegrees(void *, f32, f32, f32); /* extern */
 void matrix33ScaleLocal(void *, f32, f32, f32);              /* extern */
 void matrix33KeepScaleOnly(f32 *);                    /* extern */
 s32 romByteReaderInitialize(u8 *);
-s32 animationIntegerTrackEvaluate(f32 *, s32 *, f32);
 void objectAllocateHierarchyMatrixBuffers(s32);
 /// Segmented shared display list preparing object hierarchy drawing.
 /// \note Original identifier: \c D_100C890 (0x100C890).

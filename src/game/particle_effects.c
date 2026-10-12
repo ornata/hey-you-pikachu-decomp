@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "integer_animation.h"
 #include "object_lookup.h"
 #include "heap_alloc.h"
 #include "object_types.h"
@@ -26,7 +27,6 @@ typedef char EffectEmitterCallbackOffsetCheck[((u32)&((EffectEmitterState *)0)->
 u32 randomBelow(s32);
 void objectRequestHierarchyDestruction(u8 *);
 u32 randomNext(void);
-void animationIntegerTrackInitialize(u8 *, s32);
 /// Default opacity animation used when wisp state is initialized.
 /// \note Original identifier: \c D_8006B4C4 (0x8006B4C4).
 extern s32 gWispDefaultOpacityAnimation;
@@ -38,7 +38,6 @@ void objectAdjustPitchAlongCameraView(u8 *);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
-s32 animationIntegerTrackEvaluate(void *, s32 *, f32);
 void effectEmitterEmitColoredParticle(u8 *, f32, f32, f32, u8, u8, u8);
 /// Write cursor for the active graphics command list; also marks the camera-storage end.
 /// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
@@ -93,7 +92,7 @@ s32 wispEffectUpdateDrawAnimation(u8 *effect, s32 buffer) {
 
     state = *(AnimatedBranches173 **)(effect + 0x54);
     step = state->speed * gRuntimeFrameSeconds;
-    if (animationIntegerTrackEvaluate(state->alphaTrack, &alpha, step) == 1) {
+    if (animationIntegerTrackEvaluate((ValueTrack *)(state->alphaTrack), &alpha, step) == 1) {
         objectRequestHierarchyDestruction(effect);
         return 1;
     }
@@ -104,7 +103,7 @@ s32 wispEffectUpdateDrawAnimation(u8 *effect, s32 buffer) {
     i = 0;
     if (state->count > 0) {
         do {
-            animationIntegerTrackEvaluate(state->tracks + buffer, &frame, step);
+            animationIntegerTrackEvaluate((ValueTrack *)(state->tracks + buffer), &frame, step);
             gSPBranchList(branch++, commands);
             gDPPipeSync(commands++);
             gDPSetPrimColor(commands++, 0, 0, state->color.r, state->color.g, state->color.b, state->color.a);
@@ -190,7 +189,7 @@ s32 wispEffectPrepareDraw(u8 *effect) {
 /// \note Original decompilation identifier: \c func_80017844 (0x80017844).
 void wispEffectInitialize(u8 *effect) {
     u8 *allocation = heapAllocLocal(&gGameHeap, 0x24, 0x189);
-    animationIntegerTrackInitialize(allocation + 0x14, gWispDefaultOpacityAnimation);
+    animationIntegerTrackInitialize((ValueTrack *)(allocation + 0x14), (ValueKey *)(gWispDefaultOpacityAnimation));
     do {
         allocation[0x20] = 0xFF;
         allocation[0x21] = 0xFF;
@@ -328,26 +327,26 @@ u8 *wispEffectCreate(s32 kind, f32 x, f32 y, f32 z) {
         gSPEndDisplayList(gdl++);
     }
     state->tracks = heapAllocLocal(&gGameHeap, count * 12, 0x20A);
-    animationIntegerTrackInitialize(state->animation, gOpacityAnimationPrograms[gWispOpacityProgramIndices[kind]]);
+    animationIntegerTrackInitialize((ValueTrack *)(state->animation), (ValueKey *)(gOpacityAnimationPrograms[gWispOpacityProgramIndices[kind]]));
     switch (kind) {
     case 0:
         obj->scale[0] = 0.01f;
         obj->scale[1] = 0.01f;
         obj->scale[2] = 0.01f;
-        animationIntegerTrackInitialize(state->tracks, gWispStyle0FrameAnimation);
+        animationIntegerTrackInitialize((ValueTrack *)(state->tracks), (ValueKey *)(gWispStyle0FrameAnimation));
         break;
     case 1:
         obj->scale[0] = 0.01f;
         obj->scale[1] = 0.01f;
         obj->scale[2] = 0.01f;
-        animationIntegerTrackInitialize(state->tracks, gWispStyle1FirstFrameAnimation);
-        animationIntegerTrackInitialize(state->tracks + 0xC, gWispStyle1SecondFrameAnimation);
+        animationIntegerTrackInitialize((ValueTrack *)(state->tracks), (ValueKey *)(gWispStyle1FirstFrameAnimation));
+        animationIntegerTrackInitialize((ValueTrack *)(state->tracks + 0xC), (ValueKey *)(gWispStyle1SecondFrameAnimation));
         break;
     case 2:
         obj->scale[0] = 0.01f;
         obj->scale[1] = 0.01f;
         obj->scale[2] = 0.01f;
-        animationIntegerTrackInitialize(state->tracks, gWispStyle2FrameAnimation);
+        animationIntegerTrackInitialize((ValueTrack *)(state->tracks), (ValueKey *)(gWispStyle2FrameAnimation));
         state->color[2] = 0;
         state->color[1] = 0;
         state->color[0] = 0;
@@ -356,7 +355,7 @@ u8 *wispEffectCreate(s32 kind, f32 x, f32 y, f32 z) {
         obj->scale[0] = 0.1f;
         obj->scale[1] = (f64)randomNext() * 2.3283064365386963e-10 * 0.10000000149011612 + 0.05000000074505806;
         obj->scale[2] = (f64)randomNext() * 2.3283064365386963e-10 * 0.05000000074505806 + 0.05000000074505806;
-        animationIntegerTrackInitialize(state->tracks, gWispStyle3FrameAnimation);
+        animationIntegerTrackInitialize((ValueTrack *)(state->tracks), (ValueKey *)(gWispStyle3FrameAnimation));
         state->color[0] = 0xFF;
         state->color[1] = 0xFF;
         state->color[2] = 0x99;
@@ -365,37 +364,37 @@ u8 *wispEffectCreate(s32 kind, f32 x, f32 y, f32 z) {
         obj->scale[0] = 0.003f;
         obj->scale[1] = 0.003f;
         obj->scale[2] = 0.003f;
-        animationIntegerTrackInitialize(state->tracks, gWispStyle4FrameAnimation);
+        animationIntegerTrackInitialize((ValueTrack *)(state->tracks), (ValueKey *)(gWispStyle4FrameAnimation));
         break;
     case 5:
         obj->scale[0] = 0.02f;
         obj->scale[1] = 0.02f;
         obj->scale[2] = 0.02f;
-        animationIntegerTrackInitialize(state->tracks, gBillboardTextureAnimation);
+        animationIntegerTrackInitialize((ValueTrack *)(state->tracks), (ValueKey *)(gBillboardTextureAnimation));
         break;
     case 6:
         obj->scale[0] = 0.03f;
         obj->scale[1] = 0.03f;
         obj->scale[2] = 0.03f;
-        animationIntegerTrackInitialize(state->tracks, gWispStyle6FrameAnimation);
+        animationIntegerTrackInitialize((ValueTrack *)(state->tracks), (ValueKey *)(gWispStyle6FrameAnimation));
         break;
     case 7:
         obj->scale[0] = 0.03f;
         obj->scale[1] = 0.03f;
         obj->scale[2] = 0.03f;
-        animationIntegerTrackInitialize(state->tracks, gWispStyle7FrameAnimation);
+        animationIntegerTrackInitialize((ValueTrack *)(state->tracks), (ValueKey *)(gWispStyle7FrameAnimation));
         break;
     case 8:
         obj->scale[0] = 0.2f;
         obj->scale[1] = 0.2f;
         obj->scale[2] = 0.2f;
-        animationIntegerTrackInitialize(state->tracks, gWispStyle8FrameAnimation);
+        animationIntegerTrackInitialize((ValueTrack *)(state->tracks), (ValueKey *)(gWispStyle8FrameAnimation));
         break;
     case 9:
         obj->scale[0] = 0.2f;
         obj->scale[1] = 0.2f;
         obj->scale[2] = 0.2f;
-        animationIntegerTrackInitialize(state->tracks, gWispStyle9FrameAnimation);
+        animationIntegerTrackInitialize((ValueTrack *)(state->tracks), (ValueKey *)(gWispStyle9FrameAnimation));
         break;
     default:
         DEBUG_PRINTF(("Unknown smokeType(%d)\n", kind));
@@ -436,7 +435,7 @@ void ribbonEffectControllerInitialize(u8 *controller) {
     ((RibbonControllerState *)allocation)->destination[2] = 0.0f;
     ((RibbonControllerState *)allocation)->destination[1] = 0.0f;
     ((RibbonControllerState *)allocation)->destination[0] = 0.0f;
-    animationIntegerTrackInitialize(allocation + 0x18, gRibbonAndClusterFrameAnimation);
+    animationIntegerTrackInitialize((ValueTrack *)(allocation + 0x18), (ValueKey *)(gRibbonAndClusterFrameAnimation));
     ((RuntimeObjectPrefix *)controller)->state.bytes = sp1C;
 }
 
@@ -546,7 +545,7 @@ void ribbonEffectControllerUpdate(u8 *controller) {
     f32 h;
 
     v = *(u8 **)(controller + 0x54);
-    animationIntegerTrackEvaluate(v + 0x18, &tmp, gRuntimeFrameSeconds);
+    animationIntegerTrackEvaluate((ValueTrack *)(v + 0x18), &tmp, gRuntimeFrameSeconds);
     src = *(u8 **)(controller + 0x2C);
     *(f32 *)(controller + 0xC) = *(f32 *)(src + 0xC);
     *(f32 *)(controller + 0x10) = *(f32 *)(src + 0x10);
@@ -1123,7 +1122,7 @@ void particleClusterRendererInitialize(void *renderer) {
 
     allocation = heapAllocLocal(&gGameHeap, 0xC, 0x59A);
     sp1C = allocation;
-    animationIntegerTrackInitialize(allocation, gRibbonAndClusterFrameAnimation);
+    animationIntegerTrackInitialize((ValueTrack *)(allocation), (ValueKey *)(gRibbonAndClusterFrameAnimation));
     ((RuntimeObjectPrefix *)renderer)->state.bytes = sp1C;
 }
 
@@ -1152,7 +1151,7 @@ void particleClusterRendererUpdate(u8 *renderer) {
     s32 sp18[1];
 
     t = ((RuntimeObjectPrefix *)renderer)->state.pointer;
-    animationIntegerTrackEvaluate(t, sp18, gRuntimeFrameSeconds);
+    animationIntegerTrackEvaluate((ValueTrack *)(t), sp18, gRuntimeFrameSeconds);
     objectAdjustPitchAlongCameraView(renderer);
 }
 
@@ -1298,7 +1297,7 @@ u8 *fallingParticleCreate(s32 kind, s32 motionStyle, f32 *position, f32 *velocit
     *(f32 *)(v + 8) = velocity[0];
     *(f32 *)(v + 0xC) = velocity[1];
     *(f32 *)(v + 0x10) = velocity[2];
-    animationIntegerTrackInitialize(v + 0x14, gFallingParticleInitialScaleAnimation);
+    animationIntegerTrackInitialize((ValueTrack *)(v + 0x14), (ValueKey *)(gFallingParticleInitialScaleAnimation));
     scale = 0.029999999329447746f;
     *(f32 *)(v + 0x20) = scale;
     *(f32 *)(obj + 0) = scale;
@@ -1348,10 +1347,10 @@ void fallingParticleUpdate(u8 *particle) {
         state->lifetime = (f32)(state->lifetime - gRuntimeFrameSeconds);
         if (state->lifetime <= 0.0f) {
             state->lifetime = 0.0f;
-            animationIntegerTrackInitialize(state->animation, gFallingParticleDisappearanceScaleAnimation);
+            animationIntegerTrackInitialize((ValueTrack *)(state->animation), (ValueKey *)(gFallingParticleDisappearanceScaleAnimation));
         }
     }
-    animationIntegerTrackEvaluate(state->animation, &sample, gRuntimeFrameSeconds);
+    animationIntegerTrackEvaluate((ValueTrack *)(state->animation), &sample, gRuntimeFrameSeconds);
     if ((sample == 0) && (state->lifetime <= 0.0f)) {
         objectRequestHierarchyDestruction(particle);
         return;
@@ -1471,8 +1470,8 @@ void convergingParticleEffectUpdate(u8 *effect) {
         objectRequestHierarchyDestruction(effect);
         return;
     }
-    animationIntegerTrackEvaluate(state + 0x10, &tmp, gRuntimeFrameSeconds);
-    animationIntegerTrackEvaluate(state + 4, &tmp, gRuntimeFrameSeconds);
+    animationIntegerTrackEvaluate((ValueTrack *)(state + 0x10), &tmp, gRuntimeFrameSeconds);
+    animationIntegerTrackEvaluate((ValueTrack *)(state + 4), &tmp, gRuntimeFrameSeconds);
     fraction = *(f32 *)(state + 0x20) / *(f32 *)(state + 0x24);
     step = (1.0f / (f32) * (s32 *)(state + 0x28)) * 0.5f;
     vector3FromPitchYawDegrees((s32)randomBelow(10), *(f32 *)(state + 0x20) * 200.0f, center);
@@ -1581,9 +1580,8 @@ u8 *convergingParticleEffectCreate(s32 targetId, f32 lifetime, s32 count, s32 st
     state->remaining = lifetime;
     state->lifetime = lifetime;
     state->count = count;
-    animationIntegerTrackInitialize(state->textureAnimation,
-                                    gTextureFrameAnimationPrograms[gConvergingParticleStyles[styleId].animation]);
-    animationIntegerTrackInitialize(state->alphaAnimation, gMessengerFlightAnimation);
+    animationIntegerTrackInitialize((ValueTrack *)(state->textureAnimation), (ValueKey *)(gTextureFrameAnimationPrograms[gConvergingParticleStyles[styleId].animation]));
+    animationIntegerTrackInitialize((ValueTrack *)(state->alphaAnimation), (ValueKey *)(gMessengerFlightAnimation));
     randomA = randomBelow(60);
     randomB = randomBelow(60);
     vector3FromPitchYawDegrees((f32)(randomB + randomA) - 80.0f, (s32)randomBelow(360), direction);
@@ -1856,8 +1854,8 @@ void animatedRadialEffectUpdate(u8 *effect) {
         objectRequestHierarchyDestruction(effect);
         return;
     }
-    animationIntegerTrackEvaluate(v + 0x10, &tmp, gRuntimeFrameSeconds);
-    animationIntegerTrackEvaluate(v + 4, &tmp, gRuntimeFrameSeconds);
+    animationIntegerTrackEvaluate((ValueTrack *)(v + 0x10), &tmp, gRuntimeFrameSeconds);
+    animationIntegerTrackEvaluate((ValueTrack *)(v + 4), &tmp, gRuntimeFrameSeconds);
     *(f32 *)(effect + 0x18) = *(f32 *)(t + 0x44);
     *(f32 *)(effect + 0x1C) = *(f32 *)(t + 0x48) + 2.0f;
     *(f32 *)(effect + 0x20) = *(f32 *)(t + 0x4C);
@@ -1933,8 +1931,8 @@ u8 *animatedRadialEffectCreate(s32 targetId, f32 duration, s32 count) {
     state->displayList = (Gfx *)heapAllocLocal(&gGameHeap, (count * 4 + 16) * sizeof(Gfx), 0x8B2);
     state->targetId = targetId;
     state->duration = duration;
-    animationIntegerTrackInitialize(state->frameAnimation, gAnimatedRadialEffectFrameAnimation);
-    animationIntegerTrackInitialize(state->alphaAnimation, gMessengerFlightAnimation);
+    animationIntegerTrackInitialize((ValueTrack *)(state->frameAnimation), (ValueKey *)(gAnimatedRadialEffectFrameAnimation));
+    animationIntegerTrackInitialize((ValueTrack *)(state->alphaAnimation), (ValueKey *)(gMessengerFlightAnimation));
     *(f32 *)(object + 0x18) = *(f32 *)(target + 0x44);
     *(f32 *)(object + 0x1C) = *(f32 *)(target + 0x48);
     *(f32 *)(object + 0x20) = *(f32 *)(target + 0x4C);
@@ -1987,7 +1985,7 @@ u8 *expandingOrangeEffectCreate(s32 targetHandle, f32 lifetime) {
     sp18 = *(u8 **)(sp1C + 0x54);
     *(f32 *)(sp18 + 0x10) = lifetime;
     *(s32 *)sp18 = targetHandle;
-    animationIntegerTrackInitialize(sp18 + 4, gExpandingOrangeEffectFrameAnimation);
+    animationIntegerTrackInitialize((ValueTrack *)(sp18 + 4), (ValueKey *)(gExpandingOrangeEffectFrameAnimation));
     *(f32 *)(sp18 + 0x14) = 0.5f;
     *(f32 *)(sp1C + 8) = 0.5f;
     *(f32 *)(sp1C + 4) = 0.5f;
@@ -2026,7 +2024,7 @@ void expandingOrangeEffectUpdate(u8 *effect) {
         objectRequestHierarchyDestruction(effect);
         return;
     }
-    animationIntegerTrackEvaluate(v + 4, &tmp, gRuntimeFrameSeconds);
+    animationIntegerTrackEvaluate((ValueTrack *)(v + 4), &tmp, gRuntimeFrameSeconds);
     *(f32 *)(v + 0x14) += gRuntimeFrameSeconds * 3.0f;
     if (*(f32 *)(v + 0x14) > 3.5f) {
         *(f32 *)(v + 0x14) = 3.5f;

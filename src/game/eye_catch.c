@@ -1,4 +1,5 @@
 #include "common.h"
+#include "integer_animation.h"
 #include "heap_alloc.h"
 #include "heap_types.h"
 
@@ -74,7 +75,6 @@ void eyeCatchInitialize(void) {
 void cameraUpdateOverlayColors(s32, s32);                     /* extern */
 void cameraFadePrimarySecondaryOverlay(s32, s32, s32, s32, f32);      /* extern */
 void controllerRequestRumbleReset(s32);           /* extern */
-void animationIntegerTrackInitialize(f32 *, s32); /* extern */
 void *assetAllocateAndLoad(s32 *);                /* extern */
 /// Asset descriptor used to load the eye-catch foreground image.
 /// \note Original identifier: \c D_8009B588 (0x8009B588).
@@ -116,12 +116,12 @@ void eyeCatchBegin(void) {
     if (count != 0) {
         gEyeCatchAnimationTracks = (s32)heapAllocLocal((HpHdr *)&gGameHeap, count * sizeof(EyeTracks36A), 0x508);
         for (group = 0; group < EYE_GROUP->count; group++) {
-            animationIntegerTrackInitialize(EYE_TRACKS(group)[0], EYE_GROUP->keys[group][0]);
-            animationIntegerTrackInitialize(EYE_TRACKS(group)[1], EYE_GROUP->keys[group][1]);
-            animationIntegerTrackInitialize(EYE_TRACKS(group)[2], EYE_GROUP->keys[group][2]);
-            animationIntegerTrackInitialize(EYE_TRACKS(group)[3], EYE_GROUP->keys[group][3]);
-            animationIntegerTrackInitialize(EYE_TRACKS(group)[4], EYE_GROUP->keys[group][4]);
-            animationIntegerTrackInitialize(EYE_TRACKS(group)[5], EYE_GROUP->keys[group][5]);
+            animationIntegerTrackInitialize((ValueTrack *)EYE_TRACKS(group)[0], (ValueKey *)EYE_GROUP->keys[group][0]);
+            animationIntegerTrackInitialize((ValueTrack *)EYE_TRACKS(group)[1], (ValueKey *)EYE_GROUP->keys[group][1]);
+            animationIntegerTrackInitialize((ValueTrack *)EYE_TRACKS(group)[2], (ValueKey *)EYE_GROUP->keys[group][2]);
+            animationIntegerTrackInitialize((ValueTrack *)EYE_TRACKS(group)[3], (ValueKey *)EYE_GROUP->keys[group][3]);
+            animationIntegerTrackInitialize((ValueTrack *)EYE_TRACKS(group)[4], (ValueKey *)EYE_GROUP->keys[group][4]);
+            animationIntegerTrackInitialize((ValueTrack *)EYE_TRACKS(group)[5], (ValueKey *)EYE_GROUP->keys[group][5]);
         }
     }
     gEyeCatchForegroundImage = (s32)assetAllocateAndLoad(gEyeCatchForegroundAssetDescriptor);
@@ -186,7 +186,6 @@ typedef struct TextureDraw370 {
     f32 scaleX, scaleY;
 } TextureDraw370;
 void renderDrawColorOverlayWithDepth(u8, u8, u8, u8);
-s32 animationIntegerTrackEvaluate(void *, s32 *, f32);
 void textureDrawRectangles(s32, void *, Gfx **);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
@@ -227,16 +226,16 @@ void eyeCatchDrawLayers(Gfx **displayList) {
         for (var_s4 = 0; var_s4 < ((EyeGroup36A *)gEyeCatchActiveGroup)->count; var_s4++) {
             desc[0].width = desc[0].height = -1;
             desc[0].s = desc[0].t = 0;
-            animationIntegerTrackEvaluate((void *)var_s0, &sp9C, gRuntimeFrameSeconds);
+            animationIntegerTrackEvaluate((ValueTrack *)(void *)var_s0, &sp9C, gRuntimeFrameSeconds);
             desc[0].x = ((EyeGroup36A *)gEyeCatchActiveGroup)->x + sp9C;
-            animationIntegerTrackEvaluate((void *)(var_s0 + 0xC), &sp9C, gRuntimeFrameSeconds);
+            animationIntegerTrackEvaluate((ValueTrack *)(void *)(var_s0 + 0xC), &sp9C, gRuntimeFrameSeconds);
             desc[0].y = ((EyeGroup36A *)gEyeCatchActiveGroup)->y + sp9C;
-            animationIntegerTrackEvaluate((void *)(var_s0 + 0x18), &sp9C, gRuntimeFrameSeconds);
+            animationIntegerTrackEvaluate((ValueTrack *)(void *)(var_s0 + 0x18), &sp9C, gRuntimeFrameSeconds);
             desc[0].scaleX = (f32)sp9C * 0.1f;
-            animationIntegerTrackEvaluate((void *)(var_s0 + 0x24), &sp9C, gRuntimeFrameSeconds);
+            animationIntegerTrackEvaluate((ValueTrack *)(void *)(var_s0 + 0x24), &sp9C, gRuntimeFrameSeconds);
             desc[0].scaleY = (f32)sp9C * 0.1f;
-            animationIntegerTrackEvaluate((void *)(var_s0 + 0x30), &desc[0].texture, gRuntimeFrameSeconds);
-            animationIntegerTrackEvaluate((void *)(var_s0 + 0x3C), &spA0, gRuntimeFrameSeconds);
+            animationIntegerTrackEvaluate((ValueTrack *)(void *)(var_s0 + 0x30), &desc[0].texture, gRuntimeFrameSeconds);
+            animationIntegerTrackEvaluate((ValueTrack *)(void *)(var_s0 + 0x3C), &spA0, gRuntimeFrameSeconds);
             if (spA0 < 0) {
                 spA0 = 0;
             } else if (spA0 >= 0x100) {
