@@ -4,6 +4,7 @@
 /* Item objects. .rodata is the item-kind text (initializer order), then the
  * debug-trace formats in function order, then the late float/jump tables. */
 #include "common.h"
+#include "search_tree.h"
 #include "object_audio.h"
 #include "item_audio.h"
 #include "integer_animation.h"
@@ -2188,21 +2189,22 @@ void itemDestroy(u8 *item) {
 
 /// Compare an item with a registered item by kind, then by unsigned object handle.
 /// \param node Search node containing the registered item to compare against.
-/// \param item Live item being compared.
+/// \param itemAddress Target-width address of the live item being compared.
 /// \returns Minus one if the item precedes the node's item, one if it follows, or zero if they have equal
 /// kind and handle.
 ///
 /// \note Both items must have initialized state. Portability: the otherwise unused handle read preserves the
 /// original IDO register allocation.
 /// \note Original decompilation identifier: \c func_80113C04 (0x80113C04).
-s32 itemCompareSearchOrder(u8 *node, u8 *item) {
+s32 itemCompareSearchOrder(TreeNode *node, s32 itemAddress) {
+    u8 *item = (u8 *)itemAddress;
     u8 *other;
     u8 *a;
     u8 *b;
     u32 ia;
     u32 ib;
 
-    other = (u8 *)((TreeNode *)node)->value;
+    other = (u8 *)node->value;
     b = ((RuntimeObjectPrefix *)other)->state.bytes;
     a = ((RuntimeObjectPrefix *)item)->state.bytes;
     if (((ItemStatePrefix *)a)->kind < ((ItemStatePrefix *)b)->kind) {
@@ -2222,8 +2224,6 @@ s32 itemCompareSearchOrder(u8 *node, u8 *item) {
     return 0;
 }
 
-void searchTreeInitialize(u8 *, s32); /* extern */
-s32 itemCompareSearchOrder(u8 *, u8 *); /* extern */
 
 /// Initialize an empty item registry for the current area.
 /// \returns Nothing.
@@ -2233,7 +2233,7 @@ s32 itemCompareSearchOrder(u8 *, u8 *); /* extern */
 /// \note Original decompilation identifier: \c func_80113C78 (0x80113C78).
 void itemInitializeRegistry(void) {
     gLiveItemCount = 0;
-    searchTreeInitialize((u8 *)&gItemSearchTree, (s32)itemCompareSearchOrder);
+    searchTreeInitialize(&gItemSearchTree, itemCompareSearchOrder);
 }
 
 /// Write cursor for the active graphics command list; also marks the camera-storage end.

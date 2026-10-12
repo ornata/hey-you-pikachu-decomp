@@ -1,21 +1,21 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
-#include "search_tree_types.h"
+#include "search_tree.h"
 
 /// Initialize an empty search tree with a key comparator.
 /// \param tree Tree record to initialize.
-/// \param compare Comparator address; called with a node and key, returning a negative, zero, or positive value when the key is less than, equal to, or greater than the node.
+/// \param compare Callback comparing the target-width key against a node.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80040F20 (0x80040F20).
-void searchTreeInitialize(u8 *tree, s32 compare) {
+void searchTreeInitialize(SearchTree *tree, TreeCompare compare) {
     _bzero(tree, 0xC);
-    *(s32 *)(tree + 0xC) = compare;
+    tree->compare = compare;
 }
 
 /// Search for a key or the minimum entry in a search tree.
 /// \param rootAddress Address of the tree root, updated by the search.
 /// \param minimum Nonzero to select the minimum entry instead of searching for key.
-/// \param compareAddress Comparator address called with a node and key; returns
+/// \param compare Callback called with a node and key; returns
 /// negative, zero, or positive when the key is less than, equal to, or greater
 /// than the node. Ignored for a minimum search.
 /// \param key Search key, ignored when minimum is nonzero.
@@ -23,8 +23,8 @@ void searchTreeInitialize(u8 *tree, s32 compare) {
 ///
 /// \note NONPORTABLE: paired detach/link statements preserve IDO source-line scheduling.
 /// \note Original decompilation identifier: \c func_80040F54 (0x80040F54).
-s32 searchTreeLocateRoot(u8 *rootAddress, s32 minimum, s32 compareAddress, s32 key) {
-    TreeNode *root = *(TreeNode **)rootAddress;
+s32 searchTreeLocateRoot(TreeNode **rootAddress, s32 minimum, TreeCompare compare, s32 key) {
+    TreeNode *root = *rootAddress;
     TreeNode *child;
     TreeNode sentinels[2];
     TreeNode *tails[2];
@@ -45,7 +45,7 @@ s32 searchTreeLocateRoot(u8 *rootAddress, s32 minimum, s32 compareAddress, s32 k
             result = -1;
             direction = 0;
         } else {
-            direction = (result = ((TreeCompare)compareAddress)(root, key)) >= 0;
+            direction = (result = compare(root, key)) >= 0;
         }
         child = root->links[direction];
         if (result == 0 || child == NULL) {
@@ -55,7 +55,7 @@ s32 searchTreeLocateRoot(u8 *rootAddress, s32 minimum, s32 compareAddress, s32 k
             childResult = -1;
             childDirection = 0;
         } else {
-            childDirection = (childResult = ((TreeCompare)compareAddress)(child, key)) >= 0;
+            childDirection = (childResult = compare(child, key)) >= 0;
         }
         next = child->links[childDirection];
         if (childResult == 0 || next == NULL) {
@@ -90,11 +90,10 @@ s32 searchTreeLocateRoot(u8 *rootAddress, s32 minimum, s32 compareAddress, s32 k
     tails[1]->links[0] = root->links[1];
     root->links[0] = sentinels[0].links[1];
     root->links[1] = sentinels[1].links[0];
-    *(TreeNode **)rootAddress = root;
+    *rootAddress = root;
     return result;
 }
 
-s32 searchTreeLocateRoot(u8 *, s32, s32, s32); /* extern */
 
 /// Find a matching entry in a search tree.
 /// \param tree Tree to search; its root may change.
@@ -102,7 +101,7 @@ s32 searchTreeLocateRoot(u8 *, s32, s32, s32); /* extern */
 /// \returns The matching node address, or zero when absent.
 /// \note Original decompilation identifier: \c func_80041184 (0x80041184).
 s32 searchTreeFind(u8 *tree, s32 key) {
-    if (searchTreeLocateRoot(tree + 4, 0, (s32)((SearchTree *)tree)->compare, key) != 0) {
+    if (searchTreeLocateRoot(&((SearchTree *)tree)->root, 0, ((SearchTree *)tree)->compare, key) != 0) {
         return 0;
     }
     return (s32)((SearchTree *)tree)->root;
@@ -114,8 +113,8 @@ s32 searchTreeFind(u8 *tree, s32 key) {
 /// \param key Key to locate.
 /// \returns The matching node address, or zero when absent.
 /// \note Original decompilation identifier: \c func_800411C8 (0x800411C8).
-s32 searchTreeFindAtRoot(s32 *rootAddress, s32 compare, s32 key) {
-    if (searchTreeLocateRoot((u8 *)rootAddress, 0, compare, key) != 0) {
+TreeNode *searchTreeFindAtRoot(TreeNode **rootAddress, TreeCompare compare, s32 key) {
+    if (searchTreeLocateRoot(rootAddress, 0, compare, key) != 0) {
         return 0;
     }
     return *rootAddress;
@@ -130,7 +129,7 @@ s32 searchTreeFindSuccessor(u8 *tree, s32 key) {
     if (searchTreeFind(tree, key) == 0) {
         return 0;
     }
-    searchTreeLocateRoot((u8 *)((SearchTree *)tree)->root + 4, 1, 0, 0);
+    searchTreeLocateRoot(&((SearchTree *)tree)->root->links[1], 1, 0, 0);
     return (s32)((SearchTree *)tree)->root->links[1];
 }
 
@@ -139,7 +138,7 @@ s32 searchTreeFindSuccessor(u8 *tree, s32 key) {
 /// \returns The minimum node address, or zero for an empty tree.
 /// \note Original decompilation identifier: \c func_8004125C (0x8004125C).
 s32 searchTreeFindMinimum(u8 *tree) {
-    searchTreeLocateRoot(tree + 4, 1, 0, 0);
+    searchTreeLocateRoot(&((SearchTree *)tree)->root, 1, 0, 0);
     return (s32)((SearchTree *)tree)->root;
 }
 
@@ -156,7 +155,7 @@ TreeNode *searchTreeInsert(u8 *tree, TreeNode *node, s32 key) {
     TreeNode *cur;
 
     node->value = key;
-    idx = searchTreeLocateRoot(tree + 4, 0, *(s32 *)(tree + 0xC), key) < 1;
+    idx = searchTreeLocateRoot(&((SearchTree *)tree)->root, 0, ((SearchTree *)tree)->compare, key) < 1;
     cur = *(TreeNode **)(tree + 4);
     other = idx == 0;
     if (cur != NULL) {
@@ -183,7 +182,7 @@ u8 *searchTreeRemove(u8 *tree, s32 key) {
     u8 *next;
     u8 *rest;
 
-    if (searchTreeLocateRoot(tree + 4, 0, (s32)((SearchTree *)tree)->compare, key) != 0) {
+    if (searchTreeLocateRoot(&((SearchTree *)tree)->root, 0, ((SearchTree *)tree)->compare, key) != 0) {
         return NULL;
     }
     node = (u8 *)((SearchTree *)tree)->root;
@@ -191,7 +190,7 @@ u8 *searchTreeRemove(u8 *tree, s32 key) {
     rest = (u8 *)((TreeNode *)node)->links[0];
     if (next != NULL) {
         ((SearchTree *)tree)->root = (TreeNode *)next;
-        searchTreeLocateRoot(tree + 4, 1, 0, 0);
+        searchTreeLocateRoot(&((SearchTree *)tree)->root, 1, 0, 0);
         ((SearchTree *)tree)->root->links[0] = (TreeNode *)rest;
     } else {
         ((SearchTree *)tree)->root = (TreeNode *)rest;

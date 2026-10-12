@@ -9,7 +9,7 @@
 #include "node_pool.h"
 #include "object_types.h"
 #include "object_lookup.h"
-#include "search_tree_types.h"
+#include "search_tree.h"
 #include "midi_sequence_types.h"
 
 /* Debug trace: compiled out in this build, but each format string is still
@@ -116,7 +116,7 @@ extern s32 gActiveObjectHierarchyCount;
 u8 *objectRegisterActiveHierarchy(u8 *);
 void objectSetHierarchyFlags(u8 *, u16);
 void objectClearHierarchyFlags(u8 *, u16);
-s32 objectCompareSearchTreeOrder(u8 *, u8 *);
+s32 objectCompareSearchTreeOrder(TreeNode *, s32);
 void objectRegisterHierarchyInSearchTree(u8 *);
 f32 vector3Normalize(f32 *);
 f32 objectOrientAlongWorldSegment(u8 *, u8 *, u8 *);
@@ -910,20 +910,21 @@ void objectScaleHierarchyBounds(u8 *object, f32 parentScale) {
 
 /// Compare an object with a search-tree entry by object kind and handle.
 /// \param entry Search-tree entry containing the comparison object.
-/// \param object Candidate object whose search order is requested.
+/// \param objectAddress Target-width address of the candidate object whose search order is requested.
 /// \returns Minus one, zero, or one when the candidate sorts before, equal to, or after the entry object.
 /// \note Original decompilation identifier: \c func_800085A4 (0x800085A4).
-s32 objectCompareSearchTreeOrder(u8 *entry, u8 *object) {
+s32 objectCompareSearchTreeOrder(TreeNode *entry, s32 objectAddress) {
+    u8 *object = (u8 *)objectAddress;
     u8 *v0;
     u32 d;
-    v0 = *(u8 **)(entry + 8);
+    v0 = (u8 *)entry->value;
     if (*(u16 *)(object + 0x34) < *(u16 *)(v0 + 0x34)) {
         return -1;
     }
     if (*(u16 *)(v0 + 0x34) < *(u16 *)(object + 0x34)) {
         return 1;
     }
-    entry = (u8 *)*(u32 *)(object + 0x38);
+    entry = (TreeNode *)*(u32 *)(object + 0x38);
     d = *(u32 *)(v0 + 0x38);
     if ((u32)entry < d) {
         return -1;
@@ -1450,7 +1451,7 @@ void objectSweepDeferredHierarchyDestruction(void) {
     if (sp2C != NULL) {
         do {
             if (*(u16 *)(sp2C + 0x36) & 0x10) {
-                objectDestroyHierarchy(sp2C);
+                objectDestroyHierarchy((u8 *)sp2C);
                 nodePoolRemoveCurrent(&gActiveObjectHierarchies);
                 gActiveObjectHierarchyCount -= 1;
             } else if (*(u16 *)(sp2C + 0x36) & 0x20) {
@@ -1546,7 +1547,7 @@ void objectDrawHierarchyForCurrentGroup(u8 *object) {
     var_s0 = object;
     if (object != NULL) {
         do {
-            objectDrawSearchTreeEntry((s32)((ManagedObject *)var_s0)->entry, 0);
+            objectDrawSearchTreeEntry((u8 *)((ManagedObject *)var_s0)->entry, 0);
             firstChild = ((RuntimeObjectPrefix *)var_s0)->child.bytes;
             if (firstChild != NULL) {
                 objectDrawHierarchyForCurrentGroup(firstChild);
@@ -1581,7 +1582,6 @@ void actorInitializePartRegistry();                            /* extern */
 void objectResponsesInitialize(s32, s32);            /* extern */
 s32 interactionMarkerCreate();                            /* extern */
 void collisionGridInitialize();                            /* extern */
-void searchTreeInitialize(u8 *, s32); /* extern */
 
 /// Initialize the runtime object system and its supporting registries.
 /// \returns Nothing.
@@ -1613,7 +1613,7 @@ void objectSystemDestroy(void) {
     nodePoolIterateFirst(&gActiveObjectHierarchies, (s32 *)&sp2C);
     if (sp2C != 0) {
         do {
-            objectDestroyHierarchy(sp2C);
+            objectDestroyHierarchy((u8 *)sp2C);
             nodePoolRemoveCurrent(&gActiveObjectHierarchies);
             gActiveObjectHierarchyCount -= 1;
             nodePoolIterateNext(&gActiveObjectHierarchies, (s32 *)&sp2C);

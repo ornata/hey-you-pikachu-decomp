@@ -865,3 +865,17 @@ addition to the existing total-size and buffer-offset checks. Ghidra at
 0x800076E0 confirms these SDK boundary addresses. Optional object-state release
 uses the pointer union view, preserving its existing ownership and invalidation
 contract.
+
+### Search-tree root and comparator contracts
+
+Search-tree initialization and independent-root search share search_tree.h.
+Comparators receive a TreeNode and target-width key directly; object and item
+comparators explicitly interpret that key as an object address. Registration
+no longer casts function pointers to integer addresses. Ghidra at 0x80040F20
+confirms the comparator field at 0xC and initialization extent.
+
+The root-search primitive uses a writable TreeNode pointer and TreeCompare
+callback throughout its callers. Independent-root lookup returns a borrowed
+TreeNode pointer. Existing paired detach/link statements and traversal behavior
+remain unchanged, and all affected units match the strict baseline. Generic
+stored keys remain signed target-width values rather than invented object types.
