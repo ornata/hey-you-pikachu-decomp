@@ -1,3 +1,4 @@
+#include "object_billboard.h"
 #include "vector_direction.h"
 #include "camera_types.h"
 #include "audio_spatial.h"

@@ -1981,3 +1981,13 @@ inferred zero-argument signature omits the forwarded vector that the matching C
 provider establishes. This supersedes the extra-argument exception recorded in
 the preceding camera-layout audit. The actual one-argument interface and typed
 fields preserve all 483 objects and strict relocation addends.
+
+### Runtime object billboard interfaces
+
+`object_billboard.h` gives horizontal and full camera-facing drawing callbacks
+shared contracts, including active-camera initialization and mutable orientation
+flags. The special-item caller now includes this interface rather than declaring
+the horizontal callback locally. Ghidra 0x800088BC confirms the orientation helper
+and conditional flag update. No additional flag semantics are inferred from the
+numeric mask. Provider and caller preserve all 483 objects and strict relocation
+addends.

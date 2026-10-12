@@ -1,3 +1,4 @@
+#include "object_billboard.h"
 #include "object_movement.h"
 #include "item_object.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -157,7 +158,6 @@ typedef void (*ModeFn)(u8 *);
 /// Item behavior update callbacks indexed by the current item mode.
 /// \note Original identifier: \c D_8012B950 (0x8012B950).
 extern ModeFn gItemModeUpdateHandlers[];
-void objectFaceCameraHorizontally(u8 *); /* extern */
 
 /// Advance the item current behavior and apply its orientation rules.
 /// \param object Item to update.
