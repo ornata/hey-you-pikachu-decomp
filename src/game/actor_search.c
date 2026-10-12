@@ -1,10 +1,7 @@
+#include "object_target_search.h"
 #include "common.h"
 
-typedef struct Vec3f {
-    f32 x, y, z;
-} Vec3f;
 
-u8 *objectFindNearestTargetInView(u8 *, Vec3f *, f32, u8 *, f32, s32, s32);
 
 /// Find the nearest actor in a kind range, honoring the script actor-kind aliases.
 /// \param self Object excluded from the search, or null to exclude none.
@@ -16,7 +13,7 @@ u8 *objectFindNearestTargetInView(u8 *, Vec3f *, f32, u8 *, f32, s32, s32);
 /// \param maxKind Inclusive maximum actor kind; 38 selects Pikachu.
 /// \returns The nearest qualifying actor, or null when none is found.
 /// \note Original decompilation identifier: \c func_80027380 (0x80027380).
-u8 *actorFindNearestInRange(u8 *self, Vec3f *origin, f32 distance, u8 *rotation, f32 cone, s32 minKind, s32 maxKind) {
+u8 *actorFindNearestInRange(u8 *self, Vec3f *origin, f32 distance, f32 *rotation, f32 cone, s32 minKind, s32 maxKind) {
     if (minKind == 0x26) {
         minKind = 1;
     }
@@ -37,5 +34,5 @@ void actorSearchNearby(s32 self, s32 origin) {
     sp2C[0] = 0.0f;
     sp2C[1] = 0.0f;
     sp2C[2] = 0.0f;
-    objectFindNearestTargetInView((u8 *)self, (Vec3f *)origin, 50.0f, (u8 *)sp2C, 360.0f, 1, 0x25);
+    objectFindNearestTargetInView((u8 *)self, (Vec3f *)origin, 50.0f, sp2C, 360.0f, 1, 0x25);
 }

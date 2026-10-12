@@ -1,3 +1,4 @@
+#include "object_target_search.h"
 #include "path_query.h"
 #include "scene_region.h"
 #include "cave.h"
@@ -617,11 +618,7 @@ f32 areaGetPathPointCoordinate(s32 path, s32 point, s32 axis) {
     return -65536.0f;
 }
 
-typedef struct Vec3f {
-    f32 x, y, z;
-} Vec3f;
 
-u8 *actorFindNearestInRange(u8 *, Vec3f *, f32, u8 *, f32, s32, s32); /* extern */
 
 
 /// Find the nearest actor to a world position within a kind range.
@@ -633,7 +630,7 @@ u8 *actorFindNearestInRange(u8 *, Vec3f *, f32, u8 *, f32, s32, s32); /* extern 
 /// \returns The nearest qualifying object handle, or zero when none is found.
 /// \note Original decompilation identifier: \c func_80117C18 (0x80117C18).
 s32 actorFindNearestHandleFromPosition(s32 object, s32 position, s32 minKind, s32 maxKind, f32 distance) {
-    u8 *spawned = actorFindNearestInRange((u8 *)object, (Vec3f *)position, distance, (u8 *)(object + 0xC), 360.0f, minKind, maxKind);
+    u8 *spawned = actorFindNearestInRange((u8 *)object, (Vec3f *)position, distance, (f32 *)(object + 0xC), 360.0f, minKind, maxKind);
 
     if (spawned == NULL) {
         return 0;
@@ -659,7 +656,6 @@ s32 itemFindHandleNearPosition(f32 *position, f32 distance, s32 minKind, s32 max
     return ((RuntimeObjectPrefix *)item)->handle;
 }
 
-u8 *objectFindNearestTargetInView(u8 *, struct Vec3f *, f32, u8 *, f32, s32, s32); /* extern */
 
 
 /// Find the nearest object within a facing cone and kind range.
@@ -671,7 +667,7 @@ u8 *objectFindNearestTargetInView(u8 *, struct Vec3f *, f32, u8 *, f32, s32, s32
 /// \returns The nearest qualifying object handle, or zero when none is found.
 /// \note Original decompilation identifier: \c func_80117CEC (0x80117CEC).
 s32 objectFindNearestHandleInFacingCone(s32 object, s32 minKind, s32 maxKind, f32 distance, f32 cone) {
-    u8 *spawned = objectFindNearestTargetInView((u8 *)object, (Vec3f *)(object + 0x44), distance, (u8 *)(object + 0xC), cone, minKind, maxKind);
+    u8 *spawned = objectFindNearestTargetInView((u8 *)object, (Vec3f *)(object + 0x44), distance, (f32 *)(object + 0xC), cone, minKind, maxKind);
 
     if (spawned == NULL) {
         return 0;
@@ -690,7 +686,7 @@ s32 objectFindNearestHandleInFacingCone(s32 object, s32 minKind, s32 maxKind, f3
 /// \returns The nearest qualifying object handle, or zero when none is found.
 /// \note Original decompilation identifier: \c func_80117D4C (0x80117D4C).
 s32 objectFindNearestHandleFromPosition(s32 object, s32 position, s32 minKind, s32 maxKind, f32 distance) {
-    u8 *spawned = objectFindNearestTargetInView((u8 *)object, (Vec3f *)position, distance, (u8 *)(object + 0xC), 360.0f, minKind, maxKind);
+    u8 *spawned = objectFindNearestTargetInView((u8 *)object, (Vec3f *)position, distance, (f32 *)(object + 0xC), 360.0f, minKind, maxKind);
 
     if (spawned == NULL) {
         return 0;
@@ -1068,7 +1064,7 @@ s32 actorFindNearestFromPlayerView(u8 *object, s32 minKind, s32 maxKind, f32 dis
     rotation[1] = origin[6] + origin[3];
     rotation[0] = 0.0f;
     rotation[2] = 0.0f;
-    result = actorFindNearestInRange(object, (Vec3f *)origin, distance, (u8 *)rotation, cone, minKind, maxKind);
+    result = actorFindNearestInRange(object, (Vec3f *)origin, distance, rotation, cone, minKind, maxKind);
     if (result == NULL)
         return 0;
     return *(s32 *)(result + 0x38);
@@ -1090,7 +1086,7 @@ s32 objectFindNearestFromPlayerView(u8 *self, s32 minKind, s32 maxKind, f32 dist
     rotation[1] = origin[6] + origin[3];
     rotation[0] = 0.0f;
     rotation[2] = 0.0f;
-    item = objectFindNearestTargetInView(self, (Vec3f *)origin, distance, (u8 *)rotation, cone, minKind, maxKind);
+    item = objectFindNearestTargetInView(self, (Vec3f *)origin, distance, rotation, cone, minKind, maxKind);
     if (item == NULL) {
         return 0;
     }
@@ -1253,7 +1249,7 @@ s16 actorReleaseHeldItem(u8 *actor) {
 /// \returns The nearest qualifying actor handle, or zero when none is found.
 /// \note Original decompilation identifier: \c func_80118984 (0x80118984).
 s32 actorFindNearestHandleInFacingCone(s32 object, s32 minKind, s32 maxKind, f32 distance, f32 cone) {
-    u8 *spawned = actorFindNearestInRange((u8 *)object, (Vec3f *)(object + 0x44), distance, (u8 *)(object + 0xC), cone, minKind, maxKind);
+    u8 *spawned = actorFindNearestInRange((u8 *)object, (Vec3f *)(object + 0x44), distance, (f32 *)(object + 0xC), cone, minKind, maxKind);
 
     if (spawned == NULL) {
         return 0;

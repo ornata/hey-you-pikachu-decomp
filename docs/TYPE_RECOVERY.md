@@ -1529,3 +1529,14 @@ count/pointer entries and twelve-byte point stride. The shared declarations
 preserve signed index checks: path indices must be valid, and point/axis indices
 must be nonnegative; out-of-range upper indices produce -65536. Provider and VM
 caller rebuilds preserve all 483 objects and strict relocations.
+
+### Shared nearest-target spatial interfaces
+
+`object_target_search.h` consolidates object and actor-range searches with a
+checked shared `Vec3f` and three-float Euler-angle input. The provider, actor
+wrapper, script queries and voice text panel no longer maintain incompatible
+vector declarations or byte-pointer angle contracts. Ghidra 0x80009ED4 confirms
+the three-component origin copy, optional view setup, kind bounds and shared
+result state. The interface explicitly prohibits overlapping searches and returns
+a borrowed object. Script kind aliases remain handled by the actor wrapper.
+All four changed source units preserve all 483 objects and strict relocations.

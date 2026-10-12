@@ -1,3 +1,4 @@
+#include "object_target_search.h"
 #include "object_flags.h"
 #include "object_create.h"
 #include "object_hierarchy_create.h"
@@ -25,9 +26,6 @@
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-typedef struct Vec3f {
-    f32 x, y, z;
-} Vec3f;
 void matrix34Identity(Matrix34 *);
 f32 vector3LengthApprox(Vec3f *);
 
@@ -1851,7 +1849,7 @@ s32 objectConsiderNearestTargetEntry(u8 *node, s32 depth) {
 /// \returns Borrowed nearest qualifying object, valid until destruction, or null if none qualifies.
 /// Uses shared query state and must not overlap another nearest-target search.
 /// \note Original decompilation identifier: \c func_80009ED4 (0x80009ED4).
-u8 *objectFindNearestTargetInView(u8 *self, Vec3f *origin, f32 dist, u8 *rot, f32 cone, s32 minKind, s32 maxKind) {
+u8 *objectFindNearestTargetInView(u8 *self, Vec3f *origin, f32 dist, f32 *rot, f32 cone, s32 minKind, s32 maxKind) {
     u8 *first;
 
     gObjectNearestTargetSearch.self = self;

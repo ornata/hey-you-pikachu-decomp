@@ -1,3 +1,4 @@
+#include "object_target_search.h"
 #include "heap_free.h"
 /// \file
 /// Voice-command translation and scrolling text-panel support.
@@ -25,7 +26,6 @@ void _bzero(s32, s32);
 /// \note Original identifier: \c D_800A268C (0x800A268C).
 extern u8 gTextPanelClearedEmptyText[];
 
-u8 *objectFindNearestTargetInView(u8 *, f32 *, f32, u8 *, f32, s32, s32);
 f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
 f32 vector3Length(f32 *);
 void messengerGetCameraLaunch(f32 *, f32 *, s32);
@@ -112,8 +112,8 @@ void voiceCommandLaunchEffect(ScriptMessage message) {
             rotation[1] = gPlayerYaw + gPlayerViewShake;
             rotation[0] = 0.0f;
             rotation[2] = 0.0f;
-            nearby = objectFindNearestTargetInView(NULL, (f32 *)(gRenderCameras + gRenderCameraIndex * 0xE0), 15.0f,
-                                                   (u8 *)rotation, 60.0f, 0x82, 0x82);
+            nearby = objectFindNearestTargetInView(NULL, (Vec3f *)(gRenderCameras + gRenderCameraIndex * 0xE0), 15.0f,
+                                                   rotation, 60.0f, 0x82, 0x82);
             if (nearby != NULL) {
                 cameraX = ((f32 *)(gRenderCameras + gRenderCameraIndex * 0xE0))[0];
                 cameraY = ((f32 *)(gRenderCameras + gRenderCameraIndex * 0xE0))[1];
