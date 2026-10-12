@@ -557,12 +557,6 @@ void systemMenuRefreshSelectedDetails(MenuState *state) {
     systemMenuPrepareDetailText();
 }
 
-void textDrawReset(void);
-void textDrawBegin(Gfx *);
-void textDrawSetColor(s32, s32, s32, s32);
-void textDrawSetScale(f32, f32);
-void textDrawSetSpacingMode(s32);
-void textDrawSetFont(s32);
 /// Refresh and draw the selected system-menu item details.
 /// \param displayList Display-list cursor that receives the drawing commands and advances past them.
 /// \returns Nothing.

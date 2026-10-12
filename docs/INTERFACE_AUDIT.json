@@ -4,6 +4,27 @@
   "records": [
     {
       "code": 712,
+      "file": "src/game/collection_presentation.c",
+      "line": 472,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "textDrawBegin(*(s32 *)gdl);"
+    },
+    {
+      "code": 712,
+      "file": "src/game/collection_presentation.c",
+      "line": 747,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "textDrawBegin(*(s32 *)gdl);"
+    },
+    {
+      "code": 712,
+      "file": "src/game/collection_presentation.c",
+      "line": 796,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "textDrawBegin(*(s32 *)gdl);"
+    },
+    {
+      "code": 712,
       "file": "src/game/texture_cache.c",
       "line": 170,
       "diagnostic": "illegal combination of pointer and integer",
@@ -19,14 +40,14 @@
     {
       "code": 709,
       "file": "src/ovl/system_menu.c",
-      "line": 1085,
+      "line": 1079,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "systemMenuAppendDetailText(buf);"
     },
     {
       "code": 709,
       "file": "src/ovl/system_menu.c",
-      "line": 1123,
+      "line": 1117,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "systemMenuAppendDetailText(buf);"
     }

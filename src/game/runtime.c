@@ -1019,7 +1019,6 @@ void hudProgramInitializeNoOp(void);
 void messageBarInitialize(void);
 void messageBarResetAndReleaseImages(void);
 void heapInitializeGlobal(s32);
-void textDrawInitialize(s32, s32, s32);
 void *areaLoadNextOverlay(void);
 void messengerResetTrackedObject(void);
 extern u8 D_B140C0[];

@@ -351,7 +351,6 @@ extern s32 gTextDrawScreenHeight;
 /// \note Original identifier: \c D_800F2A60 (0x800F2A60).
 extern RomCache gFontGlyphRomCache;
 
-void textDrawReset();
 
 /// Initialize text drawing for a screen and establish its default text area.
 /// \param width Screen width in pixels.
@@ -389,7 +388,6 @@ extern s32 gTextDrawColorAlpha;
 /// Borrowed palette used for color-indexed text images.
 /// \note Original identifier: \c D_800F2A58 (0x800F2A58).
 extern const u16 *gTextDrawPalette;
-void textDrawSetColor(s32, s32, s32, s32);
 /// Begin appending text drawing commands to a display list using the current text color and default palette.
 /// \param displayList Writable command storage with enough room for the requested text drawing, retained until another textDrawBegin call.
 /// \returns Nothing.

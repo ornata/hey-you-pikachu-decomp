@@ -704,10 +704,6 @@ void hudInitializeAreaLabel(void) {
                             (FontImage *)((s32)gTextImageConfigurations));
 }
 
-void textDrawBegin(Gfx *);
-void textDrawReset(void);
-void textDrawSetColor(s32, s32, s32, s32);
-void textDrawSetFont(s32);
 /// Nonzero when the prepared current-area label is visible.
 /// \note Original identifier: \c D_800F0278 (0x800F0278).
 extern s32 gHudAreaLabelVisible;

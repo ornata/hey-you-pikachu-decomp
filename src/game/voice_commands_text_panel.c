@@ -284,12 +284,7 @@ void textPanelReleaseEntries(TextPanel *panel) {
     heapFreeLocal(&gGameHeap, panel->images);
 }
 
-void textDrawGetDefaultArea(s32 *, s32 *, s32 *, s32 *);
-void textDrawSetScale(f32, f32);
 Gfx *textureDrawScaledRegion(Gfx **, void *, u32, u32, u32, u32, u32, u32, u32, u32, f32, f32);
-void textDrawBegin(Gfx *);
-void textDrawSetColor(s32, s32, s32, s32);
-void textDrawPrintf(const char *, ...);
 /// Line-break text emitted between scrolling text-panel entries.
 /// \note Original identifier: \c D_800A2688 (0x800A2688).
 extern char gTextPanelLineBreakText[];
@@ -415,8 +410,6 @@ void textPanelSetTextConfiguration(TextPanel *panel, s32 configuration) {
     panel->configuration = NULL;
 }
 
-void textDrawSetFont(s32);
-void textDrawSetSpacingMode(s32);
 
 /// Append a text entry, discarding the oldest entry when the panel is full.
 /// \param panel Initialized text panel receiving the entry.

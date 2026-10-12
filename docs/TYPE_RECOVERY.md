@@ -1099,3 +1099,14 @@ parameters and descriptor width/height consumption. Repeated prototypes were
 removed from eight source units after each unit preserved strict object matching.
 The shared rectangle declaration retains the existing source-width and numeric
 range preconditions; no clipping or command-generation behavior was changed.
+
+### Text drawing state API consolidation
+
+The shared text drawing header declares initialization, drawing-session setup,
+reset, color, font, scale, spacing, default bounds and formatted drawing. Nine
+source units use these declarations instead of local copies or implicit calls.
+The scale interface keeps both f32 parameters; Ghidra at 0x8003D598 confirms
+the two stored scale values, and drawing consumers establish their float use.
+Initialization and formatting preconditions and the original variadic stack
+layout limitation remain documented at the shared boundary. Header changes and
+each local declaration removal preserve the strict object baseline.

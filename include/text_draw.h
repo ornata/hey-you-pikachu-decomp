@@ -80,4 +80,69 @@ void textDrawSetCursor(s32 x, s32 y);
 void textImageDrawRectangle(Gfx **gfx, TextImage *image, s32 x0, s32 y0, s32 x1, s32 y1, s32 s, s32 t, f32 scaleX,
                             f32 scaleY);
 
+/// Initialize text drawing for a screen and establish its default text area.
+/// \param width Screen width in pixels.
+/// \param height Screen height in pixels.
+/// \param cachedGlyphCount Positive wide-glyph cache capacity whose byte allocation fits a signed 32-bit value.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8003CD30 (0x8003CD30).
+void textDrawInitialize(s32 width, s32 height, s32 cachedGlyphCount);
+
+/// Begin appending text drawing commands to a display list using the current text color and default palette.
+/// \param displayList Writable command storage with enough room for the requested text drawing, retained until another textDrawBegin call.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8003CE24 (0x8003CE24).
+void textDrawBegin(Gfx *displayList);
+
+/// Restore the default text area, cursor, color, font, spacing, scale, and palette.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8003CF78 (0x8003CF78).
+void textDrawReset(void);
+
+/// Set the color and opacity used for text drawing.
+/// \param red Red component from zero to 255.
+/// \param green Green component from zero to 255.
+/// \param blue Blue component from zero to 255.
+/// \param alpha Opacity from zero to 255.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8003D4A0 (0x8003D4A0).
+void textDrawSetColor(s32 red, s32 green, s32 blue, s32 alpha);
+
+/// Select the font used for single-byte text characters.
+/// \param font Valid single-byte font-bank index for the characters to be drawn.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8003D58C (0x8003D58C).
+void textDrawSetFont(s32 font);
+
+/// Set the horizontal and vertical scale used for text drawing.
+/// \param scaleX Finite positive horizontal text scale compatible with representable drawing coordinates and texture steps.
+/// \param scaleY Finite positive vertical text scale whose sixteen-pixel row advance rounds to at least one pixel.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8003D598 (0x8003D598).
+void textDrawSetScale(f32 scaleX, f32 scaleY);
+
+/// Select proportional or fixed-cell text spacing.
+/// \param mode One for proportional spacing; other values select fixed-cell spacing.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8003D5AC (0x8003D5AC).
+void textDrawSetSpacingMode(s32 mode);
+
+/// Retrieve the default text area's inclusive screen bounds.
+/// \param left Receives the left pixel coordinate.
+/// \param top Receives the top pixel coordinate.
+/// \param right Receives the inclusive right pixel coordinate.
+/// \param bottom Receives the inclusive bottom pixel coordinate.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8003D5B8 (0x8003D5B8).
+void textDrawGetDefaultArea(s32 *left, s32 *top, s32 *right, s32 *bottom);
+
+/// Draw formatted text at the current cursor, supporting single-byte characters, wide characters, and newlines.
+/// \param format Printf-style format string; the result including its terminator must fit in 512 bytes and contain complete supported characters.
+/// \param ... Values used by the format string.
+/// \returns Nothing.
+///
+/// \note Portability/UB: Variadic forwarding reads 512 bytes after the format argument, relying on the original IDO stack layout instead of a portable va_list.
+/// \note Original decompilation identifier: \c func_8003D030 (0x8003D030).
+void textDrawPrintf(const char *format, ...);
+
 #endif
