@@ -5,7 +5,7 @@
     {
       "code": 712,
       "file": "src/scenes/playground.c",
-      "line": 20,
+      "line": 19,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "(s32)D_8013EE54_scene_playground, 0);"
     },

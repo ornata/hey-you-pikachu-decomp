@@ -1483,3 +1483,15 @@ set-flags prototype changes later registers in presentationPrepareActiveActor
 call remains a matching constraint. Next evidence needed is IDO allocation data
 or a source representation that preserves the void interface and those registers;
 the shared API was not weakened to accommodate that one caller.
+
+### Cave state producers and shared query contracts
+
+Cave creation, landmark association and description selection now use the shared
+checked `CaveState`, while object position and owned state use the runtime prefix.
+Ghidra 0x8001F4F0 confirms the 0x20 allocation, two copied anchors, initially null
+landmark and byte description selector. The first-anchor query uses the same
+record instead of an undifferentiated float pointer. `cave.h` consolidates scene,
+companion and VM declarations, including the pointer-based landmark association.
+Anchors are copied; the landmark is borrowed and must remain live when queried.
+The zero-result and invalid-axis sentinel contracts are explicit, including the
+nonnegative axis precondition. All five changed units match all 483 objects.

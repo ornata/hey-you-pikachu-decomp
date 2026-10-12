@@ -1,3 +1,4 @@
+#include "cave.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "runtime_clock.h"
@@ -979,15 +980,15 @@ f32 actorGetFollowingPathPointCoordinate(u8 *object, s32 handle, s32 axis) {
 /// \note Original decompilation identifier: \c func_801183CC (0x801183CC).
 f32 caveGetFirstAnchorCoordinate(s32 handle, s32 axis) {
     u8 *liveObject;
-    f32 *v;
+    CaveState *v;
 
     liveObject = objectFindLiveByHandle(handle);
     if (liveObject == NULL) {
         return 0.0f;
     }
-    v = ((RuntimeObjectPrefix *)liveObject)->state.floats;
+    v = ((RuntimeObjectPrefix *)liveObject)->state.pointer;
     if (axis < 3) {
-        return v[axis];
+        return v->firstAnchor[axis];
     }
     return -65536.0f;
 }

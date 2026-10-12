@@ -1,3 +1,6 @@
+#include "cave.h"
+#include "scene_types.h"
+#include "object_types.h"
 #include "object_hierarchy_create.h"
 #include "object_template.h"
 #include "object_lifecycle.h"
@@ -26,25 +29,25 @@ extern ObjectTemplate gCaveObjectTemplate;
 u8 *caveCreate(f32 *position, f32 *anchorA, f32 *anchorB, u8 kind) {
     ObjectTemplate tmpl = gCaveObjectTemplate;
     u8 *obj;
-    u8 *v;
+    CaveState *v;
 
-    obj = objectCreateHierarchyFromTemplate((ObjectTemplate *)&tmpl);
-    *(f32 *)(obj + 0x18) = position[0];
-    *(f32 *)(obj + 0x1C) = position[1];
-    *(f32 *)(obj + 0x20) = position[2];
-    *(f32 *)(obj + 0x44) = position[0];
-    *(f32 *)(obj + 0x48) = position[1];
-    *(f32 *)(obj + 0x4C) = position[2];
+    obj = objectCreateHierarchyFromTemplate(&tmpl);
+    ((RuntimeObjectPrefix *)obj)->position[0] = position[0];
+    ((RuntimeObjectPrefix *)obj)->position[1] = position[1];
+    ((RuntimeObjectPrefix *)obj)->position[2] = position[2];
+    ((RuntimeObjectPrefix *)obj)->worldPosition[0] = position[0];
+    ((RuntimeObjectPrefix *)obj)->worldPosition[1] = position[1];
+    ((RuntimeObjectPrefix *)obj)->worldPosition[2] = position[2];
     v = heapAllocLocal(&gGameHeap, 0x20, 0x32);
-    *(f32 *)(v + 0x0) = anchorA[0];
-    *(f32 *)(v + 0x4) = anchorA[1];
-    *(f32 *)(v + 0x8) = anchorA[2];
-    *(f32 *)(v + 0xC) = anchorB[0];
-    *(f32 *)(v + 0x10) = anchorB[1];
-    *(f32 *)(v + 0x14) = anchorB[2];
-    *(s32 *)(v + 0x18) = 0;
-    v[0x1C] = kind;
-    *(u8 **)(obj + 0x54) = v;
+    v->firstAnchor[0] = anchorA[0];
+    v->firstAnchor[1] = anchorA[1];
+    v->firstAnchor[2] = anchorA[2];
+    v->secondAnchor[0] = anchorB[0];
+    v->secondAnchor[1] = anchorB[1];
+    v->secondAnchor[2] = anchorB[2];
+    v->landmark = NULL;
+    v->descriptionKind = kind;
+    ((RuntimeObjectPrefix *)obj)->state.pointer = v;
     objectRegisterActiveHierarchy(obj);
     return obj;
 }
@@ -54,10 +57,10 @@ u8 *caveCreate(f32 *position, f32 *anchorA, f32 *anchorB, u8 kind) {
 /// \param landmark Linked landmark object address.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001F608 (0x8001F608).
-void caveSetLinkedLandmark(u8 *object, s32 landmark) {
-    u8 *p = *(u8 **)(object + 0x54);
+void caveSetLinkedLandmark(u8 *object, u8 *landmark) {
+    CaveState *p = ((RuntimeObjectPrefix *)object)->state.pointer;
 
-    *(s32 *)(p + 0x18) = landmark;
+    p->landmark = landmark;
 }
 
 /// Get the cave description in shared text storage.
@@ -65,8 +68,8 @@ void caveSetLinkedLandmark(u8 *object, s32 landmark) {
 /// \returns Shared description text, refreshed for kind zero and otherwise left unchanged; later requests may overwrite it.
 /// \note Original decompilation identifier: \c func_8001F614 (0x8001F614).
 s8 *caveGetDescription(u8 *object) {
-    u8 *caveState = *(u8 **)(object + 0x54);
-    if (*(u8 *)(caveState + 0x1C) == 0) {
+    CaveState *caveState = ((RuntimeObjectPrefix *)object)->state.pointer;
+    if (caveState->descriptionKind == 0) {
         sprintf(gCaveDescriptionBuffer, gCaveDescriptionFormat);
     }
     return gCaveDescriptionBuffer;

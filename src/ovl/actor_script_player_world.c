@@ -1,3 +1,4 @@
+#include "cave.h"
 #include "item_object.h"
 #include "toolbox_items.h"
 #include "common.h"
@@ -577,7 +578,6 @@ s32 actorScriptGetFollowingPathPointCoordinate(u8 *actor) {
     return 0;
 }
 
-f32 caveGetFirstAnchorCoordinate(s32, s32);  /* extern */
 
 /// Read one coordinate of a cave first scene anchor.
 /// \param actor Actor whose script VM supplies a cave handle followed by a nonnegative axis (zero for X, one for Y, two for Z), and receives the coordinate, zero for a missing handle, or -65536 for an axis greater than two; other object kinds are unsupported.
@@ -595,7 +595,6 @@ s32 actorScriptGetCaveFirstAnchorCoordinate(u8 *actor) {
     return 0;
 }
 
-f32 caveGetSecondAnchorCoordinate(s32, s32);  /* extern */
 
 /// Read one coordinate of a cave second scene anchor.
 /// \param actor Actor whose script VM supplies a cave handle followed by a nonnegative axis (zero for X, one for Y, two for Z), and receives the coordinate, zero for a missing handle, or -65536 for an axis greater than two; other object kinds are unsupported.
@@ -613,7 +612,6 @@ s32 actorScriptGetCaveSecondAnchorCoordinate(u8 *actor) {
     return 0;
 }
 
-s32 caveGetLinkedLandmarkHandle(s32);  /* extern */
 
 /// Read the landmark associated with a cave.
 /// \param actor Actor whose script VM supplies a cave handle and receives the linked landmark handle, or zero for a missing cave handle; a live cave must have a valid linked landmark, and other object kinds are unsupported.

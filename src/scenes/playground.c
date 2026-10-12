@@ -1,9 +1,8 @@
+#include "cave.h"
 #include "common.h"
 #include "actor_create.h"
 #include "scene_types.h"
-u8 *caveCreate(f32 *, f32 *, f32 *, u8);
 u8 *landmarkCreate(f32, f32, f32, s32);
-void caveSetLinkedLandmark(u8 *, s32);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
@@ -24,7 +23,7 @@ void playgroundSpawnResident(void) {
 void playgroundInitializeObjects(void) {
     u8 *object;
     object = caveCreate(D_801344D4_scene_playground, D_801344B0_scene_playground, D_801344BC_scene_playground, 0);
-    caveSetLinkedLandmark(object, (s32)landmarkCreate(D_801344B0_scene_playground[6], D_801344B0_scene_playground[7],
+    caveSetLinkedLandmark(object, landmarkCreate(D_801344B0_scene_playground[6], D_801344B0_scene_playground[7],
                                                       D_801344B0_scene_playground[8], 0x90));
     playgroundSpawnResident();
 }
