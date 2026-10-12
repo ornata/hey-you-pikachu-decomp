@@ -2438,3 +2438,14 @@ uses typed animated and previous-output angle histories throughout. Ghidra
 0x80015704 confirms the two histories are distinct: active animation refreshes
 the first, while every update records its resulting orientation in the second.
 These field conversions preserve all allocated bytes and relocation identities.
+
+### Facing consumers of shared camera and target state
+
+Child-facing code now reuses `MatrixCamera.eye` instead of its duplicate private
+camera prefix. Target resolution uses the checked actor target mode and stored
+world position, and target-facing inhibition uses the shared behavior flags.
+Ghidra 0x80015620 confirms the 0xE0-byte camera stride, stored-target selection,
+and the fallback coordinates at actor offsets 0x1EC through 0x1F4. The lifecycle
+functions have no external C callers in the current tree; no additional shared
+header is required for those private interfaces. All converted accesses match
+the immutable 483-object baseline.

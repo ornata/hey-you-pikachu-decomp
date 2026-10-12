@@ -487,12 +487,6 @@ void actorUpdateChildMotionCallback(u8 *object) {
     actorUpdateChildMotion(object);
 }
 
-typedef struct CamRec {
-    f32 x;
-    f32 y;
-    f32 z;
-    u8 pad[0xD4];
-} CamRec;
 
 /// Resolve the parent tracking position, including camera targets and the stored-position fallback.
 /// \param child Child object with a valid parent matching parentState.
@@ -503,13 +497,13 @@ typedef struct CamRec {
 void actorGetParentTrackingPosition(u8 *child, u8 *parentState, f32 *position) {
     u8 *t;
 
-    if (*(s32 *)(parentState + 0x19C) == 1) {
+    if (((ActorScriptState *)parentState)->targetMode == 1) {
         t = actorResolveStoredTarget(*(u8 **)(child + 0x50));
         if (t != NULL) {
             if (*(u16 *)(t + 0x34) == 0x7F) {
-                position[0] = ((CamRec *)gRenderCameras)[gRenderCameraIndex].x;
-                position[1] = ((CamRec *)gRenderCameras)[gRenderCameraIndex].y;
-                position[2] = ((CamRec *)gRenderCameras)[gRenderCameraIndex].z;
+                position[0] = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[0];
+                position[1] = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[1];
+                position[2] = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[2];
             } else {
                 position[0] = *(f32 *)(t + 0x44);
                 position[1] = *(f32 *)(t + 0x48);
@@ -518,9 +512,9 @@ void actorGetParentTrackingPosition(u8 *child, u8 *parentState, f32 *position) {
             return;
         }
     }
-    position[0] = *(f32 *)(parentState + 0x1EC);
-    position[1] = *(f32 *)(parentState + 0x1F0);
-    position[2] = *(f32 *)(parentState + 0x1F4);
+    position[0] = ((ActorScriptState *)parentState)->targetPosition[0];
+    position[1] = ((ActorScriptState *)parentState)->targetPosition[1];
+    position[2] = ((ActorScriptState *)parentState)->targetPosition[2];
 }
 
 
@@ -556,7 +550,7 @@ void actorUpdateTargetFacingChild(u8 *object) {
     parentState = *(u8 **)(parent + 0x54);
     motionUpdateChildPlayback(object);
     weight = &follow->weight;
-    if ((actionGetAttributes(parent) & 0x400000) && !(*(u16 *)(parentState + 0x1E8) & 1)) {
+    if ((actionGetAttributes(parent) & 0x400000) && !(((ActorScriptState *)parentState)->behaviorInhibitFlags & 1)) {
         *weight += 2.0f * gRuntimeFrameSeconds;
         if (*weight > 2.0f) {
             *weight = 2.0f;
@@ -665,9 +659,9 @@ void actorUpdateCameraFacingChild(u8 *object) {
         orientation->angles[2] = *(f32 *)(object + 0x14);
     }
     if (*weight > 0.0f) {
-        direction.x = ((CamRec *)gRenderCameras)[gRenderCameraIndex].x - *(f32 *)(object + 0x44);
-        direction.y = ((CamRec *)gRenderCameras)[gRenderCameraIndex].y - *(f32 *)(object + 0x48);
-        direction.z = ((CamRec *)gRenderCameras)[gRenderCameraIndex].z - *(f32 *)(object + 0x4C);
+        direction.x = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[0] - *(f32 *)(object + 0x44);
+        direction.y = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[1] - *(f32 *)(object + 0x48);
+        direction.z = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[2] - *(f32 *)(object + 0x4C);
         matrix34TransformPointVector((f32 *)gActorCameraFacingDirectionTransform, &direction.x, &direction.x);
         do {
             matrix = gObjectTraversalTransform;
