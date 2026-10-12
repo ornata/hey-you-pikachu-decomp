@@ -556,3 +556,17 @@ Tracked player playback start/stop contracts join `player_control.h` across the
 producer and all declaring consumers. Runtime's unused secondary input hook now
 accepts its borrowed address as a pointer. Every source mutation matched all
 483 baseline objects before moving on.
+
+The audio-cue continuation shares state query, bank selection, cue playback,
+transition and rate contracts through `audio_cue.h` across all ten consumers.
+HUD now agrees with the playback-handle return type, and script rate calls use
+the established double-precision prototype. Bank selection and lookup share
+reader state and require serialized use. Runtime explicitly converts the ROM
+linker symbol at the cartridge-address boundary.
+
+The private RomWindow layout has checked 0x424-byte size, queue and message
+offsets. Ghidra at 0x80023388 confirms initialization and the aligned buffer view;
+initialization now uses the named fields. Sixteen-byte-aligned reader storage
+keeps the full 1024-byte transfer inside the embedded data area. The signed
+address comparisons and 0x80000000 empty sentinel remain unchanged. Every source
+unit matched all 483 baseline objects before the next mutation.

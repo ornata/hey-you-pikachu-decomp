@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "audio_cue.h"
 #include "text_draw.h"
 #include "integer_animation.h"
 #include "player_control.h"
@@ -24,7 +25,6 @@ extern ValueTrack gHudMotionIndicatorTrack;
 /// Animation identifier retained for the HUD motion indicator.
 /// \note Original identifier: \c D_800F0274 (0x800F0274).
 extern s32 gHudMotionIndicatorAnimation;
-void audioPlayCue(s32);
 /// HUD guide drawing callbacks indexed by guide style.
 /// \note Original identifier: \c D_800890F0 (0x800890F0).
 extern void (*gHudGuideDrawCallbacks[])(Gfx **);

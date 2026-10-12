@@ -1,5 +1,6 @@
 /* Spatial audio emitters and effects. */
 #include "common.h"
+#include "audio_cue.h"
 #include "heap_alloc.h"
 #include "object_types.h"
 s32 audioStopPlayback(s32, f64);
@@ -42,8 +43,6 @@ void audioSetSoundEffectVolume(s32, s32);
 void audioSetSoundEffectPan(s32, s32);
 u32 randomNext(void);
 s32 audioPlaySoundEffect(s32);
-s32 audioPlayCue(s32);
-s32 audioChangeCurrentCue(s32, f64, f64);
 /// Start the next ambient sound and schedule the next playback.
 /// \param ext Ambient emitter state to update.
 /// \returns Nothing.

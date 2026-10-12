@@ -1,4 +1,5 @@
 #include "common.h"
+#include "audio_cue.h"
 #include "player_control.h"
 #include "text_draw.h"
 #include "toolbox_types.h"
@@ -550,7 +551,6 @@ u64 runtimeGetElapsedMilliseconds(void);
 void runtimeRequestGameModeChange(s32);
 s32 actionScriptIsStopped(s32);
 void hudSetAreaLabelVisible(s32);
-s32 audioChangeCurrentCue(s32, f64, f64);
 void presentationPrepareActiveActor(void *);
 void presentationSetFocusTarget(void *);
 void backdropSelectForView(s32, s32, s32);
@@ -959,7 +959,6 @@ extern ToolboxState gToolboxState;
 /// Primary controller new and auto-repeated button presses; aliases the repeated word of the processed sample.
 /// \note Original identifier: \c D_800AD54C (0x800AD54C).
 extern s32 gControllerPrimaryRepeatedButtons;
-s32 audioPlayCue(s32);
 void presentationChooseActorResponseToItem(s32);
 
 /// Advance the presentation and scoring of collected items, removing each eligible item from its kept slot.

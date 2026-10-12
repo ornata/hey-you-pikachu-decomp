@@ -6,6 +6,7 @@
 
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "audio_cue.h"
 #include "object_lookup.h"
 #include "player_types.h"
 #include "object_types.h"
@@ -786,9 +787,6 @@ s32 actorScriptQueryRequestedMicDictionary(u8 *actor) {
     return 0;
 }
 
-s32 audioGetCurrentCueState(s32 *, f64 *); /* extern */
-s32 audioChangeCurrentCue(s32, f64, f64);  /* extern */
-s32 audioSetCurrentCueRate();             /* extern */
 
 /// Change the current audio cue when needed while preserving its requested playback rate.
 /// \param actor Actor whose script VM supplies a valid cue ID or a negative value for silence, nonnegative fade-out seconds, then nonnegative fade-in seconds; receives one when a change is requested or zero when the cue is already selected.
@@ -847,7 +845,6 @@ s32 actorScriptSetCueRate(u8 *actor) {
     return 0;
 }
 
-s32 audioPlayCue(s32);  /* extern */
 
 /// Start an audio cue at full volume.
 /// \param actor Actor whose script VM supplies a valid cue ID in the initialized current bank and receives the playback identifier, or zero if no slot is available.

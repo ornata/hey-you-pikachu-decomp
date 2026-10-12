@@ -1,4 +1,5 @@
 #include "common.h"
+#include "audio_cue.h"
 #include "text_draw.h"
 #include "scene_types.h"
 #include "heap_alloc.h"
@@ -345,9 +346,6 @@ s32 D_80134218_0;
 f64 fabs(f64);
 #pragma intrinsic(fabs)
 s32 audioStopPlayback(s32, f64);      /* extern */
-s32 audioGetCurrentCueState(s32 *, f64 *); /* extern */
-s32 audioChangeCurrentCue(s32, f64, f64); /* extern */
-s32 audioSetCurrentCueRate(f64);           /* extern */
 
 /// Stop the menu sound preview and restore the audio cue and playback rate saved on menu entry.
 /// Requires a saved menu-entry audio snapshot and any preview handle to remain valid.

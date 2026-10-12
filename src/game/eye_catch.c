@@ -1,4 +1,5 @@
 #include "common.h"
+#include "audio_cue.h"
 #include "asset_loader.h"
 #include "integer_animation.h"
 #include "heap_alloc.h"
@@ -293,7 +294,6 @@ s32 eyeCatchStartReveal(void) {
 void audioStopCategories(s32, f64);              /* extern */
 s32 audioPlaySoundEffect(s16);                   /* extern */
 s32 audioSetSoundEffectVolume(s32, s32);         /* extern */
-s32 audioChangeCurrentCue(s32, f64, f64);                /* extern */
 s32 randomBelow(s32);                                    /* extern */
 /// Randomized sound choices for the eye-catch entry audio event.
 /// \note Original identifier: \c D_8009C384 (0x8009C384).

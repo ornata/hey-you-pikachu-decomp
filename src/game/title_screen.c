@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "audio_cue.h"
 #include "text_draw.h"
 #include "asset_loader.h"
 #include "text_panel.h"
@@ -493,7 +494,6 @@ void titleScreenRequestMenu(void) {
     }
 }
 
-s32 audioChangeCurrentCue(s32, f64, f64);
 void cameraFadePrimarySecondaryOverlay(s32, s32, s32, s32, f32);
 
 /// Begin the transition to the next demonstration when the title screen is awaiting Start.

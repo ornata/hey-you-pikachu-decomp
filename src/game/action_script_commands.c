@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "audio_cue.h"
 #include "actor_target.h"
 #include "object_lookup.h"
 #include "object_types.h"
@@ -58,7 +59,6 @@ s32 audioGetCurrentCueState(s32 *cue, f64 *rate) {
 /// \note Original identifier: \c D_80089470 (0x80089470).
 extern s32 gCurrentAudioCuePlaybackHandle;
 s32 audioPlaySequenceWithFade(s32, f64);
-s32 audioGetCueDataRomAddress(s32, s32);
 /// ROM address of the selected audio cue bank.
 /// \note Original identifier: \c D_80089478 (0x80089478).
 extern s32 gAudioCueBankRomAddress;
@@ -107,17 +107,21 @@ s32 audioPlayCue(s32 cue) {
     return audioPlaySequenceWithFade(audioGetCueDataRomAddress(gAudioCueBankRomAddress, cue), 0.0);
 }
 
-/* 1 KiB DMA window over ROM: data[] backs buf (16-aligned), base = ROM
- * address of buf[0] (0x80000000 = empty). Filled by romWindowInitialize. */
-typedef struct {
-    u8 data[0x400];
-    s32 base;
-    u8 *buf;
-    OSMesgQueue mq;
-    OSMesg msg[1];
+/// Private buffered ROM reader, valid only in sixteen-byte-aligned storage.
+/// The cached base uses the original signed address comparison and empty sentinel.
+typedef struct RomWindow {
+    u8 data[0x400]; ///< Embedded transfer storage, borrowed by the aligned buffer view.
+    s32 base; ///< Cartridge address of the first cached byte, or 0x80000000 when empty.
+    u8 *buf; ///< Aligned view of data, valid for the reader lifetime.
+    OSMesgQueue mq; ///< Completion queue for the current blocking transfer.
+    OSMesg msg[1]; ///< Embedded queue backing storage.
 } RomWindow;
 
-s32 romWindowInitialize(u8 *); /* extern */
+typedef char RomWindowSizeCheck[(sizeof(RomWindow) == 0x424) ? 1 : -1];
+typedef char RomWindowQueueOffsetCheck[(((u32)&((RomWindow *)0)->mq) == 0x408) ? 1 : -1];
+typedef char RomWindowMessageOffsetCheck[(((u32)&((RomWindow *)0)->msg) == 0x420) ? 1 : -1];
+
+s32 romWindowInitialize(RomWindow *); /* extern */
 /// Buffered ROM reader used to resolve audio cue sequence addresses.
 /// \note Original identifier: \c D_800F0290 (0x800F0290).
 extern RomWindow gAudioCueBankRomReader;
@@ -128,7 +132,7 @@ extern RomWindow gAudioCueBankRomReader;
 /// \note Original decompilation identifier: \c func_8002327C (0x8002327C).
 s32 audioSelectCueBank(s32 bank) {
     gAudioCueBankRomAddress = bank;
-    romWindowInitialize((u8 *)&gAudioCueBankRomReader);
+    romWindowInitialize(&gAudioCueBankRomReader);
     return 0;
 }
 
@@ -164,10 +168,10 @@ s32 audioGetCueDataRomAddress(s32 base, s32 index) {
 /// \param window Sixteen-byte-aligned storage of at least 1060 bytes, valid throughout subsequent reads.
 /// \returns Zero.
 /// \note Original decompilation identifier: \c func_80023388 (0x80023388).
-s32 romWindowInitialize(u8 *window) {
-    *(u32 *)(window + 0x400) = 0x80000000;
-    *(u32 *)(window + 0x404) = (((u32)window + 0xF) >> 4) * 0x10;
-    osCreateMesgQueue((OSMesgQueue *)(window + 0x408), (OSMesg *)(window + 0x420), 1);
+s32 romWindowInitialize(RomWindow *window) {
+    window->base = 0x80000000;
+    window->buf = (u8 *)((((u32)window + 0xF) >> 4) * 0x10);
+    osCreateMesgQueue(&window->mq, window->msg, 1);
     return 0;
 }
 

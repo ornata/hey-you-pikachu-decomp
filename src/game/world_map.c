@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "audio_cue.h"
 #include "actor_target.h"
 #include "actor_script.h"
 
@@ -537,7 +538,6 @@ void wholeMapEnsureAvailableSelection(s32 min, s32 max, s32 step) {
 }
 
 void cameraFadePrimarySecondaryOverlay(s32, s32, s32, s32, f32);
-s32 audioChangeCurrentCue(s32, f64, f64);
 s32 audioPlaySoundEffect(s32);
 void wholeMapEnsureAvailableSelection(s32, s32, s32);
 u8 *attachedEffectCreate(u8 *, s32, s32);

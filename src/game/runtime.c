@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "audio_cue.h"
 #include "player_control.h"
 #include "text_draw.h"
 #include "eeprom_io.h"
@@ -1020,7 +1021,6 @@ void motionCacheDestroy(void);
 void actorAssetCacheInitialize(void);
 void actorAssetReadQueueDestroy(void);
 void hudProgramInitializeNoOp(void);
-s32 audioSelectCueBank(s32);
 void messageBarInitialize(void);
 void messageBarResetAndReleaseImages(void);
 void heapInitializeGlobal(s32);
@@ -1056,7 +1056,7 @@ void runtimeMainThreadEntry(void *scheduler) {
             textDrawSetPalette(gDefaultTextPalette);
             TRACE("unknown program number(%d).\n", gRuntimeCurrentProgram);
         }
-        audioSelectCueBank(&D_B140C0);
+        audioSelectCueBank((s32)&D_B140C0);
         heapDebugReportFreeSpace(&gGameHeap, "after songbuffinit()");
         renderInitializeResources();
         heapDebugReportFreeSpace(&gGameHeap, "after gfxInit()");
