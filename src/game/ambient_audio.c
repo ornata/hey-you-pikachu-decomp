@@ -1,3 +1,4 @@
+#include "camera_types.h"
 #include "audio_spatial.h"
 #include "object_create.h"
 #include "object_lifecycle.h"
@@ -67,14 +68,9 @@ void ambientAudioPlayNextSound(Ext347D0 *ext) {
         break;
     }
 }
-typedef struct {
-    u8 prefix[0x24];
-    Mtx *matrix;
-    u8 tail[0xB8];
-} AudioCamera;
 /// Camera storage used for view transforms, viewports and color overlays.
 /// \note Original identifier: \c D_800ABCF0 (0x800ABCF0).
-extern AudioCamera gRenderCameras[];
+extern MatrixCamera gRenderCameras[];
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;
@@ -104,7 +100,7 @@ void ambientAudioGetSpatialMix(Ext347D0 *ext, s32 *volume, s32 *pan) {
     i = 0; pos = ext->src;
     // clang-format on
     for (; i < ext->count; i++, pos++) {
-        audioGetPositionVolumeAndPan(&pos->x, *gRenderCameras[gRenderCameraIndex].matrix, &sampleVolume, &samplePan,
+        audioGetPositionVolumeAndPan(&pos->x, *gRenderCameras[gRenderCameraIndex].matrices, &sampleVolume, &samplePan,
                                      2.0f, 100.0f);
         left += sampleVolume * samplePan / 256;
         right += sampleVolume - sampleVolume * samplePan / 256;

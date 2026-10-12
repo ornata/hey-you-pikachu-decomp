@@ -1886,3 +1886,15 @@ Object playback and actor tracked-sound spatialization now use shared world-posi
 fields; the actor helper accepts float coordinates directly. Camera record views
 remain private pending a full producer/consumer layout audit. Every changed unit
 preserves all 483 objects and strict relocation addends.
+
+### Shared camera rendering and audio layout
+
+`camera_types.h` moves the rendering producer's established 0xE0-byte camera
+layout into a documented shared header. Actor and ambient audio now reuse it
+instead of duplicate padded matrix-only views. Compile-time checks establish the
+matrix pointer at 0x24, affine view at 0x28 and viewport at 0xA8. Ghidra 0x80001844
+confirms the record stride, matrix retention and view/viewport production. Matrix
+storage is borrowed from frame buffers; unresolved camera bytes remain explicit.
+The object's separate `gRenderCameraMatrixEntries` interior-symbol view is retained
+to preserve its relocation identity and addend until that boundary is audited.
+All three changed source units preserve all 483 objects and strict relocations.

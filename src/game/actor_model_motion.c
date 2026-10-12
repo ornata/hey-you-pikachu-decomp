@@ -1,3 +1,4 @@
+#include "camera_types.h"
 #include "audio_spatial.h"
 #include "actor_sound.h"
 #include "actor_color.h"
@@ -96,13 +97,6 @@ s32 actorPlayTrackedSound(u8 *actor, s32 kind) {
     return h;
 }
 
-/* Camera record: 0xE0 bytes per camera, of which only the active view matrix is read here. */
-typedef struct CameraVoiceView {
-    /* 0x00 */ u8 pad0[0x24];
-    /* 0x24 */ Mtx *matrix;
-    /* 0x28 */ u8 pad28[0xB8];
-} CameraVoiceView;
-
 /// Camera storage used for view transforms, viewports and color overlays.
 /// \note Original identifier: \c D_800ABCF0 (0x800ABCF0).
 extern u8 gRenderCameras[];
@@ -128,11 +122,11 @@ void actorUpdateTrackedSoundSpatialization(f32 *position, s32 *voices) {
     for (i = 0; i < 4; i++, voices++) {
         if (audioCountPlayback(*voices) != 0) {
             if (gRuntimeCurrentProgram == 0) {
-                if (((CameraVoiceView *)gRenderCameras)[gRenderCameraIndex].matrix == NULL) {
+                if (((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].matrices == NULL) {
                     continue;
                 }
                 audioGetPositionVolumeAndPan(position,
-                                             *((CameraVoiceView *)gRenderCameras)[gRenderCameraIndex].matrix, &volume,
+                                             *((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].matrices, &volume,
                                              &pan, 20.0f, 100.0f);
                 audioSetSoundEffectPan(*voices, pan);
                 audioSetSoundEffectVolume(*voices, volume);

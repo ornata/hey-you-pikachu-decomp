@@ -1,3 +1,4 @@
+#include "camera_types.h"
 #include "color_transition.h"
 #include "camera_visibility.h"
 #include "graphics_tasks.h"
@@ -736,18 +737,6 @@ void renderDrawColorOverlayWithDepth(u8 r, u8 g, u8 b, u8 a) {
     gDPSetDepthSource(gRenderDisplayListCursor++, G_ZS_PIXEL);
 }
 
-typedef struct {
-    f32 values[12];
-} CameraMatrix;
-typedef struct {
-    f32 eye[3], target[3], up[3];
-    Mtx *matrices;
-    CameraMatrix view, scaled;
-    f32 distance;
-    u8 unknown8C[0x1C];
-    s32 viewport[4];
-    u8 unknownB8[0x28];
-} MatrixCamera;
 f32 viewportSetPixelRectangle(Vp *, s32, s32, s32, s32, s32, s32, f32);
 void matrixFixedTo34(Mtx, f32 *);
 /// Additional aspect scale applied when constructing the camera viewport projection.
