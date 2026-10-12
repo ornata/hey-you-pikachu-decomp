@@ -6,6 +6,7 @@
 
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "action_script_types.h"
 void actionScriptStart(u8 *, s32);
 void actionCancelPendingRequest(u8 *);
 void actionRequestLoopExit(u8 *);
@@ -101,22 +102,11 @@ s32 actionScriptCommandPlaySound(s32 object, s32 state, u8 *script) {
     return 1;
 }
 
-typedef struct ScriptCommand {
-    s32 opcode;
-    f32 time;
-    s32 args[2];
-} ScriptCommand;
-typedef struct MotionScript {
-    s32 index;
-    f32 elapsed, duration, commandTime;
-    ScriptCommand *command;
-    s32 child, previous, current;
-} MotionScript;
 s32 actionScriptIsStoppedAndLastActionEnded(s32);
 s32 audioCountPlayback(s32);
 /// Action-script opcode handlers returning whether execution may advance.
 /// \note Original identifier: \c D_8006EE50 (0x8006EE50).
-extern s32 (*gActionScriptCommandHandlers[])(u8 *, u8 *, MotionScript *);
+extern s32 (*gActionScriptCommandHandlers[])(u8 *, u8 *, ActionScriptState *);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
@@ -134,20 +124,20 @@ s32 actionScriptUpdate(u8 *object) {
     s32 reserved[2];
     f32 step;
     f32 duration;
-    ScriptCommand *command;
+    ActionScriptCommand *command;
     u8 *state;
     s32 opcode;
-    MotionScript *script;
+    ActionScriptState *script;
 
     state = *(u8 **)(object + 0x54);
-    script = (MotionScript *)(state + 0x158);
+    script = (ActionScriptState *)(state + 0x158);
     step = gRuntimeFrameSeconds;
     if (actionScriptIsStoppedAndLastActionEnded((s32)object) == 0) {
         script->elapsed += step;
     }
     duration = script->duration;
     if ((duration >= 0.0f) && (duration <= script->elapsed)) {
-        script->child = 0;
+        script->soundHandle = 0;
         script->command = NULL;
         return -1;
     }
@@ -169,9 +159,9 @@ s32 actionScriptUpdate(u8 *object) {
             break;
         }
     }
-    if ((script->command->opcode == 4) && (audioCountPlayback(script->child) == 0) &&
+    if ((script->command->opcode == 4) && (audioCountPlayback(script->soundHandle) == 0) &&
         (actionScriptHasLastActionEnded(object) != 0)) {
-        script->child = 0;
+        script->soundHandle = 0;
         script->command = NULL;
         return -1;
     }

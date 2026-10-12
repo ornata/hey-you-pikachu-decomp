@@ -317,3 +317,25 @@ objects match the preserved continuation baseline, all 31 tests pass, the ledger
 matches current source, and the name checker reports no errors (five permitted
 port-binding warnings). Both ROMs have SHA1
 `da1a1e47a86720f9d54fb2d2d247480041bda824`.
+
+## Shared-layout and contract audit
+
+The continuation starts from main `d5ea983`, with an immutable matching build at
+`/tmp/pikachu-contracts-baseline/build`. The first batch shares the action
+sequencer's 0x10-byte command and 0x20-byte state records through
+`action_script_types.h`. The actor layout now exposes command time, borrowed
+command cursor, sound playback handle, and last/pending request identifiers at
+0x164 through 0x174 instead of opaque padding. Target size and offset checks
+protect both representations.
+
+Evidence comes from actionScriptStart, actionScriptUpdate, the start-action and
+play-sound command handlers, and actionScriptHasLastActionEnded. Ghidra queries
+at 0x80012034 and 0x80012114 confirm initialization and completion checks.
+Command resources remain borrowed; script stop and action completion remain
+separate contracts. The command opcode operands remain explicit scalar words
+because their interpretation varies by command.
+
+This is the first accepted audit batch, not completion of shared-layout recovery.
+Remaining work includes callback consistency, integer-address compatibility
+interfaces, private duplicate views, ownership contracts, and unresolved field
+semantics across the other subsystems.
