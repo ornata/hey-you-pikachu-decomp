@@ -51,8 +51,6 @@ extern s32 gActorPartCounts[];
 extern Gfx *gRenderDisplayListCursor;
 void *heapAllocLocal();
 void _bzero(void *, u32);
-void matrix33Multiply(u8 *, f32 *, f32 *);
-void matrix33GetFoldedEulerDegrees(f32 *, u8 *, u8 *, u8 *);
 /// Current affine world transform shared by hierarchy traversal and actor motion consumers.
 /// \note Original identifier: \c D_800AD9E0 (0x800AD9E0).
 extern Matrix34 gObjectTraversalTransform;
@@ -725,8 +723,8 @@ void actorUpdateObjectRotationFromState(u8 *actor) {
     f32 sp1C[12];
     obj = *(u8 **)(actor + 0x54);
     matrix34MakeRotationXYZDegrees(sp1C, *(f32 *)(obj + 0xC), *(f32 *)(obj + 0x10), 0.0f);
-    matrix33Multiply(obj + 0x18, sp1C, sp1C);
-    matrix33GetFoldedEulerDegrees(sp1C, actor + 0xC, actor + 0x10, actor + 0x14);
+    matrix33Multiply((f32 *)(obj + 0x18), sp1C, sp1C);
+    matrix33GetFoldedEulerDegrees(sp1C, (f32 *)(actor + 0xC), (f32 *)(actor + 0x10), (f32 *)(actor + 0x14));
 }
 
 /// Set one actor orientation angle in degrees.

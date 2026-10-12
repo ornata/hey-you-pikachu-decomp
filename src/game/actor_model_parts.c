@@ -68,7 +68,6 @@ void actorComposePartOrientation(void *, s32, s32 *, s32);
 void matrix34Identity(void *);
 void matrix34Concatenate(void *, void *, void *);
 void actorEvaluateRelativePartOrientation(s32 *, u8 *, s32, s32);
-void matrix33GetFoldedEulerDegrees(void *, void *, void *, f32 *);
 /// Signed part-identifier sequence used to track model-part relative roll.
 /// \note Original identifier: \c D_800A2770 (0x800A2770).
 extern u8 gActorRelativeRollPartSequence[];
@@ -398,7 +397,7 @@ void actorPartFollowBlendedOrientation(u8 *object) {
     actorEvaluateRelativePartOrientation(state + 13, (u8 *)second, parent,
                                          (s32)gActorBlendedOrientationSecondPartSequence);
     matrix34BlendOrientation(0.5f, first, second, midpoint);
-    matrix33GetFoldedEulerDegrees(midpoint, object + 0xC, object + 0x10, (f32 *)(object + 0x14));
+    matrix33GetFoldedEulerDegrees(midpoint, (f32 *)(object + 0xC), (f32 *)(object + 0x10), (f32 *)(object + 0x14));
     pitchScale = mathMapRangeClamped(0.0f, 1.0f, 45.0f, 0.78f, mathWrapSignedDegrees(*(f32 *)(object + 0xC)));
     yawScale = mathMapRangeClamped(0.0f, 1.0f, 30.0f, 0.95f, mathAngleDistanceDegrees(0.0f, *(f32 *)(object + 0x10)));
     *(f32 *)(object + 8) = yawScale * pitchScale;
@@ -651,10 +650,10 @@ void actorUpdateGameplayModel(u8 *object) {
     actorUpdateModel(object);
     actorEvaluateRelativePartOrientation((s32 *)(state + 0x368), (u8 *)&((ActorScriptState *)state)->primaryPoseTransform, (s32)object,
                                          (s32)gActorPrimaryPosePartSequence);
-    matrix33GetFoldedEulerDegrees((u8 *)&((ActorScriptState *)state)->primaryPoseTransform, &((ActorScriptState *)state)->primaryPoseAngles[0], &((ActorScriptState *)state)->primaryPoseAngles[1], &((ActorScriptState *)state)->primaryPoseAngles[2]);
+    matrix33GetFoldedEulerDegrees((f32 *)&((ActorScriptState *)state)->primaryPoseTransform, &((ActorScriptState *)state)->primaryPoseAngles[0], &((ActorScriptState *)state)->primaryPoseAngles[1], &((ActorScriptState *)state)->primaryPoseAngles[2]);
     actorEvaluateRelativePartOrientation((s32 *)(state + 0x2F8), (u8 *)&((ActorScriptState *)state)->secondaryPoseTransform, (s32)object,
                                          (s32)gActorSecondaryPosePartSequence);
-    matrix33GetFoldedEulerDegrees((u8 *)&((ActorScriptState *)state)->secondaryPoseTransform, &((ActorScriptState *)state)->secondaryPoseAngles[0], &((ActorScriptState *)state)->secondaryPoseAngles[1], &((ActorScriptState *)state)->secondaryPoseAngles[2]);
+    matrix33GetFoldedEulerDegrees((f32 *)&((ActorScriptState *)state)->secondaryPoseTransform, &((ActorScriptState *)state)->secondaryPoseAngles[0], &((ActorScriptState *)state)->secondaryPoseAngles[1], &((ActorScriptState *)state)->secondaryPoseAngles[2]);
     actorUpdatePartShake(object);
     switch (actionGetAttributes(object) & 0xC0000000) {
     case 0:

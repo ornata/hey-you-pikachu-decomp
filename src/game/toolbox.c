@@ -216,7 +216,6 @@ typedef struct {
 /// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
 extern Cam6A0 gPlayerState;
 void matrix33ApplyRotationZYXDegrees(f32 *, f32, f32, f32);
-void matrix33GetFoldedEulerDegrees(f32 *, u8 *, u8 *, u8 *);
 
 /// Orient a toolbox object relative to the current camera.
 /// \param object Object whose local rotation is updated.
@@ -231,7 +230,7 @@ void toolboxSetObjectCameraRotation(u8 *object, f32 pitch, f32 yaw) {
     matrix34MakeRotationXYZDegrees(sp1C, gPlayerState.unk10 + gPlayerState.unk14,
                                    gPlayerState.unkC + gPlayerState.unk18, 0.0f);
     matrix33ApplyRotationZYXDegrees(sp1C, pitch, yaw, 0.0f);
-    matrix33GetFoldedEulerDegrees(sp1C, object + 0xC, object + 0x10, object + 0x14);
+    matrix33GetFoldedEulerDegrees(sp1C, (f32 *)(object + 0xC), (f32 *)(object + 0x10), (f32 *)(object + 0x14));
 }
 
 void itemSetScale(u8 *, f32);

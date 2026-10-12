@@ -24,4 +24,21 @@ void matrix34MakeRotationXYZDegrees(f32 *m, f32 x, f32 y, f32 z);
 /// \note Original decompilation identifier: \c func_8000D918 (0x8000D918).
 void matrix34BlendOrientation(f32 w, f32 *a, f32 *b, f32 *out);
 
+/// Compose two linear transforms as b times a.
+/// \param a First input 3x3 matrix.
+/// \param b Second input 3x3 matrix.
+/// \param c Output 3x3 matrix; may alias either input.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_80038FF0 (0x80038FF0).
+void matrix33Multiply(f32 *a, f32 *b, f32 *c);
+
+/// Extract an equivalent Euler orientation with roll near zero.
+/// \param matrix Input rotation matrix.
+/// \param roll Receives roll in degrees, folded near zero and represented as a positive angle.
+/// \param pitch Receives the corresponding pitch in degrees.
+/// \param yaw Receives the corresponding yaw in degrees.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8003B764 (0x8003B764).
+void matrix33GetFoldedEulerDegrees(f32 *matrix, f32 *roll, f32 *pitch, f32 *yaw);
+
 #endif

@@ -2490,3 +2490,13 @@ prototype and caller preserve the original allocated object bytes.
 The six affected source units were rebuilt and compared individually. The
 shared contracts retain flat twelve-float matrix storage at the helper boundary
 and document output and blending weight semantics without implementation detail.
+
+### Shared linear-transform and Euler contracts
+
+`matrix_orientation.h` also declares alias-safe linear-transform multiplication
+and folded Euler extraction. Provider and callers now share float matrix/output
+pointers instead of inconsistent byte and untyped pointers. Ghidra 0x8003B764
+confirms the three writable angle destinations. Existing Doxygen contracts
+describe composition order, permitted input/output aliasing and output angles.
+The shared-header conversion rebuilt every dependent unit and preserves all
+483 objects, including relocation identities.
