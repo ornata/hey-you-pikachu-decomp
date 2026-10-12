@@ -1088,3 +1088,14 @@ unresolved: its producer or allocation-map evidence is needed before assigning
 a separate role. Do not shorten the cleanup loop or move these linker symbols.
 Unused message-bar and collection-score redeclarations were removed from
 nonconsumers, including their stale integer views in terrain debug code.
+
+### Shared text drawing state and rectangle interface
+
+text_draw.h now owns the cursor-position, screen-area, display-list-position
+and scaled rectangle drawing declarations. Their contracts document coordinate
+origins, inclusive destination bounds, writable cursor outputs, source offsets
+and positive floating-point scales. Ghidra at 0x8003D764 confirms both scale
+parameters and descriptor width/height consumption. Repeated prototypes were
+removed from eight source units after each unit preserved strict object matching.
+The shared rectangle declaration retains the existing source-width and numeric
+range preconditions; no clipping or command-generation behavior was changed.

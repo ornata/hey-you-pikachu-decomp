@@ -218,12 +218,9 @@ extern s32 gTitleMenuSelection;
 /// \note Original identifier: \c D_800F25A8 (0x800F25A8).
 extern s32 gTitleCursorFrame;
 void textDrawBegin(Gfx *);
-void textDrawGetDisplayListCursor(Gfx **);
 void textDrawReset(void);
 void textDrawSetSpacingMode(s32);
 void textDrawSetScale(f32, f32);
-void textDrawSetArea(s32, s32, s32, s32);
-void textDrawSetCursor(s32, s32);
 void textDrawSetColor(s32, s32, s32, s32);
 /// Draw title-screen menu choices and the current selection.
 /// \pre Menu images must be initialized; the current selection must identify a listed row when the list is nonempty.

@@ -705,10 +705,7 @@ void hudInitializeAreaLabel(void) {
 }
 
 void textDrawBegin(Gfx *);
-void textDrawGetDisplayListCursor(Gfx **);
 void textDrawReset(void);
-void textDrawSetArea(s32, s32, s32, s32);
-void textDrawSetCursor(s32, s32);
 void textDrawSetColor(s32, s32, s32, s32);
 void textDrawSetFont(s32);
 /// Nonzero when the prepared current-area label is visible.

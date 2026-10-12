@@ -309,8 +309,6 @@ f32 mathCosDegrees(f32);
 void textDrawBegin(Gfx *);
 void textDrawReset(void);
 void textDrawSetColor(s32, s32, s32, s32);
-void textDrawGetDisplayListCursor(Gfx **);
-void textImageDrawRectangle(Gfx **, TextImage *, s32, s32, s32, s32, s32, s32, f32, f32);
 /// Write cursor for the active graphics command list; also marks the camera-storage end.
 /// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
 extern Gfx *gRenderDisplayListCursor;

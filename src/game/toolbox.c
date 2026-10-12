@@ -1007,14 +1007,11 @@ void toolboxUpdateHelpMessage(void) {
 
 s32 textMeasureWithFont(char *, s32 *, s32);
 void textDrawBegin(Gfx *);
-void textDrawGetDisplayListCursor(Gfx **);
 void textDrawReset(void);
 void textDrawSetFont(s32);
 void textDrawSetSpacingMode(s32);
 void textDrawSetScale(f32, f32);
-void textDrawSetArea(s32, s32, s32, s32);
 void textDrawSetColor(s32, s32, s32, s32);
-void textDrawSetCursor(s32, s32);
 /// Draw the current toolbox row title and its translucent background.
 /// \param address Address of the display-list cursor to append to and advance.
 /// \returns Nothing; requires an initialized row-title image.

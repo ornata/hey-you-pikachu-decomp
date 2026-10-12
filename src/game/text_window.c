@@ -207,7 +207,6 @@ s32 alpha;
     gDPFillRectangle((*gdl)++, 47, 55, 273, 205);
 }
 
-void textImageDrawRectangle(Gfx **, TextImage *, s32, s32, s32, s32, s32, s32, f32, f32);
 
 /// Draw the current text page at a screen position.
 /// \param list Display-list cursor to append drawing commands to and advance.
@@ -245,7 +244,6 @@ void textWindowDrawPageAt(Gfx **list, s32 x, s32 y, s32 alpha) {
 
 void textDrawBegin(Gfx *);
 void textDrawReset(void);
-void textDrawGetDisplayListCursor(Gfx **);
 void textWindowDrawPageAt(Gfx **, s32, s32, s32);
 f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
 
@@ -271,7 +269,6 @@ void textWindowDrawPage(Gfx **gdl) {
 
 s32 runtimeGetUiPulseAlpha(void);
 void textDrawSetColor(s32, s32, s32, s32);
-void textDrawSetCursor(s32, s32);
 
 /// Draw the pulsing text-window input prompt.
 /// \param gdl Display-list cursor to append drawing commands to and advance.

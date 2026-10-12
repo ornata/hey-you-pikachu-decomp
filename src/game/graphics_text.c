@@ -417,7 +417,6 @@ void textDrawGetDisplayListCursor(Gfx **cursor) {
     *cursor = gTextDrawDisplayListCursor;
 }
 
-void textDrawSetCursor(s32, s32);
 /// Active text-area left pixel coordinate.
 /// \note Original identifier: \c D_800F2A30 (0x800F2A30).
 extern s32 gTextDrawAreaLeft;

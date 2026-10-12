@@ -559,9 +559,6 @@ void systemMenuRefreshSelectedDetails(MenuState *state) {
 
 void textDrawReset(void);
 void textDrawBegin(Gfx *);
-void textDrawGetDisplayListCursor(Gfx **);
-void textDrawSetArea(s32, s32, s32, s32);
-void textDrawSetCursor(s32, s32);
 void textDrawSetColor(s32, s32, s32, s32);
 void textDrawSetScale(f32, f32);
 void textDrawSetSpacingMode(s32);
