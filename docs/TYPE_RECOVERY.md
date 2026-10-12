@@ -3015,3 +3015,15 @@ original arithmetic remain intact. The adjacent actor orientation helper
 uses actor orientation, root-motion transform and object rotation members,
 with descriptive state/matrix locals. Every conversion preserves strict
 allocated bytes and relocations without a new matching exception.
+
+### Actor drawing and orientation interfaces
+
+The referenced-matrix drawing callback now uses shared root, matrix-buffer,
+flags and display-list members. Ghidra 0x80015E34 confirms double-buffer
+selection and the returned drawing link. The single-axis orientation setter
+now indexes the checked orientation array directly, removing its byte-offset
+local without changing code. `actor_rotation.h` owns object-rotation refresh
+and action-conditioned turning contracts, preserving finite-angle and
+normalization preconditions. Additive axis helpers retain their existing
+shifted float view pending a matching representation. All conversions match
+strict objects and the clean ROM.

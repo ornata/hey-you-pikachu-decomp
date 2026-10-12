@@ -398,7 +398,6 @@ void actorDrawModelLightingSetup(u8 *actor) {
                    ((u32 *)(*(u8 **)(actor + 0x54) + 0x54))[(*(u16 *)(actor + 0x36) & 0x8000) ? 1 : 0]);
 }
 
-void actorUpdateObjectRotationFromState(u8 *);
 void actorUpdateTrackedSoundSpatialization(f32 *, s32 *);
 void actorUpdateGroundSlopePitch(u8 *);
 void objectUpdateHierarchyInteractionVisibility(u8 *);
@@ -711,9 +710,8 @@ void actorUpdateCameraFacingChild(u8 *object) {
 /// \note Original decompilation identifier: \c func_80015E34 (0x80015E34).
 s32 actorBindReferencedObjectMatrixForDraw(u8 *actor) {
     gSPSegment(gRenderDisplayListCursor++, 7,
-               osVirtualToPhysical(((void **)(*(u8 **)(actor + 0x50) +
-                                              0x3C))[(*(u16 *)(*(u8 **)(actor + 0x50) + 0x36) & 0x8000) ? 1 : 0]));
-    return *(s32 *)(actor + 0x30);
+               osVirtualToPhysical(((RuntimeObjectPrefix *)actor)->root.object->matrixBuffers[(((RuntimeObjectPrefix *)actor)->root.object->flags & 0x8000) ? 1 : 0]));
+    return (s32)((RuntimeObjectPrefix *)actor)->displayList;
 }
 
 /// Update object rotation from the actor orientation state and reference transform.
@@ -737,10 +735,8 @@ void actorUpdateObjectRotationFromState(u8 *actor) {
 /// \note Original decompilation identifier: \c func_80015F1C (0x80015F1C).
 void actorSetRotationAxisDegrees(u8 *actor, f32 angle, s32 axis) {
     u8 *obj;
-    s32 off;
 
     obj = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    off = axis * 4;
     if (angle < 0.0f) {
         do {
             angle += 360.0f;
@@ -751,7 +747,7 @@ void actorSetRotationAxisDegrees(u8 *actor, f32 angle, s32 axis) {
             angle -= 360.0f;
         } while (angle >= 360.0f);
     }
-    *(f32 *)(obj + off + 0xC) = angle;
+    ((ActorScriptState *)obj)->orientation[axis] = angle;
 }
 
 /// Rotate the actor by an angular displacement on one orientation axis.
