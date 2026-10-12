@@ -28,6 +28,15 @@ typedef struct ActionScriptState {
     u32 pendingRequestId; ///< Request being awaited by the start-action command, or zero.
 } ActionScriptState;
 
+struct ActorScriptState;
+
+/// Execute a timed command for an actor.
+/// \param object Borrowed actor object executing the script.
+/// \param state Actor-owned model and action state.
+/// \param script Actor-owned sequencer state with a valid current command.
+/// \returns Nonzero when the command may advance, or zero to retry on a later frame.
+typedef s32 (*ActionScriptCommandHandler)(u8 *object, struct ActorScriptState *state, ActionScriptState *script);
+
 typedef char ActionScriptCommandSizeCheck[(sizeof(ActionScriptCommand) == 0x10) ? 1 : -1];
 typedef char ActionScriptStateSizeCheck[(sizeof(ActionScriptState) == 0x20) ? 1 : -1];
 #define ACTION_SCRIPT_OFFSET(field) ((u32) & (((ActionScriptState *)0)->field))

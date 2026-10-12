@@ -339,3 +339,11 @@ This is the first accepted audit batch, not completion of shared-layout recovery
 Remaining work includes callback consistency, integer-address compatibility
 interfaces, private duplicate views, ownership contracts, and unresolved field
 semantics across the other subsystems.
+
+The next batch reconciles all four timed-action handlers with one shared
+`ActionScriptCommandHandler` signature. The ROM handler table at 0x8006EE50
+contains 0x80011CB0, 0x80011E28, 0x80011D78 and 0x80011DD0, corroborating the
+four definitions. Their actor-state, sequencer and command accesses now use
+established fields. The remaining integer-address sound interface is explicit
+at the call boundary. No expressions, handler ordering or command semantics
+change, and strict comparison still accepts all 483 objects.

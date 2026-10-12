@@ -7,6 +7,7 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "action_script_types.h"
+#include "actor_script.h"
 void actionScriptStart(u8 *, s32);
 void actionCancelPendingRequest(u8 *);
 void actionRequestLoopExit(u8 *);
@@ -24,29 +25,29 @@ s32 actionRequestPlayback(u8 *, s32, s32, s32 *);
 /// \param script Script state containing the current command and action request identifiers.
 /// \returns 1 when the requested action has started and the script may advance, or 0 while waiting.
 /// \note Original decompilation identifier: \c func_80011CB0 (0x80011CB0).
-s32 actionScriptCommandStartAction(u8 *object, u8 *state, u8 *script) {
-    u8 *command;
-    u8 **saved = &command;
+s32 actionScriptCommandStartAction(u8 *object, ActorScriptState *state, ActionScriptState *script) {
+    ActionScriptCommand *command;
+    ActionScriptCommand **saved = &command;
     u32 current;
     s32 *args;
     s32 kind;
-    command = *(u8 **)(script + 0x10);
+    command = script->command;
     current = actionGetStoredRequestId(object);
-    if ((current == 0 || *(u32 *)(script + 0x1C) < current) && *(s16 *)(state + 0x120) == -1) {
-        args = (s32 *)(*saved + 8);
+    if ((current == 0 || script->pendingRequestId < current) && state->pendingAction == -1) {
+        args = (*saved)->args;
         kind = args[1];
         if (kind == 0x12) {
-            kind = *(s16 *)(state + 0x13C);
+            kind = state->defaultActionMode;
         }
-        if (actionRequestPlayback(object, args[0], kind, (s32 *)(script + 0x1C))) {
-            current = *(u32 *)(script + 0x1C);
+        if (actionRequestPlayback(object, args[0], kind, (s32 *)&script->pendingRequestId)) {
+            current = script->pendingRequestId;
         }
-        *(u32 *)(script + 0x18) = *(u32 *)(script + 0x1C);
+        script->lastRequestId = script->pendingRequestId;
     }
-    if (current != *(u32 *)(script + 0x1C))
+    if (current != script->pendingRequestId)
         return 0;
-    *(u32 *)(script + 0x1C) = 0;
-    *(f32 *)(script + 0xC) = 0.0f;
+    script->pendingRequestId = 0;
+    script->commandTime = 0.0f;
     return 1;
 }
 
@@ -56,11 +57,11 @@ s32 actionScriptCommandStartAction(u8 *object, u8 *state, u8 *script) {
 /// \param script Script state containing the current command and action request identifiers.
 /// \returns 1 when the last script action has ended, or 0 while waiting.
 /// \note Original decompilation identifier: \c func_80011D78 (0x80011D78).
-s32 actionScriptCommandStopAfterIterations(s32 object, u8 *state, u8 *script) {
-    u8 *command = *(u8 **)(script + 0x10);
-    if (*(s16 *)(state + 0x11C) >= *(s32 *)(command + 8)) {
-        actionRequestLoopExit((u8 *)object);
-        actionCancelPendingRequest((u8 *)object);
+s32 actionScriptCommandStopAfterIterations(u8 *object, ActorScriptState *state, ActionScriptState *script) {
+    ActionScriptCommand *command = script->command;
+    if (state->loopCount >= command->args[0]) {
+        actionRequestLoopExit(object);
+        actionCancelPendingRequest(object);
     }
     if (actionScriptHasLastActionEnded(object) != 0) {
         return 1;
@@ -74,14 +75,14 @@ s32 actionScriptCommandStopAfterIterations(s32 object, u8 *state, u8 *script) {
 /// \param script Script state containing the current command and action request identifiers.
 /// \returns 1 when either condition allows the script to advance, or 0 while waiting.
 /// \note Original decompilation identifier: \c func_80011DD0 (0x80011DD0).
-s32 actionScriptCommandWaitForIterations(u8 *object, u8 *state, u8 *script) {
-    u8 *sp1C;
+s32 actionScriptCommandWaitForIterations(u8 *object, ActorScriptState *state, ActionScriptState *script) {
+    ActionScriptCommand *command;
 
-    sp1C = *(u8 **)(script + 0x10);
+    command = script->command;
     if (actionScriptHasLastActionEnded(object) != 0) {
         return 1;
     }
-    if (*(s16 *)(state + 0x11C) >= *(s32 *)(sp1C + 8)) {
+    if (state->loopCount >= command->args[0]) {
         return 1;
     }
     return 0;
@@ -93,11 +94,11 @@ s32 actionScriptCommandWaitForIterations(u8 *object, u8 *state, u8 *script) {
 /// \param script Script state containing the sound command; receives the sound handle when playback is requested.
 /// \returns 1, allowing the script to advance.
 /// \note Original decompilation identifier: \c func_80011E28 (0x80011E28).
-s32 actionScriptCommandPlaySound(s32 object, s32 state, u8 *script) {
-    u8 *command;
-    command = *(u8 **)(script + 0x10);
-    if (*(s32 *)(*(u8 **)(script + 0x10) + 8) > 0) {
-        *(s32 *)(script + 0x14) = actorPlayTrackedSound(object, *(s32 *)(command + 8));
+s32 actionScriptCommandPlaySound(u8 *object, ActorScriptState *state, ActionScriptState *script) {
+    ActionScriptCommand *command;
+    command = script->command;
+    if (script->command->args[0] > 0) {
+        script->soundHandle = actorPlayTrackedSound((s32)object, command->args[0]);
     }
     return 1;
 }
@@ -106,7 +107,7 @@ s32 actionScriptIsStoppedAndLastActionEnded(s32);
 s32 audioCountPlayback(s32);
 /// Action-script opcode handlers returning whether execution may advance.
 /// \note Original identifier: \c D_8006EE50 (0x8006EE50).
-extern s32 (*gActionScriptCommandHandlers[])(u8 *, u8 *, ActionScriptState *);
+extern ActionScriptCommandHandler gActionScriptCommandHandlers[];
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
@@ -152,7 +153,7 @@ s32 actionScriptUpdate(u8 *object) {
             script->command = NULL;
             return -1;
         }
-        if (gActionScriptCommandHandlers[script->command->opcode](object, state, script) != 0) {
+        if (gActionScriptCommandHandlers[script->command->opcode](object, (ActorScriptState *)state, script) != 0) {
             script->command++;
         } else {
             script->commandTime -= step;
@@ -271,7 +272,7 @@ s32 actionScriptIsStoppedAndLastActionEnded(s32 object) {
     if (actionScriptIsStopped((u8 *)object) == 0) {
         return 0;
     }
-    return actionScriptHasLastActionEnded(object);
+    return actionScriptHasLastActionEnded((u8 *)object);
 }
 
 /// Provide the inactive action-script initialization hook for runtime startup.
