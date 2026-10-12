@@ -2166,7 +2166,6 @@ u8 *itemCreate(f32 x, f32 y, f32 z, f32 pitch, f32 yaw, s32 kind) {
     return object;
 }
 
-void objectRequestHierarchyDestruction(u8 *);            /* extern */
 u8 *searchTreeRemove(u8 *, u8 *); /* extern */
 s32 itemTryRelease(u8 *, s32);   /* extern */
 /// Number of live registered items in the current area.

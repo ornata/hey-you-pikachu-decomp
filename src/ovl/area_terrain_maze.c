@@ -1756,7 +1756,6 @@ void mazePlaceBlockObject(u8 *position, u8 *objectTemplate) {
     ((MazeNode *)sp1C)->objects[0].bytes = registeredHierarchy;
 }
 
-void objectRequestHierarchyDestruction(); /* extern */
 /// Remove a maze block's area association and request destruction of its object hierarchy.
 /// \param object Live block object associated with its current maze region.
 /// \returns Nothing.
@@ -1891,6 +1890,7 @@ void mazeConfigureEventLinks(void) {
 /// \note Original decompilation identifier: \c func_8010E0E0 (0x8010E0E0).
 /// \note Checked member-offset reads preserve the matching target compiler expression ordering.
 void mazeDestroyNode(u8 *node) {
+    u8 *pendingObject;
     s32 type =
         ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)
             ->sampleCell(
@@ -1906,11 +1906,13 @@ void mazeDestroyNode(u8 *node) {
     if (((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->cellTypes[type].leave != NULL) {
         ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->cellTypes[type].leave(node);
     }
-    if (((MazeNode *)node)->objects[0].address != 0) {
-        objectRequestHierarchyDestruction(((MazeNode *)node)->objects[0].address);
+    pendingObject = ((MazeNode *)node)->objects[0].bytes;
+    if (pendingObject != NULL) {
+        objectRequestHierarchyDestruction(pendingObject);
     }
-    if (((MazeNode *)node)->objects[1].address != 0) {
-        objectRequestHierarchyDestruction(((MazeNode *)node)->objects[1].address);
+    pendingObject = ((MazeNode *)node)->objects[1].bytes;
+    if (pendingObject != NULL) {
+        objectRequestHierarchyDestruction(pendingObject);
     }
     heapFreeLocal(&gGameHeap, node);
 }

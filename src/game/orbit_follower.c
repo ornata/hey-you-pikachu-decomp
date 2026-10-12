@@ -57,7 +57,6 @@ typedef struct OrbitObject {
     OrbitState *state;
 } OrbitObject;
 
-void objectRequestHierarchyDestruction(u8 *);
 f32 vector2NormalizeComponentsApprox(f32 *, f32 *);
 u32 randomBelow(s32);
 f32 mathUnitDirectionDegrees(f32, f32);

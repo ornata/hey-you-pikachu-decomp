@@ -1455,3 +1455,16 @@ matches the provider's signature without a compatibility exception. Legacy
 byte-storage template symbols convert explicitly at the shared boundary.
 The provider and each caller were rebuilt and strictly compared separately;
 all 483 objects retain their bytes, layout and relocation addends.
+
+### Shared deferred and immediate hierarchy destruction
+
+The lifecycle header now declares deferred hierarchy marking and immediate
+recursive destruction, with distinct lifetime and registration preconditions.
+All deferred callers share the declaration instead of maintaining local variants.
+Ghidra 0x800087BC confirms deferred destruction marks the hierarchy with 0x62;
+the hierarchy processor performs later cleanup rather than freeing at the call.
+Maze node cleanup now obtains each object through its pointer reference view and
+a named local before checking and requesting destruction. Direct pointer-field
+substitution changed register reuse; the local retains the original generated
+code without keeping an unprototyped interface. Every source-unit change strictly
+matches all 483 objects. Remaining registration/link ownership rules are explicit.

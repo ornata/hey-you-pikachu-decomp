@@ -1,8 +1,8 @@
+#include "object_lifecycle.h"
 #include "door.h"
 #include "common.h"
 #include "item_object.h"
 #include "actor_create.h"
-void objectRequestHierarchyDestruction(u8 *);
 void doorRegistryReset(void);
 u32 randomNext(void);
 s32 progressGetValue(s32);

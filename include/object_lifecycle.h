@@ -31,4 +31,15 @@ void objectDestroy(u8 *object);
 /// Transform buffers require separate initialization before drawing.
 u8 *objectCloneTemplateHierarchy(ObjectTemplate *definition, u8 *root);
 
+/// Mark a hierarchy for deferred destruction and stop its active processing.
+/// \param object First live object whose siblings and descendants are marked, or null.
+/// \returns Nothing. Storage remains owned by the object system until deferred cleanup.
+void objectRequestHierarchyDestruction(u8 *object);
+
+/// Destroy a hierarchy and release its objects and owned resources immediately.
+/// \param object First object in a live acyclic hierarchy, or null.
+/// The caller must remove active registration and retained links; all destroyed storage becomes invalid.
+/// \returns Nothing.
+void objectDestroyHierarchy(u8 *object);
+
 #endif

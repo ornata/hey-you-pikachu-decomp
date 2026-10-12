@@ -204,7 +204,6 @@ s32 linkedEffectPrepareDraw(u8 *object) {
     return *(s32 *)(object + 0x30);
 }
 
-void objectRequestHierarchyDestruction(u8 *);
 f32 actorAdjustActionMeter(u8 *, f32);
 s32 actorPlayTrackedSound(u8 *, s32);
 /// Borrowed reference to the active Pikachu actor created for the current area.

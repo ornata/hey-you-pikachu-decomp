@@ -1,10 +1,10 @@
+#include "object_lifecycle.h"
 #include "common.h"
 #include "item_object.h"
 #include "actor_create.h"
 u32 randomNext(void);
 s32 randomBelow(s32);
 f32 mathPowInteger(f32, s32);
-void objectRequestHierarchyDestruction(u8 *);
 void runtimeCheckResetCheckpoint(u8 *, s32);
 void landmarkCreate(f32, f32, f32, s32);
 void mazeScatterItems(u8 *, s32, u8 *, f32);

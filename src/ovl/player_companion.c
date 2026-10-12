@@ -920,7 +920,6 @@ s32 playerRequestSavePrompt(s32 unused) {
 }
 
 
-void objectRequestHierarchyDestruction(u8 *);                /* extern */
 
 /// Use one unit of the selected interaction proxy, notify Pikachu, and remove the proxy when exhausted.
 /// \param player Player record whose current target is a consumable interaction proxy.

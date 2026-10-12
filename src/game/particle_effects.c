@@ -30,7 +30,6 @@ typedef char EffectEmitterStateSizeCheck[(sizeof(EffectEmitterState) == 0x18) ? 
 typedef char EffectEmitterCallbackOffsetCheck[((u32)&((EffectEmitterState *)0)->emit == 0x14) ? 1 : -1];
 
 u32 randomBelow(s32);
-void objectRequestHierarchyDestruction(u8 *);
 u32 randomNext(void);
 /// Default opacity animation used when wisp state is initialized.
 /// \note Original identifier: \c D_8006B4C4 (0x8006B4C4).

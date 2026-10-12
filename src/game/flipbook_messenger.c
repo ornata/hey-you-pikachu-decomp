@@ -728,7 +728,6 @@ void messengerUpdateLaunch(u8 *object, s32 unused) {
     }
 }
 
-void objectRequestHierarchyDestruction(u8 *);
 void actorStartPartShake(s32, s32);
 f32 actorAdjustSecondaryMeter(u8 *, f32);
 void messengerBeginRebound(u8 *);

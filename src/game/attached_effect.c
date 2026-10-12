@@ -33,7 +33,6 @@ extern s32 gRuntimeGameMode;
 /// \note Original identifier: \c D_8006B090 (0x8006B090).
 extern s32 gTextureFrameAnimationPrograms[];
 void objectSetHierarchyFlags(u8 *, u16);
-void objectRequestHierarchyDestruction(u8 *);
 /// Create an animated effect for an owner, replacing its previous attached effect.
 /// \param owner Object that owns and anchors the effect.
 /// \param kind Effect-definition index selecting its appearance.

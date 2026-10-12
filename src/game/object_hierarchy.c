@@ -85,7 +85,6 @@ s32 objectDrawSearchTreeEntry();
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;
 f32 vector3GetYawFromPositiveXDegrees(f32 *, u8 *);
-void objectRequestHierarchyDestruction(u8 *);
 /// Ordered traversal pool of registered active hierarchy roots.
 /// \note Original identifier: \c D_800AE3A8 (0x800AE3A8).
 extern NodePool gActiveObjectHierarchies;
