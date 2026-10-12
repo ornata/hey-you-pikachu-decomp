@@ -1171,8 +1171,19 @@ ground-reference IDs, animated-texture parts, visibility radius, collision
 dimensions, shadow segment count, reference IDs, initial flags and resource
 index. Creation now names those fields directly instead of bounds/reserved
 arrays. Existing interior linker views remain unchanged for strict relocations.
-The words at 0x10/0x14 lack identified consumers, and dimension 0x34 only has
-a confirmed copy into actor state 0x208. Find additional consumers before
-assigning semantics or changing their representation. The record remains local
+The marker query identifies 0x10/0x14 as marker depth/height (see below).
+Dimension 0x34 only has a confirmed copy into actor state 0x208; find additional
+consumers before assigning semantics or changing its representation. The record remains local
 because only creation currently consumes this complete view; no unrelated
 records were merged. The changed object matches the immutable baseline.
+
+### Actor-kind marker dimensions
+
+The actor marker query reads ActorKindConfig.markerHeight and markerDepth
+at 0x14 and 0x10, with target-compatible offset checks. Ghidra at 0x8001E730
+confirms the two field addresses and the three-float output order. The marker
+consumer scales these values by target Y/Z scale and style height/depth,
+establishing their role as unscaled placement dimensions. The query now uses
+the recovered record instead of negative offsets from a byte cursor, preserving
+the original interior-base relocation addends. actor_part_config.h declares
+the shared output contract. Both source units and dependent units match strictly.

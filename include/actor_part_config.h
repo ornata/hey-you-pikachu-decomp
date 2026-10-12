@@ -1,5 +1,5 @@
 /// \file
-/// Declares actor-kind part selections for attachments and ground clearance.
+/// Declares actor-kind reference parts and interaction-marker geometry.
 
 #ifndef ACTOR_PART_CONFIG_H
 #define ACTOR_PART_CONFIG_H
@@ -29,5 +29,12 @@ s32 actorConfigGetSecondAttachmentPartId(s32 kind);
 /// \returns Default part ID.
 /// \note Original decompilation identifier: \c func_8001E65C (0x8001E65C).
 s32 actorConfigGetDefaultPartId(s32 kind);
+
+/// Get actor dimensions used to position an interaction marker.
+/// \param kind Valid actor kind whose dimensions are requested.
+/// \param dimensions Receives three floats: zero horizontal offset, unscaled height and unscaled depth.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8001E730 (0x8001E730).
+void actorConfigGetInteractionMarkerDimensions(s32 kind, f32 *dimensions);
 
 #endif

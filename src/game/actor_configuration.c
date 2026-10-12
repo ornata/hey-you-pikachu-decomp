@@ -581,8 +581,8 @@ typedef struct ActorKindConfig {
     char *alternateDescription;    ///< Preferred inspection description when alternate text is requested.
     char *defaultName;             ///< Default inspection name.
     char *defaultDescription;      ///< Default inspection description.
-    u32 unknown10;                 ///< Unresolved configuration word; its consumers are not yet identified.
-    u32 unknown14;                 ///< Unresolved configuration word; its consumers are not yet identified.
+    f32 markerDepth;               ///< Unscaled depth used to place an interaction marker.
+    f32 markerHeight;              ///< Unscaled height used to place an interaction marker.
     u8 *hierarchyTemplate;         ///< Borrowed actor hierarchy cloned during creation.
     const s32 *groundReferenceIds; ///< Positive part IDs terminated by a nonpositive value.
     s32 *animatedTextureParts;     ///< Borrowed part list for texture-animation initialization.
@@ -603,6 +603,8 @@ typedef struct ActorKindConfig {
 typedef char ActorKindConfigSizeCheck[(sizeof(ActorKindConfig) == 0x54) ? 1 : -1];
 #define ACTOR_KIND_OFFSET_CHECK(name, member, offset)                                                                  \
     typedef char name[(((u32) & ((ActorKindConfig *)0)->member) == (offset)) ? 1 : -1]
+ACTOR_KIND_OFFSET_CHECK(ActorKindMarkerDepthOffsetCheck, markerDepth, 0x10);
+ACTOR_KIND_OFFSET_CHECK(ActorKindMarkerHeightOffsetCheck, markerHeight, 0x14);
 ACTOR_KIND_OFFSET_CHECK(ActorKindTemplateOffsetCheck, hierarchyTemplate, 0x18);
 ACTOR_KIND_OFFSET_CHECK(ActorKindGroundReferencesOffsetCheck, groundReferenceIds, 0x1C);
 ACTOR_KIND_OFFSET_CHECK(ActorKindTexturePartsOffsetCheck, animatedTextureParts, 0x20);
@@ -805,12 +807,12 @@ char *actorConfigGetDescription(s32 kind, s32 useDefault) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001E730 (0x8001E730).
 void actorConfigGetInteractionMarkerDimensions(s32 kind, f32 *dimensions) {
-    u8 *kindRecordCursor;
+    ActorKindConfig *kindConfig;
 
-    kindRecordCursor = gActorKindConfigurationsFromOne + kind * 0x54;
+    kindConfig = &((ActorKindConfig *)gActorKindConfigurationsFromOne)[kind - 1];
     dimensions[0] = 0.0f;
-    dimensions[1] = *(f32 *)(kindRecordCursor - 0x40);
-    dimensions[2] = *(f32 *)(kindRecordCursor - 0x44);
+    dimensions[1] = kindConfig->markerHeight;
+    dimensions[2] = kindConfig->markerDepth;
 }
 
 /// Create and register Togepi with scale adjusted for the current scene and progress.

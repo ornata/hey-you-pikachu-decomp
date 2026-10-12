@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "actor_part_config.h"
 #include "integer_animation.h"
 #include "object_lookup.h"
 #include "heap_alloc.h"
@@ -182,7 +183,6 @@ extern f32 gInteractionMarkerActorTrackUnitScale;
 s32 playerClassifyInteractionTarget(u8 *, u8 *, s32);
 s32 audioPlaySoundEffect(s32);
 void objectOrientAlongCameraView(u8 *);
-void actorConfigGetInteractionMarkerDimensions(s32, f32 *);
 void objectAddPendingLocalMovement(Vec3f *);
 /// Update the marker target, animation, and placement, then clear the current candidate scan.
 /// \param object Initialized interaction marker object.
