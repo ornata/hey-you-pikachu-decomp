@@ -1,3 +1,4 @@
+#include "interaction.h"
 #include "cave.h"
 #include "scene_types.h"
 #include "object_types.h"
@@ -75,7 +76,6 @@ s8 *caveGetDescription(u8 *object) {
     return gCaveDescriptionBuffer;
 }
 
-s32 interactionConsiderObject(u8 *);
 
 /// Consider a cave object for the current interaction selection.
 /// \param object Cave interaction object to evaluate.

@@ -1,3 +1,4 @@
+#include "interaction.h"
 #include "object_flags.h"
 #include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
@@ -1976,7 +1977,6 @@ void itemBuildLightingDisplayList(u8 *state, s32 index) {
 void itemUnusedUpdateHook(void) {
 }
 
-s32 interactionConsiderObject(u8 *);
 s32 collisionGridRegisterObject(u8 *);
 u8 *collisionGridFindOverlap(u8 *);
 

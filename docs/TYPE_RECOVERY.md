@@ -1570,3 +1570,15 @@ prefix for scale, local/world positions and kind. Ghidra 0x8001F110 confirms the
 offsets, hierarchy creation and active registration; its inferred floating-point
 argument list is not authoritative. Each changed unit preserves all 483 objects
 and strict relocation addends. Description storage remains borrowed and shared.
+
+### Interaction selection interfaces and marker record reuse
+
+`interaction.h` consolidates candidate classification, marker creation and query
+contracts across the provider and eight callers, including previously unprototyped
+VM queries. Classification documents its shared scan state and region/visibility
+bits. Ghidra 0x8001E830 confirms scale eligibility, world-position/radius reads,
+handle-based held-item preference and candidate replacement. The provider uses
+checked runtime-object fields and the shared vector type. Its six retained
+animation records reuse the checked twelve-byte `ValueTrack`; no new allocation
+layout is inferred. All nine source units preserve all 483 objects and strict
+relocation addends.

@@ -1,3 +1,4 @@
+#include "interaction.h"
 #include "object_target_search.h"
 #include "path_query.h"
 #include "scene_region.h"
@@ -524,7 +525,6 @@ s32 playerGetHeldItemHandle(void) {
     return gPlayerHeldItemHandle;
 }
 
-s32 interactionConsiderObject(u8 *);
 
 /// Consider an object for preferred interaction and test whether it lies in an interaction region.
 /// \param object Object to evaluate as an interaction candidate.

@@ -1,3 +1,4 @@
+#include "interaction.h"
 #include "object_target_search.h"
 #include "path_query.h"
 #include "scene_region.h"
@@ -259,7 +260,6 @@ s32 actorScriptSetObjectActivationAndGuide(u8 *actor) {
     return 0;
 }
 
-s32 interactionGetCandidateId();     /* extern */
 /// Read the preferred object from the current interaction scan.
 /// \param actor Actor whose script VM receives the candidate object handle, or zero when none is selected.
 /// \returns Zero, allowing script execution to continue.
@@ -272,7 +272,6 @@ s32 actorScriptPushInteractionCandidate(u8 *actor) {
     return 0;
 }
 
-s32 interactionGetMarkerMode();     /* extern */
 /// Read the active interaction marker mode.
 /// \param actor Actor whose script VM receives the marker mode, or zero when inactive.
 /// \returns Zero, allowing script execution to continue.

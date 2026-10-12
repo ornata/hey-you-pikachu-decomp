@@ -1,3 +1,4 @@
+#include "interaction.h"
 #include "object_lifecycle.h"
 #include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -180,7 +181,6 @@ u8 *doorGetAccessDescription(u8 *object) {
     return (u8 *)gDoorAccessDescriptionBuffer;
 }
 
-s32 interactionConsiderObject(u8 *);
 
 /// Update a door object's interaction eligibility.
 /// \param object Door object to consider for interaction.

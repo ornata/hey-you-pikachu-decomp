@@ -1,3 +1,4 @@
+#include "interaction.h"
 #include "object_target_search.h"
 #include "heap_free.h"
 /// \file
@@ -220,7 +221,6 @@ s32 voiceCommandTakeMessage(ScriptMessage *out) {
     return 1;
 }
 
-s32 interactionGetCandidateId(void);
 
 /// Process an available voice command using the current interaction candidate.
 /// \returns Nothing.

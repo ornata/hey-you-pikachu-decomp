@@ -1,6 +1,7 @@
+#include "interaction.h"
+#include "vector3_types.h"
 #include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
-/* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "actor_part_config.h"
 #include "integer_animation.h"
@@ -15,7 +16,7 @@ extern u8 gInteractionMarkerModelTemplate[];
 typedef struct InteractionMarkerState {
     s32 mode;          ///< Selected marker presentation mode.
     s32 targetHandle;  ///< Handle of the selected interaction target.
-    u8 tracks[6][0xC]; ///< Retained integer animation-track records.
+    ValueTrack tracks[6]; ///< Retained integer animation-track records.
 } InteractionMarkerState;
 typedef char InteractionMarkerStateSizeCheck[(sizeof(InteractionMarkerState) == 0x50) ? 1 : -1];
 
@@ -68,15 +69,15 @@ s32 interactionConsiderObject(u8 *object) {
     f32 score;
     s32 i;
 
-    if (*(f32 *)(object + 0) == 0.0f || *(f32 *)(object + 4) == 0.0f || *(f32 *)(object + 8) == 0.0f) {
+    if (((RuntimeObjectPrefix *)object)->scale[0] == 0.0f || ((RuntimeObjectPrefix *)object)->scale[1] == 0.0f || ((RuntimeObjectPrefix *)object)->scale[2] == 0.0f) {
         return 0;
     }
-    if (areaTestCameraVisibility(*(f32 *)(object + 0x24) * 2, (f32 *)(object + 0x44), projected)) {
+    if (areaTestCameraVisibility(((RuntimeObjectPrefix *)object)->radius * 2, ((RuntimeObjectPrefix *)object)->worldPosition, projected)) {
         flags = 4;
     } else {
         flags = 0;
     }
-    if (gPlayerHeldItemHandle == *(s32 *)(object + 0x38)) {
+    if (gPlayerHeldItemHandle == ((RuntimeObjectPrefix *)object)->handle) {
         flags |= 3;
     } else {
         if (flags == 0)
@@ -87,13 +88,13 @@ s32 interactionConsiderObject(u8 *object) {
             }
         }
         if (flags & 2) {
-            if (*(f32 *)(object + 0x48) - gPlayerPositionY > 12.0f) {
+            if (((RuntimeObjectPrefix *)object)->worldPosition[1] - gPlayerPositionY > 12.0f) {
                 flags = (flags & ~2) | 1;
             }
         }
     }
     if (object != gPikachuActor && (flags & 3)) {
-        if (gPlayerHeldItemHandle == *(s32 *)(object + 0x38)) {
+        if (gPlayerHeldItemHandle == ((RuntimeObjectPrefix *)object)->handle) {
             score = -2147483648.0f;
         } else {
             score =
@@ -101,7 +102,7 @@ s32 interactionConsiderObject(u8 *object) {
         }
         if (score < gInteractionCandidateScore) {
             gInteractionCandidateFlags = flags;
-            gInteractionCandidateHandle = *(s32 *)(object + 0x38);
+            gInteractionCandidateHandle = ((RuntimeObjectPrefix *)object)->handle;
             gInteractionCandidateScore = score;
         }
     }
@@ -138,9 +139,6 @@ void interactionMarkerInitialize(u8 *object) {
     ((RuntimeObjectPrefix *)object)->state.bytes = allocation;
 }
 
-typedef struct Vec3f {
-    f32 x, y, z;
-} Vec3f;
 typedef struct SelectionStyle {
     s32 tracks[6];
     s32 sound;

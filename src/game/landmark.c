@@ -1,3 +1,4 @@
+#include "interaction.h"
 #include "landmark.h"
 #include "object_types.h"
 #include "object_hierarchy_create.h"
@@ -55,7 +56,6 @@ s8 *landmarkGetCannonDescription(s32 unused) {
     return &gLandmarkCannonDescriptionBuffer;
 }
 
-s32 interactionConsiderObject(u8 *);
 
 /// Consider a landmark as a candidate for the current object selection.
 /// \param object Landmark to evaluate.

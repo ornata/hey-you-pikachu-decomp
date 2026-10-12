@@ -1,3 +1,4 @@
+#include "interaction.h"
 #include "object_target_search.h"
 #include "object_flags.h"
 #include "object_create.h"
@@ -1163,7 +1164,6 @@ s32 objectApplySceneEnvironmentColorForDraw(u8 *object) {
     return *(s32 *)(object + 0x30);
 }
 
-s32 interactionConsiderObject(u8 *);
 
 /// Update hierarchy visibility according to the object's interaction eligibility.
 /// \param object Object whose eligibility determines visibility for its hierarchy.
@@ -1557,7 +1557,6 @@ void objectResetTraversalTransformAndMovement(void) {
 
 void actorInitializePartRegistry();                            /* extern */
 void objectResponsesInitialize(s32, s32);            /* extern */
-s32 interactionMarkerCreate();                            /* extern */
 void collisionGridInitialize();                            /* extern */
 
 /// Initialize the runtime object system and its supporting registries.
