@@ -1,3 +1,4 @@
+#include "path_query.h"
 #include "scene_region.h"
 #include "cave.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -934,7 +935,7 @@ f32 vector3Length(f32 *);
 /// \note Portability: The adjacent coordinate-difference statements preserve the IDO scheduling required by the ROM.
 /// \note Original decompilation identifier: \c func_80118210 (0x80118210).
 f32 actorGetFollowingPathPointCoordinate(u8 *object, s32 handle, s32 axis) {
-    u8 *pathState;
+    PathObjectStatePrefix *pathState;
     s32 offset;
     s32 index;
     PathVector delta;
@@ -946,15 +947,15 @@ f32 actorGetFollowingPathPointCoordinate(u8 *object, s32 handle, s32 axis) {
         return 0.0f;
     index = 0;
     offset = 0;
-    if (*(u16 *)(pathObject + 0x34) == 0xAF) {
-        pathState = *(u8 **)(pathObject + 0x54);
+    if (((RuntimeObjectPrefix *)pathObject)->kind == 0xAF) {
+        pathState = ((RuntimeObjectPrefix *)pathObject)->state.pointer;
         for (;;) {
-            waypoint.v[0] = *(f32 *)(*(u8 **)(pathState + 0xC) + offset);
-            waypoint.v[1] = *(f32 *)(*(u8 **)(pathState + 0xC) + offset + 4);
-            waypoint.v[2] = *(f32 *)(*(u8 **)(pathState + 0xC) + offset + 8);
-            position.v[0] = *(f32 *)(object + 0x44);
-            position.v[1] = *(f32 *)(object + 0x48);
-            position.v[2] = *(f32 *)(object + 0x4C);
+            waypoint.v[0] = *(f32 *)((u8 *)pathState->points + offset);
+            waypoint.v[1] = *(f32 *)((u8 *)pathState->points + offset + 4);
+            waypoint.v[2] = *(f32 *)((u8 *)pathState->points + offset + 8);
+            position.v[0] = ((RuntimeObjectPrefix *)object)->worldPosition[0];
+            position.v[1] = ((RuntimeObjectPrefix *)object)->worldPosition[1];
+            position.v[2] = ((RuntimeObjectPrefix *)object)->worldPosition[2];
             waypoint.v[1] = terrainGetWorldHeight(waypoint.v[0], waypoint.v[1], waypoint.v[2], 0);
             position.v[1] = terrainGetWorldHeight(position.v[0], position.v[1], position.v[2], 0);
             // clang-format off
@@ -962,13 +963,13 @@ f32 actorGetFollowingPathPointCoordinate(u8 *object, s32 handle, s32 axis) {
             // clang-format on
             offset += 12;
             index++;
-            if (*(f32 *)(*(u8 **)(pathState + 0xC) + offset) < 0.0f)
+            if (*(f32 *)((u8 *)pathState->points + offset) < 0.0f)
                 break;
             if (vector3Length(&delta.v[0]) <= 3.0f)
                 break;
         }
         if (axis < 3)
-            return *(f32 *)(*(u8 **)(pathState + 0xC) + index * 12 + axis * 4);
+            return *(f32 *)((u8 *)pathState->points + index * 12 + axis * 4);
     }
     return -65536.0f;
 }

@@ -1,3 +1,4 @@
+#include "path_query.h"
 #include "scene_region.h"
 #include "cave.h"
 #include "item_object.h"
@@ -542,7 +543,6 @@ s32 actorScriptIsSceneRegionHighlighted(u8 *actor) {
     return 0;
 }
 
-f32 pathGetFirstPointCoordinateByHandle(s32, s32);  /* extern */
 
 /// Read one coordinate of the first point in a path object.
 /// \param actor Actor whose script VM supplies a path handle with at least one initialized point followed by a nonnegative axis (zero for X, one for Y, two for Z), and receives the coordinate, zero for a missing handle, or -65536 for a non-path object or an axis greater than two.
@@ -560,7 +560,6 @@ s32 actorScriptGetFirstPathPointCoordinate(u8 *actor) {
     return 0;
 }
 
-f32 actorGetFollowingPathPointCoordinate(u8 *arg0, s32 arg1, s32 arg2); /* extern */
 
 /// Read a coordinate of the path destination following a waypoint near the actor.
 /// \param actor Actor whose script VM supplies a path handle with at least one waypoint and a complete three-coordinate end marker whose X is negative followed by a nonnegative axis (zero for X, one for Y, two for Z), and receives the coordinate following the first waypoint within three ground-distance units, or an end-marker coordinate when none qualifies; missing handles yield zero, and non-path objects or axes greater than two yield -65536.

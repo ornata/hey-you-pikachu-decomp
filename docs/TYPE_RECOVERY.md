@@ -1507,3 +1507,15 @@ interface preserves their original 32-bit representation with explicit caller
 casts. Their contents remain uninterpreted. Ghidra 0x8001F1F0 confirms the 0x10
 allocation, half-extents, highlight initialization and association word.
 Each of the four source-unit changes preserves all 483 objects and relocations.
+
+### Path query interface and partial-state consumers
+
+`path_query.h` consolidates first-point and following-waypoint coordinate queries
+with their VM caller. The following-point provider uses the existing private
+partial state pointer and the shared runtime world-position fields. Ghidra at
+0x80118210 confirms the points pointer at 0x0C, twelve-byte point stride and
+negative-X end marker. The first three state words and complete allocation are
+still unresolved; allocation/initialization evidence is needed before extending
+the view. Byte offsets within the packed point sequence remain explicit to retain
+matching expression ordering. Adjacent coordinate differences are unchanged.
+Both changed units strictly match all 483 objects, including relocation addends.
