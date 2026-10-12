@@ -2716,3 +2716,15 @@ The maze uses the existing shared `ItemKind` layout rather than byte arithmetic.
 note. Four consumers lose duplicate declarations, and save progress loses an
 unused private 0x74-byte prefix and table declaration. Every source-unit change
 and shared-header dependent preserves all 483 strict object comparisons.
+
+### Item classification and effective-motion queries
+
+`item_queries.h` supplies capacity, category, class, availability-selector and
+effective-motion contracts to registry, script and physics users. Script
+callers now agree with the provider's signed byte class and signed halfword
+availability return. Ghidra 0x80115020 confirms the signed class load.
+
+The kind's checked float at 0x28 is now `motionCoefficient`: the accessor's
+result controls downward acceleration and horizontal friction, with a state
+flag reducing the coefficient by half. Shared-header dependents and every
+converted caller preserve all 483 strict object comparisons.

@@ -1,3 +1,4 @@
+#include "item_queries.h"
 #include "camera_view.h"
 #include "collision_registration.h"
 #include "object_distance.h"
@@ -2787,9 +2788,9 @@ f32 itemGetMotionCoefficient(u8 *item) {
 
     TRACE("ERROR: Unknown holdFlag(%d)\n", ((ItemStatePrefix *)rec)->flags);
     if (((ItemStatePrefix *)rec)->flags & 0x400000) {
-        return gItemKinds[((ItemStatePrefix *)rec)->kind].unk28 * 0.5f;
+        return gItemKinds[((ItemStatePrefix *)rec)->kind].motionCoefficient * 0.5f;
     }
-    return gItemKinds[((ItemStatePrefix *)rec)->kind].unk28;
+    return gItemKinds[((ItemStatePrefix *)rec)->kind].motionCoefficient;
 }
 
 /// Hide an item and suspend its participation in the world when its lifecycle permits it.

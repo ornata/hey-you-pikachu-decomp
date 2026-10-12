@@ -1,3 +1,4 @@
+#include "item_queries.h"
 #include "action_continuation.h"
 #include "player_friendship.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -133,7 +134,6 @@ s32 scriptCommandGetItemReplacement(u8 *object) {
     return 0;
 }
 
-s32 itemKindIsInCategory(s32, s32); /* extern */
 
 /// Provide whether the script item-kind argument belongs to the requested category as the script result.
 /// \param object Actor whose script supplies an item kind and category and receives
@@ -152,7 +152,6 @@ s32 scriptCommandIsItemInCategory(u8 *object) {
     return 0;
 }
 
-s32 itemGetClass(s32);  /* extern */
 
 /// Provide the item class for the script item-kind argument as the script result.
 /// \param object Actor whose script supplies an item kind and receives its class.
@@ -166,7 +165,6 @@ s32 scriptCommandGetItemClass(u8 *object) {
     return 0;
 }
 
-s32 itemGetAvailabilityFlag(s32);  /* extern */
 
 /// Provide the availability progress-field selector for the script item-kind argument as the script result.
 /// \param object Actor whose script supplies the item kind and receives the result.

@@ -44,7 +44,7 @@ typedef struct {
     /* 0x18 */ u8 response[5];                ///< Transformation responses for causes one through five.
     /* 0x20 */ f32 scale;                     ///< Default scale relative to the scene scale.
     /* 0x24 */ f32 size;                      ///< Radius override, or the retained sentinel for the model default.
-    /* 0x28 */ f32 unk28;                     ///< Motion coefficient whose complete interpretation remains unresolved.
+    /* 0x28 */ f32 motionCoefficient;         ///< Base coefficient for gravity and horizontal friction.
     /* 0x2C */ f32 speed;                     ///< Multiplier applied to launch velocity.
     /* 0x30 */ f32 frictionCoefficient;       ///< Multiplier for terrain friction and horizontal motion thresholds.
     /* 0x34 */ f32 radiusX;                   ///< Horizontal collision extent along X.
@@ -68,6 +68,7 @@ typedef struct {
 typedef char ItemKindSizeCheck[(sizeof(ItemKind) == 0x74) ? 1 : -1];
 typedef char ItemKindFrictionOffsetCheck[(((u32) & ((ItemKind *)0)->frictionCoefficient) == 0x30) ? 1 : -1];
 typedef char ItemKindEffectsOffsetCheck[(((u32) & ((ItemKind *)0)->effect) == 0x40) ? 1 : -1];
+typedef char ItemKindMotionCoefficientOffsetCheck[(((u32)&((ItemKind *)0)->motionCoefficient) == 0x28) ? 1 : -1];
 typedef char ItemKindAvailabilityOffsetCheck[(((u32)&((ItemKind *)0)->availabilityField) == 0x72) ? 1 : -1];
 
 /// Per-kind item motion, rendering, response and description configuration.

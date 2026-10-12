@@ -1,3 +1,4 @@
+#include "item_queries.h"
 #include "camera_pose.h"
 #include "item_object.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -118,7 +119,7 @@ void itemApplyHorizontalFriction(f32 *x, f32 *z, f32 rate, f32 threshold, f32 sc
 }
 
 s32 terrainGetSurfaceAttributes(f32, f32, f32, u8 **);
-f32 itemGetMotionCoefficient(u8 *);
+
 s32 itemUpdateSpin(u8 *, s32, s32);
 void itemApplyHorizontalFriction(f32 *, f32 *, f32, f32, f32);
 /// Separate friction-coefficient view of the item catalog, with a 116-byte stride.

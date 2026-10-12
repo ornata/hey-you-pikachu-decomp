@@ -1,3 +1,4 @@
+#include "item_queries.h"
 #include "story_chapter.h"
 #include "progress_fields.h"
 #include "progress_value.h"
@@ -1194,7 +1195,6 @@ s32 actorScriptUpdateChapterAfterVisit(u8 *actor) {
     return 0;
 }
 
-s32 itemGetAvailableSlots();     /* extern */
 /// Provide the remaining item-object capacity.
 /// \param actor Actor whose script VM receives the number of available item slots.
 /// \returns Zero, allowing script execution to continue.
