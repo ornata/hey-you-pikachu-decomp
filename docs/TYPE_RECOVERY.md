@@ -1647,3 +1647,14 @@ borrowed-result requirements. Ghidra 0x800080E4 confirms traversal through offse
 0x28. The provider uses the shared sibling field; actor creation uses checked
 root and sibling links for its ground-reference and shadow attachments. Both
 source units preserve all 483 objects and strict relocation addends.
+
+### Actor creation shared-state producers
+
+Actor creation now initializes shared actor-state fields for attachment mode,
+creation argument, ground reference, collision dimensions, ground offset, fallback
+handle and VM address. Runtime transforms and radius use the checked object
+prefix. Ghidra 0x8001E1C4 confirms the corresponding producer offsets and order;
+its inferred integer casts for float stores are not adopted. Offset 0x208 remains
+explicitly unresolved as `unknown208`. An attachment-mode offset check is added.
+The VM pointer remains explicitly represented as its original 32-bit address.
+Provider and header-dependent rebuilds preserve all 483 objects and relocations.

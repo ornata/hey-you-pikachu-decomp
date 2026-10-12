@@ -143,6 +143,7 @@ ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionLastRequestOffsetCheck, ActorScriptSta
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionPendingRequestOffsetCheck, ActorScriptState, actionScriptPendingRequestId, 0x174);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateSoundHandlesOffsetCheck, ActorScriptState, soundHandles, 0x178);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateHeldItemOffsetCheck, ActorScriptState, heldItemHandle, 0x190);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateAttachmentModeOffsetCheck, ActorScriptState, attachmentMode, 0x194);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateTargetHandleOffsetCheck, ActorScriptState, targetHandle, 0x198);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateAirborneOffsetCheck, ActorScriptState, airborne, 0x1BC);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateWorldMotionOffsetCheck, ActorScriptState, worldMotion, 0x1D8);

@@ -638,14 +638,14 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
     heapDebugReportFreeSpace(&gGameHeap, (const char *)gActorResourcesRequestedHeapLabel);
     kindConfig = &((ActorKindConfig *)gActorKindConfigurationsFromOne)[kind - 1];
     actor = objectCloneTemplateHierarchy(kindConfig->hierarchyTemplate, 0);
-    actorState = *(u8 **)(actor + 0x54);
+    actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
     heapDebugReportFreeSpace(&gGameHeap, (const char *)gActorHierarchyAllocatedHeapLabel);
-    *(s32 *)(actorState + 0x194) = kindConfig->initialBehaviorFlags;
-    *(s32 *)(actorState + 0x238) = scriptArgument;
+    ((ActorScriptState *)actorState)->attachmentMode = kindConfig->initialBehaviorFlags;
+    ((ActorScriptState *)actorState)->creationScriptArgument = scriptArgument;
     sp50 = objectCreateDefault();
     ((RuntimeObjectPrefix *)sp50)->root.bytes = actor;
     ((RuntimeObjectPrefix *)objectGetLastSibling(actor))->sibling.bytes = sp50;
-    *(u8 **)(actorState + 0x0) = sp50;
+    ((ActorScriptState *)actorState)->groundReference = sp50;
     if (kindConfig->shadowSegmentCount > 0) {
         sp48 = objectGetLastSibling(actor);
         shadowSegments = kindConfig->shadowSegmentCount;
@@ -658,30 +658,30 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
     heapDebugReportFreeSpace(&gGameHeap, (const char *)gActorMatricesAllocatedHeapLabel);
     actorPopulatePartTable(actor, actor);
     heapDebugReportFreeSpace(&gGameHeap, (const char *)gActorPartTablePreparedHeapLabel);
-    *(f32 *)(actor + 0x18) = x;
-    *(f32 *)(actor + 0x1C) = y;
-    *(f32 *)(actor + 0x20) = z;
-    *(f32 *)(actor + 0x8) = scale;
-    *(f32 *)(actor + 0x4) = scale;
-    *(f32 *)(actor + 0x0) = scale;
+    ((RuntimeObjectPrefix *)actor)->position[0] = x;
+    ((RuntimeObjectPrefix *)actor)->position[1] = y;
+    ((RuntimeObjectPrefix *)actor)->position[2] = z;
+    ((RuntimeObjectPrefix *)actor)->scale[2] = scale;
+    ((RuntimeObjectPrefix *)actor)->scale[1] = scale;
+    ((RuntimeObjectPrefix *)actor)->scale[0] = scale;
     actorAddRotationAxisDegrees(actor, pitch, 0);
     actorAddRotationAxisDegrees(actor, yaw, 1);
-    *(f32 *)(actor + 0x24) = (f32)kindConfig->visibilityRadius;
+    ((RuntimeObjectPrefix *)actor)->radius = (f32)kindConfig->visibilityRadius;
     if (kindConfig == (ActorKindConfig *)gPikachuKindConfiguration) {
         part = actorFindPart(actor, 0x2F);
         if (part != NULL) {
-            *(f32 *)(part + 0x24) = 80.0f;
+            ((RuntimeObjectPrefix *)part)->radius = 80.0f;
         }
         part = actorFindPart(actor, 0x2D);
         if (part != NULL) {
-            *(f32 *)(part + 0x24) = 80.0f;
+            ((RuntimeObjectPrefix *)part)->radius = 80.0f;
         }
     }
-    *(f32 *)(actorState + 0x1FC) = (f32)(kindConfig->collisionDepth * scale);
-    *(f32 *)(actorState + 0x200) = (f32)(kindConfig->clearanceHeight * scale);
-    *(f32 *)(actorState + 0x204) = (f32)(kindConfig->collisionWidth * scale);
-    *(f32 *)(actorState + 0x208) = (f32)(kindConfig->unknown34 * scale);
-    *(f32 *)(actorState + 0x20C) = (f32)(kindConfig->groundOffset * scale);
+    ((ActorScriptState *)actorState)->collisionDepth = (f32)(kindConfig->collisionDepth * scale);
+    ((ActorScriptState *)actorState)->clearanceHeight = (f32)(kindConfig->clearanceHeight * scale);
+    ((ActorScriptState *)actorState)->collisionWidth = (f32)(kindConfig->collisionWidth * scale);
+    ((ActorScriptState *)actorState)->unknown208 = (f32)(kindConfig->unknown34 * scale);
+    ((ActorScriptState *)actorState)->groundOffset = (f32)(kindConfig->groundOffset * scale);
     objectScaleHierarchyBounds(actor, 1.0f);
     objectRefreshHierarchyWorldPositions((s32)actor);
     if (kindConfig->animatedTextureParts != NULL) {
@@ -689,13 +689,13 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
     }
     objectRegisterActiveHierarchy(actor);
     objectPrepareDistributedKindSearches(0x64, 4);
-    *(s32 *)(actorState + 0x234) =
-        (s32) * (s32 *)(orbitFollowerCreate(actor, *(f32 *)(actorState + 0x204), *(f32 *)(actorState + 0x1FC),
-                                            *(f32 *)(actorState + 0x200)) +
+    ((ActorScriptState *)actorState)->fallbackObjectHandle =
+        (s32) * (s32 *)(orbitFollowerCreate(actor, ((ActorScriptState *)actorState)->collisionWidth, ((ActorScriptState *)actorState)->collisionDepth,
+                                            ((ActorScriptState *)actorState)->clearanceHeight) +
                         0x38);
     if (script != 0) {
         part = scriptVmCreate(script);
-        *(u8 **)(actorState + 0x1B8) = part;
+        ((ActorScriptState *)actorState)->vmAddress = (s32)part;
         *(s32 *)part = 0;
     }
     actorAssetWaitForQueuedReads();
