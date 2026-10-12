@@ -276,17 +276,17 @@ s32 actorScriptPerformCostedAction(u8 *object) {
         action = scriptVmPopInteger(((ActorScriptState *)state)->vmAddress);
         cost = gActorScriptCostedActions[action].cost * count;
         if (gActorScriptCostedActions[action].checkCost != 0 && *(f32 *)(state + 0x3F4) < cost) {
-            *(s32 *)(state + 0x3F0) = 0;
-            *(s32 *)(state + 0x3EC) = 0;
+            ((ActorScriptState *)state)->costedActionResult = 0;
+            ((ActorScriptState *)state)->targetedBurstAllowance = 0;
             actionScriptStart(object, gActorScriptCostedActions[action].insufficientAnimation);
         } else {
             actorAdjustActionMeter(object, -cost);
-            *(s32 *)(state + 0x3F0) = 3;
-            *(s32 *)(state + 0x3EC) = count;
+            ((ActorScriptState *)state)->costedActionResult = 3;
+            ((ActorScriptState *)state)->targetedBurstAllowance = count;
             actionScriptStart(object, gActorScriptCostedActions[action].animation);
         }
     } else if (actionScriptIsStopped(object) != 0) {
-        scriptVmPushInteger(((ActorScriptState *)state)->vmAddress, *(s32 *)(state + 0x3F0));
+        scriptVmPushInteger(((ActorScriptState *)state)->vmAddress, ((ActorScriptState *)state)->costedActionResult);
         return 1;
     }
     return 2;

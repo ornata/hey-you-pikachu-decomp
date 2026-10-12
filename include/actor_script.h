@@ -107,8 +107,8 @@ typedef struct ActorScriptState {
     u8 *shakingPart; ///< Borrowed selected model part, or null when no shake is active.
     f32 partShakeTimeRemaining; ///< Seconds remaining in the temporary part shake.
     f32 partShakeReferenceAngles[3]; ///< Part rotation captured when selected for shaking.
-    u8 unknown3EC[4];
-    s32 unknown3F0;     ///< Action-command response flag; precise behavior remains unresolved.
+    s32 targetedBurstAllowance; ///< Remaining paired target bursts allowed by the current costed action.
+    s32 costedActionResult; ///< Script result: zero for insufficient resource, one for a response, three after starting.
     f32 actionResource; ///< Action resource clamped to zero through 100.
     f32 secondaryMeter; ///< Secondary gameplay meter clamped to zero through 100.
     u8 unknown3FC[0xC];
@@ -185,7 +185,8 @@ ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePartShakeAnglesOffsetCheck, ActorScriptState
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateCreationArgumentOffsetCheck, ActorScriptState, creationScriptArgument, 0x238);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateFirstPartControllerOffsetCheck, ActorScriptState, unknown2F8, 0x2F8);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateSecondPartControllerOffsetCheck, ActorScriptState, unknown368, 0x368);
-ACTOR_SCRIPT_OFFSET_CHECK(ActorStateResponseFlagOffsetCheck, ActorScriptState, unknown3F0, 0x3F0);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateBurstAllowanceOffsetCheck, ActorScriptState, targetedBurstAllowance, 0x3EC);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateResponseFlagOffsetCheck, ActorScriptState, costedActionResult, 0x3F0);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionResourceOffsetCheck, ActorScriptState, actionResource, 0x3F4);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateSecondaryMeterOffsetCheck, ActorScriptState, secondaryMeter, 0x3F8);
 #undef ACTOR_SCRIPT_OFFSET_CHECK

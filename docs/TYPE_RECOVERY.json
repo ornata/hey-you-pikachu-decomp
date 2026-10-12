@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 3335,
-      "unique_spellings": 1239,
+      "occurrences": 3326,
+      "unique_spellings": 1237,
       "files": 80
     }
   },
@@ -326,11 +326,6 @@
           "actorStateAddress + 0x1EC": [
             "531:12"
           ],
-          "state + 0x3EC": [
-            "581:36",
-            "581:76",
-            "583:18"
-          ],
           "particles + 10": [
             "591:32",
             "597:32"
@@ -349,9 +344,6 @@
           "other + 0x38": [
             "602:103",
             "810:101"
-          ],
-          "state + 0x3F0": [
-            "603:22"
           ],
           "object + 0x38": [
             "670:97",
@@ -6635,15 +6627,6 @@
           ],
           "state + 0x3F4": [
             "278:74"
-          ],
-          "state + 0x3F0": [
-            "279:22",
-            "284:22",
-            "289:78"
-          ],
-          "state + 0x3EC": [
-            "280:22",
-            "285:22"
           ]
         }
       }

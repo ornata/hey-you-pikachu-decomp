@@ -578,9 +578,9 @@ void actionCommandEmitPairedTargetedBursts(u8 *object, u8 *state, BurstCommand *
         s32 kind;
     } *args;
     args = (void *)&command->count;
-    count = args->count < *(s32 *)(state + 0x3EC) ? args->count : *(s32 *)(state + 0x3EC);
+    count = args->count < ((ActorScriptState *)state)->targetedBurstAllowance ? args->count : ((ActorScriptState *)state)->targetedBurstAllowance;
     if (count > 0) {
-        *(s32 *)(state + 0x3EC) -= count;
+        ((ActorScriptState *)state)->targetedBurstAllowance -= count;
         actorGetPartWorldPosition(object, 0x74, left);
         actorGetPartWorldPosition(object, 0x75, right);
         target = (f32 *)actorGetEffectTargetPosition(object);
@@ -600,7 +600,7 @@ void actionCommandEmitPairedTargetedBursts(u8 *object, u8 *state, BurstCommand *
         }
         other = actorGetTrackingTarget(object);
         if (other != NULL && *(u16 *)(other + 0x34) == 0x86 && itemTryTransformToReplacement(*(s32 *)(other + 0x38))) {
-            *(s32 *)(state + 0x3F0) = 1;
+            ((ActorScriptState *)state)->costedActionResult = 1;
         }
     }
 }
@@ -722,7 +722,7 @@ void actionCommandCreateItemTransformationEffect(u8 *actor, u8 *state, u8 *comma
                      ((RuntimeObjectPrefix *)actor)->worldPosition[1] + 2.0f,
                      ((RuntimeObjectPrefix *)actor)->worldPosition[2]);
     if (itemTryTransformToReplacement(((ActorScriptState *)state)->heldItemHandle) != 0) {
-        ((ActorScriptState *)state)->unknown3F0 = 1;
+        ((ActorScriptState *)state)->costedActionResult = 1;
     }
 }
 

@@ -2096,3 +2096,14 @@ A focused header avoids changing unrelated default-part lookup declarations in
 that unit: adopting the broader part header required an unrelated prototype change
 that altered its object bytes. Those declarations are restored for separate audit.
 All 483 objects and strict relocation addends match.
+
+### Costed-action burst allowance and result fields
+
+The remaining word at 0x3EC is `targetedBurstAllowance`, supplied by the costed
+script action and consumed by paired target bursts. The adjacent `costedActionResult`
+is returned to the script after action completion: the producer writes zero on
+insufficient resource and three after starting; response commands can record one.
+Ghidra 0x80116BC4 confirms this producer/result contract. Both fields have checked
+offsets and shared producers/consumers. Numeric result values remain explicit
+rather than inventing an exhaustive enum for unobserved outcomes. Both source
+units and header dependents preserve all 483 objects and strict relocations.
