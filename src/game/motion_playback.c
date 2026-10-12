@@ -218,11 +218,11 @@ void motionStartTrackPlayback(u8 *object) {
             child = actorFindPart(object, entry[0]);
             if (child != NULL) {
                 childState = *(u8 **)(child + 0x54);
-                *(s16 *)childState = MOTION_PLAYBACK_TRACKS;
+                ((ChildMotionState *)childState)->playbackMode = MOTION_PLAYBACK_TRACKS;
                 {
                     u8 *data = (u8 *)base;
                     data += entry[1];
-                    animationTrack3Initialize((AnimationTrack3 *)(childState + 4), (AnimationCurveDescriptor *)data, base);
+                    animationTrack3Initialize(&((ChildMotionState *)childState)->playback.rotationTrack, (AnimationCurveDescriptor *)data, base);
                 }
             }
         }
@@ -254,7 +254,7 @@ void motionEvaluateRootTracks(u8 *object, u8 *state, f32 time) {
 void motionEvaluateChildRotation(u8 *obj, u8 *track, f32 step) {
     s32 r;
 
-    r = animationTrack3Evaluate((AnimationTrack3 *)(track + 4), (f32 *)(obj + 0xC), NULL, step);
+    r = animationTrack3Evaluate(&((ChildMotionState *)track)->playback.rotationTrack, (f32 *)(obj + 0xC), NULL, step);
     while (*(f32 *)(obj + 0xC) < 0.0f) {
         *(f32 *)(obj + 0xC) += 360.0f;
     }
@@ -274,7 +274,7 @@ void motionEvaluateChildRotation(u8 *obj, u8 *track, f32 step) {
         *(f32 *)(obj + 0x14) -= 360.0f;
     }
     if (r == 1) {
-        *(s16 *)track = 0;
+        ((ChildMotionState *)track)->playbackMode = MOTION_PLAYBACK_DISABLED;
     }
 }
 
@@ -329,10 +329,10 @@ void motionStartPoseTransition(u8 *object) {
             child = actorFindPart(object, entry->a);
             if (child != NULL) {
                 childState = *(u8 **)(child + 0x54);
-                *(s16 *)childState = rotationMode;
+                ((ChildMotionState *)childState)->playbackMode = rotationMode;
                 animationTrack3Initialize(&track, (AnimationCurveDescriptor *)((u8 *)base + entry->b), base);
                 animationTrack3Evaluate(&track, childRotation, 0, transformTime);
-                from = (Matrix34 *)(childState + 4);
+                from = ((ChildMotionState *)childState)->playback.posePair;
                 matrix34MakeRotationXYZDegrees((f32 *)from, *(f32 *)(child + 0xC), *(f32 *)(child + 0x10), *(f32 *)(child + 0x14));
                 matrix34MakeRotationXYZDegrees((f32 *)(from + 1), childRotation[0], childRotation[1], childRotation[2]);
             }
@@ -778,21 +778,21 @@ void motionUpdateChildPlayback(u8 *object) {
     f32 v[12];
 
     obj = *(u8 **)(object + 0x54);
-    if (*(u16 *)obj != MOTION_PLAYBACK_DISABLED) {
+    if ((u16)((ChildMotionState *)obj)->playbackMode != MOTION_PLAYBACK_DISABLED) {
         tgt = *(u8 **)(*(u8 **)(object + 0x50) + 0x54);
-        switch (*(u16 *)obj) {
+        switch ((u16)((ChildMotionState *)obj)->playbackMode) {
         case MOTION_PLAYBACK_TRACKS:
             motionEvaluateChildRotation(object, obj, *(f32 *)(tgt + 0x130) * gRuntimeFrameSeconds);
             break;
         case MOTION_PLAYBACK_TIMED:
-            *(u16 *)obj = MOTION_PLAYBACK_DISABLED;
+            ((ChildMotionState *)obj)->playbackMode = MOTION_PLAYBACK_DISABLED;
             break;
         case MOTION_PLAYBACK_POSE_BLEND:
-            motionBlendPosePair(obj + 4, v, *(f32 *)(tgt + 0x138) / *(f32 *)(tgt + 0x134));
+            motionBlendPosePair((u8 *)((ChildMotionState *)obj)->playback.posePair, v, *(f32 *)(tgt + 0x138) / *(f32 *)(tgt + 0x134));
             matrix3GetEulerAnglesDegrees(v, (f32 *)(object + 0xC), (f32 *)(object + 0x10), (f32 *)(object + 0x14));
             break;
         default:
-            TRACE("error: actJoint(%p): unknown action_type(%d)\n", object, *(u16 *)obj);
+            TRACE("error: actJoint(%p): unknown action_type(%d)\n", object, (u16)((ChildMotionState *)obj)->playbackMode);
             break;
         }
     }

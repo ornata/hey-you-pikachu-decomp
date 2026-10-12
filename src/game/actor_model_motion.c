@@ -245,13 +245,13 @@ void actorInitializeModelState(u8 *actor) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80015110 (0x80015110).
 void actorInitializeChildMotionState(void *actor) {
-    s16 *sp1C;
-    s16 *allocation;
+    ChildMotionState *sp1C;
+    ChildMotionState *allocation;
 
-    allocation = heapAllocLocal(&gGameHeap, 0x80, 0xFC);
+    allocation = heapAllocLocal(&gGameHeap, sizeof(ChildMotionState), 0xFC);
     sp1C = allocation;
-    _bzero(allocation, 0x80);
-    *sp1C = 0;
+    _bzero(allocation, sizeof(ChildMotionState));
+    sp1C->playbackMode = MOTION_PLAYBACK_DISABLED;
     ((RuntimeObjectPrefix *)actor)->state.pointer = sp1C;
 }
 

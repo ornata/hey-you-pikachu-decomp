@@ -2402,3 +2402,16 @@ orientation and delta-track evaluation addresses. Motion setup, root evaluation,
 pose setup and pose blending now use the named views. Actor initialization clears
 the records by address and checked size. Each source-unit conversion passes the
 strict comparison of all 483 objects.
+
+### Child-part playback state
+
+`motion_playback_types.h` now defines `ChildMotionState`, with a 16-bit playback
+mode and a mode-dependent rotation-track/pose-pair workspace at offset 4. Size
+checks establish the 0x60-byte workspace and full 0x80-byte allocation. Remaining
+bytes retain explicit offset names because optional part controllers use the tail.
+
+Ghidra 0x80015110 confirms allocation, clearing and mode initialization;
+0x8000E470 confirms the track boundary and mode reset on completion. Child track
+setup, pose capture, frame update and allocation now use the shared layout.
+Track keys are borrowed from motion data; the child object owns its state.
+Both source-unit changes preserve all 483 strict object comparisons.
