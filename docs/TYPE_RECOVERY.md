@@ -1898,3 +1898,13 @@ storage is borrowed from frame buffers; unresolved camera bytes remain explicit.
 The object's separate `gRenderCameraMatrixEntries` interior-symbol view is retained
 to preserve its relocation identity and addend until that boundary is audited.
 All three changed source units preserve all 483 objects and strict relocations.
+
+### Shared camera pose configuration
+
+The player's camera-transition snapshot now uses the shared camera record rather
+than a duplicate eye/target prefix. `camera_pose.h` supplies the float-coordinate
+setter contract to the provider and both overlay callers. The setter's destination
+stores use shared eye, target and up fields. Ghidra 0x80000AD4 confirms the 0xE0
+stride, copied coordinates and world-up values; 0x80112698 confirms the primary
+camera snapshot. Inputs are borrowed and copied during the setter call. Each
+changed source unit preserves all 483 objects and strict relocation addends.

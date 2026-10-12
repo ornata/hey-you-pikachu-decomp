@@ -1,3 +1,5 @@
+#include "camera_pose.h"
+#include "camera_types.h"
 #include "action_query.h"
 #include "landmark.h"
 #include "cave.h"
@@ -33,12 +35,6 @@ typedef struct InteractionProxyState {
     } description;
 } InteractionProxyState;
 typedef char InteractionProxyStateSizeCheck[(sizeof(InteractionProxyState) == 0x10) ? 1 : -1];
-
-/// Borrowed current-camera pose used to initialize a player transition.
-typedef struct CameraPosePrefix {
-    f32 eye[3];    ///< Current eye position.
-    f32 target[3]; ///< Current look-at point.
-} CameraPosePrefix;
 
 /* .bss 0x80133E10..0x80134030, in address order (IDO lays globals out in declaration order) */
 struct {
@@ -1799,7 +1795,6 @@ void playerUpdateHeldItemInspection(u8 *player, u8 *controller) {
     }
 }
 
-void cameraSetEyeAndTarget(s32, f32 *, f32 *);       /* extern */
 s32 vector3InterpolateSmoothTimed(u8 *, u8 *, f32 *, f32, f32); /* extern */
 
 /// Advance the configured smooth camera transition and apply the resulting primary camera view.
@@ -2420,7 +2415,7 @@ void playerInitializeCollisionQueryMode(s32 unused) {
 
 /// Camera storage used for view transforms, viewports and color overlays.
 /// \note Original identifier: \c D_800ABCF0 (0x800ABCF0).
-extern CameraPosePrefix gRenderCameras;
+extern MatrixCamera gRenderCameras;
 
 /// Configure a smooth primary-camera transition from the current view for the camera-transition mode.
 /// \param eye Readable destination camera eye position as world X, Y, Z coordinates; copied during this call.
@@ -2432,17 +2427,17 @@ extern CameraPosePrefix gRenderCameras;
 /// \note Original decompilation identifier: \c func_80112698 (0x80112698).
 void playerPrepareCameraTransition(u8 *eye, u8 *target, f32 duration) {
     ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraStartEye[0] =
-        (f32)((CameraPosePrefix *)&gRenderCameras)->eye[0];
+        (f32)gRenderCameras.eye[0];
     ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraStartEye[1] =
-        (f32)((CameraPosePrefix *)&gRenderCameras)->eye[1];
+        (f32)gRenderCameras.eye[1];
     ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraStartEye[2] =
-        (f32)((CameraPosePrefix *)&gRenderCameras)->eye[2];
+        (f32)gRenderCameras.eye[2];
     ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraStartTarget[0] =
-        (f32)((CameraPosePrefix *)&gRenderCameras)->target[0];
+        (f32)gRenderCameras.target[0];
     ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraStartTarget[1] =
-        (f32)((CameraPosePrefix *)&gRenderCameras)->target[1];
+        (f32)gRenderCameras.target[1];
     ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraStartTarget[2] =
-        (f32)((CameraPosePrefix *)&gRenderCameras)->target[2];
+        (f32)gRenderCameras.target[2];
     ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraEndEye[0] = (f32)((f32 *)eye)[0];
     ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraEndEye[1] = (f32)((f32 *)eye)[1];
     ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraEndEye[2] = (f32)((f32 *)eye)[2];

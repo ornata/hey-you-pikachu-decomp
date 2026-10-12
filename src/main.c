@@ -1,3 +1,4 @@
+#include "camera_pose.h"
 #include "camera_types.h"
 #include "color_transition.h"
 #include "camera_visibility.h"
@@ -413,19 +414,19 @@ void cameraSetPositionAndAngles(s32 index, f32 x, f32 y, f32 z, f32 pitch, f32 y
 /// \param eye Three-component world-space eye position in X, Y, Z order.
 /// \param target Three-component world-space look-at position in X, Y, Z order.
 /// \returns Nothing.
-void cameraSetEyeAndTarget(s32 cameraIndex, u8 *eye, u8 *target) {
+void cameraSetEyeAndTarget(s32 cameraIndex, f32 *eye, f32 *target) {
     u8 *cameraState;
 
     cameraState = gRenderCameras + cameraIndex * 0xE0;
-    *(f32 *)(cameraState + 0) = *(f32 *)(eye + 0);
-    *(f32 *)(cameraState + 4) = *(f32 *)(eye + 4);
-    *(f32 *)(cameraState + 8) = *(f32 *)(eye + 8);
-    *(f32 *)(cameraState + 0xC) = *(f32 *)(target + 0);
-    *(f32 *)(cameraState + 0x10) = *(f32 *)(target + 4);
-    *(f32 *)(cameraState + 0x14) = *(f32 *)(target + 8);
-    *(f32 *)(cameraState + 0x20) = 0.0f;
-    *(f32 *)(cameraState + 0x18) = 0.0f;
-    *(f32 *)(cameraState + 0x1C) = 1.0f;
+    ((MatrixCamera *)cameraState)->eye[0] = eye[0];
+    ((MatrixCamera *)cameraState)->eye[1] = eye[1];
+    ((MatrixCamera *)cameraState)->eye[2] = eye[2];
+    ((MatrixCamera *)cameraState)->target[0] = target[0];
+    ((MatrixCamera *)cameraState)->target[1] = target[1];
+    ((MatrixCamera *)cameraState)->target[2] = target[2];
+    ((MatrixCamera *)cameraState)->up[2] = 0.0f;
+    ((MatrixCamera *)cameraState)->up[0] = 0.0f;
+    ((MatrixCamera *)cameraState)->up[1] = 1.0f;
 }
 
 /// Framebuffer and command-buffer index for the current frame.

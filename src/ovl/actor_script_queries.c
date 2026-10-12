@@ -1,3 +1,4 @@
+#include "camera_pose.h"
 #include "action_query.h"
 #include "interaction.h"
 #include "object_target_search.h"
@@ -1287,7 +1288,6 @@ void actorTrackPlayerPrimaryObject(u8 *actor) {
 }
 
 f32 scriptVmPopFloat(s32);                   /* extern */
-void cameraSetEyeAndTarget(s32, f32 *, f32 *); /* extern */
 
 /// Set the primary camera position and look-at target from script arguments.
 /// \param vm Script VM containing position X, Y, Z followed by target X, Y, Z, with target Z on top of the stack.
