@@ -1015,7 +1015,6 @@ void textDrawSetScale(f32, f32);
 void textDrawSetArea(s32, s32, s32, s32);
 void textDrawSetColor(s32, s32, s32, s32);
 void textDrawSetCursor(s32, s32);
-void textDrawImageAtCursor(u8 *);
 /// Draw the current toolbox row title and its translucent background.
 /// \param address Address of the display-list cursor to append to and advance.
 /// \returns Nothing; requires an initialized row-title image.
@@ -1038,7 +1037,7 @@ void toolboxDrawRowTitle(s32 address) {
     textDrawSetArea(0, 0, 319, 239);
     textDrawSetColor(255, 255, 255, 254);
     textDrawSetCursor(36, 190);
-    textDrawImageAtCursor((u8 *)gToolboxRowTitleImages[row]);
+    textDrawImageAtCursor((TextImage *)gToolboxRowTitleImages[row]);
     textDrawGetDisplayListCursor(gdl);
 }
 

@@ -566,7 +566,6 @@ void textDrawSetCursor(s32, s32);
 void textDrawSetColor(s32, s32, s32, s32);
 void textDrawSetScale(f32, f32);
 void textDrawSetSpacingMode(s32);
-void textDrawImageAtCursor(u8 *);
 void textDrawSetFont(s32);
 /// Refresh and draw the selected system-menu item details.
 /// \param displayList Display-list cursor that receives the drawing commands and advances past them.
@@ -593,7 +592,7 @@ void systemMenuDrawDetails(Gfx **displayList) {
             y += 16;
         } else {
             textDrawSetCursor(183, y);
-            textDrawImageAtCursor((*row)[gSystemMenuDetailImageBuffer]);
+            textDrawImageAtCursor((TextImage *)(*row)[gSystemMenuDetailImageBuffer]);
             y += 16;
         }
         row++;
@@ -682,12 +681,12 @@ void systemMenuDrawItemList(Gfx **displayList) {
         if (menu->firstVisibleIndex + index == menu->selectedIndex) {
             textDrawSetCursor(40, y);
             textDrawSetColor(0, 0, 0, 254);
-            textDrawImageAtCursor((u8 *)gSystemMenuSelectedRowMarkerImage);
+            textDrawImageAtCursor((TextImage *)gSystemMenuSelectedRowMarkerImage);
         }
         if (menu->firstVisibleIndex + index == menu->confirmedIndex) {
             textDrawSetCursor(40, y);
             textDrawSetColor(255, 0, 0, 254);
-            textDrawImageAtCursor((u8 *)gSystemMenuSettingRowMarkerImage);
+            textDrawImageAtCursor((TextImage *)gSystemMenuSettingRowMarkerImage);
         }
     }
     y = 38;
@@ -705,7 +704,7 @@ void systemMenuDrawItemList(Gfx **displayList) {
                 textDrawSetColor(0, 0, 0, 254);
             }
         }
-        textDrawImageAtCursor(gSystemMenuRowImages[index][gSystemMenuRowImageBuffer]);
+        textDrawImageAtCursor((TextImage *)gSystemMenuRowImages[index][gSystemMenuRowImageBuffer]);
     }
     textDrawGetDisplayListCursor(displayList);
     callback = menu->action;
@@ -735,7 +734,7 @@ void systemMenuDrawClosingEffect(Gfx **displayList) {
         textDrawSetArea(0, 0, 319, 239);
         textDrawSetCursor(36, gSystemMenuClosingEffectRow * 16 + 38);
         textDrawSetColor(0, 0, 0, 254);
-        textDrawImageAtCursor(*image);
+        textDrawImageAtCursor((TextImage *)*image);
         textDrawGetDisplayListCursor(displayList);
     }
 }

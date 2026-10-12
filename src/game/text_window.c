@@ -281,7 +281,6 @@ void textWindowDrawPage(Gfx **gdl) {
 s32 runtimeGetUiPulseAlpha(void);
 void textDrawSetColor(s32, s32, s32, s32);
 void textDrawSetCursor(s32, s32);
-void textDrawImageAtCursor(s32);
 
 /// Draw the pulsing text-window input prompt.
 /// \param gdl Display-list cursor to append drawing commands to and advance.
@@ -293,7 +292,7 @@ void textWindowDrawPrompt(Gfx **gdl) {
     textDrawSetPalette(gDefaultTextPalette);
     textDrawSetColor(0xFF, 0xFF, 0xFF, runtimeGetUiPulseAlpha());
     textDrawSetCursor((0x140 - *(s32 *)(gTextWindowPromptImage + 4)) / 2 - 0x20, 0x9F);
-    textDrawImageAtCursor(gTextWindowPromptImage);
+    textDrawImageAtCursor((TextImage *)gTextWindowPromptImage);
     textDrawGetDisplayListCursor(gdl);
     textDrawReset();
     textDrawSetPalette(gDefaultTextPalette);

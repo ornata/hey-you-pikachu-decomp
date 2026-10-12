@@ -1039,3 +1039,13 @@ Loading uses the canonical ROM DMA declaration and a RAM destination pointer;
 segment setup consumes that same allocation. Unused integer redeclarations in
 controller code were removed. All changed units match the preserved object
 baseline; command-buffer address representations are not claimed recovered.
+
+### Text cursor image interface
+
+text_draw.h now declares textDrawImageAtCursor with the shared TextImage
+descriptor. Ghidra at 0x8003D5EC confirms width and height at offsets 4 and 8;
+the producer uses those fields directly. All seven caller units share the
+prototype, with explicit descriptor views at legacy byte/address slots. Pixel
+storage is borrowed until the emitted drawing commands finish. Each unit
+preserved the strict object baseline before the shared declaration was added.
+Legacy image table representations remain separate recovery targets.

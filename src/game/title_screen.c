@@ -225,7 +225,6 @@ void textDrawSetScale(f32, f32);
 void textDrawSetArea(s32, s32, s32, s32);
 void textDrawSetCursor(s32, s32);
 void textDrawSetColor(s32, s32, s32, s32);
-void textDrawImageAtCursor(u8 *);
 /// Draw title-screen menu choices and the current selection.
 /// \pre Menu images must be initialized; the current selection must identify a listed row when the list is nonempty.
 /// \param cursor Address of the display-list cursor to append commands to and advance.
@@ -278,13 +277,13 @@ void titleScreenDrawMenu(Gfx **cursor, const s32 *items, s32 enabled, s32 unavai
                 textDrawSetColor(255, 50, 50, 140);
             else
                 textDrawSetColor(120, 120, 255, 160);
-            textDrawImageAtCursor((u8 *)gTitleMenuImages[items[i]]);
+            textDrawImageAtCursor((TextImage *)gTitleMenuImages[items[i]]);
         }
         gTitleCursorFrame = (s32)((f32)runtimeGetElapsedMilliseconds() * 0.003f) % 4;
         cursorY = gTitleMenuSelection * 16 + y;
         textDrawSetCursor(x, cursorY);
         textDrawSetColor(255, 255, 0, 255);
-        textDrawImageAtCursor((u8 *)gTitleCursorImages[gTitleCursorFrame]);
+        textDrawImageAtCursor((TextImage *)gTitleCursorImages[gTitleCursorFrame]);
         textDrawGetDisplayListCursor(gdl);
     }
 }

@@ -678,11 +678,11 @@ void textImageLoadTexture(Gfx **, u8 *);
 /// \param image Text image to draw.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8003D5EC (0x8003D5EC).
-void textDrawImageAtCursor(u8 *image) {
-    s32 width = *(s32 *)(image + 4);
-    s32 height = *(s32 *)(image + 8);
+void textDrawImageAtCursor(TextImage *image) {
+    s32 width = image->width;
+    s32 height = image->height;
     s32 dx, dy;
-    textImageLoadTexture(&gTextDrawDisplayListCursor, image);
+    textImageLoadTexture(&gTextDrawDisplayListCursor, (u8 *)image);
     dx = (s32)(1024.0f / gTextDrawScaleX + 0.5);
     dy = (s32)(1024.0f / gTextDrawScaleY + 0.5);
     gSPTextureRectangle(gTextDrawDisplayListCursor++, gTextDrawCursorX * 4, gTextDrawCursorY * 4,

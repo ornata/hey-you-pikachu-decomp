@@ -711,7 +711,6 @@ void textDrawSetArea(s32, s32, s32, s32);
 void textDrawSetCursor(s32, s32);
 void textDrawSetColor(s32, s32, s32, s32);
 void textDrawSetFont(s32);
-void textDrawImageAtCursor(u8 *);
 /// Nonzero when the prepared current-area label is visible.
 /// \note Original identifier: \c D_800F0278 (0x800F0278).
 extern s32 gHudAreaLabelVisible;
@@ -736,7 +735,7 @@ void hudDrawAreaLabel(Gfx **gdl) {
         textDrawSetCursor((213 - ((TextImage *)gHudAreaLabelImage)->width) / 2,
                           (46 - ((TextImage *)gHudAreaLabelImage)->height) / 2);
         textDrawSetColor(255, 255, 255, 254);
-        textDrawImageAtCursor((u8 *)gHudAreaLabelImage);
+        textDrawImageAtCursor((TextImage *)gHudAreaLabelImage);
         textDrawGetDisplayListCursor(gdl);
         textDrawReset();
         textDrawSetPalette(gDefaultTextPalette);

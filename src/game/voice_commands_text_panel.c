@@ -292,7 +292,6 @@ Gfx *textureDrawScaledRegion(Gfx **, void *, u32, u32, u32, u32, u32, u32, u32, 
 void textDrawBegin(Gfx *);
 void textDrawSetCursor(s32, s32);
 void textDrawSetColor(s32, s32, s32, s32);
-void textDrawImageAtCursor(u8 *);
 void textDrawPrintf(const char *, ...);
 void textDrawGetDisplayListCursor(Gfx **);
 /// Line-break text emitted between scrolling text-panel entries.
@@ -350,7 +349,7 @@ void textPanelDraw(TextPanel *panel, Gfx **gdl, s32 mode) {
             textDrawSetCursor(panel->x + x0, panel->y + y0 + i * 16 - 16);
             color = panel->colors[i];
             textDrawSetColor(color[0], color[1], color[2], color[3]);
-            textDrawImageAtCursor((u8 *)*image);
+            textDrawImageAtCursor((TextImage *)*image);
         }
         textDrawPrintf(gTextPanelLineBreakText);
     }

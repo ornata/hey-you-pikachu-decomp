@@ -479,7 +479,7 @@ void presentationDrawAreaLabel(Gfx **gdl) {
         textDrawSetCursor((s32)(0x66 - gPresentationAreaLabelImage->width) / 2,
                           (s32)(0x10 - gPresentationAreaLabelImage->height) / 2);
         textDrawSetColor(0, 0, 0, 0xFE);
-        textDrawImageAtCursor(gPresentationAreaLabelImage);
+        textDrawImageAtCursor((TextImage *)gPresentationAreaLabelImage);
         textDrawGetDisplayListCursor(gdl);
         textDrawReset();
         textDrawSetPalette(gDefaultTextPalette);
@@ -755,12 +755,12 @@ void presentationDrawCollectionText(Gfx **gdl) {
     textDrawSetArea(0x1E, 0x1F, 0x118, 0x2F);
     textDrawSetCursor((s32)(0xFA - ((TextImage *)gCollectionPresentationTitleImage)->width) / 2,
                       (s32)(0x10 - ((TextImage *)gCollectionPresentationTitleImage)->height) / 2);
-    textDrawImageAtCursor((u8 *)gCollectionPresentationTitleImage);
+    textDrawImageAtCursor((TextImage *)gCollectionPresentationTitleImage);
     sub = gCollectionPresentationSubtitleImages[gCollectionPresentationSubtitleIndex];
     if (sub != NULL) {
         textDrawSetArea(0x1E, 0x31, 0x118, 0x41);
         textDrawSetCursor((s32)(0xFA - ((TextImage *)sub)->width) / 2, (s32)(0x10 - ((TextImage *)sub)->height) / 2);
-        textDrawImageAtCursor(sub);
+        textDrawImageAtCursor((TextImage *)sub);
     }
     textDrawGetDisplayListCursor(gdl);
     textDrawReset();
@@ -803,7 +803,7 @@ void presentationDrawCollectionScore(Gfx **gdl) {
         textDrawSetCursor(0, (s32)(0x10 - ((TextImage *)gCollectionPresentationScoreImage)->height) / 2);
         textDrawSetColor(0xFF, 0xFF, 0xFF, 0xFE);
         textDrawSetSpacingMode(1);
-        textDrawImageAtCursor((u8 *)gCollectionPresentationScoreImage);
+        textDrawImageAtCursor((TextImage *)gCollectionPresentationScoreImage);
         textDrawGetDisplayListCursor(gdl);
         textDrawReset();
         textDrawSetPalette(gDefaultTextPalette);
