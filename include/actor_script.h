@@ -7,6 +7,7 @@
 #include "script_message.h"
 #include "action_script_types.h"
 #include "actor_action_cue.h"
+#include "actor_action_callbacks.h"
 #include "direction_animation_types.h"
 #include "matrix_types.h"
 
@@ -45,7 +46,7 @@ typedef struct ActorScriptState {
     u8 unknown102[2];
     f32 actionMovementScale; ///< Movement scale supplied by an action, or duration supplied by a pose transition.
     ActorActionInitializer actionInitializer; ///< Optional initializer borrowed from the selected action definition.
-    s32 (*actionCallback)(u8 *); ///< Per-frame action callback; one ends playback.
+    ActorActionUpdateCallback actionCallback; ///< Per-frame action callback; one ends playback.
     ActorActionCueCommand *primaryCueProgram; ///< Borrowed primary cue program or action-kind selection collection.
     ActorActionCueCommand *secondaryCueProgram; ///< Borrowed secondary cue program or action-kind selection collection.
     s16 actionStartPending; ///< Nonzero when action playback must start or restart.

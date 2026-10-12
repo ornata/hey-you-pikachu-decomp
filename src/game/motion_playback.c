@@ -716,7 +716,7 @@ void actionDestroyTransitionMap(void) {
 void actionUpdatePlayback(u8 *object) {
     f32 remaining;
     f32 step;
-    s32 (*callback)(u8 *);
+    ActorActionUpdateCallback callback;
     s32 callbackResult;
     s32 result;
     u16 mode;

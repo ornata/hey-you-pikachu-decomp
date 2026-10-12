@@ -2255,3 +2255,18 @@ that contract. The indirect call now passes the actor explicitly, replacing
 the legacy unspecified-argument call. All changed units and header dependents
 preserve all 483 objects and strict relocation addends. This resolves the
 initializer ABI audit left open in the preceding cue-resource recovery.
+
+### Per-frame actor action callback contract
+
+The ROM action table has 70 non-null per-frame callback slots targeting 38
+distinct functions. All now have `s32 (u8 *)` definitions and shared documented
+declarations in `actor_action_callbacks.h`. `ActorActionUpdateCallback` records
+the observed contract from Ghidra 0x8000F14C: one ends motion immediately; zero
+permits normal looping; other nonzero values inhibit looping when motion ends.
+Seven preset wrappers explicitly return their movement helper results. Two
+oscillating approach handlers return the forwarded zero on their movement path,
+removing their non-void fallthrough exceptions. Four float-view callback bodies
+retain direct casts: adding local view pointers changes stack slots or frame
+size. Direct casts preserve all objects while providing a canonical actor
+parameter. The callback field and playback consumer use the shared typedef.
+All 483 objects and strict relocation addends remain identical.

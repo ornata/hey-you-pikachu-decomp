@@ -1,3 +1,4 @@
+#include "actor_action_callbacks.h"
 #include "action_continuation.h"
 #include "action_request.h"
 #include "actor_rotation.h"
@@ -33,7 +34,7 @@ f32 vector3GetYawDegrees(f32 *);
 /// \param actor Unused actor parameter retained by the action callback interface.
 /// \returns Always one, indicating completion.
 /// \note Original decompilation identifier: \c func_8000F7B0 (0x8000F7B0).
-s32 actorActionCompleteImmediately(s32 actor) {
+s32 actorActionCompleteImmediately(u8 *actor) {
     return 1;
 }
 
@@ -57,7 +58,7 @@ extern f32 gActorGroundSpinYawRate;
 /// \param actor Actor executing the spinning behavior.
 /// \returns Always zero, leaving action completion to its normal timing.
 /// \note Original decompilation identifier: \c func_8000F7BC (0x8000F7BC).
-s32 actorUpdateTimedGroundSpin(s32 actor) {
+s32 actorUpdateTimedGroundSpin(u8 *actor) {
     u8 *obj;
     f32 a;
 
@@ -231,18 +232,18 @@ s32 actorBackstepTowardTarget(s32 actor, f32 speed) {
 
 /// Apply the slow backward-step behavior while facing the tracked target.
 /// \param actor Actor executing the movement behavior.
-/// \returns Nothing.
+/// \returns The movement result: one ends the current motion, zero leaves it active.
 /// \note Original decompilation identifier: \c func_8000FC78 (0x8000FC78).
-void actorBackstepSlowly(s32 actor) {
-    actorBackstepTowardTarget(actor, 50.0f);
+s32 actorBackstepSlowly(u8 *actor) {
+    return actorBackstepTowardTarget((s32)actor, 50.0f);
 }
 
 /// Apply the fast backward-step behavior while facing the tracked target.
 /// \param actor Actor executing the movement behavior.
-/// \returns Nothing.
+/// \returns The movement result: one ends the current motion, zero leaves it active.
 /// \note Original decompilation identifier: \c func_8000FC98 (0x8000FC98).
-void actorBackstepQuickly(s32 actor) {
-    actorBackstepTowardTarget(actor, 400.0f);
+s32 actorBackstepQuickly(u8 *actor) {
+    return actorBackstepTowardTarget((s32)actor, 400.0f);
 }
 
 u32 randomNext(void);
@@ -271,7 +272,7 @@ s32 actorChooseAlignedTargetContinuation(u8 *actor) {
 /// \param actor Actor executing the turning behavior.
 /// \returns Always zero; the loop-exit request controls action completion.
 /// \note Original decompilation identifier: \c func_8000FDB0 (0x8000FDB0).
-s32 actorTurnToTrackedTargetAndExitLoop(s32 actor) {
+s32 actorTurnToTrackedTargetAndExitLoop(u8 *actor) {
     actorRefreshTrackingTargetPosition((u8 *)actor);
     if (actorTurnTowardTarget((u8 *)actor, 100.0f) != 0) {
         actionRequestLoopExit((u8 *)actor);
@@ -283,7 +284,7 @@ s32 actorTurnToTrackedTargetAndExitLoop(s32 actor) {
 /// \param actor Actor executing the turning behavior.
 /// \returns Always zero; the loop-exit request controls action completion.
 /// \note Original decompilation identifier: \c func_8000FDF0 (0x8000FDF0).
-s32 actorPivotToTargetAndExitLoop(s32 actor) {
+s32 actorPivotToTargetAndExitLoop(u8 *actor) {
     if (actorPivotTowardTarget((u8 *)actor, 100.0f) != 0) {
         actionRequestLoopExit((u8 *)actor);
     }
@@ -344,7 +345,7 @@ s32 actorSelectAlignedOrLeftTargetContinuation(u8 *actor) {
 /// \param actor Actor executing the turning behavior.
 /// \returns Always zero, leaving action completion to its normal timing.
 /// \note Original decompilation identifier: \c func_8000FF8C (0x8000FF8C).
-s32 actorUpdateAdaptiveTargetTurn(void *actor) {
+s32 actorUpdateAdaptiveTargetTurn(u8 *actor) {
     void *sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.pointer;
@@ -437,8 +438,8 @@ s32 actorTurnAwayFromPlayer(s32 actor, f32 turnSpeed) {
 /// \param actor Actor executing the turn-away behavior.
 /// \returns Always zero, leaving action completion to its normal timing.
 /// \note Original decompilation identifier: \c func_80010210 (0x80010210).
-s32 actorUpdateTurnAwayFromPlayer(s32 actor) {
-    actorTurnAwayFromPlayer(actor, 720.0f);
+s32 actorUpdateTurnAwayFromPlayer(u8 *actor) {
+    actorTurnAwayFromPlayer((s32)actor, 720.0f);
     return 0;
 }
 
@@ -487,7 +488,7 @@ s32 actorShouldEndRepeatedAction(u8 *actor) {
 /// \param actor Actor executing the turning behavior.
 /// \returns One when aligned with the constrained target heading; otherwise zero.
 /// \note Original decompilation identifier: \c func_800102DC (0x800102DC).
-s32 actorTurnToTrackedTargetSlowly(s32 actor) {
+s32 actorTurnToTrackedTargetSlowly(u8 *actor) {
     actorRefreshTrackingTargetPosition((u8 *)actor);
     if (actorTurnTowardTarget((u8 *)actor, 120.0f) != 0) {
         return 1;
@@ -500,7 +501,7 @@ s32 actorTurnToTrackedTargetSlowly(s32 actor) {
 /// \param actor Actor executing the turning behavior.
 /// \returns One when aligned with the constrained target heading; otherwise zero.
 /// \note Original decompilation identifier: \c func_80010314 (0x80010314).
-s32 actorTurnToTrackedTargetQuickly(s32 actor) {
+s32 actorTurnToTrackedTargetQuickly(u8 *actor) {
     actorRefreshTrackingTargetPosition((u8 *)actor);
     if (actorTurnTowardTarget((u8 *)actor, 1440.0f) != 0) {
         return 1;
@@ -561,13 +562,13 @@ s32 actorAdvanceToTarget(u8 *actor) {
 /// \param actor Actor executing the movement behavior.
 /// \returns Always zero, leaving action completion to its normal timing.
 /// \note Original decompilation identifier: \c func_80010480 (0x80010480).
-s32 actorAdvanceWithLateralVariation(f32 *actor) {
+s32 actorAdvanceWithLateralVariation(u8 *actor) {
     s32 pad; /* unused, sizes the frame */
     f32 v[3];
     f32 amp;
 
     amp = gRuntimeFrameSeconds * 400.0f;
-    amp *= 1.0 + (((*actor / *(f32 *)(gCurrentAreaConfiguration + 0xC)) - 1.0f) * 0.5f);
+    amp *= 1.0 + (((*((f32 *)actor) / *(f32 *)(gCurrentAreaConfiguration + 0xC)) - 1.0f) * 0.5f);
     v[0] = (f32)((s32)randomBelow(10) - 4);
     v[1] = 0.0f;
     v[2] = amp;
@@ -580,20 +581,19 @@ s32 actorAdvanceWithLateralVariation(f32 *actor) {
 /// \param actor Actor executing the movement behavior.
 /// \returns Always zero, leaving action completion to its normal timing.
 /// \note Original decompilation identifier: \c func_80010530 (0x80010530).
-s32 actorAdvanceQuicklyWithLateralVariation(f32 *actor) {
+s32 actorAdvanceQuicklyWithLateralVariation(u8 *actor) {
     s32 pad; /* unused, sizes the frame */
     f32 v[3];
     f32 amp;
 
     amp = gRuntimeFrameSeconds * 600.0f;
-    amp *= 1.0 + (((*actor / *(f32 *)(gCurrentAreaConfiguration + 0xC)) - 1.0f) * 0.5f);
+    amp *= 1.0 + (((*((f32 *)actor) / *(f32 *)(gCurrentAreaConfiguration + 0xC)) - 1.0f) * 0.5f);
     v[0] = (f32)((s32)randomBelow(10) - 4);
     v[1] = 0.0f;
     v[2] = amp;
     objectAddPendingLocalMovement(v);
     return 0;
 }
-
 
 /// Apply a small random horizontal turn during an action.
 /// \param actor Actor receiving the facing adjustment.
@@ -608,7 +608,7 @@ s32 actorApplyRandomYawJitter(u8 *actor) {
 /// \param actor Actor executing the behavior.
 /// \returns Always zero, leaving action completion to its normal timing.
 /// \note Original decompilation identifier: \c func_80010628 (0x80010628).
-s32 actorTumbleForward(s32 actor) {
+s32 actorTumbleForward(u8 *actor) {
     u8 *obj;
     f32 v[3];
     f32 amp;
@@ -713,7 +713,7 @@ s32 actorLowerLocalHeightSlowly(u8 *actor) {
 /// \param actor Actor executing the behavior.
 /// \returns Always zero, leaving action completion to its normal timing.
 /// \note Original decompilation identifier: \c func_800108E0 (0x800108E0).
-s32 actorSpinYaw(s32 actor) {
+s32 actorSpinYaw(u8 *actor) {
     actorAddRotationAxisDegrees((u8 *)actor, 20.0f, 1);
     return 0;
 }
@@ -976,18 +976,18 @@ s32 actorRecordGroundClearanceAndCheckTarget(u8 *actor) {
 
 /// Apply the standard forward approach behavior with minimum ground clearance.
 /// \param actor Actor executing the movement behavior.
-/// \returns Nothing.
+/// \returns The movement result: one ends the current motion, zero leaves it active.
 /// \note Original decompilation identifier: \c func_800112FC (0x800112FC).
-void actorAdvanceAboveGround(s32 actor) {
-    actorAdvanceWithGroundClearance(actor, 500.0f);
+s32 actorAdvanceAboveGround(u8 *actor) {
+    return actorAdvanceWithGroundClearance((s32)actor, 500.0f);
 }
 
 /// Apply the faster forward approach behavior with minimum ground clearance.
 /// \param actor Actor executing the movement behavior.
-/// \returns Nothing.
+/// \returns The movement result: one ends the current motion, zero leaves it active.
 /// \note Original decompilation identifier: \c func_8001131C (0x8001131C).
-void actorAdvanceAboveGroundQuickly(s32 actor) {
-    actorAdvanceWithGroundClearance(actor, 800.0f);
+s32 actorAdvanceAboveGroundQuickly(u8 *actor) {
+    return actorAdvanceWithGroundClearance((s32)actor, 800.0f);
 }
 
 
@@ -1053,19 +1053,20 @@ extern f32 gActorVerticalPulseAmplitude;
 /// \param actor Actor whose vertical scale pulse has been initialized with actorInitializeVerticalScalePulse.
 /// \returns One when the pulse has completed; otherwise zero.
 /// \note Original decompilation identifier: \c func_80011470 (0x80011470).
-s32 actorUpdateVerticalScalePulse(f32 *actor) {
+s32 actorUpdateVerticalScalePulse(u8 *actor) {
     u8 *obj;
     f32 t;
 
-    obj = *(u8 **)((u8 *)actor + 0x54);
+    obj = *(u8 **)((u8 *)((f32 *)actor) + 0x54);
     t = *(f32 *)(obj + 0x1F8);
     if (360.0f <= t) {
-        actor[1] = actor[0];
+        ((f32 *)actor)[1] = ((f32 *)actor)[0];
         *(f32 *)(obj + 0x1F8) = 0.0f;
         return 1;
     }
-    actor[1] =
-        (1.0f + gActorVerticalPulseAmplitude * (mathSinDegrees(*(f32 *)(obj + 0x1F8) + 210.0f) - -0.5f)) * actor[0];
+    ((f32 *)actor)[1] =
+        (1.0f + gActorVerticalPulseAmplitude * (mathSinDegrees(*(f32 *)(obj + 0x1F8) + 210.0f) - -0.5f)) *
+        ((f32 *)actor)[0];
     *(f32 *)(obj + 0x1F8) = *(f32 *)(obj + 0x1F8) + 40.0f;
     return 0;
 }
@@ -1083,16 +1084,16 @@ extern f64 gActorDampedPulseSecondPhase;
 /// \param object Actor whose vertical scale animation has been initialized with actorInitializeVerticalScalePulse.
 /// \returns One when the pulse sequence has completed; otherwise zero.
 /// \note Original decompilation identifier: \c func_80011528 (0x80011528).
-s32 actorUpdateDampedVerticalScalePulses(f32 *object) {
+s32 actorUpdateDampedVerticalScalePulses(u8 *object) {
     u8 *state;
     f32 angle;
     f32 sampleAngle;
     f32 amplitude;
     f64 phase;
-    state = *(u8 **)((u8 *)object + 0x54);
+    state = *(u8 **)((u8 *)((f32 *)object) + 0x54);
     amplitude = gActorDampedPulseInitialAmplitude;
     if (*(f32 *)(state + 0x1F8) >= 1080.0f) {
-        object[1] = object[0];
+        ((f32 *)object)[1] = ((f32 *)object)[0];
         *(f32 *)(state + 0x1F8) = 0.0f;
         return 1;
     }
@@ -1103,11 +1104,10 @@ s32 actorUpdateDampedVerticalScalePulses(f32 *object) {
         amplitude = gActorDampedPulseSecondAmplitude;
     if (719.0 < phase)
         amplitude = 0.02f;
-    object[1] = (1.0f + amplitude * (mathSinDegrees(sampleAngle + 210.0f) - -0.5f)) * object[0];
+    ((f32 *)object)[1] = (1.0f + amplitude * (mathSinDegrees(sampleAngle + 210.0f) - -0.5f)) * ((f32 *)object)[0];
     *(f32 *)(state + 0x1F8) = *(f32 *)(state + 0x1F8) + 40.0f;
     return 0;
 }
-
 
 /// Advance an actor with rhythmic body deformation and slight lateral variation.
 /// \param object Actor currently being updated, with a nonzero base scale.
@@ -1143,18 +1143,17 @@ s32 actorAdvanceWithScaleOscillation(f32 *object, f32 speed) {
 
 /// Apply the slow forward movement behavior with rhythmic body deformation.
 /// \param actor Actor executing the movement behavior.
-/// \returns Nothing.
+/// \returns The movement result: one ends the current motion, zero leaves it active.
 /// \note Original decompilation identifier: \c func_800117B4 (0x800117B4).
-void actorAdvanceWithSlowScaleOscillation(u8 *actor) {
-    actorAdvanceWithScaleOscillation((f32 *)actor, 150.0f);
+s32 actorAdvanceWithSlowScaleOscillation(u8 *actor) {
+    return actorAdvanceWithScaleOscillation((f32 *)actor, 150.0f);
 }
 
 /// Approach the tracked target slowly with rhythmic body deformation until arrival or a movement constraint.
 /// \pre The actor must be the current object update with a nonzero base scale and initialized tracking state.
 /// \param actor Actor executing the approach behavior.
-/// \returns One when the target is in range or movement is constrained; otherwise unspecified and unsuitable for deciding completion.
+/// \returns One when the target is in range or movement is constrained; otherwise zero.
 ///
-/// \note Portability/UB: the movement path reaches the end of a non-void function without returning a value.
 /// \note Original decompilation identifier: \c func_800117D4 (0x800117D4).
 s32 actorApproachTargetWithSlowScaleOscillation(u8 *actor) {
     s32 pad[3]; /* unused, sizes the frame */
@@ -1170,23 +1169,22 @@ s32 actorApproachTargetWithSlowScaleOscillation(u8 *actor) {
     if ((vector3Length(v) < *(f32 *)(obj + 0x1A4) + *(f32 *)(obj + 0x204)) || (*(u16 *)(obj + 0x1EA) != 0)) {
         return 1;
     }
-    actorAdvanceWithSlowScaleOscillation(actor);
+    return actorAdvanceWithSlowScaleOscillation(actor);
 }
 
 /// Apply the medium-speed forward movement behavior with rhythmic body deformation.
 /// \param actor Actor executing the movement behavior.
-/// \returns Nothing.
+/// \returns The movement result: one ends the current motion, zero leaves it active.
 /// \note Original decompilation identifier: \c func_80011878 (0x80011878).
-void actorAdvanceWithMediumScaleOscillation(u8 *actor) {
-    actorAdvanceWithScaleOscillation((f32 *)actor, 300.0f);
+s32 actorAdvanceWithMediumScaleOscillation(u8 *actor) {
+    return actorAdvanceWithScaleOscillation((f32 *)actor, 300.0f);
 }
 
 /// Approach the tracked target at medium speed with rhythmic body deformation until arrival or a movement constraint.
 /// \pre The actor must be the current object update with a nonzero base scale and initialized tracking state.
 /// \param actor Actor executing the approach behavior.
-/// \returns One when the target is in range or movement is constrained; otherwise unspecified and unsuitable for deciding completion.
+/// \returns One when the target is in range or movement is constrained; otherwise zero.
 ///
-/// \note Portability/UB: the movement path reaches the end of a non-void function without returning a value.
 /// \note Original decompilation identifier: \c func_80011898 (0x80011898).
 s32 actorApproachTargetWithMediumScaleOscillation(u8 *actor) {
     s32 pad[3]; /* unused, sizes the frame */
@@ -1202,15 +1200,15 @@ s32 actorApproachTargetWithMediumScaleOscillation(u8 *actor) {
     if ((vector3Length(v) < *(f32 *)(obj + 0x204)) || (*(u16 *)(obj + 0x1EA) != 0)) {
         return 1;
     }
-    actorAdvanceWithMediumScaleOscillation(actor);
+    return actorAdvanceWithMediumScaleOscillation(actor);
 }
 
 /// Apply the fast forward movement behavior with rhythmic body deformation.
 /// \param actor Actor executing the movement behavior.
-/// \returns Nothing.
+/// \returns The movement result: one ends the current motion, zero leaves it active.
 /// \note Original decompilation identifier: \c func_80011934 (0x80011934).
-void actorAdvanceWithFastScaleOscillation(u8 *actor) {
-    actorAdvanceWithScaleOscillation((f32 *)actor, 900.0f);
+s32 actorAdvanceWithFastScaleOscillation(u8 *actor) {
+    return actorAdvanceWithScaleOscillation((f32 *)actor, 900.0f);
 }
 
 /// Restore uniform actor scale after body deformation.
