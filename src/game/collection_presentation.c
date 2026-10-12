@@ -952,9 +952,6 @@ void presentationChooseActorResponseToItem(s32 id) {
 /// Separate view of the two ten-entry toolbox item rows.
 /// \note Original identifier: \c D_800F1C08 (0x800F1C08).
 extern u8 gToolboxItemSlots[], gToolboxBonusSlot[];
-/// Per-kind item motion, rendering, response and description configuration.
-/// \note Original identifier: \c D_80125A40 (0x80125A40).
-extern ItemKind gItemKinds[];
 /// Owned toolbox display state, item rows, placeholders and special storage slots.
 /// \note Original identifier: \c D_800F1BE0 (0x800F1BE0).
 extern ToolboxState gToolboxState;

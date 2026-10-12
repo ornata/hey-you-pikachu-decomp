@@ -38,14 +38,6 @@ extern s32 gProgressFieldTypes[];
 /// \note Original identifier: \c D_800F1BE0 (0x800F1BE0).
 extern s32 gToolboxState;
 
-typedef struct {
-    u8 pad0[0x71];
-    s8 f71;
-    s16 f72;
-} Unk74;
-/// Per-kind item motion, rendering, response and description configuration.
-/// \note Original identifier: \c D_80125A40 (0x80125A40).
-extern Unk74 gItemKinds[];
 
 void toolboxScaleCurrentRow(s32 *);           /* extern */
 u8 *toolboxTakeObject(s32, s32); /* extern */

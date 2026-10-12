@@ -62,10 +62,16 @@ typedef struct {
     /* 0x6C */ s32 unk6C;                     ///< Offset 0x6C; purpose remains unresolved.
     /* 0x70 */ u8 unk70;                      ///< Offset 0x70; purpose remains unresolved.
     /* 0x71 */ u8 itemClass;                  ///< Item classification used by registry queries.
-    /* 0x72 */ s16 unk72;                     ///< Offset 0x72; purpose remains unresolved.
+    /* 0x72 */ s16 availabilityField;         ///< Saved progress-field selector controlling item availability.
 } ItemKind;                                   /* size 0x74 */
 
 typedef char ItemKindSizeCheck[(sizeof(ItemKind) == 0x74) ? 1 : -1];
 typedef char ItemKindFrictionOffsetCheck[(((u32) & ((ItemKind *)0)->frictionCoefficient) == 0x30) ? 1 : -1];
 typedef char ItemKindEffectsOffsetCheck[(((u32) & ((ItemKind *)0)->effect) == 0x40) ? 1 : -1];
+typedef char ItemKindAvailabilityOffsetCheck[(((u32)&((ItemKind *)0)->availabilityField) == 0x72) ? 1 : -1];
+
+/// Per-kind item motion, rendering, response and description configuration.
+/// \note Original identifier: \c D_80125A40 (0x80125A40).
+extern ItemKind gItemKinds[];
+
 #endif

@@ -3008,5 +3008,5 @@ s8 itemGetClass(s32 kind) {
 /// \returns The configured availability progress-field selector.
 /// \note Original decompilation identifier: \c func_80115044 (0x80115044).
 s16 itemGetAvailabilityFlag(s32 kind) {
-    return gItemKinds[kind].unk72;
+    return gItemKinds[kind].availabilityField;
 }

@@ -161,9 +161,6 @@ extern u8 *gInteractionMarkerTransformPrograms[];
 /// Primary player control record and base of the player records with a 256-byte stride.
 /// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
 extern u8 gPlayerState[];
-/// Per-kind item motion, rendering, response and description configuration.
-/// \note Original identifier: \c D_80125A40 (0x80125A40).
-extern ItemKind gItemKinds[];
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;

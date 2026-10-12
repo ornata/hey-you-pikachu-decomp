@@ -1,3 +1,4 @@
+#include "item_kind.h"
 #include "maze_scatter.h"
 #include "weighted_choice.h"
 #include "progress_value.h"
@@ -2191,9 +2192,6 @@ void *areaLoadNextOverlay(void) {
                               ovl->dataEnd, ovl->bssStart, ovl->bssEnd);
 }
 
-/// Per-kind item motion, rendering, response and description configuration.
-/// \note Original identifier: \c D_80125A40 (0x80125A40).
-extern u8 gItemKinds[];
 
 /// Spawn listed maze items whose saved availability permits them to appear.
 /// \param spawn Readable placement list terminated by item kind zero; preceding kinds must be valid catalog
@@ -2212,10 +2210,10 @@ void mazeSpawnAvailableItems(ItemSpawn *spawn) {
         if (entry->type == 0) {
             break;
         }
-        if (progressGetValue(*(s16 *)(gItemKinds + entry->type * 0x74 + 0x72))) {
+        if (progressGetValue(gItemKinds[entry->type].availabilityField)) {
             itemSetMode(itemCreate(entry->x, entry->y, entry->z, entry->yaw, entry->pitch, entry->type), 2);
         } else {
-            TRACE("ERROR : not keeping item, %s\n", (char *)(gItemKinds + entry->type * 0x74));
+            TRACE("ERROR : not keeping item, %s\n", (char *)&gItemKinds[entry->type]);
         }
         if (entry->type == 100) {
         }

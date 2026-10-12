@@ -2704,3 +2704,15 @@ Ghidra 0x80032490 confirms mutation through the terminator and the cached index.
 callers. Borrowed scene position arrays now use float elements and table symbols
 use the shared record; original identifiers and addresses remain documented.
 All seven source units preserve the complete strict object baseline.
+
+### Shared item-kind availability selector
+
+The checked signed halfword at item-kind offset 0x72 is now `availabilityField`.
+Toolbox availability writes, registry queries and maze progress reads establish
+its saved-field role; Ghidra 0x8010E6C4 confirms the signed load and 0x74 stride.
+The maze uses the existing shared `ItemKind` layout rather than byte arithmetic.
+
+`item_kind.h` now owns the canonical table declaration and its original symbol
+note. Four consumers lose duplicate declarations, and save progress loses an
+unused private 0x74-byte prefix and table declaration. Every source-unit change
+and shared-header dependent preserves all 483 strict object comparisons.

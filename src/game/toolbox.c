@@ -479,9 +479,6 @@ void toolboxStorePurchasedObject(u8 *object) {
     toolboxStoreObjectInSlot(&gToolboxPurchaseSlot, (u8 *)object);
 }
 
-/// Per-kind item motion, rendering, response and description configuration.
-/// \note Original identifier: \c D_80125A40 (0x80125A40).
-extern ItemKind gItemKinds[];
 
 /// Record acquisition of a supply item in persistent progress.
 /// \param itemKind Valid item catalog kind whose acquisition is being recorded.
@@ -497,7 +494,7 @@ s32 toolboxRecordSupplyItem(s32 itemKind) {
     if ((supplyCategory != 3) && (supplyCategory != 2)) {
         return 0;
     }
-    availabilityFlag = itemRecord->unk72;
+    availabilityFlag = itemRecord->availabilityField;
     if (availabilityFlag == -1) {
         return 0;
     }
