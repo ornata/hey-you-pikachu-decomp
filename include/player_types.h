@@ -99,6 +99,12 @@ typedef char PlayerModeCallbackOffsetCheck[(PLAYER_OFFSET(modeState.update) == 0
 typedef char PlayerModeLeaveOffsetCheck[(PLAYER_OFFSET(modeState.leave) == 0xDC) ? 1 : -1];
 typedef char PlayerPointsOffsetCheck[(PLAYER_OFFSET(points) == 0xF0) ? 1 : -1];
 typedef char PlayerMovementClassOffsetCheck[(PLAYER_OFFSET(movementClass) == 0x78) ? 1 : -1];
+typedef char PlayerCameraStartEyeOffsetCheck[(PLAYER_OFFSET(modeState.cameraStartEye) == 0xA0) ? 1 : -1];
+typedef char PlayerCameraEndEyeOffsetCheck[(PLAYER_OFFSET(modeState.cameraEndEye) == 0xAC) ? 1 : -1];
+typedef char PlayerCameraStartTargetOffsetCheck[(PLAYER_OFFSET(modeState.cameraStartTarget) == 0xB8) ? 1 : -1];
+typedef char PlayerCameraEndTargetOffsetCheck[(PLAYER_OFFSET(modeState.cameraEndTarget) == 0xC4) ? 1 : -1];
+typedef char PlayerCameraRemainingOffsetCheck[(PLAYER_OFFSET(modeState.cameraRemaining) == 0xD0) ? 1 : -1];
+typedef char PlayerCameraDurationOffsetCheck[(PLAYER_OFFSET(modeState.cameraDuration) == 0xD4) ? 1 : -1];
 #undef PLAYER_OFFSET
 
 #endif

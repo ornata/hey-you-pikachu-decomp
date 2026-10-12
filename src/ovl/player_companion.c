@@ -1,3 +1,4 @@
+#include "player_camera.h"
 #include "vector_interpolation.h"
 #include "camera_overlay.h"
 #include "camera_pose.h"
@@ -1813,10 +1814,10 @@ void playerUpdateCameraTransition(u8 *player, u8 *unused) {
     if (((PlayerControlPrefix *)player)->modeState.cameraRemaining < 0.0f) {
         ((PlayerControlPrefix *)player)->modeState.cameraRemaining = 0.0f;
     }
-    vector3InterpolateSmoothTimed((f32 *)(player + 0xAC), (f32 *)(player + 0xA0), sp3C,
+    vector3InterpolateSmoothTimed(((PlayerControlPrefix *)player)->modeState.cameraEndEye, ((PlayerControlPrefix *)player)->modeState.cameraStartEye, sp3C,
                                   ((PlayerControlPrefix *)player)->modeState.cameraDuration,
                                   ((PlayerControlPrefix *)player)->modeState.cameraRemaining);
-    vector3InterpolateSmoothTimed((f32 *)(player + 0xC4), (f32 *)(player + 0xB8), sp30,
+    vector3InterpolateSmoothTimed(((PlayerControlPrefix *)player)->modeState.cameraEndTarget, ((PlayerControlPrefix *)player)->modeState.cameraStartTarget, sp30,
                                   ((PlayerControlPrefix *)player)->modeState.cameraDuration,
                                   ((PlayerControlPrefix *)player)->modeState.cameraRemaining);
     cameraSetEyeAndTarget(0, sp3C, sp30);
@@ -2416,12 +2417,11 @@ extern MatrixCamera gRenderCameras;
 /// Configure a smooth primary-camera transition from the current view for the camera-transition mode.
 /// \param eye Readable destination camera eye position as world X, Y, Z coordinates; copied during this call.
 /// \param target Readable destination look-at point as world X, Y, Z coordinates; copied during this call.
-/// \param duration Positive finite requested transition duration in seconds, representable as a signed
-/// integer.
+/// \param duration Positive finite requested transition duration in seconds.
 /// \returns Nothing.
 ///
 /// \note Original decompilation identifier: \c func_80112698 (0x80112698).
-void playerPrepareCameraTransition(u8 *eye, u8 *target, f32 duration) {
+void playerPrepareCameraTransition(f32 *eye, f32 *target, f32 duration) {
     ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraStartEye[0] =
         (f32)gRenderCameras.eye[0];
     ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraStartEye[1] =
@@ -2434,12 +2434,12 @@ void playerPrepareCameraTransition(u8 *eye, u8 *target, f32 duration) {
         (f32)gRenderCameras.target[1];
     ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraStartTarget[2] =
         (f32)gRenderCameras.target[2];
-    ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraEndEye[0] = (f32)((f32 *)eye)[0];
-    ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraEndEye[1] = (f32)((f32 *)eye)[1];
-    ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraEndEye[2] = (f32)((f32 *)eye)[2];
-    ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraEndTarget[0] = (f32)((f32 *)target)[0];
-    ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraEndTarget[1] = (f32)((f32 *)target)[1];
-    ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraEndTarget[2] = (f32)((f32 *)target)[2];
+    ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraEndEye[0] = (f32)eye[0];
+    ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraEndEye[1] = (f32)eye[1];
+    ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraEndEye[2] = (f32)eye[2];
+    ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraEndTarget[0] = (f32)target[0];
+    ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraEndTarget[1] = (f32)target[1];
+    ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraEndTarget[2] = (f32)target[2];
     ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraDuration = duration;
     ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraRemaining =
         (f32)((PlayerControlPrefix *)&gPlayerState)->modeState.cameraDuration;

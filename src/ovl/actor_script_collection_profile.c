@@ -1,3 +1,4 @@
+#include "player_camera.h"
 #include "actor_script_action.h"
 #include "camera_overlay.h"
 #include "actor_color.h"
@@ -579,7 +580,6 @@ s32 actorScriptGetCreationScriptArgument(u8 *actor) {
     return 0;
 }
 
-void playerPrepareCameraTransition(f32 *, f32 *, f32); /* extern */
 
 /// Configure a smooth primary-camera transition from the current view.
 /// \param actor Actor whose script VM supplies destination eye X/Y/Z, look-at target X/Y/Z, and transition duration in seconds as floating-point values, in that order; the VM receives zero.

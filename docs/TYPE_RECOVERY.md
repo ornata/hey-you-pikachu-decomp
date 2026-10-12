@@ -2598,3 +2598,15 @@ result. Provider and both caller units preserve all 483 strict object comparison
 The companion comment claiming an integer duration argument was stale: its
 existing declaration and call already used float duration. It is replaced with
 the actual prepared-transition and valid-camera precondition.
+
+### Companion camera-transition fields and preparation
+
+The companion update now names the four retained camera vectors instead of
+raw player offsets. Compile-time checks cover start/end eye and target vectors
+at 0xA0, 0xAC, 0xB8 and 0xC4, plus remaining time and duration at 0xD0/0xD4.
+Ghidra 0x801116D8 confirms the reversed endpoint order used with remaining time.
+
+`player_camera.h` supplies the preparation contract to provider and script caller.
+Destination vectors are copied from float pointers; the old byte-pointer view
+and stale signed-integer duration restriction are removed. All affected source
+units and shared-header dependents preserve the complete strict object baseline.
