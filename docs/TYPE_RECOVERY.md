@@ -3051,3 +3051,15 @@ configured first/second parts and fixed part-ID cases; uncertain anatomical
 meanings remain numeric. Contracts document borrowed parts, allocation
 ownership, output extents and unsupported-mode behavior. All conversions
 preserve strict allocated objects and relocations.
+
+### Ground-reference and motion vector fields
+
+Named-part flag updates, lowest reference height and ground-clearance queries
+now use checked object flags, kind and world-position fields plus actor
+ground offset. Ghidra 0x80016BA8 confirms the reference-part minimum and
+horizontal terrain query. Motion transformation names local/world vectors
+while retaining the documented unused trailing state argument. Ground-pose
+updates name pose displacement, accumulated vertical offset, actor ground
+offset, orientation and output transform fields. Original floating expression
+order is unchanged. Both isolated conversion groups preserve all strict
+allocated bytes and relocations without new matching exceptions.

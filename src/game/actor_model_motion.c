@@ -1175,8 +1175,8 @@ void actorUpdateNamedPartFlags(u8 *actor, s32 set, s32 clear, s32 *ids) {
     for (p = ids; *p >= 0; p++) {
         e = actorFindPart(actor, *p);
         if (e != NULL) {
-            *(u16 *)(e + 0x36) |= set;
-            *(u16 *)(e + 0x36) &= ~clear;
+            ((RuntimeObjectPrefix *)e)->flags |= set;
+            ((RuntimeObjectPrefix *)e)->flags &= ~clear;
         }
     }
 }
@@ -1187,15 +1187,15 @@ void actorUpdateNamedPartFlags(u8 *actor, s32 set, s32 clear, s32 *ids) {
 /// \returns Lowest reference-part world height, including the default reference part.
 /// \note Original decompilation identifier: \c func_80016B1C (0x80016B1C).
 f32 actorGetLowestReferencePartHeight(u8 *actor) {
-    f32 min = *(f32 *)(actorGetDefaultPart(actor) + 0x48);
-    const s32 *ids = actorConfigGetGroundReferencePartIds(*(u16 *)(actor + 0x34));
+    f32 min = ((RuntimeObjectPrefix *)actorGetDefaultPart(actor))->worldPosition[1];
+    const s32 *ids = actorConfigGetGroundReferencePartIds(((RuntimeObjectPrefix *)actor)->kind);
     s32 i;
     u8 *o;
 
     for (i = 0; ids[i] > 0; i++) {
         o = actorFindPart(actor, ids[i]);
-        if (o != NULL && *(f32 *)(o + 0x48) < min) {
-            min = *(f32 *)(o + 0x48);
+        if (o != NULL && ((RuntimeObjectPrefix *)o)->worldPosition[1] < min) {
+            min = ((RuntimeObjectPrefix *)o)->worldPosition[1];
         }
     }
     return min;
@@ -1218,17 +1218,17 @@ f32 actorMeasureGroundClearance(u8 *actor, s32 collisionMode, u8 *reference, f32
     u8 *e;
     f32 top;
 
-    v = *(u8 **)(actor + 0x54);
-    top = *(f32 *)(reference + 0x48);
-    for (p = actorConfigGetGroundReferencePartIds(*(u16 *)(actor + 0x34)); *p > 0; p++) {
+    v = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    top = ((RuntimeObjectPrefix *)reference)->worldPosition[1];
+    for (p = actorConfigGetGroundReferencePartIds(((RuntimeObjectPrefix *)actor)->kind); *p > 0; p++) {
         e = actorFindPart(actor, *p);
-        if (e != NULL && *(f32 *)(e + 0x48) < top) {
-            top = *(f32 *)(e + 0x48);
+        if (e != NULL && ((RuntimeObjectPrefix *)e)->worldPosition[1] < top) {
+            top = ((RuntimeObjectPrefix *)e)->worldPosition[1];
         }
     }
     *groundHeight =
-        terrainGetWorldHeightForQuery(collisionMode, *(f32 *)(reference + 0x44) + displacement[0], *(f32 *)(reference + 0x48), *(f32 *)(reference + 0x4C) + displacement[2], surface);
-    return top - *groundHeight - *(f32 *)(v + 0x20C);
+        terrainGetWorldHeightForQuery(collisionMode, ((RuntimeObjectPrefix *)reference)->worldPosition[0] + displacement[0], ((RuntimeObjectPrefix *)reference)->worldPosition[1], ((RuntimeObjectPrefix *)reference)->worldPosition[2] + displacement[2], surface);
+    return top - *groundHeight - ((ActorScriptState *)v)->groundOffset;
 }
 
 void matrix33TransformVector(f32 *, f32 *, f32 *, u8 *);
@@ -1242,7 +1242,7 @@ void actorUpdateMotionDisplacement(u8 *state, s32 status) {
     f32 movementScale;
     f32 var_f0;
 
-    matrix33TransformVector((f32 *)&gObjectTraversalTransform, (f32 *)(state + 0x1CC), (f32 *)(state + 0x1D8), state);
+    matrix33TransformVector((f32 *)&gObjectTraversalTransform, ((ActorScriptState *)state)->localMotion, ((ActorScriptState *)state)->worldMotion, state);
     movementScale = ((ActorScriptState *)state)->movementScale;
     ((ActorScriptState *)state)->worldMotion[0] = (f32)(((ActorScriptState *)state)->worldMotion[0] * movementScale);
     ((ActorScriptState *)state)->worldMotion[1] = (f32)(((ActorScriptState *)state)->worldMotion[1] * movementScale);
@@ -1273,16 +1273,16 @@ void actorUpdateGroundReferencePose(u8 *actor, u8 *reference, u8 *pose) {
     f32 *w;
     f32 dy;
 
-    v = *(u8 **)(actor + 0x54);
-    w = (f32 *)(v + 0x1C0);
+    v = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    w = ((ActorScriptState *)v)->poseDisplacement;
     dy = m[0][1] * w[0] + m[1][1] * w[1] + m[2][1] * w[2];
-    *(f32 *)(v + 4) += dy;
-    *(f32 *)(pose + 0x18) = *(f32 *)(reference + 0x44);
-    *(f32 *)(pose + 0x1C) = *(f32 *)(actor + 0x1C) - *(f32 *)(v + 4) - *(f32 *)(v + 0x20C);
-    *(f32 *)(pose + 0x20) = *(f32 *)(reference + 0x4C);
-    *(f32 *)(pose + 0xC) = *(f32 *)(v + 0xC);
-    *(f32 *)(pose + 0x10) = *(f32 *)(v + 0x10);
-    *(f32 *)(pose + 0x14) = *(f32 *)(v + 0x14);
+    ((ActorScriptState *)v)->verticalPoseOffset += dy;
+    ((RuntimeObjectPrefix *)pose)->position[0] = ((RuntimeObjectPrefix *)reference)->worldPosition[0];
+    ((RuntimeObjectPrefix *)pose)->position[1] = ((RuntimeObjectPrefix *)actor)->position[1] - ((ActorScriptState *)v)->verticalPoseOffset - ((ActorScriptState *)v)->groundOffset;
+    ((RuntimeObjectPrefix *)pose)->position[2] = ((RuntimeObjectPrefix *)reference)->worldPosition[2];
+    ((RuntimeObjectPrefix *)pose)->rotation[0] = ((ActorScriptState *)v)->orientation[0];
+    ((RuntimeObjectPrefix *)pose)->rotation[1] = ((ActorScriptState *)v)->orientation[1];
+    ((RuntimeObjectPrefix *)pose)->rotation[2] = ((ActorScriptState *)v)->orientation[2];
 }
 
 /// Borrowed reference to the active Pikachu actor created for the current area.
