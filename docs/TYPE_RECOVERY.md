@@ -1738,3 +1738,14 @@ root replacement, retained node storage and unchanged removed-node links. The
 provider uses typed root and link fields; object and item registry callers use
 explicit target-width object-address keys. All three units preserve all 483
 objects and strict relocation addends.
+
+### Ordered tree traversal contracts
+
+`search_tree_traversal.h` consolidates all three traversal orders, shared visitor
+signature and borrowed node lifetime. Traversal links use `TreeNode` fields while
+the callback retains the established byte-address view. Contracts prohibit nested
+or overlapping traversals and mutation of traversal links. Ghidra 0x80041454
+confirms the shared callback lifetime. The object caller's unprototyped integer
+return declaration is corrected to void and its diagnostic callback accepts a
+node pointer. Item traversal passes its checked registry link directly. All
+three units preserve all 483 objects and strict relocation addends.

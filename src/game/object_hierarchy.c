@@ -1,3 +1,4 @@
+#include "search_tree_traversal.h"
 #include "object_transform.h"
 #include "object_bounds.h"
 #include "object_matrix_buffers.h"
@@ -84,7 +85,6 @@ extern s32 gObjectSearchTreeRoot;
 /// Object flag group selected by the current drawing traversal.
 /// \note Original identifier: \c D_800AE3D4 (0x800AE3D4).
 extern s32 gObjectDrawGroup;
-s32 searchTreeVisitAscending();
 s32 objectDrawSearchTreeEntry();
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
@@ -445,7 +445,7 @@ void objectManagerNoOp7CE0(s32 unused) {
 /// \param depth Traversal depth to report; unused in this build.
 /// \returns Zero to continue traversal.
 /// \note Original decompilation identifier: \c func_80007CE8 (0x80007CE8).
-s32 objectDebugVisitSearchTreeEntryNoOp(s32 entryAddress, s32 depth) {
+s32 objectDebugVisitSearchTreeEntryNoOp(u8 *entryAddress, s32 depth) {
     TRACE("node:%p level:%d\n", entryAddress, depth);
     return 0;
 }
@@ -454,7 +454,7 @@ s32 objectDebugVisitSearchTreeEntryNoOp(s32 entryAddress, s32 depth) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80007CF8 (0x80007CF8).
 void objectDebugVisitSearchTree(void) {
-    searchTreeVisitAscending(gObjectSearchTreeRoot, objectDebugVisitSearchTreeEntryNoOp);
+    searchTreeVisitAscending((TreeNode *)gObjectSearchTreeRoot, objectDebugVisitSearchTreeEntryNoOp);
 }
 
 /// Provide the inactive object-manager summary report hook.
@@ -1510,7 +1510,7 @@ s32 objectDrawSearchTreeEntry(u8 *node, s32 unused) {
 void objectDrawGroup(s32 group) {
     gObjectDrawGroup = group;
     gSPDisplayList(gRenderDisplayListCursor++, gObjectDrawSetupDisplayList);
-    searchTreeVisitAscending(gObjectSearchTreeRoot, objectDrawSearchTreeEntry);
+    searchTreeVisitAscending((TreeNode *)gObjectSearchTreeRoot, objectDrawSearchTreeEntry);
 }
 
 /// Draw eligible objects in a hierarchy using the current draw group.
@@ -1877,6 +1877,6 @@ u8 *objectFindNearestTargetInView(u8 *self, Vec3f *origin, f32 dist, f32 *rot, f
     if (*(u16 *)(first + 0x34) >= minKind) {
         objectConsiderNearestTargetEntry(*(u8 **)(first + 0x58), 0);
     }
-    searchTreeVisitAscending(*(s32 *)(*(u8 **)(first + 0x58) + 4), objectConsiderNearestTargetEntry);
+    searchTreeVisitAscending(*(TreeNode **)(*(u8 **)(first + 0x58) + 4), objectConsiderNearestTargetEntry);
     return gObjectNearestTargetSearch.best;
 }

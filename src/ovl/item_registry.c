@@ -1,3 +1,4 @@
+#include "search_tree_traversal.h"
 #include "object_bounds.h"
 #include "interaction.h"
 #include "object_flags.h"
@@ -1777,7 +1778,6 @@ s32 itemConsiderSearchCandidate(u8 *node, s32 context) {
 
 void matrix34Identity(void *);
 void matrix34MakeViewFromEulerDegrees(u8 *, u8 *, s32);
-void searchTreeVisitAscending(u8 *, s32 (*)(u8 *, s32));
 
 /// Find the best nearby item satisfying the requested kind, hold-state, and viewing constraints.
 /// \param origin Readable query world position in X, Y, Z order; copied during this call.
@@ -1838,7 +1838,7 @@ u8 *itemFindNearest(f32 *origin, f32 maxDistance, f32 pitch, f32 yaw, f32 cone, 
         return NULL;
     if (((ItemStatePrefix *)state)->kind >= minKind)
         itemConsiderSearchCandidate(state + 0x54, 0);
-    searchTreeVisitAscending((u8 *)((ItemStatePrefix *)state)->registryNode.links[1], itemConsiderSearchCandidate);
+    searchTreeVisitAscending(((ItemStatePrefix *)state)->registryNode.links[1], itemConsiderSearchCandidate);
     if (weightEnabled && gItemNearestSearch.best != NULL) {
         object = ((RuntimeObjectPrefix *)gItemNearestSearch.best)->state.bytes;
         ((ItemStatePrefix *)object)->searchPriority = 0.0f;

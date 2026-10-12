@@ -51,7 +51,7 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 3512,
+      "occurrences": 3509,
       "unique_spellings": 1320,
       "files": 80
     }
@@ -4123,7 +4123,8 @@
         "object_transform.h",
         "object_types.h",
         "runtime_clock.h",
-        "search_tree.h"
+        "search_tree.h",
+        "search_tree_traversal.h"
       ],
       "matching_exceptions": {},
       "locations": {
@@ -4369,7 +4370,7 @@
           ],
           "first + 0x58": [
             "1878:51",
-            "1880:48"
+            "1880:54"
           ]
         }
       }
@@ -5462,22 +5463,18 @@
     "src/game/search_tree.c": {
       "known_views": [
         "search_tree.h",
-        "search_tree_lookup.h"
+        "search_tree_lookup.h",
+        "search_tree_traversal.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "depth + 1": [
-            "213:59",
-            "220:17",
-            "246:66",
-            "253:17",
-            "281:69"
-          ],
-          "node + 4": [
-            "219:25",
-            "246:55",
-            "281:58"
+            "214:61",
+            "221:17",
+            "247:62",
+            "254:17",
+            "282:65"
           ]
         }
       }
@@ -7756,13 +7753,14 @@
         "object_lookup.h",
         "object_types.h",
         "scene_types.h",
-        "search_tree.h"
+        "search_tree.h",
+        "search_tree_traversal.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "item + 0x44": [
-            "1762:73"
+            "1763:73"
           ],
           "state + 0x54": [
             "1840:37"

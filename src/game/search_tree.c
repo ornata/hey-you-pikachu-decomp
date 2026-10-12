@@ -1,3 +1,4 @@
+#include "search_tree_traversal.h"
 #include "search_tree_lookup.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -201,35 +202,35 @@ TreeNode *searchTreeRemove(SearchTree *tree, s32 key) {
 
 /// Borrowed callback for the active tree traversal; shared traversal state makes nested traversals unsupported.
 /// \note Original identifier: \c D_8009D540 (0x8009D540).
-extern s32 (*gSearchTreeActiveVisitor)(u8 *, s32);
+extern TreeVisitor gSearchTreeActiveVisitor;
 
 /// Visit entries in ascending order using the current tree visitor.
 /// \param node Subtree root, or NULL.
 /// \param depth Depth assigned to the subtree root.
 /// \returns 1 when a visitor requests early termination, or 0 after visiting all entries.
 /// \note Original decompilation identifier: \c func_800413B4 (0x800413B4).
-s32 searchTreeVisitAscendingAtDepth(u8 *node, s32 depth) {
+s32 searchTreeVisitAscendingAtDepth(TreeNode *node, s32 depth) {
     while (node != NULL) {
-        if (searchTreeVisitAscendingAtDepth(*(u8 **)node, depth + 1) != 0) {
+        if (searchTreeVisitAscendingAtDepth(node->links[0], depth + 1) != 0) {
             return 1;
         }
-        if (gSearchTreeActiveVisitor(node, depth) != 0) {
+        if (gSearchTreeActiveVisitor((u8 *)node, depth) != 0) {
             return 1;
         }
-        node = *(u8 **)(node + 4);
+        node = node->links[1];
         depth = depth + 1;
     }
     return 0;
 }
 
-s32 searchTreeVisitAscendingAtDepth(u8 *, s32);
+s32 searchTreeVisitAscendingAtDepth(TreeNode *, s32);
 
 /// Visit entries in ascending order.
 /// \param root Tree root, or NULL.
 /// \param visitor Callback receiving each node and its depth from root; a nonzero result stops traversal. Traversals must not be nested.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80041454 (0x80041454).
-void searchTreeVisitAscending(u8 *root, s32 (*visitor)(u8 *, s32)) {
+void searchTreeVisitAscending(TreeNode *root, TreeVisitor visitor) {
     gSearchTreeActiveVisitor = visitor;
     searchTreeVisitAscendingAtDepth(root, 0);
     gSearchTreeActiveVisitor = 0;
@@ -241,28 +242,28 @@ void searchTreeVisitAscending(u8 *root, s32 (*visitor)(u8 *, s32)) {
 /// \param depth Depth assigned to the subtree root.
 /// \returns 1 when a visitor requests early termination, or 0 after visiting all entries.
 /// \note Original decompilation identifier: \c func_80041480 (0x80041480).
-s32 searchTreeVisitDescendingAtDepth(u8 *node, s32 depth) {
+s32 searchTreeVisitDescendingAtDepth(TreeNode *node, s32 depth) {
     while (node != NULL) {
-        if (searchTreeVisitDescendingAtDepth(*(u8 **)(node + 4), depth + 1) != 0) {
+        if (searchTreeVisitDescendingAtDepth(node->links[1], depth + 1) != 0) {
             return 1;
         }
-        if (gSearchTreeActiveVisitor(node, depth) != 0) {
+        if (gSearchTreeActiveVisitor((u8 *)node, depth) != 0) {
             return 1;
         }
-        node = *(u8 **)node;
+        node = node->links[0];
         depth = depth + 1;
     }
     return 0;
 }
 
-s32 searchTreeVisitDescendingAtDepth(u8 *, s32);
+s32 searchTreeVisitDescendingAtDepth(TreeNode *, s32);
 
 /// Visit entries in descending order.
 /// \param root Tree root, or NULL.
 /// \param visitor Callback receiving each node and its depth from root; a nonzero result stops traversal. Traversals must not be nested.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80041520 (0x80041520).
-void searchTreeVisitDescending(u8 *root, s32 (*visitor)(u8 *, s32)) {
+void searchTreeVisitDescending(TreeNode *root, TreeVisitor visitor) {
     gSearchTreeActiveVisitor = visitor;
     searchTreeVisitDescendingAtDepth(root, 0);
     gSearchTreeActiveVisitor = 0;
@@ -273,14 +274,14 @@ void searchTreeVisitDescending(u8 *root, s32 (*visitor)(u8 *, s32)) {
 /// \param depth Depth assigned to the subtree root.
 /// \returns 1 when a visitor requests early termination, or 0 after visiting all entries.
 /// \note Original decompilation identifier: \c func_8004154C (0x8004154C).
-s32 searchTreeVisitRootRightLeftAtDepth(u8 *node, s32 depth) {
+s32 searchTreeVisitRootRightLeftAtDepth(TreeNode *node, s32 depth) {
     s32 i;
     while (node != NULL) {
-        if (gSearchTreeActiveVisitor(node, depth))
+        if (gSearchTreeActiveVisitor((u8 *)node, depth))
             return 1;
-        if (searchTreeVisitRootRightLeftAtDepth(*(u8 **)(node + 4), depth + 1))
+        if (searchTreeVisitRootRightLeftAtDepth(node->links[1], depth + 1))
             return 1;
-        node = *(u8 **)node;
+        node = node->links[0];
         depth++;
         if (node != NULL) {
             /* Retail code retains this empty depth-counting loop. */
@@ -291,14 +292,14 @@ s32 searchTreeVisitRootRightLeftAtDepth(u8 *node, s32 depth) {
     return 0;
 }
 
-s32 searchTreeVisitRootRightLeftAtDepth(u8 *, s32);
+s32 searchTreeVisitRootRightLeftAtDepth(TreeNode *, s32);
 
 /// Visit each root before its right and left subtrees.
 /// \param root Tree root, or NULL.
 /// \param visitor Callback receiving each node and its depth from root; a nonzero result stops traversal. Traversals must not be nested.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80041620 (0x80041620).
-void searchTreeVisitRootRightLeft(u8 *root, s32 (*visitor)(u8 *, s32)) {
+void searchTreeVisitRootRightLeft(TreeNode *root, TreeVisitor visitor) {
     gSearchTreeActiveVisitor = visitor;
     searchTreeVisitRootRightLeftAtDepth(root, 0);
     gSearchTreeActiveVisitor = 0;
