@@ -1,9 +1,9 @@
+#include "door.h"
 #include "common.h"
 #include "item_object.h"
 #include "actor_create.h"
 void objectRequestHierarchyDestruction(u8 *);
 void doorRegistryReset(void);
-u8 *doorCreate(f32 *, s32, s32, s32, s32);
 u32 randomNext(void);
 s32 progressGetValue(s32);
 s32 progressSetValue(s32, s32);

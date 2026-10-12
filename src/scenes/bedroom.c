@@ -1,3 +1,4 @@
+#include "door.h"
 #include "common.h"
 #include "actor_create.h"
 #include "scene_types.h"
@@ -7,7 +8,6 @@
 void bedroomSceneNoOp(void) {
 }
 void doorRegistryReset(void);
-u8 *doorCreate(f32 *, s32, s32, s32, s32);
 void toolboxClearCollection(void);
 void mazeSpawnAvailableItems(ItemSpawn *);
 u8 *interactionProxyCreate(u8 *, s32, s32, s32, s32);

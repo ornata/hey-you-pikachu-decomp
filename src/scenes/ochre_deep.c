@@ -1,3 +1,4 @@
+#include "door.h"
 #include "common.h"
 #include "item_object.h"
 #include "actor_create.h"
@@ -6,7 +7,6 @@
 #include "scene_types.h"
 u8 *ambientAudioCreate(f32 *, s32, f32, f32, s32, s32, f32, s32, s32);
 void doorRegistryReset(void);
-u8 *doorCreate(f32 *, s32, s32, s32, s32);
 extern f32 D_8014A188_scene_ochre_deep[];
 extern f32 D_80134C80_scene_ochre_deep[];
 extern u8 D_80134C98_scene_ochre_deep[];

@@ -1,6 +1,7 @@
 #include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "door.h"
 #include "item_object.h"
 #include "object_response.h"
 #include "object_kind_callbacks.h"
@@ -75,28 +76,28 @@ u8 *objectRegisterActiveHierarchy(u8 *);
 /// \note Original decompilation identifier: \c func_8001C150 (0x8001C150).
 u8 *doorCreate(f32 *position, s32 kind, s32 destination, s32 entrance, s32 accessState) {
     u8 *a;
-    u8 *p;
+    PassageState *p;
     u8 *r;
 
     TRACE("door object was made, (%3.2f, %3.2f, %3.2f), type = %d, area = %d, entrance = %d\n, lock = %s \n",
           position[0], position[1], position[2], kind, destination, entrance, accessState ? "TRUE" : "FALSE");
     a = objectCreateDefault();
-    p = (u8 *)heapAllocLocal(&gGameHeap, 0x10, 0x40);
+    p = (PassageState *)heapAllocLocal(&gGameHeap, 0x10, 0x40);
     _bzero((s32)p, 0x10);
-    *(s32 *)(p + 4) = destination;
-    *(s32 *)(p + 8) = entrance;
-    *(s32 *)(p + 0) = kind;
-    *(s32 *)(p + 0xC) = accessState;
-    *(u16 *)(a + 0x34) = 0x87;
-    *(u8 **)(a + 0x54) = p;
+    p->destination = destination;
+    p->entrance = entrance;
+    p->kind = kind;
+    p->accessState = accessState;
+    ((RuntimeObjectPrefix *)a)->kind = 0x87;
+    ((RuntimeObjectPrefix *)a)->state.pointer = p;
     r = objectRegisterActiveHierarchy(objectMakeHierarchyRoot(a));
-    *(f32 *)(a + 0x18) = position[0];
-    *(f32 *)(a + 0x1C) = position[1];
-    *(f32 *)(a + 0x20) = position[2];
-    *(f32 *)(a + 0x44) = position[0];
-    *(f32 *)(a + 0x48) = position[1];
-    *(f32 *)(a + 0x4C) = position[2];
-    gDoorObjectHandles[gDoorObjectCount] = *(s32 *)(a + 0x38);
+    ((RuntimeObjectPrefix *)a)->position[0] = position[0];
+    ((RuntimeObjectPrefix *)a)->position[1] = position[1];
+    ((RuntimeObjectPrefix *)a)->position[2] = position[2];
+    ((RuntimeObjectPrefix *)a)->worldPosition[0] = position[0];
+    ((RuntimeObjectPrefix *)a)->worldPosition[1] = position[1];
+    ((RuntimeObjectPrefix *)a)->worldPosition[2] = position[2];
+    gDoorObjectHandles[gDoorObjectCount] = ((RuntimeObjectPrefix *)a)->handle;
     gDoorObjectCount += 1;
     return r;
 }
@@ -108,10 +109,10 @@ u8 *doorCreate(f32 *position, s32 kind, s32 destination, s32 entrance, s32 acces
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001C248 (0x8001C248).
 void doorSetAccessState(s32 doorIndex, s32 accessState) {
-    u8 *obj;
+    PassageState *state;
 
-    obj = *(u8 **)(objectFindLiveByHandle(gDoorObjectHandles[doorIndex]) + 0x54);
-    *(s32 *)(obj + 0xC) = accessState;
+    state = ((RuntimeObjectPrefix *)objectFindLiveByHandle(gDoorObjectHandles[doorIndex]))->state.pointer;
+    state->accessState = accessState;
 }
 
 char *areaGetDisplayName(s32); /* extern */

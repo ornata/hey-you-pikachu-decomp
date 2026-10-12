@@ -1,3 +1,4 @@
+#include "door.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "item_response.h"
@@ -483,7 +484,6 @@ s32 actorScriptGetProgressMinimum(u8 *actor) {
     return 0;
 }
 
-void doorSetAccessState(s32, s32); /* extern */
 /// Change the passage-access state of a registered door.
 /// \param actor Actor whose script VM supplies a valid created-door index followed by a supported passage-access state, and receives zero.
 /// \returns Zero, allowing script execution to continue.

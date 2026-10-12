@@ -1,3 +1,4 @@
+#include "door.h"
 #include "player_friendship.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -1464,8 +1465,6 @@ s32 playerShowNextHelpLine(void) {
     return 0;
 }
 
-s8 *doorGetDescription(u8 *);
-u8 *doorGetAccessDescription(u8 *);
 s8 *landmarkGetCannonDescription(s32);
 s8 *caveGetDescription(u8 *);
 void playerSetInteractionHelpText(u8 *);

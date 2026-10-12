@@ -1,3 +1,4 @@
+#include "door.h"
 #include "common.h"
 #include "item_object.h"
 #include "actor_create.h"
@@ -5,7 +6,6 @@
 #include "scene_types.h"
 
 void doorRegistryReset(void);
-u8 *doorCreate(f32 *, s32, s32, s32, s32);
 void toolboxClearCollection(void);
 void mazeSpawnAvailableItems(u8 *);
 extern f32 D_80134590_scene_front_yard[3];

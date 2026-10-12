@@ -1381,3 +1381,15 @@ The queue producer retains a typed pointer through attachment. Ghidra 0x8001C6BC
 confirms the per-kind hook selection and clearing call; the original register ABI
 is unchanged. Separate provider, caller and allocation passes each preserve all
 483 objects, including strict relocations.
+
+### Door creation and passage interface
+
+`door.h` provides the creation, access-state mutation and borrowed-description
+contracts to four scene producers, the script command and companion description
+consumer. The provider reuses `PassageState` for its 0x10 allocation and access
+mutation, and `RuntimeObjectPrefix` for kind, state ownership, position and handle.
+Ghidra at 0x8001C150 confirms the four state words and object initialization sites.
+Description buffers remain distinct shared storage with separate invalidation
+contracts. Existing signed/unsigned text pointer conventions remain explicit.
+The ten-entry registry capacity is a caller precondition, not a newly added check.
+Each provider and caller mutation independently preserves all 483 objects.
