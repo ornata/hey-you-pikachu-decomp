@@ -16,7 +16,7 @@ extern s32 *D_8015A04C_scene_playground[8];
 void playgroundSpawnResident(void) {
     actorCreateForKind(0x13, 320.0f, 10.0f, 225.0f, 0.0f, 0.0f,
                        ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
-                       (s32)D_8013EE54_scene_playground, 0);
+                       D_8013EE54_scene_playground, 0);
 }
 /// Create the playground cave, its linked landmark, and the resident creature.
 /// \returns Nothing.

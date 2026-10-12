@@ -1551,3 +1551,12 @@ handles only for their results. Ghidra 0x80117C18 confirms the position/facing
 forwarding and handle extraction. The live excluded-object precondition avoids
 promising unsupported null-address arithmetic. Both changed units preserve all
 483 objects and strict relocation identities.
+
+### Text cursor and scene script argument contracts
+
+Collection presentation passes its display-list cursor directly to the shared
+text drawing interface, eliminating three integer-to-pointer argument mismatches.
+Ghidra 0x8003CE24 confirms writable command storage and a retained command cursor.
+Playground and entryway creation pass their declared byte-array script addresses
+directly to the canonical actor creation interface. Each source-unit change
+preserves all 483 objects, including strict relocation addends.

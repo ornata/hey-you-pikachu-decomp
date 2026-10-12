@@ -470,7 +470,7 @@ extern TextImage *gPresentationAreaLabelImage;
 /// \note Original decompilation identifier: \c func_80028830 (0x80028830).
 void presentationDrawAreaLabel(Gfx **gdl) {
     if (gPresentationAreaLabelImage != NULL) {
-        textDrawBegin(*(s32 *)gdl);
+        textDrawBegin(*gdl);
         textDrawSetFont(0);
         textDrawReset();
         textDrawSetPalette(gDefaultTextPalette);
@@ -744,7 +744,7 @@ void presentationSetCollectionItemText(u8 *object) {
 void presentationDrawCollectionText(Gfx **gdl) {
     u8 *sub;
 
-    textDrawBegin(*(s32 *)gdl);
+    textDrawBegin(*gdl);
     textDrawSetFont(0);
     textDrawReset();
     textDrawSetPalette(gDefaultTextPalette);
@@ -793,7 +793,7 @@ void presentationRefreshCollectionScoreText(void) {
 /// \note Original decompilation identifier: \c func_80029304 (0x80029304).
 void presentationDrawCollectionScore(Gfx **gdl) {
     if (gCollectionPresentationScoreImage != 0) {
-        textDrawBegin(*(s32 *)gdl);
+        textDrawBegin(*gdl);
         textDrawSetFont(0);
         textDrawReset();
         textDrawSetPalette(gDefaultTextPalette);

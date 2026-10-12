@@ -14,7 +14,7 @@ void entrywayInitializeObjects(void) {
     toolboxClearCollection();
     actorCreateForKind(1, 82.26f, 3.0f, 104.37f, 0.0f, 0.0f,
                        ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
-                       (s32)D_80139E38_scene_entryway, 0);
+                       D_80139E38_scene_entryway, 0);
 }
 
 extern s32 *D_8013C888_scene_entryway[16];
