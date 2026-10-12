@@ -2525,3 +2525,13 @@ and the view-builder call explicitly converts its retained address boundary.
 
 Provider and all C declarations use the shared header. Five source units were
 rebuilt and strictly compared one at a time; all 483 objects remain identical.
+
+### Interface-camera transform contract
+
+`camera_interface.h` now supplies one writable float-matrix output contract
+for the interface-camera builder and its system-menu, toolbox, world-map and
+collection consumers. The provider no longer carries the output pointer as
+a signed integer. Its original 0x80000800 identifier is preserved in Doxygen.
+Ghidra confirms the output flows through affine initialization, camera-position
+translation and player-view rotation. Each affected source unit was rebuilt
+and compared before moving to the next; all 483 objects match.

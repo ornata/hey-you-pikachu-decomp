@@ -1,3 +1,4 @@
+#include "camera_interface.h"
 #include "action_script_stop.h"
 #include "action_script_query.h"
 #include "object_flags.h"
@@ -978,7 +979,6 @@ void systemMenuUpdateModelTilt(void) {
     objectUpdateHierarchy(object);
 }
 
-void cameraBuildInterfaceTransform(void *);
 void systemMenuUpdateOpeningAnimation(void);
 void systemMenuUpdateClosingAnimation(void);
 void systemMenuUpdateModelTilt(void);
@@ -990,7 +990,7 @@ extern u8 *gCurrentAreaConfiguration;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8011A778 (0x8011A778).
 void systemMenuUpdateAnimation(void) {
-    cameraBuildInterfaceTransform(&gSystemMenuInterfaceTransform);
+    cameraBuildInterfaceTransform((f32 *)&gSystemMenuInterfaceTransform);
     switch (gSystemMenuPhase) {
     case 0:
         systemMenuUpdateOpeningAnimation();

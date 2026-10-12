@@ -1,3 +1,4 @@
+#include "camera_interface.h"
 #include "matrix_translation.h"
 #include "matrix_orientation.h"
 #include "actor_script_time.h"
@@ -335,9 +336,10 @@ void renderUnloadAreaAssets(void) {
 }
 
 /// Build the camera-relative world transform used to position interface models.
-/// \param output Address of writable storage for a three-by-four floating-point transform; uses the active camera position and current player viewing angles.
+/// \param output Writable twelve-component affine transform receiving the active camera position and current player viewing orientation.
 /// \returns Nothing.
-void cameraBuildInterfaceTransform(s32 output) {
+/// \note Original decompilation identifier: \c func_80000800 (0x80000800).
+void cameraBuildInterfaceTransform(f32 *output) {
     u8 *sp1C;
 
     sp1C = gRenderCameras + gRenderCameraIndex * 0xE0;

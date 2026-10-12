@@ -1,3 +1,4 @@
+#include "camera_interface.h"
 #include "action_continuation.h"
 #include "action_script_playback.h"
 #include "action_script_query.h"
@@ -548,7 +549,6 @@ void presentationDrawCardScreen(Gfx **gdl) {
     }
 }
 
-void cameraBuildInterfaceTransform(void *);
 void controllerRequestRumbleReset(s32);
 void runtimeRequestGameModeChange(s32);
 void hudSetAreaLabelVisible(s32);
@@ -597,7 +597,7 @@ void presentationUpdateCardMode(void) {
         runtimeRequestGameModeChange(0);
         return;
     }
-    cameraBuildInterfaceTransform(&gPresentationToWorldTransform);
+    cameraBuildInterfaceTransform((f32 *)gPresentationToWorldTransform);
     if (actionScriptIsStopped((u8 *)gPikachuActor) != 0) {
         actionScriptStart((u8 *)gPikachuActor, 0x57);
     }
@@ -631,7 +631,7 @@ void presentationUpdateCardMode(void) {
         backdropSelectForView(0, 0xA, 0);
         presentationSaveActiveActor();
         playerResetViewOrientation();
-        cameraBuildInterfaceTransform(&gPresentationToWorldTransform);
+        cameraBuildInterfaceTransform((f32 *)gPresentationToWorldTransform);
         presentationPrepareActiveActor(&gCardPresentationActorPosition);
         actionScriptStartWithMode((u8 *)gPikachuActor, gCardPresentationActionScript, 2);
         presentationSetFocusTarget(gPresentationActorFocusTargets);
@@ -1117,7 +1117,7 @@ extern s32 gCollectionResultsBypassed;
 /// \note Original decompilation identifier: \c func_80029CD4 (0x80029CD4).
 void presentationUpdateCollectionResultsMode(void) {
     playerResetViewOrientation();
-    cameraBuildInterfaceTransform(gPresentationToWorldTransform);
+    cameraBuildInterfaceTransform((f32 *)gPresentationToWorldTransform);
     if (actionScriptIsStopped((u8 *)gPikachuActor) != 0) {
         actionScriptStart((u8 *)gPikachuActor, 0x57);
     }

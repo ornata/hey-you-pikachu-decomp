@@ -1,3 +1,4 @@
+#include "camera_interface.h"
 #include "action_continuation.h"
 #include "action_script_stop.h"
 #include "action_script_playback.h"
@@ -754,7 +755,6 @@ void wholeMapSelectBackdrop(void) {
     }
 }
 
-void cameraBuildInterfaceTransform();
 void controllerConfigureStickButtons();
 void objectUpdateGroup();
 void runtimeRequestProgramChange();
@@ -786,7 +786,7 @@ void wholeMapUpdate(void) {
 
     sp24 = *(u8 **)((u8 *)gPikachuActor + 0x54);
     playerResetViewOrientation();
-    cameraBuildInterfaceTransform(&gWorldMapToWorldTransform);
+    cameraBuildInterfaceTransform((f32 *)&gWorldMapToWorldTransform);
     if (actionScriptIsStopped((u8 *)gPikachuActor) != 0) {
         actionScriptStartWithMode((u8 *)gPikachuActor, 0x57, 2);
     }

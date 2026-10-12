@@ -1,3 +1,4 @@
+#include "camera_interface.h"
 #include "matrix_orientation.h"
 #include "object_flags.h"
 #include "object_hierarchy_create.h"
@@ -1629,7 +1630,6 @@ void toolboxAnimateBaseTransition(void) {
     }
 }
 
-void cameraBuildInterfaceTransform(void *);
 void toolboxUpdateCarousel(void);
 void toolboxAnimateRowOpening(void);
 void toolboxAnimateRowClosing(void);
@@ -1639,7 +1639,7 @@ void toolboxAnimateBaseTransition(void);
 /// \returns Nothing; requires initialized toolbox display objects.
 /// \note Original decompilation identifier: \c func_80031ECC (0x80031ECC).
 void toolboxUpdateDisplay(void) {
-    cameraBuildInterfaceTransform(gToolboxInterfaceTransform);
+    cameraBuildInterfaceTransform((f32 *)gToolboxInterfaceTransform);
     switch (gToolboxMode) {
     case 0:
     case 4:
