@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 2846,
-      "unique_spellings": 1070,
+      "occurrences": 2843,
+      "unique_spellings": 1068,
       "files": 80
     }
   },
@@ -409,7 +409,8 @@
         "object_types.h",
         "progress_fields.h",
         "progress_value.h",
-        "rom_dma.h"
+        "rom_dma.h",
+        "script_vm_lifecycle.h"
       ],
       "matching_exceptions": {
         "actorCreateForKind": "An unused local word is named reservedCreationSlot. Removing it shrinks the IDO frame by eight bytes and changes all argument/spill offsets; it is retained with a Doxygen target-compiler note."
@@ -417,121 +418,121 @@
       "locations": {
         "raw_offset_candidates": {
           "p + 0x18": [
-            "157:14"
-          ],
-          "p + 0x1C": [
             "158:14"
           ],
-          "p + 0x20": [
+          "p + 0x1C": [
             "159:14"
           ],
-          "p + 0x44": [
+          "p + 0x20": [
             "160:14"
           ],
-          "p + 0x48": [
+          "p + 0x44": [
             "161:14"
           ],
-          "p + 0x4C": [
+          "p + 0x48": [
             "162:14"
           ],
-          "p + 0x8": [
+          "p + 0x4C": [
             "163:14"
           ],
-          "p + 0x4": [
+          "p + 0x8": [
             "164:14"
           ],
-          "p + 0x0": [
+          "p + 0x4": [
             "165:14"
           ],
-          "p + 0x24": [
+          "p + 0x0": [
             "166:14"
           ],
+          "p + 0x24": [
+            "167:14"
+          ],
           "effectState + 1": [
-            "181:60"
+            "182:60"
           ],
           "effect + 0x54": [
-            "182:15",
-            "202:28",
-            "239:20",
-            "253:28"
+            "183:15",
+            "203:28",
+            "240:20",
+            "254:28"
           ],
           "gPikachuActor + 0x44": [
-            "208:35"
-          ],
-          "effect + 0x44": [
-            "208:68",
-            "224:49"
-          ],
-          "gPikachuActor + 0x48": [
             "209:35"
           ],
-          "effect + 0x48": [
+          "effect + 0x44": [
             "209:68",
-            "224:74"
+            "225:49"
           ],
-          "gPikachuActor + 0x4C": [
+          "gPikachuActor + 0x48": [
             "210:35"
           ],
-          "effect + 0x4C": [
+          "effect + 0x48": [
             "210:68",
-            "224:99"
+            "225:74"
+          ],
+          "gPikachuActor + 0x4C": [
+            "211:35"
+          ],
+          "effect + 0x4C": [
+            "211:68",
+            "225:99"
           ],
           "effect + 0x24": [
-            "211:23"
+            "212:23"
           ],
           "gPikachuActor + 0x24": [
-            "211:55"
+            "212:55"
           ],
           "state + 1": [
-            "213:68",
-            "216:59"
+            "214:68",
+            "217:59"
           ],
           "obj + 0xC": [
-            "240:63"
+            "241:63"
           ],
           "effect + 0x30": [
-            "241:21"
+            "242:21"
           ],
           "effectState + 4": [
-            "258:68"
+            "259:68"
           ],
           "actor + 0x54": [
-            "292:21"
+            "293:21"
           ],
           "actor + 0x18": [
-            "296:18",
-            "300:43"
-          ],
-          "sp24 + 0x1EC": [
-            "296:43"
-          ],
-          "actor + 0x1C": [
             "297:18",
-            "299:18",
-            "299:68",
             "301:43"
           ],
-          "sp24 + 0x1F0": [
+          "sp24 + 0x1EC": [
             "297:43"
           ],
-          "actor + 0x20": [
+          "actor + 0x1C": [
             "298:18",
+            "300:18",
+            "300:68",
             "302:43"
           ],
-          "sp24 + 0x1F4": [
+          "sp24 + 0x1F0": [
             "298:43"
           ],
-          "actor + 0x24": [
+          "actor + 0x20": [
+            "299:18",
+            "303:43"
+          ],
+          "sp24 + 0x1F4": [
             "299:43"
           ],
-          "actor + 0x44": [
-            "300:18"
+          "actor + 0x24": [
+            "300:43"
           ],
-          "actor + 0x48": [
+          "actor + 0x44": [
             "301:18"
           ],
-          "actor + 0x4C": [
+          "actor + 0x48": [
             "302:18"
+          ],
+          "actor + 0x4C": [
+            "303:18"
           ],
           "kind - 1": [
             "639:72",
@@ -569,6 +570,7 @@
         "motion_playback.h",
         "object_audio.h",
         "object_types.h",
+        "script_vm_lifecycle.h",
         "word_map.h"
       ],
       "matching_exceptions": {
@@ -580,7 +582,7 @@
       "locations": {
         "raw_offset_candidates": {
           "actor + 0x54": [
-            "81:18",
+            "82:18",
             "171:20",
             "285:20",
             "307:20",
@@ -592,10 +594,10 @@
             "1084:38"
           ],
           "k + 1": [
-            "92:51"
+            "93:51"
           ],
           "actor + 0x34": [
-            "94:18"
+            "95:18"
           ],
           "allocation + 0x18": [
             "220:22"
@@ -7155,6 +7157,7 @@
         "heap_types.h",
         "object_types.h",
         "script_vm.h",
+        "script_vm_lifecycle.h",
         "script_vm_stack.h"
       ],
       "matching_exceptions": {
@@ -7162,47 +7165,40 @@
       },
       "locations": {
         "raw_offset_candidates": {
-          "vm + 0x28": [
-            "63:16"
-          ],
-          "vm + 0x12C": [
-            "65:16"
-          ],
-          "vm + 0x22C": [
-            "66:16",
-            "353:24"
-          ],
           "savedDepthCount + 1": [
-            "165:65"
+            "166:65"
           ],
           "returnCount + 1": [
-            "183:61"
+            "184:61"
           ],
           "value + 1": [
-            "222:15",
-            "225:11",
-            "244:15",
-            "247:11",
-            "258:20",
-            "268:20",
-            "278:18"
+            "223:15",
+            "226:11",
+            "245:15",
+            "248:11",
+            "259:20",
+            "269:20",
+            "279:18"
           ],
           "operandOffset + 5": [
-            "331:43"
+            "332:43"
+          ],
+          "vm + 0x22C": [
+            "354:24"
           ],
           "vm + 8": [
-            "694:29"
+            "695:29"
           ],
           "actor + 0x54": [
-            "742:22"
+            "743:22"
           ],
           "owner + 0x1B8": [
-            "743:25"
+            "744:25"
           ],
           "instructionOffset + 5": [
-            "793:43",
-            "844:47",
-            "862:43"
+            "794:43",
+            "845:47",
+            "863:43"
           ]
         }
       }

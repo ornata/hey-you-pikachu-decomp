@@ -1,3 +1,4 @@
+#include "script_vm_lifecycle.h"
 #include "actor_assets.h"
 #include "actor_behavior.h"
 #include "matrix_point.h"
@@ -140,7 +141,6 @@ void actorUpdateTrackedSoundSpatialization(f32 *position, s32 *voices) {
     }
 }
 
-void scriptVmDestroy(s32);        /* extern */
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
@@ -155,7 +155,7 @@ void actorReleaseModelResources(u8 *actor) {
     actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
     heapFreeLocal(&gGameHeap, (u8 *)((ActorScriptState *)actorState)->modelDrawLists[0]);
     collisionGridUnregisterObject(actor, &((ActorScriptState *)actorState)->collisionRegistration);
-    scriptVmDestroy(((ActorScriptState *)actorState)->vmAddress);
+    scriptVmDestroy((u8 *)((ActorScriptState *)actorState)->vmAddress);
     heapFreeLocal(&gGameHeap, ((ActorScriptState *)actorState)->partTable);
     heapFreeLocal(&gGameHeap, actorState);
 }

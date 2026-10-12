@@ -27,6 +27,7 @@
 #include "heap_types.h"
 #include "script_vm.h"
 #include "script_vm_stack.h"
+#include "script_vm_lifecycle.h"
 
 /// Shared 32-byte numeric conversion text, overwritten by the next numeric string conversion.
 /// \note Original identifier: \c D_801340B0 (0x801340B0).
@@ -58,12 +59,12 @@ void scriptVmReset(u8 *vm) {
         ((ScriptVm *)vm)->instructionOffset = 0;
         ((ScriptVm *)vm)->stackDepth = 0;
         ((ScriptVm *)vm)->elapsed = 0.0f;
-        _bzero(((ScriptVm *)vm)->values, ((ScriptVm *)vm)->stackCapacity * 5);
+        _bzero(((ScriptVm *)vm)->values, ((ScriptVm *)vm)->stackCapacity * sizeof(ScriptValue));
         ((ScriptVm *)vm)->savedDepthCount = 0;
-        _bzero(vm + 0x28, 0x100);
+        _bzero(((ScriptVm *)vm)->savedDepths, sizeof(((ScriptVm *)vm)->savedDepths));
         ((ScriptVm *)vm)->returnCount = 0;
-        _bzero(vm + 0x12C, 0x100);
-        _bzero(vm + 0x22C, 0x80);
+        _bzero(((ScriptVm *)vm)->returnOffsets, sizeof(((ScriptVm *)vm)->returnOffsets));
+        _bzero(((ScriptVm *)vm)->localFrameBases, sizeof(((ScriptVm *)vm)->localFrameBases));
         ((ScriptVm *)vm)->unknown2B0 = 0;
         ((ScriptVm *)vm)->messageStyle = 0;
         ((ScriptVm *)vm)->actionHandler = 0;
@@ -81,16 +82,16 @@ extern HpHdr gGameHeap;
 /// \param capacity Positive maximum number of values in the script stack.
 /// \returns An owned initialized context to release with scriptVmDestroy.
 /// \note Original decompilation identifier: \c func_80115114 (0x80115114).
-u8 *scriptVmCreateWithCapacity(u8 *config, s32 capacity) {
+u8 *scriptVmCreateWithCapacity(ScriptVmConfiguration *config, s32 capacity) {
     u8 *vm;
-    vm = heapAllocLocal((HpHdr *)&gGameHeap, 0x2C8, 0xB3);
-    _bzero(vm, 0x2C8);
+    vm = heapAllocLocal((HpHdr *)&gGameHeap, sizeof(ScriptVm), 0xB3);
+    _bzero(vm, sizeof(ScriptVm));
     ((ScriptVm *)vm)->totalElapsed = 0.0f;
-    ((ScriptVm *)vm)->commands = ((ScriptVmConfiguration *)config)->commands;
-    ((ScriptVm *)vm)->program = ((ScriptVmConfiguration *)config)->program;
-    ((ScriptVm *)vm)->stringTable = ((ScriptVmConfiguration *)config)->stringTable;
+    ((ScriptVm *)vm)->commands = config->commands;
+    ((ScriptVm *)vm)->program = config->program;
+    ((ScriptVm *)vm)->stringTable = config->stringTable;
     ((ScriptVm *)vm)->stackCapacity = capacity;
-    ((ScriptVm *)vm)->values = (ScriptValue *)heapAllocLocal((HpHdr *)&gGameHeap, capacity * 5, 0xC6);
+    ((ScriptVm *)vm)->values = (ScriptValue *)heapAllocLocal((HpHdr *)&gGameHeap, capacity * sizeof(ScriptValue), 0xC6);
     scriptVmReset(vm);
     return vm;
 }
@@ -99,17 +100,17 @@ u8 *scriptVmCreateWithCapacity(u8 *config, s32 capacity) {
 /// \param config Configuration with borrowed program, string, and command tables that must outlive the context; a nonpositive stack capacity selects 200 values.
 /// \returns An owned initialized context to release with scriptVmDestroy.
 /// \note Original decompilation identifier: \c func_801151B0 (0x801151B0).
-u8 *scriptVmCreate(u8 *config) {
-    s32 n = ((ScriptVmConfiguration *)config)->stackCapacity;
-    s32 size;
+u8 *scriptVmCreate(ScriptVmConfiguration *config) {
+    s32 configuredCapacity = config->stackCapacity;
+    s32 capacity;
 
-    if (n <= 0) {
-        TRACE(("WARNING : stack size out of range, %d\n", n));
-        size = 0xC8;
+    if (configuredCapacity <= 0) {
+        TRACE(("WARNING : stack size out of range, %d\n", configuredCapacity));
+        capacity = 0xC8;
     } else {
-        size = n;
+        capacity = configuredCapacity;
     }
-    return scriptVmCreateWithCapacity(config, size);
+    return scriptVmCreateWithCapacity(config, capacity);
 }
 
 

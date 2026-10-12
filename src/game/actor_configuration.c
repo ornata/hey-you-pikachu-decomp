@@ -1,3 +1,4 @@
+#include "script_vm_lifecycle.h"
 #include "actor_assets.h"
 #include "progress_fields.h"
 #include "progress_value.h"
@@ -577,7 +578,6 @@ void objectPrepareDistributedKindSearches(u16, s32);
 void actorInitializeAnimatedTextures(u8 *, s32 *);
 u8 *orbitFollowerCreate(u8 *, f32, f32, f32);
 u8 *groundShadowCreate(s32, f32);
-u8 *scriptVmCreate(u8 *);
 /// Separate symbol view of the actor-kind configuration for Pikachu, kind 0x25.
 /// \note Original identifier: \c D_80088BEC (0x80088BEC).
 extern u8 gPikachuKindConfiguration[];
@@ -694,9 +694,9 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
                                                    ((ActorScriptState *)actorState)->collisionDepth,
                                                    ((ActorScriptState *)actorState)->clearanceHeight))->handle;
     if (script != 0) {
-        part = scriptVmCreate(script);
+        part = scriptVmCreate((ScriptVmConfiguration *)script);
         ((ActorScriptState *)actorState)->vmAddress = (s32)part;
-        *(s32 *)part = 0;
+        ((ScriptVm *)part)->executionState = SCRIPT_VM_READY;
     }
     actorAssetWaitForQueuedReads();
     if (gActorCompressedAssetStaging != NULL) {

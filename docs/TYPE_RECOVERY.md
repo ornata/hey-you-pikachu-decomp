@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,846 / 80 |
+| Raw offset candidates | 4,040 / 86 | 2,843 / 80 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3165,3 +3165,16 @@ The private storage table has thirty-six pointer slots, initialization derives
 its clear extent from that bound, and staging/read destinations use pointers.
 The lookup's retained address temporary preserves its existing control flow.
 Every isolated provider and consumer conversion preserves strict objects.
+
+### Shared VM lifecycle contracts
+
+`script_vm_lifecycle.h` provides canonical creation, reset and release contracts
+with borrowed-resource lifetimes and owned-context responsibilities. Creation
+accepts the existing partial `ScriptVmConfiguration` view, and allocation and
+reset extents derive from checked VM/value types. Reset uses the named saved-depth,
+return-offset and local-frame arrays. Actor creation names the ready-state write;
+model teardown uses the canonical pointer parameter. Ghidra 0x80115114 confirms
+context allocation, borrowed configuration fields and the separately owned value
+stack. The actor creation boundary retains its generic resource parameter until
+its scene callers can be audited together. All isolated conversions preserve
+strict object matches.
