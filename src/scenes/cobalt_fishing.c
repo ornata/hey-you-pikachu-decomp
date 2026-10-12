@@ -1,7 +1,7 @@
 #include "common.h"
+#include "actor_create.h"
 #include "scene_types.h"
 #include "fishing_population.h"
-u8 *actorCreateForKind(s32, f32, f32, f32, f32, f32, f32, void *, s32);
 u8 *itemCreate(f32, f32, f32, f32, f32, s32);
 u32 randomNext(void);
 u8 *ambientAudioCreate(f32 *, s32, f32, f32, s32, s32, f32, s32, s32);

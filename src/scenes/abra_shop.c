@@ -1,6 +1,6 @@
 #include "common.h"
+#include "actor_create.h"
 
-u8 *actorCreateForKind(s32, f32, f32, f32, f32, f32, f32, u8 *, s32);
 void *itemCreate(f32, f32, f32, f32, f32, s32);
 typedef struct {
     u8 unknown[12];

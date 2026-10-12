@@ -2,6 +2,7 @@
 #include "heap_tail.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "actor_create.h"
 #include "actor_part_config.h"
 #include "actor_text.h"
 #include "actor_parts.h"
@@ -36,7 +37,6 @@ s32 progressGetMaximum(s32);
 extern u8 *gCurrentAreaConfiguration;
 void objectOrientTowardCamera(u8 *);
 void objectRequestHierarchyDestruction(u8 *);
-u8 *actorCreateForKind(s32, f32, f32, f32, f32, f32, f32, u8 *, s32);
 /// Integer animation program used before the contact effect is triggered.
 /// \note Original identifier: \c D_8006B390 (0x8006B390).
 extern s32 gContactEffectIdleAnimation;

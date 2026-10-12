@@ -1,7 +1,7 @@
 #include "common.h"
+#include "actor_create.h"
 #include "scene_types.h"
 
-s32 actorCreateForKind(s32, f32, f32, f32, f32, f32, f32, s32, s32);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
@@ -13,7 +13,7 @@ extern s32 *D_8013CE38_scene_wilderness_camp[16];
 void wildernessCampSpawnResident(void) {
     actorCreateForKind(0x11, 125.0f, 10.0f, 122.27f, 0.0f, 0.0f,
                        ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
-                       (s32)D_8013A878_scene_wilderness_camp, 0);
+                       D_8013A878_scene_wilderness_camp, 0);
 }
 
 /// Provide the Wilderness Camp scene callback that requires no action.

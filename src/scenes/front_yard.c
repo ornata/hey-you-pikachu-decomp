@@ -1,4 +1,5 @@
 #include "common.h"
+#include "actor_create.h"
 #include "actor_script.h"
 #include "scene_types.h"
 
@@ -28,7 +29,6 @@ void frontYardInitializeRegularObjects(void) {
     doorCreate(D_801345A8_scene_front_yard, 2, 2, 0, enabled);
 }
 
-u8 *actorCreateForKind(s32, f32, f32, f32, f32, f32, f32, s32, s32);
 void *itemCreate(f32, f32, f32, f32, f32, s32);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).

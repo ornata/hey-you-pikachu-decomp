@@ -1,6 +1,6 @@
 #include "common.h"
+#include "actor_create.h"
 
-u8 *actorCreateForKind(s32, f32, f32, f32, f32, f32, f32, u8 *, s32);
 void togepiCreate(f32, f32, f32, f32, f32, u8 *, s32);
 u8 *ambientAudioCreate(f32 *, s32, f32, f32, s32, s32, f32, s32, s32);
 void runtimeCheckResetCheckpoint(s32, s32);

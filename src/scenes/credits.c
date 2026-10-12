@@ -1,6 +1,6 @@
 #include "common.h"
+#include "actor_create.h"
 #include "scene_types.h"
-u8 *actorCreateForKind(s32, f32, f32, f32, f32, f32, f32, u8 *, s32);
 void objectSetHierarchyFlags(u8 *, s32);
 void actorTransitionModelEnvironmentColor(u8 *, u8, u8, u8, s32, f32);
 void runtimeCheckResetCheckpoint(u8 *, s32);

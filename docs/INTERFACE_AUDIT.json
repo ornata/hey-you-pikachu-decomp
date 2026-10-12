@@ -4,6 +4,20 @@
   "records": [
     {
       "code": 712,
+      "file": "src/scenes/playground.c",
+      "line": 20,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "(s32)D_8013EE54_scene_playground, 0);"
+    },
+    {
+      "code": 712,
+      "file": "src/scenes/entryway.c",
+      "line": 17,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "(s32)D_80139E38_scene_entryway, 0);"
+    },
+    {
+      "code": 712,
       "file": "src/game/collection_presentation.c",
       "line": 473,
       "diagnostic": "illegal combination of pointer and integer",

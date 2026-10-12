@@ -1,5 +1,5 @@
 #include "common.h"
-u8 *actorCreateForKind(s32, f32, f32, f32, f32, f32, f32, u8 *, s32);
+#include "actor_create.h"
 u8 *itemCreate(f32, f32, f32, f32, f32, s32);
 u32 randomNext(void);
 s32 randomBelow(s32);

@@ -1187,3 +1187,16 @@ establishing their role as unscaled placement dimensions. The query now uses
 the recovered record instead of negative offsets from a byte cursor, preserving
 the original interior-base relocation addends. actor_part_config.h declares
 the shared output contract. Both source units and dependent units match strictly.
+
+### Actor creation and replacement contracts
+
+actor_create.h is the canonical interface for actor-kind creation and script-
+preserving replacement. All 24 producer/consumer units share its floating-point
+pose/scale arguments, borrowed script configuration, retained script argument
+and pointer result. Wilderness Camp no longer declares an integer result or
+casts its script resource to an integer. Front Yard and fishing-scene script
+parameters likewise use the producer's pointer contract. Ghidra at 0x8001E568
+confirms replacement transfers script state, clears the original reference and
+requests original hierarchy destruction. Header contracts state runtime-managed
+hierarchy lifetime and script resource lifetime. Every unit was rebuilt and
+compared before proceeding to the next; all preserve strict object matching.

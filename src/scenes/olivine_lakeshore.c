@@ -1,7 +1,7 @@
 #include "common.h"
+#include "actor_create.h"
 #include "area_maze.h"
 #include "scene_types.h"
-u8 *actorCreateForKind(s32, f32, f32, f32, f32, f32, f32, u8 *, s32);
 u32 randomNext(void);
 s32 randomBelow(s32);
 void actorTransitionModelEnvironmentColor(u8 *, u8, u8, u8, u8, f32);

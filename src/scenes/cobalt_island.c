@@ -1,7 +1,7 @@
 #include "common.h"
+#include "actor_create.h"
 #include "area_maze.h"
 
-u8 *actorCreateForKind(s32, f32, f32, f32, f32, f32, f32, u8 *, s32);
 u8 *itemCreate(f32, f32, f32, f32, f32, s32);
 void itemSetMode(u8 *, s32);
 u8 playerGetChaseStage(void);

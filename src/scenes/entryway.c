@@ -1,7 +1,7 @@
 #include "common.h"
+#include "actor_create.h"
 #include "scene_types.h"
 
-u8 *actorCreateForKind(s32, f32, f32, f32, f32, f32, f32, s32, s32);
 void toolboxClearCollection(void);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).

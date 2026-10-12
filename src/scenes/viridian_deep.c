@@ -1,5 +1,6 @@
 #include "item_object.h"
 #include "common.h"
+#include "actor_create.h"
 #include "scene_types.h"
 u8 *toolboxTakeObject(s32, s32);
 /// Remove the removable items held in the tracked scene-item slots.
@@ -15,7 +16,6 @@ void viridianDeepRemoveTrackedItems(void) {
         }
     }
 }
-u8 *actorCreateForKind(s32, f32, f32, f32, f32, f32, f32, u8 *, s32);
 f32 mathSinDegrees(f32);
 f32 mathCosDegrees(f32);
 f32 mathPowInteger(f32, s32);

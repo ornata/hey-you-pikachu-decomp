@@ -1,6 +1,7 @@
 #include "player_friendship.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "actor_create.h"
 #include "actor_text.h"
 #include "item_text.h"
 #include "string_bytes.h"
@@ -2726,7 +2727,6 @@ s32 playerAddPoints(s32 amount) {
     return result;
 }
 
-u8 *actorCreateForKind(s32, f32, f32, f32, f32, f32, f32, u8 *, s32); /* extern */
 /// Current area scenario index shared by actor scripts, scene population, cards and collection titles.
 /// \note Original identifier: \c D_800F0B70 (0x800F0B70).
 extern s32 gAreaScenarioIndex;

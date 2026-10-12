@@ -1,6 +1,6 @@
 #include "common.h"
+#include "actor_create.h"
 #include "scene_types.h"
-s32 actorCreateForKind(s32, f32, f32, f32, f32, f32, f32, s32, s32);
 u8 *caveCreate(f32 *, f32 *, f32 *, u8);
 u8 *landmarkCreate(f32, f32, f32, s32);
 void caveSetLinkedLandmark(u8 *, s32);

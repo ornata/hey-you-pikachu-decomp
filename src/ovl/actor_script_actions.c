@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "actor_create.h"
 #include "actor_parts.h"
 #include "audio_cue.h"
 #include "object_lookup.h"
@@ -363,7 +364,6 @@ void actorTransitionModelEnvironmentColor(u8 *, u8, u8, u8, u8, f32);
 void actorSetModelEnvironmentColor(u8 *, u8, u8, u8, u8);
 u8 *particleClusterCreate(s32, f32, f32, f32, u8 *);
 u8 *orangePulseEmitterCreate(s32, f32);
-u8 *actorReplaceKindPreservingScript(u8 *, s32);
 u32 randomNext(void);
 /// Transform the actor to the script-selected kind with a timed visual and audio effect.
 /// \param object Actor to transform while preserving its script context.
