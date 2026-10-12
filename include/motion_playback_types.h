@@ -28,11 +28,15 @@ typedef struct ChildMotionState {
     s16 playbackMode;              ///< MotionPlaybackMode value; disabled after track completion.
     u8 unknown002[2];              ///< Unresolved bytes preceding the aligned workspace.
     ChildMotionWorkspace playback; ///< Track or pose data selected by playbackMode.
-    u8 unknown064[0x1C];           ///< Remaining allocated storage, including optional controller state.
+    u8 unknown064[0x18]; ///< Unresolved storage before the optional controller.
+    void *facingController; ///< Owned optional target- or camera-facing state, selected by the child update callback.
 } ChildMotionState;
 
 typedef char ChildMotionWorkspaceSizeCheck[(sizeof(ChildMotionWorkspace) == 0x60) ? 1 : -1];
 typedef char ChildMotionStateSizeCheck[(sizeof(ChildMotionState) == 0x80) ? 1 : -1];
 typedef char ChildMotionWorkspaceOffsetCheck[((u32) & ((ChildMotionState *)0)->playback == 4) ? 1 : -1];
+
+typedef char
+    ChildMotionFacingControllerOffsetCheck[((u32) & ((ChildMotionState *)0)->facingController == 0x7C) ? 1 : -1];
 
 #endif

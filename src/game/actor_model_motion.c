@@ -169,7 +169,7 @@ void actorReleaseChildMotionState(u8 *actor) {
     u8 *sub;
 
     obj = *(u8 **)(actor + 0x54);
-    sub = *(u8 **)(obj + 0x7C);
+    sub = ((ChildMotionState *)obj)->facingController;
     if (sub != NULL) {
         heapFreeLocal(&gGameHeap, sub);
     }
@@ -255,6 +255,16 @@ void actorInitializeChildMotionState(void *actor) {
     ((RuntimeObjectPrefix *)actor)->state.pointer = sp1C;
 }
 
+/// Target-facing history and blend weight owned by one child motion state.
+typedef struct TargetFacingState {
+    f32 motionAngles[3]; ///< Last animated orientation before target-facing adjustment.
+    f32 previousAngles[3]; ///< Orientation produced by the previous child update.
+    f32 weight; ///< Current influence of the target-facing adjustment.
+} TargetFacingState;
+
+typedef char TargetFacingStateSizeCheck[(sizeof(TargetFacingState) == 0x1C) ? 1 : -1];
+typedef char TargetFacingStateWeightOffsetCheck[((u32)&((TargetFacingState *)0)->weight == 0x18) ? 1 : -1];
+
 /// Initialize a child object for blended facing toward its parent target.
 /// \param actor Child object whose current orientation initializes target-facing behavior.
 /// \returns Nothing.
@@ -274,7 +284,7 @@ void actorInitializeTargetFacingChildState(u8 *actor) {
     vec[4] = *(f32 *)(actor + 0x10);
     vec[5] = *(f32 *)(actor + 0x14);
     vec[6] = 0.0f;
-    *(f32 **)(obj + 0x7C) = vec;
+    ((ChildMotionState *)obj)->facingController = vec;
 }
 
 /// Initialize a child object for blended facing toward the camera.
@@ -293,7 +303,7 @@ void actorInitializeCameraFacingChildState(u8 *actor) {
     vec[1] = *(f32 *)(actor + 0x10);
     vec[2] = *(f32 *)(actor + 0x14);
     vec[3] = 0.0f;
-    *(f32 **)(obj + 0x7C) = vec;
+    ((ChildMotionState *)obj)->facingController = vec;
 }
 
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
@@ -534,10 +544,10 @@ void actorUpdateTargetFacingChild(u8 *object) {
 
     state = *(u8 **)(object + 0x54);
     parent = *(u8 **)(object + 0x50);
-    follow = *(u8 **)(state + 0x7C);
+    follow = ((ChildMotionState *)state)->facingController;
     parentState = *(u8 **)(parent + 0x54);
     motionUpdateChildPlayback(object);
-    weight = (f32 *)(follow + 0x18);
+    weight = &((TargetFacingState *)follow)->weight;
     if ((actionGetAttributes(parent) & 0x400000) && !(*(u16 *)(parentState + 0x1E8) & 1)) {
         *weight += 2.0f * gRuntimeFrameSeconds;
         if (*weight > 2.0f) {
@@ -606,11 +616,13 @@ void actorUpdateTargetFacingChild(u8 *object) {
 /// Fixed direction transform used when blending child orientation toward the camera.
 /// \note Original identifier: \c D_80076C80 (0x80076C80).
 extern u8 gActorCameraFacingDirectionTransform[];
-/* Facing state at state+0x7C: the stored angles and the blend weight. */
+/// Camera-facing orientation and blend weight owned by one child motion state.
 typedef struct FacingOrientation {
-    f32 angles[3];
-    f32 weight;
+    f32 angles[3]; ///< Last animated orientation before camera-facing adjustment.
+    f32 weight; ///< Current influence of the camera-facing adjustment.
 } FacingOrientation;
+
+typedef char FacingOrientationSizeCheck[(sizeof(FacingOrientation) == 0x10) ? 1 : -1];
 
 /// Update child animation and blend its orientation toward the active camera when tracking is enabled.
 /// \param object Child object with initialized camera-facing state and a valid parent.
@@ -630,7 +642,7 @@ void actorUpdateCameraFacingChild(u8 *object) {
     f32 *weight;
 
     state = *(u16 **)(object + 0x54);
-    orientation = *(FacingOrientation **)((u8 *)state + 0x7C);
+    orientation = ((ChildMotionState *)state)->facingController;
     motionUpdateChildPlayback(object);
     weight = &orientation->weight;
     if ((actionGetAttributes(*(u8 **)(object + 0x50)) & 0x800000) &&

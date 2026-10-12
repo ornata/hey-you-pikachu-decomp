@@ -2415,3 +2415,17 @@ Ghidra 0x80015110 confirms allocation, clearing and mode initialization;
 setup, pose capture, frame update and allocation now use the shared layout.
 Track keys are borrowed from motion data; the child object owns its state.
 Both source-unit changes preserve all 483 strict object comparisons.
+
+### Optional child-facing ownership
+
+The child motion state now names its optional owned `facingController` pointer
+at 0x7C, with a checked offset. Target-facing and camera-facing constructors,
+updates and release share this member. The callback selects which private
+controller layout applies; a single common record would misrepresent them.
+
+The target controller is a checked 0x1C-byte record containing animated angles,
+previous output angles and weight at 0x18. Camera-facing state is a checked
+0x10-byte record containing animated angles and weight. Ghidra 0x80015160
+confirms the target allocation and initial orientation histories. Release frees
+the optional allocation before freeing child state. Existing allocator extra
+arguments remain documented matching constraints.
