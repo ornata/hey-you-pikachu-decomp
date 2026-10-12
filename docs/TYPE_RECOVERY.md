@@ -2586,3 +2586,15 @@ Their allocated layouts and global relocation identities are preserved.
 current-point evaluation using the same vector type for provider and consumer.
 Ghidra 0x8002D348 confirms the output is three coordinates and retained as the
 current focus. Each source-unit conversion passes all 483 strict object checks.
+
+### Shared timed-vector interpolation contract
+
+`vector_interpolation.h` supplies the float-vector interface used by presentation
+focus and companion camera transitions. It documents positive duration, elapsed
+time units, endpoint completion and separate endpoint/output storage. Ghidra
+0x8000DBE4 confirms three component outputs, time clamping and the -1 completion
+result. Provider and both caller units preserve all 483 strict object comparisons.
+
+The companion comment claiming an integer duration argument was stale: its
+existing declaration and call already used float duration. It is replaced with
+the actual prepared-transition and valid-camera precondition.

@@ -1,3 +1,4 @@
+#include "vector_interpolation.h"
 #include "matrix_point.h"
 #include "camera_view.h"
 #include "matrix_translation.h"
@@ -658,8 +659,8 @@ f32 mathCubicHermite(f32, f32, f32, f32, f32, f32);
 /// Interpolate smoothly between two positions with zero endpoint velocities.
 /// \param a Starting three-component position.
 /// \param b Ending three-component position.
-/// \param out Receives the interpolated position.
-/// \param len Positive interpolation duration.
+/// \param out Receives the interpolated position in storage separate from the endpoint.
+/// \param len Positive interpolation duration, in the same units as t.
 /// \param t Elapsed interpolation time; values beyond the duration reach the endpoint, while negative values extrapolate.
 /// \returns Minus one when the result reaches the endpoint within tolerance; otherwise zero.
 /// \note Original decompilation identifier: \c func_8000DBE4 (0x8000DBE4).

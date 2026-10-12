@@ -1,3 +1,4 @@
+#include "vector_interpolation.h"
 #include "camera_overlay.h"
 #include "camera_pose.h"
 #include "camera_types.h"
@@ -1795,16 +1796,13 @@ void playerUpdateHeldItemInspection(u8 *player, u8 *controller) {
     }
 }
 
-s32 vector3InterpolateSmoothTimed(u8 *, u8 *, f32 *, f32, f32); /* extern */
 
 /// Advance the configured smooth camera transition and apply the resulting primary camera view.
 /// \param player Player record containing the configured camera transition.
 /// \param unused Unused mode-update argument.
 /// \returns Nothing.
 ///
-/// \note Requires a transition prepared for this player and a valid primary camera. Portability: the local
-/// interpolation declaration passes its duration as an integer to a helper defined with a floating-point
-/// parameter.
+/// \pre Requires a transition prepared with positive duration for this player and a valid primary camera.
 /// \note Original decompilation identifier: \c func_801116D8 (0x801116D8).
 void playerUpdateCameraTransition(u8 *player, u8 *unused) {
     f32 sp3C[3];
@@ -1815,10 +1813,10 @@ void playerUpdateCameraTransition(u8 *player, u8 *unused) {
     if (((PlayerControlPrefix *)player)->modeState.cameraRemaining < 0.0f) {
         ((PlayerControlPrefix *)player)->modeState.cameraRemaining = 0.0f;
     }
-    vector3InterpolateSmoothTimed(player + 0xAC, player + 0xA0, sp3C,
+    vector3InterpolateSmoothTimed((f32 *)(player + 0xAC), (f32 *)(player + 0xA0), sp3C,
                                   ((PlayerControlPrefix *)player)->modeState.cameraDuration,
                                   ((PlayerControlPrefix *)player)->modeState.cameraRemaining);
-    vector3InterpolateSmoothTimed(player + 0xC4, player + 0xB8, sp30,
+    vector3InterpolateSmoothTimed((f32 *)(player + 0xC4), (f32 *)(player + 0xB8), sp30,
                                   ((PlayerControlPrefix *)player)->modeState.cameraDuration,
                                   ((PlayerControlPrefix *)player)->modeState.cameraRemaining);
     cameraSetEyeAndTarget(0, sp3C, sp30);

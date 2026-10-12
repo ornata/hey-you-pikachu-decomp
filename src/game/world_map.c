@@ -1,3 +1,4 @@
+#include "vector_interpolation.h"
 #include "presentation_focus.h"
 #include "vector3_types.h"
 #include "matrix_types.h"
@@ -77,14 +78,13 @@ void presentationResetFocusPoint(Vec3f *point) {
     gPresentationFocusTransitionStartMilliseconds = (u32)runtimeGetElapsedMilliseconds();
 }
 
-s32 vector3InterpolateSmoothTimed(Vec3f *, Vec3f *, Vec3f *, f32, f32); /* extern */
 
 /// Update and obtain the shared presentation focus point during its transition.
 /// \param point Receives the current point in presentation coordinates.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002D348 (0x8002D348).
 void presentationUpdateFocusPoint(Vec3f *point) {
-    vector3InterpolateSmoothTimed(&gPresentationFocusStart, &gPresentationFocusTarget, point, 600.0f,
+    vector3InterpolateSmoothTimed((f32 *)&gPresentationFocusStart, (f32 *)&gPresentationFocusTarget, (f32 *)point, 600.0f,
                                   (f32)runtimeGetElapsedMilliseconds() -
                                       (f32)gPresentationFocusTransitionStartMilliseconds);
     gPresentationFocusCurrent.x = point->x;
