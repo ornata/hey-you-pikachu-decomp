@@ -1679,3 +1679,13 @@ slots borrow interior storage. The shared object field comment reflects this
 ownership. The provider uses checked buffer fields and callers no longer carry
 integer object-address declarations. All six units preserve all 483 objects
 and strict relocation addends.
+
+### Transform slots and cloned hierarchy links
+
+Matrix-slot assignment now uses checked root/buffer fields and pointer arithmetic
+for each 64-byte matrix slot, plus typed child/sibling links. Ghidra 0x800082A0
+confirms the stride, root-buffer source and depth-first slot assignment. Its
+contract retains nonnegative, allocation-bounded indices and representable signed
+offsets. Template cloning uses shared flags and root/child/sibling fields without
+changing ownership or traversal order. Both incremental changes preserve all
+483 objects and strict relocation addends.

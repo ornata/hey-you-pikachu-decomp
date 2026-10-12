@@ -748,7 +748,7 @@ u8 *objectCreateDefault(void) {
 
 /// Assign each hierarchy object its transform-buffer slots.
 /// \param object First object in a live hierarchy with assigned roots and sufficiently large root transform buffers, or null.
-/// \param index Nonnegative starting slot index; slot zero retains the root buffers. The final index must fit in the allocated buffers.
+/// \param index Nonnegative starting slot index; slot zero retains the root buffers. The final index must fit the buffers and its 64-byte offset must fit signed 32 bits.
 /// \returns Next unused slot index.
 /// \note Original decompilation identifier: \c func_800082A0 (0x800082A0).
 s32 objectAssignHierarchyMatrixSlots(u8 *object, s32 index) {
@@ -760,14 +760,14 @@ s32 objectAssignHierarchyMatrixSlots(u8 *object, s32 index) {
         do {
             if (index > 0) {
                 for (i = 0; i < 2; i++) {
-                    ((s32 *)(p + 0x3C))[i] = ((s32 *)(*(u8 **)(p + 0x50) + 0x3C))[i] + (index << 6);
+                    ((RuntimeObjectPrefix *)p)->matrixBuffers[i] = ((RuntimeObjectPrefix *)p)->root.object->matrixBuffers[i] + (index << 6);
                 }
             }
             index++;
-            if (*(u8 **)(p + 0x2C) != NULL) {
-                index = objectAssignHierarchyMatrixSlots(*(u8 **)(p + 0x2C), index);
+            if (((RuntimeObjectPrefix *)p)->child.bytes != NULL) {
+                index = objectAssignHierarchyMatrixSlots(((RuntimeObjectPrefix *)p)->child.bytes, index);
             }
-            p = *(u8 **)(p + 0x28);
+            p = ((RuntimeObjectPrefix *)p)->sibling.bytes;
         } while (p != NULL);
     }
     return index;
@@ -808,14 +808,14 @@ u8 *objectCloneTemplateHierarchy(ObjectTemplate *src, u8 *root) {
         *link = n;
         if (root == NULL) {
             root = n;
-            *(u16 *)(root + 0x36) |= 4;
+            ((RuntimeObjectPrefix *)root)->flags |= 4;
         }
-        *(u8 **)(*link + 0x50) = root;
+        ((RuntimeObjectPrefix *)*link)->root.bytes = root;
         if (src->child != NULL) {
-            *(u8 **)(*link + 0x2C) = objectCloneTemplateHierarchy(src->child, root);
+            ((RuntimeObjectPrefix *)*link)->child.bytes = objectCloneTemplateHierarchy(src->child, root);
         }
         src = src->sibling;
-        link = (u8 **)(*link + 0x28);
+        link = &((RuntimeObjectPrefix *)*link)->sibling.bytes;
     } while (src != NULL);
     return head;
 }
