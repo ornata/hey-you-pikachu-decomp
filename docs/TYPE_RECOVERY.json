@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 3421,
-      "unique_spellings": 1274,
+      "occurrences": 3417,
+      "unique_spellings": 1270,
       "files": 80
     }
   },
@@ -6589,18 +6589,6 @@
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
-          "camera + 0xA8": [
-            "283:18"
-          ],
-          "camera + 0xAC": [
-            "284:18"
-          ],
-          "camera + 0xB0": [
-            "285:18"
-          ],
-          "camera + 0xB4": [
-            "286:18"
-          ],
           "gCurrentAreaConfiguration + 0x54": [
             "314:27",
             "322:39"

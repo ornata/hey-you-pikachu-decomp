@@ -1940,3 +1940,13 @@ that reset changes current output/base/blend colors while preserving pending
 targets and countdowns; the contract makes that persistence explicit. Every
 source unit was rebuilt and compared separately; all 483 objects and strict
 relocation addends match.
+
+### Camera viewport and backdrop consumers
+
+Camera initialization, scissor setup and depth clearing now share the checked
+viewport field, documented in left/top/right/bottom order. The backdrop-selection
+word at 0xA4 is exposed with an offset check and a contract derived from its
+`renderDrawBackground` consumer; the preceding 0x18 bytes retain unresolved names.
+Ghidra 0x80002058 confirms the viewport reads and backdrop dispatch. This change
+preserves initialization and graphics-command expression ordering and all 483
+objects, including strict relocations.

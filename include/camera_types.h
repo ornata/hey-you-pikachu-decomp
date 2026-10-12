@@ -21,9 +21,10 @@ typedef struct {
     CameraMatrix view;   ///< Unscaled world-to-view affine transform.
     CameraMatrix scaled; ///< World-to-view transform scaled for view-region queries.
     f32 distance;        ///< Area-dependent distance used for view-region scaling.
-    u8 unknown08C[0x1C];
-    s32 viewport[4];                   ///< Pixel rectangle used to construct the viewport.
-    u8 overlayColor[4];                ///< Blended primary overlay RGBA used for drawing.
+    u8 unknown08C[0x18];
+    s32 useBackdrop;    ///< Nonzero draws the configured backdrop instead of clearing to black.
+    s32 viewport[4];    ///< Pixel rectangle in left, top, right, bottom order for viewport, scissor and depth clearing.
+    u8 overlayColor[4]; ///< Blended primary overlay RGBA used for drawing.
     u8 targetBaseOverlayColor[4];      ///< Requested base overlay RGBA.
     u8 baseOverlayColor[4];            ///< Current base overlay RGBA.
     f32 baseOverlayTimeRemaining;      ///< Seconds remaining in the base overlay transition.
@@ -46,5 +47,7 @@ typedef char MatrixCameraBaseOverlayOffsetCheck[(((u32) & (((MatrixCamera *)0)->
 typedef char MatrixCameraBlendOverlayOffsetCheck[(((u32) & (((MatrixCamera *)0)->blendOverlayColor)) == 0xCC) ? 1 : -1];
 typedef char
     MatrixCameraSecondaryOverlayOffsetCheck[(((u32) & (((MatrixCamera *)0)->secondaryOverlayColor)) == 0xD8) ? 1 : -1];
+
+typedef char MatrixCameraBackdropOffsetCheck[(((u32) & (((MatrixCamera *)0)->useBackdrop)) == 0xA4) ? 1 : -1];
 
 #endif

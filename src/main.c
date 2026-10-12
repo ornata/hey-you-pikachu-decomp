@@ -280,10 +280,10 @@ void renderInitializeResources(void) {
         // clang-format on
         _bzero(camera, 0xE0);
         *(CameraDefaults *)camera = gRenderCameraDefaults;
-        *(s32 *)(camera + 0xA8) = 20;
-        *(s32 *)(camera + 0xAC) = 20;
-        *(s32 *)(camera + 0xB0) = 299;
-        *(s32 *)(camera + 0xB4) = 219;
+        ((MatrixCamera *)camera)->viewport[0] = 20;
+        ((MatrixCamera *)camera)->viewport[1] = 20;
+        ((MatrixCamera *)camera)->viewport[2] = 299;
+        ((MatrixCamera *)camera)->viewport[3] = 219;
         camera += 0xE0;
     } while (camera < (u8 *)&gRenderDisplayListCursor);
     cameraResetOverlayColor(0, 0, 0, 0, 0);
@@ -970,22 +970,22 @@ void renderBeginFrame(void) {
         renderDrawBackground(0);
         gDPPipeSync(gRenderDisplayListCursor++);
         gDPSetScissor(gRenderDisplayListCursor++, G_SC_NON_INTERLACE,
-                      *(s32 *)(gRenderCameras + gRenderCameraIndex * 0xE0 + 0xA8),
-                      *(s32 *)(gRenderCameras + gRenderCameraIndex * 0xE0 + 0xAC),
-                      *(s32 *)(gRenderCameras + gRenderCameraIndex * 0xE0 + 0xB0),
-                      *(s32 *)(gRenderCameras + gRenderCameraIndex * 0xE0 + 0xB4));
+                      ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].viewport[0],
+                      ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].viewport[1],
+                      ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].viewport[2],
+                      ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].viewport[3]);
     } else {
         gDPPipeSync(gRenderDisplayListCursor++);
         gDPSetScissor(gRenderDisplayListCursor++, G_SC_NON_INTERLACE,
-                      *(s32 *)(gRenderCameras + gRenderCameraIndex * 0xE0 + 0xA8),
-                      *(s32 *)(gRenderCameras + gRenderCameraIndex * 0xE0 + 0xAC),
-                      *(s32 *)(gRenderCameras + gRenderCameraIndex * 0xE0 + 0xB0),
-                      *(s32 *)(gRenderCameras + gRenderCameraIndex * 0xE0 + 0xB4));
-        renderClearDepthRectangle(*(s32 *)(gRenderCameras + gRenderCameraIndex * 0xE0 + 0xA8),
-                                  *(s32 *)(gRenderCameras + gRenderCameraIndex * 0xE0 + 0xAC),
-                                  *(s32 *)(gRenderCameras + gRenderCameraIndex * 0xE0 + 0xB0),
-                                  *(s32 *)(gRenderCameras + gRenderCameraIndex * 0xE0 + 0xB4));
-        renderDrawBackground(*(s32 *)(gRenderCameras + gRenderCameraIndex * 0xE0 + 0xA4));
+                      ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].viewport[0],
+                      ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].viewport[1],
+                      ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].viewport[2],
+                      ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].viewport[3]);
+        renderClearDepthRectangle(((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].viewport[0],
+                                  ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].viewport[1],
+                                  ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].viewport[2],
+                                  ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].viewport[3]);
+        renderDrawBackground(((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].useBackdrop);
     }
     cameraApplyRenderingState(gRenderCameraIndex);
     if (gRuntimeProgramDrawEntries[gRuntimeCurrentProgram].callback != NULL) {
