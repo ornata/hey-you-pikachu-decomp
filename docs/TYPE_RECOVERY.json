@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 3308,
-      "unique_spellings": 1232,
+      "occurrences": 3298,
+      "unique_spellings": 1223,
       "files": 80
     }
   },
@@ -81,6 +81,7 @@
   "files": {
     "src/game/action_script.c": {
       "known_views": [
+        "action_script_playback.h",
         "action_script_query.h",
         "action_script_types.h",
         "actor_script.h",
@@ -106,34 +107,6 @@
             "146:9",
             "153:13",
             "166:9"
-          ],
-          "actorState + 0x168": [
-            "180:14"
-          ],
-          "actorState + 0x170": [
-            "181:14"
-          ],
-          "actorState + 0x174": [
-            "182:14"
-          ],
-          "actorState + 0x16C": [
-            "183:14"
-          ],
-          "actorState + 0x158": [
-            "184:14"
-          ],
-          "actorState + 0x164": [
-            "185:14"
-          ],
-          "actorState + 0x15C": [
-            "186:14"
-          ],
-          "actorState + 0x160": [
-            "187:14",
-            "211:14"
-          ],
-          "v + 0x13C": [
-            "200:14"
           ],
           "state + 0x168": [
             "224:14"
@@ -2030,6 +2003,7 @@
     },
     "src/game/collection_presentation.c": {
       "known_views": [
+        "action_script_playback.h",
         "action_script_query.h",
         "actor_parts.h",
         "actor_rotation.h",
@@ -2061,12 +2035,12 @@
           ],
           "liveObject + 0x54": [
             "218:22",
-            "870:18"
+            "869:18"
           ],
           "p + 4": [
             "219:71",
             "220:82",
-            "871:71"
+            "870:71"
           ],
           "gToolboxBonusSlot + 4": [
             "259:18"
@@ -2085,7 +2059,7 @@
           ],
           "gPikachuActor + 0x54": [
             "387:32",
-            "440:24"
+            "439:24"
           ],
           "state + 0x1EC": [
             "389:50"
@@ -2107,98 +2081,98 @@
           ],
           "gPikachuActor + 0x44": [
             "404:20",
-            "447:41"
+            "446:41"
           ],
           "gPikachuActor + 0x48": [
             "405:20",
-            "448:41"
+            "447:41"
           ],
           "gPikachuActor + 0x4C": [
             "406:20",
-            "449:41"
+            "448:41"
           ],
           "tgt + 0": [
-            "447:21"
+            "446:21"
           ],
           "tgt + 4": [
-            "448:21"
+            "447:21"
           ],
           "tgt + 8": [
-            "449:21"
+            "448:21"
           ],
           "ext + 0xC": [
-            "451:64"
+            "450:64"
           ],
           "ext + 0x10": [
-            "452:69"
+            "451:69"
           ],
           "ext + 0x19C": [
-            "453:14"
+            "452:14"
           ],
           "ext + 0x1EC": [
-            "454:101"
+            "453:101"
           ],
           "firstJoint + 0x48": [
-            "458:18"
+            "457:18"
           ],
           "secondJoint + 0x48": [
-            "460:29"
+            "459:29"
           ],
           "gCurrentAreaConfiguration + 0x74": [
-            "519:23",
-            "536:18",
-            "592:25",
-            "605:25",
-            "625:29"
+            "518:23",
+            "535:18",
+            "591:25",
+            "604:25",
+            "624:29"
           ],
           "object + 0x54": [
-            "723:26",
-            "915:22"
+            "722:26",
+            "914:22"
           ],
           "state + 4": [
-            "724:75",
-            "725:68",
-            "916:58"
+            "723:75",
+            "724:68",
+            "915:58"
           ],
           "liveObject + 0x34": [
-            "867:18"
+            "866:18"
           ],
           "item + 0x18": [
-            "887:69"
+            "886:69"
           ],
           "item + 0x10": [
-            "888:14"
+            "887:14"
           ],
           "item + 0": [
-            "889:14"
+            "888:14"
           ],
           "gCurrentAreaConfiguration + 0xC": [
+            "888:35",
             "889:35",
-            "890:35",
-            "891:35"
+            "890:35"
           ],
           "item + 4": [
-            "890:14"
+            "889:14"
           ],
           "item + 8": [
-            "891:14"
+            "890:14"
           ],
           "gCurrentAreaConfiguration + 0x64": [
-            "1237:18",
-            "1262:14",
-            "1326:18",
-            "1330:18",
-            "1334:18",
-            "1342:22"
+            "1236:18",
+            "1261:14",
+            "1325:18",
+            "1329:18",
+            "1333:18",
+            "1341:22"
           ],
           "gCurrentAreaConfiguration + 0x78": [
-            "1707:44"
+            "1706:44"
           ],
           "gItemKind8FCollectionValue + 0x64": [
-            "1798:47"
+            "1797:47"
           ],
           "currentChapter + 1": [
-            "1816:18"
+            "1815:18"
           ]
         }
       }
@@ -3271,6 +3245,7 @@
     },
     "src/game/message_bar.c": {
       "known_views": [
+        "action_script_playback.h",
         "heap_alloc.h",
         "heap_types.h",
         "object_distance.h",
@@ -5444,6 +5419,7 @@
     },
     "src/game/terrain_debug_grid.c": {
       "known_views": [
+        "action_script_playback.h",
         "game_heap.h",
         "heap_alloc.h",
         "object_create.h",
@@ -6298,6 +6274,7 @@
     },
     "src/game/world_map.c": {
       "known_views": [
+        "action_script_playback.h",
         "action_script_query.h",
         "actor_parts.h",
         "actor_rotation.h",
@@ -6314,61 +6291,61 @@
       "locations": {
         "raw_offset_candidates": {
           "x - 27": [
-            "201:46"
+            "202:46"
           ],
           "x + 55": [
-            "203:46"
+            "204:46"
           ],
           "x - 16": [
-            "271:31",
-            "295:27"
-          ],
-          "y + 8": [
-            "272:31"
-          ],
-          "y - 8": [
+            "272:31",
             "296:27"
           ],
+          "y + 8": [
+            "273:31"
+          ],
+          "y - 8": [
+            "297:27"
+          ],
           "counter + 5U": [
-            "303:25"
+            "304:25"
           ],
           "gPikachuActor + 0x54": [
-            "386:28",
+            "387:28",
             "436:28",
-            "612:46",
-            "788:27"
+            "611:46",
+            "787:27"
           ],
           "state + 0x1EC": [
-            "388:74",
+            "389:74",
             "450:101"
           ],
           "gPikachuActor + 0x48": [
-            "394:29",
-            "396:35",
-            "402:20",
+            "395:29",
+            "397:35",
+            "403:20",
             "443:54"
           ],
           "firstJoint + 0x48": [
-            "394:62"
+            "395:62"
           ],
           "secondJoint + 0x48": [
-            "396:68"
+            "397:68"
           ],
           "gPikachuActor + 0x18": [
-            "398:20"
-          ],
-          "gPikachuActor + 0x1C": [
             "399:20"
           ],
-          "gPikachuActor + 0x20": [
+          "gPikachuActor + 0x1C": [
             "400:20"
           ],
+          "gPikachuActor + 0x20": [
+            "401:20"
+          ],
           "gPikachuActor + 0x44": [
-            "401:20",
+            "402:20",
             "442:54"
           ],
           "gPikachuActor + 0x4C": [
-            "403:20",
+            "404:20",
             "444:54"
           ],
           "camera + 0": [
@@ -6390,11 +6367,11 @@
             "448:14"
           ],
           "PLAYER + 0x54": [
-            "493:27"
+            "492:27"
           ],
           "sp24 + 0x13C": [
-            "795:22",
-            "799:25"
+            "794:22",
+            "798:25"
           ]
         }
       }
@@ -6563,6 +6540,7 @@
     },
     "src/ovl/actor_script_action_commands.c": {
       "known_views": [
+        "action_script_playback.h",
         "action_script_query.h",
         "actor_script.h",
         "actor_script_action.h",
@@ -6576,17 +6554,18 @@
       "locations": {
         "raw_offset_candidates": {
           "capacity - 1": [
-            "83:72",
-            "91:17"
+            "84:72",
+            "92:17"
           ],
           "prefixLength - 1": [
-            "85:70"
+            "86:70"
           ]
         }
       }
     },
     "src/ovl/actor_script_actions.c": {
       "known_views": [
+        "action_script_playback.h",
         "action_script_query.h",
         "actor_color.h",
         "actor_create.h",
@@ -6654,6 +6633,7 @@
     },
     "src/ovl/actor_script_messages_items.c": {
       "known_views": [
+        "action_script_playback.h",
         "actor_rotation.h",
         "actor_script.h",
         "actor_script_action.h",
@@ -6671,10 +6651,10 @@
       "locations": {
         "raw_offset_candidates": {
           "actor + 0xC": [
-            "668:38"
+            "669:38"
           ],
           "gPlayerCompanionTarget - 0x50": [
-            "1372:57"
+            "1371:57"
           ]
         }
       }
@@ -6682,6 +6662,7 @@
     "src/ovl/actor_script_queries.c": {
       "known_views": [
         "action_query.h",
+        "action_script_playback.h",
         "actor_script.h",
         "actor_target.h",
         "camera_pose.h",
@@ -6703,83 +6684,83 @@
       "locations": {
         "raw_offset_candidates": {
           "actor + 0x44": [
-            "40:36",
-            "207:40"
+            "41:36",
+            "208:40"
           ],
           "return -1": [
-            "76:9"
+            "77:9"
           ],
           "return -65536": [
-            "143:5",
-            "155:5",
-            "614:9",
-            "620:5",
-            "835:5",
-            "920:5",
-            "971:5",
-            "992:5",
-            "1011:5"
+            "144:5",
+            "156:5",
+            "612:9",
+            "618:5",
+            "833:5",
+            "918:5",
+            "969:5",
+            "990:5",
+            "1009:5"
           ],
           "object + 0x44": [
-            "153:25",
-            "1124:41",
-            "1141:40",
-            "1253:67"
+            "154:25",
+            "1122:41",
+            "1139:40",
+            "1251:67"
           ],
           "target + 0x44": [
-            "236:35"
+            "237:35"
           ],
           "targetObject + 0x44": [
-            "262:35",
-            "313:38"
+            "263:35",
+            "314:38"
           ],
           "resolvedObject + 0x44": [
-            "288:38",
-            "833:25"
+            "289:38",
+            "831:25"
           ],
           "gPlayerControllerPort + 4": [
-            "554:14"
+            "552:14"
           ],
           "gPlayerControllerPort + 6": [
-            "562:21"
+            "560:21"
           ],
           "offset + 4": [
-            "951:64"
+            "949:64"
           ],
           "offset + 8": [
-            "952:64"
+            "950:64"
           ],
           "result + 0x38": [
-            "1071:21"
+            "1069:21"
           ],
           "item + 0x38": [
-            "1094:21"
+            "1092:21"
           ],
           "object + 0x54": [
-            "1123:22"
+            "1121:22"
           ],
           "object + 0x48": [
-            "1125:41",
-            "1142:40"
+            "1123:41",
+            "1140:40"
           ],
           "object + 0x4C": [
-            "1126:41",
-            "1143:40"
+            "1124:41",
+            "1141:40"
           ],
           "state + 0x1EC": [
-            "1141:14"
+            "1139:14"
           ],
           "state + 0x1F0": [
-            "1142:14"
+            "1140:14"
           ],
           "state + 0x1F4": [
-            "1143:14"
+            "1141:14"
           ],
           "object + 0x18": [
-            "1167:24"
+            "1165:24"
           ],
           "object + 0xC": [
-            "1253:101"
+            "1251:101"
           ]
         }
       }

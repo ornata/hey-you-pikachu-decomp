@@ -2150,3 +2150,15 @@ the recorded-request comparison and combined query contract. All six source
 units preserve all 483 objects and strict relocation addends. Stop declarations
 remain a separate audit: actorScriptStopActionScript already documents its
 argument-register dependency, which prevents blindly adopting a stop prototype.
+
+### Shared action-script startup and duration contracts
+
+`action_script_playback.h` shares startup, inherited-mode, duration-update
+and duration-limited-start declarations across all providers and declaration
+consumers. Startup and setters use checked actor-state fields. Ghidra
+0x80012034 confirms the initialized command cursor, request tracking and clocks;
+0x80117AA0 confirms the duration wrapper forwarding. The wrapper now accepts
+the actual actor pointer and float duration, agreeing with its script caller.
+This removes its mismatched integer declaration and portability exception.
+A union reinterpretation changed matching bytes; the direct float parameter
+preserves all 483 objects, including strict relocation addends.

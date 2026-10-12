@@ -1,3 +1,4 @@
+#include "action_script_playback.h"
 #include "object_distance.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -48,7 +49,6 @@ void presentationDrawCurrentCardPanels(Gfx **);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
-void actionScriptStart(s32, s32);          /* extern */
 void textWindowAppendText(s32);                       /* extern */
 s32 textWindowOpen(s32, s32, s32); /* extern */
 s32 textWindowShowFirstPage();                          /* extern */

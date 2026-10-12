@@ -1,3 +1,4 @@
+#include "action_script_playback.h"
 #include "action_script_query.h"
 #include "actor_sound.h"
 /// \file
@@ -10,7 +11,6 @@
 #include "common.h"
 #include "action_script_types.h"
 #include "actor_script.h"
-void actionScriptStart(u8 *, s32);
 void actionCancelPendingRequest(u8 *);
 void actionRequestLoopExit(u8 *);
 /// Action-script command stream addresses indexed by script identifier.
@@ -177,14 +177,14 @@ void actionScriptStart(u8 *object, s32 scriptId) {
     u8 *actorState;
 
     actorState = *(u8 **)(object + 0x54);
-    *(s32 *)(actorState + 0x168) = gActionScriptPrograms[scriptId];
-    *(s32 *)(actorState + 0x170) = 0;
-    *(s32 *)(actorState + 0x174) = 0;
-    *(s32 *)(actorState + 0x16C) = 0;
-    *(s32 *)(actorState + 0x158) = scriptId;
-    *(f32 *)(actorState + 0x164) = 0.0f;
-    *(f32 *)(actorState + 0x15C) = 0.0f;
-    *(f32 *)(actorState + 0x160) = -1.0f;
+    ((ActorScriptState *)actorState)->actionScriptCommand = (ActionScriptCommand *)gActionScriptPrograms[scriptId];
+    ((ActorScriptState *)actorState)->actionScriptLastRequestId = 0;
+    ((ActorScriptState *)actorState)->actionScriptPendingRequestId = 0;
+    ((ActorScriptState *)actorState)->actionScriptSoundHandle = 0;
+    ((ActorScriptState *)actorState)->actionScriptId = scriptId;
+    ((ActorScriptState *)actorState)->actionScriptCommandTime = 0.0f;
+    ((ActorScriptState *)actorState)->actionScriptElapsed = 0.0f;
+    ((ActorScriptState *)actorState)->actionScriptDuration = -1.0f;
 }
 
 /// Start an action script with a default mode for actions that inherit it.
@@ -197,7 +197,7 @@ void actionScriptStartWithMode(u8 *object, s32 scriptId, s32 mode) {
     u8 *v;
 
     v = *(u8 **)(object + 0x54);
-    *(s16 *)(v + 0x13C) = mode;
+    ((ActorScriptState *)v)->defaultActionMode = mode;
     actionScriptStart(object, scriptId);
 }
 
@@ -208,7 +208,7 @@ void actionScriptStartWithMode(u8 *object, s32 scriptId, s32 mode) {
 /// \note Original decompilation identifier: \c func_8001209C (0x8001209C).
 void actionScriptSetDuration(u8 *object, f32 duration) {
     u8 *actorState = *(u8 **)(object + 0x54);
-    *(f32 *)(actorState + 0x160) = duration;
+    ((ActorScriptState *)actorState)->actionScriptDuration = duration;
 }
 
 /// Stop script command execution and request the current action to finish.

@@ -1,3 +1,4 @@
+#include "action_script_playback.h"
 #include "action_script_query.h"
 #include "actor_script_action.h"
 #include "actor_meters.h"
@@ -74,7 +75,6 @@ s32 actorScriptWaitForActionResult(u8 *actor) {
     return 2;
 }
 
-void actionScriptStart(u8 *, s32); /* extern */
 
 /// Start the action supplied by the script and wait for it to stop.
 /// \param actor Actor whose script supplies the action and receives its completion result.

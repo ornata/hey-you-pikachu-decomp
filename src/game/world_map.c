@@ -1,3 +1,4 @@
+#include "action_script_playback.h"
 #include "action_script_query.h"
 #include "camera_overlay.h"
 #include "actor_rotation.h"
@@ -414,7 +415,6 @@ extern s32 gWorldMapDirectionHeldFrames;
 extern u8 gRenderCameras[];
 void wholeMapUpdateActorPlacement(void);
 void actionScriptStop();
-void actionScriptStartWithMode();
 void actionStopPlayback(u8 *);
 f32 vector3GetYawDegrees(f32 *);
 void actorSetBehaviorInhibitFlags(u8 *, u16);
@@ -450,7 +450,7 @@ void wholeMapPrepareActor(void) {
                                  (u8 *)&gWorldMapDestinations[gWorldMapSelectedDestination] + 0x10, state + 0x1EC);
     presentationResetFocusPoint((Vec3f_ *)((u8 *)&gWorldMapDestinations[gWorldMapSelectedDestination] + 0x10));
     gWorldMapDirectionHeldFrames = 0;
-    actionScriptStartWithMode(gPikachuActor, action, actionMode);
+    actionScriptStartWithMode((u8 *)gPikachuActor, action, actionMode);
     actorSetBehaviorInhibitFlags((u8 *)gPikachuActor, animation);
 }
 
@@ -470,7 +470,6 @@ void wholeMapSetState(s32 state) {
     gWorldMapState = state;
 }
 
-void actionScriptStart(s32, s32);
 s32 randomBelow(s32);
 
 #define PLAYER (*(volatile s32 *)&gPikachuActor)
@@ -485,19 +484,19 @@ void wholeMapPlayConfirmationAnimation(void) {
     actionScriptStop(PLAYER);
     form = gWorldMapDestinations[gWorldMapSelectedDestination].w[playerGetChaseStage()];
     if (form == 9 || form == 10) {
-        actionScriptStart(PLAYER, 0x2C);
+        actionScriptStart((u8 *)PLAYER, 0x2C);
         return;
     }
     switch (randomBelow(3)) {
     case 0:
         *(s16 *)(*(u8 **)(PLAYER + 0x54) + 0x13C) = 3;
-        actionScriptStart(PLAYER, 0x39);
+        actionScriptStart((u8 *)PLAYER, 0x39);
         break;
     case 1:
-        actionScriptStart(PLAYER, 0x3F);
+        actionScriptStart((u8 *)PLAYER, 0x3F);
         break;
     case 2:
-        actionScriptStart(PLAYER, 0x54);
+        actionScriptStart((u8 *)PLAYER, 0x54);
         break;
     }
 }
@@ -789,16 +788,16 @@ void wholeMapUpdate(void) {
     playerResetViewOrientation();
     cameraBuildInterfaceTransform(&gWorldMapToWorldTransform);
     if (actionScriptIsStopped((u8 *)gPikachuActor) != 0) {
-        actionScriptStartWithMode(gPikachuActor, 0x57, 2);
+        actionScriptStartWithMode((u8 *)gPikachuActor, 0x57, 2);
     }
     if (gWorldMapDirectionHeldFrames >= 0x65) {
         if (*(s16 *)(sp24 + 0x13C) != 0xE) {
             actionScriptStop(gPikachuActor);
-            actionScriptStartWithMode(gPikachuActor, 0x57, 0xE);
+            actionScriptStartWithMode((u8 *)gPikachuActor, 0x57, 0xE);
         }
     } else if (*(s16 *)(sp24 + 0x13C) != 2) {
         actionScriptStop(gPikachuActor);
-        actionScriptStartWithMode(gPikachuActor, 0x57, 2);
+        actionScriptStartWithMode((u8 *)gPikachuActor, 0x57, 2);
     }
     switch (gWorldMapState) {
     case 0:

@@ -1,3 +1,4 @@
+#include "action_script_playback.h"
 #include "actor_script_action.h"
 #include "actor_sound.h"
 #include "actor_rotation.h"
@@ -1212,7 +1213,6 @@ s32 actorScriptPushDefaultActionMode(u8 *actor) {
     return 0;
 }
 
-void actionScriptStartWithMode(u8 *, s32, s32); /* extern */
 
 /// Start an action script with a default mode and yield actor script execution.
 /// \param actor Actor whose script VM supplies a valid action-script identifier followed by a default mode representable as a signed 16-bit value, and receives zero.
@@ -1231,7 +1231,6 @@ s32 actorScriptStartActionWithMode(u8 *actor) {
     return 1;
 }
 
-void actionScriptStartWithDurationBits(u8 *, s32, f32); /* extern */
 
 /// Start an action script with a time limit and yield actor script execution.
 /// \param actor Actor whose script VM supplies a valid action-script identifier followed by a floating-point duration in seconds, and receives zero; a negative duration removes the limit.

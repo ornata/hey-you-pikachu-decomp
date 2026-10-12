@@ -1,3 +1,4 @@
+#include "action_script_playback.h"
 #include "camera_pose.h"
 #include "action_query.h"
 #include "interaction.h"
@@ -501,19 +502,16 @@ void actorSetDefaultActionMode(u8 *actor, s32 mode) {
     ((ActorScriptState *)actorState)->defaultActionMode = mode;
 }
 
-void actionScriptStart(s32, s32); /* extern */
-void actionScriptSetDuration(s32, s32); /* extern */
 
 /// Start an object's action script with a specified time limit.
 /// \param object Address of the object that will execute the action script.
 /// \param scriptId Valid identifier of the action script to start.
-/// \param durationBits Single-precision time limit in seconds as an integer bit pattern; a negative floating-point value removes the limit.
+/// \param duration Time limit in seconds; a negative value removes the limit.
 /// \returns Nothing.
-/// \note Portability/UB: The duration helper is declared with an integer parameter here, relying on the original ABI to preserve the float bit pattern.
 /// \note Original decompilation identifier: \c func_80117AA0 (0x80117AA0).
-void actionScriptStartWithDurationBits(s32 object, s32 scriptId, s32 durationBits) {
+void actionScriptStartWithDurationBits(u8 *object, s32 scriptId, f32 duration) {
     actionScriptStart(object, scriptId);
-    actionScriptSetDuration(object, durationBits);
+    actionScriptSetDuration(object, duration);
 }
 
 /// Separate symbol view of the primary player record's held item handle.

@@ -1,3 +1,4 @@
+#include "action_script_playback.h"
 #include "action_script_query.h"
 #include "actor_script_action.h"
 /// \file
@@ -448,7 +449,6 @@ s32 actorScriptEnterTextWindowMode(u8 *actor) {
     return 0;
 }
 
-void actionScriptStart(u8 *, s32); /* extern */
 /// Start an action script for the actor.
 /// \param actor Actor whose script VM supplies a valid action-script index and receives zero.
 /// \returns One, yielding script execution.

@@ -1,3 +1,4 @@
+#include "action_script_playback.h"
 #include "action_script_query.h"
 #include "camera_overlay.h"
 #include "camera_pose.h"
@@ -176,7 +177,6 @@ void presentationDrawCurrentCardPanels(Gfx **);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
-void actionScriptStart(s32, s32);  /* extern */
 void textWindowAppendText(char *); /* extern */
 s32 textWindowOpen(s32, s32, s32); /* extern */
 s32 textWindowShowFirstPage();     /* extern */
@@ -418,7 +418,6 @@ extern s32 gRenderCameraIndex;
 extern f32 gPresentationActorJointMidpointHeight;
 f32 vector3GetYawDegrees(f32 *);
 void actionStopPlayback(u8 *);
-void actionScriptStartWithMode(u8 *, s32, s32);
 void actorSetBehaviorInhibitFlags(u8 *, u16);
 void presentationPlaceActiveActor(void *);
 void presentationResetFocusPoint(u8 *);
@@ -597,7 +596,7 @@ void presentationUpdateCardMode(void) {
     }
     cameraBuildInterfaceTransform(&gPresentationToWorldTransform);
     if (actionScriptIsStopped((u8 *)gPikachuActor) != 0) {
-        actionScriptStart(gPikachuActor, 0x57);
+        actionScriptStart((u8 *)gPikachuActor, 0x57);
     }
     switch (gCardPresentationStage) {
     case 0:
@@ -942,7 +941,7 @@ void presentationChooseActorResponseToItem(s32 id) {
         action = 0x57;
         break;
     }
-    actionScriptStart(gPikachuActor, action);
+    actionScriptStart((u8 *)gPikachuActor, action);
 }
 
 /// Separate view of the retained bonus item slot.
@@ -1088,15 +1087,15 @@ void presentationShowChapterFriendshipResult(void) {
     value = level;
     TRACE("value = %d\n", value);
     if (value < 3) {
-        actionScriptStart(gPikachuActor, 0x8E);
+        actionScriptStart((u8 *)gPikachuActor, 0x8E);
     } else if (value < 6) {
-        actionScriptStart(gPikachuActor, 0xEB);
+        actionScriptStart((u8 *)gPikachuActor, 0xEB);
     } else if (value < 9) {
-        actionScriptStart(gPikachuActor, 0x3E);
+        actionScriptStart((u8 *)gPikachuActor, 0x3E);
     } else if (value < 0xC) {
-        actionScriptStart(gPikachuActor, 0x8C);
+        actionScriptStart((u8 *)gPikachuActor, 0x8C);
     } else {
-        actionScriptStart(gPikachuActor, 0x87);
+        actionScriptStart((u8 *)gPikachuActor, 0x87);
     }
     gPlayerFriendshipMilestone = -1;
 }
@@ -1117,7 +1116,7 @@ void presentationUpdateCollectionResultsMode(void) {
     playerResetViewOrientation();
     cameraBuildInterfaceTransform(gPresentationToWorldTransform);
     if (actionScriptIsStopped((u8 *)gPikachuActor) != 0) {
-        actionScriptStart(gPikachuActor, 0x57);
+        actionScriptStart((u8 *)gPikachuActor, 0x57);
     }
     switch (gCollectionPresentationStage) {
     case 0:
@@ -1155,7 +1154,7 @@ void presentationUpdateCollectionResultsMode(void) {
                 gCollectionResultsWaitStartMilliseconds = (u32)runtimeGetElapsedMilliseconds();
             } else {
                 if (gCollectionPresentationScore <= 0) {
-                    actionScriptStart(gPikachuActor, 0x7D);
+                    actionScriptStart((u8 *)gPikachuActor, 0x7D);
                     audioPlayCue(0x22);
                 } else {
                     audioPlayCue(0x1C);
