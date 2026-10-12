@@ -13,7 +13,7 @@ void runtimeRequestGameModeChange(s32);
 void playerSetControllerPort(s32);
 /// Double-buffered text images for the shared window page rows.
 /// \note Original identifier: \c D_800F1080 (0x800F1080).
-extern s32 gTextWindowPageImages[6][2];
+extern TextImage *gTextWindowPageImages[6][2];
 
 u64 runtimeGetElapsedMilliseconds(); /* extern */
 /// Current shared text-window transition state; four is inactive.
@@ -25,7 +25,7 @@ extern u32 gTextWindowStateStartMilliseconds;
 
 /// Owned text image used for the shared window input prompt.
 /// \note Original identifier: \c D_800F10A8 (0x800F10A8).
-extern s32 gTextWindowPromptImage;
+extern TextImage *gTextWindowPromptImage;
 
 s32 textWindowPushPage(s32);            /* extern */
 /// Text-image style used when preparing window pages.

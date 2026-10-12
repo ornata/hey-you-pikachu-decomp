@@ -1,6 +1,7 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "text_image_create.h"
+
 #include "string_bytes.h"
 #include "text_draw.h"
 #include "object_lookup.h"
@@ -138,10 +139,10 @@ extern u8 gTextImageConfigurations[];
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80027610 (0x80027610).
 void messageBarPrepareImage(s32 index, QueuedMessage msg) {
-    s32 *slot = &gMessageBarState.handles[index].address;
+    TextImage **slot = &gMessageBarState.handles[index].image;
 
     if (*slot != 0) {
-        textImageDestroy(*slot);
+        textImageDestroy((TextImage *)*slot);
     }
     TRACE("_setSprite:(%s) idx:%d\n", msg.text, index);
     textImageCreateFromText((TextImage **)(slot), (u8 *)((s8 *)msg.text),
@@ -233,18 +234,18 @@ void messageBarInitialize(void) {
 
 /// Separate view of the three retained message-bar text-image handles.
 /// \note Original identifier: \c D_800F0B20 (0x800F0B20).
-extern s32 gMessageBarImageHandles[];
+extern TextImage *gMessageBarImageHandles[];
 
 /// Reset message-bar display state and release retained text images.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80027924 (0x80027924).
 void messageBarResetAndReleaseImages(void) {
     s32 i;
-    s32 *p;
+    TextImage **p;
 
     for (i = 0, p = gMessageBarImageHandles; i < 2; i++, p++) {
         if (*p != 0) {
-            textImageDestroy(*p);
+            textImageDestroy((TextImage *)*p);
         }
     }
     messageBarInitialize();
@@ -438,7 +439,7 @@ extern s8 gCollectionScoreTextFormat;
 extern s32 gCollectionPresentationScore;
 /// Owned text image for the current collection score, or zero before creation.
 /// \note Original identifier: \c D_800F0BE4 (0x800F0BE4).
-extern s32 gCollectionPresentationScoreImage;
+extern TextImage *gCollectionPresentationScoreImage;
 
 /// Live item displayed during collection results, or zero when none is shown.
 /// \note Original identifier: \c D_800F0BDC (0x800F0BDC).

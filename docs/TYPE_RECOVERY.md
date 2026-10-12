@@ -1060,3 +1060,16 @@ uses the same descriptor fields and pixel storage; its image parameter is
 nonnull even though a later internal check tests it. Both source units
 preserve strict object matching. The header documents borrowed pixel lifetime
 through completion of drawing commands.
+
+### Text-image destruction and retained slots
+
+text_image_create.h now provides the canonical TextImage destruction contract
+for every caller, including null acceptance and completion of pixel users before
+release. Ghidra at 0x8003F650 confirms ownership of the descriptor and pixels.
+Window page/prompt slots, message-bar handles and the collection score image
+are descriptor pointers rather than integer addresses. Window prompt width uses
+the shared descriptor field. The message bar uses the image view of its existing
+queue handle union. Changing only the destruction parameter with integer slots
+altered generated code; typed storage and the canonical parameter together
+preserve the strict object baseline. Remaining legacy byte image tables use
+explicit descriptor views and remain recovery targets.

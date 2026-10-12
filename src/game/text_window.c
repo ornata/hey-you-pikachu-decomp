@@ -12,11 +12,10 @@
 // clang-format on
 
 void runtimeRequestGameModeChange(s32);
-void textImageDestroy(s32);
 void playerSetControllerPort(s32);
 /// Double-buffered text images for the shared window page rows.
 /// \note Original identifier: \c D_800F1080 (0x800F1080).
-extern s32 gTextWindowPageImages[6][2];
+extern TextImage *gTextWindowPageImages[6][2];
 
 void _bzero(void *, s32);
 /// Shared integer animation programs selecting texture frames for actors, effects and interface elements.
@@ -30,7 +29,7 @@ extern s32 gTextWindowIndicatorAnimationIds[6];
 extern u8 gTextWindowPendingText[];
 /// Owned text image used for the shared window input prompt.
 /// \note Original identifier: \c D_800F10A8 (0x800F10A8).
-extern s32 gTextWindowPromptImage;
+extern TextImage *gTextWindowPromptImage;
 /// Scene-view mode controlling overlays and scene updates while the window is active.
 /// \note Original identifier: \c D_800F1A74 (0x800F1A74).
 extern s32 gTextWindowSceneViewMode;
@@ -291,7 +290,7 @@ void textWindowDrawPrompt(Gfx **gdl) {
     textDrawReset();
     textDrawSetPalette(gDefaultTextPalette);
     textDrawSetColor(0xFF, 0xFF, 0xFF, runtimeGetUiPulseAlpha());
-    textDrawSetCursor((0x140 - *(s32 *)(gTextWindowPromptImage + 4)) / 2 - 0x20, 0x9F);
+    textDrawSetCursor((0x140 - gTextWindowPromptImage->width) / 2 - 0x20, 0x9F);
     textDrawImageAtCursor((TextImage *)gTextWindowPromptImage);
     textDrawGetDisplayListCursor(gdl);
     textDrawReset();
@@ -310,7 +309,7 @@ extern u8 gTextImageConfigurations[];
 /// \note Original decompilation identifier: \c func_8002BF48 (0x8002BF48).
 void textWindowSetLine(s32 row, u8 *text, s32 style) {
     if (gTextWindowPageImages[row][gTextWindowPageImageBuffer] != 0) {
-        textImageDestroy(gTextWindowPageImages[row][gTextWindowPageImageBuffer]);
+        textImageDestroy((TextImage *)gTextWindowPageImages[row][gTextWindowPageImageBuffer]);
         gTextWindowPageImages[row][gTextWindowPageImageBuffer] = 0;
     }
     if (text != NULL && *text != 0) {
@@ -326,7 +325,7 @@ void textWindowSetLine(s32 row, u8 *text, s32 style) {
 /// \note Original decompilation identifier: \c func_8002BFE8 (0x8002BFE8).
 void textWindowSetPrompt(s32 textAddress) {
     if (gTextWindowPromptImage != 0) {
-        textImageDestroy(gTextWindowPromptImage);
+        textImageDestroy((TextImage *)gTextWindowPromptImage);
         gTextWindowPromptImage = 0;
     }
     textImageCreateFromText((TextImage **)((s32 *)&gTextWindowPromptImage), (u8 *)(textAddress),
@@ -415,7 +414,7 @@ void textWindowFinish(void) {
     for (i = 0; i < 6; i++) {
         for (j = 0; j < 2; j++) {
             if (gTextWindowPageImages[i][j] != 0) {
-                textImageDestroy(gTextWindowPageImages[i][j]);
+                textImageDestroy((TextImage *)gTextWindowPageImages[i][j]);
             }
             gTextWindowPageImages[i][j] = 0;
         }

@@ -1,6 +1,7 @@
 #include "backdrop_draw.h"
 #include "common.h"
 #include "text_image_create.h"
+
 #include "string_bytes.h"
 #include "actor_parts.h"
 #include "audio_cue.h"
@@ -193,7 +194,7 @@ extern s32 gMessageBarWorkImageIndex;
 
 /// Separate view of the three retained message-bar text-image handles.
 /// \note Original identifier: \c D_800F0B20 (0x800F0B20).
-extern s32 gMessageBarImageHandles[];
+extern TextImage *gMessageBarImageHandles[];
 
 /// Interior availability progress-flag view of the item catalog, with a 116-byte stride.
 /// \note Original identifier: \c D_80125AB2 (0x80125AB2).
@@ -731,7 +732,7 @@ void presentationSetCollectionItemText(u8 *object) {
         gCollectionPresentationSubtitleIndex ^= 1;
         slot = &gCollectionPresentationSubtitleImages[gCollectionPresentationSubtitleIndex];
         if (*slot != NULL) {
-            textImageDestroy(*slot);
+            textImageDestroy((TextImage *)*slot);
             *slot = NULL;
         }
         textImageCreateFromText((TextImage **)((s32 *)slot), (u8 *)(buffer), (FontImage *)(gTextImageConfigurations));
@@ -772,7 +773,7 @@ void presentationDrawCollectionText(Gfx **gdl) {
 extern s32 gCollectionPresentationScore;
 /// Owned text image for the current collection score, or zero before creation.
 /// \note Original identifier: \c D_800F0BE4 (0x800F0BE4).
-extern s32 gCollectionPresentationScoreImage;
+extern TextImage *gCollectionPresentationScoreImage;
 
 /// Refreshes the displayed text for the current collection score.
 /// \returns Nothing.
@@ -782,7 +783,7 @@ void presentationRefreshCollectionScoreText(void) {
 
     sprintf(sp20, "@Y@Z%d", gCollectionPresentationScore);
     if (gCollectionPresentationScoreImage != 0) {
-        textImageDestroy(gCollectionPresentationScoreImage);
+        textImageDestroy((TextImage *)gCollectionPresentationScoreImage);
         gCollectionPresentationScoreImage = 0;
     }
     textImageCreateFromText((TextImage **)(&gCollectionPresentationScoreImage), (u8 *)(sp20),

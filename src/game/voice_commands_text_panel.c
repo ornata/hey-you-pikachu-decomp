@@ -21,7 +21,6 @@ extern u8 gTextImageConfigurations[];
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
 void _bzero(s32, s32);
-void textImageDestroy(TextImage *);
 /// Empty text used to reset a scrolling text panel.
 /// \note Original identifier: \c D_800A268C (0x800A268C).
 extern u8 gTextPanelClearedEmptyText[];

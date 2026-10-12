@@ -479,7 +479,6 @@ void systemMenuAppendDetailText(u8 *text) {
     gSystemMenuDetailText[gSystemMenuDetailTextLength] = 0;
 }
 
-void textImageDestroy(void *);
 /// Shared text-image configurations selected by text panels, menus and message styles.
 /// \note Original identifier: \c D_80074DE0 (0x80074DE0).
 extern u8 gTextImageConfigurations[];
@@ -496,7 +495,7 @@ void systemMenuPrepareDetailText(void) {
     gSystemMenuDetailImageBuffer ^= 1;
     for (row = 0; row != 6; row++) {
         if (gSystemMenuDetailImages[row][gSystemMenuDetailImageBuffer] != NULL) {
-            textImageDestroy(gSystemMenuDetailImages[row][gSystemMenuDetailImageBuffer]);
+            textImageDestroy((TextImage *)gSystemMenuDetailImages[row][gSystemMenuDetailImageBuffer]);
             gSystemMenuDetailImages[row][gSystemMenuDetailImageBuffer] = NULL;
         }
     }
@@ -620,7 +619,7 @@ void systemMenuRefreshItemDisplay(MenuState *state) {
     menu = (MenuList *)state->menu;
     for (i = 0; i < 6; i++) {
         if (*(u8 **)((u8 *)gSystemMenuRowImages + i * 8 + gSystemMenuRowImageBuffer * 4) != NULL) {
-            textImageDestroy(*(u8 **)((u8 *)gSystemMenuRowImages + i * 8 + gSystemMenuRowImageBuffer * 4));
+            textImageDestroy((TextImage *)*(u8 **)((u8 *)gSystemMenuRowImages + i * 8 + gSystemMenuRowImageBuffer * 4));
             *(u8 **)((u8 *)gSystemMenuRowImages + i * 8 + gSystemMenuRowImageBuffer * 4) = NULL;
         }
     }
@@ -722,7 +721,7 @@ void systemMenuDrawClosingEffect(Gfx **displayList) {
     image = (u8 **)((u8 *)&gSystemMenuRowImages + gSystemMenuClosingEffectRow * 8 + gSystemMenuRowImageBuffer * 4);
     if (*image != NULL) {
         if (runtimeGetElapsedMilliseconds() - *(u64 *)&gSystemMenuPhaseStartMilliseconds > 150) {
-            textImageDestroy(*image);
+            textImageDestroy((TextImage *)*image);
             *image = NULL;
             return;
         }
