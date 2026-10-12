@@ -2429,3 +2429,12 @@ previous output angles and weight at 0x18. Camera-facing state is a checked
 confirms the target allocation and initial orientation histories. Release frees
 the optional allocation before freeing child state. Existing allocator extra
 arguments remain documented matching constraints.
+
+### Facing-controller field consumers
+
+Target- and camera-facing constructors now allocate their checked private
+record sizes and initialize named angles and weights. The target-facing update
+uses typed animated and previous-output angle histories throughout. Ghidra
+0x80015704 confirms the two histories are distinct: active animation refreshes
+the first, while every update records its resulting orientation in the second.
+These field conversions preserve all allocated bytes and relocation identities.

@@ -265,6 +265,14 @@ typedef struct TargetFacingState {
 typedef char TargetFacingStateSizeCheck[(sizeof(TargetFacingState) == 0x1C) ? 1 : -1];
 typedef char TargetFacingStateWeightOffsetCheck[((u32)&((TargetFacingState *)0)->weight == 0x18) ? 1 : -1];
 
+/// Camera-facing orientation and blend weight owned by one child motion state.
+typedef struct FacingOrientation {
+    f32 angles[3]; ///< Last animated orientation before camera-facing adjustment.
+    f32 weight; ///< Current influence of the camera-facing adjustment.
+} FacingOrientation;
+
+typedef char FacingOrientationSizeCheck[(sizeof(FacingOrientation) == 0x10) ? 1 : -1];
+
 /// Initialize a child object for blended facing toward its parent target.
 /// \param actor Child object whose current orientation initializes target-facing behavior.
 /// \returns Nothing.
@@ -272,18 +280,18 @@ typedef char TargetFacingStateWeightOffsetCheck[((u32)&((TargetFacingState *)0)-
 /// \note Original decompilation identifier: \c func_80015160 (0x80015160).
 void actorInitializeTargetFacingChildState(u8 *actor) {
     u8 *obj;
-    f32 *vec;
+    TargetFacingState *vec;
 
     actorInitializeChildMotionState(actor);
     obj = *(u8 **)(actor + 0x54);
-    vec = (f32 *)heapAllocLocal(&gGameHeap, 0x1C, 0x10C, actor);
-    vec[0] = *(f32 *)(actor + 0xC);
-    vec[1] = *(f32 *)(actor + 0x10);
-    vec[2] = *(f32 *)(actor + 0x14);
-    vec[3] = *(f32 *)(actor + 0xC);
-    vec[4] = *(f32 *)(actor + 0x10);
-    vec[5] = *(f32 *)(actor + 0x14);
-    vec[6] = 0.0f;
+    vec = (TargetFacingState *)heapAllocLocal(&gGameHeap, sizeof(TargetFacingState), 0x10C, actor);
+    vec->motionAngles[0] = *(f32 *)(actor + 0xC);
+    vec->motionAngles[1] = *(f32 *)(actor + 0x10);
+    vec->motionAngles[2] = *(f32 *)(actor + 0x14);
+    vec->previousAngles[0] = *(f32 *)(actor + 0xC);
+    vec->previousAngles[1] = *(f32 *)(actor + 0x10);
+    vec->previousAngles[2] = *(f32 *)(actor + 0x14);
+    vec->weight = 0.0f;
     ((ChildMotionState *)obj)->facingController = vec;
 }
 
@@ -294,15 +302,15 @@ void actorInitializeTargetFacingChildState(u8 *actor) {
 /// \note Original decompilation identifier: \c func_800151E4 (0x800151E4).
 void actorInitializeCameraFacingChildState(u8 *actor) {
     u8 *obj;
-    f32 *vec;
+    FacingOrientation *vec;
 
     actorInitializeChildMotionState(actor);
     obj = *(u8 **)(actor + 0x54);
-    vec = (f32 *)heapAllocLocal(&gGameHeap, 0x10, 0x11C, actor);
-    vec[0] = *(f32 *)(actor + 0xC);
-    vec[1] = *(f32 *)(actor + 0x10);
-    vec[2] = *(f32 *)(actor + 0x14);
-    vec[3] = 0.0f;
+    vec = (FacingOrientation *)heapAllocLocal(&gGameHeap, sizeof(FacingOrientation), 0x11C, actor);
+    vec->angles[0] = *(f32 *)(actor + 0xC);
+    vec->angles[1] = *(f32 *)(actor + 0x10);
+    vec->angles[2] = *(f32 *)(actor + 0x14);
+    vec->weight = 0.0f;
     ((ChildMotionState *)obj)->facingController = vec;
 }
 
@@ -538,7 +546,7 @@ void actorUpdateTargetFacingChild(u8 *object) {
     f32 position[3];
     f32 previous[3];
     f32 *weight;
-    u8 *follow;
+    TargetFacingState *follow;
     f32 length;
     s32 i;
 
@@ -547,7 +555,7 @@ void actorUpdateTargetFacingChild(u8 *object) {
     follow = ((ChildMotionState *)state)->facingController;
     parentState = *(u8 **)(parent + 0x54);
     motionUpdateChildPlayback(object);
-    weight = &((TargetFacingState *)follow)->weight;
+    weight = &follow->weight;
     if ((actionGetAttributes(parent) & 0x400000) && !(*(u16 *)(parentState + 0x1E8) & 1)) {
         *weight += 2.0f * gRuntimeFrameSeconds;
         if (*weight > 2.0f) {
@@ -560,9 +568,9 @@ void actorUpdateTargetFacingChild(u8 *object) {
         }
     }
     if (*(u16 *)state == 1 || *(u16 *)state == 3) {
-        *(f32 *)(follow + 0) = *(f32 *)(object + 0xC);
-        *(f32 *)(follow + 4) = *(f32 *)(object + 0x10);
-        *(f32 *)(follow + 8) = *(f32 *)(object + 0x14);
+        follow->motionAngles[0] = *(f32 *)(object + 0xC);
+        follow->motionAngles[1] = *(f32 *)(object + 0x10);
+        follow->motionAngles[2] = *(f32 *)(object + 0x14);
     } else {
     }
     if (*weight > 0.0f) {
@@ -582,8 +590,8 @@ void actorUpdateTargetFacingChild(u8 *object) {
         if (length < *weight) {
             *weight = length;
         }
-        vector3FromZAxisPitchYawDegrees(*(f32 *)(follow + 4), *(f32 *)(follow + 8), initial);
-        vector3FromZAxisPitchYawDegrees(*(f32 *)(follow + 16), *(f32 *)(follow + 20), previous);
+        vector3FromZAxisPitchYawDegrees(follow->motionAngles[1], follow->motionAngles[2], initial);
+        vector3FromZAxisPitchYawDegrees(follow->previousAngles[1], follow->previousAngles[2], previous);
         for (i = 0; i < 3; i++) {
             delta[i] = (delta[i] * *weight + initial[i]) + 2.0f * (previous[i] * *weight);
         }
@@ -608,21 +616,15 @@ void actorUpdateTargetFacingChild(u8 *object) {
         *(f32 *)(object + 0x10) = pitch;
         *(f32 *)(object + 0x14) = yaw;
     }
-    *(f32 *)(follow + 12) = *(f32 *)(object + 0xC);
-    *(f32 *)(follow + 16) = *(f32 *)(object + 0x10);
-    *(f32 *)(follow + 20) = *(f32 *)(object + 0x14);
+    follow->previousAngles[0] = *(f32 *)(object + 0xC);
+    follow->previousAngles[1] = *(f32 *)(object + 0x10);
+    follow->previousAngles[2] = *(f32 *)(object + 0x14);
 }
 
 /// Fixed direction transform used when blending child orientation toward the camera.
 /// \note Original identifier: \c D_80076C80 (0x80076C80).
 extern u8 gActorCameraFacingDirectionTransform[];
-/// Camera-facing orientation and blend weight owned by one child motion state.
-typedef struct FacingOrientation {
-    f32 angles[3]; ///< Last animated orientation before camera-facing adjustment.
-    f32 weight; ///< Current influence of the camera-facing adjustment.
-} FacingOrientation;
 
-typedef char FacingOrientationSizeCheck[(sizeof(FacingOrientation) == 0x10) ? 1 : -1];
 
 /// Update child animation and blend its orientation toward the active camera when tracking is enabled.
 /// \param object Child object with initialized camera-facing state and a valid parent.
