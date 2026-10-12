@@ -1,3 +1,4 @@
+#include "matrix_types.h"
 #include "matrix_point.h"
 #include "camera_interface.h"
 #include "action_continuation.h"
@@ -372,7 +373,7 @@ void presentationSaveActiveActor(void) {
 
 /// Transform from camera-relative presentation coordinates to world coordinates.
 /// \note Original identifier: \c D_800F0BA8 (0x800F0BA8).
-extern u8 gPresentationToWorldTransform[];
+extern Matrix34 gPresentationToWorldTransform;
 void objectUpdateHierarchy(u8 *);
 void presentationUpdateFocusPoint(Vec3_295BC *);
 /// Place the active actor at a presentation-space point while retaining its ground-clearance offset.
@@ -388,7 +389,7 @@ void presentationPlaceActiveActor(void *point) {
     u8 *output;
     f32 worldHeight;
     f32 newHeight;
-    u8 *matrix = gPresentationToWorldTransform;
+    u8 *matrix = (u8 *)&gPresentationToWorldTransform;
     u8 *state = *(u8 **)((u8 *)gPikachuActor + 0x54);
     presentationUpdateFocusPoint(&input);
     matrix34TransformPointVector((f32 *)(matrix), (f32 *)(&input), (f32 *)(state + 0x1EC));
@@ -454,7 +455,7 @@ void presentationPrepareActiveActor(void *point) {
     actorAddRotationAxisDegrees((u8 *)gPikachuActor, -*(f32 *)(ext + 0xC), 0);
     actorAddRotationAxisDegrees((u8 *)gPikachuActor, yaw - *(f32 *)(ext + 0x10), 1);
     *(s32 *)(ext + 0x19C) = 0;
-    matrix34TransformPointVector((f32 *)(gPresentationToWorldTransform), (f32 *)(&gPresentationActorFocusTargets[1]), (f32 *)(ext + 0x1EC));
+    matrix34TransformPointVector((f32 *)&gPresentationToWorldTransform, (f32 *)(&gPresentationActorFocusTargets[1]), (f32 *)(ext + 0x1EC));
     presentationResetFocusPoint((u8 *)&gPresentationActorFocusTargets[1]);
     actionScriptStartWithMode((u8 *)gPikachuActor, 0x57, 2);
     firstJoint = actorFindPart((u8 *)gPikachuActor, firstJointId);
@@ -597,7 +598,7 @@ void presentationUpdateCardMode(void) {
         runtimeRequestGameModeChange(0);
         return;
     }
-    cameraBuildInterfaceTransform((f32 *)gPresentationToWorldTransform);
+    cameraBuildInterfaceTransform((f32 *)&gPresentationToWorldTransform);
     if (actionScriptIsStopped((u8 *)gPikachuActor) != 0) {
         actionScriptStart((u8 *)gPikachuActor, 0x57);
     }
@@ -631,7 +632,7 @@ void presentationUpdateCardMode(void) {
         backdropSelectForView(0, 0xA, 0);
         presentationSaveActiveActor();
         playerResetViewOrientation();
-        cameraBuildInterfaceTransform((f32 *)gPresentationToWorldTransform);
+        cameraBuildInterfaceTransform((f32 *)&gPresentationToWorldTransform);
         presentationPrepareActiveActor(&gCardPresentationActorPosition);
         actionScriptStartWithMode((u8 *)gPikachuActor, gCardPresentationActionScript, 2);
         presentationSetFocusTarget(gPresentationActorFocusTargets);
@@ -886,7 +887,7 @@ void presentationPlaceCollectionItem(u8 *item, f32 heightOffset) {
     v.y = gCollectionItemPresentationPosition.y;
     v.z = gCollectionItemPresentationPosition.z;
     v.y += heightOffset;
-    matrix34TransformPointVector((f32 *)(gPresentationToWorldTransform), (f32 *)(&v), (f32 *)(item + 0x18));
+    matrix34TransformPointVector((f32 *)&gPresentationToWorldTransform, (f32 *)(&v), (f32 *)(item + 0x18));
     *(f32 *)(item + 0x10) += 3.0;
     *(f32 *)(item + 0) = *(f32 *)(gCurrentAreaConfiguration + 0xC);
     *(f32 *)(item + 4) = *(f32 *)(gCurrentAreaConfiguration + 0xC);
@@ -1117,7 +1118,7 @@ extern s32 gCollectionResultsBypassed;
 /// \note Original decompilation identifier: \c func_80029CD4 (0x80029CD4).
 void presentationUpdateCollectionResultsMode(void) {
     playerResetViewOrientation();
-    cameraBuildInterfaceTransform((f32 *)gPresentationToWorldTransform);
+    cameraBuildInterfaceTransform((f32 *)&gPresentationToWorldTransform);
     if (actionScriptIsStopped((u8 *)gPikachuActor) != 0) {
         actionScriptStart((u8 *)gPikachuActor, 0x57);
     }

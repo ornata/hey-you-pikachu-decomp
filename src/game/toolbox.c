@@ -1,3 +1,4 @@
+#include "matrix_types.h"
 #include "matrix_point.h"
 #include "camera_interface.h"
 #include "matrix_orientation.h"
@@ -896,7 +897,7 @@ extern f32 gRuntimeFrameSeconds;
 extern s32 gPlayerHeldItemHandle;
 /// Camera-derived transform used to draw toolbox interface elements.
 /// \note Original identifier: \c D_800F1CE8 (0x800F1CE8).
-extern u8 gToolboxInterfaceTransform[];
+extern Matrix34 gToolboxInterfaceTransform;
 /// Position and orient the displayed toolbox items and the player's held item.
 /// \param angle Rotation of the item carousel in degrees.
 /// \param height Vertical offset of the carousel in toolbox presentation coordinates.
@@ -926,7 +927,7 @@ void toolboxLayoutCurrentRow(f32 angle, f32 height, f32 depth) {
         position.x = 2.0f * mathCosDegrees(direction);
         position.y = mathSinDegrees(direction) * 0.5f + height;
         position.z = (-6.0f + depth) - mathSinDegrees(direction) * 1.5f;
-        matrix34TransformPointVector((f32 *)(gToolboxInterfaceTransform), (f32 *)(&position), (f32 *)(object + 0x18));
+        matrix34TransformPointVector((f32 *)&gToolboxInterfaceTransform, (f32 *)(&position), (f32 *)(object + 0x18));
         if (i != 0 || *(u16 *)(object + 0x34) != 0x86) {
             toolboxSetObjectCameraRotation(object, -5.0f, 180.0f);
         } else {
@@ -946,7 +947,7 @@ void toolboxLayoutCurrentRow(f32 angle, f32 height, f32 depth) {
         object = objectFindLiveByHandle(gPlayerHeldItemHandle);
         if (object != NULL) {
             VEC3_SET(position, 0, -1.5f, -4.0f);
-            matrix34TransformPointVector((f32 *)(gToolboxInterfaceTransform), (f32 *)(&position), (f32 *)(object + 0x18));
+            matrix34TransformPointVector((f32 *)&gToolboxInterfaceTransform, (f32 *)(&position), (f32 *)(object + 0x18));
             *(f32 *)(object + 0xC) = 0.0f;
             *(f32 *)(object + 0x10) = 0.0f;
             *(f32 *)(object + 0x14) = 0.0f;
@@ -968,7 +969,7 @@ void toolboxPlaceBaseForRow(ToolboxState *t, f32 dy) {
     v.y = gToolboxRowAnchors[t->row].y;
     v.z = gToolboxRowAnchors[t->row].z;
     v.y += dy;
-    matrix34TransformPointVector((f32 *)(gToolboxInterfaceTransform), (f32 *)(&v), (f32 *)(t->objects[0] + 0x18));
+    matrix34TransformPointVector((f32 *)&gToolboxInterfaceTransform, (f32 *)(&v), (f32 *)(t->objects[0] + 0x18));
     if (t->row == 0) {
         toolboxSetObjectCameraRotation(t->objects[0], -5.0f, 210.0f);
     } else {
@@ -1639,7 +1640,7 @@ void toolboxAnimateBaseTransition(void);
 /// \returns Nothing; requires initialized toolbox display objects.
 /// \note Original decompilation identifier: \c func_80031ECC (0x80031ECC).
 void toolboxUpdateDisplay(void) {
-    cameraBuildInterfaceTransform((f32 *)gToolboxInterfaceTransform);
+    cameraBuildInterfaceTransform((f32 *)&gToolboxInterfaceTransform);
     switch (gToolboxMode) {
     case 0:
     case 4:

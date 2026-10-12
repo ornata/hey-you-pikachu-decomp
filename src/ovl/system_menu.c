@@ -1,3 +1,4 @@
+#include "matrix_types.h"
 #include "matrix_point.h"
 #include "camera_interface.h"
 #include "action_script_stop.h"
@@ -333,11 +334,9 @@ extern s32 gSystemMenuPhaseStartMilliseconds;
 /// Interior view of the low word of the menu phase start timestamp.
 /// \note Original identifier: \c D_80134114 (0x80134114).
 extern s32 gSystemMenuPhaseStartMillisecondsLow;
-struct {
-    s32 w[12];
-    /// Camera-derived transform used to position system-menu models.
-    /// \note Original identifier: \c D_80134118 (0x80134118).
-} gSystemMenuInterfaceTransform;
+/// Camera-derived transform used to position system-menu models.
+/// \note Original identifier: \c D_80134118 (0x80134118).
+Matrix34 gSystemMenuInterfaceTransform;
 /// Owned text image marking the currently selected menu row.
 /// \note Original identifier: \c D_80134148 (0x80134148).
 s32 gSystemMenuSelectedRowMarkerImage;

@@ -1,3 +1,4 @@
+#include "matrix_types.h"
 #include "matrix_point.h"
 #include "camera_interface.h"
 #include "action_continuation.h"
@@ -367,7 +368,7 @@ void wholeMapDraw(Gfx **gdl) {
 extern s32 gPikachuActor;
 /// Transform from map presentation coordinates to world coordinates.
 /// \note Original identifier: \c D_800F1B78 (0x800F1B78).
-extern s32 gWorldMapToWorldTransform;
+extern Matrix34 gWorldMapToWorldTransform;
 /// Camera-relative actor position on the world-map screen.
 /// \note Original identifier: \c D_8009A104 (0x8009A104).
 extern Vec3f_ gWorldMapActorPresentationPosition;

@@ -2561,3 +2561,16 @@ Rendering, motion, terrain, interface and search callers were rebuilt and
 compared one source unit at a time. Every conversion preserves all 483 allocated
 objects and strict relocation identities. The locally generated implementation
 was not edited or added to the repository.
+
+### Interface transform global layouts
+
+World-map, toolbox and collection-presentation transform declarations now use
+`Matrix34` instead of a single word or unsized byte array. Their camera-builder
+producers and affine point-transform consumers establish the twelve-component
+layout. Ghidra 0x8002DD70 confirms the world-map matrix is used for both focus
+and actor placement. Original global identifiers and addresses remain documented.
+
+The system-menu transform definition also reuses `Matrix34` instead of a private
+twelve-word record. Its Doxygen description now precedes the declaration. All
+four source-unit changes preserve BSS layout, symbol attributes and relocation
+identities across the complete 483-object comparison.
