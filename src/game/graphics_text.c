@@ -2,6 +2,7 @@
 #include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "font_image.h"
 #include "text_draw.h"
 #include "heap_alloc.h"
 #include "text_image.h"
@@ -1027,7 +1028,6 @@ void textDrawCharacter(u8 character) {
 s32 fontImageMeasureText(u8 *, s32 *, s32);
 s32 fontImageGetCharacterAdvance(s32, s32 *, s32);
 s32 fontImageGetCharacterImageWidth();
-s32 fontImageGetCharacterLeft(s32, u8 *, s32);
 s32 textDecodeNextCharacter(u8 **, s32 *);
 s32 fontImageReadGlyph();
 
@@ -1083,7 +1083,7 @@ s32 textImageCreateCustomFont(TextImage **out, u8 *text, s32 *font) {
             } else if (code == 0xA3A0) {
                 color = value;
             } else {
-                left = fontImageGetCharacterLeft(code, (u8 *)font, gTextDrawSpacingMode);
+                left = fontImageGetCharacterLeft(code, (FontImage *)font, gTextDrawSpacingMode);
                 rowBytes = glyphWidth * 4 / 8;
                 inkWidth = fontImageGetCharacterImageWidth(code, (s32)font, gTextDrawSpacingMode) * 4 / 8;
                 advance = fontImageGetCharacterAdvance(code, font, gTextDrawSpacingMode) * 4 / 8;
@@ -1122,20 +1122,6 @@ s32 textImageCreateCustomFont(TextImage **out, u8 *text, s32 *font) {
     return (s32)bitmap;
 }
 
-typedef struct FontGlyph {
-    s32 offset; /* byte offset of the glyph's pixels from FontImage.pixels */
-    s8 width;
-    s8 height;
-    s8 pad6;
-    s8 pad7;
-} FontGlyph;
-
-typedef struct FontImage {
-    s32 width;
-    s32 height;
-    u8 *pixels;
-    FontGlyph *glyphs;
-} FontImage;
 
 s32 fontImageGetGlyphIndex();
 
@@ -1228,8 +1214,6 @@ s32 fontImageGetCharacterAdvance(s32 code, s32 *font, s32 spacingMode) {
     return r;
 }
 
-s32 fontImageGetCharacterLeft();
-s32 fontImageGetCharacterRight(s32, s32, s32);
 
 /// Check whether a character leaves horizontal margins within its font cell.
 /// \param code Encoded character to inspect.
@@ -1240,7 +1224,7 @@ s32 fontImageCharacterHasSideMargins(s32 code, s32 *font) {
     if (code == 0xA1A0) {
         return 0;
     }
-    if ((fontImageGetCharacterLeft(code, (u8 *)font, 1) == 0) && ((fontImageGetCharacterRight(code, font, 1) + 1) == *font)) {
+    if ((fontImageGetCharacterLeft(code, (FontImage *)font, 1) == 0) && ((fontImageGetCharacterRight(code, (FontImage *)font, 1) + 1) == *font)) {
         return 0;
     }
     return 1;
@@ -1256,8 +1240,8 @@ s32 fontImageCharacterHasSideMargins(s32 code, s32 *font) {
 s32 fontImageGetCharacterImageWidth(s32 code, s32 fontAddress, s32 spacingMode) {
     s32 sp1C;
 
-    sp1C = (fontImageGetCharacterLeft(code, (u8 *)fontAddress, spacingMode) / 2) * 2;
-    return (((fontImageGetCharacterRight(code, fontAddress, spacingMode) / 2) * 2) - sp1C) + 2;
+    sp1C = (fontImageGetCharacterLeft(code, (FontImage *)fontAddress, spacingMode) / 2) * 2;
+    return (((fontImageGetCharacterRight(code, (FontImage *)fontAddress, spacingMode) / 2) * 2) - sp1C) + 2;
 }
 
 s32 textDecodeTwoByteCharacter(u8 **, s32 *);
@@ -1611,24 +1595,24 @@ s32 fontImageGetGlyphIndex(s32 arg0, s32 arg1);
 /// \param spacingMode Spacing mode, with one selecting proportional spacing.
 /// \returns Left boundary in pixels within the character cell.
 /// \note Original decompilation identifier: \c func_8003F4FC (0x8003F4FC).
-s32 fontImageGetCharacterLeft(s32 code, u8 *font, s32 spacingMode) {
+s32 fontImageGetCharacterLeft(s32 code, FontImage *font, s32 spacingMode) {
     if (code == 0xA1A0) {
         return 0;
     }
     if (spacingMode == 1) {
-        return *(s8 *)((fontImageGetGlyphIndex(code, (s32)font) * 8) + *(u8 **)(font + 0xC) + 4);
+        return font->glyphs[fontImageGetGlyphIndex(code, (s32)font)].left;
     }
     return 0;
 }
 
 /// Get the right boundary used to draw a character in a supplied font.
 /// \param code Encoded character to measure.
-/// \param fontAddress Address of the font containing character dimensions and metrics.
+/// \param font Borrowed font containing character dimensions and metrics.
 /// \param spacingMode Spacing mode, with one selecting proportional spacing.
 /// \returns Inclusive right boundary in pixels within the character cell.
 /// \note Original decompilation identifier: \c func_8003F554 (0x8003F554).
-s32 fontImageGetCharacterRight(s32 code, s32 fontAddress, s32 spacingMode) {
-    s32 v = *(s32 *)fontAddress;
+s32 fontImageGetCharacterRight(s32 code, FontImage *font, s32 spacingMode) {
+    s32 v = font->width;
 
     if (code == 0xA1A0) {
         if (spacingMode == 1) {
@@ -1637,7 +1621,7 @@ s32 fontImageGetCharacterRight(s32 code, s32 fontAddress, s32 spacingMode) {
         return v / 2 - 1;
     }
     if (spacingMode == 1) {
-        return *(s8 *)((fontImageGetGlyphIndex(code, fontAddress) * 8) + *(u8 **)(fontAddress + 0xC) + 5);
+        return font->glyphs[fontImageGetGlyphIndex(code, (s32)font)].right;
     }
     return v - 1;
 }

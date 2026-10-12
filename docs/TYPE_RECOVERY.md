@@ -966,3 +966,18 @@ its already recorded four-argument compatibility declaration because the ROM
 supplies two unused trailing integers. The focused lookup header lets that
 caller share ownership APIs without conflicting declarations. No compiler
 flags or call argument setup were changed; all affected units match the baseline.
+
+### Custom-font descriptor and ink metrics
+
+Custom fonts now expose checked FontImage and FontGlyph layouts in a focused
+header. FontImage is 0x10 bytes with its metrics pointer at 0xC; each glyph is
+eight bytes. Glyph fields at 4 and 5 are signed left/right ink boundaries,
+replacing misleading width/height names. Ghidra at 0x8003F554 confirms the
+signed right-boundary read, glyph stride and fixed-cell fallback.
+
+Left/right queries share typed FontImage pointer contracts in font_image.h.
+Existing integer address boundaries in unrelated font builders remain explicit.
+Glyph bytes 6 and 7 retain offset names: no consumer has established their role;
+recovering resource generation or an additional reader is the next evidence
+needed. Their original storage is preserved. All changes match the strict
+object baseline and preserve the original unsupported-character constraints.
