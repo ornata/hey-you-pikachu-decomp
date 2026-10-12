@@ -4,6 +4,13 @@
   "records": [
     {
       "code": 709,
+      "file": "src/game/flipbook_messenger.c",
+      "line": 958,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "messengerAdvancePosition(object);"
+    },
+    {
+      "code": 709,
       "file": "src/game/doors_object_responses.c",
       "line": 160,
       "diagnostic": "Incompatible pointer type assignment",
@@ -43,13 +50,6 @@
       "line": 175,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "sprintf(gDoorAccessDescriptionBuffer, \"\\nYou can't get by for some reason.\");"
-    },
-    {
-      "code": 709,
-      "file": "src/game/flipbook_messenger.c",
-      "line": 958,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "messengerAdvancePosition(object);"
     },
     {
       "code": 709,
@@ -180,16 +180,9 @@
     {
       "code": 712,
       "file": "src/game/graphics_text.c",
-      "line": 1238,
+      "line": 1243,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "if ((fontImageGetCharacterLeft(code, (u8 *)font, 1) == 0) && ((fontImageGetCharacterRight(code, font, 1) + 1) == *font)) {"
-    },
-    {
-      "code": 709,
-      "file": "src/game/attached_effect.c",
-      "line": 78,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "obj = heapAllocLocal(gGameHeap, 0x2C, 0x7A);"
     },
     {
       "code": 709,
@@ -197,6 +190,13 @@
       "line": 42,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "v = heapAllocLocal(gGameHeap, 0x20, 0x32);"
+    },
+    {
+      "code": 709,
+      "file": "src/game/attached_effect.c",
+      "line": 78,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "obj = heapAllocLocal(gGameHeap, 0x2C, 0x7A);"
     },
     {
       "code": 709,
@@ -263,17 +263,10 @@
     },
     {
       "code": 709,
-      "file": "src/game/voice_commands_text_panel.c",
-      "line": 185,
+      "file": "src/game/node_pool.c",
+      "line": 19,
       "diagnostic": "Incompatible pointer type assignment",
-      "expression": "if (*(gVoiceCommandDisplayName = voiceDictionaryGetWordName(((u16 *)&gVoiceCommandResultIndex)[1])) == 0) {"
-    },
-    {
-      "code": 709,
-      "file": "src/game/voice_commands_text_panel.c",
-      "line": 442,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "textImageDestroy(oldImage);"
+      "expression": "pool->nodes = (PoolNode *)heapAllocLocal(gGameHeap, count * sizeof(PoolNode), 0x13);"
     },
     {
       "code": 709,
@@ -368,10 +361,17 @@
     },
     {
       "code": 709,
-      "file": "src/game/node_pool.c",
-      "line": 19,
+      "file": "src/game/voice_commands_text_panel.c",
+      "line": 185,
       "diagnostic": "Incompatible pointer type assignment",
-      "expression": "pool->nodes = (PoolNode *)heapAllocLocal(gGameHeap, count * sizeof(PoolNode), 0x13);"
+      "expression": "if (*(gVoiceCommandDisplayName = voiceDictionaryGetWordName(((u16 *)&gVoiceCommandResultIndex)[1])) == 0) {"
+    },
+    {
+      "code": 709,
+      "file": "src/game/voice_commands_text_panel.c",
+      "line": 442,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "textImageDestroy(oldImage);"
     },
     {
       "code": 709,
@@ -446,7 +446,7 @@
     {
       "code": 712,
       "file": "src/main.c",
-      "line": 360,
+      "line": 361,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "{\t\t\t\t\t\t\t\t\t\tGfx *_g = (Gfx *)((gRenderDisplayListCursor++));\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t_g->words.w0 = (((unsigned int) (((unsigned int)(( 0xdb)) & ((0x01 << ( 8)) - 1)) << ( 24)))  | ((unsigned int) (((unsigned int)((  0x06)) & ((0x01 << ( 8)) - 1)) << ( 16)))  |\t\t\t\t((unsigned int) (((unsigned int)((  ( 1)*4)) & ((0x01 << ( 16)) - 1)) << ( 0))) );\t\t\t\t\t_g->words.w1 = (unsigned int)(   osVirtualToPhysical(gSharedRenderAssets));\t\t\t\t}   ;"
     },

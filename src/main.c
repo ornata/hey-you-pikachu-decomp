@@ -1,3 +1,4 @@
+#include "graphics_tasks.h"
 #include "title_screen.h"
 #include "backdrop_draw.h"
 #include "system_menu.h"
@@ -885,7 +886,6 @@ void textWindowDrawFrame(void);
 void wholeMapDraw(Gfx **);
 void fontCacheReleaseUses(void);
 void romCacheReleaseUses(u8 *);
-void graphicsTaskSubmit(s32, s32, Gfx **, Gfx **, void *);
 /// Draw the current gameplay or menu mode and submit its graphics task.
 /// \returns Nothing; requires a prepared current frame and initialized resources for the active mode.
 void renderDrawCurrentMode(void) {

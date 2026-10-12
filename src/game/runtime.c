@@ -1,3 +1,4 @@
+#include "graphics_tasks.h"
 #include "scheduler.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -1023,7 +1024,6 @@ void hudProgramInitializeNoOp(void);
 void messageBarInitialize(void);
 void messageBarResetAndReleaseImages(void);
 void heapInitializeGlobal(s32);
-s32 graphicsTaskInitialize(s32, void *, void *, s32, s32);
 void textDrawInitialize(s32, s32, s32);
 void *areaLoadNextOverlay(void);
 void messengerResetTrackedObject(void);
@@ -1065,7 +1065,7 @@ void runtimeMainThreadEntry(void *scheduler) {
         actionInitializeTransitionMap();
         messengerResetTrackedObject();
         runtimeCheckResetCheckpoint("aft-initMessengerSystem", 1);
-        graphicsTaskInitialize((s32)gRuntimeGraphicsCommandQueue, gColorFramebuffer0, gColorFramebuffer1, 0xC, 0x1000);
+        graphicsTaskInitialize(gRuntimeGraphicsCommandQueue, gColorFramebuffer0, gColorFramebuffer1, 0xC, 0x1000);
         runtimeInitializeCurrentProgram();
         objectPrepareDistributedKindSearches(0, 0xA);
         objectPrepareDistributedKindSearches(0xB3, 0xA);

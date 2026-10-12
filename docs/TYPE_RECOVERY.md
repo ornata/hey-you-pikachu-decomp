@@ -755,3 +755,22 @@ pointer at its established offset. Legacy runtime/audio entry points retain
 explicit integer-address conversions at their existing boundaries; the graphics
 initializer interface still needs its producer/consumer audit. Every affected
 source unit passes strict comparison against the preserved 483-object baseline.
+
+### Graphics task submission and microcode views
+
+`graphics_tasks.h` shares initialization and submission using scheduler queues,
+borrowed framebuffer pointers and the shared `SchedulerTask` pool. Task-pool,
+queue, output-buffer, microcode-stack and yield-buffer globals now retain pointer
+types. Pool indexing uses the checked task size, and FIFO end addressing uses
+the output buffer's 64-bit word type. Completion queues remain borrowed through
+task completion; command storage and framebuffers have explicit lifetimes.
+Ghidra at `0x8003C500` confirms pool and working-buffer allocation sizes.
+
+The private microcode descriptor and its data-pointer interior view have size
+checks. ROM data at `0x8009D41C` confirms two sixteen-byte descriptors with data
+pointers at offset four, FIFO flags of one and retained data-size metadata.
+The interior symbol at `0x8009D420` remains separate to preserve strict relocation
+addends. Its unused trailing bytes are explicitly stride storage spanning the
+next descriptor, rather than asserted unknown semantic fields. All declaring
+callers now share the graphics API; the unused controller declaration is removed.
+Every retained source-unit change matches the preserved 483-object baseline.

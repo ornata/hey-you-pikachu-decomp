@@ -1,3 +1,4 @@
+#include "graphics_tasks.h"
 #include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -28,7 +29,7 @@ const u16 gDefaultTextPaletteRgba5551[16] = {
 extern HpHdr gGameHeap;
 /// Owned pool of reusable scheduler graphics-task records.
 /// \note Original identifier: \c D_800F2980 (0x800F2980).
-extern s32 gGraphicsTaskPool;
+extern SchedulerTask *gGraphicsTaskPool;
 /// Number of reusable graphics tasks in the pool.
 /// \note Original identifier: \c D_800F2984 (0x800F2984).
 extern s32 gGraphicsTaskCapacity;
@@ -40,22 +41,22 @@ extern s32 gGraphicsNextTaskIndex;
 extern s32 gGraphicsFramebufferIndex;
 /// Borrowed scheduler command queue address for graphics task submission.
 /// \note Original identifier: \c D_800F2990 (0x800F2990).
-extern s32 gGraphicsSchedulerQueue;
+extern OSMesgQueue *gGraphicsSchedulerQueue;
 /// Borrowed framebuffer pair used for drawing and presentation.
 /// \note Original identifier: \c D_800F2998 (0x800F2998).
 extern void *gGraphicsFramebuffers[2];
 /// Owned graphics microcode output-buffer address.
 /// \note Original identifier: \c D_800F29A0 (0x800F29A0).
-extern s32 gGraphicsOutputBuffer;
+extern u64 *gGraphicsOutputBuffer;
 /// Graphics output-buffer capacity in sixty-four-bit words.
 /// \note Original identifier: \c D_800F29A4 (0x800F29A4).
 extern s32 gGraphicsOutputCapacityWords;
 /// Owned DRAM stack address supplied to graphics microcode.
 /// \note Original identifier: \c D_800F29A8 (0x800F29A8).
-extern s32 gGraphicsMicrocodeStack;
+extern u64 *gGraphicsMicrocodeStack;
 /// Owned storage address for suspended graphics microcode state.
 /// \note Original identifier: \c D_800F29AC (0x800F29AC).
-extern s32 gGraphicsYieldBuffer;
+extern u64 *gGraphicsYieldBuffer;
 
 /// Initialize graphics task submission and its framebuffer pair.
 /// \param schedulerQueue Borrowed scheduler graphics-task queue address; must remain valid while tasks can be submitted.
@@ -63,29 +64,31 @@ extern s32 gGraphicsYieldBuffer;
 /// \param secondFramebuffer Borrowed second framebuffer address, valid throughout task submission and presentation.
 /// \param taskCount Positive reusable-task count whose allocation size fits an unsigned 32-bit value.
 /// \param outputCapacity Positive graphics output-buffer capacity in 64-bit words whose byte size fits a signed 32-bit value.
-/// \returns Address of the globally owned graphics task pool.
+/// \returns Borrowed pointer to the globally owned graphics task pool.
 /// \note Original decompilation identifier: \c func_8003C500 (0x8003C500).
-s32 graphicsTaskInitialize(s32 schedulerQueue, s32 firstFramebuffer, s32 secondFramebuffer, s32 taskCount, s32 outputCapacity) {
+SchedulerTask *graphicsTaskInitialize(OSMesgQueue *schedulerQueue, void *firstFramebuffer, void *secondFramebuffer, s32 taskCount, s32 outputCapacity) {
     gGraphicsSchedulerQueue = schedulerQueue;
     gGraphicsTaskCapacity = taskCount;
     gGraphicsNextTaskIndex = 0;
-    gGraphicsTaskPool = (s32)heapAllocLocal((HpHdr *)&gGameHeap, (u32)taskCount * 0x58U, 0x4D);
+    gGraphicsTaskPool = heapAllocLocal((HpHdr *)&gGameHeap, (u32)taskCount * sizeof(SchedulerTask), 0x4D);
     gGraphicsFramebufferIndex = 0;
-    gGraphicsFramebuffers[0] = (void *)firstFramebuffer;
-    gGraphicsFramebuffers[1] = (void *)secondFramebuffer;
-    gGraphicsMicrocodeStack = (s32)heapAllocLocal((HpHdr *)&gGameHeap, 0x400, 0x55);
-    gGraphicsYieldBuffer = (s32)heapAllocLocal((HpHdr *)&gGameHeap, 0xC00, 0x59);
+    gGraphicsFramebuffers[0] = firstFramebuffer;
+    gGraphicsFramebuffers[1] = secondFramebuffer;
+    gGraphicsMicrocodeStack = heapAllocLocal((HpHdr *)&gGameHeap, 0x400, 0x55);
+    gGraphicsYieldBuffer = heapAllocLocal((HpHdr *)&gGameHeap, 0xC00, 0x59);
     gGraphicsOutputCapacityWords = outputCapacity;
-    gGraphicsOutputBuffer = (s32)heapAllocLocal((HpHdr *)&gGameHeap, (u32)outputCapacity * 8U, 0x5E);
+    gGraphicsOutputBuffer = heapAllocLocal((HpHdr *)&gGameHeap, (u32)outputCapacity * 8U, 0x5E);
     return gGraphicsTaskPool;
 }
 
-typedef struct {
-    u64 *text;
-    u64 *data;
-    s32 fifo;
-    u32 dataSize;
+/// Borrowed graphics microcode resources and output-buffer policy.
+typedef struct GfxMicrocode {
+    u64 *text; ///< Microcode instructions retained through task completion.
+    u64 *data; ///< Microcode data retained through task completion.
+    s32 fifo; ///< Nonzero when the output descriptor carries the FIFO end address.
+    u32 dataSize; ///< Retained descriptor metadata; submission uses the SDK fixed data size.
 } GfxMicrocode;
+typedef char GfxMicrocodeSizeCheck[(sizeof(GfxMicrocode) == 0x10) ? 1 : -1];
 /// Graphics microcode text, data and output-policy descriptors.
 /// \note Original identifier: \c D_8009D41C (0x8009D41C).
 extern GfxMicrocode gGraphicsMicrocodeConfigurations[];
@@ -106,13 +109,13 @@ extern s32 gGraphicsPartialCompletionMessage, gGraphicsFrameCompletionMessage;
 /// \pre Graphics submission is initialized and the next reusable task has completed its previous use.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8003C5EC (0x8003C5EC).
-void graphicsTaskSubmit(s32 microcode, s32 flags, Gfx **start, Gfx **end, void *reply) {
+void graphicsTaskSubmit(s32 microcode, s32 flags, Gfx **start, Gfx **end, OSMesgQueue *reply) {
     SchedulerTask *task;
     u32 size;
     gDPFullSync((*end)++);
     gSPEndDisplayList((*end)++);
     size = (u8 *)*end - (u8 *)*start;
-    task = (SchedulerTask *)(gGraphicsNextTaskIndex * 0x58 + gGraphicsTaskPool);
+    task = gGraphicsTaskPool + gGraphicsNextTaskIndex;
     task->task.t.data_ptr = (u64 *)*start;
     task->task.t.data_size = size;
     task->task.t.type = M_GFXTASK;
@@ -126,7 +129,7 @@ void graphicsTaskSubmit(s32 microcode, s32 flags, Gfx **start, Gfx **end, void *
     task->task.t.dram_stack_size = SP_DRAM_STACK_SIZE8;
     task->task.t.output_buff = (u64 *)gGraphicsOutputBuffer;
     if (gGraphicsMicrocodeConfigurations[microcode].fifo) {
-        task->task.t.output_buff_size = (u64 *)(gGraphicsOutputBuffer + gGraphicsOutputCapacityWords * 8);
+        task->task.t.output_buff_size = gGraphicsOutputBuffer + gGraphicsOutputCapacityWords;
     } else {
         task->task.t.output_buff_size = (u64 *)gGraphicsOutputCapacityWords;
     }
@@ -142,7 +145,7 @@ void graphicsTaskSubmit(s32 microcode, s32 flags, Gfx **start, Gfx **end, void *
         task->message = &gGraphicsPartialCompletionMessage;
     task->framebuffer = gGraphicsFramebuffers[gGraphicsFramebufferIndex];
     osWritebackDCacheAll();
-    osSendMesg((OSMesgQueue *)gGraphicsSchedulerQueue, task, OS_MESG_BLOCK);
+    osSendMesg(gGraphicsSchedulerQueue, task, OS_MESG_BLOCK);
     if (size)
         gGraphicsFramebufferIndex ^= 1;
     if (++gGraphicsNextTaskIndex >= gGraphicsTaskCapacity)
@@ -150,15 +153,17 @@ void graphicsTaskSubmit(s32 microcode, s32 flags, Gfx **start, Gfx **end, void *
     *start = *end;
 }
 
-typedef struct TextSrc {
-    u8 *buf;
-    s32 unk4;
-    s32 unk8;
-    s32 unkC;
-} TextSrc;
+/// Interior view beginning at a microcode descriptor's data pointer.
+/// The trailing bytes preserve the table stride and overlap the next descriptor;
+/// this view is borrowed and cannot be allocated as a complete descriptor.
+typedef struct MicrocodeDataView {
+    u8 *data; ///< Borrowed microcode data searched for a version identifier.
+    u8 strideRemainder[12]; ///< Unaccessed bytes through the next data-pointer view.
+} MicrocodeDataView;
+typedef char MicrocodeDataViewSizeCheck[(sizeof(MicrocodeDataView) == 0x10) ? 1 : -1];
 /// Microcode descriptor table viewed at its data pointer, with sixteen bytes per entry.
 /// \note Original identifier: \c D_8009D420 (0x8009D420).
-extern TextSrc gGraphicsMicrocodeDataEntries[];
+extern MicrocodeDataView gGraphicsMicrocodeDataEntries[];
 /// Identification prefix searched for in graphics microcode data.
 /// \note Original identifier: \c D_8009D43C (0x8009D43C).
 extern u8 gGraphicsMicrocodeVersionPrefix[];
@@ -171,7 +176,7 @@ extern u8 gGraphicsUnknownMicrocodeVersion[];
 /// \returns Borrowed microcode identification string, or the static fallback string if none is found.
 /// \note Original decompilation identifier: \c func_8003C808 (0x8003C808).
 u8 *graphicsMicrocodeGetVersionString(s32 index) {
-    u8 *p = gGraphicsMicrocodeDataEntries[index].buf;
+    u8 *p = gGraphicsMicrocodeDataEntries[index].data;
     s32 i;
     s32 j;
 

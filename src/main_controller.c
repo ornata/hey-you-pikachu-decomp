@@ -269,7 +269,6 @@ void textWindowDrawFrame(void);
 void wholeMapDraw(Gfx **);
 void fontCacheReleaseUses(void);
 void romCacheReleaseUses(u8 *);
-void graphicsTaskSubmit(s32, s32, Gfx **, Gfx **, void *);
 
 /// Identifier of the currently active runtime program.
 /// \note Original identifier: \c D_800AE4F0 (0x800AE4F0).
