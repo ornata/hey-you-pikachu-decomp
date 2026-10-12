@@ -1,6 +1,7 @@
 #include "item_object.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "direction_animation.h"
 #include "item_response.h"
 #include "runtime_clock.h"
 #include "actor_parts.h"
@@ -910,11 +911,6 @@ void actionCommandStunPlayerInRange(u8 *actor, u8 *state, Cmd14 *command, s32 el
     }
 }
 
-typedef struct Pt2f {
-    f32 x, y;
-} Pt2f;
-void directionAnimationSetNextPoseAngles(u8 *, f32, f32, s32);
-void directionAnimationStartMotion(u8 *, f32, Pt2f *);
 
 /* Script arguments: integer endpoints and a floating-point duration. */
 typedef struct {
@@ -932,12 +928,12 @@ typedef struct {
 /// \note Original decompilation identifier: \c func_80024A18 (0x80024A18).
 void actionCommandStartDirectionMotion(s32 actor, u8 *state, u8 *command, s32 elapsed) {
     LaunchArgs24A18 *p = (LaunchArgs24A18 *)(command + 8);
-    Pt2f pts[2];
+    DirectionAngularRates pts[2];
     s32 i;
 
     for (i = 0; i < 2; i++) {
-        pts[i].x = p->start;
-        pts[i].y = p->end;
+        pts[i].pitch = p->start;
+        pts[i].yaw = p->end;
         directionAnimationSetNextPoseAngles(state + 0x60, -40.0f, 0.0f, i);
     }
     directionAnimationStartMotion(state + 0x60, p->duration, pts);

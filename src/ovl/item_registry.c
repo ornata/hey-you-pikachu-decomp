@@ -4,7 +4,7 @@
 /* Item objects. .rodata is the item-kind text (initializer order), then the
  * debug-trace formats in function order, then the late float/jump tables. */
 #include "common.h"
-#include "direction_animation_types.h"
+#include "direction_animation.h"
 #include "item_response.h"
 #include "item_text.h"
 #include "search_tree.h"
@@ -1979,7 +1979,6 @@ s32 interactionConsiderObject(u8 *);
 s32 collisionGridRegisterObject(u8 *);
 u8 *collisionGridFindOverlap(u8 *);
 
-void directionAnimationUpdate(u8 *);
 s32 itemCanBePickedUp(u8 *, s32);
 void itemStartDirectionMotion(u8 *, f32, f32, f32);
 void itemUpdateModeAndOrientation(u8 *);
@@ -2057,7 +2056,6 @@ void itemUpdate(u8 *object) {
 }
 
 void _bzero();                                         /* extern */
-void directionAnimationReset(u8 *);                    /* extern */
 void itemBuildLightingDisplayList(u8 *, s32);                  /* extern */
 
 /// Allocate and initialize the state resources for a new item.
@@ -2888,8 +2886,6 @@ u8 profileAddCounter(s32 idx, s32 delta) {
     return delta;
 }
 
-void directionAnimationSetNextPoseAngles(u8 *, f32, f32, s32); /* extern */
-void directionAnimationStartMotion(u8 *, f32, f32 (*)[2]);  /* extern */
 
 /// Start timed visual direction motion when the item permits it, postponing its idle motion.
 /// \param item Initialized item receiving the visual motion.
@@ -2900,14 +2896,14 @@ void directionAnimationStartMotion(u8 *, f32, f32 (*)[2]);  /* extern */
 /// \note Original decompilation identifier: \c func_80114DA4 (0x80114DA4).
 void itemStartDirectionMotion(u8 *item, f32 duration, f32 pitchRate, f32 yawRate) {
     u8 *rec = ((RuntimeObjectPrefix *)item)->state.bytes;
-    f32 pts[2][2];
+    DirectionAngularRates pts[2];
     s32 i;
 
     ((ItemStatePrefix *)rec)->idleMotionDelay = 5.5f;
     if (!(((ItemStatePrefix *)rec)->flags & 0x8000)) {
         for (i = 0; i < 2; i++) {
-            pts[i][0] = pitchRate;
-            pts[i][1] = yawRate;
+            pts[i].pitch = pitchRate;
+            pts[i].yaw = yawRate;
             directionAnimationSetNextPoseAngles(rec + 0x70, -40.0f, 0.0f, i);
         }
         directionAnimationStartMotion(rec + 0x70, duration, pts);

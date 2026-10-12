@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "direction_animation.h"
 #include "actor_part_config.h"
 #include "matrix_types.h"
 #include "actor_parts.h"
@@ -207,7 +208,6 @@ void actorPrepareModelLightingDrawList(u8 *actor, LitModel *model, s32 buffer) {
 }
 
 void actorPrepareModelLightingDrawList(u8 *, LitModel *, s32);
-void directionAnimationReset(u8 *); /* extern */
 void matrix34Identity(u8 *); /* extern */
 
 /// Allocate and initialize actor model state and its drawing resources.
@@ -401,7 +401,6 @@ s32 actionGetAttributes(u8 *);
 void actorUpdateGroundSlopePitch(u8 *);
 void objectUpdateHierarchyInteractionVisibility(u8 *);
 s32 collisionGridRegisterObject(u8 *);
-void directionAnimationUpdate(u8 *);
 void colorAdvanceTransition(u8 *, u8 *, u8 *);
 
 /// Update actor behavior, animation, spatial state, and model drawing setup.

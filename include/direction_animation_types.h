@@ -12,6 +12,12 @@ typedef struct DirectionPose {
     u8 raw[0x28]; ///< Packed pose bytes, including direction vectors at 0x10 and 0x20.
 } DirectionPose;
 
+/// Angular rates supplied for one direction during timed motion.
+typedef struct DirectionAngularRates {
+    f32 pitch; ///< Pitch rate in degrees per second.
+    f32 yaw;   ///< Yaw rate in degrees per second.
+} DirectionAngularRates;
+
 /// Angles and angular rates of one animated direction.
 typedef struct DirectionAngularMotion {
     f32 pitch;     ///< Current pitch in degrees.
@@ -37,6 +43,7 @@ typedef struct DirectionAnimation {
 /// \returns Nothing.
 typedef void (*DirectionAnimationUpdateHandler)(u8 *animation, s32 poseIndex);
 
+typedef char DirectionAngularRatesSizeCheck[(sizeof(DirectionAngularRates) == 8) ? 1 : -1];
 typedef char DirectionPoseSizeCheck[(sizeof(DirectionPose) == 0x28) ? 1 : -1];
 typedef char DirectionAnimationSizeCheck[(sizeof(DirectionAnimation) == 0x7C) ? 1 : -1];
 #define DIRECTION_OFFSET_CHECK(name, member, offset)                                                                   \

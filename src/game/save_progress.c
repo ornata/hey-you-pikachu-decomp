@@ -1,6 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
-#include "direction_animation_types.h"
+#include "direction_animation.h"
 #include "eeprom_io.h"
 
 /* Debug trace: compiled out in this build, but each format string is still
@@ -157,8 +157,6 @@ void directionAnimationUpdateRetargetingMotion(u8 *animation, s32 poseIndex) {
     }
 }
 
-void directionAnimationReset(u8 *);
-
 /// Advances direction motion until its duration expires, then restores the default pose.
 /// \param animation Direction animation state to update.
 /// \param poseIndex Selected pose to update, zero or one.
@@ -202,9 +200,6 @@ void directionAnimationStop(u8 *animation) {
     ((DirectionAnimation *)animation)->mode = 0;
 }
 
-typedef struct Pt2_32384 {
-    f32 x, y;
-} Pt2_32384;
 typedef struct Vec3_32384 {
     f32 x, y, z;
 } Vec3_32384;
@@ -220,12 +215,12 @@ void vector3EvaluateOppositeLookAngles(Vec3_32384 *, f32 *, f32 *);
 /// \param rates Two pairs of pitch and yaw angular rates in degrees per second.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80032384 (0x80032384).
-void directionAnimationStartMotion(u8 *animation, f32 duration, Pt2_32384 *rates) {
+void directionAnimationStartMotion(u8 *animation, f32 duration, DirectionAngularRates *rates) {
     s32 pad[2]; /* unused, sizes the frame */
     Vec3_32384 v;
     f32 *rec;
     s32 off;
-    Pt2_32384 *p;
+    DirectionAngularRates *p;
 
     *(s16 *)(animation + 0x70) = 1;
     rec = (f32 *)(animation + 0x50);
@@ -237,8 +232,8 @@ void directionAnimationStartMotion(u8 *animation, f32 duration, Pt2_32384 *rates
         vector3UnpackNormalBytes(&((Frame28 *)(animation + 0x10))[*(u16 *)(animation + 0x72)].data[off], &v);
         vector3EvaluateOppositeLookAngles(&v, rec, rec + 1);
         off += 0x10;
-        rec[2] = p->x;
-        rec[3] = p->y;
+        rec[2] = p->pitch;
+        rec[3] = p->yaw;
         p++;
         rec += 4;
     } while (off != 0x20);

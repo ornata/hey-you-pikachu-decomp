@@ -1290,3 +1290,15 @@ so register flow and the unchanged object bytes provide the stronger evidence.
 Explicit parameter forwarding produces exactly the original code, removing the
 K&R missing-argument UB rather than retaining an unnecessary compatibility
 exception. The former UB comment is replaced by the valid pose-index contract.
+
+### Shared direction-animation playback interface
+
+`direction_animation.h` supplies the reset, update, next-pose and timed-motion
+contracts used by actor motion, item motion and action commands. The timed-motion
+provider and both producers now share `DirectionAngularRates`: two floats for
+pitch and yaw rates in degrees per second, with a checked eight-byte size.
+Ghidra at 0x80032384 confirms two records are consumed at an eight-byte stride;
+the provider copies their values and retains no pointer to the caller's storage.
+The existing byte-storage animation parameters retain the enclosing actor/item
+views while their documentation requires a complete initialized animation.
+Each of the four source-unit changes independently preserves all 483 objects.
