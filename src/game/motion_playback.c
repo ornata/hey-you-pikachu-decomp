@@ -144,7 +144,7 @@ void motionSetPlaybackMode(u8 *object, s32 mode) {
 
     ((ActorScriptState *)v)->playbackMode = mode;
     for (i = 1; i < ((ActorScriptState *)v)->partCount; i++) {
-        e = ((u8 **)((ActorScriptState *)v)->partTable)[i];
+        e = ((ActorScriptState *)v)->partTable[i];
         if (e == NULL) {
             continue;
         }

@@ -928,12 +928,12 @@ u8 *actorFindPart(u8 *actor, s32 partId) {
     u8 *sp1C;
     s32 partIndex;
 
-    sp1C = *(u8 **)(actor + 0x54);
-    partIndex = actorFindPartIndex(*(u16 *)(actor + 0x34), partId);
+    sp1C = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    partIndex = actorFindPartIndex(((RuntimeObjectPrefix *)actor)->kind, partId);
     if (partIndex < 0) {
         return 0;
     }
-    return *(u8 **)(*(u8 **)(sp1C + 0x4C) + partIndex * 4);
+    return ((ActorScriptState *)sp1C)->partTable[partIndex];
 }
 
 /// Get the object handle of a named actor part.
@@ -956,7 +956,7 @@ s32 actorGetPartObjectHandle(u8 *actor, s32 partId) {
 /// \returns Borrowed default reference part, or null if it does not exist.
 /// \note Original decompilation identifier: \c func_8001647C (0x8001647C).
 u8 *actorGetDefaultPart(u8 *actor) {
-    return actorFindPart(actor, actorConfigGetDefaultPartId(*(u16 *)(actor + 0x34)));
+    return actorFindPart(actor, actorConfigGetDefaultPartId(((RuntimeObjectPrefix *)actor)->kind));
 }
 
 /// Get the world position of a named part, using the default part when the requested part is absent.
@@ -971,9 +971,9 @@ void actorGetPartWorldPosition(u8 *actor, s32 partId, f32 *position) {
     if (var_v0 == NULL) {
         var_v0 = actorGetDefaultPart(actor);
     }
-    position[0] = *(f32 *)(var_v0 + 0x44);
-    position[1] = *(f32 *)(var_v0 + 0x48);
-    position[2] = *(f32 *)(var_v0 + 0x4C);
+    position[0] = ((RuntimeObjectPrefix *)var_v0)->worldPosition[0];
+    position[1] = ((RuntimeObjectPrefix *)var_v0)->worldPosition[1];
+    position[2] = ((RuntimeObjectPrefix *)var_v0)->worldPosition[2];
 }
 
 
@@ -1127,13 +1127,13 @@ void actorAllocatePartTable(u8 *actor) {
     s32 n;
     s32 size;
 
-    v = *(u8 **)(actor + 0x54);
-    kind = *(u16 *)(actor + 0x34);
+    v = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    kind = ((RuntimeObjectPrefix *)actor)->kind;
     n = gActorPartCounts[kind];
-    *(s32 *)(v + 0x50) = n;
-    size = n * 4;
-    *(void **)(v + 0x4C) = heapAllocLocal(&gGameHeap, size, 0x4D2);
-    _bzero(*(void **)(v + 0x4C), size);
+    ((ActorScriptState *)v)->partCount = n;
+    size = n * sizeof(*((ActorScriptState *)v)->partTable);
+    ((ActorScriptState *)v)->partTable = heapAllocLocal(&gGameHeap, size, 0x4D2);
+    _bzero(((ActorScriptState *)v)->partTable, size);
 }
 
 /// Register matching objects from a hierarchy in an actor part table.
@@ -1149,15 +1149,15 @@ void actorPopulatePartTable(u8 *hierarchy, u8 *actor) {
     var_s0 = hierarchy;
     if (hierarchy != NULL) {
         do {
-            partIndex = actorFindPartIndex(*(u16 *)(actor + 0x34), *(u16 *)(var_s0 + 0x34));
+            partIndex = actorFindPartIndex(((RuntimeObjectPrefix *)actor)->kind, ((RuntimeObjectPrefix *)var_s0)->kind);
             if (partIndex >= 0) {
-                *(u8 **)(*(u8 **)(*(u8 **)(actor + 0x54) + 0x4C) + partIndex * 4) = var_s0;
+                ((RuntimeObjectPrefix *)actor)->state.actor->partTable[partIndex] = var_s0;
             }
-            firstChild = *(u8 **)(var_s0 + 0x2C);
+            firstChild = ((RuntimeObjectPrefix *)var_s0)->child.bytes;
             if (firstChild != NULL) {
                 actorPopulatePartTable(firstChild, actor);
             }
-            var_s0 = *(u8 **)(var_s0 + 0x28);
+            var_s0 = ((RuntimeObjectPrefix *)var_s0)->sibling.bytes;
         } while (var_s0 != NULL);
     }
 }

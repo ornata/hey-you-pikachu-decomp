@@ -37,7 +37,7 @@ typedef struct ActorScriptState {
     f32 orientation[3];     ///< Actor orientation in degrees, separate from child poses.
     Matrix34 rootMotionTransform; ///< Root-motion orientation with heading separated into actor yaw.
     f32 rootMotionHeading; ///< Last extracted root-motion heading in degrees.
-    u8 *partTable;          ///< Owned part-lookup table released with model state.
+    u8 **partTable;          ///< Owned array of partCount borrowed object pointers; released with model state.
     s32 partCount;          ///< Number of slots in the owned part-lookup table.
     Gfx *modelDrawLists[2]; ///< Two drawing lists sharing one owned allocation.
     u8 unknown05C[4];

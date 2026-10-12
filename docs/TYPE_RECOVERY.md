@@ -3027,3 +3027,14 @@ and action-conditioned turning contracts, preserving finite-angle and
 normalization preconditions. Additive axis helpers retain their existing
 shifted float view pending a matching representation. All conversions match
 strict objects and the clean ROM.
+
+### Typed actor part tables
+
+`ActorScriptState.partTable` is now an owned array of `partCount` borrowed
+object pointers, rather than an untyped byte pointer. Allocation, clearing,
+lookup, hierarchy population and playback indexing establish the element
+width and ownership. Ghidra 0x800163FC confirms indexed pointer lookup.
+Allocation derives its extent from the pointer element size, and population
+names object kinds, child/sibling links and shared actor state. Default-part
+lookup and part world-position reads use object members. All dependent units
+and isolated consumer conversions preserve strict objects and relocations.
