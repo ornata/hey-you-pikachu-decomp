@@ -24,7 +24,7 @@ void cobaltIslandSpawnItemType8(f32 *position) {
     f32 x = position[0];
     f32 y = position[1];
     f32 z = position[2];
-    itemSetMode(itemCreate(x, y, z, 0.0f, 0.0f, 8), 2);
+    itemSetMode(itemCreate(x, y, z, 0.0f, 0.0f, 8), ITEM_MODE_STATIONARY);
 }
 
 extern u8 D_8014D854_scene_cobalt_island[];

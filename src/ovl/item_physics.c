@@ -644,25 +644,25 @@ void itemUpdateActorHeld(u8 *object) {
     u8 *parentState;
     u8 *state;
     s16 kind;
-    state = *(u8 **)(object + 0x54);
-    parentId = *(s32 *)(state + 8);
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
+    parentId = ((ItemStatePrefix *)state)->owner;
     parent = objectFindLiveByHandle(parentId);
     if (parent == NULL) {
         itemTryRelease(object, 1);
         return;
     }
     itemRunHeldKindCallback((s32)object, state);
-    *(f32 *)(state + 0x2C) += gRuntimeFrameSeconds;
-    parentState = *(u8 **)(parent + 0x54);
-    actorGetConfiguredAttachmentPosition((s32)parent, *(f32 *)(object + 0x24), (f32 *)(object + 0x18));
-    *(f32 *)(object + 0x44) = *(f32 *)(object + 0x18);
-    *(f32 *)(object + 0x48) = *(f32 *)(object + 0x1C);
-    *(f32 *)(object + 0x4C) = *(f32 *)(object + 0x20);
-    *(f32 *)(object + 0xC) = *(f32 *)(parentState + 0xC);
-    *(f32 *)(object + 0x10) = *(f32 *)(parentState + 0x10);
-    *(f32 *)(object + 0x14) = *(f32 *)(parentState + 0x14);
-    kind = *(s16 *)(state + 4);
-    if ((kind == 0x4E || kind == 0x4F) && *(f32 *)object < 0.049999997f)
+    ((ItemStatePrefix *)state)->modeTime += gRuntimeFrameSeconds;
+    parentState = ((RuntimeObjectPrefix *)parent)->state.bytes;
+    actorGetConfiguredAttachmentPosition((s32)parent, ((RuntimeObjectPrefix *)object)->radius, ((RuntimeObjectPrefix *)object)->position);
+    ((RuntimeObjectPrefix *)object)->worldPosition[0] = ((RuntimeObjectPrefix *)object)->position[0];
+    ((RuntimeObjectPrefix *)object)->worldPosition[1] = ((RuntimeObjectPrefix *)object)->position[1];
+    ((RuntimeObjectPrefix *)object)->worldPosition[2] = ((RuntimeObjectPrefix *)object)->position[2];
+    ((RuntimeObjectPrefix *)object)->rotation[0] = ((ActorScriptState *)parentState)->orientation[0];
+    ((RuntimeObjectPrefix *)object)->rotation[1] = ((ActorScriptState *)parentState)->orientation[1];
+    ((RuntimeObjectPrefix *)object)->rotation[2] = ((ActorScriptState *)parentState)->orientation[2];
+    kind = ((ItemStatePrefix *)state)->kind;
+    if ((kind == 0x4E || kind == 0x4F) && ((RuntimeObjectPrefix *)object)->scale[0] < 0.049999997f)
         pinataUpdateWriggle(object);
 }
 

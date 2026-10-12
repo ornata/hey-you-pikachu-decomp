@@ -100,7 +100,7 @@ void balloonBeginReleasedFlight(u8 *object) {
     sp1C = ((RuntimeObjectPrefix *)object)->state.bytes;
     if ((((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale * 7.0f) <
         ((RuntimeObjectPrefix *)object)->scale[0]) {
-        itemSetMode(object, 1);
+        itemSetMode(object, ITEM_MODE_DRIFTING_FLIGHT);
         ((ItemStatePrefix *)sp1C)->wriggleAngle = 0.0f;
         ((ItemStatePrefix *)sp1C)->velocityZ = 0.0f;
         ((ItemStatePrefix *)sp1C)->velocityX = 0.0f;

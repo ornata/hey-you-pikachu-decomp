@@ -394,7 +394,7 @@ void toolboxStoreObjectInSlot(ToolboxSlot *slot, u8 *object) {
           itemGetDisplayName(((ItemStatePrefix *)objectState)->kind, 1));
     itemTryRelease(object, 1);
     ((ItemStatePrefix *)objectState)->state = 4;
-    itemSetMode(object, 5);
+    itemSetMode(object, ITEM_MODE_STORED);
     ((ItemStatePrefix *)objectState)->flags = (s32)(((ItemStatePrefix *)objectState)->flags & 0xBFFFFFFF);
     objectSetHierarchyFlags(object, 0x2000);
     slot->id = (s32)((RuntimeObjectPrefix *)object)->handle;
@@ -530,7 +530,7 @@ u8 *toolboxTakeObject(s32 row, s32 col) {
     ext = *(u8 **)(obj + 0x54);
     *(s8 *)(ext + 6) = 0;
     *(s32 *)(ext + 8) = 0;
-    itemSetMode(obj, 0);
+    itemSetMode(obj, ITEM_MODE_GROUND_AND_AIR);
     *(s32 *)ext &= 0xBFFFFFFF;
     objectClearHierarchyFlags(obj, 0x2000);
     itemRegisterForSearch(*(s32 *)(obj + 0x38));
@@ -561,7 +561,7 @@ u8 *toolboxGiveObjectToPlayer(u8 *player, s32 row, s32 index) {
     objectSetHierarchyFlags(itemObject, 0x2000);
     ((ItemStatePrefix *)itemState)->state = 1;
     ((ItemStatePrefix *)itemState)->owner = 0;
-    itemSetMode(itemObject, 3);
+    itemSetMode(itemObject, ITEM_MODE_PLAYER_HELD);
     ((ItemStatePrefix *)itemState)->flags = (s32)(((ItemStatePrefix *)itemState)->flags | 0x40000000);
     ((PlayerControlPrefix *)player)->heldItemHandle = (s32)((RuntimeObjectPrefix *)itemObject)->handle;
     toolboxScaleCurrentRow(&gToolboxState);

@@ -231,7 +231,7 @@ void actorTryHoldItem(u8 *actor, s32 itemId, s32 forceRelease) {
             ((ItemStatePrefix *)rec)->state = 3;
         }
         ((ItemStatePrefix *)rec)->owner = ((RuntimeObjectPrefix *)actor)->handle;
-        itemSetMode(obj, 4);
+        itemSetMode(obj, ITEM_MODE_ACTOR_HELD);
         ((ActorScriptState *)state)->heldItemHandle = ((RuntimeObjectPrefix *)obj)->handle;
         ((ItemStatePrefix *)rec)->flags &= 0xE3FFFFFF;
     }

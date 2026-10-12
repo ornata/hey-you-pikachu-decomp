@@ -939,7 +939,7 @@ s32 actorScriptCreateStationaryItem(u8 *actor) {
     sp_pop = scriptVmPopFloat(vmAddress);
     createdItem = itemCreate(sp_pop, sp3C, sp38, sp34, sp30, sp2C);
     sp28 = createdItem;
-    itemSetMode(createdItem, 2);
+    itemSetMode(createdItem, ITEM_MODE_STATIONARY);
     scriptVmPushInteger(vmAddress, ((RuntimeObjectPrefix *)sp28)->handle);
     return 0;
 }

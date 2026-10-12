@@ -2402,7 +2402,7 @@ s32 itemTryRelease(u8 *object, s32 force) {
     ((ItemStatePrefix *)state)->state = 0;
     ((ItemStatePrefix *)state)->owner = 0;
     ((ItemStatePrefix *)state)->modeTime = 0.0f;
-    itemSetMode(object, 0);
+    itemSetMode(object, ITEM_MODE_GROUND_AND_AIR);
     ((ItemStatePrefix *)state)->flags &= 0xBFFFFFFF;
     return 1;
 }
@@ -2485,7 +2485,7 @@ void itemAddVelocity(s32 objectId, f32 *velocity) {
         ((ItemStatePrefix *)itemState)->velocityX += velocity[0];
         ((ItemStatePrefix *)itemState)->downwardVelocity -= velocity[1];
         ((ItemStatePrefix *)itemState)->velocityZ += velocity[2];
-        itemSetMode(liveObject, 0);
+        itemSetMode(liveObject, ITEM_MODE_GROUND_AND_AIR);
     }
 }
 
@@ -2813,7 +2813,7 @@ void itemHideAndSuspend(s32 objectId) {
         if (((ItemStatePrefix *)sp20)->state != 4) {
             collisionGridUnregisterObject(liveObject, (s32 *)(sp20 + 0x50));
             itemTryRelease(liveObject, 1);
-            itemSetMode(liveObject, 2);
+            itemSetMode(liveObject, ITEM_MODE_STATIONARY);
             objectSetHierarchyFlags(liveObject, 2);
             ((ItemStatePrefix *)sp20)->state = 5;
         }
@@ -2835,7 +2835,7 @@ void itemRestoreToWorld(s32 objectId) {
         itemState = ((RuntimeObjectPrefix *)sp1C)->state.bytes;
         ((ItemStatePrefix *)itemState)->state = 0;
         objectClearHierarchyFlags(sp1C, 2);
-        itemSetMode(sp1C, 0);
+        itemSetMode(sp1C, ITEM_MODE_GROUND_AND_AIR);
         TRACE("checkout %p(%s)\n", sp1C, gItemKinds[((ItemStatePrefix *)itemState)->kind].text[0].name);
     }
 }

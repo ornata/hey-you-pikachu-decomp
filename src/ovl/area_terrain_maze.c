@@ -1988,7 +1988,7 @@ void mazeSpawnConfiguredItems(void) {
             itemSetMode(itemCreate(((SceneItemPlacement *)var_s0)->position[0],
                                    ((SceneItemPlacement *)var_s0)->position[1],
                                    ((SceneItemPlacement *)var_s0)->position[2], 0.0f, 0.0f, itemKind),
-                        2);
+                        ITEM_MODE_STATIONARY);
             var_s0 += 0x10;
             goto loop_2;
         }
@@ -2211,7 +2211,7 @@ void mazeSpawnAvailableItems(ItemSpawn *spawn) {
             break;
         }
         if (progressGetValue(gItemKinds[entry->type].availabilityField)) {
-            itemSetMode(itemCreate(entry->x, entry->y, entry->z, entry->yaw, entry->pitch, entry->type), 2);
+            itemSetMode(itemCreate(entry->x, entry->y, entry->z, entry->yaw, entry->pitch, entry->type), ITEM_MODE_STATIONARY);
         } else {
             TRACE("ERROR : not keeping item, %s\n", (char *)&gItemKinds[entry->type]);
         }
@@ -2245,7 +2245,7 @@ void mazeScatterItems(f32 *positions, s32 count, WeightedChoiceTable *table, f32
             if ((randomNext() * 2.3283064365386963e-10) < (f64)((f32)quota / (f32)remaining)) {
                 quota--;
                 itemSetMode(itemCreate(position[0], position[1], position[2], 0.0f, 0.0f, weightedChoiceSelectKey(table)),
-                              2);
+                              ITEM_MODE_STATIONARY);
             } else {
                 if ((randomNext() * 2.3283064365386963e-10) > 0.5) {
                     position = (f32 *)((u8 *)positions + index * 12);

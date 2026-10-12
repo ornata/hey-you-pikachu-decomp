@@ -2833,3 +2833,16 @@ The stationary handler now takes the common unused item pointer. Disposal
 reuses `RuntimeObjectPrefix` instead of a duplicate scale/rotation view, and
 physics transitions use named established modes. Shared-header dependents and
 each source change preserve the complete strict object baseline.
+
+### Named mode transitions and actor-held placement
+
+All item-mode setter call sites now use the established `ItemMode` constants,
+including nested scene creation calls, storage transitions and player/actor
+attachment transitions. Each of the eight caller-unit conversions preserves
+the complete strict object baseline.
+
+Actor-held placement now names the item owner and mode timer, holder private
+state, actor orientation, and object radius, position, world position, rotation
+and scale. Ghidra 0x80122DE0 confirms holder lookup and attachment placement.
+The shared-field representation preserves all 483 strict objects without a
+new matching exception.

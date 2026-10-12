@@ -2477,7 +2477,7 @@ s32 playerPickUpItem(s32 id) {
     ((ItemStatePrefix *)rec)->flags &= 0xE3FFFFFF;
     ((ItemStatePrefix *)rec)->state = 1;
     ((ItemStatePrefix *)rec)->owner = 0;
-    itemSetMode(obj, 3);
+    itemSetMode(obj, ITEM_MODE_PLAYER_HELD);
     return 1;
 }
 
