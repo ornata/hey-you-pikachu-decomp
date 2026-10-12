@@ -1,3 +1,4 @@
+#include "animation_tracks.h"
 #include "motion_playback.h"
 #include "actor_action_cue.h"
 #include "action_continuation.h"
@@ -27,10 +28,6 @@
 
 
 s32 actionRequestMotionData(s32);
-struct Track3;
-struct Track3b;
-s32 animationTrack3Evaluate(struct Track3 *, f32 *, f32 *, f32);
-s32 animationDeltaTrack3Evaluate(struct Track3b *, f32 *, f32 *, f32);
 /// Action records containing playback flags, motion identifiers and transition settings.
 /// \note Original identifier: \c D_8006B590 (0x8006B590).
 extern ActionDefinition gActionDefinitions[];
@@ -160,10 +157,6 @@ void motionSetPlaybackMode(u8 *object, s32 mode) {
     }
 }
 
-struct Track3;
-struct Pair8;
-void animationTrack3Initialize(struct Track3 *, struct Pair8 *, s32);
-void animationDeltaTrack3Initialize(struct Track3b *, struct Pair8 *, s32);
 /// Playback duration indexed by motion identifier.
 /// \note Original identifier: \c D_800773E0 (0x800773E0).
 extern f32 gMotionDurations[];
@@ -205,20 +198,20 @@ void motionStartTrackPlayback(u8 *object) {
             {
                 u8 *data = (u8 *)base;
                 data += entry[1];
-                animationTrack3Initialize((struct Track3 *)(state + 0x23C), (struct Pair8 *)data, base);
+                animationTrack3Initialize((AnimationTrack3 *)(state + 0x23C), (AnimationCurveDescriptor *)data, base);
             }
             {
                 u8 *data = (u8 *)base;
                 data += entry[1];
                 data += 0x18;
-                animationDeltaTrack3Initialize((struct Track3b *)(state + 0x2B4), (struct Pair8 *)data, base);
+                animationDeltaTrack3Initialize((AnimationDeltaTrack3 *)(state + 0x2B4), (AnimationCurveDescriptor *)data, base);
             }
             rotation[0] = 0.0f;
             rotation[1] = 0.0f;
             rotation[2] = 0.0f;
             _bzero(state + 0x2E4, 0xC);
-            animationDeltaTrack3Evaluate((struct Track3b *)(state + 0x2B4), rotation, NULL, 0.0f);
-            animationTrack3Evaluate((struct Track3 *)(state + 0x23C), position, NULL, 0.0f);
+            animationDeltaTrack3Evaluate((AnimationDeltaTrack3 *)(state + 0x2B4), rotation, NULL, 0.0f);
+            animationTrack3Evaluate((AnimationTrack3 *)(state + 0x23C), position, NULL, 0.0f);
             matrix34MakeRotationXYZDegrees((f32 *)&((ActorScriptState *)state)->rootMotionTransform, position[0], position[1], position[2]);
             motionExtractHeadingFromMatrix((f32 *)&((ActorScriptState *)state)->rootMotionTransform, &((ActorScriptState *)state)->rootMotionHeading);
         } else {
@@ -229,7 +222,7 @@ void motionStartTrackPlayback(u8 *object) {
                 {
                     u8 *data = (u8 *)base;
                     data += entry[1];
-                    animationTrack3Initialize((struct Track3 *)(childState + 4), (struct Pair8 *)data, base);
+                    animationTrack3Initialize((AnimationTrack3 *)(childState + 4), (AnimationCurveDescriptor *)data, base);
                 }
             }
         }
@@ -246,8 +239,8 @@ void motionStartTrackPlayback(u8 *object) {
 /// \note Original decompilation identifier: \c func_8000E408 (0x8000E408).
 void motionEvaluateRootTracks(u8 *object, u8 *state, f32 time) {
     f32 position[3];
-    animationTrack3Evaluate((struct Track3 *)(state + 0x23C), position, NULL, time);
-    animationDeltaTrack3Evaluate((struct Track3b *)(state + 0x2B4), (f32 *)(state + 0x1C0), (f32 *)(state + 0x1CC), time);
+    animationTrack3Evaluate((AnimationTrack3 *)(state + 0x23C), position, NULL, time);
+    animationDeltaTrack3Evaluate((AnimationDeltaTrack3 *)(state + 0x2B4), (f32 *)(state + 0x1C0), (f32 *)(state + 0x1CC), time);
     motionApplyRootOrientation(position, object);
     objectAddPendingLocalMovement((f32 *)(state + 0x1C0));
 }
@@ -261,7 +254,7 @@ void motionEvaluateRootTracks(u8 *object, u8 *state, f32 time) {
 void motionEvaluateChildRotation(u8 *obj, u8 *track, f32 step) {
     s32 r;
 
-    r = animationTrack3Evaluate((struct Track3 *)(track + 4), (f32 *)(obj + 0xC), NULL, step);
+    r = animationTrack3Evaluate((AnimationTrack3 *)(track + 4), (f32 *)(obj + 0xC), NULL, step);
     while (*(f32 *)(obj + 0xC) < 0.0f) {
         *(f32 *)(obj + 0xC) += 360.0f;
     }
@@ -288,19 +281,13 @@ void motionEvaluateChildRotation(u8 *obj, u8 *track, f32 step) {
 typedef struct Pair8 {
     s32 a, b;
 } Pair8;
-typedef struct Track3 {
-    Pair8 p[3];
-    f32 f[3];
-    s32 c[3];
-} Track3;
-void animationTrack3Initialize(Track3 *, Pair8 *, s32);
 /// Start a transition from the current pose to the initial pose of the selected motion.
 /// \param object Object with initialized motion and part state, a valid selected motion, and a positive transition duration in seconds.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000E5EC (0x8000E5EC).
 void motionStartPoseTransition(u8 *object) {
     f32 duration;
-    Track3 track;
+    AnimationTrack3 track;
     u8 *state;
     s32 base;
     f32 rotation[3];
@@ -331,7 +318,7 @@ void motionStartPoseTransition(u8 *object) {
             ((ActorScriptState *)state)->playbackMode = rotationMode;
             from = (Matrix34 *)(state + 0x23C);
             current = (Matrix34 *)&((ActorScriptState *)state)->rootMotionTransform;
-            animationTrack3Initialize(&track, (Pair8 *)((u8 *)base + entry->b), base);
+            animationTrack3Initialize(&track, (AnimationCurveDescriptor *)((u8 *)base + entry->b), base);
             animationTrack3Evaluate(&track, rotation, 0, transformTime);
             *from = *current;
             current = from + 1;
@@ -343,7 +330,7 @@ void motionStartPoseTransition(u8 *object) {
             if (child != NULL) {
                 childState = *(u8 **)(child + 0x54);
                 *(s16 *)childState = rotationMode;
-                animationTrack3Initialize(&track, (Pair8 *)((u8 *)base + entry->b), base);
+                animationTrack3Initialize(&track, (AnimationCurveDescriptor *)((u8 *)base + entry->b), base);
                 animationTrack3Evaluate(&track, childRotation, 0, transformTime);
                 from = (Matrix34 *)(childState + 4);
                 matrix34MakeRotationXYZDegrees((f32 *)from, *(f32 *)(child + 0xC), *(f32 *)(child + 0x10), *(f32 *)(child + 0x14));

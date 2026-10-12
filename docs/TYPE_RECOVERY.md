@@ -2346,3 +2346,19 @@ relying on a three-float array followed by unused frame padding. Ghidra
 0x8000F33C confirms the shared blend output and Euler-extraction input;
 0x8000E81C confirms the second matrix at offset 0x30. Both changes preserve
 allocated bytes, layout, symbols and relocations across all 483 objects.
+
+### Shared three-channel animation tracks
+
+`animation_tracks.h` supplies the curve descriptor, three-channel state and
+incremental state used by the animation producer and motion playback. Descriptors
+distinguish their curve kind from the signed constant or key reference; writable
+state names per-channel times, key indices and previous values. Sizes 8, 0x30
+and 0x3C and state offsets 0x18, 0x24 and 0x30 are compile-time checked.
+Ghidra 0x8000A34C and 0x8000A3AC confirm relocation and initialization. Key data
+is borrowed, not owned by these state records. The four shared interfaces retain
+their existing channel-output and completion semantics.
+
+The motion archive entry remains a distinct private record: equal two-word
+layouts do not establish equal field meanings. Scalar curve helpers still carry
+32-bit key-index addresses and raw descriptor views; those interfaces need
+separate matching trials before changing their pointer contracts.

@@ -1,5 +1,6 @@
 #include "common.h"
 #include "integer_animation.h"
+#include "animation_tracks.h"
 
 /* Debug trace: compiled out in this build, but each format string is still
  * emitted to .rodata in source order. */
@@ -153,15 +154,6 @@ s32 animationCurveEvaluate(s32 *curve, f32 *time, f32 *value, f32 *velocity, s32
     }
 }
 
-typedef struct Pair8 {
-    s32 a;
-    s32 b;
-} Pair8;
-typedef struct Track3 {
-    Pair8 p[3];
-    f32 f[3];
-    s32 c[3];
-} Track3;
 
 /// Initialize three animation channels.
 /// \param dst Track state to initialize.
@@ -169,25 +161,19 @@ typedef struct Track3 {
 /// \param off Address offset added to each keyed curve reference.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000A34C (0x8000A34C).
-void animationTrack3Initialize(Track3 *dst, Pair8 *src, s32 off) {
+void animationTrack3Initialize(AnimationTrack3 *dst, AnimationCurveDescriptor *src, s32 off) {
     s32 i;
 
     for (i = 0; i < 3; i++, src++) {
-        dst->p[i] = *src;
-        if (src->a != 0) {
-            dst->p[i].b = src->b + off;
+        dst->curves[i] = *src;
+        if (src->kind != 0) {
+            dst->curves[i].valueOrAddress = src->valueOrAddress + off;
         }
-        dst->f[i] = 0.0f;
-        dst->c[i] = 0;
+        dst->times[i] = 0.0f;
+        dst->keyIndices[i] = 0;
     }
 }
 
-typedef struct Track3b {
-    Pair8 p[3];
-    f32 f[3];
-    s32 c[3];
-    f32 g[3];
-} Track3b;
 
 /// Initialize three animation channels for incremental output.
 /// \param dst Track state to initialize.
@@ -195,17 +181,17 @@ typedef struct Track3b {
 /// \param off Address offset added to each keyed curve reference.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000A3AC (0x8000A3AC).
-void animationDeltaTrack3Initialize(Track3b *dst, Pair8 *src, s32 off) {
+void animationDeltaTrack3Initialize(AnimationDeltaTrack3 *dst, AnimationCurveDescriptor *src, s32 off) {
     s32 i;
 
     for (i = 0; i < 3; i++, src++) {
-        dst->p[i] = *src;
-        if (src->a != 0) {
-            dst->p[i].b = src->b + off;
+        dst->curves[i] = *src;
+        if (src->kind != 0) {
+            dst->curves[i].valueOrAddress = src->valueOrAddress + off;
         }
-        dst->g[i] = 0.0f;
-        dst->f[i] = 0.0f;
-        dst->c[i] = 0;
+        dst->previousValues[i] = 0.0f;
+        dst->times[i] = 0.0f;
+        dst->keyIndices[i] = 0;
     }
 }
 
@@ -217,7 +203,7 @@ void animationDeltaTrack3Initialize(Track3b *dst, Pair8 *src, s32 off) {
 /// \param step Time step in seconds.
 /// \returns 1 when every channel is constant, absent, or unsupported; 0 otherwise.
 /// \note Original decompilation identifier: \c func_8000A410 (0x8000A410).
-s32 animationTrack3Evaluate(Track3 *track, f32 *output, f32 *velocities, f32 step) {
+s32 animationTrack3Evaluate(AnimationTrack3 *track, f32 *output, f32 *velocities, f32 step) {
     s32 channel;
     s32 allConstant;
     s32 status;
@@ -250,7 +236,7 @@ s32 animationTrack3Evaluate(Track3 *track, f32 *output, f32 *velocities, f32 ste
 /// \param step Time step in seconds.
 /// \returns 1 when every channel is constant, absent, or unsupported; 0 otherwise.
 /// \note Original decompilation identifier: \c func_8000A4D4 (0x8000A4D4).
-s32 animationDeltaTrack3Evaluate(Track3b *track, f32 *output, f32 *velocities, f32 step) {
+s32 animationDeltaTrack3Evaluate(AnimationDeltaTrack3 *track, f32 *output, f32 *velocities, f32 step) {
     s32 channel;
     s32 allConstant;
     f32 previous;
@@ -259,7 +245,7 @@ s32 animationDeltaTrack3Evaluate(Track3b *track, f32 *output, f32 *velocities, f
 
     velocity = velocities;
     channel = 0;
-    value = track->g;
+    value = track->previousValues;
     allConstant = 1;
     do {
         previous = *value;
