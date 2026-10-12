@@ -1,3 +1,4 @@
+#include "profile_counters.h"
 #include "item_participation.h"
 #include "item_size.h"
 #include "item_queries.h"
@@ -135,7 +136,6 @@ s32 actorScriptRestoreItemToWorld(u8 *actor) {
     return 0;
 }
 
-s32 profileGetCounter(s32);  /* extern */
 /// Provide a saved player-profile counter value.
 /// \param actor Actor whose script VM supplies a valid profile-counter index from zero through 165 and receives its value from zero through 15.
 /// \returns Zero, allowing script execution to continue.
@@ -148,7 +148,6 @@ s32 actorScriptGetProfileCounter(u8 *actor) {
     return 0;
 }
 
-s32 profileAddCounter(s32, s32); /* extern */
 /// Adjust a saved player-profile counter within its permitted range.
 /// \param actor Actor whose script VM supplies a valid profile-counter index from zero through 165 followed by a signed adjustment whose sum with the current value fits a signed 32-bit integer, and receives the resulting value clamped to zero through 15.
 /// \returns Zero, allowing script execution to continue.

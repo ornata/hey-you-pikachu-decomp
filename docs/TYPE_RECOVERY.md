@@ -2885,3 +2885,14 @@ The participation header now also owns hide/suspend and restore declarations
 for script and scene users. Suspension addresses the checked collision-key
 member instead of a raw offset. Every converted source unit and shared-header
 dependent preserves all 483 strict object comparisons.
+
+### Shared persistent profile counters
+
+`profile_counters.h` owns the byte-returning read and saturating adjustment
+contracts and the 83-byte storage declaration for 166 four-bit counters.
+Script consumers now use the provider's `u8` return type instead of private
+`s32` declarations. Profile reset derives its clear extent from the shared
+storage bound. Ghidra 0x80114D04 confirms signed adjustment and saturation
+at zero and fifteen; callers must supply a valid index and an adjustment
+whose intermediate sum fits `s32`. All converted units preserve strict
+object bytes and relocations.

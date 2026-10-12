@@ -1,3 +1,4 @@
+#include "profile_counters.h"
 #include "story_milestones.h"
 #include "progress_storage.h"
 #include "common.h"
@@ -17,9 +18,6 @@ extern u8 gPlayerProfileName[];
 /// Global script-variable storage containing 500 packed five-byte values.
 /// \note Original identifier: \c D_800EF7A0 (0x800EF7A0).
 extern u8 gScriptVmGlobalValues[];
-/// Profile storage for 166 counters with values from zero through fifteen.
-/// \note Original identifier: \c D_800F0168 (0x800F0168).
-extern u8 gProfilePackedCounters[];
 
 /// Reset the player profile and associated session state to their defaults.
 /// The default player name is "You".
@@ -28,7 +26,7 @@ extern u8 gProfilePackedCounters[];
 void playerResetProfile(void) {
     _bzero(&gPlayerState, 0x100);
     _bzero(&gScriptVmGlobalValues, 0x9C4);
-    _bzero(&gProfilePackedCounters, 0x53);
+    _bzero(&gProfilePackedCounters, sizeof(gProfilePackedCounters));
     progressInitializeSaveStorage();
     stringCopy(gPlayerProfileName, (const u8 *)"You");
     ((PlayerControlPrefix *)&gPlayerState)->points = 0x12C;

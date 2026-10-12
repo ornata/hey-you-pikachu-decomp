@@ -1,3 +1,4 @@
+#include "profile_counters.h"
 #include "item_size.h"
 #include "item_state.h"
 #include "actor_script.h"
@@ -2841,9 +2842,6 @@ void itemRestoreToWorld(s32 objectId) {
     }
 }
 
-/// Profile storage for 166 counters with values from zero through fifteen.
-/// \note Original identifier: \c D_800F0168 (0x800F0168).
-extern u8 gProfilePackedCounters[];
 
 /// Read a saved profile counter.
 /// \param index Profile counter index from zero through 165.
