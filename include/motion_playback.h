@@ -31,7 +31,6 @@ void actionUpdatePlayback(u8 *object);
 /// \param object Animated child part with initialized playback state and a valid parent action state; pose blending requires a positive parent transition duration.
 /// \returns Nothing.
 ///
-/// \note Portability/UB: the matrix result exceeds the declared three-float local array and relies on adjacent IDO frame padding retained by the unused local.
 /// \note Original decompilation identifier: \c func_8000F33C (0x8000F33C).
 void motionUpdateChildPlayback(u8 *object);
 

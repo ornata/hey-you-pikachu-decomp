@@ -293,9 +293,6 @@ typedef struct Track3 {
     f32 f[3];
     s32 c[3];
 } Track3;
-typedef struct BlendMatrix {
-    f32 values[12];
-} BlendMatrix;
 void animationTrack3Initialize(Track3 *, Pair8 *, s32);
 /// Start a transition from the current pose to the initial pose of the selected motion.
 /// \param object Object with initialized motion and part state, a valid selected motion, and a positive transition duration in seconds.
@@ -309,8 +306,8 @@ void motionStartPoseTransition(u8 *object) {
     f32 rotation[3];
     Pair8 *entry;
     f32 angles[3];
-    BlendMatrix *from;
-    BlendMatrix *current;
+    Matrix34 *from;
+    Matrix34 *current;
     u8 *child;
     f32 childRotation[3];
     u8 *childState;
@@ -332,13 +329,13 @@ void motionStartPoseTransition(u8 *object) {
     while (entry->a > 0) {
         if (entry->a > 0 && entry->a < rootKindLimit) {
             ((ActorScriptState *)state)->playbackMode = rotationMode;
-            from = (BlendMatrix *)(state + 0x23C);
-            current = (BlendMatrix *)&((ActorScriptState *)state)->rootMotionTransform;
+            from = (Matrix34 *)(state + 0x23C);
+            current = (Matrix34 *)&((ActorScriptState *)state)->rootMotionTransform;
             animationTrack3Initialize(&track, (Pair8 *)((u8 *)base + entry->b), base);
             animationTrack3Evaluate(&track, rotation, 0, transformTime);
             *from = *current;
             current = from + 1;
-            matrix34MakeRotationXYZDegrees(current->values, rotation[0], rotation[1], rotation[2]);
+            matrix34MakeRotationXYZDegrees((f32 *)current, rotation[0], rotation[1], rotation[2]);
             motionExtractHeadingFromMatrix((f32 *)current, angles);
             ((ActorScriptState *)state)->rootMotionHeading = 0.0f;
         } else {
@@ -348,9 +345,9 @@ void motionStartPoseTransition(u8 *object) {
                 *(s16 *)childState = rotationMode;
                 animationTrack3Initialize(&track, (Pair8 *)((u8 *)base + entry->b), base);
                 animationTrack3Evaluate(&track, childRotation, 0, transformTime);
-                from = (BlendMatrix *)(childState + 4);
-                matrix34MakeRotationXYZDegrees(from->values, *(f32 *)(child + 0xC), *(f32 *)(child + 0x10), *(f32 *)(child + 0x14));
-                matrix34MakeRotationXYZDegrees((from + 1)->values, childRotation[0], childRotation[1], childRotation[2]);
+                from = (Matrix34 *)(childState + 4);
+                matrix34MakeRotationXYZDegrees((f32 *)from, *(f32 *)(child + 0xC), *(f32 *)(child + 0x10), *(f32 *)(child + 0x14));
+                matrix34MakeRotationXYZDegrees((f32 *)(from + 1), childRotation[0], childRotation[1], childRotation[2]);
             }
         }
         entry++;
@@ -787,13 +784,11 @@ void matrix3GetEulerAnglesDegrees(f32 *, f32 *, f32 *, f32 *);
 /// \param object Animated child part with initialized playback state and a valid parent action state; pose blending requires a positive parent transition duration.
 /// \returns Nothing.
 ///
-/// \note Portability/UB: the matrix result exceeds the declared three-float local array and relies on adjacent IDO frame padding retained by the unused local.
 /// \note Original decompilation identifier: \c func_8000F33C (0x8000F33C).
 void motionUpdateChildPlayback(u8 *object) {
     u8 *obj;
     u8 *tgt;
-    s32 pad[9];
-    f32 v[3];
+    f32 v[12];
 
     obj = *(u8 **)(object + 0x54);
     if (*(u16 *)obj != MOTION_PLAYBACK_DISABLED) {

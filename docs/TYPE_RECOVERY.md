@@ -2333,3 +2333,16 @@ track evaluation uses actor/state pointers rather than integer addresses.
 Both contracts are documented in motion_playback.h. Existing float transform
 views preserve matrix-helper calling conventions. All header dependents and
 the changed unit preserve all 483 objects and strict relocation addends.
+
+### Pose-blend matrix storage
+
+The transition builder now reuses `Matrix34` for its consecutive source and
+destination matrices instead of a duplicate private twelve-float record. Root
+transition storage at 0x23C remains a byte boundary because track playback also
+uses that region; it is not an exclusively matrix-owned allocation.
+
+`motionUpdateChildPlayback` now declares all twelve output floats rather than
+relying on a three-float array followed by unused frame padding. Ghidra
+0x8000F33C confirms the shared blend output and Euler-extraction input;
+0x8000E81C confirms the second matrix at offset 0x30. Both changes preserve
+allocated bytes, layout, symbols and relocations across all 483 objects.
