@@ -1,6 +1,8 @@
 #include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "item_object.h"
+#include "object_response.h"
 #include "vector_direction.h"
 #include "object_lookup.h"
 #include "keyed_pool_types.h"
@@ -35,7 +37,6 @@ HpHdr gObjectResponseHeap;
 /// Keyed pool indexing pending responses by target object handle.
 /// \note Original identifier: \c D_800B6B68 (0x800B6B68).
 u8 gObjectResponseRegistry[0x28];
-s32 objectResponsesGetFreeCapacity(void);
 /// Per-kind response callback view of the object callback table, with a twenty-four-byte stride.
 /// \note Original identifier: \c D_80078154 (0x80078154).
 extern u8 gObjectKindResponseEntries[];
@@ -211,8 +212,6 @@ void objectResponsesDestroy(void) {
     heapFreeLocal(&gGameHeap, gObjectResponseHeapStorage);
 }
 
-void itemAddVelocity(s32, f32 *);
-void itemStartDirectionMotion(s32, f32, f32, f32);
 
 /// Apply a queued item impulse and its visual reaction.
 /// \param object Target item object address.
@@ -222,12 +221,12 @@ void itemStartDirectionMotion(s32, f32, f32, f32);
 void objectResponseApplyImpulse(s32 object, u8 *response) {
     f32 v[3];
 
-    vector3UnpackNormalBytes((s8 *)(response + 8), v);
-    v[0] = (f32) * (s8 *)(response + 0xB) * v[0];
-    v[1] = (f32) * (s8 *)(response + 0xB) * v[1];
-    v[2] = (f32) * (s8 *)(response + 0xB) * v[2];
+    vector3UnpackNormalBytes((s8 *)((ObjectResponse *)response)->payload.impulse.bytes, v);
+    v[0] = (f32)(s8)((ObjectResponse *)response)->payload.impulse.bytes[3] * v[0];
+    v[1] = (f32)(s8)((ObjectResponse *)response)->payload.impulse.bytes[3] * v[1];
+    v[2] = (f32)(s8)((ObjectResponse *)response)->payload.impulse.bytes[3] * v[2];
     itemAddVelocity(*(s32 *)(object + 0x38), v);
-    itemStartDirectionMotion(object, 0.5f, 1000.0f, 0.0f);
+    itemStartDirectionMotion((u8 *)object, 0.5f, 1000.0f, 0.0f);
 }
 
 /// Response callbacks indexed by response kind.
@@ -240,7 +239,7 @@ void (*gObjectResponseHandlers[])(s32, u8 *) = {objectResponseApplyImpulse};
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001C5B0 (0x8001C5B0).
 void objectResponseDispatch(s32 object, u8 *response) {
-    gObjectResponseHandlers[response[6]](object, response);
+    gObjectResponseHandlers[((ObjectResponse *)response)->kind](object, response);
 }
 
 s32 keyedPoolIterateFirstForKey(KeyedPool *, s32);
@@ -263,8 +262,8 @@ void objectResponsesClearWithCallback(s32 object, s32 callback) {
             if (callback != 0) {
                 ((void (*)(s32, u8 *))callback)(object, n);
             }
-            if (*(u16 *)(n + 4) & 1) {
-                heapFreeLocal(&gObjectResponseHeap, *(void **)(n + 8));
+            if (((ObjectResponse *)n)->flags & 1) {
+                heapFreeLocal(&gObjectResponseHeap, ((ObjectResponse *)n)->payload.owned);
             }
             heapFreeLocal(&gObjectResponseHeap, n);
         } while ((n = (u8 *)keyedPoolIterateNextForKey((KeyedPool *)gObjectResponseRegistry, key)) != NULL);
@@ -328,29 +327,26 @@ u8 *objectResponseCreate(u8 *source, u8 *target, u8 kind) {
         return NULL;
     }
     if (source != NULL) {
-        *(s32 *)(allocation + 0) = *(s32 *)(source + 0x38);
+        ((ObjectResponse *)allocation)->sourceHandle = *(s32 *)(source + 0x38);
     } else {
-        *(s32 *)(allocation + 0) = 0;
+        ((ObjectResponse *)allocation)->sourceHandle = 0;
     }
-    allocation[6] = kind;
-    *(s16 *)(allocation + 4) = 0;
+    ((ObjectResponse *)allocation)->kind = kind;
+    ((ObjectResponse *)allocation)->flags = 0;
     return allocation;
 }
 
-typedef struct {
-    u8 b[4];
-} Bytes4;
 /// Queue a packed impulse response for an eligible target object.
 /// \param source Source object, or NULL for no source.
 /// \param target Target item object.
 /// \param impulse Packed direction bytes and signed strength byte.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001C804 (0x8001C804).
-void objectResponseQueueImpulse(u8 *source, u8 *target, Bytes4 impulse) {
+void objectResponseQueueImpulse(u8 *source, u8 *target, ObjectImpulse impulse) {
     u8 *r = objectResponseCreate(source, target, 0);
 
     if (r != NULL) {
-        *(Bytes4 *)(r + 8) = impulse;
+        ((ObjectResponse *)r)->payload.impulse = impulse;
         objectResponsesAttach(target, (s32)r);
     }
 }

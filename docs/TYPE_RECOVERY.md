@@ -1339,3 +1339,18 @@ The default-pose interior symbol at 0x8009A6C0 now has a packed sixteen-byte slo
 view rather than four purported floats. Only its first three signed bytes are
 decoded; trailing bytes remain uninterpreted. The original interior symbol is
 retained, preserving strict relocation addends.
+
+### Queued object response records and item impulse contracts
+
+`object_response.h` defines the checked twelve-byte response allocation seen at
+0x8001C764. Its source handle, halfword flags, kind byte and four-byte payload
+match creation, dispatch and release sites. Flag bit zero selects an owned pointer
+payload; kind zero uses an inline impulse. Byte 0x07 and trailing bytes in packed
+direction slots remain explicitly uninterpreted. The shared four-byte impulse
+preserves the producer's by-value ABI and signed interpretation of components
+and strength. Collision production and response consumption share this contract.
+The item header now supplies the canonical float-vector velocity-change and
+pointer-based visual-motion interfaces. The response handler explicitly converts
+its legacy integer callback address at that boundary. The provider's extra
+mode-change argument remains the previously documented ABI constraint.
+Each source-unit change preserved all 483 objects and strict relocation addends.

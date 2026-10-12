@@ -1980,7 +1980,6 @@ s32 collisionGridRegisterObject(u8 *);
 u8 *collisionGridFindOverlap(u8 *);
 
 s32 itemCanBePickedUp(u8 *, s32);
-void itemStartDirectionMotion(u8 *, f32, f32, f32);
 void itemUpdateModeAndOrientation(u8 *);
 /// Separate symbol view of the primary player record's held item handle.
 /// \note Original identifier: \c D_800EF724 (0x800EF724).
@@ -2474,16 +2473,16 @@ void itemThrow(s32 id, f32 *origin, f32 *target, f32 *velocity, s32 effect) {
 ///
 /// \note Portability: the unprototyped mode-change call passes an extra argument ignored by the original ABI.
 /// \note Original decompilation identifier: \c func_801143BC (0x801143BC).
-void itemAddVelocity(s32 objectId, u8 *velocity) {
+void itemAddVelocity(s32 objectId, f32 *velocity) {
     u8 *liveObject;
     u8 *itemState;
 
     liveObject = objectFindLiveByHandle(objectId);
     itemState = ((RuntimeObjectPrefix *)liveObject)->state.bytes;
     if ((((ItemStatePrefix *)itemState)->state == 0) && (((ItemStatePrefix *)itemState)->mode != 6)) {
-        ((ItemStatePrefix *)itemState)->velocityX += ((f32 *)velocity)[0];
-        ((ItemStatePrefix *)itemState)->downwardVelocity -= ((f32 *)velocity)[1];
-        ((ItemStatePrefix *)itemState)->velocityZ += ((f32 *)velocity)[2];
+        ((ItemStatePrefix *)itemState)->velocityX += velocity[0];
+        ((ItemStatePrefix *)itemState)->downwardVelocity -= velocity[1];
+        ((ItemStatePrefix *)itemState)->velocityZ += velocity[2];
         itemSetMode(liveObject, 0, velocity);
     }
 }

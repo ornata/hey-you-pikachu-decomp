@@ -1,5 +1,7 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_response.h"
+#include "vector_direction.h"
 #include "runtime_clock.h"
 #include "text_window_images.h"
 #include "text_image_create.h"
@@ -42,12 +44,6 @@ extern u8 gTextWindowPendingText[];
 /// \note Original identifier: \c D_800F1A80 (0x800F1A80).
 extern s32 gTextWindowContinuation;
 
-typedef struct {
-    u8 b[4];
-} Bytes4;
-s32 objectResponsesGetFreeCapacity(void);
-void objectResponseQueueImpulse(u8 *, u8 *, Bytes4);
-void vector3PackNormalBytes(f32 *, u8 *);
 u32 randomNext(void);
 
 /// Request a collision impulse for a target object.
@@ -58,7 +54,7 @@ u32 randomNext(void);
 /// \returns 0 when impulse-record capacity is insufficient, or 1 otherwise, including when no impulse is queued.
 /// \note Original decompilation identifier: \c func_8002C8B0 (0x8002C8B0).
 s32 collisionRequestImpulse(u8 *source, u8 *target, f32 *direction, f32 distance) {
-    Bytes4 impulse;
+    ObjectImpulse impulse;
     f32 randomDirection[3];
     f32 strength;
     f32 maximum = 10.0f;
@@ -82,11 +78,11 @@ s32 collisionRequestImpulse(u8 *source, u8 *target, f32 *direction, f32 distance
     if (strength < 0.001f) {
         return 1;
     } else {
-        vector3PackNormalBytes(direction, impulse.b);
+        vector3PackNormalBytes(direction, impulse.bytes);
         if (strength < maximum) {
-            impulse.b[3] = (s8)(s32)strength;
+            impulse.bytes[3] = (s8)(s32)strength;
         } else {
-            impulse.b[3] = (s8)(s32)maximum;
+            impulse.bytes[3] = (s8)(s32)maximum;
         }
         objectResponseQueueImpulse(source, target, impulse);
     }

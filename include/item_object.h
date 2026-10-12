@@ -59,4 +59,18 @@ void itemSetDrawMode(s32 objectId, s32 mode);
 /// \note Original decompilation identifier: \c func_80114654 (0x80114654).
 void itemSetTint(s32 id, u8 r, u8 g, u8 b, u8 a);
 
+/// Apply a velocity change to a free item that permits motion.
+/// \param objectId Handle of a live item.
+/// \param velocity Three world-space velocity components; must not overlap the item state.
+/// \returns Nothing.
+void itemAddVelocity(s32 objectId, f32 *velocity);
+
+/// Start visual direction motion when the item permits it.
+/// \param item Initialized item object.
+/// \param duration Positive finite duration in seconds.
+/// \param pitchRate Pitch angular rate in degrees per second.
+/// \param yawRate Yaw angular rate in degrees per second.
+/// \returns Nothing.
+void itemStartDirectionMotion(u8 *item, f32 duration, f32 pitchRate, f32 yawRate);
+
 #endif
