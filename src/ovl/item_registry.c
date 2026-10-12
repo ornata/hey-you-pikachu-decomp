@@ -4,6 +4,7 @@
 /* Item objects. .rodata is the item-kind text (initializer order), then the
  * debug-trace formats in function order, then the late float/jump tables. */
 #include "common.h"
+#include "direction_animation_types.h"
 #include "item_response.h"
 #include "item_text.h"
 #include "search_tree.h"
@@ -1937,13 +1938,15 @@ void itemDestroyState(u8 *item) {
     heapFreeLocal(&gGameHeap, state);
 }
 
-typedef struct {
-    /* 0x00: preceding item state; lighting records are double buffered. */
-    u8 header[0x70];
-    /* 0x70 */ Lights2 lights[2];
-    /* 0xC0 */ u8 tail[0x22];
-    /* 0xE2 */ u16 lightIndex;
-} ItemLights;
+/// Partial view of the direction animation embedded in item state.
+/// This view excludes the allocation tail and must not determine allocation size.
+typedef struct ItemDirectionView {
+    u8 prefix[0x70];
+    DirectionAnimation direction;
+} ItemDirectionView;
+typedef char ItemDirectionOffsetCheck[((u32) & ((ItemDirectionView *)0)->direction == 0x70) ? 1 : -1];
+typedef char
+    ItemDirectionPoseIndexOffsetCheck[((u32) & ((ItemDirectionView *)0)->direction.poseIndex == 0xE2) ? 1 : -1];
 /// Prepare an item lighting and environment color for rendering.
 /// \param state Initialized state with allocated drawing resources, a valid item kind, and lighting index
 /// zero or one.
@@ -1956,7 +1959,9 @@ void itemBuildLightingDisplayList(u8 *state, s32 index) {
     u8 *color;
     g = ((ItemStatePrefix *)state)->lighting[index];
     color = gItemKinds[((ItemStatePrefix *)state)->kind].color;
-    gSPSetLights2(g++, ((ItemLights *)state)->lights[((ItemLights *)state)->lightIndex]);
+    gSPSetLights2(g++, (*(Lights2 *)((ItemDirectionView *)state)
+                             ->direction.poses[((ItemDirectionView *)state)->direction.poseIndex]
+                             .raw));
     gDPPipeSync(g++);
     gDPSetEnvColor(g++, color[0], color[1], color[2], color[3]);
     gSPEndDisplayList(g++);

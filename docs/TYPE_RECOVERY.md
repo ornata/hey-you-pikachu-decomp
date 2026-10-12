@@ -1260,6 +1260,20 @@ lighting pointers are alternate views into one 0x70-byte allocation, not two
 independently owned allocations; the shared field documentation now states
 that ownership and a new offset check protects collisionKey. The allocator's
 lighting-buffer index is named explicitly. Full state allocation remains 0xF0;
-the 0x6C prefix must not determine allocation size. The later lighting and
-direction-animation views remain separate pending evidence of their complete
-relationship. All retained changes preserve strict matching.
+the 0x6C prefix must not determine allocation size. The later lighting and direction-animation relationship is now recovered
+through the shared paired-pose view described below. All retained changes preserve strict matching.
+
+### Shared direction animation and item lighting poses
+
+direction_animation_types.h shares the 0x7C-byte paired-pose animation layout.
+The former generic Spin fields are pitch, yaw and their angular rates. Poses
+remain raw 0x28-byte storage with checked size, preserving enclosing layout;
+item rendering explicitly views the selected pose as SDK Lights2. The item
+partial view places DirectionAnimation at 0x70, with poseIndex at item 0xE2.
+Ghidra at 0x80032448 confirms mode at animation 0x70 and the alternating
+selector at 0x72. Reset copies the same default pose into both slots, and
+pose-angle writes update packed directions consumed by the renderer.
+The provider and item renderer preserve strict object matching. The private
+partial item view excludes the tail; the 0xF0 state allocation remains explicit.
+Legacy K&R advancement calls remain a documented calling-convention recovery
+target; this layout change does not alter those calls.

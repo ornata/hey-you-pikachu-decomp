@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "direction_animation_types.h"
 #include "eeprom_io.h"
 
 /* Debug trace: compiled out in this build, but each format string is still
@@ -88,32 +89,6 @@ void directionAnimationSetNextPoseAngles(u8 *animation, f32 pitch, f32 yaw, s32 
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
 
-typedef struct {
-    f32 a;
-    f32 b;
-    f32 va;
-    f32 vb;
-} Spin;
-typedef struct {
-    u8 raw[0x28];
-} Pose28;
-
-/// Two direction poses and the angular motion applied while switching between them.
-/// The caller owns the state and supplies frame timing through the animation API.
-typedef struct {
-    Pose28 poses[2];
-    Spin directions[2];
-    s16 mode; ///< Zero when stopped, one for timed motion, two while retargeting.
-    u16 poseIndex; ///< Pose selected for the current update.
-    f32 duration; ///< Requested timed-motion duration in seconds.
-    f32 remaining; ///< Seconds until the current motion phase ends.
-} DirectionAnimation;
-
-typedef char DirectionAnimationSizeCheck[(sizeof(DirectionAnimation) == 0x7C) ? 1 : -1];
-typedef char DirectionAnimationModeOffsetCheck[((u32)&((DirectionAnimation *)0)->mode == 0x70) ? 1 : -1];
-typedef char DirectionAnimationRemainingOffsetCheck[((u32)&((DirectionAnimation *)0)->remaining == 0x78) ? 1 : -1];
-
-
 /// Advances the animated directions and updates the selected pose for the current frame.
 /// \param animation Direction animation state to advance.
 /// \param poseIndex Pose to update, zero or one; legacy callers may omit this parameter.
@@ -126,25 +101,25 @@ typedef char DirectionAnimationRemainingOffsetCheck[((u32)&((DirectionAnimation 
 void directionAnimationAdvancePose(animation, poseIndex) u8 *animation;
 s32 poseIndex;
 {
-    Spin *s;
+    DirectionAngularMotion *s;
     s32 i;
 
-    for (i = 0, s = (Spin *)(animation + 0x50); i < 2; i++, s++) {
-        s->a += s->va * gRuntimeFrameSeconds;
-        s->b += s->vb * gRuntimeFrameSeconds;
-        while (s->a < 0.0f) {
-            s->a += 360.0f;
+    for (i = 0, s = (DirectionAngularMotion *)(animation + 0x50); i < 2; i++, s++) {
+        s->pitch += s->pitchRate * gRuntimeFrameSeconds;
+        s->yaw += s->yawRate * gRuntimeFrameSeconds;
+        while (s->pitch < 0.0f) {
+            s->pitch += 360.0f;
         }
-        while (s->a >= 360.0f) {
-            s->a -= 360.0f;
+        while (s->pitch >= 360.0f) {
+            s->pitch -= 360.0f;
         }
-        while (s->b < 0.0f) {
-            s->b += 360.0f;
+        while (s->yaw < 0.0f) {
+            s->yaw += 360.0f;
         }
-        while (s->b >= 360.0f) {
-            s->b -= 360.0f;
+        while (s->yaw >= 360.0f) {
+            s->yaw -= 360.0f;
         }
-        directionPoseSetAngles(s->a, s->b, ((Pose28 *)animation)[poseIndex].raw, i);
+        directionPoseSetAngles(s->pitch, s->yaw, ((DirectionPose *)animation)[poseIndex].raw, i);
     }
 }
 
@@ -166,7 +141,7 @@ f32 mathWrapSignedDegrees(f32);
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80032148 (0x80032148).
 void directionAnimationUpdateRetargetingMotion(u8 *animation) {
-    Spin *s;
+    DirectionAngularMotion *s;
     s32 i;
     V3_32148 dir;
     f32 a;
@@ -176,11 +151,11 @@ void directionAnimationUpdateRetargetingMotion(u8 *animation) {
     if (*(f32 *)(animation + 0x78) < 0.0f) {
         *(s16 *)(animation + 0x70) = 2;
         *(f32 *)(animation + 0x78) = 0.5f;
-        for (i = 0, s = (Spin *)(animation + 0x50); i < 2; i++, s++) {
+        for (i = 0, s = (DirectionAngularMotion *)(animation + 0x50); i < 2; i++, s++) {
             vector3UnpackNormalBytes(&gDirectionAnimationDefaultDirections[i], &dir);
             vector3EvaluateOppositeLookAngles(&dir, &a, &b);
-            s->va = mathWrapSignedDegrees(a - s->a) * 2;
-            s->vb = mathWrapSignedDegrees(b - s->b) * 2;
+            s->pitchRate = mathWrapSignedDegrees(a - s->pitch) * 2;
+            s->yawRate = mathWrapSignedDegrees(b - s->yaw) * 2;
         }
     } else {
         directionAnimationAdvancePose(animation);
