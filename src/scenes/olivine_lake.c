@@ -1,10 +1,10 @@
+#include "actor_color.h"
 #include "common.h"
 #include "actor_create.h"
 #include "area_maze.h"
 #include "scene_types.h"
 u32 randomNext(void);
 s32 randomBelow(s32);
-void actorTransitionModelEnvironmentColor(u8 *, u8, u8, u8, u8, f32);
 void doorRegistryReset(void);
 void runtimeCheckResetCheckpoint(s32, s32);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.

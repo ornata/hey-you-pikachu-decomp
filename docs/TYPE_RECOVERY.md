@@ -1853,3 +1853,12 @@ target components at 0xE4 and duration at 0xE8. These checked shared actor field
 now serve both request and update consumers. Storage at 0xEC remains unresolved;
 no broader transition record or ownership is inferred. Provider and consumer
 changes preserve all 483 objects, including strict relocation addends.
+
+### Actor model environment-color interfaces
+
+`actor_color.h` provides one documented contract for immediate and timed model
+color changes across the provider and five caller units. The credits consumer's
+alpha parameter now uses the provider's unsigned byte type rather than a signed
+word. Ghidra 0x800155B8 confirms that immediate updates touch only current RGBA;
+they leave the target and countdown pending. Each caller was rebuilt and compared
+before moving to the next source unit; all 483 objects and relocations match.

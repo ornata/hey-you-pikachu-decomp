@@ -1,3 +1,4 @@
+#include "actor_color.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "item_response.h"
@@ -360,8 +361,6 @@ s32 actorScriptFinishAreaTransition(u8 *actor) {
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
-void actorTransitionModelEnvironmentColor(u8 *, u8, u8, u8, u8, f32);
-void actorSetModelEnvironmentColor(u8 *, u8, u8, u8, u8);
 u8 *particleClusterCreate(s32, f32, f32, f32, u8 *);
 u8 *orangePulseEmitterCreate(s32, f32);
 u32 randomNext(void);

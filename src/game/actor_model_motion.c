@@ -1,3 +1,4 @@
+#include "actor_color.h"
 #include "color_transition.h"
 #include "action_query.h"
 #include "actor_rotation.h"

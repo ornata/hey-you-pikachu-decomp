@@ -1,8 +1,8 @@
+#include "actor_color.h"
 #include "object_flags.h"
 #include "common.h"
 #include "actor_create.h"
 #include "scene_types.h"
-void actorTransitionModelEnvironmentColor(u8 *, u8, u8, u8, s32, f32);
 void runtimeCheckResetCheckpoint(u8 *, s32);
 /// Current area scenario index shared by actor scripts, scene population, cards and collection titles.
 /// \note Original identifier: \c D_800F0B70 (0x800F0B70).

@@ -1,3 +1,4 @@
+#include "actor_color.h"
 #include "object_distance.h"
 #include "object_flags.h"
 #include "door.h"
@@ -321,7 +322,6 @@ s32 actorScriptSetPikachuAppearanceVariants(u8 *actor) {
     return 0;
 }
 
-void actorTransitionModelEnvironmentColor(u8 *, u8, u8, u8, u8, f32); /* extern */
 
 /// Request a timed transition to a new actor model environment color.
 /// \param actor Actor whose script VM supplies red, green, blue, and alpha components from zero through 255 followed by a nonnegative floating-point duration in seconds, and receives zero.
