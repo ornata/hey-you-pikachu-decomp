@@ -1,3 +1,4 @@
+#include "action_script_stop.h"
 #include "action_script_playback.h"
 #include "action_script_query.h"
 #include "actor_script_action.h"
@@ -462,18 +463,16 @@ s32 actorScriptStartActionScript(u8 *actor) {
     return 1;
 }
 
-s32 *actionScriptStop(); /* extern */
 /// Stop action-script command execution and request the current action to finish.
 /// \param actor Actor whose action script is stopped and whose script VM receives zero.
 /// \returns Zero, allowing script execution to continue.
 ///
-/// \note NONPORTABLE: the legacy actionScriptStop call omits its actor argument and relies on the original argument register remaining intact.
 /// \note Original decompilation identifier: \c func_8011C5BC (0x8011C5BC).
 s32 actorScriptStopActionScript(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    actionScriptStop();
+    actionScriptStop(actor);
     scriptVmPushInteger(sp1C, 0);
     return 0;
 }

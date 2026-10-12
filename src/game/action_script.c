@@ -1,3 +1,4 @@
+#include "action_script_stop.h"
 #include "action_script_playback.h"
 #include "action_script_query.h"
 #include "actor_sound.h"
@@ -213,7 +214,7 @@ void actionScriptSetDuration(u8 *object, f32 duration) {
 
 /// Stop script command execution and request the current action to finish.
 /// \param object Object whose action script is stopped.
-/// \returns A borrowed pointer to the object's stopped script state.
+/// \returns A borrowed pointer to the actor's script identifier, now set to -1; valid while its state lives.
 /// \note Original decompilation identifier: \c func_800120AC (0x800120AC).
 s32 *actionScriptStop(u8 *object) {
     u8 *state = *(u8 **)(object + 0x54);
@@ -221,15 +222,15 @@ s32 *actionScriptStop(u8 *object) {
 
     actionRequestLoopExit(object);
     actionCancelPendingRequest(object);
-    *(s32 *)(state + 0x168) = 0;
+    ((ActorScriptState *)state)->actionScriptCommand = NULL;
     script = state;
     state = NULL;
-    *(s32 *)(script + 0x158) = -1;
+    ((ActorScriptState *)script)->actionScriptId = -1;
     // Debug null check; its body is compiled out, but its block keeps the
     // return add out of the store block.
     if (script == NULL) {
     }
-    return (s32 *)(script + 0x158);
+    return &((ActorScriptState *)script)->actionScriptId;
 }
 
 /// Check whether script command execution has stopped.

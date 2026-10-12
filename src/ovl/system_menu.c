@@ -1,3 +1,4 @@
+#include "action_script_stop.h"
 #include "action_script_query.h"
 #include "object_flags.h"
 #include "object_hierarchy_create.h"
@@ -1918,6 +1919,5 @@ void textWindowAppendText(s8 *);               /* extern */
 
 void textWindowEnterMode(); /* extern */
 
-s32 *actionScriptStop(); /* extern */
 
 void actorSetTargetToFallbackObject(); /* extern */

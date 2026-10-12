@@ -2162,3 +2162,17 @@ the actual actor pointer and float duration, agreeing with its script caller.
 This removes its mismatched integer declaration and portability exception.
 A union reinterpretation changed matching bytes; the direct float parameter
 preserves all 483 objects, including strict relocation addends.
+
+### Action-script stop contract and remaining presentation exception
+
+`action_script_stop.h` shares the actor-pointer stop interface with its provider
+and four caller units. The returned borrowed pointer identifies the actor
+script-ID field at 0x158, rather than a separately owned script record; Ghidra
+0x800120AC confirms this. Its command-cursor and ID stores and returned field
+address use checked actor fields. Passing the actor explicitly in the script
+stop command preserves all objects and removes its argument-register exception.
+The collection-presentation declaration remains local: adopting the canonical
+prototype and removing its unused presentation-state argument passed the ROM
+gate but changed allocated object bytes. That trial is restored. Further
+compiler scheduling evidence is required; the declaration records the exception.
+All accepted changes preserve all 483 objects and strict relocation addends.

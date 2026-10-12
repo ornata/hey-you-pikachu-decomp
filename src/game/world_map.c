@@ -1,3 +1,4 @@
+#include "action_script_stop.h"
 #include "action_script_playback.h"
 #include "action_script_query.h"
 #include "camera_overlay.h"
@@ -414,7 +415,6 @@ extern s32 gWorldMapDirectionHeldFrames;
 /// \note Original identifier: \c D_800ABCF0 (0x800ABCF0).
 extern u8 gRenderCameras[];
 void wholeMapUpdateActorPlacement(void);
-void actionScriptStop();
 void actionStopPlayback(u8 *);
 f32 vector3GetYawDegrees(f32 *);
 void actorSetBehaviorInhibitFlags(u8 *, u16);
@@ -437,7 +437,7 @@ void wholeMapPrepareActor(void) {
     camera = gRenderCameras + gRenderCameraIndex * 0xE0;
     objectSetHierarchyFlags((u8 *)gPikachuActor, flags);
     wholeMapUpdateActorPlacement();
-    actionScriptStop(gPikachuActor);
+    actionScriptStop((u8 *)gPikachuActor);
     actionStopPlayback((u8 *)gPikachuActor);
     delta[0] = *(f32 *)(camera + 0) - *(f32 *)((u8 *)gPikachuActor + 0x44);
     delta[1] = *(f32 *)(camera + 4) - *(f32 *)((u8 *)gPikachuActor + 0x48);
@@ -481,7 +481,7 @@ s32 randomBelow(s32);
 void wholeMapPlayConfirmationAnimation(void) {
     s32 form;
 
-    actionScriptStop(PLAYER);
+    actionScriptStop((u8 *)PLAYER);
     form = gWorldMapDestinations[gWorldMapSelectedDestination].w[playerGetChaseStage()];
     if (form == 9 || form == 10) {
         actionScriptStart((u8 *)PLAYER, 0x2C);
@@ -792,11 +792,11 @@ void wholeMapUpdate(void) {
     }
     if (gWorldMapDirectionHeldFrames >= 0x65) {
         if (*(s16 *)(sp24 + 0x13C) != 0xE) {
-            actionScriptStop(gPikachuActor);
+            actionScriptStop((u8 *)gPikachuActor);
             actionScriptStartWithMode((u8 *)gPikachuActor, 0x57, 0xE);
         }
     } else if (*(s16 *)(sp24 + 0x13C) != 2) {
-        actionScriptStop(gPikachuActor);
+        actionScriptStop((u8 *)gPikachuActor);
         actionScriptStartWithMode((u8 *)gPikachuActor, 0x57, 2);
     }
     switch (gWorldMapState) {

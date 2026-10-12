@@ -1,3 +1,4 @@
+#include "action_script_stop.h"
 #include "action_script_playback.h"
 #include "action_script_query.h"
 #include "actor_script_action.h"
@@ -92,7 +93,6 @@ s32 actorScriptPlayAction(u8 *actor) {
     return actorScriptWaitForActionResult(actor);
 }
 
-s32 *actionScriptStop(u8 *); /* extern */
 
 /// Wait for an action to stop or interrupt it when a script message is pending.
 /// \param actor Actor whose action and script mailbox are checked.
