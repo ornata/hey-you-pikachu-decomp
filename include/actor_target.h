@@ -65,4 +65,22 @@ void actorSetTargetPosition(u8 *actor, f32 *position);
 /// \note Original decompilation identifier: \c func_8011866C (0x8011866C).
 void actorChooseEscapePosition(u8 *object, f32 *target);
 
+/// Select the player's primary object as an actor's tracked movement target.
+/// \param actor Actor whose tracked target and follow mode are changed.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_80118A00 (0x80118A00).
+void actorTrackPlayerPrimaryObject(u8 *actor);
+
+/// Select the player's secondary object as an actor's tracked escape source.
+/// \param actor Actor whose tracked target and escape mode are changed.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_801189E4 (0x801189E4).
+void actorTrackEscapeFromPlayerSecondaryObject(u8 *actor);
+
+/// Place the actor at its stored target position.
+/// \param actor Actor to reposition.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_80118A94 (0x80118A94).
+void actorMoveToTargetPosition(u8 *actor);
+
 #endif

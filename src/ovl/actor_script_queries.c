@@ -1235,15 +1235,15 @@ s16 actorReleaseHeldItem(u8 *actor) {
 
 
 /// Find the nearest actor in an object facing cone, honoring script actor-kind aliases.
-/// \param object Address of the object providing the search origin and facing, excluded from the search.
+/// \param object Live object providing the world-space search origin and facing, excluded from the search.
 /// \param minKind Inclusive minimum kind.
 /// \param maxKind Inclusive maximum kind.
 /// \param distance Exclusive maximum approximate distance from the search origin.
 /// \param cone Maximum horizontal angle in degrees; 360 or greater permits all directions.
 /// \returns The nearest qualifying actor handle, or zero when none is found.
 /// \note Original decompilation identifier: \c func_80118984 (0x80118984).
-s32 actorFindNearestHandleInFacingCone(s32 object, s32 minKind, s32 maxKind, f32 distance, f32 cone) {
-    u8 *spawned = actorFindNearestInRange((u8 *)object, (Vec3f *)(object + 0x44), distance, (f32 *)(object + 0xC), cone, minKind, maxKind);
+s32 actorFindNearestHandleInFacingCone(u8 *object, s32 minKind, s32 maxKind, f32 distance, f32 cone) {
+    u8 *spawned = actorFindNearestInRange(object, (Vec3f *)((RuntimeObjectPrefix *)object)->worldPosition, distance, ((RuntimeObjectPrefix *)object)->rotation, cone, minKind, maxKind);
 
     if (spawned == NULL) {
         return 0;

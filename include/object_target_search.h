@@ -53,4 +53,14 @@ s32 objectFindNearestHandleInFacingCone(u8 *object, s32 minKind, s32 maxKind, f3
 /// \returns Nearest qualifying handle, or zero when none qualifies.
 s32 objectFindNearestHandleFromPosition(u8 *object, f32 *position, s32 minKind, s32 maxKind, f32 distance);
 
+/// Find the nearest actor in an object facing cone, honoring script actor-kind aliases.
+/// \param object Live object providing the world-space search origin and facing, excluded from the search.
+/// \param minKind Inclusive minimum kind.
+/// \param maxKind Inclusive maximum kind.
+/// \param distance Exclusive maximum approximate distance from the search origin.
+/// \param cone Maximum horizontal angle in degrees; 360 or greater permits all directions.
+/// \returns The nearest qualifying actor handle, or zero when none is found.
+/// \note Original decompilation identifier: \c func_80118984 (0x80118984).
+s32 actorFindNearestHandleInFacingCone(u8 *object, s32 minKind, s32 maxKind, f32 distance, f32 cone);
+
 #endif

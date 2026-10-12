@@ -2939,3 +2939,13 @@ Ghidra 0x80118938 confirms held-handle lookup, forced release and signed kind
 return. `item_queries.h` owns the pickup-history predicate; its provider uses
 the checked item flags member instead of a raw state word. Every converted
 unit preserves all strict object bytes and relocations.
+
+### Actor facing and player-object destination contracts
+
+The actor facing-cone wrapper now accepts an object pointer and names its
+world position and rotation, matching the general-object wrapper. Its shared
+contract lives in `object_target_search.h`; Ghidra 0x80118984 confirms the
+coordinate pointers and returned handle. `actor_target.h` consolidates player
+primary-object tracking, secondary-object escape tracking and moving to the
+stored destination for message consumers. All declarations retain original
+function/address notes and each conversion preserves strict object bytes.

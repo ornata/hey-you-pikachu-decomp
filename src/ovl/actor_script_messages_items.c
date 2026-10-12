@@ -1,3 +1,4 @@
+#include "object_target_search.h"
 #include "actor_held_item.h"
 #include "actor_target.h"
 #include "progress_fields.h"
@@ -22,7 +23,6 @@
 #include "script_vm_stack.h"
 
 /// Compatibility declaration retaining the extra actor argument in the mailbox-acknowledgement call.
-void actorTrackPlayerPrimaryObject(u8 *);
 
 /// Track the player's primary object as the actor's movement destination.
 /// \param actor Actor whose tracking target is selected with zero distance allowance; its script VM receives zero.
@@ -161,7 +161,6 @@ s32 actorScriptCreateAttachedEffect(u8 *actor) {
     return 0;
 }
 
-s32 actorFindNearestHandleInFacingCone(u8 *, s32, s32, f32, f32); /* extern */
 
 /// Find the nearest actor in the current actor's facing cone.
 /// \param actor Actor whose script VM supplies minimum kind, maximum kind, exclusive distance limit, then cone angle; kind 38 selects the creature range and angles of 360 or greater allow all directions. Receives the nearest qualifying handle, or zero.
@@ -252,7 +251,6 @@ s32 actorScriptGetObjectPlayerDistance(u8 *actor) {
     return 0;
 }
 
-void actorTrackEscapeFromPlayerSecondaryObject(u8 *);
 
 /// Track the player's secondary object as the actor's escape source.
 /// \param actor Actor whose escape tracking is selected; its script VM receives zero.
@@ -282,7 +280,6 @@ s32 actorScriptChooseEscapeFromPlayer(u8 *actor) {
     return 0;
 }
 
-void actorMoveToTargetPosition(u8 *);
 
 /// Place the actor at its stored target position.
 /// \param actor Actor to reposition; its script VM receives zero.

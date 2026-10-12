@@ -51,7 +51,7 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 2971,
+      "occurrences": 2969,
       "unique_spellings": 1102,
       "files": 80
     }
@@ -6286,6 +6286,7 @@
         "audio_cue.h",
         "object_lookup.h",
         "object_script_query.h",
+        "object_target_search.h",
         "object_types.h",
         "player_types.h",
         "progress_fields.h",
@@ -6297,10 +6298,10 @@
       "locations": {
         "raw_offset_candidates": {
           "actor + 0xC": [
-            "669:38"
+            "666:38"
           ],
           "gPlayerCompanionTarget - 0x50": [
-            "1371:57"
+            "1368:57"
           ]
         }
       }
@@ -6355,8 +6356,7 @@
             "1006:5"
           ],
           "object + 0x44": [
-            "157:25",
-            "1246:67"
+            "157:25"
           ],
           "gPlayerControllerPort + 4": [
             "549:14"
@@ -6375,9 +6375,6 @@
           ],
           "object + 0x18": [
             "1161:24"
-          ],
-          "object + 0xC": [
-            "1246:101"
           ]
         }
       }
