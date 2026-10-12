@@ -1,3 +1,6 @@
+#include "scene_region.h"
+#include "scene_types.h"
+#include "object_types.h"
 #include "object_hierarchy_create.h"
 #include "object_template.h"
 #include "object_lifecycle.h"
@@ -10,18 +13,6 @@ extern u8 gSceneRegionDisplayList[];
 /// Write cursor for the active graphics command list; also marks the camera-storage end.
 /// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
 extern Gfx *gRenderDisplayListCursor;
-
-/// Owned bounds and player-highlight state for a rectangular scene region.
-typedef struct SceneRegionState {
-    f32 halfWidth;        ///< Half-extent along the world X axis.
-    f32 halfDepth;        ///< Half-extent along the world Z axis.
-    u8 playerHighlighted; ///< Player occupies the region while the companion does not.
-    u8 padding09[3];      ///< Unused alignment bytes; no observed reads or writes.
-    s32 sceneData;        ///< Opaque scene association supplied by the creator.
-} SceneRegionState;
-
-typedef char SceneRegionStateSizeCheck[(sizeof(SceneRegionState) == 0x10) ? 1 : -1];
-typedef char SceneRegionStateDataOffsetCheck[(((u32) & (((SceneRegionState *)0)->sceneData)) == 0xC) ? 1 : -1];
 
 /// Hierarchy template used to create rectangular scene interaction regions.
 /// \note Original identifier: \c D_80088E60 (0x80088E60).
@@ -43,22 +34,22 @@ void sceneRegionCreate(f32 *position, f32 width, f32 depth, s32 sceneData) {
     SceneRegionState *state;
 
     tmpl = gSceneRegionObjectTemplate;
-    obj = objectCreateHierarchyFromTemplate((ObjectTemplate *)&tmpl);
-    *(f32 *)(obj + 0) = *(f32 *)(gCurrentAreaConfiguration + 0xC) * width;
-    *(f32 *)(obj + 4) = *(f32 *)(gCurrentAreaConfiguration + 0xC);
-    *(f32 *)(obj + 8) = *(f32 *)(gCurrentAreaConfiguration + 0xC) * depth;
-    *(f32 *)(obj + 0x18) = position[0];
-    *(f32 *)(obj + 0x1C) = position[1];
-    *(f32 *)(obj + 0x20) = position[2];
-    *(f32 *)(obj + 0x44) = position[0];
-    *(f32 *)(obj + 0x48) = position[1];
-    *(f32 *)(obj + 0x4C) = position[2];
+    obj = objectCreateHierarchyFromTemplate(&tmpl);
+    ((RuntimeObjectPrefix *)obj)->scale[0] = ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale * width;
+    ((RuntimeObjectPrefix *)obj)->scale[1] = ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale;
+    ((RuntimeObjectPrefix *)obj)->scale[2] = ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale * depth;
+    ((RuntimeObjectPrefix *)obj)->position[0] = position[0];
+    ((RuntimeObjectPrefix *)obj)->position[1] = position[1];
+    ((RuntimeObjectPrefix *)obj)->position[2] = position[2];
+    ((RuntimeObjectPrefix *)obj)->worldPosition[0] = position[0];
+    ((RuntimeObjectPrefix *)obj)->worldPosition[1] = position[1];
+    ((RuntimeObjectPrefix *)obj)->worldPosition[2] = position[2];
     state = heapAllocLocal(&gGameHeap, 0x10, 0x33);
-    state->halfWidth = width;
-    state->halfDepth = depth;
-    state->playerHighlighted = 0;
+    state->width = width;
+    state->depth = depth;
+    state->highlighted = 0;
     state->sceneData = sceneData;
-    *(SceneRegionState **)(obj + 0x54) = state;
+    ((RuntimeObjectPrefix *)obj)->state.pointer = state;
     objectRegisterActiveHierarchy(obj);
 }
 
@@ -73,10 +64,10 @@ extern f32 gPlayerState[];
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001F318 (0x8001F318).
 void sceneRegionUpdateHighlight(u8 *obj) {
-    SceneRegionState *state = *(SceneRegionState **)(obj + 0x54);
-    f32 x = *(f32 *)(obj + 0x44);
-    f32 y = *(f32 *)(obj + 0x48);
-    f32 z = *(f32 *)(obj + 0x4C);
+    SceneRegionState *state = ((RuntimeObjectPrefix *)obj)->state.pointer;
+    f32 x = ((RuntimeObjectPrefix *)obj)->worldPosition[0];
+    f32 y = ((RuntimeObjectPrefix *)obj)->worldPosition[1];
+    f32 z = ((RuntimeObjectPrefix *)obj)->worldPosition[2];
     f32 *other = gPlayerState;
     f32 cx = other[0];
     f32 cy = other[1];
@@ -87,35 +78,35 @@ void sceneRegionUpdateHighlight(u8 *obj) {
     f32 dx;
     f32 dz;
     f32 width;
-    px = *(f32 *)(gPikachuActor + 0x44);
-    py = *(f32 *)(gPikachuActor + 0x48);
-    pz = *(f32 *)(gPikachuActor + 0x4C);
+    px = ((RuntimeObjectPrefix *)gPikachuActor)->worldPosition[0];
+    py = ((RuntimeObjectPrefix *)gPikachuActor)->worldPosition[1];
+    pz = ((RuntimeObjectPrefix *)gPikachuActor)->worldPosition[2];
     dx = x >= px ? x - px : -(x - px);
-    width = state->halfWidth;
+    width = state->width;
     if (dx < width) {
         dz = z >= pz ? z - pz : -(z - pz);
-        if (dz < state->halfDepth && y <= py) {
-            state->playerHighlighted = 0;
+        if (dz < state->depth && y <= py) {
+            state->highlighted = 0;
             return;
         }
     }
     dx = x >= cx ? x - cx : -(x - cx);
     if (dx < width) {
         dz = z >= cz ? z - cz : -(z - cz);
-        if (dz < state->halfDepth && y <= cy) {
-            state->playerHighlighted = 1;
+        if (dz < state->depth && y <= cy) {
+            state->highlighted = 1;
             return;
         }
     }
-    state->playerHighlighted = 0;
+    state->highlighted = 0;
 }
 /// Prepare the region color for rendering its current highlight state.
 /// \param obj Scene-region object to render.
 /// \returns The region geometry display list.
 /// \note Original decompilation identifier: \c func_8001F47C (0x8001F47C).
 u8 *sceneRegionPrepareDraw(u8 *obj) {
-    SceneRegionState *state = *(SceneRegionState **)(obj + 0x54);
-    if (state->playerHighlighted == 0) {
+    SceneRegionState *state = ((RuntimeObjectPrefix *)obj)->state.pointer;
+    if (state->highlighted == 0) {
         gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0, 0, 0, 60);
     } else {
         gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 180, 0, 0, 180);

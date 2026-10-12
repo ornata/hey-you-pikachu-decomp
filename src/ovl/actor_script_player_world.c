@@ -1,3 +1,4 @@
+#include "scene_region.h"
 #include "cave.h"
 #include "item_object.h"
 #include "toolbox_items.h"
@@ -528,7 +529,6 @@ s32 actorScriptGetObjectWorldCoordinate(u8 *actor) {
     return 0;
 }
 
-u8 sceneRegionIsHighlightedByHandle(s32);   /* extern */
 
 /// Provide the highlight state of a scene region to an actor script.
 /// \param actor Actor whose script VM supplies a scene-region handle and receives its highlight flag, or zero when the handle is not live; a live handle must identify initialized region state.

@@ -1495,3 +1495,15 @@ companion and VM declarations, including the pointer-based landmark association.
 Anchors are copied; the landmark is borrowed and must remain live when queried.
 The zero-result and invalid-axis sentinel contracts are explicit, including the
 nonnegative axis precondition. All five changed units match all 483 objects.
+
+### Unified rectangular scene-region state
+
+The region provider now uses the existing checked `SceneRegionState` shared with
+script queries, removing its duplicate private layout. Scale, positions and state
+ownership use the runtime prefix, while scene scale uses the shared configuration
+prefix. `scene_region.h` consolidates creation and highlight query contracts.
+The ochre scene passes persistent association-data addresses; the canonical
+interface preserves their original 32-bit representation with explicit caller
+casts. Their contents remain uninterpreted. Ghidra 0x8001F1F0 confirms the 0x10
+allocation, half-extents, highlight initialization and association word.
+Each of the four source-unit changes preserves all 483 objects and relocations.

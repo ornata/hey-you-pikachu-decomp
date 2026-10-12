@@ -1,3 +1,4 @@
+#include "scene_region.h"
 #include "cave.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
