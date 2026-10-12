@@ -1226,3 +1226,14 @@ initialization at 0x40 and the active flag at 0x3C. All dependent objects match
 the preserved baseline. The prefix remains a partial view, not an allocation
 size; raw object-transform and later kind-specific state views remain separate
 recovery targets.
+
+### Item material-control contracts
+
+Material animation, fixed frame, draw mode and tint setters now use typed
+ItemStatePrefix locals. The material-track and RGBA fields have one shared
+interpretation, with the original operation order and access widths retained.
+item_object.h declares handle-based draw-mode and tint setters; the script
+caller no longer declares alpha as s32 when the implementation accepts u8.
+Ghidra at 0x80114654 confirms four byte stores at 0x4C through 0x4F and
+missing-object no-op behavior. The caller already retains byte-sized channel
+values, and the canonical declaration preserves strict matching.

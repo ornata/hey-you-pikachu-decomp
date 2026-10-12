@@ -2558,12 +2558,12 @@ s32 itemAllowsCooperation(u8 *item) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_801145D0 (0x801145D0).
 void itemStartMaterialAnimation(u8 *item, s32 animation) {
-    u8 *sp1C;
+    ItemStatePrefix *itemState;
 
     TRACE("itemChangeAnime(%p, %d)\n", item, animation);
-    sp1C = ((RuntimeObjectPrefix *)item)->state.bytes;
-    animationIntegerTrackInitialize(&((ItemStatePrefix *)sp1C)->materialTrack, (ValueKey *)(*((s32 *)((u8 *)&gTextureFrameAnimationPrograms + (animation * 4)))));
-    ((ItemStatePrefix *)sp1C)->materialAnimationActive = 1;
+    itemState = (ItemStatePrefix *)((RuntimeObjectPrefix *)item)->state.bytes;
+    animationIntegerTrackInitialize(&itemState->materialTrack, (ValueKey *)(*((s32 *)((u8 *)&gTextureFrameAnimationPrograms + (animation * 4)))));
+    itemState->materialAnimationActive = 1;
 }
 
 /// Select a fixed item material frame and stop material animation.
@@ -2572,12 +2572,12 @@ void itemStartMaterialAnimation(u8 *item, s32 animation) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80114614 (0x80114614).
 void itemSetMaterialFrame(u8 *item, s32 frame) {
-    u8 *itemState;
+    ItemStatePrefix *itemState;
 
     TRACE("itemChangeMat(%p, %d)\n", item, frame);
-    itemState = ((RuntimeObjectPrefix *)item)->state.bytes;
-    ((ItemStatePrefix *)itemState)->materialTrack.value = frame;
-    ((ItemStatePrefix *)itemState)->materialAnimationActive = 0;
+    itemState = (ItemStatePrefix *)((RuntimeObjectPrefix *)item)->state.bytes;
+    itemState->materialTrack.value = frame;
+    itemState->materialAnimationActive = 0;
 }
 
 /// Select the rendering style of an item; a missing item is ignored.
@@ -2587,12 +2587,12 @@ void itemSetMaterialFrame(u8 *item, s32 frame) {
 /// \note Original decompilation identifier: \c func_80114624 (0x80114624).
 void itemSetDrawMode(s32 objectId, s32 mode) {
     u8 *liveObject;
-    u8 *itemState;
+    ItemStatePrefix *itemState;
 
     liveObject = objectFindLiveByHandle(objectId);
     if (liveObject != NULL) {
-        itemState = ((RuntimeObjectPrefix *)liveObject)->state.bytes;
-        ((ItemStatePrefix *)itemState)->renderMode = mode;
+        itemState = (ItemStatePrefix *)((RuntimeObjectPrefix *)liveObject)->state.bytes;
+        itemState->renderMode = mode;
     }
 }
 
@@ -2606,14 +2606,14 @@ void itemSetDrawMode(s32 objectId, s32 mode) {
 /// \note Original decompilation identifier: \c func_80114654 (0x80114654).
 void itemSetTint(s32 id, u8 r, u8 g, u8 b, u8 a) {
     u8 *obj = objectFindLiveByHandle(id);
-    u8 *rec;
+    ItemStatePrefix *itemState;
 
     if (obj != NULL) {
-        rec = ((RuntimeObjectPrefix *)obj)->state.bytes;
-        ((ItemStatePrefix *)rec)->tint[0] = r;
-        ((ItemStatePrefix *)rec)->tint[1] = g;
-        ((ItemStatePrefix *)rec)->tint[2] = b;
-        ((ItemStatePrefix *)rec)->tint[3] = a;
+        itemState = (ItemStatePrefix *)((RuntimeObjectPrefix *)obj)->state.bytes;
+        itemState->tint[0] = r;
+        itemState->tint[1] = g;
+        itemState->tint[2] = b;
+        itemState->tint[3] = a;
     }
 }
 

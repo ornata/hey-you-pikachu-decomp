@@ -42,4 +42,21 @@ void itemSetMaterialFrame(u8 *item, s32 frame);
 /// \note Original decompilation identifier: \c func_80113944 (0x80113944).
 u8 *itemCreate(f32 x, f32 y, f32 z, f32 pitch, f32 yaw, s32 kind);
 
+/// Select the rendering style of an item; a missing item is ignored.
+/// \param objectId Item object handle.
+/// \param mode Supported item draw mode from zero through six.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_80114624 (0x80114624).
+void itemSetDrawMode(s32 objectId, s32 mode);
+
+/// Set the color tint of a live item; has no effect when the item is unavailable.
+/// \param id Item object handle.
+/// \param r Red intensity from zero through 255.
+/// \param g Green intensity from zero through 255.
+/// \param b Blue intensity from zero through 255.
+/// \param a Opacity from zero through 255.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_80114654 (0x80114654).
+void itemSetTint(s32 id, u8 r, u8 g, u8 b, u8 a);
+
 #endif

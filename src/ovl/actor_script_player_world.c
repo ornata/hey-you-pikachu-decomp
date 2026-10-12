@@ -1133,7 +1133,6 @@ s32 actorScriptSetItemMaterialFrame(u8 *actor) {
     return 0;
 }
 
-void itemSetDrawMode(s32, s32); /* extern */
 /// Select the draw mode of a live item.
 /// \param actor Actor whose script VM supplies an item handle followed by a draw mode from zero through six and receives zero; missing handles have no effect, and other object kinds are unsupported.
 /// \returns Zero, allowing script execution to continue.
@@ -1151,7 +1150,6 @@ s32 actorScriptSetItemDrawMode(u8 *actor) {
     return 0;
 }
 
-void itemSetTint(s32, u8, u8, u8, s32); /* extern */
 /// Set the RGBA tint of a live item.
 /// \param actor Actor whose script VM supplies an item handle followed by red, green, blue, and alpha channel values from zero through 255, and receives zero; missing handles have no effect, and other object kinds are unsupported.
 /// \returns Zero, allowing script execution to continue.
