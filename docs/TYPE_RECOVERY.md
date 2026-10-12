@@ -2610,3 +2610,16 @@ Ghidra 0x801116D8 confirms the reversed endpoint order used with remaining time.
 Destination vectors are copied from float pointers; the old byte-pointer view
 and stale signed-integer duration restriction are removed. All affected source
 units and shared-header dependents preserve the complete strict object baseline.
+
+### World-map destination records
+
+The private `WorldMapDestination` replaces the nineteen-word view with stage
+area identifiers, the availability flag, presentation focus, icon rectangle and
+stage badge textures. Size 0x4C and offsets 0x10/0x1C/0x40 are checked. Selection,
+placement, focus, drawing and area-transition consumers use the named fields.
+Ghidra 0x8002D474 confirms the icon copy, rectangle coordinates, badge offset and
+record stride. Original table identifier and address remain documented.
+
+Two identical private texture-rectangle layouts in the unit are consolidated,
+removing casts between those records. No global data definition or linker layout
+changes; both recovery steps preserve all 483 strict object comparisons.
