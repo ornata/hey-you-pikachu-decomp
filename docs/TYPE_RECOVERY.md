@@ -2028,3 +2028,15 @@ keys; object updates unregister with stored keys before registering new position
 Ghidra 0x8002C8B0 was also checked against the private impulse provider; no new shared
 impulse API is introduced because it has no external source callers. All changed
 units preserve all 483 objects and strict relocation addends.
+
+### Animated model-part allocation layout
+
+A private `ActorPartTextureState` now describes the complete 0x558-byte allocation:
+three playback rates, three borrowed-program integer tracks, two 0x280-byte command
+buffers, RGB tint and collision registration key. Ghidra 0x80013848 establishes the
+allocation, channel setup, buffer stride and tint initialization. Compile-time
+checks cover the extent and offsets 0x14, 0x50, 0x550 and 0x554. Initialization,
+tint setters/drawing, playback-rate updates and collision lifecycle use these
+fields; unresolved gaps remain explicit. Command-writing byte cursors retain
+their buffer-offset form. The type stays local because no other unit owns or
+consumes this record. All 483 objects and strict relocation addends match.

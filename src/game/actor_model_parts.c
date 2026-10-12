@@ -9,6 +9,26 @@
 #include "actor_script.h"
 #include "heap_alloc.h"
 #include "object_types.h"
+/// Owned animated-texture state for the tinted model part.
+/// Command storage belongs to this allocation; channel tracks borrow animation programs.
+typedef struct ActorPartTextureState {
+    f32 playbackRates[3]; ///< Per-channel texture animation time scales.
+    u8 unknown00C[8];
+    ValueTrack tracks[3]; ///< Three integer texture-frame tracks.
+    u8 unknown038[0x18];
+    Gfx commandBuffers[2][80]; ///< Drawing commands indexed by framebuffer.
+    u8 tint[3];                ///< Red, green and blue primitive-color components.
+    u8 unknown553;
+    s32 collisionKey; ///< Collision-grid registration key, or zero when unregistered.
+} ActorPartTextureState;
+typedef char ActorPartTextureStateSizeCheck[(sizeof(ActorPartTextureState) == 0x558) ? 1 : -1];
+typedef char ActorPartTextureTracksOffsetCheck[(((u32) & ((ActorPartTextureState *)0)->tracks) == 0x14) ? 1 : -1];
+typedef char
+    ActorPartTextureCommandsOffsetCheck[(((u32) & ((ActorPartTextureState *)0)->commandBuffers) == 0x50) ? 1 : -1];
+typedef char ActorPartTextureTintOffsetCheck[(((u32) & ((ActorPartTextureState *)0)->tint) == 0x550) ? 1 : -1];
+typedef char
+    ActorPartTextureCollisionOffsetCheck[(((u32) & ((ActorPartTextureState *)0)->collisionKey) == 0x554) ? 1 : -1];
+
 void objectDebugReportNoOp(u8 *);
 /// Model display-list addresses indexed by appearance slot zero variant.
 /// \note Original identifier: \c D_800760C4 (0x800760C4).
@@ -163,15 +183,15 @@ void actorPartInitializeAnimatedTextures(u8 *object) {
     s32 i;
     state = (u8 *)heapAllocLocal(&gGameHeap, 0x558, 0xED);
     _bzero(state, 0x558);
-    state[0x550] = 0xBE;
-    state[0x551] = 0x28;
-    state[0x552] = 0x14;
-    *(f32 *)(state) = 1.0f;
-    *(f32 *)(state + 4) = 1.0f;
-    *(f32 *)(state + 8) = 1.0f;
-    animationIntegerTrackInitialize((ValueTrack *)(state + 0x14), (ValueKey *)(gActorPartDefaultTextureAnimation));
-    animationIntegerTrackInitialize((ValueTrack *)(state + 0x20), (ValueKey *)(gActorPartDefaultTextureAnimation));
-    animationIntegerTrackInitialize((ValueTrack *)(state + 0x2C), (ValueKey *)(gActorPartDefaultThirdTextureAnimation));
+    ((ActorPartTextureState *)state)->tint[0] = 0xBE;
+    ((ActorPartTextureState *)state)->tint[1] = 0x28;
+    ((ActorPartTextureState *)state)->tint[2] = 0x14;
+    ((ActorPartTextureState *)state)->playbackRates[0] = 1.0f;
+    ((ActorPartTextureState *)state)->playbackRates[1] = 1.0f;
+    ((ActorPartTextureState *)state)->playbackRates[2] = 1.0f;
+    animationIntegerTrackInitialize(&((ActorPartTextureState *)state)->tracks[0], (ValueKey *)(gActorPartDefaultTextureAnimation));
+    animationIntegerTrackInitialize(&((ActorPartTextureState *)state)->tracks[1], (ValueKey *)(gActorPartDefaultTextureAnimation));
+    animationIntegerTrackInitialize(&((ActorPartTextureState *)state)->tracks[2], (ValueKey *)(gActorPartDefaultThirdTextureAnimation));
     /* Initialize both command buffers directly; macro temporaries change the original frame. */
     for (i = 0, buffer = state; i != 2; i++, buffer += 0x280) {
         ((Gfx *)(buffer + 0x50))->words.w0 = (u32)G_ENDDL << 24;
@@ -197,7 +217,7 @@ void actorPartInitializeAnimatedTextures(u8 *object) {
 /// \note Original decompilation identifier: \c func_80013968 (0x80013968).
 void actorPartReleaseAnimatedTextures(u8 *object) {
     s32 textureStateAddress = *(s32 *)(object + 0x54);
-    collisionGridUnregisterObject(object, (s32 *)(textureStateAddress + 0x554));
+    collisionGridUnregisterObject(object, &((ActorPartTextureState *)textureStateAddress)->collisionKey);
     heapFreeLocal(&gGameHeap, (void *)textureStateAddress);
 }
 
@@ -378,9 +398,9 @@ void actorSetPartTint(s32 actor, u8 red, u8 green, u8 blue) {
     u8 *obj;
 
     obj = *(u8 **)(actorFindPart((u8 *)actor, 0x79) + 0x54);
-    obj[0x550] = red;
-    obj[0x551] = green;
-    obj[0x552] = blue;
+    ((ActorPartTextureState *)obj)->tint[0] = red;
+    ((ActorPartTextureState *)obj)->tint[1] = green;
+    ((ActorPartTextureState *)obj)->tint[2] = blue;
 }
 
 /// Restore the default color of the actor model part that supports tinting.
@@ -435,7 +455,7 @@ void actorPartBuildAnimatedTextureCommands(u8 *object, s32 buffer) {
     gSPBranchList(branches++, commands);
     gSPBranchList(branches++, commands);
     gDPPipeSync(commands++);
-    gDPSetPrimColor(commands++, 0, 0, state[0x550], state[0x551], state[0x552], primitiveAlpha);
+    gDPSetPrimColor(commands++, 0, 0, ((ActorPartTextureState *)state)->tint[0], ((ActorPartTextureState *)state)->tint[1], ((ActorPartTextureState *)state)->tint[2], primitiveAlpha);
     gDPSetCombine(commands++, 0x30FEAC, 0x40FE7838);
     textureLoadForDraw(&commands, finalSegment, 0);
     gSPEndDisplayList(commands++);
@@ -449,8 +469,8 @@ void actorPartUpdateCollisionRegistration(u8 *object) {
     u8 *obj;
 
     obj = *(u8 **)(object + 0x54);
-    collisionGridUnregisterObject(object, (s32 *)(obj + 0x554));
-    *(s32 *)(obj + 0x554) = collisionGridRegisterObject(object);
+    collisionGridUnregisterObject(object, &((ActorPartTextureState *)obj)->collisionKey);
+    ((ActorPartTextureState *)obj)->collisionKey = collisionGridRegisterObject(object);
 }
 
 void matrix34MakeRotationXYZDegrees(f32 *, f32, f32, f32);
@@ -775,7 +795,7 @@ void actorSetPartTextureAnimation(u8 *actor, f32 speed, s32 channel, s32 animati
     int off;
     u8 *textureState;
     textureState = *(u8 **)(actorFindPart(actor, 0x79) + 0x54);
-    *(f32 *)(textureState + (channel * 4)) = speed;
+    ((ActorPartTextureState *)textureState)->playbackRates[channel] = speed;
     off = channel * 0xC;
     animationIntegerTrackInitialize((ValueTrack *)((textureState + off) + 0x14), (ValueKey *)(gTextureFrameAnimationPrograms[animation]));
 }
