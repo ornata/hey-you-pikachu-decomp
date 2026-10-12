@@ -5,6 +5,7 @@
 #include "integer_animation.h"
 #include "object_lookup.h"
 #include "heap_alloc.h"
+#include "game_heap.h"
 #include "object_types.h"
 
 /// Owned motion, neighbor constraints and animated appearance of one linked effect.
@@ -27,10 +28,9 @@ typedef struct MotionState {
     s32 head;
 } MotionState;
 
+typedef char LinkedEffectMotionStateSizeCheck[(sizeof(MotionState) == 0x58) ? 1 : -1];
+
 void _bzero(void *, s32); /* extern */
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 void textureLoadForDraw(Gfx **, s32, s16);
 /// Write cursor for the active graphics command list; also marks the camera-storage end.
 /// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
@@ -41,13 +41,13 @@ extern Gfx *gRenderDisplayListCursor;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001C860 (0x8001C860).
 void linkedEffectInitialize(u8 *object) {
-    s32 sp1C;
-    s32 allocation;
+    MotionState *state;
+    MotionState *allocation;
 
     allocation = heapAllocLocal(&gGameHeap, 0x58, 0x38);
-    sp1C = allocation;
-    _bzero((void *)allocation, 0x58);
-    ((RuntimeObjectPrefix *)object)->state.address = sp1C;
+    state = allocation;
+    _bzero(allocation, 0x58);
+    ((RuntimeObjectPrefix *)object)->state.pointer = state;
 }
 
 /// Detach an effect from its neighbors and release its motion state.
@@ -452,7 +452,7 @@ u8 *linkedEffectCreateChain(s32 kind, f32 x, f32 y, f32 z, f32 scale, s32 target
     gLinkedEffectObjectTemplate[1] = scale;
     gLinkedEffectObjectTemplate[2] = scale;
     gLinkedEffectTemplateBounds[0] = 0.5f * scale;
-    _bzero((s32)&initial, 0x58);
+    _bzero(&initial, 0x58);
     initial.spacing = spacing;
     initial.previousPull = previousPull;
     initial.nextPull = nextPull;

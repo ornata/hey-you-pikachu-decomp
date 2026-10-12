@@ -1,6 +1,7 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "heap_alloc.h"
+#include "game_heap.h"
 /// Description text format for the supported cave interaction kind.
 /// \note Original identifier: \c D_800A4860 (0x800A4860).
 extern s8 gCaveDescriptionFormat[];
@@ -14,9 +15,6 @@ typedef struct ObjTemplate38 {
 /// Hierarchy template used to create cave interaction objects.
 /// \note Original identifier: \c D_80088EA0 (0x80088EA0).
 extern ObjTemplate38 gCaveObjectTemplate;
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern u8 gGameHeap[];
 u8 *objectCreateHierarchyFromTemplate(ObjTemplate38 *);
 void objectRegisterActiveHierarchy(u8 *);
 
@@ -39,7 +37,7 @@ u8 *caveCreate(f32 *position, f32 *anchorA, f32 *anchorB, u8 kind) {
     *(f32 *)(obj + 0x44) = position[0];
     *(f32 *)(obj + 0x48) = position[1];
     *(f32 *)(obj + 0x4C) = position[2];
-    v = heapAllocLocal(gGameHeap, 0x20, 0x32);
+    v = heapAllocLocal(&gGameHeap, 0x20, 0x32);
     *(f32 *)(v + 0x0) = anchorA[0];
     *(f32 *)(v + 0x4) = anchorA[1];
     *(f32 *)(v + 0x8) = anchorA[2];

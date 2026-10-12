@@ -2,10 +2,8 @@
 #include "integer_animation.h"
 #include "object_lookup.h"
 #include "heap_alloc.h"
+#include "game_heap.h"
 
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern u8 gGameHeap[];
 /// Separate view of the default texture-frame animation program for attached effects.
 /// \note Original identifier: \c D_8006B320 (0x8006B320).
 extern s32 gAttachedEffectDefaultFrameProgram;
@@ -75,7 +73,7 @@ u8 *attachedEffectCreate(u8 *owner, s32 kind, s32 track) {
 void attachedEffectInitialize(u8 *object) {
     u8 *obj;
 
-    obj = heapAllocLocal(gGameHeap, 0x2C, 0x7A);
+    obj = heapAllocLocal(&gGameHeap, 0x2C, 0x7A);
     animationIntegerTrackInitialize((ValueTrack *)(obj + 0xC), (ValueKey *)(gAttachedEffectDefaultFrameProgram));
     animationIntegerTrackInitialize((ValueTrack *)(obj + 0x18), (ValueKey *)(gOpacityAnimationPrograms));
     obj[0x24] = obj[0x25] = obj[0x26] = obj[0x27] = 0xFF;

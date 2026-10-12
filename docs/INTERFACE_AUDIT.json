@@ -4,6 +4,13 @@
   "records": [
     {
       "code": 709,
+      "file": "src/game/flipbook_messenger.c",
+      "line": 958,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "messengerAdvancePosition(object);"
+    },
+    {
+      "code": 709,
       "file": "src/game/doors_object_responses.c",
       "line": 160,
       "diagnostic": "Incompatible pointer type assignment",
@@ -43,13 +50,6 @@
       "line": 175,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "sprintf(gDoorAccessDescriptionBuffer, \"\\nYou can't get by for some reason.\");"
-    },
-    {
-      "code": 709,
-      "file": "src/game/flipbook_messenger.c",
-      "line": 958,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "messengerAdvancePosition(object);"
     },
     {
       "code": 709,
@@ -165,38 +165,10 @@
     },
     {
       "code": 712,
-      "file": "src/game/linked_effect.c",
-      "line": 47,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "allocation = heapAllocLocal(&gGameHeap, 0x58, 0x38);"
-    },
-    {
-      "code": 712,
-      "file": "src/game/linked_effect.c",
-      "line": 455,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "_bzero((s32)&initial, 0x58);"
-    },
-    {
-      "code": 712,
       "file": "src/game/graphics_text.c",
       "line": 1243,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "if ((fontImageGetCharacterLeft(code, (u8 *)font, 1) == 0) && ((fontImageGetCharacterRight(code, font, 1) + 1) == *font)) {"
-    },
-    {
-      "code": 709,
-      "file": "src/game/cave.c",
-      "line": 42,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "v = heapAllocLocal(gGameHeap, 0x20, 0x32);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/attached_effect.c",
-      "line": 78,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "obj = heapAllocLocal(gGameHeap, 0x2C, 0x7A);"
     },
     {
       "code": 709,
@@ -351,13 +323,6 @@
       "line": 33,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "stringCopy(gPlayerProfileName, \"You\");"
-    },
-    {
-      "code": 709,
-      "file": "src/game/scene_region.c",
-      "line": 48,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "state = heapAllocLocal(gGameHeap, 0x10, 0x33);"
     },
     {
       "code": 709,

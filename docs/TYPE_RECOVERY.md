@@ -806,3 +806,16 @@ Motion cartridge addresses use an explicit numeric linker-address boundary.
 The analogous texture expression changes IDO instructions and relocations; its
 original representation is retained with a matching exception in the ledger.
 Every retained unit matches the immutable object baseline.
+
+### Gameplay heap and small owned effect records
+
+Attached effects, caves, scene regions and linked effects share the canonical
+game-heap declaration through game_heap.h. Allocation callers pass HpHdr pointers.
+Linked-effect initialization stores a typed allocation in the object's pointer
+view and checks its private 0x58-byte motion-state size.
+
+Scene regions use a private checked 0x10-byte record for world X/Z half-extents,
+player-only highlight state and opaque scene association. Ghidra at 0x8001F318
+confirms the companion-first occupancy precedence and byte flag. The scene-data
+value remains opaque; no unsupported pointer ownership is inferred. Padding is
+retained. These changes preserve all allocated bytes and strict relocations.
