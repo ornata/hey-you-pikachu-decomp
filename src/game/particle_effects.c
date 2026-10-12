@@ -1,3 +1,4 @@
+#include "object_lifecycle.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "vector_direction.h"
@@ -45,8 +46,6 @@ void effectEmitterEmitColoredParticle(u8 *, f32, f32, f32, u8, u8, u8);
 /// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
 extern Gfx *gRenderDisplayListCursor;
 u8 *objectCreateFromTemplate(void *);
-void objectMakeHierarchyRoot(u8 *);
-u8 *objectRegisterActiveHierarchy(u8 *);
 /// Object template for emitters of expanding orange effects.
 /// \note Original identifier: \c D_80077E30 (0x80077E30).
 extern u8 gOrangePulseEmitterObjectTemplate[];
@@ -656,7 +655,6 @@ s32 ribbonEffectControllerPrepareDraw(u8 *controller) {
     return *(s32 *)(controller + 0x30);
 }
 
-u8 *objectCreateDefault(void);
 void objectAllocateHierarchyMatrixBuffers(u8 *);
 f32 mathSinDegrees(f32);
 Gfx *ribbonEffectCreateDisplayList(s32);

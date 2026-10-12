@@ -1,3 +1,4 @@
+#include "object_lifecycle.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 
@@ -8,7 +9,6 @@
 // clang-format on
 
 u8 *objectCreateHierarchyFromTemplate(void *);
-void objectRegisterActiveHierarchy(u8 *);
 /// Hierarchy template used to create selectable landmarks.
 /// \note Original identifier: \c D_80088E20 (0x80088E20).
 extern u8 gLandmarkObjectTemplate[];

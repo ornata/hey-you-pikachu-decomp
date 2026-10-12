@@ -1,3 +1,4 @@
+#include "object_lifecycle.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "text_image_create.h"
@@ -249,9 +250,7 @@ extern GridTemplate gTerrainDebugGridRootTemplate;
 /// \note Original identifier: \c D_80099D5C (0x80099D5C).
 extern GridTemplate gTerrainDebugGridCellTemplate;
 u8 *objectCreateFromTemplate(u8 *);
-u8 *objectMakeHierarchyRoot(u8 *);
 void objectAllocateHierarchyMatrixBuffers(s32);
-u8 *objectRegisterActiveHierarchy(u8 *);
 s32 objectRefreshHierarchyWorldPositions(s32);
 void terrainDebugGridSetEnabled(u8 *, s32);
 /// Create a terrain diagnostic grid in front of the player.

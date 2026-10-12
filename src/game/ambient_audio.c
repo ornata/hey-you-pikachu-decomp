@@ -1,3 +1,4 @@
+#include "object_lifecycle.h"
 #include "heap_free.h"
 /* Spatial audio emitters and effects. */
 #include "common.h"
@@ -178,8 +179,6 @@ void ambientAudioDestroy(u8 *object) {
 /// \note Original identifier: \c D_8009B350 (0x8009B350).
 extern u8 gAmbientAudioEmitterTemplate[];
 u8 *objectCreateFromTemplate(u8 *, s32, f32 *);
-void objectMakeHierarchyRoot(u8 *);
-void objectRegisterActiveHierarchy(u8 *);
 
 /// Create an ambient audio emitter with the requested playback and spatial settings.
 /// \param position Three-component world-space emitter position.

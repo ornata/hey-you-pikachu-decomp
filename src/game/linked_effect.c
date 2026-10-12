@@ -1,3 +1,4 @@
+#include "object_lifecycle.h"
 #include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -396,11 +397,8 @@ void linkedEffectInitializeVelocity(s32 kind, u8 *object) {
 
 #define SET_MOTION_VECTOR(v, x, y, z) ((v)[0] = (x), (v)[1] = (y), (v)[2] = (z))
 
-u8 *objectCreateDefault(void);
 u8 *objectCreateFromTemplate(void *);
 void objectAllocateHierarchyMatrixBuffers(u8 *);
-void objectMakeHierarchyRoot(u8 *);
-void objectRegisterActiveHierarchy(u8 *);
 void linkedEffectInitializeVelocity(s32, u8 *);
 /// Model display list used by linked effect objects.
 /// \note Original identifier: \c D_1000B08 (0x01000B08).

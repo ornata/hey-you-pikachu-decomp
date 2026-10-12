@@ -1,3 +1,4 @@
+#include "object_lifecycle.h"
 #include "toolbox_items.h"
 #include "item_object.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -771,7 +772,6 @@ void toolboxRestoreStoredObjects(u8 *table) {
 }
 
 u8 *objectCreateHierarchyFromTemplate(PartNode *);
-u8 *objectRegisterActiveHierarchy(u8 *);
 void toolboxRestoreStoredObjects(u8 *);
 /// Shared text-image configurations selected by text panels, menus and message styles.
 /// \note Original identifier: \c D_80074DE0 (0x80074DE0).

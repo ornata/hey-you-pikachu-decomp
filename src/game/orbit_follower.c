@@ -1,3 +1,4 @@
+#include "object_lifecycle.h"
 #include "common.h"
 #include "object_lookup.h"
 #include "heap_alloc.h"
@@ -148,7 +149,6 @@ void orbitFollowerUpdate(OrbitObject *obj) {
 }
 
 u8 *objectCreateHierarchyFromTemplate(void *);
-void objectRegisterActiveHierarchy(u8 *);
 /// Hierarchy template used to create objects that orbit a creature owner.
 /// \note Original identifier: \c D_800999B0 (0x800999B0).
 extern u8 gOrbitFollowerObjectTemplate[];

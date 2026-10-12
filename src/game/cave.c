@@ -1,3 +1,4 @@
+#include "object_lifecycle.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "heap_alloc.h"
@@ -16,7 +17,6 @@ typedef struct ObjTemplate38 {
 /// \note Original identifier: \c D_80088EA0 (0x80088EA0).
 extern ObjTemplate38 gCaveObjectTemplate;
 u8 *objectCreateHierarchyFromTemplate(ObjTemplate38 *);
-void objectRegisterActiveHierarchy(u8 *);
 
 /// Create and register a cave interaction object with its scene anchors.
 /// \param position Three-component world position of the cave interaction point.

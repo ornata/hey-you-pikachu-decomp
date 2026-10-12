@@ -1,3 +1,4 @@
+#include "object_lifecycle.h"
 #include "heap_diagnostics.h"
 #include "player_friendship.h"
 #include "backdrop_draw.h"
@@ -1840,7 +1841,6 @@ void systemMenuSyncSoundSettingSelection(s32 unused) {
 }
 
 u8 *objectCreateHierarchyFromTemplate(void *);
-u8 *objectRegisterActiveHierarchy(u8 *);
 /// Identifier of the currently loaded area.
 /// \note Original identifier: \c D_800AE4F8 (0x800AE4F8).
 extern s32 gRuntimeCurrentArea;

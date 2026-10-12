@@ -1,3 +1,4 @@
+#include "object_lifecycle.h"
 #include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -1565,7 +1566,6 @@ typedef struct {
     SceneCellType *kinds;
 } ModelConfigD658;
 u8 *objectCreateHierarchyFromTemplate(u8 *);
-u8 *objectRegisterActiveHierarchy(u8 *);
 
 /// Configure a maze node for its selected kind, creating its model and running the configured initializer
 /// when present.
@@ -1726,7 +1726,6 @@ void mazeBuildNodeHierarchy(u8 *node, s32 depth, s32 forceSplit) {
 }
 
 u8 *objectCreateHierarchyFromTemplate();                             /* extern */
-u8 *objectRegisterActiveHierarchy();                             /* extern */
 u8 *areaFindPositionNode(f32 arg0, f32 arg1, f32 arg2); /* extern */
 
 /// Create and register a block object in the maze region selected by a world position.
@@ -2064,8 +2063,6 @@ void mazePrepareNodeObjects(u8 *node) {
     }
 }
 
-u8 *objectCreateDefault();             /* extern */
-u8 *objectMakeHierarchyRoot(u8 *);         /* extern */
 void mazeBuild(void);        /* extern */
 void mazeSpawnConfiguredItems(void);        /* extern */
 void mazePrepareNodeObjects(u8 *arg0);    /* extern */

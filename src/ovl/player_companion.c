@@ -1,3 +1,4 @@
+#include "object_lifecycle.h"
 #include "door.h"
 #include "player_friendship.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -233,9 +234,6 @@ void playerRestoreCompanionControlMode(u8 *player) {
     playerSetCompanionControlMode(player, ((PlayerControlPrefix *)player)->savedCompanionMode, 0, ((PlayerControlPrefix *)player)->savedCompanionTarget);
 }
 
-u8 *objectCreateDefault();     /* extern */
-u8 *objectMakeHierarchyRoot(u8 *); /* extern */
-u8 *objectRegisterActiveHierarchy(u8 *); /* extern */
 /// Create and register the object hierarchy used by player control.
 /// \returns Registered player-control hierarchy root, managed by the object system.
 /// \note Original decompilation identifier: \c func_8010E9D0 (0x8010E9D0).

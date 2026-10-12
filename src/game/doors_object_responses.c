@@ -1,3 +1,4 @@
+#include "object_lifecycle.h"
 #include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -62,9 +63,6 @@ void doorRegistryReset(void) {
     gDoorObjectCount = 0;
 }
 
-u8 *objectCreateDefault(void);
-u8 *objectMakeHierarchyRoot(u8 *);
-u8 *objectRegisterActiveHierarchy(u8 *);
 
 /// Create and register a destination door or sign.
 /// \param position Three-component world position.

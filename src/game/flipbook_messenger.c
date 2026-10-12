@@ -1,3 +1,4 @@
+#include "object_lifecycle.h"
 #include "heap_free.h"
 /// \file
 /// Flipbook text and messenger effects that deliver actor messages.
@@ -541,10 +542,7 @@ void scrollBoardSetSpeed(u8 *object, f32 speed) {
     *(f32 *)(boardState + 0x10) = speed;
 }
 
-u8 *objectCreateDefault();                                   /* extern */
 void objectAllocateHierarchyMatrixBuffers(u8 *);                           /* extern */
-u8 *objectMakeHierarchyRoot(u8 *);                           /* extern */
-u8 *objectRegisterActiveHierarchy(u8 *);                           /* extern */
 s32 scrollBoardCreateObject(s32, s32, u8, u8, u8, u8, s32, s32); /* extern */
 
 /// Create and register a hierarchy containing a scrolling text board.

@@ -1,3 +1,4 @@
+#include "object_lifecycle.h"
 #include "common.h"
 #include "heap_alloc.h"
 #include "game_heap.h"
@@ -30,7 +31,6 @@ extern PartTemplate gSceneRegionObjectTemplate;
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
 u8 *objectCreateHierarchyFromTemplate(PartTemplate *);
-u8 *objectRegisterActiveHierarchy(u8 *);
 
 /// Create a rectangular scene region with its associated scene data.
 /// \param position Three-component world-space region center.

@@ -1,3 +1,4 @@
+#include "object_lifecycle.h"
 #include "common.h"
 #include "actor_parts.h"
 #include "integer_animation.h"
@@ -32,7 +33,6 @@ extern s32 gRuntimeGameMode;
 extern s32 gTextureFrameAnimationPrograms[];
 u8 *objectCreateHierarchyFromTemplate(u8 *);
 void objectSetHierarchyFlags(u8 *, u16);
-u8 *objectRegisterActiveHierarchy(u8 *);
 void objectRequestHierarchyDestruction(u8 *);
 /// Create an animated effect for an owner, replacing its previous attached effect.
 /// \param owner Object that owns and anchors the effect.

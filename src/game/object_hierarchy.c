@@ -1,3 +1,4 @@
+#include "object_lifecycle.h"
 #include "keyed_pool.h"
 #include "heap_free.h"
 #include "common.h"
@@ -99,7 +100,6 @@ extern SearchTree gObjectSearchTree;
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
 u8 *objectCreateFromTemplate(u8 *);
-void objectDestroy(u8 *);
 u8 *objectCloneTemplateHierarchy(u8 *, u8 *);
 typedef struct CamRec {
     f32 x;
@@ -114,7 +114,6 @@ void objectAssignHierarchyRoot(u8 *, s32);
 /// Number of hierarchy roots registered in the active traversal pool.
 /// \note Original identifier: \c D_800AE3D0 (0x800AE3D0).
 extern s32 gActiveObjectHierarchyCount;
-u8 *objectRegisterActiveHierarchy(u8 *);
 void objectSetHierarchyFlags(u8 *, u16);
 void objectClearHierarchyFlags(u8 *, u16);
 s32 objectCompareSearchTreeOrder(TreeNode *, s32);
@@ -870,7 +869,6 @@ void objectAssignHierarchyRoot(u8 *object, s32 root) {
 /// \param object Non-null object that becomes the hierarchy root.
 /// \returns Supplied object.
 ///
-/// \note Portability: Some translation units declare this pointer-returning helper as void and discard the original ABI result.
 /// \note Original decompilation identifier: \c func_800084E8 (0x800084E8).
 u8 *objectMakeHierarchyRoot(u8 *object) {
     objectAssignHierarchyRoot(object, (s32)object);

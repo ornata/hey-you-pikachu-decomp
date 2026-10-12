@@ -1393,3 +1393,16 @@ Description buffers remain distinct shared storage with separate invalidation
 contracts. Existing signed/unsigned text pointer conventions remain explicit.
 The ten-entry registry capacity is a caller precondition, not a newly added check.
 Each provider and caller mutation independently preserves all 483 objects.
+
+### Shared runtime object lifecycle contracts
+
+`object_lifecycle.h` consolidates default creation, hierarchy-root ownership,
+active registration and destruction across nineteen source units. Previously
+void declarations of pointer-returning root and registration helpers now agree
+with their provider. The marker's integer address converts explicitly at the
+pointer interface. The former mixed-return-type portability note is obsolete.
+Ghidra at 0x800084E8 confirms root assignment and flags but infers void; the
+provider, value-consuming callers and unchanged objects establish the pointer
+return contract. Ownership comments require removing retained active/sibling
+links before destruction. Each source unit was rebuilt and all 483 objects
+strictly compared before proceeding to the next mutation.

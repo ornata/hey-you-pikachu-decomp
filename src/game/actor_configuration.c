@@ -1,3 +1,4 @@
+#include "object_lifecycle.h"
 #include "heap_free.h"
 #include "heap_tail.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -85,7 +86,6 @@ extern f32 gRuntimeFrameSeconds;
 
 u8 *objectCreateHierarchyFromTemplate(void *);
 f32 terrainGetWorldHeight(f32, f32, f32, s32);
-u8 *objectRegisterActiveHierarchy(u8 *);
 /// Initial uniform scale of a contact-reactive effect.
 /// \note Original identifier: \c D_800A3A68 (0x800A3A68).
 extern f32 gContactEffectInitialScale;
@@ -530,7 +530,6 @@ s32 actorAssetGetCachedStorage(s32 kind) {
 
 void objectPrepareDistributedKindSearches(u16, s32);
 u8 *objectGetLastSibling(u8 *);
-u8 *objectCreateDefault(void);
 void objectAllocateHierarchyMatrixBuffers(s32);
 u8 *objectCloneTemplateHierarchy(u8 *, u8 *);
 void objectScaleHierarchyBounds(u8 *, f32);

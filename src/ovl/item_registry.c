@@ -1,3 +1,4 @@
+#include "object_lifecycle.h"
 #include "item_object.h"
 #include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -2091,7 +2092,6 @@ void itemInitializeState(u8 *item) {
 }
 
 u8 *objectCreateHierarchyFromTemplate(void *);
-u8 *objectRegisterActiveHierarchy(u8 *);
 TreeNode *searchTreeInsert(u8 *, TreeNode *, s32);
 f32 terrainGetWorldHeight(f32, f32, f32, u8 **);
 /// Shared integer animation programs selecting texture frames for actors, effects and interface elements.
