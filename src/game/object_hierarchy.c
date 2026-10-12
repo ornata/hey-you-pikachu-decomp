@@ -114,7 +114,7 @@ typedef struct CamRec {
 /// Camera storage used for view transforms, viewports and color overlays.
 /// \note Original identifier: \c D_800ABCF0 (0x800ABCF0).
 extern u8 gRenderCameras[];
-void objectAssignHierarchyRoot(u8 *, s32);
+void objectAssignHierarchyRoot(u8 *, u8 *);
 /// Number of hierarchy roots registered in the active traversal pool.
 /// \note Original identifier: \c D_800AE3D0 (0x800AE3D0).
 extern s32 gActiveObjectHierarchyCount;
@@ -812,7 +812,7 @@ u8 *objectCloneTemplateHierarchy(ObjectTemplate *src, u8 *root) {
         *link = n;
         if (root == NULL) {
             root = n;
-            ((RuntimeObjectPrefix *)root)->flags |= 4;
+            ((RuntimeObjectPrefix *)root)->flags |= OBJECT_HIERARCHY_ROOT;
         }
         ((RuntimeObjectPrefix *)*link)->root.bytes = root;
         if (src->child != NULL) {
@@ -840,7 +840,7 @@ u8 *objectCreateHierarchyFromTemplate(ObjectTemplate *definition) {
 /// \param root Root object address to associate with the hierarchy.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80008480 (0x80008480).
-void objectAssignHierarchyRoot(u8 *object, s32 root) {
+void objectAssignHierarchyRoot(u8 *object, u8 *root) {
     u8 *firstChild;
     u8 *var_s0;
 
@@ -848,8 +848,8 @@ void objectAssignHierarchyRoot(u8 *object, s32 root) {
     if (object != NULL) {
         do {
             firstChild = ((RuntimeObjectPrefix *)var_s0)->child.bytes;
-            ((RuntimeObjectPrefix *)var_s0)->root.address = root;
-            ((RuntimeObjectPrefix *)var_s0)->flags = (u16)(((RuntimeObjectPrefix *)var_s0)->flags & ~4);
+            ((RuntimeObjectPrefix *)var_s0)->root.bytes = root;
+            ((RuntimeObjectPrefix *)var_s0)->flags = (u16)(((RuntimeObjectPrefix *)var_s0)->flags & ~OBJECT_HIERARCHY_ROOT);
             if (firstChild != NULL) {
                 objectAssignHierarchyRoot(firstChild, root);
             }
@@ -864,9 +864,9 @@ void objectAssignHierarchyRoot(u8 *object, s32 root) {
 ///
 /// \note Original decompilation identifier: \c func_800084E8 (0x800084E8).
 u8 *objectMakeHierarchyRoot(u8 *object) {
-    objectAssignHierarchyRoot(object, (s32)object);
-    *(u8 **)(object + 0x50) = object;
-    *(u16 *)(object + 0x36) |= 4;
+    objectAssignHierarchyRoot(object, object);
+    ((RuntimeObjectPrefix *)object)->root.bytes = object;
+    ((RuntimeObjectPrefix *)object)->flags |= OBJECT_HIERARCHY_ROOT;
     return object;
 }
 
@@ -953,8 +953,8 @@ u8 *objectRegisterActiveHierarchy(u8 *object) {
     var_v0 = object;
     if (object != NULL) {
         do {
-            *(u16 *)(var_v0 + 0x36) = *(u16 *)(var_v0 + 0x36) | 8;
-            var_v0 = *(u8 **)(var_v0 + 0x28);
+            ((RuntimeObjectPrefix *)var_v0)->flags = ((RuntimeObjectPrefix *)var_v0)->flags | OBJECT_HIERARCHY_ACTIVE;
+            var_v0 = ((RuntimeObjectPrefix *)var_v0)->sibling.bytes;
         } while (var_v0 != NULL);
     }
     return object;
@@ -989,7 +989,7 @@ void objectDestroy(u8 *object) {
         destroyCallback(object);
     }
     searchTreeRemove(&gObjectSearchTree, (s32)object);
-    if (((RuntimeObjectPrefix *)object)->flags & 4) {
+    if (((RuntimeObjectPrefix *)object)->flags & OBJECT_HIERARCHY_ROOT) {
         matrixStorage = ((RuntimeObjectPrefix *)object)->matrixBuffers[0];
         if (matrixStorage != NULL) {
             heapFreeLocal(&gGameHeap, matrixStorage);

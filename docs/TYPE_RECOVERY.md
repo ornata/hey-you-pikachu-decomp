@@ -1769,3 +1769,14 @@ offset check. Creation initializes the checked entry, flags and handle fields.
 Destruction and nearest-search consumers use shared management/object fields.
 The embedded node is initialized during registration, not by the creation clear
 that ends at 0x5C. All changes preserve all 483 objects and strict relocations.
+
+### Hierarchy management pointers and flags
+
+Root assignment now uses an object pointer instead of an integer address, while
+root designation and active registration use shared object links and flags.
+The proven root-ownership and active-registration bits have enum names in the
+shared flag header; unrelated flag meanings remain numeric. Ghidra 0x800084E8
+confirms root association and ownership designation; its inferred void return is
+not adopted over the source's established pointer result. Clone and destruction
+use the same ownership flag. Provider and header-dependent rebuilds preserve all
+483 objects and strict relocation addends.
