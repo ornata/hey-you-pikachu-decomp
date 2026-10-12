@@ -1,3 +1,4 @@
+#include "actor_script_time.h"
 #include "camera_overlay.h"
 #include "scheduler.h"
 #include "heap_tail.h"
@@ -228,7 +229,6 @@ void matrixFixedTo34(Mtx, f32 *);
 /// \note Original identifier: \c D_8009FC9C (0x8009FC9C).
 extern f32 gCameraProjectionAspectScale;
 
-f32 actorGetPrimaryScriptElapsedTime(); /* extern */
 /// Primary-actor script-time origin used to calculate elapsed camera tint.
 /// \note Original identifier: \c D_800633E8 (0x800633E8).
 extern f32 gCameraElapsedTintOriginSeconds;

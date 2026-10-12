@@ -1,3 +1,4 @@
+#include "actor_script_time.h"
 #include "camera_overlay.h"
 #include "camera_pose.h"
 #include "camera_types.h"
@@ -812,7 +813,6 @@ void renderApplyAreaFog(s32 unused) {
                         16, 16));
 }
 
-f32 actorGetPrimaryScriptElapsedTime(); /* extern */
 /// Primary-actor script-time origin used to calculate elapsed camera tint.
 /// \note Original identifier: \c D_800633E8 (0x800633E8).
 extern f32 gCameraElapsedTintOriginSeconds;

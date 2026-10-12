@@ -270,12 +270,12 @@ s32 actorScriptPerformCostedAction(u8 *object) {
     u8 *vm;
     u8 *state;
     state = *(u8 **)(object + 0x54);
-    vm = *(u8 **)(state + 0x1B8);
-    if (*(s32 *)(vm + 0x2C4) != 0) {
+    vm = (u8 *)((ActorScriptState *)state)->vmAddress;
+    if (((ScriptVm *)vm)->actionInitializing != 0) {
         count = scriptVmPopInteger((s32)vm);
         action = scriptVmPopInteger(((ActorScriptState *)state)->vmAddress);
         cost = gActorScriptCostedActions[action].cost * count;
-        if (gActorScriptCostedActions[action].checkCost != 0 && *(f32 *)(state + 0x3F4) < cost) {
+        if (gActorScriptCostedActions[action].checkCost != 0 && ((ActorScriptState *)state)->actionResource < cost) {
             ((ActorScriptState *)state)->costedActionResult = 0;
             ((ActorScriptState *)state)->targetedBurstAllowance = 0;
             actionScriptStart(object, gActorScriptCostedActions[action].insufficientAnimation);

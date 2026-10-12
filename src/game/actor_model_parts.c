@@ -1,3 +1,5 @@
+#include "actor_script_time.h"
+#include "script_vm.h"
 #include "actor_meters.h"
 #include "actor_part_shake.h"
 #include "actor_appearance.h"
@@ -873,6 +875,6 @@ f32 actorAdjustActionMeter(u8 *object, f32 delta) {
 /// \note Original decompilation identifier: \c func_80014B3C (0x80014B3C).
 f32 actorGetPrimaryScriptElapsedTime(void) {
     u8 *actorState = *(u8 **)(gPikachuActor + 0x54);
-    u8 *scriptContext = *(u8 **)(actorState + 0x1B8);
-    return *(f32 *)(scriptContext + 0x10);
+    u8 *scriptContext = (u8 *)((ActorScriptState *)actorState)->vmAddress;
+    return ((ScriptVm *)scriptContext)->totalElapsed;
 }

@@ -2117,3 +2117,13 @@ providers use the checked `ActorScriptState` meter fields at 0x3F4 and 0x3F8.
 Ghidra 0x800149D0 and 0x80014A3C confirm the owning-root state, bounds and HUD
 request behavior. Each source-unit change preserves all 483 objects and strict
 relocation addends.
+
+### Primary actor script clock and costed-action VM fields
+
+`actor_script_time.h` supplies the explicit no-argument primary actor clock
+query to its provider and presentation callers. Ghidra 0x80014B3C confirms
+the retained actor VM and total-elapsed field at 0x10. The provider now uses
+shared actor/VM fields rather than raw offsets. The costed-action handler
+also uses the shared VM address, first-update flag and action-resource field;
+Ghidra 0x80116BC4 confirms those consumers. Every changed source unit preserves
+all 483 objects and strict relocation addends.
