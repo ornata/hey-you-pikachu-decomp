@@ -2896,3 +2896,14 @@ storage bound. Ghidra 0x80114D04 confirms signed adjustment and saturation
 at zero and fifteen; callers must supply a valid index and an adjustment
 whose intermediate sum fits `s32`. All converted units preserve strict
 object bytes and relocations.
+
+### Player-view search interfaces
+
+`player_view_search.h` consolidates item, actor and general-object handle
+queries used by actor scripts. Contracts distinguish inclusive item distance
+from exclusive actor/object distance and preserve their different cone limits
+and kind aliases. Returned handles use the shared object member. Ghidra
+0x80118544 confirms the player origin, combined viewing angle and handle
+lookup. Direct named player-angle reads change ROM code generation; those
+float-array reads remain a recorded matching exception. Provider and caller
+changes preserve all strict objects and the clean ROM match.

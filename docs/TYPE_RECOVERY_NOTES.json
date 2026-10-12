@@ -114,6 +114,9 @@
       "itemTryRelease": "Hold-state switch uses an unsigned-byte view of the named signed state member. Casting the signed member value to u8 changes IDO output; the explicit byte view matches. Other release fields and the actor held-item handle use shared members.",
       "itemThrow": "Object transform and item motion fields use shared members. Owner at 8, hold state at 6, flags at 0 and kind at 4 retain raw reads: isolated direct-member trials each change ROM bytes. Their layouts are checked by shared types; further recovery needs IDO allocation/load-scheduling evidence.",
       "itemUpdate": "Search-priority arithmetic at state offset 0x38 retains a raw float view: a direct searchPriority member changes ROM bytes in an isolated forced-rebuild trial. Kind growth bounds and rate, object links/flags, hold state, material state, collision key and idle timer use named fields. Further conversion needs IDO floating scheduling evidence."
+    },
+    "src/ovl/actor_script_queries.c": {
+      "player-view search wrappers": "Player yaw and view-shake reads retain the float-array view: direct checked player members change ROM code generation. Returned object handles use the shared RuntimeObjectPrefix member. Preserve floating addition ordering while seeking a matching named representation."
     }
   },
   "baseline_totals": {

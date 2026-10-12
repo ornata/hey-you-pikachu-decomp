@@ -1,3 +1,4 @@
+#include "player_view_search.h"
 #include "profile_counters.h"
 #include "item_participation.h"
 #include "item_size.h"
@@ -1031,7 +1032,6 @@ s32 actorScriptChoosePokemonName(u8 *actor) {
     return 0;
 }
 
-s32 itemFindHandleFromPlayerView(s32, s32, f32, f32, s32, s32); /* extern */
 
 /// Find an item within the player viewing cone using script-supplied filters.
 /// \param actor Actor whose script VM supplies inclusive minimum and maximum item kinds, inclusive maximum approximate distance, maximum absolute horizontal angle in degrees, required item state, and a priority-selection flag, in that order; kind 165 selects the corresponding range endpoint, state six accepts any state, and a nonzero flag favors selection priority and resets the selected priority. The VM receives the selected handle or zero when none qualifies.
@@ -1057,7 +1057,6 @@ s32 actorScriptFindItemFromPlayerView(u8 *actor) {
     return 0;
 }
 
-s32 actorFindNearestFromPlayerView(u8 *, s32, s32, f32, f32); /* extern */
 
 /// Find the nearest other actor within the player viewing cone.
 /// \param actor Actor excluded from the search whose script VM supplies inclusive minimum and maximum kinds, exclusive maximum approximate distance, and maximum horizontal angle in degrees; script kind aliases are honored and angles of at least 360 allow every direction. The VM receives the nearest qualifying handle or zero.
@@ -1079,7 +1078,6 @@ s32 actorScriptFindActorFromPlayerView(u8 *actor) {
     return 0;
 }
 
-s32 objectFindNearestFromPlayerView(u8 *, s32, s32, f32, f32); /* extern */
 
 /// Find the nearest other object within the player viewing cone.
 /// \param actor Actor excluded from the search whose script VM supplies inclusive minimum and maximum kinds, exclusive maximum approximate distance, and maximum horizontal angle in degrees; angles of at least 360 allow every direction. The VM receives the nearest qualifying handle or zero.

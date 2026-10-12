@@ -1,3 +1,4 @@
+#include "player_view_search.h"
 #include "item_participation.h"
 #include "item_queries.h"
 #include "item_search.h"
@@ -1067,7 +1068,7 @@ s32 actorFindNearestFromPlayerView(u8 *object, s32 minKind, s32 maxKind, f32 dis
     result = actorFindNearestInRange(object, (Vec3f *)origin, distance, rotation, cone, minKind, maxKind);
     if (result == NULL)
         return 0;
-    return *(s32 *)(result + 0x38);
+    return ((RuntimeObjectPrefix *)result)->handle;
 }
 
 /// Find the nearest object in the player viewing cone.
@@ -1090,7 +1091,7 @@ s32 objectFindNearestFromPlayerView(u8 *self, s32 minKind, s32 maxKind, f32 dist
     if (item == NULL) {
         return 0;
     }
-    return *(s32 *)(item + 0x38);
+    return ((RuntimeObjectPrefix *)item)->handle;
 }
 
 /// Set the actor's stored target position.

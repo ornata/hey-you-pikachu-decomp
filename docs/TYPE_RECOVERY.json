@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 2989,
-      "unique_spellings": 1104,
+      "occurrences": 2987,
+      "unique_spellings": 1103,
       "files": 80
     }
   },
@@ -6242,6 +6242,7 @@
         "object_lookup.h",
         "object_types.h",
         "player_camera.h",
+        "player_view_search.h",
         "profile_counters.h",
         "progress_fields.h",
         "progress_value.h",
@@ -6254,18 +6255,18 @@
       "locations": {
         "raw_offset_candidates": {
           "actor + 0x54": [
-            "371:32",
-            "817:32",
-            "896:32",
-            "1001:32"
+            "372:32",
+            "818:32",
+            "897:32",
+            "1002:32"
           ],
           "created + 0x38": [
-            "837:42",
-            "841:42"
+            "838:42",
+            "842:42"
           ],
           "gCurrentAreaConfiguration + 0xC": [
-            "840:40",
-            "907:40"
+            "841:40",
+            "908:40"
           ]
         }
       }
@@ -6319,91 +6320,88 @@
         "path_query.h",
         "player_control.h",
         "player_types.h",
+        "player_view_search.h",
         "runtime_clock.h",
         "scene_region.h",
         "scene_types.h"
       ],
-      "matching_exceptions": {},
+      "matching_exceptions": {
+        "player-view search wrappers": "Player yaw and view-shake reads retain the float-array view: direct checked player members change ROM code generation. Returned object handles use the shared RuntimeObjectPrefix member. Preserve floating addition ordering while seeking a matching named representation."
+      },
       "locations": {
         "raw_offset_candidates": {
           "actor + 0x44": [
-            "42:36",
-            "209:40"
+            "43:36",
+            "210:40"
           ],
           "return -1": [
-            "78:9"
+            "79:9"
           ],
           "return -65536": [
-            "145:5",
-            "157:5",
-            "613:9",
-            "619:5",
-            "834:5",
-            "919:5",
-            "970:5",
-            "991:5",
-            "1010:5"
+            "146:5",
+            "158:5",
+            "614:9",
+            "620:5",
+            "835:5",
+            "920:5",
+            "971:5",
+            "992:5",
+            "1011:5"
           ],
           "object + 0x44": [
-            "155:25",
-            "1123:41",
-            "1140:40",
-            "1251:67"
+            "156:25",
+            "1124:41",
+            "1141:40",
+            "1252:67"
           ],
           "target + 0x44": [
-            "238:35"
+            "239:35"
           ],
           "targetObject + 0x44": [
-            "264:35",
-            "315:38"
+            "265:35",
+            "316:38"
           ],
           "resolvedObject + 0x44": [
-            "290:38",
-            "832:25"
+            "291:38",
+            "833:25"
           ],
           "gPlayerControllerPort + 4": [
-            "553:14"
+            "554:14"
           ],
           "gPlayerControllerPort + 6": [
-            "561:21"
+            "562:21"
           ],
           "offset + 4": [
-            "950:64"
-          ],
-          "offset + 8": [
             "951:64"
           ],
-          "result + 0x38": [
-            "1070:21"
-          ],
-          "item + 0x38": [
-            "1093:21"
+          "offset + 8": [
+            "952:64"
           ],
           "object + 0x54": [
-            "1122:22"
+            "1123:22"
           ],
           "object + 0x48": [
-            "1124:41",
-            "1141:40"
-          ],
-          "object + 0x4C": [
             "1125:41",
             "1142:40"
           ],
-          "state + 0x1EC": [
-            "1140:14"
+          "object + 0x4C": [
+            "1126:41",
+            "1143:40"
           ],
-          "state + 0x1F0": [
+          "state + 0x1EC": [
             "1141:14"
           ],
-          "state + 0x1F4": [
+          "state + 0x1F0": [
             "1142:14"
           ],
+          "state + 0x1F4": [
+            "1143:14"
+          ],
           "object + 0x18": [
-            "1166:24"
+            "1167:24"
           ],
           "object + 0xC": [
-            "1251:101"
+            "1252:101"
           ]
         }
       }
