@@ -2,6 +2,7 @@
 #include "heap_tail.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "actor_text.h"
 #include "actor_parts.h"
 #include "object_audio.h"
 #include "asset_loader.h"
@@ -743,32 +744,32 @@ s32 actorConfigGetDefaultPartId(s32 kind) {
 /// Get an actor kind's display name for inspection text.
 /// \param kind Valid actor kind whose text is requested.
 /// \param useDefault Nonzero selects the default name; zero prefers the alternate name when available.
-/// \returns Borrowed address of the selected name string, represented as an integer.
+/// \returns Borrowed selected name string, or null when no name is configured.
 /// \note Original decompilation identifier: \c func_8001E680 (0x8001E680).
-s32 actorConfigGetDisplayName(s32 kind, s32 useDefault) {
-    s32 alternateNameAddress;
+char *actorConfigGetDisplayName(s32 kind, s32 useDefault) {
+    char *alternateName;
 
     if ((useDefault != 0) ||
-        (alternateNameAddress = *(s32 *)(gActorKindAlternateNameEntries + kind * 0x54), (alternateNameAddress == 0))) {
-        return *(s32 *)(gActorKindDefaultNameEntries + kind * 0x54);
+        (alternateName = *(char **)(gActorKindAlternateNameEntries + kind * 0x54), (alternateName == NULL))) {
+        return *(char **)(gActorKindDefaultNameEntries + kind * 0x54);
     }
-    return alternateNameAddress;
+    return alternateName;
 }
 
 /// Get an actor kind's description for inspection text.
 /// \param kind Valid actor kind whose text is requested.
 /// \param useDefault Nonzero selects the default description; zero prefers the alternate description when available.
-/// \returns Borrowed address of the selected description string, represented as an integer.
+/// \returns Borrowed selected description string, or null when no description is configured.
 /// \note Original decompilation identifier: \c func_8001E6D8 (0x8001E6D8).
-s32 actorConfigGetDescription(s32 kind, s32 useDefault) {
-    s32 alternateDescriptionAddress;
+char *actorConfigGetDescription(s32 kind, s32 useDefault) {
+    char *alternateDescription;
 
     if ((useDefault != 0) ||
-        (alternateDescriptionAddress = *(s32 *)(gActorKindAlternateDescriptionEntries + kind * 0x54),
-         (alternateDescriptionAddress == 0))) {
-        return *(s32 *)(gActorKindDefaultDescriptionEntries + kind * 0x54);
+        (alternateDescription = *(char **)(gActorKindAlternateDescriptionEntries + kind * 0x54),
+         (alternateDescription == NULL))) {
+        return *(char **)(gActorKindDefaultDescriptionEntries + kind * 0x54);
     }
-    return alternateDescriptionAddress;
+    return alternateDescription;
 }
 
 /// Get actor dimensions used to position an interaction marker.

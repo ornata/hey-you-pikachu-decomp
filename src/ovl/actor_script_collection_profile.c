@@ -1,5 +1,7 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "actor_text.h"
+#include "voice_recognition.h"
 #include "item_text.h"
 #include "object_lookup.h"
 #include "scene_types.h"
@@ -179,7 +181,6 @@ s32 actorScriptGetItemDisplayName(u8 *actor) {
     return 0;
 }
 
-s32 actorConfigGetDisplayName(s32, s32); /* extern */
 /// Provide the display name for an actor kind.
 /// \param actor Actor whose script VM supplies a valid actor kind followed by a default-name selector and receives a borrowed reference to the selected name string; nonzero selects the default name, while zero prefers an available alternate name.
 /// \returns Zero, allowing script execution to continue.
@@ -192,11 +193,10 @@ s32 actorScriptGetActorDisplayName(u8 *actor) {
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     sp24 = vmAddress;
     sp1C = scriptVmPopInteger(vmAddress);
-    scriptVmPushStringPointer(vmAddress, actorConfigGetDisplayName(scriptVmPopInteger(vmAddress), sp1C));
+    scriptVmPushStringPointer(vmAddress, (s32)actorConfigGetDisplayName(scriptVmPopInteger(vmAddress), sp1C));
     return 0;
 }
 
-s32 voiceDictionaryGetWordName(s32);  /* extern */
 /// Provide a word name from the selected voice dictionary.
 /// \param actor Actor whose script VM supplies a dictionary-local word index and receives a borrowed name string, or an empty string for an invalid index or dictionary; only the low 16 bits of the index are significant.
 /// \returns Zero, allowing script execution to continue.
@@ -205,7 +205,7 @@ s32 actorScriptGetDictionaryWordName(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushStringPointer(sp1C, voiceDictionaryGetWordName(scriptVmPopInteger(sp1C) & 0xFFFF));
+    scriptVmPushStringPointer(sp1C, (s32)voiceDictionaryGetWordName((u16)scriptVmPopInteger(sp1C)));
     return 0;
 }
 

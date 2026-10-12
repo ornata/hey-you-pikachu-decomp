@@ -30,6 +30,7 @@ s32 voiceDictionaryGetWordId(u16 index);
 /// Get the display name of an entry in the selected vocabulary.
 /// \param index Dictionary-local word index.
 /// \returns Borrowed name, or an empty string for an invalid or unavailable entry.
+/// \note Original decompilation identifier: \c func_80040C8C (0x80040C8C).
 char *voiceDictionaryGetWordName(u16 index);
 
 /// Get the gameplay message category associated with a vocabulary entry.

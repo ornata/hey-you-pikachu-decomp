@@ -1,6 +1,7 @@
 #include "player_friendship.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "actor_text.h"
 #include "item_text.h"
 #include "string_bytes.h"
 #include "actor_parts.h"
@@ -961,7 +962,6 @@ void playerPickUpInteractionTarget(u8 *player) {
 }
 
 s32 itemAllowsCooperation(u8 *); /* extern */
-s32 actorConfigGetDisplayName(s32, s32);
 
 /// Request Pikachu cooperation with an eligible interaction target.
 /// \param player Player record containing the current interaction target.
@@ -1465,7 +1465,6 @@ s32 playerShowNextHelpLine(void) {
 
 s8 *doorGetDescription(u8 *);
 u8 *doorGetAccessDescription(u8 *);
-s32 actorConfigGetDescription(s32, s32);
 s8 *landmarkGetCannonDescription(s32);
 s8 *caveGetDescription(u8 *);
 void playerSetInteractionHelpText(u8 *);

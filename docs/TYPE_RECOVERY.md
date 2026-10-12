@@ -1135,3 +1135,16 @@ ItemText entries establish persistent name/help storage. Null results for missin
 text and unsupported selectors remain documented. All five producer/consumer
 units preserve strict object matching; no string ownership or lookup behavior
 changed. The class suffix retains its established encoded-byte pointer type.
+
+### Actor inspection text and dictionary-name VM boundary
+
+actor_text.h provides pointer-returning actor name and description contracts.
+The producer loads string pointers from the existing registry interior views
+and names its alternate pointers accordingly. Ghidra at 0x8001E680 confirms
+alternate-name selection and default fallback. Companion and VM consumers
+share the declaration; the VM explicitly retains its integer-address boundary.
+The dictionary-name VM operation also uses voice_recognition.h and its u16
+index contract. Retaining an integer bit-mask expression at the narrowed call
+changed generated code; an explicit u16 cast expresses the same low-bit
+selection and matches the preserved object. All retained changes match strictly.
+Registry-wide field recovery remains separate from these string interfaces.
