@@ -26,4 +26,12 @@ void actionSetContinuation(u8 *object, s32 actionId);
 /// \note Original decompilation identifier: \c func_8000F714 (0x8000F714).
 void actionSkipLoopingContinuations(u8 *object);
 
+/// Replace current playback with a transition to a selected action pose.
+/// \param object Actor receiving the pose transition.
+/// \param actionId Valid destination action identifier from zero through 329.
+/// \param duration Positive pose transition duration in seconds.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000F534 (0x8000F534).
+void actionBeginPoseTransition(u8 *object, s32 actionId, f32 duration);
+
 #endif

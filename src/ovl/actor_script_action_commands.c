@@ -1,3 +1,4 @@
+#include "action_continuation.h"
 #include "action_script_stop.h"
 #include "action_script_playback.h"
 #include "action_script_query.h"
@@ -557,7 +558,6 @@ s32 actorScriptPushLastScriptActionEnded(u8 *actor) {
     return 0;
 }
 
-void actionBeginPoseTransition(u8 *, s32, f32); /* extern */
 /// Stop the action script and begin a transition to a requested action pose.
 /// \param actor Actor whose script VM supplies a valid action index followed by a nonnegative transition duration in seconds and receives zero.
 /// \returns One, yielding script execution.

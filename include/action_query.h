@@ -1,5 +1,5 @@
 /// \file
-/// Declares current action attributes and movement scaling for initialized actors.
+/// Declares action attributes, movement scaling, motion identifiers and borrowed action names.
 #ifndef ACTION_QUERY_H
 #define ACTION_QUERY_H
 #include <ultra64.h>
@@ -20,5 +20,17 @@ s32 actionGetAttributes(u8 *object);
 /// \returns Current action movement scale, or one when playback is inactive.
 /// \note Original decompilation identifier: \c func_8000F5BC (0x8000F5BC).
 f32 actionGetMovementScale(u8 *object);
+
+/// Get the motion identifier of the currently playing action.
+/// \param object Actor whose action state is accessed.
+/// \returns The current motion identifier, or minus one when playback is inactive.
+/// \note Original decompilation identifier: \c func_8000F5E8 (0x8000F5E8).
+s16 actionGetCurrentMotionId(u8 *object);
+
+/// Get a display name for an action or action sentinel.
+/// \param actionId Action identifier or negative action sentinel.
+/// \returns The stored action name, a sentinel name, or an invalid-action marker; ownership remains with the action system.
+/// \note Original decompilation identifier: \c func_8000F60C (0x8000F60C).
+char *actionGetName(s32 actionId);
 
 #endif

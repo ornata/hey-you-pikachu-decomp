@@ -2310,3 +2310,14 @@ loop-count, duration and remaining-time offset checks. `motion_playback.h`
 shares reset, mode selection and root/child frame-update contracts with model
 consumers. Both source units and all header dependents preserve all 483 objects
 and strict relocation addends.
+
+### Pose-transition and motion-query interface contracts
+
+`action_continuation.h` shares the pose-transition request with both callers;
+the presentation caller now supplies its actor address through the pointer
+contract. Ghidra 0x8000F534 confirms stop/reset, transition setup and motion
+request behavior. Selected-context preparation uses the checked pending/active
+request and action-kind fields; current motion requests use checked attributes
+and motion ID. `action_query.h` also documents the motion-ID sentinel and
+borrowed-name query contracts. All changed source units and header dependents
+preserve all 483 objects and strict relocation addends.

@@ -313,7 +313,6 @@ void playerRestoreState(void);
 /// argument preserves the ROM but changes this unit's allocated object bytes.
 /// Compiler scheduling evidence is needed before replacing this declaration.
 u8 *actionScriptStop();
-void actionBeginPoseTransition(s32, s32, f32);
 void objectClearHierarchyFlags(u8 *, u16);
 
 #define ACT_F(i) (((f32 *)gPikachuActor)[i])
@@ -349,7 +348,7 @@ void presentationRestoreActiveActor(void) {
     ((f32 *)ext)[0x12] = EXT_F(0x12);
     *(u16 *)(ext + 0x1E8) = *(u16 *)((u8 *)&gPresentationSavedActorState + 0x1E8);
     actionScriptStop(gPikachuActor, &gPresentationSavedActorState);
-    actionBeginPoseTransition(gPikachuActor, 0x4A, 0.1f);
+    actionBeginPoseTransition((u8 *)gPikachuActor, 0x4A, 0.1f);
     objectClearHierarchyFlags((u8 *)gPikachuActor, 0x2000);
     cameraSetPositionAndAngles(0, gPlayerState, gPlayerPositionY + gPlayerEyeHeight, gPlayerPositionZ,
                                gPlayerPitchOffset + gPlayerPitch, gPlayerYaw + gPlayerViewShake, 0.0f);

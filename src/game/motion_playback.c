@@ -49,7 +49,6 @@ void actionConfigurePoseTransition(u8 *, s32, f32);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
-char *actionGetName(s32);
 
 /// Separate the horizontal heading from a motion orientation matrix.
 /// \param matrix Twelve-component affine matrix updated to remove its horizontal heading; its first basis vector must have a nonzero horizontal projection.
@@ -119,9 +118,9 @@ void motionRequestCurrentData(u8 *object) {
     s32 sp20;
 
     motionState = *(u8 **)(object + 0x54);
-    if (((*(s32 *)(motionState + 0xF8) & 7) == 1) || ((*(s32 *)(motionState + 0xF8) & 7) == 3)) {
-        TRACE("_requestCurMotion:%d\n", *(s16 *)(motionState + 0xFC));
-        motionCacheRead(&gMotionRomCache, *(s16 *)(motionState + 0xFC), &sp20);
+    if (((((ActorScriptState *)motionState)->actionAttributes & 7) == 1) || ((((ActorScriptState *)motionState)->actionAttributes & 7) == 3)) {
+        TRACE("_requestCurMotion:%d\n", ((ActorScriptState *)motionState)->motionId);
+        motionCacheRead(&gMotionRomCache, ((ActorScriptState *)motionState)->motionId, &sp20);
     }
 }
 
@@ -545,12 +544,12 @@ s32 actionLoadRecordByIndex(u8 *state, s32 actionId, s32 nextAction) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000EC7C (0x8000EC7C).
 void actionPrepareSelectedContext(u8 *state, ActorActionCueCommand *sequence) {
-    *(s16 *)(state + 0x11E) = 0;
-    *(s16 *)(state + 0x120) = -1;
-    *(s32 *)(state + 0x128) = *(s32 *)(state + 0x12C);
-    *(s32 *)(state + 0x12C) = 0;
+    ((ActorScriptState *)state)->loopExitRequested = 0;
+    ((ActorScriptState *)state)->pendingAction = -1;
+    ((ActorScriptState *)state)->activeRequestId = ((ActorScriptState *)state)->pendingRequestId;
+    ((ActorScriptState *)state)->pendingRequestId = 0;
     ((ActorScriptState *)state)->selectedActionKind = ((ActorScriptState *)state)->pendingActionKind;
-    *(s16 *)(state + 0x140) = 0;
+    ((ActorScriptState *)state)->pendingActionKind = 0;
     if (((ActorScriptState *)state)->primaryCueProgram == 0) {
         ((ActorScriptState *)state)->primaryCueProgram = sequence;
     }
@@ -900,8 +899,8 @@ void actionBeginPoseTransition(u8 *object, s32 actionId, f32 duration) {
 
     obj = *(u8 **)(object + 0x54);
     actionStopPlayback(object);
-    *(s16 *)(obj + 0x11C) = 0;
-    *(s16 *)(obj + 0x118) = 1;
+    ((ActorScriptState *)obj)->loopCount = 0;
+    ((ActorScriptState *)obj)->actionStartPending = 1;
     actionConfigurePoseTransition(obj, actionId, duration);
     ((ActorScriptState *)obj)->continuationAction = -1;
     motionRequestCurrentData(object);
