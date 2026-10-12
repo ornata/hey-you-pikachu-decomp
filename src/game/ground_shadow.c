@@ -1,3 +1,4 @@
+#include "object_create.h"
 #include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -183,7 +184,6 @@ void groundShadowBuildDisplayList(GridEffect *grid) {
 /// Object template used to create terrain-conforming ground shadows.
 /// \note Original identifier: \c D_8009B540 (0x8009B540).
 extern u8 gGroundShadowObjectTemplate[];
-u8 *objectCreateFromTemplate(u8 *);
 void groundShadowBuildDisplayList(GridEffect *);
 
 /// Create a ground shadow with the requested grid resolution and spacing.
@@ -192,7 +192,7 @@ void groundShadowBuildDisplayList(GridEffect *);
 /// \returns The created ground-shadow object.
 /// \note Original decompilation identifier: \c func_800369D4 (0x800369D4).
 u8 *groundShadowCreate(s32 count, f32 spacing) {
-    u8 *obj = objectCreateFromTemplate(gGroundShadowObjectTemplate);
+    u8 *obj = objectCreateFromTemplate((ObjectTemplate *)gGroundShadowObjectTemplate);
     u8 *d = *(u8 **)(obj + 0x54);
     s32 size;
 

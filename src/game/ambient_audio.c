@@ -1,3 +1,4 @@
+#include "object_create.h"
 #include "object_lifecycle.h"
 #include "heap_free.h"
 /* Spatial audio emitters and effects. */
@@ -178,7 +179,6 @@ void ambientAudioDestroy(u8 *object) {
 /// Object template used to create ambient audio emitters.
 /// \note Original identifier: \c D_8009B350 (0x8009B350).
 extern u8 gAmbientAudioEmitterTemplate[];
-u8 *objectCreateFromTemplate(u8 *, s32, f32 *);
 
 /// Create an ambient audio emitter with the requested playback and spatial settings.
 /// \param position Three-component world-space emitter position.
@@ -198,7 +198,7 @@ u8 *objectCreateFromTemplate(u8 *, s32, f32 *);
 /// \note Original decompilation identifier: \c func_80034094 (0x80034094).
 u8 *ambientAudioCreate(f32 *position, s32 kind, f32 delay, f32 delayRange, s32 firstSound, s32 secondSound,
                        f32 firstProbability, s32 sourceCount, s32 sourcePositions) {
-    u8 *obj = objectCreateFromTemplate(gAmbientAudioEmitterTemplate, kind, position);
+    u8 *obj = objectCreateFromTemplate((ObjectTemplate *)gAmbientAudioEmitterTemplate);
     u8 *fx;
 
     *(u16 *)(obj + 0x36) |= 0x100;

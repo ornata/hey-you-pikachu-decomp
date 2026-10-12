@@ -1,3 +1,4 @@
+#include "object_create.h"
 #include "object_lifecycle.h"
 #include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -397,7 +398,6 @@ void linkedEffectInitializeVelocity(s32 kind, u8 *object) {
 
 #define SET_MOTION_VECTOR(v, x, y, z) ((v)[0] = (x), (v)[1] = (y), (v)[2] = (z))
 
-u8 *objectCreateFromTemplate(void *);
 void objectAllocateHierarchyMatrixBuffers(u8 *);
 void linkedEffectInitializeVelocity(s32, u8 *);
 /// Model display list used by linked effect objects.
@@ -478,7 +478,7 @@ u8 *linkedEffectCreateChain(s32 kind, f32 x, f32 y, f32 z, f32 scale, s32 target
         break;
     }
     group = objectCreateDefault();
-    first = objectCreateFromTemplate(gLinkedEffectObjectTemplate);
+    first = objectCreateFromTemplate((ObjectTemplate *)gLinkedEffectObjectTemplate);
     *(u8 **)(group + 0x2C) = first;
     firstState = *(MotionState **)(first + 0x54);
     SET_MOTION_VECTOR((f32 *)(first + 0x18), x, y, z);
@@ -493,7 +493,7 @@ u8 *linkedEffectCreateChain(s32 kind, f32 x, f32 y, f32 z, f32 scale, s32 target
     i = 0;
     if (count > 0) {
         do {
-            object = objectCreateFromTemplate(gLinkedEffectObjectTemplate);
+            object = objectCreateFromTemplate((ObjectTemplate *)gLinkedEffectObjectTemplate);
             *(u8 **)(previous + 0x28) = object;
             state = *(MotionState **)(object + 0x54);
             SET_MOTION_VECTOR((f32 *)(object + 0x18), x, y, z);

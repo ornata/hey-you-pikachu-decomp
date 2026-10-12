@@ -1,3 +1,4 @@
+#include "object_create.h"
 #include "object_hierarchy_create.h"
 #include "object_template.h"
 #include "object_lifecycle.h"
@@ -101,7 +102,6 @@ extern SearchTree gObjectSearchTree;
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
-u8 *objectCreateFromTemplate(u8 *);
 typedef struct CamRec {
     f32 x;
     f32 y;
@@ -720,8 +720,8 @@ extern ObjectKindCallbacks gObjectKindCallbacks[];
 /// \param definition Readable object template with a valid runtime kind and initialized resources required by that kind.
 /// \returns Newly owned object; release it with objectDestroy when it is no longer in an active hierarchy.
 /// \note Original decompilation identifier: \c func_80008160 (0x80008160).
-u8 *objectCreateFromTemplate(u8 *definition) {
-    ObjectTemplate *tmpl = (ObjectTemplate *)definition;
+u8 *objectCreateFromTemplate(ObjectTemplate *definition) {
+    ObjectTemplate *tmpl = definition;
     u8 *o = heapAllocLocal(&gGameHeap, 0x68, 0x275);
     void (*init)(u8 *);
 
@@ -747,7 +747,7 @@ extern ObjectTemplate gDefaultObjectTemplate;
 u8 *objectCreateDefault(void) {
     ObjectTemplate tmpl = gDefaultObjectTemplate;
 
-    return objectCreateFromTemplate((u8 *)&tmpl);
+    return objectCreateFromTemplate(&tmpl);
 }
 
 /// Assign each hierarchy object its transform-buffer slots.
@@ -808,7 +808,7 @@ u8 *objectCloneTemplateHierarchy(ObjectTemplate *src, u8 *root) {
 
     link = &head;
     do {
-        n = objectCreateFromTemplate((u8 *)src);
+        n = objectCreateFromTemplate(src);
         *link = n;
         if (root == NULL) {
             root = n;

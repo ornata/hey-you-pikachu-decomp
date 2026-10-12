@@ -1,3 +1,4 @@
+#include "object_create.h"
 #include "object_lifecycle.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -249,7 +250,6 @@ extern GridTemplate gTerrainDebugGridRootTemplate;
 /// Object template for individual terrain diagnostic grid cells.
 /// \note Original identifier: \c D_80099D5C (0x80099D5C).
 extern GridTemplate gTerrainDebugGridCellTemplate;
-u8 *objectCreateFromTemplate(u8 *);
 void objectAllocateHierarchyMatrixBuffers(s32);
 s32 objectRefreshHierarchyWorldPositions(s32);
 void terrainDebugGridSetEnabled(u8 *, s32);
@@ -268,14 +268,14 @@ u8 *terrainDebugGridCreate(s32 size) {
     s32 row;
     s32 col;
     s32 index;
-    root = objectCreateFromTemplate((u8 *)&rootTemplate);
+    root = objectCreateFromTemplate((ObjectTemplate *)(u8 *)&rootTemplate);
     dimensions = *(s32 **)(root + 0x54);
     *dimensions = size;
     tail = root;
     index = 1;
     for (row = 0; row < size + 1; row++) {
         for (col = 0; col < size + 1; col++) {
-            cell = objectCreateFromTemplate((u8 *)&cellTemplate);
+            cell = objectCreateFromTemplate((ObjectTemplate *)(u8 *)&cellTemplate);
             data = *(TerrainDebugCellState **)(cell + 0x54);
             *(f32 *)(cell + 0x18) = col - size / 2;
             *(f32 *)(cell + 0x20) = row - size / 2;

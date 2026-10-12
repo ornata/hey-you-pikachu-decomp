@@ -1,3 +1,4 @@
+#include "object_create.h"
 #include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -46,7 +47,6 @@ void effectEmitterEmitColoredParticle(u8 *, f32, f32, f32, u8, u8, u8);
 /// Write cursor for the active graphics command list; also marks the camera-storage end.
 /// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
 extern Gfx *gRenderDisplayListCursor;
-u8 *objectCreateFromTemplate(void *);
 /// Object template for emitters of expanding orange effects.
 /// \note Original identifier: \c D_80077E30 (0x80077E30).
 extern u8 gOrangePulseEmitterObjectTemplate[];
@@ -699,7 +699,7 @@ u8 *ribbonEffectCreate(s32 count, f32 duration, f32 baseWidth, f32 widthVariatio
     f32 *state;
     s32 i;
     root = objectCreateDefault();
-    head = objectCreateFromTemplate(gRibbonAnchorObjectTemplate);
+    head = objectCreateFromTemplate((ObjectTemplate *)gRibbonAnchorObjectTemplate);
     *(f32 *)(head + 0x18) = x;
     *(f32 *)(head + 0x1C) = y;
     *(f32 *)(head + 0x20) = z;
@@ -710,7 +710,7 @@ u8 *ribbonEffectCreate(s32 count, f32 duration, f32 baseWidth, f32 widthVariatio
     *(u8 **)(root + 0x2C) = head;
     tail = head;
     for (i = 0; i < count; i++) {
-        part = objectCreateFromTemplate(gRibbonSegmentObjectTemplate);
+        part = objectCreateFromTemplate((ObjectTemplate *)gRibbonSegmentObjectTemplate);
         *(f32 *)(part + 0x18) = x;
         *(f32 *)(part + 0x1C) = y;
         *(f32 *)(part + 0x20) = z;
@@ -731,7 +731,7 @@ u8 *ribbonEffectCreate(s32 count, f32 duration, f32 baseWidth, f32 widthVariatio
         if (i & 1)
             *(f32 *)(part + 8) = -*(f32 *)(part + 8);
     }
-    part = objectCreateFromTemplate(gRibbonControllerObjectTemplate);
+    part = objectCreateFromTemplate((ObjectTemplate *)gRibbonControllerObjectTemplate);
     state = *(f32 **)(part + 0x54);
     *(f32 *)(part + 0x18) = x;
     *(f32 *)(part + 0x1C) = y;
@@ -749,7 +749,7 @@ u8 *ribbonEffectCreate(s32 count, f32 duration, f32 baseWidth, f32 widthVariatio
     **(u8 ***)(head + 0x54) = part;
     displayList = ribbonEffectCreateDisplayList(count);
     *(Gfx **)(part + 0x30) = displayList;
-    head = objectCreateFromTemplate(gRibbonTipObjectTemplate);
+    head = objectCreateFromTemplate((ObjectTemplate *)gRibbonTipObjectTemplate);
     *(f32 *)(head + 0x44) = x;
     *(f32 *)(head + 0x48) = y;
     *(f32 *)(head + 0x4C) = z;
@@ -757,7 +757,7 @@ u8 *ribbonEffectCreate(s32 count, f32 duration, f32 baseWidth, f32 widthVariatio
     *(f32 *)(head + 0x10) = pitch;
     *(f32 *)(head + 0x14) = yaw;
     *(u8 **)(part + 0x2C) = head;
-    part = objectCreateFromTemplate(gRibbonTerminalDecorationTemplate);
+    part = objectCreateFromTemplate((ObjectTemplate *)gRibbonTerminalDecorationTemplate);
     *(f32 *)(part) = baseWidth * 0.01f;
     *(f32 *)(part + 4) = baseWidth * 0.01f;
     *(f32 *)(part + 8) = baseWidth * 0.01f;
@@ -1023,7 +1023,7 @@ extern u8 gEffectEmitterObjectTemplate[];
 ///
 /// \note Original decompilation identifier: \c func_800195B0 (0x800195B0).
 void effectEmitterCreateWithCallback(f32 *position, f32 lifetime, s32 targetHandle, s32 referenceHandle, f32 offset, EffectEmissionCallback callback) {
-    u8 *o = objectCreateFromTemplate(gEffectEmitterObjectTemplate);
+    u8 *o = objectCreateFromTemplate((ObjectTemplate *)gEffectEmitterObjectTemplate);
     u8 *v = *(u8 **)(o + 0x54);
     u8 *t;
 
@@ -1222,7 +1222,7 @@ u8 *particleClusterCreate(s32 count, f32 lifetime, f32 radialScale, f32 particle
     u8 *e;
     s32 i;
 
-    obj = objectCreateFromTemplate(gParticleClusterObjectTemplate);
+    obj = objectCreateFromTemplate((ObjectTemplate *)gParticleClusterObjectTemplate);
     v = *(u8 **)(obj + 0x54);
     prev = NULL;
     *(f32 *)(obj + 0x18) = *(f32 *)(source + 0x44);
@@ -1234,7 +1234,7 @@ u8 *particleClusterCreate(s32 count, f32 lifetime, f32 radialScale, f32 particle
     *(s32 *)(v + 4) = *(s32 *)(source + 0x38);
     *(f32 *)(v + 0) = lifetime;
     for (i = 0; i < count; i++) {
-        e = objectCreateFromTemplate(gParticleClusterElementTemplate);
+        e = objectCreateFromTemplate((ObjectTemplate *)gParticleClusterElementTemplate);
         *(f32 *)(e + 0xC) = (s32)randomBelow(360);
         *(f32 *)(e + 0x10) = (s32)randomBelow(360);
         *(f32 *)(e + 0x14) = (s32)randomBelow(360);
@@ -1247,7 +1247,7 @@ u8 *particleClusterCreate(s32 count, f32 lifetime, f32 radialScale, f32 particle
         }
         prev = e;
     }
-    e = objectCreateFromTemplate(gParticleClusterRendererTemplate);
+    e = objectCreateFromTemplate((ObjectTemplate *)gParticleClusterRendererTemplate);
     *(s32 *)(e + 0x30) = particleClusterCreateDisplayList(count);
     *(u8 **)(prev + 0x28) = e;
     objectMakeHierarchyRoot(obj);
@@ -1571,7 +1571,7 @@ u8 *convergingParticleEffectCreate(s32 targetId, f32 lifetime, s32 count, s32 st
     target = objectResolveAvailableHandle(targetId);
     if (target == NULL)
         return NULL;
-    first = objectCreateFromTemplate(gConvergingParticleObjectTemplate);
+    first = objectCreateFromTemplate((ObjectTemplate *)gConvergingParticleObjectTemplate);
     state = *(LinkedEffectState **)(first + 0x54);
     state->displayList = (Gfx *)heapAllocLocal(&gGameHeap, count * 4 * sizeof(Gfx) + 0x80, 0x74E);
     state->target = targetId;
@@ -1759,7 +1759,7 @@ u8 *flickeringEffectCreate(s32 targetId, f32 duration, s32 count) {
     target = objectResolveAvailableHandle(targetId);
     if (target == NULL)
         return NULL;
-    object = objectCreateFromTemplate(gFlickeringEffectObjectTemplate);
+    object = objectCreateFromTemplate((ObjectTemplate *)gFlickeringEffectObjectTemplate);
     state = *(EffectAEDC **)(object + 0x54);
     state->displayList = (Gfx *)heapAllocLocal(&gGameHeap, (count * 4 + 16) * sizeof(Gfx), 0x809);
     state->targetId = targetId;
@@ -1924,7 +1924,7 @@ u8 *animatedRadialEffectCreate(s32 targetId, f32 duration, s32 count) {
     target = objectResolveAvailableHandle(targetId);
     if (target == NULL)
         return NULL;
-    object = objectCreateFromTemplate(gAnimatedRadialEffectObjectTemplate);
+    object = objectCreateFromTemplate((ObjectTemplate *)gAnimatedRadialEffectObjectTemplate);
     state = *(EffectB618 **)(object + 0x54);
     state->displayList = (Gfx *)heapAllocLocal(&gGameHeap, (count * 4 + 16) * sizeof(Gfx), 0x8B2);
     state->targetId = targetId;
@@ -2109,7 +2109,7 @@ u8 *orangePulseEmitterCreate(s32 targetHandle, f32 lifetime) {
     u8 *sp1C;
     u8 *emitterState;
 
-    sp1C = objectCreateFromTemplate(gOrangePulseEmitterObjectTemplate);
+    sp1C = objectCreateFromTemplate((ObjectTemplate *)gOrangePulseEmitterObjectTemplate);
     emitterState = *(u8 **)(sp1C + 0x54);
     *(f32 *)(emitterState + 4) = lifetime;
     *(s32 *)emitterState = targetHandle;

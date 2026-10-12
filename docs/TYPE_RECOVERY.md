@@ -1441,5 +1441,17 @@ explicit address conversion at its existing integer API. Ghidra at 0x80008450
 confirms cloning followed by transform-buffer allocation and returning the root.
 The comments distinguish borrowed template storage from model display-list
 lifetime and owned runtime hierarchy storage. Each source unit preserves all
-483 objects and strict relocation addends. Single-object creation, including
-ambient audio's extra-argument call, remains a separate recovery target.
+483 objects and strict relocation addends. The subsequent single-object creation recovery below resolves ambient audio's
+extra-argument call and consolidates the remaining creation declarations.
+
+### Canonical single-object template creation
+
+`object_create.h` supplies the typed `ObjectTemplate *` contract to the provider
+and all six callers. Creation copies one complete template and initializes its
+kind; complete hierarchy cloning and transform-buffer setup remain separate.
+Ghidra 0x80008160 confirms only the template parameter is read. Removing ambient
+audio's extra kind/position arguments preserves every object; that call now
+matches the provider's signature without a compatibility exception. Legacy
+byte-storage template symbols convert explicitly at the shared boundary.
+The provider and each caller were rebuilt and strictly compared separately;
+all 483 objects retain their bytes, layout and relocation addends.

@@ -1,3 +1,4 @@
+#include "object_create.h"
 #include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
 #include "heap_free.h"
@@ -472,7 +473,6 @@ Gfx *scrollBoardPrepareDraw(u8 *object) {
     return 0;
 }
 
-u8 *objectCreateFromTemplate(u8 *); /* extern */
 /// Object template used to create scrolling text boards.
 /// \note Original identifier: \c D_80099920 (0x80099920).
 extern u8 gScrollBoardObjectTemplate[];
@@ -494,7 +494,7 @@ s32 scrollBoardCreateObject(s32 columns, s32 lines, u8 red, u8 green, u8 blue, u
     s32 boardStateAddress;
 
     TRACE("sbdScrollBoardNew(%d, %d)\n", columns, lines);
-    boardObject = objectCreateFromTemplate(gScrollBoardObjectTemplate);
+    boardObject = objectCreateFromTemplate((ObjectTemplate *)gScrollBoardObjectTemplate);
     sp30 = boardObject;
     boardStateAddress = *(s32 *)(boardObject + 0x54);
     flipbookInitialize((u8 *)(boardStateAddress + 0x14), columns, lines, red, green, blue, alpha, leadingOutline,
