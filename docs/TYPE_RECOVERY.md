@@ -1368,3 +1368,16 @@ confirms callback invocation precedes owned-payload and record release. The targ
 still uses its explicit original 32-bit object-address representation. The typed
 strided response interior view preserves D_80078154 and strict relocation addends;
 it is not an independently allocated record array. All changed units match.
+
+### Typed response lifecycle and allocation boundary
+
+Response callbacks and hierarchy dispatch/discard now consistently accept object
+pointers. The shared lifecycle declarations replace integer-address declarations
+and casts in the hierarchy caller. Handle and flag consumers use the recovered
+runtime-object prefix, and creation checks the typed hierarchy root's flags.
+Creation returns `ObjectResponse *`; attachment accepts that owned record and
+converts its address only at the keyed pool's existing integer-key boundary.
+The queue producer retains a typed pointer through attachment. Ghidra 0x8001C6BC
+confirms the per-kind hook selection and clearing call; the original register ABI
+is unchanged. Separate provider, caller and allocation passes each preserve all
+483 objects, including strict relocations.

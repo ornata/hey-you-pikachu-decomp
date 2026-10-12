@@ -22,10 +22,10 @@ typedef struct ObjectResponse {
 } ObjectResponse;
 
 /// Handle one borrowed response before the response system releases it.
-/// \param object Initialized target object address in the original 32-bit representation.
+/// \param object Initialized target object.
 /// \param response Borrowed response; neither it nor its payload may be retained.
 /// \returns Nothing.
-typedef void (*ObjectResponseHandler)(s32 object, ObjectResponse *response);
+typedef void (*ObjectResponseHandler)(u8 *object, ObjectResponse *response);
 
 typedef char ObjectImpulseSizeCheck[(sizeof(ObjectImpulse) == 4) ? 1 : -1];
 typedef char ObjectResponseSizeCheck[(sizeof(ObjectResponse) == 0xC) ? 1 : -1];
@@ -41,4 +41,14 @@ s32 objectResponsesGetFreeCapacity(void);
 /// \param impulse Packed direction and signed strength, copied by value.
 /// \returns Nothing.
 void objectResponseQueueImpulse(u8 *source, u8 *target, ObjectImpulse impulse);
+/// Dispatch queued responses through the target's kind hook and release them.
+/// \param object Live initialized object; released responses and payloads become invalid.
+/// \returns Nothing.
+void objectResponsesDispatchAndClear(u8 *object);
+
+/// Release queued responses without dispatching them.
+/// \param object Live object whose pending responses and owned payloads are released.
+/// \returns Nothing.
+void objectResponsesDiscard(u8 *object);
+
 #endif

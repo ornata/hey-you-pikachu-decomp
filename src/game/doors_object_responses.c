@@ -42,7 +42,7 @@ u8 gObjectResponseRegistry[0x28];
 /// \note Original identifier: \c D_80078154 (0x80078154).
 extern ObjectKindResponseEntry gObjectKindResponseEntries[];
 s32 keyedPoolInsert(KeyedPool *, s32, u32, u8 *);
-void objectResponsesClearWithCallback(s32, ObjectResponseHandler);
+void objectResponsesClearWithCallback(u8 *, ObjectResponseHandler);
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
@@ -219,15 +219,15 @@ void objectResponsesDestroy(void) {
 /// \param response Impulse response containing a packed direction and strength.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001C504 (0x8001C504).
-void objectResponseApplyImpulse(s32 object, ObjectResponse *response) {
+void objectResponseApplyImpulse(u8 *object, ObjectResponse *response) {
     f32 v[3];
 
     vector3UnpackNormalBytes((s8 *)response->payload.impulse.bytes, v);
     v[0] = (f32)(s8)response->payload.impulse.bytes[3] * v[0];
     v[1] = (f32)(s8)response->payload.impulse.bytes[3] * v[1];
     v[2] = (f32)(s8)response->payload.impulse.bytes[3] * v[2];
-    itemAddVelocity(*(s32 *)(object + 0x38), v);
-    itemStartDirectionMotion((u8 *)object, 0.5f, 1000.0f, 0.0f);
+    itemAddVelocity(((RuntimeObjectPrefix *)object)->handle, v);
+    itemStartDirectionMotion(object, 0.5f, 1000.0f, 0.0f);
 }
 
 /// Response callbacks indexed by response kind.
@@ -239,7 +239,7 @@ ObjectResponseHandler gObjectResponseHandlers[] = {objectResponseApplyImpulse};
 /// \param response Response record with a supported kind.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001C5B0 (0x8001C5B0).
-void objectResponseDispatch(s32 object, ObjectResponse *response) {
+void objectResponseDispatch(u8 *object, ObjectResponse *response) {
     gObjectResponseHandlers[response->kind](object, response);
 }
 
@@ -252,11 +252,11 @@ void keyedPoolRemoveAllForKey(KeyedPool *, s32);
 /// \param callback Optional callback receiving the target object and each response before it is released; zero skips dispatch.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001C5E4 (0x8001C5E4).
-void objectResponsesClearWithCallback(s32 object, ObjectResponseHandler callback) {
+void objectResponsesClearWithCallback(u8 *object, ObjectResponseHandler callback) {
     s32 key;
     ObjectResponse *n;
 
-    key = *(s32 *)(object + 0x38);
+    key = ((RuntimeObjectPrefix *)object)->handle;
     n = (ObjectResponse *)keyedPoolIterateFirstForKey((KeyedPool *)gObjectResponseRegistry, key);
     if (n != NULL) {
         do {
@@ -270,14 +270,14 @@ void objectResponsesClearWithCallback(s32 object, ObjectResponseHandler callback
         } while ((n = (ObjectResponse *)keyedPoolIterateNextForKey((KeyedPool *)gObjectResponseRegistry, key)) != NULL);
     }
     keyedPoolRemoveAllForKey((KeyedPool *)gObjectResponseRegistry, key);
-    *(u16 *)(object + 0x36) = *(u16 *)(object + 0x36) & 0xF7FF;
+    ((RuntimeObjectPrefix *)object)->flags = ((RuntimeObjectPrefix *)object)->flags & 0xF7FF;
 }
 
 /// Dispatch an object's pending responses through its type handler and release them.
 /// \param object Target object address.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001C6BC (0x8001C6BC).
-void objectResponsesDispatchAndClear(s32 object) {
+void objectResponsesDispatchAndClear(u8 *object) {
     objectResponsesClearWithCallback(object,
                                      gObjectKindResponseEntries[((RuntimeObjectPrefix *)object)->kind].response);
 }
@@ -286,7 +286,7 @@ void objectResponsesDispatchAndClear(s32 object) {
 /// \param object Target object address.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001C6F4 (0x8001C6F4).
-void objectResponsesDiscard(s32 object) {
+void objectResponsesDiscard(u8 *object) {
     objectResponsesClearWithCallback(object, 0);
 }
 
@@ -303,9 +303,9 @@ s32 objectResponsesGetFreeCapacity(void) {
 /// transfers to the response system.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001C72C (0x8001C72C).
-void objectResponsesAttach(u8 *object, s32 response) {
-    *(u16 *)(object + 0x36) |= 0x800;
-    keyedPoolInsert((KeyedPool *)gObjectResponseRegistry, response, *(s32 *)(object + 0x38), object);
+void objectResponsesAttach(u8 *object, ObjectResponse *response) {
+    ((RuntimeObjectPrefix *)object)->flags |= 0x800;
+    keyedPoolInsert((KeyedPool *)gObjectResponseRegistry, (s32)response, ((RuntimeObjectPrefix *)object)->handle, object);
 }
 
 /// Allocate a response record for an eligible target object.
@@ -315,9 +315,9 @@ void objectResponsesAttach(u8 *object, s32 response) {
 /// \param kind Response kind to assign.
 /// \returns A newly allocated record whose payload the caller must prepare and attach, or NULL when ineligible or storage is unavailable.
 /// \note Original decompilation identifier: \c func_8001C764 (0x8001C764).
-u8 *objectResponseCreate(u8 *source, u8 *target, u8 kind) {
-    u8 *allocation;
-    if (*(u16 *)(*(u8 **)(target + 0x50) + 0x36) & 0x30) {
+ObjectResponse *objectResponseCreate(u8 *source, u8 *target, u8 kind) {
+    ObjectResponse *allocation;
+    if (((RuntimeObjectPrefix *)target)->root.object->flags & 0x30) {
         return NULL;
     }
     if (objectResponsesGetFreeCapacity() <= 0) {
@@ -328,12 +328,12 @@ u8 *objectResponseCreate(u8 *source, u8 *target, u8 kind) {
         return NULL;
     }
     if (source != NULL) {
-        ((ObjectResponse *)allocation)->sourceHandle = *(s32 *)(source + 0x38);
+        allocation->sourceHandle = ((RuntimeObjectPrefix *)source)->handle;
     } else {
-        ((ObjectResponse *)allocation)->sourceHandle = 0;
+        allocation->sourceHandle = 0;
     }
-    ((ObjectResponse *)allocation)->kind = kind;
-    ((ObjectResponse *)allocation)->flags = 0;
+    allocation->kind = kind;
+    allocation->flags = 0;
     return allocation;
 }
 
@@ -344,11 +344,11 @@ u8 *objectResponseCreate(u8 *source, u8 *target, u8 kind) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001C804 (0x8001C804).
 void objectResponseQueueImpulse(u8 *source, u8 *target, ObjectImpulse impulse) {
-    u8 *r = objectResponseCreate(source, target, 0);
+    ObjectResponse *r = objectResponseCreate(source, target, 0);
 
     if (r != NULL) {
-        ((ObjectResponse *)r)->payload.impulse = impulse;
-        objectResponsesAttach(target, (s32)r);
+        r->payload.impulse = impulse;
+        objectResponsesAttach(target, r);
     }
 }
 

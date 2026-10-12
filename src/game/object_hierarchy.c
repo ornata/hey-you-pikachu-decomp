@@ -85,7 +85,6 @@ void objectRequestHierarchyDestruction(u8 *);
 /// Ordered traversal pool of registered active hierarchy roots.
 /// \note Original identifier: \c D_800AE3A8 (0x800AE3A8).
 extern NodePool gActiveObjectHierarchies;
-void objectResponsesDiscard(s32);
 void searchTreeRemove(void *, u8 *);
 /// Object callback table viewed at destruction callbacks, with twenty-four bytes per kind.
 /// \note Original identifier: \c D_80078144 (0x80078144).
@@ -994,7 +993,7 @@ void objectDestroy(u8 *object) {
     void (*destroyCallback)(u8 *);
     u8 *matrixStorage;
 
-    objectResponsesDiscard((s32)object);
+    objectResponsesDiscard(object);
     destroyCallback = *(void (**)(u8 *))(gObjectKindDestroyEntries + *(u16 *)(object + 0x34) * 0x18);
     if (destroyCallback != NULL) {
         destroyCallback(object);
@@ -1304,7 +1303,6 @@ s32 objectRefreshHierarchyWorldPositions(s32 object) {
     return object;
 }
 
-void objectResponsesDispatchAndClear(s32);
 void matrix33TransformVector(f32 *, f32 *, f32 *);
 void actorConstrainMovementToTerrain(u8 *, Vec3f *);
 void matrix34ToFixedMtx(void *, void *);
@@ -1322,7 +1320,7 @@ void objectUpdateHierarchyFromCurrentTransform(u8 *object) {
         if (!(*(u16 *)(object + 0x36) & 0xC0)) {
             objectTransformStackPush((Matrix34 *)&gObjectTraversalTransform);
             if (*(u16 *)(object + 0x36) & 0x800) {
-                objectResponsesDispatchAndClear((s32)object);
+                objectResponsesDispatchAndClear(object);
             }
             if (gObjectKindCallbacks[*(u16 *)(object + 0x34)].update != NULL) {
                 gObjectKindCallbacks[*(u16 *)(object + 0x34)].update(object);
