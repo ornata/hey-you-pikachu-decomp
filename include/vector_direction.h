@@ -29,4 +29,11 @@ void vector3GetLookAnglesDegrees(f32 *direction, f32 *pitch, f32 *yaw);
 /// \param yaw Receives opposite-direction heading from negative Z toward negative X in degrees.
 /// \returns Nothing. Both outputs are zero for a near-zero direction.
 void vector3EvaluateOppositeLookAngles(f32 *direction, f32 *pitch, f32 *yaw);
+/// Construct a unit direction from pitch and yaw.
+/// \param pitch Pitch in degrees, positive downward.
+/// \param yaw Yaw in degrees from positive Z toward positive X.
+/// \param direction Storage receiving three unit-direction components.
+/// \returns Nothing.
+void vector3FromPitchYawDegrees(f32 pitch, f32 yaw, f32 *direction);
+
 #endif

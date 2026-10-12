@@ -54,7 +54,6 @@ s32 progressSetValue(s32, s32);
 void toolboxScaleCurrentRow(s32 *);           /* extern */
 u8 *toolboxTakeObject(s32, s32); /* extern */
 
-void vector3FromPitchYawDegrees(f32, f32, f32 *);
 
 /// Sets one direction in a pose from pitch and yaw angles.
 /// \param pitch Direction pitch in degrees.
@@ -117,12 +116,13 @@ void directionAnimationAdvancePose(u8 *animation, s32 poseIndex) {
     }
 }
 
-typedef struct {
-    f32 x, y, z, w;
-} Rec16;
+/// Packed direction slot in the default pose; only the first three signed bytes are decoded.
+typedef struct PackedDirectionSlot {
+    s8 bytes[0x10]; ///< Packed slot storage, including uninterpreted trailing bytes.
+} PackedDirectionSlot;
 /// Interior view of the two packed directions in the default direction-animation pose.
 /// \note Original identifier: \c D_8009A6C0 (0x8009A6C0).
-extern Rec16 gDirectionAnimationDefaultDirections[2];
+extern PackedDirectionSlot gDirectionAnimationDefaultDirections[2];
 f32 mathWrapSignedDegrees(f32);
 
 /// Advances direction motion and periodically retargets it toward the default pose.
@@ -142,7 +142,7 @@ void directionAnimationUpdateRetargetingMotion(u8 *animation, s32 poseIndex) {
         ((DirectionAnimation *)animation)->mode = 2;
         ((DirectionAnimation *)animation)->remaining = 0.5f;
         for (i = 0, s = ((DirectionAnimation *)animation)->directions; i < 2; i++, s++) {
-            vector3UnpackNormalBytes((s8 *)&gDirectionAnimationDefaultDirections[i], direction);
+            vector3UnpackNormalBytes(gDirectionAnimationDefaultDirections[i].bytes, direction);
             vector3EvaluateOppositeLookAngles(direction, &a, &b);
             s->pitchRate = mathWrapSignedDegrees(a - s->pitch) * 2;
             s->yawRate = mathWrapSignedDegrees(b - s->yaw) * 2;

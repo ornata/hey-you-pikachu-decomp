@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "vector_direction.h"
 #include "object_audio.h"
 #include "integer_animation.h"
 #include "object_lookup.h"
@@ -1441,7 +1442,6 @@ void convergingParticleEffectDestroy(u8 *effect) {
     heapFreeLocal(&gGameHeap, obj);
 }
 
-void vector3FromPitchYawDegrees(f32, f32, f32 *);
 f32 vector3Normalize(u8 *);
 f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
 

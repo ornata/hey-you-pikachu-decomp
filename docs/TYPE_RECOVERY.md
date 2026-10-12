@@ -1326,3 +1326,16 @@ negated local vector before the call to 0x8003BFA0. Explicit pitch/yaw parameter
 and forwarding preserve all 483 objects, recovering outputs omitted by Ghidra's
 one-argument inference. The function documentation now describes those outputs.
 Each affected source unit was rebuilt and strictly compared before the next edit.
+
+### Direction construction and packed default slots
+
+The shared vector-direction header now also declares unit-direction construction
+for its provider, direction playback and particle effects. Its pitch is positive
+downward, and yaw runs from positive Z toward positive X; all producers use the
+same three-float output contract. Ghidra at 0x8000CE9C confirms the component
+construction but overstates its parameters under the floating-point ABI; the
+source definition, callers and unchanged objects establish the C prototype.
+The default-pose interior symbol at 0x8009A6C0 now has a packed sixteen-byte slot
+view rather than four purported floats. Only its first three signed bytes are
+decoded; trailing bytes remain uninterpreted. The original interior symbol is
+retained, preserving strict relocation addends.
