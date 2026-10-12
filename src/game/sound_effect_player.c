@@ -328,11 +328,11 @@ s32 soundEffectPlayerCountPlayback(SoundEffectPlayer *player, s32 id) {
 /// \param player Registered audio player whose client data is the sound-effect player.
 /// \returns The interval until the next lifetime update, 5750 microseconds.
 /// \note Original decompilation identifier: \c func_8002116C (0x8002116C).
-s32 soundEffectPlayerUpdateLifetimes(ALPlayer *player) {
+ALMicroTime soundEffectPlayerUpdateLifetimes(void *player) {
     SoundEffectPlayer *state;
     s32 i;
     s32 duration;
-    state = player->clientData;
+    state = ((ALPlayer *)player)->clientData;
     for (i = 0; i < state->count; i++) {
         if (state->voices[i].id != 0) {
             duration = state->voices[i].sound->envelope->decayTime;

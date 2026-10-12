@@ -819,3 +819,18 @@ player-only highlight state and opaque scene association. Ghidra at 0x8001F318
 confirms the companion-first occupancy precedence and byte flag. The scene-data
 value remains opaque; no unsupported pointer ownership is inferred. Padding is
 retained. These changes preserve all allocated bytes and strict relocations.
+
+### Audio callback and terrain diagnostic cell contracts
+
+The sound-effect lifetime handler uses the SDK ALVoiceHandler contract directly:
+ALMicroTime return and void-pointer client argument, with an ALPlayer view at the
+client-data boundary. Ghidra at 0x8002116C confirms the registered player's
+client-data access and 5750-microsecond interval. No callback cast is required.
+
+Terrain diagnostic cells have a checked private 0x18-byte state: enable flag,
+four corner matrix indices and RGB diagnostic color. The creator, visibility
+controller, terrain updater and draw routine share that record. Ghidra at
+0x8002B380 confirms the corner-index stores. Root state remains a separate
+four-byte grid dimension, and both allocations use the object pointer view.
+The item initializer likewise stores its allocated byte state as a pointer.
+All retained changes match the immutable object baseline.

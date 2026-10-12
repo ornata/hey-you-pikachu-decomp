@@ -4,13 +4,6 @@
   "records": [
     {
       "code": 709,
-      "file": "src/game/flipbook_messenger.c",
-      "line": 958,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "messengerAdvancePosition(object);"
-    },
-    {
-      "code": 709,
       "file": "src/game/doors_object_responses.c",
       "line": 160,
       "diagnostic": "Incompatible pointer type assignment",
@@ -50,6 +43,13 @@
       "line": 175,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "sprintf(gDoorAccessDescriptionBuffer, \"\\nYou can't get by for some reason.\");"
+    },
+    {
+      "code": 709,
+      "file": "src/game/flipbook_messenger.c",
+      "line": 958,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "messengerAdvancePosition(object);"
     },
     {
       "code": 709,
@@ -178,13 +178,6 @@
       "expression": "textImageCreateFromText(&gPresentationAreaLabelImage, regionName, gTextImageConfigurations);"
     },
     {
-      "code": 709,
-      "file": "src/game/sound_effect_player.c",
-      "line": 413,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "p->player.handler = soundEffectPlayerUpdateLifetimes;"
-    },
-    {
       "code": 712,
       "file": "src/game/texture_cache.c",
       "line": 170,
@@ -199,18 +192,18 @@
       "expression": "rp = romCacheRead(&gTextureRomCache, texture.pal + gTextureArchiveRomStart, 0x20, palette);"
     },
     {
-      "code": 712,
-      "file": "src/game/terrain_debug_grid.c",
-      "line": 106,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "((RuntimeObjectPrefix *)object)->state.address = heapAllocLocal(&gGameHeap, 4, 0x38);"
+      "code": 709,
+      "file": "src/game/voice_commands_text_panel.c",
+      "line": 185,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "if (*(gVoiceCommandDisplayName = voiceDictionaryGetWordName(((u16 *)&gVoiceCommandResultIndex)[1])) == 0) {"
     },
     {
-      "code": 712,
-      "file": "src/game/terrain_debug_grid.c",
-      "line": 150,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "((RuntimeObjectPrefix *)object)->state.address = heapAllocLocal(&gGameHeap, 0x18, 0x59);"
+      "code": 709,
+      "file": "src/game/voice_commands_text_panel.c",
+      "line": 442,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "textImageDestroy(oldImage);"
     },
     {
       "code": 709,
@@ -305,20 +298,6 @@
     },
     {
       "code": 709,
-      "file": "src/game/voice_commands_text_panel.c",
-      "line": 185,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "if (*(gVoiceCommandDisplayName = voiceDictionaryGetWordName(((u16 *)&gVoiceCommandResultIndex)[1])) == 0) {"
-    },
-    {
-      "code": 709,
-      "file": "src/game/voice_commands_text_panel.c",
-      "line": 442,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "textImageDestroy(oldImage);"
-    },
-    {
-      "code": 709,
       "file": "src/game/player_profile.c",
       "line": 33,
       "diagnostic": "Incompatible pointer type assignment",
@@ -400,13 +379,6 @@
       "line": 2126,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "mazeDestroyNodeHierarchy(gAreaMazeRoot);"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/item_registry.c",
-      "line": 2086,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "((RuntimeObjectPrefix *)item)->state.address = itemAllocateState();"
     }
   ]
 }

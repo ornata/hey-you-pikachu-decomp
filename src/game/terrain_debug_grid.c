@@ -2,6 +2,7 @@
 #include "common.h"
 #include "object_lookup.h"
 #include "heap_alloc.h"
+#include "game_heap.h"
 #include "object_types.h"
 void presentationDrawAreaLabel(Gfx **);
 
@@ -50,9 +51,6 @@ extern u8 gPlayerFriendshipLevel;
 /// \note Original identifier: \c D_800EF798 (0x800EF798).
 extern s32 gPlayerFriendshipMilestone;
 
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 
 /// Separate view of the message-bar image slot prepared for the next transition.
 /// \note Original identifier: \c D_800F0B1C (0x800F0B1C).
@@ -94,8 +92,16 @@ extern s32 gItemKindCollectionValueEntries[];
 
 s32 progressGetValue(u32); /* extern */
 
+/// Owned render state of one terrain diagnostic cell.
+typedef struct TerrainDebugCellState {
+    s32 enabled;          ///< Nonzero when this cell contributes geometry.
+    u32 matrixIndices[4]; ///< Root hierarchy matrix indices for the four corners.
+    u8 color[3];          ///< Terrain-property diagnostic red, green and blue values.
+    u8 padding17;         ///< Retained alignment byte.
+} TerrainDebugCellState;
 
-
+typedef char TerrainDebugCellStateSizeCheck[(sizeof(TerrainDebugCellState) == 0x18) ? 1 : -1];
+typedef char TerrainDebugCellStateColorOffsetCheck[(((u32) & (((TerrainDebugCellState *)0)->color)) == 0x14) ? 1 : -1];
 
 /// Initialize the root state of a terrain diagnostic grid.
 /// \param object Grid root object to initialize.
@@ -103,7 +109,7 @@ s32 progressGetValue(u32); /* extern */
 /// \note Original decompilation identifier: \c func_8002AF50 (0x8002AF50).
 void terrainDebugGridInitializeRoot(u8 *object) {
     TRACE("meshRootInit:%p\n", object);
-    ((RuntimeObjectPrefix *)object)->state.address = heapAllocLocal(&gGameHeap, 4, 0x38);
+    ((RuntimeObjectPrefix *)object)->state.pointer = heapAllocLocal(&gGameHeap, 4, 0x38);
 }
 
 typedef struct {
@@ -147,7 +153,7 @@ void terrainDebugGridUpdatePosition(f32 *object) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002B020 (0x8002B020).
 void terrainDebugGridInitializeCell(u8 *object) {
-    ((RuntimeObjectPrefix *)object)->state.address = heapAllocLocal(&gGameHeap, 0x18, 0x59);
+    ((RuntimeObjectPrefix *)object)->state.pointer = heapAllocLocal(&gGameHeap, 0x18, 0x59);
 }
 
 f32 terrainGetWorldHeight(f32, f32, f32, u8 **);
@@ -161,42 +167,42 @@ extern s32 gTerrainDebugGridPropertyView;
 /// \note Original decompilation identifier: \c func_8002B058 (0x8002B058).
 void terrainDebugGridUpdateCell(u8 *obj) {
     u8 *parent;
-    u8 *data;
+    TerrainDebugCellState *data;
     u32 flags;
     u8 *node;
     parent = *(u8 **)(obj + 0x50);
-    data = *(u8 **)(obj + 0x54);
+    data = *(TerrainDebugCellState **)(obj + 0x54);
     node = NULL;
     *(f32 *)(obj + 0x1C) = terrainGetWorldHeight(*(f32 *)(obj + 0x44), *(f32 *)(parent + 0x1C), *(f32 *)(obj + 0x4C), &node) -
                            *(f32 *)(parent + 0x1C);
     flags = terrainGetSurfaceAttributes(*(f32 *)(obj + 0x44), *(f32 *)(parent + 0x1C), *(f32 *)(obj + 0x4C), &node);
     switch (gTerrainDebugGridPropertyView) {
     case 1:
-        data[0x14] = data[0x15] = data[0x16] = 0;
+        data->color[0] = data->color[1] = data->color[2] = 0;
         if (flags & 2)
-            data[0x14] = 255;
+            data->color[0] = 255;
         if (flags & 4)
-            data[0x15] = 255;
+            data->color[1] = 255;
         if (flags & 1)
-            data[0x16] = 255;
+            data->color[2] = 255;
         break;
     case 2:
-        data[0x14] = data[0x15] = data[0x16] = 255;
+        data->color[0] = data->color[1] = data->color[2] = 255;
         if (flags & 0x8000)
-            data[0x14] = 0;
+            data->color[0] = 0;
         if (flags & 0x100)
-            data[0x15] = 0;
+            data->color[1] = 0;
         if (flags & 0x4000)
-            data[0x16] = 0;
+            data->color[2] = 0;
         break;
     case 3:
-        data[0x14] = data[0x15] = data[0x16] = 255;
+        data->color[0] = data->color[1] = data->color[2] = 255;
         if (flags & 0x20)
-            data[0x14] = 0;
+            data->color[0] = 0;
         if (flags & 0x10)
-            data[0x15] = 0;
+            data->color[1] = 0;
         if (flags & 0x40)
-            data[0x16] = 0;
+            data->color[2] = 0;
         break;
     default:
         TRACE("ERROR: Unknown meshType:%d\n", gTerrainDebugGridPropertyView);
@@ -218,22 +224,22 @@ extern Gfx D_100CBB8[];
 /// \returns Zero.
 /// \note Original decompilation identifier: \c func_8002B1A4 (0x8002B1A4).
 s32 terrainDebugGridDrawCell(u8 *object) {
-    u8 *d = *(u8 **)(object + 0x54);
+    TerrainDebugCellState *d = *(TerrainDebugCellState **)(object + 0x54);
     u8 *o = *(u8 **)(object + 0x50);
     Rgb8 *c;
     s32 i;
 
-    if (*(s32 *)(d + 0) == 0) {
+    if (d->enabled == 0) {
         return 0;
     }
     gSPDisplayList(gRenderDisplayListCursor++, D_100CBB8);
     for (i = 0; i < 4; i++) {
         gSPMatrix(gRenderDisplayListCursor++,
-                  ((s32 *)(o + 0x3C))[(*(u16 *)(o + 0x36) & 0x8000) ? 1 : 0] + (*(u32 *)(d + 4 + i * 4) << 6),
+                  ((s32 *)(o + 0x3C))[(*(u16 *)(o + 0x36) & 0x8000) ? 1 : 0] + (d->matrixIndices[i] << 6),
                   G_MTX_LOAD);
         gSPVertex(gRenderDisplayListCursor++, &D_100CAD8[i], 1, i);
     }
-    c = (Rgb8 *)(d + 0x14);
+    c = (Rgb8 *)d->color;
     gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, c->r, c->g, c->b, 0xFF);
     gSP2Triangles(gRenderDisplayListCursor++, 0, 1, 2, 0, 0, 2, 3, 0);
     return 0;
@@ -264,7 +270,7 @@ u8 *terrainDebugGridCreate(s32 size) {
     u8 *root;
     u8 *tail;
     u8 *cell;
-    s32 *data;
+    TerrainDebugCellState *data;
     s32 *dimensions;
     s32 row;
     s32 col;
@@ -277,13 +283,13 @@ u8 *terrainDebugGridCreate(s32 size) {
     for (row = 0; row < size + 1; row++) {
         for (col = 0; col < size + 1; col++) {
             cell = objectCreateFromTemplate((u8 *)&cellTemplate);
-            data = *(s32 **)(cell + 0x54);
+            data = *(TerrainDebugCellState **)(cell + 0x54);
             *(f32 *)(cell + 0x18) = col - size / 2;
             *(f32 *)(cell + 0x20) = row - size / 2;
-            data[1] = index;
-            data[2] = index + size + 1;
-            data[3] = index + size + 2;
-            data[4] = index + 1;
+            data->matrixIndices[0] = index;
+            data->matrixIndices[1] = index + size + 1;
+            data->matrixIndices[2] = index + size + 2;
+            data->matrixIndices[3] = index + 1;
             *(u8 **)(tail + 0x28) = cell;
             index++;
             tail = cell;
@@ -312,15 +318,15 @@ void terrainDebugGridSetEnabled(u8 *object, s32 enabled) {
     u8 *node = *(u8 **)(object + 0x2C);
     s32 row;
     s32 col;
-    s32 *cell;
+    TerrainDebugCellState *cell;
     row = 0;
     for (; row < size + 1; row++) {
         for (col = 0; col < size + 1; col++) {
-            cell = *(s32 **)(node + 0x54);
+            cell = *(TerrainDebugCellState **)(node + 0x54);
             if (col < size && row < size)
-                *cell = enabled;
+                cell->enabled = enabled;
             else
-                *cell = 0;
+                cell->enabled = 0;
             node = *(u8 **)(node + 0x28);
         }
     }

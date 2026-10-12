@@ -2077,13 +2077,12 @@ u8 *itemAllocateState(void) {
     return allocation;
 }
 
-u8 *itemAllocateState(void); /* extern */
 /// Give a new item its initialized, owned state resources.
 /// \param item New item object without existing owned state.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8011391C (0x8011391C).
 void itemInitializeState(u8 *item) {
-    ((RuntimeObjectPrefix *)item)->state.address = itemAllocateState();
+    ((RuntimeObjectPrefix *)item)->state.bytes = itemAllocateState();
 }
 
 u8 *objectCreateHierarchyFromTemplate(void *);
