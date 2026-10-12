@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 3239,
-      "unique_spellings": 1189,
+      "occurrences": 3237,
+      "unique_spellings": 1187,
       "files": 80
     }
   },
@@ -3574,9 +3574,6 @@
           "motionState + 0x130": [
             "398:14"
           ],
-          "obj + 0x108": [
-            "413:23"
-          ],
           "v + 0xF8": [
             "437:21",
             "447:90"
@@ -3620,9 +3617,6 @@
             "540:19",
             "540:57",
             "545:14"
-          ],
-          "state + 0x108": [
-            "514:14"
           ],
           "state + 0x10C": [
             "515:14"

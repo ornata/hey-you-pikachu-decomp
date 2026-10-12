@@ -14,7 +14,7 @@
 extern float fabsf(float);
 #pragma intrinsic(fabsf)
 u32 randomBelow(s32); /* extern */
-s32 actorPrepareApproachCompletion(s32, f32);
+s32 actorPrepareApproachCompletion(u8 *, f32);
 s32 actorAdvanceWithScaleOscillation(f32 *, f32);
 s32 actorAdvanceWithGroundClearance(s32, f32);
 s32 actorTurnAwayFromPlayer(s32, f32);
@@ -75,42 +75,42 @@ s32 actorUpdateTimedGroundSpin(s32 actor) {
 
 /// Prepare approach completion using the fast approach-speed preset.
 /// \param actor Actor whose approach completion is prepared.
-/// \returns Nothing.
+/// \returns The approach-completion result; one selects a continuation immediately, zero keeps the action active.
 /// \note Original decompilation identifier: \c func_8000F880 (0x8000F880).
-void actorPrepareFastApproachCompletion(s32 actor) {
-    actorPrepareApproachCompletion(actor, 6.9542f);
+s32 actorPrepareFastApproachCompletion(u8 *actor) {
+    return actorPrepareApproachCompletion(actor, 6.9542f);
 }
 
 /// Prepare approach completion using the fastest approach-speed preset.
 /// \param actor Actor whose approach completion is prepared.
-/// \returns Nothing.
+/// \returns The approach-completion result; one selects a continuation immediately, zero keeps the action active.
 /// \note Original decompilation identifier: \c func_8000F8A4 (0x8000F8A4).
-void actorPrepareFastestApproachCompletion(s32 actor) {
-    actorPrepareApproachCompletion(actor, 8.6197f);
+s32 actorPrepareFastestApproachCompletion(u8 *actor) {
+    return actorPrepareApproachCompletion(actor, 8.6197f);
 }
 
 /// Prepare approach completion using the slow approach-speed preset.
 /// \param actor Actor whose approach completion is prepared.
-/// \returns Nothing.
+/// \returns The approach-completion result; one selects a continuation immediately, zero keeps the action active.
 /// \note Original decompilation identifier: \c func_8000F8C8 (0x8000F8C8).
-void actorPrepareSlowApproachCompletion(s32 actor) {
-    actorPrepareApproachCompletion(actor, 1.4111f);
+s32 actorPrepareSlowApproachCompletion(u8 *actor) {
+    return actorPrepareApproachCompletion(actor, 1.4111f);
 }
 
 /// Prepare approach completion using the medium approach-speed preset.
 /// \param actor Actor whose approach completion is prepared.
-/// \returns Nothing.
+/// \returns The approach-completion result; one selects a continuation immediately, zero keeps the action active.
 /// \note Original decompilation identifier: \c func_8000F8EC (0x8000F8EC).
-void actorPrepareMediumApproachCompletion(s32 actor) {
-    actorPrepareApproachCompletion(actor, 3.4162f);
+s32 actorPrepareMediumApproachCompletion(u8 *actor) {
+    return actorPrepareApproachCompletion(actor, 3.4162f);
 }
 
 /// Prepare approach completion using the slowest approach-speed preset.
 /// \param actor Actor whose approach completion is prepared.
-/// \returns Nothing.
+/// \returns The approach-completion result; one selects a continuation immediately, zero keeps the action active.
 /// \note Original decompilation identifier: \c func_8000F910 (0x8000F910).
-void actorPrepareSlowestApproachCompletion(s32 actor) {
-    actorPrepareApproachCompletion(actor, 1.27f);
+s32 actorPrepareSlowestApproachCompletion(u8 *actor) {
+    return actorPrepareApproachCompletion(actor, 1.27f);
 }
 
 extern double sqrt(double);
@@ -124,7 +124,7 @@ extern f32 gActorSpecialApproachSpeed;
 /// \param speed Positive approach-speed control used to assess remaining travel.
 /// \returns One when the special approach continuation is selected; otherwise zero, including when loop exit is requested.
 /// \note Original decompilation identifier: \c func_8000F934 (0x8000F934).
-s32 actorPrepareApproachCompletion(s32 object, f32 speed) {
+s32 actorPrepareApproachCompletion(u8 *object, f32 speed) {
     u8 *state;
     f32 distance;
     u8 *target;
@@ -599,7 +599,7 @@ s32 actorAdvanceQuicklyWithLateralVariation(f32 *actor) {
 /// \param actor Actor receiving the facing adjustment.
 /// \returns Always zero, leaving action completion to its normal timing.
 /// \note Original decompilation identifier: \c func_800105E0 (0x800105E0).
-s32 actorApplyRandomYawJitter(s32 actor) {
+s32 actorApplyRandomYawJitter(u8 *actor) {
     actorAddRotationAxisDegrees((u8 *)actor, (f32)((s32)randomBelow(0xA) - 5), 1);
     return 0;
 }
@@ -722,7 +722,7 @@ s32 actorSpinYaw(s32 actor) {
 /// \param actor Actor executing the behavior.
 /// \returns Always zero, leaving action completion to its normal timing.
 /// \note Original decompilation identifier: \c func_80010908 (0x80010908).
-s32 actorResetPitch(s32 actor) {
+s32 actorResetPitch(u8 *actor) {
     u8 *obj;
 
     obj = *(u8 **)(actor + 0x54);
@@ -768,7 +768,7 @@ s32 actorApproachTargetHeightWhileSpinning(u8 *actor) {
 /// \param actor Actor executing the behavior.
 /// \returns Always zero, leaving action completion to its normal timing.
 /// \note Original decompilation identifier: \c func_80010A44 (0x80010A44).
-s32 actorRestoreLevelPitch(s32 actor) {
+s32 actorRestoreLevelPitch(u8 *actor) {
     u8 *obj;
 
     obj = *(u8 **)(actor + 0x54);

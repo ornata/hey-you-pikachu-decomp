@@ -10,6 +10,11 @@
 #include "direction_animation_types.h"
 #include "matrix_types.h"
 
+/// Initialize a selected action for an actor.
+/// \param actor Actor whose selected action is initialized.
+/// \returns Zero to accept the selected action, or nonzero to select its continuation immediately.
+typedef s32 (*ActorActionInitializer)(u8 *actor);
+
 /// Recovered prefix of actor state used by script-message consumers.
 /// \ingroup ActorScriptVm
 /// Unresolved storage and scalar roles retain explicit offset-based names. This view does not describe the
@@ -39,7 +44,7 @@ typedef struct ActorScriptState {
     s16 continuationAction; ///< Next action identifier; values outside the action table end continuation.
     u8 unknown102[2];
     f32 actionMovementScale; ///< Movement scale supplied by an action, or duration supplied by a pose transition.
-    u8 unknown108[4];
+    ActorActionInitializer actionInitializer; ///< Optional initializer borrowed from the selected action definition.
     s32 (*actionCallback)(u8 *); ///< Per-frame action callback; one ends playback.
     ActorActionCueCommand *primaryCueProgram; ///< Borrowed primary cue program or action-kind selection collection.
     ActorActionCueCommand *secondaryCueProgram; ///< Borrowed secondary cue program or action-kind selection collection.
@@ -171,6 +176,7 @@ ACTOR_SCRIPT_OFFSET_CHECK(ActorStateEnvironmentColorTimeOffsetCheck, ActorScript
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePlaybackModeOffsetCheck, ActorScriptState, playbackMode, 0x11A);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePendingActionOffsetCheck, ActorScriptState, pendingAction, 0x120);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateMovementScaleOffsetCheck, ActorScriptState, movementScale, 0x130);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorActionInitializerOffsetCheck, ActorScriptState, actionInitializer, 0x108);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorActionMovementScaleOffsetCheck, ActorScriptState, actionMovementScale, 0x104);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorPrimaryCueProgramOffsetCheck, ActorScriptState, primaryCueProgram, 0x110);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorSecondaryCueProgramOffsetCheck, ActorScriptState, secondaryCueProgram, 0x114);

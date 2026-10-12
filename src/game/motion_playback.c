@@ -406,14 +406,14 @@ void motionStartTimedPlayback(u8 *object) {
 /// \note Original decompilation identifier: \c func_8000E8D8 (0x8000E8D8).
 s32 actionInvokeInitializer(u8 *object) {
     u8 *obj;
-    s32 (*fn)();
+    ActorActionInitializer fn;
     s32 result;
 
     obj = *(u8 **)(object + 0x54);
-    fn = *(s32(**)())(obj + 0x108);
+    fn = ((ActorScriptState *)obj)->actionInitializer;
     if (fn != NULL) {
         TRACE("initFunc:%p\n", fn);
-        result = fn();
+        result = fn(object);
         TRACE("initResult:%d\n", result);
         return result;
     }
@@ -511,7 +511,7 @@ void actionConfigurePoseTransition(u8 *state, s32 nextAction, f32 duration) {
     ((ActorScriptState *)state)->previousPoseId = ((ActorScriptState *)state)->currentPoseId;
     ((ActorScriptState *)state)->currentPoseId = var_v0[0x12];
     ((ActorScriptState *)state)->continuationAction = nextAction;
-    *(s32 *)(state + 0x108) = 0;
+    ((ActorScriptState *)state)->actionInitializer = NULL;
     *(s32 *)(state + 0x10C) = 0;
     ((ActorScriptState *)state)->actionMovementScale = duration;
     ((ActorScriptState *)state)->primaryCueProgram = 0;

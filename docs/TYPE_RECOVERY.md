@@ -2240,3 +2240,18 @@ that pointer rather than an integer address. The initializer word at 0x108
 remains unresolved as an interface: its legacy no-argument callback convention
 requires a separate caller/ABI audit. All header dependents and the source
 unit preserve all 483 objects and strict relocation addends.
+
+### Actor action initializer callback contract
+
+The 330-entry ROM action table contains 41 non-null initializer slots targeting
+25 distinct functions. Every target now has an `s32 (u8 *)` definition. Five
+approach preset wrappers previously declared void now explicitly return their
+helper result: their ROM assembly leaves that result in v0, and the dispatcher
+consumes it. Integer actor parameters in the remaining initializer targets
+are recovered as actor pointers. `ActorActionInitializer` documents zero as
+acceptance and nonzero as immediate continuation selection; actor state checks
+its offset at 0x108. Ghidra 0x8000E8D8 and the caller at 0x8000ECB4 establish
+that contract. The indirect call now passes the actor explicitly, replacing
+the legacy unspecified-argument call. All changed units and header dependents
+preserve all 483 objects and strict relocation addends. This resolves the
+initializer ABI audit left open in the preceding cue-resource recovery.
