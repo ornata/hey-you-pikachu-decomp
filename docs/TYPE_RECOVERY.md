@@ -3097,3 +3097,15 @@ gate. Remaining cooperation and presentation save/restore raw reads use the
 checked member. Cooperation permission also applies to actor candidates in
 the interaction classifier, so its contract is not restricted to the single
 activation producer's kind. All dependent and isolated conversions match.
+
+### Presentation snapshots reuse shared actor state
+
+Presentation save/restore uses `ActorScriptState` for its 0x408-byte behavior
+snapshot. Its private object snapshot embeds the checked runtime prefix and
+retains four unresolved trailing bytes, with a 0x5C size assertion. Ghidra
+0x80028518 confirms both copy extents. Snapshot comments make the shallow
+resource lifetime explicit; this does not clone or transfer actor ownership.
+Restore names object transform/radius and actor orientation, root-motion
+matrix/heading and behavior fields, removing duplicate block types and
+float-index macros. The existing action-stop ABI matching exception remains.
+Each isolated conversion preserves strict object bytes and relocations.

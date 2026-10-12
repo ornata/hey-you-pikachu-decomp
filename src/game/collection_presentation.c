@@ -1,3 +1,4 @@
+#include "object_types.h"
 #include "actor_script.h"
 #include "actor_behavior.h"
 #include "story_chapter.h"
@@ -273,23 +274,20 @@ s32 inventoryRecordKeptItemsAndClearTemporarySlot(void) {
     return result;
 }
 
-typedef struct Blk5C {
-    s32 w[21];
-    struct Blk408 *ext;
-    s32 w58;
-} Blk5C;
-typedef struct Blk408 {
-    s32 w[0x102];
-} Blk408;
+/// Shallow presentation snapshot of the object prefix and four trailing bytes.
+/// Borrowed links remain valid only while the original actor and its resources stay live.
+typedef struct PresentationObjectSnapshot {
+    RuntimeObjectPrefix object; ///< Copied object transform, links and private-state reference.
+    u8 unknown058[4]; ///< Retained trailing object bytes whose role is unresolved.
+} PresentationObjectSnapshot;
+
+typedef char PresentationObjectSnapshotSizeCheck[(sizeof(PresentationObjectSnapshot) == 0x5C) ? 1 : -1];
 /// Saved actor record retained while presentation placement and pose are active.
 /// \note Original identifier: \c D_800F0C00 (0x800F0C00).
-extern Blk5C gPresentationSavedActor;
+extern PresentationObjectSnapshot gPresentationSavedActor;
 /// Saved actor behavior state used to restore the actor after a presentation.
 /// \note Original identifier: \c D_800F0C60 (0x800F0C60).
-extern Blk408 gPresentationSavedActorState;
-typedef struct {
-    f32 m[12];
-} Blk30;
+extern ActorScriptState gPresentationSavedActorState;
 /// Primary player control record and base of the player records with a 256-byte stride.
 /// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
 extern f32 gPlayerState;
@@ -322,38 +320,36 @@ void playerRestoreState(void);
 u8 *actionScriptStop();
 void objectClearHierarchyFlags(u8 *, u16);
 
-#define ACT_F(i) (((f32 *)gPikachuActor)[i])
-#define EXT_F(i) (((f32 *)&gPresentationSavedActorState)[i])
 
 /// Restore the active actor's saved transform and behavior settings, then resume its scene pose and camera.
 /// \returns Nothing; requires a saved snapshot of the same live, initialized actor.
 /// \note Portability: The unprototyped action-script stop call passes an extra argument ignored by the original ABI.
 /// \note Original decompilation identifier: \c func_80028344 (0x80028344).
 void presentationRestoreActiveActor(void) {
-    f32 *save;
-    u8 *ext = (u8 *)((Blk5C *)gPikachuActor)->ext;
+    RuntimeObjectPrefix *save;
+    u8 *ext = ((RuntimeObjectPrefix *)gPikachuActor)->state.bytes;
 
     playerRestoreState();
-    save = (f32 *)&gPresentationSavedActor;
-    ACT_F(0x11) = save[0x11];
-    ACT_F(0x12) = save[0x12];
-    ACT_F(0x13) = save[0x13];
-    ACT_F(6) = save[6];
-    ACT_F(7) = save[7];
-    ACT_F(8) = save[8];
-    ACT_F(3) = save[3];
-    ACT_F(4) = save[4];
-    ACT_F(5) = save[5];
-    ACT_F(0) = save[0];
-    ACT_F(1) = save[1];
-    ACT_F(2) = save[2];
-    ACT_F(9) = save[9];
-    ((f32 *)ext)[3] = EXT_F(3);
-    ((f32 *)ext)[4] = EXT_F(4);
-    ((f32 *)ext)[5] = EXT_F(5);
-    *(Blk30 *)(ext + 0x18) = *(Blk30 *)&EXT_F(6);
-    ((f32 *)ext)[0x12] = EXT_F(0x12);
-    ((ActorScriptState *)ext)->behaviorFlags = ((ActorScriptState *)&gPresentationSavedActorState)->behaviorFlags;
+    save = &gPresentationSavedActor.object;
+    ((RuntimeObjectPrefix *)gPikachuActor)->worldPosition[0] = save->worldPosition[0];
+    ((RuntimeObjectPrefix *)gPikachuActor)->worldPosition[1] = save->worldPosition[1];
+    ((RuntimeObjectPrefix *)gPikachuActor)->worldPosition[2] = save->worldPosition[2];
+    ((RuntimeObjectPrefix *)gPikachuActor)->position[0] = save->position[0];
+    ((RuntimeObjectPrefix *)gPikachuActor)->position[1] = save->position[1];
+    ((RuntimeObjectPrefix *)gPikachuActor)->position[2] = save->position[2];
+    ((RuntimeObjectPrefix *)gPikachuActor)->rotation[0] = save->rotation[0];
+    ((RuntimeObjectPrefix *)gPikachuActor)->rotation[1] = save->rotation[1];
+    ((RuntimeObjectPrefix *)gPikachuActor)->rotation[2] = save->rotation[2];
+    ((RuntimeObjectPrefix *)gPikachuActor)->scale[0] = save->scale[0];
+    ((RuntimeObjectPrefix *)gPikachuActor)->scale[1] = save->scale[1];
+    ((RuntimeObjectPrefix *)gPikachuActor)->scale[2] = save->scale[2];
+    ((RuntimeObjectPrefix *)gPikachuActor)->radius = save->radius;
+    ((ActorScriptState *)ext)->orientation[0] = gPresentationSavedActorState.orientation[0];
+    ((ActorScriptState *)ext)->orientation[1] = gPresentationSavedActorState.orientation[1];
+    ((ActorScriptState *)ext)->orientation[2] = gPresentationSavedActorState.orientation[2];
+    ((ActorScriptState *)ext)->rootMotionTransform = gPresentationSavedActorState.rootMotionTransform;
+    ((ActorScriptState *)ext)->rootMotionHeading = gPresentationSavedActorState.rootMotionHeading;
+    ((ActorScriptState *)ext)->behaviorFlags = gPresentationSavedActorState.behaviorFlags;
     actionScriptStop(gPikachuActor, &gPresentationSavedActorState);
     actionBeginPoseTransition((u8 *)gPikachuActor, 0x4A, 0.1f);
     objectClearHierarchyFlags((u8 *)gPikachuActor, 0x2000);
@@ -361,8 +357,6 @@ void presentationRestoreActiveActor(void) {
                                gPlayerPitchOffset + gPlayerPitch, gPlayerYaw + gPlayerViewShake, 0.0f);
 }
 
-#undef ACT_F
-#undef EXT_F
 
 void playerSaveState(void);
 
@@ -371,8 +365,8 @@ void playerSaveState(void);
 /// \note Original decompilation identifier: \c func_80028518 (0x80028518).
 void presentationSaveActiveActor(void) {
     playerSaveState();
-    gPresentationSavedActor = *(Blk5C *)gPikachuActor;
-    gPresentationSavedActorState = *((Blk5C *)gPikachuActor)->ext;
+    gPresentationSavedActor = *(PresentationObjectSnapshot *)gPikachuActor;
+    gPresentationSavedActorState = *((RuntimeObjectPrefix *)gPikachuActor)->state.actor;
 }
 
 /// Transform from camera-relative presentation coordinates to world coordinates.

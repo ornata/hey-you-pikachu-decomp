@@ -28,7 +28,8 @@ typedef char ActorRootPlaybackWorkspaceSizeCheck[(sizeof(ActorRootPlaybackWorksp
 /// Recovered prefix of actor state used by script-message consumers.
 /// \ingroup ActorScriptVm
 /// Unresolved storage and scalar roles retain explicit offset-based names. This view does not describe the
-/// ownership of its resources and must not be used to copy actor state.
+/// ownership of its resources and must not be copied to clone an actor or transfer ownership.
+/// Presentation snapshots borrow the original live actor's resources and restore selected fields only.
 /// The 0x408-byte extent is established by actorInitializeModelState allocation and clearing.
 typedef struct ActorScriptState {
     u8 *groundReference;    ///< Borrowed hierarchy part used for ground-reference pose.
