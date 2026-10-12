@@ -4,6 +4,13 @@
   "records": [
     {
       "code": 709,
+      "file": "src/game/flipbook_messenger.c",
+      "line": 958,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "messengerAdvancePosition(object);"
+    },
+    {
+      "code": 709,
       "file": "src/game/doors_object_responses.c",
       "line": 160,
       "diagnostic": "Incompatible pointer type assignment",
@@ -43,41 +50,6 @@
       "line": 175,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "sprintf(gDoorAccessDescriptionBuffer, \"\\nYou can't get by for some reason.\");"
-    },
-    {
-      "code": 709,
-      "file": "src/game/flipbook_messenger.c",
-      "line": 958,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "messengerAdvancePosition(object);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/actor_model_motion.c",
-      "line": 260,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "allocation = heapAllocLocal(&gGameHeap, 0x80, 0xFC);"
-    },
-    {
-      "code": 712,
-      "file": "src/game/actor_model_motion.c",
-      "line": 1044,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "allocation = heapAllocLocal(&gGameHeap, 0x4C, 0x463);"
-    },
-    {
-      "code": 712,
-      "file": "src/game/actor_model_motion.c",
-      "line": 1046,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "_bzero(allocation, 0x4C);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/actor_model_motion.c",
-      "line": 1129,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "v->dl[0] = heapAllocLocal(&gGameHeap, v->len * sizeof(Gfx) * 2, 0x4B8);"
     },
     {
       "code": 712,

@@ -15,17 +15,19 @@ static const char sUnknownHoldPosFmt[] = "Unknown holdPos:%d\n";
 static const char sJointTableFmt[] = "haraType:%d jointTotal:%d jointTableSize:%d\n";
 static const char sOutOfMazeFmt[] = "ERROR: model %p(%s) is out of maze\n";
 
-/* Per-object animated-parts block: up to three parts, each a display-list
- * frame, a playback speed and a 12-byte animation track; two display-list
- * buffers (double-buffered) of len Gfx each. */
-typedef struct Parts {
-    /* 0x00 */ s32 count;
-    /* 0x04 */ s32 frame[3];
-    /* 0x10 */ f32 speed[3];
-    /* 0x1C */ u8 track[3][0xC];
-    /* 0x40 */ Gfx *dl[2];
-    /* 0x48 */ s32 len;
-} Parts;
+/// Owned texture animation tracks and double-buffered display lists for one component.
+typedef struct AnimatedTextureState {
+    s32 count;             ///< Number of initialized texture tracks, from zero through three.
+    s32 textureIds[3];     ///< Texture selected for each animation track.
+    f32 playbackRates[3];  ///< Per-track animation time multipliers.
+    ValueTrack tracks[3];  ///< Integer frame-selection animation state.
+    Gfx *displayLists[2];  ///< Two views into one owned display-list allocation.
+    s32 commandsPerBuffer; ///< Reserved command count for each drawing buffer.
+} AnimatedTextureState;
+
+typedef char AnimatedTextureStateSizeCheck[(sizeof(AnimatedTextureState) == 0x4C) ? 1 : -1];
+typedef char
+    AnimatedTextureStateListsOffsetCheck[(((u32) & (((AnimatedTextureState *)0)->displayLists)) == 0x40) ? 1 : -1];
 
 /* Lit model state: two display-list buffers, two light sets, the active set, env colour. */
 typedef struct LitModel {
@@ -47,7 +49,7 @@ extern s32 gActorPartCounts[];
 /// Write cursor for the active graphics command list; also marks the camera-storage end.
 /// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
 extern Gfx *gRenderDisplayListCursor;
-u8 *heapAllocLocal();
+void *heapAllocLocal();
 void _bzero(void *, u32);
 void matrix34MakeRotationXYZDegrees(f32 *, s32, s32, f32);
 void matrix33Multiply(u8 *, f32 *, f32 *);
@@ -1038,13 +1040,13 @@ void actorGetConfiguredAttachmentPosition(u8 *actor, f32 heightOffset, f32 *posi
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80016658 (0x80016658).
 void actorAllocateAnimatedTextureState(void *actor) {
-    s32 sp1C;
-    s32 allocation;
+    AnimatedTextureState *state;
+    AnimatedTextureState *allocation;
 
     allocation = heapAllocLocal(&gGameHeap, 0x4C, 0x463);
-    sp1C = allocation;
+    state = allocation;
     _bzero(allocation, 0x4C);
-    ((RuntimeObjectPrefix *)actor)->state.address = sp1C;
+    ((RuntimeObjectPrefix *)actor)->state.pointer = state;
 }
 
 /// Release an actor animated texture state and its drawing resources.
@@ -1052,10 +1054,10 @@ void actorAllocateAnimatedTextureState(void *actor) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800166A4 (0x800166A4).
 void actorReleaseAnimatedTextureState(u8 *actor) {
-    u8 *obj;
+    AnimatedTextureState *obj;
 
-    obj = *(u8 **)(actor + 0x54);
-    heapFreeLocal(&gGameHeap, *(u8 **)(obj + 0x40), obj);
+    obj = *(AnimatedTextureState **)(actor + 0x54);
+    heapFreeLocal(&gGameHeap, obj->displayLists[0], obj);
     heapFreeLocal(&gGameHeap, obj);
 }
 
@@ -1067,24 +1069,24 @@ Gfx *textureLoadForDraw(Gfx **, s32, s32);
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800166E4 (0x800166E4).
 void actorUpdateAnimatedTextureDrawLists(u8 *actor, s32 buffer) {
-    Parts *v;
+    AnimatedTextureState *v;
     Gfx *dl;
     s32 i;
     Gfx *gfx;
-    u8 *track;
+    ValueTrack *track;
     s32 frame;
     Gfx *base;
 
-    v = *(Parts **)(actor + 0x54);
-    base = v->dl[buffer];
+    v = *(AnimatedTextureState **)(actor + 0x54);
+    base = v->displayLists[buffer];
     dl = base;
     gfx = base + v->count;
     for (i = 0; i < v->count; i++) {
         gSPBranchList(dl++, gfx);
-        track = (u8 *)v->track[i];
-        frame = *(s16 *)(track + 8);
-        animationIntegerTrackEvaluate((ValueTrack *)track, &frame, v->speed[i] * gRuntimeFrameSeconds);
-        textureLoadForDraw(&gfx, v->frame[i], frame);
+        track = &v->tracks[i];
+        frame = track->value;
+        animationIntegerTrackEvaluate(track, &frame, v->playbackRates[i] * gRuntimeFrameSeconds);
+        textureLoadForDraw(&gfx, v->textureIds[i], frame);
         gSPEndDisplayList(gfx++);
     }
 }
@@ -1094,11 +1096,11 @@ void actorUpdateAnimatedTextureDrawLists(u8 *actor, s32 buffer) {
 /// \returns Object drawing continuation link.
 /// \note Original decompilation identifier: \c func_80016808 (0x80016808).
 s32 actorBindAnimatedTexturesForDraw(u8 *actor) {
-    u8 *obj;
+    AnimatedTextureState *obj;
 
-    obj = *(u8 **)(actor + 0x54);
+    obj = *(AnimatedTextureState **)(actor + 0x54);
     actorUpdateAnimatedTextureDrawLists(actor, gGraphicsFramebufferIndex);
-    gSPSegment(gRenderDisplayListCursor++, 6, osVirtualToPhysical(((void **)(obj + 0x40))[gGraphicsFramebufferIndex]));
+    gSPSegment(gRenderDisplayListCursor++, 6, osVirtualToPhysical(obj->displayLists[gGraphicsFramebufferIndex]));
     return *(s32 *)(actor + 0x30);
 }
 
@@ -1113,21 +1115,21 @@ extern s32 gTextureFrameAnimationPrograms[];
 /// \note Original decompilation identifier: \c func_80016884 (0x80016884).
 void actorInitializeAnimatedTextures(u8 *actor, s32 *parts) {
     u8 *obj;
-    Parts *v;
+    AnimatedTextureState *v;
     s32 frame;
 
     obj = actorFindPart(actor, 0x78);
-    v = *(Parts **)(obj + 0x54);
+    v = *(AnimatedTextureState **)(obj + 0x54);
     v->count = 0;
     for (; (frame = parts[0]) >= 0; parts += 2) {
-        v->frame[v->count] = frame;
-        v->speed[v->count] = 1.0f;
-        animationIntegerTrackInitialize((ValueTrack *)v->track[v->count], (ValueKey *)gTextureFrameAnimationPrograms[parts[1]]);
+        v->textureIds[v->count] = frame;
+        v->playbackRates[v->count] = 1.0f;
+        animationIntegerTrackInitialize(&v->tracks[v->count], (ValueKey *)gTextureFrameAnimationPrograms[parts[1]]);
         v->count++;
     }
-    v->len = v->count * 20;
-    v->dl[0] = heapAllocLocal(&gGameHeap, v->len * sizeof(Gfx) * 2, 0x4B8);
-    v->dl[1] = v->dl[0] + v->len;
+    v->commandsPerBuffer = v->count * 20;
+    v->displayLists[0] = heapAllocLocal(&gGameHeap, v->commandsPerBuffer * sizeof(Gfx) * 2, 0x4B8);
+    v->displayLists[1] = v->displayLists[0] + v->commandsPerBuffer;
     actorUpdateAnimatedTextureDrawLists(obj, 0);
     actorUpdateAnimatedTextureDrawLists(obj, 1);
 }
