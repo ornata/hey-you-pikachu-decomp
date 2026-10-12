@@ -192,9 +192,6 @@ extern HpHdr gGameHeap;
 /// \note Original identifier: \c D_800F0B1C (0x800F0B1C).
 extern s32 gMessageBarWorkImageIndex;
 
-/// Separate view of the three retained message-bar text-image handles.
-/// \note Original identifier: \c D_800F0B20 (0x800F0B20).
-extern TextImage *gMessageBarImageHandles[];
 
 /// Interior availability progress-flag view of the item catalog, with a 116-byte stride.
 /// \note Original identifier: \c D_80125AB2 (0x80125AB2).

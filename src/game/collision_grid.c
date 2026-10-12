@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "text_window_images.h"
 #include "text_image_create.h"
 #include "keyed_pool_types.h"
 
@@ -11,9 +12,6 @@
 
 void runtimeRequestGameModeChange(s32);
 void playerSetControllerPort(s32);
-/// Double-buffered text images for the shared window page rows.
-/// \note Original identifier: \c D_800F1080 (0x800F1080).
-extern TextImage *gTextWindowPageImages[6][2];
 
 u64 runtimeGetElapsedMilliseconds(); /* extern */
 /// Current shared text-window transition state; four is inactive.
@@ -23,17 +21,11 @@ extern s32 gTextWindowState;
 /// \note Original identifier: \c D_800F1AC4 (0x800F1AC4).
 extern u32 gTextWindowStateStartMilliseconds;
 
-/// Owned text image used for the shared window input prompt.
-/// \note Original identifier: \c D_800F10A8 (0x800F10A8).
-extern TextImage *gTextWindowPromptImage;
 
 s32 textWindowPushPage(s32);            /* extern */
 /// Text-image style used when preparing window pages.
 /// \note Original identifier: \c D_800F1A78 (0x800F1A78).
 extern s32 gTextWindowTextStyle;
-/// Selected buffer of window page text images.
-/// \note Original identifier: \c D_800F1ABC (0x800F1ABC).
-extern s32 gTextWindowPageImageBuffer;
 
 void textWindowResetText(); /* extern */
 /// Scene-view mode controlling overlays and scene updates while the window is active.

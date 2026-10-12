@@ -57,9 +57,6 @@ extern s32 gPlayerFriendshipMilestone;
 /// \note Original identifier: \c D_800F0B1C (0x800F0B1C).
 extern s32 gMessageBarWorkImageIndex;
 
-/// Separate view of the three retained message-bar text-image handles.
-/// \note Original identifier: \c D_800F0B20 (0x800F0B20).
-extern s32 gMessageBarImageHandles[];
 
 /// Interior availability progress-flag view of the item catalog, with a 116-byte stride.
 /// \note Original identifier: \c D_80125AB2 (0x80125AB2).
@@ -78,9 +75,6 @@ extern s8 gCollectionScoreTextFormat;
 /// Accumulated collection value awarded to the player at the end of results.
 /// \note Original identifier: \c D_800F0BD8 (0x800F0BD8).
 extern s32 gCollectionPresentationScore;
-/// Owned text image for the current collection score, or zero before creation.
-/// \note Original identifier: \c D_800F0BE4 (0x800F0BE4).
-extern s32 gCollectionPresentationScoreImage;
 
 /// Live item displayed during collection results, or zero when none is shown.
 /// \note Original identifier: \c D_800F0BDC (0x800F0BDC).

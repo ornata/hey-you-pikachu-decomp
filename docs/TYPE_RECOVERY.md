@@ -1073,3 +1073,18 @@ queue handle union. Changing only the destruction parameter with integer slots
 altered generated code; typed storage and the canonical parameter together
 preserve the strict object baseline. Remaining legacy byte image tables use
 explicit descriptor views and remain recovery targets.
+
+### Text-window image-slot overlap
+
+text_window_images.h is the shared declaration for page images, the prompt
+image and the selected buffer. Drawing uses five row pairs; initialization
+clears 0x28 bytes starting at 0x800F1080. The prompt at 0x800F10A8 aliases
+the first slot of the sixth pair in the cleanup loop's extended view. This
+view is retained to preserve the original cleanup accesses rather than claiming
+six independent page rows. Ghidra at 0x8002BF48 confirms two image slots per
+row and the selected-buffer index; 0x8002C240 confirms cleanup ends at
+0x800F10B0, covering all twelve slots. The final cleanup slot at 0x800F10AC is
+unresolved: its producer or allocation-map evidence is needed before assigning
+a separate role. Do not shorten the cleanup loop or move these linker symbols.
+Unused message-bar and collection-score redeclarations were removed from
+nonconsumers, including their stale integer views in terrain debug code.

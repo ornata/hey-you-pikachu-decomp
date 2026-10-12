@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "text_window_images.h"
 #include "text_image_create.h"
 #include "text_draw.h"
 #include "integer_animation.h"
@@ -13,9 +14,6 @@
 
 void runtimeRequestGameModeChange(s32);
 void playerSetControllerPort(s32);
-/// Double-buffered text images for the shared window page rows.
-/// \note Original identifier: \c D_800F1080 (0x800F1080).
-extern TextImage *gTextWindowPageImages[6][2];
 
 void _bzero(void *, s32);
 /// Shared integer animation programs selecting texture frames for actors, effects and interface elements.
@@ -27,9 +25,6 @@ extern s32 gTextWindowIndicatorAnimationIds[6];
 /// Shared accumulated message text from which window pages are prepared.
 /// \note Original identifier: \c D_800F10B0 (0x800F10B0).
 extern u8 gTextWindowPendingText[];
-/// Owned text image used for the shared window input prompt.
-/// \note Original identifier: \c D_800F10A8 (0x800F10A8).
-extern TextImage *gTextWindowPromptImage;
 /// Scene-view mode controlling overlays and scene updates while the window is active.
 /// \note Original identifier: \c D_800F1A74 (0x800F1A74).
 extern s32 gTextWindowSceneViewMode;
@@ -48,9 +43,6 @@ extern s32 gTextWindowHistoryWriteIndex;
 /// Oldest retained boundary in the window page-history ring.
 /// \note Original identifier: \c D_800F1AB8 (0x800F1AB8).
 extern s32 gTextWindowHistoryOldestIndex;
-/// Selected buffer of window page text images.
-/// \note Original identifier: \c D_800F1ABC (0x800F1ABC).
-extern s32 gTextWindowPageImageBuffer;
 /// Current shared text-window transition state; four is inactive.
 /// \note Original identifier: \c D_800F1AC0 (0x800F1AC0).
 extern s32 gTextWindowState;

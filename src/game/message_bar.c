@@ -437,9 +437,6 @@ extern s8 gCollectionScoreTextFormat;
 /// Accumulated collection value awarded to the player at the end of results.
 /// \note Original identifier: \c D_800F0BD8 (0x800F0BD8).
 extern s32 gCollectionPresentationScore;
-/// Owned text image for the current collection score, or zero before creation.
-/// \note Original identifier: \c D_800F0BE4 (0x800F0BE4).
-extern TextImage *gCollectionPresentationScoreImage;
 
 /// Live item displayed during collection results, or zero when none is shown.
 /// \note Original identifier: \c D_800F0BDC (0x800F0BDC).
