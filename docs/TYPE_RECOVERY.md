@@ -1790,3 +1790,14 @@ and camera-storage consumers explicitly select the vector view. Ghidra 0x80009CA
 confirms component differences and the approximate-length call; its inferred void
 return is contradicted by the source and result-consuming callers. All four units
 preserve all 483 objects and strict relocation addends.
+
+### Actor axis-rotation interfaces
+
+`actor_rotation.h` consolidates set/add contracts across the provider and seven
+callers, including the movement caller's former integer actor argument. The
+contract specifies axis bounds, finite angles and normalized results. Ghidra
+0x80015F94 confirms the actor-state orientation base at 0x0C and normalization.
+The provider uses the shared object state pointer. Replacing its shifted scalar
+views with direct `ActorScriptState.orientation` accesses changes generated code;
+those views remain a matching exception pending IDO allocation evidence. Each
+accepted source-unit change preserves all 483 objects and strict relocations.

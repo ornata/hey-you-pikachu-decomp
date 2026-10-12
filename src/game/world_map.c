@@ -1,3 +1,4 @@
+#include "actor_rotation.h"
 #include "object_flags.h"
 #include "hud_draw.h"
 #include "backdrop_draw.h"
@@ -414,7 +415,6 @@ void actionScriptStop();
 void actionScriptStartWithMode();
 void actionStopPlayback(u8 *);
 f32 vector3GetYawDegrees(f32 *);
-void actorAddRotationAxisDegrees(u8 *, f32, s32);
 void actorSetBehaviorInhibitFlags(u8 *, u16);
 
 /// Prepare the active actor to face the camera and track the selected map destination.

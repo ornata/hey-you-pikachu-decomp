@@ -1,3 +1,4 @@
+#include "actor_rotation.h"
 #include "backdrop_draw.h"
 #include "common.h"
 #include "item_text.h"
@@ -416,7 +417,6 @@ extern f32 gPresentationActorJointMidpointHeight;
 f32 vector3GetYawDegrees(f32 *);
 void actionStopPlayback(u8 *);
 void actionScriptStartWithMode(u8 *, s32, s32);
-void actorAddRotationAxisDegrees(u8 *, f32, s32);
 void actorSetBehaviorInhibitFlags(u8 *, u16);
 void presentationPlaceActiveActor(void *);
 void presentationResetFocusPoint(u8 *);

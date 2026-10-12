@@ -1,3 +1,4 @@
+#include "actor_rotation.h"
 #include "object_movement.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -16,9 +17,7 @@ s32 actorAdvanceWithScaleOscillation(f32 *, f32);
 s32 actorAdvanceWithGroundClearance(s32, f32);
 s32 actorTurnAwayFromPlayer(s32, f32);
 s32 actorBackstepTowardTarget(s32, f32);
-void actorAddRotationAxisDegrees(u8 *, f32, s32);
 void actionRequestLoopExit(s32);
-void actorSetRotationAxisDegrees(s32, f32, s32);
 f32 vector3Length(f32 *);
 f32 mathWrapSignedDegrees(f32);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
@@ -529,7 +528,7 @@ s32 actorFaceTargetPosition(u8 *object) {
     direction.y = 0.0f;
     direction.z = target[2] - position[2];
     angle = vector3GetYawDegrees((f32 *)&direction);
-    actorSetRotationAxisDegrees((s32)object, angle, 1);
+    actorSetRotationAxisDegrees(object, angle, 1);
     return 1;
 }
 

@@ -1,3 +1,4 @@
+#include "actor_rotation.h"
 /// \file
 /// Native script commands for messages, items, and microphone configuration.
 /// \ingroup ActorScriptVm
@@ -292,7 +293,6 @@ s32 actorScriptMoveToTargetPosition(u8 *actor) {
     return 0;
 }
 
-void actorSetRotationAxisDegrees(u8 *, f32, s32); /* extern */
 
 /// Set one axis of the actor's rotation from script arguments.
 /// \param actor Actor whose script VM supplies a finite angle in degrees followed by axis zero (pitch), one (yaw), or two (roll), and receives zero.

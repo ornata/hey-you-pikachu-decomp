@@ -1,3 +1,4 @@
+#include "actor_rotation.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "direction_animation.h"
@@ -60,7 +61,6 @@ void matrix33GetFoldedEulerDegrees(f32 *, u8 *, u8 *, u8 *);
 extern Matrix34 gObjectTraversalTransform;
 s32 actorFindPartIndex(s32, s32);
 void actorUpdateAnimatedTextureDrawLists(u8 *, s32);
-void actorSetRotationAxisDegrees(u8 *, f32, s32);
 void actorPopulatePartTable(u8 *, u8 *);
 void actorInitializeChildMotionState(void *);
 /// Framebuffer and command-buffer index for the current frame.
@@ -313,7 +313,6 @@ extern f32 gRuntimeFrameSeconds;
 f32 mathUnitDirectionDegrees(f32, f32);
 f32 mathSinDegrees(f32);
 f32 mathCosDegrees(f32);
-void actorAddRotationAxisDegrees(u8 *, f32, s32);
 f32 terrainGetWorldHeight(f32, f32, f32, u8 **);
 f32 mathWrapSignedDegrees(f32);
 f32 mathApproachAngleDegrees(f32, f32, f32, f32, f32);
@@ -748,7 +747,7 @@ void actorSetRotationAxisDegrees(u8 *actor, f32 angle, s32 axis) {
     u8 *obj;
     s32 off;
 
-    obj = *(u8 **)(actor + 0x54);
+    obj = ((RuntimeObjectPrefix *)actor)->state.bytes;
     off = axis * 4;
     if (angle < 0.0f) {
         do {
@@ -773,7 +772,7 @@ void actorAddRotationAxisDegrees(u8 *actor, f32 angle, s32 axis) {
     u8 *obj;
     f32 *p;
 
-    obj = *(u8 **)(actor + 0x54);
+    obj = ((RuntimeObjectPrefix *)actor)->state.bytes;
     p = &((f32 *)obj)[axis];
     p[3] = p[3] + angle;
     while (p[3] < 0.0f) {

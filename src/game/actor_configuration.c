@@ -1,3 +1,4 @@
+#include "actor_rotation.h"
 #include "object_transform.h"
 #include "object_bounds.h"
 #include "object_matrix_buffers.h"
@@ -530,7 +531,6 @@ s32 actorAssetGetCachedStorage(s32 kind) {
 }
 
 void objectPrepareDistributedKindSearches(u16, s32);
-void actorAddRotationAxisDegrees(u8 *, f32, s32);
 void actorInitializeAnimatedTextures(u8 *, s32 *);
 void actorPopulatePartTable(u8 *, u8 *);
 void actorAssetQueueLoadForKind(s32);

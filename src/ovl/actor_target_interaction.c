@@ -1,3 +1,4 @@
+#include "actor_rotation.h"
 #include "object_movement.h"
 /// \file
 /// Actor targeting, interaction, and script-message delivery.
@@ -54,7 +55,6 @@ extern f32 fabsf(f32);
 f32 vector3GetYawDegrees(f32 *);
 f32 actorConstrainFacingHeading(u8 *, f32);
 f32 mathApproachAngleDegrees(f32, f32, f32, f32, f32);
-void actorAddRotationAxisDegrees(u8 *, f32, s32);
 f32 mathWrapSignedDegrees(f32);
 /// Turn an actor toward its stored target position while respecting facing constraints.
 /// \param object Actor whose horizontal facing is updated.

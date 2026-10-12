@@ -1,3 +1,4 @@
+#include "actor_rotation.h"
 #include "object_movement.h"
 /* harvested: matched m2c drafts; pending style pass */
 /* Action and motion state machine. The unit starts at motionExtractHeadingFromMatrix: its
@@ -37,7 +38,6 @@ extern u8 gActionDefinitions[];
 f32 mathUnitDirectionDegrees(f32, f32);
 void matrix34RotateWorldYDegrees(f32, f32 *);
 void motionExtractHeadingFromMatrix(f32 *, f32 *);
-void actorAddRotationAxisDegrees(u8 *, f32, s32);
 void matrix34MakeRotationXYZDegrees(f32 *, f32, f32, f32);
 void matrix34BlendOrientation(f32, f32 *, f32 *, f32 *);
 void motionRequestCurrentData(u8 *);
