@@ -1,3 +1,4 @@
+#include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
 /* Item objects. .rodata is the item-kind text (initializer order), then the
  * debug-trace formats in function order, then the late float/jump tables. */
@@ -1911,7 +1912,6 @@ void itemShrink(u8 *item, f32 rate) {
 }
 
 void collisionGridUnregisterObject(s32, s32 *);         /* extern */
-void heapFreeLocal(u8 *, u8 *); /* extern */
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;

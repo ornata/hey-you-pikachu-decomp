@@ -1,8 +1,8 @@
+#include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "heap_alloc.h"
 #include "object_types.h"
-void heapFreeLocal(u8 *, s32);
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
@@ -116,8 +116,8 @@ void groundShadowUpdateTransform(u8 *object) {
 /// \note Original decompilation identifier: \c func_800366BC (0x800366BC).
 void groundShadowReleaseGeometry(u8 *object) {
     u8 *shadowState = *(u8 **)(object + 0x54);
-    heapFreeLocal(&gGameHeap, *(s32 *)(shadowState + 8));
-    heapFreeLocal(&gGameHeap, *(s32 *)(shadowState + 0xC));
+    heapFreeLocal(&gGameHeap, *(void **)(shadowState + 8));
+    heapFreeLocal(&gGameHeap, *(void **)(shadowState + 0xC));
 }
 
 void _bzero(void *, s32);

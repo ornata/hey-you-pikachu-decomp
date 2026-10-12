@@ -1,3 +1,4 @@
+#include "heap_free.h"
 /// \file
 /// Voice-command translation and scrolling text-panel support.
 /// \ingroup VoiceInteraction
@@ -14,7 +15,6 @@
 /// Shared text-image configurations selected by text panels, menus and message styles.
 /// \note Original identifier: \c D_80074DE0 (0x80074DE0).
 extern u8 gTextImageConfigurations[];
-void heapFreeLocal(u8 *, void *);
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
@@ -279,7 +279,7 @@ void textPanelInitialize(TextPanel *panel, s32 visibleLines) {
 /// \note Original decompilation identifier: \c osStopTimer (0x8001282C).
 void textPanelReleaseEntries(TextPanel *panel) {
     textPanelClear(panel);
-    heapFreeLocal((u8 *)&gGameHeap, panel->images);
+    heapFreeLocal(&gGameHeap, panel->images);
 }
 
 void textDrawSetArea(s32, s32, s32, s32);

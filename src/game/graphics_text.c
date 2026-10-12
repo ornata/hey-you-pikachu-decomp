@@ -1,3 +1,4 @@
+#include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "text_draw.h"
@@ -1096,7 +1097,7 @@ s32 textImageCreateCustomFont(TextImage **out, u8 *text, s32 *font) {
                                     scanline[i] &= ((u32)color << 4) + (u32)color;
                             }
                             bcopy(scanline + cropOffset, dest, inkWidth);
-                            heapFreeLocal(&gGameHeap, (s32)scanline);
+                            heapFreeLocal(&gGameHeap, scanline);
                             row++;
                             dest += destinationStride;
                             glyph += rowBytes;
@@ -1667,8 +1668,8 @@ s32 fontImageGetGlyphIndex(s32 code, s32 unused) {
 /// \note Original decompilation identifier: \c func_8003F650 (0x8003F650).
 void textImageDestroy(TextImage *image) {
     if (image != NULL) {
-        heapFreeLocal(&gGameHeap, *(s32 *)image);
-        heapFreeLocal(&gGameHeap, (s32)image);
+        heapFreeLocal(&gGameHeap, image->pixels);
+        heapFreeLocal(&gGameHeap, image);
     }
 }
 

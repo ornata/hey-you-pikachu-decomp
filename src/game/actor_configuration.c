@@ -1,3 +1,4 @@
+#include "heap_free.h"
 #include "heap_tail.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -538,7 +539,6 @@ void actorPopulatePartTable(u8 *, u8 *);
 void actorAssetQueueLoadForKind(s32);
 u8 *orbitFollowerCreate(u8 *, f32, f32, f32);
 u8 *groundShadowCreate(s32, f32);
-void heapFreeLocal(u8 *, void *);
 u8 *scriptVmCreate(u8 *);
 /// Separate symbol view of the actor-kind configuration for Pikachu, kind 0x25.
 /// \note Original identifier: \c D_80088BEC (0x80088BEC).
@@ -683,7 +683,7 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
                                     asset->dataEnd - (s32)sp50, asset->remaining[1] - (s32)sp50,
                                     asset->remaining[2] - (s32)sp50);
             heapDebugReportFreeSpace(&gGameHeap, (const char *)gActorStagingReleaseStartHeapLabel);
-            heapFreeLocal((u8 *)&gGameHeap, (void *)gActorCompressedAssetStaging);
+            heapFreeLocal(&gGameHeap, (void *)gActorCompressedAssetStaging);
             gActorCompressedAssetStaging = 0;
             heapDebugReportFreeSpace(&gGameHeap, (const char *)gActorStagingReleasedHeapLabel);
         }

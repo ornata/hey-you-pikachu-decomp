@@ -1,3 +1,4 @@
+#include "heap_free.h"
 /// \file
 /// Flipbook text and messenger effects that deliver actor messages.
 /// \ingroup VoiceInteraction
@@ -53,7 +54,6 @@ extern u8 gMessengerDissipationAnimation[];
 /// Handle of the most recently launched messenger, or zero when no messenger is tracked.
 /// \note Original identifier: \c gzip_data_0000 (0x80099960).
 extern s32 gTrackedMessengerHandle;
-void heapFreeLocal(u8 *, void *);
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
@@ -120,7 +120,7 @@ void flipbookInitialize(u8 *object, s32 columns, s32 lines, u8 red, u8 green, u8
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80025170 (0x80025170).
 void flipbookDestroy(Flipbook *object) {
-    heapFreeLocal((u8 *)&gGameHeap, object->displayList);
+    heapFreeLocal(&gGameHeap, object->displayList);
     textPanelReleaseEntries(&object->panels[0]);
     textPanelReleaseEntries(&object->panels[1]);
 }
@@ -394,7 +394,7 @@ void scrollBoardDestroyObject(u8 *object) {
     u8 *p = *(u8 **)(object + 0x54);
 
     flipbookDestroy((Flipbook *)(p + 0x14));
-    heapFreeLocal((u8 *)&gGameHeap, p);
+    heapFreeLocal(&gGameHeap, p);
 }
 
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
@@ -711,7 +711,7 @@ void messengerInitializeObject(u8 *object) {
 void messengerDestroyObject(u8 *object) {
     s32 v = *(s32 *)(object + 0x54);
 
-    heapFreeLocal((u8 *)&gGameHeap, (void *)v);
+    heapFreeLocal(&gGameHeap, (void *)v);
 }
 
 /// Begin homing when the messenger launch period has ended.

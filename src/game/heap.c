@@ -1,3 +1,4 @@
+#include "heap_free.h"
 #include "heap_tail.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -331,7 +332,7 @@ HpBlk *heapCombinePreviousFree(u8 *, HpBlk *);
 /// \param allocation Allocated payload to release, or NULL for no operation.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80038548 (0x80038548).
-void heapFreeLocal(u8 *heap, void *allocation) {
+void heapFreeLocal(HpHdr *heap, void *allocation) {
     static char *name = "heapFreeLocal";
     HpBlk *b;
 
@@ -341,14 +342,14 @@ void heapFreeLocal(u8 *heap, void *allocation) {
         return;
     }
     b = (HpBlk *)allocation - 1;
-    if (heapValidateBlock(heap, name, (u8 *)b, 1) == 0) {
+    if (heapValidateBlock((u8 *)heap, name, (u8 *)b, 1) == 0) {
         return;
     }
     b->tag = 0;
-    b = heapCombinePreviousFree(heap, b);
-    heapCombineNextFree(heap, b);
-    if ((u32)b < *(u32 *)(heap + 0xC)) {
-        *(HpBlk **)(heap + 0xC) = b;
+    b = heapCombinePreviousFree((u8 *)heap, b);
+    heapCombineNextFree((u8 *)heap, b);
+    if ((u32)b < (u32)heap->last) {
+        heap->last = b;
         TRACE(("free: hp:%p prev:%p next:%p size:%d owner:%d\n", b, b->prev, b->next, b->size, b->tag));
     }
 }

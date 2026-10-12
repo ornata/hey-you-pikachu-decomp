@@ -1,3 +1,4 @@
+#include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "integer_animation.h"
@@ -6,7 +7,6 @@
 #include "heap_alloc.h"
 #include "object_types.h"
 void objectDebugReportNoOp(u8 *);
-void heapFreeLocal(u8 *, s32);
 /// Model display-list addresses indexed by appearance slot zero variant.
 /// \note Original identifier: \c D_800760C4 (0x800760C4).
 extern s32 gActorAppearanceSlot0Models[];
@@ -198,7 +198,7 @@ void actorPartInitializeAnimatedTextures(u8 *object) {
 void actorPartReleaseAnimatedTextures(u8 *object) {
     s32 textureStateAddress = *(s32 *)(object + 0x54);
     collisionGridUnregisterObject(object, textureStateAddress + 0x554, textureStateAddress);
-    heapFreeLocal(&gGameHeap, textureStateAddress);
+    heapFreeLocal(&gGameHeap, (void *)textureStateAddress);
 }
 
 /// Provide an inactive model-part initialization hook shared by two part kinds.

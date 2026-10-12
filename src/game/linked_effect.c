@@ -1,3 +1,4 @@
+#include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "object_audio.h"
@@ -27,10 +28,9 @@ typedef struct MotionState {
 } MotionState;
 
 void _bzero(void *, s32); /* extern */
-void heapFreeLocal();
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern u8 gGameHeap[];
+extern HpHdr gGameHeap;
 void textureLoadForDraw(Gfx **, s32, s16);
 /// Write cursor for the active graphics command list; also marks the camera-storage end.
 /// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
@@ -70,7 +70,7 @@ void linkedEffectDestroy(u8 *object) {
     if (nextEffect != 0) {
         *(u8 **)((new_var2 = *(u8 **)(nextEffect + 0x54)) + 4) = previousEffect;
     }
-    heapFreeLocal(gGameHeap, effectState);
+    heapFreeLocal(&gGameHeap, effectState);
 }
 
 f32 vector3Normalize(f32 *);

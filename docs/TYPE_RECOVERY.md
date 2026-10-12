@@ -638,3 +638,21 @@ rather than a byte array. Each source-unit change matches the preserved object
 baseline. The separate header avoids imposing the regular allocator prototype
 on consumers that still retain documented extra-argument matching constraints.
 Heap release declarations and their extra-argument call sites remain under audit.
+
+### Heap release ownership and ordinary callers
+
+`heap_free.h` provides the canonical `heapFreeLocal(HpHdr *, void *)` contract:
+storage must belong to the supplied heap, NULL is accepted, and released storage
+must no longer be used. Ghidra at `0x80038548` confirms two consumed arguments,
+the null case and the heap allocation-cursor update. The producer now uses the
+shared heap record for that cursor; helper boundaries retain explicit byte views.
+All ordinary callers include the shared interface. Asset scratch allocations and
+text-image cleanup retain pointer types rather than converting to integer addresses.
+The response heap is now an `HpHdr`, with pointer-typed owned backing storage;
+its existing size, alignment and BSS placement match the preserved baseline.
+
+Five source units still require legacy release declarations: keyed and node pools,
+actor model motion, particle effects and the word map. Their existing unused
+third arguments remain documented matching exceptions rather than being folded
+into the two-argument public contract. The unused controller declaration was removed.
+Every changed source unit passes strict comparison against all 483 baseline objects.

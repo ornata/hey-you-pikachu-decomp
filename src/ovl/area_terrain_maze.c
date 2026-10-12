@@ -1,3 +1,4 @@
+#include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "heap_diagnostics.h"
@@ -1886,7 +1887,6 @@ void mazeConfigureEventLinks(void) {
     }
 }
 
-void heapFreeLocal(u8 *, u8 *); /* extern */
 
 /// Release a maze node and its associated objects, invoking its configured leave callback when present.
 /// \param node Owned maze node to release after its descendants have been handled; invalid after this call.

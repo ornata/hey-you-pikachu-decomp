@@ -1,3 +1,4 @@
+#include "heap_free.h"
 #include "common.h"
 #include "audio_cue.h"
 #include "asset_loader.h"
@@ -149,7 +150,6 @@ void eyeCatchBegin(void) {
 #undef EYE_TRACKS
 #undef EYE_GROUP
 
-void heapFreeLocal(u8 *, void *); /* extern */
 /// Whether foreground drawing and its fade-in are enabled.
 /// \note Original identifier: \c D_800F2604 (0x800F2604).
 extern s32 gEyeCatchForegroundVisible;
@@ -163,13 +163,13 @@ extern s32 gEyeCatchAudioStage;
 /// \note Original decompilation identifier: \c func_80036F74 (0x80036F74).
 void eyeCatchRelease(void) {
     void *tracks;
-    heapFreeLocal((u8 *)&gGameHeap, (void *)gEyeCatchModelViewMatrix);
-    heapFreeLocal((u8 *)&gGameHeap, (void *)gEyeCatchProjectionMatrix);
-    heapFreeLocal((u8 *)&gGameHeap, (void *)gEyeCatchBackdropVertices);
+    heapFreeLocal(&gGameHeap, (void *)gEyeCatchModelViewMatrix);
+    heapFreeLocal(&gGameHeap, (void *)gEyeCatchProjectionMatrix);
+    heapFreeLocal(&gGameHeap, (void *)gEyeCatchBackdropVertices);
     assetFree((void *)gEyeCatchForegroundImage);
     tracks = (void *)gEyeCatchAnimationTracks;
     if (tracks != NULL) {
-        heapFreeLocal((u8 *)&gGameHeap, tracks);
+        heapFreeLocal(&gGameHeap, tracks);
     }
     gEyeCatchForegroundImage = 0;
     gEyeCatchActiveGroup = 0;

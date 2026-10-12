@@ -1,3 +1,4 @@
+#include "heap_free.h"
 #include "heap_tail.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -286,7 +287,6 @@ s32 backdropLoadRomRange(s32 romStart, s32 romEnd) {
     return buf;
 }
 
-void heapFreeLocal(u8 *, s32);
 
 /// Load a backdrop asset into an allocated view buffer.
 /// \param idx Valid view index with a backdrop buffer large enough for the decoded asset.
@@ -295,10 +295,10 @@ void heapFreeLocal(u8 *, s32);
 /// \note Original decompilation identifier: \c func_80033854 (0x80033854).
 void backdropLoadAsset(s32 idx, AssetDescriptor *info) {
     s32 pad; /* unused, sizes the frame */
-    s32 buf;
+    u8 *buf;
 
-    buf = (s32)heapAllocTailLocal(&gGameHeap, info->encodedEnd - info->rangeBase, 0x2C8);
-    assetLoadAndPatchFromRom(info->romAddress, (u8 *)gRenderCameraBackdropImages[idx][0], (u8 *)buf,
+    buf = heapAllocTailLocal(&gGameHeap, info->encodedEnd - info->rangeBase, 0x2C8);
+    assetLoadAndPatchFromRom(info->romAddress, (u8 *)gRenderCameraBackdropImages[idx][0], buf,
                              info->encodedEnd - info->rangeBase, info->decodedEnd - info->rangeBase,
                              info->patchStart - info->rangeBase, info->patchCountValue - info->rangeBase);
     heapFreeLocal(&gGameHeap, buf);

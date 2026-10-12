@@ -1,3 +1,4 @@
+#include "heap_free.h"
 #include "common.h"
 #include "heap_alloc.h"
 #include "rom_dma.h"
@@ -74,7 +75,6 @@ void romDmaInitializeQueue(DmaQueue *queueState, s32 capacity) {
     queueState->capacity = capacity;
 }
 
-void heapFreeLocal(u8 *, void *);
 
 /// Wait for outstanding ROM reads, then release the queue's resources.
 /// \param queueState Previously initialized DMA-queue state.
@@ -82,8 +82,8 @@ void heapFreeLocal(u8 *, void *);
 /// \note Original decompilation identifier: \c romDmaDestroyQueue (0x80037C74).
 void romDmaDestroyQueue(DmaQueue *queueState) {
     romDmaWaitForQueue(queueState);
-    heapFreeLocal((u8 *)&gGameHeap, queueState->messages);
-    heapFreeLocal((u8 *)&gGameHeap, queueState->queue.msg);
+    heapFreeLocal(&gGameHeap, queueState->messages);
+    heapFreeLocal(&gGameHeap, queueState->queue.msg);
     queueState->pending = 0;
     queueState->cursor = 0;
     queueState->capacity = 0;

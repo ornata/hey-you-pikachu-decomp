@@ -1,9 +1,9 @@
+#include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "object_lookup.h"
 #include "keyed_pool_types.h"
 #include "scene_types.h"
-#include "keyed_pool_types.h"
 #include "heap_alloc.h"
 #include "object_types.h"
 
@@ -27,10 +27,10 @@ s8 gDoorDescriptionBuffer[0xC8];
 u8 gDoorAccessDescriptionBuffer[0xC8];
 /// Owned storage backing the object-response heap.
 /// \note Original identifier: \c D_800B6B50 (0x800B6B50).
-s32 gObjectResponseHeapStorage;
+u8 *gObjectResponseHeapStorage;
 /// Heap header for queued response records and their owned payloads.
 /// \note Original identifier: \c D_800B6B58 (0x800B6B58).
-u8 gObjectResponseHeap[0x10];
+HpHdr gObjectResponseHeap;
 /// Keyed pool indexing pending responses by target object handle.
 /// \note Original identifier: \c D_800B6B68 (0x800B6B68).
 u8 gObjectResponseRegistry[0x28];
@@ -42,7 +42,7 @@ s32 keyedPoolInsert(KeyedPool *, s32, u32, u8 *);
 void objectResponsesClearWithCallback(s32, s32);
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern u8 gGameHeap[];
+extern HpHdr gGameHeap;
 void heapInitializeRegion(void *, s32, s32);
 void keyedPoolInitialize(void *, s32);
 
@@ -78,7 +78,7 @@ u8 *doorCreate(f32 *position, s32 kind, s32 destination, s32 entrance, s32 acces
     TRACE("door object was made, (%3.2f, %3.2f, %3.2f), type = %d, area = %d, entrance = %d\n, lock = %s \n",
           position[0], position[1], position[2], kind, destination, entrance, accessState ? "TRUE" : "FALSE");
     a = objectCreateDefault();
-    p = (u8 *)heapAllocLocal(gGameHeap, 0x10, 0x40);
+    p = (u8 *)heapAllocLocal(&gGameHeap, 0x10, 0x40);
     _bzero((s32)p, 0x10);
     *(s32 *)(p + 4) = destination;
     *(s32 *)(p + 8) = entrance;
@@ -196,11 +196,10 @@ void doorUpdateInteraction(u8 *object) {
 void objectResponsesInitialize(s32 capacity, s32 heapBytes) {
     heapBytes = (heapBytes + 0xF) & ~0xF;
     gObjectResponseHeapStorage = heapAllocLocal(&gGameHeap, heapBytes, 0x33);
-    heapInitializeRegion(&gObjectResponseHeap, gObjectResponseHeapStorage, heapBytes);
+    heapInitializeRegion(&gObjectResponseHeap, (s32)gObjectResponseHeapStorage, heapBytes);
     keyedPoolInitialize(&gObjectResponseRegistry, capacity);
 }
 
-void heapFreeLocal(u8 *, s32); /* extern */
 void keyedPoolDestroy(KeyedPool *); /* extern */
 
 /// Release the queued object-response registry and its storage.
@@ -265,9 +264,9 @@ void objectResponsesClearWithCallback(s32 object, s32 callback) {
                 ((void (*)(s32, u8 *))callback)(object, n);
             }
             if (*(u16 *)(n + 4) & 1) {
-                heapFreeLocal(&gObjectResponseHeap, *(s32 *)(n + 8));
+                heapFreeLocal(&gObjectResponseHeap, *(void **)(n + 8));
             }
-            heapFreeLocal(&gObjectResponseHeap, (s32)n);
+            heapFreeLocal(&gObjectResponseHeap, n);
         } while ((n = keyedPoolIterateNextForKey(gObjectResponseRegistry, key)) != NULL);
     }
     keyedPoolRemoveAllForKey(gObjectResponseRegistry, key);

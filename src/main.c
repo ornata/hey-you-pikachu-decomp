@@ -1,3 +1,4 @@
+#include "heap_free.h"
 #include "heap_tail.h"
 /* harvested: matched m2c drafts; pending style pass */
 /**
@@ -306,20 +307,19 @@ extern u8 *gCurrentAreaConfiguration;
 /// Owned RAM allocation containing the current area rendering assets, or zero when unloaded.
 /// \note Original identifier: \c D_800ABDE0 (0x800ABDE0).
 extern s32 gAreaRenderAssets;
-void heapFreeLocal(u8 *, s32);
 /// Load the current area’s rendering assets for use by its scene.
 /// \returns Nothing; requires a loaded area configuration and no existing area asset allocation to replace.
 void renderLoadAreaAssets(void) {
     s32 outputSize;
     s32 scratchSize;
-    s32 temporary;
+    u8 *temporary;
     outputSize = *(u32 *)(gCurrentAreaConfiguration + 0x54) - *(u32 *)(gCurrentAreaConfiguration + 0x50);
     gAreaRenderAssets = (s32)heapAllocLocal(&gGameHeap, outputSize, 0x140);
     heapDebugNoOp(&gGameHeap, gAreaRenderAssets);
     scratchSize = (s32)(*(u32 *)(gCurrentAreaConfiguration + 0x60) - *(u32 *)(gCurrentAreaConfiguration + 0x50)) * 8 +
                   (s32)(*(u32 *)(gCurrentAreaConfiguration + 0x58) - *(u32 *)(gCurrentAreaConfiguration + 0x50));
-    temporary = (s32)heapAllocTailLocal(&gGameHeap, scratchSize, 0x14C);
-    assetLoadAndPatchFromRom(*(u32 *)(gCurrentAreaConfiguration + 0x48), (u8 *)gAreaRenderAssets, (u8 *)temporary,
+    temporary = heapAllocTailLocal(&gGameHeap, scratchSize, 0x14C);
+    assetLoadAndPatchFromRom(*(u32 *)(gCurrentAreaConfiguration + 0x48), (u8 *)gAreaRenderAssets, temporary,
                              *(u32 *)(gCurrentAreaConfiguration + 0x58) - *(u32 *)(gCurrentAreaConfiguration + 0x50),
                              *(u32 *)(gCurrentAreaConfiguration + 0x54) - *(u32 *)(gCurrentAreaConfiguration + 0x50),
                              *(u32 *)(gCurrentAreaConfiguration + 0x5C) - *(u32 *)(gCurrentAreaConfiguration + 0x50),
@@ -331,7 +331,7 @@ void renderLoadAreaAssets(void) {
 /// Release the current area’s rendering asset allocation.
 /// \returns Nothing; requires a previously loaded area asset allocation.
 void renderUnloadAreaAssets(void) {
-    heapFreeLocal(&gGameHeap, gAreaRenderAssets);
+    heapFreeLocal(&gGameHeap, (void *)gAreaRenderAssets);
     gAreaRenderAssets = 0;
 }
 

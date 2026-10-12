@@ -1,3 +1,4 @@
+#include "heap_free.h"
 #include "heap_tail.h"
 #include "common.h"
 #include "heap_types.h"
@@ -48,10 +49,9 @@ s32 archiveBuildFromSources(s32 memberCount, s32 *sourceAddresses, s32 *sourceBy
 
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern u8 gGameHeap[];
+extern HpHdr gGameHeap;
 void *heapAllocLocal(HpHdr *, u32, u16);
 s32 heapGetAllocationSize(u8 *, s32);
-void heapFreeLocal(u8 *, void *);
 
 /// Reuse an output allocation if large enough, otherwise free and replace it.
 /// Existing contents are not copied into a replacement allocation.
@@ -63,11 +63,11 @@ void heapFreeLocal(u8 *, void *);
 void *archiveResizeOutputBuffer(void *outputBuffer, s32 requiredBytes) {
     /* Keep free and allocation on one line: IDO builds a0 before reloading size. */
     if (outputBuffer == NULL) {
-        return heapAllocLocal((HpHdr *)gGameHeap, (u32)requiredBytes, 0x3E);
+        return heapAllocLocal(&gGameHeap, (u32)requiredBytes, 0x3E);
     }
-    if (heapGetAllocationSize(gGameHeap, (s32)outputBuffer) < requiredBytes) {
+    if (heapGetAllocationSize((u8 *)&gGameHeap, (s32)outputBuffer) < requiredBytes) {
         // clang-format off
-        heapFreeLocal(gGameHeap, outputBuffer); return heapAllocLocal((HpHdr *)gGameHeap, (u32)requiredBytes, 0x41);
+        heapFreeLocal(&gGameHeap, outputBuffer); return heapAllocLocal(&gGameHeap, (u32)requiredBytes, 0x41);
         // clang-format on
     }
     return outputBuffer;
@@ -120,12 +120,12 @@ void *archiveLoadMember(s32 memberIndex, s32 archiveAddress, void *outputBuffer)
         entry = archiveAddress + memberIndex * sizeof(s32);
     }
     length = romDmaReadWord(entry + 4) - start;
-    buffer = heapAllocTailLocal((HpHdr *)gGameHeap, (u32)length, 0x5F);
+    buffer = heapAllocTailLocal(&gGameHeap, (u32)length, 0x5F);
     romDmaReadBlocking(archiveAddress + start, buffer, length);
     size = archiveGetMemberDecodedSize(memberIndex, (s32 *)archiveAddress);
     outputBuffer = archiveResizeOutputBuffer(outputBuffer, size);
     archiveDecompressMember(buffer, outputBuffer);
-    heapFreeLocal(gGameHeap, buffer);
+    heapFreeLocal(&gGameHeap, buffer);
     return outputBuffer;
 }
 

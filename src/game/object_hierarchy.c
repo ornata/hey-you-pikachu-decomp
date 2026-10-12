@@ -1,3 +1,4 @@
+#include "heap_free.h"
 #include "common.h"
 #include "object_audio.h"
 #include "integer_animation.h"
@@ -85,7 +86,6 @@ void objectRequestHierarchyDestruction(u8 *);
 /// \note Original identifier: \c D_800AE3A8 (0x800AE3A8).
 extern NodePool gActiveObjectHierarchies;
 void objectResponsesDiscard(s32);
-void heapFreeLocal();
 void searchTreeRemove(void *, u8 *);
 void keyedPoolRemoveFirstForKey(void *, s32);
 /// Object callback table viewed at destruction callbacks, with twenty-four bytes per kind.
@@ -99,7 +99,7 @@ extern u8 gObjectHandlePool[];
 extern u8 gObjectSearchTree[];
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern u8 gGameHeap[];
+extern HpHdr gGameHeap;
 u8 *objectCreateFromTemplate(u8 *);
 void objectDestroy(u8 *);
 u8 *objectCloneTemplateHierarchy(u8 *, u8 *);
@@ -737,7 +737,7 @@ s32 keyedPoolInsertWithNextId(u8 *, u8 *);
 /// \note Original decompilation identifier: \c func_80008160 (0x80008160).
 u8 *objectCreateFromTemplate(u8 *definition) {
     ObjHead38 *tmpl = (ObjHead38 *)definition;
-    u8 *o = heapAllocLocal(gGameHeap, 0x68, 0x275);
+    u8 *o = heapAllocLocal(&gGameHeap, 0x68, 0x275);
     void (*init)(u8 *);
 
     _bzero(o, 0x5C);
@@ -805,7 +805,7 @@ void objectAllocateHierarchyMatrixBuffers(s32 root) {
     s32 n;
 
     n = objectAccumulateHierarchyCount((u8 *)root, 0);
-    *(u8 **)(root + 0x3C) = heapAllocLocal(gGameHeap, n << 7, 0x2F4);
+    *(u8 **)(root + 0x3C) = heapAllocLocal(&gGameHeap, n << 7, 0x2F4);
     for (i = 1; i < 2; i++) {
         ((s32 *)(root + 0x3C))[i] = *(s32 *)(root + 0x3C) + ((n * i) << 6);
     }
@@ -1011,11 +1011,11 @@ void objectDestroy(u8 *object) {
     if (*(u16 *)(object + 0x36) & 4) {
         matrixStorage = *(u8 **)(object + 0x3C);
         if (matrixStorage != NULL) {
-            heapFreeLocal(gGameHeap, matrixStorage);
+            heapFreeLocal(&gGameHeap, matrixStorage);
         }
     }
     keyedPoolRemoveFirstForKey(gObjectHandlePool, *(s32 *)(object + 0x38));
-    heapFreeLocal(gGameHeap, object);
+    heapFreeLocal(&gGameHeap, object);
 }
 
 /// Mark an object hierarchy for deferred destruction and stop its active processing.
@@ -1114,7 +1114,7 @@ void objectInitializeTextureMotion(u8 *object) {
     f32 angle;
     f32 elevation;
     TextureMotion *extent;
-    extent = heapAllocLocal(gGameHeap, 16, 0x491);
+    extent = heapAllocLocal(&gGameHeap, 16, 0x491);
     _bzero(extent, 16);
     packed.word = (u32) * (f32 *)(object + 0x24);
     extent->sMask = (1 << (packed.fields.widthShift + 4)) * 2 - 1;

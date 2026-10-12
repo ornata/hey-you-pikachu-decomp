@@ -1,3 +1,4 @@
+#include "heap_free.h"
 /// \file
 /// Cooperative actor behavior interpreter and script-value operations.
 /// \ingroup ActorScriptVm
@@ -110,7 +111,6 @@ u8 *scriptVmCreate(u8 *config) {
     return scriptVmCreateWithCapacity(config, size);
 }
 
-void heapFreeLocal(u8 *, void *); /* extern */
 
 /// Release a script context and its owned storage.
 /// \param vm Script context to release, or null.
@@ -118,8 +118,8 @@ void heapFreeLocal(u8 *, void *); /* extern */
 /// \note Original decompilation identifier: \c func_801151E4 (0x801151E4).
 void scriptVmDestroy(u8 *vm) {
     if (vm != NULL) {
-        heapFreeLocal((u8 *)&gGameHeap, ((ScriptVm *)vm)->values);
-        heapFreeLocal((u8 *)&gGameHeap, vm);
+        heapFreeLocal(&gGameHeap, ((ScriptVm *)vm)->values);
+        heapFreeLocal(&gGameHeap, vm);
     }
 }
 

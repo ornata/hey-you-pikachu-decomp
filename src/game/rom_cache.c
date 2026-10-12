@@ -1,8 +1,8 @@
+#include "heap_free.h"
 #include "common.h"
 #include "heap_alloc.h"
 #include "rom_cache.h"
 s32 heapInitializeRegion(HpHdr *, s32, s32);
-void heapFreeLocal(u8 *, void *);
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
@@ -30,7 +30,7 @@ void romCacheInitialize(RomCache *cache, s32 heapBytes, s32 entryCount, s32 queu
 void romCacheDestroy(RomCache *cache) {
     romDmaDestroyQueue(&cache->reads);
     keyedPoolDestroy(&cache->index);
-    heapFreeLocal((u8 *)&gGameHeap, (u8 *)cache->storageAddress);
+    heapFreeLocal(&gGameHeap, (u8 *)cache->storageAddress);
 }
 
 /// Allocate an unindexed cache entry and its data storage.
@@ -58,7 +58,7 @@ u8 *romCacheAllocateEntry(s32 cacheAddress, s32 byteCount) {
 /// \note Original decompilation identifier: \c func_8003F80C (0x8003F80C).
 void romCacheRemoveEntry(s32 cacheAddress, u8 *entry) {
     keyedPoolRemoveFirstForKey((s32) & ((RomCache *)cacheAddress)->index, ((CacheEnt *)entry)->key);
-    heapFreeLocal((u8 *)&((RomCache *)cacheAddress)->heap, entry);
+    heapFreeLocal(&((RomCache *)cacheAddress)->heap, entry);
 }
 
 /// Acquire cached cartridge data, starting a ROM read when necessary.

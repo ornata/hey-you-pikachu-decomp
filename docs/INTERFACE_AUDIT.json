@@ -4,17 +4,10 @@
   "records": [
     {
       "code": 709,
-      "file": "src/game/backdrop.c",
-      "line": 304,
+      "file": "src/game/flipbook_messenger.c",
+      "line": 958,
       "diagnostic": "Incompatible pointer type assignment",
-      "expression": "heapFreeLocal(&gGameHeap, buf);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/doors_object_responses.c",
-      "line": 81,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "p = (u8 *)heapAllocLocal(gGameHeap, 0x10, 0x40);"
+      "expression": "messengerAdvancePosition(object);"
     },
     {
       "code": 709,
@@ -57,62 +50,6 @@
       "line": 175,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "sprintf(gDoorAccessDescriptionBuffer, \"\\nYou can't get by for some reason.\");"
-    },
-    {
-      "code": 712,
-      "file": "src/game/doors_object_responses.c",
-      "line": 198,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "gObjectResponseHeapStorage = heapAllocLocal(&gGameHeap, heapBytes, 0x33);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/doors_object_responses.c",
-      "line": 198,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "gObjectResponseHeapStorage = heapAllocLocal(&gGameHeap, heapBytes, 0x33);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/doors_object_responses.c",
-      "line": 211,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "heapFreeLocal(&gGameHeap, gObjectResponseHeapStorage);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/doors_object_responses.c",
-      "line": 268,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "heapFreeLocal(&gObjectResponseHeap, *(s32 *)(n + 8));"
-    },
-    {
-      "code": 709,
-      "file": "src/game/doors_object_responses.c",
-      "line": 270,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "heapFreeLocal(&gObjectResponseHeap, (s32)n);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/doors_object_responses.c",
-      "line": 327,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "allocation = heapAllocLocal(&gObjectResponseHeap, 0xC, 0xC6);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/actor_model_parts.c",
-      "line": 201,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "heapFreeLocal(&gGameHeap, textureStateAddress);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/flipbook_messenger.c",
-      "line": 958,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "messengerAdvancePosition(object);"
     },
     {
       "code": 709,
@@ -197,13 +134,6 @@
       "line": 1133,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "v->dl[0] = heapAllocLocal(&gGameHeap, v->len * sizeof(Gfx) * 2, 0x4B8);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/ambient_audio.c",
-      "line": 174,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "heapFreeLocal(&gGameHeap, soundState);"
     },
     {
       "code": 712,
@@ -367,13 +297,6 @@
       "expression": "allocation = heapAllocLocal(&gGameHeap, 0x58, 0x38);"
     },
     {
-      "code": 709,
-      "file": "src/game/linked_effect.c",
-      "line": 47,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "allocation = heapAllocLocal(&gGameHeap, 0x58, 0x38);"
-    },
-    {
       "code": 712,
       "file": "src/game/linked_effect.c",
       "line": 455,
@@ -383,7 +306,7 @@
     {
       "code": 712,
       "file": "src/game/graphics_text.c",
-      "line": 1237,
+      "line": 1238,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "if ((fontImageGetCharacterLeft(code, (u8 *)font, 1) == 0) && ((fontImageGetCharacterRight(code, font, 1) + 1) == *font)) {"
     },
@@ -417,6 +340,20 @@
     },
     {
       "code": 712,
+      "file": "src/game/texture_cache.c",
+      "line": 170,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "r = romCacheRead(&gTextureRomCache, texture.img + gTextureArchiveRomStart, size, image);"
+    },
+    {
+      "code": 712,
+      "file": "src/game/texture_cache.c",
+      "line": 175,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "rp = romCacheRead(&gTextureRomCache, texture.pal + gTextureArchiveRomStart, 0x20, palette);"
+    },
+    {
+      "code": 712,
       "file": "src/game/motion_cache.c",
       "line": 51,
       "diagnostic": "illegal combination of pointer and integer",
@@ -438,20 +375,6 @@
     },
     {
       "code": 712,
-      "file": "src/game/texture_cache.c",
-      "line": 170,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "r = romCacheRead(&gTextureRomCache, texture.img + gTextureArchiveRomStart, size, image);"
-    },
-    {
-      "code": 712,
-      "file": "src/game/texture_cache.c",
-      "line": 175,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "rp = romCacheRead(&gTextureRomCache, texture.pal + gTextureArchiveRomStart, 0x20, palette);"
-    },
-    {
-      "code": 712,
       "file": "src/game/terrain_debug_grid.c",
       "line": 107,
       "diagnostic": "illegal combination of pointer and integer",
@@ -463,20 +386,6 @@
       "line": 151,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "((RuntimeObjectPrefix *)object)->state.address = heapAllocLocal(&gGameHeap, 0x18, 0x59);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/ground_shadow.c",
-      "line": 119,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "heapFreeLocal(&gGameHeap, *(s32 *)(shadowState + 8));"
-    },
-    {
-      "code": 709,
-      "file": "src/game/ground_shadow.c",
-      "line": 120,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "heapFreeLocal(&gGameHeap, *(s32 *)(shadowState + 0xC));"
     },
     {
       "code": 709,
@@ -550,13 +459,6 @@
     },
     {
       "code": 709,
-      "file": "src/game/node_pool.c",
-      "line": 19,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "pool->nodes = (PoolNode *)heapAllocLocal(gGameHeap, count * sizeof(PoolNode), 0x13);"
-    },
-    {
-      "code": 709,
       "file": "src/game/voice_commands_text_panel.c",
       "line": 185,
       "diagnostic": "Incompatible pointer type assignment",
@@ -584,25 +486,11 @@
       "expression": "osCreateMesgQueue(reader + 0x418, reader + 0x430, 1);"
     },
     {
-      "code": 709,
+      "code": 712,
       "file": "src/game/object_hierarchy.c",
-      "line": 740,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "u8 *o = heapAllocLocal(gGameHeap, 0x68, 0x275);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/object_hierarchy.c",
-      "line": 808,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "*(u8 **)(root + 0x3C) = heapAllocLocal(gGameHeap, n << 7, 0x2F4);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/object_hierarchy.c",
-      "line": 1117,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "extent = heapAllocLocal(gGameHeap, 16, 0x491);"
+      "line": 992,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "heapFreeLocal(&gGameHeap, objectState);"
     },
     {
       "code": 709,
@@ -676,6 +564,34 @@
     },
     {
       "code": 709,
+      "file": "src/game/node_pool.c",
+      "line": 19,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "pool->nodes = (PoolNode *)heapAllocLocal(gGameHeap, count * sizeof(PoolNode), 0x13);"
+    },
+    {
+      "code": 709,
+      "file": "src/game/player_profile.c",
+      "line": 33,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "stringCopy(gPlayerProfileName, \"You\");"
+    },
+    {
+      "code": 709,
+      "file": "src/game/motion_playback.c",
+      "line": 713,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "wordMapDestroy(&gActionPoseTransitionMap);"
+    },
+    {
+      "code": 709,
+      "file": "src/game/scene_region.c",
+      "line": 48,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "state = heapAllocLocal(gGameHeap, 0x10, 0x33);"
+    },
+    {
+      "code": 709,
       "file": "src/game/keyed_pool.c",
       "line": 20,
       "diagnostic": "Incompatible pointer type assignment",
@@ -722,41 +638,6 @@
       "line": 420,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "keyedPoolUnlinkOrderedEntry(poolAddress, entry);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/scene_region.c",
-      "line": 48,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "state = heapAllocLocal(gGameHeap, 0x10, 0x33);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/player_profile.c",
-      "line": 33,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "stringCopy(gPlayerProfileName, \"You\");"
-    },
-    {
-      "code": 709,
-      "file": "src/game/motion_playback.c",
-      "line": 713,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "wordMapDestroy(&gActionPoseTransitionMap);"
-    },
-    {
-      "code": 709,
-      "file": "src/main.c",
-      "line": 327,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "heapFreeLocal(&gGameHeap, temporary);"
-    },
-    {
-      "code": 709,
-      "file": "src/main.c",
-      "line": 334,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "heapFreeLocal(&gGameHeap, gAreaRenderAssets);"
     },
     {
       "code": 712,
@@ -878,6 +759,55 @@
       "expression": "((MenuItem *)node)->next = item;"
     },
     {
+      "code": 709,
+      "file": "src/ovl/area_terrain_maze.c",
+      "line": 1611,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "(*(SceneCellType *)((u8 *)((ModelConfigD658 *)gCurrentAreaConfiguration)->kinds + offset)).initialize(node);"
+    },
+    {
+      "code": 712,
+      "file": "src/ovl/area_terrain_maze.c",
+      "line": 1746,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "blockHierarchy = objectCreateHierarchyFromTemplate(objectTemplate);"
+    },
+    {
+      "code": 712,
+      "file": "src/ovl/area_terrain_maze.c",
+      "line": 1812,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "model = objectRegisterActiveHierarchy(objectCreateHierarchyFromTemplate(modelId));"
+    },
+    {
+      "code": 712,
+      "file": "src/ovl/area_terrain_maze.c",
+      "line": 2008,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "areaUpdateNodeVisibility(gAreaMazeRoot);"
+    },
+    {
+      "code": 712,
+      "file": "src/ovl/area_terrain_maze.c",
+      "line": 2092,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "objectRegisterActiveHierarchy(objectMakeHierarchyRoot(mazeObject));"
+    },
+    {
+      "code": 712,
+      "file": "src/ovl/area_terrain_maze.c",
+      "line": 2094,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "mazePrepareNodeObjects(gAreaMazeRoot);"
+    },
+    {
+      "code": 712,
+      "file": "src/ovl/area_terrain_maze.c",
+      "line": 2126,
+      "diagnostic": "illegal combination of pointer and integer",
+      "expression": "mazeDestroyNodeHierarchy(gAreaMazeRoot);"
+    },
+    {
       "code": 712,
       "file": "src/ovl/actor_script_player_world.c",
       "line": 966,
@@ -918,76 +848,6 @@
       "line": 1207,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "resolvedObject = objectResolveAvailableHandle(scriptVmPopInteger(sp1C));"
-    },
-    {
-      "code": 709,
-      "file": "src/ovl/area_terrain_maze.c",
-      "line": 1610,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "(*(SceneCellType *)((u8 *)((ModelConfigD658 *)gCurrentAreaConfiguration)->kinds + offset)).initialize(node);"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/area_terrain_maze.c",
-      "line": 1745,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "blockHierarchy = objectCreateHierarchyFromTemplate(objectTemplate);"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/area_terrain_maze.c",
-      "line": 1811,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "model = objectRegisterActiveHierarchy(objectCreateHierarchyFromTemplate(modelId));"
-    },
-    {
-      "code": 709,
-      "file": "src/ovl/area_terrain_maze.c",
-      "line": 1918,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "heapFreeLocal(&gGameHeap, node);"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/area_terrain_maze.c",
-      "line": 2008,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "areaUpdateNodeVisibility(gAreaMazeRoot);"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/area_terrain_maze.c",
-      "line": 2092,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "objectRegisterActiveHierarchy(objectMakeHierarchyRoot(mazeObject));"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/area_terrain_maze.c",
-      "line": 2094,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "mazePrepareNodeObjects(gAreaMazeRoot);"
-    },
-    {
-      "code": 712,
-      "file": "src/ovl/area_terrain_maze.c",
-      "line": 2126,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "mazeDestroyNodeHierarchy(gAreaMazeRoot);"
-    },
-    {
-      "code": 709,
-      "file": "src/ovl/item_registry.c",
-      "line": 1932,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "heapFreeLocal(&gGameHeap, (u8 *)((ItemStatePrefix *)sp1C)->lighting[0]);"
-    },
-    {
-      "code": 709,
-      "file": "src/ovl/item_registry.c",
-      "line": 1933,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "heapFreeLocal(&gGameHeap, sp1C);"
     },
     {
       "code": 712,
