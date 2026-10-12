@@ -387,3 +387,18 @@ and profile consumers retain pointer locals and convert explicitly where legacy
 item helpers take integer addresses. Other consumers' integer-address locals
 remain visible diagnostics for the next interface pass. No local declarations
 of either lookup remain, and no lookup or filtering behavior changes.
+
+The toolbox continuation shares its eight-byte kind/handle slots and 0x100-byte
+display/storage state in `toolbox_types.h`, with size and offset checks for rows,
+placeholder handles and bonus/purchase entries. Collection presentation reuses
+these types, including the bonus-handle read formerly expressed as base+0xF4.
+Separate linker aliases remain separate declarations; their relocation identities
+and addends are preserved. Slot storage tracks handles without extending object
+lifetime, and replacement/destruction remains controlled by toolbox routines.
+
+Toolbox also reuses the existing texture rectangle and ItemKind records instead
+of private duplicates. Explicit signed-byte casts preserve the old classification
+reads. Its slot writer accepts ToolboxSlot pointers, and frame drawing retains
+object pointers until integer-address drawing calls. Ghidra at 0x8002F088 confirms
+kind/handle writes and removal from active item search. Both source units, and
+the subsequent typed slot-writer change, independently match all 483 objects.

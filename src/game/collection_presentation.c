@@ -1,4 +1,6 @@
 #include "common.h"
+#include "toolbox_types.h"
+#include "item_kind.h"
 #include "object_lookup.h"
 #include "scene_types.h"
 #include "heap_alloc.h"
@@ -944,15 +946,6 @@ void presentationChooseActorResponseToItem(s32 id) {
     actionScriptStart(gPikachuActor, action);
 }
 
-typedef struct ItemSlot298 {
-    s32 model;
-    s32 id;
-} ItemSlot298;
-typedef struct ItemKind298 {
-    u8 prefix[0x71];
-    s8 kind;
-    s16 value;
-} ItemKind298;
 /// Separate view of the retained bonus item slot.
 /// \note Original identifier: \c D_800F1CD0 (0x800F1CD0).
 /// Separate view of the two ten-entry toolbox item rows.
@@ -960,10 +953,10 @@ typedef struct ItemKind298 {
 extern u8 gToolboxItemSlots[], gToolboxBonusSlot[];
 /// Per-kind item motion, rendering, response and description configuration.
 /// \note Original identifier: \c D_80125A40 (0x80125A40).
-extern ItemKind298 gItemKinds[];
+extern ItemKind gItemKinds[];
 /// Owned toolbox display state, item rows, placeholders and special storage slots.
 /// \note Original identifier: \c D_800F1BE0 (0x800F1BE0).
-extern u8 gToolboxState[];
+extern ToolboxState gToolboxState;
 /// Primary controller new and auto-repeated button presses; aliases the repeated word of the processed sample.
 /// \note Original identifier: \c D_800AD54C (0x800AD54C).
 extern s32 gControllerPrimaryRepeatedButtons;
@@ -978,7 +971,7 @@ void presentationChooseActorResponseToItem(s32);
 /// \note Portability: The empty debug check preserves IDO register allocation; its original operand is not recoverable.
 /// \note Original decompilation identifier: \c func_80029814 (0x80029814).
 s32 presentationUpdateItemCollectionSequence(void) {
-    ItemSlot298 *row = (ItemSlot298 *)gToolboxItemSlots;
+    ToolboxSlot *row = (ToolboxSlot *)gToolboxItemSlots;
     static s32 selectionIndex = 0;
     static u32 transitionTime = 0;
     static s32 transitionState = 0;
@@ -988,7 +981,7 @@ s32 presentationUpdateItemCollectionSequence(void) {
     f64 height;
     s32 index;
     s32 id;
-    ItemSlot298 *slot;
+    ToolboxSlot *slot;
     s32 value;
     f32 elapsedTicks;
     gCollectionPresentationItem = 0;
@@ -997,15 +990,15 @@ s32 presentationUpdateItemCollectionSequence(void) {
         for (;;) {
             if (selectionIndex >= 10) {
                 /* The overflow slot's id, read through the D_800F1BE0 base. */
-                if (*(s32 *)(gToolboxState + 0xF4) == 0) {
+                if (gToolboxState.singletons[0].id == 0) {
                     selectionIndex = 0;
                     return 1;
                 }
-                slot = (ItemSlot298 *)gToolboxBonusSlot;
+                slot = (ToolboxSlot *)gToolboxBonusSlot;
             } else {
                 slot = &row[selectionIndex];
             }
-            if (gItemKinds[slot->model].kind != 1 || slot->id == 0) {
+            if ((s8)gItemKinds[slot->kind].itemClass != 1 || slot->id == 0) {
                 selectionIndex++;
                 continue;
             }
@@ -1016,7 +1009,7 @@ s32 presentationUpdateItemCollectionSequence(void) {
         object = objectFindLiveByHandle(id);
         objectClearHierarchyFlags(object, 2);
         slot->id = 0;
-        slot->model = 0;
+        slot->kind = 0;
         transitionTime = runtimeGetElapsedMilliseconds();
         transitionState = 1;
         presentationSetFocusTarget(gPresentationActorFocusTargets);

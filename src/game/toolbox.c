@@ -5,26 +5,12 @@
 #include "item_types.h"
 #include "player_types.h"
 #include "text_image.h"
-typedef struct {
-    s32 kind; ///< Stored item kind, or zero for an empty slot.
-    s32 id;
-} Slot1BE0;
-/* 0x100-byte table: header, two rows, spare IDs, and two singleton records. */
-typedef struct {
-    u8 *objects[3]; /* Base and two linked objects. */
-    s32 spin;       /* 0x0C: signed row rotation step. */
-    f32 rotation;   /* 0x10: reset to 180 degrees by toolboxResetRowRotation. */
-    s32 row;        /* 0x14 */
-    u32 mode;       /* 0x18 */
-    s32 unk1C;
-    u64 timestamp;          /* 0x20: transition clock value. */
-    Slot1BE0 slots[2][10];  /* 0x28: row stride 0x50. */
-    s32 spareIds[10];       /* 0xC8: IDs only, not eight-byte slots. */
-    Slot1BE0 singletons[2]; /* 0xF0 */
-} Table1BE0;
+#include "toolbox_types.h"
+#include "texture_draw_types.h"
+#include "item_kind.h"
 /// Owned toolbox display state, item rows, placeholders and special storage slots.
 /// \note Original identifier: \c D_800F1BE0 (0x800F1BE0).
-Table1BE0 gToolboxState;
+ToolboxState gToolboxState;
 
 /* Debug trace: compiled out in this build, but each format string is still
  * emitted to .rodata. */
@@ -59,12 +45,6 @@ typedef struct {
 typedef struct {
     f32 x, y, z;
 } HomePosEDBC;
-
-/* textureDrawRectangles sprite entry; a texture of -1 ends the list. */
-typedef struct TextureDrawC354 {
-    s32 texture, x, y, width, height, s, t;
-    f32 scaleX, scaleY;
-} TextureDrawC354;
 
 s32 itemGetDisplayName(s32, s32);
 
@@ -186,21 +166,21 @@ extern Unk0C gProgressFieldTypeLimits[];
 extern s32 gProgressFieldTypes[];
 /// Separate view of the retained purchased item slot.
 /// \note Original identifier: \c D_800F1CD8 (0x800F1CD8).
-extern Slot1BE0 gToolboxPurchaseSlot;
+extern ToolboxSlot gToolboxPurchaseSlot;
 /// Separate view of the stored purchased item handle.
 /// \note Original identifier: \c D_800F1CDC (0x800F1CDC).
 extern s32 gToolboxPurchaseHandle;
-void toolboxStoreObjectInSlot(u8 *, u8 *);
+void toolboxStoreObjectInSlot(ToolboxSlot *, u8 *);
 /// Separate view of the retained bonus item slot.
 /// \note Original identifier: \c D_800F1CD0 (0x800F1CD0).
-extern Slot1BE0 gToolboxBonusSlot;
+extern ToolboxSlot gToolboxBonusSlot;
 /// Separate view of the stored bonus item handle.
 /// \note Original identifier: \c D_800F1CD4 (0x800F1CD4).
 extern s32 gToolboxBonusHandle;
 void itemDestroy(u8 *); /* extern */
 /// Owned toolbox display state, item rows, placeholders and special storage slots.
 /// \note Original identifier: \c D_800F1BE0 (0x800F1BE0).
-extern Table1BE0 gToolboxState;
+extern ToolboxState gToolboxState;
 /// Separate view of the two ten-entry toolbox item rows.
 /// \note Original identifier: \c D_800F1C08 (0x800F1C08).
 extern s32 gToolboxItemSlots;
@@ -276,11 +256,11 @@ void toolboxSetObjectScale(s32 handle, f32 scale) {
 /// \param t Initialized toolbox with row zero or one and live handles for its displayed items and placeholders.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002EC74 (0x8002EC74).
-void toolboxScaleCurrentRow(Table1BE0 *t) {
-    Slot1BE0 *s;
+void toolboxScaleCurrentRow(ToolboxState *t) {
+    ToolboxSlot *s;
     s32 i;
     s32 id;
-    Slot1BE0 *row;
+    ToolboxSlot *row;
     s32 v;
 
     row = t->slots[t->row];
@@ -410,7 +390,7 @@ void itemSetMode(u8 *, s32);    /* extern */
 /// \param object Live initialized item to track in storage; must remain live until removed or explicitly destroyed.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002F088 (0x8002F088).
-void toolboxStoreObjectInSlot(u8 *slot, u8 *object) {
+void toolboxStoreObjectInSlot(ToolboxSlot *slot, u8 *object) {
     u8 *objectState;
 
     objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
@@ -421,8 +401,8 @@ void toolboxStoreObjectInSlot(u8 *slot, u8 *object) {
     itemSetMode(object, 5);
     ((ItemStatePrefix *)objectState)->flags = (s32)(((ItemStatePrefix *)objectState)->flags & 0xBFFFFFFF);
     objectSetHierarchyFlags(object, 0x2000);
-    ((Slot1BE0 *)slot)->id = (s32)((RuntimeObjectPrefix *)object)->handle;
-    ((Slot1BE0 *)slot)->kind = (s32)((ItemStatePrefix *)objectState)->kind;
+    slot->id = (s32)((RuntimeObjectPrefix *)object)->handle;
+    slot->kind = (s32)((ItemStatePrefix *)objectState)->kind;
     itemRemoveFromSearchAndCollision(((RuntimeObjectPrefix *)object)->handle);
 }
 
@@ -440,7 +420,7 @@ s32 toolboxStoreObjectAt(s32 object, s32 row, s32 index) {
     s16 objectKind = *(s16 *)(data + 4);
     s8 kind = gItemKindClassEntries[objectKind][0];
     s32 i;
-    Slot1BE0 *slot;
+    ToolboxSlot *slot;
     if (kind == 3 || kind == 2) {
         for (i = 0; i < 10; i++) {
             slot = &gToolboxState.slots[row][i];
@@ -451,7 +431,7 @@ s32 toolboxStoreObjectAt(s32 object, s32 row, s32 index) {
         }
     }
     slot = &gToolboxState.slots[row][index];
-    toolboxStoreObjectInSlot((u8 *)slot, (u8 *)object);
+    toolboxStoreObjectInSlot(slot, (u8 *)object);
     return (s32)slot;
 }
 
@@ -464,7 +444,7 @@ s32 toolboxStoreObjectAt(s32, s32, s32);
 /// \note Original decompilation identifier: \c func_8002F27C (0x8002F27C).
 s32 toolboxStoreObjectInRow(s32 object, s32 row) {
     s32 i;
-    Slot1BE0 *s = gToolboxState.slots[row];
+    ToolboxSlot *s = gToolboxState.slots[row];
 
     TRACE("putItemIntoBox(%s)\n", itemGetDisplayName(*(s16 *)(*(u8 **)(object + 0x54) + 4), 1));
     for (i = 0; i < 10; i++, s++) {
@@ -486,7 +466,7 @@ void toolboxStoreBonusObject(s32 object) {
         itemDestroy(objectFindLiveByHandle(*storedHandle));
     }
     TRACE("putBonusItemIntoBox(%s)\n", itemGetDisplayName(*(s16 *)(*(u8 **)(object + 0x54) + 4), 1));
-    toolboxStoreObjectInSlot((u8 *)&gToolboxBonusSlot, object);
+    toolboxStoreObjectInSlot(&gToolboxBonusSlot, (u8 *)object);
 }
 
 /// Replace the stored purchase item with a new item, destroying the previous item if present.
@@ -499,17 +479,12 @@ void toolboxStorePurchasedObject(s32 object) {
         itemDestroy(objectFindLiveByHandle(*storedHandle));
     }
     TRACE("putPurchaseItemIntoBox(%s)\n", itemGetDisplayName(*(s16 *)(*(u8 **)(object + 0x54) + 4), 1));
-    toolboxStoreObjectInSlot((u8 *)&gToolboxPurchaseSlot, object);
+    toolboxStoreObjectInSlot(&gToolboxPurchaseSlot, (u8 *)object);
 }
 
-typedef struct {
-    u8 pad0[0x71];
-    s8 f71;
-    s16 f72;
-} Unk74;
 /// Per-kind item motion, rendering, response and description configuration.
 /// \note Original identifier: \c D_80125A40 (0x80125A40).
-extern Unk74 gItemKinds[];
+extern ItemKind gItemKinds[];
 s32 progressSetValue(s32, s32);
 
 /// Record acquisition of a supply item in persistent progress.
@@ -519,14 +494,14 @@ s32 progressSetValue(s32, s32);
 s32 toolboxRecordSupplyItem(s32 itemKind) {
     s16 availabilityFlag;
     s8 supplyCategory;
-    Unk74 *itemRecord;
+    ItemKind *itemRecord;
 
     itemRecord = &gItemKinds[itemKind];
-    supplyCategory = itemRecord->f71;
+    supplyCategory = (s8)itemRecord->itemClass;
     if ((supplyCategory != 3) && (supplyCategory != 2)) {
         return 0;
     }
-    availabilityFlag = itemRecord->f72;
+    availabilityFlag = itemRecord->unk72;
     if (availabilityFlag == -1) {
         return 0;
     }
@@ -545,7 +520,7 @@ void itemRegisterForSearch(s32);
 /// \pre Each occupied entry identifies a live item with a valid catalog kind.
 /// \note Original decompilation identifier: \c func_8002F3FC (0x8002F3FC).
 u8 *toolboxTakeObject(s32 row, s32 col) {
-    Slot1BE0 *slot;
+    ToolboxSlot *slot;
     s8 kind;
     u8 *obj;
     u8 *ext;
@@ -554,7 +529,7 @@ u8 *toolboxTakeObject(s32 row, s32 col) {
     if (slot->id == 0) {
         return NULL;
     }
-    kind = gItemKinds[slot->kind].f71;
+    kind = ((s8)gItemKinds[slot->kind].itemClass);
     if (kind == 5) {
         return NULL;
     }
@@ -574,7 +549,7 @@ u8 *toolboxTakeObject(s32 row, s32 col) {
     return obj;
 }
 
-void toolboxScaleCurrentRow(Table1BE0 *);
+void toolboxScaleCurrentRow(ToolboxState *);
 
 /// Transfer an eligible toolbox item into the player's held-item selection.
 /// \param player Player state receiving the item as its held object.
@@ -673,7 +648,7 @@ extern s32 gToolboxItemHandleEntries[][20];
 /// \returns Nothing; rejected transfers display feedback and leave the items in place.
 /// \note Original decompilation identifier: \c func_8002F6B0 (0x8002F6B0).
 void toolboxConfirmItemTransfer(u8 *player) {
-    Slot1BE0 *slot = gToolboxState.slots[gToolboxState.row];
+    ToolboxSlot *slot = gToolboxState.slots[gToolboxState.row];
     s8 kind;
     u8 *other;
     u8 *held;
@@ -861,7 +836,7 @@ void _bzero(void *, s32);
 void toolboxReset(void) {
     s32 row;
     s32 i;
-    Slot1BE0 *singleton = gToolboxState.singletons;
+    ToolboxSlot *singleton = gToolboxState.singletons;
     _bzero(&gToolboxState, sizeof(gToolboxState));
     gToolboxSelectedRow = 1;
     gToolboxExitAction = 0;
@@ -882,7 +857,7 @@ void toolboxReset(void) {
 /// \param t Initialized toolbox with row zero or one, linked display parts, and live handles for occupied entries.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002FE24 (0x8002FE24).
-void toolboxResetRowRotation(Table1BE0 *t) {
+void toolboxResetRowRotation(ToolboxState *t) {
     u8 *o;
     s32 i;
 
@@ -931,7 +906,7 @@ extern u8 gToolboxInterfaceTransform[];
 /// \note Portability: The VEC3_SET expression preserves the IDO scheduling required by the ROM.
 /// \note Original decompilation identifier: \c func_8002FEEC (0x8002FEEC).
 void toolboxLayoutCurrentRow(f32 angle, f32 height, f32 depth) {
-    Slot1BE0 *slot;
+    ToolboxSlot *slot;
     s32 i;
     u8 *object;
     f32 direction;
@@ -940,7 +915,7 @@ void toolboxLayoutCurrentRow(f32 angle, f32 height, f32 depth) {
     Vec3_301B0 position;
     {
         u8 *row = (u8 *)&gToolboxState + gToolboxState.row * 0x50;
-        slot = (Slot1BE0 *)(row + 0x28);
+        slot = (ToolboxSlot *)(row + 0x28);
     }
     for (i = 0; i < 10; i++) {
         if (slot->id != 0)
@@ -986,7 +961,7 @@ void toolboxLayoutCurrentRow(f32 angle, f32 height, f32 depth) {
 /// \param dy Vertical offset from the current row's presentation anchor.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800301B0 (0x800301B0).
-void toolboxPlaceBaseForRow(Table1BE0 *t, f32 dy) {
+void toolboxPlaceBaseForRow(ToolboxState *t, f32 dy) {
     Vec3_301B0 v;
 
     v.x = gToolboxRowAnchors[t->row].x;
@@ -1274,10 +1249,10 @@ void toolboxDrawNavigation(s32);
 /// \returns Nothing; requires initialized toolbox display objects.
 /// \note Original decompilation identifier: \c func_80030F68 (0x80030F68).
 void toolboxDrawFrame(s32 address) {
-    Slot1BE0 *row;
+    ToolboxSlot *row;
     s32 i;
     u8 **hdr = gToolboxState.objects;
-    s32 obj;
+    u8 *obj;
 
     objectDrawGroup(0);
     renderDrawColorOverlayWithDepth(gToolboxBackdropColor[0], gToolboxBackdropColor[1], gToolboxBackdropColor[2],
@@ -1299,13 +1274,13 @@ void toolboxDrawFrame(s32 address) {
             obj = objectFindLiveByHandle(row[i].id);
         }
         if (obj != 0) {
-            objectDrawHierarchyGroup(obj, 0x2000);
+            objectDrawHierarchyGroup((s32)obj, 0x2000);
         }
     }
     if (gPlayerHeldItemHandle != 0) {
         obj = objectFindLiveByHandle(gPlayerHeldItemHandle);
         if (obj != 0) {
-            objectDrawHierarchyGroup(obj, 0x2000);
+            objectDrawHierarchyGroup((s32)obj, 0x2000);
         }
     }
     if (gToolboxMode == 5) {
@@ -1332,8 +1307,8 @@ void toolboxOpen(s32 row, s32 useHeld) {
     u64 now;
     u8 *held;
     u8 *state;
-    Slot1BE0 *r;
-    Table1BE0 *table;
+    ToolboxSlot *r;
+    ToolboxState *table;
     s32 i;
 
     controllerRequestRumbleReset(0);
@@ -1383,7 +1358,7 @@ void systemMenuEnter(void);
 /// \returns Nothing; requires initialized toolbox display objects.
 /// \note Original decompilation identifier: \c func_8003126C (0x8003126C).
 void toolboxFinishClosing(void) {
-    Slot1BE0 *row = gToolboxState.slots[gToolboxState.row];
+    ToolboxSlot *row = gToolboxState.slots[gToolboxState.row];
     s32 i;
     s32 *held = &gPlayerHeldItemHandle;
 
@@ -1475,13 +1450,13 @@ void toolboxHandleInput(void) {
             }
             if (textWindowOpen(0, 0, 0) != 0) {
                 if (selected.id != 0) {
-                    kind = gItemKinds[selected.id].f71;
+                    kind = ((s8)gItemKinds[selected.id].itemClass);
                     sprintf(line, "%s%-22s^^%s\n", ((kind == 2) || (kind == 5)) ? "^^" : "^4",
                             itemGetDisplayName(selected.id, 1), itemGetClassLabelSuffix(selected.id));
                     textWindowAppendText(line);
                 }
                 textWindowAppendText(selected.text);
-                textWindowAppendText(gToolboxDescriptionSuffixes[gItemKinds[selected.id].f71]);
+                textWindowAppendText(gToolboxDescriptionSuffixes[((s8)gItemKinds[selected.id].itemClass)]);
                 textWindowShowFirstPage();
                 toolboxSetMode((u8 *)&gToolboxState, 5);
             }
@@ -1528,10 +1503,10 @@ void toolboxHandleInput(void) {
 /// \param t Toolbox with row zero or one; positive spin selects the last entry, otherwise the second entry.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80031720 (0x80031720).
-void toolboxRotateRowEntries(Table1BE0 *t) {
-    Slot1BE0 *row;
+void toolboxRotateRowEntries(ToolboxState *t) {
+    ToolboxSlot *row;
     s32 i;
-    Slot1BE0 tmp;
+    ToolboxSlot tmp;
 
     row = t->slots[t->row];
     if (t->spin > 0) {
@@ -1550,14 +1525,14 @@ void toolboxRotateRowEntries(Table1BE0 *t) {
 }
 
 void toolboxLayoutCurrentRow(f32, f32, f32);
-void toolboxRotateRowEntries(Table1BE0 *);
+void toolboxRotateRowEntries(ToolboxState *);
 
 /// Animate movement to the next toolbox item and finalize its selection.
 /// \returns Nothing; requires initialized toolbox display objects.
 /// \note Original decompilation identifier: \c func_800318A8 (0x800318A8).
 void toolboxUpdateCarousel(void) {
     u64 now;
-    Slot1BE0 *row = gToolboxState.slots[gToolboxState.row];
+    ToolboxSlot *row = gToolboxState.slots[gToolboxState.row];
     f32 angle;
     f32 degreesPerSpin = 36.0f;
     f32 duration = 200.0f;
