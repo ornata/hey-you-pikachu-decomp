@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "actor_parts.h"
 #include "actor_target.h"
 #include "actor_script.h"
 #include "object_types.h"
@@ -112,7 +113,6 @@ void actorPrepareSlowestApproachCompletion(s32 actor) {
     actorPrepareApproachCompletion(actor, 1.27f);
 }
 
-u8 *actorFindPart(u8 *, s32);
 extern double sqrt(double);
 #pragma intrinsic(sqrt)
 void actionSkipLoopingContinuations(s32);

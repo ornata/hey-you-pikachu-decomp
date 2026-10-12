@@ -96,6 +96,12 @@
     },
     "src/game/texture_cache.c": {
       "texture ROM address expressions": "Texture image and palette offsets are cartridge byte offsets added to the archive linker address. Explicitly casting the archive symbol to s32 changes allocated instructions and relocations under IDO; retain the original byte-pointer addition at the numeric romCacheRead key boundary. A matching explicit numeric representation remains to be recovered."
+    },
+    "src/game/flipbook_messenger.c": {
+      "actorGetDefaultPart caller": "The canonical actor-part interface accepts an actor pointer. Including that prototype and casting the integer gPikachuActor view changes this caller ROM bytes under IDO. Retain its s32 compatibility declaration until a matching pointer representation is established."
+    },
+    "src/game/ground_shadow.c": {
+      "actorGetDefaultPart caller": "The ROM call passes an unused second object pointer to the one-argument default-part query. Its first actor argument and returned borrowed part pointer agree with actor_parts.h; retain the local two-argument ABI declaration to preserve argument setup."
     }
   },
   "baseline_totals": {

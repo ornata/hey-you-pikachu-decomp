@@ -2,6 +2,7 @@
 #include "backdrop_draw.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "actor_parts.h"
 #include "audio_cue.h"
 #include "actor_target.h"
 #include "actor_script.h"
@@ -362,7 +363,6 @@ extern s32 gWorldMapToWorldTransform;
 /// \note Original identifier: \c D_8009A104 (0x8009A104).
 extern Vec3f_ gWorldMapActorPresentationPosition;
 void matrix34TransformPointVector(void *, void *, void *);
-u8 *actorFindPart(u8 *, s32);
 
 /// Update the map actor's position and focus while preserving its ground clearance.
 /// \pre Requires an active actor and the map presentation transform.

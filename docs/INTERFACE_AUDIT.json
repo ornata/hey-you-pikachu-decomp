@@ -4,6 +4,13 @@
   "records": [
     {
       "code": 709,
+      "file": "src/game/flipbook_messenger.c",
+      "line": 958,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "messengerAdvancePosition(object);"
+    },
+    {
+      "code": 709,
       "file": "src/game/doors_object_responses.c",
       "line": 160,
       "diagnostic": "Incompatible pointer type assignment",
@@ -46,92 +53,29 @@
     },
     {
       "code": 709,
-      "file": "src/game/flipbook_messenger.c",
-      "line": 958,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "messengerAdvancePosition(object);"
-    },
-    {
-      "code": 709,
       "file": "src/game/actor_model_motion.c",
-      "line": 260,
+      "line": 259,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "allocation = heapAllocLocal(&gGameHeap, 0x80, 0xFC);"
     },
     {
       "code": 712,
       "file": "src/game/actor_model_motion.c",
-      "line": 987,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "var_v0 = actorFindPart(actor, partId);"
-    },
-    {
-      "code": 712,
-      "file": "src/game/actor_model_motion.c",
-      "line": 1013,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "actorGetPartWorldPosition(actor, actorConfigGetFirstAttachmentPartId(((RuntimeObjectPrefix *)actor)->kind), first);"
-    },
-    {
-      "code": 712,
-      "file": "src/game/actor_model_motion.c",
-      "line": 1014,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "actorGetPartWorldPosition(actor, actorConfigGetSecondAttachmentPartId(((RuntimeObjectPrefix *)actor)->kind), second);"
-    },
-    {
-      "code": 712,
-      "file": "src/game/actor_model_motion.c",
-      "line": 1020,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "actorGetPartWorldPosition(actor, actorConfigGetFirstAttachmentPartId(((RuntimeObjectPrefix *)actor)->kind), position);"
-    },
-    {
-      "code": 712,
-      "file": "src/game/actor_model_motion.c",
-      "line": 1023,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "actorGetPartWorldPosition(actor, actorConfigGetSecondAttachmentPartId(((RuntimeObjectPrefix *)actor)->kind), position);"
-    },
-    {
-      "code": 712,
-      "file": "src/game/actor_model_motion.c",
-      "line": 1026,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "actorGetPartWorldPosition(actor, 0x76, position);"
-    },
-    {
-      "code": 712,
-      "file": "src/game/actor_model_motion.c",
-      "line": 1030,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "actorGetPartWorldPosition(actor, 0x77, position);"
-    },
-    {
-      "code": 712,
-      "file": "src/game/actor_model_motion.c",
-      "line": 1033,
-      "diagnostic": "illegal combination of pointer and integer",
-      "expression": "actorGetPartWorldPosition(actor, 0x42, position);"
-    },
-    {
-      "code": 712,
-      "file": "src/game/actor_model_motion.c",
-      "line": 1048,
+      "line": 1047,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "allocation = heapAllocLocal(&gGameHeap, 0x4C, 0x463);"
     },
     {
       "code": 712,
       "file": "src/game/actor_model_motion.c",
-      "line": 1050,
+      "line": 1049,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "_bzero(allocation, 0x4C);"
     },
     {
       "code": 709,
       "file": "src/game/actor_model_motion.c",
-      "line": 1133,
+      "line": 1132,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "v->dl[0] = heapAllocLocal(&gGameHeap, v->len * sizeof(Gfx) * 2, 0x4B8);"
     },
@@ -190,20 +134,6 @@
       "line": 175,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "rp = romCacheRead(&gTextureRomCache, texture.pal + gTextureArchiveRomStart, 0x20, palette);"
-    },
-    {
-      "code": 709,
-      "file": "src/game/voice_commands_text_panel.c",
-      "line": 185,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "if (*(gVoiceCommandDisplayName = voiceDictionaryGetWordName(((u16 *)&gVoiceCommandResultIndex)[1])) == 0) {"
-    },
-    {
-      "code": 709,
-      "file": "src/game/voice_commands_text_panel.c",
-      "line": 442,
-      "diagnostic": "Incompatible pointer type assignment",
-      "expression": "textImageDestroy(oldImage);"
     },
     {
       "code": 709,
@@ -295,6 +225,20 @@
       "line": 1616,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "objectDestroyHierarchy(sp2C);"
+    },
+    {
+      "code": 709,
+      "file": "src/game/voice_commands_text_panel.c",
+      "line": 185,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "if (*(gVoiceCommandDisplayName = voiceDictionaryGetWordName(((u16 *)&gVoiceCommandResultIndex)[1])) == 0) {"
+    },
+    {
+      "code": 709,
+      "file": "src/game/voice_commands_text_panel.c",
+      "line": 442,
+      "diagnostic": "Incompatible pointer type assignment",
+      "expression": "textImageDestroy(oldImage);"
     },
     {
       "code": 709,

@@ -1,6 +1,7 @@
 #include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "actor_parts.h"
 #include "integer_animation.h"
 #include "object_lookup.h"
 #include "actor_script.h"
@@ -17,7 +18,6 @@ extern s32 gActorAppearanceSlot1Models[];
 /// \note Original identifier: \c D_800760A8 (0x800760A8).
 extern u8 *gPikachuActor;
 void collisionGridUnregisterObject();
-u8 *actorFindPart(u8 *, s32);
 s32 collisionGridRegisterObject(s32);
 /// Model-part identifiers controlled by each actor appearance slot.
 /// \note Original identifier: \c D_800760E8 (0x800760E8).

@@ -1,6 +1,7 @@
 #include "player_friendship.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "actor_parts.h"
 #include "player_control.h"
 #include "object_lookup.h"
 #include "heap_alloc.h"
@@ -412,7 +413,6 @@ void playerSetViewAngles(u8 *player, f32 x, f32 z) {
     }
 }
 
-u8 *actorFindPart(u8 *, s32); /* extern */
 
 /// Resolve the companion-control target used for player view tracking.
 /// \param player Player record containing the target selection.

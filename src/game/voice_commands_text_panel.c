@@ -7,6 +7,7 @@
 
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "actor_parts.h"
 #include "text_draw.h"
 #include "object_lookup.h"
 #include "text_panel.h"
@@ -24,7 +25,6 @@ void textImageDestroy(TextImage *);
 /// \note Original identifier: \c D_800A268C (0x800A268C).
 extern u8 gTextPanelClearedEmptyText[];
 
-u8 *actorFindPart(u8 *, s32);
 u8 *objectFindNearestTargetInView(u8 *, f32 *, f32, u8 *, f32, s32, s32);
 f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
 f32 vector3Length(f32 *);

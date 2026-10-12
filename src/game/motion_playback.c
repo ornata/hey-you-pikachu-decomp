@@ -3,6 +3,7 @@
  * .rodata opens with the debug-trace strings and ends with the float
  * literals IDO emits after every string of the file. */
 #include "common.h"
+#include "actor_parts.h"
 #include "motion_cache.h"
 #include "actor_script.h"
 #include "object_types.h"
@@ -165,7 +166,6 @@ struct Track3;
 struct Pair8;
 void animationTrack3Initialize(struct Track3 *, struct Pair8 *, s32);
 void animationDeltaTrack3Initialize(struct Track3b *, struct Pair8 *, s32);
-u8 *actorFindPart(u8 *, s32);
 /// Playback duration indexed by motion identifier.
 /// \note Original identifier: \c D_800773E0 (0x800773E0).
 extern f32 gMotionDurations[];

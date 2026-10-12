@@ -834,3 +834,18 @@ controller, terrain updater and draw routine share that record. Ghidra at
 four-byte grid dimension, and both allocations use the object pointer view.
 The item initializer likewise stores its allocated byte state as a pointer.
 All retained changes match the immutable object baseline.
+
+### Actor part lookup and position query contracts
+
+Actor-part lookup, default-part lookup and world-position queries share
+actor_parts.h with borrowed pointer results and explicit output-array contracts.
+Ghidra at 0x800164AC confirms preferred-part lookup, fallback and three coordinate
+loads. The world-position query requires a valid default part when the preferred
+part is missing. Its definition and action-script callers now use actor pointers.
+
+All ordinary part-lookup callers include the shared header. The messenger
+default-part call retains its integer compatibility declaration because the
+canonical pointer prototype changes ROM bytes. Ground-shadow default-part lookup
+retains an unused second argument from the ROM. Both exceptions are recorded
+rather than hidden by casts or changed compiler flags. All accepted units match
+the preserved object baseline.

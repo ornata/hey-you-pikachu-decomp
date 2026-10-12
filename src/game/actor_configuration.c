@@ -2,6 +2,7 @@
 #include "heap_tail.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "actor_parts.h"
 #include "object_audio.h"
 #include "asset_loader.h"
 #include "actor_target.h"
@@ -533,7 +534,6 @@ u8 *objectCloneTemplateHierarchy(u8 *, u8 *);
 void objectScaleHierarchyBounds(u8 *, f32);
 s32 objectRefreshHierarchyWorldPositions(s32);
 void actorAddRotationAxisDegrees(u8 *, f32, s32);
-u8 *actorFindPart(u8 *, s32);
 void actorInitializeAnimatedTextures(u8 *, s32 *);
 void actorPopulatePartTable(u8 *, u8 *);
 void actorAssetQueueLoadForKind(s32);

@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "actor_parts.h"
 #include "audio_cue.h"
 #include "object_lookup.h"
 #include "item_types.h"
@@ -360,7 +361,6 @@ s32 actorScriptFinishAreaTransition(u8 *actor) {
 extern f32 gRuntimeFrameSeconds;
 void actorTransitionModelEnvironmentColor(u8 *, u8, u8, u8, u8, f32);
 void actorSetModelEnvironmentColor(u8 *, u8, u8, u8, u8);
-u8 *actorGetDefaultPart(s32);
 u8 *particleClusterCreate(s32, f32, f32, f32, u8 *);
 u8 *orangePulseEmitterCreate(s32, f32);
 u8 *actorReplaceKindPreservingScript(u8 *, s32);
@@ -380,7 +380,7 @@ s32 actorScriptTransformKind(u8 *object) {
     if (((ScriptVm *)vm)->actionInitializing != 0) {
         actorTransitionModelEnvironmentColor(object, 255, 200, 50, 255, 0.6f);
         random = randomNext();
-        linked = actorGetDefaultPart((s32)object);
+        linked = actorGetDefaultPart(object);
         randomFraction = random * 2.3283064365386963e-10;
         particleClusterCreate(10, 1.7f, 3.0f, randomFraction * 0.2f + 0.5, linked);
         orangePulseEmitterCreate(((RuntimeObjectPrefix *)object)->handle, 2.0f);

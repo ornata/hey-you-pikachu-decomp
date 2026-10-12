@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "actor_parts.h"
 #include "object_audio.h"
 #include "actor_target.h"
 #include "integer_animation.h"
@@ -37,9 +38,7 @@ typedef struct LitModel {
     /* 0xE0 */ u8 env[4];
 } LitModel;
 
-u8 *actorGetDefaultPart(s32);
 void heapFreeLocal();
-u8 *actorFindPart(u8 *, s32);
 s32 actorConfigGetDefaultPartId(u16);
 /// Per-actor-kind part-table slot counts, including the root slot.
 /// \note Original identifier: \c D_800B687C (0x800B687C).
@@ -972,8 +971,8 @@ s32 actorGetPartObjectHandle(u8 *actor, s32 partId) {
 /// \param actor Actor whose default reference part is requested.
 /// \returns Borrowed default reference part, or null if it does not exist.
 /// \note Original decompilation identifier: \c func_8001647C (0x8001647C).
-u8 *actorGetDefaultPart(s32 actor) {
-    return actorFindPart((u8 *)actor, actorConfigGetDefaultPartId(*(u16 *)(actor + 0x34)));
+u8 *actorGetDefaultPart(u8 *actor) {
+    return actorFindPart(actor, actorConfigGetDefaultPartId(*(u16 *)(actor + 0x34)));
 }
 
 /// Get the world position of a named part, using the default part when the requested part is absent.
@@ -982,7 +981,7 @@ u8 *actorGetDefaultPart(s32 actor) {
 /// \param position Output array receiving three world-space coordinates.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800164AC (0x800164AC).
-void actorGetPartWorldPosition(s32 actor, s32 partId, f32 *position) {
+void actorGetPartWorldPosition(u8 *actor, s32 partId, f32 *position) {
     u8 *var_v0;
     var_v0 = actorFindPart(actor, partId);
     if (var_v0 == NULL) {
@@ -1208,7 +1207,7 @@ s32 actorConfigGetGroundReferencePartIds(s32);
 /// \returns Lowest reference-part world height, including the default reference part.
 /// \note Original decompilation identifier: \c func_80016B1C (0x80016B1C).
 f32 actorGetLowestReferencePartHeight(u8 *actor) {
-    f32 min = *(f32 *)(actorGetDefaultPart((s32)actor) + 0x48);
+    f32 min = *(f32 *)(actorGetDefaultPart(actor) + 0x48);
     s32 *ids = (s32 *)actorConfigGetGroundReferencePartIds(*(u16 *)(actor + 0x34));
     s32 i;
     u8 *o;
@@ -1339,7 +1338,7 @@ void actorConstrainMovementToTerrain(u8 *object, f32 *displacement) {
         ((f32 *)displacement)[2] = 0.0f;
         ((f32 *)displacement)[0] = 0.0f;
     }
-    reference = actorGetDefaultPart((s32)object);
+    reference = actorGetDefaultPart(object);
     pose = ((ActorScriptState *)state)->groundReference;
     actorUpdateGroundReferencePose(object, reference, pose);
     status = actionGetAttributes(object);

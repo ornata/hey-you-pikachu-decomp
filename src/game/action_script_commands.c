@@ -1,6 +1,7 @@
 #include "item_object.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "actor_parts.h"
 #include "object_audio.h"
 #include "audio_cue.h"
 #include "actor_target.h"
@@ -240,7 +241,6 @@ void actionCommandPlayTrackedSoundWithPitch(s32 actor, u8 *state, u8 *command, f
                              ((ActionScalarArguments *)((u8 *)command + 8))->scalar);
 }
 
-u8 *actorGetDefaultPart(s32);
 u32 randomNext(void);
 s32 terrainGetSurfaceAttributes(f32, f32, f32, s32);
 s32 terrainGetMaterialSound(s32, s32);
@@ -281,7 +281,7 @@ void actionCommandPlayGroundContactEffects(u8 *object, u8 *state, Cmd14 *command
         }
     }
     if (args->amount >= 2)
-        terrainCreateContactEffect(actorGetDefaultPart((s32)object) + 0x44, ground);
+        terrainCreateContactEffect(actorGetDefaultPart(object) + 0x44, ground);
 }
 
 /// ABI compatibility declaration: the ROM caller supplies an unused command pointer.
@@ -550,7 +550,6 @@ s32 itemTryTransformToReplacement(s32 id) {
     return 1;
 }
 
-void actorGetPartWorldPosition(s32, s32, f32 *);
 void ribbonEffectCreate(s32, f32, f32, f32, s32, f32, f32, f32, f32, f32, f32 *);
 typedef struct {
     s32 op;
@@ -584,8 +583,8 @@ void actionCommandEmitPairedTargetedBursts(u8 *object, u8 *state, BurstCommand *
     count = args->count < *(s32 *)(state + 0x3EC) ? args->count : *(s32 *)(state + 0x3EC);
     if (count > 0) {
         *(s32 *)(state + 0x3EC) -= count;
-        actorGetPartWorldPosition((s32)object, 0x74, left);
-        actorGetPartWorldPosition((s32)object, 0x75, right);
+        actorGetPartWorldPosition(object, 0x74, left);
+        actorGetPartWorldPosition(object, 0x75, right);
         target = (f32 *)actorGetEffectTargetPosition(object);
         for (; count > 0; count--) {
             particles = randomBelow(10);
@@ -608,7 +607,6 @@ void actionCommandEmitPairedTargetedBursts(u8 *object, u8 *state, BurstCommand *
     }
 }
 
-u8 *actorFindPart(u8 *, s32);
 u8 *particleClusterCreate(s32, f32, f32, f32, u8 *);
 typedef struct {
     s32 target;
@@ -635,7 +633,7 @@ void actionCommandEmitParticlesAtTarget(u8 *object, u8 *unused, Cmd14 *command, 
             return;
         break;
     default:
-        target = actorGetDefaultPart((s32)object);
+        target = actorGetDefaultPart(object);
         break;
     }
     if (target == NULL)
@@ -679,7 +677,6 @@ typedef struct {
     s32 b;
     s32 c;
 } Sub3;
-u8 *actorFindPart(u8 *, s32);          /* extern */
 u8 *convergingParticleEffectCreate(s32, s32, s32, s32); /* extern */
 
 /// Creates a linked effect around an actor part, using the actor itself when that part is unavailable.
@@ -731,7 +728,6 @@ void actionCommandCreateItemTransformationEffect(u8 *actor, u8 *state, u8 *comma
     }
 }
 
-u8 *actorGetDefaultPart(s32);
 u8 *flickeringEffectCreate(s32, f32, s32);
 
 /// Create a flickering visual effect that follows the actor's default part.
@@ -744,7 +740,7 @@ u8 *flickeringEffectCreate(s32, f32, s32);
 void actionCommandCreateFlickeringPartEffect(s32 actor, u8 *state, u8 *command, f32 *elapsed) {
     u8 *p = command + 8;
 
-    flickeringEffectCreate(*(s32 *)(actorGetDefaultPart(actor) + 0x38), *(f32 *)(p + 4), *(s32 *)p);
+    flickeringEffectCreate(*(s32 *)(actorGetDefaultPart((u8 *)actor) + 0x38), *(f32 *)(p + 4), *(s32 *)p);
 }
 
 /// Creates a vertical stack of effects at the actor or its effect target.

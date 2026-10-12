@@ -1,4 +1,5 @@
 #include "common.h"
+#include "actor_parts.h"
 #include "integer_animation.h"
 #include "object_lookup.h"
 #include "heap_alloc.h"
@@ -84,7 +85,6 @@ void attachedEffectInitialize(u8 *object) {
 }
 
 void objectOrientAlongCameraView(u8 *);
-u8 *actorFindPart(u8 *, s32);
 f32 vector3Length(f32 *);
 /// Minimum view-dependent scale factor for an attached effect.
 /// \note Original identifier: \c D_800A26A0 (0x800A26A0).
