@@ -1,0 +1,800 @@
+{
+  "objects": 483,
+  "allocated_section_relocations": 24220,
+  "method": "Resolve named relocation symbols against linked ELF and select symbols within target ranges. Does not resolve section-symbol addends, base-relative computations or non-relocation machine addresses.",
+  "ranges": [
+    [
+      "0x8009adc0",
+      "0x8009adc4"
+    ],
+    [
+      "0x800a6d30",
+      "0x800a6d54"
+    ],
+    [
+      "0x80133de8",
+      "0x80133df4"
+    ]
+  ],
+  "hits": [
+    {
+      "object": "build/src/ovl/area_terrain_maze.o",
+      "section": ".text",
+      "offset": "0x3a30",
+      "relocation_type": 5,
+      "symbol": "D_80133DE8",
+      "address": "0x80133de8"
+    },
+    {
+      "object": "build/src/ovl/area_terrain_maze.o",
+      "section": ".text",
+      "offset": "0x3a34",
+      "relocation_type": 6,
+      "symbol": "D_80133DE8",
+      "address": "0x80133de8"
+    }
+  ],
+  "source_revision": "5b6f897",
+  "interpretation": "Only the known maze initialization address construction appears among named-symbol relocation targets. This is evidence of remaining uncertainty, not proof that all computed readers are absent.",
+  "disassembly_checks": [
+    {
+      "addresses": [
+        "0x8001F624",
+        "0x8001F648"
+      ],
+      "result": "Low immediate 0x6D30 combines with LUI 0x800B and addresses cave description storage, not 0x800A6D30."
+    },
+    {
+      "addresses": [
+        "0x80040464"
+      ],
+      "result": "Low immediate 0x6D30 combines with LUI 0x8010 plus an index and accesses voice dictionary pointers, not the math table."
+    },
+    {
+      "addresses": [
+        "0x8010E520",
+        "0x8010E524",
+        "0x8010E52C",
+        "0x8010E530",
+        "0x8010E538"
+      ],
+      "result": "Maze initialization constructs 0x80133DE8 and stores float zero at offsets zero, four and eight."
+    }
+  ],
+  "ghidra": {
+    "images": [
+      "/pikachu-resident.elf-325eb9",
+      "/pikachu-resident-functions.elf-b65af7"
+    ],
+    "math_table_read_bytes": "000000010000000100000000000000010000000100000001000000000000000100000001",
+    "math_table_xrefs": "Symbol resolution fails in both images; empty results are not negative-reference evidence.",
+    "save_word_xrefs": "Exported entry point only in both images.",
+    "maze_word_xrefs": "Initialization stores at the three adjacent addresses; no reader reported."
+  },
+  "section_relative_review": [
+    {
+      "object": "build/src/game/trigonometry.o",
+      "target_section": ".rodata",
+      "linked_section_base": "0x800a6cc0",
+      "range": [
+        "0x800a6d30",
+        "0x800a6d54"
+      ],
+      "refs": [
+        {
+          "section": ".text",
+          "offset": "0xc0",
+          "high_offset": "0xbc",
+          "symbol": ".rodata",
+          "target": "0x800a6d9c",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0xc8",
+          "high_offset": "0xc4",
+          "symbol": ".rodata",
+          "target": "0x800a6da0",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0xd0",
+          "high_offset": "0xcc",
+          "symbol": ".rodata",
+          "target": "0x800a6da4",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0xe0",
+          "high_offset": "0xd8",
+          "symbol": ".rodata",
+          "target": "0x800a6da8",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0xf0",
+          "high_offset": "0xe4",
+          "symbol": ".rodata",
+          "target": "0x800a6dac",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x100",
+          "high_offset": "0xf4",
+          "symbol": ".rodata",
+          "target": "0x800a6db0",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x158",
+          "high_offset": "0x154",
+          "symbol": ".rodata",
+          "target": "0x800a6db8",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x170",
+          "high_offset": "0x16c",
+          "symbol": ".rodata",
+          "target": "0x800a6dc0",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x214",
+          "high_offset": "0x210",
+          "symbol": ".rodata",
+          "target": "0x800a6dc8",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x280",
+          "high_offset": "0x27c",
+          "symbol": ".rodata",
+          "target": "0x800a6dd0",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x2b0",
+          "high_offset": "0x2ac",
+          "symbol": ".rodata",
+          "target": "0x800a6dd8",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x2dc",
+          "high_offset": "0x2d4",
+          "symbol": ".rodata",
+          "target": "0x800a6de0",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x2e0",
+          "high_offset": "0x2c8",
+          "symbol": ".rodata",
+          "target": "0x800a6de8",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x2fc",
+          "high_offset": "0x2e4",
+          "symbol": ".rodata",
+          "target": "0x800a6df0",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x334",
+          "high_offset": "0x330",
+          "symbol": ".rodata",
+          "target": "0x800a6df8",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x364",
+          "high_offset": "0x34c",
+          "symbol": ".rodata",
+          "target": "0x800a6e00",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x380",
+          "high_offset": "0x368",
+          "symbol": ".rodata",
+          "target": "0x800a6e08",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x3a8",
+          "high_offset": "0x3a4",
+          "symbol": ".rodata",
+          "target": "0x800a6e10",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x150c",
+          "high_offset": "0x1508",
+          "symbol": "gMatrix34Identity",
+          "target": "0x800a6d00",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x1640",
+          "high_offset": "0x163c",
+          "symbol": ".rodata",
+          "target": "0x800a6e18",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x1700",
+          "high_offset": "0x16fc",
+          "symbol": ".rodata",
+          "target": "0x800a6e20",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x1720",
+          "high_offset": "0x171c",
+          "symbol": ".rodata",
+          "target": "0x800a6e28",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x17e0",
+          "high_offset": "0x17dc",
+          "symbol": ".rodata",
+          "target": "0x800a6e30",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x1a18",
+          "high_offset": "0x1a10",
+          "symbol": ".rodata",
+          "target": "0x800a6e34",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x1c84",
+          "high_offset": "0x1c80",
+          "symbol": ".rodata",
+          "target": "0x800a6e38",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x212c",
+          "high_offset": "0x2124",
+          "symbol": ".rodata",
+          "target": "0x800a6e3c",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x236c",
+          "high_offset": "0x2368",
+          "symbol": ".rodata",
+          "target": "0x800a6e54",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x2378",
+          "high_offset": "0x2374",
+          "symbol": ".rodata",
+          "target": "0x800a6e58",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x254c",
+          "high_offset": "0x2548",
+          "symbol": ".rodata",
+          "target": "0x800a6e5c",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x27cc",
+          "high_offset": "0x27c8",
+          "symbol": ".rodata",
+          "target": "0x800a6e60",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x27ec",
+          "high_offset": "0x27e8",
+          "symbol": ".rodata",
+          "target": "0x800a6e64",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x28a0",
+          "high_offset": "0x27d4",
+          "symbol": ".rodata",
+          "target": "0x800a6e68",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x2e4c",
+          "high_offset": "0x2e44",
+          "symbol": ".rodata",
+          "target": "0x800a6e6c",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x2e78",
+          "high_offset": "0x2e58",
+          "symbol": ".rodata",
+          "target": "0x800a6e70",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x2ef4",
+          "high_offset": "0x2ee4",
+          "symbol": ".rodata",
+          "target": "0x800a6e74",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x3084",
+          "high_offset": "0x3074",
+          "symbol": ".rodata",
+          "target": "0x800a6e78",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x3208",
+          "high_offset": "0x31f8",
+          "symbol": ".rodata",
+          "target": "0x800a6e7c",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x324c",
+          "high_offset": "0x3248",
+          "symbol": ".rodata",
+          "target": "0x800a6e80",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x3280",
+          "high_offset": "0x3250",
+          "symbol": ".rodata",
+          "target": "0x800a6e84",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x3374",
+          "high_offset": "0x3370",
+          "symbol": ".rodata",
+          "target": "0x800a6e88",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x3394",
+          "high_offset": "0x3378",
+          "symbol": ".rodata",
+          "target": "0x800a6e8c",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x33d0",
+          "high_offset": "0x33b8",
+          "symbol": ".rodata",
+          "target": "0x800a6e90",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x3478",
+          "high_offset": "0x3468",
+          "symbol": ".rodata",
+          "target": "0x800a6e94",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x3890",
+          "high_offset": "0x388c",
+          "symbol": ".rodata",
+          "target": "0x800a6e98",
+          "in_unresolved_range": false
+        }
+      ],
+      "pending_high_relocations": {},
+      "relocation_type_counts": {
+        "5": 44,
+        "6": 44
+      },
+      "high_immediates": [
+        0
+      ],
+      "limitation": "Paired HI16/LO16 and R_MIPS_32 references only. Does not prove absence of indirect/computed reads."
+    },
+    {
+      "object": "build/src/game/save_progress.o",
+      "target_section": ".data",
+      "linked_section_base": "0x8009adc0",
+      "range": [
+        "0x8009adc0",
+        "0x8009adc4"
+      ],
+      "refs": [
+        {
+          "section": ".text",
+          "offset": "0x604",
+          "high_offset": "0x600",
+          "symbol": "gEepromRecordPayloadSizes",
+          "target": "0x8009adc4",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x6cc",
+          "high_offset": "0x6c8",
+          "symbol": ".data",
+          "target": "0x8009addc",
+          "in_unresolved_range": false
+        }
+      ],
+      "pending_high_relocations": {},
+      "relocation_type_counts": {
+        "5": 2,
+        "6": 2
+      },
+      "high_immediates": [
+        0
+      ],
+      "limitation": "Paired HI16/LO16 and R_MIPS_32 references only. Does not prove absence of indirect/computed reads."
+    },
+    {
+      "object": "build/src/ovl/area_terrain_maze.o",
+      "target_section": ".bss",
+      "linked_section_base": "0x80133de0",
+      "range": [
+        "0x80133de8",
+        "0x80133df4"
+      ],
+      "refs": [
+        {
+          "section": ".text",
+          "offset": "0x4",
+          "high_offset": "0x0",
+          "symbol": "gAreaMazeRoot",
+          "target": "0x80133de0",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x658",
+          "high_offset": "0x644",
+          "symbol": "gAreaMazeRoot",
+          "target": "0x80133de0",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x840",
+          "high_offset": "0x834",
+          "symbol": "gAreaMazeRoot",
+          "target": "0x80133de0",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x83c",
+          "high_offset": "0x838",
+          "symbol": "gCurrentAreaConfiguration",
+          "target": "0x80133de4",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x1578",
+          "high_offset": "0x1310",
+          "symbol": "gCurrentAreaConfiguration",
+          "target": "0x80133de4",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x2544",
+          "high_offset": "0x2540",
+          "symbol": "gCurrentAreaConfiguration",
+          "target": "0x80133de4",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x2748",
+          "high_offset": "0x2744",
+          "symbol": "gCurrentAreaConfiguration",
+          "target": "0x80133de4",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x276c",
+          "high_offset": "0x275c",
+          "symbol": "gAreaFarVisibilityDistanceSquared",
+          "target": "0x80133df8",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x2788",
+          "high_offset": "0x2774",
+          "symbol": "gAreaNearVisibilityDistanceSquared",
+          "target": "0x80133dfc",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x28ec",
+          "high_offset": "0x28a4",
+          "symbol": "gAreaFarVisibilityDistanceSquared",
+          "target": "0x80133df8",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x2910",
+          "high_offset": "0x28f0",
+          "symbol": "gAreaNearVisibilityDistanceSquared",
+          "target": "0x80133dfc",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x2934",
+          "high_offset": "0x2914",
+          "symbol": "gMazeVisibilityParameters",
+          "target": "0x80133e00",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x2a70",
+          "high_offset": "0x2a68",
+          "symbol": "gAreaMazeRoot",
+          "target": "0x80133de0",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x2a64",
+          "high_offset": "0x2a60",
+          "symbol": "gCurrentAreaConfiguration",
+          "target": "0x80133de4",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x2a88",
+          "high_offset": "0x2a84",
+          "symbol": "gAreaMazeRoot",
+          "target": "0x80133de0",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x2b64",
+          "high_offset": "0x2b4c",
+          "symbol": "gMazeVisibilityParameters",
+          "target": "0x80133e00",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x2b6c",
+          "high_offset": "0x2b68",
+          "symbol": "gCurrentAreaConfiguration",
+          "target": "0x80133de4",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x2bf0",
+          "high_offset": "0x2bec",
+          "symbol": "gCurrentAreaConfiguration",
+          "target": "0x80133de4",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x2e20",
+          "high_offset": "0x2e1c",
+          "symbol": "gCurrentAreaConfiguration",
+          "target": "0x80133de4",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x30b8",
+          "high_offset": "0x30b4",
+          "symbol": "gCurrentAreaConfiguration",
+          "target": "0x80133de4",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x3128",
+          "high_offset": "0x3124",
+          "symbol": "gCurrentAreaConfiguration",
+          "target": "0x80133de4",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x31d0",
+          "high_offset": "0x31cc",
+          "symbol": "gCurrentAreaConfiguration",
+          "target": "0x80133de4",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x3450",
+          "high_offset": "0x341c",
+          "symbol": "gCurrentAreaConfiguration",
+          "target": "0x80133de4",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x344c",
+          "high_offset": "0x3420",
+          "symbol": "gCurrentAreaConfiguration",
+          "target": "0x80133de4",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x35f4",
+          "high_offset": "0x35f0",
+          "symbol": "gCurrentAreaConfiguration",
+          "target": "0x80133de4",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x365c",
+          "high_offset": "0x3658",
+          "symbol": "gCurrentAreaConfiguration",
+          "target": "0x80133de4",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x3770",
+          "high_offset": "0x376c",
+          "symbol": "gAreaMazeRoot",
+          "target": "0x80133de0",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x3768",
+          "high_offset": "0x3764",
+          "symbol": "gCurrentAreaConfiguration",
+          "target": "0x80133de4",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x37fc",
+          "high_offset": "0x37f8",
+          "symbol": "gCurrentAreaConfiguration",
+          "target": "0x80133de4",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x3890",
+          "high_offset": "0x3888",
+          "symbol": "gAreaMazeRoot",
+          "target": "0x80133de0",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x39e0",
+          "high_offset": "0x39d8",
+          "symbol": "gMazeDiagnosticBlockCount",
+          "target": "0x80133df4",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x3a0c",
+          "high_offset": "0x3a04",
+          "symbol": "gAreaMazeRoot",
+          "target": "0x80133de0",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x3a34",
+          "high_offset": "0x3a30",
+          "symbol": "D_80133DE8",
+          "target": "0x80133de8",
+          "in_unresolved_range": true
+        },
+        {
+          "section": ".text",
+          "offset": "0x3a50",
+          "high_offset": "0x3a4c",
+          "symbol": "gCurrentAreaConfiguration",
+          "target": "0x80133de4",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x3a90",
+          "high_offset": "0x3a88",
+          "symbol": "gAreaMazeRoot",
+          "target": "0x80133de0",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x3a9c",
+          "high_offset": "0x3a98",
+          "symbol": "gAreaMazeRoot",
+          "target": "0x80133de0",
+          "in_unresolved_range": false
+        },
+        {
+          "section": ".text",
+          "offset": "0x3b5c",
+          "high_offset": "0x3b48",
+          "symbol": "gCurrentAreaConfiguration",
+          "target": "0x80133de4",
+          "in_unresolved_range": false
+        }
+      ],
+      "pending_high_relocations": {},
+      "relocation_type_counts": {
+        "5": 37,
+        "6": 37
+      },
+      "high_immediates": [
+        0
+      ],
+      "limitation": "Paired HI16/LO16 and R_MIPS_32 references only. Does not prove absence of indirect/computed reads."
+    }
+  ]
+}

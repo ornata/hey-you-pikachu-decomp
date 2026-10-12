@@ -1,0 +1,70 @@
+# Workflow
+
+Game functions in this tree match the ROM. SDK implementations are generated locally
+from the supplied ROM and must never be committed. See `docs/LOCAL_SDK.md`.
+Remaining game assembly fallbacks are listed by `make asm-fallbacks`.
+
+- Inspect `git status --short` before editing. Keep one source-unit mutation active per
+  checkout; use isolated checkouts for parallel work.
+- Build with `make -j8`. Every default build reports assembly fallbacks and checks the ROM
+  SHA1 (`da1a1e47a86720f9d54fb2d2d247480041bda824`).
+- The Makefile owns the compiler pins: IDO 5.3, usually `-O2 -mips2`, with per-unit exceptions.
+- Before renaming symbols, read `docs/FROZEN_NAMES.json`. libultra and its libraries (os, audio, gu,
+  libc, libm, mgu and the hand-written asm units) are always protected: renaming one is an error.
+  Only game-side names the recompiled port binds (`main`, the controller/voice overrides) warn and
+  say what to fix in the port. `make check-names` (optionally `BASE=<ref>`, `STRICT=1`) runs it.
+- Format with `.clang-format`. Acceptance is a full object comparison and
+  `make clean && make -j8` ending in `OK: ROM matches`.
+- After accepting a change: `uv run python tools/mkctx.py` if headers changed,
+  `python3 tools/progress.py`, `bash tools/check_clean.sh`, `git diff --check`, and
+  `python3 -m pytest tests`.
+- Use the Ghidra MCP (see AGENTS.md) and `tools/m2c` for first drafts; `tools/asm-differ` and
+  `tools/decomp-permuter` are fetched by `tools/setup.sh` if you want them.
+- `src/nonmatching/` holds the ROM's own assembly for functions with no matching C yet;
+  SDK assembly belongs only in ignored `asm/`, never `src/nonmatching/`.
+
+## Incremental builds and verification
+
+C and assembly objects have generated `.d` files under `build/`. The dependency
+scanner follows literal nested includes, assembly `.include` / `.incbin` inputs,
+and `GLOBAL_ASM` files. Both branches of conditional includes are tracked, so a
+header can trigger more rebuilds than strictly necessary. Optional missing headers
+are tracked through their nearest existing directories; an active missing header
+still fails compilation. Macro include operands are rejected explicitly. Missing
+`.d` files force their objects to rebuild. The compiler and its flags are unchanged.
+
+Before editing, preserve a matching baseline with `make expected`, or copy the
+whole accepted `build/` directory elsewhere. Do not overwrite that baseline during
+the change. Then run:
+
+```sh
+make clean
+make -j8
+make verify BASE=main BASELINE=expected/build
+cmp rom/baserom.us.z64 build/pikachu.z64
+```
+
+`make verify` checks the ROM SHA1, frozen names, publication hygiene, Python tests,
+object comparison, and whitespace. `BASE` selects the name-checker Git reference;
+`BASELINE` selects the object baseline directory. Verification fails if the baseline
+is missing. Header changes also require regenerating context and reporting progress
+as described above.
+
+The standalone command `python3 tools/compare_objects.py OLD_BUILD NEW_BUILD` (or
+`make compare-objects BASELINE=OLD_BUILD`) compares every object and requires both
+directories to contain their linked `pikachu.elf`. It checks object inventory,
+allocated section bytes and layout (including BSS), defined symbol attributes,
+and relocation identities resolved through each linked ELF. Debug data and symbol
+spelling are ignored. Relocation addends remain strict: a record-plus-offset rewrite
+can fail this comparison even when the final ROM matches and needs explicit review.
+Object comparison supplements the clean-ROM gate; it does not replace it.
+
+## Type and name recovery
+
+See `TYPE_RECOVERY.md` for the recovered interfaces, baseline counts and remaining
+matching constraints. `make source-quality` reports semantic placeholders separately
+from matching-function progress; `JSON=1` includes occurrence locations and context.
+After source edits, update `TYPE_RECOVERY_NOTES.json` if evidence changes and regenerate
+`TYPE_RECOVERY.json` with `python3 tools/source_quality.py --ledger`. `make verify`
+checks that this ledger still matches the source. Do not treat raw-offset candidates
+as errors or invent types/names to make the inventory reach zero.

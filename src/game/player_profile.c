@@ -1,0 +1,44 @@
+#include "common.h"
+#include "player_types.h"
+
+void _bzero(void *, s32);                                     /* extern */
+void progressSetChapterAndUnlockMilestones(s32);              /* extern */
+void progressInitializeSaveStorage();                     /* extern */
+u8 *stringCopy(u8 *, u8 *); /* extern */
+/// Current gameplay, menu or transition mode.
+/// \note Original identifier: \c D_800AE504 (0x800AE504).
+extern s32 gRuntimeGameMode;
+/// Primary player control record and base of the player records with a 256-byte stride.
+/// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
+extern PlayerControlPrefix gPlayerState;
+/// Player profile name string borrowed by actor scripts.
+/// \note Original identifier: \c D_800EF780 (0x800EF780).
+extern u8 gPlayerProfileName[];
+/// Global script-variable storage containing 500 packed five-byte values.
+/// \note Original identifier: \c D_800EF7A0 (0x800EF7A0).
+extern u8 gScriptVmGlobalValues[];
+/// Profile storage for 166 counters with values from zero through fifteen.
+/// \note Original identifier: \c D_800F0168 (0x800F0168).
+extern u8 gProfilePackedCounters[];
+
+/// Reset the player profile and associated session state to their defaults.
+/// The default player name is "You".
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_800214E0 (0x800214E0).
+void playerResetProfile(void) {
+    _bzero(&gPlayerState, 0x100);
+    _bzero(&gScriptVmGlobalValues, 0x9C4);
+    _bzero(&gProfilePackedCounters, 0x53);
+    progressInitializeSaveStorage();
+    stringCopy(gPlayerProfileName, "You");
+    ((PlayerControlPrefix *)&gPlayerState)->points = 0x12C;
+    ((PlayerControlPrefix *)&gPlayerState)->unknown0F4 = 6;
+    ((PlayerControlPrefix *)&gPlayerState)->unknown0F5 = 8;
+    ((PlayerControlPrefix *)&gPlayerState)->friendshipLevel = 0;
+    ((PlayerControlPrefix *)&gPlayerState)->unknown0FC = 0;
+    ((PlayerControlPrefix *)&gPlayerState)->friendshipMilestone = -1;
+    ((PlayerControlPrefix *)&gPlayerState)->unknown0F7 = 0;
+    if (gRuntimeGameMode == 0x12) {
+        progressSetChapterAndUnlockMilestones(0);
+    }
+}

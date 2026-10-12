@@ -1,0 +1,9 @@
+[
+  {
+    "function": "actionCommandLaunchHeldItem",
+    "anchor": {"kind": "range_check_target", "ordinal": 1},
+    "insert": [{"op": 4, "words": [2, 0]}],
+    "expected_text_sha256": "42327726a9ec2103fe30fc65604722927a0b86e25f195f3bfb90631ce8a3261e",
+    "reason": "Accepted assembler-input exception. ugen's output for the C source is the ROM's block layout, but as1's cross-block scheduler hoists the default arm's obj reload (lw t0,184(sp)) into the switch head because the one-instruction default block is dominated by the head and t0 is dead at every jump-table target. The ROM keeps the reload in the default block, which as1 does only when a block-boundary record sits between case 5's `b` and the default label. A zero-size `.align 2` record there reproduces the ROM in all 426 words and leaves the other 39 functions unchanged. No record IDO 5.3 ugen can emit for C at -O2."
+  }
+]

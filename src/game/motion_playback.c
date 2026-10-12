@@ -1,0 +1,1071 @@
+/* harvested: matched m2c drafts; pending style pass */
+/* Action and motion state machine. The unit starts at motionExtractHeadingFromMatrix: its
+ * .rodata opens with the debug-trace strings and ends with the float
+ * literals IDO emits after every string of the file. */
+#include "common.h"
+#include "actor_script.h"
+#include "object_types.h"
+#include "word_map_types.h"
+
+/* Debug trace: compiled out in this build, but each format string is still
+ * emitted to .rodata. */
+// clang-format off
+#define TRACE if (0) osSyncPrintf
+// clang-format on
+
+typedef struct Rec2C {
+    u8 pad[0x2C];
+} Rec2C;
+
+void actionRequestLoopExit(u8 *);
+void motionResetPlayback(u8 *);
+void motionSetPlaybackMode(u8 *, s32);
+s32 motionCacheRead(void *, s32, s32 *);
+/// Shared ROM cache owning loaded motion data and pending reads.
+/// \note Original identifier: \c D_800B6930 (0x800B6930).
+extern u8 gMotionRomCache[];
+void actionCancelPendingRequest(u8 *);
+s32 actionRequestMotionData(s32);
+void objectAddPendingLocalMovement(s32);
+struct Track3;
+struct Track3b;
+s32 animationTrack3Evaluate(struct Track3 *, f32 *, f32 *, f32);
+s32 animationDeltaTrack3Evaluate(struct Track3b *, f32 *, f32 *, f32);
+void motionApplyRootOrientation(void *, s32);
+/// Action records containing playback flags, motion identifiers and transition settings.
+/// \note Original identifier: \c D_8006B590 (0x8006B590).
+extern u8 gActionDefinitions[];
+f32 mathUnitDirectionDegrees(f32, f32);
+void matrix34RotateWorldYDegrees(f32, f32 *);
+void motionExtractHeadingFromMatrix(f32 *, f32 *);
+void actorAddRotationAxisDegrees(u8 *, f32, s32);
+void matrix34MakeRotationXYZDegrees(f32 *, f32, f32, f32);
+void matrix34BlendOrientation(f32, f32 *, f32 *, f32 *);
+void motionRequestCurrentData(u8 *);
+void actionStopPlayback(u8 *);
+void actionResolveNextTransition(u8 *);
+/// Separate view of fallback action identifiers in the action definitions, with a 0x2C-byte stride.
+/// \note Original identifier: \c D_8006B5A4 (0x8006B5A4).
+extern u8 gActionFallbackEntries[];
+void actionConfigurePoseTransition(u8 *, s32, f32);
+/// Smoothed frame duration in seconds used by gameplay and animation updates.
+/// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
+extern f32 gRuntimeFrameSeconds;
+char *actionGetName(s32);
+
+/// Separate the horizontal heading from a motion orientation matrix.
+/// \param matrix Twelve-component affine matrix updated to remove its horizontal heading; its first basis vector must have a nonzero horizontal projection.
+/// \param heading Receives the extracted heading in degrees.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000DF70 (0x8000DF70).
+void motionExtractHeadingFromMatrix(f32 *matrix, f32 *heading) {
+    f32 x;
+    f32 z;
+    f32 len;
+
+    x = matrix[0];
+    z = matrix[2];
+    len = sqrtf((x * x) + (z * z));
+    if ((len < 0.001f) && (-0.001f < len)) {
+        *heading = 0.0f;
+    }
+    x /= len;
+    z /= len;
+    *heading = -mathUnitDirectionDegrees(x, z);
+    matrix34RotateWorldYDegrees(-*heading, matrix);
+}
+
+/// Apply a motion root orientation and its heading change to an object.
+/// \param angles Three root rotation angles in degrees whose orientation has a nonzero horizontal heading projection.
+/// \param object Object with initialized motion state receiving the root orientation.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000E00C (0x8000E00C).
+void motionApplyRootOrientation(void *angles, s32 object) {
+    u8 *v;
+    f32 y;
+
+    v = *(u8 **)(object + 0x54);
+    matrix34MakeRotationXYZDegrees((f32 *)(v + 0x18), ((f32 *)angles)[0], ((f32 *)angles)[1], ((f32 *)angles)[2]);
+    motionExtractHeadingFromMatrix((f32 *)(v + 0x18), &y);
+    actorAddRotationAxisDegrees((u8 *)object, y - *(f32 *)(v + 0x48), 1);
+    *(f32 *)(v + 0x48) = y;
+}
+
+/// Request cached motion data associated with an action.
+/// \param actionId Action identifier to inspect.
+/// \returns A borrowed archive-relative base supplied by the motion cache, or zero for an invalid action or unsupported action type; data must be awaited before use and retained through cache use requests.
+/// \note Original decompilation identifier: \c func_8000E08C (0x8000E08C).
+s32 actionRequestMotionData(s32 actionId) {
+    u8 *var_v0;
+    if ((actionId < 0) || (actionId >= 0x14A)) {
+        var_v0 = NULL;
+    } else {
+        var_v0 = (actionId * 0x2C) + gActionDefinitions;
+    }
+    if ((var_v0 == NULL) || ((*(s32 *)(var_v0 + 0xC) & 7) != 1)) {
+        return 0;
+    }
+    {
+        s32 sp18;
+        motionCacheRead(&gMotionRomCache, *(s16 *)(var_v0 + 0x10), &sp18);
+        return sp18;
+    }
+}
+
+/// Request motion data for the object current action when its action type uses the motion cache.
+/// \param object Object whose current motion is requested.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000E110 (0x8000E110).
+void motionRequestCurrentData(u8 *object) {
+    u8 *motionState;
+    s32 sp20;
+
+    motionState = *(u8 **)(object + 0x54);
+    if (((*(s32 *)(motionState + 0xF8) & 7) == 1) || ((*(s32 *)(motionState + 0xF8) & 7) == 3)) {
+        TRACE("_requestCurMotion:%d\n", *(s16 *)(motionState + 0xFC));
+        motionCacheRead(gMotionRomCache, *(s16 *)(motionState + 0xFC), &sp20);
+    }
+}
+
+/// Reset motion playback for an object and its animated children.
+/// \param object Object whose motion playback is reset.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000E15C (0x8000E15C).
+void motionResetPlayback(u8 *object) {
+    u8 *motionState;
+    motionState = *(u8 **)(object + 0x54);
+    *(s16 *)(motionState + 0x11C) = 0;
+    *(f32 *)(motionState + 0x134) = 0.0f;
+    *(f32 *)(motionState + 0x138) = 0.0f;
+    motionSetPlaybackMode(object, 0);
+}
+
+/// Set the motion playback mode for an object and its animated children.
+/// \param object Object whose motion playback mode is updated.
+/// \param mode Playback mode: 0 disables playback, 1 selects tracks, 2 selects timed playback, and 3 selects pose blending.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000E190 (0x8000E190).
+void motionSetPlaybackMode(u8 *object, s32 mode) {
+    u8 *v = *(u8 **)(object + 0x54);
+    s32 i;
+    u8 *e;
+    u16 t;
+
+    *(s16 *)(v + 0x11A) = mode;
+    for (i = 1; i < *(s32 *)(v + 0x50); i++) {
+        e = (*(u8 ***)(v + 0x4C))[i];
+        if (e == NULL) {
+            continue;
+        }
+        t = *(u16 *)(e + 0x34);
+        if (t >= 0x26 && t < 0x64) {
+            **(s16 **)(e + 0x54) = mode;
+        }
+    }
+}
+
+struct Track3;
+struct Pair8;
+void animationTrack3Initialize(struct Track3 *, struct Pair8 *, s32);
+void animationDeltaTrack3Initialize(struct Track3b *, struct Pair8 *, s32);
+u8 *actorFindPart(u8 *, s32);
+s32 motionCacheReadBlocking(s32, s32);
+/// Playback duration indexed by motion identifier.
+/// \note Original identifier: \c D_800773E0 (0x800773E0).
+extern f32 gMotionDurations[];
+/// Motion archive offsets indexed by motion identifier, including the next-entry end offset.
+/// \note Original identifier: \c D_80077778 (0x80077778).
+extern s32 gMotionArchiveOffsets[];
+/// Archive-relative offsets of per-motion object track tables.
+/// \note Original identifier: \c D_80077048 (0x80077048).
+extern s32 gMotionTrackTableOffsets[];
+/// Start the current motion for an object and its animated children.
+/// \param object Object with initialized motion and part state and a valid selected motion; the shared motion cache must be initialized.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000E208 (0x8000E208).
+void motionStartTrackPlayback(u8 *object) {
+    u8 *state;
+    s32 base;
+    s32 *entry;
+    u8 *childState;
+    f32 rotation[3];
+    u8 *child;
+    f32 position[3];
+    f32 duration;
+
+    state = *(u8 **)(object + 0x54);
+    TRACE("motionNum:%d\n", *(s16 *)(state + 0xFC));
+    TRACE("  %s\n", *(char **)(state + 0xF0));
+    motionSetPlaybackMode(object, 0);
+    *(f32 *)(state + 0x130) = *(f32 *)(state + 0x104);
+    duration = gMotionDurations[*(s16 *)(state + 0xFC)];
+    *(f32 *)(state + 0x134) = duration;
+    *(f32 *)(state + 0x138) = duration;
+    base = motionCacheReadBlocking((s32)gMotionRomCache, *(s16 *)(state + 0xFC));
+    entry = (s32 *)(gMotionTrackTableOffsets[*(s16 *)(state + 0xFC)] + base);
+    *(f32 *)(state + 8) = *(f32 *)(base + gMotionArchiveOffsets[*(s16 *)(state + 0xFC)]) * *(f32 *)(object + 4);
+    *(f32 *)(state + 4) = *(f32 *)(state + 8);
+    while (entry[0] > 0) {
+        if (entry[0] > 0 && entry[0] < 0x26) {
+            *(s16 *)(state + 0x11A) = 1;
+            {
+                u8 *data = (u8 *)base;
+                data += entry[1];
+                animationTrack3Initialize((struct Track3 *)(state + 0x23C), (struct Pair8 *)data, base);
+            }
+            {
+                u8 *data = (u8 *)base;
+                data += entry[1];
+                data += 0x18;
+                animationDeltaTrack3Initialize((struct Track3b *)(state + 0x2B4), (struct Pair8 *)data, base);
+            }
+            rotation[0] = 0.0f;
+            rotation[1] = 0.0f;
+            rotation[2] = 0.0f;
+            _bzero(state + 0x2E4, 0xC);
+            animationDeltaTrack3Evaluate((struct Track3b *)(state + 0x2B4), rotation, NULL, 0.0f);
+            animationTrack3Evaluate((struct Track3 *)(state + 0x23C), position, NULL, 0.0f);
+            matrix34MakeRotationXYZDegrees((f32 *)(state + 0x18), position[0], position[1], position[2]);
+            motionExtractHeadingFromMatrix((f32 *)(state + 0x18), (f32 *)(state + 0x48));
+        } else {
+            child = actorFindPart(object, entry[0]);
+            if (child != NULL) {
+                childState = *(u8 **)(child + 0x54);
+                *(s16 *)childState = 1;
+                {
+                    u8 *data = (u8 *)base;
+                    data += entry[1];
+                    animationTrack3Initialize((struct Track3 *)(childState + 4), (struct Pair8 *)data, base);
+                }
+            }
+        }
+        entry += 2;
+    }
+    actionRequestMotionData(*(s16 *)(state + 0x100));
+}
+
+/// Evaluate and apply the root orientation and movement of a motion.
+/// \param object Object receiving the root motion.
+/// \param state Initialized motion state containing root tracks and writable pending movement and velocity.
+/// \param time Nonnegative time step in seconds by which to advance the root tracks.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000E408 (0x8000E408).
+void motionEvaluateRootTracks(s32 object, s32 state, f32 time) {
+    f32 position[3];
+    animationTrack3Evaluate((struct Track3 *)(state + 0x23C), position, NULL, time);
+    animationDeltaTrack3Evaluate((struct Track3b *)(state + 0x2B4), (f32 *)(state + 0x1C0), (f32 *)(state + 0x1CC), time);
+    motionApplyRootOrientation(position, object);
+    objectAddPendingLocalMovement(state + 0x1C0);
+}
+
+/// Evaluate a child rotation track and end playback when the track finishes.
+/// \param obj Child object receiving rotation angles.
+/// \param track Initialized child motion playback state to advance.
+/// \param step Nonnegative time step in seconds by which to advance the rotation track.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000E470 (0x8000E470).
+void motionEvaluateChildRotation(u8 *obj, u8 *track, f32 step) {
+    s32 r;
+
+    r = animationTrack3Evaluate((struct Track3 *)(track + 4), (f32 *)(obj + 0xC), NULL, step);
+    while (*(f32 *)(obj + 0xC) < 0.0f) {
+        *(f32 *)(obj + 0xC) += 360.0f;
+    }
+    while (*(f32 *)(obj + 0xC) >= 360.0f) {
+        *(f32 *)(obj + 0xC) -= 360.0f;
+    }
+    while (*(f32 *)(obj + 0x10) < 0.0f) {
+        *(f32 *)(obj + 0x10) += 360.0f;
+    }
+    while (*(f32 *)(obj + 0x10) >= 360.0f) {
+        *(f32 *)(obj + 0x10) -= 360.0f;
+    }
+    while (*(f32 *)(obj + 0x14) < 0.0f) {
+        *(f32 *)(obj + 0x14) += 360.0f;
+    }
+    while (*(f32 *)(obj + 0x14) >= 360.0f) {
+        *(f32 *)(obj + 0x14) -= 360.0f;
+    }
+    if (r == 1) {
+        *(s16 *)track = 0;
+    }
+}
+
+typedef struct Pair8 {
+    s32 a, b;
+} Pair8;
+typedef struct Track3 {
+    Pair8 p[3];
+    f32 f[3];
+    s32 c[3];
+} Track3;
+typedef struct BlendMatrix {
+    f32 values[12];
+} BlendMatrix;
+void animationTrack3Initialize(Track3 *, Pair8 *, s32);
+/// Start a transition from the current pose to the initial pose of the selected motion.
+/// \param object Object with initialized motion and part state, a valid selected motion, and a positive transition duration in seconds.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000E5EC (0x8000E5EC).
+void motionStartPoseTransition(u8 *object) {
+    f32 duration;
+    Track3 track;
+    u8 *state;
+    s32 base;
+    f32 rotation[3];
+    Pair8 *entry;
+    f32 angles[3];
+    BlendMatrix *from;
+    BlendMatrix *current;
+    u8 *child;
+    f32 childRotation[3];
+    u8 *childState;
+    f32 blendWeight = 1.0f;
+    s32 rootKindLimit = 0x26;
+    s32 rotationMode = 3;
+    f32 transformTime = 0.0f;
+
+    state = *(u8 **)(object + 0x54);
+    motionCacheRead(gMotionRomCache, *(s16 *)(state + 0xFC), &base);
+    entry = (Pair8 *)(gMotionTrackTableOffsets[*(s16 *)(state + 0xFC)] + base);
+    duration = *(f32 *)(state + 0x104);
+    *(f32 *)(state + 0x134) = duration;
+    *(f32 *)(state + 0x138) = duration;
+    *(f32 *)(state + 0x130) = blendWeight;
+    motionSetPlaybackMode(object, 0);
+    motionCacheReadBlocking((s32)gMotionRomCache, *(s16 *)(state + 0xFC));
+    *(f32 *)(state + 8) = *(f32 *)(base + gMotionArchiveOffsets[*(s16 *)(state + 0xFC)]) * *(f32 *)(object + 4);
+    while (entry->a > 0) {
+        if (entry->a > 0 && entry->a < rootKindLimit) {
+            *(s16 *)(state + 0x11A) = rotationMode;
+            from = (BlendMatrix *)(state + 0x23C);
+            current = (BlendMatrix *)(state + 0x18);
+            animationTrack3Initialize(&track, (Pair8 *)((u8 *)base + entry->b), base);
+            animationTrack3Evaluate(&track, rotation, 0, transformTime);
+            *from = *current;
+            current = from + 1;
+            matrix34MakeRotationXYZDegrees(current->values, rotation[0], rotation[1], rotation[2]);
+            motionExtractHeadingFromMatrix((f32 *)current, angles);
+            *(f32 *)(state + 0x48) = 0.0f;
+        } else {
+            child = actorFindPart(object, entry->a);
+            if (child != NULL) {
+                childState = *(u8 **)(child + 0x54);
+                *(s16 *)childState = rotationMode;
+                animationTrack3Initialize(&track, (Pair8 *)((u8 *)base + entry->b), base);
+                animationTrack3Evaluate(&track, childRotation, 0, transformTime);
+                from = (BlendMatrix *)(childState + 4);
+                matrix34MakeRotationXYZDegrees(from->values, *(f32 *)(child + 0xC), *(f32 *)(child + 0x10), *(f32 *)(child + 0x14));
+                matrix34MakeRotationXYZDegrees((from + 1)->values, childRotation[0], childRotation[1], childRotation[2]);
+            }
+        }
+        entry++;
+    }
+    TRACE("motionNum:%d\n", *(s16 *)(state + 0xFC));
+    TRACE("  %s\n", *(char **)(state + 0xF0));
+    TRACE("bias:%p\n", base);
+    TRACE("fcvNode:%p\n", entry);
+}
+
+/// Blend a stored pair of orientations for a motion transition.
+/// \param from Two consecutive twelve-component orientation matrices.
+/// \param out Receives the blended twelve-component orientation matrix.
+/// \param t Weight of the first pose, clamped from zero through one.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000E81C (0x8000E81C).
+void motionBlendPosePair(u8 *from, f32 *out, f32 t) {
+    if (t < 0.0f) {
+        t = 0.0f;
+    } else if (t > 1.0f) {
+        t = 1.0f;
+    }
+    matrix34BlendOrientation(1.0f - t, (f32 *)from, (f32 *)(from + 0x30), out);
+}
+
+/// Start timed motion playback using the current action duration.
+/// \param object Object whose motion timer is started.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000E88C (0x8000E88C).
+void motionStartTimedPlayback(u8 *object) {
+    u8 *motionState;
+    f32 duration;
+
+    motionState = *(u8 **)(object + 0x54);
+    motionSetPlaybackMode(object, 0);
+    duration = *(f32 *)(motionState + 0x104);
+    TRACE("interTime:%f\n", duration);
+    *(s16 *)(motionState + 0x11A) = 2;
+    *(f32 *)(motionState + 0x130) = 1.0f;
+    *(f32 *)(motionState + 0x134) = duration;
+    *(f32 *)(motionState + 0x138) = duration;
+}
+
+/// Invoke the current action initialization callback when present.
+/// \param object Object whose current action supplies the callback.
+/// \returns The initialization callback result, or zero when no callback is present.
+/// \note Original decompilation identifier: \c func_8000E8D8 (0x8000E8D8).
+s32 actionInvokeInitializer(u8 *object) {
+    u8 *obj;
+    s32 (*fn)();
+    s32 result;
+
+    obj = *(u8 **)(object + 0x54);
+    fn = *(s32(**)())(obj + 0x108);
+    if (fn != NULL) {
+        TRACE("initFunc:%p\n", fn);
+        result = fn();
+        TRACE("initResult:%d\n", result);
+        return result;
+    }
+    return 0;
+}
+
+s32 actorSelectActionScript(u8 *, s32, s32);
+void actorAppearanceReset(u8 *, s32);
+void actorResetPartTint(u8 *, s32);
+void motionStartTrackPlayback(u8 *);
+void motionStartTimedPlayback(u8 *);
+void motionStartPoseTransition(u8 *);
+
+/// Start playback and associated animation cues for the current action.
+/// \param object Object whose current action is started.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000E914 (0x8000E914).
+void actionStartPlayback(u8 *object) {
+    u8 *v;
+    s32 mode;
+    s32 anim;
+
+    v = *(u8 **)(object + 0x54);
+    mode = *(s32 *)(v + 0xF8) & 7;
+    TRACE("_startAction: actionType:%d\n", mode);
+    *(s16 *)(v + 0x118) = 0;
+    *(f32 *)(v + 0x148) = 0.0f;
+    *(s32 *)(v + 0x154) = actorSelectActionScript(object, *(s32 *)(v + 0x114), 0);
+    if (*(s16 *)(v + 0x11C) == 0) {
+        *(s16 *)(v + 0x11C) = 1;
+        anim = actorSelectActionScript(object, *(s32 *)(v + 0x110), 1);
+        if (anim != 0 && (anim != *(s32 *)(v + 0x150) || (1.2f < *(f32 *)(v + 0x144) && !(*(s32 *)(v + 0xF8) & 8)))) {
+            TRACE("lastAfcKey:%p\n    afcKey:%p\n", *(s32 *)(v + 0x150), anim);
+            if (*(u16 *)(object + 0x34) == 0x25) {
+                if (!(*(u16 *)(v + 0x1E8) & 0x40)) {
+                    actorAppearanceReset(object, anim);
+                }
+                actorResetPartTint(object, anim);
+            }
+            *(s32 *)(v + 0x14C) = anim;
+            *(s32 *)(v + 0x150) = anim;
+            *(f32 *)(v + 0x144) = 0.0f;
+        }
+    }
+    switch (mode) {
+    case 1:
+        motionStartTrackPlayback(object);
+        break;
+    case 2:
+        motionStartTimedPlayback(object);
+        break;
+    case 3:
+        motionStartPoseTransition(object);
+        break;
+    }
+}
+
+typedef struct Rec2CW {
+    s32 w[11];
+} Rec2CW;
+
+/// Apply an action record when it is compatible with the current motion state.
+/// \param state Actor action state receiving the record.
+/// \param record Action record whose referenced names, scripts, and callbacks remain valid while selected.
+/// \returns One when the record is applied; zero when its motion state is incompatible.
+/// \note Original decompilation identifier: \c func_8000EA88 (0x8000EA88).
+s32 actionTryApplyCompatibleRecord(u8 *state, u8 *record) {
+    if ((*(s32 *)(record + 0xC) & 7) != 1 || record[0x12] == state[0xFF]) {
+        *(Rec2CW *)(state + 0xEC) = *(Rec2CW *)record;
+        return 1;
+    }
+    TRACE("error: _setAction(%p): unknown action_type(%d)\n", state, *(s32 *)(record + 0xC) & 7);
+    return 0;
+}
+
+/// Configure a pose transition leading to a selected action.
+/// \param state Actor action state to configure.
+/// \param nextAction Valid destination action identifier from zero through 329.
+/// \param duration Positive pose transition duration in seconds.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000EAF8 (0x8000EAF8).
+void actionConfigurePoseTransition(u8 *state, s32 nextAction, f32 duration) {
+    u8 *var_v0;
+
+    if ((nextAction < 0) || (nextAction >= 0x14A)) {
+        var_v0 = NULL;
+    } else {
+        var_v0 = (u8 *)&((Rec2C *)gActionDefinitions)[nextAction];
+    }
+    *(s32 *)(state + 0xEC) = -2 - nextAction;
+    *(char **)(state + 0xF0) = "\xCA\xE4\xB4\xD6"; /* EUC-JP "interpolation" */
+    TRACE("_setInterAct:  next-motion:%s  next-action:%s\n", *(char **)(var_v0 + 4), *(char **)(state + 0xF0));
+    *(f32 *)(state + 0xF4) = *(f32 *)(var_v0 + 8);
+    *(s32 *)(state + 0xF8) = (*(s32 *)(var_v0 + 0xC) & 0x20100000) | 0x04010003;
+    *(s16 *)(state + 0xFC) = *(s16 *)(var_v0 + 0x10);
+    state[0xFE] = state[0xFF];
+    state[0xFF] = var_v0[0x12];
+    *(s16 *)(state + 0x100) = nextAction;
+    *(s32 *)(state + 0x108) = 0;
+    *(s32 *)(state + 0x10C) = 0;
+    *(f32 *)(state + 0x104) = duration;
+    *(s32 *)(state + 0x110) = 0;
+    *(s32 *)(state + 0x114) = 0;
+}
+
+/// Load an indexed action record and configure its continuation.
+/// \param state Actor action state receiving the record.
+/// \param actionId Action record identifier.
+/// \param nextAction Continuation action identifier stored for subsequent playback.
+/// \returns One when the record is loaded; zero when the action identifier is invalid.
+/// \note Original decompilation identifier: \c func_8000EBA0 (0x8000EBA0).
+s32 actionLoadRecordByIndex(u8 *state, s32 actionId, s32 nextAction) {
+    Rec2CW *a;
+
+    if (actionId < 0 || actionId >= 330) {
+        a = NULL;
+    } else {
+        a = &((Rec2CW *)gActionDefinitions)[actionId];
+    }
+    if (a == NULL) {
+        return 0;
+    }
+    *(Rec2CW *)(state + 0xEC) = *a;
+    *(s16 *)(state + 0x100) = nextAction;
+    if ((*(u32 *)(state + 0xF8) & 7) == 1 && ((*(u32 *)(state + 0xF8) & 0x20000) || *(s32 *)(state + 0x110) == 0)) {
+        *(s32 *)(state + 0x110) = 0;
+        *(s32 *)(state + 0x114) = 0;
+        *(f32 *)(state + 0x104) = 2.0f;
+    }
+    *(u32 *)(state + 0xF8) &= 0xF9FFFFF7;
+    return 1;
+}
+
+/// Prepare playback context for a newly selected action.
+/// \param state Actor action state to prepare.
+/// \param sequence Borrowed default sequence address used when the action supplies no sequence; it must remain valid throughout playback.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000EC7C (0x8000EC7C).
+void actionPrepareSelectedContext(u8 *state, s32 sequence) {
+    *(s16 *)(state + 0x11E) = 0;
+    *(s16 *)(state + 0x120) = -1;
+    *(s32 *)(state + 0x128) = *(s32 *)(state + 0x12C);
+    *(s32 *)(state + 0x12C) = 0;
+    *(s16 *)(state + 0x13E) = *(s16 *)(state + 0x140);
+    *(s16 *)(state + 0x140) = 0;
+    if (*(s32 *)(state + 0x110) == 0) {
+        *(s32 *)(state + 0x110) = sequence;
+    }
+}
+
+typedef struct GlyphPair {
+    u8 hi;
+    u8 lo;
+    s16 id;
+} GlyphPair;
+/// Explicit source/destination pose pairs and the actions joining them.
+/// \note Original identifier: \c D_8006EE48 (0x8006EE48).
+extern GlyphPair gActionExplicitPoseTransitions[];
+/// Owned lookup map from source/destination pose pairs to compatible transitions.
+/// \note Original identifier: \c D_800B6830 (0x800B6830).
+extern WordMap gActionPoseTransitionMap;
+void wordMapInitialize(WordMap *, s32);
+s32 wordMapLookup(WordMap *, u32);
+s32 wordMapInsert(WordMap *, s32, u32);
+
+/// Fallback command sequence used when an action has no configured sequence.
+/// \note Original identifier: \c D_80091D18 (0x80091D18).
+extern u8 gActionDefaultCommandSequence[];
+/// Select and initialize the next compatible action or pose transition.
+/// \param object Actor with initialized action state and transition map; initializer callbacks must eventually accept an action, and fallback action identifiers must be valid.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000ECB4 (0x8000ECB4).
+void actionResolveNextTransition(u8 *object) {
+    u8 *state;
+    u8 *sequence;
+    f32 blendTime;
+    s32 nextIndex;
+    s32 prevIndex;
+    u8 *previous;
+    u8 *next;
+    s32 transition;
+    s32 animation;
+
+    state = *(u8 **)(object + 0x54);
+    if (*(u16 *)(state + 0x11A) == 0) {
+        *(s16 *)(state + 0x100) = -1;
+    }
+    *(s16 *)(state + 0x11C) = 0;
+    *(s16 *)(state + 0x118) = 1;
+    blendTime = 0.2f;
+    for (;;) {
+        prevIndex = *(s16 *)(state + 0x100);
+        if (prevIndex < 0 || prevIndex >= 0x14A) {
+            previous = NULL;
+        } else {
+            previous = (u8 *)&((Rec2CW *)gActionDefinitions)[prevIndex];
+        }
+        nextIndex = *(s16 *)(state + 0x120);
+        if (nextIndex < 0 || nextIndex >= 0x14A) {
+            next = NULL;
+        } else {
+            next = (u8 *)&((Rec2CW *)gActionDefinitions)[nextIndex];
+        }
+        if (previous == NULL && next == NULL) {
+            actionStopPlayback(object);
+            return;
+        }
+        if (next == NULL || (previous != NULL && (*(s32 *)(previous + 0xC) & 0x04000000))) {
+            *(Rec2CW *)(state + 0xEC) = *(Rec2CW *)previous;
+        } else {
+            sequence = *(u8 **)(next + 0x24);
+            if (sequence == NULL) {
+                sequence = gActionDefaultCommandSequence;
+            }
+            if (actionTryApplyCompatibleRecord(state, next)) {
+                actionPrepareSelectedContext(state, (s32)sequence);
+            } else if ((*(s32 *)(next + 0xC) & 0x02000000) && *(s16 *)(next + 0x14) != -1) {
+                nextIndex = *(s16 *)(next + 0x14);
+                if (nextIndex < 0 || nextIndex >= 0x14A) {
+                    next = NULL;
+                } else {
+                    next = (u8 *)&((Rec2CW *)gActionDefinitions)[nextIndex];
+                }
+                if (actionTryApplyCompatibleRecord(state, next)) {
+                    actionPrepareSelectedContext(state, (s32)sequence);
+                } else {
+                    goto find_transition;
+                }
+            } else {
+                sequence = NULL;
+            find_transition:
+                transition = wordMapLookup(&gActionPoseTransitionMap, next[0x12] + (state[0xFF] << 8));
+                animation = transition - 0x100;
+                if (transition == 0xFE) {
+                    actionConfigurePoseTransition(state, nextIndex, blendTime);
+                    actionPrepareSelectedContext(state, (s32)sequence);
+                } else if (animation == -3) {
+                    *(Rec2CW *)(state + 0xEC) = *(Rec2CW *)next;
+                    actionPrepareSelectedContext(state, (s32)sequence);
+                } else if (actionLoadRecordByIndex(state, animation, nextIndex)) {
+                    actionPrepareSelectedContext(state, (s32)sequence);
+                } else if (previous == NULL) {
+                    actionConfigurePoseTransition(state, nextIndex, blendTime);
+                    actionPrepareSelectedContext(state, (s32)sequence);
+                } else {
+                    *(Rec2CW *)(state + 0xEC) = *(Rec2CW *)previous;
+                }
+            }
+        }
+        if (actionInvokeInitializer(object) == 0) {
+            motionRequestCurrentData(object);
+            return;
+        }
+    }
+}
+
+/// Initialize the pose-transition lookup map from explicit transitions and action definitions.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000F00C (0x8000F00C).
+void actionInitializeTransitionMap(void) {
+    s32 i;
+    s32 key;
+    u8 *e;
+    GlyphPair *p;
+
+    wordMapInitialize(&gActionPoseTransitionMap, 0x125);
+    TRACE("apply action_joint_pose from actJointPose\n");
+    for (p = gActionExplicitPoseTransitions; p->hi != '0'; p++) {
+        key = (p->hi << 8) + p->lo;
+        TRACE("firstPose:%d lastPose:%d act:%s\n", p->hi, p->lo, *(char **)(gActionDefinitions + p->id * 0x2C + 4));
+        if (wordMapLookup(&gActionPoseTransitionMap, key) == 0) {
+            TRACE("firstPose:%d lastPose:%d act:%s apply:%d\n", p->hi, p->lo,
+                  *(char **)(gActionDefinitions + p->id * 0x2C + 4), p->id);
+            wordMapInsert(&gActionPoseTransitionMap, p->id + 0x100, key);
+        }
+    }
+    TRACE("apply action_joint_pose from action\n");
+    for (i = 0, e = gActionDefinitions; i < 0x14A; i++, e += 0x2C) {
+        if (*(s32 *)(e + 0xC) & 0x40000) {
+            key = e[0x13];
+            key = (e[0x12] << 8) + key;
+            if (e[0x13] != e[0x12] && wordMapLookup(&gActionPoseTransitionMap, key) == 0) {
+                TRACE("firstPose:%d lastPose:%d act:%s apply:%d\n", e[0x12], e[0x13], *(char **)(e + 4), i);
+                wordMapInsert(&gActionPoseTransitionMap, i + 0x100, key);
+            }
+        }
+    }
+    TRACE("total %d joint_actions applied\n", i);
+}
+
+void wordMapDestroy(u8 *); /* extern */
+
+/// Release the action pose-transition lookup map.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000F128 (0x8000F128).
+void actionDestroyTransitionMap(void) {
+    wordMapDestroy(&gActionPoseTransitionMap);
+}
+
+struct Cmd14;
+void actorUpdateActionScript(u8 *, struct Cmd14 **, f32 *);
+/// Advance the current action, its motion, callbacks, and transitions.
+/// \param object Actor with initialized action state, part state, and transition map; pose blending requires a positive total transition duration.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000F14C (0x8000F14C).
+/// \note Two pose reads retain checked member-offset addressing to preserve the original IDO floating-point operand order.
+void actionUpdatePlayback(u8 *object) {
+    f32 remaining;
+    f32 step;
+    s32 (*callback)(u8 *);
+    s32 callbackResult;
+    s32 result;
+    u16 mode;
+    u8 *state;
+
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
+    ((ActorScriptState *)state)->poseDisplacement[0] = 0.0f;
+    ((ActorScriptState *)state)->poseDisplacement[1] = 0.0f;
+    ((ActorScriptState *)state)->poseDisplacement[2] = 0.0f;
+    if (((ActorScriptState *)state)->actionStartPending != 0) {
+        actionStartPlayback(object);
+    }
+    if ((u16)((ActorScriptState *)state)->playbackMode != 0) {
+        actorUpdateActionScript(object, (struct Cmd14 **)(state + 0x14C), (f32 *)(state + 0x144));
+        actorUpdateActionScript(object, (struct Cmd14 **)(state + 0x154), (f32 *)(state + 0x148));
+        step = ((ActorScriptState *)state)->movementScale * gRuntimeFrameSeconds;
+        ((ActorScriptState *)state)->motionRemaining = (f32)(((ActorScriptState *)state)->motionRemaining - step);
+        remaining = ((ActorScriptState *)state)->motionRemaining;
+        if (remaining <= 0.0f) {
+            step += remaining;
+        }
+        mode = (u16)((ActorScriptState *)state)->playbackMode;
+        switch (mode) {
+        case 2:
+            break;
+        case 1:
+            motionCacheReadBlocking((s32)gMotionRomCache, ((ActorScriptState *)state)->motionId);
+            motionEvaluateRootTracks((s32)object, (s32)state, step);
+            break;
+        case 3:
+            step = remaining / ((ActorScriptState *)state)->motionDuration;
+            ((ActorScriptState *)state)->verticalPoseOffset =
+                (f32)(((*(f32 *)((s8 *)state + (u32) & ((ActorScriptState *)0)->defaultPoseOffset)) * (1.0f - step)) +
+                      ((*(f32 *)((s8 *)state + (u32) & ((ActorScriptState *)0)->verticalPoseOffset)) * step));
+            TRACE("rate:%f  centerHeight:%f  default:%f\n", step, ((ActorScriptState *)state)->verticalPoseOffset,
+                  ((ActorScriptState *)state)->defaultPoseOffset);
+            motionBlendPosePair(state + 0x23C, (f32 *)(state + 0x18), step);
+            break;
+        default:
+            TRACE("error: actHara(%p): unknown action_type(%d)\n", object, mode);
+            break;
+        }
+        callback = ((ActorScriptState *)state)->actionCallback;
+        result = 0;
+        if (callback != NULL) {
+            callbackResult = callback(object);
+            result = callbackResult;
+            if (callbackResult == 1) {
+                ((ActorScriptState *)state)->motionRemaining = 0.0f;
+            }
+            remaining = ((ActorScriptState *)state)->motionRemaining;
+        } else {
+            remaining = ((ActorScriptState *)state)->motionRemaining;
+        }
+        if (!(remaining > 0.0f)) {
+            TRACE("IS_LOOP:%d  attr:%04x, stopFlag:%d\n", ((ActorScriptState *)state)->actionAttributes & 8,
+                  ((ActorScriptState *)state)->actionAttributes, ((ActorScriptState *)state)->loopExitRequested);
+            if ((((ActorScriptState *)state)->actionAttributes & 8) &&
+                (((ActorScriptState *)state)->loopExitRequested == 0) && (result == 0) &&
+                (actionInvokeInitializer(object) == 0)) {
+                ((ActorScriptState *)state)->loopCount = (s16)(((ActorScriptState *)state)->loopCount + 1);
+                ((ActorScriptState *)state)->actionStartPending = 1;
+                return;
+            }
+            actionResolveNextTransition(object);
+        }
+    }
+}
+
+void motionEvaluateChildRotation(u8 *, u8 *, f32);
+void motionBlendPosePair(u8 *, f32 *, f32);
+void matrix3GetEulerAnglesDegrees(f32 *, f32 *, f32 *, f32 *);
+
+/// Advance child motion playback using its parent action timing.
+/// \param object Animated child part with initialized playback state and a valid parent action state; pose blending requires a positive parent transition duration.
+/// \returns Nothing.
+///
+/// \note Portability/UB: the matrix result exceeds the declared three-float local array and relies on adjacent IDO frame padding retained by the unused local.
+/// \note Original decompilation identifier: \c func_8000F33C (0x8000F33C).
+void motionUpdateChildPlayback(u8 *object) {
+    u8 *obj;
+    u8 *tgt;
+    s32 pad[9];
+    f32 v[3];
+
+    obj = *(u8 **)(object + 0x54);
+    if (*(u16 *)obj != 0) {
+        tgt = *(u8 **)(*(u8 **)(object + 0x50) + 0x54);
+        switch (*(u16 *)obj) {
+        case 1:
+            motionEvaluateChildRotation(object, obj, *(f32 *)(tgt + 0x130) * gRuntimeFrameSeconds);
+            break;
+        case 2:
+            *(u16 *)obj = 0;
+            break;
+        case 3:
+            motionBlendPosePair(obj + 4, v, *(f32 *)(tgt + 0x138) / *(f32 *)(tgt + 0x134));
+            matrix3GetEulerAnglesDegrees(v, (f32 *)(object + 0xC), (f32 *)(object + 0x10), (f32 *)(object + 0x14));
+            break;
+        default:
+            TRACE("error: actJoint(%p): unknown action_type(%d)\n", object, *(u16 *)obj);
+            break;
+        }
+    }
+}
+
+/// Request an action, starting immediately when playback is idle or replacing the pending request until current playback ends.
+/// \param object Actor receiving the action request.
+/// \param id Valid action identifier from zero through 329.
+/// \param kind Action kind supplied by the requesting script, representable as a signed 16-bit value.
+/// \param out Receives the identifier assigned to this request.
+/// \returns One when idle playback accepts the request immediately; zero when it is queued.
+/// \note Original decompilation identifier: \c func_8000F404 (0x8000F404).
+s32 actionRequestPlayback(u8 *object, s32 id, s32 kind, s32 *out) {
+    u8 *v;
+
+    v = *(u8 **)(object + 0x54);
+    TRACE("\n\nactRequest: %s\n", actionGetName(id));
+    if (actionRequestMotionData(id) == 0) {
+        actionRequestMotionData(*(s16 *)(gActionFallbackEntries + id * 0x2C));
+    }
+    *(s16 *)(v + 0x120) = id;
+    *(s16 *)(v + 0x140) = kind;
+    *out = *(s32 *)(v + 0x124);
+    *(s32 *)(v + 0x12C) = *out;
+    (*(s32 *)(v + 0x124))++;
+    if (*(u16 *)(v + 0x11A) == 0) {
+        TRACE("play ID: %d\n", *out);
+        actionResolveNextTransition(object);
+        return 1;
+    }
+    TRACE("request to slot: ID: %d\n", *out);
+    *(s16 *)(v + 0x11E) = 1;
+    return 0;
+}
+
+/// Request that the current action leave its loop when playback reaches its end.
+/// \param object Actor whose action state is accessed.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000F4C4 (0x8000F4C4).
+void actionRequestLoopExit(u8 *object) {
+    u8 *actionState = *(u8 **)(object + 0x54);
+    *(s16 *)(actionState + 0x11E) = 1;
+}
+
+/// Stop action playback and clear pending action requests.
+/// \param object Actor whose action state is accessed.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000F4D4 (0x8000F4D4).
+void actionStopPlayback(u8 *object) {
+    u8 *actionState;
+
+    actionState = *(u8 **)(object + 0x54);
+    *(s16 *)(actionState + 0x118) = 0;
+    *(s16 *)(actionState + 0x11E) = 0;
+    *(s32 *)(actionState + 0x128) = 0;
+    *(s32 *)(actionState + 0x150) = 0;
+    *(s32 *)(actionState + 0x14C) = 0;
+    *(s32 *)(actionState + 0x154) = 0;
+    actionState[0xFF] = 0;
+    motionResetPlayback(object);
+    actionCancelPendingRequest(object);
+}
+
+/// Cancel the pending action request.
+/// \param object Actor whose action state is accessed.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000F51C (0x8000F51C).
+void actionCancelPendingRequest(u8 *object) {
+    u8 *objectState;
+
+    objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
+    ((ActorScriptState *)objectState)->pendingAction = -1;
+    ((ActorScriptState *)objectState)->pendingRequestId = 0;
+    ((ActorScriptState *)objectState)->pendingActionKind = 0;
+}
+
+/// Replace current playback with a transition to a selected action pose.
+/// \param object Actor receiving the pose transition.
+/// \param actionId Valid destination action identifier from zero through 329.
+/// \param duration Positive pose transition duration in seconds.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000F534 (0x8000F534).
+void actionBeginPoseTransition(u8 *object, s32 actionId, f32 duration) {
+    u8 *obj;
+
+    obj = *(u8 **)(object + 0x54);
+    actionStopPlayback(object);
+    *(s16 *)(obj + 0x11C) = 0;
+    *(s16 *)(obj + 0x118) = 1;
+    actionConfigurePoseTransition(obj, actionId, duration);
+    *(s16 *)(obj + 0x100) = -1;
+    motionRequestCurrentData(object);
+}
+
+/// Get the attributes of the currently playing action.
+/// \param object Actor whose action state is accessed.
+/// \returns The current action attributes, or 0x20100400 when playback is inactive.
+/// \note Original decompilation identifier: \c func_8000F594 (0x8000F594).
+s32 actionGetAttributes(u8 *object) {
+    u8 *objectState;
+
+    objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
+    if ((u16)((ActorScriptState *)objectState)->playbackMode == 0) {
+        return 0x20100400;
+    }
+    return ((ActorScriptState *)objectState)->actionAttributes;
+}
+
+/// Get the movement scale associated with the currently playing action.
+/// \param object Actor whose current action is inspected.
+/// \returns The current action movement scale, or one when playback is inactive.
+/// \note Original decompilation identifier: \c func_8000F5BC (0x8000F5BC).
+f32 actionGetMovementScale(u8 *object) {
+    u8 *objectState;
+
+    objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
+    if ((u16)((ActorScriptState *)objectState)->playbackMode == 0) {
+        return 1.0f;
+    }
+    return ((ActorScriptState *)objectState)->actionDuration;
+}
+
+/// Get the motion identifier of the currently playing action.
+/// \param object Actor whose action state is accessed.
+/// \returns The current motion identifier, or minus one when playback is inactive.
+/// \note Original decompilation identifier: \c func_8000F5E8 (0x8000F5E8).
+s16 actionGetCurrentMotionId(u8 *object) {
+    u8 *objectState;
+
+    objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
+    if ((u16)((ActorScriptState *)objectState)->playbackMode == 0) {
+        return -1;
+    }
+    return ((ActorScriptState *)objectState)->motionId;
+}
+
+/// Get a display name for an action or action sentinel.
+/// \param actionId Action identifier or negative action sentinel.
+/// \returns The stored action name, a sentinel name, or an invalid-action marker; ownership remains with the action system.
+/// \note Original decompilation identifier: \c func_8000F60C (0x8000F60C).
+char *actionGetName(s32 actionId) {
+    u8 *var_v1;
+    if ((actionId < 0) || (actionId >= 0x14A)) {
+        var_v1 = NULL;
+    } else {
+        var_v1 = (actionId * 0x2C) + gActionDefinitions;
+    }
+    if (var_v1 != NULL) {
+        return *(char **)(var_v1 + 4);
+    }
+    switch (actionId) {
+    case -3:
+        return "ACT_NONE";
+    case -2:
+        return "ACT_INTER";
+    case -1:
+        return "ACT_END";
+    default:
+        return "\xCA\xD1\xA1\xA3"; /* EUC-JP "strange." */
+    }
+}
+
+/// Get the request identifier associated with active action playback.
+/// \param object Actor whose action state is accessed.
+/// \returns The current request identifier, or zero when playback is inactive.
+/// \note Original decompilation identifier: \c func_8000F69C (0x8000F69C).
+s32 actionGetActiveRequestId(u8 *object) {
+    u8 *objectState;
+
+    objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
+    if ((u16)((ActorScriptState *)objectState)->playbackMode == 0) {
+        return 0;
+    }
+    return ((ActorScriptState *)objectState)->activeRequestId;
+}
+
+/// Get the most recently selected action request identifier.
+/// \param object Actor whose action state is accessed.
+/// \returns The stored request identifier, regardless of playback activity.
+/// \note Original decompilation identifier: \c func_8000F6C0 (0x8000F6C0).
+s32 actionGetStoredRequestId(u8 *object) {
+    u8 *obj;
+
+    obj = *(u8 **)(object + 0x54);
+    return *(s32 *)(obj + 0x128);
+}
+
+/// Set the continuation action for current playback.
+/// \param object Actor whose continuation is changed.
+/// \param actionId Continuation action identifier or termination sentinel, representable as a signed 16-bit value; identifiers outside 0 through 329 end continuation.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000F6CC (0x8000F6CC).
+void actionSetContinuation(u8 *object, s32 actionId) {
+    u8 *actionState;
+
+    actionState = *(u8 **)(object + 0x54);
+    TRACE("actSetNext:%s\n", actionGetName(actionId));
+    if ((actionId < 0) || (actionId >= 0x14A)) {
+        *(s16 *)(actionState + 0x100) = actionId;
+        actionRequestLoopExit(object);
+        return;
+    }
+    *(s16 *)(actionState + 0x100) = actionId;
+    actionRequestMotionData(actionId);
+}
+
+/// Skip looping continuation actions to reach their nonlooping successor or termination sentinel.
+/// \pre The continuation chain must not contain a cycle of looping actions.
+/// \param object Actor whose action state is accessed.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000F714 (0x8000F714).
+void actionSkipLoopingContinuations(u8 *object) {
+    s16 continuationId;
+    u8 *actionState;
+    u8 *continuationRecord;
+    actionState = *(u8 **)(object + 0x54);
+loop_1:
+    continuationId = *(s16 *)(actionState + 0x100);
+    if ((continuationId < 0) || (continuationId >= 0x14A)) {
+        continuationRecord = NULL;
+    } else {
+        continuationRecord = gActionDefinitions + (continuationId * 0x2C);
+    }
+    if ((continuationRecord != NULL) && (*(s32 *)(continuationRecord + 0xC) & 8)) {
+        *(s16 *)(actionState + 0x100) = *(s16 *)(continuationRecord + 0x14);
+        TRACE("next:%s\n", actionGetName(*(s16 *)(actionState + 0x100)));
+        goto loop_1;
+    }
+}
+
+/// Validate that action records have consistent table identifiers in debug builds.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000F77C (0x8000F77C).
+void actionValidateTableIndices(void) {
+    s32 i;
+    u8 *p;
+
+    for (i = 0, p = gActionDefinitions; i < 0x14A; i++, p += 0x2C) {
+        if (*(s32 *)p != i) {
+            TRACE("Invalid action table.\n actIdx(%d) != %d\n", i, *(s32 *)p);
+            TRACE(" action:%s\n", *(char **)(p + 4));
+        }
+    }
+}

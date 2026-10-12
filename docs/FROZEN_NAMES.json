@@ -1,0 +1,52 @@
+{
+  "frozen_paths": {
+    "src/audio": "libultra audio library: SDK API and internal symbol names",
+    "src/gu": "libultra gu matrix/projection library: SDK API names",
+    "src/os": "libultra OS layer: SDK names, which the port's runtime also reimplements by name",
+    "src/libc": "libultra libc (ll, ldiv, sprintf, xprintf, ...) and the standard C names next to it",
+    "src/libm": "libultra libm (sinf, cosf, sins, ...): SDK names",
+    "asm/os": "hand-written libultra routines (exception handler, cache, CP0, TLB): SDK names",
+    "asm/mgu": "microcode-library matrix routines: SDK API names",
+    "asm/libc": "libc leaf routines (bcopy, bcmp): standard names"
+  },
+  "frozen_functions": {
+    "proutSprintf": {
+      "severity": "error",
+      "reason": "libultra sprintf's output callback; the port also lists it in `manual_funcs`"
+    },
+    "func_80057B5C": {
+      "severity": "error",
+      "reason": "fragment of libultra's exception handler; the port lists it in `ignored`"
+    },
+    "main": {
+      "severity": "warn",
+      "reason": "game entry point; the port's pikachu.toml renames it to main_recomp",
+      "port_fix": "recomp/pikachu.toml `renamed = [...]`"
+    },
+    "func_80002810": {
+      "severity": "warn",
+      "reason": "game-side controller status function the port overrides by name",
+      "port_fix": "port/src/voice.cpp definition and recomp/pikachu.toml `ignored`"
+    },
+    "func_8004C8A0": {
+      "severity": "warn",
+      "reason": "game-side voice routine the port overrides by name (naming it osVoice* is welcome)",
+      "port_fix": "port/src/voice.cpp definition and recomp/pikachu.toml `ignored`"
+    },
+    "func_8004CAAC": {
+      "severity": "warn",
+      "reason": "game-side voice routine the port overrides by name (naming it osVoice* is welcome)",
+      "port_fix": "port/src/voice.cpp definition and recomp/pikachu.toml `ignored`"
+    },
+    "func_8004CC5C": {
+      "severity": "warn",
+      "reason": "game-side voice routine the port overrides by name (naming it osVoice* is welcome)",
+      "port_fix": "port/src/voice.cpp definition and recomp/pikachu.toml `ignored`"
+    },
+    "func_8004CDA4": {
+      "severity": "warn",
+      "reason": "game-side voice routine the port overrides by name (naming it osVoice* is welcome)",
+      "port_fix": "port/src/voice.cpp definition and recomp/pikachu.toml `ignored`"
+    }
+  }
+}

@@ -1,0 +1,116 @@
+#include "common.h"
+#include "heap_alloc.h"
+/// Geometry display list used to render scene-region occupancy highlights.
+/// \note Original identifier: \c D_100CCB0 (0x0100CCB0).
+extern u8 gSceneRegionDisplayList[];
+/// Write cursor for the active graphics command list; also marks the camera-storage end.
+/// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
+extern Gfx *gRenderDisplayListCursor;
+
+typedef struct PartTemplate {
+    s32 words[14];
+} PartTemplate;
+/// Hierarchy template used to create rectangular scene interaction regions.
+/// \note Original identifier: \c D_80088E60 (0x80088E60).
+extern PartTemplate gSceneRegionObjectTemplate;
+/// Global game heap header used by runtime resource and object allocations.
+/// \note Original identifier: \c D_800F2960 (0x800F2960).
+extern u8 gGameHeap[];
+/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
+/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
+extern u8 *gCurrentAreaConfiguration;
+u8 *objectCreateHierarchyFromTemplate(PartTemplate *);
+u8 *objectRegisterActiveHierarchy(u8 *);
+
+/// Create a rectangular scene region with its associated scene data.
+/// \param position Three-component world-space region center.
+/// \param width Region half-extent along the X axis.
+/// \param depth Region half-extent along the Z axis.
+/// \param sceneData Opaque scene-data value associated with the region.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8001F1F0 (0x8001F1F0).
+void sceneRegionCreate(f32 *position, f32 width, f32 depth, s32 sceneData) {
+    PartTemplate tmpl;
+    u8 *obj;
+    u8 *state;
+
+    tmpl = gSceneRegionObjectTemplate;
+    obj = objectCreateHierarchyFromTemplate(&tmpl);
+    *(f32 *)(obj + 0) = *(f32 *)(gCurrentAreaConfiguration + 0xC) * width;
+    *(f32 *)(obj + 4) = *(f32 *)(gCurrentAreaConfiguration + 0xC);
+    *(f32 *)(obj + 8) = *(f32 *)(gCurrentAreaConfiguration + 0xC) * depth;
+    *(f32 *)(obj + 0x18) = position[0];
+    *(f32 *)(obj + 0x1C) = position[1];
+    *(f32 *)(obj + 0x20) = position[2];
+    *(f32 *)(obj + 0x44) = position[0];
+    *(f32 *)(obj + 0x48) = position[1];
+    *(f32 *)(obj + 0x4C) = position[2];
+    state = heapAllocLocal(gGameHeap, 0x10, 0x33);
+    *(f32 *)(state + 0) = width;
+    *(f32 *)(state + 4) = depth;
+    state[8] = 0;
+    *(s32 *)(state + 0xC) = sceneData;
+    *(u8 **)(obj + 0x54) = state;
+    objectRegisterActiveHierarchy(obj);
+}
+
+/// Borrowed reference to the active Pikachu actor created for the current area.
+/// \note Original identifier: \c D_800760A8 (0x800760A8).
+extern u8 *gPikachuActor;
+/// Primary player control record and base of the player records with a 256-byte stride.
+/// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
+extern f32 gPlayerState[];
+/// Update the region highlight according to player and companion occupancy.
+/// \param obj Scene-region object to update.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8001F318 (0x8001F318).
+void sceneRegionUpdateHighlight(u8 *obj) {
+    u8 *state = *(u8 **)(obj + 0x54);
+    f32 x = *(f32 *)(obj + 0x44);
+    f32 y = *(f32 *)(obj + 0x48);
+    f32 z = *(f32 *)(obj + 0x4C);
+    f32 *other = gPlayerState;
+    f32 cx = other[0];
+    f32 cy = other[1];
+    f32 cz = other[2];
+    f32 px;
+    f32 py;
+    f32 pz;
+    f32 dx;
+    f32 dz;
+    f32 width;
+    px = *(f32 *)(gPikachuActor + 0x44);
+    py = *(f32 *)(gPikachuActor + 0x48);
+    pz = *(f32 *)(gPikachuActor + 0x4C);
+    dx = x >= px ? x - px : -(x - px);
+    width = *(f32 *)(state + 0);
+    if (dx < width) {
+        dz = z >= pz ? z - pz : -(z - pz);
+        if (dz < *(f32 *)(state + 4) && y <= py) {
+            state[8] = 0;
+            return;
+        }
+    }
+    dx = x >= cx ? x - cx : -(x - cx);
+    if (dx < width) {
+        dz = z >= cz ? z - cz : -(z - cz);
+        if (dz < *(f32 *)(state + 4) && y <= cy) {
+            state[8] = 1;
+            return;
+        }
+    }
+    state[8] = 0;
+}
+/// Prepare the region color for rendering its current highlight state.
+/// \param obj Scene-region object to render.
+/// \returns The region geometry display list.
+/// \note Original decompilation identifier: \c func_8001F47C (0x8001F47C).
+u8 *sceneRegionPrepareDraw(u8 *obj) {
+    u8 *state = *(u8 **)(obj + 0x54);
+    if (state[8] == 0) {
+        gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0, 0, 0, 60);
+    } else {
+        gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 180, 0, 0, 180);
+    }
+    return gSceneRegionDisplayList;
+}

@@ -1,0 +1,836 @@
+# splat configuration — the single source of truth for the ROM layout.
+# asm/, build/pikachu.ld, undefined_*_auto.txt and assets/ are all
+# GENERATED from this file + symbol_addrs.txt + your own ROM:
+#
+#   uv run splat split pikachu.yaml
+#
+# Cut points are measured facts (see docs/NOTES.md); every subsegment
+# boundary lands on a known function start.
+name: Hey You, Pikachu! (USA)
+sha1: da1a1e47a86720f9d54fb2d2d247480041bda824
+options:
+  basename: pikachu
+  target_path: rom/baserom.us.z64
+  base_path: .
+  compiler: IDO
+  platform: n64
+  header_encoding: ASCII
+  # rodata strings are not ASCII (the game's font bytes 0xA1.. for accented letters);
+  # any non-ASCII byte makes spimdisasm fall back to words, which reassemble exactly.
+  string_encoding: ASCII
+
+  asm_path: asm
+  src_path: src
+  build_path: build
+  asset_path: assets
+  ld_script_path: build/pikachu.ld
+  symbol_addrs_path: symbol_addrs.txt
+  undefined_funcs_auto_path: undefined_funcs_auto.txt
+  undefined_syms_auto_path: undefined_syms_auto.txt
+
+  find_file_boundaries: False
+  migrate_rodata_to_functions: True
+  o_as_suffix: True
+  use_legacy_include_asm: False
+  create_asm_dependencies: False
+  ld_bss_is_noload: True
+  subalign: 16
+
+segments:
+  - name: header
+    type: header
+    start: 0x0
+  - name: ipl3
+    type: bin
+    start: 0x40
+  - name: boot
+    type: code
+    start: 0x1000
+    vram: 0x80000400
+    bss_size: 0x57A80
+    subalign: 16
+    subsegments:
+      - [0x1000, hasm, entry]
+      - [0x1050, c, main]
+      - [0x3250, c, main_controller]
+      - [0x3FD0, c, game/eeprom_transfer]
+      - [0x4640, c, game/controller_pad_cache]
+      - [0x4750, c, game/microphone_session]
+      - [0x5270, c, game/microphone_requests]
+      - [0x5570, c, game/controller_rumble]
+      - [0x56D0, c, game/controller_input]
+      - [0x5DA0, c, game/midi_sequence]
+      - [0x63D0, c, game/sequence_control]
+      - [0x6750, c, game/sequence_engine]
+      - [0x8200, c, game/object_hierarchy]
+      - [0xAC00, c, game/animation_tracks]
+      - [0xB3A0, c, game/runtime]
+      - [0xCD40, c, game/texture_cache]
+      - [0xD3F0, c, game/vector_math]
+      - [0xEB70, c, game/motion_playback]
+      - [0x103B0, c, game/actor_movement]
+      - [0x128B0, c, game/action_script]
+      - [0x12DB0, c, game/voice_commands_text_panel]
+      - [0x13D30, c, game/attached_effect]
+      - [0x141C0, c, game/overlay_loader]
+      - [0x14260, c, game/actor_model_parts]
+      - [0x15760, c, game/actor_model_motion]
+      - [0x17DD0, c, game/motion_cache]
+      - [0x17F00, c, game/particle_effects]
+      - [0x1CA70, c, game/node_pool]
+      - [0x1CD10, c, game/doors_object_responses]
+      - [0x1D460, c, game/linked_effect]
+      - [0x1E2C0, c, game/actor_configuration]
+      - [0x1F430, c, game/interaction_marker]
+      - [0x1FD10, c, game/landmark]
+      - [0x1FDF0, c, game/scene_region]
+      - [0x200F0, c, game/cave]
+      - [0x20280, c, game/audio_playback]
+      - [0x20F40, c, game/audio_bank_loader]
+      - [0x212B0, c, game/sound_effect_player]
+      - [0x220E0, c, game/player_profile]
+      - [0x221A0, c, game/hud]
+      - [0x23D30, c, game/action_script_commands]
+      - [0x25C30, c, game/flipbook_messenger]
+      - [0x279F0, c, game/orbit_follower]
+      - [0x27F80, c, game/actor_search]
+      - [0x28030, c, game/message_bar]
+      - [0x28E40, c, game/collection_presentation]
+      - [0x2BB50, c, game/terrain_debug_grid]
+      - [0x2C2B0, c, game/text_window]
+      - [0x2D4B0, c, game/collision_grid]
+      - [0x2DC10, c, game/asset_loader]
+      - [0x2DE60, c, game/world_map]
+      - [0x2F760, c, game/toolbox]
+      - [0x32B50, c, game/save_progress]
+      - [0x33BA0, c, game/backdrop]
+      - [0x347D0, c, game/ambient_audio]
+      - [0x34DC0, c, game/title_screen]
+      - [0x36F30, c, game/ground_shadow]
+      - [0x37660, c, game/eye_catch]
+      - [0x386E0, c, game/rom_dma]
+      - [0x38B00, c, game/heap]
+      - [0x39750, c, game/trigonometry]
+      - [0x3D100, c, game/graphics_text]
+      - [0x40300, c, game/rom_cache]
+      - [0x40790, hasm, game/matrix_transform_point]
+      - [0x40830, c, game/scheduler]
+      - [0x41040, c, game/voice_recognition]
+      - [0x41B20, c, game/search_tree]
+      - [0x42270, c, game/keyed_pool]
+      - [0x42D20, hasm, game/matrix_to_fixed]
+      - [0x42EA0, c, game/fault_handler]
+      - [0x43440, c, game/texture_images_word_map]
+      - [0x49B50, c, game/square_root]
+      - [0x49B60, c, game/unused_absolute_value]
+      - [0x49B70, hasm, game/matrix_concatenate]
+      - [0x49D60, c, game/audio_worker_string_utils]
+      - [0x4A890, c, game/archive_compression]
+      - [0x4B6C0, hasm, game/font_glyph_metrics]
+      # Font tables plus the preceding handwritten lookup delay slot.
+      - [0x4B790, textbin, audio/n_data]
+      # CPU routines formerly hidden inside the n_data binary span.
+      - [0x4D4A0, c, game/voice_device]
+      - [0x4DA60, asm, libm/classify]
+      - [0x4DCB0, asm, audio/n_synstopvoice]
+      - [0x4DD20, asm, audio/n_synfreevoice]
+      - [0x4DDC0, asm, audio/n_synsetvol]
+      - [0x4DE60, asm, audio/n_synsetpan]
+      - [0x4DEE0, asm, audio/n_synsetfxmix]
+      - [0x4DF70, asm, audio/n_synallocvoice]
+      - [0x4E1A0, asm, audio/n_synstartvoiceparam]
+      - [0x4E280, asm, audio/n_synsetpitch]
+      - [0x4E300, asm, audio/n_synaddplayer]
+      - [0x4E460, asm, audio/n_sl]
+      - [0x4E4F0, asm, audio/n_synthesizer]
+      - [0x4EB60, asm, audio/n_synremoveplayer]
+      - [0x4EC70, asm, audio/n_env]
+      - [0x4F6E0, asm, audio/n_syndelete]
+      - [0x4F710, asm, audio/n_synallocfx]
+      - [0x4F770, asm, audio/n_reverb]
+      - [0x502A0, asm, audio/n_drvrnew]
+      - [0x50800, asm, audio/n_save]
+      - [0x50850, asm, audio/n_load]
+      - [0x50FB0, asm, audio/n_resample]
+      - [0x51180, asm, audio/n_mainbus]
+      - [0x51200, asm, os/initialize]
+      - [0x51550, asm, os/ai]
+      - [0x516A0, asm, os/createthread]
+      - [0x517F0, asm, os/startthread]
+      - [0x51940, asm, os/setthreadpri]
+      - [0x51A20, hasm, os/bzero]
+      - [0x51AC0, asm, os/virtualtophysical]
+      - [0x51B40, asm, gu/perspective]
+      - [0x51DD0, asm, gu/lookat]
+      - [0x520F0, asm, gu/mtxcatl]
+      - [0x52150, asm, os/recvmesg]
+      - [0x52290, asm, os/yieldthread]
+      - [0x522E0, asm, os/createmesgqueue]
+      - [0x52310, asm, os/seteventmesg]
+      - [0x523D0, asm, os/contreset]
+      - [0x52500, asm, os/contsetch]
+      - [0x52560, asm, os/controller]
+      - [0x52840, asm, os/contquery]
+      - [0x528E0, asm, os/motor]
+      - [0x52CB0, asm, os/gettime]
+      - [0x52D40, asm, libc/llcvt]
+      - [0x52F50, asm, libc/ll]
+      - [0x53210, hasm, libc/bcopy]
+      - [0x53520, asm, os/conteepprobe]
+      - [0x53590, asm, os/conteepread]
+      - [0x537E0, asm, os/conteepwrite]
+      - [0x53BB0, asm, os/contreaddata]
+      - [0x53D90, asm, os/sendmesg]
+      - [0x53EE0, hasm, os/getcount]
+      - [0x53EF0, asm, audio/cents2ratio]
+      - [0x53F40, hasm, os/invaldcache]
+      - [0x53FF0, asm, os/pidma]
+      - [0x540B0, asm, os/piread]
+      - [0x540F0, textbin, os/zero_540F0]
+      - [0x54150, hasm, os/getconfig]
+      - [0x54160, asm, os/visetmode]
+      - [0x541C0, asm, os/viblack]
+      - [0x54230, asm, os/visetspecial]
+      - [0x54390, asm, os/visetyscale]
+      - [0x543E0, asm, os/spsetpcwrap]
+      - [0x54400, asm, os/viswapbuf]
+      - [0x54450, asm, libm/nsqrtf]
+      - [0x54460, hasm, os/invalicache]
+      - [0x544E0, asm, libc/sprintf]
+      - [0x54560, asm, audio/heapinit]
+      - [0x545A0, asm, audio/heapdballoc]
+      - [0x54600, hasm, os/setintmask]
+      - [0x546A0, asm, gu/ortho]
+      - [0x54860, asm, gu/rotate]
+      - [0x54A30, asm, os/pimgr]
+      - [0x54BA0, asm, os/getthreadid]
+      - [0x54BC0, asm, libm/sinf]
+      - [0x54D80, asm, libm/cosf]
+      - [0x54EF0, asm, libm/sins]
+      - [0x54F90, asm, os/dpctr]
+      - [0x54FD0, hasm, os/writebackdcacheall]
+      - [0x55000, asm, os/vimgr]
+      - [0x55310, asm, os/visetevent]
+      - [0x55370, hasm, os/writebackdcache]
+      - [0x553F0, asm, os/sptaskyield]
+      - [0x55410, asm, os/sptaskyielded]
+      - [0x55470, asm, os/sptaskload]
+      - [0x55730, asm, os/vigetcurrfb]
+      - [0x55770, asm, os/vigetnextfb]
+      - [0x557B0, asm, os/voice_startread]
+      - [0x55870, asm, os/voice_getread]
+      - [0x55C40, asm, os/voice_stopread]
+      - [0x55D60, hasm, os/getintmask]
+      - [0x55DC0, asm, os/voice_setad]
+      - [0x55FB0, asm, os/getcurrfault]
+      - [0x55FC0, asm, os/aisetnextbuf]
+      - [0x56050, asm, os/stopthread]
+      - [0x56110, hasm, libc/bcmp]
+      - [0x56230, asm, os/voice_getstatus]
+      - [0x56420, asm, os/contchnlreset]
+      - [0x56510, asm, os/voice_read2]
+      - [0x56740, asm, os/voice_write4]
+      - [0x56970, asm, os/voice_checkresult]
+      - [0x56A20, asm, os/voice_write20]
+      - [0x56C50, asm, audio/sl]
+      - [0x56D10, asm, audio/drvrnew]
+      - [0x574C0, asm, audio/reverb]
+      - [0x58120, hasm, os/setsr]
+      - [0x58130, hasm, os/getsr]
+      - [0x58140, hasm, os/setfpccsr]
+      - [0x58150, hasm, os/setwatchlo]
+      - [0x58160, asm, os/sirawread]
+      - [0x581B0, asm, os/sirawwrite]
+      - [0x58200, hasm, os/exceptasm]
+      - [0x58C80, asm, os/dequeuethread]
+      - [0x58CC0, hasm, os/probetlb]
+      - [0x58D80, hasm, mgu/mtxidentf]
+      - [0x58DD0, hasm, mgu/mtxf2l]
+      - [0x58E40, hasm, mgu/mtxl2f]
+      - [0x58EB0, hasm, mgu/mtxcatf]
+      - [0x58FA0, asm, os/si]
+      - [0x59110, asm, os/settimer]
+      - [0x592A0, asm, os/contcrc]
+      - [0x59410, asm, os/pfsselectbank]
+      - [0x59490, asm, os/contramread]
+      - [0x596C0, asm, os/timerintr]
+      - [0x59AF0, asm, os/jammesg]
+      - [0x59C40, asm, os/pigetcmdq]
+      - [0x59C70, asm, os/piacs]
+      - [0x59D80, asm, os/viinit]
+      - [0x59EA0, asm, os/spsetpc]
+      - [0x59ED0, asm, libc/xprintf]
+      - [0x5ABB0, hasm, mgu/normalize]
+      - [0x5AC10, asm, os/getthreadpri]
+      - [0x5AC30, asm, os/pirawdma]
+      - [0x5AD00, asm, os/epirawdma]
+      - [0x5AEE0, asm, os/devmgr]
+      - [0x5B2F0, asm, os/vigetcurrcontext]
+      - [0x5B300, asm, os/viswapcontext]
+      - [0x5B600, asm, os/spsetstat]
+      - [0x5B610, asm, os/spgetstat]
+      - [0x5B620, asm, os/sprawdma]
+      - [0x5B6B0, asm, os/spdevicebusy]
+      - [0x5B6E0, asm, os/voice_read36]
+      - [0x5B910, asm, os/pfsisplug]
+      - [0x5BC00, asm, os/aibusy]
+      - [0x5BC30, asm, os/voicecrc]
+      - [0x5BCD0, asm, audio/synthesizer]
+      - [0x5C350, asm, audio/syndelete]
+      - [0x5C360, asm, audio/filter]
+      - [0x5C380, asm, audio/env]
+      - [0x5D000, asm, audio/load]
+      - [0x5DB30, asm, audio/resample]
+      - [0x5DE20, asm, audio/auxbus]
+      - [0x5DF30, asm, audio/mainbus]
+      - [0x5E080, asm, audio/save]
+      - [0x5E140, asm, os/sibusy]
+      - [0x5E170, asm, os/destroythread]
+      - [0x5E280, asm, os/contramwrite]
+      - [0x5E4D0, asm, os/pfsgetstatus]
+      - [0x5E700, hasm, os/setcompare]
+      - [0x5E710, asm, libc/xlitob]
+      - [0x5E9B0, asm, libc/xldtob]
+      - [0x5F4C0, asm, os/resetglobalintmask]
+      - [0x5F520, asm, os/epirawwrite]
+      - [0x5F680, asm, os/epirawread]
+      - [0x5F7E0, asm, os/setglobalintmask]
+      - [0x5F830, asm, audio/synallocfx]
+      - [0x5F8D0, asm, audio/copy]
+      - [0x5F950, asm, os/pfschecksum]
+      - [0x604D0, asm, libc/ldiv]
+      - [0x60660, asm, libc/stdlib]
+      - [0x60C50, textbin, rsp/ucode_text]
+      - [0x64000, data, boot_data]
+      - [0x64020, .data, game/microphone_session]
+      - [0x64050, data, boot_data_64050]
+      - [0x64430, .data, game/runtime]
+      - [0x64490, data, boot_data_64490]
+      - [0x78D20, .data, game/doors_object_responses]  # exit-door descriptions, spawn handlers
+      - [0x78D40, data, boot_data_78D40]
+      - [0x79E20, .data, game/linked_effect]  # spin angle static + spawn template
+      - [0x79E60, data, boot_data_79E60]
+      - [0x89840, .data, game/actor_configuration]  # sway phase statics
+      - [0x89850, data, boot_data_89850]
+      - [0x89ED0, .data, game/hud]  # scroll phase static, draw lists
+      - [0x89F30, data, boot_data_89F30]
+      - [0x9A5F0, .data, game/collection_presentation]  # messages, camera points, draw lists, transition state
+      - [0x9A920, data, boot_data_9A920]
+      - [0x9AFF0, .data, game/toolbox]  # tool box models, help text tables
+      - [0x9B2B0, data, boot_data_9B2B0]
+      - [0x9B9C0, .data, game/save_progress]
+      - [0x9BA00, data, boot_data_9BA00]
+      - [0x9CFD0, .data, game/heap]  # heap routine-name pointers (function statics)
+      - [0x9D000, data, boot_data_9D000]
+      - [0x9E530, .data, game/texture_images_word_map]  # texturePairUploadStrip pending-palette static
+      - [0x9E540, data, boot_data_9E540]
+      - [0x9E5C0, data, audio/n_sl]
+      - [0x9E5D0, data, boot_data_9E5D0]
+      - [0x9E6E0, data, audio/n_drvrnew]
+      - [0x9E870, data, os/initialize]
+      - [0x9E890, data, boot_data_9E890]
+      - [0x9FA30, data, gu/rotate]
+      - [0x9FA40, data, os/pimgr]
+      - [0x9FA70, data, boot_data_9FA70]
+      - [0xA0270, data, os/vimgr]
+      - [0xA0290, data, os/aisetnextbuf]
+      - [0xA02A0, data, audio/sl]
+      - [0xA02B0, data, audio/drvrnew]
+      - [0xA0440, data, audio/reverb]
+      - [0xA0460, data, boot_data_A0460]
+      - [0xA04D0, data, os/timerintr]
+      - [0xA04E0, data, boot_data_A04E0]
+      - [0xA0560, data, libc/xprintf]
+      - [0xA05B0, data, audio/env]
+      - [0xA06F0, data, boot_data_A06F0]
+      - [0xA07E0, data, libc/xlitob]
+      - [0xA0810, data, boot_data_A0810]
+      - [0xA0820, data, libc/stdlib]
+      - [0xA0830, data, boot_data_A0830]
+      - [0xA08A0, .rodata, main]
+      - [0xA08F0, .rodata, main_controller]
+      - [0xA0950, rodatabin, boot_rodata_A0950]
+      - [0xA0B30, .rodata, game/eeprom_transfer]
+      - [0xA0BF0, rodatabin, boot_rodata_A0BF0]
+      - [0xA0C10, .rodata, game/microphone_session]
+      - [0xA0DC0, rodatabin, boot_rodata_A0DC0]
+      - [0xA0E20, .rodata, game/sequence_control]
+      - [0xA0E30, .rodata, game/sequence_engine]
+      - [0xA1060, .rodata, game/object_hierarchy]
+      - [0xA1130, .rodata, game/animation_tracks]
+      - [0xA1160, .rodata, game/runtime]
+      - [0xA1880, rodatabin, boot_rodata_A1880]
+      - [0xA18D0, .rodata, game/vector_math]
+      - [0xA1930, .rodata, game/motion_playback]
+      - [0xA1CD0, rodatabin, boot_rodata_A1CD0]
+      - [0xA31F0, .rodata, game/actor_movement]
+      - [0xA3220, rodatabin, boot_rodata_A3220]
+      - [0xA33C0, .rodata, game/actor_model_motion]
+      - [0xA3470, rodatabin, boot_rodata_A3470]
+      - [0xA4230, .rodata, game/particle_effects]
+      - [0xA4390, .rodata, game/doors_object_responses]
+      - [0xA45F0, rodatabin, boot_rodata_A45F0]
+      - [0xA53C0, .rodata, game/landmark]
+      - [0xA5410, rodatabin, boot_rodata_A5410]
+      - [0xA5480, .rodata, game/audio_playback]
+      - [0xA5490, rodatabin, boot_rodata_A5490]
+      - [0xA54A0, .rodata, game/sound_effect_player]
+      - [0xA54B0, .rodata, game/player_profile]
+      - [0xA54C0, .rodata, game/hud]
+      - [0xA5520, .rodata, game/action_script_commands]
+      - [0xA56B0, .rodata, game/flipbook_messenger]
+      - [0xA5880, .rodata, game/orbit_follower]
+      - [0xA58C0, .rodata, game/message_bar]
+      - [0xA5970, .rodata, game/collection_presentation]
+      - [0xA6440, .rodata, game/terrain_debug_grid]
+      - [0xA6480, .rodata, game/text_window]
+      - [0xA6520, .rodata, game/collision_grid]
+      - [0xA6590, rodatabin, boot_rodata_A6590]
+      - [0xA65E0, .rodata, game/world_map]
+      - [0xA6710, .rodata, game/toolbox]
+      - [0xA6B80, .rodata, game/save_progress]
+      - [0xA6CF0, rodatabin, boot_rodata_A6CF0]
+      - [0xA7120, .rodata, game/title_screen]
+      - [0xA71E0, .rodata, game/ground_shadow]
+      - [0xA71F0, .rodata, game/eye_catch]
+      - [0xA7260, rodatabin, boot_rodata_A7260]
+      - [0xA7540, .rodata, game/heap]
+      - [0xA78C0, .rodata, game/trigonometry]
+      - [0xA7AA0, rodatabin, boot_rodata_A7AA0]
+      - [0xA7C40, .rodata, game/graphics_text]
+      - [0xA7E30, .rodata, game/voice_recognition]
+      - [0xA8020, rodatabin, boot_rodata_A8020]
+      - [0xA8850, rodata, audio/n_synthesizer]
+      - [0xA8860, rodata, audio/n_env]
+      - [0xA88B0, rodata, audio/n_reverb]
+      - [0xA88E0, rodata, audio/n_drvrnew]
+      - [0xA8900, rodata, audio/n_resample]
+      - [0xA8910, rodata, gu/perspective]
+      - [0xA8920, rodata, libc/llcvt]
+      - [0xA8930, rodata, audio/cents2ratio]
+      - [0xA8940, rodatabin, boot_rodata_A8940]
+      - [0xA89C0, rodata, libm/sinf]
+      - [0xA8A10, rodata, libm/cosf]
+      - [0xA8A60, rodatabin, boot_rodata_A8A60]
+      - [0xA8A70, rodata, audio/drvrnew]
+      - [0xA8A90, rodata, audio/reverb]
+      - [0xA8AC0, rodatabin, boot_rodata_A8AC0]
+      - [0xA8B10, rodata, libc/xprintf]
+      - [0xA8C10, rodata, os/devmgr]
+      - [0xA8C30, rodata, audio/synthesizer]
+      - [0xA8C40, rodata, audio/env]
+      - [0xA8CA0, rodata, audio/resample]
+      - [0xA8CD0, rodata, libc/xldtob]
+      - [0xA8D30, rodatabin, boot_rodata_A8D30]
+      - {type: bss, vram: 0x800A8C00, name: boot_bss}
+      - {type: .bss, vram: 0x800ACE80, name: main}
+      - {type: bss, vram: 0x800AD1E0, name: boot_bss_800AD1E0}
+      - {type: .bss, vram: 0x800AD420, name: game/microphone_session}
+      - {type: bss, vram: 0x800AD480, name: boot_bss_800AD480}
+      - {type: .bss, vram: 0x800AD9A0, name: game/controller_input}
+      - {type: bss, vram: 0x800AD9E0, name: boot_bss_800AD9E0}
+      - {type: .bss, vram: 0x800AE4C0, name: game/runtime}
+      - {type: bss, vram: 0x800B67B0, name: boot_bss_800B67B0}
+      - {type: .bss, vram: 0x800B6990, name: game/doors_object_responses}
+      - {type: bss, vram: 0x800B6B90, name: boot_bss_800B6B90}
+      - {type: .bss, vram: 0x800F1BE0, name: game/toolbox}
+      - {type: bss, vram: 0x800F1CE0, name: boot_bss_800F1CE0}
+      - {type: .bss, vram: 0x800F24D0, name: game/save_progress}
+      - {type: bss, vram: 0x800F2550, name: boot_bss_800F2550}
+      - {type: bss, vram: 0x800FDB80, name: os/initialize}
+      - {type: bss, vram: 0x800FDB90, name: boot_bss_800FDB90}
+      - {type: bss, vram: 0x800FDDE0, name: os/pimgr}
+      - {type: bss, vram: 0x800FF0A0, name: os/vimgr}
+      - {type: bss, vram: 0x801002C0, name: boot_bss_801002C0}
+      - {type: bss, vram: 0x80100300, name: os/voice_getread}
+      - {type: bss, vram: 0x80100310, name: boot_bss_80100310}
+      - {type: bss, vram: 0x80100330, name: os/timerintr}
+      - {type: bss, vram: 0x80100370, name: boot_bss_80100370}
+  - name: assets_a
+    type: bin
+    start: 0xA9800
+  # Resident overlay: DMA'd by func_800135C0 (called from runtimeMainThreadEntry)
+  # with ROM 0xB3C70..0xDCF60 -> 0x8010AAF0; text ..0x80123430, data
+  # ..0x80133DE0, bss ..0x80134270 (the loader's arguments, docs/NOTES.md).
+  # Unit cuts are object edges where measured: six follow pad words
+  # (0xBC0E0, 0xBE1F0, 0xC0390, 0xC26F0, 0xC4ED0, 0xCA940); 0xB7B00 and
+  # 0xBF8B0 split the .rodata rhythm (pass-1 strings, then pass-2 constants in
+  # function order, once per object). 0xC1CB0 and 0xC5980..0xCA4C0, 0xCC1E0
+  # are unverified (no text-referenced rodata), see docs/NOTES.md.
+  # .data 0xCC5B0..0xD4EE0, .rodata 0xD4EE0..0xDCF60: the map-name strings at
+  # 0x8012BD60 are the string literals of area_terrain_maze's .data area tables.
+  - name: ovl
+    type: code
+    start: 0xB3C70
+    vram: 0x8010AAF0
+    bss_size: 0x490
+    subalign: 16
+    subsegments:
+      - [0xB3C70, c, ovl/area_terrain_maze]
+      - [0xB7B00, c, ovl/player_companion]
+      - [0xBC0E0, c, ovl/item_registry]
+      - [0xBE1F0, c, ovl/script_vm]
+      - [0xBF8B0, c, ovl/actor_script_actions]
+      - [0xC0390, c, ovl/actor_script_queries]
+      - [0xC1CB0, c, ovl/actor_target_interaction]
+      - [0xC26F0, c, ovl/system_menu]
+      - [0xC4ED0, c, ovl/actor_script_action_commands]
+      - [0xC5980, c, ovl/actor_script_messages_items]
+      - [0xC7320, c, ovl/actor_script_player_world]
+      - [0xC8C90, c, ovl/actor_script_collection_profile]
+      - [0xCA4C0, c, ovl/script_demo_item_commands]
+      - [0xCA940, c, ovl/item_physics]
+      - [0xCC1E0, c, ovl/item_special_behaviors]
+      - [0xCC5B0, .data, ovl/area_terrain_maze]  # octree, terrain grids, area tables, timers
+      - [0xCCCF0, .data, ovl/player_companion]  # action prompts, player modes, control schemes
+      - [0xCD110, .data, ovl/item_registry]  # item models, kinds and ranges
+      - [0xD37E0, data, ovl_data_D37E0]  # actor_script_actions
+      - [0xD3830, data, ovl_data_D3830]  # credits table, read by actor_target_interaction
+      - [0xD3A50, .data, ovl/system_menu]  # menu trees (function statics from 0x8012B3BC)
+      - [0xD4580, data, ovl_data_D4580]  # fn-pointer tables (C4ED0..)
+      - [0xD4AD0, data, ovl_data_D4AD0]  # item_special_behaviors reads it
+      - [0xD4EE0, .rodata, ovl/area_terrain_maze]
+      - [0xD53D0, .rodata, ovl/player_companion]
+      - [0xD5A90, .rodata, ovl/item_registry]
+      - [0xD9E70, .rodata, ovl/script_vm]
+      - [0xD9FE0, .rodata, ovl/actor_script_actions]
+      - [0xDA0C0, rodatabin, ovl_rodata_DA0C0]
+      - [0xDA7C0, .rodata, ovl/system_menu]
+      - [0xDBC20, rodatabin, ovl_rodata_DBC20]
+      - [0xDBF90, .rodata, ovl/item_physics]
+      - [0xDBFE0, rodatabin, ovl_rodata_DBFE0]
+      - {type: .bss, vram: 0x80133DE0, name: ovl/area_terrain_maze}
+      - {type: .bss, vram: 0x80133E10, name: ovl/player_companion}
+      - {type: .bss, vram: 0x80134030, name: ovl/item_registry}
+      - {type: .bss, vram: 0x801340B0, name: ovl/script_vm}
+      - {type: .bss, vram: 0x801340D0, name: ovl/system_menu}
+      - {type: .bss, vram: 0x80134220, name: ovl/actor_script_action_commands}
+  # Scene 0: exact loader bounds from D_801235A4 (see docs/SCENE_OVERLAYS.md).
+  # Scene overlays share VRAM and are mutually exclusive; keep symbols qualified.
+  - name: scene_bedroom
+    type: code
+    start: 0xDCF60
+    vram: 0x80134270
+    bss_size: 0x10
+    exclusive_ram_id: scene
+    symbol_name_format: $VRAM_$SEG
+    symbol_name_format_no_rom: $VRAM_$SEG
+    subalign: 16
+    subsegments:
+      - [0xDCF60, c, scenes/bedroom]
+      - [0xDD190, databin, scenes/bedroom_data]
+      - {type: bss, vram: 0x8015E4A0, name: scenes/bedroom_bss}
+  # Loader scene 1: entryway.
+  - name: scene_entryway
+    type: code
+    start: 0x107190
+    vram: 0x80134270
+    bss_size: 0x10
+    exclusive_ram_id: scene
+    symbol_name_format: $VRAM_$SEG
+    symbol_name_format_no_rom: $VRAM_$SEG
+    subalign: 16
+    subsegments:
+      - [0x107190, c, scenes/entryway]
+      - [0x107320, databin, scenes/entryway_data]
+      - {type: bss, vram: 0x8013C8D0, name: scenes/entryway_bss}
+  # Loader scene 2: front_yard.
+  - name: scene_front_yard
+    type: code
+    start: 0x10F7F0
+    vram: 0x80134270
+    bss_size: 0x10
+    exclusive_ram_id: scene
+    symbol_name_format: $VRAM_$SEG
+    symbol_name_format_no_rom: $VRAM_$SEG
+    subalign: 16
+    subsegments:
+      - [0x10F7F0, c, scenes/front_yard]
+      - [0x10FAA0, databin, scenes/front_yard_data]
+      - {type: bss, vram: 0x80167130, name: scenes/front_yard_bss}
+  # Loader scene 3: viridian_entrance.
+  - name: scene_viridian_entrance
+    type: code
+    start: 0x1426B0
+    vram: 0x80134270
+    bss_size: 0x10
+    exclusive_ram_id: scene
+    symbol_name_format: $VRAM_$SEG
+    symbol_name_format_no_rom: $VRAM_$SEG
+    subalign: 16
+    subsegments:
+      - [0x1426B0, c, scenes/viridian_entrance]
+      - [0x142AF0, databin, scenes/viridian_entrance_data]
+      - {type: bss, vram: 0x80174700, name: scenes/viridian_entrance_bss}
+  # Loader scene 4: viridian_forest.
+  - name: scene_viridian_forest
+    type: code
+    start: 0x182B40
+    vram: 0x80134270
+    bss_size: 0x10
+    exclusive_ram_id: scene
+    symbol_name_format: $VRAM_$SEG
+    symbol_name_format_no_rom: $VRAM_$SEG
+    subalign: 16
+    subsegments:
+      - [0x182B40, c, scenes/viridian_forest]
+      - [0x182D00, databin, scenes/viridian_forest_data]
+      - {type: bss, vram: 0x8014DBA0, name: scenes/viridian_forest_bss}
+  # Loader scene 5: viridian_deep.
+  - name: scene_viridian_deep
+    type: code
+    start: 0x19C470
+    vram: 0x80134270
+    bss_size: 0x10
+    exclusive_ram_id: scene
+    symbol_name_format: $VRAM_$SEG
+    symbol_name_format_no_rom: $VRAM_$SEG
+    subalign: 16
+    subsegments:
+      - [0x19C470, c, scenes/viridian_deep]
+      - [0x19C980, databin, scenes/viridian_deep_data]
+      - {type: bss, vram: 0x8015DC50, name: scenes/viridian_deep_bss}
+  # Loader scene 6: springleaf_entrance.
+  - name: scene_springleaf_entrance
+    type: code
+    start: 0x1C5E50
+    vram: 0x80134270
+    bss_size: 0x10
+    exclusive_ram_id: scene
+    symbol_name_format: $VRAM_$SEG
+    symbol_name_format_no_rom: $VRAM_$SEG
+    subalign: 16
+    subsegments:
+      - [0x1C5E50, c, scenes/springleaf_entrance]
+      - [0x1C6720, databin, scenes/springleaf_entrance_data]
+      - {type: bss, vram: 0x8016C7F0, name: scenes/springleaf_entrance_bss}
+  # Loader scene 7: oddish_meadow.
+  - name: scene_oddish_meadow
+    type: code
+    start: 0x1FE3D0
+    vram: 0x80134270
+    bss_size: 0x10
+    exclusive_ram_id: scene
+    symbol_name_format: $VRAM_$SEG
+    symbol_name_format_no_rom: $VRAM_$SEG
+    subalign: 16
+    subsegments:
+      - [0x1FE3D0, c, scenes/oddish_meadow]
+      - [0x1FEDF0, databin, scenes/oddish_meadow_data]
+      - {type: bss, vram: 0x80189470, name: scenes/oddish_meadow_bss}
+  # Loader scene 8: springleaf_field.
+  - name: scene_springleaf_field
+    type: code
+    start: 0x2535D0
+    vram: 0x80134270
+    bss_size: 0x10
+    exclusive_ram_id: scene
+    symbol_name_format: $VRAM_$SEG
+    symbol_name_format_no_rom: $VRAM_$SEG
+    subalign: 16
+    subsegments:
+      - [0x2535D0, c, scenes/springleaf_field]
+      - [0x253ED0, databin, scenes/springleaf_field_data]
+      - {type: bss, vram: 0x8017D6E0, name: scenes/springleaf_field_bss}
+  # Loader scene 9: olivine_lakeshore.
+  - name: scene_olivine_lakeshore
+    type: code
+    start: 0x29CA40
+    vram: 0x80134270
+    bss_size: 0x10
+    exclusive_ram_id: scene
+    symbol_name_format: $VRAM_$SEG
+    symbol_name_format_no_rom: $VRAM_$SEG
+    subalign: 16
+    subsegments:
+      - [0x29CA40, c, scenes/olivine_lakeshore]
+      - [0x29CFF0, databin, scenes/olivine_lakeshore_data]
+      - {type: bss, vram: 0x80155180, name: scenes/olivine_lakeshore_bss}
+  # Loader scene 10: olivine_lake.
+  - name: scene_olivine_lake
+    type: code
+    start: 0x2BD950
+    vram: 0x80134270
+    bss_size: 0x10
+    exclusive_ram_id: scene
+    symbol_name_format: $VRAM_$SEG
+    symbol_name_format_no_rom: $VRAM_$SEG
+    subalign: 16
+    subsegments:
+      - [0x2BD950, c, scenes/olivine_lake]
+      - [0x2BE0B0, databin, scenes/olivine_lake_data]
+      - [0x2CBA30, .rodata, scenes/olivine_lake]
+      - [0x2CBA40, rodatabin, scenes/olivine_lake_data_tail]
+      - {type: bss, vram: 0x80150F60, name: scenes/olivine_lake_bss}
+  # Loader scene 11: ochre_entrance.
+  - name: scene_ochre_entrance
+    type: code
+    start: 0x2DA640
+    vram: 0x80134270
+    bss_size: 0x10
+    exclusive_ram_id: scene
+    symbol_name_format: $VRAM_$SEG
+    symbol_name_format_no_rom: $VRAM_$SEG
+    subalign: 16
+    subsegments:
+      - [0x2DA640, c, scenes/ochre_entrance]
+      - [0x2DA940, databin, scenes/ochre_entrance_data]
+      - {type: bss, vram: 0x801746C0, name: scenes/ochre_entrance_bss}
+  # Loader scene 12: ochre_deep.
+  - name: scene_ochre_deep
+    type: code
+    start: 0x31AA90
+    vram: 0x80134270
+    bss_size: 0x10
+    exclusive_ram_id: scene
+    symbol_name_format: $VRAM_$SEG
+    symbol_name_format_no_rom: $VRAM_$SEG
+    subalign: 16
+    subsegments:
+      - [0x31AA90, c, scenes/ochre_deep]
+      - [0x31B240, databin, scenes/ochre_deep_data]
+      - {type: bss, vram: 0x8018C0D0, name: scenes/ochre_deep_bss}
+  # Loader scene 13: cobalt_island.
+  - name: scene_cobalt_island
+    type: code
+    start: 0x3728F0
+    vram: 0x80134270
+    bss_size: 0x10
+    exclusive_ram_id: scene
+    symbol_name_format: $VRAM_$SEG
+    symbol_name_format_no_rom: $VRAM_$SEG
+    subalign: 16
+    subsegments:
+      - [0x3728F0, c, scenes/cobalt_island]
+      - [0x372E20, databin, scenes/cobalt_island_data]
+      - {type: bss, vram: 0x8018A2D0, name: scenes/cobalt_island_bss}
+  # Loader scene 14: cobalt_coast.
+  - name: scene_cobalt_coast
+    type: code
+    start: 0x3C8950
+    vram: 0x80134270
+    bss_size: 0x10
+    exclusive_ram_id: scene
+    symbol_name_format: $VRAM_$SEG
+    symbol_name_format_no_rom: $VRAM_$SEG
+    subalign: 16
+    subsegments:
+      - [0x3C8950, c, scenes/cobalt_coast]
+      - [0x3C8F60, databin, scenes/cobalt_coast_data]
+      - {type: bss, vram: 0x8014F620, name: scenes/cobalt_coast_bss}
+  # Loader scene 15: abra_shop.
+  - name: scene_abra_shop
+    type: code
+    start: 0x3E3D00
+    vram: 0x80134270
+    bss_size: 0x10
+    exclusive_ram_id: scene
+    symbol_name_format: $VRAM_$SEG
+    symbol_name_format_no_rom: $VRAM_$SEG
+    subalign: 16
+    subsegments:
+      - [0x3E3D00, c, scenes/abra_shop]
+      - [0x3E3FF0, databin, scenes/abra_shop_data]
+      - {type: bss, vram: 0x80147460, name: scenes/abra_shop_bss}
+  # Loader scene 17: ochre_fishing.
+  - name: scene_ochre_fishing
+    type: code
+    start: 0x3F6EF0
+    vram: 0x80134270
+    bss_size: 0x10
+    exclusive_ram_id: scene
+    symbol_name_format: $VRAM_$SEG
+    symbol_name_format_no_rom: $VRAM_$SEG
+    subalign: 16
+    subsegments:
+      - [0x3F6EF0, c, scenes/ochre_fishing]
+      - [0x3F7530, databin, scenes/ochre_fishing_data]
+      - {type: bss, vram: 0x801551D0, name: scenes/ochre_fishing_bss}
+  # Loader scene 18: olivine_fishing.
+  - name: scene_olivine_fishing
+    type: code
+    start: 0x417E50
+    vram: 0x80134270
+    bss_size: 0x10
+    exclusive_ram_id: scene
+    symbol_name_format: $VRAM_$SEG
+    symbol_name_format_no_rom: $VRAM_$SEG
+    subalign: 16
+    subsegments:
+      - [0x417E50, c, scenes/olivine_fishing]
+      - [0x4184A0, databin, scenes/olivine_fishing_data]
+      - {type: bss, vram: 0x8014D240, name: scenes/olivine_fishing_bss}
+  # Loader scene 19: cobalt_fishing.
+  - name: scene_cobalt_fishing
+    type: code
+    start: 0x430E20
+    vram: 0x80134270
+    bss_size: 0x10
+    exclusive_ram_id: scene
+    symbol_name_format: $VRAM_$SEG
+    symbol_name_format_no_rom: $VRAM_$SEG
+    subalign: 16
+    subsegments:
+      - [0x430E20, c, scenes/cobalt_fishing]
+      - [0x431460, databin, scenes/cobalt_fishing_data]
+      - {type: bss, vram: 0x80151730, name: scenes/cobalt_fishing_bss}
+  # Loader scene 16: wilderness_camp.
+  - name: scene_wilderness_camp
+    type: code
+    start: 0x44E2E0
+    vram: 0x80134270
+    bss_size: 0x10
+    exclusive_ram_id: scene
+    symbol_name_format: $VRAM_$SEG
+    symbol_name_format_no_rom: $VRAM_$SEG
+    subalign: 16
+    subsegments:
+      - [0x44E2E0, c, scenes/wilderness_camp]
+      - [0x44E460, databin, scenes/wilderness_camp_data]
+      - {type: bss, vram: 0x8013CE80, name: scenes/wilderness_camp_bss}
+  # Loader scene 20: viridian_edge.
+  - name: scene_viridian_edge
+    type: code
+    start: 0x456EF0
+    vram: 0x80134270
+    bss_size: 0x10
+    exclusive_ram_id: scene
+    symbol_name_format: $VRAM_$SEG
+    symbol_name_format_no_rom: $VRAM_$SEG
+    subalign: 16
+    subsegments:
+      - [0x456EF0, c, scenes/viridian_edge]
+      - [0x457020, databin, scenes/viridian_edge_data]
+      - {type: bss, vram: 0x8015BF50, name: scenes/viridian_edge_bss}
+  # Loader scene 21: playground.
+  - name: scene_playground
+    type: code
+    start: 0x47EBD0
+    vram: 0x80134270
+    bss_size: 0x10
+    exclusive_ram_id: scene
+    symbol_name_format: $VRAM_$SEG
+    symbol_name_format_no_rom: $VRAM_$SEG
+    subalign: 16
+    subsegments:
+      - [0x47EBD0, c, scenes/playground]
+      - [0x47EDC0, databin, scenes/playground_data]
+      - {type: bss, vram: 0x8015A070, name: scenes/playground_bss}
+  # Loader scene 22: credits.
+  - name: scene_credits
+    type: code
+    start: 0x4A49D0
+    vram: 0x80134270
+    bss_size: 0x10
+    exclusive_ram_id: scene
+    symbol_name_format: $VRAM_$SEG
+    symbol_name_format_no_rom: $VRAM_$SEG
+    subalign: 16
+    subsegments:
+      - [0x4A49D0, c, scenes/credits]
+      - [0x4A4FC0, databin, scenes/credits_data]
+      - {type: bss, vram: 0x80144230, name: scenes/credits_bss}
+  - name: assets_b
+    type: bin
+    start: 0x4B4990
+  - [0x1000000]

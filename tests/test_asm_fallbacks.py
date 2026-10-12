@@ -1,0 +1,32 @@
+from pathlib import Path
+import sys
+import tempfile
+import unittest
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
+from asm_fallbacks import inventory
+
+
+class FallbackTests(unittest.TestCase):
+    def test_pragma_blocks_data_and_standalone_units(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            files = {
+                'src/game.c': '#pragma GLOBAL_ASM("asm/nonmatchings/f.s")\n#pragma GLOBAL_ASM("asm/data/d.s")\n',
+                'asm/nonmatchings/f.s': 'glabel fallback\n',
+                'asm/data/d.s': '.word 0\n',
+                'asm/os/unit.s': 'nonmatching other, 0x10\nglabel other\nnonmatching next, 0x20\nglabel next\n',
+            }
+            for relative, text in files.items():
+                path = root / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(text)
+            records, data = inventory(root)
+            self.assertEqual(sorted(row[2] for row in records), ['fallback', 'next', 'other'])
+            self.assertEqual(data, {'asm/data/d.s'})
+            (root / 'asm/nonmatchings/f.s').unlink()
+            self.assertIn('(assembly not generated)', {row[2] for row in inventory(root)[0]})
+
+
+if __name__ == '__main__':
+    unittest.main()

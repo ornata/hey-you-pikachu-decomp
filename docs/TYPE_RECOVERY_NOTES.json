@@ -1,0 +1,122 @@
+{
+  "baseline_ref": "acee42740ab9e971b1180d2ddfa03df76ed73135",
+  "scope": "Game C inventory and evidence-led recovery; residual locations are deferred, not asserted to be fully understood.",
+  "matching_exceptions": {
+    "src/game/collection_presentation.c": {
+      "*": "Unknown declarations and temporary local names are now recovered and individually match. Existing integer address representations and unrelated noncanonical declarations remain outside this token cleanup."
+    },
+    "src/game/eye_catch.c": {
+      "eyeCatchUpdatePlayback": "The volume setter parameters are established s32 values. Its canonical void return changes allocated code in this caller; a local s32 compatibility return declaration preserves scheduling, and the returned register is never consumed. The cross-unit declaration mismatch remains target-specific."
+    },
+    "src/ovl/script_demo_item_commands.c": {
+      "scriptCommandCreateItemParticles": "The motion helper uses its established float parameters with 100.0f and 1000.0f. This isolated correction preserves all allocated bytes; the former broad-sweep exception no longer applies."
+    },
+    "src/ovl/player_companion.c": {
+      "playerUpdateNormalControl": "All placeholder fields are recovered. One angle read uses a checked member offset because direct members reverse the IDO floating add operands; the resulting object matches.",
+      "playerUpdateStationaryLook": "All placeholder fields are recovered. One angle read uses a checked member offset because direct members reverse the IDO floating add operands; the resulting object matches.",
+      "playerUpdateViewOnlyControl": "All placeholder fields are recovered. One angle read uses a checked member offset because direct members reverse the IDO floating add operands; the resulting object matches.",
+      "playerSetInteractionHelpText": "The help text is a byte string. The 256-byte buffer retains its split linker symbols, with a four-byte first symbol and adjacent retained words. Its cross-symbol access and argument-less strlen call remain documented target-specific constraints."
+    },
+    "src/ovl/item_physics.c": {
+      "itemUpdateGroundVelocity": "Two velocity reads use checked member offsets to retain the original IDO preload scheduling and floating add operands. Stores and all other recovered fields use members.",
+      "itemUpdateRollingRotation": "One radius read uses a checked member offset to retain floating multiply operand order; all other recovered fields use direct members.",
+      "itemUpdatePlayerHeld": "The void camera transformation call retains two unused trailing pointers supplied by the ROM caller."
+    },
+    "src/game/node_pool.c": {
+      "nodePoolDestroy": "The ROM caller supplies an unused third argument to the two-argument heap-free routine. An unprototyped void declaration preserves that call; inspect a2 setup before attempting a canonical declaration."
+    },
+    "src/game/keyed_pool.c": {
+      "keyedPoolDestroy": "The ROM caller supplies an unused third argument to the two-argument heap-free routine. An unprototyped void declaration preserves that call; inspect a2 setup before attempting a canonical declaration."
+    },
+    "src/game/actor_model_motion.c": {
+      "heapAllocLocal callers": "These callers preserve unused fourth arguments in the ROM. The three-argument allocator prototype rejects them. Retain the local ABI compatibility declaration until an explicitly matching call representation is verified.",
+      "actorFindPartIndex": "The word-map lookup retains two unused trailing integer arguments from the ROM call. Its map, key and return types match the implementation; removing the unused arguments is outside this matching cleanup.",
+      "actorUpdateMotionDisplacement": "The matrix-vector call retains an unused trailing actor-state pointer from the ROM call. Its matrix, input and output are float arrays and its return is void.",
+      "heapFreeLocal callers": "An unprototyped void declaration retains the original mix of two- and three-argument calls, including an unused trailing object pointer."
+    },
+    "src/game/backdrop.c": {
+      "backdropAllocateViewBuffer / backdropLoadRomRange": "Typed heap allocation declarations retain unused fourth size arguments. Integer buffer-address fields and returns preserve the original 32-bit target representation."
+    },
+    "src/game/texture_images_word_map.c": {
+      "wordMapInitialize": "The typed allocator declaration retains an unused fourth map argument to preserve the ROM call.",
+      "wordMapDestroy": "The typed void deallocator declaration retains an unused third map argument to preserve the ROM call."
+    },
+    "src/game/archive_compression.c": {
+      "heapAllocLocal callers": "The existing allocator declaration is already typed. Adopting the shared header changed the compared object; retain it locally and inspect declaration/type interactions before consolidation."
+    },
+    "src/game/voice_commands_text_panel.c": {
+      "heapAllocLocal callers": "The caller carries allocation results as s32 addresses. Adopting a void-pointer return changed the compared object. Inspect conversions and register allocation before replacing the retained declaration."
+    },
+    "src/game/audio_bank_loader.c": {
+      "audioBankRelocate": "Moving the instrument cursor directly to instArray changed object bytes. The retained byte cursor advances through the variable-length tail while accessing only the ALBank instrument-array member; preserve this biased address calculation or investigate IDO scheduling before changing it."
+    },
+    "src/game/motion_playback.c": {
+      "actionUpdatePlayback": "Direct member reads in the two-term pose blend reverse the floating add operands under IDO. Two reads retain byte addressing through checked member offsets; all other recovered accesses use members. This representation matches the original object."
+    },
+    "src/ovl/area_terrain_maze.c": {
+      "areaFindPositionNode": "Checked geometry member-offset reads preserve IDO floating operand/register ordering; direct members change allocated bytes.",
+      "mazeDestroyNode": "Checked geometry and scene-dimension member-offset reads preserve IDO scheduling; direct members change allocated bytes.",
+      "terrainSampleVertexHeight / terrainSampleCellHeight": "Checked terrain-pointer member-offset reads preserve integer multiply operand ordering; direct members reverse operands.",
+      "mazeInitialize": "Three retained words are cleared across adjacent BSS symbols; their gameplay purpose and any vector semantics remain unproven. Consolidating them changes defined symbol attributes; aliasing and adjacency remain target-specific constraints.",
+      "areaUpdateNodeVisibility / mazeDestroyNodeHierarchy": "Child cursors retain byte stepping with a checked children member offset; their loop bounds retain the original target representation.",
+      "areaActivateNode": "The void hierarchy-flag clearing call retains an unused trailing node pointer from the ROM call."
+    },
+    "src/game/actor_configuration.c": {
+      "actorCreateForKind": "An unused local word is named reservedCreationSlot. Removing it shrinks the IDO frame by eight bytes and changes all argument/spill offsets; it is retained with a Doxygen target-compiler note."
+    },
+    "src/game/voice_recognition.c": {
+      "voiceDictionaryClearDevice": "The typed OSVoiceHandle argument is established by initialization and voice_device.c. Two unused trailing arguments remain in this caller; the local compatibility declaration preserves their original ABI setup."
+    },
+    "src/game/action_script_commands.c": {
+      "appearance command calls": "Appearance scale now uses the established float parameter and both appearance helpers return void. Their unused trailing command pointer is retained through local compatibility declarations to preserve the ROM calls."
+    },
+    "src/game/collision_grid.c": {
+      "collisionGridUnregisterObject": "Keyed-pool layout and value/key types are established. The remove call retains an unused fourth registration-key pointer; preserve this argument setup when consolidating declarations."
+    },
+    "src/ovl/actor_script_actions.c": {
+      "actorConsumeHeldItem": "The item transformation result and cause are s32. The caller retains an unused third object pointer through a compatibility declaration."
+    },
+    "src/ovl/actor_script_player_world.c": {
+      "actorScriptPushSelfHandle": "scriptVmPushInteger returns void. An unprototyped compatibility declaration retains this caller's unused third actor argument; a two-argument prototype rejects the retained call."
+    },
+    "src/ovl/actor_script_messages_items.c": {
+      "scriptVmPushInteger calls": "The mailbox acknowledgement command supplies an unused third actor argument; a void compatibility declaration retains the original argument setup."
+    },
+    "src/ovl/actor_script_action_commands.c": {
+      "scriptVmPushInteger calls": "A native command supplies an unused third actor argument; a void compatibility declaration retains the original argument setup."
+    },
+    "src/ovl/script_vm.c": {
+      "scriptVmReadIntegerOperand": "scriptValueGetInteger returns s32. Operand decoding retains an unused second VM context argument through an unprototyped compatibility declaration."
+    },
+    "src/game/doors_object_responses.c": {
+      "objectResponsesAttach": "The keyed-pool insert call retains an unused fourth object pointer from the ROM; map, value, key and return types match the implementation. Pool storage retains the existing byte-array linker symbol."
+    }
+  },
+  "baseline_totals": {
+    "field_accesses": {
+      "occurrences": 2575,
+      "unique_spellings": 1,
+      "files": 75
+    },
+    "unknown_types": {
+      "occurrences": 1012,
+      "unique_spellings": 1,
+      "files": 71
+    },
+    "address_globals": {
+      "occurrences": 6650,
+      "unique_spellings": 995,
+      "files": 102
+    },
+    "temporary_names": {
+      "occurrences": 2480,
+      "unique_spellings": 32,
+      "files": 58
+    },
+    "raw_offset_candidates": {
+      "occurrences": 4040,
+      "unique_spellings": 1425,
+      "files": 86
+    }
+  }
+}

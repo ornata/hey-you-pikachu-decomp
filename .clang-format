@@ -1,0 +1,10 @@
+# Matching-decomp friendly style: formatting may only move whitespace,
+# never reflow comments (ASCII art and UB ledgers are content).
+BasedOnStyle: LLVM
+IndentWidth: 4
+ColumnLimit: 120
+ReflowComments: false
+SortIncludes: false
+AllowShortFunctionsOnASingleLine: None
+BreakBeforeBraces: Attach
+PointerAlignment: Right

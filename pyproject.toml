@@ -1,0 +1,30 @@
+# Python toolchain for the decomp pipeline, managed by uv.
+#
+#   uv sync          -> .venv/ with exact locked versions (uv.lock)
+#   uv run splat ... -> run a tool inside it
+#
+# One environment serves every tool: splat (ROM splitter), plus the
+# dependencies of the cloned-at-setup tools (m2c, asm-differ,
+# decomp-permuter), so none of them need their own venv.
+# asm-processor is stdlib-only and runs under plain python3 in the
+# Makefile hot path on purpose.
+[project]
+name = "hey-you-pikachu-tools"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    # ROM splitting
+    "splat64[mips]>=0.37,<0.38",
+    # m2c (cloned, pinned in tools/setup.sh)
+    "pycparser>=2.21",
+    # asm-differ (cloned, pinned in tools/setup.sh)
+    "colorama>=0.4",
+    "watchdog>=4",
+    "levenshtein>=0.25",
+    "cxxfilt>=0.3",
+    # decomp-permuter (cloned, pinned in tools/setup.sh)
+    "toml>=0.10",
+]
+
+[tool.uv]
+package = false

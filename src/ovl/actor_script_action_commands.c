@@ -1,0 +1,582 @@
+/// \file
+/// Native actor-script dispatch and action scheduling commands.
+/// \ingroup ActorScriptVm
+///
+/// See docs/VOICE_AND_SCRIPT_VM.md for the subsystem walkthrough.
+
+/* harvested: matched m2c drafts; pending style pass */
+#include "common.h"
+#include "object_types.h"
+#include "actor_script.h"
+#include "script_vm.h"
+
+/// Shared 80-byte text used by actor-script text and message commands.
+/// \note NONPORTABLE: buffer accesses span separate declarations whose contiguous target layout is retained for matching.
+/// \note Original identifier: \c D_80134220 (0x80134220).
+s8 gActorScriptSharedTextBuffer;
+/// Retained word storage within the shared actor-script text buffer.
+/// \note Original identifier: \c D_80134220_0 (0x80134224).
+s32 gActorScriptSharedTextWordStorage;
+/// Retained trailing storage within the shared actor-script text buffer.
+/// \note Original identifier: \c D_80134220_1 (0x80134228).
+struct {
+    s32 w[18];
+} gActorScriptSharedTextTailStorage;
+
+void systemMenuPopHistory(); /* extern */
+
+void runtimeRequestGameModeChange(s32);               /* extern */
+void backdropSelectForView(s32, s32, s32); /* extern */
+void systemMenuExit();                      /* extern */
+/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
+/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
+extern u8 *gCurrentAreaConfiguration;
+
+void areaRequestTransition(s32, s32);          /* extern */
+
+/// Selected eye-catch group index, or minus one when no interlude is selected.
+/// \note Original identifier: \c D_8009B580 (0x8009B580).
+extern s32 gEyeCatchSelectedGroup;
+
+void progressSetChapterAndUnlockMilestones(); /* extern */
+
+
+void playerSetChaseStage(); /* extern */
+
+
+
+
+
+
+s32 progressGetValue(u32); /* extern */
+
+
+/// Dispatch the next registered command for an actor script.
+/// \param actor Actor whose script VM supplies a valid command selector and command arguments.
+/// \returns The selected command execution status.
+/// \note Original decompilation identifier: \c func_8011BD50 (0x8011BD50).
+/// \pre The command selector and stack arguments satisfy the selected command's contract.
+/// \see actorRunScriptVm
+/// \see actorScriptYield
+/// \see actorScriptStartActionAndWait
+s32 actorScriptDispatchRegisteredCommand(u8 *actor) {
+    u8 *vm = (u8 *)((ActorScriptObject *)actor)->scriptState->vmAddress;
+    s32 op = scriptVmReadIntegerOperand(vm);
+    ScriptNativeCommand fn = ((ScriptVm *)vm)->commands[op];
+
+    return fn(actor, vm);
+}
+
+/// Prepend text to a string, truncating the combined text to fit its destination.
+/// \param destination Null-terminated string in a writable buffer of at least capacity bytes.
+/// \param capacity Positive destination buffer capacity, including the terminating null byte.
+/// \param prefix Null-terminated prefix in storage that does not overlap the destination.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8011BD9C (0x8011BD9C).
+void stringPrependBounded(u8 *destination, s32 capacity, u8 *prefix) {
+    s32 i;
+    s32 prefixLength;
+    s32 length;
+    for (prefixLength = 0; prefix[prefixLength] != 0 && prefixLength < capacity - 1; prefixLength++) {
+    }
+    for (length = 0; destination[length] != 0 && length < capacity - prefixLength - 1; length++) {
+    }
+    for (; length >= 0; length--)
+        destination[length + prefixLength] = destination[length];
+    for (i = 0; i < prefixLength; i++)
+        destination[i] = prefix[i];
+    destination[capacity - 1] = 0;
+}
+
+/// Compatibility declaration retaining the extra actor argument in a native command call.
+void scriptVmPushInteger(); /* extern */
+/// Yield actor script execution with a zero script result.
+/// \param actor Actor whose script VM receives zero.
+/// \returns One, yielding script execution.
+/// \note Original decompilation identifier: \c func_8011BEB0 (0x8011BEB0).
+s32 actorScriptYield(u8 *actor) {
+    scriptVmPushInteger(((RuntimeObjectPrefix *)actor)->state.actor->vmAddress, 0);
+    return 1;
+}
+
+void actorBeginScriptActionHandler(u8 *arg0, s32 arg1); /* extern */
+/// Schedule playback of the script-selected action and wait for completion.
+/// \param actor Actor address whose script action is started; its VM supplies the action arguments and later receives the completion result.
+/// \returns Two, transferring script execution to the action handler.
+/// \note Original decompilation identifier: \c func_8011BEDC (0x8011BEDC).
+s32 actorScriptStartActionAndWait(s32 actor) {
+    actorBeginScriptActionHandler((u8 *)actor, 2);
+    return 2;
+}
+
+/// Request action-loop exit and wait for the current action result.
+/// \param actor Actor address whose current action must leave its loop; its VM later receives the completion result.
+/// \returns Two, transferring script execution to the action handler.
+/// \note Original decompilation identifier: \c func_8011BF00 (0x8011BF00).
+s32 actorScriptStartLoopExitAndWait(s32 actor) {
+    actorBeginScriptActionHandler((u8 *)actor, 3);
+    return 2;
+}
+
+/// Request action-loop exit and wait for the current action result through the alternate script command.
+/// \param actor Actor address whose current action must leave its loop; its VM later receives the completion result.
+/// \returns Two, transferring script execution to the action handler.
+/// \note Original decompilation identifier: \c func_8011BF24 (0x8011BF24).
+s32 actorScriptStartLoopExitAndWaitAlternate(s32 actor) {
+    actorBeginScriptActionHandler((u8 *)actor, 3);
+    return 2;
+}
+
+/// Begin playback of the script-selected action with message interruption enabled.
+/// \param actor Actor address whose script action is started; its VM supplies the action arguments and later receives the completion result.
+/// \returns Two, transferring script execution to the action handler.
+/// \note Original decompilation identifier: \c func_8011BF48 (0x8011BF48).
+s32 actorScriptStartInterruptibleAction(s32 actor) {
+    actorBeginScriptActionHandler((u8 *)actor, 5);
+    return 2;
+}
+
+/// Begin the script-selected held-item throwing action.
+/// \param actor Actor address whose script action is started; its VM supplies the action arguments and later receives the completion result.
+/// \returns Two, transferring script execution to the action handler.
+/// \note Original decompilation identifier: \c func_8011BF6C (0x8011BF6C).
+s32 actorScriptStartHeldItemThrow(s32 actor) {
+    actorBeginScriptActionHandler((u8 *)actor, 6);
+    return 2;
+}
+
+/// Begin the scripted item-acquisition action.
+/// \param actor Actor address whose script action is started; its VM supplies the action arguments and later receives the completion result.
+/// \returns Two, transferring script execution to the action handler.
+/// \note Original decompilation identifier: \c func_8011BF90 (0x8011BF90).
+s32 actorScriptStartItemAcquisition(s32 actor) {
+    actorBeginScriptActionHandler((u8 *)actor, 7);
+    return 2;
+}
+
+s32 scriptVmPopInteger();     /* extern */
+/// Select how the actor attachment position is determined.
+/// \param actor Actor whose script VM supplies an attachment mode from zero through five and receives zero.
+/// \returns Zero, allowing script execution to continue.
+/// \note Original decompilation identifier: \c func_8011BFB4 (0x8011BFB4).
+s32 actorScriptSetAttachmentMode(u8 *actor) {
+    u8 *sp1C;
+    s32 sp18;
+
+    sp1C = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    sp18 = ((ActorScriptState *)sp1C)->vmAddress;
+    ((ActorScriptState *)sp1C)->attachmentMode = scriptVmPopInteger(sp18);
+    scriptVmPushInteger(sp18, 0);
+    return 0;
+}
+
+/// Begin the scripted held-item eating action.
+/// \param actor Actor address whose script VM supplies the eating action and later receives its result.
+/// \returns Two, transferring script execution to the action handler.
+/// \note Original decompilation identifier: \c func_8011BFF8 (0x8011BFF8).
+s32 actorScriptStartEatingHeldItem(s32 actor) {
+    actorBeginScriptActionHandler((u8 *)actor, 8);
+    return 2;
+}
+
+/// Begin an action that uses the actor action resource.
+/// \param actor Actor address whose script VM supplies an action selector followed by a repetition count and later receives the action result.
+/// \returns Two, transferring script execution to the action handler.
+/// \note Original decompilation identifier: \c func_8011C01C (0x8011C01C).
+s32 actorScriptStartCostedAction(s32 actor) {
+    actorBeginScriptActionHandler((u8 *)actor, 9);
+    return 2;
+}
+
+s32 scriptVmPopString();                 /* extern */
+void stringPrependBounded(u8 *, s32, u8 *); /* extern */
+/// Shared 80-byte text used by actor-script text and message commands.
+/// \note NONPORTABLE: buffer accesses span separate declarations whose contiguous target layout is retained for matching.
+/// \note Original identifier: \c D_80134220 (0x80134220).
+extern s8 gActorScriptSharedTextBuffer;
+
+/// Build shared script text from string arguments.
+/// \param actor Actor whose script supplies a nonnegative string count as an instruction operand and that many stack strings; the combined text follows argument order, is limited to 79 characters, and its VM receives zero.
+/// \returns Zero, allowing script execution to continue.
+/// \note Original decompilation identifier: \c func_8011C040 (0x8011C040).
+s32 actorScriptBuildSharedText(u8 *actor) {
+    s32 vmAddress;
+    s32 var_s0;
+
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    gActorScriptSharedTextBuffer = 0;
+    var_s0 = scriptVmReadIntegerOperand(vmAddress) - 1;
+    if (var_s0 >= 0) {
+        do {
+            stringPrependBounded((u8 *)&gActorScriptSharedTextBuffer, 0x50, (u8 *)scriptVmPopString(vmAddress));
+            var_s0 -= 1;
+        } while (var_s0 >= 0);
+    }
+    scriptVmPushInteger(vmAddress, 0);
+    return 0;
+}
+
+
+/// Build shared script text through the alternate text command.
+/// \param actor Actor whose script supplies a nonnegative string count as an instruction operand and that many stack strings; the combined text follows argument order, is limited to 79 characters, and its VM receives zero.
+/// \returns Zero, allowing script execution to continue.
+/// \note Original decompilation identifier: \c func_8011C0C8 (0x8011C0C8).
+s32 actorScriptBuildSharedTextAlternate(u8 *actor) {
+    s32 vmAddress;
+    s32 var_s0;
+
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    gActorScriptSharedTextBuffer = 0;
+    var_s0 = scriptVmReadIntegerOperand(vmAddress) - 1;
+    if (var_s0 >= 0) {
+        do {
+            stringPrependBounded((u8 *)&gActorScriptSharedTextBuffer, 0x50, (u8 *)scriptVmPopString(vmAddress));
+            var_s0 -= 1;
+        } while (var_s0 >= 0);
+    }
+    scriptVmPushInteger(vmAddress, 0);
+    return 0;
+}
+
+/// Provide zero as the script result.
+/// \param actor Actor whose script VM receives zero.
+/// \returns Zero, allowing script execution to continue.
+/// \note Original decompilation identifier: \c func_8011C150 (0x8011C150).
+s32 actorScriptPushZero(u8 *actor) {
+    scriptVmPushInteger(((RuntimeObjectPrefix *)actor)->state.actor->vmAddress, 0);
+    return 0;
+}
+
+void scriptVmPushFloat(u8 *, f32); /* extern */
+u32 randomNext(void);          /* extern */
+
+/// Provide a random floating-point value in the unit interval.
+/// \param actor Actor whose script VM receives a random value from zero through one.
+/// \returns Zero, allowing script execution to continue.
+/// \note Original decompilation identifier: \c func_8011C17C (0x8011C17C).
+s32 actorScriptPushRandomUnitFloat(u8 *actor) {
+    u8 *vm = (u8 *)((ActorScriptObject *)actor)->scriptState->vmAddress;
+
+    scriptVmPushFloat(vm, randomNext() * 2.3283064365386963e-10);
+    return 0;
+}
+
+s32 randomBelow(s32);  /* extern */
+/// Provide a random integer below a script-supplied limit.
+/// \param actor Actor whose script VM supplies an exclusive upper bound and receives a random nonnegative integer below it, or zero for a nonpositive bound.
+/// \returns Zero, allowing script execution to continue.
+/// \note Original decompilation identifier: \c func_8011C1F0 (0x8011C1F0).
+s32 actorScriptRandomBelow(u8 *actor) {
+    s32 sp1C;
+
+    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushInteger(sp1C, randomBelow(scriptVmPopInteger(sp1C)));
+    return 0;
+}
+
+s32 randomBelowWithHistory(s32);  /* extern */
+/// Choose a random integer while accounting for recent selections in small ranges.
+/// \param actor Actor whose script VM supplies an exclusive upper bound and receives a random nonnegative integer below it, or zero for a nonpositive bound.
+/// \returns Zero, allowing script execution to continue.
+/// \note Original decompilation identifier: \c func_8011C230 (0x8011C230).
+s32 actorScriptRandomBelowWithHistory(u8 *actor) {
+    s32 sp1C;
+
+    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushInteger(sp1C, randomBelowWithHistory(scriptVmPopInteger(sp1C)));
+    return 0;
+}
+
+/// Provide the supplied integer as the script result.
+/// \param actor Actor whose script VM supplies an integer and receives that same value.
+/// \returns Zero, allowing script execution to continue.
+/// \note Original decompilation identifier: \c func_8011C270 (0x8011C270).
+s32 actorScriptPassThroughInteger(u8 *actor) {
+    s32 sp1C;
+
+    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushInteger(sp1C, scriptVmPopInteger(sp1C));
+    return 0;
+}
+
+f32 scriptVmPopFloat();              /* extern */
+
+/// Provide the supplied floating-point value as the script result.
+/// \param actor Actor whose script VM supplies a floating-point value and receives that same value.
+/// \returns Zero, allowing script execution to continue.
+/// \note Original decompilation identifier: \c func_8011C2A8 (0x8011C2A8).
+s32 actorScriptPassThroughFloat(u8 *actor) {
+    u8 *vm = (u8 *)((ActorScriptObject *)actor)->scriptState->vmAddress;
+
+    scriptVmPushFloat(vm, scriptVmPopFloat(vm));
+    return 0;
+}
+
+/// Restart the resettable script timer.
+/// \param actor Actor whose script timer is reset to zero seconds and whose VM receives zero.
+/// \returns Zero, allowing script execution to continue.
+/// \note Original decompilation identifier: \c func_8011C2E0 (0x8011C2E0).
+s32 actorScriptResetTimer(u8 *actor) {
+    u8 *vmBytes;
+
+    vmBytes = (u8 *)((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->vmAddress;
+    ((ScriptVm *)vmBytes)->elapsed = 0.0f;
+    scriptVmPushInteger(vmBytes, 0);
+    return 0;
+}
+
+
+/// Provide the elapsed time on the resettable script timer.
+/// \param actor Actor whose script VM receives the number of elapsed seconds since the timer was reset.
+/// \returns Zero, allowing script execution to continue.
+/// \note Original decompilation identifier: \c func_8011C314 (0x8011C314).
+s32 actorScriptPushTimer(u8 *actor) {
+    u8 *vmBytes;
+
+    vmBytes = (u8 *)((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->vmAddress;
+    scriptVmPushFloat(vmBytes, ((ScriptVm *)vmBytes)->elapsed);
+    return 0;
+}
+
+s32 messageBarEnqueue(s32, f32, s8 *); /* extern */
+
+/// Queue script text for display using the configured message style and duration.
+/// \param actor Actor whose script supplies a nonnegative string count as an instruction operand and that many stack strings, whose combined text in argument order must fit within 59 characters; its VM receives zero regardless of whether the message is accepted.
+/// \returns Zero, allowing script execution to continue.
+/// \note Original decompilation identifier: \c func_8011C340 (0x8011C340).
+s32 actorScriptEnqueueMessage(u8 *actor) {
+    s32 var_s0;
+    u8 *vmBytes;
+
+    vmBytes = (u8 *)((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->vmAddress;
+    gActorScriptSharedTextBuffer = 0;
+    var_s0 = scriptVmReadIntegerOperand(vmBytes) - 1;
+    if (var_s0 >= 0) {
+        do {
+            stringPrependBounded((u8 *)&gActorScriptSharedTextBuffer, 0x50, (u8 *)scriptVmPopString(vmBytes));
+            var_s0 -= 1;
+        } while (var_s0 >= 0);
+    }
+    messageBarEnqueue(((ScriptVm *)vmBytes)->messageStyle, ((ScriptVm *)vmBytes)->messageDuration,
+                      &gActorScriptSharedTextBuffer);
+    scriptVmPushInteger(vmBytes, 0);
+    return 0;
+}
+
+void messageBarClear(); /* extern */
+/// Clear queued messages and end the active message display.
+/// \param actor Actor whose script VM receives zero after the messages are cleared.
+/// \returns Zero, allowing script execution to continue.
+/// \note Original decompilation identifier: \c func_8011C3D8 (0x8011C3D8).
+s32 actorScriptClearMessages(u8 *actor) {
+    s32 sp1C;
+
+    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    messageBarClear();
+    scriptVmPushInteger(sp1C, 0);
+    return 0;
+}
+
+/// Select the font style for subsequent script messages.
+/// \param actor Actor whose script VM supplies a valid message font-style index and receives zero.
+/// \returns Zero, allowing script execution to continue.
+/// \note Original decompilation identifier: \c func_8011C410 (0x8011C410).
+s32 actorScriptSetMessageStyle(u8 *actor) {
+    u8 *sp1C;
+
+    sp1C = (u8 *)((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->vmAddress;
+    ((ScriptVm *)sp1C)->messageStyle = scriptVmPopInteger(sp1C);
+    scriptVmPushInteger(sp1C, 0);
+    return 0;
+}
+
+/// Set the display duration for subsequent script messages.
+/// \param actor Actor whose script VM supplies a nonnegative floating-point duration in seconds and receives zero.
+/// \returns Zero, allowing script execution to continue.
+/// \note Original decompilation identifier: \c func_8011C44C (0x8011C44C).
+s32 actorScriptSetMessageDuration(u8 *actor) {
+    u8 *sp1C;
+
+    sp1C = (u8 *)((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->vmAddress;
+    ((ScriptVm *)sp1C)->messageDuration = scriptVmPopFloat(sp1C);
+    scriptVmPushInteger(sp1C, 0);
+    return 0;
+}
+
+void textWindowAppendText(s8 *);         /* extern */
+
+/// Append script text to the text window.
+/// \param actor Actor whose script supplies a nonnegative string count as an instruction operand and that many stack strings; the combined text follows argument order, is limited to 79 characters, and its VM receives zero.
+/// \returns Zero, allowing script execution to continue.
+/// \note Original decompilation identifier: \c func_8011C488 (0x8011C488).
+s32 actorScriptAppendWindowText(u8 *actor) {
+    s32 vmAddress;
+    s32 var_s0;
+
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    gActorScriptSharedTextBuffer = 0;
+    var_s0 = scriptVmReadIntegerOperand(vmAddress) - 1;
+    if (var_s0 >= 0) {
+        do {
+            stringPrependBounded((u8 *)&gActorScriptSharedTextBuffer, 0x50, (u8 *)scriptVmPopString(vmAddress));
+            var_s0 -= 1;
+        } while (var_s0 >= 0);
+    }
+    textWindowAppendText(&gActorScriptSharedTextBuffer);
+    scriptVmPushInteger(vmAddress, 0);
+    return 0;
+}
+
+/// Schedule a text-window request with the script-supplied settings.
+/// \param actor Actor whose script VM supplies the window indicator, font style, and view mode when the request can proceed; the VM receives zero after the request.
+/// \returns Two, transferring execution to the text-window action handler.
+/// \note Original decompilation identifier: \c func_8011C518 (0x8011C518).
+s32 actorScriptStartTextWindow(s32 actor) {
+    actorBeginScriptActionHandler((u8 *)actor, 0xD);
+    return 2;
+}
+
+void textWindowEnterMode(); /* extern */
+/// Display pending text and enter the text-window game mode.
+/// \param actor Actor whose script VM receives zero after the mode is requested.
+/// \returns Zero, allowing script execution to continue.
+/// \note Original decompilation identifier: \c func_8011C53C (0x8011C53C).
+s32 actorScriptEnterTextWindowMode(u8 *actor) {
+    s32 sp1C;
+
+    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    textWindowEnterMode();
+    scriptVmPushInteger(sp1C, 0);
+    return 0;
+}
+
+void actionScriptStart(u8 *, s32); /* extern */
+/// Start an action script for the actor.
+/// \param actor Actor whose script VM supplies a valid action-script index and receives zero.
+/// \returns One, yielding script execution.
+/// \note Original decompilation identifier: \c func_8011C574 (0x8011C574).
+s32 actorScriptStartActionScript(u8 *actor) {
+    s32 sp1C;
+
+    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    actionScriptStart(actor, scriptVmPopInteger(sp1C));
+    scriptVmPushInteger(sp1C, 0);
+    return 1;
+}
+
+s32 *actionScriptStop(); /* extern */
+/// Stop action-script command execution and request the current action to finish.
+/// \param actor Actor whose action script is stopped and whose script VM receives zero.
+/// \returns Zero, allowing script execution to continue.
+///
+/// \note NONPORTABLE: the legacy actionScriptStop call omits its actor argument and relies on the original argument register remaining intact.
+/// \note Original decompilation identifier: \c func_8011C5BC (0x8011C5BC).
+s32 actorScriptStopActionScript(u8 *actor) {
+    s32 sp1C;
+
+    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    actionScriptStop();
+    scriptVmPushInteger(sp1C, 0);
+    return 0;
+}
+
+s32 actorSetTargetPosition(u8 *, u8 *); /* extern */
+
+/// Set a fixed target position with no target-distance allowance.
+/// \param actor Actor whose script VM supplies the target X, Y, and Z coordinates as floating-point values and receives zero; tracked-target selection is cleared.
+/// \returns Zero, allowing script execution to continue.
+/// \note Original decompilation identifier: \c func_8011C5F4 (0x8011C5F4).
+s32 actorScriptSetTargetPosition(u8 *actor) {
+    f32 pos[3];
+    s32 vm;
+
+    vm = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    pos[2] = scriptVmPopFloat(vm);
+    pos[1] = scriptVmPopFloat(vm);
+    pos[0] = scriptVmPopFloat(vm);
+    actorSetTargetPosition(actor, (u8 *)pos);
+    ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetMode = 0;
+    ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetDistanceAllowance = 0.0f;
+    scriptVmPushInteger(vm, 0);
+    return 0;
+}
+
+f32 actorGetTargetDistance(u8 *); /* extern */
+
+/// Report the remaining distance to approach the target.
+/// \param actor Actor whose script VM receives the approximate three-dimensional target distance minus its distance allowance, clamped to zero.
+/// \returns Zero, allowing script execution to continue.
+/// \note Original decompilation identifier: \c func_8011C674 (0x8011C674).
+s32 actorScriptPushTargetApproachDistance(u8 *actor) {
+    u8 *vm = (u8 *)((ActorScriptObject *)actor)->scriptState->vmAddress;
+    f32 d = actorGetTargetDistance(actor) -
+            ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetDistanceAllowance;
+
+    if (d < 0.0f) {
+        d = 0.0f;
+    }
+    scriptVmPushFloat(vm, d);
+    return 0;
+}
+
+void actorSetTargetToFallbackObject(u8 *);
+
+/// Select the fallback object position as a fixed target with no distance allowance.
+/// \param actor Actor with a live fallback object whose current position supplies the target; tracked-target selection is cleared and its script VM receives zero.
+/// \returns Zero, allowing script execution to continue.
+/// \note Original decompilation identifier: \c func_8011C6D8 (0x8011C6D8).
+s32 actorScriptSetTargetToFallbackObject(u8 *actor) {
+    s32 sp1C;
+
+    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    actorSetTargetToFallbackObject(actor);
+    ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetMode = 0;
+    ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetDistanceAllowance = 0.0f;
+    scriptVmPushInteger(sp1C, 0, actor);
+    return 0;
+}
+
+s32 actionScriptIsStopped(u8 *); /* extern */
+/// Report whether action-script command execution has stopped.
+/// \param actor Actor whose script VM receives one when no action-script command remains active, or zero otherwise.
+/// \returns Zero, allowing script execution to continue.
+/// \note Original decompilation identifier: \c func_8011C72C (0x8011C72C).
+s32 actorScriptPushActionScriptStopped(u8 *actor) {
+    s32 sp1C;
+
+    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushInteger(sp1C, actionScriptIsStopped(actor));
+    return 0;
+}
+
+s32 actionScriptHasLastActionEnded(u8 *); /* extern */
+/// Report whether the last action started by the action script has ended.
+/// \param actor Actor whose script VM receives one when a recorded script action has ended or been superseded, or zero otherwise.
+/// \returns Zero, allowing script execution to continue.
+/// \note Original decompilation identifier: \c func_8011C764 (0x8011C764).
+s32 actorScriptPushLastScriptActionEnded(u8 *actor) {
+    s32 sp1C;
+
+    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushInteger(sp1C, actionScriptHasLastActionEnded(actor));
+    return 0;
+}
+
+void actionBeginPoseTransition(u8 *, s32, f32); /* extern */
+/// Stop the action script and begin a transition to a requested action pose.
+/// \param actor Actor whose script VM supplies a valid action index followed by a nonnegative transition duration in seconds and receives zero.
+/// \returns One, yielding script execution.
+/// \note Original decompilation identifier: \c func_8011C79C (0x8011C79C).
+s32 actorScriptBeginPoseTransition(u8 *actor) {
+    s32 sp24;
+    s32 sp20;
+    f32 sp1C;
+
+    sp24 = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    sp1C = scriptVmPopFloat(sp24);
+    sp20 = scriptVmPopInteger(sp24);
+    actionScriptStop(actor);
+    actionBeginPoseTransition(actor, sp20, sp1C);
+    scriptVmPushInteger(sp24, 0);
+    return 1;
+}

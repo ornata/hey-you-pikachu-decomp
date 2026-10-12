@@ -1,0 +1,13 @@
+# IDE-only config: clangd never builds anything here (IDO 7.1 does),
+# this just teaches it the include paths so editing is pleasant.
+CompileFlags:
+  Add:
+    - -Iinclude
+    - -Iinclude/PR
+    - -Iinclude/libc
+    - -Isrc
+    - -I.
+    - -D_LANGUAGE_C
+    - -DTARGET_N64
+    - -DF3DEX_GBI_2
+    - -Wno-everything
