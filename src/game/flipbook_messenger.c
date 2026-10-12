@@ -658,17 +658,31 @@ s32 messengerGetActorContactMode(u8 *actor) {
     return ((ActorScriptState *)actorState)->messengerContactMode;
 }
 
+/// Owned messenger flight state, appearance animation and copied delivery payload.
+typedef struct MessengerFlightState {
+    s32 mode;              ///< Current messenger flight behavior.
+    f32 remainingTime;     ///< Countdown controlling the current behavior transition.
+    f32 phase;             ///< Homing orbit phase in degrees.
+    s32 linkedId;          ///< Handle of the linked delivery target.
+    ValueTrack animation;  ///< Appearance animation playback state.
+    f32 velocity[3];       ///< Local-position velocity in units per second.
+    ScriptMessage message; ///< Copied pending delivery message.
+} MessengerFlightState;
+
+typedef char MessengerFlightStateSizeCheck[(sizeof(MessengerFlightState) == 0x40) ? 1 : -1];
+typedef char MessengerFlightVelocityOffsetCheck[(((u32) & (((MessengerFlightState *)0)->velocity)) == 0x1C) ? 1 : -1];
+typedef char MessengerFlightMessageOffsetCheck[(((u32) & (((MessengerFlightState *)0)->message)) == 0x28) ? 1 : -1];
 
 /// Advance the messenger position using its current velocity and elapsed frame time.
 /// \param object Messenger projectile with initialized state.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80025FAC (0x80025FAC).
-void messengerAdvancePosition(f32 *object) {
-    f32 *src = *(f32 **)(object + 21);
+void messengerAdvancePosition(u8 *object) {
+    MessengerFlightState *state = ((RuntimeObjectPrefix *)object)->state.pointer;
     s32 i;
 
     for (i = 0; i < 3; i++) {
-        object[6 + i] += src[7 + i] * gRuntimeFrameSeconds;
+        ((RuntimeObjectPrefix *)object)->position[i] += state->velocity[i] * gRuntimeFrameSeconds;
     }
 }
 
@@ -676,32 +690,22 @@ void messengerAdvancePosition(f32 *object) {
 /// \note Original identifier: \c D_8006B4E0 (0x8006B4E0).
 extern s32 gMessengerFlightAnimation;
 
-/// Owned messenger flight state, appearance track and pending delivery payload.
-typedef struct {
-    s32 mode;
-    f32 time;
-    f32 phase;
-    s32 linkedId;
-    u8 animation[12];
-    f32 velocity[3];
-    ScriptMessage message;
-} ProjectileState262;
 
 /// Initialize messenger projectile state and animation.
 /// \param object Projectile receiving owned state; previous state must already be released.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80026024 (0x80026024).
 void messengerInitializeObject(u8 *object) {
-    u8 *sp1C;
-    u8 *allocation;
+    MessengerFlightState *sp1C;
+    MessengerFlightState *allocation;
 
     allocation = heapAllocLocal((HpHdr *)&gGameHeap, 0x40, 0xCA);
     sp1C = allocation;
     _bzero(allocation, 0x40);
-    ((ProjectileState262 *)sp1C)->time = 0.0f;
-    ((ProjectileState262 *)sp1C)->phase = 0.0f;
-    animationIntegerTrackInitialize((ValueTrack *)(sp1C + 0x10), (ValueKey *)(gMessengerFlightAnimation));
-    ((RuntimeObjectPrefix *)object)->state.bytes = sp1C;
+    sp1C->remainingTime = 0.0f;
+    sp1C->phase = 0.0f;
+    animationIntegerTrackInitialize(&sp1C->animation, (ValueKey *)(gMessengerFlightAnimation));
+    ((RuntimeObjectPrefix *)object)->state.pointer = sp1C;
 }
 
 /// Release messenger projectile state.
@@ -709,9 +713,9 @@ void messengerInitializeObject(u8 *object) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80026090 (0x80026090).
 void messengerDestroyObject(u8 *object) {
-    s32 v = *(s32 *)(object + 0x54);
+    MessengerFlightState *state = ((RuntimeObjectPrefix *)object)->state.pointer;
 
-    heapFreeLocal(&gGameHeap, (void *)v);
+    heapFreeLocal(&gGameHeap, state);
 }
 
 /// Begin homing when the messenger launch period has ended.
@@ -806,10 +810,10 @@ void messengerUpdateHoming(u8 *object, s32 unused) {
     u8 *target;
     f32 curve;
     f32 step;
-    ProjectileState262 *state;
+    MessengerFlightState *state;
     s32 component;
-    state = *((ProjectileState262 **)(object + 0x54));
-    if (state->time < 0.0f) {
+    state = *((MessengerFlightState **)(object + 0x54));
+    if (state->remainingTime < 0.0f) {
         messengerBeginDissipation((f32 *)object);
     }
     linked = objectResolveAvailableHandle(state->linkedId);
@@ -854,12 +858,12 @@ void messengerUpdateHoming(u8 *object, s32 unused) {
         messengerBeginDissipation((f32 *)object);
         return;
     }
-    if (state->time <= 1.5f) {
+    if (state->remainingTime <= 1.5f) {
         state->velocity[0] = 0.0f;
         state->velocity[1] = 0.0f;
         state->velocity[2] = 0.0f;
     }
-    curve = mathMapRangeClamped(1.5f, 8.0f, 3.0f, 0.4f, state->time);
+    curve = mathMapRangeClamped(1.5f, 8.0f, 3.0f, 0.4f, state->remainingTime);
     step = ((curve < distance) ? (curve) : (distance)) / gRuntimeFrameSeconds;
     curve = mathMapRangeClamped(1.0f, 0, 30.0f, 0.99f, distance);
     for (component = 0; component < 3; component++) {
@@ -926,14 +930,14 @@ void messengerUpdateDissipation(u8 *, s32);
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80026798 (0x80026798).
 void messengerUpdate(u8 *object) {
-    u8 *sp2C;
+    MessengerFlightState *sp2C;
     s32 sp28;
     s32 animationStatus;
 
-    sp2C = *(u8 **)(object + 0x54);
-    *(f32 *)(sp2C + 4) = *(f32 *)(sp2C + 4) - gRuntimeFrameSeconds;
-    animationStatus = animationIntegerTrackEvaluate((ValueTrack *)(sp2C + 0x10), &sp28, gRuntimeFrameSeconds);
-    switch (*(u32 *)sp2C) {
+    sp2C = ((RuntimeObjectPrefix *)object)->state.pointer;
+    sp2C->remainingTime = sp2C->remainingTime - gRuntimeFrameSeconds;
+    animationStatus = animationIntegerTrackEvaluate(&sp2C->animation, &sp28, gRuntimeFrameSeconds);
+    switch ((u32)sp2C->mode) {
     case 0:
         messengerUpdateLaunch(object, animationStatus);
         break;
@@ -952,7 +956,7 @@ void messengerUpdate(u8 *object) {
     default:
         TRACE("");
         TRACE("");
-        TRACE("ERROR: Unknown status:%d\n", *(u32 *)sp2C);
+        TRACE("ERROR: Unknown status:%d\n", (u32)sp2C->mode);
         break;
     }
     messengerAdvancePosition(object);
@@ -979,9 +983,9 @@ void messengerBeginHoming(u8 *object) {
     u8 *objectState;
 
     objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
-    ((ProjectileState262 *)objectState)->mode = 1;
-    ((ProjectileState262 *)objectState)->phase = 0.0f;
-    ((ProjectileState262 *)objectState)->time = 3.0f;
+    ((MessengerFlightState *)objectState)->mode = 1;
+    ((MessengerFlightState *)objectState)->phase = 0.0f;
+    ((MessengerFlightState *)objectState)->remainingTime = 3.0f;
 }
 
 /// Begin the messenger dissipation animation, double its scale, and release its tracked status.
@@ -1064,7 +1068,7 @@ extern u8 gMessengerHomingDisplayList[];
 /// \note Original decompilation identifier: \c func_80026AB8 (0x80026AB8).
 void messengerCreate(s32 id, f32 *position, f32 *velocity, f32 scale, ScriptMessage message, s32 mode, s32 flags) {
     u8 *object;
-    u8 *state;
+    MessengerFlightState *state;
     u8 *previous;
     object = objectCreateHierarchyFromTemplate(gMessengerObjectTemplate);
     if (flags != 0)
@@ -1072,21 +1076,21 @@ void messengerCreate(s32 id, f32 *position, f32 *velocity, f32 scale, ScriptMess
     *(f32 *)(object + 0) = scale;
     *(f32 *)(object + 4) = scale;
     *(f32 *)(object + 8) = scale;
-    state = *(u8 **)(object + 0x54);
+    state = ((RuntimeObjectPrefix *)object)->state.pointer;
     if (mode != 0) {
-        *(s32 *)state = 4;
-        *(f32 *)(state + 4) = 5.0f;
+        state->mode = 4;
+        state->remainingTime = 5.0f;
         *(u8 **)(object + 0x30) = gMessengerDirectFlightDisplayList;
     } else {
-        *(s32 *)state = 0;
-        *(f32 *)(state + 4) = 0.1f;
+        state->mode = 0;
+        state->remainingTime = 0.1f;
         *(u8 **)(object + 0x30) = gMessengerHomingDisplayList;
     }
-    *(s32 *)(state + 0xC) = id;
-    *(ScriptMessage *)(state + 0x28) = message;
-    *(f32 *)(state + 0x1C) = velocity[0];
-    *(f32 *)(state + 0x20) = velocity[1];
-    *(f32 *)(state + 0x24) = velocity[2];
+    state->linkedId = id;
+    state->message = message;
+    state->velocity[0] = velocity[0];
+    state->velocity[1] = velocity[1];
+    state->velocity[2] = velocity[2];
     *(f32 *)(object + 0x18) = position[0];
     *(f32 *)(object + 0x1C) = position[1];
     *(f32 *)(object + 0x20) = position[2];

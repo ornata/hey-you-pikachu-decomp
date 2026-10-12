@@ -995,3 +995,18 @@ declaration. The presentation caller's former void return and integer source
 declaration were removed; its packed address source has an explicit byte view.
 The profile's ASCII literal likewise crosses the encoded-byte boundary
 explicitly. Every affected unit preserves allocated bytes and strict relocations.
+
+### Messenger flight state contracts
+
+Messenger projectiles use a checked private 0x40-byte MessengerFlightState.
+Its established ValueTrack is at 0x10, velocity at 0x1C and copied ScriptMessage
+at 0x28. Fields name the behavior mode, remaining transition time, homing orbit
+phase and linked recipient handle. Initialization, creation, frame updates,
+position advancement and destruction share the record.
+
+Position advancement accepts the same object byte-pointer contract as its
+caller and uses the object's local position and flight velocity fields.
+Ghidra at 0x80025FAC confirms the object-state reference and three velocity
+components multiplied by frame duration. Existing homing phase and countdown
+consumers establish their field roles. The pending message remains a value
+copy, not borrowed payload storage. All changes preserve strict object matching.
