@@ -1,3 +1,4 @@
+#include "camera_overlay.h"
 #include "actor_color.h"
 #include "object_distance.h"
 #include "object_flags.h"
@@ -502,7 +503,6 @@ s32 actorScriptSetDoorAccessState(u8 *actor) {
     return 0;
 }
 
-void cameraFadePrimaryOverlayBlend(s32, s32, s32, s32, f32); /* extern */
 
 /// Request a color transition for camera slot zero’s additional overlay blend.
 /// \param actor Actor whose script VM supplies red, green, blue, alpha, then a nonnegative duration in seconds and receives zero; color channels are limited to zero through 255.

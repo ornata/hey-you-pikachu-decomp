@@ -1,3 +1,4 @@
+#include "camera_overlay.h"
 #include "heap_free.h"
 #include "common.h"
 #include "audio_cue.h"
@@ -76,7 +77,6 @@ void eyeCatchInitialize(void) {
 }
 
 void cameraUpdateOverlayColors(s32, s32);                     /* extern */
-void cameraFadePrimarySecondaryOverlay(s32, s32, s32, s32, f32);      /* extern */
 void controllerRequestRumbleReset(s32);           /* extern */
 /// Asset descriptor used to load the eye-catch foreground image.
 /// \note Original identifier: \c D_8009B588 (0x8009B588).

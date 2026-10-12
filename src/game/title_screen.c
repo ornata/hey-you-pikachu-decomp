@@ -1,3 +1,4 @@
+#include "camera_overlay.h"
 #include "object_flags.h"
 #include "backdrop_draw.h"
 #include "title_screen.h"
@@ -489,7 +490,6 @@ void titleScreenRequestMenu(void) {
     }
 }
 
-void cameraFadePrimarySecondaryOverlay(s32, s32, s32, s32, f32);
 
 /// Begin the transition to the next demonstration when the title screen is awaiting Start.
 /// \returns Nothing.

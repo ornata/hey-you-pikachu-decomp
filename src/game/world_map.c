@@ -1,3 +1,4 @@
+#include "camera_overlay.h"
 #include "actor_rotation.h"
 #include "object_flags.h"
 #include "hud_draw.h"
@@ -537,7 +538,6 @@ void wholeMapEnsureAvailableSelection(s32 min, s32 max, s32 step) {
     }
 }
 
-void cameraFadePrimarySecondaryOverlay(s32, s32, s32, s32, f32);
 s32 audioPlaySoundEffect(s32);
 void wholeMapEnsureAvailableSelection(s32, s32, s32);
 u8 *attachedEffectCreate(u8 *, s32, s32);
@@ -755,7 +755,6 @@ void wholeMapSelectBackdrop(void) {
 }
 
 void cameraBuildInterfaceTransform();
-void cameraResetOverlayColor(s32, s32, s32, s32, s32);
 void controllerConfigureStickButtons();
 void objectUpdateGroup();
 void runtimeRequestProgramChange();

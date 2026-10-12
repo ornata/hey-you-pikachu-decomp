@@ -1,3 +1,4 @@
+#include "camera_overlay.h"
 #include "camera_pose.h"
 #include "camera_types.h"
 #include "color_transition.h"
@@ -125,7 +126,6 @@ extern u8 gRenderCameras[];
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
 void colorBlendToward(u8 *, u8 *, f32);
-void cameraFadeOverlayToColor(s32, s32, s32, s32, s32, f32);
 void colorStoreClampedRgba(s32, s32, s32, s32, u8 *);
 /// Write cursor for the active graphics command list; also marks the camera-storage end.
 /// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
@@ -264,8 +264,6 @@ extern f32 gCameraElapsedTintInitialSeconds;
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
 void heapDebugNoOp();
-void cameraResetOverlayColor(s32, s32, s32, s32, s32);
-void cameraFadePrimarySecondaryOverlay(s32, s32, s32, s32, f32);
 /// Load shared rendering assets and initialize camera and display-list resources.
 /// \returns Nothing; requires an initialized local heap and must run before rendering resources are used.
 void renderInitializeResources(void) {

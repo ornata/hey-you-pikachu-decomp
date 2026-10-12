@@ -1,3 +1,4 @@
+#include "camera_overlay.h"
 #include "camera_pose.h"
 #include "camera_types.h"
 #include "action_query.h"
@@ -1387,7 +1388,6 @@ void playerToggleViewShake(u8 *player) {
     ((PlayerControlPrefix *)player)->viewShake = -0.2f;
 }
 
-void cameraFadeOverlayToColor(s32, s32, s32, s32, s32, f32); /* extern */
 void controllerRequestRumbleStop(s32);                                      /* extern */
 
 /// End player stun feedback by clearing view shake, fading the screen flash, and stopping rumble.
@@ -1936,7 +1936,6 @@ void playerSelectControlScheme(s32 scheme) {
     gPlayerControllerPort = gPlayerControlSchemes[scheme].port;
 }
 
-void cameraFadeOverlayToColor(s32, s32, s32, s32, s32, f32); /* extern */
 
 /// Start a permitted timed player stun reaction with screen-flash and rumble feedback.
 /// \param player Primary player record providing stun permission and receiving the reaction.

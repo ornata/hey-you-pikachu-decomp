@@ -1,3 +1,4 @@
+#include "camera_overlay.h"
 #include "graphics_tasks.h"
 #include "scheduler.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -619,7 +620,6 @@ void runtimeRequestGameModeChange(s32 mode) {
     runtimeAccumulatePlayTime();
 }
 
-void cameraFadePrimarySecondaryOverlay(s32, s32, s32, s32, f32); /* extern */
 void objectUpdateGroup(s32);                     /* extern */
 void objectSweepDeferredHierarchyDestruction();                            /* extern */
 void audioStopCategories(s32, f64);

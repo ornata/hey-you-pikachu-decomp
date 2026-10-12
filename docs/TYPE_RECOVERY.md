@@ -1929,3 +1929,14 @@ consumers use these fields without changing their expression ordering. Ghidra
 0x8000114C confirms the three transition calls and final color blend; source
 producers establish their distinct roles. Existing primary-camera interior aliases
 retain their symbol boundaries. All 483 objects and strict relocations match.
+
+### Shared camera overlay controls
+
+`camera_overlay.h` consolidates the four overlay control interfaces across the
+provider and nine caller units, including duplicate declarations in the player
+and world-map units. Comments document component ranges, camera selection and
+transition timing without implementation narration. Ghidra 0x800015D4 confirms
+that reset changes current output/base/blend colors while preserving pending
+targets and countdowns; the contract makes that persistence explicit. Every
+source unit was rebuilt and compared separately; all 483 objects and strict
+relocation addends match.

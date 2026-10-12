@@ -1,3 +1,4 @@
+#include "camera_overlay.h"
 #include "actor_color.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -312,7 +313,6 @@ s32 actorScriptSelectControlScheme(u8 *actor) {
     return 1;
 }
 
-void cameraFadePrimarySecondaryOverlay(s32, s32, s32, s32, f32); /* extern */
 void hudSetAreaLabelVisible(s32);                                 /* extern */
 void actorBeginScriptActionHandler(u8 *arg0, s32 arg1);                         /* extern */
 /// Show the area label and begin the area-transition fade when its delay has elapsed.

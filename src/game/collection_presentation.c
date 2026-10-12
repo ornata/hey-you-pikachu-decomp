@@ -1,3 +1,4 @@
+#include "camera_overlay.h"
 #include "camera_pose.h"
 #include "actor_rotation.h"
 #include "backdrop_draw.h"
@@ -545,8 +546,6 @@ void presentationDrawCardScreen(Gfx **gdl) {
 }
 
 void cameraBuildInterfaceTransform(void *);
-void cameraResetOverlayColor(s32, s32, s32, s32, s32);
-void cameraFadePrimarySecondaryOverlay(s32, s32, s32, s32, f32);
 void controllerRequestRumbleReset(s32);
 void runtimeRequestGameModeChange(s32);
 s32 actionScriptIsStopped(s32);
