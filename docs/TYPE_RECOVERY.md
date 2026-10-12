@@ -1582,3 +1582,15 @@ checked runtime-object fields and the shared vector type. Its six retained
 animation records reuse the checked twelve-byte `ValueTrack`; no new allocation
 layout is inferred. All nine source units preserve all 483 objects and strict
 relocation addends.
+
+### Interaction marker state consumers
+
+Marker update and drawing now use the checked private state fields for mode,
+retained target handle, animation tracks and evaluated values. Track order is
+texture frame, opacity, depth offset, height offset, Z scale and Y scale; values
+are consumed only after track evaluation. A track-array offset check supplements
+the 0x50 allocation-size check, confirmed by Ghidra 0x8001EAAC. Runtime placement
+uses shared local/world positions, scales, kind, radius and private-state pointer.
+Remaining item configuration and actor-selected-handle views still require their
+own producer/consumer audit. The marker unit preserves all 483 objects and strict
+relocation addends.

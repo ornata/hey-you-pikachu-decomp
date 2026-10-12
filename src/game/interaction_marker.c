@@ -13,12 +13,15 @@
 extern u8 gInteractionMarkerModelTemplate[];
 
 /// State owned by one interaction marker, including its six animation tracks.
+/// Tracks select texture frame, opacity, depth offset, height offset, Z scale
+/// and Y scale, in that order. Track values are available after evaluation.
 typedef struct InteractionMarkerState {
-    s32 mode;          ///< Selected marker presentation mode.
-    s32 targetHandle;  ///< Handle of the selected interaction target.
+    s32 mode;             ///< Selected marker presentation mode.
+    s32 targetHandle;     ///< Handle of the selected interaction target.
     ValueTrack tracks[6]; ///< Retained integer animation-track records.
 } InteractionMarkerState;
 typedef char InteractionMarkerStateSizeCheck[(sizeof(InteractionMarkerState) == 0x50) ? 1 : -1];
+typedef char InteractionMarkerTracksOffsetCheck[((u32) & ((InteractionMarkerState *)0)->tracks == 8) ? 1 : -1];
 
 typedef struct CullRect {
     f32 minV;
@@ -197,70 +200,85 @@ void interactionMarkerUpdate(u8 *object) {
     s32 event;
     u8 *state;
     u8 *target;
-    state = *(u8 **)(object + 0x54);
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
     target = objectResolveAvailableHandle(gInteractionCandidateHandle);
     mode = playerClassifyInteractionTarget(gPlayerState, target, gInteractionCandidateFlags);
-    if (target == NULL && *(s32 *)state != 0) {
-        target = objectResolveAvailableHandle(*(s32 *)(state + 4));
+    if (target == NULL && ((InteractionMarkerState *)state)->mode != 0) {
+        target = objectResolveAvailableHandle(((InteractionMarkerState *)state)->targetHandle);
         if (target != NULL) {
             mode = 1;
-            gInteractionCandidateHandle = *(s32 *)(state + 4);
+            gInteractionCandidateHandle = ((InteractionMarkerState *)state)->targetHandle;
         } else
             mode = 0;
     }
     if (mode != 0 && target != NULL) {
-        if (mode != *(s32 *)state || gInteractionCandidateHandle != *(s32 *)(state + 4)) {
-            animationIntegerTrackInitialize((ValueTrack *)(state + 8), (ValueKey *)(gTextureFrameAnimationPrograms[gInteractionMarkerStyles[mode].tracks[0]]));
-            animationIntegerTrackInitialize((ValueTrack *)(state + 0x14), (ValueKey *)(gOpacityAnimationPrograms[gInteractionMarkerStyles[mode].tracks[1]]));
-            animationIntegerTrackInitialize((ValueTrack *)(state + 0x20), (ValueKey *)(gInteractionMarkerTransformPrograms[gInteractionMarkerStyles[mode].tracks[2]]));
-            animationIntegerTrackInitialize((ValueTrack *)(state + 0x2C), (ValueKey *)(gInteractionMarkerTransformPrograms[gInteractionMarkerStyles[mode].tracks[3]]));
-            animationIntegerTrackInitialize((ValueTrack *)(state + 0x38), (ValueKey *)(gInteractionMarkerTransformPrograms[gInteractionMarkerStyles[mode].tracks[4]]));
-            animationIntegerTrackInitialize((ValueTrack *)(state + 0x44), (ValueKey *)(gInteractionMarkerTransformPrograms[gInteractionMarkerStyles[mode].tracks[5]]));
+        if (mode != ((InteractionMarkerState *)state)->mode ||
+            gInteractionCandidateHandle != ((InteractionMarkerState *)state)->targetHandle) {
+            animationIntegerTrackInitialize(
+                &((InteractionMarkerState *)state)->tracks[0],
+                (ValueKey *)(gTextureFrameAnimationPrograms[gInteractionMarkerStyles[mode].tracks[0]]));
+            animationIntegerTrackInitialize(
+                &((InteractionMarkerState *)state)->tracks[1],
+                (ValueKey *)(gOpacityAnimationPrograms[gInteractionMarkerStyles[mode].tracks[1]]));
+            animationIntegerTrackInitialize(
+                &((InteractionMarkerState *)state)->tracks[2],
+                (ValueKey *)(gInteractionMarkerTransformPrograms[gInteractionMarkerStyles[mode].tracks[2]]));
+            animationIntegerTrackInitialize(
+                &((InteractionMarkerState *)state)->tracks[3],
+                (ValueKey *)(gInteractionMarkerTransformPrograms[gInteractionMarkerStyles[mode].tracks[3]]));
+            animationIntegerTrackInitialize(
+                &((InteractionMarkerState *)state)->tracks[4],
+                (ValueKey *)(gInteractionMarkerTransformPrograms[gInteractionMarkerStyles[mode].tracks[4]]));
+            animationIntegerTrackInitialize(
+                &((InteractionMarkerState *)state)->tracks[5],
+                (ValueKey *)(gInteractionMarkerTransformPrograms[gInteractionMarkerStyles[mode].tracks[5]]));
             audioPlaySoundEffect(gInteractionMarkerStyles[mode].sound);
             gInteractionMarkerStyles[1].tracks[0] = gInteractionMarkerStyles[mode].tracks[0];
             gInteractionMarkerStyles[1].depth = gInteractionMarkerStyles[mode].depth;
             gInteractionMarkerStyles[1].height = gInteractionMarkerStyles[mode].height;
         }
-        animationIntegerTrackEvaluate((ValueTrack *)(state + 8), &event, gRuntimeFrameSeconds);
-        animationIntegerTrackEvaluate((ValueTrack *)(state + 0x14), &event, gRuntimeFrameSeconds);
-        animationIntegerTrackEvaluate((ValueTrack *)(state + 0x20), &event, gRuntimeFrameSeconds);
-        animationIntegerTrackEvaluate((ValueTrack *)(state + 0x2C), &event, gRuntimeFrameSeconds);
-        animationIntegerTrackEvaluate((ValueTrack *)(state + 0x38), &event, gRuntimeFrameSeconds);
-        animationIntegerTrackEvaluate((ValueTrack *)(state + 0x44), &event, gRuntimeFrameSeconds);
-        *(f32 *)(object + 0x18) = *(f32 *)(target + 0x44);
-        *(f32 *)(object + 0x1C) = *(f32 *)(target + 0x48);
-        *(f32 *)(object + 0x20) = *(f32 *)(target + 0x4C);
-        *(f32 *)(object + 0x44) = *(f32 *)(object + 0x18);
-        *(f32 *)(object + 0x48) = *(f32 *)(object + 0x1C);
-        *(f32 *)(object + 0x4C) = *(f32 *)(object + 0x20);
+        animationIntegerTrackEvaluate(&((InteractionMarkerState *)state)->tracks[0], &event, gRuntimeFrameSeconds);
+        animationIntegerTrackEvaluate(&((InteractionMarkerState *)state)->tracks[1], &event, gRuntimeFrameSeconds);
+        animationIntegerTrackEvaluate(&((InteractionMarkerState *)state)->tracks[2], &event, gRuntimeFrameSeconds);
+        animationIntegerTrackEvaluate(&((InteractionMarkerState *)state)->tracks[3], &event, gRuntimeFrameSeconds);
+        animationIntegerTrackEvaluate(&((InteractionMarkerState *)state)->tracks[4], &event, gRuntimeFrameSeconds);
+        animationIntegerTrackEvaluate(&((InteractionMarkerState *)state)->tracks[5], &event, gRuntimeFrameSeconds);
+        ((RuntimeObjectPrefix *)object)->position[0] = ((RuntimeObjectPrefix *)target)->worldPosition[0];
+        ((RuntimeObjectPrefix *)object)->position[1] = ((RuntimeObjectPrefix *)target)->worldPosition[1];
+        ((RuntimeObjectPrefix *)object)->position[2] = ((RuntimeObjectPrefix *)target)->worldPosition[2];
+        ((RuntimeObjectPrefix *)object)->worldPosition[0] = ((RuntimeObjectPrefix *)object)->position[0];
+        ((RuntimeObjectPrefix *)object)->worldPosition[1] = ((RuntimeObjectPrefix *)object)->position[1];
+        ((RuntimeObjectPrefix *)object)->worldPosition[2] = ((RuntimeObjectPrefix *)object)->position[2];
         objectOrientAlongCameraView(object);
         unit = gInteractionMarkerTrackUnitScale;
-        *(f32 *)(object + 4) = ((f32) * (s16 *)(state + 0x4C) * unit) * *(f32 *)object;
-        *(f32 *)(object + 8) = ((f32) * (s16 *)(state + 0x40) * unit) * *(f32 *)object;
-        if (*(u16 *)(target + 0x34) == 0x86) {
-            species = *(u8 **)(target + 0x54);
+        ((RuntimeObjectPrefix *)object)->scale[1] =
+            ((f32) * (s16 *)(state + 0x4C) * unit) * ((RuntimeObjectPrefix *)object)->scale[0];
+        ((RuntimeObjectPrefix *)object)->scale[2] =
+            ((f32) * (s16 *)(state + 0x40) * unit) * ((RuntimeObjectPrefix *)object)->scale[0];
+        if (((RuntimeObjectPrefix *)target)->kind == 0x86) {
+            species = ((RuntimeObjectPrefix *)target)->state.bytes;
             offset.vector.x = 0.0f;
-            offset.vector.y = gItemKinds[*(s16 *)(species + 4)].height * *(f32 *)(target + 4);
-            offset.vector.z = gItemKinds[*(s16 *)(species + 4)].depth * *(f32 *)(target + 8);
-        } else if (*(u16 *)(target + 0x34) > 0 && *(u16 *)(target + 0x34) < 0x26) {
-            actorConfigGetInteractionMarkerDimensions(*(u16 *)(target + 0x34), offset.components);
+            offset.vector.y = gItemKinds[*(s16 *)(species + 4)].height * ((RuntimeObjectPrefix *)target)->scale[1];
+            offset.vector.z = gItemKinds[*(s16 *)(species + 4)].depth * ((RuntimeObjectPrefix *)target)->scale[2];
+        } else if (((RuntimeObjectPrefix *)target)->kind > 0 && ((RuntimeObjectPrefix *)target)->kind < 0x26) {
+            actorConfigGetInteractionMarkerDimensions(((RuntimeObjectPrefix *)target)->kind, offset.components);
             unit = gInteractionMarkerActorTrackUnitScale;
-            offset.vector.y *= *(f32 *)(target + 4);
-            offset.vector.z *= *(f32 *)(target + 8);
+            offset.vector.y *= ((RuntimeObjectPrefix *)target)->scale[1];
+            offset.vector.z *= ((RuntimeObjectPrefix *)target)->scale[2];
             offset.vector.x = 0.0f;
         } else {
             offset.vector.x = 0.0f;
-            offset.vector.y = *(f32 *)(target + 0x24);
-            offset.vector.z = *(f32 *)(target + 0x24);
+            offset.vector.y = ((RuntimeObjectPrefix *)target)->radius;
+            offset.vector.z = ((RuntimeObjectPrefix *)target)->radius;
         }
         offset.vector.y =
             (f32) * (s16 *)(state + 0x34) * unit + gInteractionMarkerStyles[mode].height * offset.vector.y;
-        offset.vector.z =
-            (f32) - *(s16 *)(state + 0x28) * unit - gInteractionMarkerStyles[mode].depth * offset.vector.z;
+        offset.vector.z = (f32) - ((InteractionMarkerState *)state)->tracks[2].value * unit -
+                          gInteractionMarkerStyles[mode].depth * offset.vector.z;
         objectAddPendingLocalMovement(&offset.vector);
     }
-    *(s32 *)(state + 4) = gInteractionCandidateHandle;
-    *(s32 *)state = mode;
+    ((InteractionMarkerState *)state)->targetHandle = gInteractionCandidateHandle;
+    ((InteractionMarkerState *)state)->mode = mode;
     gInteractionMarkerMode = mode;
     gInteractionCandidateFlags = 0;
     gInteractionCandidateHandle = 0;
@@ -277,22 +295,21 @@ void textureLoadForDraw(Gfx **, s32, s32, u8 *);
 /// \returns The marker display-list address, or zero when the marker is inactive.
 /// \note Original decompilation identifier: \c func_8001EF58 (0x8001EF58).
 s32 interactionMarkerPrepareDraw(u8 *object) {
-    u8 *d = *(u8 **)(object + 0x54);
+    u8 *d = ((RuntimeObjectPrefix *)object)->state.bytes;
 
-    if (*(s32 *)(d + 0) == 0) {
+    if (((InteractionMarkerState *)d)->mode == 0) {
         return 0;
     }
-    textureLoadForDraw(&gRenderDisplayListCursor, 5, *(s16 *)(d + 0x10), d);
+    textureLoadForDraw(&gRenderDisplayListCursor, 5, ((InteractionMarkerState *)d)->tracks[0].value, d);
     gDPPipeSync(gRenderDisplayListCursor++);
-    gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0xFF, 0xFF, 0xFF, *(s16 *)(d + 0x1C));
-    if (*(s32 *)(d + 4) == *(s32 *)(*(u8 **)(gPikachuActor + 0x54) + 0x190)) {
+    gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0xFF, 0xFF, 0xFF, ((InteractionMarkerState *)d)->tracks[1].value);
+    if (((InteractionMarkerState *)d)->targetHandle == *(s32 *)(*(u8 **)(gPikachuActor + 0x54) + 0x190)) {
         gDPSetRenderMode(gRenderDisplayListCursor++, 0x504240, 0);
     } else {
         gDPSetRenderMode(gRenderDisplayListCursor++, 0x504A50, 0);
     }
     return *(s32 *)(object + 0x30);
 }
-
 
 /// Get the preferred object from the current interaction scan.
 /// \returns The current candidate object identifier, or zero when none has been selected.
