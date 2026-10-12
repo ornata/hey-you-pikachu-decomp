@@ -724,11 +724,11 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
 /// \note Original decompilation identifier: \c func_8001E568 (0x8001E568).
 u8 *actorReplaceKindPreservingScript(u8 *actor, s32 kind) {
     u8 *replacementActor;
-    replacementActor = actorCreateForKind(kind, *(f32 *)(actor + 0x44), *(f32 *)(actor + 0x48), *(f32 *)(actor + 0x4C),
-                                          *(f32 *)(actor + 0xC), *(f32 *)(actor + 0x10), *(f32 *)(actor + 0), 0,
-                                          *(s32 *)(*(u8 **)(actor + 0x54) + 0x238));
-    *(s32 *)(*(u8 **)(replacementActor + 0x54) + 0x1B8) = *(s32 *)(*(u8 **)(actor + 0x54) + 0x1B8);
-    *(s32 *)(*(u8 **)(actor + 0x54) + 0x1B8) = 0;
+    replacementActor = actorCreateForKind(kind, ((RuntimeObjectPrefix *)actor)->worldPosition[0], ((RuntimeObjectPrefix *)actor)->worldPosition[1], ((RuntimeObjectPrefix *)actor)->worldPosition[2],
+                                          ((RuntimeObjectPrefix *)actor)->rotation[0], ((RuntimeObjectPrefix *)actor)->rotation[1], ((RuntimeObjectPrefix *)actor)->scale[0], 0,
+                                          ((RuntimeObjectPrefix *)actor)->state.actor->creationScriptArgument);
+    ((RuntimeObjectPrefix *)replacementActor)->state.actor->vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress = 0;
     objectRequestHierarchyDestruction(actor);
     return replacementActor;
 }

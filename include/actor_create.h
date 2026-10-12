@@ -21,9 +21,9 @@
 u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 scale, u8 *script, s32 scriptArgument);
 
 /// Replace an actor with another kind while preserving its position, pitch, yaw, scale, and script ownership.
-/// \param actor Actor whose script is transferred and whose hierarchy is scheduled for destruction.
+/// \param actor Live initialized actor whose script ownership transfers to the replacement; the original hierarchy awaits runtime destruction.
 /// \param kind Valid actor kind for the replacement.
-/// \returns Runtime-registered replacement actor; the original hierarchy awaits runtime destruction.
+/// \returns Runtime-registered replacement actor owning the original script context, if present.
 /// \note Original decompilation identifier: \c func_8001E568 (0x8001E568).
 u8 *actorReplaceKindPreservingScript(u8 *actor, s32 kind);
 

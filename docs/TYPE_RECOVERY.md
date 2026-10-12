@@ -1658,3 +1658,13 @@ its inferred integer casts for float stores are not adopted. Offset 0x208 remain
 explicitly unresolved as `unknown208`. An attachment-mode offset check is added.
 The VM pointer remains explicitly represented as its original 32-bit address.
 Provider and header-dependent rebuilds preserve all 483 objects and relocations.
+
+### Actor replacement ownership consumers
+
+Actor replacement uses shared world position, pitch/yaw, scale, creation argument
+and VM-address fields. Ghidra 0x8001E568 confirms the retained creation argument,
+VM transfer, clearing of the original address and deferred hierarchy destruction.
+The creation header explicitly documents transfer of any existing script context
+to the runtime-registered replacement. The action caller continues using that
+same context after replacement. Provider and dependent rebuilds preserve all
+483 objects and strict relocation addends.
