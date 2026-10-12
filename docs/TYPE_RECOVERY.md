@@ -1468,3 +1468,18 @@ a named local before checking and requesting destruction. Direct pointer-field
 substitution changed register reuse; the local retains the original generated
 code without keeping an unprototyped interface. Every source-unit change strictly
 matches all 483 objects. Remaining registration/link ownership rules are explicit.
+
+### Shared hierarchy flag interfaces and presentation exception
+
+`object_flags.h` defines the canonical pointer/u16 enable and disable contracts.
+The provider now uses shared runtime-object flags and sibling/child fields.
+Ghidra 0x80008DE8 confirms halfword flags and recursive hierarchy traversal.
+Menu object addresses convert explicitly at this interface, and maze activation
+no longer supplies an unused third clear-flags argument. Accepted provider and
+caller changes each preserve all 483 objects.
+`collection_presentation.c` retains its original declarations: exposing the void
+set-flags prototype changes later registers in presentationPrepareActiveActor
+(0x800286B0), even with an explicit pointer cast. Its original implicit-return
+call remains a matching constraint. Next evidence needed is IDO allocation data
+or a source representation that preserves the void interface and those registers;
+the shared API was not weakened to accommodate that one caller.

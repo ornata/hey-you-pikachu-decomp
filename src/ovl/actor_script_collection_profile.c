@@ -1,3 +1,4 @@
+#include "object_flags.h"
 #include "door.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -210,7 +211,6 @@ s32 actorScriptGetDictionaryWordName(u8 *actor) {
     return 0;
 }
 
-void objectSetHierarchyFlags(u8 *, u16); /* extern */
 /// Hide the actor hierarchy and suspend automatic interaction-based visibility updates, or resume those updates.
 /// \param actor Actor whose script VM supplies nonzero to hide its hierarchy and suppress automatic visibility updates, or zero to resume updates; resuming does not immediately change visibility. The VM receives zero.
 /// \returns Zero, allowing script execution to continue.

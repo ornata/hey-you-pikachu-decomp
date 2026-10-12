@@ -1,3 +1,4 @@
+#include "object_flags.h"
 #include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
 #include "heap_diagnostics.h"
@@ -1013,7 +1014,6 @@ void systemMenuUpdateAnimation(void) {
 
 void controllerRequestRumbleReset(s32);                                 /* extern */
 void controllerConfigureStickButtons(s32 enabled, s32 upThreshold, s32 downThreshold, s32 leftThreshold, s32 rightThreshold); /* extern */
-void objectClearHierarchyFlags(s32, u16);                            /* extern */
 void runtimeRequestGameModeChange(s32);                                 /* extern */
 void systemMenuSetPhase(s32 arg0);                                   /* extern */
 void systemMenuRefreshSelectedDetails(MenuState *arg0);                                   /* extern */
@@ -1040,8 +1040,8 @@ void systemMenuEnter(void) {
     audioGetCurrentCueState(&gSystemMenuSavedAudioCue, &gSystemMenuSavedAudioRate);
     runtimeRequestGameModeChange(2);
     systemMenuSetPhase(0);
-    objectClearHierarchyFlags(gSystemMenuState.model, 2);
-    objectClearHierarchyFlags(gSystemMenuState.tertiary, 2);
+    objectClearHierarchyFlags((u8 *)gSystemMenuState.model, 2);
+    objectClearHierarchyFlags((u8 *)gSystemMenuState.tertiary, 2);
     systemMenuUpdateAnimation();
     gSystemMenuState.depth = 0;
     gSystemMenuState.menu = &gSystemMenuRootList;
@@ -1051,7 +1051,6 @@ void systemMenuEnter(void) {
 }
 
 void controllerConfigureStickButtons(s32 enabled, s32 upThreshold, s32 downThreshold, s32 leftThreshold, s32 rightThreshold); /* extern */
-void objectSetHierarchyFlags(s32, u16);                            /* extern */
 
 /// Leave the system menu, hide its models, and restore gameplay controls.
 /// \returns Nothing.
@@ -1060,8 +1059,8 @@ void systemMenuExit(void) {
     TRACE("Exit system menu mode.\n");
     runtimeRequestGameModeChange(0);
     controllerConfigureStickButtons(0, 0x1E, 0x1E, 0x1E, 0x1E);
-    objectSetHierarchyFlags(gSystemMenuTransitionModel, 2);
-    objectSetHierarchyFlags(gSystemMenuInteractiveModel, 2);
+    objectSetHierarchyFlags((u8 *)gSystemMenuTransitionModel, 2);
+    objectSetHierarchyFlags((u8 *)gSystemMenuInteractiveModel, 2);
 }
 
 /// Global game heap header used by runtime resource and object allocations.
@@ -1865,7 +1864,7 @@ void systemMenuInitialize(void) {
     _bzero(gSystemMenuRowImages, 0x30);
     _bzero(gSystemMenuDetailImages, 0x30);
     model = (MenuModel *)objectCreateHierarchyFromTemplate((ObjectTemplate *)&gSystemMenuTransitionModelTemplate);
-    objectSetHierarchyFlags((s32)model, 0x2002);
+    objectSetHierarchyFlags((u8 *)model, 0x2002);
     objectRegisterActiveHierarchy((u8 *)model);
     model->scale[0] = *(f32 *)(gCurrentAreaConfiguration + 0xC) * 5.0;
     model->scale[1] = *(f32 *)(gCurrentAreaConfiguration + 0xC) * 5.0;
@@ -1880,7 +1879,7 @@ void systemMenuInitialize(void) {
     ((MenuModel *)state->secondary)->transform[2] = 0.0f;
     ((MenuModel *)state->secondary)->transform[1] = 90.0f;
     model = (MenuModel *)objectCreateHierarchyFromTemplate((ObjectTemplate *)&gSystemMenuInteractiveModelTemplate);
-    objectSetHierarchyFlags((s32)model, 0x2002);
+    objectSetHierarchyFlags((u8 *)model, 0x2002);
     objectRegisterActiveHierarchy((u8 *)model);
     model->scale[0] = *(f32 *)(gCurrentAreaConfiguration + 0xC);
     model->scale[1] = *(f32 *)(gCurrentAreaConfiguration + 0xC);

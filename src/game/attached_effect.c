@@ -1,3 +1,4 @@
+#include "object_flags.h"
 #include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
 #include "common.h"
@@ -32,7 +33,6 @@ extern s32 gRuntimeGameMode;
 /// Shared integer animation programs selecting texture frames for actors, effects and interface elements.
 /// \note Original identifier: \c D_8006B090 (0x8006B090).
 extern s32 gTextureFrameAnimationPrograms[];
-void objectSetHierarchyFlags(u8 *, u16);
 /// Create an animated effect for an owner, replacing its previous attached effect.
 /// \param owner Object that owns and anchors the effect.
 /// \param kind Effect-definition index selecting its appearance.

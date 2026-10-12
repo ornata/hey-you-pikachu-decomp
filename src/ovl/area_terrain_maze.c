@@ -1,3 +1,4 @@
+#include "object_flags.h"
 #include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
 #include "heap_free.h"
@@ -1319,7 +1320,6 @@ s32 areaTestCameraVisibility(f32 margin, f32 *position, f32 *out) {
     return 0;
 }
 
-void objectSetHierarchyFlags(u8 *, s32); /* extern */
 
 /// Deactivate an area node and its active descendants, disabling their associated objects.
 /// \param node Initialized area node hierarchy to deactivate.
@@ -1350,13 +1350,11 @@ void areaDeactivateNodeHierarchy(u8 *node) {
     }
 }
 
-void objectClearHierarchyFlags(u8 *, u16, u8 *); /* extern */
 
 /// Activate an area node and enable its associated objects.
 /// \param node Initialized area node to activate.
 /// \returns Nothing.
 ///
-/// \note Portability: the local helper declaration passes an extra argument ignored by the original MIPS ABI.
 /// \note Original decompilation identifier: \c func_8010D1B4 (0x8010D1B4).
 void areaActivateNode(u8 *node) {
     u8 *primaryObject;
@@ -1366,11 +1364,11 @@ void areaActivateNode(u8 *node) {
         ((MazeNode *)node)->active = 1;
         primaryObject = ((MazeNode *)node)->objects[0].bytes;
         if ((primaryObject != NULL) && (((RuntimeObjectPrefix *)primaryObject)->flags & 0x80)) {
-            objectClearHierarchyFlags(primaryObject, 0x80, node);
+            objectClearHierarchyFlags(primaryObject, 0x80);
         }
         secondaryObject = ((MazeNode *)node)->objects[1].bytes;
         if ((secondaryObject != NULL) && (((RuntimeObjectPrefix *)secondaryObject)->flags & 0x80)) {
-            objectClearHierarchyFlags(secondaryObject, 0x80, node);
+            objectClearHierarchyFlags(secondaryObject, 0x80);
         }
     }
 }

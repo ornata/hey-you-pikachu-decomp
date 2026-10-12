@@ -1,7 +1,7 @@
+#include "object_flags.h"
 #include "common.h"
 #include "actor_create.h"
 #include "scene_types.h"
-void objectSetHierarchyFlags(u8 *, s32);
 void actorTransitionModelEnvironmentColor(u8 *, u8, u8, u8, s32, f32);
 void runtimeCheckResetCheckpoint(u8 *, s32);
 /// Current area scenario index shared by actor scripts, scene population, cards and collection titles.

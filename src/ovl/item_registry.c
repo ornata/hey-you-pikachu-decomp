@@ -1,3 +1,4 @@
+#include "object_flags.h"
 #include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
 #include "item_object.h"
@@ -1975,8 +1976,6 @@ void itemBuildLightingDisplayList(u8 *state, s32 index) {
 void itemUnusedUpdateHook(void) {
 }
 
-void objectSetHierarchyFlags(u8 *, u16);
-void objectClearHierarchyFlags(u8 *, u16);
 s32 interactionConsiderObject(u8 *);
 s32 collisionGridRegisterObject(u8 *);
 u8 *collisionGridFindOverlap(u8 *);

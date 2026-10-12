@@ -1,3 +1,4 @@
+#include "object_flags.h"
 #include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
 #include "toolbox_items.h"
@@ -299,7 +300,6 @@ void toolboxClearCollection(void) {
     // clang-format on
 }
 
-void objectSetHierarchyFlags(u8 *, u16);
 /// Hide and park the toolbox and its tracked objects outside the scene.
 /// \returns Nothing; requires an initialized toolbox base object.
 /// \note Original decompilation identifier: \c func_8002EDBC (0x8002EDBC).
@@ -352,7 +352,6 @@ void toolboxHideObjects(void) {
     }
 }
 
-void objectClearHierarchyFlags(u8 *, u16);
 
 /// Make the toolbox and its tracked objects eligible for drawing.
 /// \returns Nothing; requires an initialized toolbox base object.

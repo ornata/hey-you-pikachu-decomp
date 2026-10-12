@@ -1,3 +1,4 @@
+#include "object_flags.h"
 #include "object_create.h"
 #include "object_hierarchy_create.h"
 #include "object_template.h"
@@ -114,8 +115,6 @@ void objectAssignHierarchyRoot(u8 *, s32);
 /// Number of hierarchy roots registered in the active traversal pool.
 /// \note Original identifier: \c D_800AE3D0 (0x800AE3D0).
 extern s32 gActiveObjectHierarchyCount;
-void objectSetHierarchyFlags(u8 *, u16);
-void objectClearHierarchyFlags(u8 *, u16);
 s32 objectCompareSearchTreeOrder(TreeNode *, s32);
 void objectRegisterHierarchyInSearchTree(u8 *);
 f32 vector3Normalize(f32 *);
@@ -1203,12 +1202,12 @@ void objectSetHierarchyFlags(u8 *object, u16 flags) {
     u8 *firstChild;
     if (object != 0) {
         do {
-            firstChild = *(u8 **)(object + 0x2C);
-            *(u16 *)(object + 0x36) = *(u16 *)(object + 0x36) | flags;
+            firstChild = ((RuntimeObjectPrefix *)object)->child.bytes;
+            ((RuntimeObjectPrefix *)object)->flags = ((RuntimeObjectPrefix *)object)->flags | flags;
             if (firstChild != 0) {
                 objectSetHierarchyFlags(firstChild, flags);
             }
-            object = *(u8 **)(object + 0x28);
+            object = ((RuntimeObjectPrefix *)object)->sibling.bytes;
         } while (object != 0);
     }
 }
@@ -1222,12 +1221,12 @@ void objectClearHierarchyFlags(u8 *object, u16 flags) {
     u8 *firstChild;
     if (object != 0) {
         do {
-            firstChild = *(u8 **)(object + 0x2C);
-            *(u16 *)(object + 0x36) = *(u16 *)(object + 0x36) & ~flags;
+            firstChild = ((RuntimeObjectPrefix *)object)->child.bytes;
+            ((RuntimeObjectPrefix *)object)->flags = ((RuntimeObjectPrefix *)object)->flags & ~flags;
             if (firstChild != 0) {
                 objectClearHierarchyFlags(firstChild, flags);
             }
-            object = *(u8 **)(object + 0x28);
+            object = ((RuntimeObjectPrefix *)object)->sibling.bytes;
         } while (object != 0);
     }
 }

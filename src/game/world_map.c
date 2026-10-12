@@ -1,3 +1,4 @@
+#include "object_flags.h"
 #include "hud_draw.h"
 #include "backdrop_draw.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -408,7 +409,6 @@ extern s32 gWorldMapDirectionHeldFrames;
 /// Camera storage used for view transforms, viewports and color overlays.
 /// \note Original identifier: \c D_800ABCF0 (0x800ABCF0).
 extern u8 gRenderCameras[];
-void objectSetHierarchyFlags(u8 *, u16);
 void wholeMapUpdateActorPlacement(void);
 void actionScriptStop();
 void actionScriptStartWithMode();

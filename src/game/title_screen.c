@@ -1,3 +1,4 @@
+#include "object_flags.h"
 #include "backdrop_draw.h"
 #include "title_screen.h"
 #include "hud_draw.h"
@@ -738,7 +739,6 @@ s32 micIsDeviceConnected(s32);
 void controllerConfigureStickButtons(s32 enabled, s32 upThreshold, s32 downThreshold, s32 leftThreshold,
                                      s32 rightThreshold);
 s32 controllerIsStandardPad(s32 port);
-void objectSetHierarchyFlags(u8 *, u16);
 void runtimeRequestProgramChange(s32);
 void runtimeRequestGameModeChange(s32);
 void progressSetChapterAndUnlockMilestones(s32);
