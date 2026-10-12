@@ -1,0 +1,51 @@
+/// \file
+/// Declares handle-based object categories and kinds exposed to actor scripts.
+
+#ifndef OBJECT_SCRIPT_QUERY_H
+#define OBJECT_SCRIPT_QUERY_H
+
+#include <ultra64.h>
+
+/// Stable category values returned to actor scripts.
+/// Numeric object groups retain their type numbers until their semantic roles are established.
+typedef enum ObjectScriptCategory {
+    SCRIPT_CATEGORY_UNAVAILABLE = 0,
+    SCRIPT_CATEGORY_ITEM = 1,
+    SCRIPT_CATEGORY_TYPE_127 = 2,
+    SCRIPT_CATEGORY_TYPES_141_TO_148 = 3,
+    SCRIPT_CATEGORY_CREATURE = 4,
+    SCRIPT_CATEGORY_TYPE_130 = 5
+} ObjectScriptCategory;
+
+/// Classify an available object for actor scripts.
+/// \param actor Unused actor context accepted by the script interface.
+/// \param handle Handle of the object to classify.
+/// \returns One for items, two for object type 127, three for types 141 through 148, four for creatures, five for type 130, or zero for an unavailable or unsupported object.
+/// \note Original decompilation identifier: \c func_80117840 (0x80117840).
+s32 objectGetScriptCategory(u8 *actor, s32 handle);
+
+/// Get the kind identifier exposed to actor scripts for an available object.
+/// \param handle Handle of the object to query.
+/// \returns The item or creature kind, the object type for types 130 and 141 through 148, or zero for an unavailable or unsupported object.
+/// \note Original decompilation identifier: \c func_801178EC (0x801178EC).
+s32 objectGetScriptKind(s32 handle);
+
+/// Get the item kind associated with an available handle.
+/// \param handle Handle of the item to query.
+/// \returns The item kind, or zero if the handle is unavailable or does not identify an item.
+/// \note Original decompilation identifier: \c func_80117998 (0x80117998).
+s16 itemGetKindByHandle(s32 handle);
+
+/// Get the creature kind associated with an available handle.
+/// \param handle Handle of the actor to query.
+/// \returns The creature kind, or zero if the handle is unavailable or does not identify a creature.
+/// \note Original decompilation identifier: \c func_801179E8 (0x801179E8).
+u16 actorGetKindByHandle(s32 handle);
+
+/// Get the type of an available object.
+/// \param handle Handle of the object to query.
+/// \returns The object type, or zero when the handle is unavailable.
+/// \note Original decompilation identifier: \c func_80117A30 (0x80117A30).
+u16 objectGetTypeByHandle(s32 handle);
+
+#endif

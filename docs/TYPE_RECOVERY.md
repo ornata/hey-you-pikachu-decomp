@@ -603,3 +603,17 @@ pitch-ratio expression retains its prior byte views: a typed-access trial change
 IDO scheduling only in that function, and restoring its matching representation
 restored all 483 baseline objects. This exception is documented in its Doxygen
 comment. No arithmetic, compiler settings or comparison rules changed.
+
+The script-query continuation shares category, exposed kind, item kind, creature
+kind and object type queries through `object_script_query.h`. Category constants
+retain numeric type groups where semantics are unresolved. Ghidra at 0x80117840
+corroborates the category mapping. The unused actor context has a pointer
+contract, and the producer and script consumers agree on signed item-kind and
+unsigned creature/type result widths without changing caller objects.
+
+`object_audio.h` reconciles the spatial-playback producer and all seven callers.
+`item_audio.h` uses the established ItemStatePrefix for tracked sound state; item
+registry and physics pass real object/state pointers, preserving original sound
+selection and playback ownership. The camera-space nonzero-position requirement
+is retained at the interface. All eleven changed source units were built and
+compared independently with the immutable 483-object baseline.

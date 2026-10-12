@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_audio.h"
 #include "actor_target.h"
 #include "integer_animation.h"
 #include "object_types.h"
@@ -63,7 +64,6 @@ void actorInitializeChildMotionState(void *);
 /// \note Original identifier: \c D_800F298C (0x800F298C).
 extern s32 gGraphicsFramebufferIndex;
 
-s32 objectPlaySpatialSound(u8 *, s32, f32, f32);
 s32 audioCountPlayback(s32);
 s32 audioStopPlayback(s32, f64);
 

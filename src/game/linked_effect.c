@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_audio.h"
 #include "integer_animation.h"
 #include "object_lookup.h"
 #include "heap_alloc.h"
@@ -202,7 +203,6 @@ s32 linkedEffectPrepareDraw(u8 *object) {
 }
 
 void objectRequestHierarchyDestruction(u8 *);
-s32 objectPlaySpatialSound(u8 *, s32, f32, f32);
 f32 actorAdjustActionMeter(u8 *, f32);
 s32 actorPlayTrackedSound(u8 *, s32);
 /// Borrowed reference to the active Pikachu actor created for the current area.

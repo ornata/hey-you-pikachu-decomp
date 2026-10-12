@@ -3,10 +3,10 @@
 #include "object_lookup.h"
 #include "actor_script.h"
 #include "item_types.h"
+#include "item_audio.h"
 #include "item_kind.h"
 #include "object_types.h"
 
-void itemPlayTrackedSound(s32, u8 *, s32); /* extern */
 void itemSetMode(u8 *, s32);      /* extern */
 
 /// Start item disposal with its transition sound.
@@ -14,7 +14,7 @@ void itemSetMode(u8 *, s32);      /* extern */
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_801217C0 (0x801217C0).
 void itemBeginShrinkingDisposal(u8 *object) {
-    itemPlayTrackedSound((s32)object, ((RuntimeObjectPrefix *)object)->state.bytes, 0xB7);
+    itemPlayTrackedSound(object, (ItemStatePrefix *)((RuntimeObjectPrefix *)object)->state.bytes, 0xB7);
     itemSetMode(object, 6);
 }
 
@@ -284,10 +284,10 @@ extern s16 gItemKindSecondarySoundEntries;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_801220B8 (0x801220B8).
 void itemPlayImpactSounds(u8 *object, s32 contactFlags, s32 surface) {
-    s32 sp1C;
+    ItemStatePrefix *sp1C;
     s32 surfaceSoundId;
 
-    sp1C = ((RuntimeObjectPrefix *)object)->state.address;
+    sp1C = (ItemStatePrefix *)((RuntimeObjectPrefix *)object)->state.pointer;
     if (!(contactFlags & 0x2D)) {
         surfaceSoundId = terrainGetMaterialSound(6, surface);
         if (surfaceSoundId >= 0) {
@@ -506,7 +506,7 @@ void itemUpdateDriftingFlight(u8 *object) {
     if (terrainConstrainMovement(5, *(f32 *)(object + 0x18), *(f32 *)(object + 0x1C) - radius, *(f32 *)(object + 0x20), diameter,
                       diameter, radius, &dx, &dy, &dz, &node) &
         0x12) {
-        itemPlayTrackedSound((s32)object, state, 0xBD);
+        itemPlayTrackedSound(object, (ItemStatePrefix *)state, 0xBD);
         itemSetMode(object, 6);
         return;
     }
@@ -684,7 +684,7 @@ void itemUpdateShrinkingDisposal(u8 *object) {
         transform->scale[2] = 0.0f;
         transform->scale[1] = 0.0f;
         transform->scale[0] = 0.0f;
-        itemPlayTrackedSound((s32)object, state, 0xBD);
+        itemPlayTrackedSound(object, (ItemStatePrefix *)state, 0xBD);
         itemDestroy(object);
         return;
     }

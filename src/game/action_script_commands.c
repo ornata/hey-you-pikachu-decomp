@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_audio.h"
 #include "audio_cue.h"
 #include "actor_target.h"
 #include "object_lookup.h"
@@ -984,7 +985,6 @@ void actionCommandConfigureHeldItem(s32 actor, u8 *state, u8 *command, f32 *elap
 }
 
 void objectDebugReportNoOp(u8 *);                /* extern */
-s32 objectPlaySpatialSound(u8 *, s32, f32, f32); /* extern */
 
 /// Requests a transformation of the actor’s stored target item and optionally plays a sound when no replacement is produced.
 /// \param actor Actor whose stored target item is requested to transform.

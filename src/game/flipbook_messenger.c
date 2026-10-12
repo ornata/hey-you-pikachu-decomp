@@ -6,6 +6,7 @@
 
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_audio.h"
 #include "text_draw.h"
 #include "text_panel.h"
 #include "integer_animation.h"
@@ -46,7 +47,6 @@ s32 messengerGetActorContactMode(u8 *);
 void messengerDeliver(u8 *, u8 *, u8 *, s32);
 u8 *collisionGridFindOverlap(u8 *);
 void messengerBeginDissipation(f32 *);
-s32 objectPlaySpatialSound(u8 *, s32, f32, f32);
 /// Integer appearance animation used while a messenger dissipates.
 /// \note Original identifier: \c D_8009999C (0x8009999C).
 extern u8 gMessengerDissipationAnimation[];

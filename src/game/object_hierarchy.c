@@ -1,4 +1,5 @@
 #include "common.h"
+#include "object_audio.h"
 #include "integer_animation.h"
 #include "keyed_pool_types.h"
 #include "heap_alloc.h"

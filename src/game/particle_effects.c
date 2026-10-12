@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_audio.h"
 #include "integer_animation.h"
 #include "object_lookup.h"
 #include "heap_alloc.h"
@@ -853,7 +854,6 @@ void effectEmitterEmitScatteredParticles(u8 *emitter) {
     }
 }
 
-s32 objectPlaySpatialSound(u8 *, s32, f32, f32);
 void audioSetSoundEffectPitch(s32, f32);
 u8 *fallingParticleCreate(s32, s32, f32 *, f32 *, f32);
 

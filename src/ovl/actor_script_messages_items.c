@@ -6,6 +6,7 @@
 
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_script_query.h"
 #include "audio_cue.h"
 #include "object_lookup.h"
 #include "player_types.h"
@@ -1104,7 +1105,6 @@ s32 actorScriptSetTrackingMode(u8 *actor) {
     return 0;
 }
 
-s32 objectGetScriptCategory(u8 *, s32); /* extern */
 
 /// Replace an object handle on the script stack with its script category.
 /// \param actor Actor whose script VM supplies a handle and receives its category, or zero for an unavailable or unsupported object.
@@ -1118,7 +1118,6 @@ s32 actorScriptGetObjectCategory(u8 *actor) {
     return 0;
 }
 
-s32 objectGetScriptKind(s32);  /* extern */
 
 /// Replace an object handle on the script stack with its script kind identifier.
 /// \param actor Actor whose script VM supplies a handle and receives its kind identifier, or zero for an unavailable or unsupported object.
@@ -1132,7 +1131,6 @@ s32 actorScriptGetObjectKind(u8 *actor) {
     return 0;
 }
 
-s32 itemGetKindByHandle(s32);  /* extern */
 
 /// Replace an object handle on the script stack with its item kind.
 /// \param actor Actor whose script VM supplies a handle and receives the item kind, or zero for an unavailable handle or a non-item object.
@@ -1146,7 +1144,6 @@ s32 actorScriptGetItemKind(u8 *actor) {
     return 0;
 }
 
-s32 actorGetKindByHandle(s32);  /* extern */
 
 /// Replace an object handle on the script stack with its creature kind.
 /// \param actor Actor whose script VM supplies a handle and receives the creature kind, or zero for an unavailable handle or a non-creature object.
@@ -1160,7 +1157,6 @@ s32 actorScriptGetCreatureKind(u8 *actor) {
     return 0;
 }
 
-u16 objectGetTypeByHandle(s32);  /* extern */
 
 /// Replace an object handle on the script stack with its object type.
 /// \param actor Actor whose script VM supplies a handle and receives the object type, or zero for an unavailable handle.

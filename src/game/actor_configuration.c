@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_audio.h"
 #include "asset_loader.h"
 #include "actor_target.h"
 #include "heap_diagnostics.h"
@@ -130,7 +131,6 @@ void contactEffectInitialize(u8 *effect) {
 }
 
 void objectOrientAlongCameraView(u8 *);
-s32 objectPlaySpatialSound(u8 *, s32, f32, f32);
 s32 actorGetPartObjectHandle(u8 *, s32);
 u8 *linkedEffectCreateChain(s32, f32, f32, f32, f32, s32, f32, f32, f32, f32, f32, s32, s32, s32);
 f32 vector3Length(f32 *);

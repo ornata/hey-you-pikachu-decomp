@@ -1,5 +1,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
+#include "object_script_query.h"
 #include "actor_target.h"
 #include "player_control.h"
 #include "object_lookup.h"
@@ -206,7 +207,6 @@ s32 actorFindItemHandleInFacingCone(u8 *actor, f32 distance, f32 cone, s32 minKi
 }
 
 void actorSetTargetPosition();                      /* extern */
-s32 objectGetScriptCategory(s32 actor, s32 handle); /* extern */
 /// Track an available object as an actor's movement destination. Otherwise disable target tracking.
 /// \param actor Actor whose destination is changed.
 /// \param handle Handle of the target object.
@@ -363,35 +363,33 @@ void actorSetTargetTrackingMode(u8 *actor, s32 mode) {
 /// \param handle Handle of the object to classify.
 /// \returns One for items, two for object type 127, three for types 141 through 148, four for creatures, five for type 130, or zero for an unavailable or unsupported object.
 /// \note Original decompilation identifier: \c func_80117840 (0x80117840).
-s32 objectGetScriptCategory(s32 actor, s32 handle) {
+s32 objectGetScriptCategory(u8 *actor, s32 handle) {
     u16 objectKind;
     u8 *resolvedObject;
 
     resolvedObject = objectResolveAvailableHandle(handle);
     if (resolvedObject == NULL) {
-        return 0;
+        return SCRIPT_CATEGORY_UNAVAILABLE;
     }
     objectKind = ((RuntimeObjectPrefix *)resolvedObject)->kind;
     if (objectKind == 0x86) {
-        return 1;
+        return SCRIPT_CATEGORY_ITEM;
     }
     if (objectKind == 0x7F) {
-        return 2;
+        return SCRIPT_CATEGORY_TYPE_127;
     }
     if (((s32)objectKind > 0) && ((s32)objectKind < 0x26)) {
-        return 4;
+        return SCRIPT_CATEGORY_CREATURE;
     }
     if (((s32)objectKind >= 0x82) && ((s32)objectKind < 0x83)) {
-        return 5;
+        return SCRIPT_CATEGORY_TYPE_130;
     }
     if (((s32)objectKind >= 0x8D) && ((s32)objectKind < 0x95)) {
-        return 3;
+        return SCRIPT_CATEGORY_TYPES_141_TO_148;
     }
-    return 0;
+    return SCRIPT_CATEGORY_UNAVAILABLE;
 }
 
-s16 itemGetKindByHandle(s32);      /* extern */
-u16 actorGetKindByHandle(s32 arg0); /* extern */
 /// Get the kind identifier exposed to actor scripts for an available object.
 /// \param handle Handle of the object to query.
 /// \returns The item or creature kind, the object type for types 130 and 141 through 148, or zero for an unavailable or unsupported object.

@@ -2,6 +2,8 @@
 /* Item objects. .rodata is the item-kind text (initializer order), then the
  * debug-trace formats in function order, then the late float/jump tables. */
 #include "common.h"
+#include "object_audio.h"
+#include "item_audio.h"
 #include "integer_animation.h"
 #include "object_lookup.h"
 #include "heap_alloc.h"
@@ -1831,7 +1833,6 @@ u8 *itemFindNearest(f32 *origin, f32 maxDistance, f32 pitch, f32 yaw, f32 cone, 
     return gItemNearestSearch.best;
 }
 
-s32 objectPlaySpatialSound(s32, s32, f32, f32); /* extern */
 
 /// Play a spatial sound for an item and retain its playback handle.
 /// \param item Live item object address used as the sound source.
@@ -1839,9 +1840,8 @@ s32 objectPlaySpatialSound(s32, s32, f32, f32); /* extern */
 /// \param soundId Valid sound-effect identifier to play.
 /// \returns Nothing.
 ///
-/// \note Portability: the item address is passed as a 32-bit integer.
 /// \note Original decompilation identifier: \c func_801132F8 (0x801132F8).
-void itemPlayTrackedSound(s32 item, u8 *state, s32 soundId) {
+void itemPlayTrackedSound(u8 *item, ItemStatePrefix *state, s32 soundId) {
     TRACE("request-cling:%p type:%d\n", item, soundId);
     ((ItemStatePrefix *)state)->soundHandle = objectPlaySpatialSound(item, soundId, 20.0f, 100.0f);
 }
@@ -2458,7 +2458,7 @@ void itemThrow(s32 id, f32 *origin, f32 *target, f32 *velocity, s32 effect) {
     if (callback != NULL)
         callback(object);
     if (effect != 0)
-        itemPlayTrackedSound((s32)object, state, 0x99);
+        itemPlayTrackedSound(object, (ItemStatePrefix *)state, 0x99);
 }
 
 /// Apply a velocity change to a free item that permits motion.
@@ -2720,7 +2720,7 @@ s32 itemTransform(s32 id, s32 mode) {
             return id;
         }
         TRACE("changeThunder:%d changeTo:%s\n", state->kind, gItemKinds[replacementKind].text[0].name);
-        itemPlayTrackedSound((s32)object, (u8 *)state, (s32)gItemKinds[state->kind].effect[1]);
+        itemPlayTrackedSound(object, state, (s32)gItemKinds[state->kind].effect[1]);
         break;
     case 3:
     case 4:
