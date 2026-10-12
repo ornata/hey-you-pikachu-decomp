@@ -3141,3 +3141,15 @@ local and named object flags/display list. Ghidra 0x8001DCFC confirms the
 allocation and animation initialization. Integer-animation headers now mention
 object texture users and retain original function/address notes. Both provider
 conversion and dependent header rebuild preserve all strict objects.
+
+### Actor resource descriptors reuse corrected-asset ranges
+
+The private 0x24-byte `ActorAssetDescriptor` now embeds the shared
+`AssetDescriptor` after the resource index and compression selector, with
+size and member-offset checks. Cache initialization establishes the index;
+queued reads and actor creation establish ROM/decoded ranges and biased
+encoded/correction metadata. Ghidra 0x8001E04C confirms the allocation ranges
+and 0x24-byte resource stride. The former `remaining` array is replaced by
+named encoded end, correction start and correction-count metadata through
+the shared type. Ownership stays with the cache and resident tables; the
+record remains private. All isolated conversions preserve strict objects.

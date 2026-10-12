@@ -478,18 +478,19 @@ void actorUpdateChildMotionAndCopyOrientation(u8 *object) {
     ((RuntimeObjectPrefix *)firstChild)->rotation[2] = (f32)((RuntimeObjectPrefix *)object)->rotation[2];
 }
 
-typedef struct {
-    s32 unknown;
-    s32 compressed;
-    s32 romStart;
-    s32 romEnd;
-    s32 dataStart;
-    s32 dataEnd;
-    s32 remaining[3];
-} ObjectAsset;
+/// Actor cache entry metadata; corrected-asset ranges borrow the resident resource table.
+typedef struct ActorAssetDescriptor {
+    s32 index; ///< Expected slot in the actor asset resource table.
+    s32 compressed; ///< Zero selects a direct ROM copy; one selects corrected decompression at creation.
+    AssetDescriptor asset; ///< ROM, decoded and correction ranges with their common bias.
+} ActorAssetDescriptor;
+
+typedef char ActorAssetDescriptorSizeCheck[(sizeof(ActorAssetDescriptor) == 0x24) ? 1 : -1];
+typedef char ActorAssetCompressionOffsetCheck[((u32)&((ActorAssetDescriptor *)0)->compressed == 4) ? 1 : -1];
+typedef char ActorAssetRangeOffsetCheck[((u32)&((ActorAssetDescriptor *)0)->asset == 8) ? 1 : -1];
 /// Actor resource descriptors recording compression, ROM ranges and relocated data ranges.
 /// \note Original identifier: \c D_800792A0 (0x800792A0).
-extern ObjectAsset gActorAssetResources[];
+extern ActorAssetDescriptor gActorAssetResources[];
 
 /// Initialize the actor asset cache and its read queue.
 /// \returns Nothing.
@@ -502,7 +503,7 @@ void actorAssetCacheInitialize(void) {
     _bzero(gActorAssetStorage, 0x90);
     romDmaInitializeQueue(&gActorAssetReadQueue, 0x24);
     for (i = 0; i < 36; i++) {
-        if (gActorAssetResources[i].unknown != i) {
+        if (gActorAssetResources[i].index != i) {
         }
     }
 }
@@ -531,7 +532,7 @@ void actorAssetQueueLoadForKind(s32 kind) {
 
     index = *(s32 *)(gActorKindResourceIndexEntries + kind * sizeof(ActorKindConfig));
     if (gActorAssetStorage[index] == 0) {
-        size = gActorAssetResources[index].romEnd - gActorAssetResources[index].romStart;
+        size = gActorAssetResources[index].asset.romEnd - gActorAssetResources[index].asset.romAddress;
         if (gActorAssetResources[index].compressed == 0) {
             source = (s32)heapAllocLocal(&gGameHeap, size, 0x100);
             gActorCompressedAssetStaging = 0;
@@ -540,9 +541,9 @@ void actorAssetQueueLoadForKind(s32 kind) {
             source = (s32)heapAllocTailLocal(&gGameHeap, size, 0x10D);
             gActorCompressedAssetStaging = source;
             gActorAssetStorage[index] = (s32)heapAllocLocal(
-                &gGameHeap, gActorAssetResources[index].dataEnd - gActorAssetResources[index].dataStart, 0x113);
+                &gGameHeap, gActorAssetResources[index].asset.decodedEnd - gActorAssetResources[index].asset.rangeBase, 0x113);
         }
-        romDmaReadQueued(&gActorAssetReadQueue, gActorAssetResources[index].romStart, (u8 *)source, size);
+        romDmaReadQueued(&gActorAssetReadQueue, gActorAssetResources[index].asset.romAddress, (u8 *)source, size);
     }
 }
 
@@ -629,7 +630,7 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
     u8 *actor;
     u8 *sp48;
     u8 *actorState;
-    ObjectAsset *asset;
+    ActorAssetDescriptor *descriptor;
     u8 *part;
 
     heapDebugReportFreeSpace(&gGameHeap, (const char *)gActorCreationStartHeapLabel);
@@ -699,13 +700,13 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
     }
     actorAssetWaitForQueuedReads();
     if ((u8 *)gActorCompressedAssetStaging != NULL) {
-        asset = &gActorAssetResources[kindConfig->resourceIndex];
-        if (asset->compressed == 1) {
-            sp50 = (void *)gActorAssetResources[kindConfig->resourceIndex].dataStart;
+        descriptor = &gActorAssetResources[kindConfig->resourceIndex];
+        if (descriptor->compressed == 1) {
+            sp50 = (void *)gActorAssetResources[kindConfig->resourceIndex].asset.rangeBase;
             assetDecompressAndPatch((u8 *)gActorAssetStorage[kindConfig->resourceIndex],
-                                    (u8 *)gActorCompressedAssetStaging, asset->remaining[0] - (s32)sp50,
-                                    asset->dataEnd - (s32)sp50, asset->remaining[1] - (s32)sp50,
-                                    asset->remaining[2] - (s32)sp50);
+                                    (u8 *)gActorCompressedAssetStaging, descriptor->asset.encodedEnd - (s32)sp50,
+                                    descriptor->asset.decodedEnd - (s32)sp50, descriptor->asset.patchStart - (s32)sp50,
+                                    descriptor->asset.patchCountValue - (s32)sp50);
             heapDebugReportFreeSpace(&gGameHeap, (const char *)gActorStagingReleaseStartHeapLabel);
             heapFreeLocal(&gGameHeap, (void *)gActorCompressedAssetStaging);
             gActorCompressedAssetStaging = 0;
