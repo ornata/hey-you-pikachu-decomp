@@ -14,16 +14,17 @@ Counts exclude comments, strings and character literals and cover game C under
 | --- | --- | --- |
 | `M2C_FIELD` | 2,575 / 75 | 0 / 0 |
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
-| Address-named globals | 6,650 / 102 | 6,606 / 101 |
+| Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 3,995 / 84 |
+| Raw offset candidates | 4,040 / 86 | 2,858 / 80 |
 
-Address-global counts are references, not declarations: unique address spellings
-fell from 995 to 984. Twelve globals were named, including the controller repeat
-mask formerly named `__additional_scanline_2`, which was outside that metric.
-Temporary-name uniqueness is spelling uniqueness, not distinct local variables.
-The raw-offset heuristic deliberately includes scalar arithmetic; it is a review
-list, not a count of incorrect pointer accesses.
+Address-global counts are references, not declarations: three address-named
+globals remain in three files, with seven references. Their unresolved roles
+are recorded in the recovery ledger. Counts reflect the current source;
+regenerate the report after further recovery. Temporary-name uniqueness is
+spelling uniqueness, not distinct local variables. The raw-offset heuristic
+includes scalar arithmetic; it is a review list, not a count of incorrect
+pointer accesses.
 
 Run `make source-quality`, `make source-quality JSON=1`, or
 `python3 tools/source_quality.py --json` for current counts and every occurrence's
@@ -3109,3 +3110,14 @@ Restore names object transform/radius and actor orientation, root-motion
 matrix/heading and behavior fields, removing duplicate block types and
 float-index macros. The existing action-stop ABI matching exception remains.
 Each isolated conversion preserves strict object bytes and relocations.
+
+### Actor-kind stride and initial attachment selection
+
+The actor-kind record's offset 0x4C is now `initialAttachmentMode`, correcting
+its former behavior-flags interpretation. Ghidra 0x8001E1C4 confirms its copy
+into actor attachment state. All configuration lookups derive their stride
+from the checked 0x54-byte private record while retaining interior linker
+symbols and strict relocation identities. Creation reads the orbit follower's
+handle through the shared object field. The source-quality summary is updated
+to current counts, with uncertain globals and raw candidates still explicit.
+All isolated conversions preserve strict objects and the clean ROM.

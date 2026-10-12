@@ -88,6 +88,49 @@ void actorUpdateModel(u8 *);
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
 
+/// Persistent actor-kind configuration used by actor creation.
+/// Pointer fields borrow templates, text and part lists from resident resources.
+/// Interior linker views elsewhere retain the original per-field relocations.
+typedef struct ActorKindConfig {
+    char *alternateName;           ///< Preferred inspection name when alternate text is requested.
+    char *alternateDescription;    ///< Preferred inspection description when alternate text is requested.
+    char *defaultName;             ///< Default inspection name.
+    char *defaultDescription;      ///< Default inspection description.
+    f32 markerDepth;               ///< Unscaled depth used to place an interaction marker.
+    f32 markerHeight;              ///< Unscaled height used to place an interaction marker.
+    ObjectTemplate *hierarchyTemplate;         ///< Borrowed actor hierarchy cloned during creation.
+    const s32 *groundReferenceIds; ///< Positive part IDs terminated by a nonpositive value.
+    s32 *animatedTextureParts;     ///< Borrowed part list for texture-animation initialization.
+    f32 visibilityRadius;          ///< Unscaled actor visibility and segmented-shadow radius.
+    f32 collisionDepth;            ///< Unscaled vertical span used by horizontal clearance queries.
+    f32 clearanceHeight;           ///< Unscaled permitted clearance height.
+    f32 collisionWidth;            ///< Unscaled horizontal collision width.
+    f32 unknown34;                 ///< Unresolved dimension copied to actor state at 0x208.
+    f32 groundOffset;              ///< Unscaled ground-reference offset.
+    s32 shadowSegmentCount;        ///< Number of ground-shadow segments, or nonpositive to omit the shadow.
+    s32 defaultPartId;             ///< Default reference part identifier.
+    s32 firstAttachmentPartId;     ///< First attachment reference part identifier.
+    s32 secondAttachmentPartId;    ///< Second attachment reference part identifier.
+    s32 initialAttachmentMode;      ///< Initial attachment-position selection mode.
+    s32 resourceIndex;             ///< Actor resource-table index.
+} ActorKindConfig;
+
+typedef char ActorKindConfigSizeCheck[(sizeof(ActorKindConfig) == 0x54) ? 1 : -1];
+#define ACTOR_KIND_OFFSET_CHECK(name, member, offset)                                                                  \
+    typedef char name[(((u32) & ((ActorKindConfig *)0)->member) == (offset)) ? 1 : -1]
+ACTOR_KIND_OFFSET_CHECK(ActorKindMarkerDepthOffsetCheck, markerDepth, 0x10);
+ACTOR_KIND_OFFSET_CHECK(ActorKindMarkerHeightOffsetCheck, markerHeight, 0x14);
+ACTOR_KIND_OFFSET_CHECK(ActorKindTemplateOffsetCheck, hierarchyTemplate, 0x18);
+ACTOR_KIND_OFFSET_CHECK(ActorKindGroundReferencesOffsetCheck, groundReferenceIds, 0x1C);
+ACTOR_KIND_OFFSET_CHECK(ActorKindTexturePartsOffsetCheck, animatedTextureParts, 0x20);
+ACTOR_KIND_OFFSET_CHECK(ActorKindCollisionDepthOffsetCheck, collisionDepth, 0x28);
+ACTOR_KIND_OFFSET_CHECK(ActorKindDefaultPartOffsetCheck, defaultPartId, 0x40);
+ACTOR_KIND_OFFSET_CHECK(ActorKindAttachmentModeOffsetCheck, initialAttachmentMode, 0x4C);
+ACTOR_KIND_OFFSET_CHECK(ActorKindResourceOffsetCheck, resourceIndex, 0x50);
+#undef ACTOR_KIND_OFFSET_CHECK
+
+
+
 f32 terrainGetWorldHeight(f32, f32, f32, s32);
 /// Initial uniform scale of a contact-reactive effect.
 /// \note Original identifier: \c D_800A3A68 (0x800A3A68).
@@ -486,7 +529,7 @@ void actorAssetQueueLoadForKind(s32 kind) {
     s32 size;
     s32 source;
 
-    index = *(s32 *)(gActorKindResourceIndexEntries + kind * 0x54);
+    index = *(s32 *)(gActorKindResourceIndexEntries + kind * sizeof(ActorKindConfig));
     if (gActorAssetStorage[index] == 0) {
         size = gActorAssetResources[index].romEnd - gActorAssetResources[index].romStart;
         if (gActorAssetResources[index].compressed == 0) {
@@ -519,7 +562,7 @@ s32 actorAssetGetCachedStorage(s32 kind) {
     s32 idx;
     u32 off;
     s32 *tbl;
-    off = kind * 0x54;
+    off = kind * sizeof(ActorKindConfig);
     do {
         tbl = gActorAssetStorage;
         idx = *(s32 *)(gActorKindResourceIndexEntries + off);
@@ -565,47 +608,6 @@ extern u8 gActorCreationCompleteHeapLabel[];
 /// \note Original identifier: \c D_800A477C (0x800A477C).
 extern f32 gActorShadowSegmentRadiusScale;
 
-/// Persistent actor-kind configuration used by actor creation.
-/// Pointer fields borrow templates, text and part lists from resident resources.
-/// Interior linker views elsewhere retain the original per-field relocations.
-typedef struct ActorKindConfig {
-    char *alternateName;           ///< Preferred inspection name when alternate text is requested.
-    char *alternateDescription;    ///< Preferred inspection description when alternate text is requested.
-    char *defaultName;             ///< Default inspection name.
-    char *defaultDescription;      ///< Default inspection description.
-    f32 markerDepth;               ///< Unscaled depth used to place an interaction marker.
-    f32 markerHeight;              ///< Unscaled height used to place an interaction marker.
-    ObjectTemplate *hierarchyTemplate;         ///< Borrowed actor hierarchy cloned during creation.
-    const s32 *groundReferenceIds; ///< Positive part IDs terminated by a nonpositive value.
-    s32 *animatedTextureParts;     ///< Borrowed part list for texture-animation initialization.
-    f32 visibilityRadius;          ///< Unscaled actor visibility and segmented-shadow radius.
-    f32 collisionDepth;            ///< Unscaled vertical span used by horizontal clearance queries.
-    f32 clearanceHeight;           ///< Unscaled permitted clearance height.
-    f32 collisionWidth;            ///< Unscaled horizontal collision width.
-    f32 unknown34;                 ///< Unresolved dimension copied to actor state at 0x208.
-    f32 groundOffset;              ///< Unscaled ground-reference offset.
-    s32 shadowSegmentCount;        ///< Number of ground-shadow segments, or nonpositive to omit the shadow.
-    s32 defaultPartId;             ///< Default reference part identifier.
-    s32 firstAttachmentPartId;     ///< First attachment reference part identifier.
-    s32 secondAttachmentPartId;    ///< Second attachment reference part identifier.
-    s32 initialBehaviorFlags;      ///< Initial actor behavior flags.
-    s32 resourceIndex;             ///< Actor resource-table index.
-} ActorKindConfig;
-
-typedef char ActorKindConfigSizeCheck[(sizeof(ActorKindConfig) == 0x54) ? 1 : -1];
-#define ACTOR_KIND_OFFSET_CHECK(name, member, offset)                                                                  \
-    typedef char name[(((u32) & ((ActorKindConfig *)0)->member) == (offset)) ? 1 : -1]
-ACTOR_KIND_OFFSET_CHECK(ActorKindMarkerDepthOffsetCheck, markerDepth, 0x10);
-ACTOR_KIND_OFFSET_CHECK(ActorKindMarkerHeightOffsetCheck, markerHeight, 0x14);
-ACTOR_KIND_OFFSET_CHECK(ActorKindTemplateOffsetCheck, hierarchyTemplate, 0x18);
-ACTOR_KIND_OFFSET_CHECK(ActorKindGroundReferencesOffsetCheck, groundReferenceIds, 0x1C);
-ACTOR_KIND_OFFSET_CHECK(ActorKindTexturePartsOffsetCheck, animatedTextureParts, 0x20);
-ACTOR_KIND_OFFSET_CHECK(ActorKindCollisionDepthOffsetCheck, collisionDepth, 0x28);
-ACTOR_KIND_OFFSET_CHECK(ActorKindDefaultPartOffsetCheck, defaultPartId, 0x40);
-ACTOR_KIND_OFFSET_CHECK(ActorKindFlagsOffsetCheck, initialBehaviorFlags, 0x4C);
-ACTOR_KIND_OFFSET_CHECK(ActorKindResourceOffsetCheck, resourceIndex, 0x50);
-#undef ACTOR_KIND_OFFSET_CHECK
-
 /// Create and register an actor of the requested kind with its resources ready for use.
 /// \param kind Valid actor kind to create.
 /// \param x Initial world-space X coordinate.
@@ -637,7 +639,7 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
     actor = objectCloneTemplateHierarchy(kindConfig->hierarchyTemplate, 0);
     actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
     heapDebugReportFreeSpace(&gGameHeap, (const char *)gActorHierarchyAllocatedHeapLabel);
-    ((ActorScriptState *)actorState)->attachmentMode = kindConfig->initialBehaviorFlags;
+    ((ActorScriptState *)actorState)->attachmentMode = kindConfig->initialAttachmentMode;
     ((ActorScriptState *)actorState)->creationScriptArgument = scriptArgument;
     sp50 = objectCreateDefault();
     ((RuntimeObjectPrefix *)sp50)->root.bytes = actor;
@@ -687,9 +689,9 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
     objectRegisterActiveHierarchy(actor);
     objectPrepareDistributedKindSearches(0x64, 4);
     ((ActorScriptState *)actorState)->fallbackObjectHandle =
-        (s32) * (s32 *)(orbitFollowerCreate(actor, ((ActorScriptState *)actorState)->collisionWidth, ((ActorScriptState *)actorState)->collisionDepth,
-                                            ((ActorScriptState *)actorState)->clearanceHeight) +
-                        0x38);
+        ((RuntimeObjectPrefix *)orbitFollowerCreate(actor, ((ActorScriptState *)actorState)->collisionWidth,
+                                                   ((ActorScriptState *)actorState)->collisionDepth,
+                                                   ((ActorScriptState *)actorState)->clearanceHeight))->handle;
     if (script != 0) {
         part = scriptVmCreate(script);
         ((ActorScriptState *)actorState)->vmAddress = (s32)part;
@@ -735,7 +737,7 @@ u8 *actorReplaceKindPreservingScript(u8 *actor, s32 kind) {
 /// \returns Borrowed part-ID list; positive IDs end at a nonpositive value.
 /// \note Original decompilation identifier: \c func_8001E5F0 (0x8001E5F0).
 const s32 *actorConfigGetGroundReferencePartIds(s32 kind) {
-    return *(const s32 **)(gActorKindGroundReferencePartEntries + (kind * 0x54));
+    return *(const s32 **)(gActorKindGroundReferencePartEntries + (kind * sizeof(ActorKindConfig)));
 }
 
 /// Get the first configured part used for actor attachment positions.
@@ -743,7 +745,7 @@ const s32 *actorConfigGetGroundReferencePartIds(s32 kind) {
 /// \returns First attachment part ID.
 /// \note Original decompilation identifier: \c func_8001E614 (0x8001E614).
 s32 actorConfigGetFirstAttachmentPartId(s32 kind) {
-    return *(s32 *)(gActorKindFirstAttachmentPartEntries + (kind * 0x54));
+    return *(s32 *)(gActorKindFirstAttachmentPartEntries + (kind * sizeof(ActorKindConfig)));
 }
 
 /// Get the second configured part used for actor attachment positions.
@@ -751,7 +753,7 @@ s32 actorConfigGetFirstAttachmentPartId(s32 kind) {
 /// \returns Second attachment part ID.
 /// \note Original decompilation identifier: \c func_8001E638 (0x8001E638).
 s32 actorConfigGetSecondAttachmentPartId(s32 kind) {
-    return *(s32 *)(gActorKindSecondAttachmentPartEntries + (kind * 0x54));
+    return *(s32 *)(gActorKindSecondAttachmentPartEntries + (kind * sizeof(ActorKindConfig)));
 }
 
 /// Get the configured default part for an actor kind.
@@ -759,7 +761,7 @@ s32 actorConfigGetSecondAttachmentPartId(s32 kind) {
 /// \returns Default part ID.
 /// \note Original decompilation identifier: \c func_8001E65C (0x8001E65C).
 s32 actorConfigGetDefaultPartId(s32 kind) {
-    return *(s32 *)(gActorKindDefaultPartEntries + (kind * 0x54));
+    return *(s32 *)(gActorKindDefaultPartEntries + (kind * sizeof(ActorKindConfig)));
 }
 
 /// Get an actor kind's display name for inspection text.
@@ -771,8 +773,8 @@ char *actorConfigGetDisplayName(s32 kind, s32 useDefault) {
     char *alternateName;
 
     if ((useDefault != 0) ||
-        (alternateName = *(char **)(gActorKindAlternateNameEntries + kind * 0x54), (alternateName == NULL))) {
-        return *(char **)(gActorKindDefaultNameEntries + kind * 0x54);
+        (alternateName = *(char **)(gActorKindAlternateNameEntries + kind * sizeof(ActorKindConfig)), (alternateName == NULL))) {
+        return *(char **)(gActorKindDefaultNameEntries + kind * sizeof(ActorKindConfig));
     }
     return alternateName;
 }
@@ -786,9 +788,9 @@ char *actorConfigGetDescription(s32 kind, s32 useDefault) {
     char *alternateDescription;
 
     if ((useDefault != 0) ||
-        (alternateDescription = *(char **)(gActorKindAlternateDescriptionEntries + kind * 0x54),
+        (alternateDescription = *(char **)(gActorKindAlternateDescriptionEntries + kind * sizeof(ActorKindConfig)),
          (alternateDescription == NULL))) {
-        return *(char **)(gActorKindDefaultDescriptionEntries + kind * 0x54);
+        return *(char **)(gActorKindDefaultDescriptionEntries + kind * sizeof(ActorKindConfig));
     }
     return alternateDescription;
 }
