@@ -1,3 +1,4 @@
+#include "action_script_query.h"
 #include "object_flags.h"
 #include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
@@ -1920,7 +1921,3 @@ void textWindowEnterMode(); /* extern */
 s32 *actionScriptStop(); /* extern */
 
 void actorSetTargetToFallbackObject(); /* extern */
-
-s32 actionScriptIsStopped();     /* extern */
-
-s32 actionScriptHasLastActionEnded();     /* extern */

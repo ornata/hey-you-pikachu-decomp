@@ -51,7 +51,7 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 3311,
+      "occurrences": 3308,
       "unique_spellings": 1232,
       "files": 80
     }
@@ -81,6 +81,7 @@
   "files": {
     "src/game/action_script.c": {
       "known_views": [
+        "action_script_query.h",
         "action_script_types.h",
         "actor_script.h",
         "actor_sound.h"
@@ -89,60 +90,57 @@
       "locations": {
         "raw_offset_candidates": {
           "object + 0x54": [
-            "133:22",
-            "180:27",
-            "200:18",
-            "211:31",
-            "220:26",
-            "241:31",
-            "256:27"
+            "132:22",
+            "179:27",
+            "199:18",
+            "210:31",
+            "219:26",
+            "240:31",
+            "255:27"
           ],
           "state + 0x158": [
-            "134:36"
+            "133:36"
           ],
           "return -1": [
-            "143:9",
-            "147:9",
-            "154:13",
-            "167:9"
+            "142:9",
+            "146:9",
+            "153:13",
+            "166:9"
           ],
           "actorState + 0x168": [
-            "181:14",
-            "242:18"
+            "180:14"
           ],
           "actorState + 0x170": [
-            "182:14",
-            "257:18",
-            "261:46"
+            "181:14"
           ],
           "actorState + 0x174": [
-            "183:14"
+            "182:14"
           ],
           "actorState + 0x16C": [
-            "184:14"
+            "183:14"
           ],
           "actorState + 0x158": [
-            "185:14"
+            "184:14"
           ],
           "actorState + 0x164": [
-            "186:14"
+            "185:14"
           ],
           "actorState + 0x15C": [
-            "187:14"
+            "186:14"
           ],
           "actorState + 0x160": [
-            "188:14",
-            "212:14"
+            "187:14",
+            "211:14"
           ],
           "v + 0x13C": [
-            "201:14"
+            "200:14"
           ],
           "state + 0x168": [
-            "225:14"
+            "224:14"
           ],
           "script + 0x158": [
-            "228:14",
-            "233:20"
+            "227:14",
+            "232:20"
           ]
         }
       }
@@ -2032,6 +2030,7 @@
     },
     "src/game/collection_presentation.c": {
       "known_views": [
+        "action_script_query.h",
         "actor_parts.h",
         "actor_rotation.h",
         "audio_cue.h",
@@ -2057,97 +2056,97 @@
       "locations": {
         "raw_offset_candidates": {
           "slot + 4": [
-            "215:50",
-            "252:22"
+            "216:50",
+            "253:22"
           ],
           "liveObject + 0x54": [
-            "217:22",
+            "218:22",
             "870:18"
           ],
           "p + 4": [
-            "218:71",
-            "219:82",
+            "219:71",
+            "220:82",
             "871:71"
           ],
           "gToolboxBonusSlot + 4": [
-            "258:18"
+            "259:18"
           ],
           "gToolboxPurchaseSlot + 4": [
-            "262:19"
+            "263:19"
           ],
           "ext + 0x18": [
-            "342:16"
+            "343:16"
           ],
           "ext + 0x1E8": [
-            "344:14"
+            "345:14"
           ],
           "gPresentationSavedActorState + 0x1E8": [
-            "344:45"
+            "345:45"
           ],
           "gPikachuActor + 0x54": [
-            "386:32",
-            "439:24"
+            "387:32",
+            "440:24"
           ],
           "state + 0x1EC": [
-            "388:50"
+            "389:50"
           ],
           "player + 0x48": [
-            "397:28"
+            "398:28"
           ],
           "player + 0x54": [
-            "397:65"
+            "398:65"
           ],
           "player + 0x18": [
-            "400:14"
+            "401:14"
           ],
           "gPikachuActor + 0x1C": [
-            "401:20"
-          ],
-          "gPikachuActor + 0x20": [
             "402:20"
           ],
-          "gPikachuActor + 0x44": [
-            "403:20",
-            "446:41"
+          "gPikachuActor + 0x20": [
+            "403:20"
           ],
-          "gPikachuActor + 0x48": [
+          "gPikachuActor + 0x44": [
             "404:20",
             "447:41"
           ],
-          "gPikachuActor + 0x4C": [
+          "gPikachuActor + 0x48": [
             "405:20",
             "448:41"
           ],
-          "tgt + 0": [
-            "446:21"
+          "gPikachuActor + 0x4C": [
+            "406:20",
+            "449:41"
           ],
-          "tgt + 4": [
+          "tgt + 0": [
             "447:21"
           ],
-          "tgt + 8": [
+          "tgt + 4": [
             "448:21"
           ],
+          "tgt + 8": [
+            "449:21"
+          ],
           "ext + 0xC": [
-            "450:64"
+            "451:64"
           ],
           "ext + 0x10": [
-            "451:69"
+            "452:69"
           ],
           "ext + 0x19C": [
-            "452:14"
+            "453:14"
           ],
           "ext + 0x1EC": [
-            "453:101"
+            "454:101"
           ],
           "firstJoint + 0x48": [
-            "457:18"
+            "458:18"
           ],
           "secondJoint + 0x48": [
-            "459:29"
+            "460:29"
           ],
           "gCurrentAreaConfiguration + 0x74": [
-            "518:23",
-            "535:18",
+            "519:23",
+            "536:18",
             "592:25",
             "605:25",
             "625:29"
@@ -6299,6 +6298,7 @@
     },
     "src/game/world_map.c": {
       "known_views": [
+        "action_script_query.h",
         "actor_parts.h",
         "actor_rotation.h",
         "actor_script.h",
@@ -6314,83 +6314,83 @@
       "locations": {
         "raw_offset_candidates": {
           "x - 27": [
-            "200:46"
+            "201:46"
           ],
           "x + 55": [
-            "202:46"
+            "203:46"
           ],
           "x - 16": [
-            "270:31",
-            "294:27"
-          ],
-          "y + 8": [
-            "271:31"
-          ],
-          "y - 8": [
+            "271:31",
             "295:27"
           ],
+          "y + 8": [
+            "272:31"
+          ],
+          "y - 8": [
+            "296:27"
+          ],
           "counter + 5U": [
-            "302:25"
+            "303:25"
           ],
           "gPikachuActor + 0x54": [
-            "385:28",
-            "435:28",
-            "611:46",
+            "386:28",
+            "436:28",
+            "612:46",
             "788:27"
           ],
           "state + 0x1EC": [
-            "387:74",
-            "449:101"
+            "388:74",
+            "450:101"
           ],
           "gPikachuActor + 0x48": [
-            "393:29",
-            "395:35",
-            "401:20",
-            "442:54"
-          ],
-          "firstJoint + 0x48": [
-            "393:62"
-          ],
-          "secondJoint + 0x48": [
-            "395:68"
-          ],
-          "gPikachuActor + 0x18": [
-            "397:20"
-          ],
-          "gPikachuActor + 0x1C": [
-            "398:20"
-          ],
-          "gPikachuActor + 0x20": [
-            "399:20"
-          ],
-          "gPikachuActor + 0x44": [
-            "400:20",
-            "441:54"
-          ],
-          "gPikachuActor + 0x4C": [
+            "394:29",
+            "396:35",
             "402:20",
             "443:54"
           ],
-          "camera + 0": [
-            "441:25"
+          "firstJoint + 0x48": [
+            "394:62"
           ],
-          "camera + 4": [
+          "secondJoint + 0x48": [
+            "396:68"
+          ],
+          "gPikachuActor + 0x18": [
+            "398:20"
+          ],
+          "gPikachuActor + 0x1C": [
+            "399:20"
+          ],
+          "gPikachuActor + 0x20": [
+            "400:20"
+          ],
+          "gPikachuActor + 0x44": [
+            "401:20",
+            "442:54"
+          ],
+          "gPikachuActor + 0x4C": [
+            "403:20",
+            "444:54"
+          ],
+          "camera + 0": [
             "442:25"
           ],
-          "camera + 8": [
+          "camera + 4": [
             "443:25"
           ],
+          "camera + 8": [
+            "444:25"
+          ],
           "state + 0xC": [
-            "445:64"
+            "446:64"
           ],
           "state + 0x10": [
-            "446:71"
+            "447:71"
           ],
           "state + 0x19C": [
-            "447:14"
+            "448:14"
           ],
           "PLAYER + 0x54": [
-            "492:27"
+            "493:27"
           ],
           "sp24 + 0x13C": [
             "795:22",
@@ -6563,6 +6563,7 @@
     },
     "src/ovl/actor_script_action_commands.c": {
       "known_views": [
+        "action_script_query.h",
         "actor_script.h",
         "actor_script_action.h",
         "object_types.h",
@@ -6575,17 +6576,18 @@
       "locations": {
         "raw_offset_candidates": {
           "capacity - 1": [
-            "82:72",
-            "90:17"
+            "83:72",
+            "91:17"
           ],
           "prefixLength - 1": [
-            "84:70"
+            "85:70"
           ]
         }
       }
     },
     "src/ovl/actor_script_actions.c": {
       "known_views": [
+        "action_script_query.h",
         "actor_color.h",
         "actor_create.h",
         "actor_meters.h",
@@ -6607,7 +6609,7 @@
       "locations": {
         "raw_offset_candidates": {
           "object + 0x54": [
-            "271:22"
+            "270:22"
           ]
         }
       }
@@ -7978,6 +7980,7 @@
     },
     "src/ovl/system_menu.c": {
       "known_views": [
+        "action_script_query.h",
         "audio_cue.h",
         "backdrop_draw.h",
         "heap_alloc.h",
@@ -7999,89 +8002,89 @@
       "locations": {
         "raw_offset_candidates": {
           "depth + 1": [
-            "408:47"
+            "409:47"
           ],
           "row + 1": [
-            "637:14"
+            "638:14"
           ],
           "i - 1": [
-            "643:18"
+            "644:18"
           ],
           "index - 1": [
-            "694:18"
+            "695:18"
           ],
           "count - 1": [
-            "827:51"
+            "828:51"
           ],
           "firstVisibleIndex + 4": [
-            "864:48"
+            "865:48"
           ],
           "selectedIndex - 4": [
-            "865:51"
+            "866:51"
           ],
           "model + 0x18": [
-            "904:99",
-            "934:99"
+            "905:99",
+            "935:99"
           ],
           "model + 0x10": [
-            "905:37",
-            "935:37"
-          ],
-          "gPlayerYaw + 180": [
-            "905:72",
-            "935:72",
-            "972:50"
-          ],
-          "model + 0xC": [
             "906:37",
             "936:37"
           ],
-          "secondary + 0x10": [
+          "gPlayerYaw + 180": [
+            "906:72",
+            "936:72",
+            "973:50"
+          ],
+          "model + 0xC": [
             "907:37",
             "937:37"
           ],
+          "secondary + 0x10": [
+            "908:37",
+            "938:37"
+          ],
           "object + 0x18": [
-            "970:76"
+            "971:76"
           ],
           "object + 0xC": [
-            "971:14",
-            "974:14"
-          ],
-          "object + 0x10": [
             "972:14",
             "975:14"
           ],
+          "object + 0x10": [
+            "973:14",
+            "976:14"
+          ],
           "object + 0x14": [
-            "973:14"
+            "974:14"
           ],
           "gCurrentAreaConfiguration + 0x64": [
-            "1002:47"
+            "1003:47"
           ],
           "y + 3": [
-            "1164:14"
+            "1165:14"
           ],
           "x + 80": [
-            "1165:13"
+            "1166:13"
           ],
           "selected - 2": [
-            "1178:40"
+            "1179:40"
           ],
           "top - 3": [
-            "1178:54"
+            "1179:54"
           ],
           "selected + 2": [
-            "1178:63"
+            "1179:63"
           ],
           "bottom + 3": [
-            "1178:77"
+            "1179:77"
           ],
           "gCurrentAreaConfiguration + 0xC": [
-            "1869:32",
             "1870:32",
             "1871:32",
-            "1884:32",
+            "1872:32",
             "1885:32",
-            "1886:32"
+            "1886:32",
+            "1887:32"
           ]
         }
       }

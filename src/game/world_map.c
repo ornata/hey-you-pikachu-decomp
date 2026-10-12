@@ -1,3 +1,4 @@
+#include "action_script_query.h"
 #include "camera_overlay.h"
 #include "actor_rotation.h"
 #include "object_flags.h"
@@ -758,7 +759,6 @@ void cameraBuildInterfaceTransform();
 void controllerConfigureStickButtons();
 void objectUpdateGroup();
 void runtimeRequestProgramChange();
-s32 actionScriptIsStopped();
 void wholeMapUpdateActorPlacement();
 void wholeMapPrepareActor();
 void wholeMapSetState();
@@ -788,7 +788,7 @@ void wholeMapUpdate(void) {
     sp24 = *(u8 **)((u8 *)gPikachuActor + 0x54);
     playerResetViewOrientation();
     cameraBuildInterfaceTransform(&gWorldMapToWorldTransform);
-    if (actionScriptIsStopped(gPikachuActor) != 0) {
+    if (actionScriptIsStopped((u8 *)gPikachuActor) != 0) {
         actionScriptStartWithMode(gPikachuActor, 0x57, 2);
     }
     if (gWorldMapDirectionHeldFrames >= 0x65) {

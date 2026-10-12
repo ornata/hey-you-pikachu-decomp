@@ -1,3 +1,4 @@
+#include "action_script_query.h"
 #include "actor_sound.h"
 /// \file
 /// Timed action sequencing beneath actor behavior programs.
@@ -15,7 +16,6 @@ void actionRequestLoopExit(u8 *);
 /// Action-script command stream addresses indexed by script identifier.
 /// \note Original identifier: \c D_80071D00 (0x80071D00).
 extern s32 gActionScriptPrograms[];
-s32 actionScriptHasLastActionEnded(u8 *);
 s32 actionGetStoredRequestId(u8 *);
 
 s32 actionRequestPlayback(u8 *, s32, s32, s32 *);
@@ -103,7 +103,6 @@ s32 actionScriptCommandPlaySound(u8 *object, ActorScriptState *state, ActionScri
     return 1;
 }
 
-s32 actionScriptIsStoppedAndLastActionEnded(s32);
 s32 audioCountPlayback(s32);
 /// Action-script opcode handlers returning whether execution may advance.
 /// \note Original identifier: \c D_8006EE50 (0x8006EE50).
@@ -133,7 +132,7 @@ s32 actionScriptUpdate(u8 *object) {
     state = *(u8 **)(object + 0x54);
     script = (ActionScriptState *)(state + 0x158);
     step = gRuntimeFrameSeconds;
-    if (actionScriptIsStoppedAndLastActionEnded((s32)object) == 0) {
+    if (actionScriptIsStoppedAndLastActionEnded(object) == 0) {
         script->elapsed += step;
     }
     duration = script->duration;
@@ -239,7 +238,7 @@ s32 *actionScriptStop(u8 *object) {
 /// \note Original decompilation identifier: \c func_800120F0 (0x800120F0).
 s32 actionScriptIsStopped(u8 *object) {
     u8 *actorState = *(u8 **)(object + 0x54);
-    if (*(s32 *)(actorState + 0x168) == 0) {
+    if (((ActorScriptState *)actorState)->actionScriptCommand == NULL) {
         return 1;
     }
     return 0;
@@ -254,11 +253,11 @@ s32 actionScriptHasLastActionEnded(u8 *object) {
     u32 currentRequestId;
 
     actorState = *(u8 **)(object + 0x54);
-    if (*(u32 *)(actorState + 0x170) == 0) {
+    if (((ActorScriptState *)actorState)->actionScriptLastRequestId == 0) {
         return 0;
     }
     currentRequestId = actionGetStoredRequestId(object);
-    if ((currentRequestId == 0) || (*(u32 *)(actorState + 0x170) < currentRequestId)) {
+    if ((currentRequestId == 0) || (((ActorScriptState *)actorState)->actionScriptLastRequestId < currentRequestId)) {
         return 1;
     }
     return 0;
@@ -268,11 +267,11 @@ s32 actionScriptHasLastActionEnded(u8 *object) {
 /// \param object Object whose script is inspected.
 /// \returns 1 when both conditions hold, or 0 otherwise.
 /// \note Original decompilation identifier: \c func_8001216C (0x8001216C).
-s32 actionScriptIsStoppedAndLastActionEnded(s32 object) {
-    if (actionScriptIsStopped((u8 *)object) == 0) {
+s32 actionScriptIsStoppedAndLastActionEnded(u8 *object) {
+    if (actionScriptIsStopped(object) == 0) {
         return 0;
     }
-    return actionScriptHasLastActionEnded((u8 *)object);
+    return actionScriptHasLastActionEnded(object);
 }
 
 /// Provide the inactive action-script initialization hook for runtime startup.

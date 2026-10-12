@@ -2138,3 +2138,15 @@ map. All scheduling calls and dispatch cases use the shared enum constants,
 while the existing signed argument and unsigned VM storage retain their ABI.
 Redundant declarations of the two private wait helpers are removed. Every
 source-unit change preserves all 483 objects and strict relocation addends.
+
+### Shared action-script completion queries
+
+`action_script_query.h` shares the command-stopped, last-action-ended and
+combined completion queries across their provider and all declaration consumers.
+The combined query now takes the actual actor pointer, and the acquisition
+handler no longer supplies an unused VM argument. The provider reads the checked
+command cursor and last-request fields. Ghidra 0x80012114 and 0x8001216C confirm
+the recorded-request comparison and combined query contract. All six source
+units preserve all 483 objects and strict relocation addends. Stop declarations
+remain a separate audit: actorScriptStopActionScript already documents its
+argument-register dependency, which prevents blindly adopting a stop prototype.

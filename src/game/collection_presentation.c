@@ -1,3 +1,4 @@
+#include "action_script_query.h"
 #include "camera_overlay.h"
 #include "camera_pose.h"
 #include "actor_rotation.h"
@@ -548,7 +549,6 @@ void presentationDrawCardScreen(Gfx **gdl) {
 void cameraBuildInterfaceTransform(void *);
 void controllerRequestRumbleReset(s32);
 void runtimeRequestGameModeChange(s32);
-s32 actionScriptIsStopped(s32);
 void hudSetAreaLabelVisible(s32);
 void presentationPrepareActiveActor(void *);
 void presentationSetFocusTarget(void *);
@@ -596,7 +596,7 @@ void presentationUpdateCardMode(void) {
         return;
     }
     cameraBuildInterfaceTransform(&gPresentationToWorldTransform);
-    if (actionScriptIsStopped(gPikachuActor) != 0) {
+    if (actionScriptIsStopped((u8 *)gPikachuActor) != 0) {
         actionScriptStart(gPikachuActor, 0x57);
     }
     switch (gCardPresentationStage) {
@@ -1116,7 +1116,7 @@ extern s32 gCollectionResultsBypassed;
 void presentationUpdateCollectionResultsMode(void) {
     playerResetViewOrientation();
     cameraBuildInterfaceTransform(gPresentationToWorldTransform);
-    if (actionScriptIsStopped(gPikachuActor) != 0) {
+    if (actionScriptIsStopped((u8 *)gPikachuActor) != 0) {
         actionScriptStart(gPikachuActor, 0x57);
     }
     switch (gCollectionPresentationStage) {

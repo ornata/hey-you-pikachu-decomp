@@ -1,3 +1,4 @@
+#include "action_script_query.h"
 #include "actor_script_action.h"
 /// \file
 /// Native actor-script dispatch and action scheduling commands.
@@ -533,7 +534,6 @@ s32 actorScriptSetTargetToFallbackObject(u8 *actor) {
     return 0;
 }
 
-s32 actionScriptIsStopped(u8 *); /* extern */
 /// Report whether action-script command execution has stopped.
 /// \param actor Actor whose script VM receives one when no action-script command remains active, or zero otherwise.
 /// \returns Zero, allowing script execution to continue.
@@ -546,7 +546,6 @@ s32 actorScriptPushActionScriptStopped(u8 *actor) {
     return 0;
 }
 
-s32 actionScriptHasLastActionEnded(u8 *); /* extern */
 /// Report whether the last action started by the action script has ended.
 /// \param actor Actor whose script VM receives one when a recorded script action has ended or been superseded, or zero otherwise.
 /// \returns Zero, allowing script execution to continue.

@@ -1,3 +1,4 @@
+#include "action_script_query.h"
 #include "actor_script_action.h"
 #include "actor_meters.h"
 #include "camera_overlay.h"
@@ -58,7 +59,6 @@ void actorBeginScriptActionHandler(u8 *actor, s32 handler) {
     ((ScriptVm *)((ActorScriptState *)actorState)->vmAddress)->actionHandler = handler;
 }
 
-s32 actionScriptIsStopped(u8 *); /* extern */
 /// Wait for the actor action to stop and provide a zero script result when it does.
 /// \param actor Actor whose action is awaited.
 /// \returns One when the wait completes, or two while the action continues.
@@ -151,7 +151,6 @@ s32 actorScriptThrowHeldItem(u8 *actor) {
 }
 
 s16 actorGetHeldItemKind(u8 *arg0);   /* extern */
-s32 actionScriptIsStoppedAndLastActionEnded(u8 *, u8 *); /* extern */
 
 /// Run the script-selected item acquisition action and report the held item kind.
 /// \param actor Actor whose script supplies the acquisition action and settings.
@@ -176,7 +175,7 @@ s32 actorScriptAcquireItem(u8 *actor) {
         actionScriptStart(actor, value);
         goto block_6;
     }
-    if (actionScriptIsStoppedAndLastActionEnded(actor, vmBytes) != 0) {
+    if (actionScriptIsStoppedAndLastActionEnded(actor) != 0) {
         scriptVmPushInteger(((ActorScriptState *)actorState)->vmAddress, actorGetHeldItemKind(actor));
         return 1;
     }
