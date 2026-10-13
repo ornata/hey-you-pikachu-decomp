@@ -25,6 +25,9 @@ typedef struct FontImage {
 
 typedef char FontGlyphSizeCheck[(sizeof(FontGlyph) == 8) ? 1 : -1];
 typedef char FontImageSizeCheck[(sizeof(FontImage) == 0x10) ? 1 : -1];
+typedef char FontImageWidthOffsetCheck[(((u32) & (((FontImage *)0)->width)) == 0) ? 1 : -1];
+typedef char FontImageHeightOffsetCheck[(((u32) & (((FontImage *)0)->height)) == 4) ? 1 : -1];
+typedef char FontImagePixelsOffsetCheck[(((u32) & (((FontImage *)0)->pixels)) == 8) ? 1 : -1];
 typedef char FontImageGlyphsOffsetCheck[(((u32) & (((FontImage *)0)->glyphs)) == 0xC) ? 1 : -1];
 
 #endif

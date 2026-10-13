@@ -810,7 +810,7 @@ void textImageLoadTexture(Gfx **cursor, TextImage *image) {
 }
 
 void textImageCreateSystemFont(TextImage **, u8 *, s32);
-s32 textImageCreateCustomFont(TextImage **, u8 *, s32 *);
+s32 textImageCreateCustomFont(TextImage **, u8 *, FontImage *);
 
 /// Create a text image using the system font or a supplied font.
 /// \param out Receives an owned image to release with textImageDestroy, or null for empty text.
@@ -823,7 +823,7 @@ void textImageCreateFromText(TextImage **out, u8 *text, FontImage *font) {
         textImageCreateSystemFont(out, text, (s32)font);
     }
     if (font != NULL) {
-        textImageCreateCustomFont(out, text, (s32 *)font);
+        textImageCreateCustomFont(out, text, font);
     }
 }
 
@@ -1023,9 +1023,9 @@ void textDrawCharacter(u8 character) {
 
 s32 fontImageMeasureText(u8 *, FontImage *, s32);
 s32 fontImageGetCharacterAdvance(s32, FontImage *, s32);
-s32 fontImageGetCharacterImageWidth();
+s32 fontImageGetCharacterImageWidth(s32, FontImage *, s32);
 s32 textDecodeNextCharacter(u8 **, s32 *);
-s32 fontImageReadGlyph();
+u8 *fontImageReadGlyph(s32, FontImage *);
 
 /// Create a text image using a supplied font and the current spacing mode.
 /// \param out Receives an owned image to release with textImageDestroy, or null for empty text.
@@ -1034,9 +1034,9 @@ s32 fontImageReadGlyph();
 /// \returns Address of the owned generated image, or zero for empty text.
 /// \pre Position controls and glyph extents must fit the final measured width; image allocation calculations must remain representable.
 /// \note Original decompilation identifier: \c func_8003E894 (0x8003E894).
-s32 textImageCreateCustomFont(TextImage **out, u8 *text, s32 *font) {
-    s32 glyphWidth = font[0];
-    s32 height = font[1];
+s32 textImageCreateCustomFont(TextImage **out, u8 *text, FontImage *font) {
+    s32 glyphWidth = font->width;
+    s32 height = font->height;
     s32 color = 15;
     s32 x;
     s32 rowBytes;
@@ -1061,7 +1061,7 @@ s32 textImageCreateCustomFont(TextImage **out, u8 *text, s32 *font) {
         *out = NULL;
         return bytes;
     }
-    width = fontImageMeasureText(text, (FontImage *)font, gTextDrawSpacingMode);
+    width = fontImageMeasureText(text, font, gTextDrawSpacingMode);
     width = width % 4 + width;
     bytes = width * height * 4 / 8;
     if (bytes > 0x1000) {
@@ -1081,10 +1081,10 @@ s32 textImageCreateCustomFont(TextImage **out, u8 *text, s32 *font) {
             } else {
                 left = fontImageGetCharacterLeft(code, (FontImage *)font, gTextDrawSpacingMode);
                 rowBytes = glyphWidth * 4 / 8;
-                inkWidth = fontImageGetCharacterImageWidth(code, (s32)font, gTextDrawSpacingMode) * 4 / 8;
-                advance = fontImageGetCharacterAdvance(code, (FontImage *)font, gTextDrawSpacingMode) * 4 / 8;
+                inkWidth = fontImageGetCharacterImageWidth(code, font, gTextDrawSpacingMode) * 4 / 8;
+                advance = fontImageGetCharacterAdvance(code, font, gTextDrawSpacingMode) * 4 / 8;
                 if (code != 0xA1A0) {
-                    glyph = (u8 *)fontImageReadGlyph(code, font);
+                    glyph = fontImageReadGlyph(code, font);
                     row = 0;
                     dest = pixels + x;
                     if (height > 0) {
@@ -1134,7 +1134,7 @@ s32 fontImageGetGlyphIndex();
 /// \param font Font containing the character's image data.
 /// \returns Borrowed, ready-to-read glyph data address, retained until fontCacheReleaseUses.
 /// \note Original decompilation identifier: \c func_8003EC40 (0x8003EC40).
-s32 fontImageReadGlyph(s32 code, FontImage *font) {
+u8 *fontImageReadGlyph(s32 code, FontImage *font) {
     s32 bytes;
     u8 *pixels;
     s32 glyph;
@@ -1146,7 +1146,7 @@ s32 fontImageReadGlyph(s32 code, FontImage *font) {
     glyph = fontImageGetGlyphIndex(code);
     offset = font->glyphs[glyph].offset;
     FONT_CACHE_LOAD(pixels + offset, bytes, &output);
-    return output;
+    return (u8 *)output;
 }
 
 /// Diagnostic format for text reaching or exceeding the supplied font column range.
@@ -1203,7 +1203,7 @@ s32 fontImageGetCharacterAdvance(s32 code, FontImage *font, s32 spacingMode) {
     } else {
         extra = 0;
     }
-    r = fontImageGetCharacterImageWidth(code, font, spacingMode, extra) + extra;
+    r = fontImageGetCharacterImageWidth(code, font, spacingMode) + extra;
     if (limit < r) {
         r = limit;
     }
@@ -1229,15 +1229,15 @@ s32 fontImageCharacterHasSideMargins(s32 code, FontImage *font) {
 
 /// Determine the image width used to draw a character in a supplied font.
 /// \param code Encoded character to measure.
-/// \param fontAddress Address of the font containing character dimensions and metrics.
+/// \param font Borrowed font containing character dimensions and metrics.
 /// \param spacingMode Spacing mode, with one selecting proportional spacing.
 /// \returns Character image width in pixels.
 /// \note Original decompilation identifier: \c func_8003EE74 (0x8003EE74).
-s32 fontImageGetCharacterImageWidth(s32 code, s32 fontAddress, s32 spacingMode) {
-    s32 sp1C;
+s32 fontImageGetCharacterImageWidth(s32 code, FontImage *font, s32 spacingMode) {
+    s32 leftBoundary;
 
-    sp1C = (fontImageGetCharacterLeft(code, (FontImage *)fontAddress, spacingMode) / 2) * 2;
-    return (((fontImageGetCharacterRight(code, (FontImage *)fontAddress, spacingMode) / 2) * 2) - sp1C) + 2;
+    leftBoundary = (fontImageGetCharacterLeft(code, font, spacingMode) / 2) * 2;
+    return (((fontImageGetCharacterRight(code, font, spacingMode) / 2) * 2) - leftBoundary) + 2;
 }
 
 s32 textDecodeTwoByteCharacter(u8 **, s32 *);

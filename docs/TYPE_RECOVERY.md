@@ -3491,8 +3491,15 @@ trial and the evidence still needed. Toolbox measurement now uses the recovered 
 
 Font measurement now carries `FontImage` through the public measurement wrapper,
 text-width evaluation, character advances and side-margin checks. Cell width
-reads use the established descriptor field. The custom-font bitmap builder
-retains its older word view at a narrow, explicitly cast call boundary; its
-other rasterization contracts remain to be audited. Ghidra measurement at
+reads use the established descriptor field. The custom-font bitmap builder now also uses the font descriptor; its
+cell dimensions and glyph reads share those types. Ghidra measurement at
 `0x8003ECD8`, character-boundary queries and the toolbox title consumer establish
 the recovered roles, and all objects remain identical.
+
+Custom-font image creation uses `FontImage` throughout, and glyph reads return
+borrowed byte pointers. The ROM-cache API's integer output remains a narrow
+explicit boundary. Image-width queries use a typed three-argument prototype;
+removing the unused fourth argument preserves strict object matching. Descriptor
+checks now cover width, height and pixel-base offsets as well as metrics. Ghidra
+glyph reading at `0x8003EC40`, bitmap creation and the cache lifetime contract
+confirm the recovered pointer roles.
