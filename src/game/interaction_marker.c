@@ -1,3 +1,4 @@
+#include "game_heap.h"
 #include "texture_setup.h"
 #include "pikachu_actor.h"
 #include "audio_sound_effect.h"
@@ -136,9 +137,6 @@ u8 *interactionMarkerCreate(void) {
 /// Most recently evaluated interaction marker presentation mode.
 /// \note Original identifier: \c D_800B6C5C (0x800B6C5C).
 extern s32 gInteractionMarkerMode;
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 
 /// Initialize an interaction marker's target and animation state.
 /// \param object Marker object receiving its initialized state.

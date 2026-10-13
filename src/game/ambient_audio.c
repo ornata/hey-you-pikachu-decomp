@@ -1,3 +1,4 @@
+#include "game_heap.h"
 #include "camera_storage.h"
 #include "random.h"
 #include "audio_sound_effect.h"
@@ -15,9 +16,6 @@
 #include "audio_cue.h"
 #include "heap_alloc.h"
 #include "object_types.h"
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 
 /* One source line on purpose: IDO schedules per line, and the ROM's
  * register order only comes out when the three copies share one. */

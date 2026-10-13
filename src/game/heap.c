@@ -1,3 +1,4 @@
+#include "game_heap.h"
 #include "heap_free.h"
 #include "heap_tail.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -51,9 +52,6 @@ s32 heapInitializeRegion(HpHdr *heap, s32 regionAddress, s32 regionSize) {
     return (s32)firstBlock;
 }
 
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 /// Depth-buffer storage; its start also bounds the game heap and is used as asset-loading scratch.
 /// \note Original identifier: \c D_8038F800 (0x8038F800).
 extern u8 gDepthBuffer[];

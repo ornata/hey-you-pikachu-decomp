@@ -1,11 +1,9 @@
+#include "game_heap.h"
 #include "heap_free.h"
 #include "common.h"
 #include "heap_alloc.h"
 #include "keyed_pool.h"
 
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 /// Initialize an empty pool for keyed values.
 /// \param pool Pool header to initialize.
 /// \param count Positive number of entries the pool can hold.

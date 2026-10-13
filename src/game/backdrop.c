@@ -1,3 +1,4 @@
+#include "game_heap.h"
 #include "rom_dma.h"
 #include "camera_storage.h"
 #include "math_angles.h"
@@ -236,9 +237,6 @@ void backdropDrawScrolling(Gfx **list) {
 }
 
 void *heapAllocLocal(HpHdr *, u32, u16, s32);
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 
 
 /// Allocate a backdrop image buffer for a view.

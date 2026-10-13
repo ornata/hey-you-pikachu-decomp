@@ -1,3 +1,4 @@
+#include "game_heap.h"
 #include "actor_parts.h"
 #include "object_response.h"
 #include "matrix_basic.h"
@@ -118,9 +119,6 @@ extern KeyedPool gObjectHandlePool;
 /// Search tree indexing registered runtime objects by kind and handle order.
 /// \note Original identifier: \c D_800AE3C0 (0x800AE3C0).
 extern SearchTree gObjectSearchTree;
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 void objectAssignHierarchyRoot(u8 *, u8 *);
 /// Number of hierarchy roots registered in the active traversal pool.
 /// \note Original identifier: \c D_800AE3D0 (0x800AE3D0).

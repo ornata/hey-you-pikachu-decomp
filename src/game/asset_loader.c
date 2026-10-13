@@ -1,3 +1,4 @@
+#include "game_heap.h"
 #include "heap_free.h"
 #include "heap_tail.h"
 #include "common.h"
@@ -50,9 +51,6 @@ void assetLoadAndPatchFromRom(s32 romAddress, u8 *destination, u8 *scratch, s32 
     assetDecompressAndPatch((u8 *)destination, (u8 *)scratch, encodedSize, outputSize, patchOffset, patchCount);
 }
 
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 
 /// Allocate and load a corrected asset described by a ROM asset record.
 /// \param info Asset descriptor containing its ROM address, decoded range,

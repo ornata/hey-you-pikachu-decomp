@@ -1,3 +1,4 @@
+#include "game_heap.h"
 #include "texture_image.h"
 #include "math_scalar.h"
 #include "pikachu_actor.h"
@@ -26,9 +27,6 @@
 #include "text_panel.h"
 #include "heap_alloc.h"
 #include "voice_commands.h"
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 void _bzero(s32, s32);
 /// Empty text used to reset a scrolling text panel.
 /// \note Original identifier: \c D_800A268C (0x800A268C).

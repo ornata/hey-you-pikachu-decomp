@@ -1,3 +1,4 @@
+#include "game_heap.h"
 #include "texture_image.h"
 #include "texture_rectangles.h"
 #include "random.h"
@@ -96,9 +97,6 @@ extern s32 gEyeCatchProjectionMatrix;
 /// Owned model-view matrix for eye-catch drawing.
 /// \note Original identifier: \c D_800F2618 (0x800F2618).
 extern s32 gEyeCatchModelViewMatrix;
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 
 #define EYE_GROUP ((EyeGroup36A *)gEyeCatchActiveGroup)
 

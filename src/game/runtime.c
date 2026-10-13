@@ -1,3 +1,4 @@
+#include "game_heap.h"
 #include "controller_state.h"
 #include "texture_cache.h"
 #include "pikachu_actor.h"
@@ -377,9 +378,6 @@ extern s32 gGameplayMicrophoneAvailable;
 /// Whether gameplay permits recognized voice commands to launch messenger effects.
 /// \note Original identifier: \c D_800722D4 (0x800722D4).
 extern s32 gGameplayVoiceCommandsAllowed;
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;

@@ -1,3 +1,4 @@
+#include "game_heap.h"
 #include "player_chase.h"
 #include "ambient_audio.h"
 #include "item_participation.h"
@@ -126,9 +127,6 @@ s32 ochreDeepTryCreateProgressEncounter(void) {
 }
 
 s32 ochreDeepTryCreateProgressEncounter(void);
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 extern u8 D_801475C8_scene_ochre_deep;
 extern u8 D_80147AE0_scene_ochre_deep;
 

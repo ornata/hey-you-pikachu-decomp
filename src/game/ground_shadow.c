@@ -1,3 +1,4 @@
+#include "game_heap.h"
 #include "ground_shadow.h"
 #include "actor_parts.h"
 #include "terrain_height.h"
@@ -6,9 +7,6 @@
 #include "common.h"
 #include "heap_alloc.h"
 #include "object_types.h"
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 
 /// Owned terrain-conforming geometry and two frame-specific vertex views.
 typedef struct GroundShadowGrid {

@@ -1,3 +1,4 @@
+#include "game_heap.h"
 #include "message_bar.h"
 #include "actor_script_action.h"
 #include "heap_free.h"
@@ -78,9 +79,6 @@ void scriptVmReset(u8 *vm) {
     }
 }
 
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 /// Create a script context with a specified value-stack capacity.
 /// \param config Configuration supplying borrowed program, string, and command tables that must outlive the context.
 /// \param capacity Positive maximum number of values in the script stack.

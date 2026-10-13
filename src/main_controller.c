@@ -1,3 +1,4 @@
+#include "game_heap.h"
 #include "serial_queue.h"
 #include "font_cache.h"
 #include "texture_cache.h"
@@ -166,9 +167,6 @@ extern s32 gCameraElapsedTintNeedsOrigin, gCameraElapsedTintEnabled;
 /// Initial elapsed time in seconds requested when enabling the camera tint.
 /// \note Original identifier: \c D_800AC4B8 (0x800AC4B8).
 extern f32 gCameraElapsedTintInitialSeconds;
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 void heapDebugNoOp();
 
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.

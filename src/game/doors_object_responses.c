@@ -1,3 +1,4 @@
+#include "game_heap.h"
 #include "interaction.h"
 #include "object_lifecycle.h"
 #include "heap_free.h"
@@ -54,9 +55,6 @@ ObjectResponseRegistry gObjectResponseRegistry;
 /// \note Original identifier: \c D_80078154 (0x80078154).
 extern ObjectKindResponseEntry gObjectKindResponseEntries[];
 void objectResponsesClearWithCallback(u8 *, ObjectResponseHandler);
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 void heapInitializeRegion(void *, s32, s32);
 
 /// Reset the registry of created door objects.

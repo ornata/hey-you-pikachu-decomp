@@ -1,3 +1,4 @@
+#include "game_heap.h"
 #include "vector3_types.h"
 #include "heap_free.h"
 #include "word_map_lookup.h"
@@ -156,9 +157,6 @@ void actorUpdateTrackedSoundSpatialization(f32 *position, s32 *voices) {
     }
 }
 
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 
 /// Release actor model resources and remove its collision registration.
 /// \param actor Actor with initialized model state; its state pointer becomes invalid after release.

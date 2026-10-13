@@ -1,3 +1,4 @@
+#include "game_heap.h"
 #include "heap_free.h"
 #include "texture_setup.h"
 #include "math_scalar.h"
@@ -55,9 +56,6 @@ typedef char EffectEmitterCallbackOffsetCheck[((u32)&((EffectEmitterState *)0)->
 /// Default opacity animation used when wisp state is initialized.
 /// \note Original identifier: \c D_8006B4C4 (0x8006B4C4).
 extern s32 gWispDefaultOpacityAnimation;
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;

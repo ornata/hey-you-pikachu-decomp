@@ -4179,3 +4179,12 @@ primary `held` field, and text-window consumption clears that same field.
 The contract documents record refresh and UI consumption so retained references
 are not mistaken for immutable samples. All six source units independently
 preserve strict objects, including existing scalar alias symbols.
+
+### Shared game-heap storage adoption
+
+All 34 remaining local game-heap declarations now use `game_heap.h`, giving
+allocation consumers and the heap implementation one canonical `HpHdr` storage
+contract. The shared declaration preserves the original identifier and address.
+Each unit was edited, rebuilt and strictly compared before the next unit was
+changed; all 34 adoptions preserve ROM bytes, allocated object layout, symbols
+and relocations.

@@ -1,3 +1,4 @@
+#include "game_heap.h"
 #include "actor_parts.h"
 #include "matrix_basic.h"
 #include "math_scalar.h"
@@ -98,9 +99,6 @@ extern u8 gMessengerDissipationAnimation[];
 /// Handle of the most recently launched messenger, or zero when no messenger is tracked.
 /// \note Original identifier: \c gzip_data_0000 (0x80099960).
 extern s32 gTrackedMessengerHandle;
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 
 void flipbookInitializeGeometry(u8 *object, u8 red, u8 green, u8 blue, u8 alpha);
 void flipbookBuildGeometryDisplayList(u8 *);

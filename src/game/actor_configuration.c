@@ -1,3 +1,4 @@
+#include "game_heap.h"
 #include "ground_shadow.h"
 #include "texture_setup.h"
 #include "pikachu_actor.h"
@@ -55,9 +56,6 @@ extern u8 *gCurrentAreaConfiguration;
 /// Integer animation program used before the contact effect is triggered.
 /// \note Original identifier: \c D_8006B390 (0x8006B390).
 extern s32 gContactEffectIdleAnimation;
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 /// Write cursor for the active graphics command list; also marks the camera-storage end.
 /// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
 extern Gfx *gRenderDisplayListCursor;

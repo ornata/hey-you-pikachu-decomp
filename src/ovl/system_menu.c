@@ -1,3 +1,4 @@
+#include "game_heap.h"
 #include "eeprom_io.h"
 #include "player_chase.h"
 #include "object_groups.h"
@@ -1067,9 +1068,6 @@ void systemMenuExit(void) {
     objectSetHierarchyFlags((u8 *)gSystemMenuInteractiveModel, 2);
 }
 
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 
 /// Append total free memory and the largest available allocation to the menu details.
 /// \returns Nothing.

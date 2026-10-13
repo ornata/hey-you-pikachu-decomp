@@ -1,3 +1,4 @@
+#include "game_heap.h"
 #include "pikachu_actor.h"
 #include "camera_storage.h"
 #include "object_groups.h"
@@ -1508,9 +1509,6 @@ void areaUpdateNodeVisibility(u8 *node) {
 }
 
 void _bzero(void *, s32); /* extern */
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 
 /// Allocate an empty, active area node for subsequent configuration.
 /// \returns The newly allocated node owned by the area hierarchy.

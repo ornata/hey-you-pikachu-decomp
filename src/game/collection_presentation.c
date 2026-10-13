@@ -1,3 +1,4 @@
+#include "game_heap.h"
 #include "player_chase.h"
 #include "texture_rectangles.h"
 #include "pikachu_actor.h"
@@ -203,9 +204,6 @@ extern u8 gPlayerFriendshipLevel;
 /// \note Original identifier: \c D_800EF798 (0x800EF798).
 extern s32 gPlayerFriendshipMilestone;
 
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 
 /// Separate view of the message-bar image slot prepared for the next transition.
 /// \note Original identifier: \c D_800F0B1C (0x800F0B1C).

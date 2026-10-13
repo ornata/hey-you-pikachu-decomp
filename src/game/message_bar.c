@@ -1,3 +1,4 @@
+#include "game_heap.h"
 #include "voice_recognition.h"
 #include "math_scalar.h"
 #include "pikachu_actor.h"
@@ -78,9 +79,6 @@ extern u8 gPlayerFriendshipLevel;
 extern s32 gPlayerFriendshipMilestone;
 
 void _bzero(void *, s32); /* extern */
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 
 /// Initialize an object whose rotation responds to voice activity.
 /// \param object Object receiving the initialized spinner state.

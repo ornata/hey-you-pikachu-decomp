@@ -1,3 +1,4 @@
+#include "game_heap.h"
 #include "math_angles.h"
 #include "random.h"
 #include "terrain_height.h"
@@ -15,9 +16,6 @@
 // clang-format on
 
 void _bzero(void *, s32); /* extern */
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 
 /// Owned orbit parameters shared by initialization and the follower update.
 typedef struct OrbitState {

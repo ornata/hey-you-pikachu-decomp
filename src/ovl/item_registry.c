@@ -1,3 +1,4 @@
+#include "game_heap.h"
 #include "matrix_basic.h"
 #include "texture_setup.h"
 #include "math_scalar.h"
@@ -1954,9 +1955,6 @@ void itemShrink(u8 *item, f32 rate) {
     }
 }
 
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 
 /// Release an item collision registration and owned state resources during destruction.
 /// \param item Item owning initialized state and rendering resources; those resources become invalid after

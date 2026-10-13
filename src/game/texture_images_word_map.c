@@ -1,3 +1,4 @@
+#include "game_heap.h"
 #include "heap_free.h"
 #include "texture_image.h"
 #include "common.h"
@@ -1278,9 +1279,6 @@ void textureDrawScaledRegion(Gfx **out, TextureImage *texture, u32 x, u32 y, u32
     *out = dl;
 }
 
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 void *heapAllocLocal(HpHdr *, s32, s32, void *);
 void _bzero(void *, s32);
 

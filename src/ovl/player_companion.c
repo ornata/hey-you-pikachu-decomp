@@ -1,3 +1,4 @@
+#include "game_heap.h"
 #include "controller_state.h"
 #include "player_chase.h"
 #include "math_scalar.h"
@@ -2509,9 +2510,6 @@ s32 playerCanEnterStationaryLook(void) {
 }
 
 void _bzero(void *, s32); /* extern */
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 
 /// Initialize a descriptive interaction proxy with default interaction values and placeholder help text.
 /// \param object New interaction-proxy object without owned state, receiving its initial state.

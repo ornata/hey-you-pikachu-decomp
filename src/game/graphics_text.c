@@ -1,3 +1,4 @@
+#include "game_heap.h"
 #include "font_cache.h"
 #include "graphics_tasks.h"
 #include "heap_free.h"
@@ -27,9 +28,6 @@ const u16 gDefaultTextPaletteRgba5551[16] = {
     0x0843, 0x18C7, 0x39CF, 0x5AD7, 0x7BDF, 0x9CE7, 0xBDEF, 0xFFFF,
 };
 
-/// Global game heap header used by runtime resource and object allocations.
-/// \note Original identifier: \c D_800F2960 (0x800F2960).
-extern HpHdr gGameHeap;
 /// Owned pool of reusable scheduler graphics-task records.
 /// \note Original identifier: \c D_800F2980 (0x800F2980).
 extern SchedulerTask *gGraphicsTaskPool;
