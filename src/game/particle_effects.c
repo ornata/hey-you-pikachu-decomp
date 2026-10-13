@@ -1,3 +1,4 @@
+#include "converging_particle.h"
 #include "falling_particle.h"
 #include "effect_emitter.h"
 #include "opacity_animation_programs.h"

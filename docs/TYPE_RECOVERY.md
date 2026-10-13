@@ -3640,6 +3640,7 @@ opacity value, preserving the original big-endian byte selection. Its motion
 loop uses shared scale, position, world-position and sibling fields.
 
 Converging-effect creation now uses the shared object transform, state-pointer
-and sibling fields. Its action-script caller still carries lifetime as raw script
-word bits; consolidating that declaration requires a typed script operand view,
-not a numeric integer-to-float conversion.
+and sibling fields. Its action-script caller uses a checked operand view: signed style, floating
+lifetime, and signed element count. `converging_particle.h` supplies the shared
+creation contract. Typed lifetime access preserves the original script word bits
+and matches the caller without an integer-to-float conversion.

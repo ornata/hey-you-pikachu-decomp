@@ -1,3 +1,4 @@
+#include "converging_particle.h"
 #include "falling_particle.h"
 #include "effect_emitter.h"
 #include "linked_effect.h"
@@ -664,12 +665,15 @@ void actionCommandCreateScatteredParticleEffect(u8 *actor, s32 state, u8 *comman
     effectEmitterCreateForStyle(EFFECT_EMIT_SCATTERED_PARTICLES, (f32 *)(object + 0x44), *(f32 *)(command + 0xC), 0, *(s32 *)(object + 0x38), -6.0f);
 }
 
-typedef struct {
-    s32 a;
-    s32 b;
-    s32 c;
-} Sub3;
-u8 *convergingParticleEffectCreate(s32, s32, s32, s32); /* extern */
+/// Script operands for a converging effect around an actor or its linked part.
+typedef struct LinkedPartEffectArguments {
+    s32 style;    ///< Converging-effect style-table index.
+    f32 lifetime; ///< Positive duration in seconds.
+    s32 count;    ///< Positive number of visual elements.
+} LinkedPartEffectArguments;
+
+typedef char LinkedPartEffectArgumentsSizeCheck[(sizeof(LinkedPartEffectArguments) == 12) ? 1 : -1];
+typedef char LinkedPartEffectLifetimeOffsetCheck[(((u32) & ((LinkedPartEffectArguments *)0)->lifetime) == 4) ? 1 : -1];
 
 /// Creates a linked effect around an actor part, using the actor itself when that part is unavailable.
 /// \param actor Actor supplying the effect target.
@@ -680,19 +684,19 @@ u8 *convergingParticleEffectCreate(s32, s32, s32, s32); /* extern */
 /// \note Original decompilation identifier: \c func_80024520 (0x80024520).
 void actionCommandCreateLinkedPartEffect(u8 *actor, u8 *state, u8 *command, f32 *elapsed) {
     u8 *linkedPart;
-    Sub3 *commandArguments;
-    Sub3 *effectArguments;
+    LinkedPartEffectArguments *commandArguments;
+    LinkedPartEffectArguments *effectArguments;
     u8 *effectOwner;
 
     linkedPart = actorFindPart(actor, 0x79);
-    commandArguments = (Sub3 *)(command + 8);
+    commandArguments = (LinkedPartEffectArguments *)(command + 8);
     effectOwner = linkedPart;
     if (linkedPart == 0) {
         effectOwner = actor;
     }
     effectArguments = commandArguments;
-    convergingParticleEffectCreate(*(s32 *)(effectOwner + 0x38), effectArguments->b, effectArguments->c,
-                                   effectArguments->a);
+    convergingParticleEffectCreate(*(s32 *)(effectOwner + 0x38), effectArguments->lifetime, effectArguments->count,
+                                   effectArguments->style);
 }
 
 s32 itemTryTransformToReplacement(s32); /* extern */
