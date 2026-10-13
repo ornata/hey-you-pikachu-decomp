@@ -1,3 +1,4 @@
+#include "object_transform.h"
 #include "scroll_board.h"
 #include "script_vm_globals.h"
 #include "actor_behavior.h"
@@ -793,54 +794,53 @@ s32 actorScriptPlayerTryHoldItem(u8 *actor) {
     return 0;
 }
 
-void objectSetUniformTransform(u8 *, u8 *, u8 *, f32);
 void scrollBoardSelectPresetText(s32, s32, s32);
 /// Create a scrolling text board with preset text, appearance, and transform settings.
 /// \param actor Actor whose script VM supplies, in order, a text preset index of zero or one, text style (zero through two, or another value for the default), positive width in twelve-pixel columns, positive height in sixteen-pixel lines, position X/Y/Z, rotation X/Y/Z in degrees, red/green/blue/alpha components from zero through 255, top-left and bottom-right outline palette indices, uniform scale relative to the scene scale, and scroll speed in pixels per second. Outline indices must be zero through 15, or minus one to disable the corresponding outline; the VM receives the new board hierarchy handle, to release through hierarchy destruction.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_801209E8 (0x801209E8).
 s32 actorScriptCreateScrollBoard(u8 *actor) {
-    s32 handle;
+    s32 vmAddress;
     u8 *created;
-    s32 argA;
-    s32 argB;
-    s32 kind;
-    s32 mode;
-    ScriptVector position;
-    ScriptVector velocity;
-    s32 colorA;
-    s32 colorB;
-    s32 colorC;
-    s32 colorD;
-    s32 flagA;
-    s32 flagB;
+    s32 preset;
+    s32 style;
+    s32 columns;
+    s32 lines;
+    f32 position[3];
+    f32 rotation[3];
+    s32 red;
+    s32 green;
+    s32 blue;
+    s32 alpha;
+    s32 leadingOutline;
+    s32 trailingOutline;
     f32 scale;
-    f32 duration;
-    handle = *(s32 *)(*(u8 **)(actor + 0x54) + 0x1B8);
-    duration = scriptVmPopFloat(handle);
-    scale = scriptVmPopFloat(handle);
-    flagB = scriptVmPopInteger(handle);
-    flagA = scriptVmPopInteger(handle);
-    colorD = scriptVmPopInteger(handle);
-    colorC = scriptVmPopInteger(handle);
-    colorB = scriptVmPopInteger(handle);
-    colorA = scriptVmPopInteger(handle);
-    velocity.z = scriptVmPopFloat(handle);
-    velocity.y = scriptVmPopFloat(handle);
-    velocity.x = scriptVmPopFloat(handle);
-    position.z = scriptVmPopFloat(handle);
-    position.y = scriptVmPopFloat(handle);
-    position.x = scriptVmPopFloat(handle);
-    mode = scriptVmPopInteger(handle);
-    kind = scriptVmPopInteger(handle);
-    argB = scriptVmPopInteger(handle);
-    argA = scriptVmPopInteger(handle);
-    created = scrollBoardCreateHierarchy(kind, mode, colorA, colorB, colorC, colorD, flagA, flagB);
-    scrollBoardSelectPresetText(*(s32 *)(created + 0x38), argA, argB);
-    scrollBoardSetHierarchySpeed(created, duration);
-    objectSetUniformTransform(created, (u8 *)&position, (u8 *)&velocity,
-                              *(f32 *)(gCurrentAreaConfiguration + 0xC) * scale);
-    scriptVmPushInteger(handle, *(s32 *)(created + 0x38));
+    f32 scrollSpeed;
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scrollSpeed = scriptVmPopFloat(vmAddress);
+    scale = scriptVmPopFloat(vmAddress);
+    trailingOutline = scriptVmPopInteger(vmAddress);
+    leadingOutline = scriptVmPopInteger(vmAddress);
+    alpha = scriptVmPopInteger(vmAddress);
+    blue = scriptVmPopInteger(vmAddress);
+    green = scriptVmPopInteger(vmAddress);
+    red = scriptVmPopInteger(vmAddress);
+    rotation[2] = scriptVmPopFloat(vmAddress);
+    rotation[1] = scriptVmPopFloat(vmAddress);
+    rotation[0] = scriptVmPopFloat(vmAddress);
+    position[2] = scriptVmPopFloat(vmAddress);
+    position[1] = scriptVmPopFloat(vmAddress);
+    position[0] = scriptVmPopFloat(vmAddress);
+    lines = scriptVmPopInteger(vmAddress);
+    columns = scriptVmPopInteger(vmAddress);
+    style = scriptVmPopInteger(vmAddress);
+    preset = scriptVmPopInteger(vmAddress);
+    created = scrollBoardCreateHierarchy(columns, lines, red, green, blue, alpha, leadingOutline, trailingOutline);
+    scrollBoardSelectPresetText(((RuntimeObjectPrefix *)created)->handle, preset, style);
+    scrollBoardSetHierarchySpeed(created, scrollSpeed);
+    objectSetUniformTransform(created, position, rotation,
+                              ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale * scale);
+    scriptVmPushInteger(vmAddress, ((RuntimeObjectPrefix *)created)->handle);
     return 0;
 }
 
@@ -889,25 +889,25 @@ s32 actorScriptSetScrollBoardSpeed(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_80120C34 (0x80120C34).
 s32 actorScriptSetObjectTransform(u8 *actor) {
-    s32 id;
+    s32 targetHandle;
     u8 *target;
-    s32 handle;
-    ScriptVector position;
-    ScriptVector velocity;
+    s32 vmAddress;
+    f32 position[3];
+    f32 rotation[3];
     f32 scale;
-    handle = *(s32 *)(*(u8 **)(actor + 0x54) + 0x1B8);
-    scale = scriptVmPopFloat(handle);
-    velocity.z = scriptVmPopFloat(handle);
-    velocity.y = scriptVmPopFloat(handle);
-    velocity.x = scriptVmPopFloat(handle);
-    position.z = scriptVmPopFloat(handle);
-    position.y = scriptVmPopFloat(handle);
-    position.x = scriptVmPopFloat(handle);
-    id = scriptVmPopInteger(handle);
-    target = (u8 *)objectFindLiveByHandle(id);
-    objectSetUniformTransform(target, (u8 *)&position, (u8 *)&velocity,
-                              *(f32 *)(gCurrentAreaConfiguration + 0xC) * scale);
-    scriptVmPushInteger(handle, 0);
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scale = scriptVmPopFloat(vmAddress);
+    rotation[2] = scriptVmPopFloat(vmAddress);
+    rotation[1] = scriptVmPopFloat(vmAddress);
+    rotation[0] = scriptVmPopFloat(vmAddress);
+    position[2] = scriptVmPopFloat(vmAddress);
+    position[1] = scriptVmPopFloat(vmAddress);
+    position[0] = scriptVmPopFloat(vmAddress);
+    targetHandle = scriptVmPopInteger(vmAddress);
+    target = (u8 *)objectFindLiveByHandle(targetHandle);
+    objectSetUniformTransform(target, position, rotation,
+                              ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale * scale);
+    scriptVmPushInteger(vmAddress, 0);
     return 0;
 }
 

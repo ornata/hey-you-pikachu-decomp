@@ -1,3 +1,4 @@
+#include "object_transform.h"
 #include "scroll_board.h"
 #include "messenger.h"
 #include "camera_types.h"

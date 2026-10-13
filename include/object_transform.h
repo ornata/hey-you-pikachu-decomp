@@ -1,5 +1,5 @@
 /// \file
-/// Declares object world-coordinate queries and hierarchy world-position refresh.
+/// Declares object transforms, world-coordinate queries and hierarchy refresh.
 #ifndef OBJECT_TRANSFORM_H
 #define OBJECT_TRANSFORM_H
 #include <ultra64.h>
@@ -25,5 +25,15 @@ f32 objectGetWorldCoordinate(u8 *object, s32 axis);
 /// \returns Zero when the handle is unavailable; otherwise the coordinate, or -65536 when the axis is greater than two.
 /// \note Original decompilation identifier: \c func_80117FD4 (0x80117FD4).
 f32 objectGetWorldCoordinateByHandle(s32 handle, s32 axis);
+
+/// Set an object's position, orientation and uniform scale.
+/// \param object Initialized object receiving local and world position and local transform.
+/// \param position Three readable coordinates in X, Y, Z order, copied during the call.
+/// \param rotation Three writable angles in degrees, normalized in place into
+/// zero inclusive through 360 exclusive; magnitudes must permit normalization.
+/// \param scale Uniform scale along all three axes.
+/// \returns Nothing.
+/// \note Original identifier: \c func_80025DF4 (0x80025DF4).
+void objectSetUniformTransform(u8 *object, f32 *position, f32 *rotation, f32 scale);
 
 #endif

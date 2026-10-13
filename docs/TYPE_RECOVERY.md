@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,492 / 77 |
+| Raw offset candidates | 4,040 / 86 | 2,486 / 77 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3545,3 +3545,11 @@ and board state use the same string-pointer arrays. The two preset arrays have
 a checked eight-byte descriptor instead of generic integer words. Ghidra text
 assignment at `0x80025C5C`, null-terminated entry traversal and preset selection
 establish pointer roles; hierarchy wrappers use the existing child-object link.
+
+The uniform-transform helper is declared in `object_transform.h`, documenting
+readable position, writable normalized rotation and uniform scale. Script board
+creation and transform commands use real three-float arrays, with rotation
+named according to its role. Their VM, scene scale and created-object handle
+accesses reuse established layouts. Ghidra at `0x80025DF4` confirms in-place angle
+normalization and local/world position copies; the vector representations
+preserve every allocated object byte and relocation.
