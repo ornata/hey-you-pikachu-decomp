@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 1,931 / 74 |
+| Raw offset candidates | 4,040 / 86 | 1,924 / 74 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3730,3 +3730,9 @@ The driver retains a checked borrowed `EngineSequence *` list at offset 0x18.
 Its synthesizer callback traverses that list, and event advancement and volume
 fades consume the shared sequence layout directly. Event delay accesses use
 the checked double field; no allocation or playback ownership changes.
+
+MIDI dispatch and system-event handling consume `EngineSequence` directly,
+including its event buffer, volume and fade fields. Program selection uses the
+borrowed `ALBank` and channel instrument pointer; pitch bend uses the shared
+channel field. Data entry retains its byte view because a member rewrite changes
+ROM instructions; the recovery notes record that matching constraint.

@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 1931,
-      "unique_spellings": 815,
+      "occurrences": 1924,
+      "unique_spellings": 812,
       "files": 74
     }
   },
@@ -2909,7 +2909,9 @@
         "sequence_playback.h",
         "sequence_registration.h"
       ],
-      "matching_exceptions": {},
+      "matching_exceptions": {
+        "sequenceEngineApplyDataEntry": "EngineChannel rpnLow/rpnHigh/pitchBendRange member rewrite changes function instruction bytes and fails ROM match; retain the byte view until load scheduling is isolated. The shared channel layout records the known fields."
+      },
       "locations": {
         "raw_offset_candidates": {
           "driver + 0x20": [
@@ -2966,18 +2968,14 @@
           ],
           "seq + 0x1D4": [
             "246:14",
-            "374:24",
-            "671:22"
+            "374:24"
           ],
           "seq + 0x1E0": [
-            "249:14",
-            "679:26"
+            "249:14"
           ],
           "seq + 0x1E8": [
             "250:14",
-            "373:24",
-            "679:59",
-            "682:22"
+            "373:24"
           ],
           "channel + 0x24": [
             "253:18"
@@ -3042,15 +3040,6 @@
           ],
           "sequence + 0x21": [
             "502:23"
-          ],
-          "sequence + 0xC": [
-            "522:21"
-          ],
-          "seq + 0x1D8": [
-            "678:26"
-          ],
-          "seq + 0x1F4": [
-            "704:26"
           ],
           "portamentoTime + 1": [
             "837:91",

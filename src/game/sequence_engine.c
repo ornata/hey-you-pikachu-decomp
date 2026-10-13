@@ -13,7 +13,7 @@ void n_alSynSetVol(struct N_ALVoice_s *, s16, ALMicroTime);
 
 void sequenceEngineReleaseVoice(s32, u8 *, u8 *);
 void sequenceEngineReadNextEvent(EngineSequence *);
-void sequenceEngineDispatchMidiEvent(s32, u8 *); /* extern */
+void sequenceEngineDispatchMidiEvent(VoicePlayer *, EngineSequence *);
 s32 sequenceEngineRecycleVoice(u8 *, u8 *, u8 *);
 void n_alSynFreeVoice(struct N_ALVoice_s *);
 void n_alSynStopVoice(struct N_ALVoice_s *);
@@ -516,12 +516,12 @@ void sequenceEngineNoteOff(s32 driver, u8 *sequence, s32 channel, s32 key, s32 v
 /// \param program Nonnegative instrument program index; values beyond the bank are ignored.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80006890 (0x80006890).
-void sequenceEngineSetProgram(u8 *sequence, s32 channel, s32 program) {
-    s16 *tbl;
+void sequenceEngineSetProgram(EngineSequence *sequence, s32 channel, s32 program) {
+    ALBank *bank;
 
-    tbl = *(s16 **)(sequence + 0xC);
-    if (program < *tbl) {
-        *(s32 *)(sequence + channel * 0x1C + 0x14) = *(s32 *)((u8 *)tbl + program * 4 + 0xC);
+    bank = sequence->bank;
+    if (program < bank->instCount) {
+        sequence->channels[channel].instrument = bank->instArray[program];
     }
 }
 
@@ -532,8 +532,8 @@ void sequenceEngineSetProgram(u8 *sequence, s32 channel, s32 program) {
 /// \param highBits High seven bits of the MIDI pitch-bend value.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800068CC (0x800068CC).
-void sequenceEngineSetPitchBend(s32 sequence, s32 channel, s32 lowBits, s32 highBits) {
-    ((EngineSequence *)sequence)->channels[channel].pitchBend = (s16)((highBits << 7) | lowBits);
+void sequenceEngineSetPitchBend(EngineSequence *sequence, s32 channel, s32 lowBits, s32 highBits) {
+    sequence->channels[channel].pitchBend = (s16)((highBits << 7) | lowBits);
 }
 
 /// Apply MIDI data entry to the selected supported channel parameter.
@@ -660,7 +660,7 @@ void sequenceEngineControlChange(u8 *driver, u8 *seq, s32 channel, s32 controlle
 /// \param length Event length supplied by the caller; unused.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80006CC0 (0x80006CC0).
-void sequenceEngineHandleSystemEvent(u8 *driver, u8 *seq, u8 *event, s32 length) {
+void sequenceEngineHandleSystemEvent(VoicePlayer *driver, EngineSequence *seq, u8 *event, s32 length) {
     u8 type;
     f64 time;
     f64 level;
@@ -668,22 +668,22 @@ void sequenceEngineHandleSystemEvent(u8 *driver, u8 *seq, u8 *event, s32 length)
     switch (type) {
     case 0xF0:
         if (event[1] == 0x7F && event[3] == 4 && event[4] == 1) {
-            *(s16 *)(seq + 0x1D4) = (event[6] << 7) | event[5];
+            seq->volume = (event[6] << 7) | event[5];
             return;
         }
         if (event[1] == 0x7F && (type = event[3]) == 4 && event[4] == 3) {
             time = (u32)event[5] * 0.0625;
             level = (u32)event[6] / 127.0;
             if (time > 0.0) {
-                *(f64 *)(seq + 0x1D8) = time;
-                *(f64 *)(seq + 0x1E0) = (level - *(f64 *)(seq + 0x1E8)) / time;
+                seq->fadeRemaining = time;
+                seq->fadeRate = (level - seq->fadeLevel) / time;
                 return;
             }
-            *(f64 *)(seq + 0x1E8) = level;
+            seq->fadeLevel = level;
         }
         return;
     case 0xFF:
-        sequenceEngineResetControllers(driver, seq);
+        sequenceEngineResetControllers((u8 *)driver, (u8 *)seq);
         break;
     }
 }
@@ -694,36 +694,36 @@ void sequenceEngineNoteOn(u8 *, u8 *, s32, s32, s32);
 /// \param seq Sequence whose current event is a complete supported MIDI message with seven-bit data bytes, or an empty event.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80006E08 (0x80006E08).
-void sequenceEngineDispatchMidiEvent(s32 driver, u8 *seq) {
+void sequenceEngineDispatchMidiEvent(VoicePlayer *driver, EngineSequence *seq) {
     u8 *event;
     s32 status;
     u8 length;
     u8 velocity;
-    length = seq[0x1F0];
+    length = (u8)seq->eventLength;
     if (length) {
-        event = *(u8 **)(seq + 0x1F4);
+        event = seq->eventBuffer;
         status = event[0];
         switch (status & 0xF0) {
         case 0x90:
             velocity = event[2];
             if (velocity != 0) {
-                sequenceEngineNoteOn((u8 *)driver, seq, status & 0xF, event[1], velocity);
+                sequenceEngineNoteOn((u8 *)driver, (u8 *)seq, status & 0xF, event[1], velocity);
                 return;
             }
         case 0x80:
-            sequenceEngineNoteOff(driver, seq, status & 0xF, event[1], event[2]);
+            sequenceEngineNoteOff((s32)driver, (u8 *)seq, status & 0xF, event[1], event[2]);
             return;
         case 0xB0:
-            sequenceEngineControlChange((u8 *)driver, seq, status & 0xF, event[1], event[2]);
+            sequenceEngineControlChange((u8 *)driver, (u8 *)seq, status & 0xF, event[1], event[2]);
             return;
         case 0xC0:
             sequenceEngineSetProgram(seq, status & 0xF, event[1]);
             return;
         case 0xE0:
-            sequenceEngineSetPitchBend((s32)seq, status & 0xF, event[1], event[2]);
+            sequenceEngineSetPitchBend(seq, status & 0xF, event[1], event[2]);
             return;
         case 0xF0:
-            sequenceEngineHandleSystemEvent((u8 *)driver, seq, event, length);
+            sequenceEngineHandleSystemEvent(driver, seq, event, length);
             break;
         }
     }
@@ -777,7 +777,7 @@ void sequenceEngineAdvanceEvents(s32 driver, EngineSequence *sequence, f64 elaps
         if (var_f0 >= 0.0) {
             var_f20 -= var_f0;
         }
-        sequenceEngineDispatchMidiEvent(driver, (u8 *)sequence);
+        sequenceEngineDispatchMidiEvent((VoicePlayer *)driver, sequence);
         sequenceEngineReadNextEvent(sequence);
         var_f0 = sequence->eventDelay;
         if (!(var_f0 < 0.0) && (var_f0 <= var_f20)) {
