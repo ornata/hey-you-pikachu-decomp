@@ -1248,7 +1248,6 @@ s32 playerUpdateAreaEvents(u8 *player) {
     return 0;
 }
 
-void playerRecenterWalkingView(u8 *);
 /// Update manual view control or companion tracking and follow movement according to the selected
 /// companion-control mode.
 /// \param player Player record providing companion-control selection and view state.
@@ -1933,7 +1932,6 @@ void playerSaveState(void) {
     gSavedPlayerState = gPlayerState;
 }
 
-void playerUpdateViewCamera(); /* extern */
 /// Restore the saved primary player snapshot and refresh the view camera when player camera updates are
 /// enabled.
 /// \returns Nothing.
@@ -1942,7 +1940,7 @@ void playerUpdateViewCamera(); /* extern */
 /// \note Original decompilation identifier: \c func_80111B08 (0x80111B08).
 void playerRestoreState(void) {
     gPlayerState = gSavedPlayerState;
-    playerUpdateViewCamera(&gPlayerState);
+    playerUpdateViewCamera((u8 *)&gPlayerState);
 }
 
 
@@ -1950,11 +1948,8 @@ void playerRestoreState(void) {
 /// \param player Player record providing world position, eye height, and view orientation.
 /// \returns Nothing.
 ///
-/// \note Portability: the K&R definition permits the existing unprototyped call with an extra argument, which
-/// the original MIPS ABI ignores.
 /// \note Original decompilation identifier: \c func_80111B68 (0x80111B68).
-void playerUpdateViewCamera(player) u8 *player;
-{
+void playerUpdateViewCamera(u8 *player) {
     if (!(((PlayerControlPrefix *)player)->permissions & 0x4000)) {
         cameraSetPositionAndAngles(
             0, ((PlayerControlPrefix *)player)->position[0],
@@ -2134,27 +2129,27 @@ void playerInitializeForArea(void) {
 void playerRecenterWalkingView(u8 *state) {
     f32 scale = 2.0f;
 
-    if (*(f32 *)(state + 0x18) > 0.0f) {
-        *(f32 *)(state + 0x18) = *(f32 *)(state + 0x18) - (60.0f * gRuntimeFrameSeconds * scale);
-        if (*(f32 *)(state + 0x18) < 0.0f) {
-            *(f32 *)(state + 0x18) = 0.0f;
+    if (((PlayerControlPrefix *)state)->viewShake > 0.0f) {
+        ((PlayerControlPrefix *)state)->viewShake = ((PlayerControlPrefix *)state)->viewShake - (60.0f * gRuntimeFrameSeconds * scale);
+        if (((PlayerControlPrefix *)state)->viewShake < 0.0f) {
+            ((PlayerControlPrefix *)state)->viewShake = 0.0f;
         }
-    } else if (*(f32 *)(state + 0x18) < 0.0f) {
-        *(f32 *)(state + 0x18) = *(f32 *)(state + 0x18) + (60.0f * gRuntimeFrameSeconds * scale);
-        if (*(f32 *)(state + 0x18) > 0.0f) {
-            *(f32 *)(state + 0x18) = 0.0f;
+    } else if (((PlayerControlPrefix *)state)->viewShake < 0.0f) {
+        ((PlayerControlPrefix *)state)->viewShake = ((PlayerControlPrefix *)state)->viewShake + (60.0f * gRuntimeFrameSeconds * scale);
+        if (((PlayerControlPrefix *)state)->viewShake > 0.0f) {
+            ((PlayerControlPrefix *)state)->viewShake = 0.0f;
         }
     }
 
-    if (*(f32 *)(state + 0x14) > 5.0f) {
-        *(f32 *)(state + 0x14) = *(f32 *)(state + 0x14) - (60.0f * gRuntimeFrameSeconds * scale);
-        if (*(f32 *)(state + 0x14) < 5.0f) {
-            *(f32 *)(state + 0x14) = 5.0f;
+    if (((PlayerControlPrefix *)state)->pitch > 5.0f) {
+        ((PlayerControlPrefix *)state)->pitch = ((PlayerControlPrefix *)state)->pitch - (60.0f * gRuntimeFrameSeconds * scale);
+        if (((PlayerControlPrefix *)state)->pitch < 5.0f) {
+            ((PlayerControlPrefix *)state)->pitch = 5.0f;
         }
-    } else if (*(f32 *)(state + 0x14) < 5.0f) {
-        *(f32 *)(state + 0x14) = *(f32 *)(state + 0x14) + (60.0f * gRuntimeFrameSeconds * scale);
-        if (*(f32 *)(state + 0x14) > 5.0f) {
-            *(f32 *)(state + 0x14) = 5.0f;
+    } else if (((PlayerControlPrefix *)state)->pitch < 5.0f) {
+        ((PlayerControlPrefix *)state)->pitch = ((PlayerControlPrefix *)state)->pitch + (60.0f * gRuntimeFrameSeconds * scale);
+        if (((PlayerControlPrefix *)state)->pitch > 5.0f) {
+            ((PlayerControlPrefix *)state)->pitch = 5.0f;
         }
     }
 }
@@ -2259,12 +2254,12 @@ void playerSetInteractionHelpText(u8 *text) {
 /// \param position Three consecutive floating-point world coordinates in X, Y, Z order.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80112480 (0x80112480).
-void playerSetWorldPosition(u8 *position) {
+void playerSetWorldPosition(const f32 *position) {
     ((PlayerControlPrefix *)&gPlayerState)->downwardVelocity = 0.0f;
-    ((PlayerControlPrefix *)&gPlayerState)->position[0] = (f32)((f32 *)position)[0];
-    ((PlayerControlPrefix *)&gPlayerState)->position[1] = (f32)((f32 *)position)[1];
-    ((PlayerControlPrefix *)&gPlayerState)->position[2] = (f32)((f32 *)position)[2];
-    playerUpdateViewCamera(&gPlayerState, position);
+    ((PlayerControlPrefix *)&gPlayerState)->position[0] = position[0];
+    ((PlayerControlPrefix *)&gPlayerState)->position[1] = position[1];
+    ((PlayerControlPrefix *)&gPlayerState)->position[2] = position[2];
+    playerUpdateViewCamera((u8 *)&gPlayerState);
     TRACE("playerPassCheckPoint(%d)\n", position);
 }
 

@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 1,723 / 72 |
+| Raw offset candidates | 4,040 / 86 | 1,703 / 72 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -4538,3 +4538,15 @@ unchanged. Ghidra at 0x80119970 confirms eight-byte row strides and that boundar
 Owned-image comments record reuse on buffer refresh; the unused item-row alias
 declaration is removed. The separate font-table compatibility exception remains
 unchanged. Every step preserves strict baseline objects and clean retail ROM bytes.
+
+### Canonical player camera-update and positioning contracts
+
+The existing player-camera header now shares view refresh, walking recentering and
+world-position setting with menu/script consumers. The camera-update K&R definition
+and its unused extra position argument are removed after forced matching trials;
+the normal one-argument prototype preserves every strict object. Ghidra at
+0x80112480 confirms the three coordinate copies and subsequent view refresh.
+World-position input uses const f32 coordinates, and recentering uses established
+viewShake/pitch members instead of byte offsets. Original function/address notes
+remain, while the obsolete K&R portability note is removed. All three source units
+and dependent headers preserve clean retail ROM bytes.

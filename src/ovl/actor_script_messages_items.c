@@ -1,3 +1,4 @@
+#include "player_camera.h"
 #include "audio_sound_effect.h"
 #include "player_profile.h"
 #include "microphone_query.h"
@@ -375,7 +376,6 @@ s32 actorScriptRestorePlayerState(u8 *actor) {
     return 0;
 }
 
-void playerSetWorldPosition(u8 *); /* extern */
 
 /// Move the player to a script-specified world position.
 /// \param actor Actor whose script VM supplies world X, Y, Z (Z on top) and receives zero.
@@ -388,7 +388,7 @@ s32 actorScriptSetPlayerPosition(u8 *actor) {
     pos[2] = scriptVmPopFloat(vm);
     pos[1] = scriptVmPopFloat(vm);
     pos[0] = scriptVmPopFloat(vm);
-    playerSetWorldPosition((u8 *)pos);
+    playerSetWorldPosition(pos);
     scriptVmPushInteger(vm, 0);
     return 0;
 }

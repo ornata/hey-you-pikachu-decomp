@@ -1,3 +1,4 @@
+#include "player_camera.h"
 #include "object_template.h"
 #include "object_types.h"
 #include "player_profile.h"
@@ -796,8 +797,6 @@ void systemMenuDrawFrame(Gfx **displayList) {
     textDrawSetPalette(gDefaultTextPalette);
 }
 
-void playerRecenterWalkingView(u8 *);
-void playerUpdateViewCamera(u8 *);
 /// Primary controller new and auto-repeated button presses; aliases the repeated word of the processed sample.
 /// \note Original identifier: \c D_800AD54C (0x800AD54C).
 extern s32 gControllerPrimaryRepeatedButtons;
