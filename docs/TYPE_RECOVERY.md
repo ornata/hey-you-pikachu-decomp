@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 1,890 / 74 |
+| Raw offset candidates | 4,040 / 86 | 1,881 / 74 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3762,3 +3762,9 @@ records. Controller pan/effect refresh and all-notes/all-sounds traversal use
 shared voice links and channel fields, retaining the original release ordering.
 Periodic updates borrow the same list and preserve the documented envelope
 overflow and compiled-out rate-check constraints.
+
+Sound selection and note-on initialize shared voice records directly, including
+decay envelope, modulation phases and the embedded synthesizer voice. Their
+borrowed bank data and pool ownership remain unchanged. Event advancement takes
+the shared driver type, and the timing helper accepts the synthesizer context
+actually supplied by its sole caller. All changes preserve strict object identity.

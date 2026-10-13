@@ -22,10 +22,10 @@ s32 sequenceEngineSetSustain(VoicePlayer *, EngineSequence *, s32, s32);
 s32 sequenceEngineGetVoicePan(VoicePlayer *, EngineSequence *, SequenceVoice *);
 s32 sequenceEngineResetControllers(VoicePlayer *, EngineSequence *);
 void sequenceEngineStopVoice(s32, s32, s32);
-f64 sequenceEngineGetVoiceUpdateInterval(s32);
+f64 sequenceEngineGetVoiceUpdateInterval(N_ALGlobals *);
 void sequenceEngineUpdateVoices(VoicePlayer *, EngineSequence *, f64);
 void sequenceEngineAdvanceVolumeFade(EngineSequence *, f64);
-void sequenceEngineAdvanceEvents(s32, EngineSequence *, f64);
+void sequenceEngineAdvanceEvents(VoicePlayer *, EngineSequence *, f64);
 
 
 /// Check whether sequence playback and pending release events have ended.
@@ -320,8 +320,8 @@ void sequenceEngineRegisterSequence(EngineSequence *sequence, VoicePlayer *drive
 /// \param velocity MIDI note-on velocity from zero through 127.
 /// \returns A borrowed sound definition from the instrument bank, or null when no sound covers the note and velocity.
 /// \note Original decompilation identifier: \c func_80006140 (0x80006140).
-ALSound *sequenceEngineFindSound(u8 *seq, u8 channel, u8 key, u8 velocity) {
-    EngineChannel *channels = ((EngineSequence *)seq)->channels;
+ALSound *sequenceEngineFindSound(EngineSequence *seq, u8 channel, u8 key, u8 velocity) {
+    EngineChannel *channels = seq->channels;
     s32 low = 0;
     s32 high = channels[channel].instrument->soundCount - 1;
     ALSound **sounds = channels[channel].instrument->soundArray;
@@ -410,14 +410,14 @@ f64 sequenceEngineGetVoicePitchRatio(u8 *seq, u8 *voice) {
 }
 
 /// Get the sequence voice update interval.
-/// \param driver Unused driver parameter retained by the timing interface.
+/// \param synth Unused synthesizer context retained by the timing interface.
 /// \returns The fixed update interval of 0.00575 seconds.
 /// \note Original decompilation identifier: \c func_8000657C (0x8000657C).
-f64 sequenceEngineGetVoiceUpdateInterval(s32 driver) {
+f64 sequenceEngineGetVoiceUpdateInterval(N_ALGlobals *synth) {
     return 0.00575;
 }
 
-ALSound *sequenceEngineFindSound(u8 *, u8, u8, u8);
+ALSound *sequenceEngineFindSound(EngineSequence *, u8, u8, u8);
 s32 sequenceEngineGetVoiceVolume(u8 *, u8 *, u8 *);
 f64 sequenceEngineGetVoicePitchRatio(u8 *, u8 *);
 s32 n_alSynAllocVoice(struct N_ALVoice_s *, ALVoiceConfig *);
@@ -431,48 +431,48 @@ void n_alSynStartVoiceParams(struct N_ALVoice_s *, ALWaveTable *, f32, s16, ALPa
 /// \param velocity MIDI note-on velocity from zero through 127.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000658C (0x8000658C).
-void sequenceEngineNoteOn(u8 *driver, u8 *seq, s32 channel, s32 key, s32 velocity) {
+void sequenceEngineNoteOn(VoicePlayer *driver, EngineSequence *seq, s32 channel, s32 key, s32 velocity) {
     ALSound *sound;
-    u8 *voice;
+    SequenceVoice *voice;
     ALVoiceConfig config;
 
     sound = sequenceEngineFindSound(seq, channel, key, velocity);
     if (sound != NULL) {
-        voice = (u8 *)sequenceEngineAcquireVoice((VoicePlayer *)driver, (EngineSequence *)seq);
+        voice = sequenceEngineAcquireVoice(driver, seq);
         if (voice != NULL) {
             config.priority = 5;
             config.fxBus = 0;
             config.unityPitch = 0;
-            ((SequenceVoice *)voice)->sustainDeferred = 0;
-            ((SequenceVoice *)voice)->keyDown = 1;
-            ((SequenceVoice *)voice)->sound = sound;
-            *(s32 *)(voice + 0x48) = 0xFFFF;
-            *(s32 *)(voice + 0x4C) =
-                ((((SequenceVoice *)voice)->sound->envelope->decayTime != 0) &&
-                 (((SequenceVoice *)voice)->sound->envelope->decayVolume == 0))
-                    ? (f64) - *(s32 *)(voice + 0x48) / (0.000001 * ((SequenceVoice *)voice)->sound->envelope->decayTime)
+            voice->sustainDeferred = 0;
+            voice->keyDown = 1;
+            voice->sound = sound;
+            voice->envelope = 0xFFFF;
+            voice->envelopeRate =
+                ((voice->sound->envelope->decayTime != 0) &&
+                 (voice->sound->envelope->decayVolume == 0))
+                    ? (f64) - voice->envelope / (0.000001 * voice->sound->envelope->decayTime)
                     : 0.0;
-            ((SequenceVoice *)voice)->instrument = ((EngineSequence *)seq)->channels[channel].instrument;
-            ((SequenceVoice *)voice)->key = key;
-            ((SequenceVoice *)voice)->channel = channel;
-            ((SequenceVoice *)voice)->velocity = velocity;
-            *(s16 *)(voice + 0x38) = 0;
-            *(s16 *)(voice + 0x3A) = 0;
-            ((SequenceVoice *)voice)->volume = sequenceEngineGetVoiceVolume(driver, seq, voice);
-            if (((EngineSequence *)seq)->channels[channel].portamentoEnabled) {
-                ((SequenceVoice *)voice)->portamento = (((EngineSequence *)seq)->channels[channel].lastKey - ((SequenceVoice *)voice)->key) * 100;
+            voice->instrument = seq->channels[channel].instrument;
+            voice->key = key;
+            voice->channel = channel;
+            voice->velocity = velocity;
+            voice->vibratoPhase = 0;
+            voice->tremoloPhase = 0;
+            voice->volume = sequenceEngineGetVoiceVolume((u8 *)driver, (u8 *)seq, (u8 *)voice);
+            if (seq->channels[channel].portamentoEnabled) {
+                voice->portamento = (seq->channels[channel].lastKey - voice->key) * 100;
             } else {
-                ((SequenceVoice *)voice)->portamento = 0;
+                voice->portamento = 0;
             }
-            ((EngineSequence *)seq)->channels[channel].lastKey = key;
-            ((SequenceVoice *)voice)->pitch = sequenceEngineGetVoicePitchRatio(seq, voice);
-            ((SequenceVoice *)voice)->pan = sequenceEngineGetVoicePan((VoicePlayer *)driver, (EngineSequence *)seq, (SequenceVoice *)voice);
-            n_alSynAllocVoice((struct N_ALVoice_s *)(voice + 0x14), &config);
-            n_alSynStartVoiceParams((struct N_ALVoice_s *)(voice + 0x14), ((SequenceVoice *)voice)->sound->wavetable,
-                                    ((SequenceVoice *)voice)->pitch, ((SequenceVoice *)voice)->volume, ((SequenceVoice *)voice)->pan,
-                                    ((EngineSequence *)seq)->channels[((SequenceVoice *)voice)->channel].fxMix, 0);
-            if (*(s32 *)(voice + 0x4C) != 0) {
-                n_alSynSetVol((struct N_ALVoice_s *)(voice + 0x14), 0, ((SequenceVoice *)voice)->sound->envelope->decayTime);
+            seq->channels[channel].lastKey = key;
+            voice->pitch = sequenceEngineGetVoicePitchRatio((u8 *)seq, (u8 *)voice);
+            voice->pan = sequenceEngineGetVoicePan(driver, seq, voice);
+            n_alSynAllocVoice(&voice->native, &config);
+            n_alSynStartVoiceParams(&voice->native, voice->sound->wavetable,
+                                    voice->pitch, voice->volume, voice->pan,
+                                    seq->channels[voice->channel].fxMix, 0);
+            if (voice->envelopeRate != 0) {
+                n_alSynSetVol(&voice->native, 0, voice->sound->envelope->decayTime);
             }
         }
     }
@@ -688,7 +688,7 @@ void sequenceEngineHandleSystemEvent(VoicePlayer *driver, EngineSequence *seq, u
     }
 }
 
-void sequenceEngineNoteOn(u8 *, u8 *, s32, s32, s32);
+void sequenceEngineNoteOn(VoicePlayer *, EngineSequence *, s32, s32, s32);
 /// Apply the current MIDI event to a sequence.
 /// \param driver Sequence driver owning the active voices.
 /// \param seq Sequence whose current event is a complete supported MIDI message with seven-bit data bytes, or an empty event.
@@ -707,7 +707,7 @@ void sequenceEngineDispatchMidiEvent(VoicePlayer *driver, EngineSequence *seq) {
         case 0x90:
             velocity = event[2];
             if (velocity != 0) {
-                sequenceEngineNoteOn((u8 *)driver, (u8 *)seq, status & 0xF, event[1], velocity);
+                sequenceEngineNoteOn(driver, seq, status & 0xF, event[1], velocity);
                 return;
             }
         case 0x80:
@@ -766,7 +766,7 @@ void sequenceEngineAdvanceVolumeFade(EngineSequence *sequence, f64 elapsed) {
 /// \param elapsed Nonnegative elapsed playback time in seconds.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80006FD4 (0x80006FD4).
-void sequenceEngineAdvanceEvents(s32 driver, EngineSequence *sequence, f64 elapsed) {
+void sequenceEngineAdvanceEvents(VoicePlayer *driver, EngineSequence *sequence, f64 elapsed) {
     f64 var_f0;
     f64 var_f20;
 
@@ -777,7 +777,7 @@ void sequenceEngineAdvanceEvents(s32 driver, EngineSequence *sequence, f64 elaps
         if (var_f0 >= 0.0) {
             var_f20 -= var_f0;
         }
-        sequenceEngineDispatchMidiEvent((VoicePlayer *)driver, sequence);
+        sequenceEngineDispatchMidiEvent(driver, sequence);
         sequenceEngineReadNextEvent(sequence);
         var_f0 = sequence->eventDelay;
         if (!(var_f0 < 0.0) && (var_f0 <= var_f20)) {
@@ -870,11 +870,11 @@ s32 sequenceEnginePlayerCallback(void *context) {
     EngineSequence *sequence;
     f64 updateInterval;
 
-    updateInterval = sequenceEngineGetVoiceUpdateInterval((s32)driver->synth);
+    updateInterval = sequenceEngineGetVoiceUpdateInterval(driver->synth);
     sequence = driver->sequences;
     if (sequence != NULL) {
         do {
-            sequenceEngineAdvanceEvents((s32)driver, sequence, updateInterval);
+            sequenceEngineAdvanceEvents(driver, sequence, updateInterval);
             sequenceEngineAdvanceVolumeFade(sequence, updateInterval);
             sequenceEngineUpdateVoices(driver, sequence, updateInterval);
             sequence = sequence->next;
