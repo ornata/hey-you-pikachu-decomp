@@ -1,3 +1,5 @@
+#include "font_cache.h"
+#include "texture_cache.h"
 #include "matrix_basic.h"
 #include "camera_storage.h"
 #include "object_groups.h"
@@ -852,7 +854,6 @@ extern s32 gRuntimeGameMode;
 extern OSMesgQueue gRuntimeEventQueue;
 /// Shared ROM cache owning loaded texture images, palettes and pending reads.
 /// \note Original identifier: \c D_800B67B0 (0x800B67B0).
-extern u8 gTextureRomCache[];
 /// Start of the current graphics command-list submission.
 /// \note Original identifier: \c D_800ABDD4 (0x800ABDD4).
 extern Gfx *gRenderDisplayListStart;
@@ -864,8 +865,6 @@ void eyeCatchDraw(Gfx **);
 void runtimeDrawPromptPanel(void);
 void toolboxDrawFrame(s32);
 void wholeMapDraw(Gfx **);
-void fontCacheReleaseUses(void);
-void romCacheReleaseUses(u8 *);
 /// Draw the current gameplay or menu mode and submit its graphics task.
 /// \returns Nothing; requires a prepared current frame and initialized resources for the active mode.
 void renderDrawCurrentMode(void) {
@@ -935,7 +934,7 @@ void renderDrawCurrentMode(void) {
         break;
     }
     fontCacheReleaseUses();
-    romCacheReleaseUses(gTextureRomCache);
+    romCacheReleaseUses(&gTextureRomCache);
     graphicsTaskSubmit(0, 0, &gRenderDisplayListStart, &gRenderDisplayListCursor, &gRuntimeEventQueue);
 }
 

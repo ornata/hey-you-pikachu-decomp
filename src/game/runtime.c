@@ -1,3 +1,4 @@
+#include "texture_cache.h"
 #include "pikachu_actor.h"
 #include "object_groups.h"
 #include "math_angles.h"
@@ -995,8 +996,6 @@ extern u8 ovl_BSS_END[];
 void renderInitializeResources(void);
 void objectPrepareDistributedKindSearches(u16, s32);
 void runtimeRunProgramEventLoop(void);
-void textureCacheInitialize(void);
-void textureCacheDestroy(void);
 void actionInitializeTransitionMap(void);
 void overlayLoadFromRom(void *romStart, void *romEnd, void *destination, void *textStart, void *textEnd,
                         void *dataStart, void *dataEnd, void *bssStart, void *bssEnd);

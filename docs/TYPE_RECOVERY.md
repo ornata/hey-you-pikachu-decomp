@@ -4057,3 +4057,14 @@ changes ROM code. A function-pointer call view also fails. Typed stack keys do
 not remove that constraint. The ledger records these narrower findings and
 the next evidence needed, rather than attributing the mismatch to node returns
 alone. Every accepted representation passes strict object comparison.
+
+### Rendering cache retention boundaries
+
+`texture_cache.h` declares the shared typed texture cache and its initialization
+and destruction contracts. Main rendering releases cache uses through the
+canonical `RomCache *` interface; runtime setup and teardown share lifecycle
+declarations. `font_cache.h` states the read-completion and glyph-retention
+boundaries used by text generation and frame submission. Texture references
+become invalid on cache destruction; font cache use may only be released after
+drawing commands finish consuming glyphs. All five affected source units pass
+strict object comparison independently.

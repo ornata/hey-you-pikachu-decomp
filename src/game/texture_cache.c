@@ -3,12 +3,9 @@
 #include "texture_rectangles.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
-#include "rom_cache.h"
+#include "texture_cache.h"
 #include "texture_draw_types.h"
 
-/// Shared ROM cache owning loaded texture images, palettes and pending reads.
-/// \note Original identifier: \c D_800B67B0 (0x800B67B0).
-extern RomCache gTextureRomCache;
 
 /// Initialize the shared texture cache.
 /// \returns Nothing.

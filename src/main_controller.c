@@ -1,3 +1,5 @@
+#include "font_cache.h"
+#include "texture_cache.h"
 #include "rom_dma.h"
 #include "matrix_basic.h"
 #include "camera_storage.h"
@@ -228,9 +230,6 @@ extern Gfx D_100C7E0[];
 /// Current gameplay, menu or transition mode.
 /// \note Original identifier: \c D_800AE504 (0x800AE504).
 extern s32 gRuntimeGameMode;
-/// Shared ROM cache owning loaded texture images, palettes and pending reads.
-/// \note Original identifier: \c D_800B67B0 (0x800B67B0).
-extern u8 gTextureRomCache[];
 /// Start of the current graphics command-list submission.
 /// \note Original identifier: \c D_800ABDD4 (0x800ABDD4).
 extern Gfx *gRenderDisplayListStart;
@@ -242,8 +241,6 @@ void eyeCatchDraw(Gfx **);
 void runtimeDrawPromptPanel(void);
 void toolboxDrawFrame(s32);
 void wholeMapDraw(Gfx **);
-void fontCacheReleaseUses(void);
-void romCacheReleaseUses(u8 *);
 
 /// Identifier of the currently active runtime program.
 /// \note Original identifier: \c D_800AE4F0 (0x800AE4F0).

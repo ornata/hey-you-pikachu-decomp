@@ -1,3 +1,4 @@
+#include "font_cache.h"
 #include "graphics_tasks.h"
 #include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -827,7 +828,6 @@ void textImageCreateFromText(TextImage **out, u8 *text, FontImage *font) {
     }
 }
 
-void fontCacheWaitForReads(void);
 void _bzero(void *, s32);
 s32 fontCacheReadGlyph(s32, s32 *);
 s32 fontGetGlyphMetrics(s32, s32 *, s32 *, s32 *);

@@ -5,14 +5,14 @@
     {
       "code": 712,
       "file": "src/game/texture_cache.c",
-      "line": 164,
+      "line": 161,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "r = romCacheRead(&gTextureRomCache, texture.image + gTextureArchiveRomStart, size, image);"
     },
     {
       "code": 712,
       "file": "src/game/texture_cache.c",
-      "line": 169,
+      "line": 166,
       "diagnostic": "illegal combination of pointer and integer",
       "expression": "rp = romCacheRead(&gTextureRomCache, texture.palette + gTextureArchiveRomStart, 0x20, palette);"
     },
