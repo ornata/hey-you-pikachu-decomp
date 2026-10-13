@@ -75,36 +75,36 @@ extern s32 gGraphicsFramebufferIndex;
 /// \returns Playback handle, or zero if playback could not start.
 /// \note Original decompilation identifier: \c func_80014B60 (0x80014B60).
 s32 actorPlayTrackedSound(u8 *actor, s32 kind) {
-    u8 *v;
-    s32 h;
-    s32 i;
-    s32 k;
+    ActorScriptState *state;
+    s32 handle;
+    s32 attempt;
+    s32 slot;
 
-    v = *(u8 **)(actor + 0x54);
-    h = objectPlaySpatialSound(actor, kind, 20.0f, 200.0f);
-    if (h != 0) {
-        for (i = 0, k = ((ActorScriptState *)v)->nextSoundSlot; i < 4; i++) {
-            if (audioCountPlayback(((ActorScriptState *)v)->soundHandles[k]) == 0) {
+    state = ((RuntimeObjectPrefix *)actor)->state.actor;
+    handle = objectPlaySpatialSound(actor, kind, 20.0f, 200.0f);
+    if (handle != 0) {
+        for (attempt = 0, slot = state->nextSoundSlot; attempt < 4; attempt++) {
+            if (audioCountPlayback(state->soundHandles[slot]) == 0) {
                 break;
             }
-            k++;
-            k %= 4;
+            slot++;
+            slot %= 4;
         }
-        ((ActorScriptState *)v)->soundHandles[k] = h;
-        ((ActorScriptState *)v)->nextSoundSlot = (k + 1) % 4;
+        state->soundHandles[slot] = handle;
+        state->nextSoundSlot = (slot + 1) % 4;
     }
-    if (*(u16 *)(actor + 0x34) == 0x25 && kind >= 30 && kind < 125) {
-        if (audioCountPlayback(((ActorScriptState *)v)->trackedVoice) != 0) {
-            audioStopPlayback(((ActorScriptState *)v)->trackedVoice, 0.0);
+    if (((RuntimeObjectPrefix *)actor)->kind == 0x25 && kind >= 30 && kind < 125) {
+        if (audioCountPlayback(state->trackedVoice) != 0) {
+            audioStopPlayback(state->trackedVoice, 0.0);
         }
-        ((ActorScriptState *)v)->trackedVoice = h;
+        state->trackedVoice = handle;
     }
-    return h;
+    return handle;
 }
 
 /// Camera storage used for view transforms, viewports and color overlays.
 /// \note Original identifier: \c D_800ABCF0 (0x800ABCF0).
-extern u8 gRenderCameras[];
+extern MatrixCamera gRenderCameras[];
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern u32 gRenderCameraIndex;
@@ -127,12 +127,11 @@ void actorUpdateTrackedSoundSpatialization(f32 *position, s32 *voices) {
     for (i = 0; i < 4; i++, voices++) {
         if (audioCountPlayback(*voices) != 0) {
             if (gRuntimeCurrentProgram == 0) {
-                if (((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].matrices == NULL) {
+                if (gRenderCameras[gRenderCameraIndex].matrices == NULL) {
                     continue;
                 }
-                audioGetPositionVolumeAndPan(position,
-                                             *((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].matrices, &volume,
-                                             &pan, 20.0f, 100.0f);
+                audioGetPositionVolumeAndPan(position, *gRenderCameras[gRenderCameraIndex].matrices, &volume, &pan,
+                                             20.0f, 100.0f);
                 audioSetSoundEffectPan(*voices, pan);
                 audioSetSoundEffectVolume(*voices, volume);
             }
@@ -151,13 +150,13 @@ extern HpHdr gGameHeap;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80014DE8 (0x80014DE8).
 void actorReleaseModelResources(u8 *actor) {
-    u8 *actorState;
+    ActorScriptState *actorState;
 
-    actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    heapFreeLocal(&gGameHeap, (u8 *)((ActorScriptState *)actorState)->modelDrawLists[0]);
-    collisionGridUnregisterObject(actor, &((ActorScriptState *)actorState)->collisionRegistration);
-    scriptVmDestroy((u8 *)((ActorScriptState *)actorState)->vmAddress);
-    heapFreeLocal(&gGameHeap, ((ActorScriptState *)actorState)->partTable);
+    actorState = ((RuntimeObjectPrefix *)actor)->state.actor;
+    heapFreeLocal(&gGameHeap, (u8 *)actorState->modelDrawLists[0]);
+    collisionGridUnregisterObject(actor, &actorState->collisionRegistration);
+    scriptVmDestroy((u8 *)actorState->vmAddress);
+    heapFreeLocal(&gGameHeap, actorState->partTable);
     heapFreeLocal(&gGameHeap, actorState);
 }
 
@@ -166,15 +165,15 @@ void actorReleaseModelResources(u8 *actor) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80014E54 (0x80014E54).
 void actorReleaseChildMotionState(u8 *actor) {
-    u8 *obj;
-    u8 *sub;
+    ChildMotionState *state;
+    u8 *facingController;
 
-    obj = *(u8 **)(actor + 0x54);
-    sub = ((ChildMotionState *)obj)->facingController;
-    if (sub != NULL) {
-        heapFreeLocal(&gGameHeap, sub);
+    state = ((RuntimeObjectPrefix *)actor)->state.pointer;
+    facingController = state->facingController;
+    if (facingController != NULL) {
+        heapFreeLocal(&gGameHeap, facingController);
     }
-    heapFreeLocal(&gGameHeap, obj);
+    heapFreeLocal(&gGameHeap, state);
 }
 
 
@@ -500,9 +499,9 @@ void actorGetParentTrackingPosition(u8 *child, u8 *parentState, f32 *position) {
         targetObject = actorResolveStoredTarget(((RuntimeObjectPrefix *)child)->root.bytes);
         if (targetObject != NULL) {
             if (((RuntimeObjectPrefix *)targetObject)->kind == 0x7F) {
-                position[0] = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[0];
-                position[1] = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[1];
-                position[2] = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[2];
+                position[0] = gRenderCameras[gRenderCameraIndex].eye[0];
+                position[1] = gRenderCameras[gRenderCameraIndex].eye[1];
+                position[2] = gRenderCameras[gRenderCameraIndex].eye[2];
             } else {
                 position[0] = ((RuntimeObjectPrefix *)targetObject)->worldPosition[0];
                 position[1] = ((RuntimeObjectPrefix *)targetObject)->worldPosition[1];
@@ -659,9 +658,9 @@ void actorUpdateCameraFacingChild(u8 *object) {
         orientation->angles[2] = ((RuntimeObjectPrefix *)object)->rotation[2];
     }
     if (*weight > 0.0f) {
-        direction.x = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[0] - ((RuntimeObjectPrefix *)object)->worldPosition[0];
-        direction.y = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[1] - ((RuntimeObjectPrefix *)object)->worldPosition[1];
-        direction.z = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[2] - ((RuntimeObjectPrefix *)object)->worldPosition[2];
+        direction.x = gRenderCameras[gRenderCameraIndex].eye[0] - ((RuntimeObjectPrefix *)object)->worldPosition[0];
+        direction.y = gRenderCameras[gRenderCameraIndex].eye[1] - ((RuntimeObjectPrefix *)object)->worldPosition[1];
+        direction.z = gRenderCameras[gRenderCameraIndex].eye[2] - ((RuntimeObjectPrefix *)object)->worldPosition[2];
         matrix34TransformPointVector((f32 *)gActorCameraFacingDirectionTransform, &direction.x, &direction.x);
         do {
             matrix = gObjectTraversalTransform;
