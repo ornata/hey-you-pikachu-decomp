@@ -4068,3 +4068,13 @@ boundaries used by text generation and frame submission. Texture references
 become invalid on cache destruction; font cache use may only be released after
 drawing commands finish consuming glyphs. All five affected source units pass
 strict object comparison independently.
+
+### Script consumer interface audit
+
+The primary-camera script command uses `script_vm_stack.h` and names its
+position and target arrays by role. Numeric-stack declarations now preserve
+the original function addresses. Unused menu-tail VM declarations, including
+an incorrect integer-valued float-push signature, were removed. Demonstration
+commands share title transition/query contracts and the canonical pointer-based
+item direction-motion interface. Each source-unit edit and shared-header rebuild
+preserves allocated bytes, layouts and relocations.

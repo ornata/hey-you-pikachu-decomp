@@ -1,3 +1,4 @@
+#include "script_vm_stack.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
 #include "random.h"
@@ -1280,23 +1281,22 @@ void actorTrackPlayerPrimaryObject(u8 *actor) {
     ((ActorScriptState *)actorState)->targetMode = ACTOR_TARGET_FOLLOW;
 }
 
-f32 scriptVmPopFloat(s32);                   /* extern */
 
 /// Set the primary camera position and look-at target from script arguments.
 /// \param vm Script VM containing position X, Y, Z followed by target X, Y, Z, with target Z on top of the stack.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80118A1C (0x80118A1C).
 void scriptVmSetPrimaryCameraView(s32 vm) {
-    f32 b[3];
-    f32 a[3];
+    f32 position[3];
+    f32 target[3];
 
-    a[2] = scriptVmPopFloat(vm);
-    a[1] = scriptVmPopFloat(vm);
-    a[0] = scriptVmPopFloat(vm);
-    b[2] = scriptVmPopFloat(vm);
-    b[1] = scriptVmPopFloat(vm);
-    b[0] = scriptVmPopFloat(vm);
-    cameraSetEyeAndTarget(0, b, a);
+    target[2] = scriptVmPopFloat(vm);
+    target[1] = scriptVmPopFloat(vm);
+    target[0] = scriptVmPopFloat(vm);
+    position[2] = scriptVmPopFloat(vm);
+    position[1] = scriptVmPopFloat(vm);
+    position[0] = scriptVmPopFloat(vm);
+    cameraSetEyeAndTarget(0, position, target);
 }
 
 /// Place the actor at its stored target position.

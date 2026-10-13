@@ -1891,12 +1891,3 @@ void systemMenuInitialize(void) {
     systemMenuRefreshItemCount(&gSystemMenuRootList);
     gSystemMenuState.menu = &gSystemMenuRootList;
 }
-
-
-s32 scriptVmReadIntegerOperand();                       /* extern */
-void stringPrependBounded(s8 *, s32, s32); /* extern */
-/// Shared 80-byte text used by actor-script text and message commands.
-/// \note Original identifier: \c D_80134220 (0x80134220).
-extern s8 gActorScriptSharedTextBuffer;
-
-void scriptVmPushFloat(u8 *, s32); /* extern */

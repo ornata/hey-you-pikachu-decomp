@@ -4279,6 +4279,7 @@
         "runtime_clock.h",
         "scene_region.h",
         "scene_types.h",
+        "script_vm_stack.h",
         "terrain_height.h",
         "terrain_surface.h",
         "vector_metrics.h"
@@ -4289,30 +4290,30 @@
       "locations": {
         "raw_offset_candidates": {
           "return -1": [
-            "87:9"
+            "88:9"
           ],
           "return -65536": [
-            "154:5",
-            "166:5",
-            "616:9",
-            "622:5",
-            "837:5",
-            "918:5",
-            "968:5",
-            "989:5",
-            "1008:5"
+            "155:5",
+            "167:5",
+            "617:9",
+            "623:5",
+            "838:5",
+            "919:5",
+            "969:5",
+            "990:5",
+            "1009:5"
           ],
           "gPlayerControllerPort + 4": [
-            "556:14"
+            "557:14"
           ],
           "gPlayerControllerPort + 6": [
-            "564:21"
+            "565:21"
           ],
           "offset + 4": [
-            "948:64"
+            "949:64"
           ],
           "offset + 8": [
-            "949:64"
+            "950:64"
           ]
         }
       }

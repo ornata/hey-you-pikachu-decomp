@@ -1,3 +1,5 @@
+#include "title_screen.h"
+#include "item_object.h"
 #include "particle_cluster.h"
 #include "effect_emitter.h"
 #include "item_participation.h"
@@ -13,7 +15,6 @@
 #include "script_vm_stack.h"
 #include "scene_types.h"
 
-void titleScreenBeginDemoTransition(void); /* extern */
 /// Begin the title-screen demo transition and provide a zero script result.
 /// \param object Actor whose script receives a zero result; no script arguments are required.
 /// \returns Zero after handling the script command.
@@ -27,7 +28,6 @@ s32 scriptCommandBeginDemoTransition(u8 *object) {
     return 0;
 }
 
-s32 titleScreenGetDemoIndex();     /* extern */
 /// Provide the current title-screen demo index as the script result.
 /// \param object Actor whose script receives the demo index; no script arguments are required.
 /// \returns Zero after handling the script command.
@@ -86,7 +86,6 @@ s32 scriptCommandRemoveMazeBlock(u8 *object) {
     return 0;
 }
 
-void itemStartDirectionMotion(s32, f32, f32, f32);    /* extern */
 
 /// Animate the item identified by the script arguments and create its requested particle cluster, then provide a zero script result.
 /// \param object Actor whose script supplies an item handle, particle count, lifetime
@@ -110,7 +109,7 @@ s32 scriptCommandCreateItemParticles(u8 *object) {
     sp_pop = scriptVmPopInteger(vmAddress);
     sp2C = objectResolveAvailableHandle(sp_pop);
     if (sp2C != 0) {
-        itemStartDirectionMotion((s32)sp2C, sp38, 100.0f, 1000.0f);
+        itemStartDirectionMotion(sp2C, sp38, 100.0f, 1000.0f);
         particleClusterCreate(sp3C, sp38, sp34, sp30, sp2C);
     }
     scriptVmPushInteger(vmAddress, 0);
