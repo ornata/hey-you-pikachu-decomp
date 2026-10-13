@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,766 / 80 |
+| Raw offset candidates | 4,040 / 86 | 2,758 / 80 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3251,8 +3251,21 @@ Model-part primary/secondary pose followers, relative/blended pose updates,
 orientation composition and shaking use the checked object rotation fields.
 Follower scale/root/state accesses, both meter owners, the primary VM clock and
 held-item diagnostic lookup reuse established object/actor members. Gameplay
-pose evaluation names the still-unresolved controller words instead of computing
-their offsets; their policy is not guessed. Ghidra 0x80013B90 confirms secondary
+pose evaluation names its controller words instead of computing their offsets;
+the subsequent orientation-cache recovery establishes their capture policy. Ghidra 0x80013B90 confirms secondary
 pose transforms and 0x80014A3C confirms owning-root state and action-resource
 access. Arithmetic, control flow and the separate orientation-cache ABI remain
 unchanged. Both isolated source-unit conversions preserve strict objects.
+
+### Shared actor orientation-reference caches
+
+`ActorOrientationCache` is a checked 0x34-byte record containing a capture request
+and saved inverse-reference matrix at offset four. Ghidra 0x800142E0 confirms
+reference capture, identity output on capture and subsequent relative evaluation.
+The record replaces unresolved actor regions at 0x2F8 and 0x368 as secondary and
+primary pose references, retaining both actor offset checks and total state size.
+Single/paired model-part allocation and initialization derive their extents and
+member accesses from the same type, and paired evaluation advances by one record.
+The canonical evaluator contract describes initialization, output, signed part
+sequences and ownership. Two duplicate declarations are removed. The full shared
+header rebuild and both isolated provider conversions preserve strict objects.

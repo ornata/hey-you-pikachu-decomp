@@ -11,6 +11,7 @@
 #include "action_definition_types.h"
 #include "direction_animation_types.h"
 #include "matrix_types.h"
+#include "actor_orientation_cache.h"
 #include "motion_playback_types.h"
 #include "animation_tracks.h"
 
@@ -127,12 +128,10 @@ typedef struct ActorScriptState {
     ActorRootPlaybackWorkspace rootPlayback; ///< Mode-dependent root orientation workspace.
     AnimationDeltaTrack3 rootMovementTrack; ///< Incremental movement channels borrowing motion key data.
     s32 appearanceVariants[2]; ///< Model variant per appearance slot; zero selects its default model.
-    s32 unknown2F8; ///< Relative-part controller word initialized to one; precise policy unresolved.
-    u8 unknown2FC[0x30];
+    ActorOrientationCache secondaryPoseReference; ///< Reference for the secondary signed part sequence.
     Matrix34 secondaryPoseTransform; ///< Relative transform of the secondary signed part sequence.
     f32 secondaryPoseAngles[3]; ///< Folded secondary pose pitch, yaw and roll in degrees.
-    s32 unknown368; ///< Second relative-part controller word initialized to one; precise policy unresolved.
-    u8 unknown36C[0x30];
+    ActorOrientationCache primaryPoseReference; ///< Reference for the primary signed part sequence.
     Matrix34 primaryPoseTransform; ///< Relative transform of the primary signed part sequence.
     f32 primaryPoseAngles[3]; ///< Folded primary pose pitch, yaw and roll in degrees.
     u8 *shakingPart; ///< Borrowed selected model part, or null when no shake is active.
@@ -238,8 +237,8 @@ ACTOR_SCRIPT_OFFSET_CHECK(ActorStateShakingPartOffsetCheck, ActorScriptState, sh
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePartShakeTimeOffsetCheck, ActorScriptState, partShakeTimeRemaining, 0x3DC);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePartShakeAnglesOffsetCheck, ActorScriptState, partShakeReferenceAngles, 0x3E0);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateCreationArgumentOffsetCheck, ActorScriptState, creationScriptArgument, 0x238);
-ACTOR_SCRIPT_OFFSET_CHECK(ActorStateFirstPartControllerOffsetCheck, ActorScriptState, unknown2F8, 0x2F8);
-ACTOR_SCRIPT_OFFSET_CHECK(ActorStateSecondPartControllerOffsetCheck, ActorScriptState, unknown368, 0x368);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateSecondaryPoseReferenceOffsetCheck, ActorScriptState, secondaryPoseReference, 0x2F8);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePrimaryPoseReferenceOffsetCheck, ActorScriptState, primaryPoseReference, 0x368);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateBurstAllowanceOffsetCheck, ActorScriptState, targetedBurstAllowance, 0x3EC);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateResponseFlagOffsetCheck, ActorScriptState, costedActionResult, 0x3F0);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionResourceOffsetCheck, ActorScriptState, actionResource, 0x3F4);

@@ -68,11 +68,9 @@ extern s32 gActorAppearancePartIds[];
 void actorComposePartOrientation(void *, s32, s32 *, s32);
 void matrix34Identity(void *);
 void matrix34Concatenate(void *, void *, void *);
-void actorEvaluateRelativePartOrientation(s32 *, u8 *, s32, s32);
 /// Signed part-identifier sequence used to track model-part relative roll.
 /// \note Original identifier: \c D_800A2770 (0x800A2770).
 extern u8 gActorRelativeRollPartSequence[];
-void actorEvaluateRelativePartOrientation();
 f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
 f32 mathAngleDistanceDegrees(f32, f32);
 f32 mathLerpAngleDegrees(f32, f32, f32);
@@ -114,8 +112,8 @@ void actorInitializeGameplayModel(u8 *actor) {
     actorInitializeModelState(actor);
     actorAllocatePartTable(actor);
     actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    ((ActorScriptState *)actorState)->unknown368 = 1;
-    ((ActorScriptState *)actorState)->unknown2F8 = 1;
+    ((ActorScriptState *)actorState)->primaryPoseReference.captureReference = 1;
+    ((ActorScriptState *)actorState)->secondaryPoseReference.captureReference = 1;
     ((ActorScriptState *)actorState)->actionResource = 100.0f;
     ((ActorScriptState *)actorState)->secondaryMeter = 0.0f;
 }
@@ -140,14 +138,14 @@ extern HpHdr gGameHeap;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80013714 (0x80013714).
 void actorPartInitializeOrientationCache(u8 *object) {
-    s32 *sp1C;
-    s32 *allocation;
+    ActorOrientationCache *cache;
+    ActorOrientationCache *allocation;
 
-    allocation = heapAllocLocal(&gGameHeap, 0x34, 0xAA);
-    sp1C = allocation;
-    _bzero(allocation, 0x34);
-    *sp1C = 1;
-    ((RuntimeObjectPrefix *)object)->state.words = sp1C;
+    allocation = heapAllocLocal(&gGameHeap, sizeof(ActorOrientationCache), 0xAA);
+    cache = allocation;
+    _bzero(allocation, sizeof(ActorOrientationCache));
+    cache->captureReference = 1;
+    ((RuntimeObjectPrefix *)object)->state.pointer = cache;
 }
 
 /// Initialize a model part to track two orientation changes from reference poses.
@@ -155,11 +153,11 @@ void actorPartInitializeOrientationCache(u8 *object) {
 /// \returns 1.
 /// \note Original decompilation identifier: \c func_80013768 (0x80013768).
 s32 actorPartInitializePairedOrientationCaches(u8 *object) {
-    u8 *allocation = heapAllocLocal(&gGameHeap, 0x68, 0xB9);
-    _bzero(allocation, 0x68);
-    *(s32 *)(allocation + 0) = 1;
-    *(s32 *)(allocation + 0x34) = 1;
-    ((RuntimeObjectPrefix *)object)->state.bytes = allocation;
+    ActorOrientationCache *allocation = heapAllocLocal(&gGameHeap, 2 * sizeof(ActorOrientationCache), 0xB9);
+    _bzero(allocation, 2 * sizeof(ActorOrientationCache));
+    allocation[0].captureReference = 1;
+    allocation[1].captureReference = 1;
+    ((RuntimeObjectPrefix *)object)->state.pointer = allocation;
     return 1;
 }
 
@@ -358,12 +356,12 @@ void actorPartFollowSecondaryOrientation(u8 *object) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80013CDC (0x80013CDC).
 void actorPartFollowRelativeRoll(u8 *object) {
-    s32 *state;
+    ActorOrientationCache *state;
     s32 parent;
     f32 matrix[12];
     f32 x, y, z;
-    parent = *(s32 *)(object + 0x50);
-    state = *(s32 **)(object + 0x54);
+    parent = ((RuntimeObjectPrefix *)object)->root.address;
+    state = (ActorOrientationCache *)((RuntimeObjectPrefix *)object)->state.pointer;
     actorEvaluateRelativePartOrientation(state, (u8 *)matrix, parent, (s32)gActorRelativeRollPartSequence);
     matrix33GetFoldedEulerDegrees(matrix, &x, &y, &z);
     ((RuntimeObjectPrefix *)object)->rotation[0] = 0;
@@ -385,16 +383,16 @@ extern u8 gActorBlendedOrientationSecondPartSequence[];
 /// \note Original decompilation identifier: \c func_80013D7C (0x80013D7C).
 void actorPartFollowBlendedOrientation(u8 *object) {
     s32 parent;
-    s32 *state;
+    ActorOrientationCache *state;
     f32 first[12];
     f32 second[12];
     f32 midpoint[12];
     f32 yawScale;
     f32 pitchScale;
-    parent = *(s32 *)(object + 0x50);
-    state = *(s32 **)(object + 0x54);
+    parent = ((RuntimeObjectPrefix *)object)->root.address;
+    state = (ActorOrientationCache *)((RuntimeObjectPrefix *)object)->state.pointer;
     actorEvaluateRelativePartOrientation(state, (u8 *)first, parent, (s32)gActorBlendedOrientationFirstPartSequence);
-    actorEvaluateRelativePartOrientation(state + 13, (u8 *)second, parent,
+    actorEvaluateRelativePartOrientation(state + 1, (u8 *)second, parent,
                                          (s32)gActorBlendedOrientationSecondPartSequence);
     matrix34BlendOrientation(0.5f, first, second, midpoint);
     matrix33GetFoldedEulerDegrees(midpoint, (f32 *)(object + 0xC), (f32 *)(object + 0x10), (f32 *)(object + 0x14));
@@ -549,15 +547,15 @@ void actorComposePartOrientation(void *matrix, s32 owner, s32 *cursor, s32 forwa
 /// \param parts Address of a zero-terminated signed part-identifier sequence.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800142E0 (0x800142E0).
-void actorEvaluateRelativePartOrientation(s32 *cache, u8 *matrix, s32 actor, s32 parts) {
-    if (*cache != 0) {
-        *cache = 0;
-        actorComposePartOrientation((u8 *)cache + 4, actor, (s32 *)parts, 0);
+void actorEvaluateRelativePartOrientation(ActorOrientationCache *cache, u8 *matrix, s32 actor, s32 parts) {
+    if (cache->captureReference != 0) {
+        cache->captureReference = 0;
+        actorComposePartOrientation(&cache->inverseReference, actor, (s32 *)parts, 0);
         matrix34Identity(matrix);
         return;
     }
     actorComposePartOrientation(matrix, actor, (s32 *)parts, 1);
-    matrix34Concatenate((u8 *)cache + 4, matrix, matrix);
+    matrix34Concatenate(&cache->inverseReference, matrix, matrix);
 }
 
 f32 mathSinDegrees(f32);
@@ -644,10 +642,10 @@ void actorUpdateGameplayModel(u8 *object) {
     if (object != gPikachuActor)
         actorUpdateScriptVm(object);
     actorUpdateModel(object);
-    actorEvaluateRelativePartOrientation(&((ActorScriptState *)state)->unknown368, (u8 *)&((ActorScriptState *)state)->primaryPoseTransform, (s32)object,
+    actorEvaluateRelativePartOrientation(&((ActorScriptState *)state)->primaryPoseReference, (u8 *)&((ActorScriptState *)state)->primaryPoseTransform, (s32)object,
                                          (s32)gActorPrimaryPosePartSequence);
     matrix33GetFoldedEulerDegrees((f32 *)&((ActorScriptState *)state)->primaryPoseTransform, &((ActorScriptState *)state)->primaryPoseAngles[0], &((ActorScriptState *)state)->primaryPoseAngles[1], &((ActorScriptState *)state)->primaryPoseAngles[2]);
-    actorEvaluateRelativePartOrientation(&((ActorScriptState *)state)->unknown2F8, (u8 *)&((ActorScriptState *)state)->secondaryPoseTransform, (s32)object,
+    actorEvaluateRelativePartOrientation(&((ActorScriptState *)state)->secondaryPoseReference, (u8 *)&((ActorScriptState *)state)->secondaryPoseTransform, (s32)object,
                                          (s32)gActorSecondaryPosePartSequence);
     matrix33GetFoldedEulerDegrees((f32 *)&((ActorScriptState *)state)->secondaryPoseTransform, &((ActorScriptState *)state)->secondaryPoseAngles[0], &((ActorScriptState *)state)->secondaryPoseAngles[1], &((ActorScriptState *)state)->secondaryPoseAngles[2]);
     actorUpdatePartShake(object);
