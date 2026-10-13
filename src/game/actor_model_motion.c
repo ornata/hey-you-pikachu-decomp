@@ -336,7 +336,7 @@ f32 mathApproachAngleDegrees(f32, f32, f32, f32, f32);
 /// \note Portability: The empty surface check preserves the IDO live ranges required by the ROM.
 /// \note Original decompilation identifier: \c func_80015250 (0x80015250).
 void actorUpdateGroundSlopePitch(u8 *object) {
-    u8 *state;
+    ActorScriptState *state;
     f32 height;
     f32 nextX;
     f32 nextHeight;
@@ -347,13 +347,13 @@ void actorUpdateGroundSlopePitch(u8 *object) {
     f32 headingZ;
     u8 *surface;
 
-    state = *(u8 **)(object + 0x54);
+    state = ((RuntimeObjectPrefix *)object)->state.actor;
     surface = NULL;
-    headingX = mathSinDegrees(*(f32 *)(state + 0x10));
-    headingZ = mathCosDegrees(*(f32 *)(state + 0x10));
-    height = terrainGetWorldHeight(*(f32 *)(object + 0x44), *(f32 *)(object + 0x48), *(f32 *)(object + 0x4C), &surface);
-    nextX = *(f32 *)(object + 0x44) + headingX;
-    nextHeight = terrainGetWorldHeight(nextX, *(f32 *)(object + 0x48), *(f32 *)(object + 0x4C) + headingZ, &surface);
+    headingX = mathSinDegrees(state->orientation[1]);
+    headingZ = mathCosDegrees(state->orientation[1]);
+    height = terrainGetWorldHeight(((RuntimeObjectPrefix *)object)->worldPosition[0], ((RuntimeObjectPrefix *)object)->worldPosition[1], ((RuntimeObjectPrefix *)object)->worldPosition[2], &surface);
+    nextX = ((RuntimeObjectPrefix *)object)->worldPosition[0] + headingX;
+    nextHeight = terrainGetWorldHeight(nextX, ((RuntimeObjectPrefix *)object)->worldPosition[1], ((RuntimeObjectPrefix *)object)->worldPosition[2] + headingZ, &surface);
     heightDelta = height - nextHeight;
     if (surface == NULL) {
     }
@@ -366,8 +366,8 @@ void actorUpdateGroundSlopePitch(u8 *object) {
     }
     actorAddRotationAxisDegrees(
         object,
-        mathApproachAngleDegrees(*(f32 *)(state + 0xC), pitch, 1.0f, 90.0f, 180.0f * gRuntimeFrameSeconds) -
-            *(f32 *)(state + 0xC),
+        mathApproachAngleDegrees(state->orientation[0], pitch, 1.0f, 90.0f, 180.0f * gRuntimeFrameSeconds) -
+            state->orientation[0],
         0);
 }
 
@@ -932,15 +932,15 @@ s32 actorFindPartIndex(s32 actorType, s32 partId) {
 /// \returns Borrowed part pointer, or null if it does not exist.
 /// \note Original decompilation identifier: \c func_800163FC (0x800163FC).
 u8 *actorFindPart(u8 *actor, s32 partId) {
-    u8 *sp1C;
+    ActorScriptState *state;
     s32 partIndex;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    state = ((RuntimeObjectPrefix *)actor)->state.actor;
     partIndex = actorFindPartIndex(((RuntimeObjectPrefix *)actor)->kind, partId);
     if (partIndex < 0) {
         return 0;
     }
-    return ((ActorScriptState *)sp1C)->partTable[partIndex];
+    return state->partTable[partIndex];
 }
 
 /// Get the object handle of a named actor part.
@@ -973,14 +973,14 @@ u8 *actorGetDefaultPart(u8 *actor) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800164AC (0x800164AC).
 void actorGetPartWorldPosition(u8 *actor, s32 partId, f32 *position) {
-    u8 *var_v0;
-    var_v0 = actorFindPart(actor, partId);
-    if (var_v0 == NULL) {
-        var_v0 = actorGetDefaultPart(actor);
+    u8 *part;
+    part = actorFindPart(actor, partId);
+    if (part == NULL) {
+        part = actorGetDefaultPart(actor);
     }
-    position[0] = ((RuntimeObjectPrefix *)var_v0)->worldPosition[0];
-    position[1] = ((RuntimeObjectPrefix *)var_v0)->worldPosition[1];
-    position[2] = ((RuntimeObjectPrefix *)var_v0)->worldPosition[2];
+    position[0] = ((RuntimeObjectPrefix *)part)->worldPosition[0];
+    position[1] = ((RuntimeObjectPrefix *)part)->worldPosition[1];
+    position[2] = ((RuntimeObjectPrefix *)part)->worldPosition[2];
 }
 
 
@@ -1148,21 +1148,21 @@ void actorAllocatePartTable(u8 *actor) {
 void actorPopulatePartTable(u8 *hierarchy, u8 *actor) {
     s32 partIndex;
     u8 *firstChild;
-    u8 *var_s0;
+    u8 *object;
 
-    var_s0 = hierarchy;
+    object = hierarchy;
     if (hierarchy != NULL) {
         do {
-            partIndex = actorFindPartIndex(((RuntimeObjectPrefix *)actor)->kind, ((RuntimeObjectPrefix *)var_s0)->kind);
+            partIndex = actorFindPartIndex(((RuntimeObjectPrefix *)actor)->kind, ((RuntimeObjectPrefix *)object)->kind);
             if (partIndex >= 0) {
-                ((RuntimeObjectPrefix *)actor)->state.actor->partTable[partIndex] = var_s0;
+                ((RuntimeObjectPrefix *)actor)->state.actor->partTable[partIndex] = object;
             }
-            firstChild = ((RuntimeObjectPrefix *)var_s0)->child.bytes;
+            firstChild = ((RuntimeObjectPrefix *)object)->child.bytes;
             if (firstChild != NULL) {
                 actorPopulatePartTable(firstChild, actor);
             }
-            var_s0 = ((RuntimeObjectPrefix *)var_s0)->sibling.bytes;
-        } while (var_s0 != NULL);
+            object = ((RuntimeObjectPrefix *)object)->sibling.bytes;
+        } while (object != NULL);
     }
 }
 

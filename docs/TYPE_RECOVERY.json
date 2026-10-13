@@ -51,7 +51,7 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 1989,
+      "occurrences": 1978,
       "unique_spellings": 836,
       "files": 75
     }
@@ -591,31 +591,8 @@
           "drawListStorage + 0x40": [
             "240:40"
           ],
-          "object + 0x54": [
-            "350:22"
-          ],
-          "state + 0x10": [
-            "352:40",
-            "353:40"
-          ],
-          "object + 0x44": [
-            "354:45",
-            "355:22"
-          ],
-          "object + 0x48": [
-            "354:70",
-            "356:56"
-          ],
-          "object + 0x4C": [
-            "354:95",
-            "356:81"
-          ],
           "heightDelta + 1": [
             "360:34"
-          ],
-          "state + 0xC": [
-            "369:43",
-            "370:22"
           ],
           "actor + 0x18": [
             "392:50"
