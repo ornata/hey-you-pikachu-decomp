@@ -1,5 +1,5 @@
 /// \file
-/// Declares runtime object hierarchy updates and selected-group drawing.
+/// Declares runtime object group updates, drawing and deferred cleanup.
 
 #ifndef OBJECT_GROUPS_H
 #define OBJECT_GROUPS_H
@@ -30,5 +30,16 @@ void objectDrawGroup(s32 group);
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80009784 (0x80009784).
 void objectDrawHierarchyGroup(RuntimeObjectPrefix *object, s32 group);
+
+/// Advance pending hierarchy destruction and release hierarchies ready for removal.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_800093FC (0x800093FC).
+void objectSweepDeferredHierarchyDestruction(void);
+
+/// Request deferred destruction of active hierarchies in the selected object group.
+/// \param group Object group selector: zero for unflagged hierarchies or 0x4000 for flagged hierarchies.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_800094B4 (0x800094B4).
+void objectRequestGroupDestruction(s32 group);
 
 #endif

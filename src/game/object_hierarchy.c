@@ -1384,21 +1384,21 @@ extern u8 gObjectUpdateCameraMatrices[];
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80009344 (0x80009344).
 void objectUpdateGroup(s32 group) {
-    u8 *sp34;
+    RuntimeObjectPrefix *hierarchy;
     s32 pad;
 
-    sp34 = NULL;
+    hierarchy = NULL;
     objectResetTraversalTransformAndMovement();
     collisionGridRandomizeAlignment();
     cameraBuildViewProjection(0, gObjectUpdateViewport, gObjectUpdateCameraMatrices);
-    nodePoolIterateFirst(&gActiveObjectHierarchies, (s32 *)&sp34);
-    if (sp34 != NULL) {
+    nodePoolIterateFirst(&gActiveObjectHierarchies, (s32 *)&hierarchy);
+    if (hierarchy != NULL) {
         do {
-            if ((group == (*(u16 *)(sp34 + 0x36) & 0x4000)) && !(*(u16 *)(sp34 + 0x36) & 0x30)) {
-                objectUpdateHierarchy((RuntimeObjectPrefix *)sp34);
+            if ((group == (hierarchy->flags & 0x4000)) && !(hierarchy->flags & (OBJECT_HIERARCHY_DESTROY_READY | OBJECT_HIERARCHY_DESTROY_REQUESTED))) {
+                objectUpdateHierarchy(hierarchy);
             }
-            nodePoolIterateNext(&gActiveObjectHierarchies, (s32 *)&sp34);
-        } while (sp34 != NULL);
+            nodePoolIterateNext(&gActiveObjectHierarchies, (s32 *)&hierarchy);
+        } while (hierarchy != NULL);
     }
 }
 
@@ -1407,21 +1407,21 @@ void objectUpdateGroup(s32 group) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800093FC (0x800093FC).
 void objectSweepDeferredHierarchyDestruction(void) {
-    u8 *sp2C;
+    RuntimeObjectPrefix *hierarchy;
 
-    sp2C = NULL;
-    nodePoolIterateFirst(&gActiveObjectHierarchies, (s32 *)&sp2C);
-    if (sp2C != NULL) {
+    hierarchy = NULL;
+    nodePoolIterateFirst(&gActiveObjectHierarchies, (s32 *)&hierarchy);
+    if (hierarchy != NULL) {
         do {
-            if (*(u16 *)(sp2C + 0x36) & 0x10) {
-                objectDestroyHierarchy((u8 *)sp2C);
+            if (hierarchy->flags & OBJECT_HIERARCHY_DESTROY_READY) {
+                objectDestroyHierarchy((u8 *)hierarchy);
                 nodePoolRemoveCurrent(&gActiveObjectHierarchies);
                 gActiveObjectHierarchyCount -= 1;
-            } else if (*(u16 *)(sp2C + 0x36) & 0x20) {
-                *(u16 *)(sp2C + 0x36) = *(u16 *)(sp2C + 0x36) | 0x10;
+            } else if (hierarchy->flags & OBJECT_HIERARCHY_DESTROY_REQUESTED) {
+                hierarchy->flags = hierarchy->flags | OBJECT_HIERARCHY_DESTROY_READY;
             }
-            nodePoolIterateNext(&gActiveObjectHierarchies, (s32 *)&sp2C);
-        } while (sp2C != NULL);
+            nodePoolIterateNext(&gActiveObjectHierarchies, (s32 *)&hierarchy);
+        } while (hierarchy != NULL);
     }
 }
 
@@ -1430,17 +1430,17 @@ void objectSweepDeferredHierarchyDestruction(void) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800094B4 (0x800094B4).
 void objectRequestGroupDestruction(s32 group) {
-    u8 *sp2C;
+    RuntimeObjectPrefix *hierarchy;
 
-    sp2C = NULL;
-    nodePoolIterateFirst(&gActiveObjectHierarchies, (s32 *)&sp2C);
-    if (sp2C != NULL) {
+    hierarchy = NULL;
+    nodePoolIterateFirst(&gActiveObjectHierarchies, (s32 *)&hierarchy);
+    if (hierarchy != NULL) {
         do {
-            if ((group == (*(u16 *)(sp2C + 0x36) & 0x4000)) && !(*(u16 *)(sp2C + 0x36) & 0x30)) {
-                objectRequestHierarchyDestruction(sp2C);
+            if ((group == (hierarchy->flags & 0x4000)) && !(hierarchy->flags & (OBJECT_HIERARCHY_DESTROY_READY | OBJECT_HIERARCHY_DESTROY_REQUESTED))) {
+                objectRequestHierarchyDestruction((u8 *)hierarchy);
             }
-            nodePoolIterateNext(&gActiveObjectHierarchies, (s32 *)&sp2C);
-        } while (sp2C != NULL);
+            nodePoolIterateNext(&gActiveObjectHierarchies, (s32 *)&hierarchy);
+        } while (hierarchy != NULL);
     }
 }
 

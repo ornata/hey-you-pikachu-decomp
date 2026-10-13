@@ -6,8 +6,10 @@
 
 /// Proven hierarchy-management flags; other flags retain their numeric forms.
 typedef enum ObjectHierarchyFlag {
-    OBJECT_HIERARCHY_ROOT = 4, ///< Object owns the hierarchy's transform allocation.
-    OBJECT_HIERARCHY_ACTIVE = 8 ///< Top-level object belongs to an active registered hierarchy.
+    OBJECT_HIERARCHY_ROOT = 4,                ///< Object owns the hierarchy's transform allocation.
+    OBJECT_HIERARCHY_ACTIVE = 8,              ///< Top-level object belongs to an active registered hierarchy.
+    OBJECT_HIERARCHY_DESTROY_READY = 0x10,    ///< Hierarchy is eligible for removal during deferred cleanup.
+    OBJECT_HIERARCHY_DESTROY_REQUESTED = 0x20 ///< Deferred destruction was requested; active processing is suppressed.
 } ObjectHierarchyFlag;
 
 /// Enable flags throughout a hierarchy.

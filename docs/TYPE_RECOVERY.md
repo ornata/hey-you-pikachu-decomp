@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 1,852 / 73 |
+| Raw offset candidates | 4,040 / 86 | 1,844 / 73 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3903,3 +3903,9 @@ and documents the distinct update/draw group masks. The implementation and
 eleven consumer units share it. Collection presentation retains its recorded
 legacy declaration exception because the pointer contract changes one drawing
 function; its next evidence is isolated call argument/register allocation.
+
+Group update, destruction requests and deferred cleanup iterate typed hierarchy
+records and named flags. The 0x20 destruction-requested and 0x10 removal-ready
+bits are established by request/sweep behavior and shared in `object_flags.h`.
+Group cleanup declarations join `object_groups.h`; runtime uses its canonical
+no-argument sweep declaration. The original deferred lifecycle ordering remains.

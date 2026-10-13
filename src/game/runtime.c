@@ -617,7 +617,6 @@ void runtimeRequestGameModeChange(s32 mode) {
     runtimeAccumulatePlayTime();
 }
 
-void objectSweepDeferredHierarchyDestruction();                            /* extern */
 void audioStopCategories(s32, f64);
 void hudPlayerUpdateNoOp(s32);                /* extern */
 void presentationUpdateCardMode();                   /* extern */
