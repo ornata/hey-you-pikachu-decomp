@@ -20,28 +20,38 @@
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-typedef struct {
-    char text[60];
-    f32 duration;
-    s32 style;
+/// Copied display text with its requested presentation settings.
+typedef struct QueuedMessage {
+    char text[60]; ///< Owned encoded text including its terminator.
+    f32 duration; ///< Requested display duration in seconds.
+    s32 style;    ///< Font-style index.
 } QueuedMessage;
 
-typedef struct {
-    f32 f0;
-    f32 f4;
-    s32 f8;
-    s32 fC;
-    f32 f10;
-    f32 scrollAngle;
-    QueuedMessage queued[16];
-    s32 f458;
-    s32 f45C;
-    TextImageHandle handles[3];
-    u8 pad46C[0x3C];
-} Unk4A8;
+/// Retained message queue, transition timers and owned image slots.
+typedef struct MessageBarState {
+    f32 elapsed; ///< Time since the current message became active.
+    f32 duration; ///< Current message display duration.
+    s32 queueWriteIndex; ///< Next queue slot available for insertion.
+    s32 queueReadIndex; ///< Next queued message awaiting activation.
+    f32 transitionRemaining; ///< Remaining display-transition time.
+    f32 scrollAngle; ///< Phase in degrees for wide-text scrolling.
+    QueuedMessage queued[16]; ///< Owned pending-message ring.
+    s32 displayImageIndex; ///< Image slot currently displayed.
+    s32 workImageIndex; ///< Image slot available for preparation.
+    TextImageHandle handles[3]; ///< Owned text images used during transitions.
+    u8 unknown46C[0x3C]; ///< Retained storage with no established role.
+} MessageBarState;
+typedef char QueuedMessageSizeCheck[(sizeof(QueuedMessage) == 0x44) ? 1 : -1];
+typedef char MessageBarStateSizeCheck[(sizeof(MessageBarState) == 0x4A8) ? 1 : -1];
+#define MESSAGE_OFFSET(field) ((u32) & (((MessageBarState *)0)->field))
+typedef char MessageQueueOffsetCheck[(MESSAGE_OFFSET(queued) == 0x18) ? 1 : -1];
+typedef char MessageDisplaySlotOffsetCheck[(MESSAGE_OFFSET(displayImageIndex) == 0x458) ? 1 : -1];
+typedef char MessageWorkSlotOffsetCheck[(MESSAGE_OFFSET(workImageIndex) == 0x45C) ? 1 : -1];
+typedef char MessageImagesOffsetCheck[(MESSAGE_OFFSET(handles) == 0x460) ? 1 : -1];
+#undef MESSAGE_OFFSET
 /// Shared queued-message, timing, scrolling and text-image state for the message bar.
 /// \note Original identifier: \c D_800F06C0 (0x800F06C0).
-extern Unk4A8 gMessageBarState;
+extern MessageBarState gMessageBarState;
 void cameraUpdateOverlayColors(s32, s32);
 void cameraDrawSecondaryOverlay(s32);
 void objectDrawHierarchyGroup(s32, s32);
@@ -160,22 +170,22 @@ extern u8 gMessageBarCurrentText[];
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002767C (0x8002767C).
 void messageBarActivateNext(void) {
-    u8 *e = (u8 *)&gMessageBarState + gMessageBarState.fC * 0x44;
+    u8 *e = (u8 *)&gMessageBarState + gMessageBarState.queueReadIndex * 0x44;
 
-    TRACE("_next: getIdx:%d setIdx:%d drawIdx:%d workIdx:%d\n", gMessageBarState.fC, gMessageBarState.f8,
-          gMessageBarState.f458, gMessageBarState.f45C);
+    TRACE("_next: getIdx:%d setIdx:%d drawIdx:%d workIdx:%d\n", gMessageBarState.queueReadIndex, gMessageBarState.queueWriteIndex,
+          gMessageBarState.displayImageIndex, gMessageBarState.workImageIndex);
 
-    gMessageBarState.f4 = *(f32 *)((u8 *)&gMessageBarState + gMessageBarState.fC * 0x44 + 0x54);
-    gMessageBarState.f0 = 0.0f;
+    gMessageBarState.duration = *(f32 *)((u8 *)&gMessageBarState + gMessageBarState.queueReadIndex * 0x44 + 0x54);
+    gMessageBarState.elapsed = 0.0f;
     gMessageBarState.scrollAngle = 0.0f;
     stringCopy(gMessageBarCurrentText, e + 0x18);
-    if (++gMessageBarState.fC >= 0x10) {
-        gMessageBarState.fC = 0;
+    if (++gMessageBarState.queueReadIndex >= 0x10) {
+        gMessageBarState.queueReadIndex = 0;
     }
-    if (++gMessageBarState.f458 >= 3) {
-        gMessageBarState.f458 = 0;
+    if (++gMessageBarState.displayImageIndex >= 3) {
+        gMessageBarState.displayImageIndex = 0;
     }
-    gMessageBarState.f10 = 0.0f;
+    gMessageBarState.transitionRemaining = 0.0f;
 }
 
 /// Advance the message bar display timer and queued-message transitions.
@@ -185,19 +195,19 @@ s32 messageBarUpdate(void) {
     s32 pending;
     f32 interval;
 
-    gMessageBarState.f0 += gRuntimeFrameSeconds;
-    if (gMessageBarState.fC == gMessageBarState.f8) {
-        if (gMessageBarState.f0 < gMessageBarState.f4) {
+    gMessageBarState.elapsed += gRuntimeFrameSeconds;
+    if (gMessageBarState.queueReadIndex == gMessageBarState.queueWriteIndex) {
+        if (gMessageBarState.elapsed < gMessageBarState.duration) {
             return 1;
         }
-        gMessageBarState.f4 = 0.0f;
-        gMessageBarState.f0 = 0.0f;
+        gMessageBarState.duration = 0.0f;
+        gMessageBarState.elapsed = 0.0f;
         return 0;
     }
-    pending = gMessageBarState.f8 - gMessageBarState.fC;
-    if (gMessageBarState.f10 > 0.0f) {
-        gMessageBarState.f10 -= gRuntimeFrameSeconds;
-        if (gMessageBarState.f10 <= 0.0f) {
+    pending = gMessageBarState.queueWriteIndex - gMessageBarState.queueReadIndex;
+    if (gMessageBarState.transitionRemaining > 0.0f) {
+        gMessageBarState.transitionRemaining -= gRuntimeFrameSeconds;
+        if (gMessageBarState.transitionRemaining <= 0.0f) {
             messageBarActivateNext();
         }
         return 1;
@@ -206,19 +216,19 @@ s32 messageBarUpdate(void) {
         pending += 16;
     }
     interval = mathMapRangeClamped(1.0f, 0.05f, 4.0f, 0.05f, pending);
-    if ((gMessageBarState.f0 < gMessageBarState.f4) && (gMessageBarState.f0 < interval)) {
+    if ((gMessageBarState.elapsed < gMessageBarState.duration) && (gMessageBarState.elapsed < interval)) {
         return 1;
     }
-    messageBarPrepareImage(gMessageBarState.f45C,
-                           *(QueuedMessage *)((u8 *)&gMessageBarState + gMessageBarState.fC * 0x44 + 0x18));
-    if (++gMessageBarState.f45C >= 3) {
-        gMessageBarState.f45C = 0;
+    messageBarPrepareImage(gMessageBarState.workImageIndex,
+                           *(QueuedMessage *)((u8 *)&gMessageBarState + gMessageBarState.queueReadIndex * 0x44 + 0x18));
+    if (++gMessageBarState.workImageIndex >= 3) {
+        gMessageBarState.workImageIndex = 0;
     }
-    if (gMessageBarState.f4 == 0.0f) {
+    if (gMessageBarState.duration == 0.0f) {
         messageBarActivateNext();
         return 1;
     }
-    gMessageBarState.f10 = 0.25f;
+    gMessageBarState.transitionRemaining = 0.25f;
     return 1;
 }
 
@@ -230,7 +240,7 @@ extern s32 gMessageBarWorkImageIndex;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800278F4 (0x800278F4).
 void messageBarInitialize(void) {
-    _bzero(&gMessageBarState, 0x4A8);
+    _bzero(&gMessageBarState, sizeof(MessageBarState));
     gMessageBarWorkImageIndex = 1;
 }
 
@@ -263,32 +273,32 @@ s32 strlen(const char *);
 /// \returns 1 when queued or refreshed, or 0 for empty text or a full queue.
 /// \note Original decompilation identifier: \c func_80027988 (0x80027988).
 s32 messageBarEnqueue(s32 style, f32 duration, u8 *text) {
-    u8 *ent;
+    QueuedMessage *entry;
     s32 next;
 
     TRACE("elEchoMessage(%d, %f, %s)\n", style, duration, text);
     if (strlen((char *)text) == 0) {
         return 0;
     }
-    if (gMessageBarState.fC == gMessageBarState.f8 &&
+    if (gMessageBarState.queueReadIndex == gMessageBarState.queueWriteIndex &&
         memoryCompareBytes(gMessageBarCurrentText, text, strlen((char *)text)) == 0) {
-        gMessageBarState.f0 = 0.0f;
-        gMessageBarState.f4 = duration;
+        gMessageBarState.elapsed = 0.0f;
+        gMessageBarState.duration = duration;
         return 1;
     }
-    next = gMessageBarState.f8 + 1;
+    next = gMessageBarState.queueWriteIndex + 1;
     if (next >= 16) {
         next = 0;
     }
-    TRACE("setIdx:%d nextIdx:%d\n", gMessageBarState.f8, next);
-    if (next == gMessageBarState.fC) {
+    TRACE("setIdx:%d nextIdx:%d\n", gMessageBarState.queueWriteIndex, next);
+    if (next == gMessageBarState.queueReadIndex) {
         return 0;
     }
-    ent = (u8 *)&gMessageBarState + gMessageBarState.f8 * 0x44 + 0x18;
-    stringCopy(ent, text);
-    *(f32 *)(ent + 0x3C) = duration;
-    *(s32 *)(ent + 0x40) = style;
-    gMessageBarState.f8 = next;
+    entry = &gMessageBarState.queued[gMessageBarState.queueWriteIndex];
+    stringCopy((u8 *)entry->text, text);
+    entry->duration = duration;
+    entry->style = style;
+    gMessageBarState.queueWriteIndex = next;
     return 1;
 }
 
@@ -296,14 +306,14 @@ s32 messageBarEnqueue(s32 style, f32 duration, u8 *text) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80027A88 (0x80027A88).
 void messageBarClear(void) {
-    gMessageBarState.f4 = 0.0f;
-    gMessageBarState.f0 = gMessageBarState.f4;
-    gMessageBarState.f10 = 0.0f;
-    gMessageBarState.fC = gMessageBarState.f8;
-    gMessageBarState.f45C = gMessageBarState.f458;
-    gMessageBarState.f45C++;
-    if (gMessageBarState.f45C >= 3) {
-        gMessageBarState.f45C = 0;
+    gMessageBarState.duration = 0.0f;
+    gMessageBarState.elapsed = gMessageBarState.duration;
+    gMessageBarState.transitionRemaining = 0.0f;
+    gMessageBarState.queueReadIndex = gMessageBarState.queueWriteIndex;
+    gMessageBarState.workImageIndex = gMessageBarState.displayImageIndex;
+    gMessageBarState.workImageIndex++;
+    if (gMessageBarState.workImageIndex >= 3) {
+        gMessageBarState.workImageIndex = 0;
     }
 }
 
@@ -329,11 +339,11 @@ s32 messageBarUpdateAndDraw(void) {
     if (messageBarUpdate() == 0) {
         return 0;
     }
-    slot = gMessageBarState.f458;
-    if (gMessageBarState.f0 >= 2.8f) {
-        fadeTime = gMessageBarState.f4 - 2.8f;
+    slot = gMessageBarState.displayImageIndex;
+    if (gMessageBarState.elapsed >= 2.8f) {
+        fadeTime = gMessageBarState.duration - 2.8f;
         if (fadeTime > 0.1f) {
-            textOpacity = opacity = (gMessageBarState.f4 - gMessageBarState.f0) / fadeTime;
+            textOpacity = opacity = (gMessageBarState.duration - gMessageBarState.elapsed) / fadeTime;
         } else {
             textOpacity = opacity = 0.0f;
         }
@@ -348,8 +358,8 @@ s32 messageBarUpdateAndDraw(void) {
     } else if (textOpacity > 1.0f) {
         textOpacity = 1.0f;
     }
-    if (gMessageBarState.f10 != 0.0f) {
-        transition = gMessageBarState.f10 * 4.0f;
+    if (gMessageBarState.transitionRemaining != 0.0f) {
+        transition = gMessageBarState.transitionRemaining * 4.0f;
         if (transition < 0.0f) {
             transition = 0.0f;
         } else if (transition > 1.0f) {
@@ -384,7 +394,7 @@ s32 messageBarUpdateAndDraw(void) {
             scroll = 1.0f;
         }
         offset = (gMessageBarState.handles[slot].image->width - 271) * scroll;
-        if (gMessageBarState.f10 == 0.0f) {
+        if (gMessageBarState.transitionRemaining == 0.0f) {
             gMessageBarState.scrollAngle += gRuntimeFrameSeconds * 75.0f;
             while (gMessageBarState.scrollAngle < 0.0f) {
                 gMessageBarState.scrollAngle += 360.0f;
@@ -399,7 +409,7 @@ s32 messageBarUpdateAndDraw(void) {
     textImageDrawRectangle(&gRenderDisplayListCursor, gMessageBarState.handles[slot].image, 24, textTop, edge, 38,
                            offset, 0, 1.0f, 1.0f);
     slot++;
-    if (gMessageBarState.f10 == 0.0f) {
+    if (gMessageBarState.transitionRemaining == 0.0f) {
         return 1;
     }
     if (slot >= 3) {

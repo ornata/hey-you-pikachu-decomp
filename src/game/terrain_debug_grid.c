@@ -19,20 +19,6 @@ void presentationDrawAreaLabel(Gfx **);
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-typedef struct {
-    f32 f0;
-    f32 f4;
-    s32 f8;
-    s32 fC;
-    f32 f10;
-    u8 pad14[0x444];
-    s32 f458;
-    volatile s32 f45C;
-    u8 pad460[0x48];
-} Unk4A8;
-/// Shared queued-message, timing, scrolling and text-image state for the message bar.
-/// \note Original identifier: \c D_800F06C0 (0x800F06C0).
-extern Unk4A8 gMessageBarState;
 void cameraUpdateOverlayColors(s32, s32);
 void cameraDrawSecondaryOverlay(s32);
 void objectDrawHierarchyGroup(s32, s32);

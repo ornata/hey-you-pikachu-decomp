@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,606 / 77 |
+| Raw offset candidates | 4,040 / 86 | 2,604 / 77 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3434,3 +3434,11 @@ interface; removal of its unused fourth argument preserves every allocated
 object byte and relocation. The VM and script command consumers share the same
 float duration and byte-text types. Source lifecycle code and Ghidra enqueue
 at `0x80027988` establish the ownership and return contracts.
+
+The message bar's private `MessageBarState` now names its queue cursors, display
+timers and image slots. Size and offset checks protect the queue and image
+layout. Enqueue writes use a typed `QueuedMessage`, preserving text ownership
+and the 68-byte record stride. The unused, conflicting state view in the terrain
+debug unit was removed; the implementation remains private. Initialization,
+activation, update and drawing establish the field roles; the final 60 bytes
+retain an explicit unresolved-storage name.
