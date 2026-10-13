@@ -1654,6 +1654,17 @@ u8 *convergingParticleEffectCreate(s32 targetId, f32 lifetime, s32 count, s32 st
     return first;
 }
 
+/// Owned flickering-effect drawing resources and target-following lifetime.
+typedef struct FlickeringEffectState {
+    Gfx *displayList; ///< Owned drawing commands for the hierarchy.
+    s32 targetId;     ///< Object-manager handle to follow.
+    f32 duration;     ///< Remaining lifetime in seconds.
+} FlickeringEffectState;
+
+typedef char FlickeringEffectStateSizeCheck[(sizeof(FlickeringEffectState) == 12) ? 1 : -1];
+typedef char FlickeringTargetOffsetCheck[(((u32) & ((FlickeringEffectState *)0)->targetId) == 4) ? 1 : -1];
+typedef char FlickeringLifetimeOffsetCheck[(((u32) & ((FlickeringEffectState *)0)->duration) == 8) ? 1 : -1];
+
 /// Initialize the state of a flickering effect.
 /// \param effect Effect object to initialize; must not already own state.
 /// \returns Nothing.
@@ -1662,9 +1673,9 @@ void flickeringEffectInitialize(void *effect) {
     u8 *sp1C;
     u8 *allocation;
 
-    allocation = heapAllocLocal(&gGameHeap, 0xC, 0x7A2);
+    allocation = heapAllocLocal(&gGameHeap, sizeof(FlickeringEffectState), 0x7A2);
     sp1C = allocation;
-    _bzero((void *)allocation, 0xC);
+    _bzero((void *)allocation, sizeof(FlickeringEffectState));
     ((RuntimeObjectPrefix *)effect)->state.bytes = sp1C;
 }
 
@@ -1676,11 +1687,11 @@ void flickeringEffectInitialize(void *effect) {
 /// ABI.
 /// \note Original decompilation identifier: \c func_8001ABB8 (0x8001ABB8).
 void flickeringEffectDestroy(u8 *effect) {
-    u8 *obj;
+    FlickeringEffectState *state;
 
-    obj = *(u8 **)(effect + 0x54);
-    heapFreeLocal(&gGameHeap, *(u8 **)obj, obj);
-    heapFreeLocal(&gGameHeap, obj);
+    state = ((RuntimeObjectPrefix *)effect)->state.pointer;
+    heapFreeLocal(&gGameHeap, state->displayList, state);
+    heapFreeLocal(&gGameHeap, state);
 }
 
 /// Update a flickering effect as it follows its target, ending it when its lifetime or target ends.
@@ -1688,16 +1699,16 @@ void flickeringEffectDestroy(u8 *effect) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001ABF8 (0x8001ABF8).
 void flickeringEffectUpdate(u8 *effect) {
-    u8 *v;
+    FlickeringEffectState *state;
     u8 *t;
     u8 *p;
     f64 lo;
     f64 hi;
 
-    v = *(u8 **)(effect + 0x54);
-    *(f32 *)(v + 8) -= gRuntimeFrameSeconds;
-    t = objectResolveAvailableHandle(*(s32 *)(v + 4));
-    if (*(f32 *)(v + 8) < 0.0f || t == NULL) {
+    state = ((RuntimeObjectPrefix *)effect)->state.pointer;
+    state->duration -= gRuntimeFrameSeconds;
+    t = objectResolveAvailableHandle(state->targetId);
+    if (state->duration < 0.0f || t == NULL) {
         objectRequestHierarchyDestruction(effect);
         return;
     }
@@ -1734,24 +1745,20 @@ void flickeringEffectUpdate(u8 *effect) {
 /// live until rendering finishes.
 /// \note Original decompilation identifier: \c func_8001AE30 (0x8001AE30).
 s32 flickeringEffectPrepareDraw(u8 *effect) {
-    u8 *obj;
+    FlickeringEffectState *state;
     Gfx *g;
     s32 idx;
 
-    obj = *(u8 **)(effect + 0x54);
+    state = ((RuntimeObjectPrefix *)effect)->state.pointer;
     g = gRenderDisplayListCursor++;
     g->words.w0 = 0xDB06001C;
     idx = (*(u16 *)(effect + 0x36) & 0x8000) ? 1 : 0;
     g->words.w1 = (u32)osVirtualToPhysical(((void **)(effect + 0x3C))[idx]);
     gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0x80, 0xFF, 0xFF, 0xFF);
-    return *(s32 *)obj;
+    return (s32)state->displayList;
 }
 
-typedef struct EffectAEDC {
-    Gfx *displayList;
-    s32 targetId;
-    f32 duration;
-} EffectAEDC;
+
 /// Object template for flickering particle effects.
 /// \note Original identifier: \c D_80077D88 (0x80077D88).
 extern u8 gFlickeringEffectObjectTemplate[];
@@ -1769,7 +1776,7 @@ extern Gfx *gFlickeringEffectDisplayLists[];
 u8 *flickeringEffectCreate(s32 targetId, f32 duration, s32 count) {
     u8 *target;
     u8 *object;
-    EffectAEDC *state;
+    FlickeringEffectState *state;
     u8 *previous;
     u8 *child;
     Gfx *dl;
@@ -1778,7 +1785,7 @@ u8 *flickeringEffectCreate(s32 targetId, f32 duration, s32 count) {
     if (target == NULL)
         return NULL;
     object = objectCreateFromTemplate((ObjectTemplate *)gFlickeringEffectObjectTemplate);
-    state = *(EffectAEDC **)(object + 0x54);
+    state = ((RuntimeObjectPrefix *)object)->state.pointer;
     state->displayList = (Gfx *)heapAllocLocal(&gGameHeap, (count * 4 + 16) * sizeof(Gfx), 0x809);
     state->targetId = targetId;
     state->duration = duration;

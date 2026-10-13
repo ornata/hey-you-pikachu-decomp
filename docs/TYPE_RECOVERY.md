@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,186 / 76 |
+| Raw offset candidates | 4,040 / 86 | 2,179 / 76 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3644,3 +3644,9 @@ and sibling fields. Its action-script caller uses a checked operand view: signed
 lifetime, and signed element count. `converging_particle.h` supplies the shared
 creation contract. Typed lifetime access preserves the original script word bits
 and matches the caller without an integer-to-float conversion.
+
+### Flickering-effect state
+
+Allocation, creation, update, drawing and destruction share a checked 12-byte
+private state containing an owned display list, target handle and remaining
+lifetime. The original extra deallocator argument remains documented.
