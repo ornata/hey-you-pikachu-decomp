@@ -23,27 +23,22 @@
  * discarded comma expression that keeps only the format string. */
 #define TRACE_LEAF (void)
 
-/* The unit's .data tail, ROM 0x9B9C0..0x9BA00. IDO places the globals first,
- * then the initializer image of progressGetBackupRecordIndex's local array (D_8009ADDC), so
- * the layout is: -1 word, progressInitializeEepromRecordLocations's image, progressGetBackupRecordIndex's image, pad.
- * D_8009ADC4 is a struct because IDO 8-aligns arrays and ROM has it at +4. */
-typedef struct {
-    s32 v[6];
-} Unk2F760Image;
+/// Payload byte counts for three primary EEPROM records and their three backups.
+/// \note Portability: A word-aligned record preserves the original data placement;
+/// an array declaration would receive eight-byte alignment from IDO.
+typedef struct EepromRecordSizeTable {
+    s32 payloadBytes[6]; ///< Payload sizes excluding the transfer checksum and block padding.
+} EepromRecordSizeTable;
+typedef char EepromRecordSizeTableSizeCheck[(sizeof(EepromRecordSizeTable) == 0x18) ? 1 : -1];
 s32 D_8009ADC0 = -1;
 /// Payload byte counts used to place primary EEPROM records and their backup copies.
 /// \note Original identifier: \c D_8009ADC4 (0x8009ADC4).
-Unk2F760Image gEepromRecordPayloadSizes = {{1, 0x74, 0x74, 1, 0x74, 0x74}};
+EepromRecordSizeTable gEepromRecordPayloadSizes = {{1, 0x74, 0x74, 1, 0x74, 0x74}};
 /// Storage type identifiers indexed by resolved progress field ID.
 /// \note Original identifier: \c D_8009A754 (0x8009A754).
 extern s32 gProgressFieldTypes[];
-/// Owned toolbox display state, item rows, placeholders and special storage slots.
-/// \note Original identifier: \c D_800F1BE0 (0x800F1BE0).
-extern s32 gToolboxState;
 
 
-void toolboxScaleCurrentRow(s32 *);           /* extern */
-u8 *toolboxTakeObject(s32, s32); /* extern */
 
 
 /// Sets one direction in a pose from pitch and yaw angles.
@@ -294,7 +289,7 @@ u8 gEepromRecordBlockOffsets[6];
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80032550 (0x80032550).
 void progressInitializeEepromRecordLocations(void) {
-    Unk2F760Image image = gEepromRecordPayloadSizes;
+    EepromRecordSizeTable recordSizes = gEepromRecordPayloadSizes;
     s32 i;
     u32 offset = 0;
     TRACE_LEAF("");
@@ -303,7 +298,7 @@ void progressInitializeEepromRecordLocations(void) {
     for (i = 0; i < 6; i++) {
         gEepromRecordBlockOffsets[i] = offset;
         TRACE_LEAF(" _eepromIdx[%d] = %d\n", i, offset);
-        offset += (u32)(image.v[i] + 11) >> 3;
+        offset += (u32)(recordSizes.payloadBytes[i] + 11) >> 3;
     }
     TRACE_LEAF("\npreserved data   size: %d\n", offset);
 }

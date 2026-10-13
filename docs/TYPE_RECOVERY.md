@@ -4154,3 +4154,17 @@ local partial view. World-map input uses the shared `ControllerState` and the
 actor's `ScriptMessage` mailbox rather than duplicate two-word and controller
 records. Its private sprite list has a descriptive name, documented terminator
 and checked size. All accepted changes preserve strict objects.
+
+### Reverb preset and EEPROM size records
+
+Audio initialization uses a typed resident six-section reverb preset instead of
+a scalar declaration and cast. Linked data confirms the six sections and 0xC8
+record extent; checked section size and offsets preserve the target layout.
+Delay fields are documented in milliseconds, while synthesizer coefficient
+parameters retain their established names without inventing units.
+
+The EEPROM payload-size wrapper now has a descriptive type and field, checked
+0x18 extent, and a Doxygen note explaining its required word alignment. Its
+sizes cover three primary records and their three backups. Unused toolbox
+declarations were removed from progress storage. Both source units preserve
+all allocated bytes, defined symbols and relocations.

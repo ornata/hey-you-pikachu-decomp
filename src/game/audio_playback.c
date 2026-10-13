@@ -31,18 +31,32 @@ extern AudioSequenceSlot gAudioSequenceSlots[4];
 /// \note Original identifier: \c D_800EE9B0 (0x800EE9B0).
 extern AudioSequenceSlot gAudioSequenceSlotsEnd; /* one past D_800EC9F0[3] */
 
-typedef struct ReverbSectionInit {
-    s32 inputMs, outputMs;
-    s32 feedback, feedforward, gain, chorusRate, chorusDepth, filter;
-} ReverbSectionInit;
-typedef struct ReverbInit {
-    s32 count, lengthMs;
-    ReverbSectionInit sections[6];
-} ReverbInit;
+/// One custom reverberation section before conversion to output-rate samples.
+typedef struct AudioReverbSection {
+    s32 inputDelayMs;  ///< Input delay in milliseconds.
+    s32 outputDelayMs; ///< Output delay in milliseconds.
+    s32 feedback;     ///< Feedback coefficient supplied to the synthesizer.
+    s32 feedforward;  ///< Feedforward coefficient supplied to the synthesizer.
+    s32 gain;         ///< Section output gain parameter.
+    s32 chorusRate;   ///< Chorus rate parameter.
+    s32 chorusDepth;  ///< Chorus depth parameter.
+    s32 filter;       ///< Section filter parameter.
+} AudioReverbSection;
+
+/// Resident six-section reverb configuration; playback borrows it during setup.
+typedef struct AudioReverbPreset {
+    s32 sectionCount;  ///< Number of active entries in sections; six in the resident preset.
+    s32 delayLengthMs; ///< Total delay-buffer duration in milliseconds.
+    AudioReverbSection sections[6]; ///< Resident section parameters.
+} AudioReverbPreset;
+
+typedef char AudioReverbSectionSizeCheck[(sizeof(AudioReverbSection) == 0x20) ? 1 : -1];
+typedef char AudioReverbPresetSizeCheck[(sizeof(AudioReverbPreset) == 0xC8) ? 1 : -1];
+typedef char AudioReverbSectionsOffsetCheck[(((u32) & ((AudioReverbPreset *)0)->sections) == 8) ? 1 : -1];
 #define AUDIO_BANK_SIZE 0x11690 /* bank ROM D_84F5F0..0x860C80; samples follow */
 /// Custom reverb section settings used when initializing game audio.
 /// \note Original identifier: \c D_80063510 (0x80063510).
-extern s32 gAudioReverbPreset;
+extern AudioReverbPreset gAudioReverbPreset;
 /// Storage backing the game audio heap and its playback resources.
 /// \note Original identifier: \c D_800B6E00 (0x800B6E00).
 extern u8 gAudioHeapStorage[];
@@ -89,19 +103,19 @@ s32 audioInitialize(s32 scheduler, s32 threadId, s32 priority, u32 frequency) {
     ALSynConfig config;
     s32 i;
     s32 used;
-    ReverbInit *preset;
+    AudioReverbPreset *preset;
     if (gAudioInitialized) {
         return 0;
     }
-    preset = (ReverbInit *)&gAudioReverbPreset;
+    preset = &gAudioReverbPreset;
     alHeapInit(&heap, gAudioHeapStorage, 0x35B60);
     audioDmaInitialize(&heap, 0x40, 10);
-    config.params = alHeapAlloc(&heap, preset->count * 8 + 2, sizeof(s32));
-    config.params[0] = preset->count;
-    config.params[1] = ((s32)(preset->lengthMs * frequency) / 1000) & ~7;
-    for (i = 0; i < preset->count; i++) {
-        config.params[i * 8 + 2] = ((s32)(preset->sections[i].inputMs * frequency) / 1000) & ~7;
-        config.params[i * 8 + 3] = ((s32)(preset->sections[i].outputMs * frequency) / 1000) & ~7;
+    config.params = alHeapAlloc(&heap, preset->sectionCount * 8 + 2, sizeof(s32));
+    config.params[0] = preset->sectionCount;
+    config.params[1] = ((s32)(preset->delayLengthMs * frequency) / 1000) & ~7;
+    for (i = 0; i < preset->sectionCount; i++) {
+        config.params[i * 8 + 2] = ((s32)(preset->sections[i].inputDelayMs * frequency) / 1000) & ~7;
+        config.params[i * 8 + 3] = ((s32)(preset->sections[i].outputDelayMs * frequency) / 1000) & ~7;
         config.params[i * 8 + 4] = preset->sections[i].feedback;
         config.params[i * 8 + 5] = preset->sections[i].feedforward;
         config.params[i * 8 + 6] = preset->sections[i].gain;
