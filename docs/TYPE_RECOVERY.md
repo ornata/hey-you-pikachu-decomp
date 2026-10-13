@@ -4267,3 +4267,17 @@ for mono and two for stereo. The previous blanket description of other values as
 mono was inaccurate: the two playback engines differ outside supported modes.
 Ghidra at 0x8001FA28 and both engine consumers confirm the output-setting path.
 Each source-unit adoption and named-mask change preserves strict objects.
+
+### Sequence playback and category-volume contracts
+
+`audio_sequence.h` shares sequence start, fade, stop and rate interfaces with the
+cue/action-script consumer. Sequence input is explicitly a ROM address, consistent
+with sequenceControlStart, rather than a CPU data pointer. Rate lookup reports
+whether a slot retains a handle, not whether it is still playing. Ghidra at
+0x8001FB5C confirms the sequence-start path. Redundant same-unit prototypes are
+removed without changing the line-sensitive fade loop bodies.
+
+Category master volume is now part of `audio_control.h`; title and companion
+consumers use its declaration and named masks. Its contract distinguishes sequence
+normalization from direct sound-effect levels. Each of the four edited units
+preserves strict objects, and the clean build matches the retail ROM.

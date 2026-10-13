@@ -1,3 +1,4 @@
+#include "audio_control.h"
 #include "game_heap.h"
 #include "controller_state.h"
 #include "player_chase.h"
@@ -2578,7 +2579,6 @@ void audioSetMusicDuckingInhibitFlags(s32 flags) {
     gGameplayMusicDuckingInhibitFlags = flags;
 }
 
-void audioSetCategoryVolume(s32, s32); /* extern */
 
 /// Apply the saved music-volume setting with a temporary volume multiplier.
 /// \param multiplier Finite multiplier of the saved volume; the scaled value must fit a signed integer before
@@ -2602,7 +2602,7 @@ void audioApplySavedMusicVolume(f32 multiplier) {
         var_a1 = 0x7FFF;
     }
     TRACE("setSongVolume(%f) vcur: %d/%d vol:%d\n", multiplier, sp18, progressGetMaximum(0xA), var_a1);
-    audioSetCategoryVolume(2, var_a1);
+    audioSetCategoryVolume(AUDIO_CATEGORY_SEQUENCES, var_a1);
 }
 
 
@@ -2628,7 +2628,7 @@ void audioApplySavedSoundEffectVolume(f32 multiplier) {
         var_a1 = 0xFFFF;
     }
     TRACE("setSfxVolume(%f) vcur: %d/%d vol:%d\n", multiplier, sp18, progressGetMaximum(0xB), var_a1);
-    audioSetCategoryVolume(1, var_a1);
+    audioSetCategoryVolume(AUDIO_CATEGORY_SOUND_EFFECTS, var_a1);
 }
 
 /// Whether gameplay exposes microphone interaction and its HUD indicator.

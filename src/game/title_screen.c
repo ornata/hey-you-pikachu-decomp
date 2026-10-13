@@ -519,7 +519,6 @@ s32 titleScreenGetDemoIndex(void) {
     return gTitleDemoIndex;
 }
 
-void audioSetCategoryVolume(s32, s32); /* extern */
 
 /// Adjust the title-screen music volume.
 /// \param level Relative music level, clamped to 0 through 1; its product with 32767 must be representable as a signed integer.
@@ -536,7 +535,7 @@ void titleScreenSetMusicVolume(f32 level) {
     } else if (requestedVolume >= 0x8000) {
         clampedVolume = 0x7FFF;
     }
-    audioSetCategoryVolume(2, clampedVolume);
+    audioSetCategoryVolume(AUDIO_CATEGORY_SEQUENCES, clampedVolume);
 }
 
 /// Prepare the title-screen message panel from a list of text entries.

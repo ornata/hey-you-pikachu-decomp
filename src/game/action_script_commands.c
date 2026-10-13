@@ -1,3 +1,4 @@
+#include "audio_sequence.h"
 #include "pikachu_actor.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
@@ -80,11 +81,9 @@ s32 audioGetCurrentCueState(s32 *cue, f64 *rate) {
 /// Playback handle for the selected audio cue, or zero when inactive.
 /// \note Original identifier: \c D_80089470 (0x80089470).
 extern s32 gCurrentAudioCuePlaybackHandle;
-s32 audioPlaySequenceWithFade(s32, f64);
 /// ROM address of the selected audio cue bank.
 /// \note Original identifier: \c D_80089478 (0x80089478).
 extern s32 gAudioCueBankRomAddress;
-s32 audioFadeOutSequence(s32, f64); /* extern */
 
 /// Transitions from the current audio cue to a new cue or silence.
 /// \param cue Valid cue ID in the selected bank, or a negative value to stop the current cue.
@@ -106,7 +105,6 @@ s32 audioChangeCurrentCue(s32 cue, f64 fadeIn, f64 fadeOut) {
     return gCurrentAudioCuePlaybackHandle;
 }
 
-s32 audioSetSequenceRate(s32, f64);
 
 /// Records the requested playback rate and applies it to the current cue when that cue permits rate changes.
 /// \param rate Positive playback rate multiplier; one uses the original rate.

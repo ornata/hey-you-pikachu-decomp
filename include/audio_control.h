@@ -37,4 +37,12 @@ void audioStopCategories(s32 categories, f64 fadeSeconds);
 /// \note Original decompilation identifier: \c func_8001FCA4 (0x8001FCA4).
 s32 audioCountActive(s32 categories);
 
+/// Set master levels for selected categories of initialized audio services.
+/// \param categories AudioCategory bit mask; zero selects no playback.
+/// \param volume Category-specific level: sequences use volume divided by 65535;
+/// sound effects receive the integer level directly.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8002006C (0x8002006C).
+void audioSetCategoryVolume(s32 categories, s32 volume);
+
 #endif

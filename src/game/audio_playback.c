@@ -1,3 +1,4 @@
+#include "audio_sequence.h"
 #include "audio_control.h"
 #include "audio_initialize.h"
 #include "audio_worker.h"
@@ -217,7 +218,7 @@ void audioInitializeSequencePlayers(ALHeap *heap, ALBankFile *bankFile) {
 extern s32 gAudioNextPlaybackHandle;
 
 /// Start a sequence at full volume in an available playback slot.
-/// \param data Sequence data address, valid throughout playback.
+/// \param data ROM address of sequence data, available throughout playback.
 /// \returns The playback identifier, or zero if all sequence slots are busy.
 /// \note Original decompilation identifier: \c func_8001FB5C (0x8001FB5C).
 s32 audioPlaySequence(s32 data) {
@@ -416,11 +417,10 @@ void audioSetCategoryVolume(s32 categories, s32 volume) {
     }
 }
 
-s32 audioPlaySequence(s32);
 
 // clang-format off
 /// Start a sequence with a volume transition from thirty percent to full level.
-/// \param data Sequence data address, valid throughout playback.
+/// \param data ROM address of sequence data, available throughout playback.
 /// \param time Nonnegative fade duration in seconds; zero requests full volume immediately.
 /// \returns The playback identifier, or zero if all sequence slots are busy.
 ///
@@ -471,7 +471,6 @@ s32 audioFadeOutSequence(s32 id, f64 fadeSeconds) {
 }
 // clang-format on
 
-s32 audioFadeOutSequence(s32, f64);
 
 /// Stop sound effects or fade out a sequence associated with an audio identifier.
 /// \param id Playback identifier; zero selects no playback.
