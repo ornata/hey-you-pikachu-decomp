@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "camera_overlay.h"
 #include "terrain_height.h"
 #include "terrain_surface.h"
@@ -114,8 +115,6 @@ extern f32 gPlayerPositionY;
 /// Separate symbol view of the primary player record's position Z.
 /// \note Original identifier: \c D_800EF6A8 (0x800EF6A8).
 extern f32 gPlayerPositionZ;
-f32 mathSinDegrees(f32);
-f32 mathCosDegrees(f32);
 
 /// Position the terrain diagnostic grid in front of the player.
 /// \param object Grid root transform to update.

@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "random.h"
 #include "backdrop_view.h"
 #include "area_transition.h"
@@ -248,7 +249,6 @@ void runtimeMainThreadEntry(void *);
 extern Gfx *gRenderDisplayListCursor;
 s32 runtimeGetUiPulseAlpha(void);
 
-f32 mathSinDegrees(f32);
 
 void runtimeResetTiming(void);
 

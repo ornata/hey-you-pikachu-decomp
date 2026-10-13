@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "random.h"
 #include "area_transition.h"
 #include "runtime_control.h"
@@ -1527,7 +1528,6 @@ u8 *areaAllocateNode(void) {
     return sp1C;
 }
 
-f32 mathSinDegrees(f32);
 typedef struct {
     f32 x, y, z;
 } MazeDimensions540;

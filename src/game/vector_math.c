@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "vector_interpolation.h"
 #include "matrix_point.h"
 #include "camera_view.h"
@@ -12,9 +13,6 @@
 
 extern float fabsf(float);
 #pragma intrinsic(fabsf)
-f32 mathSinDegrees(f32);
-f32 mathCosDegrees(f32);
-f32 mathUnitDirectionDegrees(f32, f32);
 void motionExtractHeadingFromMatrix(f32 *, f32 *);
 f32 vector3Normalize(f32 *);
 

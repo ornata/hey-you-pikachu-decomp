@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "random.h"
 #include "weighted_choice.h"
 #include "story_milestones.h"
@@ -112,7 +113,6 @@ typedef struct PackedDirectionSlot {
 /// Interior view of the two packed directions in the default direction-animation pose.
 /// \note Original identifier: \c D_8009A6C0 (0x8009A6C0).
 extern PackedDirectionSlot gDirectionAnimationDefaultDirections[2];
-f32 mathWrapSignedDegrees(f32);
 
 /// Advances direction motion and periodically retargets it toward the default pose.
 /// \param animation Direction animation state to update.

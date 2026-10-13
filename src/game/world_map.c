@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "random.h"
 #include "backdrop_view.h"
 #include "area_transition.h"
@@ -253,7 +254,6 @@ s32 wholeMapIsDestinationLocked(s32 destination) {
     return 1;
 }
 
-f32 mathSinDegrees(f32);
 /// Animation angle in degrees for the locked-destination markers.
 /// \note Original identifier: \c D_8009A1F4 (0x8009A1F4).
 extern s32 gWorldMapLockedMarkerAngle;

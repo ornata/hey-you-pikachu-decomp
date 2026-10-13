@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "terrain_height.h"
 #include "scroll_board.h"
 #include "actor_behavior.h"
@@ -61,8 +62,6 @@ extern f32 fabsf(f32);
 #pragma intrinsic(fabsf)
 f32 vector3GetYawDegrees(f32 *);
 f32 actorConstrainFacingHeading(u8 *, f32);
-f32 mathApproachAngleDegrees(f32, f32, f32, f32, f32);
-f32 mathWrapSignedDegrees(f32);
 /// Turn an actor toward its stored target position while respecting facing constraints.
 /// \param object Actor whose horizontal facing is updated.
 /// \param speed Angular turn-speed control in degrees per second.
@@ -89,8 +88,6 @@ s32 actorTurnTowardTarget(u8 *object, f32 speed) {
     return 0;
 }
 
-f32 mathSinDegrees(f32);
-f32 mathCosDegrees(f32);
 /// Turn an actor toward its target with a compensating movement around its turning pivot.
 /// \param object Actor whose facing and movement are updated.
 /// \param speed Angular turn-speed control in degrees per second.
@@ -367,7 +364,6 @@ f32 actorGetGroundHeightAhead(u8 *actor, f32 distance, f32 heightOffset) {
 }
 
 f32 vector2NormalizeComponentsApprox(f32 *, f32 *); /* extern */
-f32 mathUnitDirectionDegrees(f32, f32);         /* extern */
 /// Primary player control record and base of the player records with a 256-byte stride.
 /// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
 extern PlayerControlPrefix gPlayerState;

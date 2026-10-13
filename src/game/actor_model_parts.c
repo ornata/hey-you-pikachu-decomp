@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "random.h"
 #include "texture_animation_programs.h"
 #include "script_vm_execution.h"
@@ -380,7 +381,6 @@ void actorPartFollowRelativeRoll(u8 *object) {
     *(f32 *)object = mathMapRangeClamped(0.0f, 1.0f, 90.0f, 1.25f, mathAngleDistanceDegrees(0.0f, z));
 }
 
-f32 mathWrapSignedDegrees(f32);
 /// First signed part-identifier sequence used by paired orientation followers.
 /// \note Original identifier: \c D_800A277C (0x800A277C).
 extern u8 gActorBlendedOrientationFirstPartSequence[];
@@ -568,7 +568,6 @@ void actorEvaluateRelativePartOrientation(ActorOrientationCache *cache, u8 *matr
     matrix34Concatenate(&cache->inverseReference, matrix, matrix);
 }
 
-f32 mathSinDegrees(f32);
 /// Advance the temporary shake of the selected actor model part.
 /// \param object Actor whose selected model part is shaking.
 /// \returns Nothing.

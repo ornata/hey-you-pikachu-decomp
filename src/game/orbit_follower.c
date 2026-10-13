@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "random.h"
 #include "terrain_height.h"
 #include "object_hierarchy_create.h"
@@ -60,9 +61,6 @@ typedef struct OrbitObject {
 } OrbitObject;
 
 f32 vector2NormalizeComponentsApprox(f32 *, f32 *);
-f32 mathUnitDirectionDegrees(f32, f32);
-f32 mathSinDegrees(f32);
-f32 mathCosDegrees(f32);
 s32 terrainCheckHorizontalObstruction(s32, f32, f32, f32, f32, f32, f32, f32, f32, u8 **);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).

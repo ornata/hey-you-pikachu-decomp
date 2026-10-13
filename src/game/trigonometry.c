@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "random.h"
 #include "matrix_translation.h"
 #include "matrix_orientation.h"
@@ -35,7 +36,6 @@ const s32 D_800A6D30[3][3] = {
     {0, 1, 1},
 };
 
-f32 mathUnitDirectionDegrees(f32, f32);
 
 f32 __cosf(f32); /* extern */
 f32 __sinf(f32); /* extern */
@@ -411,8 +411,6 @@ void matrix33ScaleLocal(f32 *matrix, f32 xScale, f32 yScale, f32 zScale) {
     matrix[8] = (f32)(matrix[8] * zScale);
 }
 
-f32 mathSinDegrees(f32);
-f32 mathCosDegrees(f32);
 void matrix34Identity();
 
 /// Build an affine rotation applying X, then Y, then Z rotations.

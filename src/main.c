@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "controller_commands.h"
 #include "text_window.h"
 #include "message_bar.h"
@@ -379,8 +380,6 @@ extern f32 gCameraPitchCosineUpperTolerance;
 /// Lower near-zero cosine bound selecting the camera pitch fallback slope.
 /// \note Original identifier: \c D_8009FC8C (0x8009FC8C).
 extern f32 gCameraPitchCosineLowerTolerance;
-f32 mathSinDegrees(f32);
-f32 mathCosDegrees(f32);
 /// Set a camera’s world position and viewing orientation.
 /// \param index Valid camera slot to configure.
 /// \param x World-space eye X coordinate.

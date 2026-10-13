@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "actor_behavior.h"
 #include "matrix_orientation.h"
 #include "animation_tracks.h"
@@ -33,7 +34,6 @@ s32 actionRequestMotionData(s32);
 /// Action records containing playback flags, motion identifiers and transition settings.
 /// \note Original identifier: \c D_8006B590 (0x8006B590).
 extern ActionDefinition gActionDefinitions[];
-f32 mathUnitDirectionDegrees(f32, f32);
 void motionExtractHeadingFromMatrix(f32 *, f32 *);
 void motionRequestCurrentData(u8 *);
 void actionResolveNextTransition(u8 *);

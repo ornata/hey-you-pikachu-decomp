@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "random.h"
 #include "terrain_height.h"
 #include "terrain_surface.h"
@@ -836,8 +837,6 @@ f32 objectGetWorldCoordinateByHandle(s32 handle, s32 axis) {
     return -65536.0f;
 }
 
-f32 mathSinDegrees(f32);                /* extern */
-f32 mathCosDegrees(f32);                /* extern */
 
 /// Get one coordinate of a ground position offset from an actor's heading.
 /// \param actor Actor supplying the reference position and heading.

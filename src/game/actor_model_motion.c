@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "terrain_movement.h"
 #include "terrain_height.h"
 #include "terrain_surface.h"
@@ -325,11 +326,6 @@ void actorInitializeCameraFacingChildState(u8 *actor) {
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
-f32 mathUnitDirectionDegrees(f32, f32);
-f32 mathSinDegrees(f32);
-f32 mathCosDegrees(f32);
-f32 mathWrapSignedDegrees(f32);
-f32 mathApproachAngleDegrees(f32, f32, f32, f32, f32);
 
 /// Smoothly tilt the actor to follow the ground slope ahead.
 /// \param object Actor with initialized model state whose pitch follows the terrain.

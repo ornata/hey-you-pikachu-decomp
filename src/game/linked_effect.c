@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "random.h"
 /// \file
 /// Maintains linked animated effects with neighbor constraints and target motion.
@@ -174,7 +175,6 @@ void linkedEffectUpdateMotion(u8 *object) {
     }
 }
 
-f32 mathSinDegrees(f32);                                  /* extern */
 
 /// Advance a linked effect's motion and appearance.
 /// \param object Linked effect object with initialized motion state.
@@ -379,7 +379,6 @@ s32 linkedEffectComputeFallingVelocity(u8 *object, f32 *velocity) {
     return 1;
 }
 
-f32 mathCosDegrees(f32);
 /// Angular separation in degrees between successive effect launch directions.
 /// \note Original identifier: \c D_800A3A4C (0x800A3A4C).
 extern f32 gLinkedEffectLaunchAngleStep;

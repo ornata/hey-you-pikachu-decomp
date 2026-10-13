@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "camera_overlay.h"
 #include "runtime_control.h"
 #include "controller_input.h"
@@ -880,8 +881,6 @@ void toolboxResetRowRotation(ToolboxState *t) {
 /// Separate view of the toolbox item-row rotation angle.
 /// \note Original identifier: \c D_800F1BF0 (0x800F1BF0).
 extern f32 gToolboxRowRotation;
-f32 mathSinDegrees(f32);
-f32 mathCosDegrees(f32);
 void objectUpdateHierarchy(u8 *);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).

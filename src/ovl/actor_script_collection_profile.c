@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "random.h"
 #include "backdrop_view.h"
 #include "runtime_control.h"
@@ -909,7 +910,6 @@ s32 actorScriptSetObjectTransform(u8 *actor) {
     return 0;
 }
 
-f32 mathSinDegrees(f32);          /* extern */
 
 /// Provide the sine of a script-supplied angle.
 /// \param actor Actor whose script VM supplies an angle in degrees satisfying mathSinDegrees input limits and receives its approximate sine.
@@ -923,7 +923,6 @@ s32 actorScriptSinDegrees(u8 *actor) {
     return 0;
 }
 
-f32 mathCosDegrees(f32);          /* extern */
 
 /// Provide the cosine of a script-supplied angle.
 /// \param actor Actor whose script VM supplies an angle in degrees satisfying mathCosDegrees input limits and receives its approximate cosine.

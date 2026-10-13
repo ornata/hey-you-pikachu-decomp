@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "random.h"
 #include "terrain_movement.h"
 #include "terrain_surface.h"
@@ -182,8 +183,6 @@ s32 itemUpdateGroundVelocity(u8 *object, u8 *state, s32 cachedNode, s32 *spinnin
     return 0;
 }
 
-f32 mathUnitDirectionDegrees(f32, f32);     /* extern */
-f32 mathApproachAngleDegrees(f32, f32, f32, f32, f32);
 
 /// Advance item rotation according to its rolling and angular-motion settings.
 /// \param object Item whose orientation is updated.
@@ -479,7 +478,6 @@ void itemUpdateGroundAndAirMotion(u8 *object) {
     }
 }
 
-f32 mathCosDegrees(f32);
 /// Advance an item drifting through the air and begin disposal when its flight ends.
 /// \param object Flying item to update.
 /// \returns Nothing.
@@ -572,7 +570,6 @@ void itemUpdatePlayerHeld(u8 *object) {
     ((RuntimeObjectPrefix *)object)->rotation[2] = 0.0f;
 }
 
-f32 mathSinDegrees(f32);
 /// Animate the piñata wriggling while held.
 /// \param item Piñata item with an initialized model and three successive child links to animate.
 /// \returns Nothing.

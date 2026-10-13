@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "random.h"
 #include "wisp_effect.h"
 #include "ribbon_effect.h"
@@ -669,7 +670,6 @@ s32 ribbonEffectControllerPrepareDraw(u8 *controller) {
     return (s32)((RuntimeObjectPrefix *)controller)->displayList;
 }
 
-f32 mathSinDegrees(f32);
 Gfx *ribbonEffectCreateDisplayList(s32);
 /// Object template for the ribbon hierarchy anchor.
 /// \note Original identifier: \c D_80077F18 (0x80077F18).
@@ -1346,7 +1346,6 @@ void fallingParticleInitialize(void *particle) {
     ((RuntimeObjectPrefix *)particle)->state.bytes = sp1C;
 }
 
-f32 mathCosDegrees(f32);
 /// Integer scale animation selected when falling-particle lifetime expires.
 /// \note Original identifier: \c D_8006B51C (0x8006B51C).
 extern s32 gFallingParticleDisappearanceScaleAnimation;

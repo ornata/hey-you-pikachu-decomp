@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "camera_overlay.h"
 #include "text_image_configurations.h"
 #include "text_window.h"
@@ -312,7 +313,6 @@ void messageBarClear(void) {
     }
 }
 
-f32 mathCosDegrees(f32);
 /// Write cursor for the active graphics command list; also marks the camera-storage end.
 /// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
 extern Gfx *gRenderDisplayListCursor;

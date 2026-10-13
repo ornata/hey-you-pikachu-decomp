@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "random.h"
 #include "object_transform.h"
 #include "scroll_board.h"
@@ -831,8 +832,6 @@ void messengerDeliver(u8 *object, u8 *source, u8 *target, s32 mode) {
 f32 vector3Length(u8 *);
 f32 vector3Normalize(u8 *);
 f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
-f32 mathSinDegrees(f32);
-f32 mathCosDegrees(f32);
 /// Guide the messenger toward its linked recipient and handle delivery or loss of the target.
 /// \pre Frame duration must be positive, and a live linked part must have a valid owning object.
 /// \param object Messenger projectile with initialized state.

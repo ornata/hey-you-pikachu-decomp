@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "backdrop_view.h"
 #include "camera_types.h"
 #include "backdrop_draw.h"
@@ -87,8 +88,6 @@ void backdropAdvanceScroll(f32 delta) {
     }
 }
 
-f32 mathUnitDirectionDegrees(f32, f32);
-f32 mathWrapSignedDegrees(f32);
 /// Minimum camera direction length used to derive backdrop pitch.
 /// \note Original identifier: \c D_800A61C0 (0x800A61C0).
 /// Scale applied to camera pitch when deriving backdrop vertical framing.

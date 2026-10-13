@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "terrain_height.h"
 #include "linked_effect.h"
 #include "script_vm_execution.h"
@@ -432,7 +433,6 @@ extern f32 gActorChildSwayYawPhaseStep;
 /// Roll sway phase increment in degrees per child-motion update.
 /// \note Original identifier: \c D_800A4778 (0x800A4778).
 extern f32 gActorChildSwayRollPhaseStep;
-f32 mathSinDegrees(f32);
 /// Advance child motion, pass its orientation to the first child, and apply yaw and roll sway to the object.
 /// \param object Object to update; must have a first child to receive the motion orientation.
 /// \returns Nothing.

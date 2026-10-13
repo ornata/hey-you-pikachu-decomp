@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "maze_scatter.h"
 #include "story_chapter.h"
 #include "landmark.h"
@@ -27,8 +28,6 @@ void viridianDeepRemoveTrackedItems(void) {
         }
     }
 }
-f32 mathSinDegrees(f32);
-f32 mathCosDegrees(f32);
 f32 mathPowInteger(f32, s32);
 typedef struct {
     u8 header[12];

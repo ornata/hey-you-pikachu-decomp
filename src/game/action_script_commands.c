@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "random.h"
 #include "terrain_height.h"
 #include "terrain_surface.h"
@@ -346,8 +347,6 @@ extern const f32 gActionLaunchHeadingOffsets[];
 /// \note Original identifier: \c D_800A4978 (0x800A4978).
 extern const s32 gActionLaunchThrowFlags[];
 f32 vector3Normalize(u8 *);
-f32 mathSinDegrees(f32);
-f32 mathCosDegrees(f32);
 
 typedef struct Launch {
     s32 kind;

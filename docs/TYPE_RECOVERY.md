@@ -3883,3 +3883,9 @@ contracts to the implementation and all 34 declared consumer units. Nonpositive
 bounds return zero. Terrain contact-effect counts retain explicit signed sample
 conversions to preserve their original comparisons under the canonical unsigned
 return declaration. Every consumer adoption passes strict object comparison.
+
+`math_angles.h` shares sine/cosine approximation, unit-vector direction, signed
+angle normalization and bounded turn-step contracts between the implementation
+and all 31 declared consumer units. Input limits, degree units, wrap range and
+turn-step preconditions are explicit; floating-point argument placement remains
+unchanged under strict object comparison.

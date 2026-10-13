@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "controller_pad.h"
 #include "controller_rumble.h"
 #include "microphone_configuration.h"
@@ -186,8 +187,6 @@ extern f32 gCameraPitchCosineUpperTolerance;
 /// Lower near-zero cosine bound selecting the camera pitch fallback slope.
 /// \note Original identifier: \c D_8009FC8C (0x8009FC8C).
 extern f32 gCameraPitchCosineLowerTolerance;
-f32 mathSinDegrees(f32);
-f32 mathCosDegrees(f32);
 
 /// Framebuffer and command-buffer index for the current frame.
 /// \note Original identifier: \c D_800F298C (0x800F298C).

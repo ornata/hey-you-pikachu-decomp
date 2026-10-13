@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "random.h"
 #include "backdrop_view.h"
 #include "area_transition.h"
@@ -463,7 +464,6 @@ u8 *playerResolveCompanionViewTarget(u8 *player) {
 
 void vector3GetYawAndProjectedPitchDegrees(f32 *, f32 *, f32 *);
 f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
-f32 mathApproachAngleDegrees(f32, f32, f32, f32, f32);
 /// Turn the player view toward a companion-control target while companion control is active.
 /// \param player Player record whose view is updated subject to view-control permissions.
 /// \param controller Controller state influencing the tracking response.
@@ -766,8 +766,6 @@ block_14:
     ((PlayerControlPrefix *)motion)->downwardVelocity = (f32)-dy;
 }
 
-f32 mathSinDegrees(f32);
-f32 mathCosDegrees(f32);
 /// Interior motion-coefficient view of the item catalog, with a 116-byte stride.
 /// \note Original identifier: \c D_80125A68 (0x80125A68).
 extern f32 gItemKindMotionCoefficientEntries[];

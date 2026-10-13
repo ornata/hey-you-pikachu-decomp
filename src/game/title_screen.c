@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "backdrop_view.h"
 #include "area_transition.h"
 #include "runtime_control.h"
@@ -183,7 +184,6 @@ extern u32 gTitleIntroductionMilliseconds;
 /// \note Original identifier: \c D_800F2564 (0x800F2564).
 extern f32 gTitleStartPromptPhase;
 void textureDrawRectangles(s32, u8 *, Gfx **);
-f32 mathSinDegrees(f32);
 
 /// Draw the pulsing start prompt nine seconds after the title-screen introduction begins.
 /// \pre The introduction start time and prompt animation must be initialized.

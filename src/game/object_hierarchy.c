@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "terrain_height.h"
 #include "midi_reader.h"
 #include "audio_sound_effect.h"
@@ -121,7 +122,6 @@ extern s32 gActiveObjectHierarchyCount;
 s32 objectCompareSearchTreeOrder(TreeNode *, s32);
 void objectRegisterHierarchyInSearchTree(u8 *);
 f32 vector3Normalize(f32 *);
-f32 mathUnitDirectionDegrees(f32, f32);
 void vector3GetEulerDegrees(f32 *, f32 *, f32 *, f32 *);
 
 
@@ -1069,8 +1069,6 @@ typedef struct TextureMotion {
     s16 tMask;
     f32 x, y, z;
 } TextureMotion;
-f32 mathSinDegrees(f32);
-f32 mathCosDegrees(f32);
 /// Initialize object texture scrolling and rotation from its configured motion settings.
 /// \param object Live object with valid texture-motion settings and no unreleased state allocation.
 /// \returns Nothing.
@@ -1773,7 +1771,6 @@ typedef char TargetPickConeOffsetCheck[((u32)&((TargetPick *)0)->cone == 0x48) ?
 /// Shared nearest-target search context, including origin, facing, kind range and best candidate.
 /// \note Original identifier: \c D_800AE3D8 (0x800AE3D8).
 extern TargetPick gObjectNearestTargetSearch;
-f32 mathWrapSignedDegrees(f32);
 extern float fabsf(float);
 #pragma intrinsic(fabsf)
 

@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "random.h"
 #include "terrain_height.h"
 #include "actor_action_callbacks.h"
@@ -22,7 +23,6 @@ s32 actorAdvanceWithGroundClearance(s32, f32);
 s32 actorTurnAwayFromPlayer(s32, f32);
 s32 actorBackstepTowardTarget(s32, f32);
 f32 vector3Length(f32 *);
-f32 mathWrapSignedDegrees(f32);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
@@ -402,7 +402,6 @@ extern double fabs(double);
 /// Primary player control record and base of the player records with a 256-byte stride.
 /// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
 extern f32 gPlayerState[];
-f32 mathApproachAngleDegrees(f32, f32, f32, f32, f32);
 
 /// Turn an actor away from the player position.
 /// \param actor Actor whose horizontal facing is updated.
@@ -1043,7 +1042,6 @@ s32 actorInitializeVerticalScalePulse(u8 *actor) {
     return 0;
 }
 
-f32 mathSinDegrees(f32);
 /// Relative body-scale amplitude of the single vertical pulse.
 /// \note Original identifier: \c D_800A25D8 (0x800A25D8).
 extern f32 gActorVerticalPulseAmplitude;

@@ -1,3 +1,4 @@
+#include "math_angles.h"
 #include "terrain_movement.h"
 #include "terrain_height.h"
 #include "wisp_effect.h"
@@ -1762,7 +1763,6 @@ extern f32 gItemSearchOrigin[];
 extern f32 gItemSearchViewTransform[];
 f32 matrix34GetTransformedPointYawDegrees(f32 *, f32 *);
 f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
-f32 mathWrapSignedDegrees(f32);
 f32 fabsf(f32);
 #pragma intrinsic(fabsf)
 /// Consider an item for the current nearest-item query and retain the best eligible candidate.
