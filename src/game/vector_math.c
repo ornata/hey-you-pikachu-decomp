@@ -1,3 +1,4 @@
+#include "matrix_basic.h"
 #include "math_scalar.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
@@ -79,7 +80,6 @@ f32 vector2GetDirectionDegrees(u8 *vector) {
     return mathUnitDirectionDegrees(x, y);
 }
 
-void matrixFixedTo34(Mtx, f32 *);
 
 /// Determine positional sound volume and stereo pan relative to the camera.
 /// \param pos World-space sound position with a nonzero distance from the camera.

@@ -3959,3 +3959,9 @@ Scaled-region drawing shares `TextureImage` and its void-return contract with
 the voice panel, removing another duplicate rendering descriptor. The panel
 backdrop is declared as its established retained image record. Source-region
 bounds, supported formats and data lifetime accompany the shared draw contract.
+
+`matrix_basic.h` shares affine identity, 3x3 transpose/direction transforms and
+fixed-point conversion across the implementation and nine consumer units.
+Vector output may alias its input; affine identity uses the checked shared
+`Matrix34` layout. Actor motion no longer passes an unused fourth transform
+argument, and camera transpose supplies its established component array.

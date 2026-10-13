@@ -1,3 +1,4 @@
+#include "matrix_basic.h"
 #include "texture_setup.h"
 #include "math_scalar.h"
 #include "pikachu_actor.h"
@@ -1805,7 +1806,6 @@ s32 itemConsiderSearchCandidate(u8 *node, s32 context) {
     return 0;
 }
 
-void matrix34Identity(void *);
 
 /// Find the best nearby item satisfying the requested kind, hold-state, and viewing constraints.
 /// \param origin Readable query world position in X, Y, Z order; copied during this call.
@@ -1847,7 +1847,7 @@ u8 *itemFindNearest(f32 *origin, f32 maxDistance, f32 pitch, f32 yaw, f32 cone, 
     gItemNearestSearch.filter = filter;
     gItemNearestSearch.weightEnabled = weightEnabled;
     if (cone >= 180.0f) {
-        matrix34Identity(gItemSearchViewTransform);
+        matrix34Identity((Matrix34 *)gItemSearchViewTransform);
         gItemNearestSearch.cone = 360.0f;
     } else {
         rotation[0] = pitch;

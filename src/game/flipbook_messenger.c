@@ -1,3 +1,4 @@
+#include "matrix_basic.h"
 #include "math_scalar.h"
 #include "pikachu_actor.h"
 #include "camera_storage.h"
@@ -1143,8 +1144,6 @@ void messengerCreate(s32 id, f32 *position, f32 *velocity, f32 scale, ScriptMess
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;
-void matrix33Transpose(f32 *);
-void matrix33TransformVector(f32 *, f32 *, f32 *);
 
 /* Store a constant vector in one expression. Every lane store comes from one
  * source line, which lets as1 order them as the ROM does. */

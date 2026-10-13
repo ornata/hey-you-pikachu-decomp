@@ -1,3 +1,4 @@
+#include "matrix_basic.h"
 #include "math_scalar.h"
 #include "pikachu_actor.h"
 #include "vector_metrics.h"
@@ -1267,8 +1268,6 @@ s32 actorAdvanceWhileTrackingTarget(u8 *actor) {
     return 0;
 }
 
-void matrixFixedTo34(Mtx, f32 *);
-void matrix33TransformVector(f32 *, f32 *, f32 *);
 
 /// Position and orient an attached chain and adjust its pose for the target height.
 /// \param object Chain actor with initialized state and a valid chain ending at its designated end part; the primary actor attachment and its transform matrices must exist.

@@ -1,3 +1,4 @@
+#include "matrix_basic.h"
 #include "math_scalar.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
@@ -413,7 +414,6 @@ void matrix33ScaleLocal(f32 *matrix, f32 xScale, f32 yScale, f32 zScale) {
     matrix[8] = (f32)(matrix[8] * zScale);
 }
 
-void matrix34Identity();
 
 /// Build an affine rotation applying X, then Y, then Z rotations.
 /// \param m Output affine matrix.
@@ -431,7 +431,7 @@ void matrix34MakeRotationXYZDegrees(f32 *m, f32 x, f32 y, f32 z) {
     f32 cz;
 
     if (x == 0.0f && y == 0.0f && z == 0.0f) {
-        matrix34Identity(m);
+        matrix34Identity((Matrix34 *)m);
         return;
     }
     sx = mathSinDegrees(x);
@@ -470,7 +470,7 @@ void matrix34MakeRotationZYXDegrees(f32 *m, f32 x, f32 y, f32 z) {
     f32 cz;
 
     if (x == 0.0f && y == 0.0f && z == 0.0f) {
-        matrix34Identity(m);
+        matrix34Identity((Matrix34 *)m);
         return;
     }
     sx = mathSinDegrees(x);

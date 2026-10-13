@@ -1,3 +1,4 @@
+#include "matrix_basic.h"
 #include "camera_storage.h"
 #include "object_groups.h"
 #include "vector_metrics.h"
@@ -49,7 +50,6 @@
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-void matrix34Identity(Matrix34 *);
 
 
 f32 matrix34GetTransformedPointYawDegrees(f32 *, f32 *);
@@ -1275,7 +1275,6 @@ u8 *objectRefreshHierarchyWorldPositions(u8 *object) {
     return object;
 }
 
-void matrix33TransformVector(f32 *, f32 *, f32 *);
 void actorConstrainMovementToTerrain(u8 *, Vec3f *);
 void matrix34ToFixedMtx(void *, void *);
 
@@ -1522,7 +1521,7 @@ void objectDrawHierarchyGroup(RuntimeObjectPrefix *object, s32 group) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800097D0 (0x800097D0).
 void objectResetTraversalTransformAndMovement(void) {
-    matrix34Identity(&gObjectTraversalTransform);
+    matrix34Identity((Matrix34 *)&gObjectTraversalTransform);
     gObjectPendingLocalMovement.x = 0.0f;
     gObjectPendingLocalMovement.y = 0.0f;
     gObjectPendingLocalMovement.z = 0.0f;
@@ -1829,7 +1828,7 @@ u8 *objectFindNearestTargetInView(u8 *self, Vec3f *origin, f32 dist, f32 *rot, f
         matrix34MakeViewFromEulerDegrees((f32 *)origin, rot, (f32 *)&gObjectNearestTargetSearch.facing);
         gObjectNearestTargetSearch.cone = cone;
     } else {
-        matrix34Identity(&gObjectNearestTargetSearch.facing);
+        matrix34Identity((Matrix34 *)&gObjectNearestTargetSearch.facing);
         gObjectNearestTargetSearch.cone = 360.0f;
     }
     objectPrepareKindSearch(minKind);

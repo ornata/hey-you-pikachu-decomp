@@ -1,3 +1,4 @@
+#include "matrix_basic.h"
 #include "camera_storage.h"
 #include "object_groups.h"
 #include "math_angles.h"
@@ -153,7 +154,6 @@ s32 cameraBuildViewProjection(s32, u8 *, u8 *);
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;
-void matrix33Transpose(void *);
 
 /// Scale converting an overlay alpha byte to a blend weight.
 /// \note Original identifier: \c D_8009FC90 (0x8009FC90).
@@ -162,7 +162,6 @@ extern f32 gOverlayAlphaWeightScale;
 typedef struct {
     s32 w[12];
 } MatrixBlock00800;
-void matrix34Identity(MatrixBlock00800 *);
 /// Separate symbol view of the primary player record's view yaw.
 /// \note Original identifier: \c D_800EF6AC (0x800EF6AC).
 extern f32 gPlayerYaw;
@@ -345,7 +344,7 @@ void cameraBuildInterfaceTransform(f32 *output) {
     u8 *sp1C;
 
     sp1C = ((u8 *)gRenderCameras) + gRenderCameraIndex * 0xE0;
-    matrix34Identity((MatrixBlock00800 *)output);
+    matrix34Identity((Matrix34 *)(MatrixBlock00800 *)output);
     matrix34TranslateLocal((f32 (*)[3])output, *(f32 *)(sp1C + 0), *(f32 *)(sp1C + 4), *(f32 *)(sp1C + 8));
     matrix33ApplyRotationXYZDegrees((f32 *)output, -(gPlayerPitch + gPlayerPitchOffset),
                                     gPlayerViewShake + gPlayerYaw + 180.0f, 0.0f);
@@ -740,7 +739,6 @@ void renderDrawColorOverlayWithDepth(u8 r, u8 g, u8 b, u8 a) {
 }
 
 f32 viewportSetPixelRectangle(Vp *, s32, s32, s32, s32, s32, s32, f32);
-void matrixFixedTo34(Mtx, f32 *);
 /// Additional aspect scale applied when constructing the camera viewport projection.
 /// \note Original identifier: \c D_8009FC9C (0x8009FC9C).
 extern f32 gCameraProjectionAspectScale;
@@ -1052,7 +1050,7 @@ void cameraViewPointToWorld(f32 *point) {
     /* Build the view transform in its own block, like the transform
      * snapshots in actor_model_motion.c. */
     do {
-        matrix33Transpose(&matrix);
+        matrix33Transpose(matrix.values);
         matrix.values[9] = ((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].eye[0];
         matrix.values[10] = ((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].eye[1];
         matrix.values[11] = ((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].eye[2];

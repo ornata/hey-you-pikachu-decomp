@@ -1,3 +1,4 @@
+#include "matrix_basic.h"
 #include "texture_setup.h"
 #include "math_scalar.h"
 #include "pikachu_actor.h"
@@ -79,7 +80,6 @@ extern s32 gActorAppearanceSlot1Models[];
 /// \note Original identifier: \c D_800760E8 (0x800760E8).
 extern s32 gActorAppearancePartIds[];
 void actorComposePartOrientation(void *, s32, s32 *, s32);
-void matrix34Identity(void *);
 void matrix34Concatenate(void *, void *, void *);
 /// Signed part-identifier sequence used to track model-part relative roll.
 /// \note Original identifier: \c D_800A2770 (0x800A2770).
@@ -545,7 +545,7 @@ void actorComposePartOrientation(void *matrix, s32 owner, s32 *cursor, s32 forwa
         }
     }
     if (first)
-        matrix34Identity(matrix);
+        matrix34Identity((Matrix34 *)matrix);
 }
 
 /// Evaluate model-part orientation relative to a saved reference pose.
@@ -559,7 +559,7 @@ void actorEvaluateRelativePartOrientation(ActorOrientationCache *cache, u8 *matr
     if (cache->captureReference != 0) {
         cache->captureReference = 0;
         actorComposePartOrientation(&cache->inverseReference, actor, (s32 *)parts, 0);
-        matrix34Identity(matrix);
+        matrix34Identity((Matrix34 *)matrix);
         return;
     }
     actorComposePartOrientation(matrix, actor, (s32 *)parts, 1);

@@ -1,3 +1,4 @@
+#include "matrix_basic.h"
 #include "texture_setup.h"
 #include "pikachu_actor.h"
 #include "camera_storage.h"
@@ -207,7 +208,6 @@ void actorPrepareModelLightingDrawList(u8 *actor, ActorScriptState *model, s32 b
     gSPEndDisplayList(g++);
 }
 
-void matrix34Identity(u8 *); /* extern */
 
 /// Allocate and initialize actor model state and its drawing resources.
 /// \param actor Actor with a cached model asset receiving newly owned model state; existing state is not released.
@@ -228,7 +228,7 @@ void actorInitializeModelState(u8 *actor) {
     state->motionDuration = 0.0f;
     state->motionRemaining = 0.0f;
     state->movementScale = 1.0f;
-    matrix34Identity((u8 *)&state->rootMotionTransform);
+    matrix34Identity((Matrix34 *)(u8 *)&state->rootMotionTransform);
     _bzero(&state->rootPlayback, sizeof(ActorRootPlaybackWorkspace));
     _bzero(&state->rootMovementTrack, sizeof(AnimationDeltaTrack3));
     state->airborne = 0;
@@ -520,7 +520,6 @@ void actorGetParentTrackingPosition(u8 *child, ActorScriptState *parentState, f3
 
 
 void vector3FromZAxisPitchYawDegrees(f32, f32, f32 *);
-void matrix33Transpose(f32 *);
 void vector3GetEulerDegrees(f32 *, f32 *, f32 *, f32 *);
 
 /// Update child animation and blend its orientation toward the parent target when tracking is enabled.
@@ -1230,7 +1229,6 @@ f32 actorMeasureGroundClearance(u8 *actor, s32 collisionMode, u8 *reference, f32
     return top - *groundHeight - state->groundOffset;
 }
 
-void matrix33TransformVector(f32 *, f32 *, f32 *, u8 *);
 
 /// Update scaled actor motion displacement with the applicable upward movement limit.
 /// \param state Actor state whose pending motion displacement is updated.
@@ -1241,7 +1239,7 @@ void actorUpdateMotionDisplacement(ActorScriptState *state, s32 status) {
     f32 movementScale;
     f32 upwardLimit;
 
-    matrix33TransformVector((f32 *)&gObjectTraversalTransform, state->localMotion, state->worldMotion, (u8 *)state);
+    matrix33TransformVector((f32 *)&gObjectTraversalTransform, state->localMotion, state->worldMotion);
     movementScale = state->movementScale;
     state->worldMotion[0] = (f32)(state->worldMotion[0] * movementScale);
     state->worldMotion[1] = (f32)(state->worldMotion[1] * movementScale);
