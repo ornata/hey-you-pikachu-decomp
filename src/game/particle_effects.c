@@ -1265,6 +1265,19 @@ extern s32 gFallingParticleModels[];
 /// \note Original identifier: \c D_8006B4F8 (0x8006B4F8).
 extern s32 gFallingParticleInitialScaleAnimation;
 
+/// Owned falling-particle motion and scale playback state.
+typedef struct FallingParticleState {
+    f32 lifetime;         ///< Seconds until disappearance begins; zero while disappearing.
+    s32 mode;             ///< Camera-facing or tumbling motion style.
+    f32 velocity[3];      ///< World velocity in units per second.
+    ValueTrack animation; ///< Scale playback with borrowed animation keys.
+    f32 scale;            ///< Base scale multiplied by the current animation value.
+} FallingParticleState;
+
+typedef char FallingParticleStateSizeCheck[(sizeof(FallingParticleState) == 0x24) ? 1 : -1];
+typedef char FallingParticleAnimationOffsetCheck[(((u32) & ((FallingParticleState *)0)->animation) == 0x14) ? 1 : -1];
+typedef char FallingParticleScaleOffsetCheck[(((u32) & ((FallingParticleState *)0)->scale) == 0x20) ? 1 : -1];
+
 /// Create a falling particle with the selected appearance and motion style.
 /// \param kind Valid index in the falling-particle appearance table.
 /// \param motionStyle Motion style: zero or one for camera-facing motion, two for tumbling.
@@ -1275,11 +1288,11 @@ extern s32 gFallingParticleInitialScaleAnimation;
 /// \note Original decompilation identifier: \c func_80019C80 (0x80019C80).
 u8 *fallingParticleCreate(s32 kind, s32 motionStyle, f32 *position, f32 *velocity, f32 lifetime) {
     u8 *obj;
-    u8 *v;
+    FallingParticleState *state;
     f32 scale;
 
     obj = objectCreateHierarchyFromTemplate((ObjectTemplate *)gFallingParticleObjectTemplate);
-    v = *(u8 **)(obj + 0x54);
+    state = ((RuntimeObjectPrefix *)obj)->state.pointer;
     *(f32 *)(obj + 0x18) = position[0];
     *(f32 *)(obj + 0x1C) = position[1];
     *(f32 *)(obj + 0x20) = position[2];
@@ -1290,17 +1303,17 @@ u8 *fallingParticleCreate(s32 kind, s32 motionStyle, f32 *position, f32 *velocit
     *(f32 *)(obj + 0x14) = 0.0f;
     *(f32 *)(obj + 0x10) = 0.0f;
     *(s32 *)(obj + 0x30) = gFallingParticleModels[kind];
-    *(f32 *)(v + 0) = lifetime;
-    *(s32 *)(v + 4) = motionStyle;
-    *(f32 *)(v + 8) = velocity[0];
-    *(f32 *)(v + 0xC) = velocity[1];
-    *(f32 *)(v + 0x10) = velocity[2];
-    animationIntegerTrackInitialize((ValueTrack *)(v + 0x14), (ValueKey *)(gFallingParticleInitialScaleAnimation));
+    state->lifetime = lifetime;
+    state->mode = motionStyle;
+    state->velocity[0] = velocity[0];
+    state->velocity[1] = velocity[1];
+    state->velocity[2] = velocity[2];
+    animationIntegerTrackInitialize(&state->animation, (ValueKey *)(gFallingParticleInitialScaleAnimation));
     scale = 0.029999999329447746f;
-    *(f32 *)(v + 0x20) = scale;
+    state->scale = scale;
     *(f32 *)(obj + 0) = scale;
-    *(f32 *)(obj + 4) = *(f32 *)(v + 0x20);
-    *(f32 *)(obj + 8) = *(f32 *)(v + 0x20);
+    *(f32 *)(obj + 4) = state->scale;
+    *(f32 *)(obj + 8) = state->scale;
     objectRegisterActiveHierarchy(obj);
     return obj;
 }
@@ -1313,9 +1326,9 @@ void fallingParticleInitialize(void *particle) {
     u8 *sp1C;
     u8 *allocation;
 
-    allocation = heapAllocLocal(&gGameHeap, 0x24, 0x675);
+    allocation = heapAllocLocal(&gGameHeap, sizeof(FallingParticleState), 0x675);
     sp1C = allocation;
-    _bzero((void *)allocation, 0x24);
+    _bzero((void *)allocation, sizeof(FallingParticleState));
     ((RuntimeObjectPrefix *)particle)->state.bytes = sp1C;
 }
 
@@ -1323,13 +1336,6 @@ f32 mathCosDegrees(f32);
 /// Integer scale animation selected when falling-particle lifetime expires.
 /// \note Original identifier: \c D_8006B51C (0x8006B51C).
 extern s32 gFallingParticleDisappearanceScaleAnimation;
-typedef struct {
-    f32 lifetime;
-    s32 mode;
-    f32 velocity[3];
-    u8 animation[12];
-    f32 scale;
-} ParticleState;
 
 /// Advance a falling particle's motion and appearance, removing it when it finishes disappearing.
 /// \param particle Particle with initialized lifetime, velocity, and appearance animation.
@@ -1338,17 +1344,18 @@ typedef struct {
 void fallingParticleUpdate(u8 *particle) {
     f32 scale;
     s32 sample;
-    ParticleState *state;
+    FallingParticleState *state;
 
-    state = *(ParticleState **)(particle + 0x54);
+    state = ((RuntimeObjectPrefix *)particle)->state.pointer;
     if (state->lifetime > 0.0f) {
         state->lifetime = (f32)(state->lifetime - gRuntimeFrameSeconds);
         if (state->lifetime <= 0.0f) {
             state->lifetime = 0.0f;
-            animationIntegerTrackInitialize((ValueTrack *)(state->animation), (ValueKey *)(gFallingParticleDisappearanceScaleAnimation));
+            animationIntegerTrackInitialize(&state->animation,
+                                            (ValueKey *)(gFallingParticleDisappearanceScaleAnimation));
         }
     }
-    animationIntegerTrackEvaluate((ValueTrack *)(state->animation), &sample, gRuntimeFrameSeconds);
+    animationIntegerTrackEvaluate(&state->animation, &sample, gRuntimeFrameSeconds);
     if ((sample == 0) && (state->lifetime <= 0.0f)) {
         objectRequestHierarchyDestruction(particle);
         return;
