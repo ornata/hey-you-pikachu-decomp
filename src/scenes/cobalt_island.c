@@ -8,9 +8,7 @@
 #include "actor_create.h"
 #include "area_maze.h"
 
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 
 /// Provide an island-scene callback that requires no action.
 /// \returns Nothing.
@@ -34,9 +32,9 @@ extern f64 D_80151E00_scene_cobalt_island;
 /// \param residentIndex Identifier assigned to the resident within the scene population.
 /// \returns Nothing.
 void cobaltIslandSpawnResidentType16(s32 residentIndex) {
-    actorCreateForKind(0x10, 0.0f, 0.0f, 0.0f, 0,
-                       (f32)((f64)randomNext() * 2.3283064365386963e-10 * D_80151E00_scene_cobalt_island),
-                       *(f32 *)(gCurrentAreaConfiguration + 0xC), D_8014D854_scene_cobalt_island, residentIndex);
+    actorCreateForKind(
+        0x10, 0.0f, 0.0f, 0.0f, 0, (f32)((f64)randomNext() * 2.3283064365386963e-10 * D_80151E00_scene_cobalt_island),
+        *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC), D_8014D854_scene_cobalt_island, residentIndex);
 }
 
 extern u8 D_8014DCE8_scene_cobalt_island[];
@@ -44,7 +42,7 @@ extern u8 D_8014DCE8_scene_cobalt_island[];
 /// Spawn the fixed type-eleven resident for the island scene.
 /// \returns Nothing.
 void cobaltIslandSpawnResidentType11(void) {
-    actorCreateForKind(0xB, 160.0f, -1.0f, 400.0f, 0.0f, 180.0f, *(f32 *)(gCurrentAreaConfiguration + 0xC),
+    actorCreateForKind(0xB, 160.0f, -1.0f, 400.0f, 0.0f, 180.0f, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC),
                        D_8014DCE8_scene_cobalt_island, 0);
 }
 
@@ -55,7 +53,7 @@ extern f32 D_80151E08_scene_cobalt_island;
 /// \returns Nothing.
 void cobaltIslandSpawnResidentType18(void) {
     actorCreateForKind(0x12, 301.0f, 6.66f, 61.0f, 0.0f, D_80151E08_scene_cobalt_island,
-                       *(f32 *)(gCurrentAreaConfiguration + 0xC), D_8014E00C_scene_cobalt_island, 0);
+                       *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC), D_8014E00C_scene_cobalt_island, 0);
 }
 
 extern u8 D_80134A1C_scene_cobalt_island[];
@@ -120,7 +118,7 @@ void cobaltIslandInitializeObjects(void) {
     }
     stage = progressGetValue(0x76U);
     if (stage >= 4) {
-        actorCreateForKind(0xE, 220.0f, 41.0f, 111.0f, 0.0f, 0.0f, *(f32 *)(gCurrentAreaConfiguration + 0xC),
+        actorCreateForKind(0xE, 220.0f, 41.0f, 111.0f, 0.0f, 0.0f, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC),
                            D_8014E12C_scene_cobalt_island, 0);
     }
     cobaltIslandCreateSceneProps();

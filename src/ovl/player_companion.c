@@ -225,10 +225,7 @@ PlayerControlScheme gPlayerControlSchemes[28] = {
     {28, 0, 0xC000}, {29, 0, 0x5000}, {30, 0, 0x5000}, {31, 0, 0x41C8},
 };
 
-
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
@@ -2014,11 +2011,11 @@ void playerUpdateControlHierarchy(void *object) {
     distance = vector3LengthApprox((f32 *)&delta[0]);
     sine = mathSinDegrees(yaw);
     cosine = mathCosDegrees(yaw);
-    reach = ((Vec3f *)gCurrentAreaConfiguration)->x;
+    reach = ((Vec3f *)((u8 *)gCurrentAreaConfiguration))->x;
     if ((reach * 1.5f) < distance) {
         projected[0] = origin->position[0] + (sine * reach);
         projected[1] = origin->position[1];
-        projected[2] = origin->position[2] + (cosine * ((Vec3f *)gCurrentAreaConfiguration)->z);
+        projected[2] = origin->position[2] + (cosine * ((Vec3f *)((u8 *)gCurrentAreaConfiguration))->z);
     } else {
         projected[0] = origin->position[0] + (sine * distance * 0.6666667f);
         projected[1] = origin->position[1];
@@ -2056,19 +2053,6 @@ void playerUpdateControlHierarchy(void *object) {
     ((RuntimeObjectPrefix *)grandchild)->worldPosition[2] = ((RuntimeObjectPrefix *)grandchild)->position[2];
 }
 
-/// Matching view of one shared player/companion entrance record.
-/// Replacing the scalar player-position view with SceneSpawnPoint changes playerInitializeForArea
-/// instructions. Storage is borrowed from the loaded configuration, with the shared 0x20-byte stride.
-typedef struct {
-    f32 x, y, z, yaw;     ///< Player world position and initial view yaw.
-    f32 actorPosition[3]; ///< Companion world position, unused through this view.
-    f32 actorYaw;         ///< Companion initial yaw, unused through this view.
-} PlayerSpawnPoseView;
-typedef char PlayerSpawnPoseViewSizeCheck[(sizeof(PlayerSpawnPoseView) == sizeof(SceneSpawnPoint)) ? 1 : -1];
-typedef char PlayerSpawnYawViewOffsetCheck
-    [((u32) & ((PlayerSpawnPoseView *)0)->yaw == (u32) & ((SceneSpawnPoint *)0)->playerYaw) ? 1 : -1];
-typedef char PlayerSpawnActorViewOffsetCheck
-    [((u32) & ((PlayerSpawnPoseView *)0)->actorPosition == (u32) & ((SceneSpawnPoint *)0)->actorPosition) ? 1 : -1];
 void playerInitializeCollisionQueryMode(s32);
 /// Entrance index used to initialize the player and companion in the current area.
 /// \note Original identifier: \c D_800AE4F4 (0x800AE4F4).
@@ -2083,7 +2067,7 @@ extern s32 gRuntimeCurrentEntrance;
 /// \note Original decompilation identifier: \c func_80111F40 (0x80111F40).
 void playerInitializeForArea(void) {
     u8 *state;
-    PlayerSpawnPoseView *spawns;
+    SceneSpawnPoint *spawns;
     u8 *model;
     s32 index;
 
@@ -2091,13 +2075,14 @@ void playerInitializeForArea(void) {
     playerSetInteractionHelpText((u8 *)"");
     for (index = 0; index != 1; index++) {
         state = (u8 *)&gPlayerState + index * 0x100;
-        spawns = *(PlayerSpawnPoseView **)(gCurrentAreaConfiguration + 0x20);
-        *(f32 *)(state + 0) = spawns[gRuntimeCurrentEntrance].x;
-        *(f32 *)(state + 8) = spawns[gRuntimeCurrentEntrance].z;
-        *(f32 *)(state + 4) = terrainGetWorldHeightForQuery(gPlayerCollisionQueryMode, *(f32 *)(state + 0),
-                                                            spawns[gRuntimeCurrentEntrance].y, *(f32 *)(state + 8), 0);
+        spawns = gCurrentAreaConfiguration->spawns;
+        *(f32 *)(state + 0) = spawns[gRuntimeCurrentEntrance].playerPosition[0];
+        *(f32 *)(state + 8) = spawns[gRuntimeCurrentEntrance].playerPosition[2];
+        *(f32 *)(state + 4) =
+            terrainGetWorldHeightForQuery(gPlayerCollisionQueryMode, *(f32 *)(state + 0),
+                                          spawns[gRuntimeCurrentEntrance].playerPosition[1], *(f32 *)(state + 8), 0);
         *(f32 *)(state + 0x1C) = 6.0f;
-        *(f32 *)(state + 0xC) = spawns[gRuntimeCurrentEntrance].yaw;
+        *(f32 *)(state + 0xC) = spawns[gRuntimeCurrentEntrance].playerYaw;
         *(f32 *)(state + 0x10) = 0.0f;
         *(f32 *)(state + 0x14) = 5.0f;
         *(f32 *)(state + 0x18) = 0.0f;
@@ -2441,9 +2426,6 @@ s32 playerPickUpItem(s32 id) {
     return 1;
 }
 
-/// Separate symbol view of the primary player current chase stage.
-/// \note Original identifier: \c D_800EF797 (0x800EF797).
-extern u8 gPlayerChaseStage;
 
 /// Select the current chase stage and retain the furthest stage reached in saved progress.
 /// \param stage Requested chase stage; its low eight bits become the current stage, while saved furthest
@@ -2682,12 +2664,12 @@ void pikachuSpawnForArea(void) {
     s32 kind;
     SceneSpawnPoint *spots;
 
-    spots = ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->spawns;
-    kind = (s32)((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->actorScripts[gAreaScenarioIndex];
+    spots = gCurrentAreaConfiguration->spawns;
+    kind = (s32)gCurrentAreaConfiguration->actorScripts[gAreaScenarioIndex];
     gPikachuActor = (RuntimeObjectPrefix *)actorCreateForKind(
         0x25, spots[gRuntimeCurrentEntrance].actorPosition[0], spots[gRuntimeCurrentEntrance].actorPosition[1],
         spots[gRuntimeCurrentEntrance].actorPosition[2], 0.0f, spots[gRuntimeCurrentEntrance].actorYaw,
-        ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale, (u8 *)kind, 0);
+        gCurrentAreaConfiguration->objectScale, (u8 *)kind, 0);
 }
 
 

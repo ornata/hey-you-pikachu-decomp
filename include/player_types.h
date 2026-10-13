@@ -39,20 +39,20 @@ typedef struct PlayerModeState {
     f32 cameraEndTarget[3];    ///< Requested look-at point at completion.
     f32 cameraRemaining;       ///< Remaining camera-transition time.
     f32 cameraDuration;        ///< Total requested camera-transition time.
-    PlayerModeUpdate update;  ///< Active mode update; must be callable while the mode is active.
-    PlayerModeLeave leave;    ///< Optional callback completing the mode before a transition.
+    PlayerModeUpdate update;   ///< Active mode update; must be callable while the mode is active.
+    PlayerModeLeave leave;     ///< Optional callback completing the mode before a transition.
 } PlayerModeState;
 
 /// Recovered prefix of the player control record, distinct from scene objects.
 /// The observed record stride is 0x100. Offset-named storage remains unresolved;
 /// callers must not treat this view as proof of ownership of borrowed resources.
 typedef struct PlayerControlPrefix {
-    f32 position[3]; ///< Player world position.
-    f32 yaw;         ///< Player view yaw in degrees.
-    f32 pitchOffset; ///< Additional view pitch used by walking motion.
-    f32 pitch; ///< Player view pitch in degrees.
-    f32 viewShake; ///< Horizontal view-shake offset added to yaw.
-    f32 eyeHeight; ///< View height above the player's position.
+    f32 position[3];      ///< Player world position.
+    f32 yaw;              ///< Player view yaw in degrees.
+    f32 pitchOffset;      ///< Additional view pitch used by walking motion.
+    f32 pitch;            ///< Player view pitch in degrees.
+    f32 viewShake;        ///< Horizontal view-shake offset added to yaw.
+    f32 eyeHeight;        ///< View height above the player's position.
     f32 collisionRadius;  ///< Radius supplied to terrain movement constraints.
     s32 permissions;      ///< Current control-permission mask.
     s32 savedPermissions; ///< Permissions retained for normal control.
@@ -63,29 +63,29 @@ typedef struct PlayerControlPrefix {
     f32 movementSpeed;    ///< Retained speed selected from controller input.
     f32 focusRemaining;   ///< Time remaining in temporary target-focus mode.
     u8 unknown040[0xC];
-    s32 companionMode;        ///< Current CompanionControlMode selection.
-    s32 companionTarget;      ///< Object handle selected for companion control.
-    s32 savedCompanionMode;   ///< Saved selection for later restoration.
-    s32 savedCompanionTarget; ///< Saved companion target handle.
-    s32 interactionTarget;    ///< Current interaction target handle.
-    s32 interactionFlags;     ///< Target reachability/query status.
-    s32 airborne;             ///< Nonzero while the player is above the ground.
-    f32 downwardVelocity;     ///< Downward-positive displacement retained by movement updates.
-    f32 slopeSpeed;           ///< Retained speed along slippery terrain.
-    f32 stunRemaining;        ///< Remaining stun-reaction time.
-    f32 modeElapsed;          ///< Time elapsed in the current primary mode.
-    s32 movementClass;        ///< Zero through two for walking speeds, or three while airborne.
-    f32 footstepDistance;     ///< Accumulated travel since the last footstep sound.
-    s32 soundHandle;          ///< Tracked player sound-effect playback.
-    s32 heldItemHandle;       ///< Handle of the player's held item, or zero.
-    PlayerModeState modeState; ///< Current behavior and camera-transition state.
-    u8 profileName[0x10]; ///< Player-name storage, followed by the points balance.
-    s32 points; ///< Player profile points balance.
-    s8 unknown0F4;      ///< Profile byte initialized to six; interpretation remains unresolved.
-    s8 unknown0F5;      ///< Profile byte initialized to eight; interpretation remains unresolved.
-    u8 friendshipLevel; ///< Index of the player friendship title.
-    u8 unknown0F7;
-    s32 friendshipMilestone; ///< Last awarded friendship milestone.
+    s32 companionMode;              ///< Current CompanionControlMode selection.
+    s32 companionTarget;            ///< Object handle selected for companion control.
+    s32 savedCompanionMode;         ///< Saved selection for later restoration.
+    s32 savedCompanionTarget;       ///< Saved companion target handle.
+    s32 interactionTarget;          ///< Current interaction target handle.
+    s32 interactionFlags;           ///< Target reachability/query status.
+    s32 airborne;                   ///< Nonzero while the player is above the ground.
+    f32 downwardVelocity;           ///< Downward-positive displacement retained by movement updates.
+    f32 slopeSpeed;                 ///< Retained speed along slippery terrain.
+    f32 stunRemaining;              ///< Remaining stun-reaction time.
+    f32 modeElapsed;                ///< Time elapsed in the current primary mode.
+    s32 movementClass;              ///< Zero through two for walking speeds, or three while airborne.
+    f32 footstepDistance;           ///< Accumulated travel since the last footstep sound.
+    s32 soundHandle;                ///< Tracked player sound-effect playback.
+    s32 heldItemHandle;             ///< Handle of the player's held item, or zero.
+    PlayerModeState modeState;      ///< Current behavior and camera-transition state.
+    u8 profileName[0x10];           ///< Player-name storage, followed by the points balance.
+    s32 points;                     ///< Player profile points balance.
+    s8 unknown0F4;                  ///< Profile byte initialized to six; interpretation remains unresolved.
+    s8 unknown0F5;                  ///< Profile byte initialized to eight; interpretation remains unresolved.
+    u8 friendshipLevel;             ///< Index of the player friendship title.
+    u8 chaseStage;                  ///< Current chase stage; saved furthest-stage progress is tracked separately.
+    s32 friendshipMilestone;        ///< Last awarded friendship milestone.
     s32 deliveredVoiceMessageCount; ///< Voice messages delivered to Pikachu, also saved in progress.
 } PlayerControlPrefix;
 
@@ -107,9 +107,9 @@ typedef char PlayerCameraStartTargetOffsetCheck[(PLAYER_OFFSET(modeState.cameraS
 typedef char PlayerCameraEndTargetOffsetCheck[(PLAYER_OFFSET(modeState.cameraEndTarget) == 0xC4) ? 1 : -1];
 typedef char PlayerCameraRemainingOffsetCheck[(PLAYER_OFFSET(modeState.cameraRemaining) == 0xD0) ? 1 : -1];
 typedef char PlayerCameraDurationOffsetCheck[(PLAYER_OFFSET(modeState.cameraDuration) == 0xD4) ? 1 : -1];
+typedef char PlayerChaseStageOffsetCheck[(PLAYER_OFFSET(chaseStage) == 0xF7) ? 1 : -1];
 typedef char PlayerNameOffsetCheck[(PLAYER_OFFSET(profileName) == 0xE0) ? 1 : -1];
 typedef char PlayerVoiceCountOffsetCheck[(PLAYER_OFFSET(deliveredVoiceMessageCount) == 0xFC) ? 1 : -1];
 #undef PLAYER_OFFSET
-
 
 #endif

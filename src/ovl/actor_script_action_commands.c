@@ -39,11 +39,7 @@ struct {
     s32 w[18];
 } gActorScriptSharedTextTailStorage;
 
-
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
-
+#include "scene_configuration.h"
 
 /// Selected eye-catch group index, or minus one when no interlude is selected.
 /// \note Original identifier: \c D_8009B580 (0x8009B580).

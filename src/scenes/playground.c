@@ -3,9 +3,7 @@
 #include "common.h"
 #include "actor_create.h"
 #include "scene_types.h"
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 extern u8 D_8013EE54_scene_playground[];
 extern f32 D_801344B0_scene_playground[];
 extern f32 D_801344BC_scene_playground[];
@@ -14,8 +12,7 @@ extern s32 *D_8015A04C_scene_playground[8];
 /// Spawn the playground resident creature with its scene behavior.
 /// \returns Nothing.
 void playgroundSpawnResident(void) {
-    actorCreateForKind(0x13, 320.0f, 10.0f, 225.0f, 0.0f, 0.0f,
-                       ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+    actorCreateForKind(0x13, 320.0f, 10.0f, 225.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                        D_8013EE54_scene_playground, 0);
 }
 /// Create the playground cave, its linked landmark, and the resident creature.

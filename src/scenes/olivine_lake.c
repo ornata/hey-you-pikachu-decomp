@@ -6,9 +6,7 @@
 #include "actor_create.h"
 #include "area_maze.h"
 #include "scene_types.h"
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 void olivineLakeSpawnTintedResidentType12(void *, f32);
 extern f32 D_80134ABC_scene_olivine_lake[];
 typedef struct {
@@ -105,8 +103,7 @@ void olivineLakeSpawnTintedResidentType12(void *position, f32 heading) {
 
     counter = &D_80141644_scene_olivine_lake;
     object = actorCreateForKind(0xC, ((f32 *)position)[0], ((f32 *)position)[1], ((f32 *)position)[2], 0.0f, heading,
-                                ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
-                                &D_801404AC_scene_olivine_lake, *counter);
+                                gCurrentAreaConfiguration->objectScale, &D_801404AC_scene_olivine_lake, *counter);
     index = *counter;
     if (*counter < 0) {
         do {
@@ -136,16 +133,14 @@ void olivineLakeSpawnRandomHeadingResidentType12(void *position) {
 /// \returns Nothing.
 void olivineLakeSpawnResidentType13(f32 *position, f32 heading) {
     actorCreateForKind(0xD, position[0], position[1], position[2], 0.0f, heading,
-                       ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
-                       &D_80140854_scene_olivine_lake, 0);
+                       gCurrentAreaConfiguration->objectScale, &D_80140854_scene_olivine_lake, 0);
 }
 
 /// Spawn a type-seventeen lake resident at the requested position.
 /// \param position Three-component world-space position.
 /// \returns Nothing.
 void olivineLakeSpawnResidentType17(f32 *position) {
-    actorCreateForKind(0x11, position[0], position[1], position[2], 0.0f, 0.0f,
-                       ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+    actorCreateForKind(0x11, position[0], position[1], position[2], 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                        &D_801412B4_scene_olivine_lake, 0);
 }
 

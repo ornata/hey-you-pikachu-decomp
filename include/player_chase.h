@@ -6,6 +6,10 @@
 
 #include "ultra64.h"
 
+/// Separate symbol view of PlayerControlPrefix.chaseStage; ownership remains with the player record.
+/// \note Original identifier: \c D_800EF797 (0x800EF797).
+extern u8 gPlayerChaseStage;
+
 /// Select the current chase stage and retain the furthest stage reached in saved progress.
 /// \param stage Requested chase stage; its low eight bits become the current stage, while saved furthest
 /// progress uses the full value.

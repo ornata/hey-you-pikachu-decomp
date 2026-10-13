@@ -194,10 +194,7 @@ extern Unk4A8 gMessageBarState;
 void objectDrawHierarchyGroup(s32, s32);
 void presentationDrawCardDecorations(Gfx **);
 void presentationDrawCurrentCardPanels(Gfx **);
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
-
+#include "scene_configuration.h"
 
 /// Separate view of the message-bar image slot prepared for the next transition.
 /// \note Original identifier: \c D_800F0B1C (0x800F0B1C).
@@ -508,7 +505,7 @@ void presentationDrawCurrentCardPanels(Gfx **gdl) {
     PresentationDrawTemplate t;
 
     t = gCardPresentationPanelTemplate;
-    ids = (*(s32 ***)(gCurrentAreaConfiguration + 0x74))[gAreaScenarioIndex];
+    ids = (*(s32 ***)(((u8 *)gCurrentAreaConfiguration) + 0x74))[gAreaScenarioIndex];
     if (ids != NULL) {
         gDPPipeSync((*gdl)++);
         gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
@@ -525,7 +522,7 @@ void presentationDrawCurrentCardPanels(Gfx **gdl) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80028AD4 (0x80028AD4).
 void presentationDrawCardScreen(Gfx **gdl) {
-    if (*(s32 *)(gCurrentAreaConfiguration + 0x74) != 0) {
+    if (*(s32 *)(((u8 *)gCurrentAreaConfiguration) + 0x74) != 0) {
         backdropDraw(gdl);
         gDPPipeSync((*gdl)++);
         gDPSetCycleType((*gdl)++, G_CYC_1CYCLE);
@@ -573,7 +570,7 @@ void presentationUpdateCardMode(void) {
     s32 selectedImage;
     s32 *selectedImages;
 
-    cards = (*(s32 ***)(gCurrentAreaConfiguration + 0x74));
+    cards = (*(s32 ***)(((u8 *)gCurrentAreaConfiguration) + 0x74));
     if ((cards == 0) || (cards[gAreaScenarioIndex] == 0) || (gCardPresentationSuppressed != 0)) {
         hudSetAreaLabelVisible(1);
         runtimeRequestGameModeChange(0);
@@ -586,7 +583,7 @@ void presentationUpdateCardMode(void) {
     switch (gCardPresentationStage) {
     case 0:
         controllerRequestRumbleReset(0);
-        if ((*(s32 ***)(gCurrentAreaConfiguration + 0x74))[gAreaScenarioIndex] != 0) {
+        if ((*(s32 ***)(((u8 *)gCurrentAreaConfiguration) + 0x74))[gAreaScenarioIndex] != 0) {
             if (gRuntimeCurrentArea == 11 || gRuntimeCurrentArea == 5 || gRuntimeCurrentArea == 13) {
                 scene11Images = gArea11CardChaseStageTextures;
                 scene5Images = gArea5CardChaseStageTextures;
@@ -606,7 +603,7 @@ void presentationUpdateCardMode(void) {
                     break;
                 }
                 selectedImage = selectedImages[playerGetChaseStage()];
-                (*(s32 ***)(gCurrentAreaConfiguration + 0x74))[gAreaScenarioIndex][2] = selectedImage;
+                (*(s32 ***)(((u8 *)gCurrentAreaConfiguration) + 0x74))[gAreaScenarioIndex][2] = selectedImage;
                 TRACE("title image changed, to %d\n", selectedImage);
             }
         }
@@ -648,7 +645,7 @@ void presentationUpdateCardMode(void) {
         return;
     case 3:
         if (gPrimarySecondaryOverlayRemainingSeconds == 0.0f) {
-            backdropSelectForView(0, ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->backdrop, 1);
+            backdropSelectForView(0, gCurrentAreaConfiguration->backdrop, 1);
             presentationRestoreActiveActor();
             hudSetAreaLabelVisible(1);
             runtimeRequestGameModeChange(0);
@@ -867,9 +864,9 @@ void presentationPlaceCollectionItem(u8 *item, f32 heightOffset) {
     v.y += heightOffset;
     matrix34TransformPointVector((f32 *)&gPresentationToWorldTransform, (f32 *)(&v), (f32 *)(item + 0x18));
     *(f32 *)(item + 0x10) += 3.0;
-    *(f32 *)(item + 0) = *(f32 *)(gCurrentAreaConfiguration + 0xC);
-    *(f32 *)(item + 4) = *(f32 *)(gCurrentAreaConfiguration + 0xC);
-    *(f32 *)(item + 8) = *(f32 *)(gCurrentAreaConfiguration + 0xC);
+    *(f32 *)(item + 0) = *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC);
+    *(f32 *)(item + 4) = *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC);
+    *(f32 *)(item + 8) = *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC);
     objectUpdateHierarchy(item);
 }
 
@@ -1201,7 +1198,7 @@ s32 presentationSelectArea0Card(s32 *actorAction, s32 *audioCue) {
         }
         progressAddValue(6, 1);
         progressSetValue(0x12, 0);
-        *(s32 *)(gCurrentAreaConfiguration + 0x64) = 3;
+        *(s32 *)(((u8 *)gCurrentAreaConfiguration) + 0x64) = 3;
         scriptVmResetGlobals();
         playerSetChaseStage(progressGetValue(0xC));
         if (progressGetValue(0xC2) != 0) {
@@ -1226,7 +1223,7 @@ s32 presentationSelectArea0Card(s32 *actorAction, s32 *audioCue) {
         *audioCue = 0x15;
         return 9;
     }
-    *(s32 *)(gCurrentAreaConfiguration + 0x64) = 1;
+    *(s32 *)(((u8 *)gCurrentAreaConfiguration) + 0x64) = 1;
     if (progressGetValue(0x11) != 0) {
         progressSetValue(0x1A, 0);
         progressSetValue(0x13, 0);
@@ -1290,15 +1287,15 @@ s32 presentationSelectArea2Card(s32 *actorAction, s32 *audioCue) {
         *audioCue = 0x15;
         return 2;
     case 8:
-        *(s32 *)(gCurrentAreaConfiguration + 0x64) = 2;
+        *(s32 *)(((u8 *)gCurrentAreaConfiguration) + 0x64) = 2;
         *audioCue = 0x15;
         return 3;
     case 9:
-        *(s32 *)(gCurrentAreaConfiguration + 0x64) = 2;
+        *(s32 *)(((u8 *)gCurrentAreaConfiguration) + 0x64) = 2;
         *audioCue = 0x15;
         return 4;
     case 3:
-        *(s32 *)(gCurrentAreaConfiguration + 0x64) = 2;
+        *(s32 *)(((u8 *)gCurrentAreaConfiguration) + 0x64) = 2;
         *audioCue = 0x15;
         return 0;
     case 5:
@@ -1306,7 +1303,7 @@ s32 presentationSelectArea2Card(s32 *actorAction, s32 *audioCue) {
         return 5;
     case 7:
         if (progressGetValue(0x12) != 0) {
-            *(s32 *)(gCurrentAreaConfiguration + 0x64) = 2;
+            *(s32 *)(((u8 *)gCurrentAreaConfiguration) + 0x64) = 2;
             *audioCue = 0x15;
             return 6;
         }
@@ -1669,7 +1666,7 @@ void presentationInitializeForCurrentArea(void) {
         TRACE("ERROR : unknown area (%d) ?\n", gRuntimeCurrentArea);
         break;
     }
-    collectionTitleTableAddress = *(s32 *)(gCurrentAreaConfiguration + 0x78);
+    collectionTitleTableAddress = *(s32 *)(((u8 *)gCurrentAreaConfiguration) + 0x78);
     if (collectionTitleTableAddress != 0) {
         collectionTitleAddress = ((s32 *)collectionTitleTableAddress)[gAreaScenarioIndex];
         if (collectionTitleAddress != 0) {

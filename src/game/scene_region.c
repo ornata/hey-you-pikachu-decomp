@@ -17,9 +17,7 @@ extern u8 gSceneRegionDisplayList[];
 /// Hierarchy template used to create rectangular scene interaction regions.
 /// \note Original identifier: \c D_80088E60 (0x80088E60).
 extern ObjectTemplate gSceneRegionObjectTemplate;
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 
 /// Create a rectangular scene region with its associated scene data.
 /// \param position Three-component world-space region center.
@@ -35,9 +33,9 @@ void sceneRegionCreate(f32 *position, f32 width, f32 depth, s32 sceneData) {
 
     tmpl = gSceneRegionObjectTemplate;
     obj = objectCreateHierarchyFromTemplate(&tmpl);
-    ((RuntimeObjectPrefix *)obj)->scale[0] = ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale * width;
-    ((RuntimeObjectPrefix *)obj)->scale[1] = ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale;
-    ((RuntimeObjectPrefix *)obj)->scale[2] = ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale * depth;
+    ((RuntimeObjectPrefix *)obj)->scale[0] = gCurrentAreaConfiguration->objectScale * width;
+    ((RuntimeObjectPrefix *)obj)->scale[1] = gCurrentAreaConfiguration->objectScale;
+    ((RuntimeObjectPrefix *)obj)->scale[2] = gCurrentAreaConfiguration->objectScale * depth;
     ((RuntimeObjectPrefix *)obj)->position[0] = position[0];
     ((RuntimeObjectPrefix *)obj)->position[1] = position[1];
     ((RuntimeObjectPrefix *)obj)->position[2] = position[2];

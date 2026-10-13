@@ -974,9 +974,7 @@ void systemMenuUpdateModelTilt(void) {
     objectUpdateHierarchy(object);
 }
 
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 /// Advance the system-menu animation and transitions for the current phase.
 /// Requires initialized menu models, player, camera, and area state.
 /// \returns Nothing.
@@ -993,7 +991,7 @@ void systemMenuUpdateAnimation(void) {
     case SYSTEM_MENU_CLOSE_DELAY:
         if (runtimeGetElapsedMilliseconds() - *(u64 *)&gSystemMenuPhaseStartMilliseconds > 300) {
             ((MenuBackdropView *)&gPrimaryBackdropScroll)->useBackdrop = 1;
-            backdropSelectForView(0, *(s32 *)(gCurrentAreaConfiguration + 0x64), 1);
+            backdropSelectForView(0, *(s32 *)(((u8 *)gCurrentAreaConfiguration) + 0x64), 1);
             systemMenuSetPhase(SYSTEM_MENU_CLOSING);
             systemMenuUpdateClosingAnimation();
             return;
@@ -1227,7 +1225,7 @@ void systemMenuCancelSelection(s32 unused) {
 /// \note Original decompilation identifier: \c func_8011B184 (0x8011B184).
 void systemMenuGoHome(s32 unused) {
     ((MenuBackdropView *)&gPrimaryBackdropScroll)->useBackdrop = 1;
-    backdropSelectForView(0, ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->backdrop, 1);
+    backdropSelectForView(0, gCurrentAreaConfiguration->backdrop, 1);
     systemMenuExit();
     runtimeRequestGameModeChange(0xC);
 }
@@ -1239,7 +1237,7 @@ void systemMenuGoHome(s32 unused) {
 /// \note Original decompilation identifier: \c func_8011B1D4 (0x8011B1D4).
 void systemMenuChangeArea(s32 area) {
     ((MenuBackdropView *)&gPrimaryBackdropScroll)->useBackdrop = 1;
-    backdropSelectForView(0, ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->backdrop, 1);
+    backdropSelectForView(0, gCurrentAreaConfiguration->backdrop, 1);
     systemMenuExit();
     areaRequestTransition(area, 0);
 }
@@ -1254,7 +1252,7 @@ extern s32 gEyeCatchSelectedGroup;
 /// \note Original decompilation identifier: \c func_8011B228 (0x8011B228).
 void systemMenuSelectEyeCatchGroup(s32 group) {
     ((MenuBackdropView *)&gPrimaryBackdropScroll)->useBackdrop = 1;
-    backdropSelectForView(0, ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->backdrop, 1);
+    backdropSelectForView(0, gCurrentAreaConfiguration->backdrop, 1);
     gEyeCatchSelectedGroup = group;
     systemMenuExit();
 }
@@ -1287,7 +1285,7 @@ void systemMenuInvokeChapterUpdate(s32 chapter) {
 /// \note Original decompilation identifier: \c func_8011B2C8 (0x8011B2C8).
 void systemMenuOpenWorldMap(s32 unused) {
     ((MenuBackdropView *)&gPrimaryBackdropScroll)->useBackdrop = 1;
-    backdropSelectForView(0, ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->backdrop, 1);
+    backdropSelectForView(0, gCurrentAreaConfiguration->backdrop, 1);
     systemMenuExit();
     runtimeRequestGameModeChange(6);
 }
@@ -1826,9 +1824,9 @@ void systemMenuInitialize(void) {
     model = (RuntimeObjectPrefix *)objectCreateHierarchyFromTemplate(&gSystemMenuTransitionModelTemplate);
     objectSetHierarchyFlags((u8 *)model, 0x2002);
     objectRegisterActiveHierarchy((u8 *)model);
-    model->scale[0] = ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale * 5.0;
-    model->scale[1] = ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale * 5.0;
-    model->scale[2] = ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale * 5.0;
+    model->scale[0] = gCurrentAreaConfiguration->objectScale * 5.0;
+    model->scale[1] = gCurrentAreaConfiguration->objectScale * 5.0;
+    model->scale[2] = gCurrentAreaConfiguration->objectScale * 5.0;
     state->transitionModel = model;
     state->secondaryModel = model->child.object;
     state->transitionModel->rotation[0] = 0.0f;
@@ -1841,9 +1839,9 @@ void systemMenuInitialize(void) {
     model = (RuntimeObjectPrefix *)objectCreateHierarchyFromTemplate(&gSystemMenuInteractiveModelTemplate);
     objectSetHierarchyFlags((u8 *)model, 0x2002);
     objectRegisterActiveHierarchy((u8 *)model);
-    model->scale[0] = ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale;
-    model->scale[1] = ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale;
-    model->scale[2] = ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale;
+    model->scale[0] = gCurrentAreaConfiguration->objectScale;
+    model->scale[1] = gCurrentAreaConfiguration->objectScale;
+    model->scale[2] = gCurrentAreaConfiguration->objectScale;
     state->interactiveModel = model;
     model->rotation[2] = model->rotation[1] = model->rotation[0] = 0.0f;
     scene = progressGetCurrentChapter();

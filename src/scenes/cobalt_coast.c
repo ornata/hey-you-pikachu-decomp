@@ -4,9 +4,7 @@
 #include "actor_create.h"
 
 #include "togepi.h"
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 
 /// Provide the coast-scene callback that requires no action.
 /// \returns Nothing.
@@ -18,7 +16,7 @@ extern u8 D_80140BF8_scene_cobalt_coast[];
 /// Spawn the fixed type-2 resident for the coast scene.
 /// \returns Nothing.
 void cobaltCoastSpawnResidentType2(void) {
-    actorCreateForKind(2, 320.0f, 10.0f, 225.0f, 0.0f, 0.0f, *(f32 *)(gCurrentAreaConfiguration + 0xC),
+    actorCreateForKind(2, 320.0f, 10.0f, 225.0f, 0.0f, 0.0f, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC),
                        D_80140BF8_scene_cobalt_coast, 0);
 }
 
@@ -27,7 +25,7 @@ extern u8 D_80144CAC_scene_cobalt_coast[];
 /// Spawn the fixed type-18 resident for the coast scene.
 /// \returns Nothing.
 void cobaltCoastSpawnResidentType18(void) {
-    actorCreateForKind(0x12, 254.0f, 15.0f, 370.0f, 0.0f, 180.0f, *(f32 *)(gCurrentAreaConfiguration + 0xC),
+    actorCreateForKind(0x12, 254.0f, 15.0f, 370.0f, 0.0f, 180.0f, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC),
                        D_80144CAC_scene_cobalt_coast, 0);
 }
 
@@ -36,7 +34,7 @@ extern u8 D_801418D4_scene_cobalt_coast[];
 /// Spawn the fixed type-3 resident for the coast scene.
 /// \returns Nothing.
 void cobaltCoastSpawnResidentType3(void) {
-    actorCreateForKind(3, 354.98f, 6.41f, 285.68f, 0.0f, 270.0f, *(f32 *)(gCurrentAreaConfiguration + 0xC),
+    actorCreateForKind(3, 354.98f, 6.41f, 285.68f, 0.0f, 270.0f, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC),
                        D_801418D4_scene_cobalt_coast, 0);
 }
 
@@ -45,7 +43,7 @@ extern u8 D_8014263C_scene_cobalt_coast[];
 /// Spawn the fixed type-4 resident for the coast scene.
 /// \returns Nothing.
 void cobaltCoastSpawnResidentType4(void) {
-    actorCreateForKind(4, 310.3f, 6.53f, 264.0f, 0.0f, 350.0f, *(f32 *)(gCurrentAreaConfiguration + 0xC),
+    actorCreateForKind(4, 310.3f, 6.53f, 264.0f, 0.0f, 350.0f, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC),
                        D_8014263C_scene_cobalt_coast, 0);
 }
 
@@ -54,7 +52,7 @@ extern u8 D_80143334_scene_cobalt_coast[];
 /// Spawn the fixed type-1 resident for the coast scene.
 /// \returns Nothing.
 void cobaltCoastSpawnResidentType1(void) {
-    actorCreateForKind(1, 284.64f, 6.19f, 294.3f, 0.0f, 50.0f, *(f32 *)(gCurrentAreaConfiguration + 0xC),
+    actorCreateForKind(1, 284.64f, 6.19f, 294.3f, 0.0f, 50.0f, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC),
                        D_80143334_scene_cobalt_coast, 0);
 }
 
@@ -63,7 +61,7 @@ extern u8 D_80144010_scene_cobalt_coast[];
 /// Spawn the fixed type-8 resident for the coast scene.
 /// \returns Nothing.
 void cobaltCoastSpawnResidentType8(void) {
-    actorCreateForKind(8, 364.38f, 6.01f, 310.02f, 0.0f, 312.0f, *(f32 *)(gCurrentAreaConfiguration + 0xC),
+    actorCreateForKind(8, 364.38f, 6.01f, 310.02f, 0.0f, 312.0f, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC),
                        D_80144010_scene_cobalt_coast, 0);
 }
 
@@ -82,7 +80,7 @@ extern u8 D_801455D0_scene_cobalt_coast[];
 /// Spawn the fixed type-11 resident for the coast scene.
 /// \returns Nothing.
 void cobaltCoastSpawnResidentType11(void) {
-    actorCreateForKind(0xB, 320.0f, 0.23f, 413.0f, 0.0f, 160.0f, *(f32 *)(gCurrentAreaConfiguration + 0xC),
+    actorCreateForKind(0xB, 320.0f, 0.23f, 413.0f, 0.0f, 160.0f, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC),
                        D_801455D0_scene_cobalt_coast, 0);
 }
 
@@ -91,7 +89,7 @@ extern u8 D_801460FC_scene_cobalt_coast[];
 /// Spawn the first fixed type-14 resident for the coast scene.
 /// \returns Nothing.
 void cobaltCoastSpawnFirstResidentType14(void) {
-    actorCreateForKind(0xE, 310.0f, 0.0f, 350.0f, 0.0f, 320.0f, *(f32 *)(gCurrentAreaConfiguration + 0xC),
+    actorCreateForKind(0xE, 310.0f, 0.0f, 350.0f, 0.0f, 320.0f, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC),
                        D_801460FC_scene_cobalt_coast, 0);
 }
 
@@ -100,7 +98,7 @@ extern u8 D_80146A8C_scene_cobalt_coast[];
 /// Spawn the second fixed type-14 resident for the coast scene.
 /// \returns Nothing.
 void cobaltCoastSpawnSecondResidentType14(void) {
-    actorCreateForKind(0xE, 320.0f, 0.0f, 353.0f, 0.0f, 320.0f, *(f32 *)(gCurrentAreaConfiguration + 0xC),
+    actorCreateForKind(0xE, 320.0f, 0.0f, 353.0f, 0.0f, 320.0f, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC),
                        D_80146A8C_scene_cobalt_coast, 0);
 }
 

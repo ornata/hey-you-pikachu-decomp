@@ -302,9 +302,7 @@ void renderInitializeResources(void) {
     gAreaRenderAssets = 0;
 }
 
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 /// Load the current area’s rendering assets for use by its scene.
 /// \returns Nothing; requires a loaded area configuration and no existing area asset allocation to replace.
 /// \note Matching: unsigned reads through checked shared-member offsets retain the original metadata
@@ -314,29 +312,37 @@ void renderLoadAreaAssets(void) {
     s32 outputSize;
     s32 scratchSize;
     u8 *temporary;
-    outputSize = *(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.decodedEnd) -
-                 *(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.rangeBase);
+    outputSize =
+        *(u32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.decodedEnd) -
+        *(u32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.rangeBase);
     gAreaRenderAssets = heapAllocLocal(&gGameHeap, outputSize, 0x140);
     heapDebugNoOp(&gGameHeap, gAreaRenderAssets);
-    scratchSize =
-        (s32)(*(u32 *)(gCurrentAreaConfiguration + (u32) &
-                       ((SceneConfigurationPrefix *)0)->renderAsset.patchCountValue) -
-              *(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.rangeBase)) *
-            8 +
-        (s32)(*(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.encodedEnd) -
-              *(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.rangeBase));
+    scratchSize = (s32)(*(u32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) &
+                                 ((SceneConfigurationPrefix *)0)->renderAsset.patchCountValue) -
+                        *(u32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) &
+                                 ((SceneConfigurationPrefix *)0)->renderAsset.rangeBase)) *
+                      8 +
+                  (s32)(*(u32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) &
+                                 ((SceneConfigurationPrefix *)0)->renderAsset.encodedEnd) -
+                        *(u32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) &
+                                 ((SceneConfigurationPrefix *)0)->renderAsset.rangeBase));
     temporary = heapAllocTailLocal(&gGameHeap, scratchSize, 0x14C);
     assetLoadAndPatchFromRom(
-        *(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.romAddress),
+        *(u32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.romAddress),
         (u8 *)gAreaRenderAssets, temporary,
-        *(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.encodedEnd) -
-            *(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.rangeBase),
-        *(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.decodedEnd) -
-            *(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.rangeBase),
-        *(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.patchStart) -
-            *(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.rangeBase),
-        *(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.patchCountValue) -
-            *(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.rangeBase));
+        *(u32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.encodedEnd) -
+            *(u32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) &
+                     ((SceneConfigurationPrefix *)0)->renderAsset.rangeBase),
+        *(u32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.decodedEnd) -
+            *(u32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) &
+                     ((SceneConfigurationPrefix *)0)->renderAsset.rangeBase),
+        *(u32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.patchStart) -
+            *(u32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) &
+                     ((SceneConfigurationPrefix *)0)->renderAsset.rangeBase),
+        *(u32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) &
+                 ((SceneConfigurationPrefix *)0)->renderAsset.patchCountValue) -
+            *(u32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) &
+                     ((SceneConfigurationPrefix *)0)->renderAsset.rangeBase));
     heapFreeLocal(&gGameHeap, temporary);
 }
 
@@ -776,7 +782,7 @@ s32 cameraBuildViewProjection(s32 index, Vp *viewport, Mtx *buffer) {
              camera->target[2], camera->up[0], camera->up[1], camera->up[2]);
     guMtxCatL(view, buffer, buffer);
     matrixFixedTo34(*view, camera->view.values);
-    distance = ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->projectionExtent / mathSinDegrees(36.0f);
+    distance = gCurrentAreaConfiguration->projectionExtent / mathSinDegrees(36.0f);
     camera->distance = distance;
     scale = mathCosDegrees(36.0f) * distance;
     camera->scaled = camera->view;
@@ -813,21 +819,22 @@ void cameraApplyRenderingState(s32 cameraIndex) {
 void renderApplyAreaFog(s32 unused) {
     gDPPipeSync(gRenderDisplayListCursor++);
     gDPSetTextureFilter(gRenderDisplayListCursor++, G_TF_BILERP);
-    gDPSetFogColor(gRenderDisplayListCursor++, ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->fogColor[0],
-                   ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->fogColor[1],
-                   ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->fogColor[2],
-                   ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->fogColor[3]);
+    gDPSetFogColor(gRenderDisplayListCursor++, gCurrentAreaConfiguration->fogColor[0],
+                   gCurrentAreaConfiguration->fogColor[1], gCurrentAreaConfiguration->fogColor[2],
+                   gCurrentAreaConfiguration->fogColor[3]);
     /* Pack fog offset before multiplier to preserve the original division order. */
     gMoveWd(
         gRenderDisplayListCursor++, G_MW_FOG, G_MWO_FOG,
-        _SHIFTL(((500 - *(s32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->fogStart)) * 256 /
-                 (*(s32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->fogEnd) -
-                  *(s32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->fogStart))),
-                0, 16) |
-            _SHIFTL(
-                (128000 / (*(s32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->fogEnd) -
-                           *(s32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->fogStart))),
-                16, 16));
+        _SHIFTL(
+            ((500 - *(s32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) & ((SceneConfigurationPrefix *)0)->fogStart)) *
+             256 /
+             (*(s32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) & ((SceneConfigurationPrefix *)0)->fogEnd) -
+              *(s32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) & ((SceneConfigurationPrefix *)0)->fogStart))),
+            0, 16) |
+            _SHIFTL((128000 /
+                     (*(s32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) & ((SceneConfigurationPrefix *)0)->fogEnd) -
+                      *(s32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) & ((SceneConfigurationPrefix *)0)->fogStart))),
+                    16, 16));
 }
 
 /// Primary-actor script-time origin used to calculate elapsed camera tint.

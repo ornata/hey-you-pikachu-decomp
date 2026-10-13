@@ -16,7 +16,13 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 1,661 / 72 |
+| Raw offset candidates | 4,040 / 86 | 1,571 / 68 |
+
+Supplemental cast-base offset candidates: **79 occurrences / 15 files**.
+This category was not tracked in the original baseline. The historical raw-offset
+metric recognizes identifier bases; explicit byte casts can move expressions out
+of that metric without recovering their layout. Both inventories are review
+candidates, not defect or completion counts.
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -4613,3 +4619,33 @@ schemas. Template drawing passes its rectangle array directly. The known scene
 prefix still contains an opaque word at 0x1C; no semantic role or padding status
 is invented. See SHARED_LAYOUT_AUDIT.md for evidence, ownership and remaining
 scope. The broader shared-layout completion audit remains open.
+
+### Typed scene interface, chase stage and encounter targets
+
+The current scene configuration now has one shared typed declaration in
+scene_configuration.h: a pointer to SceneConfigurationPrefix. All consumers and
+the defining source unit adopt it. Five private scene-scale schemas and their
+incompatible global declarations are removed; known fields use direct members,
+while serialized extensions and compiler-sensitive loads retain explicit byte
+views. All transitions and final forms preserve the original object baseline.
+The stronger global type also permits player initialization to use SceneSpawnPoint
+without its formerly necessary private scalar view; that matching exception is
+removed.
+
+The callback at scene offset 0x40 is an initializer, established by its sole
+runtime initialization call site and all 23 overlay callback targets. Its shared
+field is initializeScene and its wrapper is areaRunSceneInitializer, with the
+original 0x8010E53C address retained in comments and the symbol map. No per-frame
+update role is claimed.
+
+The profile byte at 0xF7 is chaseStage, backed by the existing 0x800EF797 symbol,
+setter/getter behavior, reset and Ghidra evidence. Shop and deep-forest encounters
+use shared actor target fields, world-position fields and the existing follow
+mode enum. Material tint uses the shared item member with a checked private
+component view; direct array alternatives still fail matching. Unknown profile
+bytes remain explicit and are not named from their default values alone.
+
+The quality reporter supplements its historical identifier-offset metric with
+cast_offset_candidates. This keeps explicit byte-view accesses visible rather
+than treating a spelling change as recovered layout. Focused tests cover the new
+category's comment/string masking, repeated spellings and recovery-ledger evidence.

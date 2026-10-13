@@ -52,22 +52,22 @@ typedef struct SceneSpawnPoint {
 /// This view is smaller than the complete configuration and must not be used
 /// to allocate or copy it.
 typedef struct SceneConfigurationPrefix {
-    f32 cellDimensions[3];       ///< Maze cell dimensions along the X, Y and Z axes.
-    f32 objectScale;             ///< Default scale for scene objects and regions.
-    s32 subdivisionPower;        ///< Power of two used for maze subdivision.
-    SceneCellType *cellTypes;    ///< Borrowed resource table indexed by occupancy classification.
-    SceneEventLink *eventLinks;  ///< Borrowed event-link list, terminated by a null handler; null for none.
-    u8 unknown01C[4];            ///< Offset 0x1C; role is unproven, so preserve these bytes unchanged.
-    SceneSpawnPoint *spawns;     ///< Borrowed player and companion entrance poses.
-    f32 farClip;                 ///< Far clipping distance for area visibility.
-    f32 nearClip;                ///< Near clipping distance for area visibility.
-    f32 projectionExtent;        ///< Scene extent used to scale camera projection and maze visibility.
-    s32 fogStart;                ///< Scene fog start value.
-    s32 fogEnd;                  ///< Scene fog end value.
-    u8 fogColor[4];              ///< Fog red, green, blue and alpha components.
-    SceneCellSampler sampleCell; ///< Classify a world position for maze construction.
-    void (*updateMaze)(void);    ///< Optional area update callback.
-    SceneItemPlacement *items;   ///< Borrowed, negative-kind-terminated item placements.
+    f32 cellDimensions[3];         ///< Maze cell dimensions along the X, Y and Z axes.
+    f32 objectScale;               ///< Default scale for scene objects and regions.
+    s32 subdivisionPower;          ///< Power of two used for maze subdivision.
+    SceneCellType *cellTypes;      ///< Borrowed resource table indexed by occupancy classification.
+    SceneEventLink *eventLinks;    ///< Borrowed event-link list, terminated by a null handler; null for none.
+    u8 unknown01C[4];              ///< Offset 0x1C; role is unproven, so preserve these bytes unchanged.
+    SceneSpawnPoint *spawns;       ///< Borrowed player and companion entrance poses.
+    f32 farClip;                   ///< Far clipping distance for area visibility.
+    f32 nearClip;                  ///< Near clipping distance for area visibility.
+    f32 projectionExtent;          ///< Scene extent used to scale camera projection and maze visibility.
+    s32 fogStart;                  ///< Scene fog start value.
+    s32 fogEnd;                    ///< Scene fog end value.
+    u8 fogColor[4];                ///< Fog red, green, blue and alpha components.
+    SceneCellSampler sampleCell;   ///< Classify a world position for maze construction.
+    void (*initializeScene)(void); ///< Optional area-specific initializer after common gameplay setup.
+    SceneItemPlacement *items;     ///< Borrowed, negative-kind-terminated item placements.
     AssetDescriptor
         renderAsset;            ///< Encoded area graphics and correction metadata; decoded storage is owned separately.
     s32 backdrop;               ///< Backdrop selected for the primary view.
@@ -91,7 +91,7 @@ typedef char CaveLandmarkOffsetCheck[(((u32) & ((CaveState *)0)->landmark) == 0x
 
 typedef char SceneCellTypesOffsetCheck[(((u32) & ((SceneConfigurationPrefix *)0)->cellTypes) == 0x14) ? 1 : -1];
 typedef char SceneSampleCellOffsetCheck[(((u32) & ((SceneConfigurationPrefix *)0)->sampleCell) == 0x3C) ? 1 : -1];
-typedef char SceneUpdateMazeOffsetCheck[(((u32) & ((SceneConfigurationPrefix *)0)->updateMaze) == 0x40) ? 1 : -1];
+typedef char SceneInitializerOffsetCheck[(((u32) & ((SceneConfigurationPrefix *)0)->initializeScene) == 0x40) ? 1 : -1];
 typedef char SceneItemsOffsetCheck[(((u32) & ((SceneConfigurationPrefix *)0)->items) == 0x44) ? 1 : -1];
 
 typedef char

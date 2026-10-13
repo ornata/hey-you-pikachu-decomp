@@ -217,9 +217,7 @@ void toolboxSetObjectCameraRotation(u8 *object, f32 pitch, f32 yaw) {
     matrix33GetFoldedEulerDegrees(sp1C, (f32 *)(object + 0xC), (f32 *)(object + 0x10), (f32 *)(object + 0x14));
 }
 
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 
 /// Set the display scale of a toolbox object.
 /// \param handle Handle of the object to scale; missing objects are ignored.
@@ -235,9 +233,9 @@ void toolboxSetObjectScale(s32 handle, f32 scale) {
             itemSetScale(liveObject, scale);
             return;
         }
-        *(f32 *)(liveObject + 0) = *(f32 *)(gCurrentAreaConfiguration + 0xC) * scale;
-        *(f32 *)(liveObject + 4) = *(f32 *)(gCurrentAreaConfiguration + 0xC) * scale;
-        *(f32 *)(liveObject + 8) = *(f32 *)(gCurrentAreaConfiguration + 0xC) * scale;
+        *(f32 *)(liveObject + 0) = *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC) * scale;
+        *(f32 *)(liveObject + 4) = *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC) * scale;
+        *(f32 *)(liveObject + 8) = *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC) * scale;
     }
 }
 
@@ -770,9 +768,9 @@ void toolboxCreateDisplayObjects(void) {
     object = objectCreateHierarchyFromTemplate(gToolboxModelTemplate);
     objectSetHierarchyFlags(object, 0x2000);
     objectRegisterActiveHierarchy(object);
-    *(f32 *)(object + 0) = *(f32 *)(gCurrentAreaConfiguration + 0xC);
-    *(f32 *)(object + 4) = *(f32 *)(gCurrentAreaConfiguration + 0xC);
-    *(f32 *)(object + 8) = *(f32 *)(gCurrentAreaConfiguration + 0xC);
+    *(f32 *)(object + 0) = *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC);
+    *(f32 *)(object + 4) = *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC);
+    *(f32 *)(object + 8) = *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC);
     gToolboxState.objects[0] = object;
     *objects = *(u8 **)(*(u8 **)(object + 0x2C) + 0x28);
     gToolboxLinkedDisplayPart = *(u8 **)(*objects + 0x28);
@@ -794,9 +792,9 @@ void toolboxCreateDisplayObjects(void) {
         *(f32 *)(object + 0x18) = 0.0f;
         *(f32 *)(object + 0x1C) = 0.0f;
         *(f32 *)(object + 0x20) = 0.0f;
-        *(f32 *)(object + 0) = *(f32 *)(gCurrentAreaConfiguration + 0xC) * 0.3f;
-        *(f32 *)(object + 4) = *(f32 *)(gCurrentAreaConfiguration + 0xC) * 0.3f;
-        *(f32 *)(object + 8) = *(f32 *)(gCurrentAreaConfiguration + 0xC) * 0.3f;
+        *(f32 *)(object + 0) = *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC) * 0.3f;
+        *(f32 *)(object + 4) = *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC) * 0.3f;
+        *(f32 *)(object + 8) = *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC) * 0.3f;
         gToolboxState.spareIds[i] = *(s32 *)(object + 0x38);
     }
     for (i = 0; i < 2; i++) {

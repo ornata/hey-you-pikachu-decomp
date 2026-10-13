@@ -3,17 +3,14 @@
 #include "scene_types.h"
 
 #include "toolbox.h"
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 extern u8 D_80139E38_scene_entryway[];
 
 /// Initialize entryway scene state and spawn its resident creature.
 /// \returns Nothing.
 void entrywayInitializeObjects(void) {
     toolboxClearCollection();
-    actorCreateForKind(1, 82.26f, 3.0f, 104.37f, 0.0f, 0.0f,
-                       ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+    actorCreateForKind(1, 82.26f, 3.0f, 104.37f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                        D_80139E38_scene_entryway, 0);
 }
 

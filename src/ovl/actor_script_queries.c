@@ -591,16 +591,14 @@ typedef struct PathObjectStatePrefix {
 } PathObjectStatePrefix;
 typedef char PathObjectPointsOffsetCheck[(((u32) & ((PathObjectStatePrefix *)0)->points) == 0xC) ? 1 : -1];
 
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 
 /// Get the number of points in a path in the current area.
 /// \param path Valid path index in the current area.
 /// \returns The number of points in the path.
 /// \note Original decompilation identifier: \c func_80117B88 (0x80117B88).
 s32 areaGetPathPointCount(s32 path) {
-    return ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->paths[path].count;
+    return gCurrentAreaConfiguration->paths[path].count;
 }
 
 
@@ -616,7 +614,7 @@ f32 areaGetPathPointCoordinate(s32 path, s32 point, s32 axis) {
     if (axis >= 3) {
         return -65536.0f;
     }
-    entry = &((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->paths[path];
+    entry = &gCurrentAreaConfiguration->paths[path];
     if (point < entry->count) {
         return entry->points[point][axis];
     }
@@ -714,7 +712,7 @@ void objectSetUniformScaleByHandle(s32 handle, f32 scale) {
 
     if (obj != NULL) {
         if (((RuntimeObjectPrefix *)obj)->flags & 4) {
-            k = ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale;
+            k = gCurrentAreaConfiguration->objectScale;
             s = k * scale;
             old = ((RuntimeObjectPrefix *)obj)->scale[0] / k;
         } else {
@@ -743,8 +741,7 @@ f32 objectGetUniformScaleByHandle(s32 handle) {
         return 0.0f;
     }
     if (((RuntimeObjectPrefix *)resolvedObject)->flags & 4) {
-        var_f2 = ((RuntimeObjectPrefix *)resolvedObject)->scale[0] /
-                 ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale;
+        var_f2 = ((RuntimeObjectPrefix *)resolvedObject)->scale[0] / gCurrentAreaConfiguration->objectScale;
     } else {
         var_f2 = ((RuntimeObjectPrefix *)resolvedObject)->scale[0];
     }
@@ -1123,7 +1120,7 @@ void actorChooseEscapePosition(u8 *object, f32 *target) {
         actorSetTargetToFallbackObject(object);
         return;
     }
-    distance = *(f32 *)gCurrentAreaConfiguration * 4.0f;
+    distance = *(f32 *)((u8 *)gCurrentAreaConfiguration) * 4.0f;
     angle = (s32)(randomBelow(60) - 15);
     trig = mathCosDegrees(angle);
     rotated[0] = direction[0] * trig - direction[2] * mathSinDegrees(angle);

@@ -199,9 +199,7 @@ extern s32 gCameraElapsedTintNeedsOrigin, gCameraElapsedTintEnabled;
 /// \note Original identifier: \c D_800AC4B8 (0x800AC4B8).
 extern f32 gCameraElapsedTintInitialSeconds;
 
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 
 /// Whether the next display-list setup must emit the one-time initial render state.
 /// \note Original identifier: \c D_800633E4 (0x800633E4).

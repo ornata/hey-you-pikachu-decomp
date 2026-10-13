@@ -10,9 +10,7 @@ void bedroomSceneNoOp(void) {
 }
 #include "area_services.h"
 #include "toolbox.h"
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 extern f32 D_80134520_scene_bedroom[3];
 extern f32 D_8013452C_scene_bedroom[3];
 extern ItemSpawn D_801554DC_scene_bedroom[];
@@ -24,7 +22,7 @@ extern f32 D_801586DC_scene_bedroom;
 void bedroomInitializeObjects(void) {
     if (progressGetValue(0xF0) != 0) {
         actorCreateForKind(0x15, 93.75f, 31.93000030517578f, 52.189998626708984f, 0.0f, D_801586DC_scene_bedroom,
-                           ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale, 0, 0);
+                           gCurrentAreaConfiguration->objectScale, 0, 0);
     }
     toolboxClearCollection();
     mazeSpawnAvailableItems(D_801554DC_scene_bedroom);

@@ -374,9 +374,7 @@ extern s32 gGameplayMicrophoneAvailable;
 /// Whether gameplay permits recognized voice commands to launch messenger effects.
 /// \note Original identifier: \c D_800722D4 (0x800722D4).
 extern s32 gGameplayVoiceCommandsAllowed;
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 
 /// Initialize the current scene's gameplay systems and voice interaction.
 /// \returns Nothing.
@@ -391,7 +389,7 @@ void runtimeInitializeSceneGameplay(void) {
         progressAddValue(0x40000000, 1);
     }
     backdropAllocateViewBuffer(0, 0x118, 0xC8);
-    backdropSelectForView(0, ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->backdrop, 1);
+    backdropSelectForView(0, gCurrentAreaConfiguration->backdrop, 1);
     runtimeCheckResetCheckpoint("pre-loadAreaDlist", 1);
     renderLoadAreaAssets();
     heapDebugReportFreeSpace(&gGameHeap, "after loadAreaDlist");
@@ -425,7 +423,7 @@ void runtimeInitializeSceneGameplay(void) {
     textWindowInitialize();
     heapDebugReportFreeSpace(&gGameHeap, "after initMessageMode()");
     runtimeCheckResetCheckpoint("pre-areaInit", 1);
-    mazeRunAreaUpdateCallback();
+    areaRunSceneInitializer();
     runtimeCheckResetCheckpoint("aft-areaInit", 1);
 }
 

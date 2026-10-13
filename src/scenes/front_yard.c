@@ -31,9 +31,7 @@ void frontYardInitializeRegularObjects(void) {
     doorCreate(D_801345A8_scene_front_yard, 2, 2, 0, enabled);
 }
 
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 
 /// Choose the regular front-yard setup or its special encounter according to game progress.
 /// \returns Nothing.
@@ -44,9 +42,8 @@ void frontYardInitializeObjects(void) {
     if (progressGetCurrentChapter() != 9) {
         if (progressGetCurrentChapter() == 8) {
             companion = itemCreate(145.0f, 1.5f, 150.0f, 0.0f, 0.0f, 0x8F);
-            state = ((RuntimeObjectPrefix *)actorCreateForKind(
-                         0x15, 0.0f, 0.0f, 0.0f, 0.0f, 45.0f,
-                         ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale, 0, 0))
+            state = ((RuntimeObjectPrefix *)actorCreateForKind(0x15, 0.0f, 0.0f, 0.0f, 0.0f, 45.0f,
+                                                               gCurrentAreaConfiguration->objectScale, 0, 0))
                         ->state.bytes;
             ((ActorScriptState *)state)->targetPosition[0] = (f32)((RuntimeObjectPrefix *)companion)->worldPosition[0];
             ((ActorScriptState *)state)->targetPosition[1] = (f32)((RuntimeObjectPrefix *)companion)->worldPosition[1];

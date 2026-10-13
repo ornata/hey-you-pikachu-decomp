@@ -108,9 +108,7 @@ extern f32 gPrimaryCameraEyeZ, gPrimaryCameraTargetX, gPrimaryCameraTargetZ, gRu
 /// Separate horizontal-scroll-rate view of backdrop descriptors, with a 32-byte stride.
 /// \note Original identifier: \c D_8009B064 (0x8009B064).
 extern u8 gBackdropScrollRateEntries[];
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 
 /// Update backdrop offsets from the camera direction and active scrolling settings.
 /// \param view View record receiving the backdrop offsets; supplies vertical framing and accumulated horizontal scroll.
@@ -140,7 +138,7 @@ void backdropUpdateViewOffsets(u8 *view) {
             pitch = 90.0f;
     }
     yaw = mathUnitDirectionDegrees(gPrimaryCameraTargetX - camera->eye[0], gPrimaryCameraTargetZ - gPrimaryCameraEyeZ);
-    offsetY = (s32)(((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->backdropVerticalOffset +
+    offsetY = (s32)(gCurrentAreaConfiguration->backdropVerticalOffset +
                     (((s32)(240.0f * pitch * gBackdropPitchToScreenScale) + 40) - *(f32 *)(view + 4) * 1.5f));
     *(s32 *)(view + 0x98) = (s32)(yaw * gBackdropYawToPixelScale);
     *(s32 *)(view + 0x9C) = offsetY;

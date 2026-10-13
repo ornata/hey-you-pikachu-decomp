@@ -2,17 +2,14 @@
 #include "actor_create.h"
 #include "scene_types.h"
 
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 extern u8 D_8013A878_scene_wilderness_camp[];
 extern s32 *D_8013CE38_scene_wilderness_camp[16];
 
 /// Spawn the Wilderness Camp resident creature with its scene behavior.
 /// \returns Nothing.
 void wildernessCampSpawnResident(void) {
-    actorCreateForKind(0x11, 125.0f, 10.0f, 122.27f, 0.0f, 0.0f,
-                       ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+    actorCreateForKind(0x11, 125.0f, 10.0f, 122.27f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                        D_8013A878_scene_wilderness_camp, 0);
 }
 

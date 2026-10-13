@@ -45,13 +45,13 @@ void toolboxCreateDisplayObjects(void);
 /// and the indexed access relies on the original target compiler aliasing behavior.
 void mazeInitialize(void);
 
-/// Invoke the current area's optional maze update callback.
+/// Invoke the area's optional initializer after common gameplay setup.
 /// \returns Nothing; has no effect when the callback is absent.
 ///
-/// \note Requires a loaded current-area configuration; a configured callback must be callable with no
-/// arguments.
+/// \note Requires a loaded current-area configuration and initialized common gameplay systems.
+/// Release the previous area-owned objects before repeating scene initialization.
 /// \note Original decompilation identifier: \c func_8010E53C (0x8010E53C).
-void mazeRunAreaUpdateCallback(void);
+void areaRunSceneInitializer(void);
 
 /// Make the selected destination and its loaded configuration the current area.
 /// \returns Nothing; requires the destination area's overlay to be loaded.

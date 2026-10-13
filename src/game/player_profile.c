@@ -31,7 +31,7 @@ void playerResetProfile(void) {
     ((PlayerControlPrefix *)&gPlayerState)->friendshipLevel = 0;
     ((PlayerControlPrefix *)&gPlayerState)->deliveredVoiceMessageCount = 0;
     ((PlayerControlPrefix *)&gPlayerState)->friendshipMilestone = -1;
-    ((PlayerControlPrefix *)&gPlayerState)->unknown0F7 = 0;
+    ((PlayerControlPrefix *)&gPlayerState)->chaseStage = 0;
     if (gRuntimeGameMode == 0x12) {
         progressSetChapterAndUnlockMilestones(0);
     }

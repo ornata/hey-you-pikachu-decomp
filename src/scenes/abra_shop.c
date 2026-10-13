@@ -1,15 +1,13 @@
+#include "scene_types.h"
+#include "actor_target.h"
+#include "object_types.h"
+#include "actor_script.h"
 #include "story_chapter.h"
 #include "common.h"
 #include "item_object.h"
 #include "actor_create.h"
 
-typedef struct {
-    u8 unknown[12];
-    f32 scale;
-} SceneScale;
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern SceneScale *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 extern u8 D_801431F8_scene_abra_shop[], D_8014363C_scene_abra_shop[];
 
 /// Set up shop residents and any special encounter enabled by saved game state.
@@ -17,28 +15,28 @@ extern u8 D_801431F8_scene_abra_shop[], D_8014363C_scene_abra_shop[];
 void abraShopInitializeObjects(void) {
     s32 level;
     f32 scale;
-    u8 *companion;
-    u8 *state;
+    u8 *trackedItem;
+    ActorScriptState *actorState;
 
-    actorCreateForKind(0xF, 100.0f, 1.2f, 95.0f, 0, 0, gCurrentAreaConfiguration->scale * 1.5f,
+    actorCreateForKind(0xF, 100.0f, 1.2f, 95.0f, 0, 0, gCurrentAreaConfiguration->objectScale * 1.5f,
                        D_801431F8_scene_abra_shop, 0);
     if (progressGetValue(0x15) != 0 && progressGetValue(0x16) == 0) {
         level = progressGetValue(0x17);
         scale = (f32)level;
         actorCreateForKind(0x17, 100.0f, 0.0f, 0.0f, 0, 0,
-                           ((scale / 5.0f + 1.0f) * (gCurrentAreaConfiguration->scale * 0.5f)),
+                           ((scale / 5.0f + 1.0f) * (gCurrentAreaConfiguration->objectScale * 0.5f)),
                            D_8014363C_scene_abra_shop, 0);
     }
     if (progressGetCurrentChapter() == 8) {
-        companion = itemCreate(145.0f, 1.5f, 150.0f, 0.0f, 0.0f, 0x8F);
-        state =
-            *(u8 **)(actorCreateForKind(0x15, 0.0f, 0.0f, 0.0f, 0.0f, 45.0f, gCurrentAreaConfiguration->scale, 0, 0) +
-                     0x54);
-        *(f32 *)(state + 0x1EC) = *(f32 *)(companion + 0x44);
-        *(f32 *)(state + 0x1F0) = *(f32 *)(companion + 0x48);
-        *(f32 *)(state + 0x1F4) = *(f32 *)(companion + 0x4C);
-        *(s32 *)(state + 0x198) = *(s32 *)(companion + 0x38);
-        *(s32 *)(state + 0x19C) = 1;
+        trackedItem = itemCreate(145.0f, 1.5f, 150.0f, 0.0f, 0.0f, 0x8F);
+        actorState = ((RuntimeObjectPrefix *)actorCreateForKind(0x15, 0.0f, 0.0f, 0.0f, 0.0f, 45.0f,
+                                                                gCurrentAreaConfiguration->objectScale, 0, 0))
+                         ->state.actor;
+        actorState->targetPosition[0] = ((RuntimeObjectPrefix *)trackedItem)->worldPosition[0];
+        actorState->targetPosition[1] = ((RuntimeObjectPrefix *)trackedItem)->worldPosition[1];
+        actorState->targetPosition[2] = ((RuntimeObjectPrefix *)trackedItem)->worldPosition[2];
+        actorState->targetHandle = ((RuntimeObjectPrefix *)trackedItem)->handle;
+        actorState->targetMode = ACTOR_TARGET_FOLLOW;
     }
 }
 

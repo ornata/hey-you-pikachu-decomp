@@ -64,9 +64,7 @@ typedef char MessageImagesOffsetCheck[(MESSAGE_OFFSET(handles) == 0x460) ? 1 : -
 /// Shared queued-message, timing, scrolling and text-image state for the message bar.
 /// \note Original identifier: \c D_800F06C0 (0x800F06C0).
 extern MessageBarState gMessageBarState;
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 /// Friendship messages indexed by the cleared chapter.
 /// \note Original identifier: \c D_800999F0 (0x800999F0).
 extern s32 gChapterFriendshipMessages[];

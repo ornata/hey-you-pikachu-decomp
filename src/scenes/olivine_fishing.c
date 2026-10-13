@@ -7,9 +7,7 @@
 #include "actor_create.h"
 #include "scene_types.h"
 #include "fishing_population.h"
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 /// Packed actor-script data borrowed from the scene ROM.
 extern u8 D_80142B94_scene_olivine_fishing[];
 /// Packed actor-script data borrowed from the scene ROM.
@@ -71,8 +69,7 @@ void olivineFishingSpawnRandomResident(s32 residentIndex, s32 suppressSpecialPoo
         } while (i != count);
     }
     if (selected != -1) {
-        actorCreateForKind(selected, 90.0f, 3.5f, 40.0f, 0, 0,
-                           ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+        actorCreateForKind(selected, 90.0f, 3.5f, 40.0f, 0, 0, gCurrentAreaConfiguration->objectScale,
                            D_80142B94_scene_olivine_fishing, residentIndex);
         runtimeCheckResetCheckpoint((const char *)D_80147B00_scene_olivine_fishing, 1);
     }
@@ -81,8 +78,7 @@ void olivineFishingSpawnRandomResident(s32 residentIndex, s32 suppressSpecialPoo
 /// Spawn the fixed type-nine resident for the fishing scene.
 /// \returns Nothing.
 void olivineFishingSpawnResidentType9(void) {
-    actorCreateForKind(9, 90.0f, 3.5f, 35.0f, 0.0f, 0.0f,
-                       ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+    actorCreateForKind(9, 90.0f, 3.5f, 35.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                        D_80144920_scene_olivine_fishing, 0x63);
 }
 
@@ -99,32 +95,28 @@ void olivineFishingSpawnProgressItem(void) {
 /// Spawn the fixed type-twenty resident for the fishing scene.
 /// \returns Nothing.
 void olivineFishingSpawnResidentType20(void) {
-    actorCreateForKind(0x14, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-                       ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+    actorCreateForKind(0x14, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                        D_80144E14_scene_olivine_fishing, 0x62);
 }
 
 /// Spawn the optional type-three resident for the fishing scene.
 /// \returns Nothing.
 void olivineFishingSpawnResidentType3(void) {
-    actorCreateForKind(3, 113.0f, 10.0f, 67.0f, 0.0f, 0.0f,
-                       ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+    actorCreateForKind(3, 113.0f, 10.0f, 67.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                        D_80145088_scene_olivine_fishing, 0x46);
 }
 
 /// Spawn the fixed type-seventeen resident for the fishing scene.
 /// \returns Nothing.
 void olivineFishingSpawnResidentType17(void) {
-    actorCreateForKind(0x11, 130.0f, 20.0f, 40.0f, 0.0f, 0.0f,
-                       ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+    actorCreateForKind(0x11, 130.0f, 20.0f, 40.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                        D_8014549C_scene_olivine_fishing, 0x46);
 }
 
 /// Spawn the fixed type-ten resident for the fishing scene.
 /// \returns Nothing.
 void olivineFishingSpawnResidentType10(void) {
-    actorCreateForKind(0xA, 110.0f, 8.0f, 10.0f, 0.0f, 0.0f,
-                       ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+    actorCreateForKind(0xA, 110.0f, 8.0f, 10.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                        D_80145598_scene_olivine_fishing, 0x61);
 }
 

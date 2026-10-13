@@ -19,6 +19,11 @@ PATTERNS = {
     'address_globals': re.compile(r'\bD_[0-9A-Fa-f]{8}\b'),
     'temporary_names': re.compile(r'\btemp_[A-Za-z0-9_]+\b'),
     'raw_offset_candidates': re.compile(r'\b[A-Za-z_]\w*\s*[+-]\s*(?:0[xX][0-9A-Fa-f]+|[0-9]+)[uUlL]*\b'),
+    # Supplemental coverage preserves the historical identifier-only metric.
+    # These are simple casted pointer bases, not a complete C expression parser.
+    'cast_offset_candidates': re.compile(
+        r'\(\(\s*(?:[A-Za-z_]\w*[ \t]+){0,3}[A-Za-z_]\w*[ \t]*\*+[ \t]*\)'
+        r'\s*[A-Za-z_]\w*\s*\)\s*[+-]\s*(?:0[xX][0-9A-Fa-f]+|[0-9]+)[uUlL]*\b'),
 }
 
 
@@ -83,6 +88,9 @@ LEDGER_POLICIES = {
     'raw_offset_candidates': {
         'reason': 'Review candidate only; the expression may be scalar arithmetic, a byte stream, a hardware address or an unresolved record access.',
         'next_evidence': 'Establish the base type and ownership before classifying; retain intentional byte arithmetic and hardware addressing.'},
+    'cast_offset_candidates': {
+        'reason': 'Supplemental review candidate with a simple casted pointer base; it may be an intentional byte view or a retained matching representation.',
+        'next_evidence': 'Trace the cast base and consult its shared layout and matching exception before replacing arithmetic. Do not infer recovery from changes in expression spelling.'},
 }
 
 

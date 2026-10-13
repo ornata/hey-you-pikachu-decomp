@@ -1,3 +1,6 @@
+#include "actor_target.h"
+#include "object_types.h"
+#include "actor_script.h"
 #include "game_heap.h"
 #include "player_chase.h"
 #include "ambient_audio.h"
@@ -92,9 +95,7 @@ void ochreDeepCreateAlternateVariantProps(void) {
                      1);
 }
 
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 extern f32 D_8014AB90_scene_ochre_deep;
 extern u8 D_801479C0_scene_ochre_deep[];
 extern u8 D_801478D8_scene_ochre_deep[];
@@ -102,23 +103,24 @@ extern u8 D_801478D8_scene_ochre_deep[];
 /// \returns One when the encounter is created; otherwise zero.
 s32 ochreDeepTryCreateProgressEncounter(void) {
     u8 *item;
-    u8 *effect;
-    u8 *state;
+    u8 *encounterActor;
+    ActorScriptState *actorState;
 
     if (progressGetValue(0x15) == 0) {
         if (playerGetChaseStage() > 0) {
             item = itemCreate(D_8014AB90_scene_ochre_deep, 17.75f, 31.92f, 0.0f, 0.0f, 0x8F);
-            effect = actorCreateForKind(0x17, 0, 0, 0, 0, 45.0f, *(f32 *)(gCurrentAreaConfiguration + 0xC) * 0.5,
-                                        D_801479C0_scene_ochre_deep, 0);
-            state = *(u8 **)(effect + 0x54);
+            encounterActor =
+                actorCreateForKind(0x17, 0, 0, 0, 0, 45.0f, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC) * 0.5,
+                                   D_801479C0_scene_ochre_deep, 0);
+            actorState = ((RuntimeObjectPrefix *)encounterActor)->state.actor;
             *(f32 *)(item + 8) = *(f32 *)(item + 4) = *(f32 *)(item + 0) = 0;
-            *(f32 *)(state + 0x1EC) = *(f32 *)(item + 0x44);
-            *(f32 *)(state + 0x1F0) = *(f32 *)(item + 0x48);
-            *(f32 *)(state + 0x1F4) = *(f32 *)(item + 0x4C);
-            *(s32 *)(state + 0x198) = *(s32 *)(item + 0x38);
-            *(s32 *)(state + 0x19C) = 1;
-            itemHideAndSuspend(*(s32 *)(item + 0x38));
-            actorCreateForKind(0xF, 0, 0, 0, 0, 0, *(f32 *)(gCurrentAreaConfiguration + 0xC),
+            actorState->targetPosition[0] = ((RuntimeObjectPrefix *)item)->worldPosition[0];
+            actorState->targetPosition[1] = ((RuntimeObjectPrefix *)item)->worldPosition[1];
+            actorState->targetPosition[2] = ((RuntimeObjectPrefix *)item)->worldPosition[2];
+            actorState->targetHandle = ((RuntimeObjectPrefix *)item)->handle;
+            actorState->targetMode = ACTOR_TARGET_FOLLOW;
+            itemHideAndSuspend(((RuntimeObjectPrefix *)item)->handle);
+            actorCreateForKind(0xF, 0, 0, 0, 0, 0, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC),
                                D_801478D8_scene_ochre_deep, 0);
             return 1;
         }
@@ -147,12 +149,10 @@ extern f32 D_8014ABA4_scene_ochre_deep;
 void ochreDeepInitializeObjects(void) {
     f32 position[3];
 
-    actorCreateForKind(0x13, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-                       ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+    actorCreateForKind(0x13, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                        &D_801475C8_scene_ochre_deep, 0);
     if ((ochreDeepTryCreateProgressEncounter() == 0) && (progressGetValue(0x76) >= 2)) {
-        actorCreateForKind(0xE, 83.5f, 20.8f, 52.0f, 0, 0,
-                           ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+        actorCreateForKind(0xE, 83.5f, 20.8f, 52.0f, 0, 0, gCurrentAreaConfiguration->objectScale,
                            &D_80147AE0_scene_ochre_deep, 0);
     }
     heapDebugReportFreeSpace(&gGameHeap, (const char *)&D_8014AB48_scene_ochre_deep);

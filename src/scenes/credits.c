@@ -10,9 +10,7 @@ extern s32 gAreaScenarioIndex;
 extern u8 D_8013B17C_scene_credits[], D_8013B58C_scene_credits[], D_8013BC80_scene_credits[],
     D_8013C0D0_scene_credits[], D_8014382C_scene_credits[], D_80143CD0_scene_credits[], D_801440C0_scene_credits[];
 extern u8 D_80143D04_scene_credits[][4];
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 /// Provide a credits-scene callback that requires no action.
 /// \returns Nothing.
 void creditsSceneNoOp80134270(void) {
@@ -24,29 +22,25 @@ void creditsSceneNoOp80134278(void) {
 /// Spawn the type-4 resident for the credits scene.
 /// \returns Nothing.
 void creditsSpawnResidentType4(void) {
-    actorCreateForKind(4, 40.0f, 1.0f, 60.0f, 0.0f, 0.0f,
-                       ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale, D_8013B17C_scene_credits,
-                       0);
+    actorCreateForKind(4, 40.0f, 1.0f, 60.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+                       D_8013B17C_scene_credits, 0);
 }
 /// Spawn the type-1 resident for the credits scene.
 /// \returns Nothing.
 void creditsSpawnResidentType1(void) {
-    actorCreateForKind(1, 0, 1.0f, 0, 0.0f, 0.0f, ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
-                       D_8013B17C_scene_credits, 1);
+    actorCreateForKind(1, 0, 1.0f, 0, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale, D_8013B17C_scene_credits, 1);
 }
 /// Spawn the type-3 resident for the credits scene.
 /// \returns Nothing.
 void creditsSpawnResidentType3(void) {
-    actorCreateForKind(3, 0, 1.0f, 0, 0.0f, 0.0f, ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
-                       D_8013B17C_scene_credits, 2);
+    actorCreateForKind(3, 0, 1.0f, 0, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale, D_8013B17C_scene_credits, 2);
 }
 /// Spawn the type-five resident group for the credits scene.
 /// \returns Nothing.
 void creditsSpawnResidentType5Group(void) {
     s32 i;
     for (i = 0; i != 10; i++) {
-        actorCreateForKind(5, 0, 0, 0, 0.0f, 0.0f, ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
-                           D_8013B58C_scene_credits, i);
+        actorCreateForKind(5, 0, 0, 0, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale, D_8013B58C_scene_credits, i);
     }
 }
 /// Spawn the colored type-twelve resident group for the credits scene.
@@ -57,8 +51,7 @@ void creditsSpawnTintedResidentGroup(void) {
     u8 *object;
     u8 *rgba;
     for (i = 0; i != 5; i++) {
-        object = actorCreateForKind(12, 0, 0, (f32)i, 0.0f, 0.0f,
-                                    ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+        object = actorCreateForKind(12, 0, 0, (f32)i, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                                     D_8013BC80_scene_credits, i);
         color = i;
         while (color < 0)
@@ -72,24 +65,21 @@ void creditsSpawnTintedResidentGroup(void) {
 /// Spawn the type-17 resident for the credits scene.
 /// \returns Nothing.
 void creditsSpawnResidentType17(void) {
-    actorCreateForKind(17, 0, 0, 0, 0.0f, 0.0f, ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
-                       D_8013C0D0_scene_credits, 0);
+    actorCreateForKind(17, 0, 0, 0, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale, D_8013C0D0_scene_credits, 0);
 }
 /// Spawn the type-fourteen resident for the alternate credits mode.
 /// \returns Nothing.
 void creditsSpawnAlternateResidentType14(void) {
-    objectSetHierarchyFlags(actorCreateForKind(14, 0, 0, 0, 0.0f, 0.0f,
-                                               ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+    objectSetHierarchyFlags(actorCreateForKind(14, 0, 0, 0, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                                                D_8014382C_scene_credits, 0),
                             0x6000);
 }
 /// Spawn the type-five resident for the alternate credits mode.
 /// \returns Nothing.
 void creditsSpawnAlternateResidentType5(void) {
-    objectSetHierarchyFlags(actorCreateForKind(5, 0, 0, 0, 0.0f, 0.0f,
-                                               ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
-                                               D_80143CD0_scene_credits, 0),
-                            0x6000);
+    objectSetHierarchyFlags(
+        actorCreateForKind(5, 0, 0, 0, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale, D_80143CD0_scene_credits, 0),
+        0x6000);
 }
 /// Populate the credits scene for the current game mode.
 /// \returns Nothing.

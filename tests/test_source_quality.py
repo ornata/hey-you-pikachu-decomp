@@ -55,3 +55,29 @@ M2C_UNK32 temp_v0 = M2C_FIELD(p, s32 *, 4);
     def test_identifier_boundaries(self):
         items = inspect_source('NOT_M2C_UNK M2C_UNK128 D_800000000 not_temp_v0;')
         self.assertFalse(any(items.values()))
+
+    def test_cast_offsets_are_separate_and_exclude_comments_and_literals(self):
+        source = '''
+// ((u8 *)ignored) + 4
+const char *text = "((u8 *)ignored) + 4";
+read(((u8 *)configuration) + 0x74);
+read(((const struct Record **)table) - 2U);
+buffer = buffer + 4;
+count = ((s32)value) + 1;
+'''
+        items = inspect_source(source)
+        self.assertEqual([item['token'] for item in items['cast_offset_candidates']],
+                         ['((u8 *)configuration) + 0x74', '((const struct Record **)table) - 2U'])
+        self.assertEqual([item['token'] for item in items['raw_offset_candidates']], ['buffer + 4'])
+
+    def test_cast_offset_repetitions_and_ledger_evidence(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'src').mkdir()
+            (root / 'src/a.c').write_text('((u8 *)buffer) + 4; ((u8 *)buffer) + 4;')
+            report = inventory(root)
+            self.assertEqual(report['totals']['cast_offset_candidates'],
+                             {'occurrences': 2, 'unique_spellings': 1, 'files': 1})
+            ledger = recovery_ledger(root, report)
+            self.assertIn('cast_offset_candidates', ledger['files']['src/a.c']['locations'])
+            self.assertIn('next_evidence', ledger['policies']['cast_offset_candidates'])

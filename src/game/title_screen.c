@@ -731,9 +731,7 @@ extern u32 gTitleStartupPanelMilliseconds;
 /// Elapsed-time checkpoint enforcing the silhouette minimum display period.
 /// \note Original identifier: \c D_800F25E8 (0x800F25E8).
 extern u32 gTitleSilhouetteMilliseconds;
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 void titleScreenInitialize(void);
 void titleScreenResetLogoFade(void);
 void titleScreenSetMessage(void **, s32, s32);
@@ -965,7 +963,7 @@ void titleScreenUpdate(void) {
                 gTitleScreenState = 18;
                 break;
             }
-            backdropSelectForView(0, *(s32 *)(gCurrentAreaConfiguration + 0x64), 0);
+            backdropSelectForView(0, *(s32 *)(((u8 *)gCurrentAreaConfiguration) + 0x64), 0);
             gTitleScreenState = 0;
             controllerConfigureStickButtons(0, 0x1E, 0x1E, 0x1E, 0x1E);
             runtimeRequestGameModeChange(4);

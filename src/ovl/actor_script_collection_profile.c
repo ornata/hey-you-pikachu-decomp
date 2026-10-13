@@ -665,9 +665,7 @@ s32 actorScriptSelectBackdrop(u8 *actor) {
     return 0;
 }
 
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 
 /// Provide the current scene near clipping distance.
 /// \param actor Actor whose script VM receives the near clipping distance as a floating-point value.
@@ -676,7 +674,7 @@ extern u8 *gCurrentAreaConfiguration;
 s32 actorScriptPushNearClipDistance(u8 *actor) {
     s32 handle = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
 
-    scriptVmPushFloat(handle, ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->nearClip);
+    scriptVmPushFloat(handle, gCurrentAreaConfiguration->nearClip);
     return 0;
 }
 
@@ -688,7 +686,7 @@ s32 actorScriptPushNearClipDistance(u8 *actor) {
 s32 actorScriptPushFarClipDistance(u8 *actor) {
     s32 handle = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
 
-    scriptVmPushFloat(handle, ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->farClip);
+    scriptVmPushFloat(handle, gCurrentAreaConfiguration->farClip);
     return 0;
 }
 
@@ -703,7 +701,7 @@ s32 actorScriptSetNearClipDistance(u8 *actor) {
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     sp18 = vmAddress;
-    ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->nearClip = scriptVmPopFloat(vmAddress);
+    gCurrentAreaConfiguration->nearClip = scriptVmPopFloat(vmAddress);
     scriptVmPushInteger(vmAddress, 0);
     return 0;
 }
@@ -719,7 +717,7 @@ s32 actorScriptSetFarClipDistance(u8 *actor) {
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     sp18 = vmAddress;
-    ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->farClip = scriptVmPopFloat(vmAddress);
+    gCurrentAreaConfiguration->farClip = scriptVmPopFloat(vmAddress);
     scriptVmPushInteger(vmAddress, 0);
     return 0;
 }
@@ -730,8 +728,7 @@ s32 actorScriptSetFarClipDistance(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_80120888 (0x80120888).
 s32 actorScriptPushFogStart(u8 *actor) {
-    scriptVmPushFloat(((RuntimeObjectPrefix *)actor)->state.actor->vmAddress,
-                      (f32)((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->fogStart);
+    scriptVmPushFloat(((RuntimeObjectPrefix *)actor)->state.actor->vmAddress, (f32)gCurrentAreaConfiguration->fogStart);
     return 0;
 }
 
@@ -746,7 +743,7 @@ s32 actorScriptSetFogStart(u8 *actor) {
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     sp18 = vmAddress;
-    ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->fogStart = (s32)scriptVmPopFloat(vmAddress);
+    gCurrentAreaConfiguration->fogStart = (s32)scriptVmPopFloat(vmAddress);
     scriptVmPushInteger(vmAddress, 0);
     return 0;
 }
@@ -757,8 +754,7 @@ s32 actorScriptSetFogStart(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_80120918 (0x80120918).
 s32 actorScriptPushFogEnd(u8 *actor) {
-    scriptVmPushFloat(((RuntimeObjectPrefix *)actor)->state.actor->vmAddress,
-                      (f32)((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->fogEnd);
+    scriptVmPushFloat(((RuntimeObjectPrefix *)actor)->state.actor->vmAddress, (f32)gCurrentAreaConfiguration->fogEnd);
     return 0;
 }
 
@@ -773,7 +769,7 @@ s32 actorScriptSetFogEnd(u8 *actor) {
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     sp18 = vmAddress;
-    ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->fogEnd = (s32)scriptVmPopFloat(vmAddress);
+    gCurrentAreaConfiguration->fogEnd = (s32)scriptVmPopFloat(vmAddress);
     scriptVmPushInteger(vmAddress, 0);
     return 0;
 }
@@ -833,8 +829,7 @@ s32 actorScriptCreateScrollBoard(u8 *actor) {
     created = scrollBoardCreateHierarchy(columns, lines, red, green, blue, alpha, leadingOutline, trailingOutline);
     scrollBoardSelectPresetText(((RuntimeObjectPrefix *)created)->handle, preset, style);
     scrollBoardSetHierarchySpeed(created, scrollSpeed);
-    objectSetUniformTransform(created, position, rotation,
-                              ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale * scale);
+    objectSetUniformTransform(created, position, rotation, gCurrentAreaConfiguration->objectScale * scale);
     scriptVmPushInteger(vmAddress, ((RuntimeObjectPrefix *)created)->handle);
     return 0;
 }
@@ -900,8 +895,7 @@ s32 actorScriptSetObjectTransform(u8 *actor) {
     position[0] = scriptVmPopFloat(vmAddress);
     targetHandle = scriptVmPopInteger(vmAddress);
     target = (u8 *)objectFindLiveByHandle(targetHandle);
-    objectSetUniformTransform(target, position, rotation,
-                              ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale * scale);
+    objectSetUniformTransform(target, position, rotation, gCurrentAreaConfiguration->objectScale * scale);
     scriptVmPushInteger(vmAddress, 0);
     return 0;
 }

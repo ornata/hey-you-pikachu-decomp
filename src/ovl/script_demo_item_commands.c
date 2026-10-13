@@ -42,9 +42,7 @@ s32 scriptCommandGetDemoIndex(u8 *object) {
 }
 
 #include "area_services.h"
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 /// Remove the maze block identified by the script handle argument, with visual effects, and provide a zero script result.
 /// \param object Actor whose script supplies the target block handle and receives zero,
 /// including when the handle does not identify a live maze block.
@@ -65,8 +63,8 @@ s32 scriptCommandRemoveMazeBlock(u8 *object) {
         center[0] = ((RuntimeObjectPrefix *)target)->worldPosition[0];
         center[1] = ((RuntimeObjectPrefix *)target)->worldPosition[1];
         center[2] = ((RuntimeObjectPrefix *)target)->worldPosition[2];
-        center[0] += ((RuntimeObjectPrefix *)target)->radius * ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale * 0.5f;
-        center[2] += ((RuntimeObjectPrefix *)target)->radius * ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale * 0.5f;
+        center[0] += ((RuntimeObjectPrefix *)target)->radius * gCurrentAreaConfiguration->objectScale * 0.5f;
+        center[2] += ((RuntimeObjectPrefix *)target)->radius * gCurrentAreaConfiguration->objectScale * 0.5f;
         edge[0] = center[0];
         edge[1] = center[1];
         edge[2] = center[2];

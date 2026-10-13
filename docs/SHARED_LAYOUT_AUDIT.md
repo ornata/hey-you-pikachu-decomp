@@ -45,9 +45,9 @@ fields beyond this prefix also remain outside this completed entry.
 - Scene dimensions use the existing `Vec3f` component view with checks against
   the shared configuration array. Direct array accesses change root/control
   hierarchy instructions.
-- `PlayerSpawnPoseView` retains scalar player coordinates because direct
-  `SceneSpawnPoint` array access changes initialization code. Its stride, yaw and
-  companion-position offsets are checked against the shared record.
+- Player initialization now uses `SceneSpawnPoint` directly. The private scalar
+  spawn view was removed after typing the configuration global made the canonical
+  entrance-record accesses preserve all object bytes.
 - `SceneOccupancyView` retains the sampler's matching scalar representation.
   Size and component/callback offsets are checked against the shared prefix;
   it cannot be used to allocate or copy configurations.
@@ -60,3 +60,38 @@ recovery, not permission to weaken object comparison or change the baseline.
 Investigate argument/load ordering and alias effects with the target compiler
 before removing a matching view. ROM identity and strict relocation-addend checks
 remain required for every replacement.
+
+## Typed scene storage and initialization phase
+
+`scene_configuration.h` owns the common declaration of
+`gCurrentAreaConfiguration` as a pointer to the established scene prefix. Its
+producer and all consumers use that declaration. Byte arithmetic and
+area-specific extensions use explicit byte views; established common fields use
+direct members. Five private `SceneScale` records and their incompatible global
+pointer declarations were removed. The typed global and every consumer pass the
+original object comparison.
+
+The callback at configuration offset `0x40` is `initializeScene`, not a maze
+update operation. The runtime invokes it at the end of common scene gameplay
+initialization. Resolving the callback in every one of the 23 configured overlays
+identifies area initializers (including the intentional no-op scene). The public
+wrapper is `areaRunSceneInitializer`; its original address remains `0x8010E53C`.
+This corrects the lifecycle contract without changing the callback ABI or bytes.
+
+## Player chase state and material tint
+
+The player byte at `0xF7` is `chaseStage`, sharing storage with the retained
+`gPlayerChaseStage` linker view at `0x800EF797`. The setter, getter, reset and Ghidra
+at `0x801127DC` agree on its byte width and role. Saved furthest-stage progress is
+separate and uses the setter's full input value. The profile bytes at `0xF4` and
+`0xF5` remain unresolved: initialization to six and eight does not establish their
+meaning. The `0x40..0x4B` region also remains opaque. Next evidence is producer and
+indirect/script consumer tracing; no birthday, timer or vector interpretation is
+assigned from defaults or size alone.
+
+Material drawing obtains tint storage from `ItemStatePrefix.tint`, checked at
+`0x4C`. A private, size-checked `ItemMaterialTintView` preserves the original
+component loads because both direct-byte and bounded-array alternatives fail
+the ROM gate. The view borrows four RGBA bytes and owns no item resources.
+Encounter setup in the shop and deep forest now uses `ActorScriptState` target
+position/handle fields, shared object world positions and `ACTOR_TARGET_FOLLOW`.

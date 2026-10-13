@@ -87,9 +87,7 @@ void balloonUpdateHeldInflation(u8 *object) {
     }
 }
 
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 
 /// Begin upward flight for a sufficiently inflated balloon.
 /// \param object Item to update.
@@ -99,8 +97,7 @@ void balloonBeginReleasedFlight(u8 *object) {
     u8 *sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)object)->state.bytes;
-    if ((((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale * 7.0f) <
-        ((RuntimeObjectPrefix *)object)->scale[0]) {
+    if ((gCurrentAreaConfiguration->objectScale * 7.0f) < ((RuntimeObjectPrefix *)object)->scale[0]) {
         itemSetMode(object, ITEM_MODE_DRIFTING_FLIGHT);
         ((ItemStatePrefix *)sp1C)->motionPhase.flightElapsed = 0.0f;
         ((ItemStatePrefix *)sp1C)->velocityZ = 0.0f;

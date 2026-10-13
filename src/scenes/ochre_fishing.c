@@ -7,9 +7,7 @@
 #include "actor_create.h"
 #include "scene_types.h"
 #include "fishing_population.h"
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 /// Packed actor-script data borrowed from the scene ROM.
 extern u8 D_801430E4_scene_ochre_fishing[];
 /// Packed actor-script data borrowed from the scene ROM.
@@ -65,8 +63,7 @@ void ochreFishingSpawnRandomResident(s32 residentIndex) {
         } while (i != count);
     }
     if (selected != -1) {
-        actorCreateForKind(selected, 54.0f, 8.0f, 72.0f, 0, 0,
-                           ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+        actorCreateForKind(selected, 54.0f, 8.0f, 72.0f, 0, 0, gCurrentAreaConfiguration->objectScale,
                            D_801430E4_scene_ochre_fishing, residentIndex);
         runtimeCheckResetCheckpoint((const char *)D_801480FC_scene_ochre_fishing, 1);
     }
@@ -75,8 +72,7 @@ void ochreFishingSpawnRandomResident(s32 residentIndex) {
 /// Spawn the fixed type-nine resident for the fishing scene.
 /// \returns Nothing.
 void ochreFishingSpawnResidentType9(void) {
-    actorCreateForKind(9, 54.0f, 8.0f, 67.0f, 0.0f, 0.0f,
-                       ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+    actorCreateForKind(9, 54.0f, 8.0f, 67.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                        D_80144EF4_scene_ochre_fishing, 0x63);
 }
 
@@ -93,32 +89,28 @@ void ochreFishingSpawnProgressItem(void) {
 /// Spawn the fixed type-twenty resident for the fishing scene.
 /// \returns Nothing.
 void ochreFishingSpawnResidentType20(void) {
-    actorCreateForKind(0x14, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-                       ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+    actorCreateForKind(0x14, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                        D_801453E8_scene_ochre_fishing, 0x62);
 }
 
 /// Spawn the optional type-one resident for the fishing scene.
 /// \returns Nothing.
 void ochreFishingSpawnResidentType1(void) {
-    actorCreateForKind(1, 64.0f, 12.0f, 45.0f, 0.0f, 0.0f,
-                       ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+    actorCreateForKind(1, 64.0f, 12.0f, 45.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                        D_8014565C_scene_ochre_fishing, 0x46);
 }
 
 /// Spawn the fixed type-nineteen resident for the fishing scene.
 /// \returns Nothing.
 void ochreFishingSpawnResidentType19(void) {
-    actorCreateForKind(0x13, 104.0f, 24.0f, 72.0f, 0.0f, 0.0f,
-                       ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+    actorCreateForKind(0x13, 104.0f, 24.0f, 72.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                        D_801458F8_scene_ochre_fishing, 0x46);
 }
 
 /// Spawn the fixed type-ten resident for the fishing scene.
 /// \returns Nothing.
 void ochreFishingSpawnResidentType10(void) {
-    actorCreateForKind(0xA, 74.0f, 12.0f, 42.0f, 0.0f, 0.0f,
-                       ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+    actorCreateForKind(0xA, 74.0f, 12.0f, 42.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                        D_801459F4_scene_ochre_fishing, 0x61);
 }
 

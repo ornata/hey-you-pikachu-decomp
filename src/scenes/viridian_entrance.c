@@ -60,9 +60,7 @@ void viridianEntranceInitializeNormalObjects(void) {
     viridianEntranceCreateAccessObject();
 }
 
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 extern u8 D_8014CF3C_scene_viridian_entrance[];
 
 /// Populate the mode-two forest entrance with its prop and resident group.
@@ -72,8 +70,7 @@ void viridianEntranceInitializeModeTwoObjects(void) {
 
     viridianEntranceCreateSceneProp();
     for (i = 0; i < 6; i++) {
-        actorCreateForKind(0x24, 180.0f, 1.5f, 215.0f, 0, 0.0f,
-                           ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+        actorCreateForKind(0x24, 180.0f, 1.5f, 215.0f, 0, 0.0f, gCurrentAreaConfiguration->objectScale,
                            D_8014CF3C_scene_viridian_entrance, i);
     }
 }

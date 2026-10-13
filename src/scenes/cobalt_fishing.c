@@ -7,9 +7,7 @@
 #include "actor_create.h"
 #include "scene_types.h"
 #include "fishing_population.h"
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 /// Packed actor-script data borrowed from the scene ROM.
 extern u8 D_80142E90_scene_cobalt_fishing[];
 /// Packed actor-script data borrowed from the scene ROM.
@@ -66,8 +64,7 @@ void cobaltFishingSpawnRandomResident(s32 residentIndex) {
         } while (i != count);
     }
     if (selected != -1) {
-        actorCreateForKind(selected, 93.0f, 5.0f, 35.0f, 0, 0,
-                           ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+        actorCreateForKind(selected, 93.0f, 5.0f, 35.0f, 0, 0, gCurrentAreaConfiguration->objectScale,
                            D_80142E90_scene_cobalt_fishing, residentIndex);
         runtimeCheckResetCheckpoint((const char *)D_80147C94_scene_cobalt_fishing, 1);
     }
@@ -76,8 +73,7 @@ void cobaltFishingSpawnRandomResident(s32 residentIndex) {
 /// Spawn the fixed type-nine resident for the fishing scene.
 /// \returns Nothing.
 void cobaltFishingSpawnResidentType9(void) {
-    actorCreateForKind(9, 93.0f, 5.0f, 30.0f, 0.0f, 0.0f,
-                       ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+    actorCreateForKind(9, 93.0f, 5.0f, 30.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                        D_80144CA4_scene_cobalt_fishing, 0x63);
 }
 
@@ -94,32 +90,28 @@ void cobaltFishingSpawnProgressItem(void) {
 /// Spawn the fixed type-twenty resident for the fishing scene.
 /// \returns Nothing.
 void cobaltFishingSpawnResidentType20(void) {
-    actorCreateForKind(0x14, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-                       ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+    actorCreateForKind(0x14, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                        D_80145198_scene_cobalt_fishing, 0x62);
 }
 
 /// Spawn the optional type-eighteen resident for the fishing scene.
 /// \returns Nothing.
 void cobaltFishingSpawnResidentType18(void) {
-    actorCreateForKind(0x12, 110.0f, 11.0f, 79.0f, 0.0f, 0.0f,
-                       ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+    actorCreateForKind(0x12, 110.0f, 11.0f, 79.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                        D_80145390_scene_cobalt_fishing, 0x63);
 }
 
 /// Spawn the fixed type-eleven resident for the fishing scene.
 /// \returns Nothing.
 void cobaltFishingSpawnResidentType11(void) {
-    actorCreateForKind(0xB, 130.0f, 5.25f, 28.0f, 0.0f, 0.0f,
-                       ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+    actorCreateForKind(0xB, 130.0f, 5.25f, 28.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                        D_80145640_scene_cobalt_fishing, 0x63);
 }
 
 /// Spawn the fixed type-ten resident for the fishing scene.
 /// \returns Nothing.
 void cobaltFishingSpawnResidentType10(void) {
-    actorCreateForKind(0xA, 113.0f, 8.0f, 5.0f, 0.0f, 0.0f,
-                       ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+    actorCreateForKind(0xA, 113.0f, 8.0f, 5.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                        D_8014573C_scene_cobalt_fishing, 0x61);
 }
 

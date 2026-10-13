@@ -6,9 +6,7 @@
 #include "actor_create.h"
 #include "area_maze.h"
 #include "scene_types.h"
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 void lakeshorePlaceSceneProp(u8 *, s32);
 void lakeshoreSpawnColoredResident(f32 *, f32);
 extern u8 *D_8014142C_scene_olivine_lakeshore[];
@@ -83,8 +81,7 @@ void lakeshoreSpawnColoredResident(f32 *position, f32 heading) {
 
     counter = &D_80141444_scene_olivine_lakeshore;
     object = actorCreateForKind(0xC, position[0], position[1], position[2], 0.0f, heading,
-                                ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
-                                &D_801402D0_scene_olivine_lakeshore, *counter);
+                                gCurrentAreaConfiguration->objectScale, &D_801402D0_scene_olivine_lakeshore, *counter);
     index = *counter;
     if (*counter < 0) {
         do {
@@ -114,8 +111,7 @@ void lakeshoreSpawnColoredResidentRandomHeading(f32 *position) {
 /// \param heading Initial heading in degrees.
 /// \returns Nothing.
 void lakeshoreSpawnResidentType3(f32 *position, f32 heading) {
-    actorCreateForKind(3, position[0], position[1], position[2], 0.0f, heading,
-                       ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+    actorCreateForKind(3, position[0], position[1], position[2], 0.0f, heading, gCurrentAreaConfiguration->objectScale,
                        &D_8014069C_scene_olivine_lakeshore, 0);
 }
 
@@ -123,8 +119,7 @@ void lakeshoreSpawnResidentType3(f32 *position, f32 heading) {
 /// \param position Three-component scene position.
 /// \returns Nothing.
 void lakeshoreSpawnResidentType17(f32 *position) {
-    actorCreateForKind(0x11, position[0], position[1], position[2], 0.0f, 0.0f,
-                       ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+    actorCreateForKind(0x11, position[0], position[1], position[2], 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                        &D_801410FC_scene_olivine_lakeshore, 0);
 }
 

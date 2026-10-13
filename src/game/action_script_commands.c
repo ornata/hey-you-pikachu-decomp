@@ -931,9 +931,7 @@ void actionCommandStartDirectionMotion(s32 actor, u8 *state, u8 *command, s32 el
     directionAnimationStartMotion((u8 *)&((ActorScriptState *)state)->directionAnimation, p->duration, pts);
 }
 
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 typedef struct {
     s32 id;
     f32 val;
@@ -959,7 +957,7 @@ void actionCommandConfigureHeldItem(s32 actor, u8 *state, u8 *command, f32 *elap
     if (p->val > 0.0f) {
         v = (f32 *)objectFindLiveByHandle(*(s32 *)(state + 0x190));
         if (v != NULL) {
-            f = *(f32 *)(gCurrentAreaConfiguration + 0xC) * p->val;
+            f = *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC) * p->val;
             v[0] = f;
             v[1] = f;
             v[2] = f;

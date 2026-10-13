@@ -1,3 +1,4 @@
+#include "scene_types.h"
 #include "math_scalar.h"
 #include "random.h"
 #include "runtime_control.h"
@@ -25,13 +26,7 @@ extern s32 gRuntimeCurrentEntrance;
 extern f32 D_80134D24_scene_springleaf_field[];
 extern f64 D_801594E8_scene_springleaf_field;
 
-typedef struct {
-    u8 unknown[12];
-    f32 scale;
-} SceneScale;
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern SceneScale *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 extern u8 D_8014DFD8_scene_springleaf_field, D_80156C2C_scene_springleaf_field;
 extern f32 D_801594C4_scene_springleaf_field, D_801594D0_scene_springleaf_field;
 extern f64 D_801594C8_scene_springleaf_field, D_801594D8_scene_springleaf_field, D_801594E0_scene_springleaf_field;
@@ -59,7 +54,8 @@ void springleafFieldSpawnGrowthResident(f32 *position, s32 residentIndex) {
         // clang-format on
         actorCreateForKind(5, position[0], position[1], position[2], 0.0f,
                            (f32)((f64)random * 2.3283064365386963e-10 * D_801594C8_scene_springleaf_field),
-                           mathPowInteger(scale, state) * gCurrentAreaConfiguration->scale, record, residentIndex);
+                           mathPowInteger(scale, state) * gCurrentAreaConfiguration->objectScale, record,
+                           residentIndex);
         return;
     }
     if (state < 4) {
@@ -68,13 +64,14 @@ void springleafFieldSpawnGrowthResident(f32 *position, s32 residentIndex) {
         // clang-format on
         actorCreateForKind(6, position[0], position[1], position[2], 0.0f,
                            (f32)((f64)random * 2.3283064365386963e-10 * D_801594D8_scene_springleaf_field),
-                           mathPowInteger(scale, state - 2) * gCurrentAreaConfiguration->scale, record, residentIndex);
+                           mathPowInteger(scale, state - 2) * gCurrentAreaConfiguration->objectScale, record,
+                           residentIndex);
         return;
     }
     random = randomNext();
     actorCreateForKind(7, position[0], position[1], position[2], 0.0f,
                        (f32)((f64)(u32)random * 2.3283064365386963e-10 * D_801594E0_scene_springleaf_field),
-                       gCurrentAreaConfiguration->scale, record, residentIndex);
+                       gCurrentAreaConfiguration->objectScale, record, residentIndex);
 }
 
 /// Prepare scene resources for evolved field residents.
@@ -134,18 +131,18 @@ void springleafFieldInitializeObjects(void) {
     s32 kind;
     occupied = D_80157F70_scene_springleaf_field;
     if (progressGetValue(0x12) != 0) {
-        actorCreateForKind(3, 203.45f, 0.5f, 35.97f, 0.0f, 0.0f, gCurrentAreaConfiguration->scale,
+        actorCreateForKind(3, 203.45f, 0.5f, 35.97f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                            D_801571E4_scene_springleaf_field, 0);
     }
     if (progressGetCurrentChapter() == 8) {
-        actorCreateForKind(17, 0, 0, 0, 0.0f, 0.0f, gCurrentAreaConfiguration->scale, D_80157B58_scene_springleaf_field,
-                           0);
+        actorCreateForKind(17, 0, 0, 0, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+                           D_80157B58_scene_springleaf_field, 0);
     }
     if (progressGetValue(0x76) >= 3) {
-        actorCreateForKind(14, 130.0f, 16.0f, 150.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->scale,
+        actorCreateForKind(14, 130.0f, 16.0f, 150.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                            D_80157C78_scene_springleaf_field, 0);
     }
-    actorCreateForKind(10, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->scale,
+    actorCreateForKind(10, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                        D_8014E354_scene_springleaf_field, 0);
     runtimeCheckResetCheckpoint((const char *)D_80159474_scene_springleaf_field, 1);
     springleafFieldPrepareEvolvedResidents();

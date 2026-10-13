@@ -1900,9 +1900,7 @@ void itemEnableShrinking(u8 *item) {
     *itemState |= 0x20000000;
 }
 
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 
 /// Set an item uniform size relative to its kind and area scale, updating its bounds.
 /// \param item Initialized item object to resize.
@@ -1916,8 +1914,7 @@ void itemSetScale(u8 *item, f32 scale) {
 
     TRACE("Invalid scale:%f\n", scale);
     ((RuntimeObjectPrefix *)item)->radius = ((ItemStatePrefix *)rec)->baseRadius;
-    scale *= ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale *
-             gItemKinds[((ItemStatePrefix *)rec)->kind].scale;
+    scale *= gCurrentAreaConfiguration->objectScale * gItemKinds[((ItemStatePrefix *)rec)->kind].scale;
     ((RuntimeObjectPrefix *)item)->scale[0] = scale;
     ((RuntimeObjectPrefix *)item)->scale[1] = scale;
     ((RuntimeObjectPrefix *)item)->scale[2] = scale;
@@ -1939,8 +1936,7 @@ void itemShrink(u8 *item, f32 rate) {
     u8 *rec = ((RuntimeObjectPrefix *)item)->state.bytes;
     f32 step;
     f32 cur = ((RuntimeObjectPrefix *)item)->scale[0] /
-              (((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale *
-               gItemKinds[((ItemStatePrefix *)rec)->kind].scale);
+              (gCurrentAreaConfiguration->objectScale * gItemKinds[((ItemStatePrefix *)rec)->kind].scale);
 
     if (!(cur <= 0.3f)) {
         step = gRuntimeFrameSeconds * rate;
@@ -2261,9 +2257,13 @@ void itemDrawLighting(u8 *item) {
                        ->state.displayLists[0x18 + ((((RuntimeObjectPrefix *)item)->flags & 0x8000) ? 1 : 0)]);
 }
 
+/// Borrowed material-tint component view of ItemStatePrefix.tint.
+/// The scalar view preserves target color-load scheduling; direct byte-array reads change the ROM.
 typedef struct {
-    u8 r, g, b, a;
-} ItemColor13CFC;
+    u8 r, g, b, a; ///< Red, green, blue and alpha components.
+} ItemMaterialTintView;
+typedef char
+    ItemMaterialTintViewSizeCheck[(sizeof(ItemMaterialTintView) == sizeof(((ItemStatePrefix *)0)->tint)) ? 1 : -1];
 /// Apply an item material, rendering style, and tint to the current drawing context when the item uses a
 /// material.
 /// \param item Initialized item being prepared for drawing.
@@ -2273,7 +2273,7 @@ typedef struct {
 /// loaded item texture bank and valid material frame. Drawing resources remain owned by the item.
 /// \note Original decompilation identifier: \c func_80113CFC (0x80113CFC).
 s32 itemPrepareMaterial(u8 *item) {
-    ItemColor13CFC *color;
+    ItemMaterialTintView *color;
     u8 *state;
     state = ((RuntimeObjectPrefix *)item)->state.bytes;
     if (((ItemStatePrefix *)state)->flags & ITEM_STATE_MATERIAL_ENABLED) {
@@ -2312,7 +2312,7 @@ s32 itemPrepareMaterial(u8 *item) {
             break;
         }
         {
-            color = (ItemColor13CFC *)(state + 0x4C);
+            color = (ItemMaterialTintView *)((ItemStatePrefix *)state)->tint;
             gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, color->r, color->g, color->b, color->a);
         }
     }

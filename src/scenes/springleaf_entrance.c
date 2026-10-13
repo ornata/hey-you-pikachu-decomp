@@ -18,13 +18,7 @@ extern WeightedChoiceTable D_80157660_scene_springleaf_entrance;
 /// \note Original identifier: \c D_80157668_scene_springleaf_entrance (0x80157668).
 extern f32 D_80157668_scene_springleaf_entrance[];
 
-typedef struct {
-    u8 unknown[12];
-    f32 scale;
-} SceneScale;
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern SceneScale *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 
 extern u8 D_8014DF74_scene_springleaf_entrance;
 extern u8 D_80156F04_scene_springleaf_entrance;
@@ -60,7 +54,8 @@ void springleafEntranceSpawnGrowthResident(f32 *position, s32 residentIndex) {
         // clang-format on
         actorCreateForKind(5, position[0], position[1], position[2], 0.0f,
                            (f32)((f64)random * 2.3283064365386963e-10 * D_80158E38_scene_springleaf_entrance),
-                           mathPowInteger(scale, state) * gCurrentAreaConfiguration->scale, record, residentIndex);
+                           mathPowInteger(scale, state) * gCurrentAreaConfiguration->objectScale, record,
+                           residentIndex);
         return;
     }
     if (state < 4) {
@@ -69,13 +64,14 @@ void springleafEntranceSpawnGrowthResident(f32 *position, s32 residentIndex) {
         // clang-format on
         actorCreateForKind(6, position[0], position[1], position[2], 0.0f,
                            (f32)((f64)random * 2.3283064365386963e-10 * D_80158E48_scene_springleaf_entrance),
-                           mathPowInteger(scale, state - 2) * gCurrentAreaConfiguration->scale, record, residentIndex);
+                           mathPowInteger(scale, state - 2) * gCurrentAreaConfiguration->objectScale, record,
+                           residentIndex);
         return;
     }
     random = randomNext();
     actorCreateForKind(7, position[0], position[1], position[2], 0.0f,
                        (f32)((f64)(u32)random * 2.3283064365386963e-10 * D_80158E50_scene_springleaf_entrance),
-                       gCurrentAreaConfiguration->scale, record, residentIndex);
+                       gCurrentAreaConfiguration->objectScale, record, residentIndex);
 }
 
 /// Prepare scene resources for evolved entrance residents.
@@ -103,13 +99,11 @@ void springleafEntranceSpawnItem(f32 *position, s32 itemKind) {
 /// \returns Nothing.
 void springleafEntranceSpawnFixedResident(void) {
     if (progressGetValue(0x12) == 0) {
-        actorCreateForKind(4, 165.5f, 38.0f, 225.0f, 0.0f, 0.0f,
-                           ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+        actorCreateForKind(4, 165.5f, 38.0f, 225.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                            &D_8014E2B0_scene_springleaf_entrance, 0);
         return;
     }
-    actorCreateForKind(4, 128.5f, 38.0f, 200.0f, 0.0f, 0.0f,
-                       ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+    actorCreateForKind(4, 128.5f, 38.0f, 200.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                        &D_801573B8_scene_springleaf_entrance, 0);
 }
 
@@ -157,18 +151,15 @@ void springleafEntranceInitializeObjects(void) {
 
     sp54 = D_80157938_scene_springleaf_entrance;
     if (progressGetValue(0x76) > 0) {
-        actorCreateForKind(0xE, 125.0f, 16.2f, 267.0f, 0.0f, 0.0f,
-                           ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+        actorCreateForKind(0xE, 125.0f, 16.2f, 267.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                            &D_801575EC_scene_springleaf_entrance, 0);
     }
     springleafEntranceSpawnFixedResident();
     if (progressGetCurrentChapter() == 8) {
-        actorCreateForKind(0xC, 207.69f, 10.5f, 239.56f, 0.0f, 0.0f,
-                           ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+        actorCreateForKind(0xC, 207.69f, 10.5f, 239.56f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                            &D_801574CC_scene_springleaf_entrance, 0);
     }
-    actorCreateForKind(0xA, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-                       ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
+    actorCreateForKind(0xA, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                        &D_8014E62C_scene_springleaf_entrance, 0);
     runtimeCheckResetCheckpoint((const char *)&D_80158DE4_scene_springleaf_entrance, 1);
     springleafEntrancePrepareEvolvedResidents();

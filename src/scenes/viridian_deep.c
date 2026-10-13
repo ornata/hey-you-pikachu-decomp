@@ -29,13 +29,7 @@ void viridianDeepRemoveTrackedItems(void) {
         }
     }
 }
-typedef struct {
-    u8 header[12];
-    f32 scale;
-} SceneScale;
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern SceneScale *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 extern u8 D_80148ABC_scene_viridian_deep[], D_80148DAC_scene_viridian_deep[], D_80149170_scene_viridian_deep[];
 extern f32 D_8014B020_scene_viridian_deep;
 extern f32 D_8014989C_scene_viridian_deep[][4];
@@ -69,17 +63,17 @@ void viridianDeepSpawnResidentGroup(Position *position, s32 index) {
     cosine = mathCosDegrees(angle);
     scale = mathPowInteger(D_8014B020_scene_viridian_deep, growth);
     actorCreateForKind(8, sine * 8.0f + position->x, position->y, cosine * 8.0f + position->z, 0.0f, angle + 180.0f,
-                       (scale *= gCurrentAreaConfiguration->scale) * 2.0f, record, index);
+                       (scale *= gCurrentAreaConfiguration->objectScale) * 2.0f, record, index);
     if (progressGetCurrentChapter() != 4) {
         if (first > 0)
             actorCreateForKind(9, D_8014989C_scene_viridian_deep[index][0], D_8014989C_scene_viridian_deep[index][1],
                                D_8014989C_scene_viridian_deep[index][2], 0.0f, D_8014989C_scene_viridian_deep[index][3],
-                               gCurrentAreaConfiguration->scale, D_80149170_scene_viridian_deep, index);
+                               gCurrentAreaConfiguration->objectScale, D_80149170_scene_viridian_deep, index);
         if (second > 0)
             actorCreateForKind(
                 9, D_8014989C_scene_viridian_deep[secondIndex][0], D_8014989C_scene_viridian_deep[secondIndex][1],
                 D_8014989C_scene_viridian_deep[secondIndex][2], 0.0f, D_8014989C_scene_viridian_deep[secondIndex][3],
-                gCurrentAreaConfiguration->scale, D_80149170_scene_viridian_deep, secondIndex);
+                gCurrentAreaConfiguration->objectScale, D_80149170_scene_viridian_deep, secondIndex);
     }
 }
 
@@ -99,8 +93,7 @@ void viridianDeepInitializeObjects(void) {
     }
     if (progressGetCurrentChapter() != 4) {
         actorCreateForKind(14, 160.0f, 5.0f, 145.0f, 0.0f, D_8014B024_scene_viridian_deep,
-                           ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
-                           D_80149888_scene_viridian_deep, 0);
+                           gCurrentAreaConfiguration->objectScale, D_80149888_scene_viridian_deep, 0);
         mazeScatterItems(D_8014993C_scene_viridian_deep, 0x5B, &D_80149DB8_scene_viridian_deep, 0.5f);
         landmarkCreate(162.0f, 1.25f, 151.0f, 0x8D);
         landmarkCreate(D_8014B028_scene_viridian_deep, D_8014B02C_scene_viridian_deep, 175.27f, 0x8E);

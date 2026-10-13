@@ -13,7 +13,7 @@ typedef enum ItemStateFlag { ITEM_STATE_SPIN_ENABLED = 0x20, ITEM_STATE_MATERIAL
 
 /// Kind- and mode-specific storage reused for angular motion and timers.
 typedef union ItemMotionPhase {
-    f32 wriggleAngle; ///< Piñata phase in degrees.
+    f32 wriggleAngle;  ///< Piñata phase in degrees.
     f32 glowCountdown; ///< Seconds until the next held light-bulb glow update.
     f32 flightElapsed; ///< Seconds elapsed in drifting-flight mode.
 } ItemMotionPhase;
@@ -47,8 +47,8 @@ typedef struct ItemStatePrefix {
     u8 tint[4];                  ///< Red, green, blue and alpha material components.
     s32 collisionKey;            ///< Collision-grid registration key, or zero when unregistered.
     TreeNode registryNode;       ///< Embedded node linked into the item search tree.
-    Gfx *lighting[2];            ///< Alternate command-buffer views into one owned allocation; lighting[0] owns the base.
-    f32 idleMotionDelay;         ///< Countdown before another idle direction motion may begin.
+    Gfx *lighting[2];    ///< Alternate command-buffer views into one owned allocation; lighting[0] owns the base.
+    f32 idleMotionDelay; ///< Countdown before another idle direction motion may begin.
 } ItemStatePrefix;
 
 typedef char ItemStatePrefixSizeCheck[(sizeof(ItemStatePrefix) == 0x6C) ? 1 : -1];
@@ -59,6 +59,7 @@ typedef char ItemMotionPhaseOffsetCheck[(ITEM_OFFSET(motionPhase) == 0x30) ? 1 :
 typedef char ItemSpinOffsetCheck[(ITEM_OFFSET(spinSpeed) == 0x28) ? 1 : -1];
 typedef char ItemMaterialTrackOffsetCheck[(ITEM_OFFSET(materialTrack) == 0x40) ? 1 : -1];
 typedef char ItemMaterialFrameOffsetCheck[(ITEM_OFFSET(materialTrack.value) == 0x48) ? 1 : -1];
+typedef char ItemTintOffsetCheck[(ITEM_OFFSET(tint) == 0x4C) ? 1 : -1];
 typedef char ItemCollisionKeyOffsetCheck[(ITEM_OFFSET(collisionKey) == 0x50) ? 1 : -1];
 typedef char ItemRegistryNodeOffsetCheck[(ITEM_OFFSET(registryNode) == 0x54) ? 1 : -1];
 typedef char ItemLightingOffsetCheck[(ITEM_OFFSET(lighting) == 0x60) ? 1 : -1];

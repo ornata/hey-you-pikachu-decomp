@@ -28,9 +28,7 @@
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 /// Friendship messages indexed by the cleared chapter.
 /// \note Original identifier: \c D_800999F0 (0x800999F0).
 extern s32 gChapterFriendshipMessages[];

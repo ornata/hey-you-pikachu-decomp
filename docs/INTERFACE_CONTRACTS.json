@@ -49,7 +49,7 @@
     {
       "kind": "call-arity",
       "file": "src/game/backdrop.c",
-      "line": 254,
+      "line": 252,
       "name": "heapAllocLocal",
       "shape": {
         "expected": 3,
@@ -62,7 +62,7 @@
     {
       "kind": "call-arity",
       "file": "src/game/backdrop.c",
-      "line": 270,
+      "line": 268,
       "name": "heapAllocLocal",
       "shape": {
         "expected": 3,
@@ -75,7 +75,7 @@
     {
       "kind": "signature-mismatch",
       "file": "src/game/backdrop.c",
-      "line": 239,
+      "line": 237,
       "name": "heapAllocLocal",
       "shape": {
         "expected": [
@@ -102,7 +102,7 @@
     {
       "kind": "call-arity",
       "file": "src/game/collection_presentation.c",
-      "line": 347,
+      "line": 344,
       "name": "actionScriptStop",
       "shape": {
         "expected": 1,
@@ -115,7 +115,7 @@
     {
       "kind": "unspecified-parameters",
       "file": "src/game/collection_presentation.c",
-      "line": 314,
+      "line": 311,
       "name": "actionScriptStop",
       "shape": "s32 *actionScriptStop()",
       "reason": "The result is the borrowed actor-state script-identifier field, as declared in action_script_stop.h. presentationRestoreActiveActor retains an ignored trailing presentation-state argument; removing it and adopting the canonical prototype fails the ROM gate.",
@@ -148,7 +148,7 @@
     {
       "kind": "signature-mismatch",
       "file": "src/game/collection_presentation.c",
-      "line": 368,
+      "line": 365,
       "name": "objectUpdateHierarchy",
       "shape": {
         "expected": [
@@ -287,7 +287,7 @@
     {
       "kind": "signature-mismatch",
       "file": "src/game/runtime.c",
-      "line": 985,
+      "line": 983,
       "name": "overlayLoadFromRom",
       "shape": {
         "expected": [
@@ -396,7 +396,7 @@
     {
       "kind": "signature-mismatch",
       "file": "src/game/toolbox.c",
-      "line": 711,
+      "line": 709,
       "name": "progressGetValue",
       "shape": {
         "expected": [
@@ -455,7 +455,7 @@
     {
       "kind": "call-arity",
       "file": "src/main.c",
-      "line": 320,
+      "line": 319,
       "name": "heapDebugNoOp",
       "shape": {
         "expected": 1,

@@ -99,9 +99,7 @@ void objectTransformStackPush(Matrix34 *);
 void objectTransformStackPop(Matrix34 *);
 void objectTransformStackPeek(Matrix34 *);
 s32 objectAccumulateHierarchyCount(u8 *, s32);
-/// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
-/// \note Original identifier: \c D_80133DE4 (0x80133DE4).
-extern u8 *gCurrentAreaConfiguration;
+#include "scene_configuration.h"
 /// Separate root-node symbol within the runtime object search tree.
 /// \note Original identifier: \c D_800AE3C4 (0x800AE3C4).
 extern s32 gObjectSearchTreeRoot;
@@ -1151,9 +1149,8 @@ s32 objectApplyTextureMotionForDraw(u8 *obj) {
 /// \note Original decompilation identifier: \c func_80008CE0 (0x80008CE0).
 s32 objectApplySceneEnvironmentColorForDraw(u8 *object) {
     gDPPipeSync(gRenderDisplayListCursor++);
-    gDPSetEnvColor(gRenderDisplayListCursor++, ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->fogColor[0],
-                   ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->fogColor[1],
-                   ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->fogColor[2], 0);
+    gDPSetEnvColor(gRenderDisplayListCursor++, gCurrentAreaConfiguration->fogColor[0],
+                   gCurrentAreaConfiguration->fogColor[1], gCurrentAreaConfiguration->fogColor[2], 0);
     return *(s32 *)(object + 0x30);
 }
 
