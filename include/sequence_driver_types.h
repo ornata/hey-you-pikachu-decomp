@@ -11,7 +11,7 @@
 typedef struct SequenceVoice {
     struct SequenceVoice *next;     ///< Next active or free voice.
     struct SequenceVoice *previous; ///< Previous active voice, or null at the head.
-    s32 unknown08;                  ///< Retained word initialized to one; further meaning unresolved.
+    s32 keyDown;                    ///< Nonzero until the matching note-off is received.
     ALInstrument *instrument;       ///< Borrowed instrument supplying modulation settings.
     ALSound *sound;                 ///< Borrowed sound definition and sample data.
     N_ALVoice native;               ///< Synthesizer voice owned while active.
@@ -30,6 +30,7 @@ typedef struct SequenceVoice {
     s32 envelopeRate;               ///< Signed fixed-point envelope change per second.
 } SequenceVoice;
 
+typedef char SequenceVoiceKeyDownOffsetCheck[(((u32) & ((SequenceVoice *)0)->keyDown) == 8) ? 1 : -1];
 typedef char SequenceVoiceNativeOffsetCheck[(((u32) & ((SequenceVoice *)0)->native) == 0x14) ? 1 : -1];
 typedef char SequenceVoiceChannelOffsetCheck[(((u32) & ((SequenceVoice *)0)->channel) == 0x30) ? 1 : -1];
 typedef char SequenceVoicePitchOffsetCheck[(((u32) & ((SequenceVoice *)0)->pitch) == 0x40) ? 1 : -1];

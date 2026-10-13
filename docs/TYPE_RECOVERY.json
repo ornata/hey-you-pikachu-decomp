@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 1912,
-      "unique_spellings": 810,
+      "occurrences": 1907,
+      "unique_spellings": 807,
       "files": 74
     }
   },
@@ -2918,10 +2918,6 @@
           "voiceRecord + 0x14": [
             "120:56"
           ],
-          "sequence + 0x10": [
-            "160:27",
-            "497:23"
-          ],
           "driver + 0x1C": [
             "184:17"
           ],
@@ -3016,13 +3012,6 @@
           "voice + 0x4C": [
             "450:22",
             "474:26"
-          ],
-          "var_s0 + 8": [
-            "500:81",
-            "501:26"
-          ],
-          "sequence + 0x21": [
-            "502:23"
           ],
           "portamentoTime + 1": [
             "837:91",

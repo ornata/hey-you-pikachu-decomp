@@ -18,7 +18,7 @@ s32 sequenceEngineRecycleVoice(VoicePlayer *, EngineSequence *, SequenceVoice *)
 void n_alSynFreeVoice(struct N_ALVoice_s *);
 void n_alSynStopVoice(struct N_ALVoice_s *);
 
-s32 sequenceEngineSetSustain(s32, u8 *, s32, s32);
+s32 sequenceEngineSetSustain(VoicePlayer *, EngineSequence *, s32, s32);
 s32 sequenceEngineGetVoicePan(u8 *, EngineSequence *, u8 *);
 s32 sequenceEngineResetControllers(u8 *, u8 *);
 void sequenceEngineStopVoice(s32, s32, s32);
@@ -153,21 +153,21 @@ void sequenceEngineReleaseVoice(VoicePlayer *driver, EngineSequence *sequence, S
 /// \param sustain MIDI sustain value from zero through 127; values below 64 release sustain.
 /// \returns Zero.
 /// \note Original decompilation identifier: \c func_80005D6C (0x80005D6C).
-s32 sequenceEngineSetSustain(s32 driver, u8 *sequence, s32 channelIndex, s32 sustain) {
-    u8 *var_s0;
+s32 sequenceEngineSetSustain(VoicePlayer *driver, EngineSequence *sequence, s32 channelIndex, s32 sustain) {
+    SequenceVoice *voice;
 
-    if ((((EngineSequence *)sequence)->channels[channelIndex].sustain >= 0x40) && (sustain < 0x40)) {
-        var_s0 = *(u8 **)(sequence + 0x10);
-        if (var_s0 != NULL) {
+    if ((sequence->channels[channelIndex].sustain >= 0x40) && (sustain < 0x40)) {
+        voice = sequence->voices;
+        if (voice != NULL) {
             do {
-                if (var_s0[0x37] != 0) {
-                    sequenceEngineReleaseVoice((VoicePlayer *)driver, (EngineSequence *)sequence, (SequenceVoice *)var_s0);
+                if (voice->sustainDeferred != 0) {
+                    sequenceEngineReleaseVoice(driver, sequence, voice);
                 }
-                var_s0 = *(u8 **)var_s0;
-            } while (var_s0 != NULL);
+                voice = voice->next;
+            } while (voice != NULL);
         }
     }
-    ((EngineSequence *)sequence)->channels[channelIndex].sustain = sustain;
+    sequence->channels[channelIndex].sustain = sustain;
     return 0;
 }
 
@@ -217,18 +217,18 @@ s32 sequenceEngineUpdateVoicePan(u8 *driver, EngineSequence *sequence, u8 *voice
 /// \param channelIndex MIDI channel index from zero through fifteen.
 /// \returns Zero.
 /// \note Original decompilation identifier: \c func_80005EC4 (0x80005EC4).
-s32 sequenceEngineResetChannelControllers(s32 driver, u8 *sequence, s32 channelIndex) {
-    EngineChannel *p;
+s32 sequenceEngineResetChannelControllers(VoicePlayer *driver, EngineSequence *sequence, s32 channelIndex) {
+    EngineChannel *channel;
 
     sequenceEngineSetSustain(driver, sequence, channelIndex, 0);
-    p = &((EngineSequence *)sequence)->channels[channelIndex];
-    p->pitchBend = 0x2000;
-    p->portamentoEnabled = 0;
-    p->vibratoDepth = 0;
-    p->tremoloDepth = 0;
-    p->rpnHigh = 0x7F;
-    p->rpnLow = 0x7F;
-    p->expression = 0x3F80;
+    channel = &sequence->channels[channelIndex];
+    channel->pitchBend = 0x2000;
+    channel->portamentoEnabled = 0;
+    channel->vibratoDepth = 0;
+    channel->tremoloDepth = 0;
+    channel->rpnHigh = 0x7F;
+    channel->rpnLow = 0x7F;
+    channel->expression = 0x3F80;
     return 0;
 }
 
@@ -249,7 +249,7 @@ s32 sequenceEngineResetControllers(u8 *driver, u8 *seq) {
     *(f64 *)(seq + 0x1E0) = 0.0;
     *(f64 *)(seq + 0x1E8) = 1.0;
     do {
-        sequenceEngineResetChannelControllers((s32)driver, seq, i);
+        sequenceEngineResetChannelControllers((VoicePlayer *)driver, (EngineSequence *)seq, i);
         *(s16 *)(channel + 0x24) = 0;
         *(s32 *)(channel + 0x14) = *(s32 *)(*(u8 **)(seq + 0xC) + 8);
         i++;
@@ -444,7 +444,7 @@ void sequenceEngineNoteOn(u8 *driver, u8 *seq, s32 channel, s32 key, s32 velocit
             config.fxBus = 0;
             config.unityPitch = 0;
             ((SequenceVoice *)voice)->sustainDeferred = 0;
-            ((SequenceVoice *)voice)->unknown08 = 1;
+            ((SequenceVoice *)voice)->keyDown = 1;
             ((SequenceVoice *)voice)->sound = sound;
             *(s32 *)(voice + 0x48) = 0xFFFF;
             *(s32 *)(voice + 0x4C) =
@@ -492,21 +492,21 @@ void sequenceEngineNoOp(void) {
 /// \param velocity Unused note-release velocity.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800067BC (0x800067BC).
-void sequenceEngineNoteOff(s32 driver, u8 *sequence, s32 channel, s32 key, s32 velocity) {
-    u8 *var_s0;
-    var_s0 = *(u8 **)(sequence + 0x10);
-    if (var_s0 != NULL) {
+void sequenceEngineNoteOff(VoicePlayer *driver, EngineSequence *sequence, s32 channel, s32 key, s32 velocity) {
+    SequenceVoice *voice;
+    voice = sequence->voices;
+    if (voice != NULL) {
         do {
-            if ((key == var_s0[0x31]) && (channel == var_s0[0x30]) && (*(s32 *)(var_s0 + 8) != 0)) {
-                *(s32 *)(var_s0 + 8) = 0;
-                if (*(sequence + 0x21 + (channel * 0x1C)) >= 0x40) {
-                    var_s0[0x37] = 1;
+            if ((key == voice->key) && (channel == voice->channel) && (voice->keyDown != 0)) {
+                voice->keyDown = 0;
+                if (sequence->channels[channel].sustain >= 0x40) {
+                    voice->sustainDeferred = 1;
                 } else {
-                    sequenceEngineReleaseVoice((VoicePlayer *)driver, (EngineSequence *)sequence, (SequenceVoice *)var_s0);
+                    sequenceEngineReleaseVoice(driver, sequence, voice);
                 }
             }
-            var_s0 = *(u8 **)var_s0;
-        } while (var_s0 != NULL);
+            voice = voice->next;
+        } while (voice != NULL);
     }
 }
 
@@ -608,7 +608,7 @@ void sequenceEngineControlChange(u8 *driver, u8 *seq, s32 channel, s32 controlle
         ((EngineSequence *)seq)->channels[channel].expression = value << 7;
         break;
     case 64:
-        sequenceEngineSetSustain((s32)driver, seq, channel, value);
+        sequenceEngineSetSustain((VoicePlayer *)driver, (EngineSequence *)seq, channel, value);
         break;
     case 65:
         ((EngineSequence *)seq)->channels[channel].portamentoEnabled = value;
@@ -640,7 +640,7 @@ void sequenceEngineControlChange(u8 *driver, u8 *seq, s32 channel, s32 controlle
         }
         break;
     case 121:
-        sequenceEngineResetChannelControllers((s32)driver, seq, channel);
+        sequenceEngineResetChannelControllers((VoicePlayer *)driver, (EngineSequence *)seq, channel);
         break;
     case 123:
         for (current = *(u8 **)(seq + 0x10); current != NULL; current = voice) {
@@ -711,7 +711,7 @@ void sequenceEngineDispatchMidiEvent(VoicePlayer *driver, EngineSequence *seq) {
                 return;
             }
         case 0x80:
-            sequenceEngineNoteOff((s32)driver, (u8 *)seq, status & 0xF, event[1], event[2]);
+            sequenceEngineNoteOff(driver, seq, status & 0xF, event[1], event[2]);
             return;
         case 0xB0:
             sequenceEngineControlChange((u8 *)driver, (u8 *)seq, status & 0xF, event[1], event[2]);
