@@ -3,7 +3,8 @@
   "scope": "Game C inventory and evidence-led recovery; residual locations are deferred, not asserted to be fully understood.",
   "matching_exceptions": {
     "src/game/collection_presentation.c": {
-      "*": "Unknown declarations and temporary local names are now recovered and individually match. Existing integer address representations and unrelated noncanonical declarations remain outside this token cleanup."
+      "*": "Unknown declarations and temporary local names are now recovered and individually match. Existing integer address representations and unrelated noncanonical declarations remain outside this token cleanup.",
+      "presentationDrawCollectionItem": "Including canonical RuntimeObjectPrefix-pointer hierarchy update/draw declarations changes presentationDrawCollectionItem instruction bytes and fails ROM matching. Retain local legacy object-group declarations in this unit pending isolated call argument/register-allocation evidence."
     },
     "src/game/eye_catch.c": {
       "eyeCatchUpdatePlayback": "Retain local audioPlaySoundEffect(s16) and audioSetSoundEffectVolume returning s32 declarations: adopting canonical s32 sound IDs and the void volume setter changes ROM bytes. Isolate each signature before retrying canonical-header adoption."

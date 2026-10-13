@@ -1,3 +1,4 @@
+#include "object_groups.h"
 #include "math_angles.h"
 #include "backdrop_view.h"
 #include "area_transition.h"
@@ -346,7 +347,6 @@ void titleScreenDrawStartupSilhouette(Gfx **gdl) {
     gDPSetCycleType((*gdl)++, G_CYC_1CYCLE);
 }
 
-void objectDrawGroup(s32);
 void titleScreenDrawLogo(Gfx **);
 void titleScreenDrawStartupPanel(Gfx **);
 void titleScreenDrawStartPrompt(Gfx **);
@@ -582,7 +582,6 @@ s32 titleScreenFindEnabledChoice(s32 enabled, s32 selection, s32 step) {
 }
 
 void pikachuUpdateScriptAndTriggers(void);
-void objectUpdateGroup(s32);
 s32 audioCountActive(s32);
 /// Primary controller new and auto-repeated button presses; aliases the repeated word of the processed sample.
 /// \note Original identifier: \c D_800AD54C (0x800AD54C).

@@ -1,3 +1,4 @@
+#include "object_groups.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
 #include "random.h"
@@ -2030,7 +2031,6 @@ void mazeFreezeStaticObjects(u8 *object) {
     }
 }
 
-void objectUpdateHierarchy(s32); /* extern */
 
 /// Prepare a maze object hierarchy for use and freeze its static objects.
 /// \param object Live object hierarchy address to prepare.
@@ -2039,8 +2039,8 @@ void objectUpdateHierarchy(s32); /* extern */
 /// \note Portability: the object address is passed as a 32-bit integer and converted to a pointer.
 /// \note Original decompilation identifier: \c func_8010E414 (0x8010E414).
 void mazePrepareObjectHierarchy(s32 object) {
-    objectUpdateHierarchy(object);
-    objectUpdateHierarchy(object);
+    objectUpdateHierarchy((RuntimeObjectPrefix *)object);
+    objectUpdateHierarchy((RuntimeObjectPrefix *)object);
     mazeFreezeStaticObjects((u8 *)object);
 }
 

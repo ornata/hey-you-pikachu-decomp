@@ -3895,3 +3895,11 @@ in-place normalization contracts across the implementation and all eighteen
 declared consumer units. Approximate length consumes float components directly.
 Item terrain-response output and cache parameters use their established vector
 and pointer types; all adopted interfaces retain strict object identity.
+
+### Object update and draw groups
+
+`object_groups.h` gives hierarchy update/drawing typed runtime-object pointers
+and documents the distinct update/draw group masks. The implementation and
+eleven consumer units share it. Collection presentation retains its recorded
+legacy declaration exception because the pointer contract changes one drawing
+function; its next evidence is isolated call argument/register allocation.

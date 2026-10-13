@@ -1,3 +1,4 @@
+#include "object_groups.h"
 #include "math_angles.h"
 #include "camera_overlay.h"
 #include "terrain_height.h"
@@ -24,7 +25,6 @@ void presentationDrawAreaLabel(Gfx **);
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-void objectDrawHierarchyGroup(s32, s32);
 void presentationDrawCardDecorations(Gfx **);
 void presentationDrawCurrentCardPanels(Gfx **);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.

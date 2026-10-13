@@ -1,3 +1,4 @@
+#include "object_groups.h"
 #include "camera_overlay.h"
 #include "runtime_control.h"
 #include "text_image_configurations.h"
@@ -503,7 +504,6 @@ void textWindowDeactivate(void) {
     gTextWindowState = TEXT_WINDOW_INACTIVE;
 }
 
-void objectDrawGroup(s32);
 void hudDraw(Gfx **);
 void textWindowDrawIndicator(Gfx **, s32);
 /// Camera slot selected for the current drawing context.
@@ -563,7 +563,6 @@ void textWindowDrawFrame(void) {
 void runtimeResetUiPulse(void);
 void playerUpdateInput(s32);
 void pikachuUpdateScriptAndTriggers(void);
-void objectUpdateGroup(s32);
 /// Processed button and stick samples for all controller ports; scalar declarations view the primary held-button word.
 /// \note Original identifier: \c D_800AD540 (0x800AD540).
 /// Primary controller newly pressed buttons; aliases the pressed word of the processed sample.

@@ -1,3 +1,4 @@
+#include "object_groups.h"
 #include "math_angles.h"
 #include "camera_overlay.h"
 #include "text_image_configurations.h"
@@ -56,7 +57,6 @@ typedef char MessageImagesOffsetCheck[(MESSAGE_OFFSET(handles) == 0x460) ? 1 : -
 /// Shared queued-message, timing, scrolling and text-image state for the message bar.
 /// \note Original identifier: \c D_800F06C0 (0x800F06C0).
 extern MessageBarState gMessageBarState;
-void objectDrawHierarchyGroup(s32, s32);
 void presentationDrawAreaLabel(Gfx **);
 void presentationDrawCardDecorations(Gfx **);
 void presentationDrawCurrentCardPanels(Gfx **);

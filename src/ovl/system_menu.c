@@ -1,3 +1,4 @@
+#include "object_groups.h"
 #include "math_angles.h"
 #include "random.h"
 #include "backdrop_view.h"
@@ -750,8 +751,6 @@ void systemMenuDrawClosingEffect(Gfx **displayList) {
 }
 
 void renderDrawColorOverlayWithDepth(u8, u8, u8, u8); /* extern */
-void objectDrawGroup(s32);        /* extern */
-void objectDrawHierarchyGroup(s32, s32);   /* extern */
 void systemMenuDrawDetails(Gfx **);            /* extern */
 void systemMenuDrawItemList(Gfx **);            /* extern */
 void systemMenuDrawClosingEffect(Gfx **);            /* extern */
@@ -776,13 +775,13 @@ void systemMenuDrawFrame(Gfx **displayList) {
     switch (gSystemMenuPhase) { /* irregular */
     case 1:
         backdropDraw(displayList);
-        objectDrawHierarchyGroup(gSystemMenuInteractiveModel, 0x2000);
+        objectDrawHierarchyGroup((RuntimeObjectPrefix *)gSystemMenuInteractiveModel, 0x2000);
         systemMenuDrawItemList(displayList);
         systemMenuDrawDetails(displayList);
         break;
     case 2:
         backdropDraw(displayList);
-        objectDrawHierarchyGroup(gSystemMenuInteractiveModel, 0x2000);
+        objectDrawHierarchyGroup((RuntimeObjectPrefix *)gSystemMenuInteractiveModel, 0x2000);
         systemMenuDrawClosingEffect(displayList);
         break;
     case 0:
@@ -793,7 +792,7 @@ void systemMenuDrawFrame(Gfx **displayList) {
         cameraUpdateOverlayColors(gRenderCameraIndex, 0);
         cameraDrawOverlay(gRenderCameraIndex);
         cameraDrawSecondaryOverlay(gRenderCameraIndex);
-        objectDrawHierarchyGroup(gSystemMenuTransitionModel, 0x2000);
+        objectDrawHierarchyGroup((RuntimeObjectPrefix *)gSystemMenuTransitionModel, 0x2000);
         break;
     }
     textDrawReset();
@@ -883,7 +882,6 @@ void systemMenuHandleInput(void) {
     }
 }
 
-void objectUpdateHierarchy(u8 *);
 /// Separate symbol view of the primary player record's view yaw.
 /// \note Original identifier: \c D_800EF6AC (0x800EF6AC).
 /// Separate symbol view of the primary player record's horizontal view shake.
@@ -914,7 +912,7 @@ void systemMenuUpdateOpeningAnimation(void) {
     *(f32 *)((u8 *)gSystemMenuState.model + 0x10) = gPlayerViewShake + gPlayerYaw + 180.0f;
     *(f32 *)((u8 *)gSystemMenuState.model + 0xC) = (1.0f - progress) * -90.0f;
     *(f32 *)((u8 *)gSystemMenuState.secondary + 0x10) = angle;
-    objectUpdateHierarchy((u8 *)gSystemMenuState.model);
+    objectUpdateHierarchy((RuntimeObjectPrefix *)(u8 *)gSystemMenuState.model);
     if (runtimeGetElapsedMilliseconds() - gSystemMenuState.started >= 400) {
         ((MenuBackdropView *)&gPrimaryBackdropScroll)->useBackdrop = 0;
         backdropSelectForView(0, 9, 0);
@@ -944,7 +942,7 @@ void systemMenuUpdateClosingAnimation(void) {
     *(f32 *)((u8 *)gSystemMenuState.model + 0x10) = gPlayerViewShake + gPlayerYaw + 180.0f;
     *(f32 *)((u8 *)gSystemMenuState.model + 0xC) = -90.0f * progress;
     *(f32 *)((u8 *)gSystemMenuState.secondary + 0x10) = (1.0 - progress) * 90.0;
-    objectUpdateHierarchy((u8 *)gSystemMenuState.model);
+    objectUpdateHierarchy((RuntimeObjectPrefix *)(u8 *)gSystemMenuState.model);
     if (runtimeGetElapsedMilliseconds() - gSystemMenuState.started >= 400) {
         systemMenuExit();
     }
@@ -982,7 +980,7 @@ void systemMenuUpdateModelTilt(void) {
     *(f32 *)(object + 0x14) = 0.0f;
     *(f32 *)(object + 0xC) = basePitch - (f32)gControllerPrimaryStickY / axisDivisor;
     *(f32 *)(object + 0x10) += (f32)gControllerPrimaryStickX / axisDivisor;
-    objectUpdateHierarchy(object);
+    objectUpdateHierarchy((RuntimeObjectPrefix *)object);
 }
 
 void systemMenuUpdateOpeningAnimation(void);

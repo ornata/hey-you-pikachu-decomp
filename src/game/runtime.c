@@ -1,3 +1,4 @@
+#include "object_groups.h"
 #include "math_angles.h"
 #include "random.h"
 #include "backdrop_view.h"
@@ -616,7 +617,6 @@ void runtimeRequestGameModeChange(s32 mode) {
     runtimeAccumulatePlayTime();
 }
 
-void objectUpdateGroup(s32);                     /* extern */
 void objectSweepDeferredHierarchyDestruction();                            /* extern */
 void audioStopCategories(s32, f64);
 void hudPlayerUpdateNoOp(s32);                /* extern */

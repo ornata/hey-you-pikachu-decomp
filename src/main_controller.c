@@ -1,3 +1,4 @@
+#include "object_groups.h"
 #include "math_angles.h"
 #include "controller_pad.h"
 #include "controller_rumble.h"
@@ -250,7 +251,6 @@ extern u8 gTextureRomCache[];
 /// Start of the current graphics command-list submission.
 /// \note Original identifier: \c D_800ABDD4 (0x800ABDD4).
 extern Gfx *gRenderDisplayListStart;
-void objectDrawGroup(s32);
 void hudDraw(Gfx **);
 void hudDrawAreaLabel(Gfx **);
 void presentationDrawCardScreen(Gfx **);

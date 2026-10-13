@@ -1,3 +1,4 @@
+#include "object_groups.h"
 #include "math_angles.h"
 #include "random.h"
 #include "backdrop_view.h"
@@ -347,7 +348,6 @@ void wholeMapDrawDifficultyOverlay(Gfx **gdl) {
     textureDrawRectangles(7, (DrawRectangle *)((playerGetChaseStage() * 0x90) + gWorldMapDifficultyOverlays), gdl);
 }
 
-void objectDrawGroup(s32);      /* extern */
 void wholeMapDrawDestinations(Gfx **);          /* extern */
 void wholeMapDrawLockedDestinations(Gfx **);          /* extern */
 void wholeMapDrawDifficultyOverlay(Gfx **);          /* extern */
@@ -758,7 +758,6 @@ void wholeMapSelectBackdrop(void) {
     }
 }
 
-void objectUpdateGroup();
 void runtimeRequestProgramChange();
 void wholeMapUpdateActorPlacement();
 void wholeMapPrepareActor();

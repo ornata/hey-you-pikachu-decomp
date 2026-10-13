@@ -1,3 +1,4 @@
+#include "object_groups.h"
 #include "math_angles.h"
 #include "camera_overlay.h"
 #include "runtime_control.h"
@@ -881,7 +882,6 @@ void toolboxResetRowRotation(ToolboxState *t) {
 /// Separate view of the toolbox item-row rotation angle.
 /// \note Original identifier: \c D_800F1BF0 (0x800F1BF0).
 extern f32 gToolboxRowRotation;
-void objectUpdateHierarchy(u8 *);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
@@ -933,7 +933,7 @@ void toolboxLayoutCurrentRow(f32 angle, f32 height, f32 depth) {
             *spin = rotation;
             toolboxSetObjectCameraRotation(object, -5.0f, rotation);
         }
-        objectUpdateHierarchy(object);
+        objectUpdateHierarchy((RuntimeObjectPrefix *)object);
         slot++;
     }
     if (gPlayerHeldItemHandle != 0) {
@@ -944,7 +944,7 @@ void toolboxLayoutCurrentRow(f32 angle, f32 height, f32 depth) {
             *(f32 *)(object + 0xC) = 0.0f;
             *(f32 *)(object + 0x10) = 0.0f;
             *(f32 *)(object + 0x14) = 0.0f;
-            objectUpdateHierarchy(object);
+            objectUpdateHierarchy((RuntimeObjectPrefix *)object);
         }
     }
 }
@@ -968,7 +968,7 @@ void toolboxPlaceBaseForRow(ToolboxState *t, f32 dy) {
     } else {
         toolboxSetObjectCameraRotation(t->objects[0], -5.0f, 180.0f);
     }
-    objectUpdateHierarchy(t->objects[0]);
+    objectUpdateHierarchy((RuntimeObjectPrefix *)t->objects[0]);
 }
 
 /// Show the next toolbox help message when the help delay has elapsed.
@@ -1213,9 +1213,7 @@ extern s32 gRenderCameraIndex;
 /// Initial draw count used to defer toolbox rendering until its display is ready.
 /// \note Original identifier: \c D_800F1CE0 (0x800F1CE0).
 extern s32 gToolboxOpeningDrawCount;
-void objectDrawGroup(s32);
 void renderDrawColorOverlayWithDepth(u8, u8, u8, u8);
-void objectDrawHierarchyGroup(s32, s32);
 void toolboxDrawRowTitle(s32);
 void toolboxDrawNavigation(s32);
 
@@ -1240,7 +1238,7 @@ void toolboxDrawFrame(s32 address) {
         return;
     }
     row = gToolboxState.slots[gToolboxSelectedRow];
-    objectDrawHierarchyGroup((s32)hdr[0], 0x2000);
+    objectDrawHierarchyGroup((RuntimeObjectPrefix *)(s32)hdr[0], 0x2000);
     toolboxUpdateHelpMessage();
     for (i = 0; i < 10; i++) {
         if (row[i].id == 0) {
@@ -1249,13 +1247,13 @@ void toolboxDrawFrame(s32 address) {
             obj = objectFindLiveByHandle(row[i].id);
         }
         if (obj != 0) {
-            objectDrawHierarchyGroup((s32)obj, 0x2000);
+            objectDrawHierarchyGroup((RuntimeObjectPrefix *)(s32)obj, 0x2000);
         }
     }
     if (gPlayerHeldItemHandle != 0) {
         obj = objectFindLiveByHandle(gPlayerHeldItemHandle);
         if (obj != 0) {
-            objectDrawHierarchyGroup((s32)obj, 0x2000);
+            objectDrawHierarchyGroup((RuntimeObjectPrefix *)(s32)obj, 0x2000);
         }
     }
     if (gToolboxMode == 5) {

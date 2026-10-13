@@ -1,3 +1,4 @@
+#include "object_groups.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
 #include "terrain_height.h"
@@ -1363,10 +1364,10 @@ void objectUpdateHierarchyFromCurrentTransform(u8 *object) {
 /// \param object Non-null hierarchy root to update.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80009308 (0x80009308).
-void objectUpdateHierarchy(u8 *object) {
-    objectUpdateHierarchyFromCurrentTransform(object);
-    if (((RuntimeObjectPrefix *)object)->flags & 1) {
-        objectClearHierarchyFlags(object, 1);
+void objectUpdateHierarchy(RuntimeObjectPrefix *object) {
+    objectUpdateHierarchyFromCurrentTransform((u8 *)object);
+    if (object->flags & 1) {
+        objectClearHierarchyFlags((u8 *)object, 1);
     }
 }
 
@@ -1394,7 +1395,7 @@ void objectUpdateGroup(s32 group) {
     if (sp34 != NULL) {
         do {
             if ((group == (*(u16 *)(sp34 + 0x36) & 0x4000)) && !(*(u16 *)(sp34 + 0x36) & 0x30)) {
-                objectUpdateHierarchy(sp34);
+                objectUpdateHierarchy((RuntimeObjectPrefix *)sp34);
             }
             nodePoolIterateNext(&gActiveObjectHierarchies, (s32 *)&sp34);
         } while (sp34 != NULL);
@@ -1513,10 +1514,10 @@ void objectDrawHierarchyForCurrentGroup(u8 *object) {
 /// \param group Draw group selector: zero or 0x2000.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80009784 (0x80009784).
-void objectDrawHierarchyGroup(u8 *object, s32 group) {
+void objectDrawHierarchyGroup(RuntimeObjectPrefix *object, s32 group) {
     gObjectDrawGroup = group;
     gSPDisplayList(gRenderDisplayListCursor++, gObjectDrawSetupDisplayList);
-    objectDrawHierarchyForCurrentGroup(object);
+    objectDrawHierarchyForCurrentGroup((u8 *)object);
 }
 
 /// Reset the object traversal transform and pending local movement.
