@@ -415,26 +415,26 @@ void objectUpdateHierarchyInteractionVisibility(u8 *);
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80015488 (0x80015488).
 void actorUpdateModel(u8 *actor) {
-    u8 *actorState;
+    ActorScriptState *state;
 
-    actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    collisionGridUnregisterObject(actor, &((ActorScriptState *)actorState)->collisionRegistration);
+    state = ((RuntimeObjectPrefix *)actor)->state.actor;
+    collisionGridUnregisterObject(actor, &state->collisionRegistration);
     actionScriptUpdate(actor);
     actionUpdatePlayback(actor);
-    actorUpdateTrackedSoundSpatialization(((RuntimeObjectPrefix *)actor)->worldPosition, ((ActorScriptState *)actorState)->soundHandles);
-    if (!(actionGetAttributes(actor) & 0x20000000) && !(((ActorScriptState *)actorState)->behaviorFlags & ACTOR_INHIBIT_TERRAIN_AND_GRAVITY)) {
+    actorUpdateTrackedSoundSpatialization(((RuntimeObjectPrefix *)actor)->worldPosition, state->soundHandles);
+    if (!(actionGetAttributes(actor) & 0x20000000) && !(state->behaviorFlags & ACTOR_INHIBIT_TERRAIN_AND_GRAVITY)) {
         actorUpdateGroundSlopePitch(actor);
     }
     actorUpdateObjectRotationFromState(actor);
     actorRefreshTrackingTargetPosition(actor);
-    if ((gRuntimeCurrentProgram == 0) && !(((ActorScriptState *)actorState)->behaviorFlags & ACTOR_INHIBIT_INTERACTION_VISIBILITY)) {
+    if ((gRuntimeCurrentProgram == 0) && !(state->behaviorFlags & ACTOR_INHIBIT_INTERACTION_VISIBILITY)) {
         objectUpdateHierarchyInteractionVisibility(actor);
     }
-    ((ActorScriptState *)actorState)->collisionRegistration = collisionGridRegisterObject(actor);
-    directionAnimationUpdate((u8 *)&((ActorScriptState *)actorState)->directionAnimation);
-    colorAdvanceTransition(((ActorScriptState *)actorState)->environmentColor, ((ActorScriptState *)actorState)->targetEnvironmentColor,
-                           &((ActorScriptState *)actorState)->environmentColorTimeRemaining);
-    actorPrepareModelLightingDrawList(actor, (ActorScriptState *)actorState, ((*(u16 *)(actor + 0x36) & 0x8000) ? 1 : 0) ^ 1);
+    state->collisionRegistration = collisionGridRegisterObject(actor);
+    directionAnimationUpdate((u8 *)&state->directionAnimation);
+    colorAdvanceTransition(state->environmentColor, state->targetEnvironmentColor,
+                           &state->environmentColorTimeRemaining);
+    actorPrepareModelLightingDrawList(actor, state, ((((RuntimeObjectPrefix *)actor)->flags & 0x8000) ? 1 : 0) ^ 1);
 }
 
 /// Request a timed transition to a new actor model environment color.
@@ -726,11 +726,11 @@ s32 actorBindReferencedObjectMatrixForDraw(u8 *actor) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80015EB8 (0x80015EB8).
 void actorUpdateObjectRotationFromState(u8 *actor) {
-    u8 *actorState;
+    ActorScriptState *state;
     f32 rotationMatrix[12];
-    actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    matrix34MakeRotationXYZDegrees(rotationMatrix, ((ActorScriptState *)actorState)->orientation[0], ((ActorScriptState *)actorState)->orientation[1], 0.0f);
-    matrix33Multiply(&((ActorScriptState *)actorState)->rootMotionTransform.m[0][0], rotationMatrix, rotationMatrix);
+    state = ((RuntimeObjectPrefix *)actor)->state.actor;
+    matrix34MakeRotationXYZDegrees(rotationMatrix, state->orientation[0], state->orientation[1], 0.0f);
+    matrix33Multiply(&state->rootMotionTransform.m[0][0], rotationMatrix, rotationMatrix);
     matrix33GetFoldedEulerDegrees(rotationMatrix, &((RuntimeObjectPrefix *)actor)->rotation[0], &((RuntimeObjectPrefix *)actor)->rotation[1], &((RuntimeObjectPrefix *)actor)->rotation[2]);
 }
 
@@ -741,9 +741,9 @@ void actorUpdateObjectRotationFromState(u8 *actor) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80015F1C (0x80015F1C).
 void actorSetRotationAxisDegrees(u8 *actor, f32 angle, s32 axis) {
-    u8 *obj;
+    ActorScriptState *state;
 
-    obj = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    state = ((RuntimeObjectPrefix *)actor)->state.actor;
     if (angle < 0.0f) {
         do {
             angle += 360.0f;
@@ -754,7 +754,7 @@ void actorSetRotationAxisDegrees(u8 *actor, f32 angle, s32 axis) {
             angle -= 360.0f;
         } while (angle >= 360.0f);
     }
-    ((ActorScriptState *)obj)->orientation[axis] = angle;
+    state->orientation[axis] = angle;
 }
 
 /// Rotate the actor by an angular displacement on one orientation axis.
@@ -810,23 +810,23 @@ void actorAddActionRotationAxisDegrees(u8 *actor, f32 angle, s32 axis) {
 /// \pre Updated angles must remain finite and allow full-turn adjustments to change their floating-point values.
 /// \note Original decompilation identifier: \c func_800160FC (0x800160FC).
 void actorAddActionPitchAndYawDegrees(u8 *actor, f32 *angles) {
-    u8 *v;
+    ActorScriptState *state;
 
     if (actionGetAttributes(actor) & ACTION_ATTRIBUTE_ALLOW_TURNING) {
-        v = ((RuntimeObjectPrefix *)actor)->state.bytes;
-        ((ActorScriptState *)v)->orientation[0] += angles[0];
-        while (((ActorScriptState *)v)->orientation[0] < 0.0f) {
-            ((ActorScriptState *)v)->orientation[0] += 360.0f;
+        state = ((RuntimeObjectPrefix *)actor)->state.actor;
+        state->orientation[0] += angles[0];
+        while (state->orientation[0] < 0.0f) {
+            state->orientation[0] += 360.0f;
         }
-        while (((ActorScriptState *)v)->orientation[0] >= 360.0f) {
-            ((ActorScriptState *)v)->orientation[0] -= 360.0f;
+        while (state->orientation[0] >= 360.0f) {
+            state->orientation[0] -= 360.0f;
         }
-        ((ActorScriptState *)v)->orientation[1] += angles[1];
-        while (((ActorScriptState *)v)->orientation[1] < 0.0f) {
-            ((ActorScriptState *)v)->orientation[1] += 360.0f;
+        state->orientation[1] += angles[1];
+        while (state->orientation[1] < 0.0f) {
+            state->orientation[1] += 360.0f;
         }
-        while (((ActorScriptState *)v)->orientation[1] >= 360.0f) {
-            ((ActorScriptState *)v)->orientation[1] -= 360.0f;
+        while (state->orientation[1] >= 360.0f) {
+            state->orientation[1] -= 360.0f;
         }
     }
 }
@@ -836,12 +836,12 @@ void actorAddActionPitchAndYawDegrees(u8 *actor, f32 *angles) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80016228 (0x80016228).
 void actorCopyObjectRotationToState(u8 *actor) {
-    u8 *actorState;
+    ActorScriptState *state;
 
-    actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    ((ActorScriptState *)actorState)->orientation[0] = (f32)((RuntimeObjectPrefix *)actor)->rotation[0];
-    ((ActorScriptState *)actorState)->orientation[1] = (f32)((RuntimeObjectPrefix *)actor)->rotation[1];
-    ((ActorScriptState *)actorState)->orientation[2] = (f32)((RuntimeObjectPrefix *)actor)->rotation[2];
+    state = ((RuntimeObjectPrefix *)actor)->state.actor;
+    state->orientation[0] = (f32)((RuntimeObjectPrefix *)actor)->rotation[0];
+    state->orientation[1] = (f32)((RuntimeObjectPrefix *)actor)->rotation[1];
+    state->orientation[2] = (f32)((RuntimeObjectPrefix *)actor)->rotation[2];
 }
 
 /// Owned lookup mapping packed actor-kind and part identifiers to part-table slots.
@@ -1407,10 +1407,10 @@ void actorConstrainMovementToTerrain(u8 *object, f32 *displacement) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80017190 (0x80017190).
 void actorSetBehaviorInhibitFlags(u8 *actor, u16 flags) {
-    u8 *actorState;
+    ActorScriptState *state;
 
-    actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    ((ActorScriptState *)actorState)->behaviorFlags |= flags;
+    state = ((RuntimeObjectPrefix *)actor)->state.actor;
+    state->behaviorFlags |= flags;
 }
 
 /// Disable actor behavior inhibition flags.
@@ -1419,8 +1419,8 @@ void actorSetBehaviorInhibitFlags(u8 *actor, u16 flags) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800171A8 (0x800171A8).
 void actorClearBehaviorInhibitFlags(u8 *actor, u16 flags) {
-    u8 *actorState;
+    ActorScriptState *state;
 
-    actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    ((ActorScriptState *)actorState)->behaviorFlags &= ~flags;
+    state = ((RuntimeObjectPrefix *)actor)->state.actor;
+    state->behaviorFlags &= ~flags;
 }
