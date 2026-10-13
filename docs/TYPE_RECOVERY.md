@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,351 / 76 |
+| Raw offset candidates | 4,040 / 86 | 2,307 / 76 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3594,3 +3594,7 @@ the access locations; the matching C remains authoritative for scalar types.
 Ribbon steering and mirrored segment updates now use the shared object child,
 sibling, root, rotation, position and world-position fields. The mirrored segment
 retains the signed scale reversal and original update order.
+
+Ribbon creation now populates the shared object transforms and controller state.
+Drawing reads the checked animation value and the root matrix-buffer and flag
+fields. The anchor retains its separately allocated pointer slot.

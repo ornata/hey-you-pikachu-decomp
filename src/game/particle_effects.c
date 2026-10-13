@@ -643,17 +643,17 @@ void ribbonEffectSegmentUpdate(u8 *segment) {
 /// live until rendering finishes. The effect texture bank must be loaded.
 /// \note Original decompilation identifier: \c func_80018474 (0x80018474).
 s32 ribbonEffectControllerPrepareDraw(u8 *controller) {
-    u8 *obj;
+    RibbonControllerState *state;
     Gfx *g;
     s32 idx;
 
-    obj = *(u8 **)(controller + 0x54);
+    state = ((RuntimeObjectPrefix *)controller)->state.pointer;
     g = gRenderDisplayListCursor++;
     g->words.w0 = 0xDB06001C;
-    idx = (*(u16 *)(*(u8 **)(controller + 0x50) + 0x36) & 0x8000) ? 1 : 0;
-    g->words.w1 = (u32)osVirtualToPhysical(((void **)(*(u8 **)(controller + 0x50) + 0x3C))[idx]);
-    textureLoadForDraw(&gRenderDisplayListCursor, 5, *(s16 *)(obj + 0x20));
-    return *(s32 *)(controller + 0x30);
+    idx = (((RuntimeObjectPrefix *)controller)->root.object->flags & 0x8000) ? 1 : 0;
+    g->words.w1 = (u32)osVirtualToPhysical(((RuntimeObjectPrefix *)controller)->root.object->matrixBuffers[idx]);
+    textureLoadForDraw(&gRenderDisplayListCursor, 5, state->animation.value);
+    return (s32)((RuntimeObjectPrefix *)controller)->displayList;
 }
 
 f32 mathSinDegrees(f32);
@@ -696,72 +696,72 @@ u8 *ribbonEffectCreate(s32 count, f32 duration, f32 baseWidth, f32 widthVariatio
     u8 *head;
     u8 *tail;
     u8 *part;
-    f32 *state;
+    RibbonControllerState *state;
     s32 i;
     root = objectCreateDefault();
     head = objectCreateFromTemplate((ObjectTemplate *)gRibbonAnchorObjectTemplate);
-    *(f32 *)(head + 0x18) = x;
-    *(f32 *)(head + 0x1C) = y;
-    *(f32 *)(head + 0x20) = z;
-    *(f32 *)(head + 0x44) = x;
-    *(f32 *)(head + 0x48) = y;
-    *(f32 *)(head + 0x4C) = z;
-    *(f32 *)(head + 8) = baseWidth;
-    *(u8 **)(root + 0x2C) = head;
+    ((RuntimeObjectPrefix *)head)->position[0] = x;
+    ((RuntimeObjectPrefix *)head)->position[1] = y;
+    ((RuntimeObjectPrefix *)head)->position[2] = z;
+    ((RuntimeObjectPrefix *)head)->worldPosition[0] = x;
+    ((RuntimeObjectPrefix *)head)->worldPosition[1] = y;
+    ((RuntimeObjectPrefix *)head)->worldPosition[2] = z;
+    ((RuntimeObjectPrefix *)head)->scale[2] = baseWidth;
+    ((RuntimeObjectPrefix *)root)->child.bytes = head;
     tail = head;
     for (i = 0; i < count; i++) {
         part = objectCreateFromTemplate((ObjectTemplate *)gRibbonSegmentObjectTemplate);
-        *(f32 *)(part + 0x18) = x;
-        *(f32 *)(part + 0x1C) = y;
-        *(f32 *)(part + 0x20) = z;
-        *(f32 *)(part + 0x44) = x;
-        *(f32 *)(part + 0x48) = y;
-        *(f32 *)(part + 0x4C) = z;
-        *(u8 **)(tail + 0x28) = part;
+        ((RuntimeObjectPrefix *)part)->position[0] = x;
+        ((RuntimeObjectPrefix *)part)->position[1] = y;
+        ((RuntimeObjectPrefix *)part)->position[2] = z;
+        ((RuntimeObjectPrefix *)part)->worldPosition[0] = x;
+        ((RuntimeObjectPrefix *)part)->worldPosition[1] = y;
+        ((RuntimeObjectPrefix *)part)->worldPosition[2] = z;
+        ((RuntimeObjectPrefix *)tail)->sibling.bytes = part;
         tail = part;
         switch (widthStyle) {
         case 0:
-            *(f32 *)(part + 8) = mathSinDegrees(i * 30) * widthVariation + baseWidth;
+            ((RuntimeObjectPrefix *)part)->scale[2] = mathSinDegrees(i * 30) * widthVariation + baseWidth;
             break;
         case 1:
-            *(f32 *)(part + 8) =
+            ((RuntimeObjectPrefix *)part)->scale[2] =
                 (1.0 - ((f64)randomNext() * 2.3283064365386963e-10) * 2) * (f64)widthVariation + (f64)baseWidth;
             break;
         }
         if (i & 1)
-            *(f32 *)(part + 8) = -*(f32 *)(part + 8);
+            ((RuntimeObjectPrefix *)part)->scale[2] = -((RuntimeObjectPrefix *)part)->scale[2];
     }
     part = objectCreateFromTemplate((ObjectTemplate *)gRibbonControllerObjectTemplate);
-    state = *(f32 **)(part + 0x54);
-    *(f32 *)(part + 0x18) = x;
-    *(f32 *)(part + 0x1C) = y;
-    *(f32 *)(part + 0x20) = z;
-    *(f32 *)(part + 0x44) = x;
-    *(f32 *)(part + 0x48) = y;
-    *(f32 *)(part + 0x4C) = z;
-    *(f32 *)(part + 8) = baseWidth;
-    *(u8 **)(tail + 0x28) = part;
+    state = ((RuntimeObjectPrefix *)part)->state.pointer;
+    ((RuntimeObjectPrefix *)part)->position[0] = x;
+    ((RuntimeObjectPrefix *)part)->position[1] = y;
+    ((RuntimeObjectPrefix *)part)->position[2] = z;
+    ((RuntimeObjectPrefix *)part)->worldPosition[0] = x;
+    ((RuntimeObjectPrefix *)part)->worldPosition[1] = y;
+    ((RuntimeObjectPrefix *)part)->worldPosition[2] = z;
+    ((RuntimeObjectPrefix *)part)->scale[2] = baseWidth;
+    ((RuntimeObjectPrefix *)tail)->sibling.bytes = part;
     tail = part;
-    state[0] = destination[0];
-    state[1] = destination[1];
-    state[2] = destination[2];
-    state[3] = duration;
+    state->destination[0] = destination[0];
+    state->destination[1] = destination[1];
+    state->destination[2] = destination[2];
+    state->remaining = duration;
     **(u8 ***)(head + 0x54) = part;
     displayList = ribbonEffectCreateDisplayList(count);
-    *(Gfx **)(part + 0x30) = displayList;
+    ((RuntimeObjectPrefix *)part)->displayList = displayList;
     head = objectCreateFromTemplate((ObjectTemplate *)gRibbonTipObjectTemplate);
-    *(f32 *)(head + 0x44) = x;
-    *(f32 *)(head + 0x48) = y;
-    *(f32 *)(head + 0x4C) = z;
-    *(f32 *)(head + 0xC) = 0.0f;
-    *(f32 *)(head + 0x10) = pitch;
-    *(f32 *)(head + 0x14) = yaw;
-    *(u8 **)(part + 0x2C) = head;
+    ((RuntimeObjectPrefix *)head)->worldPosition[0] = x;
+    ((RuntimeObjectPrefix *)head)->worldPosition[1] = y;
+    ((RuntimeObjectPrefix *)head)->worldPosition[2] = z;
+    ((RuntimeObjectPrefix *)head)->rotation[0] = 0.0f;
+    ((RuntimeObjectPrefix *)head)->rotation[1] = pitch;
+    ((RuntimeObjectPrefix *)head)->rotation[2] = yaw;
+    ((RuntimeObjectPrefix *)part)->child.bytes = head;
     part = objectCreateFromTemplate((ObjectTemplate *)gRibbonTerminalDecorationTemplate);
-    *(f32 *)(part) = baseWidth * 0.01f;
-    *(f32 *)(part + 4) = baseWidth * 0.01f;
-    *(f32 *)(part + 8) = baseWidth * 0.01f;
-    *(u8 **)(tail + 0x28) = part;
+    ((RuntimeObjectPrefix *)part)->scale[0] = baseWidth * 0.01f;
+    ((RuntimeObjectPrefix *)part)->scale[1] = baseWidth * 0.01f;
+    ((RuntimeObjectPrefix *)part)->scale[2] = baseWidth * 0.01f;
+    ((RuntimeObjectPrefix *)tail)->sibling.bytes = part;
     objectMakeHierarchyRoot(root);
     objectAllocateHierarchyMatrixBuffers(root);
     objectRegisterActiveHierarchy(root);
