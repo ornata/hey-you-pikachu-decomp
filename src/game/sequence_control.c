@@ -1,11 +1,9 @@
+#include "midi_sequence.h"
 #include "sequence_control.h"
 /* Sequence control API; its read-only constants end at ROM A0E30. */
 #include "common.h"
 #include "midi_sequence_types.h"
 
-s32 midiSequenceInitialize(u8 *);
-s32 midiSequenceStop(u8 *);
-u8 midiSequenceIsStopped(u8 *);
 
 /// Initialize sequence playback with no pending control requests.
 /// \param state Sequence control state to initialize.
@@ -16,10 +14,9 @@ void sequenceControlInitialize(SequenceControlState *state) {
     state->stopDelay = -1.0;
     state->fadeDuration = -1.0;
     state->immediateLevel = -1.0;
-    midiSequenceInitialize((u8 *)state);
+    midiSequenceInitialize(&state->playback);
 }
 
-s32 midiSequenceStart(u8 *, s32); /* extern */
 
 /// Request playback and an engine reset for a stopped sequence.
 /// \param state Initialized sequence control state.
@@ -27,11 +24,11 @@ s32 midiSequenceStart(u8 *, s32); /* extern */
 /// \returns 1 when playback starts, or 0 when already playing or the sequence cannot be opened.
 /// \note Original decompilation identifier: \c func_80005808 (0x80005808).
 s32 sequenceControlStart(SequenceControlState *state, s32 romAddress) {
-    if (midiSequenceIsStopped((u8 *)state) != 0) {
+    if (midiSequenceIsStopped(&state->playback) != 0) {
         state->resetPending = 1;
         state->stopDelay = -1.0;
         state->fadeDuration = -1.0;
-        return midiSequenceStart((u8 *)state, romAddress);
+        return midiSequenceStart(&state->playback, romAddress);
     }
     return 0;
 }
@@ -44,9 +41,9 @@ s32 sequenceControlStart(SequenceControlState *state, s32 romAddress) {
 s32 sequenceControlScheduleStop(SequenceControlState *state, f64 delay) {
     f64 cur;
 
-    if (midiSequenceIsStopped((u8 *)state) == 0) {
+    if (midiSequenceIsStopped(&state->playback) == 0) {
         if (delay == 0.0) {
-            return midiSequenceStop((u8 *)state);
+            return midiSequenceStop(&state->playback);
         }
         cur = state->stopDelay;
         if ((cur < 0.0) || (delay < cur)) {
@@ -107,7 +104,6 @@ s32 sequenceControlEncodeVolumeEvent(f64 duration, f64 level, u8 *event) {
     return 8;
 }
 
-s32 midiSequenceReadEvent(u8 *, u8 *, s32, f64 *);
 /// Get the next engine control or MIDI event and update the playback stop deadline.
 /// \param state Sequence control state to advance.
 /// \param event Destination for the event; must have room for at least eight bytes.
@@ -118,7 +114,7 @@ s32 midiSequenceReadEvent(u8 *, u8 *, s32, f64 *);
 s32 sequenceControlReadEvent(SequenceControlState *state, u8 *event, s32 capacity, f64 *delta) {
     s32 result;
     if (state->stopDelay == 0.0) {
-        midiSequenceStop((u8 *)state);
+        midiSequenceStop(&state->playback);
         state->stopDelay = -1.0;
     }
     if (state->resetPending != 0) {
@@ -140,7 +136,7 @@ s32 sequenceControlReadEvent(SequenceControlState *state, u8 *event, s32 capacit
         *delta = 0.0;
         return result;
     }
-    result = midiSequenceReadEvent((u8 *)state, event, capacity, delta);
+    result = midiSequenceReadEvent(&state->playback, event, capacity, delta);
     if (*delta > 0.0 && state->stopDelay >= 0.0) {
         if (state->stopDelay < *delta) {
             state->stopDelay = 0.0;

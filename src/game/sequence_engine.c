@@ -1,3 +1,4 @@
+#include "midi_sequence.h"
 /* Voice and sequence engine; split from the control API at ROM 6750. */
 #include "common.h"
 #include "sequence_driver.h"
@@ -62,9 +63,7 @@ s32 sequenceEngineRecycleVoice(u8 *, u8 *, u8 *);
 void n_alSynFreeVoice(struct N_ALVoice_s *);
 void n_alSynStopVoice(struct N_ALVoice_s *);
 
-s32 midiSequenceSetRate(u8 *, f64);
 s32 sequenceEngineSetSustain(s32, u8 *, s32, s32);
-u8 midiSequenceIsStopped(u8 *);
 s32 sequenceEngineGetVoicePan(u8 *, EngineSequence *, u8 *);
 s32 sequenceEngineResetControllers(u8 *, u8 *);
 void sequenceEngineStopVoice(s32, s32, s32);
@@ -73,14 +72,13 @@ void sequenceEngineUpdateVoices(u8 *, u8 *, f64);
 void sequenceEngineAdvanceVolumeFade(u8 *, f64);
 void sequenceEngineAdvanceEvents(s32, u8 *, f64);
 
-s32 midiSequenceIsDrained(u8 *);
 
 /// Check whether sequence playback and pending release events have ended.
 /// \param player Sequence player to inspect.
 /// \returns One when playback and pending releases have ended; otherwise zero.
 /// \note Original decompilation identifier: \c func_80005B50 (0x80005B50).
 s32 sequenceEngineIsDrained(u8 *player) {
-    return midiSequenceIsDrained(player);
+    return midiSequenceIsDrained((SequenceState *)player);
 }
 
 /// Check whether sequence playback is stopped.
@@ -88,7 +86,7 @@ s32 sequenceEngineIsDrained(u8 *player) {
 /// \returns Nonzero when stopped, even if release events remain; otherwise zero.
 /// \note Original decompilation identifier: \c func_80005B70 (0x80005B70).
 s32 sequenceEngineIsStopped(u8 *player) {
-    return midiSequenceIsStopped(player);
+    return midiSequenceIsStopped((SequenceState *)player);
 }
 
 /// Set the sequence playback speed multiplier.
@@ -97,17 +95,16 @@ s32 sequenceEngineIsStopped(u8 *player) {
 /// \returns Zero.
 /// \note Original decompilation identifier: \c func_80005B90 (0x80005B90).
 s32 sequenceEngineSetRate(u8 *player, f64 rate) {
-    return midiSequenceSetRate(player, rate);
+    return midiSequenceSetRate((SequenceState *)player, rate);
 }
 
-f64 midiSequenceGetRate(u8 *);
 
 /// Get the sequence playback speed multiplier.
 /// \param player Sequence player to inspect.
 /// \returns The configured playback multiplier.
 /// \note Original decompilation identifier: \c func_80005BC0 (0x80005BC0).
 f64 sequenceEngineGetRate(u8 *player) {
-    return midiSequenceGetRate(player);
+    return midiSequenceGetRate((SequenceState *)player);
 }
 
 /// Assign a free sequence voice to a sequence.

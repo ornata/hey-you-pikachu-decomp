@@ -1,4 +1,4 @@
-/* harvested: matched m2c drafts; pending style pass */
+#include "midi_sequence.h"
 #include "common.h"
 #include "midi_sequence_types.h"
 void midiSequencePlaybackTransitionHook(void);
@@ -14,15 +14,15 @@ void midiSequencePlaybackTransitionHook(void) {
 /// \param state Sequence state to initialize.
 /// \returns Zero.
 /// \note Original decompilation identifier: \c func_800051A8 (0x800051A8).
-s32 midiSequenceInitialize(u8 *state) {
+s32 midiSequenceInitialize(SequenceState *state) {
     s32 i;
 
-    state[0x59C] = 1;
-    state[0x59D] = 0;
-    state[0x59E] = 0;
-    *(s32 *)(state + 0x458) = 0;
+    state->stopped = 1;
+    state->releaseNotes = 0;
+    state->releaseSustain = 0;
+    state->noteCount = 0;
     for (i = 0; i < 16; i++) {
-        ((s32 *)(state + 0x55C))[i] = 0;
+        state->sustain[i] = 0;
     }
     return 0;
 }
@@ -31,8 +31,8 @@ s32 midiSequenceInitialize(u8 *state) {
 /// \param state Sequence state whose channel mask is changed.
 /// \returns Zero.
 /// \note Original decompilation identifier: \c func_800051EC (0x800051EC).
-s32 midiSequenceRandomizeUpperChannels(u8 *state) {
-    ((SequenceState *)state)->channelMask = (s16)(osGetCount() | 0xFF);
+s32 midiSequenceRandomizeUpperChannels(SequenceState *state) {
+    state->channelMask = (s16)(osGetCount() | 0xFF);
     return 0;
 }
 
@@ -40,8 +40,8 @@ s32 midiSequenceRandomizeUpperChannels(u8 *state) {
 /// \param state Sequence state whose channel mask is changed.
 /// \returns Zero.
 /// \note Original decompilation identifier: \c func_8000521C (0x8000521C).
-s32 midiSequenceEnableAllChannels(u8 *state) {
-    *(u16 *)(state + 0x5A8) = 0xFFFF;
+s32 midiSequenceEnableAllChannels(SequenceState *state) {
+    state->channelMask = 0xFFFF;
     return 0;
 }
 
@@ -50,37 +50,37 @@ s32 midiSequenceEnableAllChannels(u8 *state) {
 /// \param romAddress ROM address of the sequence data.
 /// \returns 1 when playback starts, or 0 when already playing or the sequence cannot be opened.
 /// \note Original decompilation identifier: \c func_8000522C (0x8000522C).
-s32 midiSequenceStart(u8 *state, s32 romAddress) {
-    s32 var_v0;
-    var_v0 = 0;
-    if (state[0x59C] != 0) {
-        *(s16 *)(state + 0x444) = midiReaderOpen(state, romAddress);
-        if (*(s16 *)(state + 0x444) == 0) {
+s32 midiSequenceStart(SequenceState *state, s32 romAddress) {
+    s32 started;
+    started = 0;
+    if (state->stopped != 0) {
+        state->division = midiReaderOpen((u8 *)state, romAddress);
+        if (state->division == 0) {
             return 0;
         }
-        *(s32 *)(state + 0x448) = 0x7A120;
-        *(s8 *)(state + 0x59F) = 0;
-        *(f64 *)(state + 0x450) = 1.0;
-        *(u16 *)(state + 0x5A8) = 0xFFFF;
-        *(s16 *)(state + 0x5AA) = 0;
+        state->tempo = 0x7A120;
+        state->hasLoop = 0;
+        state->rate = 1.0;
+        state->channelMask = 0xFFFF;
+        state->repetitions = 0;
         midiSequencePlaybackTransitionHook();
-        var_v0 = 1;
-        state[0x59C] = 0;
-        return var_v0;
+        started = 1;
+        state->stopped = 0;
+        return started;
     }
-    return var_v0;
+    return started;
 }
 
 /// Stop sequence playback and request release of held notes and sustain.
 /// \param state Sequence state to stop.
 /// \returns Zero.
 /// \note Original decompilation identifier: \c func_800052BC (0x800052BC).
-s32 midiSequenceStop(u8 *state) {
-    if (state[0x59C] == 0) {
-        state[0x59D] = 1;
-        state[0x59E] = 1;
+s32 midiSequenceStop(SequenceState *state) {
+    if (state->stopped == 0) {
+        state->releaseNotes = 1;
+        state->releaseSustain = 1;
         midiSequencePlaybackTransitionHook();
-        state[0x59C] = 1;
+        state->stopped = 1;
         return 0;
     }
     return 0;
@@ -136,7 +136,7 @@ s32 midiSequenceReadEvent(SequenceState *state, u8 *event, s32 capacity, f64 *de
         }
         ticks = midiReaderReadEvent((u8 *)state, event, &length, capacity);
         if (ticks < 0) {
-            midiSequenceStop((u8 *)state);
+            midiSequenceStop(state);
             continue;
         }
         elapsed = (ticks * gMidiMicrosecondsToSeconds * state->tempo) / state->division;
@@ -152,7 +152,7 @@ s32 midiSequenceReadEvent(SequenceState *state, u8 *event, s32 capacity, f64 *de
                     state->tempo = ((event[3] << 16) | ((u32)event[4] << 8)) | (u32)event[5];
                     break;
                 case 0x2F:
-                    midiSequenceStop((u8 *)state);
+                    midiSequenceStop(state);
                     break;
                 }
                 continue;
@@ -171,9 +171,9 @@ s32 midiSequenceReadEvent(SequenceState *state, u8 *event, s32 capacity, f64 *de
             case 0x67:
                 state->releaseNotes = 1;
                 if (state->repetitions % 3 > 0 && state->repetitions >= 4)
-                    midiSequenceRandomizeUpperChannels((u8 *)state);
+                    midiSequenceRandomizeUpperChannels(state);
                 else
-                    midiSequenceEnableAllChannels((u8 *)state);
+                    midiSequenceEnableAllChannels(state);
                 ++state->repetitions;
                 if (state->hasLoop)
                     midiReaderRestoreMark((u8 *)state, (u8 *)&state->loop);
@@ -211,9 +211,9 @@ s32 midiSequenceReadEvent(SequenceState *state, u8 *event, s32 capacity, f64 *de
 /// \param state Sequence state to inspect.
 /// \returns 1 when playback and pending releases have ended, or 0 otherwise.
 /// \note Original decompilation identifier: \c func_80005768 (0x80005768).
-s32 midiSequenceIsDrained(u8 *state) {
-    if ((((SequenceState *)state)->stopped != 0) && (((SequenceState *)state)->releaseNotes == 0) &&
-        (((SequenceState *)state)->releaseSustain == 0)) {
+s32 midiSequenceIsDrained(SequenceState *state) {
+    if ((state->stopped != 0) && (state->releaseNotes == 0) &&
+        (state->releaseSustain == 0)) {
         return 1;
     }
     return 0;
@@ -223,8 +223,8 @@ s32 midiSequenceIsDrained(u8 *state) {
 /// \param state Sequence state to inspect.
 /// \returns Nonzero when playback is stopped, even if release events remain, or zero while playing.
 /// \note Original decompilation identifier: \c func_800057A0 (0x800057A0).
-u8 midiSequenceIsStopped(u8 *state) {
-    return ((SequenceState *)state)->stopped;
+u8 midiSequenceIsStopped(SequenceState *state) {
+    return state->stopped;
 }
 
 /// Set the sequence playback speed multiplier.
@@ -232,8 +232,8 @@ u8 midiSequenceIsStopped(u8 *state) {
 /// \param rate Positive playback multiplier; 1 preserves the original tempo.
 /// \returns Zero.
 /// \note Original decompilation identifier: \c func_800057A8 (0x800057A8).
-s32 midiSequenceSetRate(u8 *state, f64 rate) {
-    *(f64 *)(state + 0x450) = rate;
+s32 midiSequenceSetRate(SequenceState *state, f64 rate) {
+    state->rate = rate;
     return 0;
 }
 
@@ -241,6 +241,6 @@ s32 midiSequenceSetRate(u8 *state, f64 rate) {
 /// \param state Sequence state to inspect.
 /// \returns The configured playback multiplier.
 /// \note Original decompilation identifier: \c func_800057BC (0x800057BC).
-f64 midiSequenceGetRate(u8 *state) {
-    return ((SequenceState *)state)->rate;
+f64 midiSequenceGetRate(SequenceState *state) {
+    return state->rate;
 }
