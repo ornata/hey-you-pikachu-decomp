@@ -1,3 +1,4 @@
+#include "wisp_effect.h"
 #include "effect_emitter.h"
 #include "texture_animation_programs.h"
 #include "profile_counters.h"
@@ -2667,7 +2668,6 @@ s32 itemGetResponse(s32 responseType, s32 objectId) {
     return itemGetKindResponse(responseType, itemState->kind);
 }
 
-u8 *wispEffectCreate(s32, f32, f32, f32);
 void actorTryHoldItem(u8 *, s32, s32);
 
 /// Apply a transformation cause to an item, retaining, replacing, or removing it as appropriate.

@@ -1,3 +1,4 @@
+#include "wisp_effect.h"
 #include "ribbon_effect.h"
 #include "particle_cluster.h"
 #include "animated_radial_effect.h"
@@ -502,7 +503,6 @@ void actionCommandCreateRandomHeldItem(u8 *object, u8 *state, ActorActionCueComm
     }
 }
 
-u8 *wispEffectCreate(s32, f32, f32, f32); /* extern */
 
 /// Creates a vertical stack of effects at a world position.
 /// \param position World-space base position as three consecutive coordinates.

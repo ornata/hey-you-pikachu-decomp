@@ -1,3 +1,4 @@
+#include "wisp_effect.h"
 #include "effect_emitter.h"
 #include "object_transform.h"
 #include "scroll_board.h"
@@ -384,7 +385,6 @@ s32 actorScriptCreateEffectEmitter(u8 *actor) {
     return 0;
 }
 
-u8 *wispEffectCreate(s32, f32, f32, f32); /* extern */
 
 /// Create an animated wisp effect at a world position.
 /// \param actor Actor whose script VM supplies a supported wisp style followed by floating-point world X, Y, and Z coordinates, and receives zero.

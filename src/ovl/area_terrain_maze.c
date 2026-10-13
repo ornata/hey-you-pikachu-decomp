@@ -1,3 +1,4 @@
+#include "wisp_effect.h"
 #include "falling_particle.h"
 #include "item_mode.h"
 #include "item_kind.h"
@@ -963,7 +964,6 @@ s32 terrainGetMaterialSound(s32 category, s32 material) {
     return gTerrainMaterialSounds[category][material];
 }
 
-u8 *wispEffectCreate(s32, f32, f32, f32);
 s32 randomBelow(s32);
 /// Create the contact effect appropriate to a terrain material when one is configured.
 /// \param position World position in X, Y, Z order; supported ground effects may adjust Y to just above the

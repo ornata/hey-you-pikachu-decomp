@@ -3697,3 +3697,7 @@ through the canonical declaration; the original register arguments remain identi
 object-manager-owned return value and copied destination input. The script caller
 now uses the canonical pointer return instead of its former void declaration;
 its ignored return and all register arguments retain identical generated code.
+
+`wisp_effect.h` supplies the creation contract to action scripts, collection
+commands, item registry/physics and maze scatter consumers. All five consumers
+and the implementation use the same signed style and floating-coordinate ABI.

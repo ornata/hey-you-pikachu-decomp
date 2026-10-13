@@ -1,3 +1,4 @@
+#include "wisp_effect.h"
 #include "ribbon_effect.h"
 #include "particle_cluster.h"
 #include "orange_effect.h"
@@ -75,7 +76,6 @@ extern s32 gExpandingOrangeEffectFrameAnimation;
 extern s32 gGraphicsFramebufferIndex;
 void textureLoadForDraw(Gfx **, s32, s32);
 s32 wispEffectUpdateDrawAnimation(u8 *, s32);
-u8 *wispEffectCreate(s32, f32, f32, f32);
 
 /// Wisp modulation channels, including animation-controlled opacity.
 typedef struct WispColor {

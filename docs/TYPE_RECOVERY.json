@@ -140,7 +140,8 @@
         "object_types.h",
         "particle_cluster.h",
         "ribbon_effect.h",
-        "runtime_clock.h"
+        "runtime_clock.h",
+        "wisp_effect.h"
       ],
       "matching_exceptions": {
         "appearance command calls": "Appearance scale now uses the established float parameter and both appearance helpers return void. Their unused trailing command pointer is retained through local compatibility declarations to preserve the ROM calls."
@@ -148,50 +149,50 @@
       "locations": {
         "raw_offset_candidates": {
           "base + 1": [
-            "169:48"
-          ],
-          "base + 2": [
             "170:48"
           ],
-          "base + 3": [
+          "base + 2": [
             "171:48"
           ],
+          "base + 3": [
+            "172:48"
+          ],
           "entry + 6": [
-            "174:54"
+            "175:54"
           ],
           "entry + 5": [
-            "175:57"
+            "176:57"
           ],
           "entry + 4": [
-            "176:55"
+            "177:55"
           ],
           "entry + 7": [
-            "178:53"
+            "179:53"
           ],
           "window + 0xF": [
-            "188:33"
+            "189:33"
           ],
           "base + 0x400": [
-            "202:38"
+            "203:38"
           ],
           "command + 0xC": [
-            "220:50",
-            "324:58",
+            "221:50",
+            "325:58",
             "667:99",
             "1065:24"
           ],
           "command + 0x10": [
-            "220:75",
-            "311:76"
+            "221:75",
+            "312:76"
           ],
           "command + 8": [
-            "220:101",
-            "236:81",
-            "250:92",
-            "251:63",
-            "310:9",
-            "311:53",
-            "467:61",
+            "221:101",
+            "237:81",
+            "251:92",
+            "252:63",
+            "311:9",
+            "312:53",
+            "468:61",
             "655:18",
             "694:54",
             "716:42",
@@ -210,7 +211,7 @@
             "1064:22"
           ],
           "object + 0x44": [
-            "279:51",
+            "280:51",
             "664:28",
             "665:50",
             "667:74",
@@ -219,82 +220,82 @@
             "812:57"
           ],
           "object + 0x48": [
-            "279:76",
+            "280:76",
             "665:75"
           ],
           "object + 0x4C": [
-            "279:101",
+            "280:101",
             "665:100",
             "666:28"
           ],
           "p + 4": [
-            "312:62"
+            "313:62"
           ],
           "state + 0x190": [
-            "382:49",
-            "464:41",
-            "493:41",
+            "383:49",
+            "465:41",
+            "494:41",
             "973:52"
           ],
           "obj + 0x24": [
-            "388:58"
+            "389:58"
           ],
           "state + 0x19C": [
-            "391:22",
+            "392:22",
             "914:39"
           ],
           "p + 0x34": [
-            "391:103"
+            "392:103"
           ],
           "obj + 0x18": [
-            "392:44",
-            "446:45"
+            "393:44",
+            "447:45"
           ],
           "obj + 0x20": [
-            "393:44"
+            "394:44"
           ],
           "state + 0x10": [
-            "405:24",
-            "412:26",
-            "428:26"
+            "406:24",
+            "413:26",
+            "429:26"
           ],
           "state + 0x1EC": [
-            "435:27",
+            "436:27",
             "821:61"
           ],
           "obj + 0x44": [
-            "435:53"
-          ],
-          "state + 0x1F0": [
-            "436:27"
-          ],
-          "obj + 0x48": [
             "436:53"
           ],
-          "state + 0x1F4": [
+          "state + 0x1F0": [
             "437:27"
           ],
-          "obj + 0x4C": [
+          "obj + 0x48": [
             "437:53"
           ],
+          "state + 0x1F4": [
+            "438:27"
+          ],
+          "obj + 0x4C": [
+            "438:53"
+          ],
           "obj + 0x38": [
-            "446:24"
+            "447:24"
           ],
           "state + 0x1A8": [
-            "447:14"
+            "448:14"
           ],
           "state + 0x1B4": [
-            "466:43"
+            "467:43"
           ],
           "state + 0x1B0": [
-            "466:88",
-            "467:36"
+            "467:88",
+            "468:36"
           ],
           "r + 0x38": [
-            "469:52"
+            "470:52"
           ],
           "spawned + 0x38": [
-            "500:47"
+            "501:47"
           ],
           "trackingTarget + 0x44": [
             "529:22"
@@ -2900,7 +2901,8 @@
         "particle_cluster.h",
         "ribbon_effect.h",
         "texture_animation_programs.h",
-        "vector_direction.h"
+        "vector_direction.h",
+        "wisp_effect.h"
       ],
       "matching_exceptions": {
         "wispEffectUpdateDrawAnimation": "Wisp color retains named byte channels in a struct: a byte-array representation changes IDO channel load/shift register ordering. Texture tracks retain the signed byte cursor; the shared state and lifecycle fields match the original object."
@@ -4700,7 +4702,8 @@
         "progress_value.h",
         "runtime_clock.h",
         "scene_types.h",
-        "weighted_choice.h"
+        "weighted_choice.h",
+        "wisp_effect.h"
       ],
       "matching_exceptions": {
         "areaFindPositionNode": "Checked geometry member-offset reads preserve IDO floating operand/register ordering; direct members change allocated bytes.",
@@ -4713,7 +4716,7 @@
       "locations": {
         "address_globals": {
           "D_80133DE8": [
-            "221:5",
+            "222:5",
             "2073:12",
             "2096:14",
             "2097:14",
@@ -4722,166 +4725,166 @@
         },
         "raw_offset_candidates": {
           "scene_bedroom_DATA_START + 0x21314": [
-            "131:5"
-          ],
-          "scene_entryway_DATA_START + 0x5A6C": [
             "132:5"
           ],
-          "scene_front_yard_DATA_START + 0x24A20": [
+          "scene_entryway_DATA_START + 0x5A6C": [
             "133:5"
           ],
-          "scene_viridian_entrance_DATA_START + 0x18904": [
+          "scene_front_yard_DATA_START + 0x24A20": [
             "134:5"
           ],
-          "scene_viridian_forest_DATA_START + 0x60C4": [
+          "scene_viridian_entrance_DATA_START + 0x18904": [
             "135:5"
           ],
-          "scene_viridian_deep_DATA_START + 0x15680": [
+          "scene_viridian_forest_DATA_START + 0x60C4": [
             "136:5"
           ],
-          "scene_springleaf_entrance_DATA_START + 0x22E9C": [
+          "scene_viridian_deep_DATA_START + 0x15680": [
             "137:5"
           ],
-          "scene_oddish_meadow_DATA_START + 0x23368": [
+          "scene_springleaf_entrance_DATA_START + 0x22E9C": [
             "138:5"
           ],
-          "scene_springleaf_field_DATA_START + 0x234B8": [
+          "scene_oddish_meadow_DATA_START + 0x23368": [
             "139:5"
           ],
-          "scene_olivine_lakeshore_DATA_START + 0xCC94": [
+          "scene_springleaf_field_DATA_START + 0x234B8": [
             "140:5"
           ],
-          "scene_olivine_lake_DATA_START + 0xCCE8": [
+          "scene_olivine_lakeshore_DATA_START + 0xCC94": [
             "141:5"
           ],
-          "scene_ochre_entrance_DATA_START + 0x9858": [
+          "scene_olivine_lake_DATA_START + 0xCCE8": [
             "142:5"
           ],
-          "scene_ochre_deep_DATA_START + 0x157A4": [
+          "scene_ochre_entrance_DATA_START + 0x9858": [
             "143:5"
           ],
-          "scene_cobalt_island_DATA_START + 0x1C698": [
+          "scene_ochre_deep_DATA_START + 0x157A4": [
             "144:5"
           ],
-          "scene_cobalt_coast_DATA_START + 0x12284": [
+          "scene_cobalt_island_DATA_START + 0x1C698": [
             "145:5"
           ],
-          "scene_abra_shop_DATA_START + 0xF114": [
+          "scene_cobalt_coast_DATA_START + 0x12284": [
             "146:5"
           ],
-          "scene_wilderness_camp_DATA_START + 0x64DC": [
+          "scene_abra_shop_DATA_START + 0xF114": [
             "147:5"
           ],
-          "scene_ochre_fishing_DATA_START + 0x111E0": [
+          "scene_wilderness_camp_DATA_START + 0x64DC": [
             "148:5"
           ],
-          "scene_olivine_fishing_DATA_START + 0x10DB0": [
+          "scene_ochre_fishing_DATA_START + 0x111E0": [
             "149:5"
           ],
-          "scene_cobalt_fishing_DATA_START + 0x10F50": [
+          "scene_olivine_fishing_DATA_START + 0x10DB0": [
             "150:5"
           ],
-          "scene_viridian_edge_DATA_START + 0xF2A8": [
+          "scene_cobalt_fishing_DATA_START + 0x10F50": [
             "151:5"
           ],
-          "scene_playground_DATA_START + 0xAA3C": [
+          "scene_viridian_edge_DATA_START + 0xF2A8": [
             "152:5"
           ],
-          "scene_credits_DATA_START + 0xF4DC": [
+          "scene_playground_DATA_START + 0xAA3C": [
             "153:5"
           ],
+          "scene_credits_DATA_START + 0xF4DC": [
+            "154:5"
+          ],
           "w + 10": [
-            "254:47"
+            "255:47"
           ],
           "d + 10": [
-            "255:97"
+            "256:97"
           ],
           "node + 0x48": [
-            "373:45",
+            "374:45",
             "1716:18",
             "1875:19"
           ],
           "return -1": [
-            "377:5",
+            "378:5",
             "1680:29"
           ],
           "node + 0x20": [
-            "407:26",
+            "408:26",
             "1351:30",
             "2065:45"
           ],
           "w - 1": [
-            "496:79",
-            "497:72",
-            "518:79",
-            "519:72",
-            "544:39",
-            "553:15",
+            "497:79",
+            "498:72",
+            "519:79",
+            "520:72",
+            "545:39",
             "554:15",
-            "665:58"
+            "555:15",
+            "666:58"
           ],
           "h - 1": [
-            "501:79",
-            "502:72",
-            "523:79",
-            "524:72",
-            "545:33",
-            "667:58",
-            "914:28"
+            "502:79",
+            "503:72",
+            "524:79",
+            "525:72",
+            "546:33",
+            "668:58",
+            "915:28"
           ],
           "node + 8": [
-            "544:25",
-            "598:19",
+            "545:25",
+            "599:19",
             "1465:45"
           ],
           "node + 0x14": [
-            "544:58",
-            "916:75",
+            "545:58",
+            "917:75",
             "1464:26"
           ],
           "node + 0x10": [
-            "547:25",
-            "599:19",
-            "856:27",
-            "917:33",
+            "548:25",
+            "600:19",
+            "857:27",
+            "918:33",
             "1462:49",
             "1820:43",
             "1831:30"
           ],
           "node + 0x1C": [
-            "547:55",
-            "917:73",
+            "548:55",
+            "918:73",
             "1462:18"
           ],
           "ix + 1": [
-            "549:10",
-            "670:41",
-            "672:41",
-            "679:39",
-            "681:39"
+            "550:10",
+            "671:41",
+            "673:41",
+            "680:39",
+            "682:39"
           ],
           "iz + 1": [
-            "550:10",
-            "671:45",
-            "672:49",
-            "680:43",
-            "681:47"
+            "551:10",
+            "672:45",
+            "673:49",
+            "681:43",
+            "682:47"
           ],
           "node + 0xC": [
-            "743:23",
-            "779:32",
+            "744:23",
+            "780:32",
             "1467:57",
             "1819:43",
             "1829:30"
           ],
           "node + 0x8": [
-            "854:27",
-            "916:33",
+            "855:27",
+            "917:33",
             "1818:43",
             "1827:30"
           ],
           "count - 1": [
-            "915:25"
+            "916:25"
           ],
           "kind + 3": [
             "1033:39"
@@ -5156,7 +5159,8 @@
         "item_size.h",
         "item_types.h",
         "object_lookup.h",
-        "object_types.h"
+        "object_types.h",
+        "wisp_effect.h"
       ],
       "matching_exceptions": {
         "itemUpdateGroundVelocity": "Two velocity reads use checked member offsets to retain the original IDO preload scheduling and floating add operands. Stores and all other recovered fields use members.",
@@ -5166,17 +5170,17 @@
       "locations": {
         "raw_offset_candidates": {
           "direction + 8": [
-            "41:49"
+            "42:49"
           ],
           "gItemKindFrictionEntries - 0x30": [
-            "167:29",
-            "170:23"
+            "168:29",
+            "171:23"
           ],
           "state + 0x14": [
-            "179:41"
+            "180:41"
           ],
           "state + 0x18": [
-            "179:64"
+            "180:64"
           ],
           "object + 0x44": [
             "446:51"
@@ -5237,7 +5241,8 @@
         "scene_types.h",
         "search_tree.h",
         "search_tree_traversal.h",
-        "texture_animation_programs.h"
+        "texture_animation_programs.h",
+        "wisp_effect.h"
       ],
       "matching_exceptions": {
         "itemTryRelease": "Hold-state switch uses an unsigned-byte view of the named signed state member. Casting the signed member value to u8 changes IDO output; the explicit byte view matches. Other release fields and the actor held-item handle use shared members.",
@@ -5247,90 +5252,90 @@
       "locations": {
         "raw_offset_candidates": {
           "state + 0x54": [
-            "1862:37"
+            "1863:37"
           ],
           "bytes + 0x54": [
-            "2021:67"
+            "2022:67"
           ],
           "subject + 6": [
-            "2024:28"
+            "2025:28"
           ],
           "subject + 0x190": [
-            "2025:56"
+            "2026:56"
           ],
           "state + 0x38": [
-            "2056:18",
             "2057:18",
-            "2057:87",
-            "2058:42",
-            "2059:22"
+            "2058:18",
+            "2058:87",
+            "2059:42",
+            "2060:22"
           ],
           "lightingStorage + 0x38": [
-            "2088:60"
+            "2089:60"
           ],
           "object + 0x24": [
-            "2146:18",
-            "2147:34",
-            "2149:45",
-            "2151:45",
-            "2158:23"
+            "2147:18",
+            "2148:34",
+            "2150:45",
+            "2152:45",
+            "2159:23"
           ],
           "object + 0xC": [
-            "2160:14"
-          ],
-          "object + 0x10": [
             "2161:14"
           ],
-          "object + 0x14": [
+          "object + 0x10": [
             "2162:14"
           ],
-          "object + 0x18": [
+          "object + 0x14": [
             "2163:14"
           ],
-          "object + 0x1C": [
+          "object + 0x18": [
             "2164:14"
           ],
-          "object + 0x20": [
+          "object + 0x1C": [
             "2165:14"
           ],
+          "object + 0x20": [
+            "2166:14"
+          ],
           "object + 0x44": [
-            "2166:14",
+            "2167:14",
             "2711:74",
             "2733:70"
           ],
           "object + 0x48": [
-            "2167:14"
-          ],
-          "object + 0x4C": [
             "2168:14"
           ],
+          "object + 0x4C": [
+            "2169:14"
+          ],
           "gLiveItemCount + 1U": [
-            "2169:33"
+            "2170:33"
           ],
           "gLiveItemCount - 1": [
-            "2186:45"
+            "2187:45"
           ],
           "return -1": [
-            "2218:9",
-            "2226:9"
+            "2219:9",
+            "2227:9"
           ],
           "state + 0x4C": [
-            "2315:40"
+            "2316:40"
           ],
           "itemState + 0x54": [
-            "2354:53"
+            "2355:53"
           ],
           "state + 8": [
-            "2438:68"
+            "2439:68"
           ],
           "state + 6": [
-            "2440:24"
+            "2441:24"
           ],
           "state + 4": [
-            "2456:79",
-            "2457:87",
-            "2458:79",
-            "2465:36"
+            "2457:79",
+            "2458:87",
+            "2459:79",
+            "2466:36"
           ],
           "replacement + 0x44": [
             "2767:74",

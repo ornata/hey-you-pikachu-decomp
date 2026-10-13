@@ -1,3 +1,4 @@
+#include "wisp_effect.h"
 #include "actor_parts.h"
 #include "item_size.h"
 #include "item_participation.h"
@@ -346,7 +347,6 @@ s32 itemDispatchCollisionResponse(u8 *object, s32 flags) {
     return 1;
 }
 
-u8 *wispEffectCreate(s32, f32, f32, f32);
 u32 randomNext(void);
 s32 areaIsPositionOutsideBounds(f32, f32, f32);
 s32 terrainConstrainMovement(s32, f32, f32, f32, f32, f32, f32, f32 *, f32 *, f32 *, u8 **);
