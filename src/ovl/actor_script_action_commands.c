@@ -192,7 +192,6 @@ s32 actorScriptStartCostedAction(s32 actor) {
     return 2;
 }
 
-s32 scriptVmPopString();                 /* extern */
 void stringPrependBounded(u8 *, s32, u8 *); /* extern */
 /// Shared 80-byte text used by actor-script text and message commands.
 /// \note NONPORTABLE: buffer accesses span separate declarations whose contiguous target layout is retained for matching.
@@ -212,7 +211,7 @@ s32 actorScriptBuildSharedText(u8 *actor) {
     var_s0 = scriptVmReadIntegerOperand((u8 *)vmAddress) - 1;
     if (var_s0 >= 0) {
         do {
-            stringPrependBounded((u8 *)&gActorScriptSharedTextBuffer, 0x50, (u8 *)scriptVmPopString(vmAddress));
+            stringPrependBounded((u8 *)&gActorScriptSharedTextBuffer, 0x50, (u8 *)scriptVmPopString((u8 *)vmAddress));
             var_s0 -= 1;
         } while (var_s0 >= 0);
     }
@@ -234,7 +233,7 @@ s32 actorScriptBuildSharedTextAlternate(u8 *actor) {
     var_s0 = scriptVmReadIntegerOperand((u8 *)vmAddress) - 1;
     if (var_s0 >= 0) {
         do {
-            stringPrependBounded((u8 *)&gActorScriptSharedTextBuffer, 0x50, (u8 *)scriptVmPopString(vmAddress));
+            stringPrependBounded((u8 *)&gActorScriptSharedTextBuffer, 0x50, (u8 *)scriptVmPopString((u8 *)vmAddress));
             var_s0 -= 1;
         } while (var_s0 >= 0);
     }
@@ -420,7 +419,7 @@ s32 actorScriptAppendWindowText(u8 *actor) {
     var_s0 = scriptVmReadIntegerOperand((u8 *)vmAddress) - 1;
     if (var_s0 >= 0) {
         do {
-            stringPrependBounded((u8 *)&gActorScriptSharedTextBuffer, 0x50, (u8 *)scriptVmPopString(vmAddress));
+            stringPrependBounded((u8 *)&gActorScriptSharedTextBuffer, 0x50, (u8 *)scriptVmPopString((u8 *)vmAddress));
             var_s0 -= 1;
         } while (var_s0 >= 0);
     }

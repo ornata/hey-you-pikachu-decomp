@@ -34,4 +34,12 @@ s32 scriptVmPopInteger(s32 vm);
 /// \returns Converted floating-point value.
 f32 scriptVmPopFloat(s32 vm);
 
+/// Remove a script value and obtain its string representation.
+/// \param vm Context with a valid string or numeric value on top; formatted
+/// numeric text must fit in 32 bytes including the terminator.
+/// \returns Borrowed string, or shared numeric text overwritten by the next
+/// numeric string conversion. Consume or copy numeric text before that conversion.
+/// \note Original identifier: \c func_80116104 (0x80116104).
+char *scriptVmPopString(u8 *vm);
+
 #endif

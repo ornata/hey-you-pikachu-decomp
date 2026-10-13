@@ -86,7 +86,8 @@
       "scriptVmPushInteger calls": "A native command supplies an unused third actor argument; a void compatibility declaration retains the original argument setup."
     },
     "src/ovl/script_vm.c": {
-      "scriptVmReadIntegerOperand": "scriptValueGetInteger returns s32. Operand decoding retains an unused second VM context argument through an unprototyped compatibility declaration."
+      "scriptVmReadIntegerOperand": "scriptValueGetInteger returns s32. Operand decoding retains an unused second VM context argument through an unprototyped compatibility declaration.",
+      "actorRunScriptVm indexed read": "Opcode 33 retains a five-byte array view when passing an indexed value to scriptVmPushValue. Replacing that view with &elements[elementIndex] on ScriptValue * changes allocated instructions and fails ROM matching; opcode 34 typed indexed writes independently preserve strict objects. Isolate IDO address-expression scheduling before consolidating the read view."
     },
     "src/game/doors_object_responses.c": {
       "objectResponsesAttach": "The keyed insertion call retains the ROM caller's unused fourth object pointer. Its pool, integer value and key match the canonical implementation; the response registry retains 0x28 bytes of storage for a 0x20-byte pool header. Inspect a3 setup and trailing storage before consolidating the compatibility declaration or changing the global definition."

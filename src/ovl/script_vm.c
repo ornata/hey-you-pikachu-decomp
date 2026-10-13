@@ -345,20 +345,20 @@ extern ScriptValue gScriptVmGlobalValues[500];
 ///
 /// \note UB: a frame below -1 returns an uninitialised pointer.
 /// \note Original decompilation identifier: \c func_801156A0 (0x801156A0).
-u8 *scriptVmReadVariableReference(u8 *vm) {
+ScriptValue *scriptVmReadVariableReference(u8 *vm) {
     s32 frame;
-    s32 idx;
-    u8 *box;
+    s32 valueIndex;
+    ScriptValue *value;
 
     frame = scriptVmReadIntegerOperand(vm);
-    idx = scriptVmReadIntegerOperand(vm);
+    valueIndex = scriptVmReadIntegerOperand(vm);
     if (frame >= 0) {
-        idx = ((s32 *)(vm + 0x22C))[frame] + idx;
-        box = (u8 *)((ScriptVm *)vm)->values + idx * 5;
+        valueIndex = ((ScriptVm *)vm)->localFrameBases[frame] + valueIndex;
+        value = &((ScriptVm *)vm)->values[valueIndex];
     } else if (frame == -1) {
-        box = (u8 *)&gScriptVmGlobalValues + idx * 5;
+        value = &gScriptVmGlobalValues[valueIndex];
     }
-    return box;
+    return value;
 }
 
 /// Replace the top script value with the result of a unary operation.
@@ -620,7 +620,6 @@ void scriptVmPushInteger(s32 vm, s32 value) {
     scriptVmPushValue((u8 *)vm, &valueBox);
 }
 
-void scriptValueSetFloat(s8 *arg0, f32 arg1);  /* extern */
 /// Push a floating-point number onto the script value stack.
 /// \param vm Address of a script context with stack capacity available.
 /// \param value Floating-point number to push.
@@ -645,7 +644,6 @@ void scriptVmPushStringPointer(s32 vm, s32 text) {
     scriptVmPushValue((u8 *)vm, &valueBox);
 }
 
-void scriptVmPopValue(u8 *arg0, ScriptValue *arg1); /* extern */
 /// Pop a numeric script value and convert it to an integer.
 /// \param vm Address of a script context with a numeric value on its stack.
 /// \returns The popped integer value, with any floating-point fraction discarded.
@@ -657,7 +655,6 @@ s32 scriptVmPopInteger(s32 vm) {
     return scriptValueGetInteger((s8 *)&valueBox);
 }
 
-f32 scriptValueGetFloat(s8 *arg0);             /* extern */
 
 /// Pop a numeric script value and convert it to a floating-point number.
 /// \param vm Address of a script context with a numeric value on its stack.
@@ -694,7 +691,7 @@ char *scriptVmPopString(u8 *vm) {
             return text;
         }
         bcopy(&box.bytes[1], &index, 4);
-        return (*(char ***)(vm + 8))[index];
+        return ((char **)((ScriptVm *)vm)->stringTable)[index];
     }
     if (box.data.tag == SCRIPT_VALUE_INTEGER || box.data.tag == 2)
         test = 1;
@@ -796,21 +793,21 @@ loop_3:
         vm->instructionOffset = (s32)(vm->instructionOffset + 5);
         goto loop_3;
     case 25:
-        scriptVmPushValue((u8 *)vm, (ScriptValue *)scriptVmReadVariableReference((u8 *)vm));
+        scriptVmPushValue((u8 *)vm, scriptVmReadVariableReference((u8 *)vm));
         goto loop_2;
     case 10:
-        scriptVmPopValue((u8 *)vm, (ScriptValue *)scriptVmReadVariableReference((u8 *)vm));
+        scriptVmPopValue((u8 *)vm, scriptVmReadVariableReference((u8 *)vm));
         goto loop_2;
     case 33: {
         u8 *elements;
         s32 elementIndex;
-        elements = scriptVmReadVariableReference((u8 *)vm);
+        elements = (u8 *)scriptVmReadVariableReference((u8 *)vm);
         elementIndex = scriptVmPopInteger((s32)vm);
         scriptVmPushValue((u8 *)vm, (ScriptValue *)((u8(*)[5])elements)[elementIndex]);
         goto loop_2;
     }
     case 34: {
-        u8 *elements;
+        ScriptValue *elements;
         s32 i;
         s32 elementIndex;
         ScriptValue value;
@@ -818,7 +815,7 @@ loop_3:
         scriptVmPopValue((u8 *)vm, &value);
         elementIndex = scriptVmPopInteger((s32)vm);
         for (i = 0; i < 5; i++) {
-            ((u8(*)[5])elements)[elementIndex][i] = value.bytes[i];
+            elements[elementIndex].bytes[i] = value.bytes[i];
         }
         goto loop_2;
     }

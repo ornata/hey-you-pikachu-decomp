@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 2841,
-      "unique_spellings": 1067,
+      "occurrences": 2839,
+      "unique_spellings": 1065,
       "files": 80
     }
   },
@@ -7171,7 +7171,8 @@
         "script_vm_stack.h"
       ],
       "matching_exceptions": {
-        "scriptVmReadIntegerOperand": "scriptValueGetInteger returns s32. Operand decoding retains an unused second VM context argument through an unprototyped compatibility declaration."
+        "scriptVmReadIntegerOperand": "scriptValueGetInteger returns s32. Operand decoding retains an unused second VM context argument through an unprototyped compatibility declaration.",
+        "actorRunScriptVm indexed read": "Opcode 33 retains a five-byte array view when passing an indexed value to scriptVmPushValue. Replacing that view with &elements[elementIndex] on ScriptValue * changes allocated instructions and fails ROM matching; opcode 34 typed indexed writes independently preserve strict objects. Isolate IDO address-expression scheduling before consolidating the read view."
       },
       "locations": {
         "raw_offset_candidates": {
@@ -7193,16 +7194,10 @@
           "operandOffset + 5": [
             "334:43"
           ],
-          "vm + 0x22C": [
-            "356:24"
-          ],
-          "vm + 8": [
-            "697:29"
-          ],
           "instructionOffset + 5": [
-            "796:43",
-            "847:47",
-            "865:43"
+            "793:43",
+            "844:47",
+            "862:43"
           ]
         }
       }

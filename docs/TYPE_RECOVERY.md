@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,841 / 80 |
+| Raw offset candidates | 4,040 / 86 | 2,839 / 80 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3191,3 +3191,18 @@ A direct pointer cast in the companion caller changed register allocation and
 failed ROM matching; a descriptive local actor pointer preserves the original
 instructions and permits the canonical declaration without an exception.
 All provider and consumer conversions preserve strict object matches.
+
+### Typed VM variable references and borrowed string results
+
+The variable-reference decoder returns `ScriptValue *`, uses the checked local
+frame-base array and indexes the existing global/local value storage. Ghidra
+0x801156A0 confirms frame -1 for globals and nonnegative local-frame bases;
+invalid negative frames remain an explicit precondition/UB note. Indexed writes
+use the value's byte representation. Opcode 33 retains its five-byte array view:
+a typed indexed-address trial changes allocated instructions and fails matching,
+while the independently tested write conversion preserves strict objects.
+The string-pop contract now lives in `script_vm_stack.h`, including borrowed
+string lifetime and shared numeric-text invalidation. Native command consumers
+use its pointer result and canonical context parameter; an unused menu declaration
+and three duplicate provider declarations are removed. The string-table lookup
+uses the checked context member. All accepted conversions preserve strict objects.
