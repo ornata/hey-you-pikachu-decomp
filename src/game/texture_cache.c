@@ -1,3 +1,4 @@
+#include "texture_descriptor.h"
 #include "texture_setup.h"
 #include "texture_rectangles.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -24,24 +25,15 @@ void textureCacheDestroy(void) {
     romCacheDestroy(&gTextureRomCache);
 }
 
-/* Texture entry as textureGetDescriptor returns it: image, palette, size and format. */
-typedef struct TexDesc {
-    s32 img;
-    s32 pal;
-    u16 w;
-    u16 h;
-    u8 siz;
-    u8 fmt;
-    u8 pad[2];
-} TexDesc;
+
 /// Texture descriptor tables indexed by texture bank.
 /// \note Original identifier: \c D_8006B520 (0x8006B520).
-extern TexDesc *gTextureDescriptorTables[];
+extern TextureDescriptor *gTextureDescriptorTables[];
 
 /// Number of texture descriptors in each bank.
 /// \note Original identifier: \c D_8006B54C (0x8006B54C).
 extern s32 gTextureDescriptorCounts[];
-s32 textureCacheResolve(TexDesc, s32 *, s32 *);
+s32 textureCacheResolve(TextureDescriptor, s32 *, s32 *);
 
 /// Get a texture descriptor with RAM addresses for its image and palette.
 /// \param table Texture-table index.
@@ -52,7 +44,7 @@ s32 textureCacheResolve(TexDesc, s32 *, s32 *);
 ///
 /// \note NONPORTABLE: the empty `if` is a compiled-out bounds check; the ROM still evaluates it.
 /// \note Original decompilation identifier: \c func_8000C198 (0x8000C198).
-void textureGetDescriptor(s32 table, s32 index, TexDesc *descriptor) {
+void textureGetDescriptor(s32 table, s32 index, TextureDescriptor *descriptor) {
     s32 image;
     s32 palette;
 
@@ -60,8 +52,8 @@ void textureGetDescriptor(s32 table, s32 index, TexDesc *descriptor) {
     }
     *descriptor = gTextureDescriptorTables[table][index];
     textureCacheResolve(*descriptor, &image, &palette);
-    descriptor->img = image;
-    descriptor->pal = palette;
+    descriptor->image = image;
+    descriptor->palette = palette;
 }
 
 void textureUploadTile(Gfx **, s32, s32, s32, s32, u32, u32, s32, s32, s32, s32);
@@ -74,17 +66,17 @@ void textureUploadTile(Gfx **, s32, s32, s32, s32, u32, u32, s32, s32, s32, s32)
 /// \note Original decompilation identifier: \c func_8000C26C (0x8000C26C).
 Gfx *textureLoadForDraw(Gfx **displayList, s32 table, s32 index) {
     Gfx *head;
-    TexDesc t;
+    TextureDescriptor t;
 
     head = *displayList;
     textureGetDescriptor(table, index, &t);
     gDPPipeSync((*displayList)++);
-    if (t.fmt == G_IM_FMT_CI) {
+    if (t.format == G_IM_FMT_CI) {
         gDPSetTextureLUT((*displayList)++, G_TT_RGBA16);
     } else {
         gDPSetTextureLUT((*displayList)++, G_TT_NONE);
     }
-    textureUploadTile(displayList, t.img, t.pal, t.fmt, t.siz, t.w, t.h, 2, 2, 0, 0);
+    textureUploadTile(displayList, t.image, t.palette, t.format, t.size, t.width, t.height, 2, 2, 0, 0);
     return head;
 }
 
@@ -106,7 +98,7 @@ extern f32 gTextureScalePositiveTolerance, gTextureScaleXNegativeTolerance, gTex
 /// \note Original decompilation identifier: \c func_8000C354 (0x8000C354).
 void textureDrawRectangles(s32 table, TextureDrawC354 *draw, Gfx **gdl) {
     s32 width;
-    TexDesc texture;
+    TextureDescriptor texture;
     s32 height;
     s32 useMaskS, useMaskT;
     f32 ds;
@@ -125,21 +117,21 @@ void textureDrawRectangles(s32 table, TextureDrawC354 *draw, Gfx **gdl) {
     while (draw->texture >= 0) {
         textureGetDescriptor(table, draw->texture, &texture);
         gDPPipeSync((*gdl)++);
-        if (texture.fmt == G_IM_FMT_CI) {
+        if (texture.format == G_IM_FMT_CI) {
             gDPSetTextureLUT((*gdl)++, G_TT_RGBA16);
         } else {
             gDPSetTextureLUT((*gdl)++, G_TT_NONE);
         }
-        useMaskS = (texture.w & (texture.w - 1)) ? 0 : 1;
-        useMaskT = (texture.h & (texture.h - 1)) ? 0 : 1;
-        textureUploadTile(gdl, texture.img, texture.pal, texture.fmt, texture.siz, texture.w, texture.h, 0, 0, useMaskS,
+        useMaskS = (texture.width & (texture.width - 1)) ? 0 : 1;
+        useMaskT = (texture.height & (texture.height - 1)) ? 0 : 1;
+        textureUploadTile(gdl, texture.image, texture.palette, texture.format, texture.size, texture.width, texture.height, 0, 0, useMaskS,
                       useMaskT);
-        width = draw->width >= 0 ? draw->width : texture.w;
-        height = draw->height >= 0 ? draw->height : texture.h;
+        width = draw->width >= 0 ? draw->width : texture.width;
+        height = draw->height >= 0 ? draw->height : texture.height;
         gSPTextureRectangle((*gdl)++, (u32)draw->x << 2, (u32)draw->y << 2,
                             (s32)((draw->x + width * draw->scaleX) * 4.0f),
                             (s32)((draw->y + height * draw->scaleY) * 4.0f), G_TX_RENDERTILE, (u32)draw->s << 5,
-                            ((u32)texture.h - (u32)draw->t - 1U) << 5,
+                            ((u32)texture.height - (u32)draw->t - 1U) << 5,
                             (s32)((ds = 1024.0f / draw->scaleX) >= 0.0f ? ds + 0.5f : ds - 0.5f),
                             (s32)((dt = -1024.0f / draw->scaleY) >= 0.0f ? dt + 0.5f : dt - 0.5f));
         draw++;
@@ -162,19 +154,19 @@ extern u8 gTextureArchiveRomStart[];
 ///
 /// \note NONPORTABLE: the unused `pad` local only sizes the frame.
 /// \note Original decompilation identifier: \c func_8000C704 (0x8000C704).
-s32 textureCacheResolve(TexDesc texture, s32 *image, s32 *palette) {
+s32 textureCacheResolve(TextureDescriptor texture, s32 *image, s32 *palette) {
     s32 pad; /* unused, sizes the frame */
     s32 rp;
     s32 r;
     s32 size;
 
-    size = (((texture.w >= 17) ? texture.w : 16) * texture.h << texture.siz) >> 1;
-    r = romCacheRead(&gTextureRomCache, texture.img + gTextureArchiveRomStart, size, image);
-    if (texture.fmt != G_IM_FMT_CI) {
+    size = (((texture.width >= 17) ? texture.width : 16) * texture.height << texture.size) >> 1;
+    r = romCacheRead(&gTextureRomCache, texture.image + gTextureArchiveRomStart, size, image);
+    if (texture.format != G_IM_FMT_CI) {
         *palette = 0;
         return r;
     }
-    rp = romCacheRead(&gTextureRomCache, texture.pal + gTextureArchiveRomStart, 0x20, palette);
+    rp = romCacheRead(&gTextureRomCache, texture.palette + gTextureArchiveRomStart, 0x20, palette);
     if (r == 4 || rp == 4) {
         return 0;
     }

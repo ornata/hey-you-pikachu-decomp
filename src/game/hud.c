@@ -1,3 +1,4 @@
+#include "texture_descriptor.h"
 #include "texture_rectangles.h"
 #include "pikachu_actor.h"
 #include "random.h"
@@ -100,14 +101,6 @@ void hudInitializeDirectionIndicators(void) {
     animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalDirectionInnerTrack, gTextureFrameAnimationPrograms[226]);
 }
 
-/* Texture descriptor shared by the animated HUD renderers. */
-typedef struct {
-    s32 image, palette;
-    u16 width, height;
-    u8 size, format;
-    u8 pad[2];
-} HudTexture;
-void textureGetDescriptor(s32, s32, HudTexture *);
 void textureImageInitialize(s32 *, s32, s32, s32, s32, s32, s32);
 void textureDrawScaledRepeated(Gfx **, s32 *, s32, s32, s32, s32, s32, s32, f32, f32, s32, s32);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
@@ -125,7 +118,7 @@ void hudDrawDirectionIndicators(Gfx **gdl) {
     f32 direction[3];
     s32 frame;
     s32 tex[7];
-    HudTexture desc;
+    TextureDescriptor desc;
     u8 *anim;
     u8 *verticalAnim;
     s32 offset;
@@ -316,7 +309,7 @@ void hudDrawRecognitionIndicator(Gfx **gdl) {
     s32 mode;
     Gfx *gp;
     s32 tex[7];
-    HudTexture desc;
+    TextureDescriptor desc;
     s32 x;
     s32 y;
     f32 scale;
@@ -395,7 +388,7 @@ void hudDrawMicrophoneIndicators(Gfx **gdl) {
     s32 mode;
     f32 scale;
     Gfx *gp;
-    HudTexture desc;
+    TextureDescriptor desc;
     s32 x;
     s32 y;
     s32 tex[7];

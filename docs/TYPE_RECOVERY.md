@@ -3942,3 +3942,9 @@ return and signed word index across all eight consumers. Former void-return
 and short-index declarations are removed. The interaction marker’s unused
 fourth argument is unnecessary for matching and is removed; both ROM bytes
 and strict object identity are preserved.
+
+`texture_descriptor.h` unifies the 0x10-byte cache/HUD/toolbox descriptor and
+resolution interface, with size and offset checks. Image/palette words are
+archive-relative offsets in source tables and borrowed target addresses after
+resolution; dimensions and RDP size/format selectors are named. Pending cache
+reads must complete before resolved image/palette use.

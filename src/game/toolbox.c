@@ -1,3 +1,4 @@
+#include "texture_descriptor.h"
 #include "texture_rectangles.h"
 #include "object_groups.h"
 #include "math_angles.h"
@@ -1023,13 +1024,6 @@ void toolboxDrawRowTitle(s32 address) {
     textDrawGetDisplayListCursor(gdl);
 }
 
-typedef struct {
-    s32 image, palette;
-    u16 width, height;
-    u8 size, format;
-    u8 reserved[2];
-} Texture304D8;
-void textureGetDescriptor(s32, s32, Texture304D8 *);
 void textureUploadTile(Gfx **, s32, s32, s32, s32, u32, u32, s32, s32, s32, s32);
 /// Segmented shared display list preparing textured screen rectangle drawing.
 /// \note Original identifier: \c D_100C8C8 (0x100C8C8).
@@ -1046,7 +1040,7 @@ extern Gfx gTextureRectangleSetupDisplayList[];
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800304D8 (0x800304D8).
 void toolboxDrawIcon(Gfx **gdl, s32 texture, s32 x, s32 y, s32 width, s32 height, f32 scaleX, f32 scaleY) {
-    Texture304D8 t;
+    TextureDescriptor t;
     textureGetDescriptor(5, texture, &t);
     gDPPipeSync((*gdl)++);
     if (t.format == G_IM_FMT_CI) {
