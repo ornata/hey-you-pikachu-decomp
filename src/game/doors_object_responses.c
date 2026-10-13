@@ -38,9 +38,18 @@ u8 *gObjectResponseHeapStorage;
 /// Heap header for queued response records and their owned payloads.
 /// \note Original identifier: \c D_800B6B58 (0x800B6B58).
 HpHdr gObjectResponseHeap;
+/// Response lookup storage with an uninterpreted trailing region.
+/// Only the keyed-pool prefix has established consumers; preserve the full allocation.
+typedef struct ObjectResponseRegistry {
+    KeyedPool pool;  ///< Responses indexed by target handle.
+    u8 unknown20[8]; ///< Reserved storage with no established interpretation.
+} ObjectResponseRegistry;
+
+typedef char ObjectResponseRegistrySizeCheck[(sizeof(ObjectResponseRegistry) == 0x28) ? 1 : -1];
+
 /// Keyed pool indexing pending responses by target object handle.
 /// \note Original identifier: \c D_800B6B68 (0x800B6B68).
-u8 gObjectResponseRegistry[0x28];
+ObjectResponseRegistry gObjectResponseRegistry;
 /// Per-kind response callback view of the object callback table, with a twenty-four-byte stride.
 /// \note Original identifier: \c D_80078154 (0x80078154).
 extern ObjectKindResponseEntry gObjectKindResponseEntries[];
@@ -199,7 +208,7 @@ void objectResponsesInitialize(s32 capacity, s32 heapBytes) {
     heapBytes = (heapBytes + 0xF) & ~0xF;
     gObjectResponseHeapStorage = heapAllocLocal(&gGameHeap, heapBytes, 0x33);
     heapInitializeRegion(&gObjectResponseHeap, (s32)gObjectResponseHeapStorage, heapBytes);
-    keyedPoolInitialize((KeyedPool *)&gObjectResponseRegistry, capacity);
+    keyedPoolInitialize(&gObjectResponseRegistry.pool, capacity);
 }
 
 void keyedPoolDestroy(KeyedPool *); /* extern */
@@ -208,7 +217,7 @@ void keyedPoolDestroy(KeyedPool *); /* extern */
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001C4CC (0x8001C4CC).
 void objectResponsesDestroy(void) {
-    keyedPoolDestroy((KeyedPool *)gObjectResponseRegistry);
+    keyedPoolDestroy(&gObjectResponseRegistry.pool);
     heapFreeLocal(&gGameHeap, gObjectResponseHeapStorage);
 }
 
@@ -256,7 +265,7 @@ void objectResponsesClearWithCallback(u8 *object, ObjectResponseHandler callback
     ObjectResponse *n;
 
     key = ((RuntimeObjectPrefix *)object)->handle;
-    n = (ObjectResponse *)keyedPoolIterateFirstForKey((KeyedPool *)gObjectResponseRegistry, key);
+    n = (ObjectResponse *)keyedPoolIterateFirstForKey(&gObjectResponseRegistry.pool, key);
     if (n != NULL) {
         do {
             if (callback != 0) {
@@ -266,9 +275,9 @@ void objectResponsesClearWithCallback(u8 *object, ObjectResponseHandler callback
                 heapFreeLocal(&gObjectResponseHeap, n->payload.owned);
             }
             heapFreeLocal(&gObjectResponseHeap, n);
-        } while ((n = (ObjectResponse *)keyedPoolIterateNextForKey((KeyedPool *)gObjectResponseRegistry, key)) != NULL);
+        } while ((n = (ObjectResponse *)keyedPoolIterateNextForKey(&gObjectResponseRegistry.pool, key)) != NULL);
     }
-    keyedPoolRemoveAllForKey((KeyedPool *)gObjectResponseRegistry, key);
+    keyedPoolRemoveAllForKey(&gObjectResponseRegistry.pool, key);
     ((RuntimeObjectPrefix *)object)->flags = ((RuntimeObjectPrefix *)object)->flags & 0xF7FF;
 }
 
@@ -293,7 +302,7 @@ void objectResponsesDiscard(u8 *object) {
 /// \returns The number of unused registry entries; response-heap space is a separate requirement.
 /// \note Original decompilation identifier: \c func_8001C714 (0x8001C714).
 s32 objectResponsesGetFreeCapacity(void) {
-    return ((KeyedPool *)&gObjectResponseRegistry)->capacity - ((KeyedPool *)&gObjectResponseRegistry)->active;
+    return gObjectResponseRegistry.pool.capacity - gObjectResponseRegistry.pool.active;
 }
 
 /// Attach a prepared response to its target object.
@@ -304,7 +313,7 @@ s32 objectResponsesGetFreeCapacity(void) {
 /// \note Original decompilation identifier: \c func_8001C72C (0x8001C72C).
 void objectResponsesAttach(u8 *object, ObjectResponse *response) {
     ((RuntimeObjectPrefix *)object)->flags |= 0x800;
-    keyedPoolInsert((KeyedPool *)gObjectResponseRegistry, (s32)response, ((RuntimeObjectPrefix *)object)->handle, object);
+    keyedPoolInsert(&gObjectResponseRegistry.pool, (s32)response, ((RuntimeObjectPrefix *)object)->handle, object);
 }
 
 /// Allocate a response record for an eligible target object.

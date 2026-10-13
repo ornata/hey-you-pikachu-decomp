@@ -31,6 +31,19 @@ typedef char ObjectImpulseSizeCheck[(sizeof(ObjectImpulse) == 4) ? 1 : -1];
 typedef char ObjectResponseSizeCheck[(sizeof(ObjectResponse) == 0xC) ? 1 : -1];
 typedef char ObjectResponsePayloadOffsetCheck[(((u32) & ((ObjectResponse *)0)->payload) == 8) ? 1 : -1];
 
+/// Begin an empty response-system lifetime before objects submit responses.
+/// \param capacity Positive maximum number of registered response records.
+/// \param heapBytes Bytes available for response records and owned payloads.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8001C460 (0x8001C460).
+void objectResponsesInitialize(s32 capacity, s32 heapBytes);
+
+/// End the response-system lifetime after all target objects are destroyed.
+/// Outstanding response records and owned payloads become invalid.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8001C4CC (0x8001C4CC).
+void objectResponsesDestroy(void);
+
 /// Get unused response registry capacity.
 /// \returns Available entries; payload heap capacity is a separate constraint.
 s32 objectResponsesGetFreeCapacity(void);

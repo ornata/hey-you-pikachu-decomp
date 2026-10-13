@@ -3981,3 +3981,13 @@ established access categories. Existing scene consumers receive it through the
 scene header; the door interface includes it directly. All six scene reset
 callers use the shared registry-lifetime contract. Door descriptions and player
 transition checks use named access states and the typed passage record.
+
+### Object-response registry lifetime
+
+`object_response.h` shares initialization and teardown contracts with the object
+manager. Teardown follows destruction of registered hierarchies. The private
+response registry now embeds its established `KeyedPool` prefix and preserves
+eight trailing bytes, with a checked total size of 0x28. The trailing region has
+no established interpretation; references to that region or allocation evidence
+are needed before assigning it fields. Ghidra's 0x8001C460 initializer confirms
+the registry's keyed-pool initialization.

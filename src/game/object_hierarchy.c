@@ -1,3 +1,4 @@
+#include "object_response.h"
 #include "matrix_basic.h"
 #include "camera_storage.h"
 #include "object_groups.h"
@@ -1528,7 +1529,6 @@ void objectResetTraversalTransformAndMovement(void) {
 }
 
 void actorInitializePartRegistry();                            /* extern */
-void objectResponsesInitialize(s32, s32);            /* extern */
 
 /// Initialize the runtime object system and its supporting registries.
 /// \returns Nothing.
@@ -1547,7 +1547,6 @@ void objectSystemInitialize(void) {
 }
 
 void actorDestroyPartIdMap();                  /* extern */
-void objectResponsesDestroy();                  /* extern */
 
 /// Destroy registered object hierarchies and release the runtime object system.
 /// \returns Nothing.
