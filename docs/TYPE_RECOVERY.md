@@ -4078,3 +4078,13 @@ an incorrect integer-valued float-push signature, were removed. Demonstration
 commands share title transition/query contracts and the canonical pointer-based
 item direction-motion interface. Each source-unit edit and shared-header rebuild
 preserves allocated bytes, layouts and relocations.
+
+### Heap and backdrop transfer compatibility audit
+
+Backdrop ROM reads now use `rom_dma.h`; the raw-image caller no longer needs
+its unused fourth DMA argument. Node-pool, keyed-pool and particle-effect
+teardown use the canonical two-argument heap-free interface, removing unused
+trailing pointers and obsolete compatibility notes. These adoptions preserve
+all allocated bytes and relocations. Removing the backdrop allocator's trailing
+arguments changes `backdropAllocateViewBuffer` code, so its local allocator
+view remains with the failed trial and next evidence recorded in the ledger.

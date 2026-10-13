@@ -24,12 +24,6 @@
       "itemUpdateRollingRotation": "One radius read uses a checked member offset to retain floating multiply operand order; all other recovered fields use direct members.",
       "itemUpdatePlayerHeld": "The void camera transformation call retains two unused trailing pointers supplied by the ROM caller."
     },
-    "src/game/node_pool.c": {
-      "nodePoolDestroy": "The ROM caller supplies an unused third argument to the two-argument heap-free routine. An unprototyped void declaration preserves that call; inspect a2 setup before attempting a canonical declaration."
-    },
-    "src/game/keyed_pool.c": {
-      "keyedPoolDestroy": "The ROM caller supplies an unused third argument to the two-argument heap-free routine. An unprototyped void declaration preserves that call; inspect a2 setup before attempting a canonical declaration."
-    },
     "src/game/actor_model_motion.c": {
       "heapAllocLocal callers": "These callers preserve unused fourth arguments in the ROM. The three-argument allocator prototype rejects them. Retain the local ABI compatibility declaration until an explicitly matching call representation is verified.",
       "actorUpdateMotionDisplacement": "The matrix-vector call retains an unused trailing actor-state pointer from the ROM call. Its matrix, input and output are float arrays and its return is void.",
@@ -37,7 +31,7 @@
       "actorBindAnimatedTexturesForDraw": "The raw 32-bit child continuation read at object offset 0x30 is retained: replacing it with RuntimeObjectPrefix.child.address changes this function's allocated instruction bytes under IDO, while the typed animated-texture state links match. Retry only with a representation that preserves the return load scheduling."
     },
     "src/game/backdrop.c": {
-      "backdropAllocateViewBuffer / backdropLoadRomRange": "Typed heap allocation declarations retain unused fourth size arguments. Integer buffer-address fields and returns preserve the original 32-bit target representation.",
+      "backdropAllocateViewBuffer / backdropLoadRomRange": "The allocator interface types are established. Removing both unused fourth allocation arguments changes backdropAllocateViewBuffer instructions and fails the ROM gate; restoring them restores all strict objects. Retain the local four-argument allocator view pending allocation/scheduling evidence. Backdrop ROM reads now use canonical rom_dma.h and no longer retain an unused fourth DMA argument.",
       "backdropUpdateViewOffsets": "Typed destination MatrixCamera pointer and backdropX/backdropY/backdropScroll/eye[1] member rewrite changes this function instruction bytes and fails ROM match. Retain destination byte accesses; shared layout and primary-camera direction view are established and match. Isolate mixed float/integer load scheduling before replacing destination accesses."
     },
     "src/game/texture_images_word_map.c": {

@@ -1,3 +1,4 @@
+#include "heap_free.h"
 #include "common.h"
 #include "heap_alloc.h"
 #include "node_pool.h"
@@ -36,16 +37,13 @@ void nodePoolInitialize(NodePool *pool, s32 count) {
     pool->free = pool->nodes;
 }
 
-// The callee consumes two arguments. Keep this call unprototyped because the
-// matching caller also passes its pool in a2; see docs/TYPE_RECOVERY.md.
-void heapFreeLocal();
 
 /// Release the storage owned by a value pool.
 /// \param pool Initialized pool to destroy.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001BF8C (0x8001BF8C).
 void nodePoolDestroy(NodePool *pool) {
-    heapFreeLocal(&gGameHeap, pool->nodes, pool);
+    heapFreeLocal(&gGameHeap, pool->nodes);
 }
 
 /// Append a value to the end of a pool's ordered entries.

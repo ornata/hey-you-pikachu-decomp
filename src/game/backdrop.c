@@ -1,3 +1,4 @@
+#include "rom_dma.h"
 #include "camera_storage.h"
 #include "math_angles.h"
 #include "backdrop_view.h"
@@ -256,7 +257,6 @@ void backdropAllocateViewBuffer(s32 viewIndex, u32 width, u32 height) {
     ((MatrixCamera *)((u8 *)gRenderCameras))[viewIndex].useBackdrop = 1;
 }
 
-void romDmaReadBlocking(); /* extern, 3 or 4 args by caller */
 
 /// Allocate memory and load a ROM range for backdrop data.
 /// \param romStart First ROM byte to load.
@@ -270,7 +270,7 @@ s32 backdropLoadRomRange(s32 romStart, s32 romEnd) {
     len = romStart;
     len = romEnd - len;
     buf = (s32)heapAllocLocal(&gGameHeap, len ^ 0, 0x29A, len);
-    romDmaReadBlocking(romStart, buf, len);
+    romDmaReadBlocking(romStart, (u8 *)buf, len);
     return buf;
 }
 
@@ -322,7 +322,7 @@ void backdropLoadAssetWithSharedScratch(s32 idx, AssetDescriptor *info) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80033A24 (0x80033A24).
 void backdropLoadRawImage(s32 viewIndex, s32 romStart, s32 romEnd) {
-    romDmaReadBlocking(romStart, gRenderCameraBackdropImages[viewIndex][0], romEnd - romStart, romStart);
+    romDmaReadBlocking(romStart, (u8 *)gRenderCameraBackdropImages[viewIndex][0], romEnd - romStart);
 }
 
 void backdropLoadAsset(s32, AssetDescriptor *);

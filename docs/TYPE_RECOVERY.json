@@ -1324,33 +1324,34 @@
         "heap_free.h",
         "heap_tail.h",
         "heap_types.h",
-        "math_angles.h"
+        "math_angles.h",
+        "rom_dma.h"
       ],
       "matching_exceptions": {
-        "backdropAllocateViewBuffer / backdropLoadRomRange": "Typed heap allocation declarations retain unused fourth size arguments. Integer buffer-address fields and returns preserve the original 32-bit target representation.",
+        "backdropAllocateViewBuffer / backdropLoadRomRange": "The allocator interface types are established. Removing both unused fourth allocation arguments changes backdropAllocateViewBuffer instructions and fails the ROM gate; restoring them restores all strict objects. Retain the local four-argument allocator view pending allocation/scheduling evidence. Backdrop ROM reads now use canonical rom_dma.h and no longer retain an unused fourth DMA argument.",
         "backdropUpdateViewOffsets": "Typed destination MatrixCamera pointer and backdropX/backdropY/backdropScroll/eye[1] member rewrite changes this function instruction bytes and fails ROM match. Retain destination byte accesses; shared layout and primary-camera direction view are established and match. Isolate mixed float/integer load scheduling before replacing destination accesses."
       },
       "locations": {
         "raw_offset_candidates": {
           "gCurrentAreaConfiguration + 0x68": [
-            "140:30"
+            "141:30"
           ],
           "view + 4": [
-            "141:92"
+            "142:92"
           ],
           "view + 0x98": [
-            "142:14",
-            "146:14",
-            "146:68"
+            "143:14",
+            "147:14",
+            "147:68"
           ],
           "view + 0x9C": [
-            "143:14"
+            "144:14"
           ],
           "view + 0xA0": [
-            "146:44"
+            "147:44"
           ],
           "top - 1": [
-            "197:57"
+            "198:57"
           ]
         }
       }
@@ -2152,27 +2153,26 @@
     "src/game/keyed_pool.c": {
       "known_views": [
         "heap_alloc.h",
+        "heap_free.h",
         "keyed_pool.h"
       ],
-      "matching_exceptions": {
-        "keyedPoolDestroy": "The ROM caller supplies an unused third argument to the two-argument heap-free routine. An unprototyped void declaration preserves that call; inspect a2 setup before attempting a canonical declaration."
-      },
+      "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "node - 1": [
-            "28:26"
+            "29:26"
           ],
           "node + 1": [
-            "29:22"
+            "30:22"
           ],
           "active + 1": [
-            "126:32"
+            "125:32"
           ],
           "active - 1": [
-            "146:32"
+            "145:32"
           ],
           "nextId + 1": [
-            "228:30"
+            "227:30"
           ]
         }
       }
@@ -2386,18 +2386,17 @@
     "src/game/node_pool.c": {
       "known_views": [
         "heap_alloc.h",
+        "heap_free.h",
         "node_pool.h"
       ],
-      "matching_exceptions": {
-        "nodePoolDestroy": "The ROM caller supplies an unused third argument to the two-argument heap-free routine. An unprototyped void declaration preserves that call; inspect a2 setup before attempting a canonical declaration."
-      },
+      "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "node - 1": [
-            "25:26"
+            "26:26"
           ],
           "node + 1": [
-            "26:22"
+            "27:22"
           ]
         }
       }
@@ -2691,6 +2690,7 @@
         "falling_particle.h",
         "flickering_effect.h",
         "heap_alloc.h",
+        "heap_free.h",
         "integer_animation.h",
         "math_angles.h",
         "math_scalar.h",

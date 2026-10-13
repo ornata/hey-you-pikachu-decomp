@@ -1,3 +1,4 @@
+#include "heap_free.h"
 #include "texture_setup.h"
 #include "math_scalar.h"
 #include "vector_metrics.h"
@@ -54,7 +55,6 @@ typedef char EffectEmitterCallbackOffsetCheck[((u32)&((EffectEmitterState *)0)->
 /// Default opacity animation used when wisp state is initialized.
 /// \note Original identifier: \c D_8006B4C4 (0x8006B4C4).
 extern s32 gWispDefaultOpacityAnimation;
-void heapFreeLocal();
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
@@ -534,7 +534,7 @@ void ribbonEffectControllerDestroy(u8 *controller) {
     RibbonControllerState *state;
 
     state = ((RuntimeObjectPrefix *)controller)->state.pointer;
-    heapFreeLocal(&gGameHeap, ((RuntimeObjectPrefix *)controller)->displayList, controller);
+    heapFreeLocal(&gGameHeap, ((RuntimeObjectPrefix *)controller)->displayList);
     heapFreeLocal(&gGameHeap, state);
 }
 
@@ -1150,7 +1150,7 @@ void particleClusterRendererDestroy(u8 *renderer) {
     ValueTrack *track;
 
     track = ((RuntimeObjectPrefix *)renderer)->state.pointer;
-    heapFreeLocal(&gGameHeap, ((RuntimeObjectPrefix *)renderer)->displayList, renderer);
+    heapFreeLocal(&gGameHeap, ((RuntimeObjectPrefix *)renderer)->displayList);
     heapFreeLocal(&gGameHeap, track);
 }
 
@@ -1473,7 +1473,7 @@ void convergingParticleEffectDestroy(u8 *effect) {
     ConvergingParticleState *state;
 
     state = ((RuntimeObjectPrefix *)effect)->state.pointer;
-    heapFreeLocal(&gGameHeap, state->displayList, state);
+    heapFreeLocal(&gGameHeap, state->displayList);
     heapFreeLocal(&gGameHeap, state);
 }
 
@@ -1700,7 +1700,7 @@ void flickeringEffectDestroy(u8 *effect) {
     FlickeringEffectState *state;
 
     state = ((RuntimeObjectPrefix *)effect)->state.pointer;
-    heapFreeLocal(&gGameHeap, state->displayList, state);
+    heapFreeLocal(&gGameHeap, state->displayList);
     heapFreeLocal(&gGameHeap, state);
 }
 
@@ -1881,7 +1881,7 @@ void animatedRadialEffectDestroy(u8 *effect) {
     AnimatedRadialState *state;
 
     state = ((RuntimeObjectPrefix *)effect)->state.pointer;
-    heapFreeLocal(&gGameHeap, state->displayList, state);
+    heapFreeLocal(&gGameHeap, state->displayList);
     heapFreeLocal(&gGameHeap, state);
 }
 

@@ -1,3 +1,4 @@
+#include "heap_free.h"
 #include "common.h"
 #include "heap_alloc.h"
 #include "keyed_pool.h"
@@ -42,15 +43,13 @@ void keyedPoolInitialize(KeyedPool *pool, u32 count) {
     pool->active = 0;
 }
 
-// Preserve the ROM caller's unused third argument; see docs/TYPE_RECOVERY.md.
-void heapFreeLocal();
 
 /// Release the entry storage owned by a keyed pool without releasing its stored values.
 /// \param pool Pool header whose entry storage is to be released.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800417EC (0x800417EC).
 void keyedPoolDestroy(KeyedPool *pool) {
-    heapFreeLocal(&gGameHeap, pool->entries, pool);
+    heapFreeLocal(&gGameHeap, pool->entries);
 }
 
 /// Append an entry to the pool traversal order.
