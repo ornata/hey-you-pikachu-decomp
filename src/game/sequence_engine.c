@@ -1,3 +1,4 @@
+#include "sequence_registration.h"
 #include "sequence_engine_types.h"
 #include "sequence_playback.h"
 #include "midi_sequence.h"
@@ -280,7 +281,7 @@ void sequenceEngineReadNextEvent(u8 *sequence) {
     ((EngineSequence *)sequence)->eventLength =
         ((EngineSequence *)sequence)
             ->eventReader(((EngineSequence *)sequence)->readerContext, ((EngineSequence *)sequence)->eventBuffer,
-                          ((EngineSequence *)sequence)->eventCapacity, sequence + 0x1F8);
+                          ((EngineSequence *)sequence)->eventCapacity, &((EngineSequence *)sequence)->eventDelay);
 }
 
 /// Initialize a sequence and register it for playback by the driver.
@@ -293,22 +294,22 @@ void sequenceEngineReadNextEvent(u8 *sequence) {
 /// \param eventReader Callback receiving the context, buffer, byte capacity, and output delay in seconds; it must emit complete supported MIDI messages within capacity and return their byte length.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800060A8 (0x800060A8).
-void sequenceEngineRegisterSequence(u8 *sequence, u8 *driver, s32 instrumentBank, s32 eventCapacity, s32 eventBuffer, s32 readerContext, s32 eventReader) {
+void sequenceEngineRegisterSequence(EngineSequence *sequence, VoicePlayer *driver, ALBank *instrumentBank, s32 eventCapacity, u8 *eventBuffer, SequenceControlState *readerContext, SequenceEventReader eventReader) {
     s32 i;
 
-    *(u8 **)(sequence + 0) = *(u8 **)(driver + 0x18);
-    *(s32 *)(sequence + 0xC) = instrumentBank;
-    *(s32 *)(sequence + 0x10) = 0;
-    *(s32 *)(sequence + 4) = readerContext;
-    *(s32 *)(sequence + 8) = eventReader;
-    *(s8 *)(sequence + 0x1F1) = eventCapacity;
-    *(s32 *)(sequence + 0x1F4) = eventBuffer;
+    sequence->next = (EngineSequence *)driver->active;
+    sequence->bank = instrumentBank;
+    sequence->voices = NULL;
+    sequence->readerContext = readerContext;
+    sequence->eventReader = eventReader;
+    sequence->eventCapacity = eventCapacity;
+    sequence->eventBuffer = eventBuffer;
     for (i = 0; i < 16; i++) {
-        ((EngineSequence *)sequence)->channels[i].sustain = 0;
+        sequence->channels[i].sustain = 0;
     }
-    sequenceEngineResetControllers(driver, sequence);
-    sequenceEngineReadNextEvent(sequence);
-    *(u8 **)(driver + 0x18) = sequence;
+    sequenceEngineResetControllers((u8 *)driver, (u8 *)sequence);
+    sequenceEngineReadNextEvent((u8 *)sequence);
+    driver->active = (s32)sequence;
 }
 
 

@@ -5,6 +5,15 @@
 #define SEQUENCE_ENGINE_TYPES_H
 
 #include "sequence_driver_types.h"
+#include "midi_sequence_types.h"
+
+/// Read one event from the registered sequence control state.
+/// \param state Borrowed playback and queued-control context to advance.
+/// \param event Caller-owned destination for a complete engine event.
+/// \param capacity Available destination bytes; at least eight are required.
+/// \param delta Receives the event delay in seconds, or -1 when releases have ended.
+/// \returns Event length, or zero when no event remains.
+typedef s32 (*SequenceEventReader)(SequenceControlState *state, u8 *event, s32 capacity, f64 *delta);
 
 /// Per-channel controller storage owned by a registered sequence.
 typedef struct EngineChannel {
@@ -30,21 +39,21 @@ typedef struct EngineChannel {
 /// Callback and channel state for one registered sequence.
 /// Event storage and reader context are borrowed until the sequence is removed.
 typedef struct EngineSequence {
-    struct EngineSequence *next;           ///< Next registered sequence in the driver list.
-    s32 readerContext;                     ///< Borrowed event-reader context represented by its target address.
-    s8 (*eventReader)(s32, s32, u8, u8 *); ///< Legacy event callback view used by the engine.
-    ALBank *bank;                          ///< Borrowed instrument bank for channel programs.
-    SequenceVoice *voices;                 ///< Active voice list drawn from the driver-owned pool.
-    EngineChannel channels[16];            ///< Controller state for the sixteen MIDI channels.
-    s16 volume;                            ///< Current master sequence volume.
-    u8 unknown1D6[2];                      ///< Unresolved alignment storage.
-    f64 fadeRemaining;                     ///< Seconds remaining in the current master-volume fade.
-    f64 fadeRate;                          ///< Master-volume change per second during the fade.
-    f64 fadeLevel;                         ///< Current normalized master-volume fade level.
-    s8 eventLength;                        ///< Length of the pending event, or a negative end marker.
-    u8 eventCapacity;                      ///< Capacity supplied for the borrowed event buffer.
+    struct EngineSequence *next;         ///< Next registered sequence in the driver list.
+    SequenceControlState *readerContext; ///< Borrowed playback and queued-control context.
+    SequenceEventReader eventReader;     ///< Event producer advancing the borrowed context.
+    ALBank *bank;                        ///< Borrowed instrument bank for channel programs.
+    SequenceVoice *voices;               ///< Active voice list drawn from the driver-owned pool.
+    EngineChannel channels[16];          ///< Controller state for the sixteen MIDI channels.
+    s16 volume;                          ///< Current master sequence volume.
+    u8 unknown1D6[2];                    ///< Unresolved alignment storage.
+    f64 fadeRemaining;                   ///< Seconds remaining in the current master-volume fade.
+    f64 fadeRate;                        ///< Master-volume change per second during the fade.
+    f64 fadeLevel;                       ///< Current normalized master-volume fade level.
+    s8 eventLength;                      ///< Length of the pending event, or a negative end marker.
+    u8 eventCapacity;                    ///< Capacity supplied for the borrowed event buffer.
     u8 unknown1F2[2];
-    s32 eventBuffer; ///< Target address of caller-owned event storage.
+    u8 *eventBuffer; ///< Caller-owned event storage.
     f64 eventDelay;  ///< Seconds remaining before the pending event is dispatched.
 } EngineSequence;
 

@@ -1,3 +1,4 @@
+#include "sequence_registration.h"
 #include "sequence_engine_types.h"
 #include "sequence_playback.h"
 #include "sequence_control.h"
@@ -176,7 +177,6 @@ s32 audioGetOutputMode(void) {
 /// \note Original identifier: \c D_800EEA18 (0x800EEA18).
 extern SequenceVoice gAudioSequenceVoices[];
 
-void sequenceEngineRegisterSequence(AudioSequenceSlot *, u8 *, s32, s32, u8 *, SequenceControlState *, void *);
 
 /// Initialize the shared sequence synthesizer and its four playback slots.
 /// \param heap Unused audio heap address.
@@ -192,7 +192,7 @@ void audioInitializeSequencePlayers(s32 heap, u8 *bankFile) {
         p = &gAudioSequenceSlots[i];
         sequenceControlInitialize(&gAudioSequenceSlots[i].player);
         p->handle = 0;
-        sequenceEngineRegisterSequence(p, (u8 *)&gAudioSequenceDriver, *(s32 *)(bankFile + 4), 0x14,
+        sequenceEngineRegisterSequence(&p->engine, &gAudioSequenceDriver, *(ALBank **)(bankFile + 4), 0x14,
                                        gAudioSequenceSlots[i].eventBuffer, &gAudioSequenceSlots[i].player,
                                        sequenceControlReadEvent);
     }

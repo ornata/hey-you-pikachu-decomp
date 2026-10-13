@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 1,946 / 74 |
+| Raw offset candidates | 4,040 / 86 | 1,936 / 74 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3716,3 +3716,12 @@ The action sequencer uses shared object-private-state links throughout its
 start, update, stop and query paths. Its retained playback subview begins at the
 checked actor `actionScriptId` member instead of a literal byte offset. The
 subview retains its target-specific representation and original stack contract.
+
+### Sequence registration and event callbacks
+
+`sequence_registration.h` gives audio playback and the engine one registration
+contract. The engine borrows the bank, event buffer and `SequenceControlState`
+for the registration lifetime. `SequenceEventReader` agrees with the sole event
+producer: a signed word event length, signed word capacity and double delay
+output. The pending event length remains a signed byte in engine storage.
+These types preserve the original target layout and strict object match.
