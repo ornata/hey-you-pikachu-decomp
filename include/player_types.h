@@ -5,6 +5,7 @@
 #define PLAYER_TYPES_H
 
 #include <ultra64.h>
+#include "controller_types.h"
 
 /// Companion-control selections accepted by the player-control interface.
 typedef enum CompanionControlMode {
@@ -15,9 +16,10 @@ typedef enum CompanionControlMode {
 
 /// Advance a player behavior mode for one input update.
 /// \param player Borrowed player record whose active mode is being serviced.
-/// \param controller Borrowed processed input sample, valid only for the call.
+/// \param controller Writable filtered input sample, borrowed only for the call.
+/// Changes do not alter the global controller cache.
 /// \returns Nothing.
-typedef void (*PlayerModeUpdate)(u8 *player, u8 *controller);
+typedef void (*PlayerModeUpdate)(u8 *player, ControllerState *controller);
 
 /// Complete a player behavior mode before switching to another mode.
 /// \param player Borrowed player record leaving the active mode.

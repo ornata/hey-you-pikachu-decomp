@@ -1,3 +1,4 @@
+#include "player_control.h"
 #include "render_state.h"
 #include "controller_state.h"
 #include "texture_rectangles.h"
@@ -553,7 +554,6 @@ void textWindowDrawFrame(void) {
 }
 
 void runtimeResetUiPulse(void);
-void playerUpdateInput(s32);
 void pikachuUpdateScriptAndTriggers(void);
 /// Processed button and stick samples for all controller ports; scalar declarations view the primary held-button word.
 /// Primary controller newly pressed buttons; aliases the pressed word of the processed sample.

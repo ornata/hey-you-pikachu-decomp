@@ -151,24 +151,24 @@ typedef struct {
 } PlayerMode;
 typedef char PlayerModeSizeCheck[(sizeof(PlayerMode) == 0xC) ? 1 : -1];
 
-void playerUpdateNormalControl(u8 *, u8 *);
-void playerUpdateStationaryLook(u8 *, u8 *);
-void playerUpdateMenuOnly(u8 *, u8 *);
+void playerUpdateNormalControl(u8 *, ControllerState *);
+void playerUpdateStationaryLook(u8 *, ControllerState *);
+void playerUpdateMenuOnly(u8 *, ControllerState *);
 void playerFinishStun(u8 *);
-void playerUpdateStun(u8 *, u8 *);
-void playerUpdateBriefViewShake(u8 *, u8 *);
+void playerUpdateStun(u8 *, ControllerState *);
+void playerUpdateBriefViewShake(u8 *, ControllerState *);
 void playerFinishHelpDisplay(u8 *);
-void playerUpdateHelpDisplay(u8 *, u8 *);
+void playerUpdateHelpDisplay(u8 *, ControllerState *);
 void playerFinishTargetFocus(u8 *);
-void playerUpdateTargetFocus(u8 *, u8 *);
-void playerUpdateRestrictedMovement(u8 *, u8 *);
-void playerUpdateRestrictedControl(u8 *, u8 *);
-void playerUpdateViewOnlyControl(u8 *, u8 *);
-void playerUpdateMovementWithoutActions(u8 *, u8 *);
-void playerUpdateEmptyHandInteraction(u8 *, u8 *);
-void playerUpdateHeldItemInspection(u8 *, u8 *);
-void playerUpdateCameraTransition(u8 *, u8 *);
-void playerUnusedModeUpdate(u8 *, u8 *);
+void playerUpdateTargetFocus(u8 *, ControllerState *);
+void playerUpdateRestrictedMovement(u8 *, ControllerState *);
+void playerUpdateRestrictedControl(u8 *, ControllerState *);
+void playerUpdateViewOnlyControl(u8 *, ControllerState *);
+void playerUpdateMovementWithoutActions(u8 *, ControllerState *);
+void playerUpdateEmptyHandInteraction(u8 *, ControllerState *);
+void playerUpdateHeldItemInspection(u8 *, ControllerState *);
+void playerUpdateCameraTransition(u8 *, ControllerState *);
+void playerUnusedModeUpdate(u8 *, ControllerState *);
 
 PlayerMode gPlayerModes[32] = {
     {playerUnusedModeUpdate, NULL, 0x08004003},
@@ -305,13 +305,13 @@ extern f32 gRuntimeFrameSeconds;
 /// \note Controller stick values must remain in their supported range so magnitude calculations fit a signed
 /// integer.
 /// \note Original decompilation identifier: \c func_8010EA38 (0x8010EA38).
-f32 playerCalculateYawInput(u8 *object, u8 *controller, s32 invert) {
+f32 playerCalculateYawInput(u8 *object, ControllerState *controller, s32 invert) {
     f32 normalized;
     f32 response;
     s32 stick;
 
     if (!(((PlayerControlPrefix *)object)->permissions & 0x200) ||
-        ((stick = ((ControllerState *)controller)->stickX), (stick >= 0 ? stick : -stick) < 11)) {
+        ((stick = controller->stickX), (stick >= 0 ? stick : -stick) < 11)) {
         return 0.0f;
     }
     if (stick >= 0x32) {
@@ -338,14 +338,14 @@ f32 playerCalculateYawInput(u8 *object, u8 *controller, s32 invert) {
 /// \note Controller stick values must remain in their supported range so magnitude calculations fit a signed
 /// integer.
 /// \note Original decompilation identifier: \c func_8010EB5C (0x8010EB5C).
-f32 playerCalculatePitchInput(u8 *player, u8 *controller, s32 invert) {
+f32 playerCalculatePitchInput(u8 *player, ControllerState *controller, s32 invert) {
     f32 delta;
     s32 flags;
     s32 input;
     flags = ((PlayerControlPrefix *)player)->permissions;
     if (!(flags & 0x200) || !(flags & 0x8000))
         return 0.0f;
-    input = ((ControllerState *)controller)->stickY;
+    input = controller->stickY;
     if (input >= 50)
         delta = 60.0f * gRuntimeFrameSeconds;
     else if (input >= 20)
@@ -374,7 +374,7 @@ void vector2RotateComponentsDegrees(f32, f32 *, f32 *);
 /// \note Requires a positive finite frame duration and initialized movement history. Portability: the
 /// reserved words and one-element history array preserve the original IDO stack layout and stores.
 /// \note Original decompilation identifier: \c func_8010EC3C (0x8010EC3C).
-void playerCalculateMovementInput(u8 *pad, u8 *obj, f32 *dx, f32 *dz) {
+void playerCalculateMovementInput(ControllerState *pad, u8 *obj, f32 *dx, f32 *dz) {
     s32 padding[2];
     f32 previous[1];
     f32 x;
@@ -387,11 +387,11 @@ void playerCalculateMovementInput(u8 *pad, u8 *obj, f32 *dx, f32 *dz) {
     s32 buttons;
     *dx = 0.0f;
     *dz = 0.0f;
-    x = ((PlayerControlPrefix *)obj)->permissions & 0x2000 ? (f32)((ControllerState *)pad)->stickX : 0.0f;
-    z = (f32)((ControllerState *)pad)->stickY;
+    x = ((PlayerControlPrefix *)obj)->permissions & 0x2000 ? (f32)pad->stickX : 0.0f;
+    z = (f32)pad->stickY;
     previous[0] = (f32)((PlayerControlPrefix *)obj)->previousStickY;
     ((PlayerControlPrefix *)obj)->previousStickY = (s32)z;
-    buttons = ((ControllerState *)pad)->held;
+    buttons = pad->held;
     if (buttons & 3) {
         x = buttons & 1 ? 50.0f : -50.0f;
     } else if ((fabsf(x) >= 60.0f || fabsf(z) <= 10.0f) && ((PlayerControlPrefix *)obj)->companionMode == 0) {
@@ -482,7 +482,7 @@ void vector3GetYawAndProjectedPitchDegrees(f32 *, f32 *, f32 *);
 /// \note Controller stick values must remain in their supported range so magnitude calculations fit a signed
 /// integer.
 /// \note Original decompilation identifier: \c func_8010F074 (0x8010F074).
-void playerTrackCompanionViewTarget(u8 *player, u8 *controller, u8 *target) {
+void playerTrackCompanionViewTarget(u8 *player, ControllerState *controller, u8 *target) {
     f32 direction[3];
     f32 yaw;
     f32 pitch;
@@ -492,9 +492,9 @@ void playerTrackCompanionViewTarget(u8 *player, u8 *controller, u8 *target) {
     s32 input;
     f32 result;
     if (((PlayerControlPrefix *)player)->companionMode != 0) {
-        input = ((ControllerState *)controller)->stickX;
+        input = controller->stickX;
         x = input >= 0 ? input : -input;
-        input = ((ControllerState *)controller)->stickY;
+        input = controller->stickY;
         y = input >= 0 ? input : -input;
         speed = mathMapRangeClamped(0.0f, 60.0f, 50.0f, 10.0f, (f32)(y + x));
         direction[0] = ((RuntimeObjectPrefix *)target)->worldPosition[0] - ((PlayerControlPrefix *)player)->position[0];
@@ -520,17 +520,17 @@ void playerTrackCompanionViewTarget(u8 *player, u8 *controller, u8 *target) {
 /// \note Controller stick values must remain in their supported range so magnitude calculations fit a signed
 /// integer.
 /// \note Original decompilation identifier: \c func_8010F1C4 (0x8010F1C4).
-void playerApplyFollowMovementInput(u8 *controller, u8 *player, u8 *target) {
+void playerApplyFollowMovementInput(ControllerState *controller, u8 *player, u8 *target) {
     f32 direction[3];
     f32 distance;
     s32 input;
     s32 x;
     s32 y;
     if (((PlayerControlPrefix *)player)->companionMode == 2) {
-        input = ((ControllerState *)controller)->stickX;
+        input = controller->stickX;
         x = input >= 0 ? input : -input;
         if (x < 10) {
-            input = ((ControllerState *)controller)->stickY;
+            input = controller->stickY;
             y = input >= 0 ? input : -input;
             if (y < 10) {
                 direction[0] =
@@ -541,10 +541,10 @@ void playerApplyFollowMovementInput(u8 *controller, u8 *player, u8 *target) {
                     ((PlayerControlPrefix *)player)->position[2] - ((RuntimeObjectPrefix *)target)->worldPosition[2];
                 distance = vector3Length(direction);
                 if (distance > 20.0f)
-                    ((ControllerState *)controller)->stickY =
+                    controller->stickY =
                         (s32)mathMapRangeClamped(25.0f, 20.0f, 40.0f, 50.0f, distance);
                 if (distance < 12.0f)
-                    ((ControllerState *)controller)->stickY =
+                    controller->stickY =
                         (s32)mathMapRangeClamped(15.0f, -20.0f, 0.0f, -50.0f, distance);
             }
         }
@@ -1093,9 +1093,9 @@ void systemMenuEnter();                 /* extern */
 /// \param controller Controller state supplying newly pressed buttons.
 /// \returns One if a menu was requested, or zero if no permitted request was present.
 /// \note Original decompilation identifier: \c func_80110308 (0x80110308).
-s32 playerTryOpenMenu(u8 *player, u8 *controller) {
+s32 playerTryOpenMenu(u8 *player, ControllerState *controller) {
     if ((playerGetChaseStage() <= 0) || (progressGetValue(0x12) != 0)) {
-        if ((((ControllerState *)controller)->pressed & 0x1000) &&
+        if ((controller->pressed & 0x1000) &&
             (((PlayerControlPrefix *)player)->permissions & 0x1000)) {
             playerStopTrackedSoundEffect(player);
             systemMenuEnter();
@@ -1103,7 +1103,7 @@ s32 playerTryOpenMenu(u8 *player, u8 *controller) {
         }
         goto block_8;
     }
-    if ((((ControllerState *)controller)->pressed & 0x1000) && (((PlayerControlPrefix *)player)->permissions & 0x100)) {
+    if ((controller->pressed & 0x1000) && (((PlayerControlPrefix *)player)->permissions & 0x100)) {
         playerStopTrackedSoundEffect(player);
         toolboxOpen(-1, 1);
         return 1;
@@ -1123,15 +1123,15 @@ block_8:
 /// passes the player address as either a pointer or integer and ignores extra arguments; the pickup handler
 /// has no defined return value.
 /// \note Original decompilation identifier: \c func_801103C8 (0x801103C8).
-s32 playerTryActivateInteraction(u8 *player, u8 *controller) {
+s32 playerTryActivateInteraction(u8 *player, ControllerState *controller) {
     s32 (*handler)(u8 *, u8 *);
 
     if (!(((PlayerControlPrefix *)player)->permissions & 0x400)) {
         return 0;
     }
     handler = gPlayerInteractionActionHandlers[((PlayerControlPrefix *)player)->modeState.interactionAction];
-    if ((handler != NULL) && (((ControllerState *)controller)->pressed & 0x8000)) {
-        return handler(player, controller);
+    if ((handler != NULL) && (controller->pressed & 0x8000)) {
+        return handler(player, (u8 *)controller);
     }
     return 0;
 }
@@ -1146,14 +1146,14 @@ extern u8 gPlayerHelpTextBuffer[4];
 /// \param controller Controller state supplying newly pressed buttons.
 /// \returns One if the inspection text window opened, or zero otherwise.
 /// \note Original decompilation identifier: \c func_80110438 (0x80110438).
-s32 playerTryInspectTarget(u8 *player, u8 *controller) {
+s32 playerTryInspectTarget(u8 *player, ControllerState *controller) {
     s32 ret;
 
     if (!(((PlayerControlPrefix *)player)->permissions & 0x800)) {
         return 0;
     }
     ret = 0;
-    if (((ControllerState *)controller)->pressed & 0x4000) {
+    if (controller->pressed & 0x4000) {
         playerPrepareInteractionDescription((PlayerControlPrefix *)player);
         if (textWindowOpen(2, 0, (((PlayerControlPrefix *)player)->permissions & 0x10000) ? 1 : 0) == 0) {
             return 0;
@@ -1174,14 +1174,14 @@ s32 playerCanEnterStationaryLook(void); /* extern */
 ///
 /// \note Requires a live active Pikachu actor when a permitted mode change is requested.
 /// \note Original decompilation identifier: \c func_801104D8 (0x801104D8).
-s32 playerTryEnterStationaryLook(u8 *player, u8 *controller) {
+s32 playerTryEnterStationaryLook(u8 *player, ControllerState *controller) {
     if (playerCanEnterStationaryLook() == 0) {
         return 0;
     }
-    if ((((ControllerState *)controller)->pressed & 0x404) || (((ControllerState *)controller)->held & 0x10)) {
+    if ((controller->pressed & 0x404) || (controller->held & 0x10)) {
         playerSetCompanionControlMode(player, 0, 0, ((RuntimeObjectPrefix *)(u8 *)((s32)gPikachuActor))->handle);
         playerChangeMode(2);
-        if (((ControllerState *)controller)->held & 0x10) {
+        if (controller->held & 0x10) {
             ((PlayerControlPrefix *)player)->modeState.companionHoldRequired = 1;
         } else {
             ((PlayerControlPrefix *)player)->modeState.companionHoldRequired = 0;
@@ -1201,10 +1201,10 @@ s32 playerCanToggleCompanionControl();  /* extern */
 ///
 /// \note Requires a live active Pikachu actor when a permitted mode change is requested.
 /// \note Original decompilation identifier: \c func_80110590 (0x80110590).
-s32 playerToggleCompanionControl(u8 *player, u8 *controller) {
+s32 playerToggleCompanionControl(u8 *player, ControllerState *controller) {
     s32 companionMode;
 
-    if (!(((ControllerState *)controller)->pressed & 0x108) || (playerCanToggleCompanionControl() == 0)) {
+    if (!(controller->pressed & 0x108) || (playerCanToggleCompanionControl() == 0)) {
         return 0;
     }
     companionMode = ((PlayerControlPrefix *)player)->companionMode;
@@ -1247,9 +1247,6 @@ s32 playerUpdateAreaEvents(u8 *player) {
     return 0;
 }
 
-f32 playerCalculateYawInput(u8 *, u8 *, s32);
-void playerTrackCompanionViewTarget(u8 *, u8 *, u8 *);
-void playerApplyFollowMovementInput(u8 *, u8 *, u8 *);
 void playerRecenterWalkingView(u8 *);
 /// Update manual view control or companion tracking and follow movement according to the selected
 /// companion-control mode.
@@ -1258,7 +1255,7 @@ void playerRecenterWalkingView(u8 *);
 /// applicable.
 /// \returns Zero if a required companion target is unavailable, or one otherwise.
 /// \note Original decompilation identifier: \c func_801106FC (0x801106FC).
-s32 playerUpdateCompanionControl(u8 *player, u8 *controller) {
+s32 playerUpdateCompanionControl(u8 *player, ControllerState *controller) {
     s32 mode;
     u8 *target;
     mode = ((PlayerControlPrefix *)player)->companionMode;
@@ -1290,15 +1287,8 @@ s32 playerUpdateCompanionControl(u8 *player, u8 *controller) {
     return 1;
 }
 
-void playerCalculateMovementInput(u8 *, u8 *, f32 *, f32 *); /* extern */
 void playerStepGroundMovement(u8 *, f32, f32);
-s32 playerTryOpenMenu(u8 *arg0, u8 *arg1); /* extern */
-s32 playerTryActivateInteraction();                   /* extern */
-s32 playerTryInspectTarget();                         /* extern */
-s32 playerTryEnterStationaryLook(u8 *arg0, u8 *arg1); /* extern */
-s32 playerToggleCompanionControl(u8 *arg0, u8 *arg1); /* extern */
 s32 playerUpdateAreaEvents(u8 *arg0);           /* extern */
-s32 playerUpdateCompanionControl();             /* extern */
 /// Advance normal player movement, view control, interactions, and permitted menu requests.
 /// \param player Player record to update.
 /// \param controller Controller state address.
@@ -1306,7 +1296,7 @@ s32 playerUpdateCompanionControl();             /* extern */
 ///
 /// \note A checked member-offset angle read preserves the original IDO floating-point operand order.
 /// \note Original decompilation identifier: \c func_801107F0 (0x801107F0).
-void playerUpdateNormalControl(u8 *player, u8 *controller) {
+void playerUpdateNormalControl(u8 *player, ControllerState *controller) {
     f32 sp24;
     f32 sp20;
 
@@ -1319,7 +1309,6 @@ void playerUpdateNormalControl(u8 *player, u8 *controller) {
     }
 }
 
-f32 playerCalculatePitchInput(u8 *, u8 *, s32);
 /// Advance stationary view control and permitted interactions, returning to normal control when this mode
 /// ends.
 /// \param player Player record whose stationary view mode is updated.
@@ -1327,14 +1316,14 @@ f32 playerCalculatePitchInput(u8 *, u8 *, s32);
 /// \returns Nothing.
 /// \note A checked member-offset angle read preserves the original IDO floating-point operand order.
 /// \note Original decompilation identifier: \c func_8011089C (0x8011089C).
-void playerUpdateStationaryLook(u8 *player, u8 *controller) {
+void playerUpdateStationaryLook(u8 *player, ControllerState *controller) {
     f32 dx;
     s32 mode;
     if (playerTryInspectTarget(player, controller) == 0) {
-        if ((((ControllerState *)controller)->pressed & 0x404) ||
+        if ((controller->pressed & 0x404) ||
             ((mode = ((PlayerControlPrefix *)player)->modeState.companionHoldRequired, mode != 0) &&
-             !(((ControllerState *)controller)->held & 0x10)) ||
-            ((mode == 0) && (((ControllerState *)controller)->held & 0x10)) ||
+             !(controller->held & 0x10)) ||
+            ((mode == 0) && (controller->held & 0x10)) ||
             playerTryActivateInteraction(player, controller) != 0 ||
             playerToggleCompanionControl(player, controller) != 0 || playerTryOpenMenu(player, controller) != 0) {
             playerResumeNormalControl();
@@ -1354,7 +1343,7 @@ void playerUpdateStationaryLook(u8 *player, u8 *controller) {
 /// \param controller Controller state supplying menu input.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_801109C8 (0x801109C8).
-void playerUpdateMenuOnly(u8 *player, u8 *controller) {
+void playerUpdateMenuOnly(u8 *player, ControllerState *controller) {
     playerTryOpenMenu(player, controller);
 }
 
@@ -1389,7 +1378,7 @@ void playerToggleViewShake(u8 *arg0);          /* extern */
 /// \param controller Controller state supplying menu requests.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80110A74 (0x80110A74).
-void playerUpdateStun(u8 *player, u8 *controller) {
+void playerUpdateStun(u8 *player, ControllerState *controller) {
     if (playerTryOpenMenu(player, controller) == 0) {
         ((PlayerControlPrefix *)player)->stunRemaining =
             (f32)(((PlayerControlPrefix *)player)->stunRemaining - gRuntimeFrameSeconds);
@@ -1410,7 +1399,7 @@ void playerUpdateStun(u8 *player, u8 *controller) {
 /// \param unused Unused mode-update argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80110B04 (0x80110B04).
-void playerUpdateBriefViewShake(u8 *player, u8 *unused) {
+void playerUpdateBriefViewShake(u8 *player, ControllerState *unused) {
     if (((PlayerControlPrefix *)player)->modeElapsed < 1.5f) {
         playerToggleViewShake(player);
     }
@@ -1579,8 +1568,8 @@ s32 playerShowNextHelpLine();                   /* extern */
 /// \param controller Controller state supplying confirmation and menu input.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80111114 (0x80111114).
-void playerUpdateHelpDisplay(u8 *player, u8 *controller) {
-    if ((playerTryOpenMenu(player, controller) == 0) && (((ControllerState *)controller)->pressed & 0xC000) &&
+void playerUpdateHelpDisplay(u8 *player, ControllerState *controller) {
+    if ((playerTryOpenMenu(player, controller) == 0) && (controller->pressed & 0xC000) &&
         (playerShowNextHelpLine() == 0)) {
         playerResumeNormalControl();
     }
@@ -1617,7 +1606,7 @@ void playerBeginTargetFocus(u8 *player, s32 targetHandle, f32 duration) {
 /// \param controller Controller state supplying interactions and focus interruption input.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_801111D4 (0x801111D4).
-void playerUpdateTargetFocus(u8 *player, u8 *controller) {
+void playerUpdateTargetFocus(u8 *player, ControllerState *controller) {
     u8 *target;
     s32 x;
     s32 y;
@@ -1630,9 +1619,9 @@ void playerUpdateTargetFocus(u8 *player, u8 *controller) {
             target = playerResolveCompanionViewTarget(player);
             ((PlayerControlPrefix *)player)->focusRemaining -= gRuntimeFrameSeconds;
             if (((PlayerControlPrefix *)player)->focusRemaining < 0.0f ||
-                ((ControllerState *)controller)->pressed != 0 ||
-                ((x = ((ControllerState *)controller)->stickX) >= 0 ? x : -x) >= 11 ||
-                ((y = ((ControllerState *)controller)->stickY) >= 0 ? y : -y) >= 11 || target == NULL) {
+                controller->pressed != 0 ||
+                ((x = controller->stickX) >= 0 ? x : -x) >= 11 ||
+                ((y = controller->stickY) >= 0 ? y : -y) >= 11 || target == NULL) {
                 playerResumeNormalControl();
             } else {
                 playerTrackCompanionViewTarget(player, controller, target);
@@ -1649,20 +1638,20 @@ void playerUpdateTargetFocus(u8 *player, u8 *controller) {
 /// \param controller Controller state filtered in place for the restricted movement mode.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_801112FC (0x801112FC).
-void playerUpdateRestrictedMovement(u8 *player, u8 *controller) {
+void playerUpdateRestrictedMovement(u8 *player, ControllerState *controller) {
     f32 sp2C;
     f32 sp28;
 
     if ((playerTryOpenMenu(player, controller) == 0) && (playerTryActivateInteraction(player, controller) == 0) && (playerTryInspectTarget(player, controller) == 0)) {
-        if (((ControllerState *)controller)->stickY != 0) {
-            ((ControllerState *)controller)->stickX = 0;
+        if (controller->stickY != 0) {
+            controller->stickX = 0;
         }
-        if (((ControllerState *)controller)->stickY < 0) {
-            if (((ControllerState *)controller)->stickY < -0x32) {
+        if (controller->stickY < 0) {
+            if (controller->stickY < -0x32) {
                 ((PlayerControlPrefix *)player)->handledButtons =
                     (u16)(((PlayerControlPrefix *)player)->handledButtons | 0x80);
             }
-            ((ControllerState *)controller)->stickY = 0;
+            controller->stickY = 0;
         } else {
             ((PlayerControlPrefix *)player)->handledButtons =
                 (u16)(((PlayerControlPrefix *)player)->handledButtons & 0xFF7F);
@@ -1678,7 +1667,7 @@ void playerUpdateRestrictedMovement(u8 *player, u8 *controller) {
 /// \param controller Controller state supplying movement, view, and interaction requests.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_801113B8 (0x801113B8).
-void playerUpdateRestrictedControl(u8 *player, u8 *controller) {
+void playerUpdateRestrictedControl(u8 *player, ControllerState *controller) {
     f32 dx;
     f32 dz;
     f32 x;
@@ -1698,14 +1687,14 @@ void playerUpdateRestrictedControl(u8 *player, u8 *controller) {
                 dz = playerCalculatePitchInput(player, controller, progressGetValue(7));
                 playerSetViewAngles((u8 *)player, ((PlayerControlPrefix *)player)->yaw + dx,
                                     dz + ((PlayerControlPrefix *)player)->pitch);
-                if (((ControllerState *)controller)->pressed & 0x404) {
+                if (controller->pressed & 0x404) {
                     playerApplyControlScheme(0x14);
                 }
             } else {
                 playerUpdateCompanionControl(player, controller);
                 playerCalculateMovementInput(controller, player, &x, &y);
                 playerStepGroundMovement(player, x, y);
-                if (((ControllerState *)controller)->pressed & 0x404) {
+                if (controller->pressed & 0x404) {
                     playerApplyControlScheme(9);
                 }
             }
@@ -1720,7 +1709,7 @@ void playerUpdateRestrictedControl(u8 *player, u8 *controller) {
 /// \returns Nothing.
 /// \note A checked member-offset angle read preserves the original IDO floating-point operand order.
 /// \note Original decompilation identifier: \c func_80111508 (0x80111508).
-void playerUpdateViewOnlyControl(u8 *player, u8 *pad) {
+void playerUpdateViewOnlyControl(u8 *player, ControllerState *pad) {
     f32 dx;
 
     if (playerTryOpenMenu(player, pad) != 0) {
@@ -1745,7 +1734,7 @@ void playerUpdateViewOnlyControl(u8 *player, u8 *pad) {
 /// \returns Nothing.
 ///
 /// \note Original decompilation identifier: \c func_801115C0 (0x801115C0).
-void playerUpdateMovementWithoutActions(u8 *player, u8 *controller) {
+void playerUpdateMovementWithoutActions(u8 *player, ControllerState *controller) {
     f32 sp24;
     f32 sp20;
 
@@ -1763,7 +1752,7 @@ void playerUpdateMovementWithoutActions(u8 *player, u8 *controller) {
 /// \returns Nothing.
 ///
 /// \note Original decompilation identifier: \c func_80111638 (0x80111638).
-void playerUpdateEmptyHandInteraction(u8 *player, u8 *controller) {
+void playerUpdateEmptyHandInteraction(u8 *player, ControllerState *controller) {
     if ((objectFindLiveByHandle(((PlayerControlPrefix *)player)->heldItemHandle) == 0) &&
         (playerTryOpenMenu(player, controller) == 0) && (playerTryActivateInteraction(player, controller) == 0)) {
         playerTryInspectTarget(player, controller);
@@ -1776,7 +1765,7 @@ void playerUpdateEmptyHandInteraction(u8 *player, u8 *controller) {
 /// \returns Nothing.
 ///
 /// \note Original decompilation identifier: \c func_80111690 (0x80111690).
-void playerUpdateHeldItemInspection(u8 *player, u8 *controller) {
+void playerUpdateHeldItemInspection(u8 *player, ControllerState *controller) {
     if ((objectFindLiveByHandle(((PlayerControlPrefix *)player)->heldItemHandle) != 0) &&
         (playerTryOpenMenu(player, controller) == 0)) {
         playerTryInspectTarget(player, controller);
@@ -1791,7 +1780,7 @@ void playerUpdateHeldItemInspection(u8 *player, u8 *controller) {
 ///
 /// \pre Requires a transition prepared with positive duration for this player and a valid primary camera.
 /// \note Original decompilation identifier: \c func_801116D8 (0x801116D8).
-void playerUpdateCameraTransition(u8 *player, u8 *unused) {
+void playerUpdateCameraTransition(u8 *player, ControllerState *unused) {
     f32 sp3C[3];
     f32 sp30[3];
 
@@ -1814,7 +1803,7 @@ void playerUpdateCameraTransition(u8 *player, u8 *unused) {
 /// \param arg1 Unused callback argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80111778 (0x80111778).
-void playerUnusedModeUpdate(u8 *arg0, u8 *arg1) {
+void playerUnusedModeUpdate(u8 *arg0, ControllerState *arg1) {
 }
 
 /// Select the player interaction target and action, and determine its interaction-marker style.
@@ -2236,7 +2225,7 @@ void playerUpdateInput(s32 idx) {
         ((PlayerControlPrefix *)p)->handledButtons =
             playerFilterControllerInput(((PlayerControlPrefix *)p)->keptButtons, &pad);
     }
-    ((PlayerControlPrefix *)p)->modeState.update(p, (u8 *)&pad);
+    ((PlayerControlPrefix *)p)->modeState.update(p, &pad);
     playerUpdateViewCamera(p);
 }
 

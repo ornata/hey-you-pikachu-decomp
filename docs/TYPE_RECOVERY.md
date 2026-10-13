@@ -4325,3 +4325,17 @@ Saved player storage at 0x80133E10 now uses the checked 0x100-byte PlayerControl
 save and restore use typed assignments instead of anonymous storage and Blob100 casts.
 Both copies preserve object bytes, BSS layout and relocations. All four edited units
 pass strict baseline comparison and the clean retail ROM gate.
+
+### Typed player-mode input callbacks
+
+PlayerModeUpdate now borrows a writable ControllerState rather than an untyped byte
+pointer. All mode definitions and controller-input helpers carry the established
+type; redundant same-unit declarations and casts are removed. Input is a local
+filtered copy, so mode-specific writes do not change the shared controller cache.
+Ghidra at 0x80112344 confirms the six-word copy, input filtering and callback address.
+The legacy interaction-action call retains an explicit byte-pointer boundary for
+its separately documented incompatible callback ABI.
+
+`player_control.h` shares the per-frame update entry point with runtime and text
+windows. All dependent units rebuild without new pointer-interface warnings, preserve
+all strict baseline objects and pass the clean retail ROM gate.

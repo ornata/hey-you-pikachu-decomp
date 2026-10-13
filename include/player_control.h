@@ -94,4 +94,11 @@ void playerSaveState(void);
 /// \note Original decompilation identifier: \c func_80111B08 (0x80111B08).
 void playerRestoreState(void);
 
+/// Advance primary player input, behavior and view-camera state for this frame.
+/// \param idx Primary player record index zero; unavailable controller input is neutral.
+/// \returns Nothing.
+/// \note Requires an initialized player with a callable mode update and active camera.
+/// \note Original decompilation identifier: \c func_80112344 (0x80112344).
+void playerUpdateInput(s32 idx);
+
 #endif

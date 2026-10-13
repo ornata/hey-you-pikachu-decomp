@@ -624,7 +624,6 @@ void toolboxUpdateDisplay();                   /* extern */
 void titleScreenUpdate();                   /* extern */
 void eyeCatchBegin();                   /* extern */
 s32 eyeCatchUpdate();                       /* extern */
-void playerUpdateInput(s32);                /* extern */
 void pikachuUpdateScriptAndTriggers();                   /* extern */
 void systemMenuHandleInput();                   /* extern */
 void systemMenuUpdateAnimation();                   /* extern */
