@@ -1,3 +1,4 @@
+#include "audio_playback_query.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "sound_effect_player.h"

@@ -88,6 +88,7 @@
         "action_script_types.h",
         "actor_script.h",
         "actor_sound.h",
+        "audio_playback_query.h",
         "object_types.h"
       ],
       "matching_exceptions": {},
@@ -556,6 +557,7 @@
         "actor_script.h",
         "actor_sound.h",
         "actor_target.h",
+        "audio_playback_query.h",
         "audio_spatial.h",
         "camera_types.h",
         "collision_registration.h",
@@ -1206,6 +1208,7 @@
     "src/game/ambient_audio.c": {
       "known_views": [
         "audio_cue.h",
+        "audio_playback_query.h",
         "audio_spatial.h",
         "camera_types.h",
         "heap_alloc.h",
@@ -1363,6 +1366,7 @@
     },
     "src/game/audio_playback.c": {
       "known_views": [
+        "audio_playback_query.h",
         "n_synthInternals.h",
         "sequence_driver.h",
         "sound_effect_player.h"
@@ -1371,12 +1375,12 @@
       "locations": {
         "raw_offset_candidates": {
           "return -1": [
-            "141:5",
-            "381:9",
-            "388:5"
+            "142:5",
+            "382:9",
+            "389:5"
           ],
           "bankFile + 4": [
-            "191:81"
+            "192:81"
           ]
         }
       }

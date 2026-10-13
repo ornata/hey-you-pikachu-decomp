@@ -1,3 +1,4 @@
+#include "audio_playback_query.h"
 #include "object_types.h"
 #include "action_request.h"
 #include "action_script_stop.h"
@@ -101,7 +102,6 @@ s32 actionScriptCommandPlaySound(u8 *object, ActorScriptState *state, ActionScri
     return 1;
 }
 
-s32 audioCountPlayback(s32);
 /// Action-script opcode handlers returning whether execution may advance.
 /// \note Original identifier: \c D_8006EE50 (0x8006EE50).
 extern ActionScriptCommandHandler gActionScriptCommandHandlers[];

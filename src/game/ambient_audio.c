@@ -1,3 +1,4 @@
+#include "audio_playback_query.h"
 #include "camera_types.h"
 #include "audio_spatial.h"
 #include "object_create.h"
@@ -42,7 +43,6 @@ typedef struct {
     u8 pad50[4];
     Ext347D0 *ext;
 } Obj347D0;
-s32 audioCountPlayback(s32);
 void audioSetSoundEffectVolume(s32, s32);
 void audioSetSoundEffectPan(s32, s32);
 u32 randomNext(void);

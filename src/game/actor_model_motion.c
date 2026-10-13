@@ -1,3 +1,4 @@
+#include "audio_playback_query.h"
 #include "texture_animation_programs.h"
 #include "script_vm_lifecycle.h"
 #include "actor_assets.h"
@@ -66,7 +67,6 @@ void actorInitializeChildMotionState(void *);
 /// \note Original identifier: \c D_800F298C (0x800F298C).
 extern s32 gGraphicsFramebufferIndex;
 
-s32 audioCountPlayback(s32);
 s32 audioStopPlayback(s32, f64);
 
 /// Play a spatial sound for an actor and track its playback.
