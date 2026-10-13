@@ -501,16 +501,23 @@ Gfx *ribbonEffectCreateDisplayList(s32 count) {
 void ribbonEffectNoOp(s32 unused) {
 }
 
+/// Borrowed controller link owned by a ribbon hierarchy anchor.
+typedef struct RibbonAnchorState {
+    u8 *controller; ///< Live controller in the same owning hierarchy, or null before setup.
+} RibbonAnchorState;
+
+typedef char RibbonAnchorStateSizeCheck[(sizeof(RibbonAnchorState) == 4) ? 1 : -1];
+
 /// Initialize a ribbon effect's anchor state.
 /// \param anchor Ribbon effect anchor to initialize; must not already own state.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800180FC (0x800180FC).
 void ribbonEffectAnchorInitialize(void *anchor) {
-    s32 *anchorState;
+    RibbonAnchorState *anchorState;
 
-    anchorState = heapAllocLocal(&gGameHeap, 4, 0x2D1);
-    *anchorState = 0;
-    ((RuntimeObjectPrefix *)anchor)->state.words = anchorState;
+    anchorState = heapAllocLocal(&gGameHeap, sizeof(RibbonAnchorState), 0x2D1);
+    anchorState->controller = NULL;
+    ((RuntimeObjectPrefix *)anchor)->state.pointer = anchorState;
 }
 
 /// Release the resources owned by a ribbon effect controller.
@@ -522,11 +529,11 @@ void ribbonEffectAnchorInitialize(void *anchor) {
 /// ABI.
 /// \note Original decompilation identifier: \c func_80018138 (0x80018138).
 void ribbonEffectControllerDestroy(u8 *controller) {
-    s32 sp1C;
+    RibbonControllerState *state;
 
-    sp1C = *(s32 *)(controller + 0x54);
-    heapFreeLocal(&gGameHeap, *(s32 *)(controller + 0x30), controller);
-    heapFreeLocal(&gGameHeap, sp1C);
+    state = ((RuntimeObjectPrefix *)controller)->state.pointer;
+    heapFreeLocal(&gGameHeap, ((RuntimeObjectPrefix *)controller)->displayList, controller);
+    heapFreeLocal(&gGameHeap, state);
 }
 
 void vector3GetZAxisAnglesDegrees(f32 *, f32 *, f32 *);
@@ -753,7 +760,7 @@ u8 *ribbonEffectCreate(s32 count, f32 duration, f32 baseWidth, f32 widthVariatio
     state->destination[1] = destination[1];
     state->destination[2] = destination[2];
     state->remaining = duration;
-    **(u8 ***)(head + 0x54) = part;
+    ((RibbonAnchorState *)((RuntimeObjectPrefix *)head)->state.pointer)->controller = part;
     displayList = ribbonEffectCreateDisplayList(count);
     ((RuntimeObjectPrefix *)part)->displayList = displayList;
     head = objectCreateFromTemplate((ObjectTemplate *)gRibbonTipObjectTemplate);

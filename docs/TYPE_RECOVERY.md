@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,047 / 76 |
+| Raw offset candidates | 4,040 / 86 | 2,044 / 76 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3701,3 +3701,7 @@ its ignored return and all register arguments retain identical generated code.
 `wisp_effect.h` supplies the creation contract to action scripts, collection
 commands, item registry/physics and maze scatter consumers. All five consumers
 and the implementation use the same signed style and floating-coordinate ABI.
+
+Ribbon anchors own a checked four-byte state containing a borrowed controller
+link in the same hierarchy. Initialization and hierarchy creation share that
+layout; controller destruction uses the established state and display-list fields.
