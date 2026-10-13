@@ -1,3 +1,4 @@
+#include "message_bar.h"
 #include "story_chapter.h"
 #include "progress_storage.h"
 #include "progress_fields.h"
@@ -1905,9 +1906,7 @@ extern s8 gActorScriptSharedTextBuffer;
 
 void scriptVmPushFloat(u8 *, s32); /* extern */
 
-s32 messageBarEnqueue(s32, s32, s8 *);     /* extern */
 
-void messageBarClear(); /* extern */
 
 void textWindowAppendText(s8 *);               /* extern */
 

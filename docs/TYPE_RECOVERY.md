@@ -3422,3 +3422,15 @@ of the proxy's 32-bit classification result at the same offset. The inspection
 reader uses the shared primary-region flag name. Ghidra at `0x80111784` confirms
 the classifier's widths and passage branches; strict object comparison preserves
 the established held-handle comparison operand order.
+
+### Message-bar interface contract
+
+`message_bar.h` supplies canonical queue, clear, initialization and release
+contracts to all declaring game units. Queue input is borrowed for the call and
+copied into retained storage; its established maximum is 59 encoded bytes.
+Empty text and a full queue are rejected, while an idle queue can refresh a
+prefix-matching displayed message. The toolbox now uses the fixed three-argument
+interface; removal of its unused fourth argument preserves every allocated
+object byte and relocation. The VM and script command consumers share the same
+float duration and byte-text types. Source lifecycle code and Ghidra enqueue
+at `0x80027988` establish the ownership and return contracts.

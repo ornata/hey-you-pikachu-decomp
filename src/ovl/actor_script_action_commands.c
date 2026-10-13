@@ -1,3 +1,4 @@
+#include "message_bar.h"
 #include "actor_target.h"
 #include "story_milestones.h"
 #include "progress_value.h"
@@ -339,7 +340,6 @@ s32 actorScriptPushTimer(u8 *actor) {
     return SCRIPT_COMMAND_CONTINUE;
 }
 
-s32 messageBarEnqueue(s32, f32, s8 *); /* extern */
 
 /// Queue script text for display using the configured message style and duration.
 /// \param actor Actor whose script supplies a nonnegative string count as an instruction operand and that many stack strings, whose combined text in argument order must fit within 59 characters; its VM receives zero regardless of whether the message is accepted.
@@ -359,12 +359,11 @@ s32 actorScriptEnqueueMessage(u8 *actor) {
         } while (var_s0 >= 0);
     }
     messageBarEnqueue(((ScriptVm *)vmBytes)->messageStyle, ((ScriptVm *)vmBytes)->messageDuration,
-                      &gActorScriptSharedTextBuffer);
+                      (u8 *)&gActorScriptSharedTextBuffer);
     scriptVmPushInteger((s32)vmBytes, 0);
     return SCRIPT_COMMAND_CONTINUE;
 }
 
-void messageBarClear(); /* extern */
 /// Clear queued messages and end the active message display.
 /// \param actor Actor whose script VM receives zero after the messages are cleared.
 /// \returns Zero, allowing script execution to continue.

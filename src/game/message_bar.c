@@ -1,3 +1,4 @@
+#include "message_bar.h"
 #include "progress_value.h"
 #include "action_script_playback.h"
 #include "object_distance.h"

@@ -1,3 +1,4 @@
+#include "message_bar.h"
 #include "actor_script_action.h"
 #include "heap_free.h"
 /// \file
@@ -724,7 +725,6 @@ void scriptVmSetGlobalInteger(s32 index, s32 value) {
     scriptValueSetInteger(&gScriptVmGlobalValues[index], value);
 }
 
-s32 messageBarEnqueue(s32, f32, u8 *);
 /// Run actor script instructions until execution yields, finishes, or encounters an error.
 /// \param actor Actor with valid script state and well-formed bytecode whose stack, frame, and variable accesses remain within capacity.
 /// \returns Execution state: 1 when yielded, 2 when waiting on an action, 4 when finished, or 5 on a missing context or invalid instruction.

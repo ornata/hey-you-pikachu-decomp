@@ -1,3 +1,4 @@
+#include "message_bar.h"
 #include "interaction_proxy.h"
 #include "interaction.h"
 #include "script_vm_execution.h"
@@ -1425,7 +1426,6 @@ void playerUpdateBriefViewShake(u8 *player, u8 *unused) {
     }
 }
 
-s32 messageBarEnqueue(s32, f32, u8 *);
 /// Display the next prepared interaction-help line, if one remains.
 /// \returns One if more help text remains after this line, or zero when no further text remains.
 ///

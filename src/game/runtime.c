@@ -1,3 +1,4 @@
+#include "message_bar.h"
 #include "actor_assets.h"
 #include "story_milestones.h"
 #include "progress_storage.h"
@@ -1013,8 +1014,6 @@ void actionInitializeTransitionMap(void);
 void overlayLoadFromRom(void *romStart, void *romEnd, void *destination, void *textStart, void *textEnd,
                         void *dataStart, void *dataEnd, void *bssStart, void *bssEnd);
 void hudProgramInitializeNoOp(void);
-void messageBarInitialize(void);
-void messageBarResetAndReleaseImages(void);
 void heapInitializeGlobal(s32);
 void *areaLoadNextOverlay(void);
 void messengerResetTrackedObject(void);

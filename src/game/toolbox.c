@@ -1,3 +1,4 @@
+#include "message_bar.h"
 #include "item_size.h"
 #include "item_participation.h"
 #include "item_mode.h"
@@ -568,7 +569,6 @@ u8 *toolboxGiveObjectToPlayer(u8 *player, s32 row, s32 index) {
     return itemObject;
 }
 
-s32 messageBarEnqueue(s32, f32, char *, ...);
 /// Elapsed-time checkpoint controlling the delay between toolbox help messages.
 /// \note Original identifier: \c D_800F1D20 (0x800F1D20).
 extern s32 gToolboxHelpMessageMilliseconds;
@@ -584,7 +584,7 @@ void toolboxShowItemMessage(u8 *object, char *fmt) {
 
     p = *(s16 **)(object + 0x54);
     sprintf(buf, fmt, itemGetDisplayName(p[2], 1));
-    messageBarEnqueue(0, 3.5f, buf);
+    messageBarEnqueue(0, 3.5f, (u8 *)buf);
     gToolboxHelpMessageMilliseconds = runtimeGetElapsedMilliseconds();
 }
 
@@ -652,7 +652,7 @@ void toolboxConfirmItemTransfer(u8 *player) {
     case 5:
         playerPlayTrackedSoundEffect(player, 0xC5);
         gToolboxExitAction = 2;
-        messageBarEnqueue(0, 0.1f, " ");
+        messageBarEnqueue(0, 0.1f, (u8 *)" ");
         toolboxSetMode((u8 *)&gToolboxState, 3);
         return;
     case 2:
@@ -710,7 +710,7 @@ void toolboxConfirmItemTransfer(u8 *player) {
         return;
     }
     playerPlayTrackedSoundEffect(player, 0x92);
-    messageBarEnqueue(0, 2.0f, "There isn't anything there.");
+    messageBarEnqueue(0, 2.0f, (u8 *)"There isn't anything there.");
 }
 
 /// Reads a saved progress field for toolbox supply restoration.
@@ -977,7 +977,7 @@ void toolboxUpdateHelpMessage(void) {
 
     if ((u64)runtimeGetElapsedMilliseconds() - (u32)gToolboxHelpMessageMilliseconds >= 0xBB9) {
         v = *cur;
-        messageBarEnqueue(0, 3.5f, gToolboxHelpMessages[v], v);
+        messageBarEnqueue(0, 3.5f, (u8 *)gToolboxHelpMessages[v]);
         v = *cur + 1;
         while (v < 0) {
             v += 6;
@@ -1326,7 +1326,6 @@ void toolboxOpen(s32 row, s32 useHeld) {
 
 void controllerConfigureStickButtons(s32 enabled, s32 upThreshold, s32 downThreshold, s32 leftThreshold,
                                      s32 rightThreshold);
-void messageBarClear(void);
 void toolboxHideObjects(void);
 void toolboxOpen(s32, s32);
 void systemMenuEnter(void);
@@ -1408,7 +1407,7 @@ void toolboxHandleInput(void) {
         buttons = gControllerPrimaryRepeatedButtons;
         if (buttons & 0x1000) {
             gToolboxExitAction = 0;
-            messageBarEnqueue(0, 1.0f, "You closed the tool box.");
+            messageBarEnqueue(0, 1.0f, (u8 *)"You closed the tool box.");
             toolboxSetMode((u8 *)&gToolboxState, 3);
             playerPlayTrackedSoundEffect((u8 *)&gPlayerState, 0xB8);
             return;
