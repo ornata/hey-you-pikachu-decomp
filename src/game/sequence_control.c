@@ -1,3 +1,4 @@
+#include "sequence_control.h"
 /* Sequence control API; its read-only constants end at ROM A0E30. */
 #include "common.h"
 #include "midi_sequence_types.h"
@@ -10,12 +11,12 @@ u8 midiSequenceIsStopped(u8 *);
 /// \param state Sequence control state to initialize.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800057D0 (0x800057D0).
-void sequenceControlInitialize(u8 *state) {
-    ((SequenceControlState *)state)->resetPending = 0;
-    ((SequenceControlState *)state)->stopDelay = -1.0;
-    ((SequenceControlState *)state)->fadeDuration = -1.0;
-    ((SequenceControlState *)state)->immediateLevel = -1.0;
-    midiSequenceInitialize(state);
+void sequenceControlInitialize(SequenceControlState *state) {
+    state->resetPending = 0;
+    state->stopDelay = -1.0;
+    state->fadeDuration = -1.0;
+    state->immediateLevel = -1.0;
+    midiSequenceInitialize((u8 *)state);
 }
 
 s32 midiSequenceStart(u8 *, s32); /* extern */
@@ -25,12 +26,12 @@ s32 midiSequenceStart(u8 *, s32); /* extern */
 /// \param romAddress ROM address of the MIDI sequence.
 /// \returns 1 when playback starts, or 0 when already playing or the sequence cannot be opened.
 /// \note Original decompilation identifier: \c func_80005808 (0x80005808).
-s32 sequenceControlStart(u8 *state, s32 romAddress) {
-    if (midiSequenceIsStopped(state) != 0) {
-        ((SequenceControlState *)state)->resetPending = 1;
-        ((SequenceControlState *)state)->stopDelay = -1.0;
-        ((SequenceControlState *)state)->fadeDuration = -1.0;
-        return midiSequenceStart(state, romAddress);
+s32 sequenceControlStart(SequenceControlState *state, s32 romAddress) {
+    if (midiSequenceIsStopped((u8 *)state) != 0) {
+        state->resetPending = 1;
+        state->stopDelay = -1.0;
+        state->fadeDuration = -1.0;
+        return midiSequenceStart((u8 *)state, romAddress);
     }
     return 0;
 }
@@ -40,16 +41,16 @@ s32 sequenceControlStart(u8 *state, s32 romAddress) {
 /// \param delay Nonnegative delay in seconds; zero stops playback immediately.
 /// \returns Zero.
 /// \note Original decompilation identifier: \c func_80005864 (0x80005864).
-s32 sequenceControlScheduleStop(u8 *state, f64 delay) {
+s32 sequenceControlScheduleStop(SequenceControlState *state, f64 delay) {
     f64 cur;
 
-    if (midiSequenceIsStopped(state) == 0) {
+    if (midiSequenceIsStopped((u8 *)state) == 0) {
         if (delay == 0.0) {
-            return midiSequenceStop(state);
+            return midiSequenceStop((u8 *)state);
         }
-        cur = ((SequenceControlState *)state)->stopDelay;
+        cur = state->stopDelay;
         if ((cur < 0.0) || (delay < cur)) {
-            ((SequenceControlState *)state)->stopDelay = delay;
+            state->stopDelay = delay;
         }
     }
     return 0;
@@ -61,12 +62,12 @@ s32 sequenceControlScheduleStop(u8 *state, f64 delay) {
 /// \param level Target volume fraction, clamped to [0, 1] when the event is produced.
 /// \returns Zero.
 /// \note Original decompilation identifier: \c func_800058F4 (0x800058F4).
-s32 sequenceControlRequestVolume(u8 *state, f64 duration, f64 level) {
+s32 sequenceControlRequestVolume(SequenceControlState *state, f64 duration, f64 level) {
     if (duration == 0.0) {
-        ((SequenceControlState *)state)->immediateLevel = level;
+        state->immediateLevel = level;
     } else {
-        ((SequenceControlState *)state)->fadeDuration = duration;
-        ((SequenceControlState *)state)->fadeLevel = level;
+        state->fadeDuration = duration;
+        state->fadeLevel = level;
     }
     return 0;
 }

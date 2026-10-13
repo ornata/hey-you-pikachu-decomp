@@ -1,3 +1,4 @@
+#include "sequence_control.h"
 #include "audio_sound_effect.h"
 #include "audio_playback_stop.h"
 #include "audio_playback_query.h"
@@ -174,7 +175,6 @@ s32 audioGetOutputMode(void) {
 /// \note Original identifier: \c D_800EEA18 (0x800EEA18).
 extern SequenceVoice gAudioSequenceVoices[];
 
-void sequenceControlInitialize(SequenceControlState *);
 void sequenceEngineRegisterSequence(AudioSequenceSlot *, u8 *, s32, s32, u8 *, SequenceControlState *, void *);
 s32 sequenceControlReadEvent(u8 *, u8 *, s32, f64 *);
 
@@ -198,8 +198,6 @@ void audioInitializeSequencePlayers(s32 heap, u8 *bankFile) {
     }
 }
 
-s32 sequenceControlStart(SequenceControlState *, s32);
-s32 sequenceControlRequestVolume(SequenceControlState *, f64, f64);
 /// Next shared playback identifier assigned to sequences and sound effects.
 /// \note Original identifier: \c D_80088EF4 (0x80088EF4).
 extern s32 gAudioNextPlaybackHandle;
@@ -434,7 +432,6 @@ s32 audioPlaySequenceWithFade(s32 data, f64 time) {
 /// Target sequence volume requested during a fade followed by scheduled stop.
 /// \note Original identifier: \c D_800A4890 (0x800A4890).
 extern f64 gAudioSequenceStopFadeTargetVolume;
-void sequenceControlScheduleStop(SequenceControlState *, f64);
 
 
 // clang-format off
