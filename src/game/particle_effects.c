@@ -158,14 +158,14 @@ void wispEffectUpdateFacingAlternate(u8 *effect) {
 /// \note Portability: integer factors preserve the original IDO floating-point code generation.
 /// \note Original decompilation identifier: \c func_800174F0 (0x800174F0).
 void wispEffectUpdateDriftingMotion(u8 *effect) {
-    *(f32 *)(effect + 24) += (1.0 - (u32)randomNext() * 2.3283064365386963e-10 * 2) * gRuntimeFrameSeconds;
-    *(f32 *)(effect + 28) += ((u32)randomNext() * 2.3283064365386963e-10 * 6) * gRuntimeFrameSeconds;
-    *(f32 *)(effect + 32) += (1.0 - (u32)randomNext() * 2.3283064365386963e-10 * 2) * gRuntimeFrameSeconds;
-    *(f32 *)(effect + 0) += ((u32)randomNext() * 2.3283064365386963e-10 * 0.01f) * gRuntimeFrameSeconds;
-    *(f32 *)(effect + 4) += ((u32)randomNext() * 2.3283064365386963e-10 * 0.01f) * gRuntimeFrameSeconds;
-    *(f32 *)(effect + 8) += ((u32)randomNext() * 2.3283064365386963e-10 * 0.01f) * gRuntimeFrameSeconds;
+    ((RuntimeObjectPrefix *)effect)->position[0] += (1.0 - (u32)randomNext() * 2.3283064365386963e-10 * 2) * gRuntimeFrameSeconds;
+    ((RuntimeObjectPrefix *)effect)->position[1] += ((u32)randomNext() * 2.3283064365386963e-10 * 6) * gRuntimeFrameSeconds;
+    ((RuntimeObjectPrefix *)effect)->position[2] += (1.0 - (u32)randomNext() * 2.3283064365386963e-10 * 2) * gRuntimeFrameSeconds;
+    ((RuntimeObjectPrefix *)effect)->scale[0] += ((u32)randomNext() * 2.3283064365386963e-10 * 0.01f) * gRuntimeFrameSeconds;
+    ((RuntimeObjectPrefix *)effect)->scale[1] += ((u32)randomNext() * 2.3283064365386963e-10 * 0.01f) * gRuntimeFrameSeconds;
+    ((RuntimeObjectPrefix *)effect)->scale[2] += ((u32)randomNext() * 2.3283064365386963e-10 * 0.01f) * gRuntimeFrameSeconds;
     objectOrientAlongCameraView(effect);
-    *(f32 *)(effect + 0xC) += 50.0f * *(f32 *)effect;
+    ((RuntimeObjectPrefix *)effect)->rotation[0] += 50.0f * ((RuntimeObjectPrefix *)effect)->scale[0];
 }
 
 
@@ -911,13 +911,13 @@ void effectEmitterEmitColoredParticle(u8 *emitter, f32 intervalRange, f32 minimu
         e = wispEffectCreate(2, ((RuntimeObjectPrefix *)emitter)->worldPosition[0] + ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * spread,
                           ((RuntimeObjectPrefix *)emitter)->worldPosition[1] + (f64)randomNext() * 2.3283064365386963e-10 * half,
                           ((RuntimeObjectPrefix *)emitter)->worldPosition[2] + ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * spread);
-        v = *(u8 **)(e + 0x54);
-        v[0x20] = red;
-        v[0x21] = green;
-        v[0x22] = blue;
-        *(f32 *)(e + 8) = 0.0f;
-        *(f32 *)(e + 4) = 0.0f;
-        *(f32 *)(e + 0) = 0.0f;
+        v = ((RuntimeObjectPrefix *)e)->state.bytes;
+        ((WispState *)v)->color.r = red;
+        ((WispState *)v)->color.g = green;
+        ((WispState *)v)->color.b = blue;
+        ((RuntimeObjectPrefix *)e)->scale[2] = 0.0f;
+        ((RuntimeObjectPrefix *)e)->scale[1] = 0.0f;
+        ((RuntimeObjectPrefix *)e)->scale[0] = 0.0f;
     }
 }
 

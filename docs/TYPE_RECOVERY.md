@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,423 / 76 |
+| Raw offset candidates | 4,040 / 86 | 2,412 / 76 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3580,5 +3580,6 @@ state remain separate; their matching offsets do not imply identical records.
 The wisp creator, animation renderer, initializer and destructor share a checked
 36-byte private state. Its two drawing banks share one owned allocation; texture
 tracks are separately owned, while animation key data is borrowed. Named color
-channels preserve the original compiler scheduling. Remaining motion and emitter
-consumers still have explicit byte views pending individual matching recovery.
+channels preserve the original compiler scheduling. Drifting motion uses the shared object transform fields, and colored emission
+uses the same wisp color state as creation and rendering. The emitter callback
+retains its local byte alias across the distinct emitter and emitted-wisp states.
