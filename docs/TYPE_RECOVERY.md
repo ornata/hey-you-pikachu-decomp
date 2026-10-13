@@ -3837,3 +3837,8 @@ availability queries across both producer units, processed input and microphone
 trigger handling. Its contract distinguishes connection from sample validity:
 an errored connected sample is copied, while an unavailable port yields a cleared
 sample. Borrowed status pointers refer to the persistent per-port cache.
+
+`controller_input.h` shares processed-input reset/update, stick-button thresholds,
+repeat mask/timing, hold duration and standard-pad queries. The implementation
+and all five declared consumer units use the canonical contracts, including the
+world map formerly using an unprototyped stick-button configuration call.

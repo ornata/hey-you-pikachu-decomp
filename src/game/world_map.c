@@ -1,3 +1,4 @@
+#include "controller_input.h"
 #include "microphone_requests.h"
 #include "audio_sound_effect.h"
 #include "attached_effect.h"
@@ -758,7 +759,6 @@ void wholeMapSelectBackdrop(void) {
     }
 }
 
-void controllerConfigureStickButtons();
 void objectUpdateGroup();
 void runtimeRequestProgramChange();
 void wholeMapUpdateActorPlacement();

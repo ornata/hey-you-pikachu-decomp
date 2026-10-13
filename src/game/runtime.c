@@ -1,3 +1,4 @@
+#include "controller_input.h"
 #include "controller_rumble.h"
 #include "microphone_requests.h"
 #include "text_window.h"
@@ -294,8 +295,6 @@ void runtimeOsInfoReportNoOp(void) {
 }
 
 void controllerStartThread(s32, s32, s32);
-void controllerSetRepeatTiming(f32 initialDelaySeconds, f32 repeatIntervalSeconds);
-void controllerSetRepeatMask(u32 buttonMask);
 void audioInitialize(s32, s32, s32, s32);
 void playerResetProfile(void);
 void toolboxReset(void);
@@ -924,7 +923,6 @@ void runtimeCheckResetCheckpoint(const char *label, s32 unused) {
     }
 }
 
-void controllerUpdateInputState(void);
 #include "voice_commands.h"
 void renderBeginFrame(void);
 void renderSubmitFrameBorder(void);

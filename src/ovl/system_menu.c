@@ -1,3 +1,4 @@
+#include "controller_input.h"
 #include "controller_rumble.h"
 #include "audio_sound_effect.h"
 #include "audio_playback_stop.h"
@@ -1020,7 +1021,6 @@ void systemMenuUpdateAnimation(void) {
     }
 }
 
-void controllerConfigureStickButtons(s32 enabled, s32 upThreshold, s32 downThreshold, s32 leftThreshold, s32 rightThreshold); /* extern */
 void runtimeRequestGameModeChange(s32);                                 /* extern */
 void systemMenuSetPhase(s32 arg0);                                   /* extern */
 void systemMenuRefreshSelectedDetails(MenuState *arg0);                                   /* extern */
@@ -1057,7 +1057,6 @@ void systemMenuEnter(void) {
     controllerConfigureStickButtons(1, 0x1E, 0x1E, 0x1E, 0x1E);
 }
 
-void controllerConfigureStickButtons(s32 enabled, s32 upThreshold, s32 downThreshold, s32 leftThreshold, s32 rightThreshold); /* extern */
 
 /// Leave the system menu, hide its models, and restore gameplay controls.
 /// \returns Nothing.

@@ -1,3 +1,4 @@
+#include "controller_input.h"
 #include "controller_rumble.h"
 #include "font_image.h"
 #include "text_image_configurations.h"
@@ -1271,8 +1272,6 @@ void toolboxDrawFrame(s32 address) {
 /// \note Original identifier: \c D_800F1D1C (0x800F1D1C).
 extern s32 gToolboxRequestedRow;
 void runtimeRequestGameModeChange(s32);
-void controllerConfigureStickButtons(s32 enabled, s32 upThreshold, s32 downThreshold, s32 leftThreshold,
-                                     s32 rightThreshold);
 /// Open the toolbox display and prepare its selected row and held item.
 /// \param row Row to open: zero for Collection, one for Item Storage, or minus one to retain the current row.
 /// \param useHeld Nonzero to choose the row from the held item when an item is present, overriding the requested row.
@@ -1322,8 +1321,6 @@ void toolboxOpen(s32 row, s32 useHeld) {
     gToolboxHelpMessageMilliseconds = now - 0xBB8;
 }
 
-void controllerConfigureStickButtons(s32 enabled, s32 upThreshold, s32 downThreshold, s32 leftThreshold,
-                                     s32 rightThreshold);
 void toolboxHideObjects(void);
 void toolboxOpen(s32, s32);
 void systemMenuEnter(void);

@@ -1,3 +1,4 @@
+#include "controller_input.h"
 #include "audio_sound_effect.h"
 #include "text_image_configurations.h"
 #include "script_vm_globals.h"
@@ -737,9 +738,6 @@ extern u32 gTitleSilhouetteMilliseconds;
 extern u8 *gCurrentAreaConfiguration;
 s32 eepromGetQueuedTransferState(void);
 s32 micIsDeviceConnected(s32);
-void controllerConfigureStickButtons(s32 enabled, s32 upThreshold, s32 downThreshold, s32 leftThreshold,
-                                     s32 rightThreshold);
-s32 controllerIsStandardPad(s32 port);
 void runtimeRequestProgramChange(s32);
 void runtimeRequestGameModeChange(s32);
 void backdropSelectForView(s32, s32, s32);
