@@ -2035,9 +2035,9 @@ u8 *expandingOrangeEffectCreate(s32 targetHandle, f32 lifetime) {
     state->targetHandle = targetHandle;
     animationIntegerTrackInitialize(&state->animation, (ValueKey *)(gExpandingOrangeEffectFrameAnimation));
     state->scale = 0.5f;
-    *(f32 *)(sp1C + 8) = 0.5f;
-    *(f32 *)(sp1C + 4) = 0.5f;
-    *(f32 *)sp1C = 0.5f;
+    ((RuntimeObjectPrefix *)sp1C)->scale[2] = 0.5f;
+    ((RuntimeObjectPrefix *)sp1C)->scale[1] = 0.5f;
+    ((RuntimeObjectPrefix *)sp1C)->scale[0] = 0.5f;
     objectRegisterActiveHierarchy(sp1C);
     return sp1C;
 }
@@ -2078,19 +2078,18 @@ void expandingOrangeEffectUpdate(u8 *effect) {
         state->scale = 3.5f;
     }
     if (t != NULL) {
-        *(f32 *)(effect + 0x18) = *(f32 *)(t + 0x44);
-        *(f32 *)(effect + 0x1C) = *(f32 *)(t + 0x48);
-        *(f32 *)(effect + 0x20) = *(f32 *)(t + 0x4C);
-        *(f32 *)(effect + 0x44) = *(f32 *)(effect + 0x18);
-        *(f32 *)(effect + 0x48) = *(f32 *)(effect + 0x1C);
-        *(f32 *)(effect + 0x4C) = *(f32 *)(effect + 0x20);
+        ((RuntimeObjectPrefix *)effect)->position[0] = ((RuntimeObjectPrefix *)t)->worldPosition[0];
+        ((RuntimeObjectPrefix *)effect)->position[1] = ((RuntimeObjectPrefix *)t)->worldPosition[1];
+        ((RuntimeObjectPrefix *)effect)->position[2] = ((RuntimeObjectPrefix *)t)->worldPosition[2];
+        ((RuntimeObjectPrefix *)effect)->worldPosition[0] = ((RuntimeObjectPrefix *)effect)->position[0];
+        ((RuntimeObjectPrefix *)effect)->worldPosition[1] = ((RuntimeObjectPrefix *)effect)->position[1];
+        ((RuntimeObjectPrefix *)effect)->worldPosition[2] = ((RuntimeObjectPrefix *)effect)->position[2];
     }
-    *(f32 *)(effect + 0) = state->scale;
-    *(f32 *)(effect + 4) = state->scale;
-    *(f32 *)(effect + 8) = state->scale;
+    ((RuntimeObjectPrefix *)effect)->scale[0] = state->scale;
+    ((RuntimeObjectPrefix *)effect)->scale[1] = state->scale;
+    ((RuntimeObjectPrefix *)effect)->scale[2] = state->scale;
     objectOrientAlongCameraView(effect);
 }
-
 
 /// Prepare an expanding orange effect for drawing with its current fading appearance.
 /// \param effect Effect object to draw.
@@ -2108,8 +2107,19 @@ s32 expandingOrangeEffectPrepareDraw(u8 *effect) {
     alpha = mathMapRangeClamped(0.5f, 255.0f, 3.5f, 0.0f, state->scale);
     textureLoadForDraw(&gRenderDisplayListCursor, 5, state->animation.value);
     gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0xFF, 0x96, 0, alpha);
-    return *(s32 *)(effect + 0x30);
+    return (s32)((RuntimeObjectPrefix *)effect)->displayList;
 }
+
+/// Target and independent lifetime/emission clocks for orange pulses.
+typedef struct OrangePulseEmitterState {
+    s32 targetHandle; ///< Object-manager handle receiving each pulse.
+    f32 remaining;    ///< Remaining emitter lifetime in seconds.
+    f32 cooldown;     ///< Seconds until the next target check and pulse emission.
+} OrangePulseEmitterState;
+
+typedef char OrangePulseEmitterStateSizeCheck[(sizeof(OrangePulseEmitterState) == 12) ? 1 : -1];
+typedef char OrangePulseLifetimeOffsetCheck[(((u32) & ((OrangePulseEmitterState *)0)->remaining) == 4) ? 1 : -1];
+typedef char OrangePulseCooldownOffsetCheck[(((u32) & ((OrangePulseEmitterState *)0)->cooldown) == 8) ? 1 : -1];
 
 /// Initialize an emitter of expanding orange effects.
 /// \param emitter Emitter object to initialize; must not already own state.
@@ -2119,12 +2129,11 @@ void orangePulseEmitterInitialize(void *emitter) {
     u8 *sp1C;
     u8 *allocation;
 
-    allocation = heapAllocLocal(&gGameHeap, 0xC, 0x95E);
+    allocation = heapAllocLocal(&gGameHeap, sizeof(OrangePulseEmitterState), 0x95E);
     sp1C = allocation;
-    _bzero((void *)allocation, 0xC);
+    _bzero((void *)allocation, sizeof(OrangePulseEmitterState));
     ((RuntimeObjectPrefix *)emitter)->state.bytes = sp1C;
 }
-
 
 /// Emit expanding orange effects at a live target until the emitter's lifetime expires or its target
 /// disappears.
@@ -2132,21 +2141,21 @@ void orangePulseEmitterInitialize(void *emitter) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001BD50 (0x8001BD50).
 void orangePulseEmitterUpdate(u8 *emitter) {
-    u8 *v = *(u8 **)(emitter + 0x54);
+    OrangePulseEmitterState *state = ((RuntimeObjectPrefix *)emitter)->state.pointer;
 
-    *(f32 *)(v + 4) -= gRuntimeFrameSeconds;
-    if (*(f32 *)(v + 4) < 0.0f) {
+    state->remaining -= gRuntimeFrameSeconds;
+    if (state->remaining < 0.0f) {
         objectRequestHierarchyDestruction(emitter);
         return;
     }
-    *(f32 *)(v + 8) -= gRuntimeFrameSeconds;
-    if (*(f32 *)(v + 8) < 0.0f) {
-        *(f32 *)(v + 8) = 0.30000001192092896f;
-        if (objectResolveAvailableHandle(*(s32 *)v) != 0) {
-            expandingOrangeEffectCreate(*(s32 *)v, 1.0f);
+    state->cooldown -= gRuntimeFrameSeconds;
+    if (state->cooldown < 0.0f) {
+        state->cooldown = 0.30000001192092896f;
+        if (objectResolveAvailableHandle(state->targetHandle) != 0) {
+            expandingOrangeEffectCreate(state->targetHandle, 1.0f);
             return;
         }
-        *(f32 *)(v + 4) = 0.0f;
+        state->remaining = 0.0f;
     }
 }
 
@@ -2157,12 +2166,12 @@ void orangePulseEmitterUpdate(u8 *emitter) {
 /// \note Original decompilation identifier: \c func_8001BE0C (0x8001BE0C).
 u8 *orangePulseEmitterCreate(s32 targetHandle, f32 lifetime) {
     u8 *sp1C;
-    u8 *emitterState;
+    OrangePulseEmitterState *state;
 
     sp1C = objectCreateFromTemplate((ObjectTemplate *)gOrangePulseEmitterObjectTemplate);
-    emitterState = *(u8 **)(sp1C + 0x54);
-    *(f32 *)(emitterState + 4) = lifetime;
-    *(s32 *)emitterState = targetHandle;
+    state = ((RuntimeObjectPrefix *)sp1C)->state.pointer;
+    state->remaining = lifetime;
+    state->targetHandle = targetHandle;
     objectMakeHierarchyRoot(sp1C);
     objectRegisterActiveHierarchy(sp1C);
     return sp1C;

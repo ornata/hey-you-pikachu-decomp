@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,074 / 76 |
+| Raw offset candidates | 4,040 / 86 | 2,047 / 76 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3679,3 +3679,8 @@ with descriptive field names and the original signed-count/floating-lifetime ABI
 Creation, initialization, update and drawing share a checked 24-byte private state
 containing target handle, borrowed-key texture track, remaining lifetime and
 uniform scale. Target unavailability does not end the effect before expiry.
+
+Orange-pulse emitters use a separate checked 12-byte state with target handle,
+remaining lifetime and emission cooldown. Expanding effects use shared object
+scale, position, world-position and display-list fields. Both retain their
+original expiry checks and target-availability behavior.
