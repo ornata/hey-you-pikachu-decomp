@@ -4437,3 +4437,16 @@ coordinate selectors, signed distances and terrain sentinel results. All three u
 preserve strict baseline objects and the clean retail ROM match. The exploratory scan
 also identifies cameraBuildViewProjection, heapInitializeRegion and playerAddPoints
 local return declarations for follow-up; it is not an exhaustive interface audit.
+
+### Typed heap-region initialization and layout contracts
+
+`heap_initialize.h` shares pointer-based region/global initialization with the heap,
+object-response registry, ROM cache and runtime. The region initializer returns its
+supplied memory pointer; Ghidra at 0x80037F00 and the source confirm that contract.
+This resolves the response registry's local void-return declaration and removes
+integer-address conversions from the initialization call chain. Region alignment,
+minimum size, nonoverlapping control storage and allocation lifetimes are explicit.
+Shared heap controls and private block metadata now have target size/offset checks,
+and block fields document list links, payload size, category and allocation state.
+All four edited units and dependent headers preserve strict baseline objects and
+clean retail ROM bytes.

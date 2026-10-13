@@ -1,3 +1,4 @@
+#include "heap_initialize.h"
 #include "controller_service.h"
 #include "player_state.h"
 #include "audio_control.h"
@@ -990,7 +991,6 @@ void actionInitializeTransitionMap(void);
 void overlayLoadFromRom(void *romStart, void *romEnd, void *destination, void *textStart, void *textEnd,
                         void *dataStart, void *dataEnd, void *bssStart, void *bssEnd);
 void hudProgramInitializeNoOp(void);
-void heapInitializeGlobal(s32);
 void *areaLoadNextOverlay(void);
 void messengerResetTrackedObject(void);
 extern u8 D_B140C0[];
@@ -1013,7 +1013,7 @@ void runtimeMainThreadEntry(void *scheduler) {
             overlayLoadFromRom(ovl_ROM_START, ovl_ROM_END, ovl_VRAM, ovl_TEXT_START, ovl_TEXT_END, ovl_DATA_START,
                                ovl_RODATA_END, ovl_BSS_START, ovl_BSS_END);
             runtimeCheckResetCheckpoint("pre-heapInit", 1);
-            heapInitializeGlobal((s32)areaLoadNextOverlay());
+            heapInitializeGlobal(areaLoadNextOverlay());
             runtimeCheckResetCheckpoint("aft-heapInit", 0);
             textDrawInitialize(0x140, 0xF0, 0xDA);
             textDrawSetPalette(gDefaultTextPalette);

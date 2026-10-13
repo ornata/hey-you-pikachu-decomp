@@ -1,9 +1,9 @@
+#include "heap_initialize.h"
 #include "game_heap.h"
 #include "heap_free.h"
 #include "common.h"
 #include "heap_alloc.h"
 #include "rom_cache.h"
-s32 heapInitializeRegion(HpHdr *, s32, s32);
 
 /// Initialize a bounded cache for cartridge data.
 /// \param cache Cache state to initialize.
@@ -16,7 +16,7 @@ void romCacheInitialize(RomCache *cache, s32 heapBytes, s32 entryCount, s32 queu
     u8 *storage;
     storage = heapAllocLocal(&gGameHeap, heapBytes, 0x15);
     cache->storage = storage;
-    heapInitializeRegion(&cache->heap, (s32)storage, heapBytes);
+    heapInitializeRegion(&cache->heap, storage, heapBytes);
     keyedPoolInitialize(&cache->index, entryCount);
     romDmaInitializeQueue(&cache->reads, queueCapacity);
 }

@@ -1,3 +1,4 @@
+#include "heap_initialize.h"
 #include "game_heap.h"
 #include "interaction.h"
 #include "object_lifecycle.h"
@@ -52,7 +53,6 @@ typedef char ObjectResponseRegistrySizeCheck[(sizeof(ObjectResponseRegistry) == 
 /// \note Original identifier: \c D_800B6B68 (0x800B6B68).
 ObjectResponseRegistry gObjectResponseRegistry;
 void objectResponsesClearWithCallback(u8 *, ObjectResponseHandler);
-void heapInitializeRegion(void *, s32, s32);
 
 /// Reset the registry of created door objects.
 /// \returns Nothing.
@@ -200,7 +200,7 @@ void doorUpdateInteraction(u8 *object) {
 void objectResponsesInitialize(s32 capacity, s32 heapBytes) {
     heapBytes = (heapBytes + 0xF) & ~0xF;
     gObjectResponseHeapStorage = heapAllocLocal(&gGameHeap, heapBytes, 0x33);
-    heapInitializeRegion(&gObjectResponseHeap, (s32)gObjectResponseHeapStorage, heapBytes);
+    heapInitializeRegion(&gObjectResponseHeap, gObjectResponseHeapStorage, heapBytes);
     keyedPoolInitialize(&gObjectResponseRegistry.pool, capacity);
 }
 

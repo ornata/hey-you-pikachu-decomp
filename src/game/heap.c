@@ -1,3 +1,4 @@
+#include "heap_initialize.h"
 #include "game_heap.h"
 #include "heap_free.h"
 #include "heap_tail.h"
@@ -15,28 +16,31 @@
         }                                                                                                              \
     } while (0)
 
-/* Each heap routine keeps a static pointer to its name for the heap checker; the
- * debug prints that also used the names are compiled out. */
+/// Private metadata for one region in a heap's circular block list.
 typedef struct HpBlk {
-    struct HpBlk *prev;
-    struct HpBlk *next;
-    u32 size;
-    u16 flag;
-    u8 magic;
-    u8 tag;
+    struct HpBlk *prev; ///< Previous block in the same heap.
+    struct HpBlk *next; ///< Next block in the same heap.
+    u32 size; ///< Payload capacity in bytes, excluding this metadata.
+    u16 flag; ///< Allocation category supplied by the caller, or 0xFFFF for a fresh free block.
+    u8 magic; ///< Metadata validity marker, 0xA5 while valid.
+    u8 tag; ///< Allocation state: zero for free, one for allocated.
 } HpBlk;
+typedef char HpBlkSizeCheck[(sizeof(HpBlk) == 0x10) ? 1 : -1];
+typedef char HpBlkSizeOffsetCheck[(((u32)&((HpBlk *)0)->size) == 8) ? 1 : -1];
+typedef char HpBlkFlagOffsetCheck[(((u32)&((HpBlk *)0)->flag) == 0xC) ? 1 : -1];
+typedef char HpBlkTagOffsetCheck[(((u32)&((HpBlk *)0)->tag) == 0xF) ? 1 : -1];
 
 void _bzero(void *, s32);
 
 /// Initialize a heap in a caller-provided memory region.
 /// \param heap Writable heap header to initialize.
-/// \param regionAddress RAM address of a 16-byte-aligned writable region that remains valid for the heap lifetime.
+/// \param region Sixteen-byte-aligned writable memory retained for the heap lifetime.
 /// \param regionSize Region size in bytes, at least sixteen, including heap metadata.
-/// \returns RAM address of the initialized region.
+/// \returns The supplied region pointer.
 /// \note Original decompilation identifier: \c func_80037F00 (0x80037F00).
-s32 heapInitializeRegion(HpHdr *heap, s32 regionAddress, s32 regionSize) {
+void *heapInitializeRegion(HpHdr *heap, void *region, s32 regionSize) {
     HpHdr *header = (HpHdr *)heap;
-    HpBlk *firstBlock = (HpBlk *)regionAddress;
+    HpBlk *firstBlock = region;
 
     _bzero(firstBlock, regionSize);
     firstBlock->next = firstBlock;
@@ -49,7 +53,7 @@ s32 heapInitializeRegion(HpHdr *heap, s32 regionAddress, s32 regionSize) {
     header->size = regionSize;
     header->first = firstBlock;
     header->last = firstBlock;
-    return (s32)firstBlock;
+    return firstBlock;
 }
 
 /// Depth-buffer storage; its start also bounds the game heap and is used as asset-loading scratch.
@@ -57,11 +61,11 @@ s32 heapInitializeRegion(HpHdr *heap, s32 regionAddress, s32 regionSize) {
 extern u8 gDepthBuffer[];
 
 /// Initialize the global game heap from a RAM starting address.
-/// \param startAddress Aligned RAM address below the global heap limit.
+/// \param start Aligned RAM pointer below the global heap limit.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80037F88 (0x80037F88).
-void heapInitializeGlobal(s32 startAddress) {
-    heapInitializeRegion(&gGameHeap, startAddress, (s32)gDepthBuffer - startAddress);
+void heapInitializeGlobal(void *start) {
+    heapInitializeRegion(&gGameHeap, start, (s32)gDepthBuffer - (s32)start);
 }
 
 /// Provide an inactive heap diagnostic hook.
