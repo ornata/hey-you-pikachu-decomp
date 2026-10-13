@@ -1244,6 +1244,7 @@
     "src/game/audio_playback.c": {
       "known_views": [
         "audio_bank.h",
+        "audio_dma.h",
         "audio_playback_query.h",
         "audio_playback_stop.h",
         "audio_sound_effect.h",
@@ -1260,18 +1261,19 @@
       "locations": {
         "raw_offset_candidates": {
           "return -1": [
-            "162:5",
-            "394:9",
-            "401:5"
+            "161:5",
+            "393:9",
+            "400:5"
           ],
           "bankFile + 4": [
-            "209:88"
+            "208:88"
           ]
         }
       }
     },
     "src/game/audio_worker_string_utils.c": {
       "known_views": [
+        "audio_dma.h",
         "scheduler.h",
         "string_bytes.h"
       ],
@@ -1279,43 +1281,43 @@
       "locations": {
         "raw_offset_candidates": {
           "slot + 1": [
-            "125:36"
+            "129:36"
           ],
           "gAudioDmaPageBytes - 1": [
-            "126:49"
+            "130:49"
           ],
           "address + 0x80000000": [
-            "134:92"
+            "138:92"
           ],
           "gAudioWorkerStorage + 0x2218": [
-            "194:14"
-          ],
-          "gAudioWorkerStorage + 0x220C": [
-            "195:14"
-          ],
-          "gAudioWorkerStorage + 0x2208": [
-            "196:14"
-          ],
-          "gAudioWorkerStorage + 0x2210": [
-            "197:14"
-          ],
-          "gAudioWorkerStorage + 0x2214": [
             "198:14"
           ],
+          "gAudioWorkerStorage + 0x220C": [
+            "199:14"
+          ],
+          "gAudioWorkerStorage + 0x2208": [
+            "200:14"
+          ],
+          "gAudioWorkerStorage + 0x2210": [
+            "201:14"
+          ],
+          "gAudioWorkerStorage + 0x2214": [
+            "202:14"
+          ],
           "gAudioWorkerStorage + 0x221C": [
-            "199:16"
+            "203:16"
           ],
           "gAudioWorkerStorage + 0x2220": [
-            "200:23"
+            "204:23"
           ],
           "gAudioWorkerStorage + 0x2224": [
-            "202:20"
+            "206:20"
           ],
           "gAudioWorkerStorage + 0x2204": [
-            "204:14"
+            "208:14"
           ],
           "buffer + 0x80000000": [
-            "259:68"
+            "253:68"
           ]
         }
       }

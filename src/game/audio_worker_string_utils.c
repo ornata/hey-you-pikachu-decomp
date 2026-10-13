@@ -1,3 +1,4 @@
+#include "audio_dma.h"
 #include "scheduler.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -15,23 +16,26 @@ extern u32 gAudioDmaCacheCapacity;
 /// Completion queue for audio sample ROM reads.
 /// \note Original identifier: \c D_800F8F08 (0x800F8F08).
 extern OSMesgQueue gAudioDmaCompletionQueue;
-typedef struct {
-    u8 *buffer;
-    u32 address;
-    u32 lastUse;
-} AudioCache;
+/// Cache-owned sample page retained for audio synthesis and its pending DMA read.
+typedef struct AudioDmaCacheEntry {
+    u8 *buffer;       ///< Audio-heap allocation containing the page and read-ahead bytes.
+    u32 address;      ///< Cartridge page address, or zero before assignment.
+    u32 lastUseFrame; ///< Cache frame in which this entry was last used.
+} AudioDmaCacheEntry;
+typedef char AudioDmaCacheEntrySizeCheck[(sizeof(AudioDmaCacheEntry) == 0xC) ? 1 : -1];
+typedef char AudioDmaCacheAddressOffsetCheck[(((u32) & ((AudioDmaCacheEntry *)0)->address) == 4) ? 1 : -1];
 /// Owned audio cache entries retaining sample buffers, ROM pages and last-use ages.
 /// \note Original identifier: \c D_800F8F24 (0x800F8F24).
-extern AudioCache *gAudioDmaCacheEntries;
+extern AudioDmaCacheEntry *gAudioDmaCacheEntries;
 
 s32 audioDmaResolveSample(s32, s32, void *);
 
 /// Provide the shared audio sample DMA callback.
-/// \param state Receives the zero callback-state token.
+/// \param state Writable callback-state pointer slot, receiving null.
 /// \returns The audio sample DMA callback.
 /// \note Original decompilation identifier: \c func_80049160 (0x80049160).
-ALDMAproc audioDmaCreateCallback(s32 *state) {
-    *state = 0;
+ALDMAproc audioDmaCreateCallback(void *state) {
+    *(void **)state = NULL;
     return &audioDmaResolveSample;
 }
 
@@ -53,7 +57,7 @@ void audioDmaFinishFrame(void) {
     }
     gAudioDmaPendingReads = 0;
     if (gAudioDmaCacheFrame < gAudioDmaCacheCapacity) {
-        gAudioDmaCacheEntries[gAudioDmaCacheFrame].lastUse = gAudioDmaCacheFrame;
+        gAudioDmaCacheEntries[gAudioDmaCacheFrame].lastUseFrame = gAudioDmaCacheFrame;
     }
     gAudioDmaCacheFrame += 1;
 }
@@ -86,12 +90,12 @@ s32 audioDmaInitialize(ALHeap *heap, s32 slots, s32 shift) {
     gAudioDmaPageBytes = 1 << shift;
     pages = 0x1000000 / gAudioDmaPageBytes;
     gAudioDmaPageSlots = alHeapDBAlloc(NULL, 0, heap, 1, pages);
-    gAudioDmaCacheEntries = alHeapDBAlloc(NULL, 0, heap, 1, gAudioDmaCacheCapacity * sizeof(AudioCache));
+    gAudioDmaCacheEntries = alHeapDBAlloc(NULL, 0, heap, 1, gAudioDmaCacheCapacity * sizeof(AudioDmaCacheEntry));
     gAudioDmaIoMessages = alHeapDBAlloc(NULL, 0, heap, 1, gAudioDmaCacheCapacity * sizeof(OSIoMesg));
     for (i = 0; i < pages; i++)
         gAudioDmaPageSlots[i] = 0;
     for (i = 0; i < (s32)gAudioDmaCacheCapacity; i++) {
-        gAudioDmaCacheEntries[i].lastUse = gAudioDmaCacheFrame;
+        gAudioDmaCacheEntries[i].lastUseFrame = gAudioDmaCacheFrame;
         gAudioDmaCacheEntries[i].buffer = alHeapDBAlloc(NULL, 0, heap, 1, gAudioDmaPageBytes + gAudioDmaReadAheadBytes);
         gAudioDmaCacheEntries[i].address = 0;
     }
@@ -116,7 +120,7 @@ s32 audioDmaResolveSample(s32 address, s32 length, void *state) {
     slot = gAudioDmaPageSlots[page];
     if (slot == 0) {
         for (i = 1, slot = 0; i < (s32)gAudioDmaCacheCapacity; i++) {
-            if (gAudioDmaCacheEntries[i].lastUse < gAudioDmaCacheEntries[slot].lastUse)
+            if (gAudioDmaCacheEntries[i].lastUseFrame < gAudioDmaCacheEntries[slot].lastUseFrame)
                 slot = i;
         }
         if (gAudioDmaCacheEntries[slot].address != 0) {
@@ -130,7 +134,7 @@ s32 audioDmaResolveSample(s32 address, s32 length, void *state) {
     } else {
         slot--;
     }
-    gAudioDmaCacheEntries[slot].lastUse = gAudioDmaCacheFrame;
+    gAudioDmaCacheEntries[slot].lastUseFrame = gAudioDmaCacheFrame;
     return (s32)gAudioDmaCacheEntries[slot].buffer + address - gAudioDmaCacheEntries[slot].address + 0x80000000;
 }
 
@@ -210,16 +214,6 @@ void audioWorkerStart(s32 scheduler, ALHeap *heap, OSId id, OSPri pri, s32 rende
     osStartThread(&gAudioWorkerThread);
 }
 
-/* FINALROM scheduler task: OSTask at 0x10 and completion queue at 0x50. */
-typedef struct AudioTask {
-    struct AudioTask *next;
-    u32 state;
-    u32 flags;
-    void *framebuffer;
-    OSTask task;
-    OSMesgQueue *reply;
-    OSMesg message;
-} AudioTask;
 typedef struct {
     u8 threadAndStack[0x21B0];
     OSMesgQueue aiQueue;
@@ -250,7 +244,7 @@ void audioWorkerThreadMain(void *arg) {
     AudioThread *audio = arg;
     s32 commandCount;
     void *buffer;
-    AudioTask task;
+    SchedulerTask task;
     OSMesg taskMessage;
     OSMesg aiMessage;
     do {

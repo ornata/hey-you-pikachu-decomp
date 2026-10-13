@@ -1,3 +1,4 @@
+#include "audio_dma.h"
 #include "audio_bank.h"
 #include "sequence_registration.h"
 #include "sequence_engine_types.h"
@@ -84,8 +85,6 @@ extern u8 gAudioRspMicrocodeTextStart[];
 /// Audio RSP microcode data start supplied to audio task initialization.
 /// \note Original identifier: \c D_800A8130 (0x800A8130).
 extern u8 gAudioRspMicrocodeDataStart[];
-s32 audioDmaInitialize(ALHeap *, s32, s32);
-ALDMAproc audioDmaCreateCallback(s32 *);
 void n_alInit(N_ALGlobals *, ALSynConfig *);
 Acmd *n_alAudioFrame(Acmd *, s32 *, s16 *, s32);
 void audioInitializeSequencePlayers(s32, u8 *);

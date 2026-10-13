@@ -4222,3 +4222,14 @@ unchanged. Hierarchy updates and actor orientation use these declarations.
 The relative-orientation interface and its private composition helper now
 carry `Matrix34 *` outputs; retained reference caches remain separate from
 output storage. Each interface adoption preserves strict objects.
+
+### Audio sample DMA and shared task records
+
+`audio_dma.h` shares cache initialization, callback creation and frame-completion
+contracts with playback setup. Callback state uses the synthesizer's opaque
+state-slot interface and receives a null pointer. The contract distinguishes
+physical sample addresses from DMA readiness and records cache-capacity and
+read-ahead bounds. Private cache entries now document owned sample buffers,
+ROM page addresses and last-use frames with a checked size and address offset.
+The audio worker uses the shared `SchedulerTask` instead of an identical local
+record. All accepted source and interface changes preserve strict objects.
