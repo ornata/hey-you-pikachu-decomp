@@ -1222,33 +1222,33 @@ u8 *particleClusterCreate(s32 count, f32 lifetime, f32 radialScale, f32 particle
     s32 i;
 
     obj = objectCreateFromTemplate((ObjectTemplate *)gParticleClusterObjectTemplate);
-    v = *(u8 **)(obj + 0x54);
+    v = ((RuntimeObjectPrefix *)obj)->state.bytes;
     prev = NULL;
-    *(f32 *)(obj + 0x18) = *(f32 *)(source + 0x44);
-    *(f32 *)(obj + 0x1C) = *(f32 *)(source + 0x48);
-    *(f32 *)(obj + 0x20) = *(f32 *)(source + 0x4C);
-    *(f32 *)(obj + 0x44) = *(f32 *)(source + 0x44);
-    *(f32 *)(obj + 0x48) = *(f32 *)(source + 0x48);
-    *(f32 *)(obj + 0x4C) = *(f32 *)(source + 0x4C);
-    *(s32 *)(v + 4) = *(s32 *)(source + 0x38);
+    ((RuntimeObjectPrefix *)obj)->position[0] = ((RuntimeObjectPrefix *)source)->worldPosition[0];
+    ((RuntimeObjectPrefix *)obj)->position[1] = ((RuntimeObjectPrefix *)source)->worldPosition[1];
+    ((RuntimeObjectPrefix *)obj)->position[2] = ((RuntimeObjectPrefix *)source)->worldPosition[2];
+    ((RuntimeObjectPrefix *)obj)->worldPosition[0] = ((RuntimeObjectPrefix *)source)->worldPosition[0];
+    ((RuntimeObjectPrefix *)obj)->worldPosition[1] = ((RuntimeObjectPrefix *)source)->worldPosition[1];
+    ((RuntimeObjectPrefix *)obj)->worldPosition[2] = ((RuntimeObjectPrefix *)source)->worldPosition[2];
+    *(s32 *)(v + 4) = ((RuntimeObjectPrefix *)source)->handle;
     *(f32 *)(v + 0) = lifetime;
     for (i = 0; i < count; i++) {
         e = objectCreateFromTemplate((ObjectTemplate *)gParticleClusterElementTemplate);
-        *(f32 *)(e + 0xC) = (s32)randomBelow(360);
-        *(f32 *)(e + 0x10) = (s32)randomBelow(360);
-        *(f32 *)(e + 0x14) = (s32)randomBelow(360);
-        *(f32 *)(e + 0) = radialScale;
-        *(f32 *)(e + 8) = particleScale;
+        ((RuntimeObjectPrefix *)e)->rotation[0] = (s32)randomBelow(360);
+        ((RuntimeObjectPrefix *)e)->rotation[1] = (s32)randomBelow(360);
+        ((RuntimeObjectPrefix *)e)->rotation[2] = (s32)randomBelow(360);
+        ((RuntimeObjectPrefix *)e)->scale[0] = radialScale;
+        ((RuntimeObjectPrefix *)e)->scale[2] = particleScale;
         if (prev != NULL) {
-            *(u8 **)(prev + 0x28) = e;
+            ((RuntimeObjectPrefix *)prev)->sibling.bytes = e;
         } else {
-            *(u8 **)(obj + 0x2C) = e;
+            ((RuntimeObjectPrefix *)obj)->child.bytes = e;
         }
         prev = e;
     }
     e = objectCreateFromTemplate((ObjectTemplate *)gParticleClusterRendererTemplate);
-    *(s32 *)(e + 0x30) = particleClusterCreateDisplayList(count);
-    *(u8 **)(prev + 0x28) = e;
+    ((RuntimeObjectPrefix *)e)->displayList = (Gfx *)particleClusterCreateDisplayList(count);
+    ((RuntimeObjectPrefix *)prev)->sibling.bytes = e;
     objectMakeHierarchyRoot(obj);
     objectAllocateHierarchyMatrixBuffers(obj);
     objectRegisterActiveHierarchy(obj);
