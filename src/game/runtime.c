@@ -1,3 +1,4 @@
+#include "microphone_requests.h"
 #include "text_window.h"
 #include "message_bar.h"
 #include "actor_assets.h"
@@ -356,12 +357,6 @@ void runtimeInitializePlatform(s32 schedulerAddress) {
 }
 
 void renderLoadAreaAssets();                          /* extern */
-void micRequestTriggerMode(s32, s32);          /* extern */
-void micRequestDictionary(s32);                   /* extern */
-void micRequestSessionEnabled(s32);                   /* extern */
-void micRequestRecognitionOverride(s32);                   /* extern */
-void micRequestRecognitionFollowsTrigger(s32);                   /* extern */
-void micRequestTriggerButtons(s32, s32);          /* extern */
 void objectSystemInitialize();                          /* extern */
 void presentationInitializeForCurrentArea();                          /* extern */
 void toolboxCreateDisplayObjects();                          /* extern */

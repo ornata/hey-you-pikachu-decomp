@@ -1,3 +1,4 @@
+#include "microphone_requests.h"
 #include "attached_effect.h"
 #include "actor_movement.h"
 #include "object_transform.h"
@@ -744,7 +745,6 @@ s32 actorScriptTrackPlayerTertiaryObject(u8 *actor) {
     return 0;
 }
 
-void micRequestDictionary(s32); /* extern */
 
 /// Request a speech recognition dictionary and yield script execution.
 /// \param actor Actor whose script VM supplies the dictionary identifier and receives zero.

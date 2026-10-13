@@ -1,3 +1,4 @@
+#include "microphone_requests.h"
 #include "audio_sound_effect.h"
 #include "attached_effect.h"
 #include "script_vm_globals.h"
@@ -708,9 +709,6 @@ void wholeMapSelectInitialDestination(void) {
     wholeMapEnsureAvailableSelection(0, 8, 1);
 }
 
-void micRequestDictionary(s32);      /* extern */
-void micRequestRecognitionOverride(s32);      /* extern */
-void micRequestRecognitionFollowsTrigger(s32);      /* extern */
 void hudSetFeatureMask(s32);      /* extern */
 /// Whether gameplay exposes microphone interaction and its HUD indicator.
 /// \note Original identifier: \c D_800722D0 (0x800722D0).

@@ -1,3 +1,4 @@
+#include "microphone_requests.h"
 #include "terrain_height.h"
 #include "terrain_surface.h"
 #include "actor_behavior.h"
@@ -782,8 +783,6 @@ s32 actorScriptPushCurrentArea(u8 *actor) {
     return 0;
 }
 
-void micRequestRecognitionOverride(s32); /* extern */
-void micRequestRecognitionFollowsTrigger(s32); /* extern */
 /// Whether gameplay exposes microphone interaction and its HUD indicator.
 /// \note Original identifier: \c D_800722D0 (0x800722D0).
 extern s32 gGameplayMicrophoneAvailable;

@@ -1,3 +1,4 @@
+#include "microphone_requests.h"
 #include "microphone_configuration.h"
 #include "controller_commands.h"
 /// \file

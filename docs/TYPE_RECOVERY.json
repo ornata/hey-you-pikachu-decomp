@@ -2140,6 +2140,7 @@
         "hud_draw.h",
         "integer_animation.h",
         "integer_animation_types.h",
+        "microphone_requests.h",
         "object_types.h",
         "player_control.h",
         "text_draw.h",
@@ -2153,28 +2154,28 @@
       "locations": {
         "raw_offset_candidates": {
           "gPikachuActor + 0x44": [
-            "133:94"
+            "134:94"
           ],
           "offset + 48": [
-            "150:32"
+            "151:32"
           ],
           "offset + 40": [
-            "166:32"
+            "167:32"
           ],
           "gPikachuActor + 0x54": [
-            "604:34"
+            "605:34"
           ],
           "gPikachuActor + 0x38": [
-            "610:25"
+            "611:25"
           ],
           "gPlayerState + 0x50": [
-            "610:59"
+            "611:59"
           ],
           "x + 0": [
-            "659:23"
+            "660:23"
           ],
           "y + 0": [
-            "660:23"
+            "661:23"
           ]
         }
       }
@@ -2786,6 +2787,7 @@
         "heap_diagnostics.h",
         "heap_types.h",
         "message_bar.h",
+        "microphone_requests.h",
         "motion_cache.h",
         "player_control.h",
         "player_types.h",
@@ -2805,13 +2807,13 @@
       "locations": {
         "raw_offset_candidates": {
           "gPikachuActor + 0x54": [
-            "608:31"
+            "603:31"
           ],
           "actorState + 0x1B8": [
-            "609:50"
+            "604:50"
           ],
           "gRuntimePromptPanelLineCount - 1": [
-            "1095:75"
+            "1090:75"
           ]
         }
       }
@@ -3765,6 +3767,7 @@
         "heap_free.h",
         "interaction.h",
         "messenger.h",
+        "microphone_requests.h",
         "object_lookup.h",
         "object_target_search.h",
         "object_types.h",
@@ -3780,10 +3783,10 @@
       "locations": {
         "raw_offset_candidates": {
           "object + 0x54": [
-            "98:50"
+            "99:50"
           ],
           "state + 4": [
-            "98:82"
+            "99:82"
           ],
           "x0 - 10": [
             "318:73"
@@ -3911,6 +3914,7 @@
         "hud_draw.h",
         "matrix_point.h",
         "matrix_types.h",
+        "microphone_requests.h",
         "object_flags.h",
         "presentation_focus.h",
         "progress_value.h",
@@ -3923,87 +3927,87 @@
       "locations": {
         "raw_offset_candidates": {
           "x - 27": [
-            "222:46"
+            "223:46"
           ],
           "x + 55": [
-            "224:46"
+            "225:46"
           ],
           "x - 16": [
-            "285:31",
-            "309:27"
-          ],
-          "y + 8": [
-            "286:31"
-          ],
-          "y - 8": [
+            "286:31",
             "310:27"
           ],
+          "y + 8": [
+            "287:31"
+          ],
+          "y - 8": [
+            "311:27"
+          ],
           "counter + 5U": [
-            "317:25"
+            "318:25"
           ],
           "gPikachuActor + 0x54": [
-            "399:28",
-            "445:28",
-            "617:46",
-            "791:27"
+            "400:28",
+            "446:28",
+            "618:46",
+            "789:27"
           ],
           "state + 0x1EC": [
-            "401:100",
-            "458:154"
+            "402:100",
+            "459:154"
           ],
           "gPikachuActor + 0x48": [
-            "407:29",
-            "409:35",
-            "415:20",
-            "452:54"
-          ],
-          "firstJoint + 0x48": [
-            "407:62"
-          ],
-          "secondJoint + 0x48": [
-            "409:68"
-          ],
-          "gPikachuActor + 0x18": [
-            "411:20"
-          ],
-          "gPikachuActor + 0x1C": [
-            "412:20"
-          ],
-          "gPikachuActor + 0x20": [
-            "413:20"
-          ],
-          "gPikachuActor + 0x44": [
-            "414:20",
-            "451:54"
-          ],
-          "gPikachuActor + 0x4C": [
+            "408:29",
+            "410:35",
             "416:20",
             "453:54"
           ],
-          "camera + 0": [
-            "451:25"
+          "firstJoint + 0x48": [
+            "408:62"
           ],
-          "camera + 4": [
+          "secondJoint + 0x48": [
+            "410:68"
+          ],
+          "gPikachuActor + 0x18": [
+            "412:20"
+          ],
+          "gPikachuActor + 0x1C": [
+            "413:20"
+          ],
+          "gPikachuActor + 0x20": [
+            "414:20"
+          ],
+          "gPikachuActor + 0x44": [
+            "415:20",
+            "452:54"
+          ],
+          "gPikachuActor + 0x4C": [
+            "417:20",
+            "454:54"
+          ],
+          "camera + 0": [
             "452:25"
           ],
-          "camera + 8": [
+          "camera + 4": [
             "453:25"
           ],
+          "camera + 8": [
+            "454:25"
+          ],
           "state + 0xC": [
-            "455:64"
+            "456:64"
           ],
           "state + 0x10": [
-            "456:71"
+            "457:71"
           ],
           "state + 0x19C": [
-            "457:14"
+            "458:14"
           ],
           "PLAYER + 0x54": [
-            "500:27"
+            "501:27"
           ],
           "sp24 + 0x13C": [
-            "798:22",
-            "802:25"
+            "796:22",
+            "800:25"
           ]
         }
       }
@@ -4252,6 +4256,7 @@
         "attached_effect.h",
         "audio_cue.h",
         "item_search.h",
+        "microphone_requests.h",
         "object_distance.h",
         "object_lookup.h",
         "object_script_query.h",
@@ -4270,7 +4275,7 @@
       "locations": {
         "raw_offset_candidates": {
           "actor + 0xC": [
-            "660:38"
+            "661:38"
           ],
           "gPlayerCompanionTarget - 0x50": [
             "1351:57"

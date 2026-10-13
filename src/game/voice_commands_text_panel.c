@@ -1,3 +1,4 @@
+#include "microphone_requests.h"
 #include "messenger.h"
 #include "camera_types.h"
 #include "object_types.h"
@@ -142,7 +143,6 @@ void voiceCommandLaunchEffect(ScriptMessage message) {
     }
 }
 
-void micRequestAmplifierOff(void);
 /// Borrowed encoded display name retained by voice-command translation.
 /// \note The unsigned byte view preserves the ROM's text-byte load convention.
 /// \note Original identifier: \c D_800722D8 (0x800722D8).

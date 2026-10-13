@@ -1,3 +1,4 @@
+#include "microphone_requests.h"
 #include "text_image_configurations.h"
 #include "texture_animation_programs.h"
 #include "camera_visibility.h"
@@ -740,8 +741,6 @@ void hudSetAreaLabelVisible(s32 visible) {
     gHudAreaLabelVisible = visible;
 }
 
-void micRequestRecognitionOverride(s32); /* extern */
-void micRequestRecognitionFollowsTrigger(s32); /* extern */
 /// Nonzero when alternate overlay drawing replaces normal HUD drawing.
 /// \note Original identifier: \c D_800F027C (0x800F027C).
 extern s32 gHudAlternateOverlayEnabled;

@@ -3802,3 +3802,8 @@ between microphone submission, session dispatch and controller-thread routing.
 It removes the consumer-only unused 0x20-byte view, names supported commands,
 and documents command-dependent arguments and dispatch acknowledgement. The
 eight-slot ring, stack requests and asynchronous device behavior remain identical.
+
+`microphone_requests.h` declares all eight asynchronous configuration entry
+points, with parameter roles and original addresses. The producer and all six
+consumer units share it. The contract requires an initialized controller thread
+and distinguishes submission return from later device completion.
