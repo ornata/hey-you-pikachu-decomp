@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 1881,
-      "unique_spellings": 800,
+      "occurrences": 1876,
+      "unique_spellings": 795,
       "files": 74
     }
   },
@@ -2256,6 +2256,7 @@
     },
     "src/game/microphone_session.c": {
       "known_views": [
+        "controller_commands.h",
         "eeprom_io.h",
         "voice_recognition.h"
       ],
@@ -4017,6 +4018,7 @@
         "camera_types.h",
         "camera_visibility.h",
         "color_transition.h",
+        "controller_commands.h",
         "graphics_tasks.h",
         "heap_alloc.h",
         "heap_free.h",
@@ -4114,6 +4116,7 @@
       "known_views": [
         "actor_script_time.h",
         "camera_overlay.h",
+        "controller_commands.h",
         "eeprom_io.h",
         "heap_alloc.h",
         "heap_tail.h",
@@ -4129,52 +4132,37 @@
       "locations": {
         "raw_offset_candidates": {
           "control + 0": [
-            "498:14"
+            "497:14"
           ],
           "control + 0x10": [
-            "499:14"
+            "498:14"
           ],
           "control + 8": [
-            "500:14"
+            "499:14"
           ],
           "p + 8": [
-            "539:18",
-            "548:26",
-            "592:33"
+            "538:18",
+            "547:26",
+            "591:33"
           ],
           "p + 0x10": [
-            "543:22",
-            "546:28",
-            "577:24",
-            "594:18",
-            "619:14"
-          ],
-          "request + 4": [
-            "717:54"
-          ],
-          "request + 8": [
-            "718:24"
+            "542:22",
+            "545:28",
+            "576:24",
+            "593:18",
+            "618:14"
           ],
           "timer + 8": [
-            "722:18"
-          ],
-          "request + 0xC": [
-            "724:46"
+            "721:18"
           ],
           "timer + 0x10": [
-            "725:18"
+            "724:18"
           ],
           "timer + 0x18": [
-            "726:18"
-          ],
-          "request + 0x10": [
-            "727:46"
+            "725:18"
           ],
           "timer + 0x20": [
-            "728:18"
-          ],
-          "request + 0x14": [
-            "729:46"
+            "727:18"
           ]
         }
       }

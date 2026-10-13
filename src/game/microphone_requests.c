@@ -1,3 +1,4 @@
+#include "controller_commands.h"
 /// \file
 /// Asynchronous microphone configuration requests.
 /// \ingroup VoiceInteraction
@@ -22,7 +23,6 @@ extern PadMsg gMicrophoneRequestRing[8];
 /// Next microphone configuration request slot, wrapping after eight submissions.
 /// \note Original identifier: \c D_800634F0 (0x800634F0).
 extern s32 gMicrophoneNextRequestIndex;
-OSMesgQueue *controllerGetCommandQueue();
 void micQueueConfigurationRequest(PadMsg *);
 
 /// Submit a microphone configuration request for asynchronous processing.

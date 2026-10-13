@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 1,881 / 74 |
+| Raw offset candidates | 4,040 / 86 | 1,876 / 74 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3788,3 +3788,11 @@ contracts to the terrain implementation and all four consumer units. It records
 distinct writable displacement outputs, query-policy bounds and borrowed cache
 lifetime. Actor downhill movement uses a pointer-valued cache and floating Z
 coordinate, preserving target argument placement and strict object identity.
+
+### Controller command transport
+
+`controller_commands.h` shares the persistent command-queue accessor across all
+five users and a checked 0x18-byte rumble request between producer and consumer.
+Rumble duration, interval and pulse fields have named seconds-based contracts.
+Queued request storage remains caller-owned until consumed; the persistent ring
+and controller thread retain their original layout and processing behavior.

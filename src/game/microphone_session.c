@@ -1,3 +1,4 @@
+#include "controller_commands.h"
 /// \file
 /// Device discovery, listening policy, and dictionary transitions.
 /// \ingroup VoiceInteraction
@@ -88,7 +89,6 @@ void micSessionResetAndFindDevice(void);
 s32 micSessionIsDictionaryUploadActive(void);
 s32 micSessionIsDeviceConnected(s32);
 void voiceRecognitionPoll(void);
-OSMesgQueue *controllerGetCommandQueue();
 /// Controller-thread microphone configuration message; distinct from EEPROM payloads.
 /// Command-dependent values retain their established slots without claiming a common meaning.
 typedef struct MicSessionRequest {

@@ -1,3 +1,4 @@
+#include "controller_commands.h"
 #include "text_window.h"
 #include "message_bar.h"
 #include "matrix_point.h"
@@ -180,7 +181,6 @@ void controllerThreadMain(void *);
 extern OSThread gControllerThread;
 /// Controller scheduler-client registration; its address also marks the controller-thread stack top.
 /// \note Original identifier: \c D_800ACE70 (0x800ACE70).
-OSMesgQueue *controllerGetCommandQueue(void);
 /// Primary camera additional overlay blend target RGBA color.
 /// \note Original identifier: \c D_800ABDB8 (0x800ABDB8).
 extern u8 gPrimaryOverlayBlendTarget[];

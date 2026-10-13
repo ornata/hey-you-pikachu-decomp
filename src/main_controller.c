@@ -1,3 +1,4 @@
+#include "controller_commands.h"
 #include "text_window.h"
 #include "message_bar.h"
 #include "matrix_point.h"
@@ -126,7 +127,6 @@ extern OSThread gControllerThread;
 /// Controller scheduler-client registration; its address also marks the controller-thread stack top.
 /// \note Original identifier: \c D_800ACE70 (0x800ACE70).
 extern SchedulerClient gControllerSchedulerClient;
-OSMesgQueue *controllerGetCommandQueue(void);
 /// Primary camera additional overlay blend target RGBA color.
 /// \note Original identifier: \c D_800ABDB8 (0x800ABDB8).
 extern u8 gPrimaryOverlayBlendTarget[];
@@ -290,7 +290,6 @@ void controllerPollPads(void);
 void micSessionUpdate(void);
 void controllerUpdateRumble(void);
 void micSessionDispatchRequest(void *);
-void controllerDispatchRumbleRequest(u8 *);
 /* Orphan strings of the compiled-out mpak error traces. */
 static const char sNoMpakModuleMsg[] = "ERROR: no mpak module.\n";
 static const char sUnknownMessageTypeMsg[] = "ERROR: unknown message type(%d)\n";
@@ -710,23 +709,23 @@ extern f32 gControllerRumblePulseMicrosecondsPerSecond;
 /// Apply a queued rumble start, stop, or reset request to the selected port.
 /// \param request Rumble request with a port from zero through three and command zero to start, one to stop, or two to reset; start requests include total duration, pulse interval, and pulse duration in seconds.
 /// \returns Nothing.
-void controllerDispatchRumbleRequest(u8 *request) {
+void controllerDispatchRumbleRequest(ControllerRumbleRequest *request) {
     u8 *timer;
     s32 command;
 
-    timer = gControllerRumblePatternState + *(s32 *)(request + 4) * 0x28;
-    command = *(s32 *)(request + 8);
+    timer = gControllerRumblePatternState + request->port * 0x28;
+    command = request->command;
     switch (command) {
     case 0:
         *(s32 *)timer = 2;
         *(u64 *)(timer + 8) =
             osGetTime() +
-            OS_USEC_TO_CYCLES((u64)(*(f32 *)(request + 0xC) * gControllerRumbleTotalMicrosecondsPerSecond));
+            OS_USEC_TO_CYCLES((u64)(request->durationSeconds * gControllerRumbleTotalMicrosecondsPerSecond));
         *(u64 *)(timer + 0x10) = osGetTime();
         *(u64 *)(timer + 0x18) =
-            OS_USEC_TO_CYCLES((u64)(*(f32 *)(request + 0x10) * gControllerRumbleIntervalMicrosecondsPerSecond));
+            OS_USEC_TO_CYCLES((u64)(request->intervalSeconds * gControllerRumbleIntervalMicrosecondsPerSecond));
         *(u64 *)(timer + 0x20) =
-            OS_USEC_TO_CYCLES((u64)(*(f32 *)(request + 0x14) * gControllerRumblePulseMicrosecondsPerSecond));
+            OS_USEC_TO_CYCLES((u64)(request->pulseSeconds * gControllerRumblePulseMicrosecondsPerSecond));
         break;
     case 1:
         *(s32 *)timer = 1;
