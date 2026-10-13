@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,551 / 77 |
+| Raw offset candidates | 4,040 / 86 | 2,537 / 77 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3523,3 +3523,11 @@ positions and handles reuse `RuntimeObjectPrefix`. Allocation uses the checked
 Ghidra update at `0x80026798`, transition writers and delivery readers establish
 these roles. The draw callback retains its narrower signed-halfword opacity
 view; it must not be replaced with a full-word animation value without evidence.
+
+Flipbook geometry, row-list reset and text replacement reuse its private
+record fields, including the two embedded text panels. Pending swaps, active
+banks, row branches, color and outline indices have descriptive field names
+and target offset checks. Outline reads retain signed-byte interpretation of
+the 255 disabled sentinel. The model owns drawing allocation and panel entry
+storage; existing panel color retention is unchanged. Ghidra text replacement
+at `0x8002588C`, geometry initialization and bank selection support these roles.

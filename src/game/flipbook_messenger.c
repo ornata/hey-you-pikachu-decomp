@@ -37,18 +37,24 @@ typedef struct Flipbook {
     /* 0x00 */ TextPanel panels[2]; ///< Displayed and prepared text banks.
     /* 0x40 */ s32 width; ///< Surface width in pixels.
     /* 0x44 */ s32 stripCount; ///< Number of visible sixteen-pixel rows.
-    /* 0x48 */ s32 flip; ///< Nonzero when the next draw must select prepared text.
-    /* 0x4C */ s32 cur; ///< Currently displayed panel and command bank.
+    /* 0x48 */ s32 pendingSwap; ///< Nonzero when the next draw must select prepared text.
+    /* 0x4C */ s32 activeBank; ///< Currently displayed panel and command bank.
     /* 0x50 */ Gfx *displayList; ///< Owned drawing allocation and surface display list.
-    /* 0x54 */ Gfx *dl[2]; ///< Per-bank row branches within the drawing allocation.
+    /* 0x54 */ Gfx *rowBranches[2]; ///< Per-bank row branches within the drawing allocation.
     /* 0x5C */ Gfx *commands[2]; ///< Per-bank text commands within the drawing allocation.
     /* 0x64 */ Vtx *vertices; ///< Surface vertices within the drawing allocation.
     /* 0x68 */ u8 pad68[4]; ///< Unresolved storage; no semantic interpretation established.
-    /* 0x6C */ u8 prim[4]; ///< RGBA modulation color.
-    /* 0x70 */ u8 flags[2]; ///< Leading and trailing outline indices; 255 disables an outline.
+    /* 0x6C */ u8 color[4]; ///< RGBA modulation color.
+    /* 0x70 */ u8 outlineIndices[2]; ///< Leading and trailing outline indices; 255 disables an outline.
 } Flipbook;
 
 typedef char FlipbookSizeCheck[(sizeof(Flipbook) == 0x74) ? 1 : -1];
+typedef char FlipbookWidthOffsetCheck[(((u32) & ((Flipbook *)0)->width) == 0x40) ? 1 : -1];
+typedef char FlipbookRowsOffsetCheck[(((u32) & ((Flipbook *)0)->stripCount) == 0x44) ? 1 : -1];
+typedef char FlipbookBankOffsetCheck[(((u32) & ((Flipbook *)0)->activeBank) == 0x4C) ? 1 : -1];
+typedef char FlipbookBranchesOffsetCheck[(((u32) & ((Flipbook *)0)->rowBranches) == 0x54) ? 1 : -1];
+typedef char FlipbookColorOffsetCheck[(((u32) & ((Flipbook *)0)->color) == 0x6C) ? 1 : -1];
+typedef char FlipbookOutlinesOffsetCheck[(((u32) & ((Flipbook *)0)->outlineIndices) == 0x70) ? 1 : -1];
 typedef char FlipbookDrawingOffsetCheck[(((u32)&((Flipbook *)0)->displayList) == 0x50) ? 1 : -1];
 typedef char FlipbookVerticesOffsetCheck[(((u32)&((Flipbook *)0)->vertices) == 0x64) ? 1 : -1];
 
@@ -95,24 +101,24 @@ void flipbookInitialize(u8 *object, s32 columns, s32 lines, u8 red, u8 green, u8
 
     TRACE("sbdInit(%p, %d, %d)\n", object, columns, lines);
     TRACE("sbd->line:%d\n", lines);
-    textPanelInitialize((TextPanel *)object, lines);
-    textPanelInitialize((TextPanel *)(object + 0x20), lines);
+    textPanelInitialize(&((Flipbook *)object)->panels[0], lines);
+    textPanelInitialize(&((Flipbook *)object)->panels[1], lines);
     ((Flipbook *)object)->width = columns * 0xC;
     ((Flipbook *)object)->stripCount = lines;
-    ((Flipbook *)object)->flip = 0;
-    ((Flipbook *)object)->cur = 0;
-    ((Flipbook *)object)->flags[0] = leadingOutline;
+    ((Flipbook *)object)->pendingSwap = 0;
+    ((Flipbook *)object)->activeBank = 0;
+    ((Flipbook *)object)->outlineIndices[0] = leadingOutline;
     branchSize = lines * 8;
     prefixSize = (branchSize * 8) + 0xA0;
     commandSize = (lines * 0x14 + 0x14) * sizeof(Gfx);
-    ((Flipbook *)object)->flags[1] = trailingOutline;
+    ((Flipbook *)object)->outlineIndices[1] = trailingOutline;
     cursor = (u8 *)heapAllocLocal((HpHdr *)&gGameHeap, (commandSize * 2) + prefixSize + (branchSize * 2) + (lines << 6),
                                  0x8E);
     ((Flipbook *)object)->displayList = (Gfx *)cursor;
     cursor += prefixSize;
-    ((Flipbook *)object)->dl[0] = (Gfx *)cursor;
+    ((Flipbook *)object)->rowBranches[0] = (Gfx *)cursor;
     cursor += branchSize;
-    ((Flipbook *)object)->dl[1] = (Gfx *)cursor;
+    ((Flipbook *)object)->rowBranches[1] = (Gfx *)cursor;
     cursor += branchSize;
     ((Flipbook *)object)->commands[0] = (Gfx *)cursor;
     cursor += commandSize;
@@ -122,10 +128,10 @@ void flipbookInitialize(u8 *object, s32 columns, s32 lines, u8 red, u8 green, u8
     flipbookInitializeGeometry(object, red, green, blue, alpha);
     flipbookBuildGeometryDisplayList(object);
     flipbookResetImageDisplayLists(object);
-    ((Flipbook *)object)->prim[0] = 0xFF;
-    ((Flipbook *)object)->prim[1] = 0xFF;
-    ((Flipbook *)object)->prim[2] = 0xFF;
-    ((Flipbook *)object)->prim[3] = 0xFF;
+    ((Flipbook *)object)->color[0] = 0xFF;
+    ((Flipbook *)object)->color[1] = 0xFF;
+    ((Flipbook *)object)->color[2] = 0xFF;
+    ((Flipbook *)object)->color[3] = 0xFF;
 }
 
 /// Release the model drawing storage and text images, retaining the panel color storage and caller-owned model storage.
@@ -151,10 +157,10 @@ void flipbookInitializeGeometry(u8 *object, u8 red, u8 green, u8 blue, u8 alpha)
     s32 halfWidth;
     Vtx *vertices;
     s32 i;
-    y = (*(s32 *)(object + 0x44) * 16) / 2;
-    halfWidth = *(s32 *)(object + 0x40) / 2;
+    y = (((Flipbook *)object)->stripCount * 16) / 2;
+    halfWidth = ((Flipbook *)object)->width / 2;
     vertices = *(Vtx **)(object + 0x64);
-    for (i = 0; i < *(s32 *)(object + 0x44); i++) {
+    for (i = 0; i < ((Flipbook *)object)->stripCount; i++) {
         vertices[0].v.ob[0] = 0;
         vertices[0].v.ob[1] = y;
         vertices[0].v.ob[2] = halfWidth;
@@ -177,9 +183,9 @@ void flipbookInitializeGeometry(u8 *object, u8 red, u8 green, u8 blue, u8 alpha)
         vertices[1].v.cn[3] = alpha;
         vertices[2].v.ob[1] = y - 16;
         vertices[2].v.ob[0] = 0;
-        vertices[2].v.ob[2] = halfWidth - *(s32 *)(object + 0x40);
+        vertices[2].v.ob[2] = halfWidth - ((Flipbook *)object)->width;
         vertices[2].v.flag = 0;
-        vertices[2].v.tc[0] = *(s32 *)(object + 0x40) << 5;
+        vertices[2].v.tc[0] = ((Flipbook *)object)->width << 5;
         vertices[2].v.cn[3] = alpha;
         vertices[2].v.cn[2] = blue;
         vertices[2].v.cn[1] = green;
@@ -187,9 +193,9 @@ void flipbookInitializeGeometry(u8 *object, u8 red, u8 green, u8 blue, u8 alpha)
         vertices[2].v.tc[1] = 0x200;
         vertices[3].v.ob[1] = y;
         vertices[3].v.ob[0] = 0;
-        vertices[3].v.ob[2] = halfWidth - *(s32 *)(object + 0x40);
+        vertices[3].v.ob[2] = halfWidth - ((Flipbook *)object)->width;
         vertices[3].v.flag = 0;
-        vertices[3].v.tc[0] = *(s32 *)(object + 0x40) << 5;
+        vertices[3].v.tc[0] = ((Flipbook *)object)->width << 5;
         vertices[3].v.cn[3] = alpha;
         vertices[3].v.cn[2] = blue;
         vertices[3].v.cn[1] = green;
@@ -258,7 +264,7 @@ void flipbookResetImageDisplayLists(u8 *object) {
     s32 i;
     Gfx *p = *(Gfx **)(object + 0x54);
 
-    for (i = 0; i < *(s32 *)(object + 0x44) * 2; i++) {
+    for (i = 0; i < ((Flipbook *)object)->stripCount * 2; i++) {
         gSPEndDisplayList(p++);
     }
 }
@@ -272,14 +278,14 @@ extern Gfx *gRenderDisplayListCursor;
 /// \returns A borrowed display list owned by the model, valid until destruction.
 /// \note Original decompilation identifier: \c func_800255E8 (0x800255E8).
 Gfx *flipbookPrepareDraw(Flipbook *f) {
-    if (f->flip != 0) {
-        f->flip = 0;
-        f->cur ^= 1;
+    if (f->pendingSwap != 0) {
+        f->pendingSwap = 0;
+        f->activeBank ^= 1;
     }
-    TRACE("drawIdx:%d\n", f->cur);
-    gSPSegment(gRenderDisplayListCursor++, 6, osVirtualToPhysical(f->dl[f->cur]));
+    TRACE("drawIdx:%d\n", f->activeBank);
+    gSPSegment(gRenderDisplayListCursor++, 6, osVirtualToPhysical(f->rowBranches[f->activeBank]));
     gDPPipeSync(gRenderDisplayListCursor++);
-    gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, f->prim[0], f->prim[1], f->prim[2], f->prim[3]);
+    gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, f->color[0], f->color[1], f->color[2], f->color[3]);
     return f->displayList;
 }
 
@@ -298,8 +304,8 @@ void flipbookBuildImageDisplayLists(u8 *object) {
     s32 index;
     s32 bank;
     textDrawSetPalette(gDefaultTextPalette);
-    bank = ((Flipbook *)object)->cur ^ 1;
-    branches = ((Flipbook *)object)->dl[bank];
+    bank = ((Flipbook *)object)->activeBank ^ 1;
+    branches = ((Flipbook *)object)->rowBranches[bank];
     commands = ((Flipbook *)object)->commands[bank];
     images = (TextImage **)((Flipbook *)object)->panels[bank].images + 1;
     for (index = 0; index < ((Flipbook *)object)->stripCount; index++) {
@@ -325,7 +331,7 @@ void flipbookBuildImageDisplayLists(u8 *object) {
     TRACE("workIdx:%d\n", bank);
     TRACE("ERROR: gpSize over:%d\n", commands - ((Flipbook *)object)->commands[bank]);
     lists = (Flipbook *)object;
-    lists->flip = 1;
+    lists->pendingSwap = 1;
 }
 
 void image4BitAddOffsetOutline(u8 *, s32, s32, s32, s32);
@@ -343,22 +349,22 @@ void flipbookSetText(u8 *object, s32 *text, s32 count) {
     TextPanel *inactivePanel;
 
     TRACE("sbdApply(%p, %p, %d)\n", object, text, count);
-    activeBuffer = *(s32 *)(object + 0x4C);
-    inactivePanel = &((TextPanel *)object)[activeBuffer ^ 1];
+    activeBuffer = ((Flipbook *)object)->activeBank;
+    inactivePanel = &((Flipbook *)object)->panels[activeBuffer ^ 1];
     textPanelClear(inactivePanel);
     if (count != 0) {
         do {
             TRACE(" Apply:(%s)\n", *text);
             lineImage = (u8 *)textPanelAppend(inactivePanel, (void *)*text);
-            trailingOutline = *(s8 *)(object + 0x71);
+            trailingOutline = (s8)((Flipbook *)object)->outlineIndices[1];
             if ((trailingOutline >= 0) && (trailingOutline < 0x10)) {
                 image4BitAddOffsetOutline(lineImage, 1, 0, 0, (s32)trailingOutline);
-                image4BitAddOffsetOutline(lineImage, 0, 1, 0, (s32) * (s8 *)(object + 0x71));
+                image4BitAddOffsetOutline(lineImage, 0, 1, 0, (s32) (s8)((Flipbook *)object)->outlineIndices[1]);
             }
-            leadingOutline = *(s8 *)(object + 0x70);
+            leadingOutline = (s8)((Flipbook *)object)->outlineIndices[0];
             if ((leadingOutline >= 0) && (leadingOutline < 0x10)) {
                 image4BitAddOffsetOutline(lineImage, -1, 0, 0, (s32)leadingOutline);
-                image4BitAddOffsetOutline(lineImage, 0, -1, 0, (s32) * (s8 *)(object + 0x70));
+                image4BitAddOffsetOutline(lineImage, 0, -1, 0, (s32) (s8)((Flipbook *)object)->outlineIndices[0]);
             }
             count -= 1;
             text++;
