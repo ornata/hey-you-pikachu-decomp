@@ -1688,6 +1688,7 @@
         "action_query.h",
         "actor_meters.h",
         "actor_part_shake.h",
+        "actor_parts.h",
         "actor_script.h",
         "camera_storage.h",
         "camera_types.h",
@@ -1719,69 +1720,67 @@
         "text_panel.h",
         "vector_metrics.h"
       ],
-      "matching_exceptions": {
-        "actorGetDefaultPart caller": "The canonical actor-part interface accepts an actor pointer. Including that prototype and casting the integer gPikachuActor view changes this caller ROM bytes under IDO. Retain its s32 compatibility declaration until a matching pointer representation is established."
-      },
+      "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "object + 0x64": [
-            "186:26"
+            "187:26"
           ],
           "y - 16": [
-            "198:31",
-            "208:31"
+            "199:31",
+            "209:31"
           ],
           "vtxIdx + 1": [
-            "272:37"
+            "273:37"
           ],
           "vtxIdx + 2": [
-            "272:49",
-            "272:72"
+            "273:49",
+            "273:72"
           ],
           "vtxIdx + 3": [
-            "272:84"
+            "273:84"
           ],
           "object + 0x54": [
-            "289:24"
+            "290:24"
           ],
           "images + 1": [
-            "334:63"
+            "335:63"
           ],
           "rowOffset - 16": [
-            "467:67"
+            "468:67"
           ],
           "rowOffset + 16": [
-            "480:67"
+            "481:67"
           ],
           "boardStateAddress + 0x14": [
-            "540:31"
+            "541:31"
           ],
           "actor + 0x34": [
-            "690:26"
+            "691:26"
           ],
           "actor + 0x54": [
-            "694:27"
+            "695:27"
           ],
           "gPlayerState + 0xFC": [
-            "815:18"
+            "816:18"
           ],
           "object + 0x18": [
-            "863:81"
-          ],
-          "object + 0x1C": [
             "864:81"
           ],
-          "object + 0x20": [
+          "object + 0x1C": [
             "865:81"
           ],
+          "object + 0x20": [
+            "866:81"
+          ],
           "linked + 0x24": [
-            "890:39"
+            "891:39"
           ],
           "p + 0x18": [
-            "1010:82"
+            "1011:82"
           ],
           "object + 0x30": [
-            "1011:21",
+            "1012:21",
             "1115:18",
             "1119:18"
           ],
@@ -2107,6 +2106,7 @@
     "src/game/hud.c": {
       "known_views": [
         "audio_cue.h",
+        "audio_sound_effect.h",
         "camera_visibility.h",
         "hud_draw.h",
         "integer_animation.h",
@@ -2124,16 +2124,17 @@
         "texture_descriptor.h",
         "texture_draw_types.h",
         "texture_image.h",
-        "texture_rectangles.h"
+        "texture_rectangles.h",
+        "voice_recognition.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "offset + 48": [
-            "143:32"
+            "145:32"
           ],
           "offset + 40": [
-            "159:32"
+            "161:32"
           ],
           "gPlayerState + 0x50": [
             "601:67"
@@ -2196,7 +2197,8 @@
         "text_image.h",
         "text_image_configurations.h",
         "text_image_create.h",
-        "text_window.h"
+        "text_window.h",
+        "voice_recognition.h"
       ],
       "matching_exceptions": {
         "messageBarActivateNext": "The 68-byte queue record and duration field are established. Direct typed duration indexing changes IDO output and fails ROM matching; using sizeof(QueuedMessage) for the byte-cursor stride also fails. Retain the signed literal stride and biased byte cursor in activation. Typed queued-record access in messageBarUpdate and typed enqueue writes pass strict object comparison. Next evidence: instruction/scheduling analysis of activation to find a matching typed representation."
@@ -2448,7 +2450,9 @@
         "vector_direction.h",
         "vector_metrics.h"
       ],
-      "matching_exceptions": {},
+      "matching_exceptions": {
+        "searchTreeFind callers": "Canonical TreeNode * return and s32 key declaration with explicit stack-key address casts changes the ROM in objectPrepareSearchTreeAtKey/objectPrepareKindSearch. Restoring the local void/pointer-key declaration restores all 483 strict objects. Isolate return-type and key-address scheduling separately before adopting search_tree_lookup.h; the generic tree implementation and its canonical header remain unchanged."
+      },
       "locations": {
         "raw_offset_candidates": {
           "base + 1": [
@@ -3361,6 +3365,7 @@
         "backdrop_view.h",
         "camera_overlay.h",
         "controller_input.h",
+        "eeprom_io.h",
         "hud_draw.h",
         "math_angles.h",
         "object_flags.h",
@@ -3385,22 +3390,22 @@
       "locations": {
         "raw_offset_candidates": {
           "words + 4": [
-            "81:72"
+            "82:72"
           ],
           "words + 8": [
-            "86:44"
+            "87:44"
           ],
           "x - 10": [
-            "261:36"
+            "262:36"
           ],
           "y - 4": [
-            "261:44"
+            "262:44"
           ],
           "maxWidth + 10": [
-            "261:55"
+            "262:55"
           ],
           "x + 16": [
-            "268:17"
+            "269:17"
           ],
           "gCurrentAreaConfiguration + 0x64": [
             "969:47"
@@ -5374,6 +5379,7 @@
         "camera_overlay.h",
         "controller_input.h",
         "controller_rumble.h",
+        "eeprom_io.h",
         "heap_alloc.h",
         "heap_diagnostics.h",
         "math_angles.h",
@@ -5408,81 +5414,81 @@
       "locations": {
         "raw_offset_candidates": {
           "depth + 1": [
-            "428:47"
+            "429:47"
           ],
           "row + 1": [
-            "656:14"
+            "657:14"
           ],
           "i - 1": [
-            "662:18"
+            "663:18"
           ],
           "index - 1": [
-            "713:18"
+            "714:18"
           ],
           "count - 1": [
-            "840:51"
+            "841:51"
           ],
           "firstVisibleIndex + 4": [
-            "877:48"
+            "878:48"
           ],
           "selectedIndex - 4": [
-            "878:51"
+            "879:51"
           ],
           "model + 0x18": [
-            "912:125",
-            "942:125"
+            "913:125",
+            "943:125"
           ],
           "model + 0x10": [
-            "913:37",
-            "943:37"
-          ],
-          "gPlayerYaw + 180": [
-            "913:72",
-            "943:72",
-            "980:50"
-          ],
-          "model + 0xC": [
             "914:37",
             "944:37"
           ],
-          "secondary + 0x10": [
+          "gPlayerYaw + 180": [
+            "914:72",
+            "944:72",
+            "981:50"
+          ],
+          "model + 0xC": [
             "915:37",
             "945:37"
           ],
+          "secondary + 0x10": [
+            "916:37",
+            "946:37"
+          ],
           "object + 0x18": [
-            "978:102"
+            "979:102"
           ],
           "object + 0xC": [
-            "979:14",
-            "982:14"
-          ],
-          "object + 0x10": [
             "980:14",
             "983:14"
           ],
+          "object + 0x10": [
+            "981:14",
+            "984:14"
+          ],
           "object + 0x14": [
-            "981:14"
+            "982:14"
           ],
           "gCurrentAreaConfiguration + 0x64": [
-            "1009:47"
+            "1010:47"
           ],
           "y + 3": [
-            "1165:14"
+            "1166:14"
           ],
           "x + 80": [
-            "1166:13"
+            "1167:13"
           ],
           "selected - 2": [
-            "1179:40"
+            "1180:40"
           ],
           "top - 3": [
-            "1179:54"
+            "1180:54"
           ],
           "selected + 2": [
-            "1179:63"
+            "1180:63"
           ],
           "bottom + 3": [
-            "1179:77"
+            "1180:77"
           ],
           "gCurrentAreaConfiguration + 0xC": [
             "1862:32",

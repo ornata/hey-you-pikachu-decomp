@@ -1,3 +1,4 @@
+#include "eeprom_io.h"
 #include "player_chase.h"
 #include "object_groups.h"
 #include "math_angles.h"
@@ -1431,7 +1432,6 @@ void systemMenuSetVerticalLookMode(s32 normal) {
     progressSetValue(7, 0);
 }
 
-s32 eepromGetQueuedTransferState(void);
 /// Save-control byte transferred independently from the progress records.
 /// \note Original identifier: \c D_8009A6F0 (0x8009A6F0).
 extern u8 gEepromSaveControl;
@@ -1452,7 +1452,7 @@ void systemMenuAppendSaveStatusDetails(void) {
     char buffer[48];
     FileStatusLabels labels = gSystemMenuSaveStatusLabels;
     switch (eepromGetQueuedTransferState()) {
-    case 2:
+    case EEPROM_TRANSFER_WRITING:
         switch (gRuntimeSaveParameters) {
         case 1:
             gEepromSaveControl |= 1;
@@ -1462,9 +1462,9 @@ void systemMenuAppendSaveStatusDetails(void) {
             break;
         }
         break;
-    case 3:
-    case 4:
-    case 5:
+    case EEPROM_TRANSFER_READ_FAILED:
+    case EEPROM_TRANSFER_CHECKSUM_FAILED:
+    case EEPROM_TRANSFER_WRITE_FAILED:
         switch (gRuntimeSaveParameters) {
         case 1:
             gEepromSaveControl &= ~1;

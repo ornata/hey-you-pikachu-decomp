@@ -103,9 +103,6 @@
     "src/game/texture_cache.c": {
       "texture ROM address expressions": "Texture image and palette offsets are cartridge byte offsets added to the archive linker address. Explicitly casting the archive symbol to s32 changes allocated instructions and relocations under IDO; retain the original byte-pointer addition at the numeric romCacheRead key boundary. A matching explicit numeric representation remains to be recovered."
     },
-    "src/game/flipbook_messenger.c": {
-      "actorGetDefaultPart caller": "The canonical actor-part interface accepts an actor pointer. Including that prototype and casting the integer gPikachuActor view changes this caller ROM bytes under IDO. Retain its s32 compatibility declaration until a matching pointer representation is established."
-    },
     "src/game/actor_movement.c": {
       "actorApproachTargetInThreeDimensions": "The shared maze root is MazeNode*. Bounds reads at checked MazeNode x/w/z/d offsets retain explicit byte views: direct member reads change allocated instructions under IDO. The canonical root ownership and allocation are established; a matching direct-field representation remains to be recovered."
     },
@@ -145,6 +142,9 @@
     },
     "src/game/microphone_session.c": {
       "micSessionIsTriggerReady": "Retain the established int return in the shared query header. IDO s32 is long; changing the definition return to s32 fails ROM matching. The canonical int declaration and all other shared session queries match."
+    },
+    "src/game/object_hierarchy.c": {
+      "searchTreeFind callers": "Canonical TreeNode * return and s32 key declaration with explicit stack-key address casts changes the ROM in objectPrepareSearchTreeAtKey/objectPrepareKindSearch. Restoring the local void/pointer-key declaration restores all 483 strict objects. Isolate return-type and key-address scheduling separately before adopting search_tree_lookup.h; the generic tree implementation and its canonical header remain unchanged."
     }
   },
   "baseline_totals": {

@@ -4031,3 +4031,17 @@ views into a single vertex allocation. `ground_shadow.h` shares creation with
 actor configuration and documents resolution, owner attachment and object
 lifetime. Transform updates use the canonical one-argument actor-part query;
 removing the unused second argument preserves all allocated bytes and relocations.
+
+### Remaining interface consumers
+
+Messenger rebound now uses the shared actor-part query. HUD and message-bar
+recognition status use `voice_recognition.h`; HUD sound playback uses the
+canonical playback-result declaration. Title and system-menu EEPROM consumers
+include the transfer contract and use named transfer states. These adoptions
+preserve all allocated object bytes and relocations.
+
+The object-manager search-key callers still require their local compatibility
+declaration: adopting the canonical node return and integer key with stack-key
+address casts changes the ROM. This trial was restored and recorded in the
+exception ledger; return-type and address-expression effects need separate
+isolation before another canonical adoption.

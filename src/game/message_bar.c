@@ -1,3 +1,4 @@
+#include "voice_recognition.h"
 #include "math_scalar.h"
 #include "pikachu_actor.h"
 #include "camera_storage.h"
@@ -101,7 +102,6 @@ extern s32 gRenderCameraIndex;
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
-s32 voiceRecognitionGetCommandStatus(void);
 
 /// Update an object spinner in response to voice activity and viewer distance.
 /// \param object Spinner object with initialized rotation-speed state.

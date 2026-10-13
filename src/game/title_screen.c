@@ -1,3 +1,4 @@
+#include "eeprom_io.h"
 #include "texture_image.h"
 #include "texture_rectangles.h"
 #include "pikachu_actor.h"
@@ -732,7 +733,6 @@ extern u32 gTitleSilhouetteMilliseconds;
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
-s32 eepromGetQueuedTransferState(void);
 s32 micIsDeviceConnected(s32);
 void runtimeRequestProgramChange(s32);
 void titleScreenInitialize(void);
@@ -753,10 +753,10 @@ void titleScreenUpdate(void) {
         gTitleScreenState = 1;
         break;
     case 1:
-        if (eepromGetQueuedTransferState() == 1) {
+        if (eepromGetQueuedTransferState() == EEPROM_TRANSFER_READING) {
             break;
         }
-        if (eepromGetQueuedTransferState() != 0) {
+        if (eepromGetQueuedTransferState() != EEPROM_TRANSFER_IDLE) {
             gEepromSaveControl = 0;
         }
         if (!(gEepromSaveControl & 1) && (gEepromSaveControl & 2)) {
@@ -813,8 +813,8 @@ void titleScreenUpdate(void) {
         }
         break;
     case 6:
-        if (eepromGetQueuedTransferState() != 1) {
-            if (eepromGetQueuedTransferState() == 0) {
+        if (eepromGetQueuedTransferState() != EEPROM_TRANSFER_READING) {
+            if (eepromGetQueuedTransferState() == EEPROM_TRANSFER_IDLE) {
                 if (gRuntimeSaveParameters == 1) {
                     gEepromSaveControl |= 1;
                 } else {
@@ -949,10 +949,10 @@ void titleScreenUpdate(void) {
             if (gTitleLoadGameSelected == 0) {
                 progressResetRecordToDefaults();
                 progressUpdateChapterAfterVisit();
-            } else if (eepromGetQueuedTransferState() == 0) {
+            } else if (eepromGetQueuedTransferState() == EEPROM_TRANSFER_IDLE) {
                 progressApplyLoadedRecord();
             } else {
-                if (eepromGetQueuedTransferState() == 1) {
+                if (eepromGetQueuedTransferState() == EEPROM_TRANSFER_READING) {
                     break;
                 }
                 if (gRuntimeSaveParameters == 1) {

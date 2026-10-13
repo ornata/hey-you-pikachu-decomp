@@ -1,3 +1,5 @@
+#include "audio_sound_effect.h"
+#include "voice_recognition.h"
 #include "texture_image.h"
 #include "texture_descriptor.h"
 #include "texture_rectangles.h"
@@ -283,7 +285,6 @@ typedef struct {
 } HudState;
 s32 micQueryTriggerStateNoResult(void);
 s32 micQueryDevicePortNoResult(void);
-s32 voiceRecognitionGetCommandStatus(void);
 /// Whether gameplay exposes microphone interaction and its HUD indicator.
 /// \note Original identifier: \c D_800722D0 (0x800722D0).
 extern s32 gGameplayMicrophoneAvailable;
@@ -360,7 +361,6 @@ void hudDrawRecognitionIndicator(Gfx **gdl) {
 }
 
 s32 micQueryTriggerReadinessNoResult(void);
-void audioPlaySoundEffect(s32);
 /// Whether gameplay permits recognized voice commands to launch messenger effects.
 /// \note Original identifier: \c D_800722D4 (0x800722D4).
 extern s32 gGameplayVoiceCommandsAllowed;

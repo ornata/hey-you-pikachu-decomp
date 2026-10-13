@@ -1,3 +1,4 @@
+#include "actor_parts.h"
 #include "matrix_basic.h"
 #include "math_scalar.h"
 #include "pikachu_actor.h"
@@ -1045,7 +1046,6 @@ void messengerBeginDissipation(f32 *object) {
     object[1] = doubledScale;
 }
 
-u8 *actorGetDefaultPart(s32);
 /// Begin the messenger rebound after delivery, including applicable recipient feedback.
 /// \param object Messenger projectile with initialized state.
 /// \returns Nothing.
@@ -1064,7 +1064,7 @@ void messengerBeginRebound(u8 *object) {
         gTrackedMessengerHandle = 0;
     linked = objectResolveAvailableHandle(((MessengerFlightState *)state)->linkedId);
     if (linked != NULL && ((s32)gPikachuActor) == *(s32 *)(linked + 0x50)) {
-        target = actorGetDefaultPart((s32)((s32)gPikachuActor));
+        target = actorGetDefaultPart((u8 *)gPikachuActor);
         count = (s32)mathMapRangeClamped(0.0f, 2.0f, 4000.0f, 6.0f, (f32) * (s32 *)(state + 0x34));
         linkedEffectCreateChain(LINKED_EFFECT_FALLING, ((RuntimeObjectPrefix *)object)->worldPosition[0], ((RuntimeObjectPrefix *)object)->worldPosition[1], ((RuntimeObjectPrefix *)object)->worldPosition[2], 0.05f,
                       ((RuntimeObjectPrefix *)target)->handle, 0.7f, 0.5f, 5.0f, 0.03f, 0.03f, 0xC2, 1, count);
