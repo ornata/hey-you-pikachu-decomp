@@ -112,7 +112,8 @@
     "src/ovl/item_registry.c": {
       "itemTryRelease": "Hold-state switch uses an unsigned-byte view of the named signed state member. Casting the signed member value to u8 changes IDO output; the explicit byte view matches. Other release fields and the actor held-item handle use shared members.",
       "itemThrow": "Object transform and item motion fields use shared members. Owner at 8, hold state at 6, flags at 0 and kind at 4 retain raw reads: isolated direct-member trials each change ROM bytes. Their layouts are checked by shared types; further recovery needs IDO allocation/load-scheduling evidence.",
-      "itemUpdate": "Search-priority arithmetic at state offset 0x38 retains a raw float view: a direct searchPriority member changes ROM bytes in an isolated forced-rebuild trial. Kind growth bounds and rate, object links/flags, hold state, material state, collision key and idle timer use named fields. Further conversion needs IDO floating scheduling evidence."
+      "itemUpdate": "Search-priority arithmetic at state offset 0x38 retains a raw float view: a direct searchPriority member changes ROM bytes in an isolated forced-rebuild trial. Kind growth bounds and rate, object links/flags, hold state, material state, collision key and idle timer use named fields. Further conversion needs IDO floating scheduling evidence.",
+      "itemPrepareKindSearch": "TreeNode * return and SearchTree * parameter match through the pointer-key compatibility declaration. Adopting search_tree_lookup.h with an explicit s32 address cast fails the ROM gate; restoring the pointer-key view restores all strict objects. Retain typed object/state keys with their checked stack extents; investigate integer-address argument scheduling before canonical-header adoption."
     },
     "src/ovl/actor_script_queries.c": {
       "player-view search wrappers": "Player yaw and view-shake reads retain the float-array view: direct checked player members change ROM code generation. Returned object handles use the shared RuntimeObjectPrefix member. Preserve floating addition ordering while seeking a matching named representation."
@@ -144,7 +145,7 @@
       "micSessionIsTriggerReady": "Retain the established int return in the shared query header. IDO s32 is long; changing the definition return to s32 fails ROM matching. The canonical int declaration and all other shared session queries match."
     },
     "src/game/object_hierarchy.c": {
-      "searchTreeFind callers": "Canonical TreeNode * return and s32 key declaration with explicit stack-key address casts changes the ROM in objectPrepareSearchTreeAtKey/objectPrepareKindSearch. Restoring the local void/pointer-key declaration restores all 483 strict objects. Isolate return-type and key-address scheduling separately before adopting search_tree_lookup.h; the generic tree implementation and its canonical header remain unchanged."
+      "searchTreeFind callers": "The correct TreeNode * return and SearchTree * parameter match with a pointer-key compatibility declaration. Canonical s32 keys combined with the node return change ROM code in objectPrepareKindSearch, with both byte-array and typed ObjectSearchKey storage. A function-pointer call view also fails ROM matching. Keep the documented pointer-key ABI view; isolate integer-address argument scheduling before canonical-header adoption. The typed object key preserves its 0x5C stack extent and all strict objects."
     }
   },
   "baseline_totals": {

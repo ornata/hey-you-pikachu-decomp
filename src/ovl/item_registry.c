@@ -1716,9 +1716,14 @@ ItemCategoryRange gItemCategoryRanges[19] = {
 };
 // clang-format on
 
-/// Matching exception: the node result is discarded here; the canonical pointer-return
-/// prototype changes IDO allocation. See search_tree_lookup.h and TYPE_RECOVERY.md.
-void searchTreeFind(void *, void *); /* extern */
+/// Find a tree node using a borrowed item-shaped search key.
+/// \param tree Initialized item tree whose root may change during lookup.
+/// \param key Borrowed key whose state kind and handle are interpreted synchronously.
+/// \returns Borrowed matching node, or null when absent.
+/// \note Portability: Retain the pointer-key ABI view pending a matching canonical
+/// integer-key call representation; see search_tree_lookup.h.
+/// \note Original decompilation identifier: \c func_80041184 (0x80041184).
+TreeNode *searchTreeFind(SearchTree *tree, void *key);
 
 /// Temporary item-state key; retained storage extent preserves the ROM stack layout.
 /// Only the shared state kind is initialized and read by the comparator.

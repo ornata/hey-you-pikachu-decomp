@@ -61,9 +61,14 @@ extern Gfx *gRenderDisplayListCursor;
 void objectDrawHierarchyForCurrentGroup(u8 *);
 u8 romByteReaderRead();
 void _bzero(void *, u32);
-/// Matching exception: the node result is discarded here; the canonical pointer-return
-/// prototype changes IDO allocation. See search_tree_lookup.h and TYPE_RECOVERY.md.
-void searchTreeFind(void *, void *);
+/// Find a tree node using a borrowed object-shaped search key.
+/// \param tree Initialized object tree whose root may change during lookup.
+/// \param key Borrowed key whose kind and handle are interpreted synchronously.
+/// \returns Borrowed matching node, or null when absent.
+/// \note Portability: Retain the pointer-key ABI view; the canonical integer key
+/// combined with the node return changes IDO code in objectPrepareKindSearch.
+/// \note Original decompilation identifier: \c func_80041184 (0x80041184).
+TreeNode *searchTreeFind(SearchTree *tree, void *key);
 
 /// Pending local movement accumulated during hierarchy traversal.
 /// \note Original identifier: \c D_800ADA10 (0x800ADA10).
@@ -498,18 +503,27 @@ void objectDebugReportResponsesAndCollisions(void) {
     collisionGridDebugReportNoOp();
 }
 
+/// Borrowed search key with the original caller stack extent.
+/// Only kind and handle identify a candidate; this record is not a live object.
+typedef struct ObjectSearchKey {
+    RuntimeObjectPrefix object; ///< Shared kind and handle fields used by the comparator.
+    u8 retainedStackPadding[4]; ///< Storage retained for the original target stack layout.
+} ObjectSearchKey;
+
+typedef char ObjectSearchKeySizeCheck[(sizeof(ObjectSearchKey) == 0x5C) ? 1 : -1];
+
 /// Prepare the object search tree around a requested object key.
 /// \param kind Object kind to locate.
 /// \param handle Object handle to locate within the kind.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80007D7C (0x80007D7C).
 void objectPrepareSearchTreeAtKey(u16 kind, s32 handle) {
-    u8 msg[0x5C];
+    ObjectSearchKey key;
 
-    _bzero(msg, 0x5C);
-    *(u16 *)(msg + 0x34) = kind;
-    *(s32 *)(msg + 0x38) = handle;
-    searchTreeFind(&gObjectSearchTree, msg);
+    _bzero(&key, 0x5C);
+    key.object.kind = kind;
+    key.object.handle = handle;
+    searchTreeFind(&gObjectSearchTree, &key);
 }
 
 s32 objectGetNextHandle(void);
@@ -1739,14 +1753,14 @@ void objectEvaluatePointRelativeYaw(u8 *object, s32 pointAddress) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80009D80 (0x80009D80).
 void objectPrepareKindSearch(s32 kind) {
-    u8 msg[0x5C];
+    ObjectSearchKey key;
 
-    _bzero(msg, 0x5C);
-    *(s16 *)(msg + 0x34) = kind;
-    *(s32 *)(msg + 0x38) = -1;
-    searchTreeFind(&gObjectSearchTree, msg);
-    *(s32 *)(msg + 0x38) = 0;
-    searchTreeFind(&gObjectSearchTree, msg);
+    _bzero(&key, 0x5C);
+    key.object.kind = kind;
+    key.object.handle = -1;
+    searchTreeFind(&gObjectSearchTree, &key);
+    key.object.handle = 0;
+    searchTreeFind(&gObjectSearchTree, &key);
 }
 
 /* Target picker: the candidate in reach, its distance, the search origin and facing. */

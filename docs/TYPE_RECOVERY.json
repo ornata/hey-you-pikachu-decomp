@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 1793,
-      "unique_spellings": 765,
+      "occurrences": 1788,
+      "unique_spellings": 763,
       "files": 72
     }
   },
@@ -2451,153 +2451,144 @@
         "vector_metrics.h"
       ],
       "matching_exceptions": {
-        "searchTreeFind callers": "Canonical TreeNode * return and s32 key declaration with explicit stack-key address casts changes the ROM in objectPrepareSearchTreeAtKey/objectPrepareKindSearch. Restoring the local void/pointer-key declaration restores all 483 strict objects. Isolate return-type and key-address scheduling separately before adopting search_tree_lookup.h; the generic tree implementation and its canonical header remain unchanged."
+        "searchTreeFind callers": "The correct TreeNode * return and SearchTree * parameter match with a pointer-key compatibility declaration. Canonical s32 keys combined with the node return change ROM code in objectPrepareKindSearch, with both byte-array and typed ObjectSearchKey storage. A function-pointer call view also fails ROM matching. Keep the documented pointer-key ABI view; isolate integer-address argument scheduling before canonical-header adoption. The typed object key preserves its 0x5C stack extent and all strict objects."
       },
       "locations": {
         "raw_offset_candidates": {
           "base + 1": [
-            "170:31"
+            "175:31"
           ],
           "base + 2": [
-            "171:31"
+            "176:31"
           ],
           "base + 3": [
-            "172:31"
+            "177:31"
           ],
           "reader + 0x13": [
-            "187:62"
+            "192:62"
           ],
           "windowStart + 0x400": [
-            "206:61"
+            "211:61"
           ],
           "reader + 0x10": [
-            "230:29",
-            "356:36"
+            "235:29",
+            "361:36"
           ],
           "return -1": [
-            "298:9",
-            "895:9",
-            "903:9"
+            "303:9",
+            "909:9",
+            "917:9"
           ],
           "i + 1": [
-            "306:19"
+            "311:19"
           ],
           "length + 1U": [
-            "309:28"
+            "314:28"
           ],
           "position + 1": [
-            "353:34",
-            "356:77"
-          ],
-          "msg + 0x34": [
-            "510:14",
-            "1745:14"
-          ],
-          "msg + 0x38": [
-            "511:14",
-            "1746:14",
-            "1748:14"
+            "358:34",
+            "361:77"
           ],
           "gObjectSearchTreeRoot + 8": [
-            "528:31",
-            "1833:22"
+            "542:31",
+            "1847:22"
           ],
           "gObjectTransformStackDepth - 1": [
-            "598:40"
+            "612:40"
           ],
           "object + 0x24": [
-            "1086:35"
+            "1100:35"
           ],
           "widthShift + 4": [
-            "1087:42"
+            "1101:42"
           ],
           "heightShift + 4": [
-            "1088:42"
+            "1102:42"
           ],
           "object + 0x54": [
-            "1098:25"
+            "1112:25"
           ],
           "obj + 0x54": [
-            "1117:34"
+            "1131:34"
           ],
           "obj + 0x34": [
-            "1138:18"
+            "1152:18"
           ],
           "obj + 0x30": [
-            "1141:21"
+            "1155:21"
           ],
           "object + 0x30": [
-            "1152:21"
+            "1166:21"
           ],
           "object + 0x36": [
-            "1293:24",
-            "1295:26",
-            "1301:28",
-            "1304:30",
-            "1337:78",
-            "1338:30",
-            "1343:30",
-            "1344:34",
-            "1345:34",
-            "1346:34",
-            "1348:34",
-            "1349:34"
+            "1307:24",
+            "1309:26",
+            "1315:28",
+            "1318:30",
+            "1351:78",
+            "1352:30",
+            "1357:30",
+            "1358:34",
+            "1359:34",
+            "1360:34",
+            "1362:34",
+            "1363:34"
           ],
           "object + 0x34": [
-            "1298:47",
-            "1299:47",
-            "1307:30",
-            "1324:37"
+            "1312:47",
+            "1313:47",
+            "1321:30",
+            "1338:37"
           ],
           "object + 0x18": [
-            "1302:78",
-            "1331:30"
+            "1316:78",
+            "1345:30"
           ],
           "object + 0x1C": [
-            "1302:103",
-            "1332:30"
+            "1316:103",
+            "1346:30"
           ],
           "object + 0x20": [
-            "1303:49",
-            "1333:30"
+            "1317:49",
+            "1347:30"
           ],
           "object + 0xC": [
-            "1308:97",
-            "1732:70"
+            "1322:97",
+            "1746:70"
           ],
           "object + 0x10": [
-            "1309:62"
+            "1323:62"
           ],
           "object + 0x14": [
-            "1309:87"
+            "1323:87"
           ],
           "object + 4": [
-            "1310:93"
+            "1324:93"
           ],
           "object + 8": [
-            "1311:49"
+            "1325:49"
           ],
           "object + 0x3C": [
-            "1335:32",
-            "1337:51"
+            "1349:32",
+            "1351:51"
           ],
           "object + 0x44": [
-            "1340:26",
-            "1732:46"
+            "1354:26",
+            "1746:46"
           ],
           "object + 0x48": [
-            "1341:26"
+            "1355:26"
           ],
           "object + 0x4C": [
-            "1342:26"
+            "1356:26"
           ],
           "object + 0x2C": [
-            "1353:26",
-            "1354:68"
+            "1367:26",
+            "1368:68"
           ],
           "first + 0x34": [
-            "1837:28",
-            "1840:18"
+            "1851:28",
+            "1854:18"
           ]
         }
       }
@@ -4932,101 +4923,102 @@
       "matching_exceptions": {
         "itemTryRelease": "Hold-state switch uses an unsigned-byte view of the named signed state member. Casting the signed member value to u8 changes IDO output; the explicit byte view matches. Other release fields and the actor held-item handle use shared members.",
         "itemThrow": "Object transform and item motion fields use shared members. Owner at 8, hold state at 6, flags at 0 and kind at 4 retain raw reads: isolated direct-member trials each change ROM bytes. Their layouts are checked by shared types; further recovery needs IDO allocation/load-scheduling evidence.",
-        "itemUpdate": "Search-priority arithmetic at state offset 0x38 retains a raw float view: a direct searchPriority member changes ROM bytes in an isolated forced-rebuild trial. Kind growth bounds and rate, object links/flags, hold state, material state, collision key and idle timer use named fields. Further conversion needs IDO floating scheduling evidence."
+        "itemUpdate": "Search-priority arithmetic at state offset 0x38 retains a raw float view: a direct searchPriority member changes ROM bytes in an isolated forced-rebuild trial. Kind growth bounds and rate, object links/flags, hold state, material state, collision key and idle timer use named fields. Further conversion needs IDO floating scheduling evidence.",
+        "itemPrepareKindSearch": "TreeNode * return and SearchTree * parameter match through the pointer-key compatibility declaration. Adopting search_tree_lookup.h with an explicit s32 address cast fails the ROM gate; restoring the pointer-key view restores all strict objects. Retain typed object/state keys with their checked stack extents; investigate integer-address argument scheduling before canonical-header adoption."
       },
       "locations": {
         "raw_offset_candidates": {
           "state + 0x54": [
-            "1867:37"
+            "1872:37"
           ],
           "bytes + 0x54": [
-            "2026:67"
+            "2031:67"
           ],
           "subject + 6": [
-            "2029:28"
+            "2034:28"
           ],
           "subject + 0x190": [
-            "2030:56"
+            "2035:56"
           ],
           "state + 0x38": [
-            "2061:18",
-            "2062:18",
-            "2062:87",
-            "2063:42",
-            "2064:22"
+            "2066:18",
+            "2067:18",
+            "2067:87",
+            "2068:42",
+            "2069:22"
           ],
           "lightingStorage + 0x38": [
-            "2093:60"
+            "2098:60"
           ],
           "object + 0x24": [
-            "2150:18",
-            "2151:34",
-            "2153:45",
-            "2155:45",
-            "2162:23"
+            "2155:18",
+            "2156:34",
+            "2158:45",
+            "2160:45",
+            "2167:23"
           ],
           "object + 0xC": [
-            "2164:14"
-          ],
-          "object + 0x10": [
-            "2165:14"
-          ],
-          "object + 0x14": [
-            "2166:14"
-          ],
-          "object + 0x18": [
-            "2167:14"
-          ],
-          "object + 0x1C": [
-            "2168:14"
-          ],
-          "object + 0x20": [
             "2169:14"
           ],
-          "object + 0x44": [
-            "2170:14",
-            "2709:74",
-            "2731:70"
+          "object + 0x10": [
+            "2170:14"
           ],
-          "object + 0x48": [
+          "object + 0x14": [
             "2171:14"
           ],
-          "object + 0x4C": [
+          "object + 0x18": [
             "2172:14"
           ],
+          "object + 0x1C": [
+            "2173:14"
+          ],
+          "object + 0x20": [
+            "2174:14"
+          ],
+          "object + 0x44": [
+            "2175:14",
+            "2714:74",
+            "2736:70"
+          ],
+          "object + 0x48": [
+            "2176:14"
+          ],
+          "object + 0x4C": [
+            "2177:14"
+          ],
           "gLiveItemCount + 1U": [
-            "2173:33"
+            "2178:33"
           ],
           "gLiveItemCount - 1": [
-            "2190:45"
+            "2195:45"
           ],
           "return -1": [
-            "2222:9",
-            "2230:9"
+            "2227:9",
+            "2235:9"
           ],
           "state + 0x4C": [
-            "2318:40"
+            "2323:40"
           ],
           "itemState + 0x54": [
-            "2357:53"
+            "2362:53"
           ],
           "state + 8": [
-            "2437:75"
+            "2442:75"
           ],
           "state + 6": [
-            "2439:24"
+            "2444:24"
           ],
           "state + 4": [
-            "2455:79",
-            "2456:87",
-            "2457:79",
-            "2464:36"
+            "2460:79",
+            "2461:87",
+            "2462:79",
+            "2469:36"
           ],
           "replacement + 0x44": [
-            "2765:74",
-            "2770:77",
-            "2773:76",
-            "2777:77"
+            "2770:74",
+            "2775:77",
+            "2778:76",
+            "2782:77"
           ]
         }
       }

@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 1,793 / 72 |
+| Raw offset candidates | 4,040 / 86 | 1,788 / 72 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -4045,3 +4045,15 @@ declaration: adopting the canonical node return and integer key with stack-key
 address casts changes the ROM. This trial was restored and recorded in the
 exception ledger; return-type and address-expression effects need separate
 isolation before another canonical adoption.
+
+### Search-key contracts and target calling constraints
+
+Object-kind searches now use a checked `ObjectSearchKey` containing the shared
+object prefix and retained stack padding, replacing raw kind/handle offsets.
+Both object and item registry lookup declarations now state the correct borrowed
+node return and tree type. Isolated trials show that these types match through
+a pointer-key ABI view; the combined canonical integer key and node return
+changes ROM code. A function-pointer call view also fails. Typed stack keys do
+not remove that constraint. The ledger records these narrower findings and
+the next evidence needed, rather than attributing the mismatch to node returns
+alone. Every accepted representation passes strict object comparison.
