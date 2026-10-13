@@ -2116,6 +2116,7 @@
         "hud_draw.h",
         "integer_animation.h",
         "integer_animation_types.h",
+        "microphone_query.h",
         "microphone_requests.h",
         "object_types.h",
         "pikachu_actor.h",
@@ -2139,19 +2140,19 @@
       "locations": {
         "raw_offset_candidates": {
           "offset + 48": [
-            "147:32"
+            "148:32"
           ],
           "offset + 40": [
-            "163:32"
+            "164:32"
           ],
           "gPlayerState + 0x50": [
-            "598:74"
+            "596:74"
           ],
           "actionResourceHudLevel + 0": [
-            "647:23"
+            "645:23"
           ],
           "secondaryMeterHudLevel + 0": [
-            "648:23"
+            "646:23"
           ]
         }
       }
@@ -4205,6 +4206,7 @@
         "attached_effect.h",
         "audio_cue.h",
         "item_search.h",
+        "microphone_query.h",
         "microphone_requests.h",
         "object_distance.h",
         "object_lookup.h",
@@ -4230,7 +4232,7 @@
       "locations": {
         "raw_offset_candidates": {
           "actor + 0xC": [
-            "657:38"
+            "658:38"
           ],
           "gPlayerCompanionTarget - 0x50": [
             "1347:57"

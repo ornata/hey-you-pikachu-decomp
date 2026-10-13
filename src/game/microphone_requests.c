@@ -1,3 +1,4 @@
+#include "microphone_query.h"
 #include "microphone_session_query.h"
 #include "microphone_requests.h"
 #include "microphone_configuration.h"
@@ -149,43 +150,43 @@ void micNoOp0489C(void) {
 }
 
 
-/// Query whether a voice dictionary upload is active without exposing the result.
-/// \returns Nothing.
+/// Check whether vocabulary upload is currently active.
+/// \returns One during an active upload, otherwise zero.
 /// \note Original decompilation identifier: \c func_800048A4 (0x800048A4).
-void micQueryDictionaryUploadNoResult(void) {
-    micSessionIsDictionaryUploadActive();
+s32 micIsDictionaryUploadActive(void) {
+    return micSessionIsDictionaryUploadActive();
 }
 
 
-/// Query microphone trigger readiness without exposing the result.
-/// \returns Nothing.
+/// Check readiness for the current microphone trigger.
+/// \returns One when the dictionary is settled and any active trigger has microphone input enabled.
 /// \note Original decompilation identifier: \c func_800048C4 (0x800048C4).
-void micQueryTriggerReadinessNoResult(void) {
-    micSessionIsTriggerReady();
+s32 micIsTriggerReady(void) {
+    return micSessionIsTriggerReady();
 }
 
 
-/// Query the microphone trigger state without exposing the result.
-/// \returns Nothing.
+/// Read the current microphone trigger state.
+/// \returns Nonzero when the trigger is active, otherwise zero.
 /// \note Original decompilation identifier: \c func_800048E4 (0x800048E4).
-void micQueryTriggerStateNoResult(void) {
-    micSessionGetTriggerState();
+s32 micGetTriggerState(void) {
+    return micSessionGetTriggerState();
 }
 
 
-/// Query the requested voice dictionary without exposing the result.
-/// \returns Nothing.
+/// Read the dictionary requested by microphone configuration.
+/// \returns Requested dictionary identifier.
 /// \note Original decompilation identifier: \c func_80004904 (0x80004904).
-void micQueryRequestedDictionaryNoResult(void) {
-    micSessionGetRequestedDictionary();
+s32 micGetRequestedDictionary(void) {
+    return micSessionGetRequestedDictionary();
 }
 
 
-/// Query the selected Voice Recognition Unit port without exposing the result.
-/// \returns Nothing.
+/// Read the selected recognition-device port.
+/// \returns Selected controller port, or minus one when unavailable.
 /// \note Original decompilation identifier: \c func_80004924 (0x80004924).
-void micQueryDevicePortNoResult(void) {
-    micSessionGetDevicePort();
+s32 micGetDevicePort(void) {
+    return micSessionGetDevicePort();
 }
 
 

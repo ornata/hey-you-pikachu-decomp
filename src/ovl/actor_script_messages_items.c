@@ -1,3 +1,4 @@
+#include "microphone_query.h"
 #include "player_control.h"
 #include "player_state.h"
 #include "player_chase.h"
@@ -758,7 +759,6 @@ s32 actorScriptRequestMicDictionary(u8 *actor) {
     return 1;
 }
 
-s32 micQueryRequestedDictionaryNoResult();     /* extern */
 /// Query the requested voice dictionary.
 /// \param actor Actor whose script VM receives an unspecified legacy result from the dictionary query.
 /// \returns Zero, allowing script execution to continue.
@@ -768,7 +768,7 @@ s32 actorScriptQueryRequestedMicDictionary(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushInteger(sp1C, micQueryRequestedDictionaryNoResult());
+    scriptVmPushInteger(sp1C, micGetRequestedDictionary());
     return 0;
 }
 

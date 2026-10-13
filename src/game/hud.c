@@ -1,3 +1,4 @@
+#include "microphone_query.h"
 #include "player_state.h"
 #include "actor_script.h"
 #include "audio_sound_effect.h"
@@ -287,8 +288,6 @@ typedef struct {
     s32 animation;
     f32 scale;
 } HudState;
-s32 micQueryTriggerStateNoResult(void);
-s32 micQueryDevicePortNoResult(void);
 /// Whether gameplay exposes microphone interaction and its HUD indicator.
 /// \note Original identifier: \c D_800722D0 (0x800722D0).
 extern s32 gGameplayMicrophoneAvailable;
@@ -318,7 +317,7 @@ void hudDrawRecognitionIndicator(Gfx **gdl) {
     s32 y;
     f32 scale;
     s32 state;
-    if (gGameplayMicrophoneAvailable != 0 && (gHudEnabledFeatures & 4) && micQueryDevicePortNoResult() >= 0) {
+    if (gGameplayMicrophoneAvailable != 0 && (gHudEnabledFeatures & 4) && micGetDevicePort() >= 0) {
         mode = voiceRecognitionGetCommandStatus();
         switch (mode) {
         case 3:
@@ -341,7 +340,7 @@ void hudDrawRecognitionIndicator(Gfx **gdl) {
             gp = *gdl;
             scale = gHudRecognitionScale;
             if (gHudRecognitionIndicatorState == 1) {
-                if (micQueryTriggerStateNoResult() != 0) {
+                if (micGetTriggerState() != 0) {
                     scale += randomNext() * 2.3283064365386963e-10 * 0.15f;
                 } else {
                     scale += randomNext() * 2.3283064365386963e-10 * 0.05f;
@@ -364,7 +363,6 @@ void hudDrawRecognitionIndicator(Gfx **gdl) {
     }
 }
 
-s32 micQueryTriggerReadinessNoResult(void);
 /// Whether gameplay permits recognized voice commands to launch messenger effects.
 /// \note Original identifier: \c D_800722D4 (0x800722D4).
 extern s32 gGameplayVoiceCommandsAllowed;
@@ -397,14 +395,14 @@ void hudDrawMicrophoneIndicators(Gfx **gdl) {
     TextureImage tex;
     if (gGameplayMicrophoneAvailable != 0 && (gHudEnabledFeatures & 4)) {
         hudDrawRecognitionIndicator(gdl);
-        if (micQueryDevicePortNoResult() < 0) {
+        if (micGetDevicePort() < 0) {
             scale = 1.0f;
             state = 1;
-        } else if (gGameplayVoiceCommandsAllowed == 0 || micQueryTriggerReadinessNoResult() == 0) {
+        } else if (gGameplayVoiceCommandsAllowed == 0 || micIsTriggerReady() == 0) {
             state = 2;
             scale = 0.7f;
         } else {
-            if (micQueryTriggerStateNoResult() == 0) {
+            if (micGetTriggerState() == 0) {
                 state = 3;
                 scale = 0.8f;
             } else {

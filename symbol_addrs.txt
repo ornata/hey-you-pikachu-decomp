@@ -769,11 +769,11 @@ micRequestRecognitionFollowsTrigger = 0x80004810;
 micRequestTriggerButtons = 0x8000483C;
 micRequestUnsupportedWordDictionary = 0x8000486C;
 micNoOp0489C = 0x8000489C;
-micQueryDictionaryUploadNoResult = 0x800048A4;
-micQueryTriggerReadinessNoResult = 0x800048C4;
-micQueryTriggerStateNoResult = 0x800048E4;
-micQueryRequestedDictionaryNoResult = 0x80004904;
-micQueryDevicePortNoResult = 0x80004924;
+micIsDictionaryUploadActive = 0x800048A4;
+micIsTriggerReady = 0x800048C4;
+micGetTriggerState = 0x800048E4;
+micGetRequestedDictionary = 0x80004904;
+micGetDevicePort = 0x80004924;
 micIsDeviceConnected = 0x80004944;
 
 mathIsNaNFloat = 0x8004CE60;

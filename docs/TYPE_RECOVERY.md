@@ -4408,3 +4408,16 @@ has one shared volatile declaration, explicitly distinct from an active read.
 Ghidra at 0x80004204 confirms trigger/amplifier/dictionary ordering and deferred
 recognition polling. All three edited units and dependent headers preserve strict
 baseline objects and clean retail ROM bytes.
+
+### Correct microphone query results and vocabulary contracts
+
+Five microphone wrappers previously declared void while HUD/scripts consumed their
+return registers. ROM assembly at 0x800048A4 through 0x80004924 preserves the queried
+session result in v0; Ghidra's void inference at 0x800048E4 was insufficient to settle
+the contract. Explicit s32 returns preserve all strict objects. `microphone_query.h`
+now shares accurately named upload/readiness/trigger/dictionary/port queries with
+HUD and scripts, and symbol_addrs.txt uses the recovered names at unchanged addresses.
+Original function/address notes remain in the producer and shared declarations.
+Vocabulary/result interfaces also record original addresses, borrowed resident-name
+storage, unchanged output when no result is pending, and dictionary-local answer
+indices. All three edited units and dependent headers preserve clean retail ROM bytes.

@@ -37,22 +37,25 @@ typedef struct VoiceWord {
 /// Resolve an entry in the selected vocabulary to a global word identifier.
 /// \param index Valid entry index in the selected dictionary.
 /// \returns Global word identifier, or zero when no dictionary is selected.
+/// \note Original decompilation identifier: \c func_80040440 (0x80040440).
 s32 voiceDictionaryGetWordId(u16 index);
 
 /// Get the display name of an entry in the selected vocabulary.
 /// \param index Dictionary-local word index.
-/// \returns Borrowed name, or an empty string for an invalid or unavailable entry.
+/// \returns Borrowed name from resident vocabulary storage, or an empty string for an invalid or unavailable entry.
 /// \note Original decompilation identifier: \c func_80040C8C (0x80040C8C).
 char *voiceDictionaryGetWordName(u16 index);
 
 /// Get the gameplay message category associated with a vocabulary entry.
 /// \param index Dictionary-local word index.
 /// \returns Command category, or -1 for an invalid or unavailable entry.
+/// \note Original decompilation identifier: \c func_80040CF8 (0x80040CF8).
 s32 voiceDictionaryGetCommandType(u16 index);
 
 /// Get the gameplay command argument associated with a vocabulary entry.
 /// \param index Dictionary-local word index.
 /// \returns Command value, or -1 for an invalid or unavailable entry.
+/// \note Original decompilation identifier: \c func_80040D60 (0x80040D60).
 s32 voiceDictionaryGetCommandValue(u16 index);
 
 /// Initialize recognition and load the resident vocabulary for a connected device.
@@ -97,12 +100,14 @@ s32 voiceRecognitionSetAmplifier(u8 flag);
 s32 voiceRecognitionIsAmplifierEnabled(void);
 
 /// Consume the pending recognition-result notification.
-/// \param out Destination for the retained result, or null to discard the notification.
-/// \returns First answer index, or -1 when no result is pending; callers must also check the answer count.
+/// \param out Destination for the retained result, unchanged when none is pending; null discards the notification.
+/// \returns First dictionary-local answer index, or -1 when no result is pending; check the answer count before lookup.
+/// \note Original decompilation identifier: \c func_80040BA0 (0x80040BA0).
 s32 voiceRecognitionTakeResult(OSVoiceData *out);
 
 /// Get the most recently recorded device recognition command status.
 /// \returns Device command status.
+/// \note Original decompilation identifier: \c func_80040C70 (0x80040C70).
 s32 voiceRecognitionGetCommandStatus(void);
 
 typedef char VoiceDictionarySizeCheck[(sizeof(VoiceDictionary) == 8) ? 1 : -1];
