@@ -1712,26 +1712,26 @@ void flickeringEffectUpdate(u8 *effect) {
         objectRequestHierarchyDestruction(effect);
         return;
     }
-    *(f32 *)(effect + 0x18) = *(f32 *)(t + 0x44);
-    *(f32 *)(effect + 0x1C) = *(f32 *)(t + 0x48);
-    *(f32 *)(effect + 0x20) = *(f32 *)(t + 0x4C);
-    *(f32 *)(effect + 0x44) = *(f32 *)(effect + 0x18);
-    *(f32 *)(effect + 0x48) = *(f32 *)(effect + 0x1C);
-    *(f32 *)(effect + 0x4C) = *(f32 *)(effect + 0x20);
+    ((RuntimeObjectPrefix *)effect)->position[0] = ((RuntimeObjectPrefix *)t)->worldPosition[0];
+    ((RuntimeObjectPrefix *)effect)->position[1] = ((RuntimeObjectPrefix *)t)->worldPosition[1];
+    ((RuntimeObjectPrefix *)effect)->position[2] = ((RuntimeObjectPrefix *)t)->worldPosition[2];
+    ((RuntimeObjectPrefix *)effect)->worldPosition[0] = ((RuntimeObjectPrefix *)effect)->position[0];
+    ((RuntimeObjectPrefix *)effect)->worldPosition[1] = ((RuntimeObjectPrefix *)effect)->position[1];
+    ((RuntimeObjectPrefix *)effect)->worldPosition[2] = ((RuntimeObjectPrefix *)effect)->position[2];
     objectOrientAlongCameraView(effect);
-    p = *(u8 **)(effect + 0x2C);
+    p = ((RuntimeObjectPrefix *)effect)->child.bytes;
     if (p != NULL) {
         hi = 0.30000001192092896;
         lo = 0.4000000059604645;
         do {
             if ((f64)randomNext() * 2.3283064365386963e-10 < lo) {
-                *(f32 *)(p + 0xC) = (s32)randomBelow(360);
+                ((RuntimeObjectPrefix *)p)->rotation[0] = (s32)randomBelow(360);
             }
             if ((f64)randomNext() * 2.3283064365386963e-10 < hi) {
-                *(f32 *)(p + 0x1C) = ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * 5.0;
-                *(f32 *)(p + 0x20) = ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * 5.0;
+                ((RuntimeObjectPrefix *)p)->position[1] = ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * 5.0;
+                ((RuntimeObjectPrefix *)p)->position[2] = ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * 5.0;
             }
-            p = *(u8 **)(p + 0x28);
+            p = ((RuntimeObjectPrefix *)p)->sibling.bytes;
         } while (p != NULL);
     }
 }
@@ -1752,12 +1752,11 @@ s32 flickeringEffectPrepareDraw(u8 *effect) {
     state = ((RuntimeObjectPrefix *)effect)->state.pointer;
     g = gRenderDisplayListCursor++;
     g->words.w0 = 0xDB06001C;
-    idx = (*(u16 *)(effect + 0x36) & 0x8000) ? 1 : 0;
-    g->words.w1 = (u32)osVirtualToPhysical(((void **)(effect + 0x3C))[idx]);
+    idx = (((RuntimeObjectPrefix *)effect)->flags & 0x8000) ? 1 : 0;
+    g->words.w1 = (u32)osVirtualToPhysical(((RuntimeObjectPrefix *)effect)->matrixBuffers[idx]);
     gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0x80, 0xFF, 0xFF, 0xFF);
     return (s32)state->displayList;
 }
-
 
 /// Object template for flickering particle effects.
 /// \note Original identifier: \c D_80077D88 (0x80077D88).
@@ -1789,23 +1788,25 @@ u8 *flickeringEffectCreate(s32 targetId, f32 duration, s32 count) {
     state->displayList = (Gfx *)heapAllocLocal(&gGameHeap, (count * 4 + 16) * sizeof(Gfx), 0x809);
     state->targetId = targetId;
     state->duration = duration;
-    *(f32 *)(object + 0x18) = *(f32 *)(target + 0x44);
-    *(f32 *)(object + 0x1C) = *(f32 *)(target + 0x48);
-    *(f32 *)(object + 0x20) = *(f32 *)(target + 0x4C);
-    *(f32 *)(object + 8) = *(f32 *)(object + 4) = *(f32 *)object = 0.2f;
-    *(f32 *)(object + 0x44) = *(f32 *)(object + 0x18);
-    *(f32 *)(object + 0x48) = *(f32 *)(object + 0x1C);
-    *(f32 *)(object + 0x4C) = *(f32 *)(object + 0x20);
+    ((RuntimeObjectPrefix *)object)->position[0] = ((RuntimeObjectPrefix *)target)->worldPosition[0];
+    ((RuntimeObjectPrefix *)object)->position[1] = ((RuntimeObjectPrefix *)target)->worldPosition[1];
+    ((RuntimeObjectPrefix *)object)->position[2] = ((RuntimeObjectPrefix *)target)->worldPosition[2];
+    ((RuntimeObjectPrefix *)object)->scale[2] = ((RuntimeObjectPrefix *)object)->scale[1] =
+        ((RuntimeObjectPrefix *)object)->scale[0] = 0.2f;
+    ((RuntimeObjectPrefix *)object)->worldPosition[0] = ((RuntimeObjectPrefix *)object)->position[0];
+    ((RuntimeObjectPrefix *)object)->worldPosition[1] = ((RuntimeObjectPrefix *)object)->position[1];
+    ((RuntimeObjectPrefix *)object)->worldPosition[2] = ((RuntimeObjectPrefix *)object)->position[2];
     previous = object;
     for (i = 0; i < count; i++) {
         child = objectCreateDefault();
-        *(u8 **)(previous + 0x28) = child;
+        ((RuntimeObjectPrefix *)previous)->sibling.bytes = child;
         previous = child;
-        *(f32 *)(child + 8) = *(f32 *)(child + 4) = *(f32 *)child = 1.0f;
-        *(f32 *)(child + 0xC) = i * 137.5f;
+        ((RuntimeObjectPrefix *)child)->scale[2] = ((RuntimeObjectPrefix *)child)->scale[1] =
+            ((RuntimeObjectPrefix *)child)->scale[0] = 1.0f;
+        ((RuntimeObjectPrefix *)child)->rotation[0] = i * 137.5f;
     }
-    *(u8 **)(object + 0x2C) = *(u8 **)(object + 0x28);
-    *(u8 **)(object + 0x28) = NULL;
+    ((RuntimeObjectPrefix *)object)->child.bytes = ((RuntimeObjectPrefix *)object)->sibling.bytes;
+    ((RuntimeObjectPrefix *)object)->sibling.bytes = NULL;
     objectMakeHierarchyRoot(object);
     objectAllocateHierarchyMatrixBuffers(object);
     objectRegisterActiveHierarchy(object);

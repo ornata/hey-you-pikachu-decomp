@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,179 / 76 |
+| Raw offset candidates | 4,040 / 86 | 2,139 / 76 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3650,3 +3650,7 @@ and matches the caller without an integer-to-float conversion.
 Allocation, creation, update, drawing and destruction share a checked 12-byte
 private state containing an owned display list, target handle and remaining
 lifetime. The original extra deallocator argument remains documented.
+
+Flickering-effect creation, following motion and drawing use shared object
+transforms, child/sibling links, flags and matrix buffers. The initial sibling
+chain is transferred into the root child link with the original ordering.
