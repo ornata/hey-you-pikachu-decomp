@@ -1895,15 +1895,16 @@ void animatedRadialEffectUpdate(u8 *effect) {
     }
     animationIntegerTrackEvaluate(&state->alphaAnimation, &tmp, gRuntimeFrameSeconds);
     animationIntegerTrackEvaluate(&state->frameAnimation, &tmp, gRuntimeFrameSeconds);
-    *(f32 *)(effect + 0x18) = *(f32 *)(t + 0x44);
-    *(f32 *)(effect + 0x1C) = *(f32 *)(t + 0x48) + 2.0f;
-    *(f32 *)(effect + 0x20) = *(f32 *)(t + 0x4C);
-    *(f32 *)(effect + 0x44) = *(f32 *)(effect + 0x18);
-    *(f32 *)(effect + 0x48) = *(f32 *)(effect + 0x1C);
-    *(f32 *)(effect + 0x4C) = *(f32 *)(effect + 0x20);
+    ((RuntimeObjectPrefix *)effect)->position[0] = ((RuntimeObjectPrefix *)t)->worldPosition[0];
+    ((RuntimeObjectPrefix *)effect)->position[1] = ((RuntimeObjectPrefix *)t)->worldPosition[1] + 2.0f;
+    ((RuntimeObjectPrefix *)effect)->position[2] = ((RuntimeObjectPrefix *)t)->worldPosition[2];
+    ((RuntimeObjectPrefix *)effect)->worldPosition[0] = ((RuntimeObjectPrefix *)effect)->position[0];
+    ((RuntimeObjectPrefix *)effect)->worldPosition[1] = ((RuntimeObjectPrefix *)effect)->position[1];
+    ((RuntimeObjectPrefix *)effect)->worldPosition[2] = ((RuntimeObjectPrefix *)effect)->position[2];
     objectOrientAlongCameraView(effect);
-    for (cursor = *(u8 **)(effect + 0x2C); cursor != NULL; cursor = *(u8 **)(cursor + 0x28)) {
-        *(f32 *)(cursor + 4) *= 1.0099999904632568f;
+    for (cursor = ((RuntimeObjectPrefix *)effect)->child.bytes; cursor != NULL;
+         cursor = ((RuntimeObjectPrefix *)cursor)->sibling.bytes) {
+        ((RuntimeObjectPrefix *)cursor)->scale[1] *= 1.0099999904632568f;
     }
 }
 
@@ -1923,13 +1924,12 @@ s32 animatedRadialEffectPrepareDraw(u8 *effect) {
     state = ((RuntimeObjectPrefix *)effect)->state.pointer;
     g = gRenderDisplayListCursor++;
     g->words.w0 = 0xDB06001C;
-    idx = (*(u16 *)(effect + 0x36) & 0x8000) ? 1 : 0;
-    g->words.w1 = (u32)osVirtualToPhysical(((void **)(effect + 0x3C))[idx]);
+    idx = (((RuntimeObjectPrefix *)effect)->flags & 0x8000) ? 1 : 0;
+    g->words.w1 = (u32)osVirtualToPhysical(((RuntimeObjectPrefix *)effect)->matrixBuffers[idx]);
     textureLoadForDraw(&gRenderDisplayListCursor, 5, state->frameAnimation.value);
     gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0xFF, 0xFF, 0x90, (u8)state->alphaAnimation.value);
     return (s32)state->displayList;
 }
-
 
 /// Integer texture-frame animation used by animated radial effects.
 /// \note Original identifier: \c D_8006B3A4 (0x8006B3A4).
@@ -1966,22 +1966,23 @@ u8 *animatedRadialEffectCreate(s32 targetId, f32 duration, s32 count) {
     state->duration = duration;
     animationIntegerTrackInitialize(&state->frameAnimation, (ValueKey *)(gAnimatedRadialEffectFrameAnimation));
     animationIntegerTrackInitialize(&state->alphaAnimation, (ValueKey *)(gMessengerFlightAnimation));
-    *(f32 *)(object + 0x18) = *(f32 *)(target + 0x44);
-    *(f32 *)(object + 0x1C) = *(f32 *)(target + 0x48);
-    *(f32 *)(object + 0x20) = *(f32 *)(target + 0x4C);
-    *(f32 *)(object + 8) = *(f32 *)(object + 4) = *(f32 *)object = 0.06f;
-    *(f32 *)(object + 0x44) = *(f32 *)(object + 0x18);
-    *(f32 *)(object + 0x48) = *(f32 *)(object + 0x1C);
-    *(f32 *)(object + 0x4C) = *(f32 *)(object + 0x20);
+    ((RuntimeObjectPrefix *)object)->position[0] = ((RuntimeObjectPrefix *)target)->worldPosition[0];
+    ((RuntimeObjectPrefix *)object)->position[1] = ((RuntimeObjectPrefix *)target)->worldPosition[1];
+    ((RuntimeObjectPrefix *)object)->position[2] = ((RuntimeObjectPrefix *)target)->worldPosition[2];
+    ((RuntimeObjectPrefix *)object)->scale[2] = ((RuntimeObjectPrefix *)object)->scale[1] =
+        ((RuntimeObjectPrefix *)object)->scale[0] = 0.06f;
+    ((RuntimeObjectPrefix *)object)->worldPosition[0] = ((RuntimeObjectPrefix *)object)->position[0];
+    ((RuntimeObjectPrefix *)object)->worldPosition[1] = ((RuntimeObjectPrefix *)object)->position[1];
+    ((RuntimeObjectPrefix *)object)->worldPosition[2] = ((RuntimeObjectPrefix *)object)->position[2];
     previous = object;
     for (i = 0; i < count; i++) {
         child = objectCreateDefault();
-        *(u8 **)(previous + 0x28) = child;
+        ((RuntimeObjectPrefix *)previous)->sibling.bytes = child;
         previous = child;
-        *(f32 *)(child + 0xC) = i * (360.0f / count);
+        ((RuntimeObjectPrefix *)child)->rotation[0] = i * (360.0f / count);
     }
-    *(u8 **)(object + 0x2C) = *(u8 **)(object + 0x28);
-    *(u8 **)(object + 0x28) = NULL;
+    ((RuntimeObjectPrefix *)object)->child.bytes = ((RuntimeObjectPrefix *)object)->sibling.bytes;
+    ((RuntimeObjectPrefix *)object)->sibling.bytes = NULL;
     objectMakeHierarchyRoot(object);
     objectAllocateHierarchyMatrixBuffers(object);
     objectRegisterActiveHierarchy(object);

@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,128 / 76 |
+| Raw offset candidates | 4,040 / 86 | 2,092 / 76 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3665,3 +3665,7 @@ Allocation, creation, update, drawing and destruction share a checked 36-byte
 private state. It owns drawing commands, borrows texture and opacity animation
 keys, and records its target handle and remaining lifetime. Opacity drawing uses
 the low byte of the typed animation value, preserving the original selection.
+
+Radial-effect creation, following motion and drawing use shared object transforms,
+child/sibling links, flags and matrix buffers. Child Y-scale growth retains the
+original floating expression and traversal order.
