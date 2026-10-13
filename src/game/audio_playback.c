@@ -1,3 +1,4 @@
+#include "sequence_playback.h"
 #include "sequence_control.h"
 #include "audio_sound_effect.h"
 #include "audio_playback_stop.h"
@@ -20,7 +21,6 @@ typedef struct AudioSequenceSlot {
 typedef char AudioSequenceSlotSizeCheck[(sizeof(AudioSequenceSlot) == 0x7F0) ? 1 : -1];
 typedef char AudioSequenceSlotPlayerOffsetCheck[((u32) & ((AudioSequenceSlot *)0)->player == 0x200) ? 1 : -1];
 typedef char AudioSequenceSlotHandleOffsetCheck[((u32) & ((AudioSequenceSlot *)0)->handle == 0x7D8) ? 1 : -1];
-s32 sequenceEngineIsStopped(SequenceControlState *);
 /// Four sequence playback slots retaining control state and playback handles.
 /// \note Original identifier: \c D_800EC9F0 (0x800EC9F0).
 extern AudioSequenceSlot gAudioSequenceSlots[4];
@@ -209,7 +209,7 @@ s32 audioPlaySequence(s32 data) {
     s32 i;
 
     for (i = 0; i < 4; i++) {
-        if (sequenceEngineIsStopped(&gAudioSequenceSlots[i].player)) {
+        if (sequenceEngineIsStopped(&gAudioSequenceSlots[i].player.playback)) {
             gAudioSequenceSlots[i].handle = gAudioNextPlaybackHandle;
             sequenceControlStart(&gAudioSequenceSlots[i].player, data);
             sequenceControlRequestVolume(&gAudioSequenceSlots[i].player, 0.0, 1.0);
@@ -249,7 +249,7 @@ s32 audioCountActive(s32 categories) {
     s32 var_s1 = 0;
     if (categories & 2) {
         for (i = 0; i < 4; i++) {
-            var_s1 += sequenceEngineIsStopped(&gAudioSequenceSlots[i].player) == 0;
+            var_s1 += sequenceEngineIsStopped(&gAudioSequenceSlots[i].player.playback) == 0;
         }
     }
     if (categories & 1) {
@@ -271,7 +271,7 @@ s32 audioCountPlayback(s32 id) {
     }
     for (i = 0; i < 4; i++) {
         if (id == gAudioSequenceSlots[i].handle) {
-            return (u64)(sequenceEngineIsStopped(&gAudioSequenceSlots[i].player) == 0);
+            return (u64)(sequenceEngineIsStopped(&gAudioSequenceSlots[i].player.playback) == 0);
         }
     }
     return soundEffectPlayerCountPlayback(gSoundEffectPlayer, id);
@@ -346,7 +346,6 @@ void audioSetSoundEffectMix(s32 id, s32 mix) {
     soundEffectPlayerSetEffectMix(gSoundEffectPlayer, id, mix);
 }
 
-s32 sequenceEngineSetRate(SequenceControlState *, f64);
 
 /// Change a sequence's playback rate.
 /// \param id Playback identifier; zero selects no playback.
@@ -361,14 +360,13 @@ s32 audioSetSequenceRate(s32 id, f64 rate) {
     }
     for (i = 0; i < 4; i++) {
         if (id == gAudioSequenceSlots[i].handle) {
-            sequenceEngineSetRate(&gAudioSequenceSlots[i].player, rate);
+            sequenceEngineSetRate(&gAudioSequenceSlots[i].player.playback, rate);
             return 1;
         }
     }
     return 0;
 }
 
-f64 sequenceEngineGetRate(SequenceControlState *);
 
 /// Get the playback rate of a sequence.
 /// \param id Playback identifier; zero selects no playback.
@@ -382,7 +380,7 @@ f64 audioGetSequenceRate(s32 id) {
     }
     for (i = 0; i < 4; i++) {
         if (id == gAudioSequenceSlots[i].handle) {
-            return sequenceEngineGetRate(&gAudioSequenceSlots[i].player);
+            return sequenceEngineGetRate(&gAudioSequenceSlots[i].player.playback);
         }
     }
     return -1.0;

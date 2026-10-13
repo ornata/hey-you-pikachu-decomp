@@ -1,3 +1,4 @@
+#include "sequence_playback.h"
 #include "midi_sequence.h"
 /* Voice and sequence engine; split from the control API at ROM 6750. */
 #include "common.h"
@@ -77,16 +78,16 @@ void sequenceEngineAdvanceEvents(s32, u8 *, f64);
 /// \param player Sequence player to inspect.
 /// \returns One when playback and pending releases have ended; otherwise zero.
 /// \note Original decompilation identifier: \c func_80005B50 (0x80005B50).
-s32 sequenceEngineIsDrained(u8 *player) {
-    return midiSequenceIsDrained((SequenceState *)player);
+s32 sequenceEngineIsDrained(SequenceState *player) {
+    return midiSequenceIsDrained(player);
 }
 
 /// Check whether sequence playback is stopped.
 /// \param player Sequence player to inspect.
 /// \returns Nonzero when stopped, even if release events remain; otherwise zero.
 /// \note Original decompilation identifier: \c func_80005B70 (0x80005B70).
-s32 sequenceEngineIsStopped(u8 *player) {
-    return midiSequenceIsStopped((SequenceState *)player);
+s32 sequenceEngineIsStopped(SequenceState *player) {
+    return midiSequenceIsStopped(player);
 }
 
 /// Set the sequence playback speed multiplier.
@@ -94,8 +95,8 @@ s32 sequenceEngineIsStopped(u8 *player) {
 /// \param rate Positive playback multiplier; one preserves the original tempo.
 /// \returns Zero.
 /// \note Original decompilation identifier: \c func_80005B90 (0x80005B90).
-s32 sequenceEngineSetRate(u8 *player, f64 rate) {
-    return midiSequenceSetRate((SequenceState *)player, rate);
+s32 sequenceEngineSetRate(SequenceState *player, f64 rate) {
+    return midiSequenceSetRate(player, rate);
 }
 
 
@@ -103,8 +104,8 @@ s32 sequenceEngineSetRate(u8 *player, f64 rate) {
 /// \param player Sequence player to inspect.
 /// \returns The configured playback multiplier.
 /// \note Original decompilation identifier: \c func_80005BC0 (0x80005BC0).
-f64 sequenceEngineGetRate(u8 *player) {
-    return midiSequenceGetRate((SequenceState *)player);
+f64 sequenceEngineGetRate(SequenceState *player) {
+    return midiSequenceGetRate(player);
 }
 
 /// Assign a free sequence voice to a sequence.
