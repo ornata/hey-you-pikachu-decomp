@@ -39,9 +39,7 @@ struct {
     s32 w[18];
 } gActorScriptSharedTextTailStorage;
 
-void systemMenuPopHistory(); /* extern */
 
-void systemMenuExit();                      /* extern */
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;

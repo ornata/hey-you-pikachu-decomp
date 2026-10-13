@@ -4491,3 +4491,18 @@ results. With the corrected return contracts, eye-catch also adopts the complete
 canonical header and s32 sound IDs while preserving strict objects. Three obsolete
 matching exceptions and stale unspecified-result notes are removed. All five edited
 source units and dependent headers preserve clean retail ROM bytes.
+
+### Menu entry contract and typed navigation state
+
+The existing system-menu header now shares the entry contract with player control,
+including initialized menu/text, player, camera, area, audio and controller resources.
+Unused action-command declarations and redundant same-unit prototypes are removed;
+private exit/navigation declarations remain local. Ghidra at 0x8011A930 confirms
+exit's gameplay-mode, input-synthesis and model-visibility operations.
+
+MenuState retains typed RuntimeObjectPrefix pointers for its transition, secondary
+and interactive live models rather than integer addresses. Field roles and named
+opening/interactive/close-delay/closing phases document the navigation lifecycle.
+Target offset checks guard the three pointers and phase alongside existing size/time
+checks. All three edited units preserve strict baseline objects and clean retail ROM
+bytes, including existing interior model aliases and permitted text-pointer warnings.

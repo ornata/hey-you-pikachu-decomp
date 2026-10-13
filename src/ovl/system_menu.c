@@ -1,3 +1,4 @@
+#include "object_types.h"
 #include "player_profile.h"
 #include "player_state.h"
 #include "audio_settings.h"
@@ -62,19 +63,27 @@ s32 gSystemMenuSoundPreviewHandle;
 s32 D_801340E0_0;
 struct MenuList;
 struct MenuItem;
-/// Owned menu navigation state with borrowed menu-tree links and retained model handles.
+/// Private system-menu animation and interaction phases.
+typedef enum SystemMenuPhase {
+    SYSTEM_MENU_OPENING = 0,
+    SYSTEM_MENU_INTERACTIVE = 1,
+    SYSTEM_MENU_CLOSE_DELAY = 2,
+    SYSTEM_MENU_CLOSING = 3
+} SystemMenuPhase;
+
+/// Owned menu navigation state with borrowed menu-tree links and retained live-model pointers.
 typedef struct MenuState {
     struct MenuList *menu;       ///< Borrowed current menu list.
     struct MenuList *history[3]; ///< Borrowed parent lists, retained while navigating.
     struct MenuItem *selected;   ///< Borrowed item whose details and row are displayed.
-    s32 depth;
-    s32 phase;
-    s32 model;
-    s32 secondary;
-    s32 tertiary;
-    u64 started;
+    s32 depth; ///< Number of retained parent menu lists, from zero through three.
+    s32 phase; ///< SystemMenuPhase selector.
+    RuntimeObjectPrefix *transitionModel; ///< Live model used for opening and closing.
+    RuntimeObjectPrefix *secondaryModel; ///< Linked secondary transition model.
+    RuntimeObjectPrefix *interactiveModel; ///< Live model used while selecting menu entries.
+    u64 started; ///< Current phase's start time in runtime milliseconds.
 } MenuState;
-/// Owned menu navigation state with borrowed menu-tree links and retained model handles.
+/// Owned menu navigation state with borrowed menu-tree links and retained live-model pointers.
 /// \note Original identifier: \c D_801340E8 (0x801340E8).
 MenuState gSystemMenuState;
 
@@ -106,6 +115,10 @@ typedef char MenuItemSizeCheck[(sizeof(MenuItem) == 0x1C) ? 1 : -1];
     typedef char Name[(((u32) & ((Type *)0)->Field) == (Offset)) ? 1 : -1]
 MENU_OFFSET_CHECK(MenuStateSelectionOffsetCheck, MenuState, selected, 0x10);
 MENU_OFFSET_CHECK(MenuStateTimeOffsetCheck, MenuState, started, 0x28);
+MENU_OFFSET_CHECK(MenuStatePhaseOffsetCheck, MenuState, phase, 0x18);
+MENU_OFFSET_CHECK(MenuStateTransitionOffsetCheck, MenuState, transitionModel, 0x1C);
+MENU_OFFSET_CHECK(MenuStateSecondaryOffsetCheck, MenuState, secondaryModel, 0x20);
+MENU_OFFSET_CHECK(MenuStateInteractiveOffsetCheck, MenuState, interactiveModel, 0x24);
 MENU_OFFSET_CHECK(MenuListHeadOffsetCheck, MenuList, head, 4);
 MENU_OFFSET_CHECK(MenuListVisibleOffsetCheck, MenuList, firstVisibleIndex, 0x14);
 MENU_OFFSET_CHECK(MenuItemNextOffsetCheck, MenuItem, next, 0x14);
@@ -412,7 +425,7 @@ void systemMenuRestoreAudio(void) {
     }
 }
 
-/// Owned menu navigation state with borrowed menu-tree links and retained model handles.
+/// Owned menu navigation state with borrowed menu-tree links and retained live-model pointers.
 /// \note Original identifier: \c D_801340E8 (0x801340E8).
 extern MenuState gSystemMenuState;
 
@@ -781,19 +794,19 @@ extern s32 gSystemMenuInteractiveModel;
 /// \note Original decompilation identifier: \c func_80119FC4 (0x80119FC4).
 void systemMenuDrawFrame(Gfx **displayList) {
     switch (gSystemMenuPhase) { /* irregular */
-    case 1:
+    case SYSTEM_MENU_INTERACTIVE:
         backdropDraw(displayList);
         objectDrawHierarchyGroup((RuntimeObjectPrefix *)gSystemMenuInteractiveModel, 0x2000);
         systemMenuDrawItemList(displayList);
         systemMenuDrawDetails(displayList);
         break;
-    case 2:
+    case SYSTEM_MENU_CLOSE_DELAY:
         backdropDraw(displayList);
         objectDrawHierarchyGroup((RuntimeObjectPrefix *)gSystemMenuInteractiveModel, 0x2000);
         systemMenuDrawClosingEffect(displayList);
         break;
-    case 0:
-    case 3:
+    case SYSTEM_MENU_OPENING:
+    case SYSTEM_MENU_CLOSING:
         objectDrawGroup(0);
         renderDrawColorOverlayWithDepth(gSystemMenuBackdropColor[0], gSystemMenuBackdropColor[1],
                                         gSystemMenuBackdropColor[2], gSystemMenuBackdropColor[3]);
@@ -827,10 +840,10 @@ void systemMenuHandleInput(void) {
     menu = &gSystemMenuState.menu;
     pressed = &gControllerPrimaryRepeatedButtons;
     state = &gSystemMenuState;
-    if ((gSystemMenuPhase == 1) && (*pressed != 0)) {
+    if ((gSystemMenuPhase == SYSTEM_MENU_INTERACTIVE) && (*pressed != 0)) {
         if (*pressed & 0x1000) {
             audioPlaySoundEffect(0xC2);
-            systemMenuSetPhase(2);
+            systemMenuSetPhase(SYSTEM_MENU_CLOSE_DELAY);
             systemMenuRestoreAudio();
             systemMenuRefreshItemDisplay(state);
             return;
@@ -868,7 +881,7 @@ void systemMenuHandleInput(void) {
             systemMenuRestoreAudio();
             if (gSystemMenuHistoryDepth == 0) {
                 audioPlaySoundEffect(0xC2);
-                systemMenuSetPhase(2);
+                systemMenuSetPhase(SYSTEM_MENU_CLOSE_DELAY);
                 systemMenuRestoreAudio();
                 systemMenuRefreshItemDisplay(state);
                 return;
@@ -913,15 +926,15 @@ void systemMenuUpdateOpeningAnimation(void) {
     position[1] += 10.0f * mathSinDegrees(90.0f * progress);
     angle = 90.0f * progress;
     position[2] -= 10.0f * mathCosDegrees(angle);
-    matrix34TransformPointVector((f32 *)(&gSystemMenuInterfaceTransform), (f32 *)(position), (f32 *)((u8 *)gSystemMenuState.model + 0x18));
-    *(f32 *)((u8 *)gSystemMenuState.model + 0x10) = gPlayerViewShake + gPlayerYaw + 180.0f;
-    *(f32 *)((u8 *)gSystemMenuState.model + 0xC) = (1.0f - progress) * -90.0f;
-    *(f32 *)((u8 *)gSystemMenuState.secondary + 0x10) = angle;
-    objectUpdateHierarchy((RuntimeObjectPrefix *)(u8 *)gSystemMenuState.model);
+    matrix34TransformPointVector((f32 *)(&gSystemMenuInterfaceTransform), (f32 *)(position), (f32 *)((u8 *)gSystemMenuState.transitionModel + 0x18));
+    *(f32 *)((u8 *)gSystemMenuState.transitionModel + 0x10) = gPlayerViewShake + gPlayerYaw + 180.0f;
+    *(f32 *)((u8 *)gSystemMenuState.transitionModel + 0xC) = (1.0f - progress) * -90.0f;
+    *(f32 *)((u8 *)gSystemMenuState.secondaryModel + 0x10) = angle;
+    objectUpdateHierarchy((RuntimeObjectPrefix *)(u8 *)gSystemMenuState.transitionModel);
     if (runtimeGetElapsedMilliseconds() - gSystemMenuState.started >= 400) {
         ((MenuBackdropView *)&gPrimaryBackdropScroll)->useBackdrop = 0;
         backdropSelectForView(0, 9, 0);
-        systemMenuSetPhase(1);
+        systemMenuSetPhase(SYSTEM_MENU_INTERACTIVE);
     }
 }
 
@@ -943,11 +956,11 @@ void systemMenuUpdateClosingAnimation(void) {
     position[1] += 10.0f * mathSinDegrees((1.0f - progress) * 90.0f);
     angle = (1.0f - progress) * 90.0f;
     position[2] -= 10.0f * mathCosDegrees(angle);
-    matrix34TransformPointVector((f32 *)(&gSystemMenuInterfaceTransform), (f32 *)(position), (f32 *)((u8 *)gSystemMenuState.model + 0x18));
-    *(f32 *)((u8 *)gSystemMenuState.model + 0x10) = gPlayerViewShake + gPlayerYaw + 180.0f;
-    *(f32 *)((u8 *)gSystemMenuState.model + 0xC) = -90.0f * progress;
-    *(f32 *)((u8 *)gSystemMenuState.secondary + 0x10) = (1.0 - progress) * 90.0;
-    objectUpdateHierarchy((RuntimeObjectPrefix *)(u8 *)gSystemMenuState.model);
+    matrix34TransformPointVector((f32 *)(&gSystemMenuInterfaceTransform), (f32 *)(position), (f32 *)((u8 *)gSystemMenuState.transitionModel + 0x18));
+    *(f32 *)((u8 *)gSystemMenuState.transitionModel + 0x10) = gPlayerViewShake + gPlayerYaw + 180.0f;
+    *(f32 *)((u8 *)gSystemMenuState.transitionModel + 0xC) = -90.0f * progress;
+    *(f32 *)((u8 *)gSystemMenuState.secondaryModel + 0x10) = (1.0 - progress) * 90.0;
+    objectUpdateHierarchy((RuntimeObjectPrefix *)(u8 *)gSystemMenuState.transitionModel);
     if (runtimeGetElapsedMilliseconds() - gSystemMenuState.started >= 400) {
         systemMenuExit();
     }
@@ -1001,31 +1014,28 @@ extern u8 *gCurrentAreaConfiguration;
 void systemMenuUpdateAnimation(void) {
     cameraBuildInterfaceTransform((f32 *)&gSystemMenuInterfaceTransform);
     switch (gSystemMenuPhase) {
-    case 0:
+    case SYSTEM_MENU_OPENING:
         systemMenuUpdateOpeningAnimation();
         return;
-    case 1:
+    case SYSTEM_MENU_INTERACTIVE:
         systemMenuUpdateModelTilt();
         return;
-    case 2:
+    case SYSTEM_MENU_CLOSE_DELAY:
         if (runtimeGetElapsedMilliseconds() - *(u64 *)&gSystemMenuPhaseStartMilliseconds > 300) {
             ((MenuBackdropView *)&gPrimaryBackdropScroll)->useBackdrop = 1;
             backdropSelectForView(0, *(s32 *)(gCurrentAreaConfiguration + 0x64), 1);
-            systemMenuSetPhase(3);
+            systemMenuSetPhase(SYSTEM_MENU_CLOSING);
             systemMenuUpdateClosingAnimation();
             return;
         }
         systemMenuUpdateModelTilt();
         return;
-    case 3:
+    case SYSTEM_MENU_CLOSING:
         systemMenuUpdateClosingAnimation();
         return;
     }
 }
 
-void systemMenuSetPhase(s32 arg0);                                   /* extern */
-void systemMenuRefreshSelectedDetails(MenuState *arg0);                                   /* extern */
-void systemMenuRefreshItemDisplay(MenuState *);                                /* extern */
 void systemMenuUpdateAnimation(void);                                       /* extern */
 /// Audio cue retained on menu entry for restoration.
 /// \note Original identifier: \c D_801340D0 (0x801340D0).
@@ -1047,9 +1057,9 @@ void systemMenuEnter(void) {
     gSystemMenuSoundPreviewHandle = 0;
     audioGetCurrentCueState(&gSystemMenuSavedAudioCue, &gSystemMenuSavedAudioRate);
     runtimeRequestGameModeChange(2);
-    systemMenuSetPhase(0);
-    objectClearHierarchyFlags((u8 *)gSystemMenuState.model, 2);
-    objectClearHierarchyFlags((u8 *)gSystemMenuState.tertiary, 2);
+    systemMenuSetPhase(SYSTEM_MENU_OPENING);
+    objectClearHierarchyFlags((u8 *)gSystemMenuState.transitionModel, 2);
+    objectClearHierarchyFlags((u8 *)gSystemMenuState.interactiveModel, 2);
     systemMenuUpdateAnimation();
     gSystemMenuState.depth = 0;
     gSystemMenuState.menu = &gSystemMenuRootList;
@@ -1232,7 +1242,6 @@ void systemMenuUpdateVolumeSettings(MenuList *menu) {
                          (f32)channelBValue / (f32)channelBMaximum);
 }
 
-void systemMenuPopHistory(void); /* extern */
 
 /// Cancel the current menu choice and return to its parent menu.
 /// \param unused Unused menu action value.
@@ -1850,22 +1859,22 @@ void systemMenuInitialize(void) {
     model->scale[0] = *(f32 *)(gCurrentAreaConfiguration + 0xC) * 5.0;
     model->scale[1] = *(f32 *)(gCurrentAreaConfiguration + 0xC) * 5.0;
     model->scale[2] = *(f32 *)(gCurrentAreaConfiguration + 0xC) * 5.0;
-    state->model = (s32)model;
-    state->secondary = (s32)model->next;
-    ((MenuModel *)state->model)->transform[0] = 0.0f;
-    ((MenuModel *)state->model)->transform[1] = 0.0f;
-    ((MenuModel *)state->model)->transform[2] = 0.0f;
-    ((MenuModel *)state->secondary)->transform[0] = 0.0f;
-    ((MenuModel *)state->secondary)->transform[1] = 0.0f;
-    ((MenuModel *)state->secondary)->transform[2] = 0.0f;
-    ((MenuModel *)state->secondary)->transform[1] = 90.0f;
+    state->transitionModel = (RuntimeObjectPrefix *)model;
+    state->secondaryModel = (RuntimeObjectPrefix *)model->next;
+    ((MenuModel *)state->transitionModel)->transform[0] = 0.0f;
+    ((MenuModel *)state->transitionModel)->transform[1] = 0.0f;
+    ((MenuModel *)state->transitionModel)->transform[2] = 0.0f;
+    ((MenuModel *)state->secondaryModel)->transform[0] = 0.0f;
+    ((MenuModel *)state->secondaryModel)->transform[1] = 0.0f;
+    ((MenuModel *)state->secondaryModel)->transform[2] = 0.0f;
+    ((MenuModel *)state->secondaryModel)->transform[1] = 90.0f;
     model = (MenuModel *)objectCreateHierarchyFromTemplate((ObjectTemplate *)&gSystemMenuInteractiveModelTemplate);
     objectSetHierarchyFlags((u8 *)model, 0x2002);
     objectRegisterActiveHierarchy((u8 *)model);
     model->scale[0] = *(f32 *)(gCurrentAreaConfiguration + 0xC);
     model->scale[1] = *(f32 *)(gCurrentAreaConfiguration + 0xC);
     model->scale[2] = *(f32 *)(gCurrentAreaConfiguration + 0xC);
-    state->tertiary = (s32)model;
+    state->interactiveModel = (RuntimeObjectPrefix *)model;
     model->transform[2] = model->transform[1] = model->transform[0] = 0.0f;
     scene = progressGetCurrentChapter();
     if (scene != 4 && scene != 6 && scene != 8 && gRuntimeCurrentArea >= 3 && progressGetValue(0x12) == 0) {

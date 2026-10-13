@@ -1,3 +1,4 @@
+#include "system_menu.h"
 #include "player_profile.h"
 #include "player_state.h"
 #include "audio_settings.h"
@@ -1087,7 +1088,6 @@ void playerResumeNormalControl(void) {
 }
 
 void toolboxOpen(s32, s32); /* extern */
-void systemMenuEnter();                 /* extern */
 
 /// Handle a permitted menu request by opening the system menu or toolbox appropriate to current progress.
 /// \param player Player record providing menu permissions and tracked playback.
