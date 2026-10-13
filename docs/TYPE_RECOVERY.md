@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,092 / 76 |
+| Raw offset candidates | 4,040 / 86 | 2,074 / 76 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3673,3 +3673,9 @@ original floating expression and traversal order.
 `animated_radial_effect.h` supplies the shared creation contract. Radial and
 flickering action commands reuse the same checked count/lifetime operand record,
 with descriptive field names and the original signed-count/floating-lifetime ABI.
+
+### Expanding-orange state
+
+Creation, initialization, update and drawing share a checked 24-byte private state
+containing target handle, borrowed-key texture track, remaining lifetime and
+uniform scale. Target unavailability does not end the effect before expiry.

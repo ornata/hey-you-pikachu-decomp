@@ -2007,6 +2007,19 @@ u8 *animatedRadialEffectCreate(s32 targetId, f32 duration, s32 count) {
     return object;
 }
 
+/// Expanding-orange target, texture playback, lifetime and uniform scale.
+typedef struct ExpandingOrangeState {
+    s32 targetHandle;     ///< Object-manager handle to follow when available.
+    ValueTrack animation; ///< Texture-frame playback with borrowed keys.
+    f32 remaining;        ///< Remaining lifetime in seconds.
+    f32 scale;            ///< Current uniform scale and fade progression.
+} ExpandingOrangeState;
+
+typedef char ExpandingOrangeStateSizeCheck[(sizeof(ExpandingOrangeState) == 0x18) ? 1 : -1];
+typedef char OrangeAnimationOffsetCheck[(((u32) & ((ExpandingOrangeState *)0)->animation) == 4) ? 1 : -1];
+typedef char OrangeLifetimeOffsetCheck[(((u32) & ((ExpandingOrangeState *)0)->remaining) == 0x10) ? 1 : -1];
+typedef char OrangeScaleOffsetCheck[(((u32) & ((ExpandingOrangeState *)0)->scale) == 0x14) ? 1 : -1];
+
 /// Create an expanding orange visual effect that follows a target while it exists.
 /// \param targetHandle Object handle identifying the target to follow.
 /// \param lifetime Effect lifetime in seconds.
@@ -2014,14 +2027,14 @@ u8 *animatedRadialEffectCreate(s32 targetId, f32 duration, s32 count) {
 /// \note Original decompilation identifier: \c func_8001B9EC (0x8001B9EC).
 u8 *expandingOrangeEffectCreate(s32 targetHandle, f32 lifetime) {
     u8 *sp1C;
-    u8 *sp18;
+    ExpandingOrangeState *state;
 
     sp1C = objectCreateHierarchyFromTemplate((ObjectTemplate *)gExpandingOrangeEffectTemplate);
-    sp18 = *(u8 **)(sp1C + 0x54);
-    *(f32 *)(sp18 + 0x10) = lifetime;
-    *(s32 *)sp18 = targetHandle;
-    animationIntegerTrackInitialize((ValueTrack *)(sp18 + 4), (ValueKey *)(gExpandingOrangeEffectFrameAnimation));
-    *(f32 *)(sp18 + 0x14) = 0.5f;
+    state = ((RuntimeObjectPrefix *)sp1C)->state.pointer;
+    state->remaining = lifetime;
+    state->targetHandle = targetHandle;
+    animationIntegerTrackInitialize(&state->animation, (ValueKey *)(gExpandingOrangeEffectFrameAnimation));
+    state->scale = 0.5f;
     *(f32 *)(sp1C + 8) = 0.5f;
     *(f32 *)(sp1C + 4) = 0.5f;
     *(f32 *)sp1C = 0.5f;
@@ -2037,9 +2050,9 @@ void expandingOrangeEffectInitialize(void *effect) {
     u8 *sp1C;
     u8 *allocation;
 
-    allocation = heapAllocLocal(&gGameHeap, 0x18, 0x923);
+    allocation = heapAllocLocal(&gGameHeap, sizeof(ExpandingOrangeState), 0x923);
     sp1C = allocation;
-    _bzero((void *)allocation, 0x18);
+    _bzero((void *)allocation, sizeof(ExpandingOrangeState));
     ((RuntimeObjectPrefix *)effect)->state.bytes = sp1C;
 }
 
@@ -2048,21 +2061,21 @@ void expandingOrangeEffectInitialize(void *effect) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001BAB8 (0x8001BAB8).
 void expandingOrangeEffectUpdate(u8 *effect) {
-    u8 *v;
+    ExpandingOrangeState *state;
     u8 *t;
     s32 tmp;
 
-    v = *(u8 **)(effect + 0x54);
-    *(f32 *)(v + 0x10) -= gRuntimeFrameSeconds;
-    t = objectResolveAvailableHandle(*(s32 *)v);
-    if (*(f32 *)(v + 0x10) < 0.0f) {
+    state = ((RuntimeObjectPrefix *)effect)->state.pointer;
+    state->remaining -= gRuntimeFrameSeconds;
+    t = objectResolveAvailableHandle(state->targetHandle);
+    if (state->remaining < 0.0f) {
         objectRequestHierarchyDestruction(effect);
         return;
     }
-    animationIntegerTrackEvaluate((ValueTrack *)(v + 4), &tmp, gRuntimeFrameSeconds);
-    *(f32 *)(v + 0x14) += gRuntimeFrameSeconds * 3.0f;
-    if (*(f32 *)(v + 0x14) > 3.5f) {
-        *(f32 *)(v + 0x14) = 3.5f;
+    animationIntegerTrackEvaluate(&state->animation, &tmp, gRuntimeFrameSeconds);
+    state->scale += gRuntimeFrameSeconds * 3.0f;
+    if (state->scale > 3.5f) {
+        state->scale = 3.5f;
     }
     if (t != NULL) {
         *(f32 *)(effect + 0x18) = *(f32 *)(t + 0x44);
@@ -2072,9 +2085,9 @@ void expandingOrangeEffectUpdate(u8 *effect) {
         *(f32 *)(effect + 0x48) = *(f32 *)(effect + 0x1C);
         *(f32 *)(effect + 0x4C) = *(f32 *)(effect + 0x20);
     }
-    *(f32 *)(effect + 0) = *(f32 *)(v + 0x14);
-    *(f32 *)(effect + 4) = *(f32 *)(v + 0x14);
-    *(f32 *)(effect + 8) = *(f32 *)(v + 0x14);
+    *(f32 *)(effect + 0) = state->scale;
+    *(f32 *)(effect + 4) = state->scale;
+    *(f32 *)(effect + 8) = state->scale;
     objectOrientAlongCameraView(effect);
 }
 
@@ -2088,12 +2101,12 @@ void expandingOrangeEffectUpdate(u8 *effect) {
 /// live until rendering finishes. The effect texture bank must be loaded.
 /// \note Original decompilation identifier: \c func_8001BBF0 (0x8001BBF0).
 s32 expandingOrangeEffectPrepareDraw(u8 *effect) {
-    u8 *obj;
+    ExpandingOrangeState *state;
     u8 alpha;
 
-    obj = *(u8 **)(effect + 0x54);
-    alpha = mathMapRangeClamped(0.5f, 255.0f, 3.5f, 0.0f, *(f32 *)(obj + 0x14));
-    textureLoadForDraw(&gRenderDisplayListCursor, 5, *(s16 *)(obj + 0xC));
+    state = ((RuntimeObjectPrefix *)effect)->state.pointer;
+    alpha = mathMapRangeClamped(0.5f, 255.0f, 3.5f, 0.0f, state->scale);
+    textureLoadForDraw(&gRenderDisplayListCursor, 5, state->animation.value);
     gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0xFF, 0x96, 0, alpha);
     return *(s32 *)(effect + 0x30);
 }
