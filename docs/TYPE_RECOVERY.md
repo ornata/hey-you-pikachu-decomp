@@ -4421,3 +4421,19 @@ Original function/address notes remain in the producer and shared declarations.
 Vocabulary/result interfaces also record original addresses, borrowed resident-name
 storage, unchanged output when no result is pending, and dictionary-local answer
 indices. All three edited units and dependent headers preserve clean retail ROM bytes.
+
+### Actor ground-query results and shared contracts
+
+An exploratory declaration/definition scan exposed a void/integer disagreement in
+actorProbeGroundMaterialAhead. Ghidra at 0x801180E8 inferred void, but ROM assembly
+at 0x80118154 calls terrainGetSurfaceAttributes and leaves its result register intact.
+Explicitly returning that value preserves every strict object. Both script consumers
+already push that material/attribute result, so their stale unspecified-result notes
+are removed without changing VM behavior.
+
+`actor_ground.h` shares material, height and offset-coordinate queries with both
+producer units and the script consumer. Contracts document actor/terrain prerequisites,
+coordinate selectors, signed distances and terrain sentinel results. All three units
+preserve strict baseline objects and the clean retail ROM match. The exploratory scan
+also identifies cameraBuildViewProjection, heapInitializeRegion and playerAddPoints
+local return declarations for follow-up; it is not an exhaustive interface audit.

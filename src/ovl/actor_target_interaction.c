@@ -1,3 +1,4 @@
+#include "actor_ground.h"
 #include "player_state.h"
 #include "pikachu_actor.h"
 #include "vector_metrics.h"

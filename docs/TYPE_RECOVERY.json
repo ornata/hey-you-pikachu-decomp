@@ -4244,6 +4244,7 @@
       "known_views": [
         "action_query.h",
         "action_script_playback.h",
+        "actor_ground.h",
         "actor_held_item.h",
         "actor_movement.h",
         "actor_script.h",
@@ -4282,30 +4283,30 @@
       "locations": {
         "raw_offset_candidates": {
           "return -1": [
-            "89:9"
+            "90:9"
           ],
           "return -65536": [
-            "156:5",
-            "168:5",
-            "615:9",
-            "621:5",
-            "836:5",
-            "917:5",
-            "967:5",
-            "988:5",
-            "1007:5"
+            "157:5",
+            "169:5",
+            "616:9",
+            "622:5",
+            "837:5",
+            "918:5",
+            "968:5",
+            "989:5",
+            "1008:5"
           ],
           "gPlayerControllerPort + 4": [
-            "555:14"
+            "556:14"
           ],
           "gPlayerControllerPort + 6": [
-            "563:21"
+            "564:21"
           ],
           "offset + 4": [
-            "947:64"
+            "948:64"
           ],
           "offset + 8": [
-            "948:64"
+            "949:64"
           ]
         }
       }
@@ -4314,6 +4315,7 @@
       "known_views": [
         "actor_appearance.h",
         "actor_behavior.h",
+        "actor_ground.h",
         "actor_rotation.h",
         "actor_script.h",
         "actor_target.h",
@@ -4336,7 +4338,7 @@
       "locations": {
         "raw_offset_candidates": {
           "return -1": [
-            "415:9"
+            "416:9"
           ]
         }
       }

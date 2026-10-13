@@ -1,3 +1,4 @@
+#include "actor_ground.h"
 #include "player_state.h"
 #include "script_vm_stack.h"
 #include "vector_metrics.h"
@@ -867,12 +868,12 @@ f32 actorGetGroundOffsetCoordinate(u8 *actor, f32 distance, f32 angle, s32 axis)
 /// \param actor Actor supplying the reference position and heading.
 /// \param distance Horizontal distance along the actor's heading.
 /// \param heightOffset Vertical offset from the actor's position.
-/// \returns Nothing; the queried material is discarded.
+/// \returns Terrain material and surface attributes, including terrain query sentinel values.
 /// \note Original decompilation identifier: \c func_801180E8 (0x801180E8).
-void actorProbeGroundMaterialAhead(u8 *actor, f32 distance, f32 heightOffset) {
+s32 actorProbeGroundMaterialAhead(u8 *actor, f32 distance, f32 heightOffset) {
     u8 *state = ((RuntimeObjectPrefix *)actor)->state.bytes;
 
-    terrainGetSurfaceAttributes(((RuntimeObjectPrefix *)actor)->worldPosition[0] +
+    return terrainGetSurfaceAttributes(((RuntimeObjectPrefix *)actor)->worldPosition[0] +
                                     mathSinDegrees(((ActorScriptState *)state)->orientation[1]) * distance,
                                 ((RuntimeObjectPrefix *)actor)->worldPosition[1] + heightOffset,
                                 ((RuntimeObjectPrefix *)actor)->worldPosition[2] +

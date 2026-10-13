@@ -1,3 +1,4 @@
+#include "actor_ground.h"
 #include "player_state.h"
 #include "controller_state.h"
 #include "pikachu_actor.h"
@@ -133,7 +134,7 @@ s32 actorScriptSetPlayerInteractionMode(u8 *actor) {
 
 
 /// Query the current player interaction mode.
-/// \param actor Actor whose script VM receives an unspecified legacy result from the interaction-mode query.
+/// \param actor Actor whose script VM receives terrain material and surface attributes from the interaction-mode query.
 /// \returns Zero, allowing script execution to continue.
 /// \note Portability/UB: The interaction-mode helper is defined with a void return but declared as returning an integer here; its consumed result is unspecified.
 /// \note Original decompilation identifier: \c func_8011E374 (0x8011E374).
@@ -624,7 +625,6 @@ s32 actorScriptGetCaveLandmarkHandle(u8 *actor) {
     return 0;
 }
 
-f32 actorGetGroundOffsetCoordinate(u8 *arg0, f32 arg1, f32 arg2, s32 arg3); /* extern */
 /// Read a coordinate of a ground position offset from the actor.
 /// \param actor Actor whose script VM supplies horizontal distance, finite heading offset in degrees, then a valid axis (zero for X, one for ground height, two for Z), and receives that coordinate.
 /// \returns Zero, allowing script execution to continue.
@@ -662,12 +662,10 @@ s32 actorScriptGetGroundMaterialAtPosition(u8 *actor) {
     return 0;
 }
 
-s32 actorProbeGroundMaterialAhead(u8 *, f32, f32); /* extern */
 
 /// Probe ground material along the actor heading.
-/// \param actor Actor whose script VM supplies signed horizontal distance and receives an unspecified legacy result; requires initialized actor heading; the probe uses the actor height.
+/// \param actor Actor whose script VM supplies signed horizontal distance and receives terrain material and surface attributes; requires initialized actor heading; the probe uses the actor height.
 /// \returns Zero, allowing script execution to continue.
-/// \note Portability/UB: The ground-material helper is defined with a void return but declared as returning an integer here; its consumed result is unspecified.
 /// \note Original decompilation identifier: \c func_8011EE08 (0x8011EE08).
 s32 actorScriptProbeGroundMaterialAhead(u8 *actor) {
     s32 sp1C;
@@ -679,9 +677,8 @@ s32 actorScriptProbeGroundMaterialAhead(u8 *actor) {
 
 
 /// Probe ground material ahead with a vertical query offset.
-/// \param actor Actor whose script VM supplies signed horizontal distance followed by vertical height offset and receives an unspecified legacy result; requires initialized actor heading.
+/// \param actor Actor whose script VM supplies signed horizontal distance followed by vertical height offset and receives terrain material and surface attributes; requires initialized actor heading.
 /// \returns Zero, allowing script execution to continue.
-/// \note Portability/UB: The ground-material helper is defined with a void return but declared as returning an integer here; its consumed result is unspecified.
 /// \note Original decompilation identifier: \c func_8011EE54 (0x8011EE54).
 s32 actorScriptProbeGroundMaterialAtHeightOffset(u8 *actor) {
     s32 sp1C;
@@ -695,7 +692,6 @@ s32 actorScriptProbeGroundMaterialAtHeightOffset(u8 *actor) {
     return 0;
 }
 
-f32 actorGetGroundHeightAhead(u8 *arg0, f32 arg1, f32 arg2); /* extern */
 
 /// Read ground height along the actor heading.
 /// \param actor Actor whose script VM supplies signed horizontal distance and receives the ground height, or zero when no ground node is found; the query starts at the actor height.
@@ -709,7 +705,6 @@ s32 actorScriptGetGroundHeightAhead(u8 *actor) {
     return 0;
 }
 
-f32 actorGetGroundHeightAhead(u8 *, f32, f32); /* extern */
 
 /// Read ground height ahead with a vertical query offset.
 /// \param actor Actor whose script VM supplies signed horizontal distance followed by vertical height offset and receives the ground height, or zero when no ground node is found.
