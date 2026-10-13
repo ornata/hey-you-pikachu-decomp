@@ -3991,3 +3991,12 @@ eight trailing bytes, with a checked total size of 0x28. The trailing region has
 no established interpretation; references to that region or allocation evidence
 are needed before assigning it fields. Ghidra's 0x8001C460 initializer confirms
 the registry's keyed-pool initialization.
+
+### Actor-part registry contracts
+
+`actor_parts.h` shares registry initialization and teardown with the object
+manager. The registry outlives actor part tables and is released after object
+hierarchies. Actor part-index lookup now uses the canonical two-argument
+`word_map_lookup.h` interface; removing its unused trailing arguments preserves
+all object bytes and relocations. Registration locals distinguish the actor
+type, part identifier list, assigned part-table index and packed lookup key.

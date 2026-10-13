@@ -1,10 +1,20 @@
 /// \file
-/// Provides borrowed actor-part lookup and world-position queries.
+/// Defines actor-part registry lifetime, borrowed lookup and world-position queries.
 
 #ifndef ACTOR_PARTS_H
 #define ACTOR_PARTS_H
 
 #include <ultra64.h>
+
+/// Initialize the shared actor-part registry before allocating actor part tables.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_80016354 (0x80016354).
+void actorInitializePartRegistry(void);
+
+/// Release the shared part lookup after all actors have been destroyed.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_80016384 (0x80016384).
+void actorDestroyPartIdMap(void);
 
 /// Find an actor part by its identifier.
 /// \param actor Actor whose parts are searched.

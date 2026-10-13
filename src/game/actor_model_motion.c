@@ -1,3 +1,4 @@
+#include "word_map_lookup.h"
 #include "matrix_basic.h"
 #include "texture_setup.h"
 #include "pikachu_actor.h"
@@ -844,29 +845,28 @@ void actorCopyObjectRotationToState(u8 *actor) {
 extern WordMap gActorPartIndexMap;
 
 /// Register the named parts belonging to an actor type.
-/// \param bank Nonnegative actor type within the part-count table and the 15-bit actor-type range.
-/// \param ids Part identifiers in [0, 65535], terminated by minus one.
+/// \param actorType Nonnegative actor type within the part-count table and the 15-bit actor-type range.
+/// \param partIds Part identifiers in [0, 65535], terminated by minus one.
 /// \returns Pointer to the terminating entry in the part identifier list.
 /// \note Original decompilation identifier: \c func_80016248 (0x80016248).
-s32 *actorRegisterPartIds(s32 bank, s32 *ids) {
-    s32 n = 1;
-    s32 snd;
+s32 *actorRegisterPartIds(s32 actorType, s32 *partIds) {
+    s32 partIndex = 1;
+    s32 lookupKey;
 
-    while (*ids != -1) {
-        snd = *ids + (bank << 16);
-        wordMapInsert(&gActorPartIndexMap, n, (u32)snd);
-        n++;
-        ids++;
+    while (*partIds != -1) {
+        lookupKey = *partIds + (actorType << 16);
+        wordMapInsert(&gActorPartIndexMap, partIndex, (u32)lookupKey);
+        partIndex++;
+        partIds++;
     }
-    gActorPartCounts[bank] = n;
-    return ids;
+    gActorPartCounts[actorType] = partIndex;
+    return partIds;
 }
 
 /// Packed actor-kind and terminated part-identifier lists used to initialize the part registry.
 /// \note Original identifier: \c D_800760F0 (0x800760F0).
 extern s32 gActorPartRegistrationData;
 
-s32 *actorRegisterPartIds(s32, s32 *);
 
 /// Initialize the actor part lookup from the configured actor types.
 /// \returns Nothing.
@@ -901,7 +901,6 @@ void actorDestroyPartIdMap(void) {
     wordMapDestroy(&gActorPartIndexMap);
 }
 
-s32 wordMapLookup(WordMap *, u32, s32, s32);
 
 /// Find the index of a named part for an actor type.
 /// \param actorType Nonnegative actor type in the 15-bit actor-type range.
@@ -914,7 +913,7 @@ s32 actorFindPartIndex(s32 actorType, s32 partId) {
     if (partId == actorType) {
         return 0;
     }
-    partIndex = wordMapLookup(&gActorPartIndexMap, (actorType << 0x10) + partId, partId, actorType);
+    partIndex = wordMapLookup(&gActorPartIndexMap, (actorType << 0x10) + partId);
     if (partIndex != 0) {
         return partIndex;
     }

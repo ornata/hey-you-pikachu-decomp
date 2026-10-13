@@ -1,3 +1,4 @@
+#include "actor_parts.h"
 #include "object_response.h"
 #include "matrix_basic.h"
 #include "camera_storage.h"
@@ -1528,7 +1529,6 @@ void objectResetTraversalTransformAndMovement(void) {
     gObjectPendingLocalMovement.z = 0.0f;
 }
 
-void actorInitializePartRegistry();                            /* extern */
 
 /// Initialize the runtime object system and its supporting registries.
 /// \returns Nothing.
@@ -1546,7 +1546,6 @@ void objectSystemInitialize(void) {
     interactionMarkerCreate();
 }
 
-void actorDestroyPartIdMap();                  /* extern */
 
 /// Destroy registered object hierarchies and release the runtime object system.
 /// \returns Nothing.

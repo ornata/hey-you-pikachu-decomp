@@ -583,11 +583,11 @@
         "texture_animation_programs.h",
         "texture_setup.h",
         "vector_metrics.h",
-        "word_map.h"
+        "word_map.h",
+        "word_map_lookup.h"
       ],
       "matching_exceptions": {
         "heapAllocLocal callers": "These callers preserve unused fourth arguments in the ROM. The three-argument allocator prototype rejects them. Retain the local ABI compatibility declaration until an explicitly matching call representation is verified.",
-        "actorFindPartIndex": "The word-map lookup retains two unused trailing integer arguments from the ROM call. Its map, key and return types match the implementation; removing the unused arguments is outside this matching cleanup.",
         "actorUpdateMotionDisplacement": "The matrix-vector call retains an unused trailing actor-state pointer from the ROM call. Its matrix, input and output are float arrays and its return is void.",
         "heapFreeLocal callers": "An unprototyped void declaration retains the original mix of two- and three-argument calls, including an unused trailing object pointer.",
         "actorBindAnimatedTexturesForDraw": "The raw 32-bit child continuation read at object offset 0x30 is retained: replacing it with RuntimeObjectPrefix.child.address changes this function's allocated instruction bytes under IDO, while the typed animated-texture state links match. Retry only with a representation that preserves the return load scheduling."
@@ -595,40 +595,40 @@
       "locations": {
         "raw_offset_candidates": {
           "slot + 1": [
-            "112:33"
+            "113:33"
           ],
           "drawListStorage + 0x40": [
-            "244:40"
+            "245:40"
           ],
           "heightDelta + 1": [
-            "358:34"
+            "359:34"
           ],
           "actor + 0x18": [
-            "388:50"
+            "389:50"
           ],
           "actor + 0x1C": [
-            "388:74"
+            "389:74"
           ],
           "actor + 0x20": [
-            "388:98"
+            "389:98"
           ],
           "actor + 0x54": [
-            "401:38"
+            "402:38"
           ],
           "actor + 0x36": [
-            "401:71"
+            "402:71"
           ],
           "p + 1": [
             "880:38"
           ],
           "return -1": [
-            "921:5"
+            "920:5"
           ],
           "actor + 0x30": [
-            "1088:21"
+            "1087:21"
           ],
           "displacement + 2": [
-            "1344:17"
+            "1343:17"
           ]
         }
       }
@@ -2442,6 +2442,7 @@
     },
     "src/game/object_hierarchy.c": {
       "known_views": [
+        "actor_parts.h",
         "audio_sound_effect.h",
         "audio_spatial.h",
         "camera_storage.h",
@@ -2492,148 +2493,148 @@
       "locations": {
         "raw_offset_candidates": {
           "base + 1": [
-            "169:31"
-          ],
-          "base + 2": [
             "170:31"
           ],
-          "base + 3": [
+          "base + 2": [
             "171:31"
           ],
+          "base + 3": [
+            "172:31"
+          ],
           "reader + 0x13": [
-            "186:62"
+            "187:62"
           ],
           "windowStart + 0x400": [
-            "205:61"
+            "206:61"
           ],
           "reader + 0x10": [
-            "229:29",
-            "355:36"
+            "230:29",
+            "356:36"
           ],
           "return -1": [
-            "297:9",
-            "894:9",
-            "902:9"
+            "298:9",
+            "895:9",
+            "903:9"
           ],
           "i + 1": [
-            "305:19"
+            "306:19"
           ],
           "length + 1U": [
-            "308:28"
+            "309:28"
           ],
           "position + 1": [
-            "352:34",
-            "355:77"
+            "353:34",
+            "356:77"
           ],
           "msg + 0x34": [
-            "509:14",
-            "1746:14"
+            "510:14",
+            "1745:14"
           ],
           "msg + 0x38": [
-            "510:14",
-            "1747:14",
-            "1749:14"
+            "511:14",
+            "1746:14",
+            "1748:14"
           ],
           "gObjectSearchTreeRoot + 8": [
-            "527:31",
-            "1834:22"
+            "528:31",
+            "1833:22"
           ],
           "gObjectTransformStackDepth - 1": [
-            "597:40"
+            "598:40"
           ],
           "object + 0x24": [
-            "1085:35"
+            "1086:35"
           ],
           "widthShift + 4": [
-            "1086:42"
-          ],
-          "heightShift + 4": [
             "1087:42"
           ],
+          "heightShift + 4": [
+            "1088:42"
+          ],
           "object + 0x54": [
-            "1097:25"
+            "1098:25"
           ],
           "obj + 0x54": [
-            "1116:34"
+            "1117:34"
           ],
           "obj + 0x34": [
-            "1137:18"
+            "1138:18"
           ],
           "obj + 0x30": [
-            "1140:21"
+            "1141:21"
           ],
           "object + 0x30": [
-            "1151:21"
+            "1152:21"
           ],
           "object + 0x36": [
-            "1292:24",
-            "1294:26",
-            "1300:28",
-            "1303:30",
-            "1336:78",
-            "1337:30",
-            "1342:30",
-            "1343:34",
+            "1293:24",
+            "1295:26",
+            "1301:28",
+            "1304:30",
+            "1337:78",
+            "1338:30",
+            "1343:30",
             "1344:34",
             "1345:34",
-            "1347:34",
-            "1348:34"
+            "1346:34",
+            "1348:34",
+            "1349:34"
           ],
           "object + 0x34": [
-            "1297:47",
             "1298:47",
-            "1306:30",
-            "1323:37"
+            "1299:47",
+            "1307:30",
+            "1324:37"
           ],
           "object + 0x18": [
-            "1301:78",
-            "1330:30"
-          ],
-          "object + 0x1C": [
-            "1301:103",
+            "1302:78",
             "1331:30"
           ],
-          "object + 0x20": [
-            "1302:49",
+          "object + 0x1C": [
+            "1302:103",
             "1332:30"
           ],
+          "object + 0x20": [
+            "1303:49",
+            "1333:30"
+          ],
           "object + 0xC": [
-            "1307:97",
-            "1733:70"
+            "1308:97",
+            "1732:70"
           ],
           "object + 0x10": [
-            "1308:62"
+            "1309:62"
           ],
           "object + 0x14": [
-            "1308:87"
+            "1309:87"
           ],
           "object + 4": [
-            "1309:93"
+            "1310:93"
           ],
           "object + 8": [
-            "1310:49"
+            "1311:49"
           ],
           "object + 0x3C": [
-            "1334:32",
-            "1336:51"
+            "1335:32",
+            "1337:51"
           ],
           "object + 0x44": [
-            "1339:26",
-            "1733:46"
+            "1340:26",
+            "1732:46"
           ],
           "object + 0x48": [
-            "1340:26"
-          ],
-          "object + 0x4C": [
             "1341:26"
           ],
+          "object + 0x4C": [
+            "1342:26"
+          ],
           "object + 0x2C": [
-            "1352:26",
-            "1353:68"
+            "1353:26",
+            "1354:68"
           ],
           "first + 0x34": [
-            "1838:28",
-            "1841:18"
+            "1837:28",
+            "1840:18"
           ]
         }
       }
