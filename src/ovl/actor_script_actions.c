@@ -1,3 +1,4 @@
+#include "player_control.h"
 #include "random.h"
 #include "particle_cluster.h"
 #include "orange_effect.h"
@@ -295,7 +296,6 @@ s32 actorScriptPerformCostedAction(u8 *object) {
     return SCRIPT_VM_WAITING_FOR_ACTION;
 }
 
-void playerSelectControlScheme(s32); /* extern */
 /// Current gameplay, menu or transition mode.
 /// \note Original identifier: \c D_800AE504 (0x800AE504).
 extern s32 gRuntimeGameMode;

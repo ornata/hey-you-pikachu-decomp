@@ -4311,3 +4311,17 @@ full-prefix reads fail ROM matching. HUD retains its byte-offset companion-targe
 read for the same reason. Their canonical storage declarations still match; both
 exceptions record the failed trials and next scheduling evidence. All eighteen
 units preserve strict baseline objects and the clean retail ROM match.
+
+### Player mode and snapshot contracts
+
+`player_control.h` shares behavior changes, control-scheme selection, saved permissions
+and the single save/restore snapshot interface. Contracts state selector bounds and
+borrowed-resource validity through restoration. Three external consumers replace local
+or unprototyped declarations. Private behavior/control-scheme records now document
+callback, permission, controller-port and button-mask roles with target size checks.
+Ghidra at 0x801101D0 confirms callback completion and mode application.
+
+Saved player storage at 0x80133E10 now uses the checked 0x100-byte PlayerControlPrefix;
+save and restore use typed assignments instead of anonymous storage and Blob100 casts.
+Both copies preserve object bytes, BSS layout and relocations. All four edited units
+pass strict baseline comparison and the clean retail ROM gate.

@@ -313,7 +313,6 @@ extern f32 gPlayerViewShake;
 /// Separate symbol view of the primary player record's eye height.
 /// \note Original identifier: \c D_800EF6BC (0x800EF6BC).
 extern f32 gPlayerEyeHeight;
-void playerRestoreState(void);
 /// Stop the actor action script and borrow its completed script-identifier field.
 /// \returns Actor-state script identifier, set to minus one; valid while that state lives.
 /// \note Portability: The first argument is an actor address. The restore call
@@ -361,7 +360,6 @@ void presentationRestoreActiveActor(void) {
 }
 
 
-void playerSaveState(void);
 
 /// Save the active actor's state before a presentation changes its pose and placement.
 /// \returns Nothing; requires a live actor with initialized model and behavior state.

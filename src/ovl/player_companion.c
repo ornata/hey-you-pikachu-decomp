@@ -75,9 +75,9 @@ typedef char InteractionProxyDescriptionOffsetCheck[(PROXY_OFFSET(description) =
 #undef PROXY_OFFSET
 
 /* .bss 0x80133E10..0x80134030, in address order (IDO lays globals out in declaration order) */
-struct {
-    s32 w[64];
-} gSavedPlayerState;
+/// Single saved copy of the primary player record; referenced resources remain borrowed.
+/// \note Original identifier: \c D_80133E10 (0x80133E10).
+PlayerControlPrefix gSavedPlayerState;
 /// Terrain query mode used for player movement and ground sampling.
 /// \note Original identifier: \c D_80133F10 (0x80133F10).
 s32 gPlayerCollisionQueryMode;
@@ -143,12 +143,13 @@ s32 (*gPlayerInteractionActionHandlers[10])() = {
     playerConsumeInteractionProxy,
 };
 
-/* A player mode: per-frame handler (player, pad), leave handler, and the player flags it sets. */
+/// Private behavior definition supplying callbacks and active control permissions.
 typedef struct {
-    /* 0x0 */ PlayerModeUpdate update;
-    /* 0x4 */ PlayerModeLeave leave;
-    /* 0x8 */ s32 flags;
-} PlayerMode; /* size 0xC */
+    PlayerModeUpdate update; ///< Per-input-update callback.
+    PlayerModeLeave leave; ///< Optional mode completion callback.
+    s32 permissions; ///< Active control permissions for this mode.
+} PlayerMode;
+typedef char PlayerModeSizeCheck[(sizeof(PlayerMode) == 0xC) ? 1 : -1];
 
 void playerUpdateNormalControl(u8 *, u8 *);
 void playerUpdateStationaryLook(u8 *, u8 *);
@@ -204,15 +205,15 @@ PlayerMode gPlayerModes[32] = {
     {playerUpdateRestrictedControl, NULL, 0x40018A02},
 };
 
-/* A control scheme: the player mode to enter, the controller port driving the player (-1: none)
- * and the pad bits it keeps (playerFilterControllerInput). */
+/// Private control-scheme definition selecting behavior, input port and retained buttons.
 typedef struct {
-    /* 0x0 */ s32 mode;
-    /* 0x4 */ s32 port;
-    /* 0x8 */ u16 keepMask;
-} ModeRec; /* size 0xC */
+    s32 mode; ///< Behavior mode selected by this scheme.
+    s32 port; ///< Controller port, or minus one for neutral input.
+    u16 keepMask; ///< Buttons retained by input filtering.
+} PlayerControlScheme;
+typedef char PlayerControlSchemeSizeCheck[(sizeof(PlayerControlScheme) == 0xC) ? 1 : -1];
 
-ModeRec gPlayerControlSchemes[28] = {
+PlayerControlScheme gPlayerControlSchemes[28] = {
     {0, -1, 0},      {1, 0, 0xFFFF},  {6, -1, 0},      {7, -1, 0},      {8, 0, 0x1000},  {9, -1, 0},
     {10, 0, 0},      {11, 0, 0},      {12, 0, 0x4000}, {13, 0, 0},      {14, 0, 0},      {15, 0, 0x80},
     {16, 0, 0x4080}, {17, 0, 0x40},   {18, 0, 0x108},  {19, 0, 0x404},  {20, 0, 0x40C0}, {21, 0, 0x404},
@@ -1046,7 +1047,7 @@ void playerChangeMode(s32 mode) {
     m = &gPlayerModes[mode];
     ((PlayerModeState *)mc)->update = m->update;
     ((PlayerModeState *)mc)->leave = m->leave;
-    gPlayerPermissions = m->flags;
+    gPlayerPermissions = m->permissions;
     ((PlayerModeState *)mc)->mode = mode;
     ((PlayerControlPrefix *)((u8 *)gPlayerCompanionTarget - 0x50))->modeElapsed = 0.0f;
 }
@@ -1054,7 +1055,6 @@ void playerChangeMode(s32 mode) {
 /// Separate symbol view of the primary player record's controller port.
 /// \note Original identifier: \c D_800EF6CC (0x800EF6CC).
 extern s32 gPlayerControllerPort;
-void playerChangeMode(s32); /* extern */
 
 /// Apply a primary player control scheme, including behavior mode, controller assignment, and permitted
 /// input.
@@ -1062,7 +1062,7 @@ void playerChangeMode(s32); /* extern */
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80110288 (0x80110288).
 void playerApplyControlScheme(s32 scheme) {
-    ModeRec *rec = &gPlayerControlSchemes[scheme];
+    PlayerControlScheme *rec = &gPlayerControlSchemes[scheme];
 
     playerChangeMode(rec->mode);
     ((PlayerControlPrefix *)((u8 *)&gPlayerControllerPort - 0x2C))->keptButtons = rec->keepMask;
@@ -1381,7 +1381,6 @@ void playerFinishStun(u8 *player) {
     controllerRequestRumbleStop(0);
 }
 
-void playerResumeNormalControl(void);              /* extern */
 void playerToggleViewShake(u8 *arg0);          /* extern */
 
 /// Advance the timed player stun reaction, allowing menus and returning to the chapter-appropriate control
@@ -1907,7 +1906,6 @@ void playerSetControllerPort(s32 port) {
     ((PlayerControlPrefix *)((u8 *)&gPlayerEyeHeight - 0x1C))->controllerPort = port;
 }
 
-void playerApplyControlScheme(); /* extern */
 /// Separate symbol view of the primary player record's controller port.
 /// \note Original identifier: \c D_800EF6CC (0x800EF6CC).
 extern s32 gPlayerControllerPort;
@@ -1936,16 +1934,13 @@ void playerBeginStun(u8 *player, f32 duration) {
     }
 }
 
-typedef struct {
-    s32 w[64];
-} Blob100;
 
 
 /// Save a temporary snapshot of the primary player state for later restoration.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80111AC4 (0x80111AC4).
 void playerSaveState(void) {
-    *(Blob100 *)&gSavedPlayerState = *(Blob100 *)&gPlayerState;
+    gSavedPlayerState = gPlayerState;
 }
 
 void playerUpdateViewCamera(); /* extern */
@@ -1956,7 +1951,7 @@ void playerUpdateViewCamera(); /* extern */
 /// \note Requires a previous snapshot whose object handles and callback references are still valid.
 /// \note Original decompilation identifier: \c func_80111B08 (0x80111B08).
 void playerRestoreState(void) {
-    *(Blob100 *)&gPlayerState = *(Blob100 *)&gSavedPlayerState;
+    gPlayerState = gSavedPlayerState;
     playerUpdateViewCamera(&gPlayerState);
 }
 

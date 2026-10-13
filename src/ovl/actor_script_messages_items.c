@@ -1,3 +1,4 @@
+#include "player_control.h"
 #include "player_state.h"
 #include "player_chase.h"
 #include "pikachu_actor.h"
@@ -345,7 +346,6 @@ s32 actorScriptSetCameraView(u8 *actor) {
     return 0;
 }
 
-void playerSaveState(); /* extern */
 /// Save the current player state for later restoration.
 /// \param actor Actor whose script VM receives zero after the shared player snapshot is replaced.
 /// \returns Zero, allowing script execution to continue.
@@ -359,7 +359,6 @@ s32 actorScriptSavePlayerState(u8 *actor) {
     return 0;
 }
 
-void playerRestoreState(); /* extern */
 /// Restore the saved player state and refresh the player view.
 /// \param actor Actor whose script VM receives zero; a player snapshot must have been saved.
 /// \returns Zero, allowing script execution to continue.
