@@ -81,15 +81,11 @@ s32 gMicSessionPreviousTriggerButtons = 0;
 /// Most recent recognition-policy poll time with the amplifier disabled.
 /// \note Original identifier: \c D_80063428 (0x80063428).
 u64 gMicSessionLastAmplifierDisabledPollTicks = 0;
-void voiceRecognitionSetAmplifier(s32);
-s32 voiceRecognitionIsAmplifierEnabled(void);
-s32 voiceRecognitionGetDeviceState();
 void micSessionUpdateTrigger(void);
 void micSessionUpdateAmplifier(void);
 void micSessionUpdateRecognitionEnable(s32);
 void micSessionUpdateDictionary(void);
 void micSessionResetAndFindDevice(void);
-void voiceRecognitionPoll(void);
 
 /// Persistent EEPROM request shared with the controller thread until acknowledgment.
 /// \note Original identifier: \c D_80063430 (0x80063430).
@@ -189,8 +185,6 @@ void micSessionUpdateRecognitionEnable(s32 enabled) {
     gVoiceRecognitionReadRequested = 0;
 }
 
-s32 voiceDictionaryUpload(s32, s32);           /* extern */
-s32 voiceRecognitionIsReadActive();                       /* extern */
 
 /// Advance the pending change to the requested voice dictionary.
 /// \returns Nothing.

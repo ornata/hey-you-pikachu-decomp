@@ -166,13 +166,12 @@ void voiceRecognitionInitialize(OSMesgQueue *queue, s32 channel) {
 /// Clear the device dictionary through the retained target call representation.
 /// \param handle Initialized voice handle.
 /// \param wordCount Number of replacement dictionary words.
-/// \param unusedState Unused trailing device-state pointer retained for matching.
-/// \param unusedCount Unused trailing word count retained for matching.
 /// \returns Zero on success, or a device error code.
-/// \note Portability: The canonical two-argument u16-count declaration changes
-/// voiceDictionaryClearDevice code; see voice_device.h for the device contract.
+/// \note Portability: The 32-bit count view preserves target call scheduling.
+/// The canonical u16-count declaration changes voiceDictionaryClearDevice code;
+/// see voice_device.h for the device contract.
 /// \note Original decompilation identifier: \c func_8004CDA4 (0x8004CDA4).
-s32 voiceDeviceClearDictionary(OSVoiceHandle *handle, s32 wordCount, s32 *unusedState, s32 unusedCount);
+s32 voiceDeviceClearDictionary(OSVoiceHandle *handle, s32 wordCount);
 
 /// Clear the device dictionary and reserve space for its replacement.
 /// \param wordCount Number of words in the replacement dictionary.
@@ -184,7 +183,7 @@ s32 voiceDictionaryClearDevice(s32 wordCount) {
     if (gVoiceRecognitionDeviceState != 1) {
         return -1;
     }
-    gVoiceRecognitionLastDeviceError = voiceDeviceClearDictionary(&gVoiceRecognitionHandle, wordCount & 0xFFFF, &gVoiceRecognitionDeviceState, wordCount);
+    gVoiceRecognitionLastDeviceError = voiceDeviceClearDictionary(&gVoiceRecognitionHandle, wordCount & 0xFFFF);
     if (gVoiceRecognitionLastDeviceError == 0) {
         return 0;
     }

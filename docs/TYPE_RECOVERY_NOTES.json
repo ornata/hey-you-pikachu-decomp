@@ -56,7 +56,7 @@
       "actorCreateForKind": "An unused local word is named reservedCreationSlot. Removing it shrinks the IDO frame by eight bytes and changes all argument/spill offsets; it is retained with a Doxygen target-compiler note."
     },
     "src/game/voice_recognition.c": {
-      "voiceDictionaryClearDevice": "Canonical voice_device.h adoption and removal of the two trailing clear-call arguments changes voiceDictionaryClearDevice and fails the ROM gate. The other device calls retain their bytes. Keep the documented s32-count/four-argument clear view until count-width and argument scheduling effects are isolated. Queue types are now OSMesgQueue * end-to-end through recognition initialization and microphone_session.c."
+      "voiceDictionaryClearDevice": "The unused trailing clear-call arguments are removed: a two-argument s32-count view preserves all strict objects. Changing only that count to u16 fails ROM matching even with the trailing arguments retained. A u16 wrapper parameter also changes voiceDictionaryUpload. Retain the documented 32-bit count view with explicit low-16-bit mask pending count-conversion scheduling evidence; full voice_device.h adoption remains blocked by this width effect, not unused arguments."
     },
     "src/game/action_script_commands.c": {
       "appearance command calls": "Appearance scale now uses the established float parameter and both appearance helpers return void. Their unused trailing command pointer is retained through local compatibility declarations to preserve the ROM calls."

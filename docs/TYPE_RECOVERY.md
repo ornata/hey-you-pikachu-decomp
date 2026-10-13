@@ -4117,3 +4117,18 @@ exceptions whose current source already uses canonical calls.
 controller-pad cache, EEPROM transfers and microphone discovery. This removes
 the microphone caller's implicit integer-return declaration while preserving
 all object bytes. The queue is borrowed for the controller subsystem lifetime.
+
+### Recognition session contracts and count conversion
+
+The microphone session now shares dictionary-upload, polling, read-active,
+device-state and amplifier contracts with the recognition implementation.
+Amplifier control uses its actual unsigned-byte input and status return rather
+than a local void declaration. Dictionary completion is explicitly distinct
+from starting recognition, and retained results may be replaced by later reads.
+
+Isolated clear-dictionary trials remove the two unused trailing arguments with
+all strict objects preserved. The remaining compatibility requirement is the
+32-bit count view: changing it to unsigned halfword changes code even with
+trailing arguments retained, and narrowing the wrapper also changes its upload
+caller. The ledger now records this evidence and the count-conversion scheduling
+question instead of retaining unnecessary arguments.

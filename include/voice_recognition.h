@@ -50,6 +50,40 @@ s32 voiceDictionaryGetCommandValue(u16 index);
 /// \note Original decompilation identifier: \c func_800404E8 (0x800404E8).
 void voiceRecognitionInitialize(OSMesgQueue *queue, s32 channel);
 
+/// Advance registration of a selected vocabulary on the ready device.
+/// \param dictionary Valid dictionary index to select and upload.
+/// \param batch Positive word limit for this call, or zero for all remaining words.
+/// \returns One when registration is complete, or zero while incomplete or after a device error.
+/// \note Completion does not start recognition reading.
+/// \note Original decompilation identifier: \c func_800406B4 (0x800406B4).
+s32 voiceDictionaryUpload(s32 dictionary, s32 batch);
+
+/// Advance recognition and retain a newly completed result.
+/// \returns Nothing; a later completed read replaces the retained result.
+/// \note Original decompilation identifier: \c func_800409CC (0x800409CC).
+void voiceRecognitionPoll(void);
+
+/// Check whether a recognition read is active.
+/// \returns Nonzero while a read is active, or zero otherwise.
+/// \note Original decompilation identifier: \c func_80040C80 (0x80040C80).
+s32 voiceRecognitionIsReadActive(void);
+
+/// Get the recorded recognition-device availability state.
+/// \returns One when ready, zero when disconnected or unconfirmed, or two after a device error.
+/// \note Original decompilation identifier: \c func_80040DC8 (0x80040DC8).
+s32 voiceRecognitionGetDeviceState(void);
+
+/// Set the microphone amplifier on a ready recognition device.
+/// \param flag Eight to enable the amplifier, or zero to disable it.
+/// \returns Zero on success, minus one when unavailable, or a device error code.
+/// \note Original decompilation identifier: \c func_80040E64 (0x80040E64).
+s32 voiceRecognitionSetAmplifier(u8 flag);
+
+/// Get the recorded microphone amplifier state.
+/// \returns Nonzero when enabled, or zero when disabled.
+/// \note Original decompilation identifier: \c func_80040F10 (0x80040F10).
+s32 voiceRecognitionIsAmplifierEnabled(void);
+
 /// Consume the pending recognition-result notification.
 /// \param out Destination for the retained result, or null to discard the notification.
 /// \returns First answer index, or -1 when no result is pending; callers must also check the answer count.
