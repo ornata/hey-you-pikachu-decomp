@@ -1,3 +1,4 @@
+#include "render_state.h"
 #include "game_heap.h"
 #include "voice_recognition.h"
 #include "math_scalar.h"
@@ -304,9 +305,6 @@ void messageBarClear(void) {
     }
 }
 
-/// Write cursor for the active graphics command list; also marks the camera-storage end.
-/// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
-extern Gfx *gRenderDisplayListCursor;
 
 /// Advance and draw the message bar with its current transition and scrolling state.
 /// \returns 1 when a message is drawn, or 0 when the display is idle.

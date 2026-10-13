@@ -1,3 +1,4 @@
+#include "render_state.h"
 #include "game_heap.h"
 #include "controller_state.h"
 #include "texture_cache.h"
@@ -249,9 +250,6 @@ void hudInitialize();        /* extern */
 void runtimeAccumulatePlayTime(void);
 void runtimeShutdownAndHalt(void);
 void runtimeMainThreadEntry(void *);
-/// Write cursor for the active graphics command list; also marks the camera-storage end.
-/// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
-extern Gfx *gRenderDisplayListCursor;
 s32 runtimeGetUiPulseAlpha(void);
 
 

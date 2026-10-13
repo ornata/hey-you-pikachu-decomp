@@ -1,3 +1,4 @@
+#include "render_state.h"
 #include "object_template.h"
 #include "texture_descriptor.h"
 #include "texture_rectangles.h"
@@ -1048,9 +1049,6 @@ extern u64 gToolboxTransitionMilliseconds;
 /// Separate view of the toolbox display transition mode.
 /// \note Original identifier: \c D_800F1BF8 (0x800F1BF8).
 extern u32 gToolboxMode;
-/// Write cursor for the active graphics command list; also marks the camera-storage end.
-/// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
-extern Gfx *gRenderDisplayListCursor;
 /// Separate view of the selected Collection or Item Storage row.
 /// \note Original identifier: \c D_800F1BF4 (0x800F1BF4).
 /// Separate view of the signed item-row rotation step.

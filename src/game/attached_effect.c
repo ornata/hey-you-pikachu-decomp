@@ -1,3 +1,4 @@
+#include "render_state.h"
 #include "texture_setup.h"
 #include "camera_storage.h"
 #include "vector_metrics.h"
@@ -24,9 +25,6 @@
 /// Separate view of the default texture-frame animation program for attached effects.
 /// \note Original identifier: \c D_8006B320 (0x8006B320).
 extern ValueKey *gAttachedEffectDefaultFrameProgram;
-/// Write cursor for the active graphics command list; also marks the camera-storage end.
-/// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
-extern Gfx *gRenderDisplayListCursor;
 
 /// Resident appearance and animation defaults for one attached-effect kind.
 typedef struct AttachedEffectDefinition {

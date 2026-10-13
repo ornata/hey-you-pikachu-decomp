@@ -1,3 +1,4 @@
+#include "render_state.h"
 #include "game_heap.h"
 #include "matrix_basic.h"
 #include "texture_setup.h"
@@ -88,12 +89,6 @@ extern u8 gActorRelativeRollPartSequence[];
 f32 mathAngleDistanceDegrees(f32, f32);
 f32 mathLerpAngleDegrees(f32, f32, f32);
 void actorPartBuildAnimatedTextureCommands(u8 *, s32);
-/// Write cursor for the active graphics command list; also marks the camera-storage end.
-/// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
-extern Gfx *gRenderDisplayListCursor;
-/// Framebuffer and command-buffer index for the current frame.
-/// \note Original identifier: \c D_800F298C (0x800F298C).
-extern s32 gGraphicsFramebufferIndex;
 extern u8 D_1049F80[];
 
 /// Invoke the inactive actor and linked-object diagnostic reports for this build.

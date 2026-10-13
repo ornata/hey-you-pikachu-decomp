@@ -1,3 +1,4 @@
+#include "render_state.h"
 #include "game_heap.h"
 #include "ground_shadow.h"
 #include "actor_parts.h"
@@ -67,15 +68,9 @@ void groundShadowUpdateVertices(u8 *obj, s32 buffer) {
     }
 }
 
-/// Write cursor for the active graphics command list; also marks the camera-storage end.
-/// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
-extern Gfx *gRenderDisplayListCursor;
 /// Current gameplay, menu or transition mode.
 /// \note Original identifier: \c D_800AE504 (0x800AE504).
 extern s32 gRuntimeGameMode;
-/// Framebuffer and command-buffer index for the current frame.
-/// \note Original identifier: \c D_800F298C (0x800F298C).
-extern s32 gGraphicsFramebufferIndex;
 void groundShadowUpdateVertices(u8 *, s32);
 
 /// Prepare the ground shadow for rendering when the current scene mode permits it.

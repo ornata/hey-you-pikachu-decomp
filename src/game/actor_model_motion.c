@@ -1,3 +1,4 @@
+#include "render_state.h"
 #include "game_heap.h"
 #include "vector3_types.h"
 #include "heap_free.h"
@@ -74,9 +75,6 @@ typedef char
 /// Per-actor-kind part-table slot counts, including the root slot.
 /// \note Original identifier: \c D_800B687C (0x800B687C).
 extern s32 gActorPartCounts[];
-/// Write cursor for the active graphics command list; also marks the camera-storage end.
-/// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
-extern Gfx *gRenderDisplayListCursor;
 void *heapAllocLocal();
 void _bzero(void *, u32);
 /// Current affine world transform shared by hierarchy traversal and actor motion consumers.
@@ -85,9 +83,6 @@ extern Matrix34 gObjectTraversalTransform;
 s32 actorFindPartIndex(s32, s32);
 void actorUpdateAnimatedTextureDrawLists(u8 *, s32);
 void actorInitializeChildMotionState(void *);
-/// Framebuffer and command-buffer index for the current frame.
-/// \note Original identifier: \c D_800F298C (0x800F298C).
-extern s32 gGraphicsFramebufferIndex;
 
 
 /// Play a spatial sound for an actor and track its playback.

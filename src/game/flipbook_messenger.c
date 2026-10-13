@@ -1,3 +1,4 @@
+#include "render_state.h"
 #include "game_heap.h"
 #include "actor_parts.h"
 #include "matrix_basic.h"
@@ -292,9 +293,6 @@ void flipbookResetImageDisplayLists(u8 *object) {
     }
 }
 
-/// Write cursor for the active graphics command list; also marks the camera-storage end.
-/// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
-extern Gfx *gRenderDisplayListCursor;
 
 /// Prepare the latest text-display model content and color for drawing.
 /// \param f Initialized text-display model to prepare; a writable global drawing cursor must be available.

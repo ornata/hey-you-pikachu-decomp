@@ -1,3 +1,4 @@
+#include "render_state.h"
 #include "pikachu_actor.h"
 #include "object_groups.h"
 #include "math_angles.h"
@@ -191,9 +192,6 @@ void terrainDebugGridUpdateCell(u8 *obj) {
 typedef struct Rgb8 {
     u8 r, g, b;
 } Rgb8;
-/// Write cursor for the active graphics command list; also marks the camera-storage end.
-/// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
-extern Gfx *gRenderDisplayListCursor;
 extern Vtx D_100CAD8[];
 extern Gfx D_100CBB8[];
 

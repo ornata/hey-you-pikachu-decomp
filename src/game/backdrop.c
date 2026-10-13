@@ -1,3 +1,4 @@
+#include "render_state.h"
 #include "game_heap.h"
 #include "rom_dma.h"
 #include "camera_storage.h"
@@ -21,9 +22,6 @@ extern u8 gBackdropWidthEntries[];
 /// \note Original identifier: \c D_8009B05C (0x8009B05C).
 extern u8 gBackdropHeightEntries[];
 
-/// Framebuffer and command-buffer index for the current frame.
-/// \note Original identifier: \c D_800F298C (0x800F298C).
-extern s32 gGraphicsFramebufferIndex;
 /// Identifier of the backdrop whose display settings are currently active.
 /// \note Original identifier: \c D_800F2550 (0x800F2550).
 extern s32 gActiveBackdropId;

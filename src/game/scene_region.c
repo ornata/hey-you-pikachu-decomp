@@ -1,3 +1,4 @@
+#include "render_state.h"
 #include "pikachu_actor.h"
 #include "scene_region.h"
 #include "scene_types.h"
@@ -11,9 +12,6 @@
 /// Geometry display list used to render scene-region occupancy highlights.
 /// \note Original identifier: \c D_100CCB0 (0x0100CCB0).
 extern u8 gSceneRegionDisplayList[];
-/// Write cursor for the active graphics command list; also marks the camera-storage end.
-/// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
-extern Gfx *gRenderDisplayListCursor;
 
 /// Hierarchy template used to create rectangular scene interaction regions.
 /// \note Original identifier: \c D_80088E60 (0x80088E60).

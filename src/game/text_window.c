@@ -1,3 +1,4 @@
+#include "render_state.h"
 #include "controller_state.h"
 #include "texture_rectangles.h"
 #include "math_scalar.h"
@@ -460,9 +461,6 @@ s32 textWindowOpen(s32 indicator, s32 style, s32 viewMode) {
 void textWindowDrawBackground(); /* K&R: called with 2 or 3 arguments */
 void textWindowDrawPage(Gfx **);
 void textWindowDrawPrompt(Gfx **);
-/// Write cursor for the active graphics command list; also marks the camera-storage end.
-/// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
-extern Gfx *gRenderDisplayListCursor;
 
 /// Draw the text window and its input prompt within the current screen.
 /// \returns Nothing.

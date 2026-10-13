@@ -1,3 +1,4 @@
+#include "render_state.h"
 #include "game_heap.h"
 #include "ground_shadow.h"
 #include "texture_setup.h"
@@ -56,9 +57,6 @@ extern u8 *gCurrentAreaConfiguration;
 /// Integer animation program used before the contact effect is triggered.
 /// \note Original identifier: \c D_8006B390 (0x8006B390).
 extern s32 gContactEffectIdleAnimation;
-/// Write cursor for the active graphics command list; also marks the camera-storage end.
-/// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
-extern Gfx *gRenderDisplayListCursor;
 /// Cached actor asset storage addresses indexed by resource identifier.
 /// \note Original identifier: \c D_800B6BB8 (0x800B6BB8).
 extern u8 *gActorAssetStorage[36];

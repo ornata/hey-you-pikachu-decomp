@@ -1,3 +1,4 @@
+#include "render_state.h"
 #include "game_heap.h"
 #include "actor_parts.h"
 #include "object_response.h"
@@ -56,9 +57,6 @@
 
 
 f32 matrix34GetTransformedPointYawDegrees(f32 *, f32 *);
-/// Write cursor for the active graphics command list; also marks the camera-storage end.
-/// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
-extern Gfx *gRenderDisplayListCursor;
 void objectDrawHierarchyForCurrentGroup(u8 *);
 u8 romByteReaderRead();
 void _bzero(void *, u32);

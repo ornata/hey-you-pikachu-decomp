@@ -1,3 +1,4 @@
+#include "render_state.h"
 #include "game_heap.h"
 #include "matrix_basic.h"
 #include "texture_setup.h"
@@ -2250,9 +2251,6 @@ void itemInitializeRegistry(void) {
     searchTreeInitialize(&gItemSearchTree, itemCompareSearchOrder);
 }
 
-/// Write cursor for the active graphics command list; also marks the camera-storage end.
-/// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
-extern Gfx *gRenderDisplayListCursor;
 
 /// Apply an item prepared lighting and environment color to the current drawing context.
 /// \param item Initialized item whose lighting is applied.

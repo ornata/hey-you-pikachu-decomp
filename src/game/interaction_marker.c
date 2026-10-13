@@ -1,3 +1,4 @@
+#include "render_state.h"
 #include "game_heap.h"
 #include "texture_setup.h"
 #include "pikachu_actor.h"
@@ -284,9 +285,6 @@ void interactionMarkerUpdate(u8 *object) {
     gInteractionCandidateScore = 2147483648.0f;
 }
 
-/// Write cursor for the active graphics command list; also marks the camera-storage end.
-/// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
-extern Gfx *gRenderDisplayListCursor;
 
 /// Prepare display settings for an active interaction marker.
 /// \param object Interaction marker object to draw.

@@ -1,3 +1,4 @@
+#include "render_state.h"
 #include "game_heap.h"
 #include "heap_free.h"
 #include "texture_setup.h"
@@ -60,9 +61,6 @@ extern s32 gWispDefaultOpacityAnimation;
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
 void effectEmitterEmitColoredParticle(u8 *, f32, f32, f32, u8, u8, u8);
-/// Write cursor for the active graphics command list; also marks the camera-storage end.
-/// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
-extern Gfx *gRenderDisplayListCursor;
 /// Object template for emitters of expanding orange effects.
 /// \note Original identifier: \c D_80077E30 (0x80077E30).
 extern u8 gOrangePulseEmitterObjectTemplate[];
@@ -72,9 +70,6 @@ extern u8 gExpandingOrangeEffectTemplate[];
 /// Integer texture-frame animation used by expanding orange effects.
 /// \note Original identifier: \c D_8006B3A8 (0x8006B3A8).
 extern s32 gExpandingOrangeEffectFrameAnimation;
-/// Framebuffer and command-buffer index for the current frame.
-/// \note Original identifier: \c D_800F298C (0x800F298C).
-extern s32 gGraphicsFramebufferIndex;
 s32 wispEffectUpdateDrawAnimation(u8 *, s32);
 
 /// Wisp modulation channels, including animation-controlled opacity.

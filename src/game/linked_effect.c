@@ -1,3 +1,4 @@
+#include "render_state.h"
 #include "texture_setup.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
@@ -62,9 +63,6 @@ LINKED_EFFECT_OFFSET_CHECK(LinkedEffectContactOffsetCheck, contactPending, 0x54)
 #undef LINKED_EFFECT_OFFSET_CHECK
 
 void _bzero(void *, s32); /* extern */
-/// Write cursor for the active graphics command list; also marks the camera-storage end.
-/// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
-extern Gfx *gRenderDisplayListCursor;
 
 /// Allocate and initialize motion state for a linked effect.
 /// \param object Effect object receiving its motion state.

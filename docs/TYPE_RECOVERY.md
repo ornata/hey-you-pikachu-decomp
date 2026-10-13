@@ -4188,3 +4188,12 @@ contract. The shared declaration preserves the original identifier and address.
 Each unit was edited, rebuilt and strictly compared before the next unit was
 changed; all 34 adoptions preserve ROM bytes, allocated object layout, symbols
 and relocations.
+
+### Shared rendering state contract
+
+`render_state.h` provides the canonical command-list cursor, submission start
+and double-buffer slot declarations. It documents command storage lifetime
+through task completion, slot selection after presentation submission, and the
+cursor symbol's camera-storage boundary. All 22 source units using these globals
+now share the header; each adoption independently preserves ROM bytes and strict
+object sections, symbols and relocations.

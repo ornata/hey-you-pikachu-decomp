@@ -1,3 +1,4 @@
+#include "render_state.h"
 #include "game_heap.h"
 #include "serial_queue.h"
 #include "font_cache.h"
@@ -88,9 +89,6 @@ u8 gControllerRumblePatternState[0xA0];
 extern f32 gRuntimeFrameSeconds;
 void colorBlendToward(u8 *, u8 *, f32);
 void colorStoreClampedRgba(s32, s32, s32, s32, u8 *);
-/// Write cursor for the active graphics command list; also marks the camera-storage end.
-/// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
-extern Gfx *gRenderDisplayListCursor;
 /// Next reusable graphics-task slot for submission.
 /// \note Original identifier: \c D_800F2988 (0x800F2988).
 extern s32 gGraphicsNextTaskIndex;
@@ -185,9 +183,6 @@ extern f32 gCameraPitchCosineUpperTolerance;
 /// \note Original identifier: \c D_8009FC8C (0x8009FC8C).
 extern f32 gCameraPitchCosineLowerTolerance;
 
-/// Framebuffer and command-buffer index for the current frame.
-/// \note Original identifier: \c D_800F298C (0x800F298C).
-extern s32 gGraphicsFramebufferIndex;
 /// First color framebuffer storage used for drawing and presentation.
 /// \note Original identifier: \c D_803B5000 (0x803B5000).
 extern u8 gColorFramebuffer0[];
@@ -229,9 +224,6 @@ extern Gfx D_100C7E0[];
 /// Current gameplay, menu or transition mode.
 /// \note Original identifier: \c D_800AE504 (0x800AE504).
 extern s32 gRuntimeGameMode;
-/// Start of the current graphics command-list submission.
-/// \note Original identifier: \c D_800ABDD4 (0x800ABDD4).
-extern Gfx *gRenderDisplayListStart;
 void hudDraw(Gfx **);
 void hudDrawAreaLabel(Gfx **);
 void presentationDrawCardScreen(Gfx **);

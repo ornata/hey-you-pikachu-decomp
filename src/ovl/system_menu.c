@@ -1,3 +1,4 @@
+#include "render_state.h"
 #include "game_heap.h"
 #include "eeprom_io.h"
 #include "player_chase.h"
@@ -1144,9 +1145,6 @@ void systemMenuAppendPlayerStatusDetails(void) {
     systemMenuAppendDetailText((u8 *)buf);
 }
 
-/// Write cursor for the active graphics command list; also marks the camera-storage end.
-/// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
-extern Gfx *gRenderDisplayListCursor;
 /// Draw a menu slider and highlight its knob when selected.
 /// \param displayList Active shared display-list cursor with sufficient capacity; receives drawing commands and advances past them.
 /// \param x Horizontal screen coordinate of the slider left endpoint.

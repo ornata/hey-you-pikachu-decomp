@@ -1,3 +1,4 @@
+#include "render_state.h"
 #include "game_heap.h"
 #include "font_cache.h"
 #include "graphics_tasks.h"
@@ -37,9 +38,6 @@ extern s32 gGraphicsTaskCapacity;
 /// Next reusable graphics-task slot for submission.
 /// \note Original identifier: \c D_800F2988 (0x800F2988).
 extern s32 gGraphicsNextTaskIndex;
-/// Framebuffer and command-buffer index for the current frame.
-/// \note Original identifier: \c D_800F298C (0x800F298C).
-extern s32 gGraphicsFramebufferIndex;
 /// Borrowed scheduler command queue address for graphics task submission.
 /// \note Original identifier: \c D_800F2990 (0x800F2990).
 extern OSMesgQueue *gGraphicsSchedulerQueue;
