@@ -1,3 +1,4 @@
+#include "microphone_configuration.h"
 #include "controller_commands.h"
 /// \file
 /// Device discovery, listening policy, and dictionary transitions.
@@ -43,7 +44,7 @@ s32 gMicSessionUploadingDictionary;
 s32 gMicSessionUploadedDictionary;
 /// Dictionary identifier requested by session configuration.
 /// \note Original identifier: \c D_800AD444 (0x800AD444).
-s32 gMicSessionRequestedDictionary;
+s32 gMicConfigurationRequestedDictionary;
 /// Controller ports whose buttons contribute to the microphone trigger.
 /// \note Original identifier: \c D_800AD448 (0x800AD448).
 u32 gMicSessionTriggerPortMask;
@@ -89,15 +90,7 @@ void micSessionResetAndFindDevice(void);
 s32 micSessionIsDictionaryUploadActive(void);
 s32 micSessionIsDeviceConnected(s32);
 void voiceRecognitionPoll(void);
-/// Controller-thread microphone configuration message; distinct from EEPROM payloads.
-/// Command-dependent values retain their established slots without claiming a common meaning.
-typedef struct MicSessionRequest {
-    s16 type;    ///< Controller message type, six for microphone requests.
-    s32 command; ///< Microphone configuration operation selected by the sender.
-    s32 pending; ///< Nonzero until the controller thread acknowledges the request.
-    s32 result;  ///< Command-dependent configuration value supplied by the sender.
-    s32 args[4]; ///< Command-dependent configuration arguments.
-} MicSessionRequest;
+
 /// Persistent EEPROM request shared with the controller thread until acknowledgment.
 /// \note Original identifier: \c D_80063430 (0x80063430).
 EepromRequest gEepromQueuedRequest = {0};
@@ -211,7 +204,7 @@ s32 voiceRecognitionIsReadActive();                       /* extern */
 void micSessionUpdateDictionary(void) {
     if (micSessionIsDictionaryUploadActive() == 0) {
         if ((voiceRecognitionGetCommandStatus() == 0) && (voiceRecognitionIsReadActive() == 0)) {
-            gMicSessionUploadingDictionary = gMicSessionRequestedDictionary;
+            gMicSessionUploadingDictionary = gMicConfigurationRequestedDictionary;
             TRACE("_changeDic: newDictionary:%d\n", gMicSessionUploadingDictionary);
             goto block_4;
         }
@@ -257,8 +250,8 @@ void micSessionResetAndFindDevice(void) {
 
     gMicSessionTriggerActive = gMicSessionPreviousTriggerActive = 0;
     gMicSessionUploadingDictionary = gMicSessionUploadedDictionary = -1;
-    if (gMicSessionRequestedDictionary == -1) {
-        gMicSessionRequestedDictionary = 0;
+    if (gMicConfigurationRequestedDictionary == -1) {
+        gMicConfigurationRequestedDictionary = 0;
     }
     gMicSessionAmplifierOffRequested = 0;
     gMicSessionLastDeviceScanTicks = gMicSessionLastAmplifierOnTicks = gMicSessionLastAmplifierOffTicks = gMicSessionTriggerReleaseTicks = osGetTime();
@@ -293,7 +286,7 @@ s32 micSessionGetTriggerState(void) {
 /// \returns Requested dictionary identifier.
 /// \note Original decompilation identifier: \c func_8000418C (0x8000418C).
 s32 micSessionGetRequestedDictionary(void) {
-    return gMicSessionRequestedDictionary;
+    return gMicConfigurationRequestedDictionary;
 }
 
 /// Get the controller port selected for the Voice Recognition Unit.
@@ -328,7 +321,7 @@ void micSessionUpdate(void) {
         if ((gMicSessionDevicePort >= 0) && (micSessionIsDeviceConnected(gMicSessionDevicePort) != 0)) {
             micSessionUpdateTrigger();
             micSessionUpdateAmplifier();
-            if ((gMicSessionUploadedDictionary != gMicSessionRequestedDictionary) || (micSessionIsDictionaryUploadActive() != 0)) {
+            if ((gMicSessionUploadedDictionary != gMicConfigurationRequestedDictionary) || (micSessionIsDictionaryUploadActive() != 0)) {
                 micSessionUpdateRecognitionEnable(0);
                 micSessionUpdateDictionary();
             } else if (gMicSessionRecognitionFollowsTrigger != 0) {
@@ -351,37 +344,37 @@ void micSessionUpdate(void) {
 /// \param request Configuration request to apply and acknowledge.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000432C (0x8000432C).
-void micSessionDispatchRequest(MicSessionRequest *request) {
+void micSessionDispatchRequest(MicConfigurationRequest *request) {
     switch (request->command) {
-    case 0:
+    case MIC_CONFIG_AMPLIFIER_OFF:
         gMicSessionAmplifierOffRequested = 1;
         break;
-    case 1:
-        if (request->result != 0) {
+    case MIC_CONFIG_TRIGGER_MODE:
+        if (request->argument0 != 0) {
             gMicSessionTriggerToggleMode = 1;
-            gMicSessionTriggerActive = request->args[0];
+            gMicSessionTriggerActive = request->argument1;
         } else {
             gMicSessionTriggerToggleMode = 0;
         }
         break;
-    case 2:
-        gMicSessionRequestedDictionary = request->result;
-        TRACE("_change_dictionary(%d)\n", gMicSessionRequestedDictionary);
+    case MIC_CONFIG_DICTIONARY:
+        gMicConfigurationRequestedDictionary = request->argument0;
+        TRACE("_change_dictionary(%d)\n", gMicConfigurationRequestedDictionary);
         break;
-    case 3:
-        gMicSessionEnabled = request->result;
+    case MIC_CONFIG_SESSION_ENABLED:
+        gMicSessionEnabled = request->argument0;
         break;
-    case 4:
-        gMicSessionRecognitionOverride = request->result;
+    case MIC_CONFIG_RECOGNITION_OVERRIDE:
+        gMicSessionRecognitionOverride = request->argument0;
         break;
-    case 5:
-        gMicSessionRecognitionFollowsTrigger = request->result;
+    case MIC_CONFIG_RECOGNITION_FOLLOWS_TRIGGER:
+        gMicSessionRecognitionFollowsTrigger = request->argument0;
         break;
-    case 6:
-        gMicSessionTriggerPortMask = request->result;
-        gMicSessionTriggerButtonMask = request->args[0];
+    case MIC_CONFIG_TRIGGER_BUTTONS:
+        gMicSessionTriggerPortMask = request->argument0;
+        gMicSessionTriggerButtonMask = request->argument1;
         break;
-    case 7:
+    case MIC_CONFIG_UNSUPPORTED_WORD_DICTIONARY:
         TRACE("ERROR: mic64SetWordDic() is not supported.\n");
         break;
     default:

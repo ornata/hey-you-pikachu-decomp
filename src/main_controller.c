@@ -1,3 +1,4 @@
+#include "microphone_configuration.h"
 #include "controller_commands.h"
 #include "text_window.h"
 #include "message_bar.h"
@@ -289,7 +290,6 @@ void controllerQueryDevices(void);
 void controllerPollPads(void);
 void micSessionUpdate(void);
 void controllerUpdateRumble(void);
-void micSessionDispatchRequest(void *);
 /* Orphan strings of the compiled-out mpak error traces. */
 static const char sNoMpakModuleMsg[] = "ERROR: no mpak module.\n";
 static const char sUnknownMessageTypeMsg[] = "ERROR: unknown message type(%d)\n";

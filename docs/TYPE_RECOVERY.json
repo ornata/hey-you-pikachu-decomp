@@ -2258,13 +2258,14 @@
       "known_views": [
         "controller_commands.h",
         "eeprom_io.h",
+        "microphone_configuration.h",
         "voice_recognition.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "gMicSessionUploadingDictionary + 1": [
-            "274:13"
+            "267:13"
           ]
         }
       }
@@ -4124,6 +4125,7 @@
         "matrix_point.h",
         "matrix_translation.h",
         "message_bar.h",
+        "microphone_configuration.h",
         "runtime_program.h",
         "scheduler.h",
         "text_window.h"

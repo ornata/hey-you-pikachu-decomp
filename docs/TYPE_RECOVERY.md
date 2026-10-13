@@ -3796,3 +3796,9 @@ five users and a checked 0x18-byte rumble request between producer and consumer.
 Rumble duration, interval and pulse fields have named seconds-based contracts.
 Queued request storage remains caller-owned until consumed; the persistent ring
 and controller thread retain their original layout and processing behavior.
+
+`microphone_configuration.h` shares the producer-proven 0x14-byte request
+between microphone submission, session dispatch and controller-thread routing.
+It removes the consumer-only unused 0x20-byte view, names supported commands,
+and documents command-dependent arguments and dispatch acknowledgement. The
+eight-slot ring, stack requests and asynchronous device behavior remain identical.

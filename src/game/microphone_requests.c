@@ -1,3 +1,4 @@
+#include "microphone_configuration.h"
 #include "controller_commands.h"
 /// \file
 /// Asynchronous microphone configuration requests.
@@ -8,22 +9,15 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 
-/* message handed to the pad thread (queued through D_80063450) */
-typedef struct PadMsg {
-    s16 type;
-    s32 cmd;
-    s32 pending;
-    s32 arg0;
-    s32 arg1;
-} PadMsg;
+
 
 /// Persistent ring of microphone configuration requests submitted to the controller thread.
 /// \note Original identifier: \c D_80063450 (0x80063450).
-extern PadMsg gMicrophoneRequestRing[8];
+extern MicConfigurationRequest gMicrophoneRequestRing[8];
 /// Next microphone configuration request slot, wrapping after eight submissions.
 /// \note Original identifier: \c D_800634F0 (0x800634F0).
 extern s32 gMicrophoneNextRequestIndex;
-void micQueueConfigurationRequest(PadMsg *);
+void micQueueConfigurationRequest(MicConfigurationRequest *);
 
 /// Submit a microphone configuration request for asynchronous processing.
 /// \param msg Writable request specifying the operation and its configuration values;
@@ -33,7 +27,7 @@ void micQueueConfigurationRequest(PadMsg *);
 /// \note Submission does not guarantee that the requested configuration has
 /// finished taking effect when this call returns.
 /// \see micSessionDispatchRequest
-void micQueueConfigurationRequest(PadMsg *msg) {
+void micQueueConfigurationRequest(MicConfigurationRequest *msg) {
     msg->pending = 1;
     msg->type = 6;
     gMicrophoneRequestRing[gMicrophoneNextRequestIndex] = *msg;
@@ -48,9 +42,9 @@ void micQueueConfigurationRequest(PadMsg *msg) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80004738 (0x80004738).
 void micRequestAmplifierOff(void) {
-    PadMsg msg;
+    MicConfigurationRequest msg;
 
-    msg.cmd = 0;
+    msg.command = MIC_CONFIG_AMPLIFIER_OFF;
     micQueueConfigurationRequest(&msg);
 }
 
@@ -60,11 +54,11 @@ void micRequestAmplifierOff(void) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000475C (0x8000475C).
 void micRequestTriggerMode(s32 toggleMode, s32 initialState) {
-    PadMsg msg;
+    MicConfigurationRequest msg;
 
-    msg.cmd = 1;
-    msg.arg0 = toggleMode;
-    msg.arg1 = initialState;
+    msg.command = MIC_CONFIG_TRIGGER_MODE;
+    msg.argument0 = toggleMode;
+    msg.argument1 = initialState;
     micQueueConfigurationRequest(&msg);
 }
 
@@ -75,10 +69,10 @@ void micRequestTriggerMode(s32 toggleMode, s32 initialState) {
 /// \note Dictionary registration completes asynchronously through the session.
 /// \see micSessionUpdateDictionary
 void micRequestDictionary(s32 dictionaryId) {
-    PadMsg msg;
+    MicConfigurationRequest msg;
 
-    msg.cmd = 2;
-    msg.arg0 = dictionaryId;
+    msg.command = MIC_CONFIG_DICTIONARY;
+    msg.argument0 = dictionaryId;
     micQueueConfigurationRequest(&msg);
 }
 
@@ -87,10 +81,10 @@ void micRequestDictionary(s32 dictionaryId) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800047B8 (0x800047B8).
 void micRequestSessionEnabled(s32 enabled) {
-    PadMsg msg;
+    MicConfigurationRequest msg;
 
-    msg.cmd = 3;
-    msg.arg0 = enabled;
+    msg.command = MIC_CONFIG_SESSION_ENABLED;
+    msg.argument0 = enabled;
     micQueueConfigurationRequest(&msg);
 }
 
@@ -99,10 +93,10 @@ void micRequestSessionEnabled(s32 enabled) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800047E4 (0x800047E4).
 void micRequestRecognitionOverride(s32 enabled) {
-    PadMsg msg;
+    MicConfigurationRequest msg;
 
-    msg.cmd = 4;
-    msg.arg0 = enabled;
+    msg.command = MIC_CONFIG_RECOGNITION_OVERRIDE;
+    msg.argument0 = enabled;
     micQueueConfigurationRequest(&msg);
 }
 
@@ -111,10 +105,10 @@ void micRequestRecognitionOverride(s32 enabled) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80004810 (0x80004810).
 void micRequestRecognitionFollowsTrigger(s32 enabled) {
-    PadMsg msg;
+    MicConfigurationRequest msg;
 
-    msg.cmd = 5;
-    msg.arg0 = enabled;
+    msg.command = MIC_CONFIG_RECOGNITION_FOLLOWS_TRIGGER;
+    msg.argument0 = enabled;
     micQueueConfigurationRequest(&msg);
 }
 
@@ -124,11 +118,11 @@ void micRequestRecognitionFollowsTrigger(s32 enabled) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000483C (0x8000483C).
 void micRequestTriggerButtons(s32 portMask, s32 buttonMask) {
-    PadMsg msg;
+    MicConfigurationRequest msg;
 
-    msg.cmd = 6;
-    msg.arg0 = portMask;
-    msg.arg1 = buttonMask;
+    msg.command = MIC_CONFIG_TRIGGER_BUTTONS;
+    msg.argument0 = portMask;
+    msg.argument1 = buttonMask;
     micQueueConfigurationRequest(&msg);
 }
 
@@ -138,11 +132,11 @@ void micRequestTriggerButtons(s32 portMask, s32 buttonMask) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000486C (0x8000486C).
 void micRequestUnsupportedWordDictionary(s32 reserved0, s32 reserved1) {
-    PadMsg msg;
+    MicConfigurationRequest msg;
 
-    msg.cmd = 7;
-    msg.arg0 = reserved0;
-    msg.arg1 = reserved1;
+    msg.command = MIC_CONFIG_UNSUPPORTED_WORD_DICTIONARY;
+    msg.argument0 = reserved0;
+    msg.argument1 = reserved1;
     micQueueConfigurationRequest(&msg);
 }
 
