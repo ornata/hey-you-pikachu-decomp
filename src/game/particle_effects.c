@@ -70,17 +70,25 @@ void textureLoadForDraw(Gfx **, s32, s32);
 s32 wispEffectUpdateDrawAnimation(u8 *, s32);
 u8 *wispEffectCreate(s32, f32, f32, f32);
 
-typedef struct Color173 {
+/// Wisp modulation channels, including animation-controlled opacity.
+typedef struct WispColor {
     u8 r, g, b, a;
-} Color173;
-typedef struct AnimatedBranches173 {
-    s32 count;
-    f32 speed;
-    Gfx *lists[2];
-    u8 *tracks;
-    u8 alphaTrack[12];
-    Color173 color;
-} AnimatedBranches173;
+} WispColor;
+
+/// Owned wisp drawing banks, frame tracks, opacity track and modulation color.
+typedef struct WispState {
+    s32 count; ///< Number of texture-frame tracks and drawing branches.
+    f32 playbackRate; ///< Time multiplier shared by frame and opacity playback.
+    Gfx *lists[2]; ///< Two drawing banks; lists[0] owns their shared allocation.
+    ValueTrack *tracks; ///< Owned per-branch texture-frame tracks.
+    ValueTrack opacity; ///< Opacity playback state with borrowed key data.
+    WispColor color; ///< Red, green, blue and evaluated opacity.
+} WispState;
+
+typedef char WispStateSizeCheck[(sizeof(WispState) == 0x24) ? 1 : -1];
+typedef char WispTracksOffsetCheck[(((u32) & ((WispState *)0)->tracks) == 0x10) ? 1 : -1];
+typedef char WispOpacityOffsetCheck[(((u32) & ((WispState *)0)->opacity) == 0x14) ? 1 : -1];
+typedef char WispColorOffsetCheck[(((u32) & ((WispState *)0)->color) == 0x20) ? 1 : -1];
 
 /// Advance a wisp effect's animated appearance and prepare its selected drawing buffer.
 /// \param effect Wisp effect with initialized animation tracks and drawing resources.
@@ -96,11 +104,11 @@ s32 wispEffectUpdateDrawAnimation(u8 *effect, s32 buffer) {
     Gfx *branch;
     s32 i;
     Gfx *commands;
-    AnimatedBranches173 *state;
+    WispState *state;
 
-    state = *(AnimatedBranches173 **)(effect + 0x54);
-    step = state->speed * gRuntimeFrameSeconds;
-    if (animationIntegerTrackEvaluate((ValueTrack *)(state->alphaTrack), &alpha, step) == 1) {
+    state = ((RuntimeObjectPrefix *)effect)->state.pointer;
+    step = state->playbackRate * gRuntimeFrameSeconds;
+    if (animationIntegerTrackEvaluate(&state->opacity, &alpha, step) == 1) {
         objectRequestHierarchyDestruction(effect);
         return 1;
     }
@@ -111,7 +119,7 @@ s32 wispEffectUpdateDrawAnimation(u8 *effect, s32 buffer) {
     i = 0;
     if (state->count > 0) {
         do {
-            animationIntegerTrackEvaluate((ValueTrack *)(state->tracks + buffer), &frame, step);
+            animationIntegerTrackEvaluate((ValueTrack *)((u8 *)state->tracks + buffer), &frame, step);
             gSPBranchList(branch++, commands);
             gDPPipeSync(commands++);
             gDPSetPrimColor(commands++, 0, 0, state->color.r, state->color.g, state->color.b, state->color.a);
@@ -178,14 +186,14 @@ void wispEffectUpdateRisingMotion(u8 *effect) {
 /// \note Requires the effect texture bank and an active display-list cursor with sufficient capacity.
 /// \note Original decompilation identifier: \c func_800177B8 (0x800177B8).
 s32 wispEffectPrepareDraw(u8 *effect) {
-    u8 *obj;
+    WispState *state;
 
-    obj = *(u8 **)(effect + 0x54);
+    state = ((RuntimeObjectPrefix *)effect)->state.pointer;
     if (wispEffectUpdateDrawAnimation(effect, gGraphicsFramebufferIndex) != 0) {
         return 0;
     }
-    gSPSegment(gRenderDisplayListCursor++, 6, osVirtualToPhysical(((void **)(obj + 8))[gGraphicsFramebufferIndex]));
-    return *(s32 *)(effect + 0x30);
+    gSPSegment(gRenderDisplayListCursor++, 6, osVirtualToPhysical(state->lists[gGraphicsFramebufferIndex]));
+    return (s32)((RuntimeObjectPrefix *)effect)->displayList;
 }
 
 /// Initialize a wisp effect's appearance and animation state.
@@ -195,20 +203,20 @@ s32 wispEffectPrepareDraw(u8 *effect) {
 /// \note Portability: the grouped initial stores preserve the original IDO register allocation.
 /// \note Original decompilation identifier: \c func_80017844 (0x80017844).
 void wispEffectInitialize(u8 *effect) {
-    u8 *allocation = heapAllocLocal(&gGameHeap, 0x24, 0x189);
-    animationIntegerTrackInitialize((ValueTrack *)(allocation + 0x14), (ValueKey *)(gWispDefaultOpacityAnimation));
+    WispState *allocation = heapAllocLocal(&gGameHeap, sizeof(WispState), 0x189);
+    animationIntegerTrackInitialize(&allocation->opacity, (ValueKey *)(gWispDefaultOpacityAnimation));
     do {
-        allocation[0x20] = 0xFF;
-        allocation[0x21] = 0xFF;
-        allocation[0x22] = 0xFF;
+        allocation->color.r = 0xFF;
+        allocation->color.g = 0xFF;
+        allocation->color.b = 0xFF;
     } while (0);
-    allocation[0x23] = 0xFF;
-    *(s32 *)(allocation + 0) = 0;
-    *(s32 *)(allocation + 0xC) = 0;
-    *(s32 *)(allocation + 8) = 0;
-    *(s32 *)(allocation + 0x10) = 0;
-    *(f32 *)(allocation + 4) = 1.0f;
-    *(u8 **)(effect + 0x54) = allocation;
+    allocation->color.a = 0xFF;
+    allocation->count = 0;
+    allocation->lists[1] = 0;
+    allocation->lists[0] = 0;
+    allocation->tracks = 0;
+    allocation->playbackRate = 1.0f;
+    ((RuntimeObjectPrefix *)effect)->state.pointer = allocation;
 }
 
 /// Release the resources owned by a wisp effect.
@@ -217,9 +225,9 @@ void wispEffectInitialize(u8 *effect) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800178C4 (0x800178C4).
 void wispEffectDestroy(u8 *effect) {
-    u8 *effectState = *(u8 **)(effect + 0x54);
-    heapFreeLocal(&gGameHeap, *(u8 **)(effectState + 8));
-    heapFreeLocal(&gGameHeap, *(u8 **)(effectState + 0x10));
+    WispState *effectState = ((RuntimeObjectPrefix *)effect)->state.pointer;
+    heapFreeLocal(&gGameHeap, effectState->lists[0]);
+    heapFreeLocal(&gGameHeap, effectState->tracks);
     heapFreeLocal(&gGameHeap, effectState);
 }
 
@@ -275,25 +283,6 @@ extern s32 gWispStyle9FrameAnimation;
 /// \note Original identifier: \c D_8006B3B4 (0x8006B3B4).
 extern s32 gWispStyle4FrameAnimation;
 
-typedef struct {
-    s32 count;
-    f32 frame;
-    Gfx *dl[2];
-    u8 *tracks;
-    u8 animation[12];
-    u8 color[4];
-} EffectState;
-
-typedef struct {
-    f32 scale[3];
-    f32 rotation[3];
-    f32 position[3];
-    u8 unk24[0x20];
-    f32 world[3];
-    u8 unk50[4];
-    EffectState *state;
-} EffectObject;
-
 /// Create an animated wisp effect of the selected style at a world position.
 /// \param kind Wisp style from zero through nine.
 /// \param x World X coordinate.
@@ -302,103 +291,103 @@ typedef struct {
 /// \returns Registered wisp effect, managed by the object system.
 /// \note Original decompilation identifier: \c func_80017918 (0x80017918).
 u8 *wispEffectCreate(s32 kind, f32 x, f32 y, f32 z) {
-    EffectState *state;
-    EffectObject *obj;
+    WispState *state;
+    RuntimeObjectPrefix *obj;
     s32 count;
     s32 commands;
     Gfx *gdl;
     s32 i;
-    EffectObject *allocated;
+    RuntimeObjectPrefix *allocated;
 
-    allocated = (EffectObject *)objectCreateHierarchyFromTemplate((ObjectTemplate *)gWispObjectTemplates[kind]);
+    allocated = (RuntimeObjectPrefix *)objectCreateHierarchyFromTemplate((ObjectTemplate *)gWispObjectTemplates[kind]);
     allocated->position[0] = x;
-    allocated->world[0] = x;
+    allocated->worldPosition[0] = x;
     allocated->position[1] = y;
-    allocated->world[1] = y;
+    allocated->worldPosition[1] = y;
     allocated->position[2] = z;
-    allocated->world[2] = z;
-    state = allocated->state;
+    allocated->worldPosition[2] = z;
+    state = allocated->state.pointer;
     obj = allocated;
     count = gWispTextureTrackCounts[kind];
     state->count = count;
     commands = count * 20;
-    state->dl[0] = (Gfx *)heapAllocLocal(&gGameHeap, commands * 16, 0x1FF);
-    state->dl[1] = state->dl[0] + commands;
-    gdl = state->dl[0];
+    state->lists[0] = (Gfx *)heapAllocLocal(&gGameHeap, commands * 16, 0x1FF);
+    state->lists[1] = state->lists[0] + commands;
+    gdl = state->lists[0];
     i = 0;
     while (i < (u32)(commands * 2)) {
         i++;
         gSPEndDisplayList(gdl++);
     }
     state->tracks = heapAllocLocal(&gGameHeap, count * 12, 0x20A);
-    animationIntegerTrackInitialize((ValueTrack *)(state->animation), (gOpacityAnimationPrograms[gWispOpacityProgramIndices[kind]]));
+    animationIntegerTrackInitialize(&state->opacity, (gOpacityAnimationPrograms[gWispOpacityProgramIndices[kind]]));
     switch (kind) {
     case 0:
         obj->scale[0] = 0.01f;
         obj->scale[1] = 0.01f;
         obj->scale[2] = 0.01f;
-        animationIntegerTrackInitialize((ValueTrack *)(state->tracks), (ValueKey *)(gWispStyle0FrameAnimation));
+        animationIntegerTrackInitialize(state->tracks, (ValueKey *)(gWispStyle0FrameAnimation));
         break;
     case 1:
         obj->scale[0] = 0.01f;
         obj->scale[1] = 0.01f;
         obj->scale[2] = 0.01f;
-        animationIntegerTrackInitialize((ValueTrack *)(state->tracks), (ValueKey *)(gWispStyle1FirstFrameAnimation));
-        animationIntegerTrackInitialize((ValueTrack *)(state->tracks + 0xC), (ValueKey *)(gWispStyle1SecondFrameAnimation));
+        animationIntegerTrackInitialize(state->tracks, (ValueKey *)(gWispStyle1FirstFrameAnimation));
+        animationIntegerTrackInitialize(&state->tracks[1], (ValueKey *)(gWispStyle1SecondFrameAnimation));
         break;
     case 2:
         obj->scale[0] = 0.01f;
         obj->scale[1] = 0.01f;
         obj->scale[2] = 0.01f;
-        animationIntegerTrackInitialize((ValueTrack *)(state->tracks), (ValueKey *)(gWispStyle2FrameAnimation));
-        state->color[2] = 0;
-        state->color[1] = 0;
-        state->color[0] = 0;
+        animationIntegerTrackInitialize(state->tracks, (ValueKey *)(gWispStyle2FrameAnimation));
+        state->color.b = 0;
+        state->color.g = 0;
+        state->color.r = 0;
         break;
     case 3:
         obj->scale[0] = 0.1f;
         obj->scale[1] = (f64)randomNext() * 2.3283064365386963e-10 * 0.10000000149011612 + 0.05000000074505806;
         obj->scale[2] = (f64)randomNext() * 2.3283064365386963e-10 * 0.05000000074505806 + 0.05000000074505806;
-        animationIntegerTrackInitialize((ValueTrack *)(state->tracks), (ValueKey *)(gWispStyle3FrameAnimation));
-        state->color[0] = 0xFF;
-        state->color[1] = 0xFF;
-        state->color[2] = 0x99;
+        animationIntegerTrackInitialize(state->tracks, (ValueKey *)(gWispStyle3FrameAnimation));
+        state->color.r = 0xFF;
+        state->color.g = 0xFF;
+        state->color.b = 0x99;
         break;
     case 4:
         obj->scale[0] = 0.003f;
         obj->scale[1] = 0.003f;
         obj->scale[2] = 0.003f;
-        animationIntegerTrackInitialize((ValueTrack *)(state->tracks), (ValueKey *)(gWispStyle4FrameAnimation));
+        animationIntegerTrackInitialize(state->tracks, (ValueKey *)(gWispStyle4FrameAnimation));
         break;
     case 5:
         obj->scale[0] = 0.02f;
         obj->scale[1] = 0.02f;
         obj->scale[2] = 0.02f;
-        animationIntegerTrackInitialize((ValueTrack *)(state->tracks), (ValueKey *)(gBillboardTextureAnimation));
+        animationIntegerTrackInitialize(state->tracks, (ValueKey *)(gBillboardTextureAnimation));
         break;
     case 6:
         obj->scale[0] = 0.03f;
         obj->scale[1] = 0.03f;
         obj->scale[2] = 0.03f;
-        animationIntegerTrackInitialize((ValueTrack *)(state->tracks), (ValueKey *)(gWispStyle6FrameAnimation));
+        animationIntegerTrackInitialize(state->tracks, (ValueKey *)(gWispStyle6FrameAnimation));
         break;
     case 7:
         obj->scale[0] = 0.03f;
         obj->scale[1] = 0.03f;
         obj->scale[2] = 0.03f;
-        animationIntegerTrackInitialize((ValueTrack *)(state->tracks), (ValueKey *)(gWispStyle7FrameAnimation));
+        animationIntegerTrackInitialize(state->tracks, (ValueKey *)(gWispStyle7FrameAnimation));
         break;
     case 8:
         obj->scale[0] = 0.2f;
         obj->scale[1] = 0.2f;
         obj->scale[2] = 0.2f;
-        animationIntegerTrackInitialize((ValueTrack *)(state->tracks), (ValueKey *)(gWispStyle8FrameAnimation));
+        animationIntegerTrackInitialize(state->tracks, (ValueKey *)(gWispStyle8FrameAnimation));
         break;
     case 9:
         obj->scale[0] = 0.2f;
         obj->scale[1] = 0.2f;
         obj->scale[2] = 0.2f;
-        animationIntegerTrackInitialize((ValueTrack *)(state->tracks), (ValueKey *)(gWispStyle9FrameAnimation));
+        animationIntegerTrackInitialize(state->tracks, (ValueKey *)(gWispStyle9FrameAnimation));
         break;
     default:
         DEBUG_PRINTF(("Unknown smokeType(%d)\n", kind));

@@ -133,6 +133,9 @@
     },
     "src/game/message_bar.c": {
       "messageBarActivateNext": "The 68-byte queue record and duration field are established. Direct typed duration indexing changes IDO output and fails ROM matching; using sizeof(QueuedMessage) for the byte-cursor stride also fails. Retain the signed literal stride and biased byte cursor in activation. Typed queued-record access in messageBarUpdate and typed enqueue writes pass strict object comparison. Next evidence: instruction/scheduling analysis of activation to find a matching typed representation."
+    },
+    "src/game/particle_effects.c": {
+      "wispEffectUpdateDrawAnimation": "Wisp color retains named byte channels in a struct: a byte-array representation changes IDO channel load/shift register ordering. Texture tracks retain the signed byte cursor; the shared state and lifecycle fields match the original object."
     }
   },
   "baseline_totals": {

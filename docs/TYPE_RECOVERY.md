@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,438 / 76 |
+| Raw offset candidates | 4,040 / 86 | 2,423 / 76 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3574,3 +3574,11 @@ offsets. Allocation uses the established 24-byte state size. Ghidra update at
 `0x800196D8` confirms target/reference lookup, signed horizontal offset, optional
 callback and timer roles. Callback-local views that change to emitted-particle
 state remain separate; their matching offsets do not imply identical records.
+
+### Wisp state and ownership
+
+The wisp creator, animation renderer, initializer and destructor share a checked
+36-byte private state. Its two drawing banks share one owned allocation; texture
+tracks are separately owned, while animation key data is borrowed. Named color
+channels preserve the original compiler scheduling. Remaining motion and emitter
+consumers still have explicit byte views pending individual matching recovery.
