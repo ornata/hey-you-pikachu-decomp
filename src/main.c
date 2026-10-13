@@ -122,12 +122,6 @@ extern OSMesgQueue gControllerCommandQueue;
 /// Backing message slots for the controller thread command queue.
 /// Original: D_800AD0A0 (0x800AD0A0).
 extern OSMesg gControllerCommandMessages[16];
-/// Per-port rumble motor state, pulse deadline and initialization retry state.
-/// \note Original identifier: \c D_800AD0E0 (0x800AD0E0).
-extern u8 gControllerRumbleMotorState[0x60];
-/// Per-port rumble pattern state, end time, pulse interval and pulse duration.
-/// \note Original identifier: \c D_800AD140 (0x800AD140).
-extern u8 gControllerRumblePatternState[0xA0];
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;

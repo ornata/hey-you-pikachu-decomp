@@ -4373,3 +4373,15 @@ stride, also confirmed by Ghidra at 0x8000284C. Controller discovery and rumble 
 retry and access use named unavailable/ready/pending/failed states. Unobserved values
 remain unnamed. Borrowed contexts may be reinitialized on device changes.
 All accepted changes preserve BSS layout, strict baseline objects and clean ROM bytes.
+
+### Typed rumble state arrays and lifecycle dispatch
+
+The controller thread owns four checked motor records and four checked pattern
+records instead of byte-array storage. Initialization, requests, retry handling,
+pulse timing and status queries use typed entries. Per-frame dispatch uses typed
+cursors while preserving the documented paired-initialization scheduling constraint.
+Linked handler tables at 0x800633F0 and 0x80063400 establish separate named pattern
+and motor lifecycle selectors; Ghidra at 0x80003078 confirms per-port dispatch.
+The records and dispatch tables remain private because no other unit consumes them;
+unused boot declarations are removed. Both units preserve strict object sections,
+BSS alignment/layout, relocations and clean retail ROM bytes.
