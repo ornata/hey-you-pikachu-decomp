@@ -1,3 +1,4 @@
+#include "audio_playback_stop.h"
 #include "text_window.h"
 #include "message_bar.h"
 #include "interaction_proxy.h"
@@ -1997,7 +1998,6 @@ void playerPlayTrackedSoundEffect(u8 *player, s32 soundId) {
     ((PlayerControlPrefix *)player)->soundHandle = audioPlaySoundEffect(soundId);
 }
 
-s32 audioStopPlayback(s32, f64); /* extern */
 
 /// Stop the player tracked sound effect immediately and clear its playback selection.
 /// \param player Player record whose tracked playback should stop; no effect if none is selected.

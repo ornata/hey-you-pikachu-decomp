@@ -1,3 +1,4 @@
+#include "audio_playback_stop.h"
 #include "audio_playback_query.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -219,7 +220,6 @@ s32 audioPlaySequence(s32 data) {
     return 0;
 }
 
-s32 audioStopPlayback(s32, f64);
 
 /// Stop selected categories of game audio.
 /// \param categories Category mask: bit zero selects sound effects and bit one selects sequences.

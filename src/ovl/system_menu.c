@@ -1,3 +1,4 @@
+#include "audio_playback_stop.h"
 #include "text_window.h"
 #include "message_bar.h"
 #include "story_chapter.h"
@@ -374,7 +375,6 @@ s32 D_80134218_0;
 
 f64 fabs(f64);
 #pragma intrinsic(fabs)
-s32 audioStopPlayback(s32, f64);      /* extern */
 
 /// Stop the menu sound preview and restore the audio cue and playback rate saved on menu entry.
 /// Requires a saved menu-entry audio snapshot and any preview handle to remain valid.

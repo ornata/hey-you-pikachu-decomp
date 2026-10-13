@@ -1,3 +1,4 @@
+#include "audio_playback_stop.h"
 #include "ambient_audio.h"
 #include "audio_playback_query.h"
 #include "vector3_types.h"
@@ -11,7 +12,6 @@
 #include "audio_cue.h"
 #include "heap_alloc.h"
 #include "object_types.h"
-s32 audioStopPlayback(s32, f64);
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;

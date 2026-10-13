@@ -558,6 +558,7 @@
         "actor_sound.h",
         "actor_target.h",
         "audio_playback_query.h",
+        "audio_playback_stop.h",
         "audio_spatial.h",
         "camera_types.h",
         "collision_registration.h",
@@ -1288,6 +1289,7 @@
     "src/game/audio_playback.c": {
       "known_views": [
         "audio_playback_query.h",
+        "audio_playback_stop.h",
         "n_synthInternals.h",
         "sequence_driver.h",
         "sound_effect_player.h"
@@ -1296,12 +1298,12 @@
       "locations": {
         "raw_offset_candidates": {
           "return -1": [
-            "142:5",
+            "143:5",
             "382:9",
             "389:5"
           ],
           "bankFile + 4": [
-            "192:81"
+            "193:81"
           ]
         }
       }
@@ -5274,6 +5276,7 @@
         "actor_parts.h",
         "actor_script.h",
         "actor_text.h",
+        "audio_playback_stop.h",
         "camera_overlay.h",
         "camera_pose.h",
         "camera_types.h",
@@ -5318,83 +5321,83 @@
       "locations": {
         "raw_offset_candidates": {
           "gRuntimeFrameSeconds + 8": [
-            "385:35"
+            "386:35"
           ],
           "normal + 2": [
-            "643:80"
+            "644:80"
           ],
           "currentGround + 0": [
-            "671:38"
+            "672:38"
           ],
           "dy + 0": [
-            "679:64",
-            "699:86"
+            "680:64",
+            "700:86"
           ],
           "nextX + 0": [
-            "682:79",
-            "688:79"
+            "683:79",
+            "689:79"
           ],
           "nextZ + 0": [
-            "685:93",
-            "688:100"
+            "686:93",
+            "689:100"
           ],
           "nextGround + 0": [
-            "692:22"
+            "693:22"
           ],
           "player + 0x84": [
-            "790:46"
+            "791:46"
           ],
           "object + 0x54": [
-            "793:22",
+            "794:22",
             "2742:22"
           ],
           "player + 0x18": [
-            "794:20"
+            "795:20"
           ],
           "player + 0xC": [
-            "794:46"
+            "795:46"
           ],
           "player + 0x10": [
-            "795:22",
-            "797:22"
+            "796:22",
+            "798:22"
           ],
           "player + 0x14": [
-            "795:48",
-            "797:48"
+            "796:48",
+            "798:48"
           ],
           "player + 0x1C": [
-            "800:26"
-          ],
-          "player + 4": [
-            "800:52"
-          ],
-          "player + 8": [
             "801:26"
           ],
+          "player + 4": [
+            "801:52"
+          ],
+          "player + 8": [
+            "802:26"
+          ],
           "object + 0x38": [
-            "805:24",
-            "809:25"
+            "806:24",
+            "810:25"
           ],
           "object + 0x18": [
-            "805:56"
+            "806:56"
           ],
           "state + 4": [
-            "807:94",
+            "808:94",
             "2122:18"
           ],
           "gPlayerCompanionTarget - 0x50": [
-            "1056:36"
+            "1057:36"
           ],
           "gPlayerControllerPort - 0x2C": [
-            "1073:37",
-            "1074:37"
+            "1074:37",
+            "1075:37"
           ],
           "gPlayerHelpTextCursor + 1": [
-            "1441:46",
-            "1445:46"
+            "1442:46",
+            "1446:46"
           ],
           "gPlayerEyeHeight - 0x1C": [
-            "1914:37",
+            "1915:37",
             "2505:42",
             "2517:42"
           ],
@@ -5568,6 +5571,7 @@
         "action_script_query.h",
         "action_script_stop.h",
         "audio_cue.h",
+        "audio_playback_stop.h",
         "backdrop_draw.h",
         "camera_interface.h",
         "heap_alloc.h",
