@@ -216,7 +216,7 @@ void eyeCatchDrawLayers(Gfx **displayList) {
     gDPPipeSync((*displayList)++);
     gDPSetRenderMode((*displayList)++, 0x504240, 0);
     gDPSetCombine((*displayList)++, 0xFFFFFF, 0xFFFCF279);
-    textureDrawRectangles(9, (TextureDrawC354 *)(s32 *)((EyeGroup36A *)gEyeCatchActiveGroup)->records, displayList);
+    textureDrawRectangles(9, (TextureRectangle *)(s32 *)((EyeGroup36A *)gEyeCatchActiveGroup)->records, displayList);
     gDPPipeSync((*displayList)++);
     gDPSetRenderMode((*displayList)++, 0x504240, 0);
     gDPSetCombineLERP((*displayList)++, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE,
@@ -246,7 +246,7 @@ void eyeCatchDrawLayers(Gfx **displayList) {
             }
             gDPSetPrimColor((*displayList)++, 0, 0, 0, 0, 0, spA0);
             desc[1].texture = -1;
-            textureDrawRectangles(9, (TextureDrawC354 *)&desc, displayList);
+            textureDrawRectangles(9, (TextureRectangle *)&desc, displayList);
             var_s0 += 0x48;
         }
     }

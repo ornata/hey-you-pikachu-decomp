@@ -93,7 +93,7 @@ extern f32 gTextureScalePositiveTolerance, gTextureScaleXNegativeTolerance, gTex
 /// \param gdl Display-list cursor receiving the drawing commands.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000C354 (0x8000C354).
-void textureDrawRectangles(s32 table, TextureDrawC354 *draw, Gfx **gdl) {
+void textureDrawRectangles(s32 table, TextureRectangle *draw, Gfx **gdl) {
     s32 width;
     TextureDescriptor texture;
     s32 height;

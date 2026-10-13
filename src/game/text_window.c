@@ -159,7 +159,7 @@ extern f32 gRuntimeFrameSeconds;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002B910 (0x8002B910).
 void textWindowDrawIndicator(Gfx **gdl, s32 alpha) {
-    TextureDrawC354 rectangles[2];
+    TextureRectangle rectangles[2];
     s32 origin = 31;
     s32 size = 48;
     f32 scale = 1.0f;
@@ -193,7 +193,7 @@ void textWindowDrawIndicator(Gfx **gdl, s32 alpha) {
         rectangles[0].scaleX = scale;
         rectangles[0].scaleY = scale;
         rectangles[1].texture = -1;
-        textureDrawRectangles(rendererTable, (TextureDrawC354 *)rectangles, gdl);
+        textureDrawRectangles(rendererTable, (TextureRectangle *)rectangles, gdl);
     }
 }
 

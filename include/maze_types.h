@@ -13,18 +13,39 @@ typedef struct MazeGrid {
     s32 mode;         ///< Sampling representation; zero selects triangles and two selects vertex samples.
 } MazeGrid;
 
+/// Handle a position event in a maze region.
+/// \param position Borrowed world-space X, Y, Z coordinates, valid for the call.
+/// \param node Borrowed maze region receiving the event, valid for the call.
+/// \param eventType Event selector supplied by the event source.
+/// \returns The handler's response status.
+typedef s32 (*MazePositionEvent)(f32 *position, u8 *node, s32 eventType);
+
+/// One borrowed area event-link definition; a null event terminates the list.
+/// Source cells identify regions in the configured maze. A negative target-cell component disables
+/// the optional destination link. Storage remains live through maze event-link initialization.
+/// Installed handlers must remain callable until their maze regions are released.
+typedef struct SceneEventLink {
+    s32 sourceCell[3];       ///< Source cell indices in X, Y, Z order.
+    MazePositionEvent event; ///< Handler installed on the source region, or null to end the list.
+    s32 targetCell[3];       ///< Optional destination cell indices in X, Y, Z order.
+} SceneEventLink;
+
+typedef char SceneEventLinkSizeCheck[(sizeof(SceneEventLink) == 0x1C) ? 1 : -1];
+typedef char SceneEventLinkHandlerOffsetCheck[((u32) & ((SceneEventLink *)0)->event == 0xC) ? 1 : -1];
+typedef char SceneEventLinkTargetOffsetCheck[((u32) & ((SceneEventLink *)0)->targetCell == 0x10) ? 1 : -1];
+
 /// Owned octree region with borrowed terrain resources and associated scene objects.
 /// Descendants and associated objects are released with the area hierarchy.
 typedef struct MazeNode {
-    ObjectReference objects[2];     ///< Primary region object and configured model hierarchy.
-    f32 x, y, z;                    ///< World-space minimum corner of the region.
-    f32 w, h, d;                    ///< Region extents along X, Y and Z.
-    struct MazeNode *children[8];   ///< Owned octree descendants, or null for unused slots.
-    s16 depth;                      ///< Remaining subdivision depth.
-    s16 active;                     ///< Nonzero while associated objects are active.
-    MazeGrid *terrain;              ///< Borrowed terrain surface, or null for an empty region.
-    s32 (*event)(f32 *, u8 *, s32); ///< Optional position-event callback returning its response status.
-    struct MazeNode *linkedNode;    ///< Borrowed region associated by a configured event link.
+    ObjectReference objects[2];   ///< Primary region object and configured model hierarchy.
+    f32 x, y, z;                  ///< World-space minimum corner of the region.
+    f32 w, h, d;                  ///< Region extents along X, Y and Z.
+    struct MazeNode *children[8]; ///< Owned octree descendants, or null for unused slots.
+    s16 depth;                    ///< Remaining subdivision depth.
+    s16 active;                   ///< Nonzero while associated objects are active.
+    MazeGrid *terrain;            ///< Borrowed terrain surface, or null for an empty region.
+    MazePositionEvent event;      ///< Optional position-event callback returning its response status.
+    struct MazeNode *linkedNode;  ///< Borrowed region associated by a configured event link.
 } MazeNode;
 
 /// Borrowed resources and lifecycle callbacks for one occupancy-sampler result.

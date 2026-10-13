@@ -1,3 +1,4 @@
+#include "vector3_types.h"
 #include "runtime_lifecycle.h"
 #include "area_names.h"
 #include "game_heap.h"
@@ -378,7 +379,7 @@ u8 *areaFindPositionNode(f32, f32, f32);
 /// \note Original decompilation identifier: \c func_8010B054 (0x8010B054).
 s32 areaDispatchPositionEvent(f32 *position, s32 eventType) {
     u8 *node;
-    s32 (*callback)(f32 *, u8 *, s32);
+    MazePositionEvent callback;
     node = areaFindPositionNode(position[0], position[1], position[2]);
     if (node == gAreaLastEventNode && (u64)runtimeGetElapsedMilliseconds() - gAreaLastEventMilliseconds < 1000) {
         return 0;
@@ -386,7 +387,7 @@ s32 areaDispatchPositionEvent(f32 *position, s32 eventType) {
     gAreaLastEventMilliseconds = runtimeGetElapsedMilliseconds();
     gAreaLastEventType = eventType;
     gAreaLastEventNode = node;
-    callback = *(s32(**)(f32 *, u8 *, s32))(node + 0x48);
+    callback = ((MazeNode *)node)->event;
     if (callback != NULL) {
         return callback(position, node, eventType);
     }
@@ -1527,13 +1528,10 @@ u8 *areaAllocateNode(void) {
     return sp1C;
 }
 
-typedef struct {
-    f32 x, y, z;
-} MazeDimensions540;
-typedef struct {
-    u8 header[8];
-    f32 x, y, z, w, h, d;
-} MazeGeometry540;
+/// Borrowed scalar view of the initial scene cell dimensions used during root initialization.
+/// The view describes only the shared configuration prefix's first twelve bytes.
+typedef char SceneRootZViewOffsetCheck
+    [((u32) & ((Vec3f *)0)->z == (u32) & ((SceneConfigurationPrefix *)0)->cellDimensions[2]) ? 1 : -1];
 /// Create the maze root region and configure its geometry and visibility scale for the current area.
 /// \returns Nothing; requires a loaded area configuration and no existing maze root to replace.
 ///
@@ -1542,34 +1540,28 @@ typedef struct {
 /// \note Original decompilation identifier: \c func_8010D540 (0x8010D540).
 void mazeInitializeRoot(void) {
     s32 integerScale;
-    MazeDimensions540 dims;
+    Vec3f dims;
     f32 length;
     gAreaMazeRoot = (MazeNode *)areaAllocateNode();
     integerScale = integerPower(2, *(s32 *)(gCurrentAreaConfiguration + 0x10));
-    ((MazeGeometry540 *)gAreaMazeRoot)->x = 0.0f;
-    ((MazeGeometry540 *)gAreaMazeRoot)->y = 0.0f;
-    ((MazeGeometry540 *)gAreaMazeRoot)->z = 0.0f;
-    ((MazeGeometry540 *)gAreaMazeRoot)->w = (f32)integerScale * ((MazeDimensions540 *)gCurrentAreaConfiguration)->x;
-    ((MazeGeometry540 *)gAreaMazeRoot)->h = (f32)integerScale * ((MazeDimensions540 *)gCurrentAreaConfiguration)->y;
-    ((MazeGeometry540 *)gAreaMazeRoot)->d = (f32)integerScale * ((MazeDimensions540 *)gCurrentAreaConfiguration)->z;
+    ((MazeNode *)gAreaMazeRoot)->x = 0.0f;
+    ((MazeNode *)gAreaMazeRoot)->y = 0.0f;
+    ((MazeNode *)gAreaMazeRoot)->z = 0.0f;
+    ((MazeNode *)gAreaMazeRoot)->w = (f32)integerScale * ((Vec3f *)gCurrentAreaConfiguration)->x;
+    ((MazeNode *)gAreaMazeRoot)->h = (f32)integerScale * ((Vec3f *)gCurrentAreaConfiguration)->y;
+    ((MazeNode *)gAreaMazeRoot)->d = (f32)integerScale * ((Vec3f *)gCurrentAreaConfiguration)->z;
     gAreaMazeRoot->depth = *(s32 *)(gCurrentAreaConfiguration + 0x10);
-    dims.x = ((MazeDimensions540 *)gCurrentAreaConfiguration)->x;
-    dims.y = ((MazeDimensions540 *)gCurrentAreaConfiguration)->y;
-    dims.z = ((MazeDimensions540 *)gCurrentAreaConfiguration)->z;
+    dims.x = ((Vec3f *)gCurrentAreaConfiguration)->x;
+    dims.y = ((Vec3f *)gCurrentAreaConfiguration)->y;
+    dims.z = ((Vec3f *)gCurrentAreaConfiguration)->z;
     length = vector3Length((f32 *)&dims);
     gMazeVisibilityParameters.radiusScale =
-        length * 0.5f / (mathSinDegrees(36.0f) * ((MazeDimensions540 *)gCurrentAreaConfiguration)->x);
+        length * 0.5f / (mathSinDegrees(36.0f) * ((Vec3f *)gCurrentAreaConfiguration)->x);
     TRACE("blockSize: %f,%f,%f  _clipZFactor:%f  clipFar:%f clipNear:%f clipFactor:%f\n", dims.x, dims.y, dims.z,
           *(f32 *)(gCurrentAreaConfiguration + 0x2C), *(f32 *)(gCurrentAreaConfiguration + 0x24),
           *(f32 *)(gCurrentAreaConfiguration + 0x28), gMazeVisibilityParameters.radiusScale);
 }
 
-typedef struct {
-    f32 dimensions[3];
-    f32 scale;
-    s32 depth;
-    SceneCellType *kinds;
-} ModelConfigD658;
 
 /// Configure a maze node for its selected kind, creating its model and running the configured initializer
 /// when present.
@@ -1581,11 +1573,15 @@ void mazeConfigureNodeModel(MazeNode *node, s32 kind) {
     u8 *root;
     u8 *part;
     s32 offset = kind * sizeof(SceneCellType);
-    node->terrain = (*(SceneCellType *)((u8 *)((ModelConfigD658 *)gCurrentAreaConfiguration)->kinds + offset)).terrain;
-    if ((*(SceneCellType *)((u8 *)((ModelConfigD658 *)gCurrentAreaConfiguration)->kinds + offset)).objectTemplate !=
-        NULL) {
-        root = objectCreateHierarchyFromTemplate((ObjectTemplate *)
-            (*(SceneCellType *)((u8 *)((ModelConfigD658 *)gCurrentAreaConfiguration)->kinds + offset)).objectTemplate);
+    node->terrain =
+        (*(SceneCellType *)((u8 *)((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->cellTypes + offset)).terrain;
+    if ((*(SceneCellType *)((u8 *)((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->cellTypes + offset))
+            .objectTemplate != NULL) {
+        root = objectCreateHierarchyFromTemplate(
+            (ObjectTemplate *)(*(SceneCellType *)((u8 *)((SceneConfigurationPrefix *)gCurrentAreaConfiguration)
+                                                      ->cellTypes +
+                                                  offset))
+                .objectTemplate);
         root = objectRegisterActiveHierarchy(root);
         node->objects[1].bytes = root;
         *(f32 *)(root + 0x14) = 0.0f;
@@ -1595,24 +1591,26 @@ void mazeConfigureNodeModel(MazeNode *node, s32 kind) {
         *(f32 *)(root + 0x1C) = node->y;
         part = *(u8 **)(root + 0x28);
         *(f32 *)(root + 0x20) = node->z;
-        *(f32 *)(root + 0) *= ((ModelConfigD658 *)gCurrentAreaConfiguration)->scale;
-        *(f32 *)(root + 4) *= ((ModelConfigD658 *)gCurrentAreaConfiguration)->scale;
-        *(f32 *)(root + 8) *= ((ModelConfigD658 *)gCurrentAreaConfiguration)->scale;
+        *(f32 *)(root + 0) *= ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale;
+        *(f32 *)(root + 4) *= ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale;
+        *(f32 *)(root + 8) *= ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale;
         while (part != NULL) {
             *(f32 *)(part + 0x18) =
-                *(f32 *)(part + 0x18) * ((ModelConfigD658 *)gCurrentAreaConfiguration)->scale + node->x;
+                *(f32 *)(part + 0x18) * ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale + node->x;
             *(f32 *)(part + 0x1C) =
-                *(f32 *)(part + 0x1C) * ((ModelConfigD658 *)gCurrentAreaConfiguration)->scale + node->y;
+                *(f32 *)(part + 0x1C) * ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale + node->y;
             *(f32 *)(part + 0x20) =
-                *(f32 *)(part + 0x20) * ((ModelConfigD658 *)gCurrentAreaConfiguration)->scale + node->z;
+                *(f32 *)(part + 0x20) * ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale + node->z;
             *(f32 *)(part + 0) = *(f32 *)(part + 0) * *(f32 *)(root + 0);
             *(f32 *)(part + 4) = *(f32 *)(part + 4) * *(f32 *)(root + 4);
             *(f32 *)(part + 8) = *(f32 *)(part + 8) * *(f32 *)(root + 8);
             part = *(u8 **)(part + 0x28);
         }
     }
-    if ((*(SceneCellType *)((u8 *)((ModelConfigD658 *)gCurrentAreaConfiguration)->kinds + offset)).initialize != NULL) {
-        (*(SceneCellType *)((u8 *)((ModelConfigD658 *)gCurrentAreaConfiguration)->kinds + offset)).initialize((u8 *)node);
+    if ((*(SceneCellType *)((u8 *)((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->cellTypes + offset))
+            .initialize != NULL) {
+        (*(SceneCellType *)((u8 *)((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->cellTypes + offset))
+            .initialize((u8 *)node);
     }
 }
 
@@ -1632,12 +1630,25 @@ void mazeConfigureChildBounds(MazeNode *parent, s32 index) {
     child->depth = parent->depth - 1;
 }
 
-/* Geometry and occupancy callback from the maze configuration. */
+/// Matching-only borrowed view of scene dimensions and the occupancy callback.
+/// Shared-array field access changes mazeClassifyNode instructions. This smaller view must not be used
+/// to allocate or copy configurations; all used offsets are checked against SceneConfigurationPrefix.
 typedef struct {
-    f32 width, height, depth;
-    u8 unknownC[0x30];
-    s32 (*sample)(f32, f32, f32);
-} MazeSampler;
+    f32 width, height, depth; ///< Cell dimensions in world units along X, Y and Z.
+    u8 omittedFields[0x30];   ///< Intervening configuration storage, not owned by this view.
+    SceneCellSampler sample;  ///< Borrowed occupancy classification callback.
+} SceneOccupancyView;
+typedef char SceneOccupancyViewSizeCheck[(sizeof(SceneOccupancyView) == 0x40) ? 1 : -1];
+typedef char SceneOccupancyXViewOffsetCheck
+    [((u32) & ((SceneOccupancyView *)0)->width == (u32) & ((SceneConfigurationPrefix *)0)->cellDimensions[0]) ? 1 : -1];
+typedef char SceneOccupancyYViewOffsetCheck[((u32) & ((SceneOccupancyView *)0)->height == (u32) &
+                                             ((SceneConfigurationPrefix *)0)->cellDimensions[1])
+                                                ? 1
+                                                : -1];
+typedef char SceneOccupancyZViewOffsetCheck
+    [((u32) & ((SceneOccupancyView *)0)->depth == (u32) & ((SceneConfigurationPrefix *)0)->cellDimensions[2]) ? 1 : -1];
+typedef char SceneOccupancyCallbackViewOffsetCheck
+    [((u32) & ((SceneOccupancyView *)0)->sample == (u32) & ((SceneConfigurationPrefix *)0)->sampleCell) ? 1 : -1];
 
 /// Classify a maze region using the current area's occupancy sampler.
 /// \param node Maze region with initialized bounds and nonnegative remaining depth.
@@ -1658,10 +1669,10 @@ s32 mazeClassifyNode(MazeNode *node) {
     s32 z;
 
     count = integerPower(2, node->depth);
-    result = ((MazeSampler *)gCurrentAreaConfiguration)
-                 ->sample(node->x + ((MazeSampler *)gCurrentAreaConfiguration)->width * 0.5f,
-                          node->y + ((MazeSampler *)gCurrentAreaConfiguration)->height * 0.5f,
-                          node->z + ((MazeSampler *)gCurrentAreaConfiguration)->depth * 0.5f);
+    result = ((SceneOccupancyView *)gCurrentAreaConfiguration)
+                 ->sample(node->x + ((SceneOccupancyView *)gCurrentAreaConfiguration)->width * 0.5f,
+                          node->y + ((SceneOccupancyView *)gCurrentAreaConfiguration)->height * 0.5f,
+                          node->z + ((SceneOccupancyView *)gCurrentAreaConfiguration)->depth * 0.5f);
     if (count >= 2) {
         for (x = 0; x < count; x++) {
             for (y = 0; y < count; y++) {
@@ -1670,13 +1681,13 @@ s32 mazeClassifyNode(MazeNode *node) {
                         continue;
                     {
                         f32 px, py, pz;
-                        width = ((MazeSampler *)gCurrentAreaConfiguration)->width;
-                        height = ((MazeSampler *)gCurrentAreaConfiguration)->height;
-                        depth = ((MazeSampler *)gCurrentAreaConfiguration)->depth;
+                        width = ((SceneOccupancyView *)gCurrentAreaConfiguration)->width;
+                        height = ((SceneOccupancyView *)gCurrentAreaConfiguration)->height;
+                        depth = ((SceneOccupancyView *)gCurrentAreaConfiguration)->depth;
                         px = node->x + x * width + width * 0.5f;
                         py = node->y + y * height + height * 0.5f;
                         pz = node->z + z * depth + depth * 0.5f;
-                        if (((MazeSampler *)gCurrentAreaConfiguration)->sample(px, py, pz) != 0) {
+                        if (((SceneOccupancyView *)gCurrentAreaConfiguration)->sample(px, py, pz) != 0) {
                             return -1;
                         }
                     }
@@ -1844,7 +1855,8 @@ void mazeReplaceBlock(u8 *pos, u8 *modelTemplate, MazeGrid *terrain, s32 level) 
 /// callback, or a null list.
 ///
 /// \note Portability: the shared initialization and loop-label line preserves the original IDO scheduling.
-/// Callback addresses use the original 32-bit pointer ABI.
+/// Callback addresses use the original 32-bit pointer ABI. The byte cursor retains target null-plus-zero
+/// behavior when the configured event list is absent.
 /// \note Original decompilation identifier: \c func_8010DEF8 (0x8010DEF8).
 void mazeConfigureEventLinks(void) {
     f32 width;
@@ -1854,7 +1866,7 @@ void mazeConfigureEventLinks(void) {
     f32 y;
     f32 z;
     s32 offset;
-    u8 *link;
+    SceneEventLink *link;
     u8 *node;
 
 
@@ -1862,26 +1874,26 @@ void mazeConfigureEventLinks(void) {
     // clang-format off
     offset = 0; nextLink:
     // clang-format on
-    link = (*(u8 **)(gCurrentAreaConfiguration + 0x18)) + offset;
-    if ((link != NULL) && ((*(s32 *)(link + 0xC)) != 0)) {
-        width = (*(f32 *)(gCurrentAreaConfiguration + 0x0));
-        height = (*(f32 *)(gCurrentAreaConfiguration + 0x4));
-        depth = (*(f32 *)(gCurrentAreaConfiguration + 0x8));
-        x = ((f32)(*(s32 *)(link + 0x0)) * width) + (width * 0.5f);
-        y = ((f32)(*(s32 *)(link + 0x4)) * height) + (height * 0.5f);
-        z = ((f32)(*(s32 *)(link + 0x8)) * depth) + (depth * 0.5f);
+    link = (SceneEventLink *)((u8 *)((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->eventLinks + offset);
+    if ((link != NULL) && (link->event != NULL)) {
+        width = (((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->cellDimensions[0]);
+        height = (((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->cellDimensions[1]);
+        depth = (((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->cellDimensions[2]);
+        x = ((f32)(link->sourceCell[0]) * width) + (width * 0.5f);
+        y = ((f32)(link->sourceCell[1]) * height) + (height * 0.5f);
+        z = ((f32)(link->sourceCell[2]) * depth) + (depth * 0.5f);
         node = areaFindPositionNode(x, y, z);
-        (*(s32 *)(node + 0x48)) = (s32)(*(s32 *)(link + 0xC));
-        width = (*(f32 *)(gCurrentAreaConfiguration + 0x0));
-        height = (*(f32 *)(gCurrentAreaConfiguration + 0x4));
-        depth = (*(f32 *)(gCurrentAreaConfiguration + 0x8));
-        x = ((f32)(*(s32 *)(link + 0x10)) * width) + (width * 0.5f);
-        y = ((f32)(*(s32 *)(link + 0x14)) * height) + (height * 0.5f);
-        z = ((f32)(*(s32 *)(link + 0x18)) * depth) + (depth * 0.5f);
+        ((MazeNode *)node)->event = link->event;
+        width = (((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->cellDimensions[0]);
+        height = (((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->cellDimensions[1]);
+        depth = (((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->cellDimensions[2]);
+        x = ((f32)(link->targetCell[0]) * width) + (width * 0.5f);
+        y = ((f32)(link->targetCell[1]) * height) + (height * 0.5f);
+        z = ((f32)(link->targetCell[2]) * depth) + (depth * 0.5f);
         if (!((f64)x < 0.0) && !((f64)y < 0.0) && !((f64)z < 0.0)) {
-            (*(u8 **)(node + 0x4C)) = areaFindPositionNode(x, y, z);
+            ((MazeNode *)node)->linkedNode = (MazeNode *)areaFindPositionNode(x, y, z);
         }
-        offset += 0x1C;
+        offset += (s32)sizeof(SceneEventLink);
         goto nextLink;
     }
 }

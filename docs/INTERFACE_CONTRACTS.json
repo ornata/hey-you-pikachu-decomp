@@ -49,7 +49,7 @@
     {
       "kind": "call-arity",
       "file": "src/game/backdrop.c",
-      "line": 253,
+      "line": 254,
       "name": "heapAllocLocal",
       "shape": {
         "expected": 3,
@@ -62,7 +62,7 @@
     {
       "kind": "call-arity",
       "file": "src/game/backdrop.c",
-      "line": 269,
+      "line": 270,
       "name": "heapAllocLocal",
       "shape": {
         "expected": 3,
@@ -75,7 +75,7 @@
     {
       "kind": "signature-mismatch",
       "file": "src/game/backdrop.c",
-      "line": 238,
+      "line": 239,
       "name": "heapAllocLocal",
       "shape": {
         "expected": [
@@ -102,7 +102,7 @@
     {
       "kind": "call-arity",
       "file": "src/game/collection_presentation.c",
-      "line": 352,
+      "line": 347,
       "name": "actionScriptStop",
       "shape": {
         "expected": 1,
@@ -115,7 +115,7 @@
     {
       "kind": "unspecified-parameters",
       "file": "src/game/collection_presentation.c",
-      "line": 319,
+      "line": 314,
       "name": "actionScriptStop",
       "shape": "s32 *actionScriptStop()",
       "reason": "The result is the borrowed actor-state script-identifier field, as declared in action_script_stop.h. presentationRestoreActiveActor retains an ignored trailing presentation-state argument; removing it and adopting the canonical prototype fails the ROM gate.",
@@ -124,7 +124,7 @@
     {
       "kind": "signature-mismatch",
       "file": "src/game/collection_presentation.c",
-      "line": 199,
+      "line": 194,
       "name": "objectDrawHierarchyGroup",
       "shape": {
         "expected": [
@@ -148,7 +148,7 @@
     {
       "kind": "signature-mismatch",
       "file": "src/game/collection_presentation.c",
-      "line": 373,
+      "line": 368,
       "name": "objectUpdateHierarchy",
       "shape": {
         "expected": [
@@ -223,7 +223,7 @@
     {
       "kind": "signature-mismatch",
       "file": "src/game/object_hierarchy.c",
-      "line": 78,
+      "line": 79,
       "name": "searchTreeFind",
       "shape": {
         "expected": [
@@ -442,7 +442,7 @@
     {
       "kind": "call-arity",
       "file": "src/main.c",
-      "line": 273,
+      "line": 274,
       "name": "heapDebugNoOp",
       "shape": {
         "expected": 1,
@@ -455,7 +455,7 @@
     {
       "kind": "call-arity",
       "file": "src/main.c",
-      "line": 315,
+      "line": 320,
       "name": "heapDebugNoOp",
       "shape": {
         "expected": 1,
@@ -468,7 +468,7 @@
     {
       "kind": "unspecified-parameters",
       "file": "src/main.c",
-      "line": 265,
+      "line": 266,
       "name": "heapDebugNoOp",
       "shape": "void heapDebugNoOp()",
       "reason": "This inactive diagnostic hook has a one-argument K&R definition but receives an ignored allocation address after the heap address. Typed two-argument pointer and integer variants both fail the ROM gate. No portable shared prototype is published for this matching-only hook.",
@@ -501,7 +501,7 @@
     {
       "kind": "unspecified-callback",
       "file": "src/ovl/player_companion.c",
-      "line": 136,
+      "line": 137,
       "name": "gPlayerInteractionActionHandlers",
       "shape": "(*gPlayerInteractionActionHandlers[10])()",
       "reason": "The original action table mixes pointer/integer argument views and one void-returning pickup handler. Dispatch forwards player and controller addresses and exposes an unspecified result for the void handler. Existing Doxygen contracts describe this incompatible callback ABI; no result or adapter is invented.",

@@ -1,3 +1,4 @@
+#include "scene_types.h"
 #include "runtime_lifecycle.h"
 #include "camera_projection.h"
 #include "controller_accessory.h"
@@ -306,21 +307,36 @@ void renderInitializeResources(void) {
 extern u8 *gCurrentAreaConfiguration;
 /// Load the current area’s rendering assets for use by its scene.
 /// \returns Nothing; requires a loaded area configuration and no existing area asset allocation to replace.
+/// \note Matching: unsigned reads through checked shared-member offsets retain the original metadata
+/// arithmetic. Direct AssetDescriptor field reads change target instructions.
+/// \note Original address: 0x800006E4.
 void renderLoadAreaAssets(void) {
     s32 outputSize;
     s32 scratchSize;
     u8 *temporary;
-    outputSize = *(u32 *)(gCurrentAreaConfiguration + 0x54) - *(u32 *)(gCurrentAreaConfiguration + 0x50);
+    outputSize = *(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.decodedEnd) -
+                 *(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.rangeBase);
     gAreaRenderAssets = heapAllocLocal(&gGameHeap, outputSize, 0x140);
     heapDebugNoOp(&gGameHeap, gAreaRenderAssets);
-    scratchSize = (s32)(*(u32 *)(gCurrentAreaConfiguration + 0x60) - *(u32 *)(gCurrentAreaConfiguration + 0x50)) * 8 +
-                  (s32)(*(u32 *)(gCurrentAreaConfiguration + 0x58) - *(u32 *)(gCurrentAreaConfiguration + 0x50));
+    scratchSize =
+        (s32)(*(u32 *)(gCurrentAreaConfiguration + (u32) &
+                       ((SceneConfigurationPrefix *)0)->renderAsset.patchCountValue) -
+              *(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.rangeBase)) *
+            8 +
+        (s32)(*(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.encodedEnd) -
+              *(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.rangeBase));
     temporary = heapAllocTailLocal(&gGameHeap, scratchSize, 0x14C);
-    assetLoadAndPatchFromRom(*(u32 *)(gCurrentAreaConfiguration + 0x48), (u8 *)gAreaRenderAssets, temporary,
-                             *(u32 *)(gCurrentAreaConfiguration + 0x58) - *(u32 *)(gCurrentAreaConfiguration + 0x50),
-                             *(u32 *)(gCurrentAreaConfiguration + 0x54) - *(u32 *)(gCurrentAreaConfiguration + 0x50),
-                             *(u32 *)(gCurrentAreaConfiguration + 0x5C) - *(u32 *)(gCurrentAreaConfiguration + 0x50),
-                             *(u32 *)(gCurrentAreaConfiguration + 0x60) - *(u32 *)(gCurrentAreaConfiguration + 0x50));
+    assetLoadAndPatchFromRom(
+        *(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.romAddress),
+        (u8 *)gAreaRenderAssets, temporary,
+        *(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.encodedEnd) -
+            *(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.rangeBase),
+        *(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.decodedEnd) -
+            *(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.rangeBase),
+        *(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.patchStart) -
+            *(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.rangeBase),
+        *(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.patchCountValue) -
+            *(u32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.rangeBase));
     heapFreeLocal(&gGameHeap, temporary);
 }
 
@@ -760,7 +776,7 @@ s32 cameraBuildViewProjection(s32 index, Vp *viewport, Mtx *buffer) {
              camera->target[2], camera->up[0], camera->up[1], camera->up[2]);
     guMtxCatL(view, buffer, buffer);
     matrixFixedTo34(*view, camera->view.values);
-    distance = *(f32 *)(gCurrentAreaConfiguration + 0x2C) / mathSinDegrees(36.0f);
+    distance = ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->projectionExtent / mathSinDegrees(36.0f);
     camera->distance = distance;
     scale = mathCosDegrees(36.0f) * distance;
     camera->scaled = camera->view;
@@ -792,19 +808,26 @@ void cameraApplyRenderingState(s32 cameraIndex) {
 /// Apply the current area’s fog and texture filtering settings to the drawing context.
 /// \param unused Unused camera index accepted by the rendering interface.
 /// \returns Nothing; requires a loaded area configuration with distinct near and far fog distances.
+/// \note Matching: checked shared-member offsets preserve the original fog division ordering.
+/// \note Original address: 0x80001B60.
 void renderApplyAreaFog(s32 unused) {
     gDPPipeSync(gRenderDisplayListCursor++);
     gDPSetTextureFilter(gRenderDisplayListCursor++, G_TF_BILERP);
-    gDPSetFogColor(gRenderDisplayListCursor++, gCurrentAreaConfiguration[0x38], gCurrentAreaConfiguration[0x39],
-                   gCurrentAreaConfiguration[0x3A], gCurrentAreaConfiguration[0x3B]);
+    gDPSetFogColor(gRenderDisplayListCursor++, ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->fogColor[0],
+                   ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->fogColor[1],
+                   ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->fogColor[2],
+                   ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->fogColor[3]);
     /* Pack fog offset before multiplier to preserve the original division order. */
-    gMoveWd(gRenderDisplayListCursor++, G_MW_FOG, G_MWO_FOG,
-            _SHIFTL(((500 - *(s32 *)(gCurrentAreaConfiguration + 0x30)) * 256 /
-                     (*(s32 *)(gCurrentAreaConfiguration + 0x34) - *(s32 *)(gCurrentAreaConfiguration + 0x30))),
-                    0, 16) |
-                _SHIFTL((128000 /
-                         (*(s32 *)(gCurrentAreaConfiguration + 0x34) - *(s32 *)(gCurrentAreaConfiguration + 0x30))),
-                        16, 16));
+    gMoveWd(
+        gRenderDisplayListCursor++, G_MW_FOG, G_MWO_FOG,
+        _SHIFTL(((500 - *(s32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->fogStart)) * 256 /
+                 (*(s32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->fogEnd) -
+                  *(s32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->fogStart))),
+                0, 16) |
+            _SHIFTL(
+                (128000 / (*(s32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->fogEnd) -
+                           *(s32 *)(gCurrentAreaConfiguration + (u32) & ((SceneConfigurationPrefix *)0)->fogStart))),
+                16, 16));
 }
 
 /// Primary-actor script-time origin used to calculate elapsed camera tint.

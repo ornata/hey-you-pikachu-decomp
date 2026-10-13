@@ -1,3 +1,4 @@
+#include "scene_types.h"
 #include "render_state.h"
 #include "game_heap.h"
 #include "rom_dma.h"
@@ -139,7 +140,7 @@ void backdropUpdateViewOffsets(u8 *view) {
             pitch = 90.0f;
     }
     yaw = mathUnitDirectionDegrees(gPrimaryCameraTargetX - camera->eye[0], gPrimaryCameraTargetZ - gPrimaryCameraEyeZ);
-    offsetY = (s32)(*(f32 *)(gCurrentAreaConfiguration + 0x68) +
+    offsetY = (s32)(((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->backdropVerticalOffset +
                     (((s32)(240.0f * pitch * gBackdropPitchToScreenScale) + 40) - *(f32 *)(view + 4) * 1.5f));
     *(s32 *)(view + 0x98) = (s32)(yaw * gBackdropYawToPixelScale);
     *(s32 *)(view + 0x9C) = offsetY;

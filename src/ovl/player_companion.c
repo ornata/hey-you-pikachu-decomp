@@ -1,3 +1,4 @@
+#include "vector3_types.h"
 #include "runtime_lifecycle.h"
 #include "system_menu.h"
 #include "player_profile.h"
@@ -1972,19 +1973,22 @@ void playerStopTrackedSoundEffect(u8 *player) {
     }
 }
 
-typedef struct {
-    f32 x, y, z;
-} MazeDims1C4C;
-typedef struct {
-    f32 x, y, z;
-} Origin1C4C;
+/// Matching-only borrowed view of the scene configuration's initial cell dimensions.
+/// Do not allocate or copy configurations through this view. Direct shared-array accesses change
+/// playerUpdateControlHierarchy instructions; the component offsets remain tied to the shared layout.
+typedef char SceneCellXViewOffsetCheck
+    [((u32) & ((Vec3f *)0)->x == (u32) & ((SceneConfigurationPrefix *)0)->cellDimensions[0]) ? 1 : -1];
+typedef char SceneCellYViewOffsetCheck
+    [((u32) & ((Vec3f *)0)->y == (u32) & ((SceneConfigurationPrefix *)0)->cellDimensions[1]) ? 1 : -1];
+typedef char SceneCellZViewOffsetCheck
+    [((u32) & ((Vec3f *)0)->z == (u32) & ((SceneConfigurationPrefix *)0)->cellDimensions[2]) ? 1 : -1];
 /// Position the player control hierarchy from the current player view, terrain, and distance to Pikachu.
 /// \param object Player-control hierarchy root with its required child objects; the active Pikachu actor must
 /// be available.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80111C4C (0x80111C4C).
 void playerUpdateControlHierarchy(void *object) {
-    Origin1C4C *origin;
+    PlayerControlPrefix *origin;
     f32 projected[3];
     f32 delta[3];
     f32 yaw;
@@ -1999,23 +2003,26 @@ void playerUpdateControlHierarchy(void *object) {
     u8 *surface;
     void *child;
 
-    origin = (Origin1C4C *)&gPlayerState;
+    origin = (PlayerControlPrefix *)&gPlayerState;
     yaw = ((PlayerControlPrefix *)&gPlayerState)->yaw + ((PlayerControlPrefix *)&gPlayerState)->viewShake;
-    delta[0] = ((Origin1C4C *)&gPlayerState)->x - ((RuntimeObjectPrefix *)((s32)gPikachuActor))->worldPosition[0];
-    delta[1] = ((Origin1C4C *)&gPlayerState)->y - ((RuntimeObjectPrefix *)((s32)gPikachuActor))->worldPosition[1];
-    delta[2] = ((Origin1C4C *)&gPlayerState)->z - ((RuntimeObjectPrefix *)((s32)gPikachuActor))->worldPosition[2];
+    delta[0] = ((PlayerControlPrefix *)&gPlayerState)->position[0] -
+               ((RuntimeObjectPrefix *)((s32)gPikachuActor))->worldPosition[0];
+    delta[1] = ((PlayerControlPrefix *)&gPlayerState)->position[1] -
+               ((RuntimeObjectPrefix *)((s32)gPikachuActor))->worldPosition[1];
+    delta[2] = ((PlayerControlPrefix *)&gPlayerState)->position[2] -
+               ((RuntimeObjectPrefix *)((s32)gPikachuActor))->worldPosition[2];
     distance = vector3LengthApprox((f32 *)&delta[0]);
     sine = mathSinDegrees(yaw);
     cosine = mathCosDegrees(yaw);
-    reach = ((MazeDims1C4C *)gCurrentAreaConfiguration)->x;
+    reach = ((Vec3f *)gCurrentAreaConfiguration)->x;
     if ((reach * 1.5f) < distance) {
-        projected[0] = origin->x + (sine * reach);
-        projected[1] = origin->y;
-        projected[2] = origin->z + (cosine * ((MazeDims1C4C *)gCurrentAreaConfiguration)->z);
+        projected[0] = origin->position[0] + (sine * reach);
+        projected[1] = origin->position[1];
+        projected[2] = origin->position[2] + (cosine * ((Vec3f *)gCurrentAreaConfiguration)->z);
     } else {
-        projected[0] = origin->x + (sine * distance * 0.6666667f);
-        projected[1] = origin->y;
-        projected[2] = origin->z + (cosine * distance * 0.6666667f);
+        projected[0] = origin->position[0] + (sine * distance * 0.6666667f);
+        projected[1] = origin->position[1];
+        projected[2] = origin->position[2] + (cosine * distance * 0.6666667f);
     }
     child = ((RuntimeObjectPrefix *)object)->sibling.pointer;
     ((RuntimeObjectPrefix *)object)->position[0] = projected[0];
@@ -2025,21 +2032,21 @@ void playerUpdateControlHierarchy(void *object) {
     ((RuntimeObjectPrefix *)object)->worldPosition[1] = projected[1];
     ((RuntimeObjectPrefix *)object)->worldPosition[2] = projected[2];
     grandchild = ((RuntimeObjectPrefix *)child)->sibling.pointer;
-    ((RuntimeObjectPrefix *)child)->position[0] = (f32)origin->x;
-    ((RuntimeObjectPrefix *)child)->position[1] = (f32)origin->y;
-    ((RuntimeObjectPrefix *)child)->position[2] = (f32)origin->z;
-    ((RuntimeObjectPrefix *)child)->worldPosition[0] = (f32)origin->x;
-    ((RuntimeObjectPrefix *)child)->worldPosition[1] = (f32)origin->y;
-    ((RuntimeObjectPrefix *)child)->worldPosition[2] = (f32)origin->z;
+    ((RuntimeObjectPrefix *)child)->position[0] = (f32)origin->position[0];
+    ((RuntimeObjectPrefix *)child)->position[1] = (f32)origin->position[1];
+    ((RuntimeObjectPrefix *)child)->position[2] = (f32)origin->position[2];
+    ((RuntimeObjectPrefix *)child)->worldPosition[0] = (f32)origin->position[0];
+    ((RuntimeObjectPrefix *)child)->worldPosition[1] = (f32)origin->position[1];
+    ((RuntimeObjectPrefix *)child)->worldPosition[2] = (f32)origin->position[2];
     surface = NULL;
     hitX = sine * 20.0f;
     hitY = 0.0f;
     hitZ = cosine * 20.0f;
-    terrainConstrainMovement(1, origin->x, origin->y + 0.03f, origin->z, *(f32 *)((u8 *)origin + 0x20),
-                  *(f32 *)((u8 *)origin + 0x1C), 5.5f, &hitX, &hitY, &hitZ, &surface);
-    hitX += origin->x;
-    hitY += origin->y;
-    hitZ += origin->z;
+    terrainConstrainMovement(1, origin->position[0], origin->position[1] + 0.03f, origin->position[2],
+                             origin->collisionRadius, origin->eyeHeight, 5.5f, &hitX, &hitY, &hitZ, &surface);
+    hitX += origin->position[0];
+    hitY += origin->position[1];
+    hitZ += origin->position[2];
     hitY = terrainGetWorldHeightForQuery(1, hitX, hitY, hitZ, &surface);
     ((RuntimeObjectPrefix *)grandchild)->position[0] = hitX;
     ((RuntimeObjectPrefix *)grandchild)->position[1] = hitY;
@@ -2049,10 +2056,19 @@ void playerUpdateControlHierarchy(void *object) {
     ((RuntimeObjectPrefix *)grandchild)->worldPosition[2] = ((RuntimeObjectPrefix *)grandchild)->position[2];
 }
 
+/// Matching view of one shared player/companion entrance record.
+/// Replacing the scalar player-position view with SceneSpawnPoint changes playerInitializeForArea
+/// instructions. Storage is borrowed from the loaded configuration, with the shared 0x20-byte stride.
 typedef struct {
-    f32 x, y, z, yaw;
-    u8 remainder[0x10];
-} Spawn11F40;
+    f32 x, y, z, yaw;     ///< Player world position and initial view yaw.
+    f32 actorPosition[3]; ///< Companion world position, unused through this view.
+    f32 actorYaw;         ///< Companion initial yaw, unused through this view.
+} PlayerSpawnPoseView;
+typedef char PlayerSpawnPoseViewSizeCheck[(sizeof(PlayerSpawnPoseView) == sizeof(SceneSpawnPoint)) ? 1 : -1];
+typedef char PlayerSpawnYawViewOffsetCheck
+    [((u32) & ((PlayerSpawnPoseView *)0)->yaw == (u32) & ((SceneSpawnPoint *)0)->playerYaw) ? 1 : -1];
+typedef char PlayerSpawnActorViewOffsetCheck
+    [((u32) & ((PlayerSpawnPoseView *)0)->actorPosition == (u32) & ((SceneSpawnPoint *)0)->actorPosition) ? 1 : -1];
 void playerInitializeCollisionQueryMode(s32);
 /// Entrance index used to initialize the player and companion in the current area.
 /// \note Original identifier: \c D_800AE4F4 (0x800AE4F4).
@@ -2067,7 +2083,7 @@ extern s32 gRuntimeCurrentEntrance;
 /// \note Original decompilation identifier: \c func_80111F40 (0x80111F40).
 void playerInitializeForArea(void) {
     u8 *state;
-    Spawn11F40 *spawns;
+    PlayerSpawnPoseView *spawns;
     u8 *model;
     s32 index;
 
@@ -2075,7 +2091,7 @@ void playerInitializeForArea(void) {
     playerSetInteractionHelpText((u8 *)"");
     for (index = 0; index != 1; index++) {
         state = (u8 *)&gPlayerState + index * 0x100;
-        spawns = *(Spawn11F40 **)(gCurrentAreaConfiguration + 0x20);
+        spawns = *(PlayerSpawnPoseView **)(gCurrentAreaConfiguration + 0x20);
         *(f32 *)(state + 0) = spawns[gRuntimeCurrentEntrance].x;
         *(f32 *)(state + 8) = spawns[gRuntimeCurrentEntrance].z;
         *(f32 *)(state + 4) = terrainGetWorldHeightForQuery(gPlayerCollisionQueryMode, *(f32 *)(state + 0),

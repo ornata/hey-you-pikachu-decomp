@@ -179,7 +179,7 @@ void hudDrawDirectionIndicators(Gfx **gdl) {
 
 /// Two guide sprites followed by the negative-index list terminator.
 typedef struct HudGuideSpriteList {
-    TextureDrawC354 rectangles[3]; ///< Borrowed texture rectangles, including the terminator.
+    TextureRectangle rectangles[3]; ///< Borrowed texture rectangles, including the terminator.
 } HudGuideSpriteList;
 typedef char HudGuideSpriteListSizeCheck[(sizeof(HudGuideSpriteList) == 0x6C) ? 1 : -1];
 /// Sprite descriptors drawn for HUD guide style one.
@@ -204,7 +204,7 @@ void hudDrawGuideStyle1(Gfx **gdl) {
 
 /// Sprite descriptors drawn for HUD guide style two.
 /// \note Original identifier: \c D_80088FAC (0x80088FAC).
-extern TextureDrawC354 gHudGuideStyleTwoSprites[];
+extern TextureRectangle gHudGuideStyleTwoSprites[];
 
 /// Draw HUD guide style 2 and directional guidance toward Pikachu.
 /// \param gdl Display-list cursor to append drawing commands to and advance.
@@ -215,13 +215,13 @@ void hudDrawGuideStyle2(Gfx **gdl) {
     gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
     gDPSetCombineMode((*gdl)++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
     gDPSetPrimColor((*gdl)++, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF);
-    textureDrawRectangles(5, (TextureDrawC354 *)gHudGuideStyleTwoSprites, gdl);
+    textureDrawRectangles(5, (TextureRectangle *)gHudGuideStyleTwoSprites, gdl);
     hudDrawDirectionIndicators(gdl);
 }
 
 /// Sprite descriptors drawn for HUD guide style three.
 /// \note Original identifier: \c D_80089018 (0x80089018).
-extern TextureDrawC354 gHudGuideStyleThreeSprites[];
+extern TextureRectangle gHudGuideStyleThreeSprites[];
 
 /// Draw HUD guide style 3 and directional guidance toward Pikachu.
 /// \param gdl Display-list cursor to append drawing commands to and advance.
@@ -232,13 +232,13 @@ void hudDrawGuideStyle3(Gfx **gdl) {
     gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
     gDPSetCombineMode((*gdl)++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
     gDPSetPrimColor((*gdl)++, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF);
-    textureDrawRectangles(5, (TextureDrawC354 *)gHudGuideStyleThreeSprites, gdl);
+    textureDrawRectangles(5, (TextureRectangle *)gHudGuideStyleThreeSprites, gdl);
     hudDrawDirectionIndicators(gdl);
 }
 
 /// Sprite descriptors drawn for HUD guide style four.
 /// \note Original identifier: \c D_80089084 (0x80089084).
-extern TextureDrawC354 gHudGuideStyleFourSprites[];
+extern TextureRectangle gHudGuideStyleFourSprites[];
 
 /// Draw HUD guide style 4 and directional guidance toward Pikachu.
 /// \param gdl Display-list cursor to append drawing commands to and advance.
@@ -249,7 +249,7 @@ void hudDrawGuideStyle4(Gfx **gdl) {
     gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
     gDPSetCombineMode((*gdl)++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
     gDPSetPrimColor((*gdl)++, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF);
-    textureDrawRectangles(5, (TextureDrawC354 *)gHudGuideStyleFourSprites, gdl);
+    textureDrawRectangles(5, (TextureRectangle *)gHudGuideStyleFourSprites, gdl);
     hudDrawDirectionIndicators(gdl);
 }
 
@@ -465,7 +465,7 @@ void hudDrawMicrophoneIndicators(Gfx **gdl) {
 }
 
 /* Nine-word draw record consumed by textureDrawRectangles; texture -1 terminates a list. */
-typedef TextureDrawC354 DrawRecord;
+typedef TextureRectangle DrawRecord;
 /// Sprite descriptors for the animated alternate HUD overlay.
 /// \note Original identifier: \c D_8008918C (0x8008918C).
 extern DrawRecord gHudAlternateOverlaySprites[9];
@@ -492,7 +492,7 @@ void hudDrawAlternateOverlay(Gfx **gdl) {
     gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
     gDPSetCombineMode((*gdl)++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
     gDPSetPrimColor((*gdl)++, 0, 0, 0, 0, 0, 0x50);
-    textureDrawRectangles(5, (TextureDrawC354 *)(TextureDrawC354 *)gHudAlternateOverlaySprites, gdl);
+    textureDrawRectangles(5, (TextureRectangle *)gHudAlternateOverlaySprites, gdl);
 }
 
 /// Terminated sprite descriptors for the auxiliary HUD icon.
@@ -511,7 +511,7 @@ void hudDrawAuxiliaryIcon(Gfx **gdl) {
     gSPSetOtherMode((*gdl)++, G_SETOTHERMODE_L, G_MDSFT_RENDERMODE, 29, 0x504240);
     gDPSetCombineMode((*gdl)++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
     gDPSetPrimColor((*gdl)++, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF);
-    textureDrawRectangles(5, (TextureDrawC354 *)(TextureDrawC354 *)gHudAuxiliaryIconSprites, gdl);
+    textureDrawRectangles(5, (TextureRectangle *)gHudAuxiliaryIconSprites, gdl);
 }
 
 /// Animation identifiers for the five vertical movement-indicator bands.
@@ -616,7 +616,7 @@ void hudDrawMotionIndicators(Gfx **gdl) {
         gSPSetOtherMode((*gdl)++, G_SETOTHERMODE_L, G_MDSFT_RENDERMODE, 29, 0x504240);
         gDPSetCombineMode((*gdl)++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
         gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 255, 136);
-        textureDrawRectangles(5, (TextureDrawC354 *)(void *)gHudActionIndicatorSprites, gdl);
+        textureDrawRectangles(5, (TextureRectangle *)(void *)gHudActionIndicatorSprites, gdl);
         if (!showMotion)
             return;
     }
@@ -663,12 +663,12 @@ void hudDrawMotionIndicators(Gfx **gdl) {
     if (gHudHorizontalMotionRemaining > 0.0f) {
         gHudHorizontalMotionSprites[0].t = x;
         gHudHorizontalMotionSprites[1].texture = frameX;
-        textureDrawRectangles(5, (TextureDrawC354 *)(void *)gHudHorizontalMotionSprites, gdl);
+        textureDrawRectangles(5, (TextureRectangle *)(void *)gHudHorizontalMotionSprites, gdl);
         return;
     }
     gHudVerticalMotionSprites[0].t = y;
     gHudVerticalMotionSprites[1].texture = frameY;
-    textureDrawRectangles(5, (TextureDrawC354 *)(void *)gHudVerticalMotionSprites, gdl);
+    textureDrawRectangles(5, (TextureRectangle *)(void *)gHudVerticalMotionSprites, gdl);
 }
 
 /// Owned text-image handle for the current area name.

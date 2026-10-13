@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 1,704 / 72 |
+| Raw offset candidates | 4,040 / 86 | 1,661 / 72 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -4586,3 +4586,30 @@ matching views are exceptions, not invented portable interfaces. See
 `INTERFACE_CONTRACTS.md` for the audit scope and before/after counts. New and changed
 headers independently pass the target compiler. ROM and strict object verification
 remain required; shared-layout recovery beyond these interfaces remains separate.
+
+### Scene, maze and drawing layouts
+
+SceneConfigurationPrefix now exposes its event-link list, fog RGBA, projection
+extent, biased AssetDescriptor and vertical backdrop offset. Ghidra and all 23
+configured scene descriptors support the asset metadata interpretation; the
+recorded cartridge ends contain the loader extent plus eight or sixteen bytes.
+SceneEventLink has checked 0x1C stride, source cell, handler and target cell fields;
+installation and dispatch share MazePositionEvent and the MazeNode event slots.
+SceneCellSampler documents the occupancy callback contract. Existing size and
+new field/entrance offset checks preserve the shared ABI.
+
+Maze root geometry and node model configuration now use shared records. Player
+control positioning uses the complete PlayerControlPrefix and named eye-height
+and terrain-clearance fields. Duplicate three-float position/dimension records
+are removed in favor of the established player record and Vec3f. Scalar scene
+sampling and entrance views remain explicitly checked matching representations;
+direct canonical-array access failed the ROM gate and is recorded with next
+evidence in the exception ledger.
+
+TextureRectangle replaces the address-suffixed TextureDrawC354 across the drawing
+interface and all consumers. Presentation templates reuse its checked layout,
+with named private draw and chase-stage records rather than duplicate anonymous
+schemas. Template drawing passes its rectangle array directly. The known scene
+prefix still contains an opaque word at 0x1C; no semantic role or padding status
+is invented. See SHARED_LAYOUT_AUDIT.md for evidence, ownership and remaining
+scope. The broader shared-layout completion audit remains open.

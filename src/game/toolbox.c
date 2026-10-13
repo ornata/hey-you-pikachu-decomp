@@ -159,7 +159,7 @@ s32 gToolboxNextHelpMessage = 0;
 
 /// Terminated sprite list used to draw toolbox navigation feedback.
 /// \note Original identifier: \c D_8009A664 (0x8009A664).
-TextureDrawC354 gToolboxNavigationSprites[2] = {
+TextureRectangle gToolboxNavigationSprites[2] = {
     {0xF8, 0, 0, 32, 32, 0, 0, 1.0f, 1.0f},
     {-1, 0, 0, 0, 0, 0, 0, 0.0f, 0.0f},
 };
@@ -1170,7 +1170,7 @@ void toolboxDrawNavigation(s32 address) {
             yO = 150 - halfO;
             gToolboxNavigationSprites[0].x = xO;
             gToolboxNavigationSprites[0].y = yO;
-            textureDrawRectangles(5, (TextureDrawC354 *)gToolboxNavigationSprites, gdl);
+            textureDrawRectangles(5, (TextureRectangle *)gToolboxNavigationSprites, gdl);
         }
     }
 }

@@ -1,3 +1,4 @@
+#include "scene_types.h"
 #include "runtime_lifecycle.h"
 #include "camera_projection.h"
 #include "render_state.h"
@@ -1150,8 +1151,9 @@ s32 objectApplyTextureMotionForDraw(u8 *obj) {
 /// \note Original decompilation identifier: \c func_80008CE0 (0x80008CE0).
 s32 objectApplySceneEnvironmentColorForDraw(u8 *object) {
     gDPPipeSync(gRenderDisplayListCursor++);
-    gDPSetEnvColor(gRenderDisplayListCursor++, gCurrentAreaConfiguration[0x38], gCurrentAreaConfiguration[0x39],
-                   gCurrentAreaConfiguration[0x3A], 0);
+    gDPSetEnvColor(gRenderDisplayListCursor++, ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->fogColor[0],
+                   ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->fogColor[1],
+                   ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->fogColor[2], 0);
     return *(s32 *)(object + 0x30);
 }
 

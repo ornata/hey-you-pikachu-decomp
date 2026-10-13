@@ -90,26 +90,21 @@ char *gChapterFriendshipMessages[20] = {
 };
 
 
-/* One sprite of a textureDrawRectangles draw list; texture < 0 ends the list and a
- * negative width/height means the texture's own size. */
-typedef struct TextureDraw {
-    s32 texture;
-    s32 x, y;
-    s32 width, height;
-    s32 s, t;
-    f32 scaleX, scaleY;
-} TextureDraw;
 
 #define TEXTURE_DRAW_END {-1, 0, 0, 0, 0, 0, 0, 0.0f, 0.0f}
 
-/* Draw-list template: up to three sprites plus the terminator. */
-typedef struct Tmpl90 {
-    TextureDraw draws[4];
-} Tmpl90;
+/// Private presentation template holding up to three rectangles and a terminator.
+typedef struct PresentationDrawTemplate {
+    TextureRectangle draws[4]; ///< Ordered rectangles, terminated by a negative texture index.
+} PresentationDrawTemplate;
 
+/// Per-stage texture choices for one area chase presentation.
 typedef struct {
-    s32 ids[3];
-} Choice28B84;
+    s32 textures[3]; ///< Texture index for each chase stage; negative entries suppress drawing.
+} ChaseStageTextures;
+
+typedef char PresentationDrawTemplateSizeCheck[(sizeof(PresentationDrawTemplate) == 0x90) ? 1 : -1];
+typedef char ChaseStageTexturesSizeCheck[(sizeof(ChaseStageTextures) == 0xC) ? 1 : -1];
 
 /// Camera-relative position of the item shown in collection results.
 /// \note Original identifier: \c D_80099A40 (0x80099A40).
@@ -135,7 +130,7 @@ Vec3f gPresentationActorFocusTargets[3] = {
 };
 /// Texture rectangles for card presentation decorations.
 /// \note Original identifier: \c D_80099A90 (0x80099A90).
-Tmpl90 gCardPresentationDecorationTemplate = {{
+PresentationDrawTemplate gCardPresentationDecorationTemplate = {{
     {0x23, 0x14, 0xB8, -1, -1, 0, 0, 1.0f, 1.0f},
     {0x24, 0x44, 0xB8, -1, -1, 0, 0, 1.0f, 1.0f},
     {0x25, 0x65, 0xCC, -1, -1, 0, 0, 1.0f, 1.0f},
@@ -143,7 +138,7 @@ Tmpl90 gCardPresentationDecorationTemplate = {{
 }};
 /// Card panel rectangles whose textures come from the selected area card.
 /// \note Original identifier: \c D_80099B20 (0x80099B20).
-Tmpl90 gCardPresentationPanelTemplate = {{
+PresentationDrawTemplate gCardPresentationPanelTemplate = {{
     {0, 0x30, 0x3C, 0x80, 0x20, 0, 0, 1.0f, 1.0f},
     {0, 0xB0, 0x3C, 0x60, 0x20, 0, 0, 1.0f, 1.0f},
     {0, 0xD4, 0x5C, 0x40, 0x20, 0, 0, 1.0f, 1.0f},
@@ -151,16 +146,16 @@ Tmpl90 gCardPresentationPanelTemplate = {{
 }};
 /// Third card panel texture indexed by chase stage for area 11.
 /// \note Original identifier: \c D_80099BB0 (0x80099BB0).
-Choice28B84 gArea11CardChaseStageTextures = {{0xE, 0xF, 0x10}};
+ChaseStageTextures gArea11CardChaseStageTextures = {{0xE, 0xF, 0x10}};
 /// Third card panel texture indexed by chase stage for area 5.
 /// \note Original identifier: \c D_80099BBC (0x80099BBC).
-Choice28B84 gArea5CardChaseStageTextures = {{0xE, -1, 0xF}};
+ChaseStageTextures gArea5CardChaseStageTextures = {{0xE, -1, 0xF}};
 /// Third card panel texture indexed by chase stage for area 13.
 /// \note Original identifier: \c D_80099BC8 (0x80099BC8).
-Choice28B84 gArea13CardChaseStageTextures = {{-1, 0xE, 0xF}};
+ChaseStageTextures gArea13CardChaseStageTextures = {{-1, 0xE, 0xF}};
 /// Texture rectangles for collection result decorations.
 /// \note Original identifier: \c D_80099BD4 (0x80099BD4).
-TextureDraw gCollectionPresentationDecorations[7] = {
+TextureRectangle gCollectionPresentationDecorations[7] = {
     {0x29, 0x1C, 0x10, 0x40, 0x40, 0, 0, 1.0f, 1.0f},
     {0x2A, 0x5C, 0x10, 0x80, 0x40, 0, 0, 1.0f, 1.0f},
     {0x2B, 0xDC, 0x10, 0x40, 0x40, 0, 0, 1.0f, 1.0f},
@@ -491,12 +486,12 @@ void presentationDrawAreaLabel(Gfx **gdl) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80028918 (0x80028918).
 void presentationDrawCardDecorations(Gfx **gdl) {
-    Tmpl90 t = gCardPresentationDecorationTemplate;
+    PresentationDrawTemplate t = gCardPresentationDecorationTemplate;
 
     gDPPipeSync((*gdl)++);
     gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
     gDPSetCombineMode((*gdl)++, G_CC_DECALRGBA, G_CC_DECALRGBA);
-    textureDrawRectangles(6, (TextureDrawC354 *)(u8 *)&t, gdl);
+    textureDrawRectangles(6, t.draws, gdl);
 }
 
 /// Current area scenario index shared by actor scripts, scene population, cards and collection titles.
@@ -510,7 +505,7 @@ extern s32 gAreaScenarioIndex;
 void presentationDrawCurrentCardPanels(Gfx **gdl) {
     s32 *ids;
     s32 i;
-    Tmpl90 t;
+    PresentationDrawTemplate t;
 
     t = gCardPresentationPanelTemplate;
     ids = (*(s32 ***)(gCurrentAreaConfiguration + 0x74))[gAreaScenarioIndex];
@@ -521,7 +516,7 @@ void presentationDrawCurrentCardPanels(Gfx **gdl) {
         for (i = 0; i < 3; i++) {
             t.draws[i].texture = ids[i];
         }
-        textureDrawRectangles(6, (TextureDrawC354 *)(u8 *)&t, gdl);
+        textureDrawRectangles(6, t.draws, gdl);
     }
 }
 
@@ -572,9 +567,9 @@ extern u32 gCardPresentationDismissalDeadline;
 void presentationUpdateCardMode(void) {
     s32 **cards;
     u32 now;
-    Choice28B84 scene11Images;
-    Choice28B84 scene5Images;
-    Choice28B84 scene13Images;
+    ChaseStageTextures scene11Images;
+    ChaseStageTextures scene5Images;
+    ChaseStageTextures scene13Images;
     s32 selectedImage;
     s32 *selectedImages;
 
@@ -598,13 +593,13 @@ void presentationUpdateCardMode(void) {
                 scene13Images = gArea13CardChaseStageTextures;
                 switch (gRuntimeCurrentArea) {
                 case 11:
-                    selectedImages = scene11Images.ids;
+                    selectedImages = scene11Images.textures;
                     break;
                 case 5:
-                    selectedImages = scene5Images.ids;
+                    selectedImages = scene5Images.textures;
                     break;
                 case 13:
-                    selectedImages = scene13Images.ids;
+                    selectedImages = scene13Images.textures;
                     break;
                 default:
                     TRACE("Strange area. curAreaNum = %d\n", gRuntimeCurrentArea);
@@ -804,7 +799,7 @@ void presentationDrawCollectionDecorations(Gfx **gdl) {
     gDPPipeSync((*gdl)++);
     gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
     gDPSetCombineMode((*gdl)++, G_CC_DECALRGBA, G_CC_DECALRGBA);
-    textureDrawRectangles(6, (TextureDrawC354 *)(u8 *)gCollectionPresentationDecorations, gdl);
+    textureDrawRectangles(6, (TextureRectangle *)(u8 *)gCollectionPresentationDecorations, gdl);
 }
 
 /// Live item displayed during collection results, or zero when none is shown.

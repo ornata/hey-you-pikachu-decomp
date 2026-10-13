@@ -219,7 +219,7 @@ void titleScreenDrawStartPrompt(Gfx **gdl) {
         gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
         gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 255, a);
         gDPSetCombineLERP((*gdl)++, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0);
-        textureDrawRectangles(10, (TextureDrawC354 *)(u8 *)&t, gdl);
+        textureDrawRectangles(10, (TextureRectangle *)(u8 *)&t, gdl);
     }
 }
 
