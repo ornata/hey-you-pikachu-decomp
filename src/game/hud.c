@@ -170,12 +170,14 @@ void hudDrawDirectionIndicators(Gfx **gdl) {
     }
 }
 
-typedef struct Tmpl6C {
-    s32 w[27];
-} Tmpl6C;
+/// Two guide sprites followed by the negative-index list terminator.
+typedef struct HudGuideSpriteList {
+    TextureDrawC354 rectangles[3]; ///< Borrowed texture rectangles, including the terminator.
+} HudGuideSpriteList;
+typedef char HudGuideSpriteListSizeCheck[(sizeof(HudGuideSpriteList) == 0x6C) ? 1 : -1];
 /// Sprite descriptors drawn for HUD guide style one.
 /// \note Original identifier: \c D_80088F40 (0x80088F40).
-extern Tmpl6C gHudGuideStyleOneSprites;
+extern HudGuideSpriteList gHudGuideStyleOneSprites;
 void hudDrawDirectionIndicators(Gfx **);
 
 /// Draw HUD guide style 1 and directional guidance toward Pikachu.
@@ -183,13 +185,13 @@ void hudDrawDirectionIndicators(Gfx **);
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800219DC (0x800219DC).
 void hudDrawGuideStyle1(Gfx **gdl) {
-    Tmpl6C t = gHudGuideStyleOneSprites;
+    HudGuideSpriteList t = gHudGuideStyleOneSprites;
 
     gDPPipeSync((*gdl)++);
     gDPSetRenderMode((*gdl)++, 0x504240, 0);
     gDPSetCombine((*gdl)++, 0x119623, 0xFF2FFFFF);
     gDPSetPrimColor((*gdl)++, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF);
-    textureDrawRectangles(5, (TextureDrawC354 *)(TextureDrawC354 *)&t, gdl);
+    textureDrawRectangles(5, t.rectangles, gdl);
     hudDrawDirectionIndicators(gdl);
 }
 

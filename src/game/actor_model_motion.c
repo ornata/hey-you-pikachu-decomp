@@ -1,3 +1,4 @@
+#include "vector3_types.h"
 #include "heap_free.h"
 #include "word_map_lookup.h"
 #include "matrix_basic.h"
@@ -370,9 +371,6 @@ void actorUpdateGroundSlopePitch(u8 *object) {
         0);
 }
 
-typedef struct Vec3f {
-    f32 x, y, z;
-} Vec3f;
 
 /// Add downhill drift to actor movement according to the nearby terrain slope.
 /// \param actor Actor whose position determines the terrain slope.

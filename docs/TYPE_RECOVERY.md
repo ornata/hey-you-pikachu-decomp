@@ -4132,3 +4132,14 @@ all strict objects preserved. The remaining compatibility requirement is the
 trailing arguments retained, and narrowing the wrapper also changes its upload
 caller. The ledger now records this evidence and the count-conversion scheduling
 question instead of retaining unnecessary arguments.
+
+### Toolbox templates and guide sprite records
+
+Toolbox model and empty-slot definitions reuse `ObjectTemplate`, including
+separate halfword kind and flag fields and typed segmented display-list
+references. Explicit zero flag initializers preserve IDO's defined-symbol sizes
+as well as ROM bytes. Toolbox parking and actor slope/motion calculations reuse
+the shared `Vec3f` rather than duplicate vector definitions. HUD guide style one
+uses three checked texture rectangles instead of a 27-word placeholder: linked
+data confirms texture indices 96 and 97 followed by a minus-one terminator.
+All three source units independently pass strict object comparison.

@@ -1,3 +1,4 @@
+#include "object_template.h"
 #include "texture_descriptor.h"
 #include "texture_rectangles.h"
 #include "object_groups.h"
@@ -50,20 +51,6 @@ ToolboxState gToolboxState;
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-/* Model part template instantiated by objectCreateHierarchyFromTemplate: scale, rotation and
- * position, a float at 0x24, two linked parts and the display list. */
-typedef struct PartNode {
-    f32 scale[3];
-    f32 rotation[3];
-    f32 position[3];
-    f32 unk24;
-    struct PartNode *link28;
-    struct PartNode *link2C;
-    u32 displayList;
-    u32 unk34;
-} PartNode;
-
-
 /* Item seeded into the Item Storage row unless its story flag is clear
  * (-1: always). */
 typedef struct {
@@ -71,57 +58,54 @@ typedef struct {
     s32 kind;
 } DefaultObject;
 
-typedef struct {
-    f32 x, y, z;
-} HomePosEDBC;
 
 
 /* This object's .data, 0x8009A3F0..0x8009A6B0, in address order. */
 
 /// Linked model template cloned to create the toolbox display.
 /// \note Original identifier: \c D_8009A3F0 (0x8009A3F0).
-PartNode gToolboxModelTemplate[6] = {
+ObjectTemplate gToolboxModelTemplate[6] = {
     {{1.0f, 1.0f, 1.0f},
      {0.0f, 0.0f, 0.0f},
      {0.0f, 0.0f, 0.0f},
      606.1f,
      NULL,
      &gToolboxModelTemplate[1],
-     0x0104F2F0,
-     0},
+     (Gfx *)0x0104F2F0,
+     0, 0},
     {{1.0f, 1.0f, 1.0f},
      {0.0f, 0.0f, 0.0f},
      {0.0f, 0.0f, 0.0f},
      142.5f,
      &gToolboxModelTemplate[2],
      NULL,
-     0x0104F508,
-     0},
+     (Gfx *)0x0104F508,
+     0, 0},
     {{1.0f, 1.0f, 1.0f},
      {0.0f, 0.0f, 0.0f},
      {0.0f, 312.1642f, 0.0f},
      612.1f,
      &gToolboxModelTemplate[4],
      &gToolboxModelTemplate[3],
-     0x0104FA00,
-     0},
-    {{1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {5.9223f, 0.0f, 0.0f}, 196.7f, NULL, NULL, 0x0104FD90, 0},
+     (Gfx *)0x0104FA00,
+     0, 0},
+    {{1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {5.9223f, 0.0f, 0.0f}, 196.7f, NULL, NULL, (Gfx *)0x0104FD90, 0, 0},
     {{1.0f, 1.0f, 1.0f},
      {0.0f, 0.0f, 0.0f},
      {0.0f, 0.0f, 0.0f},
      606.1f,
      NULL,
      &gToolboxModelTemplate[5],
-     0x010501F0,
-     0},
-    {{1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, 582.1f, NULL, NULL, 0x01050648, 0},
+     (Gfx *)0x010501F0,
+     0, 0},
+    {{1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, 582.1f, NULL, NULL, (Gfx *)0x01050648, 0, 0},
 };
 
 /// Model template cloned for unoccupied toolbox slot displays.
 /// \note Original identifier: \c D_8009A540 (0x8009A540).
-PartNode gToolboxPlaceholderTemplate[2] = {
-    {{1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, 0.0f, NULL, &gToolboxPlaceholderTemplate[1], 0, 0},
-    {{1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, 257.0f, NULL, NULL, 0x01008860, 0x00980000},
+ObjectTemplate gToolboxPlaceholderTemplate[2] = {
+    {{1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, 0.0f, NULL, &gToolboxPlaceholderTemplate[1], 0, 0, 0},
+    {{1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, 257.0f, NULL, NULL, (Gfx *)0x01008860, 0x98, 0},
 };
 
 /// Base-object anchor positions indexed by Collection or Item Storage row.
@@ -164,7 +148,7 @@ char *gToolboxRowTitles[2] = {"Collection", "Item Storage"};
 
 /// Off-screen world position used to park toolbox objects.
 /// \note Original identifier: \c D_8009A654 (0x8009A654).
-HomePosEDBC gToolboxParkingPosition = {1000.0f, 1000.0f, 1000.0f};
+Vec3f gToolboxParkingPosition = {1000.0f, 1000.0f, 1000.0f};
 
 /// Index of the next toolbox help message to display.
 /// \note Original identifier: \c D_8009A660 (0x8009A660).
@@ -314,7 +298,7 @@ void toolboxHideObjects(void) {
     s32 row;
     s32 i;
     u8 *object;
-    HomePosEDBC home;
+    Vec3f home;
 
     home = gToolboxParkingPosition;
     objects = gToolboxState.objects;
@@ -789,7 +773,7 @@ void toolboxCreateDisplayObjects(void) {
     s32 i;
     u8 **objects = &gToolboxState.objects[1];
 
-    object = objectCreateHierarchyFromTemplate((ObjectTemplate *)gToolboxModelTemplate);
+    object = objectCreateHierarchyFromTemplate(gToolboxModelTemplate);
     objectSetHierarchyFlags(object, 0x2000);
     objectRegisterActiveHierarchy(object);
     *(f32 *)(object + 0) = *(f32 *)(gCurrentAreaConfiguration + 0xC);
@@ -807,7 +791,7 @@ void toolboxCreateDisplayObjects(void) {
     gToolboxBonusHandle = 0;
     gToolboxPurchaseHandle = 0;
     for (i = 0; i < 10; i++) {
-        object = objectCreateHierarchyFromTemplate((ObjectTemplate *)gToolboxPlaceholderTemplate);
+        object = objectCreateHierarchyFromTemplate(gToolboxPlaceholderTemplate);
         objectSetHierarchyFlags(object, 0x2000);
         objectRegisterActiveHierarchy(object);
         *(f32 *)(object + 0xC) = 0.0f;
