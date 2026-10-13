@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,277 / 76 |
+| Raw offset candidates | 4,040 / 86 | 2,275 / 76 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3607,5 +3607,8 @@ uses the shared root flags and matrix buffers. The original extra deallocator
 argument remains documented for target ABI compatibility.
 
 Particle-cluster creation uses shared object transforms, source handles, hierarchy
-links and display-list fields. The root lifetime/target bytes remain an explicit
-private view until its lifecycle callbacks establish the complete allocation.
+links and display-list fields. The root reuses `EffectEmitterState`: template 0x80078030 selects kind 169,
+whose callbacks are `effectEmitterInitialize` (0x8001968C),
+`objectReleaseStateAllocation` (0x800086E0), and `effectEmitterUpdate`
+(0x800196D8). The initializer allocates and zeroes 24 bytes. Creation sets the
+remaining lifetime and target handle; the zero callback disables emission.

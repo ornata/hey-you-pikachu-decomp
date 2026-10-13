@@ -1216,13 +1216,13 @@ s32 particleClusterCreateDisplayList(s32);
 /// \note Original decompilation identifier: \c func_80019B08 (0x80019B08).
 u8 *particleClusterCreate(s32 count, f32 lifetime, f32 radialScale, f32 particleScale, u8 *source) {
     u8 *obj;
-    u8 *v;
+    EffectEmitterState *state;
     u8 *prev;
     u8 *e;
     s32 i;
 
     obj = objectCreateFromTemplate((ObjectTemplate *)gParticleClusterObjectTemplate);
-    v = ((RuntimeObjectPrefix *)obj)->state.bytes;
+    state = ((RuntimeObjectPrefix *)obj)->state.pointer;
     prev = NULL;
     ((RuntimeObjectPrefix *)obj)->position[0] = ((RuntimeObjectPrefix *)source)->worldPosition[0];
     ((RuntimeObjectPrefix *)obj)->position[1] = ((RuntimeObjectPrefix *)source)->worldPosition[1];
@@ -1230,8 +1230,8 @@ u8 *particleClusterCreate(s32 count, f32 lifetime, f32 radialScale, f32 particle
     ((RuntimeObjectPrefix *)obj)->worldPosition[0] = ((RuntimeObjectPrefix *)source)->worldPosition[0];
     ((RuntimeObjectPrefix *)obj)->worldPosition[1] = ((RuntimeObjectPrefix *)source)->worldPosition[1];
     ((RuntimeObjectPrefix *)obj)->worldPosition[2] = ((RuntimeObjectPrefix *)source)->worldPosition[2];
-    *(s32 *)(v + 4) = ((RuntimeObjectPrefix *)source)->handle;
-    *(f32 *)(v + 0) = lifetime;
+    state->targetHandle = ((RuntimeObjectPrefix *)source)->handle;
+    state->remaining = lifetime;
     for (i = 0; i < count; i++) {
         e = objectCreateFromTemplate((ObjectTemplate *)gParticleClusterElementTemplate);
         ((RuntimeObjectPrefix *)e)->rotation[0] = (s32)randomBelow(360);
