@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,039 / 76 |
+| Raw offset candidates | 4,040 / 86 | 2,031 / 76 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3709,3 +3709,10 @@ layout; controller destruction uses the established state and display-list field
 Cluster-element orientation uses the shared rotation array for its two animated
 axes. The indexed array representation preserves the original update and angle
 normalization code, confirmed by strict object comparison.
+
+### Action-sequencer state links
+
+The action sequencer uses shared object-private-state links throughout its
+start, update, stop and query paths. Its retained playback subview begins at the
+checked actor `actionScriptId` member instead of a literal byte offset. The
+subview retains its target-specific representation and original stack contract.

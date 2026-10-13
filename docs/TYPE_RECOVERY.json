@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 2039,
-      "unique_spellings": 851,
+      "occurrences": 2031,
+      "unique_spellings": 850,
       "files": 76
     }
   },
@@ -87,23 +87,12 @@
         "action_script_stop.h",
         "action_script_types.h",
         "actor_script.h",
-        "actor_sound.h"
+        "actor_sound.h",
+        "object_types.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
-          "object + 0x54": [
-            "130:22",
-            "177:27",
-            "197:18",
-            "208:31",
-            "217:26",
-            "238:31",
-            "253:27"
-          ],
-          "state + 0x158": [
-            "131:36"
-          ],
           "return -1": [
             "140:9",
             "144:9",

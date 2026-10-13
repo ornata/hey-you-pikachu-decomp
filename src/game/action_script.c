@@ -1,3 +1,4 @@
+#include "object_types.h"
 #include "action_request.h"
 #include "action_script_stop.h"
 #include "action_script_playback.h"
@@ -9,7 +10,6 @@
 ///
 /// See docs/VOICE_AND_SCRIPT_VM.md for the subsystem walkthrough.
 
-/* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "action_script_types.h"
 #include "actor_script.h"
@@ -127,8 +127,8 @@ s32 actionScriptUpdate(u8 *object) {
     s32 opcode;
     ActionScriptState *script;
 
-    state = *(u8 **)(object + 0x54);
-    script = (ActionScriptState *)(state + 0x158);
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
+    script = (ActionScriptState *)&((ActorScriptState *)state)->actionScriptId;
     step = gRuntimeFrameSeconds;
     if (actionScriptIsStoppedAndLastActionEnded(object) == 0) {
         script->elapsed += step;
@@ -174,7 +174,7 @@ s32 actionScriptUpdate(u8 *object) {
 void actionScriptStart(u8 *object, s32 scriptId) {
     u8 *actorState;
 
-    actorState = *(u8 **)(object + 0x54);
+    actorState = ((RuntimeObjectPrefix *)object)->state.bytes;
     ((ActorScriptState *)actorState)->actionScriptCommand = gActionScriptPrograms[scriptId];
     ((ActorScriptState *)actorState)->actionScriptLastRequestId = 0;
     ((ActorScriptState *)actorState)->actionScriptPendingRequestId = 0;
@@ -194,7 +194,7 @@ void actionScriptStart(u8 *object, s32 scriptId) {
 void actionScriptStartWithMode(u8 *object, s32 scriptId, s32 mode) {
     u8 *v;
 
-    v = *(u8 **)(object + 0x54);
+    v = ((RuntimeObjectPrefix *)object)->state.bytes;
     ((ActorScriptState *)v)->defaultActionMode = mode;
     actionScriptStart(object, scriptId);
 }
@@ -205,7 +205,7 @@ void actionScriptStartWithMode(u8 *object, s32 scriptId, s32 mode) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001209C (0x8001209C).
 void actionScriptSetDuration(u8 *object, f32 duration) {
-    u8 *actorState = *(u8 **)(object + 0x54);
+    u8 *actorState = ((RuntimeObjectPrefix *)object)->state.bytes;
     ((ActorScriptState *)actorState)->actionScriptDuration = duration;
 }
 
@@ -214,7 +214,7 @@ void actionScriptSetDuration(u8 *object, f32 duration) {
 /// \returns A borrowed pointer to the actor's script identifier, now set to -1; valid while its state lives.
 /// \note Original decompilation identifier: \c func_800120AC (0x800120AC).
 s32 *actionScriptStop(u8 *object) {
-    u8 *state = *(u8 **)(object + 0x54);
+    u8 *state = ((RuntimeObjectPrefix *)object)->state.bytes;
     u8 *script;
 
     actionRequestLoopExit(object);
@@ -235,7 +235,7 @@ s32 *actionScriptStop(u8 *object) {
 /// \returns 1 when no command remains active, or 0 otherwise.
 /// \note Original decompilation identifier: \c func_800120F0 (0x800120F0).
 s32 actionScriptIsStopped(u8 *object) {
-    u8 *actorState = *(u8 **)(object + 0x54);
+    u8 *actorState = ((RuntimeObjectPrefix *)object)->state.bytes;
     if (((ActorScriptState *)actorState)->actionScriptCommand == NULL) {
         return 1;
     }
@@ -250,7 +250,7 @@ s32 actionScriptHasLastActionEnded(u8 *object) {
     u8 *actorState;
     u32 currentRequestId;
 
-    actorState = *(u8 **)(object + 0x54);
+    actorState = ((RuntimeObjectPrefix *)object)->state.bytes;
     if (((ActorScriptState *)actorState)->actionScriptLastRequestId == 0) {
         return 0;
     }
