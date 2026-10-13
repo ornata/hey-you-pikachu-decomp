@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,251 / 76 |
+| Raw offset candidates | 4,040 / 86 | 2,241 / 76 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3627,3 +3627,10 @@ The falling-particle creation contract and motion-style enumeration are shared
 through `falling_particle.h` by the implementation, action-script commands and
 maze scatter effects. Position and velocity inputs are copied; the object manager
 owns the registered result. All callers retain the established signed scalar ABI.
+
+### Converging-particle state
+
+A checked 44-byte private state now connects allocation, creation, destruction
+and lifetime/animation updates. It owns drawing commands and borrows texture and
+opacity animation keys through two `ValueTrack` records. The update loop retains
+its explicit byte alias when it switches from private state to scene objects.

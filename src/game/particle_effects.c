@@ -1419,6 +1419,22 @@ void fallingParticleUpdate(u8 *particle) {
     ((RuntimeObjectPrefix *)particle)->position[2] += (state->velocity[2] * gRuntimeFrameSeconds);
 }
 
+/// Owned drawing resources and borrowed animation programs for converging particles.
+typedef struct ConvergingParticleState {
+    Gfx *displayList;            ///< Owned drawing commands shared by the visual elements.
+    ValueTrack textureAnimation; ///< Texture-frame playback with borrowed keys.
+    ValueTrack alphaAnimation;   ///< Opacity playback with borrowed keys.
+    s32 target;                  ///< Object-manager handle of the live target.
+    f32 remaining;               ///< Remaining lifetime in seconds.
+    f32 lifetime;                ///< Initial lifetime used to normalize age.
+    s32 count;                   ///< Number of visual elements.
+} ConvergingParticleState;
+
+typedef char ConvergingParticleStateSizeCheck[(sizeof(ConvergingParticleState) == 0x2C) ? 1 : -1];
+typedef char ConvergingTextureOffsetCheck[(((u32) & ((ConvergingParticleState *)0)->textureAnimation) == 4) ? 1 : -1];
+typedef char ConvergingAlphaOffsetCheck[(((u32) & ((ConvergingParticleState *)0)->alphaAnimation) == 0x10) ? 1 : -1];
+typedef char ConvergingTargetOffsetCheck[(((u32) & ((ConvergingParticleState *)0)->target) == 0x1C) ? 1 : -1];
+
 /// Initialize the state of a converging particle effect.
 /// \param effect Effect object to initialize; must not already own state.
 /// \returns Nothing.
@@ -1427,9 +1443,9 @@ void convergingParticleEffectInitialize(void *effect) {
     u8 *sp1C;
     u8 *allocation;
 
-    allocation = heapAllocLocal(&gGameHeap, 0x2C, 0x6BB);
+    allocation = heapAllocLocal(&gGameHeap, sizeof(ConvergingParticleState), 0x6BB);
     sp1C = allocation;
-    _bzero((void *)allocation, 0x2C);
+    _bzero((void *)allocation, sizeof(ConvergingParticleState));
     ((RuntimeObjectPrefix *)effect)->state.bytes = sp1C;
 }
 
@@ -1441,11 +1457,11 @@ void convergingParticleEffectInitialize(void *effect) {
 /// ABI.
 /// \note Original decompilation identifier: \c func_8001A274 (0x8001A274).
 void convergingParticleEffectDestroy(u8 *effect) {
-    u8 *obj;
+    ConvergingParticleState *state;
 
-    obj = *(u8 **)(effect + 0x54);
-    heapFreeLocal(&gGameHeap, *(u8 **)obj, obj);
-    heapFreeLocal(&gGameHeap, obj);
+    state = ((RuntimeObjectPrefix *)effect)->state.pointer;
+    heapFreeLocal(&gGameHeap, state->displayList, state);
+    heapFreeLocal(&gGameHeap, state);
 }
 
 f32 vector3Normalize(u8 *);
@@ -1469,18 +1485,18 @@ void convergingParticleEffectUpdate(u8 *effect) {
     f32 age;
     f32 scale;
 
-    state = *(u8 **)(effect + 0x54);
-    *(f32 *)(state + 0x20) -= gRuntimeFrameSeconds;
-    target = objectResolveAvailableHandle(*(s32 *)(state + 0x1C));
-    if (*(f32 *)(state + 0x20) < 0.0f || target == NULL) {
+    state = ((RuntimeObjectPrefix *)effect)->state.bytes;
+    ((ConvergingParticleState *)state)->remaining -= gRuntimeFrameSeconds;
+    target = objectResolveAvailableHandle(((ConvergingParticleState *)state)->target);
+    if (((ConvergingParticleState *)state)->remaining < 0.0f || target == NULL) {
         objectRequestHierarchyDestruction(effect);
         return;
     }
-    animationIntegerTrackEvaluate((ValueTrack *)(state + 0x10), &tmp, gRuntimeFrameSeconds);
-    animationIntegerTrackEvaluate((ValueTrack *)(state + 4), &tmp, gRuntimeFrameSeconds);
-    fraction = *(f32 *)(state + 0x20) / *(f32 *)(state + 0x24);
+    animationIntegerTrackEvaluate(&((ConvergingParticleState *)state)->alphaAnimation, &tmp, gRuntimeFrameSeconds);
+    animationIntegerTrackEvaluate(&((ConvergingParticleState *)state)->textureAnimation, &tmp, gRuntimeFrameSeconds);
+    fraction = ((ConvergingParticleState *)state)->remaining / ((ConvergingParticleState *)state)->lifetime;
     step = (1.0f / (f32) * (s32 *)(state + 0x28)) * 0.5f;
-    vector3FromPitchYawDegrees((s32)randomBelow(10), *(f32 *)(state + 0x20) * 200.0f, center);
+    vector3FromPitchYawDegrees((s32)randomBelow(10), ((ConvergingParticleState *)state)->remaining * 200.0f, center);
     center[0] = center[0] * 0.1f + *(f32 *)(target + 0x44);
     center[1] = center[1] * 0.1f + *(f32 *)(target + 0x48);
     center[2] = center[2] * 0.1f + *(f32 *)(target + 0x4C);
@@ -1545,14 +1561,7 @@ typedef struct {
 /// Texture-animation selections and display lists indexed by converging-particle style.
 /// \note Original identifier: \c D_800780F4 (0x800780F4).
 extern LinkedEffectStyle gConvergingParticleStyles[];
-typedef struct {
-    Gfx *displayList;
-    u8 textureAnimation[12];
-    u8 alphaAnimation[12];
-    s32 target;
-    f32 remaining, lifetime;
-    s32 count;
-} LinkedEffectState;
+
 /// Create styled particles that converge around a live target.
 /// \param targetId Handle of the target the effect surrounds.
 /// \param lifetime Positive effect lifetime in seconds.
@@ -1565,7 +1574,7 @@ typedef struct {
 u8 *convergingParticleEffectCreate(s32 targetId, f32 lifetime, s32 count, s32 styleId) {
     u8 *target;
     u8 *first;
-    LinkedEffectState *state;
+    ConvergingParticleState *state;
     u8 *tail;
     s32 randomA;
     s32 randomB;
@@ -1577,14 +1586,14 @@ u8 *convergingParticleEffectCreate(s32 targetId, f32 lifetime, s32 count, s32 st
     if (target == NULL)
         return NULL;
     first = objectCreateFromTemplate((ObjectTemplate *)gConvergingParticleObjectTemplate);
-    state = *(LinkedEffectState **)(first + 0x54);
+    state = *(ConvergingParticleState **)(first + 0x54);
     state->displayList = (Gfx *)heapAllocLocal(&gGameHeap, count * 4 * sizeof(Gfx) + 0x80, 0x74E);
     state->target = targetId;
     state->remaining = lifetime;
     state->lifetime = lifetime;
     state->count = count;
-    animationIntegerTrackInitialize((ValueTrack *)(state->textureAnimation), (gTextureFrameAnimationPrograms[gConvergingParticleStyles[styleId].animation]));
-    animationIntegerTrackInitialize((ValueTrack *)(state->alphaAnimation), (ValueKey *)(gMessengerFlightAnimation));
+    animationIntegerTrackInitialize(&state->textureAnimation, (gTextureFrameAnimationPrograms[gConvergingParticleStyles[styleId].animation]));
+    animationIntegerTrackInitialize(&state->alphaAnimation, (ValueKey *)(gMessengerFlightAnimation));
     randomA = randomBelow(60);
     randomB = randomBelow(60);
     vector3FromPitchYawDegrees((f32)(randomB + randomA) - 80.0f, (s32)randomBelow(360), direction);
