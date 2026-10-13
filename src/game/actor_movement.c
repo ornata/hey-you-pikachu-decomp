@@ -1,3 +1,4 @@
+#include "player_state.h"
 #include "matrix_basic.h"
 #include "math_scalar.h"
 #include "pikachu_actor.h"
@@ -402,9 +403,6 @@ s32 actorUpdateAdaptiveTargetPivot(u8 *actor) {
 
 extern double fabs(double);
 #pragma intrinsic(fabs)
-/// Primary player control record and base of the player records with a 256-byte stride.
-/// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
-extern f32 gPlayerState[];
 
 /// Turn an actor away from the player position.
 /// \param actor Actor whose horizontal facing is updated.
@@ -418,9 +416,9 @@ s32 actorTurnAwayFromPlayer(s32 actor, f32 turnSpeed) {
     s32 pad[2]; /* unused, sizes the frame */
 
     obj = *(u8 **)(actor + 0x54);
-    v[0] = *(f32 *)(actor + 0x44) - gPlayerState[0];
+    v[0] = *(f32 *)(actor + 0x44) - gPlayerState.position[0];
     v[1] = 0.0f;
-    v[2] = *(f32 *)(actor + 0x4C) - gPlayerState[2];
+    v[2] = *(f32 *)(actor + 0x4C) - gPlayerState.position[2];
     a = vector3GetYawDegrees(v);
     if (fabs((f64)(a - *(f32 *)(obj + 0x10))) < 1.0) {
         return 1;

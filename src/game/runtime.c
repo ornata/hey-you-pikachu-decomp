@@ -1,3 +1,4 @@
+#include "player_state.h"
 #include "audio_control.h"
 #include "audio_initialize.h"
 #include "render_state.h"
@@ -639,9 +640,6 @@ extern f32 gPrimarySecondaryOverlayRemainingSeconds;
 /// Second controller processed sample; also the start of the secondary-player input traversal.
 /// \note Original identifier: \c D_800AD558 (0x800AD558).
 extern ControllerState gControllerSecondPortInputState;
-/// Primary player control record and base of the player records with a 256-byte stride.
-/// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
-extern PlayerControlPrefix gPlayerState;
 /// Pending completed-visit card and progress update, consumed by area-zero card selection.
 /// \note Original identifier: \c D_800F0B74 (0x800F0B74).
 extern s32 gCompletedVisitCardPending;

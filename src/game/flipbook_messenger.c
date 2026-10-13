@@ -1,3 +1,4 @@
+#include "player_state.h"
 #include "render_state.h"
 #include "game_heap.h"
 #include "actor_parts.h"
@@ -778,9 +779,6 @@ void messengerUpdateLaunch(u8 *object, s32 unused) {
 }
 
 void messengerBeginRebound(u8 *);
-/// Primary player control record and base of the player records with a 256-byte stride.
-/// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
-extern u8 gPlayerState[];
 /// Deliver a messenger script message and trigger the recipient and projectile responses.
 /// \param object Messenger projectile with initialized state.
 /// \param source Contacted object part used to select recipient feedback.
@@ -809,7 +807,7 @@ void messengerDeliver(u8 *object, u8 *source, u8 *target, s32 mode) {
     force = target == (u8 *)((s32)gPikachuActor) ? 1 : 0;
     actorPostScriptMessage((s32)target, ((MessengerFlightState *)state)->message, force);
     if (target == (u8 *)((s32)gPikachuActor)) {
-        *(s32 *)(gPlayerState + 0xFC) += 1;
+        gPlayerState.unknown0FC += 1;
         actorAdjustSecondaryMeter((u8 *)((s32)gPikachuActor), 1.0f);
         sourceKind = ((RuntimeObjectPrefix *)source)->kind;
         if (sourceKind == 0x2C || sourceKind == 0x2E)

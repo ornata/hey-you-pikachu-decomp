@@ -1,3 +1,4 @@
+#include "player_state.h"
 #include "render_state.h"
 #include "pikachu_actor.h"
 #include "scene_region.h"
@@ -52,9 +53,6 @@ void sceneRegionCreate(f32 *position, f32 width, f32 depth, s32 sceneData) {
     objectRegisterActiveHierarchy(obj);
 }
 
-/// Primary player control record and base of the player records with a 256-byte stride.
-/// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
-extern f32 gPlayerState[];
 /// Update the region highlight according to player and companion occupancy.
 /// \param obj Scene-region object to update.
 /// \returns Nothing.
@@ -64,7 +62,7 @@ void sceneRegionUpdateHighlight(u8 *obj) {
     f32 x = ((RuntimeObjectPrefix *)obj)->worldPosition[0];
     f32 y = ((RuntimeObjectPrefix *)obj)->worldPosition[1];
     f32 z = ((RuntimeObjectPrefix *)obj)->worldPosition[2];
-    f32 *other = gPlayerState;
+    f32 *other = gPlayerState.position;
     f32 cx = other[0];
     f32 cy = other[1];
     f32 cz = other[2];

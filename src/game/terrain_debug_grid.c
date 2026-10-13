@@ -1,3 +1,4 @@
+#include "player_state.h"
 #include "render_state.h"
 #include "pikachu_actor.h"
 #include "object_groups.h"
@@ -95,20 +96,21 @@ void terrainDebugGridInitializeRoot(u8 *object) {
     ((RuntimeObjectPrefix *)object)->state.pointer = heapAllocLocal(&gGameHeap, 4, 0x38);
 }
 
-typedef struct {
-    f32 x;
-    f32 pad4[2];
-    f32 unkC;
-    f32 unk10;
-    f32 unk14;
-    f32 unk18;
-} Cam6A0;
-/// Primary player control record and base of the player records with a 256-byte stride.
-/// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
-extern Cam6A0 gPlayerState;
-/* y and z are referenced as their own symbols: the ROM gives each its own
- * lui, which a struct member access of D_800EF6A0 would CSE away. */
+/// Small player view preserving the diagnostic grid's matching load scheduling.
+/// \note The full player prefix changes generated code in terrainDebugGridUpdatePosition.
+typedef struct PlayerGridView {
+    f32 x; ///< Primary player world X position.
+    f32 pad4[2]; ///< Y and Z position storage accessed through separate symbols.
+    f32 yaw; ///< View yaw in degrees.
+    f32 pitchOffset; ///< Walking pitch offset in degrees.
+    f32 pitch; ///< View pitch in degrees.
+    f32 viewShake; ///< Horizontal shake added to yaw in degrees.
+} PlayerGridView;
+typedef char PlayerGridViewSizeCheck[(sizeof(PlayerGridView) == 0x1C) ? 1 : -1];
+typedef char PlayerGridYawOffsetCheck[(((u32)&((PlayerGridView *)0)->yaw) == 0xC) ? 1 : -1];
+typedef char PlayerGridShakeOffsetCheck[(((u32)&((PlayerGridView *)0)->viewShake) == 0x18) ? 1 : -1];
 /// Separate symbol view of the primary player record's position Y.
+/// \note Separate position symbols preserve the original independent address loads.
 /// \note Original identifier: \c D_800EF6A4 (0x800EF6A4).
 extern f32 gPlayerPositionY;
 /// Separate symbol view of the primary player record's position Z.
@@ -121,9 +123,9 @@ extern f32 gPlayerPositionZ;
 /// \note Original decompilation identifier: \c func_8002AF88 (0x8002AF88).
 void terrainDebugGridUpdatePosition(f32 *object) {
     f32 pad; /* unused, but sizes the frame (angle lands at 0x18) */
-    f32 angle = gPlayerState.unkC + gPlayerState.unk18;
+    f32 angle = ((PlayerGridView *)&gPlayerState)->yaw + ((PlayerGridView *)&gPlayerState)->viewShake;
 
-    object[6] = mathSinDegrees(angle) * 15.0f + gPlayerState.x;
+    object[6] = mathSinDegrees(angle) * 15.0f + ((PlayerGridView *)&gPlayerState)->x;
     object[7] = gPlayerPositionY + 0.1f;
     object[8] = mathCosDegrees(angle) * 15.0f + gPlayerPositionZ;
 }

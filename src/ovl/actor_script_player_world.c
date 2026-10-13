@@ -1,3 +1,4 @@
+#include "player_state.h"
 #include "controller_state.h"
 #include "pikachu_actor.h"
 #include "area_transition.h"
@@ -144,9 +145,6 @@ s32 actorScriptQueryPlayerInteractionMode(u8 *actor) {
     return 0;
 }
 
-/// Primary player control record and base of the player records with a 256-byte stride.
-/// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
-extern PlayerControlPrefix gPlayerState;
 
 /// Read whether the player permits pitch control.
 /// \param actor Actor whose script VM receives one when player pitch control is enabled, or zero otherwise.

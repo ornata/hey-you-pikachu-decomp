@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 1,744 / 72 |
+| Raw offset candidates | 4,040 / 86 | 1,743 / 72 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -4294,3 +4294,20 @@ confirms the saved music setting, clamping and category dispatch.
 action commands and particle effects use that canonical header; semitone-to-cent
 conversion requires a finite representable value, as confirmed at 0x8001FEFC.
 All six edited source units preserve strict baseline objects and clean ROM identity.
+
+### Canonical primary-player storage and stun interface
+
+`player_state.h` supplies the single PlayerControlPrefix declaration of the primary
+player record. All eighteen consumer units now share it, replacing scalar, array
+and duplicate partial-record declarations. Toolbox and action-command position and
+orientation reads use established fields; messenger delivery uses the existing
+unresolved profile word at 0xFC without assigning an unsupported semantic name.
+The player stun helper is shared through player_control.h with its actual byte-pointer
+interface, permission condition and duration contract. Ghidra at 0x80024948 confirms
+the command's position check, primary-player address and integer duration conversion.
+
+Terrain debug rendering retains a documented, size/offset-checked small player view:
+full-prefix reads fail ROM matching. HUD retains its byte-offset companion-target
+read for the same reason. Their canonical storage declarations still match; both
+exceptions record the failed trials and next scheduling evidence. All eighteen
+units preserve strict baseline objects and the clean retail ROM match.

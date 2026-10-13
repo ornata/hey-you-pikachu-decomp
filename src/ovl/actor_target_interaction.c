@@ -1,3 +1,4 @@
+#include "player_state.h"
 #include "pikachu_actor.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
@@ -362,9 +363,6 @@ f32 actorGetGroundHeightAhead(u8 *actor, f32 distance, f32 heightOffset) {
 }
 
 f32 vector2NormalizeComponentsApprox(f32 *, f32 *); /* extern */
-/// Primary player control record and base of the player records with a 256-byte stride.
-/// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
-extern PlayerControlPrefix gPlayerState;
 /// Separate symbol view of the primary player record's view yaw.
 /// \note Original identifier: \c D_800EF6AC (0x800EF6AC).
 extern f32 gPlayerYaw;

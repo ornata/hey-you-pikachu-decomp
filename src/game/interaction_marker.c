@@ -1,3 +1,4 @@
+#include "player_state.h"
 #include "render_state.h"
 #include "game_heap.h"
 #include "texture_setup.h"
@@ -173,9 +174,6 @@ extern InteractionMarkerStyle gInteractionMarkerStyles[];
 /// Integer animation programs controlling marker position offsets and scale axes.
 /// \note Original identifier: \c D_8006B4EC (0x8006B4EC).
 extern ValueKey *gInteractionMarkerTransformPrograms[];
-/// Primary player control record and base of the player records with a 256-byte stride.
-/// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
-extern u8 gPlayerState[];
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
@@ -202,7 +200,7 @@ void interactionMarkerUpdate(u8 *object) {
     u8 *target;
     state = ((RuntimeObjectPrefix *)object)->state.bytes;
     target = objectResolveAvailableHandle(gInteractionCandidateHandle);
-    mode = playerClassifyInteractionTarget(gPlayerState, target, gInteractionCandidateFlags);
+    mode = playerClassifyInteractionTarget((u8 *)&gPlayerState, target, gInteractionCandidateFlags);
     if (target == NULL && ((InteractionMarkerState *)state)->mode != 0) {
         target = objectResolveAvailableHandle(((InteractionMarkerState *)state)->targetHandle);
         if (target != NULL) {

@@ -1,3 +1,4 @@
+#include "player_state.h"
 #include "audio_settings.h"
 #include "audio_control.h"
 #include "game_heap.h"
@@ -1016,9 +1017,6 @@ s32 playerRequestTargetCooperation(u8 *player) {
     return 1;
 }
 
-/// Primary player control record and base of the player records with a 256-byte stride.
-/// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
-extern PlayerControlPrefix gPlayerState; /* the player record */
 /// Separate symbol view of the primary player record's current control permissions.
 /// \note Original identifier: \c D_800EF6C4 (0x800EF6C4).
 extern s32 gPlayerPermissions;

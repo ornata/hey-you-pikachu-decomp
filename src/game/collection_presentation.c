@@ -1,3 +1,4 @@
+#include "player_state.h"
 #include "audio_control.h"
 #include "game_heap.h"
 #include "player_chase.h"
@@ -291,9 +292,6 @@ extern PresentationObjectSnapshot gPresentationSavedActor;
 /// Saved actor behavior state used to restore the actor after a presentation.
 /// \note Original identifier: \c D_800F0C60 (0x800F0C60).
 extern ActorScriptState gPresentationSavedActorState;
-/// Primary player control record and base of the player records with a 256-byte stride.
-/// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
-extern f32 gPlayerState;
 /// Separate symbol view of the primary player record's position Y.
 /// \note Original identifier: \c D_800EF6A4 (0x800EF6A4).
 extern f32 gPlayerPositionY;
@@ -358,7 +356,7 @@ void presentationRestoreActiveActor(void) {
     actionScriptStop(((s32)gPikachuActor), &gPresentationSavedActorState);
     actionBeginPoseTransition((u8 *)((s32)gPikachuActor), 0x4A, 0.1f);
     objectClearHierarchyFlags((u8 *)((s32)gPikachuActor), 0x2000);
-    cameraSetPositionAndAngles(0, gPlayerState, gPlayerPositionY + gPlayerEyeHeight, gPlayerPositionZ,
+    cameraSetPositionAndAngles(0, gPlayerState.position[0], gPlayerPositionY + gPlayerEyeHeight, gPlayerPositionZ,
                                gPlayerPitchOffset + gPlayerPitch, gPlayerYaw + gPlayerViewShake, 0.0f);
 }
 

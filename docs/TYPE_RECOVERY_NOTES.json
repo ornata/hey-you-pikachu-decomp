@@ -130,6 +130,12 @@
     },
     "src/game/object_hierarchy.c": {
       "searchTreeFind callers": "The correct TreeNode * return and SearchTree * parameter match with a pointer-key compatibility declaration. Canonical s32 keys combined with the node return change ROM code in objectPrepareKindSearch, with both byte-array and typed ObjectSearchKey storage. A function-pointer call view also fails ROM matching. Keep the documented pointer-key ABI view; isolate integer-address argument scheduling before canonical-header adoption. The typed object key preserves its 0x5C stack extent and all strict objects."
+    },
+    "src/game/terrain_debug_grid.c": {
+      "terrainDebugGridUpdatePosition": "Canonical player_state.h storage declaration matches when reads use the small PlayerGridView cast. Replacing its yaw/viewShake/position reads with the full PlayerControlPrefix changes ROM bytes. Retain the checked-offset-compatible local view and separate Y/Z symbols until IDO alias/load scheduling is isolated."
+    },
+    "src/game/hud.c": {
+      "hud player companion target read": "Canonical player_state.h storage and explicit player pointer calls match. Replacing the byte-offset read at 0x50 with gPlayerState.companionTarget changes code and fails the ROM gate. Retain the explicit byte view pending alias/load scheduling evidence; the shared field offset is established."
     }
   },
   "baseline_totals": {

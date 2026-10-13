@@ -1,3 +1,4 @@
+#include "player_state.h"
 #include "profile_counters.h"
 #include "story_milestones.h"
 #include "progress_storage.h"
@@ -9,9 +10,6 @@ void _bzero(void *, s32);                                     /* extern */
 /// Current gameplay, menu or transition mode.
 /// \note Original identifier: \c D_800AE504 (0x800AE504).
 extern s32 gRuntimeGameMode;
-/// Primary player control record and base of the player records with a 256-byte stride.
-/// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
-extern PlayerControlPrefix gPlayerState;
 /// Player profile name string borrowed by actor scripts.
 /// \note Original identifier: \c D_800EF780 (0x800EF780).
 extern u8 gPlayerProfileName[];

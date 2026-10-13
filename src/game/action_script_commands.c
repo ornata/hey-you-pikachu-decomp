@@ -1,3 +1,5 @@
+#include "player_control.h"
+#include "player_state.h"
 #include "audio_sound_effect.h"
 #include "audio_sequence.h"
 #include "pikachu_actor.h"
@@ -42,13 +44,6 @@
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-/* XYZ prefix of the player state; the larger object remains opaque here. */
-typedef struct {
-    f32 x, y, z;
-} PlayerPosition23;
-/// Primary player control record and base of the player records with a 256-byte stride.
-/// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
-extern PlayerPosition23 gPlayerState;
 
 
 /// Common scalar argument pair in action bytecode; interpretation depends on the opcode.
@@ -385,8 +380,8 @@ void actionCommandLaunchHeldItem(u8 *actor, u8 *state, ActorActionCueCommand *co
     switch (l->kind) {
     case 0:
         if (*(s32 *)(state + 0x19C) == 1 && (p = actorResolveStoredTarget(actor)) != NULL && *(u16 *)(p + 0x34) == 0x7F) {
-            dx = gPlayerState.x - *(f32 *)(obj + 0x18);
-            dz = gPlayerState.z - *(f32 *)(obj + 0x20);
+            dx = gPlayerState.position[0] - *(f32 *)(obj + 0x18);
+            dz = gPlayerState.position[2] - *(f32 *)(obj + 0x20);
             len = sqrtf(dx * dx + dz * dz);
             speed /= len;
             vel[0] = dx * speed;
@@ -878,7 +873,6 @@ extern f32 gPlayerPositionZ;
 /// Separate symbol view of the primary player record's mode and camera-transition state.
 /// \note Original identifier: \c D_800EF728 (0x800EF728).
 extern s32 gPlayerModeState;
-void playerBeginStun(f32 *, f32);
 typedef struct ArgsSpawn {
     s32 base;
     f32 range;
@@ -898,14 +892,14 @@ void actionCommandStunPlayerInRange(u8 *actor, u8 *state, ActorActionCueCommand 
     f32 d[3];
 
     o = (u8 *)actorGetEffectTargetPosition(actor);
-    d[0] = *(f32 *)(o + 0) - gPlayerState.x;
+    d[0] = *(f32 *)(o + 0) - gPlayerState.position[0];
     d[1] = *(f32 *)(o + 4) - gPlayerPositionY;
     d[2] = *(f32 *)(o + 8) - gPlayerPositionZ;
     a = (ArgsSpawn *)command->args;
     dist = vector3Length(d);
     TRACE("vec:%f,%f,%f len:%f  stunRange:%f\n", d[0], d[1], d[2], dist, a->range);
     if (dist <= a->range || (*(s32 *)(state + 0x19C) != 0 && gPlayerModeState == *(s32 *)(state + 0x198))) {
-        playerBeginStun(&gPlayerState.x, a->base);
+        playerBeginStun((u8 *)&gPlayerState, a->base);
     }
 }
 

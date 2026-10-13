@@ -1,3 +1,4 @@
+#include "player_state.h"
 #include "player_chase.h"
 #include "pikachu_actor.h"
 #include "vector_metrics.h"
@@ -229,9 +230,6 @@ s32 actorScriptGetPointDistance(u8 *actor) {
     return 0;
 }
 
-/// Primary player control record and base of the player records with a 256-byte stride.
-/// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
-extern PlayerControlPrefix gPlayerState;
 /// Replace an object handle on the script stack with its distance from the player.
 /// \param actor Actor whose script VM supplies a handle and receives the approximate three-dimensional distance, or -1 when the object is unavailable.
 /// \returns Zero, allowing script execution to continue.

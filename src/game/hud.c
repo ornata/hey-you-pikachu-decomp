@@ -1,3 +1,4 @@
+#include "player_state.h"
 #include "actor_script.h"
 #include "audio_sound_effect.h"
 #include "voice_recognition.h"
@@ -558,9 +559,6 @@ void hudSetActionIndicatorAnimation(s32 animation) {
     gHudMotionIndicatorAnimation = animation;
 }
 
-/// Primary player control record and base of the player records with a 256-byte stride.
-/// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
-extern u8 gPlayerState[];
 /// Action-indicator animations indexed by whether stationary look can be entered.
 /// \note Original identifier: \c D_80089450 (0x80089450).
 /// Action-indicator animations indexed by whether companion control can be toggled.
@@ -592,12 +590,12 @@ void hudDrawMotionIndicators(Gfx **gdl) {
 
     selected = gHudMotionIndicatorAnimation;
     motion = gPikachuActor->state.actor;
-    if (playerIsPitchControlEnabled(gPlayerState)) {
+    if (playerIsPitchControlEnabled((u8 *)&gPlayerState)) {
         selected = gHudStationaryLookActionAnimations[playerCanEnterStationaryLook()];
         showMotion = 1;
         showSelected = 1;
-    } else if (playerGetCompanionControlMode(gPlayerState) &&
-               *(s32 *)(((u8 *)gPikachuActor) + 0x38) == *(s32 *)(gPlayerState + 0x50)) {
+    } else if (playerGetCompanionControlMode((u8 *)&gPlayerState) &&
+               *(s32 *)(((u8 *)gPikachuActor) + 0x38) == *(s32 *)((u8 *)&gPlayerState + 0x50)) {
         selected = gHudCompanionActionAnimations[playerCanToggleCompanionControl()];
         showMotion = 1;
         showSelected = 1;

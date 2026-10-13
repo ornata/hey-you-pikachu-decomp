@@ -1,3 +1,4 @@
+#include "player_state.h"
 #include "title_screen.h"
 #include "item_object.h"
 #include "particle_cluster.h"
@@ -212,9 +213,6 @@ s32 scriptCommandStopAction(u8 *object) {
     return 0;
 }
 
-/// Primary player control record and base of the player records with a 256-byte stride.
-/// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
-extern PlayerControlPrefix gPlayerState;
 
 /// Apply the script friendship milestone and provide its progress identifier, or -1 if already reached, as the script result.
 /// \param object Actor whose script supplies the friendship milestone and receives

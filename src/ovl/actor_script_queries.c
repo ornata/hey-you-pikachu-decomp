@@ -1,3 +1,4 @@
+#include "player_state.h"
 #include "script_vm_stack.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
@@ -320,9 +321,6 @@ s32 actorChooseEscapePositionFromHandle(u8 *actor, s32 handle) {
     return objectGetScriptCategory(actor, handle);
 }
 
-/// Primary player control record and base of the player records with a 256-byte stride.
-/// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
-extern PlayerControlPrefix gPlayerState;
 
 /// Choose an escape destination away from the player and disable ongoing target tracking.
 /// \param actor Actor whose escape destination is selected.

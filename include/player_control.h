@@ -46,4 +46,11 @@ void playerPlayTrackedSoundEffect(u8 *player, s32 soundId);
 /// \returns Nothing.
 void playerStopTrackedSoundEffect(u8 *player);
 
+/// Start a permitted timed stun reaction with visual and rumble feedback.
+/// \param player Primary player record providing permission and receiving stun state.
+/// \param duration Nonnegative requested reaction duration in seconds.
+/// \returns Nothing; no effect when stun permission is disabled.
+/// \note Original decompilation identifier: \c func_80111A40 (0x80111A40).
+void playerBeginStun(u8 *player, f32 duration);
+
 #endif

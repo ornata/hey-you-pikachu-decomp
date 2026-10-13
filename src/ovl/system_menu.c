@@ -1,3 +1,4 @@
+#include "player_state.h"
 #include "audio_settings.h"
 #include "audio_control.h"
 #include "render_state.h"
@@ -807,9 +808,6 @@ void systemMenuDrawFrame(Gfx **displayList) {
 
 void playerRecenterWalkingView(u8 *);
 void playerUpdateViewCamera(u8 *);
-/// Primary player control record and base of the player records with a 256-byte stride.
-/// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
-extern PlayerControlPrefix gPlayerState;
 /// Primary controller new and auto-repeated button presses; aliases the repeated word of the processed sample.
 /// \note Original identifier: \c D_800AD54C (0x800AD54C).
 extern s32 gControllerPrimaryRepeatedButtons;

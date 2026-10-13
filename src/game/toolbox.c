@@ -1,3 +1,4 @@
+#include "player_state.h"
 #include "render_state.h"
 #include "object_template.h"
 #include "texture_descriptor.h"
@@ -198,17 +199,6 @@ extern s32 gToolboxStorageRow;
 void toolboxNoOp(s32 unused) {
 }
 
-typedef struct {
-    f32 x;
-    f32 pad4[2];
-    f32 unkC;
-    f32 unk10;
-    f32 unk14;
-    f32 unk18;
-} Cam6A0;
-/// Primary player control record and base of the player records with a 256-byte stride.
-/// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
-extern Cam6A0 gPlayerState;
 
 /// Orient a toolbox object relative to the current camera.
 /// \param object Object whose local rotation is updated.
@@ -220,8 +210,8 @@ void toolboxSetObjectCameraRotation(u8 *object, f32 pitch, f32 yaw) {
     f32 pad;
     f32 sp1C[12];
 
-    matrix34MakeRotationXYZDegrees(sp1C, gPlayerState.unk10 + gPlayerState.unk14,
-                                   gPlayerState.unkC + gPlayerState.unk18, 0.0f);
+    matrix34MakeRotationXYZDegrees(sp1C, gPlayerState.pitchOffset + gPlayerState.pitch,
+                                   gPlayerState.yaw + gPlayerState.viewShake, 0.0f);
     matrix33ApplyRotationZYXDegrees(sp1C, pitch, yaw, 0.0f);
     matrix33GetFoldedEulerDegrees(sp1C, (f32 *)(object + 0xC), (f32 *)(object + 0x10), (f32 *)(object + 0x14));
 }
