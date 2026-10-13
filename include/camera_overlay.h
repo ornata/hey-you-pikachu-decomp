@@ -67,4 +67,14 @@ void cameraDrawOverlay(s32 index);
 /// \note Original address: 0x80001324.
 void cameraDrawSecondaryOverlay(s32 index);
 
+/// Append a depth-writing RGBA overlay across the current view.
+/// \param red Red intensity from zero through 255.
+/// \param green Green intensity from zero through 255.
+/// \param blue Blue intensity from zero through 255.
+/// \param alpha Opacity from zero through 255.
+/// \returns Nothing; advances the shared render cursor and changes active graphics state.
+/// Requires an initialized display list with sufficient command capacity.
+/// \note Original address: 0x800016B0.
+void renderDrawColorOverlayWithDepth(u8 red, u8 green, u8 blue, u8 alpha);
+
 #endif

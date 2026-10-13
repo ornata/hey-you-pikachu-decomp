@@ -757,7 +757,6 @@ void systemMenuDrawClosingEffect(Gfx **displayList) {
     }
 }
 
-void renderDrawColorOverlayWithDepth(u8, u8, u8, u8); /* extern */
 void systemMenuDrawDetails(Gfx **);            /* extern */
 void systemMenuDrawItemList(Gfx **);            /* extern */
 void systemMenuDrawClosingEffect(Gfx **);            /* extern */

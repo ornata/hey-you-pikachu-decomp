@@ -4550,3 +4550,13 @@ World-position input uses const f32 coordinates, and recentering uses establishe
 viewShake/pitch members instead of byte offsets. Original function/address notes
 remain, while the obsolete K&R portability note is removed. All three source units
 and dependent headers preserve clean retail ROM bytes.
+
+### Shared depth-writing overlay contract
+
+The existing camera-overlay header now declares renderDrawColorOverlayWithDepth for
+its producer and menu/toolbox/eye-catch consumers, replacing local declarations.
+The contract records byte-sized RGBA inputs, shared render-cursor advancement,
+command capacity and graphics-state effects without narrating command implementation.
+Original address 0x800016B0 is preserved in source/header notes; Ghidra confirms the
+cursor-based drawing path. All four source units and dependent headers preserve
+strict baseline objects and clean retail ROM bytes.

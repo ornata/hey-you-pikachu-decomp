@@ -706,7 +706,8 @@ void cameraFadePrimarySecondaryOverlay(s32 red, s32 green, s32 blue, s32 alpha, 
 /// \param g Green intensity from zero through 255.
 /// \param b Blue intensity from zero through 255.
 /// \param a Opacity from zero through 255.
-/// \returns Nothing.
+/// \returns Nothing; advances the shared render cursor and changes active graphics state.
+/// \note Original address: 0x800016B0.
 void renderDrawColorOverlayWithDepth(u8 r, u8 g, u8 b, u8 a) {
     gDPPipeSync(gRenderDisplayListCursor++);
     gDPSetCycleType(gRenderDisplayListCursor++, G_CYC_1CYCLE);

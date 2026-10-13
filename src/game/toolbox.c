@@ -1179,7 +1179,6 @@ extern s32 gRenderCameraIndex;
 /// Initial draw count used to defer toolbox rendering until its display is ready.
 /// \note Original identifier: \c D_800F1CE0 (0x800F1CE0).
 extern s32 gToolboxOpeningDrawCount;
-void renderDrawColorOverlayWithDepth(u8, u8, u8, u8);
 void toolboxDrawRowTitle(s32);
 void toolboxDrawNavigation(s32);
 

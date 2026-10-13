@@ -188,7 +188,6 @@ typedef struct TextureDraw370 {
     s32 texture, x, y, width, height, s, t;
     f32 scaleX, scaleY;
 } TextureDraw370;
-void renderDrawColorOverlayWithDepth(u8, u8, u8, u8);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
