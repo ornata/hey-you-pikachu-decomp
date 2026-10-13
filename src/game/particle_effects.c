@@ -403,14 +403,17 @@ extern s32 gRibbonAndClusterFrameAnimation;
 
 /// Owned steering target, lifetime, ground-contact state and appearance track.
 typedef struct RibbonControllerState {
-    f32 destination[3];
-    f32 remaining;
-    s32 steeringFrame;
-    s32 grounded;
-    u8 animation[12];
+    f32 destination[3]; ///< World position toward which the ribbon steers.
+    f32 remaining; ///< Remaining lifetime in seconds.
+    s32 steeringFrame; ///< Update count until the next randomized steering direction.
+    s32 grounded; ///< Whether ground contact has already emitted a wisp.
+    ValueTrack animation; ///< Texture-frame playback with borrowed key data.
 } RibbonControllerState;
 
 typedef char RibbonControllerStateSizeCheck[(sizeof(RibbonControllerState) == 0x24) ? 1 : -1];
+typedef char RibbonLifetimeOffsetCheck[(((u32) & ((RibbonControllerState *)0)->remaining) == 0xC) ? 1 : -1];
+typedef char RibbonSteeringOffsetCheck[(((u32) & ((RibbonControllerState *)0)->steeringFrame) == 0x10) ? 1 : -1];
+typedef char RibbonGroundContactOffsetCheck[(((u32) & ((RibbonControllerState *)0)->grounded) == 0x14) ? 1 : -1];
 typedef char RibbonAnimationOffsetCheck[((u32) & ((RibbonControllerState *)0)->animation == 0x18) ? 1 : -1];
 
 /// Initialize a ribbon effect's motion and animation state.
@@ -421,14 +424,14 @@ void ribbonEffectControllerInitialize(u8 *controller) {
     u8 *sp1C;
     u8 *allocation;
 
-    allocation = heapAllocLocal(&gGameHeap, 0x24, 0x25F);
+    allocation = heapAllocLocal(&gGameHeap, sizeof(RibbonControllerState), 0x25F);
     sp1C = allocation;
     ((RibbonControllerState *)allocation)->steeringFrame = 0;
     ((RibbonControllerState *)allocation)->grounded = 0;
     ((RibbonControllerState *)allocation)->destination[2] = 0.0f;
     ((RibbonControllerState *)allocation)->destination[1] = 0.0f;
     ((RibbonControllerState *)allocation)->destination[0] = 0.0f;
-    animationIntegerTrackInitialize((ValueTrack *)(allocation + 0x18), (ValueKey *)(gRibbonAndClusterFrameAnimation));
+    animationIntegerTrackInitialize(&((RibbonControllerState *)allocation)->animation, (ValueKey *)(gRibbonAndClusterFrameAnimation));
     ((RuntimeObjectPrefix *)controller)->state.bytes = sp1C;
 }
 
@@ -529,7 +532,7 @@ f32 objectGetHeightAboveGround(u8 *);
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001817C (0x8001817C).
 void ribbonEffectControllerUpdate(u8 *controller) {
-    u8 *v;
+    RibbonControllerState *state;
     u8 *src;
     s32 tmp;
     f32 d[3];
@@ -537,8 +540,8 @@ void ribbonEffectControllerUpdate(u8 *controller) {
     f32 pitch;
     f32 h;
 
-    v = *(u8 **)(controller + 0x54);
-    animationIntegerTrackEvaluate((ValueTrack *)(v + 0x18), &tmp, gRuntimeFrameSeconds);
+    state = ((RuntimeObjectPrefix *)controller)->state.pointer;
+    animationIntegerTrackEvaluate(&state->animation, &tmp, gRuntimeFrameSeconds);
     src = *(u8 **)(controller + 0x2C);
     *(f32 *)(controller + 0xC) = *(f32 *)(src + 0xC);
     *(f32 *)(controller + 0x10) = *(f32 *)(src + 0x10);
@@ -547,11 +550,11 @@ void ribbonEffectControllerUpdate(u8 *controller) {
     *(f32 *)(controller + 0x1C) = *(f32 *)(src + 0x48);
     *(f32 *)(controller + 0x20) = *(f32 *)(src + 0x4C);
     objectAdjustPitchAlongCameraView(controller);
-    d[0] = *(f32 *)(v + 0) - *(f32 *)(controller + 0x18);
-    d[1] = *(f32 *)(v + 4) - *(f32 *)(controller + 0x1C);
-    d[2] = *(f32 *)(v + 8) - *(f32 *)(controller + 0x20);
-    if (++*(s32 *)(v + 0x10) >= 5) {
-        *(s32 *)(v + 0x10) = 0;
+    d[0] = state->destination[0] - *(f32 *)(controller + 0x18);
+    d[1] = state->destination[1] - *(f32 *)(controller + 0x1C);
+    d[2] = state->destination[2] - *(f32 *)(controller + 0x20);
+    if (++state->steeringFrame >= 5) {
+        state->steeringFrame = 0;
         *(f32 *)(src + 0x10) = (s32)randomBelow(360);
         *(f32 *)(src + 0x14) = (s32)randomBelow(360);
     } else {
@@ -564,19 +567,19 @@ void ribbonEffectControllerUpdate(u8 *controller) {
     *(f32 *)(*(u8 **)(controller + 0x28) + 0x20) = *(f32 *)(controller + 0x20);
     h = objectGetHeightAboveGround(controller);
     if (h < 1.2000000476837158f) {
-        if (*(s32 *)(v + 0x14) == 0) {
+        if (state->grounded == 0) {
             if (h < -1.0f) {
                 h = 0.0f;
             }
             wispEffectCreate(4, *(f32 *)(controller + 0x44), *(f32 *)(controller + 0x48) - h, *(f32 *)(controller + 0x4C));
         }
-        *(s32 *)(v + 0x14) = 1;
-        *(f32 *)(v + 0xC) -= gRuntimeFrameSeconds;
+        state->grounded = 1;
+        state->remaining -= gRuntimeFrameSeconds;
     } else {
-        *(s32 *)(v + 0x14) = 0;
+        state->grounded = 0;
     }
-    *(f32 *)(v + 0xC) -= gRuntimeFrameSeconds;
-    if (*(f32 *)(v + 0xC) < 0.0f) {
+    state->remaining -= gRuntimeFrameSeconds;
+    if (state->remaining < 0.0f) {
         objectRequestHierarchyDestruction(*(u8 **)(controller + 0x50));
     }
 }
