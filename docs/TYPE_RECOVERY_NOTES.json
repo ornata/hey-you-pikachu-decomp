@@ -129,6 +129,9 @@
     },
     "src/game/interaction_marker.c": {
       "interactionMarkerPrepareDraw held-item comparison": "The named shared-field comparison matches with actor held-item handle on the left and marker target handle on the right. Reversing that source order changes IDO register allocation and fails ROM matching. Keep this accepted comparison order when changing marker drawing."
+    },
+    "src/game/message_bar.c": {
+      "messageBarActivateNext": "The 68-byte queue record and duration field are established. Direct typed duration indexing changes IDO output and fails ROM matching; using sizeof(QueuedMessage) for the byte-cursor stride also fails. Retain the signed literal stride and biased byte cursor in activation. Typed queued-record access in messageBarUpdate and typed enqueue writes pass strict object comparison. Next evidence: instruction/scheduling analysis of activation to find a matching typed representation."
     }
   },
   "baseline_totals": {

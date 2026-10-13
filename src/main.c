@@ -1,3 +1,4 @@
+#include "message_bar.h"
 #include "matrix_point.h"
 #include "camera_interface.h"
 #include "matrix_translation.h"
@@ -862,7 +863,6 @@ extern u8 gTextureRomCache[];
 extern Gfx *gRenderDisplayListStart;
 void objectDrawGroup(s32);
 void hudDraw(Gfx **);
-s32 messageBarUpdateAndDraw(void);
 void hudDrawAreaLabel(Gfx **);
 void presentationDrawCardScreen(Gfx **);
 void presentationDrawCollectionScreen(Gfx **);

@@ -170,7 +170,7 @@ extern u8 gMessageBarCurrentText[];
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002767C (0x8002767C).
 void messageBarActivateNext(void) {
-    u8 *e = (u8 *)&gMessageBarState + gMessageBarState.queueReadIndex * 0x44;
+    u8 *queueCursor = (u8 *)&gMessageBarState + gMessageBarState.queueReadIndex * 0x44;
 
     TRACE("_next: getIdx:%d setIdx:%d drawIdx:%d workIdx:%d\n", gMessageBarState.queueReadIndex, gMessageBarState.queueWriteIndex,
           gMessageBarState.displayImageIndex, gMessageBarState.workImageIndex);
@@ -178,7 +178,7 @@ void messageBarActivateNext(void) {
     gMessageBarState.duration = *(f32 *)((u8 *)&gMessageBarState + gMessageBarState.queueReadIndex * 0x44 + 0x54);
     gMessageBarState.elapsed = 0.0f;
     gMessageBarState.scrollAngle = 0.0f;
-    stringCopy(gMessageBarCurrentText, e + 0x18);
+    stringCopy(gMessageBarCurrentText, queueCursor + 0x18);
     if (++gMessageBarState.queueReadIndex >= 0x10) {
         gMessageBarState.queueReadIndex = 0;
     }
@@ -220,7 +220,7 @@ s32 messageBarUpdate(void) {
         return 1;
     }
     messageBarPrepareImage(gMessageBarState.workImageIndex,
-                           *(QueuedMessage *)((u8 *)&gMessageBarState + gMessageBarState.queueReadIndex * 0x44 + 0x18));
+                           gMessageBarState.queued[gMessageBarState.queueReadIndex]);
     if (++gMessageBarState.workImageIndex >= 3) {
         gMessageBarState.workImageIndex = 0;
     }

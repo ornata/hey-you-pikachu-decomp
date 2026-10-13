@@ -3442,3 +3442,10 @@ and the 68-byte record stride. The unused, conflicting state view in the terrain
 debug unit was removed; the implementation remains private. Initialization,
 activation, update and drawing establish the field roles; the final 60 bytes
 retain an explicit unresolved-storage name.
+
+Message image preparation reads a typed queued record. Activation retains its
+biased byte cursor and signed literal stride: direct typed duration indexing
+and a `sizeof` stride independently failed the ROM gate. These matching
+constraints are recorded in the ledger. The display entry point now shares
+its documented declaration with both main-loop source units. Ghidra activation
+at `0x8002767C` confirms queue duration and copied text roles.

@@ -30,4 +30,10 @@ void messageBarResetAndReleaseImages(void);
 /// \note Original identifier: \c func_80027A88 (0x80027A88).
 void messageBarClear(void);
 
+/// Advance display timing and draw the active message and its transition.
+/// \returns One while a message is drawn, or zero when the display is idle.
+/// \note Requires initialized message-bar state and the active graphics command list.
+/// \note Original identifier: \c func_80027AD0 (0x80027AD0).
+s32 messageBarUpdateAndDraw(void);
+
 #endif
