@@ -15,7 +15,8 @@
       "playerUpdateNormalControl": "All placeholder fields are recovered. One angle read uses a checked member offset because direct members reverse the IDO floating add operands; the resulting object matches.",
       "playerUpdateStationaryLook": "All placeholder fields are recovered. One angle read uses a checked member offset because direct members reverse the IDO floating add operands; the resulting object matches.",
       "playerUpdateViewOnlyControl": "All placeholder fields are recovered. One angle read uses a checked member offset because direct members reverse the IDO floating add operands; the resulting object matches.",
-      "playerSetInteractionHelpText": "The help text is a byte string. The 256-byte buffer retains its split linker symbols, with a four-byte first symbol and adjacent retained words. Its cross-symbol access and argument-less strlen call remain documented target-specific constraints."
+      "playerSetInteractionHelpText": "The help text is a byte string. The 256-byte buffer retains its split linker symbols, with a four-byte first symbol and adjacent retained words. Its cross-symbol access and argument-less strlen call remain documented target-specific constraints.",
+      "playerClassifyInteractionTarget held-item comparison": "The recovered named-field equality preserves instructions with player held-item handle on the left and candidate object handle on the right. The opposite source order exchanges IDO load registers and fails matching; retain this accepted order when editing the classifier."
     },
     "src/ovl/item_physics.c": {
       "itemUpdateGroundVelocity": "Two velocity reads use checked member offsets to retain the original IDO preload scheduling and floating add operands. Stores and all other recovered fields use members.",

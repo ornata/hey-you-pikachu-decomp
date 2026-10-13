@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,631 / 77 |
+| Raw offset candidates | 4,040 / 86 | 2,610 / 77 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3371,3 +3371,16 @@ through the existing shared interaction header. Drawing uses named display-list
 and held-item fields; placing the actor handle first in the equality preserves
 original register allocation, recorded as a matching constraint. Provider changes
 and the shared-header rebuild preserve strict objects.
+
+### Interaction classification and region interfaces
+
+The existing interaction header names independent primary-region, secondary-region
+and camera-visibility flags and consolidates player classification and four region
+adjustment contracts. The classifier uses checked player selection/action,
+permission and held-item fields plus object identity/state members. Producer and
+script region queries use the shared flag enum. Ghidra 0x80111784 confirms player
+selection updates and 0x8001F078 confirms paired primary scale assignment. Named
+held-item equality matches with player handle first; the alternative source order
+swaps load registers and is recorded as a constraint. Kind-specific unresolved
+state remains explicit. All isolated conversions and dependent rebuilds preserve
+strict objects.

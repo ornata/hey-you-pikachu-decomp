@@ -1,3 +1,4 @@
+#include "interaction.h"
 #include "script_vm_execution.h"
 #include "script_vm_globals.h"
 #include "actor_behavior.h"
@@ -1845,56 +1846,56 @@ void playerUnusedModeUpdate(u8 *arg0, u8 *arg1) {
 s32 playerClassifyInteractionTarget(u8 *player, u8 *object, s32 flags) {
     s32 kind;
     u8 *state;
-    *(s32 *)(player + 0x60) = flags;
-    *(s32 *)(player + 0x98) = 6;
-    *(s32 *)(player + 0x5C) = 0;
-    if (object == NULL || !(*(s32 *)(player + 0x24) & 0xC00))
+    ((PlayerControlPrefix *)player)->interactionFlags = flags;
+    ((PlayerControlPrefix *)player)->modeState.interactionAction = 6;
+    ((PlayerControlPrefix *)player)->interactionTarget = 0;
+    if (object == NULL || !(((PlayerControlPrefix *)player)->permissions & 0xC00))
         return 0;
-    *(s32 *)(player + 0x5C) = *(s32 *)(object + 0x38);
+    ((PlayerControlPrefix *)player)->interactionTarget = ((RuntimeObjectPrefix *)object)->handle;
     if (playerGetChaseStage() <= 0)
         return 2;
-    if (*(s32 *)(object + 0x38) == *(s32 *)(player + 0x84)) {
-        if (*(s16 *)(*(u8 **)(object + 0x54) + 4) != 0x8A)
-            *(s32 *)(player + 0x98) = 5;
+    if (((PlayerControlPrefix *)player)->heldItemHandle == ((RuntimeObjectPrefix *)object)->handle) {
+        if (*(s16 *)(((RuntimeObjectPrefix *)object)->state.bytes + 4) != 0x8A)
+            ((PlayerControlPrefix *)player)->modeState.interactionAction = 5;
         return 0;
     }
-    kind = *(u16 *)(object + 0x34);
+    kind = ((RuntimeObjectPrefix *)object)->kind;
     if (kind == 0x25)
         return 2;
     if (kind == 0xB0 || kind == 0x8F)
         return 2;
-    if (!(flags & 2) || !(*(s32 *)(player + 0x24) & 0x400)) {
+    if (!(flags & INTERACTION_PRIMARY_REGION) || !(((PlayerControlPrefix *)player)->permissions & 0x400)) {
         if (kind == 0x87)
             return 9;
         return 2;
     }
     if (kind > 0 && kind < 0x26) {
-        state = *(u8 **)(object + 0x54);
+        state = ((RuntimeObjectPrefix *)object)->state.bytes;
         if (((ActorScriptState *)state)->behaviorFlags & ACTOR_BEHAVIOR_COOPERATION_ENABLED) {
-            *(s32 *)(player + 0x98) = 2;
+            ((PlayerControlPrefix *)player)->modeState.interactionAction = 2;
             return 4;
         }
         return 2;
     }
     if (kind == 0x89) {
-        *(s32 *)(player + 0x98) = 8;
+        ((PlayerControlPrefix *)player)->modeState.interactionAction = 8;
         return 4;
     }
     if (kind == 0x86) {
         if (itemAllowsCooperation(object)) {
-            *(s32 *)(player + 0x98) = 2;
+            ((PlayerControlPrefix *)player)->modeState.interactionAction = 2;
             return 4;
         }
         if (!itemCanBePickedUp(object, 1))
             return 2;
-        *(s32 *)(player + 0x98) = 1;
+        ((PlayerControlPrefix *)player)->modeState.interactionAction = 1;
         return 3;
     }
     if (kind == 0x87) {
-        state = *(u8 **)(object + 0x54);
+        state = ((RuntimeObjectPrefix *)object)->state.bytes;
         if (*(s32 *)(state + 0xC))
             return 5;
-        *(s32 *)(player + 0x98) = 7;
+        ((PlayerControlPrefix *)player)->modeState.interactionAction = 7;
         if (*(s32 *)state == 2 || *(s32 *)state == 3) {
             switch (*(s32 *)(state + 4)) {
             case 0:
@@ -1907,10 +1908,10 @@ s32 playerClassifyInteractionTarget(u8 *player, u8 *object, s32 flags) {
         } else
             return 4;
     }
-    kind = *(u16 *)(object + 0x34);
+    kind = ((RuntimeObjectPrefix *)object)->kind;
     if (kind == 0x8A) {
-        u8 *resultState = *(u8 **)(object + 0x54);
-        *(s32 *)(player + 0x98) = 9;
+        u8 *resultState = ((RuntimeObjectPrefix *)object)->state.bytes;
+        ((PlayerControlPrefix *)player)->modeState.interactionAction = 9;
         return *(s32 *)(resultState + 4);
     }
     return 4;

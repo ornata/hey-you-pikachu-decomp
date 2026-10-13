@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 2631,
-      "unique_spellings": 1030,
+      "occurrences": 2610,
+      "unique_spellings": 1027,
       "files": 77
     }
   },
@@ -6413,6 +6413,7 @@
         "controller_types.h",
         "door.h",
         "heap_alloc.h",
+        "interaction.h",
         "item_mode.h",
         "item_participation.h",
         "item_queries.h",
@@ -6440,246 +6441,218 @@
         "playerUpdateNormalControl": "All placeholder fields are recovered. One angle read uses a checked member offset because direct members reverse the IDO floating add operands; the resulting object matches.",
         "playerUpdateStationaryLook": "All placeholder fields are recovered. One angle read uses a checked member offset because direct members reverse the IDO floating add operands; the resulting object matches.",
         "playerUpdateViewOnlyControl": "All placeholder fields are recovered. One angle read uses a checked member offset because direct members reverse the IDO floating add operands; the resulting object matches.",
-        "playerSetInteractionHelpText": "The help text is a byte string. The 256-byte buffer retains its split linker symbols, with a four-byte first symbol and adjacent retained words. Its cross-symbol access and argument-less strlen call remain documented target-specific constraints."
+        "playerSetInteractionHelpText": "The help text is a byte string. The 256-byte buffer retains its split linker symbols, with a four-byte first symbol and adjacent retained words. Its cross-symbol access and argument-less strlen call remain documented target-specific constraints.",
+        "playerClassifyInteractionTarget held-item comparison": "The recovered named-field equality preserves instructions with player held-item handle on the left and candidate object handle on the right. The opposite source order exchanges IDO load registers and fails matching; retain this accepted order when editing the classifier."
       },
       "locations": {
         "raw_offset_candidates": {
           "gRuntimeFrameSeconds + 8": [
-            "379:35"
+            "380:35"
           ],
           "normal + 2": [
-            "637:80"
+            "638:80"
           ],
           "currentGround + 0": [
-            "665:38"
+            "666:38"
           ],
           "dy + 0": [
-            "673:64",
-            "693:86"
+            "674:64",
+            "694:86"
           ],
           "nextX + 0": [
-            "676:79",
-            "682:79"
+            "677:79",
+            "683:79"
           ],
           "nextZ + 0": [
-            "679:93",
-            "682:100"
+            "680:93",
+            "683:100"
           ],
           "nextGround + 0": [
-            "686:22"
+            "687:22"
           ],
           "player + 0x84": [
-            "784:46",
-            "1856:45"
+            "785:46"
           ],
           "object + 0x54": [
-            "787:22",
-            "1857:31",
-            "1872:26",
-            "1894:26",
-            "1912:36",
-            "2754:22"
-          ],
-          "player + 0x18": [
-            "788:20"
-          ],
-          "player + 0xC": [
-            "788:46"
-          ],
-          "player + 0x10": [
-            "789:22",
-            "791:22"
-          ],
-          "player + 0x14": [
-            "789:48",
-            "791:48"
-          ],
-          "player + 0x1C": [
-            "794:26"
-          ],
-          "player + 4": [
-            "794:52"
-          ],
-          "player + 8": [
-            "795:26"
-          ],
-          "object + 0x38": [
-            "799:24",
-            "803:25",
-            "1853:40",
-            "1856:18"
-          ],
-          "object + 0x18": [
-            "799:56"
-          ],
-          "state + 4": [
-            "801:94",
-            "1899:30",
-            "2133:18"
-          ],
-          "gPlayerCompanionTarget - 0x50": [
-            "1050:36"
-          ],
-          "gPlayerControllerPort - 0x2C": [
-            "1067:37",
-            "1068:37"
-          ],
-          "gPlayerHelpTextCursor + 1": [
-            "1461:46",
-            "1465:46"
-          ],
-          "player + 0x60": [
-            "1848:14"
-          ],
-          "player + 0x98": [
-            "1849:14",
-            "1858:22",
-            "1874:22",
-            "1880:18",
-            "1885:22",
-            "1890:18",
-            "1897:18",
-            "1913:18"
-          ],
-          "player + 0x5C": [
-            "1850:14",
-            "1853:14"
-          ],
-          "player + 0x24": [
-            "1851:38",
-            "1866:36"
-          ],
-          "object + 0x34": [
-            "1861:21",
-            "1910:21"
-          ],
-          "state + 0xC": [
-            "1895:22",
-            "2136:18"
-          ],
-          "resultState + 4": [
-            "1914:25"
-          ],
-          "gPlayerEyeHeight - 0x1C": [
-            "1925:37",
-            "2516:42",
-            "2528:42"
-          ],
-          "y + 0": [
-            "2088:52"
-          ],
-          "origin + 0x20": [
-            "2088:89"
-          ],
-          "origin + 0x1C": [
-            "2089:34"
-          ],
-          "gCurrentAreaConfiguration + 0x20": [
-            "2130:35"
-          ],
-          "state + 0": [
-            "2131:18",
-            "2133:97"
-          ],
-          "state + 8": [
-            "2132:18",
-            "2134:105"
-          ],
-          "state + 0x1C": [
-            "2135:18"
-          ],
-          "state + 0x10": [
-            "2137:18"
-          ],
-          "state + 0x14": [
-            "2138:18",
-            "2185:18",
-            "2186:18",
-            "2186:43",
-            "2187:22",
-            "2188:22",
-            "2190:25",
-            "2191:18",
-            "2191:43",
-            "2192:22",
-            "2193:22"
-          ],
-          "state + 0x18": [
-            "2139:18",
-            "2173:18",
-            "2174:18",
-            "2174:43",
-            "2175:22",
-            "2176:22",
-            "2178:25",
-            "2179:18",
-            "2179:43",
-            "2180:22",
-            "2181:22"
-          ],
-          "state + 0x2C": [
-            "2142:18"
-          ],
-          "state + 0x30": [
-            "2143:18"
-          ],
-          "state + 0x32": [
-            "2144:18"
-          ],
-          "state + 0x4C": [
-            "2145:18"
-          ],
-          "state + 0x50": [
-            "2146:18"
-          ],
-          "state + 0x64": [
-            "2147:18"
-          ],
-          "state + 0x68": [
-            "2148:18"
-          ],
-          "state + 0x20": [
-            "2149:18"
-          ],
-          "state + 0x84": [
-            "2150:18"
-          ],
-          "state + 0x78": [
-            "2151:18"
-          ],
-          "state + 0x80": [
-            "2152:18"
-          ],
-          "state + 0x88": [
-            "2154:18"
-          ],
-          "model + 0x38": [
-            "2154:43"
-          ],
-          "state + 0x8C": [
-            "2155:18"
-          ],
-          "model + 0x28": [
-            "2155:52",
-            "2156:61"
-          ],
-          "state + 0x90": [
-            "2156:18"
-          ],
-          "state + 0x98": [
-            "2157:18"
-          ],
-          "return -1": [
-            "2378:9"
-          ],
-          "friendshipLevel + 1": [
-            "2383:48"
-          ],
-          "state + 0x1EA": [
+            "788:22",
             "2755:22"
           ],
+          "player + 0x18": [
+            "789:20"
+          ],
+          "player + 0xC": [
+            "789:46"
+          ],
+          "player + 0x10": [
+            "790:22",
+            "792:22"
+          ],
+          "player + 0x14": [
+            "790:48",
+            "792:48"
+          ],
+          "player + 0x1C": [
+            "795:26"
+          ],
+          "player + 4": [
+            "795:52"
+          ],
+          "player + 8": [
+            "796:26"
+          ],
+          "object + 0x38": [
+            "800:24",
+            "804:25"
+          ],
+          "object + 0x18": [
+            "800:56"
+          ],
+          "state + 4": [
+            "802:94",
+            "1900:30",
+            "2134:18"
+          ],
+          "gPlayerCompanionTarget - 0x50": [
+            "1051:36"
+          ],
+          "gPlayerControllerPort - 0x2C": [
+            "1068:37",
+            "1069:37"
+          ],
+          "gPlayerHelpTextCursor + 1": [
+            "1462:46",
+            "1466:46"
+          ],
+          "bytes + 4": [
+            "1858:61"
+          ],
+          "state + 0xC": [
+            "1896:22",
+            "2137:18"
+          ],
+          "resultState + 4": [
+            "1915:25"
+          ],
+          "gPlayerEyeHeight - 0x1C": [
+            "1926:37",
+            "2517:42",
+            "2529:42"
+          ],
+          "y + 0": [
+            "2089:52"
+          ],
+          "origin + 0x20": [
+            "2089:89"
+          ],
+          "origin + 0x1C": [
+            "2090:34"
+          ],
+          "gCurrentAreaConfiguration + 0x20": [
+            "2131:35"
+          ],
+          "state + 0": [
+            "2132:18",
+            "2134:97"
+          ],
+          "state + 8": [
+            "2133:18",
+            "2135:105"
+          ],
+          "state + 0x1C": [
+            "2136:18"
+          ],
+          "state + 0x10": [
+            "2138:18"
+          ],
+          "state + 0x14": [
+            "2139:18",
+            "2186:18",
+            "2187:18",
+            "2187:43",
+            "2188:22",
+            "2189:22",
+            "2191:25",
+            "2192:18",
+            "2192:43",
+            "2193:22",
+            "2194:22"
+          ],
+          "state + 0x18": [
+            "2140:18",
+            "2174:18",
+            "2175:18",
+            "2175:43",
+            "2176:22",
+            "2177:22",
+            "2179:25",
+            "2180:18",
+            "2180:43",
+            "2181:22",
+            "2182:22"
+          ],
+          "state + 0x2C": [
+            "2143:18"
+          ],
+          "state + 0x30": [
+            "2144:18"
+          ],
+          "state + 0x32": [
+            "2145:18"
+          ],
+          "state + 0x4C": [
+            "2146:18"
+          ],
+          "state + 0x50": [
+            "2147:18"
+          ],
+          "state + 0x64": [
+            "2148:18"
+          ],
+          "state + 0x68": [
+            "2149:18"
+          ],
+          "state + 0x20": [
+            "2150:18"
+          ],
+          "state + 0x84": [
+            "2151:18"
+          ],
+          "state + 0x78": [
+            "2152:18"
+          ],
+          "state + 0x80": [
+            "2153:18"
+          ],
+          "state + 0x88": [
+            "2155:18"
+          ],
+          "model + 0x38": [
+            "2155:43"
+          ],
+          "state + 0x8C": [
+            "2156:18"
+          ],
+          "model + 0x28": [
+            "2156:52",
+            "2157:61"
+          ],
+          "state + 0x90": [
+            "2157:18"
+          ],
+          "state + 0x98": [
+            "2158:18"
+          ],
+          "return -1": [
+            "2379:9"
+          ],
+          "friendshipLevel + 1": [
+            "2384:48"
+          ],
+          "state + 0x1EA": [
+            "2756:22"
+          ],
           "gPikachuActor + 0x44": [
-            "2812:35"
+            "2813:35"
           ]
         }
       }

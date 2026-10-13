@@ -534,7 +534,7 @@ s32 interactionConsiderObjectInRegion(u8 *object) {
     s32 interactionFlags;
 
     interactionFlags = interactionConsiderObject(object);
-    if ((interactionFlags & 1) || (interactionFlags & 2)) {
+    if ((interactionFlags & INTERACTION_SECONDARY_REGION) || (interactionFlags & INTERACTION_PRIMARY_REGION)) {
         return 1;
     }
     return 0;

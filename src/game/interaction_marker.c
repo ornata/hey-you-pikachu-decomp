@@ -88,12 +88,12 @@ s32 interactionConsiderObject(u8 *object) {
         return 0;
     }
     if (areaTestCameraVisibility(((RuntimeObjectPrefix *)object)->radius * 2, ((RuntimeObjectPrefix *)object)->worldPosition, projected)) {
-        flags = 4;
+        flags = INTERACTION_CAMERA_VISIBLE;
     } else {
         flags = 0;
     }
     if (gPlayerHeldItemHandle == ((RuntimeObjectPrefix *)object)->handle) {
-        flags |= 3;
+        flags |= INTERACTION_SECONDARY_REGION | INTERACTION_PRIMARY_REGION;
     } else {
         if (flags == 0)
             return 0;
@@ -102,13 +102,13 @@ s32 interactionConsiderObject(u8 *object) {
                 flags |= gInteractionRegionFlags[i];
             }
         }
-        if (flags & 2) {
+        if (flags & INTERACTION_PRIMARY_REGION) {
             if (((RuntimeObjectPrefix *)object)->worldPosition[1] - gPlayerPositionY > 12.0f) {
-                flags = (flags & ~2) | 1;
+                flags = (flags & ~INTERACTION_PRIMARY_REGION) | INTERACTION_SECONDARY_REGION;
             }
         }
     }
-    if (object != gPikachuActor && (flags & 3)) {
+    if (object != gPikachuActor && (flags & (INTERACTION_SECONDARY_REGION | INTERACTION_PRIMARY_REGION))) {
         if (gPlayerHeldItemHandle == ((RuntimeObjectPrefix *)object)->handle) {
             score = -2147483648.0f;
         } else {
@@ -186,7 +186,6 @@ extern f32 gInteractionMarkerTrackUnitScale;
 /// Scale converting marker animation offsets for actor targets from tenths to coordinate units.
 /// \note Original identifier: \c D_800A47AC (0x800A47AC).
 extern f32 gInteractionMarkerActorTrackUnitScale;
-s32 playerClassifyInteractionTarget(u8 *, u8 *, s32);
 s32 audioPlaySoundEffect(s32);
 /// Update the marker target, animation, and placement, then clear the current candidate scan.
 /// \param object Initialized interaction marker object.
