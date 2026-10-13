@@ -439,14 +439,14 @@ void actorUpdateModel(u8 *actor) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80015588 (0x80015588).
 void actorTransitionModelEnvironmentColor(u8 *actor, u8 r, u8 g, u8 b, u8 a, f32 duration) {
-    u8 *v;
+    ActorScriptState *state;
 
-    v = *(u8 **)(actor + 0x54);
-    ((ActorScriptState *)v)->targetEnvironmentColor[0] = r;
-    ((ActorScriptState *)v)->targetEnvironmentColor[1] = g;
-    ((ActorScriptState *)v)->targetEnvironmentColor[2] = b;
-    ((ActorScriptState *)v)->targetEnvironmentColor[3] = a;
-    ((ActorScriptState *)v)->environmentColorTimeRemaining = duration;
+    state = ((RuntimeObjectPrefix *)actor)->state.actor;
+    state->targetEnvironmentColor[0] = r;
+    state->targetEnvironmentColor[1] = g;
+    state->targetEnvironmentColor[2] = b;
+    state->targetEnvironmentColor[3] = a;
+    state->environmentColorTimeRemaining = duration;
 }
 
 /// Set the actor model environment color immediately.
@@ -458,13 +458,13 @@ void actorTransitionModelEnvironmentColor(u8 *actor, u8 r, u8 g, u8 b, u8 a, f32
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800155B8 (0x800155B8).
 void actorSetModelEnvironmentColor(u8 *actor, u8 r, u8 g, u8 b, u8 a) {
-    u8 *v;
+    ActorScriptState *state;
 
-    v = *(u8 **)(actor + 0x54);
-    ((ActorScriptState *)v)->environmentColor[0] = r;
-    ((ActorScriptState *)v)->environmentColor[1] = g;
-    ((ActorScriptState *)v)->environmentColor[2] = b;
-    ((ActorScriptState *)v)->environmentColor[3] = a;
+    state = ((RuntimeObjectPrefix *)actor)->state.actor;
+    state->environmentColor[0] = r;
+    state->environmentColor[1] = g;
+    state->environmentColor[2] = b;
+    state->environmentColor[3] = a;
 }
 
 
@@ -491,10 +491,10 @@ void actorUpdateChildMotionCallback(u8 *object) {
 /// \param position Output array receiving three world-space coordinates.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80015620 (0x80015620).
-void actorGetParentTrackingPosition(u8 *child, u8 *parentState, f32 *position) {
+void actorGetParentTrackingPosition(u8 *child, ActorScriptState *parentState, f32 *position) {
     u8 *targetObject;
 
-    if (((ActorScriptState *)parentState)->targetMode == ACTOR_TARGET_FOLLOW) {
+    if (parentState->targetMode == ACTOR_TARGET_FOLLOW) {
         targetObject = actorResolveStoredTarget(((RuntimeObjectPrefix *)child)->root.bytes);
         if (targetObject != NULL) {
             if (((RuntimeObjectPrefix *)targetObject)->kind == 0x7F) {
@@ -509,9 +509,9 @@ void actorGetParentTrackingPosition(u8 *child, u8 *parentState, f32 *position) {
             return;
         }
     }
-    position[0] = ((ActorScriptState *)parentState)->targetPosition[0];
-    position[1] = ((ActorScriptState *)parentState)->targetPosition[1];
-    position[2] = ((ActorScriptState *)parentState)->targetPosition[2];
+    position[0] = parentState->targetPosition[0];
+    position[1] = parentState->targetPosition[1];
+    position[2] = parentState->targetPosition[2];
 }
 
 
@@ -524,11 +524,11 @@ void vector3GetEulerDegrees(f32 *, f32 *, f32 *, f32 *);
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80015704 (0x80015704).
 void actorUpdateTargetFacingChild(u8 *object) {
-    u8 *state;
+    ChildMotionState *state;
     f32 rollOffset = 180.0f;
     f32 fullTurn = 360.0f;
     u8 *parent;
-    u8 *parentState;
+    ActorScriptState *parentState;
     f32 delta[3];
     f32 initial[3];
     Matrix34 matrix;
@@ -540,13 +540,13 @@ void actorUpdateTargetFacingChild(u8 *object) {
     f32 length;
     s32 i;
 
-    state = ((RuntimeObjectPrefix *)object)->state.bytes;
+    state = ((RuntimeObjectPrefix *)object)->state.pointer;
     parent = ((RuntimeObjectPrefix *)object)->root.bytes;
-    follow = ((ChildMotionState *)state)->facingController;
-    parentState = ((RuntimeObjectPrefix *)parent)->state.bytes;
+    follow = state->facingController;
+    parentState = ((RuntimeObjectPrefix *)parent)->state.actor;
     motionUpdateChildPlayback(object);
     weight = &follow->weight;
-    if ((actionGetAttributes(parent) & 0x400000) && !(((ActorScriptState *)parentState)->behaviorFlags & ACTOR_INHIBIT_TARGET_FACING)) {
+    if ((actionGetAttributes(parent) & 0x400000) && !(parentState->behaviorFlags & ACTOR_INHIBIT_TARGET_FACING)) {
         *weight += 2.0f * gRuntimeFrameSeconds;
         if (*weight > 2.0f) {
             *weight = 2.0f;
@@ -557,8 +557,8 @@ void actorUpdateTargetFacingChild(u8 *object) {
             *weight = 0.0f;
         }
     }
-    if ((u16)((ChildMotionState *)state)->playbackMode == MOTION_PLAYBACK_TRACKS ||
-        (u16)((ChildMotionState *)state)->playbackMode == MOTION_PLAYBACK_POSE_BLEND) {
+    if ((u16)state->playbackMode == MOTION_PLAYBACK_TRACKS ||
+        (u16)state->playbackMode == MOTION_PLAYBACK_POSE_BLEND) {
         follow->motionAngles[0] = ((RuntimeObjectPrefix *)object)->rotation[0];
         follow->motionAngles[1] = ((RuntimeObjectPrefix *)object)->rotation[1];
         follow->motionAngles[2] = ((RuntimeObjectPrefix *)object)->rotation[2];
@@ -622,7 +622,7 @@ extern u8 gActorCameraFacingDirectionTransform[];
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80015AE8 (0x80015AE8).
 void actorUpdateCameraFacingChild(u8 *object) {
-    u16 *state;
+    ChildMotionState *state;
     FacingOrientation *orientation;
     f32 maxWeight = 2.0f;
     Vec3f direction;
@@ -634,8 +634,8 @@ void actorUpdateCameraFacingChild(u8 *object) {
     f32 x;
     f32 *weight;
 
-    state = (u16 *)((RuntimeObjectPrefix *)object)->state.bytes;
-    orientation = ((ChildMotionState *)state)->facingController;
+    state = ((RuntimeObjectPrefix *)object)->state.pointer;
+    orientation = state->facingController;
     motionUpdateChildPlayback(object);
     weight = &orientation->weight;
     if ((actionGetAttributes(((RuntimeObjectPrefix *)object)->root.bytes) & 0x800000) &&
@@ -650,8 +650,8 @@ void actorUpdateCameraFacingChild(u8 *object) {
             *weight = 0.0f;
         }
     }
-    if ((u16)((ChildMotionState *)state)->playbackMode == MOTION_PLAYBACK_TRACKS ||
-        (u16)((ChildMotionState *)state)->playbackMode == MOTION_PLAYBACK_POSE_BLEND) {
+    if ((u16)state->playbackMode == MOTION_PLAYBACK_TRACKS ||
+        (u16)state->playbackMode == MOTION_PLAYBACK_POSE_BLEND) {
         orientation->angles[0] = ((RuntimeObjectPrefix *)object)->rotation[0];
         orientation->angles[1] = ((RuntimeObjectPrefix *)object)->rotation[1];
         orientation->angles[2] = ((RuntimeObjectPrefix *)object)->rotation[2];
