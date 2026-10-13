@@ -1,3 +1,4 @@
+#include "area_transition.h"
 #include "runtime_control.h"
 #include "text_window.h"
 #include "message_bar.h"
@@ -43,7 +44,6 @@ void systemMenuExit();                      /* extern */
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
 
-void areaRequestTransition(s32, s32);          /* extern */
 
 /// Selected eye-catch group index, or minus one when no interlude is selected.
 /// \note Original identifier: \c D_8009B580 (0x8009B580).

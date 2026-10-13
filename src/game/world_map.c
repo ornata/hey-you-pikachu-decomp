@@ -1,3 +1,4 @@
+#include "area_transition.h"
 #include "controller_input.h"
 #include "microphone_requests.h"
 #include "audio_sound_effect.h"
@@ -769,7 +770,6 @@ void wholeMapSelectInitialDestination();
 void wholeMapConfigureVoiceInput();
 void wholeMapSelectBackdrop();
 void toolboxClearCollection();
-void areaSetNextDestination();
 void playerResetViewOrientation();
 void playerSetChaseStage();
 /// Remaining duration of the primary camera secondary overlay transition.

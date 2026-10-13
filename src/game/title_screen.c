@@ -1,3 +1,4 @@
+#include "area_transition.h"
 #include "runtime_control.h"
 #include "controller_input.h"
 #include "audio_sound_effect.h"
@@ -746,7 +747,6 @@ void titleScreenResetLogoFade(void);
 void titleScreenSetMessage(void **, s32, s32);
 s32 titleScreenHandleFileSelection(void);
 s32 titleScreenHandleOverwriteConfirmation(void);
-void areaSetNextDestination(s32, s32);
 
 /// Advance startup checks, title presentation, save-file menus, and transitions into gameplay or a demonstration.
 /// \returns Nothing.

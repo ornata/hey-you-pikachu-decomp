@@ -3850,3 +3850,9 @@ between runtime and all twenty declared consumer units. Checkpoint labels use
 the established borrowed string-pointer contract instead of local integer or
 byte-pointer declarations. Labels and the reserved diagnostic argument remain
 unused in this build; a pending reset may halt execution at a permitted checkpoint.
+
+`area_transition.h` unifies destination selection and transition requests
+between the area implementation and all eight declared consumer units. It
+documents destination wrapping through 23 areas and the caller-required valid
+spawn index. Runtime and world-map selection remain distinct from an immediate
+request to enter the destination.

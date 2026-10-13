@@ -1,3 +1,4 @@
+#include "area_transition.h"
 #include "runtime_control.h"
 #include "controller_input.h"
 #include "controller_rumble.h"
@@ -628,7 +629,6 @@ void toolboxUpdateDisplay();                   /* extern */
 void titleScreenUpdate();                   /* extern */
 void eyeCatchBegin();                   /* extern */
 s32 eyeCatchUpdate();                       /* extern */
-void areaSetNextDestination(s32, s32);   /* extern */
 void playerUpdateInput(s32);                /* extern */
 void pikachuUpdateScriptAndTriggers();                   /* extern */
 void systemMenuHandleInput();                   /* extern */

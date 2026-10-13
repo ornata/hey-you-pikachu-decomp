@@ -1,3 +1,4 @@
+#include "area_transition.h"
 #include "runtime_control.h"
 #include "controller_rumble.h"
 #include "text_image_configurations.h"
@@ -1094,7 +1095,6 @@ void presentationShowChapterFriendshipResult(void) {
 
 void runtimeRequestProgramChange(s32);
 void audioStopCategories(s32, f64);
-void areaSetNextDestination(s32, s32);
 void playerAddPoints(s32);
 /// Whether collection results were bypassed because no kept items or chapter result required presentation.
 /// \note Original identifier: \c D_8009B584 (0x8009B584).

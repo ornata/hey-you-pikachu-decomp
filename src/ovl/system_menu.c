@@ -1,3 +1,4 @@
+#include "area_transition.h"
 #include "runtime_control.h"
 #include "controller_input.h"
 #include "controller_rumble.h"
@@ -1267,7 +1268,6 @@ void systemMenuGoHome(s32 unused) {
     runtimeRequestGameModeChange(0xC);
 }
 
-void areaRequestTransition(s32, s32); /* extern */
 
 /// Leave the system menu and request an area transition at its default spawn.
 /// \param area Destination area identifier.

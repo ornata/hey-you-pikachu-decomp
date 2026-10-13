@@ -1,3 +1,4 @@
+#include "area_transition.h"
 #include "runtime_control.h"
 #include "controller_rumble.h"
 #include "terrain_movement.h"
@@ -882,7 +883,6 @@ s32 playerThrowHeldItemAndFocus(u8 *player) {
     return 1;
 }
 
-void areaRequestTransition(s32, s32); /* extern */
 void playerSetChaseStage(s32 arg0);    /* extern */
 /// Identifier of the currently loaded area.
 /// \note Original identifier: \c D_800AE4F8 (0x800AE4F8).

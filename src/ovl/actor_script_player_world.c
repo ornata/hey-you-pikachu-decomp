@@ -1,3 +1,4 @@
+#include "area_transition.h"
 #include "microphone_requests.h"
 #include "terrain_height.h"
 #include "terrain_surface.h"
@@ -752,7 +753,6 @@ s32 actorScriptPushHeldControllerButtons(u8 *actor) {
     return 1;
 }
 
-void areaRequestTransition(s32, s32); /* extern */
 /// Request an area transition and yield script execution.
 /// \param actor Actor whose script VM supplies an area identifier followed by a valid destination spawn index and receives zero; area identifiers wrap through the 23 supported areas.
 /// \returns One, yielding script execution.

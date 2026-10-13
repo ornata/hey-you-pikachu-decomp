@@ -1,3 +1,4 @@
+#include "area_transition.h"
 #include "runtime_control.h"
 #include "terrain_movement.h"
 #include "terrain_height.h"
@@ -2147,7 +2148,6 @@ void areaSetNextDestination(s32 area, s32 spawn) {
     gRuntimeNextEntrance = spawn;
 }
 
-void areaSetNextDestination();           /* extern */
 /// Request a transition to the selected area and destination spawn.
 /// \param area Destination area identifier, wrapped through the 23 supported areas.
 /// \param spawn Valid spawn index in the destination area's configuration.
