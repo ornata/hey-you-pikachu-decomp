@@ -1,3 +1,4 @@
+#include "falling_particle.h"
 #include "effect_emitter.h"
 #include "linked_effect.h"
 #include "attached_effect.h"
@@ -338,7 +339,6 @@ extern const f32 gActionLaunchHeadingOffsets[];
 /// Per-mode flags passed to the held-item throw interface.
 /// \note Original identifier: \c D_800A4978 (0x800A4978).
 extern const s32 gActionLaunchThrowFlags[];
-u8 *fallingParticleCreate(s32, s32, f32 *, f32 *, f32);
 f32 vector3Normalize(u8 *);
 f32 mathSinDegrees(f32);
 f32 mathCosDegrees(f32);

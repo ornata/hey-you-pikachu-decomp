@@ -1,3 +1,4 @@
+#include "falling_particle.h"
 #include "effect_emitter.h"
 #include "opacity_animation_programs.h"
 #include "texture_animation_programs.h"
@@ -854,7 +855,6 @@ void effectEmitterEmitScatteredParticles(u8 *emitter) {
 }
 
 void audioSetSoundEffectPitch(s32, f32);
-u8 *fallingParticleCreate(s32, s32, f32 *, f32 *, f32);
 
 /// Emit a falling-particle burst with accompanying sound when the emitter is ready.
 /// \param emitter Initialized effect emitter to update.
@@ -1264,13 +1264,6 @@ extern s32 gFallingParticleModels[];
 /// Integer scale animation selected when falling particles are created.
 /// \note Original identifier: \c D_8006B4F8 (0x8006B4F8).
 extern s32 gFallingParticleInitialScaleAnimation;
-
-/// Supported falling-particle orientation and lateral-motion styles.
-typedef enum FallingParticleMotion {
-    FALLING_PARTICLE_BILLBOARD_SPIN = 0, ///< Face the view with animated roll.
-    FALLING_PARTICLE_BILLBOARD_SWAY = 1, ///< Face the view with roll and lateral swaying.
-    FALLING_PARTICLE_TUMBLING = 2        ///< Turn around two axes independently of the view.
-} FallingParticleMotion;
 
 /// Owned falling-particle motion and scale playback state.
 typedef struct FallingParticleState {

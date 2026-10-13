@@ -3622,3 +3622,8 @@ allocates and zeroes exactly this size; animation keys remain borrowed.
 Falling-particle creation also uses shared object transforms and display-list
 fields. Its three motion styles are named billboard spin, billboard sway, and
 tumbling, while the stored style retains its signed 32-bit representation.
+
+The falling-particle creation contract and motion-style enumeration are shared
+through `falling_particle.h` by the implementation, action-script commands and
+maze scatter effects. Position and velocity inputs are copied; the object manager
+owns the registered result. All callers retain the established signed scalar ABI.
