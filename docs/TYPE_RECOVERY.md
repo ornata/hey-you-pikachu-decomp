@@ -3812,3 +3812,10 @@ and distinguishes submission return from later device completion.
 between session definitions and request wrappers. Readiness retains its original
 `int` return: substituting IDO `s32` (`long`) changes ROM code. The session
 requested-dictionary global again uses its established symbol-manifest name.
+
+### EEPROM transfer state
+
+The EEPROM interface names its six established asynchronous transfer states.
+The private 0x21C-byte job has checked payload/staging offsets and documented
+borrowed payload, owned staging, cursor and backup-page fields. State storage
+and function returns retain their signed target-word representation.

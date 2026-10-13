@@ -1631,11 +1631,11 @@
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
-          "size + 4": [
-            "123:55",
-            "157:55",
-            "189:71",
-            "212:71"
+          "payloadBytes + 4": [
+            "127:60",
+            "161:60",
+            "193:76",
+            "216:76"
           ]
         }
       }

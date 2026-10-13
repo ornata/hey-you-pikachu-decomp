@@ -6,11 +6,21 @@
 
 #include <ultra64.h>
 
+/// Asynchronous transfer states reported by the EEPROM interface.
+typedef enum EepromTransferState {
+    EEPROM_TRANSFER_IDLE = 0,            ///< No transfer is active, or EEPROM is unavailable to a state query.
+    EEPROM_TRANSFER_READING = 1,         ///< A checksum-protected read is pending.
+    EEPROM_TRANSFER_WRITING = 2,         ///< A checksum-protected write is pending.
+    EEPROM_TRANSFER_READ_FAILED = 3,     ///< Reading failed or a read could not start without supported EEPROM.
+    EEPROM_TRANSFER_CHECKSUM_FAILED = 4, ///< Read payload checksum did not match.
+    EEPROM_TRANSFER_WRITE_FAILED = 5     ///< Writing failed or a write could not start without supported EEPROM.
+} EepromTransferState;
+
 /// Request borrowed by the controller thread until pending becomes zero.
 /// Only one queued request and one transfer may be outstanding. Acknowledgment
 /// reports setup, while transfer completion is queried separately.
 typedef struct EepromRequest {
-    s16 type;       ///< Controller message type, five for EEPROM requests.
+    s16 type; ///< Controller message type, five for EEPROM requests.
     u8 padding02[2];
     s32 command;    ///< Zero requests a read; one requests a write.
     s32 pending;    ///< Nonzero until the controller thread acknowledges setup.
@@ -22,8 +32,8 @@ typedef struct EepromRequest {
 } EepromRequest;
 
 typedef char EepromRequestSizeCheck[(sizeof(EepromRequest) == 0x20) ? 1 : -1];
-typedef char EepromRequestBufferCheck[(((u32)&((EepromRequest *)0)->buffer) == 0x18) ? 1 : -1];
-typedef char EepromRequestPendingCheck[(((u32)&((EepromRequest *)0)->pending) == 8) ? 1 : -1];
+typedef char EepromRequestBufferCheck[(((u32) & ((EepromRequest *)0)->buffer) == 0x18) ? 1 : -1];
+typedef char EepromRequestPendingCheck[(((u32) & ((EepromRequest *)0)->pending) == 8) ? 1 : -1];
 
 /// Start a checksum-protected read without waiting for completion.
 /// \param page First eight-byte EEPROM page.
