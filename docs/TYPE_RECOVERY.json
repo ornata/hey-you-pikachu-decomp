@@ -590,7 +590,6 @@
       ],
       "matching_exceptions": {
         "heapAllocLocal callers": "Adopting heap_alloc.h and removing the unused fourth actor pointers changes actorAllocatePartTable instructions and fails the ROM gate, although the facing-controller allocation functions retain their bytes. Restoring the compatibility declaration restores all strict objects. Isolate signed size conversion and allocation scheduling in actorAllocatePartTable before canonical adoption. Heap deallocation now independently uses heap_free.h without trailing pointers.",
-        "actorUpdateMotionDisplacement": "The matrix-vector call retains an unused trailing actor-state pointer from the ROM call. Its matrix, input and output are float arrays and its return is void.",
         "actorBindAnimatedTexturesForDraw": "The raw 32-bit child continuation read at object offset 0x30 is retained: replacing it with RuntimeObjectPrefix.child.address changes this function's allocated instruction bytes under IDO, while the typed animated-texture state links match. Retry only with a representation that preserves the return load scheduling."
       },
       "locations": {
@@ -1405,7 +1404,9 @@
       ],
       "matching_exceptions": {
         "*": "Unknown declarations and temporary local names are now recovered and individually match. Existing integer address representations and unrelated noncanonical declarations remain outside this token cleanup.",
-        "presentationDrawCollectionItem": "Including canonical RuntimeObjectPrefix-pointer hierarchy update/draw declarations changes presentationDrawCollectionItem instruction bytes and fails ROM matching. Retain local legacy object-group declarations in this unit pending isolated call argument/register-allocation evidence."
+        "presentationDrawCollectionItem": "Including canonical RuntimeObjectPrefix-pointer hierarchy update/draw declarations changes presentationDrawCollectionItem instruction bytes and fails ROM matching. Retain local legacy object-group declarations in this unit pending isolated call argument/register-allocation evidence.",
+        "actionScriptStop callers": "The return is now the established borrowed s32 * script-identifier field. Canonical header adoption and removal of the unused presentation-state argument changes presentationRestoreActiveActor and fails the ROM gate in a forced rebuild. Keep the unprototyped argument view pending call setup/scheduling evidence.",
+        "hierarchy flag calls": "Including object_flags.h preserves final ROM bytes but changes allocated bytes in presentationPrepareActiveActor through its formerly implicit flag-set call, including with an explicit actor-pointer cast. Retain the local clear declaration and flag-set call representation pending strict object scheduling/relocation evidence."
       },
       "locations": {
         "raw_offset_candidates": {
@@ -1415,12 +1416,12 @@
           ],
           "liveObject + 0x54": [
             "231:22",
-            "860:18"
+            "862:18"
           ],
           "p + 4": [
             "232:71",
             "233:82",
-            "861:71"
+            "863:71"
           ],
           "gToolboxBonusSlot + 4": [
             "272:18"
@@ -1429,99 +1430,99 @@
             "276:19"
           ],
           "state + 0x1EC": [
-            "396:76"
+            "398:76"
           ],
           "player + 0x48": [
-            "405:28"
+            "407:28"
           ],
           "player + 0x54": [
-            "405:65"
+            "407:65"
           ],
           "player + 0x18": [
-            "408:14"
+            "410:14"
           ],
           "tgt + 0": [
-            "447:21"
-          ],
-          "tgt + 4": [
-            "448:21"
-          ],
-          "tgt + 8": [
             "449:21"
           ],
+          "tgt + 4": [
+            "450:21"
+          ],
+          "tgt + 8": [
+            "451:21"
+          ],
           "ext + 0xC": [
-            "451:71"
+            "453:71"
           ],
           "ext + 0x10": [
-            "452:76"
+            "454:76"
           ],
           "ext + 0x19C": [
-            "453:14"
+            "455:14"
           ],
           "ext + 0x1EC": [
-            "454:126"
+            "456:126"
           ],
           "firstJoint + 0x48": [
-            "458:18"
+            "460:18"
           ],
           "secondJoint + 0x48": [
-            "460:29"
+            "462:29"
           ],
           "gCurrentAreaConfiguration + 0x74": [
-            "518:23",
-            "535:18",
-            "585:25",
-            "598:25",
-            "618:29"
+            "520:23",
+            "537:18",
+            "587:25",
+            "600:25",
+            "620:29"
           ],
           "object + 0x54": [
-            "713:26",
-            "903:22"
+            "715:26",
+            "905:22"
           ],
           "state + 4": [
-            "714:75",
-            "715:68",
-            "904:58"
+            "716:75",
+            "717:68",
+            "906:58"
           ],
           "liveObject + 0x34": [
-            "857:18"
+            "859:18"
           ],
           "item + 0x18": [
-            "877:94"
+            "879:94"
           ],
           "item + 0x10": [
-            "878:14"
-          ],
-          "item + 0": [
-            "879:14"
-          ],
-          "gCurrentAreaConfiguration + 0xC": [
-            "879:35",
-            "880:35",
-            "881:35"
-          ],
-          "item + 4": [
             "880:14"
           ],
-          "item + 8": [
+          "item + 0": [
             "881:14"
           ],
+          "gCurrentAreaConfiguration + 0xC": [
+            "881:35",
+            "882:35",
+            "883:35"
+          ],
+          "item + 4": [
+            "882:14"
+          ],
+          "item + 8": [
+            "883:14"
+          ],
           "gCurrentAreaConfiguration + 0x64": [
-            "1217:18",
-            "1242:14",
-            "1306:18",
-            "1310:18",
-            "1314:18",
-            "1322:22"
+            "1219:18",
+            "1244:14",
+            "1308:18",
+            "1312:18",
+            "1316:18",
+            "1324:22"
           ],
           "gCurrentAreaConfiguration + 0x78": [
-            "1686:44"
+            "1688:44"
           ],
           "gItemKind8FCollectionValue + 0x64": [
-            "1776:47"
+            "1778:47"
           ],
           "currentChapter + 1": [
-            "1794:18"
+            "1796:18"
           ]
         }
       }
@@ -1541,9 +1542,7 @@
         "vector_direction.h",
         "vector_metrics.h"
       ],
-      "matching_exceptions": {
-        "collisionGridUnregisterObject": "Keyed-pool layout and value/key types are established. The remove call retains an unused fourth registration-key pointer; preserve this argument setup when consolidating declarations."
-      },
+      "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "object + 0x24": [
@@ -1609,7 +1608,8 @@
     },
     "src/game/eeprom_transfer.c": {
       "known_views": [
-        "eeprom_io.h"
+        "eeprom_io.h",
+        "serial_queue.h"
       ],
       "matching_exceptions": {},
       "locations": {
@@ -2237,6 +2237,7 @@
         "eeprom_io.h",
         "microphone_configuration.h",
         "microphone_session_query.h",
+        "serial_queue.h",
         "voice_recognition.h"
       ],
       "matching_exceptions": {
@@ -2245,7 +2246,7 @@
       "locations": {
         "raw_offset_candidates": {
           "gMicSessionUploadingDictionary + 1": [
-            "264:13"
+            "265:13"
           ]
         }
       }
@@ -3865,36 +3866,37 @@
     },
     "src/game/voice_device.c": {
       "known_views": [
-        "PRinternal/controller_voice.h"
+        "PRinternal/controller_voice.h",
+        "voice_device.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "i - 1": [
-            "89:31"
+            "90:31"
           ],
           "i + 1": [
-            "89:45",
-            "138:41"
+            "90:45",
+            "139:41"
           ],
           "command + 20": [
-            "95:60",
-            "145:60"
+            "96:60",
+            "146:60"
           ],
           "command + 40": [
-            "98:60"
+            "99:60"
           ],
           "command + 60": [
-            "101:60"
+            "102:60"
           ],
           "bytes + 1": [
-            "133:28"
+            "134:28"
           ],
           "length + 40": [
-            "137:21"
+            "138:21"
           ],
           "length + 41": [
-            "138:21"
+            "139:21"
           ]
         }
       }
@@ -3905,15 +3907,15 @@
         "voice_recognition.h"
       ],
       "matching_exceptions": {
-        "voiceDictionaryClearDevice": "The typed OSVoiceHandle argument is established by initialization and voice_device.c. Two unused trailing arguments remain in this caller; the local compatibility declaration preserves their original ABI setup."
+        "voiceDictionaryClearDevice": "Canonical voice_device.h adoption and removal of the two trailing clear-call arguments changes voiceDictionaryClearDevice and fails the ROM gate. The other device calls retain their bytes. Keep the documented s32-count/four-argument clear view until count-width and argument scheduling effects are isolated. Queue types are now OSMesgQueue * end-to-end through recognition initialization and microphone_session.c."
       },
       "locations": {
         "raw_offset_candidates": {
           "return -1": [
-            "175:9",
-            "427:5",
-            "441:5",
-            "483:9"
+            "185:9",
+            "436:5",
+            "450:5",
+            "492:9"
           ]
         }
       }

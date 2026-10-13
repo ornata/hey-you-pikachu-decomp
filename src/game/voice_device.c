@@ -1,3 +1,4 @@
+#include "voice_device.h"
 #include "common.h"
 #include "PRinternal/controller_voice.h"
 void _bzero(void *, s32);

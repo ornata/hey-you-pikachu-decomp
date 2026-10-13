@@ -1,3 +1,4 @@
+#include "serial_queue.h"
 #include "common.h"
 #include "eeprom_io.h"
 
@@ -35,7 +36,6 @@ void _bzero(void *, u32);
 s32 checksumCrc32(s32, void *);
 
 
-OSMesgQueue *serialGetMessageQueue();
 
 /// Check whether the current EEPROM payload passes checksum validation.
 /// \returns 1 when the checksums match, 0 otherwise.

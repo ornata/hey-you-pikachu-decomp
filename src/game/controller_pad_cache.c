@@ -1,7 +1,7 @@
+#include "serial_queue.h"
 #include "controller_pad.h"
 #include "common.h"
 
-OSMesgQueue *serialGetMessageQueue(void);
 /// Latest hardware samples for the four controller ports.
 /// \note Original identifier: \c D_800AD400 (0x800AD400).
 extern OSContPad gControllerPadSamples[4];

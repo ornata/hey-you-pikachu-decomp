@@ -1,3 +1,4 @@
+#include "serial_queue.h"
 #include "font_cache.h"
 #include "texture_cache.h"
 #include "rom_dma.h"

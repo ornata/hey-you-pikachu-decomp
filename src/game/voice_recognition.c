@@ -125,8 +125,9 @@ extern s32 gVoiceRecognitionResultPending;
 extern u8 gVoiceVocabularyData[];
 extern s32 D_A9800;
 extern s32 D_B3C70;
-s32 voiceDeviceInitialize(s32, OSVoiceHandle *, s32);
 #include "rom_dma.h"
+s32 voiceDeviceInitialize(OSMesgQueue *, OSVoiceHandle *, s32);
+s32 voiceDeviceRegisterWord(OSVoiceHandle *, u8 *);
 
 /// Initialize the voice recognition device and load its resident dictionary data.
 /// \param queue Initialized serial-interface message queue address; the queue
@@ -134,7 +135,7 @@ s32 voiceDeviceInitialize(s32, OSVoiceHandle *, s32);
 /// \param channel Controller port connected to the voice recognition device, from 0 through 3.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800404E8 (0x800404E8).
-void voiceRecognitionInitialize(s32 queue, s32 channel) {
+void voiceRecognitionInitialize(OSMesgQueue *queue, s32 channel) {
     s32 *start = &D_A9800;
     s32 i;
 
@@ -161,8 +162,17 @@ void voiceRecognitionInitialize(s32 queue, s32 channel) {
     TRACE("mic64Init() End\n");
 }
 
-/// ABI compatibility declaration: this caller retains two unused trailing ROM arguments.
-s32 voiceDeviceClearDictionary(OSVoiceHandle *, s32, s32 *, s32);
+
+/// Clear the device dictionary through the retained target call representation.
+/// \param handle Initialized voice handle.
+/// \param wordCount Number of replacement dictionary words.
+/// \param unusedState Unused trailing device-state pointer retained for matching.
+/// \param unusedCount Unused trailing word count retained for matching.
+/// \returns Zero on success, or a device error code.
+/// \note Portability: The canonical two-argument u16-count declaration changes
+/// voiceDictionaryClearDevice code; see voice_device.h for the device contract.
+/// \note Original decompilation identifier: \c func_8004CDA4 (0x8004CDA4).
+s32 voiceDeviceClearDictionary(OSVoiceHandle *handle, s32 wordCount, s32 *unusedState, s32 unusedCount);
 
 /// Clear the device dictionary and reserve space for its replacement.
 /// \param wordCount Number of words in the replacement dictionary.
@@ -193,7 +203,6 @@ s32 voiceDictionaryClearDevice(s32 wordCount) {
 /// Number of words in the selected dictionary upload.
 /// \note Original identifier: \c D_800F8AD0 (0x800F8AD0).
 extern s32 gVoiceSelectedDictionaryWordCount;
-s32 voiceDeviceRegisterWord(OSVoiceHandle *, u8 *);
 
 /* Copy the encoded text of dictionary word `index` into `dst` as u16
  * characters, including the zero terminator. */

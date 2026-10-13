@@ -43,6 +43,13 @@ s32 voiceDictionaryGetCommandType(u16 index);
 /// \returns Command value, or -1 for an invalid or unavailable entry.
 s32 voiceDictionaryGetCommandValue(u16 index);
 
+/// Initialize recognition and load the resident vocabulary for a connected device.
+/// \param queue Initialized serial-interface queue, retained for the device lifetime.
+/// \param channel Controller port connected to the device, from zero through three.
+/// \returns Nothing; device state reports initialization success or failure.
+/// \note Original decompilation identifier: \c func_800404E8 (0x800404E8).
+void voiceRecognitionInitialize(OSMesgQueue *queue, s32 channel);
+
 /// Consume the pending recognition-result notification.
 /// \param out Destination for the retained result, or null to discard the notification.
 /// \returns First answer index, or -1 when no result is pending; callers must also check the answer count.

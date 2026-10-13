@@ -4,13 +4,12 @@
   "matching_exceptions": {
     "src/game/collection_presentation.c": {
       "*": "Unknown declarations and temporary local names are now recovered and individually match. Existing integer address representations and unrelated noncanonical declarations remain outside this token cleanup.",
-      "presentationDrawCollectionItem": "Including canonical RuntimeObjectPrefix-pointer hierarchy update/draw declarations changes presentationDrawCollectionItem instruction bytes and fails ROM matching. Retain local legacy object-group declarations in this unit pending isolated call argument/register-allocation evidence."
+      "presentationDrawCollectionItem": "Including canonical RuntimeObjectPrefix-pointer hierarchy update/draw declarations changes presentationDrawCollectionItem instruction bytes and fails ROM matching. Retain local legacy object-group declarations in this unit pending isolated call argument/register-allocation evidence.",
+      "actionScriptStop callers": "The return is now the established borrowed s32 * script-identifier field. Canonical header adoption and removal of the unused presentation-state argument changes presentationRestoreActiveActor and fails the ROM gate in a forced rebuild. Keep the unprototyped argument view pending call setup/scheduling evidence.",
+      "hierarchy flag calls": "Including object_flags.h preserves final ROM bytes but changes allocated bytes in presentationPrepareActiveActor through its formerly implicit flag-set call, including with an explicit actor-pointer cast. Retain the local clear declaration and flag-set call representation pending strict object scheduling/relocation evidence."
     },
     "src/game/eye_catch.c": {
       "eyeCatchUpdatePlayback": "Retain local audioPlaySoundEffect(s16) and audioSetSoundEffectVolume returning s32 declarations: adopting canonical s32 sound IDs and the void volume setter changes ROM bytes. Isolate each signature before retrying canonical-header adoption."
-    },
-    "src/ovl/script_demo_item_commands.c": {
-      "scriptCommandCreateItemParticles": "The motion helper uses its established float parameters with 100.0f and 1000.0f. This isolated correction preserves all allocated bytes; the former broad-sweep exception no longer applies."
     },
     "src/ovl/player_companion.c": {
       "playerUpdateNormalControl": "All placeholder fields are recovered. One angle read uses a checked member offset because direct members reverse the IDO floating add operands; the resulting object matches.",
@@ -26,7 +25,6 @@
     },
     "src/game/actor_model_motion.c": {
       "heapAllocLocal callers": "Adopting heap_alloc.h and removing the unused fourth actor pointers changes actorAllocatePartTable instructions and fails the ROM gate, although the facing-controller allocation functions retain their bytes. Restoring the compatibility declaration restores all strict objects. Isolate signed size conversion and allocation scheduling in actorAllocatePartTable before canonical adoption. Heap deallocation now independently uses heap_free.h without trailing pointers.",
-      "actorUpdateMotionDisplacement": "The matrix-vector call retains an unused trailing actor-state pointer from the ROM call. Its matrix, input and output are float arrays and its return is void.",
       "actorBindAnimatedTexturesForDraw": "The raw 32-bit child continuation read at object offset 0x30 is retained: replacing it with RuntimeObjectPrefix.child.address changes this function's allocated instruction bytes under IDO, while the typed animated-texture state links match. Retry only with a representation that preserves the return load scheduling."
     },
     "src/game/backdrop.c": {
@@ -58,13 +56,10 @@
       "actorCreateForKind": "An unused local word is named reservedCreationSlot. Removing it shrinks the IDO frame by eight bytes and changes all argument/spill offsets; it is retained with a Doxygen target-compiler note."
     },
     "src/game/voice_recognition.c": {
-      "voiceDictionaryClearDevice": "The typed OSVoiceHandle argument is established by initialization and voice_device.c. Two unused trailing arguments remain in this caller; the local compatibility declaration preserves their original ABI setup."
+      "voiceDictionaryClearDevice": "Canonical voice_device.h adoption and removal of the two trailing clear-call arguments changes voiceDictionaryClearDevice and fails the ROM gate. The other device calls retain their bytes. Keep the documented s32-count/four-argument clear view until count-width and argument scheduling effects are isolated. Queue types are now OSMesgQueue * end-to-end through recognition initialization and microphone_session.c."
     },
     "src/game/action_script_commands.c": {
       "appearance command calls": "Appearance scale now uses the established float parameter and both appearance helpers return void. Their unused trailing command pointer is retained through local compatibility declarations to preserve the ROM calls."
-    },
-    "src/game/collision_grid.c": {
-      "collisionGridUnregisterObject": "Keyed-pool layout and value/key types are established. The remove call retains an unused fourth registration-key pointer; preserve this argument setup when consolidating declarations."
     },
     "src/ovl/actor_script_actions.c": {
       "actorConsumeHeldItem": "The item transformation result and cause are s32. The caller retains an unused third object pointer through a compatibility declaration."

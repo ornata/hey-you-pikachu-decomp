@@ -317,11 +317,13 @@ extern f32 gPlayerViewShake;
 /// \note Original identifier: \c D_800EF6BC (0x800EF6BC).
 extern f32 gPlayerEyeHeight;
 void playerRestoreState(void);
-/// Compatibility declaration retained for strict object matching.
-/// \note Adopting action_script_stop.h and removing the extra presentation-state
-/// argument preserves the ROM but changes this unit's allocated object bytes.
-/// Compiler scheduling evidence is needed before replacing this declaration.
-u8 *actionScriptStop();
+/// Stop the actor action script and borrow its completed script-identifier field.
+/// \returns Actor-state script identifier, set to minus one; valid while that state lives.
+/// \note Portability: The first argument is an actor address. The restore call
+/// retains an unused presentation-state argument; adopting action_script_stop.h
+/// and removing it changes presentationRestoreActiveActor code and fails ROM matching.
+/// \note Original decompilation identifier: \c func_800120AC (0x800120AC).
+s32 *actionScriptStop();
 void objectClearHierarchyFlags(u8 *, u16);
 
 

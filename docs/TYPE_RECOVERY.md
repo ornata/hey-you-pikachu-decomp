@@ -4097,3 +4097,23 @@ units preserve strict objects. Allocator trials isolate remaining mismatches to
 `wordMapInitialize` and `actorAllocatePartTable`; their compatibility declarations
 remain, with the failed trials and next compiler evidence recorded. Obsolete
 deallocator portability notes were removed from the word-map interface.
+
+### Voice-device contracts and compatibility evidence
+
+`voice_device.h` documents connection, encoded-word upload, mask storage and
+dictionary capacity contracts. Recognition initialization now carries an
+`OSMesgQueue *` through its shared header and microphone-session caller. The
+clear-dictionary caller still needs its explicit legacy argument view: canonical
+adoption changes that function and fails the ROM gate, while connection and word
+upload calls retain their bytes.
+
+Collection presentation now states the correct borrowed `s32 *` action-stop
+result. Forced trials isolate its remaining stop-call mismatch and the distinct
+strict-object constraint on hierarchy flag-header adoption. The ledger also
+removes obsolete motion-transform, collision-pool and demonstration-command
+exceptions whose current source already uses canonical calls.
+
+`serial_queue.h` completes the queue contract through the controller accessor,
+controller-pad cache, EEPROM transfers and microphone discovery. This removes
+the microphone caller's implicit integer-return declaration while preserving
+all object bytes. The queue is borrowed for the controller subsystem lifetime.

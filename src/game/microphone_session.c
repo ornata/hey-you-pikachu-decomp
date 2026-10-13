@@ -1,3 +1,4 @@
+#include "serial_queue.h"
 #include "controller_pad.h"
 #include "microphone_session_query.h"
 #include "microphone_configuration.h"
@@ -226,7 +227,7 @@ void micSessionUpdateDictionary(void) {
                 if (((status) = controllerGetPortStatus(port), (status)->errno == 0) &&                                          \
                     (((status)->type & CONT_TYPE_MASK) == CONT_TYPE_VOICE)) {                                          \
                     TRACE("mic found:%d\n", (port));                                                                   \
-                    voiceRecognitionInitialize((s32)serialGetMessageQueue(), (port));                                                       \
+                    voiceRecognitionInitialize(serialGetMessageQueue(), (port));                                                       \
                     if (voiceRecognitionGetDeviceState() == 1) {                                                                        \
                         gMicSessionDevicePort = (port);                                                                           \
                     } else {                                                                                           \
