@@ -24,7 +24,6 @@ extern f32 D_80147C8C_scene_ochre_deep[];
 /// \note Original identifier: \c D_80147AF4_scene_ochre_deep (0x80147AF4).
 extern f32 D_80147AF4_scene_ochre_deep[];
 
-void doorRegistryReset(void);
 extern f32 D_8014A188_scene_ochre_deep[];
 extern f32 D_80134C80_scene_ochre_deep[];
 extern u8 D_80134C98_scene_ochre_deep[];

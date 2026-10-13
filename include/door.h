@@ -3,6 +3,12 @@
 #ifndef DOOR_H
 #define DOOR_H
 #include <ultra64.h>
+#include "passage_types.h"
+
+/// Begin a new door-registry lifetime for area initialization.
+/// \returns Nothing; existing objects remain owned by the object system.
+/// \note Original decompilation identifier: \c func_8001C110 (0x8001C110).
+void doorRegistryReset(void);
 
 /// Create and register a door or destination sign.
 /// \param position Three-component world position.

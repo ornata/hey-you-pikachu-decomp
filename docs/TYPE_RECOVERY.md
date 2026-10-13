@@ -3973,3 +3973,11 @@ the implementation and all eight declared consumer units. The contract records
 that current stage uses the low eight bits while saved furthest-stage progress
 uses the full requested value. Script callers now share the actual query return
 instead of a local signed-word declaration.
+
+### Passage state and registry lifetime
+
+`passage_types.h` focuses the checked door/sign destination layout and five
+established access categories. Existing scene consumers receive it through the
+scene header; the door interface includes it directly. All six scene reset
+callers use the shared registry-lifetime contract. Door descriptions and player
+transition checks use named access states and the typed passage record.

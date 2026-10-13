@@ -19,7 +19,6 @@ extern WeightedChoiceTable D_80157CEC_scene_springleaf_field;
 /// \note Original identifier: \c D_80157CF4_scene_springleaf_field (0x80157CF4).
 extern f32 D_80157CF4_scene_springleaf_field[];
 
-void doorRegistryReset(void);
 /// Entrance index used to initialize the player and companion in the current area.
 /// \note Original identifier: \c D_800AE4F4 (0x800AE4F4).
 extern s32 gRuntimeCurrentEntrance;

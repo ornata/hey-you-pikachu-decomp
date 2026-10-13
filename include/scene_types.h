@@ -6,6 +6,7 @@
 
 #include <ultra64.h>
 #include "maze_types.h"
+#include "passage_types.h"
 
 /// Borrowed coordinate table for one scene path.
 typedef struct ScenePathEntry {
@@ -39,13 +40,7 @@ typedef struct SceneSpawnPoint {
     f32 actorYaw;          ///< Initial companion facing in degrees.
 } SceneSpawnPoint;
 
-/// Destination and access state owned by a door or sign object.
-typedef struct PassageState {
-    s32 kind;        ///< Description and destination category, zero through three.
-    s32 destination; ///< Destination area or chase-stage identifier, depending on kind.
-    s32 entrance;    ///< Entrance selected in the destination area.
-    s32 accessState; ///< Nonzero when passage is blocked.
-} PassageState;
+
 
 /// Recovered scene configuration prefix used by maze and scene initialization.
 /// This view is smaller than the complete configuration and must not be used
@@ -78,11 +73,6 @@ typedef char
     SceneConfigurationScaleOffsetCheck[(((u32) & (((SceneConfigurationPrefix *)0)->objectScale)) == 0xC) ? 1 : -1];
 
 typedef char SceneSpawnPointSizeCheck[(sizeof(SceneSpawnPoint) == 0x20) ? 1 : -1];
-typedef char PassageStateSizeCheck[(sizeof(PassageState) == 0x10) ? 1 : -1];
-typedef char PassageKindOffsetCheck[(((u32) & ((PassageState *)0)->kind) == 0) ? 1 : -1];
-typedef char PassageDestinationOffsetCheck[(((u32) & ((PassageState *)0)->destination) == 4) ? 1 : -1];
-typedef char PassageEntranceOffsetCheck[(((u32) & ((PassageState *)0)->entrance) == 8) ? 1 : -1];
-typedef char PassageAccessStateOffsetCheck[(((u32) & ((PassageState *)0)->accessState) == 0xC) ? 1 : -1];
 typedef char ScenePathEntrySizeCheck[(sizeof(ScenePathEntry) == 8) ? 1 : -1];
 typedef char SceneRegionStateSizeCheck[(sizeof(SceneRegionState) == 0x10) ? 1 : -1];
 typedef char CaveStateSizeCheck[(sizeof(CaveState) == 0x20) ? 1 : -1];

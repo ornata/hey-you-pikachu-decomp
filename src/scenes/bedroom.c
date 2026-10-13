@@ -8,7 +8,6 @@
 /// \returns Nothing.
 void bedroomSceneNoOp(void) {
 }
-void doorRegistryReset(void);
 void toolboxClearCollection(void);
 void mazeSpawnAvailableItems(ItemSpawn *);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.

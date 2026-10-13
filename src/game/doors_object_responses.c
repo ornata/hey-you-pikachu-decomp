@@ -159,19 +159,19 @@ u8 *doorGetAccessDescription(u8 *object) {
     PassageState *state = ((RuntimeObjectPrefix *)object)->state.pointer;
 
     switch ((u32)state->accessState) {
-    case 0:
+    case PASSAGE_ACCESS_ALLOWED:
         sprintf(gDoorAccessDescriptionBuffer, "\nPress @I@J to go on.");
         break;
-    case 1:
+    case PASSAGE_ACCESS_LOCKED:
         sprintf(gDoorAccessDescriptionBuffer, "\nIt's locked.");
         break;
-    case 2:
+    case PASSAGE_ACCESS_UNAVAILABLE:
         sprintf(gDoorAccessDescriptionBuffer, "\nYou can't go through here yet.");
         break;
-    case 3:
+    case PASSAGE_ACCESS_REQUIRES_PIKACHU:
         sprintf(gDoorAccessDescriptionBuffer, "\nYou can go through\nwhen ^6PIKACHU^^ is near.");
         break;
-    case 4:
+    case PASSAGE_ACCESS_BLOCKED_BY_SQUIRTLE:
         sprintf(gDoorAccessDescriptionBuffer, "\n^4SQUIRTLE^^ is blocking the way.");
         break;
     default:

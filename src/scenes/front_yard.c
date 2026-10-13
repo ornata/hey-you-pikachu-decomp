@@ -7,7 +7,6 @@
 #include "actor_script.h"
 #include "scene_types.h"
 
-void doorRegistryReset(void);
 void toolboxClearCollection(void);
 void mazeSpawnAvailableItems(u8 *);
 extern f32 D_80134590_scene_front_yard[3];
