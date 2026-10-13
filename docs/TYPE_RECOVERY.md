@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,044 / 76 |
+| Raw offset candidates | 4,040 / 86 | 2,039 / 76 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3705,3 +3705,7 @@ and the implementation use the same signed style and floating-coordinate ABI.
 Ribbon anchors own a checked four-byte state containing a borrowed controller
 link in the same hierarchy. Initialization and hierarchy creation share that
 layout; controller destruction uses the established state and display-list fields.
+
+Cluster-element orientation uses the shared rotation array for its two animated
+axes. The indexed array representation preserves the original update and angle
+normalization code, confirmed by strict object comparison.

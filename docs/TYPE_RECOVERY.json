@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 2044,
-      "unique_spellings": 852,
+      "occurrences": 2039,
+      "unique_spellings": 851,
       "files": 76
     }
   },
@@ -2917,13 +2917,6 @@
           ],
           "emitter + 0x44": [
             "897:21"
-          ],
-          "element + 0xC": [
-            "1199:18",
-            "1201:25",
-            "1202:22",
-            "1204:25",
-            "1205:22"
           ],
           "state + 0x28": [
             "1511:36"

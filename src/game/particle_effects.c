@@ -1196,13 +1196,13 @@ void particleClusterElementUpdate(u8 *element) {
     s32 i;
 
     for (i = 1; i < 3; i++) {
-        *(f32 *)(element + 0xC + i * 4) +=
+        ((RuntimeObjectPrefix *)element)->rotation[i] +=
             ((f64)randomNext() * 2.3283064365386963e-10 * 30.0 + 60.0) * gRuntimeFrameSeconds;
-        while (*(f32 *)(element + 0xC + i * 4) < 0.0f) {
-            *(f32 *)(element + 0xC + i * 4) += 360.0f;
+        while (((RuntimeObjectPrefix *)element)->rotation[i] < 0.0f) {
+            ((RuntimeObjectPrefix *)element)->rotation[i] += 360.0f;
         }
-        while (*(f32 *)(element + 0xC + i * 4) >= 360.0f) {
-            *(f32 *)(element + 0xC + i * 4) -= 360.0f;
+        while (((RuntimeObjectPrefix *)element)->rotation[i] >= 360.0f) {
+            ((RuntimeObjectPrefix *)element)->rotation[i] -= 360.0f;
         }
     }
     objectAdjustPitchAlongCameraView(element);
