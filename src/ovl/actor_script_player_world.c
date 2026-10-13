@@ -1,3 +1,4 @@
+#include "controller_state.h"
 #include "pikachu_actor.h"
 #include "area_transition.h"
 #include "microphone_requests.h"
@@ -738,16 +739,13 @@ s32 actorScriptPushGameMode(u8 *actor) {
     return 0;
 }
 
-/// Processed button and stick samples for all controller ports; scalar declarations view the primary held-button word.
-/// \note Original identifier: \c D_800AD540 (0x800AD540).
-extern s32 gControllerInputState;
 
 /// Read held buttons from the first controller and yield script execution.
 /// \param actor Actor whose script VM receives the first controller held-button mask.
 /// \returns One, yielding script execution.
 /// \note Original decompilation identifier: \c func_8011EF80 (0x8011EF80).
 s32 actorScriptPushHeldControllerButtons(u8 *actor) {
-    scriptVmPushInteger(((RuntimeObjectPrefix *)actor)->state.actor->vmAddress, gControllerInputState);
+    scriptVmPushInteger(((RuntimeObjectPrefix *)actor)->state.actor->vmAddress, (s32)gControllerInputState[0].held);
     return 1;
 }
 

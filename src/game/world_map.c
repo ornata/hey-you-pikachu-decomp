@@ -1,3 +1,4 @@
+#include "controller_state.h"
 #include "actor_script.h"
 #include "player_chase.h"
 #include "texture_rectangles.h"
@@ -538,9 +539,6 @@ void wholeMapEnsureAvailableSelection(s32 min, s32 max, s32 step) {
 }
 
 void wholeMapEnsureAvailableSelection(s32, s32, s32);
-/// Processed button and stick samples for all controller ports; scalar declarations view the primary held-button word.
-/// \note Original identifier: \c D_800AD540 (0x800AD540).
-extern ControllerState gControllerInputState[4];
 /// Primary controller new and auto-repeated button presses.
 /// \note Original identifier: \c D_800AD54C (0x800AD54C).
 extern s32 gControllerPrimaryRepeatedButtons;

@@ -1,3 +1,4 @@
+#include "controller_state.h"
 #include "texture_cache.h"
 #include "pikachu_actor.h"
 #include "object_groups.h"
@@ -639,9 +640,6 @@ extern s32 gEyeCatchSelectedGroup;
 /// Remaining duration of the primary camera secondary overlay transition.
 /// \note Original identifier: \c D_800ABDCC (0x800ABDCC).
 extern f32 gPrimarySecondaryOverlayRemainingSeconds;
-/// Processed button and stick samples for all controller ports; scalar declarations view the primary held-button word.
-/// \note Original identifier: \c D_800AD540 (0x800AD540).
-extern u32 gControllerInputState[];
 /// Second controller processed sample; also the start of the secondary-player input traversal.
 /// \note Original identifier: \c D_800AD558 (0x800AD558).
 extern ControllerState gControllerSecondPortInputState;
@@ -754,7 +752,7 @@ void runtimeUpdateGameMode(void) {
             } while (savePrompt != gSaveSuccessPromptLines);
             runtimeResetUiPulse();
             gRuntimeGameModeEntryPending = 0;
-        } else if (gControllerInputState[1] & 0x8000) {
+        } else if (gControllerInputState[0].pressed & 0x8000) {
             textPanelReleaseEntries((TextPanel *)&gRuntimePromptPanelLineCount);
             gRuntimePromptPanelImages = 0;
             runtimeRequestGameModeChange(0x10);
@@ -820,7 +818,7 @@ void runtimeUpdateGameMode(void) {
         objectUpdateGroup(0);
         break;
     case 17:
-        if (gRuntimeSaveAcknowledgeButtons & gControllerInputState[1]) {
+        if (gRuntimeSaveAcknowledgeButtons & gControllerInputState[0].pressed) {
             audioStopCategories(3, 0.10000000149011612);
             cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.0f);
             textPanelReleaseEntries((TextPanel *)&gRuntimePromptPanelLineCount);

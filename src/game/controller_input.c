@@ -1,3 +1,4 @@
+#include "controller_state.h"
 #include "controller_input.h"
 #include "controller_pad.h"
 #include "common.h"
@@ -44,9 +45,6 @@ extern OSTime gControllerButtonPressTicks[4][16];
 /// \note Original identifier: \c D_800AD7A0 (0x800AD7A0).
 extern OSTime gControllerNextRepeatTicks[4][16]; /* next auto-repeat time per port and button */
 
-/// Processed button and stick samples for all controller ports; scalar declarations view the primary held-button word.
-/// \note Original identifier: \c D_800AD540 (0x800AD540).
-extern ControllerState gControllerInputState[4];
 /// \note Original identifier: \c D_800A01F4 (0x800A01F4).
 extern f32 gControllerDefaultRepeatDelaySeconds;
 /// \note Original identifier: \c D_800A01F8 (0x800A01F8).

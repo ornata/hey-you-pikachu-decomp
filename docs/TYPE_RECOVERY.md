@@ -4168,3 +4168,14 @@ The EEPROM payload-size wrapper now has a descriptive type and field, checked
 sizes cover three primary records and their three backups. Unused toolbox
 declarations were removed from progress storage. Both source units preserve
 all allocated bytes, defined symbols and relocations.
+
+### Processed controller storage contract
+
+`controller_state.h` provides the single typed declaration for all four
+processed controller samples. The input producer, world map, player update,
+runtime, actor-script button query and text window share it. Runtime accesses
+the primary `pressed` field instead of indexing raw words; scripts read the
+primary `held` field, and text-window consumption clears that same field.
+The contract documents record refresh and UI consumption so retained references
+are not mistaken for immutable samples. All six source units independently
+preserve strict objects, including existing scalar alias symbols.

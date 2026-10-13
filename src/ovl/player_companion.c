@@ -1,3 +1,4 @@
+#include "controller_state.h"
 #include "player_chase.h"
 #include "math_scalar.h"
 #include "pikachu_actor.h"
@@ -2218,9 +2219,6 @@ s32 playerIsPitchControlEnabled(u8 *player) {
 
 void _bzero(); /* extern */
 
-/// Processed button and stick samples for all controller ports; scalar declarations view the primary held-button word.
-/// \note Original identifier: \c D_800AD540 (0x800AD540).
-extern ControllerState gControllerInputState[4];
 
 /// Advance a player control update using the assigned controller input.
 /// \param idx Player record index zero; a missing controller supplies neutral input.

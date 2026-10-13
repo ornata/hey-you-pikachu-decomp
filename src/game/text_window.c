@@ -1,3 +1,4 @@
+#include "controller_state.h"
 #include "texture_rectangles.h"
 #include "math_scalar.h"
 #include "object_groups.h"
@@ -557,14 +558,13 @@ void runtimeResetUiPulse(void);
 void playerUpdateInput(s32);
 void pikachuUpdateScriptAndTriggers(void);
 /// Processed button and stick samples for all controller ports; scalar declarations view the primary held-button word.
-/// \note Original identifier: \c D_800AD540 (0x800AD540).
 /// Primary controller newly pressed buttons; aliases the pressed word of the processed sample.
 /// \note Original identifier: \c D_800AD544 (0x800AD544).
 /// Primary controller newly released buttons; aliases the released word of the processed sample.
 /// \note Original identifier: \c D_800AD548 (0x800AD548).
 /// Primary controller new and auto-repeated button presses; aliases the repeated word of the processed sample.
 /// \note Original identifier: \c D_800AD54C (0x800AD54C).
-extern s32 gControllerInputState, gControllerPrimaryPressedButtons, gControllerPrimaryReleasedButtons, gControllerPrimaryRepeatedButtons;
+extern s32 gControllerPrimaryPressedButtons, gControllerPrimaryReleasedButtons, gControllerPrimaryRepeatedButtons;
 /// Advance text-window transitions, respond to page-advance input, and update the enabled scene.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002C6A4 (0x8002C6A4).
@@ -583,7 +583,7 @@ void textWindowUpdate(void) {
         gControllerPrimaryRepeatedButtons = 0;
         gControllerPrimaryReleasedButtons = 0;
         gControllerPrimaryPressedButtons = 0;
-        gControllerInputState = 0;
+        gControllerInputState[0].held = 0;
         break;
     case TEXT_WINDOW_CHANGING_PAGE:
         if (runtimeGetElapsedMilliseconds() - (u64)gTextWindowStateStartMilliseconds > 90) {
