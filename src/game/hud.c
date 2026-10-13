@@ -1,3 +1,4 @@
+#include "texture_image.h"
 #include "texture_descriptor.h"
 #include "texture_rectangles.h"
 #include "pikachu_actor.h"
@@ -101,8 +102,6 @@ void hudInitializeDirectionIndicators(void) {
     animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalDirectionInnerTrack, gTextureFrameAnimationPrograms[226]);
 }
 
-void textureImageInitialize(s32 *, s32, s32, s32, s32, s32, s32);
-void textureDrawScaledRepeated(Gfx **, s32 *, s32, s32, s32, s32, s32, s32, f32, f32, s32, s32);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
@@ -117,7 +116,7 @@ extern s32 gHudVerticalMotionTrack;
 void hudDrawDirectionIndicators(Gfx **gdl) {
     f32 direction[3];
     s32 frame;
-    s32 tex[7];
+    TextureImage tex;
     TextureDescriptor desc;
     u8 *anim;
     u8 *verticalAnim;
@@ -137,12 +136,12 @@ void hudDrawDirectionIndicators(Gfx **gdl) {
             do {
                 animationIntegerTrackEvaluate((ValueTrack *)anim, &frame, gRuntimeFrameSeconds);
                 textureGetDescriptor(5, frame, &desc);
-                textureImageInitialize(tex, desc.image, desc.palette, desc.format, desc.size, desc.width, desc.height);
+                textureImageInitialize(&tex, desc.image, desc.palette, desc.format, desc.size, desc.width, desc.height);
                 if (direction[0] > 0.0f)
                     position = 260 - offset;
                 else
                     position = offset + 48;
-                textureDrawScaledRepeated(gdl, tex, position, (240 - desc.height) / 2 - 8, 2, 2, 1, 1, 1.0f, 1.0f,
+                textureDrawScaledRepeated(gdl, &tex, position, (240 - desc.height) / 2 - 8, 2, 2, 1, 1, 1.0f, 1.0f,
                               direction[0] > 0.0f ? 0 : 1, 0);
                 offset += 12;
                 anim += 12;
@@ -155,12 +154,12 @@ void hudDrawDirectionIndicators(Gfx **gdl) {
             do {
                 animationIntegerTrackEvaluate((ValueTrack *)verticalAnim, &frame, gRuntimeFrameSeconds);
                 textureGetDescriptor(5, frame, &desc);
-                textureImageInitialize(tex, desc.image, desc.palette, desc.format, desc.size, desc.width, desc.height);
+                textureImageInitialize(&tex, desc.image, desc.palette, desc.format, desc.size, desc.width, desc.height);
                 if (direction[1] > 0.0f)
                     position = offset + 40;
                 else
                     position = 188 - offset;
-                textureDrawScaledRepeated(gdl, tex, (320 - desc.width) / 2, position, 2, 2, 1, 1, 1.0f, 1.0f, 0,
+                textureDrawScaledRepeated(gdl, &tex, (320 - desc.width) / 2, position, 2, 2, 1, 1, 1.0f, 1.0f, 0,
                               direction[1] > 0.0f ? 0 : 1);
                 offset += 12;
                 verticalAnim += 12;
@@ -308,7 +307,7 @@ void hudDrawRecognitionIndicator(Gfx **gdl) {
     s32 frame;
     s32 mode;
     Gfx *gp;
-    s32 tex[7];
+    TextureImage tex;
     TextureDescriptor desc;
     s32 x;
     s32 y;
@@ -353,8 +352,8 @@ void hudDrawRecognitionIndicator(Gfx **gdl) {
             textureGetDescriptor(5, frame, &desc);
             x = (242.0f - desc.width * scale * 0.5f) * 1;
             y = 196.0f - (f32)(u32)desc.height * scale * 0.5f;
-            textureImageInitialize(tex, desc.image, desc.palette, desc.format, desc.size, desc.width, desc.height);
-            textureDrawScaledRepeated(&gp, tex, x, y, 2, 2, 1, 1, 1 * scale, scale, 0, 1);
+            textureImageInitialize(&tex, desc.image, desc.palette, desc.format, desc.size, desc.width, desc.height);
+            textureDrawScaledRepeated(&gp, &tex, x, y, 2, 2, 1, 1, 1 * scale, scale, 0, 1);
             *gdl = gp;
         }
     }
@@ -391,7 +390,7 @@ void hudDrawMicrophoneIndicators(Gfx **gdl) {
     TextureDescriptor desc;
     s32 x;
     s32 y;
-    s32 tex[7];
+    TextureImage tex;
     if (gGameplayMicrophoneAvailable != 0 && (gHudEnabledFeatures & 4)) {
         hudDrawRecognitionIndicator(gdl);
         if (micQueryDevicePortNoResult() < 0) {
@@ -453,8 +452,8 @@ void hudDrawMicrophoneIndicators(Gfx **gdl) {
             x = (274.0f - desc.width * scale * 0.5f) * 1;
             y = 200.0f - (f32)(u32)desc.height * scale * 0.5f;
         }
-        textureImageInitialize(tex, desc.image, desc.palette, desc.format, desc.size, desc.width, desc.height);
-        textureDrawScaledRepeated(&gp, tex, x, y, 2, 2, 1, 1, 1 * scale, scale, 0, 1);
+        textureImageInitialize(&tex, desc.image, desc.palette, desc.format, desc.size, desc.width, desc.height);
+        textureDrawScaledRepeated(&gp, &tex, x, y, 2, 2, 1, 1, 1 * scale, scale, 0, 1);
         *gdl = gp;
     }
 }

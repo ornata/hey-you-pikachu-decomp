@@ -1,3 +1,4 @@
+#include "texture_image.h"
 #include "texture_rectangles.h"
 #include "pikachu_actor.h"
 #include "object_groups.h"
@@ -113,8 +114,6 @@ extern s32 gTitleLogoImage;
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
-void textureImageInitialize(s32 *, s32, s32, s32, s32, s32, s32);
-void textureDrawScaledRepeated(Gfx **, s32 *, s32, s32, s32, s32, s32, s32, f32, f32, s32, s32);
 
 /// Advance the title-logo fade and draw the logo.
 /// \pre Title-screen artwork must be initialized.
@@ -124,7 +123,7 @@ void textureDrawScaledRepeated(Gfx **, s32 *, s32, s32, s32, s32, s32, s32, f32,
 /// \note NONPORTABLE: callers pass the display-list cursor as s32 (32-bit pointers)
 /// \note Original decompilation identifier: \c func_80034338 (0x80034338).
 void titleScreenDrawLogo(Gfx **gdl) {
-    s32 tex[7];
+    TextureImage tex;
 
     if (gTitleLogoFade.finished == 0) {
         gTitleLogoFade.alpha += 300.0f * gRuntimeFrameSeconds;
@@ -135,13 +134,13 @@ void titleScreenDrawLogo(Gfx **gdl) {
     } else {
         gTitleLogoFade.alpha = 255.0f;
     }
-    textureImageInitialize(tex, gTitleLogoImage, 0, 0, 2, 0x108, 0x7E);
+    textureImageInitialize(&tex, gTitleLogoImage, 0, 0, 2, 0x108, 0x7E);
     gDPPipeSync((*gdl)++);
     gDPSetCycleType((*gdl)++, G_CYC_1CYCLE);
     gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
     gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 255, (s32)gTitleLogoFade.alpha);
     gDPSetCombineLERP((*gdl)++, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0);
-    textureDrawScaledRepeated(gdl, tex, 0x1C, 0x19, 0, 0, 0, 0, 1.0f, 1.0f, 0, 0);
+    textureDrawScaledRepeated(gdl, &tex, 0x1C, 0x19, 0, 0, 0, 0, 1.0f, 1.0f, 0, 0);
 }
 
 /// Loaded artwork image used by startup panel drawing.
@@ -156,9 +155,9 @@ extern s32 gTitleStartupPanelImage;
 /// \note NONPORTABLE: callers pass the display-list cursor as s32 (32-bit pointers)
 /// \note Original decompilation identifier: \c func_800344E8 (0x800344E8).
 void titleScreenDrawStartupPanel(Gfx **gdl) {
-    s32 tex[7];
+    TextureImage tex;
 
-    textureImageInitialize(tex, gTitleStartupPanelImage, 0, 0, 2, 0x80, 0x6E);
+    textureImageInitialize(&tex, gTitleStartupPanelImage, 0, 0, 2, 0x80, 0x6E);
     gDPPipeSync((*gdl)++);
     gDPSetCycleType((*gdl)++, G_CYC_1CYCLE);
     gDPSetRenderMode((*gdl)++, G_RM_OPA_SURF, G_RM_OPA_SURF2);
@@ -169,7 +168,7 @@ void titleScreenDrawStartupPanel(Gfx **gdl) {
     gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
     gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 255, 255);
     gDPSetCombineLERP((*gdl)++, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0);
-    textureDrawScaledRepeated(gdl, tex, 0x60, 0x41, 2, 2, 0, 0, 1.0f, 1.0f, 0, 0);
+    textureDrawScaledRepeated(gdl, &tex, 0x60, 0x41, 2, 2, 0, 0, 1.0f, 1.0f, 0, 0);
     gDPPipeSync((*gdl)++);
     gDPSetCycleType((*gdl)++, G_CYC_1CYCLE);
 }
@@ -334,16 +333,16 @@ extern s32 gTitleSilhouetteImage;
 /// \note NONPORTABLE: callers pass the display-list cursor as s32 (32-bit pointers)
 /// \note Original decompilation identifier: \c func_80034DF4 (0x80034DF4).
 void titleScreenDrawStartupSilhouette(Gfx **gdl) {
-    s32 tex[7];
+    TextureImage tex;
 
-    textureImageInitialize(tex, gTitleSilhouetteImage, 0, 0, 2, 0x80, 0x70);
+    textureImageInitialize(&tex, gTitleSilhouetteImage, 0, 0, 2, 0x80, 0x70);
     gDPPipeSync((*gdl)++);
     gDPSetCycleType((*gdl)++, G_CYC_1CYCLE);
     gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
     gDPSetPrimColor((*gdl)++, 0, 0, 0, 0, 0, 255);
     gDPSetCombineLERP((*gdl)++, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0);
     gDPPipeSync((*gdl)++);
-    textureDrawScaledRepeated(gdl, tex, 0x60, 0x40, 2, 2, 0, 0, 1.0f, 1.0f, 0, 0);
+    textureDrawScaledRepeated(gdl, &tex, 0x60, 0x40, 2, 2, 0, 0, 1.0f, 1.0f, 0, 0);
     gDPPipeSync((*gdl)++);
     gDPSetCycleType((*gdl)++, G_CYC_1CYCLE);
 }

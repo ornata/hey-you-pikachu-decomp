@@ -1,3 +1,4 @@
+#include "texture_image.h"
 #include "math_scalar.h"
 #include "pikachu_actor.h"
 #include "camera_storage.h"
@@ -230,7 +231,6 @@ void voiceCommandUpdate(void) {
     }
 }
 
-void textureImageInitialize(void *, void *, void *, s32, s32, s32, s32);
 /// Pixel data for the scrolling text-panel backdrop strip.
 /// \note Original identifier: \c D_80074EE0 (0x80074EE0).
 /// Palette data for the scrolling text-panel backdrop strip.
@@ -265,7 +265,7 @@ void textPanelInitialize(TextPanel *panel, s32 visibleLines) {
     panel->capacity = visibleLines;
     panel->configuration = NULL;
     textPanelSetColor(panel, 0xFF, 0xFF, 0xFF, 0xFF);
-    textureImageInitialize(gTextPanelBackdropImage, gTextPanelBackdropPixels, gTextPanelBackdropPalette, 2, 0, 0x114,
+    textureImageInitialize((TextureImage *)gTextPanelBackdropImage, (s32)gTextPanelBackdropPixels, (s32)gTextPanelBackdropPalette, 2, 0, 0x114,
                            0x1C);
     textPanelAppend((struct TextPanel *)panel, gTextPanelInitialEmptyText);
 }

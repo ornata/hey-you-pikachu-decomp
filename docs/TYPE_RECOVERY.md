@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 1,844 / 73 |
+| Raw offset candidates | 4,040 / 86 | 1,807 / 73 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3948,3 +3948,9 @@ resolution interface, with size and offset checks. Image/palette words are
 archive-relative offsets in source tables and borrowed target addresses after
 resolution; dimensions and RDP size/format selectors are named. Pending cache
 reads must complete before resolved image/palette use.
+
+`texture_image.h` shares a checked 0x1C-byte borrowed rendering descriptor,
+its initializer and scaled/repeated drawing interface. HUD, title and eye-catch
+stack storage uses the shared record instead of seven-word arrays; the voice
+panel uses an explicit view of its retained storage. Padded row width and
+RDP-readable data lifetime are documented separately from archive descriptors.

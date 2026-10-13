@@ -1,3 +1,4 @@
+#include "texture_image.h"
 #include "common.h"
 #include "heap_types.h"
 #include "word_map.h"
@@ -140,39 +141,39 @@ void textureUploadTile(Gfx **displayList, s32 image, s32 palette, s32 format, s3
 /// \param height Positive image height in texels.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80043000 (0x80043000).
-void textureImageInitialize(s32 *descriptor, s32 image, s32 palette, s32 format, s32 size, s32 width, s32 height) {
+void textureImageInitialize(TextureImage *descriptor, s32 image, s32 palette, s32 format, s32 size, s32 width, s32 height) {
     s32 r;
 
-    descriptor[0] = image;
-    descriptor[1] = palette;
-    descriptor[2] = format;
-    descriptor[3] = size;
-    descriptor[4] = width;
-    descriptor[5] = height;
-    descriptor[6] = width;
+    descriptor->image = image;
+    descriptor->palette = palette;
+    descriptor->format = format;
+    descriptor->size = size;
+    descriptor->width = width;
+    descriptor->height = height;
+    descriptor->alignedWidth = width;
     switch (size) {
     case 0:
         r = width & 0xF;
         if (r != 0) {
-            descriptor[6] = width - r + 16;
+            descriptor->alignedWidth = width - r + 16;
         }
         break;
     case 1:
         r = width & 7;
         if (r != 0) {
-            descriptor[6] = width - r + 8;
+            descriptor->alignedWidth = width - r + 8;
         }
         break;
     case 2:
         r = width & 3;
         if (r != 0) {
-            descriptor[6] = width - r + 4;
+            descriptor->alignedWidth = width - r + 4;
         }
         break;
     case 3:
         r = width & 3;
         if (r != 0) {
-            descriptor[6] = width - r + 4;
+            descriptor->alignedWidth = width - r + 4;
         }
         break;
     }
@@ -213,11 +214,7 @@ void textureImageInitialize(s32 *descriptor, s32 image, s32 palette, s32 format,
                        (lrs) << G_TEXTURE_IMAGE_FRAC, (lrt) << G_TEXTURE_IMAGE_FRAC);                                  \
     }
 
-typedef struct {
-    s32 image, palette;
-    s32 format, size;
-    u32 width, height, alignedWidth;
-} Texture430;
+
 /// Render a scaled texture with optional repetition and flipping.
 /// \param out Display-list cursor with sufficient capacity; receives the drawing commands and advances past them.
 /// \param texture Borrowed, initialized texture image descriptor.
@@ -236,7 +233,7 @@ typedef struct {
 /// \pre Width and height must be positive. At least two source rows must fit texture memory unless the image has only one row.
 /// \pre Four- and eight-bit images must use CI, I, or IA format; wrapped dimensions must be powers of two for whole-image repetition.
 /// \note Original decompilation identifier: \c func_800430C4 (0x800430C4).
-void textureDrawScaledRepeated(Gfx **out, Texture430 *texture, u32 x, u32 y, s32 wrapS, s32 wrapT, u32 repeatX, u32 repeatY,
+void textureDrawScaledRepeated(Gfx **out, TextureImage *texture, u32 x, u32 y, s32 wrapS, s32 wrapT, u32 repeatX, u32 repeatY,
                    f32 scaleX, f32 scaleY, s32 flipX, s32 flipY) {
     Gfx *dl;
     u32 maskS, maskT;

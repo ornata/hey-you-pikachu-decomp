@@ -1,3 +1,4 @@
+#include "texture_image.h"
 #include "texture_rectangles.h"
 #include "random.h"
 #include "controller_rumble.h"
@@ -250,8 +251,6 @@ void eyeCatchDrawLayers(Gfx **displayList) {
     }
 }
 
-void textureImageInitialize(s32 *, s32, s32, s32, s32, s32, s32);
-void textureDrawScaledRepeated(Gfx **, s32 *, s32, s32, s32, s32, s32, s32, f32, f32, s32, s32);
 /// Foreground opacity on the zero-through-255 scale.
 /// \note Original identifier: \c D_800F2608 (0x800F2608).
 extern f32 gEyeCatchForegroundAlpha;
@@ -263,16 +262,16 @@ extern f32 gEyeCatchForegroundAlpha;
 /// \note NONPORTABLE: the existing caller carries gdl in an s32 (32-bit pointers).
 /// \note Original decompilation identifier: \c func_8003740C (0x8003740C).
 void eyeCatchDrawFadingImage(Gfx **gdl) {
-    s32 tex[7];
+    TextureImage tex;
 
     if (gEyeCatchForegroundVisible != 0) {
-        textureImageInitialize(tex, gEyeCatchForegroundImage, 0, 0, 2, 0x108, 0x7E);
+        textureImageInitialize(&tex, gEyeCatchForegroundImage, 0, 0, 2, 0x108, 0x7E);
         gDPPipeSync((*gdl)++);
         gDPSetCycleType((*gdl)++, G_CYC_1CYCLE);
         gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
         gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 255, (s32)gEyeCatchForegroundAlpha);
         gDPSetCombineLERP((*gdl)++, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0);
-        textureDrawScaledRepeated(gdl, tex, ((EyeGroup36A *)gEyeCatchActiveGroup)->width,
+        textureDrawScaledRepeated(gdl, &tex, ((EyeGroup36A *)gEyeCatchActiveGroup)->width,
                                   ((EyeGroup36A *)gEyeCatchActiveGroup)->height, 2, 2, 0, 0, 0.5f, 0.5f, 0, 0);
         gEyeCatchForegroundAlpha += 127.5f * gRuntimeFrameSeconds;
         if (gEyeCatchForegroundAlpha < 0.0f) {
