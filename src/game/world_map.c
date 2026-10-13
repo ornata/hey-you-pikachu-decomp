@@ -1,3 +1,4 @@
+#include "actor_script.h"
 #include "player_chase.h"
 #include "texture_rectangles.h"
 #include "pikachu_actor.h"
@@ -137,21 +138,21 @@ s32 wholeMapIsDestinationAvailable(s32 destination) {
     return 1;
 }
 
-/* textureDrawRectangles list: one drawn record, then the template's negative-texture
- * terminator record. */
-typedef struct {
-    TextureDrawC354 item;
-    TextureDrawC354 end;
-} DrawList474;
+/// One map sprite followed by its negative-texture list terminator.
+typedef struct WorldMapSpriteList {
+    TextureDrawC354 item; ///< Visible destination, badge or selection sprite.
+    TextureDrawC354 end;  ///< Negative-texture terminator.
+} WorldMapSpriteList;
+typedef char WorldMapSpriteListSizeCheck[(sizeof(WorldMapSpriteList) == 0x48) ? 1 : -1];
 /// Texture rectangle template for the selected destination highlight.
 /// \note Original identifier: \c D_8009A11C (0x8009A11C).
-extern DrawList474 gWorldMapSelectionTemplate;
+extern WorldMapSpriteList gWorldMapSelectionTemplate;
 /// Texture rectangle template for available destination icons.
 /// \note Original identifier: \c D_8009A164 (0x8009A164).
-extern DrawList474 gWorldMapDestinationTemplate;
+extern WorldMapSpriteList gWorldMapDestinationTemplate;
 /// Texture rectangle template for destination badges.
 /// \note Original identifier: \c D_8009A1AC (0x8009A1AC).
-extern DrawList474 gWorldMapBadgeTemplate;
+extern WorldMapSpriteList gWorldMapBadgeTemplate;
 /// Current world-map menu and transition state.
 /// \note Original identifier: \c D_8009A110 (0x8009A110).
 extern s32 gWorldMapState;
@@ -170,9 +171,9 @@ s32 runtimeGetUiPulseAlpha(void);
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002D474 (0x8002D474).
 void wholeMapDrawDestinations(Gfx **gdl) {
-    DrawList474 selection = gWorldMapSelectionTemplate;
-    DrawList474 icon = gWorldMapDestinationTemplate;
-    DrawList474 badge = gWorldMapBadgeTemplate;
+    WorldMapSpriteList selection = gWorldMapSelectionTemplate;
+    WorldMapSpriteList icon = gWorldMapDestinationTemplate;
+    WorldMapSpriteList badge = gWorldMapBadgeTemplate;
     s32 rendererTable = 7;
     s32 index;
     s32 lastIndex;
@@ -537,13 +538,9 @@ void wholeMapEnsureAvailableSelection(s32 min, s32 max, s32 step) {
 }
 
 void wholeMapEnsureAvailableSelection(s32, s32, s32);
-typedef struct MenuController2E {
-    u32 held, pressed, released, repeated;
-    s32 stickX, stickY;
-} MenuController2E;
 /// Processed button and stick samples for all controller ports; scalar declarations view the primary held-button word.
 /// \note Original identifier: \c D_800AD540 (0x800AD540).
-extern MenuController2E gControllerInputState[4];
+extern ControllerState gControllerInputState[4];
 /// Primary controller new and auto-repeated button presses.
 /// \note Original identifier: \c D_800AD54C (0x800AD54C).
 extern s32 gControllerPrimaryRepeatedButtons;
@@ -565,10 +562,6 @@ extern s32 gWorldMapVoiceDestinationIndices[];
 /// Opacity of the pulsing selected-destination highlight.
 /// \note Original identifier: \c D_8009A114 (0x8009A114).
 extern s32 gWorldMapSelectionAlpha;
-typedef struct {
-    s32 type;
-    s32 value;
-} MenuInput;
 /// Handle destination selection, confirmation, and cancellation from controller and voice input.
 /// \pre Requires the whole-map menu and its active actor.
 /// \returns Nothing.
@@ -578,7 +571,7 @@ void wholeMapHandleInput(void) {
     s32 *pressed;
     s32 confirmSound = 0xC5;
     s32 direction;
-    MenuInput *input;
+    ScriptMessage *input;
     s32 selection;
     Vec3f specialPosition;
     Vec3f defaultPosition;
@@ -604,9 +597,9 @@ void wholeMapHandleInput(void) {
         gWorldMapDirectionHeldFrames = 0;
     }
     if (actorAcknowledgeScriptMessage((u8 *)((s32)gPikachuActor)) != 0) {
-        input = (MenuInput *)(*(u8 **)((u8 *)((s32)gPikachuActor) + 0x54) + 0x21C);
+        input = &gPikachuActor->state.actor->message;
         if (input->type == 0x12) {
-            if (input->value == 10 && playerGetChaseStage() == 2) {
+            if (input->arg0 == 10 && playerGetChaseStage() == 2) {
                 specialPosition = gWorldMapSpecialDestinationFocus;
                 gWorldMapSelectedDestination = 10;
                 presentationSetFocusTarget(&specialPosition);
@@ -615,12 +608,12 @@ void wholeMapHandleInput(void) {
                 wholeMapSetState(3);
                 return;
             }
-            if (input->value < 0) {
-                input->value = 0;
-            } else if (input->value >= 10) {
-                input->value = 9;
+            if (input->arg0 < 0) {
+                input->arg0 = 0;
+            } else if (input->arg0 >= 10) {
+                input->arg0 = 9;
             }
-            selection = gWorldMapVoiceDestinationIndices[input->value];
+            selection = gWorldMapVoiceDestinationIndices[input->arg0];
             if (wholeMapIsDestinationAvailable(selection) != 0) {
                 gWorldMapSelectedDestination = selection;
                 attachedEffectCreate((u8 *)((s32)gPikachuActor), 1, 0xA4);

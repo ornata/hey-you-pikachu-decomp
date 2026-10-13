@@ -1,3 +1,4 @@
+#include "actor_script.h"
 #include "audio_sound_effect.h"
 #include "voice_recognition.h"
 #include "texture_image.h"
@@ -557,10 +558,6 @@ void hudSetActionIndicatorAnimation(s32 animation) {
     gHudMotionIndicatorAnimation = animation;
 }
 
-typedef struct {
-    u8 unknown[0x3F4];
-    f32 targetX, targetY, x, y;
-} MenuMotion228;
 /// Primary player control record and base of the player records with a 256-byte stride.
 /// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
 extern u8 gPlayerState[];
@@ -586,7 +583,7 @@ s32 playerCanEnterStationaryLook(void);
 /// \note Original decompilation identifier: \c func_800228D8 (0x800228D8).
 void hudDrawMotionIndicators(Gfx **gdl) {
     s32 frameY, frameX;
-    MenuMotion228 *motion;
+    ActorScriptState *motion;
     s32 x, y;
     s32 showMotion;
     s32 showSelected;
@@ -594,7 +591,7 @@ void hudDrawMotionIndicators(Gfx **gdl) {
     f32 dx, dy, step, negativeStep;
 
     selected = gHudMotionIndicatorAnimation;
-    motion = *(MenuMotion228 **)(((u8 *)gPikachuActor) + 0x54);
+    motion = gPikachuActor->state.actor;
     if (playerIsPitchControlEnabled(gPlayerState)) {
         selected = gHudStationaryLookActionAnimations[playerCanEnterStationaryLook()];
         showMotion = 1;
@@ -628,9 +625,9 @@ void hudDrawMotionIndicators(Gfx **gdl) {
     {
         s32 oldBand;
         s32 newBand;
-        oldBand = hudGetVerticalMotionAnimation((s32)motion->y);
-        dx = motion->targetX * 0.32f - motion->x;
-        dy = motion->targetY * 0.32f - motion->y;
+        oldBand = hudGetVerticalMotionAnimation((s32)motion->secondaryMeterHudLevel);
+        dx = motion->actionResource * 0.32f - motion->actionResourceHudLevel;
+        dy = motion->secondaryMeter * 0.32f - motion->secondaryMeterHudLevel;
         if (gHudHorizontalMotionRemaining > 0.0f)
             gHudHorizontalMotionRemaining -= gRuntimeFrameSeconds;
         step = gRuntimeFrameSeconds * 32.0f;
@@ -643,14 +640,14 @@ void hudDrawMotionIndicators(Gfx **gdl) {
             dy = negativeStep;
         else if (step < dy)
             dy = step;
-        motion->x += dx;
-        motion->y += dy;
-        newBand = hudGetVerticalMotionAnimation((s32)motion->y);
+        motion->actionResourceHudLevel += dx;
+        motion->secondaryMeterHudLevel += dy;
+        newBand = hudGetVerticalMotionAnimation((s32)motion->secondaryMeterHudLevel);
         if (oldBand != newBand)
             animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalMotionTrack, gTextureFrameAnimationPrograms[newBand]);
     }
-    x = (s32)(motion->x + 0.5f);
-    y = (s32)(motion->y + 0.5f);
+    x = (s32)(motion->actionResourceHudLevel + 0.5f);
+    y = (s32)(motion->secondaryMeterHudLevel + 0.5f);
     if (x < 0)
         x = 0;
     else if (x >= 32)

@@ -141,7 +141,8 @@ typedef struct ActorScriptState {
     s32 costedActionResult; ///< Script result: zero for insufficient resource, one for a response, three after starting.
     f32 actionResource; ///< Action resource clamped to zero through 100.
     f32 secondaryMeter; ///< Secondary gameplay meter clamped to zero through 100.
-    u8 unknown3FC[8];
+    f32 actionResourceHudLevel; ///< Smoothed action-resource HUD level on a zero-to-32 scale.
+    f32 secondaryMeterHudLevel; ///< Smoothed secondary-meter HUD level on a zero-to-32 scale.
     s32 attachedEffectHandle; ///< Object-manager handle of the latest attached effect, or zero.
 } ActorScriptState;
 
@@ -243,6 +244,8 @@ ACTOR_SCRIPT_OFFSET_CHECK(ActorStatePrimaryPoseReferenceOffsetCheck, ActorScript
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateBurstAllowanceOffsetCheck, ActorScriptState, targetedBurstAllowance, 0x3EC);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateResponseFlagOffsetCheck, ActorScriptState, costedActionResult, 0x3F0);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionResourceOffsetCheck, ActorScriptState, actionResource, 0x3F4);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorActionResourceHudLevelOffsetCheck, ActorScriptState, actionResourceHudLevel, 0x3FC);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorSecondaryMeterHudLevelOffsetCheck, ActorScriptState, secondaryMeterHudLevel, 0x400);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateSecondaryMeterOffsetCheck, ActorScriptState, secondaryMeter, 0x3F8);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateAttachedEffectOffsetCheck, ActorScriptState, attachedEffectHandle, 0x404);
 #undef ACTOR_SCRIPT_OFFSET_CHECK

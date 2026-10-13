@@ -52,7 +52,7 @@
     },
     "raw_offset_candidates": {
       "occurrences": 1788,
-      "unique_spellings": 763,
+      "unique_spellings": 764,
       "files": 72
     }
   },
@@ -2107,6 +2107,7 @@
     },
     "src/game/hud.c": {
       "known_views": [
+        "actor_script.h",
         "audio_cue.h",
         "audio_sound_effect.h",
         "camera_visibility.h",
@@ -2133,19 +2134,19 @@
       "locations": {
         "raw_offset_candidates": {
           "offset + 48": [
-            "145:32"
+            "146:32"
           ],
           "offset + 40": [
-            "161:32"
+            "162:32"
           ],
           "gPlayerState + 0x50": [
-            "603:67"
+            "600:67"
           ],
-          "x + 0": [
-            "652:23"
+          "actionResourceHudLevel + 0": [
+            "649:23"
           ],
-          "y + 0": [
-            "653:23"
+          "secondaryMeterHudLevel + 0": [
+            "650:23"
           ]
         }
       }
@@ -3965,58 +3966,58 @@
       "locations": {
         "raw_offset_candidates": {
           "x - 27": [
-            "223:46"
+            "224:46"
           ],
           "x + 55": [
-            "225:46"
+            "226:46"
           ],
           "x - 16": [
-            "285:31",
-            "309:27"
-          ],
-          "y + 8": [
-            "286:31"
-          ],
-          "y - 8": [
+            "286:31",
             "310:27"
           ],
+          "y + 8": [
+            "287:31"
+          ],
+          "y - 8": [
+            "311:27"
+          ],
           "counter + 5U": [
-            "317:25"
+            "318:25"
           ],
           "state + 0x1EC": [
-            "395:100",
-            "449:154"
+            "396:100",
+            "450:154"
           ],
           "firstJoint + 0x48": [
-            "401:69"
+            "402:69"
           ],
           "secondJoint + 0x48": [
-            "403:75"
+            "404:75"
           ],
           "camera + 0": [
-            "442:25"
-          ],
-          "camera + 4": [
             "443:25"
           ],
-          "camera + 8": [
+          "camera + 4": [
             "444:25"
           ],
+          "camera + 8": [
+            "445:25"
+          ],
           "state + 0xC": [
-            "446:71"
+            "447:71"
           ],
           "state + 0x10": [
-            "447:78"
+            "448:78"
           ],
           "state + 0x19C": [
-            "448:14"
+            "449:14"
           ],
           "PLAYER + 0x54": [
-            "490:27"
+            "491:27"
           ],
           "sp24 + 0x13C": [
-            "780:22",
-            "784:25"
+            "773:22",
+            "777:25"
           ]
         }
       }

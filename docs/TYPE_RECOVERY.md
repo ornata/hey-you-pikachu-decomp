@@ -4143,3 +4143,14 @@ the shared `Vec3f` rather than duplicate vector definitions. HUD guide style one
 uses three checked texture rectangles instead of a 27-word placeholder: linked
 data confirms texture indices 96 and 97 followed by a minus-one terminator.
 All three source units independently pass strict object comparison.
+
+### Actor HUD levels and map mailbox consumers
+
+Actor-state words at 0x3FC and 0x400 are the smoothed HUD levels of the action
+resource and secondary meter. HUD source and Ghidra's 0x800228D8 reads/writes
+confirm their float widths and zero-to-32 display scale. Both fields have target
+offset checks, and HUD rendering now uses `ActorScriptState` instead of a large
+local partial view. World-map input uses the shared `ControllerState` and the
+actor's `ScriptMessage` mailbox rather than duplicate two-word and controller
+records. Its private sprite list has a descriptive name, documented terminator
+and checked size. All accepted changes preserve strict objects.
