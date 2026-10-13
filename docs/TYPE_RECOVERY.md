@@ -3461,3 +3461,11 @@ at signed-text consumers preserve their established storage. Provider code and
 Ghidra opening at `0x8002C348` establish the contract; each consumer passed strict
 object comparison independently. Background drawing's separate legacy callback
 contract remains outside these four presentation operations.
+
+Text-window page history, page preparation and continuation storage now use
+borrowed byte-text pointers consistently. The retained text must remain valid
+while it is navigable in history. Indicator initialization and drawing reuse
+the existing `ValueTrack` layout rather than a duplicate three-word record.
+Unused text-window declarations in the collision unit were removed. Ghidra page
+preparation at `0x8002C03C` and provider readers/writers confirm continuation
+roles; pointer recovery passes both the ROM gate and strict object comparison.

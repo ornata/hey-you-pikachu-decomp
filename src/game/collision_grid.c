@@ -19,34 +19,6 @@
 void runtimeRequestGameModeChange(s32);
 void playerSetControllerPort(s32);
 
-/// Current shared text-window transition state; four is inactive.
-/// \note Original identifier: \c D_800F1AC0 (0x800F1AC0).
-extern s32 gTextWindowState;
-/// Elapsed-time checkpoint recorded when the text-window state changes.
-/// \note Original identifier: \c D_800F1AC4 (0x800F1AC4).
-extern u32 gTextWindowStateStartMilliseconds;
-
-
-s32 textWindowPushPage(s32);            /* extern */
-/// Text-image style used when preparing window pages.
-/// \note Original identifier: \c D_800F1A78 (0x800F1A78).
-extern s32 gTextWindowTextStyle;
-
-void textWindowResetText(); /* extern */
-/// Scene-view mode controlling overlays and scene updates while the window is active.
-/// \note Original identifier: \c D_800F1A74 (0x800F1A74).
-extern s32 gTextWindowSceneViewMode;
-/// Animated window indicator identifier; zero hides the indicator.
-/// \note Original identifier: \c D_800F1A7C (0x800F1A7C).
-extern s32 gTextWindowIndicator;
-
-/// Shared accumulated message text from which window pages are prepared.
-/// \note Original identifier: \c D_800F10B0 (0x800F10B0).
-extern u8 gTextWindowPendingText[];
-/// Address of text remaining after the displayed page, or zero at the message end.
-/// \note Original identifier: \c D_800F1A80 (0x800F1A80).
-extern s32 gTextWindowContinuation;
-
 u32 randomNext(void);
 
 /// Request a collision impulse for a target object.

@@ -34,9 +34,9 @@ extern s32 gTextWindowTextStyle;
 /// Animated window indicator identifier; zero hides the indicator.
 /// \note Original identifier: \c D_800F1A7C (0x800F1A7C).
 extern s32 gTextWindowIndicator;
-/// Address of text remaining after the displayed page, or zero at the message end.
+/// Borrowed text remaining after the displayed page, or null at the message end.
 /// \note Original identifier: \c D_800F1A80 (0x800F1A80).
-extern s32 gTextWindowContinuation;
+extern u8 *gTextWindowContinuation;
 /// Next write position in the window page-history ring.
 /// \note Original identifier: \c D_800F1AB4 (0x800F1AB4).
 extern s32 gTextWindowHistoryWriteIndex;
@@ -46,12 +46,9 @@ extern s32 gTextWindowHistoryOldestIndex;
 /// Current shared text-window transition state; four is inactive.
 /// \note Original identifier: \c D_800F1AC0 (0x800F1AC0).
 extern s32 gTextWindowState;
-typedef struct {
-    s32 w[3];
-} Unk1AD4;
 /// Six indicator animation tracks initialized for the shared text window.
 /// \note Original identifier: \c D_800F1AD4 (0x800F1AD4).
-extern Unk1AD4 gTextWindowInitializedIndicatorTracks[6];
+extern ValueTrack gTextWindowInitializedIndicatorTracks[6];
 
 /// Initialize the shared text window and its page history.
 /// \returns Nothing.
@@ -71,13 +68,13 @@ void textWindowInitialize(void) {
     gTextWindowIndicator = 1;
     gTextWindowState = 4;
     for (i = 0; i < 6; i++) {
-        animationIntegerTrackInitialize((ValueTrack *)&gTextWindowInitializedIndicatorTracks[i], gTextureFrameAnimationPrograms[gTextWindowIndicatorAnimationIds[i]]);
+        animationIntegerTrackInitialize(&gTextWindowInitializedIndicatorTracks[i], gTextureFrameAnimationPrograms[gTextWindowIndicatorAnimationIds[i]]);
     }
 }
 
-/// Ring of text page addresses used for page history.
+/// Borrowed page-text pointers retained while their backing message remains valid.
 /// \note Original identifier: \c D_800F1A88 (0x800F1A88).
-extern s32 gTextWindowPageHistory[11];
+extern u8 *gTextWindowPageHistory[11];
 #define RING_WRAP(x)                                                                                                   \
     while ((x) < 0) {                                                                                                  \
         (x) += 11;                                                                                                     \
@@ -87,11 +84,11 @@ extern s32 gTextWindowPageHistory[11];
     }
 
 /// Retain a text page for subsequent backward navigation.
-/// \param pageAddress Borrowed page-text address that remains valid while retained in history.
-/// \returns The supplied page address.
+/// \param pageText Borrowed page text that remains valid while retained in history.
+/// \returns The supplied page text.
 /// \note Original decompilation identifier: \c func_8002B798 (0x8002B798).
-s32 textWindowPushPage(s32 pageAddress) {
-    gTextWindowPageHistory[gTextWindowHistoryWriteIndex] = pageAddress;
+u8 *textWindowPushPage(u8 *pageText) {
+    gTextWindowPageHistory[gTextWindowHistoryWriteIndex] = pageText;
     gTextWindowHistoryWriteIndex++;
     RING_WRAP(gTextWindowHistoryWriteIndex);
     if (gTextWindowHistoryWriteIndex == gTextWindowHistoryOldestIndex) {
@@ -99,14 +96,14 @@ s32 textWindowPushPage(s32 pageAddress) {
         gTextWindowHistoryOldestIndex++;
         RING_WRAP(gTextWindowHistoryOldestIndex);
     }
-    return pageAddress;
+    return pageText;
 }
 
 /// Retrieve the most recently retained text page for backward navigation.
 /// Requires at least one retained page.
 /// \returns The borrowed page address, remaining at the oldest available page when history is exhausted.
 /// \note Original decompilation identifier: \c func_8002B844 (0x8002B844).
-s32 textWindowPopPage(void) {
+u8 *textWindowPopPage(void) {
     gTextWindowHistoryWriteIndex--;
     RING_WRAP(gTextWindowHistoryWriteIndex);
     if (gTextWindowHistoryWriteIndex == gTextWindowHistoryOldestIndex) {
@@ -140,7 +137,7 @@ typedef struct DrawRectangle {
 void textureDrawRectangles(s32, DrawRectangle *, Gfx **);
 /// Separate indicator-indexed animation view; initialized tracks begin at index one.
 /// \note Original identifier: \c D_800F1AC8 (0x800F1AC8).
-extern Unk1AD4 gTextWindowIndicatorTrackIndexBase[];
+extern ValueTrack gTextWindowIndicatorTrackIndexBase[];
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
@@ -173,7 +170,7 @@ void textWindowDrawIndicator(Gfx **gdl, s32 alpha) {
         gSPTexture((*gdl)++, 0x7FFF, 0, 0, G_TX_RENDERTILE, G_ON);
         gMoveWd((*gdl)++, G_MW_FOG, 0x10, 0x7FFF);
         gDPPipeSync((*gdl)++);
-        animationIntegerTrackEvaluate((ValueTrack *)&gTextWindowIndicatorTrackIndexBase[gTextWindowIndicator], &texture,
+        animationIntegerTrackEvaluate(&gTextWindowIndicatorTrackIndexBase[gTextWindowIndicator], &texture,
                                       gRuntimeFrameSeconds);
         rectangles[0].texture = texture;
         rectangles[0].x = origin;
@@ -323,7 +320,7 @@ void textWindowSetPrompt(s32 textAddress) {
 /// \param style Valid text-style table index for the page.
 /// \returns A borrowed continuation address in the input text, or zero when a text terminator is encountered.
 /// \note Original decompilation identifier: \c func_8002C03C (0x8002C03C).
-s32 textWindowPreparePage(u8 *text, s32 style) {
+u8 *textWindowPreparePage(u8 *text, s32 style) {
     u8 line[50];
     u8 *input = (u8 *)text;
     s32 row;
@@ -347,7 +344,7 @@ s32 textWindowPreparePage(u8 *text, s32 style) {
                 for (++row; row < 5; row++) {
                     textWindowSetLine(row, NULL, style);
                 }
-                return (s32)(input + 1);
+                return input + 1;
             }
             if (ch == 10) {
                 line[i] = 0;
@@ -363,18 +360,16 @@ s32 textWindowPreparePage(u8 *text, s32 style) {
         }
         textWindowSetLine(row, line, style);
     }
-    return (s32)(input + 1);
+    return input + 1;
 }
 
-s32 textWindowPushPage(s32);            /* extern */
-s32 textWindowPreparePage(u8 *, s32);   /* extern */
 
 /// Select a text page for display and retain it for backward navigation.
 /// \param text Page text to display using the current style; must remain valid while retained in history.
 /// \returns A borrowed continuation address in the input text, or zero when a text terminator is encountered.
 /// \note Original decompilation identifier: \c func_8002C1A0 (0x8002C1A0).
-s32 textWindowShowPage(u8 *text) {
-    textWindowPushPage((s32)text);
+u8 *textWindowShowPage(u8 *text) {
+    textWindowPushPage(text);
     gTextWindowPageImageBuffer ^= 1;
     return textWindowPreparePage(text, gTextWindowTextStyle);
 }
@@ -384,7 +379,7 @@ s32 textWindowShowPage(u8 *text) {
 /// \note Original decompilation identifier: \c func_8002C1E4 (0x8002C1E4).
 void textWindowResetText(void) {
     _bzero(gTextWindowPendingText, 0x9C4);
-    gTextWindowContinuation = (s32)gTextWindowPendingText;
+    gTextWindowContinuation = gTextWindowPendingText;
     gTextWindowHistoryOldestIndex = 0;
     gTextWindowHistoryWriteIndex = gTextWindowHistoryOldestIndex + 1;
     textWindowSetPrompt((s32) "Press the @I@J Button.");
@@ -480,10 +475,10 @@ void textWindowDrawEmbedded(void) {
 /// \returns 1 when another page remains, or 0 otherwise.
 /// \note Original decompilation identifier: \c func_8002C3FC (0x8002C3FC).
 s32 textWindowShowFirstPage(void) {
-    s32 continuationAddress;
+    u8 *continuationAddress;
 
     continuationAddress = textWindowShowPage((u8 *)gTextWindowPendingText);
-    gTextWindowContinuation = continuationAddress & 0xFFFFFFFFFFFFFFFFu;
+    gTextWindowContinuation = continuationAddress;
     if (!(&gTextWindowContinuation)) {
     }
     if (continuationAddress != 0) {
@@ -623,7 +618,7 @@ void textWindowUpdate(void) {
     }
 }
 
-s32 textWindowShowPage(u8 *); /* extern */
+u8 *textWindowShowPage(u8 *);
 
 /// Display the pending message and enter the text-window game mode.
 /// \returns Nothing.
