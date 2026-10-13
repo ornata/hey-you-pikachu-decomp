@@ -3782,3 +3782,9 @@ implementation and thirteen consumer units. Coordinates are floating point;
 optional node caches retain the same area lifetime as surface-attribute caches.
 The actor ground-clearance caller reads Z as a float, and ground-shadow sampling
 uses a pointer-valued cache. Both changes preserve the original instruction bytes.
+
+`terrain_movement.h` supplies constrained-displacement and downhill-sampling
+contracts to the terrain implementation and all four consumer units. It records
+distinct writable displacement outputs, query-policy bounds and borrowed cache
+lifetime. Actor downhill movement uses a pointer-valued cache and floating Z
+coordinate, preserving target argument placement and strict object identity.

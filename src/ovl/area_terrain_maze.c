@@ -1,3 +1,4 @@
+#include "terrain_movement.h"
 #include "terrain_height.h"
 #include "terrain_surface.h"
 #include "wisp_effect.h"

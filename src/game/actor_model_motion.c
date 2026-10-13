@@ -1,3 +1,4 @@
+#include "terrain_movement.h"
 #include "terrain_height.h"
 #include "terrain_surface.h"
 #include "audio_sound_effect.h"
@@ -374,7 +375,6 @@ void actorUpdateGroundSlopePitch(u8 *object) {
 typedef struct Vec3f {
     f32 x, y, z;
 } Vec3f;
-void terrainGetDownhillHeightDifferences(f32, f32, s32, f32, f32, f32 *, f32 *, s32);
 f32 vector3Normalize(u8 *);
 
 /// Add downhill drift to actor movement according to the nearby terrain slope.
@@ -383,13 +383,13 @@ f32 vector3Normalize(u8 *);
 /// \param surfaceCache Address of the cached terrain surface pointer used and updated by the slope query.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80015394 (0x80015394).
-void actorAddDownhillMovement(u8 *actor, f32 *displacement, s32 surfaceCache) {
+void actorAddDownhillMovement(u8 *actor, f32 *displacement, u8 **surfaceCache) {
     Vec3f v;
     f32 f;
 
     f = 0.2f;
     v.y = f;
-    terrainGetDownhillHeightDifferences(*(f32 *)(actor + 0x18), *(f32 *)(actor + 0x1C), *(s32 *)(actor + 0x20), 50.0f, v.y, &v.x, &v.z, surfaceCache);
+    terrainGetDownhillHeightDifferences(*(f32 *)(actor + 0x18), *(f32 *)(actor + 0x1C), *(f32 *)(actor + 0x20), 50.0f, v.y, &v.x, &v.z, surfaceCache);
     vector3Normalize((u8 *)&v);
     f = 10.0f * gRuntimeFrameSeconds;
     displacement[0] += v.x * f;
@@ -1293,7 +1293,6 @@ void actorUpdateGroundReferencePose(u8 *actor, u8 *reference, u8 *pose) {
 /// \note Original identifier: \c D_800760A8 (0x800760A8).
 extern u8 *gPikachuActor;
 s32 areaIsPositionOutsideBounds(f32, f32, f32);
-s32 terrainConstrainMovement(s32, f32, f32, f32, f32, f32, f32, f32 *, f32 *, f32 *, u8 **);
 /// Adjust actor movement for terrain, gravity, and ground contact while updating its movement state.
 /// \param object Actor with initialized action, model, ground-reference pose, and default part state.
 /// \param displacement Three-component movement vector adjusted for terrain and gravity.
@@ -1340,7 +1339,7 @@ void actorConstrainMovementToTerrain(u8 *object, f32 *displacement) {
         collisionFlags = terrainGetSurfaceAttributes(((RuntimeObjectPrefix *)object)->worldPosition[0], ((RuntimeObjectPrefix *)object)->worldPosition[1],
                                        ((RuntimeObjectPrefix *)object)->worldPosition[2], &surface);
         if (collisionFlags & 0x100) {
-            actorAddDownhillMovement(object, displacement, (s32)&surface);
+            actorAddDownhillMovement(object, displacement, &surface);
             radius = state->clearanceHeight * 0.001f;
         } else {
             radius = state->clearanceHeight;

@@ -1,3 +1,4 @@
+#include "terrain_movement.h"
 #include "terrain_height.h"
 #include "terrain_surface.h"
 #include "audio_sound_effect.h"
@@ -567,8 +568,6 @@ s32 controllerIsRumblePatternActive(s32);
 void backdropAdvanceScroll(f32);
 f32 vector3Normalize(f32 *);
 u32 randomNext(void);
-s32 terrainConstrainMovement(s32, f32, f32, f32, f32, f32, f32, f32 *, f32 *, f32 *, u8 **);
-void terrainGetDownhillHeightDifferences(f32, f32, f32, f32, f32, f32 *, f32 *, u8 **);
 void playerPlayFootstepSound(u8 *, s32);
 /// Borrowed reference to the active Pikachu actor created for the current area.
 /// \note Original identifier: \c D_800760A8 (0x800760A8).

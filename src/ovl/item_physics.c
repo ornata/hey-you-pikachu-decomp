@@ -1,3 +1,4 @@
+#include "terrain_movement.h"
 #include "terrain_surface.h"
 #include "wisp_effect.h"
 #include "actor_parts.h"
@@ -27,7 +28,6 @@ void itemBeginShrinkingDisposal(u8 *object) {
 }
 
 f32 vector3Normalize(u8 *); /* extern */
-void terrainGetDownhillHeightDifferences(f32, f32, f32, f32, f32, f32 *, f32 *, u8 **);
 
 /// Determine the normalized terrain response direction at an item.
 /// \param object Item whose terrain is sampled.
@@ -349,7 +349,6 @@ s32 itemDispatchCollisionResponse(u8 *object, s32 flags) {
 
 u32 randomNext(void);
 s32 areaIsPositionOutsideBounds(f32, f32, f32);
-s32 terrainConstrainMovement(s32, f32, f32, f32, f32, f32, f32, f32 *, f32 *, f32 *, u8 **);
 s32 itemUpdateGroundVelocity(u8 *, u8 *, s32, s32 *);
 s32 itemDispatchCollisionResponse(u8 *, s32);
 #pragma intrinsic(fabsf)

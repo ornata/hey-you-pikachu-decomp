@@ -1,3 +1,4 @@
+#include "terrain_movement.h"
 #include "terrain_height.h"
 #include "wisp_effect.h"
 #include "effect_emitter.h"
@@ -2412,7 +2413,6 @@ s32 itemTryRelease(u8 *object, s32 force) {
 /// Borrowed reference to the active Pikachu actor created for the current area.
 /// \note Original identifier: \c D_800760A8 (0x800760A8).
 extern s32 gPikachuActor;
-s32 terrainConstrainMovement(s32, f32, f32, f32, f32, f32, f32, f32 *, f32 *, f32 *, s32);
 /// Launch a live item with collision-aware starting placement and the requested motion.
 /// \param id Handle of a live item that permits release; requires the active primary actor.
 /// \param origin Readable three-component world position from which starting placement is checked.
