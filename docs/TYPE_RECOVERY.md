@@ -4385,3 +4385,14 @@ and motor lifecycle selectors; Ghidra at 0x80003078 confirms per-port dispatch.
 The records and dispatch tables remain private because no other unit consumes them;
 unused boot declarations are removed. Both units preserve strict object sections,
 BSS alignment/layout, relocations and clean retail ROM bytes.
+
+### Shared device-request operations
+
+Rumble request records name their start/stop/reset operations through
+ControllerRumbleCommand, shared by producers and controller dispatch. EEPROM
+request records similarly share EepromRequestCommand read/write selectors with
+setup producers and dispatch. The numeric storage types and record layouts remain
+unchanged. Ghidra at 0x8000317C confirms rumble operation dispatch.
+The public rumble contract records finite nonnegative representable timing values
+and the eight-unconsumed-request storage limit. All four edited units and dependent
+headers preserve strict baseline objects and clean retail ROM bytes.

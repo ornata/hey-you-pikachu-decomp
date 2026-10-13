@@ -7,11 +7,18 @@
 #include "game_message.h"
 #include "ultra64.h"
 
+/// Operations accepted by queued controller rumble requests.
+typedef enum ControllerRumbleCommand {
+    CONTROLLER_RUMBLE_START = 0, ///< Start or replace a timed pulse pattern.
+    CONTROLLER_RUMBLE_STOP = 1, ///< Cancel the pattern and request motor stopping.
+    CONTROLLER_RUMBLE_RESET = 2 ///< Cancel the pattern and reinitialize the accessory.
+} ControllerRumbleCommand;
+
 /// Caller-owned rumble command retained until the controller thread consumes it.
 typedef struct ControllerRumbleRequest {
     s16 type;            ///< GameMessageKind selector; GAME_MESSAGE_RUMBLE.
     s32 port;            ///< Controller port from zero through three.
-    s32 command;         ///< Zero starts a pattern, one stops it, and two resets rumble.
+    s32 command;         ///< ControllerRumbleCommand operation.
     f32 durationSeconds; ///< Total pattern duration for a start command.
     f32 intervalSeconds; ///< Interval between pulse starts for a start command.
     f32 pulseSeconds;    ///< Duration of each pulse for a start command.

@@ -238,10 +238,10 @@ void eepromUpdateTransfer(void) {
 /// \note Original decompilation identifier: \c eepromDispatchRequest (0x80003938).
 void eepromDispatchRequest(EepromRequest *req) {
     switch (req->command) {
-    case 0:
+    case EEPROM_REQUEST_READ:
         req->result = eepromStartRead(req->page, req->backupPage, req->buffer, req->byteCount);
         break;
-    case 1:
+    case EEPROM_REQUEST_WRITE:
         req->result = eepromStartWrite(req->page, req->backupPage, req->buffer, req->byteCount);
         break;
     default:

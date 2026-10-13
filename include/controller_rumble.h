@@ -1,6 +1,7 @@
 /// \file
 /// Declares queued controller rumble patterns and current playback queries.
 /// Requests require an initialized controller thread and take effect asynchronously.
+/// No more than eight requests may remain unconsumed before request storage is reused.
 
 #ifndef CONTROLLER_RUMBLE_H
 #define CONTROLLER_RUMBLE_H
@@ -15,9 +16,9 @@ void controllerRequestRumbleReset(s32 port);
 
 /// Request a timed pattern of controller rumble pulses.
 /// \param port Controller port index, from 0 through 3.
-/// \param durationSeconds Total pattern duration in seconds.
-/// \param intervalSeconds Time between pulse starts in seconds.
-/// \param pulseSeconds Duration of each pulse in seconds.
+/// \param durationSeconds Finite nonnegative total pattern duration in seconds, representable in timer ticks.
+/// \param intervalSeconds Finite nonnegative time between pulse starts in seconds, representable in timer ticks.
+/// \param pulseSeconds Finite nonnegative pulse duration in seconds, representable in timer ticks.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80004A3C (0x80004A3C).
 void controllerRequestRumblePattern(s32 port, f32 durationSeconds, f32 intervalSeconds, f32 pulseSeconds);

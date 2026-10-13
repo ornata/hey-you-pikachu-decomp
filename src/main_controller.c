@@ -707,7 +707,7 @@ void controllerDispatchRumbleRequest(ControllerRumbleRequest *request) {
     timer = &gControllerRumblePatternState[request->port];
     command = request->command;
     switch (command) {
-    case 0:
+    case CONTROLLER_RUMBLE_START:
         timer->state = CONTROLLER_PATTERN_RUNNING;
         timer->deadlineTicks =
             osGetTime() +
@@ -718,10 +718,10 @@ void controllerDispatchRumbleRequest(ControllerRumbleRequest *request) {
         timer->pulseTicks =
             OS_USEC_TO_CYCLES((u64)(request->pulseSeconds * gControllerRumblePulseMicrosecondsPerSecond));
         break;
-    case 1:
+    case CONTROLLER_RUMBLE_STOP:
         timer->state = CONTROLLER_PATTERN_CANCEL;
         break;
-    case 2:
+    case CONTROLLER_RUMBLE_RESET:
         timer->state = CONTROLLER_PATTERN_RESET;
         break;
     default:

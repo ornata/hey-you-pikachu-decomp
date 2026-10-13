@@ -17,13 +17,19 @@ typedef enum EepromTransferState {
     EEPROM_TRANSFER_WRITE_FAILED = 5     ///< Writing failed or a write could not start without supported EEPROM.
 } EepromTransferState;
 
+/// Operations accepted by controller-thread EEPROM setup requests.
+typedef enum EepromRequestCommand {
+    EEPROM_REQUEST_READ = 0, ///< Start a checksum-protected read.
+    EEPROM_REQUEST_WRITE = 1 ///< Start a checksum-protected write.
+} EepromRequestCommand;
+
 /// Request borrowed by the controller thread until pending becomes zero.
 /// Only one queued request and one transfer may be outstanding. Acknowledgment
 /// reports setup, while transfer completion is queried separately.
 typedef struct EepromRequest {
     s16 type; ///< GameMessageKind selector; GAME_MESSAGE_EEPROM.
     u8 padding02[2];
-    s32 command;    ///< Zero requests a read; one requests a write.
+    s32 command;    ///< EepromRequestCommand operation.
     s32 pending;    ///< Nonzero until the controller thread acknowledges setup.
     s32 result;     ///< Transfer setup result, valid after acknowledgment.
     s32 page;       ///< First eight-byte EEPROM page.

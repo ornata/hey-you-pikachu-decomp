@@ -442,7 +442,7 @@ s32 eepromRequestRead(s32 page, s32 backupPage, void *destination, s32 byteCount
     eepromWaitForIdle();
     gEepromQueuedRequest.pending = 1;
     gEepromQueuedRequest.type = GAME_MESSAGE_EEPROM;
-    gEepromQueuedRequest.command = 0;
+    gEepromQueuedRequest.command = EEPROM_REQUEST_READ;
     gEepromQueuedRequest.page = page;
     gEepromQueuedRequest.backupPage = backupPage;
     gEepromQueuedRequest.buffer = destination;
@@ -473,7 +473,7 @@ s32 eepromRequestWrite(s32 page, s32 backupPage, void *source, s32 byteCount) {
     } while (0);
     gEepromQueuedRequest.pending = 1;
     gEepromQueuedRequest.type = GAME_MESSAGE_EEPROM;
-    gEepromQueuedRequest.command = 1;
+    gEepromQueuedRequest.command = EEPROM_REQUEST_WRITE;
     gEepromQueuedRequest.page = page;
     gEepromQueuedRequest.backupPage = backupPage;
     gEepromQueuedRequest.buffer = source;

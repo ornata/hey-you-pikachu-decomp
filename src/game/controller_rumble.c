@@ -11,7 +11,6 @@ extern u32 gControllerRumbleRequestIndex;
 /// Eight retained request slots submitted asynchronously to the controller thread.
 /// \note Original identifier: \c D_800AD480 (0x800AD480).
 extern ControllerRumbleRequest gControllerRumbleRequests[8];
-void controllerQueueRumbleCommand(s32, s32, f32, f32, f32);
 
 /// Submit a controller rumble request for asynchronous processing.
 /// \param port Controller port index, from 0 through 3.
@@ -43,7 +42,7 @@ void controllerQueueRumbleCommand(s32 port, s32 command, f32 durationSeconds, f3
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80004A0C (0x80004A0C).
 void controllerRequestRumbleReset(s32 port) {
-    controllerQueueRumbleCommand(port, 2, 0.0f, 0.0f, 0.0f);
+    controllerQueueRumbleCommand(port, CONTROLLER_RUMBLE_RESET, 0.0f, 0.0f, 0.0f);
 }
 
 /// Request a timed pattern of controller rumble pulses.
@@ -54,7 +53,7 @@ void controllerRequestRumbleReset(s32 port) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80004A3C (0x80004A3C).
 void controllerRequestRumblePattern(s32 port, f32 durationSeconds, f32 intervalSeconds, f32 pulseSeconds) {
-    controllerQueueRumbleCommand(port, 0, durationSeconds, intervalSeconds, pulseSeconds);
+    controllerQueueRumbleCommand(port, CONTROLLER_RUMBLE_START, durationSeconds, intervalSeconds, pulseSeconds);
 }
 
 /// Request that a controller's rumble pattern stop.
@@ -62,7 +61,7 @@ void controllerRequestRumblePattern(s32 port, f32 durationSeconds, f32 intervalS
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80004A78 (0x80004A78).
 void controllerRequestRumbleStop(s32 port) {
-    controllerQueueRumbleCommand(port, 1, 0.0f, 0.0f, 0.0f);
+    controllerQueueRumbleCommand(port, CONTROLLER_RUMBLE_STOP, 0.0f, 0.0f, 0.0f);
 }
 
 
