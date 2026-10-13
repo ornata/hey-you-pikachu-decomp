@@ -95,9 +95,6 @@
       "scriptVmReadIntegerOperand": "scriptValueGetInteger returns s32. Operand decoding retains an unused second VM context argument through an unprototyped compatibility declaration.",
       "actorRunScriptVm indexed read": "Opcode 33 retains a five-byte array view when passing an indexed value to scriptVmPushValue. Replacing that view with &elements[elementIndex] on ScriptValue * changes allocated instructions and fails ROM matching; opcode 34 typed indexed writes independently preserve strict objects. Isolate IDO address-expression scheduling before consolidating the read view."
     },
-    "src/game/doors_object_responses.c": {
-      "objectResponsesAttach": "The keyed insertion call retains the ROM caller's unused fourth object pointer. Its pool, integer value and key match the canonical implementation; the response registry retains 0x28 bytes of storage for a 0x20-byte pool header. Inspect a3 setup and trailing storage before consolidating the compatibility declaration or changing the global definition."
-    },
     "src/ovl/system_menu.c": {
       "systemMenuAppendDetailText": "The detail accumulator interface retains an unsigned byte-string view. Trials using const char *, including a local unsigned-byte view, changed allocated code. Isolate the compiler scheduling/register effect before changing the text interface; menu record and callback typing independently matches.",
       "systemMenuInvokeChapterUpdate": "The legacy no-argument menu callback calls the one-argument chapter setter without supplying a chapter. Preserve its explicitly documented unprototyped call; a canonical setter prototype requires an invented argument or recovery of the menu callback ABI. The chapter-query header remains canonical.",

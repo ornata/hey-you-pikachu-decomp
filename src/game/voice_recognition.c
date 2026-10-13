@@ -126,7 +126,7 @@ extern u8 gVoiceVocabularyData[];
 extern s32 D_A9800;
 extern s32 D_B3C70;
 s32 voiceDeviceInitialize(s32, OSVoiceHandle *, s32);
-void romDmaReadBlocking(s32 romAddress, u8 *destination, s32 byteCount);
+#include "rom_dma.h"
 
 /// Initialize the voice recognition device and load its resident dictionary data.
 /// \param queue Initialized serial-interface message queue address; the queue

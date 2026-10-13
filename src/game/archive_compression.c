@@ -2,7 +2,7 @@
 #include "heap_tail.h"
 #include "common.h"
 #include "heap_types.h"
-void romDmaReadBlocking(u32 romAddress, u8 *destination, s32 byteCount);
+#include "rom_dma.h"
 void archiveConsumeBits(s32 bitCount, u8 **source, s32 *bitWindow, s32 *availableBits);
 
 s32 archiveEncodeMemberStub(s32 unusedSourceAddress, s32 unusedSourceBytes, u8 *unusedDestination);

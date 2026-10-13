@@ -4000,3 +4000,13 @@ hierarchies. Actor part-index lookup now uses the canonical two-argument
 `word_map_lookup.h` interface; removing its unused trailing arguments preserves
 all object bytes and relocations. Registration locals distinguish the actor
 type, part identifier list, assigned part-table index and packed lookup key.
+
+### Canonical pool and cartridge interfaces
+
+Object responses now include the shared keyed-pool contracts rather than six
+local declarations. The unused fourth insertion argument can be removed without
+changing allocated bytes or relocations; the registry's eight unknown trailing
+bytes remain explicitly preserved. Audio-bank, overlay, compressed-archive and
+voice-vocabulary loading now use `rom_dma.h`. Main and controller startup also
+use its canonical hook declarations, removing duplicate and unused local DMA
+prototypes. Every source-unit change independently passed strict object comparison.

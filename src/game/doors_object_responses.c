@@ -9,7 +9,7 @@
 #include "object_kind_callbacks.h"
 #include "vector_direction.h"
 #include "object_lookup.h"
-#include "keyed_pool_types.h"
+#include "keyed_pool.h"
 #include "scene_types.h"
 #include "heap_alloc.h"
 #include "object_types.h"
@@ -53,13 +53,11 @@ ObjectResponseRegistry gObjectResponseRegistry;
 /// Per-kind response callback view of the object callback table, with a twenty-four-byte stride.
 /// \note Original identifier: \c D_80078154 (0x80078154).
 extern ObjectKindResponseEntry gObjectKindResponseEntries[];
-s32 keyedPoolInsert(KeyedPool *, s32, u32, u8 *);
 void objectResponsesClearWithCallback(u8 *, ObjectResponseHandler);
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
 void heapInitializeRegion(void *, s32, s32);
-void keyedPoolInitialize(KeyedPool *, u32);
 
 /// Reset the registry of created door objects.
 /// \returns Nothing.
@@ -211,7 +209,6 @@ void objectResponsesInitialize(s32 capacity, s32 heapBytes) {
     keyedPoolInitialize(&gObjectResponseRegistry.pool, capacity);
 }
 
-void keyedPoolDestroy(KeyedPool *); /* extern */
 
 /// Release the queued object-response registry and its storage.
 /// \returns Nothing.
@@ -251,9 +248,6 @@ void objectResponseDispatch(u8 *object, ObjectResponse *response) {
     gObjectResponseHandlers[response->kind](object, response);
 }
 
-s32 keyedPoolIterateFirstForKey(KeyedPool *, s32);
-s32 keyedPoolIterateNextForKey(KeyedPool *, s32);
-void keyedPoolRemoveAllForKey(KeyedPool *, s32);
 
 /// Consume an object's pending responses, optionally invoking a callback for each.
 /// \param object Target object address whose pending responses are cleared.
@@ -313,7 +307,7 @@ s32 objectResponsesGetFreeCapacity(void) {
 /// \note Original decompilation identifier: \c func_8001C72C (0x8001C72C).
 void objectResponsesAttach(u8 *object, ObjectResponse *response) {
     ((RuntimeObjectPrefix *)object)->flags |= 0x800;
-    keyedPoolInsert(&gObjectResponseRegistry.pool, (s32)response, ((RuntimeObjectPrefix *)object)->handle, object);
+    keyedPoolInsert(&gObjectResponseRegistry.pool, (s32)response, ((RuntimeObjectPrefix *)object)->handle);
 }
 
 /// Allocate a response record for an eligible target object.

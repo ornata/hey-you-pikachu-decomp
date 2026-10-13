@@ -2,7 +2,7 @@
 #include "common.h"
 
 void audioBankFileRelocate(ALBankFile *, s32);
-void romDmaReadBlocking(s32 romAddress, u8 *destination, s32 byteCount);
+#include "rom_dma.h"
 
 /// Load an audio bank file from ROM and prepare it for playback.
 /// \param heap Audio heap receiving the loaded bank file.

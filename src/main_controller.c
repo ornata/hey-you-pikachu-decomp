@@ -1,3 +1,4 @@
+#include "rom_dma.h"
 #include "matrix_basic.h"
 #include "camera_storage.h"
 #include "object_groups.h"
@@ -35,8 +36,6 @@ extern u64 gMainSchedulerContext[];
 extern u64 gIdleThreadStackTop[];
 
 void IdleMain(void *arg);
-void romDmaInitializeHook(void);
-void romDmaCreatePiManager(void);
 void runtimeStartMainThread(void *stack);
 
 #define IDLE_THREAD_ID 10
@@ -168,7 +167,6 @@ extern f32 gCameraElapsedTintInitialSeconds;
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
 void heapDebugNoOp();
-void romDmaReadBlocking(s32 romAddress, s32 destination, s32 byteCount);
 
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).

@@ -76,8 +76,6 @@ extern u64 gMainSchedulerContext[];
 extern u64 gIdleThreadStackTop[];
 
 void IdleMain(void *arg);
-void romDmaInitializeHook(void);
-void romDmaCreatePiManager(void);
 void runtimeStartMainThread(void *stack);
 
 #define IDLE_THREAD_ID 10

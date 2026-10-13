@@ -1,7 +1,7 @@
 #include "common.h"
 
 void _bzero(void *, s32);
-void romDmaReadBlocking(u32 romAddress, u8 *destination, s32 byteCount);
+#include "rom_dma.h"
 
 /// Load a prelinked overlay from cartridge ROM and prepare it for execution.
 /// Blocks until the entire overlay has been read. All end addresses are exclusive.
