@@ -79,6 +79,10 @@ typedef char
 
 typedef char SceneSpawnPointSizeCheck[(sizeof(SceneSpawnPoint) == 0x20) ? 1 : -1];
 typedef char PassageStateSizeCheck[(sizeof(PassageState) == 0x10) ? 1 : -1];
+typedef char PassageKindOffsetCheck[(((u32) & ((PassageState *)0)->kind) == 0) ? 1 : -1];
+typedef char PassageDestinationOffsetCheck[(((u32) & ((PassageState *)0)->destination) == 4) ? 1 : -1];
+typedef char PassageEntranceOffsetCheck[(((u32) & ((PassageState *)0)->entrance) == 8) ? 1 : -1];
+typedef char PassageAccessStateOffsetCheck[(((u32) & ((PassageState *)0)->accessState) == 0xC) ? 1 : -1];
 typedef char ScenePathEntrySizeCheck[(sizeof(ScenePathEntry) == 8) ? 1 : -1];
 typedef char SceneRegionStateSizeCheck[(sizeof(SceneRegionState) == 0x10) ? 1 : -1];
 typedef char CaveStateSizeCheck[(sizeof(CaveState) == 0x20) ? 1 : -1];

@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,609 / 77 |
+| Raw offset candidates | 4,040 / 86 | 2,606 / 77 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3414,3 +3414,11 @@ and `accessState`. This removes the private `InspectObject` and `InspectState`
 views that conflated independent record kinds. Existing target offset checks,
 creation code, description consumers and Ghidra at `0x80110C0C` support the
 replacement. The proxy description branch keeps its separate private type.
+
+The interaction classifier also reuses the passage kind, destination and access
+fields, with target offset checks in `scene_types.h`. Its held-item exclusion
+reads the signed 16-bit item kind through `ItemStatePrefix`; this is independent
+of the proxy's 32-bit classification result at the same offset. The inspection
+reader uses the shared primary-region flag name. Ghidra at `0x80111784` confirms
+the classifier's widths and passage branches; strict object comparison preserves
+the established held-handle comparison operand order.

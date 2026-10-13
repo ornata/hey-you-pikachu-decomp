@@ -1490,7 +1490,7 @@ s32 playerPrepareInteractionDescription(PlayerControlPrefix *player) {
     }
     if (kind == 0x86) {
         state = item->state.bytes;
-        if (player->interactionFlags & 2) {
+        if (player->interactionFlags & INTERACTION_PRIMARY_REGION) {
             sprintf(text, "%s%-22s^^%s\n%s%s",
                     ((ITEM_CLASS(((ItemStatePrefix *)state)->kind) == 2) ||
                      (ITEM_CLASS(((ItemStatePrefix *)state)->kind) == 5))
@@ -1513,7 +1513,7 @@ s32 playerPrepareInteractionDescription(PlayerControlPrefix *player) {
         return item->handle;
     }
     if (((s32)kind > 0) && ((s32)kind < 0x26)) {
-        if (player->interactionFlags & 2) {
+        if (player->interactionFlags & INTERACTION_PRIMARY_REGION) {
             sprintf(text, "^4%s^^\n%s", (s8 *)actorConfigGetDisplayName(item->kind, 1),
                     (s8 *)actorConfigGetDescription(item->kind, 1));
         } else {
@@ -1525,7 +1525,7 @@ s32 playerPrepareInteractionDescription(PlayerControlPrefix *player) {
         return item->handle;
     }
     if (kind == 0x87) {
-        if (player->interactionFlags & 2) {
+        if (player->interactionFlags & INTERACTION_PRIMARY_REGION) {
             state = item->state.bytes;
             if (((PassageState *)state)->accessState != 0) {
                 suffix = (s8 *)doorGetAccessDescription((u8 *)item);
@@ -1546,7 +1546,7 @@ s32 playerPrepareInteractionDescription(PlayerControlPrefix *player) {
         /// \note Original identifier: \c D_80123EA0 (0x80123EA0).
         static char *gPlayerKind89InteractionLabel = "\xA1\xA9\xA1\xA9\xA1\xA9";
 
-        if (player->interactionFlags & 2) {
+        if (player->interactionFlags & INTERACTION_PRIMARY_REGION) {
             sprintf(text, "%s%s", gPlayerKind89InteractionLabel, gPlayerInteractionPromptSuffixes[8]);
         } else {
             sprintf(text, "%s%s", gPlayerKind89InteractionLabel, "\n^9You can't reach it from here.^^");
@@ -1845,7 +1845,7 @@ s32 playerClassifyInteractionTarget(u8 *player, u8 *object, s32 flags) {
     if (playerGetChaseStage() <= 0)
         return 2;
     if (((PlayerControlPrefix *)player)->heldItemHandle == ((RuntimeObjectPrefix *)object)->handle) {
-        if (*(s16 *)(((RuntimeObjectPrefix *)object)->state.bytes + 4) != 0x8A)
+        if (((ItemStatePrefix *)((RuntimeObjectPrefix *)object)->state.bytes)->kind != 0x8A)
             ((PlayerControlPrefix *)player)->modeState.interactionAction = 5;
         return 0;
     }
@@ -1883,11 +1883,11 @@ s32 playerClassifyInteractionTarget(u8 *player, u8 *object, s32 flags) {
     }
     if (kind == 0x87) {
         state = ((RuntimeObjectPrefix *)object)->state.bytes;
-        if (*(s32 *)(state + 0xC))
+        if (((PassageState *)state)->accessState)
             return 5;
         ((PlayerControlPrefix *)player)->modeState.interactionAction = 7;
-        if (*(s32 *)state == 2 || *(s32 *)state == 3) {
-            switch (*(s32 *)(state + 4)) {
+        if (((PassageState *)state)->kind == 2 || ((PassageState *)state)->kind == 3) {
+            switch (((PassageState *)state)->destination) {
             case 0:
                 return 6;
             case 1:

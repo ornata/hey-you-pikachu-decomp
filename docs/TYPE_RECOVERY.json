@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 2609,
-      "unique_spellings": 1026,
+      "occurrences": 2606,
+      "unique_spellings": 1025,
       "files": 77
     }
   },
@@ -6510,7 +6510,6 @@
           ],
           "state + 4": [
             "805:94",
-            "1890:30",
             "2124:18"
           ],
           "gPlayerCompanionTarget - 0x50": [
@@ -6523,13 +6522,6 @@
           "gPlayerHelpTextCursor + 1": [
             "1443:46",
             "1447:46"
-          ],
-          "bytes + 4": [
-            "1848:61"
-          ],
-          "state + 0xC": [
-            "1886:22",
-            "2127:18"
           ],
           "gPlayerEyeHeight - 0x1C": [
             "1916:37",
@@ -6558,6 +6550,9 @@
           ],
           "state + 0x1C": [
             "2126:18"
+          ],
+          "state + 0xC": [
+            "2127:18"
           ],
           "state + 0x10": [
             "2128:18"
