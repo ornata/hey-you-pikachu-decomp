@@ -11,10 +11,10 @@ typedef char EngineDriverVoicesOffsetCheck[((u32) & ((VoicePlayer *)0)->voices =
 struct N_ALVoice_s;
 void n_alSynSetVol(struct N_ALVoice_s *, s16, ALMicroTime);
 
-void sequenceEngineReleaseVoice(s32, u8 *, u8 *);
+void sequenceEngineReleaseVoice(VoicePlayer *, EngineSequence *, SequenceVoice *);
 void sequenceEngineReadNextEvent(EngineSequence *);
 void sequenceEngineDispatchMidiEvent(VoicePlayer *, EngineSequence *);
-s32 sequenceEngineRecycleVoice(u8 *, u8 *, u8 *);
+s32 sequenceEngineRecycleVoice(VoicePlayer *, EngineSequence *, SequenceVoice *);
 void n_alSynFreeVoice(struct N_ALVoice_s *);
 void n_alSynStopVoice(struct N_ALVoice_s *);
 
@@ -67,20 +67,20 @@ f64 sequenceEngineGetRate(SequenceState *player) {
 /// \param sequence Sequence receiving the voice.
 /// \returns A borrowed voice owned by the driver and assigned to the sequence, or null when the free pool is empty.
 /// \note Original decompilation identifier: \c func_80005BE0 (0x80005BE0).
-u8 *sequenceEngineAcquireVoice(u8 *driver, u8 *sequence) {
-    u8 *node;
-    u8 *head;
+SequenceVoice *sequenceEngineAcquireVoice(VoicePlayer *driver, EngineSequence *sequence) {
+    SequenceVoice *node;
+    SequenceVoice *head;
 
-    node = *(u8 **)(driver + 0x20);
+    node = driver->voices;
     if (node != NULL) {
-        *(u8 **)(driver + 0x20) = *(u8 **)node;
-        *(u8 **)node = *(u8 **)(sequence + 0x10);
-        *(s32 *)(node + 4) = 0;
-        head = *(u8 **)(sequence + 0x10);
+        driver->voices = node->next;
+        node->next = sequence->voices;
+        node->previous = NULL;
+        head = sequence->voices;
         if (head != NULL) {
-            *(u8 **)(head + 4) = node;
+            head->previous = node;
         }
-        *(u8 **)(sequence + 0x10) = node;
+        sequence->voices = node;
     }
     return node;
 }
@@ -91,22 +91,22 @@ u8 *sequenceEngineAcquireVoice(u8 *driver, u8 *sequence) {
 /// \param voice Voice belonging to the sequence.
 /// \returns One.
 /// \note Original decompilation identifier: \c func_80005C1C (0x80005C1C).
-s32 sequenceEngineRecycleVoice(u8 *driver, u8 *sequence, u8 *voice) {
-    u8 **previousVoiceLink;
-    u8 *nextVoice;
+s32 sequenceEngineRecycleVoice(VoicePlayer *driver, EngineSequence *sequence, SequenceVoice *voice) {
+    SequenceVoice *previousVoice;
+    SequenceVoice *nextVoice;
 
-    previousVoiceLink = (u8 **)((SequenceVoice *)voice)->previous;
-    if (previousVoiceLink != NULL) {
-        *previousVoiceLink = (u8 *)((SequenceVoice *)voice)->next;
+    previousVoice = voice->previous;
+    if (previousVoice != NULL) {
+        previousVoice->next = voice->next;
     } else {
-        ((EngineSequence *)sequence)->voices = ((SequenceVoice *)voice)->next;
+        sequence->voices = voice->next;
     }
-    nextVoice = (u8 *)((SequenceVoice *)voice)->next;
+    nextVoice = voice->next;
     if (nextVoice != NULL) {
-        ((SequenceVoice *)nextVoice)->previous = ((SequenceVoice *)voice)->previous;
+        nextVoice->previous = voice->previous;
     }
-    ((SequenceVoice *)voice)->next = ((VoicePlayer *)driver)->voices;
-    ((VoicePlayer *)driver)->voices = (SequenceVoice *)voice;
+    voice->next = driver->voices;
+    driver->voices = voice;
     return 1;
 }
 
@@ -120,7 +120,7 @@ void sequenceEngineStopVoice(s32 driver, s32 sequence, s32 voiceRecord) {
     struct N_ALVoice_s *voice = (struct N_ALVoice_s *)(voiceRecord + 0x14);
     n_alSynStopVoice(voice);
     n_alSynFreeVoice(voice);
-    sequenceEngineRecycleVoice((u8 *)driver, (u8 *)sequence, (u8 *)voiceRecord);
+    sequenceEngineRecycleVoice((VoicePlayer *)driver, (EngineSequence *)sequence, (SequenceVoice *)voiceRecord);
 }
 
 /// Release a sequence note according to its sound release setting.
@@ -129,21 +129,21 @@ void sequenceEngineStopVoice(s32 driver, s32 sequence, s32 voiceRecord) {
 /// \param voice Voice belonging to the sequence.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80005CAC (0x80005CAC).
-void sequenceEngineReleaseVoice(s32 driver, u8 *sequence, u8 *voice) {
+void sequenceEngineReleaseVoice(VoicePlayer *driver, EngineSequence *sequence, SequenceVoice *voice) {
     f64 releaseSeconds;
     s32 releaseVolumeRate;
 
-    releaseSeconds = (f64) * (s32 *)(**(u8 ***)(voice + 0x10) + 8) * 0.000001;
+    releaseSeconds = (f64)voice->sound->envelope->releaseTime * 0.000001;
     if (releaseSeconds > 0.0) {
-        releaseVolumeRate = (s32)((f64) - *(s32 *)(voice + 0x48) / releaseSeconds);
-        *(s32 *)(voice + 0x4C) = releaseVolumeRate;
+        releaseVolumeRate = (s32)((f64) - voice->envelope / releaseSeconds);
+        voice->envelopeRate = releaseVolumeRate;
         if (releaseVolumeRate == 0) {
-            *(s32 *)(voice + 0x4C) = -1;
+            voice->envelopeRate = -1;
         }
-        n_alSynSetVol((struct N_ALVoice_s *)(voice + 0x14), 0, (s32)(releaseSeconds * 1000000.0));
+        n_alSynSetVol(&voice->native, 0, (s32)(releaseSeconds * 1000000.0));
         return;
     }
-    sequenceEngineStopVoice(driver, (s32)sequence, (s32)voice);
+    sequenceEngineStopVoice((s32)driver, (s32)sequence, (s32)voice);
 }
 
 /// Set channel sustain, releasing all sustain-held notes in the sequence when that channel lifts sustain.
@@ -161,7 +161,7 @@ s32 sequenceEngineSetSustain(s32 driver, u8 *sequence, s32 channelIndex, s32 sus
         if (var_s0 != NULL) {
             do {
                 if (var_s0[0x37] != 0) {
-                    sequenceEngineReleaseVoice(driver, sequence, var_s0);
+                    sequenceEngineReleaseVoice((VoicePlayer *)driver, (EngineSequence *)sequence, (SequenceVoice *)var_s0);
                 }
                 var_s0 = *(u8 **)var_s0;
             } while (var_s0 != NULL);
@@ -438,7 +438,7 @@ void sequenceEngineNoteOn(u8 *driver, u8 *seq, s32 channel, s32 key, s32 velocit
 
     sound = sequenceEngineFindSound(seq, channel, key, velocity);
     if (sound != NULL) {
-        voice = sequenceEngineAcquireVoice(driver, seq);
+        voice = (u8 *)sequenceEngineAcquireVoice((VoicePlayer *)driver, (EngineSequence *)seq);
         if (voice != NULL) {
             config.priority = 5;
             config.fxBus = 0;
@@ -502,7 +502,7 @@ void sequenceEngineNoteOff(s32 driver, u8 *sequence, s32 channel, s32 key, s32 v
                 if (*(sequence + 0x21 + (channel * 0x1C)) >= 0x40) {
                     var_s0[0x37] = 1;
                 } else {
-                    sequenceEngineReleaseVoice(driver, sequence, var_s0);
+                    sequenceEngineReleaseVoice((VoicePlayer *)driver, (EngineSequence *)sequence, (SequenceVoice *)var_s0);
                 }
             }
             var_s0 = *(u8 **)var_s0;
@@ -646,7 +646,7 @@ void sequenceEngineControlChange(u8 *driver, u8 *seq, s32 channel, s32 controlle
         for (current = *(u8 **)(seq + 0x10); current != NULL; current = voice) {
             voice = *(u8 **)current;
             if (channel == current[0x30]) {
-                sequenceEngineReleaseVoice((s32)driver, seq, current);
+                sequenceEngineReleaseVoice((VoicePlayer *)driver, (EngineSequence *)seq, (SequenceVoice *)current);
             }
         }
         break;

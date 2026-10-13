@@ -141,7 +141,8 @@
       "wispEffectUpdateDrawAnimation": "Wisp color retains named byte channels in a struct: a byte-array representation changes IDO channel load/shift register ordering. Texture tracks retain the signed byte cursor; the shared state and lifecycle fields match the original object."
     },
     "src/game/sequence_engine.c": {
-      "sequenceEngineApplyDataEntry": "EngineChannel rpnLow/rpnHigh/pitchBendRange member rewrite changes function instruction bytes and fails ROM match; retain the byte view until load scheduling is isolated. The shared channel layout records the known fields."
+      "sequenceEngineApplyDataEntry": "EngineChannel rpnLow/rpnHigh/pitchBendRange member rewrite changes function instruction bytes and fails ROM match; retain the byte view until load scheduling is isolated. The shared channel layout records the known fields.",
+      "sequenceEngineStopVoice": "Typed driver/sequence/voice parameters change function instruction bytes and fail ROM match, both with &voiceRecord->native and with retained integer native-voice address arithmetic. Keep target-address parameters pending register-allocation evidence; callers and recycle/release interfaces use established shared record types."
     }
   },
   "baseline_totals": {

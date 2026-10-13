@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 1924,
-      "unique_spellings": 812,
+      "occurrences": 1912,
+      "unique_spellings": 810,
       "files": 74
     }
   },
@@ -2910,61 +2910,35 @@
         "sequence_registration.h"
       ],
       "matching_exceptions": {
-        "sequenceEngineApplyDataEntry": "EngineChannel rpnLow/rpnHigh/pitchBendRange member rewrite changes function instruction bytes and fails ROM match; retain the byte view until load scheduling is isolated. The shared channel layout records the known fields."
+        "sequenceEngineApplyDataEntry": "EngineChannel rpnLow/rpnHigh/pitchBendRange member rewrite changes function instruction bytes and fails ROM match; retain the byte view until load scheduling is isolated. The shared channel layout records the known fields.",
+        "sequenceEngineStopVoice": "Typed driver/sequence/voice parameters change function instruction bytes and fail ROM match, both with &voiceRecord->native and with retained integer native-voice address arithmetic. Keep target-address parameters pending register-allocation evidence; callers and recycle/release interfaces use established shared record types."
       },
       "locations": {
         "raw_offset_candidates": {
-          "driver + 0x20": [
-            "74:21",
-            "76:18"
-          ],
-          "sequence + 0x10": [
-            "77:33",
-            "79:25",
-            "83:18",
-            "160:27",
-            "497:23"
-          ],
-          "node + 4": [
-            "78:18"
-          ],
-          "head + 4": [
-            "81:22"
-          ],
           "voiceRecord + 0x14": [
             "120:56"
           ],
+          "sequence + 0x10": [
+            "160:27",
+            "497:23"
+          ],
+          "driver + 0x1C": [
+            "184:17"
+          ],
           "voice + 0x10": [
-            "136:49",
             "187:26",
             "407:29"
           ],
-          "voice + 0x48": [
-            "138:52",
-            "375:25",
-            "449:22",
-            "453:40"
-          ],
-          "voice + 0x4C": [
-            "139:18",
-            "141:22",
-            "450:22",
-            "474:26"
+          "voice + 0x30": [
+            "187:77"
           ],
           "voice + 0x14": [
-            "143:46",
             "209:23",
             "269:52",
             "470:54",
             "471:60",
             "475:54",
             "623:56"
-          ],
-          "driver + 0x1C": [
-            "184:17"
-          ],
-          "voice + 0x30": [
-            "187:77"
           ],
           "seq + 0x1D4": [
             "246:14",
@@ -3018,6 +2992,11 @@
           "channel + 0x22": [
             "372:24"
           ],
+          "voice + 0x48": [
+            "375:25",
+            "449:22",
+            "453:40"
+          ],
           "voice + 0x38": [
             "403:88",
             "459:22"
@@ -3033,6 +3012,10 @@
           ],
           "voice + 0x3C": [
             "409:35"
+          ],
+          "voice + 0x4C": [
+            "450:22",
+            "474:26"
           ],
           "var_s0 + 8": [
             "500:81",

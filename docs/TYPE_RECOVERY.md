@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 1,924 / 74 |
+| Raw offset candidates | 4,040 / 86 | 1,912 / 74 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3736,3 +3736,8 @@ including its event buffer, volume and fade fields. Program selection uses the
 borrowed `ALBank` and channel instrument pointer; pitch bend uses the shared
 channel field. Data entry retains its byte view because a member rewrite changes
 ROM instructions; the recovery notes record that matching constraint.
+
+Sequence voice acquisition, recycling and note release use shared driver,
+sequence and voice types. Free/active list ownership and release-envelope
+accesses are explicit. The stop wrapper retains its target-address parameters:
+typed parameters change its instruction allocation, as recorded in the notes.
