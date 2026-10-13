@@ -1,3 +1,4 @@
+#include "camera_projection.h"
 #include "render_state.h"
 #include "game_heap.h"
 #include "actor_parts.h"
@@ -1373,7 +1374,6 @@ void objectUpdateHierarchy(RuntimeObjectPrefix *object) {
     }
 }
 
-void cameraBuildViewProjection(s32, u8 *, u8 *);
 /// Viewport storage prepared for object hierarchy updates.
 /// \note Original identifier: \c D_800AE430 (0x800AE430).
 extern u8 gObjectUpdateViewport[];
@@ -1392,7 +1392,7 @@ void objectUpdateGroup(s32 group) {
     hierarchy = NULL;
     objectResetTraversalTransformAndMovement();
     collisionGridRandomizeAlignment();
-    cameraBuildViewProjection(0, gObjectUpdateViewport, gObjectUpdateCameraMatrices);
+    cameraBuildViewProjection(0, (Vp *)gObjectUpdateViewport, (Mtx *)gObjectUpdateCameraMatrices);
     nodePoolIterateFirst(&gActiveObjectHierarchies, (s32 *)&hierarchy);
     if (hierarchy != NULL) {
         do {

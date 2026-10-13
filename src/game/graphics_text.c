@@ -1,3 +1,4 @@
+#include "camera_projection.h"
 #include "render_state.h"
 #include "game_heap.h"
 #include "font_cache.h"

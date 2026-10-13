@@ -1,3 +1,4 @@
+#include "camera_projection.h"
 #include "controller_accessory.h"
 #include "render_state.h"
 #include "game_heap.h"
@@ -138,7 +139,6 @@ extern u8 gRenderTaskViewports[];
 extern u8 gRenderTaskMatrices[];
 /* The original caller passes an extra, unused display-list argument. */
 void renderApplyAreaFog();
-s32 cameraBuildViewProjection(s32, u8 *, u8 *);
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;
@@ -720,7 +720,6 @@ void renderDrawColorOverlayWithDepth(u8 r, u8 g, u8 b, u8 a) {
     gDPSetDepthSource(gRenderDisplayListCursor++, G_ZS_PIXEL);
 }
 
-f32 viewportSetPixelRectangle(Vp *, s32, s32, s32, s32, s32, s32, f32);
 /// Additional aspect scale applied when constructing the camera viewport projection.
 /// \note Original identifier: \c D_8009FC9C (0x8009FC9C).
 extern f32 gCameraProjectionAspectScale;
@@ -729,7 +728,8 @@ extern f32 gCameraProjectionAspectScale;
 /// \param viewport Writable buffer suitable for one aligned viewport structure.
 /// \param buffer Writable aligned buffer for two fixed-point matrices, retained by the camera until replaced.
 /// \returns The perspective normalization value for rendering with the prepared projection.
-s32 cameraBuildViewProjection(s32 index, u8 *viewport, u8 *buffer) {
+/// \note Original address: 0x80001844.
+s32 cameraBuildViewProjection(s32 index, Vp *viewport, Mtx *buffer) {
     s32 row;
     u16 normalize;
     f32 scale;
@@ -738,15 +738,15 @@ s32 cameraBuildViewProjection(s32 index, u8 *viewport, u8 *buffer) {
     MatrixCamera *camera;
     MatrixCamera *cameras = (MatrixCamera *)((u8 *)gRenderCameras);
     camera = (MatrixCamera *)((u8 *)cameras + index * sizeof(*cameras));
-    guPerspective((Mtx *)buffer, &normalize, 45.0f,
-                  viewportSetPixelRectangle((Vp *)viewport, camera->viewport[0], camera->viewport[1],
+    guPerspective(buffer, &normalize, 45.0f,
+                  viewportSetPixelRectangle(viewport, camera->viewport[0], camera->viewport[1],
                                             camera->viewport[2], camera->viewport[3], 320, 240,
                                             gCameraProjectionAspectScale),
                   0.5f, 1000.0f, 1.0f);
-    view = (Mtx *)buffer + 1;
+    view = buffer + 1;
     guLookAt(view, camera->eye[0], camera->eye[1], camera->eye[2], camera->target[0], camera->target[1],
              camera->target[2], camera->up[0], camera->up[1], camera->up[2]);
-    guMtxCatL(view, (Mtx *)buffer, (Mtx *)buffer);
+    guMtxCatL(view, buffer, buffer);
     matrixFixedTo34(*view, camera->view.values);
     distance = *(f32 *)(gCurrentAreaConfiguration + 0x2C) / mathSinDegrees(36.0f);
     camera->distance = distance;
@@ -756,7 +756,7 @@ s32 cameraBuildViewProjection(s32 index, u8 *viewport, u8 *buffer) {
         cameras[index].scaled.values[row * 3] *= scale;
         cameras[index].scaled.values[row * 3 + 1] *= scale;
     }
-    camera->matrices = (Mtx *)buffer;
+    camera->matrices = buffer;
     return normalize;
 }
 
@@ -770,7 +770,7 @@ void cameraApplyRenderingState(s32 cameraIndex) {
 
     sp18 = gRenderTaskViewports + gGraphicsNextTaskIndex * 0x10;
     sp1C = gRenderTaskMatrices + (gGraphicsNextTaskIndex << 7);
-    perspectiveNormalization = cameraBuildViewProjection(cameraIndex, sp18, sp1C);
+    perspectiveNormalization = cameraBuildViewProjection(cameraIndex, (Vp *)sp18, (Mtx *)sp1C);
     gSPPerspNormalize(gRenderDisplayListCursor++, perspectiveNormalization);
     gSPViewport(gRenderDisplayListCursor++, sp18);
     gSPMatrix(gRenderDisplayListCursor++, sp1C + 0x80000000, G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH);

@@ -4450,3 +4450,15 @@ Shared heap controls and private block metadata now have target size/offset chec
 and block fields document list links, payload size, category and allocation state.
 All four edited units and dependent headers preserve strict baseline objects and
 clean retail ROM bytes.
+
+### Camera projection and viewport interfaces
+
+`camera_projection.h` shares camera preparation and inclusive-pixel viewport contracts.
+Projection outputs use Vp and two Mtx records rather than byte-buffer parameters;
+object hierarchy updates now see the actual normalization return instead of a local
+void declaration. The camera borrows prepared matrices until replacement, and graphics
+tasks retain output buffers through completion. Rectangle bounds, field representability
+and aspect correction inputs are documented separately by the viewport helper.
+Ghidra at 0x80001844 confirms viewport/projection setup, the second matrix and returned
+normalization. Both producers and consumers preserve strict baseline objects and clean
+retail ROM bytes across all four edited units.

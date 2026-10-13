@@ -1,3 +1,4 @@
+#include "camera_projection.h"
 #include "microphone_session.h"
 #include "controller_accessory.h"
 #include "controller_service.h"
@@ -138,7 +139,6 @@ extern u8 gRenderTaskViewports[];
 extern u8 gRenderTaskMatrices[];
 /* The original caller passes an extra, unused display-list argument. */
 void renderApplyAreaFog();
-s32 cameraBuildViewProjection(s32, u8 *, u8 *);
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;
@@ -246,7 +246,6 @@ extern f32 gFloatStoreZeroUpperTolerance;
 extern f32 gFloatStoreZeroLowerTolerance;
 
 
-f32 viewportSetPixelRectangle(Vp *, s32, s32, s32, s32, s32, s32, f32);
 /// Additional aspect scale applied when constructing the camera viewport projection.
 /// \note Original identifier: \c D_8009FC9C (0x8009FC9C).
 extern f32 gCameraProjectionAspectScale;
