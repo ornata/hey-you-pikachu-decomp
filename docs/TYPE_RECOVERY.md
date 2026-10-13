@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 1,737 / 72 |
+| Raw offset candidates | 4,040 / 86 | 1,723 / 72 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -4517,3 +4517,13 @@ of treating runtime objects as templates. Ghidra at 0x8011BAC8 confirms construc
 results, the child at 0x2C and rotation writes. Six scene scale reads now use the shared
 SceneConfigurationPrefix.objectScale field. Each step preserves strict allocated
 sections, BSS, symbols and relocations, followed by the clean retail ROM gate.
+
+### Menu animation object-field adoption
+
+Opening, closing and interactive tilt use RuntimeObjectPrefix position and rotation
+members instead of byte offsets. Model interior aliases retain their linker identities
+but now declare the actual object-pointer storage. Duplicate phase/model declarations,
+an unused secondary-model alias and redundant local animation prototypes are removed.
+Ghidra at 0x8011A4CC confirms closing position/rotation writes and the retained models.
+Each field and alias adoption preserves strict baseline objects, followed by a clean
+retail ROM match with only the existing permitted interface warnings.

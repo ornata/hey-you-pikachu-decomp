@@ -349,13 +349,10 @@ extern s32 gSystemMenuHistoryDepth;
 extern s32 gSystemMenuPhase;
 /// Interior view of the owned model used during menu opening and closing.
 /// \note Original identifier: \c D_80134104 (0x80134104).
-extern s32 gSystemMenuTransitionModel;
-/// Interior view of the linked secondary menu transition model.
-/// \note Original identifier: \c D_80134108 (0x80134108).
-extern s32 gSystemMenuSecondaryModel;
+extern RuntimeObjectPrefix *gSystemMenuTransitionModel;
 /// Interior view of the owned model drawn during menu interaction.
 /// \note Original identifier: \c D_8013410C (0x8013410C).
-extern s32 gSystemMenuInteractiveModel;
+extern RuntimeObjectPrefix *gSystemMenuInteractiveModel;
 /// Interior view of the menu phase start time as a full 64-bit timestamp.
 /// \note Original identifier: \c D_80134110 (0x80134110).
 extern s32 gSystemMenuPhaseStartMilliseconds;
@@ -768,15 +765,6 @@ void systemMenuDrawClosingEffect(Gfx **);            /* extern */
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;
-/// Interior view of the menu opening, interaction and closing phase.
-/// \note Original identifier: \c D_80134100 (0x80134100).
-extern s32 gSystemMenuPhase;
-/// Interior view of the owned model used during menu opening and closing.
-/// \note Original identifier: \c D_80134104 (0x80134104).
-extern s32 gSystemMenuTransitionModel;
-/// Interior view of the owned model drawn during menu interaction.
-/// \note Original identifier: \c D_8013410C (0x8013410C).
-extern s32 gSystemMenuInteractiveModel;
 
 /// Draw the system menu and its surrounding scene for the current menu phase.
 /// \param displayList Writable display-list cursor with sufficient command capacity; advances past appended commands.
@@ -786,13 +774,13 @@ void systemMenuDrawFrame(Gfx **displayList) {
     switch (gSystemMenuPhase) { /* irregular */
     case SYSTEM_MENU_INTERACTIVE:
         backdropDraw(displayList);
-        objectDrawHierarchyGroup((RuntimeObjectPrefix *)gSystemMenuInteractiveModel, 0x2000);
+        objectDrawHierarchyGroup(gSystemMenuInteractiveModel, 0x2000);
         systemMenuDrawItemList(displayList);
         systemMenuDrawDetails(displayList);
         break;
     case SYSTEM_MENU_CLOSE_DELAY:
         backdropDraw(displayList);
-        objectDrawHierarchyGroup((RuntimeObjectPrefix *)gSystemMenuInteractiveModel, 0x2000);
+        objectDrawHierarchyGroup(gSystemMenuInteractiveModel, 0x2000);
         systemMenuDrawClosingEffect(displayList);
         break;
     case SYSTEM_MENU_OPENING:
@@ -803,7 +791,7 @@ void systemMenuDrawFrame(Gfx **displayList) {
         cameraUpdateOverlayColors(gRenderCameraIndex, 0);
         cameraDrawOverlay(gRenderCameraIndex);
         cameraDrawSecondaryOverlay(gRenderCameraIndex);
-        objectDrawHierarchyGroup((RuntimeObjectPrefix *)gSystemMenuTransitionModel, 0x2000);
+        objectDrawHierarchyGroup(gSystemMenuTransitionModel, 0x2000);
         break;
     }
     textDrawReset();
@@ -916,11 +904,11 @@ void systemMenuUpdateOpeningAnimation(void) {
     position[1] += 10.0f * mathSinDegrees(90.0f * progress);
     angle = 90.0f * progress;
     position[2] -= 10.0f * mathCosDegrees(angle);
-    matrix34TransformPointVector((f32 *)(&gSystemMenuInterfaceTransform), (f32 *)(position), (f32 *)((u8 *)gSystemMenuState.transitionModel + 0x18));
-    *(f32 *)((u8 *)gSystemMenuState.transitionModel + 0x10) = gPlayerViewShake + gPlayerYaw + 180.0f;
-    *(f32 *)((u8 *)gSystemMenuState.transitionModel + 0xC) = (1.0f - progress) * -90.0f;
-    *(f32 *)((u8 *)gSystemMenuState.secondaryModel + 0x10) = angle;
-    objectUpdateHierarchy((RuntimeObjectPrefix *)(u8 *)gSystemMenuState.transitionModel);
+    matrix34TransformPointVector((f32 *)(&gSystemMenuInterfaceTransform), (f32 *)(position), gSystemMenuState.transitionModel->position);
+    gSystemMenuState.transitionModel->rotation[1] = gPlayerViewShake + gPlayerYaw + 180.0f;
+    gSystemMenuState.transitionModel->rotation[0] = (1.0f - progress) * -90.0f;
+    gSystemMenuState.secondaryModel->rotation[1] = angle;
+    objectUpdateHierarchy(gSystemMenuState.transitionModel);
     if (runtimeGetElapsedMilliseconds() - gSystemMenuState.started >= 400) {
         ((MenuBackdropView *)&gPrimaryBackdropScroll)->useBackdrop = 0;
         backdropSelectForView(0, 9, 0);
@@ -946,11 +934,11 @@ void systemMenuUpdateClosingAnimation(void) {
     position[1] += 10.0f * mathSinDegrees((1.0f - progress) * 90.0f);
     angle = (1.0f - progress) * 90.0f;
     position[2] -= 10.0f * mathCosDegrees(angle);
-    matrix34TransformPointVector((f32 *)(&gSystemMenuInterfaceTransform), (f32 *)(position), (f32 *)((u8 *)gSystemMenuState.transitionModel + 0x18));
-    *(f32 *)((u8 *)gSystemMenuState.transitionModel + 0x10) = gPlayerViewShake + gPlayerYaw + 180.0f;
-    *(f32 *)((u8 *)gSystemMenuState.transitionModel + 0xC) = -90.0f * progress;
-    *(f32 *)((u8 *)gSystemMenuState.secondaryModel + 0x10) = (1.0 - progress) * 90.0;
-    objectUpdateHierarchy((RuntimeObjectPrefix *)(u8 *)gSystemMenuState.transitionModel);
+    matrix34TransformPointVector((f32 *)(&gSystemMenuInterfaceTransform), (f32 *)(position), gSystemMenuState.transitionModel->position);
+    gSystemMenuState.transitionModel->rotation[1] = gPlayerViewShake + gPlayerYaw + 180.0f;
+    gSystemMenuState.transitionModel->rotation[0] = -90.0f * progress;
+    gSystemMenuState.secondaryModel->rotation[1] = (1.0 - progress) * 90.0;
+    objectUpdateHierarchy(gSystemMenuState.transitionModel);
     if (runtimeGetElapsedMilliseconds() - gSystemMenuState.started >= 400) {
         systemMenuExit();
     }
@@ -975,25 +963,22 @@ extern f32 gPlayerViewShake;
 /// \note Original decompilation identifier: \c func_8011A684 (0x8011A684).
 void systemMenuUpdateModelTilt(void) {
     f32 position[3];
-    u8 *object;
+    RuntimeObjectPrefix *object;
     f32 basePitch = -15.0f;
     f32 axisDivisor = 2.0f;
     position[0] = -6.8f;
     position[1] = -3.15f;
-    object = (u8 *)gSystemMenuInteractiveModel;
+    object = gSystemMenuInteractiveModel;
     position[2] = -15.0f;
-    matrix34TransformPointVector((f32 *)(&gSystemMenuInterfaceTransform), (f32 *)(position), (f32 *)(object + 0x18));
-    *(f32 *)(object + 0xC) = basePitch;
-    *(f32 *)(object + 0x10) = gPlayerViewShake + gPlayerYaw + 180.0f + 23.0f;
-    *(f32 *)(object + 0x14) = 0.0f;
-    *(f32 *)(object + 0xC) = basePitch - (f32)gControllerPrimaryStickY / axisDivisor;
-    *(f32 *)(object + 0x10) += (f32)gControllerPrimaryStickX / axisDivisor;
-    objectUpdateHierarchy((RuntimeObjectPrefix *)object);
+    matrix34TransformPointVector((f32 *)(&gSystemMenuInterfaceTransform), (f32 *)(position), object->position);
+    object->rotation[0] = basePitch;
+    object->rotation[1] = gPlayerViewShake + gPlayerYaw + 180.0f + 23.0f;
+    object->rotation[2] = 0.0f;
+    object->rotation[0] = basePitch - (f32)gControllerPrimaryStickY / axisDivisor;
+    object->rotation[1] += (f32)gControllerPrimaryStickX / axisDivisor;
+    objectUpdateHierarchy(object);
 }
 
-void systemMenuUpdateOpeningAnimation(void);
-void systemMenuUpdateClosingAnimation(void);
-void systemMenuUpdateModelTilt(void);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
