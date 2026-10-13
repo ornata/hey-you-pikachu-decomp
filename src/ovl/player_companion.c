@@ -43,12 +43,14 @@ typedef struct InteractionProxyState {
     s32 context;           ///< Caller context; consumable proxies use it as remaining uses.
     s32 interactionResult; ///< Player interaction classification supplied by the proxy.
     s32 metadata;          ///< Caller metadata sent with a consumption message.
-    union {
-        char *text;  ///< Borrowed description string.
-        s32 address; ///< Original 32-bit description-address representation.
-    } description;
+    char *description; ///< Borrowed description string, valid throughout the proxy lifetime.
 } InteractionProxyState;
 typedef char InteractionProxyStateSizeCheck[(sizeof(InteractionProxyState) == 0x10) ? 1 : -1];
+#define PROXY_OFFSET(field) ((u32) & (((InteractionProxyState *)0)->field))
+typedef char InteractionProxyResultOffsetCheck[(PROXY_OFFSET(interactionResult) == 4) ? 1 : -1];
+typedef char InteractionProxyMetadataOffsetCheck[(PROXY_OFFSET(metadata) == 8) ? 1 : -1];
+typedef char InteractionProxyDescriptionOffsetCheck[(PROXY_OFFSET(description) == 0xC) ? 1 : -1];
+#undef PROXY_OFFSET
 
 /* .bss 0x80133E10..0x80134030, in address order (IDO lays globals out in declaration order) */
 struct {
@@ -1576,8 +1578,8 @@ s32 playerPrepareInteractionDescription(InspectObject *player) {
     }
     if (kind == 0x8A) {
         reachSuffix = (s8 *)item->unk54;
-        sprintf(text, "%s", (s8 *)((InspectState *)reachSuffix)->unkC);
-        TRACE("Illegal difficulty:%d\n", ((InspectState *)reachSuffix)->unk0);
+        sprintf(text, "%s", ((InteractionProxyState *)reachSuffix)->description);
+        TRACE("Illegal difficulty:%d\n", ((InteractionProxyState *)reachSuffix)->context);
         playerSetInteractionHelpText((u8 *)text);
         return item->unk38;
     }
@@ -2544,14 +2546,14 @@ extern HpHdr gGameHeap;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_801128E8 (0x801128E8).
 void interactionProxyInitialize(u8 *object) {
-    u8 *sp1C;
+    u8 *proxyState;
     u8 *allocation;
 
-    allocation = heapAllocLocal(&gGameHeap, 0x10, 0x1011);
-    sp1C = allocation;
-    _bzero(allocation, 0x10);
-    ((InteractionProxyState *)sp1C)->description.text = "\xA1\xA9";
-    ((RuntimeObjectPrefix *)object)->state.bytes = sp1C;
+    allocation = heapAllocLocal(&gGameHeap, sizeof(InteractionProxyState), 0x1011);
+    proxyState = allocation;
+    _bzero(allocation, sizeof(InteractionProxyState));
+    ((InteractionProxyState *)proxyState)->description = "\xA1\xA9";
+    ((RuntimeObjectPrefix *)object)->state.bytes = proxyState;
 }
 
 /// Unit-scale object template for descriptive interaction proxies of kind 0x8A.
@@ -2588,7 +2590,7 @@ u8 *interactionProxyCreate(f32 *position, s32 context, s32 interactionResult, s3
     ((InteractionProxyState *)proxyState)->context = context;
     ((InteractionProxyState *)proxyState)->interactionResult = interactionResult;
     ((InteractionProxyState *)proxyState)->metadata = metadata;
-    ((InteractionProxyState *)proxyState)->description.text = description;
+    ((InteractionProxyState *)proxyState)->description = description;
     objectRegisterActiveHierarchy(proxy);
     return proxy;
 }

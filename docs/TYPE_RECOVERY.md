@@ -3396,3 +3396,11 @@ field rather than an independent offset view. Ghidra at `0x80112940`, the two
 scene callers, and the existing description consumer support these contracts.
 The context retains its caller-defined meaning, including remaining uses for
 consumable proxies; no common semantics are inferred for unrelated object kinds.
+
+The proxy description reader (`0x80110C0C`) now shares the private state layout
+with creation, classification and consumption. Its borrowed text pointer at
+`0xC` replaces the unused integer-address union alias. Target size and field
+offset checks cover the 16-byte state, and initialization uses that allocation
+size. The reader's other object-kind views remain separate because their state
+layouts have different contracts. Ghidra initialization at `0x801128E8` confirms
+the allocation size, zero initialization and default description pointer.
