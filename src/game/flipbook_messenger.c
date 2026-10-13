@@ -58,6 +58,21 @@ typedef char FlipbookOutlinesOffsetCheck[(((u32) & ((Flipbook *)0)->outlineIndic
 typedef char FlipbookDrawingOffsetCheck[(((u32)&((Flipbook *)0)->displayList) == 0x50) ? 1 : -1];
 typedef char FlipbookVerticesOffsetCheck[(((u32)&((Flipbook *)0)->vertices) == 0x64) ? 1 : -1];
 
+/// Owned scrolling state and model, borrowing its assigned text-address array.
+typedef struct ScrollBoardState {
+    s32 *text; ///< Borrowed null-terminated array of target-width text addresses.
+    s32 topLine; ///< First text entry displayed by the model.
+    s32 textCount; ///< Number of assigned non-null text entries.
+    f32 rowOffset; ///< Vertical offset within the current sixteen-pixel row.
+    f32 speed; ///< Signed scrolling speed in pixels per second.
+    Flipbook model; ///< Owned text panels and drawing storage.
+} ScrollBoardState;
+
+typedef char ScrollBoardStateSizeCheck[(sizeof(ScrollBoardState) == 0x88) ? 1 : -1];
+typedef char ScrollBoardModelOffsetCheck[(((u32) & ((ScrollBoardState *)0)->model) == 0x14) ? 1 : -1];
+typedef char ScrollBoardSpeedOffsetCheck[(((u32) & ((ScrollBoardState *)0)->speed) == 0x10) ? 1 : -1];
+typedef char ScrollBoardRowsOffsetCheck[(((u32) & ((ScrollBoardState *)0)->model.stripCount) == 0x58) ? 1 : -1];
+
 /* Debug trace: compiled out in this build, but each format string is still
  * emitted to .rodata. */
 // clang-format off
@@ -398,9 +413,9 @@ void scrollBoardInitializeObject(u8 *object) {
     s32 savedAllocationAddress;
     s32 allocationAddress;
 
-    allocationAddress = (s32)heapAllocLocal((HpHdr *)&gGameHeap, 0x88, 0x1C5);
+    allocationAddress = (s32)heapAllocLocal((HpHdr *)&gGameHeap, sizeof(ScrollBoardState), 0x1C5);
     savedAllocationAddress = allocationAddress;
-    _bzero((void *)allocationAddress, 0x88);
+    _bzero((void *)allocationAddress, sizeof(ScrollBoardState));
     ((RuntimeObjectPrefix *)object)->state.address = savedAllocationAddress;
 }
 
@@ -409,9 +424,9 @@ void scrollBoardInitializeObject(u8 *object) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80025A0C (0x80025A0C).
 void scrollBoardDestroyObject(u8 *object) {
-    u8 *p = *(u8 **)(object + 0x54);
+    u8 *p = ((RuntimeObjectPrefix *)object)->state.bytes;
 
-    flipbookDestroy((Flipbook *)(p + 0x14));
+    flipbookDestroy(&((ScrollBoardState *)p)->model);
     heapFreeLocal(&gGameHeap, p);
 }
 
@@ -424,53 +439,53 @@ extern f32 gRuntimeFrameSeconds;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80025A44 (0x80025A44).
 void scrollBoardUpdate(u8 *object) {
-    u8 *boardState;
+    ScrollBoardState *boardState;
     f32 scrollSpeed;
     f32 zero = 0.0f;
     s32 lastTopLine;
     s32 topLine;
 
-    boardState = *(u8 **)(object + 0x54);
-    if (*(s32 *)(boardState + 0x0) != 0) {
-        scrollSpeed = *(f32 *)(boardState + 0x10);
+    boardState = ((RuntimeObjectPrefix *)object)->state.pointer;
+    if (boardState->text != 0) {
+        scrollSpeed = boardState->speed;
         if (zero != scrollSpeed) {
-            topLine = *(s32 *)(boardState + 0x4);
-            *(f32 *)(boardState + 0xC) = (f32)(*(f32 *)(boardState + 0xC) + (scrollSpeed * gRuntimeFrameSeconds));
+            topLine = boardState->topLine;
+            boardState->rowOffset = (f32)(boardState->rowOffset + (scrollSpeed * gRuntimeFrameSeconds));
             if (scrollSpeed > 0.0f) {
-                if (*(f32 *)(boardState + 0xC) >= 16.0f) {
+                if (boardState->rowOffset >= 16.0f) {
                     do {
                         topLine += 1;
-                        *(f32 *)(boardState + 0xC) = (f32)(*(f32 *)(boardState + 0xC) - 16.0f);
-                    } while (*(f32 *)(boardState + 0xC) >= 16.0f);
+                        boardState->rowOffset = (f32)(boardState->rowOffset - 16.0f);
+                    } while (boardState->rowOffset >= 16.0f);
                 }
-                lastTopLine = *(s32 *)(boardState + 0x8) - *(s32 *)(boardState + 0x58);
+                lastTopLine = boardState->textCount - boardState->model.stripCount;
                 if (topLine >= lastTopLine) {
                     topLine = lastTopLine;
-                    *(f32 *)(boardState + 0x10) = 0.0f;
-                    *(f32 *)(boardState + 0xC) = 0.0f;
+                    boardState->speed = 0.0f;
+                    boardState->rowOffset = 0.0f;
                 }
             } else {
-                if (*(f32 *)(boardState + 0xC) < 0.0f) {
+                if (boardState->rowOffset < 0.0f) {
                     do {
                         topLine -= 1;
-                        *(f32 *)(boardState + 0xC) = (f32)(*(f32 *)(boardState + 0xC) + 16.0f);
-                    } while (*(f32 *)(boardState + 0xC) < 0.0f);
+                        boardState->rowOffset = (f32)(boardState->rowOffset + 16.0f);
+                    } while (boardState->rowOffset < 0.0f);
                 }
                 if (topLine < 0) {
                     topLine = 0;
-                    *(f32 *)(boardState + 0x10) = 0.0f;
-                    *(f32 *)(boardState + 0xC) = 0.0f;
+                    boardState->speed = 0.0f;
+                    boardState->rowOffset = 0.0f;
                 }
             }
-            if (topLine != *(s32 *)(boardState + 0x4)) {
-                *(s32 *)(boardState + 0x4) = topLine;
+            if (topLine != boardState->topLine) {
+                boardState->topLine = topLine;
                 TRACE("newTextIdx:%d\n", topLine);
-                TRACE("Error: textData_lines:%d < %d\n", *(s32 *)(boardState + 0x8), topLine);
-                flipbookSetText(boardState + 0x14, (s32 *)*(s32 *)(boardState + 0) + topLine,
-                                *(s32 *)(boardState + 0x58));
+                TRACE("Error: textData_lines:%d < %d\n", boardState->textCount, topLine);
+                flipbookSetText((u8 *)&boardState->model, boardState->text + topLine,
+                                boardState->model.stripCount);
             }
         }
-        *(f32 *)(object + 0x1C) = (f32) * (f32 *)(boardState + 0xC);
+        ((RuntimeObjectPrefix *)object)->position[1] = (f32)boardState->rowOffset;
     }
 }
 
@@ -480,11 +495,11 @@ void scrollBoardUpdate(u8 *object) {
 /// \returns A borrowed display list owned by the board, or null when no text is assigned.
 /// \note Original decompilation identifier: \c func_80025BA4 (0x80025BA4).
 Gfx *scrollBoardPrepareDraw(u8 *object) {
-    s32 *boardState;
+    ScrollBoardState *boardState;
 
-    boardState = *(s32 **)(object + 0x54);
-    if (*boardState != 0) {
-        return flipbookPrepareDraw((Flipbook *)((u8 *)boardState + 0x14));
+    boardState = ((RuntimeObjectPrefix *)object)->state.pointer;
+    if (boardState->text != NULL) {
+        return flipbookPrepareDraw((Flipbook *)((u8 *)(u8 *)&boardState->model));
     }
     return 0;
 }
@@ -512,7 +527,7 @@ s32 scrollBoardCreateObject(s32 columns, s32 lines, u8 red, u8 green, u8 blue, u
     TRACE("sbdScrollBoardNew(%d, %d)\n", columns, lines);
     boardObject = objectCreateFromTemplate((ObjectTemplate *)gScrollBoardObjectTemplate);
     sp30 = boardObject;
-    boardStateAddress = *(s32 *)(boardObject + 0x54);
+    boardStateAddress = ((RuntimeObjectPrefix *)boardObject)->state.address;
     flipbookInitialize((u8 *)(boardStateAddress + 0x14), columns, lines, red, green, blue, alpha, leadingOutline,
                        trailingOutline);
     return (s32)boardObject;
@@ -526,27 +541,27 @@ s32 scrollBoardCreateObject(s32 columns, s32 lines, u8 red, u8 green, u8 blue, u
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80025C5C (0x80025C5C).
 void scrollBoardSetText(u8 *object, s32 *list, s32 style) {
-    u8 *v = *(u8 **)(object + 0x54);
+    u8 *v = ((RuntimeObjectPrefix *)object)->state.bytes;
     s32 n;
     s32 *p;
 
     if (list == NULL) {
-        *(s32 **)v = list;
-        *(s32 *)(v + 8) = 0;
+        ((ScrollBoardState *)v)->text = list;
+        ((ScrollBoardState *)v)->textCount = 0;
         return;
     }
     n = 0;
     for (p = list; *p != 0; n++) {
         p++;
     }
-    *(s32 *)(v + 8) = n;
-    *(s32 **)v = list;
-    *(s32 *)(v + 4) = 0;
-    *(f32 *)(v + 0xC) = 0.0f;
-    *(f32 *)(object + 0x1C) = 0.0f;
-    textPanelSetTextConfiguration((TextPanel *)(v + 0x14), style);
-    textPanelSetTextConfiguration((TextPanel *)(v + 0x34), style);
-    flipbookSetText(v + 0x14, list, *(s32 *)(v + 0x58));
+    ((ScrollBoardState *)v)->textCount = n;
+    ((ScrollBoardState *)v)->text = list;
+    ((ScrollBoardState *)v)->topLine = 0;
+    ((ScrollBoardState *)v)->rowOffset = 0.0f;
+    ((RuntimeObjectPrefix *)object)->position[1] = 0.0f;
+    textPanelSetTextConfiguration(&((ScrollBoardState *)v)->model.panels[0], style);
+    textPanelSetTextConfiguration(&((ScrollBoardState *)v)->model.panels[1], style);
+    flipbookSetText((u8 *)&((ScrollBoardState *)v)->model, list, ((ScrollBoardState *)v)->model.stripCount);
 }
 
 /// Set the scrolling text-board speed.
@@ -555,8 +570,8 @@ void scrollBoardSetText(u8 *object, s32 *list, s32 style) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80025D14 (0x80025D14).
 void scrollBoardSetSpeed(u8 *object, f32 speed) {
-    u8 *boardState = *(u8 **)(object + 0x54);
-    *(f32 *)(boardState + 0x10) = speed;
+    ScrollBoardState *boardState = ((RuntimeObjectPrefix *)object)->state.pointer;
+    boardState->speed = speed;
 }
 
 s32 scrollBoardCreateObject(s32, s32, u8, u8, u8, u8, s32, s32); /* extern */
