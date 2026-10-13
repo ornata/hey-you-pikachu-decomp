@@ -364,19 +364,18 @@ extern s32 gSystemMenuPhaseStartMillisecondsLow;
 Matrix34 gSystemMenuInterfaceTransform;
 /// Owned text image marking the currently selected menu row.
 /// \note Original identifier: \c D_80134148 (0x80134148).
-s32 gSystemMenuSelectedRowMarkerImage;
+TextImage *gSystemMenuSelectedRowMarkerImage;
 /// Owned text image marking the currently configured setting row.
 /// \note Original identifier: \c D_8013414C (0x8013414C).
-s32 gSystemMenuSettingRowMarkerImage;
-/// Double-buffered title and item-row text images.
+TextImage *gSystemMenuSettingRowMarkerImage;
+/// Owned double-buffered title and item-row text images.
+/// Refreshing a buffer releases its prior images after their rendering use has ended.
 /// \note Original identifier: \c D_80134150 (0x80134150).
-u8 *gSystemMenuRowImages[6][2];
-/// Separate view of the five double-buffered item rows following the title row.
-/// \note Original identifier: \c D_80134158 (0x80134158).
-extern u8 *gSystemMenuItemRowImages[5][2];
-/// Double-buffered text images for six selected-item detail rows.
+TextImage *gSystemMenuRowImages[6][2];
+/// Owned double-buffered images for six selected-item detail rows.
+/// Refreshing a buffer releases its prior images after their rendering use has ended.
 /// \note Original identifier: \c D_80134180 (0x80134180).
-u8 *gSystemMenuDetailImages[6][2];
+TextImage *gSystemMenuDetailImages[6][2];
 /// Selected render buffer for title and item-row images.
 /// \note Original identifier: \c D_801341B0 (0x801341B0).
 s32 gSystemMenuRowImageBuffer;
@@ -525,7 +524,7 @@ void systemMenuPrepareDetailText(void) {
     gSystemMenuDetailImageBuffer ^= 1;
     for (row = 0; row != 6; row++) {
         if (gSystemMenuDetailImages[row][gSystemMenuDetailImageBuffer] != NULL) {
-            textImageDestroy((TextImage *)gSystemMenuDetailImages[row][gSystemMenuDetailImageBuffer]);
+            textImageDestroy(gSystemMenuDetailImages[row][gSystemMenuDetailImageBuffer]);
             gSystemMenuDetailImages[row][gSystemMenuDetailImageBuffer] = NULL;
         }
     }
@@ -549,7 +548,7 @@ void systemMenuPrepareDetailText(void) {
         }
         line[count] = 0;
         if (line[0] != 0)
-            textImageCreateFromText((TextImage **)((s32)&gSystemMenuDetailImages[row][gSystemMenuDetailImageBuffer]),
+            textImageCreateFromText(&gSystemMenuDetailImages[row][gSystemMenuDetailImageBuffer],
                                     (u8 *)((s32)line), (FontImage *)((s32)gTextImageConfigurations));
     }
 }
@@ -593,7 +592,7 @@ void systemMenuRefreshSelectedDetails(MenuState *state) {
 /// \note Portability: The adjacent row initialization and loop preserve the original IDO instruction scheduling.
 /// \note Original decompilation identifier: \c func_80119970 (0x80119970).
 void systemMenuDrawDetails(Gfx **displayList) {
-    u8 *(*row)[2];
+    TextImage *(*row)[2];
     s32 y;
     systemMenuRefreshSelectedDetails(&gSystemMenuState);
     textDrawBegin(*displayList);
@@ -612,11 +611,11 @@ void systemMenuDrawDetails(Gfx **displayList) {
             y += 16;
         } else {
             textDrawSetCursor(183, y);
-            textDrawImageAtCursor((TextImage *)(*row)[gSystemMenuDetailImageBuffer]);
+            textDrawImageAtCursor((*row)[gSystemMenuDetailImageBuffer]);
             y += 16;
         }
         row++;
-    } while (row != (u8 * (*)[2]) & gSystemMenuRowImageBuffer);
+    } while (row != (TextImage * (*)[2]) & gSystemMenuRowImageBuffer);
     textDrawGetDisplayListCursor(displayList);
 }
 
@@ -638,23 +637,22 @@ void systemMenuRefreshItemDisplay(MenuState *state) {
     gSystemMenuRowImageBuffer ^= 1;
     menu = (MenuList *)state->menu;
     for (i = 0; i < 6; i++) {
-        if (*(u8 **)((u8 *)gSystemMenuRowImages + i * 8 + gSystemMenuRowImageBuffer * 4) != NULL) {
-            textImageDestroy((TextImage *)*(u8 **)((u8 *)gSystemMenuRowImages + i * 8 + gSystemMenuRowImageBuffer * 4));
-            *(u8 **)((u8 *)gSystemMenuRowImages + i * 8 + gSystemMenuRowImageBuffer * 4) = NULL;
+        if (gSystemMenuRowImages[i][gSystemMenuRowImageBuffer] != NULL) {
+            textImageDestroy(gSystemMenuRowImages[i][gSystemMenuRowImageBuffer]);
+            gSystemMenuRowImages[i][gSystemMenuRowImageBuffer] = NULL;
         }
     }
     font = gTextImageConfigurations;
-    if (state->phase == 2) {
+    if (state->phase == SYSTEM_MENU_CLOSE_DELAY) {
         gSystemMenuClosingEffectRow = randomBelow(6);
         textImageCreateFromText(
-            (TextImage **)((s32)(u8 **)((u8 *)gSystemMenuRowImages + gSystemMenuClosingEffectRow * 8 +
-                                        gSystemMenuRowImageBuffer * 4)),
+            &gSystemMenuRowImages[gSystemMenuClosingEffectRow][gSystemMenuRowImageBuffer],
             (u8 *)((s32) "@j@j@j@j@j@j@j@j@j"), (FontImage *)((s32)font));
         return;
     }
     row = 0;
     textImageCreateFromText(
-        (TextImage **)((s32)(u8 **)((u8 *)gSystemMenuRowImages + row * 8 + gSystemMenuRowImageBuffer * 4)),
+        &gSystemMenuRowImages[row][gSystemMenuRowImageBuffer],
         (u8 *)((s32)menu->title), (FontImage *)((s32)font));
     item = menu->head;
     for (i = 0; i < menu->firstVisibleIndex; i++) {
@@ -663,14 +661,14 @@ void systemMenuRefreshItemDisplay(MenuState *state) {
     for (i = row + 1; i != 6; i++) {
         if (item == NULL) {
             textImageCreateFromText(
-                (TextImage **)((s32)(u8 **)((u8 *)gSystemMenuRowImages + i * 8 + gSystemMenuRowImageBuffer * 4)),
+                &gSystemMenuRowImages[i][gSystemMenuRowImageBuffer],
                 (u8 *)((s32) ""), (FontImage *)((s32)font));
         } else {
             if ((i - 1) + menu->firstVisibleIndex == menu->selectedIndex) {
                 state->selected = item;
             }
             textImageCreateFromText(
-                (TextImage **)((s32)(u8 **)((u8 *)gSystemMenuRowImages + i * 8 + gSystemMenuRowImageBuffer * 4)),
+                &gSystemMenuRowImages[i][gSystemMenuRowImageBuffer],
                 (u8 *)((s32)item->label), (FontImage *)((s32)font));
             item = item->next;
         }
@@ -700,12 +698,12 @@ void systemMenuDrawItemList(Gfx **displayList) {
         if (menu->firstVisibleIndex + index == menu->selectedIndex) {
             textDrawSetCursor(40, y);
             textDrawSetColor(0, 0, 0, 254);
-            textDrawImageAtCursor((TextImage *)gSystemMenuSelectedRowMarkerImage);
+            textDrawImageAtCursor(gSystemMenuSelectedRowMarkerImage);
         }
         if (menu->firstVisibleIndex + index == menu->confirmedIndex) {
             textDrawSetCursor(40, y);
             textDrawSetColor(255, 0, 0, 254);
-            textDrawImageAtCursor((TextImage *)gSystemMenuSettingRowMarkerImage);
+            textDrawImageAtCursor(gSystemMenuSettingRowMarkerImage);
         }
     }
     y = 38;
@@ -723,7 +721,7 @@ void systemMenuDrawItemList(Gfx **displayList) {
                 textDrawSetColor(0, 0, 0, 254);
             }
         }
-        textDrawImageAtCursor((TextImage *)gSystemMenuRowImages[index][gSystemMenuRowImageBuffer]);
+        textDrawImageAtCursor(gSystemMenuRowImages[index][gSystemMenuRowImageBuffer]);
     }
     textDrawGetDisplayListCursor(displayList);
     callback = menu->action;
@@ -737,11 +735,11 @@ void systemMenuDrawItemList(Gfx **displayList) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80119EA0 (0x80119EA0).
 void systemMenuDrawClosingEffect(Gfx **displayList) {
-    u8 **image;
-    image = (u8 **)((u8 *)&gSystemMenuRowImages + gSystemMenuClosingEffectRow * 8 + gSystemMenuRowImageBuffer * 4);
+    TextImage **image;
+    image = &gSystemMenuRowImages[gSystemMenuClosingEffectRow][gSystemMenuRowImageBuffer];
     if (*image != NULL) {
         if (runtimeGetElapsedMilliseconds() - *(u64 *)&gSystemMenuPhaseStartMilliseconds > 150) {
-            textImageDestroy((TextImage *)*image);
+            textImageDestroy(*image);
             *image = NULL;
             return;
         }
@@ -753,7 +751,7 @@ void systemMenuDrawClosingEffect(Gfx **displayList) {
         textDrawSetArea(0, 0, 319, 239);
         textDrawSetCursor(36, gSystemMenuClosingEffectRow * 16 + 38);
         textDrawSetColor(0, 0, 0, 254);
-        textDrawImageAtCursor((TextImage *)*image);
+        textDrawImageAtCursor(*image);
         textDrawGetDisplayListCursor(displayList);
     }
 }
@@ -1820,9 +1818,9 @@ void systemMenuInitialize(void) {
 
     state = &gSystemMenuState;
     _bzero(&gSystemMenuState, 0x30);
-    textImageCreateFromText((TextImage **)((s32)&gSystemMenuSelectedRowMarkerImage), (u8 *)((s32) "@d"),
+    textImageCreateFromText(&gSystemMenuSelectedRowMarkerImage, (u8 *)((s32) "@d"),
                             (FontImage *)((s32)gTextImageConfigurations));
-    textImageCreateFromText((TextImage **)((s32)&gSystemMenuSettingRowMarkerImage), (u8 *)((s32) "@b"),
+    textImageCreateFromText(&gSystemMenuSettingRowMarkerImage, (u8 *)((s32) "@b"),
                             (FontImage *)((s32)gTextImageConfigurations));
     gSystemMenuRowImageBuffer = 0;
     gSystemMenuDetailImageBuffer = 0;

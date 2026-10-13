@@ -19,14 +19,14 @@
     {
       "code": 709,
       "file": "src/ovl/system_menu.c",
-      "line": 1069,
+      "line": 1067,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "systemMenuAppendDetailText(buf);"
     },
     {
       "code": 709,
       "file": "src/ovl/system_menu.c",
-      "line": 1105,
+      "line": 1103,
       "diagnostic": "Incompatible pointer type assignment",
       "expression": "systemMenuAppendDetailText(buf);"
     }

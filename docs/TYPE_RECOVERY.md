@@ -4527,3 +4527,14 @@ an unused secondary-model alias and redundant local animation prototypes are rem
 Ghidra at 0x8011A4CC confirms closing position/rotation writes and the retained models.
 Each field and alias adoption preserves strict baseline objects, followed by a clean
 retail ROM match with only the existing permitted interface warnings.
+
+### Typed menu text-image storage and indexing
+
+Menu marker images and both six-by-two row/detail arrays now retain TextImage
+pointers. Creation uses typed pointer slots; release, drawing and closing effects
+use direct row/buffer indexing rather than byte offsets and integer address casts.
+The detail draw cursor is typed while its original end-symbol reference remains
+unchanged. Ghidra at 0x80119970 confirms eight-byte row strides and that boundary.
+Owned-image comments record reuse on buffer refresh; the unused item-row alias
+declaration is removed. The separate font-table compatibility exception remains
+unchanged. Every step preserves strict baseline objects and clean retail ROM bytes.
