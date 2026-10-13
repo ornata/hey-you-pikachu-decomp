@@ -30,6 +30,7 @@
 #include "script_vm_lifecycle.h"
 #include "script_vm_execution.h"
 #include "script_vm_globals.h"
+#include "script_value.h"
 
 /// Shared 32-byte numeric conversion text, overwritten by the next numeric string conversion.
 /// \note Original identifier: \c D_801340B0 (0x801340B0).
@@ -212,43 +213,43 @@ void scriptVmNoOp(void) {
 s32 scriptValueGetInteger(value)
 u8 *value;
 {
-    s32 sp24;
-    f32 sp20;
-    s32 is_int;
+    s32 integerValue;
+    f32 floatValue;
+    s32 isInteger;
 
     if ((*value == 0) || (*value == 2)) {
-        is_int = 1;
+        isInteger = 1;
     } else {
-        is_int = 0;
+        isInteger = 0;
     }
-    if (is_int != 0) {
-        bcopy(value + 1, &sp24, 4);
-        return sp24;
+    if (isInteger != 0) {
+        bcopy(value + 1, &integerValue, 4);
+        return integerValue;
     }
-    bcopy(value + 1, &sp20, 4);
-    return sp20;
+    bcopy(value + 1, &floatValue, 4);
+    return floatValue;
 }
 
 /// Read a numeric script value as a floating-point number.
 /// \param value Numeric script value to read.
 /// \returns The floating-point value.
 /// \note Original decompilation identifier: \c func_8011549C (0x8011549C).
-f32 scriptValueGetFloat(s8 *value) {
-    f32 f;
-    s32 i;
+f32 scriptValueGetFloat(ScriptValue *value) {
+    f32 floatValue;
+    s32 integerValue;
     s32 isFloat;
 
-    if (*(u8 *)value == 1) {
+    if (value->data.tag == SCRIPT_VALUE_FLOAT) {
         isFloat = 1;
     } else {
         isFloat = 0;
     }
     if (isFloat) {
-        bcopy(value + 1, &f, 4);
-        return f;
+        bcopy(value->data.payload, &floatValue, 4);
+        return floatValue;
     }
-    bcopy(value + 1, &i, 4);
-    return i;
+    bcopy(value->data.payload, &integerValue, 4);
+    return integerValue;
 }
 
 /// Assign a floating-point number to a script value.
@@ -256,9 +257,9 @@ f32 scriptValueGetFloat(s8 *value) {
 /// \param number Floating-point number to assign.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8011550C (0x8011550C).
-void scriptValueSetFloat(s8 *value, f32 number) {
-    *value = SCRIPT_VALUE_FLOAT;
-    bcopy(&number, value + 1, 4);
+void scriptValueSetFloat(ScriptValue *value, f32 number) {
+    value->data.tag = SCRIPT_VALUE_FLOAT;
+    bcopy(&number, value->data.payload, 4);
 }
 
 /// Assign an integer to a script value.
@@ -266,9 +267,9 @@ void scriptValueSetFloat(s8 *value, f32 number) {
 /// \param number Integer to assign.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80115544 (0x80115544).
-void scriptValueSetInteger(s8 *value, s32 number) {
-    *value = SCRIPT_VALUE_INTEGER;
-    bcopy(&number, value + 1, 4);
+void scriptValueSetInteger(ScriptValue *value, s32 number) {
+    value->data.tag = SCRIPT_VALUE_INTEGER;
+    bcopy(&number, value->data.payload, 4);
 }
 
 /// Assign a string pointer to a script value.
@@ -276,9 +277,9 @@ void scriptValueSetInteger(s8 *value, s32 number) {
 /// \param text Borrowed string address that must remain valid while the value is used.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80115578 (0x80115578).
-void scriptValueSetStringPointer(s8 *value, s32 text) {
-    *value = SCRIPT_VALUE_STRING_POINTER;
-    bcopy(&text, value + 1, 4);
+void scriptValueSetStringPointer(ScriptValue *value, s32 text) {
+    value->data.tag = SCRIPT_VALUE_STRING_POINTER;
+    bcopy(&text, value->data.payload, 4);
 }
 
 s32 stdlibParseUnsignedDecimal(s32); /* extern */
@@ -289,34 +290,34 @@ s32 stdlibParseUnsignedDecimal(s32); /* extern */
 /// \returns The parsed decimal value, or zero when the value is not a string.
 /// \note Original decompilation identifier: \c func_801155B0 (0x801155B0).
 s32 scriptValueParseDecimal(u8 *vm, ScriptValue *value) {
-    s32 sp2C;
-    s32 ok;
-    s32 sp24;
-    s32 is_ptr;
-    s32 ret;
+    s32 stringIndex;
+    s32 isString;
+    s32 stringAddress;
+    s32 isPointer;
+    s32 parsedValue;
 
     if ((value->data.tag == SCRIPT_VALUE_STRING_INDEX) || (value->data.tag == SCRIPT_VALUE_STRING_POINTER)) {
-        ok = 1;
+        isString = 1;
     } else {
-        ok = 0;
+        isString = 0;
     }
-    if (ok == 0) {
+    if (isString == 0) {
         return 0;
     }
     if (value->data.tag == SCRIPT_VALUE_STRING_POINTER) {
-        is_ptr = 1;
+        isPointer = 1;
     } else {
-        is_ptr = 0;
+        isPointer = 0;
     }
-    if (is_ptr != 0) {
-        bcopy(&value->bytes[1], &sp24, 4);
-        ret = stdlibParseUnsignedDecimal(sp24);
+    if (isPointer != 0) {
+        bcopy(&value->bytes[1], &stringAddress, 4);
+        parsedValue = stdlibParseUnsignedDecimal(stringAddress);
     } else {
-        bcopy(&value->bytes[1], &sp2C, 4);
-        sp24 = ((s32 *)((ScriptVm *)vm)->stringTable)[sp2C];
-        ret = stdlibParseUnsignedDecimal(sp24);
+        bcopy(&value->bytes[1], &stringIndex, 4);
+        stringAddress = ((s32 *)((ScriptVm *)vm)->stringTable)[stringIndex];
+        parsedValue = stdlibParseUnsignedDecimal(stringAddress);
     }
-    return ret;
+    return parsedValue;
 }
 
 /// Compatibility declaration for the retained extra context argument in operand decoding.
@@ -377,35 +378,35 @@ void scriptVmApplyUnaryOperator(u8 *vm, u8 op) {
     else
         test = 0;
     if (test)
-        scriptValueSetInteger((s8 *)box, scriptValueParseDecimal(vm, box));
+        scriptValueSetInteger(box, scriptValueParseDecimal(vm, box));
     if (box->data.tag == SCRIPT_VALUE_FLOAT)
         test = 1;
     else
         test = 0;
     if (test) {
-        f = scriptValueGetFloat((s8 *)box);
+        f = scriptValueGetFloat(box);
         switch (op) {
         case 3:
-            scriptValueSetFloat((s8 *)box, -f);
+            scriptValueSetFloat(box, -f);
             break;
         case 0x11:
-            scriptValueSetFloat((s8 *)box, !f);
+            scriptValueSetFloat(box, !f);
             break;
         case 4:
-            scriptValueSetInteger((s8 *)box, 0);
+            scriptValueSetInteger(box, 0);
             break;
         }
     } else {
         i = scriptValueGetInteger(box->bytes);
         switch (op) {
         case 3:
-            scriptValueSetInteger((s8 *)box, -i);
+            scriptValueSetInteger(box, -i);
             break;
         case 0x11:
-            scriptValueSetInteger((s8 *)box, !i);
+            scriptValueSetInteger(box, !i);
             break;
         case 4:
-            scriptValueSetInteger((s8 *)box, ~i);
+            scriptValueSetInteger(box, ~i);
             break;
         }
     }
@@ -423,13 +424,13 @@ void scriptVmApplyArithmeticOperator(u8 *vm, u8 op) {
     s32 iv, ir, il;
     scriptVmPopValue(vm, &right);
     if ((right.data.tag == SCRIPT_VALUE_STRING_INDEX || right.data.tag == SCRIPT_VALUE_STRING_POINTER) ? 1 : 0)
-        scriptValueSetInteger((s8 *)&right, scriptValueParseDecimal(vm, &right));
+        scriptValueSetInteger(&right, scriptValueParseDecimal(vm, &right));
     scriptVmPopValue(vm, &left);
     if ((right.data.tag == SCRIPT_VALUE_STRING_INDEX || right.data.tag == SCRIPT_VALUE_STRING_POINTER) ? 1 : 0)
-        scriptValueSetInteger((s8 *)&right, scriptValueParseDecimal(vm, &right));
+        scriptValueSetInteger(&right, scriptValueParseDecimal(vm, &right));
     if ((right.data.tag == SCRIPT_VALUE_FLOAT ? 1 : 0) || (left.data.tag == SCRIPT_VALUE_FLOAT ? 1 : 0)) {
-        fr = scriptValueGetFloat((s8 *)&right);
-        fl = scriptValueGetFloat((s8 *)&left);
+        fr = scriptValueGetFloat(&right);
+        fl = scriptValueGetFloat(&left);
         switch (op) {
         case 5:
             fv = fl + fr;
@@ -447,7 +448,7 @@ void scriptVmApplyArithmeticOperator(u8 *vm, u8 op) {
             fv = 0.0f;
             break;
         }
-        scriptValueSetFloat((s8 *)&result, fv);
+        scriptValueSetFloat(&result, fv);
     } else {
         ir = scriptValueGetInteger(right.bytes);
         il = scriptValueGetInteger(left.bytes);
@@ -468,7 +469,7 @@ void scriptVmApplyArithmeticOperator(u8 *vm, u8 op) {
             iv = il % ir;
             break;
         }
-        scriptValueSetInteger((s8 *)&result, iv);
+        scriptValueSetInteger(&result, iv);
     }
     scriptVmPushValue(vm, &result);
 }
@@ -484,12 +485,12 @@ void scriptVmApplyBitwiseOperator(u8 *vm, u8 op) {
     s32 value, rhs, lhs;
     scriptVmPopValue(vm, &right);
     if ((right.data.tag == SCRIPT_VALUE_STRING_INDEX || right.data.tag == SCRIPT_VALUE_STRING_POINTER) ? 1 : 0)
-        scriptValueSetInteger((s8 *)&right, scriptValueParseDecimal(vm, &right));
+        scriptValueSetInteger(&right, scriptValueParseDecimal(vm, &right));
     scriptVmPopValue(vm, &left);
     if ((right.data.tag == SCRIPT_VALUE_STRING_INDEX || right.data.tag == SCRIPT_VALUE_STRING_POINTER) ? 1 : 0)
-        scriptValueSetInteger((s8 *)&right, scriptValueParseDecimal(vm, &right));
+        scriptValueSetInteger(&right, scriptValueParseDecimal(vm, &right));
     if ((right.data.tag == SCRIPT_VALUE_FLOAT ? 1 : 0) || (left.data.tag == SCRIPT_VALUE_FLOAT ? 1 : 0)) {
-        scriptValueSetInteger((s8 *)&result, 0);
+        scriptValueSetInteger(&result, 0);
     } else {
         rhs = scriptValueGetInteger(right.bytes);
         lhs = scriptValueGetInteger(left.bytes);
@@ -507,7 +508,7 @@ void scriptVmApplyBitwiseOperator(u8 *vm, u8 op) {
             value = lhs << rhs;
             break;
         }
-        scriptValueSetInteger((s8 *)&result, value);
+        scriptValueSetInteger(&result, value);
     }
     scriptVmPushValue(vm, &result);
 }
@@ -527,14 +528,14 @@ void scriptVmApplyComparisonOperator(u8 *vm, u8 op) {
     s32 ir, il;
     scriptVmPopValue(vm, &right);
     if ((right.data.tag == SCRIPT_VALUE_STRING_INDEX || right.data.tag == SCRIPT_VALUE_STRING_POINTER) ? 1 : 0)
-        scriptValueSetInteger((s8 *)&right, scriptValueParseDecimal(vm, &right));
+        scriptValueSetInteger(&right, scriptValueParseDecimal(vm, &right));
     scriptVmPopValue(vm, &left);
     if ((right.data.tag == SCRIPT_VALUE_STRING_INDEX || right.data.tag == SCRIPT_VALUE_STRING_POINTER) ? 1 : 0)
-        scriptValueSetInteger((s8 *)&right, scriptValueParseDecimal(vm, &right));
+        scriptValueSetInteger(&right, scriptValueParseDecimal(vm, &right));
     value = 0;
     if ((right.data.tag == SCRIPT_VALUE_FLOAT ? 1 : 0) || (left.data.tag == SCRIPT_VALUE_FLOAT ? 1 : 0)) {
-        fr = scriptValueGetFloat((s8 *)&right);
-        fl = scriptValueGetFloat((s8 *)&left);
+        fr = scriptValueGetFloat(&right);
+        fl = scriptValueGetFloat(&left);
         switch (op) {
         case 11:
             if (fabsf(fr - fl) <= fabsf(fl) * 0.001f + 0.001f)
@@ -603,7 +604,7 @@ void scriptVmApplyComparisonOperator(u8 *vm, u8 op) {
             break;
         }
     }
-    scriptValueSetInteger((s8 *)&result, value);
+    scriptValueSetInteger(&result, value);
     scriptVmPushValue(vm, &result);
 }
 
@@ -616,7 +617,7 @@ void scriptVmApplyComparisonOperator(u8 *vm, u8 op) {
 void scriptVmPushInteger(s32 vm, s32 value) {
     ScriptValue valueBox;
 
-    scriptValueSetInteger((s8 *)&valueBox, value);
+    scriptValueSetInteger(&valueBox, value);
     scriptVmPushValue((u8 *)vm, &valueBox);
 }
 
@@ -628,7 +629,7 @@ void scriptVmPushInteger(s32 vm, s32 value) {
 void scriptVmPushFloat(s32 vm, f32 value) {
     ScriptValue valueBox;
 
-    scriptValueSetFloat((s8 *)&valueBox, value);
+    scriptValueSetFloat(&valueBox, value);
     scriptVmPushValue((u8 *)vm, &valueBox);
 }
 
@@ -640,7 +641,7 @@ void scriptVmPushFloat(s32 vm, f32 value) {
 void scriptVmPushStringPointer(s32 vm, s32 text) {
     ScriptValue valueBox;
 
-    scriptValueSetStringPointer((s8 *)&valueBox, text);
+    scriptValueSetStringPointer(&valueBox, text);
     scriptVmPushValue((u8 *)vm, &valueBox);
 }
 
@@ -664,7 +665,7 @@ f32 scriptVmPopFloat(s32 vm) {
     ScriptValue valueBox;
 
     scriptVmPopValue((u8 *)vm, &valueBox);
-    return scriptValueGetFloat((s8 *)&valueBox);
+    return scriptValueGetFloat(&valueBox);
 }
 
 /// Pop a script value and obtain its string representation.
@@ -700,7 +701,7 @@ char *scriptVmPopString(u8 *vm) {
     if (test)
         sprintf((char *)&gScriptVmNumericTextBuffer, "%d", scriptValueGetInteger(box.bytes));
     else
-        sprintf((char *)&gScriptVmNumericTextBuffer, "%f", scriptValueGetFloat((s8 *)box.bytes));
+        sprintf((char *)&gScriptVmNumericTextBuffer, "%f", scriptValueGetFloat(&box));
     return (char *)&gScriptVmNumericTextBuffer;
 }
 
@@ -720,7 +721,7 @@ void scriptVmEvaluateGlobalInteger(s32 index) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80116254 (0x80116254).
 void scriptVmSetGlobalInteger(s32 index, s32 value) {
-    scriptValueSetInteger((s8 *)((u8 *)&gScriptVmGlobalValues + index * 5), value);
+    scriptValueSetInteger(&gScriptVmGlobalValues[index], value);
 }
 
 s32 messageBarEnqueue(s32, f32, u8 *);

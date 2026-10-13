@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,839 / 80 |
+| Raw offset candidates | 4,040 / 86 | 2,834 / 80 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3218,3 +3218,16 @@ confirms the command-table lookup; matching assembly additionally confirms both
 actor and context argument registers, which Ghidra's inferred signature omits.
 The callback ABI and integer return types remain unchanged. Every isolated unit
 conversion and shared-header rebuild preserves strict objects.
+
+### Packed script-value conversion contracts
+
+`script_value.h` exposes typed float reading and numeric/borrowed-string assignment
+contracts. Their implementations and all call sites use `ScriptValue *`, named
+byte-aligned tag/payload members and the established tag enum. The global integer
+setter indexes the existing value bank directly. Ghidra 0x8011549C confirms tag 1
+as the floating-point representation and integer conversion otherwise. Payload
+copies retain their unaligned-safe representation and original operation order.
+Conversion and decimal-string parsing locals now name the numeric values, string
+index/address and category tests. The integer reader retains its documented
+legacy definition/extra-argument compatibility constraint. All conversions and
+header rebuilds preserve strict objects.
