@@ -1,3 +1,4 @@
+#include "audio_settings.h"
 #include "audio_control.h"
 #include "render_state.h"
 #include "game_heap.h"
@@ -1177,8 +1178,6 @@ void systemMenuDrawSlider(Gfx **displayList, s32 x, s32 y, s32 selected, f32 val
     gDPFillRectangle((*displayList)++, selected - 2, top - 3, selected + 2, bottom + 3);
 }
 
-void audioApplySavedMusicVolume(f32);
-void audioApplySavedSoundEffectVolume(f32);
 
 /// Adjust the selected music or sound volume from controller input and draw both volume sliders.
 /// \param menu Live volume menu whose current row selects the setting to adjust.

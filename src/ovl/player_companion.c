@@ -1,3 +1,4 @@
+#include "audio_settings.h"
 #include "audio_control.h"
 #include "game_heap.h"
 #include "controller_state.h"
@@ -2085,7 +2086,6 @@ typedef struct {
     u8 remainder[0x10];
 } Spawn11F40;
 void playerInitializeCollisionQueryMode(s32);
-void audioApplySavedMusicVolume(f32);
 void audioSetMusicDuckingInhibitFlags(s32);
 /// Entrance index used to initialize the player and companion in the current area.
 /// \note Original identifier: \c D_800AE4F4 (0x800AE4F4).
@@ -2590,19 +2590,19 @@ void audioSetMusicDuckingInhibitFlags(s32 flags) {
 /// \note Original decompilation identifier: \c func_801129E8 (0x801129E8).
 void audioApplySavedMusicVolume(f32 multiplier) {
     s32 scaledVolume;
-    s32 sp18;
-    s32 var_a1;
+    s32 savedVolume;
+    s32 masterLevel;
 
-    sp18 = progressGetValue(0xA);
-    scaledVolume = (s32)((f32)((s32)(sp18 * 0x7FFF) / progressGetMaximum(0xA)) * multiplier);
-    var_a1 = scaledVolume;
+    savedVolume = progressGetValue(0xA);
+    scaledVolume = (s32)((f32)((s32)(savedVolume * 0x7FFF) / progressGetMaximum(0xA)) * multiplier);
+    masterLevel = scaledVolume;
     if (scaledVolume < 0) {
-        var_a1 = 0;
+        masterLevel = 0;
     } else if (scaledVolume >= 0x8000) {
-        var_a1 = 0x7FFF;
+        masterLevel = 0x7FFF;
     }
-    TRACE("setSongVolume(%f) vcur: %d/%d vol:%d\n", multiplier, sp18, progressGetMaximum(0xA), var_a1);
-    audioSetCategoryVolume(AUDIO_CATEGORY_SEQUENCES, var_a1);
+    TRACE("setSongVolume(%f) vcur: %d/%d vol:%d\n", multiplier, savedVolume, progressGetMaximum(0xA), masterLevel);
+    audioSetCategoryVolume(AUDIO_CATEGORY_SEQUENCES, masterLevel);
 }
 
 
@@ -2616,19 +2616,19 @@ void audioApplySavedMusicVolume(f32 multiplier) {
 /// \note Original decompilation identifier: \c func_80112A98 (0x80112A98).
 void audioApplySavedSoundEffectVolume(f32 multiplier) {
     s32 scaledVolume;
-    s32 sp18;
-    s32 var_a1;
+    s32 savedVolume;
+    s32 masterLevel;
 
-    sp18 = progressGetValue(0xB);
-    scaledVolume = (s32)((f32)((s32)(sp18 * 0xFFFF) / progressGetMaximum(0xB)) * multiplier);
-    var_a1 = scaledVolume;
+    savedVolume = progressGetValue(0xB);
+    scaledVolume = (s32)((f32)((s32)(savedVolume * 0xFFFF) / progressGetMaximum(0xB)) * multiplier);
+    masterLevel = scaledVolume;
     if (scaledVolume < 0) {
-        var_a1 = 0;
+        masterLevel = 0;
     } else if (scaledVolume >= 0x10000) {
-        var_a1 = 0xFFFF;
+        masterLevel = 0xFFFF;
     }
-    TRACE("setSfxVolume(%f) vcur: %d/%d vol:%d\n", multiplier, sp18, progressGetMaximum(0xB), var_a1);
-    audioSetCategoryVolume(AUDIO_CATEGORY_SOUND_EFFECTS, var_a1);
+    TRACE("setSfxVolume(%f) vcur: %d/%d vol:%d\n", multiplier, savedVolume, progressGetMaximum(0xB), masterLevel);
+    audioSetCategoryVolume(AUDIO_CATEGORY_SOUND_EFFECTS, masterLevel);
 }
 
 /// Whether gameplay exposes microphone interaction and its HUD indicator.

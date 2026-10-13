@@ -1,5 +1,5 @@
 /// \file
-/// Declares game sound-effect playback and per-handle volume and pan controls.
+/// Declares game sound-effect playback and per-handle volume, pan, pitch and effect-mix controls.
 
 #ifndef AUDIO_SOUND_EFFECT_H
 #define AUDIO_SOUND_EFFECT_H
@@ -25,5 +25,19 @@ void audioSetSoundEffectVolume(s32 id, s32 volume);
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001FEAC (0x8001FEAC).
 void audioSetSoundEffectPan(s32 id, s32 pan);
+
+/// Transpose a sound effect relative to its original pitch.
+/// \param id Playback identifier; zero selects no playback.
+/// \param semitones Finite pitch change in semitones; its value in cents must fit s32.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8001FEFC (0x8001FEFC).
+void audioSetSoundEffectPitch(s32 id, f32 semitones);
+
+/// Set the synthesizer effect mix for a sound effect.
+/// \param id Playback identifier; zero selects no playback.
+/// \param mix Effect mix level from zero through 127.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8001FF54 (0x8001FF54).
+void audioSetSoundEffectMix(s32 id, s32 mix);
 
 #endif

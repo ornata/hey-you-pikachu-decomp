@@ -4281,3 +4281,16 @@ Category master volume is now part of `audio_control.h`; title and companion
 consumers use its declaration and named masks. Its contract distinguishes sequence
 normalization from direct sound-effect levels. Each of the four edited units
 preserves strict objects, and the clean build matches the retail ROM.
+
+### Saved volume and sound-effect pitch contracts
+
+`audio_settings.h` shares saved music/sound-effect scaling interfaces across the
+companion producer, system menu and loaded-progress application. Numeric conversion
+and saved-setting preconditions remain explicit. The producer distinguishes saved,
+scaled and applied level locals without combining expressions. Ghidra at 0x801129E8
+confirms the saved music setting, clamping and category dispatch.
+
+`audio_sound_effect.h` now includes pitch and effect-mix contracts. Pitch callers in
+action commands and particle effects use that canonical header; semitone-to-cent
+conversion requires a finite representable value, as confirmed at 0x8001FEFC.
+All six edited source units preserve strict baseline objects and clean ROM identity.

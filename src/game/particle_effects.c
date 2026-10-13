@@ -1,3 +1,4 @@
+#include "audio_sound_effect.h"
 #include "render_state.h"
 #include "game_heap.h"
 #include "heap_free.h"
@@ -861,7 +862,6 @@ void effectEmitterEmitScatteredParticles(u8 *emitter) {
     }
 }
 
-void audioSetSoundEffectPitch(s32, f32);
 
 /// Emit a falling-particle burst with accompanying sound when the emitter is ready.
 /// \param emitter Initialized effect emitter to update.

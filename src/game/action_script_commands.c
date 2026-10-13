@@ -1,3 +1,4 @@
+#include "audio_sound_effect.h"
 #include "audio_sequence.h"
 #include "pikachu_actor.h"
 #include "vector_metrics.h"
@@ -242,7 +243,6 @@ void actionCommandChangeHeldItemAnimation(s32 actor, u8 *state, u8 *command, f32
     }
 }
 
-void audioSetSoundEffectPitch(s32, f32);
 
 /// Plays a tracked actor sound with the pitch requested by an action command.
 /// \param actor Actor to receive the tracked sound.

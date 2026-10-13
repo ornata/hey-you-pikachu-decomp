@@ -345,7 +345,7 @@ void audioSetSoundEffectPan(s32 id, s32 pan) {
 
 /// Transpose a sound effect relative to its original pitch.
 /// \param id Playback identifier; zero selects no playback.
-/// \param semitones Pitch change in semitones; zero preserves the original pitch.
+/// \param semitones Finite pitch change in semitones; its value in cents must fit s32.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001FEFC (0x8001FEFC).
 void audioSetSoundEffectPitch(s32 id, f32 semitones) {
