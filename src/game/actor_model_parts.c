@@ -37,6 +37,16 @@ typedef char ActorPartTextureTintOffsetCheck[(((u32) & ((ActorPartTextureState *
 typedef char
     ActorPartTextureCollisionOffsetCheck[(((u32) & ((ActorPartTextureState *)0)->collisionKey) == 0x554) ? 1 : -1];
 
+/// Resident parameters selecting a linked part and its angular response.
+typedef struct ActorPartLinkedRotationDefinition {
+    u16 linkedPartId; ///< Part identifier resolved within the owning actor.
+    u16 axis; ///< Rotation axis from zero through two.
+    f32 responseFactor; ///< Angular response to deviation from the captured reference.
+} ActorPartLinkedRotationDefinition;
+typedef char ActorPartLinkedRotationDefinitionSizeCheck[(sizeof(ActorPartLinkedRotationDefinition) == 8) ? 1 : -1];
+typedef char ActorPartLinkedRotationDefinitionFactorOffsetCheck[
+    (((u32)&((ActorPartLinkedRotationDefinition *)0)->responseFactor) == 4) ? 1 : -1];
+
 /// Owned rotation-follower state borrowing another part from the same actor.
 typedef struct ActorPartLinkedRotationState {
     u16 linkedPartId;   ///< Identifier resolved within the owning actor.
@@ -163,20 +173,21 @@ s32 actorPartInitializePairedOrientationCaches(u8 *object) {
 
 /// Linked part, rotation axis and response factor definitions for supported part kinds.
 /// \note Original identifier: \c D_800A2750 (0x800A2750).
-extern u8 gActorPartLinkedRotationDefinitions[];
+extern ActorPartLinkedRotationDefinition gActorPartLinkedRotationDefinitions[];
 /// Initialize a model part to follow rotation changes of its designated linked part.
 /// \param object Part of a kind with a linked-rotation definition, receiving owned state; previous state must already be released.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800137C0 (0x800137C0).
 void actorPartInitializeLinkedRotation(u8 *object) {
     u8 *state;
-    u8 *record;
-    state = (u8 *)heapAllocLocal(&gGameHeap, 0x10, 0xD6);
-    _bzero(state, 0x10);
-    record = gActorPartLinkedRotationDefinitions + (((RuntimeObjectPrefix *)object)->kind * 8) - 0x348;
-    ((ActorPartLinkedRotationState *)state)->linkedPartId = *(u16 *)record;
-    ((ActorPartLinkedRotationState *)state)->axis = *(u16 *)(record + 2);
-    ((ActorPartLinkedRotationState *)state)->responseFactor = *(f32 *)(record + 4);
+    ActorPartLinkedRotationDefinition *record;
+    state = (u8 *)heapAllocLocal(&gGameHeap, sizeof(ActorPartLinkedRotationState), 0xD6);
+    _bzero(state, sizeof(ActorPartLinkedRotationState));
+    record = (ActorPartLinkedRotationDefinition *)((u8 *)gActorPartLinkedRotationDefinitions +
+        (((RuntimeObjectPrefix *)object)->kind * sizeof(ActorPartLinkedRotationDefinition)) - 0x348);
+    ((ActorPartLinkedRotationState *)state)->linkedPartId = record->linkedPartId;
+    ((ActorPartLinkedRotationState *)state)->axis = record->axis;
+    ((ActorPartLinkedRotationState *)state)->responseFactor = record->responseFactor;
     ((ActorPartLinkedRotationState *)state)->linkedPart = 0;
     ((ActorPartLinkedRotationState *)state)->referenceAngle = 0.0f;
     ((RuntimeObjectPrefix *)object)->state.bytes = state;
@@ -262,30 +273,30 @@ void actorPartInitializeNoOp(s32 unused) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800139B8 (0x800139B8).
 void actorPartUpdateLinkedRotation(u8 *object) {
-    f32 r;
-    u8 *d;
-    s32 k;
-    u8 *o;
-    u8 *p;
-    f32 diff;
-    s32 off;
+    f32 angle;
+    u8 *state;
+    s32 axis;
+    u8 *angleSource;
+    u8 *linkedPart;
+    f32 angleDelta;
+    s32 rotationByteOffset;
 
-    d = ((RuntimeObjectPrefix *)object)->state.bytes;
-    p = ((ActorPartLinkedRotationState *)d)->linkedPart;
-    k = ((ActorPartLinkedRotationState *)d)->axis;
-    if (p != NULL) {
-        o = p;
-        off = k * 4;
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
+    linkedPart = ((ActorPartLinkedRotationState *)state)->linkedPart;
+    axis = ((ActorPartLinkedRotationState *)state)->axis;
+    if (linkedPart != NULL) {
+        angleSource = linkedPart;
+        rotationByteOffset = axis * 4;
     } else {
-        p = actorFindPart(((RuntimeObjectPrefix *)object)->root.bytes, ((ActorPartLinkedRotationState *)d)->linkedPartId);
-        o = p;
-        off = k * 4;
-        ((ActorPartLinkedRotationState *)d)->linkedPart = p;
-        ((ActorPartLinkedRotationState *)d)->referenceAngle = *(f32 *)(p + off + 0xC);
+        linkedPart = actorFindPart(((RuntimeObjectPrefix *)object)->root.bytes, ((ActorPartLinkedRotationState *)state)->linkedPartId);
+        angleSource = linkedPart;
+        rotationByteOffset = axis * 4;
+        ((ActorPartLinkedRotationState *)state)->linkedPart = linkedPart;
+        ((ActorPartLinkedRotationState *)state)->referenceAngle = *(f32 *)(linkedPart + rotationByteOffset + 0xC);
     }
-    diff = *(f32 *)(o + off + 0xC) - ((ActorPartLinkedRotationState *)d)->referenceAngle;
-    r = mathLerpAngleDegrees(0.0f, diff, ((ActorPartLinkedRotationState *)d)->responseFactor);
-    *(f32 *)(object + off + 0xC) = r;
+    angleDelta = *(f32 *)(angleSource + rotationByteOffset + 0xC) - ((ActorPartLinkedRotationState *)state)->referenceAngle;
+    angle = mathLerpAngleDegrees(0.0f, angleDelta, ((ActorPartLinkedRotationState *)state)->responseFactor);
+    *(f32 *)(object + rotationByteOffset + 0xC) = angle;
 }
 
 /// Adjust model-part roll and scale to follow the actor primary pose.

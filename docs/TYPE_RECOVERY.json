@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 2758,
-      "unique_spellings": 1054,
+      "occurrences": 2756,
+      "unique_spellings": 1052,
       "files": 80
     }
   },
@@ -698,94 +698,90 @@
         "script_vm.h",
         "script_vm_execution.h"
       ],
-      "matching_exceptions": {},
+      "matching_exceptions": {
+        "actorPartUpdateLinkedRotation": "The linked-part axis is a recovered unsigned halfword selecting rotation components. Replacing explicit axis*4 byte-offset reads/writes with RuntimeObjectPrefix.rotation[axis] changes allocated instructions and fails ROM matching. The callback retains named rotationByteOffset/angleSource variables; isolate IDO indexed-address scheduling before converting these remaining accesses."
+      },
       "locations": {
         "raw_offset_candidates": {
-          "record + 2": [
-            "178:62"
-          ],
-          "record + 4": [
-            "179:72"
-          ],
           "buffer + 0x50": [
-            "212:18",
-            "213:18",
-            "456:32"
+            "223:18",
+            "224:18",
+            "467:32"
           ],
           "buffer + 0x58": [
-            "214:18",
-            "215:18"
+            "225:18",
+            "226:18"
           ],
           "buffer + 0x60": [
-            "216:18",
-            "217:18"
+            "227:18",
+            "228:18"
           ],
           "buffer + 0x68": [
-            "218:18",
-            "219:18"
+            "229:18",
+            "230:18"
           ],
           "buffer + 0x70": [
-            "220:18",
-            "221:18"
+            "231:18",
+            "232:18"
           ],
           "buffer + 0x78": [
-            "222:18",
-            "223:18",
-            "457:32"
+            "233:18",
+            "234:18",
+            "468:32"
           ],
           "object + 0x24": [
-            "226:14"
+            "237:14"
           ],
           "object + 0x54": [
-            "234:40"
+            "245:40"
           ],
-          "off + 0xC": [
-            "284:76",
-            "286:25",
-            "288:23"
+          "rotationByteOffset + 0xC": [
+            "295:89",
+            "297:41",
+            "299:23"
           ],
           "state + 1": [
-            "395:42"
+            "406:42"
           ],
           "object + 0xC": [
-            "398:53"
+            "409:53"
           ],
           "object + 0x10": [
-            "398:76"
+            "409:76"
           ],
           "object + 0x14": [
-            "398:100"
+            "409:100"
           ],
           "object + 8": [
-            "401:14"
+            "412:14"
           ],
           "state + 0x14": [
-            "453:26"
+            "464:26"
           ],
           "animation + 0x1C": [
-            "459:26"
+            "470:26"
           ],
           "child + 0x54": [
-            "573:32"
+            "584:32"
           ],
           "obj + 0x50": [
-            "675:67"
+            "686:67"
           ],
           "object + 0x30": [
-            "676:21",
-            "756:25",
-            "769:25",
-            "785:25",
-            "789:25"
+            "687:21",
+            "767:25",
+            "780:25",
+            "796:25",
+            "800:25"
           ],
           "state + 0x190": [
-            "783:25"
+            "794:25"
           ],
           "state + 0x194": [
-            "784:35"
+            "795:35"
           ],
           "target + 0x54": [
-            "788:45"
+            "799:45"
           ]
         }
       }

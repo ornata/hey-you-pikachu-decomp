@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,758 / 80 |
+| Raw offset candidates | 4,040 / 86 | 2,756 / 80 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3269,3 +3269,16 @@ member accesses from the same type, and paired evaluation advances by one record
 The canonical evaluator contract describes initialization, output, signed part
 sequences and ownership. Two duplicate declarations are removed. The full shared
 header rebuild and both isolated provider conversions preserve strict objects.
+
+### Linked model-part rotation definitions
+
+The private checked eight-byte `ActorPartLinkedRotationDefinition` records a
+halfword linked-part identifier, halfword axis and float response factor. Ghidra
+0x800137C0 confirms widths, record stride and initialization of the owned
+sixteen-byte follower state. Resident table and initializer use the recovered
+record; allocation and clearing derive their extent from the state type. The
+existing biased table address is retained to preserve strict relocation addends.
+Callback locals now describe linked part, axis, angle source, delta and response.
+Direct indexed rotation fields fail ROM matching, so the explicit named byte
+offset is retained and recorded with the next compiler-evidence question.
+All accepted source-unit conversions preserve strict objects.
