@@ -1,3 +1,4 @@
+#include "controller_rumble.h"
 #include "text_image_configurations.h"
 #include "text_window.h"
 #include "script_vm_globals.h"
@@ -545,7 +546,6 @@ void presentationDrawCardScreen(Gfx **gdl) {
     }
 }
 
-void controllerRequestRumbleReset(s32);
 void runtimeRequestGameModeChange(s32);
 void hudSetAreaLabelVisible(s32);
 void presentationPrepareActiveActor(void *);

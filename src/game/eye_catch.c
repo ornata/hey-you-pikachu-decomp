@@ -1,3 +1,4 @@
+#include "controller_rumble.h"
 #include "progress_value.h"
 #include "camera_overlay.h"
 #include "heap_free.h"
@@ -78,7 +79,6 @@ void eyeCatchInitialize(void) {
 }
 
 void cameraUpdateOverlayColors(s32, s32);                     /* extern */
-void controllerRequestRumbleReset(s32);           /* extern */
 /// Asset descriptor used to load the eye-catch foreground image.
 /// \note Original identifier: \c D_8009B588 (0x8009B588).
 extern AssetDescriptor gEyeCatchForegroundAssetDescriptor;

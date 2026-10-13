@@ -1,3 +1,4 @@
+#include "controller_rumble.h"
 #include "terrain_movement.h"
 #include "terrain_height.h"
 #include "terrain_surface.h"
@@ -563,8 +564,6 @@ void playerPlayFootstepSound(u8 *player, s32 ground) {
     }
 }
 
-void controllerRequestRumblePattern(s32, f32, f32, f32);
-s32 controllerIsRumblePatternActive(s32);
 void backdropAdvanceScroll(f32);
 f32 vector3Normalize(f32 *);
 u32 randomNext(void);
@@ -1375,7 +1374,6 @@ void playerToggleViewShake(u8 *player) {
     ((PlayerControlPrefix *)player)->viewShake = -0.2f;
 }
 
-void controllerRequestRumbleStop(s32);                                      /* extern */
 
 /// End player stun feedback by clearing view shake, fading the screen flash, and stopping rumble.
 /// \param player Player record whose view shake is cleared.

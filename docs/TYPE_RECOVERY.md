@@ -3819,3 +3819,9 @@ The EEPROM interface names its six established asynchronous transfer states.
 The private 0x21C-byte job has checked payload/staging offsets and documented
 borrowed payload, owned staging, cursor and backup-page fields. State storage
 and function returns retain their signed target-word representation.
+
+`controller_rumble.h` shares reset/start/stop and pattern-activity contracts
+between the request producer, controller thread and six gameplay consumers.
+Port bounds and seconds-based timing inputs are documented, as is asynchronous
+submission. The activity query reports scheduled playback rather than device
+connectivity or guaranteed motor movement.

@@ -1,3 +1,4 @@
+#include "controller_rumble.h"
 #include "microphone_requests.h"
 #include "text_window.h"
 #include "message_bar.h"
@@ -232,7 +233,6 @@ const char *gSaveFailurePromptLines[] = {gSaveFailureHeadingText, gSaveFailurePo
                                          gSaveFailureCheckGamePakText, gSaveFailureInsertionText,
                                          gSaveFailureContinueText};
 
-void controllerRequestRumbleReset(s32); /* extern */
 void actionScriptInitializeHook();        /* extern */
 void hudInitialize();        /* extern */
 void randomSeedFromSystem();        /* extern */

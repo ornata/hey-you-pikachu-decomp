@@ -1,3 +1,4 @@
+#include "controller_rumble.h"
 #include "font_image.h"
 #include "text_image_configurations.h"
 #include "text_window.h"
@@ -1269,7 +1270,6 @@ void toolboxDrawFrame(s32 address) {
 /// Row requested when reopening the toolbox after a transition.
 /// \note Original identifier: \c D_800F1D1C (0x800F1D1C).
 extern s32 gToolboxRequestedRow;
-void controllerRequestRumbleReset(s32);
 void runtimeRequestGameModeChange(s32);
 void controllerConfigureStickButtons(s32 enabled, s32 upThreshold, s32 downThreshold, s32 leftThreshold,
                                      s32 rightThreshold);

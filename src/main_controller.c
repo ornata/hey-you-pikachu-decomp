@@ -1,3 +1,4 @@
+#include "controller_rumble.h"
 #include "microphone_configuration.h"
 #include "controller_commands.h"
 #include "text_window.h"

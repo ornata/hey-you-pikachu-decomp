@@ -1,3 +1,4 @@
+#include "controller_rumble.h"
 #include "controller_commands.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
@@ -64,7 +65,6 @@ void controllerRequestRumbleStop(s32 port) {
     controllerQueueRumbleCommand(port, 1, 0.0f, 0.0f, 0.0f);
 }
 
-s32 controllerIsRumblePatternScheduled(s32);
 
 /// Check whether a controller currently has an active rumble pattern.
 /// \param controller Controller port index, from 0 through 3.
