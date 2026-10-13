@@ -1,3 +1,4 @@
+#include "script_vm_globals.h"
 #include "actor_behavior.h"
 #include "progress_value.h"
 #include "vector_interpolation.h"
@@ -773,7 +774,6 @@ void toolboxClearCollection();
 void areaSetNextDestination();
 void playerResetViewOrientation();
 void playerSetChaseStage();
-void scriptVmSetGlobalInteger();
 /// Remaining duration of the primary camera secondary overlay transition.
 /// \note Original identifier: \c D_800ABDCC (0x800ABDCC).
 extern f32 gPrimarySecondaryOverlayRemainingSeconds;

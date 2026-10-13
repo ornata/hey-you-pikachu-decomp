@@ -1,3 +1,5 @@
+#include "script_vm_execution.h"
+#include "script_vm_globals.h"
 #include "actor_behavior.h"
 #include "item_participation.h"
 #include "item_queries.h"
@@ -878,7 +880,6 @@ s32 playerThrowHeldItemAndFocus(u8 *player) {
 
 void areaRequestTransition(s32, s32); /* extern */
 void playerSetChaseStage(s32 arg0);    /* extern */
-void scriptVmResetGlobals();         /* extern */
 /// Identifier of the currently loaded area.
 /// \note Original identifier: \c D_800AE4F8 (0x800AE4F8).
 extern s32 gRuntimeCurrentArea;
@@ -2798,15 +2799,16 @@ f32 actorConstrainFacingHeading(u8 *object, f32 angle) {
     return angle;
 }
 
-void actorUpdateScriptVm(s32); /* extern */
+
 
 /// Advance the active Pikachu script and service area events at its world position; has no effect when no
 /// Pikachu actor is selected.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80112F10 (0x80112F10).
 void pikachuUpdateScriptAndTriggers(void) {
-    if (gPikachuActor != 0) {
-        actorUpdateScriptVm(gPikachuActor);
+    u8 *actor = (u8 *)gPikachuActor;
+    if (actor != NULL) {
+        actorUpdateScriptVm(actor);
         areaDispatchPositionEvent(gPikachuActor + 0x44, 3);
     }
 }

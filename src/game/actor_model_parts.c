@@ -1,3 +1,4 @@
+#include "script_vm_execution.h"
 #include "matrix_orientation.h"
 #include "actor_script_time.h"
 #include "script_vm.h"
@@ -626,7 +627,6 @@ void actorStartPartShake(u8 *actor, s32 part) {
         (f32)((((f64)randomNext() * 2.3283064365386963e-10 * 0.5) + 0.5) * gActorPartShakeMaximumSeconds);
 }
 
-void actorUpdateScriptVm(u8 *);
 void actorUpdateModel(u8 *);
 void actorUpdatePartShake(u8 *);
 /// Signed part-identifier sequence defining the actor primary tracked pose.

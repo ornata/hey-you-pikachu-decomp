@@ -1,3 +1,4 @@
+#include "script_vm_globals.h"
 #include "object_types.h"
 #include "actor_script.h"
 #include "actor_behavior.h"
@@ -1206,7 +1207,6 @@ extern s32 gEyeCatchSelectedGroup;
 /// \note Original identifier: \c D_800F0B74 (0x800F0B74).
 extern s32 gCompletedVisitCardPending;
 s32 eyeCatchChooseGroup();
-void scriptVmResetGlobals(void);
 
 /// Selects the area 0 card presentation and updates related progress for a completed visit.
 /// \param actorAction Unused; the caller’s presentation action remains unchanged.

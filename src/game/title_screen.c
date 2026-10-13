@@ -1,3 +1,4 @@
+#include "script_vm_globals.h"
 #include "story_chapter.h"
 #include "story_milestones.h"
 #include "progress_storage.h"
@@ -750,7 +751,6 @@ void titleScreenSetMessage(void **, s32, s32);
 s32 titleScreenHandleFileSelection(void);
 s32 titleScreenHandleOverwriteConfirmation(void);
 void areaSetNextDestination(s32, s32);
-void scriptVmResetGlobals(void);
 
 /// Advance startup checks, title presentation, save-file menus, and transitions into gameplay or a demonstration.
 /// \returns Nothing.

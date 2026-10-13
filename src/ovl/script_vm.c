@@ -28,6 +28,8 @@
 #include "script_vm.h"
 #include "script_vm_stack.h"
 #include "script_vm_lifecycle.h"
+#include "script_vm_execution.h"
+#include "script_vm_globals.h"
 
 /// Shared 32-byte numeric conversion text, overwritten by the next numeric string conversion.
 /// \note Original identifier: \c D_801340B0 (0x801340B0).
@@ -740,8 +742,8 @@ s32 actorRunScriptVm(u8 *actor) {
     u8 *owner;
     u8 op;
 
-    owner = *(u8 **)(actor + 0x54);
-    vm = *(ScriptVm **)(owner + 0x1B8);
+    owner = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    vm = (ScriptVm *)((ActorScriptState *)owner)->vmAddress;
     if (vm == NULL) {
         messageBarEnqueue(0, 3600.0f, (u8 *)"No PPU");
         goto block_29;
@@ -907,7 +909,6 @@ loop_3:
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
-s32 actorRunScriptVm(u8 *); /* extern */
 
 /// Advance the actor script execution and timers for the current frame.
 /// \param actor Actor whose script context is advanced when present.
@@ -944,5 +945,5 @@ void actorUpdateScriptVm(u8 *actor) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80116708 (0x80116708).
 void scriptVmResetGlobals(void) {
-    _bzero(&gScriptVmGlobalValues, 0x9C4);
+    _bzero(&gScriptVmGlobalValues, sizeof(gScriptVmGlobalValues));
 }

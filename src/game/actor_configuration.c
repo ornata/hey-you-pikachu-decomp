@@ -1,3 +1,4 @@
+#include "script_vm_execution.h"
 #include "script_vm_lifecycle.h"
 #include "actor_assets.h"
 #include "progress_fields.h"
@@ -272,7 +273,6 @@ void actorInitializeModelAndPartTable(u8 *actor) {
     actorAllocatePartTable(actor);
 }
 
-void actorUpdateScriptVm(u8 *);
 
 /// Advance an actor's script execution and model behavior.
 /// \param actor Actor whose script and model are updated.

@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,843 / 80 |
+| Raw offset candidates | 4,040 / 86 | 2,841 / 80 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3178,3 +3178,16 @@ context allocation, borrowed configuration fields and the separately owned value
 stack. The actor creation boundary retains its generic resource parameter until
 its scene callers can be audited together. All isolated conversions preserve
 strict object matches.
+
+### Shared VM scheduling and global-variable interfaces
+
+`script_vm_execution.h` defines bytecode-run and frame-update contracts, including
+scheduling results, bytecode bounds and absent-context behavior. The interpreter
+uses shared actor/object fields to locate its context. `script_vm_globals.h`
+consolidates reset and integer-assignment contracts for the 500-value global bank;
+reset extent derives from its existing typed storage. Seven consumer units use
+canonical declarations. Ghidra 0x80116658 confirms timer and scheduling behavior.
+A direct pointer cast in the companion caller changed register allocation and
+failed ROM matching; a descriptive local actor pointer preserves the original
+instructions and permits the canonical declaration without an exception.
+All provider and consumer conversions preserve strict object matches.

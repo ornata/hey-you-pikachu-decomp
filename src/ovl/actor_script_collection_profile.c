@@ -1,3 +1,4 @@
+#include "script_vm_globals.h"
 #include "actor_behavior.h"
 #include "player_view_search.h"
 #include "profile_counters.h"
@@ -1204,7 +1205,6 @@ s32 actorScriptPushAvailableItemSlots(u8 *actor) {
     return 0;
 }
 
-void scriptVmResetGlobals(); /* extern */
 
 /// Reset all global script variables to their initial values.
 /// \param actor Actor whose script VM receives zero after the shared global variables are reset.
