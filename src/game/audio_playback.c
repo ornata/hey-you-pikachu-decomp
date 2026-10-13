@@ -1,3 +1,4 @@
+#include "audio_worker.h"
 #include "audio_dma.h"
 #include "audio_bank.h"
 #include "sequence_registration.h"
@@ -88,7 +89,6 @@ extern u8 gAudioRspMicrocodeDataStart[];
 void n_alInit(N_ALGlobals *, ALSynConfig *);
 Acmd *n_alAudioFrame(Acmd *, s32 *, s16 *, s32);
 void audioInitializeSequencePlayers(s32, u8 *);
-void audioWorkerStart(s32, ALHeap *, OSId, OSPri, s32, s32, s32, s32, s32);
 
 /// Initialize game audio resources, playback services, and the audio worker.
 /// \param scheduler Scheduler address used by the audio worker.
@@ -134,8 +134,8 @@ s32 audioInitialize(s32 scheduler, s32 threadId, s32 priority, u32 frequency) {
         &heap, (s32)gAudioBankRomStart, (s32)(gAudioBankRomStart + AUDIO_BANK_SIZE), (s32)gAudioSamplesRomStart);
     audioInitializeSequencePlayers((s32)&heap, (u8 *)gAudioBankFile);
     gSoundEffectPlayer = soundEffectPlayerCreate(&gGameAudioSynthesizer, &heap, 32);
-    audioWorkerStart(scheduler, &heap, threadId, priority, (s32)n_alAudioFrame, (s32)gAudioRspMicrocodeTextStart,
-                     (s32)gAudioRspMicrocodeDataStart, 0xB8, 0x200);
+    audioWorkerStart((GameScheduler *)scheduler, &heap, threadId, priority, n_alAudioFrame,
+                     (u64 *)gAudioRspMicrocodeTextStart, (u64 *)gAudioRspMicrocodeDataStart, 0xB8, 0x200);
     gAudioInitialized = 1;
     used = heap.cur - heap.base;
     if (used > 0x35B60) {
@@ -145,7 +145,6 @@ s32 audioInitialize(s32 scheduler, s32 threadId, s32 priority, u32 frequency) {
     return used;
 }
 
-void audioWorkerStopAndWait(); /* extern */
 void n_alClose(N_ALGlobals *);
 
 /// Stop the audio worker and close the game synthesizer.

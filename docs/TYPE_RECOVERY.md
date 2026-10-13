@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 1,754 / 72 |
+| Raw offset candidates | 4,040 / 86 | 1,745 / 72 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -4233,3 +4233,16 @@ read-ahead bounds. Private cache entries now document owned sample buffers,
 ROM page addresses and last-use frames with a checked size and address offset.
 The audio worker uses the shared `SchedulerTask` instead of an identical local
 record. All accepted source and interface changes preserve strict objects.
+
+### Audio worker state and startup contracts
+
+The worker's checked private state now names its stack, embedded thread, queues,
+callback, microcode and owned buffers. Startup writes the same fields used by
+rendering instead of numeric byte offsets. Original interior linker symbols remain
+in queue and thread operations to preserve relocation identities. Ghidra startup
+and linked symbol addresses confirm the 0x2230-byte observed prefix.
+
+`audio_worker.h` shares typed scheduler, rendering callback and microcode arguments
+with playback initialization. Its contracts distinguish physical sample addresses,
+command capacity and resource lifetime through shutdown. Both source units preserve
+all strict baseline objects and the clean retail ROM match.

@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 1754,
-      "unique_spellings": 762,
+      "occurrences": 1745,
+      "unique_spellings": 753,
       "files": 72
     }
   },
@@ -1248,6 +1248,7 @@
         "audio_playback_query.h",
         "audio_playback_stop.h",
         "audio_sound_effect.h",
+        "audio_worker.h",
         "midi_sequence_types.h",
         "n_synthInternals.h",
         "sequence_control.h",
@@ -1261,12 +1262,12 @@
       "locations": {
         "raw_offset_candidates": {
           "return -1": [
-            "161:5",
-            "393:9",
-            "400:5"
+            "160:5",
+            "392:9",
+            "399:5"
           ],
           "bankFile + 4": [
-            "208:88"
+            "207:88"
           ]
         }
       }
@@ -1274,6 +1275,7 @@
     "src/game/audio_worker_string_utils.c": {
       "known_views": [
         "audio_dma.h",
+        "audio_worker.h",
         "scheduler.h",
         "string_bytes.h"
       ],
@@ -1281,43 +1283,16 @@
       "locations": {
         "raw_offset_candidates": {
           "slot + 1": [
-            "129:36"
+            "130:36"
           ],
           "gAudioDmaPageBytes - 1": [
-            "130:49"
+            "131:49"
           ],
           "address + 0x80000000": [
-            "138:92"
-          ],
-          "gAudioWorkerStorage + 0x2218": [
-            "198:14"
-          ],
-          "gAudioWorkerStorage + 0x220C": [
-            "199:14"
-          ],
-          "gAudioWorkerStorage + 0x2208": [
-            "200:14"
-          ],
-          "gAudioWorkerStorage + 0x2210": [
-            "201:14"
-          ],
-          "gAudioWorkerStorage + 0x2214": [
-            "202:14"
-          ],
-          "gAudioWorkerStorage + 0x221C": [
-            "203:16"
-          ],
-          "gAudioWorkerStorage + 0x2220": [
-            "204:23"
-          ],
-          "gAudioWorkerStorage + 0x2224": [
-            "206:20"
-          ],
-          "gAudioWorkerStorage + 0x2204": [
-            "208:14"
+            "139:92"
           ],
           "buffer + 0x80000000": [
-            "253:68"
+            "277:68"
           ]
         }
       }

@@ -1,3 +1,4 @@
+#include "audio_worker.h"
 #include "audio_dma.h"
 #include "scheduler.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -153,6 +154,48 @@ void audioWorkerStopAndWait(void) {
     osRecvMesg(&gAudioWorkerStopQueue, NULL, 1);
 }
 
+/// Retained audio worker prefix with audio-heap-owned command and sample buffers.
+/// Interior linker symbols borrow the embedded thread, queues and stop flag.
+typedef struct AudioWorkerState {
+    u64 stack[0x400];           ///< Thread stack, whose upper boundary is the embedded thread.
+    OSThread thread;            ///< Operating-system worker thread.
+    OSMesgQueue aiQueue;        ///< Audio-interface completion queue.
+    OSMesg aiMessage;           ///< Owned message slot for aiQueue.
+    OSMesgQueue taskQueue;      ///< Synthesis-task completion queue.
+    OSMesg taskMessage;         ///< Owned message slot for taskQueue.
+    OSMesgQueue stopQueue;      ///< Shutdown acknowledgment queue.
+    OSMesg stopMessage;         ///< Owned message slot for stopQueue.
+    s32 stop;                   ///< Nonzero requests shutdown after the current buffer.
+    AudioRenderCallback render; ///< Borrowed synthesis callback retained until shutdown.
+    s32 samples;                ///< Stereo sample frames per output buffer.
+    u64 *ucode;                 ///< Borrowed audio microcode text.
+    u64 *ucodeData;             ///< Borrowed audio microcode data.
+    s32 maxCommands;            ///< Allocated synthesis-command capacity.
+    Acmd *commands;             ///< Audio-heap-owned command buffer.
+    OSMesgQueue *scheduler;     ///< Borrowed scheduler audio command queue.
+    void *buffers[2];           ///< Audio-heap-owned stereo output buffers.
+    s32 index;                  ///< Output-buffer slot selected for the next rendering call.
+} AudioWorkerState;
+
+typedef char AudioWorkerStateSizeCheck[(sizeof(AudioWorkerState) == 0x2230) ? 1 : -1];
+#define AUDIO_WORKER_OFFSET_CHECK(field, offset)                                                                       \
+    typedef char AudioWorker_##field##OffsetCheck[(((u32) & ((AudioWorkerState *)0)->field) == (offset)) ? 1 : -1]
+AUDIO_WORKER_OFFSET_CHECK(thread, 0x2000);
+AUDIO_WORKER_OFFSET_CHECK(aiQueue, 0x21B0);
+AUDIO_WORKER_OFFSET_CHECK(taskQueue, 0x21CC);
+AUDIO_WORKER_OFFSET_CHECK(stopQueue, 0x21E8);
+AUDIO_WORKER_OFFSET_CHECK(stop, 0x2204);
+AUDIO_WORKER_OFFSET_CHECK(render, 0x2208);
+AUDIO_WORKER_OFFSET_CHECK(samples, 0x220C);
+AUDIO_WORKER_OFFSET_CHECK(ucode, 0x2210);
+AUDIO_WORKER_OFFSET_CHECK(ucodeData, 0x2214);
+AUDIO_WORKER_OFFSET_CHECK(maxCommands, 0x2218);
+AUDIO_WORKER_OFFSET_CHECK(commands, 0x221C);
+AUDIO_WORKER_OFFSET_CHECK(scheduler, 0x2220);
+AUDIO_WORKER_OFFSET_CHECK(buffers, 0x2224);
+AUDIO_WORKER_OFFSET_CHECK(index, 0x222C);
+#undef AUDIO_WORKER_OFFSET_CHECK
+
 void audioWorkerThreadMain(void *);
 /// Shared audio worker storage containing its stack, thread and rendering state.
 /// \note Original identifier: \c D_800F8F30 (0x800F8F30).
@@ -191,21 +234,21 @@ extern OSMesg gAudioWorkerStopMessage;
 /// the render callback must not exceed it.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800496B8 (0x800496B8).
-void audioWorkerStart(s32 scheduler, ALHeap *heap, OSId id, OSPri pri, s32 render, s32 ucode, s32 ucodeData,
-                      s32 samples, s32 maxCommands) {
+void audioWorkerStart(GameScheduler *scheduler, ALHeap *heap, OSId id, OSPri pri, AudioRenderCallback render,
+                      u64 *ucode, u64 *ucodeData, s32 samples, s32 maxCommands) {
     s32 i;
 
-    *(s32 *)(gAudioWorkerStorage + 0x2218) = maxCommands;
-    *(s32 *)(gAudioWorkerStorage + 0x220C) = samples;
-    *(s32 *)(gAudioWorkerStorage + 0x2208) = render;
-    *(s32 *)(gAudioWorkerStorage + 0x2210) = ucode;
-    *(s32 *)(gAudioWorkerStorage + 0x2214) = ucodeData;
-    *(void **)(gAudioWorkerStorage + 0x221C) = alHeapDBAlloc(NULL, 0, heap, 1, maxCommands * 8);
-    *(OSMesgQueue **)(gAudioWorkerStorage + 0x2220) = schedulerGetAudioCommandQueue((GameScheduler *)scheduler);
+    ((AudioWorkerState *)gAudioWorkerStorage)->maxCommands = maxCommands;
+    ((AudioWorkerState *)gAudioWorkerStorage)->samples = samples;
+    ((AudioWorkerState *)gAudioWorkerStorage)->render = render;
+    ((AudioWorkerState *)gAudioWorkerStorage)->ucode = ucode;
+    ((AudioWorkerState *)gAudioWorkerStorage)->ucodeData = ucodeData;
+    ((AudioWorkerState *)gAudioWorkerStorage)->commands = alHeapDBAlloc(NULL, 0, heap, 1, maxCommands * 8);
+    ((AudioWorkerState *)gAudioWorkerStorage)->scheduler = schedulerGetAudioCommandQueue(scheduler);
     for (i = 0; i < 2; i++) {
-        ((void **)(gAudioWorkerStorage + 0x2224))[i] = alHeapDBAlloc(NULL, 0, heap, 1, samples * 4);
+        ((AudioWorkerState *)gAudioWorkerStorage)->buffers[i] = alHeapDBAlloc(NULL, 0, heap, 1, samples * 4);
     }
-    *(s32 *)(gAudioWorkerStorage + 0x2204) = 0;
+    ((AudioWorkerState *)gAudioWorkerStorage)->stop = 0;
     osCreateMesgQueue(&gAudioWorkerAiQueue, &gAudioWorkerAiMessage, 1);
     osCreateMesgQueue(&gAudioWorkerTaskQueue, &gAudioWorkerTaskMessage, 1);
     osCreateMesgQueue(&gAudioWorkerStopQueue, &gAudioWorkerStopMessage, 1);
@@ -214,25 +257,6 @@ void audioWorkerStart(s32 scheduler, ALHeap *heap, OSId id, OSPri pri, s32 rende
     osStartThread(&gAudioWorkerThread);
 }
 
-typedef struct {
-    u8 threadAndStack[0x21B0];
-    OSMesgQueue aiQueue;
-    OSMesg aiMessage;
-    OSMesgQueue taskQueue;
-    OSMesg taskMessage;
-    OSMesgQueue stopQueue;
-    OSMesg stopMessage;
-    s32 stop;
-    Acmd *(*render)(Acmd *, s32 *, s16 *, s32);
-    s32 samples;
-    u64 *ucode;
-    u64 *ucodeData;
-    s32 maxCommands;
-    Acmd *commands;
-    OSMesgQueue *scheduler;
-    void *buffers[2];
-    s32 index;
-} AudioThread;
 /// Audio RSP microcode text start; also marks the end of the RSP boot code.
 /// \note Original identifier: \c D_80060120 (0x80060120).
 extern u64 gAudioRspMicrocodeTextStart[];
@@ -241,7 +265,7 @@ extern u64 gAudioRspMicrocodeTextStart[];
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8004982C (0x8004982C).
 void audioWorkerThreadMain(void *arg) {
-    AudioThread *audio = arg;
+    AudioWorkerState *audio = arg;
     s32 commandCount;
     void *buffer;
     SchedulerTask task;
