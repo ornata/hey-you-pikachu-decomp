@@ -1,3 +1,4 @@
+#include "linked_effect.h"
 #include "attached_effect.h"
 #include "item_participation.h"
 #include "item_search.h"
@@ -337,7 +338,6 @@ extern const f32 gActionLaunchHeadingOffsets[];
 /// \note Original identifier: \c D_800A4978 (0x800A4978).
 extern const s32 gActionLaunchThrowFlags[];
 u8 *fallingParticleCreate(s32, s32, f32 *, f32 *, f32);
-u8 *linkedEffectCreateChain(s32, f32, f32, f32, f32, s32, f32, f32, f32, f32, f32, s32, s32, s32);
 f32 vector3Normalize(u8 *);
 f32 mathSinDegrees(f32);
 f32 mathCosDegrees(f32);
@@ -411,7 +411,7 @@ void actionCommandLaunchHeldItem(u8 *actor, u8 *state, ActorActionCueCommand *co
         break;
     case 7:
         linkedEffectCreateChain(
-            randomBelow(2) != 0 ? 2 : 3, pos[0], pos[1], pos[2], randomNext() * 2.3283064365386963e-10 * 0.1f + 0.03f,
+            randomBelow(2) != 0 ? LINKED_EFFECT_REBOUND : LINKED_EFFECT_FALLING, pos[0], pos[1], pos[2], randomNext() * 2.3283064365386963e-10 * 0.1f + 0.03f,
             actorGetPartObjectHandle(gPikachuActor, 0x79), 1.0f, 0.8f, 2.0f, 0.1f, 0.1f, 0xC2, 1, randomBelow(2) + 1);
         vel[0] = (randomNext() * 2.3283064365386963e-10 - 0.5) * 8.0;
         vel[1] = 0.0f;

@@ -1,3 +1,4 @@
+#include "linked_effect.h"
 #include "script_vm_execution.h"
 #include "script_vm_lifecycle.h"
 #include "actor_assets.h"
@@ -184,7 +185,6 @@ void contactEffectInitialize(u8 *effect) {
     *(s32 **)(effect + 0x54) = savedEffectState;
 }
 
-u8 *linkedEffectCreateChain(s32, f32, f32, f32, f32, s32, f32, f32, f32, f32, f32, s32, s32, s32);
 f32 vector3Length(f32 *);
 /// Attraction strength between adjacent effects in the contact reaction chain.
 /// \note Original identifier: \c D_800A3A6C (0x800A3A6C).
@@ -223,7 +223,7 @@ void contactEffectUpdate(u8 *effect) {
             objectPlaySpatialSound(effect, 0x97, 20.0f, 100.0f);
             result = actorGetPartObjectHandle((u8 *)gPikachuActor, 0x79);
             pull = gContactEffectChainPull;
-            linkedEffectCreateChain(2, *(f32 *)(effect + 0x44), *(f32 *)(effect + 0x48), *(f32 *)(effect + 0x4C),
+            linkedEffectCreateChain(LINKED_EFFECT_REBOUND, *(f32 *)(effect + 0x44), *(f32 *)(effect + 0x48), *(f32 *)(effect + 0x4C),
                                     gContactEffectChainScale, result, 1.0f, gContactEffectChainDamping, 2.0f, pull,
                                     pull, 0xC2, 1, 8);
         }

@@ -1,6 +1,7 @@
 /// \file
 /// Maintains linked animated effects with neighbor constraints and target motion.
 
+#include "linked_effect.h"
 #include "opacity_animation_programs.h"
 #include "texture_animation_programs.h"
 #include "actor_meters.h"
@@ -118,9 +119,9 @@ void linkedEffectAddNeighborPull(u8 *object, u8 *neighbor, f32 spacing, f32 pull
     f32 k;
     s32 i;
 
-    d[0] = *(f32 *)(neighbor + 0x18) - *(f32 *)(object + 0x18);
-    d[1] = *(f32 *)(neighbor + 0x1C) - *(f32 *)(object + 0x1C);
-    d[2] = *(f32 *)(neighbor + 0x20) - *(f32 *)(object + 0x20);
+    d[0] = ((RuntimeObjectPrefix *)neighbor)->position[0] - ((RuntimeObjectPrefix *)object)->position[0];
+    d[1] = ((RuntimeObjectPrefix *)neighbor)->position[1] - ((RuntimeObjectPrefix *)object)->position[1];
+    d[2] = ((RuntimeObjectPrefix *)neighbor)->position[2] - ((RuntimeObjectPrefix *)object)->position[2];
     len = vector3Normalize(d);
     k = len - spacing;
     if (len <= spacing) {
@@ -168,7 +169,7 @@ void linkedEffectUpdateMotion(u8 *object) {
     ((LinkedEffectState *)state)->velocity[1] = velocity[1];
     ((LinkedEffectState *)state)->velocity[2] = velocity[2];
     for (axis = 0; axis < 3; axis++) {
-        ((f32 *)(object + 0x18))[axis] += velocity[axis] * gRuntimeFrameSeconds;
+        ((RuntimeObjectPrefix *)object)->position[axis] += velocity[axis] * gRuntimeFrameSeconds;
     }
 }
 
@@ -220,10 +221,10 @@ s32 linkedEffectPrepareDraw(u8 *object) {
     u8 *v = ((RuntimeObjectPrefix *)object)->state.bytes;
     Rgba8 *c;
 
-    textureLoadForDraw(&gRenderDisplayListCursor, 5, *(s16 *)(v + 0x40));
-    c = (Rgba8 *)(v + 0x50);
+    textureLoadForDraw(&gRenderDisplayListCursor, 5, ((LinkedEffectState *)v)->frameTrack.value);
+    c = (Rgba8 *)((LinkedEffectState *)v)->color;
     gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, c->r, c->g, c->b, c->a);
-    return *(s32 *)(object + 0x30);
+    return (s32)((RuntimeObjectPrefix *)object)->displayList;
 }
 
 /// Borrowed reference to the active Pikachu actor created for the current area.
@@ -247,8 +248,8 @@ s32 linkedEffectComputeTargetVelocity(u8 *object, f32 *velocity) {
     u8 *nextState;
 
     state = ((RuntimeObjectPrefix *)object)->state.bytes;
-    if (*(f32 *)(object + 0x1C) > 100.0f) {
-        objectRequestHierarchyDestruction(*(u8 **)(object + 0x50));
+    if (((RuntimeObjectPrefix *)object)->position[1] > 100.0f) {
+        objectRequestHierarchyDestruction(((RuntimeObjectPrefix *)object)->root.bytes);
         velocity[0] = 0.0f;
         velocity[1] = 0.0f;
         velocity[2] = 0.0f;
@@ -261,18 +262,18 @@ s32 linkedEffectComputeTargetVelocity(u8 *object, f32 *velocity) {
         velocity[1] = 10.0f;
         return 1;
     }
-    velocity[0] = (f32)(*(f32 *)(target + 0x44) - *(f32 *)(object + 0x18));
-    velocity[1] = (f32)(*(f32 *)(target + 0x48) - *(f32 *)(object + 0x1C));
-    velocity[2] = (f32)(*(f32 *)(target + 0x4C) - *(f32 *)(object + 0x20));
+    velocity[0] = (f32)(((RuntimeObjectPrefix *)target)->worldPosition[0] - ((RuntimeObjectPrefix *)object)->position[0]);
+    velocity[1] = (f32)(((RuntimeObjectPrefix *)target)->worldPosition[1] - ((RuntimeObjectPrefix *)object)->position[1]);
+    velocity[2] = (f32)(((RuntimeObjectPrefix *)target)->worldPosition[2] - ((RuntimeObjectPrefix *)object)->position[2]);
     distance = vector3Normalize(velocity);
-    if ((((LinkedEffectState *)state)->contactPending != 0) && (distance < (*(f32 *)(object + 0x24) + *(f32 *)(target + 0x24)))) {
+    if ((((LinkedEffectState *)state)->contactPending != 0) && (distance < (((RuntimeObjectPrefix *)target)->radius + ((RuntimeObjectPrefix *)object)->radius))) {
         next = ((LinkedEffectState *)state)->next;
         ((LinkedEffectState *)state)->contactPending = 0;
-        flags = *(u16 *)(object + 0x36);
+        flags = ((RuntimeObjectPrefix *)object)->flags;
         if (!(flags & 2)) {
-            *(u16 *)(object + 0x36) = (u16)(flags | 2);
+            ((RuntimeObjectPrefix *)object)->flags = (u16)(flags | 2);
             do {
-                if (gPikachuActor == *(u8 **)(target + 0x50)) {
+                if (gPikachuActor == ((RuntimeObjectPrefix *)target)->root.bytes) {
                     actorPlayTrackedSound(gPikachuActor, 0x8F);
                     actorAdjustActionMeter(gPikachuActor, 2.5f);
                 } else {
@@ -285,7 +286,7 @@ s32 linkedEffectComputeTargetVelocity(u8 *object, f32 *velocity) {
             ((LinkedEffectState *)nextState)->callback = linkedEffectComputeTargetVelocity;
             ((LinkedEffectState *)nextState)->contactPending = 1;
         } else {
-            objectRequestHierarchyDestruction(*(u8 **)(object + 0x50));
+            objectRequestHierarchyDestruction(((RuntimeObjectPrefix *)object)->root.bytes);
         }
         velocity[0] = 0.0f;
         velocity[1] = 0.0f;
@@ -402,13 +403,13 @@ void linkedEffectInitializeVelocity(s32 kind, u8 *object) {
     ((LinkedEffectState *)state)->velocity[0] = mathCosDegrees(angle) * 10.0f;
     ((LinkedEffectState *)state)->velocity[2] = mathSinDegrees(angle) * 10.0f;
     switch (kind) {
-    case 1:
+    case LINKED_EFFECT_RISING_TARGET:
         ((LinkedEffectState *)state)->velocity[1] = (f64)randomNext() * 2.3283064365386963e-10 * 1.0f + 3.0;
         return;
-    case 2:
+    case LINKED_EFFECT_REBOUND:
         ((LinkedEffectState *)state)->velocity[1] = (f64)randomNext() * 2.3283064365386963e-10 * 5.0 + 30.0;
         return;
-    case 3:
+    case LINKED_EFFECT_FALLING:
         ((LinkedEffectState *)state)->velocity[1] = (f64)randomNext() * 2.3283064365386963e-10 * 2.0f + 8.0;
         return;
     }
@@ -476,23 +477,23 @@ u8 *linkedEffectCreateChain(s32 kind, f32 x, f32 y, f32 z, f32 scale, s32 target
     initial.color[3] = 255;
     gLinkedEffectTemplateModel[0] = gLinkedEffectModelDisplayList;
     switch (kind) {
-    case 0:
-    case 1:
+    case LINKED_EFFECT_TARGET:
+    case LINKED_EFFECT_RISING_TARGET:
         initial.callback = linkedEffectComputeTargetVelocity;
         break;
-    case 2:
+    case LINKED_EFFECT_REBOUND:
         initial.callback = linkedEffectComputeReboundVelocity;
         break;
-    case 3:
+    case LINKED_EFFECT_FALLING:
         initial.callback = linkedEffectComputeFallingVelocity;
         break;
     }
     group = objectCreateDefault();
     first = objectCreateFromTemplate((ObjectTemplate *)gLinkedEffectObjectTemplate);
-    *(u8 **)(group + 0x2C) = first;
-    firstState = *(LinkedEffectState **)(first + 0x54);
-    SET_MOTION_VECTOR((f32 *)(first + 0x18), x, y, z);
-    SET_MOTION_VECTOR((f32 *)(first + 0x44), x, y, z);
+    ((RuntimeObjectPrefix *)group)->child.bytes = first;
+    firstState = (LinkedEffectState *)((RuntimeObjectPrefix *)first)->state.pointer;
+    SET_MOTION_VECTOR(((RuntimeObjectPrefix *)first)->position, x, y, z);
+    SET_MOTION_VECTOR(((RuntimeObjectPrefix *)first)->worldPosition, x, y, z);
     *firstState = initial;
     firstState->speed = speed;
     firstState->contactPending = 1;
@@ -504,10 +505,10 @@ u8 *linkedEffectCreateChain(s32 kind, f32 x, f32 y, f32 z, f32 scale, s32 target
     if (count > 0) {
         do {
             object = objectCreateFromTemplate((ObjectTemplate *)gLinkedEffectObjectTemplate);
-            *(u8 **)(previous + 0x28) = object;
-            state = *(LinkedEffectState **)(object + 0x54);
-            SET_MOTION_VECTOR((f32 *)(object + 0x18), x, y, z);
-            SET_MOTION_VECTOR((f32 *)(object + 0x44), x, y, z);
+            ((RuntimeObjectPrefix *)previous)->sibling.bytes = object;
+            state = (LinkedEffectState *)((RuntimeObjectPrefix *)object)->state.pointer;
+            SET_MOTION_VECTOR(((RuntimeObjectPrefix *)object)->position, x, y, z);
+            SET_MOTION_VECTOR(((RuntimeObjectPrefix *)object)->worldPosition, x, y, z);
             *state = initial;
             state->contactPending = 0;
             previousState->next = object;

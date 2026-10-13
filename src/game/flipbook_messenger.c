@@ -1,3 +1,4 @@
+#include "linked_effect.h"
 #include "actor_meters.h"
 #include "actor_part_shake.h"
 #include "collision_registration.h"
@@ -1009,7 +1010,6 @@ void messengerBeginDissipation(f32 *object) {
 }
 
 u8 *actorGetDefaultPart(s32);
-u8 *linkedEffectCreateChain(s32, f32, f32, f32, f32, s32, f32, f32, f32, f32, f32, s32, s32, s32);
 /// Begin the messenger rebound after delivery, including applicable recipient feedback.
 /// \param object Messenger projectile with initialized state.
 /// \returns Nothing.
@@ -1030,7 +1030,7 @@ void messengerBeginRebound(u8 *object) {
     if (linked != NULL && gPikachuActor == *(s32 *)(linked + 0x50)) {
         target = actorGetDefaultPart((s32)gPikachuActor);
         count = (s32)mathMapRangeClamped(0.0f, 2.0f, 4000.0f, 6.0f, (f32) * (s32 *)(state + 0x34));
-        linkedEffectCreateChain(3, *(f32 *)(object + 0x44), *(f32 *)(object + 0x48), *(f32 *)(object + 0x4C), 0.05f,
+        linkedEffectCreateChain(LINKED_EFFECT_FALLING, *(f32 *)(object + 0x44), *(f32 *)(object + 0x48), *(f32 *)(object + 0x4C), 0.05f,
                       *(s32 *)(target + 0x38), 0.7f, 0.5f, 5.0f, 0.03f, 0.03f, 0xC2, 1, count);
     }
 }

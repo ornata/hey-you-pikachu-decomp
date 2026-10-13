@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,668 / 79 |
+| Raw offset candidates | 4,040 / 86 | 2,636 / 78 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3345,3 +3345,16 @@ extent from the state type, while motion, teardown and appearance use its named
 fields and checked offsets. Three redundant declarations are removed; arithmetic,
 neighbor unlink ordering and callback ABI remain unchanged. All isolated
 source-unit conversions preserve strict objects.
+
+### Linked-effect creation and hierarchy contracts
+
+`linked_effect.h` defines supported initial motion kinds and the chain creation
+contract, including target lookup, animation indices, neighbor constraints and
+object-system-managed group lifetime. Three callers adopt canonical declarations
+and named rebound/falling kinds. Motion and target queries reuse object position,
+world position, radius, flags and owning-root fields; chain construction names
+child/sibling links and state pointers. Drawing uses its retained frame value and
+object display list. Ghidra 0x8001D3B8 confirms chain initialization. A named radius
+sum initially swapped operand registers; target-plus-effect source order preserves
+the original instruction bytes, documented as a matching constraint. All provider
+and consumer conversions preserve strict objects.
