@@ -345,9 +345,6 @@ void titleScreenDrawStartupSilhouette(Gfx **gdl) {
     gDPSetCycleType((*gdl)++, G_CYC_1CYCLE);
 }
 
-void cameraUpdateOverlayColors(s32, s32);
-void cameraDrawOverlay(s32);
-void cameraDrawSecondaryOverlay(s32);
 void objectDrawGroup(s32);
 void titleScreenDrawLogo(Gfx **);
 void titleScreenDrawStartupPanel(Gfx **);

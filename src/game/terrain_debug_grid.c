@@ -1,3 +1,4 @@
+#include "camera_overlay.h"
 #include "terrain_height.h"
 #include "terrain_surface.h"
 #include "text_window.h"
@@ -22,8 +23,6 @@ void presentationDrawAreaLabel(Gfx **);
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-void cameraUpdateOverlayColors(s32, s32);
-void cameraDrawSecondaryOverlay(s32);
 void objectDrawHierarchyGroup(s32, s32);
 void presentationDrawCardDecorations(Gfx **);
 void presentationDrawCurrentCardPanels(Gfx **);

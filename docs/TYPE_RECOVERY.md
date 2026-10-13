@@ -3856,3 +3856,11 @@ between the area implementation and all eight declared consumer units. It
 documents destination wrapping through 23 areas and the caller-required valid
 spawn index. Runtime and world-map selection remain distinct from an immediate
 request to enter the destination.
+
+### Camera overlay update and drawing
+
+`camera_overlay.h` also declares per-frame overlay update and both drawing
+operations for all nine declared consumers. The implementations consume the
+shared camera record directly; color transitions and rendering retain their
+original argument placement and generated code. Original addresses accompany
+the shared purpose/parameter/return contracts.

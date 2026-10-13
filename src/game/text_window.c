@@ -1,3 +1,4 @@
+#include "camera_overlay.h"
 #include "runtime_control.h"
 #include "text_image_configurations.h"
 #include "text_window.h"
@@ -503,9 +504,6 @@ void textWindowDeactivate(void) {
 }
 
 void objectDrawGroup(s32);
-void cameraUpdateOverlayColors(s32, s32);
-void cameraDrawOverlay(s32);
-void cameraDrawSecondaryOverlay(s32);
 void hudDraw(Gfx **);
 void textWindowDrawIndicator(Gfx **, s32);
 /// Camera slot selected for the current drawing context.

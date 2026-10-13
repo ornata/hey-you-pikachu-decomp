@@ -1,3 +1,4 @@
+#include "camera_overlay.h"
 #include "area_transition.h"
 #include "runtime_control.h"
 #include "controller_input.h"
@@ -746,9 +747,6 @@ void systemMenuDrawClosingEffect(Gfx **displayList) {
     }
 }
 
-void cameraUpdateOverlayColors(s32, s32);   /* extern */
-void cameraDrawOverlay(s32);            /* extern */
-void cameraDrawSecondaryOverlay(s32);            /* extern */
 void renderDrawColorOverlayWithDepth(u8, u8, u8, u8); /* extern */
 void objectDrawGroup(s32);        /* extern */
 void objectDrawHierarchyGroup(s32, s32);   /* extern */

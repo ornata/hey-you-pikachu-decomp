@@ -184,8 +184,6 @@ typedef struct {
 /// Shared queued-message, timing, scrolling and text-image state for the message bar.
 /// \note Original identifier: \c D_800F06C0 (0x800F06C0).
 extern Unk4A8 gMessageBarState;
-void cameraUpdateOverlayColors(s32, s32);
-void cameraDrawSecondaryOverlay(s32);
 void objectDrawHierarchyGroup(s32, s32);
 void presentationDrawCardDecorations(Gfx **);
 void presentationDrawCurrentCardPanels(Gfx **);

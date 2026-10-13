@@ -1,5 +1,5 @@
 /// \file
-/// Declares camera overlay color transitions and immediate reset controls.
+/// Declares camera overlay color transitions, reset controls and drawing.
 
 #ifndef CAMERA_OVERLAY_H
 #define CAMERA_OVERLAY_H
@@ -47,5 +47,24 @@ void cameraFadePrimaryOverlayBlend(s32 red, s32 green, s32 blue, s32 alpha, f32 
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80001678 (0x80001678).
 void cameraFadePrimarySecondaryOverlay(s32 red, s32 green, s32 blue, s32 alpha, f32 duration);
+
+/// Advance camera overlay transitions and refresh the blended overlay color for the current frame.
+/// \param cameraIndex Valid camera slot whose overlay colors are updated.
+/// \param advanceBlend Nonzero also advances the additional blend transition; zero retains its current contribution.
+/// \returns Nothing.
+/// \note Original address: 0x8000114C.
+void cameraUpdateOverlayColors(s32 cameraIndex, s32 advanceBlend);
+
+/// Draw the camera’s blended color overlay when its opacity is nonzero.
+/// \param index Valid camera slot whose overlay is drawn in the current drawing context.
+/// \returns Nothing.
+/// \note Original address: 0x80001218.
+void cameraDrawOverlay(s32 index);
+
+/// Draw the camera’s independent secondary color overlay when its opacity is nonzero.
+/// \param index Valid camera slot whose secondary overlay is drawn in the current drawing context.
+/// \returns Nothing.
+/// \note Original address: 0x80001324.
+void cameraDrawSecondaryOverlay(s32 index);
 
 #endif

@@ -345,8 +345,6 @@ void wholeMapDrawDifficultyOverlay(Gfx **gdl) {
     textureDrawRectangles(7, (DrawRectangle *)((playerGetChaseStage() * 0x90) + gWorldMapDifficultyOverlays), gdl);
 }
 
-void cameraUpdateOverlayColors(s32, s32); /* extern */
-void cameraDrawSecondaryOverlay(s32);      /* extern */
 void objectDrawGroup(s32);      /* extern */
 void wholeMapDrawDestinations(Gfx **);          /* extern */
 void wholeMapDrawLockedDestinations(Gfx **);          /* extern */

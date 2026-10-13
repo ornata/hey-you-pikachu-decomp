@@ -1,3 +1,4 @@
+#include "camera_overlay.h"
 #include "runtime_control.h"
 #include "controller_input.h"
 #include "controller_rumble.h"
@@ -1215,9 +1216,6 @@ extern s32 gRenderCameraIndex;
 extern s32 gToolboxOpeningDrawCount;
 void objectDrawGroup(s32);
 void renderDrawColorOverlayWithDepth(u8, u8, u8, u8);
-void cameraUpdateOverlayColors(s32, s32);
-void cameraDrawOverlay(s32);
-void cameraDrawSecondaryOverlay(s32);
 void objectDrawHierarchyGroup(s32, s32);
 void toolboxDrawRowTitle(s32);
 void toolboxDrawNavigation(s32);

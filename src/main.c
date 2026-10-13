@@ -550,20 +550,20 @@ void colorAdvanceTransition(u8 *color, u8 *target, f32 *remaining) {
 /// \param advanceBlend Nonzero also advances the additional blend transition; zero retains its current contribution.
 /// \returns Nothing.
 void cameraUpdateOverlayColors(s32 cameraIndex, s32 advanceBlend) {
-    u8 *cameraState;
+    MatrixCamera *cameraState;
 
-    cameraState = gRenderCameras + cameraIndex * 0xE0;
-    colorAdvanceTransition(((MatrixCamera *)cameraState)->secondaryOverlayColor, ((MatrixCamera *)cameraState)->targetSecondaryOverlayColor, &((MatrixCamera *)cameraState)->secondaryOverlayTimeRemaining);
-    colorAdvanceTransition(((MatrixCamera *)cameraState)->baseOverlayColor, ((MatrixCamera *)cameraState)->targetBaseOverlayColor, &((MatrixCamera *)cameraState)->baseOverlayTimeRemaining);
+    cameraState = (MatrixCamera *)(gRenderCameras + cameraIndex * 0xE0);
+    colorAdvanceTransition(cameraState->secondaryOverlayColor, cameraState->targetSecondaryOverlayColor, &cameraState->secondaryOverlayTimeRemaining);
+    colorAdvanceTransition(cameraState->baseOverlayColor, cameraState->targetBaseOverlayColor, &cameraState->baseOverlayTimeRemaining);
     if (advanceBlend != 0) {
-        colorAdvanceTransition(((MatrixCamera *)cameraState)->blendOverlayColor, ((MatrixCamera *)cameraState)->targetBlendOverlayColor, &((MatrixCamera *)cameraState)->blendOverlayTimeRemaining);
+        colorAdvanceTransition(cameraState->blendOverlayColor, cameraState->targetBlendOverlayColor, &cameraState->blendOverlayTimeRemaining);
     }
-    ((MatrixCamera *)cameraState)->overlayColor[0] = ((MatrixCamera *)cameraState)->baseOverlayColor[0];
-    ((MatrixCamera *)cameraState)->overlayColor[1] = ((MatrixCamera *)cameraState)->baseOverlayColor[1];
-    ((MatrixCamera *)cameraState)->overlayColor[2] = ((MatrixCamera *)cameraState)->baseOverlayColor[2];
-    ((MatrixCamera *)cameraState)->overlayColor[3] = ((MatrixCamera *)cameraState)->baseOverlayColor[3];
-    colorBlendToward(((MatrixCamera *)cameraState)->overlayColor, ((MatrixCamera *)cameraState)->blendOverlayColor,
-                     (f32)(0xFF - ((MatrixCamera *)cameraState)->blendOverlayColor[3]) * gOverlayAlphaWeightScale);
+    cameraState->overlayColor[0] = cameraState->baseOverlayColor[0];
+    cameraState->overlayColor[1] = cameraState->baseOverlayColor[1];
+    cameraState->overlayColor[2] = cameraState->baseOverlayColor[2];
+    cameraState->overlayColor[3] = cameraState->baseOverlayColor[3];
+    colorBlendToward(cameraState->overlayColor, cameraState->blendOverlayColor,
+                     (f32)(0xFF - cameraState->blendOverlayColor[3]) * gOverlayAlphaWeightScale);
 }
 
 /// Segmented shared display list drawing the camera overlay rectangle.
@@ -573,13 +573,13 @@ extern Gfx gCameraOverlayRectangleDisplayList[];
 /// \param index Valid camera slot whose overlay is drawn in the current drawing context.
 /// \returns Nothing.
 void cameraDrawOverlay(s32 index) {
-    u8 *camera = gRenderCameras + index * 0xE0;
-    if (((MatrixCamera *)camera)->overlayColor[3] != 0) {
+    MatrixCamera *camera = (MatrixCamera *)(gRenderCameras + index * 0xE0);
+    if (camera->overlayColor[3] != 0) {
         gDPPipeSync(gRenderDisplayListCursor++);
         gDPSetCycleType(gRenderDisplayListCursor++, G_CYC_1CYCLE);
         gDPSetRenderMode(gRenderDisplayListCursor++, G_RM_AA_XLU_SURF, G_RM_AA_XLU_SURF2);
         gDPSetCombineMode(gRenderDisplayListCursor++, G_CC_PRIMITIVE, G_CC_PRIMITIVE);
-        gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, ((MatrixCamera *)camera)->overlayColor[0], ((MatrixCamera *)camera)->overlayColor[1], ((MatrixCamera *)camera)->overlayColor[2], ((MatrixCamera *)camera)->overlayColor[3]);
+        gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, camera->overlayColor[0], camera->overlayColor[1], camera->overlayColor[2], camera->overlayColor[3]);
         gSPDisplayList(gRenderDisplayListCursor++, gCameraOverlayRectangleDisplayList);
     }
 }
@@ -588,13 +588,13 @@ void cameraDrawOverlay(s32 index) {
 /// \param index Valid camera slot whose secondary overlay is drawn in the current drawing context.
 /// \returns Nothing.
 void cameraDrawSecondaryOverlay(s32 index) {
-    u8 *camera = gRenderCameras + index * 0xE0;
-    if (((MatrixCamera *)camera)->secondaryOverlayColor[3] != 0) {
+    MatrixCamera *camera = (MatrixCamera *)(gRenderCameras + index * 0xE0);
+    if (camera->secondaryOverlayColor[3] != 0) {
         gDPPipeSync(gRenderDisplayListCursor++);
         gDPSetCycleType(gRenderDisplayListCursor++, G_CYC_1CYCLE);
         gDPSetRenderMode(gRenderDisplayListCursor++, G_RM_AA_XLU_SURF, G_RM_AA_XLU_SURF2);
         gDPSetCombineMode(gRenderDisplayListCursor++, G_CC_PRIMITIVE, G_CC_PRIMITIVE);
-        gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, ((MatrixCamera *)camera)->secondaryOverlayColor[0], ((MatrixCamera *)camera)->secondaryOverlayColor[1], ((MatrixCamera *)camera)->secondaryOverlayColor[2], ((MatrixCamera *)camera)->secondaryOverlayColor[3]);
+        gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, camera->secondaryOverlayColor[0], camera->secondaryOverlayColor[1], camera->secondaryOverlayColor[2], camera->secondaryOverlayColor[3]);
         gSPDisplayList(gRenderDisplayListCursor++, gCameraOverlayRectangleDisplayList);
     }
 }

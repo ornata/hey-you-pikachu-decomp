@@ -78,7 +78,6 @@ void eyeCatchInitialize(void) {
     gEyeCatchSelectedGroup = -1;
 }
 
-void cameraUpdateOverlayColors(s32, s32);                     /* extern */
 /// Asset descriptor used to load the eye-catch foreground image.
 /// \note Original identifier: \c D_8009B588 (0x8009B588).
 extern AssetDescriptor gEyeCatchForegroundAssetDescriptor;
