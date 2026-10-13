@@ -50,4 +50,29 @@ s32 midiReaderSaveMark(MidiReader *reader, SequenceMark *mark);
 /// \note Original decompilation identifier: \c func_8000793C (0x8000793C).
 s32 midiReaderReadEvent(MidiReader *reader, u8 *event, s32 *size, s32 capacity);
 
+/// Read and consume the next MIDI stream byte.
+/// \param reader Initialized reader with a readable byte at its current position.
+/// \returns The next stream byte.
+/// \note Portability: Address bit 31 selects directly readable memory; addresses and stream positions use the original 32-bit N64 address model.
+/// \note Original decompilation identifier: \c func_80007B9C (0x80007B9C).
+u8 midiReaderReadByte(MidiReader *reader);
+
+/// Read and consume a big-endian unsigned 16-bit MIDI stream value.
+/// \param reader Reader positioned at two available bytes.
+/// \returns The decoded unsigned value.
+/// \note Original decompilation identifier: \c func_80007BE4 (0x80007BE4).
+s32 midiReaderReadU16(MidiReader *reader);
+
+/// Read and consume a big-endian 32-bit MIDI stream value.
+/// \param reader Reader positioned at four available bytes.
+/// \returns The decoded bit pattern represented as s32.
+/// \note Original decompilation identifier: \c func_80007C1C (0x80007C1C).
+s32 midiReaderReadU32(MidiReader *reader);
+
+/// Read and consume a MIDI variable-length quantity.
+/// \param reader Reader positioned at a complete MIDI variable-length quantity of at most four bytes.
+/// \returns The decoded quantity.
+/// \note Original decompilation identifier: \c func_80007C74 (0x80007C74).
+s32 midiReaderReadVariableLength(MidiReader *reader);
+
 #endif

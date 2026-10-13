@@ -54,9 +54,6 @@ f32 matrix34GetTransformedPointYawDegrees(f32 *, f32 *);
 extern Gfx *gRenderDisplayListCursor;
 void objectDrawHierarchyForCurrentGroup(u8 *);
 u8 romByteReaderRead();
-u8 midiReaderReadByte(u8 *);
-s32 midiReaderReadU16(u8 *);
-s32 midiReaderReadU32(u8 *);
 void _bzero(void *, u32);
 /// Matching exception: the node result is discarded here; the canonical pointer-return
 /// prototype changes IDO allocation. See search_tree_lookup.h and TYPE_RECOVERY.md.
@@ -196,7 +193,7 @@ s32 romByteReaderInitialize(u8 *reader) {
 /// \param address Readable cartridge byte address; its aligned read window must also be available.
 /// \returns The byte at the requested address.
 ///
-/// \note Portability: The unprototyped midiReaderReadByte call passes an extra argument ignored by the original ABI.
+/// \note Portability: The unprototyped call from midiReaderReadByte passes an extra argument ignored by the original ABI.
 /// \note Original decompilation identifier: \c func_80007728 (0x80007728).
 u8 romByteReaderRead(reader, address)
 RomByteReader *reader;
@@ -230,27 +227,27 @@ s32 midiReaderOpen(u8 *reader, s32 address) {
     ((MidiReader *)reader)->runningStatus = 0;
     ((MidiReader *)reader)->position = address;
     romByteReaderInitialize(reader + 0x10);
-    if (midiReaderReadU32(reader) != 0x4D546864) {
+    if (midiReaderReadU32((MidiReader *)reader) != 0x4D546864) {
         return 0;
     }
-    if (midiReaderReadU32(reader) != 6) {
+    if (midiReaderReadU32((MidiReader *)reader) != 6) {
         return 0;
     }
-    if (midiReaderReadU16(reader) != 0) {
+    if (midiReaderReadU16((MidiReader *)reader) != 0) {
         return 0;
     }
-    if (midiReaderReadU16(reader) != 1) {
+    if (midiReaderReadU16((MidiReader *)reader) != 1) {
         return 0;
     }
-    division = midiReaderReadU16(reader);
+    division = midiReaderReadU16((MidiReader *)reader);
     savedDivision = division;
     if (division & 0x8000) {
         return 0;
     }
-    if (midiReaderReadU32(reader) != 0x4D54726B) {
+    if (midiReaderReadU32((MidiReader *)reader) != 0x4D54726B) {
         return 0;
     }
-    trackLength = midiReaderReadU32(reader);
+    trackLength = midiReaderReadU32((MidiReader *)reader);
     ((MidiReader *)reader)->length = (s32)((((MidiReader *)reader)->length) + trackLength);
     return savedDivision;
 }
@@ -277,7 +274,6 @@ s32 midiReaderSaveMark(MidiReader *reader, SequenceMark *mark) {
     return 1;
 }
 
-s32 midiReaderReadVariableLength(u8 *);
 
 
 
@@ -299,31 +295,31 @@ s32 midiReaderReadEvent(MidiReader *reader, u8 *event, s32 *size, s32 capacity) 
     s32 j;
     if (reader->position >= reader->start + reader->length)
         return -1;
-    delta = midiReaderReadVariableLength((u8 *)reader);
-    event[0] = midiReaderReadByte((u8 *)reader);
+    delta = midiReaderReadVariableLength(reader);
+    event[0] = midiReaderReadByte(reader);
     switch (event[0]) {
     case 0xF0:
     case 0xF7:
-        length = midiReaderReadVariableLength((u8 *)reader);
+        length = midiReaderReadVariableLength(reader);
         for (i = 0; i < length && i < capacity; i++)
-            event[i + 1] = midiReaderReadByte((u8 *)reader);
+            event[i + 1] = midiReaderReadByte(reader);
         for (; i < length; i++)
-            midiReaderReadByte((u8 *)reader);
+            midiReaderReadByte(reader);
         *size = (s32)((u32)length + 1U);
         break;
     case 0xFF:
-        event[1] = midiReaderReadByte((u8 *)reader);
-        event[2] = midiReaderReadByte((u8 *)reader);
+        event[1] = midiReaderReadByte(reader);
+        event[2] = midiReaderReadByte(reader);
         reader->runningStatus = 0;
         for (j = 3; j < event[2] + 3 && j < capacity; j++)
-            event[j] = midiReaderReadByte((u8 *)reader);
+            event[j] = midiReaderReadByte(reader);
         for (; j < event[2] + 3; j++)
-            midiReaderReadByte((u8 *)reader);
+            midiReaderReadByte(reader);
         *size = j;
         break;
     default:
         if (event[0] & 0x80) {
-            event[1] = midiReaderReadByte((u8 *)reader);
+            event[1] = midiReaderReadByte(reader);
             reader->runningStatus = event[0];
         } else {
             event[1] = event[0];
@@ -334,7 +330,7 @@ s32 midiReaderReadEvent(MidiReader *reader, u8 *event, s32 *size, s32 capacity) 
         else
             *size = 3;
         if (*size == 3)
-            event[2] = midiReaderReadByte((u8 *)reader);
+            event[2] = midiReaderReadByte(reader);
         break;
     }
     return delta;
@@ -347,23 +343,23 @@ s32 midiReaderReadEvent(MidiReader *reader, u8 *event, s32 *size, s32 capacity) 
 /// \returns The next stream byte.
 /// \note Portability: Address bit 31 selects directly readable memory; addresses and stream positions use the original 32-bit N64 address model.
 /// \note Original decompilation identifier: \c func_80007B9C (0x80007B9C).
-u8 midiReaderReadByte(u8 *reader) {
-    u8 *position = (u8 *)((MidiReader *)reader)->position;
+u8 midiReaderReadByte(MidiReader *reader) {
+    u8 *position = (u8 *)reader->position;
     u8 value;
 
     if ((u32)position & 0x80000000) {
         value = *position;
-        ((MidiReader *)reader)->position = (u32)(position + 1);
+        reader->position = (u32)(position + 1);
         return value;
     }
-    return romByteReaderRead(reader + 0x10, (((MidiReader *)reader)->position = (u32)(position + 1)) - 1, reader);
+    return romByteReaderRead((u8 *)reader + 0x10, (reader->position = (u32)(position + 1)) - 1, reader);
 }
 
 /// Read and consume a big-endian unsigned 16-bit MIDI stream value.
 /// \param reader Reader positioned at two available bytes.
 /// \returns The decoded unsigned value.
 /// \note Original decompilation identifier: \c func_80007BE4 (0x80007BE4).
-s32 midiReaderReadU16(u8 *reader) {
+s32 midiReaderReadU16(MidiReader *reader) {
     s32 v;
 
     v = midiReaderReadByte(reader) << 8;
@@ -375,7 +371,7 @@ s32 midiReaderReadU16(u8 *reader) {
 /// \param reader Reader positioned at four available bytes.
 /// \returns The decoded bit pattern represented as s32.
 /// \note Original decompilation identifier: \c func_80007C1C (0x80007C1C).
-s32 midiReaderReadU32(u8 *reader) {
+s32 midiReaderReadU32(MidiReader *reader) {
     u32 v;
 
     v = (u32)midiReaderReadByte(reader) << 0x18;
@@ -389,7 +385,7 @@ s32 midiReaderReadU32(u8 *reader) {
 /// \param reader Reader positioned at a complete MIDI variable-length quantity of at most four bytes.
 /// \returns The decoded quantity.
 /// \note Original decompilation identifier: \c func_80007C74 (0x80007C74).
-s32 midiReaderReadVariableLength(u8 *reader) {
+s32 midiReaderReadVariableLength(MidiReader *reader) {
     s32 firstByte;
     s32 nextByte;
     u32 quantity;
