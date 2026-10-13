@@ -235,12 +235,12 @@ void voiceCommandUpdate(void) {
 /// \note Original identifier: \c D_80074EE0 (0x80074EE0).
 /// Palette data for the scrolling text-panel backdrop strip.
 /// \note Original identifier: \c D_80075EA0 (0x80075EA0).
-/// Persistent texture descriptor for the scrolling text-panel backdrop.
-/// \note Original identifier: \c D_800B6860 (0x800B6860).
 /// Empty text used to initialize a scrolling text panel.
 /// \note Original identifier: \c D_800A2670 (0x800A2670).
-extern u8 gTextPanelBackdropPixels[], gTextPanelBackdropPalette[], gTextPanelInitialEmptyText[],
-    gTextPanelBackdropImage[];
+extern u8 gTextPanelBackdropPixels[], gTextPanelBackdropPalette[], gTextPanelInitialEmptyText[];
+/// Retained backdrop descriptor borrowing the panel image and palette.
+/// \note Original identifier: \c D_800B6860 (0x800B6860).
+extern TextureImage gTextPanelBackdropImage;
 
 /// Initialize a scrolling text panel with white text and its initial entry.
 /// \param panel Writable panel storage of at least 32 bytes, valid until its entries are released.
@@ -265,7 +265,7 @@ void textPanelInitialize(TextPanel *panel, s32 visibleLines) {
     panel->capacity = visibleLines;
     panel->configuration = NULL;
     textPanelSetColor(panel, 0xFF, 0xFF, 0xFF, 0xFF);
-    textureImageInitialize((TextureImage *)gTextPanelBackdropImage, (s32)gTextPanelBackdropPixels, (s32)gTextPanelBackdropPalette, 2, 0, 0x114,
+    textureImageInitialize(&gTextPanelBackdropImage, (s32)gTextPanelBackdropPixels, (s32)gTextPanelBackdropPalette, 2, 0, 0x114,
                            0x1C);
     textPanelAppend((struct TextPanel *)panel, gTextPanelInitialEmptyText);
 }
@@ -279,7 +279,6 @@ void textPanelReleaseEntries(TextPanel *panel) {
     heapFreeLocal(&gGameHeap, panel->images);
 }
 
-Gfx *textureDrawScaledRegion(Gfx **, void *, u32, u32, u32, u32, u32, u32, u32, u32, f32, f32);
 /// Line-break text emitted between scrolling text-panel entries.
 /// \note Original identifier: \c D_800A2688 (0x800A2688).
 extern char gTextPanelLineBreakText[];
@@ -311,7 +310,7 @@ void textPanelDraw(TextPanel *panel, Gfx **gdl, s32 mode) {
             textDrawSetScale(1.0f, 1.0f);
             gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 255, 160);
             gDPSetCombineMode((*gdl)++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
-            textureDrawScaledRegion(gdl, gTextPanelBackdropImage, (u32)(x0 - 10.0f), panel->y + y0 - 6, 256, 0, 0, 0, 2,
+            textureDrawScaledRegion(gdl, &gTextPanelBackdropImage, (u32)(x0 - 10.0f), panel->y + y0 - 6, 256, 0, 0, 0, 2,
                                     0, gTextPanelBackdropHorizontalScale, 1.0f);
             break;
         case 2:

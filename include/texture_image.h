@@ -55,4 +55,25 @@ void textureImageInitialize(TextureImage *descriptor, s32 image, s32 palette, s3
 void textureDrawScaledRepeated(Gfx **out, TextureImage *texture, u32 x, u32 y, s32 wrapS, s32 wrapT, u32 repeatX,
                                u32 repeatY, f32 scaleX, f32 scaleY, s32 flipX, s32 flipY);
 
+/// Render a scaled region of a CI4 or RGBA16 image.
+/// \param out Display-list cursor with sufficient capacity; receives drawing commands and advances past them.
+/// \param texture Borrowed, initialized CI4 or RGBA16 image descriptor.
+/// \param x Destination screen X coordinate in pixels.
+/// \param y Destination screen Y coordinate in pixels.
+/// \param drawWidth Requested screen width in pixels, or zero to use the image width.
+/// \param drawHeight Requested screen height in pixels, or zero to use the image height.
+/// \param sourceX Source X offset in texels.
+/// \param sourceY Source Y offset in texels.
+/// \param wrapS Texture addressing mode along S.
+/// \param repeat Nonzero to permit horizontal texture repetition.
+/// \param scaleX Positive finite horizontal scale; the texture step and resulting coordinates must be representable.
+/// \param scaleY Positive finite vertical scale; the texture step and resulting coordinates must be representable.
+/// \returns Nothing.
+/// \pre Texture and palette data must remain RDP-readable until rendering finishes; source row padding must match the descriptor.
+/// \pre The effective source height must be positive; source offsets and extents must remain within readable image data.
+/// \pre At least two padded source rows must fit texture memory unless the effective source height is one.
+/// \note Original decompilation identifier: \c func_80047C48 (0x80047C48).
+void textureDrawScaledRegion(Gfx **out, TextureImage *texture, u32 x, u32 y, u32 drawWidth, u32 drawHeight, u32 sourceX,
+                             u32 sourceY, u32 wrapS, u32 repeat, f32 scaleX, f32 scaleY);
+
 #endif

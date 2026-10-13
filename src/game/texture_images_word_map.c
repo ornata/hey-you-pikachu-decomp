@@ -1157,10 +1157,7 @@ void textureCopyWrappedRgba16(Gfx **displayList, void *image, s32 x, s32 y, u32 
         gDPSetTileSize(pkt, G_TX_RENDERTILE, (uls) << G_TEXTURE_IMAGE_FRAC, (ult) << G_TEXTURE_IMAGE_FRAC,             \
                        (lrs) << G_TEXTURE_IMAGE_FRAC, (lrt) << G_TEXTURE_IMAGE_FRAC);                                  \
     }
-typedef struct {
-    s32 image, palette, format, size;
-    u32 width, height, alignedWidth;
-} Texture47C;
+
 /// Render a scaled region of a CI4 or RGBA16 image.
 /// \param out Display-list cursor with sufficient capacity; receives drawing commands and advances past them.
 /// \param texture Borrowed, initialized CI4 or RGBA16 image descriptor.
@@ -1180,7 +1177,7 @@ typedef struct {
 /// \pre At least two padded source rows must fit texture memory unless the effective source height is one.
 /// \note Portability: The row-expression spellings preserve the original IDO register allocation.
 /// \note Original decompilation identifier: \c func_80047C48 (0x80047C48).
-void textureDrawScaledRegion(Gfx **out, Texture47C *texture, u32 x, u32 y, u32 drawWidth, u32 drawHeight, u32 sourceX,
+void textureDrawScaledRegion(Gfx **out, TextureImage *texture, u32 x, u32 y, u32 drawWidth, u32 drawHeight, u32 sourceX,
                    u32 sourceY, u32 wrapS, u32 repeat, f32 scaleX, f32 scaleY) {
     Gfx *dl = *out;
     u32 mask;

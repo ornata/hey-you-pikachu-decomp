@@ -3954,3 +3954,8 @@ its initializer and scaled/repeated drawing interface. HUD, title and eye-catch
 stack storage uses the shared record instead of seven-word arrays; the voice
 panel uses an explicit view of its retained storage. Padded row width and
 RDP-readable data lifetime are documented separately from archive descriptors.
+
+Scaled-region drawing shares `TextureImage` and its void-return contract with
+the voice panel, removing another duplicate rendering descriptor. The panel
+backdrop is declared as its established retained image record. Source-region
+bounds, supported formats and data lifetime accompany the shared draw contract.
