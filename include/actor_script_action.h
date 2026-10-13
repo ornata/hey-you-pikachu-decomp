@@ -35,7 +35,8 @@ void actorBeginScriptActionHandler(u8 *actor, s32 handler);
 
 /// Advance the actor currently selected script action handler.
 /// \param object Actor whose script action handler is dispatched.
-/// \returns One when the handler completes, two while it waits, or five for an unknown handler.
+/// \returns SCRIPT_VM_YIELDED when the handler completes,
+/// SCRIPT_VM_WAITING_FOR_ACTION while it waits, or SCRIPT_VM_ERROR for an unknown handler.
 /// \note Original decompilation identifier: \c func_80117098 (0x80117098).
 s32 actorScriptDispatchActionHandler(u8 *object);
 

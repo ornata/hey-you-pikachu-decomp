@@ -3206,3 +3206,15 @@ string lifetime and shared numeric-text invalidation. Native command consumers
 use its pointer result and canonical context parameter; an unused menu declaration
 and three duplicate provider declarations are removed. The string-table lookup
 uses the checked context member. All accepted conversions preserve strict objects.
+
+### Native command scheduling results
+
+`script_vm_commands.h` documents the native-command dispatch boundary and names
+continue, yield and action-wait results separately from retained VM states.
+The dispatcher names its command index/callback, native action commands use the
+request constants, and action handlers return named retained states. The
+interpreter consumes the canonical dispatch declaration. Ghidra 0x8011BD50
+confirms the command-table lookup; matching assembly additionally confirms both
+actor and context argument registers, which Ghidra's inferred signature omits.
+The callback ABI and integer return types remain unchanged. Every isolated unit
+conversion and shared-header rebuild preserves strict objects.

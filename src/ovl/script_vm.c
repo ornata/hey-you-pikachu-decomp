@@ -724,7 +724,6 @@ void scriptVmSetGlobalInteger(s32 index, s32 value) {
 }
 
 s32 messageBarEnqueue(s32, f32, u8 *);
-s32 actorScriptDispatchRegisteredCommand(u8 *);
 /// Run actor script instructions until execution yields, finishes, or encounters an error.
 /// \param actor Actor with valid script state and well-formed bytecode whose stack, frame, and variable accesses remain within capacity.
 /// \returns Execution state: 1 when yielded, 2 when waiting on an action, 4 when finished, or 5 on a missing context or invalid instruction.
@@ -848,10 +847,10 @@ loop_3:
     case 27: {
         s32 commandStatus;
         commandStatus = actorScriptDispatchRegisteredCommand(actor);
-        if (commandStatus == 0) {
+        if (commandStatus == SCRIPT_COMMAND_CONTINUE) {
             goto loop_2;
         }
-        if (commandStatus == 2) {
+        if (commandStatus == SCRIPT_COMMAND_WAIT_FOR_ACTION) {
             return SCRIPT_VM_WAITING_FOR_ACTION;
         }
         return SCRIPT_VM_YIELDED;

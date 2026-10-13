@@ -5,6 +5,7 @@
 #define SCRIPT_VM_H
 
 #include <ultra64.h>
+#include "script_vm_commands.h"
 
 /// Recovered script value tags; tag 2 remains an unresolved integer-like form.
 /// \ingroup ActorScriptVm
@@ -41,7 +42,7 @@ typedef union ScriptValue {
 /// Native script command called with an actor and its retained context.
 /// \param actor Actor executing the command.
 /// \param vm Script context providing command arguments and receiving results.
-/// \returns Zero to continue immediately, one to yield, or two to wait on an action; other nonzero values also yield.
+/// \returns A ScriptNativeCommandResult scheduling request; other nonzero values also yield.
 typedef s32 (*ScriptNativeCommand)(u8 *actor, u8 *vm);
 
 /// Borrowed program resources and stack capacity supplied when creating a VM.

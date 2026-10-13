@@ -75,9 +75,9 @@ s32 actorScriptWaitForActionResult(u8 *actor) {
     sp1C = ((RuntimeObjectPrefix *)actor)->state.bytes;
     if (actionScriptIsStopped(actor) != 0) {
         scriptVmPushInteger(((ActorScriptState *)sp1C)->vmAddress, 0);
-        return 1;
+        return SCRIPT_VM_YIELDED;
     }
-    return 2;
+    return SCRIPT_VM_WAITING_FOR_ACTION;
 }
 
 
@@ -92,7 +92,7 @@ s32 actorScriptPlayAction(u8 *actor) {
     vmBytes = (u8 *)((ActorScriptState *)actorState)->vmAddress;
     if (((ScriptVm *)vmBytes)->actionInitializing != 0) {
         actionScriptStart(actor, scriptVmPopInteger((s32)vmBytes));
-        return 2;
+        return SCRIPT_VM_WAITING_FOR_ACTION;
     }
     return actorScriptWaitForActionResult(actor);
 }
@@ -111,7 +111,7 @@ s32 actorScriptWaitForActionOrMessage(u8 *actor) {
     if (messagePending != 0) {
         scriptVmPushInteger(((ActorScriptState *)actorState)->vmAddress, messagePending);
         actionScriptStop(actor);
-        return 1;
+        return SCRIPT_VM_YIELDED;
     }
     return actorScriptWaitForActionResult(actor);
 }
@@ -128,7 +128,7 @@ s32 actorScriptPlayInterruptibleAction(u8 *actor) {
     vmBytes = (u8 *)((ActorScriptState *)actorState)->vmAddress;
     if (((ScriptVm *)vmBytes)->actionInitializing != 0) {
         actionScriptStart(actor, scriptVmPopInteger((s32)vmBytes));
-        return 2;
+        return SCRIPT_VM_WAITING_FOR_ACTION;
     }
     return actorScriptWaitForActionOrMessage(actor);
 }
@@ -146,10 +146,10 @@ s32 actorScriptThrowHeldItem(u8 *actor) {
         TRACE("nerveThrowItem - %d\n", ((ActorScriptState *)state)->heldItemHandle);
         if (((ActorScriptState *)state)->heldItemHandle == 0) {
             scriptVmPushInteger(((ActorScriptState *)state)->vmAddress, -1);
-            return 1;
+            return SCRIPT_VM_YIELDED;
         }
         actionScriptStart(actor, anim);
-        return 2;
+        return SCRIPT_VM_WAITING_FOR_ACTION;
     }
     return actorScriptWaitForActionResult(actor);
 }
@@ -173,17 +173,17 @@ s32 actorScriptAcquireItem(u8 *actor) {
         value = scriptVmPopInteger(((ActorScriptState *)actorState)->vmAddress);
         if (((ActorScriptState *)actorState)->heldItemHandle != 0) {
             scriptVmPushInteger(((ActorScriptState *)actorState)->vmAddress, actorGetHeldItemKind(actor));
-            return 1;
+            return SCRIPT_VM_YIELDED;
         }
         actionScriptStart(actor, value);
         goto block_6;
     }
     if (actionScriptIsStoppedAndLastActionEnded(actor) != 0) {
         scriptVmPushInteger(((ActorScriptState *)actorState)->vmAddress, actorGetHeldItemKind(actor));
-        return 1;
+        return SCRIPT_VM_YIELDED;
     }
 block_6:
-    return 2;
+    return SCRIPT_VM_WAITING_FOR_ACTION;
 }
 
 
@@ -205,16 +205,16 @@ s32 actorScriptEatHeldItem(u8 *actor) {
         obj = objectFindLiveByHandle(((ActorScriptState *)state)->heldItemHandle);
         if (obj == NULL) {
             scriptVmPushInteger(((ActorScriptState *)state)->vmAddress, -1);
-            return 1;
+            return SCRIPT_VM_YIELDED;
         }
         rec = ((RuntimeObjectPrefix *)obj)->state.bytes;
         if (((ItemStatePrefix *)rec)->flags & 0x800000) {
             scriptVmPushInteger(((ActorScriptState *)state)->vmAddress, -1);
-            return 1;
+            return SCRIPT_VM_YIELDED;
         }
         itemEnableShrinking(obj);
         actionScriptStart(actor, anim);
-        return 2;
+        return SCRIPT_VM_WAITING_FOR_ACTION;
     }
     if (actionScriptIsStopped(actor) != 0) {
         obj = objectFindLiveByHandle(((ActorScriptState *)state)->heldItemHandle);
@@ -230,11 +230,11 @@ s32 actorScriptEatHeldItem(u8 *actor) {
         if (objectFindLiveByHandle(((ActorScriptState *)state)->heldItemHandle) != NULL) {
             actionScriptStart(actor, 0x4F);
             actorBeginScriptActionHandler(actor, ACTOR_SCRIPT_ACTION_POLL_ACTION_STOPPED);
-            return 2;
+            return SCRIPT_VM_WAITING_FOR_ACTION;
         }
-        return 1;
+        return SCRIPT_VM_YIELDED;
     }
-    return 2;
+    return SCRIPT_VM_WAITING_FOR_ACTION;
 }
 
 
@@ -244,9 +244,9 @@ s32 actorScriptEatHeldItem(u8 *actor) {
 /// \note Original decompilation identifier: \c func_80116B98 (0x80116B98).
 s32 actorScriptPollActionStopped(u8 *object) {
     if (actionScriptIsStopped(object) != 0) {
-        return 1;
+        return SCRIPT_VM_YIELDED;
     }
-    return 2;
+    return SCRIPT_VM_WAITING_FOR_ACTION;
 }
 
 typedef struct ActionCost {
@@ -286,9 +286,9 @@ s32 actorScriptPerformCostedAction(u8 *object) {
         }
     } else if (actionScriptIsStopped(object) != 0) {
         scriptVmPushInteger(((ActorScriptState *)state)->vmAddress, ((ActorScriptState *)state)->costedActionResult);
-        return 1;
+        return SCRIPT_VM_YIELDED;
     }
-    return 2;
+    return SCRIPT_VM_WAITING_FOR_ACTION;
 }
 
 void playerSelectControlScheme(s32); /* extern */
@@ -304,12 +304,12 @@ s32 actorScriptSelectControlScheme(u8 *actor) {
     u8 *sp1C;
 
     if (gRuntimeGameMode == 3) {
-        return 2;
+        return SCRIPT_VM_WAITING_FOR_ACTION;
     }
     sp1C = ((RuntimeObjectPrefix *)actor)->state.bytes;
     playerSelectControlScheme(scriptVmPopInteger(((ActorScriptState *)sp1C)->vmAddress));
     scriptVmPushInteger(((ActorScriptState *)sp1C)->vmAddress, 0);
-    return 1;
+    return SCRIPT_VM_YIELDED;
 }
 
 void hudSetAreaLabelVisible(s32);                                 /* extern */
@@ -328,7 +328,7 @@ s32 actorScriptBeginAreaTransition(u8 *actor) {
         cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 0.6f);
         actorBeginScriptActionHandler(actor, ACTOR_SCRIPT_ACTION_FINISH_AREA_TRANSITION);
     }
-    return 2;
+    return SCRIPT_VM_WAITING_FOR_ACTION;
 }
 
 void audioSetMusicDuckingInhibitFlags(s32); /* extern */
@@ -345,15 +345,15 @@ s32 actorScriptFinishAreaTransition(u8 *actor) {
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.bytes;
     if (((ScriptVm *)((ActorScriptState *)sp1C)->vmAddress)->actionInitializing != 0) {
-        return 2;
+        return SCRIPT_VM_WAITING_FOR_ACTION;
     }
     if (gPrimarySecondaryOverlayRemainingSeconds > 0.0f) {
-        return 2;
+        return SCRIPT_VM_WAITING_FOR_ACTION;
     }
     hudSetAreaLabelVisible(0);
     audioSetMusicDuckingInhibitFlags(0);
     scriptVmPushInteger(((ActorScriptState *)sp1C)->vmAddress, 0);
-    return 1;
+    return SCRIPT_VM_YIELDED;
 }
 
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
@@ -383,17 +383,17 @@ s32 actorScriptTransformKind(u8 *object) {
         orangePulseEmitterCreate(((RuntimeObjectPrefix *)object)->handle, 2.0f);
         ((ScriptVm *)vm)->actionTimer = 2.0f;
         audioPlayCue(31);
-        return 2;
+        return SCRIPT_VM_WAITING_FOR_ACTION;
     }
     ((ScriptVm *)vm)->actionTimer -= gRuntimeFrameSeconds;
     if (((ScriptVm *)vm)->actionTimer > 0.0f)
-        return 2;
+        return SCRIPT_VM_WAITING_FOR_ACTION;
     linked = actorReplaceKindPreservingScript(object, scriptVmPopInteger((s32)vm));
     actorSetModelEnvironmentColor(linked, 255, 200, 50, 255);
     actorTransitionModelEnvironmentColor(linked, 0, 0, 0, 0, 0.4f);
     audioPlayCue(30);
     scriptVmPushInteger((s32)vm, ((RuntimeObjectPrefix *)linked)->handle);
-    return 1;
+    return SCRIPT_VM_YIELDED;
 }
 
 s32 textWindowOpen(s32, s32, s32); /* extern */
@@ -408,7 +408,7 @@ s32 actorScriptOpenTextWindow(u8 *actor) {
     s32 sp24;
 
     if (gRuntimeGameMode == 3) {
-        return 2;
+        return SCRIPT_VM_WAITING_FOR_ACTION;
     }
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     sp2C = scriptVmPopInteger(vmAddress);
@@ -416,10 +416,9 @@ s32 actorScriptOpenTextWindow(u8 *actor) {
     textWindowOpen(scriptVmPopInteger(vmAddress), sp24, sp2C);
     TRACE("messageSetup(%d,%d,%d)\n");
     scriptVmPushInteger(vmAddress, 0);
-    return 1;
+    return SCRIPT_VM_YIELDED;
 }
 
-s32 actorScriptTransformKind(u8 *);
 /// Advance the actor currently selected script action handler.
 /// \param object Actor whose script action handler is dispatched.
 /// \returns One when the handler completes, two while it waits, or five for an unknown handler.
@@ -434,7 +433,7 @@ s32 actorScriptDispatchActionHandler(u8 *object) {
             actionScriptStart(object, 0x57);
         }
         scriptVmPushInteger(((ActorScriptState *)state)->vmAddress, 0);
-        return 1;
+        return SCRIPT_VM_YIELDED;
     case ACTOR_SCRIPT_ACTION_POLL_ACTION_STOPPED:
         return actorScriptPollActionStopped(object);
     case ACTOR_SCRIPT_ACTION_PLAY_ACTION:
@@ -467,6 +466,6 @@ s32 actorScriptDispatchActionHandler(u8 *object) {
     default:
         TRACE("ERROR: Unknown nerve routine. Nerve number %d\n",
               ((ScriptVm *)((ActorScriptState *)state)->vmAddress)->actionHandler);
-        return 5;
+        return SCRIPT_VM_ERROR;
     }
 }

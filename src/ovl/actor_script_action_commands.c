@@ -68,10 +68,10 @@ void playerSetChaseStage(); /* extern */
 /// \see actorScriptStartActionAndWait
 s32 actorScriptDispatchRegisteredCommand(u8 *actor) {
     u8 *vm = (u8 *)((ActorScriptObject *)actor)->scriptState->vmAddress;
-    s32 op = scriptVmReadIntegerOperand(vm);
-    ScriptNativeCommand fn = ((ScriptVm *)vm)->commands[op];
+    s32 commandIndex = scriptVmReadIntegerOperand(vm);
+    ScriptNativeCommand command = ((ScriptVm *)vm)->commands[commandIndex];
 
-    return fn(actor, vm);
+    return command(actor, vm);
 }
 
 /// Prepend text to a string, truncating the combined text to fit its destination.
@@ -102,7 +102,7 @@ void stringPrependBounded(u8 *destination, s32 capacity, u8 *prefix) {
 /// \note Original decompilation identifier: \c func_8011BEB0 (0x8011BEB0).
 s32 actorScriptYield(u8 *actor) {
     scriptVmPushInteger(((RuntimeObjectPrefix *)actor)->state.actor->vmAddress, 0);
-    return 1;
+    return SCRIPT_COMMAND_YIELD;
 }
 
 /// Schedule playback of the script-selected action and wait for completion.
@@ -111,7 +111,7 @@ s32 actorScriptYield(u8 *actor) {
 /// \note Original decompilation identifier: \c func_8011BEDC (0x8011BEDC).
 s32 actorScriptStartActionAndWait(s32 actor) {
     actorBeginScriptActionHandler((u8 *)actor, ACTOR_SCRIPT_ACTION_PLAY_ACTION);
-    return 2;
+    return SCRIPT_COMMAND_WAIT_FOR_ACTION;
 }
 
 /// Request action-loop exit and wait for the current action result.
@@ -120,7 +120,7 @@ s32 actorScriptStartActionAndWait(s32 actor) {
 /// \note Original decompilation identifier: \c func_8011BF00 (0x8011BF00).
 s32 actorScriptStartLoopExitAndWait(s32 actor) {
     actorBeginScriptActionHandler((u8 *)actor, ACTOR_SCRIPT_ACTION_EXIT_ACTION_LOOP);
-    return 2;
+    return SCRIPT_COMMAND_WAIT_FOR_ACTION;
 }
 
 /// Request action-loop exit and wait for the current action result through the alternate script command.
@@ -129,7 +129,7 @@ s32 actorScriptStartLoopExitAndWait(s32 actor) {
 /// \note Original decompilation identifier: \c func_8011BF24 (0x8011BF24).
 s32 actorScriptStartLoopExitAndWaitAlternate(s32 actor) {
     actorBeginScriptActionHandler((u8 *)actor, ACTOR_SCRIPT_ACTION_EXIT_ACTION_LOOP);
-    return 2;
+    return SCRIPT_COMMAND_WAIT_FOR_ACTION;
 }
 
 /// Begin playback of the script-selected action with message interruption enabled.
@@ -138,7 +138,7 @@ s32 actorScriptStartLoopExitAndWaitAlternate(s32 actor) {
 /// \note Original decompilation identifier: \c func_8011BF48 (0x8011BF48).
 s32 actorScriptStartInterruptibleAction(s32 actor) {
     actorBeginScriptActionHandler((u8 *)actor, ACTOR_SCRIPT_ACTION_PLAY_INTERRUPTIBLE_ACTION);
-    return 2;
+    return SCRIPT_COMMAND_WAIT_FOR_ACTION;
 }
 
 /// Begin the script-selected held-item throwing action.
@@ -147,7 +147,7 @@ s32 actorScriptStartInterruptibleAction(s32 actor) {
 /// \note Original decompilation identifier: \c func_8011BF6C (0x8011BF6C).
 s32 actorScriptStartHeldItemThrow(s32 actor) {
     actorBeginScriptActionHandler((u8 *)actor, ACTOR_SCRIPT_ACTION_THROW_HELD_ITEM);
-    return 2;
+    return SCRIPT_COMMAND_WAIT_FOR_ACTION;
 }
 
 /// Begin the scripted item-acquisition action.
@@ -156,7 +156,7 @@ s32 actorScriptStartHeldItemThrow(s32 actor) {
 /// \note Original decompilation identifier: \c func_8011BF90 (0x8011BF90).
 s32 actorScriptStartItemAcquisition(s32 actor) {
     actorBeginScriptActionHandler((u8 *)actor, ACTOR_SCRIPT_ACTION_ACQUIRE_ITEM);
-    return 2;
+    return SCRIPT_COMMAND_WAIT_FOR_ACTION;
 }
 
 /// Select how the actor attachment position is determined.
@@ -171,7 +171,7 @@ s32 actorScriptSetAttachmentMode(u8 *actor) {
     sp18 = ((ActorScriptState *)sp1C)->vmAddress;
     ((ActorScriptState *)sp1C)->attachmentMode = scriptVmPopInteger(sp18);
     scriptVmPushInteger(sp18, 0);
-    return 0;
+    return SCRIPT_COMMAND_CONTINUE;
 }
 
 /// Begin the scripted held-item eating action.
@@ -180,7 +180,7 @@ s32 actorScriptSetAttachmentMode(u8 *actor) {
 /// \note Original decompilation identifier: \c func_8011BFF8 (0x8011BFF8).
 s32 actorScriptStartEatingHeldItem(s32 actor) {
     actorBeginScriptActionHandler((u8 *)actor, ACTOR_SCRIPT_ACTION_EAT_HELD_ITEM);
-    return 2;
+    return SCRIPT_COMMAND_WAIT_FOR_ACTION;
 }
 
 /// Begin an action that uses the actor action resource.
@@ -189,7 +189,7 @@ s32 actorScriptStartEatingHeldItem(s32 actor) {
 /// \note Original decompilation identifier: \c func_8011C01C (0x8011C01C).
 s32 actorScriptStartCostedAction(s32 actor) {
     actorBeginScriptActionHandler((u8 *)actor, ACTOR_SCRIPT_ACTION_PERFORM_COSTED_ACTION);
-    return 2;
+    return SCRIPT_COMMAND_WAIT_FOR_ACTION;
 }
 
 void stringPrependBounded(u8 *, s32, u8 *); /* extern */
@@ -216,7 +216,7 @@ s32 actorScriptBuildSharedText(u8 *actor) {
         } while (var_s0 >= 0);
     }
     scriptVmPushInteger(vmAddress, 0);
-    return 0;
+    return SCRIPT_COMMAND_CONTINUE;
 }
 
 
@@ -238,7 +238,7 @@ s32 actorScriptBuildSharedTextAlternate(u8 *actor) {
         } while (var_s0 >= 0);
     }
     scriptVmPushInteger(vmAddress, 0);
-    return 0;
+    return SCRIPT_COMMAND_CONTINUE;
 }
 
 /// Provide zero as the script result.
@@ -247,7 +247,7 @@ s32 actorScriptBuildSharedTextAlternate(u8 *actor) {
 /// \note Original decompilation identifier: \c func_8011C150 (0x8011C150).
 s32 actorScriptPushZero(u8 *actor) {
     scriptVmPushInteger(((RuntimeObjectPrefix *)actor)->state.actor->vmAddress, 0);
-    return 0;
+    return SCRIPT_COMMAND_CONTINUE;
 }
 
 u32 randomNext(void);          /* extern */
@@ -260,7 +260,7 @@ s32 actorScriptPushRandomUnitFloat(u8 *actor) {
     u8 *vm = (u8 *)((ActorScriptObject *)actor)->scriptState->vmAddress;
 
     scriptVmPushFloat((s32)vm, randomNext() * 2.3283064365386963e-10);
-    return 0;
+    return SCRIPT_COMMAND_CONTINUE;
 }
 
 s32 randomBelow(s32);  /* extern */
@@ -273,7 +273,7 @@ s32 actorScriptRandomBelow(u8 *actor) {
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     scriptVmPushInteger(sp1C, randomBelow(scriptVmPopInteger(sp1C)));
-    return 0;
+    return SCRIPT_COMMAND_CONTINUE;
 }
 
 s32 randomBelowWithHistory(s32);  /* extern */
@@ -286,7 +286,7 @@ s32 actorScriptRandomBelowWithHistory(u8 *actor) {
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     scriptVmPushInteger(sp1C, randomBelowWithHistory(scriptVmPopInteger(sp1C)));
-    return 0;
+    return SCRIPT_COMMAND_CONTINUE;
 }
 
 /// Provide the supplied integer as the script result.
@@ -298,7 +298,7 @@ s32 actorScriptPassThroughInteger(u8 *actor) {
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     scriptVmPushInteger(sp1C, scriptVmPopInteger(sp1C));
-    return 0;
+    return SCRIPT_COMMAND_CONTINUE;
 }
 
 
@@ -310,7 +310,7 @@ s32 actorScriptPassThroughFloat(u8 *actor) {
     u8 *vm = (u8 *)((ActorScriptObject *)actor)->scriptState->vmAddress;
 
     scriptVmPushFloat((s32)vm, scriptVmPopFloat((s32)vm));
-    return 0;
+    return SCRIPT_COMMAND_CONTINUE;
 }
 
 /// Restart the resettable script timer.
@@ -323,7 +323,7 @@ s32 actorScriptResetTimer(u8 *actor) {
     vmBytes = (u8 *)((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->vmAddress;
     ((ScriptVm *)vmBytes)->elapsed = 0.0f;
     scriptVmPushInteger((s32)vmBytes, 0);
-    return 0;
+    return SCRIPT_COMMAND_CONTINUE;
 }
 
 
@@ -336,7 +336,7 @@ s32 actorScriptPushTimer(u8 *actor) {
 
     vmBytes = (u8 *)((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->vmAddress;
     scriptVmPushFloat((s32)vmBytes, ((ScriptVm *)vmBytes)->elapsed);
-    return 0;
+    return SCRIPT_COMMAND_CONTINUE;
 }
 
 s32 messageBarEnqueue(s32, f32, s8 *); /* extern */
@@ -361,7 +361,7 @@ s32 actorScriptEnqueueMessage(u8 *actor) {
     messageBarEnqueue(((ScriptVm *)vmBytes)->messageStyle, ((ScriptVm *)vmBytes)->messageDuration,
                       &gActorScriptSharedTextBuffer);
     scriptVmPushInteger((s32)vmBytes, 0);
-    return 0;
+    return SCRIPT_COMMAND_CONTINUE;
 }
 
 void messageBarClear(); /* extern */
@@ -375,7 +375,7 @@ s32 actorScriptClearMessages(u8 *actor) {
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     messageBarClear();
     scriptVmPushInteger(sp1C, 0);
-    return 0;
+    return SCRIPT_COMMAND_CONTINUE;
 }
 
 /// Select the font style for subsequent script messages.
@@ -388,7 +388,7 @@ s32 actorScriptSetMessageStyle(u8 *actor) {
     sp1C = (u8 *)((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->vmAddress;
     ((ScriptVm *)sp1C)->messageStyle = scriptVmPopInteger((s32)sp1C);
     scriptVmPushInteger((s32)sp1C, 0);
-    return 0;
+    return SCRIPT_COMMAND_CONTINUE;
 }
 
 /// Set the display duration for subsequent script messages.
@@ -401,7 +401,7 @@ s32 actorScriptSetMessageDuration(u8 *actor) {
     sp1C = (u8 *)((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->vmAddress;
     ((ScriptVm *)sp1C)->messageDuration = scriptVmPopFloat((s32)sp1C);
     scriptVmPushInteger((s32)sp1C, 0);
-    return 0;
+    return SCRIPT_COMMAND_CONTINUE;
 }
 
 void textWindowAppendText(s8 *);         /* extern */
@@ -425,7 +425,7 @@ s32 actorScriptAppendWindowText(u8 *actor) {
     }
     textWindowAppendText(&gActorScriptSharedTextBuffer);
     scriptVmPushInteger(vmAddress, 0);
-    return 0;
+    return SCRIPT_COMMAND_CONTINUE;
 }
 
 /// Schedule a text-window request with the script-supplied settings.
@@ -434,7 +434,7 @@ s32 actorScriptAppendWindowText(u8 *actor) {
 /// \note Original decompilation identifier: \c func_8011C518 (0x8011C518).
 s32 actorScriptStartTextWindow(s32 actor) {
     actorBeginScriptActionHandler((u8 *)actor, ACTOR_SCRIPT_ACTION_OPEN_TEXT_WINDOW);
-    return 2;
+    return SCRIPT_COMMAND_WAIT_FOR_ACTION;
 }
 
 void textWindowEnterMode(); /* extern */
@@ -448,7 +448,7 @@ s32 actorScriptEnterTextWindowMode(u8 *actor) {
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     textWindowEnterMode();
     scriptVmPushInteger(sp1C, 0);
-    return 0;
+    return SCRIPT_COMMAND_CONTINUE;
 }
 
 /// Start an action script for the actor.
@@ -461,7 +461,7 @@ s32 actorScriptStartActionScript(u8 *actor) {
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     actionScriptStart(actor, scriptVmPopInteger(sp1C));
     scriptVmPushInteger(sp1C, 0);
-    return 1;
+    return SCRIPT_COMMAND_YIELD;
 }
 
 /// Stop action-script command execution and request the current action to finish.
@@ -475,7 +475,7 @@ s32 actorScriptStopActionScript(u8 *actor) {
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     actionScriptStop(actor);
     scriptVmPushInteger(sp1C, 0);
-    return 0;
+    return SCRIPT_COMMAND_CONTINUE;
 }
 
 
@@ -495,7 +495,7 @@ s32 actorScriptSetTargetPosition(u8 *actor) {
     ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetMode = ACTOR_TARGET_FIXED;
     ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetDistanceAllowance = 0.0f;
     scriptVmPushInteger(vm, 0);
-    return 0;
+    return SCRIPT_COMMAND_CONTINUE;
 }
 
 
@@ -512,7 +512,7 @@ s32 actorScriptPushTargetApproachDistance(u8 *actor) {
         d = 0.0f;
     }
     scriptVmPushFloat((s32)vm, d);
-    return 0;
+    return SCRIPT_COMMAND_CONTINUE;
 }
 
 
@@ -528,7 +528,7 @@ s32 actorScriptSetTargetToFallbackObject(u8 *actor) {
     ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetMode = ACTOR_TARGET_FIXED;
     ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetDistanceAllowance = 0.0f;
     scriptVmPushInteger(sp1C, 0);
-    return 0;
+    return SCRIPT_COMMAND_CONTINUE;
 }
 
 /// Report whether action-script command execution has stopped.
@@ -540,7 +540,7 @@ s32 actorScriptPushActionScriptStopped(u8 *actor) {
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     scriptVmPushInteger(sp1C, actionScriptIsStopped(actor));
-    return 0;
+    return SCRIPT_COMMAND_CONTINUE;
 }
 
 /// Report whether the last action started by the action script has ended.
@@ -552,7 +552,7 @@ s32 actorScriptPushLastScriptActionEnded(u8 *actor) {
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     scriptVmPushInteger(sp1C, actionScriptHasLastActionEnded(actor));
-    return 0;
+    return SCRIPT_COMMAND_CONTINUE;
 }
 
 /// Stop the action script and begin a transition to a requested action pose.
@@ -570,5 +570,5 @@ s32 actorScriptBeginPoseTransition(u8 *actor) {
     actionScriptStop(actor);
     actionBeginPoseTransition(actor, sp20, sp1C);
     scriptVmPushInteger(sp24, 0);
-    return 1;
+    return SCRIPT_COMMAND_YIELD;
 }
