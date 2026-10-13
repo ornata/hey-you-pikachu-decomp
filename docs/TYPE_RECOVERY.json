@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 1903,
-      "unique_spellings": 805,
+      "occurrences": 1897,
+      "unique_spellings": 803,
       "files": 74
     }
   },
@@ -2912,51 +2912,22 @@
       "matching_exceptions": {
         "sequenceEngineApplyDataEntry": "EngineChannel rpnLow/rpnHigh/pitchBendRange member rewrite changes function instruction bytes and fails ROM match; retain the byte view until load scheduling is isolated. The shared channel layout records the known fields.",
         "sequenceEngineStopVoice": "Typed driver/sequence/voice parameters change function instruction bytes and fail ROM match, both with &voiceRecord->native and with retained integer native-voice address arithmetic. Keep target-address parameters pending register-allocation evidence; callers and recycle/release interfaces use established shared record types.",
-        "sequenceEngineGetVoiceVolume": "A typed driver/sequence/voice and EngineChannel member rewrite fails ROM matching. Known tremolo, expression, volume, fade and envelope fields remain described in shared layouts; isolate load scheduling and arithmetic representation before replacing the retained byte cursor."
+        "sequenceEngineGetVoiceVolume": "A typed driver/sequence/voice and EngineChannel member rewrite fails ROM matching. Known tremolo, expression, volume, fade and envelope fields remain described in shared layouts; isolate load scheduling and arithmetic representation before replacing the retained byte cursor.",
+        "sequenceEngineResetControllers": "EngineChannel cursor with channel[-1] member stores after the original cursor advance fails ROM matching. Retain the biased byte cursor for channel defaults; typed sequence/driver parameters, sequence volume/fade fields, borrowed bank percussion pointer and typed active-voice traversal match. Isolate cursor address scheduling before replacing its stores."
       },
       "locations": {
         "raw_offset_candidates": {
           "voiceRecord + 0x14": [
             "120:56"
           ],
-          "seq + 0x1D4": [
-            "246:14",
-            "374:24"
-          ],
-          "seq + 0x1E0": [
-            "249:14"
-          ],
-          "seq + 0x1E8": [
-            "250:14",
-            "373:24"
-          ],
           "channel + 0x24": [
             "253:18"
           ],
           "channel + 0x14": [
-            "254:18"
-          ],
-          "seq + 0xC": [
-            "254:54"
+            "254:28"
           ],
           "channel - 2": [
             "260:18"
-          ],
-          "seq + 0x10": [
-            "265:22",
-            "592:31",
-            "601:31",
-            "621:31",
-            "635:33",
-            "646:33",
-            "816:33"
-          ],
-          "voice + 0x14": [
-            "269:52",
-            "470:54",
-            "471:60",
-            "475:54",
-            "623:56"
           ],
           "soundCount - 1": [
             "326:46"
@@ -2977,6 +2948,12 @@
           ],
           "channel + 0x22": [
             "372:24"
+          ],
+          "seq + 0x1E8": [
+            "373:24"
+          ],
+          "seq + 0x1D4": [
+            "374:24"
           ],
           "voice + 0x48": [
             "375:25",
@@ -3005,6 +2982,20 @@
           "voice + 0x4C": [
             "450:22",
             "474:26"
+          ],
+          "voice + 0x14": [
+            "470:54",
+            "471:60",
+            "475:54",
+            "623:56"
+          ],
+          "seq + 0x10": [
+            "592:31",
+            "601:31",
+            "621:31",
+            "635:33",
+            "646:33",
+            "816:33"
           ],
           "portamentoTime + 1": [
             "837:91",

@@ -20,7 +20,7 @@ void n_alSynStopVoice(struct N_ALVoice_s *);
 
 s32 sequenceEngineSetSustain(VoicePlayer *, EngineSequence *, s32, s32);
 s32 sequenceEngineGetVoicePan(VoicePlayer *, EngineSequence *, SequenceVoice *);
-s32 sequenceEngineResetControllers(u8 *, u8 *);
+s32 sequenceEngineResetControllers(VoicePlayer *, EngineSequence *);
 void sequenceEngineStopVoice(s32, s32, s32);
 f64 sequenceEngineGetVoiceUpdateInterval(s32);
 void sequenceEngineUpdateVoices(u8 *, u8 *, f64);
@@ -239,19 +239,19 @@ void n_alSynSetFXMix(struct N_ALVoice_s *, u8);
 /// \param seq Sequence to reset.
 /// \returns Zero.
 /// \note Original decompilation identifier: \c func_80005F30 (0x80005F30).
-s32 sequenceEngineResetControllers(u8 *driver, u8 *seq) {
+s32 sequenceEngineResetControllers(VoicePlayer *driver, EngineSequence *seq) {
     s32 i;
     u8 *channel;
-    u8 *voice;
-    *(s16 *)(seq + 0x1D4) = 0x4000;
-    channel = seq;
+    SequenceVoice *voice;
+    seq->volume = 0x4000;
+    channel = (u8 *)seq;
     i = 0;
-    *(f64 *)(seq + 0x1E0) = 0.0;
-    *(f64 *)(seq + 0x1E8) = 1.0;
+    seq->fadeRate = 0.0;
+    seq->fadeLevel = 1.0;
     do {
-        sequenceEngineResetChannelControllers((VoicePlayer *)driver, (EngineSequence *)seq, i);
+        sequenceEngineResetChannelControllers(driver, seq, i);
         *(s16 *)(channel + 0x24) = 0;
-        *(s32 *)(channel + 0x14) = *(s32 *)(*(u8 **)(seq + 0xC) + 8);
+        *(ALInstrument **)(channel + 0x14) = seq->bank->percussion;
         i++;
         channel += 0x1C;
         channel[4] = 0;
@@ -262,12 +262,12 @@ s32 sequenceEngineResetControllers(u8 *driver, u8 *seq) {
         channel[0xC] = 0x40;
         *(s16 *)channel = 0x2000;
     } while (i != 16);
-    voice = *(u8 **)(seq + 0x10);
+    voice = seq->voices;
     if (voice != NULL) {
         do {
-            sequenceEngineUpdateVoicePan((VoicePlayer *)driver, (EngineSequence *)seq, (SequenceVoice *)voice);
-            n_alSynSetFXMix((struct N_ALVoice_s *)(voice + 0x14), ((EngineSequence *)seq)->channels[((SequenceVoice *)voice)->channel].fxMix);
-            voice = *(u8 **)voice;
+            sequenceEngineUpdateVoicePan(driver, seq, voice);
+            n_alSynSetFXMix(&voice->native, seq->channels[voice->channel].fxMix);
+            voice = voice->next;
         } while (voice != NULL);
     }
     return 0;
@@ -307,7 +307,7 @@ void sequenceEngineRegisterSequence(EngineSequence *sequence, VoicePlayer *drive
     for (i = 0; i < 16; i++) {
         sequence->channels[i].sustain = 0;
     }
-    sequenceEngineResetControllers((u8 *)driver, (u8 *)sequence);
+    sequenceEngineResetControllers(driver, sequence);
     sequenceEngineReadNextEvent(sequence);
     driver->sequences = sequence;
 }
@@ -683,7 +683,7 @@ void sequenceEngineHandleSystemEvent(VoicePlayer *driver, EngineSequence *seq, u
         }
         return;
     case 0xFF:
-        sequenceEngineResetControllers((u8 *)driver, (u8 *)seq);
+        sequenceEngineResetControllers(driver, seq);
         break;
     }
 }

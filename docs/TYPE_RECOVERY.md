@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 1,903 / 74 |
+| Raw offset candidates | 4,040 / 86 | 1,897 / 74 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3751,3 +3751,8 @@ Voice pan evaluation and refresh use shared driver, sound, channel and voice
 fields. Driver output controls are named `outputMode` and `masterVolume`.
 Volume evaluation retains its byte cursor after a typed member rewrite failed
 the ROM gate; recovery notes identify the next scheduling evidence needed.
+
+Full controller reset uses typed driver/sequence parameters, named sequence
+volume/fade fields, the borrowed bank percussion instrument and typed voice
+traversal. Its biased channel-default byte cursor remains a documented matching
+constraint after a struct cursor changed ROM instructions.
