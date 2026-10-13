@@ -3692,3 +3692,8 @@ handles and floating lifetimes retain their established ABI and ownership rules.
 `particle_cluster.h` supplies the creation contract to action-script, actor-action
 and demo-item consumers. The demo caller now passes the source object as a pointer
 through the canonical declaration; the original register arguments remain identical.
+
+`ribbon_effect.h` supplies the shared ribbon-creation contract, including its
+object-manager-owned return value and copied destination input. The script caller
+now uses the canonical pointer return instead of its former void declaration;
+its ignored return and all register arguments retain identical generated code.

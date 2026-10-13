@@ -1,3 +1,4 @@
+#include "ribbon_effect.h"
 #include "particle_cluster.h"
 #include "orange_effect.h"
 #include "animated_radial_effect.h"

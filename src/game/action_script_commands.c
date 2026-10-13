@@ -1,3 +1,4 @@
+#include "ribbon_effect.h"
 #include "particle_cluster.h"
 #include "animated_radial_effect.h"
 #include "flickering_effect.h"
@@ -547,7 +548,6 @@ s32 itemTryTransformToReplacement(s32 id) {
     return 1;
 }
 
-void ribbonEffectCreate(s32, f32, f32, f32, s32, f32, f32, f32, f32, f32, f32 *);
 typedef struct {
     s32 op;
     f32 time;
