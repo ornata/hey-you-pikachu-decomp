@@ -1,3 +1,4 @@
+#include "random.h"
 #include "matrix_translation.h"
 #include "matrix_orientation.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -1016,7 +1017,6 @@ void randomSeedFromSystem(void) {
     gRandomGeneratorState.named.word0 = osGetCount();
 }
 
-u32 randomNext(); /* extern */
 
 /// Get a bounded value from the global pseudorandom generator.
 /// \param limit Exclusive upper bound; nonpositive values produce zero.

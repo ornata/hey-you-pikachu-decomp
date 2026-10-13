@@ -1,3 +1,4 @@
+#include "random.h"
 #include "microphone_requests.h"
 #include "attached_effect.h"
 #include "actor_movement.h"
@@ -136,7 +137,6 @@ s32 actorScriptPushMessageArgument4(u8 *actor) {
 }
 
 
-u32 randomNext(void);               /* extern */
 /// Borrowed reference to the active Pikachu actor created for the current area.
 /// \note Original identifier: \c D_800760A8 (0x800760A8).
 extern u8 *gPikachuActor;

@@ -1,3 +1,4 @@
+#include "random.h"
 #include "runtime_control.h"
 #include "keyed_pool.h"
 #include "object_types.h"
@@ -19,7 +20,6 @@
 
 void playerSetControllerPort(s32);
 
-u32 randomNext(void);
 
 /// Request a collision impulse for a target object.
 /// \param source Object responsible for the collision.

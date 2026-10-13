@@ -1,3 +1,4 @@
+#include "random.h"
 #include "ambient_audio.h"
 #include "item_mode.h"
 #include "landmark.h"
@@ -7,7 +8,6 @@
 #include "area_maze.h"
 
 u8 playerGetChaseStage(void);
-u32 randomNext(void);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;

@@ -1,3 +1,4 @@
+#include "random.h"
 #include "backdrop_view.h"
 #include "area_transition.h"
 #include "controller_input.h"
@@ -480,7 +481,6 @@ void wholeMapSetState(s32 state) {
     gWorldMapState = state;
 }
 
-s32 randomBelow(s32);
 
 #define PLAYER (*(volatile s32 *)&gPikachuActor)
 

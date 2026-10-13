@@ -3875,3 +3875,11 @@ representation after member substitution changed ROM instructions.
 horizontal scrolling between the implementation and all eight declared consumer
 units. Contracts distinguish allocated capacity from selected descriptor dimensions
 and document pixels, valid view/backdrop identifiers and shared-workspace choice.
+
+### Shared pseudorandom sampling
+
+`random.h` supplies seed, unsigned word generation and bounded sampling
+contracts to the implementation and all 34 declared consumer units. Nonpositive
+bounds return zero. Terrain contact-effect counts retain explicit signed sample
+conversions to preserve their original comparisons under the canonical unsigned
+return declaration. Every consumer adoption passes strict object comparison.

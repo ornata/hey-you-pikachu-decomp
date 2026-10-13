@@ -1,3 +1,4 @@
+#include "random.h"
 #include "wisp_effect.h"
 #include "ribbon_effect.h"
 #include "particle_cluster.h"
@@ -46,8 +47,6 @@ typedef char EffectEmitterOffsetOffsetCheck[(((u32) & ((EffectEmitterState *)0)-
 typedef char EffectEmitterCooldownOffsetCheck[(((u32) & ((EffectEmitterState *)0)->cooldown) == 0x10) ? 1 : -1];
 typedef char EffectEmitterCallbackOffsetCheck[((u32)&((EffectEmitterState *)0)->emit == 0x14) ? 1 : -1];
 
-u32 randomBelow(s32);
-u32 randomNext(void);
 /// Default opacity animation used when wisp state is initialized.
 /// \note Original identifier: \c D_8006B4C4 (0x8006B4C4).
 extern s32 gWispDefaultOpacityAnimation;

@@ -1,3 +1,4 @@
+#include "random.h"
 #include "backdrop_view.h"
 #include "camera_overlay.h"
 #include "area_transition.h"
@@ -609,7 +610,6 @@ void systemMenuDrawDetails(Gfx **displayList) {
     textDrawGetDisplayListCursor(displayList);
 }
 
-u32 randomBelow(s32);
 /// Randomly selected text row used by the menu closing effect.
 /// \note Original identifier: \c D_8012A978 (0x8012A978).
 extern s32 gSystemMenuClosingEffectRow;

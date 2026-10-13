@@ -1,3 +1,4 @@
+#include "random.h"
 #include "terrain_height.h"
 #include "terrain_surface.h"
 #include "wisp_effect.h"
@@ -254,7 +255,6 @@ void actionCommandPlayTrackedSoundWithPitch(s32 actor, u8 *state, u8 *command, f
                              ((ActionScalarArguments *)((u8 *)command + 8))->scalar);
 }
 
-u32 randomNext(void);
 s32 terrainGetMaterialSound(s32, s32);
 void terrainCreateContactEffect(u8 *, s32);
 /// Borrowed reference to the active Pikachu actor created for the current area.
@@ -336,7 +336,6 @@ const f32 gActionLaunchHeadingOffsets[8] = {0.0f, 0.0f, 240.0f, 0.0f, 0.0f, 0.0f
 /// \note Original identifier: \c D_800A4978 (0x800A4978).
 const s32 gActionLaunchThrowFlags[8] = {1, 1, 1, 1, 1, 1, 1, 0};
 
-u32 randomBelow(s32);
 /// Per-mode vertical launch factors, negated and multiplied by command speed.
 /// \note Original identifier: \c D_800A4938 (0x800A4938).
 extern const f32 gActionLaunchVerticalSpeedFactors[];

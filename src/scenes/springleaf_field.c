@@ -1,3 +1,4 @@
+#include "random.h"
 #include "runtime_control.h"
 #include "maze_scatter.h"
 #include "story_chapter.h"
@@ -18,7 +19,6 @@ extern WeightedChoiceTable D_80157CEC_scene_springleaf_field;
 extern f32 D_80157CF4_scene_springleaf_field[];
 
 void doorRegistryReset(void);
-u32 randomNext(void);
 /// Entrance index used to initialize the player and companion in the current area.
 /// \note Original identifier: \c D_800AE4F4 (0x800AE4F4).
 extern s32 gRuntimeCurrentEntrance;
@@ -116,7 +116,6 @@ void springleafFieldResetCompletedGrowth(void) {
     }
 }
 
-s32 randomBelow(s32);
 typedef struct {
     s32 used[27];
 } FieldOccupancy;

@@ -1,3 +1,4 @@
+#include "random.h"
 #include "object_transform.h"
 #include "scroll_board.h"
 #include "messenger.h"
@@ -774,7 +775,6 @@ void messengerUpdateLaunch(u8 *object, s32 unused) {
 }
 
 void messengerBeginRebound(u8 *);
-u32 randomNext(void);
 /// Borrowed reference to the active Pikachu actor created for the current area.
 /// \note Original identifier: \c D_800760A8 (0x800760A8).
 extern s32 gPikachuActor;

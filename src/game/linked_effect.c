@@ -1,3 +1,4 @@
+#include "random.h"
 /// \file
 /// Maintains linked animated effects with neighbor constraints and target motion.
 
@@ -306,7 +307,6 @@ s32 linkedEffectComputeTargetVelocity(u8 *object, f32 *velocity) {
     return 2;
 }
 
-u32 randomNext(void); /* extern */
 /// Range of randomized elapsed-time thresholds for release from rebound motion.
 /// \note Original identifier: \c D_800A3A20 (0x800A3A20).
 extern f64 gLinkedReboundReleaseTimeRange;

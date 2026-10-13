@@ -1,3 +1,4 @@
+#include "random.h"
 #include "particle_cluster.h"
 #include "orange_effect.h"
 #include "text_window.h"
@@ -362,7 +363,6 @@ s32 actorScriptFinishAreaTransition(u8 *actor) {
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
-u32 randomNext(void);
 /// Transform the actor to the script-selected kind with a timed visual and audio effect.
 /// \param object Actor to transform while preserving its script context.
 /// \returns One when complete, or two during the effect; completion supplies the replacement actor handle as the script result.

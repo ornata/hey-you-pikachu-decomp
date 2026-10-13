@@ -1,3 +1,4 @@
+#include "random.h"
 #include "texture_animation_programs.h"
 #include "script_vm_execution.h"
 #include "matrix_orientation.h"
@@ -608,7 +609,6 @@ void actorUpdatePartShake(u8 *object) {
     }
 }
 
-u32 randomNext(void);
 /// Upper duration bound for randomized actor model-part shaking, in seconds.
 /// \note Original identifier: \c D_800A27B0 (0x800A27B0).
 extern f64 gActorPartShakeMaximumSeconds;

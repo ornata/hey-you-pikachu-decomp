@@ -1,3 +1,4 @@
+#include "random.h"
 #include "weighted_choice.h"
 #include "story_milestones.h"
 #include "progress_field_types.h"
@@ -258,7 +259,6 @@ void weightedChoicePrepareTable(WeightedChoiceTable *t) {
     }
 }
 
-u32 randomBelow(s32);
 
 /// Chooses a key from a weighted selection table, preparing the table when needed.
 /// \param t Mutable selection table with a zero-key terminator and a positive total weight.

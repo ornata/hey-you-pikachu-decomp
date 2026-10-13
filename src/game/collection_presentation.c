@@ -1,3 +1,4 @@
+#include "random.h"
 #include "backdrop_view.h"
 #include "area_transition.h"
 #include "runtime_control.h"
@@ -885,8 +886,6 @@ void presentationPlaceCollectionItem(u8 *item, f32 heightOffset) {
     objectUpdateHierarchy(item);
 }
 
-u32 randomBelow(s32);
-u32 randomNext(void);
 /// Interior presentation-response category view of the item catalog, with a 116-byte stride.
 /// \note Original identifier: \c D_80125AB0 (0x80125AB0).
 extern s8 gItemKindResponseCategoryEntries[];

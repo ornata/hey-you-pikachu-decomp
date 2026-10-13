@@ -1,3 +1,4 @@
+#include "random.h"
 #include "backdrop_view.h"
 #include "area_transition.h"
 #include "runtime_control.h"
@@ -252,7 +253,6 @@ s32 actorScriptPushZero(u8 *actor) {
     return SCRIPT_COMMAND_CONTINUE;
 }
 
-u32 randomNext(void);          /* extern */
 
 /// Provide a random floating-point value in the unit interval.
 /// \param actor Actor whose script VM receives a random value from zero through one.
@@ -265,7 +265,6 @@ s32 actorScriptPushRandomUnitFloat(u8 *actor) {
     return SCRIPT_COMMAND_CONTINUE;
 }
 
-s32 randomBelow(s32);  /* extern */
 /// Provide a random integer below a script-supplied limit.
 /// \param actor Actor whose script VM supplies an exclusive upper bound and receives a random nonnegative integer below it, or zero for a nonpositive bound.
 /// \returns Zero, allowing script execution to continue.

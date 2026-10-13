@@ -1,3 +1,4 @@
+#include "random.h"
 #include "backdrop_view.h"
 #include "runtime_control.h"
 #include "wisp_effect.h"
@@ -972,7 +973,6 @@ s32 actorScriptGetPokemonName(u8 *actor) {
     return 0;
 }
 
-u32 randomBelow(s32);
 /// Ring history of up to 100 previously selected bedroom name-catalog indices.
 /// \note Original identifier: \c D_8015546C (0x8015546C).
 extern u8 gBedroomPokemonNameHistory[];

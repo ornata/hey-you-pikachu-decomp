@@ -1,3 +1,4 @@
+#include "random.h"
 #include "terrain_height.h"
 #include "terrain_surface.h"
 #include "actor_movement.h"
@@ -1104,7 +1105,6 @@ void actorSetTargetPosition(u8 *actor, f32 *position) {
 }
 
 f32 vector3Normalize(u8 *);
-u32 randomBelow(s32);
 /// Choose a target position away from the supplied threat position.
 /// \param object Actor whose escape target is changed; its fallback target handle must be live when the positions coincide.
 /// \param target Three-component world-space threat position; the pointer is not retained.

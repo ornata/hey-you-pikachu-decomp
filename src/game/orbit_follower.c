@@ -1,3 +1,4 @@
+#include "random.h"
 #include "terrain_height.h"
 #include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
@@ -59,7 +60,6 @@ typedef struct OrbitObject {
 } OrbitObject;
 
 f32 vector2NormalizeComponentsApprox(f32 *, f32 *);
-u32 randomBelow(s32);
 f32 mathUnitDirectionDegrees(f32, f32);
 f32 mathSinDegrees(f32);
 f32 mathCosDegrees(f32);

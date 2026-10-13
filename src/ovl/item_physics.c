@@ -1,3 +1,4 @@
+#include "random.h"
 #include "terrain_movement.h"
 #include "terrain_surface.h"
 #include "wisp_effect.h"
@@ -347,7 +348,6 @@ s32 itemDispatchCollisionResponse(u8 *object, s32 flags) {
     return 1;
 }
 
-u32 randomNext(void);
 s32 areaIsPositionOutsideBounds(f32, f32, f32);
 s32 itemUpdateGroundVelocity(u8 *, u8 *, s32, s32 *);
 s32 itemDispatchCollisionResponse(u8 *, s32);
@@ -572,7 +572,6 @@ void itemUpdatePlayerHeld(u8 *object) {
     ((RuntimeObjectPrefix *)object)->rotation[2] = 0.0f;
 }
 
-u32 randomBelow(s32);
 f32 mathSinDegrees(f32);
 /// Animate the piñata wriggling while held.
 /// \param item Piñata item with an initialized model and three successive child links to animate.

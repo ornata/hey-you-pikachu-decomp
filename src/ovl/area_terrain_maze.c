@@ -1,3 +1,4 @@
+#include "random.h"
 #include "area_transition.h"
 #include "runtime_control.h"
 #include "terrain_movement.h"
@@ -264,7 +265,6 @@ s32 areaIsPositionOutsideBounds(f32 x, f32 y, f32 z) {
     return 0;
 }
 
-u32 randomNext();                             /* extern */
 
 /// Create an item at a random horizontal position near a supplied center.
 /// \param center Center world position in X, Y, Z order; its Y coordinate is passed to item creation.
@@ -968,7 +968,6 @@ s32 terrainGetMaterialSound(s32 category, s32 material) {
     return gTerrainMaterialSounds[category][material];
 }
 
-s32 randomBelow(s32);
 /// Create the contact effect appropriate to a terrain material when one is configured.
 /// \param position World position in X, Y, Z order; supported ground effects may adjust Y to just above the
 /// terrain.
@@ -993,18 +992,18 @@ void terrainCreateContactEffect(f32 *position, s32 material) {
     case 3:
         position[1] = (f32)(terrainGetWorldHeight(position[0], position[1], position[2], NULL) + 0.5f);
         sprayIndex = 0;
-        if ((randomBelow(6) + 2) > 0) {
+        if (((s32)randomBelow(6) + 2) > 0) {
             do {
                 spray[0] = (f32)((((f64)randomNext() * 2.3283064365386963e-10) - 0.5) * 8.0);
                 spray[1] = (f32)((f64)randomNext() * 2.3283064365386963e-10 * 5.0);
                 spray[2] = (f32)((((f64)randomNext() * 2.3283064365386963e-10) - 0.5) * 8.0);
-                kind = randomBelow(3);
-                variant = randomBelow(3);
+                kind = (s32)randomBelow(3);
+                variant = (s32)randomBelow(3);
                 fallingParticleCreate(
                     kind, variant, position, spray,
                     (f32)(((f64)randomNext() * 2.3283064365386963e-10 * 0.4000000059604645) + 0.800000011920929));
                 sprayIndex += 1;
-            } while (sprayIndex < (randomBelow(6) + 2));
+            } while (sprayIndex < ((s32)randomBelow(6) + 2));
             return;
         }
     default:
@@ -1012,32 +1011,32 @@ void terrainCreateContactEffect(f32 *position, s32 material) {
     case 1:
         position[1] = (f32)(terrainGetWorldHeight(position[0], position[1], position[2], NULL) + 0.5f);
         dustIndex = 0;
-        if ((randomBelow(3) + 3) > 0) {
+        if (((s32)randomBelow(3) + 3) > 0) {
             do {
                 dust[0] = (f32)((((f64)randomNext() * 2.3283064365386963e-10) - 0.5) * 10.0);
                 dust[1] = (f32)((f64)randomNext() * 2.3283064365386963e-10 * 3.0);
                 dust[2] = (f32)((((f64)randomNext() * 2.3283064365386963e-10) - 0.5) * 10.0);
-                variant = randomBelow(3);
+                variant = (s32)randomBelow(3);
                 fallingParticleCreate(5, variant, position, dust,
                               (f32)(((f64)randomNext() * 2.3283064365386963e-10 * 0.5) + 0.6000000238418579));
                 dustIndex += 1;
-            } while (dustIndex < (randomBelow(3) + 3));
+            } while (dustIndex < ((s32)randomBelow(3) + 3));
             return;
         }
         break;
     case 4:
         chipsIndex = 0;
-        if ((randomBelow(0xA) + 5) > 0) {
+        if (((s32)randomBelow(0xA) + 5) > 0) {
             do {
                 chips[0] = (f32)((((f64)randomNext() * 2.3283064365386963e-10) - 0.5) * 10.0);
                 chips[1] = (f32)((f64)randomNext() * 2.3283064365386963e-10 * 8.0);
                 chips[2] = (f32)((((f64)randomNext() * 2.3283064365386963e-10) - 0.5) * 10.0);
-                kind = randomBelow(2);
-                variant = randomBelow(3);
+                kind = (s32)randomBelow(2);
+                variant = (s32)randomBelow(3);
                 fallingParticleCreate(kind + 3, variant, position, chips,
                               (f32)(((f64)randomNext() * 2.3283064365386963e-10 * 0.5) + 1.0));
                 chipsIndex += 1;
-            } while (chipsIndex < (randomBelow(0xA) + 5));
+            } while (chipsIndex < ((s32)randomBelow(0xA) + 5));
             return;
         }
         break;

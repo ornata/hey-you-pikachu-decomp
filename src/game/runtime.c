@@ -1,3 +1,4 @@
+#include "random.h"
 #include "backdrop_view.h"
 #include "area_transition.h"
 #include "runtime_control.h"
@@ -239,7 +240,6 @@ const char *gSaveFailurePromptLines[] = {gSaveFailureHeadingText, gSaveFailurePo
 
 void actionScriptInitializeHook();        /* extern */
 void hudInitialize();        /* extern */
-void randomSeedFromSystem();        /* extern */
 void runtimeAccumulatePlayTime(void);
 void runtimeShutdownAndHalt(void);
 void runtimeMainThreadEntry(void *);

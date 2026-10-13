@@ -1,3 +1,4 @@
+#include "random.h"
 #include "backdrop_view.h"
 #include "area_transition.h"
 #include "runtime_control.h"
@@ -567,7 +568,6 @@ void playerPlayFootstepSound(u8 *player, s32 ground) {
 }
 
 f32 vector3Normalize(f32 *);
-u32 randomNext(void);
 void playerPlayFootstepSound(u8 *, s32);
 /// Borrowed reference to the active Pikachu actor created for the current area.
 /// \note Original identifier: \c D_800760A8 (0x800760A8).

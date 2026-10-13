@@ -1,3 +1,4 @@
+#include "random.h"
 #include "terrain_height.h"
 #include "actor_action_callbacks.h"
 #include "action_continuation.h"
@@ -15,7 +16,6 @@
 #include "object_types.h"
 extern float fabsf(float);
 #pragma intrinsic(fabsf)
-u32 randomBelow(s32); /* extern */
 s32 actorPrepareApproachCompletion(u8 *, f32);
 s32 actorAdvanceWithScaleOscillation(f32 *, f32);
 s32 actorAdvanceWithGroundClearance(s32, f32);
@@ -247,7 +247,6 @@ s32 actorBackstepQuickly(u8 *actor) {
     return actorBackstepTowardTarget((s32)actor, 400.0f);
 }
 
-u32 randomNext(void);
 
 /// Choose a random continuation once the actor is facing its target.
 /// \param actor Actor whose facing and continuation are inspected and updated.

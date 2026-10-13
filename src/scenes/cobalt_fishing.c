@@ -1,3 +1,4 @@
+#include "random.h"
 #include "runtime_control.h"
 #include "ambient_audio.h"
 #include "progress_value.h"
@@ -6,7 +7,6 @@
 #include "actor_create.h"
 #include "scene_types.h"
 #include "fishing_population.h"
-u32 randomNext(void);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;

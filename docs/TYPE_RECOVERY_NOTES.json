@@ -62,7 +62,8 @@
       "terrainSampleVertexHeight / terrainSampleCellHeight": "Checked terrain-pointer member-offset reads preserve integer multiply operand ordering; direct members reverse operands.",
       "mazeInitialize": "Three retained words are cleared across adjacent BSS symbols; their gameplay purpose and any vector semantics remain unproven. Consolidating them changes defined symbol attributes; aliasing and adjacency remain target-specific constraints.",
       "areaUpdateNodeVisibility / mazeDestroyNodeHierarchy": "Child cursors retain byte stepping with a checked children member offset; their loop bounds retain the original target representation.",
-      "areaActivateNode": "The void hierarchy-flag clearing call retains an unused trailing node pointer from the ROM call."
+      "areaActivateNode": "The void hierarchy-flag clearing call retains an unused trailing node pointer from the ROM call.",
+      "terrainCreateContactEffect": "Canonical randomBelow returns u32. Retain explicit s32 conversions of bounded samples in contact-effect count expressions to preserve signed comparisons and strict object bytes; removing these conversions changes the object even when the linked ROM matches."
     },
     "src/game/actor_configuration.c": {
       "actorCreateForKind": "An unused local word is named reservedCreationSlot. Removing it shrinks the IDO frame by eight bytes and changes all argument/spill offsets; it is retained with a Doxygen target-compiler note."

@@ -1,3 +1,4 @@
+#include "random.h"
 #include "microphone_requests.h"
 #include "text_image_configurations.h"
 #include "texture_animation_programs.h"
@@ -292,7 +293,6 @@ typedef struct {
 } HudState;
 s32 micQueryTriggerStateNoResult(void);
 s32 micQueryDevicePortNoResult(void);
-u32 randomNext(void);
 s32 voiceRecognitionGetCommandStatus(void);
 /// Whether gameplay exposes microphone interaction and its HUD indicator.
 /// \note Original identifier: \c D_800722D0 (0x800722D0).

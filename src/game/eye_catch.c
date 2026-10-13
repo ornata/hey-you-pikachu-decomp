@@ -1,3 +1,4 @@
+#include "random.h"
 #include "controller_rumble.h"
 #include "progress_value.h"
 #include "camera_overlay.h"
@@ -294,7 +295,6 @@ s32 eyeCatchStartReveal(void) {
 void audioStopCategories(s32, f64);              /* extern */
 s32 audioPlaySoundEffect(s16);                   /* extern */
 s32 audioSetSoundEffectVolume(s32, s32);         /* extern */
-s32 randomBelow(s32);                                    /* extern */
 /// Randomized sound choices for the eye-catch entry audio event.
 /// \note Original identifier: \c D_8009C384 (0x8009C384).
 extern s16 gEyeCatchEntrySoundChoices[];

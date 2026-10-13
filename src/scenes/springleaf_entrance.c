@@ -1,3 +1,4 @@
+#include "random.h"
 #include "runtime_control.h"
 #include "maze_scatter.h"
 #include "story_chapter.h"
@@ -16,8 +17,6 @@ extern WeightedChoiceTable D_80157660_scene_springleaf_entrance;
 /// \note Original identifier: \c D_80157668_scene_springleaf_entrance (0x80157668).
 extern f32 D_80157668_scene_springleaf_entrance[];
 
-u32 randomNext(void);
-s32 randomBelow(s32);
 f32 mathPowInteger(f32, s32);
 typedef struct {
     u8 unknown[12];
