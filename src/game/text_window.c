@@ -1,3 +1,4 @@
+#include "math_scalar.h"
 #include "object_groups.h"
 #include "camera_overlay.h"
 #include "runtime_control.h"
@@ -251,7 +252,6 @@ void textWindowDrawPageAt(Gfx **list, s32 x, s32 y, s32 alpha) {
 }
 
 void textWindowDrawPageAt(Gfx **, s32, s32, s32);
-f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
 
 /// Draw the current text page with its page-transition appearance.
 /// \param gdl Display-list cursor to append drawing commands to and advance.

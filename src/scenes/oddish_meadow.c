@@ -1,3 +1,4 @@
+#include "math_scalar.h"
 #include "random.h"
 #include "runtime_control.h"
 #include "maze_scatter.h"
@@ -16,7 +17,6 @@ extern WeightedChoiceTable D_80157DB4_scene_oddish_meadow;
 /// \note Original identifier: \c D_80157DBC_scene_oddish_meadow (0x80157DBC).
 extern f32 D_80157DBC_scene_oddish_meadow[];
 
-f32 mathPowInteger(f32, s32);
 typedef struct {
     u8 unk0[12];
     f32 scale;

@@ -1,3 +1,4 @@
+#include "math_scalar.h"
 #include "pikachu_actor.h"
 #include "terrain_surface.h"
 #include "item_size.h"
@@ -63,7 +64,6 @@ void lightBulbResetReleasedGlow(u8 *object, s32 unused) {
     }
 }
 
-f32 mathMapRangeClamped(f32, f32, f32, f32, f32); /* extern */
 
 /// Inflate an actor-held balloon and update its inflated state.
 /// \param object Item to update.

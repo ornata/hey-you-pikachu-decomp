@@ -1,3 +1,4 @@
+#include "math_scalar.h"
 #include "pikachu_actor.h"
 #include "math_angles.h"
 #include "random.h"
@@ -82,7 +83,6 @@ void matrix34Concatenate(void *, void *, void *);
 /// Signed part-identifier sequence used to track model-part relative roll.
 /// \note Original identifier: \c D_800A2770 (0x800A2770).
 extern u8 gActorRelativeRollPartSequence[];
-f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
 f32 mathAngleDistanceDegrees(f32, f32);
 f32 mathLerpAngleDegrees(f32, f32, f32);
 void actorPartBuildAnimatedTextureCommands(u8 *, s32);

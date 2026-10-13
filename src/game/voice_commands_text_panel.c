@@ -1,3 +1,4 @@
+#include "math_scalar.h"
 #include "pikachu_actor.h"
 #include "camera_storage.h"
 #include "vector_metrics.h"
@@ -32,7 +33,6 @@ void _bzero(s32, s32);
 /// \note Original identifier: \c D_800A268C (0x800A268C).
 extern u8 gTextPanelClearedEmptyText[];
 
-f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
 /// Whether gameplay exposes microphone interaction and its HUD indicator.
 /// \note Original identifier: \c D_800722D0 (0x800722D0).
 /// Whether gameplay permits recognized voice commands to launch messenger effects.

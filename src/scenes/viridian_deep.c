@@ -1,3 +1,4 @@
+#include "math_scalar.h"
 #include "math_angles.h"
 #include "maze_scatter.h"
 #include "story_chapter.h"
@@ -28,7 +29,6 @@ void viridianDeepRemoveTrackedItems(void) {
         }
     }
 }
-f32 mathPowInteger(f32, s32);
 typedef struct {
     u8 header[12];
     f32 scale;

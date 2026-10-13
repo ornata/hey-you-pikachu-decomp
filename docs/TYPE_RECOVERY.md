@@ -3923,3 +3923,8 @@ Pikachu actor to twenty-five units, including creation and runtime reset. Legacy
 byte/address value views remain explicit at consumers. Linked-effect targeting
 retains its local declaration because canonical storage changes allocated object
 bytes despite a matching ROM; the strict comparison exception is recorded.
+
+`math_scalar.h` supplies clamped range mapping and integer-power contracts to
+both definitions and every declared caller. Mapping endpoints and exponent
+preconditions are explicit. The power helper names its accumulated result and
+remaining exponent without changing arithmetic or control flow.

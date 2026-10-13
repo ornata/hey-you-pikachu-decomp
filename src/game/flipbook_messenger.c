@@ -1,3 +1,4 @@
+#include "math_scalar.h"
 #include "pikachu_actor.h"
 #include "camera_storage.h"
 #include "vector_metrics.h"
@@ -829,7 +830,6 @@ void messengerDeliver(u8 *object, u8 *source, u8 *target, s32 mode) {
     gTrackedMessengerHandle = 0;
 }
 
-f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
 /// Guide the messenger toward its linked recipient and handle delivery or loss of the target.
 /// \pre Frame duration must be positive, and a live linked part must have a valid owning object.
 /// \param object Messenger projectile with initialized state.

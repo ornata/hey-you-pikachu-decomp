@@ -1,3 +1,4 @@
+#include "math_scalar.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
 #include "random.h"
@@ -1476,7 +1477,6 @@ void convergingParticleEffectDestroy(u8 *effect) {
     heapFreeLocal(&gGameHeap, state);
 }
 
-f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
 
 /// Advance a converging particle effect around its target until its lifetime expires or the target
 /// disappears.

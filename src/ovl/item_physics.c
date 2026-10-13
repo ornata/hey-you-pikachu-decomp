@@ -1,3 +1,4 @@
+#include "math_scalar.h"
 #include "pikachu_actor.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
@@ -47,7 +48,6 @@ void itemGetTerrainResponseDirection(u8 *object, f32 *direction, u8 **cachedNode
     vector3Normalize(direction);
 }
 
-f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
 f32 terrainGetFriction(s32);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).

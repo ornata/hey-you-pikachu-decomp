@@ -1,3 +1,4 @@
+#include "math_scalar.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
 #include "random.h"

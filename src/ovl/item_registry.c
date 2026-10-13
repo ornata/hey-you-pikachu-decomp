@@ -1,3 +1,4 @@
+#include "math_scalar.h"
 #include "pikachu_actor.h"
 #include "math_angles.h"
 #include "terrain_movement.h"
@@ -1763,7 +1764,6 @@ extern f32 gItemSearchOrigin[];
 /// \note Original identifier: \c D_80134060 (0x80134060).
 extern f32 gItemSearchViewTransform[];
 f32 matrix34GetTransformedPointYawDegrees(f32 *, f32 *);
-f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
 f32 fabsf(f32);
 #pragma intrinsic(fabsf)
 /// Consider an item for the current nearest-item query and retain the best eligible candidate.

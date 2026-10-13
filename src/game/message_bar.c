@@ -1,3 +1,4 @@
+#include "math_scalar.h"
 #include "pikachu_actor.h"
 #include "camera_storage.h"
 #include "object_groups.h"
@@ -101,7 +102,6 @@ extern s32 gRenderCameraIndex;
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
 s32 voiceRecognitionGetCommandStatus(void);
-f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
 
 /// Update an object spinner in response to voice activity and viewer distance.
 /// \param object Spinner object with initialized rotation-speed state.

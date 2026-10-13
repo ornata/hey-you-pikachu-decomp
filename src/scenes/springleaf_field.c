@@ -1,3 +1,4 @@
+#include "math_scalar.h"
 #include "random.h"
 #include "runtime_control.h"
 #include "maze_scatter.h"
@@ -25,7 +26,6 @@ extern s32 gRuntimeCurrentEntrance;
 extern f32 D_80134D24_scene_springleaf_field[];
 extern f64 D_801594E8_scene_springleaf_field;
 
-f32 mathPowInteger(f32, s32);
 typedef struct {
     u8 unknown[12];
     f32 scale;

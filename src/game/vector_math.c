@@ -1,3 +1,4 @@
+#include "math_scalar.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
 #include "vector_interpolation.h"
@@ -79,7 +80,6 @@ f32 vector2GetDirectionDegrees(u8 *vector) {
 }
 
 void matrixFixedTo34(Mtx, f32 *);
-f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
 
 /// Determine positional sound volume and stereo pan relative to the camera.
 /// \param pos World-space sound position with a nonzero distance from the camera.
@@ -690,21 +690,21 @@ s32 vector3InterpolateSmoothTimed(f32 *a, f32 *b, f32 *out, f32 len, f32 t) {
 /// \returns The base raised to the requested power.
 /// \note Original decompilation identifier: \c func_8000DD40 (0x8000DD40).
 f32 mathPowInteger(f32 base, s32 exponent) {
-    f32 var_f2;
-    s32 var_v0;
+    f32 result;
+    s32 remainingExponent;
 
-    var_v0 = (exponent >= 0) ? exponent : -exponent;
-    var_f2 = 1.0f;
-    for (; var_v0 != 0; var_v0 >>= 1) {
-        if (var_v0 & 1) {
-            var_f2 *= base;
+    remainingExponent = (exponent >= 0) ? exponent : -exponent;
+    result = 1.0f;
+    for (; remainingExponent != 0; remainingExponent >>= 1) {
+        if (remainingExponent & 1) {
+            result *= base;
         }
         base *= base;
     }
     if (exponent >= 0) {
-        return var_f2;
+        return result;
     }
-    return 1.0f / var_f2;
+    return 1.0f / result;
 }
 
 /// Compute the standard CRC-32 checksum of a byte buffer.

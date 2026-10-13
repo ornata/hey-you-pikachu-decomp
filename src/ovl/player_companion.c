@@ -1,3 +1,4 @@
+#include "math_scalar.h"
 #include "pikachu_actor.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
@@ -465,7 +466,6 @@ u8 *playerResolveCompanionViewTarget(u8 *player) {
 }
 
 void vector3GetYawAndProjectedPitchDegrees(f32 *, f32 *, f32 *);
-f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
 /// Turn the player view toward a companion-control target while companion control is active.
 /// \param player Player record whose view is updated subject to view-control permissions.
 /// \param controller Controller state influencing the tracking response.
