@@ -3404,3 +3404,13 @@ offset checks cover the 16-byte state, and initialization uses that allocation
 size. The reader's other object-kind views remain separate because their state
 layouts have different contracts. Ghidra initialization at `0x801128E8` confirms
 the allocation size, zero initialization and default description pointer.
+
+### Inspection layout consolidation
+
+Player target-description preparation now uses `PlayerControlPrefix` for the
+inspector and `RuntimeObjectPrefix` for the selected world object. Item catalog
+lookups use `ItemStatePrefix.kind`; door prompt selection uses `PassageState.kind`
+and `accessState`. This removes the private `InspectObject` and `InspectState`
+views that conflated independent record kinds. Existing target offset checks,
+creation code, description consumers and Ghidra at `0x80110C0C` support the
+replacement. The proxy description branch keeps its separate private type.

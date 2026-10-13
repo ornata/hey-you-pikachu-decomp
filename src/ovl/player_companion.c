@@ -1140,29 +1140,7 @@ s32 playerTryActivateInteraction(u8 *player, u8 *controller) {
     return 0;
 }
 
-/* Inspected world object: kind at 0x34, item ID at 0x38, per-kind state at 0x54;
- * the inspecting player keeps the target ID at 0x5C, flags at 0x60 and the
- * selected action at 0x98. */
-typedef struct InspectState {
-    s32 unk0;
-    s16 unk4;
-    u8 unknown6[6];
-    s32 unkC;
-} InspectState;
-typedef struct InspectObject {
-    u8 unknown0[0x34];
-    u16 unk34;
-    u16 unknown36;
-    s32 unk38;
-    u8 unknown3C[0x18];
-    InspectState *unk54;
-    s32 unknown58;
-    s32 unk5C;
-    s32 unk60;
-    u8 unknown64[0x34];
-    s32 unk98;
-} InspectObject;
-s32 playerPrepareInteractionDescription(InspectObject *);
+s32 playerPrepareInteractionDescription(PlayerControlPrefix *);
 s32 textWindowOpen(s32, s32, s32); /* extern */
 void textWindowAppendText(u8 *); /* extern */
 void textWindowEnterMode(void);      /* extern */
@@ -1183,7 +1161,7 @@ s32 playerTryInspectTarget(u8 *player, u8 *controller) {
     }
     ret = 0;
     if (((ControllerState *)controller)->pressed & 0x4000) {
-        playerPrepareInteractionDescription((InspectObject *)player);
+        playerPrepareInteractionDescription((PlayerControlPrefix *)player);
         if (textWindowOpen(2, 0, (((PlayerControlPrefix *)player)->permissions & 0x10000) ? 1 : 0) == 0) {
             return 0;
         }
@@ -1490,58 +1468,68 @@ extern s8 gItemKindClassEntries;
 /// \note Target state and catalog identifiers must be valid for their object kind. The formatted description,
 /// including prompts, must fit in 255 bytes plus its terminator.
 /// \note Original decompilation identifier: \c func_80110C0C (0x80110C0C).
-s32 playerPrepareInteractionDescription(InspectObject *player) {
+s32 playerPrepareInteractionDescription(PlayerControlPrefix *player) {
     s8 text[0x100];
-    InspectObject *item;
-    InspectState *state;
+    RuntimeObjectPrefix *item;
+    u8 *state;
     s8 *suffix;
     s8 *reachSuffix;
     u16 kind;
 
-    item = (InspectObject *)objectFindLiveByHandle(player->unk5C);
+    item = (RuntimeObjectPrefix *)objectFindLiveByHandle(player->interactionTarget);
     if (item == NULL) {
         playerSetInteractionHelpText(
             (u8 *)"(There\'s nothing to check.)\nMove the @A@B cursor to any\nitem you want to check "
                   "and\npress @K@L to see a description\nof it.");
         return 0;
     }
-    kind = item->unk34;
+    kind = item->kind;
     if (kind == 0x25) {
         playerSetInteractionHelpText((u8 *)"???");
-        return item->unk38;
+        return item->handle;
     }
     if (kind == 0x86) {
-        state = item->unk54;
-        if (player->unk60 & 2) {
+        state = item->state.bytes;
+        if (player->interactionFlags & 2) {
             sprintf(text, "%s%-22s^^%s\n%s%s",
-                    ((ITEM_CLASS(state->unk4) == 2) || (ITEM_CLASS(state->unk4) == 5)) ? "^^" : "^4",
-                    (s8 *)itemGetDisplayName(state->unk4, 1), (s8 *)itemGetClassLabelSuffix(state->unk4),
-                    (s8 *)itemGetHelpText(state->unk4, 1), gPlayerInteractionPromptSuffixes[player->unk98]);
+                    ((ITEM_CLASS(((ItemStatePrefix *)state)->kind) == 2) ||
+                     (ITEM_CLASS(((ItemStatePrefix *)state)->kind) == 5))
+                        ? "^^"
+                        : "^4",
+                    (s8 *)itemGetDisplayName(((ItemStatePrefix *)state)->kind, 1),
+                    (s8 *)itemGetClassLabelSuffix(((ItemStatePrefix *)state)->kind),
+                    (s8 *)itemGetHelpText(((ItemStatePrefix *)state)->kind, 1),
+                    gPlayerInteractionPromptSuffixes[player->modeState.interactionAction]);
         } else {
             sprintf(text, "%s%s^^?\n%s%s",
-                    ((ITEM_CLASS(state->unk4) == 2) || (ITEM_CLASS(state->unk4) == 5)) ? "^^" : "^4",
-                    (s8 *)itemGetDisplayName(state->unk4, 0), (s8 *)itemGetHelpText(state->unk4, 0),
-                    "\n^9You can't reach it from here.^^");
+                    ((ITEM_CLASS(((ItemStatePrefix *)state)->kind) == 2) ||
+                     (ITEM_CLASS(((ItemStatePrefix *)state)->kind) == 5))
+                        ? "^^"
+                        : "^4",
+                    (s8 *)itemGetDisplayName(((ItemStatePrefix *)state)->kind, 0),
+                    (s8 *)itemGetHelpText(((ItemStatePrefix *)state)->kind, 0), "\n^9You can't reach it from here.^^");
         }
         playerSetInteractionHelpText((u8 *)text);
-        return item->unk38;
+        return item->handle;
     }
     if (((s32)kind > 0) && ((s32)kind < 0x26)) {
-        if (player->unk60 & 2) {
-            sprintf(text, "^4%s^^\n%s", (s8 *)actorConfigGetDisplayName(item->unk34, 1), (s8 *)actorConfigGetDescription(item->unk34, 1));
+        if (player->interactionFlags & 2) {
+            sprintf(text, "^4%s^^\n%s", (s8 *)actorConfigGetDisplayName(item->kind, 1),
+                    (s8 *)actorConfigGetDescription(item->kind, 1));
         } else {
-            sprintf(text, "^4%s^^?\n%s%s", (s8 *)actorConfigGetDisplayName(item->unk34, 0), (s8 *)actorConfigGetDescription(item->unk34, 0),
-                    ((item->unk34 == 5) || (item->unk34 == 6)) ? "\n^9You can't reach it from here.^^" : "");
+            sprintf(text, "^4%s^^?\n%s%s", (s8 *)actorConfigGetDisplayName(item->kind, 0),
+                    (s8 *)actorConfigGetDescription(item->kind, 0),
+                    ((item->kind == 5) || (item->kind == 6)) ? "\n^9You can't reach it from here.^^" : "");
         }
         playerSetInteractionHelpText((u8 *)text);
-        return item->unk38;
+        return item->handle;
     }
     if (kind == 0x87) {
-        if (player->unk60 & 2) {
-            state = item->unk54;
-            if (state->unkC != 0) {
+        if (player->interactionFlags & 2) {
+            state = item->state.bytes;
+            if (((PassageState *)state)->accessState != 0) {
                 suffix = (s8 *)doorGetAccessDescription((u8 *)item);
-            } else if (state->unk0 == 1) {
+            } else if (((PassageState *)state)->kind == 1) {
                 suffix = "\nPress @I@J to go on.";
             } else {
                 suffix = gPlayerInteractionPromptSuffixes[7];
@@ -1551,41 +1539,40 @@ s32 playerPrepareInteractionDescription(InspectObject *player) {
             sprintf(text, "%s%s", doorGetDescription((u8 *)item), "\n^9You can't reach it from here.^^");
         }
         playerSetInteractionHelpText((u8 *)text);
-        return item->unk38;
+        return item->handle;
     }
     if (kind == 0x89) {
         /// Encoded interaction label for object kind 0x89.
         /// \note Original identifier: \c D_80123EA0 (0x80123EA0).
         static char *gPlayerKind89InteractionLabel = "\xA1\xA9\xA1\xA9\xA1\xA9";
 
-        if (player->unk60 & 2) {
+        if (player->interactionFlags & 2) {
             sprintf(text, "%s%s", gPlayerKind89InteractionLabel, gPlayerInteractionPromptSuffixes[8]);
         } else {
             sprintf(text, "%s%s", gPlayerKind89InteractionLabel, "\n^9You can't reach it from here.^^");
         }
         playerSetInteractionHelpText((u8 *)text);
-        return item->unk38;
+        return item->handle;
     }
     if (kind == 0xB0) {
         sprintf(text, "%s", caveGetDescription((u8 *)item));
         playerSetInteractionHelpText((u8 *)text);
-        return item->unk38;
+        return item->handle;
     }
     if (kind == 0x8F) {
         sprintf(text, "%s", landmarkGetCannonDescription((s32)item));
         playerSetInteractionHelpText((u8 *)text);
-        return item->unk38;
+        return item->handle;
     }
     if (kind == 0x8A) {
-        reachSuffix = (s8 *)item->unk54;
+        reachSuffix = (s8 *)item->state.bytes;
         sprintf(text, "%s", ((InteractionProxyState *)reachSuffix)->description);
         TRACE("Illegal difficulty:%d\n", ((InteractionProxyState *)reachSuffix)->context);
         playerSetInteractionHelpText((u8 *)text);
-        return item->unk38;
+        return item->handle;
     }
     return 0;
 }
-
 
 /// Clear the primary camera screen tint when leaving the help-display mode.
 /// \param unused Unused mode-exit argument.
