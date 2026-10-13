@@ -17,7 +17,6 @@ void wordMapInitialize(WordMap *map, s32 capacity);
 /// Release a word map and reset it to an empty unallocated state.
 /// \param map Initialized map whose storage is released.
 /// \returns Nothing.
-/// \note Portability: The deallocator call passes an extra argument ignored by the original ABI.
 /// \note Original decompilation identifier: \c func_80048D44 (0x80048D44).
 void wordMapDestroy(WordMap *map);
 

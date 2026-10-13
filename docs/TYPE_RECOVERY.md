@@ -4088,3 +4088,12 @@ trailing pointers and obsolete compatibility notes. These adoptions preserve
 all allocated bytes and relocations. Removing the backdrop allocator's trailing
 arguments changes `backdropAllocateViewBuffer` code, so its local allocator
 view remains with the failed trial and next evidence recorded in the ledger.
+
+### Remaining heap declaration audit
+
+Word-map destruction and actor geometry cleanup now use `heap_free.h` without
+unused trailing pointers. Archive allocation uses `heap_alloc.h`. All three
+units preserve strict objects. Allocator trials isolate remaining mismatches to
+`wordMapInitialize` and `actorAllocatePartTable`; their compatibility declarations
+remain, with the failed trials and next compiler evidence recorded. Obsolete
+deallocator portability notes were removed from the word-map interface.

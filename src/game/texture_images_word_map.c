@@ -1,3 +1,4 @@
+#include "heap_free.h"
 #include "texture_image.h"
 #include "common.h"
 #include "heap_types.h"
@@ -1284,10 +1285,11 @@ void *heapAllocLocal(HpHdr *, s32, s32, void *);
 void _bzero(void *, s32);
 
 /// Initialize an empty map of integer keys to nonzero word values.
+/// \note Portability: The allocator call retains an unused trailing map pointer
+/// to preserve the original target compiler output.
 /// \param map Caller-owned map storage without an unreleased backing allocation.
 /// \param capacity Positive entry capacity whose total allocation size fits in signed 32 bits.
 /// \returns Nothing.
-/// \note Portability: The allocator call passes an extra argument ignored by the original ABI.
 /// \note Original decompilation identifier: \c func_80048CE0 (0x80048CE0).
 void wordMapInitialize(WordMap *map, s32 capacity) {
     s32 len;
@@ -1299,15 +1301,13 @@ void wordMapInitialize(WordMap *map, s32 capacity) {
     _bzero(map->slots, len);
 }
 
-void heapFreeLocal(HpHdr *, void *, u8 *);
 
 /// Release a word map and reset it to an empty unallocated state.
 /// \param map Initialized map whose storage is released.
 /// \returns Nothing.
-/// \note Portability: The deallocator call passes an extra argument ignored by the original ABI.
 /// \note Original decompilation identifier: \c func_80048D44 (0x80048D44).
 void wordMapDestroy(WordMap *map) {
-    heapFreeLocal(&gGameHeap, map->slots, (u8 *)map);
+    heapFreeLocal(&gGameHeap, map->slots);
     map->slots = NULL;
     map->size = 0;
     map->count = 0;

@@ -25,9 +25,8 @@
       "itemUpdatePlayerHeld": "The void camera transformation call retains two unused trailing pointers supplied by the ROM caller."
     },
     "src/game/actor_model_motion.c": {
-      "heapAllocLocal callers": "These callers preserve unused fourth arguments in the ROM. The three-argument allocator prototype rejects them. Retain the local ABI compatibility declaration until an explicitly matching call representation is verified.",
+      "heapAllocLocal callers": "Adopting heap_alloc.h and removing the unused fourth actor pointers changes actorAllocatePartTable instructions and fails the ROM gate, although the facing-controller allocation functions retain their bytes. Restoring the compatibility declaration restores all strict objects. Isolate signed size conversion and allocation scheduling in actorAllocatePartTable before canonical adoption. Heap deallocation now independently uses heap_free.h without trailing pointers.",
       "actorUpdateMotionDisplacement": "The matrix-vector call retains an unused trailing actor-state pointer from the ROM call. Its matrix, input and output are float arrays and its return is void.",
-      "heapFreeLocal callers": "An unprototyped void declaration retains the original mix of two- and three-argument calls, including an unused trailing object pointer.",
       "actorBindAnimatedTexturesForDraw": "The raw 32-bit child continuation read at object offset 0x30 is retained: replacing it with RuntimeObjectPrefix.child.address changes this function's allocated instruction bytes under IDO, while the typed animated-texture state links match. Retry only with a representation that preserves the return load scheduling."
     },
     "src/game/backdrop.c": {
@@ -35,11 +34,7 @@
       "backdropUpdateViewOffsets": "Typed destination MatrixCamera pointer and backdropX/backdropY/backdropScroll/eye[1] member rewrite changes this function instruction bytes and fails ROM match. Retain destination byte accesses; shared layout and primary-camera direction view are established and match. Isolate mixed float/integer load scheduling before replacing destination accesses."
     },
     "src/game/texture_images_word_map.c": {
-      "wordMapInitialize": "The typed allocator declaration retains an unused fourth map argument to preserve the ROM call.",
-      "wordMapDestroy": "The typed void deallocator declaration retains an unused third map argument to preserve the ROM call."
-    },
-    "src/game/archive_compression.c": {
-      "heapAllocLocal callers": "The existing allocator declaration is already typed. Adopting the shared header changed the compared object; retain it locally and inspect declaration/type interactions before consolidation."
+      "wordMapInitialize": "Canonical heap allocation with the unused fourth map argument removed changes wordMapInitialize instructions and fails the ROM gate. Keep the typed four-argument allocator view pending IDO allocation/scheduling evidence. Word-map destruction independently adopts heap_free.h and preserves all strict objects."
     },
     "src/game/voice_commands_text_panel.c": {
       "heapAllocLocal callers": "The caller carries allocation results as s32 addresses. Adopting a void-pointer return changed the compared object. Inspect conversions and register allocation before replacing the retained declaration."

@@ -566,6 +566,7 @@
         "collision_registration.h",
         "color_transition.h",
         "direction_animation.h",
+        "heap_free.h",
         "heap_types.h",
         "integer_animation.h",
         "math_angles.h",
@@ -588,9 +589,8 @@
         "word_map_lookup.h"
       ],
       "matching_exceptions": {
-        "heapAllocLocal callers": "These callers preserve unused fourth arguments in the ROM. The three-argument allocator prototype rejects them. Retain the local ABI compatibility declaration until an explicitly matching call representation is verified.",
+        "heapAllocLocal callers": "Adopting heap_alloc.h and removing the unused fourth actor pointers changes actorAllocatePartTable instructions and fails the ROM gate, although the facing-controller allocation functions retain their bytes. Restoring the compatibility declaration restores all strict objects. Isolate signed size conversion and allocation scheduling in actorAllocatePartTable before canonical adoption. Heap deallocation now independently uses heap_free.h without trailing pointers.",
         "actorUpdateMotionDisplacement": "The matrix-vector call retains an unused trailing actor-state pointer from the ROM call. Its matrix, input and output are float arrays and its return is void.",
-        "heapFreeLocal callers": "An unprototyped void declaration retains the original mix of two- and three-argument calls, including an unused trailing object pointer.",
         "actorBindAnimatedTexturesForDraw": "The raw 32-bit child continuation read at object offset 0x30 is retained: replacing it with RuntimeObjectPrefix.child.address changes this function's allocated instruction bytes under IDO, while the typed animated-texture state links match. Retry only with a representation that preserves the return load scheduling."
       },
       "locations": {
@@ -1189,14 +1189,13 @@
     },
     "src/game/archive_compression.c": {
       "known_views": [
+        "heap_alloc.h",
         "heap_free.h",
         "heap_tail.h",
         "heap_types.h",
         "rom_dma.h"
       ],
-      "matching_exceptions": {
-        "heapAllocLocal callers": "The existing allocator declaration is already typed. Adopting the shared header changed the compared object; retain it locally and inspect declaration/type interactions before consolidation."
-      },
+      "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "entry + 4": [
@@ -3188,162 +3187,162 @@
     },
     "src/game/texture_images_word_map.c": {
       "known_views": [
+        "heap_free.h",
         "heap_types.h",
         "texture_image.h",
         "word_map.h",
         "word_map_lookup.h"
       ],
       "matching_exceptions": {
-        "wordMapInitialize": "The typed allocator declaration retains an unused fourth map argument to preserve the ROM call.",
-        "wordMapDestroy": "The typed void deallocator declaration retains an unused third map argument to preserve the ROM call."
+        "wordMapInitialize": "Canonical heap allocation with the unused fourth map argument removed changes wordMapInitialize instructions and fails the ROM gate. Keep the typed four-argument allocator view pending IDO allocation/scheduling evidence. Word-map destruction independently adopts heap_free.h and preserves all strict objects."
       },
       "locations": {
         "raw_offset_candidates": {
           "G_TEXTURE_IMAGE_FRAC - 1": [
-            "38:51",
-            "39:31",
-            "192:51",
-            "193:31",
-            "1152:51",
-            "1153:31"
+            "39:51",
+            "40:31",
+            "193:51",
+            "194:31",
+            "1153:51",
+            "1154:31"
           ],
           "remainder + 16": [
-            "101:44"
+            "102:44"
           ],
           "alignedWidth - 1": [
-            "102:94",
-            "108:99",
-            "114:100",
-            "121:38",
-            "345:61",
-            "362:49",
-            "404:58",
-            "420:54",
-            "451:72",
-            "469:54",
-            "500:72",
-            "517:68",
-            "1043:76",
-            "1050:72",
-            "1242:75",
-            "1250:75",
-            "1264:86",
-            "1272:86"
+            "103:94",
+            "109:99",
+            "115:100",
+            "122:38",
+            "346:61",
+            "363:49",
+            "405:58",
+            "421:54",
+            "452:72",
+            "470:54",
+            "501:72",
+            "518:68",
+            "1044:76",
+            "1051:72",
+            "1243:75",
+            "1251:75",
+            "1265:86",
+            "1273:86"
           ],
           "height - 1": [
-            "103:36",
-            "109:33",
-            "115:33",
-            "121:56",
-            "1052:90",
-            "1121:33"
+            "104:36",
+            "110:33",
+            "116:33",
+            "122:56",
+            "1053:90",
+            "1122:33"
           ],
           "remainder + 8": [
-            "107:44"
+            "108:44"
           ],
           "remainder + 4": [
-            "113:44",
-            "119:44",
-            "1032:37"
+            "114:44",
+            "120:44",
+            "1033:37"
           ],
           "r + 16": [
-            "158:48"
+            "159:48"
           ],
           "r + 8": [
-            "164:48"
+            "165:48"
           ],
           "r + 4": [
-            "170:48",
-            "176:48"
+            "171:48",
+            "177:48"
           ],
           "texelStepX + 0": [
-            "265:21"
-          ],
-          "texelStepY + 0": [
             "266:21"
           ],
+          "texelStepY + 0": [
+            "267:21"
+          ],
           "step - 1": [
-            "320:16",
-            "333:49",
-            "362:84",
-            "382:16",
-            "392:49",
-            "420:89",
-            "429:16",
-            "439:49",
-            "469:89",
-            "478:16",
-            "488:49",
-            "517:103",
-            "1236:16",
-            "1237:53",
-            "1251:59",
-            "1258:16",
-            "1259:53",
-            "1273:56"
+            "321:16",
+            "334:49",
+            "363:84",
+            "383:16",
+            "393:49",
+            "421:89",
+            "430:16",
+            "440:49",
+            "470:89",
+            "479:16",
+            "489:49",
+            "518:103",
+            "1237:16",
+            "1238:53",
+            "1252:59",
+            "1259:16",
+            "1260:53",
+            "1274:56"
           ],
           "scaleY - 1": [
-            "326:37",
-            "388:37",
-            "435:37",
-            "484:37",
-            "918:33"
+            "327:37",
+            "389:37",
+            "436:37",
+            "485:37",
+            "919:33"
           ],
           "height + 0": [
-            "326:63",
-            "388:63",
-            "435:63",
-            "484:63"
+            "327:63",
+            "389:63",
+            "436:63",
+            "485:63"
           ],
           "index + 1": [
-            "337:60",
-            "339:81",
-            "396:60",
-            "398:81",
-            "443:60",
-            "445:81",
-            "492:60",
-            "494:81",
-            "1239:24",
-            "1261:24"
+            "338:60",
+            "340:81",
+            "397:60",
+            "399:81",
+            "444:60",
+            "446:81",
+            "493:60",
+            "495:81",
+            "1240:24",
+            "1262:24"
           ],
           "width + 1": [
-            "454:66"
+            "455:66"
           ],
           "aligned - 1": [
-            "685:63",
-            "694:65",
-            "703:66",
-            "712:66"
+            "686:63",
+            "695:65",
+            "704:66",
+            "713:66"
           ],
           "stripRows - 1": [
-            "922:60",
-            "956:41",
-            "958:41"
+            "923:60",
+            "957:41",
+            "959:41"
           ],
           "stripIndex + 1": [
-            "928:54",
-            "931:70"
+            "929:54",
+            "932:70"
           ],
           "capacity - 1": [
-            "1038:49",
-            "1050:107"
+            "1039:49",
+            "1051:107"
           ],
           "count + 1": [
-            "1040:20"
+            "1041:20"
           ],
           "y - 1U": [
-            "1041:36"
+            "1042:36"
           ],
           "drawWidth - 1U": [
-            "1045:67",
-            "1052:63"
+            "1046:67",
+            "1053:63"
           ],
           "width - 1": [
-            "1120:95"
+            "1121:95"
           ],
           "drawWidth - 1": [
-            "1124:15"
+            "1125:15"
           ]
         }
       }

@@ -1,3 +1,4 @@
+#include "heap_free.h"
 #include "word_map_lookup.h"
 #include "matrix_basic.h"
 #include "texture_setup.h"
@@ -68,7 +69,6 @@ typedef char AnimatedTextureStateSizeCheck[(sizeof(AnimatedTextureState) == 0x4C
 typedef char
     AnimatedTextureStateListsOffsetCheck[(((u32) & (((AnimatedTextureState *)0)->displayLists)) == 0x40) ? 1 : -1];
 
-void heapFreeLocal();
 /// Per-actor-kind part-table slot counts, including the root slot.
 /// \note Original identifier: \c D_800B687C (0x800B687C).
 extern s32 gActorPartCounts[];
@@ -1041,7 +1041,7 @@ void actorReleaseAnimatedTextureState(u8 *actor) {
     AnimatedTextureState *obj;
 
     obj = ((RuntimeObjectPrefix *)actor)->state.pointer;
-    heapFreeLocal(&gGameHeap, obj->displayLists[0], obj);
+    heapFreeLocal(&gGameHeap, obj->displayLists[0]);
     heapFreeLocal(&gGameHeap, obj);
 }
 

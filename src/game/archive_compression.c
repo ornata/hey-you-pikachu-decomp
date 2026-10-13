@@ -1,3 +1,4 @@
+#include "heap_alloc.h"
 #include "heap_free.h"
 #include "heap_tail.h"
 #include "common.h"
@@ -50,7 +51,6 @@ s32 archiveBuildFromSources(s32 memberCount, s32 *sourceAddresses, s32 *sourceBy
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
-void *heapAllocLocal(HpHdr *, u32, u16);
 s32 heapGetAllocationSize(u8 *, s32);
 
 /// Reuse an output allocation if large enough, otherwise free and replace it.
