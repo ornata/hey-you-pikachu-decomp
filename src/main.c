@@ -1,3 +1,4 @@
+#include "controller_accessory.h"
 #include "render_state.h"
 #include "game_heap.h"
 #include "font_cache.h"
@@ -96,9 +97,6 @@ void runtimeStartMainThread(void *stack);
 
 
 
-typedef struct PadSlot {
-    u8 data[0x68];
-} PadSlot;
 
 /// Controller ports enabled by device initialization.
 /// Original: D_800ACE80 (0x800ACE80).
@@ -109,9 +107,6 @@ extern u8 gControllerConnectedPortMask;
 /// Persistent cached device status for each controller port.
 /// Original: D_800ACE88 (0x800ACE88).
 extern OSContStatus gControllerPortStatus[4];
-/// Persistent accessory context storage for each controller port.
-/// Original: D_800ACE98 (0x800ACE98).
-extern PadSlot gControllerAccessoryStorage[4];
 /// Shared serial I/O completion queue owned by the controller subsystem.
 /// Original: D_800AD038 (0x800AD038).
 extern OSMesgQueue gSerialCompletionQueue;

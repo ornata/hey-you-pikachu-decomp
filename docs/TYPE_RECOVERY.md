@@ -4363,3 +4363,13 @@ Ghidra at 0x80002650 confirms controller dispatch, while linked halfwords at
 0x8009D414 and 0x8009D418 confirm partial/frame completion values four and two.
 All six edited source units and dependent headers preserve strict baseline objects
 and the clean retail ROM match.
+
+### Controller accessory context and lifecycle
+
+`controller_accessory.h` shares persistent OSPfs storage and accessory-state contracts.
+Both boot/controller units replace duplicate 0x68-byte PadSlot wrappers. The typed
+accessor no longer requires motor API casts; a target size check guards the observed
+stride, also confirmed by Ghidra at 0x8000284C. Controller discovery and rumble setup,
+retry and access use named unavailable/ready/pending/failed states. Unobserved values
+remain unnamed. Borrowed contexts may be reinitialized on device changes.
+All accepted changes preserve BSS layout, strict baseline objects and clean ROM bytes.

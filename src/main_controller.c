@@ -1,3 +1,4 @@
+#include "controller_accessory.h"
 #include "controller_service.h"
 #include "render_state.h"
 #include "game_heap.h"
@@ -48,9 +49,6 @@ void runtimeStartMainThread(void *stack);
 #define IDLE_THREAD_PRI 10
 
 
-typedef struct PadSlot {
-    u8 data[0x68];
-} PadSlot;
 
 /// Controller ports enabled by device initialization.
 /// Original: D_800ACE80 (0x800ACE80).
@@ -63,7 +61,7 @@ u8 gControllerConnectedPortMask;
 OSContStatus gControllerPortStatus[4];
 /// Persistent accessory context storage for each controller port.
 /// Original: D_800ACE98 (0x800ACE98).
-PadSlot gControllerAccessoryStorage[4];
+OSPfs gControllerAccessoryStorage[4];
 /// Shared serial I/O completion queue owned by the controller subsystem.
 /// Original: D_800AD038 (0x800AD038).
 OSMesgQueue gSerialCompletionQueue;
@@ -354,7 +352,7 @@ void controllerSetAccessoryState(s32 port, s32 state) {
 /// Get the persistent accessory context for a controller port.
 /// \param port Controller port index from zero through three.
 /// \returns Borrowed storage suitable for the port’s accessory context.
-PadSlot *controllerGetAccessoryStorage(s32 port) {
+OSPfs *controllerGetAccessoryStorage(s32 port) {
     return &gControllerAccessoryStorage[port];
 }
 
@@ -381,9 +379,9 @@ void controllerRefreshConnectionState(void) {
             gControllerConnectedPortMask |= mask;
         }
         if (gControllerPortStatus[i].errno != 0 || !(gControllerPortStatus[i].type & 4) || gControllerPortStatus[i].status != 1) {
-            gControllerAccessoryState[i] = 0;
-        } else if (gControllerAccessoryState[i] == 0) {
-            gControllerAccessoryState[i] = 3;
+            gControllerAccessoryState[i] = CONTROLLER_ACCESSORY_UNAVAILABLE;
+        } else if (gControllerAccessoryState[i] == CONTROLLER_ACCESSORY_UNAVAILABLE) {
+            gControllerAccessoryState[i] = CONTROLLER_ACCESSORY_PENDING;
         }
         mask <<= 1;
     }
@@ -397,7 +395,7 @@ void controllerInitializeDevices(s32 count) {
     s32 i;
 
     for (i = 0; i < 4; i++) {
-        gControllerAccessoryState[i] = 3;
+        gControllerAccessoryState[i] = CONTROLLER_ACCESSORY_PENDING;
     }
     osCreateMesgQueue(&gControllerCommandQueue, gControllerCommandMessages, 16);
     osCreateMesgQueue(&gSerialCompletionQueue, gSerialCompletionMessages, 10);
@@ -444,12 +442,12 @@ s32 controllerInitializeRumblePak(s32 port) {
     OSMesgQueue *sp24;
 
     sp24 = (OSMesgQueue *)serialGetMessageQueue();
-    if (osMotorInit(sp24, (OSPfs *)controllerGetAccessoryStorage(port), port) == 0) {
-        controllerSetAccessoryState(port, 2);
+    if (osMotorInit(sp24, controllerGetAccessoryStorage(port), port) == 0) {
+        controllerSetAccessoryState(port, CONTROLLER_ACCESSORY_READY);
         return 1;
     }
-    if (controllerGetAccessoryState(port) == 2) {
-        controllerSetAccessoryState(port, 3);
+    if (controllerGetAccessoryState(port) == CONTROLLER_ACCESSORY_READY) {
+        controllerSetAccessoryState(port, CONTROLLER_ACCESSORY_PENDING);
     }
     return 0;
 }
@@ -514,7 +512,7 @@ extern char gControllerRumbleGiveUpFormat[];
 void controllerRetryRumbleInitialization(s32 port) {
     ControllerRumbleMotorState *p;
 
-    if ((controllerGetAccessoryState(port) != 2) && (controllerGetAccessoryState(port) != 3)) {
+    if ((controllerGetAccessoryState(port) != CONTROLLER_ACCESSORY_READY) && (controllerGetAccessoryState(port) != CONTROLLER_ACCESSORY_PENDING)) {
         DEBUG_PRINTF((gControllerRumbleWrongAccessoryFormat, port));
         *(s32 *)(gControllerRumbleMotorState + port * 0x18) = 0;
         return;
@@ -532,7 +530,7 @@ void controllerRetryRumbleInitialization(s32 port) {
                 p->deadlineTicks = osGetTime() + OS_USEC_TO_CYCLES(1000000);
             } else {
                 DEBUG_PRINTF((gControllerRumbleGiveUpFormat, port));
-                controllerSetAccessoryState(port, 4);
+                controllerSetAccessoryState(port, CONTROLLER_ACCESSORY_FAILED);
                 p->state = 0;
             }
         }
@@ -543,7 +541,7 @@ void controllerRetryRumbleInitialization(s32 port) {
 /// \param port Controller port index from zero through three; requires initialized controller communication.
 /// \returns Nothing.
 void controllerStartRumbleMotor(s32 port) {
-    if ((controllerGetAccessoryState(port) == 2) && (__osMotorAccess((OSPfs *)controllerGetAccessoryStorage(port), 1) == 0)) {
+    if ((controllerGetAccessoryState(port) == CONTROLLER_ACCESSORY_READY) && (__osMotorAccess(controllerGetAccessoryStorage(port), 1) == 0)) {
         *(s32 *)(gControllerRumbleMotorState + port * 0x18) = 1;
         return;
     }
@@ -556,7 +554,7 @@ void controllerStartRumbleMotor(s32 port) {
 void controllerStopRumbleMotor(s32 port) {
     ControllerRumbleMotorState *p;
 
-    if ((controllerGetAccessoryState(port) == 2) && (__osMotorAccess((OSPfs *)controllerGetAccessoryStorage(port), 0) == 0)) {
+    if ((controllerGetAccessoryState(port) == CONTROLLER_ACCESSORY_READY) && (__osMotorAccess(controllerGetAccessoryStorage(port), 0) == 0)) {
         p = (ControllerRumbleMotorState *)(gControllerRumbleMotorState + port * 0x18);
         if (++p->attempts >= 3) {
             p->state = 0;
@@ -721,7 +719,7 @@ void controllerInitializeRumbleState(void) {
     for (i = 0; i < 4; i++) {
         *(s32 *)(gControllerRumbleMotorState + i * 0x18) = 0;
         *(s32 *)(gControllerRumblePatternState + i * 0x28) = 0;
-        if (controllerGetAccessoryState(i) == 3) {
+        if (controllerGetAccessoryState(i) == CONTROLLER_ACCESSORY_PENDING) {
             controllerInitializeRumblePak(i);
         }
     }
