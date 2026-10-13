@@ -1,3 +1,4 @@
+#include "particle_cluster.h"
 #include "animated_radial_effect.h"
 #include "flickering_effect.h"
 #include "converging_particle.h"
@@ -603,7 +604,6 @@ void actionCommandEmitPairedTargetedBursts(u8 *object, u8 *state, BurstCommand *
     }
 }
 
-u8 *particleClusterCreate(s32, f32, f32, f32, u8 *);
 typedef struct {
     s32 target;
     f32 lifetime;

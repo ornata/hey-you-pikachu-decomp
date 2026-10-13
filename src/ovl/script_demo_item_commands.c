@@ -1,3 +1,4 @@
+#include "particle_cluster.h"
 #include "effect_emitter.h"
 #include "item_participation.h"
 #include "item_queries.h"
@@ -85,7 +86,6 @@ s32 scriptCommandRemoveMazeBlock(u8 *object) {
     return 0;
 }
 
-u8 *particleClusterCreate(s32, f32, f32, f32, s32);   /* extern */
 void itemStartDirectionMotion(s32, f32, f32, f32);    /* extern */
 
 /// Animate the item identified by the script arguments and create its requested particle cluster, then provide a zero script result.
@@ -111,7 +111,7 @@ s32 scriptCommandCreateItemParticles(u8 *object) {
     sp2C = objectResolveAvailableHandle(sp_pop);
     if (sp2C != 0) {
         itemStartDirectionMotion((s32)sp2C, sp38, 100.0f, 1000.0f);
-        particleClusterCreate(sp3C, sp38, sp34, sp30, (s32)sp2C);
+        particleClusterCreate(sp3C, sp38, sp34, sp30, sp2C);
     }
     scriptVmPushInteger(vmAddress, 0);
     return 0;

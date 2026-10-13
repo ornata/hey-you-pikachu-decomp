@@ -1,3 +1,4 @@
+#include "particle_cluster.h"
 #include "orange_effect.h"
 #include "text_window.h"
 #include "item_queries.h"
@@ -361,7 +362,6 @@ s32 actorScriptFinishAreaTransition(u8 *actor) {
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
-u8 *particleClusterCreate(s32, f32, f32, f32, u8 *);
 u32 randomNext(void);
 /// Transform the actor to the script-selected kind with a timed visual and audio effect.
 /// \param object Actor to transform while preserving its script context.

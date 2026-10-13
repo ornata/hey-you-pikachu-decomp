@@ -3688,3 +3688,7 @@ original expiry checks and target-availability behavior.
 `orange_effect.h` supplies the creation contracts for individual expanding effects
 and timed pulse emitters. Actor-script actions use the shared declaration; target
 handles and floating lifetimes retain their established ABI and ownership rules.
+
+`particle_cluster.h` supplies the creation contract to action-script, actor-action
+and demo-item consumers. The demo caller now passes the source object as a pointer
+through the canonical declaration; the original register arguments remain identical.
