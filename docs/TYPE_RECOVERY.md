@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,728 / 80 |
+| Raw offset candidates | 4,040 / 86 | 2,705 / 79 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3321,3 +3321,14 @@ names its latest attached-effect handle at checked offset 0x404, replacing only
 the supported final word of its unresolved tail. Ghidra 0x80013130 confirms the
 state fields, replacement handle lookup and publication of the new handle.
 All four table conversions and the state/header conversion preserve strict objects.
+
+### Attached-effect creation and placement contracts
+
+`attached_effect.h` consolidates three caller declarations and the provider's
+creation contract: initialized actor/anchor lifetime, supported resource indices,
+previous-effect destruction request and object-system-managed result lifetime.
+Placement/drawing use checked object position, rotation, scale, radius, world
+position and display-list members. Camera-distance evaluation uses the checked
+`MatrixCamera.eye` layout instead of a 56-float array view. Ghidra 0x800132E0
+confirms anchor world position, camera-relative distance and owner size inputs.
+Every provider conversion and all three consumer rebuilds preserve strict objects.

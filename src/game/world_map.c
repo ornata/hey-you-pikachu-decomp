@@ -1,3 +1,4 @@
+#include "attached_effect.h"
 #include "script_vm_globals.h"
 #include "actor_behavior.h"
 #include "progress_value.h"
@@ -546,7 +547,6 @@ void wholeMapEnsureAvailableSelection(s32 min, s32 max, s32 step) {
 
 s32 audioPlaySoundEffect(s32);
 void wholeMapEnsureAvailableSelection(s32, s32, s32);
-u8 *attachedEffectCreate(u8 *, s32, s32);
 typedef struct MenuController2E {
     u32 held, pressed, released, repeated;
     s32 stickX, stickY;

@@ -1,3 +1,4 @@
+#include "attached_effect.h"
 #include "item_participation.h"
 #include "item_search.h"
 #include "actor_action_cue.h"
@@ -847,7 +848,6 @@ void actionCommandCreateEffectAtActorOrTarget(u8 *actor, u8 *state, u8 *command,
     }
 }
 
-u8 *attachedEffectCreate(u8 *, s32, s32); /* extern */
 
 /// Creates an animated effect attached to the actor, replacing its previous attached effect.
 /// \param actor Actor supplying the effect owner or position.

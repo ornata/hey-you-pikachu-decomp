@@ -1,6 +1,8 @@
 /// \file
 /// Creates and advances actor-attached effects with frame and opacity animation.
 
+#include "attached_effect.h"
+#include "camera_types.h"
 #include "actor_script.h"
 #include "object_types.h"
 #include "opacity_animation_programs.h"
@@ -125,7 +127,7 @@ extern f32 gAttachedEffectMinimumViewScale;
 extern f32 gAttachedEffectViewScaleCoefficient;
 /// Camera storage used for view transforms, viewports and color overlays.
 /// \note Original identifier: \c D_800ABCF0 (0x800ABCF0).
-extern f32 gRenderCameras[][56];
+extern MatrixCamera gRenderCameras[];
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;
@@ -151,36 +153,36 @@ void attachedEffectUpdate(u8 *obj) {
     step = ((AttachedEffectState *)state)->playbackRate * gRuntimeFrameSeconds;
     owner = ((AttachedEffectState *)state)->owner;
     view = (f32 *)actorFindPart(owner, 0x79);
-    *(f32 *)(obj + 0x18) = view[17];
-    *(f32 *)(obj + 0x1C) = view[18];
-    *(f32 *)(obj + 0x20) = view[19];
-    *(f32 *)(obj + 0x44) = *(f32 *)(obj + 0x18);
-    *(f32 *)(obj + 0x48) = *(f32 *)(obj + 0x1C);
-    *(f32 *)(obj + 0x4C) = *(f32 *)(obj + 0x20);
+    ((RuntimeObjectPrefix *)obj)->position[0] = ((RuntimeObjectPrefix *)view)->worldPosition[0];
+    ((RuntimeObjectPrefix *)obj)->position[1] = ((RuntimeObjectPrefix *)view)->worldPosition[1];
+    ((RuntimeObjectPrefix *)obj)->position[2] = ((RuntimeObjectPrefix *)view)->worldPosition[2];
+    ((RuntimeObjectPrefix *)obj)->worldPosition[0] = ((RuntimeObjectPrefix *)obj)->position[0];
+    ((RuntimeObjectPrefix *)obj)->worldPosition[1] = ((RuntimeObjectPrefix *)obj)->position[1];
+    ((RuntimeObjectPrefix *)obj)->worldPosition[2] = ((RuntimeObjectPrefix *)obj)->position[2];
     objectOrientAlongCameraView(obj);
-    delta[0] = *(f32 *)(obj + 0x44) - gRenderCameras[gRenderCameraIndex][0];
-    delta[1] = *(f32 *)(obj + 0x48) - gRenderCameras[gRenderCameraIndex][1];
-    delta[2] = *(f32 *)(obj + 0x4C) - gRenderCameras[gRenderCameraIndex][2];
+    delta[0] = ((RuntimeObjectPrefix *)obj)->worldPosition[0] - gRenderCameras[gRenderCameraIndex].eye[0];
+    delta[1] = ((RuntimeObjectPrefix *)obj)->worldPosition[1] - gRenderCameras[gRenderCameraIndex].eye[1];
+    delta[2] = ((RuntimeObjectPrefix *)obj)->worldPosition[2] - gRenderCameras[gRenderCameraIndex].eye[2];
     factor = vector3Length(delta);
     minimum = gAttachedEffectMinimumViewScale;
-    factor = (factor + *(f32 *)owner * 1000.0f) * gAttachedEffectViewScaleCoefficient;
+    factor = (factor + ((RuntimeObjectPrefix *)owner)->scale[0] * 1000.0f) * gAttachedEffectViewScaleCoefficient;
     if (factor < minimum) {
         factor = minimum;
     } else if (factor > 4.0f) {
         factor = 4.0f;
     }
-    *(f32 *)(obj + 0x1C) += *(f32 *)(owner + 0x24) * factor * 40.0f;
+    ((RuntimeObjectPrefix *)obj)->position[1] += ((RuntimeObjectPrefix *)owner)->radius * factor * 40.0f;
     factor *= ((AttachedEffectState *)state)->baseScale;
-    *(f32 *)(obj + 0) = factor;
-    *(f32 *)(obj + 4) = factor;
-    *(f32 *)(obj + 8) = factor;
+    ((RuntimeObjectPrefix *)obj)->scale[0] = factor;
+    ((RuntimeObjectPrefix *)obj)->scale[1] = factor;
+    ((RuntimeObjectPrefix *)obj)->scale[2] = factor;
     if (((AttachedEffectState *)state)->reverseFacing != 0) {
-        *(f32 *)(obj + 0x10) += 180.0f;
-        while (*(f32 *)(obj + 0x10) < 0.0f) {
-            *(f32 *)(obj + 0x10) += 360.0f;
+        ((RuntimeObjectPrefix *)obj)->rotation[1] += 180.0f;
+        while (((RuntimeObjectPrefix *)obj)->rotation[1] < 0.0f) {
+            ((RuntimeObjectPrefix *)obj)->rotation[1] += 360.0f;
         }
-        while (*(f32 *)(obj + 0x10) >= 360.0f) {
-            *(f32 *)(obj + 0x10) -= 360.0f;
+        while (((RuntimeObjectPrefix *)obj)->rotation[1] >= 360.0f) {
+            ((RuntimeObjectPrefix *)obj)->rotation[1] -= 360.0f;
         }
     }
     animationIntegerTrackEvaluate(&((AttachedEffectState *)state)->frameTrack, &value, step);
@@ -202,5 +204,5 @@ s32 attachedEffectPrepareDraw(u8 *object) {
     textureLoadForDraw(&gRenderDisplayListCursor, 4, ((AttachedEffectState *)v)->frameTrack.value);
     c = &((AttachedEffectState *)v)->color;
     gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, c->r, c->g, c->b, c->a);
-    return *(s32 *)(object + 0x30);
+    return (s32)((RuntimeObjectPrefix *)object)->displayList;
 }
