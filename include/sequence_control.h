@@ -34,4 +34,21 @@ s32 sequenceControlScheduleStop(SequenceControlState *state, f64 delay);
 /// \note Original decompilation identifier: \c func_800058F4 (0x800058F4).
 s32 sequenceControlRequestVolume(SequenceControlState *state, f64 duration, f64 level);
 
+/// Encode a sequence-engine volume change event.
+/// \param duration Fade duration in seconds, quantized downward to sixteenths and clamped to [0, 127/16].
+/// \param level Target volume fraction, quantized downward to 127ths and clamped to [0, 1].
+/// \param event Destination with room for eight event bytes.
+/// \returns 8, the encoded event length.
+/// \note Original decompilation identifier: \c func_80005938 (0x80005938).
+s32 sequenceControlEncodeVolumeEvent(f64 duration, f64 level, u8 *event);
+
+/// Get the next engine control or MIDI event and update the playback stop deadline.
+/// \param state Sequence control state to advance.
+/// \param event Destination for the event; must have room for at least eight bytes.
+/// \param capacity Event buffer capacity in bytes.
+/// \param delta Receives the delay in seconds, zero for an immediate control event, or -1 after playback releases have ended.
+/// \returns The event length, including a one-byte reset marker when requested, or zero when no event remains.
+/// \note Original decompilation identifier: \c func_800059E4 (0x800059E4).
+s32 sequenceControlReadEvent(SequenceControlState *state, u8 *event, s32 capacity, f64 *delta);
+
 #endif

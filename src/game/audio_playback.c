@@ -176,7 +176,6 @@ s32 audioGetOutputMode(void) {
 extern SequenceVoice gAudioSequenceVoices[];
 
 void sequenceEngineRegisterSequence(AudioSequenceSlot *, u8 *, s32, s32, u8 *, SequenceControlState *, void *);
-s32 sequenceControlReadEvent(u8 *, u8 *, s32, f64 *);
 
 /// Initialize the shared sequence synthesizer and its four playback slots.
 /// \param heap Unused audio heap address.

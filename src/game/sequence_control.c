@@ -79,30 +79,30 @@ s32 sequenceControlRequestVolume(SequenceControlState *state, f64 duration, f64 
 /// \returns 8, the encoded event length.
 /// \note Original decompilation identifier: \c func_80005938 (0x80005938).
 s32 sequenceControlEncodeVolumeEvent(f64 duration, f64 level, u8 *event) {
-    s32 var_a0;
-    s32 var_v1;
+    s32 encodedLevel;
+    s32 encodedDuration;
 
-    var_v1 = (s32)(duration * 16.0);
-    if (var_v1 < 0) {
-        var_v1 = 0;
+    encodedDuration = (s32)(duration * 16.0);
+    if (encodedDuration < 0) {
+        encodedDuration = 0;
     }
-    if (var_v1 >= 0x80) {
-        var_v1 = 0x7F;
+    if (encodedDuration >= 0x80) {
+        encodedDuration = 0x7F;
     }
-    var_a0 = (s32)(level * 127.0);
-    if (var_a0 < 0) {
-        var_a0 = 0;
+    encodedLevel = (s32)(level * 127.0);
+    if (encodedLevel < 0) {
+        encodedLevel = 0;
     }
-    if (var_a0 >= 0x80) {
-        var_a0 = 0x7F;
+    if (encodedLevel >= 0x80) {
+        encodedLevel = 0x7F;
     }
     event[0] = 0xF0;
     event[1] = 0x7F;
     event[2] = 0x7F;
     event[3] = 4;
     event[4] = 3;
-    event[5] = var_v1;
-    event[6] = var_a0;
+    event[5] = encodedDuration;
+    event[6] = encodedLevel;
     event[7] = 0xF7;
     return 8;
 }
@@ -115,37 +115,37 @@ s32 midiSequenceReadEvent(u8 *, u8 *, s32, f64 *);
 /// \param delta Receives the delay in seconds, zero for an immediate control event, or -1 after playback releases have ended.
 /// \returns The event length, including a one-byte reset marker when requested, or zero when no event remains.
 /// \note Original decompilation identifier: \c func_800059E4 (0x800059E4).
-s32 sequenceControlReadEvent(u8 *state, u8 *event, s32 capacity, f64 *delta) {
+s32 sequenceControlReadEvent(SequenceControlState *state, u8 *event, s32 capacity, f64 *delta) {
     s32 result;
-    if (((SequenceControlState *)state)->stopDelay == 0.0) {
-        midiSequenceStop(state);
-        ((SequenceControlState *)state)->stopDelay = -1.0;
+    if (state->stopDelay == 0.0) {
+        midiSequenceStop((u8 *)state);
+        state->stopDelay = -1.0;
     }
-    if (((SequenceControlState *)state)->resetPending != 0) {
+    if (state->resetPending != 0) {
         *delta = 0.0;
         *event = 0xFF;
-        ((SequenceControlState *)state)->resetPending = 0;
+        state->resetPending = 0;
         return 1;
     }
-    if (((SequenceControlState *)state)->immediateLevel >= 0.0) {
-        result = sequenceControlEncodeVolumeEvent(0.0, ((SequenceControlState *)state)->immediateLevel, event);
-        ((SequenceControlState *)state)->immediateLevel = -1.0;
+    if (state->immediateLevel >= 0.0) {
+        result = sequenceControlEncodeVolumeEvent(0.0, state->immediateLevel, event);
+        state->immediateLevel = -1.0;
         *delta = 0.0;
         return result;
     }
-    if (((SequenceControlState *)state)->fadeDuration >= 0.0) {
-        result = sequenceControlEncodeVolumeEvent(((SequenceControlState *)state)->fadeDuration,
-                                                  ((SequenceControlState *)state)->fadeLevel, event);
-        ((SequenceControlState *)state)->fadeDuration = -1.0;
+    if (state->fadeDuration >= 0.0) {
+        result = sequenceControlEncodeVolumeEvent(state->fadeDuration,
+                                                  state->fadeLevel, event);
+        state->fadeDuration = -1.0;
         *delta = 0.0;
         return result;
     }
-    result = midiSequenceReadEvent(state, event, capacity, delta);
-    if (*delta > 0.0 && ((SequenceControlState *)state)->stopDelay >= 0.0) {
-        if (((SequenceControlState *)state)->stopDelay < *delta) {
-            ((SequenceControlState *)state)->stopDelay = 0.0;
+    result = midiSequenceReadEvent((u8 *)state, event, capacity, delta);
+    if (*delta > 0.0 && state->stopDelay >= 0.0) {
+        if (state->stopDelay < *delta) {
+            state->stopDelay = 0.0;
         } else {
-            ((SequenceControlState *)state)->stopDelay -= *delta;
+            state->stopDelay -= *delta;
         }
     }
     return result;
