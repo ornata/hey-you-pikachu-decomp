@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 1907,
-      "unique_spellings": 807,
+      "occurrences": 1903,
+      "unique_spellings": 805,
       "files": 74
     }
   },
@@ -2911,30 +2911,13 @@
       ],
       "matching_exceptions": {
         "sequenceEngineApplyDataEntry": "EngineChannel rpnLow/rpnHigh/pitchBendRange member rewrite changes function instruction bytes and fails ROM match; retain the byte view until load scheduling is isolated. The shared channel layout records the known fields.",
-        "sequenceEngineStopVoice": "Typed driver/sequence/voice parameters change function instruction bytes and fail ROM match, both with &voiceRecord->native and with retained integer native-voice address arithmetic. Keep target-address parameters pending register-allocation evidence; callers and recycle/release interfaces use established shared record types."
+        "sequenceEngineStopVoice": "Typed driver/sequence/voice parameters change function instruction bytes and fail ROM match, both with &voiceRecord->native and with retained integer native-voice address arithmetic. Keep target-address parameters pending register-allocation evidence; callers and recycle/release interfaces use established shared record types.",
+        "sequenceEngineGetVoiceVolume": "A typed driver/sequence/voice and EngineChannel member rewrite fails ROM matching. Known tremolo, expression, volume, fade and envelope fields remain described in shared layouts; isolate load scheduling and arithmetic representation before replacing the retained byte cursor."
       },
       "locations": {
         "raw_offset_candidates": {
           "voiceRecord + 0x14": [
             "120:56"
-          ],
-          "driver + 0x1C": [
-            "184:17"
-          ],
-          "voice + 0x10": [
-            "187:26",
-            "407:29"
-          ],
-          "voice + 0x30": [
-            "187:77"
-          ],
-          "voice + 0x14": [
-            "209:23",
-            "269:52",
-            "470:54",
-            "471:60",
-            "475:54",
-            "623:56"
           ],
           "seq + 0x1D4": [
             "246:14",
@@ -2968,6 +2951,13 @@
             "646:33",
             "816:33"
           ],
+          "voice + 0x14": [
+            "269:52",
+            "470:54",
+            "471:60",
+            "475:54",
+            "623:56"
+          ],
           "soundCount - 1": [
             "326:46"
           ],
@@ -2996,6 +2986,9 @@
           "voice + 0x38": [
             "403:88",
             "459:22"
+          ],
+          "voice + 0x10": [
+            "407:29"
           ],
           "channel + 4": [
             "408:37"

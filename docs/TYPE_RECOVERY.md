@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 1,907 / 74 |
+| Raw offset candidates | 4,040 / 86 | 1,903 / 74 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3746,3 +3746,8 @@ Sustain, note-off and channel reset consume shared sequence/voice records. The
 checked voice word at offset 0x08 is `keyDown`: note-on sets it and the first
 matching note-off clears it, independently of sustain-deferred release. Sustain
 lift retains the original sequence-wide deferred-release behavior.
+
+Voice pan evaluation and refresh use shared driver, sound, channel and voice
+fields. Driver output controls are named `outputMode` and `masterVolume`.
+Volume evaluation retains its byte cursor after a typed member rewrite failed
+the ROM gate; recovery notes identify the next scheduling evidence needed.

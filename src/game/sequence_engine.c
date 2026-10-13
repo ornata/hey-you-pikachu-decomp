@@ -19,7 +19,7 @@ void n_alSynFreeVoice(struct N_ALVoice_s *);
 void n_alSynStopVoice(struct N_ALVoice_s *);
 
 s32 sequenceEngineSetSustain(VoicePlayer *, EngineSequence *, s32, s32);
-s32 sequenceEngineGetVoicePan(u8 *, EngineSequence *, u8 *);
+s32 sequenceEngineGetVoicePan(VoicePlayer *, EngineSequence *, SequenceVoice *);
 s32 sequenceEngineResetControllers(u8 *, u8 *);
 void sequenceEngineStopVoice(s32, s32, s32);
 f64 sequenceEngineGetVoiceUpdateInterval(s32);
@@ -178,20 +178,20 @@ s32 sequenceEngineSetSustain(VoicePlayer *driver, EngineSequence *sequence, s32 
 /// \param voice Sequence voice whose pan is evaluated.
 /// \returns The pan value from zero through 127, or 64 in mono mode.
 /// \note Original decompilation identifier: \c func_80005E14 (0x80005E14).
-s32 sequenceEngineGetVoicePan(u8 *driver, EngineSequence *sequence, u8 *voice) {
-    s32 v;
+s32 sequenceEngineGetVoicePan(VoicePlayer *driver, EngineSequence *sequence, SequenceVoice *voice) {
+    s32 pan;
 
-    if (*(u8 *)(driver + 0x1C) == 1) {
+    if (driver->outputMode == 1) {
         return 0x40;
     }
-    v = *(u8 *)(*(u8 **)(voice + 0x10) + 0xC) + (sequence->channels[*(u8 *)(voice + 0x30)].pan >> 7) - 0x40;
-    if (v < 0) {
-        v = 0;
+    pan = voice->sound->samplePan + (sequence->channels[voice->channel].pan >> 7) - 0x40;
+    if (pan < 0) {
+        pan = 0;
     }
-    if (v >= 0x80) {
-        v = 0x7F;
+    if (pan >= 0x80) {
+        pan = 0x7F;
     }
-    return v;
+    return pan;
 }
 
 /// Apply the effective stereo pan to a sequence voice.
@@ -200,13 +200,13 @@ s32 sequenceEngineGetVoicePan(u8 *driver, EngineSequence *sequence, u8 *voice) {
 /// \param voice Sequence voice whose pan is evaluated.
 /// \returns Zero.
 /// \note Original decompilation identifier: \c func_80005E80 (0x80005E80).
-s32 sequenceEngineUpdateVoicePan(u8 *driver, EngineSequence *sequence, u8 *voice) {
+s32 sequenceEngineUpdateVoicePan(VoicePlayer *driver, EngineSequence *sequence, SequenceVoice *voice) {
     s32 pan;
 
     pan = sequenceEngineGetVoicePan(driver, sequence, voice);
-    if (pan != ((SequenceVoice *)voice)->pan) {
-        ((SequenceVoice *)voice)->pan = pan;
-        n_alSynSetPan(voice + 0x14, pan & 0xFF, voice);
+    if (pan != voice->pan) {
+        voice->pan = pan;
+        n_alSynSetPan(&voice->native, pan & 0xFF, voice);
     }
     return 0;
 }
@@ -265,7 +265,7 @@ s32 sequenceEngineResetControllers(u8 *driver, u8 *seq) {
     voice = *(u8 **)(seq + 0x10);
     if (voice != NULL) {
         do {
-            sequenceEngineUpdateVoicePan(driver, (EngineSequence *)seq, voice);
+            sequenceEngineUpdateVoicePan((VoicePlayer *)driver, (EngineSequence *)seq, (SequenceVoice *)voice);
             n_alSynSetFXMix((struct N_ALVoice_s *)(voice + 0x14), ((EngineSequence *)seq)->channels[((SequenceVoice *)voice)->channel].fxMix);
             voice = *(u8 **)voice;
         } while (voice != NULL);
@@ -466,7 +466,7 @@ void sequenceEngineNoteOn(u8 *driver, u8 *seq, s32 channel, s32 key, s32 velocit
             }
             ((EngineSequence *)seq)->channels[channel].lastKey = key;
             ((SequenceVoice *)voice)->pitch = sequenceEngineGetVoicePitchRatio(seq, voice);
-            ((SequenceVoice *)voice)->pan = sequenceEngineGetVoicePan(driver, (EngineSequence *)seq, voice);
+            ((SequenceVoice *)voice)->pan = sequenceEngineGetVoicePan((VoicePlayer *)driver, (EngineSequence *)seq, (SequenceVoice *)voice);
             n_alSynAllocVoice((struct N_ALVoice_s *)(voice + 0x14), &config);
             n_alSynStartVoiceParams((struct N_ALVoice_s *)(voice + 0x14), ((SequenceVoice *)voice)->sound->wavetable,
                                     ((SequenceVoice *)voice)->pitch, ((SequenceVoice *)voice)->volume, ((SequenceVoice *)voice)->pan,
@@ -591,7 +591,7 @@ void sequenceEngineControlChange(u8 *driver, u8 *seq, s32 channel, s32 controlle
         ((EngineSequence *)seq)->channels[channel].pan = value << 7;
         for (voice = *(u8 **)(seq + 0x10); voice != NULL; voice = *(u8 **)voice) {
             if (channel == ((SequenceVoice *)voice)->channel) {
-                sequenceEngineUpdateVoicePan(driver, (EngineSequence *)seq, voice);
+                sequenceEngineUpdateVoicePan((VoicePlayer *)driver, (EngineSequence *)seq, (SequenceVoice *)voice);
             }
         }
         break;
@@ -600,7 +600,7 @@ void sequenceEngineControlChange(u8 *driver, u8 *seq, s32 channel, s32 controlle
             (((EngineSequence *)seq)->channels[channel].pan & 0x3F80) | value;
         for (voice = *(u8 **)(seq + 0x10); voice != NULL; voice = *(u8 **)voice) {
             if (channel == ((SequenceVoice *)voice)->channel) {
-                sequenceEngineUpdateVoicePan(driver, (EngineSequence *)seq, voice);
+                sequenceEngineUpdateVoicePan((VoicePlayer *)driver, (EngineSequence *)seq, (SequenceVoice *)voice);
             }
         }
         break;
@@ -898,8 +898,8 @@ void sequenceEngineInitializeDriver(VoicePlayer *p, N_ALGlobals *synth, s32 outp
 
     p->synth = synth;
     p->sequences = NULL;
-    p->bank = outputMode;
-    p->vol = 0x80;
+    p->outputMode = outputMode;
+    p->masterVolume = 0x80;
     p->maxVoices = maxVoices;
     p->voices = voices;
     for (i = 0; i < maxVoices - 1; i++) {
@@ -918,7 +918,7 @@ void sequenceEngineInitializeDriver(VoicePlayer *p, N_ALGlobals *synth, s32 outp
 /// \returns Always one.
 /// \note Original decompilation identifier: \c func_80007538 (0x80007538).
 s32 sequenceEngineSetMasterVolume(VoicePlayer *driver, f64 volume) {
-    driver->vol = (u32)(volume * 255.0);
+    driver->masterVolume = (u32)(volume * 255.0);
     return 1;
 }
 
@@ -928,7 +928,7 @@ s32 sequenceEngineSetMasterVolume(VoicePlayer *driver, f64 volume) {
 /// \returns Always one.
 /// \note Original decompilation identifier: \c func_800075E0 (0x800075E0).
 s32 sequenceEngineSetOutputMode(VoicePlayer *driver, s32 outputMode) {
-    driver->bank = outputMode;
+    driver->outputMode = outputMode;
     return 1;
 }
 
