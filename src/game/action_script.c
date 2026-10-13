@@ -1,3 +1,4 @@
+#include "runtime_lifecycle.h"
 #include "audio_playback_query.h"
 #include "object_types.h"
 #include "action_request.h"

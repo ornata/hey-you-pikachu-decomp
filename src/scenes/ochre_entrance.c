@@ -2,7 +2,7 @@
 #include "common.h"
 #include "actor_create.h"
 
-void togepiCreate(f32, f32, f32, f32, f32, u8 *, s32);
+#include "togepi.h"
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;

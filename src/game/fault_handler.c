@@ -56,7 +56,8 @@ void faultInspectDouble(s32 labelAddress, f64 value) {
     }
 }
 
-void debugTextDrawFramebuffers(char *, s32, s32);
+#include "fault_handler.h"
+#include "graphics_output.h"
 /// Flag descriptions for the saved exception cause register.
 /// \note Original identifier: \c D_8009D550 (0x8009D550).
 extern FlagDesc gFaultCauseFlagDescriptions[];
@@ -227,13 +228,13 @@ void faultDrawThreadSummary(OSThread *thread) {
     faultInspectFloat((s32)&gFaultFloatRegister26Label, context->fp26.f.f_even);
     faultInspectFloat((s32)&gFaultFloatRegister28Label, context->fp28.f.f_even);
     faultInspectFloat((s32)&gFaultFloatRegister30Label, context->fp30.f.f_even);
-    debugTextDrawFramebuffers(&gFaultThreadSummaryLabel, 0x28, 9);
+    debugTextDrawFramebuffers((u8 *)&gFaultThreadSummaryLabel, 0x28, 9);
     sprintf(buffer, &gFaultThreadIdFormat, thread->id);
-    debugTextDrawFramebuffers(buffer, 0x48, 9);
+    debugTextDrawFramebuffers((u8 *)buffer, 0x48, 9);
     sprintf(buffer, &gFaultProgramCounterFormat, context->pc);
-    debugTextDrawFramebuffers(buffer, 0x68, 9);
+    debugTextDrawFramebuffers((u8 *)buffer, 0x68, 9);
     sprintf(buffer, &gFaultReturnAddressFormat, (u32)context->ra);
-    debugTextDrawFramebuffers(buffer, 0xB8, 9);
+    debugTextDrawFramebuffers((u8 *)buffer, 0xB8, 9);
 }
 
 extern OSThread *__osGetCurrFaultedThread(void);
@@ -269,9 +270,9 @@ void faultHandlerThread(void *unused) {
         if ((s32)message == 0x10) {
         }
         if (gFaultPendingDiagnosticText != NULL) {
-            debugTextDrawFramebuffers(gFaultPendingDiagnosticText, 0x28, 9);
+            debugTextDrawFramebuffers((u8 *)gFaultPendingDiagnosticText, 0x28, 9);
             sprintf(buffer, &gFaultDiagnosticValueFormat, gFaultPendingDiagnosticValue);
-            debugTextDrawFramebuffers(buffer, 0xC8, 9);
+            debugTextDrawFramebuffers((u8 *)buffer, 0xC8, 9);
             gFaultPendingDiagnosticText = NULL;
         } else {
             faulted = __osGetCurrFaultedThread();

@@ -251,12 +251,22 @@ const char *gSaveFailurePromptLines[] = {gSaveFailureHeadingText, gSaveFailurePo
                                          gSaveFailureCheckGamePakText, gSaveFailureInsertionText,
                                          gSaveFailureContinueText};
 
-void actionScriptInitializeHook();        /* extern */
-void hudInitialize();        /* extern */
+#include "runtime_lifecycle.h"
 void runtimeAccumulatePlayTime(void);
 void runtimeShutdownAndHalt(void);
 void runtimeMainThreadEntry(void *);
-s32 runtimeGetUiPulseAlpha(void);
+#include "area_services.h"
+#include "eye_catch.h"
+#include "fault_handler.h"
+#include "graphics_output.h"
+#include "hud.h"
+#include "messenger_tracking.h"
+#include "motion_transitions.h"
+#include "object_update.h"
+#include "player_interaction.h"
+#include "render_frame.h"
+#include "runtime_services.h"
+#include "toolbox.h"
 
 
 void runtimeResetTiming(void);
@@ -304,10 +314,6 @@ void runtimeOsInfoReportNoOp(void) {
     TRACE("\n");
 }
 
-void toolboxReset(void);
-void eyeCatchInitialize(void);
-void videoConfigureMode(OSViMode, s32, s32, s32);
-void faultStartHandler(s32, s32);
 /// Canonical SDK video-interface mode table indexed by runtime and scheduler mode selection.
 /// \note Original identifier: \c D_8009DCB0 (0x8009DCB0).
 extern OSViMode osViModeTable[];
@@ -362,17 +368,6 @@ void runtimeInitializePlatform(s32 schedulerAddress) {
     *(s32 *)gRuntimeSaveParameters = 1;
 }
 
-void renderLoadAreaAssets();                          /* extern */
-void objectSystemInitialize();                          /* extern */
-void presentationInitializeForCurrentArea();                          /* extern */
-void toolboxCreateDisplayObjects();                          /* extern */
-void mazeInitialize();                          /* extern */
-void mazeRunAreaUpdateCallback();                          /* extern */
-void areaActivateDestination();                          /* extern */
-void playerInitializeForArea();                          /* extern */
-void pikachuSpawnForArea();                          /* extern */
-void itemInitializeRegistry();                          /* extern */
-void systemMenuInitialize();                          /* extern */
 /// Whether gameplay exposes microphone interaction and its HUD indicator.
 /// \note Original identifier: \c D_800722D0 (0x800722D0).
 extern s32 gGameplayMicrophoneAvailable;
@@ -616,18 +611,6 @@ void runtimeRequestGameModeChange(s32 mode) {
     runtimeAccumulatePlayTime();
 }
 
-void hudPlayerUpdateNoOp(s32);                /* extern */
-void presentationUpdateCardMode();                   /* extern */
-void presentationUpdateCollectionResultsMode();                   /* extern */
-void wholeMapUpdate();                   /* extern */
-void toolboxHandleInput();                   /* extern */
-void toolboxUpdateDisplay();                   /* extern */
-void titleScreenUpdate();                   /* extern */
-void eyeCatchBegin();                   /* extern */
-s32 eyeCatchUpdate();                       /* extern */
-void pikachuUpdateScriptAndTriggers();                   /* extern */
-void systemMenuHandleInput();                   /* extern */
-void systemMenuUpdateAnimation();                   /* extern */
 /// Save-control byte transferred independently from the progress records.
 /// \note Original identifier: \c D_8009A6F0 (0x8009A6F0).
 extern u8 gEepromSaveControl;
@@ -911,9 +894,6 @@ void runtimeCheckResetCheckpoint(const char *label, s32 unused) {
 }
 
 #include "voice_commands.h"
-void renderBeginFrame(void);
-void renderSubmitFrameBorder(void);
-void audioUpdateGameplayMusicDucking(void);
 /// Service runtime events and frames until a requested program transition is ready.
 /// \returns Nothing when the current program can be left; halts on system reset.
 /// \note Original decompilation identifier: \c func_8000BB8C (0x8000BB8C).
@@ -984,15 +964,26 @@ extern u8 ovl_DATA_START[];
 extern u8 ovl_RODATA_END[];
 extern u8 ovl_BSS_START[];
 extern u8 ovl_BSS_END[];
-void renderInitializeResources(void);
-void objectPrepareDistributedKindSearches(u16, s32);
 void runtimeRunProgramEventLoop(void);
-void actionInitializeTransitionMap(void);
-void overlayLoadFromRom(void *romStart, void *romEnd, void *destination, void *textStart, void *textEnd,
+/// Load a prelinked overlay from cartridge ROM and prepare it for execution.
+/// Blocks until the entire overlay has been read. All end addresses are exclusive.
+/// \param romStart Cartridge ROM address of the overlay's first byte.
+/// \param romEnd Cartridge ROM address immediately after the overlay image.
+/// \param destination RAM load address with room for the overlay image.
+/// \param textStart First byte of the overlay executable RAM range.
+/// \param textEnd End of the executable text range.
+/// \param dataStart First byte of the overlay initialized-data RAM range.
+/// \param dataEnd End of the data range.
+/// \param bssStart First byte of the overlay zero-initialized RAM range.
+/// \param bssEnd End of the zero-initialized range.
+/// \returns Address after BSS rounded up to a 16-byte boundary.
+///
+/// \note NONPORTABLE: ROM offsets and aligned RAM addresses use the N64 32-bit address space.
+/// \note Original decompilation identifier: \c overlayLoadFromRom (0x800135C0).
+/// \note Matching/portability: ROM offsets retain the legacy pointer-width argument view in this caller.
+/// The canonical integer-offset declaration and explicit casts change ROM code; all addresses are 32 bits.
+void *overlayLoadFromRom(void *romStart, void *romEnd, void *destination, void *textStart, void *textEnd,
                         void *dataStart, void *dataEnd, void *bssStart, void *bssEnd);
-void hudProgramInitializeNoOp(void);
-void *areaLoadNextOverlay(void);
-void messengerResetTrackedObject(void);
 extern u8 D_B140C0[];
 
 /// Run the main runtime thread through successive program lifecycles.

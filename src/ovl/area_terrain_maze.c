@@ -1,3 +1,5 @@
+#include "runtime_lifecycle.h"
+#include "area_names.h"
 #include "game_heap.h"
 #include "pikachu_actor.h"
 #include "camera_storage.h"
@@ -250,6 +252,9 @@ struct {
     s32 unknown04[3];
 } gMazeVisibilityParameters;
 
+#include "area_services.h"
+#include "object_update.h"
+#include "spatial_math.h"
 /// Check whether a world position lies outside the current area's permitted bounds.
 /// \param x World X coordinate.
 /// \param y World Y coordinate.
@@ -303,7 +308,7 @@ void areaSpawnItemInRegion(f32 *region, s32 kind) {
     itemCreate(x, y, z, 0.0f, 0.0f, kind);
 }
 
-void contactEffectCreate(f32, f32, f32);       /* extern */
+#include "contact_effect.h"
 
 /// Create a contact effect at a random horizontal position within an area region.
 /// \param region Area region providing world origin and dimensions; its top height relative to terrain
@@ -1405,7 +1410,6 @@ void areaRefreshVisibilityDistances(s32 unused) {
     gAreaNearVisibilityDistanceSquared = nearClip * nearClip * 3.0f;
 }
 
-void matrix34TransformPoint(f32 (*)[3], f32, f32, f32, f32 *, f32 *, f32 *); /* extern */
 
 /// Check whether a world position lies within the active camera's horizontal view allowance.
 /// \param x World X coordinate.
@@ -1942,7 +1946,6 @@ void mazeDestroyNodeHierarchy(u8 *node) {
     mazeDestroyNode(node);
 }
 
-void objectPrepareDistributedKindSearches(u16, s32);    /* extern */
 void mazeInitializeRoot(void);        /* extern */
 void mazeConfigureEventLinks(void); /* extern */
 
@@ -2168,8 +2171,7 @@ void areaActivateDestination(void) {
     TRACE("initArea(%p) curAreaNum:%d\n", gCurrentAreaConfiguration, gRuntimeCurrentArea);
 }
 
-void *overlayLoadFromRom(u32 romStart, u32 romEnd, u8 *destination, u8 *textStart, u8 *textEnd, u8 *dataStart,
-                         u8 *dataEnd, u8 *bssStart, u8 *bssEnd);
+#include "overlay_loader.h"
 
 /// Load and initialize the selected destination area's overlay.
 /// \returns The start of available memory following the loaded overlay, aligned to sixteen bytes.

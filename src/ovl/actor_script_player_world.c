@@ -1,3 +1,4 @@
+#include "object_script_query.h"
 #include "actor_ground.h"
 #include "player_state.h"
 #include "controller_state.h"
@@ -55,7 +56,10 @@ s32 actorScriptPushMessengerContactMode(u8 *actor) {
     return 0;
 }
 
-s32 interactionConsiderObjectInRegion(u8 *);
+#include "actor_interaction.h"
+#include "hud.h"
+#include "script_object_queries.h"
+#include "toolbox.h"
 
 /// Consider the actor for preferred interaction and test interaction-region eligibility.
 /// \param actor Actor whose script VM receives one when it qualifies for either interaction region, or zero otherwise.
@@ -81,7 +85,6 @@ s32 actorScriptPushVisibilityEnabled(u8 *actor) {
     return 0;
 }
 
-void playerSetInputKeepMask(s32); /* extern */
 
 /// Select which player controls remain enabled and yield script execution.
 /// \param actor Actor whose script VM supplies the input bits to retain, with bits 64 and 128 enabling the horizontal and vertical analog axes, and receives zero.
@@ -96,7 +99,6 @@ s32 actorScriptSetPlayerInputKeepMask(u8 *actor) {
     return 1;
 }
 
-u16 playerGetBlockedInput(void); /* extern */
 /// Current gameplay, menu or transition mode.
 /// \note Original identifier: \c D_800AE504 (0x800AE504).
 extern s32 gRuntimeGameMode;
@@ -117,7 +119,6 @@ s32 actorScriptPushBlockedPlayerInput(u8 *actor) {
     return 0;
 }
 
-void playerSetActorInteractionMode(u8 *, s32); /* extern */
 
 /// Request a player interaction mode targeting the actor.
 /// \param actor Actor whose script VM supplies zero for off, one for Pikachu mode, or two for follow mode, and receives zero; player permissions may prevent the change.
@@ -159,7 +160,6 @@ s32 actorScriptPushPlayerPitchControlEnabled(u8 *actor) {
     return 0;
 }
 
-void hudSetOverlayMode(s32); /* extern */
 /// Select the alternate HUD overlay, disabling microphone input when enabled.
 /// \param actor Actor whose script VM supplies nonzero to enable the alternate overlay or zero for normal drawing, and receives zero.
 /// \returns Zero, allowing script execution to continue.
@@ -173,7 +173,6 @@ s32 actorScriptSetHudOverlayMode(u8 *actor) {
     return 0;
 }
 
-void hudSetAuxiliaryIconVisible(s32); /* extern */
 /// Control visibility of the auxiliary HUD icon.
 /// \param actor Actor whose script VM supplies nonzero to show the icon or zero to hide it, and receives zero.
 /// \returns Zero, allowing script execution to continue.
@@ -187,7 +186,6 @@ s32 actorScriptSetHudAuxiliaryIconVisible(u8 *actor) {
     return 0;
 }
 
-void hudSetFeatureMask(s32); /* extern */
 /// Select which HUD indicators are enabled.
 /// \param actor Actor whose script VM supplies a feature mask (bit zero for action, bit one for movement, bit two for microphone indicators) and receives zero.
 /// \returns Zero, allowing script execution to continue.
@@ -201,7 +199,6 @@ s32 actorScriptSetHudFeatureMask(u8 *actor) {
     return 0;
 }
 
-void hudSetGuideStyle(); /* extern */
 /// Select the HUD guide style with selection feedback when a different guide is enabled.
 /// \param actor Actor whose script VM supplies a guide style from one through four, or zero to disable the guide, and receives zero.
 /// \returns Zero, allowing script execution to continue.
@@ -244,12 +241,10 @@ s32 actorScriptSetHeldItemReleaseAndGuide(u8 *actor) {
     return 0;
 }
 
-s32 objectSetOnState(s32, s32); /* extern */
 
 /// Set object activation and select the corresponding HUD guide.
 /// \param actor Actor whose script VM supplies an activation value (zero for off, nonzero for on) followed by an object handle, and receives the supplied activation value when supported or zero otherwise; a nonzero result selects guide style two, and zero disables the guide.
 /// \returns Zero, allowing script execution to continue.
-/// \note Portability: The unprototyped HUD guide call passes an extra argument ignored by the original ABI.
 /// \note Original decompilation identifier: \c func_8011E598 (0x8011E598).
 s32 actorScriptSetObjectActivationAndGuide(u8 *actor) {
     s32 sp24;
@@ -265,7 +260,7 @@ s32 actorScriptSetObjectActivationAndGuide(u8 *actor) {
     } else {
         guideStyle = 0;
     }
-    hudSetGuideStyle(guideStyle, sp18);
+    hudSetGuideStyle(guideStyle);
     scriptVmPushInteger(sp24, sp18);
     return 0;
 }
@@ -309,7 +304,6 @@ s32 actorScriptPushPikachuHandle(u8 *actor) {
 /// Read the executing actor handle.
 /// \param actor Actor whose script VM receives its own object handle.
 /// \returns Zero, allowing script execution to continue.
-/// \note Portability: The unprototyped push call passes an extra argument ignored by the original ABI.
 /// \note Original decompilation identifier: \c func_8011E6A8 (0x8011E6A8).
 s32 actorScriptPushSelfHandle(u8 *actor) {
     scriptVmPushInteger(((RuntimeObjectPrefix *)actor)->state.actor->vmAddress, ((RuntimeObjectPrefix *)actor)->handle);
@@ -376,7 +370,6 @@ s32 actorScriptFindCreatureNearPosition(u8 *actor) {
     return 0;
 }
 
-s32 itemFindHandleNearPosition(f32 *, f32, s32, s32, s32, s32); /* extern */
 
 /// Find an item near a world position using kind, state, and priority filters.
 /// \param actor Actor whose script VM supplies X, Y, Z, inclusive minimum and maximum item kinds (165 selects the respective range endpoint), inclusive maximum approximate distance, required state (six accepts any), then a nonzero priority-weighting flag, and receives the selected handle or zero; weighted selection resets the selected item priority.
@@ -454,7 +447,6 @@ s32 actorScriptFindObjectNearPosition(u8 *actor) {
     return 0;
 }
 
-void objectSetUniformScaleByHandle(s32, f32); /* extern */
 
 /// Resize an available object using its area-relative uniform scale.
 /// \param actor Actor whose script VM supplies an object handle followed by the requested scale and receives zero; unavailable handles have no effect, and available objects must have nonzero current scale, and area-scaled objects require initialized area data with nonzero scale.
@@ -473,7 +465,6 @@ s32 actorScriptSetObjectUniformScale(u8 *actor) {
     return 0;
 }
 
-f32 objectGetUniformScaleByHandle(s32);       /* extern */
 
 /// Read an available object uniform scale relative to its area scaling convention.
 /// \param actor Actor whose script VM supplies an object handle and receives its uniform scale, or zero when unavailable; area-scaled objects require initialized area data with nonzero scale.
@@ -487,7 +478,6 @@ s32 actorScriptGetObjectUniformScale(u8 *actor) {
     return 0;
 }
 
-f32 voiceReactiveSpinnerGetSpeedByHandle(s32 arg0);  /* extern */
 /// Provide the active rotation speed of a voice-reactive spinner to a script.
 /// \param actor Actor whose script VM supplies an object handle and receives its spinner speed in degrees per second, or zero for an unavailable handle, a non-spinner object, or a nonpositive speed.
 /// \returns Zero, allowing script execution to continue.
@@ -500,7 +490,6 @@ s32 actorScriptGetVoiceReactiveSpinnerSpeed(u8 *actor) {
     return 0;
 }
 
-s32 actorGetScriptActionFlagsByHandle(s32);  /* extern */
 
 /// Read the compact action status exposed to scripts for a creature.
 /// \param actor Actor whose script VM supplies a creature handle and receives its action status flags, or zero for a missing handle or a non-creature object.
@@ -1030,7 +1019,6 @@ s32 actorScriptPushHeldItemHandle(u8 *actor) {
     return 0;
 }
 
-void actorTryHoldItem(u8 *, s32, s32); /* extern */
 
 /// Attempt to hold a requested item, forcing release from its current holder.
 /// \param actor Actor whose script VM supplies an item handle and receives its resulting held-item kind, or zero when it has no available held item; the previous held item is released only if the new item can be taken.
@@ -1184,7 +1172,6 @@ s32 actorScriptStorePurchasedItem(u8 *actor) {
     return 0;
 }
 
-s32 toolboxRecordSupplyItem(s32);  /* extern */
 /// Record acquisition of a supply item in persistent progress.
 /// \param actor Actor whose script VM supplies a valid item kind and receives one when it has a supply progress flag to record, or zero otherwise.
 /// \returns Zero, allowing script execution to continue.
@@ -1197,7 +1184,6 @@ s32 actorScriptRecordSupplyItem(u8 *actor) {
     return 0;
 }
 
-s32 itemGetImpactCount(s32);  /* extern */
 
 /// Read the remaining impact count of an available item.
 /// \param actor Actor whose script VM supplies an item handle and receives its remaining impact count, or -65536 when the handle is unavailable or identifies a non-item object.
@@ -1211,7 +1197,6 @@ s32 actorScriptGetItemImpactCount(u8 *actor) {
     return 0;
 }
 
-s32 itemSetImpactCount(s32, s32); /* extern */
 
 /// Set the remaining impact count of an available item.
 /// \param actor Actor whose script VM supplies an item handle followed by the new count and receives one if updated, or zero when the handle is unavailable or identifies a non-item object.
@@ -1297,7 +1282,6 @@ s32 actorScriptGetItemKindResponse(u8 *actor) {
 /// Control suppression of target-facing motion on actor child parts.
 /// \param actor Actor whose script VM supplies nonzero to suppress target-facing motion or zero to permit it when the current action allows, and receives zero.
 /// \returns Zero, allowing script execution to continue.
-/// \note Portability: The unprototyped pop call passes an extra argument ignored by the original ABI.
 /// \note Original decompilation identifier: \c func_8011FAA4 (0x8011FAA4).
 s32 actorScriptSetTargetFacingSuppressed(u8 *actor) {
     s32 sp1C;

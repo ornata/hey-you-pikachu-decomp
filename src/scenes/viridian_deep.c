@@ -15,7 +15,7 @@ extern WeightedChoiceTable D_80149DB8_scene_viridian_deep;
 /// \note Original identifier: \c D_8014993C_scene_viridian_deep (0x8014993C).
 extern f32 D_8014993C_scene_viridian_deep[];
 
-u8 *toolboxTakeObject(s32, s32);
+#include "toolbox.h"
 /// Remove the removable items held in the tracked scene-item slots.
 /// \returns Nothing.
 void viridianDeepRemoveTrackedItems(void) {

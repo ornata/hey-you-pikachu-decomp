@@ -116,7 +116,8 @@ void doorSetAccessState(s32 doorIndex, s32 accessState) {
     state->accessState = accessState;
 }
 
-char *areaGetDisplayName(s32); /* extern */
+#include "area_services.h"
+#include "object_response_diagnostics.h"
 
 char *gDoorExitDescriptions[4] = {
     "Sliding Door\nThis leads to\n^6PIKACHU^^'s Discovery Days\nwhere you can play.",

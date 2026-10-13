@@ -21,7 +21,6 @@
 #include "heap_alloc.h"
 #include "game_heap.h"
 #include "object_types.h"
-void presentationDrawAreaLabel(Gfx **);
 
 /* Debug trace: compiled out in this build, but each format string is still
  * emitted to .rodata in source order. */
@@ -29,8 +28,6 @@ void presentationDrawAreaLabel(Gfx **);
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-void presentationDrawCardDecorations(Gfx **);
-void presentationDrawCurrentCardPanels(Gfx **);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;

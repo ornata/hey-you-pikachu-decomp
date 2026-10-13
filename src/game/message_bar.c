@@ -64,9 +64,6 @@ typedef char MessageImagesOffsetCheck[(MESSAGE_OFFSET(handles) == 0x460) ? 1 : -
 /// Shared queued-message, timing, scrolling and text-image state for the message bar.
 /// \note Original identifier: \c D_800F06C0 (0x800F06C0).
 extern MessageBarState gMessageBarState;
-void presentationDrawAreaLabel(Gfx **);
-void presentationDrawCardDecorations(Gfx **);
-void presentationDrawCurrentCardPanels(Gfx **);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
@@ -246,8 +243,7 @@ void messageBarResetAndReleaseImages(void) {
     messageBarInitialize();
 }
 
-s32 memoryCompareBytes(u8 *, u8 *, s32);
-s32 strlen(const char *);
+#include "byte_strings.h"
 
 /// Queue a display message or refresh the matching displayed message timer.
 /// \param style Valid font-style index used to render the text.
@@ -260,11 +256,11 @@ s32 messageBarEnqueue(s32 style, f32 duration, u8 *text) {
     s32 next;
 
     TRACE("elEchoMessage(%d, %f, %s)\n", style, duration, text);
-    if (strlen((char *)text) == 0) {
+    if (strlen(text) == 0) {
         return 0;
     }
     if (gMessageBarState.queueReadIndex == gMessageBarState.queueWriteIndex &&
-        memoryCompareBytes(gMessageBarCurrentText, text, strlen((char *)text)) == 0) {
+        memoryCompareBytes(gMessageBarCurrentText, text, strlen(text)) == 0) {
         gMessageBarState.elapsed = 0.0f;
         gMessageBarState.duration = duration;
         return 1;

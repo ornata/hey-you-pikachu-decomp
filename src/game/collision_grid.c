@@ -19,7 +19,6 @@
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-void playerSetControllerPort(s32);
 
 
 /// Request a collision impulse for a target object.
@@ -71,6 +70,7 @@ s32 collisionRequestImpulse(u8 *source, u8 *target, f32 *direction, f32 distance
 void collisionInactiveHook(void) {
 }
 
+#include "collision_diagnostics.h"
 /// Provide the inactive collision-grid diagnostic entry point for this build.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002CBA0 (0x8002CBA0).

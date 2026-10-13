@@ -1,3 +1,4 @@
+#include "runtime_lifecycle.h"
 #include "camera_projection.h"
 #include "controller_accessory.h"
 #include "render_state.h"
@@ -82,7 +83,13 @@ extern u64 gMainSchedulerContext[];
 extern u64 gIdleThreadStackTop[];
 
 void IdleMain(void *arg);
-void runtimeStartMainThread(void *stack);
+#include "eye_catch.h"
+#include "hud.h"
+#include "presentation_draw.h"
+#include "render_frame.h"
+#include "runtime_services.h"
+#include "toolbox.h"
+#include "world_map.h"
 
 #define IDLE_THREAD_ID 10
 #define IDLE_THREAD_PRI 10
@@ -138,7 +145,7 @@ extern u8 gRenderTaskViewports[];
 /// \note Original identifier: \c D_800ABEB0 (0x800ABEB0).
 extern u8 gRenderTaskMatrices[];
 /* The original caller passes an extra, unused display-list argument. */
-void renderApplyAreaFog();
+void renderApplyAreaFog(s32 unused);
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;
@@ -162,7 +169,6 @@ extern f32 gPlayerPitch;
 /// Separate symbol view of the primary player record's horizontal view shake.
 /// \note Original identifier: \c D_800EF6B8 (0x800EF6B8).
 extern f32 gPlayerViewShake;
-void controllerThreadMain(void *);
 /// Thread record for controller polling, voice requests and rumble servicing.
 /// \note Original identifier: \c D_800AC4C0 (0x800AC4C0).
 extern OSThread gControllerThread;
@@ -251,6 +257,11 @@ extern s32 gCameraElapsedTintNeedsOrigin, gCameraElapsedTintEnabled;
 /// Initial elapsed time in seconds requested when enabling the camera tint.
 /// \note Original identifier: \c D_800AC4B8 (0x800AC4B8).
 extern f32 gCameraElapsedTintInitialSeconds;
+/// Invoke the inactive heap diagnostic hook.
+/// \returns Nothing.
+/// \note Both supplied arguments, the heap and allocation addresses, are ignored. The original definition
+/// accepts one formal argument through a K&R interface; a typed two-argument replacement changes ROM code.
+/// \note Original decompilation identifier: \c func_80037FBC (0x80037FBC).
 void heapDebugNoOp();
 /// Load shared rendering assets and initialize camera and display-list resources.
 /// \returns Nothing; requires an initialized local heap and must run before rendering resources are used.
@@ -775,7 +786,7 @@ void cameraApplyRenderingState(s32 cameraIndex) {
     gSPPerspNormalize(gRenderDisplayListCursor++, perspectiveNormalization);
     gSPViewport(gRenderDisplayListCursor++, sp18);
     gSPMatrix(gRenderDisplayListCursor++, sp1C + 0x80000000, G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH);
-    renderApplyAreaFog(cameraIndex, &gRenderDisplayListCursor);
+    renderApplyAreaFog(cameraIndex);
 }
 
 /// Apply the current area’s fog and texture filtering settings to the drawing context.
@@ -837,14 +848,6 @@ extern s32 gRuntimeGameMode;
 extern OSMesgQueue gRuntimeEventQueue;
 /// Shared ROM cache owning loaded texture images, palettes and pending reads.
 /// \note Original identifier: \c D_800B67B0 (0x800B67B0).
-void hudDraw(Gfx **);
-void hudDrawAreaLabel(Gfx **);
-void presentationDrawCardScreen(Gfx **);
-void presentationDrawCollectionScreen(Gfx **);
-void eyeCatchDraw(Gfx **);
-void runtimeDrawPromptPanel(void);
-void toolboxDrawFrame(s32);
-void wholeMapDraw(Gfx **);
 /// Draw the current gameplay or menu mode and submit its graphics task.
 /// \returns Nothing; requires a prepared current frame and initialized resources for the active mode.
 void renderDrawCurrentMode(void) {

@@ -1,3 +1,5 @@
+#include "runtime_lifecycle.h"
+#include "area_names.h"
 #include "player_profile.h"
 #include "player_state.h"
 #include "audio_control.h"
@@ -412,7 +414,11 @@ extern s32 gRenderCameraIndex;
 /// World-space midpoint height of the two actor joints sampled during presentation preparation.
 /// \note Original identifier: \c D_800F106C (0x800F106C).
 extern f32 gPresentationActorJointMidpointHeight;
-f32 vector3GetYawDegrees(f32 *);
+#include "eye_catch.h"
+#include "hud.h"
+#include "player_interaction.h"
+#include "presentation_draw.h"
+#include "vector_operations.h"
 void presentationPlaceActiveActor(void *);
 /// Place the active actor for a camera-facing presentation and begin its presentation pose.
 /// \param point Three-component position in the current presentation coordinate system.
@@ -537,9 +543,7 @@ void presentationDrawCardScreen(Gfx **gdl) {
     }
 }
 
-void hudSetAreaLabelVisible(s32);
 void presentationPrepareActiveActor(void *);
-void playerResetViewOrientation(void);
 /// Primary controller new and auto-repeated button presses; aliases the repeated word of the processed sample.
 /// \note Original identifier: \c D_800AD54C (0x800AD54C).
 extern s32 gControllerPrimaryRepeatedButtons;
@@ -1078,7 +1082,6 @@ void presentationShowChapterFriendshipResult(void) {
     gPlayerFriendshipMilestone = -1;
 }
 
-void runtimeRequestProgramChange(s32);
 /// Whether collection results were bypassed because no kept items or chapter result required presentation.
 /// \note Original identifier: \c D_8009B584 (0x8009B584).
 extern s32 gCollectionResultsBypassed;
@@ -1184,7 +1187,6 @@ extern s32 gEyeCatchSelectedGroup;
 /// Pending completed-visit card and progress update, consumed by area-zero card selection.
 /// \note Original identifier: \c D_800F0B74 (0x800F0B74).
 extern s32 gCompletedVisitCardPending;
-s32 eyeCatchChooseGroup();
 
 /// Selects the area 0 card presentation and updates related progress for a completed visit.
 /// \param actorAction Unused; the caller’s presentation action remains unchanged.
@@ -1559,7 +1561,6 @@ s32 presentationSelectArea22Card(s32 *actorAction, s32 *audioCue) {
     }
 }
 
-s8 *areaGetRegionName(u32);
 /// Entrance index used to initialize the player and companion in the current area.
 /// \note Original identifier: \c D_800AE4F4 (0x800AE4F4).
 extern s32 gRuntimeCurrentEntrance;
@@ -1584,7 +1585,7 @@ extern s32 gCardPresentationActionScript;
 void presentationInitializeForCurrentArea(void) {
     s32 collectionTitleAddress;
     s32 collectionTitleTableAddress;
-    s8 *regionName;
+    char *regionName;
 
     cameraResetOverlayColor(0, 0, 0, 0, 0);
     cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.0f);

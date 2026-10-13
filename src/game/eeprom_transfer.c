@@ -1,3 +1,4 @@
+#include "checksum.h"
 #include "serial_queue.h"
 #include "common.h"
 #include "eeprom_io.h"
@@ -33,7 +34,6 @@ extern EepromJob gEepromTransferJob;
 /// \note Original identifier: \c __osActiveQueue_2 (0x800AD3FC).
 extern s32 gEepromDeviceType;
 void _bzero(void *, u32);
-s32 checksumCrc32(s32, void *);
 
 
 

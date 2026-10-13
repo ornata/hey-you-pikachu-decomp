@@ -1,3 +1,4 @@
+#include "runtime_lifecycle.h"
 #include "player_state.h"
 #include "render_state.h"
 #include "object_template.h"
@@ -267,6 +268,8 @@ void toolboxScaleCurrentRow(ToolboxState *t) {
     }
 }
 
+#include "texture_tiles.h"
+#include "toolbox.h"
 /// Remove the objects in the toolbox collection row and clear its entries.
 /// \returns Nothing.
 /// \pre Every nonzero collection handle identifies a live item not pending destruction.
@@ -999,7 +1002,6 @@ void toolboxDrawRowTitle(s32 address) {
     textDrawGetDisplayListCursor(gdl);
 }
 
-void textureUploadTile(Gfx **, s32, s32, s32, s32, u32, u32, s32, s32, s32, s32);
 /// Segmented shared display list preparing textured screen rectangle drawing.
 /// \note Original identifier: \c D_100C8C8 (0x100C8C8).
 extern Gfx gTextureRectangleSetupDisplayList[];
@@ -1282,7 +1284,6 @@ void toolboxOpen(s32 row, s32 useHeld) {
 }
 
 void toolboxHideObjects(void);
-void toolboxOpen(s32, s32);
 void systemMenuEnter(void);
 
 /// Finish closing the toolbox and continue the pending return, row change, or item-menu action.

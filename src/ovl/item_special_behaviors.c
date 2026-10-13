@@ -14,6 +14,9 @@
 #include "item_types.h"
 #include "object_types.h"
 
+#include "area_services.h"
+#include "item_physics.h"
+#include "item_special_behaviors.h"
 /// Restore the baseball cap normal size when released by an actor.
 /// \param object Item to update.
 /// \param unused Unused release callback argument.
@@ -106,8 +109,6 @@ void balloonBeginReleasedFlight(u8 *object) {
     }
 }
 
-void terrainCreateContactEffect(u8 *, s32);      /* extern */
-void itemPlayImpactSounds(u8 *, u16, s32); /* extern */
 
 /// Resolve item contact with the map and play the appropriate impact effects.
 /// \param object Item to update.
@@ -130,7 +131,7 @@ s32 itemResolveMapCollision(u8 *object, u16 contactFlags) {
     if ((hit & 0xF) == 5) {
         ((ItemStatePrefix *)st)->downwardVelocity = 0.0f;
     }
-    terrainCreateContactEffect(object + 0x18, hit);
+    terrainCreateContactEffect((f32 *)(object + 0x18), hit);
     itemPlayImpactSounds(object, contactFlags, hit);
     if (--((ItemStatePrefix *)st)->bounceCount < 0) {
         ((ItemStatePrefix *)st)->bounceCount = 0;

@@ -298,6 +298,7 @@ void matrix34ComposeWith44(f32 *a, f32 *b, f32 *c) {
     c[15] = b03 * a30 + b13 * a31 + b23 * a32 + b33;
 }
 
+#include "spatial_math.h"
 /// Transform a three-dimensional point.
 /// \param mf Input affine matrix.
 /// \param x Input point X coordinate.
@@ -803,7 +804,6 @@ f32 vector3Length(f32 *vector) {
     return sqrtf((x * x) + (y * y) + (z * z));
 }
 
-f32 mathHypotApprox(f32, f32);
 
 /// Approximate the length of a three-dimensional vector.
 /// \param vector Input three-component vector.

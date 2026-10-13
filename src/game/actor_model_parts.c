@@ -71,7 +71,10 @@ typedef char
 typedef char ActorPartLinkedRotationFactorOffsetCheck
     [(((u32) & ((ActorPartLinkedRotationState *)0)->responseFactor) == 0xC) ? 1 : -1];
 
-void objectDebugReportNoOp(u8 *);
+#include "actor_model.h"
+#include "hud.h"
+#include "object_update.h"
+#include "spatial_math.h"
 /// Model display-list addresses indexed by appearance slot zero variant.
 /// \note Original identifier: \c D_800760C4 (0x800760C4).
 extern s32 gActorAppearanceSlot0Models[];
@@ -85,8 +88,6 @@ void actorComposePartOrientation(Matrix34 *, s32, s32 *, s32);
 /// Signed part-identifier sequence used to track model-part relative roll.
 /// \note Original identifier: \c D_800A2770 (0x800A2770).
 extern u8 gActorRelativeRollPartSequence[];
-f32 mathAngleDistanceDegrees(f32, f32);
-f32 mathLerpAngleDegrees(f32, f32, f32);
 void actorPartBuildAnimatedTextureCommands(u8 *, s32);
 extern u8 D_1049F80[];
 
@@ -104,7 +105,6 @@ void actorDebugReportLinkedObjectNoOp(u8 *actor, s32 unused) {
     objectDebugReportNoOp(actor);
 }
 
-void actorInitializeModelState(u8 *);
 
 /// Initialize actor model resources, parts, and default gameplay model settings.
 /// \param actor Actor whose model is initialized.
@@ -122,7 +122,6 @@ void actorInitializeGameplayModel(u8 *actor) {
     ((ActorScriptState *)actorState)->secondaryMeter = 0.0f;
 }
 
-void actorReleaseModelResources(u8 *);
 
 /// Release actor model resources.
 /// \param object Actor whose model resources are released.
@@ -623,7 +622,6 @@ void actorStartPartShake(u8 *actor, s32 part) {
         (f32)((((f64)randomNext() * 2.3283064365386963e-10 * 0.5) + 0.5) * gActorPartShakeMaximumSeconds);
 }
 
-void actorUpdateModel(u8 *);
 void actorUpdatePartShake(u8 *);
 /// Signed part-identifier sequence defining the actor primary tracked pose.
 /// \note Original identifier: \c D_800A2794 (0x800A2794).
@@ -824,7 +822,6 @@ f32 actorAdjustSecondaryMeter(u8 *object, f32 delta) {
 
 extern float fabsf(float);
 #pragma intrinsic(fabsf)
-void hudExtendHorizontalMotionDisplay(f32);
 /// Minimum change magnitude requesting the action-meter display when the meter changes.
 /// \note Original identifier: \c D_800A27B8 (0x800A27B8).
 extern f32 gActorActionMeterDisplayDeltaThreshold;

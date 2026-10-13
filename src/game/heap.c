@@ -71,6 +71,8 @@ void heapInitializeGlobal(void *start) {
 /// Provide an inactive heap diagnostic hook.
 /// \param heapAddress Unused diagnostic argument.
 /// \returns Nothing.
+/// \note Matching/portability: retain the K&R argument view for callers supplying an ignored allocation
+/// address after the heap address. Typed two-argument replacements change ROM code.
 /// \note Original decompilation identifier: \c func_80037FBC (0x80037FBC).
 void heapDebugNoOp(heapAddress) s32 heapAddress;
 {
@@ -303,6 +305,7 @@ void heapShrinkLocal(u8 *heap, void *allocation, s32 size) {
     }
 }
 
+#include "heap_query.h"
 /// Get the available payload size of a heap allocation.
 /// \param heap Initialized heap to operate on.
 /// \param allocationAddress RAM address of a payload with a readable heap header, or zero.

@@ -1,3 +1,4 @@
+#include "text_image.h"
 #include "player_state.h"
 #include "render_state.h"
 #include "game_heap.h"
@@ -356,7 +357,8 @@ void flipbookBuildImageDisplayLists(u8 *object) {
     lists->pendingSwap = 1;
 }
 
-void image4BitAddOffsetOutline(u8 *, s32, s32, s32, s32);
+#include "image_outline.h"
+#include "messenger_tracking.h"
 /// Replace the model text using its configured outline appearance.
 /// \param object Initialized text-display model with valid owned drawing and text storage.
 /// \param text At least count null-terminated text-entry addresses, read during this call; entries must be nonempty when outlines are enabled.
@@ -380,13 +382,13 @@ void flipbookSetText(u8 *object, u8 **text, s32 count) {
             lineImage = (u8 *)textPanelAppend(inactivePanel, *text);
             trailingOutline = (s8)((Flipbook *)object)->outlineIndices[1];
             if ((trailingOutline >= 0) && (trailingOutline < 0x10)) {
-                image4BitAddOffsetOutline(lineImage, 1, 0, 0, (s32)trailingOutline);
-                image4BitAddOffsetOutline(lineImage, 0, 1, 0, (s32) (s8)((Flipbook *)object)->outlineIndices[1]);
+                image4BitAddOffsetOutline((TextImage *)lineImage, 1, 0, 0, (s32)trailingOutline);
+                image4BitAddOffsetOutline((TextImage *)lineImage, 0, 1, 0, (s32) (s8)((Flipbook *)object)->outlineIndices[1]);
             }
             leadingOutline = (s8)((Flipbook *)object)->outlineIndices[0];
             if ((leadingOutline >= 0) && (leadingOutline < 0x10)) {
-                image4BitAddOffsetOutline(lineImage, -1, 0, 0, (s32)leadingOutline);
-                image4BitAddOffsetOutline(lineImage, 0, -1, 0, (s32) (s8)((Flipbook *)object)->outlineIndices[0]);
+                image4BitAddOffsetOutline((TextImage *)lineImage, -1, 0, 0, (s32)leadingOutline);
+                image4BitAddOffsetOutline((TextImage *)lineImage, 0, -1, 0, (s32) (s8)((Flipbook *)object)->outlineIndices[0]);
             }
             count -= 1;
             text++;

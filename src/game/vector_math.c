@@ -1,3 +1,4 @@
+#include "checksum.h"
 #include "matrix_basic.h"
 #include "math_scalar.h"
 #include "vector_metrics.h"
@@ -16,7 +17,6 @@
 
 extern float fabsf(float);
 #pragma intrinsic(fabsf)
-void motionExtractHeadingFromMatrix(f32 *, f32 *);
 
 /// Get the Y-Z projection angle of a transformation's Z row.
 /// \param matrix Input affine transformation matrix.
@@ -127,6 +127,8 @@ void vector3EvaluateOppositeLookAngles(f32 *direction, f32 *pitch, f32 *yaw) {
     vector3GetLookAnglesDegrees(v, pitch, yaw);
 }
 
+#include "spatial_math.h"
+#include "vector_operations.h"
 /// Get the horizontal direction of a three-dimensional vector.
 /// \param vector Input vector whose X and Z components determine the direction.
 /// \returns Yaw in degrees from positive Z toward positive X, or zero for a near-zero horizontal vector.
@@ -272,7 +274,6 @@ void vector3FromPitchYawDegrees(f32 pitch, f32 yaw, f32 *direction) {
     direction[2] = cosPitch * cosYaw;
 }
 
-s32 mathCosSignDegrees(f32);
 /// Get direction angles using a reference heading to choose the orientation.
 /// \param vector Input three-component direction vector.
 /// \param heading Reference planar yaw in degrees, also used at a vertical direction.
@@ -466,7 +467,6 @@ void matrix3GetEulerAnglesDegrees(f32 *matrix, f32 *roll, f32 *pitch, f32 *yaw) 
     *yaw = mathUnitDirectionDegrees(cosYaw, sinYaw);
 }
 
-f32 mathHypotApprox(f32, f32); /* extern */
 
 /// Normalize a planar vector using an approximate length.
 /// \param x First component, updated in place.

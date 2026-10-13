@@ -646,6 +646,7 @@ void actionResolveNextTransition(u8 *object) {
     }
 }
 
+#include "motion_transitions.h"
 /// Initialize the pose-transition lookup map from explicit transitions and action definitions.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000F00C (0x8000F00C).

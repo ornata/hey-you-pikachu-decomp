@@ -58,7 +58,26 @@ typedef struct OrbitObject {
     OrbitState *state;
 } OrbitObject;
 
-f32 vector2NormalizeComponentsApprox(f32 *, f32 *);
+#include "orbit_follower.h"
+#include "vector_operations.h"
+/// Check horizontal clearance at a candidate world position under the requested collision policy.
+/// \param type Collision policy from zero through nine; policy five also requires the active primary actor.
+/// \param x Candidate world X coordinate.
+/// \param y Candidate world Y coordinate.
+/// \param z Candidate world Z coordinate.
+/// \param width Horizontal clearance width.
+/// \param height Vertical span used for clearance checks.
+/// \param step Maximum permitted terrain world height.
+/// \param dirX X movement sign: minus one, zero, or one.
+/// \param dirZ Z movement sign: minus one, zero, or one.
+/// \param previous Optional writable terrain-node cache; initialize to null or a live node in the current
+/// area. Receives a borrowed node, or null when no surface is found; invalidate it before area teardown.
+/// \returns Directional obstruction flags, or zero when the tested position is clear.
+///
+/// \note Requires initialized current-area terrain and a positive vertical search spacing.
+/// \note Original decompilation identifier: \c func_8010C788 (0x8010C788).
+/// \note Matching: retain the signed-word return view in this caller. The canonical u16 return changes
+/// allocated instructions even though this call discards its result.
 s32 terrainCheckHorizontalObstruction(s32, f32, f32, f32, f32, f32, f32, f32, f32, u8 **);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).

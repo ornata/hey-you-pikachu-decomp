@@ -206,6 +206,7 @@ u16 actorGetMovementCollisionFlags(u8 *actor) {
 }
 
 
+#include "script_object_queries.h"
 /// Find an item near an actor within its facing cone and the requested filters.
 /// \param actor Actor supplying the search origin and facing.
 /// \param distance Inclusive maximum approximate distance from the search origin.

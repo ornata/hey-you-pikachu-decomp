@@ -1,6 +1,6 @@
 #include "common.h"
 
-extern double sqrt(double);
+#include "square_root.h"
 #pragma intrinsic(sqrt);
 
 /// Compute the double-precision square root of a number.

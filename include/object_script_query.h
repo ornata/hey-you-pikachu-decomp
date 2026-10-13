@@ -48,4 +48,10 @@ u16 actorGetKindByHandle(s32 handle);
 /// \note Original decompilation identifier: \c func_80117A30 (0x80117A30).
 u16 objectGetTypeByHandle(s32 handle);
 
+/// Get the compact action status exposed to actor scripts for a creature.
+/// \param handle Handle of the creature whose current action is queried.
+/// \returns The script action status flags, or zero when the handle is not live or does not identify a creature.
+/// \note Original decompilation identifier: \c func_80117EE8 (0x80117EE8).
+u16 actorGetScriptActionFlagsByHandle(s32 handle);
+
 #endif

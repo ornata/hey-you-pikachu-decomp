@@ -315,6 +315,7 @@ s32 runtimeReturnZero(void) {
     return 0;
 }
 
+#include "byte_strings.h"
 /// Check whether two byte regions have identical contents.
 /// \param first First region to compare.
 /// \param second Second region to compare.

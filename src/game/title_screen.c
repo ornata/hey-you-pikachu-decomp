@@ -464,6 +464,8 @@ void titleScreenDrawFrame(Gfx **cursor) {
 }
 
 
+#include "microphone_connection.h"
+#include "title_screen_state.h"
 /// Query the current startup and title-screen state.
 /// \returns The current title-screen state identifier.
 /// \note Original decompilation identifier: \c func_800351C0 (0x800351C0).
@@ -582,7 +584,7 @@ s32 titleScreenFindEnabledChoice(s32 enabled, s32 selection, s32 step) {
     return i;
 }
 
-void pikachuUpdateScriptAndTriggers(void);
+#include "runtime_lifecycle.h"
 /// Primary controller new and auto-repeated button presses; aliases the repeated word of the processed sample.
 /// \note Original identifier: \c D_800AD54C (0x800AD54C).
 extern s32 gControllerPrimaryRepeatedButtons;
@@ -732,8 +734,6 @@ extern u32 gTitleSilhouetteMilliseconds;
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
-s32 micIsDeviceConnected(s32);
-void runtimeRequestProgramChange(s32);
 void titleScreenInitialize(void);
 void titleScreenResetLogoFade(void);
 void titleScreenSetMessage(void **, s32, s32);

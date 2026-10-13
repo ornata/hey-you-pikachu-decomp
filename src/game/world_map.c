@@ -1,3 +1,5 @@
+#include "runtime_control.h"
+#include "runtime_lifecycle.h"
 #include "controller_state.h"
 #include "actor_script.h"
 #include "player_chase.h"
@@ -166,7 +168,12 @@ extern s32 gWorldMapSelectionAlphaStep;
 /// Index of the currently selected world-map destination.
 /// \note Original identifier: \c D_800F1B74 (0x800F1B74).
 extern s32 gWorldMapSelectedDestination;
-s32 runtimeGetUiPulseAlpha(void);
+#include "hud.h"
+#include "player_interaction.h"
+#include "runtime_services.h"
+#include "toolbox.h"
+#include "vector_operations.h"
+#include "world_map.h"
 /// Draw available map destinations, their badges, and the animated selection highlight.
 /// \param gdl Display-list cursor to append to and advance.
 /// \returns Nothing.
@@ -419,7 +426,6 @@ extern s32 gWorldMapSelectedDestination;
 /// \note Original identifier: \c D_800F1B70 (0x800F1B70).
 extern s32 gWorldMapDirectionHeldFrames;
 void wholeMapUpdateActorPlacement(void);
-f32 vector3GetYawDegrees(f32 *);
 
 /// Prepare the active actor to face the camera and track the selected map destination.
 /// \pre Requires an active actor, camera, and selected map destination.
@@ -689,7 +695,6 @@ void wholeMapSelectInitialDestination(void) {
     wholeMapEnsureAvailableSelection(0, 8, 1);
 }
 
-void hudSetFeatureMask(s32);      /* extern */
 /// Whether gameplay exposes microphone interaction and its HUD indicator.
 /// \note Original identifier: \c D_800722D0 (0x800722D0).
 extern s32 gGameplayMicrophoneAvailable;
@@ -737,16 +742,12 @@ void wholeMapSelectBackdrop(void) {
     }
 }
 
-void runtimeRequestProgramChange();
-void wholeMapUpdateActorPlacement();
-void wholeMapPrepareActor();
-void wholeMapSetState();
-void wholeMapHandleInput();
-void wholeMapSelectInitialDestination();
-void wholeMapConfigureVoiceInput();
-void wholeMapSelectBackdrop();
-void toolboxClearCollection();
-void playerResetViewOrientation();
+void wholeMapUpdateActorPlacement(void);
+void wholeMapPrepareActor(void);
+void wholeMapHandleInput(void);
+void wholeMapSelectInitialDestination(void);
+void wholeMapConfigureVoiceInput(void);
+void wholeMapSelectBackdrop(void);
 /// Remaining duration of the primary camera secondary overlay transition.
 /// \note Original identifier: \c D_800ABDCC (0x800ABDCC).
 extern f32 gPrimarySecondaryOverlayRemainingSeconds;

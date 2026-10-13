@@ -48,7 +48,9 @@ void itemGetTerrainResponseDirection(u8 *object, f32 *direction, u8 **cachedNode
     vector3Normalize(direction);
 }
 
-f32 terrainGetFriction(s32);
+#include "area_services.h"
+#include "item_physics.h"
+#include "vector_operations.h"
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
@@ -92,7 +94,6 @@ s32 itemUpdateSpin(u8 *object, s32 surfaceAttributes, s32 applyDecay) {
 
 f32 fabsf(f32);
 #pragma intrinsic(fabsf)
-f32 vector2NormalizeComponentsApprox(f32 *, f32 *);
 /// Reduce horizontal velocity toward rest for the current frame.
 /// \param x Horizontal X velocity to update.
 /// \param z Horizontal Z velocity to update.
@@ -277,7 +278,6 @@ void itemApplyGroundBounce(u8 *object, ItemStatePrefix *state, s32 cachedNode) {
     }
 }
 
-s32 terrainGetMaterialSound(s32 arg0, s32 arg1); /* extern */
 /// Separate first tracked-sound view of the item catalog, with a 116-byte stride.
 /// \note Original identifier: \c D_80125A80 (0x80125A80).
 extern s16 gItemKindPrimarySoundEntries;
@@ -314,7 +314,6 @@ void itemPlayImpactSounds(u8 *object, s32 contactFlags, s32 surface) {
 /// Separate terrain-collision callback view of the item catalog, with a 116-byte stride.
 /// \note Original identifier: \c D_80125A90 (0x80125A90).
 extern u8 gItemKindCollisionCallbackEntries[];
-s32 areaDispatchPositionEvent(f32 *, s32);
 
 /// Handle item contact and invoke its kind-specific collision response.
 /// \param object Item involved in the contact.
@@ -343,7 +342,6 @@ s32 itemDispatchCollisionResponse(u8 *object, s32 flags) {
     return 1;
 }
 
-s32 areaIsPositionOutsideBounds(f32, f32, f32);
 s32 itemUpdateGroundVelocity(u8 *, u8 *, s32, s32 *);
 s32 itemDispatchCollisionResponse(u8 *, s32);
 #pragma intrinsic(fabsf)

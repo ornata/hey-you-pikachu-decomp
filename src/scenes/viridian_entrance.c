@@ -5,7 +5,7 @@
 #include "actor_create.h"
 #include "area_maze.h"
 #include "scene_types.h"
-s32 toolboxStoreObjectInRow(s32, s32);
+#include "toolbox.h"
 
 extern u8 D_80144BC4_scene_viridian_entrance[];
 extern u8 D_8014CF50_scene_viridian_entrance[];

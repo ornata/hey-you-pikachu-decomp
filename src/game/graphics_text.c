@@ -210,6 +210,8 @@ extern u32 gVideoConfiguredHorizontalScaleRegister; /* D_800F29B0.comRegs.xScale
 /// \note Original identifier: \c D_8009D410 (0x8009D410).
 extern s32 gVideoFramebufferWidth;
 
+#include "byte_strings.h"
+#include "graphics_output.h"
 /// Configure the video mode for a framebuffer and blank the display until rendering begins.
 /// \param mode Base video mode to configure.
 /// \param width Positive framebuffer width in pixels; video-mode integer calculations must remain representable.
@@ -469,7 +471,6 @@ typedef struct {
 } TextFormatArgs;
 void textDrawWideCharacter(s32);
 void textDrawCharacter(u8);
-s32 fontConvertJisToShiftJis(s32);
 void textDrawFitGlyphAtCursor(s32, s32);
 
 /// Draw formatted text at the current cursor, supporting single-byte characters, wide characters, and newlines.
@@ -1116,6 +1117,12 @@ s32 textImageCreateCustomFont(TextImage **out, u8 *text, FontImage *font) {
 }
 
 
+/// Find the glyph index for a supported encoded character.
+/// \returns The character's index within the font glyph table.
+/// \note The first argument is the character code; the unused second font argument may be omitted through
+/// this legacy view. Supplying a dummy argument or removing the unused formal parameter changes ROM code.
+/// Unsupported character ranges have no defined result, as documented at the definition below.
+/// \note Original decompilation identifier: \c func_8003F5D0 (0x8003F5D0).
 s32 fontImageGetGlyphIndex();
 
 /* Acquire glyph texture data and synchronize pending reads before CPU use. */

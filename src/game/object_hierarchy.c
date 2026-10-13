@@ -1,3 +1,4 @@
+#include "runtime_lifecycle.h"
 #include "camera_projection.h"
 #include "render_state.h"
 #include "game_heap.h"
@@ -57,9 +58,15 @@
 
 
 
-f32 matrix34GetTransformedPointYawDegrees(f32 *, f32 *);
+#include "actor_model.h"
+#include "collision_diagnostics.h"
+#include "object_response_diagnostics.h"
+#include "object_update.h"
+#include "spatial_math.h"
+#include "vector_operations.h"
 void objectDrawHierarchyForCurrentGroup(u8 *);
-u8 romByteReaderRead();
+typedef struct RomByteReader RomByteReader;
+u8 romByteReaderRead(RomByteReader *reader, s32 address);
 void _bzero(void *, u32);
 /// Find a tree node using a borrowed object-shaped search key.
 /// \param tree Initialized object tree whose root may change during lookup.
@@ -76,8 +83,6 @@ extern Vec3f gObjectPendingLocalMovement;
 /// Current affine world transform shared by hierarchy traversal and actor motion consumers.
 /// \note Original identifier: \c D_800AD9E0 (0x800AD9E0).
 extern Matrix34 gObjectTraversalTransform;
-void matrix33ScaleLocal(void *, f32, f32, f32);              /* extern */
-void matrix33KeepScaleOnly(f32 *);                    /* extern */
 s32 romByteReaderInitialize(u8 *);
 /// Segmented shared display list preparing object hierarchy drawing.
 /// \note Original identifier: \c D_100C890 (0x100C890).
@@ -102,7 +107,7 @@ extern s32 gObjectSearchTreeRoot;
 /// Object flag group selected by the current drawing traversal.
 /// \note Original identifier: \c D_800AE3D4 (0x800AE3D4).
 extern s32 gObjectDrawGroup;
-s32 objectDrawSearchTreeEntry();
+s32 objectDrawSearchTreeEntry(u8 *node, s32 unused);
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;
@@ -121,21 +126,20 @@ void objectAssignHierarchyRoot(u8 *, u8 *);
 extern s32 gActiveObjectHierarchyCount;
 s32 objectCompareSearchTreeOrder(TreeNode *, s32);
 void objectRegisterHierarchyInSearchTree(u8 *);
-void vector3GetEulerDegrees(f32 *, f32 *, f32 *, f32 *);
 
 
 
 
 
 /// Buffered cartridge-reader storage with room to align the DMA buffer internally.
-typedef struct RomByteReader {
+struct RomByteReader {
     s32 windowStart; ///< Cartridge address of the cached window, or the initial invalid sentinel.
     u8 storage[0x410]; ///< Owned storage containing the aligned 0x400-byte DMA window.
     u8 *alignedBuffer; ///< Borrowed aligned view into this reader's storage.
     OSMesgQueue queue; ///< Completion queue owned by the reader; reads must not overlap.
     OSMesg completion; ///< Single message slot backing the completion queue.
     u8 unknown434[4]; ///< Unresolved trailing storage.
-} RomByteReader;
+};
 
 /// Object-manager allocation containing the hierarchy prefix and its tree entry.
 /// The entry pointer initially selects the embedded node at offset 0x5C.
@@ -165,14 +169,14 @@ u8 *romTableResolveEntry(u8 *base, s32 idx) {
     u8 b1;
 
     romByteReaderInitialize(reader);
-    romByteReaderRead(reader, base);
-    romByteReaderRead(reader, base + 1);
-    romByteReaderRead(reader, base + 2);
-    romByteReaderRead(reader, base + 3);
-    b1 = romByteReaderRead(reader, &((u8(*)[8])base)[idx][6]);
-    b2 = romByteReaderRead(reader, &((u8(*)[8])base)[idx][5]);
-    b3 = romByteReaderRead(reader, &((u8(*)[8])base)[idx][4]);
-    base += romByteReaderRead(reader, &((u8(*)[8])base)[idx][7]) | ((u32)b3 << 24) | (b2 << 16) | (b1 << 8);
+    romByteReaderRead((RomByteReader *)reader, (s32)base);
+    romByteReaderRead((RomByteReader *)reader, (s32)(base + 1));
+    romByteReaderRead((RomByteReader *)reader, (s32)(base + 2));
+    romByteReaderRead((RomByteReader *)reader, (s32)(base + 3));
+    b1 = romByteReaderRead((RomByteReader *)reader, (s32)&((u8(*)[8])base)[idx][6]);
+    b2 = romByteReaderRead((RomByteReader *)reader, (s32)&((u8(*)[8])base)[idx][5]);
+    b3 = romByteReaderRead((RomByteReader *)reader, (s32)&((u8(*)[8])base)[idx][4]);
+    base += romByteReaderRead((RomByteReader *)reader, (s32)&((u8(*)[8])base)[idx][7]) | ((u32)b3 << 24) | (b2 << 16) | (b1 << 8);
     return base;
 }
 
@@ -193,12 +197,8 @@ s32 romByteReaderInitialize(u8 *reader) {
 /// \param address Readable cartridge byte address; its aligned read window must also be available.
 /// \returns The byte at the requested address.
 ///
-/// \note Portability: The unprototyped call from midiReaderReadByte passes an extra argument ignored by the original ABI.
 /// \note Original decompilation identifier: \c func_80007728 (0x80007728).
-u8 romByteReaderRead(reader, address)
-RomByteReader *reader;
-s32 address;
-{
+u8 romByteReaderRead(RomByteReader *reader, s32 address) {
     OSIoMesg io;
     OSMesg msg;
 
@@ -352,7 +352,7 @@ u8 midiReaderReadByte(MidiReader *reader) {
         reader->position = (u32)(position + 1);
         return value;
     }
-    return romByteReaderRead((u8 *)reader + 0x10, (reader->position = (u32)(position + 1)) - 1, reader);
+    return romByteReaderRead((RomByteReader *)((u8 *)reader + 0x10), (reader->position = (u32)(position + 1)) - 1);
 }
 
 /// Read and consume a big-endian unsigned 16-bit MIDI stream value.
@@ -408,7 +408,7 @@ s32 midiReaderReadVariableLength(MidiReader *reader) {
 /// \param objectAddress Address of the object to report; unused in this build.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80007CD0 (0x80007CD0).
-void objectDebugReportNoOp(s32 objectAddress) {
+void objectDebugReportNoOp(u8 *objectAddress) {
     TRACE("nodeObj:%p  objType:%d objID:%d level:%d\n");
 }
 
@@ -486,8 +486,6 @@ void objectManagerNoOp7D44(void) {
 void objectManagerNoOp7D4C(s32 unused) {
 }
 
-void objectResponsesDebugReportNoOp(); /* extern */
-void collisionGridDebugReportNoOp(); /* extern */
 
 /// Request object-response and collision diagnostics, which are inactive in this build.
 /// \returns Nothing.
@@ -1241,7 +1239,7 @@ void objectUpdateHierarchyWorldPositions(u8 *object) {
                     matrix33ApplyRotationXYZDegrees((f32 *)&gObjectTraversalTransform, ((RuntimeObjectPrefix *)object)->rotation[0],
                                                     ((RuntimeObjectPrefix *)object)->rotation[1],
                                                     ((RuntimeObjectPrefix *)object)->rotation[2]);
-                    matrix33ScaleLocal(&gObjectTraversalTransform, ((RuntimeObjectPrefix *)object)->scale[0],
+                    matrix33ScaleLocal((f32 *)&gObjectTraversalTransform, ((RuntimeObjectPrefix *)object)->scale[0],
                                        ((RuntimeObjectPrefix *)object)->scale[1], ((RuntimeObjectPrefix *)object)->scale[2]);
                 }
                 firstChild = ((RuntimeObjectPrefix *)object)->child.bytes;
@@ -1282,7 +1280,6 @@ u8 *objectRefreshHierarchyWorldPositions(u8 *object) {
     return object;
 }
 
-void actorConstrainMovementToTerrain(u8 *, Vec3f *);
 
 /// Update hierarchy behavior, movement, and drawing transforms from the current reference transform.
 /// Requires initialized kind state, a live acyclic hierarchy, and enough traversal-stack capacity for its depth.
@@ -1311,7 +1308,7 @@ void objectUpdateHierarchyFromCurrentTransform(u8 *object) {
                 if (((RuntimeObjectPrefix *)object)->kind != 0x64) {
                     matrix33ApplyRotationXYZDegrees((f32 *)&gObjectTraversalTransform, ((RuntimeObjectPrefix *)object)->rotation[0],
                                                     ((RuntimeObjectPrefix *)object)->rotation[1], ((RuntimeObjectPrefix *)object)->rotation[2]);
-                    matrix33ScaleLocal(&gObjectTraversalTransform, ((RuntimeObjectPrefix *)object)->scale[0], ((RuntimeObjectPrefix *)object)->scale[1],
+                    matrix33ScaleLocal((f32 *)&gObjectTraversalTransform, ((RuntimeObjectPrefix *)object)->scale[0], ((RuntimeObjectPrefix *)object)->scale[1],
                                        ((RuntimeObjectPrefix *)object)->scale[2]);
                     if (gObjectPendingLocalMovement.x != 0.0f || gObjectPendingLocalMovement.y != 0.0f ||
                         gObjectPendingLocalMovement.z != 0.0f) {
@@ -1327,7 +1324,7 @@ void objectUpdateHierarchyFromCurrentTransform(u8 *object) {
                     }
                     kind = ((RuntimeObjectPrefix *)object)->kind;
                     if (kind > 0 && kind < 0x26) {
-                        actorConstrainMovementToTerrain(object, (Vec3f *)offset);
+                        actorConstrainMovementToTerrain(object, offset);
                     }
                     ((f32 *)&gObjectTraversalTransform)[9] += offset[0];
                     ((f32 *)&gObjectTraversalTransform)[10] += offset[1];

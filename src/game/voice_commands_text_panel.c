@@ -489,13 +489,7 @@ void textPanelClear(TextPanel *panel) {
     textPanelAppend((struct TextPanel *)panel, gTextPanelClearedEmptyText);
 }
 
-/* 4bpp image: two pixels per byte, high nibble first. */
-typedef struct {
-    u8 *pixels;
-    s32 width;
-    s32 height;
-    s32 format;
-} Image12F8C;
+#include "text_image.h"
 /* {0xF0, 0x0F}: nibble mask for even/odd pixels (rodata blob). */
 typedef struct {
     u8 m[2];
@@ -504,6 +498,7 @@ typedef struct {
 /// \note Original identifier: \c D_800A2690 (0x800A2690).
 extern PixelMasks gImage4BitPixelMasks;
 
+#include "image_outline.h"
 /// Add a colored outline at a requested offset in a four-bit image.
 /// \param image Writable image with an even pixel width and byte-aligned rows; unsupported formats or absent pixel data are ignored.
 /// \param dx Horizontal outline offset in pixels.
@@ -512,7 +507,7 @@ extern PixelMasks gImage4BitPixelMasks;
 /// \param outline Outline pixel value from zero through fifteen.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80012F8C (0x80012F8C).
-void image4BitAddOffsetOutline(Image12F8C *image, s32 dx, s32 dy, s32 background, s32 outline) {
+void image4BitAddOffsetOutline(TextImage *image, s32 dx, s32 dy, s32 background, s32 outline) {
     PixelMasks masks = gImage4BitPixelMasks;
     u8 src[2];
     u8 dest[2];

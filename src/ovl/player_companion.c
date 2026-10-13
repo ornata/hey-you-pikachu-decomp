@@ -1,3 +1,4 @@
+#include "runtime_lifecycle.h"
 #include "system_menu.h"
 #include "player_profile.h"
 #include "player_state.h"
@@ -223,18 +224,11 @@ PlayerControlScheme gPlayerControlSchemes[28] = {
     {28, 0, 0xC000}, {29, 0, 0x5000}, {30, 0, 0x5000}, {31, 0, 0x41C8},
 };
 
-void mazeDestroyNode(u8 *); /* extern */
 
-void objectPrepareDistributedKindSearches(u16, s32);   /* extern */
-void mazeInitializeRoot();                   /* extern */
-void mazeBuildNodeHierarchy(s32, s32, s32);  /* extern */
-void mazeConfigureEventLinks();                   /* extern */
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
 
-void areaRefreshVisibilityDistances(s32); /* extern */
-void areaUpdateNodeVisibility(s32); /* extern */
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;
@@ -365,7 +359,11 @@ f32 playerCalculatePitchInput(u8 *player, ControllerState *controller, s32 inver
 
 f32 fabsf(f32);
 #pragma intrinsic(fabsf)
-void vector2RotateComponentsDegrees(f32, f32 *, f32 *);
+#include "area_services.h"
+#include "byte_strings.h"
+#include "player_interaction.h"
+#include "toolbox.h"
+#include "vector_operations.h"
 /// Calculate the current frame movement request from player controls and update movement responsiveness.
 /// \param pad Controller state supplying movement input.
 /// \param obj Player record providing movement settings, orientation, and movement history.
@@ -474,7 +472,6 @@ u8 *playerResolveCompanionViewTarget(u8 *player) {
     return var_a0;
 }
 
-void vector3GetYawAndProjectedPitchDegrees(f32 *, f32 *, f32 *);
 /// Turn the player view toward a companion-control target while companion control is active.
 /// \param player Player record whose view is updated subject to view-control permissions.
 /// \param controller Controller state influencing the tracking response.
@@ -553,7 +550,6 @@ void playerApplyFollowMovementInput(ControllerState *controller, u8 *player, u8 
     }
 }
 
-s32 terrainGetMaterialSound(s32, s32);  /* extern */
 /// Footstep travel thresholds indexed by movement class; the airborne class suppresses footsteps.
 /// \note Original identifier: \c D_80123E90 (0x80123E90).
 f32 gPlayerFootstepDistanceThresholds[4] = {5.0f, 8.0f, 9.0f, 2147483648.0f};
@@ -852,7 +848,6 @@ u16 playerFilterControllerInput(u16 keep, ControllerState *pad) {
     return dropped;
 }
 
-s32 areaDispatchPositionEvent(); /* extern */
 /// Request an interaction event for the area region containing the player position.
 /// \param position Address of three floating-point world coordinates, represented as an integer.
 /// \returns One if the area callback reports a positive result, or zero otherwise.
@@ -861,7 +856,7 @@ s32 areaDispatchPositionEvent(); /* extern */
 /// integer.
 /// \note Original decompilation identifier: \c func_8010FE84 (0x8010FE84).
 s32 playerRequestAreaInteractionEvent(s32 position) {
-    if (areaDispatchPositionEvent(position, 2) > 0) {
+    if (areaDispatchPositionEvent((f32 *)position, 2) > 0) {
         return 1;
     }
     return 0;
@@ -967,7 +962,6 @@ s32 playerConsumeInteractionProxy(u8 *player) {
     return 1;
 }
 
-s32 playerPickUpItem(s32); /* extern */
 
 /// Attempt to pick up the current interaction target.
 /// \param player Player record containing the target item handle.
@@ -1087,7 +1081,6 @@ void playerResumeNormalControl(void) {
     gPlayerPermissions = gPlayerSavedPermissions;
 }
 
-void toolboxOpen(s32, s32); /* extern */
 
 /// Handle a permitted menu request by opening the system menu or toolbox appropriate to current progress.
 /// \param player Player record providing menu permissions and tracked playback.
@@ -1166,7 +1159,6 @@ s32 playerTryInspectTarget(u8 *player, ControllerState *controller) {
     return ret;
 }
 
-s32 playerCanEnterStationaryLook(void); /* extern */
 
 /// Handle a permitted stationary-look request and turn off companion tracking.
 /// \param player Primary player record receiving the stationary-look selection.
@@ -1192,7 +1184,6 @@ s32 playerTryEnterStationaryLook(u8 *player, ControllerState *controller) {
     return 0;
 }
 
-s32 playerCanToggleCompanionControl();  /* extern */
 
 /// Handle a permitted companion-control toggle request, selecting Pikachu or follow mode according to saved
 /// preferences.
@@ -1243,7 +1234,7 @@ s32 playerToggleCompanionControl(u8 *player, ControllerState *controller) {
 /// \note Original decompilation identifier: \c func_801106C0 (0x801106C0).
 s32 playerUpdateAreaEvents(u8 *player) {
     if (((PlayerControlPrefix *)player)->permissions & 0x20) {
-        return areaDispatchPositionEvent(player, 1);
+        return areaDispatchPositionEvent((f32 *)player, 1);
     }
     return 0;
 }
@@ -1561,7 +1552,7 @@ void playerFinishHelpDisplay(u8 *unused) {
     cameraFadeOverlayToColor(0, 0, 0, 0, 0, 0.0f);
 }
 
-s32 playerShowNextHelpLine();                   /* extern */
+s32 playerShowNextHelpLine(void);                   /* extern */
 /// Advance prepared help text on confirmation input and resume normal control after the last line, while
 /// allowing menu requests.
 /// \param player Player record providing menu permissions.
@@ -1575,7 +1566,6 @@ void playerUpdateHelpDisplay(u8 *player, ControllerState *controller) {
     }
 }
 
-void playerRestoreCompanionControlMode(); /* extern */
 /// Restore the previous companion-control selection when target focus ends, if that selection is currently
 /// permitted.
 /// \param player Player record whose saved companion-control selection is restored.
@@ -2064,7 +2054,6 @@ typedef struct {
     u8 remainder[0x10];
 } Spawn11F40;
 void playerInitializeCollisionQueryMode(s32);
-void audioSetMusicDuckingInhibitFlags(s32);
 /// Entrance index used to initialize the player and companion in the current area.
 /// \note Original identifier: \c D_800AE4F4 (0x800AE4F4).
 extern s32 gRuntimeCurrentEntrance;
@@ -2197,7 +2186,7 @@ s32 playerIsPitchControlEnabled(u8 *player) {
     return 0;
 }
 
-void _bzero(); /* extern */
+void _bzero(void *, s32); /* extern */
 
 
 /// Advance a player control update using the assigned controller input.
@@ -2225,7 +2214,6 @@ void playerUpdateInput(s32 idx) {
     playerUpdateViewCamera(p);
 }
 
-s32 strlen();                                /* extern */
 /// Borrowed cursor into shared player help text while lines are consumed.
 /// \note Original identifier: \c D_80134020 (0x80134020).
 extern u8 *gPlayerHelpTextCursor;
@@ -2235,12 +2223,10 @@ extern u8 *gPlayerHelpTextCursor;
 /// buffer; copied during this call.
 /// \returns Nothing.
 ///
-/// \note Undefined behavior: the unprototyped strlen call supplies no argument and relies on the incoming
-/// text pointer remaining in the original MIPS argument register.
 /// \note The help buffer spans adjacent linker symbols and relies on their target-specific layout.
 /// \note Original decompilation identifier: \c func_80112424 (0x80112424).
 void playerSetInteractionHelpText(u8 *text) {
-    if (strlen() > 0) {
+    if ((s32)strlen(text) > 0) {
         stringCopy(gPlayerHelpTextBuffer, text);
     } else {
         stringCopy(gPlayerHelpTextBuffer, (u8 *)"Target Unknown");
@@ -2760,6 +2746,6 @@ void pikachuUpdateScriptAndTriggers(void) {
     u8 *actor = (u8 *)((s32)gPikachuActor);
     if (actor != NULL) {
         actorUpdateScriptVm(actor);
-        areaDispatchPositionEvent(((s32)gPikachuActor) + 0x44, 3);
+        areaDispatchPositionEvent((f32 *)((u8 *)gPikachuActor + 0x44), 3);
     }
 }

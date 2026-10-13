@@ -1,3 +1,4 @@
+#include "overlay_loader.h"
 #include "common.h"
 
 void _bzero(void *, s32);

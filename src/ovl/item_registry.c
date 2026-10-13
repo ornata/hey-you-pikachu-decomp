@@ -1,3 +1,4 @@
+#include "runtime_lifecycle.h"
 #include "render_state.h"
 #include "game_heap.h"
 #include "matrix_basic.h"
@@ -101,14 +102,10 @@ typedef char ItemCategoryRangeSizeCheck[(sizeof(ItemCategoryRange) == 0xC) ? 1 :
 typedef char ItemCategoryMinimumOffsetCheck[(((u32)&((ItemCategoryRange *)0)->minimumKind) == 4) ? 1 : -1];
 typedef char ItemCategoryMaximumOffsetCheck[(((u32)&((ItemCategoryRange *)0)->maximumKind) == 8) ? 1 : -1];
 
-void baseballCapUpdateHeldVisibility(u8 *);
-void baseballCapResetReleasedScale(u8 *, s32);
-void lightBulbUpdateHeldGlow(u8 *);
-void lightBulbResetReleasedGlow(u8 *, s32);
-void balloonUpdateHeldInflation(u8 *);
-void balloonBeginReleasedFlight(u8 *);
-s32 itemResolveMapCollision(u8 *, u16);
-void itemInitializeFlightSpin(u8 *);
+#include "actor_interaction.h"
+#include "item_physics.h"
+#include "item_special_behaviors.h"
+#include "vector_operations.h"
 
 // clang-format off
 /// Borrowed model hierarchy templates cloned to create item objects.
@@ -1772,7 +1769,6 @@ extern f32 gItemSearchOrigin[];
 /// Separate interior view of the nearest-item query view transform.
 /// \note Original identifier: \c D_80134060 (0x80134060).
 extern f32 gItemSearchViewTransform[];
-f32 matrix34GetTransformedPointYawDegrees(f32 *, f32 *);
 f32 fabsf(f32);
 #pragma intrinsic(fabsf)
 /// Consider an item for the current nearest-item query and retain the best eligible candidate.
@@ -2075,7 +2071,7 @@ void itemUpdate(u8 *object) {
     itemBuildLightingDisplayList(state, ((((RuntimeObjectPrefix *)object)->flags & 0x8000) ? 1 : 0) ^ 1);
 }
 
-void _bzero();                                         /* extern */
+void _bzero(void *destination, u32 size);                                         /* extern */
 void itemBuildLightingDisplayList(u8 *, s32);                  /* extern */
 
 /// Allocate and initialize the state resources for a new item.
@@ -2667,7 +2663,6 @@ s32 itemGetResponse(s32 responseType, s32 objectId) {
     return itemGetKindResponse(responseType, itemState->kind);
 }
 
-void actorTryHoldItem(u8 *, s32, s32);
 
 /// Apply a transformation cause to an item, retaining, replacing, or removing it as appropriate.
 /// \param id Initialized item handle, or a missing handle to return zero.

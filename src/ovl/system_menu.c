@@ -554,7 +554,6 @@ void systemMenuPrepareDetailText(void) {
     }
 }
 
-void systemMenuAppendDetailText();     /* extern */
 void systemMenuPrepareDetailText(void); /* extern */
 /// Shared bounded text accumulator for selected-item details.
 /// \note Original identifier: \c D_801341B8 (0x801341B8).
@@ -1007,7 +1006,6 @@ void systemMenuUpdateAnimation(void) {
     }
 }
 
-void systemMenuUpdateAnimation(void);                                       /* extern */
 /// Audio cue retained on menu entry for restoration.
 /// \note Original identifier: \c D_801340D0 (0x801340D0).
 extern s32 gSystemMenuSavedAudioCue;
@@ -1271,14 +1269,15 @@ void systemMenuAwardFriendshipMilestoneAndGoHome(s32 milestone) {
     systemMenuGoHome(0);
 }
 
-void progressSetChapterAndUnlockMilestones(); /* extern */
+#include "story_milestones.h"
 
-/// Invoke story chapter setting and milestone unlocks through the menu’s legacy callback interface.
-/// \returns Nothing; the chapter value is unspecified through this declared no-argument interface.
-/// \note Portability/UB: The unprototyped chapter helper expects a chapter argument, but this interface supplies none; the argument value is unspecified.
+/// Forward a chapter assignment to story progression.
+/// \param chapter Story chapter supplied by the caller.
+/// \note The original wrapper forwards the incoming argument; its registration site is not recovered.
+/// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8011B2A8 (0x8011B2A8).
-void systemMenuInvokeChapterUpdate(void) {
-    progressSetChapterAndUnlockMilestones();
+void systemMenuInvokeChapterUpdate(s32 chapter) {
+    progressSetChapterAndUnlockMilestones(chapter);
 }
 
 
@@ -1859,3 +1858,5 @@ void systemMenuInitialize(void) {
     systemMenuRefreshItemCount(&gSystemMenuRootList);
     gSystemMenuState.menu = &gSystemMenuRootList;
 }
+
+#include "runtime_lifecycle.h"

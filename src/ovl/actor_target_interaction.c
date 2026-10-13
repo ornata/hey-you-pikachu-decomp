@@ -64,8 +64,9 @@ void actorSetMessengerContactMode(u8 *actor, s32 mode) {
 extern f32 gRuntimeFrameSeconds;
 extern f32 fabsf(f32);
 #pragma intrinsic(fabsf)
-f32 vector3GetYawDegrees(f32 *);
-f32 actorConstrainFacingHeading(u8 *, f32);
+#include "actor_interaction.h"
+#include "player_interaction.h"
+#include "vector_operations.h"
 /// Turn an actor toward its stored target position while respecting facing constraints.
 /// \param object Actor whose horizontal facing is updated.
 /// \param speed Angular turn-speed control in degrees per second.
@@ -363,7 +364,6 @@ f32 actorGetGroundHeightAhead(u8 *actor, f32 distance, f32 heightOffset) {
     return terrainGetWorldHeightForQuery((((RuntimeObjectPrefix *)actor)->kind == 0x25) ? 3 : 4, pos[0], pos[1], pos[2], NULL);
 }
 
-f32 vector2NormalizeComponentsApprox(f32 *, f32 *); /* extern */
 /// Separate symbol view of the primary player record's view yaw.
 /// \note Original identifier: \c D_800EF6AC (0x800EF6AC).
 extern f32 gPlayerYaw;

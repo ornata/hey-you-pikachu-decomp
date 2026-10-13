@@ -225,7 +225,7 @@ compare-objects:
 .PHONY: compare-objects
 
 # BASELINE must be a previously accepted build, not the current output directory.
-verify: check check-names verify-clean
+verify: check check-names check-interfaces verify-clean
 	python3 -m pytest tests
 	python3 tools/source_quality.py --check-ledger
 	python3 tools/compare_objects.py $(BASELINE) $(BUILD)
@@ -236,3 +236,8 @@ verify: check check-names verify-clean
 source-quality:
 	python3 tools/source_quality.py $(if $(JSON),--json)
 .PHONY: source-quality
+
+# Reviewed ABI exceptions are fingerprinted; new or stale findings fail verification.
+check-interfaces:
+	python3 tools/interface_contracts.py --check
+.PHONY: check-interfaces

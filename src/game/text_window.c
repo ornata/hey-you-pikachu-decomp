@@ -24,7 +24,9 @@
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-void playerSetControllerPort(s32);
+#include "hud.h"
+#include "player_interaction.h"
+#include "runtime_services.h"
 
 void _bzero(void *, s32);
 /// Animation identifiers used to initialize the six window indicator tracks.
@@ -200,11 +202,8 @@ void textWindowDrawIndicator(Gfx **gdl, s32 alpha) {
 /// \param alpha Background opacity, from 0 transparent to 255 opaque.
 /// \returns Nothing.
 ///
-/// \note UB: K&R definition called with 2 or 3 arguments
 /// \note Original decompilation identifier: \c func_8002BB68 (0x8002BB68).
-void textWindowDrawBackground(gdl, alpha) Gfx **gdl;
-s32 alpha;
-{
+void textWindowDrawBackground(Gfx **gdl, s32 alpha) {
     gDPPipeSync((*gdl)++);
     gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
     gDPSetCombineMode((*gdl)++, G_CC_PRIMITIVE, G_CC_PRIMITIVE);
@@ -269,7 +268,6 @@ void textWindowDrawPage(Gfx **gdl) {
     }
 }
 
-s32 runtimeGetUiPulseAlpha(void);
 
 /// Draw the pulsing text-window input prompt.
 /// \param gdl Display-list cursor to append drawing commands to and advance.
@@ -459,7 +457,6 @@ s32 textWindowOpen(s32 indicator, s32 style, s32 viewMode) {
     return 1;
 }
 
-void textWindowDrawBackground(); /* K&R: called with 2 or 3 arguments */
 void textWindowDrawPage(Gfx **);
 void textWindowDrawPrompt(Gfx **);
 
@@ -497,7 +494,6 @@ void textWindowDeactivate(void) {
     gTextWindowState = TEXT_WINDOW_INACTIVE;
 }
 
-void hudDraw(Gfx **);
 void textWindowDrawIndicator(Gfx **, s32);
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
@@ -535,7 +531,7 @@ void textWindowDrawFrame(void) {
         } else if (v >= 0x100) {
             v = 0xFF;
         }
-        textWindowDrawBackground(&gRenderDisplayListCursor, v / 2, v);
+        textWindowDrawBackground(&gRenderDisplayListCursor, v / 2);
         textWindowDrawIndicator(&gRenderDisplayListCursor, v);
         break;
     case TEXT_WINDOW_CLOSING:
@@ -545,7 +541,7 @@ void textWindowDrawFrame(void) {
         } else if (v >= 0x100) {
             v = 0xFF;
         }
-        textWindowDrawBackground(&gRenderDisplayListCursor, v / 2, v);
+        textWindowDrawBackground(&gRenderDisplayListCursor, v / 2);
         textWindowDrawIndicator(&gRenderDisplayListCursor, v);
         break;
     case TEXT_WINDOW_INACTIVE:
@@ -553,7 +549,6 @@ void textWindowDrawFrame(void) {
     }
 }
 
-void runtimeResetUiPulse(void);
 void pikachuUpdateScriptAndTriggers(void);
 /// Processed button and stick samples for all controller ports; scalar declarations view the primary held-button word.
 /// Primary controller newly pressed buttons; aliases the pressed word of the processed sample.

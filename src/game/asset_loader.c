@@ -10,7 +10,7 @@ typedef struct {
     s32 offset;
     s32 value;
 } AssetPatch;
-s32 archiveDecompressMember(u8 *input, u8 *output);
+#include "archive_compression.h"
 /// Decode an asset and apply its supplied corrections.
 /// \param destination Writable storage large enough for the decoded asset.
 /// \param source Encoded asset and its correction records.

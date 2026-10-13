@@ -96,7 +96,6 @@ void stringPrependBounded(u8 *destination, s32 capacity, u8 *prefix) {
     destination[capacity - 1] = 0;
 }
 
-/// Compatibility declaration retaining the extra actor argument in a native command call.
 /// Yield actor script execution with a zero script result.
 /// \param actor Actor whose script VM receives zero.
 /// \returns One, yielding script execution.
@@ -275,7 +274,7 @@ s32 actorScriptRandomBelow(u8 *actor) {
     return SCRIPT_COMMAND_CONTINUE;
 }
 
-s32 randomBelowWithHistory(s32);  /* extern */
+#include "vector_operations.h"
 /// Choose a random integer while accounting for recent selections in small ranges.
 /// \param actor Actor whose script VM supplies an exclusive upper bound and receives a random nonnegative integer below it, or zero for a nonpositive bound.
 /// \returns Zero, allowing script execution to continue.

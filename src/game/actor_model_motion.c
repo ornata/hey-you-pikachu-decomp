@@ -75,6 +75,12 @@ typedef char
 /// Per-actor-kind part-table slot counts, including the root slot.
 /// \note Original identifier: \c D_800B687C (0x800B687C).
 extern s32 gActorPartCounts[];
+/// Allocate owned storage from a game heap.
+/// \returns The allocation, or null when no suitable block is available.
+/// \note Parameters are the initialized heap, byte count and allocation label described in heap_alloc.h.
+/// This matching view also accepts ignored trailing actor addresses. Adopting the canonical prototype and
+/// removing those arguments changes actorAllocatePartTable code; retain this view until call setup matches.
+/// \note Original decompilation identifier: \c func_800380F4 (0x800380F4).
 void *heapAllocLocal();
 void _bzero(void *, u32);
 /// Current affine world transform shared by hierarchy traversal and actor motion consumers.
@@ -153,6 +159,11 @@ void actorUpdateTrackedSoundSpatialization(f32 *position, s32 *voices) {
 }
 
 
+#include "actor_model.h"
+#include "area_services.h"
+#include "object_update.h"
+#include "spatial_math.h"
+#include "vector_operations.h"
 /// Release actor model resources and remove its collision registration.
 /// \param actor Actor with initialized model state; its state pointer becomes invalid after release.
 /// \returns Nothing.
@@ -395,7 +406,6 @@ void actorDrawModelLightingSetup(u8 *actor) {
 
 void actorUpdateTrackedSoundSpatialization(f32 *, s32 *);
 void actorUpdateGroundSlopePitch(u8 *);
-void objectUpdateHierarchyInteractionVisibility(u8 *);
 
 
 /// Update actor behavior, animation, spatial state, and model drawing setup.
@@ -511,8 +521,6 @@ void actorGetParentTrackingPosition(u8 *child, ActorScriptState *parentState, f3
 }
 
 
-void vector3FromZAxisPitchYawDegrees(f32, f32, f32 *);
-void vector3GetEulerDegrees(f32 *, f32 *, f32 *, f32 *);
 
 /// Update child animation and blend its orientation toward the parent target when tracking is enabled.
 /// \param object Child object with initialized target-facing state and a valid actor hierarchy root.
@@ -1272,7 +1280,6 @@ void actorUpdateGroundReferencePose(u8 *actor, u8 *reference, u8 *pose) {
     ((RuntimeObjectPrefix *)pose)->rotation[2] = state->orientation[2];
 }
 
-s32 areaIsPositionOutsideBounds(f32, f32, f32);
 /// Adjust actor movement for terrain, gravity, and ground contact while updating its movement state.
 /// \param object Actor with initialized action, model, ground-reference pose, and default part state.
 /// \param displacement Three-component movement vector adjusted for terrain and gravity.

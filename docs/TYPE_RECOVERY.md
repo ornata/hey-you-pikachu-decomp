@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 1,703 / 72 |
+| Raw offset candidates | 4,040 / 86 | 1,704 / 72 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -4560,3 +4560,29 @@ command capacity and graphics-state effects without narrating command implementa
 Original address 0x800016B0 is preserved in source/header notes; Ghidra confirms the
 cursor-based drawing path. All four source units and dependent headers preserve
 strict baseline objects and clean retail ROM bytes.
+
+### Completed C interface sweep
+
+The C interface audit now covers 2,302 definitions and their written declarations,
+direct calls and cross-unit references. Unspecified parameter declarations fell
+from 66 to five; functions referenced across C units without a shared header fell
+from 178 to one. Every remaining interface finding has a specific reason and next
+evidence in `INTERFACE_CONTRACTS.json`; `make check-interfaces` rejects new, changed,
+stale or incompletely reviewed findings and is included in `make verify`.
+
+Shared LLVM-style headers cover runtime lifecycle, actor/player/item operations,
+area and terrain services, rendering, text, math and other exported interfaces.
+They retain original identifier/address notes and documented ownership contracts.
+The four-bit outline function now uses the existing TextImage layout. The VM
+integer reader, ROM byte reader, text-window background, help-text length call,
+and chapter wrapper use explicit supported arguments; obsolete extra-argument
+notes and compatibility-declaration fragments are removed. CRC, actor action
+flags, contact-effect and overlay returns are consistent with their definitions.
+
+The chapter wrapper explicitly forwards its incoming chapter argument; its
+registration site is still unproven. The retained inactive heap hook, mixed
+interaction callbacks, unused font argument, progress-reader formal and other
+matching views are exceptions, not invented portable interfaces. See
+`INTERFACE_CONTRACTS.md` for the audit scope and before/after counts. New and changed
+headers independently pass the target compiler. ROM and strict object verification
+remain required; shared-layout recovery beyond these interfaces remains separate.

@@ -33,7 +33,8 @@ extern f32 gRuntimeFrameSeconds;
 /// Pending vertical movement applied by the airborne action until landing.
 /// \note Original identifier: \c D_800A25D0 (0x800A25D0).
 extern f32 gActorAirborneVerticalStep;
-f32 vector3GetYawDegrees(f32 *);
+#include "square_root.h"
+#include "vector_operations.h"
 
 /// Complete an actor action immediately.
 /// \param actor Unused actor parameter retained by the action callback interface.
@@ -119,7 +120,6 @@ s32 actorPrepareSlowestApproachCompletion(u8 *actor) {
     return actorPrepareApproachCompletion(actor, 1.27f);
 }
 
-extern double sqrt(double);
 #pragma intrinsic(sqrt)
 /// Approach-speed preset selecting the special completion continuation.
 /// \note Original identifier: \c D_800A25C8 (0x800A25C8).

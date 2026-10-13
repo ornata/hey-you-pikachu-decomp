@@ -1,3 +1,4 @@
+#include "area_services.h"
 #include "actor_target.h"
 #include "story_chapter.h"
 #include "door.h"
@@ -7,12 +8,11 @@
 #include "actor_script.h"
 #include "scene_types.h"
 
-void toolboxClearCollection(void);
-void mazeSpawnAvailableItems(u8 *);
+#include "toolbox.h"
 extern f32 D_80134590_scene_front_yard[3];
 extern f32 D_8013459C_scene_front_yard[3];
 extern f32 D_801345A8_scene_front_yard[3];
-extern u8 D_80158B90_scene_front_yard[];
+extern ItemSpawn D_80158B90_scene_front_yard[];
 
 /// Set up regular front-yard objects and destination gates according to game progress.
 /// \returns Nothing.

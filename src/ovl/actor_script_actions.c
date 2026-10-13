@@ -33,7 +33,6 @@
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-/// Compatibility declaration retaining an unused third argument from the original call.
 
 /// Consume an eligible held item and replenish the actor action resource.
 /// \param actor Actor whose held item is consumed.
@@ -316,7 +315,8 @@ s32 actorScriptSelectControlScheme(u8 *actor) {
     return SCRIPT_VM_YIELDED;
 }
 
-void hudSetAreaLabelVisible(s32);                                 /* extern */
+#include "hud.h"
+#include "player_interaction.h"
 /// Show the area label and begin the area-transition fade when its delay has elapsed.
 /// \param actor Actor whose script context controls the transition.
 /// \returns Two while this handler or its selected successor waits for the transition.
@@ -335,7 +335,6 @@ s32 actorScriptBeginAreaTransition(u8 *actor) {
     return SCRIPT_VM_WAITING_FOR_ACTION;
 }
 
-void audioSetMusicDuckingInhibitFlags(s32); /* extern */
 /// Remaining duration of the primary camera secondary overlay transition.
 /// \note Original identifier: \c D_800ABDCC (0x800ABDCC).
 extern f32 gPrimarySecondaryOverlayRemainingSeconds;

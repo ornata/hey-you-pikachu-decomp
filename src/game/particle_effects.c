@@ -521,8 +521,6 @@ void ribbonEffectAnchorInitialize(void *anchor) {
 /// after release.
 /// \returns Nothing.
 ///
-/// \note Portability: the unprototyped deallocator call passes an extra argument ignored by the original MIPS
-/// ABI.
 /// \note Original decompilation identifier: \c func_80018138 (0x80018138).
 void ribbonEffectControllerDestroy(u8 *controller) {
     RibbonControllerState *state;
@@ -532,9 +530,9 @@ void ribbonEffectControllerDestroy(u8 *controller) {
     heapFreeLocal(&gGameHeap, state);
 }
 
-void vector3GetZAxisAnglesDegrees(f32 *, f32 *, f32 *);
-f32 mathLerpAngleDegrees(f32, f32, f32);
-f32 objectGetHeightAboveGround(u8 *);
+#include "object_update.h"
+#include "spatial_math.h"
+#include "vector_operations.h"
 
 /// Advance a ribbon effect's steering, ground-contact effects, animation, and lifetime.
 /// \param controller Initialized ribbon controller with its live motion child, tip sibling, and hierarchy
@@ -1072,7 +1070,6 @@ void effectEmitterInitialize(void *emitter) {
     ((RuntimeObjectPrefix *)emitter)->state.bytes = emitterState;
 }
 
-f32 vector2NormalizeComponentsApprox(f32 *, f32 *);
 
 /// Update an effect emitter's target-relative position, emissions, and lifetime.
 /// \param emitter Initialized effect emitter to update.
@@ -1136,8 +1133,6 @@ void particleClusterRendererInitialize(void *renderer) {
 /// release.
 /// \returns Nothing.
 ///
-/// \note Portability: the unprototyped deallocator call passes an extra argument ignored by the original MIPS
-/// ABI.
 /// \note Original decompilation identifier: \c func_80019884 (0x80019884).
 void particleClusterRendererDestroy(u8 *renderer) {
     ValueTrack *track;
@@ -1459,8 +1454,6 @@ void convergingParticleEffectInitialize(void *effect) {
 /// \param effect Effect object with owned drawing resources and state; these become invalid after release.
 /// \returns Nothing.
 ///
-/// \note Portability: the unprototyped deallocator call passes an extra argument ignored by the original MIPS
-/// ABI.
 /// \note Original decompilation identifier: \c func_8001A274 (0x8001A274).
 void convergingParticleEffectDestroy(u8 *effect) {
     ConvergingParticleState *state;
@@ -1686,8 +1679,6 @@ void flickeringEffectInitialize(void *effect) {
 /// \param effect Effect object with owned drawing resources and state; these become invalid after release.
 /// \returns Nothing.
 ///
-/// \note Portability: the unprototyped deallocator call passes an extra argument ignored by the original MIPS
-/// ABI.
 /// \note Original decompilation identifier: \c func_8001ABB8 (0x8001ABB8).
 void flickeringEffectDestroy(u8 *effect) {
     FlickeringEffectState *state;
@@ -1867,8 +1858,6 @@ void animatedRadialEffectInitialize(void *effect) {
 /// \param effect Effect object with owned drawing resources and state; these become invalid after release.
 /// \returns Nothing.
 ///
-/// \note Portability: the unprototyped deallocator call passes an extra argument ignored by the original MIPS
-/// ABI.
 /// \note Original decompilation identifier: \c func_8001B3EC (0x8001B3EC).
 void animatedRadialEffectDestroy(u8 *effect) {
     AnimatedRadialState *state;

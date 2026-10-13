@@ -15,6 +15,9 @@ Remaining game assembly fallbacks are listed by `make asm-fallbacks`.
   say what to fix in the port. `make check-names` (optionally `BASE=<ref>`, `STRICT=1`) runs it.
 - Format with `.clang-format`. Acceptance is a full object comparison and
   `make clean && make -j8` ending in `OK: ROM matches`.
+- Run `make check-interfaces` after interface changes. See `INTERFACE_CONTRACTS.md`
+  for scope and the reviewed ABI exceptions; do not refresh exceptions without
+  reviewing their source and matching evidence.
 - After accepting a change: `uv run python tools/mkctx.py` if headers changed,
   `python3 tools/progress.py`, `bash tools/check_clean.sh`, `git diff --check`, and
   `python3 -m pytest tests`.

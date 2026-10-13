@@ -251,8 +251,9 @@ void actionCommandPlayTrackedSoundWithPitch(s32 actor, u8 *state, u8 *command, f
                              ((ActionScalarArguments *)((u8 *)command + 8))->scalar);
 }
 
-s32 terrainGetMaterialSound(s32, s32);
-void terrainCreateContactEffect(u8 *, s32);
+#include "actor_interaction.h"
+#include "area_services.h"
+#include "object_update.h"
 typedef struct {
     s32 amount;
 } SoundAmplitude;
@@ -286,7 +287,7 @@ void actionCommandPlayGroundContactEffects(u8 *object, u8 *state, ActorActionCue
         }
     }
     if (args->amount >= 2)
-        terrainCreateContactEffect(actorGetDefaultPart(object) + 0x44, ground);
+        terrainCreateContactEffect((f32 *)(actorGetDefaultPart(object) + 0x44), ground);
 }
 
 /// ABI compatibility declaration: the ROM caller supplies an unused command pointer.
@@ -438,7 +439,6 @@ void actionCommandLaunchHeldItem(u8 *actor, u8 *state, ActorActionCueCommand *co
     *(u64 *)(state + 0x1A8) = runtimeGetElapsedMilliseconds();
 }
 
-void actorTryHoldItem(u8 *, s32, s32);
 
 /// Selects a nearby matching item for the actor to hold when it has no live held item.
 /// \param actor Actor that will hold the selected item.
@@ -967,7 +967,6 @@ void actionCommandConfigureHeldItem(s32 actor, u8 *state, u8 *command, f32 *elap
     }
 }
 
-void objectDebugReportNoOp(u8 *);                /* extern */
 
 /// Requests a transformation of the actor’s stored target item and optionally plays a sound when no replacement is produced.
 /// \param actor Actor whose stored target item is requested to transform.

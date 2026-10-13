@@ -53,7 +53,7 @@ void textureGetDescriptor(s32 table, s32 index, TextureDescriptor *descriptor) {
     descriptor->palette = palette;
 }
 
-void textureUploadTile(Gfx **, s32, s32, s32, s32, u32, u32, s32, s32, s32, s32);
+#include "texture_tiles.h"
 
 /// Prepare a table texture for rendering.
 /// \param displayList Display-list cursor advanced by the texture setup commands.

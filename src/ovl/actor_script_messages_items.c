@@ -38,12 +38,10 @@
 #include "actor_script.h"
 #include "script_vm_stack.h"
 
-/// Compatibility declaration retaining the extra actor argument in the mailbox-acknowledgement call.
 
 /// Track the player's primary object as the actor's movement destination.
 /// \param actor Actor whose tracking target is selected with zero distance allowance; its script VM receives zero.
 /// \returns Zero, allowing script execution to continue.
-/// \note Portability: The unprototyped VM push retains an extra argument ignored by the original ABI.
 /// \note Original decompilation identifier: \c func_8011C800 (0x8011C800).
 s32 actorScriptTrackPlayerPrimaryObject(u8 *actor) {
     s32 sp1C;
@@ -335,7 +333,10 @@ s32 actorScriptStartAreaTransition(s32 actor) {
     return 2;
 }
 
-void scriptVmSetPrimaryCameraView(s32); /* extern */
+#include "actor_interaction.h"
+#include "player_interaction.h"
+#include "script_object_queries.h"
+#include "square_root.h"
 
 /// Set the primary camera position and look-at target from script arguments.
 /// \param actor Actor whose script VM supplies position X, Y, Z followed by target X, Y, Z (target Z on top), and receives zero.
@@ -393,7 +394,6 @@ s32 actorScriptSetPlayerPosition(u8 *actor) {
     return 0;
 }
 
-void playerSetViewYaw(f32); /* extern */
 
 /// Request a player heading angle, subject to player view-control permissions.
 /// \param actor Actor whose script VM supplies a yaw angle in degrees and receives zero.
@@ -419,7 +419,6 @@ s32 actorScriptPushPlayerViewYaw(u8 *actor) {
     return 0;
 }
 
-void playerSetViewPitch(f32); /* extern */
 
 /// Request a player view pitch, subject to player view-control permissions.
 /// \param actor Actor whose script VM supplies a pitch angle in degrees, limited to -60 through 60 when applied, and receives zero.
@@ -904,7 +903,6 @@ s32 actorScriptSetSoundEffectVolume(u8 *actor) {
     return 0;
 }
 
-f64 sqrt(f64);
 #pragma intrinsic(sqrt)
 
 /// Replace a numeric script argument with its square root.
@@ -918,7 +916,6 @@ s32 actorScriptSquareRoot(u8 *actor) {
     return 0;
 }
 
-s32 actorFindItemHandleInFacingCone(u8 *, f32, f32, s32, s32, s32, s32); /* extern */
 
 /// Find an item near the actor within its facing cone and the requested filters.
 /// \param actor Actor whose script VM supplies minimum kind, maximum kind, distance, cone angle, item state, and weighted preference (preference on top). Kind 165 removes its bound, state six accepts any state, and nonzero preference enables priority weighting. Receives the selected item handle, or zero when none qualifies.
@@ -1143,7 +1140,6 @@ s32 actorScriptGetObjectType(u8 *actor) {
     return 0;
 }
 
-f32 objectGetBoundingRadiusByHandle(s32);          /* extern */
 
 /// Replace an object handle on the script stack with its bounding radius.
 /// \param actor Actor whose script VM supplies a handle and receives the radius, or zero for an unavailable handle.
@@ -1157,7 +1153,6 @@ s32 actorScriptGetBoundingRadius(u8 *actor) {
     return 0;
 }
 
-void actorSetDefaultActionMode(u8 *, s32); /* extern */
 
 /// Set the default mode for actions that inherit the actor's mode.
 /// \param actor Actor whose script VM supplies a default action mode representable as a signed 16-bit value and receives zero.
@@ -1222,7 +1217,6 @@ s32 actorScriptStartTimedAction(u8 *actor) {
     return 1;
 }
 
-s32 playerGetHeldItemHandle();     /* extern */
 
 /// Push the handle of the item held by the player.
 /// \param actor Actor whose script VM receives the stored player held-item handle, or zero when none is recorded.
@@ -1271,7 +1265,6 @@ s32 actorScriptGetPlayerCoordinate(u8 *actor) {
     return 0;
 }
 
-f32 objectGetFacingErrorToPlayer(u8 *);         /* extern */
 
 /// Push the actor's facing error relative to the player.
 /// \param actor Actor whose script VM receives the signed facing error in degrees.

@@ -1,3 +1,4 @@
+#include "contact_effect.h"
 #include "render_state.h"
 #include "game_heap.h"
 #include "ground_shadow.h"
@@ -85,7 +86,10 @@ void _bzero(void *, u32);
 /// Integer animation program used after contact triggers the effect.
 /// \note Original identifier: \c D_8006B394 (0x8006B394).
 extern s32 gContactEffectTriggeredAnimation;
-void actorUpdateModel(u8 *);
+#include "actor_model.h"
+#include "object_update.h"
+#include "orbit_follower.h"
+#include "togepi.h"
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
@@ -258,7 +262,6 @@ void contactEffectHandleActorResponse(u8 *effect, s32 *response) {
     }
 }
 
-void actorInitializeModelState(u8 *);
 
 /// Initialize an actor model and its part lookup storage.
 /// \param actor Actor to initialize.
@@ -336,7 +339,6 @@ void objectResetRollVelocity(u8 *object) {
     }
 }
 
-void actorUpdateChildMotion(u8 *);
 
 /// Advance child motion while spinning toward decreasing yaw.
 /// \param child Child object whose motion and yaw are updated.
@@ -569,9 +571,6 @@ u8 *actorAssetGetCachedStorage(s32 kind) {
     return (u8 *)off;
 }
 
-void objectPrepareDistributedKindSearches(u16, s32);
-void actorInitializeAnimatedTextures(u8 *, s32 *);
-u8 *orbitFollowerCreate(u8 *, f32, f32, f32);
 /// Separate symbol view of the actor-kind configuration for Pikachu, kind 0x25.
 /// \note Original identifier: \c D_80088BEC (0x80088BEC).
 extern u8 gPikachuKindConfiguration[];

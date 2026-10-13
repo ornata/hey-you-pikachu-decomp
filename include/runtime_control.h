@@ -19,4 +19,10 @@ void runtimeRequestGameModeChange(s32 mode);
 /// \note Original decompilation identifier: \c func_8000BB48 (0x8000BB48).
 void runtimeCheckResetCheckpoint(const char *label, s32 unused);
 
+/// Request a runtime program transition and reset transient input and recognition state.
+/// \param program Valid identifier in the runtime program table.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_8000B1D8 (0x8000B1D8).
+void runtimeRequestProgramChange(s32 program);
+
 #endif

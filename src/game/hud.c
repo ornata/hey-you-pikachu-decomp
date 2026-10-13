@@ -1,3 +1,4 @@
+#include "runtime_lifecycle.h"
 #include "microphone_query.h"
 #include "player_state.h"
 #include "actor_script.h"
@@ -50,6 +51,9 @@ extern s32 gHudGuideStyle;
 /// \note Original identifier: \c D_800F01F8 (0x800F01F8).
 extern void (*gHudGuideDrawCallback)(Gfx **);
 
+#include "area_services.h"
+#include "hud.h"
+#include "player_interaction.h"
 /// Provide the inactive HUD program-initialization hook for this build.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800215A0 (0x800215A0).
@@ -569,8 +573,6 @@ extern s32 gHudStationaryLookActionAnimations[], gHudCompanionActionAnimations[]
 /// Sprite descriptors updated with the selected action-indicator animation.
 /// \note Original identifier: \c D_80089408 (0x80089408).
 extern DrawRecord gHudVerticalMotionSprites[], gHudHorizontalMotionSprites[], gHudActionIndicatorSprites[];
-s32 playerCanToggleCompanionControl(void);
-s32 playerCanEnterStationaryLook(void);
 
 /// Update and draw the movement indicators and applicable action indicator.
 /// Requires an active Pikachu actor and initialized motion-indicator animations.
@@ -669,7 +671,6 @@ void hudDrawMotionIndicators(Gfx **gdl) {
     textureDrawRectangles(5, (TextureDrawC354 *)(void *)gHudVerticalMotionSprites, gdl);
 }
 
-char *areaGetDisplayName(s32);                        /* extern */
 /// Owned text-image handle for the current area name.
 /// \note Original identifier: \c D_80089460 (0x80089460).
 extern s32 gHudAreaLabelImage;

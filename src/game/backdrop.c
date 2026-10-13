@@ -31,7 +31,9 @@ extern u8 gColorFramebuffer0[];
 /// Separate camera backdrop-image view, with a 224-byte camera stride.
 /// \note Original identifier: \c D_800ABD7C (0x800ABD7C).
 extern s32 gRenderCameraBackdropImages[][0xE0 / 4];
-void textureCopyRgba16Region(Gfx **, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+#include "backdrop_query.h"
+#include "render_frame.h"
+#include "texture_tiles.h"
 /// Draw the active backdrop as a fixed image in the scene viewport.
 /// \param list Display-list cursor, advanced by the appended drawing commands.
 /// \returns Nothing.
@@ -152,7 +154,6 @@ typedef struct {
     s32 image, width, height, x, y;
 } ScrollView333;
 void backdropUpdateViewOffsets(u8 *);
-void renderFillFramebufferRectangle(u32, u32, u32, u32, u8, u8, u8, u8);
 
 /// Draw the active scrolling backdrop and its upper and lower fill bands.
 /// \param list Display-list cursor, advanced by the appended drawing commands.

@@ -46,6 +46,7 @@
                        (lrs) << G_TEXTURE_IMAGE_FRAC, (lrt) << G_TEXTURE_IMAGE_FRAC);                                  \
     }
 
+#include "texture_tiles.h"
 /// Make an image and any required palette ready for textured drawing.
 /// \param displayList Display-list cursor with sufficient capacity; receives the texture setup commands and advances past them.
 /// \param image RDP-readable texture data with padded rows; borrowed until these commands finish rendering.

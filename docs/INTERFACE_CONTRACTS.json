@@ -1,0 +1,511 @@
+{
+  "schema_version": 1,
+  "baseline_ref": "0f41200",
+  "scope": "Lexical audit of written game C declarations, known-definition direct-call arity, old-style callback tables and shared-header coverage. SDK headers are excluded through LOCAL_SDK_FILES.json. This does not replace target compilation, ROM assembly evidence, callback/lifetime analysis or strict object verification. Assembly-only functions without a C definition are not inferred.",
+  "baseline_counts": {
+    "unspecified-parameters": 66,
+    "signature-mismatch": 29,
+    "missing-shared-header": 178,
+    "knr-definition": 5,
+    "call-arity": 19,
+    "unspecified-callback": 1
+  },
+  "exceptions": [
+    {
+      "kind": "call-arity",
+      "file": "src/game/actor_model_motion.c",
+      "line": 325,
+      "name": "heapAllocLocal",
+      "shape": {
+        "expected": 3,
+        "actual": 4
+      },
+      "caller": "actorInitializeCameraFacingChildState",
+      "reason": "The canonical allocator is void *(HpHdr *, u32, u16). These callers retain legacy allocation labels, signed sizes or ignored fourth arguments. Canonical adoption failed forced matching builds; actorAllocatePartTable, backdropAllocateViewBuffer and wordMapInitialize are recorded matching constraints.",
+      "next_evidence": "Isolate argument promotion, signed size conversion and IDO call setup in the affected caller; preserve the unused argument until both the ROM and strict object comparison pass."
+    },
+    {
+      "kind": "call-arity",
+      "file": "src/game/actor_model_motion.c",
+      "line": 303,
+      "name": "heapAllocLocal",
+      "shape": {
+        "expected": 3,
+        "actual": 4
+      },
+      "caller": "actorInitializeTargetFacingChildState",
+      "reason": "The canonical allocator is void *(HpHdr *, u32, u16). These callers retain legacy allocation labels, signed sizes or ignored fourth arguments. Canonical adoption failed forced matching builds; actorAllocatePartTable, backdropAllocateViewBuffer and wordMapInitialize are recorded matching constraints.",
+      "next_evidence": "Isolate argument promotion, signed size conversion and IDO call setup in the affected caller; preserve the unused argument until both the ROM and strict object comparison pass."
+    },
+    {
+      "kind": "unspecified-parameters",
+      "file": "src/game/actor_model_motion.c",
+      "line": 84,
+      "name": "heapAllocLocal",
+      "shape": "void *heapAllocLocal()",
+      "reason": "The canonical allocator is void *(HpHdr *, u32, u16). These callers retain legacy allocation labels, signed sizes or ignored fourth arguments. Canonical adoption failed forced matching builds; actorAllocatePartTable, backdropAllocateViewBuffer and wordMapInitialize are recorded matching constraints.",
+      "next_evidence": "Isolate argument promotion, signed size conversion and IDO call setup in the affected caller; preserve the unused argument until both the ROM and strict object comparison pass."
+    },
+    {
+      "kind": "call-arity",
+      "file": "src/game/backdrop.c",
+      "line": 253,
+      "name": "heapAllocLocal",
+      "shape": {
+        "expected": 3,
+        "actual": 4
+      },
+      "caller": "backdropAllocateViewBuffer",
+      "reason": "The canonical allocator is void *(HpHdr *, u32, u16). These callers retain legacy allocation labels, signed sizes or ignored fourth arguments. Canonical adoption failed forced matching builds; actorAllocatePartTable, backdropAllocateViewBuffer and wordMapInitialize are recorded matching constraints.",
+      "next_evidence": "Isolate argument promotion, signed size conversion and IDO call setup in the affected caller; preserve the unused argument until both the ROM and strict object comparison pass."
+    },
+    {
+      "kind": "call-arity",
+      "file": "src/game/backdrop.c",
+      "line": 269,
+      "name": "heapAllocLocal",
+      "shape": {
+        "expected": 3,
+        "actual": 4
+      },
+      "caller": "backdropLoadRomRange",
+      "reason": "The canonical allocator is void *(HpHdr *, u32, u16). These callers retain legacy allocation labels, signed sizes or ignored fourth arguments. Canonical adoption failed forced matching builds; actorAllocatePartTable, backdropAllocateViewBuffer and wordMapInitialize are recorded matching constraints.",
+      "next_evidence": "Isolate argument promotion, signed size conversion and IDO call setup in the affected caller; preserve the unused argument until both the ROM and strict object comparison pass."
+    },
+    {
+      "kind": "signature-mismatch",
+      "file": "src/game/backdrop.c",
+      "line": 238,
+      "name": "heapAllocLocal",
+      "shape": {
+        "expected": [
+          "void*",
+          [
+            "HpHdr*",
+            "u32",
+            "u16"
+          ]
+        ],
+        "actual": [
+          "void*",
+          [
+            "HpHdr*",
+            "u32",
+            "u16",
+            "s32"
+          ]
+        ]
+      },
+      "reason": "The canonical allocator is void *(HpHdr *, u32, u16). These callers retain legacy allocation labels, signed sizes or ignored fourth arguments. Canonical adoption failed forced matching builds; actorAllocatePartTable, backdropAllocateViewBuffer and wordMapInitialize are recorded matching constraints.",
+      "next_evidence": "Isolate argument promotion, signed size conversion and IDO call setup in the affected caller; preserve the unused argument until both the ROM and strict object comparison pass."
+    },
+    {
+      "kind": "call-arity",
+      "file": "src/game/collection_presentation.c",
+      "line": 352,
+      "name": "actionScriptStop",
+      "shape": {
+        "expected": 1,
+        "actual": 2
+      },
+      "caller": "presentationRestoreActiveActor",
+      "reason": "The result is the borrowed actor-state script-identifier field, as declared in action_script_stop.h. presentationRestoreActiveActor retains an ignored trailing presentation-state argument; removing it and adopting the canonical prototype fails the ROM gate.",
+      "next_evidence": "Recover a matching call representation for presentationRestoreActiveActor without changing the borrowed return contract."
+    },
+    {
+      "kind": "unspecified-parameters",
+      "file": "src/game/collection_presentation.c",
+      "line": 319,
+      "name": "actionScriptStop",
+      "shape": "s32 *actionScriptStop()",
+      "reason": "The result is the borrowed actor-state script-identifier field, as declared in action_script_stop.h. presentationRestoreActiveActor retains an ignored trailing presentation-state argument; removing it and adopting the canonical prototype fails the ROM gate.",
+      "next_evidence": "Recover a matching call representation for presentationRestoreActiveActor without changing the borrowed return contract."
+    },
+    {
+      "kind": "signature-mismatch",
+      "file": "src/game/collection_presentation.c",
+      "line": 199,
+      "name": "objectDrawHierarchyGroup",
+      "shape": {
+        "expected": [
+          "void",
+          [
+            "RuntimeObjectPrefix*",
+            "s32"
+          ]
+        ],
+        "actual": [
+          "void",
+          [
+            "s32",
+            "s32"
+          ]
+        ]
+      },
+      "reason": "The canonical object_groups.h interface uses RuntimeObjectPrefix *. collection_presentation.c retains an integer-address view because canonical adoption changes presentationDrawCollectionItem code and fails the ROM gate.",
+      "next_evidence": "Isolate pointer/integer argument lowering in presentationDrawCollectionItem; retain original relocation identities and compare all objects."
+    },
+    {
+      "kind": "signature-mismatch",
+      "file": "src/game/collection_presentation.c",
+      "line": 373,
+      "name": "objectUpdateHierarchy",
+      "shape": {
+        "expected": [
+          "void",
+          [
+            "RuntimeObjectPrefix*"
+          ]
+        ],
+        "actual": [
+          "void",
+          [
+            "u8*"
+          ]
+        ]
+      },
+      "reason": "The canonical object_groups.h interface uses RuntimeObjectPrefix *. Its adoption in collection_presentation.c changes presentationDrawCollectionItem code and fails the ROM gate. The local byte-pointer view is retained.",
+      "next_evidence": "Isolate call argument and register allocation in presentationDrawCollectionItem; preserve the shared layout and object lifetime contract."
+    },
+    {
+      "kind": "call-arity",
+      "file": "src/game/graphics_text.c",
+      "line": 1150,
+      "name": "fontImageGetGlyphIndex",
+      "shape": {
+        "expected": 2,
+        "actual": 1
+      },
+      "caller": "fontImageReadGlyph",
+      "reason": "The first argument is a supported character code; the second font argument is unused. fontImageReadGlyph omits the second argument through an unprototyped declaration. Both supplying zero and removing the unused formal from the helper and its other callers fail forced ROM builds.",
+      "next_evidence": "Recover a matching single-argument representation or matching initialization of the unused argument; unsupported character ranges remain explicitly undefined."
+    },
+    {
+      "kind": "unspecified-parameters",
+      "file": "src/game/graphics_text.c",
+      "line": 1126,
+      "name": "fontImageGetGlyphIndex",
+      "shape": "s32 fontImageGetGlyphIndex()",
+      "reason": "The first argument is a supported character code; the second font argument is unused. fontImageReadGlyph omits the second argument through an unprototyped declaration. Both supplying zero and removing the unused formal from the helper and its other callers fail forced ROM builds.",
+      "next_evidence": "Recover a matching single-argument representation or matching initialization of the unused argument; unsupported character ranges remain explicitly undefined."
+    },
+    {
+      "kind": "call-arity",
+      "file": "src/game/heap.c",
+      "line": 100,
+      "name": "heapDebugNoOp",
+      "shape": {
+        "expected": 1,
+        "actual": 2
+      },
+      "caller": "heapDebugReportBlock",
+      "reason": "This inactive diagnostic hook has a one-argument K&R definition but receives an ignored allocation address after the heap address. Typed two-argument pointer and integer variants both fail the ROM gate. No portable shared prototype is published for this matching-only hook.",
+      "next_evidence": "Isolate heapDebugReportBlock call generation and the rendering callers before replacing the compatibility definition and declarations; do not remove emitted calls merely because the retail hook is inactive."
+    },
+    {
+      "kind": "knr-definition",
+      "file": "src/game/heap.c",
+      "line": 77,
+      "name": "heapDebugNoOp",
+      "shape": "void heapDebugNoOp(heapAddress)",
+      "reason": "This inactive diagnostic hook has a one-argument K&R definition but receives an ignored allocation address after the heap address. Typed two-argument pointer and integer variants both fail the ROM gate. No portable shared prototype is published for this matching-only hook.",
+      "next_evidence": "Isolate heapDebugReportBlock call generation and the rendering callers before replacing the compatibility definition and declarations; do not remove emitted calls merely because the retail hook is inactive."
+    },
+    {
+      "kind": "missing-shared-header",
+      "file": "src/game/heap.c",
+      "line": 77,
+      "name": "heapDebugNoOp",
+      "shape": "heapDebugNoOp",
+      "reason": "This inactive diagnostic hook has a one-argument K&R definition but receives an ignored allocation address after the heap address. Typed two-argument pointer and integer variants both fail the ROM gate. No portable shared prototype is published for this matching-only hook.",
+      "next_evidence": "Isolate heapDebugReportBlock call generation and the rendering callers before replacing the compatibility definition and declarations; do not remove emitted calls merely because the retail hook is inactive."
+    },
+    {
+      "kind": "signature-mismatch",
+      "file": "src/game/object_hierarchy.c",
+      "line": 78,
+      "name": "searchTreeFind",
+      "shape": {
+        "expected": [
+          "TreeNode*",
+          [
+            "SearchTree*",
+            "s32"
+          ]
+        ],
+        "actual": [
+          "TreeNode*",
+          [
+            "SearchTree*",
+            "void*"
+          ]
+        ]
+      },
+      "reason": "The node return and tree pointer are established. The pointer-shaped object key view matches; canonical integer-address keys change code in these callers. search_tree_lookup.h remains the canonical integer-key interface.",
+      "next_evidence": "Isolate objectPrepareKindSearch and item lookup key argument scheduling, retaining key allocation extents and strict relocation identities."
+    },
+    {
+      "kind": "signature-mismatch",
+      "file": "src/game/orbit_follower.c",
+      "line": 81,
+      "name": "terrainCheckHorizontalObstruction",
+      "shape": {
+        "expected": [
+          "u16",
+          [
+            "s32",
+            "float",
+            "float",
+            "float",
+            "float",
+            "float",
+            "float",
+            "float",
+            "float",
+            "u8**"
+          ]
+        ],
+        "actual": [
+          "s32",
+          [
+            "s32",
+            "float",
+            "float",
+            "float",
+            "float",
+            "float",
+            "float",
+            "float",
+            "float",
+            "u8**"
+          ]
+        ]
+      },
+      "reason": "The canonical area_services.h result is u16 directional obstruction flags. The orbit caller retains a signed-word result view; changing to u16 fails the ROM gate, including with an explicitly discarded result.",
+      "next_evidence": "Isolate orbitFollowerUpdate call lowering and preserve the original unused-result instruction sequence before adopting the narrow return declaration."
+    },
+    {
+      "kind": "signature-mismatch",
+      "file": "src/game/runtime.c",
+      "line": 985,
+      "name": "overlayLoadFromRom",
+      "shape": {
+        "expected": [
+          "void*",
+          [
+            "u32",
+            "u32",
+            "u8*",
+            "u8*",
+            "u8*",
+            "u8*",
+            "u8*",
+            "u8*",
+            "u8*"
+          ]
+        ],
+        "actual": [
+          "void*",
+          [
+            "void*",
+            "void*",
+            "void*",
+            "void*",
+            "void*",
+            "void*",
+            "void*",
+            "void*",
+            "void*"
+          ]
+        ]
+      },
+      "reason": "The correct void * result is now shared. The runtime caller retains pointer-width ROM offsets and RAM ranges; canonical u32 ROM offsets plus casts fail the ROM gate, including with an explicitly discarded result. The loader and area consumer use overlay_loader.h.",
+      "next_evidence": "Isolate runtimeMainThreadEntry argument lowering. ROM offsets are numeric cartridge addresses, all target addresses are 32 bits, and the returned end-of-BSS address is ignored here."
+    },
+    {
+      "kind": "call-arity",
+      "file": "src/game/save_progress.c",
+      "line": 536,
+      "name": "progressReadFieldValue",
+      "shape": {
+        "expected": 2,
+        "actual": 1
+      },
+      "caller": "progressGetValue",
+      "reason": "The second K&R formal is overwritten before use and omitted by progressGetValue. Moving it to a local and introducing a one-argument prototype fails the ROM gate. Its original register representation remains an explicit matching exception.",
+      "next_evidence": "Recover a one-argument definition that preserves the field-type register allocation and object bytes; do not initialize a dummy argument merely to silence the audit."
+    },
+    {
+      "kind": "knr-definition",
+      "file": "src/game/save_progress.c",
+      "line": 382,
+      "name": "progressReadFieldValue",
+      "shape": "s32 progressReadFieldValue(fieldId, type)",
+      "reason": "The second K&R formal is overwritten before use and omitted by progressGetValue. Moving it to a local and introducing a one-argument prototype fails the ROM gate. Its original register representation remains an explicit matching exception.",
+      "next_evidence": "Recover a one-argument definition that preserves the field-type register allocation and object bytes; do not initialize a dummy argument merely to silence the audit."
+    },
+    {
+      "kind": "unspecified-parameters",
+      "file": "src/game/save_progress.c",
+      "line": 529,
+      "name": "progressReadFieldValue",
+      "shape": "s32 progressReadFieldValue()",
+      "reason": "The second K&R formal is overwritten before use and omitted by progressGetValue. Moving it to a local and introducing a one-argument prototype fails the ROM gate. Its original register representation remains an explicit matching exception.",
+      "next_evidence": "Recover a one-argument definition that preserves the field-type register allocation and object bytes; do not initialize a dummy argument merely to silence the audit."
+    },
+    {
+      "kind": "call-arity",
+      "file": "src/game/texture_images_word_map.c",
+      "line": 1299,
+      "name": "heapAllocLocal",
+      "shape": {
+        "expected": 3,
+        "actual": 4
+      },
+      "caller": "wordMapInitialize",
+      "reason": "The canonical allocator is void *(HpHdr *, u32, u16). These callers retain legacy allocation labels, signed sizes or ignored fourth arguments. Canonical adoption failed forced matching builds; actorAllocatePartTable, backdropAllocateViewBuffer and wordMapInitialize are recorded matching constraints.",
+      "next_evidence": "Isolate argument promotion, signed size conversion and IDO call setup in the affected caller; preserve the unused argument until both the ROM and strict object comparison pass."
+    },
+    {
+      "kind": "signature-mismatch",
+      "file": "src/game/texture_images_word_map.c",
+      "line": 1283,
+      "name": "heapAllocLocal",
+      "shape": {
+        "expected": [
+          "void*",
+          [
+            "HpHdr*",
+            "u32",
+            "u16"
+          ]
+        ],
+        "actual": [
+          "void*",
+          [
+            "HpHdr*",
+            "s32",
+            "s32",
+            "void*"
+          ]
+        ]
+      },
+      "reason": "The canonical allocator is void *(HpHdr *, u32, u16). These callers retain legacy allocation labels, signed sizes or ignored fourth arguments. Canonical adoption failed forced matching builds; actorAllocatePartTable, backdropAllocateViewBuffer and wordMapInitialize are recorded matching constraints.",
+      "next_evidence": "Isolate argument promotion, signed size conversion and IDO call setup in the affected caller; preserve the unused argument until both the ROM and strict object comparison pass."
+    },
+    {
+      "kind": "signature-mismatch",
+      "file": "src/game/toolbox.c",
+      "line": 711,
+      "name": "progressGetValue",
+      "shape": {
+        "expected": [
+          "s32",
+          [
+            "u32"
+          ]
+        ],
+        "actual": [
+          "s32",
+          [
+            "s32"
+          ]
+        ]
+      },
+      "reason": "The canonical progress_value.h selector is u32. The toolbox signed selector view is retained: replacing it with the shared declaration changes ROM code. Both carry the original 32-bit selector bit pattern.",
+      "next_evidence": "Compare toolboxRestoreStoredObjects argument conversion and register allocation before adopting the unsigned declaration."
+    },
+    {
+      "kind": "signature-mismatch",
+      "file": "src/game/voice_recognition.c",
+      "line": 171,
+      "name": "voiceDeviceClearDictionary",
+      "shape": {
+        "expected": [
+          "s32",
+          [
+            "OSVoiceHandle*",
+            "u16"
+          ]
+        ],
+        "actual": [
+          "s32",
+          [
+            "OSVoiceHandle*",
+            "s32"
+          ]
+        ]
+      },
+      "reason": "The device API accepts a u16 word count. The recognition caller retains its established s32 count view because canonical narrowing changes matching instructions; the previously unused trailing arguments are already removed.",
+      "next_evidence": "Reconcile argument-width lowering in voiceDictionaryClearDevice before adopting voice_device.h in that unit."
+    },
+    {
+      "kind": "call-arity",
+      "file": "src/main.c",
+      "line": 273,
+      "name": "heapDebugNoOp",
+      "shape": {
+        "expected": 1,
+        "actual": 2
+      },
+      "caller": "renderInitializeResources",
+      "reason": "This inactive diagnostic hook has a one-argument K&R definition but receives an ignored allocation address after the heap address. Typed two-argument pointer and integer variants both fail the ROM gate. No portable shared prototype is published for this matching-only hook.",
+      "next_evidence": "Isolate heapDebugReportBlock call generation and the rendering callers before replacing the compatibility definition and declarations; do not remove emitted calls merely because the retail hook is inactive."
+    },
+    {
+      "kind": "call-arity",
+      "file": "src/main.c",
+      "line": 315,
+      "name": "heapDebugNoOp",
+      "shape": {
+        "expected": 1,
+        "actual": 2
+      },
+      "caller": "renderLoadAreaAssets",
+      "reason": "This inactive diagnostic hook has a one-argument K&R definition but receives an ignored allocation address after the heap address. Typed two-argument pointer and integer variants both fail the ROM gate. No portable shared prototype is published for this matching-only hook.",
+      "next_evidence": "Isolate heapDebugReportBlock call generation and the rendering callers before replacing the compatibility definition and declarations; do not remove emitted calls merely because the retail hook is inactive."
+    },
+    {
+      "kind": "unspecified-parameters",
+      "file": "src/main.c",
+      "line": 265,
+      "name": "heapDebugNoOp",
+      "shape": "void heapDebugNoOp()",
+      "reason": "This inactive diagnostic hook has a one-argument K&R definition but receives an ignored allocation address after the heap address. Typed two-argument pointer and integer variants both fail the ROM gate. No portable shared prototype is published for this matching-only hook.",
+      "next_evidence": "Isolate heapDebugReportBlock call generation and the rendering callers before replacing the compatibility definition and declarations; do not remove emitted calls merely because the retail hook is inactive."
+    },
+    {
+      "kind": "signature-mismatch",
+      "file": "src/ovl/item_registry.c",
+      "line": 1725,
+      "name": "searchTreeFind",
+      "shape": {
+        "expected": [
+          "TreeNode*",
+          [
+            "SearchTree*",
+            "s32"
+          ]
+        ],
+        "actual": [
+          "TreeNode*",
+          [
+            "SearchTree*",
+            "void*"
+          ]
+        ]
+      },
+      "reason": "The node return and tree pointer are established. The pointer-shaped object key view matches; canonical integer-address keys change code in these callers. search_tree_lookup.h remains the canonical integer-key interface.",
+      "next_evidence": "Isolate objectPrepareKindSearch and item lookup key argument scheduling, retaining key allocation extents and strict relocation identities."
+    },
+    {
+      "kind": "unspecified-callback",
+      "file": "src/ovl/player_companion.c",
+      "line": 136,
+      "name": "gPlayerInteractionActionHandlers",
+      "shape": "(*gPlayerInteractionActionHandlers[10])()",
+      "reason": "The original action table mixes pointer/integer argument views and one void-returning pickup handler. Dispatch forwards player and controller addresses and exposes an unspecified result for the void handler. Existing Doxygen contracts describe this incompatible callback ABI; no result or adapter is invented.",
+      "next_evidence": "Trace each callback and every dispatch-result consumer against ROM assembly, then establish a common callback contract or matching per-action adapters without inventing a pickup result."
+    }
+  ]
+}

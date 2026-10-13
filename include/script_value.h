@@ -34,4 +34,11 @@ void scriptValueSetInteger(ScriptValue *value, s32 number);
 /// \note Original identifier: \c func_80115578 (0x80115578).
 void scriptValueSetStringPointer(ScriptValue *value, char *text);
 
+/// Read a numeric script value as an integer.
+/// \param value Numeric script value to read; floating-point values must be representable as an integer.
+/// \returns The integer value, with any floating-point fraction discarded.
+///
+/// \note Original decompilation identifier: \c func_80115424 (0x80115424).
+s32 scriptValueGetInteger(u8 *value);
+
 #endif

@@ -1,3 +1,4 @@
+#include "runtime_lifecycle.h"
 #include "audio_sound_effect.h"
 #include "audio_control.h"
 #include "game_heap.h"
@@ -58,6 +59,7 @@ typedef struct {
 /// \note Original identifier: \c D_8009C2AC (0x8009C2AC).
 extern EyeGroup36A gEyeCatchGroups[6];
 
+#include "eye_catch.h"
 /// Prepare eye-catch layouts and reset interlude state once at startup.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80036A60 (0x80036A60).

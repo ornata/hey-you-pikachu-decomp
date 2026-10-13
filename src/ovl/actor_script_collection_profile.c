@@ -1,3 +1,4 @@
+#include "area_names.h"
 #include "player_profile.h"
 #include "pikachu_actor.h"
 #include "math_angles.h"
@@ -76,7 +77,12 @@ s32 actorScriptTransformItem(u8 *actor) {
     return 0;
 }
 
-void cameraEnableElapsedTimeTint(f32); /* extern */
+#include "actor_interaction.h"
+#include "area_services.h"
+#include "backdrop_query.h"
+#include "player_interaction.h"
+#include "render_frame.h"
+#include "title_screen_state.h"
 
 /// Enable the elapsed-time camera tint using the script-supplied initial elapsed time.
 /// \param actor Actor whose script VM supplies the initial elapsed time in seconds and receives zero; negative time values are ignored.
@@ -251,7 +257,6 @@ s32 actorScriptSetInteractionVisibilitySuppressed(u8 *actor) {
     return 0;
 }
 
-char *areaGetDisplayName(s32); /* extern */
 /// Provide the full display name of an area.
 /// \param actor Actor whose script VM supplies an area index from zero through 22 and receives a borrowed reference to its name string.
 /// \returns Zero, allowing script execution to continue.
@@ -264,7 +269,6 @@ s32 actorScriptGetAreaName(u8 *actor) {
     return 0;
 }
 
-char *areaGetRegionName(s32); /* extern */
 /// Provide the short display name of an area.
 /// \param actor Actor whose script VM supplies an area index from zero through 22 and receives a borrowed short-name string, or a null string reference when no short name is defined.
 /// \returns Zero, allowing script execution to continue.
@@ -313,7 +317,6 @@ s32 actorScriptGetItemCollectionValue(u8 *actor) {
     return 0;
 }
 
-void actorSetAppearanceVariants(s32, s32, s32, s32); /* extern */
 
 /// Select Pikachu appearance variants and whether they persist across action changes.
 /// \param actor Actor whose script VM supplies appearance-slot zero and one variants followed by a nonzero value to preserve them across action changes, or zero to allow changes; the VM receives zero.
@@ -329,7 +332,7 @@ s32 actorScriptSetPikachuAppearanceVariants(u8 *actor) {
     sp20 = scriptVmPopInteger(vmAddress);
     sp24 = scriptVmPopInteger(vmAddress);
     sp_pop = scriptVmPopInteger(vmAddress);
-    actorSetAppearanceVariants(((s32)gPikachuActor), sp_pop, sp24, sp20);
+    actorSetAppearanceVariants((u8 *)gPikachuActor, sp_pop, sp24, sp20);
     scriptVmPushInteger(vmAddress, 0);
     return 0;
 }
@@ -637,7 +640,6 @@ s32 actorScriptGetAvailableObjectDistance(u8 *actor) {
     return 0;
 }
 
-s32 backdropGetActiveId();     /* extern */
 /// Provide the currently selected backdrop identifier.
 /// \param actor Actor whose script VM receives the active backdrop identifier.
 /// \returns Zero, allowing script execution to continue.
@@ -776,7 +778,6 @@ s32 actorScriptSetFogEnd(u8 *actor) {
     return 0;
 }
 
-s32 playerPickUpItem(s32);  /* extern */
 /// Try to place an item in the player hand, replacing the previously held item on success.
 /// \param actor Actor whose script VM supplies an item handle and receives one on successful pickup, or zero if the item is unavailable or cannot be picked up.
 /// \returns Zero, allowing script execution to continue.
@@ -789,7 +790,6 @@ s32 actorScriptPlayerTryHoldItem(u8 *actor) {
     return 0;
 }
 
-void scrollBoardSelectPresetText(s32, s32, s32);
 /// Create a scrolling text board with preset text, appearance, and transform settings.
 /// \param actor Actor whose script VM supplies, in order, a text preset index of zero or one, text style (zero through two, or another value for the default), positive width in twelve-pixel columns, positive height in sixteen-pixel lines, position X/Y/Z, rotation X/Y/Z in degrees, red/green/blue/alpha components from zero through 255, top-left and bottom-right outline palette indices, uniform scale relative to the scene scale, and scroll speed in pixels per second. Outline indices must be zero through 15, or minus one to disable the corresponding outline; the VM receives the new board hierarchy handle, to release through hierarchy destruction.
 /// \returns Zero, allowing script execution to continue.
@@ -1092,7 +1092,6 @@ s32 actorScriptFindObjectFromPlayerView(u8 *actor) {
     return 0;
 }
 
-f32 objectGetPlayerFacingError(u8 *);         /* extern */
 
 /// Report the player heading relative to the direction toward the actor.
 /// \param actor Actor whose script VM receives the player heading minus the direction toward this actor, wrapped to signed degrees.
@@ -1106,7 +1105,6 @@ s32 actorScriptPushPlayerFacingError(u8 *actor) {
     return 0;
 }
 
-f32 objectGetFacingErrorToTarget(u8 *, s32);    /* extern */
 
 /// Report the actor heading relative to the direction toward a target.
 /// \param actor Actor whose script VM supplies a target identifier and receives its heading minus the target direction in degrees from zero inclusive to 360 exclusive, or minus one when the target is unavailable.
@@ -1210,7 +1208,6 @@ s32 actorScriptResetGlobalVariables(u8 *actor) {
     return 0;
 }
 
-s32 titleScreenGetState();     /* extern */
 /// Provide the current startup and title-screen state.
 /// \param actor Actor whose script VM receives the current title-screen state identifier.
 /// \returns Zero, allowing script execution to continue.
@@ -1223,7 +1220,6 @@ s32 actorScriptPushTitleScreenState(u8 *actor) {
     return 0;
 }
 
-void titleScreenRequestMenu(); /* extern */
 /// Request the main menu when the title screen is awaiting Start.
 /// \param actor Actor whose script VM receives zero after the request; other title-screen states are unaffected.
 /// \returns Zero, allowing script execution to continue.

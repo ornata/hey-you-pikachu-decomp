@@ -49,7 +49,8 @@ s32 archiveBuildFromSources(s32 memberCount, s32 *sourceAddresses, s32 *sourceBy
     return offset;
 }
 
-s32 heapGetAllocationSize(u8 *, s32);
+#include "archive_compression.h"
+#include "heap_query.h"
 
 /// Reuse an output allocation if large enough, otherwise free and replace it.
 /// Existing contents are not copied into a replacement allocation.
@@ -95,7 +96,6 @@ void archiveReadHeaderWordDiscard(s32 archiveAddress) {
 
 #include "heap_types.h"
 s32 archiveGetMemberDecodedSize(s32 memberIndex, s32 *archiveAddress);
-s32 archiveDecompressMember(u8 *input, u8 *output);
 /// Load and decompress one archive member from ROM into a game-heap buffer.
 /// \param memberIndex Zero-based member index; not bounds-checked.
 /// \param archiveAddress Cartridge ROM address of the archive header.

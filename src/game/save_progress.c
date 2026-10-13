@@ -521,6 +521,11 @@ s32 progressGetMaximum(s32 fieldId) {
     return progressGetFieldMaximum(progressResolveFieldId(fieldId));
 }
 
+/// Read the value of a resolved saved-progress field.
+/// \returns The saved value, or zero for an unsupported field type.
+/// \note The field identifier is supplied here. The definition's second argument is overwritten before
+/// use and omitted by this legacy call; converting that formal argument to a local changes ROM code.
+/// \note Original decompilation identifier: \c func_80032830 (0x80032830).
 s32 progressReadFieldValue();
 
 /// Gets the saved value of a progress field.

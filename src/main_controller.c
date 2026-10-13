@@ -44,8 +44,6 @@ extern u64 gMainSchedulerContext[];
 /// \note Original identifier: \c D_800A9DE8 (0x800A9DE8).
 extern u64 gIdleThreadStackTop[];
 
-void IdleMain(void *arg);
-void runtimeStartMainThread(void *stack);
 
 #define IDLE_THREAD_ID 10
 #define IDLE_THREAD_PRI 10
@@ -126,8 +124,6 @@ ControllerRumblePatternState gControllerRumblePatternState[4];
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
-void colorBlendToward(u8 *, u8 *, f32);
-void colorStoreClampedRgba(s32, s32, s32, s32, u8 *);
 /// Next reusable graphics-task slot for submission.
 /// \note Original identifier: \c D_800F2988 (0x800F2988).
 extern s32 gGraphicsNextTaskIndex;
@@ -138,7 +134,6 @@ extern u8 gRenderTaskViewports[];
 /// \note Original identifier: \c D_800ABEB0 (0x800ABEB0).
 extern u8 gRenderTaskMatrices[];
 /* The original caller passes an extra, unused display-list argument. */
-void renderApplyAreaFog();
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;
@@ -203,7 +198,6 @@ extern s32 gCameraElapsedTintNeedsOrigin, gCameraElapsedTintEnabled;
 /// Initial elapsed time in seconds requested when enabling the camera tint.
 /// \note Original identifier: \c D_800AC4B8 (0x800AC4B8).
 extern f32 gCameraElapsedTintInitialSeconds;
-void heapDebugNoOp();
 
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
@@ -261,21 +255,12 @@ extern Gfx D_100C7E0[];
 /// Current gameplay, menu or transition mode.
 /// \note Original identifier: \c D_800AE504 (0x800AE504).
 extern s32 gRuntimeGameMode;
-void hudDraw(Gfx **);
-void hudDrawAreaLabel(Gfx **);
-void presentationDrawCardScreen(Gfx **);
-void presentationDrawCollectionScreen(Gfx **);
-void eyeCatchDraw(Gfx **);
-void runtimeDrawPromptPanel(void);
-void toolboxDrawFrame(s32);
-void wholeMapDraw(Gfx **);
 
 /// Identifier of the currently active runtime program.
 /// \note Original identifier: \c D_800AE4F0 (0x800AE4F0).
 /// Number of startup frames whose full framebuffer has been cleared, capped at two.
 /// \note Original identifier: \c D_800633EC (0x800633EC).
 extern s32 gRenderInitialClearCount, gRuntimeCurrentProgram;
-void renderPrepareDisplayList(void);
 
 /// Whether final frame submission invokes the optional rendering hook.
 /// \note Original identifier: \c D_80088F18 (0x80088F18).
