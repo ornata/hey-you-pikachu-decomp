@@ -1,3 +1,4 @@
+#include "terrain_surface.h"
 #include "item_size.h"
 #include "item_mode.h"
 #include "actor_meters.h"
@@ -107,7 +108,6 @@ void balloonBeginReleasedFlight(u8 *object) {
     }
 }
 
-s8 terrainGetSurfaceAttributes(f32, f32, f32, s32);  /* extern */
 void terrainCreateContactEffect(u8 *, s32);      /* extern */
 void itemPlayImpactSounds(u8 *, u16, s32); /* extern */
 

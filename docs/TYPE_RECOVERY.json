@@ -131,6 +131,7 @@
         "particle_cluster.h",
         "ribbon_effect.h",
         "runtime_clock.h",
+        "terrain_surface.h",
         "wisp_effect.h"
       ],
       "matching_exceptions": {
@@ -139,47 +140,47 @@
       "locations": {
         "raw_offset_candidates": {
           "base + 1": [
-            "170:48"
-          ],
-          "base + 2": [
             "171:48"
           ],
-          "base + 3": [
+          "base + 2": [
             "172:48"
           ],
+          "base + 3": [
+            "173:48"
+          ],
           "entry + 6": [
-            "175:54"
+            "176:54"
           ],
           "entry + 5": [
-            "176:57"
+            "177:57"
           ],
           "entry + 4": [
-            "177:55"
+            "178:55"
           ],
           "entry + 7": [
-            "179:53"
+            "180:53"
           ],
           "window + 0xF": [
-            "189:33"
+            "190:33"
           ],
           "base + 0x400": [
-            "203:38"
+            "204:38"
           ],
           "command + 0xC": [
-            "221:50",
+            "222:50",
             "325:58",
             "667:99",
             "1065:24"
           ],
           "command + 0x10": [
-            "221:75",
+            "222:75",
             "312:76"
           ],
           "command + 8": [
-            "221:101",
-            "237:81",
-            "251:92",
-            "252:63",
+            "222:101",
+            "238:81",
+            "252:92",
+            "253:63",
             "311:9",
             "312:53",
             "468:61",
@@ -574,6 +575,7 @@
         "object_audio.h",
         "object_types.h",
         "script_vm_lifecycle.h",
+        "terrain_surface.h",
         "texture_animation_programs.h",
         "word_map.h"
       ],
@@ -587,37 +589,37 @@
       "locations": {
         "raw_offset_candidates": {
           "slot + 1": [
-            "103:33"
+            "104:33"
           ],
           "drawListStorage + 0x40": [
-            "239:40"
+            "240:40"
           ],
           "heightDelta + 1": [
-            "359:34"
+            "360:34"
           ],
           "actor + 0x18": [
-            "391:50"
+            "392:50"
           ],
           "actor + 0x1C": [
-            "391:74"
+            "392:74"
           ],
           "actor + 0x20": [
-            "391:98"
+            "392:98"
           ],
           "actor + 0x54": [
-            "404:38"
+            "405:38"
           ],
           "actor + 0x36": [
-            "404:71"
+            "405:71"
           ],
           "p + 1": [
-            "884:38"
+            "885:38"
           ],
           "return -1": [
-            "925:5"
+            "926:5"
           ],
           "actor + 0x30": [
-            "1093:21"
+            "1094:21"
           ],
           "displacement + 2": [
             "1356:17"
@@ -3017,6 +3019,7 @@
         "object_transform.h",
         "object_types.h",
         "progress_value.h",
+        "terrain_surface.h",
         "text_image_create.h",
         "text_window.h"
       ],
@@ -3024,7 +3027,7 @@
       "locations": {
         "raw_offset_candidates": {
           "gPlayerPositionY + 0": [
-            "128:17"
+            "129:17"
           ],
           "obj + 0x50": [
             "155:23"
@@ -4303,7 +4306,8 @@
         "player_view_search.h",
         "runtime_clock.h",
         "scene_region.h",
-        "scene_types.h"
+        "scene_types.h",
+        "terrain_surface.h"
       ],
       "matching_exceptions": {
         "player-view search wrappers": "Player yaw and view-shake reads retain the float-array view: direct checked player members change ROM code generation. Returned object handles use the shared RuntimeObjectPrefix member. Preserve floating addition ordering while seeking a matching named representation."
@@ -4311,24 +4315,24 @@
       "locations": {
         "raw_offset_candidates": {
           "return -1": [
-            "83:9"
+            "84:9"
           ],
           "return -65536": [
-            "150:5",
-            "162:5",
-            "612:9",
-            "618:5",
-            "833:5",
+            "151:5",
+            "163:5",
+            "613:9",
+            "619:5",
+            "834:5",
             "918:5",
             "969:5",
             "990:5",
             "1009:5"
           ],
           "gPlayerControllerPort + 4": [
-            "552:14"
+            "553:14"
           ],
           "gPlayerControllerPort + 6": [
-            "560:21"
+            "561:21"
           ],
           "offset + 4": [
             "949:64"
@@ -4386,6 +4390,7 @@
         "progress_value.h",
         "runtime_clock.h",
         "scene_types.h",
+        "terrain_surface.h",
         "weighted_choice.h",
         "wisp_effect.h"
       ],
@@ -4400,7 +4405,7 @@
       "locations": {
         "address_globals": {
           "D_80133DE8": [
-            "222:5",
+            "223:5",
             "2073:12",
             "2096:14",
             "2097:14",
@@ -4409,169 +4414,169 @@
         },
         "raw_offset_candidates": {
           "scene_bedroom_DATA_START + 0x21314": [
-            "132:5"
-          ],
-          "scene_entryway_DATA_START + 0x5A6C": [
             "133:5"
           ],
-          "scene_front_yard_DATA_START + 0x24A20": [
+          "scene_entryway_DATA_START + 0x5A6C": [
             "134:5"
           ],
-          "scene_viridian_entrance_DATA_START + 0x18904": [
+          "scene_front_yard_DATA_START + 0x24A20": [
             "135:5"
           ],
-          "scene_viridian_forest_DATA_START + 0x60C4": [
+          "scene_viridian_entrance_DATA_START + 0x18904": [
             "136:5"
           ],
-          "scene_viridian_deep_DATA_START + 0x15680": [
+          "scene_viridian_forest_DATA_START + 0x60C4": [
             "137:5"
           ],
-          "scene_springleaf_entrance_DATA_START + 0x22E9C": [
+          "scene_viridian_deep_DATA_START + 0x15680": [
             "138:5"
           ],
-          "scene_oddish_meadow_DATA_START + 0x23368": [
+          "scene_springleaf_entrance_DATA_START + 0x22E9C": [
             "139:5"
           ],
-          "scene_springleaf_field_DATA_START + 0x234B8": [
+          "scene_oddish_meadow_DATA_START + 0x23368": [
             "140:5"
           ],
-          "scene_olivine_lakeshore_DATA_START + 0xCC94": [
+          "scene_springleaf_field_DATA_START + 0x234B8": [
             "141:5"
           ],
-          "scene_olivine_lake_DATA_START + 0xCCE8": [
+          "scene_olivine_lakeshore_DATA_START + 0xCC94": [
             "142:5"
           ],
-          "scene_ochre_entrance_DATA_START + 0x9858": [
+          "scene_olivine_lake_DATA_START + 0xCCE8": [
             "143:5"
           ],
-          "scene_ochre_deep_DATA_START + 0x157A4": [
+          "scene_ochre_entrance_DATA_START + 0x9858": [
             "144:5"
           ],
-          "scene_cobalt_island_DATA_START + 0x1C698": [
+          "scene_ochre_deep_DATA_START + 0x157A4": [
             "145:5"
           ],
-          "scene_cobalt_coast_DATA_START + 0x12284": [
+          "scene_cobalt_island_DATA_START + 0x1C698": [
             "146:5"
           ],
-          "scene_abra_shop_DATA_START + 0xF114": [
+          "scene_cobalt_coast_DATA_START + 0x12284": [
             "147:5"
           ],
-          "scene_wilderness_camp_DATA_START + 0x64DC": [
+          "scene_abra_shop_DATA_START + 0xF114": [
             "148:5"
           ],
-          "scene_ochre_fishing_DATA_START + 0x111E0": [
+          "scene_wilderness_camp_DATA_START + 0x64DC": [
             "149:5"
           ],
-          "scene_olivine_fishing_DATA_START + 0x10DB0": [
+          "scene_ochre_fishing_DATA_START + 0x111E0": [
             "150:5"
           ],
-          "scene_cobalt_fishing_DATA_START + 0x10F50": [
+          "scene_olivine_fishing_DATA_START + 0x10DB0": [
             "151:5"
           ],
-          "scene_viridian_edge_DATA_START + 0xF2A8": [
+          "scene_cobalt_fishing_DATA_START + 0x10F50": [
             "152:5"
           ],
-          "scene_playground_DATA_START + 0xAA3C": [
+          "scene_viridian_edge_DATA_START + 0xF2A8": [
             "153:5"
           ],
-          "scene_credits_DATA_START + 0xF4DC": [
+          "scene_playground_DATA_START + 0xAA3C": [
             "154:5"
           ],
+          "scene_credits_DATA_START + 0xF4DC": [
+            "155:5"
+          ],
           "w + 10": [
-            "255:47"
+            "256:47"
           ],
           "d + 10": [
-            "256:97"
+            "257:97"
           ],
           "node + 0x48": [
-            "374:45",
+            "375:45",
             "1716:18",
             "1875:19"
           ],
           "return -1": [
-            "378:5",
+            "379:5",
             "1680:29"
           ],
           "node + 0x20": [
-            "408:26",
+            "409:26",
             "1351:30",
             "2065:45"
           ],
           "w - 1": [
-            "497:79",
-            "498:72",
-            "519:79",
-            "520:72",
-            "545:39",
-            "554:15",
+            "498:79",
+            "499:72",
+            "520:79",
+            "521:72",
+            "546:39",
             "555:15",
-            "666:58"
+            "556:15",
+            "667:58"
           ],
           "h - 1": [
-            "502:79",
-            "503:72",
-            "524:79",
-            "525:72",
-            "546:33",
-            "668:58",
-            "915:28"
+            "503:79",
+            "504:72",
+            "525:79",
+            "526:72",
+            "547:33",
+            "669:58",
+            "916:28"
           ],
           "node + 8": [
-            "545:25",
-            "599:19",
+            "546:25",
+            "600:19",
             "1465:45"
           ],
           "node + 0x14": [
-            "545:58",
-            "917:75",
+            "546:58",
+            "918:75",
             "1464:26"
           ],
           "node + 0x10": [
-            "548:25",
-            "600:19",
-            "857:27",
-            "918:33",
+            "549:25",
+            "601:19",
+            "858:27",
+            "919:33",
             "1462:49",
             "1820:43",
             "1831:30"
           ],
           "node + 0x1C": [
-            "548:55",
-            "918:73",
+            "549:55",
+            "919:73",
             "1462:18"
           ],
           "ix + 1": [
-            "550:10",
-            "671:41",
-            "673:41",
-            "680:39",
-            "682:39"
+            "551:10",
+            "672:41",
+            "674:41",
+            "681:39",
+            "683:39"
           ],
           "iz + 1": [
-            "551:10",
-            "672:45",
-            "673:49",
-            "681:43",
-            "682:47"
+            "552:10",
+            "673:45",
+            "674:49",
+            "682:43",
+            "683:47"
           ],
           "node + 0xC": [
-            "744:23",
-            "780:32",
+            "745:23",
+            "781:32",
             "1467:57",
             "1819:43",
             "1829:30"
           ],
           "node + 0x8": [
-            "855:27",
-            "917:33",
+            "856:27",
+            "918:33",
             "1818:43",
             "1827:30"
           ],
           "count - 1": [
-            "916:25"
+            "917:25"
           ],
           "kind + 3": [
-            "1033:39"
+            "1034:39"
           ],
           "gPikachuActor + 0x44": [
             "1113:29"
@@ -4844,6 +4849,7 @@
         "item_types.h",
         "object_lookup.h",
         "object_types.h",
+        "terrain_surface.h",
         "wisp_effect.h"
       ],
       "matching_exceptions": {
@@ -4854,7 +4860,7 @@
       "locations": {
         "raw_offset_candidates": {
           "direction + 8": [
-            "42:49"
+            "43:49"
           ],
           "gItemKindFrictionEntries - 0x30": [
             "168:29",
@@ -5041,7 +5047,8 @@
         "object_billboard.h",
         "object_movement.h",
         "object_types.h",
-        "scene_types.h"
+        "scene_types.h",
+        "terrain_surface.h"
       ],
       "matching_exceptions": {},
       "locations": {
@@ -5093,6 +5100,7 @@
         "script_vm_globals.h",
         "story_chapter.h",
         "string_bytes.h",
+        "terrain_surface.h",
         "text_window.h",
         "vector_interpolation.h"
       ],
@@ -5106,7 +5114,7 @@
       "locations": {
         "raw_offset_candidates": {
           "gRuntimeFrameSeconds + 8": [
-            "387:35"
+            "388:35"
           ],
           "normal + 2": [
             "643:80"

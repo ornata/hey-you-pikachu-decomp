@@ -1,3 +1,4 @@
+#include "terrain_surface.h"
 #include "text_window.h"
 #include "progress_value.h"
 #include "action_script_playback.h"
@@ -139,7 +140,6 @@ void terrainDebugGridInitializeCell(u8 *object) {
 }
 
 f32 terrainGetWorldHeight(f32, f32, f32, u8 **);
-u32 terrainGetSurfaceAttributes(f32, f32, f32, u8 **);
 /// Terrain-property view selecting the diagnostic grid cell colors.
 /// \note Original identifier: \c D_80099D20 (0x80099D20).
 extern s32 gTerrainDebugGridPropertyView;

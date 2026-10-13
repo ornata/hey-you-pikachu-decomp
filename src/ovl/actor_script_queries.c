@@ -1,3 +1,4 @@
+#include "terrain_surface.h"
 #include "actor_movement.h"
 #include "object_transform.h"
 #include "object_distance.h"
@@ -861,7 +862,6 @@ f32 actorGetGroundOffsetCoordinate(u8 *actor, f32 distance, f32 angle, s32 axis)
     return q[axis];
 }
 
-void terrainGetSurfaceAttributes(f32, f32, f32, s32); /* extern */
 
 
 /// Query the ground material at an offset along an actor's heading.

@@ -3768,3 +3768,11 @@ decay envelope, modulation phases and the embedded synthesizer voice. Their
 borrowed bank data and pool ownership remain unchanged. Event advancement takes
 the shared driver type, and the timing helper accepts the synthesizer context
 actually supplied by its sole caller. All changes preserve strict object identity.
+
+### Terrain surface query contract
+
+`terrain_surface.h` unifies the material/attribute query across the terrain
+implementation and eight consumers. It specifies the signed word return and
+optional writable borrowed-node cache, including invalidation before area
+teardown. The ignored-return caller and former integer-cache declarations now
+use the same interface; every source-unit adoption passes strict comparison.

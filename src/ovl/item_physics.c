@@ -1,3 +1,4 @@
+#include "terrain_surface.h"
 #include "wisp_effect.h"
 #include "actor_parts.h"
 #include "item_size.h"
@@ -122,7 +123,6 @@ void itemApplyHorizontalFriction(f32 *x, f32 *z, f32 rate, f32 threshold, f32 sc
     *z -= dz;
 }
 
-s32 terrainGetSurfaceAttributes(f32, f32, f32, u8 **);
 
 s32 itemUpdateSpin(u8 *, s32, s32);
 void itemApplyHorizontalFriction(f32 *, f32 *, f32, f32, f32);

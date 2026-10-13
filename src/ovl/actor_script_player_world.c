@@ -1,3 +1,4 @@
+#include "terrain_surface.h"
 #include "actor_behavior.h"
 #include "object_transform.h"
 #include "actor_held_item.h"
@@ -642,7 +643,6 @@ s32 actorScriptGetGroundOffsetCoordinate(u8 *actor) {
     return 0;
 }
 
-s32 terrainGetSurfaceAttributes(f32, f32, f32, u8 **); /* extern */
 
 /// Read ground material attributes below a world position.
 /// \param actor Actor whose script VM supplies X, Y, then Z and receives the terrain material-attribute value, or 0x77 when no terrain node is found.

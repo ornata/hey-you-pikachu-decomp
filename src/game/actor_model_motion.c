@@ -1,3 +1,4 @@
+#include "terrain_surface.h"
 #include "audio_sound_effect.h"
 #include "audio_playback_stop.h"
 #include "audio_playback_query.h"
@@ -1293,7 +1294,6 @@ void actorUpdateGroundReferencePose(u8 *actor, u8 *reference, u8 *pose) {
 /// \note Original identifier: \c D_800760A8 (0x800760A8).
 extern u8 *gPikachuActor;
 s32 areaIsPositionOutsideBounds(f32, f32, f32);
-s32 terrainGetSurfaceAttributes(f32, f32, f32, u8 **);
 s32 terrainConstrainMovement(s32, f32, f32, f32, f32, f32, f32, f32 *, f32 *, f32 *, u8 **);
 /// Adjust actor movement for terrain, gravity, and ground contact while updating its movement state.
 /// \param object Actor with initialized action, model, ground-reference pose, and default part state.

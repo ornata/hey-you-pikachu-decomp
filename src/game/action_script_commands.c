@@ -1,3 +1,4 @@
+#include "terrain_surface.h"
 #include "wisp_effect.h"
 #include "ribbon_effect.h"
 #include "particle_cluster.h"
@@ -253,7 +254,6 @@ void actionCommandPlayTrackedSoundWithPitch(s32 actor, u8 *state, u8 *command, f
 }
 
 u32 randomNext(void);
-s32 terrainGetSurfaceAttributes(f32, f32, f32, s32);
 s32 terrainGetMaterialSound(s32, s32);
 void terrainCreateContactEffect(u8 *, s32);
 /// Borrowed reference to the active Pikachu actor created for the current area.

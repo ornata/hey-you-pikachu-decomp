@@ -1,3 +1,4 @@
+#include "terrain_surface.h"
 #include "wisp_effect.h"
 #include "falling_particle.h"
 #include "item_mode.h"
@@ -1044,7 +1045,6 @@ void terrainCreateContactEffect(f32 *position, s32 material) {
 }
 
 f32 terrainGetWorldHeightForQuery(s32, f32, f32, f32, u8 **);
-s32 terrainGetSurfaceAttributes(f32, f32, f32, u8 **);
 f32 vector3Length(u8 *);
 /// Borrowed reference to the active Pikachu actor created for the current area.
 /// \note Original identifier: \c D_800760A8 (0x800760A8).
