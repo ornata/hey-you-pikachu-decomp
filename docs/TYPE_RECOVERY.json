@@ -51,7 +51,7 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 1966,
+      "occurrences": 1963,
       "unique_spellings": 828,
       "files": 74
     }
@@ -2491,14 +2491,9 @@
           "length + 1U": [
             "312:28"
           ],
-          "reader + 4": [
-            "351:22",
-            "356:18",
-            "359:55"
-          ],
-          "p + 1": [
-            "356:32",
-            "359:69"
+          "position + 1": [
+            "356:50",
+            "359:87"
           ],
           "msg + 0x34": [
             "513:14",
