@@ -195,10 +195,10 @@ void actorPartInitializeLinkedRotation(u8 *object) {
 
 /// Default integer animation program for the first two actor texture channels.
 /// \note Original identifier: \c D_8006B0B8 (0x8006B0B8).
-extern s32 gActorPartDefaultTextureAnimation;
+extern ValueKey *gActorPartDefaultTextureAnimation;
 /// Default integer animation program for the third actor texture channel.
 /// \note Original identifier: \c D_8006B180 (0x8006B180).
-extern s32 gActorPartDefaultThirdTextureAnimation;
+extern ValueKey *gActorPartDefaultThirdTextureAnimation;
 /// Initialize the model part animated textures, tint, and collision size.
 /// \param object Model part receiving owned texture state; previous state must already be released.
 /// \returns Nothing.
@@ -207,17 +207,17 @@ void actorPartInitializeAnimatedTextures(u8 *object) {
     u8 *state;
     u8 *buffer;
     s32 i;
-    state = (u8 *)heapAllocLocal(&gGameHeap, 0x558, 0xED);
-    _bzero(state, 0x558);
+    state = (u8 *)heapAllocLocal(&gGameHeap, sizeof(ActorPartTextureState), 0xED);
+    _bzero(state, sizeof(ActorPartTextureState));
     ((ActorPartTextureState *)state)->tint[0] = 0xBE;
     ((ActorPartTextureState *)state)->tint[1] = 0x28;
     ((ActorPartTextureState *)state)->tint[2] = 0x14;
     ((ActorPartTextureState *)state)->playbackRates[0] = 1.0f;
     ((ActorPartTextureState *)state)->playbackRates[1] = 1.0f;
     ((ActorPartTextureState *)state)->playbackRates[2] = 1.0f;
-    animationIntegerTrackInitialize(&((ActorPartTextureState *)state)->tracks[0], (ValueKey *)(gActorPartDefaultTextureAnimation));
-    animationIntegerTrackInitialize(&((ActorPartTextureState *)state)->tracks[1], (ValueKey *)(gActorPartDefaultTextureAnimation));
-    animationIntegerTrackInitialize(&((ActorPartTextureState *)state)->tracks[2], (ValueKey *)(gActorPartDefaultThirdTextureAnimation));
+    animationIntegerTrackInitialize(&((ActorPartTextureState *)state)->tracks[0], gActorPartDefaultTextureAnimation);
+    animationIntegerTrackInitialize(&((ActorPartTextureState *)state)->tracks[1], gActorPartDefaultTextureAnimation);
+    animationIntegerTrackInitialize(&((ActorPartTextureState *)state)->tracks[2], gActorPartDefaultThirdTextureAnimation);
     /* Initialize both command buffers directly; macro temporaries change the original frame. */
     for (i = 0, buffer = state; i != 2; i++, buffer += 0x280) {
         ((Gfx *)(buffer + 0x50))->words.w0 = (u32)G_ENDDL << 24;
@@ -234,7 +234,7 @@ void actorPartInitializeAnimatedTextures(u8 *object) {
         ((Gfx *)(buffer + 0x78))->words.w1 = 0;
     }
     ((RuntimeObjectPrefix *)object)->state.bytes = state;
-    *(f32 *)(object + 0x24) *= 1.5f;
+    ((RuntimeObjectPrefix *)object)->radius *= 1.5f;
 }
 
 /// Remove the model part collision registration and release its animated-texture resources.
@@ -242,9 +242,9 @@ void actorPartInitializeAnimatedTextures(u8 *object) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80013968 (0x80013968).
 void actorPartReleaseAnimatedTextures(u8 *object) {
-    s32 textureStateAddress = *(s32 *)(object + 0x54);
-    collisionGridUnregisterObject(object, &((ActorPartTextureState *)textureStateAddress)->collisionKey);
-    heapFreeLocal(&gGameHeap, (void *)textureStateAddress);
+    ActorPartTextureState *textureState = (ActorPartTextureState *)((RuntimeObjectPrefix *)object)->state.pointer;
+    collisionGridUnregisterObject(object, &textureState->collisionKey);
+    heapFreeLocal(&gGameHeap, textureState);
 }
 
 /// Provide an inactive model-part initialization hook shared by two part kinds.
@@ -422,7 +422,7 @@ void actorPartFollowBlendedOrientation(u8 *object) {
 void actorSetPartTint(u8 *actor, u8 red, u8 green, u8 blue) {
     u8 *obj;
 
-    obj = *(u8 **)(actorFindPart(actor, 0x79) + 0x54);
+    obj = ((RuntimeObjectPrefix *)actorFindPart(actor, 0x79))->state.bytes;
     ((ActorPartTextureState *)obj)->tint[0] = red;
     ((ActorPartTextureState *)obj)->tint[1] = green;
     ((ActorPartTextureState *)obj)->tint[2] = blue;
@@ -461,20 +461,20 @@ void actorPartBuildAnimatedTextureCommands(u8 *object, s32 buffer) {
     s32 value;
     s32 segment;
     u8 *animation = state;
-    f32 *frame = (f32 *)(state + 0x14);
-    f32 *speed = (f32 *)state;
+    ValueTrack *track = &((ActorPartTextureState *)state)->tracks[0];
+    f32 *speed = ((ActorPartTextureState *)state)->playbackRates;
     buffer *= 0x280;
     branches = (Gfx *)(state + buffer + 0x50);
     commands = (Gfx *)(state + buffer + 0x78);
     for (segment = 0; segment < 3; segment++) {
         value = *(s16 *)(animation + 0x1C);
-        animationIntegerTrackEvaluate((ValueTrack *)(frame), &value, *speed * gRuntimeFrameSeconds);
+        animationIntegerTrackEvaluate(track, &value, *speed * gRuntimeFrameSeconds);
         gSPBranchList(branches++, commands);
         gDPPipeSync(commands++);
         textureLoadForDraw(&commands, segments.value[segment], value);
         gSPEndDisplayList(commands++);
-        animation += 0xC;
-        frame += 3;
+        animation += sizeof(ValueTrack);
+        track++;
         speed++;
     }
     gSPBranchList(branches++, commands);
@@ -811,12 +811,10 @@ u8 *actorPartGetLinkedItemModel(u8 *object) {
 ///
 /// \note Original decompilation identifier: \c func_80014960 (0x80014960).
 void actorSetPartTextureAnimation(u8 *actor, f32 speed, s32 channel, s32 animation) {
-    int off;
     u8 *textureState;
-    textureState = *(u8 **)(actorFindPart(actor, 0x79) + 0x54);
+    textureState = ((RuntimeObjectPrefix *)actorFindPart(actor, 0x79))->state.bytes;
     ((ActorPartTextureState *)textureState)->playbackRates[channel] = speed;
-    off = channel * 0xC;
-    animationIntegerTrackInitialize((ValueTrack *)((textureState + off) + 0x14), (ValueKey *)(gTextureFrameAnimationPrograms[animation]));
+    animationIntegerTrackInitialize(&((ActorPartTextureState *)textureState)->tracks[channel], (ValueKey *)(gTextureFrameAnimationPrograms[animation]));
 }
 
 /// Adjust the actor secondary gameplay meter within its allowed range.

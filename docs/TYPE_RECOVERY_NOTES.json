@@ -120,7 +120,8 @@
       "player-view search wrappers": "Player yaw and view-shake reads retain the float-array view: direct checked player members change ROM code generation. Returned object handles use the shared RuntimeObjectPrefix member. Preserve floating addition ordering while seeking a matching named representation."
     },
     "src/game/actor_model_parts.c": {
-      "actorPartUpdateLinkedRotation": "The linked-part axis is a recovered unsigned halfword selecting rotation components. Replacing explicit axis*4 byte-offset reads/writes with RuntimeObjectPrefix.rotation[axis] changes allocated instructions and fails ROM matching. The callback retains named rotationByteOffset/angleSource variables; isolate IDO indexed-address scheduling before converting these remaining accesses."
+      "actorPartUpdateLinkedRotation": "The linked-part axis is a recovered unsigned halfword selecting rotation components. Replacing explicit axis*4 byte-offset reads/writes with RuntimeObjectPrefix.rotation[axis] changes allocated instructions and fails ROM matching. The callback retains named rotationByteOffset/angleSource variables; isolate IDO indexed-address scheduling before converting these remaining accesses.",
+      "actorPartBuildAnimatedTextureCommands": "The evaluated track cursor uses ValueTrack *, but the retained-value load keeps a separate byte cursor anchored at the texture-state allocation and offset 0x1C. Initializing both cursors at tracks[0] changes allocated instructions and fails ROM matching. Isolate IDO cursor coalescing/address scheduling before replacing the retained-value cursor; command-buffer traversal and initial commands remain in their matching representations."
     }
   },
   "baseline_totals": {

@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,756 / 80 |
+| Raw offset candidates | 4,040 / 86 | 2,753 / 80 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3282,3 +3282,16 @@ Callback locals now describe linked part, axis, angle source, delta and response
 Direct indexed rotation fields fail ROM matching, so the explicit named byte
 offset is retained and recorded with the next compiler-evidence question.
 All accepted source-unit conversions preserve strict objects.
+
+### Actor texture-state consumers and track cursors
+
+Texture allocation and clearing derive from checked `ActorPartTextureState`;
+release uses its pointer and collision key. Tint/channel lookup uses the object
+state member, animation selection indexes the three tracks directly, and model
+radius uses its shared object field. Default key-program globals now borrow
+`ValueKey` pointers. Ghidra 0x80014960 confirms channel rates and twelve-byte
+track indexing. Drawing advances a typed evaluated-track cursor and named rate
+array. Its separate retained-value byte cursor remains: moving both cursors to
+the track-array base changes instructions and fails ROM matching. That constraint
+is recorded without inventing an overlapping structure view. All accepted
+source-unit conversions preserve strict objects.

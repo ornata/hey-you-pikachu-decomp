@@ -51,7 +51,7 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 2756,
+      "occurrences": 2753,
       "unique_spellings": 1052,
       "files": 80
     }
@@ -699,7 +699,8 @@
         "script_vm_execution.h"
       ],
       "matching_exceptions": {
-        "actorPartUpdateLinkedRotation": "The linked-part axis is a recovered unsigned halfword selecting rotation components. Replacing explicit axis*4 byte-offset reads/writes with RuntimeObjectPrefix.rotation[axis] changes allocated instructions and fails ROM matching. The callback retains named rotationByteOffset/angleSource variables; isolate IDO indexed-address scheduling before converting these remaining accesses."
+        "actorPartUpdateLinkedRotation": "The linked-part axis is a recovered unsigned halfword selecting rotation components. Replacing explicit axis*4 byte-offset reads/writes with RuntimeObjectPrefix.rotation[axis] changes allocated instructions and fails ROM matching. The callback retains named rotationByteOffset/angleSource variables; isolate IDO indexed-address scheduling before converting these remaining accesses.",
+        "actorPartBuildAnimatedTextureCommands": "The evaluated track cursor uses ValueTrack *, but the retained-value load keeps a separate byte cursor anchored at the texture-state allocation and offset 0x1C. Initializing both cursors at tracks[0] changes allocated instructions and fails ROM matching. Isolate IDO cursor coalescing/address scheduling before replacing the retained-value cursor; command-buffer traversal and initial commands remain in their matching representations."
       },
       "locations": {
         "raw_offset_candidates": {
@@ -729,12 +730,6 @@
             "234:18",
             "468:32"
           ],
-          "object + 0x24": [
-            "237:14"
-          ],
-          "object + 0x54": [
-            "245:40"
-          ],
           "rotationByteOffset + 0xC": [
             "295:89",
             "297:41",
@@ -754,9 +749,6 @@
           ],
           "object + 8": [
             "412:14"
-          ],
-          "state + 0x14": [
-            "464:26"
           ],
           "animation + 0x1C": [
             "470:26"
