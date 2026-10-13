@@ -2894,6 +2894,7 @@
         "object_movement.h",
         "object_types.h",
         "opacity_animation_programs.h",
+        "orange_effect.h",
         "texture_animation_programs.h",
         "vector_direction.h"
       ],
@@ -2903,35 +2904,35 @@
       "locations": {
         "raw_offset_candidates": {
           "count + 16": [
-            "471:38"
+            "472:38"
           ],
           "controller + 0x54": [
-            "524:21"
+            "525:21"
           ],
           "controller + 0x30": [
-            "525:40"
+            "526:40"
           ],
           "head + 0x54": [
-            "753:16"
+            "754:16"
           ],
           "n + 1": [
-            "880:17"
+            "881:17"
           ],
           "emitter + 0x44": [
-            "887:21"
+            "888:21"
           ],
           "element + 0xC": [
-            "1189:18",
-            "1191:25",
-            "1192:22",
-            "1194:25",
-            "1195:22"
+            "1190:18",
+            "1192:25",
+            "1193:22",
+            "1195:25",
+            "1196:22"
           ],
           "state + 0x28": [
-            "1501:36"
+            "1502:36"
           ],
           "count - 1": [
-            "1616:21"
+            "1617:21"
           ]
         }
       }
@@ -4531,6 +4532,7 @@
         "item_types.h",
         "object_lookup.h",
         "object_types.h",
+        "orange_effect.h",
         "script_vm.h",
         "script_vm_stack.h",
         "text_window.h"
@@ -4541,7 +4543,7 @@
       "locations": {
         "raw_offset_candidates": {
           "object + 0x54": [
-            "272:22"
+            "273:22"
           ]
         }
       }

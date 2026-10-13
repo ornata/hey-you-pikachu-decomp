@@ -1,3 +1,4 @@
+#include "orange_effect.h"
 #include "animated_radial_effect.h"
 #include "flickering_effect.h"
 #include "converging_particle.h"

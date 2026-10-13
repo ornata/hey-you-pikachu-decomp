@@ -3684,3 +3684,7 @@ Orange-pulse emitters use a separate checked 12-byte state with target handle,
 remaining lifetime and emission cooldown. Expanding effects use shared object
 scale, position, world-position and display-list fields. Both retain their
 original expiry checks and target-availability behavior.
+
+`orange_effect.h` supplies the creation contracts for individual expanding effects
+and timed pulse emitters. Actor-script actions use the shared declaration; target
+handles and floating lifetimes retain their established ABI and ownership rules.

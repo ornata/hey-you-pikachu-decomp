@@ -1,3 +1,4 @@
+#include "orange_effect.h"
 #include "text_window.h"
 #include "item_queries.h"
 #include "actor_held_item.h"
@@ -361,7 +362,6 @@ s32 actorScriptFinishAreaTransition(u8 *actor) {
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
 u8 *particleClusterCreate(s32, f32, f32, f32, u8 *);
-u8 *orangePulseEmitterCreate(s32, f32);
 u32 randomNext(void);
 /// Transform the actor to the script-selected kind with a timed visual and audio effect.
 /// \param object Actor to transform while preserving its script context.
