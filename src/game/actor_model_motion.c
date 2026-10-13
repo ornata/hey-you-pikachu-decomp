@@ -983,12 +983,12 @@ void actorGetPartWorldPosition(u8 *actor, s32 partId, f32 *position) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800164FC (0x800164FC).
 void actorGetConfiguredAttachmentPosition(u8 *actor, f32 heightOffset, f32 *position) {
-    u8 *state;
+    ActorScriptState *state;
     f32 first[3];
     f32 second[3];
 
-    state = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    switch ((u32)((ActorScriptState *)state)->attachmentMode) {
+    state = ((RuntimeObjectPrefix *)actor)->state.actor;
+    switch ((u32)state->attachmentMode) {
     case 0:
         actorGetPartWorldPosition(actor, actorConfigGetFirstAttachmentPartId(((RuntimeObjectPrefix *)actor)->kind), first);
         actorGetPartWorldPosition(actor, actorConfigGetSecondAttachmentPartId(((RuntimeObjectPrefix *)actor)->kind), second);
@@ -1038,7 +1038,7 @@ void actorAllocateAnimatedTextureState(void *actor) {
 void actorReleaseAnimatedTextureState(u8 *actor) {
     AnimatedTextureState *obj;
 
-    obj = *(AnimatedTextureState **)(actor + 0x54);
+    obj = ((RuntimeObjectPrefix *)actor)->state.pointer;
     heapFreeLocal(&gGameHeap, obj->displayLists[0], obj);
     heapFreeLocal(&gGameHeap, obj);
 }
@@ -1080,7 +1080,7 @@ void actorUpdateAnimatedTextureDrawLists(u8 *actor, s32 buffer) {
 s32 actorBindAnimatedTexturesForDraw(u8 *actor) {
     AnimatedTextureState *obj;
 
-    obj = *(AnimatedTextureState **)(actor + 0x54);
+    obj = ((RuntimeObjectPrefix *)actor)->state.pointer;
     actorUpdateAnimatedTextureDrawLists(actor, gGraphicsFramebufferIndex);
     gSPSegment(gRenderDisplayListCursor++, 6, osVirtualToPhysical(obj->displayLists[gGraphicsFramebufferIndex]));
     return *(s32 *)(actor + 0x30);
@@ -1235,25 +1235,25 @@ void matrix33TransformVector(f32 *, f32 *, f32 *, u8 *);
 /// \param status Movement status flags selecting the upward movement limit.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80016C98 (0x80016C98).
-void actorUpdateMotionDisplacement(u8 *state, s32 status) {
+void actorUpdateMotionDisplacement(ActorScriptState *state, s32 status) {
     f32 movementScale;
-    f32 var_f0;
+    f32 upwardLimit;
 
-    matrix33TransformVector((f32 *)&gObjectTraversalTransform, ((ActorScriptState *)state)->localMotion, ((ActorScriptState *)state)->worldMotion, state);
-    movementScale = ((ActorScriptState *)state)->movementScale;
-    ((ActorScriptState *)state)->worldMotion[0] = (f32)(((ActorScriptState *)state)->worldMotion[0] * movementScale);
-    ((ActorScriptState *)state)->worldMotion[1] = (f32)(((ActorScriptState *)state)->worldMotion[1] * movementScale);
-    ((ActorScriptState *)state)->worldMotion[2] = (f32)(((ActorScriptState *)state)->worldMotion[2] * movementScale);
+    matrix33TransformVector((f32 *)&gObjectTraversalTransform, state->localMotion, state->worldMotion, (u8 *)state);
+    movementScale = state->movementScale;
+    state->worldMotion[0] = (f32)(state->worldMotion[0] * movementScale);
+    state->worldMotion[1] = (f32)(state->worldMotion[1] * movementScale);
+    state->worldMotion[2] = (f32)(state->worldMotion[2] * movementScale);
     if (status & 0x200) {
-        var_f0 = 30.0f;
-        if (((ActorScriptState *)state)->worldMotion[1] > 30.0f) {
+        upwardLimit = 30.0f;
+        if (state->worldMotion[1] > 30.0f) {
             goto block_4;
         }
     } else {
-        var_f0 = 5.0f;
-        if (((ActorScriptState *)state)->worldMotion[1] > 5.0f) {
+        upwardLimit = 5.0f;
+        if (state->worldMotion[1] > 5.0f) {
         block_4:
-            ((ActorScriptState *)state)->worldMotion[1] = var_f0;
+            state->worldMotion[1] = upwardLimit;
         }
     }
 }
@@ -1265,21 +1265,21 @@ void actorUpdateMotionDisplacement(u8 *state, s32 status) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80016D58 (0x80016D58).
 void actorUpdateGroundReferencePose(u8 *actor, u8 *reference, u8 *pose) {
-    u8 *v;
+    ActorScriptState *state;
     f32(*m)[3] = gObjectTraversalTransform.m;
     f32 *w;
     f32 dy;
 
-    v = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    w = ((ActorScriptState *)v)->poseDisplacement;
+    state = ((RuntimeObjectPrefix *)actor)->state.actor;
+    w = state->poseDisplacement;
     dy = m[0][1] * w[0] + m[1][1] * w[1] + m[2][1] * w[2];
-    ((ActorScriptState *)v)->verticalPoseOffset += dy;
+    state->verticalPoseOffset += dy;
     ((RuntimeObjectPrefix *)pose)->position[0] = ((RuntimeObjectPrefix *)reference)->worldPosition[0];
-    ((RuntimeObjectPrefix *)pose)->position[1] = ((RuntimeObjectPrefix *)actor)->position[1] - ((ActorScriptState *)v)->verticalPoseOffset - ((ActorScriptState *)v)->groundOffset;
+    ((RuntimeObjectPrefix *)pose)->position[1] = ((RuntimeObjectPrefix *)actor)->position[1] - state->verticalPoseOffset - state->groundOffset;
     ((RuntimeObjectPrefix *)pose)->position[2] = ((RuntimeObjectPrefix *)reference)->worldPosition[2];
-    ((RuntimeObjectPrefix *)pose)->rotation[0] = ((ActorScriptState *)v)->orientation[0];
-    ((RuntimeObjectPrefix *)pose)->rotation[1] = ((ActorScriptState *)v)->orientation[1];
-    ((RuntimeObjectPrefix *)pose)->rotation[2] = ((ActorScriptState *)v)->orientation[2];
+    ((RuntimeObjectPrefix *)pose)->rotation[0] = state->orientation[0];
+    ((RuntimeObjectPrefix *)pose)->rotation[1] = state->orientation[1];
+    ((RuntimeObjectPrefix *)pose)->rotation[2] = state->orientation[2];
 }
 
 /// Borrowed reference to the active Pikachu actor created for the current area.
@@ -1297,7 +1297,7 @@ void actorConstrainMovementToTerrain(u8 *object, f32 *displacement) {
     f32 radius;
     f32 clearance;
     s32 status;
-    u8 *state;
+    ActorScriptState *state;
     u8 *reference;
     f32 floorDelta;
     u8 *pose;
@@ -1308,17 +1308,17 @@ void actorConstrainMovementToTerrain(u8 *object, f32 *displacement) {
     f32 verticalCorrection;
     s32 supported;
 
-    state = ((RuntimeObjectPrefix *)object)->state.bytes;
+    state = ((RuntimeObjectPrefix *)object)->state.actor;
     surface = 0;
-    if (((ActorScriptState *)state)->behaviorFlags & ACTOR_INHIBIT_HORIZONTAL_MOVEMENT) {
+    if (state->behaviorFlags & ACTOR_INHIBIT_HORIZONTAL_MOVEMENT) {
         ((f32 *)displacement)[2] = 0.0f;
         ((f32 *)displacement)[0] = 0.0f;
     }
     reference = actorGetDefaultPart(object);
-    pose = ((ActorScriptState *)state)->groundReference;
+    pose = state->groundReference;
     actorUpdateGroundReferencePose(object, reference, pose);
     status = actionGetAttributes(object);
-    if (((ActorScriptState *)state)->behaviorFlags & ACTOR_INHIBIT_TERRAIN_AND_GRAVITY) {
+    if (state->behaviorFlags & ACTOR_INHIBIT_TERRAIN_AND_GRAVITY) {
         status |= 0x20000000;
     }
     if (!(status & 0x20000000)) {
@@ -1335,17 +1335,17 @@ void actorConstrainMovementToTerrain(u8 *object, f32 *displacement) {
                                        ((RuntimeObjectPrefix *)object)->worldPosition[2], &surface);
         if (collisionFlags & 0x100) {
             actorAddDownhillMovement(object, displacement, (s32)&surface);
-            radius = ((ActorScriptState *)state)->clearanceHeight * 0.001f;
+            radius = state->clearanceHeight * 0.001f;
         } else {
-            radius = ((ActorScriptState *)state)->clearanceHeight;
+            radius = state->clearanceHeight;
         }
         if (gRuntimeCurrentProgram == 0) {
             verticalCorrection = 0.0f;
-            ((ActorScriptState *)state)->movementCollisionFlags = terrainConstrainMovement(
+            state->movementCollisionFlags = terrainConstrainMovement(
                 collisionMode, ((RuntimeObjectPrefix *)reference)->worldPosition[0],
                 ((RuntimeObjectPrefix *)reference)->worldPosition[1],
-                ((RuntimeObjectPrefix *)reference)->worldPosition[2], ((ActorScriptState *)state)->collisionWidth,
-                ((ActorScriptState *)state)->collisionDepth, radius, displacement, &verticalCorrection,
+                ((RuntimeObjectPrefix *)reference)->worldPosition[2], state->collisionWidth,
+                state->collisionDepth, radius, displacement, &verticalCorrection,
                 displacement + 2, &surface);
             clearance = actorMeasureGroundClearance(object, collisionMode, reference, displacement, &floorDelta, &surface);
             floorDelta = ((RuntimeObjectPrefix *)pose)->position[1] - floorDelta;
@@ -1359,35 +1359,35 @@ void actorConstrainMovementToTerrain(u8 *object, f32 *displacement) {
             supported = 0;
         }
         if (supported != 0) {
-            gravityDelta = ((ActorScriptState *)state)->movementScale *
+            gravityDelta = state->movementScale *
                            (actionGetMovementScale(object) * 3.2666667f * gRuntimeFrameSeconds) * 30.0f;
             if (collisionFlags & 0x100) {
                 gravityDelta *= 5.0f;
             }
-            ((ActorScriptState *)state)->gravityVelocity -= gravityDelta;
+            state->gravityVelocity -= gravityDelta;
             if ((status & 0x01000000) != 0) {
-                ((f32 *)displacement)[0] = (f32)(((ActorScriptState *)state)->worldMotion[0] * gRuntimeFrameSeconds);
+                ((f32 *)displacement)[0] = (f32)(state->worldMotion[0] * gRuntimeFrameSeconds);
                 ((f32 *)displacement)[1] =
-                    (f32)((((ActorScriptState *)state)->gravityVelocity + ((ActorScriptState *)state)->worldMotion[1]) *
+                    (f32)((state->gravityVelocity + state->worldMotion[1]) *
                           gRuntimeFrameSeconds);
-                ((f32 *)displacement)[2] = (f32)(((ActorScriptState *)state)->worldMotion[2] * gRuntimeFrameSeconds);
+                ((f32 *)displacement)[2] = (f32)(state->worldMotion[2] * gRuntimeFrameSeconds);
             } else {
-                ((f32 *)displacement)[1] += ((ActorScriptState *)state)->gravityVelocity * gRuntimeFrameSeconds;
+                ((f32 *)displacement)[1] += state->gravityVelocity * gRuntimeFrameSeconds;
             }
         } else {
             actorUpdateMotionDisplacement(state, status);
-            ((ActorScriptState *)state)->gravityVelocity = 0.0f;
+            state->gravityVelocity = 0.0f;
         }
         if ((((f32 *)displacement)[1] + clearance) >= 0.05f) {
-            ((ActorScriptState *)state)->airborne = 1;
+            state->airborne = 1;
             return;
         }
-        ((ActorScriptState *)state)->airborne = 0;
+        state->airborne = 0;
         if ((((f32 *)displacement)[1] + clearance) < 0.0f) {
             ((f32 *)displacement)[1] = (f32)(0.03f - clearance);
-            if ((((ActorScriptState *)state)->gravityVelocity + ((ActorScriptState *)state)->worldMotion[1]) < 0.0f) {
-                ((ActorScriptState *)state)->worldMotion[1] = 0.0f;
-                ((ActorScriptState *)state)->gravityVelocity = 0.0f;
+            if ((state->gravityVelocity + state->worldMotion[1]) < 0.0f) {
+                state->worldMotion[1] = 0.0f;
+                state->gravityVelocity = 0.0f;
             }
         }
     }

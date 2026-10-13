@@ -51,7 +51,7 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 1993,
+      "occurrences": 1991,
       "unique_spellings": 836,
       "files": 75
     }
@@ -627,9 +627,7 @@
           ],
           "actor + 0x54": [
             "397:38",
-            "1041:38",
-            "1062:36",
-            "1083:38"
+            "1062:36"
           ],
           "actor + 0x36": [
             "397:71",
