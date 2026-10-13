@@ -4396,3 +4396,15 @@ unchanged. Ghidra at 0x8000317C confirms rumble operation dispatch.
 The public rumble contract records finite nonnegative representable timing values
 and the eight-unconsumed-request storage limit. All four edited units and dependent
 headers preserve strict baseline objects and clean retail ROM bytes.
+
+### Microphone lifecycle and recognition availability
+
+`microphone_session.h` shares controller-thread initialization/update contracts,
+including initialized controller/serial prerequisites, disabled initial processing
+and asynchronous recovery/upload progress. Private session policy state remains
+local. Recognition readiness uses named unavailable/ready/error values while its
+storage and volatile poll views remain unchanged. The session-policy read request
+has one shared volatile declaration, explicitly distinct from an active read.
+Ghidra at 0x80004204 confirms trigger/amplifier/dictionary ordering and deferred
+recognition polling. All three edited units and dependent headers preserve strict
+baseline objects and clean retail ROM bytes.

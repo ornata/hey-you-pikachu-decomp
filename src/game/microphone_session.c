@@ -1,3 +1,4 @@
+#include "microphone_session.h"
 #include "serial_queue.h"
 #include "controller_pad.h"
 #include "microphone_session_query.h"
@@ -90,9 +91,6 @@ void micSessionResetAndFindDevice(void);
 /// Persistent EEPROM request shared with the controller thread until acknowledgment.
 /// \note Original identifier: \c D_80063430 (0x80063430).
 EepromRequest gEepromQueuedRequest = {0};
-/// Whether session policy requests an active recognition read.
-/// \note Original identifier: \c D_800F8AC8 (0x800F8AC8).
-extern volatile s32 gVoiceRecognitionReadRequested;
 
 /// Update the microphone trigger from the configured controller buttons.
 /// \returns Nothing.
@@ -222,7 +220,7 @@ void micSessionUpdateDictionary(void) {
                     (((status)->type & CONT_TYPE_MASK) == CONT_TYPE_VOICE)) {                                          \
                     TRACE("mic found:%d\n", (port));                                                                   \
                     voiceRecognitionInitialize(serialGetMessageQueue(), (port));                                                       \
-                    if (voiceRecognitionGetDeviceState() == 1) {                                                                        \
+                    if (voiceRecognitionGetDeviceState() == VOICE_RECOGNITION_READY) {                                                                        \
                         gMicSessionDevicePort = (port);                                                                           \
                     } else {                                                                                           \
                         TRACE("failed to initialize mic(port %d)\n", (port));                                          \
@@ -296,7 +294,7 @@ s32 micSessionIsDeviceConnected(s32 port) {
     OSContStatus *status;
 
     status = controllerGetPortStatus(port);
-    if ((status->errno == 0) && ((status->type & 0x1F07) == 0x100) && (voiceRecognitionGetDeviceState() == 1)) {
+    if ((status->errno == 0) && ((status->type & 0x1F07) == 0x100) && (voiceRecognitionGetDeviceState() == VOICE_RECOGNITION_READY)) {
         return 1;
     }
     TRACE(" mic-disconnect\n  errno:%d\n  type:0x%08x\n  connect:%d\n", status->errno, status->type, port);

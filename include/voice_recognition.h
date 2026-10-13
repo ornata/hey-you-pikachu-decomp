@@ -6,6 +6,18 @@
 
 #include <ultra64.h>
 
+/// Recorded availability of the recognition device, distinct from command/read progress.
+typedef enum VoiceRecognitionDeviceState {
+    VOICE_RECOGNITION_UNAVAILABLE = 0, ///< Disconnected or not yet confirmed.
+    VOICE_RECOGNITION_READY = 1, ///< Initialized device available for operations.
+    VOICE_RECOGNITION_ERROR = 2 ///< Device operation failed and recovery is required.
+} VoiceRecognitionDeviceState;
+
+/// Session-policy request for recognition reading, distinct from an active read.
+/// The microphone session writes this flag; recognition polling services it.
+/// \note Original identifier: \c D_800F8AC8 (0x800F8AC8).
+extern volatile s32 gVoiceRecognitionReadRequested;
+
 /// Vocabulary selected for recognition, expressed as global word identifiers.
 /// \ingroup VoiceInteraction
 typedef struct VoiceDictionary {
@@ -69,7 +81,7 @@ void voiceRecognitionPoll(void);
 s32 voiceRecognitionIsReadActive(void);
 
 /// Get the recorded recognition-device availability state.
-/// \returns One when ready, zero when disconnected or unconfirmed, or two after a device error.
+/// \returns The recorded VoiceRecognitionDeviceState value.
 /// \note Original decompilation identifier: \c func_80040DC8 (0x80040DC8).
 s32 voiceRecognitionGetDeviceState(void);
 

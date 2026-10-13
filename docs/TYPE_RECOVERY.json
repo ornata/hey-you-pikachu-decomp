@@ -2246,6 +2246,7 @@
         "controller_pad.h",
         "eeprom_io.h",
         "microphone_configuration.h",
+        "microphone_session.h",
         "microphone_session_query.h",
         "serial_queue.h",
         "voice_recognition.h"
@@ -2256,7 +2257,7 @@
       "locations": {
         "raw_offset_candidates": {
           "gMicSessionUploadingDictionary + 1": [
-            "259:13"
+            "257:13"
           ]
         }
       }
@@ -3892,10 +3893,10 @@
       "locations": {
         "raw_offset_candidates": {
           "return -1": [
-            "184:9",
-            "435:5",
-            "449:5",
-            "491:9"
+            "181:9",
+            "432:5",
+            "446:5",
+            "488:9"
           ]
         }
       }

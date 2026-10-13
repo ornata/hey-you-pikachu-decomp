@@ -78,9 +78,6 @@ void voiceRecognitionResetProgress(void) {
     gVoiceAmplifierEnabled = 1;
 }
 
-/// Whether session policy requests an active recognition read.
-/// \note Original identifier: \c D_800F8AC8 (0x800F8AC8).
-extern volatile s32 gVoiceRecognitionReadRequested;
 
 /// Clear recognition requests and reset dictionary and read progress.
 /// \returns Nothing.
@@ -148,14 +145,14 @@ void voiceRecognitionInitialize(OSMesgQueue *queue, s32 channel) {
         }
         TRACE("mic64Error:%d osEngVoiceUnitType:%d\n", gVoiceRecognitionLastDeviceError, osEngVoiceUnitType);
         if (gVoiceRecognitionLastDeviceError == 0) {
-            gVoiceRecognitionDeviceState = 1;
+            gVoiceRecognitionDeviceState = VOICE_RECOGNITION_READY;
             break;
         }
         osYieldThread();
     }
     if (i >= 2) {
         TRACE("Initializing Mic failed.\n");
-        gVoiceRecognitionDeviceState = 2;
+        gVoiceRecognitionDeviceState = VOICE_RECOGNITION_ERROR;
     }
     romDmaReadBlocking((s32)start, gVoiceVocabularyData, (s32)&D_B3C70 - (s32)start);
     gVoiceRecognitionResultPending = 0;
@@ -180,7 +177,7 @@ s32 voiceDeviceClearDictionary(OSVoiceHandle *handle, s32 wordCount);
 /// IDO register allocation and read-only data order.
 /// \note Original decompilation identifier: \c func_80040608 (0x80040608).
 s32 voiceDictionaryClearDevice(s32 wordCount) {
-    if (gVoiceRecognitionDeviceState != 1) {
+    if (gVoiceRecognitionDeviceState != VOICE_RECOGNITION_READY) {
         return -1;
     }
     gVoiceRecognitionLastDeviceError = voiceDeviceClearDictionary(&gVoiceRecognitionHandle, wordCount & 0xFFFF);
@@ -188,10 +185,10 @@ s32 voiceDictionaryClearDevice(s32 wordCount) {
         return 0;
     }
     if (gVoiceRecognitionLastDeviceError == 1) {
-        gVoiceRecognitionDeviceState = 0;
+        gVoiceRecognitionDeviceState = VOICE_RECOGNITION_UNAVAILABLE;
         voiceRecognitionResetRequests();
     } else {
-        gVoiceRecognitionDeviceState = 2;
+        gVoiceRecognitionDeviceState = VOICE_RECOGNITION_ERROR;
         voiceRecognitionResetRequests();
     }
     TRACE("%d:%s\n");
@@ -230,7 +227,7 @@ s32 voiceDictionaryUpload(s32 dictionary, s32 batch) {
     u8 *src;
     u16 word[72];
 
-    if (gVoiceRecognitionDeviceState != 1) {
+    if (gVoiceRecognitionDeviceState != VOICE_RECOGNITION_READY) {
         voiceRecognitionResetProgress();
         return 0;
     }
@@ -255,11 +252,11 @@ s32 voiceDictionaryUpload(s32 dictionary, s32 batch) {
         if (gVoiceRecognitionLastDeviceError == 0) {
             gVoiceDictionaryNextWordIndex++;
         } else if (gVoiceRecognitionLastDeviceError == 1) {
-            gVoiceRecognitionDeviceState = 0;
+            gVoiceRecognitionDeviceState = VOICE_RECOGNITION_UNAVAILABLE;
             voiceRecognitionResetRequests();
             return 0;
         } else {
-            gVoiceRecognitionDeviceState = 2;
+            gVoiceRecognitionDeviceState = VOICE_RECOGNITION_ERROR;
             voiceRecognitionResetRequests();
             return 0;
         }
@@ -280,7 +277,7 @@ s32 voiceDictionaryUpload(s32 dictionary, s32 batch) {
 s32 voiceRecognitionStartRequestedRead(void) {
     s32 ret = 0;
 
-    if (gVoiceRecognitionDeviceState != 1) {
+    if (gVoiceRecognitionDeviceState != VOICE_RECOGNITION_READY) {
         return 0;
     }
     if (gVoiceRecognitionReadRequested != 0) {
@@ -288,10 +285,10 @@ s32 voiceRecognitionStartRequestedRead(void) {
         if (gVoiceRecognitionLastDeviceError == 0) {
             ret = 1;
         } else if (gVoiceRecognitionLastDeviceError == 1) {
-            gVoiceRecognitionDeviceState = 0;
+            gVoiceRecognitionDeviceState = VOICE_RECOGNITION_UNAVAILABLE;
             voiceRecognitionResetRequests();
         } else {
-            gVoiceRecognitionDeviceState = 2;
+            gVoiceRecognitionDeviceState = VOICE_RECOGNITION_ERROR;
             voiceRecognitionResetRequests();
         }
     } else {
@@ -313,7 +310,7 @@ void voiceRecognitionPoll(void) {
     s32 pad[2];
     OSVoiceData sp18;
 
-    if (VOICE_DEVICE_STATE_VOLATILE == 1) {
+    if (VOICE_DEVICE_STATE_VOLATILE == VOICE_RECOGNITION_READY) {
         if (gVoiceRecognitionReadActive == 0) {
             gVoiceRecognitionReadActive = voiceRecognitionStartRequestedRead();
             return;
@@ -326,11 +323,11 @@ void voiceRecognitionPoll(void) {
             gVoiceRecognitionReadActive = 0;
             gVoiceRecognitionCommandStatus = 7;
         } else if (gVoiceRecognitionLastDeviceError == 1) {
-            VOICE_DEVICE_STATE_VOLATILE = 0;
+            VOICE_DEVICE_STATE_VOLATILE = VOICE_RECOGNITION_UNAVAILABLE;
             voiceRecognitionResetRequests();
             return;
         } else if (gVoiceRecognitionLastDeviceError != 0xC) {
-            VOICE_DEVICE_STATE_VOLATILE = 2;
+            VOICE_DEVICE_STATE_VOLATILE = VOICE_RECOGNITION_ERROR;
             voiceRecognitionResetRequests();
             return;
         }
@@ -344,11 +341,11 @@ void voiceRecognitionPoll(void) {
                     return;
                 }
                 if (gVoiceRecognitionLastDeviceError == 1) {
-                    VOICE_DEVICE_STATE_VOLATILE = 0;
+                    VOICE_DEVICE_STATE_VOLATILE = VOICE_RECOGNITION_UNAVAILABLE;
                     voiceRecognitionResetRequests();
                     return;
                 }
-                VOICE_DEVICE_STATE_VOLATILE = 2;
+                VOICE_DEVICE_STATE_VOLATILE = VOICE_RECOGNITION_ERROR;
                 voiceRecognitionResetRequests();
             }
             break;
@@ -475,7 +472,7 @@ s32 voiceRecognitionProbePort(OSMesgQueue *queue, s32 channel) {
     if (p->errno == 0 && (p->type & 0x1F07) == 0x100) {
         return 1;
     }
-    gVoiceRecognitionDeviceState = 0;
+    gVoiceRecognitionDeviceState = VOICE_RECOGNITION_UNAVAILABLE;
     return 0;
 }
 
@@ -486,7 +483,7 @@ s32 __osVoiceSetADConverter(s32, s32, u8);
 /// \returns Zero on success, -1 when the device is unavailable, or a device error code.
 /// \note Original decompilation identifier: \c func_80040E64 (0x80040E64).
 s32 voiceRecognitionSetAmplifier(u8 flag) {
-    if (gVoiceRecognitionDeviceState != 1) {
+    if (gVoiceRecognitionDeviceState != VOICE_RECOGNITION_READY) {
         gVoiceAmplifierEnabled = 0;
         return -1;
     }

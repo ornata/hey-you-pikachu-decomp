@@ -1,3 +1,4 @@
+#include "microphone_session.h"
 #include "controller_accessory.h"
 #include "controller_service.h"
 #include "render_state.h"
@@ -291,10 +292,8 @@ typedef struct ControllerStartup {
 } ControllerStartup;
 typedef char ControllerStartupSizeCheck[(sizeof(ControllerStartup) == 0xC) ? 1 : -1];
 void controllerInitializeDevices(s32);
-void micSessionInitialize(s32);
 void controllerInitializeRumbleState(void);
 void controllerQueryDevices(void);
-void micSessionUpdate(void);
 void controllerUpdateRumble(void);
 /* Orphan strings of the compiled-out mpak error traces. */
 static const char sNoMpakModuleMsg[] = "ERROR: no mpak module.\n";
