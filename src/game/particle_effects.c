@@ -1,3 +1,4 @@
+#include "flickering_effect.h"
 #include "converging_particle.h"
 #include "falling_particle.h"
 #include "effect_emitter.h"

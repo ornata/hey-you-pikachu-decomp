@@ -1,3 +1,4 @@
+#include "flickering_effect.h"
 #include "converging_particle.h"
 #include "falling_particle.h"
 #include "effect_emitter.h"
@@ -724,7 +725,15 @@ void actionCommandCreateItemTransformationEffect(u8 *actor, u8 *state, u8 *comma
     }
 }
 
-u8 *flickeringEffectCreate(s32, f32, s32);
+/// Script operands for a target-following flickering effect.
+typedef struct FlickeringPartEffectArguments {
+    s32 count;    ///< Number of visual elements.
+    f32 lifetime; ///< Effect lifetime in seconds.
+} FlickeringPartEffectArguments;
+
+typedef char FlickeringPartArgumentsSizeCheck[(sizeof(FlickeringPartEffectArguments) == 8) ? 1 : -1];
+typedef char
+    FlickeringPartLifetimeOffsetCheck[(((u32) & ((FlickeringPartEffectArguments *)0)->lifetime) == 4) ? 1 : -1];
 
 /// Create a flickering visual effect that follows the actor's default part.
 /// \param actor Actor whose default part receives the effect.
@@ -734,9 +743,10 @@ u8 *flickeringEffectCreate(s32, f32, s32);
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80024618 (0x80024618).
 void actionCommandCreateFlickeringPartEffect(s32 actor, u8 *state, u8 *command, f32 *elapsed) {
-    u8 *p = command + 8;
+    FlickeringPartEffectArguments *arguments = (FlickeringPartEffectArguments *)(command + 8);
 
-    flickeringEffectCreate(*(s32 *)(actorGetDefaultPart((u8 *)actor) + 0x38), *(f32 *)(p + 4), *(s32 *)p);
+    flickeringEffectCreate(((RuntimeObjectPrefix *)actorGetDefaultPart((u8 *)actor))->handle, arguments->lifetime,
+                           arguments->count);
 }
 
 /// Creates a vertical stack of effects at the actor or its effect target.
