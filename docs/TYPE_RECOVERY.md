@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,587 / 77 |
+| Raw offset candidates | 4,040 / 86 | 2,551 / 77 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3514,3 +3514,12 @@ private matrix duplicate. The voice candidate distance path and messenger
 creation reuse runtime-object positions, scale and handles. Ghidra launch at
 `0x80026C58`, creation and delivery consumers support the homing/direct and
 visibility contracts. All affected units pass strict object comparison.
+
+Messenger flight callbacks share named launch, homing, dissipation, rebound and
+collision-flight modes. Existing state fields replace timer, velocity, linked
+target and copied-message offset views. Object state, hierarchy roots, kind,
+positions and handles reuse `RuntimeObjectPrefix`. Allocation uses the checked
+64-byte state size, with checks for timer, phase, target and animation offsets.
+Ghidra update at `0x80026798`, transition writers and delivery readers establish
+these roles. The draw callback retains its narrower signed-halfword opacity
+view; it must not be replaced with a full-word animation value without evidence.

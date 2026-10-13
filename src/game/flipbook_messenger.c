@@ -665,6 +665,15 @@ s32 messengerGetActorContactMode(u8 *actor) {
     return ((ActorScriptState *)actorState)->messengerContactMode;
 }
 
+/// Behaviors serviced by a messenger projectile's update callback.
+typedef enum MessengerFlightMode {
+    MESSENGER_LAUNCH = 0, ///< Initial homing-projectile launch interval.
+    MESSENGER_HOMING = 1, ///< Guided flight toward the recipient.
+    MESSENGER_DISSIPATING = 2, ///< Fading projectile awaiting removal.
+    MESSENGER_REBOUND = 3, ///< Brief flight after recipient contact.
+    MESSENGER_COLLISION_FLIGHT = 4 ///< Direct flight with collision delivery.
+} MessengerFlightMode;
+
 /// Owned messenger flight state, appearance animation and copied delivery payload.
 typedef struct MessengerFlightState {
     s32 mode;              ///< Current messenger flight behavior.
@@ -677,6 +686,10 @@ typedef struct MessengerFlightState {
 } MessengerFlightState;
 
 typedef char MessengerFlightStateSizeCheck[(sizeof(MessengerFlightState) == 0x40) ? 1 : -1];
+typedef char MessengerFlightTimerOffsetCheck[(((u32) & (((MessengerFlightState *)0)->remainingTime)) == 4) ? 1 : -1];
+typedef char MessengerFlightPhaseOffsetCheck[(((u32) & (((MessengerFlightState *)0)->phase)) == 8) ? 1 : -1];
+typedef char MessengerFlightTargetOffsetCheck[(((u32) & (((MessengerFlightState *)0)->linkedId)) == 0xC) ? 1 : -1];
+typedef char MessengerFlightAnimationOffsetCheck[(((u32) & (((MessengerFlightState *)0)->animation)) == 0x10) ? 1 : -1];
 typedef char MessengerFlightVelocityOffsetCheck[(((u32) & (((MessengerFlightState *)0)->velocity)) == 0x1C) ? 1 : -1];
 typedef char MessengerFlightMessageOffsetCheck[(((u32) & (((MessengerFlightState *)0)->message)) == 0x28) ? 1 : -1];
 
@@ -703,16 +716,16 @@ extern s32 gMessengerFlightAnimation;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80026024 (0x80026024).
 void messengerInitializeObject(u8 *object) {
-    MessengerFlightState *sp1C;
+    MessengerFlightState *projectileState;
     MessengerFlightState *allocation;
 
-    allocation = heapAllocLocal((HpHdr *)&gGameHeap, 0x40, 0xCA);
-    sp1C = allocation;
-    _bzero(allocation, 0x40);
-    sp1C->remainingTime = 0.0f;
-    sp1C->phase = 0.0f;
-    animationIntegerTrackInitialize(&sp1C->animation, (ValueKey *)(gMessengerFlightAnimation));
-    ((RuntimeObjectPrefix *)object)->state.pointer = sp1C;
+    allocation = heapAllocLocal((HpHdr *)&gGameHeap, sizeof(MessengerFlightState), 0xCA);
+    projectileState = allocation;
+    _bzero(allocation, sizeof(MessengerFlightState));
+    projectileState->remainingTime = 0.0f;
+    projectileState->phase = 0.0f;
+    animationIntegerTrackInitialize(&projectileState->animation, (ValueKey *)(gMessengerFlightAnimation));
+    ((RuntimeObjectPrefix *)object)->state.pointer = projectileState;
 }
 
 /// Release messenger projectile state.
@@ -731,8 +744,8 @@ void messengerDestroyObject(u8 *object) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800260B8 (0x800260B8).
 void messengerUpdateLaunch(u8 *object, s32 unused) {
-    u8 *projectileState = *(u8 **)(object + 0x54);
-    if (*(f32 *)(projectileState + 4) < 0.0f) {
+    u8 *projectileState = ((RuntimeObjectPrefix *)object)->state.bytes;
+    if (((MessengerFlightState *)projectileState)->remainingTime < 0.0f) {
         messengerBeginHoming(object);
     }
 }
@@ -762,20 +775,20 @@ void messengerDeliver(u8 *object, u8 *source, u8 *target, s32 mode) {
     s32 force;
     s32 animation;
     s32 sourceKind;
-    kind = *(u16 *)(target + 0x34);
-    state = *(u8 **)(object + 0x54);
+    kind = ((RuntimeObjectPrefix *)target)->kind;
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
     if (kind <= 0 || kind >= 0x26) {
         messengerBeginDissipation((f32 *)object);
         return;
     }
     if (mode == 1)
-        *(s32 *)(state + 0x28) = 0;
+        ((MessengerFlightState *)state)->message.type = 0;
     force = target == (u8 *)gPikachuActor ? 1 : 0;
-    actorPostScriptMessage((s32)target, *(ScriptMessage *)(state + 0x28), force);
+    actorPostScriptMessage((s32)target, ((MessengerFlightState *)state)->message, force);
     if (target == (u8 *)gPikachuActor) {
         *(s32 *)(gPlayerState + 0xFC) += 1;
         actorAdjustSecondaryMeter((u8 *)gPikachuActor, 1.0f);
-        sourceKind = *(u16 *)(source + 0x34);
+        sourceKind = ((RuntimeObjectPrefix *)source)->kind;
         if (sourceKind == 0x2C || sourceKind == 0x2E)
             animation = sourceKind;
         else {
@@ -815,7 +828,7 @@ void messengerUpdateHoming(u8 *object, s32 unused) {
     f32 step;
     MessengerFlightState *state;
     s32 component;
-    state = *((MessengerFlightState **)(object + 0x54));
+    state = ((RuntimeObjectPrefix *)object)->state.pointer;
     if (state->remainingTime < 0.0f) {
         messengerBeginDissipation((f32 *)object);
     }
@@ -824,13 +837,13 @@ void messengerUpdateHoming(u8 *object, s32 unused) {
         messengerBeginDissipation((f32 *)object);
         return;
     }
-    target = *((u8 **)(linked + 0x50));
+    target = ((RuntimeObjectPrefix *)linked)->root.bytes;
     mode = messengerGetActorContactMode(target);
-    delta[0] = (*((f32 *)(linked + 0x44))) - (*((f32 *)(object + 0x18)));
-    delta[1] = (*((f32 *)(linked + 0x48))) - (*((f32 *)(object + 0x1C)));
-    delta[2] = (*((f32 *)(linked + 0x4C))) - (*((f32 *)(object + 0x20)));
+    delta[0] = (((RuntimeObjectPrefix *)linked)->worldPosition[0]) - (*((f32 *)(object + 0x18)));
+    delta[1] = (((RuntimeObjectPrefix *)linked)->worldPosition[1]) - (*((f32 *)(object + 0x1C)));
+    delta[2] = (((RuntimeObjectPrefix *)linked)->worldPosition[2]) - (*((f32 *)(object + 0x20)));
     contactDistance = -1.0f;
-    property = *((u16 *)(target + 0x34));
+    property = ((RuntimeObjectPrefix *)target)->kind;
     if ((((property > 0) && (property < 0x26)) && ((mode == 3) || (mode == 2))) &&
         (((property = actionGetAttributes(target), property & 0x10000)) || ((mode == 3) && (!(property & 0x8000))))) {
         contactDistance = vector3Length((u8 *)delta);
@@ -882,15 +895,15 @@ void messengerUpdateHoming(u8 *object, s32 unused) {
 void messengerUpdateCollisionFlight(u8 *object, s32 unused) {
     u8 *sp18;
     u8 *overlappingObject;
-    u8 *projectileState = *(u8 **)(object + 0x54);
-    if (*(f32 *)(projectileState + 4) < 0.0f) {
+    u8 *projectileState = ((RuntimeObjectPrefix *)object)->state.bytes;
+    if (((MessengerFlightState *)projectileState)->remainingTime < 0.0f) {
         messengerBeginDissipation((f32 *)object);
     }
     overlappingObject = collisionGridFindOverlap(object);
     if (overlappingObject != NULL) {
         sp18 = overlappingObject;
-        messengerDeliver(object, sp18, *(u8 **)(sp18 + 0x50),
-                         messengerGetActorContactMode(*(u8 **)(overlappingObject + 0x50)));
+        messengerDeliver(object, sp18, ((RuntimeObjectPrefix *)sp18)->root.bytes,
+                         messengerGetActorContactMode(((RuntimeObjectPrefix *)overlappingObject)->root.bytes));
     }
 }
 
@@ -901,13 +914,13 @@ void messengerUpdateCollisionFlight(u8 *object, s32 unused) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800266DC (0x800266DC).
 void messengerUpdateDissipation(u8 *object, s32 animationStatus) {
-    f32 *p = *(f32 **)(object + 0x54);
+    MessengerFlightState *state = ((RuntimeObjectPrefix *)object)->state.pointer;
     f32 k = 0.8f;
 
-    p[7] = p[7] * k;
-    p[8] = p[8] + 0.1f;
-    p[9] = p[9] * k;
-    if (animationStatus == 1 || p[1] < 0.0f) {
+    state->velocity[0] = state->velocity[0] * k;
+    state->velocity[1] = state->velocity[1] + 0.1f;
+    state->velocity[2] = state->velocity[2] * k;
+    if (animationStatus == 1 || state->remainingTime < 0.0f) {
         objectRequestHierarchyDestruction(object);
     }
 }
@@ -918,8 +931,8 @@ void messengerUpdateDissipation(u8 *object, s32 animationStatus) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80026758 (0x80026758).
 void messengerUpdateRebound(u8 *object, s32 unused) {
-    u8 *projectileState = *(u8 **)(object + 0x54);
-    if (*(f32 *)(projectileState + 4) < 0.0f) {
+    u8 *projectileState = ((RuntimeObjectPrefix *)object)->state.bytes;
+    if (((MessengerFlightState *)projectileState)->remainingTime < 0.0f) {
         messengerBeginDissipation((f32 *)object);
     }
 }
@@ -932,33 +945,33 @@ void messengerUpdateDissipation(u8 *, s32);
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80026798 (0x80026798).
 void messengerUpdate(u8 *object) {
-    MessengerFlightState *sp2C;
-    s32 sp28;
+    MessengerFlightState *flightState;
+    s32 animationValue;
     s32 animationStatus;
 
-    sp2C = ((RuntimeObjectPrefix *)object)->state.pointer;
-    sp2C->remainingTime = sp2C->remainingTime - gRuntimeFrameSeconds;
-    animationStatus = animationIntegerTrackEvaluate(&sp2C->animation, &sp28, gRuntimeFrameSeconds);
-    switch ((u32)sp2C->mode) {
-    case 0:
+    flightState = ((RuntimeObjectPrefix *)object)->state.pointer;
+    flightState->remainingTime = flightState->remainingTime - gRuntimeFrameSeconds;
+    animationStatus = animationIntegerTrackEvaluate(&flightState->animation, &animationValue, gRuntimeFrameSeconds);
+    switch ((u32)flightState->mode) {
+    case MESSENGER_LAUNCH:
         messengerUpdateLaunch(object, animationStatus);
         break;
-    case 1:
+    case MESSENGER_HOMING:
         messengerUpdateHoming(object, animationStatus);
         break;
-    case 2:
+    case MESSENGER_DISSIPATING:
         messengerUpdateDissipation(object, animationStatus);
         break;
-    case 3:
+    case MESSENGER_REBOUND:
         messengerUpdateRebound(object, animationStatus);
         break;
-    case 4:
+    case MESSENGER_COLLISION_FLIGHT:
         messengerUpdateCollisionFlight(object, animationStatus);
         break;
     default:
         TRACE("");
         TRACE("");
-        TRACE("ERROR: Unknown status:%d\n", (u32)sp2C->mode);
+        TRACE("ERROR: Unknown status:%d\n", (u32)flightState->mode);
         break;
     }
     messengerAdvancePosition(object);
@@ -971,7 +984,7 @@ void messengerUpdate(u8 *object) {
 /// \returns A borrowed address of the messenger model display list.
 /// \note Original decompilation identifier: \c func_80026870 (0x80026870).
 s32 messengerPrepareDraw(u8 *object) {
-    u8 *p = *(u8 **)(object + 0x54);
+    u8 *p = ((RuntimeObjectPrefix *)object)->state.bytes;
 
     gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0xFF, 0xFF, 0xFF, *(s16 *)(p + 0x18));
     return *(s32 *)(object + 0x30);
@@ -985,7 +998,7 @@ void messengerBeginHoming(u8 *object) {
     u8 *objectState;
 
     objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
-    ((MessengerFlightState *)objectState)->mode = 1;
+    ((MessengerFlightState *)objectState)->mode = MESSENGER_HOMING;
     ((MessengerFlightState *)objectState)->phase = 0.0f;
     ((MessengerFlightState *)objectState)->remainingTime = 3.0f;
 }
@@ -997,12 +1010,12 @@ void messengerBeginHoming(u8 *object) {
 void messengerBeginDissipation(f32 *object) {
     f32 doubledScale;
     u8 *projectileState;
-    projectileState = *(u8 **)((u8 *)object + 0x54);
-    *(s32 *)(projectileState + 0) = 2;
-    *(f32 *)(projectileState + 4) = 0.35f;
-    animationIntegerTrackInitialize((ValueTrack *)(projectileState + 0x10), (ValueKey *)((s32)gMessengerDissipationAnimation));
+    projectileState = ((RuntimeObjectPrefix *)object)->state.bytes;
+    ((MessengerFlightState *)projectileState)->mode = MESSENGER_DISSIPATING;
+    ((MessengerFlightState *)projectileState)->remainingTime = 0.35f;
+    animationIntegerTrackInitialize(&((MessengerFlightState *)projectileState)->animation, (ValueKey *)((s32)gMessengerDissipationAnimation));
     objectPlaySpatialSound((u8 *)object, 0xBD, 0.0f, 500.0f);
-    if (gTrackedMessengerHandle == *(s32 *)((u8 *)object + 0x38)) {
+    if (gTrackedMessengerHandle == ((RuntimeObjectPrefix *)object)->handle) {
         gTrackedMessengerHandle = 0;
     }
     object[0] = 2.0f * object[0];
@@ -1021,19 +1034,19 @@ void messengerBeginRebound(u8 *object) {
     u8 *target;
     u8 *state;
     u8 *linked;
-    state = *(u8 **)(object + 0x54);
-    *(s32 *)state = 3;
-    *(f32 *)(state + 4) = 0.3f;
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
+    ((MessengerFlightState *)state)->mode = MESSENGER_REBOUND;
+    ((MessengerFlightState *)state)->remainingTime = 0.3f;
     objectPlaySpatialSound(object, 0xBC, 0.0f, 250.0f);
-    *(f32 *)(state + 0x20) = -*(f32 *)(state + 0x20);
-    if (gTrackedMessengerHandle == *(s32 *)(object + 0x38))
+    ((MessengerFlightState *)state)->velocity[1] = -((MessengerFlightState *)state)->velocity[1];
+    if (gTrackedMessengerHandle == ((RuntimeObjectPrefix *)object)->handle)
         gTrackedMessengerHandle = 0;
-    linked = objectResolveAvailableHandle(*(s32 *)(state + 0xC));
+    linked = objectResolveAvailableHandle(((MessengerFlightState *)state)->linkedId);
     if (linked != NULL && gPikachuActor == *(s32 *)(linked + 0x50)) {
         target = actorGetDefaultPart((s32)gPikachuActor);
         count = (s32)mathMapRangeClamped(0.0f, 2.0f, 4000.0f, 6.0f, (f32) * (s32 *)(state + 0x34));
-        linkedEffectCreateChain(LINKED_EFFECT_FALLING, *(f32 *)(object + 0x44), *(f32 *)(object + 0x48), *(f32 *)(object + 0x4C), 0.05f,
-                      *(s32 *)(target + 0x38), 0.7f, 0.5f, 5.0f, 0.03f, 0.03f, 0xC2, 1, count);
+        linkedEffectCreateChain(LINKED_EFFECT_FALLING, ((RuntimeObjectPrefix *)object)->worldPosition[0], ((RuntimeObjectPrefix *)object)->worldPosition[1], ((RuntimeObjectPrefix *)object)->worldPosition[2], 0.05f,
+                      ((RuntimeObjectPrefix *)target)->handle, 0.7f, 0.5f, 5.0f, 0.03f, 0.03f, 0xC2, 1, count);
     }
 }
 
@@ -1076,11 +1089,11 @@ void messengerCreate(s32 id, f32 *position, f32 *velocity, f32 scale, ScriptMess
     ((RuntimeObjectPrefix *)object)->scale[2] = scale;
     state = ((RuntimeObjectPrefix *)object)->state.pointer;
     if (mode != 0) {
-        state->mode = 4;
+        state->mode = MESSENGER_COLLISION_FLIGHT;
         state->remainingTime = 5.0f;
         *(u8 **)(object + 0x30) = gMessengerDirectFlightDisplayList;
     } else {
-        state->mode = 0;
+        state->mode = MESSENGER_LAUNCH;
         state->remainingTime = 0.1f;
         *(u8 **)(object + 0x30) = gMessengerHomingDisplayList;
     }
