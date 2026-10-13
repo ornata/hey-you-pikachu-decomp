@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 1,861 / 73 |
+| Raw offset candidates | 4,040 / 86 | 1,856 / 73 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3864,3 +3864,9 @@ operations for all nine declared consumers. The implementations consume the
 shared camera record directly; color transitions and rendering retain their
 original argument placement and generated code. Original addresses accompany
 the shared purpose/parameter/return contracts.
+
+The shared camera layout now resolves 0x8C..0xA3 as backdrop image storage,
+dimensions, draw offsets and accumulated scroll. Allocation, selection and
+primary-image/scroll consumers use it, removing duplicate camera allocation and
+direction views. The offset-update destination retains its documented byte
+representation after member substitution changed ROM instructions.

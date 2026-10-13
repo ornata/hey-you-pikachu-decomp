@@ -1,3 +1,4 @@
+#include "camera_types.h"
 #include "backdrop_draw.h"
 #include "heap_free.h"
 #include "heap_tail.h"
@@ -36,8 +37,8 @@ void textureCopyRgba16Region(Gfx **, s32, s32, s32, s32, s32, s32, s32, s32, s32
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80032FA0 (0x80032FA0).
 void backdropDrawFixed(Gfx **list) {
-    if (*(void **)(gRenderCameras + 0x8C) != NULL) {
-        gSPSegment((*list)++, 9, osVirtualToPhysical(*(void **)(gRenderCameras + 0x8C)));
+    if (((MatrixCamera *)gRenderCameras)->backdropImage != NULL) {
+        gSPSegment((*list)++, 9, osVirtualToPhysical(((MatrixCamera *)gRenderCameras)->backdropImage));
         gDPPipeSync((*list)++);
         gDPSetCycleType((*list)++, G_CYC_1CYCLE);
         gDPSetColorImage((*list)++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 320,
@@ -66,8 +67,8 @@ void backdropAdvanceScroll(f32 delta) {
     f32 a;
     f32 *cur = &gPrimaryBackdropScroll;
 
-    *(f32 *)(gRenderCameras + 0xA0) += delta;
-    if (*(f32 *)(gRenderCameras + 0xA0) < 0.0f) {
+    ((MatrixCamera *)gRenderCameras)->backdropScroll += delta;
+    if (((MatrixCamera *)gRenderCameras)->backdropScroll < 0.0f) {
         n = gPrimaryBackdropWidth;
         a = *cur;
         do {
@@ -109,10 +110,7 @@ extern u8 gBackdropScrollRateEntries[];
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
-typedef struct {
-    f32 eye[3];
-    f32 target[3];
-} CameraDirection;
+
 /// Update backdrop offsets from the camera direction and active scrolling settings.
 /// \param view View record receiving the backdrop offsets; supplies vertical framing and accumulated horizontal scroll.
 /// \returns Nothing.
@@ -125,7 +123,7 @@ void backdropUpdateViewOffsets(u8 *view) {
     f32 yaw;
     f32 zero = 0.0f;
     s32 offsetY;
-    CameraDirection *camera = (CameraDirection *)gRenderCameras;
+    MatrixCamera *camera = (MatrixCamera *)gRenderCameras;
     horizontalSquared = (camera->target[0] - camera->eye[0]) * (camera->target[0] - camera->eye[0]) +
                         (camera->target[2] - camera->eye[2]) * (camera->target[2] - camera->eye[2]);
     deltaY = camera->target[1] - camera->eye[1];
@@ -168,7 +166,7 @@ void backdropDrawScrolling(Gfx **list) {
     s32 top;
     s32 bottom;
 
-    if (*(void **)(gRenderCameras + 0x8C) == NULL) {
+    if (((MatrixCamera *)gRenderCameras)->backdropImage == NULL) {
         return;
     }
     backdropUpdateViewOffsets(gRenderCameras);
@@ -242,17 +240,7 @@ void *heapAllocLocal(HpHdr *, u32, u16, s32);
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
-typedef struct {
-    u8 pad0[0x8C];
-    s32 buf;
-    s32 imageWidth;
-    s32 imageHeight;
-    s32 offsetX;
-    s32 offsetY;
-    f32 horizontalScroll;
-    s32 flag;
-    u8 padA8[0x38];
-} Ent33784;
+
 
 /// Allocate a backdrop image buffer for a view.
 /// \param viewIndex Valid view index receiving the buffer.
@@ -266,8 +254,8 @@ void backdropAllocateViewBuffer(s32 viewIndex, u32 width, u32 height) {
     if (size < 0x1B580) {
         size = 0x1B580;
     }
-    ((Ent33784 *)gRenderCameras)[viewIndex].buf = (s32)heapAllocLocal(&gGameHeap, size ^ 0, 0x280, size);
-    ((Ent33784 *)gRenderCameras)[viewIndex].flag = 1;
+    ((MatrixCamera *)gRenderCameras)[viewIndex].backdropImage = heapAllocLocal(&gGameHeap, size ^ 0, 0x280, size);
+    ((MatrixCamera *)gRenderCameras)[viewIndex].useBackdrop = 1;
 }
 
 void romDmaReadBlocking(); /* extern, 3 or 4 args by caller */
@@ -363,9 +351,6 @@ typedef struct BackdropDescriptor {
 } BackdropDescriptor;
 
 typedef char BackdropDescriptorSizeCheck[(sizeof(BackdropDescriptor) == 0x20) ? 1 : -1];
-typedef char BackdropViewSizeCheck[(sizeof(Ent33784) == 0xE0) ? 1 : -1];
-typedef char BackdropViewWidthOffsetCheck[((u32) & ((Ent33784 *)0)->imageWidth == 0x90) ? 1 : -1];
-typedef char BackdropViewScrollOffsetCheck[((u32) & ((Ent33784 *)0)->horizontalScroll == 0xA0) ? 1 : -1];
 
 /// Load a backdrop for a view and select its display settings.
 /// \param viewIndex Valid view index with an allocated backdrop buffer.
@@ -381,9 +366,9 @@ void backdropSelectForView(s32 viewIndex, s32 backdropId, s32 sharedScratch) {
 
     backdropDescriptor = (backdropId << 5) + gBackdropDescriptors;
     viewState = (viewIndex * 0xE0) + gRenderCameras;
-    ((Ent33784 *)viewState)->imageWidth = (s32)((BackdropDescriptor *)backdropDescriptor)->width;
-    ((Ent33784 *)viewState)->imageHeight = (s32)((BackdropDescriptor *)backdropDescriptor)->height;
-    ((Ent33784 *)viewState)->horizontalScroll = 0.0f;
+    ((MatrixCamera *)viewState)->backdropWidth = (s32)((BackdropDescriptor *)backdropDescriptor)->width;
+    ((MatrixCamera *)viewState)->backdropHeight = (s32)((BackdropDescriptor *)backdropDescriptor)->height;
+    ((MatrixCamera *)viewState)->backdropScroll = 0.0f;
     if (((BackdropDescriptor *)backdropDescriptor)->encoding == 0) {
         romRange = ((BackdropDescriptor *)backdropDescriptor)->source;
         backdropLoadRawImage(viewIndex, ((BackdropRomRange *)romRange)->start, ((BackdropRomRange *)romRange)->end);

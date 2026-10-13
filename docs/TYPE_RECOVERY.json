@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 1861,
-      "unique_spellings": 786,
+      "occurrences": 1856,
+      "unique_spellings": 784,
       "files": 73
     }
   },
@@ -1320,43 +1320,36 @@
       "known_views": [
         "asset_loader.h",
         "backdrop_draw.h",
+        "camera_types.h",
         "heap_free.h",
         "heap_tail.h",
         "heap_types.h"
       ],
       "matching_exceptions": {
-        "backdropAllocateViewBuffer / backdropLoadRomRange": "Typed heap allocation declarations retain unused fourth size arguments. Integer buffer-address fields and returns preserve the original 32-bit target representation."
+        "backdropAllocateViewBuffer / backdropLoadRomRange": "Typed heap allocation declarations retain unused fourth size arguments. Integer buffer-address fields and returns preserve the original 32-bit target representation.",
+        "backdropUpdateViewOffsets": "Typed destination MatrixCamera pointer and backdropX/backdropY/backdropScroll/eye[1] member rewrite changes this function instruction bytes and fails ROM match. Retain destination byte accesses; shared layout and primary-camera direction view are established and match. Isolate mixed float/integer load scheduling before replacing destination accesses."
       },
       "locations": {
         "raw_offset_candidates": {
-          "gRenderCameras + 0x8C": [
-            "39:20",
-            "40:65",
-            "171:20"
-          ],
-          "gRenderCameras + 0xA0": [
-            "69:14",
-            "70:18"
-          ],
           "gCurrentAreaConfiguration + 0x68": [
-            "144:30"
+            "142:30"
           ],
           "view + 4": [
-            "145:92"
+            "143:92"
           ],
           "view + 0x98": [
-            "146:14",
-            "150:14",
-            "150:68"
+            "144:14",
+            "148:14",
+            "148:68"
           ],
           "view + 0x9C": [
-            "147:14"
+            "145:14"
           ],
           "view + 0xA0": [
-            "150:44"
+            "148:44"
           ],
           "top - 1": [
-            "201:57"
+            "199:57"
           ]
         }
       }

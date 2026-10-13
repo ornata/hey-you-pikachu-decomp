@@ -21,8 +21,13 @@ typedef struct {
     CameraMatrix view;   ///< Unscaled world-to-view affine transform.
     CameraMatrix scaled; ///< World-to-view transform scaled for view-region queries.
     f32 distance;        ///< Area-dependent distance used for view-region scaling.
-    u8 unknown08C[0x18];
-    s32 useBackdrop;    ///< Nonzero draws the configured backdrop instead of clearing to black.
+    u8 *backdropImage;   ///< Heap-allocated image storage for this view, or null before allocation.
+    s32 backdropWidth;   ///< Backdrop image width in pixels.
+    s32 backdropHeight;  ///< Backdrop image height in pixels.
+    s32 backdropX;       ///< Horizontal image offset used for backdrop drawing.
+    s32 backdropY;       ///< Vertical image offset used for backdrop drawing.
+    f32 backdropScroll;  ///< Accumulated horizontal backdrop scroll in pixels.
+    s32 useBackdrop;     ///< Nonzero draws the configured backdrop instead of clearing to black.
     s32 viewport[4];    ///< Pixel rectangle in left, top, right, bottom order for viewport, scissor and depth clearing.
     u8 overlayColor[4]; ///< Blended primary overlay RGBA used for drawing.
     u8 targetBaseOverlayColor[4];      ///< Requested base overlay RGBA.
@@ -47,6 +52,10 @@ typedef char MatrixCameraBaseOverlayOffsetCheck[(((u32) & (((MatrixCamera *)0)->
 typedef char MatrixCameraBlendOverlayOffsetCheck[(((u32) & (((MatrixCamera *)0)->blendOverlayColor)) == 0xCC) ? 1 : -1];
 typedef char
     MatrixCameraSecondaryOverlayOffsetCheck[(((u32) & (((MatrixCamera *)0)->secondaryOverlayColor)) == 0xD8) ? 1 : -1];
+
+typedef char MatrixCameraBackdropImageOffsetCheck[(((u32) & ((MatrixCamera *)0)->backdropImage) == 0x8C) ? 1 : -1];
+typedef char MatrixCameraBackdropWidthOffsetCheck[(((u32) & ((MatrixCamera *)0)->backdropWidth) == 0x90) ? 1 : -1];
+typedef char MatrixCameraBackdropScrollOffsetCheck[(((u32) & ((MatrixCamera *)0)->backdropScroll) == 0xA0) ? 1 : -1];
 
 typedef char MatrixCameraBackdropOffsetCheck[(((u32) & (((MatrixCamera *)0)->useBackdrop)) == 0xA4) ? 1 : -1];
 
