@@ -1,3 +1,4 @@
+#include "audio_control.h"
 #include "game_heap.h"
 #include "texture_image.h"
 #include "texture_rectangles.h"
@@ -289,7 +290,6 @@ s32 eyeCatchStartReveal(void) {
     return 1;
 }
 
-void audioStopCategories(s32, f64);              /* extern */
 s32 audioPlaySoundEffect(s16);                   /* extern */
 s32 audioSetSoundEffectVolume(s32, s32);         /* extern */
 /// Randomized sound choices for the eye-catch entry audio event.
@@ -347,7 +347,7 @@ s32 eyeCatchUpdatePlayback(void) {
     }
     if ((gControllerPrimaryPressedButtons != 0) || gEyeCatchStageSeconds > 7.5f) {
         cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.8f);
-        audioStopCategories(3, 0.8f);
+        audioStopCategories(AUDIO_CATEGORY_ALL, 0.8f);
         return 2;
     }
     return -10;

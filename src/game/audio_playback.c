@@ -1,3 +1,4 @@
+#include "audio_control.h"
 #include "audio_initialize.h"
 #include "audio_worker.h"
 #include "audio_dma.h"
@@ -169,7 +170,7 @@ extern s32 gAudioOutputMode;
 extern VoicePlayer gAudioSequenceDriver;
 
 /// Set the output mode for sequence and sound-effect playback.
-/// \param mode Two enables stereo positioning; other values use centered mono output.
+/// \param mode One selects mono; two selects stereo.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001FA28 (0x8001FA28).
 void audioSetOutputMode(s32 mode) {
@@ -242,14 +243,14 @@ s32 audioPlaySequence(s32 data) {
 void audioStopCategories(s32 categories, f64 fadeSeconds) {
     s32 i;
 
-    if (categories & 2) {
+    if (categories & AUDIO_CATEGORY_SEQUENCES) {
         for (i = 0; i < 4; i++) {
             if (gAudioSequenceSlots[i].handle != 0) {
                 audioStopPlayback(gAudioSequenceSlots[i].handle, fadeSeconds);
             }
         }
     }
-    if (categories & 1) {
+    if (categories & AUDIO_CATEGORY_SOUND_EFFECTS) {
         soundEffectPlayerStopAll(gSoundEffectPlayer);
     }
 }
@@ -261,12 +262,12 @@ void audioStopCategories(s32 categories, f64 fadeSeconds) {
 s32 audioCountActive(s32 categories) {
     s32 i;
     s32 var_s1 = 0;
-    if (categories & 2) {
+    if (categories & AUDIO_CATEGORY_SEQUENCES) {
         for (i = 0; i < 4; i++) {
             var_s1 += sequenceEngineIsStopped(&gAudioSequenceSlots[i].player.playback) == 0;
         }
     }
-    if (categories & 1) {
+    if (categories & AUDIO_CATEGORY_SOUND_EFFECTS) {
         var_s1 += soundEffectPlayerCountActive(gSoundEffectPlayer);
     }
     return var_s1;
@@ -407,10 +408,10 @@ f64 audioGetSequenceRate(s32 id) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002006C (0x8002006C).
 void audioSetCategoryVolume(s32 categories, s32 volume) {
-    if (categories & 2) {
+    if (categories & AUDIO_CATEGORY_SEQUENCES) {
         sequenceEngineSetMasterVolume(&gAudioSequenceDriver, (f64)volume / 65535.0);
     }
-    if (categories & 1) {
+    if (categories & AUDIO_CATEGORY_SOUND_EFFECTS) {
         soundEffectPlayerSetMasterVolume(gSoundEffectPlayer, volume);
     }
 }

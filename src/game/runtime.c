@@ -1,3 +1,4 @@
+#include "audio_control.h"
 #include "audio_initialize.h"
 #include "render_state.h"
 #include "game_heap.h"
@@ -613,7 +614,6 @@ void runtimeRequestGameModeChange(s32 mode) {
     runtimeAccumulatePlayTime();
 }
 
-void audioStopCategories(s32, f64);
 void hudPlayerUpdateNoOp(s32);                /* extern */
 void presentationUpdateCardMode();                   /* extern */
 void presentationUpdateCollectionResultsMode();                   /* extern */
@@ -709,13 +709,13 @@ void runtimeUpdateGameMode(void) {
         break;
     case 6:
         if (gRuntimeGameModeEntryPending != 0) {
-            audioStopCategories(3, 0.10000000149011612);
+            audioStopCategories(AUDIO_CATEGORY_ALL, 0.10000000149011612);
             cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.8f);
             runtimeAccumulateActorScriptTime();
             controllerRequestRumbleReset(0);
             gRuntimeGameModeEntryPending = 0;
         } else if (gPrimarySecondaryOverlayRemainingSeconds == 0.0f) {
-            audioStopCategories(3, 0.0);
+            audioStopCategories(AUDIO_CATEGORY_ALL, 0.0);
             runtimeRequestGameModeChange(8);
         }
         objectUpdateGroup(0);
@@ -815,7 +815,7 @@ void runtimeUpdateGameMode(void) {
         break;
     case 17:
         if (gRuntimeSaveAcknowledgeButtons & gControllerInputState[0].pressed) {
-            audioStopCategories(3, 0.10000000149011612);
+            audioStopCategories(AUDIO_CATEGORY_ALL, 0.10000000149011612);
             cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.0f);
             textPanelReleaseEntries((TextPanel *)&gRuntimePromptPanelLineCount);
             gRuntimePromptPanelImages = 0;
@@ -1049,7 +1049,7 @@ void runtimeMainThreadEntry(void *scheduler) {
         motionCacheDestroy();
         actorAssetReadQueueDestroy();
         messageBarResetAndReleaseImages();
-        audioStopCategories(1, 0.0);
+        audioStopCategories(AUDIO_CATEGORY_SOUND_EFFECTS, 0.0);
         osViSwapBuffer(gColorFramebuffer1);
         osViBlack(1);
         gRuntimeCurrentProgram = gRuntimeNextProgram;

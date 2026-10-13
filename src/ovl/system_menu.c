@@ -1,3 +1,4 @@
+#include "audio_control.h"
 #include "render_state.h"
 #include "game_heap.h"
 #include "eeprom_io.h"
@@ -1343,7 +1344,6 @@ void systemMenuPreviewSoundEffect(s32 soundId) {
     TRACE("selectSound : %d %s\n", soundId, ((MenuItem *)systemMenuGetSelectedItem(gSystemMenuState.menu))->label);
 }
 
-void audioSetOutputMode(s32);     /* extern */
 
 /// Apply and save the selected mono or stereo output setting.
 /// \param mode One selects mono; two selects stereo.

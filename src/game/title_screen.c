@@ -1,3 +1,4 @@
+#include "audio_control.h"
 #include "eeprom_io.h"
 #include "texture_image.h"
 #include "texture_rectangles.h"
@@ -583,7 +584,6 @@ s32 titleScreenFindEnabledChoice(s32 enabled, s32 selection, s32 step) {
 }
 
 void pikachuUpdateScriptAndTriggers(void);
-s32 audioCountActive(s32);
 /// Primary controller new and auto-repeated button presses; aliases the repeated word of the processed sample.
 /// \note Original identifier: \c D_800AD54C (0x800AD54C).
 extern s32 gControllerPrimaryRepeatedButtons;
@@ -606,7 +606,7 @@ s32 titleScreenHandleFileSelection(void) {
 
     pikachuUpdateScriptAndTriggers();
     objectUpdateGroup(0x4000);
-    if (audioCountActive(3) == 0) {
+    if (audioCountActive(AUDIO_CATEGORY_ALL) == 0) {
         audioChangeCurrentCue(0, 0.0, 0.0);
     }
     buttons = gControllerPrimaryRepeatedButtons;
@@ -671,7 +671,7 @@ extern s32 gControllerPrimaryRepeatedButtons, gTitleScreenState;
 s32 titleScreenHandleOverwriteConfirmation(void) {
     pikachuUpdateScriptAndTriggers();
     objectUpdateGroup(0x4000);
-    if (audioCountActive(3) == 0)
+    if (audioCountActive(AUDIO_CATEGORY_ALL) == 0)
         audioChangeCurrentCue(0, 0.0, 0.0);
     if (gControllerPrimaryRepeatedButtons & 0xC00) {
         if ((gControllerPrimaryRepeatedButtons & 0x800) && gTitleMenuSelection > 0) {
@@ -890,7 +890,7 @@ void titleScreenUpdate(void) {
     case 13:
         pikachuUpdateScriptAndTriggers();
         objectUpdateGroup(0x4000);
-        if (audioCountActive(3) == 0) {
+        if (audioCountActive(AUDIO_CATEGORY_ALL) == 0) {
             audioChangeCurrentCue(0, 0.0, 0.0);
         }
         if (gEepromSaveControl != 0 && (*pressed & 0xC00)) {

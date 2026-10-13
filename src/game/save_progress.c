@@ -1,3 +1,4 @@
+#include "audio_control.h"
 #include "player_chase.h"
 #include "math_angles.h"
 #include "random.h"
@@ -624,7 +625,6 @@ void progressLoadRecordFromEeprom(s32 record) {
 
 void audioApplySavedMusicVolume(f32);
 void audioApplySavedSoundEffectVolume(f32);
-void audioSetOutputMode(s32);
 
 /// Applies the loaded progress record to the active gameplay state and settings.
 /// \returns Nothing.

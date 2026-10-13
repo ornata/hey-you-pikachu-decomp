@@ -1244,6 +1244,7 @@
     "src/game/audio_playback.c": {
       "known_views": [
         "audio_bank.h",
+        "audio_control.h",
         "audio_dma.h",
         "audio_initialize.h",
         "audio_playback_query.h",
@@ -1263,9 +1264,9 @@
       "locations": {
         "raw_offset_candidates": {
           "return -1": [
-            "161:5",
-            "393:9",
-            "400:5"
+            "162:5",
+            "394:9",
+            "401:5"
           ]
         }
       }
@@ -1349,6 +1350,7 @@
         "actor_rotation.h",
         "actor_script.h",
         "area_transition.h",
+        "audio_control.h",
         "audio_cue.h",
         "backdrop_draw.h",
         "backdrop_view.h",
@@ -1397,101 +1399,101 @@
       "locations": {
         "raw_offset_candidates": {
           "slot + 4": [
-            "227:50",
-            "264:22"
+            "228:50",
+            "265:22"
           ],
           "liveObject + 0x54": [
-            "229:22",
-            "860:18"
+            "230:22",
+            "861:18"
           ],
           "p + 4": [
-            "230:71",
-            "231:82",
-            "861:71"
+            "231:71",
+            "232:82",
+            "862:71"
           ],
           "gToolboxBonusSlot + 4": [
-            "270:18"
+            "271:18"
           ],
           "gToolboxPurchaseSlot + 4": [
-            "274:19"
+            "275:19"
           ],
           "state + 0x1EC": [
-            "396:76"
+            "397:76"
           ],
           "player + 0x48": [
-            "405:28"
+            "406:28"
           ],
           "player + 0x54": [
-            "405:65"
+            "406:65"
           ],
           "player + 0x18": [
-            "408:14"
+            "409:14"
           ],
           "tgt + 0": [
-            "447:21"
-          ],
-          "tgt + 4": [
             "448:21"
           ],
-          "tgt + 8": [
+          "tgt + 4": [
             "449:21"
           ],
+          "tgt + 8": [
+            "450:21"
+          ],
           "ext + 0xC": [
-            "451:71"
+            "452:71"
           ],
           "ext + 0x10": [
-            "452:76"
+            "453:76"
           ],
           "ext + 0x19C": [
-            "453:14"
+            "454:14"
           ],
           "ext + 0x1EC": [
-            "454:126"
+            "455:126"
           ],
           "firstJoint + 0x48": [
-            "458:18"
+            "459:18"
           ],
           "secondJoint + 0x48": [
-            "460:29"
+            "461:29"
           ],
           "gCurrentAreaConfiguration + 0x74": [
-            "518:23",
-            "535:18",
-            "585:25",
-            "598:25",
-            "618:29"
+            "519:23",
+            "536:18",
+            "586:25",
+            "599:25",
+            "619:29"
           ],
           "object + 0x54": [
-            "713:26",
-            "903:22"
+            "714:26",
+            "904:22"
           ],
           "state + 4": [
-            "714:75",
-            "715:68",
-            "904:58"
+            "715:75",
+            "716:68",
+            "905:58"
           ],
           "liveObject + 0x34": [
-            "857:18"
+            "858:18"
           ],
           "item + 0x18": [
-            "877:94"
+            "878:94"
           ],
           "item + 0x10": [
-            "878:14"
-          ],
-          "item + 0": [
             "879:14"
           ],
-          "gCurrentAreaConfiguration + 0xC": [
-            "879:35",
-            "880:35",
-            "881:35"
-          ],
-          "item + 4": [
+          "item + 0": [
             "880:14"
           ],
-          "item + 8": [
+          "gCurrentAreaConfiguration + 0xC": [
+            "880:35",
+            "881:35",
+            "882:35"
+          ],
+          "item + 4": [
             "881:14"
+          ],
+          "item + 8": [
+            "882:14"
           ],
           "gCurrentAreaConfiguration + 0x64": [
             "1217:18",
@@ -1613,6 +1615,7 @@
     "src/game/eye_catch.c": {
       "known_views": [
         "asset_loader.h",
+        "audio_control.h",
         "audio_cue.h",
         "camera_overlay.h",
         "controller_rumble.h",
@@ -1632,28 +1635,28 @@
       "locations": {
         "raw_offset_candidates": {
           "gEyeCatchProjectionMatrix + 0x80000000": [
-            "209:33"
-          ],
-          "gEyeCatchModelViewMatrix + 0x80000000": [
             "210:33"
           ],
-          "gEyeCatchBackdropVertices + 0x80000000": [
+          "gEyeCatchModelViewMatrix + 0x80000000": [
             "211:33"
           ],
+          "gEyeCatchBackdropVertices + 0x80000000": [
+            "212:33"
+          ],
           "var_s0 + 0xC": [
-            "231:66"
+            "232:66"
           ],
           "var_s0 + 0x18": [
-            "233:66"
+            "234:66"
           ],
           "var_s0 + 0x24": [
-            "235:66"
+            "236:66"
           ],
           "var_s0 + 0x30": [
-            "237:66"
+            "238:66"
           ],
           "var_s0 + 0x3C": [
-            "238:66"
+            "239:66"
           ],
           "return -10": [
             "353:5"
@@ -2704,6 +2707,7 @@
       "known_views": [
         "actor_assets.h",
         "area_transition.h",
+        "audio_control.h",
         "audio_cue.h",
         "audio_initialize.h",
         "backdrop_view.h",
@@ -2745,7 +2749,7 @@
       "locations": {
         "raw_offset_candidates": {
           "actorState + 0x1B8": [
-            "599:50"
+            "600:50"
           ],
           "gRuntimePromptPanelLineCount - 1": [
             "1075:75"
@@ -2755,6 +2759,7 @@
     },
     "src/game/save_progress.c": {
       "known_views": [
+        "audio_control.h",
         "direction_animation.h",
         "eeprom_io.h",
         "math_angles.h",
@@ -2772,31 +2777,31 @@
       "locations": {
         "address_globals": {
           "D_8009ADC0": [
-            "33:5"
+            "34:5"
           ]
         },
         "raw_offset_candidates": {
           "pose + 0x10": [
-            "55:34"
+            "56:34"
           ],
           "animation + 0x28": [
-            "171:28"
+            "172:28"
           ],
           "rec + 1": [
-            "210:59"
+            "211:59"
           ],
           "entries + 1": [
-            "246:16"
+            "247:16"
           ],
           "width + 7": [
-            "355:18"
+            "356:18"
           ],
           "bytes - 1": [
-            "356:29"
+            "357:29"
           ],
           "bitWidth + 31": [
-            "403:53",
-            "447:80"
+            "404:53",
+            "448:80"
           ]
         }
       }
@@ -3306,6 +3311,7 @@
       "known_views": [
         "area_transition.h",
         "asset_loader.h",
+        "audio_control.h",
         "audio_cue.h",
         "audio_sound_effect.h",
         "backdrop_draw.h",
@@ -3337,22 +3343,22 @@
       "locations": {
         "raw_offset_candidates": {
           "words + 4": [
-            "82:72"
+            "83:72"
           ],
           "words + 8": [
-            "87:44"
+            "88:44"
           ],
           "x - 10": [
-            "262:36"
+            "263:36"
           ],
           "y - 4": [
-            "262:44"
+            "263:44"
           ],
           "maxWidth + 10": [
-            "262:55"
+            "263:55"
           ],
           "x + 16": [
-            "269:17"
+            "270:17"
           ],
           "gCurrentAreaConfiguration + 0x64": [
             "969:47"
@@ -5334,6 +5340,7 @@
         "action_script_query.h",
         "action_script_stop.h",
         "area_transition.h",
+        "audio_control.h",
         "audio_cue.h",
         "audio_playback_stop.h",
         "audio_sound_effect.h",
@@ -5380,81 +5387,81 @@
       "locations": {
         "raw_offset_candidates": {
           "depth + 1": [
-            "431:47"
+            "432:47"
           ],
           "row + 1": [
-            "659:14"
+            "660:14"
           ],
           "i - 1": [
-            "665:18"
+            "666:18"
           ],
           "index - 1": [
-            "716:18"
+            "717:18"
           ],
           "count - 1": [
-            "843:51"
+            "844:51"
           ],
           "firstVisibleIndex + 4": [
-            "880:48"
+            "881:48"
           ],
           "selectedIndex - 4": [
-            "881:51"
+            "882:51"
           ],
           "model + 0x18": [
-            "915:125",
-            "945:125"
+            "916:125",
+            "946:125"
           ],
           "model + 0x10": [
-            "916:37",
-            "946:37"
-          ],
-          "gPlayerYaw + 180": [
-            "916:72",
-            "946:72",
-            "983:50"
-          ],
-          "model + 0xC": [
             "917:37",
             "947:37"
           ],
-          "secondary + 0x10": [
+          "gPlayerYaw + 180": [
+            "917:72",
+            "947:72",
+            "984:50"
+          ],
+          "model + 0xC": [
             "918:37",
             "948:37"
           ],
+          "secondary + 0x10": [
+            "919:37",
+            "949:37"
+          ],
           "object + 0x18": [
-            "981:102"
+            "982:102"
           ],
           "object + 0xC": [
-            "982:14",
-            "985:14"
-          ],
-          "object + 0x10": [
             "983:14",
             "986:14"
           ],
+          "object + 0x10": [
+            "984:14",
+            "987:14"
+          ],
           "object + 0x14": [
-            "984:14"
+            "985:14"
           ],
           "gCurrentAreaConfiguration + 0x64": [
-            "1012:47"
+            "1013:47"
           ],
           "y + 3": [
-            "1162:14"
+            "1163:14"
           ],
           "x + 80": [
-            "1163:13"
+            "1164:13"
           ],
           "selected - 2": [
-            "1176:40"
+            "1177:40"
           ],
           "top - 3": [
-            "1176:54"
+            "1177:54"
           ],
           "selected + 2": [
-            "1176:63"
+            "1177:63"
           ],
           "bottom + 3": [
-            "1176:77"
+            "1177:77"
           ],
           "gCurrentAreaConfiguration + 0xC": [
             "1858:32",

@@ -4256,3 +4256,14 @@ scheduler pointer through to worker startup. Sequence setup carries typed heap
 and bank-file pointers and selects the bank through its named array member.
 Ghidra initialization at 0x8001F680 confirms the resource and worker call chain;
 all changes preserve strict objects and the clean ROM match.
+
+### Audio output and category controls
+
+`audio_control.h` shares output-mode, category-stop and category-count contracts
+with all six consumer units. Named category masks replace literal bits in dispatch
+and callers. Sequence fades can remain active after a stop request; count reports
+active slots rather than merely allocated handles. Supported output modes are one
+for mono and two for stereo. The previous blanket description of other values as
+mono was inaccurate: the two playback engines differ outside supported modes.
+Ghidra at 0x8001FA28 and both engine consumers confirm the output-setting path.
+Each source-unit adoption and named-mask change preserves strict objects.

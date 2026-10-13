@@ -1,3 +1,4 @@
+#include "audio_control.h"
 #include "game_heap.h"
 #include "player_chase.h"
 #include "texture_rectangles.h"
@@ -1087,7 +1088,6 @@ void presentationShowChapterFriendshipResult(void) {
 }
 
 void runtimeRequestProgramChange(s32);
-void audioStopCategories(s32, f64);
 void playerAddPoints(s32);
 /// Whether collection results were bypassed because no kept items or chapter result required presentation.
 /// \note Original identifier: \c D_8009B584 (0x8009B584).
@@ -1116,7 +1116,7 @@ void presentationUpdateCollectionResultsMode(void) {
         backdropSelectForView(0, 0xB, 0);
         cameraResetOverlayColor(0, 0, 0, 0, 0);
         cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 0.6f);
-        audioStopCategories(3, 0.6f);
+        audioStopCategories(AUDIO_CATEGORY_ALL, 0.6f);
         presentationPrepareActiveActor(&gCollectionPresentationActorPosition);
         gCollectionPresentationScore = 0;
         presentationRefreshCollectionScoreText();
@@ -1160,7 +1160,7 @@ void presentationUpdateCollectionResultsMode(void) {
         return;
     case 4:
         if (gControllerPrimaryRepeatedButtons & 0x8000) {
-            audioStopCategories(3, 0.1f);
+            audioStopCategories(AUDIO_CATEGORY_ALL, 0.1f);
             cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFE, 0.8f);
             gCollectionPresentationStage = 6;
         }
@@ -1169,7 +1169,7 @@ void presentationUpdateCollectionResultsMode(void) {
     case 5:
         if ((gControllerPrimaryRepeatedButtons != 0) ||
             (runtimeGetElapsedMilliseconds() - (u64)gCollectionResultsWaitStartMilliseconds >= 0xBB9)) {
-            audioStopCategories(3, 0.1f);
+            audioStopCategories(AUDIO_CATEGORY_ALL, 0.1f);
             cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFE, 0.8f);
             gCollectionPresentationStage = 6;
         }
