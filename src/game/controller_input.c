@@ -1,8 +1,7 @@
+#include "controller_pad.h"
 #include "common.h"
 #include "controller_types.h"
 
-OSContStatus *controllerGetPortStatus(s32);
-s32 controllerIsPortConnected(s32);
 /// Seconds-to-microseconds scale for the initial button-repeat delay.
 /// \note Original identifier: \c D_800A01FC (0x800A01FC).
 extern f32 gControllerInitialDelayMicrosecondsPerSecond;
@@ -97,7 +96,6 @@ extern char gControllerInputTraceFormat[]; /* "send(%d, %d, %.3f, %.3f, %.3f)\n"
 /// \note Original identifier: \c D_800A01E0 (0x800A01E0).
 extern char gControllerInvalidPortTraceFormat[]; /* "pad-%d is invalid\n" */
 
-s32 controllerReadCachedPad(OSContPad *pad, s32 port);
 
 /// Update held, pressed, released, and repeated buttons from cached pad samples.
 /// Applies optional stick-derived direction bits and updates per-button timing.

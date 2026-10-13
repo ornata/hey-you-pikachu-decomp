@@ -1,3 +1,4 @@
+#include "controller_pad.h"
 #include "controller_rumble.h"
 #include "microphone_configuration.h"
 #include "controller_commands.h"
@@ -284,11 +285,9 @@ typedef struct {
     s32 ready, arg1, arg2;
 } ThreadStartup2650;
 void controllerInitializeDevices(s32);
-void controllerClearPadCache(void);
 void micSessionInitialize(s32);
 void controllerInitializeRumbleState(void);
 void controllerQueryDevices(void);
-void controllerPollPads(void);
 void micSessionUpdate(void);
 void controllerUpdateRumble(void);
 /* Orphan strings of the compiled-out mpak error traces. */

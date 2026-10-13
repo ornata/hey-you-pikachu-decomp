@@ -1,11 +1,10 @@
+#include "controller_pad.h"
 #include "common.h"
 
 OSMesgQueue *serialGetMessageQueue(void);
-u8 controllerGetConnectedPortMask(void);
 /// Latest hardware samples for the four controller ports.
 /// \note Original identifier: \c D_800AD400 (0x800AD400).
 extern OSContPad gControllerPadSamples[4];
-s32 controllerIsPortConnected(s32);
 void _bzero(void *, u32);
 
 /// Poll connected controllers and refresh the cached pad samples.

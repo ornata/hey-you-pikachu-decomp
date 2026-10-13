@@ -1,3 +1,4 @@
+#include "controller_pad.h"
 #include "microphone_session_query.h"
 #include "microphone_configuration.h"
 #include "controller_commands.h"
@@ -81,7 +82,6 @@ s32 gMicSessionPreviousTriggerButtons = 0;
 u64 gMicSessionLastAmplifierDisabledPollTicks = 0;
 void voiceRecognitionSetAmplifier(s32);
 s32 voiceRecognitionIsAmplifierEnabled(void);
-OSContStatus *controllerGetPortStatus(s32);
 s32 voiceRecognitionGetDeviceState();
 void micSessionUpdateTrigger(void);
 void micSessionUpdateAmplifier(void);
@@ -93,7 +93,6 @@ void voiceRecognitionPoll(void);
 /// Persistent EEPROM request shared with the controller thread until acknowledgment.
 /// \note Original identifier: \c D_80063430 (0x80063430).
 EepromRequest gEepromQueuedRequest = {0};
-s32 controllerReadCachedPad(OSContPad *pad, s32 port);
 /// Whether session policy requests an active recognition read.
 /// \note Original identifier: \c D_800F8AC8 (0x800F8AC8).
 extern volatile s32 gVoiceRecognitionReadRequested;

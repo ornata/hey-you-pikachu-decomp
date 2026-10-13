@@ -2260,6 +2260,7 @@
     "src/game/microphone_session.c": {
       "known_views": [
         "controller_commands.h",
+        "controller_pad.h",
         "eeprom_io.h",
         "microphone_configuration.h",
         "microphone_session_query.h",
@@ -2271,7 +2272,7 @@
       "locations": {
         "raw_offset_candidates": {
           "gMicSessionUploadingDictionary + 1": [
-            "265:13"
+            "264:13"
           ]
         }
       }

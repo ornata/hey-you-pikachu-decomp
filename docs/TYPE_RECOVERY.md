@@ -3831,3 +3831,9 @@ Controller-thread rumble timing has checked private 0x28-byte pattern and
 interval/duration and the motor state-dependent deadline/attempt counter.
 Retry, stop, expiry, cancellation and queued dispatch consume these views;
 the original backing byte arrays preserve their storage and alignment.
+
+`controller_pad.h` unifies polling, cache clearing, sample copying, status and
+availability queries across both producer units, processed input and microphone
+trigger handling. Its contract distinguishes connection from sample validity:
+an errored connected sample is copied, while an unavailable port yields a cleared
+sample. Borrowed status pointers refer to the persistent per-port cache.
