@@ -1,57 +1,10 @@
+#include "sequence_engine_types.h"
 #include "sequence_playback.h"
 #include "midi_sequence.h"
 /* Voice and sequence engine; split from the control API at ROM 6750. */
 #include "common.h"
 #include "sequence_driver.h"
 
-/// Per-channel controller storage owned by a registered sequence.
-typedef struct EngineChannel {
-    ALInstrument *instrument; ///< Borrowed current bank instrument.
-    s16 pitchBend;            ///< Retained fourteen-bit bend value, centered at 0x2000.
-    u16 pitchBendRange;       ///< Pitch bend sensitivity in 1/128-semitone units.
-    u16 pan;                  ///< Fourteen-bit stereo pan control.
-    u8 unknown0A;             ///< Unresolved controller byte.
-    u8 volume;                ///< Seven-bit channel volume.
-    u8 fxMix;                 ///< Seven-bit synthesizer effect mix.
-    u8 sustain;               ///< Sustain pedal; values at least 64 hold note releases.
-    u16 expression;           ///< Fourteen-bit expression level.
-    u16 bank;                 ///< Fourteen-bit bank selection.
-    u8 rpnHigh, rpnLow;       ///< Registered parameter selector bytes.
-    u8 lastKey;               ///< Retained note used by portamento.
-    u8 portamentoEnabled;     ///< Nonzero enables a previous-note pitch transition.
-    u8 portamentoTime;        ///< Controller scaling the transition duration.
-    u8 vibratoDepth;          ///< Pitch-modulation amount.
-    u8 tremoloDepth;          ///< Volume-modulation amount.
-    u8 unknown019[3];         ///< Unresolved channel tail.
-} EngineChannel;
-
-/// Callback and channel state for one registered sequence.
-/// Event storage and reader context are borrowed until the sequence is removed.
-typedef struct EngineSequence {
-    struct EngineSequence *next;
-    s32 readerContext;
-    s8 (*eventReader)(s32, s32, u8, u8 *);
-    ALBank *bank;
-    SequenceVoice *voices;
-    EngineChannel channels[16];
-    s16 volume;
-    u8 unknown1D6[0xA];
-    f64 fadeRemaining;
-    f64 fadeRate;
-    s8 eventLength;
-    u8 eventCapacity;
-    u8 unknown1F2[2];
-    s32 eventBuffer;
-    f64 eventDelay;
-} EngineSequence;
-
-typedef char EngineChannelPanOffsetCheck[(((u32)&((EngineChannel *)0)->pan) == 8) ? 1 : -1];
-typedef char EngineChannelEffectsOffsetCheck[(((u32)&((EngineChannel *)0)->fxMix) == 0xC) ? 1 : -1];
-typedef char EngineChannelVibratoOffsetCheck[(((u32)&((EngineChannel *)0)->vibratoDepth) == 0x17) ? 1 : -1];
-typedef char EngineChannelSizeCheck[(sizeof(EngineChannel) == 0x1C) ? 1 : -1];
-typedef char EngineSequenceSizeCheck[(sizeof(EngineSequence) == 0x200) ? 1 : -1];
-typedef char EngineSequenceVoicesOffsetCheck[((u32) & ((EngineSequence *)0)->voices == 0x10) ? 1 : -1];
-typedef char EngineSequenceEventOffsetCheck[((u32) & ((EngineSequence *)0)->eventLength == 0x1F0) ? 1 : -1];
 typedef char EngineDriverVoicesOffsetCheck[((u32) & ((VoicePlayer *)0)->voices == 0x20) ? 1 : -1];
 
 struct N_ALVoice_s;
@@ -785,23 +738,23 @@ void sequenceEngineAdvanceVolumeFade(u8 *sequence, f64 elapsed) {
     f64 left;
     f64 level;
 
-    rate = *(f64 *)(sequence + 0x1E0);
-    if (*(f64 *)(sequence + 0x1E0) != 0.0) {
-        left = *(f64 *)(sequence + 0x1D8);
+    rate = ((EngineSequence *)sequence)->fadeRate;
+    if (((EngineSequence *)sequence)->fadeRate != 0.0) {
+        left = ((EngineSequence *)sequence)->fadeRemaining;
         if (left < elapsed) {
-            *(f64 *)(sequence + 0x1E0) = 0.0;
-            *(f64 *)(sequence + 0x1E8) = *(f64 *)(sequence + 0x1E8) + (left * rate);
+            ((EngineSequence *)sequence)->fadeRate = 0.0;
+            ((EngineSequence *)sequence)->fadeLevel = ((EngineSequence *)sequence)->fadeLevel + (left * rate);
         } else {
-            *(f64 *)(sequence + 0x1D8) = left - elapsed;
-            *(f64 *)(sequence + 0x1E8) = *(f64 *)(sequence + 0x1E8) + (elapsed * rate);
+            ((EngineSequence *)sequence)->fadeRemaining = left - elapsed;
+            ((EngineSequence *)sequence)->fadeLevel = ((EngineSequence *)sequence)->fadeLevel + (elapsed * rate);
         }
-        level = *(f64 *)(sequence + 0x1E8);
+        level = ((EngineSequence *)sequence)->fadeLevel;
         if (level < 0.0) {
-            *(f64 *)(sequence + 0x1E8) = 0.0;
+            ((EngineSequence *)sequence)->fadeLevel = 0.0;
             level = 0.0;
         }
         if (level > 1.0) {
-            *(f64 *)(sequence + 0x1E8) = 1.0;
+            ((EngineSequence *)sequence)->fadeLevel = 1.0;
         }
     }
 }

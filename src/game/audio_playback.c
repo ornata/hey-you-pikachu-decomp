@@ -1,3 +1,4 @@
+#include "sequence_engine_types.h"
 #include "sequence_playback.h"
 #include "sequence_control.h"
 #include "audio_sound_effect.h"
@@ -9,10 +10,10 @@
 #include "sequence_driver.h"
 #include "midi_sequence_types.h"
 /// One audio sequence slot with embedded MIDI control state and a playback handle.
-/// Engine registration owns the leading storage; its internal layout is not exposed here.
+/// The engine borrows its MIDI control state, instrument bank, and event buffer.
 /// Four slots share one contiguous allocation. The slot owns the event buffer borrowed by engine registration.
 typedef struct AudioSequenceSlot {
-    u8 engineStorage[0x200]; ///< Registered sequence engine state.
+    EngineSequence engine; ///< Embedded registered sequence engine state.
     SequenceControlState player; ///< Embedded MIDI reader and queued playback controls.
     s32 handle; ///< Playback handle issued by audioPlaySequence, or zero when free.
     u8 eventBuffer[0x14]; ///< MIDI event bytes borrowed by the registered engine.
