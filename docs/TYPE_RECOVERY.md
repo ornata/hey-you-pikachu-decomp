@@ -3669,3 +3669,7 @@ the low byte of the typed animation value, preserving the original selection.
 Radial-effect creation, following motion and drawing use shared object transforms,
 child/sibling links, flags and matrix buffers. Child Y-scale growth retains the
 original floating expression and traversal order.
+
+`animated_radial_effect.h` supplies the shared creation contract. Radial and
+flickering action commands reuse the same checked count/lifetime operand record,
+with descriptive field names and the original signed-count/floating-lifetime ABI.

@@ -1,3 +1,4 @@
+#include "animated_radial_effect.h"
 #include "flickering_effect.h"
 #include "converging_particle.h"
 #include "falling_particle.h"
@@ -725,15 +726,15 @@ void actionCommandCreateItemTransformationEffect(u8 *actor, u8 *state, u8 *comma
     }
 }
 
-/// Script operands for a target-following flickering effect.
-typedef struct FlickeringPartEffectArguments {
+/// Shared count and lifetime operands for target-following visual effects.
+typedef struct FollowingEffectArguments {
     s32 count;    ///< Number of visual elements.
     f32 lifetime; ///< Effect lifetime in seconds.
-} FlickeringPartEffectArguments;
+} FollowingEffectArguments;
 
-typedef char FlickeringPartArgumentsSizeCheck[(sizeof(FlickeringPartEffectArguments) == 8) ? 1 : -1];
+typedef char FollowingEffectArgumentsSizeCheck[(sizeof(FollowingEffectArguments) == 8) ? 1 : -1];
 typedef char
-    FlickeringPartLifetimeOffsetCheck[(((u32) & ((FlickeringPartEffectArguments *)0)->lifetime) == 4) ? 1 : -1];
+    FollowingEffectLifetimeOffsetCheck[(((u32) & ((FollowingEffectArguments *)0)->lifetime) == 4) ? 1 : -1];
 
 /// Create a flickering visual effect that follows the actor's default part.
 /// \param actor Actor whose default part receives the effect.
@@ -743,7 +744,7 @@ typedef char
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80024618 (0x80024618).
 void actionCommandCreateFlickeringPartEffect(s32 actor, u8 *state, u8 *command, f32 *elapsed) {
-    FlickeringPartEffectArguments *arguments = (FlickeringPartEffectArguments *)(command + 8);
+    FollowingEffectArguments *arguments = (FollowingEffectArguments *)(command + 8);
 
     flickeringEffectCreate(((RuntimeObjectPrefix *)actorGetDefaultPart((u8 *)actor))->handle, arguments->lifetime,
                            arguments->count);
@@ -764,7 +765,6 @@ void actionCommandCreateStackedEffects(u8 *actor, u8 *state, u8 *command, f32 *e
     effectCreateVerticalStack(actor + 0x44);
 }
 
-u8 *animatedRadialEffectCreate(s32, f32, s32); /* extern */
 
 /// Create an animated radial effect that follows the actor.
 /// \param actor Actor receiving the effect.
@@ -774,9 +774,9 @@ u8 *animatedRadialEffectCreate(s32, f32, s32); /* extern */
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800246B0 (0x800246B0).
 void actionCommandCreateAnimatedRadialEffect(u8 *actor, u8 *state, u8 *command, f32 *elapsed) {
-    animatedRadialEffectCreate(((RuntimeObjectPrefix *)actor)->handle,
-                               ((ActionScalarArguments *)((u8 *)command + 8))->scalar,
-                               ((ActionScalarArguments *)((u8 *)command + 8))->integer);
+    FollowingEffectArguments *arguments = (FollowingEffectArguments *)(command + 8);
+
+    animatedRadialEffectCreate(((RuntimeObjectPrefix *)actor)->handle, arguments->lifetime, arguments->count);
 }
 
 typedef struct {
