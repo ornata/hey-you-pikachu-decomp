@@ -1,3 +1,4 @@
+#include "player_profile.h"
 #include "render_state.h"
 #include "game_heap.h"
 #include "voice_recognition.h"
@@ -72,12 +73,6 @@ extern u8 *gCurrentAreaConfiguration;
 /// Friendship messages indexed by the cleared chapter.
 /// \note Original identifier: \c D_800999F0 (0x800999F0).
 extern s32 gChapterFriendshipMessages[];
-/// Separate symbol view of the primary player friendship-title level.
-/// \note Original identifier: \c D_800EF796 (0x800EF796).
-extern u8 gPlayerFriendshipLevel;
-/// Separate symbol view of the last awarded primary player friendship milestone, or minus one when none awaits presentation.
-/// \note Original identifier: \c D_800EF798 (0x800EF798).
-extern s32 gPlayerFriendshipMilestone;
 
 void _bzero(void *, s32); /* extern */
 

@@ -1,3 +1,4 @@
+#include "player_profile.h"
 #include "player_state.h"
 #include "audio_control.h"
 #include "game_heap.h"
@@ -199,12 +200,6 @@ void presentationDrawCurrentCardPanels(Gfx **);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
-/// Separate symbol view of the primary player friendship-title level.
-/// \note Original identifier: \c D_800EF796 (0x800EF796).
-extern u8 gPlayerFriendshipLevel;
-/// Separate symbol view of the last awarded primary player friendship milestone, or minus one when none awaits presentation.
-/// \note Original identifier: \c D_800EF798 (0x800EF798).
-extern s32 gPlayerFriendshipMilestone;
 
 
 /// Separate view of the message-bar image slot prepared for the next transition.
@@ -1084,7 +1079,6 @@ void presentationShowChapterFriendshipResult(void) {
 }
 
 void runtimeRequestProgramChange(s32);
-void playerAddPoints(s32);
 /// Whether collection results were bypassed because no kept items or chapter result required presentation.
 /// \note Original identifier: \c D_8009B584 (0x8009B584).
 extern s32 gCollectionResultsBypassed;
@@ -1735,9 +1729,6 @@ void progressSetChapterAndUnlockMilestones(s32 chapter) {
     }
 }
 
-/// Separate symbol view of the primary player profile points balance.
-/// \note Original identifier: \c D_800EF790 (0x800EF790).
-extern s32 gPlayerProfilePoints;
 /// Collection value of item kind 0x8F, also used by the chapter progression threshold.
 /// \note Original identifier: \c D_80129B78 (0x80129B78).
 extern s32 gItemKind8FCollectionValue;

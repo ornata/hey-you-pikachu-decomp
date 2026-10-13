@@ -4462,3 +4462,17 @@ and aspect correction inputs are documented separately by the viewport helper.
 Ghidra at 0x80001844 confirms viewport/projection setup, the second matrix and returned
 normalization. Both producers and consumers preserve strict baseline objects and clean
 retail ROM bytes across all four edited units.
+
+### Player profile aliases, points return and recovered fields
+
+`player_profile.h` shares reset/points contracts and all existing profile interior
+symbols. Collection presentation now sees the actual bounded points return rather
+than a void declaration; Ghidra at 0x80112C58 confirms that result. Scripts, UI,
+save/load and runtime use the canonical declarations while retaining alias identities.
+
+Linked addresses establish player-name storage at player offset 0xE0, ending at the
+points word at 0xF0, and delivered voice-message count at 0xFC. Profile reset at
+0x800214E0, messenger delivery, script count queries, the UI's Voice label and progress
+record field three corroborate those roles. The previous unresolved fields are now
+profileName and deliveredVoiceMessageCount, with target offset checks. All eleven
+edited source units preserve strict baseline objects and clean retail ROM bytes.

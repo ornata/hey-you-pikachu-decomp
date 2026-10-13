@@ -1,3 +1,4 @@
+#include "player_profile.h"
 #include "player_state.h"
 #include "profile_counters.h"
 #include "story_milestones.h"
@@ -10,9 +11,6 @@ void _bzero(void *, s32);                                     /* extern */
 /// Current gameplay, menu or transition mode.
 /// \note Original identifier: \c D_800AE504 (0x800AE504).
 extern s32 gRuntimeGameMode;
-/// Player profile name string borrowed by actor scripts.
-/// \note Original identifier: \c D_800EF780 (0x800EF780).
-extern u8 gPlayerProfileName[];
 /// Global script-variable storage containing 500 packed five-byte values.
 /// \note Original identifier: \c D_800EF7A0 (0x800EF7A0).
 extern u8 gScriptVmGlobalValues[];
@@ -31,7 +29,7 @@ void playerResetProfile(void) {
     ((PlayerControlPrefix *)&gPlayerState)->unknown0F4 = 6;
     ((PlayerControlPrefix *)&gPlayerState)->unknown0F5 = 8;
     ((PlayerControlPrefix *)&gPlayerState)->friendshipLevel = 0;
-    ((PlayerControlPrefix *)&gPlayerState)->unknown0FC = 0;
+    ((PlayerControlPrefix *)&gPlayerState)->deliveredVoiceMessageCount = 0;
     ((PlayerControlPrefix *)&gPlayerState)->friendshipMilestone = -1;
     ((PlayerControlPrefix *)&gPlayerState)->unknown0F7 = 0;
     if (gRuntimeGameMode == 0x12) {

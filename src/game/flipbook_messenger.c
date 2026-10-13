@@ -807,7 +807,7 @@ void messengerDeliver(u8 *object, u8 *source, u8 *target, s32 mode) {
     force = target == (u8 *)((s32)gPikachuActor) ? 1 : 0;
     actorPostScriptMessage((s32)target, ((MessengerFlightState *)state)->message, force);
     if (target == (u8 *)((s32)gPikachuActor)) {
-        gPlayerState.unknown0FC += 1;
+        gPlayerState.deliveredVoiceMessageCount += 1;
         actorAdjustSecondaryMeter((u8 *)((s32)gPikachuActor), 1.0f);
         sourceKind = ((RuntimeObjectPrefix *)source)->kind;
         if (sourceKind == 0x2C || sourceKind == 0x2E)

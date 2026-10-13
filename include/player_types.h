@@ -79,14 +79,14 @@ typedef struct PlayerControlPrefix {
     s32 soundHandle;          ///< Tracked player sound-effect playback.
     s32 heldItemHandle;       ///< Handle of the player's held item, or zero.
     PlayerModeState modeState; ///< Current behavior and camera-transition state.
-    u8 unknown0E0[0x10];
+    u8 profileName[0x10]; ///< Player-name storage, followed by the points balance.
     s32 points; ///< Player profile points balance.
     s8 unknown0F4;      ///< Profile byte initialized to six; interpretation remains unresolved.
     s8 unknown0F5;      ///< Profile byte initialized to eight; interpretation remains unresolved.
     u8 friendshipLevel; ///< Index of the player friendship title.
     u8 unknown0F7;
     s32 friendshipMilestone; ///< Last awarded friendship milestone.
-    s32 unknown0FC;          ///< Profile word reset to zero; interpretation remains unresolved.
+    s32 deliveredVoiceMessageCount; ///< Voice messages delivered to Pikachu, also saved in progress.
 } PlayerControlPrefix;
 
 typedef char PlayerModeStateSizeCheck[(sizeof(PlayerModeState) == 0x58) ? 1 : -1];
@@ -107,6 +107,9 @@ typedef char PlayerCameraStartTargetOffsetCheck[(PLAYER_OFFSET(modeState.cameraS
 typedef char PlayerCameraEndTargetOffsetCheck[(PLAYER_OFFSET(modeState.cameraEndTarget) == 0xC4) ? 1 : -1];
 typedef char PlayerCameraRemainingOffsetCheck[(PLAYER_OFFSET(modeState.cameraRemaining) == 0xD0) ? 1 : -1];
 typedef char PlayerCameraDurationOffsetCheck[(PLAYER_OFFSET(modeState.cameraDuration) == 0xD4) ? 1 : -1];
+typedef char PlayerNameOffsetCheck[(PLAYER_OFFSET(profileName) == 0xE0) ? 1 : -1];
+typedef char PlayerVoiceCountOffsetCheck[(PLAYER_OFFSET(deliveredVoiceMessageCount) == 0xFC) ? 1 : -1];
 #undef PLAYER_OFFSET
+
 
 #endif

@@ -1,3 +1,4 @@
+#include "player_profile.h"
 #include "player_state.h"
 #include "audio_settings.h"
 #include "audio_control.h"

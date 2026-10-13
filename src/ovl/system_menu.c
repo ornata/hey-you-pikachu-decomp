@@ -1,3 +1,4 @@
+#include "player_profile.h"
 #include "player_state.h"
 #include "audio_settings.h"
 #include "audio_control.h"
@@ -1119,12 +1120,6 @@ void systemMenuAppendDaysDetails(void) {
     systemMenuAppendDetailText(buf);
 }
 
-/// Separate symbol view of the primary player profile points balance.
-/// \note Original identifier: \c D_800EF790 (0x800EF790).
-extern s32 gPlayerProfilePoints;
-/// Player status voice count, incremented when a messenger delivers to Pikachu.
-/// \note Original identifier: \c D_800EF79C (0x800EF79C).
-extern s32 gPlayerVoiceMessageCount;
 
 /// Append the player status title, points balance, and voice count to the menu details.
 /// Requires initialized player state and a friendship title of at most 46 bytes.

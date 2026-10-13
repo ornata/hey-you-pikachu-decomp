@@ -1,3 +1,4 @@
+#include "player_profile.h"
 #include "pikachu_actor.h"
 #include "math_angles.h"
 #include "random.h"
@@ -173,9 +174,6 @@ s32 actorScriptAddProfileCounter(u8 *actor) {
     return 0;
 }
 
-/// Player profile name string borrowed by actor scripts.
-/// \note Original identifier: \c D_800EF780 (0x800EF780).
-extern char gPlayerProfileName[];
 
 /// Provide the player profile name to the script.
 /// \param actor Actor whose script VM receives a borrowed reference to the current player-name string.

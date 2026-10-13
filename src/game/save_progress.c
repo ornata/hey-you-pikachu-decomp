@@ -1,3 +1,4 @@
+#include "player_profile.h"
 #include "audio_settings.h"
 #include "audio_control.h"
 #include "player_chase.h"
@@ -584,15 +585,6 @@ void progressLoadControlDataFromEeprom(void) {
     TRACE("pdLoadFCB_EEPROM: eepromWrite ans:%d\n", ans);
 }
 
-/// Separate symbol view of the primary player profile points balance.
-/// \note Original identifier: \c D_800EF790 (0x800EF790).
-extern s32 gPlayerProfilePoints;
-/// Separate symbol view of the primary player friendship-title level.
-/// \note Original identifier: \c D_800EF796 (0x800EF796).
-extern u8 gPlayerFriendshipLevel;
-/// Player status voice count, incremented when a messenger delivers to Pikachu.
-/// \note Original identifier: \c D_800EF79C (0x800EF79C).
-extern s32 gPlayerVoiceMessageCount;
 
 /// Captures current gameplay progress and requests that its save record be written to EEPROM.
 /// \param record Progress record index, one or two, each with a backup record.

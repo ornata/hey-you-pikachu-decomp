@@ -1,3 +1,4 @@
+#include "player_profile.h"
 #include "heap_initialize.h"
 #include "controller_service.h"
 #include "player_state.h"
@@ -303,7 +304,6 @@ void runtimeOsInfoReportNoOp(void) {
     TRACE("\n");
 }
 
-void playerResetProfile(void);
 void toolboxReset(void);
 void eyeCatchInitialize(void);
 void videoConfigureMode(OSViMode, s32, s32, s32);

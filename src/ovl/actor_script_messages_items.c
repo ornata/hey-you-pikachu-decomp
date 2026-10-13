@@ -1,3 +1,4 @@
+#include "player_profile.h"
 #include "microphone_query.h"
 #include "player_control.h"
 #include "player_state.h"
@@ -1240,9 +1241,6 @@ s32 actorScriptPushPlayerHeldItem(u8 *actor) {
     return 0;
 }
 
-/// Separate symbol view of the primary player friendship-title level.
-/// \note Original identifier: \c D_800EF796 (0x800EF796).
-extern u8 gPlayerFriendshipLevel;
 
 /// Read the current friendship level with Pikachu.
 /// \param actor Actor whose script VM receives the friendship level used for the friendship title.
@@ -1253,9 +1251,6 @@ s32 actorScriptPushFriendshipLevel(u8 *actor) {
     return 0;
 }
 
-/// Player status voice count, incremented when a messenger delivers to Pikachu.
-/// \note Original identifier: \c D_800EF79C (0x800EF79C).
-extern s32 gPlayerVoiceMessageCount;
 
 /// Read the number of voice messages delivered to Pikachu.
 /// \param actor Actor whose script VM receives the delivered voice-message count.
@@ -1295,9 +1290,6 @@ s32 actorScriptPushFacingErrorToPlayer(u8 *actor) {
     return 0;
 }
 
-/// Separate symbol view of the primary player profile points balance.
-/// \note Original identifier: \c D_800EF790 (0x800EF790).
-extern s32 gPlayerProfilePoints;
 
 /// Read the player profile points balance.
 /// \param actor Actor whose script VM receives the current points balance.
@@ -1320,7 +1312,6 @@ s32 actorScriptSetPlayerPoints(u8 *actor) {
     return 0;
 }
 
-s32 playerAddPoints(s32);  /* extern */
 
 /// Adjust the player profile points balance within its supported range.
 /// \param actor Actor whose script VM supplies a signed adjustment whose sum with the current balance fits a signed 32-bit value, and receives the resulting balance clamped to zero through 999999.
