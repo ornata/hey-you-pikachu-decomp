@@ -1,3 +1,4 @@
+#include "text_window.h"
 #include "message_bar.h"
 #include "item_size.h"
 #include "item_participation.h"
@@ -1365,9 +1366,6 @@ void toolboxFinishClosing(void) {
     }
 }
 
-void textWindowAppendText(char *);
-s32 textWindowOpen(s32, s32, s32);
-s32 textWindowShowFirstPage(void);
 void textWindowDeactivate(void);
 void toolboxConfirmItemTransfer(u8 *);
 /// Primary controller new and auto-repeated button presses; aliases the repeated word of the processed sample.
@@ -1427,10 +1425,10 @@ void toolboxHandleInput(void) {
                     kind = ((s8)gItemKinds[selected.id].itemClass);
                     sprintf(line, "%s%-22s^^%s\n", ((kind == 2) || (kind == 5)) ? "^^" : "^4",
                             itemGetDisplayName(selected.id, 1), itemGetClassLabelSuffix(selected.id));
-                    textWindowAppendText(line);
+                    textWindowAppendText((u8 *)line);
                 }
-                textWindowAppendText(selected.text);
-                textWindowAppendText(gToolboxDescriptionSuffixes[((s8)gItemKinds[selected.id].itemClass)]);
+                textWindowAppendText((u8 *)selected.text);
+                textWindowAppendText((u8 *)gToolboxDescriptionSuffixes[((s8)gItemKinds[selected.id].itemClass)]);
                 textWindowShowFirstPage();
                 toolboxSetMode((u8 *)&gToolboxState, 5);
             }

@@ -1,3 +1,4 @@
+#include "text_window.h"
 #include "message_bar.h"
 #include "story_chapter.h"
 #include "progress_storage.h"
@@ -1905,9 +1906,3 @@ void stringPrependBounded(s8 *, s32, s32); /* extern */
 extern s8 gActorScriptSharedTextBuffer;
 
 void scriptVmPushFloat(u8 *, s32); /* extern */
-
-
-
-void textWindowAppendText(s8 *);               /* extern */
-
-void textWindowEnterMode(); /* extern */

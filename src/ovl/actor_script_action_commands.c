@@ -1,3 +1,4 @@
+#include "text_window.h"
 #include "message_bar.h"
 #include "actor_target.h"
 #include "story_milestones.h"
@@ -403,7 +404,6 @@ s32 actorScriptSetMessageDuration(u8 *actor) {
     return SCRIPT_COMMAND_CONTINUE;
 }
 
-void textWindowAppendText(s8 *);         /* extern */
 
 /// Append script text to the text window.
 /// \param actor Actor whose script supplies a nonnegative string count as an instruction operand and that many stack strings; the combined text follows argument order, is limited to 79 characters, and its VM receives zero.
@@ -422,7 +422,7 @@ s32 actorScriptAppendWindowText(u8 *actor) {
             var_s0 -= 1;
         } while (var_s0 >= 0);
     }
-    textWindowAppendText(&gActorScriptSharedTextBuffer);
+    textWindowAppendText((u8 *)&gActorScriptSharedTextBuffer);
     scriptVmPushInteger(vmAddress, 0);
     return SCRIPT_COMMAND_CONTINUE;
 }
@@ -436,7 +436,6 @@ s32 actorScriptStartTextWindow(s32 actor) {
     return SCRIPT_COMMAND_WAIT_FOR_ACTION;
 }
 
-void textWindowEnterMode(); /* extern */
 /// Display pending text and enter the text-window game mode.
 /// \param actor Actor whose script VM receives zero after the mode is requested.
 /// \returns Zero, allowing script execution to continue.

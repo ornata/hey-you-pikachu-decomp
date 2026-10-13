@@ -3449,3 +3449,15 @@ and a `sizeof` stride independently failed the ROM gate. These matching
 constraints are recorded in the ledger. The display entry point now shares
 its documented declaration with both main-loop source units. Ghidra activation
 at `0x8002767C` confirms queue duration and copied text roles.
+
+### Text-window presentation interface
+
+`text_window.h` unifies open, append, first-page preparation and mode-entry
+declarations in the provider and all declaring consumers. Pending text is
+copied during append, with excess text discarded at the existing capacity;
+opening an active window is rejected. Page preparation reports whether another
+page remains, while mode entry displays the pending message. Byte-string casts
+at signed-text consumers preserve their established storage. Provider code and
+Ghidra opening at `0x8002C348` establish the contract; each consumer passed strict
+object comparison independently. Background drawing's separate legacy callback
+contract remains outside these four presentation operations.

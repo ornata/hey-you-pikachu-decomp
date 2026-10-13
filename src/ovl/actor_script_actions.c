@@ -1,3 +1,4 @@
+#include "text_window.h"
 #include "item_queries.h"
 #include "actor_held_item.h"
 #include "item_size.h"
@@ -396,7 +397,6 @@ s32 actorScriptTransformKind(u8 *object) {
     return SCRIPT_VM_YIELDED;
 }
 
-s32 textWindowOpen(s32, s32, s32); /* extern */
 
 /// Request a text window using the script-supplied indicator, style, and view mode.
 /// \param actor Actor whose script supplies the window settings.

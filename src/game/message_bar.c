@@ -1,3 +1,4 @@
+#include "text_window.h"
 #include "message_bar.h"
 #include "progress_value.h"
 #include "action_script_playback.h"
@@ -61,9 +62,6 @@ void presentationDrawCurrentCardPanels(Gfx **);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
-void textWindowAppendText(s32);                       /* extern */
-s32 textWindowOpen(s32, s32, s32); /* extern */
-s32 textWindowShowFirstPage();                          /* extern */
 /// Borrowed reference to the active Pikachu actor created for the current area.
 /// \note Original identifier: \c D_800760A8 (0x800760A8).
 extern s32 gPikachuActor;

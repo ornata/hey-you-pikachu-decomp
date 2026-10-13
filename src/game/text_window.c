@@ -1,3 +1,4 @@
+#include "text_window.h"
 #include "texture_animation_programs.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"

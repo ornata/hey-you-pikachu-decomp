@@ -1,3 +1,4 @@
+#include "text_window.h"
 #include "script_vm_globals.h"
 #include "object_types.h"
 #include "actor_script.h"
@@ -187,9 +188,6 @@ void presentationDrawCurrentCardPanels(Gfx **);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
-void textWindowAppendText(char *); /* extern */
-s32 textWindowOpen(s32, s32, s32); /* extern */
-s32 textWindowShowFirstPage();     /* extern */
 /// Borrowed reference to the active Pikachu actor created for the current area.
 /// \note Original identifier: \c D_800760A8 (0x800760A8).
 extern s32 gPikachuActor;
@@ -1077,7 +1075,7 @@ void presentationShowChapterFriendshipResult(void) {
     s32 value;
 
     textWindowOpen(2, 0, 0);
-    textWindowAppendText(gChapterFriendshipMessages[gPlayerFriendshipMilestone]);
+    textWindowAppendText((u8 *)gChapterFriendshipMessages[gPlayerFriendshipMilestone]);
     textWindowShowFirstPage();
     level = gPlayerFriendshipLevel;
     value = level;

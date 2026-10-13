@@ -1,3 +1,4 @@
+#include "text_window.h"
 #include "message_bar.h"
 #include "interaction_proxy.h"
 #include "interaction.h"
@@ -1142,9 +1143,6 @@ s32 playerTryActivateInteraction(u8 *player, u8 *controller) {
 }
 
 s32 playerPrepareInteractionDescription(PlayerControlPrefix *);
-s32 textWindowOpen(s32, s32, s32); /* extern */
-void textWindowAppendText(u8 *); /* extern */
-void textWindowEnterMode(void);      /* extern */
 /// First word of the shared 256-byte player help text buffer; storage continues through adjacent symbols.
 /// \note Original identifier: \c D_80133F20 (0x80133F20).
 extern u8 gPlayerHelpTextBuffer[4];
