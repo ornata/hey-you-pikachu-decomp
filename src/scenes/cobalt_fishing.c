@@ -1,3 +1,4 @@
+#include "runtime_control.h"
 #include "ambient_audio.h"
 #include "progress_value.h"
 #include "common.h"
@@ -6,7 +7,6 @@
 #include "scene_types.h"
 #include "fishing_population.h"
 u32 randomNext(void);
-void runtimeCheckResetCheckpoint(s32, s32);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
@@ -69,7 +69,7 @@ void cobaltFishingSpawnRandomResident(s32 residentIndex) {
         actorCreateForKind(selected, 93.0f, 5.0f, 35.0f, 0, 0,
                            ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
                            D_80142E90_scene_cobalt_fishing, residentIndex);
-        runtimeCheckResetCheckpoint((s32)D_80147C94_scene_cobalt_fishing, 1);
+        runtimeCheckResetCheckpoint((const char *)D_80147C94_scene_cobalt_fishing, 1);
     }
 }
 

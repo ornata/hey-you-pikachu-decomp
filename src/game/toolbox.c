@@ -1,3 +1,4 @@
+#include "runtime_control.h"
 #include "controller_input.h"
 #include "controller_rumble.h"
 #include "font_image.h"
@@ -1271,7 +1272,6 @@ void toolboxDrawFrame(s32 address) {
 /// Row requested when reopening the toolbox after a transition.
 /// \note Original identifier: \c D_800F1D1C (0x800F1D1C).
 extern s32 gToolboxRequestedRow;
-void runtimeRequestGameModeChange(s32);
 /// Open the toolbox display and prepare its selected row and held item.
 /// \param row Row to open: zero for Collection, one for Item Storage, or minus one to retain the current row.
 /// \param useHeld Nonzero to choose the row from the held item when an item is present, overriding the requested row.

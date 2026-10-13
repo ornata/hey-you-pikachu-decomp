@@ -1,3 +1,4 @@
+#include "runtime_control.h"
 #include "text_image_configurations.h"
 #include "text_window.h"
 #include "texture_animation_programs.h"
@@ -16,7 +17,6 @@
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-void runtimeRequestGameModeChange(s32);
 void playerSetControllerPort(s32);
 
 void _bzero(void *, s32);

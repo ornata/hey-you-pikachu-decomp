@@ -1,3 +1,4 @@
+#include "runtime_control.h"
 #include "controller_input.h"
 #include "audio_sound_effect.h"
 #include "text_image_configurations.h"
@@ -739,7 +740,6 @@ extern u8 *gCurrentAreaConfiguration;
 s32 eepromGetQueuedTransferState(void);
 s32 micIsDeviceConnected(s32);
 void runtimeRequestProgramChange(s32);
-void runtimeRequestGameModeChange(s32);
 void backdropSelectForView(s32, s32, s32);
 void titleScreenInitialize(void);
 void titleScreenResetLogoFade(void);

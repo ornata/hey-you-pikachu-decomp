@@ -1,3 +1,4 @@
+#include "runtime_control.h"
 #include "terrain_movement.h"
 #include "terrain_height.h"
 #include "terrain_surface.h"
@@ -1687,7 +1688,6 @@ s32 mazeClassifyNode(MazeNode *node) {
     return result;
 }
 
-void runtimeCheckResetCheckpoint(void *, s32);
 
 /// Build a maze region's descendants and models from the current area's configuration.
 /// \param node New maze node with initialized bounds and remaining depth.
@@ -2147,7 +2147,6 @@ void areaSetNextDestination(s32 area, s32 spawn) {
     gRuntimeNextEntrance = spawn;
 }
 
-void runtimeRequestGameModeChange(s32); /* extern */
 void areaSetNextDestination();           /* extern */
 /// Request a transition to the selected area and destination spawn.
 /// \param area Destination area identifier, wrapped through the 23 supported areas.

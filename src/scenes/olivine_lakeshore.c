@@ -1,3 +1,4 @@
+#include "runtime_control.h"
 #include "actor_color.h"
 #include "common.h"
 #include "actor_create.h"
@@ -6,7 +7,6 @@
 u32 randomNext(void);
 s32 randomBelow(s32);
 void doorRegistryReset(void);
-void runtimeCheckResetCheckpoint(s32, s32);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
@@ -156,7 +156,7 @@ void lakeshoreSpawnRandomResidents(void) {
 void lakeshoreInitializeObjects(void) {
     doorRegistryReset();
     lakeshoreInitializeProps();
-    runtimeCheckResetCheckpoint((s32)D_801420A4_scene_olivine_lakeshore, 1);
+    runtimeCheckResetCheckpoint((const char *)D_801420A4_scene_olivine_lakeshore, 1);
     lakeshoreSpawnResidentType3(D_8014145C_scene_olivine_lakeshore, 310.0f);
     lakeshoreSpawnRandomResidents();
     lakeshoreSpawnResidentType17(D_80141474_scene_olivine_lakeshore);

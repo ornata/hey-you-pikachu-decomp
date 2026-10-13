@@ -3842,3 +3842,11 @@ sample. Borrowed status pointers refer to the persistent per-port cache.
 repeat mask/timing, hold duration and standard-pad queries. The implementation
 and all five declared consumer units use the canonical contracts, including the
 world map formerly using an unprototyped stick-button configuration call.
+
+### Runtime transitions and reset checkpoints
+
+`runtime_control.h` shares game-mode transition and cooperative reset contracts
+between runtime and all twenty declared consumer units. Checkpoint labels use
+the established borrowed string-pointer contract instead of local integer or
+byte-pointer declarations. Labels and the reserved diagnostic argument remain
+unused in this build; a pending reset may halt execution at a permitted checkpoint.

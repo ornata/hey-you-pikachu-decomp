@@ -1,3 +1,4 @@
+#include "runtime_control.h"
 #include "maze_scatter.h"
 #include "story_chapter.h"
 #include "progress_fields.h"
@@ -18,7 +19,6 @@ extern f32 D_80157668_scene_springleaf_entrance[];
 u32 randomNext(void);
 s32 randomBelow(s32);
 f32 mathPowInteger(f32, s32);
-void runtimeCheckResetCheckpoint(u8 *, s32);
 typedef struct {
     u8 unknown[12];
     f32 scale;
@@ -171,7 +171,7 @@ void springleafEntranceInitializeObjects(void) {
     actorCreateForKind(0xA, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
                        ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale,
                        &D_8014E62C_scene_springleaf_entrance, 0);
-    runtimeCheckResetCheckpoint(&D_80158DE4_scene_springleaf_entrance, 1);
+    runtimeCheckResetCheckpoint((const char *)&D_80158DE4_scene_springleaf_entrance, 1);
     springleafEntrancePrepareEvolvedResidents();
     springleafEntranceResetCompletedGrowth();
     i = 0;

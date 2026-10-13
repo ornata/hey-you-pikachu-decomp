@@ -1,3 +1,4 @@
+#include "runtime_control.h"
 #include "controller_input.h"
 #include "controller_rumble.h"
 #include "audio_sound_effect.h"
@@ -1021,7 +1022,6 @@ void systemMenuUpdateAnimation(void) {
     }
 }
 
-void runtimeRequestGameModeChange(s32);                                 /* extern */
 void systemMenuSetPhase(s32 arg0);                                   /* extern */
 void systemMenuRefreshSelectedDetails(MenuState *arg0);                                   /* extern */
 void systemMenuRefreshItemDisplay(MenuState *);                                /* extern */

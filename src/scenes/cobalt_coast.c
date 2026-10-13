@@ -1,9 +1,9 @@
+#include "runtime_control.h"
 #include "ambient_audio.h"
 #include "common.h"
 #include "actor_create.h"
 
 void togepiCreate(f32, f32, f32, f32, f32, u8 *, s32);
-void runtimeCheckResetCheckpoint(s32, s32);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
@@ -127,7 +127,7 @@ void cobaltCoastInitializeObjects(void) {
     cobaltCoastSpawnResidentType18();
     cobaltCoastSpawnResidentType3();
     cobaltCoastSpawnResidentType4();
-    runtimeCheckResetCheckpoint((s32)D_80147674_scene_cobalt_coast, 1);
+    runtimeCheckResetCheckpoint((const char *)D_80147674_scene_cobalt_coast, 1);
     cobaltCoastSpawnResidentType1();
     cobaltCoastSpawnResidentType11();
     cobaltCoastSpawnFirstResidentType14();

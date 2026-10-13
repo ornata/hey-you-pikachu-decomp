@@ -1,9 +1,9 @@
+#include "runtime_control.h"
 #include "actor_color.h"
 #include "object_flags.h"
 #include "common.h"
 #include "actor_create.h"
 #include "scene_types.h"
-void runtimeCheckResetCheckpoint(u8 *, s32);
 /// Current area scenario index shared by actor scripts, scene population, cards and collection titles.
 /// \note Original identifier: \c D_800F0B70 (0x800F0B70).
 extern s32 gAreaScenarioIndex;
@@ -98,7 +98,7 @@ void creditsInitializeObjects(void) {
         creditsSpawnResidentType4();
         creditsSpawnResidentType5Group();
         creditsSpawnTintedResidentGroup();
-        runtimeCheckResetCheckpoint(D_801440C0_scene_credits, 1);
+        runtimeCheckResetCheckpoint((const char *)D_801440C0_scene_credits, 1);
         creditsSpawnResidentType17();
         creditsSpawnResidentType1();
         creditsSpawnResidentType3();

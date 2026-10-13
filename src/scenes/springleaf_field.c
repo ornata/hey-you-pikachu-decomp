@@ -1,3 +1,4 @@
+#include "runtime_control.h"
 #include "maze_scatter.h"
 #include "story_chapter.h"
 #include "progress_fields.h"
@@ -116,7 +117,6 @@ void springleafFieldResetCompletedGrowth(void) {
 }
 
 s32 randomBelow(s32);
-void runtimeCheckResetCheckpoint(u8 *, s32);
 typedef struct {
     s32 used[27];
 } FieldOccupancy;
@@ -149,7 +149,7 @@ void springleafFieldInitializeObjects(void) {
     }
     actorCreateForKind(10, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->scale,
                        D_8014E354_scene_springleaf_field, 0);
-    runtimeCheckResetCheckpoint(D_80159474_scene_springleaf_field, 1);
+    runtimeCheckResetCheckpoint((const char *)D_80159474_scene_springleaf_field, 1);
     springleafFieldPrepareEvolvedResidents();
     springleafFieldResetCompletedGrowth();
     if (progressGetValue(0x4F) == 0) {

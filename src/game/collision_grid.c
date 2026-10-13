@@ -1,3 +1,4 @@
+#include "runtime_control.h"
 #include "keyed_pool.h"
 #include "object_types.h"
 #include "collision_registration.h"
@@ -16,7 +17,6 @@
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-void runtimeRequestGameModeChange(s32);
 void playerSetControllerPort(s32);
 
 u32 randomNext(void);

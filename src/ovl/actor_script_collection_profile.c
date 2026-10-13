@@ -1,3 +1,4 @@
+#include "runtime_control.h"
 #include "wisp_effect.h"
 #include "effect_emitter.h"
 #include "object_transform.h"
@@ -85,7 +86,6 @@ s32 actorScriptEnableElapsedTimeTint(u8 *actor) {
     return 0;
 }
 
-void runtimeRequestGameModeChange(s32); /* extern */
 /// Request the transition to collection results for a completed game.
 /// \param actor Actor whose script VM receives zero after the transition is requested.
 /// \returns One, yielding script execution.

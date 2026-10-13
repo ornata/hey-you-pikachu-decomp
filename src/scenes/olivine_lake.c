@@ -1,3 +1,4 @@
+#include "runtime_control.h"
 #include "actor_color.h"
 #include "common.h"
 #include "actor_create.h"
@@ -6,7 +7,6 @@
 u32 randomNext(void);
 s32 randomBelow(s32);
 void doorRegistryReset(void);
-void runtimeCheckResetCheckpoint(s32, s32);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
@@ -189,7 +189,7 @@ void olivineLakeInitializeObjects(void) {
     doorRegistryReset();
     olivineLakeCreateRandomizedGroupProps();
     olivineLakeCreatePropArrangement();
-    runtimeCheckResetCheckpoint((s32)D_80142304_scene_olivine_lake, 1);
+    runtimeCheckResetCheckpoint((const char *)D_80142304_scene_olivine_lake, 1);
     olivineLakeSpawnResidentType13((f32 *)&a, 227.0f);
     olivineLakeSpawnResidentType17((f32 *)&b);
     olivineLakeSpawnRandomResidentGroup();

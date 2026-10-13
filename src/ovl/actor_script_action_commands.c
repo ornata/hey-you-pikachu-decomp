@@ -1,3 +1,4 @@
+#include "runtime_control.h"
 #include "text_window.h"
 #include "message_bar.h"
 #include "actor_target.h"
@@ -36,7 +37,6 @@ struct {
 
 void systemMenuPopHistory(); /* extern */
 
-void runtimeRequestGameModeChange(s32);               /* extern */
 void backdropSelectForView(s32, s32, s32); /* extern */
 void systemMenuExit();                      /* extern */
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.

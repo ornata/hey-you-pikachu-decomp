@@ -1,3 +1,4 @@
+#include "runtime_control.h"
 #include "maze_scatter.h"
 #include "story_chapter.h"
 #include "progress_fields.h"
@@ -17,7 +18,6 @@ extern f32 D_80157DBC_scene_oddish_meadow[];
 u32 randomNext(void);
 s32 randomBelow(s32);
 f32 mathPowInteger(f32, s32);
-void runtimeCheckResetCheckpoint(u8 *, s32);
 typedef struct {
     u8 unk0[12];
     f32 scale;
@@ -174,7 +174,7 @@ void oddishMeadowInitializeRegularObjects(void) {
                        (f32)((f64)headingRandomBits * 2.3283064365386963e-10 * D_80159480_scene_oddish_meadow),
                        (f32)(((f64)((f32)growthProgress / 5.0f) + 1.0) * (f64)gCurrentAreaConfiguration->scale), var_s0,
                        5);
-    runtimeCheckResetCheckpoint(&D_80159404_scene_oddish_meadow, 1);
+    runtimeCheckResetCheckpoint((const char *)&D_80159404_scene_oddish_meadow, 1);
     oddishMeadowPrepareEvolvedResidents();
     oddishMeadowResetCompletedGrowth();
     i = 0;

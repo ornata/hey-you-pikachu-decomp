@@ -1,3 +1,4 @@
+#include "runtime_control.h"
 #include "controller_input.h"
 #include "controller_rumble.h"
 #include "microphone_requests.h"
@@ -239,8 +240,6 @@ void hudInitialize();        /* extern */
 void randomSeedFromSystem();        /* extern */
 void runtimeAccumulatePlayTime(void);
 void runtimeShutdownAndHalt(void);
-void runtimeRequestGameModeChange(s32);
-void runtimeCheckResetCheckpoint(const char *, s32);
 void runtimeMainThreadEntry(void *);
 /// Write cursor for the active graphics command list; also marks the camera-storage end.
 /// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).

@@ -1,3 +1,4 @@
+#include "runtime_control.h"
 #include "controller_rumble.h"
 #include "terrain_movement.h"
 #include "terrain_height.h"
@@ -222,7 +223,6 @@ void areaUpdateNodeVisibility(s32); /* extern */
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;
 
-void runtimeRequestGameModeChange(s32); /* extern */
 
 /// Set both the current and saved player control permissions.
 /// \param player Player record receiving the permissions.

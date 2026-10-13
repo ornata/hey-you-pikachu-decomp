@@ -1,3 +1,4 @@
+#include "runtime_control.h"
 #include "controller_rumble.h"
 #include "text_image_configurations.h"
 #include "text_window.h"
@@ -546,7 +547,6 @@ void presentationDrawCardScreen(Gfx **gdl) {
     }
 }
 
-void runtimeRequestGameModeChange(s32);
 void hudSetAreaLabelVisible(s32);
 void presentationPrepareActiveActor(void *);
 void backdropSelectForView(s32, s32, s32);
