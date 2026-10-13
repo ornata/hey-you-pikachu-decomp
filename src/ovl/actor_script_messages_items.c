@@ -1,3 +1,4 @@
+#include "audio_sound_effect.h"
 #include "player_profile.h"
 #include "microphone_query.h"
 #include "player_control.h"
@@ -763,7 +764,6 @@ s32 actorScriptRequestMicDictionary(u8 *actor) {
 /// Query the requested voice dictionary.
 /// \param actor Actor whose script VM receives an unspecified legacy result from the dictionary query.
 /// \returns Zero, allowing script execution to continue.
-/// \note Portability/UB: The helper is defined as void but declared as returning an integer here; its consumed result is unspecified.
 /// \note Original decompilation identifier: \c func_8011D610 (0x8011D610).
 s32 actorScriptQueryRequestedMicDictionary(u8 *actor) {
     s32 sp1C;
@@ -857,7 +857,6 @@ s32 actorScriptPlayTrackedSound(u8 *actor) {
     return 0;
 }
 
-s32 audioPlaySoundEffect(s32);  /* extern */
 
 /// Start a sound effect from the loaded sound bank.
 /// \param actor Actor whose script VM supplies a valid index in the initialized sound bank and receives the playback identifier, or zero if no slot is available.
@@ -871,12 +870,10 @@ s32 actorScriptPlaySoundEffect(u8 *actor) {
     return 0;
 }
 
-s32 audioSetSoundEffectPan(s32, s32); /* extern */
 
 /// Adjust the stereo position of a playing sound effect.
-/// \param actor Actor whose script VM supplies a playback identifier followed by a pan value from 0 (left) to 255 (right), and receives an unspecified legacy result.
+/// \param actor Actor whose script VM supplies a playback identifier followed by a pan value from 0 (left) to 255 (right), and receives the number of matching sound-effect slots updated.
 /// \returns Zero, allowing script execution to continue.
-/// \note Portability/UB: The helper is defined as void but declared as returning an integer here; its consumed result is unspecified.
 /// \note Original decompilation identifier: \c func_8011D870 (0x8011D870).
 s32 actorScriptSetSoundEffectPan(u8 *actor) {
     s32 vmAddress;
@@ -890,12 +887,10 @@ s32 actorScriptSetSoundEffectPan(u8 *actor) {
     return 0;
 }
 
-s32 audioSetSoundEffectVolume(s32, s32); /* extern */
 
 /// Adjust the volume of a playing sound effect.
-/// \param actor Actor whose script VM supplies a playback identifier followed by a volume in units of 1/128 of the original volume, and receives an unspecified legacy result.
+/// \param actor Actor whose script VM supplies a playback identifier followed by a volume in units of 1/128 of the original volume, and receives the number of matching sound-effect slots updated.
 /// \returns Zero, allowing script execution to continue.
-/// \note Portability/UB: The helper is defined as void but declared as returning an integer here; its consumed result is unspecified.
 /// \note Original decompilation identifier: \c func_8011D8C0 (0x8011D8C0).
 s32 actorScriptSetSoundEffectVolume(u8 *actor) {
     s32 vmAddress;

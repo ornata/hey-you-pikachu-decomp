@@ -181,11 +181,11 @@ s32 actorPostScriptMessage(s32 obj, ScriptMessage msg, s32 force) {
 
 /// Attempt to notify an actor script of an item impact and its speed.
 /// An already pending message prevents delivery.
-/// \param actor Address of the actor receiving the impact message.
-/// \param item Item whose identity and motion describe the impact.
-/// \returns Nothing.
+/// \param actor Borrowed actor receiving the impact message.
+/// \param item Initialized item whose impact speed is finite and representable as s32.
+/// \returns One when the message is accepted, or zero when another message is pending.
 /// \note Original decompilation identifier: \c func_80118EE8 (0x80118EE8).
-void actorPostItemImpactMessage(s32 actor, u8 *item) {
+s32 actorPostItemImpactMessage(u8 *actor, u8 *item) {
     u8 *state;
     ScriptMessage msg;
     f32 dir[3];
@@ -200,7 +200,7 @@ void actorPostItemImpactMessage(s32 actor, u8 *item) {
     msg.arg2 = vector3Length(dir);
     msg.arg3 = 0;
     msg.arg4 = ((RuntimeObjectPrefix *)item)->handle;
-    actorPostScriptMessage(actor, msg, 0);
+    return actorPostScriptMessage((s32)actor, msg, 0);
 }
 
 

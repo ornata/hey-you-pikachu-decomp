@@ -314,7 +314,6 @@ void itemPlayImpactSounds(u8 *object, s32 contactFlags, s32 surface) {
 /// Separate terrain-collision callback view of the item catalog, with a 116-byte stride.
 /// \note Original identifier: \c D_80125A90 (0x80125A90).
 extern u8 gItemKindCollisionCallbackEntries[];
-s32 actorPostItemImpactMessage();
 s32 areaDispatchPositionEvent(f32 *, s32);
 
 /// Handle item contact and invoke its kind-specific collision response.
@@ -323,7 +322,6 @@ s32 areaDispatchPositionEvent(f32 *, s32);
 /// \pre An active actor must be available for actor-contact notifications.
 /// \returns The kind-specific callback result, or one when no callback is installed.
 ///
-/// \note NONPORTABLE: the impact-message call retains its legacy implicit-int declaration although the callee returns void; this preserves the original register-clobber contract.
 /// \note Original decompilation identifier: \c func_80122184 (0x80122184).
 s32 itemDispatchCollisionResponse(u8 *object, s32 flags) {
     u8 *state;

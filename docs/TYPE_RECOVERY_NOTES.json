@@ -8,9 +8,6 @@
       "actionScriptStop callers": "The return is now the established borrowed s32 * script-identifier field. Canonical header adoption and removal of the unused presentation-state argument changes presentationRestoreActiveActor and fails the ROM gate in a forced rebuild. Keep the unprototyped argument view pending call setup/scheduling evidence.",
       "hierarchy flag calls": "Including object_flags.h preserves final ROM bytes but changes allocated bytes in presentationPrepareActiveActor through its formerly implicit flag-set call, including with an explicit actor-pointer cast. Retain the local clear declaration and flag-set call representation pending strict object scheduling/relocation evidence."
     },
-    "src/game/eye_catch.c": {
-      "eyeCatchUpdatePlayback": "Retain local audioPlaySoundEffect(s16) and audioSetSoundEffectVolume returning s32 declarations: adopting canonical s32 sound IDs and the void volume setter changes ROM bytes. Isolate each signature before retrying canonical-header adoption."
-    },
     "src/ovl/player_companion.c": {
       "playerUpdateNormalControl": "All placeholder fields are recovered. One angle read uses a checked member offset because direct members reverse the IDO floating add operands; the resulting object matches.",
       "playerUpdateStationaryLook": "All placeholder fields are recovered. One angle read uses a checked member offset because direct members reverse the IDO floating add operands; the resulting object matches.",
@@ -68,9 +65,7 @@
       "actorScriptPushSelfHandle": "scriptVmPushInteger returns void. An unprototyped compatibility declaration retains this caller's unused third actor argument; a two-argument prototype rejects the retained call."
     },
     "src/ovl/actor_script_messages_items.c": {
-      "scriptVmPushInteger calls": "The mailbox acknowledgement command supplies an unused third actor argument; a void compatibility declaration retains the original argument setup.",
-      "actorScriptSetSoundEffectPan": "The VM handlers push the return register of audioSetSoundEffectPan and audioSetSoundEffectVolume, whose definitions return void. Local s32 declarations preserve the original ABI-dependent behavior. A shared void declaration does not compile here; resolve the original return-register contract before changing these handlers.",
-      "actorScriptSetSoundEffectVolume": "The VM handlers push the return register of audioSetSoundEffectPan and audioSetSoundEffectVolume, whose definitions return void. Local s32 declarations preserve the original ABI-dependent behavior. A shared void declaration does not compile here; resolve the original return-register contract before changing these handlers."
+      "scriptVmPushInteger calls": "The mailbox acknowledgement command supplies an unused third actor argument; a void compatibility declaration retains the original argument setup."
     },
     "src/ovl/actor_script_action_commands.c": {
       "scriptVmPushInteger calls": "A native command supplies an unused third actor argument; a void compatibility declaration retains the original argument setup."

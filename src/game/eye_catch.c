@@ -1,3 +1,4 @@
+#include "audio_sound_effect.h"
 #include "audio_control.h"
 #include "game_heap.h"
 #include "texture_image.h"
@@ -290,8 +291,6 @@ s32 eyeCatchStartReveal(void) {
     return 1;
 }
 
-s32 audioPlaySoundEffect(s16);                   /* extern */
-s32 audioSetSoundEffectVolume(s32, s32);         /* extern */
 /// Randomized sound choices for the eye-catch entry audio event.
 /// \note Original identifier: \c D_8009C384 (0x8009C384).
 extern s16 gEyeCatchEntrySoundChoices[];

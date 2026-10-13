@@ -162,6 +162,14 @@ typedef struct ActorScriptObject {
 /// \returns One when accepted, or zero when an unread message prevents delivery.
 s32 actorPostScriptMessage(s32 actorAddress, ScriptMessage message, s32 force);
 
+/// Notify an actor script of an item's impact without replacing an unread message.
+/// \param actor Borrowed actor with initialized script/mailbox state.
+/// \param item Borrowed initialized item whose impact speed is finite and representable as s32.
+/// \returns One when the message is accepted, or zero when another message is pending.
+/// No ownership of the item is transferred.
+/// \note Original decompilation identifier: \c func_80118EE8 (0x80118EE8).
+s32 actorPostItemImpactMessage(u8 *actor, u8 *item);
+
 /// Acknowledge an actor's pending script message without erasing its contents.
 /// \param actor Actor whose notification is cleared.
 /// \returns The previous pending-message flag.

@@ -1626,6 +1626,7 @@
         "asset_loader.h",
         "audio_control.h",
         "audio_cue.h",
+        "audio_sound_effect.h",
         "camera_overlay.h",
         "controller_rumble.h",
         "game_heap.h",
@@ -1638,47 +1639,45 @@
         "texture_image.h",
         "texture_rectangles.h"
       ],
-      "matching_exceptions": {
-        "eyeCatchUpdatePlayback": "Retain local audioPlaySoundEffect(s16) and audioSetSoundEffectVolume returning s32 declarations: adopting canonical s32 sound IDs and the void volume setter changes ROM bytes. Isolate each signature before retrying canonical-header adoption."
-      },
+      "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "gEyeCatchProjectionMatrix + 0x80000000": [
-            "210:33"
-          ],
-          "gEyeCatchModelViewMatrix + 0x80000000": [
             "211:33"
           ],
-          "gEyeCatchBackdropVertices + 0x80000000": [
+          "gEyeCatchModelViewMatrix + 0x80000000": [
             "212:33"
           ],
+          "gEyeCatchBackdropVertices + 0x80000000": [
+            "213:33"
+          ],
           "var_s0 + 0xC": [
-            "232:66"
+            "233:66"
           ],
           "var_s0 + 0x18": [
-            "234:66"
+            "235:66"
           ],
           "var_s0 + 0x24": [
-            "236:66"
+            "237:66"
           ],
           "var_s0 + 0x30": [
-            "238:66"
-          ],
-          "var_s0 + 0x3C": [
             "239:66"
           ],
+          "var_s0 + 0x3C": [
+            "240:66"
+          ],
           "return -10": [
-            "353:5"
+            "352:5"
           ],
           "return -0xA": [
-            "367:5"
+            "366:5"
           ],
           "return -0x14": [
-            "375:5"
+            "374:5"
           ],
           "column + 2": [
-            "439:46",
-            "443:47"
+            "438:46",
+            "442:47"
           ]
         }
       }
@@ -4217,6 +4216,7 @@
         "actor_target.h",
         "attached_effect.h",
         "audio_cue.h",
+        "audio_sound_effect.h",
         "item_search.h",
         "microphone_query.h",
         "microphone_requests.h",
@@ -4238,17 +4238,15 @@
         "vector_metrics.h"
       ],
       "matching_exceptions": {
-        "scriptVmPushInteger calls": "The mailbox acknowledgement command supplies an unused third actor argument; a void compatibility declaration retains the original argument setup.",
-        "actorScriptSetSoundEffectPan": "The VM handlers push the return register of audioSetSoundEffectPan and audioSetSoundEffectVolume, whose definitions return void. Local s32 declarations preserve the original ABI-dependent behavior. A shared void declaration does not compile here; resolve the original return-register contract before changing these handlers.",
-        "actorScriptSetSoundEffectVolume": "The VM handlers push the return register of audioSetSoundEffectPan and audioSetSoundEffectVolume, whose definitions return void. Local s32 declarations preserve the original ABI-dependent behavior. A shared void declaration does not compile here; resolve the original return-register contract before changing these handlers."
+        "scriptVmPushInteger calls": "The mailbox acknowledgement command supplies an unused third actor argument; a void compatibility declaration retains the original argument setup."
       },
       "locations": {
         "raw_offset_candidates": {
           "actor + 0xC": [
-            "659:38"
+            "660:38"
           ],
           "gPlayerCompanionTarget - 0x50": [
-            "1338:57"
+            "1333:57"
           ]
         }
       }
@@ -4866,25 +4864,25 @@
             "183:64"
           ],
           "object + 0x44": [
-            "442:51"
+            "440:51"
           ],
           "bounceCount - 1U": [
-            "455:98"
+            "453:98"
           ],
           "wriggleAngle + 360": [
-            "591:114"
+            "589:114"
           ],
           "wriggleAngle - 360": [
-            "596:114"
+            "594:114"
           ],
           "spinSpeed + 360": [
-            "607:87"
+            "605:87"
           ],
           "spinSpeed - 360": [
-            "612:87"
+            "610:87"
           ],
           "object + 0x54": [
-            "671:23"
+            "669:23"
           ]
         }
       }

@@ -4476,3 +4476,18 @@ points word at 0xF0, and delivered voice-message count at 0xFC. Profile reset at
 record field three corroborate those roles. The previous unresolved fields are now
 profileName and deliveredVoiceMessageCount, with target offset checks. All eleven
 edited source units preserve strict baseline objects and clean retail ROM bytes.
+
+### Impact delivery and sound-effect setter results
+
+actorPostItemImpactMessage now accepts an actor pointer and explicitly returns the
+mailbox acceptance result. ROM at 0x80118F94 leaves actorPostScriptMessage's v0 intact;
+Ghidra's void inference at 0x80118EE8 did not describe the complete contract.
+The shared actor-script declaration removes the item-physics legacy call view.
+
+Likewise, sound-effect volume and pan wrappers explicitly return the underlying
+player's updated-slot count. ROM calls at 0x8001FE94 and 0x8001FEE4 preserve those
+results. VM setters share audio_sound_effect.h and document their actual script
+results. With the corrected return contracts, eye-catch also adopts the complete
+canonical header and s32 sound IDs while preserving strict objects. Three obsolete
+matching exceptions and stale unspecified-result notes are removed. All five edited
+source units and dependent headers preserve clean retail ROM bytes.
