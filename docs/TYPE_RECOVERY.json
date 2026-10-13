@@ -51,9 +51,9 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 2017,
-      "unique_spellings": 840,
-      "files": 76
+      "occurrences": 2010,
+      "unique_spellings": 839,
+      "files": 75
     }
   },
   "policies": {
@@ -1201,46 +1201,6 @@
           ],
           "end + 0x14": [
             "1329:22"
-          ]
-        }
-      }
-    },
-    "src/game/ambient_audio.c": {
-      "known_views": [
-        "audio_cue.h",
-        "audio_playback_query.h",
-        "audio_spatial.h",
-        "camera_types.h",
-        "heap_alloc.h",
-        "heap_free.h",
-        "object_create.h",
-        "object_lifecycle.h",
-        "object_types.h",
-        "vector3_types.h"
-      ],
-      "matching_exceptions": {},
-      "locations": {
-        "raw_offset_candidates": {
-          "obj + 0x36": [
-            "219:14"
-          ],
-          "obj + 0x18": [
-            "221:14"
-          ],
-          "obj + 0x1C": [
-            "222:14"
-          ],
-          "obj + 0x20": [
-            "223:14"
-          ],
-          "obj + 0x44": [
-            "224:14"
-          ],
-          "obj + 0x48": [
-            "225:14"
-          ],
-          "obj + 0x4C": [
-            "226:14"
           ]
         }
       }

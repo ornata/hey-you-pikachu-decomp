@@ -18,9 +18,9 @@ extern HpHdr gGameHeap;
 /* One source line on purpose: IDO schedules per line, and the ROM's
  * register order only comes out when the three copies share one. */
 #define VEC3F_COPY(dst, src)                                                                                           \
-    (dst).x = (src).x;                                                                                                 \
-    (dst).y = (src).y;                                                                                                 \
-    (dst).z = (src).z
+    (dst)[0] = (src)[0];                                                                                                 \
+    (dst)[1] = (src)[1];                                                                                                 \
+    (dst)[2] = (src)[2]
 /// Playback routing selected by an ambient emitter.
 typedef enum AmbientAudioPlaybackKind {
     AMBIENT_AUDIO_SOUND_EFFECT = 0, ///< Start an individual sound effect.
@@ -55,14 +55,6 @@ AMBIENT_STATE_OFFSET_CHECK(count, 0x1C);
 AMBIENT_STATE_OFFSET_CHECK(src, 0x20);
 AMBIENT_STATE_OFFSET_CHECK(timer, 0x24);
 #undef AMBIENT_STATE_OFFSET_CHECK
-typedef struct {
-    u8 pad0[0x18];
-    Vec3f pos;
-    u8 pad24[0x20];
-    Vec3f prev;
-    u8 pad50[4];
-    AmbientAudioState *ext;
-} Obj347D0;
 void audioSetSoundEffectVolume(s32, s32);
 void audioSetSoundEffectPan(s32, s32);
 u32 randomNext(void);
@@ -141,13 +133,13 @@ extern f32 gRuntimeFrameSeconds;
 /// \param obj Ambient emitter object to update.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80033F20 (0x80033F20).
-void ambientAudioUpdate(Obj347D0 *obj) {
+void ambientAudioUpdate(RuntimeObjectPrefix *obj) {
     AmbientAudioState *ext;
-    s32 sp28;
-    s32 sp24;
+    s32 volume;
+    s32 pan;
 
-    ext = obj->ext;
-    VEC3F_COPY(obj->prev, obj->pos);
+    ext = obj->state.pointer;
+    VEC3F_COPY(obj->worldPosition, obj->position);
     ext->timer -= gRuntimeFrameSeconds;
     if (ext->timer <= 0.0f) {
         ambientAudioPlayNextSound(ext);
@@ -158,9 +150,9 @@ void ambientAudioUpdate(Obj347D0 *obj) {
             return;
         }
         if (ext->count > 0 && ext->src != NULL) {
-            ambientAudioGetSpatialMix(ext, &sp28, &sp24);
-            audioSetSoundEffectPan(ext->voice, sp24);
-            audioSetSoundEffectVolume(ext->voice, sp28);
+            ambientAudioGetSpatialMix(ext, &volume, &pan);
+            audioSetSoundEffectPan(ext->voice, pan);
+            audioSetSoundEffectVolume(ext->voice, volume);
         }
     }
 }
@@ -172,13 +164,13 @@ void _bzero(u8 *, s32);
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80033FF4 (0x80033FF4).
 void ambientAudioInitialize(u8 *object) {
-    u8 *sp1C;
+    AmbientAudioState *state;
 
-    sp1C = heapAllocLocal(&gGameHeap, 0x28, 0x8E);
-    _bzero(sp1C, 0x28);
-    ((AmbientAudioState *)sp1C)->count = 1;
-    ((AmbientAudioState *)sp1C)->src = (Vec3f *)((RuntimeObjectPrefix *)object)->position;
-    ((RuntimeObjectPrefix *)object)->state.bytes = sp1C;
+    state = heapAllocLocal(&gGameHeap, sizeof(AmbientAudioState), 0x8E);
+    _bzero((u8 *)state, sizeof(AmbientAudioState));
+    state->count = 1;
+    state->src = (Vec3f *)((RuntimeObjectPrefix *)object)->position;
+    ((RuntimeObjectPrefix *)object)->state.pointer = state;
 }
 
 /// Stop an ambient emitter and release its state.
@@ -216,14 +208,14 @@ u8 *ambientAudioCreate(f32 *position, s32 kind, f32 delay, f32 delayRange, s32 f
     u8 *obj = objectCreateFromTemplate((ObjectTemplate *)gAmbientAudioEmitterTemplate);
     AmbientAudioState *fx;
 
-    *(u16 *)(obj + 0x36) |= 0x100;
+    ((RuntimeObjectPrefix *)obj)->flags |= 0x100;
     fx = ((RuntimeObjectPrefix *)obj)->state.pointer;
-    *(f32 *)(obj + 0x18) = position[0];
-    *(f32 *)(obj + 0x1C) = position[1];
-    *(f32 *)(obj + 0x20) = position[2];
-    *(f32 *)(obj + 0x44) = position[0];
-    *(f32 *)(obj + 0x48) = position[1];
-    *(f32 *)(obj + 0x4C) = position[2];
+    ((RuntimeObjectPrefix *)obj)->position[0] = position[0];
+    ((RuntimeObjectPrefix *)obj)->position[1] = position[1];
+    ((RuntimeObjectPrefix *)obj)->position[2] = position[2];
+    ((RuntimeObjectPrefix *)obj)->worldPosition[0] = position[0];
+    ((RuntimeObjectPrefix *)obj)->worldPosition[1] = position[1];
+    ((RuntimeObjectPrefix *)obj)->worldPosition[2] = position[2];
     fx->playbackKind = kind;
     fx->delay = delay;
     fx->delayRange = delayRange;
