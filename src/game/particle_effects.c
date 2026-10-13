@@ -32,6 +32,10 @@ typedef struct EffectEmitterState {
 } EffectEmitterState;
 
 typedef char EffectEmitterStateSizeCheck[(sizeof(EffectEmitterState) == 0x18) ? 1 : -1];
+typedef char EffectEmitterTargetOffsetCheck[(((u32) & ((EffectEmitterState *)0)->targetHandle) == 4) ? 1 : -1];
+typedef char EffectEmitterReferenceOffsetCheck[(((u32) & ((EffectEmitterState *)0)->referenceHandle) == 8) ? 1 : -1];
+typedef char EffectEmitterOffsetOffsetCheck[(((u32) & ((EffectEmitterState *)0)->offset) == 0xC) ? 1 : -1];
+typedef char EffectEmitterCooldownOffsetCheck[(((u32) & ((EffectEmitterState *)0)->cooldown) == 0x10) ? 1 : -1];
 typedef char EffectEmitterCallbackOffsetCheck[((u32)&((EffectEmitterState *)0)->emit == 0x14) ? 1 : -1];
 
 u32 randomBelow(s32);
@@ -808,11 +812,11 @@ s32 particleClusterCreateDisplayList(s32 count) {
 void effectEmitterEmitBlackWisps(u8 *emitter) {
     u8 *obj;
 
-    obj = *(u8 **)(emitter + 0x54);
+    obj = ((RuntimeObjectPrefix *)emitter)->state.bytes;
     if (((EffectEmitterState *)obj)->cooldown == 0.0f) {
         ((EffectEmitterState *)obj)->cooldown =
             (f32)(((f64)randomNext() * 2.3283064365386963e-10 * 0.10000000149011612) + 0.10000000149011612);
-        wispEffectCreate(2, *(f32 *)(emitter + 0x44), *(f32 *)(emitter + 0x48), *(f32 *)(emitter + 0x4C));
+        wispEffectCreate(2, ((RuntimeObjectPrefix *)emitter)->worldPosition[0], ((RuntimeObjectPrefix *)emitter)->worldPosition[1], ((RuntimeObjectPrefix *)emitter)->worldPosition[2]);
     }
 }
 
@@ -823,11 +827,11 @@ void effectEmitterEmitBlackWisps(u8 *emitter) {
 void effectEmitterEmitWhiteWisps(u8 *emitter) {
     u8 *obj;
 
-    obj = *(u8 **)(emitter + 0x54);
+    obj = ((RuntimeObjectPrefix *)emitter)->state.bytes;
     if (((EffectEmitterState *)obj)->cooldown == 0.0f) {
         ((EffectEmitterState *)obj)->cooldown =
             (f32)(((f64)randomNext() * 2.3283064365386963e-10 * 0.6000000238418579) + 0.800000011920929);
-        wispEffectCreate(5, *(f32 *)(emitter + 0x44), *(f32 *)(emitter + 0x48), *(f32 *)(emitter + 0x4C));
+        wispEffectCreate(5, ((RuntimeObjectPrefix *)emitter)->worldPosition[0], ((RuntimeObjectPrefix *)emitter)->worldPosition[1], ((RuntimeObjectPrefix *)emitter)->worldPosition[2]);
     }
 }
 
@@ -839,14 +843,14 @@ void effectEmitterEmitScatteredParticles(u8 *emitter) {
     u8 *v;
     s32 n;
 
-    v = *(u8 **)(emitter + 0x54);
+    v = ((RuntimeObjectPrefix *)emitter)->state.bytes;
     if (((EffectEmitterState *)v)->cooldown == 0.0f) {
         ((EffectEmitterState *)v)->cooldown =
             (f64)randomNext() * 2.3283064365386963e-10 * 0.009999999776482582 + 0.009999999776482582;
         for (n = randomBelow(3); n != 0; n--) {
-            wispEffectCreate(3, *(f32 *)(emitter + 0x44) + ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * 5.0,
-                          *(f32 *)(emitter + 0x48),
-                          *(f32 *)(emitter + 0x4C) + ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * 5.0);
+            wispEffectCreate(3, ((RuntimeObjectPrefix *)emitter)->worldPosition[0] + ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * 5.0,
+                          ((RuntimeObjectPrefix *)emitter)->worldPosition[1],
+                          ((RuntimeObjectPrefix *)emitter)->worldPosition[2] + ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * 5.0);
         }
     }
 }
@@ -867,7 +871,7 @@ void effectEmitterEmitAudibleBurst(u8 *emitter) {
     s32 kind;
     s32 i;
 
-    state = *(u8 **)(emitter + 0x54);
+    state = ((RuntimeObjectPrefix *)emitter)->state.bytes;
     if (((EffectEmitterState *)state)->cooldown == 0.0f) {
         n = randomBelow(3);
         ((EffectEmitterState *)state)->cooldown =
@@ -911,13 +915,13 @@ void effectEmitterEmitColoredParticle(u8 *emitter, f32 intervalRange, f32 minimu
     u8 *e;
     f32 half;
 
-    v = *(u8 **)(emitter + 0x54);
+    v = ((RuntimeObjectPrefix *)emitter)->state.bytes;
     if (((EffectEmitterState *)v)->cooldown == 0.0f) {
         ((EffectEmitterState *)v)->cooldown = (f64)randomNext() * 2.3283064365386963e-10 * intervalRange + minimumInterval;
         half = 0.5f * spread;
-        e = wispEffectCreate(2, *(f32 *)(emitter + 0x44) + ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * spread,
-                          *(f32 *)(emitter + 0x48) + (f64)randomNext() * 2.3283064365386963e-10 * half,
-                          *(f32 *)(emitter + 0x4C) + ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * spread);
+        e = wispEffectCreate(2, ((RuntimeObjectPrefix *)emitter)->worldPosition[0] + ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * spread,
+                          ((RuntimeObjectPrefix *)emitter)->worldPosition[1] + (f64)randomNext() * 2.3283064365386963e-10 * half,
+                          ((RuntimeObjectPrefix *)emitter)->worldPosition[2] + ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * spread);
         v = *(u8 **)(e + 0x54);
         v[0x20] = red;
         v[0x21] = green;
@@ -1020,31 +1024,31 @@ extern u8 gEffectEmitterObjectTemplate[];
 ///
 /// \note Original decompilation identifier: \c func_800195B0 (0x800195B0).
 void effectEmitterCreateWithCallback(f32 *position, f32 lifetime, s32 targetHandle, s32 referenceHandle, f32 offset, EffectEmissionCallback callback) {
-    u8 *o = objectCreateFromTemplate((ObjectTemplate *)gEffectEmitterObjectTemplate);
-    u8 *v = *(u8 **)(o + 0x54);
-    u8 *t;
+    u8 *emitter = objectCreateFromTemplate((ObjectTemplate *)gEffectEmitterObjectTemplate);
+    EffectEmitterState *state = ((RuntimeObjectPrefix *)emitter)->state.pointer;
+    u8 *target;
 
-    ((EffectEmitterState *)v)->remaining = lifetime;
-    ((EffectEmitterState *)v)->targetHandle = targetHandle;
-    ((EffectEmitterState *)v)->referenceHandle = referenceHandle;
-    ((EffectEmitterState *)v)->offset = offset;
-    ((EffectEmitterState *)v)->emit = callback;
-    ((EffectEmitterState *)v)->cooldown = 0.0f;
-    t = objectResolveAvailableHandle(targetHandle);
-    if (t != NULL) {
-        *(f32 *)(o + 0x18) = *(f32 *)(t + 0x44);
-        *(f32 *)(o + 0x1C) = *(f32 *)(t + 0x48);
-        *(f32 *)(o + 0x20) = *(f32 *)(t + 0x4C);
+    state->remaining = lifetime;
+    state->targetHandle = targetHandle;
+    state->referenceHandle = referenceHandle;
+    state->offset = offset;
+    state->emit = callback;
+    state->cooldown = 0.0f;
+    target = objectResolveAvailableHandle(targetHandle);
+    if (target != NULL) {
+        ((RuntimeObjectPrefix *)emitter)->position[0] = ((RuntimeObjectPrefix *)target)->worldPosition[0];
+        ((RuntimeObjectPrefix *)emitter)->position[1] = ((RuntimeObjectPrefix *)target)->worldPosition[1];
+        ((RuntimeObjectPrefix *)emitter)->position[2] = ((RuntimeObjectPrefix *)target)->worldPosition[2];
     } else {
-        *(f32 *)(o + 0x18) = position[0];
-        *(f32 *)(o + 0x1C) = position[1];
-        *(f32 *)(o + 0x20) = position[2];
+        ((RuntimeObjectPrefix *)emitter)->position[0] = position[0];
+        ((RuntimeObjectPrefix *)emitter)->position[1] = position[1];
+        ((RuntimeObjectPrefix *)emitter)->position[2] = position[2];
     }
-    *(f32 *)(o + 0x44) = *(f32 *)(o + 0x18);
-    *(f32 *)(o + 0x48) = *(f32 *)(o + 0x1C);
-    *(f32 *)(o + 0x4C) = *(f32 *)(o + 0x20);
-    objectMakeHierarchyRoot(o);
-    objectRegisterActiveHierarchy(o);
+    ((RuntimeObjectPrefix *)emitter)->worldPosition[0] = ((RuntimeObjectPrefix *)emitter)->position[0];
+    ((RuntimeObjectPrefix *)emitter)->worldPosition[1] = ((RuntimeObjectPrefix *)emitter)->position[1];
+    ((RuntimeObjectPrefix *)emitter)->worldPosition[2] = ((RuntimeObjectPrefix *)emitter)->position[2];
+    objectMakeHierarchyRoot(emitter);
+    objectRegisterActiveHierarchy(emitter);
 }
 
 void _bzero(void *, s32); /* extern */
@@ -1054,13 +1058,13 @@ void _bzero(void *, s32); /* extern */
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001968C (0x8001968C).
 void effectEmitterInitialize(void *emitter) {
-    u8 *sp1C;
+    u8 *emitterState;
     u8 *allocation;
 
-    allocation = heapAllocLocal(&gGameHeap, 0x18, 0x548);
-    sp1C = allocation;
-    _bzero((void *)allocation, 0x18);
-    ((RuntimeObjectPrefix *)emitter)->state.bytes = sp1C;
+    allocation = heapAllocLocal(&gGameHeap, sizeof(EffectEmitterState), 0x548);
+    emitterState = allocation;
+    _bzero((void *)allocation, sizeof(EffectEmitterState));
+    ((RuntimeObjectPrefix *)emitter)->state.bytes = emitterState;
 }
 
 f32 vector2NormalizeComponentsApprox(f32 *, f32 *);
@@ -1070,41 +1074,41 @@ f32 vector2NormalizeComponentsApprox(f32 *, f32 *);
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800196D8 (0x800196D8).
 void effectEmitterUpdate(u8 *emitter) {
-    u8 *v;
-    u8 *a;
-    u8 *b;
+    EffectEmitterState *state;
+    u8 *target;
+    u8 *reference;
     f32 dx;
     f32 dz;
 
-    v = *(u8 **)(emitter + 0x54);
-    a = objectResolveAvailableHandle(((EffectEmitterState *)v)->targetHandle);
-    if (a != NULL) {
-        *(f32 *)(emitter + 0x18) = *(f32 *)(a + 0x44);
-        *(f32 *)(emitter + 0x1C) = *(f32 *)(a + 0x48);
-        *(f32 *)(emitter + 0x20) = *(f32 *)(a + 0x4C);
-        b = objectResolveAvailableHandle(((EffectEmitterState *)v)->referenceHandle);
-        if (b != NULL) {
-            dx = *(f32 *)(a + 0x44) - *(f32 *)(b + 0x44);
-            dz = *(f32 *)(a + 0x4C) - *(f32 *)(b + 0x4C);
+    state = ((RuntimeObjectPrefix *)emitter)->state.pointer;
+    target = objectResolveAvailableHandle(state->targetHandle);
+    if (target != NULL) {
+        ((RuntimeObjectPrefix *)emitter)->position[0] = ((RuntimeObjectPrefix *)target)->worldPosition[0];
+        ((RuntimeObjectPrefix *)emitter)->position[1] = ((RuntimeObjectPrefix *)target)->worldPosition[1];
+        ((RuntimeObjectPrefix *)emitter)->position[2] = ((RuntimeObjectPrefix *)target)->worldPosition[2];
+        reference = objectResolveAvailableHandle(state->referenceHandle);
+        if (reference != NULL) {
+            dx = ((RuntimeObjectPrefix *)target)->worldPosition[0] - ((RuntimeObjectPrefix *)reference)->worldPosition[0];
+            dz = ((RuntimeObjectPrefix *)target)->worldPosition[2] - ((RuntimeObjectPrefix *)reference)->worldPosition[2];
             vector2NormalizeComponentsApprox(&dx, &dz);
-            dx *= ((EffectEmitterState *)v)->offset;
-            dz *= ((EffectEmitterState *)v)->offset;
-            *(f32 *)(emitter + 0x18) += dx;
-            *(f32 *)(emitter + 0x20) += dz;
+            dx *= state->offset;
+            dz *= state->offset;
+            ((RuntimeObjectPrefix *)emitter)->position[0] += dx;
+            ((RuntimeObjectPrefix *)emitter)->position[2] += dz;
         }
     }
-    if (((EffectEmitterState *)v)->emit != NULL) {
-        (((EffectEmitterState *)v)->emit)(emitter);
+    if (state->emit != NULL) {
+        (state->emit)(emitter);
     }
-    if (((EffectEmitterState *)v)->remaining > 0.0f) {
-        ((EffectEmitterState *)v)->remaining -= gRuntimeFrameSeconds;
-        if (((EffectEmitterState *)v)->remaining <= 0.0f) {
+    if (state->remaining > 0.0f) {
+        state->remaining -= gRuntimeFrameSeconds;
+        if (state->remaining <= 0.0f) {
             objectRequestHierarchyDestruction(emitter);
         }
     }
-    ((EffectEmitterState *)v)->cooldown -= gRuntimeFrameSeconds;
-    if (((EffectEmitterState *)v)->cooldown < 0.0f) {
-        ((EffectEmitterState *)v)->cooldown = 0.0f;
+    state->cooldown -= gRuntimeFrameSeconds;
+    if (state->cooldown < 0.0f) {
+        state->cooldown = 0.0f;
     }
 }
 
