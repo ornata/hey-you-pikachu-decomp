@@ -3870,3 +3870,8 @@ dimensions, draw offsets and accumulated scroll. Allocation, selection and
 primary-image/scroll consumers use it, removing duplicate camera allocation and
 direction views. The offset-update destination retains its documented byte
 representation after member substitution changed ROM instructions.
+
+`backdrop_view.h` shares backdrop buffer allocation, view selection and active
+horizontal scrolling between the implementation and all eight declared consumer
+units. Contracts distinguish allocated capacity from selected descriptor dimensions
+and document pixels, valid view/backdrop identifiers and shared-workspace choice.

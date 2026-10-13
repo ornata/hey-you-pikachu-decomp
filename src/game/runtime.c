@@ -1,3 +1,4 @@
+#include "backdrop_view.h"
 #include "area_transition.h"
 #include "runtime_control.h"
 #include "controller_input.h"
@@ -359,8 +360,6 @@ void renderLoadAreaAssets();                          /* extern */
 void objectSystemInitialize();                          /* extern */
 void presentationInitializeForCurrentArea();                          /* extern */
 void toolboxCreateDisplayObjects();                          /* extern */
-void backdropAllocateViewBuffer(s32, u32, u32); /* extern */
-void backdropSelectForView(s32, s32, s32);     /* extern */
 void mazeInitialize();                          /* extern */
 void mazeRunAreaUpdateCallback();                          /* extern */
 void areaActivateDestination();                          /* extern */

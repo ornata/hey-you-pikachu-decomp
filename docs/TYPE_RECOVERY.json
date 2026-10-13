@@ -1320,6 +1320,7 @@
       "known_views": [
         "asset_loader.h",
         "backdrop_draw.h",
+        "backdrop_view.h",
         "camera_types.h",
         "heap_free.h",
         "heap_tail.h",
@@ -1332,24 +1333,24 @@
       "locations": {
         "raw_offset_candidates": {
           "gCurrentAreaConfiguration + 0x68": [
-            "142:30"
+            "143:30"
           ],
           "view + 4": [
-            "143:92"
+            "144:92"
           ],
           "view + 0x98": [
-            "144:14",
-            "148:14",
-            "148:68"
+            "145:14",
+            "149:14",
+            "149:68"
           ],
           "view + 0x9C": [
-            "145:14"
+            "146:14"
           ],
           "view + 0xA0": [
-            "148:44"
+            "149:44"
           ],
           "top - 1": [
-            "199:57"
+            "200:57"
           ]
         }
       }
@@ -1366,6 +1367,7 @@
         "area_transition.h",
         "audio_cue.h",
         "backdrop_draw.h",
+        "backdrop_view.h",
         "camera_interface.h",
         "camera_overlay.h",
         "camera_pose.h",
@@ -1402,88 +1404,88 @@
       "locations": {
         "raw_offset_candidates": {
           "slot + 4": [
-            "226:50",
-            "263:22"
+            "227:50",
+            "264:22"
           ],
           "liveObject + 0x54": [
-            "228:22",
+            "229:22",
             "863:18"
           ],
           "p + 4": [
-            "229:71",
-            "230:82",
+            "230:71",
+            "231:82",
             "864:71"
           ],
           "gToolboxBonusSlot + 4": [
-            "269:18"
+            "270:18"
           ],
           "gToolboxPurchaseSlot + 4": [
-            "273:19"
+            "274:19"
           ],
           "gPikachuActor + 0x54": [
-            "391:32",
-            "440:24"
+            "392:32",
+            "441:24"
           ],
           "state + 0x1EC": [
-            "393:76"
+            "394:76"
           ],
           "player + 0x48": [
-            "402:28"
+            "403:28"
           ],
           "player + 0x54": [
-            "402:65"
+            "403:65"
           ],
           "player + 0x18": [
-            "405:14"
+            "406:14"
           ],
           "gPikachuActor + 0x1C": [
-            "406:20"
-          ],
-          "gPikachuActor + 0x20": [
             "407:20"
           ],
-          "gPikachuActor + 0x44": [
-            "408:20",
-            "447:41"
+          "gPikachuActor + 0x20": [
+            "408:20"
           ],
-          "gPikachuActor + 0x48": [
+          "gPikachuActor + 0x44": [
             "409:20",
             "448:41"
           ],
-          "gPikachuActor + 0x4C": [
+          "gPikachuActor + 0x48": [
             "410:20",
             "449:41"
           ],
-          "tgt + 0": [
-            "447:21"
+          "gPikachuActor + 0x4C": [
+            "411:20",
+            "450:41"
           ],
-          "tgt + 4": [
+          "tgt + 0": [
             "448:21"
           ],
-          "tgt + 8": [
+          "tgt + 4": [
             "449:21"
           ],
+          "tgt + 8": [
+            "450:21"
+          ],
           "ext + 0xC": [
-            "451:64"
+            "452:64"
           ],
           "ext + 0x10": [
-            "452:69"
+            "453:69"
           ],
           "ext + 0x19C": [
-            "453:14"
+            "454:14"
           ],
           "ext + 0x1EC": [
-            "454:126"
+            "455:126"
           ],
           "firstJoint + 0x48": [
-            "458:18"
+            "459:18"
           ],
           "secondJoint + 0x48": [
-            "460:29"
+            "461:29"
           ],
           "gCurrentAreaConfiguration + 0x74": [
-            "519:23",
-            "536:18",
+            "520:23",
+            "537:18",
             "588:25",
             "601:25",
             "621:29"
@@ -2784,6 +2786,7 @@
         "actor_assets.h",
         "area_transition.h",
         "audio_cue.h",
+        "backdrop_view.h",
         "camera_overlay.h",
         "controller_input.h",
         "controller_rumble.h",
@@ -2814,13 +2817,13 @@
       "locations": {
         "raw_offset_candidates": {
           "gPikachuActor + 0x54": [
-            "602:31"
+            "601:31"
           ],
           "actorState + 0x1B8": [
-            "603:50"
+            "602:50"
           ],
           "gRuntimePromptPanelLineCount - 1": [
-            "1087:75"
+            "1086:75"
           ]
         }
       }
@@ -3364,6 +3367,7 @@
         "audio_cue.h",
         "audio_sound_effect.h",
         "backdrop_draw.h",
+        "backdrop_view.h",
         "camera_overlay.h",
         "controller_input.h",
         "hud_draw.h",
@@ -3385,22 +3389,22 @@
       "locations": {
         "raw_offset_candidates": {
           "words + 4": [
-            "75:72"
+            "76:72"
           ],
           "words + 8": [
-            "80:44"
+            "81:44"
           ],
           "x - 10": [
-            "259:36"
+            "260:36"
           ],
           "y - 4": [
-            "259:44"
+            "260:44"
           ],
           "maxWidth + 10": [
-            "259:55"
+            "260:55"
           ],
           "x + 16": [
-            "266:17"
+            "267:17"
           ],
           "gCurrentAreaConfiguration + 0x64": [
             "973:47"
@@ -3927,6 +3931,7 @@
         "audio_cue.h",
         "audio_sound_effect.h",
         "backdrop_draw.h",
+        "backdrop_view.h",
         "camera_interface.h",
         "camera_overlay.h",
         "controller_input.h",
@@ -3946,83 +3951,83 @@
       "locations": {
         "raw_offset_candidates": {
           "x - 27": [
-            "225:46"
+            "226:46"
           ],
           "x + 55": [
-            "227:46"
+            "228:46"
           ],
           "x - 16": [
-            "288:31",
-            "312:27"
-          ],
-          "y + 8": [
-            "289:31"
-          ],
-          "y - 8": [
+            "289:31",
             "313:27"
           ],
+          "y + 8": [
+            "290:31"
+          ],
+          "y - 8": [
+            "314:27"
+          ],
           "counter + 5U": [
-            "320:25"
+            "321:25"
           ],
           "gPikachuActor + 0x54": [
-            "400:28",
-            "446:28",
-            "618:46",
+            "401:28",
+            "447:28",
+            "619:46",
             "787:27"
           ],
           "state + 0x1EC": [
-            "402:100",
-            "459:154"
+            "403:100",
+            "460:154"
           ],
           "gPikachuActor + 0x48": [
-            "408:29",
-            "410:35",
-            "416:20",
-            "453:54"
-          ],
-          "firstJoint + 0x48": [
-            "408:62"
-          ],
-          "secondJoint + 0x48": [
-            "410:68"
-          ],
-          "gPikachuActor + 0x18": [
-            "412:20"
-          ],
-          "gPikachuActor + 0x1C": [
-            "413:20"
-          ],
-          "gPikachuActor + 0x20": [
-            "414:20"
-          ],
-          "gPikachuActor + 0x44": [
-            "415:20",
-            "452:54"
-          ],
-          "gPikachuActor + 0x4C": [
+            "409:29",
+            "411:35",
             "417:20",
             "454:54"
           ],
-          "camera + 0": [
-            "452:25"
+          "firstJoint + 0x48": [
+            "409:62"
           ],
-          "camera + 4": [
+          "secondJoint + 0x48": [
+            "411:68"
+          ],
+          "gPikachuActor + 0x18": [
+            "413:20"
+          ],
+          "gPikachuActor + 0x1C": [
+            "414:20"
+          ],
+          "gPikachuActor + 0x20": [
+            "415:20"
+          ],
+          "gPikachuActor + 0x44": [
+            "416:20",
+            "453:54"
+          ],
+          "gPikachuActor + 0x4C": [
+            "418:20",
+            "455:54"
+          ],
+          "camera + 0": [
             "453:25"
           ],
-          "camera + 8": [
+          "camera + 4": [
             "454:25"
           ],
+          "camera + 8": [
+            "455:25"
+          ],
           "state + 0xC": [
-            "456:64"
+            "457:64"
           ],
           "state + 0x10": [
-            "457:71"
+            "458:71"
           ],
           "state + 0x19C": [
-            "458:14"
+            "459:14"
           ],
           "PLAYER + 0x54": [
-            "501:27"
+            "502:27"
           ],
           "sp24 + 0x13C": [
             "794:22",
@@ -4146,6 +4151,7 @@
         "actor_script_action.h",
         "actor_target.h",
         "area_transition.h",
+        "backdrop_view.h",
         "message_bar.h",
         "object_types.h",
         "progress_value.h",
@@ -5048,6 +5054,7 @@
         "area_transition.h",
         "audio_playback_stop.h",
         "audio_sound_effect.h",
+        "backdrop_view.h",
         "camera_overlay.h",
         "camera_pose.h",
         "camera_types.h",
@@ -5097,7 +5104,7 @@
       "locations": {
         "raw_offset_candidates": {
           "gRuntimeFrameSeconds + 8": [
-            "392:35"
+            "393:35"
           ],
           "normal + 2": [
             "642:80"
@@ -5351,6 +5358,7 @@
         "audio_playback_stop.h",
         "audio_sound_effect.h",
         "backdrop_draw.h",
+        "backdrop_view.h",
         "camera_interface.h",
         "camera_overlay.h",
         "controller_input.h",
@@ -5385,25 +5393,25 @@
       "locations": {
         "raw_offset_candidates": {
           "depth + 1": [
-            "423:47"
+            "424:47"
           ],
           "row + 1": [
-            "652:14"
+            "653:14"
           ],
           "i - 1": [
-            "658:18"
+            "659:18"
           ],
           "index - 1": [
-            "709:18"
+            "710:18"
           ],
           "count - 1": [
-            "838:51"
+            "839:51"
           ],
           "firstVisibleIndex + 4": [
-            "875:48"
+            "876:48"
           ],
           "selectedIndex - 4": [
-            "876:51"
+            "877:51"
           ],
           "model + 0x18": [
             "914:125",

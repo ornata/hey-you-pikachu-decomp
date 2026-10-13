@@ -1,3 +1,4 @@
+#include "backdrop_view.h"
 #include "runtime_control.h"
 #include "wisp_effect.h"
 #include "effect_emitter.h"
@@ -651,7 +652,6 @@ s32 actorScriptPushActiveBackdrop(u8 *actor) {
     return 0;
 }
 
-void backdropSelectForView(s32, s32, s32); /* extern */
 /// Select and load a backdrop for the primary view.
 /// \param actor Actor whose script VM supplies a valid backdrop descriptor index and receives zero; the primary view must have an allocated backdrop buffer.
 /// \returns Zero, allowing script execution to continue.

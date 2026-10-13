@@ -1,3 +1,4 @@
+#include "backdrop_view.h"
 #include "area_transition.h"
 #include "runtime_control.h"
 #include "text_window.h"
@@ -38,7 +39,6 @@ struct {
 
 void systemMenuPopHistory(); /* extern */
 
-void backdropSelectForView(s32, s32, s32); /* extern */
 void systemMenuExit();                      /* extern */
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).

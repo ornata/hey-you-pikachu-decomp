@@ -1,3 +1,4 @@
+#include "backdrop_view.h"
 #include "area_transition.h"
 #include "runtime_control.h"
 #include "controller_rumble.h"
@@ -565,7 +566,6 @@ void playerPlayFootstepSound(u8 *player, s32 ground) {
     }
 }
 
-void backdropAdvanceScroll(f32);
 f32 vector3Normalize(f32 *);
 u32 randomNext(void);
 void playerPlayFootstepSound(u8 *, s32);

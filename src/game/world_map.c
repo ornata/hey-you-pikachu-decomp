@@ -1,3 +1,4 @@
+#include "backdrop_view.h"
 #include "area_transition.h"
 #include "controller_input.h"
 #include "microphone_requests.h"
@@ -732,7 +733,6 @@ void wholeMapConfigureVoiceInput(void) {
     gGameplayVoiceCommandsAllowed = 1;
 }
 
-void backdropSelectForView(s32, s32, s32); /* extern */
 
 /// Select the whole-map backdrop for the current difficulty.
 /// \returns Nothing.

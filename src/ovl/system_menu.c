@@ -1,3 +1,4 @@
+#include "backdrop_view.h"
 #include "camera_overlay.h"
 #include "area_transition.h"
 #include "runtime_control.h"
@@ -884,7 +885,6 @@ void systemMenuHandleInput(void) {
 f32 mathSinDegrees(f32);
 f32 mathCosDegrees(f32);
 void objectUpdateHierarchy(u8 *);
-void backdropSelectForView(s32, s32, s32);
 /// Separate symbol view of the primary player record's view yaw.
 /// \note Original identifier: \c D_800EF6AC (0x800EF6AC).
 /// Separate symbol view of the primary player record's horizontal view shake.

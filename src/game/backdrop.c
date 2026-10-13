@@ -1,3 +1,4 @@
+#include "backdrop_view.h"
 #include "camera_types.h"
 #include "backdrop_draw.h"
 #include "heap_free.h"

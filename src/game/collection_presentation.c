@@ -1,3 +1,4 @@
+#include "backdrop_view.h"
 #include "area_transition.h"
 #include "runtime_control.h"
 #include "controller_rumble.h"
@@ -548,7 +549,6 @@ void presentationDrawCardScreen(Gfx **gdl) {
 
 void hudSetAreaLabelVisible(s32);
 void presentationPrepareActiveActor(void *);
-void backdropSelectForView(s32, s32, s32);
 void playerResetViewOrientation(void);
 u8 playerGetChaseStage(void);
 /// Primary controller new and auto-repeated button presses; aliases the repeated word of the processed sample.

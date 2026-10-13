@@ -1,3 +1,4 @@
+#include "backdrop_view.h"
 #include "area_transition.h"
 #include "runtime_control.h"
 #include "controller_input.h"
@@ -738,7 +739,6 @@ extern u8 *gCurrentAreaConfiguration;
 s32 eepromGetQueuedTransferState(void);
 s32 micIsDeviceConnected(s32);
 void runtimeRequestProgramChange(s32);
-void backdropSelectForView(s32, s32, s32);
 void titleScreenInitialize(void);
 void titleScreenResetLogoFade(void);
 void titleScreenSetMessage(void **, s32, s32);
