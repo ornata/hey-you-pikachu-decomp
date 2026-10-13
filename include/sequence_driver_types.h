@@ -34,19 +34,22 @@ typedef char SequenceVoiceNativeOffsetCheck[(((u32) & ((SequenceVoice *)0)->nati
 typedef char SequenceVoiceChannelOffsetCheck[(((u32) & ((SequenceVoice *)0)->channel) == 0x30) ? 1 : -1];
 typedef char SequenceVoicePitchOffsetCheck[(((u32) & ((SequenceVoice *)0)->pitch) == 0x40) ? 1 : -1];
 
+struct EngineSequence;
+
 /// Synthesizer registration and shared sequence playback controls.
 typedef struct VoicePlayer {
-    ALPlayer node;         ///< Synthesizer callback registration; valid while registered.
-    N_ALGlobals *synth;    ///< Borrowed synthesizer context while registered.
-    s32 active;            ///< First registered sequence address, or zero.
-    u8 bank;               ///< Output mode; one selects mono panning.
-    u8 maxVoices;          ///< Number of records supplied in the voice pool.
-    SequenceVoice *voices; ///< First available voice in caller-supplied storage.
-    u8 vol;                ///< Master sequence volume on a zero-to-255 scale.
+    ALPlayer node;                    ///< Synthesizer callback registration; valid while registered.
+    N_ALGlobals *synth;               ///< Borrowed synthesizer context while registered.
+    struct EngineSequence *sequences; ///< Borrowed registered-sequence list, or null.
+    u8 bank;                          ///< Output mode; one selects mono panning.
+    u8 maxVoices;                     ///< Number of records supplied in the voice pool.
+    SequenceVoice *voices;            ///< First available voice in caller-supplied storage.
+    u8 vol;                           ///< Master sequence volume on a zero-to-255 scale.
 } VoicePlayer;
 
 typedef char SequenceVoiceSizeCheck[(sizeof(SequenceVoice) == 0x50) ? 1 : -1];
 typedef char VoicePlayerSizeCheck[(sizeof(VoicePlayer) == 0x28) ? 1 : -1];
+typedef char VoicePlayerSequencesOffsetCheck[((u32) & ((VoicePlayer *)0)->sequences == 0x18) ? 1 : -1];
 typedef char VoicePlayerPoolOffsetCheck[((u32) & ((VoicePlayer *)0)->voices == 0x20) ? 1 : -1];
 
 #endif

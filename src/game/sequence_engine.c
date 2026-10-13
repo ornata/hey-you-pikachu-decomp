@@ -12,7 +12,7 @@ struct N_ALVoice_s;
 void n_alSynSetVol(struct N_ALVoice_s *, s16, ALMicroTime);
 
 void sequenceEngineReleaseVoice(s32, u8 *, u8 *);
-void sequenceEngineReadNextEvent(u8 *);
+void sequenceEngineReadNextEvent(EngineSequence *);
 void sequenceEngineDispatchMidiEvent(s32, u8 *); /* extern */
 s32 sequenceEngineRecycleVoice(u8 *, u8 *, u8 *);
 void n_alSynFreeVoice(struct N_ALVoice_s *);
@@ -24,8 +24,8 @@ s32 sequenceEngineResetControllers(u8 *, u8 *);
 void sequenceEngineStopVoice(s32, s32, s32);
 f64 sequenceEngineGetVoiceUpdateInterval(s32);
 void sequenceEngineUpdateVoices(u8 *, u8 *, f64);
-void sequenceEngineAdvanceVolumeFade(u8 *, f64);
-void sequenceEngineAdvanceEvents(s32, u8 *, f64);
+void sequenceEngineAdvanceVolumeFade(EngineSequence *, f64);
+void sequenceEngineAdvanceEvents(s32, EngineSequence *, f64);
 
 
 /// Check whether sequence playback and pending release events have ended.
@@ -277,11 +277,11 @@ s32 sequenceEngineResetControllers(u8 *driver, u8 *seq) {
 /// \param sequence Sequence whose event reader is advanced.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80006068 (0x80006068).
-void sequenceEngineReadNextEvent(u8 *sequence) {
-    ((EngineSequence *)sequence)->eventLength =
+void sequenceEngineReadNextEvent(EngineSequence *sequence) {
+    sequence->eventLength =
         ((EngineSequence *)sequence)
-            ->eventReader(((EngineSequence *)sequence)->readerContext, ((EngineSequence *)sequence)->eventBuffer,
-                          ((EngineSequence *)sequence)->eventCapacity, &((EngineSequence *)sequence)->eventDelay);
+            ->eventReader(sequence->readerContext, sequence->eventBuffer,
+                          sequence->eventCapacity, &sequence->eventDelay);
 }
 
 /// Initialize a sequence and register it for playback by the driver.
@@ -297,7 +297,7 @@ void sequenceEngineReadNextEvent(u8 *sequence) {
 void sequenceEngineRegisterSequence(EngineSequence *sequence, VoicePlayer *driver, ALBank *instrumentBank, s32 eventCapacity, u8 *eventBuffer, SequenceControlState *readerContext, SequenceEventReader eventReader) {
     s32 i;
 
-    sequence->next = (EngineSequence *)driver->active;
+    sequence->next = driver->sequences;
     sequence->bank = instrumentBank;
     sequence->voices = NULL;
     sequence->readerContext = readerContext;
@@ -308,8 +308,8 @@ void sequenceEngineRegisterSequence(EngineSequence *sequence, VoicePlayer *drive
         sequence->channels[i].sustain = 0;
     }
     sequenceEngineResetControllers((u8 *)driver, (u8 *)sequence);
-    sequenceEngineReadNextEvent((u8 *)sequence);
-    driver->active = (s32)sequence;
+    sequenceEngineReadNextEvent(sequence);
+    driver->sequences = sequence;
 }
 
 
@@ -734,28 +734,28 @@ void sequenceEngineDispatchMidiEvent(s32 driver, u8 *seq) {
 /// \param elapsed Nonnegative elapsed time in seconds.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80006F2C (0x80006F2C).
-void sequenceEngineAdvanceVolumeFade(u8 *sequence, f64 elapsed) {
+void sequenceEngineAdvanceVolumeFade(EngineSequence *sequence, f64 elapsed) {
     f64 rate;
     f64 left;
     f64 level;
 
-    rate = ((EngineSequence *)sequence)->fadeRate;
-    if (((EngineSequence *)sequence)->fadeRate != 0.0) {
-        left = ((EngineSequence *)sequence)->fadeRemaining;
+    rate = sequence->fadeRate;
+    if (sequence->fadeRate != 0.0) {
+        left = sequence->fadeRemaining;
         if (left < elapsed) {
-            ((EngineSequence *)sequence)->fadeRate = 0.0;
-            ((EngineSequence *)sequence)->fadeLevel = ((EngineSequence *)sequence)->fadeLevel + (left * rate);
+            sequence->fadeRate = 0.0;
+            sequence->fadeLevel = sequence->fadeLevel + (left * rate);
         } else {
-            ((EngineSequence *)sequence)->fadeRemaining = left - elapsed;
-            ((EngineSequence *)sequence)->fadeLevel = ((EngineSequence *)sequence)->fadeLevel + (elapsed * rate);
+            sequence->fadeRemaining = left - elapsed;
+            sequence->fadeLevel = sequence->fadeLevel + (elapsed * rate);
         }
-        level = ((EngineSequence *)sequence)->fadeLevel;
+        level = sequence->fadeLevel;
         if (level < 0.0) {
-            ((EngineSequence *)sequence)->fadeLevel = 0.0;
+            sequence->fadeLevel = 0.0;
             level = 0.0;
         }
         if (level > 1.0) {
-            ((EngineSequence *)sequence)->fadeLevel = 1.0;
+            sequence->fadeLevel = 1.0;
         }
     }
 }
@@ -766,26 +766,26 @@ void sequenceEngineAdvanceVolumeFade(u8 *sequence, f64 elapsed) {
 /// \param elapsed Nonnegative elapsed playback time in seconds.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80006FD4 (0x80006FD4).
-void sequenceEngineAdvanceEvents(s32 driver, u8 *sequence, f64 elapsed) {
+void sequenceEngineAdvanceEvents(s32 driver, EngineSequence *sequence, f64 elapsed) {
     f64 var_f0;
     f64 var_f20;
 
     var_f20 = elapsed;
-    var_f0 = *(f64 *)(sequence + 0x1F8);
+    var_f0 = sequence->eventDelay;
     if (var_f0 <= var_f20) {
     loop_2:
         if (var_f0 >= 0.0) {
             var_f20 -= var_f0;
         }
-        sequenceEngineDispatchMidiEvent(driver, sequence);
+        sequenceEngineDispatchMidiEvent(driver, (u8 *)sequence);
         sequenceEngineReadNextEvent(sequence);
-        var_f0 = *(f64 *)(sequence + 0x1F8);
+        var_f0 = sequence->eventDelay;
         if (!(var_f0 < 0.0) && (var_f0 <= var_f20)) {
             goto loop_2;
         }
     }
     if (var_f0 >= 0.0) {
-        *(f64 *)(sequence + 0x1F8) = var_f0 - var_f20;
+        sequence->eventDelay = var_f0 - var_f20;
     }
 }
 
@@ -866,19 +866,19 @@ void sequenceEngineUpdateVoices(u8 *driver, u8 *seq, f64 elapsed) {
 /// \returns Always -1, the player callback result.
 /// \note Original decompilation identifier: \c func_80007390 (0x80007390).
 s32 sequenceEnginePlayerCallback(void *context) {
-    u8 *driver = context;
-    u8 *var_s0;
+    VoicePlayer *driver = context;
+    EngineSequence *sequence;
     f64 updateInterval;
 
-    updateInterval = sequenceEngineGetVoiceUpdateInterval(*(s32 *)(driver + 0x14));
-    var_s0 = *(u8 **)(driver + 0x18);
-    if (var_s0 != NULL) {
+    updateInterval = sequenceEngineGetVoiceUpdateInterval((s32)driver->synth);
+    sequence = driver->sequences;
+    if (sequence != NULL) {
         do {
-            sequenceEngineAdvanceEvents((s32)driver, var_s0, updateInterval);
-            sequenceEngineAdvanceVolumeFade(var_s0, updateInterval);
-            sequenceEngineUpdateVoices(driver, var_s0, updateInterval);
-            var_s0 = *(u8 **)var_s0;
-        } while (var_s0 != NULL);
+            sequenceEngineAdvanceEvents((s32)driver, sequence, updateInterval);
+            sequenceEngineAdvanceVolumeFade(sequence, updateInterval);
+            sequenceEngineUpdateVoices((u8 *)driver, (u8 *)sequence, updateInterval);
+            sequence = sequence->next;
+        } while (sequence != NULL);
     }
     return -1;
 }
@@ -897,7 +897,7 @@ void sequenceEngineInitializeDriver(VoicePlayer *p, N_ALGlobals *synth, s32 outp
     s32 i;
 
     p->synth = synth;
-    p->active = 0;
+    p->sequences = NULL;
     p->bank = outputMode;
     p->vol = 0x80;
     p->maxVoices = maxVoices;

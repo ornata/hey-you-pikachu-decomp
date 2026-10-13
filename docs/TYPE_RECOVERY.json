@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 1936,
-      "unique_spellings": 818,
+      "occurrences": 1931,
+      "unique_spellings": 815,
       "files": 74
     }
   },
@@ -3052,20 +3052,9 @@
           "seq + 0x1F4": [
             "704:26"
           ],
-          "sequence + 0x1F8": [
-            "774:23",
-            "782:27",
-            "788:18"
-          ],
           "portamentoTime + 1": [
             "837:91",
             "843:91"
-          ],
-          "driver + 0x14": [
-            "873:68"
-          ],
-          "driver + 0x18": [
-            "874:23"
           ],
           "return -1": [
             "883:5"
