@@ -2723,6 +2723,7 @@
         "camera_overlay.h",
         "controller_input.h",
         "controller_rumble.h",
+        "controller_service.h",
         "controller_state.h",
         "controller_types.h",
         "eeprom_io.h",

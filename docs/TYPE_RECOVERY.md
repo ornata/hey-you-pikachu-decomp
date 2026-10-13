@@ -4339,3 +4339,15 @@ its separately documented incompatible callback ABI.
 `player_control.h` shares the per-frame update entry point with runtime and text
 windows. All dependent units rebuild without new pointer-interface warnings, preserve
 all strict baseline objects and pass the clean retail ROM gate.
+
+### Controller service startup handshake
+
+`controller_service.h` shares the typed scheduler startup interface with runtime,
+including channel bounds, microphone-port selection and scheduler lifetime.
+The worker and caller now share one private, size-checked ControllerStartup record
+with descriptive channelCount and microphonePortMask fields. Its caller-owned stack
+storage is released only after readiness; the worker never reads it afterward.
+Ghidra at 0x80002650 confirms initialization order and the final acknowledgment.
+Original controller entry-point names remain unchanged for port bindings.
+An orphaned nonmatching draft note is removed. Both source units preserve all strict
+baseline objects and the clean retail ROM match.

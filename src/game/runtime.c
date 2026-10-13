@@ -1,3 +1,4 @@
+#include "controller_service.h"
 #include "player_state.h"
 #include "audio_control.h"
 #include "audio_initialize.h"
@@ -301,7 +302,6 @@ void runtimeOsInfoReportNoOp(void) {
     TRACE("\n");
 }
 
-void controllerStartThread(s32, s32, s32);
 void playerResetProfile(void);
 void toolboxReset(void);
 void eyeCatchInitialize(void);
@@ -351,7 +351,7 @@ void runtimeInitializePlatform(s32 schedulerAddress) {
     osViSetSpecialFeatures(0x40);
     osViSetSpecialFeatures(8);
     osViSetSpecialFeatures(2);
-    controllerStartThread(schedulerAddress, 4, 8);
+    controllerStartThread((GameScheduler *)schedulerAddress, 4, 8);
     controllerSetRepeatMask(0xF0F);
     controllerSetRepeatTiming(0.3f, 0.05f);
     playerResetProfile();

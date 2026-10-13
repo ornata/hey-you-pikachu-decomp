@@ -1,3 +1,4 @@
+#include "controller_service.h"
 #include "render_state.h"
 #include "game_heap.h"
 #include "serial_queue.h"
@@ -245,15 +246,14 @@ void renderPrepareDisplayList(void);
 extern s32 gRenderOptionalFrameHookEnabled;
 
 
-/* NONMATCHING: three used translation scalars reproduce frame 0x58 and
- * matrix offset 0x28 (carry /tmp/258c-scalars.c). Remaining differences are
- * point preservation through a1 and the translation's FP registers. The old
- * draft's unused position array was only padding and is not a valid solution.
- */
-
-typedef struct {
-    s32 ready, arg1, arg2;
-} ThreadStartup2650;
+/// Caller-owned startup record released after the worker acknowledges initialization.
+/// The worker must not retain this record after setting ready.
+typedef struct ControllerStartup {
+    s32 ready; ///< Zero during startup; one after device services are initialized.
+    s32 channelCount; ///< Number of enabled controller channels.
+    s32 microphonePortMask; ///< Ports eligible to host the microphone.
+} ControllerStartup;
+typedef char ControllerStartupSizeCheck[(sizeof(ControllerStartup) == 0xC) ? 1 : -1];
 void controllerInitializeDevices(s32);
 void micSessionInitialize(s32);
 void controllerInitializeRumbleState(void);
@@ -267,16 +267,17 @@ static const char sUnknownMessageTypeMsg[] = "ERROR: unknown message type(%d)\n"
 /// Run controller, microphone, EEPROM, and rumble services in response to scheduler and device messages.
 /// \param argument Writable startup record containing a readiness flag, enabled controller-channel count, and eligible microphone-port mask; consumed before readiness is signaled.
 /// \returns Never returns.
+/// \note Original decompilation identifier: \c func_80002650 (0x80002650).
 void controllerThreadMain(void *argument) {
     struct {
-        ThreadStartup2650 *args;
+        ControllerStartup *args;
         OSMesg message;
     } frame;
     frame.message = NULL;
     frame.args = argument;
-    controllerInitializeDevices(((ThreadStartup2650 *)argument)->arg1);
+    controllerInitializeDevices(((ControllerStartup *)argument)->channelCount);
     controllerClearPadCache();
-    micSessionInitialize(((ThreadStartup2650 *)argument)->arg2);
+    micSessionInitialize(((ControllerStartup *)argument)->microphonePortMask);
     eepromInitializeTransfers();
     controllerInitializeRumbleState();
     frame.args->ready = 1;
@@ -308,26 +309,19 @@ void controllerThreadMain(void *argument) {
     }
 }
 
-/* Start-up handshake for the controllerThreadMain thread: the thread sets ready
- * once it has consumed arg1 (controllerInitializeDevices) and arg2 (micSessionInitialize). */
-typedef struct MainThreadArgs {
-    /* 0x0 */ s32 ready;
-    /* 0x4 */ s32 arg1;
-    /* 0x8 */ s32 arg2;
-} MainThreadArgs;
-
 /// Start the controller service thread and wait until device initialization completes.
-/// \param scheduler Address of the initialized scheduler supplying frame events.
+/// \param scheduler Initialized scheduler retained for frame events.
 /// \param channelCount Number of controller channels to enable, from one through four.
 /// \param microphonePortMask Bit mask of controller ports eligible to host the microphone.
-/// \returns Nothing.
-void controllerStartThread(s32 scheduler, s32 channelCount, s32 microphonePortMask) {
-    MainThreadArgs args;
+/// \returns Nothing after device initialization completes.
+/// \note Original decompilation identifier: \c func_80002764 (0x80002764).
+void controllerStartThread(GameScheduler *scheduler, s32 channelCount, s32 microphonePortMask) {
+    ControllerStartup args;
 
-    schedulerAddClient((GameScheduler *)scheduler, &gControllerSchedulerClient, controllerGetCommandQueue());
+    schedulerAddClient(scheduler, &gControllerSchedulerClient, controllerGetCommandQueue());
     args.ready = 0;
-    args.arg1 = channelCount;
-    args.arg2 = microphonePortMask;
+    args.channelCount = channelCount;
+    args.microphonePortMask = microphonePortMask;
     osCreateThread(&gControllerThread, 0x28, controllerThreadMain, &args, &gControllerSchedulerClient, 0x3C);
     osStartThread(&gControllerThread);
     while (args.ready == 0) {
