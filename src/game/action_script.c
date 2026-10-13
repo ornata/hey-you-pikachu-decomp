@@ -123,12 +123,12 @@ s32 actionScriptUpdate(u8 *object) {
     f32 step;
     f32 duration;
     ActionScriptCommand *command;
-    u8 *state;
+    ActorScriptState *state;
     s32 opcode;
     ActionScriptState *script;
 
-    state = ((RuntimeObjectPrefix *)object)->state.bytes;
-    script = (ActionScriptState *)&((ActorScriptState *)state)->actionScriptId;
+    state = ((RuntimeObjectPrefix *)object)->state.actor;
+    script = (ActionScriptState *)&state->actionScriptId;
     step = gRuntimeFrameSeconds;
     if (actionScriptIsStoppedAndLastActionEnded(object) == 0) {
         script->elapsed += step;
@@ -150,7 +150,7 @@ s32 actionScriptUpdate(u8 *object) {
             script->command = NULL;
             return -1;
         }
-        if (gActionScriptCommandHandlers[script->command->opcode](object, (ActorScriptState *)state, script) != 0) {
+        if (gActionScriptCommandHandlers[script->command->opcode](object, state, script) != 0) {
             script->command++;
         } else {
             script->commandTime -= step;
@@ -172,17 +172,17 @@ s32 actionScriptUpdate(u8 *object) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80012034 (0x80012034).
 void actionScriptStart(u8 *object, s32 scriptId) {
-    u8 *actorState;
+    ActorScriptState *actorState;
 
-    actorState = ((RuntimeObjectPrefix *)object)->state.bytes;
-    ((ActorScriptState *)actorState)->actionScriptCommand = gActionScriptPrograms[scriptId];
-    ((ActorScriptState *)actorState)->actionScriptLastRequestId = 0;
-    ((ActorScriptState *)actorState)->actionScriptPendingRequestId = 0;
-    ((ActorScriptState *)actorState)->actionScriptSoundHandle = 0;
-    ((ActorScriptState *)actorState)->actionScriptId = scriptId;
-    ((ActorScriptState *)actorState)->actionScriptCommandTime = 0.0f;
-    ((ActorScriptState *)actorState)->actionScriptElapsed = 0.0f;
-    ((ActorScriptState *)actorState)->actionScriptDuration = -1.0f;
+    actorState = ((RuntimeObjectPrefix *)object)->state.actor;
+    actorState->actionScriptCommand = gActionScriptPrograms[scriptId];
+    actorState->actionScriptLastRequestId = 0;
+    actorState->actionScriptPendingRequestId = 0;
+    actorState->actionScriptSoundHandle = 0;
+    actorState->actionScriptId = scriptId;
+    actorState->actionScriptCommandTime = 0.0f;
+    actorState->actionScriptElapsed = 0.0f;
+    actorState->actionScriptDuration = -1.0f;
 }
 
 /// Start an action script with a default mode for actions that inherit it.
@@ -192,10 +192,10 @@ void actionScriptStart(u8 *object, s32 scriptId) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80012078 (0x80012078).
 void actionScriptStartWithMode(u8 *object, s32 scriptId, s32 mode) {
-    u8 *v;
+    ActorScriptState *actorState;
 
-    v = ((RuntimeObjectPrefix *)object)->state.bytes;
-    ((ActorScriptState *)v)->defaultActionMode = mode;
+    actorState = ((RuntimeObjectPrefix *)object)->state.actor;
+    actorState->defaultActionMode = mode;
     actionScriptStart(object, scriptId);
 }
 
@@ -205,8 +205,8 @@ void actionScriptStartWithMode(u8 *object, s32 scriptId, s32 mode) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001209C (0x8001209C).
 void actionScriptSetDuration(u8 *object, f32 duration) {
-    u8 *actorState = ((RuntimeObjectPrefix *)object)->state.bytes;
-    ((ActorScriptState *)actorState)->actionScriptDuration = duration;
+    ActorScriptState *actorState = ((RuntimeObjectPrefix *)object)->state.actor;
+    actorState->actionScriptDuration = duration;
 }
 
 /// Stop script command execution and request the current action to finish.
@@ -214,20 +214,20 @@ void actionScriptSetDuration(u8 *object, f32 duration) {
 /// \returns A borrowed pointer to the actor's script identifier, now set to -1; valid while its state lives.
 /// \note Original decompilation identifier: \c func_800120AC (0x800120AC).
 s32 *actionScriptStop(u8 *object) {
-    u8 *state = ((RuntimeObjectPrefix *)object)->state.bytes;
-    u8 *script;
+    ActorScriptState *state = ((RuntimeObjectPrefix *)object)->state.actor;
+    ActorScriptState *script;
 
     actionRequestLoopExit(object);
     actionCancelPendingRequest(object);
-    ((ActorScriptState *)state)->actionScriptCommand = NULL;
+    state->actionScriptCommand = NULL;
     script = state;
     state = NULL;
-    ((ActorScriptState *)script)->actionScriptId = -1;
+    script->actionScriptId = -1;
     // Debug null check; its body is compiled out, but its block keeps the
     // return add out of the store block.
     if (script == NULL) {
     }
-    return &((ActorScriptState *)script)->actionScriptId;
+    return &script->actionScriptId;
 }
 
 /// Check whether script command execution has stopped.
@@ -235,8 +235,8 @@ s32 *actionScriptStop(u8 *object) {
 /// \returns 1 when no command remains active, or 0 otherwise.
 /// \note Original decompilation identifier: \c func_800120F0 (0x800120F0).
 s32 actionScriptIsStopped(u8 *object) {
-    u8 *actorState = ((RuntimeObjectPrefix *)object)->state.bytes;
-    if (((ActorScriptState *)actorState)->actionScriptCommand == NULL) {
+    ActorScriptState *actorState = ((RuntimeObjectPrefix *)object)->state.actor;
+    if (actorState->actionScriptCommand == NULL) {
         return 1;
     }
     return 0;
@@ -247,15 +247,15 @@ s32 actionScriptIsStopped(u8 *object) {
 /// \returns 1 when a recorded script action has ended or been superseded, or 0 otherwise.
 /// \note Original decompilation identifier: \c func_80012114 (0x80012114).
 s32 actionScriptHasLastActionEnded(u8 *object) {
-    u8 *actorState;
+    ActorScriptState *actorState;
     u32 currentRequestId;
 
-    actorState = ((RuntimeObjectPrefix *)object)->state.bytes;
-    if (((ActorScriptState *)actorState)->actionScriptLastRequestId == 0) {
+    actorState = ((RuntimeObjectPrefix *)object)->state.actor;
+    if (actorState->actionScriptLastRequestId == 0) {
         return 0;
     }
     currentRequestId = actionGetStoredRequestId(object);
-    if ((currentRequestId == 0) || (((ActorScriptState *)actorState)->actionScriptLastRequestId < currentRequestId)) {
+    if ((currentRequestId == 0) || (actorState->actionScriptLastRequestId < currentRequestId)) {
         return 1;
     }
     return 0;
