@@ -1,3 +1,4 @@
+#include "terrain_height.h"
 #include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
 #include "common.h"
@@ -62,7 +63,6 @@ u32 randomBelow(s32);
 f32 mathUnitDirectionDegrees(f32, f32);
 f32 mathSinDegrees(f32);
 f32 mathCosDegrees(f32);
-f32 terrainGetWorldHeightForQuery(s32, f32, f32, f32, u8 **);
 s32 terrainCheckHorizontalObstruction(s32, f32, f32, f32, f32, f32, f32, f32, f32, u8 **);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).

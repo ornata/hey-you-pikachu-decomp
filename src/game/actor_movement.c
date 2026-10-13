@@ -1,3 +1,4 @@
+#include "terrain_height.h"
 #include "actor_action_callbacks.h"
 #include "action_continuation.h"
 #include "action_request.h"
@@ -943,7 +944,6 @@ s32 actorApproachTargetWithinSceneBounds(u8 *object) {
 #undef MOVE_MAX
 #undef MOVE_MIN
 
-f32 terrainGetWorldHeight(f32, f32, s32, s32);
 
 /// Record ground clearance and check whether the tracked target is within approach range.
 /// \param actor Actor whose ground clearance and target are inspected.
@@ -956,7 +956,7 @@ s32 actorRecordGroundClearanceAndCheckTarget(u8 *actor) {
 
     obj = *(u8 **)(actor + 0x54);
     actorRefreshTrackingTargetPosition((u8 *)actor);
-    y = terrainGetWorldHeight(*(f32 *)(actor + 0x18), *(f32 *)(actor + 0x1C), *(s32 *)(actor + 0x20), 0);
+    y = terrainGetWorldHeight(*(f32 *)(actor + 0x18), *(f32 *)(actor + 0x1C), *(f32 *)(actor + 0x20), 0);
     if (*(f32 *)(actor + 0x48) < y) {
         *(f32 *)(obj + 0x1F8) = 0.0f;
     } else {
@@ -1007,7 +1007,7 @@ s32 actorAdvanceWithGroundClearance(s32 actor, f32 speed) {
     v[1] = 0.0f;
     v[2] = gRuntimeFrameSeconds * speed;
     objectAddPendingLocalMovement(v);
-    y = terrainGetWorldHeight(*(f32 *)(actor + 0x18), *(f32 *)(actor + 0x1C), *(s32 *)(actor + 0x20), 0);
+    y = terrainGetWorldHeight(*(f32 *)(actor + 0x18), *(f32 *)(actor + 0x1C), *(f32 *)(actor + 0x20), 0);
     if (*(f32 *)(actor + 0x1C) - y < 10.0f) {
         *(f32 *)(actor + 0x18) = *(f32 *)(actor + 0x18);
         *(f32 *)(actor + 0x1C) = y + 10.0f;
@@ -1024,7 +1024,7 @@ s32 actorFollowGroundAndFaceTarget(u8 *actor) {
     f32 y;
     actorRefreshTrackingTargetPosition((u8 *)actor);
     actorTurnTowardTarget((u8 *)actor, 300.0f);
-    y = terrainGetWorldHeight(*(f32 *)(actor + 0x18), *(f32 *)(actor + 0x1C), *(s32 *)(actor + 0x20), 0);
+    y = terrainGetWorldHeight(*(f32 *)(actor + 0x18), *(f32 *)(actor + 0x1C), *(f32 *)(actor + 0x20), 0);
     *(f32 *)(actor + 0x18) = *(f32 *)(actor + 0x18);
     *(f32 *)(actor + 0x1C) = y + 11.5f;
     *(f32 *)(actor + 0x20) = *(f32 *)(actor + 0x20);

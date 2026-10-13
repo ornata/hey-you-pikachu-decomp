@@ -1,3 +1,4 @@
+#include "terrain_height.h"
 #include "object_create.h"
 #include "heap_free.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -8,7 +9,6 @@
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
 
-f32 terrainGetWorldHeight(f32, f32, f32, s32 *);
 typedef struct {
     s32 count;
     f32 spacing;
@@ -27,7 +27,7 @@ void groundShadowUpdateVertices(u8 *obj, s32 buffer) {
     GridEffect *grid;
     Vtx *vertex;
     s32 row;
-    s32 hit;
+    u8 *hit;
     s32 column;
     f32 x;
     f32 z;

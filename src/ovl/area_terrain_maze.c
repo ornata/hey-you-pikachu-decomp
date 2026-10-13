@@ -1,3 +1,4 @@
+#include "terrain_height.h"
 #include "terrain_surface.h"
 #include "wisp_effect.h"
 #include "falling_particle.h"
@@ -293,7 +294,6 @@ void areaSpawnItemInRegion(f32 *region, s32 kind) {
     itemCreate(x, y, z, 0.0f, 0.0f, kind);
 }
 
-f32 terrainGetWorldHeight(f32, f32, f32, u8 **); /* extern */
 void contactEffectCreate(f32, f32, f32);       /* extern */
 
 /// Create a contact effect at a random horizontal position within an area region.
@@ -1044,7 +1044,6 @@ void terrainCreateContactEffect(f32 *position, s32 material) {
     }
 }
 
-f32 terrainGetWorldHeightForQuery(s32, f32, f32, f32, u8 **);
 f32 vector3Length(u8 *);
 /// Borrowed reference to the active Pikachu actor created for the current area.
 /// \note Original identifier: \c D_800760A8 (0x800760A8).

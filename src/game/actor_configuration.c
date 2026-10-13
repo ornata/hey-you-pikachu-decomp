@@ -1,3 +1,4 @@
+#include "terrain_height.h"
 #include "linked_effect.h"
 #include "script_vm_execution.h"
 #include "script_vm_lifecycle.h"
@@ -135,7 +136,6 @@ ACTOR_KIND_OFFSET_CHECK(ActorKindResourceOffsetCheck, resourceIndex, 0x50);
 
 
 
-f32 terrainGetWorldHeight(f32, f32, f32, s32);
 /// Initial uniform scale of a contact-reactive effect.
 /// \note Original identifier: \c D_800A3A68 (0x800A3A68).
 extern f32 gContactEffectInitialScale;

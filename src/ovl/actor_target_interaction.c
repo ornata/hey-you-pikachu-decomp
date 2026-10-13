@@ -1,3 +1,4 @@
+#include "terrain_height.h"
 #include "scroll_board.h"
 #include "actor_behavior.h"
 #include "item_participation.h"
@@ -346,7 +347,6 @@ void actorSetAppearanceVariants(u8 *actor, s32 slot0Variant, s32 slot1Variant, s
     }
 }
 
-f32 terrainGetWorldHeightForQuery(s32, f32, f32, f32, u8 **); /* extern */
 
 /// Query ground height at an offset along the actor heading.
 /// \param actor Actor providing the position and heading.

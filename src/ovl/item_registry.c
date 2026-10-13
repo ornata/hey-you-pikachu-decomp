@@ -1,3 +1,4 @@
+#include "terrain_height.h"
 #include "wisp_effect.h"
 #include "effect_emitter.h"
 #include "texture_animation_programs.h"
@@ -2103,7 +2104,6 @@ void itemInitializeState(u8 *item) {
     ((RuntimeObjectPrefix *)item)->state.bytes = itemAllocateState();
 }
 
-f32 terrainGetWorldHeight(f32, f32, f32, u8 **);
 /// Whether newly created items receive hierarchy flag two; broader policy remains unresolved.
 /// \note Original identifier: \c D_80088F20 (0x80088F20).
 extern s32 gItemCreationHierarchyFlag2Enabled;

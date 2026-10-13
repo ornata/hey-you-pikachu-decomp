@@ -1,3 +1,4 @@
+#include "terrain_height.h"
 #include "terrain_surface.h"
 #include "audio_sound_effect.h"
 #include "audio_playback_stop.h"
@@ -566,7 +567,6 @@ s32 controllerIsRumblePatternActive(s32);
 void backdropAdvanceScroll(f32);
 f32 vector3Normalize(f32 *);
 u32 randomNext(void);
-f32 terrainGetWorldHeightForQuery(s32, f32, f32, f32, u8 **);
 s32 terrainConstrainMovement(s32, f32, f32, f32, f32, f32, f32, f32 *, f32 *, f32 *, u8 **);
 void terrainGetDownhillHeightDifferences(f32, f32, f32, f32, f32, f32 *, f32 *, u8 **);
 void playerPlayFootstepSound(u8 *, s32);

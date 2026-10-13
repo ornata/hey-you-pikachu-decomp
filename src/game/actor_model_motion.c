@@ -1,3 +1,4 @@
+#include "terrain_height.h"
 #include "terrain_surface.h"
 #include "audio_sound_effect.h"
 #include "audio_playback_stop.h"
@@ -326,7 +327,6 @@ extern f32 gRuntimeFrameSeconds;
 f32 mathUnitDirectionDegrees(f32, f32);
 f32 mathSinDegrees(f32);
 f32 mathCosDegrees(f32);
-f32 terrainGetWorldHeight(f32, f32, f32, u8 **);
 f32 mathWrapSignedDegrees(f32);
 f32 mathApproachAngleDegrees(f32, f32, f32, f32, f32);
 
@@ -1206,7 +1206,6 @@ f32 actorGetLowestReferencePartHeight(u8 *actor) {
     return min;
 }
 
-f32 terrainGetWorldHeightForQuery(s32, f32, f32, f32, u8 **);
 
 /// Measure actor ground clearance at a displaced reference position.
 /// \param actor Actor whose reference parts and ground offset determine clearance.

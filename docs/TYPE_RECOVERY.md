@@ -3776,3 +3776,9 @@ implementation and eight consumers. It specifies the signed word return and
 optional writable borrowed-node cache, including invalidation before area
 teardown. The ignored-return caller and former integer-cache declarations now
 use the same interface; every source-unit adoption passes strict comparison.
+
+`terrain_height.h` supplies both world-height query contracts to the terrain
+implementation and thirteen consumer units. Coordinates are floating point;
+optional node caches retain the same area lifetime as surface-attribute caches.
+The actor ground-clearance caller reads Z as a float, and ground-shadow sampling
+uses a pointer-valued cache. Both changes preserve the original instruction bytes.

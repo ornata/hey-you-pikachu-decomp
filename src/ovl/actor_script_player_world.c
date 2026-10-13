@@ -1,3 +1,4 @@
+#include "terrain_height.h"
 #include "terrain_surface.h"
 #include "actor_behavior.h"
 #include "object_transform.h"
@@ -1254,7 +1255,6 @@ s32 actorScriptPushElapsedTime(u8 *actor) {
     return 0;
 }
 
-f32 terrainGetWorldHeight(f32, f32, f32, s32); /* extern */
 
 /// Read ground height at a world position.
 /// \param actor Actor whose script VM supplies X, Y, then Z and receives the ground height, or zero when no terrain node is found.

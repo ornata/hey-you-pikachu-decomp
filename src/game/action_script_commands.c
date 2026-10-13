@@ -1,3 +1,4 @@
+#include "terrain_height.h"
 #include "terrain_surface.h"
 #include "wisp_effect.h"
 #include "ribbon_effect.h"
@@ -640,7 +641,6 @@ void actionCommandEmitParticlesAtTarget(u8 *object, u8 *unused, ActorActionCueCo
 typedef struct {
     f32 v[3];
 } GroundVector;
-f32 terrainGetWorldHeight(f32, f32, f32, void *);
 /// Create a scattered particle effect at the actor or its tracking target.
 /// \param actor Actor supplying the effect position or tracking target.
 /// \param state Unused action-handler context.

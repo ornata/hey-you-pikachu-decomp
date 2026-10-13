@@ -1,3 +1,4 @@
+#include "terrain_height.h"
 #include "midi_reader.h"
 #include "audio_sound_effect.h"
 #include "matrix_point.h"
@@ -1168,7 +1169,6 @@ void objectUpdateHierarchyInteractionVisibility(u8 *object) {
     }
 }
 
-f32 terrainGetWorldHeightForQuery(s32, f32, f32, f32, u8 **); /* extern */
 
 /// Measure the object world height relative to the ground beneath it.
 /// \param object Object whose world position is queried.
