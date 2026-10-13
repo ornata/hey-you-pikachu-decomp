@@ -1,3 +1,4 @@
+#include "audio_bank.h"
 #include "sequence_registration.h"
 #include "sequence_engine_types.h"
 #include "sequence_playback.h"
@@ -73,7 +74,6 @@ s32 audioDmaInitialize(ALHeap *, s32, s32);
 ALDMAproc audioDmaCreateCallback(s32 *);
 void n_alInit(N_ALGlobals *, ALSynConfig *);
 Acmd *n_alAudioFrame(Acmd *, s32 *, s16 *, s32);
-u8 *audioBankLoad(ALHeap *, s32, s32, s32);
 void audioInitializeSequencePlayers(s32, u8 *);
 void audioWorkerStart(s32, ALHeap *, OSId, OSPri, s32, s32, s32, s32, s32);
 
@@ -117,7 +117,7 @@ s32 audioInitialize(s32 scheduler, s32 threadId, s32 priority, u32 frequency) {
     config.dmaproc = audioDmaCreateCallback;
     config.outputRate = osAiSetFrequency(frequency);
     n_alInit(&gGameAudioSynthesizer, &config);
-    gAudioBankFile = (ALBankFile *)audioBankLoad(
+    gAudioBankFile = audioBankLoad(
         &heap, (s32)gAudioBankRomStart, (s32)(gAudioBankRomStart + AUDIO_BANK_SIZE), (s32)gAudioSamplesRomStart);
     audioInitializeSequencePlayers((s32)&heap, (u8 *)gAudioBankFile);
     gSoundEffectPlayer = soundEffectPlayerCreate(&gGameAudioSynthesizer, &heap, 32);

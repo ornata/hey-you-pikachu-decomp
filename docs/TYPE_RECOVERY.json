@@ -51,9 +51,9 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 1807,
-      "unique_spellings": 771,
-      "files": 73
+      "occurrences": 1802,
+      "unique_spellings": 769,
+      "files": 72
     }
   },
   "policies": {
@@ -1234,29 +1234,9 @@
         }
       }
     },
-    "src/game/audio_bank_loader.c": {
-      "known_views": [
-        "rom_dma.h"
-      ],
-      "matching_exceptions": {
-        "audioBankRelocate": "Moving the instrument cursor directly to instArray changed object bytes. The retained byte cursor advances through the variable-length tail while accessing only the ALBank instrument-array member; preserve this biased address calculation or investigate IDO scheduling before changing it."
-      },
-      "locations": {
-        "raw_offset_candidates": {
-          "instrument + 0xE": [
-            "112:18",
-            "113:34"
-          ],
-          "instrument + 0x10": [
-            "112:55",
-            "114:22",
-            "115:51"
-          ]
-        }
-      }
-    },
     "src/game/audio_playback.c": {
       "known_views": [
+        "audio_bank.h",
         "audio_playback_query.h",
         "audio_playback_stop.h",
         "audio_sound_effect.h",

@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 1,807 / 73 |
+| Raw offset candidates | 4,040 / 86 | 1,802 / 72 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -4010,3 +4010,15 @@ bytes remain explicitly preserved. Audio-bank, overlay, compressed-archive and
 voice-vocabulary loading now use `rom_dma.h`. Main and controller startup also
 use its canonical hook declarations, removing duplicate and unused local DMA
 prototypes. Every source-unit change independently passed strict object comparison.
+
+### Audio-bank relocation records
+
+`audio_bank.h` shares the typed loaded-bank result and its audio-heap lifetime
+with playback initialization. Bank, instrument, sound and wave-table relocation
+reuse the existing audio declarations instead of local placeholder records.
+Named fields distinguish envelope, key-map, sample data, ADPCM book and loop,
+and raw-sample loop references; target offset checks cover the accessed record
+prefixes. Sample data remains cartridge-backed while bank metadata is in RAM.
+The variable-length bank instrument cursor retains its documented byte view
+and 32-bit offset arithmetic. All recovered representations pass strict object
+comparison, without changing external audio declarations or compiler settings.
