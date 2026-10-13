@@ -195,7 +195,6 @@ void actorPrepareModelLightingDrawList(u8 *actor, ActorScriptState *model, s32 b
     gSPEndDisplayList(g++);
 }
 
-void actorPrepareModelLightingDrawList(u8 *, ActorScriptState *, s32);
 void matrix34Identity(u8 *); /* extern */
 
 /// Allocate and initialize actor model state and its drawing resources.
@@ -203,40 +202,40 @@ void matrix34Identity(u8 *); /* extern */
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80014FE4 (0x80014FE4).
 void actorInitializeModelState(u8 *actor) {
-    s32 var_s0;
-    u8 *allocation;
+    s32 buffer;
+    ActorScriptState *state;
     u8 *drawListStorage;
 
-    allocation = heapAllocLocal(&gGameHeap, 0x408, 0xC3);
-    _bzero(allocation, 0x408);
-    ((ActorScriptState *)allocation)->activeRequestId = 0;
-    ((ActorScriptState *)allocation)->nextRequestId = 1;
-    ((ActorScriptState *)allocation)->playbackMode = 0;
-    ((ActorScriptState *)allocation)->pendingAction = -1;
-    ((ActorScriptState *)allocation)->messengerContactMode = 2;
-    ((ActorScriptState *)allocation)->motionDuration = 0.0f;
-    ((ActorScriptState *)allocation)->motionRemaining = 0.0f;
-    ((ActorScriptState *)allocation)->movementScale = 1.0f;
-    matrix34Identity(allocation + 0x18);
-    _bzero(&((ActorScriptState *)allocation)->rootPlayback, sizeof(ActorRootPlaybackWorkspace));
-    _bzero(&((ActorScriptState *)allocation)->rootMovementTrack, sizeof(AnimationDeltaTrack3));
-    ((ActorScriptState *)allocation)->airborne = 0;
-    ((ActorScriptState *)allocation)->nextSoundSlot = 0;
-    _bzero(((ActorScriptState *)allocation)->soundHandles, 0x10);
-    ((ActorScriptState *)allocation)->trackedVoice = 0;
-    ((ActorScriptState *)allocation)->actionScriptId = -1;
-    ((ActorScriptState *)allocation)->searchItemKind = 0x43;
-    ((ActorScriptState *)allocation)->searchItemRange = 0.0f;
-    directionAnimationReset((u8 *)&((ActorScriptState *)allocation)->directionAnimation);
+    state = heapAllocLocal(&gGameHeap, sizeof(ActorScriptState), 0xC3);
+    _bzero(state, sizeof(ActorScriptState));
+    state->activeRequestId = 0;
+    state->nextRequestId = 1;
+    state->playbackMode = 0;
+    state->pendingAction = -1;
+    state->messengerContactMode = 2;
+    state->motionDuration = 0.0f;
+    state->motionRemaining = 0.0f;
+    state->movementScale = 1.0f;
+    matrix34Identity((u8 *)&state->rootMotionTransform);
+    _bzero(&state->rootPlayback, sizeof(ActorRootPlaybackWorkspace));
+    _bzero(&state->rootMovementTrack, sizeof(AnimationDeltaTrack3));
+    state->airborne = 0;
+    state->nextSoundSlot = 0;
+    _bzero(state->soundHandles, 0x10);
+    state->trackedVoice = 0;
+    state->actionScriptId = -1;
+    state->searchItemKind = 0x43;
+    state->searchItemRange = 0.0f;
+    directionAnimationReset((u8 *)&state->directionAnimation);
     drawListStorage = heapAllocLocal(&gGameHeap, 0x80, 0xE8);
-    ((ActorScriptState *)allocation)->modelDrawLists[0] = (Gfx *)drawListStorage;
-    ((ActorScriptState *)allocation)->modelDrawLists[1] = (Gfx *)(drawListStorage + 0x40);
-    var_s0 = 0;
+    state->modelDrawLists[0] = (Gfx *)drawListStorage;
+    state->modelDrawLists[1] = (Gfx *)(drawListStorage + 0x40);
+    buffer = 0;
     do {
-        actorPrepareModelLightingDrawList(actor, (ActorScriptState *)allocation, var_s0);
-        var_s0 += 1;
-    } while (var_s0 != 2);
-    ((RuntimeObjectPrefix *)actor)->state.bytes = allocation;
+        actorPrepareModelLightingDrawList(actor, state, buffer);
+        buffer += 1;
+    } while (buffer != 2);
+    ((RuntimeObjectPrefix *)actor)->state.actor = state;
 }
 
 /// Allocate initial motion state for an actor child object.
@@ -278,20 +277,20 @@ typedef char FacingOrientationSizeCheck[(sizeof(FacingOrientation) == 0x10) ? 1 
 /// \note Portability: The allocator call retains an extra argument ignored by the original ABI.
 /// \note Original decompilation identifier: \c func_80015160 (0x80015160).
 void actorInitializeTargetFacingChildState(u8 *actor) {
-    u8 *obj;
+    ChildMotionState *state;
     TargetFacingState *vec;
 
     actorInitializeChildMotionState(actor);
-    obj = *(u8 **)(actor + 0x54);
+    state = ((RuntimeObjectPrefix *)actor)->state.pointer;
     vec = (TargetFacingState *)heapAllocLocal(&gGameHeap, sizeof(TargetFacingState), 0x10C, actor);
-    vec->motionAngles[0] = *(f32 *)(actor + 0xC);
-    vec->motionAngles[1] = *(f32 *)(actor + 0x10);
-    vec->motionAngles[2] = *(f32 *)(actor + 0x14);
-    vec->previousAngles[0] = *(f32 *)(actor + 0xC);
-    vec->previousAngles[1] = *(f32 *)(actor + 0x10);
-    vec->previousAngles[2] = *(f32 *)(actor + 0x14);
+    vec->motionAngles[0] = ((RuntimeObjectPrefix *)actor)->rotation[0];
+    vec->motionAngles[1] = ((RuntimeObjectPrefix *)actor)->rotation[1];
+    vec->motionAngles[2] = ((RuntimeObjectPrefix *)actor)->rotation[2];
+    vec->previousAngles[0] = ((RuntimeObjectPrefix *)actor)->rotation[0];
+    vec->previousAngles[1] = ((RuntimeObjectPrefix *)actor)->rotation[1];
+    vec->previousAngles[2] = ((RuntimeObjectPrefix *)actor)->rotation[2];
     vec->weight = 0.0f;
-    ((ChildMotionState *)obj)->facingController = vec;
+    state->facingController = vec;
 }
 
 /// Initialize a child object for blended facing toward the camera.
@@ -300,17 +299,17 @@ void actorInitializeTargetFacingChildState(u8 *actor) {
 /// \note Portability: The allocator call retains an extra argument ignored by the original ABI.
 /// \note Original decompilation identifier: \c func_800151E4 (0x800151E4).
 void actorInitializeCameraFacingChildState(u8 *actor) {
-    u8 *obj;
+    ChildMotionState *state;
     FacingOrientation *vec;
 
     actorInitializeChildMotionState(actor);
-    obj = *(u8 **)(actor + 0x54);
+    state = ((RuntimeObjectPrefix *)actor)->state.pointer;
     vec = (FacingOrientation *)heapAllocLocal(&gGameHeap, sizeof(FacingOrientation), 0x11C, actor);
-    vec->angles[0] = *(f32 *)(actor + 0xC);
-    vec->angles[1] = *(f32 *)(actor + 0x10);
-    vec->angles[2] = *(f32 *)(actor + 0x14);
+    vec->angles[0] = ((RuntimeObjectPrefix *)actor)->rotation[0];
+    vec->angles[1] = ((RuntimeObjectPrefix *)actor)->rotation[1];
+    vec->angles[2] = ((RuntimeObjectPrefix *)actor)->rotation[2];
     vec->weight = 0.0f;
-    ((ChildMotionState *)obj)->facingController = vec;
+    state->facingController = vec;
 }
 
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
