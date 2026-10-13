@@ -4210,3 +4210,15 @@ Hierarchy updates now use the shared object prefix for kind, flags, child links,
 scale, rotation, local/world positions and both transform-buffer references.
 Each field group and response-table adoption independently preserves strict
 objects, including original interior-symbol relocation identities.
+
+### Affine composition and graphics matrix interfaces
+
+ROM/Ghidra evidence identifies the twelve-component affine input and complete
+graphics-matrix output of `matrix34ToFixedMtx`. `matrix_basic.h` now supplies
+that typed contract, including representable finite inputs, nonoverlapping output
+and target rounding mode. It also shares affine concatenation, composition
+order and supported exact in-place output. Assembly implementations remain
+unchanged. Hierarchy updates and actor orientation use these declarations.
+The relative-orientation interface and its private composition helper now
+carry `Matrix34 *` outputs; retained reference caches remain separate from
+output storage. Each interface adoption preserves strict objects.

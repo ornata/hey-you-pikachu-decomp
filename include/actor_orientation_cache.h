@@ -21,12 +21,12 @@ typedef char
 /// Evaluate a model-part sequence relative to a retained reference pose.
 /// \param cache Writable cache initialized with captureReference nonzero, or a
 /// previously captured reference; requesting capture produces identity this call.
-/// \param matrix Output storage for a complete 3-by-4 relative orientation matrix.
+/// \param matrix Output affine relative orientation; must not overlap the retained cache.
 /// \param actor Actor address in the original 32-bit ABI, containing the listed parts.
 /// \param parts Address of a zero-terminated signed 32-bit part-identifier sequence;
 /// negative identifiers request inverse rotations and the minimum integer is invalid.
 /// \returns Nothing.
 /// \note Original identifier: \c func_800142E0 (0x800142E0).
-void actorEvaluateRelativePartOrientation(ActorOrientationCache *cache, u8 *matrix, s32 actor, s32 parts);
+void actorEvaluateRelativePartOrientation(ActorOrientationCache *cache, Matrix34 *matrix, s32 actor, s32 parts);
 
 #endif

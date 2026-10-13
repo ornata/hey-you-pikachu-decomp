@@ -1282,7 +1282,6 @@ u8 *objectRefreshHierarchyWorldPositions(u8 *object) {
 }
 
 void actorConstrainMovementToTerrain(u8 *, Vec3f *);
-void matrix34ToFixedMtx(void *, void *);
 
 /// Update hierarchy behavior, movement, and drawing transforms from the current reference transform.
 /// Requires initialized kind state, a live acyclic hierarchy, and enough traversal-stack capacity for its depth.
@@ -1338,7 +1337,7 @@ void objectUpdateHierarchyFromCurrentTransform(u8 *object) {
                 }
                 if (((RuntimeObjectPrefix *)object)->matrixBuffers[0] != NULL) {
                     matrix34ToFixedMtx(&gObjectTraversalTransform,
-                                       ((RuntimeObjectPrefix *)object)->matrixBuffers[((((RuntimeObjectPrefix *)object)->flags & 0x8000) ? 1 : 0) ^ 1]);
+                                       (Mtx *)((RuntimeObjectPrefix *)object)->matrixBuffers[((((RuntimeObjectPrefix *)object)->flags & 0x8000) ? 1 : 0) ^ 1]);
                     ((RuntimeObjectPrefix *)object)->flags ^= 0x8000;
                 }
                 ((RuntimeObjectPrefix *)object)->worldPosition[0] = ((f32 *)&gObjectTraversalTransform)[9];

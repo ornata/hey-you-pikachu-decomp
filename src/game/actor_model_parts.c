@@ -81,8 +81,7 @@ extern s32 gActorAppearanceSlot1Models[];
 /// Model-part identifiers controlled by each actor appearance slot.
 /// \note Original identifier: \c D_800760E8 (0x800760E8).
 extern s32 gActorAppearancePartIds[];
-void actorComposePartOrientation(void *, s32, s32 *, s32);
-void matrix34Concatenate(void *, void *, void *);
+void actorComposePartOrientation(Matrix34 *, s32, s32 *, s32);
 /// Signed part-identifier sequence used to track model-part relative roll.
 /// \note Original identifier: \c D_800A2770 (0x800A2770).
 extern u8 gActorRelativeRollPartSequence[];
@@ -365,7 +364,7 @@ void actorPartFollowRelativeRoll(u8 *object) {
     f32 x, y, z;
     parent = ((RuntimeObjectPrefix *)object)->root.address;
     state = (ActorOrientationCache *)((RuntimeObjectPrefix *)object)->state.pointer;
-    actorEvaluateRelativePartOrientation(state, (u8 *)matrix, parent, (s32)gActorRelativeRollPartSequence);
+    actorEvaluateRelativePartOrientation(state, (Matrix34 *)matrix, parent, (s32)gActorRelativeRollPartSequence);
     matrix33GetFoldedEulerDegrees(matrix, &x, &y, &z);
     ((RuntimeObjectPrefix *)object)->rotation[0] = 0;
     ((RuntimeObjectPrefix *)object)->rotation[1] = 0;
@@ -393,8 +392,8 @@ void actorPartFollowBlendedOrientation(u8 *object) {
     f32 pitchScale;
     parent = ((RuntimeObjectPrefix *)object)->root.address;
     state = (ActorOrientationCache *)((RuntimeObjectPrefix *)object)->state.pointer;
-    actorEvaluateRelativePartOrientation(state, (u8 *)first, parent, (s32)gActorBlendedOrientationFirstPartSequence);
-    actorEvaluateRelativePartOrientation(state + 1, (u8 *)second, parent,
+    actorEvaluateRelativePartOrientation(state, (Matrix34 *)first, parent, (s32)gActorBlendedOrientationFirstPartSequence);
+    actorEvaluateRelativePartOrientation(state + 1, (Matrix34 *)second, parent,
                                          (s32)gActorBlendedOrientationSecondPartSequence);
     matrix34BlendOrientation(0.5f, first, second, midpoint);
     matrix33GetFoldedEulerDegrees(midpoint, (f32 *)(object + 0xC), (f32 *)(object + 0x10), (f32 *)(object + 0x14));
@@ -489,13 +488,13 @@ void actorPartUpdateCollisionRegistration(u8 *object) {
 }
 
 /// Evaluate the combined orientation of a signed sequence of actor model parts.
-/// \param matrix Output 3-by-4 orientation matrix; identity when no listed parts are available.
+/// \param matrix Output affine orientation; identity when no listed parts are available.
 /// \param owner Address of the actor containing the listed model parts.
 /// \param cursor Zero-terminated sequence of part identifiers, excluding the minimum signed integer; negative identifiers request inverse part rotations.
 /// \param forward Nonzero to evaluate the sequence orientation, or zero to evaluate its inverse.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001412C (0x8001412C).
-void actorComposePartOrientation(void *matrix, s32 owner, s32 *cursor, s32 forward) {
+void actorComposePartOrientation(Matrix34 *matrix, s32 owner, s32 *cursor, s32 forward) {
     u8 *node;
     s32 direction;
     s32 count;
@@ -528,31 +527,31 @@ void actorComposePartOrientation(void *matrix, s32 owner, s32 *cursor, s32 forwa
             if (first != 0) {
                 first = 0;
                 if (id * direction > 0)
-                    matrix34MakeRotationXYZDegrees(matrix, ((RuntimeObjectPrefix *)node)->rotation[0], ((RuntimeObjectPrefix *)node)->rotation[1], ((RuntimeObjectPrefix *)node)->rotation[2]);
+                    matrix34MakeRotationXYZDegrees((f32 *)matrix, ((RuntimeObjectPrefix *)node)->rotation[0], ((RuntimeObjectPrefix *)node)->rotation[1], ((RuntimeObjectPrefix *)node)->rotation[2]);
                 else
-                    matrix34MakeRotationZYXDegrees(matrix, -((RuntimeObjectPrefix *)node)->rotation[0], -((RuntimeObjectPrefix *)node)->rotation[1], -((RuntimeObjectPrefix *)node)->rotation[2]);
+                    matrix34MakeRotationZYXDegrees((f32 *)matrix, -((RuntimeObjectPrefix *)node)->rotation[0], -((RuntimeObjectPrefix *)node)->rotation[1], -((RuntimeObjectPrefix *)node)->rotation[2]);
             } else if (id * direction > 0)
-                matrix33ApplyRotationXYZDegrees(matrix, ((RuntimeObjectPrefix *)node)->rotation[0], ((RuntimeObjectPrefix *)node)->rotation[1], ((RuntimeObjectPrefix *)node)->rotation[2]);
+                matrix33ApplyRotationXYZDegrees((f32 *)matrix, ((RuntimeObjectPrefix *)node)->rotation[0], ((RuntimeObjectPrefix *)node)->rotation[1], ((RuntimeObjectPrefix *)node)->rotation[2]);
             else
-                matrix33ApplyRotationZYXDegrees(matrix, -((RuntimeObjectPrefix *)node)->rotation[0], -((RuntimeObjectPrefix *)node)->rotation[1], -((RuntimeObjectPrefix *)node)->rotation[2]);
+                matrix33ApplyRotationZYXDegrees((f32 *)matrix, -((RuntimeObjectPrefix *)node)->rotation[0], -((RuntimeObjectPrefix *)node)->rotation[1], -((RuntimeObjectPrefix *)node)->rotation[2]);
         }
     }
     if (first)
-        matrix34Identity((Matrix34 *)matrix);
+        matrix34Identity(matrix);
 }
 
 /// Evaluate model-part orientation relative to a saved reference pose.
 /// \param cache Initialized writable orientation-tracking state; a set reset flag captures a new reference pose on this call.
-/// \param matrix Output 3-by-4 relative orientation matrix; identity when capturing a new reference pose.
+/// \param matrix Output affine relative orientation, separate from the cache; identity when capturing a new reference pose.
 /// \param actor Address of the actor containing the listed model parts.
 /// \param parts Address of a zero-terminated signed part-identifier sequence.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800142E0 (0x800142E0).
-void actorEvaluateRelativePartOrientation(ActorOrientationCache *cache, u8 *matrix, s32 actor, s32 parts) {
+void actorEvaluateRelativePartOrientation(ActorOrientationCache *cache, Matrix34 *matrix, s32 actor, s32 parts) {
     if (cache->captureReference != 0) {
         cache->captureReference = 0;
         actorComposePartOrientation(&cache->inverseReference, actor, (s32 *)parts, 0);
-        matrix34Identity((Matrix34 *)matrix);
+        matrix34Identity(matrix);
         return;
     }
     actorComposePartOrientation(matrix, actor, (s32 *)parts, 1);
@@ -641,10 +640,10 @@ void actorUpdateGameplayModel(u8 *object) {
     if (object != ((u8 *)gPikachuActor))
         actorUpdateScriptVm(object);
     actorUpdateModel(object);
-    actorEvaluateRelativePartOrientation(&((ActorScriptState *)state)->primaryPoseReference, (u8 *)&((ActorScriptState *)state)->primaryPoseTransform, (s32)object,
+    actorEvaluateRelativePartOrientation(&((ActorScriptState *)state)->primaryPoseReference, &((ActorScriptState *)state)->primaryPoseTransform, (s32)object,
                                          (s32)gActorPrimaryPosePartSequence);
     matrix33GetFoldedEulerDegrees((f32 *)&((ActorScriptState *)state)->primaryPoseTransform, &((ActorScriptState *)state)->primaryPoseAngles[0], &((ActorScriptState *)state)->primaryPoseAngles[1], &((ActorScriptState *)state)->primaryPoseAngles[2]);
-    actorEvaluateRelativePartOrientation(&((ActorScriptState *)state)->secondaryPoseReference, (u8 *)&((ActorScriptState *)state)->secondaryPoseTransform, (s32)object,
+    actorEvaluateRelativePartOrientation(&((ActorScriptState *)state)->secondaryPoseReference, &((ActorScriptState *)state)->secondaryPoseTransform, (s32)object,
                                          (s32)gActorSecondaryPosePartSequence);
     matrix33GetFoldedEulerDegrees((f32 *)&((ActorScriptState *)state)->secondaryPoseTransform, &((ActorScriptState *)state)->secondaryPoseAngles[0], &((ActorScriptState *)state)->secondaryPoseAngles[1], &((ActorScriptState *)state)->secondaryPoseAngles[2]);
     actorUpdatePartShake(object);
