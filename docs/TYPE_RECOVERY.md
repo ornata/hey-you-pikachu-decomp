@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,834 / 80 |
+| Raw offset candidates | 4,040 / 86 | 2,766 / 80 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3244,3 +3244,15 @@ string-address decoding. New offset checks cover configuration program, strings,
 commands and capacity, and the VM's program/string pointers. The complete resource
 allocation and configuration word 0x0C remain unresolved. All typed conversions
 and dependent header rebuilds preserve strict objects.
+
+### Actor pose, shake and meter consumers
+
+Model-part primary/secondary pose followers, relative/blended pose updates,
+orientation composition and shaking use the checked object rotation fields.
+Follower scale/root/state accesses, both meter owners, the primary VM clock and
+held-item diagnostic lookup reuse established object/actor members. Gameplay
+pose evaluation names the still-unresolved controller words instead of computing
+their offsets; their policy is not guessed. Ghidra 0x80013B90 confirms secondary
+pose transforms and 0x80014A3C confirms owning-root state and action-resource
+access. Arithmetic, control flow and the separate orientation-cache ABI remain
+unchanged. Both isolated source-unit conversions preserve strict objects.

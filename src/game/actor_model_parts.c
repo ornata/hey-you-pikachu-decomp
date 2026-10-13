@@ -94,8 +94,8 @@ extern u8 D_1049F80[];
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80013660 (0x80013660).
 void actorDebugReportLinkedObjectNoOp(u8 *actor, s32 unused) {
-    u8 *actorState = *(u8 **)(actor + 0x54);
-    unused = *(s32 *)(actorState + 0x190);
+    u8 *actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    unused = ((ActorScriptState *)actorState)->heldItemHandle;
     if (unused != 0) {
         objectDebugReportNoOp(objectFindLiveByHandle(unused));
     }
@@ -159,7 +159,7 @@ s32 actorPartInitializePairedOrientationCaches(u8 *object) {
     _bzero(allocation, 0x68);
     *(s32 *)(allocation + 0) = 1;
     *(s32 *)(allocation + 0x34) = 1;
-    *(u8 **)(object + 0x54) = allocation;
+    ((RuntimeObjectPrefix *)object)->state.bytes = allocation;
     return 1;
 }
 
@@ -224,7 +224,7 @@ void actorPartInitializeAnimatedTextures(u8 *object) {
         ((Gfx *)(buffer + 0x78))->words.w0 = (u32)G_ENDDL << 24;
         ((Gfx *)(buffer + 0x78))->words.w1 = 0;
     }
-    *(u8 **)(object + 0x54) = state;
+    ((RuntimeObjectPrefix *)object)->state.bytes = state;
     *(f32 *)(object + 0x24) *= 1.5f;
 }
 
@@ -299,13 +299,13 @@ void actorPartFollowPrimaryRoll(u8 *object) {
     u8 *sub;
     u8 *data;
 
-    sub = *(u8 **)(object + 0x50);
-    data = *(u8 **)(sub + 0x54);
-    *(f32 *)(object + 0x10) = 0;
-    *(f32 *)(object + 0xC) = 0;
+    sub = ((RuntimeObjectPrefix *)object)->root.bytes;
+    data = ((RuntimeObjectPrefix *)sub)->state.bytes;
+    ((RuntimeObjectPrefix *)object)->rotation[1] = 0;
+    ((RuntimeObjectPrefix *)object)->rotation[0] = 0;
     partRoll = mathLerpAngleDegrees(0.0f, ((ActorScriptState *)data)->primaryPoseAngles[2], 0.45f);
-    *(f32 *)(object + 0x14) = partRoll;
-    *(f32 *)(object + 4) = mathMapRangeClamped(0.0f, 1.0f, 30.0f, 1.1f, mathAngleDistanceDegrees(0.0f, partRoll));
+    ((RuntimeObjectPrefix *)object)->rotation[2] = partRoll;
+    ((RuntimeObjectPrefix *)object)->scale[1] = mathMapRangeClamped(0.0f, 1.0f, 30.0f, 1.1f, mathAngleDistanceDegrees(0.0f, partRoll));
 }
 
 /// Provide an inactive model-part update hook for this build.
@@ -324,13 +324,13 @@ void actorPartFollowPrimaryOrientation(u8 *object) {
     u8 *data;
     f32 partRoll;
 
-    sub = *(u8 **)(object + 0x50);
-    data = *(u8 **)(sub + 0x54);
-    *(f32 *)(object + 0xC) = mathLerpAngleDegrees(0.0f, ((ActorScriptState *)data)->primaryPoseAngles[0], 0.8f);
-    *(f32 *)(object + 0x10) = mathLerpAngleDegrees(0.0f, ((ActorScriptState *)data)->primaryPoseAngles[1], 0.8f);
+    sub = ((RuntimeObjectPrefix *)object)->root.bytes;
+    data = ((RuntimeObjectPrefix *)sub)->state.bytes;
+    ((RuntimeObjectPrefix *)object)->rotation[0] = mathLerpAngleDegrees(0.0f, ((ActorScriptState *)data)->primaryPoseAngles[0], 0.8f);
+    ((RuntimeObjectPrefix *)object)->rotation[1] = mathLerpAngleDegrees(0.0f, ((ActorScriptState *)data)->primaryPoseAngles[1], 0.8f);
     partRoll = mathLerpAngleDegrees(0.0f, ((ActorScriptState *)data)->primaryPoseAngles[2], 0.8f);
-    *(f32 *)(object + 0x14) = partRoll;
-    *(f32 *)(object + 4) = mathMapRangeClamped(0.0f, 1.0f, 55.0f, 1.35f, mathAngleDistanceDegrees(0.0f, partRoll));
+    ((RuntimeObjectPrefix *)object)->rotation[2] = partRoll;
+    ((RuntimeObjectPrefix *)object)->scale[1] = mathMapRangeClamped(0.0f, 1.0f, 55.0f, 1.35f, mathAngleDistanceDegrees(0.0f, partRoll));
 }
 
 /// Adjust model-part orientation and scale to follow the actor secondary pose.
@@ -338,19 +338,19 @@ void actorPartFollowPrimaryOrientation(u8 *object) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80013B90 (0x80013B90).
 void actorPartFollowSecondaryOrientation(u8 *object) {
-    u8 *parent = *(u8 **)(object + 0x50);
-    u8 *state = *(u8 **)(parent + 0x54);
+    u8 *parent = ((RuntimeObjectPrefix *)object)->root.bytes;
+    u8 *state = ((RuntimeObjectPrefix *)parent)->state.bytes;
     f32 factor;
     f32 scale;
-    *(f32 *)(object + 0xC) = mathLerpAngleDegrees(0.0f, ((ActorScriptState *)state)->secondaryPoseAngles[0], 0.35f);
-    *(f32 *)(object + 0x10) = mathLerpAngleDegrees(0.0f, ((ActorScriptState *)state)->secondaryPoseAngles[1], 0.5f);
-    *(f32 *)(object + 0x14) = mathLerpAngleDegrees(0.0f, ((ActorScriptState *)state)->secondaryPoseAngles[2], 0.5f);
-    scale = mathMapRangeClamped(0.0f, 1.0f, 70.0f, 0.8f, mathAngleDistanceDegrees(0, *(f32 *)(object + 0x14)));
+    ((RuntimeObjectPrefix *)object)->rotation[0] = mathLerpAngleDegrees(0.0f, ((ActorScriptState *)state)->secondaryPoseAngles[0], 0.35f);
+    ((RuntimeObjectPrefix *)object)->rotation[1] = mathLerpAngleDegrees(0.0f, ((ActorScriptState *)state)->secondaryPoseAngles[1], 0.5f);
+    ((RuntimeObjectPrefix *)object)->rotation[2] = mathLerpAngleDegrees(0.0f, ((ActorScriptState *)state)->secondaryPoseAngles[2], 0.5f);
+    scale = mathMapRangeClamped(0.0f, 1.0f, 70.0f, 0.8f, mathAngleDistanceDegrees(0, ((RuntimeObjectPrefix *)object)->rotation[2]));
     factor = mathMapRangeClamped(0.0f, 1.0f, 55.0f, 0.8f, mathAngleDistanceDegrees(0, ((ActorScriptState *)state)->primaryPoseAngles[2]));
-    *(f32 *)object = factor * scale;
-    scale = mathMapRangeClamped(0.0f, 1.0f, 80.0f, 0.8f, mathAngleDistanceDegrees(0, *(f32 *)(object + 0xC)));
+    ((RuntimeObjectPrefix *)object)->scale[0] = factor * scale;
+    scale = mathMapRangeClamped(0.0f, 1.0f, 80.0f, 0.8f, mathAngleDistanceDegrees(0, ((RuntimeObjectPrefix *)object)->rotation[0]));
     factor = mathMapRangeClamped(0.0f, 1.0f, 55.0f, 0.8f, mathAngleDistanceDegrees(0, ((ActorScriptState *)state)->primaryPoseAngles[0]));
-    *(f32 *)(object + 8) = factor * scale;
+    ((RuntimeObjectPrefix *)object)->scale[2] = factor * scale;
 }
 
 /// Adjust model-part roll and scale from its tracked relative orientation.
@@ -366,9 +366,9 @@ void actorPartFollowRelativeRoll(u8 *object) {
     state = *(s32 **)(object + 0x54);
     actorEvaluateRelativePartOrientation(state, (u8 *)matrix, parent, (s32)gActorRelativeRollPartSequence);
     matrix33GetFoldedEulerDegrees(matrix, &x, &y, &z);
-    *(f32 *)(object + 0xC) = 0;
-    *(f32 *)(object + 0x10) = 0;
-    *(f32 *)(object + 0x14) = mathLerpAngleDegrees(0.0f, z, 0.3f);
+    ((RuntimeObjectPrefix *)object)->rotation[0] = 0;
+    ((RuntimeObjectPrefix *)object)->rotation[1] = 0;
+    ((RuntimeObjectPrefix *)object)->rotation[2] = mathLerpAngleDegrees(0.0f, z, 0.3f);
     *(f32 *)object = mathMapRangeClamped(0.0f, 1.0f, 90.0f, 1.25f, mathAngleDistanceDegrees(0.0f, z));
 }
 
@@ -398,8 +398,8 @@ void actorPartFollowBlendedOrientation(u8 *object) {
                                          (s32)gActorBlendedOrientationSecondPartSequence);
     matrix34BlendOrientation(0.5f, first, second, midpoint);
     matrix33GetFoldedEulerDegrees(midpoint, (f32 *)(object + 0xC), (f32 *)(object + 0x10), (f32 *)(object + 0x14));
-    pitchScale = mathMapRangeClamped(0.0f, 1.0f, 45.0f, 0.78f, mathWrapSignedDegrees(*(f32 *)(object + 0xC)));
-    yawScale = mathMapRangeClamped(0.0f, 1.0f, 30.0f, 0.95f, mathAngleDistanceDegrees(0.0f, *(f32 *)(object + 0x10)));
+    pitchScale = mathMapRangeClamped(0.0f, 1.0f, 45.0f, 0.78f, mathWrapSignedDegrees(((RuntimeObjectPrefix *)object)->rotation[0]));
+    yawScale = mathMapRangeClamped(0.0f, 1.0f, 30.0f, 0.95f, mathAngleDistanceDegrees(0.0f, ((RuntimeObjectPrefix *)object)->rotation[1]));
     *(f32 *)(object + 8) = yawScale * pitchScale;
 }
 
@@ -445,7 +445,7 @@ extern TextureSegments gActorPartTextureSegments;
 void actorPartBuildAnimatedTextureCommands(u8 *object, s32 buffer) {
     s32 primitiveAlpha = 255;
     TextureSegments segments = gActorPartTextureSegments;
-    u8 *state = *(u8 **)(object + 0x54);
+    u8 *state = ((RuntimeObjectPrefix *)object)->state.bytes;
     s32 finalSegment = 3;
     Gfx *branches;
     Gfx *commands;
@@ -484,7 +484,7 @@ void actorPartBuildAnimatedTextureCommands(u8 *object, s32 buffer) {
 void actorPartUpdateCollisionRegistration(u8 *object) {
     u8 *obj;
 
-    obj = *(u8 **)(object + 0x54);
+    obj = ((RuntimeObjectPrefix *)object)->state.bytes;
     collisionGridUnregisterObject(object, &((ActorPartTextureState *)obj)->collisionKey);
     ((ActorPartTextureState *)obj)->collisionKey = collisionGridRegisterObject(object);
 }
@@ -529,13 +529,13 @@ void actorComposePartOrientation(void *matrix, s32 owner, s32 *cursor, s32 forwa
             if (first != 0) {
                 first = 0;
                 if (id * direction > 0)
-                    matrix34MakeRotationXYZDegrees(matrix, *(f32 *)(node + 0xC), *(f32 *)(node + 0x10), *(f32 *)(node + 0x14));
+                    matrix34MakeRotationXYZDegrees(matrix, ((RuntimeObjectPrefix *)node)->rotation[0], ((RuntimeObjectPrefix *)node)->rotation[1], ((RuntimeObjectPrefix *)node)->rotation[2]);
                 else
-                    matrix34MakeRotationZYXDegrees(matrix, -*(f32 *)(node + 0xC), -*(f32 *)(node + 0x10), -*(f32 *)(node + 0x14));
+                    matrix34MakeRotationZYXDegrees(matrix, -((RuntimeObjectPrefix *)node)->rotation[0], -((RuntimeObjectPrefix *)node)->rotation[1], -((RuntimeObjectPrefix *)node)->rotation[2]);
             } else if (id * direction > 0)
-                matrix33ApplyRotationXYZDegrees(matrix, *(f32 *)(node + 0xC), *(f32 *)(node + 0x10), *(f32 *)(node + 0x14));
+                matrix33ApplyRotationXYZDegrees(matrix, ((RuntimeObjectPrefix *)node)->rotation[0], ((RuntimeObjectPrefix *)node)->rotation[1], ((RuntimeObjectPrefix *)node)->rotation[2]);
             else
-                matrix33ApplyRotationZYXDegrees(matrix, -*(f32 *)(node + 0xC), -*(f32 *)(node + 0x10), -*(f32 *)(node + 0x14));
+                matrix33ApplyRotationZYXDegrees(matrix, -((RuntimeObjectPrefix *)node)->rotation[0], -((RuntimeObjectPrefix *)node)->rotation[1], -((RuntimeObjectPrefix *)node)->rotation[2]);
         }
     }
     if (first)
@@ -566,7 +566,7 @@ f32 mathSinDegrees(f32);
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80014360 (0x80014360).
 void actorUpdatePartShake(u8 *object) {
-    u8 *state = *(u8 **)(object + 0x54);
+    u8 *state = ((RuntimeObjectPrefix *)object)->state.bytes;
     u8 *child;
     u16 *childState;
     f32 rotation[3];
@@ -577,9 +577,9 @@ void actorUpdatePartShake(u8 *object) {
         if (((ActorScriptState *)state)->partShakeTimeRemaining <= 0.0f) {
             ((ActorScriptState *)state)->shakingPart = NULL;
             if (*childState == 0) {
-                *(f32 *)(child + 0xC) = ((ActorScriptState *)state)->partShakeReferenceAngles[0];
-                *(f32 *)(child + 0x10) = ((ActorScriptState *)state)->partShakeReferenceAngles[1];
-                *(f32 *)(child + 0x14) = ((ActorScriptState *)state)->partShakeReferenceAngles[2];
+                ((RuntimeObjectPrefix *)child)->rotation[0] = ((ActorScriptState *)state)->partShakeReferenceAngles[0];
+                ((RuntimeObjectPrefix *)child)->rotation[1] = ((ActorScriptState *)state)->partShakeReferenceAngles[1];
+                ((RuntimeObjectPrefix *)child)->rotation[2] = ((ActorScriptState *)state)->partShakeReferenceAngles[2];
             }
         } else {
             rotation[0] = mathSinDegrees(((ActorScriptState *)state)->partShakeTimeRemaining * 1200.0f) * 3.0f;
@@ -589,14 +589,14 @@ void actorUpdatePartShake(u8 *object) {
                 rotation[0] += ((ActorScriptState *)state)->partShakeReferenceAngles[0];
                 rotation[1] += ((ActorScriptState *)state)->partShakeReferenceAngles[1];
                 rotation[2] += ((ActorScriptState *)state)->partShakeReferenceAngles[2];
-                *(f32 *)(child + 0xC) = rotation[0];
-                *(f32 *)(child + 0x10) = rotation[1];
-                *(f32 *)(child + 0x14) = rotation[2];
+                ((RuntimeObjectPrefix *)child)->rotation[0] = rotation[0];
+                ((RuntimeObjectPrefix *)child)->rotation[1] = rotation[1];
+                ((RuntimeObjectPrefix *)child)->rotation[2] = rotation[2];
                 return;
             }
-            *(f32 *)(child + 0xC) += rotation[0];
-            *(f32 *)(child + 0x10) += rotation[1];
-            *(f32 *)(child + 0x14) += rotation[2];
+            ((RuntimeObjectPrefix *)child)->rotation[0] += rotation[0];
+            ((RuntimeObjectPrefix *)child)->rotation[1] += rotation[1];
+            ((RuntimeObjectPrefix *)child)->rotation[2] += rotation[2];
         }
     }
 }
@@ -618,9 +618,9 @@ void actorStartPartShake(u8 *actor, s32 part) {
     obj = ((RuntimeObjectPrefix *)actor)->state.bytes;
     t = actorFindPart(actor, part);
     if (t != ((ActorScriptState *)obj)->shakingPart) {
-        ((ActorScriptState *)obj)->partShakeReferenceAngles[0] = *(f32 *)(t + 0xC);
-        ((ActorScriptState *)obj)->partShakeReferenceAngles[1] = *(f32 *)(t + 0x10);
-        ((ActorScriptState *)obj)->partShakeReferenceAngles[2] = *(f32 *)(t + 0x14);
+        ((ActorScriptState *)obj)->partShakeReferenceAngles[0] = ((RuntimeObjectPrefix *)t)->rotation[0];
+        ((ActorScriptState *)obj)->partShakeReferenceAngles[1] = ((RuntimeObjectPrefix *)t)->rotation[1];
+        ((ActorScriptState *)obj)->partShakeReferenceAngles[2] = ((RuntimeObjectPrefix *)t)->rotation[2];
     }
     ((ActorScriptState *)obj)->shakingPart = t;
     ((ActorScriptState *)obj)->partShakeTimeRemaining =
@@ -640,14 +640,14 @@ extern u8 gActorSecondaryPosePartSequence[];
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80014590 (0x80014590).
 void actorUpdateGameplayModel(u8 *object) {
-    u8 *state = *(u8 **)(object + 0x54);
+    u8 *state = ((RuntimeObjectPrefix *)object)->state.bytes;
     if (object != gPikachuActor)
         actorUpdateScriptVm(object);
     actorUpdateModel(object);
-    actorEvaluateRelativePartOrientation((s32 *)(state + 0x368), (u8 *)&((ActorScriptState *)state)->primaryPoseTransform, (s32)object,
+    actorEvaluateRelativePartOrientation(&((ActorScriptState *)state)->unknown368, (u8 *)&((ActorScriptState *)state)->primaryPoseTransform, (s32)object,
                                          (s32)gActorPrimaryPosePartSequence);
     matrix33GetFoldedEulerDegrees((f32 *)&((ActorScriptState *)state)->primaryPoseTransform, &((ActorScriptState *)state)->primaryPoseAngles[0], &((ActorScriptState *)state)->primaryPoseAngles[1], &((ActorScriptState *)state)->primaryPoseAngles[2]);
-    actorEvaluateRelativePartOrientation((s32 *)(state + 0x2F8), (u8 *)&((ActorScriptState *)state)->secondaryPoseTransform, (s32)object,
+    actorEvaluateRelativePartOrientation(&((ActorScriptState *)state)->unknown2F8, (u8 *)&((ActorScriptState *)state)->secondaryPoseTransform, (s32)object,
                                          (s32)gActorSecondaryPosePartSequence);
     matrix33GetFoldedEulerDegrees((f32 *)&((ActorScriptState *)state)->secondaryPoseTransform, &((ActorScriptState *)state)->secondaryPoseAngles[0], &((ActorScriptState *)state)->secondaryPoseAngles[1], &((ActorScriptState *)state)->secondaryPoseAngles[2]);
     actorUpdatePartShake(object);
@@ -672,7 +672,7 @@ void actorUpdateGameplayModel(u8 *object) {
 s32 actorPartPrepareAnimatedTextureDraw(u8 *object) {
     u8 *obj;
 
-    obj = *(u8 **)(object + 0x54);
+    obj = ((RuntimeObjectPrefix *)object)->state.bytes;
     actorPartBuildAnimatedTextureCommands(object, gGraphicsFramebufferIndex);
     gSPSegment(gRenderDisplayListCursor++, 6, osVirtualToPhysical(obj + 0x50 + gGraphicsFramebufferIndex * 0x280));
     return *(s32 *)(object + 0x30);
@@ -718,7 +718,7 @@ f32 actorAppearanceGetScale(u8 *actor, s32 slot) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800147E4 (0x800147E4).
 void actorAppearanceSetVariant(u8 *actor, s32 slot, s32 variant) {
-    u8 *actorState = *(u8 **)(actor + 0x54);
+    u8 *actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
     ((ActorScriptState *)actorState)->appearanceVariants[slot] = variant;
 }
 
@@ -728,7 +728,7 @@ void actorAppearanceSetVariant(u8 *actor, s32 slot, s32 variant) {
 /// \returns The selected model-variant identifier, or zero for the default model.
 /// \note Original decompilation identifier: \c func_800147F8 (0x800147F8).
 s32 actorAppearanceGetVariant(u8 *actor, s32 slot) {
-    u8 *actorState = *(u8 **)(actor + 0x54);
+    u8 *actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
     return ((ActorScriptState *)actorState)->appearanceVariants[slot];
 }
 
@@ -752,7 +752,7 @@ void actorAppearanceReset(u8 *actor) {
 /// \returns Borrowed address of the selected variant model, or the part default model.
 /// \note Original decompilation identifier: \c func_80014880 (0x80014880).
 s32 actorPartGetAppearanceSlot1Model(u8 *object) {
-    u8 *actorState = *(u8 **)(*(u8 **)(object + 0x50) + 0x54);
+    u8 *actorState = ((RuntimeObjectPrefix *)object)->root.object->state.bytes;
     s32 variant = ((ActorScriptState *)actorState)->appearanceVariants[1];
     if (variant == 0) {
         return *(s32 *)(object + 0x30);
@@ -765,7 +765,7 @@ s32 actorPartGetAppearanceSlot1Model(u8 *object) {
 /// \returns Borrowed address of the selected variant model, or the part default model.
 /// \note Original decompilation identifier: \c func_800148B0 (0x800148B0).
 s32 actorPartGetAppearanceSlot0Model(u8 *object) {
-    u8 *actorState = *(u8 **)(*(u8 **)(object + 0x50) + 0x54);
+    u8 *actorState = ((RuntimeObjectPrefix *)object)->root.object->state.bytes;
     s32 variant = ((ActorScriptState *)actorState)->appearanceVariants[0];
     if (variant == 0) {
         return *(s32 *)(object + 0x30);
@@ -781,7 +781,7 @@ u8 *actorPartGetLinkedItemModel(u8 *object) {
     u8 *state;
     s32 targetId;
     u8 *target;
-    state = *(u8 **)(*(u8 **)(object + 0x50) + 0x54);
+    state = ((RuntimeObjectPrefix *)object)->root.object->state.bytes;
     targetId = *(s32 *)(state + 0x190);
     if (targetId == 0 || *(s32 *)(state + 0x194) != 3) {
         return *(u8 **)(object + 0x30);
@@ -818,7 +818,7 @@ void actorSetPartTextureAnimation(u8 *actor, f32 speed, s32 channel, s32 animati
 f32 actorAdjustSecondaryMeter(u8 *object, f32 delta) {
     u8 *actorState;
 
-    actorState = *(u8 **)(*(u8 **)(object + 0x50) + 0x54);
+    actorState = ((RuntimeObjectPrefix *)object)->root.object->state.bytes;
     ((ActorScriptState *)actorState)->secondaryMeter = ((ActorScriptState *)actorState)->secondaryMeter + delta;
     if (((ActorScriptState *)actorState)->secondaryMeter < 0.0f) {
         ((ActorScriptState *)actorState)->secondaryMeter = 0.0f;
@@ -847,7 +847,7 @@ f32 actorAdjustActionMeter(u8 *object, f32 delta) {
     u8 *state;
     f32 meter;
 
-    state = *(u8 **)(*(u8 **)(object + 0x50) + 0x54);
+    state = ((RuntimeObjectPrefix *)object)->root.object->state.bytes;
     meter = ((ActorScriptState *)state)->actionResource + delta;
     if (meter < 0.0f) {
         meter = 0.0f;
@@ -868,7 +868,7 @@ f32 actorAdjustActionMeter(u8 *object, f32 delta) {
 /// \returns Total elapsed time in seconds accumulated by the primary actor script context.
 /// \note Original decompilation identifier: \c func_80014B3C (0x80014B3C).
 f32 actorGetPrimaryScriptElapsedTime(void) {
-    u8 *actorState = *(u8 **)(gPikachuActor + 0x54);
+    u8 *actorState = ((RuntimeObjectPrefix *)gPikachuActor)->state.bytes;
     u8 *scriptContext = (u8 *)((ActorScriptState *)actorState)->vmAddress;
     return ((ScriptVm *)scriptContext)->totalElapsed;
 }
