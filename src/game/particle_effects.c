@@ -542,36 +542,43 @@ void ribbonEffectControllerUpdate(u8 *controller) {
 
     state = ((RuntimeObjectPrefix *)controller)->state.pointer;
     animationIntegerTrackEvaluate(&state->animation, &tmp, gRuntimeFrameSeconds);
-    src = *(u8 **)(controller + 0x2C);
-    *(f32 *)(controller + 0xC) = *(f32 *)(src + 0xC);
-    *(f32 *)(controller + 0x10) = *(f32 *)(src + 0x10);
-    *(f32 *)(controller + 0x14) = *(f32 *)(src + 0x14);
-    *(f32 *)(controller + 0x18) = *(f32 *)(src + 0x44);
-    *(f32 *)(controller + 0x1C) = *(f32 *)(src + 0x48);
-    *(f32 *)(controller + 0x20) = *(f32 *)(src + 0x4C);
+    src = ((RuntimeObjectPrefix *)controller)->child.bytes;
+    ((RuntimeObjectPrefix *)controller)->rotation[0] = ((RuntimeObjectPrefix *)src)->rotation[0];
+    ((RuntimeObjectPrefix *)controller)->rotation[1] = ((RuntimeObjectPrefix *)src)->rotation[1];
+    ((RuntimeObjectPrefix *)controller)->rotation[2] = ((RuntimeObjectPrefix *)src)->rotation[2];
+    ((RuntimeObjectPrefix *)controller)->position[0] = ((RuntimeObjectPrefix *)src)->worldPosition[0];
+    ((RuntimeObjectPrefix *)controller)->position[1] = ((RuntimeObjectPrefix *)src)->worldPosition[1];
+    ((RuntimeObjectPrefix *)controller)->position[2] = ((RuntimeObjectPrefix *)src)->worldPosition[2];
     objectAdjustPitchAlongCameraView(controller);
-    d[0] = state->destination[0] - *(f32 *)(controller + 0x18);
-    d[1] = state->destination[1] - *(f32 *)(controller + 0x1C);
-    d[2] = state->destination[2] - *(f32 *)(controller + 0x20);
+    d[0] = state->destination[0] - ((RuntimeObjectPrefix *)controller)->position[0];
+    d[1] = state->destination[1] - ((RuntimeObjectPrefix *)controller)->position[1];
+    d[2] = state->destination[2] - ((RuntimeObjectPrefix *)controller)->position[2];
     if (++state->steeringFrame >= 5) {
         state->steeringFrame = 0;
-        *(f32 *)(src + 0x10) = (s32)randomBelow(360);
-        *(f32 *)(src + 0x14) = (s32)randomBelow(360);
+        ((RuntimeObjectPrefix *)src)->rotation[1] = (s32)randomBelow(360);
+        ((RuntimeObjectPrefix *)src)->rotation[2] = (s32)randomBelow(360);
     } else {
         vector3GetZAxisAnglesDegrees(d, &yaw, &pitch);
-        *(f32 *)(src + 0x10) = mathLerpAngleDegrees(*(f32 *)(src + 0x10), yaw, 0.3f);
-        *(f32 *)(src + 0x14) = mathLerpAngleDegrees(*(f32 *)(src + 0x14), pitch, 0.3f);
+        ((RuntimeObjectPrefix *)src)->rotation[1] =
+            mathLerpAngleDegrees(((RuntimeObjectPrefix *)src)->rotation[1], yaw, 0.3f);
+        ((RuntimeObjectPrefix *)src)->rotation[2] =
+            mathLerpAngleDegrees(((RuntimeObjectPrefix *)src)->rotation[2], pitch, 0.3f);
     }
-    *(f32 *)(*(u8 **)(controller + 0x28) + 0x18) = *(f32 *)(controller + 0x18);
-    *(f32 *)(*(u8 **)(controller + 0x28) + 0x1C) = *(f32 *)(controller + 0x1C);
-    *(f32 *)(*(u8 **)(controller + 0x28) + 0x20) = *(f32 *)(controller + 0x20);
+    ((RuntimeObjectPrefix *)((RuntimeObjectPrefix *)controller)->sibling.pointer)->position[0] =
+        ((RuntimeObjectPrefix *)controller)->position[0];
+    ((RuntimeObjectPrefix *)((RuntimeObjectPrefix *)controller)->sibling.pointer)->position[1] =
+        ((RuntimeObjectPrefix *)controller)->position[1];
+    ((RuntimeObjectPrefix *)((RuntimeObjectPrefix *)controller)->sibling.pointer)->position[2] =
+        ((RuntimeObjectPrefix *)controller)->position[2];
     h = objectGetHeightAboveGround(controller);
     if (h < 1.2000000476837158f) {
         if (state->grounded == 0) {
             if (h < -1.0f) {
                 h = 0.0f;
             }
-            wispEffectCreate(4, *(f32 *)(controller + 0x44), *(f32 *)(controller + 0x48) - h, *(f32 *)(controller + 0x4C));
+            wispEffectCreate(4, ((RuntimeObjectPrefix *)controller)->worldPosition[0],
+                             ((RuntimeObjectPrefix *)controller)->worldPosition[1] - h,
+                             ((RuntimeObjectPrefix *)controller)->worldPosition[2]);
         }
         state->grounded = 1;
         state->remaining -= gRuntimeFrameSeconds;
@@ -580,10 +587,9 @@ void ribbonEffectControllerUpdate(u8 *controller) {
     }
     state->remaining -= gRuntimeFrameSeconds;
     if (state->remaining < 0.0f) {
-        objectRequestHierarchyDestruction(*(u8 **)(controller + 0x50));
+        objectRequestHierarchyDestruction(((RuntimeObjectPrefix *)controller)->root.bytes);
     }
 }
-
 
 /// Keep a ribbon effect's tip facing the current view.
 /// \param tip Ribbon effect tip to update.
@@ -600,14 +606,14 @@ void ribbonEffectTipUpdateFacing(u8 *tip) {
 void ribbonEffectSegmentUpdateMirrored(u8 *segment) {
     u8 *nextSegment;
 
-    nextSegment = *(u8 **)(segment + 0x28);
-    *(f32 *)(segment + 0x18) = *(f32 *)(nextSegment + 0x18);
-    *(f32 *)(segment + 0x1C) = *(f32 *)(nextSegment + 0x1C);
-    *(f32 *)(segment + 0x20) = *(f32 *)(nextSegment + 0x20);
-    *(f32 *)(segment + 0xC) = *(f32 *)(nextSegment + 0xC);
-    *(f32 *)(segment + 0x10) = *(f32 *)(nextSegment + 0x10);
-    *(f32 *)(segment + 0x14) = *(f32 *)(nextSegment + 0x14);
-    *(f32 *)(segment + 8) = -*(f32 *)(segment + 8);
+    nextSegment = ((RuntimeObjectPrefix *)segment)->sibling.bytes;
+    ((RuntimeObjectPrefix *)segment)->position[0] = ((RuntimeObjectPrefix *)nextSegment)->position[0];
+    ((RuntimeObjectPrefix *)segment)->position[1] = ((RuntimeObjectPrefix *)nextSegment)->position[1];
+    ((RuntimeObjectPrefix *)segment)->position[2] = ((RuntimeObjectPrefix *)nextSegment)->position[2];
+    ((RuntimeObjectPrefix *)segment)->rotation[0] = ((RuntimeObjectPrefix *)nextSegment)->rotation[0];
+    ((RuntimeObjectPrefix *)segment)->rotation[1] = ((RuntimeObjectPrefix *)nextSegment)->rotation[1];
+    ((RuntimeObjectPrefix *)segment)->rotation[2] = ((RuntimeObjectPrefix *)nextSegment)->rotation[2];
+    ((RuntimeObjectPrefix *)segment)->scale[2] = -((RuntimeObjectPrefix *)segment)->scale[2];
     objectAdjustPitchAlongCameraView(segment);
 }
 
