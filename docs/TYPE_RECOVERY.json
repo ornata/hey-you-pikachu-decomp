@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 1745,
-      "unique_spellings": 753,
+      "occurrences": 1744,
+      "unique_spellings": 752,
       "files": 72
     }
   },
@@ -1245,6 +1245,7 @@
       "known_views": [
         "audio_bank.h",
         "audio_dma.h",
+        "audio_initialize.h",
         "audio_playback_query.h",
         "audio_playback_stop.h",
         "audio_sound_effect.h",
@@ -1262,12 +1263,9 @@
       "locations": {
         "raw_offset_candidates": {
           "return -1": [
-            "160:5",
-            "392:9",
-            "399:5"
-          ],
-          "bankFile + 4": [
-            "207:88"
+            "161:5",
+            "393:9",
+            "400:5"
           ]
         }
       }
@@ -2707,6 +2705,7 @@
         "actor_assets.h",
         "area_transition.h",
         "audio_cue.h",
+        "audio_initialize.h",
         "backdrop_view.h",
         "camera_overlay.h",
         "controller_input.h",
@@ -2749,7 +2748,7 @@
             "599:50"
           ],
           "gRuntimePromptPanelLineCount - 1": [
-            "1076:75"
+            "1075:75"
           ]
         }
       }

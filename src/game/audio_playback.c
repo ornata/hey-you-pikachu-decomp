@@ -1,3 +1,4 @@
+#include "audio_initialize.h"
 #include "audio_worker.h"
 #include "audio_dma.h"
 #include "audio_bank.h"
@@ -88,16 +89,16 @@ extern u8 gAudioRspMicrocodeTextStart[];
 extern u8 gAudioRspMicrocodeDataStart[];
 void n_alInit(N_ALGlobals *, ALSynConfig *);
 Acmd *n_alAudioFrame(Acmd *, s32 *, s16 *, s32);
-void audioInitializeSequencePlayers(s32, u8 *);
+void audioInitializeSequencePlayers(ALHeap *, ALBankFile *);
 
 /// Initialize game audio resources, playback services, and the audio worker.
-/// \param scheduler Scheduler address used by the audio worker.
+/// \param scheduler Initialized scheduler retained by the audio worker.
 /// \param threadId Operating-system identifier for the audio worker thread.
 /// \param priority Scheduling priority of the audio worker thread.
 /// \param frequency Requested audio output frequency in hertz.
 /// \returns Audio heap bytes used, or zero if audio was already initialized.
 /// \note Original decompilation identifier: \c func_8001F680 (0x8001F680).
-s32 audioInitialize(s32 scheduler, s32 threadId, s32 priority, u32 frequency) {
+s32 audioInitialize(GameScheduler *scheduler, OSId threadId, OSPri priority, u32 frequency) {
     ALHeap heap;
     ALSynConfig config;
     s32 i;
@@ -132,9 +133,9 @@ s32 audioInitialize(s32 scheduler, s32 threadId, s32 priority, u32 frequency) {
     n_alInit(&gGameAudioSynthesizer, &config);
     gAudioBankFile = audioBankLoad(
         &heap, (s32)gAudioBankRomStart, (s32)(gAudioBankRomStart + AUDIO_BANK_SIZE), (s32)gAudioSamplesRomStart);
-    audioInitializeSequencePlayers((s32)&heap, (u8 *)gAudioBankFile);
+    audioInitializeSequencePlayers(&heap, gAudioBankFile);
     gSoundEffectPlayer = soundEffectPlayerCreate(&gGameAudioSynthesizer, &heap, 32);
-    audioWorkerStart((GameScheduler *)scheduler, &heap, threadId, priority, n_alAudioFrame,
+    audioWorkerStart(scheduler, &heap, threadId, priority, n_alAudioFrame,
                      (u64 *)gAudioRspMicrocodeTextStart, (u64 *)gAudioRspMicrocodeDataStart, 0xB8, 0x200);
     gAudioInitialized = 1;
     used = heap.cur - heap.base;
@@ -191,11 +192,11 @@ extern SequenceVoice gAudioSequenceVoices[];
 
 
 /// Initialize the shared sequence synthesizer and its four playback slots.
-/// \param heap Unused audio heap address.
+/// \param heap Unused audio heap.
 /// \param bankFile Loaded audio bank file supplying sequence instruments.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001FA78 (0x8001FA78).
-void audioInitializeSequencePlayers(s32 heap, u8 *bankFile) {
+void audioInitializeSequencePlayers(ALHeap *heap, ALBankFile *bankFile) {
     s32 i;
     AudioSequenceSlot *p;
 
@@ -204,7 +205,7 @@ void audioInitializeSequencePlayers(s32 heap, u8 *bankFile) {
         p = &gAudioSequenceSlots[i];
         sequenceControlInitialize(&gAudioSequenceSlots[i].player);
         p->handle = 0;
-        sequenceEngineRegisterSequence(&p->engine, &gAudioSequenceDriver, *(ALBank **)(bankFile + 4), 0x14,
+        sequenceEngineRegisterSequence(&p->engine, &gAudioSequenceDriver, bankFile->bankArray[0], 0x14,
                                        gAudioSequenceSlots[i].eventBuffer, &gAudioSequenceSlots[i].player,
                                        sequenceControlReadEvent);
     }

@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 1,745 / 72 |
+| Raw offset candidates | 4,040 / 86 | 1,744 / 72 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -4246,3 +4246,13 @@ and linked symbol addresses confirm the 0x2230-byte observed prefix.
 with playback initialization. Its contracts distinguish physical sample addresses,
 command capacity and resource lifetime through shutdown. Both source units preserve
 all strict baseline objects and the clean retail ROM match.
+
+### Audio initialization and runtime lifecycle
+
+`audio_initialize.h` supplies the shared initialization and shutdown contracts,
+including actual status returns and scheduler lifetime. Runtime now uses those
+interfaces instead of local void-return declarations. Initialization carries the
+scheduler pointer through to worker startup. Sequence setup carries typed heap
+and bank-file pointers and selects the bank through its named array member.
+Ghidra initialization at 0x8001F680 confirms the resource and worker call chain;
+all changes preserve strict objects and the clean ROM match.

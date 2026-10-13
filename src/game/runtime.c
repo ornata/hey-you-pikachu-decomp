@@ -1,3 +1,4 @@
+#include "audio_initialize.h"
 #include "render_state.h"
 #include "game_heap.h"
 #include "controller_state.h"
@@ -299,7 +300,6 @@ void runtimeOsInfoReportNoOp(void) {
 }
 
 void controllerStartThread(s32, s32, s32);
-void audioInitialize(s32, s32, s32, s32);
 void playerResetProfile(void);
 void toolboxReset(void);
 void eyeCatchInitialize(void);
@@ -338,7 +338,7 @@ void runtimeInitializePlatform(s32 schedulerAddress) {
         break;
     }
     schedulerInitialize((GameScheduler *)schedulerAddress, 100, 100, mode, 1);
-    audioInitialize(schedulerAddress, 50, 50, 0x7D00);
+    audioInitialize((GameScheduler *)schedulerAddress, 50, 50, 0x7D00);
     videoConfigureMode(osViModeTable[mode], 320, 240, 16);
     osViSetMode(&osViModeTable[mode]);
     osViBlack(1);
@@ -860,7 +860,6 @@ void runtimeUpdateGameMode(void) {
     } while (player != 3);
 }
 
-void audioShutdown(void);
 s32 rspTryResetProgramCounter(void);
 /// Stop runtime activity, wait for outstanding work, and halt for system reset.
 /// \returns Does not return.
