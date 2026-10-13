@@ -1,3 +1,5 @@
+#include "messenger.h"
+#include "camera_types.h"
 #include "linked_effect.h"
 #include "actor_meters.h"
 #include "actor_part_shake.h"
@@ -1069,9 +1071,9 @@ void messengerCreate(s32 id, f32 *position, f32 *velocity, f32 scale, ScriptMess
     object = objectCreateHierarchyFromTemplate((ObjectTemplate *)gMessengerObjectTemplate);
     if (flags != 0)
         objectSetHierarchyFlags(object, 0x6000);
-    *(f32 *)(object + 0) = scale;
-    *(f32 *)(object + 4) = scale;
-    *(f32 *)(object + 8) = scale;
+    ((RuntimeObjectPrefix *)object)->scale[0] = scale;
+    ((RuntimeObjectPrefix *)object)->scale[1] = scale;
+    ((RuntimeObjectPrefix *)object)->scale[2] = scale;
     state = ((RuntimeObjectPrefix *)object)->state.pointer;
     if (mode != 0) {
         state->mode = 4;
@@ -1087,16 +1089,16 @@ void messengerCreate(s32 id, f32 *position, f32 *velocity, f32 scale, ScriptMess
     state->velocity[0] = velocity[0];
     state->velocity[1] = velocity[1];
     state->velocity[2] = velocity[2];
-    *(f32 *)(object + 0x18) = position[0];
-    *(f32 *)(object + 0x1C) = position[1];
-    *(f32 *)(object + 0x20) = position[2];
-    *(f32 *)(object + 0x44) = position[0];
-    *(f32 *)(object + 0x48) = position[1];
-    *(f32 *)(object + 0x4C) = position[2];
+    ((RuntimeObjectPrefix *)object)->position[0] = position[0];
+    ((RuntimeObjectPrefix *)object)->position[1] = position[1];
+    ((RuntimeObjectPrefix *)object)->position[2] = position[2];
+    ((RuntimeObjectPrefix *)object)->worldPosition[0] = position[0];
+    ((RuntimeObjectPrefix *)object)->worldPosition[1] = position[1];
+    ((RuntimeObjectPrefix *)object)->worldPosition[2] = position[2];
     previous = objectFindLiveByHandle(gTrackedMessengerHandle);
     if (previous != NULL)
         messengerBeginDissipation((f32 *)previous);
-    gTrackedMessengerHandle = *(s32 *)(object + 0x38);
+    gTrackedMessengerHandle = ((RuntimeObjectPrefix *)object)->handle;
     objectScaleHierarchyBounds(object, 1.0f);
     objectRegisterActiveHierarchy(object);
     objectPlaySpatialSound(object, 0xBA, 0.0f, 500.0f);
@@ -1105,12 +1107,9 @@ void messengerCreate(s32 id, f32 *position, f32 *velocity, f32 scale, ScriptMess
           message.arg0, message.arg1, message.arg2, message.arg3, mode, flags);
 }
 
-typedef struct {
-    f32 v[12];
-} ImpactMatrix;
 /// Camera storage used for view transforms, viewports and color overlays.
 /// \note Original identifier: \c D_800ABCF0 (0x800ABCF0).
-extern u8 gRenderCameras[];
+extern MatrixCamera gRenderCameras[];
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;
@@ -1131,19 +1130,19 @@ void matrix33TransformVector(f32 *, f32 *, f32 *);
 /// \note Portability: the compiled-out null check is retained for IDO register allocation.
 /// \note Original decompilation identifier: \c func_80026C58 (0x80026C58).
 void messengerGetCameraLaunch(f32 *position, f32 *velocity, s32 mode) {
-    ImpactMatrix matrix;
+    CameraMatrix matrix;
     f32 *basis;
 
-    matrix = *(ImpactMatrix *)(gRenderCameras + gRenderCameraIndex * 0xE0 + 0x28);
-    basis = matrix.v;
+    matrix = gRenderCameras[gRenderCameraIndex].view;
+    basis = matrix.values;
     if (basis == NULL) {
     }
     matrix33Transpose(basis);
     VEC3_SET(position, 1.0f, -1.0f, -3.0f);
     matrix33TransformVector(basis, position, position);
-    position[0] += *(f32 *)(gRenderCameras + gRenderCameraIndex * 0xE0);
-    position[1] += *(f32 *)(gRenderCameras + gRenderCameraIndex * 0xE0 + 4);
-    position[2] += *(f32 *)(gRenderCameras + gRenderCameraIndex * 0xE0 + 8);
+    position[0] += gRenderCameras[gRenderCameraIndex].eye[0];
+    position[1] += gRenderCameras[gRenderCameraIndex].eye[1];
+    position[2] += gRenderCameras[gRenderCameraIndex].eye[2];
     if (mode != 0) {
         VEC3_SET(velocity, 0.0f, 1.0f, -75.0f);
     } else {

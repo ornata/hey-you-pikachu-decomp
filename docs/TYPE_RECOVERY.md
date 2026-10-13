@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,604 / 77 |
+| Raw offset candidates | 4,040 / 86 | 2,587 / 77 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3503,3 +3503,14 @@ removing the unused fourth argument preserves strict object matching. Descriptor
 checks now cover width, height and pixel-base offsets as well as metrics. Ghidra
 glyph reading at `0x8003EC40`, bitmap creation and the cache lifetime contract
 confirm the recovered pointer roles.
+
+### Voice messenger launch contract
+
+`messenger.h` shares camera-launch and projectile-creation declarations between
+the provider and voice-command consumer. Coordinates, velocity and script
+message are copied; the object system owns projectile lifetime. Camera-relative
+launch uses the established `MatrixCamera.view` and eye position, replacing a
+private matrix duplicate. The voice candidate distance path and messenger
+creation reuse runtime-object positions, scale and handles. Ghidra launch at
+`0x80026C58`, creation and delivery consumers support the homing/direct and
+visibility contracts. All affected units pass strict object comparison.

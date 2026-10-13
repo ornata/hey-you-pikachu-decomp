@@ -1,3 +1,6 @@
+#include "messenger.h"
+#include "camera_types.h"
+#include "object_types.h"
 #include "text_image_configurations.h"
 #include "interaction.h"
 #include "object_target_search.h"
@@ -27,8 +30,6 @@ extern u8 gTextPanelClearedEmptyText[];
 
 f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
 f32 vector3Length(f32 *);
-void messengerGetCameraLaunch(f32 *, f32 *, s32);
-void messengerCreate(s32, f32 *, f32 *, f32, ScriptMessage, s32, s32);
 /// Whether gameplay exposes microphone interaction and its HUD indicator.
 /// \note Original identifier: \c D_800722D0 (0x800722D0).
 /// Whether gameplay permits recognized voice commands to launch messenger effects.
@@ -44,7 +45,7 @@ extern u8 *gPikachuActor;
 extern f32 gVoiceCommandMinimumEffectScale;
 /// Camera storage used for view transforms, viewports and color overlays.
 /// \note Original identifier: \c D_800ABCF0 (0x800ABCF0).
-extern u8 gRenderCameras[];
+extern MatrixCamera gRenderCameras[];
 /// Identifier of the currently active runtime program.
 /// \note Original identifier: \c D_800AE4F0 (0x800AE4F0).
 /// Identifier of the currently loaded area.
@@ -111,18 +112,18 @@ void voiceCommandLaunchEffect(ScriptMessage message) {
             rotation[1] = gPlayerYaw + gPlayerViewShake;
             rotation[0] = 0.0f;
             rotation[2] = 0.0f;
-            nearby = objectFindNearestTargetInView(NULL, (Vec3f *)(gRenderCameras + gRenderCameraIndex * 0xE0), 15.0f,
+            nearby = objectFindNearestTargetInView(NULL, (Vec3f *)gRenderCameras[gRenderCameraIndex].eye, 15.0f,
                                                    rotation, 60.0f, 0x82, 0x82);
             if (nearby != NULL) {
-                cameraX = ((f32 *)(gRenderCameras + gRenderCameraIndex * 0xE0))[0];
-                cameraY = ((f32 *)(gRenderCameras + gRenderCameraIndex * 0xE0))[1];
-                cameraZ = ((f32 *)(gRenderCameras + gRenderCameraIndex * 0xE0))[2];
-                targetDelta[0] = *(f32 *)(target + 0x44) - cameraX;
-                targetDelta[1] = *(f32 *)(target + 0x48) - cameraY;
-                targetDelta[2] = *(f32 *)(target + 0x4C) - cameraZ;
-                nearbyDelta[0] = *(f32 *)(nearby + 0x44) - cameraX;
-                nearbyDelta[1] = *(f32 *)(nearby + 0x48) - cameraY;
-                nearbyDelta[2] = *(f32 *)(nearby + 0x4C) - cameraZ;
+                cameraX = gRenderCameras[gRenderCameraIndex].eye[0];
+                cameraY = gRenderCameras[gRenderCameraIndex].eye[1];
+                cameraZ = gRenderCameras[gRenderCameraIndex].eye[2];
+                targetDelta[0] = ((RuntimeObjectPrefix *)target)->worldPosition[0] - cameraX;
+                targetDelta[1] = ((RuntimeObjectPrefix *)target)->worldPosition[1] - cameraY;
+                targetDelta[2] = ((RuntimeObjectPrefix *)target)->worldPosition[2] - cameraZ;
+                nearbyDelta[0] = ((RuntimeObjectPrefix *)nearby)->worldPosition[0] - cameraX;
+                nearbyDelta[1] = ((RuntimeObjectPrefix *)nearby)->worldPosition[1] - cameraY;
+                nearbyDelta[2] = ((RuntimeObjectPrefix *)nearby)->worldPosition[2] - cameraZ;
                 targetDistance = vector3Length(targetDelta);
                 if (vector3Length(nearbyDelta) < targetDistance) {
                     target = nearby;
@@ -137,7 +138,7 @@ void voiceCommandLaunchEffect(ScriptMessage message) {
         else
             mode = 0;
         messengerGetCameraLaunch(position, velocity, special);
-        messengerCreate(*(s32 *)(target + 0x38), position, velocity, scale, message, special, mode);
+        messengerCreate(((RuntimeObjectPrefix *)target)->handle, position, velocity, scale, message, special, mode);
     }
 }
 
