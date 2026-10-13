@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 2307,
-      "unique_spellings": 916,
+      "occurrences": 2300,
+      "unique_spellings": 912,
       "files": 76
     }
   },
@@ -2913,21 +2913,6 @@
           ],
           "emitter + 0x44": [
             "884:21"
-          ],
-          "renderer + 0x54": [
-            "1138:21",
-            "1169:20"
-          ],
-          "renderer + 0x30": [
-            "1139:40",
-            "1175:21"
-          ],
-          "renderer + 0x50": [
-            "1172:30",
-            "1173:64"
-          ],
-          "obj + 0x8": [
-            "1174:63"
           ],
           "element + 0xC": [
             "1186:18",

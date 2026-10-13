@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,307 / 76 |
+| Raw offset candidates | 4,040 / 86 | 2,300 / 76 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3598,3 +3598,10 @@ retains the signed scale reversal and original update order.
 Ribbon creation now populates the shared object transforms and controller state.
 Drawing reads the checked animation value and the root matrix-buffer and flag
 fields. The anchor retains its separately allocated pointer slot.
+
+### Particle-cluster renderer state
+
+The renderer owns one `ValueTrack`, with borrowed texture-frame key data. Its
+initializer, updater, destructor and draw callback now share that type. Drawing
+uses the shared root flags and matrix buffers. The original extra deallocator
+argument remains documented for target ABI compatibility.

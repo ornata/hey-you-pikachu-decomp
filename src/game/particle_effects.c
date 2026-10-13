@@ -1115,13 +1115,13 @@ void effectEmitterUpdate(u8 *emitter) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80019834 (0x80019834).
 void particleClusterRendererInitialize(void *renderer) {
-    u8 *sp1C;
-    u8 *allocation;
+    ValueTrack *track;
+    ValueTrack *allocation;
 
-    allocation = heapAllocLocal(&gGameHeap, 0xC, 0x59A);
-    sp1C = allocation;
-    animationIntegerTrackInitialize((ValueTrack *)(allocation), (ValueKey *)(gRibbonAndClusterFrameAnimation));
-    ((RuntimeObjectPrefix *)renderer)->state.bytes = sp1C;
+    allocation = heapAllocLocal(&gGameHeap, sizeof(ValueTrack), 0x59A);
+    track = allocation;
+    animationIntegerTrackInitialize(allocation, (ValueKey *)(gRibbonAndClusterFrameAnimation));
+    ((RuntimeObjectPrefix *)renderer)->state.pointer = track;
 }
 
 /// Release the resources owned by a particle cluster renderer.
@@ -1133,11 +1133,11 @@ void particleClusterRendererInitialize(void *renderer) {
 /// ABI.
 /// \note Original decompilation identifier: \c func_80019884 (0x80019884).
 void particleClusterRendererDestroy(u8 *renderer) {
-    s32 sp1C;
+    ValueTrack *track;
 
-    sp1C = *(s32 *)(renderer + 0x54);
-    heapFreeLocal(&gGameHeap, *(s32 *)(renderer + 0x30), renderer);
-    heapFreeLocal(&gGameHeap, sp1C);
+    track = ((RuntimeObjectPrefix *)renderer)->state.pointer;
+    heapFreeLocal(&gGameHeap, ((RuntimeObjectPrefix *)renderer)->displayList, renderer);
+    heapFreeLocal(&gGameHeap, track);
 }
 
 /// Advance a particle cluster's animated appearance and keep it aligned with the view.
@@ -1145,11 +1145,11 @@ void particleClusterRendererDestroy(u8 *renderer) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800198C8 (0x800198C8).
 void particleClusterRendererUpdate(u8 *renderer) {
-    void *t;
-    s32 sp18[1];
+    ValueTrack *track;
+    s32 frame[1];
 
-    t = ((RuntimeObjectPrefix *)renderer)->state.pointer;
-    animationIntegerTrackEvaluate((ValueTrack *)(t), sp18, gRuntimeFrameSeconds);
+    track = ((RuntimeObjectPrefix *)renderer)->state.pointer;
+    animationIntegerTrackEvaluate(track, frame, gRuntimeFrameSeconds);
     objectAdjustPitchAlongCameraView(renderer);
 }
 
@@ -1162,17 +1162,17 @@ void particleClusterRendererUpdate(u8 *renderer) {
 /// live until rendering finishes. The effect texture bank must be loaded.
 /// \note Original decompilation identifier: \c func_80019900 (0x80019900).
 s32 particleClusterRendererPrepareDraw(u8 *renderer) {
-    u8 *obj;
+    ValueTrack *track;
     Gfx *g;
     s32 idx;
 
-    obj = *(u8 **)(renderer + 0x54);
+    track = ((RuntimeObjectPrefix *)renderer)->state.pointer;
     g = gRenderDisplayListCursor++;
     g->words.w0 = 0xDB06001C;
-    idx = (*(u16 *)(*(u8 **)(renderer + 0x50) + 0x36) & 0x8000) ? 1 : 0;
-    g->words.w1 = (u32)osVirtualToPhysical(((void **)(*(u8 **)(renderer + 0x50) + 0x3C))[idx]);
-    textureLoadForDraw(&gRenderDisplayListCursor, 5, *(s16 *)(obj + 0x8));
-    return *(s32 *)(renderer + 0x30);
+    idx = (((RuntimeObjectPrefix *)renderer)->root.object->flags & 0x8000) ? 1 : 0;
+    g->words.w1 = (u32)osVirtualToPhysical(((RuntimeObjectPrefix *)renderer)->root.object->matrixBuffers[idx]);
+    textureLoadForDraw(&gRenderDisplayListCursor, 5, track->value);
+    return (s32)((RuntimeObjectPrefix *)renderer)->displayList;
 }
 
 /// Animate the orientation of a particle cluster element.
