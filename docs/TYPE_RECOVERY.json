@@ -1236,6 +1236,7 @@
         "audio_playback_query.h",
         "audio_playback_stop.h",
         "audio_sound_effect.h",
+        "midi_sequence_types.h",
         "n_synthInternals.h",
         "sequence_driver.h",
         "sound_effect_player.h"
@@ -1244,12 +1245,12 @@
       "locations": {
         "raw_offset_candidates": {
           "return -1": [
-            "144:5",
-            "383:9",
-            "390:5"
+            "145:5",
+            "384:9",
+            "391:5"
           ],
           "bankFile + 4": [
-            "194:81"
+            "195:81"
           ]
         }
       }

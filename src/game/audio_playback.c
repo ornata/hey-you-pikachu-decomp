@@ -1,30 +1,31 @@
 #include "audio_sound_effect.h"
 #include "audio_playback_stop.h"
 #include "audio_playback_query.h"
-/* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "sound_effect_player.h"
 #include "n_synthInternals.h"
 #include "sequence_driver.h"
-typedef struct {
-    u8 pad[0x5D8];
-} SeqPlayer;
-/* One sequence-player slot. The four slots are one contiguous table, so the
- * player, its handle and its tail are fields of the same record rather than
- * parallel arrays at fixed offsets. */
-typedef struct {
-    u8 header[0x200];
-    SeqPlayer player; /* 0x200 */
-    s32 handle;       /* 0x7D8: serial handed out by audioPlaySequence, 0 when free */
-    u8 tail[0x14];    /* 0x7DC */
-} SeqSlot;
-s32 sequenceEngineIsStopped(SeqPlayer *);
+#include "midi_sequence_types.h"
+/// One audio sequence slot with embedded MIDI control state and a playback handle.
+/// Engine registration owns the leading storage; its internal layout is not exposed here.
+/// Four slots share one contiguous allocation. The slot owns the event buffer borrowed by engine registration.
+typedef struct AudioSequenceSlot {
+    u8 engineStorage[0x200]; ///< Registered sequence engine state.
+    SequenceControlState player; ///< Embedded MIDI reader and queued playback controls.
+    s32 handle; ///< Playback handle issued by audioPlaySequence, or zero when free.
+    u8 eventBuffer[0x14]; ///< MIDI event bytes borrowed by the registered engine.
+} AudioSequenceSlot;
+
+typedef char AudioSequenceSlotSizeCheck[(sizeof(AudioSequenceSlot) == 0x7F0) ? 1 : -1];
+typedef char AudioSequenceSlotPlayerOffsetCheck[((u32) & ((AudioSequenceSlot *)0)->player == 0x200) ? 1 : -1];
+typedef char AudioSequenceSlotHandleOffsetCheck[((u32) & ((AudioSequenceSlot *)0)->handle == 0x7D8) ? 1 : -1];
+s32 sequenceEngineIsStopped(SequenceControlState *);
 /// Four sequence playback slots retaining control state and playback handles.
 /// \note Original identifier: \c D_800EC9F0 (0x800EC9F0).
-extern SeqSlot gAudioSequenceSlots[4];
+extern AudioSequenceSlot gAudioSequenceSlots[4];
 /// Boundary symbol immediately after the four sequence playback slots.
 /// \note Original identifier: \c D_800EE9B0 (0x800EE9B0).
-extern SeqSlot gAudioSequenceSlotsEnd; /* one past D_800EC9F0[3] */
+extern AudioSequenceSlot gAudioSequenceSlotsEnd; /* one past D_800EC9F0[3] */
 
 typedef struct ReverbSectionInit {
     s32 inputMs, outputMs;
@@ -173,8 +174,8 @@ s32 audioGetOutputMode(void) {
 /// \note Original identifier: \c D_800EEA18 (0x800EEA18).
 extern SequenceVoice gAudioSequenceVoices[];
 
-void sequenceControlInitialize(SeqPlayer *);
-void sequenceEngineRegisterSequence(SeqSlot *, u8 *, s32, s32, u8 *, SeqPlayer *, void *);
+void sequenceControlInitialize(SequenceControlState *);
+void sequenceEngineRegisterSequence(AudioSequenceSlot *, u8 *, s32, s32, u8 *, SequenceControlState *, void *);
 s32 sequenceControlReadEvent(u8 *, u8 *, s32, f64 *);
 
 /// Initialize the shared sequence synthesizer and its four playback slots.
@@ -184,7 +185,7 @@ s32 sequenceControlReadEvent(u8 *, u8 *, s32, f64 *);
 /// \note Original decompilation identifier: \c func_8001FA78 (0x8001FA78).
 void audioInitializeSequencePlayers(s32 heap, u8 *bankFile) {
     s32 i;
-    SeqSlot *p;
+    AudioSequenceSlot *p;
 
     sequenceEngineInitializeDriver(&gAudioSequenceDriver, n_alGlobals, 2, 0x28, gAudioSequenceVoices);
     for (i = 0; i < 4; i++) {
@@ -192,13 +193,13 @@ void audioInitializeSequencePlayers(s32 heap, u8 *bankFile) {
         sequenceControlInitialize(&gAudioSequenceSlots[i].player);
         p->handle = 0;
         sequenceEngineRegisterSequence(p, (u8 *)&gAudioSequenceDriver, *(s32 *)(bankFile + 4), 0x14,
-                                       gAudioSequenceSlots[i].tail, &gAudioSequenceSlots[i].player,
+                                       gAudioSequenceSlots[i].eventBuffer, &gAudioSequenceSlots[i].player,
                                        sequenceControlReadEvent);
     }
 }
 
-s32 sequenceControlStart(SeqPlayer *, s32);
-s32 sequenceControlRequestVolume(SeqPlayer *, f64, f64);
+s32 sequenceControlStart(SequenceControlState *, s32);
+s32 sequenceControlRequestVolume(SequenceControlState *, f64, f64);
 /// Next shared playback identifier assigned to sequences and sound effects.
 /// \note Original identifier: \c D_80088EF4 (0x80088EF4).
 extern s32 gAudioNextPlaybackHandle;
@@ -348,7 +349,7 @@ void audioSetSoundEffectMix(s32 id, s32 mix) {
     soundEffectPlayerSetEffectMix(gSoundEffectPlayer, id, mix);
 }
 
-s32 sequenceEngineSetRate(SeqPlayer *, f64);
+s32 sequenceEngineSetRate(SequenceControlState *, f64);
 
 /// Change a sequence's playback rate.
 /// \param id Playback identifier; zero selects no playback.
@@ -370,7 +371,7 @@ s32 audioSetSequenceRate(s32 id, f64 rate) {
     return 0;
 }
 
-f64 sequenceEngineGetRate(SeqPlayer *);
+f64 sequenceEngineGetRate(SequenceControlState *);
 
 /// Get the playback rate of a sequence.
 /// \param id Playback identifier; zero selects no playback.
@@ -417,7 +418,7 @@ s32 audioPlaySequence(s32);
 /// \note Original decompilation identifier: \c func_800200E0 (0x800200E0).
 s32 audioPlaySequenceWithFade(s32 data, f64 time) {
     s32 id;
-    SeqSlot *entry;
+    AudioSequenceSlot *entry;
 
     id = audioPlaySequence(data);
     entry = gAudioSequenceSlots; do { if (id == entry->handle) {
@@ -433,7 +434,7 @@ s32 audioPlaySequenceWithFade(s32 data, f64 time) {
 /// Target sequence volume requested during a fade followed by scheduled stop.
 /// \note Original identifier: \c D_800A4890 (0x800A4890).
 extern f64 gAudioSequenceStopFadeTargetVolume;
-void sequenceControlScheduleStop(SeqPlayer *, f64);
+void sequenceControlScheduleStop(SequenceControlState *, f64);
 
 
 // clang-format off
@@ -446,7 +447,7 @@ void sequenceControlScheduleStop(SeqPlayer *, f64);
 /// \note Original decompilation identifier: \c func_800201B8 (0x800201B8).
 s32 audioFadeOutSequence(s32 id, f64 fadeSeconds) {
     f64 vol;
-    SeqSlot *e;
+    AudioSequenceSlot *e;
 
     if (id == 0) {
         return 0;
