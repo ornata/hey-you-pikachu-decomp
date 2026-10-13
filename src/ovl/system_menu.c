@@ -1,3 +1,4 @@
+#include "audio_sound_effect.h"
 #include "audio_playback_stop.h"
 #include "text_window.h"
 #include "message_bar.h"
@@ -803,7 +804,6 @@ extern PlayerControlPrefix gPlayerState;
 /// Primary controller new and auto-repeated button presses; aliases the repeated word of the processed sample.
 /// \note Original identifier: \c D_800AD54C (0x800AD54C).
 extern s32 gControllerPrimaryRepeatedButtons;
-s32 audioPlaySoundEffect(s32);
 /// Handle system-menu navigation, item activation, and requests to close the menu.
 /// Requires initialized menu and player state, valid menu selection, and history capacity for any submenu.
 /// \returns Nothing.

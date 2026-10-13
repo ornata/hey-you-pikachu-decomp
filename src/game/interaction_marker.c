@@ -1,3 +1,4 @@
+#include "audio_sound_effect.h"
 /// \file
 /// Selects interaction candidates and animates their presentation marker.
 
@@ -186,7 +187,6 @@ extern f32 gInteractionMarkerTrackUnitScale;
 /// Scale converting marker animation offsets for actor targets from tenths to coordinate units.
 /// \note Original identifier: \c D_800A47AC (0x800A47AC).
 extern f32 gInteractionMarkerActorTrackUnitScale;
-s32 audioPlaySoundEffect(s32);
 /// Update the marker target, animation, and placement, then clear the current candidate scan.
 /// \param object Initialized interaction marker object.
 /// \returns Nothing.

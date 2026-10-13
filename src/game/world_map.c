@@ -1,3 +1,4 @@
+#include "audio_sound_effect.h"
 #include "attached_effect.h"
 #include "script_vm_globals.h"
 #include "actor_behavior.h"
@@ -545,7 +546,6 @@ void wholeMapEnsureAvailableSelection(s32 min, s32 max, s32 step) {
     }
 }
 
-s32 audioPlaySoundEffect(s32);
 void wholeMapEnsureAvailableSelection(s32, s32, s32);
 typedef struct MenuController2E {
     u32 held, pressed, released, repeated;

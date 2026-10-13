@@ -1,3 +1,4 @@
+#include "audio_sound_effect.h"
 #include "audio_playback_stop.h"
 #include "audio_playback_query.h"
 #include "texture_animation_programs.h"
@@ -119,8 +120,6 @@ extern u32 gRenderCameraIndex;
 /// Identifier of the currently active runtime program.
 /// \note Original identifier: \c D_800AE4F0 (0x800AE4F0).
 extern s32 gRuntimeCurrentProgram;
-void audioSetSoundEffectPan(s32, s32);
-void audioSetSoundEffectVolume(s32, s32);
 
 /// Update tracked sounds for the listener view and forget completed playback.
 /// \param position World-space sound position containing three floating-point coordinates.

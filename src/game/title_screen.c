@@ -1,3 +1,4 @@
+#include "audio_sound_effect.h"
 #include "text_image_configurations.h"
 #include "script_vm_globals.h"
 #include "story_chapter.h"
@@ -582,7 +583,6 @@ s32 titleScreenFindEnabledChoice(s32 enabled, s32 selection, s32 step) {
 void pikachuUpdateScriptAndTriggers(void);
 void objectUpdateGroup(s32);
 s32 audioCountActive(s32);
-s32 audioPlaySoundEffect(s32);
 /// Primary controller new and auto-repeated button presses; aliases the repeated word of the processed sample.
 /// \note Original identifier: \c D_800AD54C (0x800AD54C).
 extern s32 gControllerPrimaryRepeatedButtons;

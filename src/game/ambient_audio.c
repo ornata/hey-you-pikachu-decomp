@@ -1,3 +1,4 @@
+#include "audio_sound_effect.h"
 #include "audio_playback_stop.h"
 #include "ambient_audio.h"
 #include "audio_playback_query.h"
@@ -49,10 +50,7 @@ AMBIENT_STATE_OFFSET_CHECK(count, 0x1C);
 AMBIENT_STATE_OFFSET_CHECK(src, 0x20);
 AMBIENT_STATE_OFFSET_CHECK(timer, 0x24);
 #undef AMBIENT_STATE_OFFSET_CHECK
-void audioSetSoundEffectVolume(s32, s32);
-void audioSetSoundEffectPan(s32, s32);
 u32 randomNext(void);
-s32 audioPlaySoundEffect(s32);
 /// Start the next ambient sound and schedule the next playback.
 /// \param ext Ambient emitter state to update.
 /// \returns Nothing.

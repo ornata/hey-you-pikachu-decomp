@@ -1,3 +1,4 @@
+#include "audio_sound_effect.h"
 #include "audio_playback_stop.h"
 #include "audio_playback_query.h"
 /* harvested: matched m2c drafts; pending style pass */

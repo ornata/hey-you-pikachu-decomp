@@ -1,3 +1,4 @@
+#include "audio_sound_effect.h"
 #include "matrix_point.h"
 #include "camera_view.h"
 #include "matrix_translation.h"
@@ -1680,9 +1681,6 @@ typedef struct CamSlot {
 /// Camera storage viewed at retained matrix pointers, with 224 bytes per camera.
 /// \note Original identifier: \c D_800ABD14 (0x800ABD14).
 extern CamSlot gRenderCameraMatrixEntries[];
-s32 audioPlaySoundEffect(s32);
-void audioSetSoundEffectPan(s32, s32);
-void audioSetSoundEffectVolume(s32, s32);
 
 
 /// Play a sound effect at an object position with spatial volume and panning.

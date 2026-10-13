@@ -1,3 +1,4 @@
+#include "audio_sound_effect.h"
 #include "audio_playback_stop.h"
 #include "text_window.h"
 #include "message_bar.h"
@@ -536,8 +537,6 @@ void playerApplyFollowMovementInput(u8 *controller, u8 *player, u8 *target) {
 }
 
 s32 terrainGetMaterialSound(s32, s32);  /* extern */
-s32 audioPlaySoundEffect(s32);   /* extern */
-void audioSetSoundEffectVolume(s32, s32); /* extern */
 /// Footstep travel thresholds indexed by movement class; the airborne class suppresses footsteps.
 /// \note Original identifier: \c D_80123E90 (0x80123E90).
 f32 gPlayerFootstepDistanceThresholds[4] = {5.0f, 8.0f, 9.0f, 2147483648.0f};

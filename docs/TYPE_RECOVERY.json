@@ -559,6 +559,7 @@
         "actor_target.h",
         "audio_playback_query.h",
         "audio_playback_stop.h",
+        "audio_sound_effect.h",
         "audio_spatial.h",
         "camera_types.h",
         "collision_registration.h",
@@ -586,40 +587,40 @@
       "locations": {
         "raw_offset_candidates": {
           "slot + 1": [
-            "102:33"
+            "103:33"
           ],
           "drawListStorage + 0x40": [
-            "240:40"
+            "239:40"
           ],
           "heightDelta + 1": [
-            "360:34"
+            "359:34"
           ],
           "actor + 0x18": [
-            "392:50"
+            "391:50"
           ],
           "actor + 0x1C": [
-            "392:74"
+            "391:74"
           ],
           "actor + 0x20": [
-            "392:98"
+            "391:98"
           ],
           "actor + 0x54": [
-            "405:38"
+            "404:38"
           ],
           "actor + 0x36": [
-            "405:71"
+            "404:71"
           ],
           "p + 1": [
-            "885:38"
+            "884:38"
           ],
           "return -1": [
-            "926:5"
+            "925:5"
           ],
           "actor + 0x30": [
-            "1094:21"
+            "1093:21"
           ],
           "displacement + 2": [
-            "1357:17"
+            "1356:17"
           ]
         }
       }
@@ -1234,6 +1235,7 @@
       "known_views": [
         "audio_playback_query.h",
         "audio_playback_stop.h",
+        "audio_sound_effect.h",
         "n_synthInternals.h",
         "sequence_driver.h",
         "sound_effect_player.h"
@@ -1242,12 +1244,12 @@
       "locations": {
         "raw_offset_candidates": {
           "return -1": [
-            "143:5",
-            "382:9",
-            "389:5"
+            "144:5",
+            "383:9",
+            "390:5"
           ],
           "bankFile + 4": [
-            "193:81"
+            "194:81"
           ]
         }
       }
@@ -1638,7 +1640,7 @@
         "progress_value.h"
       ],
       "matching_exceptions": {
-        "eyeCatchUpdatePlayback": "The volume setter parameters are established s32 values. Its canonical void return changes allocated code in this caller; a local s32 compatibility return declaration preserves scheduling, and the returned register is never consumed. The cross-unit declaration mismatch remains target-specific."
+        "eyeCatchUpdatePlayback": "Retain local audioPlaySoundEffect(s16) and audioSetSoundEffectVolume returning s32 declarations: adopting canonical s32 sound IDs and the void volume setter changes ROM bytes. Isolate each signature before retrying canonical-header adoption."
       },
       "locations": {
         "raw_offset_candidates": {
@@ -2442,6 +2444,7 @@
     },
     "src/game/object_hierarchy.c": {
       "known_views": [
+        "audio_sound_effect.h",
         "audio_spatial.h",
         "camera_types.h",
         "camera_view.h",
@@ -2483,174 +2486,174 @@
       "locations": {
         "raw_offset_candidates": {
           "base + 1": [
-            "177:31"
-          ],
-          "base + 2": [
             "178:31"
           ],
-          "base + 3": [
+          "base + 2": [
             "179:31"
           ],
+          "base + 3": [
+            "180:31"
+          ],
           "reader + 0x13": [
-            "194:61"
+            "195:61"
           ],
           "r + 0x400": [
-            "213:45"
+            "214:45"
           ],
           "r + 0x414": [
-            "215:34",
-            "216:76",
-            "221:23"
+            "216:34",
+            "217:76",
+            "222:23"
           ],
           "r + 0x418": [
-            "217:38",
-            "218:43"
+            "218:38",
+            "219:43"
           ],
           "reader + 0x10": [
-            "237:29",
-            "364:30"
+            "238:29",
+            "365:30"
           ],
           "return -1": [
-            "306:9",
-            "903:9",
-            "911:9"
+            "307:9",
+            "904:9",
+            "912:9"
           ],
           "i + 1": [
-            "314:19"
+            "315:19"
           ],
           "length + 1U": [
-            "317:28"
+            "318:28"
           ],
           "reader + 4": [
-            "356:22",
-            "361:18",
-            "364:55"
+            "357:22",
+            "362:18",
+            "365:55"
           ],
           "p + 1": [
-            "361:32",
-            "364:69"
+            "362:32",
+            "365:69"
           ],
           "msg + 0x34": [
-            "518:14",
-            "1764:14"
+            "519:14",
+            "1762:14"
           ],
           "msg + 0x38": [
-            "519:14",
-            "1765:14",
-            "1767:14"
+            "520:14",
+            "1763:14",
+            "1765:14"
           ],
           "gObjectSearchTreeRoot + 8": [
-            "536:31",
-            "1853:22"
+            "537:31",
+            "1851:22"
           ],
           "gObjectTransformStackDepth - 1": [
-            "606:40"
+            "607:40"
           ],
           "object + 0x24": [
-            "1096:35"
+            "1097:35"
           ],
           "widthShift + 4": [
-            "1097:42"
-          ],
-          "heightShift + 4": [
             "1098:42"
           ],
+          "heightShift + 4": [
+            "1099:42"
+          ],
           "object + 0x54": [
-            "1108:25"
+            "1109:25"
           ],
           "obj + 0x54": [
-            "1127:34"
+            "1128:34"
           ],
           "obj + 0x34": [
-            "1148:18"
+            "1149:18"
           ],
           "obj + 0x30": [
-            "1151:21"
+            "1152:21"
           ],
           "object + 0x30": [
-            "1162:21"
+            "1163:21"
           ],
           "object + 0x36": [
-            "1305:24",
-            "1307:26",
-            "1313:28",
-            "1316:30",
-            "1349:78",
-            "1350:30",
-            "1355:30",
-            "1356:34",
+            "1306:24",
+            "1308:26",
+            "1314:28",
+            "1317:30",
+            "1350:78",
+            "1351:30",
+            "1356:30",
             "1357:34",
             "1358:34",
-            "1360:34",
-            "1361:34"
+            "1359:34",
+            "1361:34",
+            "1362:34"
           ],
           "object + 0x34": [
-            "1310:47",
             "1311:47",
-            "1319:30",
-            "1336:37"
+            "1312:47",
+            "1320:30",
+            "1337:37"
           ],
           "object + 0x18": [
-            "1314:78",
-            "1343:30"
-          ],
-          "object + 0x1C": [
-            "1314:103",
+            "1315:78",
             "1344:30"
           ],
-          "object + 0x20": [
-            "1315:49",
+          "object + 0x1C": [
+            "1315:103",
             "1345:30"
           ],
+          "object + 0x20": [
+            "1316:49",
+            "1346:30"
+          ],
           "object + 0xC": [
-            "1320:97",
-            "1751:70"
+            "1321:97",
+            "1749:70"
           ],
           "object + 0x10": [
-            "1321:62"
+            "1322:62"
           ],
           "object + 0x14": [
-            "1321:87"
+            "1322:87"
           ],
           "object + 4": [
-            "1322:93"
+            "1323:93"
           ],
           "object + 8": [
-            "1323:49"
+            "1324:49"
           ],
           "object + 0x3C": [
-            "1347:32",
-            "1349:51"
+            "1348:32",
+            "1350:51"
           ],
           "object + 0x44": [
-            "1352:26",
-            "1751:46"
+            "1353:26",
+            "1749:46"
           ],
           "object + 0x48": [
-            "1353:26"
-          ],
-          "object + 0x4C": [
             "1354:26"
           ],
+          "object + 0x4C": [
+            "1355:26"
+          ],
           "object + 0x2C": [
-            "1365:26",
-            "1366:68"
+            "1366:26",
+            "1367:68"
           ],
           "sp34 + 0x36": [
-            "1408:37",
-            "1408:75"
+            "1409:37",
+            "1409:75"
           ],
           "sp2C + 0x36": [
-            "1427:26",
-            "1431:33",
-            "1432:26",
-            "1432:50",
-            "1450:37",
-            "1450:75"
+            "1428:26",
+            "1432:33",
+            "1433:26",
+            "1433:50",
+            "1451:37",
+            "1451:75"
           ],
           "first + 0x34": [
-            "1857:28",
-            "1860:18"
+            "1855:28",
+            "1858:18"
           ]
         }
       }
@@ -3499,6 +3502,7 @@
       "known_views": [
         "asset_loader.h",
         "audio_cue.h",
+        "audio_sound_effect.h",
         "backdrop_draw.h",
         "camera_overlay.h",
         "hud_draw.h",
@@ -3519,22 +3523,22 @@
       "locations": {
         "raw_offset_candidates": {
           "words + 4": [
-            "71:72"
+            "72:72"
           ],
           "words + 8": [
-            "76:44"
+            "77:44"
           ],
           "x - 10": [
-            "255:36"
+            "256:36"
           ],
           "y - 4": [
-            "255:44"
+            "256:44"
           ],
           "maxWidth + 10": [
-            "255:55"
+            "256:55"
           ],
           "x + 16": [
-            "262:17"
+            "263:17"
           ],
           "gCurrentAreaConfiguration + 0x64": [
             "978:47"
@@ -4053,6 +4057,7 @@
         "actor_target.h",
         "attached_effect.h",
         "audio_cue.h",
+        "audio_sound_effect.h",
         "backdrop_draw.h",
         "camera_interface.h",
         "camera_overlay.h",
@@ -4071,83 +4076,83 @@
       "locations": {
         "raw_offset_candidates": {
           "x - 27": [
-            "221:46"
+            "222:46"
           ],
           "x + 55": [
-            "223:46"
+            "224:46"
           ],
           "x - 16": [
-            "284:31",
-            "308:27"
-          ],
-          "y + 8": [
-            "285:31"
-          ],
-          "y - 8": [
+            "285:31",
             "309:27"
           ],
+          "y + 8": [
+            "286:31"
+          ],
+          "y - 8": [
+            "310:27"
+          ],
           "counter + 5U": [
-            "316:25"
+            "317:25"
           ],
           "gPikachuActor + 0x54": [
-            "398:28",
-            "444:28",
+            "399:28",
+            "445:28",
             "617:46",
             "791:27"
           ],
           "state + 0x1EC": [
-            "400:100",
-            "457:154"
+            "401:100",
+            "458:154"
           ],
           "gPikachuActor + 0x48": [
-            "406:29",
-            "408:35",
-            "414:20",
-            "451:54"
-          ],
-          "firstJoint + 0x48": [
-            "406:62"
-          ],
-          "secondJoint + 0x48": [
-            "408:68"
-          ],
-          "gPikachuActor + 0x18": [
-            "410:20"
-          ],
-          "gPikachuActor + 0x1C": [
-            "411:20"
-          ],
-          "gPikachuActor + 0x20": [
-            "412:20"
-          ],
-          "gPikachuActor + 0x44": [
-            "413:20",
-            "450:54"
-          ],
-          "gPikachuActor + 0x4C": [
+            "407:29",
+            "409:35",
             "415:20",
             "452:54"
           ],
-          "camera + 0": [
-            "450:25"
+          "firstJoint + 0x48": [
+            "407:62"
           ],
-          "camera + 4": [
+          "secondJoint + 0x48": [
+            "409:68"
+          ],
+          "gPikachuActor + 0x18": [
+            "411:20"
+          ],
+          "gPikachuActor + 0x1C": [
+            "412:20"
+          ],
+          "gPikachuActor + 0x20": [
+            "413:20"
+          ],
+          "gPikachuActor + 0x44": [
+            "414:20",
+            "451:54"
+          ],
+          "gPikachuActor + 0x4C": [
+            "416:20",
+            "453:54"
+          ],
+          "camera + 0": [
             "451:25"
           ],
-          "camera + 8": [
+          "camera + 4": [
             "452:25"
           ],
+          "camera + 8": [
+            "453:25"
+          ],
           "state + 0xC": [
-            "454:64"
+            "455:64"
           ],
           "state + 0x10": [
-            "455:71"
+            "456:71"
           ],
           "state + 0x19C": [
-            "456:14"
+            "457:14"
           ],
           "PLAYER + 0x54": [
-            "499:27"
+            "500:27"
           ],
           "sp24 + 0x13C": [
             "798:22",
@@ -4423,7 +4428,9 @@
         "script_vm_stack.h"
       ],
       "matching_exceptions": {
-        "scriptVmPushInteger calls": "The mailbox acknowledgement command supplies an unused third actor argument; a void compatibility declaration retains the original argument setup."
+        "scriptVmPushInteger calls": "The mailbox acknowledgement command supplies an unused third actor argument; a void compatibility declaration retains the original argument setup.",
+        "actorScriptSetSoundEffectPan": "The VM handlers push the return register of audioSetSoundEffectPan and audioSetSoundEffectVolume, whose definitions return void. Local s32 declarations preserve the original ABI-dependent behavior. A shared void declaration does not compile here; resolve the original return-register contract before changing these handlers.",
+        "actorScriptSetSoundEffectVolume": "The VM handlers push the return register of audioSetSoundEffectPan and audioSetSoundEffectVolume, whose definitions return void. Local s32 declarations preserve the original ABI-dependent behavior. A shared void declaration does not compile here; resolve the original return-register contract before changing these handlers."
       },
       "locations": {
         "raw_offset_candidates": {
@@ -5221,6 +5228,7 @@
         "actor_script.h",
         "actor_text.h",
         "audio_playback_stop.h",
+        "audio_sound_effect.h",
         "camera_overlay.h",
         "camera_pose.h",
         "camera_types.h",
@@ -5265,204 +5273,204 @@
       "locations": {
         "raw_offset_candidates": {
           "gRuntimeFrameSeconds + 8": [
-            "386:35"
+            "387:35"
           ],
           "normal + 2": [
-            "644:80"
+            "643:80"
           ],
           "currentGround + 0": [
-            "672:38"
+            "671:38"
           ],
           "dy + 0": [
-            "680:64",
-            "700:86"
+            "679:64",
+            "699:86"
           ],
           "nextX + 0": [
-            "683:79",
-            "689:79"
+            "682:79",
+            "688:79"
           ],
           "nextZ + 0": [
-            "686:93",
-            "689:100"
+            "685:93",
+            "688:100"
           ],
           "nextGround + 0": [
-            "693:22"
+            "692:22"
           ],
           "player + 0x84": [
-            "791:46"
+            "790:46"
           ],
           "object + 0x54": [
-            "794:22",
-            "2742:22"
+            "793:22",
+            "2741:22"
           ],
           "player + 0x18": [
-            "795:20"
+            "794:20"
           ],
           "player + 0xC": [
-            "795:46"
+            "794:46"
           ],
           "player + 0x10": [
-            "796:22",
-            "798:22"
+            "795:22",
+            "797:22"
           ],
           "player + 0x14": [
-            "796:48",
-            "798:48"
+            "795:48",
+            "797:48"
           ],
           "player + 0x1C": [
-            "801:26"
+            "800:26"
           ],
           "player + 4": [
-            "801:52"
+            "800:52"
           ],
           "player + 8": [
-            "802:26"
+            "801:26"
           ],
           "object + 0x38": [
-            "806:24",
-            "810:25"
+            "805:24",
+            "809:25"
           ],
           "object + 0x18": [
-            "806:56"
+            "805:56"
           ],
           "state + 4": [
-            "808:94",
-            "2122:18"
+            "807:94",
+            "2121:18"
           ],
           "gPlayerCompanionTarget - 0x50": [
-            "1057:36"
+            "1056:36"
           ],
           "gPlayerControllerPort - 0x2C": [
-            "1074:37",
-            "1075:37"
+            "1073:37",
+            "1074:37"
           ],
           "gPlayerHelpTextCursor + 1": [
-            "1442:46",
-            "1446:46"
+            "1441:46",
+            "1445:46"
           ],
           "gPlayerEyeHeight - 0x1C": [
-            "1915:37",
-            "2505:42",
-            "2517:42"
+            "1914:37",
+            "2504:42",
+            "2516:42"
           ],
           "y + 0": [
-            "2077:52"
+            "2076:52"
           ],
           "origin + 0x20": [
-            "2077:89"
+            "2076:89"
           ],
           "origin + 0x1C": [
-            "2078:34"
+            "2077:34"
           ],
           "gCurrentAreaConfiguration + 0x20": [
-            "2119:35"
+            "2118:35"
           ],
           "state + 0": [
-            "2120:18",
-            "2122:97"
+            "2119:18",
+            "2121:97"
           ],
           "state + 8": [
-            "2121:18",
-            "2123:105"
+            "2120:18",
+            "2122:105"
           ],
           "state + 0x1C": [
-            "2124:18"
+            "2123:18"
           ],
           "state + 0xC": [
-            "2125:18"
+            "2124:18"
           ],
           "state + 0x10": [
-            "2126:18"
+            "2125:18"
           ],
           "state + 0x14": [
-            "2127:18",
+            "2126:18",
+            "2173:18",
             "2174:18",
-            "2175:18",
-            "2175:43",
+            "2174:43",
+            "2175:22",
             "2176:22",
-            "2177:22",
-            "2179:25",
-            "2180:18",
-            "2180:43",
-            "2181:22",
-            "2182:22"
+            "2178:25",
+            "2179:18",
+            "2179:43",
+            "2180:22",
+            "2181:22"
           ],
           "state + 0x18": [
-            "2128:18",
+            "2127:18",
+            "2161:18",
             "2162:18",
-            "2163:18",
-            "2163:43",
+            "2162:43",
+            "2163:22",
             "2164:22",
-            "2165:22",
-            "2167:25",
-            "2168:18",
-            "2168:43",
-            "2169:22",
-            "2170:22"
+            "2166:25",
+            "2167:18",
+            "2167:43",
+            "2168:22",
+            "2169:22"
           ],
           "state + 0x2C": [
-            "2131:18"
+            "2130:18"
           ],
           "state + 0x30": [
-            "2132:18"
+            "2131:18"
           ],
           "state + 0x32": [
-            "2133:18"
+            "2132:18"
           ],
           "state + 0x4C": [
-            "2134:18"
+            "2133:18"
           ],
           "state + 0x50": [
-            "2135:18"
+            "2134:18"
           ],
           "state + 0x64": [
-            "2136:18"
+            "2135:18"
           ],
           "state + 0x68": [
-            "2137:18"
+            "2136:18"
           ],
           "state + 0x20": [
-            "2138:18"
+            "2137:18"
           ],
           "state + 0x84": [
-            "2139:18"
+            "2138:18"
           ],
           "state + 0x78": [
-            "2140:18"
+            "2139:18"
           ],
           "state + 0x80": [
-            "2141:18"
+            "2140:18"
           ],
           "state + 0x88": [
-            "2143:18"
+            "2142:18"
           ],
           "model + 0x38": [
-            "2143:43"
+            "2142:43"
           ],
           "state + 0x8C": [
-            "2144:18"
+            "2143:18"
           ],
           "model + 0x28": [
-            "2144:52",
-            "2145:61"
+            "2143:52",
+            "2144:61"
           ],
           "state + 0x90": [
-            "2145:18"
+            "2144:18"
           ],
           "state + 0x98": [
-            "2146:18"
+            "2145:18"
           ],
           "return -1": [
-            "2367:9"
+            "2366:9"
           ],
           "friendshipLevel + 1": [
-            "2372:48"
+            "2371:48"
           ],
           "state + 0x1EA": [
-            "2743:22"
+            "2742:22"
           ],
           "gPikachuActor + 0x44": [
-            "2800:35"
+            "2799:35"
           ]
         }
       }
@@ -5516,6 +5524,7 @@
         "action_script_stop.h",
         "audio_cue.h",
         "audio_playback_stop.h",
+        "audio_sound_effect.h",
         "backdrop_draw.h",
         "camera_interface.h",
         "heap_alloc.h",
@@ -5547,16 +5556,16 @@
       "locations": {
         "raw_offset_candidates": {
           "depth + 1": [
-            "417:47"
+            "418:47"
           ],
           "row + 1": [
-            "646:14"
+            "647:14"
           ],
           "i - 1": [
-            "652:18"
+            "653:18"
           ],
           "index - 1": [
-            "703:18"
+            "704:18"
           ],
           "count - 1": [
             "836:51"
