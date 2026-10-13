@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,241 / 76 |
+| Raw offset candidates | 4,040 / 86 | 2,216 / 76 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3634,3 +3634,7 @@ A checked 44-byte private state now connects allocation, creation, destruction
 and lifetime/animation updates. It owns drawing commands and borrows texture and
 opacity animation keys through two `ValueTrack` records. The update loop retains
 its explicit byte alias when it switches from private state to scene objects.
+
+Converging-effect drawing reads the typed texture value and the low byte of the
+opacity value, preserving the original big-endian byte selection. Its motion
+loop uses shared scale, position, world-position and sibling fields.

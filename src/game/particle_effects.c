@@ -1497,29 +1497,29 @@ void convergingParticleEffectUpdate(u8 *effect) {
     fraction = ((ConvergingParticleState *)state)->remaining / ((ConvergingParticleState *)state)->lifetime;
     step = (1.0f / (f32) * (s32 *)(state + 0x28)) * 0.5f;
     vector3FromPitchYawDegrees((s32)randomBelow(10), ((ConvergingParticleState *)state)->remaining * 200.0f, center);
-    center[0] = center[0] * 0.1f + *(f32 *)(target + 0x44);
-    center[1] = center[1] * 0.1f + *(f32 *)(target + 0x48);
-    center[2] = center[2] * 0.1f + *(f32 *)(target + 0x4C);
-    for (i = 0, state = effect; state != NULL; state = *(u8 **)(state + 0x28)) {
+    center[0] = center[0] * 0.1f + ((RuntimeObjectPrefix *)target)->worldPosition[0];
+    center[1] = center[1] * 0.1f + ((RuntimeObjectPrefix *)target)->worldPosition[1];
+    center[2] = center[2] * 0.1f + ((RuntimeObjectPrefix *)target)->worldPosition[2];
+    for (i = 0, state = effect; state != NULL; state = ((RuntimeObjectPrefix *)state)->sibling.bytes) {
         age = i * step + fraction;
         scale = 0.15f * age;
-        *(f32 *)state = scale;
-        *(f32 *)(state + 4) = scale;
-        *(f32 *)(state + 8) = scale;
+        ((RuntimeObjectPrefix *)state)->scale[0] = scale;
+        ((RuntimeObjectPrefix *)state)->scale[1] = scale;
+        ((RuntimeObjectPrefix *)state)->scale[2] = scale;
         radius = mathMapRangeClamped(0.6f, 0.15f, 0.8f, 1.0f, age) * 10.0f;
-        delta[0] = *(f32 *)(state + 0x44) - center[0];
-        delta[1] = *(f32 *)(state + 0x48) - center[1];
-        delta[2] = *(f32 *)(state + 0x4C) - center[2];
+        delta[0] = ((RuntimeObjectPrefix *)state)->worldPosition[0] - center[0];
+        delta[1] = ((RuntimeObjectPrefix *)state)->worldPosition[1] - center[1];
+        delta[2] = ((RuntimeObjectPrefix *)state)->worldPosition[2] - center[2];
         vector3Normalize((u8 *)delta);
         delta[0] *= radius;
         delta[1] *= radius;
         delta[2] *= radius;
-        *(f32 *)(state + 0x18) = *(f32 *)(target + 0x44) + delta[0];
-        *(f32 *)(state + 0x1C) = *(f32 *)(target + 0x48) + delta[1];
-        *(f32 *)(state + 0x20) = *(f32 *)(target + 0x4C) + delta[2];
-        *(f32 *)(state + 0x44) = *(f32 *)(state + 0x18);
-        *(f32 *)(state + 0x48) = *(f32 *)(state + 0x1C);
-        *(f32 *)(state + 0x4C) = *(f32 *)(state + 0x20);
+        ((RuntimeObjectPrefix *)state)->position[0] = ((RuntimeObjectPrefix *)target)->worldPosition[0] + delta[0];
+        ((RuntimeObjectPrefix *)state)->position[1] = ((RuntimeObjectPrefix *)target)->worldPosition[1] + delta[1];
+        ((RuntimeObjectPrefix *)state)->position[2] = ((RuntimeObjectPrefix *)target)->worldPosition[2] + delta[2];
+        ((RuntimeObjectPrefix *)state)->worldPosition[0] = ((RuntimeObjectPrefix *)state)->position[0];
+        ((RuntimeObjectPrefix *)state)->worldPosition[1] = ((RuntimeObjectPrefix *)state)->position[1];
+        ((RuntimeObjectPrefix *)state)->worldPosition[2] = ((RuntimeObjectPrefix *)state)->position[2];
         objectOrientAlongCameraView(state);
         i++;
     }
@@ -1534,18 +1534,18 @@ void convergingParticleEffectUpdate(u8 *effect) {
 /// live until rendering finishes. The effect texture bank must be loaded.
 /// \note Original decompilation identifier: \c func_8001A55C (0x8001A55C).
 s32 convergingParticleEffectPrepareDraw(u8 *effect) {
-    u8 *obj;
+    ConvergingParticleState *state;
     Gfx *g;
     s32 idx;
 
-    obj = *(u8 **)(effect + 0x54);
+    state = ((RuntimeObjectPrefix *)effect)->state.pointer;
     g = gRenderDisplayListCursor++;
     g->words.w0 = 0xDB06001C;
-    idx = (*(u16 *)(effect + 0x36) & 0x8000) ? 1 : 0;
-    g->words.w1 = (u32)osVirtualToPhysical(((void **)(effect + 0x3C))[idx]);
-    textureLoadForDraw(&gRenderDisplayListCursor, 5, *(s16 *)(obj + 0xC));
-    gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0xFF, 0xFF, 0x90, obj[0x19]);
-    return *(s32 *)obj;
+    idx = (((RuntimeObjectPrefix *)effect)->flags & 0x8000) ? 1 : 0;
+    g->words.w1 = (u32)osVirtualToPhysical(((RuntimeObjectPrefix *)effect)->matrixBuffers[idx]);
+    textureLoadForDraw(&gRenderDisplayListCursor, 5, state->textureAnimation.value);
+    gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0xFF, 0xFF, 0x90, (u8)state->alphaAnimation.value);
+    return (s32)state->displayList;
 }
 
 /// Object template for converging particle effects.
