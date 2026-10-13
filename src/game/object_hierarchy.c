@@ -1,3 +1,4 @@
+#include "midi_reader.h"
 #include "audio_sound_effect.h"
 #include "matrix_point.h"
 #include "camera_view.h"
@@ -127,14 +128,7 @@ void vector3GetEulerDegrees(f32 *, f32 *, f32 *, f32 *);
 
 
 
-/* MIDI track reader: start/position/length of the track data, plus the running
- * status byte restored for data bytes that omit a status. */
-typedef struct MidiReader {
-    u32 start;
-    u32 position;
-    u32 length;
-    u8 runningStatus;
-} MidiReader;
+
 
 /// Buffered cartridge-reader storage with room to align the DMA buffer internally.
 typedef struct RomByteReader {
@@ -266,9 +260,9 @@ s32 midiReaderOpen(u8 *reader, s32 address) {
 /// \param mark Previously saved, word-aligned mark containing at least five readable bytes.
 /// \returns 1.
 /// \note Original decompilation identifier: \c func_8000790C (0x8000790C).
-s32 midiReaderRestoreMark(u8 *reader, u8 *mark) {
-    ((MidiReader *)reader)->position = (s32)((SequenceMark *)mark)->position;
-    ((MidiReader *)reader)->runningStatus = (u8)((SequenceMark *)mark)->runningStatus;
+s32 midiReaderRestoreMark(MidiReader *reader, SequenceMark *mark) {
+    reader->position = (s32)mark->position;
+    reader->runningStatus = (u8)mark->runningStatus;
     return 1;
 }
 
@@ -277,9 +271,9 @@ s32 midiReaderRestoreMark(u8 *reader, u8 *mark) {
 /// \param mark Word-aligned destination with room for at least five bytes; must not overlap the reader.
 /// \returns 1.
 /// \note Original decompilation identifier: \c func_80007924 (0x80007924).
-s32 midiReaderSaveMark(u8 *reader, u8 *mark) {
-    ((SequenceMark *)mark)->position = (s32)((MidiReader *)reader)->position;
-    ((SequenceMark *)mark)->runningStatus = (u8)((MidiReader *)reader)->runningStatus;
+s32 midiReaderSaveMark(MidiReader *reader, SequenceMark *mark) {
+    mark->position = (s32)reader->position;
+    mark->runningStatus = (u8)reader->runningStatus;
     return 1;
 }
 

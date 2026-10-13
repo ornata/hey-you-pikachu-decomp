@@ -1,8 +1,8 @@
+#include "midi_reader.h"
 #include "midi_sequence.h"
 #include "common.h"
 #include "midi_sequence_types.h"
 void midiSequencePlaybackTransitionHook(void);
-s32 midiReaderOpen(u8 *, s32);
 
 /// Provide the inactive notification hook for sequence start and stop transitions.
 /// \returns Nothing.
@@ -86,9 +86,6 @@ s32 midiSequenceStop(SequenceState *state) {
     return 0;
 }
 
-s32 midiReaderRestoreMark(u8 *, u8 *);
-s32 midiReaderSaveMark(u8 *, u8 *);
-s32 midiReaderReadEvent(u8 *, u8 *, s32 *, s32);
 /// Conversion factor from MIDI tempo microseconds to elapsed seconds.
 /// \note Original identifier: \c D_800A0210 (0x800A0210).
 extern f64 gMidiMicrosecondsToSeconds;
@@ -134,7 +131,7 @@ s32 midiSequenceReadEvent(SequenceState *state, u8 *event, s32 capacity, f64 *de
             *delta = -1.0;
             return 0;
         }
-        ticks = midiReaderReadEvent((u8 *)state, event, &length, capacity);
+        ticks = midiReaderReadEvent((MidiReader *)state, event, &length, capacity);
         if (ticks < 0) {
             midiSequenceStop(state);
             continue;
@@ -165,7 +162,7 @@ s32 midiSequenceReadEvent(SequenceState *state, u8 *event, s32 capacity, f64 *de
                 state->sustain[event[0] & 0xF] = event[2];
                 break;
             case 0x66:
-                midiReaderSaveMark((u8 *)state, (u8 *)&state->loop);
+                midiReaderSaveMark((MidiReader *)state, &state->loop);
                 state->hasLoop = 1;
                 continue;
             case 0x67:
@@ -176,7 +173,7 @@ s32 midiSequenceReadEvent(SequenceState *state, u8 *event, s32 capacity, f64 *de
                     midiSequenceEnableAllChannels(state);
                 ++state->repetitions;
                 if (state->hasLoop)
-                    midiReaderRestoreMark((u8 *)state, (u8 *)&state->loop);
+                    midiReaderRestoreMark((MidiReader *)state, &state->loop);
                 continue;
             }
             break;

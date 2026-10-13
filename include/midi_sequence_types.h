@@ -8,9 +8,9 @@
 
 /// Saved MIDI reader position and running status for a sequence loop.
 typedef struct SequenceMark {
-    s32 position;
-    u8 runningStatus;
-    u8 unknown5[3];
+    s32 position; ///< Saved address of the next unread sequence byte.
+    u8 runningStatus; ///< Saved channel status for events that omit their status byte.
+    u8 unknown5[3]; ///< Unresolved trailing storage; not written by mark save/restore.
 } SequenceMark;
 /// MIDI reader, tempo, held notes and pending playback releases.
 /// The reader bytes remain opaque to playback consumers.
@@ -46,6 +46,8 @@ typedef struct SequenceControlState {
     f64 immediateLevel; ///< Volume fraction to apply before the next event.
 } SequenceControlState;
 
+typedef char SequenceMarkSizeCheck[(sizeof(SequenceMark) == 8) ? 1 : -1];
+typedef char SequenceMarkStatusOffsetCheck[((u32) & ((SequenceMark *)0)->runningStatus == 4) ? 1 : -1];
 typedef char SequenceStateSizeCheck[(sizeof(SequenceState) == 0x5B0) ? 1 : -1];
 typedef char SequenceControlStateSizeCheck[(sizeof(SequenceControlState) == 0x5D8) ? 1 : -1];
 #define SEQUENCE_OFFSET(type, member) ((u32) & ((type *)0)->member)
