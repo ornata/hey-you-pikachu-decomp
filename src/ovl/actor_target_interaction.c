@@ -1,3 +1,4 @@
+#include "scroll_board.h"
 #include "actor_behavior.h"
 #include "item_participation.h"
 #include "item_queries.h"
@@ -441,14 +442,15 @@ f32 objectGetFacingErrorToTarget(u8 *object, s32 targetId) {
     return var_f2;
 }
 
-typedef struct {
-    s32 w[2];
-} Pair32;
+/// Borrowed text arrays selected by the two supported board presets.
+typedef struct ScrollBoardTextPresets {
+    u8 **entries[2]; ///< Null-terminated arrays of borrowed encoded strings.
+} ScrollBoardTextPresets;
+typedef char ScrollBoardTextPresetsSizeCheck[(sizeof(ScrollBoardTextPresets) == 8) ? 1 : -1];
 
-void scrollBoardSetHierarchyText(u8 *, s32, s32); /* extern */
 /// Two preset text references available to scrolling-board hierarchies.
 /// \note Original identifier: \c D_8012A6B0 (0x8012A6B0).
-extern Pair32 gScrollBoardPresetTexts;
+extern ScrollBoardTextPresets gScrollBoardPresetTexts;
 
 /// Select preset text for a scrolling board hierarchy.
 /// \param handle Live object handle of the board hierarchy.
@@ -457,7 +459,7 @@ extern Pair32 gScrollBoardPresetTexts;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80119508 (0x80119508).
 void scrollBoardSelectPresetText(s32 handle, s32 preset, s32 style) {
-    Pair32 sp20 = gScrollBoardPresetTexts;
+    ScrollBoardTextPresets presets = gScrollBoardPresetTexts;
 
-    scrollBoardSetHierarchyText(objectFindLiveByHandle(handle), sp20.w[preset], style);
+    scrollBoardSetHierarchyText(objectFindLiveByHandle(handle), presets.entries[preset], style);
 }

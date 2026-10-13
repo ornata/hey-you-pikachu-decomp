@@ -51,7 +51,7 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 2494,
+      "occurrences": 2492,
       "unique_spellings": 996,
       "files": 77
     }
@@ -1840,6 +1840,7 @@
         "object_matrix_buffers.h",
         "object_movement.h",
         "object_types.h",
+        "scroll_board.h",
         "text_draw.h",
         "text_panel.h"
       ],
@@ -1849,75 +1850,71 @@
       "locations": {
         "raw_offset_candidates": {
           "object + 0x64": [
-            "177:26"
+            "178:26"
           ],
           "y - 16": [
-            "189:31",
-            "199:31"
+            "190:31",
+            "200:31"
           ],
           "vtxIdx + 1": [
-            "263:37"
+            "264:37"
           ],
           "vtxIdx + 2": [
-            "263:49",
-            "263:72"
+            "264:49",
+            "264:72"
           ],
           "vtxIdx + 3": [
-            "263:84"
+            "264:84"
           ],
           "object + 0x54": [
-            "280:24"
+            "281:24"
           ],
           "images + 1": [
-            "325:63"
+            "326:63"
           ],
           "rowOffset - 16": [
-            "458:67"
+            "459:67"
           ],
           "rowOffset + 16": [
-            "471:67"
+            "472:67"
           ],
           "boardStateAddress + 0x14": [
-            "531:31"
-          ],
-          "root + 0x2C": [
-            "609:33",
-            "618:34"
+            "532:31"
           ],
           "actor + 0x34": [
-            "681:26"
+            "682:26"
           ],
           "actor + 0x54": [
-            "685:27"
+            "686:27"
           ],
           "gPlayerState + 0xFC": [
-            "810:18"
+            "811:18"
           ],
           "object + 0x18": [
-            "863:81"
-          ],
-          "object + 0x1C": [
             "864:81"
           ],
-          "object + 0x20": [
+          "object + 0x1C": [
             "865:81"
           ],
+          "object + 0x20": [
+            "866:81"
+          ],
           "linked + 0x24": [
-            "890:39"
+            "891:39"
           ],
           "p + 0x18": [
-            "1010:82"
+            "1011:82"
           ],
           "object + 0x30": [
-            "1011:21",
-            "1115:18",
-            "1119:18"
+            "1012:21",
+            "1116:18",
+            "1120:18"
           ],
           "linked + 0x50": [
-            "1066:53"
+            "1067:53"
           ],
           "state + 0x34": [
-            "1068:85"
+            "1069:85"
           ]
         }
       }
@@ -5391,6 +5388,7 @@
         "scene_types.h",
         "script_vm_globals.h",
         "script_vm_stack.h",
+        "scroll_board.h",
         "story_chapter.h",
         "voice_recognition.h"
       ],
@@ -5398,18 +5396,18 @@
       "locations": {
         "raw_offset_candidates": {
           "actor + 0x54": [
-            "374:32",
-            "820:32",
-            "899:32",
-            "1004:32"
+            "375:32",
+            "819:32",
+            "898:32",
+            "1003:32"
           ],
           "created + 0x38": [
-            "840:42",
-            "844:42"
+            "839:42",
+            "843:42"
           ],
           "gCurrentAreaConfiguration + 0xC": [
-            "843:40",
-            "910:40"
+            "842:40",
+            "909:40"
           ]
         }
       }
@@ -5528,13 +5526,14 @@
         "object_lookup.h",
         "object_movement.h",
         "object_types.h",
-        "player_types.h"
+        "player_types.h",
+        "scroll_board.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "return -1": [
-            "422:9"
+            "423:9"
           ]
         }
       }

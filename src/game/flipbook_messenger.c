@@ -1,3 +1,4 @@
+#include "scroll_board.h"
 #include "messenger.h"
 #include "camera_types.h"
 #include "linked_effect.h"
@@ -58,9 +59,9 @@ typedef char FlipbookOutlinesOffsetCheck[(((u32) & ((Flipbook *)0)->outlineIndic
 typedef char FlipbookDrawingOffsetCheck[(((u32)&((Flipbook *)0)->displayList) == 0x50) ? 1 : -1];
 typedef char FlipbookVerticesOffsetCheck[(((u32)&((Flipbook *)0)->vertices) == 0x64) ? 1 : -1];
 
-/// Owned scrolling state and model, borrowing its assigned text-address array.
+/// Owned scrolling state and model, borrowing its assigned text-pointer array.
 typedef struct ScrollBoardState {
-    s32 *text; ///< Borrowed null-terminated array of target-width text addresses.
+    u8 **text; ///< Borrowed null-terminated array of encoded text pointers.
     s32 topLine; ///< First text entry displayed by the model.
     s32 textCount; ///< Number of assigned non-null text entries.
     f32 rowOffset; ///< Vertical offset within the current sixteen-pixel row.
@@ -356,7 +357,7 @@ void image4BitAddOffsetOutline(u8 *, s32, s32, s32, s32);
 /// \param count Nonnegative number of text entries to display.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002588C (0x8002588C).
-void flipbookSetText(u8 *object, s32 *text, s32 count) {
+void flipbookSetText(u8 *object, u8 **text, s32 count) {
     u8 *lineImage;
     s32 activeBuffer;
     s8 leadingOutline;
@@ -370,7 +371,7 @@ void flipbookSetText(u8 *object, s32 *text, s32 count) {
     if (count != 0) {
         do {
             TRACE(" Apply:(%s)\n", *text);
-            lineImage = (u8 *)textPanelAppend(inactivePanel, (void *)*text);
+            lineImage = (u8 *)textPanelAppend(inactivePanel, *text);
             trailingOutline = (s8)((Flipbook *)object)->outlineIndices[1];
             if ((trailingOutline >= 0) && (trailingOutline < 0x10)) {
                 image4BitAddOffsetOutline(lineImage, 1, 0, 0, (s32)trailingOutline);
@@ -540,10 +541,10 @@ s32 scrollBoardCreateObject(s32 columns, s32 lines, u8 red, u8 green, u8 blue, u
 /// \param style Text configuration 0 through 2, or another value to select the default configuration.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80025C5C (0x80025C5C).
-void scrollBoardSetText(u8 *object, s32 *list, s32 style) {
+void scrollBoardSetText(u8 *object, u8 **list, s32 style) {
     u8 *v = ((RuntimeObjectPrefix *)object)->state.bytes;
     s32 n;
-    s32 *p;
+    u8 **p;
 
     if (list == NULL) {
         ((ScrollBoardState *)v)->text = list;
@@ -605,8 +606,8 @@ u8 *scrollBoardCreateHierarchy(s32 columns, s32 lines, u8 red, u8 green, u8 blue
 /// \param style Text configuration 0 through 2, or another value to select the default configuration.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80025DAC (0x80025DAC).
-void scrollBoardSetHierarchyText(u8 *root, s32 *list, s32 style) {
-    scrollBoardSetText(*(u8 **)(root + 0x2C), list, style);
+void scrollBoardSetHierarchyText(u8 *root, u8 **list, s32 style) {
+    scrollBoardSetText(((RuntimeObjectPrefix *)root)->child.bytes, list, style);
 }
 
 /// Set the scrolling speed of the board in a hierarchy.
@@ -615,7 +616,7 @@ void scrollBoardSetHierarchyText(u8 *root, s32 *list, s32 style) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80025DCC (0x80025DCC).
 void scrollBoardSetHierarchySpeed(u8 *root, f32 speed) {
-    scrollBoardSetSpeed(*(u8 **)(root + 0x2C), speed);
+    scrollBoardSetSpeed(((RuntimeObjectPrefix *)root)->child.bytes, speed);
 }
 
 /// Set an object position, orientation, and uniform scale.

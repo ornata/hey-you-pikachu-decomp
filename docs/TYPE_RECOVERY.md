@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,494 / 77 |
+| Raw offset candidates | 4,040 / 86 | 2,492 / 77 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3535,7 +3535,13 @@ at `0x8002588C`, geometry initialization and bank selection support these roles.
 Scrolling-board state now has a checked private 136-byte layout containing
 borrowed text addresses, first visible line, text count, row offset, signed
 speed and its owned flipbook. Update, drawing, text assignment and speed changes
-reuse this layout, including the model's visible-row count. Text address entries
-retain the existing target-width representation at the public assignment
-boundary pending interface recovery. Ghidra update at `0x80025A44`, allocation
+reuse this layout, including the model's visible-row count. Text entries now use borrowed byte-string pointers consistently through
+the public hierarchy interface and preset arrays. Ghidra update at `0x80025A44`, allocation
 and text assignment establish the size, offsets and resource lifetimes.
+
+`scroll_board.h` shares hierarchy creation, borrowed-text assignment and speed
+contracts with script and preset consumers. The private flipbook text interface
+and board state use the same string-pointer arrays. The two preset arrays have
+a checked eight-byte descriptor instead of generic integer words. Ghidra text
+assignment at `0x80025C5C`, null-terminated entry traversal and preset selection
+establish pointer roles; hierarchy wrappers use the existing child-object link.

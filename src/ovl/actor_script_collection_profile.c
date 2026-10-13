@@ -1,3 +1,4 @@
+#include "scroll_board.h"
 #include "script_vm_globals.h"
 #include "actor_behavior.h"
 #include "player_view_search.h"
@@ -792,9 +793,7 @@ s32 actorScriptPlayerTryHoldItem(u8 *actor) {
     return 0;
 }
 
-u8 *scrollBoardCreateHierarchy(s32, s32, u8, u8, u8, u8, s32, s32);
 void objectSetUniformTransform(u8 *, u8 *, u8 *, f32);
-void scrollBoardSetHierarchySpeed(u8 *, f32);
 void scrollBoardSelectPresetText(s32, s32, s32);
 /// Create a scrolling text board with preset text, appearance, and transform settings.
 /// \param actor Actor whose script VM supplies, in order, a text preset index of zero or one, text style (zero through two, or another value for the default), positive width in twelve-pixel columns, positive height in sixteen-pixel lines, position X/Y/Z, rotation X/Y/Z in degrees, red/green/blue/alpha components from zero through 255, top-left and bottom-right outline palette indices, uniform scale relative to the scene scale, and scroll speed in pixels per second. Outline indices must be zero through 15, or minus one to disable the corresponding outline; the VM receives the new board hierarchy handle, to release through hierarchy destruction.
