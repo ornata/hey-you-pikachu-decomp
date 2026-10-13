@@ -45,6 +45,14 @@ typedef struct AnimatedTextureState {
     s32 commandsPerBuffer; ///< Reserved command count for each drawing buffer.
 } AnimatedTextureState;
 
+#define ANIMATED_TEXTURE_OFFSET_CHECK(field, offset) \
+    typedef char AnimatedTexture_##field##OffsetCheck[(((u32) & ((AnimatedTextureState *)0)->field) == (offset)) ? 1 : -1]
+ANIMATED_TEXTURE_OFFSET_CHECK(textureIds, 0x4);
+ANIMATED_TEXTURE_OFFSET_CHECK(playbackRates, 0x10);
+ANIMATED_TEXTURE_OFFSET_CHECK(tracks, 0x1C);
+ANIMATED_TEXTURE_OFFSET_CHECK(commandsPerBuffer, 0x48);
+#undef ANIMATED_TEXTURE_OFFSET_CHECK
+
 typedef char AnimatedTextureStateSizeCheck[(sizeof(AnimatedTextureState) == 0x4C) ? 1 : -1];
 typedef char
     AnimatedTextureStateListsOffsetCheck[(((u32) & (((AnimatedTextureState *)0)->displayLists)) == 0x40) ? 1 : -1];
@@ -1025,9 +1033,9 @@ void actorAllocateAnimatedTextureState(void *actor) {
     AnimatedTextureState *state;
     AnimatedTextureState *allocation;
 
-    allocation = heapAllocLocal(&gGameHeap, 0x4C, 0x463);
+    allocation = heapAllocLocal(&gGameHeap, sizeof(AnimatedTextureState), 0x463);
     state = allocation;
-    _bzero(allocation, 0x4C);
+    _bzero(allocation, sizeof(AnimatedTextureState));
     ((RuntimeObjectPrefix *)actor)->state.pointer = state;
 }
 
@@ -1051,7 +1059,7 @@ Gfx *textureLoadForDraw(Gfx **, s32, s32);
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800166E4 (0x800166E4).
 void actorUpdateAnimatedTextureDrawLists(u8 *actor, s32 buffer) {
-    AnimatedTextureState *v;
+    AnimatedTextureState *state;
     Gfx *dl;
     s32 i;
     Gfx *gfx;
@@ -1059,16 +1067,16 @@ void actorUpdateAnimatedTextureDrawLists(u8 *actor, s32 buffer) {
     s32 frame;
     Gfx *base;
 
-    v = *(AnimatedTextureState **)(actor + 0x54);
-    base = v->displayLists[buffer];
+    state = ((RuntimeObjectPrefix *)actor)->state.pointer;
+    base = state->displayLists[buffer];
     dl = base;
-    gfx = base + v->count;
-    for (i = 0; i < v->count; i++) {
+    gfx = base + state->count;
+    for (i = 0; i < state->count; i++) {
         gSPBranchList(dl++, gfx);
-        track = &v->tracks[i];
+        track = &state->tracks[i];
         frame = track->value;
-        animationIntegerTrackEvaluate(track, &frame, v->playbackRates[i] * gRuntimeFrameSeconds);
-        textureLoadForDraw(&gfx, v->textureIds[i], frame);
+        animationIntegerTrackEvaluate(track, &frame, state->playbackRates[i] * gRuntimeFrameSeconds);
+        textureLoadForDraw(&gfx, state->textureIds[i], frame);
         gSPEndDisplayList(gfx++);
     }
 }
@@ -1094,21 +1102,21 @@ s32 actorBindAnimatedTexturesForDraw(u8 *actor) {
 /// \note Original decompilation identifier: \c func_80016884 (0x80016884).
 void actorInitializeAnimatedTextures(u8 *actor, s32 *parts) {
     u8 *obj;
-    AnimatedTextureState *v;
+    AnimatedTextureState *state;
     s32 frame;
 
     obj = actorFindPart(actor, 0x78);
-    v = *(AnimatedTextureState **)(obj + 0x54);
-    v->count = 0;
+    state = ((RuntimeObjectPrefix *)obj)->state.pointer;
+    state->count = 0;
     for (; (frame = parts[0]) >= 0; parts += 2) {
-        v->textureIds[v->count] = frame;
-        v->playbackRates[v->count] = 1.0f;
-        animationIntegerTrackInitialize(&v->tracks[v->count], gTextureFrameAnimationPrograms[parts[1]]);
-        v->count++;
+        state->textureIds[state->count] = frame;
+        state->playbackRates[state->count] = 1.0f;
+        animationIntegerTrackInitialize(&state->tracks[state->count], gTextureFrameAnimationPrograms[parts[1]]);
+        state->count++;
     }
-    v->commandsPerBuffer = v->count * 20;
-    v->displayLists[0] = heapAllocLocal(&gGameHeap, v->commandsPerBuffer * sizeof(Gfx) * 2, 0x4B8);
-    v->displayLists[1] = v->displayLists[0] + v->commandsPerBuffer;
+    state->commandsPerBuffer = state->count * 20;
+    state->displayLists[0] = heapAllocLocal(&gGameHeap, state->commandsPerBuffer * sizeof(Gfx) * 2, 0x4B8);
+    state->displayLists[1] = state->displayLists[0] + state->commandsPerBuffer;
     actorUpdateAnimatedTextureDrawLists(obj, 0);
     actorUpdateAnimatedTextureDrawLists(obj, 1);
 }
@@ -1118,18 +1126,18 @@ void actorInitializeAnimatedTextures(u8 *actor, s32 *parts) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800169B8 (0x800169B8).
 void actorAllocatePartTable(u8 *actor) {
-    u8 *v;
+    ActorScriptState *state;
     s32 kind;
     s32 n;
     s32 size;
 
-    v = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    state = ((RuntimeObjectPrefix *)actor)->state.actor;
     kind = ((RuntimeObjectPrefix *)actor)->kind;
     n = gActorPartCounts[kind];
-    ((ActorScriptState *)v)->partCount = n;
-    size = n * sizeof(*((ActorScriptState *)v)->partTable);
-    ((ActorScriptState *)v)->partTable = heapAllocLocal(&gGameHeap, size, 0x4D2);
-    _bzero(((ActorScriptState *)v)->partTable, size);
+    state->partCount = n;
+    size = n * sizeof(*state->partTable);
+    state->partTable = heapAllocLocal(&gGameHeap, size, 0x4D2);
+    _bzero(state->partTable, size);
 }
 
 /// Register matching objects from a hierarchy in an actor part table.
@@ -1210,12 +1218,12 @@ f32 terrainGetWorldHeightForQuery(s32, f32, f32, f32, u8 **);
 /// \returns Signed height above the ground after the actor ground offset is applied.
 /// \note Original decompilation identifier: \c func_80016BA8 (0x80016BA8).
 f32 actorMeasureGroundClearance(u8 *actor, s32 collisionMode, u8 *reference, f32 *displacement, f32 *groundHeight, u8 **surface) {
-    u8 *v;
+    ActorScriptState *state;
     const s32 *p;
     u8 *e;
     f32 top;
 
-    v = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    state = ((RuntimeObjectPrefix *)actor)->state.actor;
     top = ((RuntimeObjectPrefix *)reference)->worldPosition[1];
     for (p = actorConfigGetGroundReferencePartIds(((RuntimeObjectPrefix *)actor)->kind); *p > 0; p++) {
         e = actorFindPart(actor, *p);
@@ -1225,7 +1233,7 @@ f32 actorMeasureGroundClearance(u8 *actor, s32 collisionMode, u8 *reference, f32
     }
     *groundHeight =
         terrainGetWorldHeightForQuery(collisionMode, ((RuntimeObjectPrefix *)reference)->worldPosition[0] + displacement[0], ((RuntimeObjectPrefix *)reference)->worldPosition[1], ((RuntimeObjectPrefix *)reference)->worldPosition[2] + displacement[2], surface);
-    return top - *groundHeight - ((ActorScriptState *)v)->groundOffset;
+    return top - *groundHeight - state->groundOffset;
 }
 
 void matrix33TransformVector(f32 *, f32 *, f32 *, u8 *);

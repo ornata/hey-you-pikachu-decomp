@@ -33,7 +33,8 @@
       "heapAllocLocal callers": "These callers preserve unused fourth arguments in the ROM. The three-argument allocator prototype rejects them. Retain the local ABI compatibility declaration until an explicitly matching call representation is verified.",
       "actorFindPartIndex": "The word-map lookup retains two unused trailing integer arguments from the ROM call. Its map, key and return types match the implementation; removing the unused arguments is outside this matching cleanup.",
       "actorUpdateMotionDisplacement": "The matrix-vector call retains an unused trailing actor-state pointer from the ROM call. Its matrix, input and output are float arrays and its return is void.",
-      "heapFreeLocal callers": "An unprototyped void declaration retains the original mix of two- and three-argument calls, including an unused trailing object pointer."
+      "heapFreeLocal callers": "An unprototyped void declaration retains the original mix of two- and three-argument calls, including an unused trailing object pointer.",
+      "actorBindAnimatedTexturesForDraw": "The raw 32-bit child continuation read at object offset 0x30 is retained: replacing it with RuntimeObjectPrefix.child.address changes this function's allocated instruction bytes under IDO, while the typed animated-texture state links match. Retry only with a representation that preserves the return load scheduling."
     },
     "src/game/backdrop.c": {
       "backdropAllocateViewBuffer / backdropLoadRomRange": "Typed heap allocation declarations retain unused fourth size arguments. Integer buffer-address fields and returns preserve the original 32-bit target representation."

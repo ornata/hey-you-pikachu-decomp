@@ -51,7 +51,7 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 1991,
+      "occurrences": 1989,
       "unique_spellings": 836,
       "files": 75
     }
@@ -580,73 +580,70 @@
         "heapAllocLocal callers": "These callers preserve unused fourth arguments in the ROM. The three-argument allocator prototype rejects them. Retain the local ABI compatibility declaration until an explicitly matching call representation is verified.",
         "actorFindPartIndex": "The word-map lookup retains two unused trailing integer arguments from the ROM call. Its map, key and return types match the implementation; removing the unused arguments is outside this matching cleanup.",
         "actorUpdateMotionDisplacement": "The matrix-vector call retains an unused trailing actor-state pointer from the ROM call. Its matrix, input and output are float arrays and its return is void.",
-        "heapFreeLocal callers": "An unprototyped void declaration retains the original mix of two- and three-argument calls, including an unused trailing object pointer."
+        "heapFreeLocal callers": "An unprototyped void declaration retains the original mix of two- and three-argument calls, including an unused trailing object pointer.",
+        "actorBindAnimatedTexturesForDraw": "The raw 32-bit child continuation read at object offset 0x30 is retained: replacing it with RuntimeObjectPrefix.child.address changes this function's allocated instruction bytes under IDO, while the typed animated-texture state links match. Retry only with a representation that preserves the return load scheduling."
       },
       "locations": {
         "raw_offset_candidates": {
           "slot + 1": [
-            "94:33"
+            "102:33"
           ],
           "drawListStorage + 0x40": [
-            "232:40"
+            "240:40"
           ],
           "object + 0x54": [
-            "342:22"
+            "350:22"
           ],
           "state + 0x10": [
-            "344:40",
-            "345:40"
+            "352:40",
+            "353:40"
           ],
           "object + 0x44": [
-            "346:45",
-            "347:22"
+            "354:45",
+            "355:22"
           ],
           "object + 0x48": [
-            "346:70",
-            "348:56"
+            "354:70",
+            "356:56"
           ],
           "object + 0x4C": [
-            "346:95",
-            "348:81"
+            "354:95",
+            "356:81"
           ],
           "heightDelta + 1": [
-            "352:34"
+            "360:34"
           ],
           "state + 0xC": [
-            "361:43",
-            "362:22"
+            "369:43",
+            "370:22"
           ],
           "actor + 0x18": [
-            "384:50"
+            "392:50"
           ],
           "actor + 0x1C": [
-            "384:74"
+            "392:74"
           ],
           "actor + 0x20": [
-            "384:98"
+            "392:98"
           ],
           "actor + 0x54": [
-            "397:38",
-            "1062:36"
+            "405:38"
           ],
           "actor + 0x36": [
-            "397:71",
-            "429:89"
+            "405:71",
+            "437:89"
           ],
           "p + 1": [
-            "877:38"
+            "885:38"
           ],
           "return -1": [
-            "918:5"
+            "926:5"
           ],
           "actor + 0x30": [
-            "1086:21"
-          ],
-          "obj + 0x54": [
-            "1101:36"
+            "1094:21"
           ],
           "displacement + 2": [
-            "1349:17"
+            "1357:17"
           ]
         }
       }
