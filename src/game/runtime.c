@@ -870,11 +870,11 @@ void runtimeShutdownAndHalt(void) {
         do {
             osRecvMesg(&gRuntimeEventQueue, (OSMesg *)&message, OS_MESG_BLOCK);
             switch (*message) {
-            case 1:
-            case 3:
-            case 4:
+            case GAME_MESSAGE_RETRACE:
+            case GAME_MESSAGE_PRE_NMI:
+            case GAME_MESSAGE_GRAPHICS_COMPLETE:
                 break;
-            case 2:
+            case GAME_MESSAGE_FRAME_COMPLETE:
                 gRuntimePendingGraphicsTasks--;
                 break;
             }
@@ -925,7 +925,7 @@ void runtimeRunProgramEventLoop(void) {
     for (;;) {
         osRecvMesg(&gRuntimeEventQueue, (OSMesg *)&message, OS_MESG_BLOCK);
         switch (*message) {
-        case 1:
+        case GAME_MESSAGE_RETRACE:
             if (gRuntimePendingGraphicsTasks == 0) {
                 if (gRuntimeProgramChangeRequested == 0) {
                     runtimeUpdateTiming();
@@ -951,7 +951,7 @@ void runtimeRunProgramEventLoop(void) {
                     return;
             }
             continue;
-        case 2:
+        case GAME_MESSAGE_FRAME_COMPLETE:
             gRuntimePendingGraphicsTasks--;
             if (startupFrames != 0) {
                 if (startupFrames < 4U)
@@ -964,10 +964,10 @@ void runtimeRunProgramEventLoop(void) {
             if (gRuntimeProgramChangeRequested != 0 && gRuntimePendingGraphicsTasks == 0)
                 return;
             continue;
-        case 3:
+        case GAME_MESSAGE_PRE_NMI:
             runtimeShutdownAndHalt();
             continue;
-        case 4:
+        case GAME_MESSAGE_GRAPHICS_COMPLETE:
             continue;
         }
         continue;

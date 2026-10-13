@@ -4351,3 +4351,15 @@ Ghidra at 0x80002650 confirms initialization order and the final acknowledgment.
 Original controller entry-point names remain unchanged for port bindings.
 An orphaned nonmatching draft note is removed. Both source units preserve all strict
 baseline objects and the clean retail ROM match.
+
+### Shared queue-message selectors
+
+`game_message.h` documents established selectors shared by scheduler/runtime events
+and controller requests. Retrace, frame/partial graphics completion, pre-NMI, EEPROM,
+microphone and rumble now use named values in producers and dispatchers. Request
+fields remain sixteen bits; the enum does not replace their distinct payload layouts
+or ownership contracts. Ignored value eight remains unnamed pending evidence.
+Ghidra at 0x80002650 confirms controller dispatch, while linked halfwords at
+0x8009D414 and 0x8009D418 confirm partial/frame completion values four and two.
+All six edited source units and dependent headers preserve strict baseline objects
+and the clean retail ROM match.

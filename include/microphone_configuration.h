@@ -4,6 +4,7 @@
 #ifndef MICROPHONE_CONFIGURATION_H
 #define MICROPHONE_CONFIGURATION_H
 
+#include "game_message.h"
 #include "ultra64.h"
 
 /// Operations accepted by the microphone configuration dispatcher.
@@ -21,7 +22,7 @@ typedef enum MicConfigurationCommand {
 /// Retained controller-thread request; only arguments required by its command are meaningful.
 /// Storage remains valid until pending becomes zero. Configuration may take effect later.
 typedef struct MicConfigurationRequest {
-    s16 type;      ///< Controller message kind; six identifies microphone configuration.
+    s16 type;      ///< GameMessageKind selector; GAME_MESSAGE_MICROPHONE.
     s32 command;   ///< Operation from MicConfigurationCommand.
     s32 pending;   ///< Nonzero until the controller thread acknowledges dispatch.
     s32 argument0; ///< Toggle mode, dictionary ID, enable flag or trigger port mask, as selected by command.

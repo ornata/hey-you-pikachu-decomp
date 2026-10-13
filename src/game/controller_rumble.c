@@ -29,7 +29,7 @@ void controllerQueueRumbleCommand(s32 port, s32 command, f32 durationSeconds, f3
         gControllerRumbleRequestIndex = 0;
     }
     slot = &gControllerRumbleRequests[gControllerRumbleRequestIndex];
-    slot->type = 7;
+    slot->type = GAME_MESSAGE_RUMBLE;
     slot->pulseSeconds = pulseSeconds;
     slot->intervalSeconds = intervalSeconds;
     slot->durationSeconds = durationSeconds;

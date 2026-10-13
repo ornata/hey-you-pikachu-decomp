@@ -284,25 +284,25 @@ void controllerThreadMain(void *argument) {
     for (;;) {
         osRecvMesg((OSMesgQueue *)controllerGetCommandQueue(), &frame.message, OS_MESG_BLOCK);
         switch (*(s16 *)frame.message) {
-        case 1:
+        case GAME_MESSAGE_RETRACE:
             controllerQueryDevices();
             controllerPollPads();
             eepromUpdateTransfer();
             micSessionUpdate();
             controllerUpdateRumble();
             break;
-        case 5:
+        case GAME_MESSAGE_EEPROM:
             eepromDispatchRequest(frame.message);
             break;
-        case 6:
+        case GAME_MESSAGE_MICROPHONE:
             micSessionDispatchRequest(frame.message);
             break;
-        case 7:
+        case GAME_MESSAGE_RUMBLE:
             controllerDispatchRumbleRequest(frame.message);
             break;
-        case 2:
-        case 3:
-        case 4:
+        case GAME_MESSAGE_FRAME_COMPLETE:
+        case GAME_MESSAGE_PRE_NMI:
+        case GAME_MESSAGE_GRAPHICS_COMPLETE:
         case 8:
             break;
         }

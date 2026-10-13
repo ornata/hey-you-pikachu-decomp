@@ -4,11 +4,12 @@
 #ifndef CONTROLLER_COMMANDS_H
 #define CONTROLLER_COMMANDS_H
 
+#include "game_message.h"
 #include "ultra64.h"
 
 /// Caller-owned rumble command retained until the controller thread consumes it.
 typedef struct ControllerRumbleRequest {
-    s16 type;            ///< Controller message kind; seven identifies rumble commands.
+    s16 type;            ///< GameMessageKind selector; GAME_MESSAGE_RUMBLE.
     s32 port;            ///< Controller port from zero through three.
     s32 command;         ///< Zero starts a pattern, one stops it, and two resets rumble.
     f32 durationSeconds; ///< Total pattern duration for a start command.

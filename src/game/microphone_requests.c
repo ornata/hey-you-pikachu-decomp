@@ -31,7 +31,7 @@ void micQueueConfigurationRequest(MicConfigurationRequest *);
 /// \see micSessionDispatchRequest
 void micQueueConfigurationRequest(MicConfigurationRequest *msg) {
     msg->pending = 1;
-    msg->type = 6;
+    msg->type = GAME_MESSAGE_MICROPHONE;
     gMicrophoneRequestRing[gMicrophoneNextRequestIndex] = *msg;
     osSendMesg(controllerGetCommandQueue(), &gMicrophoneRequestRing[gMicrophoneNextRequestIndex], 1);
     gMicrophoneNextRequestIndex += 1;

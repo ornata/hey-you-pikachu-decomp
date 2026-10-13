@@ -4,6 +4,7 @@
 #ifndef EEPROM_IO_H
 #define EEPROM_IO_H
 
+#include "game_message.h"
 #include <ultra64.h>
 
 /// Asynchronous transfer states reported by the EEPROM interface.
@@ -20,7 +21,7 @@ typedef enum EepromTransferState {
 /// Only one queued request and one transfer may be outstanding. Acknowledgment
 /// reports setup, while transfer completion is queried separately.
 typedef struct EepromRequest {
-    s16 type; ///< Controller message type, five for EEPROM requests.
+    s16 type; ///< GameMessageKind selector; GAME_MESSAGE_EEPROM.
     u8 padding02[2];
     s32 command;    ///< Zero requests a read; one requests a write.
     s32 pending;    ///< Nonzero until the controller thread acknowledges setup.

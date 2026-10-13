@@ -2,6 +2,7 @@
 /// Defines game scheduler registrations, task records and retained worker state.
 #ifndef SCHEDULER_TYPES_H
 #define SCHEDULER_TYPES_H
+#include "game_message.h"
 #include <ultra64.h>
 
 /// Borrowed event registration linked into one scheduler.

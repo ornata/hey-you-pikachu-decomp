@@ -38,8 +38,8 @@ void schedulerInitialize(GameScheduler *s, s32 id, s32 priority, u8 mode, u8 ret
     s->clients = NULL;
     s->startupBlack = 1;
     s->frameCount = 0;
-    s->retraceMessage = 1;
-    s->preNmiMessage = 3;
+    s->retraceMessage = GAME_MESSAGE_RETRACE;
+    s->preNmiMessage = GAME_MESSAGE_PRE_NMI;
     osCreateMesgQueue(&s->retrace.queue, s->retrace.messages, 8);
     osCreateMesgQueue(&s->rsp.queue, s->rsp.messages, 8);
     osCreateMesgQueue(&s->rdp.queue, s->rdp.messages, 8);
