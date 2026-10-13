@@ -3231,3 +3231,16 @@ Conversion and decimal-string parsing locals now name the numeric values, string
 index/address and category tests. The integer reader retains its documented
 legacy definition/extra-argument compatibility constraint. All conversions and
 header rebuilds preserve strict objects.
+
+### Borrowed VM string-resource layout
+
+Both `ScriptVmConfiguration` and `ScriptVm` now describe their string resource
+as a borrowed table of borrowed null-terminated strings. Creation copies the
+table reference, string-pop indexes it directly, and decimal parsing retains a
+string pointer until the existing integer-address parser boundary. String-value
+assignment accepts a borrowed string pointer; the address-based stack wrapper
+converts explicitly. Ghidra 0x801155B0 confirms indexed address lookup and direct
+string-address decoding. New offset checks cover configuration program, strings,
+commands and capacity, and the VM's program/string pointers. The complete resource
+allocation and configuration word 0x0C remain unresolved. All typed conversions
+and dependent header rebuilds preserve strict objects.

@@ -28,10 +28,10 @@ void scriptValueSetInteger(ScriptValue *value, s32 number);
 
 /// Assign a borrowed string reference to a script value.
 /// \param value Destination value to replace.
-/// \param text Borrowed string address in the original 32-bit ABI; the string
+/// \param text Borrowed null-terminated string; its storage
 /// must remain valid while the script value is used.
 /// \returns Nothing.
 /// \note Original identifier: \c func_80115578 (0x80115578).
-void scriptValueSetStringPointer(ScriptValue *value, s32 text);
+void scriptValueSetStringPointer(ScriptValue *value, char *text);
 
 #endif

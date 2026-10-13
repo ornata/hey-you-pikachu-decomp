@@ -49,7 +49,7 @@ typedef s32 (*ScriptNativeCommand)(u8 *actor, u8 *vm);
 /// The observed prefix ends at 0x14; the complete resource allocation is unknown.
 typedef struct ScriptVmConfiguration {
     u8 *program;                   ///< Bytecode retained for the context lifetime.
-    u8 *stringTable;               ///< String-address table retained for the context lifetime.
+    char **stringTable;            ///< Borrowed table of borrowed null-terminated strings; both outlive the context.
     ScriptNativeCommand *commands; ///< Native-command table retained for the context lifetime.
     s32 unknown00C;                ///< Resource word whose purpose remains unresolved.
     s32 stackCapacity;             ///< Requested value capacity; nonpositive values select the default.
@@ -63,7 +63,7 @@ typedef struct ScriptVmConfiguration {
 typedef struct ScriptVm {
     s32 executionState;            ///< Interpreter scheduling state retained between updates.
     u8 *program;                   ///< Borrowed script bytecode.
-    u8 *stringTable;               ///< Borrowed table of string addresses.
+    char **stringTable;            ///< Borrowed table of borrowed null-terminated strings.
     f32 elapsed;                   ///< Time accumulated since the latest script reset.
     f32 totalElapsed;              ///< Time accumulated across resets.
     s32 instructionOffset;         ///< Current position in the borrowed script program.
@@ -108,6 +108,12 @@ typedef char ScriptVmSizeCheck[(sizeof(ScriptVm) == 0x2C8) ? 1 : -1];
 
 #define SCRIPT_VM_OFFSET_CHECK(name, type, member, offset)                                                             \
     typedef char name[(((u32) & ((type *)0)->member) == (offset)) ? 1 : -1]
+SCRIPT_VM_OFFSET_CHECK(ScriptVmConfigurationProgramOffsetCheck, ScriptVmConfiguration, program, 0x0);
+SCRIPT_VM_OFFSET_CHECK(ScriptVmConfigurationStringTableOffsetCheck, ScriptVmConfiguration, stringTable, 0x4);
+SCRIPT_VM_OFFSET_CHECK(ScriptVmConfigurationCommandsOffsetCheck, ScriptVmConfiguration, commands, 0x8);
+SCRIPT_VM_OFFSET_CHECK(ScriptVmConfigurationStackCapacityOffsetCheck, ScriptVmConfiguration, stackCapacity, 0x10);
+SCRIPT_VM_OFFSET_CHECK(ScriptVmProgramOffsetCheck, ScriptVm, program, 0x4);
+SCRIPT_VM_OFFSET_CHECK(ScriptVmStringTableOffsetCheck, ScriptVm, stringTable, 0x8);
 SCRIPT_VM_OFFSET_CHECK(ScriptValueDataTagOffsetCheck, ScriptValue, data.tag, 0x0);
 SCRIPT_VM_OFFSET_CHECK(ScriptValueDataPayloadOffsetCheck, ScriptValue, data.payload, 0x1);
 SCRIPT_VM_OFFSET_CHECK(ScriptVmInstructionOffsetOffsetCheck, ScriptVm, instructionOffset, 0x14);

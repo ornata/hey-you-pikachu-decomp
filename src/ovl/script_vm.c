@@ -277,7 +277,7 @@ void scriptValueSetInteger(ScriptValue *value, s32 number) {
 /// \param text Borrowed string address that must remain valid while the value is used.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80115578 (0x80115578).
-void scriptValueSetStringPointer(ScriptValue *value, s32 text) {
+void scriptValueSetStringPointer(ScriptValue *value, char *text) {
     value->data.tag = SCRIPT_VALUE_STRING_POINTER;
     bcopy(&text, value->data.payload, 4);
 }
@@ -292,7 +292,7 @@ s32 stdlibParseUnsignedDecimal(s32); /* extern */
 s32 scriptValueParseDecimal(u8 *vm, ScriptValue *value) {
     s32 stringIndex;
     s32 isString;
-    s32 stringAddress;
+    char *text;
     s32 isPointer;
     s32 parsedValue;
 
@@ -310,12 +310,12 @@ s32 scriptValueParseDecimal(u8 *vm, ScriptValue *value) {
         isPointer = 0;
     }
     if (isPointer != 0) {
-        bcopy(&value->bytes[1], &stringAddress, 4);
-        parsedValue = stdlibParseUnsignedDecimal(stringAddress);
+        bcopy(&value->bytes[1], &text, 4);
+        parsedValue = stdlibParseUnsignedDecimal((s32)text);
     } else {
         bcopy(&value->bytes[1], &stringIndex, 4);
-        stringAddress = ((s32 *)((ScriptVm *)vm)->stringTable)[stringIndex];
-        parsedValue = stdlibParseUnsignedDecimal(stringAddress);
+        text = ((ScriptVm *)vm)->stringTable[stringIndex];
+        parsedValue = stdlibParseUnsignedDecimal((s32)text);
     }
     return parsedValue;
 }
@@ -641,7 +641,7 @@ void scriptVmPushFloat(s32 vm, f32 value) {
 void scriptVmPushStringPointer(s32 vm, s32 text) {
     ScriptValue valueBox;
 
-    scriptValueSetStringPointer(&valueBox, text);
+    scriptValueSetStringPointer(&valueBox, (char *)text);
     scriptVmPushValue((u8 *)vm, &valueBox);
 }
 
@@ -692,7 +692,7 @@ char *scriptVmPopString(u8 *vm) {
             return text;
         }
         bcopy(&box.bytes[1], &index, 4);
-        return ((char **)((ScriptVm *)vm)->stringTable)[index];
+        return ((ScriptVm *)vm)->stringTable[index];
     }
     if (box.data.tag == SCRIPT_VALUE_INTEGER || box.data.tag == 2)
         test = 1;
