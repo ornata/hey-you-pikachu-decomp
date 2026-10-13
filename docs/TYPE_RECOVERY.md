@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 1,897 / 74 |
+| Raw offset candidates | 4,040 / 86 | 1,890 / 74 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3756,3 +3756,9 @@ Full controller reset uses typed driver/sequence parameters, named sequence
 volume/fade fields, the borrowed bank percussion instrument and typed voice
 traversal. Its biased channel-default byte cursor remains a documented matching
 constraint after a struct cursor changed ROM instructions.
+
+MIDI controller changes and periodic voice updates take typed driver/sequence
+records. Controller pan/effect refresh and all-notes/all-sounds traversal use
+shared voice links and channel fields, retaining the original release ordering.
+Periodic updates borrow the same list and preserve the documented envelope
+overflow and compiled-out rate-check constraints.

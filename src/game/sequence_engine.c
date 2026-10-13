@@ -23,7 +23,7 @@ s32 sequenceEngineGetVoicePan(VoicePlayer *, EngineSequence *, SequenceVoice *);
 s32 sequenceEngineResetControllers(VoicePlayer *, EngineSequence *);
 void sequenceEngineStopVoice(s32, s32, s32);
 f64 sequenceEngineGetVoiceUpdateInterval(s32);
-void sequenceEngineUpdateVoices(u8 *, u8 *, f64);
+void sequenceEngineUpdateVoices(VoicePlayer *, EngineSequence *, f64);
 void sequenceEngineAdvanceVolumeFade(EngineSequence *, f64);
 void sequenceEngineAdvanceEvents(s32, EngineSequence *, f64);
 
@@ -560,93 +560,93 @@ void sequenceEngineApplyDataEntry(u8 *channel, s32 isLowPart, s32 value) {
 /// \param value Seven-bit controller value.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000692C (0x8000692C).
-void sequenceEngineControlChange(u8 *driver, u8 *seq, s32 channel, s32 controller, s32 value) {
-    u8 *voice;
-    u8 *current;
+void sequenceEngineControlChange(VoicePlayer *driver, EngineSequence *seq, s32 channel, s32 controller, s32 value) {
+    SequenceVoice *voice;
+    SequenceVoice *current;
     switch (controller) {
     case 0:
-        ((EngineSequence *)seq)->channels[channel].bank = value << 7;
+        seq->channels[channel].bank = value << 7;
         break;
     case 32:
-        ((EngineSequence *)seq)->channels[channel].bank =
-            (((EngineSequence *)seq)->channels[channel].bank & 0x3F80) | value;
+        seq->channels[channel].bank =
+            (seq->channels[channel].bank & 0x3F80) | value;
         break;
     case 1:
-        ((EngineSequence *)seq)->channels[channel].vibratoDepth = value;
-        ((EngineSequence *)seq)->channels[channel].tremoloDepth = value;
+        seq->channels[channel].vibratoDepth = value;
+        seq->channels[channel].tremoloDepth = value;
         break;
     case 5:
-        ((EngineSequence *)seq)->channels[channel].portamentoTime = value;
+        seq->channels[channel].portamentoTime = value;
         break;
     case 6:
-        sequenceEngineApplyDataEntry((u8 *)&((EngineSequence *)seq)->channels[channel], 0, value);
+        sequenceEngineApplyDataEntry((u8 *)&seq->channels[channel], 0, value);
         break;
     case 38:
-        sequenceEngineApplyDataEntry((u8 *)&((EngineSequence *)seq)->channels[channel], 1, value);
+        sequenceEngineApplyDataEntry((u8 *)&seq->channels[channel], 1, value);
         break;
     case 7:
-        ((EngineSequence *)seq)->channels[channel].volume = value;
+        seq->channels[channel].volume = value;
         break;
     case 10:
-        ((EngineSequence *)seq)->channels[channel].pan = value << 7;
-        for (voice = *(u8 **)(seq + 0x10); voice != NULL; voice = *(u8 **)voice) {
-            if (channel == ((SequenceVoice *)voice)->channel) {
-                sequenceEngineUpdateVoicePan((VoicePlayer *)driver, (EngineSequence *)seq, (SequenceVoice *)voice);
+        seq->channels[channel].pan = value << 7;
+        for (voice = seq->voices; voice != NULL; voice = voice->next) {
+            if (channel == voice->channel) {
+                sequenceEngineUpdateVoicePan(driver, seq, voice);
             }
         }
         break;
     case 42:
-        ((EngineSequence *)seq)->channels[channel].pan =
-            (((EngineSequence *)seq)->channels[channel].pan & 0x3F80) | value;
-        for (voice = *(u8 **)(seq + 0x10); voice != NULL; voice = *(u8 **)voice) {
-            if (channel == ((SequenceVoice *)voice)->channel) {
-                sequenceEngineUpdateVoicePan((VoicePlayer *)driver, (EngineSequence *)seq, (SequenceVoice *)voice);
+        seq->channels[channel].pan =
+            (seq->channels[channel].pan & 0x3F80) | value;
+        for (voice = seq->voices; voice != NULL; voice = voice->next) {
+            if (channel == voice->channel) {
+                sequenceEngineUpdateVoicePan(driver, seq, voice);
             }
         }
         break;
     case 11:
-        ((EngineSequence *)seq)->channels[channel].expression = value << 7;
+        seq->channels[channel].expression = value << 7;
         break;
     case 64:
-        sequenceEngineSetSustain((VoicePlayer *)driver, (EngineSequence *)seq, channel, value);
+        sequenceEngineSetSustain(driver, seq, channel, value);
         break;
     case 65:
-        ((EngineSequence *)seq)->channels[channel].portamentoEnabled = value;
+        seq->channels[channel].portamentoEnabled = value;
         break;
     case 84:
-        ((EngineSequence *)seq)->channels[channel].lastKey = value;
+        seq->channels[channel].lastKey = value;
         break;
     case 91:
-        ((EngineSequence *)seq)->channels[channel].fxMix = value;
-        for (voice = *(u8 **)(seq + 0x10); voice != NULL; voice = *(u8 **)voice) {
-            if (channel == ((SequenceVoice *)voice)->channel) {
-                n_alSynSetFXMix((struct N_ALVoice_s *)(voice + 0x14),
-                                ((EngineSequence *)seq)->channels[((SequenceVoice *)voice)->channel].fxMix);
+        seq->channels[channel].fxMix = value;
+        for (voice = seq->voices; voice != NULL; voice = voice->next) {
+            if (channel == voice->channel) {
+                n_alSynSetFXMix(&voice->native,
+                                seq->channels[voice->channel].fxMix);
             }
         }
         break;
     case 100:
-        ((EngineSequence *)seq)->channels[channel].rpnLow = value;
+        seq->channels[channel].rpnLow = value;
         break;
     case 101:
-        ((EngineSequence *)seq)->channels[channel].rpnHigh = value;
+        seq->channels[channel].rpnHigh = value;
         break;
     case 120:
-        for (current = *(u8 **)(seq + 0x10); current != NULL; current = voice) {
-            voice = *(u8 **)current;
-            if (channel == current[0x30]) {
+        for (current = seq->voices; current != NULL; current = voice) {
+            voice = current->next;
+            if (channel == current->channel) {
                 sequenceEngineStopVoice((s32)driver, (s32)seq, (s32)current);
             }
         }
         break;
     case 121:
-        sequenceEngineResetChannelControllers((VoicePlayer *)driver, (EngineSequence *)seq, channel);
+        sequenceEngineResetChannelControllers(driver, seq, channel);
         break;
     case 123:
-        for (current = *(u8 **)(seq + 0x10); current != NULL; current = voice) {
-            voice = *(u8 **)current;
-            if (channel == current[0x30]) {
-                sequenceEngineReleaseVoice((VoicePlayer *)driver, (EngineSequence *)seq, (SequenceVoice *)current);
+        for (current = seq->voices; current != NULL; current = voice) {
+            voice = current->next;
+            if (channel == current->channel) {
+                sequenceEngineReleaseVoice(driver, seq, current);
             }
         }
         break;
@@ -714,7 +714,7 @@ void sequenceEngineDispatchMidiEvent(VoicePlayer *driver, EngineSequence *seq) {
             sequenceEngineNoteOff(driver, seq, status & 0xF, event[1], event[2]);
             return;
         case 0xB0:
-            sequenceEngineControlChange((u8 *)driver, (u8 *)seq, status & 0xF, event[1], event[2]);
+            sequenceEngineControlChange(driver, seq, status & 0xF, event[1], event[2]);
             return;
         case 0xC0:
             sequenceEngineSetProgram(seq, status & 0xF, event[1]);
@@ -804,7 +804,7 @@ void n_alSynSetPitch(struct N_ALVoice_s *, f32);
 ///
 /// \note UB: rate * step overflows s32 for short decays; IDO wraps (UB.md).
 /// \note Original decompilation identifier: \c func_800070A4 (0x800070A4).
-void sequenceEngineUpdateVoices(u8 *driver, u8 *seq, f64 elapsed) {
+void sequenceEngineUpdateVoices(VoicePlayer *driver, EngineSequence *seq, f64 elapsed) {
     SequenceVoice *voice;
     s32 step;
     s32 vibRate;
@@ -813,7 +813,7 @@ void sequenceEngineUpdateVoices(u8 *driver, u8 *seq, f64 elapsed) {
     f64 pitch;
 
     step = elapsed * 65536.0;
-    voice = *(SequenceVoice **)(seq + 0x10);
+    voice = seq->voices;
     while (voice != NULL) {
 
 
@@ -825,34 +825,34 @@ void sequenceEngineUpdateVoices(u8 *driver, u8 *seq, f64 elapsed) {
             sequenceEngineStopVoice((s32)driver, (s32)seq, (s32)voice);
             return;
         }
-        if (((EngineSequence *)seq)->channels[voice->channel].vibratoDepth != 0) {
+        if (seq->channels[voice->channel].vibratoDepth != 0) {
             vibRate = voice->instrument->vibRate;
             voice->vibratoPhase += step * vibRate / 16;
         }
-        if (((EngineSequence *)seq)->channels[voice->channel].tremoloDepth != 0) {
+        if (seq->channels[voice->channel].tremoloDepth != 0) {
             tremRate = voice->instrument->tremRate;
             voice->tremoloPhase += step * tremRate / 16;
         }
         if (voice->portamento > 0) {
-            voice->portamento -= 768 / (((EngineSequence *)seq)->channels[voice->channel].portamentoTime + 1);
+            voice->portamento -= 768 / (seq->channels[voice->channel].portamentoTime + 1);
             if (voice->portamento < 0) {
                 voice->portamento = 0;
             }
         }
         if (voice->portamento < 0) {
-            voice->portamento += 768 / (((EngineSequence *)seq)->channels[voice->channel].portamentoTime + 1);
+            voice->portamento += 768 / (seq->channels[voice->channel].portamentoTime + 1);
             if (voice->portamento > 0) {
                 voice->portamento = 0;
             }
         }
         if (voice->envelopeRate == 0) {
-            volume = sequenceEngineGetVoiceVolume(driver, seq, (u8 *)voice);
+            volume = sequenceEngineGetVoiceVolume((u8 *)driver, (u8 *)seq, (u8 *)voice);
             if (volume != (u16)voice->volume) {
                 voice->volume = volume;
                 n_alSynSetVol(&voice->native, voice->volume, (s32)(elapsed * 1000000.0));
             }
         }
-        pitch = sequenceEngineGetVoicePitchRatio(seq, (u8 *)voice);
+        pitch = sequenceEngineGetVoicePitchRatio((u8 *)seq, (u8 *)voice);
         if (pitch != voice->pitch) {
             voice->pitch = pitch;
             n_alSynSetPitch((struct N_ALVoice_s *)(&voice->native), pitch);
@@ -876,7 +876,7 @@ s32 sequenceEnginePlayerCallback(void *context) {
         do {
             sequenceEngineAdvanceEvents((s32)driver, sequence, updateInterval);
             sequenceEngineAdvanceVolumeFade(sequence, updateInterval);
-            sequenceEngineUpdateVoices((u8 *)driver, (u8 *)sequence, updateInterval);
+            sequenceEngineUpdateVoices(driver, sequence, updateInterval);
             sequence = sequence->next;
         } while (sequence != NULL);
     }
