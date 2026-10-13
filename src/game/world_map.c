@@ -1,3 +1,4 @@
+#include "player_chase.h"
 #include "texture_rectangles.h"
 #include "pikachu_actor.h"
 #include "camera_storage.h"
@@ -118,7 +119,6 @@ void presentationUpdateFocusPoint(Vec3f *point) {
     gPresentationFocusCurrent.z = point->z;
 }
 
-u8 playerGetChaseStage(void);
 
 /// Check whether a map destination can be selected at the current difficulty.
 /// \param destination Valid index in the map-destination table.
@@ -756,7 +756,6 @@ void wholeMapConfigureVoiceInput();
 void wholeMapSelectBackdrop();
 void toolboxClearCollection();
 void playerResetViewOrientation();
-void playerSetChaseStage();
 /// Remaining duration of the primary camera secondary overlay transition.
 /// \note Original identifier: \c D_800ABDCC (0x800ABDCC).
 extern f32 gPrimarySecondaryOverlayRemainingSeconds;

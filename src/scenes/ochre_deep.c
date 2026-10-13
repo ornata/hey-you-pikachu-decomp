@@ -1,3 +1,4 @@
+#include "player_chase.h"
 #include "ambient_audio.h"
 #include "item_participation.h"
 #include "maze_scatter.h"
@@ -91,7 +92,6 @@ void ochreDeepCreateAlternateVariantProps(void) {
                      1);
 }
 
-u8 playerGetChaseStage(void);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;

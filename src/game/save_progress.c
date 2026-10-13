@@ -1,3 +1,4 @@
+#include "player_chase.h"
 #include "math_angles.h"
 #include "random.h"
 #include "weighted_choice.h"
@@ -626,7 +627,6 @@ void progressLoadRecordFromEeprom(s32 record) {
     TRACE("pdLoadEEPROM: eepromRead ans:%d\n", ans);
 }
 
-void playerSetChaseStage(s32);
 void audioApplySavedMusicVolume(f32);
 void audioApplySavedSoundEffectVolume(f32);
 void audioSetOutputMode(s32);

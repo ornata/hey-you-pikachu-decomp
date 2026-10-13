@@ -3965,3 +3965,11 @@ fixed-point conversion across the implementation and nine consumer units.
 Vector output may alias its input; affine identity uses the checked shared
 `Matrix34` layout. Actor motion no longer passes an unused fourth transform
 argument, and camera transpose supplies its established component array.
+
+### Player chase progress
+
+`player_chase.h` shares stage selection and its unsigned-byte query across
+the implementation and all eight declared consumer units. The contract records
+that current stage uses the low eight bits while saved furthest-stage progress
+uses the full requested value. Script callers now share the actual query return
+instead of a local signed-word declaration.

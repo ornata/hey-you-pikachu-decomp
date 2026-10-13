@@ -1,3 +1,4 @@
+#include "player_chase.h"
 #include "pikachu_actor.h"
 #include "vector_metrics.h"
 #include "random.h"
@@ -1350,7 +1351,6 @@ s32 actorScriptPushPlayerMovementClass(u8 *actor) {
     return 0;
 }
 
-s32 playerGetChaseStage();     /* extern */
 /// Read the current chase difficulty setting.
 /// \param actor Actor whose script VM receives the current chase difficulty.
 /// \returns Zero, allowing script execution to continue.

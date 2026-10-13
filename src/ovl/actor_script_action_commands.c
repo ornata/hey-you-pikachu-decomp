@@ -1,3 +1,4 @@
+#include "player_chase.h"
 #include "random.h"
 #include "backdrop_view.h"
 #include "area_transition.h"
@@ -52,7 +53,6 @@ extern s32 gEyeCatchSelectedGroup;
 
 
 
-void playerSetChaseStage(); /* extern */
 
 
 

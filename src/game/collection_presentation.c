@@ -1,3 +1,4 @@
+#include "player_chase.h"
 #include "texture_rectangles.h"
 #include "pikachu_actor.h"
 #include "camera_storage.h"
@@ -547,7 +548,6 @@ void presentationDrawCardScreen(Gfx **gdl) {
 void hudSetAreaLabelVisible(s32);
 void presentationPrepareActiveActor(void *);
 void playerResetViewOrientation(void);
-u8 playerGetChaseStage(void);
 /// Primary controller new and auto-repeated button presses; aliases the repeated word of the processed sample.
 /// \note Original identifier: \c D_800AD54C (0x800AD54C).
 extern s32 gControllerPrimaryRepeatedButtons;
@@ -1188,7 +1188,6 @@ void presentationUpdateCollectionResultsMode(void) {
     }
 }
 
-void playerSetChaseStage(s32);
 /// Selected eye-catch group index, or minus one when no interlude is selected.
 /// \note Original identifier: \c D_8009B580 (0x8009B580).
 extern s32 gEyeCatchSelectedGroup;

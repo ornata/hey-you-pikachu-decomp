@@ -1,3 +1,4 @@
+#include "player_chase.h"
 #include "object_groups.h"
 #include "math_angles.h"
 #include "random.h"
@@ -1363,7 +1364,6 @@ void systemMenuSetAudioOutputMode(s32 mode) {
 void systemMenuUnusedActionHook(void) {
 }
 
-void playerSetChaseStage(s32); /* extern */
 
 /// Set the current chase progress and retain the furthest progress reached.
 /// \param value Requested chase progress; the current stage retains its low eight bits, while furthest progress uses the full value.

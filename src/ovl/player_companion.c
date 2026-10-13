@@ -1,3 +1,4 @@
+#include "player_chase.h"
 #include "math_scalar.h"
 #include "pikachu_actor.h"
 #include "vector_metrics.h"
@@ -878,7 +879,6 @@ s32 playerThrowHeldItemAndFocus(u8 *player) {
     return 1;
 }
 
-void playerSetChaseStage(s32 arg0);    /* extern */
 /// Identifier of the currently loaded area.
 /// \note Original identifier: \c D_800AE4F8 (0x800AE4F8).
 extern s32 gRuntimeCurrentArea;
@@ -1084,7 +1084,6 @@ void playerResumeNormalControl(void) {
 }
 
 void toolboxOpen(s32, s32); /* extern */
-u8 playerGetChaseStage(void);                  /* extern */
 void systemMenuEnter();                 /* extern */
 
 /// Handle a permitted menu request by opening the system menu or toolbox appropriate to current progress.
