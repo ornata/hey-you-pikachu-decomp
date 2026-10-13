@@ -1586,13 +1586,14 @@ u8 *convergingParticleEffectCreate(s32 targetId, f32 lifetime, s32 count, s32 st
     if (target == NULL)
         return NULL;
     first = objectCreateFromTemplate((ObjectTemplate *)gConvergingParticleObjectTemplate);
-    state = *(ConvergingParticleState **)(first + 0x54);
+    state = ((RuntimeObjectPrefix *)first)->state.pointer;
     state->displayList = (Gfx *)heapAllocLocal(&gGameHeap, count * 4 * sizeof(Gfx) + 0x80, 0x74E);
     state->target = targetId;
     state->remaining = lifetime;
     state->lifetime = lifetime;
     state->count = count;
-    animationIntegerTrackInitialize(&state->textureAnimation, (gTextureFrameAnimationPrograms[gConvergingParticleStyles[styleId].animation]));
+    animationIntegerTrackInitialize(&state->textureAnimation,
+                                    (gTextureFrameAnimationPrograms[gConvergingParticleStyles[styleId].animation]));
     animationIntegerTrackInitialize(&state->alphaAnimation, (ValueKey *)(gMessengerFlightAnimation));
     randomA = randomBelow(60);
     randomB = randomBelow(60);
@@ -1600,17 +1601,18 @@ u8 *convergingParticleEffectCreate(s32 targetId, f32 lifetime, s32 count, s32 st
     direction[0] *= 10.0f;
     direction[1] *= 10.0f;
     direction[2] *= 10.0f;
-    *(f32 *)(first + 0x18) = *(f32 *)(target + 0x44) + direction[0];
-    *(f32 *)(first + 0x1C) = *(f32 *)(target + 0x48) + direction[1];
-    *(f32 *)(first + 0x20) = *(f32 *)(target + 0x4C) + direction[2];
-    *(f32 *)(first + 8) = *(f32 *)(first + 4) = *(f32 *)first = 0.15f;
-    *(f32 *)(first + 0x44) = *(f32 *)(first + 0x18);
-    *(f32 *)(first + 0x48) = *(f32 *)(first + 0x1C);
-    *(f32 *)(first + 0x4C) = *(f32 *)(first + 0x20);
+    ((RuntimeObjectPrefix *)first)->position[0] = ((RuntimeObjectPrefix *)target)->worldPosition[0] + direction[0];
+    ((RuntimeObjectPrefix *)first)->position[1] = ((RuntimeObjectPrefix *)target)->worldPosition[1] + direction[1];
+    ((RuntimeObjectPrefix *)first)->position[2] = ((RuntimeObjectPrefix *)target)->worldPosition[2] + direction[2];
+    ((RuntimeObjectPrefix *)first)->scale[2] = ((RuntimeObjectPrefix *)first)->scale[1] =
+        ((RuntimeObjectPrefix *)first)->scale[0] = 0.15f;
+    ((RuntimeObjectPrefix *)first)->worldPosition[0] = ((RuntimeObjectPrefix *)first)->position[0];
+    ((RuntimeObjectPrefix *)first)->worldPosition[1] = ((RuntimeObjectPrefix *)first)->position[1];
+    ((RuntimeObjectPrefix *)first)->worldPosition[2] = ((RuntimeObjectPrefix *)first)->position[2];
     tail = first;
     for (i = 0; i < count - 1; i++) {
         object = objectCreateDefault();
-        *(u8 **)(tail + 0x28) = object;
+        ((RuntimeObjectPrefix *)tail)->sibling.bytes = object;
         tail = object;
         randomA = randomBelow(60);
         randomB = randomBelow(60);
@@ -1618,13 +1620,14 @@ u8 *convergingParticleEffectCreate(s32 targetId, f32 lifetime, s32 count, s32 st
         direction[0] *= 10.0f;
         direction[1] *= 10.0f;
         direction[2] *= 10.0f;
-        *(f32 *)(object + 0x18) = *(f32 *)(target + 0x44) + direction[0];
-        *(f32 *)(object + 0x1C) = *(f32 *)(target + 0x48) + direction[1];
-        *(f32 *)(object + 0x20) = *(f32 *)(target + 0x4C) + direction[2];
-        *(f32 *)(object + 8) = *(f32 *)(object + 4) = *(f32 *)object = 0.15f;
-        *(f32 *)(object + 0x44) = *(f32 *)(object + 0x18);
-        *(f32 *)(object + 0x48) = *(f32 *)(object + 0x1C);
-        *(f32 *)(object + 0x4C) = *(f32 *)(object + 0x20);
+        ((RuntimeObjectPrefix *)object)->position[0] = ((RuntimeObjectPrefix *)target)->worldPosition[0] + direction[0];
+        ((RuntimeObjectPrefix *)object)->position[1] = ((RuntimeObjectPrefix *)target)->worldPosition[1] + direction[1];
+        ((RuntimeObjectPrefix *)object)->position[2] = ((RuntimeObjectPrefix *)target)->worldPosition[2] + direction[2];
+        ((RuntimeObjectPrefix *)object)->scale[2] = ((RuntimeObjectPrefix *)object)->scale[1] =
+            ((RuntimeObjectPrefix *)object)->scale[0] = 0.15f;
+        ((RuntimeObjectPrefix *)object)->worldPosition[0] = ((RuntimeObjectPrefix *)object)->position[0];
+        ((RuntimeObjectPrefix *)object)->worldPosition[1] = ((RuntimeObjectPrefix *)object)->position[1];
+        ((RuntimeObjectPrefix *)object)->worldPosition[2] = ((RuntimeObjectPrefix *)object)->position[2];
     }
     objectMakeHierarchyRoot(first);
     objectAllocateHierarchyMatrixBuffers(first);
