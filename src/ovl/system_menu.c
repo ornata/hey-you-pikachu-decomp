@@ -1,3 +1,4 @@
+#include "object_template.h"
 #include "object_types.h"
 #include "player_profile.h"
 #include "player_state.h"
@@ -135,15 +136,6 @@ typedef char MenuBackdropViewSizeCheck[(sizeof(MenuBackdropView) == 8) ? 1 : -1]
 typedef char MenuBackdropFlagOffsetCheck[(((u32) & ((MenuBackdropView *)0)->useBackdrop) == 4) ? 1 : -1];
 
 /* 0x38-byte model records: unit scale, zero transform, segment address. */
-typedef struct MenuModel {
-    f32 scale[3];
-    f32 transform[6];
-    f32 unk24;
-    s32 unk28;
-    struct MenuModel *next;
-    u32 segment;
-    s32 unk34;
-} MenuModel;
 
 /* .data 0x8012A8D0..0x8012ACE0: the menu-model chain and the root menu tree.
  * Defined ahead of the code so their labels lead the unit's .rodata. */
@@ -161,24 +153,22 @@ void systemMenuSyncLookSettingSelection(s32 arg0);
 void systemMenuSyncSoundSettingSelection(s32 arg0);
 /// Linked secondary model template in the menu transition hierarchy.
 /// \note Original identifier: \c D_8012A908 (0x8012A908).
-extern MenuModel gSystemMenuSecondaryModelTemplate;
+extern ObjectTemplate gSystemMenuSecondaryModelTemplate;
 /// Hierarchy template for the menu opening and closing model.
 /// \note Original identifier: \c D_8012A8D0 (0x8012A8D0).
-MenuModel gSystemMenuTransitionModelTemplate = {{1.0f, 1.0f, 1.0f},
-                                                {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
-                                                200.0f,
-                                                0,
-                                                &gSystemMenuSecondaryModelTemplate,
-                                                0x0100AF28,
-                                                0};
+ObjectTemplate gSystemMenuTransitionModelTemplate = {
+    {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f},
+    200.0f, NULL, &gSystemMenuSecondaryModelTemplate, (Gfx *)0x0100AF28, 0, 0};
 /// Linked secondary model template in the menu transition hierarchy.
 /// \note Original identifier: \c D_8012A908 (0x8012A908).
-MenuModel gSystemMenuSecondaryModelTemplate = {
-    {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f}, 200.0f, 0, NULL, 0x0100B2D8, 0};
+ObjectTemplate gSystemMenuSecondaryModelTemplate = {
+    {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f},
+    200.0f, NULL, NULL, (Gfx *)0x0100B2D8, 0, 0};
 /// Model template drawn while the menu accepts input or waits to close.
 /// \note Original identifier: \c D_8012A940 (0x8012A940).
-MenuModel gSystemMenuInteractiveModelTemplate = {
-    {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f}, 92.0f, 0, NULL, 0x0100BEE0, 0};
+ObjectTemplate gSystemMenuInteractiveModelTemplate = {
+    {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f},
+    92.0f, NULL, NULL, (Gfx *)0x0100BEE0, 0, 0};
 /// Randomly selected text row used by the menu closing effect.
 /// \note Original identifier: \c D_8012A978 (0x8012A978).
 s32 gSystemMenuClosingEffectRow = 0;
@@ -1839,7 +1829,7 @@ extern s32 gRuntimeCurrentArea;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8011BAC8 (0x8011BAC8).
 void systemMenuInitialize(void) {
-    MenuModel *model;
+    RuntimeObjectPrefix *model;
     s32 scene;
     MenuState *state;
 
@@ -1853,29 +1843,29 @@ void systemMenuInitialize(void) {
     gSystemMenuDetailImageBuffer = 0;
     _bzero(gSystemMenuRowImages, 0x30);
     _bzero(gSystemMenuDetailImages, 0x30);
-    model = (MenuModel *)objectCreateHierarchyFromTemplate((ObjectTemplate *)&gSystemMenuTransitionModelTemplate);
+    model = (RuntimeObjectPrefix *)objectCreateHierarchyFromTemplate(&gSystemMenuTransitionModelTemplate);
     objectSetHierarchyFlags((u8 *)model, 0x2002);
     objectRegisterActiveHierarchy((u8 *)model);
-    model->scale[0] = *(f32 *)(gCurrentAreaConfiguration + 0xC) * 5.0;
-    model->scale[1] = *(f32 *)(gCurrentAreaConfiguration + 0xC) * 5.0;
-    model->scale[2] = *(f32 *)(gCurrentAreaConfiguration + 0xC) * 5.0;
-    state->transitionModel = (RuntimeObjectPrefix *)model;
-    state->secondaryModel = (RuntimeObjectPrefix *)model->next;
-    ((MenuModel *)state->transitionModel)->transform[0] = 0.0f;
-    ((MenuModel *)state->transitionModel)->transform[1] = 0.0f;
-    ((MenuModel *)state->transitionModel)->transform[2] = 0.0f;
-    ((MenuModel *)state->secondaryModel)->transform[0] = 0.0f;
-    ((MenuModel *)state->secondaryModel)->transform[1] = 0.0f;
-    ((MenuModel *)state->secondaryModel)->transform[2] = 0.0f;
-    ((MenuModel *)state->secondaryModel)->transform[1] = 90.0f;
-    model = (MenuModel *)objectCreateHierarchyFromTemplate((ObjectTemplate *)&gSystemMenuInteractiveModelTemplate);
+    model->scale[0] = ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale * 5.0;
+    model->scale[1] = ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale * 5.0;
+    model->scale[2] = ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale * 5.0;
+    state->transitionModel = model;
+    state->secondaryModel = model->child.object;
+    state->transitionModel->rotation[0] = 0.0f;
+    state->transitionModel->rotation[1] = 0.0f;
+    state->transitionModel->rotation[2] = 0.0f;
+    state->secondaryModel->rotation[0] = 0.0f;
+    state->secondaryModel->rotation[1] = 0.0f;
+    state->secondaryModel->rotation[2] = 0.0f;
+    state->secondaryModel->rotation[1] = 90.0f;
+    model = (RuntimeObjectPrefix *)objectCreateHierarchyFromTemplate(&gSystemMenuInteractiveModelTemplate);
     objectSetHierarchyFlags((u8 *)model, 0x2002);
     objectRegisterActiveHierarchy((u8 *)model);
-    model->scale[0] = *(f32 *)(gCurrentAreaConfiguration + 0xC);
-    model->scale[1] = *(f32 *)(gCurrentAreaConfiguration + 0xC);
-    model->scale[2] = *(f32 *)(gCurrentAreaConfiguration + 0xC);
-    state->interactiveModel = (RuntimeObjectPrefix *)model;
-    model->transform[2] = model->transform[1] = model->transform[0] = 0.0f;
+    model->scale[0] = ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale;
+    model->scale[1] = ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale;
+    model->scale[2] = ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale;
+    state->interactiveModel = model;
+    model->rotation[2] = model->rotation[1] = model->rotation[0] = 0.0f;
     scene = progressGetCurrentChapter();
     if (scene != 4 && scene != 6 && scene != 8 && gRuntimeCurrentArea >= 3 && progressGetValue(0x12) == 0) {
         systemMenuAppendItem(&gSystemMenuRootList, &gSystemMenuGoHomeEntry);

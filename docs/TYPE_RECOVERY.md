@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 1,743 / 72 |
+| Raw offset candidates | 4,040 / 86 | 1,737 / 72 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -4506,3 +4506,14 @@ opening/interactive/close-delay/closing phases document the navigation lifecycle
 Target offset checks guard the three pointers and phase alongside existing size/time
 checks. All three edited units preserve strict baseline objects and clean retail ROM
 bytes, including existing interior model aliases and permitted text-pointer warnings.
+
+### Menu hierarchy templates and live object initialization
+
+The menu's mixed MenuModel view is removed. Three static definitions use the shared
+ObjectTemplate with distinct rotation/position, radius, child, segmented display-list,
+kind and flag fields. Explicit zero kind/flag initializers preserve IDO symbol extents.
+Live initialization uses RuntimeObjectPrefix child links, scales and rotations instead
+of treating runtime objects as templates. Ghidra at 0x8011BAC8 confirms constructor
+results, the child at 0x2C and rotation writes. Six scene scale reads now use the shared
+SceneConfigurationPrefix.objectScale field. Each step preserves strict allocated
+sections, BSS, symbols and relocations, followed by the clean retail ROM gate.
