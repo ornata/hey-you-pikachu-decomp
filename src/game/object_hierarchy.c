@@ -1,3 +1,4 @@
+#include "camera_storage.h"
 #include "object_groups.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
@@ -113,9 +114,6 @@ extern SearchTree gObjectSearchTree;
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
-/// Camera storage used for view transforms, viewports and color overlays.
-/// \note Original identifier: \c D_800ABCF0 (0x800ABCF0).
-extern u8 gRenderCameras[];
 void objectAssignHierarchyRoot(u8 *, u8 *);
 /// Number of hierarchy roots registered in the active traversal pool.
 /// \note Original identifier: \c D_800AE3D0 (0x800AE3D0).
@@ -1028,9 +1026,9 @@ void objectDestroyHierarchy(u8 *object) {
 void objectFaceCameraHorizontally(u8 *object) {
     f32 d[3];
 
-    d[0] = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[0] - ((RuntimeObjectPrefix *)object)->worldPosition[0];
+    d[0] = ((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].eye[0] - ((RuntimeObjectPrefix *)object)->worldPosition[0];
     d[1] = 0.0f;
-    d[2] = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[2] - ((RuntimeObjectPrefix *)object)->worldPosition[2];
+    d[2] = ((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].eye[2] - ((RuntimeObjectPrefix *)object)->worldPosition[2];
     ((RuntimeObjectPrefix *)object)->rotation[1] = vector3GetYawFromPositiveXDegrees(d);
     if (!(((RuntimeObjectPrefix *)object)->flags & 0x1008)) {
         ((RuntimeObjectPrefix *)object)->flags = ((RuntimeObjectPrefix *)object)->flags | 0x1000;
@@ -1632,7 +1630,7 @@ f32 objectAdjustPitchAlongWorldSegment(u8 *object, f32 *start, f32 *end) {
 /// \note Original decompilation identifier: \c func_80009AB8 (0x80009AB8).
 void objectOrientAlongCameraView(u8 *object) {
     u8 *cameraView;
-    cameraView = (gRenderCameraIndex * 0xE0) + gRenderCameras;
+    cameraView = (gRenderCameraIndex * 0xE0) + ((u8 *)gRenderCameras);
     objectOrientAlongWorldSegment(object, ((MatrixCamera *)cameraView)->target, ((MatrixCamera *)cameraView)->eye);
 }
 
@@ -1642,7 +1640,7 @@ void objectOrientAlongCameraView(u8 *object) {
 /// \note Original decompilation identifier: \c func_80009AF8 (0x80009AF8).
 void objectAdjustPitchAlongCameraView(u8 *object) {
     u8 *cameraView;
-    cameraView = (gRenderCameraIndex * 0xE0) + gRenderCameras;
+    cameraView = (gRenderCameraIndex * 0xE0) + ((u8 *)gRenderCameras);
     objectAdjustPitchAlongWorldSegment(object, ((MatrixCamera *)cameraView)->target, ((MatrixCamera *)cameraView)->eye);
 }
 
@@ -1651,7 +1649,7 @@ void objectAdjustPitchAlongCameraView(u8 *object) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80009B38 (0x80009B38).
 void objectOrientTowardCamera(u8 *object) {
-    objectOrientAlongWorldSegment(object, ((RuntimeObjectPrefix *)object)->worldPosition, ((MatrixCamera *)((gRenderCameraIndex * 0xE0) + gRenderCameras))->eye);
+    objectOrientAlongWorldSegment(object, ((RuntimeObjectPrefix *)object)->worldPosition, ((MatrixCamera *)((gRenderCameraIndex * 0xE0) + ((u8 *)gRenderCameras)))->eye);
 }
 
 /// Adjust object pitch toward the active camera while retaining its other orientation angles.
@@ -1659,7 +1657,7 @@ void objectOrientTowardCamera(u8 *object) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80009B78 (0x80009B78).
 void objectAdjustPitchTowardCamera(u8 *object) {
-    objectAdjustPitchAlongWorldSegment(object, ((RuntimeObjectPrefix *)object)->worldPosition, ((MatrixCamera *)((gRenderCameraIndex * 0xE0) + gRenderCameras))->eye);
+    objectAdjustPitchAlongWorldSegment(object, ((RuntimeObjectPrefix *)object)->worldPosition, ((MatrixCamera *)((gRenderCameraIndex * 0xE0) + ((u8 *)gRenderCameras)))->eye);
 }
 
 typedef struct CamSlot {

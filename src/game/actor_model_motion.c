@@ -1,3 +1,4 @@
+#include "camera_storage.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
 #include "terrain_movement.h"
@@ -116,9 +117,6 @@ s32 actorPlayTrackedSound(u8 *actor, s32 kind) {
     return handle;
 }
 
-/// Camera storage used for view transforms, viewports and color overlays.
-/// \note Original identifier: \c D_800ABCF0 (0x800ABCF0).
-extern MatrixCamera gRenderCameras[];
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern u32 gRenderCameraIndex;

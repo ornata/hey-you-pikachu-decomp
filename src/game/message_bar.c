@@ -1,3 +1,4 @@
+#include "camera_storage.h"
 #include "object_groups.h"
 #include "math_angles.h"
 #include "camera_overlay.h"
@@ -95,12 +96,6 @@ void voiceReactiveSpinnerInitialize(u8 *object) {
     ((RuntimeObjectPrefix *)object)->state.address = sp1C;
 }
 
-typedef struct {
-    u8 raw[0xE0];
-} Rec800ABCF0;
-/// Camera storage used for view transforms, viewports and color overlays.
-/// \note Original identifier: \c D_800ABCF0 (0x800ABCF0).
-extern Rec800ABCF0 gRenderCameras[];
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;
@@ -120,7 +115,7 @@ void voiceReactiveSpinnerUpdate(u8 *object) {
 
     if (voiceRecognitionGetCommandStatus() == 5) {
         *speed += mathMapRangeClamped(0.0f, 2000.0f, 40.0f, 0.0f,
-                                      objectGetApproxDistanceToPoint(object, (Vec3f *)gRenderCameras[gRenderCameraIndex].raw)) *
+                                      objectGetApproxDistanceToPoint(object, (Vec3f *)gRenderCameras[gRenderCameraIndex].eye)) *
                   *dt;
         if (*speed > 600.0f) {
             *speed = 600.0f;

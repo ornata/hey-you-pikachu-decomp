@@ -1,3 +1,4 @@
+#include "camera_storage.h"
 #include "random.h"
 #include "backdrop_view.h"
 #include "area_transition.h"
@@ -413,9 +414,6 @@ void presentationPlaceActiveActor(void *point) {
     objectUpdateHierarchy((u8 *)gPikachuActor);
 }
 
-/// Camera storage used for view transforms, viewports and color overlays.
-/// \note Original identifier: \c D_800ABCF0 (0x800ABCF0).
-extern f32 gRenderCameras[][56];
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;
@@ -441,7 +439,7 @@ void presentationPrepareActiveActor(void *point) {
     f32 secondHeight;
     u8 *ext = *(u8 **)(gPikachuActor + 0x54);
 
-    tgt = (u8 *)gRenderCameras[gRenderCameraIndex];
+    tgt = (u8 *)&gRenderCameras[gRenderCameraIndex];
     objectSetHierarchyFlags(gPikachuActor, 0x2000);
     presentationPlaceActiveActor(point);
     actionScriptStop((u8 *)gPikachuActor);

@@ -1,3 +1,4 @@
+#include "camera_storage.h"
 #include "vector_metrics.h"
 #include "microphone_requests.h"
 #include "messenger.h"
@@ -44,9 +45,6 @@ extern u8 *gPikachuActor;
 /// Messenger scale at the quiet end of the voice-level mapping.
 /// \note Original identifier: \c D_800A2668 (0x800A2668).
 extern f32 gVoiceCommandMinimumEffectScale;
-/// Camera storage used for view transforms, viewports and color overlays.
-/// \note Original identifier: \c D_800ABCF0 (0x800ABCF0).
-extern MatrixCamera gRenderCameras[];
 /// Identifier of the currently active runtime program.
 /// \note Original identifier: \c D_800AE4F0 (0x800AE4F0).
 /// Identifier of the currently loaded area.

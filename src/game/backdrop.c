@@ -1,3 +1,4 @@
+#include "camera_storage.h"
 #include "math_angles.h"
 #include "backdrop_view.h"
 #include "camera_types.h"
@@ -18,9 +19,6 @@ extern u8 gBackdropWidthEntries[];
 /// \note Original identifier: \c D_8009B05C (0x8009B05C).
 extern u8 gBackdropHeightEntries[];
 
-/// Camera storage used for view transforms, viewports and color overlays.
-/// \note Original identifier: \c D_800ABCF0 (0x800ABCF0).
-extern u8 gRenderCameras[];
 /// Framebuffer and command-buffer index for the current frame.
 /// \note Original identifier: \c D_800F298C (0x800F298C).
 extern s32 gGraphicsFramebufferIndex;
@@ -39,8 +37,8 @@ void textureCopyRgba16Region(Gfx **, s32, s32, s32, s32, s32, s32, s32, s32, s32
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80032FA0 (0x80032FA0).
 void backdropDrawFixed(Gfx **list) {
-    if (((MatrixCamera *)gRenderCameras)->backdropImage != NULL) {
-        gSPSegment((*list)++, 9, osVirtualToPhysical(((MatrixCamera *)gRenderCameras)->backdropImage));
+    if (((MatrixCamera *)((u8 *)gRenderCameras))->backdropImage != NULL) {
+        gSPSegment((*list)++, 9, osVirtualToPhysical(((MatrixCamera *)((u8 *)gRenderCameras))->backdropImage));
         gDPPipeSync((*list)++);
         gDPSetCycleType((*list)++, G_CYC_1CYCLE);
         gDPSetColorImage((*list)++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 320,
@@ -69,8 +67,8 @@ void backdropAdvanceScroll(f32 delta) {
     f32 a;
     f32 *cur = &gPrimaryBackdropScroll;
 
-    ((MatrixCamera *)gRenderCameras)->backdropScroll += delta;
-    if (((MatrixCamera *)gRenderCameras)->backdropScroll < 0.0f) {
+    ((MatrixCamera *)((u8 *)gRenderCameras))->backdropScroll += delta;
+    if (((MatrixCamera *)((u8 *)gRenderCameras))->backdropScroll < 0.0f) {
         n = gPrimaryBackdropWidth;
         a = *cur;
         do {
@@ -123,7 +121,7 @@ void backdropUpdateViewOffsets(u8 *view) {
     f32 yaw;
     f32 zero = 0.0f;
     s32 offsetY;
-    MatrixCamera *camera = (MatrixCamera *)gRenderCameras;
+    MatrixCamera *camera = (MatrixCamera *)((u8 *)gRenderCameras);
     horizontalSquared = (camera->target[0] - camera->eye[0]) * (camera->target[0] - camera->eye[0]) +
                         (camera->target[2] - camera->eye[2]) * (camera->target[2] - camera->eye[2]);
     deltaY = camera->target[1] - camera->eye[1];
@@ -166,10 +164,10 @@ void backdropDrawScrolling(Gfx **list) {
     s32 top;
     s32 bottom;
 
-    if (((MatrixCamera *)gRenderCameras)->backdropImage == NULL) {
+    if (((MatrixCamera *)((u8 *)gRenderCameras))->backdropImage == NULL) {
         return;
     }
-    backdropUpdateViewOffsets(gRenderCameras);
+    backdropUpdateViewOffsets(((u8 *)gRenderCameras));
     gSPSegment((*list)++, 9, osVirtualToPhysical((void *)view->image));
     gDPPipeSync((*list)++);
     gDPSetCycleType((*list)++, G_CYC_1CYCLE);
@@ -254,8 +252,8 @@ void backdropAllocateViewBuffer(s32 viewIndex, u32 width, u32 height) {
     if (size < 0x1B580) {
         size = 0x1B580;
     }
-    ((MatrixCamera *)gRenderCameras)[viewIndex].backdropImage = heapAllocLocal(&gGameHeap, size ^ 0, 0x280, size);
-    ((MatrixCamera *)gRenderCameras)[viewIndex].useBackdrop = 1;
+    ((MatrixCamera *)((u8 *)gRenderCameras))[viewIndex].backdropImage = heapAllocLocal(&gGameHeap, size ^ 0, 0x280, size);
+    ((MatrixCamera *)((u8 *)gRenderCameras))[viewIndex].useBackdrop = 1;
 }
 
 void romDmaReadBlocking(); /* extern, 3 or 4 args by caller */
@@ -365,7 +363,7 @@ void backdropSelectForView(s32 viewIndex, s32 backdropId, s32 sharedScratch) {
     u8 *backdropDescriptor;
 
     backdropDescriptor = (backdropId << 5) + gBackdropDescriptors;
-    viewState = (viewIndex * 0xE0) + gRenderCameras;
+    viewState = (viewIndex * 0xE0) + ((u8 *)gRenderCameras);
     ((MatrixCamera *)viewState)->backdropWidth = (s32)((BackdropDescriptor *)backdropDescriptor)->width;
     ((MatrixCamera *)viewState)->backdropHeight = (s32)((BackdropDescriptor *)backdropDescriptor)->height;
     ((MatrixCamera *)viewState)->backdropScroll = 0.0f;

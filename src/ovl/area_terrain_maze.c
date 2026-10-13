@@ -1,3 +1,4 @@
+#include "camera_storage.h"
 #include "object_groups.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
@@ -1300,9 +1301,6 @@ void terrainGetDownhillHeightDifferences(f32 x, f32 y, f32 z, f32 maxSlope, f32 
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;
-/// Camera storage used for view transforms, viewports and color overlays.
-/// \note Original identifier: \c D_800ABCF0 (0x800ABCF0).
-extern u8 gRenderCameras[];
 /// Camera storage viewed at retained matrix pointers, with 224 bytes per camera.
 /// \note Original identifier: \c D_800ABD14 (0x800ABD14).
 extern u8 gRenderCameraMatrixEntries[];
@@ -1316,7 +1314,7 @@ extern u8 gRenderCameraMatrixEntries[];
 /// \note Original decompilation identifier: \c func_8010CFF8 (0x8010CFF8).
 s32 areaTestCameraVisibility(f32 margin, f32 *position, f32 *out) {
     f32 x, y, z, far;
-    matrix34TransformPointVector((f32 *)(gRenderCameras + gRenderCameraIndex * 0xE0 + 0x58), position, out);
+    matrix34TransformPointVector((f32 *)(((u8 *)gRenderCameras) + gRenderCameraIndex * 0xE0 + 0x58), position, out);
     far = *(f32 *)(gCurrentAreaConfiguration + 0x24) * 1.7f;
     z = -out[2];
     x = out[0];
@@ -1425,7 +1423,7 @@ s32 areaIsPositionInHorizontalView(f32 x, f32 y, f32 z, f32 margin) {
     f32 oz;
     f32 d;
 
-    matrix34TransformPoint((f32(*)[3])(gRenderCameraIndex * 0xE0 + 0x58 + gRenderCameras), x, y, z, &ox, &oy, &oz);
+    matrix34TransformPoint((f32(*)[3])(gRenderCameraIndex * 0xE0 + 0x58 + ((u8 *)gRenderCameras)), x, y, z, &ox, &oy, &oz);
     d = margin - oz;
     if ((ox < d) && (-ox < d)) {
         return 1;
@@ -1457,7 +1455,7 @@ s32 areaIsNodeVisible(u8 *node) {
     f32 distance;
     u8 *base;
 
-    base = gRenderCameras;
+    base = ((u8 *)gRenderCameras);
     if (*(s16 *)(node + 0x40) >= 3) {
         return 1;
     }

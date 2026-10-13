@@ -3909,3 +3909,9 @@ records and named flags. The 0x20 destruction-requested and 0x10 removal-ready
 bits are established by request/sweep behavior and shared in `object_flags.h`.
 Group cleanup declarations join `object_groups.h`; runtime uses its canonical
 no-argument sweep declaration. The original deferred lifecycle ordering remains.
+
+`camera_storage.h` provides one typed camera-array declaration to all thirteen
+consumer/producer units, replacing byte, float-array and private raw-record
+declarations. Message-bar distance reads use the recovered eye field, and the
+controller unit drops its unused duplicate camera types. Explicit byte views
+preserve existing consumers without weakening the shared storage contract.

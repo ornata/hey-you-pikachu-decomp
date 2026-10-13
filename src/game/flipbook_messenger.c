@@ -1,3 +1,4 @@
+#include "camera_storage.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
 #include "random.h"
@@ -1141,9 +1142,6 @@ void messengerCreate(s32 id, f32 *position, f32 *velocity, f32 scale, ScriptMess
           message.arg0, message.arg1, message.arg2, message.arg3, mode, flags);
 }
 
-/// Camera storage used for view transforms, viewports and color overlays.
-/// \note Original identifier: \c D_800ABCF0 (0x800ABCF0).
-extern MatrixCamera gRenderCameras[];
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;

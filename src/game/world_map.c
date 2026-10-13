@@ -1,3 +1,4 @@
+#include "camera_storage.h"
 #include "object_groups.h"
 #include "math_angles.h"
 #include "random.h"
@@ -425,9 +426,6 @@ extern s32 gWorldMapSelectedDestination;
 /// Consecutive map input updates with directional buttons held, used to select the actor pose.
 /// \note Original identifier: \c D_800F1B70 (0x800F1B70).
 extern s32 gWorldMapDirectionHeldFrames;
-/// Camera storage used for view transforms, viewports and color overlays.
-/// \note Original identifier: \c D_800ABCF0 (0x800ABCF0).
-extern u8 gRenderCameras[];
 void wholeMapUpdateActorPlacement(void);
 f32 vector3GetYawDegrees(f32 *);
 
@@ -446,7 +444,7 @@ void wholeMapPrepareActor(void) {
     f32 angle;
     u8 *state;
     state = *(u8 **)((u8 *)gPikachuActor + 0x54);
-    camera = gRenderCameras + gRenderCameraIndex * 0xE0;
+    camera = ((u8 *)gRenderCameras) + gRenderCameraIndex * 0xE0;
     objectSetHierarchyFlags((u8 *)gPikachuActor, flags);
     wholeMapUpdateActorPlacement();
     actionScriptStop((u8 *)gPikachuActor);

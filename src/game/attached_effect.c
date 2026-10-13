@@ -1,3 +1,4 @@
+#include "camera_storage.h"
 #include "vector_metrics.h"
 /// \file
 /// Creates and advances actor-attached effects with frame and opacity animation.
@@ -125,9 +126,6 @@ extern f32 gAttachedEffectMinimumViewScale;
 /// Scale coefficient applied to camera distance and owner size for attached effects.
 /// \note Original identifier: \c D_800A26A4 (0x800A26A4).
 extern f32 gAttachedEffectViewScaleCoefficient;
-/// Camera storage used for view transforms, viewports and color overlays.
-/// \note Original identifier: \c D_800ABCF0 (0x800ABCF0).
-extern MatrixCamera gRenderCameras[];
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;

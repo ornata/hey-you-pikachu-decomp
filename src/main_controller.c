@@ -1,3 +1,4 @@
+#include "camera_storage.h"
 #include "object_groups.h"
 #include "math_angles.h"
 #include "controller_pad.h"
@@ -78,9 +79,6 @@ u8 gControllerRumbleMotorState[0x60];
 /// Per-port rumble pattern state, end time, pulse interval and pulse duration.
 /// \note Original identifier: \c D_800AD140 (0x800AD140).
 u8 gControllerRumblePatternState[0xA0];
-/// Camera storage used for view transforms, viewports and color overlays.
-/// \note Original identifier: \c D_800ABCF0 (0x800ABCF0).
-extern u8 gRenderCameras[];
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
@@ -216,18 +214,7 @@ extern f32 gFloatStoreZeroUpperTolerance;
 /// \note Original identifier: \c D_8009FC98 (0x8009FC98).
 extern f32 gFloatStoreZeroLowerTolerance;
 
-typedef struct {
-    f32 values[12];
-} CameraMatrix;
-typedef struct {
-    f32 eye[3], target[3], up[3];
-    Mtx *matrices;
-    CameraMatrix view, scaled;
-    f32 distance;
-    u8 unknown8C[0x1C];
-    s32 viewport[4];
-    u8 unknownB8[0x28];
-} MatrixCamera;
+
 f32 viewportSetPixelRectangle(Vp *, s32, s32, s32, s32, s32, s32, f32);
 void matrixFixedTo34(Mtx, f32 *);
 /// Additional aspect scale applied when constructing the camera viewport projection.

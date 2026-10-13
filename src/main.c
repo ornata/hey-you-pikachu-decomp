@@ -1,3 +1,4 @@
+#include "camera_storage.h"
 #include "object_groups.h"
 #include "math_angles.h"
 #include "controller_commands.h"
@@ -129,9 +130,6 @@ extern u8 gControllerRumbleMotorState[0x60];
 /// Per-port rumble pattern state, end time, pulse interval and pulse duration.
 /// \note Original identifier: \c D_800AD140 (0x800AD140).
 extern u8 gControllerRumblePatternState[0xA0];
-/// Camera storage used for view transforms, viewports and color overlays.
-/// \note Original identifier: \c D_800ABCF0 (0x800ABCF0).
-extern u8 gRenderCameras[];
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
@@ -282,7 +280,7 @@ void renderInitializeResources(void) {
     gRenderCameraIndex = 0;
     /* Keep initialization with the loop for IDO address-load scheduling. */
     // clang-format off
-    camera = gRenderCameras; do {
+    camera = ((u8 *)gRenderCameras); do {
         // clang-format on
         _bzero(camera, 0xE0);
         *(CameraDefaults *)camera = gRenderCameraDefaults;
@@ -346,7 +344,7 @@ void renderUnloadAreaAssets(void) {
 void cameraBuildInterfaceTransform(f32 *output) {
     u8 *sp1C;
 
-    sp1C = gRenderCameras + gRenderCameraIndex * 0xE0;
+    sp1C = ((u8 *)gRenderCameras) + gRenderCameraIndex * 0xE0;
     matrix34Identity((MatrixBlock00800 *)output);
     matrix34TranslateLocal((f32 (*)[3])output, *(f32 *)(sp1C + 0), *(f32 *)(sp1C + 4), *(f32 *)(sp1C + 8));
     matrix33ApplyRotationXYZDegrees((f32 *)output, -(gPlayerPitch + gPlayerPitchOffset),
@@ -391,7 +389,7 @@ extern f32 gCameraPitchCosineLowerTolerance;
 /// \param roll Camera up-vector angle in degrees, measured from positive Y toward positive X.
 /// \returns Nothing.
 void cameraSetPositionAndAngles(s32 index, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 roll) {
-    MatrixCamera *camera = (MatrixCamera *)(gRenderCameras + index * 0xE0);
+    MatrixCamera *camera = (MatrixCamera *)(((u8 *)gRenderCameras) + index * 0xE0);
     f32 denominator;
     f32 slope;
     /* IDO schedules these three position stores together. */
@@ -420,7 +418,7 @@ void cameraSetPositionAndAngles(s32 index, f32 x, f32 y, f32 z, f32 pitch, f32 y
 void cameraSetEyeAndTarget(s32 cameraIndex, f32 *eye, f32 *target) {
     u8 *cameraState;
 
-    cameraState = gRenderCameras + cameraIndex * 0xE0;
+    cameraState = ((u8 *)gRenderCameras) + cameraIndex * 0xE0;
     ((MatrixCamera *)cameraState)->eye[0] = eye[0];
     ((MatrixCamera *)cameraState)->eye[1] = eye[1];
     ((MatrixCamera *)cameraState)->eye[2] = eye[2];
@@ -552,7 +550,7 @@ void colorAdvanceTransition(u8 *color, u8 *target, f32 *remaining) {
 void cameraUpdateOverlayColors(s32 cameraIndex, s32 advanceBlend) {
     MatrixCamera *cameraState;
 
-    cameraState = (MatrixCamera *)(gRenderCameras + cameraIndex * 0xE0);
+    cameraState = (MatrixCamera *)(((u8 *)gRenderCameras) + cameraIndex * 0xE0);
     colorAdvanceTransition(cameraState->secondaryOverlayColor, cameraState->targetSecondaryOverlayColor, &cameraState->secondaryOverlayTimeRemaining);
     colorAdvanceTransition(cameraState->baseOverlayColor, cameraState->targetBaseOverlayColor, &cameraState->baseOverlayTimeRemaining);
     if (advanceBlend != 0) {
@@ -573,7 +571,7 @@ extern Gfx gCameraOverlayRectangleDisplayList[];
 /// \param index Valid camera slot whose overlay is drawn in the current drawing context.
 /// \returns Nothing.
 void cameraDrawOverlay(s32 index) {
-    MatrixCamera *camera = (MatrixCamera *)(gRenderCameras + index * 0xE0);
+    MatrixCamera *camera = (MatrixCamera *)(((u8 *)gRenderCameras) + index * 0xE0);
     if (camera->overlayColor[3] != 0) {
         gDPPipeSync(gRenderDisplayListCursor++);
         gDPSetCycleType(gRenderDisplayListCursor++, G_CYC_1CYCLE);
@@ -588,7 +586,7 @@ void cameraDrawOverlay(s32 index) {
 /// \param index Valid camera slot whose secondary overlay is drawn in the current drawing context.
 /// \returns Nothing.
 void cameraDrawSecondaryOverlay(s32 index) {
-    MatrixCamera *camera = (MatrixCamera *)(gRenderCameras + index * 0xE0);
+    MatrixCamera *camera = (MatrixCamera *)(((u8 *)gRenderCameras) + index * 0xE0);
     if (camera->secondaryOverlayColor[3] != 0) {
         gDPPipeSync(gRenderDisplayListCursor++);
         gDPSetCycleType(gRenderDisplayListCursor++, G_CYC_1CYCLE);
@@ -677,7 +675,7 @@ void floatStoreWithZeroTolerance(f32 value, f32 *output) {
 void cameraFadeOverlayToColor(s32 cameraIndex, s32 red, s32 green, s32 blue, s32 alpha, f32 duration) {
     u8 *sp20;
 
-    sp20 = gRenderCameras + cameraIndex * 0xE0;
+    sp20 = ((u8 *)gRenderCameras) + cameraIndex * 0xE0;
     floatStoreWithZeroTolerance(duration, (f32 *)(sp20 + 0xC4));
     colorStoreClampedRgba(red, green, blue, alpha, sp20 + 0xBC);
 }
@@ -704,7 +702,7 @@ void cameraFadePrimaryOverlayBlend(s32 red, s32 green, s32 blue, s32 alpha, f32 
 void cameraResetOverlayColor(s32 cameraIndex, s32 red, s32 green, s32 blue, s32 alpha) {
     u8 *sp20;
 
-    sp20 = gRenderCameras + cameraIndex * 0xE0;
+    sp20 = ((u8 *)gRenderCameras) + cameraIndex * 0xE0;
     colorStoreClampedRgba(red, green, blue, alpha, sp20 + 0xB8);
     colorStoreClampedRgba(red, green, blue, alpha, sp20 + 0xC0);
     colorStoreClampedRgba(0, 0, 0, 0, sp20 + 0xCC);
@@ -758,7 +756,7 @@ s32 cameraBuildViewProjection(s32 index, u8 *viewport, u8 *buffer) {
     Mtx *view;
     f32 distance;
     MatrixCamera *camera;
-    MatrixCamera *cameras = (MatrixCamera *)gRenderCameras;
+    MatrixCamera *cameras = (MatrixCamera *)((u8 *)gRenderCameras);
     camera = (MatrixCamera *)((u8 *)cameras + index * sizeof(*cameras));
     guPerspective((Mtx *)buffer, &normalize, 45.0f,
                   viewportSetPixelRectangle((Vp *)viewport, camera->viewport[0], camera->viewport[1],
@@ -971,22 +969,22 @@ void renderBeginFrame(void) {
         renderDrawBackground(0);
         gDPPipeSync(gRenderDisplayListCursor++);
         gDPSetScissor(gRenderDisplayListCursor++, G_SC_NON_INTERLACE,
-                      ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].viewport[0],
-                      ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].viewport[1],
-                      ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].viewport[2],
-                      ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].viewport[3]);
+                      ((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].viewport[0],
+                      ((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].viewport[1],
+                      ((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].viewport[2],
+                      ((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].viewport[3]);
     } else {
         gDPPipeSync(gRenderDisplayListCursor++);
         gDPSetScissor(gRenderDisplayListCursor++, G_SC_NON_INTERLACE,
-                      ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].viewport[0],
-                      ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].viewport[1],
-                      ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].viewport[2],
-                      ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].viewport[3]);
-        renderClearDepthRectangle(((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].viewport[0],
-                                  ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].viewport[1],
-                                  ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].viewport[2],
-                                  ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].viewport[3]);
-        renderDrawBackground(((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].useBackdrop);
+                      ((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].viewport[0],
+                      ((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].viewport[1],
+                      ((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].viewport[2],
+                      ((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].viewport[3]);
+        renderClearDepthRectangle(((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].viewport[0],
+                                  ((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].viewport[1],
+                                  ((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].viewport[2],
+                                  ((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].viewport[3]);
+        renderDrawBackground(((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].useBackdrop);
     }
     cameraApplyRenderingState(gRenderCameraIndex);
     if (gRuntimeProgramDrawEntries[gRuntimeCurrentProgram].callback != NULL) {
@@ -1050,14 +1048,14 @@ void cameraViewPointToWorld(f32 *point) {
     f32 *in = point;
     f32 *out = point;
 
-    matrix = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].view;
+    matrix = ((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].view;
     /* Build the view transform in its own block, like the transform
      * snapshots in actor_model_motion.c. */
     do {
         matrix33Transpose(&matrix);
-        matrix.values[9] = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[0];
-        matrix.values[10] = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[1];
-        matrix.values[11] = ((MatrixCamera *)gRenderCameras)[gRenderCameraIndex].eye[2];
+        matrix.values[9] = ((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].eye[0];
+        matrix.values[10] = ((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].eye[1];
+        matrix.values[11] = ((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].eye[2];
     } while (0);
     matrix34TransformPointVector((f32 *)&matrix, in, out);
 }

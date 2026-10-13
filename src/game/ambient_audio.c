@@ -1,3 +1,4 @@
+#include "camera_storage.h"
 #include "random.h"
 #include "audio_sound_effect.h"
 #include "audio_playback_stop.h"
@@ -72,9 +73,6 @@ void ambientAudioPlayNextSound(AmbientAudioState *ext) {
         break;
     }
 }
-/// Camera storage used for view transforms, viewports and color overlays.
-/// \note Original identifier: \c D_800ABCF0 (0x800ABCF0).
-extern MatrixCamera gRenderCameras[];
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;
