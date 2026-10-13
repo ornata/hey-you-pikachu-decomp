@@ -1,3 +1,4 @@
+#include "pikachu_actor.h"
 #include "camera_storage.h"
 #include "object_groups.h"
 #include "vector_metrics.h"
@@ -1050,9 +1051,6 @@ void terrainCreateContactEffect(f32 *position, s32 material) {
     }
 }
 
-/// Borrowed reference to the active Pikachu actor created for the current area.
-/// \note Original identifier: \c D_800760A8 (0x800760A8).
-extern u8 *gPikachuActor;
 /// Surface attribute masks that obstruct each horizontal collision policy.
 /// \note Original identifier: \c D_80123B48 (0x80123B48).
 extern s32 gTerrainCollisionPolicySurfaceMasks[];
@@ -1114,9 +1112,9 @@ u16 terrainCheckHorizontalObstruction(s32 type, f32 x, f32 y, f32 z, f32 width, 
         }
     }
     if (type == 5) {
-        delta[0] = *(f32 *)(gPikachuActor + 0x44) - x;
-        delta[1] = *(f32 *)(gPikachuActor + 0x48) - y;
-        delta[2] = *(f32 *)(gPikachuActor + 0x4C) - z;
+        delta[0] = *(f32 *)(((u8 *)gPikachuActor) + 0x44) - x;
+        delta[1] = *(f32 *)(((u8 *)gPikachuActor) + 0x48) - y;
+        delta[2] = *(f32 *)(((u8 *)gPikachuActor) + 0x4C) - z;
         if (vector3Length((f32 *)delta) < 5.0f) {
             flags |= 0x6D;
         }

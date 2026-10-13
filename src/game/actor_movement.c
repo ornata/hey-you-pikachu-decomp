@@ -1,3 +1,4 @@
+#include "pikachu_actor.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
 #include "random.h"
@@ -1268,9 +1269,6 @@ s32 actorAdvanceWhileTrackingTarget(u8 *actor) {
 void matrixFixedTo34(Mtx, f32 *);
 void matrix33TransformVector(f32 *, f32 *, f32 *);
 f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
-/// Borrowed reference to the active Pikachu actor created for the current area.
-/// \note Original identifier: \c D_800760A8 (0x800760A8).
-extern u8 *gPikachuActor;
 
 /// Position and orient an attached chain and adjust its pose for the target height.
 /// \param object Chain actor with initialized state and a valid chain ending at its designated end part; the primary actor attachment and its transform matrices must exist.
@@ -1293,7 +1291,7 @@ s32 actorUpdateAttachedChainPose(u8 *object) {
     s32 buffer;
 
     state = *(u8 **)(object + 0x54);
-    attachment = actorFindPart(gPikachuActor, 0x35);
+    attachment = actorFindPart(((u8 *)gPikachuActor), 0x35);
     *(f32 *)(object + 0x18) = *(f32 *)(attachment + 0x44);
     *(f32 *)(object + 0x1C) = *(f32 *)(attachment + 0x48);
     *(f32 *)(object + 0x20) = *(f32 *)(attachment + 0x4C);

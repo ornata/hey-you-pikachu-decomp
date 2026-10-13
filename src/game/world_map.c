@@ -1,3 +1,4 @@
+#include "pikachu_actor.h"
 #include "camera_storage.h"
 #include "object_groups.h"
 #include "math_angles.h"
@@ -375,9 +376,6 @@ void wholeMapDraw(Gfx **gdl) {
     cameraDrawSecondaryOverlay(0);
 }
 
-/// Borrowed reference to the active Pikachu actor created for the current area.
-/// \note Original identifier: \c D_800760A8 (0x800760A8).
-extern s32 gPikachuActor;
 /// Transform from map presentation coordinates to world coordinates.
 /// \note Original identifier: \c D_800F1B78 (0x800F1B78).
 extern Matrix34 gWorldMapToWorldTransform;
@@ -400,24 +398,24 @@ void wholeMapUpdateActorPlacement(void) {
     u8 *firstJoint;
     u8 *secondJoint;
     u8 *state;
-    state = *(u8 **)((u8 *)gPikachuActor + 0x54);
+    state = *(u8 **)((u8 *)((s32)gPikachuActor) + 0x54);
     presentationUpdateFocusPoint(&reference);
     matrix34TransformPointVector((f32 *)(&gWorldMapToWorldTransform), (f32 *)(&reference), (f32 *)(state + 0x1EC));
     reference.x = gWorldMapActorPresentationPosition.x;
     reference.y = gWorldMapActorPresentationPosition.y;
     reference.z = gWorldMapActorPresentationPosition.z;
     matrix34TransformPointVector((f32 *)(&gWorldMapToWorldTransform), (f32 *)(&reference), (f32 *)(&position));
-    firstJoint = actorFindPart((u8 *)gPikachuActor, firstJointId);
-    height = *(f32 *)((u8 *)gPikachuActor + 0x48) - *(f32 *)(firstJoint + 0x48);
-    secondJoint = actorFindPart((u8 *)gPikachuActor, secondJointId);
-    otherHeight = (*(f32 *)((u8 *)gPikachuActor + 0x48) - *(f32 *)(secondJoint + 0x48));
+    firstJoint = actorFindPart((u8 *)((s32)gPikachuActor), firstJointId);
+    height = *(f32 *)((u8 *)((s32)gPikachuActor) + 0x48) - *(f32 *)(firstJoint + 0x48);
+    secondJoint = actorFindPart((u8 *)((s32)gPikachuActor), secondJointId);
+    otherHeight = (*(f32 *)((u8 *)((s32)gPikachuActor) + 0x48) - *(f32 *)(secondJoint + 0x48));
     position.y += (otherHeight + height) / averageDivisor;
-    *(f32 *)((u8 *)gPikachuActor + 0x18) = position.x;
-    *(f32 *)((u8 *)gPikachuActor + 0x1C) = position.y;
-    *(f32 *)((u8 *)gPikachuActor + 0x20) = position.z;
-    *(f32 *)((u8 *)gPikachuActor + 0x44) = position.x;
-    *(f32 *)((u8 *)gPikachuActor + 0x48) = position.y;
-    *(f32 *)((u8 *)gPikachuActor + 0x4C) = position.z;
+    *(f32 *)((u8 *)((s32)gPikachuActor) + 0x18) = position.x;
+    *(f32 *)((u8 *)((s32)gPikachuActor) + 0x1C) = position.y;
+    *(f32 *)((u8 *)((s32)gPikachuActor) + 0x20) = position.z;
+    *(f32 *)((u8 *)((s32)gPikachuActor) + 0x44) = position.x;
+    *(f32 *)((u8 *)((s32)gPikachuActor) + 0x48) = position.y;
+    *(f32 *)((u8 *)((s32)gPikachuActor) + 0x4C) = position.z;
 }
 
 /// Index of the currently selected world-map destination.
@@ -443,24 +441,24 @@ void wholeMapPrepareActor(void) {
     s32 pitchAxis = 0;
     f32 angle;
     u8 *state;
-    state = *(u8 **)((u8 *)gPikachuActor + 0x54);
+    state = *(u8 **)((u8 *)((s32)gPikachuActor) + 0x54);
     camera = ((u8 *)gRenderCameras) + gRenderCameraIndex * 0xE0;
-    objectSetHierarchyFlags((u8 *)gPikachuActor, flags);
+    objectSetHierarchyFlags((u8 *)((s32)gPikachuActor), flags);
     wholeMapUpdateActorPlacement();
-    actionScriptStop((u8 *)gPikachuActor);
-    actionStopPlayback((u8 *)gPikachuActor);
-    delta[0] = *(f32 *)(camera + 0) - *(f32 *)((u8 *)gPikachuActor + 0x44);
-    delta[1] = *(f32 *)(camera + 4) - *(f32 *)((u8 *)gPikachuActor + 0x48);
-    delta[2] = *(f32 *)(camera + 8) - *(f32 *)((u8 *)gPikachuActor + 0x4C);
+    actionScriptStop((u8 *)((s32)gPikachuActor));
+    actionStopPlayback((u8 *)((s32)gPikachuActor));
+    delta[0] = *(f32 *)(camera + 0) - *(f32 *)((u8 *)((s32)gPikachuActor) + 0x44);
+    delta[1] = *(f32 *)(camera + 4) - *(f32 *)((u8 *)((s32)gPikachuActor) + 0x48);
+    delta[2] = *(f32 *)(camera + 8) - *(f32 *)((u8 *)((s32)gPikachuActor) + 0x4C);
     angle = vector3GetYawDegrees(delta);
-    actorAddRotationAxisDegrees((u8 *)gPikachuActor, -*(f32 *)(state + 0xC), pitchAxis);
-    actorAddRotationAxisDegrees((u8 *)gPikachuActor, angle - *(f32 *)(state + 0x10), 1);
+    actorAddRotationAxisDegrees((u8 *)((s32)gPikachuActor), -*(f32 *)(state + 0xC), pitchAxis);
+    actorAddRotationAxisDegrees((u8 *)((s32)gPikachuActor), angle - *(f32 *)(state + 0x10), 1);
     *(s32 *)(state + 0x19C) = 0;
     matrix34TransformPointVector((f32 *)(&gWorldMapToWorldTransform), (f32 *)&gWorldMapDestinations[gWorldMapSelectedDestination].focusPosition, (f32 *)(state + 0x1EC));
     presentationResetFocusPoint(&gWorldMapDestinations[gWorldMapSelectedDestination].focusPosition);
     gWorldMapDirectionHeldFrames = 0;
-    actionScriptStartWithMode((u8 *)gPikachuActor, action, actionMode);
-    actorSetBehaviorInhibitFlags((u8 *)gPikachuActor, animation);
+    actionScriptStartWithMode((u8 *)((s32)gPikachuActor), action, actionMode);
+    actorSetBehaviorInhibitFlags((u8 *)((s32)gPikachuActor), animation);
 }
 
 /// Current world-map menu and transition state.
@@ -613,8 +611,8 @@ void wholeMapHandleInput(void) {
     } else {
         gWorldMapDirectionHeldFrames = 0;
     }
-    if (actorAcknowledgeScriptMessage((u8 *)gPikachuActor) != 0) {
-        input = (MenuInput *)(*(u8 **)((u8 *)gPikachuActor + 0x54) + 0x21C);
+    if (actorAcknowledgeScriptMessage((u8 *)((s32)gPikachuActor)) != 0) {
+        input = (MenuInput *)(*(u8 **)((u8 *)((s32)gPikachuActor) + 0x54) + 0x21C);
         if (input->type == 0x12) {
             if (input->value == 10 && playerGetChaseStage() == 2) {
                 specialPosition = gWorldMapSpecialDestinationFocus;
@@ -633,7 +631,7 @@ void wholeMapHandleInput(void) {
             selection = gWorldMapVoiceDestinationIndices[input->value];
             if (wholeMapIsDestinationAvailable(selection) != 0) {
                 gWorldMapSelectedDestination = selection;
-                attachedEffectCreate((u8 *)gPikachuActor, 1, 0xA4);
+                attachedEffectCreate((u8 *)((s32)gPikachuActor), 1, 0xA4);
             }
         } else {
             defaultPosition = gWorldMapOtherMessageFocus;
@@ -723,7 +721,7 @@ extern s32 gGameplayVoiceCommandsAllowed;
 void wholeMapConfigureVoiceInput(void) {
     TRACE("restart skit.\n");
     micRequestDictionary(0x1F);
-    actorSetMessengerContactMode((u8 *)gPikachuActor, 2);
+    actorSetMessengerContactMode((u8 *)((s32)gPikachuActor), 2);
     hudSetFeatureMask(4);
     micRequestRecognitionOverride(1);
     micRequestRecognitionFollowsTrigger(1);
@@ -781,20 +779,20 @@ extern s32 gCollectionResultsBypassed;
 void wholeMapUpdate(void) {
     u8 *sp24;
 
-    sp24 = *(u8 **)((u8 *)gPikachuActor + 0x54);
+    sp24 = *(u8 **)((u8 *)((s32)gPikachuActor) + 0x54);
     playerResetViewOrientation();
     cameraBuildInterfaceTransform((f32 *)&gWorldMapToWorldTransform);
-    if (actionScriptIsStopped((u8 *)gPikachuActor) != 0) {
-        actionScriptStartWithMode((u8 *)gPikachuActor, 0x57, 2);
+    if (actionScriptIsStopped((u8 *)((s32)gPikachuActor)) != 0) {
+        actionScriptStartWithMode((u8 *)((s32)gPikachuActor), 0x57, 2);
     }
     if (gWorldMapDirectionHeldFrames >= 0x65) {
         if (*(s16 *)(sp24 + 0x13C) != 0xE) {
-            actionScriptStop((u8 *)gPikachuActor);
-            actionScriptStartWithMode((u8 *)gPikachuActor, 0x57, 0xE);
+            actionScriptStop((u8 *)((s32)gPikachuActor));
+            actionScriptStartWithMode((u8 *)((s32)gPikachuActor), 0x57, 0xE);
         }
     } else if (*(s16 *)(sp24 + 0x13C) != 2) {
-        actionScriptStop((u8 *)gPikachuActor);
-        actionScriptStartWithMode((u8 *)gPikachuActor, 0x57, 2);
+        actionScriptStop((u8 *)((s32)gPikachuActor));
+        actionScriptStartWithMode((u8 *)((s32)gPikachuActor), 0x57, 2);
     }
     switch (gWorldMapState) {
     case 0:

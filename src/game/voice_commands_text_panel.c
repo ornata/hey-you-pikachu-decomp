@@ -1,3 +1,4 @@
+#include "pikachu_actor.h"
 #include "camera_storage.h"
 #include "vector_metrics.h"
 #include "microphone_requests.h"
@@ -39,9 +40,6 @@ f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
 /// Minimum nonzero voice level for a command without a quiet-voice warning.
 /// \note Original identifier: \c D_800722E8 (0x800722E8).
 extern s32 gGameplayMicrophoneAvailable, gGameplayVoiceCommandsAllowed, gVoiceCommandMinimumVoiceLevel;
-/// Borrowed reference to the active Pikachu actor created for the current area.
-/// \note Original identifier: \c D_800760A8 (0x800760A8).
-extern u8 *gPikachuActor;
 /// Messenger scale at the quiet end of the voice-level mapping.
 /// \note Original identifier: \c D_800A2668 (0x800A2668).
 extern f32 gVoiceCommandMinimumEffectScale;
@@ -104,9 +102,9 @@ void voiceCommandLaunchEffect(ScriptMessage message) {
         if (special != 0)
             scale *= 2.0f;
         if (gVoiceCommandRecognitionResult.warning != 0)
-            target = actorFindPart(gPikachuActor, 0x2C);
+            target = actorFindPart(((u8 *)gPikachuActor), 0x2C);
         else
-            target = actorFindPart(gPikachuActor, 0x2E);
+            target = actorFindPart(((u8 *)gPikachuActor), 0x2E);
         if (gRuntimeCurrentArea == 7) {
             rotation[1] = gPlayerYaw + gPlayerViewShake;
             rotation[0] = 0.0f;

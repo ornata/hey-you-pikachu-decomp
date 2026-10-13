@@ -1,3 +1,4 @@
+#include "pikachu_actor.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
 #include "random.h"
@@ -313,9 +314,6 @@ void itemPlayImpactSounds(u8 *object, s32 contactFlags, s32 surface) {
 /// Separate terrain-collision callback view of the item catalog, with a 116-byte stride.
 /// \note Original identifier: \c D_80125A90 (0x80125A90).
 extern u8 gItemKindCollisionCallbackEntries[];
-/// Borrowed reference to the active Pikachu actor created for the current area.
-/// \note Original identifier: \c D_800760A8 (0x800760A8).
-extern u8 *gPikachuActor;
 s32 actorPostItemImpactMessage();
 s32 areaDispatchPositionEvent(f32 *, s32);
 
@@ -334,7 +332,7 @@ s32 itemDispatchCollisionResponse(u8 *object, s32 flags) {
     state = ((RuntimeObjectPrefix *)object)->state.bytes;
     callback = *(ItemCollisionCallback *)(gItemKindCollisionCallbackEntries + ((ItemStatePrefix *)state)->kind * sizeof(ItemKind));
     if (flags & 0x40) {
-        actorPostItemImpactMessage(gPikachuActor, object);
+        actorPostItemImpactMessage(((u8 *)gPikachuActor), object);
     }
     if (!(flags & 0x40) && !(((ItemStatePrefix *)state)->flags & 0x10000000)) {
         if (areaDispatchPositionEvent(((RuntimeObjectPrefix *)object)->worldPosition, 6) != 0) {
@@ -708,7 +706,7 @@ void itemUpdateStationaryMode(u8 *unused) {
 void baseballCapUpdateHeldVisibility(u8 *object) {
     u8 *objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
     if ((((ItemStatePrefix *)objectState)->state == 2) &&
-        (((ActorScriptState *)((RuntimeObjectPrefix *)gPikachuActor)->state.pointer)->attachmentMode == 3)) {
+        (((ActorScriptState *)((RuntimeObjectPrefix *)((u8 *)gPikachuActor))->state.pointer)->attachmentMode == 3)) {
         itemSetScale(object, 0.0f);
         return;
     }

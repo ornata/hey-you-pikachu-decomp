@@ -1,3 +1,4 @@
+#include "pikachu_actor.h"
 #include "object_groups.h"
 #include "math_angles.h"
 #include "random.h"
@@ -374,9 +375,6 @@ extern s32 gGameplayMicrophoneAvailable;
 /// Whether gameplay permits recognized voice commands to launch messenger effects.
 /// \note Original identifier: \c D_800722D4 (0x800722D4).
 extern s32 gGameplayVoiceCommandsAllowed;
-/// Borrowed reference to the active Pikachu actor created for the current area.
-/// \note Original identifier: \c D_800760A8 (0x800760A8).
-extern u8 *gPikachuActor;
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
@@ -405,7 +403,7 @@ void runtimeInitializeSceneGameplay(void) {
     itemInitializeRegistry();
     heapDebugReportFreeSpace(&gGameHeap, "after initItemSystem");
     objectSystemInitialize();
-    gPikachuActor = 0;
+    gPikachuActor = NULL;
     heapDebugReportFreeSpace(&gGameHeap, "after initObjects()");
     runtimeCheckResetCheckpoint("pre-initMaze", 1);
     mazeInitialize();
@@ -599,7 +597,7 @@ void runtimeAccumulatePlayTime(void) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000B288 (0x8000B288).
 void runtimeAccumulateActorScriptTime(void) {
-    u8 *actorState = *(u8 **)(gPikachuActor + 0x54);
+    u8 *actorState = *(u8 **)(((u8 *)gPikachuActor) + 0x54);
     progressAddValue(5, (s32) * (f32 *)(*(u8 **)(actorState + 0x1B8) + 0x10));
 }
 

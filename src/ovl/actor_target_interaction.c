@@ -1,3 +1,4 @@
+#include "pikachu_actor.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
 #include "terrain_height.h"
@@ -200,9 +201,6 @@ void actorPostItemImpactMessage(s32 actor, u8 *item) {
     actorPostScriptMessage(actor, msg, 0);
 }
 
-/// Borrowed reference to the active Pikachu actor created for the current area.
-/// \note Original identifier: \c D_800760A8 (0x800760A8).
-extern u8 *gPikachuActor;
 
 /// Attempt to make an actor hold the requested item, releasing its previous held item on success.
 /// \param actor Actor that will hold the item.
@@ -223,7 +221,7 @@ void actorTryHoldItem(u8 *actor, s32 itemId, s32 forceRelease) {
             itemTryRelease(other, 1);
         }
         rec = ((RuntimeObjectPrefix *)obj)->state.bytes;
-        if (actor == gPikachuActor) {
+        if (actor == ((u8 *)gPikachuActor)) {
             ((ItemStatePrefix *)rec)->state = 2;
         } else {
             ((ItemStatePrefix *)rec)->state = 3;

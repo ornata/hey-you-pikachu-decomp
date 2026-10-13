@@ -1,3 +1,4 @@
+#include "pikachu_actor.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
 #include "random.h"
@@ -568,9 +569,6 @@ void playerPlayFootstepSound(u8 *player, s32 ground) {
 }
 
 void playerPlayFootstepSound(u8 *, s32);
-/// Borrowed reference to the active Pikachu actor created for the current area.
-/// \note Original identifier: \c D_800760A8 (0x800760A8).
-extern s32 gPikachuActor;
 /// Terrain query mode used for player movement and ground sampling.
 /// \note Original identifier: \c D_80133F10 (0x80133F10).
 extern s32 gPlayerCollisionQueryMode;
@@ -704,11 +702,11 @@ block_14:
         dz = 0.0f;
     }
     distance[0] =
-        ((PlayerControlPrefix *)motion)->position[0] - ((RuntimeObjectPrefix *)(u8 *)gPikachuActor)->worldPosition[0];
+        ((PlayerControlPrefix *)motion)->position[0] - ((RuntimeObjectPrefix *)(u8 *)((s32)gPikachuActor))->worldPosition[0];
     distance[1] =
-        ((PlayerControlPrefix *)motion)->position[1] - ((RuntimeObjectPrefix *)(u8 *)gPikachuActor)->worldPosition[1];
+        ((PlayerControlPrefix *)motion)->position[1] - ((RuntimeObjectPrefix *)(u8 *)((s32)gPikachuActor))->worldPosition[1];
     distance[2] =
-        ((PlayerControlPrefix *)motion)->position[2] - ((RuntimeObjectPrefix *)(u8 *)gPikachuActor)->worldPosition[2];
+        ((PlayerControlPrefix *)motion)->position[2] - ((RuntimeObjectPrefix *)(u8 *)((s32)gPikachuActor))->worldPosition[2];
     oldDistance = vector3Length(distance);
     if (oldDistance < 2.5f) {
         if (controllerIsRumblePatternActive(0) == 0) {
@@ -954,7 +952,7 @@ s32 playerConsumeInteractionProxy(u8 *player) {
     msg.arg2 = ((InteractionProxyState *)state)->context;
     msg.arg3 = 0;
     msg.arg4 = ((RuntimeObjectPrefix *)obj)->handle;
-    actorPostScriptMessage(gPikachuActor, msg, 1);
+    actorPostScriptMessage(((s32)gPikachuActor), msg, 1);
     if (((InteractionProxyState *)state)->context <= 0) {
         objectRequestHierarchyDestruction(obj);
     }
@@ -1010,7 +1008,7 @@ s32 playerRequestTargetCooperation(u8 *player) {
     msg.arg2 = 0;
     msg.arg3 = 0;
     msg.arg4 = ((PlayerControlPrefix *)player)->interactionTarget;
-    actorPostScriptMessage(gPikachuActor, msg, 1);
+    actorPostScriptMessage(((s32)gPikachuActor), msg, 1);
     return 1;
 }
 
@@ -1180,7 +1178,7 @@ s32 playerTryEnterStationaryLook(u8 *player, u8 *controller) {
         return 0;
     }
     if ((((ControllerState *)controller)->pressed & 0x404) || (((ControllerState *)controller)->held & 0x10)) {
-        playerSetCompanionControlMode(player, 0, 0, ((RuntimeObjectPrefix *)(u8 *)gPikachuActor)->handle);
+        playerSetCompanionControlMode(player, 0, 0, ((RuntimeObjectPrefix *)(u8 *)((s32)gPikachuActor))->handle);
         playerChangeMode(2);
         if (((ControllerState *)controller)->held & 0x10) {
             ((PlayerControlPrefix *)player)->modeState.companionHoldRequired = 1;
@@ -1212,22 +1210,22 @@ s32 playerToggleCompanionControl(u8 *player, u8 *controller) {
     switch (companionMode) {
     case 0:
         if (progressGetValue(8) != 0) {
-            playerSetCompanionControlMode(player, 2, 0, ((RuntimeObjectPrefix *)(u8 *)gPikachuActor)->handle);
+            playerSetCompanionControlMode(player, 2, 0, ((RuntimeObjectPrefix *)(u8 *)((s32)gPikachuActor))->handle);
         } else {
-            playerSetCompanionControlMode(player, 1, 0, ((RuntimeObjectPrefix *)(u8 *)gPikachuActor)->handle);
+            playerSetCompanionControlMode(player, 1, 0, ((RuntimeObjectPrefix *)(u8 *)((s32)gPikachuActor))->handle);
         }
         break;
     case 1:
         if (!(((PlayerControlPrefix *)player)->permissions & 0x40000000)) {
             return 0;
         }
-        playerSetCompanionControlMode(player, 0, 0, ((RuntimeObjectPrefix *)(u8 *)gPikachuActor)->handle);
+        playerSetCompanionControlMode(player, 0, 0, ((RuntimeObjectPrefix *)(u8 *)((s32)gPikachuActor))->handle);
         return 1;
     case 2:
         if (!(((PlayerControlPrefix *)player)->permissions & 0x80000000)) {
             return 0;
         }
-        playerSetCompanionControlMode(player, 0, 0, ((RuntimeObjectPrefix *)(u8 *)gPikachuActor)->handle);
+        playerSetCompanionControlMode(player, 0, 0, ((RuntimeObjectPrefix *)(u8 *)((s32)gPikachuActor))->handle);
         break;
     default:
         TRACE("ERROR: unknown markMode:%d\n", companionMode);
@@ -2032,9 +2030,9 @@ void playerUpdateControlHierarchy(void *object) {
 
     origin = (Origin1C4C *)&gPlayerState;
     yaw = ((PlayerControlPrefix *)&gPlayerState)->yaw + ((PlayerControlPrefix *)&gPlayerState)->viewShake;
-    delta[0] = ((Origin1C4C *)&gPlayerState)->x - ((RuntimeObjectPrefix *)gPikachuActor)->worldPosition[0];
-    delta[1] = ((Origin1C4C *)&gPlayerState)->y - ((RuntimeObjectPrefix *)gPikachuActor)->worldPosition[1];
-    delta[2] = ((Origin1C4C *)&gPlayerState)->z - ((RuntimeObjectPrefix *)gPikachuActor)->worldPosition[2];
+    delta[0] = ((Origin1C4C *)&gPlayerState)->x - ((RuntimeObjectPrefix *)((s32)gPikachuActor))->worldPosition[0];
+    delta[1] = ((Origin1C4C *)&gPlayerState)->y - ((RuntimeObjectPrefix *)((s32)gPikachuActor))->worldPosition[1];
+    delta[2] = ((Origin1C4C *)&gPlayerState)->z - ((RuntimeObjectPrefix *)((s32)gPikachuActor))->worldPosition[2];
     distance = vector3LengthApprox((f32 *)&delta[0]);
     sine = mathSinDegrees(yaw);
     cosine = mathCosDegrees(yaw);
@@ -2711,7 +2709,7 @@ void pikachuSpawnForArea(void) {
 
     spots = ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->spawns;
     kind = (s32)((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->actorScripts[gAreaScenarioIndex];
-    gPikachuActor = (s32)actorCreateForKind(
+    gPikachuActor = (RuntimeObjectPrefix *)actorCreateForKind(
         0x25, spots[gRuntimeCurrentEntrance].actorPosition[0], spots[gRuntimeCurrentEntrance].actorPosition[1],
         spots[gRuntimeCurrentEntrance].actorPosition[2], 0.0f, spots[gRuntimeCurrentEntrance].actorYaw,
         ((SceneConfigurationPrefix *)gCurrentAreaConfiguration)->objectScale, (u8 *)kind, 0);
@@ -2786,9 +2784,9 @@ f32 actorConstrainFacingHeading(u8 *object, f32 angle) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80112F10 (0x80112F10).
 void pikachuUpdateScriptAndTriggers(void) {
-    u8 *actor = (u8 *)gPikachuActor;
+    u8 *actor = (u8 *)((s32)gPikachuActor);
     if (actor != NULL) {
         actorUpdateScriptVm(actor);
-        areaDispatchPositionEvent(gPikachuActor + 0x44, 3);
+        areaDispatchPositionEvent(((s32)gPikachuActor) + 0x44, 3);
     }
 }

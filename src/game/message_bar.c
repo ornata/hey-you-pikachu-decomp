@@ -1,3 +1,4 @@
+#include "pikachu_actor.h"
 #include "camera_storage.h"
 #include "object_groups.h"
 #include "math_angles.h"
@@ -64,9 +65,6 @@ void presentationDrawCurrentCardPanels(Gfx **);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
-/// Borrowed reference to the active Pikachu actor created for the current area.
-/// \note Original identifier: \c D_800760A8 (0x800760A8).
-extern s32 gPikachuActor;
 /// Friendship messages indexed by the cleared chapter.
 /// \note Original identifier: \c D_800999F0 (0x800999F0).
 extern s32 gChapterFriendshipMessages[];

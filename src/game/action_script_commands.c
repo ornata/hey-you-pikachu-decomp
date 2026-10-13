@@ -1,3 +1,4 @@
+#include "pikachu_actor.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
 #include "random.h"
@@ -259,9 +260,6 @@ void actionCommandPlayTrackedSoundWithPitch(s32 actor, u8 *state, u8 *command, f
 
 s32 terrainGetMaterialSound(s32, s32);
 void terrainCreateContactEffect(u8 *, s32);
-/// Borrowed reference to the active Pikachu actor created for the current area.
-/// \note Original identifier: \c D_800760A8 (0x800760A8).
-extern u8 *gPikachuActor;
 typedef struct {
     s32 amount;
 } SoundAmplitude;
@@ -283,7 +281,7 @@ void actionCommandPlayGroundContactEffects(u8 *object, u8 *state, ActorActionCue
     ground = terrainGetSurfaceAttributes(*(f32 *)(object + 0x44), *(f32 *)(object + 0x48), *(f32 *)(object + 0x4C), 0);
     args = (SoundAmplitude *)(*source)->args;
     if (args->amount > 0) {
-        if (object == gPikachuActor)
+        if (object == ((u8 *)gPikachuActor))
             type = 3;
         else
             type = 4;
@@ -418,7 +416,7 @@ void actionCommandLaunchHeldItem(u8 *actor, u8 *state, ActorActionCueCommand *co
     case 7:
         linkedEffectCreateChain(
             randomBelow(2) != 0 ? LINKED_EFFECT_REBOUND : LINKED_EFFECT_FALLING, pos[0], pos[1], pos[2], randomNext() * 2.3283064365386963e-10 * 0.1f + 0.03f,
-            actorGetPartObjectHandle(gPikachuActor, 0x79), 1.0f, 0.8f, 2.0f, 0.1f, 0.1f, 0xC2, 1, randomBelow(2) + 1);
+            actorGetPartObjectHandle(((u8 *)gPikachuActor), 0x79), 1.0f, 0.8f, 2.0f, 0.1f, 0.1f, 0xC2, 1, randomBelow(2) + 1);
         vel[0] = (randomNext() * 2.3283064365386963e-10 - 0.5) * 8.0;
         vel[1] = 0.0f;
         vel[2] = (randomNext() * 2.3283064365386963e-10 - 0.5) * 8.0;

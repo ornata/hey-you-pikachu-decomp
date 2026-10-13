@@ -1,3 +1,4 @@
+#include "pikachu_actor.h"
 #include "object_groups.h"
 #include "math_angles.h"
 #include "backdrop_view.h"
@@ -702,9 +703,6 @@ s32 titleScreenHandleOverwriteConfirmation(void) {
     return 0;
 }
 
-/// Borrowed reference to the active Pikachu actor created for the current area.
-/// \note Original identifier: \c D_800760A8 (0x800760A8).
-extern u8 *gPikachuActor;
 /// Backdrop identifiers indexed by title-screen demonstration.
 /// \note Original identifier: \c D_8009B3F8 (0x8009B3F8).
 extern s32 gTitleDemoBackdropIds[];
@@ -832,7 +830,7 @@ void titleScreenUpdate(void) {
         break;
     case 8:
         if (runtimeGetElapsedMilliseconds() - gTitleIntroductionMilliseconds >= 0xBB9 || (*pressed & 0x9000)) {
-            objectSetHierarchyFlags(gPikachuActor, 0x6000);
+            objectSetHierarchyFlags(((u8 *)gPikachuActor), 0x6000);
             cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.5f);
             gTitleScreenState = 9;
         }

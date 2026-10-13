@@ -1,3 +1,4 @@
+#include "pikachu_actor.h"
 #include "terrain_surface.h"
 #include "item_size.h"
 #include "item_mode.h"
@@ -24,9 +25,6 @@ void baseballCapResetReleasedScale(u8 *object, s32 unused) {
     }
 }
 
-/// Borrowed reference to the active Pikachu actor created for the current area.
-/// \note Original identifier: \c D_800760A8 (0x800760A8).
-extern s32 gPikachuActor;
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
@@ -48,7 +46,7 @@ void lightBulbUpdateHeldGlow(u8 *object) {
         *timer -= gRuntimeFrameSeconds;
         if (*timer <= 0.0f) {
             *timer = 1.0f;
-            actorAdjustActionMeter((u8 *)gPikachuActor, -10.0f);
+            actorAdjustActionMeter((u8 *)((s32)gPikachuActor), -10.0f);
         }
     }
 }

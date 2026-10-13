@@ -1,3 +1,4 @@
+#include "pikachu_actor.h"
 #include "math_angles.h"
 #include "terrain_movement.h"
 #include "terrain_height.h"
@@ -2410,9 +2411,6 @@ s32 itemTryRelease(u8 *object, s32 force) {
     return 1;
 }
 
-/// Borrowed reference to the active Pikachu actor created for the current area.
-/// \note Original identifier: \c D_800760A8 (0x800760A8).
-extern s32 gPikachuActor;
 /// Launch a live item with collision-aware starting placement and the requested motion.
 /// \param id Handle of a live item that permits release; requires the active primary actor.
 /// \param origin Readable three-component world position from which starting placement is checked.
@@ -2436,7 +2434,7 @@ void itemThrow(s32 id, f32 *origin, f32 *target, f32 *velocity, s32 effect) {
           id, origin[0], origin[1], origin[2], target[0], target[1], target[2], velocity[0], velocity[1], velocity[2]);
     object = objectFindLiveByHandle(id);
     state = ((RuntimeObjectPrefix *)object)->state.bytes;
-    if (((RuntimeObjectPrefix *)gPikachuActor)->handle == *(s32 *)(state + 8)) {
+    if (((RuntimeObjectPrefix *)((s32)gPikachuActor))->handle == *(s32 *)(state + 8)) {
         *(s32 *)state |= 0x08000000;
     } else if (*(s8 *)(state + 6) == 1) {
         *(s32 *)state |= 0x04000000;

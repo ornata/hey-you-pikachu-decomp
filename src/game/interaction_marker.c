@@ -1,3 +1,4 @@
+#include "pikachu_actor.h"
 #include "audio_sound_effect.h"
 /// \file
 /// Selects interaction candidates and animates their presentation marker.
@@ -59,9 +60,6 @@ extern s32 gPlayerHeldItemHandle;
 /// Separate symbol view of the primary player record's position Y.
 /// \note Original identifier: \c D_800EF6A4 (0x800EF6A4).
 extern f32 gPlayerPositionY;
-/// Borrowed reference to the active Pikachu actor created for the current area.
-/// \note Original identifier: \c D_800760A8 (0x800760A8).
-extern u8 *gPikachuActor;
 /// Best candidate score in the current scan; lower scores take precedence.
 /// \note Original identifier: \c D_800B6C50 (0x800B6C50).
 extern f32 gInteractionCandidateScore;
@@ -109,7 +107,7 @@ s32 interactionConsiderObject(u8 *object) {
             }
         }
     }
-    if (object != gPikachuActor && (flags & (INTERACTION_SECONDARY_REGION | INTERACTION_PRIMARY_REGION))) {
+    if (object != ((u8 *)gPikachuActor) && (flags & (INTERACTION_SECONDARY_REGION | INTERACTION_PRIMARY_REGION))) {
         if (gPlayerHeldItemHandle == ((RuntimeObjectPrefix *)object)->handle) {
             score = -2147483648.0f;
         } else {
@@ -305,7 +303,7 @@ s32 interactionMarkerPrepareDraw(u8 *object) {
     textureLoadForDraw(&gRenderDisplayListCursor, 5, ((InteractionMarkerState *)d)->tracks[MARKER_TRACK_FRAME].value, d);
     gDPPipeSync(gRenderDisplayListCursor++);
     gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0xFF, 0xFF, 0xFF, ((InteractionMarkerState *)d)->tracks[MARKER_TRACK_OPACITY].value);
-    if (((RuntimeObjectPrefix *)gPikachuActor)->state.actor->heldItemHandle == ((InteractionMarkerState *)d)->targetHandle) {
+    if (((RuntimeObjectPrefix *)((u8 *)gPikachuActor))->state.actor->heldItemHandle == ((InteractionMarkerState *)d)->targetHandle) {
         gDPSetRenderMode(gRenderDisplayListCursor++, 0x504240, 0);
     } else {
         gDPSetRenderMode(gRenderDisplayListCursor++, 0x504A50, 0);

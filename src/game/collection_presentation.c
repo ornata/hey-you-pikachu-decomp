@@ -1,3 +1,4 @@
+#include "pikachu_actor.h"
 #include "camera_storage.h"
 #include "random.h"
 #include "backdrop_view.h"
@@ -193,9 +194,6 @@ void presentationDrawCurrentCardPanels(Gfx **);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
-/// Borrowed reference to the active Pikachu actor created for the current area.
-/// \note Original identifier: \c D_800760A8 (0x800760A8).
-extern s32 gPikachuActor;
 /// Separate symbol view of the primary player friendship-title level.
 /// \note Original identifier: \c D_800EF796 (0x800EF796).
 extern u8 gPlayerFriendshipLevel;
@@ -331,32 +329,32 @@ void objectClearHierarchyFlags(u8 *, u16);
 /// \note Original decompilation identifier: \c func_80028344 (0x80028344).
 void presentationRestoreActiveActor(void) {
     RuntimeObjectPrefix *save;
-    u8 *ext = ((RuntimeObjectPrefix *)gPikachuActor)->state.bytes;
+    u8 *ext = ((RuntimeObjectPrefix *)((s32)gPikachuActor))->state.bytes;
 
     playerRestoreState();
     save = &gPresentationSavedActor.object;
-    ((RuntimeObjectPrefix *)gPikachuActor)->worldPosition[0] = save->worldPosition[0];
-    ((RuntimeObjectPrefix *)gPikachuActor)->worldPosition[1] = save->worldPosition[1];
-    ((RuntimeObjectPrefix *)gPikachuActor)->worldPosition[2] = save->worldPosition[2];
-    ((RuntimeObjectPrefix *)gPikachuActor)->position[0] = save->position[0];
-    ((RuntimeObjectPrefix *)gPikachuActor)->position[1] = save->position[1];
-    ((RuntimeObjectPrefix *)gPikachuActor)->position[2] = save->position[2];
-    ((RuntimeObjectPrefix *)gPikachuActor)->rotation[0] = save->rotation[0];
-    ((RuntimeObjectPrefix *)gPikachuActor)->rotation[1] = save->rotation[1];
-    ((RuntimeObjectPrefix *)gPikachuActor)->rotation[2] = save->rotation[2];
-    ((RuntimeObjectPrefix *)gPikachuActor)->scale[0] = save->scale[0];
-    ((RuntimeObjectPrefix *)gPikachuActor)->scale[1] = save->scale[1];
-    ((RuntimeObjectPrefix *)gPikachuActor)->scale[2] = save->scale[2];
-    ((RuntimeObjectPrefix *)gPikachuActor)->radius = save->radius;
+    ((RuntimeObjectPrefix *)((s32)gPikachuActor))->worldPosition[0] = save->worldPosition[0];
+    ((RuntimeObjectPrefix *)((s32)gPikachuActor))->worldPosition[1] = save->worldPosition[1];
+    ((RuntimeObjectPrefix *)((s32)gPikachuActor))->worldPosition[2] = save->worldPosition[2];
+    ((RuntimeObjectPrefix *)((s32)gPikachuActor))->position[0] = save->position[0];
+    ((RuntimeObjectPrefix *)((s32)gPikachuActor))->position[1] = save->position[1];
+    ((RuntimeObjectPrefix *)((s32)gPikachuActor))->position[2] = save->position[2];
+    ((RuntimeObjectPrefix *)((s32)gPikachuActor))->rotation[0] = save->rotation[0];
+    ((RuntimeObjectPrefix *)((s32)gPikachuActor))->rotation[1] = save->rotation[1];
+    ((RuntimeObjectPrefix *)((s32)gPikachuActor))->rotation[2] = save->rotation[2];
+    ((RuntimeObjectPrefix *)((s32)gPikachuActor))->scale[0] = save->scale[0];
+    ((RuntimeObjectPrefix *)((s32)gPikachuActor))->scale[1] = save->scale[1];
+    ((RuntimeObjectPrefix *)((s32)gPikachuActor))->scale[2] = save->scale[2];
+    ((RuntimeObjectPrefix *)((s32)gPikachuActor))->radius = save->radius;
     ((ActorScriptState *)ext)->orientation[0] = gPresentationSavedActorState.orientation[0];
     ((ActorScriptState *)ext)->orientation[1] = gPresentationSavedActorState.orientation[1];
     ((ActorScriptState *)ext)->orientation[2] = gPresentationSavedActorState.orientation[2];
     ((ActorScriptState *)ext)->rootMotionTransform = gPresentationSavedActorState.rootMotionTransform;
     ((ActorScriptState *)ext)->rootMotionHeading = gPresentationSavedActorState.rootMotionHeading;
     ((ActorScriptState *)ext)->behaviorFlags = gPresentationSavedActorState.behaviorFlags;
-    actionScriptStop(gPikachuActor, &gPresentationSavedActorState);
-    actionBeginPoseTransition((u8 *)gPikachuActor, 0x4A, 0.1f);
-    objectClearHierarchyFlags((u8 *)gPikachuActor, 0x2000);
+    actionScriptStop(((s32)gPikachuActor), &gPresentationSavedActorState);
+    actionBeginPoseTransition((u8 *)((s32)gPikachuActor), 0x4A, 0.1f);
+    objectClearHierarchyFlags((u8 *)((s32)gPikachuActor), 0x2000);
     cameraSetPositionAndAngles(0, gPlayerState, gPlayerPositionY + gPlayerEyeHeight, gPlayerPositionZ,
                                gPlayerPitchOffset + gPlayerPitch, gPlayerYaw + gPlayerViewShake, 0.0f);
 }
@@ -369,8 +367,8 @@ void playerSaveState(void);
 /// \note Original decompilation identifier: \c func_80028518 (0x80028518).
 void presentationSaveActiveActor(void) {
     playerSaveState();
-    gPresentationSavedActor = *(PresentationObjectSnapshot *)gPikachuActor;
-    gPresentationSavedActorState = *((RuntimeObjectPrefix *)gPikachuActor)->state.actor;
+    gPresentationSavedActor = *(PresentationObjectSnapshot *)((s32)gPikachuActor);
+    gPresentationSavedActorState = *((RuntimeObjectPrefix *)((s32)gPikachuActor))->state.actor;
 }
 
 /// Transform from camera-relative presentation coordinates to world coordinates.
@@ -391,7 +389,7 @@ void presentationPlaceActiveActor(void *point) {
     f32 worldHeight;
     f32 newHeight;
     u8 *matrix = (u8 *)&gPresentationToWorldTransform;
-    u8 *state = *(u8 **)((u8 *)gPikachuActor + 0x54);
+    u8 *state = *(u8 **)((u8 *)((s32)gPikachuActor) + 0x54);
     presentationUpdateFocusPoint(&input);
     matrix34TransformPointVector((f32 *)(matrix), (f32 *)(&input), (f32 *)(state + 0x1EC));
     src = point;
@@ -400,18 +398,18 @@ void presentationPlaceActiveActor(void *point) {
     input.z = src[2];
     output = (u8 *)&world;
     matrix34TransformPointVector((f32 *)(matrix), (f32 *)(&input), (f32 *)(output));
-    player = (u8 *)gPikachuActor;
+    player = (u8 *)((s32)gPikachuActor);
     worldHeight = world.y;
     heightDelta = *(f32 *)(player + 0x48) - *(f32 *)(**(u8 ***)(player + 0x54) + 0x48);
     newHeight = worldHeight + heightDelta;
     world.y = newHeight;
     *(f32 *)(player + 0x18) = world.x;
-    *(f32 *)((u8 *)gPikachuActor + 0x1C) = world.y;
-    *(f32 *)((u8 *)gPikachuActor + 0x20) = world.z;
-    *(f32 *)((u8 *)gPikachuActor + 0x44) = world.x;
-    *(f32 *)((u8 *)gPikachuActor + 0x48) = world.y;
-    *(f32 *)((u8 *)gPikachuActor + 0x4C) = world.z;
-    objectUpdateHierarchy((u8 *)gPikachuActor);
+    *(f32 *)((u8 *)((s32)gPikachuActor) + 0x1C) = world.y;
+    *(f32 *)((u8 *)((s32)gPikachuActor) + 0x20) = world.z;
+    *(f32 *)((u8 *)((s32)gPikachuActor) + 0x44) = world.x;
+    *(f32 *)((u8 *)((s32)gPikachuActor) + 0x48) = world.y;
+    *(f32 *)((u8 *)((s32)gPikachuActor) + 0x4C) = world.z;
+    objectUpdateHierarchy((u8 *)((s32)gPikachuActor));
 }
 
 /// Camera slot selected for the current drawing context.
@@ -437,29 +435,29 @@ void presentationPrepareActiveActor(void *point) {
     f32 yaw;
     f32 h;
     f32 secondHeight;
-    u8 *ext = *(u8 **)(gPikachuActor + 0x54);
+    u8 *ext = *(u8 **)(((s32)gPikachuActor) + 0x54);
 
     tgt = (u8 *)&gRenderCameras[gRenderCameraIndex];
-    objectSetHierarchyFlags(gPikachuActor, 0x2000);
+    objectSetHierarchyFlags(((s32)gPikachuActor), 0x2000);
     presentationPlaceActiveActor(point);
-    actionScriptStop((u8 *)gPikachuActor);
-    actionStopPlayback((u8 *)gPikachuActor);
-    d[0] = *(f32 *)(tgt + 0) - *(f32 *)(gPikachuActor + 0x44);
-    d[1] = *(f32 *)(tgt + 4) - *(f32 *)(gPikachuActor + 0x48);
-    d[2] = *(f32 *)(tgt + 8) - *(f32 *)(gPikachuActor + 0x4C);
+    actionScriptStop((u8 *)((s32)gPikachuActor));
+    actionStopPlayback((u8 *)((s32)gPikachuActor));
+    d[0] = *(f32 *)(tgt + 0) - *(f32 *)(((s32)gPikachuActor) + 0x44);
+    d[1] = *(f32 *)(tgt + 4) - *(f32 *)(((s32)gPikachuActor) + 0x48);
+    d[2] = *(f32 *)(tgt + 8) - *(f32 *)(((s32)gPikachuActor) + 0x4C);
     yaw = vector3GetYawDegrees(d);
-    actorAddRotationAxisDegrees((u8 *)gPikachuActor, -*(f32 *)(ext + 0xC), 0);
-    actorAddRotationAxisDegrees((u8 *)gPikachuActor, yaw - *(f32 *)(ext + 0x10), 1);
+    actorAddRotationAxisDegrees((u8 *)((s32)gPikachuActor), -*(f32 *)(ext + 0xC), 0);
+    actorAddRotationAxisDegrees((u8 *)((s32)gPikachuActor), yaw - *(f32 *)(ext + 0x10), 1);
     *(s32 *)(ext + 0x19C) = 0;
     matrix34TransformPointVector((f32 *)&gPresentationToWorldTransform, (f32 *)(&gPresentationActorFocusTargets[1]), (f32 *)(ext + 0x1EC));
     presentationResetFocusPoint(&gPresentationActorFocusTargets[1]);
-    actionScriptStartWithMode((u8 *)gPikachuActor, 0x57, 2);
-    firstJoint = actorFindPart((u8 *)gPikachuActor, firstJointId);
+    actionScriptStartWithMode((u8 *)((s32)gPikachuActor), 0x57, 2);
+    firstJoint = actorFindPart((u8 *)((s32)gPikachuActor), firstJointId);
     h = *(f32 *)(firstJoint + 0x48);
-    secondJoint = actorFindPart((u8 *)gPikachuActor, secondJointId);
+    secondJoint = actorFindPart((u8 *)((s32)gPikachuActor), secondJointId);
     secondHeight = *(f32 *)(secondJoint + 0x48);
     gPresentationActorJointMidpointHeight = (h + secondHeight) / 2;
-    actorSetBehaviorInhibitFlags((u8 *)gPikachuActor, ACTOR_INHIBIT_HORIZONTAL_MOVEMENT | ACTOR_INHIBIT_TERRAIN_AND_GRAVITY);
+    actorSetBehaviorInhibitFlags((u8 *)((s32)gPikachuActor), ACTOR_INHIBIT_HORIZONTAL_MOVEMENT | ACTOR_INHIBIT_TERRAIN_AND_GRAVITY);
 }
 
 /// Owned text image for the current area region name, or null if unavailable.
@@ -537,7 +535,7 @@ void presentationDrawCardScreen(Gfx **gdl) {
         backdropDraw(gdl);
         gDPPipeSync((*gdl)++);
         gDPSetCycleType((*gdl)++, G_CYC_1CYCLE);
-        objectDrawHierarchyGroup(gPikachuActor, 0x2000);
+        objectDrawHierarchyGroup(((s32)gPikachuActor), 0x2000);
         presentationDrawAreaLabel(gdl);
         presentationDrawCurrentCardPanels(gdl);
         presentationDrawCardDecorations(gdl);
@@ -591,8 +589,8 @@ void presentationUpdateCardMode(void) {
         return;
     }
     cameraBuildInterfaceTransform((f32 *)&gPresentationToWorldTransform);
-    if (actionScriptIsStopped((u8 *)gPikachuActor) != 0) {
-        actionScriptStart((u8 *)gPikachuActor, 0x57);
+    if (actionScriptIsStopped((u8 *)((s32)gPikachuActor)) != 0) {
+        actionScriptStart((u8 *)((s32)gPikachuActor), 0x57);
     }
     switch (gCardPresentationStage) {
     case 0:
@@ -626,7 +624,7 @@ void presentationUpdateCardMode(void) {
         playerResetViewOrientation();
         cameraBuildInterfaceTransform((f32 *)&gPresentationToWorldTransform);
         presentationPrepareActiveActor(&gCardPresentationActorPosition);
-        actionScriptStartWithMode((u8 *)gPikachuActor, gCardPresentationActionScript, 2);
+        actionScriptStartWithMode((u8 *)((s32)gPikachuActor), gCardPresentationActionScript, 2);
         presentationSetFocusTarget(gPresentationActorFocusTargets);
         cameraResetOverlayColor(0, 0, 0, 0, 0);
         cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 0.6f);
@@ -832,7 +830,7 @@ void presentationDrawCollectionItem(void) {
 /// \note Original decompilation identifier: \c func_800294C4 (0x800294C4).
 void presentationDrawCollectionScreen(Gfx **gdl) {
     backdropDraw(gdl);
-    objectDrawHierarchyGroup(gPikachuActor, 0x2000);
+    objectDrawHierarchyGroup(((s32)gPikachuActor), 0x2000);
     presentationDrawCollectionItem();
     if (gCollectionPresentationStage != 4 && gCollectionPresentationStage != 6) {
         presentationDrawCollectionDecorations(gdl);
@@ -932,7 +930,7 @@ void presentationChooseActorResponseToItem(s32 id) {
         action = 0x57;
         break;
     }
-    actionScriptStart((u8 *)gPikachuActor, action);
+    actionScriptStart((u8 *)((s32)gPikachuActor), action);
 }
 
 /// Separate view of the retained bonus item slot.
@@ -1075,15 +1073,15 @@ void presentationShowChapterFriendshipResult(void) {
     value = level;
     TRACE("value = %d\n", value);
     if (value < 3) {
-        actionScriptStart((u8 *)gPikachuActor, 0x8E);
+        actionScriptStart((u8 *)((s32)gPikachuActor), 0x8E);
     } else if (value < 6) {
-        actionScriptStart((u8 *)gPikachuActor, 0xEB);
+        actionScriptStart((u8 *)((s32)gPikachuActor), 0xEB);
     } else if (value < 9) {
-        actionScriptStart((u8 *)gPikachuActor, 0x3E);
+        actionScriptStart((u8 *)((s32)gPikachuActor), 0x3E);
     } else if (value < 0xC) {
-        actionScriptStart((u8 *)gPikachuActor, 0x8C);
+        actionScriptStart((u8 *)((s32)gPikachuActor), 0x8C);
     } else {
-        actionScriptStart((u8 *)gPikachuActor, 0x87);
+        actionScriptStart((u8 *)((s32)gPikachuActor), 0x87);
     }
     gPlayerFriendshipMilestone = -1;
 }
@@ -1102,8 +1100,8 @@ extern s32 gCollectionResultsBypassed;
 void presentationUpdateCollectionResultsMode(void) {
     playerResetViewOrientation();
     cameraBuildInterfaceTransform((f32 *)&gPresentationToWorldTransform);
-    if (actionScriptIsStopped((u8 *)gPikachuActor) != 0) {
-        actionScriptStart((u8 *)gPikachuActor, 0x57);
+    if (actionScriptIsStopped((u8 *)((s32)gPikachuActor)) != 0) {
+        actionScriptStart((u8 *)((s32)gPikachuActor), 0x57);
     }
     switch (gCollectionPresentationStage) {
     case 0:
@@ -1141,7 +1139,7 @@ void presentationUpdateCollectionResultsMode(void) {
                 gCollectionResultsWaitStartMilliseconds = (u32)runtimeGetElapsedMilliseconds();
             } else {
                 if (gCollectionPresentationScore <= 0) {
-                    actionScriptStart((u8 *)gPikachuActor, 0x7D);
+                    actionScriptStart((u8 *)((s32)gPikachuActor), 0x7D);
                     audioPlayCue(0x22);
                 } else {
                     audioPlayCue(0x1C);

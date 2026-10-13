@@ -1,3 +1,4 @@
+#include "pikachu_actor.h"
 #include "camera_storage.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
@@ -1283,9 +1284,6 @@ void actorUpdateGroundReferencePose(u8 *actor, u8 *reference, u8 *pose) {
     ((RuntimeObjectPrefix *)pose)->rotation[2] = state->orientation[2];
 }
 
-/// Borrowed reference to the active Pikachu actor created for the current area.
-/// \note Original identifier: \c D_800760A8 (0x800760A8).
-extern u8 *gPikachuActor;
 s32 areaIsPositionOutsideBounds(f32, f32, f32);
 /// Adjust actor movement for terrain, gravity, and ground contact while updating its movement state.
 /// \param object Actor with initialized action, model, ground-reference pose, and default part state.
@@ -1321,7 +1319,7 @@ void actorConstrainMovementToTerrain(u8 *object, f32 *displacement) {
         status |= 0x20000000;
     }
     if (!(status & 0x20000000)) {
-        if (object == gPikachuActor) {
+        if (object == ((u8 *)gPikachuActor)) {
             collisionMode = 3;
         } else {
             collisionMode = 4;

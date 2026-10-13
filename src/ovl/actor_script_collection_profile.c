@@ -1,3 +1,4 @@
+#include "pikachu_actor.h"
 #include "math_angles.h"
 #include "random.h"
 #include "backdrop_view.h"
@@ -315,9 +316,6 @@ s32 actorScriptGetItemCollectionValue(u8 *actor) {
 }
 
 void actorSetAppearanceVariants(s32, s32, s32, s32); /* extern */
-/// Borrowed reference to the active Pikachu actor created for the current area.
-/// \note Original identifier: \c D_800760A8 (0x800760A8).
-extern s32 gPikachuActor;
 
 /// Select Pikachu appearance variants and whether they persist across action changes.
 /// \param actor Actor whose script VM supplies appearance-slot zero and one variants followed by a nonzero value to preserve them across action changes, or zero to allow changes; the VM receives zero.
@@ -333,7 +331,7 @@ s32 actorScriptSetPikachuAppearanceVariants(u8 *actor) {
     sp20 = scriptVmPopInteger(vmAddress);
     sp24 = scriptVmPopInteger(vmAddress);
     sp_pop = scriptVmPopInteger(vmAddress);
-    actorSetAppearanceVariants(gPikachuActor, sp_pop, sp24, sp20);
+    actorSetAppearanceVariants(((s32)gPikachuActor), sp_pop, sp24, sp20);
     scriptVmPushInteger(vmAddress, 0);
     return 0;
 }

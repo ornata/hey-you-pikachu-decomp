@@ -1,3 +1,4 @@
+#include "pikachu_actor.h"
 #include "vector_metrics.h"
 #include "random.h"
 #include "microphone_requests.h"
@@ -138,9 +139,6 @@ s32 actorScriptPushMessageArgument4(u8 *actor) {
 }
 
 
-/// Borrowed reference to the active Pikachu actor created for the current area.
-/// \note Original identifier: \c D_800760A8 (0x800760A8).
-extern u8 *gPikachuActor;
 
 /// Create an animated effect attached to the actor and record related Pikachu reaction progress.
 /// \param actor Actor whose script VM supplies a valid effect-definition index followed by a valid animation-track index and receives zero; its previous attached effect is replaced.
@@ -158,7 +156,7 @@ s32 actorScriptCreateAttachedEffect(u8 *actor) {
     kind = scriptVmPopInteger(vm);
     value = scriptVmPopInteger(vm);
     attachedEffectCreate(actor, value, kind);
-    if ((actor == gPikachuActor) && ((kind == 0xA6) || (kind == 0xA7) || (kind == 0xAF) || (kind == 0xB3))) {
+    if ((actor == ((u8 *)gPikachuActor)) && ((kind == 0xA6) || (kind == 0xA7) || (kind == 0xAF) || (kind == 0xB3))) {
         if (0.5 < randomNext() * 2.3283064365386963e-10) {
             progressAddValue(0x1A, 1);
         }

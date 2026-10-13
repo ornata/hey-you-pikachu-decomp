@@ -1,3 +1,4 @@
+#include "pikachu_actor.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
 #include "terrain_height.h"
@@ -87,9 +88,6 @@ void _bzero(void *, u32);
 /// Integer animation program used after contact triggers the effect.
 /// \note Original identifier: \c D_8006B394 (0x8006B394).
 extern s32 gContactEffectTriggeredAnimation;
-/// Borrowed reference to the active Pikachu actor created for the current area.
-/// \note Original identifier: \c D_800760A8 (0x800760A8).
-extern s32 gPikachuActor;
 void actorUpdateModel(u8 *);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
@@ -208,10 +206,10 @@ void contactEffectUpdate(u8 *effect) {
     s32 result;
     f32 pull;
     if (*state == 0) {
-        delta[0] = *(f32 *)((u8 *)gPikachuActor + 0x44) - *(f32 *)(effect + 0x44);
-        delta[1] = *(f32 *)((u8 *)gPikachuActor + 0x48) - *(f32 *)(effect + 0x48);
-        delta[2] = *(f32 *)((u8 *)gPikachuActor + 0x4C) - *(f32 *)(effect + 0x4C);
-        if ((*(f32 *)(effect + 0x24) + *(f32 *)((u8 *)gPikachuActor + 0x24)) > vector3Length(delta)) {
+        delta[0] = *(f32 *)((u8 *)((s32)gPikachuActor) + 0x44) - *(f32 *)(effect + 0x44);
+        delta[1] = *(f32 *)((u8 *)((s32)gPikachuActor) + 0x48) - *(f32 *)(effect + 0x48);
+        delta[2] = *(f32 *)((u8 *)((s32)gPikachuActor) + 0x4C) - *(f32 *)(effect + 0x4C);
+        if ((*(f32 *)(effect + 0x24) + *(f32 *)((u8 *)((s32)gPikachuActor) + 0x24)) > vector3Length(delta)) {
             *state = 1;
             animationIntegerTrackInitialize((ValueTrack *)((f32 *)(state + 1)), (ValueKey *)(gContactEffectTriggeredAnimation));
         }
@@ -222,7 +220,7 @@ void contactEffectUpdate(u8 *effect) {
             objectRequestHierarchyDestruction(effect);
         } else if (result == 2) {
             objectPlaySpatialSound(effect, 0x97, 20.0f, 100.0f);
-            result = actorGetPartObjectHandle((u8 *)gPikachuActor, 0x79);
+            result = actorGetPartObjectHandle((u8 *)((s32)gPikachuActor), 0x79);
             pull = gContactEffectChainPull;
             linkedEffectCreateChain(LINKED_EFFECT_REBOUND, *(f32 *)(effect + 0x44), *(f32 *)(effect + 0x48), *(f32 *)(effect + 0x4C),
                                     gContactEffectChainScale, result, 1.0f, gContactEffectChainDamping, 2.0f, pull,
@@ -256,7 +254,7 @@ void contactEffectHandleActorResponse(u8 *effect, s32 *response) {
     effectState = *(u8 **)(effect + 0x54);
     if (*(s32 *)effectState == 0) {
         savedEffectState = effectState;
-        if (objectFindLiveByHandle(*response) == (u8 *)gPikachuActor) {
+        if (objectFindLiveByHandle(*response) == (u8 *)((s32)gPikachuActor)) {
             *(s32 *)effectState = 1;
             animationIntegerTrackInitialize((ValueTrack *)((f32 *)(effectState + 4)), (ValueKey *)(gContactEffectTriggeredAnimation));
         }

@@ -1,3 +1,4 @@
+#include "pikachu_actor.h"
 #include "area_transition.h"
 #include "microphone_requests.h"
 #include "terrain_height.h"
@@ -293,9 +294,6 @@ s32 actorScriptPushInteractionMarkerMode(u8 *actor) {
     return 0;
 }
 
-/// Borrowed reference to the active Pikachu actor created for the current area.
-/// \note Original identifier: \c D_800760A8 (0x800760A8).
-extern u8 *gPikachuActor;
 
 /// Read the handle of the active Pikachu actor.
 /// \param actor Actor whose script VM receives the Pikachu handle; requires an active Pikachu actor.
@@ -304,7 +302,7 @@ extern u8 *gPikachuActor;
 s32 actorScriptPushPikachuHandle(u8 *actor) {
     s32 handle = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
 
-    scriptVmPushInteger(handle, ((RuntimeObjectPrefix *)gPikachuActor)->handle);
+    scriptVmPushInteger(handle, ((RuntimeObjectPrefix *)((u8 *)gPikachuActor))->handle);
     return 0;
 }
 
@@ -831,7 +829,7 @@ s32 actorScriptAdjustPikachuSecondaryMeter(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushFloat(sp1C, actorAdjustSecondaryMeter(gPikachuActor, scriptVmPopFloat(sp1C)));
+    scriptVmPushFloat(sp1C, actorAdjustSecondaryMeter(((u8 *)gPikachuActor), scriptVmPopFloat(sp1C)));
     return 0;
 }
 
@@ -850,9 +848,9 @@ s32 actorScriptSetPikachuSecondaryMeter(u8 *actor) {
     v = scriptVmPopFloat(sp1C);
 
     // clang-format off
-    if (v < 0.0f) { v = 0.0f; } else if (v > 100.0f) { v = 100.0f; } ((RuntimeObjectPrefix *)gPikachuActor)->state.actor->secondaryMeter = v;
+    if (v < 0.0f) { v = 0.0f; } else if (v > 100.0f) { v = 100.0f; } ((RuntimeObjectPrefix *)((u8 *)gPikachuActor))->state.actor->secondaryMeter = v;
     // clang-format on
-    scriptVmPushFloat(sp1C, ((RuntimeObjectPrefix *)gPikachuActor)->state.actor->secondaryMeter);
+    scriptVmPushFloat(sp1C, ((RuntimeObjectPrefix *)((u8 *)gPikachuActor))->state.actor->secondaryMeter);
     return 0;
 }
 
@@ -863,7 +861,7 @@ s32 actorScriptSetPikachuSecondaryMeter(u8 *actor) {
 /// \note Original decompilation identifier: \c func_8011F1BC (0x8011F1BC).
 s32 actorScriptPushPikachuSecondaryMeter(u8 *actor) {
     scriptVmPushFloat(((RuntimeObjectPrefix *)actor)->state.actor->vmAddress,
-                      ((RuntimeObjectPrefix *)gPikachuActor)->state.actor->secondaryMeter);
+                      ((RuntimeObjectPrefix *)((u8 *)gPikachuActor))->state.actor->secondaryMeter);
     return 0;
 }
 
@@ -876,7 +874,7 @@ s32 actorScriptAdjustPikachuActionResource(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushFloat(sp1C, actorAdjustActionMeter(gPikachuActor, scriptVmPopFloat(sp1C)));
+    scriptVmPushFloat(sp1C, actorAdjustActionMeter(((u8 *)gPikachuActor), scriptVmPopFloat(sp1C)));
     return 0;
 }
 
@@ -887,7 +885,7 @@ s32 actorScriptAdjustPikachuActionResource(u8 *actor) {
 /// \note Original decompilation identifier: \c func_8011F23C (0x8011F23C).
 s32 actorScriptPushPikachuActionResource(u8 *actor) {
     scriptVmPushFloat(((RuntimeObjectPrefix *)actor)->state.actor->vmAddress,
-                      ((RuntimeObjectPrefix *)gPikachuActor)->state.actor->actionResource);
+                      ((RuntimeObjectPrefix *)((u8 *)gPikachuActor))->state.actor->actionResource);
     return 0;
 }
 

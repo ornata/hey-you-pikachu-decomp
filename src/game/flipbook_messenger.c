@@ -1,3 +1,4 @@
+#include "pikachu_actor.h"
 #include "camera_storage.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
@@ -778,9 +779,6 @@ void messengerUpdateLaunch(u8 *object, s32 unused) {
 }
 
 void messengerBeginRebound(u8 *);
-/// Borrowed reference to the active Pikachu actor created for the current area.
-/// \note Original identifier: \c D_800760A8 (0x800760A8).
-extern s32 gPikachuActor;
 /// Primary player control record and base of the player records with a 256-byte stride.
 /// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
 extern u8 gPlayerState[];
@@ -809,18 +807,18 @@ void messengerDeliver(u8 *object, u8 *source, u8 *target, s32 mode) {
     }
     if (mode == 1)
         ((MessengerFlightState *)state)->message.type = 0;
-    force = target == (u8 *)gPikachuActor ? 1 : 0;
+    force = target == (u8 *)((s32)gPikachuActor) ? 1 : 0;
     actorPostScriptMessage((s32)target, ((MessengerFlightState *)state)->message, force);
-    if (target == (u8 *)gPikachuActor) {
+    if (target == (u8 *)((s32)gPikachuActor)) {
         *(s32 *)(gPlayerState + 0xFC) += 1;
-        actorAdjustSecondaryMeter((u8 *)gPikachuActor, 1.0f);
+        actorAdjustSecondaryMeter((u8 *)((s32)gPikachuActor), 1.0f);
         sourceKind = ((RuntimeObjectPrefix *)source)->kind;
         if (sourceKind == 0x2C || sourceKind == 0x2E)
             animation = sourceKind;
         else {
             animation = randomNext() * 2.3283064365386963e-10 > 0.5 ? 0x2C : 0x2E;
         }
-        actorStartPartShake((u8 *)gPikachuActor, animation);
+        actorStartPartShake((u8 *)((s32)gPikachuActor), animation);
     }
     if (mode == 1) {
         messengerBeginRebound(object);
@@ -1064,8 +1062,8 @@ void messengerBeginRebound(u8 *object) {
     if (gTrackedMessengerHandle == ((RuntimeObjectPrefix *)object)->handle)
         gTrackedMessengerHandle = 0;
     linked = objectResolveAvailableHandle(((MessengerFlightState *)state)->linkedId);
-    if (linked != NULL && gPikachuActor == *(s32 *)(linked + 0x50)) {
-        target = actorGetDefaultPart((s32)gPikachuActor);
+    if (linked != NULL && ((s32)gPikachuActor) == *(s32 *)(linked + 0x50)) {
+        target = actorGetDefaultPart((s32)((s32)gPikachuActor));
         count = (s32)mathMapRangeClamped(0.0f, 2.0f, 4000.0f, 6.0f, (f32) * (s32 *)(state + 0x34));
         linkedEffectCreateChain(LINKED_EFFECT_FALLING, ((RuntimeObjectPrefix *)object)->worldPosition[0], ((RuntimeObjectPrefix *)object)->worldPosition[1], ((RuntimeObjectPrefix *)object)->worldPosition[2], 0.05f,
                       ((RuntimeObjectPrefix *)target)->handle, 0.7f, 0.5f, 5.0f, 0.03f, 0.03f, 0xC2, 1, count);

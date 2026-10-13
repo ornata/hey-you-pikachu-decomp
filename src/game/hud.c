@@ -1,3 +1,4 @@
+#include "pikachu_actor.h"
 #include "random.h"
 #include "microphone_requests.h"
 #include "text_image_configurations.h"
@@ -108,9 +109,6 @@ typedef struct {
 void textureGetDescriptor(s32, s32, HudTexture *);
 void textureImageInitialize(s32 *, s32, s32, s32, s32, s32, s32);
 void textureDrawScaledRepeated(Gfx **, s32 *, s32, s32, s32, s32, s32, s32, f32, f32, s32, s32);
-/// Borrowed reference to the active Pikachu actor created for the current area.
-/// \note Original identifier: \c D_800760A8 (0x800760A8).
-extern u8 *gPikachuActor;
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
@@ -132,7 +130,7 @@ void hudDrawDirectionIndicators(Gfx **gdl) {
     s32 offset;
     s32 position;
     f32 limit;
-    if (areaTestCameraVisibility(((RuntimeObjectPrefix *)gPikachuActor)->radius * 2, (f32 *)(gPikachuActor + 0x44),
+    if (areaTestCameraVisibility(((RuntimeObjectPrefix *)((u8 *)gPikachuActor))->radius * 2, (f32 *)(((u8 *)gPikachuActor) + 0x44),
                                  direction) == 0) {
         gDPPipeSync((*gdl)++);
         gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
@@ -602,13 +600,13 @@ void hudDrawMotionIndicators(Gfx **gdl) {
     f32 dx, dy, step, negativeStep;
 
     selected = gHudMotionIndicatorAnimation;
-    motion = *(MenuMotion228 **)(gPikachuActor + 0x54);
+    motion = *(MenuMotion228 **)(((u8 *)gPikachuActor) + 0x54);
     if (playerIsPitchControlEnabled(gPlayerState)) {
         selected = gHudStationaryLookActionAnimations[playerCanEnterStationaryLook()];
         showMotion = 1;
         showSelected = 1;
     } else if (playerGetCompanionControlMode(gPlayerState) &&
-               *(s32 *)(gPikachuActor + 0x38) == *(s32 *)(gPlayerState + 0x50)) {
+               *(s32 *)(((u8 *)gPikachuActor) + 0x38) == *(s32 *)(gPlayerState + 0x50)) {
         selected = gHudCompanionActionAnimations[playerCanToggleCompanionControl()];
         showMotion = 1;
         showSelected = 1;

@@ -1,3 +1,4 @@
+#include "pikachu_actor.h"
 #include "scene_region.h"
 #include "scene_types.h"
 #include "object_types.h"
@@ -53,9 +54,6 @@ void sceneRegionCreate(f32 *position, f32 width, f32 depth, s32 sceneData) {
     objectRegisterActiveHierarchy(obj);
 }
 
-/// Borrowed reference to the active Pikachu actor created for the current area.
-/// \note Original identifier: \c D_800760A8 (0x800760A8).
-extern u8 *gPikachuActor;
 /// Primary player control record and base of the player records with a 256-byte stride.
 /// \note Original identifier: \c D_800EF6A0 (0x800EF6A0).
 extern f32 gPlayerState[];
@@ -78,9 +76,9 @@ void sceneRegionUpdateHighlight(u8 *obj) {
     f32 dx;
     f32 dz;
     f32 width;
-    px = ((RuntimeObjectPrefix *)gPikachuActor)->worldPosition[0];
-    py = ((RuntimeObjectPrefix *)gPikachuActor)->worldPosition[1];
-    pz = ((RuntimeObjectPrefix *)gPikachuActor)->worldPosition[2];
+    px = ((RuntimeObjectPrefix *)((u8 *)gPikachuActor))->worldPosition[0];
+    py = ((RuntimeObjectPrefix *)((u8 *)gPikachuActor))->worldPosition[1];
+    pz = ((RuntimeObjectPrefix *)((u8 *)gPikachuActor))->worldPosition[2];
     dx = x >= px ? x - px : -(x - px);
     width = state->width;
     if (dx < width) {

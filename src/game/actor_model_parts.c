@@ -1,3 +1,4 @@
+#include "pikachu_actor.h"
 #include "math_angles.h"
 #include "random.h"
 #include "texture_animation_programs.h"
@@ -72,9 +73,6 @@ extern s32 gActorAppearanceSlot0Models[];
 /// Model display-list addresses indexed by appearance slot one variant.
 /// \note Original identifier: \c D_800760AC (0x800760AC).
 extern s32 gActorAppearanceSlot1Models[];
-/// Borrowed reference to the active Pikachu actor created for the current area.
-/// \note Original identifier: \c D_800760A8 (0x800760A8).
-extern u8 *gPikachuActor;
 /// Model-part identifiers controlled by each actor appearance slot.
 /// \note Original identifier: \c D_800760E8 (0x800760E8).
 extern s32 gActorAppearancePartIds[];
@@ -647,7 +645,7 @@ extern u8 gActorSecondaryPosePartSequence[];
 /// \note Original decompilation identifier: \c func_80014590 (0x80014590).
 void actorUpdateGameplayModel(u8 *object) {
     u8 *state = ((RuntimeObjectPrefix *)object)->state.bytes;
-    if (object != gPikachuActor)
+    if (object != ((u8 *)gPikachuActor))
         actorUpdateScriptVm(object);
     actorUpdateModel(object);
     actorEvaluateRelativePartOrientation(&((ActorScriptState *)state)->primaryPoseReference, (u8 *)&((ActorScriptState *)state)->primaryPoseTransform, (s32)object,
@@ -872,7 +870,7 @@ f32 actorAdjustActionMeter(u8 *object, f32 delta) {
 /// \returns Total elapsed time in seconds accumulated by the primary actor script context.
 /// \note Original decompilation identifier: \c func_80014B3C (0x80014B3C).
 f32 actorGetPrimaryScriptElapsedTime(void) {
-    u8 *actorState = ((RuntimeObjectPrefix *)gPikachuActor)->state.bytes;
+    u8 *actorState = ((RuntimeObjectPrefix *)((u8 *)gPikachuActor))->state.bytes;
     u8 *scriptContext = (u8 *)((ActorScriptState *)actorState)->vmAddress;
     return ((ScriptVm *)scriptContext)->totalElapsed;
 }

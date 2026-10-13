@@ -3915,3 +3915,11 @@ consumer/producer units, replacing byte, float-array and private raw-record
 declarations. Message-bar distance reads use the recovered eye field, and the
 controller unit drops its unused duplicate camera types. Explicit byte views
 preserve existing consumers without weakening the shared storage contract.
+
+### Retained Pikachu actor reference
+
+`pikachu_actor.h` supplies a borrowed runtime-object pointer for the active-area
+Pikachu actor to twenty-five units, including creation and runtime reset. Legacy
+byte/address value views remain explicit at consumers. Linked-effect targeting
+retains its local declaration because canonical storage changes allocated object
+bytes despite a matching ROM; the strict comparison exception is recorded.
