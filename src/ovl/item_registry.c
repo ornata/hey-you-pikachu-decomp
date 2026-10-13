@@ -1,3 +1,4 @@
+#include "texture_animation_programs.h"
 #include "profile_counters.h"
 #include "item_size.h"
 #include "item_state.h"
@@ -2101,9 +2102,6 @@ void itemInitializeState(u8 *item) {
 }
 
 f32 terrainGetWorldHeight(f32, f32, f32, u8 **);
-/// Shared integer animation programs selecting texture frames for actors, effects and interface elements.
-/// \note Original identifier: \c D_8006B090 (0x8006B090).
-extern s32 gTextureFrameAnimationPrograms[];
 /// Whether newly created items receive hierarchy flag two; broader policy remains unresolved.
 /// \note Original identifier: \c D_80088F20 (0x80088F20).
 extern s32 gItemCreationHierarchyFlag2Enabled;
@@ -2142,7 +2140,7 @@ u8 *itemCreate(f32 x, f32 y, f32 z, f32 pitch, f32 yaw, s32 kind) {
     state->state = 0;
     state->owner = 0;
     state->mode = 0;
-    animationIntegerTrackInitialize(&state->materialTrack, (ValueKey *)(((s32 *)&gTextureFrameAnimationPrograms)[gItemKinds[kind].animation]));
+    animationIntegerTrackInitialize(&state->materialTrack, gTextureFrameAnimationPrograms[gItemKinds[kind].animation]);
     if (gItemKinds[kind].size != -100000.0f)
         *(f32 *)(object + 0x24) = gItemKinds[kind].size;
     state->baseRadius = *(f32 *)(object + 0x24);
@@ -2569,7 +2567,7 @@ void itemStartMaterialAnimation(u8 *item, s32 animation) {
 
     TRACE("itemChangeAnime(%p, %d)\n", item, animation);
     itemState = (ItemStatePrefix *)((RuntimeObjectPrefix *)item)->state.bytes;
-    animationIntegerTrackInitialize(&itemState->materialTrack, (ValueKey *)(*((s32 *)((u8 *)&gTextureFrameAnimationPrograms + (animation * 4)))));
+    animationIntegerTrackInitialize(&itemState->materialTrack, gTextureFrameAnimationPrograms[animation]);
     itemState->materialAnimationActive = 1;
 }
 

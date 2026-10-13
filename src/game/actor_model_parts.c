@@ -1,3 +1,4 @@
+#include "texture_animation_programs.h"
 #include "script_vm_execution.h"
 #include "matrix_orientation.h"
 #include "actor_script_time.h"
@@ -84,9 +85,6 @@ extern u8 gActorRelativeRollPartSequence[];
 f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
 f32 mathAngleDistanceDegrees(f32, f32);
 f32 mathLerpAngleDegrees(f32, f32, f32);
-/// Shared integer animation programs selecting texture frames for actors, effects and interface elements.
-/// \note Original identifier: \c D_8006B090 (0x8006B090).
-extern s32 gTextureFrameAnimationPrograms[];
 void actorPartBuildAnimatedTextureCommands(u8 *, s32);
 /// Write cursor for the active graphics command list; also marks the camera-storage end.
 /// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
@@ -814,7 +812,7 @@ void actorSetPartTextureAnimation(u8 *actor, f32 speed, s32 channel, s32 animati
     u8 *textureState;
     textureState = ((RuntimeObjectPrefix *)actorFindPart(actor, 0x79))->state.bytes;
     ((ActorPartTextureState *)textureState)->playbackRates[channel] = speed;
-    animationIntegerTrackInitialize(&((ActorPartTextureState *)textureState)->tracks[channel], (ValueKey *)(gTextureFrameAnimationPrograms[animation]));
+    animationIntegerTrackInitialize(&((ActorPartTextureState *)textureState)->tracks[channel], (gTextureFrameAnimationPrograms[animation]));
 }
 
 /// Adjust the actor secondary gameplay meter within its allowed range.

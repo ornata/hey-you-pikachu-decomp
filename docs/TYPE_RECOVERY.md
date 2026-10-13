@@ -3295,3 +3295,15 @@ array. Its separate retained-value byte cursor remains: moving both cursors to
 the track-array base changes instructions and fails ROM matching. That constraint
 is recorded without inventing an overlapping structure view. All accepted
 source-unit conversions preserve strict objects.
+
+### Shared resident texture-animation program table
+
+`texture_animation_programs.h` consolidates nine source declarations into a
+borrowed resident `ValueKey *` table used by actors, items, effects, markers,
+text windows and HUD indicators. Consumers pass typed entries directly instead
+of integer-to-pointer casts, and item material animation removes manual word
+addressing. Ghidra 0x801145D0 confirms the item track/table lookup. The full table
+bound remains explicitly unresolved; supported identifiers come from each
+consumer's resources. Original global/address notes are retained at the canonical
+declaration. Every consumer conversion was built and compared in isolation;
+all nine preserve strict object matches.

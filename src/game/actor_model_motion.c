@@ -1,3 +1,4 @@
+#include "texture_animation_programs.h"
 #include "script_vm_lifecycle.h"
 #include "actor_assets.h"
 #include "actor_behavior.h"
@@ -1087,9 +1088,6 @@ s32 actorBindAnimatedTexturesForDraw(u8 *actor) {
     return *(s32 *)(actor + 0x30);
 }
 
-/// Shared integer animation programs selecting texture frames for actors, effects and interface elements.
-/// \note Original identifier: \c D_8006B090 (0x8006B090).
-extern s32 gTextureFrameAnimationPrograms[];
 
 /// Configure an actor animated texture component from texture and animation definitions.
 /// \param actor Actor with part 0x78 and allocated texture state; existing drawing buffers are not released.
@@ -1107,7 +1105,7 @@ void actorInitializeAnimatedTextures(u8 *actor, s32 *parts) {
     for (; (frame = parts[0]) >= 0; parts += 2) {
         v->textureIds[v->count] = frame;
         v->playbackRates[v->count] = 1.0f;
-        animationIntegerTrackInitialize(&v->tracks[v->count], (ValueKey *)gTextureFrameAnimationPrograms[parts[1]]);
+        animationIntegerTrackInitialize(&v->tracks[v->count], gTextureFrameAnimationPrograms[parts[1]]);
         v->count++;
     }
     v->commandsPerBuffer = v->count * 20;

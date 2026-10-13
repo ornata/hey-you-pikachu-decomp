@@ -1,3 +1,4 @@
+#include "texture_animation_programs.h"
 #include "object_matrix_buffers.h"
 #include "object_movement.h"
 #include "object_create.h"
@@ -1525,9 +1526,6 @@ s32 convergingParticleEffectPrepareDraw(u8 *effect) {
 /// Object template for converging particle effects.
 /// \note Original identifier: \c D_80077D50 (0x80077D50).
 extern u8 gConvergingParticleObjectTemplate[];
-/// Shared integer animation programs selecting texture frames for actors, effects and interface elements.
-/// \note Original identifier: \c D_8006B090 (0x8006B090).
-extern s32 gTextureFrameAnimationPrograms[];
 /// Integer appearance animation used when messenger state is initialized.
 /// \note Original identifier: \c D_8006B4E0 (0x8006B4E0).
 extern s32 gMessengerFlightAnimation;
@@ -1576,7 +1574,7 @@ u8 *convergingParticleEffectCreate(s32 targetId, f32 lifetime, s32 count, s32 st
     state->remaining = lifetime;
     state->lifetime = lifetime;
     state->count = count;
-    animationIntegerTrackInitialize((ValueTrack *)(state->textureAnimation), (ValueKey *)(gTextureFrameAnimationPrograms[gConvergingParticleStyles[styleId].animation]));
+    animationIntegerTrackInitialize((ValueTrack *)(state->textureAnimation), (gTextureFrameAnimationPrograms[gConvergingParticleStyles[styleId].animation]));
     animationIntegerTrackInitialize((ValueTrack *)(state->alphaAnimation), (ValueKey *)(gMessengerFlightAnimation));
     randomA = randomBelow(60);
     randomB = randomBelow(60);

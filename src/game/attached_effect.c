@@ -1,3 +1,4 @@
+#include "texture_animation_programs.h"
 #include "object_movement.h"
 #include "object_flags.h"
 #include "object_hierarchy_create.h"
@@ -31,9 +32,6 @@ extern PartDef gAttachedEffectDefinitions[];
 /// Current gameplay, menu or transition mode.
 /// \note Original identifier: \c D_800AE504 (0x800AE504).
 extern s32 gRuntimeGameMode;
-/// Shared integer animation programs selecting texture frames for actors, effects and interface elements.
-/// \note Original identifier: \c D_8006B090 (0x8006B090).
-extern s32 gTextureFrameAnimationPrograms[];
 /// Create an animated effect for an owner, replacing its previous attached effect.
 /// \param owner Object that owns and anchors the effect.
 /// \param kind Effect-definition index selecting its appearance.
@@ -54,7 +52,7 @@ u8 *attachedEffectCreate(u8 *owner, s32 kind, s32 track) {
     v[0] = kind;
     *(f32 *)(v + 0x28) = def->scale;
     animationIntegerTrackInitialize((ValueTrack *)(v + 0x18), (ValueKey *)((&gOpacityAnimationPrograms)[def->track]));
-    animationIntegerTrackInitialize((ValueTrack *)(v + 0xC), (ValueKey *)(gTextureFrameAnimationPrograms[track]));
+    animationIntegerTrackInitialize((ValueTrack *)(v + 0xC), (gTextureFrameAnimationPrograms[track]));
     *(u8 **)(v + 4) = owner;
     v[1] = 0;
     objectRegisterActiveHierarchy(obj);

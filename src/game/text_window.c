@@ -1,3 +1,4 @@
+#include "texture_animation_programs.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "runtime_clock.h"
@@ -17,9 +18,6 @@ void runtimeRequestGameModeChange(s32);
 void playerSetControllerPort(s32);
 
 void _bzero(void *, s32);
-/// Shared integer animation programs selecting texture frames for actors, effects and interface elements.
-/// \note Original identifier: \c D_8006B090 (0x8006B090).
-extern s32 gTextureFrameAnimationPrograms[];
 /// Animation identifiers used to initialize the six window indicator tracks.
 /// \note Original identifier: \c D_80099DA4 (0x80099DA4).
 extern s32 gTextWindowIndicatorAnimationIds[6];
@@ -72,7 +70,7 @@ void textWindowInitialize(void) {
     gTextWindowIndicator = 1;
     gTextWindowState = 4;
     for (i = 0; i < 6; i++) {
-        animationIntegerTrackInitialize((ValueTrack *)&gTextWindowInitializedIndicatorTracks[i], (ValueKey *)gTextureFrameAnimationPrograms[gTextWindowIndicatorAnimationIds[i]]);
+        animationIntegerTrackInitialize((ValueTrack *)&gTextWindowInitializedIndicatorTracks[i], gTextureFrameAnimationPrograms[gTextWindowIndicatorAnimationIds[i]]);
     }
 }
 

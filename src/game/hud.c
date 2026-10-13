@@ -1,3 +1,4 @@
+#include "texture_animation_programs.h"
 #include "camera_visibility.h"
 #include "hud_draw.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -63,9 +64,6 @@ void hudUnusedArgumentNoOp(s32 unused) {
 void hudUnusedNoOp(void) {
 }
 
-/// Shared integer animation programs selecting texture frames for actors, effects and interface elements.
-/// \note Original identifier: \c D_8006B090 (0x8006B090).
-extern s32 gTextureFrameAnimationPrograms[];
 /// Three animation tracks drawing horizontal guidance toward off-screen Pikachu.
 /// \note Original identifier: \c D_800F0200 (0x800F0200).
 extern u8 gHudHorizontalDirectionTracks[0x24];
@@ -89,12 +87,12 @@ extern ValueTrack gHudVerticalDirectionInnerTrack;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800215C0 (0x800215C0).
 void hudInitializeDirectionIndicators(void) {
-    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudHorizontalDirectionTracks, (ValueKey *)gTextureFrameAnimationPrograms[221]);
-    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudHorizontalDirectionMiddleTrack, (ValueKey *)gTextureFrameAnimationPrograms[222]);
-    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudHorizontalDirectionInnerTrack, (ValueKey *)gTextureFrameAnimationPrograms[223]);
-    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalDirectionTracks, (ValueKey *)gTextureFrameAnimationPrograms[224]);
-    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalDirectionMiddleTrack, (ValueKey *)gTextureFrameAnimationPrograms[225]);
-    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalDirectionInnerTrack, (ValueKey *)gTextureFrameAnimationPrograms[226]);
+    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudHorizontalDirectionTracks, gTextureFrameAnimationPrograms[221]);
+    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudHorizontalDirectionMiddleTrack, gTextureFrameAnimationPrograms[222]);
+    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudHorizontalDirectionInnerTrack, gTextureFrameAnimationPrograms[223]);
+    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalDirectionTracks, gTextureFrameAnimationPrograms[224]);
+    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalDirectionMiddleTrack, gTextureFrameAnimationPrograms[225]);
+    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalDirectionInnerTrack, gTextureFrameAnimationPrograms[226]);
 }
 
 /* Texture descriptor shared by the animated HUD renderers. */
@@ -436,7 +434,7 @@ void hudDrawMicrophoneIndicators(Gfx **gdl) {
             gHudMicrophoneIndicatorState = state;
             if (state == 4)
                 audioPlaySoundEffect(0xBF);
-            animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudMicrophoneTrack, (ValueKey *)gTextureFrameAnimationPrograms[gHudMicrophoneAnimationIds[gHudMicrophoneIndicatorState]]);
+            animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudMicrophoneTrack, gTextureFrameAnimationPrograms[gHudMicrophoneAnimationIds[gHudMicrophoneIndicatorState]]);
         }
         previousFrame = gHudMicrophoneTrackFrame;
         animationIntegerTrackEvaluate((ValueTrack *)&gHudMicrophoneTrack, &frame, gRuntimeFrameSeconds);
@@ -551,7 +549,7 @@ extern s32 gHudHorizontalMotionTrack;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80022838 (0x80022838).
 void hudInitializeMotionIndicators(void) {
-    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalMotionTrack, (ValueKey *)gTextureFrameAnimationPrograms[hudGetVerticalMotionAnimation(0)]);
+    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalMotionTrack, gTextureFrameAnimationPrograms[hudGetVerticalMotionAnimation(0)]);
     animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudHorizontalMotionTrack, (ValueKey *)gHudHorizontalMotionAnimation);
     gHudHorizontalMotionRemaining = 5.0f;
 }
@@ -561,7 +559,7 @@ void hudInitializeMotionIndicators(void) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80022894 (0x80022894).
 void hudSetActionIndicatorAnimation(s32 animation) {
-    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudMotionIndicatorTrack, (ValueKey *)gTextureFrameAnimationPrograms[animation]);
+    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudMotionIndicatorTrack, gTextureFrameAnimationPrograms[animation]);
     gHudMotionIndicatorAnimation = animation;
 }
 
@@ -655,7 +653,7 @@ void hudDrawMotionIndicators(Gfx **gdl) {
         motion->y += dy;
         newBand = hudGetVerticalMotionAnimation((s32)motion->y);
         if (oldBand != newBand)
-            animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalMotionTrack, (ValueKey *)gTextureFrameAnimationPrograms[newBand]);
+            animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalMotionTrack, gTextureFrameAnimationPrograms[newBand]);
     }
     x = (s32)(motion->x + 0.5f);
     y = (s32)(motion->y + 0.5f);
