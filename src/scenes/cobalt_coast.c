@@ -1,8 +1,8 @@
+#include "ambient_audio.h"
 #include "common.h"
 #include "actor_create.h"
 
 void togepiCreate(f32, f32, f32, f32, f32, u8 *, s32);
-u8 *ambientAudioCreate(f32 *, s32, f32, f32, s32, s32, f32, s32, s32);
 void runtimeCheckResetCheckpoint(s32, s32);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
@@ -110,7 +110,7 @@ extern f32 D_80146AA0_scene_cobalt_coast[];
 /// \returns Nothing.
 void cobaltCoastCreateAmbientAudio(void) {
     ambientAudioCreate(D_80146AA0_scene_cobalt_coast, 1, 4.0f, 4.0f, 0x2B, 0x2B, 1.0f, 4,
-                  (s32)D_80146AA0_scene_cobalt_coast);
+                  (Vec3f *)D_80146AA0_scene_cobalt_coast);
 }
 
 extern u8 D_80147674_scene_cobalt_coast[];

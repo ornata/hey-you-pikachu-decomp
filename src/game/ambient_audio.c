@@ -1,3 +1,4 @@
+#include "ambient_audio.h"
 #include "audio_playback_query.h"
 #include "vector3_types.h"
 #include "camera_types.h"
@@ -21,13 +22,6 @@ extern HpHdr gGameHeap;
     (dst)[0] = (src)[0];                                                                                                 \
     (dst)[1] = (src)[1];                                                                                                 \
     (dst)[2] = (src)[2]
-/// Playback routing selected by an ambient emitter.
-typedef enum AmbientAudioPlaybackKind {
-    AMBIENT_AUDIO_SOUND_EFFECT = 0, ///< Start an individual sound effect.
-    AMBIENT_AUDIO_PLAY_CUE = 1,     ///< Start a cue.
-    AMBIENT_AUDIO_CHANGE_CUE = 2    ///< Replace the current cue.
-} AmbientAudioPlaybackKind;
-
 /// Owned ambient playback state borrowing its array of spatial source positions.
 typedef struct AmbientAudioState {
     s32 playbackKind; ///< AmbientAudioPlaybackKind routing selector.
@@ -197,14 +191,14 @@ extern u8 gAmbientAudioEmitterTemplate[];
 /// \param secondSound Second candidate sound identifier.
 /// \param firstProbability Probability of choosing the first candidate sound.
 /// \param sourceCount Number of source positions; a negative value together with
-/// a zero sourcePositions retains the emitter position as the sole source.
-/// \param sourcePositions Address of the source-position array, which must remain
-/// valid while the emitter uses it. Zero with a negative sourceCount selects the
-/// default source; zero with a nonnegative count disables spatial mixing.
+/// a null sourcePositions retains the emitter position as the sole source.
+/// \param sourcePositions Borrowed source-position array, which must remain
+/// valid while the emitter uses it. Null with a negative sourceCount selects the
+/// default source; null with a nonnegative count disables spatial mixing.
 /// \returns The created ambient emitter object.
 /// \note Original decompilation identifier: \c func_80034094 (0x80034094).
 u8 *ambientAudioCreate(f32 *position, s32 kind, f32 delay, f32 delayRange, s32 firstSound, s32 secondSound,
-                       f32 firstProbability, s32 sourceCount, s32 sourcePositions) {
+                       f32 firstProbability, s32 sourceCount, Vec3f *sourcePositions) {
     u8 *obj = objectCreateFromTemplate((ObjectTemplate *)gAmbientAudioEmitterTemplate);
     AmbientAudioState *fx;
 
@@ -227,9 +221,9 @@ u8 *ambientAudioCreate(f32 *position, s32 kind, f32 delay, f32 delayRange, s32 f
     } else {
         fx->timer = delay / 2;
     }
-    if (sourceCount >= 0 || sourcePositions != 0) {
+    if (sourceCount >= 0 || sourcePositions != NULL) {
         fx->count = sourceCount;
-        fx->src = (Vec3f *)sourcePositions;
+        fx->src = sourcePositions;
     }
     objectMakeHierarchyRoot(obj);
     objectRegisterActiveHierarchy(obj);

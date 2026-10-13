@@ -5727,7 +5727,8 @@
     },
     "src/scenes/cobalt_coast.c": {
       "known_views": [
-        "actor_create.h"
+        "actor_create.h",
+        "ambient_audio.h"
       ],
       "matching_exceptions": {},
       "locations": {
@@ -5749,6 +5750,7 @@
     "src/scenes/cobalt_island.c": {
       "known_views": [
         "actor_create.h",
+        "ambient_audio.h",
         "area_maze.h",
         "item_mode.h",
         "item_object.h",
@@ -5769,6 +5771,7 @@
     "src/scenes/ochre_deep.c": {
       "known_views": [
         "actor_create.h",
+        "ambient_audio.h",
         "area_maze.h",
         "door.h",
         "heap_diagnostics.h",

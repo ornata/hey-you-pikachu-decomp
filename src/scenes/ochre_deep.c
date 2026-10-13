@@ -1,3 +1,4 @@
+#include "ambient_audio.h"
 #include "item_participation.h"
 #include "maze_scatter.h"
 #include "scene_region.h"
@@ -22,7 +23,6 @@ extern f32 D_80147C8C_scene_ochre_deep[];
 /// \note Original identifier: \c D_80147AF4_scene_ochre_deep (0x80147AF4).
 extern f32 D_80147AF4_scene_ochre_deep[];
 
-u8 *ambientAudioCreate(f32 *, s32, f32, f32, s32, s32, f32, s32, s32);
 void doorRegistryReset(void);
 extern f32 D_8014A188_scene_ochre_deep[];
 extern f32 D_80134C80_scene_ochre_deep[];
@@ -49,7 +49,7 @@ extern u8 D_8014A0DC_scene_ochre_deep[];
 /// \returns Nothing.
 void ochreDeepCreateAmbientAudio(void) {
     ambientAudioCreate(D_8014A188_scene_ochre_deep, 0, 10000.0f, 0.0f, 0x88, 0x88, 1.0f, 2,
-                  (s32)D_8014A188_scene_ochre_deep);
+                  (Vec3f *)D_8014A188_scene_ochre_deep);
 }
 
 /// Initialize the deep-forest scene door.

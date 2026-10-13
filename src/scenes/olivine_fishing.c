@@ -1,3 +1,4 @@
+#include "ambient_audio.h"
 #include "progress_value.h"
 #include "common.h"
 #include "item_object.h"
@@ -5,7 +6,6 @@
 #include "scene_types.h"
 #include "fishing_population.h"
 u32 randomNext(void);
-u8 *ambientAudioCreate(f32 *, s32, f32, f32, s32, s32, f32, s32, s32);
 void runtimeCheckResetCheckpoint(s32, s32);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).

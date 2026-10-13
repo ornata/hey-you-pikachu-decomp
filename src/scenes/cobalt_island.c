@@ -1,3 +1,4 @@
+#include "ambient_audio.h"
 #include "item_mode.h"
 #include "landmark.h"
 #include "common.h"
@@ -7,7 +8,6 @@
 
 u8 playerGetChaseStage(void);
 u32 randomNext(void);
-u8 *ambientAudioCreate(f32 *, s32, f32, f32, s32, s32, f32, s32, s32);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
@@ -91,7 +91,7 @@ extern f32 D_80150D80_scene_cobalt_island[];
 /// \returns Nothing.
 void cobaltIslandCreateAmbientAudio(void) {
     ambientAudioCreate(D_80150D80_scene_cobalt_island, 1, 4.0f, 4.0f, 0x2B, 0x2B, 1.0f, 3,
-                  (s32)D_80150D80_scene_cobalt_island);
+                  (Vec3f *)D_80150D80_scene_cobalt_island);
 }
 
 extern f32 D_80134A34_scene_cobalt_island[][3];
