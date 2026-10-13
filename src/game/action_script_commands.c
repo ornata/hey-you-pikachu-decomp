@@ -1,3 +1,4 @@
+#include "effect_emitter.h"
 #include "linked_effect.h"
 #include "attached_effect.h"
 #include "item_participation.h"
@@ -636,7 +637,6 @@ void actionCommandEmitParticlesAtTarget(u8 *object, u8 *unused, ActorActionCueCo
 typedef struct {
     f32 v[3];
 } GroundVector;
-void effectEmitterCreateForStyle(u32, f32 *, f32, s32, s32, f32);
 f32 terrainGetWorldHeight(f32, f32, f32, void *);
 /// Create a scattered particle effect at the actor or its tracking target.
 /// \param actor Actor supplying the effect position or tracking target.
@@ -661,7 +661,7 @@ void actionCommandCreateScatteredParticleEffect(u8 *actor, s32 state, u8 *comman
     ground.v[0] = *(f32 *)(object + 0x44);
     ground.v[1] = terrainGetWorldHeight(*(f32 *)(object + 0x44), *(f32 *)(object + 0x48), *(f32 *)(object + 0x4C), NULL);
     ground.v[2] = *(f32 *)(object + 0x4C);
-    effectEmitterCreateForStyle(6, (f32 *)(object + 0x44), *(f32 *)(command + 0xC), 0, *(s32 *)(object + 0x38), -6.0f);
+    effectEmitterCreateForStyle(EFFECT_EMIT_SCATTERED_PARTICLES, (f32 *)(object + 0x44), *(f32 *)(command + 0xC), 0, *(s32 *)(object + 0x38), -6.0f);
 }
 
 typedef struct {

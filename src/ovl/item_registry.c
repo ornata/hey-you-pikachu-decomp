@@ -1,3 +1,4 @@
+#include "effect_emitter.h"
 #include "texture_animation_programs.h"
 #include "profile_counters.h"
 #include "item_size.h"
@@ -2667,7 +2668,6 @@ s32 itemGetResponse(s32 responseType, s32 objectId) {
 }
 
 u8 *wispEffectCreate(s32, f32, f32, f32);
-void effectEmitterCreateForStyle(u32, f32 *, f32, s32, s32, f32);
 void actorTryHoldItem(u8 *, s32, s32);
 
 /// Apply a transformation cause to an item, retaining, replacing, or removing it as appropriate.
@@ -2708,7 +2708,7 @@ s32 itemTransform(s32 id, s32 mode) {
         break;
     case 1:
         if (state->kind == 0x47) {
-            effectEmitterCreateForStyle(0U, (f32 *)(object + 0x44), 1.5f, 0, state->owner, effectOpacity);
+            effectEmitterCreateForStyle(EFFECT_EMIT_BLACK_WISPS, (f32 *)(object + 0x44), 1.5f, 0, state->owner, effectOpacity);
             itemDestroy(object);
             return 0;
         }
@@ -2730,7 +2730,7 @@ s32 itemTransform(s32 id, s32 mode) {
     case 4:
         effect = wispEffectCreate(mode == 3 ? 4 : 5, ((RuntimeObjectPrefix *)object)->worldPosition[0], ((RuntimeObjectPrefix *)object)->worldPosition[1],
                                ((RuntimeObjectPrefix *)object)->worldPosition[2]);
-        effectEmitterCreateForStyle(0U, (f32 *)(object + 0x44), 1.5f, ((RuntimeObjectPrefix *)effect)->handle,
+        effectEmitterCreateForStyle(EFFECT_EMIT_BLACK_WISPS, (f32 *)(object + 0x44), 1.5f, ((RuntimeObjectPrefix *)effect)->handle,
                                     state->owner, effectOpacity);
         itemDestroy(object);
         return 0;
@@ -2764,19 +2764,19 @@ s32 itemTransform(s32 id, s32 mode) {
     if ((mode == 1) || (mode == 5)) {
         switch (replacementState->kind) {
         case 0x47:
-            effectEmitterCreateForStyle(0U, (f32 *)(replacement + 0x44), 2.0f,
+            effectEmitterCreateForStyle(EFFECT_EMIT_BLACK_WISPS, (f32 *)(replacement + 0x44), 2.0f,
                                         ((RuntimeObjectPrefix *)replacement)->handle, replacementState->owner,
                                         effectOpacity);
             break;
         case 0xC:
-            effectEmitterCreateForStyle(4U, (f32 *)(replacement + 0x44), 5.0f,
+            effectEmitterCreateForStyle(EFFECT_EMIT_GRAY_PARTICLES, (f32 *)(replacement + 0x44), 5.0f,
                                         ((RuntimeObjectPrefix *)replacement)->handle, replacementState->owner,
                                         effectOpacity);
-            effectEmitterCreateForStyle(7U, (f32 *)(replacement + 0x44), 1.0f,
+            effectEmitterCreateForStyle(EFFECT_EMIT_AUDIBLE_BURST, (f32 *)(replacement + 0x44), 1.0f,
                                         ((RuntimeObjectPrefix *)replacement)->handle, replacementState->owner, 0.0f);
             break;
         default:
-            effectEmitterCreateForStyle(4U, (f32 *)(replacement + 0x44), 5.0f,
+            effectEmitterCreateForStyle(EFFECT_EMIT_GRAY_PARTICLES, (f32 *)(replacement + 0x44), 5.0f,
                                         ((RuntimeObjectPrefix *)replacement)->handle, replacementState->owner,
                                         effectOpacity);
         }

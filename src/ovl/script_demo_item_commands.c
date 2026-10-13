@@ -1,3 +1,4 @@
+#include "effect_emitter.h"
 #include "item_participation.h"
 #include "item_queries.h"
 #include "action_continuation.h"
@@ -38,7 +39,6 @@ s32 scriptCommandGetDemoIndex(u8 *object) {
     return 0;
 }
 
-void effectEmitterCreateForStyle(u32, f32 *, f32, s32, s32, f32);
 void mazeRemoveBlockObject(u8 *);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
@@ -70,7 +70,7 @@ s32 scriptCommandRemoveMazeBlock(u8 *object) {
         edge[2] = center[2];
         edge[0] += 1.0f;
         edge[2] += 1.0f;
-        effectEmitterCreateForStyle(0, &edge[0], 3.0f, 0, 0, 0.0f);
+        effectEmitterCreateForStyle(EFFECT_EMIT_BLACK_WISPS, &edge[0], 3.0f, 0, 0, 0.0f);
         mazeRemoveBlockObject(target);
         x = center[0];
         z = center[2];
@@ -79,7 +79,7 @@ s32 scriptCommandRemoveMazeBlock(u8 *object) {
         edge[0] = x;
         edge[2] = z;
         edge[1] = center[1];
-        effectEmitterCreateForStyle(0, &center[0], 3.0f, 0, 0, 0.0f);
+        effectEmitterCreateForStyle(EFFECT_EMIT_BLACK_WISPS, &center[0], 3.0f, 0, 0, 0.0f);
     }
     scriptVmPushInteger(script, 0);
     return 0;

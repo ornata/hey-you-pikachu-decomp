@@ -1,3 +1,4 @@
+#include "effect_emitter.h"
 #include "object_transform.h"
 #include "scroll_board.h"
 #include "script_vm_globals.h"
@@ -357,33 +358,29 @@ s32 actorScriptTransitionEnvironmentColor(u8 *actor) {
     return 0;
 }
 
-typedef struct ScriptVector {
-    f32 x, y, z;
-} ScriptVector;
-void effectEmitterCreateForStyle(u32, f32 *, f32, s32, s32, f32);
 /// Create a target-following effect emitter with a selected visual style.
 /// \param actor Actor whose script VM supplies an emission style from zero through seven, fallback world X/Y/Z coordinates, target handle, lifetime in seconds, reference handle, and signed horizontal offset, in that order; unavailable targets use the fallback position, nonpositive lifetimes disable expiry, and the VM receives zero.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_80120150 (0x80120150).
 s32 actorScriptCreateEffectEmitter(u8 *actor) {
-    s32 kind;
-    s32 handle;
-    ScriptVector position;
-    s32 target;
-    s32 id;
-    f32 amount;
-    f32 scale;
-    handle = *(s32 *)(*(u8 **)(actor + 0x54) + 0x1B8);
-    scale = scriptVmPopFloat(handle);
-    id = scriptVmPopInteger(handle);
-    amount = scriptVmPopFloat(handle);
-    target = scriptVmPopInteger(handle);
-    position.z = scriptVmPopFloat(handle);
-    position.y = scriptVmPopFloat(handle);
-    position.x = scriptVmPopFloat(handle);
-    kind = scriptVmPopInteger(handle);
-    effectEmitterCreateForStyle(kind, &position.x, amount, target, id, scale);
-    scriptVmPushInteger(handle, 0);
+    s32 style;
+    s32 vmAddress;
+    f32 position[3];
+    s32 targetHandle;
+    s32 referenceHandle;
+    f32 lifetime;
+    f32 offset;
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    offset = scriptVmPopFloat(vmAddress);
+    referenceHandle = scriptVmPopInteger(vmAddress);
+    lifetime = scriptVmPopFloat(vmAddress);
+    targetHandle = scriptVmPopInteger(vmAddress);
+    position[2] = scriptVmPopFloat(vmAddress);
+    position[1] = scriptVmPopFloat(vmAddress);
+    position[0] = scriptVmPopFloat(vmAddress);
+    style = scriptVmPopInteger(vmAddress);
+    effectEmitterCreateForStyle(style, position, lifetime, targetHandle, referenceHandle, offset);
+    scriptVmPushInteger(vmAddress, 0);
     return 0;
 }
 
@@ -1000,7 +997,7 @@ s32 actorScriptChoosePokemonName(u8 *actor) {
     s32 candidate;
     s32 index;
     s32 i;
-    handle = *(s32 *)(*(u8 **)(actor + 0x54) + 0x1B8);
+    handle = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     head = gBedroomPokemonNameHistoryHead;
     tail = gBedroomPokemonNameHistoryTail;
     count = gBedroomPokemonNameHistoryCount;

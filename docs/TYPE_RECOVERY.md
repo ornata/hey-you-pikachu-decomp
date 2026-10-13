@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,486 / 77 |
+| Raw offset candidates | 4,040 / 86 | 2,484 / 76 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3553,3 +3553,16 @@ named according to its role. Their VM, scene scale and created-object handle
 accesses reuse established layouts. Ghidra at `0x80025DF4` confirms in-place angle
 normalization and local/world position copies; the vector representations
 preserve every allocated object byte and relocation.
+
+### Particle emitter interface
+
+`effect_emitter.h` shares creation and named emission styles across the provider
+and its four consumers. Callback selection establishes black/white wisps,
+colored particles, scattered particles and audible bursts. Fallback position,
+expiry, target and reference handles and signed offset have documented
+contracts. The script emitter command uses a three-float array with descriptive
+argument names; the final duplicate ScriptVector record was removed. Remaining
+VM accesses in this script unit reuse actor state. Ghidra dispatch at
+`0x8001940C` and callback signatures support the contracts; a stale integer
+callback portability note was removed because callbacks already have a typed
+function-pointer interface.

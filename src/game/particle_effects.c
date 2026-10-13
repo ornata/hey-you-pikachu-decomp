@@ -1,3 +1,4 @@
+#include "effect_emitter.h"
 #include "opacity_animation_programs.h"
 #include "texture_animation_programs.h"
 #include "object_matrix_buffers.h"
@@ -972,32 +973,31 @@ void effectEmitterEmitAudibleBurst(u8 *);
 /// both objects are available.
 /// \returns Nothing.
 ///
-/// \note NONPORTABLE: the callback is passed as s32 (32-bit function pointers).
 /// \note Original decompilation identifier: \c func_8001940C (0x8001940C).
 void effectEmitterCreateForStyle(u32 kind, f32 *position, f32 lifetime, s32 targetHandle, s32 referenceHandle, f32 offset) {
     switch (kind) {
-    case 0:
+    case EFFECT_EMIT_BLACK_WISPS:
         effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, effectEmitterEmitBlackWisps);
         break;
-    case 1:
+    case EFFECT_EMIT_PALE_GREEN_PARTICLES:
         effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, effectEmitterEmitPaleGreenParticles);
         break;
-    case 2:
+    case EFFECT_EMIT_YELLOW_PARTICLES:
         effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, effectEmitterEmitYellowParticles);
         break;
-    case 3:
+    case EFFECT_EMIT_PINK_PARTICLES:
         effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, effectEmitterEmitPinkParticles);
         break;
-    case 4:
+    case EFFECT_EMIT_GRAY_PARTICLES:
         effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, effectEmitterEmitGrayParticles);
         break;
-    case 5:
+    case EFFECT_EMIT_WHITE_WISPS:
         effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, effectEmitterEmitWhiteWisps);
         break;
-    case 6:
+    case EFFECT_EMIT_SCATTERED_PARTICLES:
         effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, effectEmitterEmitScatteredParticles);
         break;
-    case 7:
+    case EFFECT_EMIT_AUDIBLE_BURST:
         effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, effectEmitterEmitAudibleBurst);
         break;
     }
