@@ -1,3 +1,4 @@
+#include "font_image.h"
 #include "text_image_configurations.h"
 #include "text_window.h"
 #include "message_bar.h"
@@ -992,7 +993,6 @@ void toolboxUpdateHelpMessage(void) {
     }
 }
 
-s32 textMeasureWithFont(char *, s32 *, s32);
 /// Draw the current toolbox row title and its translucent background.
 /// \param address Address of the display-list cursor to append to and advance.
 /// \returns Nothing; requires an initialized row-title image.
@@ -1000,7 +1000,7 @@ s32 textMeasureWithFont(char *, s32 *, s32);
 void toolboxDrawRowTitle(s32 address) {
     Gfx **gdl = (Gfx **)address;
     s32 row = gToolboxSelectedRow;
-    s32 width = textMeasureWithFont(gToolboxRowTitles[row], (s32 *)gTextImageConfigurations, 1);
+    s32 width = textMeasureWithFont((u8 *)gToolboxRowTitles[row], gTextImageConfigurations, 1);
     gDPPipeSync((*gdl)++);
     gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
     gDPSetCombineMode((*gdl)++, G_CC_MODULATEI_PRIM, G_CC_MODULATEI_PRIM);

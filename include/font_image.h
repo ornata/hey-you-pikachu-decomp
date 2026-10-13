@@ -1,5 +1,5 @@
 /// \file
-/// Declares horizontal ink-boundary queries for custom fonts.
+/// Declares text measurement and horizontal ink-boundary queries for custom fonts.
 
 #ifndef FONT_IMAGE_H
 #define FONT_IMAGE_H
@@ -21,5 +21,14 @@ s32 fontImageGetCharacterLeft(s32 code, FontImage *font, s32 spacingMode);
 /// \returns Inclusive right boundary in pixels within the character cell.
 /// \note Original decompilation identifier: \c func_8003F554 (0x8003F554).
 s32 fontImageGetCharacterRight(s32 code, FontImage *font, s32 spacingMode);
+
+/// Measure encoded text using a supplied custom font.
+/// \param text Borrowed null-terminated text with complete supported characters
+/// and optional position/color controls.
+/// \param font Borrowed descriptor with valid metrics for every supplied character.
+/// \param mode Spacing mode, with one selecting proportional spacing.
+/// \returns Final horizontal position in pixels after processing the text.
+/// \note Original identifier: \c func_8003F6DC (0x8003F6DC).
+s32 textMeasureWithFont(u8 *text, FontImage *font, s32 mode);
 
 #endif

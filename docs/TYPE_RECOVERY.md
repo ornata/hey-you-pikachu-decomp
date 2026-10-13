@@ -3487,5 +3487,12 @@ The descriptor stride is 16 bytes; initialization, renderer consumers and Ghidra
 configuration selection at `0x80012CF0` support it. Complete table bounds remain
 unspecified. The system menu retains a byte view because typed declarations
 change strict relocation addends despite a ROM match; the ledger records the
-trial and the evidence still needed. Toolbox measurement retains the existing
-word-pointer boundary until that separate interface is recovered.
+trial and the evidence still needed. Toolbox measurement now uses the recovered font-descriptor interface.
+
+Font measurement now carries `FontImage` through the public measurement wrapper,
+text-width evaluation, character advances and side-margin checks. Cell width
+reads use the established descriptor field. The custom-font bitmap builder
+retains its older word view at a narrow, explicitly cast call boundary; its
+other rasterization contracts remain to be audited. Ghidra measurement at
+`0x8003ECD8`, character-boundary queries and the toolbox title consumer establish
+the recovered roles, and all objects remain identical.

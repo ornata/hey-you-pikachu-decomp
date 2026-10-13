@@ -1021,8 +1021,8 @@ void textDrawCharacter(u8 character) {
         gTextDrawCursorX += (s32)((width + 1) * gTextDrawScaleX + 0.5);
 }
 
-s32 fontImageMeasureText(u8 *, s32 *, s32);
-s32 fontImageGetCharacterAdvance(s32, s32 *, s32);
+s32 fontImageMeasureText(u8 *, FontImage *, s32);
+s32 fontImageGetCharacterAdvance(s32, FontImage *, s32);
 s32 fontImageGetCharacterImageWidth();
 s32 textDecodeNextCharacter(u8 **, s32 *);
 s32 fontImageReadGlyph();
@@ -1061,7 +1061,7 @@ s32 textImageCreateCustomFont(TextImage **out, u8 *text, s32 *font) {
         *out = NULL;
         return bytes;
     }
-    width = fontImageMeasureText(text, font, gTextDrawSpacingMode);
+    width = fontImageMeasureText(text, (FontImage *)font, gTextDrawSpacingMode);
     width = width % 4 + width;
     bytes = width * height * 4 / 8;
     if (bytes > 0x1000) {
@@ -1082,7 +1082,7 @@ s32 textImageCreateCustomFont(TextImage **out, u8 *text, s32 *font) {
                 left = fontImageGetCharacterLeft(code, (FontImage *)font, gTextDrawSpacingMode);
                 rowBytes = glyphWidth * 4 / 8;
                 inkWidth = fontImageGetCharacterImageWidth(code, (s32)font, gTextDrawSpacingMode) * 4 / 8;
-                advance = fontImageGetCharacterAdvance(code, font, gTextDrawSpacingMode) * 4 / 8;
+                advance = fontImageGetCharacterAdvance(code, (FontImage *)font, gTextDrawSpacingMode) * 4 / 8;
                 if (code != 0xA1A0) {
                     glyph = (u8 *)fontImageReadGlyph(code, font);
                     row = 0;
@@ -1159,9 +1159,9 @@ extern char gFontColumnRangeErrorFormat[];
 /// \param spacingMode Spacing mode, with one selecting proportional spacing.
 /// \returns Final horizontal position in pixels after processing the text.
 /// \note Original decompilation identifier: \c func_8003ECD8 (0x8003ECD8).
-s32 fontImageMeasureText(u8 *text, s32 *fontData, s32 spacingMode) {
+s32 fontImageMeasureText(u8 *text, FontImage *fontData, s32 spacingMode) {
     s32 mode = spacingMode;
-    s32 *font = fontData;
+    FontImage *font = fontData;
     s32 code;
     s32 total = 0;
     s32 *decoded;
@@ -1179,13 +1179,13 @@ s32 fontImageMeasureText(u8 *text, s32 *fontData, s32 spacingMode) {
             }
         } while (*cursor != 0);
     }
-    if (*font <= total) {
-        TRACE(gFontColumnRangeErrorFormat, *font, total);
+    if (font->width <= total) {
+        TRACE(gFontColumnRangeErrorFormat, font->width, total);
     }
     return total;
 }
 
-s32 fontImageCharacterHasSideMargins();
+s32 fontImageCharacterHasSideMargins(s32, FontImage *);
 
 /// Determine how far to advance after a character in a supplied font.
 /// \param code Encoded character to measure.
@@ -1193,8 +1193,8 @@ s32 fontImageCharacterHasSideMargins();
 /// \param spacingMode Spacing mode, with one selecting proportional spacing.
 /// \returns Horizontal character advance in pixels.
 /// \note Original decompilation identifier: \c func_8003ED90 (0x8003ED90).
-s32 fontImageGetCharacterAdvance(s32 code, s32 *font, s32 spacingMode) {
-    s32 limit = *font;
+s32 fontImageGetCharacterAdvance(s32 code, FontImage *font, s32 spacingMode) {
+    s32 limit = font->width;
     s32 extra;
     s32 r;
 
@@ -1216,11 +1216,11 @@ s32 fontImageGetCharacterAdvance(s32 code, s32 *font, s32 spacingMode) {
 /// \param font Font containing character dimensions and metrics.
 /// \returns One if a non-space character has side margins, or zero otherwise.
 /// \note Original decompilation identifier: \c func_8003EE04 (0x8003EE04).
-s32 fontImageCharacterHasSideMargins(s32 code, s32 *font) {
+s32 fontImageCharacterHasSideMargins(s32 code, FontImage *font) {
     if (code == 0xA1A0) {
         return 0;
     }
-    if ((fontImageGetCharacterLeft(code, (FontImage *)font, 1) == 0) && ((fontImageGetCharacterRight(code, (FontImage *)font, 1) + 1) == *font)) {
+    if ((fontImageGetCharacterLeft(code, (FontImage *)font, 1) == 0) && ((fontImageGetCharacterRight(code, (FontImage *)font, 1) + 1) == font->width)) {
         return 0;
     }
     return 1;
@@ -1680,6 +1680,6 @@ void fontCacheWaitForReads(void) {
 /// \param mode Spacing mode, with one selecting proportional spacing.
 /// \returns Final horizontal position in pixels after processing the text.
 /// \note Original decompilation identifier: \c func_8003F6DC (0x8003F6DC).
-s32 textMeasureWithFont(u8 *text, s32 *font, s32 mode) {
+s32 textMeasureWithFont(u8 *text, FontImage *font, s32 mode) {
     return fontImageMeasureText(text, font, mode);
 }
