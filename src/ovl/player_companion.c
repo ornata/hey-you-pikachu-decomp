@@ -1,3 +1,4 @@
+#include "interaction_proxy.h"
 #include "interaction.h"
 #include "script_vm_execution.h"
 #include "script_vm_globals.h"
@@ -1912,7 +1913,7 @@ s32 playerClassifyInteractionTarget(u8 *player, u8 *object, s32 flags) {
     if (kind == 0x8A) {
         u8 *resultState = ((RuntimeObjectPrefix *)object)->state.bytes;
         ((PlayerControlPrefix *)player)->modeState.interactionAction = 9;
-        return *(s32 *)(resultState + 4);
+        return ((InteractionProxyState *)resultState)->interactionResult;
     }
     return 4;
 }
@@ -2567,30 +2568,29 @@ struct {
 /// \param context Caller-defined context value associated with the proxy.
 /// \param interactionResult Result code supplied to player target classification when the proxy is selected.
 /// \param metadata Caller-defined additional proxy metadata.
-/// \param description Borrowed null-terminated help text address, represented as an integer; must remain
+/// \param description Borrowed null-terminated help text; must remain
 /// valid throughout the proxy lifetime and fit the interaction-description buffer.
 /// \returns Registered interaction proxy managed by the object system.
 ///
-/// \note Portability: the description address is stored as a 32-bit integer.
 /// \note Original decompilation identifier: \c func_80112940 (0x80112940).
-u8 *interactionProxyCreate(u8 *position, s32 context, s32 interactionResult, s32 metadata, s32 description) {
-    u8 *sp24;
+u8 *interactionProxyCreate(f32 *position, s32 context, s32 interactionResult, s32 metadata, char *description) {
+    u8 *proxy;
     u8 *proxyState;
 
-    sp24 = objectCreateHierarchyFromTemplate((ObjectTemplate *)(u8 *)&gInteractionProxyObjectTemplate);
-    proxyState = ((RuntimeObjectPrefix *)sp24)->state.bytes;
-    ((RuntimeObjectPrefix *)sp24)->position[0] = (f32)((f32 *)position)[0];
-    ((RuntimeObjectPrefix *)sp24)->position[1] = (f32)((f32 *)position)[1];
-    ((RuntimeObjectPrefix *)sp24)->position[2] = (f32)((f32 *)position)[2];
-    ((RuntimeObjectPrefix *)sp24)->worldPosition[0] = (f32)((f32 *)position)[0];
-    ((RuntimeObjectPrefix *)sp24)->worldPosition[1] = (f32)((f32 *)position)[1];
-    ((RuntimeObjectPrefix *)sp24)->worldPosition[2] = (f32)((f32 *)position)[2];
+    proxy = objectCreateHierarchyFromTemplate((ObjectTemplate *)(u8 *)&gInteractionProxyObjectTemplate);
+    proxyState = ((RuntimeObjectPrefix *)proxy)->state.bytes;
+    ((RuntimeObjectPrefix *)proxy)->position[0] = position[0];
+    ((RuntimeObjectPrefix *)proxy)->position[1] = position[1];
+    ((RuntimeObjectPrefix *)proxy)->position[2] = position[2];
+    ((RuntimeObjectPrefix *)proxy)->worldPosition[0] = position[0];
+    ((RuntimeObjectPrefix *)proxy)->worldPosition[1] = position[1];
+    ((RuntimeObjectPrefix *)proxy)->worldPosition[2] = position[2];
     ((InteractionProxyState *)proxyState)->context = context;
     ((InteractionProxyState *)proxyState)->interactionResult = interactionResult;
     ((InteractionProxyState *)proxyState)->metadata = metadata;
-    ((InteractionProxyState *)proxyState)->description.address = description;
-    objectRegisterActiveHierarchy(sp24);
-    return sp24;
+    ((InteractionProxyState *)proxyState)->description.text = description;
+    objectRegisterActiveHierarchy(proxy);
+    return proxy;
 }
 
 /// Flags inhibiting entry into or exit from gameplay music ducking.

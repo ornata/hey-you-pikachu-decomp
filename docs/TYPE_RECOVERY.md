@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,610 / 77 |
+| Raw offset candidates | 4,040 / 86 | 2,609 / 77 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3384,3 +3384,15 @@ held-item equality matches with player handle first; the alternative source orde
 swaps load registers and is recorded as a constraint. Kind-specific unresolved
 state remains explicit. All isolated conversions and dependent rebuilds preserve
 strict objects.
+
+### Interaction proxy creation contract
+
+`interaction_proxy.h` provides the shared creation declaration for the player
+implementation and the bedroom and Viridian entrance consumers. The position
+is three floating-point coordinates read during creation. Help text is borrowed
+for the proxy lifetime; the registered object is managed by the object system.
+The private proxy state supplies the classifier result through its established
+field rather than an independent offset view. Ghidra at `0x80112940`, the two
+scene callers, and the existing description consumer support these contracts.
+The context retains its caller-defined meaning, including remaining uses for
+consumable proxies; no common semantics are inferred for unrelated object kinds.

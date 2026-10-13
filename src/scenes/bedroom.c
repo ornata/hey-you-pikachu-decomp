@@ -1,3 +1,4 @@
+#include "interaction_proxy.h"
 #include "door.h"
 #include "common.h"
 #include "actor_create.h"
@@ -10,7 +11,6 @@ void bedroomSceneNoOp(void) {
 void doorRegistryReset(void);
 void toolboxClearCollection(void);
 void mazeSpawnAvailableItems(ItemSpawn *);
-u8 *interactionProxyCreate(u8 *, s32, s32, s32, s32);
 /// Borrowed configuration of the loaded scene overlay, valid while that overlay remains loaded.
 /// \note Original identifier: \c D_80133DE4 (0x80133DE4).
 extern u8 *gCurrentAreaConfiguration;
@@ -33,7 +33,7 @@ void bedroomInitializeObjects(void) {
     if (progressGetValue(0xA0) != 0) {
         doorCreate(D_80134520_scene_bedroom, 0, 2, 0, 0);
     } else {
-        interactionProxyCreate((u8 *)D_80134520_scene_bedroom, 1, 4, 0, (s32)D_80158674_scene_bedroom);
+        interactionProxyCreate(D_80134520_scene_bedroom, 1, 4, 0, (char *)D_80158674_scene_bedroom);
     }
     doorCreate(D_8013452C_scene_bedroom, 3, 0, 0, 0);
 }

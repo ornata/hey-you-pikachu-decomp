@@ -1,10 +1,10 @@
+#include "interaction_proxy.h"
 #include "story_chapter.h"
 #include "common.h"
 #include "item_object.h"
 #include "actor_create.h"
 #include "area_maze.h"
 #include "scene_types.h"
-u8 *interactionProxyCreate(u8 *, s32, s32, s32, s32);
 s32 toolboxStoreObjectInRow(s32, s32);
 
 extern u8 D_80144BC4_scene_viridian_entrance[];
@@ -37,7 +37,7 @@ void viridianEntranceCreateAccessObject(void) {
     position[0] = 160.0f;
     position[1] = 7.5f;
     position[2] = 262.0f;
-    interactionProxyCreate((u8 *)position, 1, 4, 0, (s32)D_8014E9F4_scene_viridian_entrance);
+    interactionProxyCreate(position, 1, 4, 0, (char *)D_8014E9F4_scene_viridian_entrance);
 }
 
 /// Create and register the entrance items required by the saved progress stage.
