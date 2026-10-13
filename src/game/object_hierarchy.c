@@ -132,12 +132,12 @@ void vector3GetEulerDegrees(f32 *, f32 *, f32 *, f32 *);
 
 /// Buffered cartridge-reader storage with room to align the DMA buffer internally.
 typedef struct RomByteReader {
-    s32 windowStart;
-    u8 storage[0x410];
-    s32 alignedBuffer;
-    OSMesgQueue queue;
-    OSMesg completion;
-    u8 unknown434[4];
+    s32 windowStart; ///< Cartridge address of the cached window, or the initial invalid sentinel.
+    u8 storage[0x410]; ///< Owned storage containing the aligned 0x400-byte DMA window.
+    u8 *alignedBuffer; ///< Borrowed aligned view into this reader's storage.
+    OSMesgQueue queue; ///< Completion queue owned by the reader; reads must not overlap.
+    OSMesg completion; ///< Single message slot backing the completion queue.
+    u8 unknown434[4]; ///< Unresolved trailing storage.
 } RomByteReader;
 
 /// Object-manager allocation containing the hierarchy prefix and its tree entry.
@@ -186,34 +186,34 @@ u8 *romTableResolveEntry(u8 *base, s32 idx) {
 /// \note Original decompilation identifier: \c func_800076E0 (0x800076E0).
 s32 romByteReaderInitialize(u8 *reader) {
     ((RomByteReader *)reader)->windowStart = 0x80000000;
-    ((RomByteReader *)reader)->alignedBuffer = (s32)(((u32)(reader + 0x13) >> 4) * 0x10);
+    ((RomByteReader *)reader)->alignedBuffer = (u8 *)(((u32)(reader + 0x13) >> 4) * 0x10);
     osCreateMesgQueue(&((RomByteReader *)reader)->queue, &((RomByteReader *)reader)->completion, 1);
     return 0;
 }
 
 /// Read a byte from cartridge ROM.
-/// \param r Initialized buffered reader; reads sharing this reader must not overlap.
-/// \param addr Readable cartridge byte address; its aligned read window must also be available.
+/// \param reader Initialized buffered reader; reads sharing this reader must not overlap.
+/// \param address Readable cartridge byte address; its aligned read window must also be available.
 /// \returns The byte at the requested address.
 ///
 /// \note Portability: The unprototyped midiReaderReadByte call passes an extra argument ignored by the original ABI.
 /// \note Original decompilation identifier: \c func_80007728 (0x80007728).
-u8 romByteReaderRead(r, addr)
-u8 *r;
-s32 addr;
+u8 romByteReaderRead(reader, address)
+RomByteReader *reader;
+s32 address;
 {
     OSIoMesg io;
     OSMesg msg;
 
-    if (addr < *(s32 *)r || addr >= *(s32 *)r + 0x400) {
-        *(s32 *)r = addr & ~0xF;
-        osInvalDCache(*(void **)(r + 0x414), 0x400);
-        osPiStartDma(&io, OS_MESG_PRI_HIGH, OS_READ, *(s32 *)r, *(void **)(r + 0x414), 0x400,
-                     (OSMesgQueue *)(r + 0x418));
-        while (osRecvMesg((OSMesgQueue *)(r + 0x418), &msg, OS_MESG_NOBLOCK) != 0) {
+    if (address < reader->windowStart || address >= reader->windowStart + 0x400) {
+        reader->windowStart = address & ~0xF;
+        osInvalDCache(reader->alignedBuffer, 0x400);
+        osPiStartDma(&io, OS_MESG_PRI_HIGH, OS_READ, reader->windowStart, reader->alignedBuffer, 0x400,
+                     &reader->queue);
+        while (osRecvMesg(&reader->queue, &msg, OS_MESG_NOBLOCK) != 0) {
         }
     }
-    return *(*(u8 **)(r + 0x414) + addr - *(s32 *)r);
+    return *(reader->alignedBuffer + address - reader->windowStart);
 }
 
 /// Open a single-track format-zero MIDI sequence using tick-based timing.
