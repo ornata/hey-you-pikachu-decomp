@@ -1,3 +1,4 @@
+#include "vector_metrics.h"
 #include "math_angles.h"
 #include "random.h"
 #include "terrain_movement.h"
@@ -29,7 +30,6 @@ void itemBeginShrinkingDisposal(u8 *object) {
     itemSetMode(object, ITEM_MODE_SHRINKING_DISPOSAL);
 }
 
-f32 vector3Normalize(u8 *); /* extern */
 
 /// Determine the normalized terrain response direction at an item.
 /// \param object Item whose terrain is sampled.
@@ -37,12 +37,12 @@ f32 vector3Normalize(u8 *); /* extern */
 /// \param cachedNode Address of a writable cached map-node pointer, initially null or valid, updated by the terrain query.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_801217F4 (0x801217F4).
-void itemGetTerrainResponseDirection(u8 *object, u8 *direction, s32 cachedNode) {
-    ((f32 *)direction)[1] = 0.2f;
+void itemGetTerrainResponseDirection(u8 *object, f32 *direction, u8 **cachedNode) {
+    direction[1] = 0.2f;
     terrainGetDownhillHeightDifferences(((RuntimeObjectPrefix *)object)->position[0],
                                         ((RuntimeObjectPrefix *)object)->position[1],
-                                        ((RuntimeObjectPrefix *)object)->position[2], 50.0f, 0.2f, (f32 *)direction,
-                                        (f32 *)(direction + 8), (u8 **)cachedNode);
+                                        ((RuntimeObjectPrefix *)object)->position[2], 50.0f, 0.2f, direction,
+                                        &direction[2], cachedNode);
     vector3Normalize(direction);
 }
 
@@ -156,7 +156,7 @@ s32 itemUpdateGroundVelocity(u8 *object, u8 *state, s32 cachedNode, s32 *spinnin
     } else {
         *spinning = 0;
     }
-    itemGetTerrainResponseDirection(object, (u8 *)slope, cachedNode);
+    itemGetTerrainResponseDirection(object, slope, (u8 **)cachedNode);
     if ((var_v1 != 0) || (slope[0] > 0.01f) || (slope[0] < -0.01f) || (slope[2] > 0.01f) || (slope[2] < -0.01f)) {
         f32 accelerationStep;
         accelerationStep = 900.0f * gRuntimeFrameSeconds;
@@ -264,8 +264,8 @@ void itemApplyGroundBounce(u8 *object, ItemStatePrefix *state, s32 cachedNode) {
     if (state->downwardVelocity < 9.0f || !(state->flags & 4)) {
         state->downwardVelocity = 0.0f;
     } else {
-        itemGetTerrainResponseDirection(object, (u8 *)normal, cachedNode);
-        vector3Normalize((u8 *)normal);
+        itemGetTerrainResponseDirection(object, normal, (u8 **)cachedNode);
+        vector3Normalize((f32 *)normal);
         reflection = (state->velocityX * normal[0] - state->downwardVelocity * normal[1]) + normal[2] * state->velocityZ;
         reflection *= -2.0f;
         state->velocityX = normal[0] * reflection + (state->velocityX);

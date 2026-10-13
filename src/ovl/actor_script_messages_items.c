@@ -1,3 +1,4 @@
+#include "vector_metrics.h"
 #include "random.h"
 #include "microphone_requests.h"
 #include "attached_effect.h"
@@ -213,7 +214,6 @@ s32 actorScriptPushPlayerDistance(u8 *actor) {
     return 0;
 }
 
-f32 vector3LengthApprox(f32 *); /* extern */
 
 /// Replace a world position on the script stack with its distance from the actor.
 /// \param actor Actor whose script VM supplies world X, Y, Z (Z on top) and receives the approximate three-dimensional distance.

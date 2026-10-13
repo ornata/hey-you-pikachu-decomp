@@ -1,3 +1,4 @@
+#include "vector_metrics.h"
 #include "math_angles.h"
 #include "terrain_height.h"
 #include "linked_effect.h"
@@ -186,7 +187,6 @@ void contactEffectInitialize(u8 *effect) {
     *(s32 **)(effect + 0x54) = savedEffectState;
 }
 
-f32 vector3Length(f32 *);
 /// Attraction strength between adjacent effects in the contact reaction chain.
 /// \note Original identifier: \c D_800A3A6C (0x800A3A6C).
 extern f32 gContactEffectChainPull;

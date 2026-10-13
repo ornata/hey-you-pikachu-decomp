@@ -1,3 +1,4 @@
+#include "vector_metrics.h"
 #include "microphone_requests.h"
 #include "messenger.h"
 #include "camera_types.h"
@@ -30,7 +31,6 @@ void _bzero(s32, s32);
 extern u8 gTextPanelClearedEmptyText[];
 
 f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
-f32 vector3Length(f32 *);
 /// Whether gameplay exposes microphone interaction and its HUD indicator.
 /// \note Original identifier: \c D_800722D0 (0x800722D0).
 /// Whether gameplay permits recognized voice commands to launch messenger effects.

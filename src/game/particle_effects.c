@@ -1,3 +1,4 @@
+#include "vector_metrics.h"
 #include "math_angles.h"
 #include "random.h"
 #include "wisp_effect.h"
@@ -1475,7 +1476,6 @@ void convergingParticleEffectDestroy(u8 *effect) {
     heapFreeLocal(&gGameHeap, state);
 }
 
-f32 vector3Normalize(u8 *);
 f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
 
 /// Advance a converging particle effect around its target until its lifetime expires or the target
@@ -1521,7 +1521,7 @@ void convergingParticleEffectUpdate(u8 *effect) {
         delta[0] = ((RuntimeObjectPrefix *)state)->worldPosition[0] - center[0];
         delta[1] = ((RuntimeObjectPrefix *)state)->worldPosition[1] - center[1];
         delta[2] = ((RuntimeObjectPrefix *)state)->worldPosition[2] - center[2];
-        vector3Normalize((u8 *)delta);
+        vector3Normalize((f32 *)delta);
         delta[0] *= radius;
         delta[1] *= radius;
         delta[2] *= radius;

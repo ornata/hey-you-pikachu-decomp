@@ -1,3 +1,4 @@
+#include "vector_metrics.h"
 #include "math_angles.h"
 #include "random.h"
 #include "terrain_height.h"
@@ -57,7 +58,6 @@ s16 actorFindInteractableItemKind(u8 *actor, s32 kind, f32 distance) {
     return ((ItemStatePrefix *)rec)->kind;
 }
 
-f32 vector3LengthApprox(f32 *); /* extern */
 
 /// Measure an object's distance from the world origin.
 /// \param object Object whose world position is queried.
@@ -921,7 +921,6 @@ f32 pathGetFirstPointCoordinateByHandle(s32 handle, s32 axis) {
 typedef struct PathVector {
     f32 v[3];
 } PathVector;
-f32 vector3Length(f32 *);
 /// Get a coordinate of the path destination following a waypoint near an actor.
 /// \param object Actor whose world position determines the nearby waypoint.
 /// \param handle Handle of a path object with at least one waypoint and a complete three-coordinate end marker whose X coordinate is negative.
@@ -1103,7 +1102,6 @@ void actorSetTargetPosition(u8 *actor, f32 *position) {
     ((RuntimeObjectPrefix *)actor)->state.actor->targetPosition[2] = position[2];
 }
 
-f32 vector3Normalize(u8 *);
 /// Choose a target position away from the supplied threat position.
 /// \param object Actor whose escape target is changed; its fallback target handle must be live when the positions coincide.
 /// \param target Three-component world-space threat position; the pointer is not retained.
@@ -1120,7 +1118,7 @@ void actorChooseEscapePosition(u8 *object, f32 *target) {
     direction[0] = target[0] - ((RuntimeObjectPrefix *)object)->worldPosition[0];
     direction[1] = target[1] - ((RuntimeObjectPrefix *)object)->worldPosition[1];
     direction[2] = target[2] - ((RuntimeObjectPrefix *)object)->worldPosition[2];
-    if (vector3Normalize((u8 *)direction) == 0.0f) {
+    if (vector3Normalize((f32 *)direction) == 0.0f) {
         actorSetTargetToFallbackObject(object);
         return;
     }

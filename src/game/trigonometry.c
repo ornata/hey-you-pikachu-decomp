@@ -1,3 +1,4 @@
+#include "vector_metrics.h"
 #include "math_angles.h"
 #include "random.h"
 #include "matrix_translation.h"
@@ -807,8 +808,8 @@ f32 mathHypotApprox(f32, f32);
 /// \param vector Input three-component vector.
 /// \returns Approximate vector length.
 /// \note Original decompilation identifier: \c func_8003A5FC (0x8003A5FC).
-f32 vector3LengthApprox(u8 *vector) {
-    return mathHypotApprox(mathHypotApprox(*(f32 *)(vector + 0), *(f32 *)(vector + 4)), *(f32 *)(vector + 8));
+f32 vector3LengthApprox(f32 *vector) {
+    return mathHypotApprox(mathHypotApprox(vector[0], vector[1]), vector[2]);
 }
 
 /// Compute the length of a planar vector.

@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 1,856 / 73 |
+| Raw offset candidates | 4,040 / 86 | 1,852 / 73 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3889,3 +3889,9 @@ angle normalization and bounded turn-step contracts between the implementation
 and all 31 declared consumer units. Input limits, degree units, wrap range and
 turn-step preconditions are explicit; floating-point argument placement remains
 unchanged under strict object comparison.
+
+`vector_metrics.h` shares three-component length, approximate length and
+in-place normalization contracts across the implementation and all eighteen
+declared consumer units. Approximate length consumes float components directly.
+Item terrain-response output and cache parameters use their established vector
+and pointer types; all adopted interfaces retain strict object identity.

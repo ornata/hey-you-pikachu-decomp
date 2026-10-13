@@ -1,3 +1,4 @@
+#include "vector_metrics.h"
 #include "math_angles.h"
 #include "terrain_height.h"
 #include "midi_reader.h"
@@ -47,7 +48,6 @@
 // clang-format on
 
 void matrix34Identity(Matrix34 *);
-f32 vector3LengthApprox(Vec3f *);
 
 
 f32 matrix34GetTransformedPointYawDegrees(f32 *, f32 *);
@@ -121,7 +121,6 @@ void objectAssignHierarchyRoot(u8 *, u8 *);
 extern s32 gActiveObjectHierarchyCount;
 s32 objectCompareSearchTreeOrder(TreeNode *, s32);
 void objectRegisterHierarchyInSearchTree(u8 *);
-f32 vector3Normalize(f32 *);
 void vector3GetEulerDegrees(f32 *, f32 *, f32 *, f32 *);
 
 
@@ -1706,7 +1705,7 @@ f32 objectGetApproxDistanceToPoint(u8 *object, Vec3f *point) {
     d.x = ((RuntimeObjectPrefix *)object)->worldPosition[0] - point->x;
     d.y = ((RuntimeObjectPrefix *)object)->worldPosition[1] - point->y;
     d.z = ((RuntimeObjectPrefix *)object)->worldPosition[2] - point->z;
-    return vector3LengthApprox(&d);
+    return vector3LengthApprox((f32 *)&d);
 }
 
 
@@ -1721,7 +1720,7 @@ f32 objectGetApproxDistance(u8 *first, u8 *second) {
     d.x = ((RuntimeObjectPrefix *)first)->worldPosition[0] - ((RuntimeObjectPrefix *)second)->worldPosition[0];
     d.y = ((RuntimeObjectPrefix *)first)->worldPosition[1] - ((RuntimeObjectPrefix *)second)->worldPosition[1];
     d.z = ((RuntimeObjectPrefix *)first)->worldPosition[2] - ((RuntimeObjectPrefix *)second)->worldPosition[2];
-    return vector3LengthApprox(&d);
+    return vector3LengthApprox((f32 *)&d);
 }
 
 /// Evaluate a point's horizontal direction relative to an object's world pose without exposing a result.

@@ -1,3 +1,4 @@
+#include "vector_metrics.h"
 #include "math_angles.h"
 #include "vector_interpolation.h"
 #include "matrix_point.h"
@@ -14,7 +15,6 @@
 extern float fabsf(float);
 #pragma intrinsic(fabsf)
 void motionExtractHeadingFromMatrix(f32 *, f32 *);
-f32 vector3Normalize(f32 *);
 
 /// Get the Y-Z projection angle of a transformation's Z row.
 /// \param matrix Input affine transformation matrix.
@@ -79,7 +79,6 @@ f32 vector2GetDirectionDegrees(u8 *vector) {
 }
 
 void matrixFixedTo34(Mtx, f32 *);
-f32 vector3Length(f32 *);
 f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
 
 /// Determine positional sound volume and stereo pan relative to the camera.

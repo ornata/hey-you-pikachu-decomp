@@ -1,3 +1,4 @@
+#include "vector_metrics.h"
 #include "math_angles.h"
 #include "random.h"
 #include "object_transform.h"
@@ -829,8 +830,6 @@ void messengerDeliver(u8 *object, u8 *source, u8 *target, s32 mode) {
     gTrackedMessengerHandle = 0;
 }
 
-f32 vector3Length(u8 *);
-f32 vector3Normalize(u8 *);
 f32 mathMapRangeClamped(f32, f32, f32, f32, f32);
 /// Guide the messenger toward its linked recipient and handle delivery or loss of the target.
 /// \pre Frame duration must be positive, and a live linked part must have a valid owning object.
@@ -868,7 +867,7 @@ void messengerUpdateHoming(u8 *object, s32 unused) {
     property = ((RuntimeObjectPrefix *)target)->kind;
     if ((((property > 0) && (property < 0x26)) && ((mode == 3) || (mode == 2))) &&
         (((property = actionGetAttributes(target), property & 0x10000)) || ((mode == 3) && (!(property & 0x8000))))) {
-        contactDistance = vector3Length((u8 *)delta);
+        contactDistance = vector3Length((f32 *)delta);
         delta[0] += 2.0f * mathCosDegrees(state->phase);
         delta[1] += ((2.0f * mathSinDegrees(2.0f * state->phase)) * 0.4f) + 2.0f;
         delta[2] += 2.0f * mathSinDegrees(state->phase);
@@ -884,7 +883,7 @@ void messengerUpdateHoming(u8 *object, s32 unused) {
             } while (state->phase >= 360.0f);
         }
     }
-    distance = vector3Normalize((u8 *)delta);
+    distance = vector3Normalize((f32 *)delta);
     if (contactDistance < 0.0f) {
         contactDistance = distance;
     }

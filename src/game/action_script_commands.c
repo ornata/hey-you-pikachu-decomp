@@ -1,3 +1,4 @@
+#include "vector_metrics.h"
 #include "math_angles.h"
 #include "random.h"
 #include "terrain_height.h"
@@ -346,7 +347,6 @@ extern const f32 gActionLaunchHeadingOffsets[];
 /// Per-mode flags passed to the held-item throw interface.
 /// \note Original identifier: \c D_800A4978 (0x800A4978).
 extern const s32 gActionLaunchThrowFlags[];
-f32 vector3Normalize(u8 *);
 
 typedef struct Launch {
     s32 kind;
@@ -435,7 +435,7 @@ void actionCommandLaunchHeldItem(u8 *actor, u8 *state, ActorActionCueCommand *co
         dir[0] = *(f32 *)(state + 0x1EC) - *(f32 *)(obj + 0x44);
         dir[1] = *(f32 *)(state + 0x1F0) - *(f32 *)(obj + 0x48);
         dir[2] = *(f32 *)(state + 0x1F4) - *(f32 *)(obj + 0x4C);
-        vector3Normalize((u8 *)dir);
+        vector3Normalize((f32 *)dir);
         vel[0] = dir[0] * speed;
         vel[1] = dir[1] * speed;
         vel[2] = dir[2] * speed;
@@ -882,7 +882,6 @@ extern f32 gPlayerPositionZ;
 /// Separate symbol view of the primary player record's mode and camera-transition state.
 /// \note Original identifier: \c D_800EF728 (0x800EF728).
 extern s32 gPlayerModeState;
-f32 vector3Length(f32 *);
 void playerBeginStun(f32 *, f32);
 typedef struct ArgsSpawn {
     s32 base;

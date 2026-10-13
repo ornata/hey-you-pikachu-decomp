@@ -1,3 +1,4 @@
+#include "vector_metrics.h"
 #include "math_angles.h"
 #include "terrain_height.h"
 #include "scroll_board.h"
@@ -174,7 +175,6 @@ s32 actorPostScriptMessage(s32 obj, ScriptMessage msg, s32 force) {
     return 1;
 }
 
-f32 vector3Length(f32 *);                   /* extern */
 
 /// Attempt to notify an actor script of an item impact and its speed.
 /// An already pending message prevents delivery.

@@ -1,3 +1,4 @@
+#include "vector_metrics.h"
 /// \file
 /// Creates and advances actor-attached effects with frame and opacity animation.
 
@@ -118,7 +119,6 @@ void attachedEffectInitialize(u8 *object) {
     ((RuntimeObjectPrefix *)object)->state.bytes = obj;
 }
 
-f32 vector3Length(f32 *);
 /// Minimum view-dependent scale factor for an attached effect.
 /// \note Original identifier: \c D_800A26A0 (0x800A26A0).
 extern f32 gAttachedEffectMinimumViewScale;

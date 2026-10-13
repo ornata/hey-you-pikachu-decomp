@@ -1,3 +1,4 @@
+#include "vector_metrics.h"
 #include "random.h"
 #include "runtime_control.h"
 #include "keyed_pool.h"
@@ -132,7 +133,6 @@ void collisionGridUnregisterObject(u8 *object, s32 *registrationKey) {
 /// Z-axis alignment offset used by collision spatial hashing.
 /// \note Original identifier: \c D_800F1B44 (0x800F1B44).
 extern f32 gCollisionGridAlignmentX, gCollisionGridAlignmentZ;
-f32 vector3Length(f32 *);
 
 /* Advance a spatial-hash bucket iterator to the next entry with the same key. */
 #define HASH_NEXT(var, table, key)                                                                                     \

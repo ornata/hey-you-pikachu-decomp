@@ -1,3 +1,4 @@
+#include "vector_metrics.h"
 #include "math_angles.h"
 #include "terrain_movement.h"
 #include "terrain_height.h"
@@ -371,7 +372,6 @@ void actorUpdateGroundSlopePitch(u8 *object) {
 typedef struct Vec3f {
     f32 x, y, z;
 } Vec3f;
-f32 vector3Normalize(u8 *);
 
 /// Add downhill drift to actor movement according to the nearby terrain slope.
 /// \param actor Actor whose position determines the terrain slope.
@@ -386,7 +386,7 @@ void actorAddDownhillMovement(u8 *actor, f32 *displacement, u8 **surfaceCache) {
     f = 0.2f;
     v.y = f;
     terrainGetDownhillHeightDifferences(*(f32 *)(actor + 0x18), *(f32 *)(actor + 0x1C), *(f32 *)(actor + 0x20), 50.0f, v.y, &v.x, &v.z, surfaceCache);
-    vector3Normalize((u8 *)&v);
+    vector3Normalize((f32 *)&v);
     f = 10.0f * gRuntimeFrameSeconds;
     displacement[0] += v.x * f;
     displacement[2] += v.z * f;
@@ -581,7 +581,7 @@ void actorUpdateTargetFacingChild(u8 *object) {
         matrix.m[3][1] = 0.0f;
         matrix.m[3][2] = 0.0f;
         matrix34TransformPointVector(&matrix.m[0][0], delta, delta);
-        length = vector3Normalize((u8 *)delta) * 50.0f;
+        length = vector3Normalize((f32 *)delta) * 50.0f;
         if (length < *weight) {
             *weight = length;
         }
@@ -590,7 +590,7 @@ void actorUpdateTargetFacingChild(u8 *object) {
         for (i = 0; i < 3; i++) {
             delta[i] = (delta[i] * *weight + initial[i]) + 2.0f * (previous[i] * *weight);
         }
-        vector3Normalize((u8 *)delta);
+        vector3Normalize((f32 *)delta);
         if (delta[0] > -0.5f) {
             delta[0] = -0.5f;
         }
@@ -673,7 +673,7 @@ void actorUpdateCameraFacingChild(u8 *object) {
         matrix.m[3][1] = 0.0f;
         matrix.m[3][2] = 0.0f;
         matrix34TransformPointVector(&matrix.m[0][0], &direction.x, &direction.x);
-        vector3Normalize((u8 *)&direction);
+        vector3Normalize((f32 *)&direction);
         direction.x *= *weight;
         direction.y *= *weight;
         direction.z *= *weight;
@@ -681,7 +681,7 @@ void actorUpdateCameraFacingChild(u8 *object) {
         direction.x += original.x;
         direction.y += original.y;
         direction.z += original.z;
-        vector3Normalize((u8 *)&direction);
+        vector3Normalize((f32 *)&direction);
         x = -0.99f;
         if (direction.x < -0.99f) {
             direction.x = x;

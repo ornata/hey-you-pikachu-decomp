@@ -1,3 +1,4 @@
+#include "vector_metrics.h"
 #include "math_angles.h"
 #include "random.h"
 #include "area_transition.h"
@@ -1047,7 +1048,6 @@ void terrainCreateContactEffect(f32 *position, s32 material) {
     }
 }
 
-f32 vector3Length(u8 *);
 /// Borrowed reference to the active Pikachu actor created for the current area.
 /// \note Original identifier: \c D_800760A8 (0x800760A8).
 extern u8 *gPikachuActor;
@@ -1115,7 +1115,7 @@ u16 terrainCheckHorizontalObstruction(s32 type, f32 x, f32 y, f32 z, f32 width, 
         delta[0] = *(f32 *)(gPikachuActor + 0x44) - x;
         delta[1] = *(f32 *)(gPikachuActor + 0x48) - y;
         delta[2] = *(f32 *)(gPikachuActor + 0x4C) - z;
-        if (vector3Length((u8 *)delta) < 5.0f) {
+        if (vector3Length((f32 *)delta) < 5.0f) {
             flags |= 0x6D;
         }
     }
@@ -1557,7 +1557,7 @@ void mazeInitializeRoot(void) {
     dims.x = ((MazeDimensions540 *)gCurrentAreaConfiguration)->x;
     dims.y = ((MazeDimensions540 *)gCurrentAreaConfiguration)->y;
     dims.z = ((MazeDimensions540 *)gCurrentAreaConfiguration)->z;
-    length = vector3Length((u8 *)&dims);
+    length = vector3Length((f32 *)&dims);
     gMazeVisibilityParameters.radiusScale =
         length * 0.5f / (mathSinDegrees(36.0f) * ((MazeDimensions540 *)gCurrentAreaConfiguration)->x);
     TRACE("blockSize: %f,%f,%f  _clipZFactor:%f  clipFar:%f clipNear:%f clipFactor:%f\n", dims.x, dims.y, dims.z,

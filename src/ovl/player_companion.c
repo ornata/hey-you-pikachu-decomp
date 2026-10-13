@@ -1,3 +1,4 @@
+#include "vector_metrics.h"
 #include "math_angles.h"
 #include "random.h"
 #include "backdrop_view.h"
@@ -501,7 +502,6 @@ void playerTrackCompanionViewTarget(u8 *player, u8 *controller, u8 *target) {
     }
 }
 
-f32 vector3Length(f32 *);
 /// Supply automatic forward or backward movement to maintain follow distance when follow mode is active and
 /// the stick is neutral.
 /// \param controller Controller state receiving the automatic movement request.
@@ -567,7 +567,6 @@ void playerPlayFootstepSound(u8 *player, s32 ground) {
     }
 }
 
-f32 vector3Normalize(f32 *);
 void playerPlayFootstepSound(u8 *, s32);
 /// Borrowed reference to the active Pikachu actor created for the current area.
 /// \note Original identifier: \c D_800760A8 (0x800760A8).
@@ -2010,7 +2009,6 @@ typedef struct {
 typedef struct {
     f32 x, y, z;
 } Origin1C4C;
-f32 vector3LengthApprox(u8 *);
 /// Position the player control hierarchy from the current player view, terrain, and distance to Pikachu.
 /// \param object Player-control hierarchy root with its required child objects; the active Pikachu actor must
 /// be available.
@@ -2037,7 +2035,7 @@ void playerUpdateControlHierarchy(void *object) {
     delta[0] = ((Origin1C4C *)&gPlayerState)->x - ((RuntimeObjectPrefix *)gPikachuActor)->worldPosition[0];
     delta[1] = ((Origin1C4C *)&gPlayerState)->y - ((RuntimeObjectPrefix *)gPikachuActor)->worldPosition[1];
     delta[2] = ((Origin1C4C *)&gPlayerState)->z - ((RuntimeObjectPrefix *)gPikachuActor)->worldPosition[2];
-    distance = vector3LengthApprox((u8 *)&delta[0]);
+    distance = vector3LengthApprox((f32 *)&delta[0]);
     sine = mathSinDegrees(yaw);
     cosine = mathCosDegrees(yaw);
     reach = ((MazeDims1C4C *)gCurrentAreaConfiguration)->x;

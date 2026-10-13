@@ -1,3 +1,4 @@
+#include "vector_metrics.h"
 #include "math_angles.h"
 #include "random.h"
 #include "terrain_height.h"
@@ -22,7 +23,6 @@ s32 actorAdvanceWithScaleOscillation(f32 *, f32);
 s32 actorAdvanceWithGroundClearance(s32, f32);
 s32 actorTurnAwayFromPlayer(s32, f32);
 s32 actorBackstepTowardTarget(s32, f32);
-f32 vector3Length(f32 *);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
