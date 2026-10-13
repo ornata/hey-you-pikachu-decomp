@@ -108,9 +108,6 @@ extern s32 gRenderCameraIndex;
 /// Ordered traversal pool of registered active hierarchy roots.
 /// \note Original identifier: \c D_800AE3A8 (0x800AE3A8).
 extern NodePool gActiveObjectHierarchies;
-/// Object callback table viewed at destruction callbacks, with twenty-four bytes per kind.
-/// \note Original identifier: \c D_80078144 (0x80078144).
-extern u8 gObjectKindDestroyEntries[];
 /// Owned keyed pool mapping runtime handles to live object addresses.
 /// \note Original identifier: \c D_800AE388 (0x800AE388).
 extern KeyedPool gObjectHandlePool;
@@ -710,9 +707,6 @@ s32 objectDetachChildLink(u8 *previous, u8 *object) {
     return firstChildAddress;
 }
 
-/// Per-kind object initialization, destruction, update and drawing callbacks.
-/// \note Original identifier: \c D_80078140 (0x80078140).
-extern ObjectKindCallbacks gObjectKindCallbacks[];
 
 
 
@@ -723,7 +717,7 @@ extern ObjectKindCallbacks gObjectKindCallbacks[];
 u8 *objectCreateFromTemplate(ObjectTemplate *definition) {
     ObjectTemplate *tmpl = definition;
     u8 *o = heapAllocLocal(&gGameHeap, 0x68, 0x275);
-    void (*init)(u8 *);
+    ObjectLifecycleHandler init;
 
     _bzero(o, 0x5C);
     *(ObjectTemplate *)o = *tmpl;
@@ -980,11 +974,11 @@ void objectReleaseStateAllocation(u8 *object) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80008710 (0x80008710).
 void objectDestroy(u8 *object) {
-    void (*destroyCallback)(u8 *);
+    ObjectLifecycleHandler destroyCallback;
     u8 *matrixStorage;
 
     objectResponsesDiscard(object);
-    destroyCallback = *(void (**)(u8 *))(gObjectKindDestroyEntries + ((RuntimeObjectPrefix *)object)->kind * 0x18);
+    destroyCallback = gObjectKindDestroyEntries[((RuntimeObjectPrefix *)object)->kind].destroy;
     if (destroyCallback != NULL) {
         destroyCallback(object);
     }
@@ -1300,25 +1294,25 @@ void objectUpdateHierarchyFromCurrentTransform(u8 *object) {
     s32 kind;
     f32 offset[3];
     while (object != NULL) {
-        if (!(*(u16 *)(object + 0x36) & 0xC0)) {
+        if (!(((RuntimeObjectPrefix *)object)->flags & 0xC0)) {
             objectTransformStackPush((Matrix34 *)&gObjectTraversalTransform);
-            if (*(u16 *)(object + 0x36) & 0x800) {
+            if (((RuntimeObjectPrefix *)object)->flags & 0x800) {
                 objectResponsesDispatchAndClear(object);
             }
-            if (gObjectKindCallbacks[*(u16 *)(object + 0x34)].update != NULL) {
-                gObjectKindCallbacks[*(u16 *)(object + 0x34)].update(object);
+            if (gObjectKindCallbacks[((RuntimeObjectPrefix *)object)->kind].update != NULL) {
+                gObjectKindCallbacks[((RuntimeObjectPrefix *)object)->kind].update(object);
             }
-            if (!(*(u16 *)(object + 0x36) & 0x100)) {
-                matrix34TranslateLocal(gObjectTraversalTransform.m, *(f32 *)(object + 0x18), *(f32 *)(object + 0x1C),
-                                       *(f32 *)(object + 0x20));
-                if (*(u16 *)(object + 0x36) & 0x1000) {
+            if (!(((RuntimeObjectPrefix *)object)->flags & 0x100)) {
+                matrix34TranslateLocal(gObjectTraversalTransform.m, ((RuntimeObjectPrefix *)object)->position[0], ((RuntimeObjectPrefix *)object)->position[1],
+                                       ((RuntimeObjectPrefix *)object)->position[2]);
+                if (((RuntimeObjectPrefix *)object)->flags & 0x1000) {
                     matrix33KeepScaleOnly(gObjectTraversalTransform.m[0]);
                 }
-                if (*(u16 *)(object + 0x34) != 0x64) {
-                    matrix33ApplyRotationXYZDegrees((f32 *)&gObjectTraversalTransform, *(f32 *)(object + 0xC),
-                                                    *(f32 *)(object + 0x10), *(f32 *)(object + 0x14));
-                    matrix33ScaleLocal(&gObjectTraversalTransform, *(f32 *)object, *(f32 *)(object + 4),
-                                       *(f32 *)(object + 8));
+                if (((RuntimeObjectPrefix *)object)->kind != 0x64) {
+                    matrix33ApplyRotationXYZDegrees((f32 *)&gObjectTraversalTransform, ((RuntimeObjectPrefix *)object)->rotation[0],
+                                                    ((RuntimeObjectPrefix *)object)->rotation[1], ((RuntimeObjectPrefix *)object)->rotation[2]);
+                    matrix33ScaleLocal(&gObjectTraversalTransform, ((RuntimeObjectPrefix *)object)->scale[0], ((RuntimeObjectPrefix *)object)->scale[1],
+                                       ((RuntimeObjectPrefix *)object)->scale[2]);
                     if (gObjectPendingLocalMovement.x != 0.0f || gObjectPendingLocalMovement.y != 0.0f ||
                         gObjectPendingLocalMovement.z != 0.0f) {
                         matrix33TransformVector((f32 *)&gObjectTraversalTransform, (f32 *)&gObjectPendingLocalMovement,
@@ -1331,37 +1325,37 @@ void objectUpdateHierarchyFromCurrentTransform(u8 *object) {
                         offset[1] = 0.0f;
                         offset[2] = 0.0f;
                     }
-                    kind = *(u16 *)(object + 0x34);
+                    kind = ((RuntimeObjectPrefix *)object)->kind;
                     if (kind > 0 && kind < 0x26) {
                         actorConstrainMovementToTerrain(object, (Vec3f *)offset);
                     }
                     ((f32 *)&gObjectTraversalTransform)[9] += offset[0];
                     ((f32 *)&gObjectTraversalTransform)[10] += offset[1];
                     ((f32 *)&gObjectTraversalTransform)[11] += offset[2];
-                    *(f32 *)(object + 0x18) += offset[0];
-                    *(f32 *)(object + 0x1C) += offset[1];
-                    *(f32 *)(object + 0x20) += offset[2];
+                    ((RuntimeObjectPrefix *)object)->position[0] += offset[0];
+                    ((RuntimeObjectPrefix *)object)->position[1] += offset[1];
+                    ((RuntimeObjectPrefix *)object)->position[2] += offset[2];
                 }
-                if (*(void **)(object + 0x3C) != NULL) {
+                if (((RuntimeObjectPrefix *)object)->matrixBuffers[0] != NULL) {
                     matrix34ToFixedMtx(&gObjectTraversalTransform,
-                                       ((void **)(object + 0x3C))[((*(u16 *)(object + 0x36) & 0x8000) ? 1 : 0) ^ 1]);
-                    *(u16 *)(object + 0x36) ^= 0x8000;
+                                       ((RuntimeObjectPrefix *)object)->matrixBuffers[((((RuntimeObjectPrefix *)object)->flags & 0x8000) ? 1 : 0) ^ 1]);
+                    ((RuntimeObjectPrefix *)object)->flags ^= 0x8000;
                 }
-                *(f32 *)(object + 0x44) = ((f32 *)&gObjectTraversalTransform)[9];
-                *(f32 *)(object + 0x48) = ((f32 *)&gObjectTraversalTransform)[10];
-                *(f32 *)(object + 0x4C) = ((f32 *)&gObjectTraversalTransform)[11];
-                if (*(u16 *)(object + 0x36) & 0x600) {
-                    if (*(u16 *)(object + 0x36) & 0x400) {
-                        *(u16 *)(object + 0x36) &= ~0x600;
-                        *(u16 *)(object + 0x36) |= 0x200;
+                ((RuntimeObjectPrefix *)object)->worldPosition[0] = ((f32 *)&gObjectTraversalTransform)[9];
+                ((RuntimeObjectPrefix *)object)->worldPosition[1] = ((f32 *)&gObjectTraversalTransform)[10];
+                ((RuntimeObjectPrefix *)object)->worldPosition[2] = ((f32 *)&gObjectTraversalTransform)[11];
+                if (((RuntimeObjectPrefix *)object)->flags & 0x600) {
+                    if (((RuntimeObjectPrefix *)object)->flags & 0x400) {
+                        ((RuntimeObjectPrefix *)object)->flags &= ~0x600;
+                        ((RuntimeObjectPrefix *)object)->flags |= 0x200;
                     } else {
-                        *(u16 *)(object + 0x36) &= ~0x600;
-                        *(u16 *)(object + 0x36) |= 0x100;
+                        ((RuntimeObjectPrefix *)object)->flags &= ~0x600;
+                        ((RuntimeObjectPrefix *)object)->flags |= 0x100;
                     }
                 }
             }
-            if (*(u8 **)(object + 0x2C) != NULL) {
-                objectUpdateHierarchyFromCurrentTransform(*(u8 **)(object + 0x2C));
+            if (((RuntimeObjectPrefix *)object)->child.bytes != NULL) {
+                objectUpdateHierarchyFromCurrentTransform(((RuntimeObjectPrefix *)object)->child.bytes);
             }
             objectTransformStackPop((Matrix34 *)&gObjectTraversalTransform);
         }

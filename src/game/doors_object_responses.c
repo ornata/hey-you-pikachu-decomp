@@ -51,9 +51,6 @@ typedef char ObjectResponseRegistrySizeCheck[(sizeof(ObjectResponseRegistry) == 
 /// Keyed pool indexing pending responses by target object handle.
 /// \note Original identifier: \c D_800B6B68 (0x800B6B68).
 ObjectResponseRegistry gObjectResponseRegistry;
-/// Per-kind response callback view of the object callback table, with a twenty-four-byte stride.
-/// \note Original identifier: \c D_80078154 (0x80078154).
-extern ObjectKindResponseEntry gObjectKindResponseEntries[];
 void objectResponsesClearWithCallback(u8 *, ObjectResponseHandler);
 void heapInitializeRegion(void *, s32, s32);
 

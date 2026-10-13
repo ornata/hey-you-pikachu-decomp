@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 1,788 / 72 |
+| Raw offset candidates | 4,040 / 86 | 1,754 / 72 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -4197,3 +4197,16 @@ through task completion, slot selection after presentation submission, and the
 cursor symbol's camera-storage boundary. All 22 source units using these globals
 now share the header; each adoption independently preserves ROM bytes and strict
 object sections, symbols and relocations.
+
+### Object-kind dispatch and hierarchy consumers
+
+`object_kind_callbacks.h` shares the callback table and its original destruction
+and response interior symbols. A checked destruction-entry view preserves its
+twenty-four-byte stride and overlapping table storage. Lifecycle dispatch uses
+the shared handler type; callback contracts distinguish initialized kind state
+and borrowed drawing-command lifetimes. Offset checks cover all six hooks.
+
+Hierarchy updates now use the shared object prefix for kind, flags, child links,
+scale, rotation, local/world positions and both transform-buffer references.
+Each field group and response-table adoption independently preserves strict
+objects, including original interior-symbol relocation identities.
