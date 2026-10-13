@@ -1,3 +1,4 @@
+#include "text_image_configurations.h"
 #include "text_window.h"
 #include "texture_animation_programs.h"
 /* harvested: matched m2c drafts; pending style pass */
@@ -288,9 +289,6 @@ void textWindowDrawPrompt(Gfx **gdl) {
     textDrawSetPalette(gDefaultTextPalette);
 }
 
-/// Shared text-image configurations selected by text panels, menus and message styles.
-/// \note Original identifier: \c D_80074DE0 (0x80074DE0).
-extern u8 gTextImageConfigurations[];
 
 /// Replace a line of the current text page.
 /// \param row Zero-based line index, from 0 through 4.
@@ -305,7 +303,7 @@ void textWindowSetLine(s32 row, u8 *text, s32 style) {
     }
     if (text != NULL && *text != 0) {
         textImageCreateFromText((TextImage **)(&gTextWindowPageImages[row][gTextWindowPageImageBuffer]),
-                                (u8 *)((s32)text), (FontImage *)((s32)(gTextImageConfigurations + style * 16)));
+                                (u8 *)((s32)text), &gTextImageConfigurations[style]);
     }
 }
 
@@ -320,7 +318,7 @@ void textWindowSetPrompt(s32 textAddress) {
         gTextWindowPromptImage = 0;
     }
     textImageCreateFromText((TextImage **)((s32 *)&gTextWindowPromptImage), (u8 *)(textAddress),
-                            (FontImage *)((s32)gTextImageConfigurations));
+                            gTextImageConfigurations);
 }
 
 /// Prepare a page of text for display using the requested text style.

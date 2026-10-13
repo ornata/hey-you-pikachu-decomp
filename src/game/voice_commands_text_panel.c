@@ -1,3 +1,4 @@
+#include "text_image_configurations.h"
 #include "interaction.h"
 #include "object_target_search.h"
 #include "heap_free.h"
@@ -16,9 +17,6 @@
 #include "text_panel.h"
 #include "heap_alloc.h"
 #include "voice_commands.h"
-/// Shared text-image configurations selected by text panels, menus and message styles.
-/// \note Original identifier: \c D_80074DE0 (0x80074DE0).
-extern u8 gTextImageConfigurations[];
 /// Global game heap header used by runtime resource and object allocations.
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
@@ -404,7 +402,7 @@ void textPanelSetPosition(TextPanel *panel, s32 x, s32 y) {
 /// \note Original decompilation identifier: \c func_80012CF0 (0x80012CF0).
 void textPanelSetTextConfiguration(TextPanel *panel, s32 configuration) {
     if ((configuration >= 0) && (configuration < 3)) {
-        panel->configuration = gTextImageConfigurations + (configuration * 0x10);
+        panel->configuration = &gTextImageConfigurations[configuration];
         return;
     }
     panel->configuration = NULL;

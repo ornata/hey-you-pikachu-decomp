@@ -1514,6 +1514,7 @@
         "string_bytes.h",
         "text_draw.h",
         "text_image.h",
+        "text_image_configurations.h",
         "text_image_create.h",
         "text_window.h",
         "toolbox_types.h",
@@ -1525,140 +1526,140 @@
       "locations": {
         "raw_offset_candidates": {
           "slot + 4": [
-            "224:50",
-            "261:22"
+            "225:50",
+            "262:22"
           ],
           "liveObject + 0x54": [
-            "226:22",
-            "866:18"
+            "227:22",
+            "864:18"
           ],
           "p + 4": [
-            "227:71",
-            "228:82",
-            "867:71"
+            "228:71",
+            "229:82",
+            "865:71"
           ],
           "gToolboxBonusSlot + 4": [
-            "267:18"
+            "268:18"
           ],
           "gToolboxPurchaseSlot + 4": [
-            "271:19"
+            "272:19"
           ],
           "gPikachuActor + 0x54": [
-            "389:32",
-            "438:24"
+            "390:32",
+            "439:24"
           ],
           "state + 0x1EC": [
-            "391:76"
+            "392:76"
           ],
           "player + 0x48": [
-            "400:28"
+            "401:28"
           ],
           "player + 0x54": [
-            "400:65"
+            "401:65"
           ],
           "player + 0x18": [
-            "403:14"
+            "404:14"
           ],
           "gPikachuActor + 0x1C": [
-            "404:20"
-          ],
-          "gPikachuActor + 0x20": [
             "405:20"
           ],
-          "gPikachuActor + 0x44": [
-            "406:20",
-            "445:41"
+          "gPikachuActor + 0x20": [
+            "406:20"
           ],
-          "gPikachuActor + 0x48": [
+          "gPikachuActor + 0x44": [
             "407:20",
             "446:41"
           ],
-          "gPikachuActor + 0x4C": [
+          "gPikachuActor + 0x48": [
             "408:20",
             "447:41"
           ],
-          "tgt + 0": [
-            "445:21"
+          "gPikachuActor + 0x4C": [
+            "409:20",
+            "448:41"
           ],
-          "tgt + 4": [
+          "tgt + 0": [
             "446:21"
           ],
-          "tgt + 8": [
+          "tgt + 4": [
             "447:21"
           ],
+          "tgt + 8": [
+            "448:21"
+          ],
           "ext + 0xC": [
-            "449:64"
+            "450:64"
           ],
           "ext + 0x10": [
-            "450:69"
+            "451:69"
           ],
           "ext + 0x19C": [
-            "451:14"
+            "452:14"
           ],
           "ext + 0x1EC": [
-            "452:126"
+            "453:126"
           ],
           "firstJoint + 0x48": [
-            "456:18"
+            "457:18"
           ],
           "secondJoint + 0x48": [
-            "458:29"
+            "459:29"
           ],
           "gCurrentAreaConfiguration + 0x74": [
-            "517:23",
-            "534:18",
-            "588:25",
-            "601:25",
-            "621:29"
+            "518:23",
+            "535:18",
+            "589:25",
+            "602:25",
+            "622:29"
           ],
           "object + 0x54": [
-            "719:26",
-            "911:22"
+            "717:26",
+            "909:22"
           ],
           "state + 4": [
-            "720:75",
-            "721:68",
-            "912:58"
+            "718:75",
+            "719:68",
+            "910:58"
           ],
           "liveObject + 0x34": [
-            "863:18"
+            "861:18"
           ],
           "item + 0x18": [
-            "883:94"
+            "881:94"
           ],
           "item + 0x10": [
-            "884:14"
+            "882:14"
           ],
           "item + 0": [
-            "885:14"
+            "883:14"
           ],
           "gCurrentAreaConfiguration + 0xC": [
-            "885:35",
-            "886:35",
-            "887:35"
+            "883:35",
+            "884:35",
+            "885:35"
           ],
           "item + 4": [
-            "886:14"
+            "884:14"
           ],
           "item + 8": [
-            "887:14"
+            "885:14"
           ],
           "gCurrentAreaConfiguration + 0x64": [
-            "1227:18",
-            "1252:14",
-            "1316:18",
-            "1320:18",
-            "1324:18",
-            "1332:22"
+            "1225:18",
+            "1250:14",
+            "1314:18",
+            "1318:18",
+            "1322:18",
+            "1330:22"
           ],
           "gCurrentAreaConfiguration + 0x78": [
-            "1696:44"
+            "1694:44"
           ],
           "gItemKind8FCollectionValue + 0x64": [
-            "1786:47"
+            "1784:47"
           ],
           "currentChapter + 1": [
-            "1804:18"
+            "1802:18"
           ]
         }
       }
@@ -2443,6 +2444,7 @@
         "player_control.h",
         "text_draw.h",
         "text_image.h",
+        "text_image_configurations.h",
         "text_image_create.h",
         "texture_animation_programs.h",
         "texture_draw_types.h"
@@ -2451,28 +2453,28 @@
       "locations": {
         "raw_offset_candidates": {
           "gPikachuActor + 0x44": [
-            "132:94"
+            "133:94"
           ],
           "offset + 48": [
-            "149:32"
+            "150:32"
           ],
           "offset + 40": [
-            "165:32"
+            "166:32"
           ],
           "gPikachuActor + 0x54": [
-            "603:34"
+            "604:34"
           ],
           "gPikachuActor + 0x38": [
-            "609:25"
+            "610:25"
           ],
           "gPlayerState + 0x50": [
-            "609:59"
+            "610:59"
           ],
           "x + 0": [
-            "658:23"
+            "659:23"
           ],
           "y + 0": [
-            "659:23"
+            "660:23"
           ]
         }
       }
@@ -2518,6 +2520,7 @@
         "string_bytes.h",
         "text_draw.h",
         "text_image.h",
+        "text_image_configurations.h",
         "text_image_create.h",
         "text_window.h"
       ],
@@ -2527,26 +2530,26 @@
       "locations": {
         "raw_offset_candidates": {
           "object + 0x54": [
-            "117:28"
+            "118:28"
           ],
           "object + 0x10": [
-            "131:22",
-            "132:29",
-            "133:26",
-            "135:29",
-            "136:26"
+            "132:22",
+            "133:29",
+            "134:26",
+            "136:29",
+            "137:26"
           ],
           "queueCursor + 0x18": [
-            "179:40"
+            "177:40"
           ],
           "queueWriteIndex + 1": [
-            "287:29"
+            "285:29"
           ],
           "duration - 2": [
-            "342:37"
+            "340:37"
           ],
           "width - 271": [
-            "394:57"
+            "392:57"
           ]
         }
       }
@@ -4422,6 +4425,7 @@
         "runtime_clock.h",
         "text_draw.h",
         "text_image.h",
+        "text_image_configurations.h",
         "text_image_create.h",
         "text_window.h",
         "text_window_images.h",
@@ -4431,14 +4435,14 @@
       "locations": {
         "raw_offset_candidates": {
           "height + 4": [
-            "243:87"
+            "244:87"
           ],
           "input + 1": [
-            "356:24",
-            "372:12"
+            "354:24",
+            "370:12"
           ],
           "gTextWindowHistoryOldestIndex + 1": [
-            "393:36"
+            "391:36"
           ]
         }
       }
@@ -4653,6 +4657,7 @@
         "story_milestones.h",
         "text_draw.h",
         "text_image.h",
+        "text_image_configurations.h",
         "text_image_create.h",
         "text_panel.h",
         "title_screen.h"
@@ -4661,25 +4666,25 @@
       "locations": {
         "raw_offset_candidates": {
           "words + 4": [
-            "73:72"
+            "71:72"
           ],
           "words + 8": [
-            "78:44"
+            "76:44"
           ],
           "x - 10": [
-            "257:36"
+            "255:36"
           ],
           "y - 4": [
-            "257:44"
+            "255:44"
           ],
           "maxWidth + 10": [
-            "257:55"
+            "255:55"
           ],
           "x + 16": [
-            "264:17"
+            "262:17"
           ],
           "gCurrentAreaConfiguration + 0x64": [
-            "980:47"
+            "978:47"
           ]
         }
       }
@@ -4710,6 +4715,7 @@
         "runtime_clock.h",
         "text_draw.h",
         "text_image.h",
+        "text_image_configurations.h",
         "text_image_create.h",
         "text_window.h",
         "texture_draw_types.h",
@@ -4723,218 +4729,218 @@
       "locations": {
         "raw_offset_candidates": {
           "object + 0xC": [
-            "231:49",
+            "232:49",
+            "804:18",
+            "940:22"
+          ],
+          "object + 0x10": [
+            "232:72",
+            "805:18",
+            "941:22"
+          ],
+          "object + 0x14": [
+            "232:96",
             "806:18",
             "942:22"
           ],
-          "object + 0x10": [
-            "231:72",
-            "807:18",
-            "943:22"
-          ],
-          "object + 0x14": [
-            "231:96",
-            "808:18",
-            "944:22"
-          ],
           "liveObject + 0x34": [
-            "248:22"
+            "249:22"
           ],
           "liveObject + 0": [
-            "252:18"
-          ],
-          "gCurrentAreaConfiguration + 0xC": [
-            "252:45",
-            "253:45",
-            "254:45",
-            "788:37",
-            "789:37",
-            "790:37",
-            "812:41",
-            "813:41",
-            "814:41"
-          ],
-          "liveObject + 4": [
             "253:18"
           ],
-          "liveObject + 8": [
+          "gCurrentAreaConfiguration + 0xC": [
+            "253:45",
+            "254:45",
+            "255:45",
+            "786:37",
+            "787:37",
+            "788:37",
+            "810:41",
+            "811:41",
+            "812:41"
+          ],
+          "liveObject + 4": [
             "254:18"
           ],
-          "object + 0x18": [
-            "320:26",
-            "330:22",
-            "338:18",
-            "345:18",
-            "809:18",
-            "921:102",
-            "941:106"
+          "liveObject + 8": [
+            "255:18"
           ],
-          "object + 0x1C": [
+          "object + 0x18": [
             "321:26",
             "331:22",
             "339:18",
             "346:18",
-            "810:18"
+            "807:18",
+            "919:102",
+            "939:106"
           ],
-          "object + 0x20": [
+          "object + 0x1C": [
             "322:26",
             "332:22",
             "340:18",
             "347:18",
-            "811:18"
+            "808:18"
+          ],
+          "object + 0x20": [
+            "323:26",
+            "333:22",
+            "341:18",
+            "348:18",
+            "809:18"
           ],
           "object + 0x54": [
-            "417:25",
-            "447:72",
-            "466:77",
-            "479:80",
-            "586:19",
-            "599:22"
+            "418:25",
+            "448:72",
+            "467:77",
+            "480:80",
+            "587:19",
+            "600:22"
           ],
           "data + 4": [
-            "418:31",
-            "425:40",
-            "683:34"
+            "419:31",
+            "426:40",
+            "684:34"
           ],
           "obj + 0x54": [
-            "532:20"
+            "533:20"
           ],
           "ext + 6": [
-            "533:13"
+            "534:13"
           ],
           "ext + 8": [
-            "534:14"
+            "535:14"
           ],
           "obj + 0x38": [
-            "538:36"
+            "539:36"
           ],
           "p + 4": [
-            "600:43"
+            "601:43"
           ],
           "table + 0x18": [
-            "623:14"
-          ],
-          "table + 0x20": [
             "624:14"
           ],
+          "table + 0x20": [
+            "625:14"
+          ],
           "player + 0x84": [
-            "664:44"
+            "665:44"
           ],
           "held + 0x54": [
-            "677:29",
-            "1295:26"
+            "678:29",
+            "1293:26"
           ],
           "other + 0x54": [
-            "682:43"
+            "683:43"
           ],
           "otherState + 4": [
-            "683:56"
+            "684:56"
           ],
           "slot + 0x7C": [
-            "741:22"
-          ],
-          "slot + 0x78": [
             "742:22"
           ],
+          "slot + 0x78": [
+            "743:22"
+          ],
           "slot + 0x28": [
-            "747:22",
-            "748:98"
+            "748:22",
+            "749:98"
           ],
           "table + 0xF0": [
-            "751:12"
+            "752:12"
           ],
           "table + 0xF8": [
-            "757:12"
+            "758:12"
           ],
           "object + 0": [
+            "786:14",
+            "810:18"
+          ],
+          "object + 4": [
+            "787:14",
+            "811:18"
+          ],
+          "object + 8": [
             "788:14",
             "812:18"
           ],
-          "object + 4": [
-            "789:14",
-            "813:18"
-          ],
-          "object + 8": [
-            "790:14",
-            "814:18"
-          ],
           "object + 0x2C": [
-            "792:34"
+            "790:34"
           ],
           "objects + 0x28": [
-            "793:43"
+            "791:43"
           ],
           "object + 0x38": [
-            "815:46"
+            "813:46"
           ],
           "o + 0xC": [
-            "868:22"
+            "866:22"
           ],
           "o + 0x10": [
-            "869:22"
+            "867:22"
           ],
           "o + 0x14": [
-            "870:22"
+            "868:22"
           ],
           "row + 0x28": [
-            "910:32"
+            "908:32"
           ],
           "object + 0x34": [
-            "922:32"
+            "920:32"
           ],
           "cur + 1": [
-            "982:14"
+            "980:14"
           ],
           "width + 40": [
-            "1010:41"
+            "1008:41"
           ],
           "width - 1": [
-            "1057:61"
+            "1055:61"
           ],
           "height - 1": [
-            "1058:37"
+            "1056:37"
           ],
           "scaleX + 0": [
-            "1059:68"
+            "1057:68"
           ],
           "scaleX - 0": [
-            "1059:94"
+            "1057:94"
           ],
           "scaleY + 0": [
-            "1060:70"
+            "1058:70"
           ],
           "scaleY - 0": [
-            "1060:97"
+            "1058:97"
           ],
           "phase - 0": [
-            "1118:31",
-            "1118:47",
-            "1148:39",
-            "1148:55",
-            "1164:39",
-            "1164:55"
+            "1116:31",
+            "1116:47",
+            "1146:39",
+            "1146:55",
+            "1162:39",
+            "1162:55"
           ],
           "object + 0x24": [
-            "1181:42"
+            "1179:42"
           ],
           "state + 4": [
-            "1297:48"
+            "1295:48"
           ],
           "now - 0xBB8": [
-            "1324:39"
+            "1322:39"
           ],
           "i - 1": [
-            "1485:26"
+            "1483:26"
           ],
           "i + 1": [
-            "1491:26"
+            "1489:26"
           ],
           "k + 1": [
-            "1547:57",
-            "1573:57"
+            "1545:57",
+            "1571:57"
           ],
           "k - 1": [
-            "1551:49"
+            "1549:49"
           ]
         }
       }
@@ -5055,6 +5061,7 @@
         "object_lookup.h",
         "object_target_search.h",
         "text_draw.h",
+        "text_image_configurations.h",
         "text_image_create.h",
         "text_panel.h",
         "voice_commands.h"
@@ -5065,80 +5072,80 @@
       "locations": {
         "raw_offset_candidates": {
           "object + 0x54": [
-            "99:50"
+            "97:50"
           ],
           "state + 4": [
-            "99:82"
+            "97:82"
           ],
           "target + 0x44": [
-            "122:43"
+            "120:43"
           ],
           "target + 0x48": [
-            "123:43"
+            "121:43"
           ],
           "target + 0x4C": [
-            "124:43"
+            "122:43"
           ],
           "nearby + 0x44": [
-            "125:43"
+            "123:43"
           ],
           "nearby + 0x48": [
-            "126:43"
+            "124:43"
           ],
           "nearby + 0x4C": [
-            "127:43"
+            "125:43"
           ],
           "target + 0x38": [
-            "142:34"
+            "140:34"
           ],
           "x0 - 10": [
-            "319:73"
+            "317:73"
           ],
           "y0 - 6": [
-            "319:97"
+            "317:97"
           ],
           "x1 + 8": [
-            "329:104"
+            "327:104"
           ],
           "y0 - 2": [
-            "330:58"
+            "328:58"
           ],
           "x0 - 8": [
-            "330:83"
+            "328:83"
           ],
           "images + 1": [
-            "337:20"
+            "335:20"
           ],
           "panel + 0xC": [
+            "361:21",
+            "362:21",
             "363:21",
-            "364:21",
-            "365:21",
-            "366:21"
+            "364:21"
           ],
           "off + 1": [
-            "364:35"
+            "362:35"
           ],
           "off + 2": [
-            "365:35"
+            "363:35"
           ],
           "off + 3": [
-            "366:35"
+            "364:35"
           ],
           "count + 1": [
-            "440:51"
+            "438:51"
           ],
           "panel + 0x14": [
-            "484:52",
-            "487:41"
+            "482:52",
+            "485:41"
           ],
           "panel + 0x18": [
-            "494:27"
+            "492:27"
           ],
           "panel + 0x10": [
-            "494:63"
+            "492:63"
           ],
           "panel + 4": [
-            "495:20"
+            "493:20"
           ]
         }
       }
@@ -6737,7 +6744,8 @@
       ],
       "matching_exceptions": {
         "systemMenuAppendDetailText": "The detail accumulator interface retains an unsigned byte-string view. Trials using const char *, including a local unsigned-byte view, changed allocated code. Isolate the compiler scheduling/register effect before changing the text interface; menu record and callback typing independently matches.",
-        "systemMenuInvokeChapterUpdate": "The legacy no-argument menu callback calls the one-argument chapter setter without supplying a chapter. Preserve its explicitly documented unprototyped call; a canonical setter prototype requires an invented argument or recovery of the menu callback ABI. The chapter-query header remains canonical."
+        "systemMenuInvokeChapterUpdate": "The legacy no-argument menu callback calls the one-argument chapter setter without supplying a chapter. Preserve its explicitly documented unprototyped call; a canonical setter prototype requires an invented argument or recovery of the menu callback ABI. The chapter-query header remains canonical.",
+        "gTextImageConfigurations": "The table contains 16-byte FontImage descriptors; other text consumers use the shared typed declaration. In this unit a typed declaration preserves ROM bytes but changes object relocation addends, even when original integer casts at image creation are restored. Retain its byte declaration pending relocation-level analysis of the menu font accesses."
       },
       "locations": {
         "raw_offset_candidates": {

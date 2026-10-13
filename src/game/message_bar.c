@@ -1,3 +1,4 @@
+#include "text_image_configurations.h"
 #include "text_window.h"
 #include "message_bar.h"
 #include "progress_value.h"
@@ -139,9 +140,6 @@ void voiceReactiveSpinnerUpdate(u8 *object) {
     }
 }
 
-/// Shared text-image configurations selected by text panels, menus and message styles.
-/// \note Original identifier: \c D_80074DE0 (0x80074DE0).
-extern u8 gTextImageConfigurations[];
 
 /// Prepare a text image for a queued display message.
 /// \param index Text-image slot to replace, from 0 through 2.
@@ -156,7 +154,7 @@ void messageBarPrepareImage(s32 index, QueuedMessage msg) {
     }
     TRACE("_setSprite:(%s) idx:%d\n", msg.text, index);
     textImageCreateFromText((TextImage **)(slot), (u8 *)((s8 *)msg.text),
-                            (FontImage *)((s32)(gTextImageConfigurations + msg.style * 16)));
+                            &gTextImageConfigurations[msg.style]);
 }
 
 /// Retained displayed message text used to coalesce repeated message requests.

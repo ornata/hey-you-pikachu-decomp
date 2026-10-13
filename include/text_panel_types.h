@@ -4,6 +4,7 @@
 #ifndef TEXT_PANEL_TYPES_H
 #define TEXT_PANEL_TYPES_H
 #include "text_image.h"
+#include "font_image_types.h"
 
 /// Scrolling panel owning line images and their display-order and color tables.
 /// Initialization establishes storage for capacity entries. ReleaseEntries releases
@@ -16,7 +17,7 @@ typedef struct TextPanel {
     s32 capacity;        ///< Number of entry slots, including the additional scroll line.
     TextImage **images;         ///< Display-order image pointers in the shared entry allocation.
     TextImage **entries;        ///< Circular image-entry pointers in the shared entry allocation.
-    void *configuration; ///< Borrowed font/text configuration, or null for defaults.
+    FontImage *configuration; ///< Borrowed font descriptor, or null for defaults.
 } TextPanel;
 
 typedef char TextPanelSizeCheck[(sizeof(TextPanel) == 0x20) ? 1 : -1];

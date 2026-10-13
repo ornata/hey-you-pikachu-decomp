@@ -1,3 +1,4 @@
+#include "text_image_configurations.h"
 #include "texture_animation_programs.h"
 #include "camera_visibility.h"
 #include "hud_draw.h"
@@ -683,9 +684,6 @@ void hudDrawMotionIndicators(Gfx **gdl) {
 }
 
 char *areaGetDisplayName(s32);                        /* extern */
-/// Shared text-image configurations selected by text panels, menus and message styles.
-/// \note Original identifier: \c D_80074DE0 (0x80074DE0).
-extern u8 gTextImageConfigurations[];
 /// Owned text-image handle for the current area name.
 /// \note Original identifier: \c D_80089460 (0x80089460).
 extern s32 gHudAreaLabelImage;
@@ -699,7 +697,7 @@ extern s32 gRuntimeCurrentArea;
 void hudInitializeAreaLabel(void) {
     gHudAreaLabelImage = 0;
     textImageCreateFromText((TextImage **)(&gHudAreaLabelImage), (u8 *)(areaGetDisplayName(gRuntimeCurrentArea)),
-                            (FontImage *)((s32)gTextImageConfigurations));
+                            gTextImageConfigurations);
 }
 
 /// Nonzero when the prepared current-area label is visible.

@@ -3477,3 +3477,15 @@ deactivation. Runtime, toolbox and main-loop consumers use these declarations.
 Deactivation retains resources; full completion releases displayed images and
 returns to gameplay. Provider transitions and Ghidra update at `0x8002C6A4`
 establish these distinctions without changing state storage or callback ABI.
+
+### Shared font configurations
+
+`text_image_configurations.h` declares resident `FontImage` descriptors reused
+by message bars, text windows, panels, HUD, title, collection and toolbox text.
+The scrolling panel's configuration pointer now uses that established type.
+The descriptor stride is 16 bytes; initialization, renderer consumers and Ghidra
+configuration selection at `0x80012CF0` support it. Complete table bounds remain
+unspecified. The system menu retains a byte view because typed declarations
+change strict relocation addends despite a ROM match; the ledger records the
+trial and the evidence still needed. Toolbox measurement retains the existing
+word-pointer boundary until that separate interface is recovered.

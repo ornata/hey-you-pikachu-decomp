@@ -1,3 +1,4 @@
+#include "text_image_configurations.h"
 #include "script_vm_globals.h"
 #include "story_chapter.h"
 #include "story_milestones.h"
@@ -53,9 +54,6 @@ extern s32 gTitleLogoImage, gTitleStartupPanelImage, gTitleSilhouetteImage;
 /// Owned text images for the eight title-screen menu labels.
 /// \note Original identifier: \c D_800F2570 (0x800F2570).
 extern TextImage *gTitleCursorImages[4], *gTitleMenuImages[8];
-/// Shared text-image configurations selected by text panels, menus and message styles.
-/// \note Original identifier: \c D_80074DE0 (0x80074DE0).
-extern u8 gTextImageConfigurations[];
 /// Load title-screen artwork and menu text and reset menu selections.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800341C0 (0x800341C0).
@@ -72,12 +70,12 @@ void titleScreenInitialize(void) {
     gTitleSilhouetteImage = (s32)assetAllocateAndLoad(&gTitleSilhouetteAsset);
     for (source = four.words, dest = gTitleCursorImages; source < four.words + 4; source++, dest++) {
         textImageCreateFromText((TextImage **)((u8 **)dest), (u8 *)(*source),
-                                (FontImage *)((s32 *)gTextImageConfigurations));
+                                gTextImageConfigurations);
     }
     dest = gTitleMenuImages;
     for (source = eight.words, end = eight.words + 8; source != end; source++, dest++) {
         textImageCreateFromText((TextImage **)((u8 **)dest), (u8 *)(*source),
-                                (FontImage *)((s32 *)gTextImageConfigurations));
+                                gTextImageConfigurations);
     }
 }
 

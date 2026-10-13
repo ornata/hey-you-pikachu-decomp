@@ -1,3 +1,4 @@
+#include "text_image_configurations.h"
 #include "text_window.h"
 #include "message_bar.h"
 #include "item_size.h"
@@ -764,9 +765,6 @@ void toolboxRestoreStoredObjects(u8 *table) {
 }
 
 void toolboxRestoreStoredObjects(u8 *);
-/// Shared text-image configurations selected by text panels, menus and message styles.
-/// \note Original identifier: \c D_80074DE0 (0x80074DE0).
-extern s32 gTextImageConfigurations[];
 /// Owned text images for the two toolbox row titles.
 /// \note Original identifier: \c D_800F1D28 (0x800F1D28).
 extern TextImage *gToolboxRowTitleImages[];
@@ -817,7 +815,7 @@ void toolboxCreateDisplayObjects(void) {
     for (i = 0; i < 2; i++) {
         gToolboxRowTitleImages[i] = 0;
         textImageCreateFromText((TextImage **)(&gToolboxRowTitleImages[i]), (u8 *)(gToolboxRowTitles[i]),
-                                (FontImage *)(gTextImageConfigurations));
+                                gTextImageConfigurations);
     }
     toolboxRestoreStoredObjects((u8 *)&gToolboxState);
 }
@@ -1002,7 +1000,7 @@ s32 textMeasureWithFont(char *, s32 *, s32);
 void toolboxDrawRowTitle(s32 address) {
     Gfx **gdl = (Gfx **)address;
     s32 row = gToolboxSelectedRow;
-    s32 width = textMeasureWithFont(gToolboxRowTitles[row], gTextImageConfigurations, 1);
+    s32 width = textMeasureWithFont(gToolboxRowTitles[row], (s32 *)gTextImageConfigurations, 1);
     gDPPipeSync((*gdl)++);
     gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
     gDPSetCombineMode((*gdl)++, G_CC_MODULATEI_PRIM, G_CC_MODULATEI_PRIM);

@@ -1,3 +1,4 @@
+#include "text_image_configurations.h"
 #include "text_window.h"
 #include "script_vm_globals.h"
 #include "object_types.h"
@@ -672,9 +673,6 @@ void presentationUpdateCardMode(void) {
     }
 }
 
-/// Shared text-image configurations selected by text panels, menus and message styles.
-/// \note Original identifier: \c D_80074DE0 (0x80074DE0).
-extern u8 gTextImageConfigurations[];
 /// Collection title text used to create the presentation title image.
 /// \note Original identifier: \c D_800F0B78 (0x800F0B78).
 extern u8 gCollectionPresentationTitleText[];
@@ -692,7 +690,7 @@ void presentationCreateCollectionTitleText(void) {
     sprintf(sp18, "%s", gCollectionPresentationTitleText);
     gCollectionPresentationTitleImage = 0;
     textImageCreateFromText((TextImage **)(&gCollectionPresentationTitleImage), (u8 *)(sp18),
-                            (FontImage *)(gTextImageConfigurations));
+                            gTextImageConfigurations);
 }
 
 /// Interior collection-value view of the item catalog, with a 116-byte stride.
@@ -727,7 +725,7 @@ void presentationSetCollectionItemText(u8 *object) {
             textImageDestroy((TextImage *)*slot);
             *slot = NULL;
         }
-        textImageCreateFromText((TextImage **)((s32 *)slot), (u8 *)(buffer), (FontImage *)(gTextImageConfigurations));
+        textImageCreateFromText((TextImage **)((s32 *)slot), (u8 *)(buffer), gTextImageConfigurations);
     }
 }
 
@@ -779,7 +777,7 @@ void presentationRefreshCollectionScoreText(void) {
         gCollectionPresentationScoreImage = 0;
     }
     textImageCreateFromText((TextImage **)(&gCollectionPresentationScoreImage), (u8 *)(sp20),
-                            (FontImage *)(gTextImageConfigurations));
+                            gTextImageConfigurations);
 }
 
 /// Draws the current collection score when its text is available.
@@ -1705,7 +1703,7 @@ void presentationInitializeForCurrentArea(void) {
         gPresentationAreaLabelImage = 0;
     } else {
         textImageCreateFromText((TextImage **)(&gPresentationAreaLabelImage), (u8 *)(regionName),
-                                (FontImage *)(gTextImageConfigurations));
+                                gTextImageConfigurations);
     }
     presentationCreateCollectionTitleText();
     gCollectionPresentationScore = 0;
