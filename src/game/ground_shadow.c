@@ -1,7 +1,8 @@
+#include "ground_shadow.h"
+#include "actor_parts.h"
 #include "terrain_height.h"
 #include "object_create.h"
 #include "heap_free.h"
-/* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "heap_alloc.h"
 #include "object_types.h"
@@ -9,12 +10,17 @@
 /// \note Original identifier: \c D_800F2960 (0x800F2960).
 extern HpHdr gGameHeap;
 
-typedef struct {
-    s32 count;
-    f32 spacing;
-    Gfx *displayList;
-    Vtx *vertices[2];
-} GridEffect;
+/// Owned terrain-conforming geometry and two frame-specific vertex views.
+typedef struct GroundShadowGrid {
+    s32 count;          ///< Vertices along each side of the square grid.
+    f32 spacing;        ///< Distance between vertices before object scaling.
+    Gfx *displayList;   ///< Owned rendering command allocation.
+    Vtx *vertices[2];   ///< Two frame views into one owned vertex allocation.
+} GroundShadowGrid;
+
+typedef char GroundShadowGridSizeCheck[(sizeof(GroundShadowGrid) == 0x14) ? 1 : -1];
+typedef char GroundShadowGridCommandsOffsetCheck[(((u32) & ((GroundShadowGrid *)0)->displayList) == 8) ? 1 : -1];
+typedef char GroundShadowGridVerticesOffsetCheck[(((u32) & ((GroundShadowGrid *)0)->vertices) == 0xC) ? 1 : -1];
 
 /// Conform the shadow surface to the terrain beneath its owner.
 /// \param obj Ground-shadow object with a valid owner.
@@ -24,7 +30,7 @@ typedef struct {
 /// \note UB: the original texture-coordinate divisions require count != 1.
 /// \note Original decompilation identifier: \c func_80036330 (0x80036330).
 void groundShadowUpdateVertices(u8 *obj, s32 buffer) {
-    GridEffect *grid;
+    GroundShadowGrid *grid;
     Vtx *vertex;
     s32 row;
     u8 *hit;
@@ -33,7 +39,7 @@ void groundShadowUpdateVertices(u8 *obj, s32 buffer) {
     f32 z;
     f32 height;
 
-    grid = *(GridEffect **)(obj + 0x54);
+    grid = *(GroundShadowGrid **)(obj + 0x54);
     hit = 0;
     vertex = grid->vertices[buffer];
     for (row = 0; row < grid->count; row++) {
@@ -79,17 +85,16 @@ void groundShadowUpdateVertices(u8 *, s32);
 /// \returns The shadow display-list address, or zero when shadows are suppressed.
 /// \note Original decompilation identifier: \c func_80036594 (0x80036594).
 s32 groundShadowPrepareDraw(u8 *object) {
-    u8 *d = *(u8 **)(object + 0x54);
+    GroundShadowGrid *grid = *(GroundShadowGrid **)(object + 0x54);
 
     if (gRuntimeGameMode == 4 || gRuntimeGameMode == 5 || gRuntimeGameMode == 8 || gRuntimeGameMode == 9) {
         return 0;
     }
     groundShadowUpdateVertices(object, gGraphicsFramebufferIndex);
-    gSPSegment(gRenderDisplayListCursor++, 3, osVirtualToPhysical(((u8 **)(d + 0xC))[gGraphicsFramebufferIndex]));
-    return *(s32 *)(d + 8);
+    gSPSegment(gRenderDisplayListCursor++, 3, osVirtualToPhysical(grid->vertices[gGraphicsFramebufferIndex]));
+    return (s32)grid->displayList;
 }
 
-u8 *actorGetDefaultPart(u8 *, u8 *);
 
 /// Keep the ground shadow positioned and scaled beneath its owner.
 /// \param object Ground-shadow object with a valid owner.
@@ -100,7 +105,7 @@ void groundShadowUpdateTransform(u8 *object) {
     u8 *t;
     f32 *s;
 
-    t = actorGetDefaultPart(*(u8 **)(object + 0x50), object);
+    t = actorGetDefaultPart(*(u8 **)(object + 0x50));
     s = *(f32 **)(object + 0x50);
     o[6] = *(f32 *)(t + 0x44);
     o[7] = *(f32 *)(t + 0x48);
@@ -116,9 +121,9 @@ void groundShadowUpdateTransform(u8 *object) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800366BC (0x800366BC).
 void groundShadowReleaseGeometry(u8 *object) {
-    u8 *shadowState = *(u8 **)(object + 0x54);
-    heapFreeLocal(&gGameHeap, *(void **)(shadowState + 8));
-    heapFreeLocal(&gGameHeap, *(void **)(shadowState + 0xC));
+    GroundShadowGrid *shadowState = *(GroundShadowGrid **)(object + 0x54);
+    heapFreeLocal(&gGameHeap, shadowState->displayList);
+    heapFreeLocal(&gGameHeap, shadowState->vertices[0]);
 }
 
 void _bzero(void *, s32);
@@ -147,7 +152,7 @@ extern u8 gGroundShadowIntensityTexture[];
 ///
 /// \note NONPORTABLE: paired texture setup commands share one line for IDO scheduling.
 /// \note Original decompilation identifier: \c func_8003674C (0x8003674C).
-void groundShadowBuildDisplayList(GridEffect *grid) {
+void groundShadowBuildDisplayList(GroundShadowGrid *grid) {
     Gfx *g;
     s32 row;
     s32 column;
@@ -184,7 +189,7 @@ void groundShadowBuildDisplayList(GridEffect *grid) {
 /// Object template used to create terrain-conforming ground shadows.
 /// \note Original identifier: \c D_8009B540 (0x8009B540).
 extern u8 gGroundShadowObjectTemplate[];
-void groundShadowBuildDisplayList(GridEffect *);
+void groundShadowBuildDisplayList(GroundShadowGrid *);
 
 /// Create a ground shadow with the requested grid resolution and spacing.
 /// \param count Number of vertices along each grid side; must exceed one and fit the renderer vertex limit.
@@ -193,14 +198,14 @@ void groundShadowBuildDisplayList(GridEffect *);
 /// \note Original decompilation identifier: \c func_800369D4 (0x800369D4).
 u8 *groundShadowCreate(s32 count, f32 spacing) {
     u8 *obj = objectCreateFromTemplate((ObjectTemplate *)gGroundShadowObjectTemplate);
-    u8 *d = *(u8 **)(obj + 0x54);
+    GroundShadowGrid *grid = *(GroundShadowGrid **)(obj + 0x54);
     s32 size;
 
-    *(s32 *)(d + 0) = count;
-    *(f32 *)(d + 4) = spacing;
+    grid->count = count;
+    grid->spacing = spacing;
     size = count * count * 0x10;
-    *(s32 *)(d + 0xC) = (s32)heapAllocLocal(&gGameHeap, size * 2, 0x11B);
-    *(s32 *)(d + 0x10) = *(s32 *)(d + 0xC) + size;
-    groundShadowBuildDisplayList((GridEffect *)d);
+    grid->vertices[0] = (Vtx *)heapAllocLocal(&gGameHeap, size * 2, 0x11B);
+    grid->vertices[1] = (Vtx *)((s32)grid->vertices[0] + size);
+    groundShadowBuildDisplayList(grid);
     return obj;
 }

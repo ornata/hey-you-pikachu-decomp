@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 1802,
-      "unique_spellings": 769,
+      "occurrences": 1793,
+      "unique_spellings": 765,
       "files": 72
     }
   },
@@ -397,6 +397,7 @@
         "actor_target.h",
         "actor_text.h",
         "asset_loader.h",
+        "ground_shadow.h",
         "heap_alloc.h",
         "heap_diagnostics.h",
         "heap_free.h",
@@ -429,109 +430,109 @@
       "locations": {
         "raw_offset_candidates": {
           "p + 0x18": [
-            "160:14"
-          ],
-          "p + 0x1C": [
             "161:14"
           ],
-          "p + 0x20": [
+          "p + 0x1C": [
             "162:14"
           ],
-          "p + 0x44": [
+          "p + 0x20": [
             "163:14"
           ],
-          "p + 0x48": [
+          "p + 0x44": [
             "164:14"
           ],
-          "p + 0x4C": [
+          "p + 0x48": [
             "165:14"
           ],
-          "p + 0x8": [
+          "p + 0x4C": [
             "166:14"
           ],
-          "p + 0x4": [
+          "p + 0x8": [
             "167:14"
           ],
-          "p + 0x0": [
+          "p + 0x4": [
             "168:14"
           ],
-          "p + 0x24": [
+          "p + 0x0": [
             "169:14"
           ],
+          "p + 0x24": [
+            "170:14"
+          ],
           "effectState + 1": [
-            "184:60"
+            "185:60"
           ],
           "effect + 0x54": [
-            "185:15",
-            "203:28",
-            "240:20",
-            "254:28"
+            "186:15",
+            "204:28",
+            "241:20",
+            "255:28"
           ],
           "effect + 0x44": [
-            "209:75",
-            "225:69"
+            "210:75",
+            "226:69"
           ],
           "effect + 0x48": [
-            "210:75",
-            "225:94"
+            "211:75",
+            "226:94"
           ],
           "effect + 0x4C": [
-            "211:75",
-            "225:119"
+            "212:75",
+            "226:119"
           ],
           "effect + 0x24": [
-            "212:23"
+            "213:23"
           ],
           "state + 1": [
-            "214:68",
-            "217:59"
+            "215:68",
+            "218:59"
           ],
           "obj + 0xC": [
-            "241:63"
+            "242:63"
           ],
           "effect + 0x30": [
-            "242:21"
+            "243:21"
           ],
           "effectState + 4": [
-            "259:68"
+            "260:68"
           ],
           "actor + 0x54": [
-            "292:21"
+            "293:21"
           ],
           "actor + 0x18": [
-            "296:18",
-            "300:43"
-          ],
-          "sp24 + 0x1EC": [
-            "296:43"
-          ],
-          "actor + 0x1C": [
             "297:18",
-            "299:18",
-            "299:68",
             "301:43"
           ],
-          "sp24 + 0x1F0": [
+          "sp24 + 0x1EC": [
             "297:43"
           ],
-          "actor + 0x20": [
+          "actor + 0x1C": [
             "298:18",
+            "300:18",
+            "300:68",
             "302:43"
           ],
-          "sp24 + 0x1F4": [
+          "sp24 + 0x1F0": [
             "298:43"
           ],
-          "actor + 0x24": [
+          "actor + 0x20": [
+            "299:18",
+            "303:43"
+          ],
+          "sp24 + 0x1F4": [
             "299:43"
           ],
-          "actor + 0x44": [
-            "300:18"
+          "actor + 0x24": [
+            "300:43"
           ],
-          "actor + 0x48": [
+          "actor + 0x44": [
             "301:18"
           ],
-          "actor + 0x4C": [
+          "actor + 0x48": [
             "302:18"
+          ],
+          "actor + 0x4C": [
+            "303:18"
           ],
           "kind - 1": [
             "637:72",
@@ -1929,103 +1930,80 @@
     },
     "src/game/ground_shadow.c": {
       "known_views": [
+        "actor_parts.h",
+        "ground_shadow.h",
         "heap_alloc.h",
         "heap_free.h",
         "object_create.h",
         "object_types.h",
         "terrain_height.h"
       ],
-      "matching_exceptions": {
-        "actorGetDefaultPart caller": "The ROM call passes an unused second object pointer to the one-argument default-part query. Its first actor argument and returned borrowed part pointer agree with actor_parts.h; retain the local two-argument ABI declaration to preserve argument setup."
-      },
+      "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "obj + 0x54": [
-            "36:29",
-            "196:22"
+            "42:35",
+            "201:53"
           ],
           "count - 1": [
-            "43:35",
-            "44:38",
-            "53:56",
-            "54:59",
-            "171:31",
-            "173:41"
+            "49:35",
+            "50:38",
+            "59:56",
+            "60:59",
+            "176:31",
+            "178:41"
           ],
           "obj + 0x18": [
-            "45:57"
+            "51:57"
           ],
           "obj + 0": [
-            "45:80"
+            "51:80"
           ],
           "obj + 0x1C": [
-            "45:103",
-            "48:36"
+            "51:103",
+            "54:36"
           ],
           "obj + 0x20": [
-            "46:49"
+            "52:49"
           ],
           "obj + 8": [
-            "46:72"
+            "52:72"
           ],
           "obj + 0x50": [
-            "47:56"
+            "53:56"
           ],
           "height + 0": [
-            "50:42"
+            "56:42"
           ],
           "obj + 4": [
-            "50:69"
+            "56:69"
           ],
           "object + 0x54": [
-            "82:22",
-            "119:32"
-          ],
-          "d + 0xC": [
-            "88:76",
-            "202:14",
-            "203:35"
-          ],
-          "d + 8": [
-            "89:21"
+            "88:53",
+            "124:60"
           ],
           "object + 0x50": [
-            "103:38",
-            "104:19"
+            "108:38",
+            "109:19"
           ],
           "t + 0x44": [
-            "105:21"
+            "110:21"
           ],
           "t + 0x48": [
-            "106:21"
+            "111:21"
           ],
           "t + 0x4C": [
-            "107:21"
+            "112:21"
           ],
           "object + 0x20": [
-            "111:55"
-          ],
-          "shadowState + 8": [
-            "120:42"
-          ],
-          "shadowState + 0xC": [
-            "121:42"
+            "116:55"
           ],
           "index + 1": [
-            "174:39"
+            "179:39"
           ],
           "count + 1": [
-            "174:64",
-            "174:99"
-          ],
-          "d + 0": [
-            "199:14"
-          ],
-          "d + 4": [
-            "200:14"
-          ],
-          "d + 0x10": [
-            "203:14"
+            "179:64",
+            "179:99"
           ]
         }
       }

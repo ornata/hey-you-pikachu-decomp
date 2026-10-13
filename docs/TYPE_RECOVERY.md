@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 1,802 / 72 |
+| Raw offset candidates | 4,040 / 86 | 1,793 / 72 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -4022,3 +4022,12 @@ prefixes. Sample data remains cartridge-backed while bank metadata is in RAM.
 The variable-length bank instrument cursor retains its documented byte view
 and 32-bit offset arithmetic. All recovered representations pass strict object
 comparison, without changing external audio declarations or compiler settings.
+
+### Ground-shadow geometry ownership
+
+Ground-shadow creation, drawing and cleanup now share one checked private
+`GroundShadowGrid` layout, distinguishing the owned display list from two frame
+views into a single vertex allocation. `ground_shadow.h` shares creation with
+actor configuration and documents resolution, owner attachment and object
+lifetime. Transform updates use the canonical one-argument actor-part query;
+removing the unused second argument preserves all allocated bytes and relocations.

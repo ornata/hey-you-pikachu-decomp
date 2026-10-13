@@ -106,9 +106,6 @@
     "src/game/flipbook_messenger.c": {
       "actorGetDefaultPart caller": "The canonical actor-part interface accepts an actor pointer. Including that prototype and casting the integer gPikachuActor view changes this caller ROM bytes under IDO. Retain its s32 compatibility declaration until a matching pointer representation is established."
     },
-    "src/game/ground_shadow.c": {
-      "actorGetDefaultPart caller": "The ROM call passes an unused second object pointer to the one-argument default-part query. Its first actor argument and returned borrowed part pointer agree with actor_parts.h; retain the local two-argument ABI declaration to preserve argument setup."
-    },
     "src/game/actor_movement.c": {
       "actorApproachTargetInThreeDimensions": "The shared maze root is MazeNode*. Bounds reads at checked MazeNode x/w/z/d offsets retain explicit byte views: direct member reads change allocated instructions under IDO. The canonical root ownership and allocation are established; a matching direct-field representation remains to be recovered."
     },

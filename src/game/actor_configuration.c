@@ -1,3 +1,4 @@
+#include "ground_shadow.h"
 #include "texture_setup.h"
 #include "pikachu_actor.h"
 #include "vector_metrics.h"
@@ -575,7 +576,6 @@ u8 *actorAssetGetCachedStorage(s32 kind) {
 void objectPrepareDistributedKindSearches(u16, s32);
 void actorInitializeAnimatedTextures(u8 *, s32 *);
 u8 *orbitFollowerCreate(u8 *, f32, f32, f32);
-u8 *groundShadowCreate(s32, f32);
 /// Separate symbol view of the actor-kind configuration for Pikachu, kind 0x25.
 /// \note Original identifier: \c D_80088BEC (0x80088BEC).
 extern u8 gPikachuKindConfiguration[];
