@@ -3469,3 +3469,11 @@ the existing `ValueTrack` layout rather than a duplicate three-word record.
 Unused text-window declarations in the collision unit were removed. Ghidra page
 preparation at `0x8002C03C` and provider readers/writers confirm continuation
 roles; pointer recovery passes both the ROM gate and strict object comparison.
+
+Text-window lifecycle phases now use private named constants for opening,
+awaiting input, changing pages, closing and inactivity. The shared presentation
+header also covers initialization, update, embedded drawing, mode drawing and
+deactivation. Runtime, toolbox and main-loop consumers use these declarations.
+Deactivation retains resources; full completion releases displayed images and
+returns to gameplay. Provider transitions and Ghidra update at `0x8002C6A4`
+establish these distinctions without changing state storage or callback ABI.

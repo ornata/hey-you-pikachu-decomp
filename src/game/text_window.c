@@ -43,6 +43,15 @@ extern s32 gTextWindowHistoryWriteIndex;
 /// Oldest retained boundary in the window page-history ring.
 /// \note Original identifier: \c D_800F1AB8 (0x800F1AB8).
 extern s32 gTextWindowHistoryOldestIndex;
+/// Phases of the shared text-window presentation lifecycle.
+typedef enum TextWindowState {
+    TEXT_WINDOW_OPENING = 0,       ///< Window opening transition.
+    TEXT_WINDOW_AWAITING_INPUT = 1, ///< Current page is ready for advance input.
+    TEXT_WINDOW_CHANGING_PAGE = 2, ///< Transition to the next page.
+    TEXT_WINDOW_CLOSING = 3,       ///< Window closing transition.
+    TEXT_WINDOW_INACTIVE = 4       ///< No active window presentation.
+} TextWindowState;
+
 /// Current shared text-window transition state; four is inactive.
 /// \note Original identifier: \c D_800F1AC0 (0x800F1AC0).
 extern s32 gTextWindowState;
@@ -66,7 +75,7 @@ void textWindowInitialize(void) {
     gTextWindowSceneViewMode = 0;
     gTextWindowTextStyle = 0;
     gTextWindowIndicator = 1;
-    gTextWindowState = 4;
+    gTextWindowState = TEXT_WINDOW_INACTIVE;
     for (i = 0; i < 6; i++) {
         animationIntegerTrackInitialize(&gTextWindowInitializedIndicatorTracks[i], gTextureFrameAnimationPrograms[gTextWindowIndicatorAnimationIds[i]]);
     }
@@ -250,7 +259,7 @@ void textWindowDrawPage(Gfx **gdl) {
     textDrawReset();
     textDrawSetPalette(gDefaultTextPalette);
     textDrawGetDisplayListCursor(gdl);
-    if (gTextWindowState == 2) {
+    if (gTextWindowState == TEXT_WINDOW_CHANGING_PAGE) {
         textWindowDrawPageAt(
             gdl, 0x35, 0x53,
             mathMapRangeClamped(0.0f, 255.0f, 90.0f, 10.0f,
@@ -399,7 +408,7 @@ void textWindowFinish(void) {
             gTextWindowPageImages[i][j] = 0;
         }
     }
-    gTextWindowState = 4;
+    gTextWindowState = TEXT_WINDOW_INACTIVE;
     runtimeRequestGameModeChange(0);
     playerSetControllerPort(0);
 }
@@ -443,11 +452,11 @@ void textWindowResetText(void);
 /// \returns 1 when opened, or 0 when a text window is already active.
 /// \note Original decompilation identifier: \c func_8002C348 (0x8002C348).
 s32 textWindowOpen(s32 indicator, s32 style, s32 viewMode) {
-    if (gTextWindowState != 4) {
+    if (gTextWindowState != TEXT_WINDOW_INACTIVE) {
         return 0;
     }
     textWindowResetText();
-    textWindowSetState(0);
+    textWindowSetState(TEXT_WINDOW_OPENING);
     gTextWindowIndicator = indicator;
     gTextWindowSceneViewMode = viewMode;
     gTextWindowTextStyle = style;
@@ -492,7 +501,7 @@ s32 textWindowShowFirstPage(void) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002C43C (0x8002C43C).
 void textWindowDeactivate(void) {
-    gTextWindowState = 4;
+    gTextWindowState = TEXT_WINDOW_INACTIVE;
 }
 
 void objectDrawGroup(s32);
@@ -519,18 +528,18 @@ void textWindowDrawFrame(void) {
     gDPPipeSync(gRenderDisplayListCursor++);
     gDPSetCycleType(gRenderDisplayListCursor++, G_CYC_1CYCLE);
     switch ((u32)gTextWindowState) {
-    case 1:
+    case TEXT_WINDOW_AWAITING_INPUT:
         textWindowDrawBackground(&gRenderDisplayListCursor, 0xAA);
         textWindowDrawIndicator(&gRenderDisplayListCursor, 0xFF);
         textWindowDrawPage(&gRenderDisplayListCursor);
         textWindowDrawPrompt(&gRenderDisplayListCursor);
         break;
-    case 2:
+    case TEXT_WINDOW_CHANGING_PAGE:
         textWindowDrawBackground(&gRenderDisplayListCursor, 0xAA);
         textWindowDrawIndicator(&gRenderDisplayListCursor, 0xFF);
         textWindowDrawPage(&gRenderDisplayListCursor);
         break;
-    case 0:
+    case TEXT_WINDOW_OPENING:
         v = 0xFF * (runtimeGetElapsedMilliseconds() - (u64)gTextWindowStateStartMilliseconds) / 0x12C;
         if (v < 0) {
             v = 0;
@@ -540,7 +549,7 @@ void textWindowDrawFrame(void) {
         textWindowDrawBackground(&gRenderDisplayListCursor, v / 2, v);
         textWindowDrawIndicator(&gRenderDisplayListCursor, v);
         break;
-    case 3:
+    case TEXT_WINDOW_CLOSING:
         v = 0xFF * (0x12C - runtimeGetElapsedMilliseconds() + gTextWindowStateStartMilliseconds) / 0x12C;
         if (v < 0) {
             v = 0;
@@ -550,7 +559,7 @@ void textWindowDrawFrame(void) {
         textWindowDrawBackground(&gRenderDisplayListCursor, v / 2, v);
         textWindowDrawIndicator(&gRenderDisplayListCursor, v);
         break;
-    case 4:
+    case TEXT_WINDOW_INACTIVE:
         break;
     }
 }
@@ -574,34 +583,34 @@ extern s32 gControllerInputState, gControllerPrimaryPressedButtons, gControllerP
 void textWindowUpdate(void) {
     s32 i;
     switch ((u32)gTextWindowState) {
-    case 4:
+    case TEXT_WINDOW_INACTIVE:
         break;
-    case 1:
+    case TEXT_WINDOW_AWAITING_INPUT:
         if (gControllerPrimaryRepeatedButtons & 0x8000) {
             if (gTextWindowContinuation == 0)
-                textWindowSetState(3);
+                textWindowSetState(TEXT_WINDOW_CLOSING);
             else
-                textWindowSetState(2);
+                textWindowSetState(TEXT_WINDOW_CHANGING_PAGE);
         }
         gControllerPrimaryRepeatedButtons = 0;
         gControllerPrimaryReleasedButtons = 0;
         gControllerPrimaryPressedButtons = 0;
         gControllerInputState = 0;
         break;
-    case 2:
+    case TEXT_WINDOW_CHANGING_PAGE:
         if (runtimeGetElapsedMilliseconds() - (u64)gTextWindowStateStartMilliseconds > 90) {
             gTextWindowContinuation = textWindowShowPage((u8 *)gTextWindowContinuation);
             runtimeResetUiPulse();
-            textWindowSetState(1);
+            textWindowSetState(TEXT_WINDOW_AWAITING_INPUT);
         }
         break;
-    case 0:
+    case TEXT_WINDOW_OPENING:
         if (runtimeGetElapsedMilliseconds() - (u64)gTextWindowStateStartMilliseconds > 300) {
             runtimeResetUiPulse();
-            textWindowSetState(1);
+            textWindowSetState(TEXT_WINDOW_AWAITING_INPUT);
         }
         break;
-    case 3:
+    case TEXT_WINDOW_CLOSING:
         if (runtimeGetElapsedMilliseconds() - (u64)gTextWindowStateStartMilliseconds > 300)
             textWindowFinish();
         break;

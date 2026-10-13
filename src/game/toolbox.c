@@ -1218,7 +1218,6 @@ void cameraUpdateOverlayColors(s32, s32);
 void cameraDrawOverlay(s32);
 void cameraDrawSecondaryOverlay(s32);
 void objectDrawHierarchyGroup(s32, s32);
-void textWindowDrawEmbedded(void);
 void toolboxDrawRowTitle(s32);
 void toolboxDrawNavigation(s32);
 
@@ -1366,7 +1365,6 @@ void toolboxFinishClosing(void) {
     }
 }
 
-void textWindowDeactivate(void);
 void toolboxConfirmItemTransfer(u8 *);
 /// Primary controller new and auto-repeated button presses; aliases the repeated word of the processed sample.
 /// \note Original identifier: \c D_800AD54C (0x800AD54C).

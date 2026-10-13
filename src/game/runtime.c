@@ -1,3 +1,4 @@
+#include "text_window.h"
 #include "message_bar.h"
 #include "actor_assets.h"
 #include "story_milestones.h"
@@ -363,7 +364,6 @@ void micRequestRecognitionFollowsTrigger(s32);                   /* extern */
 void micRequestTriggerButtons(s32, s32);          /* extern */
 void objectSystemInitialize();                          /* extern */
 void presentationInitializeForCurrentArea();                          /* extern */
-void textWindowInitialize();                          /* extern */
 void toolboxCreateDisplayObjects();                          /* extern */
 void backdropAllocateViewBuffer(s32, u32, u32); /* extern */
 void backdropSelectForView(s32, s32, s32);     /* extern */
@@ -629,7 +629,6 @@ void audioStopCategories(s32, f64);
 void hudPlayerUpdateNoOp(s32);                /* extern */
 void presentationUpdateCardMode();                   /* extern */
 void presentationUpdateCollectionResultsMode();                   /* extern */
-void textWindowUpdate();                   /* extern */
 void wholeMapUpdate();                   /* extern */
 void toolboxHandleInput();                   /* extern */
 void toolboxUpdateDisplay();                   /* extern */

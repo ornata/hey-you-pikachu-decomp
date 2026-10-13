@@ -30,4 +30,31 @@ s32 textWindowShowFirstPage(void);
 /// \note Original identifier: \c func_8002C874 (0x8002C874).
 void textWindowEnterMode(void);
 
+/// Initialize window storage and history before retaining text-image resources.
+/// \returns Nothing.
+/// \note Original identifier: \c func_8002B6B0 (0x8002B6B0).
+void textWindowInitialize(void);
+
+/// Advance window transitions and input, including scene updates when enabled.
+/// \returns Nothing.
+/// \note Original identifier: \c func_8002C6A4 (0x8002C6A4).
+void textWindowUpdate(void);
+
+/// Draw the text-window game mode with its scene and active window transition.
+/// \returns Nothing.
+/// \note Requires the active graphics command list and initialized scene rendering.
+/// \note Original identifier: \c func_8002C44C (0x8002C44C).
+void textWindowDrawFrame(void);
+
+/// Draw window text and its prompt within the current screen.
+/// \returns Nothing.
+/// \note Requires prepared page images and the active graphics command list.
+/// \note Original identifier: \c func_8002C3BC (0x8002C3BC).
+void textWindowDrawEmbedded(void);
+
+/// Mark the window inactive while retaining its text resources.
+/// \returns Nothing.
+/// \note Original identifier: \c func_8002C43C (0x8002C43C).
+void textWindowDeactivate(void);
+
 #endif

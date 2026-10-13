@@ -1,3 +1,4 @@
+#include "text_window.h"
 #include "message_bar.h"
 #include "matrix_point.h"
 #include "camera_interface.h"
@@ -869,7 +870,6 @@ void presentationDrawCollectionScreen(Gfx **);
 void eyeCatchDraw(Gfx **);
 void runtimeDrawPromptPanel(void);
 void toolboxDrawFrame(s32);
-void textWindowDrawFrame(void);
 void wholeMapDraw(Gfx **);
 void fontCacheReleaseUses(void);
 void romCacheReleaseUses(u8 *);
