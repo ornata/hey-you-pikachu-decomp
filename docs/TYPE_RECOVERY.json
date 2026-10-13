@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 2031,
-      "unique_spellings": 850,
+      "occurrences": 2017,
+      "unique_spellings": 840,
       "files": 76
     }
   },
@@ -1215,71 +1215,32 @@
         "heap_free.h",
         "object_create.h",
         "object_lifecycle.h",
-        "object_types.h"
+        "object_types.h",
+        "vector3_types.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
-          "object + 0x18": [
-            "161:31"
-          ],
-          "object + 0x54": [
-            "170:31"
-          ],
-          "soundState + 4": [
-            "171:32"
-          ],
           "obj + 0x36": [
-            "200:14"
-          ],
-          "obj + 0x54": [
-            "201:19"
+            "219:14"
           ],
           "obj + 0x18": [
-            "202:14"
+            "221:14"
           ],
           "obj + 0x1C": [
-            "203:14"
+            "222:14"
           ],
           "obj + 0x20": [
-            "204:14"
+            "223:14"
           ],
           "obj + 0x44": [
-            "205:14"
+            "224:14"
           ],
           "obj + 0x48": [
-            "206:14"
+            "225:14"
           ],
           "obj + 0x4C": [
-            "207:14"
-          ],
-          "fx + 0": [
-            "208:14"
-          ],
-          "fx + 8": [
-            "209:14"
-          ],
-          "fx + 0xC": [
-            "210:14"
-          ],
-          "fx + 0x10": [
-            "211:14"
-          ],
-          "fx + 0x14": [
-            "212:14"
-          ],
-          "fx + 0x18": [
-            "213:14"
-          ],
-          "fx + 0x24": [
-            "215:18",
-            "217:18"
-          ],
-          "fx + 0x1C": [
-            "220:18"
-          ],
-          "fx + 0x20": [
-            "221:18"
+            "226:14"
           ]
         }
       }

@@ -1,4 +1,5 @@
 #include "audio_playback_query.h"
+#include "vector3_types.h"
 #include "camera_types.h"
 #include "audio_spatial.h"
 #include "object_create.h"
@@ -20,28 +21,47 @@ extern HpHdr gGameHeap;
     (dst).x = (src).x;                                                                                                 \
     (dst).y = (src).y;                                                                                                 \
     (dst).z = (src).z
-typedef struct {
-    f32 x, y, z;
-} Vec3fS;
-typedef struct {
-    s32 unk0;
-    s32 voice;
-    f32 delay;
-    f32 delayRange;
-    s32 first;
-    s32 second;
-    f32 probability;
-    s32 count;
-    void *src;
-    f32 timer;
-} Ext347D0;
+/// Playback routing selected by an ambient emitter.
+typedef enum AmbientAudioPlaybackKind {
+    AMBIENT_AUDIO_SOUND_EFFECT = 0, ///< Start an individual sound effect.
+    AMBIENT_AUDIO_PLAY_CUE = 1,     ///< Start a cue.
+    AMBIENT_AUDIO_CHANGE_CUE = 2    ///< Replace the current cue.
+} AmbientAudioPlaybackKind;
+
+/// Owned ambient playback state borrowing its array of spatial source positions.
+typedef struct AmbientAudioState {
+    s32 playbackKind; ///< AmbientAudioPlaybackKind routing selector.
+    s32 voice;        ///< Active playback handle, or zero.
+    f32 delay;        ///< Minimum interval between playback starts in seconds.
+    f32 delayRange;   ///< Additional randomized interval range in seconds.
+    s32 first;        ///< First candidate sound or cue identifier.
+    s32 second;       ///< Second candidate sound or cue identifier.
+    f32 probability;  ///< Probability of selecting the first candidate.
+    s32 count;        ///< Number of borrowed spatial source positions.
+    Vec3f *src;       ///< Borrowed source positions, or null to disable spatial mixing.
+    f32 timer;        ///< Seconds remaining before the next playback start.
+} AmbientAudioState;
+
+typedef char AmbientAudioStateSizeCheck[(sizeof(AmbientAudioState) == 0x28) ? 1 : -1];
+#define AMBIENT_STATE_OFFSET_CHECK(field, offset)                                                                      \
+    typedef char AmbientAudio_##field##OffsetCheck[(((u32) & ((AmbientAudioState *)0)->field) == (offset)) ? 1 : -1]
+AMBIENT_STATE_OFFSET_CHECK(voice, 0x4);
+AMBIENT_STATE_OFFSET_CHECK(delay, 0x8);
+AMBIENT_STATE_OFFSET_CHECK(delayRange, 0xC);
+AMBIENT_STATE_OFFSET_CHECK(first, 0x10);
+AMBIENT_STATE_OFFSET_CHECK(second, 0x14);
+AMBIENT_STATE_OFFSET_CHECK(probability, 0x18);
+AMBIENT_STATE_OFFSET_CHECK(count, 0x1C);
+AMBIENT_STATE_OFFSET_CHECK(src, 0x20);
+AMBIENT_STATE_OFFSET_CHECK(timer, 0x24);
+#undef AMBIENT_STATE_OFFSET_CHECK
 typedef struct {
     u8 pad0[0x18];
-    Vec3fS pos;
+    Vec3f pos;
     u8 pad24[0x20];
-    Vec3fS prev;
+    Vec3f prev;
     u8 pad50[4];
-    Ext347D0 *ext;
+    AmbientAudioState *ext;
 } Obj347D0;
 void audioSetSoundEffectVolume(s32, s32);
 void audioSetSoundEffectPan(s32, s32);
@@ -51,19 +71,19 @@ s32 audioPlaySoundEffect(s32);
 /// \param ext Ambient emitter state to update.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80033BD0 (0x80033BD0).
-void ambientAudioPlayNextSound(Ext347D0 *ext) {
+void ambientAudioPlayNextSound(AmbientAudioState *ext) {
     s32 sound;
     ext->timer = randomNext() * (1.0 / 4294967296.0) * ext->delayRange + ext->delay;
     sound = randomNext() * (1.0 / 4294967296.0) < ext->probability ? ext->first : ext->second;
-    switch (ext->unk0) {
-    case 0:
+    switch (ext->playbackKind) {
+    case AMBIENT_AUDIO_SOUND_EFFECT:
         audioStopPlayback(ext->voice, 0.0);
         ext->voice = audioPlaySoundEffect(sound);
         break;
-    case 1:
+    case AMBIENT_AUDIO_PLAY_CUE:
         ext->voice = audioPlayCue(sound);
         break;
-    case 2:
+    case AMBIENT_AUDIO_CHANGE_CUE:
         ext->voice = audioChangeCurrentCue(sound, 1.0, 1.0);
         break;
     }
@@ -86,10 +106,10 @@ extern f32 gAmbientAudioMixGain;
 /// \note A zero total source volume produces an undefined pan conversion;
 /// callers must ensure that the sources have a nonzero combined volume.
 /// \note Original decompilation identifier: \c func_80033D20 (0x80033D20).
-void ambientAudioGetSpatialMix(Ext347D0 *ext, s32 *volume, s32 *pan) {
+void ambientAudioGetSpatialMix(AmbientAudioState *ext, s32 *volume, s32 *pan) {
     s32 left;
     s32 right;
-    Vec3fS *pos;
+    Vec3f *pos;
     s32 i;
     s32 sampleVolume;
     s32 samplePan;
@@ -113,7 +133,6 @@ void ambientAudioGetSpatialMix(Ext347D0 *ext, s32 *volume, s32 *pan) {
         *pan = 256;
 }
 
-void ambientAudioGetSpatialMix(Ext347D0 *, s32 *, s32 *);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
@@ -123,7 +142,7 @@ extern f32 gRuntimeFrameSeconds;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80033F20 (0x80033F20).
 void ambientAudioUpdate(Obj347D0 *obj) {
-    Ext347D0 *ext;
+    AmbientAudioState *ext;
     s32 sp28;
     s32 sp24;
 
@@ -157,8 +176,8 @@ void ambientAudioInitialize(u8 *object) {
 
     sp1C = heapAllocLocal(&gGameHeap, 0x28, 0x8E);
     _bzero(sp1C, 0x28);
-    ((Ext347D0 *)sp1C)->count = 1;
-    ((Ext347D0 *)sp1C)->src = object + 0x18;
+    ((AmbientAudioState *)sp1C)->count = 1;
+    ((AmbientAudioState *)sp1C)->src = (Vec3f *)((RuntimeObjectPrefix *)object)->position;
     ((RuntimeObjectPrefix *)object)->state.bytes = sp1C;
 }
 
@@ -167,8 +186,8 @@ void ambientAudioInitialize(u8 *object) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80034050 (0x80034050).
 void ambientAudioDestroy(u8 *object) {
-    u8 *soundState = *(u8 **)(object + 0x54);
-    audioStopPlayback(*(s32 *)(soundState + 4), 0.0);
+    AmbientAudioState *soundState = ((RuntimeObjectPrefix *)object)->state.pointer;
+    audioStopPlayback(soundState->voice, 0.0);
     heapFreeLocal(&gGameHeap, soundState);
 }
 
@@ -195,30 +214,30 @@ extern u8 gAmbientAudioEmitterTemplate[];
 u8 *ambientAudioCreate(f32 *position, s32 kind, f32 delay, f32 delayRange, s32 firstSound, s32 secondSound,
                        f32 firstProbability, s32 sourceCount, s32 sourcePositions) {
     u8 *obj = objectCreateFromTemplate((ObjectTemplate *)gAmbientAudioEmitterTemplate);
-    u8 *fx;
+    AmbientAudioState *fx;
 
     *(u16 *)(obj + 0x36) |= 0x100;
-    fx = *(u8 **)(obj + 0x54);
+    fx = ((RuntimeObjectPrefix *)obj)->state.pointer;
     *(f32 *)(obj + 0x18) = position[0];
     *(f32 *)(obj + 0x1C) = position[1];
     *(f32 *)(obj + 0x20) = position[2];
     *(f32 *)(obj + 0x44) = position[0];
     *(f32 *)(obj + 0x48) = position[1];
     *(f32 *)(obj + 0x4C) = position[2];
-    *(s32 *)(fx + 0) = kind;
-    *(f32 *)(fx + 8) = delay;
-    *(f32 *)(fx + 0xC) = delayRange;
-    *(s32 *)(fx + 0x10) = firstSound;
-    *(s32 *)(fx + 0x14) = secondSound;
-    *(f32 *)(fx + 0x18) = firstProbability;
+    fx->playbackKind = kind;
+    fx->delay = delay;
+    fx->delayRange = delayRange;
+    fx->first = firstSound;
+    fx->second = secondSound;
+    fx->probability = firstProbability;
     if (delay > 30.0f) {
-        *(f32 *)(fx + 0x24) = 0.0f;
+        fx->timer = 0.0f;
     } else {
-        *(f32 *)(fx + 0x24) = delay / 2;
+        fx->timer = delay / 2;
     }
     if (sourceCount >= 0 || sourcePositions != 0) {
-        *(s32 *)(fx + 0x1C) = sourceCount;
-        *(s32 *)(fx + 0x20) = sourcePositions;
+        fx->count = sourceCount;
+        fx->src = (Vec3f *)sourcePositions;
     }
     objectMakeHierarchyRoot(obj);
     objectRegisterActiveHierarchy(obj);
