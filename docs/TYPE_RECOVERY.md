@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,705 / 79 |
+| Raw offset candidates | 4,040 / 86 | 2,668 / 79 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3332,3 +3332,16 @@ position and display-list members. Camera-distance evaluation uses the checked
 `MatrixCamera.eye` layout instead of a 56-float array view. Ghidra 0x800132E0
 confirms anchor world position, camera-relative distance and owner size inputs.
 Every provider conversion and all three consumer rebuilds preserve strict objects.
+
+### Linked-effect motion and appearance state
+
+The private checked 0x58-byte `LinkedEffectState` names owned motion state,
+borrowed neighbors, target handle, playback rate and contact handoff. Two float
+arrays become `ValueTrack` frame/opacity records. The documented callback receives
+an output velocity and returns one to bypass damping and neighbor pulls; Ghidra
+0x8001C9D8 confirms that contract. Ghidra 0x8001CD24 confirms contact consumption
+and transfer to the next effect. Allocation and initialization derive their
+extent from the state type, while motion, teardown and appearance use its named
+fields and checked offsets. Three redundant declarations are removed; arithmetic,
+neighbor unlink ordering and callback ABI remain unchanged. All isolated
+source-unit conversions preserve strict objects.

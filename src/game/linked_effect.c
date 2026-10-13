@@ -1,3 +1,6 @@
+/// \file
+/// Maintains linked animated effects with neighbor constraints and target motion.
+
 #include "opacity_animation_programs.h"
 #include "texture_animation_programs.h"
 #include "actor_meters.h"
@@ -16,27 +19,42 @@
 #include "game_heap.h"
 #include "object_types.h"
 
-/// Owned motion, neighbor constraints and animated appearance of one linked effect.
-typedef struct MotionState {
-    f32 elapsed;
-    u8 *previous;
-    u8 *next;
-    f32 spacing;
-    f32 previousPull;
-    f32 nextPull;
-    f32 damping;
-    f32 velocity[3];
-    s32 (*callback)(u8 *, f32 *);
-    s32 target;
-    f32 speed;
-    f32 rate;
-    f32 channelA[3];
-    f32 channelB[3];
-    u8 color[4];
-    s32 head;
-} MotionState;
+/// Compute a linked effect's requested velocity.
+/// \param object Effect with initialized private state.
+/// \param velocity Writable three-component motion output.
+/// \returns One to use this motion alone, or another value to add damping and neighbor pulls.
+typedef s32 (*LinkedEffectMotionCallback)(u8 *object, f32 *velocity);
 
-typedef char LinkedEffectMotionStateSizeCheck[(sizeof(MotionState) == 0x58) ? 1 : -1];
+/// Owned motion, neighbor constraints and animated appearance of one linked effect.
+typedef struct LinkedEffectState {
+    f32 elapsed; ///< Seconds accumulated since creation.
+    u8 *previous; ///< Borrowed preceding effect, or null.
+    u8 *next; ///< Borrowed following effect, or null.
+    f32 spacing; ///< Allowed separation from the following effect.
+    f32 previousPull; ///< Strength of correction toward the preceding effect.
+    f32 nextPull; ///< Strength of correction toward the following effect.
+    f32 damping; ///< Fraction of retained velocity used during constrained motion.
+    f32 velocity[3]; ///< Retained motion vector.
+    LinkedEffectMotionCallback callback; ///< Optional motion policy; null uses constrained motion alone.
+    s32 targetHandle; ///< Object-manager target identifier.
+    f32 speed; ///< Limit applied to target-directed motion.
+    f32 playbackRate; ///< Time multiplier for both appearance tracks.
+    ValueTrack frameTrack; ///< Texture-frame track borrowing resident keys.
+    ValueTrack opacityTrack; ///< Opacity track borrowing resident keys.
+    u8 color[4]; ///< Primitive RGBA; alpha follows the opacity track.
+    s32 contactPending; ///< Nonzero enables target contact for the current leading effect.
+} LinkedEffectState;
+
+typedef char LinkedEffectStateSizeCheck[(sizeof(LinkedEffectState) == 0x58) ? 1 : -1];
+#define LINKED_EFFECT_OFFSET_CHECK(name, member, offset) \
+    typedef char name[(((u32)&((LinkedEffectState *)0)->member) == (offset)) ? 1 : -1]
+LINKED_EFFECT_OFFSET_CHECK(LinkedEffectCallbackOffsetCheck, callback, 0x28);
+LINKED_EFFECT_OFFSET_CHECK(LinkedEffectTargetOffsetCheck, targetHandle, 0x2C);
+LINKED_EFFECT_OFFSET_CHECK(LinkedEffectFrameOffsetCheck, frameTrack, 0x38);
+LINKED_EFFECT_OFFSET_CHECK(LinkedEffectOpacityOffsetCheck, opacityTrack, 0x44);
+LINKED_EFFECT_OFFSET_CHECK(LinkedEffectColorOffsetCheck, color, 0x50);
+LINKED_EFFECT_OFFSET_CHECK(LinkedEffectContactOffsetCheck, contactPending, 0x54);
+#undef LINKED_EFFECT_OFFSET_CHECK
 
 void _bzero(void *, s32); /* extern */
 void textureLoadForDraw(Gfx **, s32, s16);
@@ -49,12 +67,12 @@ extern Gfx *gRenderDisplayListCursor;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001C860 (0x8001C860).
 void linkedEffectInitialize(u8 *object) {
-    MotionState *state;
-    MotionState *allocation;
+    LinkedEffectState *state;
+    LinkedEffectState *allocation;
 
-    allocation = heapAllocLocal(&gGameHeap, 0x58, 0x38);
+    allocation = heapAllocLocal(&gGameHeap, sizeof(LinkedEffectState), 0x38);
     state = allocation;
-    _bzero(allocation, 0x58);
+    _bzero(allocation, sizeof(LinkedEffectState));
     ((RuntimeObjectPrefix *)object)->state.pointer = state;
 }
 
@@ -64,19 +82,19 @@ void linkedEffectInitialize(u8 *object) {
 /// \note Original decompilation identifier: \c func_8001C8AC (0x8001C8AC).
 void linkedEffectDestroy(u8 *object) {
     u8 *effectState;
-    u8 *new_var;
+    u8 *precedingState;
     u8 *previousEffect;
     u8 *nextEffect;
-    u8 *new_var2;
-    effectState = *(u8 **)(object + 0x54);
-    previousEffect = *(u8 **)(effectState + 4);
-    nextEffect = *(u8 **)(effectState + 8);
+    u8 *followingState;
+    effectState = ((RuntimeObjectPrefix *)object)->state.bytes;
+    previousEffect = ((LinkedEffectState *)effectState)->previous;
+    nextEffect = ((LinkedEffectState *)effectState)->next;
     if (previousEffect != 0) {
-        new_var = *(u8 **)(previousEffect + 0x54);
-        *(u8 **)(new_var + 8) = nextEffect;
+        precedingState = ((RuntimeObjectPrefix *)previousEffect)->state.bytes;
+        ((LinkedEffectState *)precedingState)->next = nextEffect;
     }
     if (nextEffect != 0) {
-        *(u8 **)((new_var2 = *(u8 **)(nextEffect + 0x54)) + 4) = previousEffect;
+        ((LinkedEffectState *)(followingState = ((RuntimeObjectPrefix *)nextEffect)->state.bytes))->previous = previousEffect;
     }
     heapFreeLocal(&gGameHeap, effectState);
 }
@@ -125,36 +143,35 @@ void linkedEffectUpdateMotion(u8 *object) {
     s32 i;
     u8 *neighbor;
     u8 *next;
-    s32 (*callback)(u8 *, f32 *);
+    LinkedEffectMotionCallback callback;
 
-    state = *(u8 **)(object + 0x54);
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
     velocity[2] = 0.0f;
     velocity[1] = 0.0f;
     velocity[0] = 0.0f;
-    callback = *(s32(**)(u8 *, f32 *))(state + 0x28);
+    callback = ((LinkedEffectState *)state)->callback;
     if (callback == NULL || callback(object, velocity) != 1) {
         for (i = 0; i < 3; i++) {
-            velocity[i] += ((f32 *)(state + 0x1C))[i] * *(f32 *)(state + 0x18);
+            velocity[i] += ((LinkedEffectState *)state)->velocity[i] * ((LinkedEffectState *)state)->damping;
         }
-        neighbor = *(u8 **)(state + 4);
+        neighbor = ((LinkedEffectState *)state)->previous;
         if (neighbor != NULL) {
-            linkedEffectAddNeighborPull(object, neighbor, *(f32 *)(*(u8 **)(neighbor + 0x54) + 0xC),
-                                        *(f32 *)(state + 0x10), velocity);
+            linkedEffectAddNeighborPull(object, neighbor, ((LinkedEffectState *)((RuntimeObjectPrefix *)neighbor)->state.pointer)->spacing,
+                                        ((LinkedEffectState *)state)->previousPull, velocity);
         }
-        next = *(u8 **)(state + 8);
+        next = ((LinkedEffectState *)state)->next;
         if (next != NULL) {
-            linkedEffectAddNeighborPull(object, next, *(f32 *)(state + 0xC), *(f32 *)(state + 0x14), velocity);
+            linkedEffectAddNeighborPull(object, next, ((LinkedEffectState *)state)->spacing, ((LinkedEffectState *)state)->nextPull, velocity);
         }
     }
-    *(f32 *)(state + 0x1C) = velocity[0];
-    *(f32 *)(state + 0x20) = velocity[1];
-    *(f32 *)(state + 0x24) = velocity[2];
+    ((LinkedEffectState *)state)->velocity[0] = velocity[0];
+    ((LinkedEffectState *)state)->velocity[1] = velocity[1];
+    ((LinkedEffectState *)state)->velocity[2] = velocity[2];
     for (axis = 0; axis < 3; axis++) {
         ((f32 *)(object + 0x18))[axis] += velocity[axis] * gRuntimeFrameSeconds;
     }
 }
 
-void linkedEffectUpdateMotion(u8 *);                      /* extern */
 f32 mathSinDegrees(f32);                                  /* extern */
 
 /// Advance a linked effect's motion and appearance.
@@ -170,7 +187,7 @@ void linkedEffectUpdate(u8 *object) {
     linkedEffectUpdateMotion(object);
     objectOrientAlongCameraView(object);
     ((RuntimeObjectPrefix *)object)->rotation[0] =
-        (f32)(mathSinDegrees(((MotionState *)state)->elapsed * 540.0f) * 45.0f);
+        (f32)(mathSinDegrees(((LinkedEffectState *)state)->elapsed * 540.0f) * 45.0f);
     if (((RuntimeObjectPrefix *)object)->handle & 1) {
         ((RuntimeObjectPrefix *)object)->rotation[0] = (f32)-((RuntimeObjectPrefix *)object)->rotation[0];
     }
@@ -184,11 +201,11 @@ void linkedEffectUpdate(u8 *object) {
             ((RuntimeObjectPrefix *)object)->rotation[0] = (f32)(((RuntimeObjectPrefix *)object)->rotation[0] - 360.0f);
         } while (((RuntimeObjectPrefix *)object)->rotation[0] >= 360.0f);
     }
-    step = ((MotionState *)state)->rate * gRuntimeFrameSeconds;
-    animationIntegerTrackEvaluate((ValueTrack *)(f32 *)(state + 0x38), &channelValue, step);
-    animationIntegerTrackEvaluate((ValueTrack *)(f32 *)(state + 0x44), &channelValue, step);
-    ((MotionState *)state)->color[3] = (s8)channelValue;
-    ((MotionState *)state)->elapsed = (f32)(((MotionState *)state)->elapsed + gRuntimeFrameSeconds);
+    step = ((LinkedEffectState *)state)->playbackRate * gRuntimeFrameSeconds;
+    animationIntegerTrackEvaluate(&((LinkedEffectState *)state)->frameTrack, &channelValue, step);
+    animationIntegerTrackEvaluate(&((LinkedEffectState *)state)->opacityTrack, &channelValue, step);
+    ((LinkedEffectState *)state)->color[3] = (s8)channelValue;
+    ((LinkedEffectState *)state)->elapsed = (f32)(((LinkedEffectState *)state)->elapsed + gRuntimeFrameSeconds);
 }
 
 typedef struct Rgba8 {
@@ -200,7 +217,7 @@ typedef struct Rgba8 {
 /// \returns The borrowed effect model display-list address.
 /// \note Original decompilation identifier: \c func_8001CC9C (0x8001CC9C).
 s32 linkedEffectPrepareDraw(u8 *object) {
-    u8 *v = *(u8 **)(object + 0x54);
+    u8 *v = ((RuntimeObjectPrefix *)object)->state.bytes;
     Rgba8 *c;
 
     textureLoadForDraw(&gRenderDisplayListCursor, 5, *(s16 *)(v + 0x40));
@@ -229,7 +246,7 @@ s32 linkedEffectComputeTargetVelocity(u8 *object, f32 *velocity) {
     u8 *target;
     u8 *nextState;
 
-    state = *(u8 **)(object + 0x54);
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
     if (*(f32 *)(object + 0x1C) > 100.0f) {
         objectRequestHierarchyDestruction(*(u8 **)(object + 0x50));
         velocity[0] = 0.0f;
@@ -237,7 +254,7 @@ s32 linkedEffectComputeTargetVelocity(u8 *object, f32 *velocity) {
         velocity[2] = 0.0f;
         return 1;
     }
-    target = objectResolveAvailableHandle(*(s32 *)(state + 0x2C));
+    target = objectResolveAvailableHandle(((LinkedEffectState *)state)->targetHandle);
     if (target == NULL) {
         velocity[0] = 0.0f;
         velocity[2] = 0.0f;
@@ -248,9 +265,9 @@ s32 linkedEffectComputeTargetVelocity(u8 *object, f32 *velocity) {
     velocity[1] = (f32)(*(f32 *)(target + 0x48) - *(f32 *)(object + 0x1C));
     velocity[2] = (f32)(*(f32 *)(target + 0x4C) - *(f32 *)(object + 0x20));
     distance = vector3Normalize(velocity);
-    if ((*(s32 *)(state + 0x54) != 0) && (distance < (*(f32 *)(object + 0x24) + *(f32 *)(target + 0x24)))) {
-        next = *(u8 **)(state + 0x8);
-        *(s32 *)(state + 0x54) = 0;
+    if ((((LinkedEffectState *)state)->contactPending != 0) && (distance < (*(f32 *)(object + 0x24) + *(f32 *)(target + 0x24)))) {
+        next = ((LinkedEffectState *)state)->next;
+        ((LinkedEffectState *)state)->contactPending = 0;
         flags = *(u16 *)(object + 0x36);
         if (!(flags & 2)) {
             *(u16 *)(object + 0x36) = (u16)(flags | 2);
@@ -264,9 +281,9 @@ s32 linkedEffectComputeTargetVelocity(u8 *object, f32 *velocity) {
             } while (0);
         }
         if (next != NULL) {
-            nextState = *(u8 **)(next + 0x54);
-            *(s32(**)(u8 *, f32 *))(nextState + 0x28) = linkedEffectComputeTargetVelocity;
-            *(s32 *)(nextState + 0x54) = 1;
+            nextState = ((RuntimeObjectPrefix *)next)->state.bytes;
+            ((LinkedEffectState *)nextState)->callback = linkedEffectComputeTargetVelocity;
+            ((LinkedEffectState *)nextState)->contactPending = 1;
         } else {
             objectRequestHierarchyDestruction(*(u8 **)(object + 0x50));
         }
@@ -275,7 +292,7 @@ s32 linkedEffectComputeTargetVelocity(u8 *object, f32 *velocity) {
         velocity[2] = 0.0f;
         return 1;
     }
-    maxStep = *(f32 *)(state + 0x30);
+    maxStep = ((LinkedEffectState *)state)->speed;
     if (maxStep < distance) {
         step = maxStep;
     } else {
@@ -301,7 +318,6 @@ extern f32 gLinkedReboundTargetTime;
 /// Horizontal velocity turning coefficient during rebound motion.
 /// \note Original identifier: \c D_800A3A34 (0x800A3A34).
 extern f32 gLinkedReboundTurnCoefficient;
-s32 linkedEffectComputeTargetVelocity(u8 *, f32 *);
 
 /// Advance a rebounding effect and select its subsequent motion behavior.
 /// \param object Linked effect object with initialized motion state.
@@ -313,19 +329,19 @@ s32 linkedEffectComputeReboundVelocity(u8 *object, f32 *velocity) {
     f32 turn;
 
     objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
-    if (((MotionState *)objectState)->previous != 0 &&
+    if (((LinkedEffectState *)objectState)->previous != 0 &&
         (f64)randomNext() * 2.3283064365386963e-10 * gLinkedReboundReleaseTimeRange + gLinkedReboundReleaseTimeMinimum <
-            (f64)((MotionState *)objectState)->elapsed) {
-        ((MotionState *)objectState)->callback = NULL;
-        ((MotionState *)objectState)->velocity[1] = -((MotionState *)objectState)->velocity[1];
-    } else if (gLinkedReboundTargetTime < ((MotionState *)objectState)->elapsed) {
-        ((MotionState *)objectState)->callback = &linkedEffectComputeTargetVelocity;
-        ((MotionState *)objectState)->velocity[1] = -((MotionState *)objectState)->velocity[1];
+            (f64)((LinkedEffectState *)objectState)->elapsed) {
+        ((LinkedEffectState *)objectState)->callback = NULL;
+        ((LinkedEffectState *)objectState)->velocity[1] = -((LinkedEffectState *)objectState)->velocity[1];
+    } else if (gLinkedReboundTargetTime < ((LinkedEffectState *)objectState)->elapsed) {
+        ((LinkedEffectState *)objectState)->callback = &linkedEffectComputeTargetVelocity;
+        ((LinkedEffectState *)objectState)->velocity[1] = -((LinkedEffectState *)objectState)->velocity[1];
     }
     turn = gLinkedReboundTurnCoefficient;
-    velocity[0] = (f32)(((MotionState *)objectState)->velocity[0] - (((MotionState *)objectState)->velocity[2] * turn));
-    velocity[1] = (f32)(((MotionState *)objectState)->velocity[1] - (gRuntimeFrameSeconds * 70.0f));
-    velocity[2] = (f32)(((MotionState *)objectState)->velocity[2] + (((MotionState *)objectState)->velocity[0] * turn));
+    velocity[0] = (f32)(((LinkedEffectState *)objectState)->velocity[0] - (((LinkedEffectState *)objectState)->velocity[2] * turn));
+    velocity[1] = (f32)(((LinkedEffectState *)objectState)->velocity[1] - (gRuntimeFrameSeconds * 70.0f));
+    velocity[2] = (f32)(((LinkedEffectState *)objectState)->velocity[2] + (((LinkedEffectState *)objectState)->velocity[0] * turn));
     return 1;
 }
 
@@ -348,17 +364,17 @@ s32 linkedEffectComputeFallingVelocity(u8 *object, f32 *velocity) {
     f32 turn;
 
     objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
-    if (((MotionState *)objectState)->previous != 0 &&
+    if (((LinkedEffectState *)objectState)->previous != 0 &&
         (f64)randomNext() * 2.3283064365386963e-10 * gLinkedFallingReleaseTimeRange + gLinkedFallingReleaseTimeMinimum <
-            (f64)((MotionState *)objectState)->elapsed) {
-        ((MotionState *)objectState)->callback = NULL;
-    } else if (0.5f < ((MotionState *)objectState)->elapsed) {
-        ((MotionState *)objectState)->callback = &linkedEffectComputeTargetVelocity;
+            (f64)((LinkedEffectState *)objectState)->elapsed) {
+        ((LinkedEffectState *)objectState)->callback = NULL;
+    } else if (0.5f < ((LinkedEffectState *)objectState)->elapsed) {
+        ((LinkedEffectState *)objectState)->callback = &linkedEffectComputeTargetVelocity;
     }
     turn = gLinkedFallingTurnCoefficient;
-    velocity[0] = (f32)(((MotionState *)objectState)->velocity[0] - (((MotionState *)objectState)->velocity[2] * turn));
-    velocity[1] = (f32)(((MotionState *)objectState)->velocity[1] - (gRuntimeFrameSeconds * 30.0f));
-    velocity[2] = (f32)(((MotionState *)objectState)->velocity[2] + (((MotionState *)objectState)->velocity[0] * turn));
+    velocity[0] = (f32)(((LinkedEffectState *)objectState)->velocity[0] - (((LinkedEffectState *)objectState)->velocity[2] * turn));
+    velocity[1] = (f32)(((LinkedEffectState *)objectState)->velocity[1] - (gRuntimeFrameSeconds * 30.0f));
+    velocity[2] = (f32)(((LinkedEffectState *)objectState)->velocity[2] + (((LinkedEffectState *)objectState)->velocity[0] * turn));
     return 1;
 }
 
@@ -374,7 +390,7 @@ extern f32 gLinkedEffectLaunchAngleStep;
 /// \note Original decompilation identifier: \c func_8001D194 (0x8001D194).
 void linkedEffectInitializeVelocity(s32 kind, u8 *object) {
     static f32 angle = 0.0f;
-    u8 *state = *(u8 **)(object + 0x54);
+    u8 *state = ((RuntimeObjectPrefix *)object)->state.bytes;
 
     angle += gLinkedEffectLaunchAngleStep;
     while (angle < 0.0f) {
@@ -383,24 +399,23 @@ void linkedEffectInitializeVelocity(s32 kind, u8 *object) {
     while (angle >= 360.0f) {
         angle -= 360.0f;
     }
-    *(f32 *)(state + 0x1C) = mathCosDegrees(angle) * 10.0f;
-    *(f32 *)(state + 0x24) = mathSinDegrees(angle) * 10.0f;
+    ((LinkedEffectState *)state)->velocity[0] = mathCosDegrees(angle) * 10.0f;
+    ((LinkedEffectState *)state)->velocity[2] = mathSinDegrees(angle) * 10.0f;
     switch (kind) {
     case 1:
-        *(f32 *)(state + 0x20) = (f64)randomNext() * 2.3283064365386963e-10 * 1.0f + 3.0;
+        ((LinkedEffectState *)state)->velocity[1] = (f64)randomNext() * 2.3283064365386963e-10 * 1.0f + 3.0;
         return;
     case 2:
-        *(f32 *)(state + 0x20) = (f64)randomNext() * 2.3283064365386963e-10 * 5.0 + 30.0;
+        ((LinkedEffectState *)state)->velocity[1] = (f64)randomNext() * 2.3283064365386963e-10 * 5.0 + 30.0;
         return;
     case 3:
-        *(f32 *)(state + 0x20) = (f64)randomNext() * 2.3283064365386963e-10 * 2.0f + 8.0;
+        ((LinkedEffectState *)state)->velocity[1] = (f64)randomNext() * 2.3283064365386963e-10 * 2.0f + 8.0;
         return;
     }
 }
 
 #define SET_MOTION_VECTOR(v, x, y, z) ((v)[0] = (x), (v)[1] = (y), (v)[2] = (z))
 
-void linkedEffectInitializeVelocity(s32, u8 *);
 /// Model display list used by linked effect objects.
 /// \note Original identifier: \c D_1000B08 (0x01000B08).
 extern u8 gLinkedEffectModelDisplayList[];
@@ -434,27 +449,27 @@ u8 *linkedEffectCreateChain(s32 kind, f32 x, f32 y, f32 z, f32 scale, s32 target
                             f32 previousPull, f32 nextPull, s32 channelA, s32 channelB, s32 count) {
     u8 *group;
     u8 *first;
-    MotionState *firstState;
+    LinkedEffectState *firstState;
     s32 i;
-    MotionState initial;
-    MotionState *state;
-    MotionState *previousState;
+    LinkedEffectState initial;
+    LinkedEffectState *state;
+    LinkedEffectState *previousState;
     u8 *object;
     u8 *previous;
     gLinkedEffectObjectTemplate[0] = scale;
     gLinkedEffectObjectTemplate[1] = scale;
     gLinkedEffectObjectTemplate[2] = scale;
     gLinkedEffectTemplateBounds[0] = 0.5f * scale;
-    _bzero(&initial, 0x58);
+    _bzero(&initial, sizeof(LinkedEffectState));
     initial.spacing = spacing;
     initial.previousPull = previousPull;
     initial.nextPull = nextPull;
     initial.damping = damping;
-    initial.target = target;
+    initial.targetHandle = target;
     initial.speed = speed;
-    initial.rate = 1.0f;
-    animationIntegerTrackInitialize((ValueTrack *)initial.channelA, gTextureFrameAnimationPrograms[channelA]);
-    animationIntegerTrackInitialize((ValueTrack *)initial.channelB, gOpacityAnimationPrograms[channelB]);
+    initial.playbackRate = 1.0f;
+    animationIntegerTrackInitialize(&initial.frameTrack, gTextureFrameAnimationPrograms[channelA]);
+    animationIntegerTrackInitialize(&initial.opacityTrack, gOpacityAnimationPrograms[channelB]);
     initial.color[0] = 255;
     initial.color[1] = 255;
     initial.color[2] = 255;
@@ -475,12 +490,12 @@ u8 *linkedEffectCreateChain(s32 kind, f32 x, f32 y, f32 z, f32 scale, s32 target
     group = objectCreateDefault();
     first = objectCreateFromTemplate((ObjectTemplate *)gLinkedEffectObjectTemplate);
     *(u8 **)(group + 0x2C) = first;
-    firstState = *(MotionState **)(first + 0x54);
+    firstState = *(LinkedEffectState **)(first + 0x54);
     SET_MOTION_VECTOR((f32 *)(first + 0x18), x, y, z);
     SET_MOTION_VECTOR((f32 *)(first + 0x44), x, y, z);
     *firstState = initial;
     firstState->speed = speed;
-    firstState->head = 1;
+    firstState->contactPending = 1;
     linkedEffectInitializeVelocity(kind, first);
     previousState = firstState;
     previous = first;
@@ -490,11 +505,11 @@ u8 *linkedEffectCreateChain(s32 kind, f32 x, f32 y, f32 z, f32 scale, s32 target
         do {
             object = objectCreateFromTemplate((ObjectTemplate *)gLinkedEffectObjectTemplate);
             *(u8 **)(previous + 0x28) = object;
-            state = *(MotionState **)(object + 0x54);
+            state = *(LinkedEffectState **)(object + 0x54);
             SET_MOTION_VECTOR((f32 *)(object + 0x18), x, y, z);
             SET_MOTION_VECTOR((f32 *)(object + 0x44), x, y, z);
             *state = initial;
-            state->head = 0;
+            state->contactPending = 0;
             previousState->next = object;
             state->previous = previous;
             linkedEffectInitializeVelocity(kind, object);
