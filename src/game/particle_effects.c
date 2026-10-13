@@ -1265,6 +1265,13 @@ extern s32 gFallingParticleModels[];
 /// \note Original identifier: \c D_8006B4F8 (0x8006B4F8).
 extern s32 gFallingParticleInitialScaleAnimation;
 
+/// Supported falling-particle orientation and lateral-motion styles.
+typedef enum FallingParticleMotion {
+    FALLING_PARTICLE_BILLBOARD_SPIN = 0, ///< Face the view with animated roll.
+    FALLING_PARTICLE_BILLBOARD_SWAY = 1, ///< Face the view with roll and lateral swaying.
+    FALLING_PARTICLE_TUMBLING = 2        ///< Turn around two axes independently of the view.
+} FallingParticleMotion;
+
 /// Owned falling-particle motion and scale playback state.
 typedef struct FallingParticleState {
     f32 lifetime;         ///< Seconds until disappearance begins; zero while disappearing.
@@ -1275,6 +1282,8 @@ typedef struct FallingParticleState {
 } FallingParticleState;
 
 typedef char FallingParticleStateSizeCheck[(sizeof(FallingParticleState) == 0x24) ? 1 : -1];
+typedef char FallingParticleModeOffsetCheck[(((u32) & ((FallingParticleState *)0)->mode) == 4) ? 1 : -1];
+typedef char FallingParticleVelocityOffsetCheck[(((u32) & ((FallingParticleState *)0)->velocity) == 8) ? 1 : -1];
 typedef char FallingParticleAnimationOffsetCheck[(((u32) & ((FallingParticleState *)0)->animation) == 0x14) ? 1 : -1];
 typedef char FallingParticleScaleOffsetCheck[(((u32) & ((FallingParticleState *)0)->scale) == 0x20) ? 1 : -1];
 
@@ -1293,16 +1302,16 @@ u8 *fallingParticleCreate(s32 kind, s32 motionStyle, f32 *position, f32 *velocit
 
     obj = objectCreateHierarchyFromTemplate((ObjectTemplate *)gFallingParticleObjectTemplate);
     state = ((RuntimeObjectPrefix *)obj)->state.pointer;
-    *(f32 *)(obj + 0x18) = position[0];
-    *(f32 *)(obj + 0x1C) = position[1];
-    *(f32 *)(obj + 0x20) = position[2];
-    *(f32 *)(obj + 0x44) = position[0];
-    *(f32 *)(obj + 0x48) = position[1];
-    *(f32 *)(obj + 0x4C) = position[2];
-    *(f32 *)(obj + 0xC) = (s32)randomBelow(360);
-    *(f32 *)(obj + 0x14) = 0.0f;
-    *(f32 *)(obj + 0x10) = 0.0f;
-    *(s32 *)(obj + 0x30) = gFallingParticleModels[kind];
+    ((RuntimeObjectPrefix *)obj)->position[0] = position[0];
+    ((RuntimeObjectPrefix *)obj)->position[1] = position[1];
+    ((RuntimeObjectPrefix *)obj)->position[2] = position[2];
+    ((RuntimeObjectPrefix *)obj)->worldPosition[0] = position[0];
+    ((RuntimeObjectPrefix *)obj)->worldPosition[1] = position[1];
+    ((RuntimeObjectPrefix *)obj)->worldPosition[2] = position[2];
+    ((RuntimeObjectPrefix *)obj)->rotation[0] = (s32)randomBelow(360);
+    ((RuntimeObjectPrefix *)obj)->rotation[2] = 0.0f;
+    ((RuntimeObjectPrefix *)obj)->rotation[1] = 0.0f;
+    ((RuntimeObjectPrefix *)obj)->displayList = (Gfx *)gFallingParticleModels[kind];
     state->lifetime = lifetime;
     state->mode = motionStyle;
     state->velocity[0] = velocity[0];
@@ -1311,9 +1320,9 @@ u8 *fallingParticleCreate(s32 kind, s32 motionStyle, f32 *position, f32 *velocit
     animationIntegerTrackInitialize(&state->animation, (ValueKey *)(gFallingParticleInitialScaleAnimation));
     scale = 0.029999999329447746f;
     state->scale = scale;
-    *(f32 *)(obj + 0) = scale;
-    *(f32 *)(obj + 4) = state->scale;
-    *(f32 *)(obj + 8) = state->scale;
+    ((RuntimeObjectPrefix *)obj)->scale[0] = scale;
+    ((RuntimeObjectPrefix *)obj)->scale[1] = state->scale;
+    ((RuntimeObjectPrefix *)obj)->scale[2] = state->scale;
     objectRegisterActiveHierarchy(obj);
     return obj;
 }
@@ -1365,7 +1374,7 @@ void fallingParticleUpdate(u8 *particle) {
     ((RuntimeObjectPrefix *)particle)->scale[1] = scale;
     ((RuntimeObjectPrefix *)particle)->scale[2] = scale;
     switch (state->mode) {
-    case 0:
+    case FALLING_PARTICLE_BILLBOARD_SPIN:
         objectOrientAlongCameraView(particle);
         ((RuntimeObjectPrefix *)particle)->rotation[0] += ((mathSinDegrees(state->lifetime * 80.0f) + 1.0f) * 180.0f);
         if (((RuntimeObjectPrefix *)particle)->rotation[0] < 0.0f) {
@@ -1380,7 +1389,7 @@ void fallingParticleUpdate(u8 *particle) {
             } while (((RuntimeObjectPrefix *)particle)->rotation[0] >= 360.0f);
         }
         break;
-    case 1:
+    case FALLING_PARTICLE_BILLBOARD_SWAY:
         objectOrientAlongCameraView(particle);
         ((RuntimeObjectPrefix *)particle)->rotation[0] += ((mathCosDegrees(state->lifetime * 200.0f) + 1.0f) * 180.0f);
         if (((RuntimeObjectPrefix *)particle)->rotation[0] < 0.0f) {
@@ -1399,7 +1408,7 @@ void fallingParticleUpdate(u8 *particle) {
         ((RuntimeObjectPrefix *)particle)->position[2] +=
             (2.0f * mathCosDegrees(state->lifetime * 310.0f) * gRuntimeFrameSeconds);
         break;
-    case 2:
+    case FALLING_PARTICLE_TUMBLING:
         ((RuntimeObjectPrefix *)particle)->rotation[0] =
             (f32)((mathSinDegrees(state->lifetime * 40.0f) + 1.0f) * 180.0f);
         ((RuntimeObjectPrefix *)particle)->rotation[1] = (mathSinDegrees(state->lifetime * 300.0f) + 1.0f) * 180.0f;
