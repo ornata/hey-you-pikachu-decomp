@@ -51,9 +51,9 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 2636,
-      "unique_spellings": 1031,
-      "files": 78
+      "occurrences": 2631,
+      "unique_spellings": 1030,
+      "files": 77
     }
   },
   "policies": {
@@ -2472,46 +2472,6 @@
           ],
           "y + 0": [
             "659:23"
-          ]
-        }
-      }
-    },
-    "src/game/interaction_marker.c": {
-      "known_views": [
-        "actor_part_config.h",
-        "actor_script.h",
-        "camera_visibility.h",
-        "heap_alloc.h",
-        "integer_animation.h",
-        "interaction.h",
-        "item_kind.h",
-        "item_types.h",
-        "object_hierarchy_create.h",
-        "object_lifecycle.h",
-        "object_lookup.h",
-        "object_movement.h",
-        "object_types.h",
-        "opacity_animation_programs.h",
-        "texture_animation_programs.h",
-        "vector3_types.h"
-      ],
-      "matching_exceptions": {},
-      "locations": {
-        "raw_offset_candidates": {
-          "state + 0x4C": [
-            "238:30"
-          ],
-          "state + 0x40": [
-            "240:30"
-          ],
-          "state + 0x34": [
-            "258:29"
-          ],
-          "gPikachuActor + 0x54": [
-            "289:86"
-          ],
-          "object + 0x30": [
-            "294:21"
           ]
         }
       }

@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,636 / 78 |
+| Raw offset candidates | 4,040 / 86 | 2,631 / 77 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3358,3 +3358,16 @@ object display list. Ghidra 0x8001D3B8 confirms chain initialization. A named ra
 sum initially swapped operand registers; target-plus-effect source order preserves
 the original instruction bytes, documented as a matching constraint. All provider
 and consumer conversions preserve strict objects.
+
+### Interaction-marker track roles and style contracts
+
+Six named marker track roles replace numeric frame, opacity, depth, height and
+scale selections. `InteractionMarkerStyle` names program indices, sound identifier
+and target-dimension factors, with size and offset checks. Transform programs
+borrow typed `ValueKey` streams, marker allocation derives from its checked state,
+and retained height/scale values use track members. Ghidra 0x8001EAF4 confirms
+track selection and placement. Creation now returns the registered object pointer
+through the existing shared interaction header. Drawing uses named display-list
+and held-item fields; placing the actor handle first in the equality preserves
+original register allocation, recorded as a matching constraint. Provider changes
+and the shared-header rebuild preserve strict objects.

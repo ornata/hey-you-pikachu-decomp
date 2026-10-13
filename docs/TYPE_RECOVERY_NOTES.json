@@ -125,6 +125,9 @@
     },
     "src/game/linked_effect.c": {
       "linkedEffectComputeTargetVelocity radius sum": "Named radius fields match when written as target radius plus effect radius. The prior effect-plus-target source order causes IDO to exchange the two floating-point operand registers. Keep the accepted named-field order unless further compiler evidence shows a matching alternative."
+    },
+    "src/game/interaction_marker.c": {
+      "interactionMarkerPrepareDraw held-item comparison": "The named shared-field comparison matches with actor held-item handle on the left and marker target handle on the right. Reversing that source order changes IDO register allocation and fails ROM matching. Keep this accepted comparison order when changing marker drawing."
     }
   },
   "baseline_totals": {

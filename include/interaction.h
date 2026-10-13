@@ -14,9 +14,9 @@
 s32 interactionConsiderObject(u8 *object);
 
 /// Create and register the interaction marker hierarchy.
-/// \returns Object-manager-owned marker address in its original 32-bit representation.
+/// \returns Registered marker object whose lifetime is managed by the object system.
 /// \note Original decompilation identifier: \c func_8001EA78 (0x8001EA78).
-s32 interactionMarkerCreate(void);
+u8 *interactionMarkerCreate(void);
 
 /// Retrieve the preferred object from the current interaction scan.
 /// \returns Candidate object handle, or zero when none is selected.
