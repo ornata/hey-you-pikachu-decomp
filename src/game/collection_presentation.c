@@ -1,3 +1,4 @@
+#include "texture_rectangles.h"
 #include "pikachu_actor.h"
 #include "camera_storage.h"
 #include "random.h"
@@ -485,7 +486,6 @@ void presentationDrawAreaLabel(Gfx **gdl) {
     }
 }
 
-void textureDrawRectangles(s32, u8 *, Gfx **);
 
 /// Draws the decorative elements of the card presentation.
 /// \param gdl Display-list cursor to receive drawing commands and advance past them.
@@ -497,7 +497,7 @@ void presentationDrawCardDecorations(Gfx **gdl) {
     gDPPipeSync((*gdl)++);
     gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
     gDPSetCombineMode((*gdl)++, G_CC_DECALRGBA, G_CC_DECALRGBA);
-    textureDrawRectangles(6, (u8 *)&t, gdl);
+    textureDrawRectangles(6, (TextureDrawC354 *)(u8 *)&t, gdl);
 }
 
 /// Current area scenario index shared by actor scripts, scene population, cards and collection titles.
@@ -522,7 +522,7 @@ void presentationDrawCurrentCardPanels(Gfx **gdl) {
         for (i = 0; i < 3; i++) {
             t.draws[i].texture = ids[i];
         }
-        textureDrawRectangles(6, (u8 *)&t, gdl);
+        textureDrawRectangles(6, (TextureDrawC354 *)(u8 *)&t, gdl);
     }
 }
 
@@ -808,7 +808,7 @@ void presentationDrawCollectionDecorations(Gfx **gdl) {
     gDPPipeSync((*gdl)++);
     gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
     gDPSetCombineMode((*gdl)++, G_CC_DECALRGBA, G_CC_DECALRGBA);
-    textureDrawRectangles(6, (u8 *)gCollectionPresentationDecorations, gdl);
+    textureDrawRectangles(6, (TextureDrawC354 *)(u8 *)gCollectionPresentationDecorations, gdl);
 }
 
 /// Live item displayed during collection results, or zero when none is shown.

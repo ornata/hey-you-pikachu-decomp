@@ -3928,3 +3928,11 @@ bytes despite a matching ROM; the strict comparison exception is recorded.
 both definitions and every declared caller. Mapping endpoints and exponent
 preconditions are explicit. The power helper names its accumulated result and
 remaining exponent without changing arithmetic or control flow.
+
+### Texture rectangle drawing
+
+`texture_rectangles.h` shares typed terminated rectangle lists and display-list
+output contracts between drawing and all seven declared consumer units. Text
+windows and the world map use the established 0x24-byte rectangle layout instead
+of duplicate records. Generic pointer callers retain explicit compatible views
+of their existing rectangle-list storage.

@@ -1,3 +1,4 @@
+#include "texture_rectangles.h"
 #include "math_scalar.h"
 #include "object_groups.h"
 #include "camera_overlay.h"
@@ -140,14 +141,6 @@ void textWindowSetState(s32 state) {
     gTextWindowStateStartMilliseconds = (u32)runtimeGetElapsedMilliseconds();
 }
 
-typedef struct DrawRectangle {
-    s32 texture;
-    s32 x, y;
-    s32 width, height;
-    s32 s, t;
-    f32 scaleX, scaleY;
-} DrawRectangle;
-void textureDrawRectangles(s32, DrawRectangle *, Gfx **);
 /// Separate indicator-indexed animation view; initialized tracks begin at index one.
 /// \note Original identifier: \c D_800F1AC8 (0x800F1AC8).
 extern ValueTrack gTextWindowIndicatorTrackIndexBase[];
@@ -161,7 +154,7 @@ extern f32 gRuntimeFrameSeconds;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002B910 (0x8002B910).
 void textWindowDrawIndicator(Gfx **gdl, s32 alpha) {
-    DrawRectangle rectangles[2];
+    TextureDrawC354 rectangles[2];
     s32 origin = 31;
     s32 size = 48;
     f32 scale = 1.0f;
@@ -195,7 +188,7 @@ void textWindowDrawIndicator(Gfx **gdl, s32 alpha) {
         rectangles[0].scaleX = scale;
         rectangles[0].scaleY = scale;
         rectangles[1].texture = -1;
-        textureDrawRectangles(rendererTable, rectangles, gdl);
+        textureDrawRectangles(rendererTable, (TextureDrawC354 *)rectangles, gdl);
     }
 }
 

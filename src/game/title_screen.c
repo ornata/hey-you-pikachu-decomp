@@ -1,3 +1,4 @@
+#include "texture_rectangles.h"
 #include "pikachu_actor.h"
 #include "object_groups.h"
 #include "math_angles.h"
@@ -185,7 +186,6 @@ extern u32 gTitleIntroductionMilliseconds;
 /// Angular phase controlling the pulsing Start prompt opacity.
 /// \note Original identifier: \c D_800F2564 (0x800F2564).
 extern f32 gTitleStartPromptPhase;
-void textureDrawRectangles(s32, u8 *, Gfx **);
 
 /// Draw the pulsing start prompt nine seconds after the title-screen introduction begins.
 /// \pre The introduction start time and prompt animation must be initialized.
@@ -218,7 +218,7 @@ void titleScreenDrawStartPrompt(Gfx **gdl) {
         gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
         gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 255, a);
         gDPSetCombineLERP((*gdl)++, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0);
-        textureDrawRectangles(10, (u8 *)&t, gdl);
+        textureDrawRectangles(10, (TextureDrawC354 *)(u8 *)&t, gdl);
     }
 }
 

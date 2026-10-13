@@ -1408,6 +1408,7 @@
         "text_image_configurations.h",
         "text_image_create.h",
         "text_window.h",
+        "texture_rectangles.h",
         "toolbox_types.h",
         "vector3_types.h"
       ],
@@ -1418,62 +1419,62 @@
       "locations": {
         "raw_offset_candidates": {
           "slot + 4": [
-            "227:50",
-            "264:22"
+            "228:50",
+            "265:22"
           ],
           "liveObject + 0x54": [
-            "229:22",
+            "230:22",
             "860:18"
           ],
           "p + 4": [
-            "230:71",
-            "231:82",
+            "231:71",
+            "232:82",
             "861:71"
           ],
           "gToolboxBonusSlot + 4": [
-            "270:18"
+            "271:18"
           ],
           "gToolboxPurchaseSlot + 4": [
-            "274:19"
+            "275:19"
           ],
           "state + 0x1EC": [
-            "394:76"
+            "395:76"
           ],
           "player + 0x48": [
-            "403:28"
+            "404:28"
           ],
           "player + 0x54": [
-            "403:65"
+            "404:65"
           ],
           "player + 0x18": [
-            "406:14"
+            "407:14"
           ],
           "tgt + 0": [
-            "445:21"
-          ],
-          "tgt + 4": [
             "446:21"
           ],
-          "tgt + 8": [
+          "tgt + 4": [
             "447:21"
           ],
+          "tgt + 8": [
+            "448:21"
+          ],
           "ext + 0xC": [
-            "449:71"
+            "450:71"
           ],
           "ext + 0x10": [
-            "450:76"
+            "451:76"
           ],
           "ext + 0x19C": [
-            "451:14"
+            "452:14"
           ],
           "ext + 0x1EC": [
-            "452:126"
+            "453:126"
           ],
           "firstJoint + 0x48": [
-            "456:18"
+            "457:18"
           ],
           "secondJoint + 0x48": [
-            "458:29"
+            "459:29"
           ],
           "gCurrentAreaConfiguration + 0x74": [
             "517:23",
@@ -1644,7 +1645,8 @@
         "heap_types.h",
         "integer_animation.h",
         "progress_value.h",
-        "random.h"
+        "random.h",
+        "texture_rectangles.h"
       ],
       "matching_exceptions": {
         "eyeCatchUpdatePlayback": "Retain local audioPlaySoundEffect(s16) and audioSetSoundEffectVolume returning s32 declarations: adopting canonical s32 sound IDs and the void volume setter changes ROM bytes. Isolate each signature before retrying canonical-header adoption."
@@ -2151,16 +2153,17 @@
         "text_image_configurations.h",
         "text_image_create.h",
         "texture_animation_programs.h",
-        "texture_draw_types.h"
+        "texture_draw_types.h",
+        "texture_rectangles.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "offset + 48": [
-            "150:32"
+            "151:32"
           ],
           "offset + 40": [
-            "166:32"
+            "167:32"
           ],
           "gPlayerState + 0x50": [
             "609:67"
@@ -3153,20 +3156,21 @@
         "text_image_create.h",
         "text_window.h",
         "text_window_images.h",
-        "texture_animation_programs.h"
+        "texture_animation_programs.h",
+        "texture_rectangles.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "height + 4": [
-            "247:87"
+            "240:87"
           ],
           "input + 1": [
-            "356:24",
-            "372:12"
+            "349:24",
+            "365:12"
           ],
           "gTextWindowHistoryOldestIndex + 1": [
-            "393:36"
+            "386:36"
           ]
         }
       }
@@ -3174,7 +3178,8 @@
     "src/game/texture_cache.c": {
       "known_views": [
         "rom_cache.h",
-        "texture_draw_types.h"
+        "texture_draw_types.h",
+        "texture_rectangles.h"
       ],
       "matching_exceptions": {
         "texture ROM address expressions": "Texture image and palette offsets are cartridge byte offsets added to the archive linker address. Explicitly casting the archive symbol to s32 changes allocated instructions and relocations under IDO; retain the original byte-pointer addition at the numeric romCacheRead key boundary. A matching explicit numeric representation remains to be recovered."
@@ -3182,25 +3187,25 @@
       "locations": {
         "raw_offset_candidates": {
           "w - 1": [
-            "131:42"
-          ],
-          "h - 1": [
             "132:42"
           ],
+          "h - 1": [
+            "133:42"
+          ],
           "t - 1U": [
-            "140:58"
+            "141:58"
           ],
           "ds + 0": [
-            "141:75"
+            "142:75"
           ],
           "ds - 0": [
-            "141:87"
+            "142:87"
           ],
           "dt + 0": [
-            "142:76"
+            "143:76"
           ],
           "dt - 0": [
-            "142:88"
+            "143:88"
           ]
         }
       }
@@ -3392,16 +3397,17 @@
         "text_image_configurations.h",
         "text_image_create.h",
         "text_panel.h",
+        "texture_rectangles.h",
         "title_screen.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "words + 4": [
-            "79:72"
+            "80:72"
           ],
           "words + 8": [
-            "84:44"
+            "85:44"
           ],
           "x - 10": [
             "262:36"
@@ -3458,6 +3464,7 @@
         "text_image_create.h",
         "text_window.h",
         "texture_draw_types.h",
+        "texture_rectangles.h",
         "toolbox_items.h",
         "toolbox_types.h",
         "vector3_types.h"
@@ -3468,188 +3475,188 @@
       "locations": {
         "raw_offset_candidates": {
           "object + 0xC": [
-            "239:49",
-            "811:18",
-            "944:22"
-          ],
-          "object + 0x10": [
-            "239:72",
+            "240:49",
             "812:18",
             "945:22"
           ],
-          "object + 0x14": [
-            "239:96",
+          "object + 0x10": [
+            "240:72",
             "813:18",
             "946:22"
           ],
+          "object + 0x14": [
+            "240:96",
+            "814:18",
+            "947:22"
+          ],
           "liveObject + 0x34": [
-            "256:22"
+            "257:22"
           ],
           "liveObject + 0": [
-            "260:18"
-          ],
-          "gCurrentAreaConfiguration + 0xC": [
-            "260:45",
-            "261:45",
-            "262:45",
-            "793:37",
-            "794:37",
-            "795:37",
-            "817:41",
-            "818:41",
-            "819:41"
-          ],
-          "liveObject + 4": [
             "261:18"
           ],
-          "liveObject + 8": [
+          "gCurrentAreaConfiguration + 0xC": [
+            "261:45",
+            "262:45",
+            "263:45",
+            "794:37",
+            "795:37",
+            "796:37",
+            "818:41",
+            "819:41",
+            "820:41"
+          ],
+          "liveObject + 4": [
             "262:18"
           ],
-          "object + 0x18": [
-            "328:26",
-            "338:22",
-            "346:18",
-            "353:18",
-            "814:18",
-            "923:102",
-            "943:106"
+          "liveObject + 8": [
+            "263:18"
           ],
-          "object + 0x1C": [
+          "object + 0x18": [
             "329:26",
             "339:22",
             "347:18",
             "354:18",
-            "815:18"
+            "815:18",
+            "924:102",
+            "944:106"
           ],
-          "object + 0x20": [
+          "object + 0x1C": [
             "330:26",
             "340:22",
             "348:18",
             "355:18",
             "816:18"
           ],
+          "object + 0x20": [
+            "331:26",
+            "341:22",
+            "349:18",
+            "356:18",
+            "817:18"
+          ],
           "object + 0x54": [
-            "425:25",
-            "455:72",
-            "474:77",
-            "487:80",
-            "594:19",
-            "607:22"
+            "426:25",
+            "456:72",
+            "475:77",
+            "488:80",
+            "595:19",
+            "608:22"
           ],
           "data + 4": [
-            "426:31",
-            "433:40",
-            "691:34"
+            "427:31",
+            "434:40",
+            "692:34"
           ],
           "obj + 0x54": [
-            "540:20"
+            "541:20"
           ],
           "ext + 6": [
-            "541:13"
+            "542:13"
           ],
           "ext + 8": [
-            "542:14"
+            "543:14"
           ],
           "obj + 0x38": [
-            "546:36"
+            "547:36"
           ],
           "p + 4": [
-            "608:43"
+            "609:43"
           ],
           "table + 0x18": [
-            "631:14"
-          ],
-          "table + 0x20": [
             "632:14"
           ],
+          "table + 0x20": [
+            "633:14"
+          ],
           "player + 0x84": [
-            "672:44"
+            "673:44"
           ],
           "held + 0x54": [
-            "685:29",
+            "686:29",
             "1287:26"
           ],
           "other + 0x54": [
-            "690:43"
+            "691:43"
           ],
           "otherState + 4": [
-            "691:56"
+            "692:56"
           ],
           "slot + 0x7C": [
-            "749:22"
-          ],
-          "slot + 0x78": [
             "750:22"
           ],
+          "slot + 0x78": [
+            "751:22"
+          ],
           "slot + 0x28": [
-            "755:22",
-            "756:98"
+            "756:22",
+            "757:98"
           ],
           "table + 0xF0": [
-            "759:12"
+            "760:12"
           ],
           "table + 0xF8": [
-            "765:12"
+            "766:12"
           ],
           "object + 0": [
-            "793:14",
-            "817:18"
-          ],
-          "object + 4": [
             "794:14",
             "818:18"
           ],
-          "object + 8": [
+          "object + 4": [
             "795:14",
             "819:18"
           ],
+          "object + 8": [
+            "796:14",
+            "820:18"
+          ],
           "object + 0x2C": [
-            "797:34"
+            "798:34"
           ],
           "objects + 0x28": [
-            "798:43"
+            "799:43"
           ],
           "object + 0x38": [
-            "820:46"
+            "821:46"
           ],
           "o + 0xC": [
-            "873:22"
-          ],
-          "o + 0x10": [
             "874:22"
           ],
-          "o + 0x14": [
+          "o + 0x10": [
             "875:22"
           ],
+          "o + 0x14": [
+            "876:22"
+          ],
           "row + 0x28": [
-            "912:32"
+            "913:32"
           ],
           "object + 0x34": [
-            "924:32"
+            "925:32"
           ],
           "cur + 1": [
-            "984:14"
+            "985:14"
           ],
           "width + 40": [
-            "1011:41"
+            "1012:41"
           ],
           "width - 1": [
-            "1058:61"
+            "1059:61"
           ],
           "height - 1": [
-            "1059:37"
+            "1060:37"
           ],
           "scaleX + 0": [
-            "1060:68"
+            "1061:68"
           ],
           "scaleX - 0": [
-            "1060:94"
+            "1061:94"
           ],
           "scaleY + 0": [
-            "1061:70"
+            "1062:70"
           ],
           "scaleY - 0": [
-            "1061:97"
+            "1062:97"
           ],
           "phase - 0": [
             "1119:31",
@@ -3962,6 +3969,7 @@
         "random.h",
         "runtime_clock.h",
         "script_vm_globals.h",
+        "texture_rectangles.h",
         "vector3_types.h",
         "vector_interpolation.h"
       ],
@@ -3969,58 +3977,58 @@
       "locations": {
         "raw_offset_candidates": {
           "x - 27": [
-            "231:46"
+            "223:46"
           ],
           "x + 55": [
-            "233:46"
+            "225:46"
           ],
           "x - 16": [
-            "293:31",
-            "317:27"
+            "285:31",
+            "309:27"
           ],
           "y + 8": [
-            "294:31"
+            "286:31"
           ],
           "y - 8": [
-            "318:27"
+            "310:27"
           ],
           "counter + 5U": [
-            "325:25"
+            "317:25"
           ],
           "state + 0x1EC": [
-            "403:100",
-            "457:154"
+            "395:100",
+            "449:154"
           ],
           "firstJoint + 0x48": [
-            "409:69"
+            "401:69"
           ],
           "secondJoint + 0x48": [
-            "411:75"
+            "403:75"
           ],
           "camera + 0": [
-            "450:25"
+            "442:25"
           ],
           "camera + 4": [
-            "451:25"
+            "443:25"
           ],
           "camera + 8": [
-            "452:25"
+            "444:25"
           ],
           "state + 0xC": [
-            "454:71"
+            "446:71"
           ],
           "state + 0x10": [
-            "455:78"
+            "447:78"
           ],
           "state + 0x19C": [
-            "456:14"
+            "448:14"
           ],
           "PLAYER + 0x54": [
-            "498:27"
+            "490:27"
           ],
           "sp24 + 0x13C": [
-            "789:22",
-            "793:25"
+            "781:22",
+            "785:25"
           ]
         }
       }

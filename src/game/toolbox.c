@@ -1,3 +1,4 @@
+#include "texture_rectangles.h"
 #include "object_groups.h"
 #include "math_angles.h"
 #include "camera_overlay.h"
@@ -1081,7 +1082,6 @@ extern Gfx *gRenderDisplayListCursor;
 /// Requested action on toolbox exit: close, change row or open the system menu.
 /// \note Original identifier: \c D_800F1D18 (0x800F1D18).
 extern s32 gToolboxRotationStep, gToolboxSelectedRow, gToolboxExitAction, gToolboxRequestedRow;
-void textureDrawRectangles(s32, TextureDrawC354 *, Gfx **);
 /// Draw the toolbox navigation arrows and eligible selected-item marker with transition feedback.
 /// \param address Address of the display-list cursor to append to and advance.
 /// \returns Nothing.
@@ -1202,7 +1202,7 @@ void toolboxDrawNavigation(s32 address) {
             yO = 150 - halfO;
             gToolboxNavigationSprites[0].x = xO;
             gToolboxNavigationSprites[0].y = yO;
-            textureDrawRectangles(5, gToolboxNavigationSprites, gdl);
+            textureDrawRectangles(5, (TextureDrawC354 *)gToolboxNavigationSprites, gdl);
         }
     }
 }

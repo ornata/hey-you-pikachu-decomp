@@ -1,3 +1,4 @@
+#include "texture_rectangles.h"
 #include "pikachu_actor.h"
 #include "random.h"
 #include "microphone_requests.h"
@@ -175,7 +176,6 @@ void hudDrawDirectionIndicators(Gfx **gdl) {
     }
 }
 
-void textureDrawRectangles(s32, TextureDrawC354 *, Gfx **);
 typedef struct Tmpl6C {
     s32 w[27];
 } Tmpl6C;
@@ -195,7 +195,7 @@ void hudDrawGuideStyle1(Gfx **gdl) {
     gDPSetRenderMode((*gdl)++, 0x504240, 0);
     gDPSetCombine((*gdl)++, 0x119623, 0xFF2FFFFF);
     gDPSetPrimColor((*gdl)++, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF);
-    textureDrawRectangles(5, (TextureDrawC354 *)&t, gdl);
+    textureDrawRectangles(5, (TextureDrawC354 *)(TextureDrawC354 *)&t, gdl);
     hudDrawDirectionIndicators(gdl);
 }
 
@@ -212,7 +212,7 @@ void hudDrawGuideStyle2(Gfx **gdl) {
     gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
     gDPSetCombineMode((*gdl)++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
     gDPSetPrimColor((*gdl)++, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF);
-    textureDrawRectangles(5, gHudGuideStyleTwoSprites, gdl);
+    textureDrawRectangles(5, (TextureDrawC354 *)gHudGuideStyleTwoSprites, gdl);
     hudDrawDirectionIndicators(gdl);
 }
 
@@ -229,7 +229,7 @@ void hudDrawGuideStyle3(Gfx **gdl) {
     gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
     gDPSetCombineMode((*gdl)++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
     gDPSetPrimColor((*gdl)++, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF);
-    textureDrawRectangles(5, gHudGuideStyleThreeSprites, gdl);
+    textureDrawRectangles(5, (TextureDrawC354 *)gHudGuideStyleThreeSprites, gdl);
     hudDrawDirectionIndicators(gdl);
 }
 
@@ -246,7 +246,7 @@ void hudDrawGuideStyle4(Gfx **gdl) {
     gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
     gDPSetCombineMode((*gdl)++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
     gDPSetPrimColor((*gdl)++, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF);
-    textureDrawRectangles(5, gHudGuideStyleFourSprites, gdl);
+    textureDrawRectangles(5, (TextureDrawC354 *)gHudGuideStyleFourSprites, gdl);
     hudDrawDirectionIndicators(gdl);
 }
 
@@ -494,7 +494,7 @@ void hudDrawAlternateOverlay(Gfx **gdl) {
     gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
     gDPSetCombineMode((*gdl)++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
     gDPSetPrimColor((*gdl)++, 0, 0, 0, 0, 0, 0x50);
-    textureDrawRectangles(5, (TextureDrawC354 *)gHudAlternateOverlaySprites, gdl);
+    textureDrawRectangles(5, (TextureDrawC354 *)(TextureDrawC354 *)gHudAlternateOverlaySprites, gdl);
 }
 
 /// Terminated sprite descriptors for the auxiliary HUD icon.
@@ -513,7 +513,7 @@ void hudDrawAuxiliaryIcon(Gfx **gdl) {
     gSPSetOtherMode((*gdl)++, G_SETOTHERMODE_L, G_MDSFT_RENDERMODE, 29, 0x504240);
     gDPSetCombineMode((*gdl)++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
     gDPSetPrimColor((*gdl)++, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF);
-    textureDrawRectangles(5, (TextureDrawC354 *)gHudAuxiliaryIconSprites, gdl);
+    textureDrawRectangles(5, (TextureDrawC354 *)(TextureDrawC354 *)gHudAuxiliaryIconSprites, gdl);
 }
 
 /// Animation identifiers for the five vertical movement-indicator bands.
@@ -627,7 +627,7 @@ void hudDrawMotionIndicators(Gfx **gdl) {
         gSPSetOtherMode((*gdl)++, G_SETOTHERMODE_L, G_MDSFT_RENDERMODE, 29, 0x504240);
         gDPSetCombineMode((*gdl)++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
         gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 255, 136);
-        textureDrawRectangles(5, (void *)gHudActionIndicatorSprites, gdl);
+        textureDrawRectangles(5, (TextureDrawC354 *)(void *)gHudActionIndicatorSprites, gdl);
         if (!showMotion)
             return;
     }
@@ -674,12 +674,12 @@ void hudDrawMotionIndicators(Gfx **gdl) {
     if (gHudHorizontalMotionRemaining > 0.0f) {
         gHudHorizontalMotionSprites[0].t = x;
         gHudHorizontalMotionSprites[1].texture = frameX;
-        textureDrawRectangles(5, (void *)gHudHorizontalMotionSprites, gdl);
+        textureDrawRectangles(5, (TextureDrawC354 *)(void *)gHudHorizontalMotionSprites, gdl);
         return;
     }
     gHudVerticalMotionSprites[0].t = y;
     gHudVerticalMotionSprites[1].texture = frameY;
-    textureDrawRectangles(5, (void *)gHudVerticalMotionSprites, gdl);
+    textureDrawRectangles(5, (TextureDrawC354 *)(void *)gHudVerticalMotionSprites, gdl);
 }
 
 char *areaGetDisplayName(s32);                        /* extern */

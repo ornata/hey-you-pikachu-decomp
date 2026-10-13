@@ -1,3 +1,4 @@
+#include "texture_rectangles.h"
 #include "random.h"
 #include "controller_rumble.h"
 #include "progress_value.h"
@@ -187,7 +188,6 @@ typedef struct TextureDraw370 {
     f32 scaleX, scaleY;
 } TextureDraw370;
 void renderDrawColorOverlayWithDepth(u8, u8, u8, u8);
-void textureDrawRectangles(s32, void *, Gfx **);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
@@ -214,7 +214,7 @@ void eyeCatchDrawLayers(Gfx **displayList) {
     gDPPipeSync((*displayList)++);
     gDPSetRenderMode((*displayList)++, 0x504240, 0);
     gDPSetCombine((*displayList)++, 0xFFFFFF, 0xFFFCF279);
-    textureDrawRectangles(9, (s32 *)((EyeGroup36A *)gEyeCatchActiveGroup)->records, displayList);
+    textureDrawRectangles(9, (TextureDrawC354 *)(s32 *)((EyeGroup36A *)gEyeCatchActiveGroup)->records, displayList);
     gDPPipeSync((*displayList)++);
     gDPSetRenderMode((*displayList)++, 0x504240, 0);
     gDPSetCombineLERP((*displayList)++, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE,
@@ -244,7 +244,7 @@ void eyeCatchDrawLayers(Gfx **displayList) {
             }
             gDPSetPrimColor((*displayList)++, 0, 0, 0, 0, 0, spA0);
             desc[1].texture = -1;
-            textureDrawRectangles(9, &desc, displayList);
+            textureDrawRectangles(9, (TextureDrawC354 *)&desc, displayList);
             var_s0 += 0x48;
         }
     }

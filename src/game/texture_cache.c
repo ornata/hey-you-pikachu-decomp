@@ -1,3 +1,4 @@
+#include "texture_rectangles.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "rom_cache.h"

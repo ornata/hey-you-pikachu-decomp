@@ -1,3 +1,4 @@
+#include "texture_rectangles.h"
 #include "pikachu_actor.h"
 #include "camera_storage.h"
 #include "object_groups.h"
@@ -41,21 +42,13 @@
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-/// Texture rectangle used by destination artwork and locked markers.
-typedef struct DrawRectangle {
-    s32 texture;        ///< Texture identifier; negative terminates a drawing list.
-    s32 x, y;           ///< Destination origin in menu pixels.
-    s32 width, height;  ///< Source rectangle dimensions.
-    s32 s, t;           ///< Source texture coordinates.
-    f32 scaleX, scaleY; ///< Drawing scale along each axis.
-} DrawRectangle;
 
 /// World-map destination choices, presentation focus and menu artwork.
 typedef struct WorldMapDestination {
     s32 areaIds[3];       ///< Area identifier for each chase stage; negative disables that stage.
     s32 availabilityFlag; ///< Progress flag required for selection, or -1 for unconditional availability.
     Vec3f focusPosition;  ///< Actor look-at point in presentation coordinates.
-    DrawRectangle icon;   ///< Destination icon and its menu rectangle.
+    TextureDrawC354 icon;   ///< Destination icon and its menu rectangle.
     s32 badgeTextures[3]; ///< Badge texture for each chase stage; negative hides the badge.
 } WorldMapDestination;
 
@@ -147,8 +140,8 @@ s32 wholeMapIsDestinationAvailable(s32 destination) {
 /* textureDrawRectangles list: one drawn record, then the template's negative-texture
  * terminator record. */
 typedef struct {
-    DrawRectangle item;
-    DrawRectangle end;
+    TextureDrawC354 item;
+    TextureDrawC354 end;
 } DrawList474;
 /// Texture rectangle template for the selected destination highlight.
 /// \note Original identifier: \c D_8009A11C (0x8009A11C).
@@ -171,7 +164,6 @@ extern s32 gWorldMapSelectionAlphaStep;
 /// Index of the currently selected world-map destination.
 /// \note Original identifier: \c D_800F1B74 (0x800F1B74).
 extern s32 gWorldMapSelectedDestination;
-void textureDrawRectangles(s32, DrawRectangle *, Gfx **);
 s32 runtimeGetUiPulseAlpha(void);
 /// Draw available map destinations, their badges, and the animated selection highlight.
 /// \param gdl Display-list cursor to append to and advance.
@@ -203,7 +195,7 @@ void wholeMapDrawDestinations(Gfx **gdl) {
     }
     selection.item.x = gWorldMapDestinations[gWorldMapSelectedDestination].icon.x;
     selection.item.y = gWorldMapDestinations[gWorldMapSelectedDestination].icon.y;
-    textureDrawRectangles(rendererTable, &selection.item, gdl);
+    textureDrawRectangles(rendererTable, (TextureDrawC354 *)&selection.item, gdl);
     if (gWorldMapState == 3) {
         change = gWorldMapSelectionAlphaStep * 16;
     } else {
@@ -224,7 +216,7 @@ void wholeMapDrawDestinations(Gfx **gdl) {
     for (index = 0; index <= lastIndex; index++) {
         if (wholeMapIsDestinationAvailable(index)) {
             icon.item = gWorldMapDestinations[index].icon;
-            textureDrawRectangles(rendererTable, &icon.item, gdl);
+            textureDrawRectangles(rendererTable, (TextureDrawC354 *)&icon.item, gdl);
             texture = gWorldMapDestinations[index].badgeTextures[playerGetChaseStage()];
             if (texture >= 0) {
                 if (index == 4) {
@@ -235,7 +227,7 @@ void wholeMapDrawDestinations(Gfx **gdl) {
                 alpha = runtimeGetUiPulseAlpha() & 255;
                 badge.item.y = (s32)(((index & 1) ? 0.01f : -0.01f) * (f32)(u32)alpha + (f32)icon.item.y);
                 badge.item.texture = texture;
-                textureDrawRectangles(rendererTable, &badge.item, gdl);
+                textureDrawRectangles(rendererTable, (TextureDrawC354 *)&badge.item, gdl);
             }
         }
     }
@@ -266,7 +258,7 @@ extern s32 gWorldMapLockedMarkerAngle;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002D904 (0x8002D904).
 void wholeMapDrawLockedDestinations(Gfx **gdl) {
-    DrawRectangle rectangles[3];
+    TextureDrawC354 rectangles[3];
     s32 i;
     s32 x, y;
     s32 angle;
@@ -299,7 +291,7 @@ void wholeMapDrawLockedDestinations(Gfx **gdl) {
             gDPSetCombineLERP((*gdl)++, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE,
                               0);
             gDPSetPrimColor((*gdl)++, 0, 0, 0, 0, 0, 128);
-            textureDrawRectangles(7, rectangles, gdl);
+            textureDrawRectangles(7, (TextureDrawC354 *)rectangles, gdl);
         }
     }
     for (i = 0; i < 9; i++) {
@@ -320,7 +312,7 @@ void wholeMapDrawLockedDestinations(Gfx **gdl) {
         rectangles[1].y = rectangles[0].y;
         gDPPipeSync((*gdl)++);
         gDPSetCombineMode((*gdl)++, G_CC_DECALRGBA, G_CC_DECALRGBA);
-        textureDrawRectangles(7, rectangles, gdl);
+        textureDrawRectangles(7, (TextureDrawC354 *)rectangles, gdl);
     }
     angle = (s32)((u32)*counter + 5U);
     while (angle < 0)
@@ -347,7 +339,7 @@ void wholeMapDrawDifficultyOverlay(Gfx **gdl) {
     gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
     gDPSetCombineLERP((*gdl)++, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0);
     gDPSetPrimColor((*gdl)++, 0, 0, 0, 0, 0, 0xC0);
-    textureDrawRectangles(7, (DrawRectangle *)((playerGetChaseStage() * 0x90) + gWorldMapDifficultyOverlays), gdl);
+    textureDrawRectangles(7, (TextureDrawC354 *)(TextureDrawC354 *)((playerGetChaseStage() * 0x90) + gWorldMapDifficultyOverlays), gdl);
 }
 
 void wholeMapDrawDestinations(Gfx **);          /* extern */
