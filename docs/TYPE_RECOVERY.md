@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,753 / 80 |
+| Raw offset candidates | 4,040 / 86 | 2,728 / 80 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3307,3 +3307,17 @@ bound remains explicitly unresolved; supported identifiers come from each
 consumer's resources. Original global/address notes are retained at the canonical
 declaration. Every consumer conversion was built and compared in isolation;
 all nine preserve strict object matches.
+
+### Opacity programs and attached-effect state
+
+Four consumers share the borrowed resident `ValueKey *` opacity-program table;
+attached-effect initialization names default entry zero. The complete table bound
+remains unresolved. Private `AttachedEffectDefinition` names hierarchy template,
+scale and opacity selection. Checked `AttachedEffectState` covers its complete
+0x2C-byte allocation: effect kind, reverse-facing flag, borrowed owner, playback
+rate, two value tracks, RGBA color and scale. Existing padding is retained and
+initialization does not clear previously uninitialized bytes. Actor state now
+names its latest attached-effect handle at checked offset 0x404, replacing only
+the supported final word of its unresolved tail. Ghidra 0x80013130 confirms the
+state fields, replacement handle lookup and publication of the new handle.
+All four table conversions and the state/header conversion preserve strict objects.

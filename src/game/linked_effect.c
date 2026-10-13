@@ -1,3 +1,4 @@
+#include "opacity_animation_programs.h"
 #include "texture_animation_programs.h"
 #include "actor_meters.h"
 #include "actor_sound.h"
@@ -412,9 +413,6 @@ f32 gLinkedEffectTemplateBounds[3] = {10.0f};
 /// Separate model and kind/flags portion of the linked-effect object template.
 /// \note Original identifier: \c D_80079254 (0x80079254).
 void *gLinkedEffectTemplateModel[3] = {gLinkedEffectModelDisplayList, (void *)0x00A80000};
-/// Shared integer animation programs controlling effect and marker opacity.
-/// \note Original identifier: \c D_8006B4B0 (0x8006B4B0).
-extern s32 gOpacityAnimationPrograms[];
 /// Create and register a chain of animated effects directed toward a target.
 /// \param kind Motion kind: zero or one approaches the target, two rebounds, and three falls before changing behavior.
 /// \param x Initial world-space X coordinate.
@@ -456,7 +454,7 @@ u8 *linkedEffectCreateChain(s32 kind, f32 x, f32 y, f32 z, f32 scale, s32 target
     initial.speed = speed;
     initial.rate = 1.0f;
     animationIntegerTrackInitialize((ValueTrack *)initial.channelA, gTextureFrameAnimationPrograms[channelA]);
-    animationIntegerTrackInitialize((ValueTrack *)initial.channelB, (ValueKey *)gOpacityAnimationPrograms[channelB]);
+    animationIntegerTrackInitialize((ValueTrack *)initial.channelB, gOpacityAnimationPrograms[channelB]);
     initial.color[0] = 255;
     initial.color[1] = 255;
     initial.color[2] = 255;

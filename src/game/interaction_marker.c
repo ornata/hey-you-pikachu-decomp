@@ -1,3 +1,4 @@
+#include "opacity_animation_programs.h"
 #include "texture_animation_programs.h"
 #include "object_movement.h"
 #include "camera_visibility.h"
@@ -150,9 +151,6 @@ typedef char SelectionStyleSizeCheck[(sizeof(SelectionStyle) == 0x24) ? 1 : -1];
 /// Animation, sound and target-relative placement settings indexed by marker mode.
 /// \note Original identifier: \c D_80088CB0 (0x80088CB0).
 extern SelectionStyle gInteractionMarkerStyles[];
-/// Shared integer animation programs controlling effect and marker opacity.
-/// \note Original identifier: \c D_8006B4B0 (0x8006B4B0).
-extern u8 *gOpacityAnimationPrograms[];
 /// Integer animation programs controlling marker position offsets and scale axes.
 /// \note Original identifier: \c D_8006B4EC (0x8006B4EC).
 extern u8 *gInteractionMarkerTransformPrograms[];
@@ -204,7 +202,7 @@ void interactionMarkerUpdate(u8 *object) {
                 (gTextureFrameAnimationPrograms[gInteractionMarkerStyles[mode].tracks[0]]));
             animationIntegerTrackInitialize(
                 &((InteractionMarkerState *)state)->tracks[1],
-                (ValueKey *)(gOpacityAnimationPrograms[gInteractionMarkerStyles[mode].tracks[1]]));
+                (gOpacityAnimationPrograms[gInteractionMarkerStyles[mode].tracks[1]]));
             animationIntegerTrackInitialize(
                 &((InteractionMarkerState *)state)->tracks[2],
                 (ValueKey *)(gInteractionMarkerTransformPrograms[gInteractionMarkerStyles[mode].tracks[2]]));

@@ -1,3 +1,9 @@
+/// \file
+/// Creates and advances actor-attached effects with frame and opacity animation.
+
+#include "actor_script.h"
+#include "object_types.h"
+#include "opacity_animation_programs.h"
 #include "texture_animation_programs.h"
 #include "object_movement.h"
 #include "object_flags.h"
@@ -12,23 +18,50 @@
 
 /// Separate view of the default texture-frame animation program for attached effects.
 /// \note Original identifier: \c D_8006B320 (0x8006B320).
-extern s32 gAttachedEffectDefaultFrameProgram;
+extern ValueKey *gAttachedEffectDefaultFrameProgram;
 /// Write cursor for the active graphics command list; also marks the camera-storage end.
 /// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
 extern Gfx *gRenderDisplayListCursor;
 void textureLoadForDraw(Gfx **, s32, s16);
-/// Shared integer animation programs controlling effect and marker opacity.
-/// \note Original identifier: \c D_8006B4B0 (0x8006B4B0).
-extern s32 gOpacityAnimationPrograms;
 
-typedef struct PartDef {
-    u8 *tmpl;
-    f32 scale;
-    s32 track;
-} PartDef;
+/// Resident appearance and animation defaults for one attached-effect kind.
+typedef struct AttachedEffectDefinition {
+    ObjectTemplate *objectTemplate; ///< Borrowed hierarchy template.
+    f32 baseScale; ///< Scale multiplier for view-dependent sizing.
+    s32 opacityProgramIndex; ///< Opacity key-program table index.
+} AttachedEffectDefinition;
+typedef char AttachedEffectDefinitionSizeCheck[(sizeof(AttachedEffectDefinition) == 0xC) ? 1 : -1];
+
+/// Four byte color components used by the effect's primitive color.
+typedef struct Rgba8 {
+    u8 r, g, b, a;
+} Rgba8;
+
+/// Owned animation and appearance state for an actor-attached effect.
+typedef struct AttachedEffectState {
+    u8 kind; ///< Effect-definition index selected at creation.
+    s8 reverseFacing; ///< Nonzero turns the effect away from its camera-facing orientation.
+    u8 unknown002[2];
+    u8 *owner; ///< Borrowed actor that anchors the effect.
+    f32 playbackRate; ///< Time multiplier shared by frame and opacity tracks.
+    ValueTrack frameTrack; ///< Texture-frame animation borrowing resident keys.
+    ValueTrack opacityTrack; ///< Opacity animation borrowing resident keys.
+    Rgba8 color; ///< Primitive color; alpha follows the opacity track.
+    f32 baseScale; ///< Multiplier applied to view-dependent scale.
+} AttachedEffectState;
+typedef char AttachedEffectStateSizeCheck[(sizeof(AttachedEffectState) == 0x2C) ? 1 : -1];
+#define ATTACHED_EFFECT_OFFSET_CHECK(name, member, offset) \
+    typedef char name[(((u32)&((AttachedEffectState *)0)->member) == (offset)) ? 1 : -1]
+ATTACHED_EFFECT_OFFSET_CHECK(AttachedEffectOwnerOffsetCheck, owner, 0x4);
+ATTACHED_EFFECT_OFFSET_CHECK(AttachedEffectRateOffsetCheck, playbackRate, 0x8);
+ATTACHED_EFFECT_OFFSET_CHECK(AttachedEffectFrameOffsetCheck, frameTrack, 0xC);
+ATTACHED_EFFECT_OFFSET_CHECK(AttachedEffectOpacityOffsetCheck, opacityTrack, 0x18);
+ATTACHED_EFFECT_OFFSET_CHECK(AttachedEffectColorOffsetCheck, color, 0x24);
+ATTACHED_EFFECT_OFFSET_CHECK(AttachedEffectScaleOffsetCheck, baseScale, 0x28);
+#undef ATTACHED_EFFECT_OFFSET_CHECK
 /// Attached-effect templates, base scales and opacity-program selections indexed by effect kind.
 /// \note Original identifier: \c D_80074EB8 (0x80074EB8).
-extern PartDef gAttachedEffectDefinitions[];
+extern AttachedEffectDefinition gAttachedEffectDefinitions[];
 /// Current gameplay, menu or transition mode.
 /// \note Original identifier: \c D_800AE504 (0x800AE504).
 extern s32 gRuntimeGameMode;
@@ -42,26 +75,26 @@ u8 *attachedEffectCreate(u8 *owner, s32 kind, s32 track) {
     u8 *obj;
     u8 *v;
     u8 *ov;
-    PartDef *def;
+    AttachedEffectDefinition *def;
     def = &gAttachedEffectDefinitions[kind];
-    obj = objectCreateHierarchyFromTemplate((ObjectTemplate *)def->tmpl);
+    obj = objectCreateHierarchyFromTemplate(def->objectTemplate);
     if (gRuntimeGameMode == 8 || gRuntimeGameMode == 0x12) {
         objectSetHierarchyFlags(obj, 0x6000);
     }
-    v = *(u8 **)(obj + 0x54);
-    v[0] = kind;
-    *(f32 *)(v + 0x28) = def->scale;
-    animationIntegerTrackInitialize((ValueTrack *)(v + 0x18), (ValueKey *)((&gOpacityAnimationPrograms)[def->track]));
-    animationIntegerTrackInitialize((ValueTrack *)(v + 0xC), (gTextureFrameAnimationPrograms[track]));
-    *(u8 **)(v + 4) = owner;
-    v[1] = 0;
+    v = ((RuntimeObjectPrefix *)obj)->state.bytes;
+    ((AttachedEffectState *)v)->kind = kind;
+    ((AttachedEffectState *)v)->baseScale = def->baseScale;
+    animationIntegerTrackInitialize(&((AttachedEffectState *)v)->opacityTrack, gOpacityAnimationPrograms[def->opacityProgramIndex]);
+    animationIntegerTrackInitialize(&((AttachedEffectState *)v)->frameTrack, (gTextureFrameAnimationPrograms[track]));
+    ((AttachedEffectState *)v)->owner = owner;
+    ((AttachedEffectState *)v)->reverseFacing = 0;
     objectRegisterActiveHierarchy(obj);
-    ov = *(u8 **)(owner + 0x54);
-    owner = objectFindLiveByHandle(*(s32 *)(ov + 0x404));
+    ov = ((RuntimeObjectPrefix *)owner)->state.bytes;
+    owner = objectFindLiveByHandle(((ActorScriptState *)ov)->attachedEffectHandle);
     if (owner != NULL) {
         objectRequestHierarchyDestruction(owner);
     }
-    *(s32 *)(ov + 0x404) = *(s32 *)(obj + 0x38);
+    ((ActorScriptState *)ov)->attachedEffectHandle = ((RuntimeObjectPrefix *)obj)->handle;
     return obj;
 }
 
@@ -72,14 +105,15 @@ u8 *attachedEffectCreate(u8 *owner, s32 kind, s32 track) {
 void attachedEffectInitialize(u8 *object) {
     u8 *obj;
 
-    obj = heapAllocLocal(&gGameHeap, 0x2C, 0x7A);
-    animationIntegerTrackInitialize((ValueTrack *)(obj + 0xC), (ValueKey *)(gAttachedEffectDefaultFrameProgram));
-    animationIntegerTrackInitialize((ValueTrack *)(obj + 0x18), (ValueKey *)(gOpacityAnimationPrograms));
-    obj[0x24] = obj[0x25] = obj[0x26] = obj[0x27] = 0xFF;
-    *(s32 *)(obj + 4) = 0;
-    *(f32 *)(obj + 8) = 1.0f;
-    *(f32 *)(obj + 0x28) = 1.0f;
-    *(u8 **)(object + 0x54) = obj;
+    obj = heapAllocLocal(&gGameHeap, sizeof(AttachedEffectState), 0x7A);
+    animationIntegerTrackInitialize(&((AttachedEffectState *)obj)->frameTrack, gAttachedEffectDefaultFrameProgram);
+    animationIntegerTrackInitialize(&((AttachedEffectState *)obj)->opacityTrack, gOpacityAnimationPrograms[0]);
+    ((AttachedEffectState *)obj)->color.r = ((AttachedEffectState *)obj)->color.g =
+        ((AttachedEffectState *)obj)->color.b = ((AttachedEffectState *)obj)->color.a = 0xFF;
+    ((AttachedEffectState *)obj)->owner = NULL;
+    ((AttachedEffectState *)obj)->playbackRate = 1.0f;
+    ((AttachedEffectState *)obj)->baseScale = 1.0f;
+    ((RuntimeObjectPrefix *)object)->state.bytes = obj;
 }
 
 f32 vector3Length(f32 *);
@@ -113,9 +147,9 @@ void attachedEffectUpdate(u8 *obj) {
     f32 factor;
     f32 delta[3];
 
-    state = *(u8 **)(obj + 0x54);
-    step = *(f32 *)(state + 8) * gRuntimeFrameSeconds;
-    owner = *(u8 **)(state + 4);
+    state = ((RuntimeObjectPrefix *)obj)->state.bytes;
+    step = ((AttachedEffectState *)state)->playbackRate * gRuntimeFrameSeconds;
+    owner = ((AttachedEffectState *)state)->owner;
     view = (f32 *)actorFindPart(owner, 0x79);
     *(f32 *)(obj + 0x18) = view[17];
     *(f32 *)(obj + 0x1C) = view[18];
@@ -136,11 +170,11 @@ void attachedEffectUpdate(u8 *obj) {
         factor = 4.0f;
     }
     *(f32 *)(obj + 0x1C) += *(f32 *)(owner + 0x24) * factor * 40.0f;
-    factor *= *(f32 *)(state + 0x28);
+    factor *= ((AttachedEffectState *)state)->baseScale;
     *(f32 *)(obj + 0) = factor;
     *(f32 *)(obj + 4) = factor;
     *(f32 *)(obj + 8) = factor;
-    if (*(s8 *)(state + 1) != 0) {
+    if (((AttachedEffectState *)state)->reverseFacing != 0) {
         *(f32 *)(obj + 0x10) += 180.0f;
         while (*(f32 *)(obj + 0x10) < 0.0f) {
             *(f32 *)(obj + 0x10) += 360.0f;
@@ -149,28 +183,24 @@ void attachedEffectUpdate(u8 *obj) {
             *(f32 *)(obj + 0x10) -= 360.0f;
         }
     }
-    animationIntegerTrackEvaluate((ValueTrack *)(state + 0xC), &value, step);
-    if (animationIntegerTrackEvaluate((ValueTrack *)(state + 0x18), &value, step) == 1) {
+    animationIntegerTrackEvaluate(&((AttachedEffectState *)state)->frameTrack, &value, step);
+    if (animationIntegerTrackEvaluate(&((AttachedEffectState *)state)->opacityTrack, &value, step) == 1) {
         objectRequestHierarchyDestruction(obj);
         return;
     }
-    state[0x27] = value;
+    ((AttachedEffectState *)state)->color.a = value;
 }
-
-typedef struct Rgba8 {
-    u8 r, g, b, a;
-} Rgba8;
 
 /// Prepare the current animation frame and color for rendering an attached effect.
 /// \param object Attached effect object to render.
 /// \returns The effect geometry display-list address.
 /// \note Original decompilation identifier: \c func_80013530 (0x80013530).
 s32 attachedEffectPrepareDraw(u8 *object) {
-    u8 *v = *(u8 **)(object + 0x54);
+    u8 *v = ((RuntimeObjectPrefix *)object)->state.bytes;
     Rgba8 *c;
 
-    textureLoadForDraw(&gRenderDisplayListCursor, 4, *(s16 *)(v + 0x14));
-    c = (Rgba8 *)(v + 0x24);
+    textureLoadForDraw(&gRenderDisplayListCursor, 4, ((AttachedEffectState *)v)->frameTrack.value);
+    c = &((AttachedEffectState *)v)->color;
     gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, c->r, c->g, c->b, c->a);
     return *(s32 *)(object + 0x30);
 }

@@ -1,3 +1,4 @@
+#include "opacity_animation_programs.h"
 #include "texture_animation_programs.h"
 #include "object_matrix_buffers.h"
 #include "object_movement.h"
@@ -235,9 +236,6 @@ extern s32 gWispTextureTrackCounts[];
 /// Shared opacity animation program index for each wisp style.
 /// \note Original identifier: \c D_80077EF0 (0x80077EF0).
 extern s32 gWispOpacityProgramIndices[];
-/// Shared integer animation programs controlling effect and marker opacity.
-/// \note Original identifier: \c D_8006B4B0 (0x8006B4B0).
-extern s32 gOpacityAnimationPrograms[];
 /// Integer texture-frame animation for wisp style 0.
 /// \note Original identifier: \c D_8006B370 (0x8006B370).
 extern s32 gWispStyle0FrameAnimation;
@@ -328,7 +326,7 @@ u8 *wispEffectCreate(s32 kind, f32 x, f32 y, f32 z) {
         gSPEndDisplayList(gdl++);
     }
     state->tracks = heapAllocLocal(&gGameHeap, count * 12, 0x20A);
-    animationIntegerTrackInitialize((ValueTrack *)(state->animation), (ValueKey *)(gOpacityAnimationPrograms[gWispOpacityProgramIndices[kind]]));
+    animationIntegerTrackInitialize((ValueTrack *)(state->animation), (gOpacityAnimationPrograms[gWispOpacityProgramIndices[kind]]));
     switch (kind) {
     case 0:
         obj->scale[0] = 0.01f;
