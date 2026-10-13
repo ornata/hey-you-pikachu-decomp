@@ -1,3 +1,4 @@
+#include "texture_setup.h"
 #include "pikachu_actor.h"
 #include "audio_sound_effect.h"
 /// \file
@@ -288,7 +289,6 @@ void interactionMarkerUpdate(u8 *object) {
 /// Write cursor for the active graphics command list; also marks the camera-storage end.
 /// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
 extern Gfx *gRenderDisplayListCursor;
-void textureLoadForDraw(Gfx **, s32, s32, u8 *);
 
 /// Prepare display settings for an active interaction marker.
 /// \param object Interaction marker object to draw.
@@ -300,7 +300,7 @@ s32 interactionMarkerPrepareDraw(u8 *object) {
     if (((InteractionMarkerState *)d)->mode == 0) {
         return 0;
     }
-    textureLoadForDraw(&gRenderDisplayListCursor, 5, ((InteractionMarkerState *)d)->tracks[MARKER_TRACK_FRAME].value, d);
+    textureLoadForDraw(&gRenderDisplayListCursor, 5, ((InteractionMarkerState *)d)->tracks[MARKER_TRACK_FRAME].value);
     gDPPipeSync(gRenderDisplayListCursor++);
     gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0xFF, 0xFF, 0xFF, ((InteractionMarkerState *)d)->tracks[MARKER_TRACK_OPACITY].value);
     if (((RuntimeObjectPrefix *)((u8 *)gPikachuActor))->state.actor->heldItemHandle == ((InteractionMarkerState *)d)->targetHandle) {

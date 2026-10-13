@@ -1,3 +1,4 @@
+#include "texture_setup.h"
 #include "texture_rectangles.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"

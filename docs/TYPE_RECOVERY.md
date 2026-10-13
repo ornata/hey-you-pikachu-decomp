@@ -3936,3 +3936,9 @@ output contracts between drawing and all seven declared consumer units. Text
 windows and the world map use the established 0x24-byte rectangle layout instead
 of duplicate records. Generic pointer callers retain explicit compatible views
 of their existing rectangle-list storage.
+
+`texture_setup.h` shares the texture setup function’s display-list-pointer
+return and signed word index across all eight consumers. Former void-return
+and short-index declarations are removed. The interaction marker’s unused
+fourth argument is unnecessary for matching and is removed; both ROM bytes
+and strict object identity are preserved.

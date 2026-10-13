@@ -420,6 +420,7 @@
         "script_vm_execution.h",
         "script_vm_lifecycle.h",
         "terrain_height.h",
+        "texture_setup.h",
         "vector_metrics.h"
       ],
       "matching_exceptions": {
@@ -579,6 +580,7 @@
         "terrain_movement.h",
         "terrain_surface.h",
         "texture_animation_programs.h",
+        "texture_setup.h",
         "vector_metrics.h",
         "word_map.h"
       ],
@@ -592,34 +594,34 @@
       "locations": {
         "raw_offset_candidates": {
           "slot + 1": [
-            "110:33"
+            "111:33"
           ],
           "drawListStorage + 0x40": [
-            "243:40"
+            "244:40"
           ],
           "heightDelta + 1": [
-            "357:34"
+            "358:34"
           ],
           "actor + 0x18": [
-            "387:50"
+            "388:50"
           ],
           "actor + 0x1C": [
-            "387:74"
+            "388:74"
           ],
           "actor + 0x20": [
-            "387:98"
+            "388:98"
           ],
           "actor + 0x54": [
-            "400:38"
+            "401:38"
           ],
           "actor + 0x36": [
-            "400:71"
+            "401:71"
           ],
           "p + 1": [
-            "880:38"
+            "881:38"
           ],
           "return -1": [
-            "921:5"
+            "922:5"
           ],
           "actor + 0x30": [
             "1089:21"
@@ -653,7 +655,8 @@
         "random.h",
         "script_vm.h",
         "script_vm_execution.h",
-        "texture_animation_programs.h"
+        "texture_animation_programs.h",
+        "texture_setup.h"
       ],
       "matching_exceptions": {
         "actorPartUpdateLinkedRotation": "The linked-part axis is a recovered unsigned halfword selecting rotation components. Replacing explicit axis*4 byte-offset reads/writes with RuntimeObjectPrefix.rotation[axis] changes allocated instructions and fails ROM matching. The callback retains named rotationByteOffset/angleSource variables; isolate IDO indexed-address scheduling before converting these remaining accesses.",
@@ -662,50 +665,50 @@
       "locations": {
         "raw_offset_candidates": {
           "buffer + 0x50": [
-            "221:18",
             "222:18",
+            "223:18",
             "464:32"
           ],
           "buffer + 0x58": [
-            "223:18",
-            "224:18"
+            "224:18",
+            "225:18"
           ],
           "buffer + 0x60": [
-            "225:18",
-            "226:18"
+            "226:18",
+            "227:18"
           ],
           "buffer + 0x68": [
-            "227:18",
-            "228:18"
+            "228:18",
+            "229:18"
           ],
           "buffer + 0x70": [
-            "229:18",
-            "230:18"
+            "230:18",
+            "231:18"
           ],
           "buffer + 0x78": [
-            "231:18",
             "232:18",
+            "233:18",
             "465:32"
           ],
           "rotationByteOffset + 0xC": [
-            "293:89",
-            "295:41",
-            "297:23"
+            "294:89",
+            "296:41",
+            "298:23"
           ],
           "state + 1": [
-            "403:42"
+            "404:42"
           ],
           "object + 0xC": [
-            "406:53"
+            "407:53"
           ],
           "object + 0x10": [
-            "406:76"
+            "407:76"
           ],
           "object + 0x14": [
-            "406:100"
+            "407:100"
           ],
           "object + 8": [
-            "409:14"
+            "410:14"
           ],
           "animation + 0x1C": [
             "467:26"
@@ -2737,6 +2740,7 @@
         "random.h",
         "ribbon_effect.h",
         "texture_animation_programs.h",
+        "texture_setup.h",
         "vector_direction.h",
         "vector_metrics.h",
         "wisp_effect.h"
@@ -3179,7 +3183,8 @@
       "known_views": [
         "rom_cache.h",
         "texture_draw_types.h",
-        "texture_rectangles.h"
+        "texture_rectangles.h",
+        "texture_setup.h"
       ],
       "matching_exceptions": {
         "texture ROM address expressions": "Texture image and palette offsets are cartridge byte offsets added to the archive linker address. Explicitly casting the archive symbol to s32 changes allocated instructions and relocations under IDO; retain the original byte-pointer addition at the numeric romCacheRead key boundary. A matching explicit numeric representation remains to be recovered."
@@ -3187,25 +3192,25 @@
       "locations": {
         "raw_offset_candidates": {
           "w - 1": [
-            "132:42"
-          ],
-          "h - 1": [
             "133:42"
           ],
+          "h - 1": [
+            "134:42"
+          ],
           "t - 1U": [
-            "141:58"
+            "142:58"
           ],
           "ds + 0": [
-            "142:75"
+            "143:75"
           ],
           "ds - 0": [
-            "142:87"
+            "143:87"
           ],
           "dt + 0": [
-            "143:76"
+            "144:76"
           ],
           "dt - 0": [
-            "143:88"
+            "144:88"
           ]
         }
       }
@@ -4930,6 +4935,7 @@
         "terrain_height.h",
         "terrain_movement.h",
         "texture_animation_programs.h",
+        "texture_setup.h",
         "wisp_effect.h"
       ],
       "matching_exceptions": {
@@ -4940,72 +4946,72 @@
       "locations": {
         "raw_offset_candidates": {
           "state + 0x54": [
-            "1866:37"
+            "1867:37"
           ],
           "bytes + 0x54": [
-            "2025:67"
+            "2026:67"
           ],
           "subject + 6": [
-            "2028:28"
+            "2029:28"
           ],
           "subject + 0x190": [
-            "2029:56"
+            "2030:56"
           ],
           "state + 0x38": [
-            "2060:18",
             "2061:18",
-            "2061:87",
-            "2062:42",
-            "2063:22"
+            "2062:18",
+            "2062:87",
+            "2063:42",
+            "2064:22"
           ],
           "lightingStorage + 0x38": [
-            "2092:60"
+            "2093:60"
           ],
           "object + 0x24": [
-            "2149:18",
-            "2150:34",
-            "2152:45",
-            "2154:45",
-            "2161:23"
+            "2150:18",
+            "2151:34",
+            "2153:45",
+            "2155:45",
+            "2162:23"
           ],
           "object + 0xC": [
-            "2163:14"
-          ],
-          "object + 0x10": [
             "2164:14"
           ],
-          "object + 0x14": [
+          "object + 0x10": [
             "2165:14"
           ],
-          "object + 0x18": [
+          "object + 0x14": [
             "2166:14"
           ],
-          "object + 0x1C": [
+          "object + 0x18": [
             "2167:14"
           ],
-          "object + 0x20": [
+          "object + 0x1C": [
             "2168:14"
           ],
+          "object + 0x20": [
+            "2169:14"
+          ],
           "object + 0x44": [
-            "2169:14",
+            "2170:14",
             "2709:74",
             "2731:70"
           ],
           "object + 0x48": [
-            "2170:14"
-          ],
-          "object + 0x4C": [
             "2171:14"
           ],
+          "object + 0x4C": [
+            "2172:14"
+          ],
           "gLiveItemCount + 1U": [
-            "2172:33"
+            "2173:33"
           ],
           "gLiveItemCount - 1": [
-            "2189:45"
+            "2190:45"
           ],
           "return -1": [
-            "2221:9",
-            "2229:9"
+            "2222:9",
+            "2230:9"
           ],
           "state + 0x4C": [
             "2318:40"

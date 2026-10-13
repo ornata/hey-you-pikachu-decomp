@@ -1,3 +1,4 @@
+#include "texture_setup.h"
 #include "math_scalar.h"
 #include "pikachu_actor.h"
 #include "math_angles.h"
@@ -433,7 +434,6 @@ void actorResetPartTint(u8 *actor) {
     actorSetPartTint(actor, 0xBE, 0x28, 0x14);
 }
 
-Gfx *textureLoadForDraw(Gfx **, s32, s32);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;

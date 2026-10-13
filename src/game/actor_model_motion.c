@@ -1,3 +1,4 @@
+#include "texture_setup.h"
 #include "pikachu_actor.h"
 #include "camera_storage.h"
 #include "vector_metrics.h"
@@ -1046,7 +1047,6 @@ void actorReleaseAnimatedTextureState(u8 *actor) {
     heapFreeLocal(&gGameHeap, obj);
 }
 
-Gfx *textureLoadForDraw(Gfx **, s32, s32);
 
 /// Advance animated textures and prepare their drawing commands.
 /// \param actor Component with zero through three initialized texture tracks and allocated drawing buffers.

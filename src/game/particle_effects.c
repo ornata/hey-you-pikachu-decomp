@@ -1,3 +1,4 @@
+#include "texture_setup.h"
 #include "math_scalar.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
@@ -76,7 +77,6 @@ extern s32 gExpandingOrangeEffectFrameAnimation;
 /// Framebuffer and command-buffer index for the current frame.
 /// \note Original identifier: \c D_800F298C (0x800F298C).
 extern s32 gGraphicsFramebufferIndex;
-void textureLoadForDraw(Gfx **, s32, s32);
 s32 wispEffectUpdateDrawAnimation(u8 *, s32);
 
 /// Wisp modulation channels, including animation-controlled opacity.

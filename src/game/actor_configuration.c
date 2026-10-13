@@ -1,3 +1,4 @@
+#include "texture_setup.h"
 #include "pikachu_actor.h"
 #include "vector_metrics.h"
 #include "math_angles.h"
@@ -59,7 +60,6 @@ extern HpHdr gGameHeap;
 /// Write cursor for the active graphics command list; also marks the camera-storage end.
 /// \note Original identifier: \c D_800ABDD0 (0x800ABDD0).
 extern Gfx *gRenderDisplayListCursor;
-void textureLoadForDraw(Gfx **, s32, s32);
 /// Cached actor asset storage addresses indexed by resource identifier.
 /// \note Original identifier: \c D_800B6BB8 (0x800B6BB8).
 extern u8 *gActorAssetStorage[36];

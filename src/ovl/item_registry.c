@@ -1,3 +1,4 @@
+#include "texture_setup.h"
 #include "math_scalar.h"
 #include "pikachu_actor.h"
 #include "math_angles.h"
@@ -2266,7 +2267,6 @@ void itemDrawLighting(u8 *item) {
 typedef struct {
     u8 r, g, b, a;
 } ItemColor13CFC;
-Gfx *textureLoadForDraw(Gfx **, s32, s32);
 /// Apply an item material, rendering style, and tint to the current drawing context when the item uses a
 /// material.
 /// \param item Initialized item being prepared for drawing.
