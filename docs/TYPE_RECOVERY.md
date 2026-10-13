@@ -3807,3 +3807,8 @@ eight-slot ring, stack requests and asynchronous device behavior remain identica
 points, with parameter roles and original addresses. The producer and all six
 consumer units share it. The contract requires an initialized controller thread
 and distinguishes submission return from later device completion.
+
+`microphone_session_query.h` shares all six trigger/dictionary/device queries
+between session definitions and request wrappers. Readiness retains its original
+`int` return: substituting IDO `s32` (`long`) changes ROM code. The session
+requested-dictionary global again uses its established symbol-manifest name.

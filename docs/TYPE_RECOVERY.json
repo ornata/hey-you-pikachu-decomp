@@ -2260,13 +2260,16 @@
         "controller_commands.h",
         "eeprom_io.h",
         "microphone_configuration.h",
+        "microphone_session_query.h",
         "voice_recognition.h"
       ],
-      "matching_exceptions": {},
+      "matching_exceptions": {
+        "micSessionIsTriggerReady": "Retain the established int return in the shared query header. IDO s32 is long; changing the definition return to s32 fails ROM matching. The canonical int declaration and all other shared session queries match."
+      },
       "locations": {
         "raw_offset_candidates": {
           "gMicSessionUploadingDictionary + 1": [
-            "267:13"
+            "265:13"
           ]
         }
       }

@@ -1,3 +1,4 @@
+#include "microphone_session_query.h"
 #include "microphone_configuration.h"
 #include "controller_commands.h"
 /// \file
@@ -44,7 +45,7 @@ s32 gMicSessionUploadingDictionary;
 s32 gMicSessionUploadedDictionary;
 /// Dictionary identifier requested by session configuration.
 /// \note Original identifier: \c D_800AD444 (0x800AD444).
-s32 gMicConfigurationRequestedDictionary;
+s32 gMicSessionRequestedDictionary;
 /// Controller ports whose buttons contribute to the microphone trigger.
 /// \note Original identifier: \c D_800AD448 (0x800AD448).
 u32 gMicSessionTriggerPortMask;
@@ -87,8 +88,6 @@ void micSessionUpdateAmplifier(void);
 void micSessionUpdateRecognitionEnable(s32);
 void micSessionUpdateDictionary(void);
 void micSessionResetAndFindDevice(void);
-s32 micSessionIsDictionaryUploadActive(void);
-s32 micSessionIsDeviceConnected(s32);
 void voiceRecognitionPoll(void);
 
 /// Persistent EEPROM request shared with the controller thread until acknowledgment.
@@ -190,7 +189,6 @@ void micSessionUpdateRecognitionEnable(s32 enabled) {
     gVoiceRecognitionReadRequested = 0;
 }
 
-s32 micSessionIsDictionaryUploadActive(); /* extern */
 s32 voiceDictionaryUpload(s32, s32);           /* extern */
 s32 voiceRecognitionIsReadActive();                       /* extern */
 
@@ -204,7 +202,7 @@ s32 voiceRecognitionIsReadActive();                       /* extern */
 void micSessionUpdateDictionary(void) {
     if (micSessionIsDictionaryUploadActive() == 0) {
         if ((voiceRecognitionGetCommandStatus() == 0) && (voiceRecognitionIsReadActive() == 0)) {
-            gMicSessionUploadingDictionary = gMicConfigurationRequestedDictionary;
+            gMicSessionUploadingDictionary = gMicSessionRequestedDictionary;
             TRACE("_changeDic: newDictionary:%d\n", gMicSessionUploadingDictionary);
             goto block_4;
         }
@@ -250,8 +248,8 @@ void micSessionResetAndFindDevice(void) {
 
     gMicSessionTriggerActive = gMicSessionPreviousTriggerActive = 0;
     gMicSessionUploadingDictionary = gMicSessionUploadedDictionary = -1;
-    if (gMicConfigurationRequestedDictionary == -1) {
-        gMicConfigurationRequestedDictionary = 0;
+    if (gMicSessionRequestedDictionary == -1) {
+        gMicSessionRequestedDictionary = 0;
     }
     gMicSessionAmplifierOffRequested = 0;
     gMicSessionLastDeviceScanTicks = gMicSessionLastAmplifierOnTicks = gMicSessionLastAmplifierOffTicks = gMicSessionTriggerReleaseTicks = osGetTime();
@@ -286,7 +284,7 @@ s32 micSessionGetTriggerState(void) {
 /// \returns Requested dictionary identifier.
 /// \note Original decompilation identifier: \c func_8000418C (0x8000418C).
 s32 micSessionGetRequestedDictionary(void) {
-    return gMicConfigurationRequestedDictionary;
+    return gMicSessionRequestedDictionary;
 }
 
 /// Get the controller port selected for the Voice Recognition Unit.
@@ -321,7 +319,7 @@ void micSessionUpdate(void) {
         if ((gMicSessionDevicePort >= 0) && (micSessionIsDeviceConnected(gMicSessionDevicePort) != 0)) {
             micSessionUpdateTrigger();
             micSessionUpdateAmplifier();
-            if ((gMicSessionUploadedDictionary != gMicConfigurationRequestedDictionary) || (micSessionIsDictionaryUploadActive() != 0)) {
+            if ((gMicSessionUploadedDictionary != gMicSessionRequestedDictionary) || (micSessionIsDictionaryUploadActive() != 0)) {
                 micSessionUpdateRecognitionEnable(0);
                 micSessionUpdateDictionary();
             } else if (gMicSessionRecognitionFollowsTrigger != 0) {
@@ -358,8 +356,8 @@ void micSessionDispatchRequest(MicConfigurationRequest *request) {
         }
         break;
     case MIC_CONFIG_DICTIONARY:
-        gMicConfigurationRequestedDictionary = request->argument0;
-        TRACE("_change_dictionary(%d)\n", gMicConfigurationRequestedDictionary);
+        gMicSessionRequestedDictionary = request->argument0;
+        TRACE("_change_dictionary(%d)\n", gMicSessionRequestedDictionary);
         break;
     case MIC_CONFIG_SESSION_ENABLED:
         gMicSessionEnabled = request->argument0;

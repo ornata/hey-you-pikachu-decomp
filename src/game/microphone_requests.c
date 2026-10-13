@@ -1,3 +1,4 @@
+#include "microphone_session_query.h"
 #include "microphone_requests.h"
 #include "microphone_configuration.h"
 #include "controller_commands.h"
@@ -147,7 +148,6 @@ void micRequestUnsupportedWordDictionary(s32 reserved0, s32 reserved1) {
 void micNoOp0489C(void) {
 }
 
-s32 micSessionIsDictionaryUploadActive(); /* extern */
 
 /// Query whether a voice dictionary upload is active without exposing the result.
 /// \returns Nothing.
@@ -156,7 +156,6 @@ void micQueryDictionaryUploadNoResult(void) {
     micSessionIsDictionaryUploadActive();
 }
 
-s32 micSessionIsTriggerReady(void); /* extern */
 
 /// Query microphone trigger readiness without exposing the result.
 /// \returns Nothing.
@@ -165,7 +164,6 @@ void micQueryTriggerReadinessNoResult(void) {
     micSessionIsTriggerReady();
 }
 
-s32 micSessionGetTriggerState(); /* extern */
 
 /// Query the microphone trigger state without exposing the result.
 /// \returns Nothing.
@@ -174,7 +172,6 @@ void micQueryTriggerStateNoResult(void) {
     micSessionGetTriggerState();
 }
 
-s32 micSessionGetRequestedDictionary(); /* extern */
 
 /// Query the requested voice dictionary without exposing the result.
 /// \returns Nothing.
@@ -183,7 +180,6 @@ void micQueryRequestedDictionaryNoResult(void) {
     micSessionGetRequestedDictionary();
 }
 
-s32 micSessionGetDevicePort(); /* extern */
 
 /// Query the selected Voice Recognition Unit port without exposing the result.
 /// \returns Nothing.
@@ -192,7 +188,6 @@ void micQueryDevicePortNoResult(void) {
     micSessionGetDevicePort();
 }
 
-s32 micSessionIsDeviceConnected(s32);
 
 /// Check whether a controller port has a usable Voice Recognition Unit.
 /// \param port Controller port index, from 0 through 3.

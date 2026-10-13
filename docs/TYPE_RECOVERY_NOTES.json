@@ -145,6 +145,9 @@
       "sequenceEngineStopVoice": "Typed driver/sequence/voice parameters change function instruction bytes and fail ROM match, both with &voiceRecord->native and with retained integer native-voice address arithmetic. Keep target-address parameters pending register-allocation evidence; callers and recycle/release interfaces use established shared record types.",
       "sequenceEngineGetVoiceVolume": "A typed driver/sequence/voice and EngineChannel member rewrite fails ROM matching. Known tremolo, expression, volume, fade and envelope fields remain described in shared layouts; isolate load scheduling and arithmetic representation before replacing the retained byte cursor.",
       "sequenceEngineResetControllers": "EngineChannel cursor with channel[-1] member stores after the original cursor advance fails ROM matching. Retain the biased byte cursor for channel defaults; typed sequence/driver parameters, sequence volume/fade fields, borrowed bank percussion pointer and typed active-voice traversal match. Isolate cursor address scheduling before replacing its stores."
+    },
+    "src/game/microphone_session.c": {
+      "micSessionIsTriggerReady": "Retain the established int return in the shared query header. IDO s32 is long; changing the definition return to s32 fails ROM matching. The canonical int declaration and all other shared session queries match."
     }
   },
   "baseline_totals": {
