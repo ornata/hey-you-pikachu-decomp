@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 2,138 / 76 |
+| Raw offset candidates | 4,040 / 86 | 2,128 / 76 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3658,3 +3658,10 @@ chain is transferred into the root child link with the original ordering.
 `flickering_effect.h` supplies the shared creation contract. The action-script
 caller uses a checked count/lifetime operand record and the shared object handle
 field; the lifetime remains a floating value at script-operand offset four.
+
+### Animated radial state
+
+Allocation, creation, update, drawing and destruction share a checked 36-byte
+private state. It owns drawing commands, borrows texture and opacity animation
+keys, and records its target handle and remaining lifetime. Opacity drawing uses
+the low byte of the typed animation value, preserving the original selection.

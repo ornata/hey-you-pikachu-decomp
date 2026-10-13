@@ -1832,6 +1832,21 @@ u8 *flickeringEffectCreate(s32 targetId, f32 duration, s32 count) {
     return object;
 }
 
+/// Owned radial-effect drawing commands and borrowed appearance animation keys.
+typedef struct AnimatedRadialState {
+    Gfx *displayList;          ///< Owned drawing commands for the hierarchy.
+    ValueTrack frameAnimation; ///< Texture-frame playback state.
+    ValueTrack alphaAnimation; ///< Opacity playback state.
+    s32 targetId;              ///< Object-manager handle to follow.
+    f32 duration;              ///< Remaining lifetime in seconds.
+} AnimatedRadialState;
+
+typedef char AnimatedRadialStateSizeCheck[(sizeof(AnimatedRadialState) == 0x24) ? 1 : -1];
+typedef char RadialFrameOffsetCheck[(((u32) & ((AnimatedRadialState *)0)->frameAnimation) == 4) ? 1 : -1];
+typedef char RadialAlphaOffsetCheck[(((u32) & ((AnimatedRadialState *)0)->alphaAnimation) == 0x10) ? 1 : -1];
+typedef char RadialTargetOffsetCheck[(((u32) & ((AnimatedRadialState *)0)->targetId) == 0x1C) ? 1 : -1];
+typedef char RadialLifetimeOffsetCheck[(((u32) & ((AnimatedRadialState *)0)->duration) == 0x20) ? 1 : -1];
+
 /// Initialize the state of an animated radial effect.
 /// \param effect Effect object to initialize; must not already own state.
 /// \returns Nothing.
@@ -1840,9 +1855,9 @@ void animatedRadialEffectInitialize(void *effect) {
     u8 *sp1C;
     u8 *allocation;
 
-    allocation = heapAllocLocal(&gGameHeap, 0x24, 0x84F);
+    allocation = heapAllocLocal(&gGameHeap, sizeof(AnimatedRadialState), 0x84F);
     sp1C = allocation;
-    _bzero((void *)allocation, 0x24);
+    _bzero((void *)allocation, sizeof(AnimatedRadialState));
     ((RuntimeObjectPrefix *)effect)->state.bytes = sp1C;
 }
 
@@ -1854,33 +1869,32 @@ void animatedRadialEffectInitialize(void *effect) {
 /// ABI.
 /// \note Original decompilation identifier: \c func_8001B3EC (0x8001B3EC).
 void animatedRadialEffectDestroy(u8 *effect) {
-    u8 *obj;
+    AnimatedRadialState *state;
 
-    obj = *(u8 **)(effect + 0x54);
-    heapFreeLocal(&gGameHeap, *(u8 **)obj, obj);
-    heapFreeLocal(&gGameHeap, obj);
+    state = ((RuntimeObjectPrefix *)effect)->state.pointer;
+    heapFreeLocal(&gGameHeap, state->displayList, state);
+    heapFreeLocal(&gGameHeap, state);
 }
-
 
 /// Advance an animated radial effect as it follows its target, ending it when its lifetime or target ends.
 /// \param effect Effect with state and hierarchy configured by its creation function.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001B42C (0x8001B42C).
 void animatedRadialEffectUpdate(u8 *effect) {
-    u8 *v;
+    AnimatedRadialState *state;
     u8 *cursor;
     u8 *t;
     s32 tmp;
 
-    v = *(u8 **)(effect + 0x54);
-    *(f32 *)(v + 0x20) -= gRuntimeFrameSeconds;
-    t = objectResolveAvailableHandle(*(s32 *)(v + 0x1C));
-    if (*(f32 *)(v + 0x20) < 0.0f || t == NULL) {
+    state = ((RuntimeObjectPrefix *)effect)->state.pointer;
+    state->duration -= gRuntimeFrameSeconds;
+    t = objectResolveAvailableHandle(state->targetId);
+    if (state->duration < 0.0f || t == NULL) {
         objectRequestHierarchyDestruction(effect);
         return;
     }
-    animationIntegerTrackEvaluate((ValueTrack *)(v + 0x10), &tmp, gRuntimeFrameSeconds);
-    animationIntegerTrackEvaluate((ValueTrack *)(v + 4), &tmp, gRuntimeFrameSeconds);
+    animationIntegerTrackEvaluate(&state->alphaAnimation, &tmp, gRuntimeFrameSeconds);
+    animationIntegerTrackEvaluate(&state->frameAnimation, &tmp, gRuntimeFrameSeconds);
     *(f32 *)(effect + 0x18) = *(f32 *)(t + 0x44);
     *(f32 *)(effect + 0x1C) = *(f32 *)(t + 0x48) + 2.0f;
     *(f32 *)(effect + 0x20) = *(f32 *)(t + 0x4C);
@@ -1902,27 +1916,21 @@ void animatedRadialEffectUpdate(u8 *effect) {
 /// live until rendering finishes. The effect texture bank must be loaded.
 /// \note Original decompilation identifier: \c func_8001B550 (0x8001B550).
 s32 animatedRadialEffectPrepareDraw(u8 *effect) {
-    u8 *obj;
+    AnimatedRadialState *state;
     Gfx *g;
     s32 idx;
 
-    obj = *(u8 **)(effect + 0x54);
+    state = ((RuntimeObjectPrefix *)effect)->state.pointer;
     g = gRenderDisplayListCursor++;
     g->words.w0 = 0xDB06001C;
     idx = (*(u16 *)(effect + 0x36) & 0x8000) ? 1 : 0;
     g->words.w1 = (u32)osVirtualToPhysical(((void **)(effect + 0x3C))[idx]);
-    textureLoadForDraw(&gRenderDisplayListCursor, 5, *(s16 *)(obj + 0xC));
-    gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0xFF, 0xFF, 0x90, obj[0x19]);
-    return *(s32 *)obj;
+    textureLoadForDraw(&gRenderDisplayListCursor, 5, state->frameAnimation.value);
+    gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0xFF, 0xFF, 0x90, (u8)state->alphaAnimation.value);
+    return (s32)state->displayList;
 }
 
-typedef struct EffectB618 {
-    Gfx *displayList;
-    u8 frameAnimation[12];
-    u8 alphaAnimation[12];
-    s32 targetId;
-    f32 duration;
-} EffectB618;
+
 /// Integer texture-frame animation used by animated radial effects.
 /// \note Original identifier: \c D_8006B3A4 (0x8006B3A4).
 extern s32 gAnimatedRadialEffectFrameAnimation;
@@ -1943,7 +1951,7 @@ extern Gfx D_1004888[];
 u8 *animatedRadialEffectCreate(s32 targetId, f32 duration, s32 count) {
     u8 *object;
     u8 *previous;
-    EffectB618 *state;
+    AnimatedRadialState *state;
     u8 *child;
     Gfx *dl;
     u8 *target;
@@ -1952,12 +1960,12 @@ u8 *animatedRadialEffectCreate(s32 targetId, f32 duration, s32 count) {
     if (target == NULL)
         return NULL;
     object = objectCreateFromTemplate((ObjectTemplate *)gAnimatedRadialEffectObjectTemplate);
-    state = *(EffectB618 **)(object + 0x54);
+    state = ((RuntimeObjectPrefix *)object)->state.pointer;
     state->displayList = (Gfx *)heapAllocLocal(&gGameHeap, (count * 4 + 16) * sizeof(Gfx), 0x8B2);
     state->targetId = targetId;
     state->duration = duration;
-    animationIntegerTrackInitialize((ValueTrack *)(state->frameAnimation), (ValueKey *)(gAnimatedRadialEffectFrameAnimation));
-    animationIntegerTrackInitialize((ValueTrack *)(state->alphaAnimation), (ValueKey *)(gMessengerFlightAnimation));
+    animationIntegerTrackInitialize(&state->frameAnimation, (ValueKey *)(gAnimatedRadialEffectFrameAnimation));
+    animationIntegerTrackInitialize(&state->alphaAnimation, (ValueKey *)(gMessengerFlightAnimation));
     *(f32 *)(object + 0x18) = *(f32 *)(target + 0x44);
     *(f32 *)(object + 0x1C) = *(f32 *)(target + 0x48);
     *(f32 *)(object + 0x20) = *(f32 *)(target + 0x4C);
