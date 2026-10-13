@@ -51,9 +51,9 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 1876,
-      "unique_spellings": 795,
-      "files": 74
+      "occurrences": 1861,
+      "unique_spellings": 786,
+      "files": 73
     }
   },
   "policies": {
@@ -4120,63 +4120,6 @@
           "gCurrentAreaConfiguration + 0x34": [
             "813:32",
             "816:36"
-          ]
-        }
-      }
-    },
-    "src/main_controller.c": {
-      "known_views": [
-        "actor_script_time.h",
-        "camera_overlay.h",
-        "controller_commands.h",
-        "controller_rumble.h",
-        "eeprom_io.h",
-        "heap_alloc.h",
-        "heap_tail.h",
-        "matrix_orientation.h",
-        "matrix_point.h",
-        "matrix_translation.h",
-        "message_bar.h",
-        "microphone_configuration.h",
-        "runtime_program.h",
-        "scheduler.h",
-        "text_window.h"
-      ],
-      "matching_exceptions": {},
-      "locations": {
-        "raw_offset_candidates": {
-          "control + 0": [
-            "498:14"
-          ],
-          "control + 0x10": [
-            "499:14"
-          ],
-          "control + 8": [
-            "500:14"
-          ],
-          "p + 8": [
-            "539:18",
-            "548:26",
-            "592:33"
-          ],
-          "p + 0x10": [
-            "543:22",
-            "546:28",
-            "577:24",
-            "594:18",
-            "619:14"
-          ],
-          "timer + 8": [
-            "722:18"
-          ],
-          "timer + 0x10": [
-            "725:18"
-          ],
-          "timer + 0x18": [
-            "726:18"
-          ],
-          "timer + 0x20": [
-            "728:18"
           ]
         }
       }

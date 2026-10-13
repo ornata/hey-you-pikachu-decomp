@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 1,876 / 74 |
+| Raw offset candidates | 4,040 / 86 | 1,861 / 73 |
 
 Address-global counts are references, not declarations: three address-named
 globals remain in three files, with seven references. Their unresolved roles
@@ -3825,3 +3825,9 @@ between the request producer, controller thread and six gameplay consumers.
 Port bounds and seconds-based timing inputs are documented, as is asynchronous
 submission. The activity query reports scheduled playback rather than device
 connectivity or guaranteed motor movement.
+
+Controller-thread rumble timing has checked private 0x28-byte pattern and
+0x18-byte motor views. Fields distinguish pattern deadline, next pulse, pulse
+interval/duration and the motor state-dependent deadline/attempt counter.
+Retry, stop, expiry, cancellation and queued dispatch consume these views;
+the original backing byte arrays preserve their storage and alignment.

@@ -491,13 +491,34 @@ s32 controllerInitializeRumblePak(s32 port) {
     return 0;
 }
 
+/// Per-port rumble pattern timing, owned by the controller thread.
+typedef struct ControllerRumblePatternState {
+    s32 state; ///< Pattern lifecycle handler index.
+    u64 deadlineTicks; ///< Time when the complete pattern ends.
+    u64 nextPulseTicks; ///< Time when the next pulse may begin.
+    u64 intervalTicks; ///< Interval between pulse starts.
+    u64 pulseTicks; ///< Duration of each motor pulse.
+} ControllerRumblePatternState;
+
+/// Per-port motor timing and accessory-initialization retry state.
+typedef struct ControllerRumbleMotorState {
+    s32 state; ///< Motor lifecycle handler index.
+    u64 deadlineTicks; ///< Pulse expiry or next accessory-initialization attempt, selected by state.
+    s32 attempts; ///< Initialization failures or successful stop attempts, selected by state.
+} ControllerRumbleMotorState;
+
+typedef char ControllerRumblePatternSizeCheck[(sizeof(ControllerRumblePatternState) == 0x28) ? 1 : -1];
+typedef char ControllerRumbleMotorSizeCheck[(sizeof(ControllerRumbleMotorState) == 0x18) ? 1 : -1];
+typedef char ControllerRumbleDeadlineOffsetCheck[((u32)&((ControllerRumbleMotorState *)0)->deadlineTicks == 8) ? 1 : -1];
+typedef char ControllerRumbleAttemptsOffsetCheck[((u32)&((ControllerRumbleMotorState *)0)->attempts == 0x10) ? 1 : -1];
+
 /// Reset a rumble control record for an immediate accessory initialization attempt.
 /// \param control Writable rumble control record to reset.
 /// \returns Nothing.
-void controllerScheduleRumbleInitialization(u8 *control) {
-    *(s32 *)(control + 0) = 2;
-    *(s32 *)(control + 0x10) = 0;
-    *(u64 *)(control + 8) = osGetTime();
+void controllerScheduleRumbleInitialization(ControllerRumbleMotorState *control) {
+    control->state = 2;
+    control->attempts = 0;
+    control->deadlineTicks = osGetTime();
 }
 
 /* Release-build debug print: the call is compiled out, but its format
@@ -528,28 +549,28 @@ extern char gControllerRumbleGiveUpFormat[];
 /// \param port Controller port index from zero through three with a pending initialization record.
 /// \returns Nothing.
 void controllerRetryRumbleInitialization(s32 port) {
-    u8 *p;
+    ControllerRumbleMotorState *p;
 
     if ((controllerGetAccessoryState(port) != 2) && (controllerGetAccessoryState(port) != 3)) {
         DEBUG_PRINTF((gControllerRumbleWrongAccessoryFormat, port));
         *(s32 *)(gControllerRumbleMotorState + port * 0x18) = 0;
         return;
     }
-    p = gControllerRumbleMotorState + port * 0x18;
-    if (*(u64 *)(p + 8) <= osGetTime()) {
+    p = (ControllerRumbleMotorState *)(gControllerRumbleMotorState + port * 0x18);
+    if (p->deadlineTicks <= osGetTime()) {
         if (controllerInitializeRumblePak(port)) {
             DEBUG_PRINTF((gControllerRumbleInitializedFormat, port));
-            *(s32 *)p = 4;
-            *(s32 *)(p + 0x10) = 0;
+            p->state = 4;
+            p->attempts = 0;
         } else {
             DEBUG_PRINTF((gControllerRumbleNotInitializedFormat, port));
-            if (++*(s32 *)(p + 0x10) < 3) {
+            if (++p->attempts < 3) {
                 DEBUG_PRINTF((gControllerRumbleRetryFormat, port));
-                *(u64 *)(p + 8) = osGetTime() + OS_USEC_TO_CYCLES(1000000);
+                p->deadlineTicks = osGetTime() + OS_USEC_TO_CYCLES(1000000);
             } else {
                 DEBUG_PRINTF((gControllerRumbleGiveUpFormat, port));
                 controllerSetAccessoryState(port, 4);
-                *(s32 *)p = 0;
+                p->state = 0;
             }
         }
     }
@@ -563,22 +584,22 @@ void controllerStartRumbleMotor(s32 port) {
         *(s32 *)(gControllerRumbleMotorState + port * 0x18) = 1;
         return;
     }
-    controllerScheduleRumbleInitialization(gControllerRumbleMotorState + port * 0x18);
+    controllerScheduleRumbleInitialization((ControllerRumbleMotorState *)(gControllerRumbleMotorState + port * 0x18));
 }
 
 /// Advance the stop request for a rumble motor, scheduling reinitialization if access fails.
 /// \param port Controller port index from zero through three; requires initialized controller communication.
 /// \returns Nothing.
 void controllerStopRumbleMotor(s32 port) {
-    u8 *p;
+    ControllerRumbleMotorState *p;
 
     if ((controllerGetAccessoryState(port) == 2) && (__osMotorAccess((OSPfs *)controllerGetAccessoryStorage(port), 0) == 0)) {
-        p = gControllerRumbleMotorState + port * 0x18;
-        if (++*(s32 *)(p + 0x10) >= 3) {
-            *(s32 *)p = 0;
+        p = (ControllerRumbleMotorState *)(gControllerRumbleMotorState + port * 0x18);
+        if (++p->attempts >= 3) {
+            p->state = 0;
         }
     } else {
-        controllerScheduleRumbleInitialization(gControllerRumbleMotorState + port * 0x18);
+        controllerScheduleRumbleInitialization((ControllerRumbleMotorState *)(gControllerRumbleMotorState + port * 0x18));
     }
 }
 
@@ -586,12 +607,12 @@ void controllerStopRumbleMotor(s32 port) {
 /// \param port Controller port index from zero through three with an active timed pulse.
 /// \returns Nothing.
 void controllerUpdateRumblePulseExpiry(s32 port) {
-    u8 *p;
+    ControllerRumbleMotorState *p;
 
-    p = gControllerRumbleMotorState + port * 0x18;
-    if (osGetTime() >= *(u64 *)(p + 8)) {
-        *(s32 *)p = 4;
-        *(s32 *)(p + 0x10) = 0;
+    p = (ControllerRumbleMotorState *)(gControllerRumbleMotorState + port * 0x18);
+    if (osGetTime() >= p->deadlineTicks) {
+        p->state = 4;
+        p->attempts = 0;
     }
 }
 
@@ -611,46 +632,35 @@ void controllerRumblePatternIdle(s32 unused) {
 /// \param port Controller port index from zero through three.
 /// \returns Nothing.
 void controllerCancelRumblePattern(s32 port) {
-    u8 *p;
+    ControllerRumbleMotorState *p;
 
     *(s32 *)(gControllerRumblePatternState + port * 0x28) = 0;
-    p = gControllerRumbleMotorState + port * 0x18;
-    *(s32 *)p = 4;
-    *(s32 *)(p + 0x10) = 0;
+    p = (ControllerRumbleMotorState *)(gControllerRumbleMotorState + port * 0x18);
+    p->state = 4;
+    p->attempts = 0;
 }
 
-typedef struct {
-    s32 state;
-    u64 stopTime;
-    u64 nextTime;
-    u64 interval;
-    u64 duration;
-} ControllerTimer;
-typedef struct {
-    s32 state;
-    u64 stopTime;
-    s32 value;
-} ControllerPulse;
+
 /// Advance an active rumble pattern, starting due pulses or requesting completion.
 /// \param port Controller port index from zero through three with an active pattern.
 /// \returns Nothing.
 void controllerUpdateRumblePattern(s32 port) {
-    ControllerTimer *timer;
-    ControllerPulse *pulse;
-    timer = (ControllerTimer *)(gControllerRumblePatternState + port * 0x28);
-    if (osGetTime() >= timer->stopTime) {
+    ControllerRumblePatternState *timer;
+    ControllerRumbleMotorState *pulse;
+    timer = (ControllerRumblePatternState *)(gControllerRumblePatternState + port * 0x28);
+    if (osGetTime() >= timer->deadlineTicks) {
         timer->state = 1;
         return;
     }
-    if (osGetTime() < timer->nextTime)
+    if (osGetTime() < timer->nextPulseTicks)
         return;
-    timer->nextTime += timer->interval;
-    if (osGetTime() > timer->nextTime) {
-        timer->nextTime = osGetTime();
+    timer->nextPulseTicks += timer->intervalTicks;
+    if (osGetTime() > timer->nextPulseTicks) {
+        timer->nextPulseTicks = osGetTime();
     }
-    pulse = (ControllerPulse *)(gControllerRumbleMotorState + port * 0x18);
+    pulse = (ControllerRumbleMotorState *)(gControllerRumbleMotorState + port * 0x18);
     pulse->state = 3;
-    pulse->stopTime = osGetTime() + timer->duration;
+    pulse->deadlineTicks = osGetTime() + timer->pulseTicks;
 }
 
 /// Cancel a port’s rumble pattern and schedule accessory reinitialization.
@@ -658,7 +668,7 @@ void controllerUpdateRumblePattern(s32 port) {
 /// \returns Nothing.
 void controllerResetRumblePort(s32 port) {
     *(s32 *)(gControllerRumblePatternState + port * 0x28) = 0;
-    controllerScheduleRumbleInitialization(gControllerRumbleMotorState + port * 0x18);
+    controllerScheduleRumbleInitialization((ControllerRumbleMotorState *)(gControllerRumbleMotorState + port * 0x18));
 }
 
 typedef struct {
@@ -711,28 +721,28 @@ extern f32 gControllerRumblePulseMicrosecondsPerSecond;
 /// \param request Rumble request with a port from zero through three and command zero to start, one to stop, or two to reset; start requests include total duration, pulse interval, and pulse duration in seconds.
 /// \returns Nothing.
 void controllerDispatchRumbleRequest(ControllerRumbleRequest *request) {
-    u8 *timer;
+    ControllerRumblePatternState *timer;
     s32 command;
 
-    timer = gControllerRumblePatternState + request->port * 0x28;
+    timer = (ControllerRumblePatternState *)(gControllerRumblePatternState + request->port * 0x28);
     command = request->command;
     switch (command) {
     case 0:
-        *(s32 *)timer = 2;
-        *(u64 *)(timer + 8) =
+        timer->state = 2;
+        timer->deadlineTicks =
             osGetTime() +
             OS_USEC_TO_CYCLES((u64)(request->durationSeconds * gControllerRumbleTotalMicrosecondsPerSecond));
-        *(u64 *)(timer + 0x10) = osGetTime();
-        *(u64 *)(timer + 0x18) =
+        timer->nextPulseTicks = osGetTime();
+        timer->intervalTicks =
             OS_USEC_TO_CYCLES((u64)(request->intervalSeconds * gControllerRumbleIntervalMicrosecondsPerSecond));
-        *(u64 *)(timer + 0x20) =
+        timer->pulseTicks =
             OS_USEC_TO_CYCLES((u64)(request->pulseSeconds * gControllerRumblePulseMicrosecondsPerSecond));
         break;
     case 1:
-        *(s32 *)timer = 1;
+        timer->state = 1;
         break;
     case 2:
-        *(s32 *)timer = 3;
+        timer->state = 3;
         break;
     default:
         DEBUG_PRINTF((gControllerRumbleUnknownCommandFormat, command));
