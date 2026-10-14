@@ -613,3 +613,18 @@ replacing enclosing-state casts. The standalone ROM-table path retains its
 original stack buffer and explicitly views its active reader prefix. Both source
 units preserve every baseline object after mutation, with no new matching
 exception or change to timing, I/O or event parsing.
+
+## Sequence playback fields and loop markers
+
+The shared sequence header documents tempo units, bounded held-note tables,
+per-channel sustain levels, saved loop state and repetition count. The event
+reader retains up to 32 channel/key pairs and emits pending note/sustain releases.
+Ghidra at `0x8000530C` confirms these consumers and the custom loop controllers.
+
+`SEQUENCE_MARK_LOOP_START` and `SEQUENCE_MARK_LOOP_END` name controllers 0x66
+and 0x67. They save/restore reader marks and control iteration/channel selection;
+the existing numeric values and event flow are unchanged. Additional offset
+checks cover note count, paired note arrays, sustain, loop mark and repetitions.
+Opaque slots at 0x446, 0x44C and 0x5B4 retain their offsets and unresolved status;
+no physical or padding role is inferred. Header/source changes preserve the
+strict object baseline without new matching exceptions.

@@ -161,11 +161,11 @@ s32 midiSequenceReadEvent(SequenceState *state, u8 *event, s32 capacity, f64 *de
             case 0x40:
                 state->sustain[event[0] & 0xF] = event[2];
                 break;
-            case 0x66:
+            case SEQUENCE_MARK_LOOP_START:
                 midiReaderSaveMark(&state->reader, &state->loop);
                 state->hasLoop = 1;
                 continue;
-            case 0x67:
+            case SEQUENCE_MARK_LOOP_END:
                 state->releaseNotes = 1;
                 if (state->repetitions % 3 > 0 && state->repetitions >= 4)
                     midiSequenceRandomizeUpperChannels(state);
