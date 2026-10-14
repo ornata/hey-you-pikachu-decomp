@@ -9,8 +9,8 @@
 
 /// Read one event from the registered sequence control state.
 /// \param state Borrowed playback and queued-control context to advance.
-/// \param event Caller-owned destination for a complete engine event.
-/// \param capacity Available destination bytes; at least eight are required.
+/// \param event Caller-owned destination meeting the selected reader's storage contract.
+/// \param capacity Reader-specific event limit; it may exclude a leading status byte.
 /// \param delta Receives the event delay in seconds, or -1 when releases have ended.
 /// \returns Event length, or zero when no event remains.
 typedef s32 (*SequenceEventReader)(SequenceControlState *state, u8 *event, s32 capacity, f64 *delta);
@@ -51,7 +51,7 @@ typedef struct EngineSequence {
     f64 fadeRate;                        ///< Master-volume change per second during the fade.
     f64 fadeLevel;                       ///< Current normalized master-volume fade level.
     s8 eventLength;                      ///< Length of the pending event, or a negative end marker.
-    u8 eventCapacity;                    ///< Capacity supplied for the borrowed event buffer.
+    u8 eventLimit;                       ///< Reader-specific event limit; not an allocation-size guarantee.
     u8 unknown1F2[2];
     u8 *eventBuffer; ///< Caller-owned event storage.
     f64 eventDelay;  ///< Seconds remaining before the pending event is dispatched.
@@ -67,5 +67,7 @@ typedef char EngineSequenceEventOffsetCheck[((u32) & ((EngineSequence *)0)->even
 typedef char EngineSequenceFadeTimeOffsetCheck[((u32) & ((EngineSequence *)0)->fadeRemaining == 0x1D8) ? 1 : -1];
 typedef char EngineSequenceFadeRateOffsetCheck[((u32) & ((EngineSequence *)0)->fadeRate == 0x1E0) ? 1 : -1];
 typedef char EngineSequenceFadeLevelOffsetCheck[((u32) & ((EngineSequence *)0)->fadeLevel == 0x1E8) ? 1 : -1];
+
+typedef char EngineSequenceEventLimitOffsetCheck[((u32) & ((EngineSequence *)0)->eventLimit == 0x1F1) ? 1 : -1];
 
 #endif

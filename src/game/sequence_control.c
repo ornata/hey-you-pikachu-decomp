@@ -74,6 +74,7 @@ s32 sequenceControlRequestVolume(SequenceControlState *state, f64 duration, f64 
 /// \param level Target volume fraction, quantized downward to 127ths and clamped to [0, 1].
 /// \param event Destination with room for eight event bytes.
 /// \returns 8, the encoded event length.
+/// \pre Scaled duration and level must be finite and representable as signed 32-bit integers before quantization.
 /// \note Original decompilation identifier: \c func_80005938 (0x80005938).
 s32 sequenceControlEncodeVolumeEvent(f64 duration, f64 level, u8 *event) {
     s32 encodedLevel;
@@ -106,8 +107,8 @@ s32 sequenceControlEncodeVolumeEvent(f64 duration, f64 level, u8 *event) {
 
 /// Get the next engine control or MIDI event and update the playback stop deadline.
 /// \param state Sequence control state to advance.
-/// \param event Destination for the event; must have room for at least eight bytes.
-/// \param capacity Event buffer capacity in bytes.
+/// \param event Destination covering eight-byte controls and every retained MIDI event; SysEx may write min(payload length, capacity) + 1 bytes.
+/// \param capacity MIDI event data limit, at least six; this is not the total destination allocation size.
 /// \param delta Receives the delay in seconds, zero for an immediate control event, or -1 after playback releases have ended.
 /// \returns The event length, including a one-byte reset marker when requested, or zero when no event remains.
 /// \note Original decompilation identifier: \c func_800059E4 (0x800059E4).

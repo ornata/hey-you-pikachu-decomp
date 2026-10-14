@@ -10,14 +10,14 @@
 /// \param sequence Caller-owned state of at least 512 bytes, not already registered, which must remain valid while registered.
 /// \param driver Initialized sequence driver receiving the sequence.
 /// \param instrumentBank Borrowed instrument bank with a valid default instrument, retained while the sequence and its voices use it.
-/// \param eventCapacity Event buffer capacity in bytes, representable as an unsigned byte.
-/// \param eventBuffer Address of caller-owned storage of at least eventCapacity bytes, valid while the sequence is registered.
+/// \param eventLimit Reader-specific event limit, representable as an unsigned byte.
+/// \param eventBuffer Caller-owned storage meeting the selected reader's contract, valid while registered.
 /// \param readerContext Borrowed context passed to the event reader, valid while the sequence is registered.
 /// \param eventReader Callback receiving the context, buffer, byte capacity, and output delay in seconds; it must emit complete supported MIDI messages within capacity and return their byte length.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800060A8 (0x800060A8).
 void sequenceEngineRegisterSequence(EngineSequence *sequence, VoicePlayer *driver, ALBank *instrumentBank,
-                                    s32 eventCapacity, u8 *eventBuffer, SequenceControlState *readerContext,
+                                    s32 eventLimit, u8 *eventBuffer, SequenceControlState *readerContext,
                                     SequenceEventReader eventReader);
 
 #endif

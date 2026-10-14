@@ -628,3 +628,25 @@ checks cover note count, paired note arrays, sustain, loop mark and repetitions.
 Opaque slots at 0x446, 0x44C and 0x5B4 retain their offsets and unresolved status;
 no physical or padding role is inferred. Header/source changes preserve the
 strict object baseline without new matching exceptions.
+
+## Sequence event limit versus destination storage
+
+The registered `eventLimit` replaces the misleading `eventCapacity` name. It is
+the selected reader's limit, not a general allocation-size guarantee. MIDI SysEx
+copying retains a leading status byte and can write `min(payload length, limit)
++ 1` bytes; Ghidra at `0x8000793C` confirms the loop. Meta/channel events and the
+eight-byte generated volume event have different storage requirements.
+
+Sequence control, callback and registration comments now require destination
+storage meeting the selected reader's contract. The queued-control reader also
+requires its existing minimum MIDI data limit. Volume quantization documents
+that scaled inputs must be finite and fit signed 32-bit conversion before
+clamping. No bounds check, allocation, I/O, timing or event encoding changes.
+A new offset check preserves the one-byte event limit at 0x1F1.
+
+A linear scan of the retail ROM found 45 header/track-compatible MIDI candidates;
+all parsed successfully and contained zero SysEx events. This supports those raw
+tracks only: it does not prove the complete registered/constructed input set,
+and does not relax the reader's storage precondition. Further evidence for a
+project-wide input guarantee requires following every registration and sequence
+resource path. Both source-unit changes preserve the strict baseline objects.
