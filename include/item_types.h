@@ -11,6 +11,17 @@
 /// Proven item-state flags; other bits retain their numeric representation.
 typedef enum ItemStateFlag { ITEM_STATE_SPIN_ENABLED = 0x20, ITEM_STATE_MATERIAL_ENABLED = 0x200 } ItemStateFlag;
 
+/// Item ownership and world-participation states, stored as a signed byte.
+/// These selectors are independent of the ItemMode behavior-update selector.
+typedef enum ItemOwnershipState {
+    ITEM_OWNERSHIP_WORLD = 0, ///< Unheld world item; other flags still govern participation.
+    ITEM_OWNERSHIP_PLAYER = 1, ///< Held by the player; owner is zero.
+    ITEM_OWNERSHIP_PIKACHU = 2, ///< Held by the primary companion; owner is its object handle.
+    ITEM_OWNERSHIP_OTHER_ACTOR = 3, ///< Held by another actor; owner is its object handle.
+    ITEM_OWNERSHIP_TOOLBOX = 4, ///< Retained in toolbox storage and excluded from item searches.
+    ITEM_OWNERSHIP_SUSPENDED = 5 ///< Hidden item with world participation suspended.
+} ItemOwnershipState;
+
 /// Kind- and mode-specific storage reused for angular motion and timers.
 typedef union ItemMotionPhase {
     f32 wriggleAngle;  ///< Piñata phase in degrees.
@@ -26,9 +37,9 @@ typedef char ItemMotionPhaseSizeCheck[(sizeof(ItemMotionPhase) == 4) ? 1 : -1];
 typedef struct ItemStatePrefix {
     s32 flags;                   ///< Item behavior and lifecycle flags.
     s16 kind;                    ///< Item-kind table index.
-    s8 state;                    ///< Current item lifecycle state.
-    s8 mode;                     ///< Additional mode used by transformation responses.
-    s32 owner;                   ///< Owner handle supplied to item effects.
+    s8 state;                    ///< ItemOwnershipState selector; retained as a signed byte.
+    s8 mode;                     ///< Independent ItemMode behavior-update selector.
+    s32 owner;                   ///< Borrowed actor-holder handle in actor-held states; zero when unheld or player-held.
     f32 baseRadius;              ///< Unscaled object radius retained for item resizing.
     f32 downwardVelocity;        ///< Downward-positive vertical velocity.
     f32 velocityX;               ///< Horizontal X velocity.
@@ -53,6 +64,9 @@ typedef struct ItemStatePrefix {
 
 typedef char ItemStatePrefixSizeCheck[(sizeof(ItemStatePrefix) == 0x6C) ? 1 : -1];
 #define ITEM_OFFSET(field) ((u32) & (((ItemStatePrefix *)0)->field))
+typedef char ItemOwnershipOffsetCheck[(ITEM_OFFSET(state) == 6) ? 1 : -1];
+typedef char ItemModeOffsetCheck[(ITEM_OFFSET(mode) == 7) ? 1 : -1];
+typedef char ItemOwnerOffsetCheck[(ITEM_OFFSET(owner) == 8) ? 1 : -1];
 typedef char ItemKindOffsetCheck[(ITEM_OFFSET(kind) == 4) ? 1 : -1];
 typedef char ItemDownwardVelocityOffsetCheck[(ITEM_OFFSET(downwardVelocity) == 0x10) ? 1 : -1];
 typedef char ItemMotionPhaseOffsetCheck[(ITEM_OFFSET(motionPhase) == 0x30) ? 1 : -1];

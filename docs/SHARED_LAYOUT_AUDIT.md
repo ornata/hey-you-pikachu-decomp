@@ -1326,3 +1326,36 @@ heap's storage. Sequence voices are drawn from caller-supplied pool storage, wit
 the driver managing active/free links; banks and sample resources remain borrowed
 while voices use them. The synthesizer player callback retains the SDK-compatible
 `void *` context and borrows the registered `VoicePlayer`.
+
+### Action resource and sequencer callback audit
+
+The 330-entry `gActionDefinitions` resource contains 111 populated initialization
+and update slots. Every target resolves to a written `s32 (u8 *)` definition,
+consistent with `ActorActionInitializer` and `ActorActionUpdateCallback`. The
+acceptance callback's result and the update callback's completion result remain
+distinct contracts even where one implementation is used in both slots.
+`gActionScriptCommandHandlers` contains four handlers for opcodes zero through
+three, all `s32 (u8 *, ActorScriptState *, ActionScriptState *)`; the end opcode
+four is handled by the sequencer before dispatch and has no table entry.
+The linked table words and written dispatcher bounds establish these counts.
+
+### Item ownership state versus behavior mode
+
+Item-state byte 6 now has the explicit `ItemOwnershipState` selectors: world,
+player-held, Pikachu-held, other-actor-held, toolbox-stored and suspended, numbered
+zero through five. Byte 7 is independently the `ItemMode` update selector. Both
+remain signed-byte storage with checked offsets; the enums do not enlarge fields.
+The owner at byte 8 is an object handle for actor-held items, not an owned pointer.
+
+`playerPickUpItem` and `toolboxGiveObjectToPlayer` establish player ownership.
+`actorTryHoldItem` selects two for the primary companion and three for another
+actor, recording its handle; Ghidra at 0x80118FAC confirms these writes and the
+independent actor-held behavior mode four. `toolboxStoreObjectInSlot` writes
+ownership four and behavior mode five. `itemHideAndSuspend` writes ownership five
+but stationary behavior mode two. These distinct combinations disprove treating
+the two bytes as one mode or interpreting ownership four as another-item attachment.
+
+Supported ownership comparisons and assignments now use named selectors. Pickup
+and release contracts correctly distinguish toolbox storage and suspension;
+release refuses both even when forced. Existing checked byte views and access
+widths are preserved where required for matching.

@@ -225,9 +225,9 @@ void actorTryHoldItem(u8 *actor, s32 itemId, s32 forceRelease) {
         }
         rec = ((RuntimeObjectPrefix *)obj)->state.bytes;
         if (actor == ((u8 *)gPikachuActor)) {
-            ((ItemStatePrefix *)rec)->state = 2;
+            ((ItemStatePrefix *)rec)->state = ITEM_OWNERSHIP_PIKACHU;
         } else {
-            ((ItemStatePrefix *)rec)->state = 3;
+            ((ItemStatePrefix *)rec)->state = ITEM_OWNERSHIP_OTHER_ACTOR;
         }
         ((ItemStatePrefix *)rec)->owner = ((RuntimeObjectPrefix *)actor)->handle;
         itemSetMode(obj, ITEM_MODE_ACTOR_HELD);

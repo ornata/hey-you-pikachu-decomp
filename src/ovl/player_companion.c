@@ -2424,7 +2424,7 @@ s32 playerPickUpItem(s32 id) {
     gPlayerHeldItemHandle = ((RuntimeObjectPrefix *)obj)->handle;
     ((ItemStatePrefix *)rec)->flags |= 0x42000000;
     ((ItemStatePrefix *)rec)->flags &= 0xE3FFFFFF;
-    ((ItemStatePrefix *)rec)->state = 1;
+    ((ItemStatePrefix *)rec)->state = ITEM_OWNERSHIP_PLAYER;
     ((ItemStatePrefix *)rec)->owner = 0;
     itemSetMode(obj, ITEM_MODE_PLAYER_HELD);
     return 1;

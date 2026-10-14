@@ -8,8 +8,7 @@
 
 /// Release an item from its current holder when its lifecycle permits release.
 /// \param object Live initialized item with valid hold state and item-kind callbacks.
-/// \param force Nonzero bypasses the holder's release restriction; suspended items and items attached to
-/// another item cannot be released.
+/// \param force Nonzero bypasses the holder's release restriction; suspended items and toolbox-stored items cannot be released.
 /// \returns One if the item is free after release, or zero if release is refused.
 ///
 /// \note Portability: the release callback receives the former holder address as a 32-bit integer, or zero

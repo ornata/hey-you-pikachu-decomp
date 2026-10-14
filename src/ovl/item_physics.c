@@ -696,7 +696,7 @@ void itemUpdateStationaryMode(u8 *unused) {
 /// \note Original decompilation identifier: \c func_80123000 (0x80123000).
 void baseballCapUpdateHeldVisibility(u8 *object) {
     u8 *objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
-    if ((((ItemStatePrefix *)objectState)->state == 2) &&
+    if ((((ItemStatePrefix *)objectState)->state == ITEM_OWNERSHIP_PIKACHU) &&
         (((ActorScriptState *)((RuntimeObjectPrefix *)((u8 *)gPikachuActor))->state.pointer)->attachmentMode == 3)) {
         itemSetScale(object, 0.0f);
         return;

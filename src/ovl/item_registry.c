@@ -2016,14 +2016,14 @@ void itemUpdate(u8 *object) {
     state = ((RuntimeObjectPrefix *)object)->state.bytes;
 
     TRACE("player->holdItem = %d\n", gPlayerHeldItemHandle);
-    if (((ItemStatePrefix *)state)->state == 4) {
+    if (((ItemStatePrefix *)state)->state == ITEM_OWNERSHIP_TOOLBOX) {
         subject = *(u8 **)(((RuntimeObjectPrefix *)object)->child.bytes + 0x54);
         if (subject == NULL) {
             TRACE("Hold subject has been deleted.\n");
         } else if (*(s8 *)(subject + 6) != 4) {
             TRACE("subject->holdItem = %d\n", *(s32 *)(subject + 0x190));
         }
-    } else if (((ItemStatePrefix *)state)->state != 0) {
+    } else if (((ItemStatePrefix *)state)->state != ITEM_OWNERSHIP_WORLD) {
         TRACE("ERROR: Strange state.\n");
     }
     collisionGridUnregisterObject(object, &((ItemStatePrefix *)state)->collisionKey);
@@ -2058,7 +2058,8 @@ void itemUpdate(u8 *object) {
             *(f32 *)(state + 0x38) = record->growthMax;
     }
     itemUpdateModeAndOrientation(object);
-    if (((ItemStatePrefix *)state)->state == 0 && !(((RuntimeObjectPrefix *)object)->flags & 0x2000) && !(((ItemStatePrefix *)state)->flags & 0x10000) &&
+    if (((ItemStatePrefix *)state)->state == ITEM_OWNERSHIP_WORLD &&
+        !(((RuntimeObjectPrefix *)object)->flags & 0x2000) && !(((ItemStatePrefix *)state)->flags & 0x10000) &&
         (collisionGridFindOverlap(object), itemCanBePickedUp(object, 1) != 0 || itemCanBePickedUp(object, 0) != 0)) {
         ((ItemStatePrefix *)state)->collisionKey = collisionGridRegisterObject(object);
     }
@@ -2136,7 +2137,7 @@ u8 *itemCreate(f32 x, f32 y, f32 z, f32 pitch, f32 yaw, s32 kind) {
     state->flags = gItemKinds[kind].stateFlags | 0x1000000;
     state->bounceCount = gItemKinds[kind].initialBounceCount;
     state->searchPriority = gItemKinds[kind].growthMax;
-    state->state = 0;
+    state->state = ITEM_OWNERSHIP_WORLD;
     state->owner = 0;
     state->mode = 0;
     animationIntegerTrackInitialize(&state->materialTrack, gTextureFrameAnimationPrograms[gItemKinds[kind].animation]);
@@ -2185,7 +2186,7 @@ void itemDestroy(u8 *item) {
 
     TRACE("destroy item. item rest = %d\n", gLiveItemCount - 1);
     state = (ItemStatePrefix *)((RuntimeObjectPrefix *)item)->state.bytes;
-    if ((state->owner != 0) || (state->state == 1)) {
+    if ((state->owner != 0) || (state->state == ITEM_OWNERSHIP_PLAYER)) {
         itemTryRelease(item, 1);
     }
     collisionGridUnregisterObject(item, &state->collisionKey);
@@ -2355,8 +2356,7 @@ void itemRegisterForSearch(s32 objectId) {
 
 /// Release an item from its current holder when its lifecycle permits release.
 /// \param object Live initialized item with valid hold state and item-kind callbacks.
-/// \param force Nonzero bypasses the holder's release restriction; suspended items and items attached to
-/// another item cannot be released.
+/// \param force Nonzero bypasses the holder's release restriction; suspended items and toolbox-stored items cannot be released.
 /// \returns One if the item is free after release, or zero if release is refused.
 ///
 /// \note Matching: hold-state dispatch reads the unsigned byte representation; a cast from the signed field changes IDO code generation.
@@ -2371,17 +2371,17 @@ s32 itemTryRelease(u8 *object, s32 force) {
     state = ((RuntimeObjectPrefix *)object)->state.bytes;
     other = NULL;
     switch (*(u8 *)&((ItemStatePrefix *)state)->state) {
-    case 0:
+    case ITEM_OWNERSHIP_WORLD:
         break;
-    case 5:
+    case ITEM_OWNERSHIP_SUSPENDED:
         return 0;
-    case 1:
+    case ITEM_OWNERSHIP_PLAYER:
         if (force == 0 && !(((ItemStatePrefix *)state)->flags & 0x40000000))
             return 0;
         gPlayerHeldItemHandle = 0;
         break;
-    case 2:
-    case 3:
+    case ITEM_OWNERSHIP_PIKACHU:
+    case ITEM_OWNERSHIP_OTHER_ACTOR:
         found = objectFindLiveByHandle(((ItemStatePrefix *)state)->owner);
         other = found;
         if (found != NULL) {
@@ -2390,7 +2390,7 @@ s32 itemTryRelease(u8 *object, s32 force) {
             ((RuntimeObjectPrefix *)found)->state.actor->heldItemHandle = 0;
         }
         break;
-    case 4:
+    case ITEM_OWNERSHIP_TOOLBOX:
         return 0;
     default:
         TRACE("Error: Unknown hold_type(%d) in item(%p)\n", ((ItemStatePrefix *)state)->state, object);
@@ -2399,7 +2399,7 @@ s32 itemTryRelease(u8 *object, s32 force) {
     callback = gItemKinds[((ItemStatePrefix *)state)->kind].release;
     if (callback != NULL)
         callback(object, (s32)other);
-    ((ItemStatePrefix *)state)->state = 0;
+    ((ItemStatePrefix *)state)->state = ITEM_OWNERSHIP_WORLD;
     ((ItemStatePrefix *)state)->owner = 0;
     ((ItemStatePrefix *)state)->modeTime = 0.0f;
     itemSetMode(object, ITEM_MODE_GROUND_AND_AIR);
@@ -2477,7 +2477,8 @@ void itemAddVelocity(s32 objectId, f32 *velocity) {
 
     liveObject = objectFindLiveByHandle(objectId);
     itemState = ((RuntimeObjectPrefix *)liveObject)->state.bytes;
-    if ((((ItemStatePrefix *)itemState)->state == 0) && (((ItemStatePrefix *)itemState)->mode != 6)) {
+    if ((((ItemStatePrefix *)itemState)->state == ITEM_OWNERSHIP_WORLD) &&
+        (((ItemStatePrefix *)itemState)->mode != 6)) {
         ((ItemStatePrefix *)itemState)->velocityX += velocity[0];
         ((ItemStatePrefix *)itemState)->downwardVelocity -= velocity[1];
         ((ItemStatePrefix *)itemState)->velocityZ += velocity[2];
@@ -2513,16 +2514,17 @@ void itemSetMode(u8 *item, s32 mode) {
 /// \note Original decompilation identifier: \c func_801144EC (0x801144EC).
 s32 itemCanBePickedUp(u8 *item, s32 byPlayer) {
     s32 itemFlags;
-    s8 itemModeState;
+    s8 ownershipState;
     u8 *itemState;
 
     itemState = ((RuntimeObjectPrefix *)item)->state.bytes;
-    itemModeState = ((ItemStatePrefix *)itemState)->state;
-    if ((itemModeState == 4) || (itemModeState == 5)) {
+    ownershipState = ((ItemStatePrefix *)itemState)->state;
+    if ((ownershipState == ITEM_OWNERSHIP_TOOLBOX) || (ownershipState == ITEM_OWNERSHIP_SUSPENDED)) {
         return 0;
     }
     if (byPlayer != 0) {
-        if (((itemModeState == 2) || (itemModeState == 3)) && !(((ItemStatePrefix *)itemState)->flags & 0x40000000)) {
+        if (((ownershipState == ITEM_OWNERSHIP_PIKACHU) || (ownershipState == ITEM_OWNERSHIP_OTHER_ACTOR)) &&
+            !(((ItemStatePrefix *)itemState)->flags & 0x40000000)) {
             return 0;
         }
         if (((ItemStatePrefix *)itemState)->flags & 0x04000040) {
@@ -2531,7 +2533,7 @@ s32 itemCanBePickedUp(u8 *item, s32 byPlayer) {
         return 1;
     }
     itemFlags = ((ItemStatePrefix *)itemState)->flags;
-    if ((itemFlags & 0x80) || ((itemModeState == 1) && !(itemFlags & 0x40000000))) {
+    if ((itemFlags & 0x80) || ((ownershipState == ITEM_OWNERSHIP_PLAYER) && !(itemFlags & 0x40000000))) {
         return 0;
     }
     return 1;
@@ -2688,7 +2690,7 @@ s32 itemTransform(s32 id, s32 mode) {
     }
     state = (ItemStatePrefix *)((RuntimeObjectPrefix *)object)->state.pointer;
     TRACE("itemChange(%p(%s), %d)\n", object, gItemKinds[state->kind].text[0].name, mode);
-    if ((state->mode == 6) || (state->state == 4)) {
+    if ((state->mode == 6) || (state->state == ITEM_OWNERSHIP_TOOLBOX)) {
         return id;
     }
     replacementKind = gItemKinds[state->kind].replacement;
@@ -2803,12 +2805,12 @@ void itemHideAndSuspend(s32 objectId) {
     if (liveObject != NULL) {
         sp20 = ((RuntimeObjectPrefix *)liveObject)->state.bytes;
         TRACE("checkin %p(%s)\n", liveObject, gItemKinds[((ItemStatePrefix *)sp20)->kind].text[0].name);
-        if (((ItemStatePrefix *)sp20)->state != 4) {
+        if (((ItemStatePrefix *)sp20)->state != ITEM_OWNERSHIP_TOOLBOX) {
             collisionGridUnregisterObject(liveObject, &((ItemStatePrefix *)sp20)->collisionKey);
             itemTryRelease(liveObject, 1);
             itemSetMode(liveObject, ITEM_MODE_STATIONARY);
             objectSetHierarchyFlags(liveObject, 2);
-            ((ItemStatePrefix *)sp20)->state = 5;
+            ((ItemStatePrefix *)sp20)->state = ITEM_OWNERSHIP_SUSPENDED;
         }
     }
 }
@@ -2826,7 +2828,7 @@ void itemRestoreToWorld(s32 objectId) {
     sp1C = objectFindLiveByHandle(objectId);
     if (sp1C != NULL) {
         itemState = ((RuntimeObjectPrefix *)sp1C)->state.bytes;
-        ((ItemStatePrefix *)itemState)->state = 0;
+        ((ItemStatePrefix *)itemState)->state = ITEM_OWNERSHIP_WORLD;
         objectClearHierarchyFlags(sp1C, 2);
         itemSetMode(sp1C, ITEM_MODE_GROUND_AND_AIR);
         TRACE("checkout %p(%s)\n", sp1C, gItemKinds[((ItemStatePrefix *)itemState)->kind].text[0].name);

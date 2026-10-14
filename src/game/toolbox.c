@@ -384,7 +384,7 @@ void toolboxStoreObjectInSlot(ToolboxSlot *slot, u8 *object) {
     TRACE("putItemBoxIntoContent(%p, %p(%s))\n", slot, object,
           itemGetDisplayName(((ItemStatePrefix *)objectState)->kind, 1));
     itemTryRelease(object, 1);
-    ((ItemStatePrefix *)objectState)->state = 4;
+    ((ItemStatePrefix *)objectState)->state = ITEM_OWNERSHIP_TOOLBOX;
     itemSetMode(object, ITEM_MODE_STORED);
     ((ItemStatePrefix *)objectState)->flags = (s32)(((ItemStatePrefix *)objectState)->flags & 0xBFFFFFFF);
     objectSetHierarchyFlags(object, 0x2000);
@@ -521,7 +521,7 @@ u8 *toolboxTakeObject(s32 row, s32 col) {
     }
     obj = objectFindLiveByHandle(slot->id);
     ext = ((RuntimeObjectPrefix *)obj)->state.bytes;
-    ((ItemStatePrefix *)ext)->state = 0;
+    ((ItemStatePrefix *)ext)->state = ITEM_OWNERSHIP_WORLD;
     ((ItemStatePrefix *)ext)->owner = 0;
     itemSetMode(obj, ITEM_MODE_GROUND_AND_AIR);
     ((ItemStatePrefix *)ext)->flags &= 0xBFFFFFFF;
@@ -552,7 +552,7 @@ u8 *toolboxGiveObjectToPlayer(u8 *player, s32 row, s32 index) {
     itemState = ((RuntimeObjectPrefix *)itemObject)->state.bytes;
     sp24 = itemState;
     objectSetHierarchyFlags(itemObject, 0x2000);
-    ((ItemStatePrefix *)itemState)->state = 1;
+    ((ItemStatePrefix *)itemState)->state = ITEM_OWNERSHIP_PLAYER;
     ((ItemStatePrefix *)itemState)->owner = 0;
     itemSetMode(itemObject, ITEM_MODE_PLAYER_HELD);
     ((ItemStatePrefix *)itemState)->flags = (s32)(((ItemStatePrefix *)itemState)->flags | 0x40000000);

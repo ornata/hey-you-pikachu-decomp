@@ -238,8 +238,9 @@ s32 actorTrackObjectPosition(u8 *actor, s32 handle, f32 distanceAllowance) {
     u8 *state = ((RuntimeObjectPrefix *)actor)->state.bytes;
     u8 *target = objectResolveAvailableHandle(handle);
 
-    if ((target == NULL) || ((((RuntimeObjectPrefix *)target)->kind == 0x86) &&
-                             (((ItemStatePrefix *)((RuntimeObjectPrefix *)target)->state.bytes)->state == 4))) {
+    if ((target == NULL) ||
+        ((((RuntimeObjectPrefix *)target)->kind == 0x86) &&
+         (((ItemStatePrefix *)((RuntimeObjectPrefix *)target)->state.bytes)->state == ITEM_OWNERSHIP_TOOLBOX))) {
         ((ActorScriptState *)state)->targetMode = ACTOR_TARGET_FIXED;
         return 0;
     }
@@ -267,7 +268,8 @@ s32 actorSetDestinationFromObject(u8 *actor, s32 handle, f32 distanceAllowance) 
     ((ActorScriptState *)actorState)->targetMode = ACTOR_TARGET_FIXED;
     if ((resolvedObject == NULL) ||
         ((((RuntimeObjectPrefix *)resolvedObject)->kind == 0x86) &&
-         (((ItemStatePrefix *)((RuntimeObjectPrefix *)resolvedObject)->state.bytes)->state == 4))) {
+         (((ItemStatePrefix *)((RuntimeObjectPrefix *)resolvedObject)->state.bytes)->state ==
+          ITEM_OWNERSHIP_TOOLBOX))) {
         return 0;
     }
     ((ActorScriptState *)actorState)->targetDistanceAllowance = distanceAllowance;
@@ -288,7 +290,8 @@ s32 actorTrackEscapeFromObject(u8 *actor, s32 handle) {
     resolvedObject = objectResolveAvailableHandle(handle);
     if ((resolvedObject == NULL) ||
         ((((RuntimeObjectPrefix *)resolvedObject)->kind == 0x86) &&
-         (((ItemStatePrefix *)((RuntimeObjectPrefix *)resolvedObject)->state.bytes)->state == 4))) {
+         (((ItemStatePrefix *)((RuntimeObjectPrefix *)resolvedObject)->state.bytes)->state ==
+          ITEM_OWNERSHIP_TOOLBOX))) {
         ((ActorScriptState *)sp1C)->targetMode = ACTOR_TARGET_FIXED;
         return 0;
     }
@@ -315,7 +318,8 @@ s32 actorChooseEscapePositionFromHandle(u8 *actor, s32 handle) {
     ((ActorScriptState *)actorState)->targetMode = ACTOR_TARGET_FIXED;
     if ((resolvedObject == NULL) ||
         ((((RuntimeObjectPrefix *)resolvedObject)->kind == 0x86) &&
-         (((ItemStatePrefix *)((RuntimeObjectPrefix *)resolvedObject)->state.bytes)->state == 4))) {
+         (((ItemStatePrefix *)((RuntimeObjectPrefix *)resolvedObject)->state.bytes)->state ==
+          ITEM_OWNERSHIP_TOOLBOX))) {
         return 0;
     }
     ((ActorScriptState *)actorState)->targetDistanceAllowance = 0.0f;
@@ -1316,7 +1320,7 @@ u8 *objectResolveAvailableHandle(s32 handle) {
     }
     liveObject = objectFindLiveByHandle(handle);
     if ((liveObject != NULL) && (((RuntimeObjectPrefix *)liveObject)->kind == 0x86) &&
-        (((ItemStatePrefix *)((RuntimeObjectPrefix *)liveObject)->state.bytes)->state == 4)) {
+        (((ItemStatePrefix *)((RuntimeObjectPrefix *)liveObject)->state.bytes)->state == ITEM_OWNERSHIP_TOOLBOX)) {
         return NULL;
     }
     return liveObject;

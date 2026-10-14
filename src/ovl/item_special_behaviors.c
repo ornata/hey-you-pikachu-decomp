@@ -24,7 +24,7 @@
 /// \note Original decompilation identifier: \c func_80123060 (0x80123060).
 void baseballCapResetReleasedScale(u8 *object, s32 unused) {
     u8 *objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
-    if (((ItemStatePrefix *)objectState)->state == 2) {
+    if (((ItemStatePrefix *)objectState)->state == ITEM_OWNERSHIP_PIKACHU) {
         itemSetScale(object, 1.0f);
     }
 }
@@ -41,7 +41,7 @@ void lightBulbUpdateHeldGlow(u8 *object) {
     u8 *rec = ((RuntimeObjectPrefix *)object)->state.bytes;
     f32 *timer;
 
-    if (((ItemStatePrefix *)rec)->state == 2) {
+    if (((ItemStatePrefix *)rec)->state == ITEM_OWNERSHIP_PIKACHU) {
         if (!((ItemStatePrefix *)rec)->modeTime) {
             itemStartMaterialAnimation(object, 0xF4);
             ((ItemStatePrefix *)rec)->motionPhase.glowCountdown = 0.0f;
@@ -62,7 +62,7 @@ void lightBulbUpdateHeldGlow(u8 *object) {
 /// \note Original decompilation identifier: \c func_80123140 (0x80123140).
 void lightBulbResetReleasedGlow(u8 *object, s32 unused) {
     u8 *objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
-    if (((ItemStatePrefix *)objectState)->state == 2) {
+    if (((ItemStatePrefix *)objectState)->state == ITEM_OWNERSHIP_PIKACHU) {
         itemStartMaterialAnimation(object, 0xF3);
     }
 }
@@ -76,7 +76,7 @@ void balloonUpdateHeldInflation(u8 *object) {
     u8 *rec = ((RuntimeObjectPrefix *)object)->state.bytes;
     f32 scale;
 
-    if (((ItemStatePrefix *)rec)->state == 2) {
+    if (((ItemStatePrefix *)rec)->state == ITEM_OWNERSHIP_PIKACHU) {
         scale = mathMapRangeClamped(0.0f, 1.0f, 6.0f, 10.0f, ((ItemStatePrefix *)rec)->modeTime);
         if (scale > 3.0f) {
             ((ItemStatePrefix *)rec)->flags |= 0x400000;
