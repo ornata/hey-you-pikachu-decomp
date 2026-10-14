@@ -105,7 +105,7 @@ extern s32 gObjectSearchTreeRoot;
 /// Object flag group selected by the current drawing traversal.
 /// \note Original identifier: \c D_800AE3D4 (0x800AE3D4).
 extern s32 gObjectDrawGroup;
-s32 objectDrawSearchTreeEntry(u8 *node, s32 unused);
+s32 objectDrawSearchTreeEntry(TreeNode *node, s32 unused);
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;
@@ -420,7 +420,7 @@ void objectManagerNoOp7CE0(s32 unused) {
 /// \param depth Traversal depth to report; unused in this build.
 /// \returns Zero to continue traversal.
 /// \note Original decompilation identifier: \c func_80007CE8 (0x80007CE8).
-s32 objectDebugVisitSearchTreeEntryNoOp(u8 *entryAddress, s32 depth) {
+s32 objectDebugVisitSearchTreeEntryNoOp(TreeNode *entryAddress, s32 depth) {
     TRACE("node:%p level:%d\n", entryAddress, depth);
     return 0;
 }
@@ -1442,12 +1442,12 @@ extern u8 D_100C858[];
 /// \param unused Unused callback argument.
 /// \returns Always zero, allowing traversal to continue.
 /// \note Original decompilation identifier: \c func_80009548 (0x80009548).
-s32 objectDrawSearchTreeEntry(u8 *node, s32 unused) {
+s32 objectDrawSearchTreeEntry(TreeNode *node, s32 unused) {
     RuntimeObjectPrefix *object;
     Gfx *displayList;
     RuntimeObjectPrefix *parent;
 
-    object = (RuntimeObjectPrefix *)((TreeNode *)node)->value;
+    object = (RuntimeObjectPrefix *)node->value;
     if (gObjectDrawGroup != (object->flags & 0x2000) || (object->flags & 0xB3)) {
         return 0;
     }
@@ -1490,7 +1490,7 @@ void objectDrawHierarchyForCurrentGroup(u8 *object) {
     var_s0 = object;
     if (object != NULL) {
         do {
-            objectDrawSearchTreeEntry((u8 *)((ManagedObject *)var_s0)->entry, 0);
+            objectDrawSearchTreeEntry(((ManagedObject *)var_s0)->entry, 0);
             firstChild = ((RuntimeObjectPrefix *)var_s0)->child.bytes;
             if (firstChild != NULL) {
                 objectDrawHierarchyForCurrentGroup(firstChild);
@@ -1768,11 +1768,11 @@ extern float fabsf(float);
 /// \param depth Traversal depth; unused.
 /// \returns One to stop traversal beyond the requested kind range, or zero to continue.
 /// \note Original decompilation identifier: \c func_80009DDC (0x80009DDC).
-s32 objectConsiderNearestTargetEntry(u8 *node, s32 depth) {
+s32 objectConsiderNearestTargetEntry(TreeNode *node, s32 depth) {
     u8 *obj;
     f32 d;
 
-    obj = (u8 *)((TreeNode *)node)->value;
+    obj = (u8 *)node->value;
     if (gObjectNearestTargetSearch.maxKind < ((RuntimeObjectPrefix *)obj)->kind) {
         return 1;
     }
@@ -1831,7 +1831,7 @@ u8 *objectFindNearestTargetInView(u8 *self, Vec3f *origin, f32 dist, f32 *rot, f
         return NULL;
     }
     if (((RuntimeObjectPrefix *)first)->kind >= minKind) {
-        objectConsiderNearestTargetEntry((u8 *)((ManagedObject *)first)->entry, 0);
+        objectConsiderNearestTargetEntry(((ManagedObject *)first)->entry, 0);
     }
     searchTreeVisitAscending(((ManagedObject *)first)->entry->links[1], objectConsiderNearestTargetEntry);
     return gObjectNearestTargetSearch.best;

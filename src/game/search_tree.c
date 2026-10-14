@@ -214,7 +214,7 @@ s32 searchTreeVisitAscendingAtDepth(TreeNode *node, s32 depth) {
         if (searchTreeVisitAscendingAtDepth(node->links[0], depth + 1) != 0) {
             return 1;
         }
-        if (gSearchTreeActiveVisitor((u8 *)node, depth) != 0) {
+        if (gSearchTreeActiveVisitor(node, depth) != 0) {
             return 1;
         }
         node = node->links[1];
@@ -247,7 +247,7 @@ s32 searchTreeVisitDescendingAtDepth(TreeNode *node, s32 depth) {
         if (searchTreeVisitDescendingAtDepth(node->links[1], depth + 1) != 0) {
             return 1;
         }
-        if (gSearchTreeActiveVisitor((u8 *)node, depth) != 0) {
+        if (gSearchTreeActiveVisitor(node, depth) != 0) {
             return 1;
         }
         node = node->links[0];
@@ -277,7 +277,7 @@ void searchTreeVisitDescending(TreeNode *root, TreeVisitor visitor) {
 s32 searchTreeVisitRootRightLeftAtDepth(TreeNode *node, s32 depth) {
     s32 i;
     while (node != NULL) {
-        if (gSearchTreeActiveVisitor((u8 *)node, depth))
+        if (gSearchTreeActiveVisitor(node, depth))
             return 1;
         if (searchTreeVisitRootRightLeftAtDepth(node->links[1], depth + 1))
             return 1;
@@ -322,6 +322,6 @@ void searchTreeAlternateNoOp(void) {
 /// \param depth Unused depth argument.
 /// \returns Zero.
 /// \note Original decompilation identifier: \c func_8004165C (0x8004165C).
-s32 searchTreeVisitorContinue(s32 node, s32 depth) {
+s32 searchTreeVisitorContinue(TreeNode *node, s32 depth) {
     return 0;
 }

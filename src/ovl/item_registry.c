@@ -1773,19 +1773,19 @@ f32 fabsf(f32);
 #pragma intrinsic(fabsf)
 /// Consider an item for the current nearest-item query and retain the best eligible candidate.
 /// \param node Registered item search node to evaluate.
-/// \param context Unused traversal context.
+/// \param depth Traversal depth; unused.
 /// \returns One when the kind exceeds the query range and traversal should stop; zero otherwise.
 ///
 /// \note Requires query state prepared by itemFindNearest and a search node referencing a live, initialized
 /// item.
 /// \note Original decompilation identifier: \c func_80112FC0 (0x80112FC0).
-s32 itemConsiderSearchCandidate(u8 *node, s32 context) {
+s32 itemConsiderSearchCandidate(TreeNode *node, s32 depth) {
     f32 rawDistance;
     u8 *state;
     f32 distance;
     u8 *item;
 
-    item = (u8 *)((TreeNode *)node)->value;
+    item = (u8 *)node->value;
     state = ((RuntimeObjectPrefix *)item)->state.bytes;
     if (gItemNearestSearch.maxKind < ((ItemStatePrefix *)state)->kind)
         return 1;
@@ -1867,7 +1867,7 @@ u8 *itemFindNearest(f32 *origin, f32 maxDistance, f32 pitch, f32 yaw, f32 cone, 
     if (maxKind < ((ItemStatePrefix *)state)->kind)
         return NULL;
     if (((ItemStatePrefix *)state)->kind >= minKind)
-        itemConsiderSearchCandidate(state + 0x54, 0);
+        itemConsiderSearchCandidate(&((ItemStatePrefix *)state)->registryNode, 0);
     searchTreeVisitAscending(((ItemStatePrefix *)state)->registryNode.links[1], itemConsiderSearchCandidate);
     if (weightEnabled && gItemNearestSearch.best != NULL) {
         object = ((RuntimeObjectPrefix *)gItemNearestSearch.best)->state.bytes;

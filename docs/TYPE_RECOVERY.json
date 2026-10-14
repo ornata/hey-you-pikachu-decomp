@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 887,
-      "unique_spellings": 479,
+      "occurrences": 886,
+      "unique_spellings": 478,
       "files": 64
     },
     "cast_offset_candidates": {
@@ -3680,9 +3680,6 @@
       },
       "locations": {
         "raw_offset_candidates": {
-          "state + 0x54": [
-            "1870:37"
-          ],
           "bytes + 0x54": [
             "2022:67"
           ],

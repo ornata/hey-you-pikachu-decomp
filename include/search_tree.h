@@ -10,6 +10,7 @@
 /// \param tree Tree record to initialize; previous nodes must already be detached.
 /// \param compare Callback comparing a target-width key against a node. A negative,
 /// zero or positive result places the key before, equal to or after the node.
+/// The callback is retained until the tree is reinitialized or no longer used.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80040F20 (0x80040F20).
 void searchTreeInitialize(SearchTree *tree, TreeCompare compare);

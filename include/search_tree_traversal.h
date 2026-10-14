@@ -4,11 +4,13 @@
 #define SEARCH_TREE_TRAVERSAL_H
 #include "search_tree_types.h"
 
-/// Visit one live tree node through its original byte-address view.
-/// \param node Borrowed node storage, valid for the callback; do not detach traversal links.
+/// Visit one live caller-owned tree node.
+/// \param node Borrowed linked entry, valid throughout the callback.
 /// \param depth Depth from the supplied root, starting at zero.
 /// \returns Nonzero to stop traversal, or zero to continue.
-typedef s32 (*TreeVisitor)(u8 *node, s32 depth);
+/// \pre Keep all visited nodes and their referenced values live; do not change tree
+/// links, insert or remove nodes, or start another traversal from the callback.
+typedef s32 (*TreeVisitor)(TreeNode *node, s32 depth);
 
 /// Visit entries in ascending order.
 /// \param root Root of a live acyclic tree, or null.

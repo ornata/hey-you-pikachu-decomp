@@ -721,3 +721,27 @@ other opaque spellings, raw offsets and ownership evidence require separate
 review. An inventory entry does not establish padding, unused storage or a
 semantic role. Existing evidence and matching constraints remain in this audit
 and the recovery ledger; these counts do not certify completed shared layouts.
+
+## Typed tree visitor and comparator lifetimes
+
+`TreeVisitor` now receives `TreeNode *` throughout all three traversal modes,
+the object diagnostic/drawing/nearest-target visitors, and the item nearest
+candidate visitor. The previously unused traversal-continuation hook uses the
+same node representation. Callbacks read the entry's value directly rather than
+recovering it from a byte pointer. The item callback's second parameter is named
+`depth`, matching dispatch, rather than suggesting an arbitrary context pointer.
+
+Ghidra at `0x800413B4` confirms child links at offsets zero and four and the
+callback receiving the current node in `a0` and depth in `a1`. Checks now cover
+`TreeNode.links` at zero and `TreeNode.value` at eight as well as its 12-byte size.
+Comparator contracts explicitly describe key-versus-entry ordering, stable
+ordering while linked, and the retained callback lifetime. The actual object and
+item comparators return negative for a candidate preceding the entry and positive
+for a candidate following it. Visitors borrow nodes and must not invalidate
+values or mutate tree links; nested traversal remains unsupported.
+
+The tree's words at zero and eight are cleared by initialization, but their
+later roles remain unproven. They retain offset names rather than being called
+unused or assigned padding semantics. The integer-versus-pointer key matching
+exceptions in lookup consumers remain separate from this visitor contract.
+Each changed C unit passed the full strict baseline before the next was edited.
