@@ -163,6 +163,10 @@
     },
     "src/game/flipbook_messenger.c": {
       "messengerBeginRebound": "The linked object root reference is established at RuntimeObjectPrefix.root. A direct root.address read changes instructions and fails the ROM gate. The checked member-offset signed-word read preserves the original representation; the message payload uses direct ScriptMessage.arg2. Isolate IDO global actor/root load scheduling before replacing the checked root read."
+    },
+    "src/game/world_map.c": {
+      "wholeMapUpdateActorPlacement": "Direct active-actor local X or world Y members independently fail ROM matching; state, target coordinates, other pose fields and joint heights match. Retain checked RuntimeObjectPrefix member offsets for these two reads/stores and isolate IDO global load/store scheduling before further conversion.",
+      "wholeMapPrepareActor": "Direct global actor state and any world-position coordinate read independently fail ROM matching, while target and orientation members match. Checked RuntimeObjectPrefix offsets preserve those four accesses; isolate global address reuse and call-boundary scheduling before removing them."
     }
   },
   "baseline_totals": {

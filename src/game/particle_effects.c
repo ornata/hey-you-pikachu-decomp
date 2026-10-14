@@ -1492,7 +1492,7 @@ void convergingParticleEffectUpdate(u8 *effect) {
     animationIntegerTrackEvaluate(&((ConvergingParticleState *)state)->alphaAnimation, &tmp, gRuntimeFrameSeconds);
     animationIntegerTrackEvaluate(&((ConvergingParticleState *)state)->textureAnimation, &tmp, gRuntimeFrameSeconds);
     fraction = ((ConvergingParticleState *)state)->remaining / ((ConvergingParticleState *)state)->lifetime;
-    step = (1.0f / (f32) * (s32 *)(state + 0x28)) * 0.5f;
+    step = (1.0f / (f32)((ConvergingParticleState *)state)->count) * 0.5f;
     vector3FromPitchYawDegrees((s32)randomBelow(10), ((ConvergingParticleState *)state)->remaining * 200.0f, center);
     center[0] = center[0] * 0.1f + ((RuntimeObjectPrefix *)target)->worldPosition[0];
     center[1] = center[1] * 0.1f + ((RuntimeObjectPrefix *)target)->worldPosition[1];

@@ -316,3 +316,17 @@ object's root with the active actor. That comparison retains a checked root-memb
 offset because a direct member failed the ROM gate; its next compiler evidence
 is recorded in the recovery ledger. No mailbox layout or delivery behavior changes.
 Every accepted source-unit trial preserved the strict baseline objects.
+
+## World-map actor placement and particle count
+
+World-map actor placement/preparation use shared target coordinates, orientation,
+target mode, joint heights and matching direct actor pose members. Confirmation
+and update use `ActorScriptState.defaultActionMode`. Ghidra at `0x8002DD70`
+confirms the placement target and joint-height relationships. Two placement
+coordinates and four preparation accesses require checked object-member offsets;
+each direct-member alternative independently failed the ROM gate. These are
+known-layout compiler representations, with focused ledger entries.
+
+Converging-particle spacing uses the established private state's signed count
+member at 0x28. Neither particle count nor actor behavior changes. Every accepted
+source-unit trial preserves the strict baseline objects.

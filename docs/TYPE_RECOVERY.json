@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 961,
-      "unique_spellings": 512,
+      "occurrences": 950,
+      "unique_spellings": 505,
       "files": 65
     },
     "cast_offset_candidates": {
@@ -1984,9 +1984,6 @@
           "emitter + 0x44": [
             "889:21"
           ],
-          "state + 0x28": [
-            "1495:36"
-          ],
           "count - 1": [
             "1610:21"
           ]
@@ -3127,7 +3124,10 @@
         "vector_operations.h",
         "world_map.h"
       ],
-      "matching_exceptions": {},
+      "matching_exceptions": {
+        "wholeMapUpdateActorPlacement": "Direct active-actor local X or world Y members independently fail ROM matching; state, target coordinates, other pose fields and joint heights match. Retain checked RuntimeObjectPrefix member offsets for these two reads/stores and isolate IDO global load/store scheduling before further conversion.",
+        "wholeMapPrepareActor": "Direct global actor state and any world-position coordinate read independently fail ROM matching, while target and orientation members match. Checked RuntimeObjectPrefix offsets preserve those four accesses; isolate global address reuse and call-boundary scheduling before removing them."
+      },
       "locations": {
         "raw_offset_candidates": {
           "x - 27": [
@@ -3149,40 +3149,14 @@
           "counter + 5U": [
             "326:25"
           ],
-          "state + 0x1EC": [
-            "405:100",
-            "458:154"
-          ],
-          "firstJoint + 0x48": [
-            "411:69"
-          ],
-          "secondJoint + 0x48": [
-            "413:75"
-          ],
           "camera + 0": [
-            "451:25"
+            "455:25"
           ],
           "camera + 4": [
-            "452:25"
+            "457:25"
           ],
           "camera + 8": [
-            "453:25"
-          ],
-          "state + 0xC": [
-            "455:71"
-          ],
-          "state + 0x10": [
-            "456:78"
-          ],
-          "state + 0x19C": [
-            "457:14"
-          ],
-          "PLAYER + 0x54": [
-            "499:27"
-          ],
-          "sp24 + 0x13C": [
-            "773:22",
-            "777:25"
+            "459:25"
           ]
         }
       }
