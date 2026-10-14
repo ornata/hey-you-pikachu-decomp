@@ -325,7 +325,7 @@
     {
       "kind": "call-arity",
       "file": "src/game/save_progress.c",
-      "line": 536,
+      "line": 532,
       "name": "progressReadFieldValue",
       "shape": {
         "expected": 2,
@@ -338,7 +338,7 @@
     {
       "kind": "knr-definition",
       "file": "src/game/save_progress.c",
-      "line": 382,
+      "line": 378,
       "name": "progressReadFieldValue",
       "shape": "s32 progressReadFieldValue(fieldId, type)",
       "reason": "The second K&R formal is overwritten before use and omitted by progressGetValue. Moving it to a local and introducing a one-argument prototype fails the ROM gate. Its original register representation remains an explicit matching exception.",
@@ -347,7 +347,7 @@
     {
       "kind": "unspecified-parameters",
       "file": "src/game/save_progress.c",
-      "line": 529,
+      "line": 525,
       "name": "progressReadFieldValue",
       "shape": "s32 progressReadFieldValue()",
       "reason": "The second K&R formal is overwritten before use and omitted by progressGetValue. Moving it to a local and introducing a one-argument prototype fails the ROM gate. Its original register representation remains an explicit matching exception.",

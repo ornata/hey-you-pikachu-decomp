@@ -8,26 +8,26 @@
 /// Restore both poses and stop playback.
 /// \param animation Borrowed storage for a complete DirectionAnimation.
 /// \returns Nothing.
-void directionAnimationReset(u8 *animation);
+void directionAnimationReset(DirectionAnimation *animation);
 
 /// Advance active playback for the current frame.
-/// \param animation Borrowed initialized DirectionAnimation storage.
+/// \param animation Borrowed initialized state with a valid mode and pose index zero or one.
 /// \returns Nothing.
-void directionAnimationUpdate(u8 *animation);
+void directionAnimationUpdate(DirectionAnimation *animation);
 
 /// Set one direction in the next pose.
-/// \param animation Borrowed initialized DirectionAnimation storage.
+/// \param animation Borrowed initialized state with a valid mode and pose index zero or one.
 /// \param pitch Direction pitch in degrees.
 /// \param yaw Direction yaw in degrees.
 /// \param index Direction index, zero or one.
 /// \returns Nothing.
-void directionAnimationSetNextPoseAngles(u8 *animation, f32 pitch, f32 yaw, s32 index);
+void directionAnimationSetNextPoseAngles(DirectionAnimation *animation, f32 pitch, f32 yaw, s32 index);
 
 /// Start timed motion from the selected pose.
-/// \param animation Borrowed initialized DirectionAnimation storage.
+/// \param animation Borrowed initialized state with a valid mode and pose index zero or one.
 /// \param duration Nonnegative motion duration in seconds.
 /// \param rates Two pitch/yaw rate records, borrowed only for this call.
 /// \returns Nothing.
-void directionAnimationStartMotion(u8 *animation, f32 duration, DirectionAngularRates *rates);
+void directionAnimationStartMotion(DirectionAnimation *animation, f32 duration, DirectionAngularRates *rates);
 
 #endif

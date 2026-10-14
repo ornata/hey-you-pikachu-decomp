@@ -942,9 +942,9 @@ void actionCommandStartDirectionMotion(s32 actor, u8 *state, u8 *command, s32 el
     for (i = 0; i < 2; i++) {
         pts[i].pitch = p->start;
         pts[i].yaw = p->end;
-        directionAnimationSetNextPoseAngles((u8 *)&((ActorScriptState *)state)->directionAnimation, -40.0f, 0.0f, i);
+        directionAnimationSetNextPoseAngles(&((ActorScriptState *)state)->directionAnimation, -40.0f, 0.0f, i);
     }
-    directionAnimationStartMotion((u8 *)&((ActorScriptState *)state)->directionAnimation, p->duration, pts);
+    directionAnimationStartMotion(&((ActorScriptState *)state)->directionAnimation, p->duration, pts);
 }
 
 #include "scene_configuration.h"

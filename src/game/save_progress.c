@@ -65,9 +65,9 @@ void directionPoseSetAngles(f32 pitch, f32 yaw, u8 *pose, s32 index) {
 /// \param index Direction index within the pose, zero or one.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80031F94 (0x80031F94).
-void directionAnimationSetNextPoseAngles(u8 *animation, f32 pitch, f32 yaw, s32 index) {
-    u16 flag = ((DirectionAnimation *)animation)->poseIndex;
-    u8 *d = animation;
+void directionAnimationSetNextPoseAngles(DirectionAnimation *animation, f32 pitch, f32 yaw, s32 index) {
+    u16 flag = animation->poseIndex;
+    u8 *d = (u8 *)animation;
 
     d += (flag ^ 1) * 0x28;
     directionPoseSetAngles(pitch, yaw, d, index);
@@ -82,11 +82,11 @@ extern f32 gRuntimeFrameSeconds;
 /// \param poseIndex Pose to update, zero or one.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80031FD0 (0x80031FD0).
-void directionAnimationAdvancePose(u8 *animation, s32 poseIndex) {
+void directionAnimationAdvancePose(DirectionAnimation *animation, s32 poseIndex) {
     DirectionAngularMotion *s;
     s32 i;
 
-    for (i = 0, s = ((DirectionAnimation *)animation)->directions; i < 2; i++, s++) {
+    for (i = 0, s = animation->directions; i < 2; i++, s++) {
         s->pitch += s->pitchRate * gRuntimeFrameSeconds;
         s->yaw += s->yawRate * gRuntimeFrameSeconds;
         while (s->pitch < 0.0f) {
@@ -118,18 +118,18 @@ extern PackedDirectionSlot gDirectionAnimationDefaultDirections[2];
 /// \param poseIndex Selected pose to update, zero or one.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80032148 (0x80032148).
-void directionAnimationUpdateRetargetingMotion(u8 *animation, s32 poseIndex) {
+void directionAnimationUpdateRetargetingMotion(DirectionAnimation *animation, s32 poseIndex) {
     DirectionAngularMotion *s;
     s32 i;
     f32 direction[3];
     f32 a;
     f32 b;
 
-    ((DirectionAnimation *)animation)->remaining -= gRuntimeFrameSeconds;
-    if (((DirectionAnimation *)animation)->remaining < 0.0f) {
-        ((DirectionAnimation *)animation)->mode = 2;
-        ((DirectionAnimation *)animation)->remaining = 0.5f;
-        for (i = 0, s = ((DirectionAnimation *)animation)->directions; i < 2; i++, s++) {
+    animation->remaining -= gRuntimeFrameSeconds;
+    if (animation->remaining < 0.0f) {
+        animation->mode = DIRECTION_ANIMATION_RETURNING;
+        animation->remaining = 0.5f;
+        for (i = 0, s = animation->directions; i < 2; i++, s++) {
             vector3UnpackNormalBytes(gDirectionAnimationDefaultDirections[i].bytes, direction);
             vector3EvaluateOppositeLookAngles(direction, &a, &b);
             s->pitchRate = mathWrapSignedDegrees(a - s->pitch) * 2;
@@ -145,10 +145,9 @@ void directionAnimationUpdateRetargetingMotion(u8 *animation, s32 poseIndex) {
 /// \param poseIndex Selected pose to update, zero or one.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8003225C (0x8003225C).
-void directionAnimationUpdateTimedMotion(u8 *animation, s32 poseIndex) {
-    ((DirectionAnimation *)animation)->remaining =
-        (f32)(((DirectionAnimation *)animation)->remaining - gRuntimeFrameSeconds);
-    if (((DirectionAnimation *)animation)->remaining < 0.0f) {
+void directionAnimationUpdateTimedMotion(DirectionAnimation *animation, s32 poseIndex) {
+    animation->remaining = (f32)(animation->remaining - gRuntimeFrameSeconds);
+    if (animation->remaining < 0.0f) {
         directionAnimationReset(animation);
         return;
     }
@@ -168,23 +167,22 @@ extern DirectionPoseCopy gDirectionAnimationDefaultPose;
 /// \param animation Direction animation state to update.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800322B8 (0x800322B8).
-void directionAnimationReset(u8 *animation) {
+void directionAnimationReset(DirectionAnimation *animation) {
     DirectionPoseCopy t = gDirectionAnimationDefaultPose;
 
-    *(DirectionPoseCopy *)(animation + 0x28) = t;
+    *(DirectionPoseCopy *)((u8 *)animation + 0x28) = t;
     *(DirectionPoseCopy *)animation = t;
-    ((DirectionAnimation *)animation)->mode = 0;
-    ((DirectionAnimation *)animation)->poseIndex = 0;
+    animation->mode = DIRECTION_ANIMATION_STOPPED;
+    animation->poseIndex = 0;
 }
 
 /// Stops direction animation while preserving its current pose.
 /// \param animation Direction animation state to update.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8003237C (0x8003237C).
-void directionAnimationStop(u8 *animation) {
-    ((DirectionAnimation *)animation)->mode = 0;
+void directionAnimationStop(DirectionAnimation *animation) {
+    animation->mode = DIRECTION_ANIMATION_STOPPED;
 }
-
 
 /// Starts timed direction motion from the current pose.
 /// \param animation Direction animation state to configure.
@@ -192,23 +190,21 @@ void directionAnimationStop(u8 *animation) {
 /// \param rates Two pairs of pitch and yaw angular rates in degrees per second.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80032384 (0x80032384).
-void directionAnimationStartMotion(u8 *animation, f32 duration, DirectionAngularRates *rates) {
+void directionAnimationStartMotion(DirectionAnimation *animation, f32 duration, DirectionAngularRates *rates) {
     s32 pad[2]; /* unused, sizes the frame */
     f32 direction[3];
     f32 *rec;
     s32 off;
     DirectionAngularRates *p;
 
-    ((DirectionAnimation *)animation)->mode = 1;
-    rec = (f32 *)((DirectionAnimation *)animation)->directions;
+    animation->mode = DIRECTION_ANIMATION_TIMED;
+    rec = (f32 *)animation->directions;
     off = 0;
     p = rates;
-    ((DirectionAnimation *)animation)->duration = duration;
-    ((DirectionAnimation *)animation)->remaining = duration;
+    animation->duration = duration;
+    animation->remaining = duration;
     do {
-        vector3UnpackNormalBytes((s8 *)&((DirectionAnimation *)animation)
-                                     ->poses[((DirectionAnimation *)animation)->poseIndex]
-                                     .raw[0x10 + off],
+        vector3UnpackNormalBytes((s8 *)&((DirectionAnimation *)animation)->poses[animation->poseIndex].raw[0x10 + off],
                                  direction);
         vector3EvaluateOppositeLookAngles(direction, rec, rec + 1);
         off += 0x10;
@@ -227,13 +223,13 @@ extern DirectionAnimationUpdateHandler gDirectionAnimationUpdateHandlers[];
 /// \param animation Direction animation state to update.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80032448 (0x80032448).
-void directionAnimationUpdate(u8 *animation) {
+void directionAnimationUpdate(DirectionAnimation *animation) {
     u16 motionKind;
 
-    motionKind = (u16)((DirectionAnimation *)animation)->mode;
-    if (motionKind != 0) {
-        ((DirectionAnimation *)animation)->poseIndex ^= 1;
-        gDirectionAnimationUpdateHandlers[motionKind](animation, ((DirectionAnimation *)animation)->poseIndex);
+    motionKind = (u16)animation->mode;
+    if (motionKind != DIRECTION_ANIMATION_STOPPED) {
+        animation->poseIndex ^= 1;
+        gDirectionAnimationUpdateHandlers[motionKind](animation, animation->poseIndex);
     }
 }
 

@@ -851,3 +851,27 @@ Ghidra at `0x80006068` confirms callback/context at eight/four, limit at 0x1F1,
 destination pointer at 0x1F4, delay at 0x1F8 and result stored at 0x1F0. New
 checks cover callback, context, destination and delay offsets; the driver master
 volume offset 0x24 is also checked. No parser, event loop or allocation changes.
+
+## Typed direction-animation API and mode contract
+
+All eight direction-animation routines and the retained mode-update callback
+now receive `DirectionAnimation *`. The public reset, update, next-pose and
+start-motion declarations agree with the actor, item and action-command callers,
+which pass embedded animation members directly. Internal state reads and writes
+use the shared record; the private word-aligned `DirectionPoseCopy` remains
+because its packed-pose copy representation is a documented matching constraint.
+
+The callback table at 0x8009A6D8 contains null, 0x80032148 and 0x8003225C.
+Ghidra at 0x80032448 confirms dispatch by mode at 0x70 and pose selection at
+0x72. The first active handler performs requested motion, then sets mode two
+and rates toward the default directions for half a second; the second advances
+that return phase and restores both default poses. The new enum names stopped,
+timed and returning modes, preserving the stored 16-bit width and original
+values. The earlier vague description of mode two as retargeting is corrected
+to return-to-default playback.
+
+The enclosing actor/item owns pose and motion storage; update callbacks borrow
+it for the call. Contracts require a valid mode and pose index zero or one.
+Checks additionally cover the 0x10-byte angular-motion stride, pose offset zero
+and duration at 0x74, alongside the existing total extent and mode/index checks.
+Every changed source unit passed all 483 objects before the next semantic edit.

@@ -244,7 +244,7 @@ void actorInitializeModelState(u8 *actor) {
     state->actionScriptId = -1;
     state->searchItemKind = 0x43;
     state->searchItemRange = 0.0f;
-    directionAnimationReset((u8 *)&state->directionAnimation);
+    directionAnimationReset(&state->directionAnimation);
     drawListStorage = heapAllocLocal(&gGameHeap, 0x80, 0xE8);
     state->modelDrawLists[0] = (Gfx *)drawListStorage;
     state->modelDrawLists[1] = (Gfx *)(drawListStorage + 0x40);
@@ -432,7 +432,7 @@ void actorUpdateModel(u8 *actor) {
         objectUpdateHierarchyInteractionVisibility(actor);
     }
     state->collisionRegistration = collisionGridRegisterObject(actor);
-    directionAnimationUpdate((u8 *)&state->directionAnimation);
+    directionAnimationUpdate(&state->directionAnimation);
     colorAdvanceTransition(state->environmentColor, state->targetEnvironmentColor,
                            &state->environmentColorTimeRemaining);
     actorPrepareModelLightingDrawList(actor, state, ((((RuntimeObjectPrefix *)actor)->flags & 0x8000) ? 1 : 0) ^ 1);

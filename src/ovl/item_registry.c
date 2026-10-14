@@ -2039,7 +2039,7 @@ void itemUpdate(u8 *object) {
     ((ItemStatePrefix *)state)->idleMotionDelay -= gRuntimeFrameSeconds;
     if (((ItemStatePrefix *)state)->idleMotionDelay < 0.0f)
         itemStartDirectionMotion(object, 0.5f, 0.0f, 720.0f);
-    directionAnimationUpdate((u8 *)&((ItemState *)state)->direction);
+    directionAnimationUpdate(&((ItemState *)state)->direction);
     if (((ItemStatePrefix *)state)->flags & 0x20000000)
         itemShrink(object, 0.12f);
     if (!(((RuntimeObjectPrefix *)object)->flags & 2) &&
@@ -2082,7 +2082,7 @@ u8 *itemAllocateState(void) {
     _bzero(allocation, sizeof(ItemState));
     ((ItemStatePrefix *)allocation)->kind = 0;
     ((ItemStatePrefix *)allocation)->renderMode = 0;
-    directionAnimationReset((u8 *)&((ItemState *)allocation)->direction);
+    directionAnimationReset(&((ItemState *)allocation)->direction);
     ((ItemStatePrefix *)allocation)->idleMotionDelay = 5.5f;
     lightingStorage = heapAllocLocal(&gGameHeap, 0x70, 0x2D4);
     ((ItemStatePrefix *)allocation)->lighting[0] = (Gfx *)lightingStorage;
@@ -2896,9 +2896,9 @@ void itemStartDirectionMotion(u8 *item, f32 duration, f32 pitchRate, f32 yawRate
         for (i = 0; i < 2; i++) {
             pts[i].pitch = pitchRate;
             pts[i].yaw = yawRate;
-            directionAnimationSetNextPoseAngles((u8 *)&((ItemState *)rec)->direction, -40.0f, 0.0f, i);
+            directionAnimationSetNextPoseAngles(&((ItemState *)rec)->direction, -40.0f, 0.0f, i);
         }
-        directionAnimationStartMotion((u8 *)&((ItemState *)rec)->direction, duration, pts);
+        directionAnimationStartMotion(&((ItemState *)rec)->direction, duration, pts);
     }
 }
 
