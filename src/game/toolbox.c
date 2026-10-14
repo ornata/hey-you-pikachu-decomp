@@ -214,7 +214,9 @@ void toolboxSetObjectCameraRotation(u8 *object, f32 pitch, f32 yaw) {
     matrix34MakeRotationXYZDegrees(sp1C, gPlayerState.pitchOffset + gPlayerState.pitch,
                                    gPlayerState.yaw + gPlayerState.viewShake, 0.0f);
     matrix33ApplyRotationZYXDegrees(sp1C, pitch, yaw, 0.0f);
-    matrix33GetFoldedEulerDegrees(sp1C, (f32 *)(object + 0xC), (f32 *)(object + 0x10), (f32 *)(object + 0x14));
+    matrix33GetFoldedEulerDegrees(sp1C, &((RuntimeObjectPrefix *)object)->rotation[0],
+                                  &((RuntimeObjectPrefix *)object)->rotation[1],
+                                  &((RuntimeObjectPrefix *)object)->rotation[2]);
 }
 
 #include "scene_configuration.h"
@@ -230,7 +232,7 @@ void toolboxSetObjectScale(s32 handle, f32 scale) {
 
     liveObject = objectFindLiveByHandle(handle);
     if (liveObject != NULL) {
-        if (*(u16 *)(liveObject + 0x34) == 0x86) {
+        if (((RuntimeObjectPrefix *)liveObject)->kind == 0x86) {
             itemSetScale(liveObject, scale);
             return;
         }
@@ -296,17 +298,17 @@ void toolboxHideObjects(void) {
     home = gToolboxParkingPosition;
     objects = gToolboxState.objects;
     objectSetHierarchyFlags(objects[0], 0x2002);
-    *(f32 *)(objects[0] + 0x18) = home.x;
-    *(f32 *)(objects[0] + 0x1C) = home.y;
-    *(f32 *)(objects[0] + 0x20) = home.z;
+    ((RuntimeObjectPrefix *)objects[0])->position[0] = home.x;
+    ((RuntimeObjectPrefix *)objects[0])->position[1] = home.y;
+    ((RuntimeObjectPrefix *)objects[0])->position[2] = home.z;
     for (row = 0; row < 2; row++) {
         for (i = 0; i < 10; i++) {
             object = objectFindLiveByHandle(gToolboxState.slots[row][i].id);
             if (object != NULL) {
                 objectSetHierarchyFlags(object, 0x2002);
-                *(f32 *)(object + 0x18) = home.x;
-                *(f32 *)(object + 0x1C) = home.y;
-                *(f32 *)(object + 0x20) = home.z;
+                ((RuntimeObjectPrefix *)object)->position[0] = home.x;
+                ((RuntimeObjectPrefix *)object)->position[1] = home.y;
+                ((RuntimeObjectPrefix *)object)->position[2] = home.z;
             }
         }
     }
@@ -314,24 +316,24 @@ void toolboxHideObjects(void) {
         object = objectFindLiveByHandle(gToolboxState.spareIds[i]);
         if (object != NULL) {
             objectSetHierarchyFlags(object, 0x2002);
-            *(f32 *)(object + 0x18) = home.x;
-            *(f32 *)(object + 0x1C) = home.y;
-            *(f32 *)(object + 0x20) = home.z;
+            ((RuntimeObjectPrefix *)object)->position[0] = home.x;
+            ((RuntimeObjectPrefix *)object)->position[1] = home.y;
+            ((RuntimeObjectPrefix *)object)->position[2] = home.z;
         }
     }
     object = objectFindLiveByHandle(gToolboxBonusHandle);
     if (object != NULL) {
         objectSetHierarchyFlags(object, 0x2002);
-        *(f32 *)(object + 0x18) = home.x;
-        *(f32 *)(object + 0x1C) = home.y;
-        *(f32 *)(object + 0x20) = home.z;
+        ((RuntimeObjectPrefix *)object)->position[0] = home.x;
+        ((RuntimeObjectPrefix *)object)->position[1] = home.y;
+        ((RuntimeObjectPrefix *)object)->position[2] = home.z;
     }
     object = objectFindLiveByHandle(gToolboxPurchaseHandle);
     if (object != NULL) {
         objectSetHierarchyFlags(object, 0x2002);
-        *(f32 *)(object + 0x18) = home.x;
-        *(f32 *)(object + 0x1C) = home.y;
-        *(f32 *)(object + 0x20) = home.z;
+        ((RuntimeObjectPrefix *)object)->position[0] = home.x;
+        ((RuntimeObjectPrefix *)object)->position[1] = home.y;
+        ((RuntimeObjectPrefix *)object)->position[2] = home.z;
     }
 }
 
@@ -401,15 +403,15 @@ extern s8 gItemKindClassEntries[][0x74];
 /// \returns Borrowed address of the destination entry in the shared toolbox table.
 /// \note Original decompilation identifier: \c func_8002F114 (0x8002F114).
 s32 toolboxStoreObjectAt(s32 object, s32 row, s32 index) {
-    u8 *data = *(u8 **)(object + 0x54);
-    s16 objectKind = *(s16 *)(data + 4);
+    u8 *data = ((RuntimeObjectPrefix *)object)->state.bytes;
+    s16 objectKind = ((ItemStatePrefix *)data)->kind;
     s8 kind = gItemKindClassEntries[objectKind][0];
     s32 i;
     ToolboxSlot *slot;
     if (kind == 3 || kind == 2) {
         for (i = 0; i < 10; i++) {
             slot = &gToolboxState.slots[row][i];
-            if ((objectKind = *(s16 *)(data + 4)) == slot->kind) {
+            if ((objectKind = ((ItemStatePrefix *)data)->kind) == slot->kind) {
                 slot->kind = 0;
                 slot->id = 0;
             }
@@ -431,7 +433,7 @@ s32 toolboxStoreObjectInRow(s32 object, s32 row) {
     s32 i;
     ToolboxSlot *s = gToolboxState.slots[row];
 
-    TRACE("putItemIntoBox(%s)\n", itemGetDisplayName(*(s16 *)(*(u8 **)(object + 0x54) + 4), 1));
+    TRACE("putItemIntoBox(%s)\n", itemGetDisplayName(*(s16 *)(((RuntimeObjectPrefix *)object)->state.bytes + 4), 1));
     for (i = 0; i < 10; i++, s++) {
         if (s->id == 0 && s->kind == 0) {
             return toolboxStoreObjectAt(object, row, i);
@@ -450,7 +452,8 @@ void toolboxStoreBonusObject(u8 *object) {
     if (*storedHandle != 0) {
         itemDestroy(objectFindLiveByHandle(*storedHandle));
     }
-    TRACE("putBonusItemIntoBox(%s)\n", itemGetDisplayName(*(s16 *)(*(u8 **)(object + 0x54) + 4), 1));
+    TRACE("putBonusItemIntoBox(%s)\n",
+          itemGetDisplayName(*(s16 *)(((RuntimeObjectPrefix *)object)->state.bytes + 4), 1));
     toolboxStoreObjectInSlot(&gToolboxBonusSlot, (u8 *)object);
 }
 
@@ -463,7 +466,8 @@ void toolboxStorePurchasedObject(u8 *object) {
     if (*storedHandle != 0) {
         itemDestroy(objectFindLiveByHandle(*storedHandle));
     }
-    TRACE("putPurchaseItemIntoBox(%s)\n", itemGetDisplayName(*(s16 *)(*(u8 **)(object + 0x54) + 4), 1));
+    TRACE("putPurchaseItemIntoBox(%s)\n",
+          itemGetDisplayName(*(s16 *)(((RuntimeObjectPrefix *)object)->state.bytes + 4), 1));
     toolboxStoreObjectInSlot(&gToolboxPurchaseSlot, (u8 *)object);
 }
 
@@ -516,13 +520,13 @@ u8 *toolboxTakeObject(s32 row, s32 col) {
         return NULL;
     }
     obj = objectFindLiveByHandle(slot->id);
-    ext = *(u8 **)(obj + 0x54);
-    *(s8 *)(ext + 6) = 0;
-    *(s32 *)(ext + 8) = 0;
+    ext = ((RuntimeObjectPrefix *)obj)->state.bytes;
+    ((ItemStatePrefix *)ext)->state = 0;
+    ((ItemStatePrefix *)ext)->owner = 0;
     itemSetMode(obj, ITEM_MODE_GROUND_AND_AIR);
-    *(s32 *)ext &= 0xBFFFFFFF;
+    ((ItemStatePrefix *)ext)->flags &= 0xBFFFFFFF;
     objectClearHierarchyFlags(obj, 0x2000);
-    itemRegisterForSearch(*(s32 *)(obj + 0x38));
+    itemRegisterForSearch(((RuntimeObjectPrefix *)obj)->handle);
     slot->kind = 0;
     slot->id = 0;
     return obj;
@@ -570,8 +574,8 @@ void toolboxShowItemMessage(u8 *object, char *fmt) {
     s16 *p;
     char buf[128];
 
-    p = *(s16 **)(object + 0x54);
-    sprintf(buf, fmt, itemGetDisplayName(p[2], 1));
+    p = (s16 *)((RuntimeObjectPrefix *)object)->state.pointer;
+    sprintf(buf, fmt, itemGetDisplayName(((ItemStatePrefix *)p)->kind, 1));
     messageBarEnqueue(0, 3.5f, (u8 *)buf);
     gToolboxHelpMessageMilliseconds = runtimeGetElapsedMilliseconds();
 }
@@ -583,8 +587,8 @@ void toolboxShowItemMessage(u8 *object, char *fmt) {
 /// \returns One if the item category is accepted by the row, or zero otherwise.
 /// \note Original decompilation identifier: \c func_8002F5F8 (0x8002F5F8).
 s32 toolboxCanStoreObjectInRow(u8 *object, s32 row) {
-    u8 *p = *(u8 **)(object + 0x54);
-    s8 t = gItemKindClassEntries[*(s16 *)(p + 4)][0];
+    u8 *p = ((RuntimeObjectPrefix *)object)->state.bytes;
+    s8 t = gItemKindClassEntries[((ItemStatePrefix *)p)->kind][0];
 
     if (t == 1) {
         if (row == 0) {
@@ -648,7 +652,7 @@ void toolboxConfirmItemTransfer(u8 *player) {
         toolboxShowItemMessage(objectFindLiveByHandle(slot->id), "You can't take out the ^4%s^^.");
         return;
     }
-    held = objectFindLiveByHandle(*(s32 *)(player + 0x84));
+    held = objectFindLiveByHandle(((PlayerControlPrefix *)player)->heldItemHandle);
     if (held != NULL) {
         if (toolboxCanStoreObjectInRow(held, gToolboxSelectedRow) == 0) {
             playerPlayTrackedSoundEffect(player, 0x92);
@@ -661,12 +665,12 @@ void toolboxConfirmItemTransfer(u8 *player) {
         }
         i = 0;
         if (gToolboxSelectedRow == 1) {
-            data = *(u8 **)(held + 0x54);
+            data = ((RuntimeObjectPrefix *)held)->state.bytes;
             do {
                 other = objectFindLiveByHandle(
                     *(s32 *)((u8 *)gToolboxItemHandleEntries + gToolboxState.row * 0x50 + i * 8));
                 if (other != NULL) {
-                    otherState = *(u8 **)(other + 0x54);
+                    otherState = ((RuntimeObjectPrefix *)other)->state.bytes;
                     if (*(s16 *)(data + 4) == *(s16 *)(otherState + 4)) {
                         playerPlayTrackedSoundEffect(player, 0x92);
                         toolboxShowItemMessage(held, "You already have the ^4%s^^.");
@@ -773,8 +777,8 @@ void toolboxCreateDisplayObjects(void) {
     *(f32 *)(object + 4) = gCurrentAreaConfiguration->objectScale;
     *(f32 *)(object + 8) = gCurrentAreaConfiguration->objectScale;
     gToolboxState.objects[0] = object;
-    *objects = *(u8 **)(*(u8 **)(object + 0x2C) + 0x28);
-    gToolboxLinkedDisplayPart = *(u8 **)(*objects + 0x28);
+    *objects = ((RuntimeObjectPrefix *)object)->child.object->sibling.bytes;
+    gToolboxLinkedDisplayPart = ((RuntimeObjectPrefix *)*objects)->sibling.bytes;
     for (row = 0; row < 2; row++) {
         for (i = 0; i < 10; i++) {
             TRACE("contents[%d][%d].objID = %d\n", row, i, gToolboxState.slots[row][i].id);
@@ -787,16 +791,16 @@ void toolboxCreateDisplayObjects(void) {
         object = objectCreateHierarchyFromTemplate(gToolboxPlaceholderTemplate);
         objectSetHierarchyFlags(object, 0x2000);
         objectRegisterActiveHierarchy(object);
-        *(f32 *)(object + 0xC) = 0.0f;
-        *(f32 *)(object + 0x10) = 0.0f;
-        *(f32 *)(object + 0x14) = 0.0f;
-        *(f32 *)(object + 0x18) = 0.0f;
-        *(f32 *)(object + 0x1C) = 0.0f;
-        *(f32 *)(object + 0x20) = 0.0f;
+        ((RuntimeObjectPrefix *)object)->rotation[0] = 0.0f;
+        ((RuntimeObjectPrefix *)object)->rotation[1] = 0.0f;
+        ((RuntimeObjectPrefix *)object)->rotation[2] = 0.0f;
+        ((RuntimeObjectPrefix *)object)->position[0] = 0.0f;
+        ((RuntimeObjectPrefix *)object)->position[1] = 0.0f;
+        ((RuntimeObjectPrefix *)object)->position[2] = 0.0f;
         *(f32 *)(object + 0) = gCurrentAreaConfiguration->objectScale * 0.3f;
         *(f32 *)(object + 4) = gCurrentAreaConfiguration->objectScale * 0.3f;
         *(f32 *)(object + 8) = gCurrentAreaConfiguration->objectScale * 0.3f;
-        gToolboxState.spareIds[i] = *(s32 *)(object + 0x38);
+        gToolboxState.spareIds[i] = ((RuntimeObjectPrefix *)object)->handle;
     }
     for (i = 0; i < 2; i++) {
         gToolboxRowTitleImages[i] = 0;
@@ -838,20 +842,20 @@ void toolboxResetRowRotation(ToolboxState *t) {
     u8 *o;
     s32 i;
 
-    *(f32 *)(t->objects[1] + 0xC) = 0.0f;
-    *(f32 *)(t->objects[1] + 0x10) = 0.0f;
-    *(f32 *)(t->objects[1] + 0x14) = 0.0f;
-    *(f32 *)(t->objects[2] + 0x18) = 0.0f;
-    *(f32 *)(t->objects[2] + 0x1C) = 0.0f;
-    *(f32 *)(t->objects[2] + 0x20) = 0.0f;
+    ((RuntimeObjectPrefix *)t->objects[1])->rotation[0] = 0.0f;
+    ((RuntimeObjectPrefix *)t->objects[1])->rotation[1] = 0.0f;
+    ((RuntimeObjectPrefix *)t->objects[1])->rotation[2] = 0.0f;
+    ((RuntimeObjectPrefix *)t->objects[2])->position[0] = 0.0f;
+    ((RuntimeObjectPrefix *)t->objects[2])->position[1] = 0.0f;
+    ((RuntimeObjectPrefix *)t->objects[2])->position[2] = 0.0f;
     t->spin = 0;
     t->rotation = 180.0f;
     for (i = 0; i < 10; i++) {
         if (t->slots[t->row][i].id != 0) {
             o = objectFindLiveByHandle(t->slots[t->row][i].id);
-            *(f32 *)(o + 0xC) = 0.0f;
-            *(f32 *)(o + 0x10) = 0.0f;
-            *(f32 *)(o + 0x14) = 0.0f;
+            ((RuntimeObjectPrefix *)o)->rotation[0] = 0.0f;
+            ((RuntimeObjectPrefix *)o)->rotation[1] = 0.0f;
+            ((RuntimeObjectPrefix *)o)->rotation[2] = 0.0f;
         }
     }
 }
@@ -899,8 +903,9 @@ void toolboxLayoutCurrentRow(f32 angle, f32 height, f32 depth) {
         position.x = 2.0f * mathCosDegrees(direction);
         position.y = mathSinDegrees(direction) * 0.5f + height;
         position.z = (-6.0f + depth) - mathSinDegrees(direction) * 1.5f;
-        matrix34TransformPointVector((f32 *)&gToolboxInterfaceTransform, (f32 *)(&position), (f32 *)(object + 0x18));
-        if (i != 0 || *(u16 *)(object + 0x34) != 0x86) {
+        matrix34TransformPointVector((f32 *)&gToolboxInterfaceTransform, (f32 *)(&position),
+                                     ((RuntimeObjectPrefix *)object)->position);
+        if (i != 0 || ((RuntimeObjectPrefix *)object)->kind != 0x86) {
             toolboxSetObjectCameraRotation(object, -5.0f, 180.0f);
         } else {
             rotation = *spin;
@@ -919,10 +924,11 @@ void toolboxLayoutCurrentRow(f32 angle, f32 height, f32 depth) {
         object = objectFindLiveByHandle(gPlayerHeldItemHandle);
         if (object != NULL) {
             VEC3_SET(position, 0, -1.5f, -4.0f);
-            matrix34TransformPointVector((f32 *)&gToolboxInterfaceTransform, (f32 *)(&position), (f32 *)(object + 0x18));
-            *(f32 *)(object + 0xC) = 0.0f;
-            *(f32 *)(object + 0x10) = 0.0f;
-            *(f32 *)(object + 0x14) = 0.0f;
+            matrix34TransformPointVector((f32 *)&gToolboxInterfaceTransform, (f32 *)(&position),
+                                         ((RuntimeObjectPrefix *)object)->position);
+            ((RuntimeObjectPrefix *)object)->rotation[0] = 0.0f;
+            ((RuntimeObjectPrefix *)object)->rotation[1] = 0.0f;
+            ((RuntimeObjectPrefix *)object)->rotation[2] = 0.0f;
             objectUpdateHierarchy((RuntimeObjectPrefix *)object);
         }
     }
@@ -1250,7 +1256,7 @@ void toolboxOpen(s32 row, s32 useHeld) {
     runtimeRequestGameModeChange(1);
     held = (u8 *)objectFindLiveByHandle(gPlayerHeldItemHandle);
     if (held != NULL) {
-        state = *(u8 **)(held + 0x54);
+        state = ((RuntimeObjectPrefix *)held)->state.bytes;
         if (useHeld) {
             if (gItemKindClassEntries[*(s16 *)(state + 4)][0] == 1) {
                 row = 0;

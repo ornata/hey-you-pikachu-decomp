@@ -189,3 +189,18 @@ original objects permit. Four callbacks retain their byte views after direct
 member trials failed the ROM gate; their names and next evidence are recorded
 in the recovery ledger. Each accepted callback mutation was compared against
 all 483 baseline objects before proceeding.
+
+## Toolbox object and item consumers
+
+Toolbox display placement, rotation, hierarchy lookup, and item access now use
+shared object transforms, child/sibling links, kind, handle and private state.
+The player's retained item lookup uses `PlayerControlPrefix.heldItemHandle`.
+Storage and removal expose `ItemStatePrefix.kind`, lifecycle state, owner and
+flags; item-name and row-eligibility helpers also use the signed kind member.
+Ghidra at `0x8002F114` confirms storage's signed kind read and eight-byte slot
+stride. The slots retain handles without extending item lifetime.
+
+Transfer confirmation keeps its duplicate-kind byte reads after direct members
+changed the ROM; this matching exception and next compiler evidence are recorded
+in the recovery ledger. The established layout is not in doubt. Every accepted
+source-unit trial preserved all 483 baseline objects.
