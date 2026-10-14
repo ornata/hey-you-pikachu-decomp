@@ -22,13 +22,14 @@ typedef struct ScenePathEntry {
     f32 (*points)[3]; ///< Borrowed world-space path points.
 } ScenePathEntry;
 
-/// Rectangular region state owned by a scene-region object.
+/// Rectangular region and waypoint state owned by a kind 0xAF scene object.
+/// Waypoint resources remain borrowed for the object lifetime.
 typedef struct SceneRegionState {
     f32 width;      ///< Region half-extent along X.
     f32 depth;      ///< Region half-extent along Z.
     u8 highlighted; ///< Nonzero while the region is highlighted.
     u8 unknown009[3];
-    s32 sceneData; ///< Opaque associated scene-data value.
+    f32 *points; ///< Borrowed world-coordinate triples ending with a complete marker whose X is negative.
 } SceneRegionState;
 
 /// Interaction anchors and landmark retained by a cave object.
@@ -86,6 +87,8 @@ typedef char
 typedef char SceneSpawnPointSizeCheck[(sizeof(SceneSpawnPoint) == 0x20) ? 1 : -1];
 typedef char ScenePathEntrySizeCheck[(sizeof(ScenePathEntry) == 8) ? 1 : -1];
 typedef char SceneRegionStateSizeCheck[(sizeof(SceneRegionState) == 0x10) ? 1 : -1];
+typedef char SceneRegionPointsOffsetCheck[((u32) & ((SceneRegionState *)0)->points == 0xC) ? 1 : -1];
+typedef char SceneRegionHighlightOffsetCheck[((u32) & ((SceneRegionState *)0)->highlighted == 8) ? 1 : -1];
 typedef char CaveStateSizeCheck[(sizeof(CaveState) == 0x20) ? 1 : -1];
 typedef char SceneSpawnCountOffsetCheck[(((u32) & ((SceneConfigurationPrefix *)0)->spawnCount) == 0x1C) ? 1 : -1];
 typedef char SceneSpawnsOffsetCheck[(((u32) & ((SceneConfigurationPrefix *)0)->spawns) == 0x20) ? 1 : -1];

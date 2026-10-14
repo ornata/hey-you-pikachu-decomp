@@ -19,14 +19,15 @@ extern u8 gSceneRegionDisplayList[];
 extern ObjectTemplate gSceneRegionObjectTemplate;
 #include "scene_configuration.h"
 
-/// Create a rectangular scene region with its associated scene data.
+/// Create a rectangular scene region with its borrowed waypoint data.
 /// \param position Three-component world-space region center.
 /// \param width Region half-extent along the X axis.
 /// \param depth Region half-extent along the Z axis.
-/// \param sceneData Opaque scene-data value associated with the region.
+/// \param points Borrowed world-coordinate triples ending with a complete negative-X marker;
+/// the resource must remain valid for the region lifetime.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001F1F0 (0x8001F1F0).
-void sceneRegionCreate(f32 *position, f32 width, f32 depth, s32 sceneData) {
+void sceneRegionCreate(f32 *position, f32 width, f32 depth, f32 *points) {
     ObjectTemplate tmpl;
     u8 *obj;
     SceneRegionState *state;
@@ -46,7 +47,7 @@ void sceneRegionCreate(f32 *position, f32 width, f32 depth, s32 sceneData) {
     state->width = width;
     state->depth = depth;
     state->highlighted = 0;
-    state->sceneData = sceneData;
+    state->points = points;
     ((RuntimeObjectPrefix *)obj)->state.pointer = state;
     objectRegisterActiveHierarchy(obj);
 }

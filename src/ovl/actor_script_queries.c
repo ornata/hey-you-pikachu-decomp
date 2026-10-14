@@ -583,14 +583,6 @@ s32 playerQueryInteractionMode(void) {
     return playerGetCompanionControlMode((u8 *)&gPlayerState);
 }
 
-/// Partial path-object state exposing the borrowed, sentinel-terminated points.
-/// The complete allocation and the first three words remain unresolved.
-typedef struct PathObjectStatePrefix {
-    u8 unknown000[0xC];
-    f32 *points; ///< Three-coordinate world points followed by an end marker.
-} PathObjectStatePrefix;
-typedef char PathObjectPointsOffsetCheck[(((u32) & ((PathObjectStatePrefix *)0)->points) == 0xC) ? 1 : -1];
-
 #include "scene_configuration.h"
 
 /// Get the number of points in a path in the current area.
@@ -910,7 +902,7 @@ f32 pathGetFirstPointCoordinateByHandle(s32 handle, s32 axis) {
     if (((RuntimeObjectPrefix *)obj)->kind == 0xAF) {
         rec = ((RuntimeObjectPrefix *)obj)->state.bytes;
         if (axis < 3) {
-            return ((PathObjectStatePrefix *)rec)->points[axis];
+            return ((SceneRegionState *)rec)->points[axis];
         }
     }
     return -65536.0f;
@@ -927,7 +919,7 @@ typedef struct PathVector {
 /// \note Portability: The adjacent coordinate-difference statements preserve the IDO scheduling required by the ROM.
 /// \note Original decompilation identifier: \c func_80118210 (0x80118210).
 f32 actorGetFollowingPathPointCoordinate(u8 *object, s32 handle, s32 axis) {
-    PathObjectStatePrefix *pathState;
+    SceneRegionState *pathState;
     s32 offset;
     s32 index;
     PathVector delta;

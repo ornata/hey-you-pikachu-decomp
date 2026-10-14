@@ -294,19 +294,19 @@
       "file": "include/scene_types.h",
       "record": "SceneRegionState",
       "member": "unknown009",
-      "line": 30,
+      "line": 31,
       "declaration": "u8 unknown009[3];",
-      "known_facts": "Highlight state is one byte at eight and associated scene data starts at 0xC in the 0x10-byte state.",
+      "known_facts": "Kind 0xAF owns a 0x10-byte state: X/Z half-extents at zero/four, highlight byte at eight and borrowed waypoint pointer at 0xC. The three intervening bytes remain unresolved.",
       "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
       "next_evidence": "Trace region initialization, highlight updates and scene callbacks for byte-wide or packed accesses to the gap.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/scene_types.h (record declaration and neighboring layout checks); docs/SHARED_LAYOUT_AUDIT.md (review scope and subsystem evidence)"
+      "evidence": "include/scene_types.h (record declaration and neighboring layout checks); docs/SHARED_LAYOUT_AUDIT.md (review scope and subsystem evidence); Ghidra 0x8001F1F0 and 0x8001F318; linked kind table entry 0x800791A8; docs/SHARED_LAYOUT_AUDIT.md waypoint-state recovery"
     },
     {
       "file": "include/scene_types.h",
       "record": "CaveState",
       "member": "unknown01D",
-      "line": 40,
+      "line": 41,
       "declaration": "u8 unknown01D[3];",
       "known_facts": "Two anchors and a landmark pointer precede descriptionKind at 0x1C in the 0x20-byte state.",
       "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
@@ -577,18 +577,6 @@
       "next_evidence": "Trace all retained-symbol aliases and title lifecycle paths for reads or nonzero writes of the middle float; one reset does not establish a timer.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
       "evidence": "src/game/title_screen.c (record declaration and neighboring layout checks); docs/SHARED_LAYOUT_AUDIT.md (review scope and subsystem evidence)"
-    },
-    {
-      "file": "src/ovl/actor_script_queries.c",
-      "record": "PathObjectStatePrefix",
-      "member": "unknown000",
-      "line": 589,
-      "declaration": "u8 unknown000[0xC];",
-      "known_facts": "Kind 0xAF queries read the points pointer at 0xC; the first three words and complete allocation remain unresolved.",
-      "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Identify kind 0xAF lifecycle registration and its allocator/initializer; trace producers of the points pointer and first three words before publishing a complete state type.",
-      "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "src/ovl/actor_script_queries.c (record declaration and neighboring layout checks); docs/SHARED_LAYOUT_AUDIT.md (review scope and subsystem evidence); Ghidra ROM function 0x801181A4 confirms kind 0xAF, state at object+0x54, and point pointer at state+0xC"
     },
     {
       "file": "src/ovl/area_terrain_maze.c",

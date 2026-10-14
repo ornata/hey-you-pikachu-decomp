@@ -133,10 +133,10 @@ extern u8 D_801475C8_scene_ochre_deep;
 extern u8 D_80147AE0_scene_ochre_deep;
 
 
-extern u8 D_8014A0EC_scene_ochre_deep;
-extern u8 D_8014A110_scene_ochre_deep;
-extern u8 D_8014A134_scene_ochre_deep;
-extern u8 D_8014A164_scene_ochre_deep;
+extern f32 D_8014A0EC_scene_ochre_deep[];
+extern f32 D_8014A110_scene_ochre_deep[];
+extern f32 D_8014A134_scene_ochre_deep[];
+extern f32 D_8014A164_scene_ochre_deep[];
 extern u8 D_8014AB48_scene_ochre_deep;
 extern u8 D_8014AB54_scene_ochre_deep;
 extern f32 D_8014AB94_scene_ochre_deep;
@@ -170,19 +170,19 @@ void ochreDeepInitializeObjects(void) {
     position[0] = 130.0f;
     position[1] = D_8014AB94_scene_ochre_deep;
     position[2] = D_8014AB98_scene_ochre_deep;
-    sceneRegionCreate(position, 9.0f, 9.0f, (s32)&D_8014A0EC_scene_ochre_deep);
+    sceneRegionCreate(position, 9.0f, 9.0f, D_8014A0EC_scene_ochre_deep);
     position[0] = 217.0f;
     position[1] = D_8014AB9C_scene_ochre_deep;
     position[2] = 151.0f;
-    sceneRegionCreate(position, 41.0f, 38.0f, (s32)&D_8014A110_scene_ochre_deep);
+    sceneRegionCreate(position, 41.0f, 38.0f, D_8014A110_scene_ochre_deep);
     position[0] = 74.0f;
     position[1] = D_8014ABA0_scene_ochre_deep;
     position[2] = 225.0f;
-    sceneRegionCreate(position, 25.0f, 13.0f, (s32)&D_8014A134_scene_ochre_deep);
+    sceneRegionCreate(position, 25.0f, 13.0f, D_8014A134_scene_ochre_deep);
     position[0] = 83.5f;
     position[1] = D_8014ABA4_scene_ochre_deep;
     position[2] = 52.0f;
-    sceneRegionCreate(position, 61.5f, 38.0f, (s32)&D_8014A164_scene_ochre_deep);
+    sceneRegionCreate(position, 61.5f, 38.0f, D_8014A164_scene_ochre_deep);
     if (playerGetChaseStage() == 2) {
         ochreDeepCreateVariantTwoProps();
     }

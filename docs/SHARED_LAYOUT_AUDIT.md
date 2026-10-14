@@ -797,3 +797,32 @@ scope. It does not prove the declarations semantically resolved, audit every
 possible opaque spelling or raw offset, or prove every callback lifetime.
 Further layout recovery must follow the recorded evidence rather than treat
 the presence of a review as proof of a complete type.
+
+## Kind 0xAF scene-region waypoint state
+
+The apparent path-object prefix is the complete `SceneRegionState`, rather than
+an unrelated record with coincident offsets. The linked object-kind table entry
+for 0xAF at `0x800791A8` has no initializer, the generic state destructor, and
+`sceneRegionUpdateHighlight` (`0x8001F318`) as its update hook. The shared
+region template at `0x80088E60` stores kind 0xAF at offset 0x34.
+`sceneRegionCreate` (`0x8001F1F0`) performs the custom initialization and allocates
+0x10 bytes: half-extents at zero/four, highlight at eight, borrowed waypoint
+address at 0xC. Ghidra confirms these stores and the highlight consumer; its
+inferred float type for the fourth argument is contradicted by the actual
+pointer consumers and authored resources.
+
+The four creation calls in `ochre_deep.c` pass resources at 0x8014A0EC,
+0x8014A110, 0x8014A134 and 0x8014A164. Their linked coordinate triples contain
+respectively two, two, three and two waypoints followed by (-1, -1, -1).
+These agree with the kind-checked first-point and following-point queries.
+`SceneRegionState.points` and the creation parameter are now floating-point
+pointers, the scene resource declarations use floating-point arrays, and both
+queries reuse the complete shared state. The duplicate opaque 12-byte prefix
+is removed. Checks cover highlight at eight, points at 0xC and total size 0x10.
+
+The object owns its state but borrows waypoint storage for its lifetime. Query
+contracts retain nonnegative axis/index requirements and a complete negative-X
+marker. The three bytes after the highlight flag remain unresolved; nothing in
+this recovery establishes that they are unused or padding. The inventory is now
+51 opaque declarations across 27 files. Every affected C unit passed the full
+strict baseline before the next was changed.

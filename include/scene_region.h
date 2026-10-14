@@ -8,9 +8,10 @@
 /// \param position Three world-space center coordinates, copied during creation.
 /// \param width Region half-extent along X.
 /// \param depth Region half-extent along Z.
-/// \param sceneData Original 32-bit address of persistent scene association data; its contents are not interpreted here.
+/// \param points Borrowed world-coordinate triples, valid for the region lifetime,
+/// ending with a complete three-coordinate marker whose X is negative.
 /// \returns Nothing; the object system owns the registered region.
-void sceneRegionCreate(f32 *position, f32 width, f32 depth, s32 sceneData);
+void sceneRegionCreate(f32 *position, f32 width, f32 depth, f32 *points);
 
 /// Query whether a region has its player highlight enabled.
 /// \param handle Handle of an initialized scene region; other kinds are unsupported.
