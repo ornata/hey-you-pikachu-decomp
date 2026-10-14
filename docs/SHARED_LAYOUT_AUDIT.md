@@ -220,3 +220,19 @@ and response selection use shared object kind/state and signed item-kind members
 Catalog interior aliases retain their symbol identities and strides. No prototype
 compatibility exception or relocation comparison has been weakened. Accepted
 source-unit trials all preserve the baseline objects.
+
+## Texture motion and model drawing
+
+Private `TextureMotion` storage is a checked 0x10-byte owned record containing
+texture-coordinate wrap masks, S/T scroll velocities and an angular rate. Ghidra
+at `0x800088F4` confirms initialization from the kind-specific numeric settings
+in the object's radius slot. Drawing consumers establish the scrolling and
+rotation roles; the packed configuration still requires the original compiler's
+bit-field representation. The object prefix documents this radius-slot reuse.
+
+Texture-motion drawing, scene environment drawing, kind-range search and relative
+yaw queries use shared object members. Actor downhill movement, double-buffered
+model setup and animated-texture return values also use the shared layouts.
+The old animated-texture return exception is resolved: offset 0x30 is the display
+list, not the child link asserted by the obsolete note. Both source units pass
+strict baseline comparison with the canonical display-list read.

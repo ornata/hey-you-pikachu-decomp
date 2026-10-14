@@ -37,7 +37,7 @@ typedef struct RuntimeObjectPrefix {
     f32 scale[3];             ///< Local scale along each axis.
     f32 rotation[3];          ///< Local Euler rotation in degrees.
     f32 position[3];          ///< Local position relative to the hierarchy.
-    f32 radius;               ///< Template radius used by object visibility queries.
+    f32 radius;               ///< Visibility or collision radius; texture-motion kinds initially reuse this value for encoded motion settings.
     ObjectReference sibling;  ///< Next sibling in the hierarchy.
     ObjectReference child;    ///< First child in the hierarchy.
     Gfx *displayList;         ///< Borrowed model display list.

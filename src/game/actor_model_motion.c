@@ -388,7 +388,9 @@ void actorAddDownhillMovement(u8 *actor, f32 *displacement, u8 **surfaceCache) {
 
     f = 0.2f;
     v.y = f;
-    terrainGetDownhillHeightDifferences(*(f32 *)(actor + 0x18), *(f32 *)(actor + 0x1C), *(f32 *)(actor + 0x20), 50.0f, v.y, &v.x, &v.z, surfaceCache);
+    terrainGetDownhillHeightDifferences(
+        ((RuntimeObjectPrefix *)actor)->position[0], ((RuntimeObjectPrefix *)actor)->position[1],
+        ((RuntimeObjectPrefix *)actor)->position[2], 50.0f, v.y, &v.x, &v.z, surfaceCache);
     vector3Normalize((f32 *)&v);
     f = 10.0f * gRuntimeFrameSeconds;
     displacement[0] += v.x * f;
@@ -401,7 +403,8 @@ void actorAddDownhillMovement(u8 *actor, f32 *displacement, u8 **surfaceCache) {
 /// \note Original decompilation identifier: \c func_80015438 (0x80015438).
 void actorDrawModelLightingSetup(u8 *actor) {
     gSPDisplayList(gRenderDisplayListCursor++,
-                   ((u32 *)(*(u8 **)(actor + 0x54) + 0x54))[(*(u16 *)(actor + 0x36) & 0x8000) ? 1 : 0]);
+                   ((RuntimeObjectPrefix *)actor)
+                       ->state.actor->modelDrawLists[(((RuntimeObjectPrefix *)actor)->flags & 0x8000) ? 1 : 0]);
 }
 
 void actorUpdateTrackedSoundSpatialization(f32 *, s32 *);
@@ -1083,7 +1086,7 @@ s32 actorBindAnimatedTexturesForDraw(u8 *actor) {
     obj = ((RuntimeObjectPrefix *)actor)->state.pointer;
     actorUpdateAnimatedTextureDrawLists(actor, gGraphicsFramebufferIndex);
     gSPSegment(gRenderDisplayListCursor++, 6, osVirtualToPhysical(obj->displayLists[gGraphicsFramebufferIndex]));
-    return *(s32 *)(actor + 0x30);
+    return (s32)((RuntimeObjectPrefix *)actor)->displayList;
 }
 
 

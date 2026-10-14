@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 1189,
-      "unique_spellings": 621,
+      "occurrences": 1174,
+      "unique_spellings": 614,
       "files": 68
     },
     "cast_offset_candidates": {
@@ -481,8 +481,7 @@
         "word_map_lookup.h"
       ],
       "matching_exceptions": {
-        "heapAllocLocal callers": "Adopting heap_alloc.h and removing the unused fourth actor pointers changes actorAllocatePartTable instructions and fails the ROM gate, although the facing-controller allocation functions retain their bytes. Restoring the compatibility declaration restores all strict objects. Isolate signed size conversion and allocation scheduling in actorAllocatePartTable before canonical adoption. Heap deallocation now independently uses heap_free.h without trailing pointers.",
-        "actorBindAnimatedTexturesForDraw": "The raw 32-bit child continuation read at object offset 0x30 is retained: replacing it with RuntimeObjectPrefix.child.address changes this function's allocated instruction bytes under IDO, while the typed animated-texture state links match. Retry only with a representation that preserves the return load scheduling."
+        "heapAllocLocal callers": "Adopting heap_alloc.h and removing the unused fourth actor pointers changes actorAllocatePartTable instructions and fails the ROM gate, although the facing-controller allocation functions retain their bytes. Restoring the compatibility declaration restores all strict objects. Isolate signed size conversion and allocation scheduling in actorAllocatePartTable before canonical adoption. Heap deallocation now independently uses heap_free.h without trailing pointers."
       },
       "locations": {
         "raw_offset_candidates": {
@@ -495,32 +494,14 @@
           "heightDelta + 1": [
             "364:34"
           ],
-          "actor + 0x18": [
-            "391:50"
-          ],
-          "actor + 0x1C": [
-            "391:74"
-          ],
-          "actor + 0x20": [
-            "391:98"
-          ],
-          "actor + 0x54": [
-            "404:38"
-          ],
-          "actor + 0x36": [
-            "404:71"
-          ],
           "p + 1": [
-            "879:38"
+            "882:38"
           ],
           "return -1": [
-            "919:5"
-          ],
-          "actor + 0x30": [
-            "1086:21"
+            "922:5"
           ],
           "displacement + 2": [
-            "1341:17"
+            "1344:17"
           ]
         }
       }
@@ -2064,44 +2045,19 @@
           ],
           "gObjectSearchTreeRoot + 8": [
             "533:31",
-            "1832:22"
+            "1840:22"
           ],
           "gObjectTransformStackDepth - 1": [
             "603:40"
           ],
           "object + 0x24": [
-            "1088:35"
+            "1095:35"
           ],
           "widthShift + 4": [
-            "1089:42"
+            "1096:42"
           ],
           "heightShift + 4": [
-            "1090:42"
-          ],
-          "object + 0x54": [
-            "1100:25"
-          ],
-          "obj + 0x54": [
-            "1119:34"
-          ],
-          "obj + 0x34": [
-            "1140:18"
-          ],
-          "obj + 0x30": [
-            "1143:21"
-          ],
-          "object + 0x30": [
-            "1154:21"
-          ],
-          "object + 0x44": [
-            "1731:46"
-          ],
-          "object + 0xC": [
-            "1731:70"
-          ],
-          "first + 0x34": [
-            "1836:28",
-            "1839:18"
+            "1097:42"
           ]
         }
       }

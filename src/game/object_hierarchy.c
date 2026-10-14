@@ -1066,11 +1066,18 @@ typedef union PackedTextureMotion {
         unsigned flag : 1;
     } fields;
 } PackedTextureMotion;
+/// Owned texture motion parameters; the object radius slot supplies packed configuration before initialization.
 typedef struct TextureMotion {
-    s16 sMask;
-    s16 tMask;
-    f32 x, y, z;
+    s16 sMask;        ///< Wrap mask for the horizontal texture coordinate.
+    s16 tMask;        ///< Wrap mask for the vertical texture coordinate.
+    f32 scrollS;      ///< Horizontal texture-coordinate velocity in fractional texel units per second.
+    f32 scrollT;      ///< Vertical texture-coordinate velocity in fractional texel units per second.
+    f32 rotationRate; ///< Angular velocity in units of one thirty-second degree per second.
 } TextureMotion;
+
+typedef char TextureMotionSizeCheck[(sizeof(TextureMotion) == 0x10) ? 1 : -1];
+typedef char TextureMotionScrollOffsetCheck[((u32) & ((TextureMotion *)0)->scrollS == 4) ? 1 : -1];
+typedef char TextureMotionRotationOffsetCheck[((u32) & ((TextureMotion *)0)->rotationRate == 0xC) ? 1 : -1];
 /// Initialize object texture scrolling and rotation from its configured motion settings.
 /// \param object Live object with valid texture-motion settings and no unreleased state allocation.
 /// \returns Nothing.
@@ -1094,10 +1101,10 @@ void objectInitializeTextureMotion(u8 *object) {
     elevation = (elevationStep >= 0 ? elevationStep : -elevationStep) * 5.0f;
     if (elevationStep < 0)
         elevation = -elevation;
-    extent->x = mathCosDegrees(angle) * radius * 32.0f;
-    extent->y = mathSinDegrees(angle) * radius * 32.0f;
-    extent->z = elevation * 32.0f;
-    *(TextureMotion **)(object + 0x54) = extent;
+    extent->scrollS = mathCosDegrees(angle) * radius * 32.0f;
+    extent->scrollT = mathSinDegrees(angle) * radius * 32.0f;
+    extent->rotationRate = elevation * 32.0f;
+    ((RuntimeObjectPrefix *)object)->state.pointer = extent;
 }
 
 s32 objectApplySceneEnvironmentColorForDraw(u8 *);
@@ -1116,31 +1123,31 @@ s32 objectApplyTextureMotionForDraw(u8 *obj) {
     f32 time, angle;
     s32 sine, cosine;
 
-    motion = *(TextureMotion **)(obj + 0x54);
+    motion = (TextureMotion *)((RuntimeObjectPrefix *)obj)->state.pointer;
     time = (f32)(runtimeGetElapsedMilliseconds() & 0x7FFFF) * 0.001f;
-    if (motion->x != 0.0f) {
-        u = (s32)(motion->x * time) & motion->sMask;
+    if (motion->scrollS != 0.0f) {
+        u = (s32)(motion->scrollS * time) & motion->sMask;
     } else {
         u = 0;
     }
-    if (motion->y != 0.0f) {
-        v = (s32)(motion->y * time) & motion->tMask;
+    if (motion->scrollT != 0.0f) {
+        v = (s32)(motion->scrollT * time) & motion->tMask;
     } else {
         v = 0;
     }
     gdl = gRenderDisplayListCursor++;
     gMoveWd(gdl, G_MW_FOG, 0x0C, _SHIFTL(u, 16, 16) | _SHIFTL(v, 0, 16));
-    if (motion->z != 0.0f) {
-        angle = (f32)((s32)(motion->z * time) % 11520) * 0.03125f;
+    if (motion->rotationRate != 0.0f) {
+        angle = (f32)((s32)(motion->rotationRate * time) % 11520) * 0.03125f;
         sine = (s32)(mathCosDegrees(angle) * 32767.0f);
         cosine = (s32)(mathSinDegrees(angle) * 32767.0f);
         gSPTexture(gRenderDisplayListCursor++, sine, cosine, 0, 0, 1);
         gMoveWd(gRenderDisplayListCursor++, G_MW_FOG, 0x10, _SHIFTL(-cosine, 16, 16) | _SHIFTL(sine, 0, 16));
     }
-    if (*(u16 *)(obj + 0x34) == 0x97) {
+    if (((RuntimeObjectPrefix *)obj)->kind == 0x97) {
         return objectApplySceneEnvironmentColorForDraw(obj);
     }
-    return *(s32 *)(obj + 0x30);
+    return (s32)((RuntimeObjectPrefix *)obj)->displayList;
 }
 
 /// Apply the scene environment color for object drawing.
@@ -1151,7 +1158,7 @@ s32 objectApplySceneEnvironmentColorForDraw(u8 *object) {
     gDPPipeSync(gRenderDisplayListCursor++);
     gDPSetEnvColor(gRenderDisplayListCursor++, gCurrentAreaConfiguration->fogColor[0],
                    gCurrentAreaConfiguration->fogColor[1], gCurrentAreaConfiguration->fogColor[2], 0);
-    return *(s32 *)(object + 0x30);
+    return (s32)((RuntimeObjectPrefix *)object)->displayList;
 }
 
 
@@ -1728,7 +1735,8 @@ f32 objectGetApproxDistance(u8 *first, u8 *second) {
 void objectEvaluatePointRelativeYaw(u8 *object, s32 pointAddress) {
     u8 v[0x30];
 
-    matrix34MakeViewFromEulerDegrees((f32 *)(object + 0x44), (f32 *)(object + 0xC), (f32 *)v);
+    matrix34MakeViewFromEulerDegrees(((RuntimeObjectPrefix *)object)->worldPosition,
+                                     ((RuntimeObjectPrefix *)object)->rotation, (f32 *)v);
 
     matrix34GetTransformedPointYawDegrees((f32 *)v, (f32 *)pointAddress);
 }
@@ -1833,10 +1841,10 @@ u8 *objectFindNearestTargetInView(u8 *self, Vec3f *origin, f32 dist, f32 *rot, f
     if (first == NULL) {
         return NULL;
     }
-    if (maxKind < *(u16 *)(first + 0x34)) {
+    if (maxKind < ((RuntimeObjectPrefix *)first)->kind) {
         return NULL;
     }
-    if (*(u16 *)(first + 0x34) >= minKind) {
+    if (((RuntimeObjectPrefix *)first)->kind >= minKind) {
         objectConsiderNearestTargetEntry((u8 *)((ManagedObject *)first)->entry, 0);
     }
     searchTreeVisitAscending(((ManagedObject *)first)->entry->links[1], objectConsiderNearestTargetEntry);
