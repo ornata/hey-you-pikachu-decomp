@@ -55,7 +55,8 @@
       "areaIsNodeVisible": "Replacing the established MazeNode depth and geometry byte reads with direct members changes allocated instructions and fails the ROM gate. Other terrain sampling/model callbacks accept direct geometry members. Isolate visibility-test floating load/operand ordering before converting this function; preserve the existing model and camera representations."
     },
     "src/game/actor_configuration.c": {
-      "actorCreateForKind": "An unused local word is named reservedCreationSlot. Removing it shrinks the IDO frame by eight bytes and changes all argument/spill offsets; it is retained with a Doxygen target-compiler note."
+      "actorCreateForKind": "An unused local word is named reservedCreationSlot. Removing it shrinks the IDO frame by eight bytes and changes all argument/spill offsets; it is retained with a Doxygen target-compiler note.",
+      "actorCreateForKind VM local": "VM creators now return ScriptVm*. Replacing the reused part byte pointer with a separate ScriptVm *scriptContext local changes actor creation instructions and fails the ROM gate. An explicit byte-pointer cast at this caller preserves the typed creation interface and existing local allocation. Isolate IDO local liveness/register allocation before separating the local roles."
     },
     "src/game/voice_recognition.c": {
       "voiceDictionaryClearDevice": "The unused trailing clear-call arguments are removed: a two-argument s32-count view preserves all strict objects. Changing only that count to u16 fails ROM matching even with the trailing arguments retained. A u16 wrapper parameter also changes voiceDictionaryUpload. Retain the documented 32-bit count view with explicit low-16-bit mask pending count-conversion scheduling evidence; full voice_device.h adoption remains blocked by this width effect, not unused arguments."

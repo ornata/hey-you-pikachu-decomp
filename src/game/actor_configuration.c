@@ -703,7 +703,7 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
                                                    ((ActorScriptState *)actorState)->collisionDepth,
                                                    ((ActorScriptState *)actorState)->clearanceHeight))->handle;
     if (script != 0) {
-        part = scriptVmCreate((ScriptVmConfiguration *)script);
+        part = (u8 *)scriptVmCreate((ScriptVmConfiguration *)script);
         ((ActorScriptState *)actorState)->vmAddress = (s32)part;
         ((ScriptVm *)part)->executionState = SCRIPT_VM_READY;
     }

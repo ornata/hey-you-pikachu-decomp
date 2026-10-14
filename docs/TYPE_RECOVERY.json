@@ -313,7 +313,8 @@
         "vector_metrics.h"
       ],
       "matching_exceptions": {
-        "actorCreateForKind": "An unused local word is named reservedCreationSlot. Removing it shrinks the IDO frame by eight bytes and changes all argument/spill offsets; it is retained with a Doxygen target-compiler note."
+        "actorCreateForKind": "An unused local word is named reservedCreationSlot. Removing it shrinks the IDO frame by eight bytes and changes all argument/spill offsets; it is retained with a Doxygen target-compiler note.",
+        "actorCreateForKind VM local": "VM creators now return ScriptVm*. Replacing the reused part byte pointer with a separate ScriptVm *scriptContext local changes actor creation instructions and fails the ROM gate. An explicit byte-pointer cast at this caller preserves the typed creation interface and existing local allocation. Isolate IDO local liveness/register allocation before separating the local roles."
       },
       "locations": {
         "raw_offset_candidates": {
@@ -3938,22 +3939,22 @@
       "locations": {
         "raw_offset_candidates": {
           "savedDepthCount + 1": [
-            "168:65"
+            "167:65"
           ],
           "returnCount + 1": [
-            "186:61"
+            "185:61"
           ],
           "value + 1": [
-            "222:15",
-            "225:11"
+            "221:15",
+            "224:11"
           ],
           "operandOffset + 5": [
-            "329:43"
+            "328:43"
           ],
           "instructionOffset + 5": [
-            "786:43",
-            "837:47",
-            "855:43"
+            "785:43",
+            "836:47",
+            "854:43"
           ]
         }
       }

@@ -84,17 +84,17 @@ void scriptVmReset(u8 *vm) {
 /// \param capacity Positive maximum number of values in the script stack.
 /// \returns An owned initialized context to release with scriptVmDestroy.
 /// \note Original decompilation identifier: \c func_80115114 (0x80115114).
-u8 *scriptVmCreateWithCapacity(ScriptVmConfiguration *config, s32 capacity) {
-    u8 *vm;
+ScriptVm *scriptVmCreateWithCapacity(ScriptVmConfiguration *config, s32 capacity) {
+    ScriptVm *vm;
     vm = heapAllocLocal((HpHdr *)&gGameHeap, sizeof(ScriptVm), 0xB3);
     _bzero(vm, sizeof(ScriptVm));
-    ((ScriptVm *)vm)->totalElapsed = 0.0f;
-    ((ScriptVm *)vm)->commands = config->commands;
-    ((ScriptVm *)vm)->program = config->program;
-    ((ScriptVm *)vm)->stringTable = config->stringTable;
-    ((ScriptVm *)vm)->stackCapacity = capacity;
-    ((ScriptVm *)vm)->values = (ScriptValue *)heapAllocLocal((HpHdr *)&gGameHeap, capacity * sizeof(ScriptValue), 0xC6);
-    scriptVmReset(vm);
+    vm->totalElapsed = 0.0f;
+    vm->commands = config->commands;
+    vm->program = config->program;
+    vm->stringTable = config->stringTable;
+    vm->stackCapacity = capacity;
+    vm->values = (ScriptValue *)heapAllocLocal((HpHdr *)&gGameHeap, capacity * sizeof(ScriptValue), 0xC6);
+    scriptVmReset((u8 *)vm);
     return vm;
 }
 
@@ -102,7 +102,7 @@ u8 *scriptVmCreateWithCapacity(ScriptVmConfiguration *config, s32 capacity) {
 /// \param config Configuration with borrowed program, string, and command tables that must outlive the context; a nonpositive stack capacity selects 200 values.
 /// \returns An owned initialized context to release with scriptVmDestroy.
 /// \note Original decompilation identifier: \c func_801151B0 (0x801151B0).
-u8 *scriptVmCreate(ScriptVmConfiguration *config) {
+ScriptVm *scriptVmCreate(ScriptVmConfiguration *config) {
     s32 configuredCapacity = config->stackCapacity;
     s32 capacity;
 
@@ -114,7 +114,6 @@ u8 *scriptVmCreate(ScriptVmConfiguration *config) {
     }
     return scriptVmCreateWithCapacity(config, capacity);
 }
-
 
 /// Release a script context and its owned storage.
 /// \param vm Script context to release, or null.

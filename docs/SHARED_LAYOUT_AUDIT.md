@@ -466,3 +466,17 @@ indexed accesses, block copies and script consumers still need data-flow tracing
 Its size and scale operation do not establish a physical dimension. The source
 comments therefore describe an unresolved scaled configuration value, retaining
 `unknown208` and `unknown34` until stronger evidence exists.
+
+## Typed VM creation interface
+
+`scriptVmCreateWithCapacity` and `scriptVmCreate` now return owned `ScriptVm *`
+contexts. The explicit-capacity creator uses a typed local for its configuration
+fields and owned value stack; Ghidra at `0x80115114` confirms construction and
+reset. The shared lifecycle header and definitions agree, and the reset boundary
+retains its existing byte-pointer ABI.
+
+Actor creation's reused byte-pointer local requires an explicit conversion from
+the typed result. A separate typed context local failed the ROM gate; the boundary
+cast preserves matching and has a focused ledger entry. Ownership and release
+requirements remain unchanged. Every accepted source-unit/header mutation passed
+strict comparison against all 483 baseline objects.
