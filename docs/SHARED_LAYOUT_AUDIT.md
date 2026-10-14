@@ -564,3 +564,17 @@ interaction. The redundant opaque 0x54-byte object view and its duplicate checks
 are removed; the common object prefix retains its size/state-offset checks.
 The voice/VM walkthrough names the canonical member. Producer/header and each
 consumer mutation preserve all strict baseline objects without added exceptions.
+
+## Packed integer-value interface
+
+`scriptValueGetInteger` now takes `ScriptValue *` consistently with the other
+numeric value interfaces. It reads the byte tag and copies the four-byte payload
+without an unaligned word access. Ghidra at `0x80115424` confirms integer-like
+tags and floating conversion. All interpreter callers use the typed value or
+explicitly view a complete five-byte bytecode/global operand as a value.
+
+Compile-time checks establish tag offset zero and payload offset one alongside
+the five-byte extent. The established integer tag uses its existing enum; tag
+two remains an unresolved integer-like form and is not renamed from guesswork.
+Typed producer/header, caller and packed-offset changes each preserve the strict
+baseline without adding a matching exception or changing conversion behavior.

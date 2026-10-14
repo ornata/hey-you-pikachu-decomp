@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 891,
-      "unique_spellings": 482,
+      "occurrences": 889,
+      "unique_spellings": 481,
       "files": 64
     },
     "cast_offset_candidates": {
@@ -3936,10 +3936,6 @@
           ],
           "returnCount + 1": [
             "184:33"
-          ],
-          "value + 1": [
-            "220:15",
-            "223:11"
           ],
           "operandOffset + 5": [
             "327:29"

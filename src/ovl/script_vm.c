@@ -206,21 +206,21 @@ void scriptVmNoOp(void) {
 /// \returns The integer value, with any floating-point fraction discarded.
 ///
 /// \note Original decompilation identifier: \c func_80115424 (0x80115424).
-s32 scriptValueGetInteger(u8 *value) {
+s32 scriptValueGetInteger(ScriptValue *value) {
     s32 integerValue;
     f32 floatValue;
     s32 isInteger;
 
-    if ((*value == 0) || (*value == 2)) {
+    if ((value->data.tag == SCRIPT_VALUE_INTEGER) || (value->data.tag == 2)) {
         isInteger = 1;
     } else {
         isInteger = 0;
     }
     if (isInteger != 0) {
-        bcopy(value + 1, &integerValue, 4);
+        bcopy(value->data.payload, &integerValue, 4);
         return integerValue;
     }
-    bcopy(value + 1, &floatValue, 4);
+    bcopy(value->data.payload, &floatValue, 4);
     return floatValue;
 }
 
@@ -325,7 +325,7 @@ s32 scriptVmReadIntegerOperand(ScriptVm *vm) {
     operandOffset = vm->instructionOffset;
     operandAddress = (s32)vm->program + operandOffset;
     vm->instructionOffset = operandOffset + 5;
-    return scriptValueGetInteger((u8 *)operandAddress);
+    return scriptValueGetInteger((ScriptValue *)(operandAddress));
 }
 
 /// Global script-variable storage containing 500 packed five-byte values.
@@ -389,7 +389,7 @@ void scriptVmApplyUnaryOperator(ScriptVm *vm, u8 op) {
             break;
         }
     } else {
-        i = scriptValueGetInteger(box->bytes);
+        i = scriptValueGetInteger(box);
         switch (op) {
         case 3:
             scriptValueSetInteger(box, -i);
@@ -442,8 +442,8 @@ void scriptVmApplyArithmeticOperator(ScriptVm *vm, u8 op) {
         }
         scriptValueSetFloat(&result, fv);
     } else {
-        ir = scriptValueGetInteger(right.bytes);
-        il = scriptValueGetInteger(left.bytes);
+        ir = scriptValueGetInteger(&right);
+        il = scriptValueGetInteger(&left);
         switch (op) {
         case 5:
             iv = il + ir;
@@ -484,8 +484,8 @@ void scriptVmApplyBitwiseOperator(ScriptVm *vm, u8 op) {
     if ((right.data.tag == SCRIPT_VALUE_FLOAT ? 1 : 0) || (left.data.tag == SCRIPT_VALUE_FLOAT ? 1 : 0)) {
         scriptValueSetInteger(&result, 0);
     } else {
-        rhs = scriptValueGetInteger(right.bytes);
-        lhs = scriptValueGetInteger(left.bytes);
+        rhs = scriptValueGetInteger(&right);
+        lhs = scriptValueGetInteger(&left);
         switch (op) {
         case 20:
             value = lhs & rhs;
@@ -561,8 +561,8 @@ void scriptVmApplyComparisonOperator(ScriptVm *vm, u8 op) {
             break;
         }
     } else {
-        ir = scriptValueGetInteger(right.bytes);
-        il = scriptValueGetInteger(left.bytes);
+        ir = scriptValueGetInteger(&right);
+        il = scriptValueGetInteger(&left);
         switch (op) {
         case 11:
             if (il == ir)
@@ -644,7 +644,7 @@ s32 scriptVmPopInteger(ScriptVm *vm) {
     ScriptValue valueBox;
 
     scriptVmPopValue(vm, &valueBox);
-    return scriptValueGetInteger((u8 *)&valueBox);
+    return scriptValueGetInteger(&valueBox);
 }
 
 /// Pop a numeric script value and convert it to a floating-point number.
@@ -689,7 +689,7 @@ char *scriptVmPopString(ScriptVm *vm) {
     else
         test = 0;
     if (test)
-        sprintf((char *)&gScriptVmNumericTextBuffer, "%d", scriptValueGetInteger(box.bytes));
+        sprintf((char *)&gScriptVmNumericTextBuffer, "%d", scriptValueGetInteger(&box));
     else
         sprintf((char *)&gScriptVmNumericTextBuffer, "%f", scriptValueGetFloat(&box));
     return (char *)&gScriptVmNumericTextBuffer;
@@ -700,7 +700,7 @@ char *scriptVmPopString(ScriptVm *vm) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80116224 (0x80116224).
 void scriptVmEvaluateGlobalInteger(s32 index) {
-    scriptValueGetInteger((u8 *)((u8 *)&gScriptVmGlobalValues + index * 5));
+    scriptValueGetInteger((ScriptValue *)(((u8 *)&gScriptVmGlobalValues + index * 5)));
 }
 
 
@@ -817,7 +817,7 @@ loop_3:
     case 28: {
         s32 address;
         TRACE(("%d\n", vm->instructionOffset));
-        address = scriptValueGetInteger((u8 *)(vm->program + vm->instructionOffset));
+        address = scriptValueGetInteger((ScriptValue *)((vm->program + vm->instructionOffset)));
         vm->instructionOffset = address;
         goto loop_2;
     }
@@ -825,9 +825,9 @@ loop_3:
         s32 condition;
         ScriptValue sp6C;
         scriptVmPopValue(vm, &sp6C);
-        condition = scriptValueGetInteger((u8 *)sp6C.bytes);
+        condition = scriptValueGetInteger(&sp6C);
         if (condition == 0) {
-            vm->instructionOffset = scriptValueGetInteger((u8 *)(vm->program + vm->instructionOffset));
+            vm->instructionOffset = scriptValueGetInteger((ScriptValue *)((vm->program + vm->instructionOffset)));
         } else {
             vm->instructionOffset = (s32)(vm->instructionOffset + 5);
         }
@@ -846,7 +846,7 @@ loop_3:
     }
     case 26: {
         s32 callTargetOffset;
-        callTargetOffset = scriptValueGetInteger((u8 *)(vm->program + vm->instructionOffset));
+        callTargetOffset = scriptValueGetInteger((ScriptValue *)((vm->program + vm->instructionOffset)));
         vm->instructionOffset = (s32)(vm->instructionOffset + 5);
         scriptVmSaveReturnLocation(vm);
         vm->instructionOffset = callTargetOffset;

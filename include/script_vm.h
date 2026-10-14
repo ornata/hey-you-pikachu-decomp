@@ -135,6 +135,8 @@ SCRIPT_VM_OFFSET_CHECK(ScriptVmMessageStyleOffsetCheck, ScriptVm, messageStyle, 
 SCRIPT_VM_OFFSET_CHECK(ScriptVmActionTimerOffsetCheck, ScriptVm, actionTimer, 0x2BC);
 SCRIPT_VM_OFFSET_CHECK(ScriptVmActionHandlerOffsetCheck, ScriptVm, actionHandler, 0x2C0);
 SCRIPT_VM_OFFSET_CHECK(ScriptVmActionInitializingOffsetCheck, ScriptVm, actionInitializing, 0x2C4);
+SCRIPT_VM_OFFSET_CHECK(ScriptValueTagOffsetCheck, ScriptValue, data.tag, 0);
+SCRIPT_VM_OFFSET_CHECK(ScriptValuePayloadOffsetCheck, ScriptValue, data.payload, 1);
 #undef SCRIPT_VM_OFFSET_CHECK
 
 #endif

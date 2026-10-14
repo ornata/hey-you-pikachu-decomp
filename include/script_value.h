@@ -39,6 +39,6 @@ void scriptValueSetStringPointer(ScriptValue *value, char *text);
 /// \returns The integer value, with any floating-point fraction discarded.
 ///
 /// \note Original decompilation identifier: \c func_80115424 (0x80115424).
-s32 scriptValueGetInteger(u8 *value);
+s32 scriptValueGetInteger(ScriptValue *value);
 
 #endif
