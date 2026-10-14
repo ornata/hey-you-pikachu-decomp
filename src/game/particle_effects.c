@@ -1,3 +1,6 @@
+/// \file
+/// Implements wisp, ribbon, and particle effect creation, updates, and drawing.
+
 #include "audio_sound_effect.h"
 #include "render_state.h"
 #include "game_heap.h"
@@ -23,7 +26,6 @@
 #include "object_create.h"
 #include "object_hierarchy_create.h"
 #include "object_lifecycle.h"
-/* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "vector_direction.h"
 #include "object_audio.h"
@@ -184,11 +186,11 @@ void wispEffectUpdateRisingMotion(u8 *effect) {
 
 /// Prepare an active wisp effect for rendering.
 /// \param effect Initialized wisp effect whose selected drawing buffer is available for writing.
-/// \returns Address of the effect's display list, or zero when its animation has finished.
+/// \returns Borrowed effect display list, or null when its animation has finished.
 ///
 /// \note Requires the effect texture bank and an active display-list cursor with sufficient capacity.
 /// \note Original decompilation identifier: \c func_800177B8 (0x800177B8).
-s32 wispEffectPrepareDraw(u8 *effect) {
+Gfx *wispEffectPrepareDraw(u8 *effect) {
     WispState *state;
 
     state = ((RuntimeObjectPrefix *)effect)->state.pointer;
@@ -196,7 +198,7 @@ s32 wispEffectPrepareDraw(u8 *effect) {
         return 0;
     }
     gSPSegment(gRenderDisplayListCursor++, 6, osVirtualToPhysical(state->lists[gGraphicsFramebufferIndex]));
-    return (s32)((RuntimeObjectPrefix *)effect)->displayList;
+    return ((RuntimeObjectPrefix *)effect)->displayList;
 }
 
 /// Initialize a wisp effect's appearance and animation state.
@@ -491,10 +493,10 @@ Gfx *ribbonEffectCreateDisplayList(s32 count) {
 }
 
 /// Provide a no-operation hook for a ribbon effect.
-/// \param unused Unused hook argument.
+/// \param unused Unused object argument retained by the lifecycle callback interface.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800180F4 (0x800180F4).
-void ribbonEffectNoOp(s32 unused) {
+void ribbonEffectNoOp(u8 *unused) {
 }
 
 /// Borrowed controller link owned by a ribbon hierarchy anchor.
@@ -508,7 +510,7 @@ typedef char RibbonAnchorStateSizeCheck[(sizeof(RibbonAnchorState) == 4) ? 1 : -
 /// \param anchor Ribbon effect anchor to initialize; must not already own state.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800180FC (0x800180FC).
-void ribbonEffectAnchorInitialize(void *anchor) {
+void ribbonEffectAnchorInitialize(u8 *anchor) {
     RibbonAnchorState *anchorState;
 
     anchorState = heapAllocLocal(&gGameHeap, sizeof(RibbonAnchorState), 0x2D1);
@@ -644,13 +646,13 @@ void ribbonEffectSegmentUpdate(u8 *segment) {
 
 /// Prepare a ribbon effect for drawing with its current animated appearance.
 /// \param controller Ribbon effect controller to draw.
-/// \returns Address of the ribbon's display list.
+/// \returns Borrowed display list for the effect.
 ///
 /// \note Requires initialized effect resources, valid active matrix buffers where used, and an active
 /// display-list cursor with sufficient capacity. Drawing resources remain owned by the effect and must stay
 /// live until rendering finishes. The effect texture bank must be loaded.
 /// \note Original decompilation identifier: \c func_80018474 (0x80018474).
-s32 ribbonEffectControllerPrepareDraw(u8 *controller) {
+Gfx *ribbonEffectControllerPrepareDraw(u8 *controller) {
     RibbonControllerState *state;
     Gfx *g;
     s32 idx;
@@ -661,7 +663,7 @@ s32 ribbonEffectControllerPrepareDraw(u8 *controller) {
     idx = (((RuntimeObjectPrefix *)controller)->root.object->flags & 0x8000) ? 1 : 0;
     g->words.w1 = (u32)osVirtualToPhysical(((RuntimeObjectPrefix *)controller)->root.object->matrixBuffers[idx]);
     textureLoadForDraw(&gRenderDisplayListCursor, 5, state->animation.value);
-    return (s32)((RuntimeObjectPrefix *)controller)->displayList;
+    return ((RuntimeObjectPrefix *)controller)->displayList;
 }
 
 Gfx *ribbonEffectCreateDisplayList(s32);
@@ -1060,7 +1062,7 @@ void _bzero(void *, s32); /* extern */
 /// \param emitter Effect emitter to initialize; must not already own state.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001968C (0x8001968C).
-void effectEmitterInitialize(void *emitter) {
+void effectEmitterInitialize(u8 *emitter) {
     u8 *emitterState;
     u8 *allocation;
 
@@ -1069,7 +1071,6 @@ void effectEmitterInitialize(void *emitter) {
     _bzero((void *)allocation, sizeof(EffectEmitterState));
     ((RuntimeObjectPrefix *)emitter)->state.bytes = emitterState;
 }
-
 
 /// Update an effect emitter's target-relative position, emissions, and lifetime.
 /// \param emitter Initialized effect emitter to update.
@@ -1118,7 +1119,7 @@ void effectEmitterUpdate(u8 *emitter) {
 /// \param renderer Cluster renderer to initialize; must not already own state.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80019834 (0x80019834).
-void particleClusterRendererInitialize(void *renderer) {
+void particleClusterRendererInitialize(u8 *renderer) {
     ValueTrack *track;
     ValueTrack *allocation;
 
@@ -1157,13 +1158,13 @@ void particleClusterRendererUpdate(u8 *renderer) {
 
 /// Prepare a particle cluster renderer for drawing.
 /// \param renderer Cluster renderer to draw.
-/// \returns Address of the cluster's display list.
+/// \returns Borrowed display list for the effect.
 ///
 /// \note Requires initialized effect resources, valid active matrix buffers where used, and an active
 /// display-list cursor with sufficient capacity. Drawing resources remain owned by the effect and must stay
 /// live until rendering finishes. The effect texture bank must be loaded.
 /// \note Original decompilation identifier: \c func_80019900 (0x80019900).
-s32 particleClusterRendererPrepareDraw(u8 *renderer) {
+Gfx *particleClusterRendererPrepareDraw(u8 *renderer) {
     ValueTrack *track;
     Gfx *g;
     s32 idx;
@@ -1174,7 +1175,7 @@ s32 particleClusterRendererPrepareDraw(u8 *renderer) {
     idx = (((RuntimeObjectPrefix *)renderer)->root.object->flags & 0x8000) ? 1 : 0;
     g->words.w1 = (u32)osVirtualToPhysical(((RuntimeObjectPrefix *)renderer)->root.object->matrixBuffers[idx]);
     textureLoadForDraw(&gRenderDisplayListCursor, 5, track->value);
-    return (s32)((RuntimeObjectPrefix *)renderer)->displayList;
+    return ((RuntimeObjectPrefix *)renderer)->displayList;
 }
 
 /// Animate the orientation of a particle cluster element.
@@ -1326,7 +1327,7 @@ u8 *fallingParticleCreate(s32 kind, s32 motionStyle, f32 *position, f32 *velocit
 /// \param particle Particle object to initialize; must not already own state.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80019DA0 (0x80019DA0).
-void fallingParticleInitialize(void *particle) {
+void fallingParticleInitialize(u8 *particle) {
     u8 *sp1C;
     u8 *allocation;
 
@@ -1440,7 +1441,7 @@ typedef char ConvergingTargetOffsetCheck[(((u32) & ((ConvergingParticleState *)0
 /// \param effect Effect object to initialize; must not already own state.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001A228 (0x8001A228).
-void convergingParticleEffectInitialize(void *effect) {
+void convergingParticleEffectInitialize(u8 *effect) {
     u8 *sp1C;
     u8 *allocation;
 
@@ -1524,13 +1525,13 @@ void convergingParticleEffectUpdate(u8 *effect) {
 
 /// Prepare a converging particle effect for rendering.
 /// \param effect Effect object to render.
-/// \returns Address of the effect's display list.
+/// \returns Borrowed display list for the effect.
 ///
 /// \note Requires initialized effect resources, valid active matrix buffers where used, and an active
 /// display-list cursor with sufficient capacity. Drawing resources remain owned by the effect and must stay
 /// live until rendering finishes. The effect texture bank must be loaded.
 /// \note Original decompilation identifier: \c func_8001A55C (0x8001A55C).
-s32 convergingParticleEffectPrepareDraw(u8 *effect) {
+Gfx *convergingParticleEffectPrepareDraw(u8 *effect) {
     ConvergingParticleState *state;
     Gfx *g;
     s32 idx;
@@ -1542,7 +1543,7 @@ s32 convergingParticleEffectPrepareDraw(u8 *effect) {
     g->words.w1 = (u32)osVirtualToPhysical(((RuntimeObjectPrefix *)effect)->matrixBuffers[idx]);
     textureLoadForDraw(&gRenderDisplayListCursor, 5, state->textureAnimation.value);
     gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0xFF, 0xFF, 0x90, (u8)state->alphaAnimation.value);
-    return (s32)state->displayList;
+    return state->displayList;
 }
 
 /// Object template for converging particle effects.
@@ -1665,7 +1666,7 @@ typedef char FlickeringLifetimeOffsetCheck[(((u32) & ((FlickeringEffectState *)0
 /// \param effect Effect object to initialize; must not already own state.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001AB6C (0x8001AB6C).
-void flickeringEffectInitialize(void *effect) {
+void flickeringEffectInitialize(u8 *effect) {
     u8 *sp1C;
     u8 *allocation;
 
@@ -1732,13 +1733,13 @@ void flickeringEffectUpdate(u8 *effect) {
 
 /// Prepare a flickering effect for rendering.
 /// \param effect Effect object to render.
-/// \returns Address of the effect's display list.
+/// \returns Borrowed display list for the effect.
 ///
 /// \note Requires initialized effect resources, valid active matrix buffers where used, and an active
 /// display-list cursor with sufficient capacity. Drawing resources remain owned by the effect and must stay
 /// live until rendering finishes.
 /// \note Original decompilation identifier: \c func_8001AE30 (0x8001AE30).
-s32 flickeringEffectPrepareDraw(u8 *effect) {
+Gfx *flickeringEffectPrepareDraw(u8 *effect) {
     FlickeringEffectState *state;
     Gfx *g;
     s32 idx;
@@ -1749,7 +1750,7 @@ s32 flickeringEffectPrepareDraw(u8 *effect) {
     idx = (((RuntimeObjectPrefix *)effect)->flags & 0x8000) ? 1 : 0;
     g->words.w1 = (u32)osVirtualToPhysical(((RuntimeObjectPrefix *)effect)->matrixBuffers[idx]);
     gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0x80, 0xFF, 0xFF, 0xFF);
-    return (s32)state->displayList;
+    return state->displayList;
 }
 
 /// Object template for flickering particle effects.
@@ -1844,7 +1845,7 @@ typedef char RadialLifetimeOffsetCheck[(((u32) & ((AnimatedRadialState *)0)->dur
 /// \param effect Effect object to initialize; must not already own state.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001B3A0 (0x8001B3A0).
-void animatedRadialEffectInitialize(void *effect) {
+void animatedRadialEffectInitialize(u8 *effect) {
     u8 *sp1C;
     u8 *allocation;
 
@@ -1901,13 +1902,13 @@ void animatedRadialEffectUpdate(u8 *effect) {
 
 /// Prepare an animated radial effect for rendering.
 /// \param effect Effect object to render.
-/// \returns Address of the effect's display list.
+/// \returns Borrowed display list for the effect.
 ///
 /// \note Requires initialized effect resources, valid active matrix buffers where used, and an active
 /// display-list cursor with sufficient capacity. Drawing resources remain owned by the effect and must stay
 /// live until rendering finishes. The effect texture bank must be loaded.
 /// \note Original decompilation identifier: \c func_8001B550 (0x8001B550).
-s32 animatedRadialEffectPrepareDraw(u8 *effect) {
+Gfx *animatedRadialEffectPrepareDraw(u8 *effect) {
     AnimatedRadialState *state;
     Gfx *g;
     s32 idx;
@@ -1919,7 +1920,7 @@ s32 animatedRadialEffectPrepareDraw(u8 *effect) {
     g->words.w1 = (u32)osVirtualToPhysical(((RuntimeObjectPrefix *)effect)->matrixBuffers[idx]);
     textureLoadForDraw(&gRenderDisplayListCursor, 5, state->frameAnimation.value);
     gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0xFF, 0xFF, 0x90, (u8)state->alphaAnimation.value);
-    return (s32)state->displayList;
+    return state->displayList;
 }
 
 /// Integer texture-frame animation used by animated radial effects.
@@ -2036,7 +2037,7 @@ u8 *expandingOrangeEffectCreate(s32 targetHandle, f32 lifetime) {
 /// \param effect Effect object to initialize; must not already own state.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001BA6C (0x8001BA6C).
-void expandingOrangeEffectInitialize(void *effect) {
+void expandingOrangeEffectInitialize(u8 *effect) {
     u8 *sp1C;
     u8 *allocation;
 
@@ -2083,13 +2084,13 @@ void expandingOrangeEffectUpdate(u8 *effect) {
 
 /// Prepare an expanding orange effect for drawing with its current fading appearance.
 /// \param effect Effect object to draw.
-/// \returns Address of the effect's display list.
+/// \returns Borrowed display list for the effect.
 ///
 /// \note Requires initialized effect resources, valid active matrix buffers where used, and an active
 /// display-list cursor with sufficient capacity. Drawing resources remain owned by the effect and must stay
 /// live until rendering finishes. The effect texture bank must be loaded.
 /// \note Original decompilation identifier: \c func_8001BBF0 (0x8001BBF0).
-s32 expandingOrangeEffectPrepareDraw(u8 *effect) {
+Gfx *expandingOrangeEffectPrepareDraw(u8 *effect) {
     ExpandingOrangeState *state;
     u8 alpha;
 
@@ -2097,7 +2098,7 @@ s32 expandingOrangeEffectPrepareDraw(u8 *effect) {
     alpha = mathMapRangeClamped(0.5f, 255.0f, 3.5f, 0.0f, state->scale);
     textureLoadForDraw(&gRenderDisplayListCursor, 5, state->animation.value);
     gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0xFF, 0x96, 0, alpha);
-    return (s32)((RuntimeObjectPrefix *)effect)->displayList;
+    return ((RuntimeObjectPrefix *)effect)->displayList;
 }
 
 /// Target and independent lifetime/emission clocks for orange pulses.
@@ -2115,7 +2116,7 @@ typedef char OrangePulseCooldownOffsetCheck[(((u32) & ((OrangePulseEmitterState 
 /// \param emitter Emitter object to initialize; must not already own state.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001BD04 (0x8001BD04).
-void orangePulseEmitterInitialize(void *emitter) {
+void orangePulseEmitterInitialize(u8 *emitter) {
     u8 *sp1C;
     u8 *allocation;
 

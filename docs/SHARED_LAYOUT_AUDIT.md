@@ -1111,3 +1111,22 @@ has a typed display-list declaration with its original identifier/address note.
 The separate appearance scale API still returns a three-component scale view
 of the actor-owned part; its documentation and zero-offset check reflect that
 limited view rather than claiming a complete typed object return.
+
+## Particle-effect callback signature agreement
+
+All seven particle drawing hooks now return `Gfx *`: wisp, ribbon controller,
+cluster renderer, converging particles, flickering particles, animated radial
+effects and expanding orange effects. Their existing returned values are the
+object's display list or effect-owned drawing storage; the wisp also returns
+null after animation completion. Ghidra at 0x800177B8 confirms that conditional
+null/display-list result. Returned resources remain borrowed and valid through
+render completion under the existing drawing preconditions.
+
+Nine particle/ribbon initializers now accept `u8 *` object arguments instead
+of `void *`, and the inactive ribbon lifecycle hook uses the same object pointer
+rather than an unused integer. This agrees with registered lifecycle callbacks
+without changing argument width, resource allocation or side effects. Complete
+private effect records remain local; no unrelated effect state was merged.
+The obsolete harvested-draft note is replaced by a Doxygen file-purpose summary.
+Both the drawing-result and lifecycle-parameter sweeps passed all 483 original
+objects before documentation/formatting and the final clean verification.
