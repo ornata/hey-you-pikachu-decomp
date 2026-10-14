@@ -223,7 +223,7 @@
     {
       "kind": "signature-mismatch",
       "file": "src/game/object_hierarchy.c",
-      "line": 79,
+      "line": 78,
       "name": "searchTreeFind",
       "shape": {
         "expected": [

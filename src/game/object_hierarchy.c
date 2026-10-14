@@ -66,8 +66,7 @@
 #include "spatial_math.h"
 #include "vector_operations.h"
 void objectDrawHierarchyForCurrentGroup(u8 *);
-typedef struct RomByteReader RomByteReader;
-u8 romByteReaderRead(RomByteReader *reader, s32 address);
+u8 romByteReaderRead(RomByteReaderPrefix *reader, s32 address);
 void _bzero(void *, u32);
 /// Find a tree node using a borrowed object-shaped search key.
 /// \param tree Initialized object tree whose root may change during lookup.
@@ -130,16 +129,6 @@ void objectRegisterHierarchyInSearchTree(u8 *);
 
 
 
-/// Buffered cartridge-reader storage with room to align the DMA buffer internally.
-struct RomByteReader {
-    s32 windowStart; ///< Cartridge address of the cached window, or the initial invalid sentinel.
-    u8 storage[0x410]; ///< Owned storage containing the aligned 0x400-byte DMA window.
-    u8 *alignedBuffer; ///< Borrowed aligned view into this reader's storage.
-    OSMesgQueue queue; ///< Completion queue owned by the reader; reads must not overlap.
-    OSMesg completion; ///< Single message slot backing the completion queue.
-    u8 unknown434[4]; ///< Unresolved trailing storage.
-};
-
 /// Object-manager allocation containing the hierarchy prefix and its tree entry.
 /// The entry pointer initially selects the embedded node at offset 0x5C.
 typedef struct ManagedObject {
@@ -148,10 +137,6 @@ typedef struct ManagedObject {
     TreeNode node;   ///< Embedded caller-owned node, initialized when registered.
 } ManagedObject;
 
-typedef char RomByteReaderSizeCheck[(sizeof(RomByteReader) == 0x438) ? 1 : -1];
-typedef char RomReaderQueueOffsetCheck[((u32)&((RomByteReader *)0)->queue == 0x418) ? 1 : -1];
-typedef char RomReaderCompletionOffsetCheck[((u32)&((RomByteReader *)0)->completion == 0x430) ? 1 : -1];
-typedef char RomReaderBufferOffsetCheck[((u32)&((RomByteReader *)0)->alignedBuffer == 0x414) ? 1 : -1];
 typedef char ManagedObjectSizeCheck[(sizeof(ManagedObject) == 0x68) ? 1 : -1];
 typedef char ManagedObjectEntryOffsetCheck[((u32)&((ManagedObject *)0)->entry == 0x58) ? 1 : -1];
 typedef char ManagedObjectNodeOffsetCheck[((u32)&((ManagedObject *)0)->node == 0x5C) ? 1 : -1];
@@ -168,14 +153,15 @@ u8 *romTableResolveEntry(u8 *base, s32 idx) {
     u8 b1;
 
     romByteReaderInitialize(reader);
-    romByteReaderRead((RomByteReader *)reader, (s32)base);
-    romByteReaderRead((RomByteReader *)reader, (s32)(base + 1));
-    romByteReaderRead((RomByteReader *)reader, (s32)(base + 2));
-    romByteReaderRead((RomByteReader *)reader, (s32)(base + 3));
-    b1 = romByteReaderRead((RomByteReader *)reader, (s32)&((u8(*)[8])base)[idx][6]);
-    b2 = romByteReaderRead((RomByteReader *)reader, (s32)&((u8(*)[8])base)[idx][5]);
-    b3 = romByteReaderRead((RomByteReader *)reader, (s32)&((u8(*)[8])base)[idx][4]);
-    base += romByteReaderRead((RomByteReader *)reader, (s32)&((u8(*)[8])base)[idx][7]) | ((u32)b3 << 24) | (b2 << 16) | (b1 << 8);
+    romByteReaderRead((RomByteReaderPrefix *)reader, (s32)base);
+    romByteReaderRead((RomByteReaderPrefix *)reader, (s32)(base + 1));
+    romByteReaderRead((RomByteReaderPrefix *)reader, (s32)(base + 2));
+    romByteReaderRead((RomByteReaderPrefix *)reader, (s32)(base + 3));
+    b1 = romByteReaderRead((RomByteReaderPrefix *)reader, (s32) & ((u8(*)[8])base)[idx][6]);
+    b2 = romByteReaderRead((RomByteReaderPrefix *)reader, (s32) & ((u8(*)[8])base)[idx][5]);
+    b3 = romByteReaderRead((RomByteReaderPrefix *)reader, (s32) & ((u8(*)[8])base)[idx][4]);
+    base += romByteReaderRead((RomByteReaderPrefix *)reader, (s32) & ((u8(*)[8])base)[idx][7]) | ((u32)b3 << 24) |
+            (b2 << 16) | (b1 << 8);
     return base;
 }
 
@@ -185,9 +171,9 @@ u8 *romTableResolveEntry(u8 *base, s32 idx) {
 /// \note Portability: Reader addresses are carried as 32-bit integers and the buffered cartridge path uses the N64 DMA interface.
 /// \note Original decompilation identifier: \c func_800076E0 (0x800076E0).
 s32 romByteReaderInitialize(u8 *reader) {
-    ((RomByteReader *)reader)->windowStart = 0x80000000;
-    ((RomByteReader *)reader)->alignedBuffer = (u8 *)(((u32)(reader + 0x13) >> 4) * 0x10);
-    osCreateMesgQueue(&((RomByteReader *)reader)->queue, &((RomByteReader *)reader)->completion, 1);
+    ((RomByteReaderPrefix *)reader)->windowStart = 0x80000000;
+    ((RomByteReaderPrefix *)reader)->alignedBuffer = (u8 *)(((u32)(reader + 0x13) >> 4) * 0x10);
+    osCreateMesgQueue(&((RomByteReaderPrefix *)reader)->queue, &((RomByteReaderPrefix *)reader)->completion, 1);
     return 0;
 }
 
@@ -197,7 +183,7 @@ s32 romByteReaderInitialize(u8 *reader) {
 /// \returns The byte at the requested address.
 ///
 /// \note Original decompilation identifier: \c func_80007728 (0x80007728).
-u8 romByteReaderRead(RomByteReader *reader, s32 address) {
+u8 romByteReaderRead(RomByteReaderPrefix *reader, s32 address) {
     OSIoMesg io;
     OSMesg msg;
 
@@ -351,7 +337,8 @@ u8 midiReaderReadByte(MidiReader *reader) {
         reader->position = (u32)(position + 1);
         return value;
     }
-    return romByteReaderRead((RomByteReader *)((u8 *)reader + 0x10), (reader->position = (u32)(position + 1)) - 1);
+    return romByteReaderRead((RomByteReaderPrefix *)((u8 *)reader + 0x10),
+                             (reader->position = (u32)(position + 1)) - 1);
 }
 
 /// Read and consume a big-endian unsigned 16-bit MIDI stream value.

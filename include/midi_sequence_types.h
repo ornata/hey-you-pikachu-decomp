@@ -5,6 +5,7 @@
 #define MIDI_SEQUENCE_TYPES_H
 
 #include <ultra64.h>
+#include "midi_reader_types.h"
 
 /// Saved MIDI reader position and running status for a sequence loop.
 typedef struct SequenceMark {
@@ -13,10 +14,10 @@ typedef struct SequenceMark {
     u8 unknown5[3]; ///< Unresolved trailing storage; not written by mark save/restore.
 } SequenceMark;
 /// MIDI reader, tempo, held notes and pending playback releases.
-/// The reader bytes remain opaque to playback consumers.
+/// Reader storage is shared with the MIDI stream and cartridge-cache interfaces.
 typedef struct SequenceState {
-    u8 reader[0x444];
-    s16 division;
+    MidiReader reader; ///< Retained cursor and buffered cartridge storage.
+    s16 division;      ///< Tick-based timing division returned by MIDI initialization.
     s16 unknown446;
     s32 tempo;
     s32 unknown44C;
@@ -56,6 +57,7 @@ typedef char SequenceStoppedOffsetCheck[(SEQUENCE_OFFSET(SequenceState, stopped)
 typedef char SequenceChannelsOffsetCheck[(SEQUENCE_OFFSET(SequenceState, channelMask) == 0x5A8) ? 1 : -1];
 typedef char SequenceResetOffsetCheck[(SEQUENCE_OFFSET(SequenceControlState, resetPending) == 0x5B0) ? 1 : -1];
 typedef char SequenceStopOffsetCheck[(SEQUENCE_OFFSET(SequenceControlState, stopDelay) == 0x5B8) ? 1 : -1];
+typedef char SequenceDivisionOffsetCheck[(SEQUENCE_OFFSET(SequenceState, division) == 0x444) ? 1 : -1];
 #undef SEQUENCE_OFFSET
 
 #endif

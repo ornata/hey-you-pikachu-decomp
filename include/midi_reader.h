@@ -1,22 +1,11 @@
 /// \file
-/// Defines the MIDI stream cursor prefix and saved-position interface.
+/// Declares MIDI stream reading and saved-position interfaces.
 
 #ifndef MIDI_READER_H
 #define MIDI_READER_H
 
 #include "midi_sequence_types.h"
-
-/// MIDI cursor prefix preceding reader-owned buffered cartridge storage.
-/// This view is not the full reader allocation and must not be used to allocate a reader.
-typedef struct MidiReader {
-    u32 start;        ///< Address of the sequence header in its backing storage.
-    u32 position;     ///< Address of the next unread sequence byte.
-    u32 length;       ///< Extent from the sequence start through the end of its track.
-    u8 runningStatus; ///< Last channel status retained for running-status events.
-} MidiReader;
-
-typedef char MidiReaderPrefixSizeCheck[(sizeof(MidiReader) == 0x10) ? 1 : -1];
-typedef char MidiReaderStatusOffsetCheck[((u32) & ((MidiReader *)0)->runningStatus == 0xC) ? 1 : -1];
+#include "midi_reader_types.h"
 
 /// Open a single-track format-zero MIDI sequence using tick-based timing.
 /// \param reader Caller-owned, word-aligned storage of at least 0x448 bytes, retained while the sequence is read.

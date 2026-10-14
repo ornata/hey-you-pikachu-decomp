@@ -578,3 +578,24 @@ the five-byte extent. The established integer tag uses its existing enum; tag
 two remains an unresolved integer-like form and is not renamed from guesswork.
 Typed producer/header, caller and packed-offset changes each preserve the strict
 baseline without adding a matching exception or changing conversion behavior.
+
+## Shared MIDI and cartridge-reader storage
+
+`midi_reader_types.h` defines the active 0x434-byte cartridge-reader prefix and
+0x444-byte MIDI cursor/cache view. The cached window, aligned buffer, completion
+queue and completion slot are shared with the cartridge reader implementation.
+Ghidra at `0x800076E0` confirms buffer setup and queue initialization; the existing
+read path establishes the completion slot at prefix offset 0x430. Size and
+member checks cover those boundaries. Initialized storage must remain stable.
+
+`SequenceState` embeds `MidiReader`, replacing an opaque 0x444-byte array. Its
+timing division remains at 0x444, now checked explicitly. The old private reader's
+trailing four bytes were part of the standalone 0x438-byte stack buffer, beyond
+the active fields; in sequence storage, that location holds division and its
+neighboring unresolved bytes. The active prefix avoids claiming those bytes as
+reader state. Existing standalone 0x438/0x448 storage contracts and stack-buffer
+sizes are unchanged; the prefix is not a new allocation-size contract.
+
+The stream prefix's bytes 0xD through 0xF remain unresolved rather than inferred
+as padding. The shared type owns no sequence data; source storage stays borrowed.
+All source/header mutations preserve the strict baseline objects.
