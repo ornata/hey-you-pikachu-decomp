@@ -4,6 +4,8 @@
 #ifndef M2C_MACROS_H
 #define M2C_MACROS_H
 
+#include <PR/ultratypes.h>
+
 /* Unknown types */
 typedef s32 M2C_UNK;
 typedef s8  M2C_UNK8;

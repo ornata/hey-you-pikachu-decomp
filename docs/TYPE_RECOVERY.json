@@ -158,9 +158,7 @@
         "vector_metrics.h",
         "wisp_effect.h"
       ],
-      "matching_exceptions": {
-        "appearance command calls": "Appearance scale now uses the established float parameter and both appearance helpers return void. Their unused trailing command pointer is retained through local compatibility declarations to preserve the ROM calls."
-      },
+      "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "base + 1": [
@@ -3117,9 +3115,7 @@
         "text_window.h",
         "vector_operations.h"
       ],
-      "matching_exceptions": {
-        "scriptVmPushInteger calls": "A native command supplies an unused third actor argument; a void compatibility declaration retains the original argument setup."
-      },
+      "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "capacity - 1": [
@@ -3341,7 +3337,6 @@
         "terrainSampleVertexHeight / terrainSampleCellHeight": "Checked terrain-pointer member-offset reads preserve integer multiply operand ordering; direct members reverse operands.",
         "mazeInitialize": "Three retained words are cleared across adjacent BSS symbols; their gameplay purpose and any vector semantics remain unproven. Consolidating them changes defined symbol attributes; aliasing and adjacency remain target-specific constraints.",
         "areaUpdateNodeVisibility / mazeDestroyNodeHierarchy": "Child cursors retain byte stepping with a checked children member offset; their loop bounds retain the original target representation.",
-        "areaActivateNode": "The void hierarchy-flag clearing call retains an unused trailing node pointer from the ROM call.",
         "terrainCreateContactEffect": "Canonical randomBelow returns u32. Retain explicit s32 conversions of bounded samples in contact-effect count expressions to preserve signed comparisons and strict object bytes; removing these conversions changes the object even when the linked ROM matches.",
         "mazeInitializeRoot": "Root geometry now uses MazeNode. Cell dimensions use shared Vec3f with a checked scene-prefix component offset; direct array-field accesses fail the ROM gate. Next evidence: isolate initialization floating multiply/load ordering before removing the scalar view.",
         "mazeClassifyNode": "SceneOccupancyView uses the shared sampler callback type and checked component/callback offsets. Replacing it with direct SceneConfigurationPrefix accesses changes target instructions and fails the ROM gate. Next evidence: isolate callback argument/load scheduling and loop reload behavior; the view must not allocate or copy scene configurations.",
@@ -3589,8 +3584,7 @@
       ],
       "matching_exceptions": {
         "itemUpdateGroundVelocity": "Two velocity reads use checked member offsets to retain the original IDO preload scheduling and floating add operands. Stores and all other recovered fields use members.",
-        "itemUpdateRollingRotation": "One radius read uses a checked member offset to retain floating multiply operand order; all other recovered fields use direct members.",
-        "itemUpdatePlayerHeld": "The void camera transformation call retains two unused trailing pointers supplied by the ROM caller."
+        "itemUpdateRollingRotation": "One radius read uses a checked member offset to retain floating multiply operand order; all other recovered fields use direct members."
       },
       "locations": {
         "raw_offset_candidates": {
@@ -3917,7 +3911,6 @@
         "script_vm_stack.h"
       ],
       "matching_exceptions": {
-        "scriptVmReadIntegerOperand": "scriptValueGetInteger returns s32. Operand decoding retains an unused second VM context argument through an unprototyped compatibility declaration.",
         "actorRunScriptVm indexed read": "Opcode 33 retains a five-byte array view when passing an indexed value to scriptVmPushValue. Replacing that view with &elements[elementIndex] on ScriptValue * changes allocated instructions and fails ROM matching; opcode 34 typed indexed writes independently preserve strict objects. Isolate IDO address-expression scheduling before consolidating the read view."
       },
       "locations": {

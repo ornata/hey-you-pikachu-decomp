@@ -1426,3 +1426,30 @@ A final header-summary inventory found Doxygen file-purpose comments in all
 293 non-SDK headers. This is documentation coverage, not evidence that unknown
 fields have been assigned meanings; the opaque-layout ledger remains the source
 for unresolved layout facts and required next evidence.
+
+## Completion audit
+
+This continuation follows the original acceptance rule: supported layouts and
+contracts are recovered, while unresolved semantics and necessary matching
+representations remain explicit with evidence and a next investigation. It does
+not require inventing meanings for unused bytes or publishing portable prototypes
+that contradict the target's matching call representation.
+
+| Requirement | Evidence |
+| --- | --- |
+| Reuse shared records and recover cross-unit interfaces | Focused headers and the subsystem evidence above; the written-C audit covers 2,302 definitions and 3,655 declarations. Every retained finding has a current review. |
+| Establish ownership, callback inputs/results and lifetimes | Object/actor, item, player, scene, MIDI/sequence, audio, menu and effect contracts above; linked tables and source dispatchers identify installed targets and their bounds. |
+| Preserve partial layouts and unresolved cases explicitly | All 54 offset-named opaque declarations across 28 files have current individual facts, reasons, missing evidence and matching constraints in OPAQUE_LAYOUTS.json. The 29 lexical interface findings are reviewed target-ABI representations, not undiscovered signatures. |
+| Preserve the recovery inventory | TYPE_RECOVERY.json contains current locations and matching notes; TYPE_RECOVERY.md reports the historical before/after counts. No M2C_FIELD, M2C_UNK or temp_* code tokens remain. Three address-named globals remain with seven references and recorded evidence limits. Raw arithmetic remains a review-candidate inventory. |
+| LLVM-style header purpose and usable dependencies | All 293 non-SDK headers have Doxygen file-purpose summaries and compile independently under the pinned target compiler. The audit corrected m2c_macros.h's missing integer-type dependency. |
+| Keep verification strict | Object comparison, header-dependency scanning, publication checks and frozen-name checking are unchanged from main. Makefile changes add checks without changing compiler flags or relaxing relocation-addend comparison. |
+| Preserve ROM and original objects | Clean default build, make verify against the immutable saved build, and direct ROM byte comparison are required for acceptance; all 483 objects are compared. |
+| Leave integration separate | Work remains on codex/shared-layout-contracts; main is not rewritten by this continuation. |
+
+The final audit removed six stale matching notes for already-canonical camera,
+object-flag, appearance, item-transform and VM calls. Current source and
+INTERFACE_CONTRACTS.json establish the remaining exception set. Future removal
+of an exception requires new matching evidence; refreshing the baseline or
+weakening the comparator is not an accepted resolution. Full semantic recovery
+of unobserved storage and decompilation of remaining assembly are separate
+research work, not claims made by the recovered partial views.

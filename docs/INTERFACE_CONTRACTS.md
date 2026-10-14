@@ -48,6 +48,29 @@ table now uses a common one-parameter callback contract. The pickup wrapper
 explicitly returns the existing item-pickup result, as confirmed by the ROM
 return register and dispatcher; no handler requires a controller argument.
 
+## Shared layout and callback continuation
+
+The shared-layout continuation is recorded in
+[SHARED_LAYOUT_AUDIT.md](SHARED_LAYOUT_AUDIT.md). It covers actor/object ownership,
+embedded actor VM and action sequencer state, complete item-state allocation,
+player/control state, scene resources, direction animation, MIDI and sequence
+playback, audio worker/cache lifetimes, and registered callback contracts.
+
+The retained native-command table has 278 actor-only handlers. Object-kind
+lifecycle, drawing, child-drawing and response slots agree across the audited
+180 kinds (537 populated slots). Item kind/mode tables have 189 populated slots;
+runtime and scene entry tables have 49. These linked-table checks supplement the
+lexical declaration audit. Remaining action, player-mode, controller, menu,
+effect and presentation callback evidence is recorded in the shared-layout audit.
+
+The 54 offset-named opaque members in 28 files retain individual reviews in
+[OPAQUE_LAYOUTS.json](OPAQUE_LAYOUTS.json), with known facts, missing evidence and
+matching constraints. Partial views and unused storage are deliberately explicit;
+this does not assert that their unknown semantics have been recovered. Likewise,
+reviewed target-ABI exceptions do not become portable C contracts merely because
+the linked ROM matches. SDK and assembly-only functions remain outside the written
+C interface audit.
+
 ## Verification and future changes
 
 Run `make check-interfaces` for a concise audit or
