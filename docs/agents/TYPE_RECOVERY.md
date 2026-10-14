@@ -47,8 +47,8 @@ location, function and source context.
 - `GLOBAL_RECOVERY_REFERENCE_AUDIT.json` records the bounded relocation investigation
   of the three unresolved address-named globals. Its method and exclusions are
   explicit; absence of a named relocation does not prove absence of all consumers.
-- [Shared layout evidence](SHARED_LAYOUT_AUDIT.md) records storage and ownership facts.
-- [Interface contracts](INTERFACE_CONTRACTS.md) describes the reviewed ABI exceptions.
+- [Shared layout evidence](../SHARED_LAYOUT_AUDIT.md) records storage and ownership facts.
+- [Interface contracts](../INTERFACE_CONTRACTS.md) describes the reviewed ABI exceptions.
 
 Original names remain in declaration comments. Do not invent semantic names to
 lower counts, merge interior symbols that change relocation addends, or replace

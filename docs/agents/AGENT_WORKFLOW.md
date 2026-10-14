@@ -1,7 +1,7 @@
 # Workflow
 
 Game functions in this tree match the ROM. SDK implementations are generated locally
-from the supplied ROM and must never be committed. See `docs/LOCAL_SDK.md`.
+from the supplied ROM and must never be committed. See [Local SDK inputs](../LOCAL_SDK.md).
 Remaining game assembly fallbacks are listed by `make asm-fallbacks`.
 
 - Inspect `git status --short` before editing. Keep one source-unit mutation active per
@@ -15,13 +15,13 @@ Remaining game assembly fallbacks are listed by `make asm-fallbacks`.
   say what to fix in the port. `make check-names` (optionally `BASE=<ref>`, `STRICT=1`) runs it.
 - Format with `.clang-format`. Acceptance is a full object comparison and
   `make clean && make -j8` ending in `OK: ROM matches`.
-- Run `make check-interfaces` after interface changes. See `INTERFACE_CONTRACTS.md`
+- Run `make check-interfaces` after interface changes. See [Interface contracts](../INTERFACE_CONTRACTS.md)
   for scope and the reviewed ABI exceptions; do not refresh exceptions without
   reviewing their source and matching evidence.
 - After accepting a change: `uv run python tools/mkctx.py` if headers changed,
   `python3 tools/progress.py`, `bash tools/check_clean.sh`, `git diff --check`, and
   `python3 -m pytest tests`.
-- Use the Ghidra MCP (see AGENTS.md). Optional external helpers include m2c,
+- Use the Ghidra MCP (see ../../AGENTS.md). Optional external helpers include m2c,
   asm-differ and decomp-permuter; obtain them separately when needed.
 - `src/nonmatching/` holds the ROM's own assembly for functions with no matching C yet;
   SDK assembly belongs only in ignored `asm/`, never `src/nonmatching/`.
@@ -48,7 +48,7 @@ cmp rom/baserom.us.z64 build/pikachu.z64
 ```
 
 `make check-sequence-bank` validates the selected retail cue bank against the
-registered event limit and storage; see `SHARED_LAYOUT_AUDIT.md` for scope.
+registered event limit and storage; see [Shared layout evidence](../SHARED_LAYOUT_AUDIT.md) for scope.
 
 `make verify` checks the ROM SHA1, frozen names, sequence-bank storage, publication hygiene, Python tests,
 object comparison, and whitespace. `BASE` selects the name-checker Git reference;
@@ -77,7 +77,7 @@ as errors or invent types/names to make the inventory reach zero.
 
 Use `python3 tools/layout_contracts.py --json` to inventory offset-named opaque
 record members (both unknown and unk spellings) separately from source-quality token counts. See
-`SHARED_LAYOUT_AUDIT.md` for the inventory's lexical scope and limitations.
+[Shared layout evidence](../SHARED_LAYOUT_AUDIT.md) for the inventory's lexical scope and limitations.
 
 `make check-layouts` requires a current review of every offset-named opaque
 record member in `docs/OPAQUE_LAYOUTS.json`. It runs under `make verify`. Review

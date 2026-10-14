@@ -11,7 +11,7 @@ while the server was down) can still use it through this helper:
     python3 tools/ghidra_mcp.py call decompile_function --json '{"binary_name": "...", "name": "..."}'
     python3 tools/ghidra_mcp.py stop             # only a server this helper started
 
-The launcher and project are machine-local (see TOOLS.md). Override with:
+The launcher and project are machine-local (see docs/agents/TOOLS.md). Override with:
     GHIDRA_MCP_URL        default http://127.0.0.1:8765/mcp
     GHIDRA_MCP_LAUNCHER   default ~/ghidra-projects/hey-you-pikachu/start-mcp.sh
     GHIDRA_MCP_LOG        default $TMPDIR/ghidra-mcp.log
@@ -137,7 +137,7 @@ def cmd_start(args):
         print('already up: %s' % URL)
         return 0
     if not os.path.exists(LAUNCHER):
-        print('launcher not found: %s\nSet GHIDRA_MCP_LAUNCHER, or ask the maintainer (see TOOLS.md).' % LAUNCHER,
+        print('launcher not found: %s\nSet GHIDRA_MCP_LAUNCHER, or ask the maintainer (see docs/agents/TOOLS.md).' % LAUNCHER,
               file=sys.stderr)
         return 2
     log = open(LOG, 'ab')

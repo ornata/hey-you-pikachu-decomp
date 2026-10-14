@@ -74,7 +74,7 @@ python3 tools/ghidra_mcp.py stop          # only a server this helper started
 | `list_xrefs`, `search_strings`, `search_code`, `gen_callgraph` | Find callers, data/string use, related code, and call neighborhoods. | Search and call graphs are discovery aids; indirect callers and memory effects may be missing. |
 
 Avoid changing prototypes, variable types, comments, or other shared Ghidra
-database state for ordinary matching work. Use [`tools/prepare_ghidra_symbols.py`](tools/prepare_ghidra_symbols.py)
+database state for ordinary matching work. Use [`tools/prepare_ghidra_symbols.py`](../../tools/prepare_ghidra_symbols.py)
 to prepare a separate analysis ELF when duplicate symbols obstruct import; never
 use that analysis copy as a build input. 
 

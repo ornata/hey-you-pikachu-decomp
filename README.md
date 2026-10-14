@@ -89,7 +89,7 @@ Run `make progress` for current game-source counts; generated SDK functions are 
 | 23 scene overlays, ROM 0xDCF60–0x4B4990 | all text split; 11 scenes fully matched, all spatial lookups matched; scene data retained as binary |
 | remaining assets | extracted binary; inventory research continues |
 
-Agents should start with [docs/AGENT_WORKFLOW.md](docs/AGENT_WORKFLOW.md) for tool selection,
+Agents should start with [docs/agents/AGENT_WORKFLOW.md](docs/agents/AGENT_WORKFLOW.md) for tool selection,
 bounded searches, verification, and interruption recovery.
 
 Every default build prints an assembly fallback summary. Run `make asm-fallbacks`
