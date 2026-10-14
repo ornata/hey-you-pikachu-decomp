@@ -1287,12 +1287,12 @@ void scriptVmSetPrimaryCameraView(s32 vm) {
     f32 position[3];
     f32 target[3];
 
-    target[2] = scriptVmPopFloat(vm);
-    target[1] = scriptVmPopFloat(vm);
-    target[0] = scriptVmPopFloat(vm);
-    position[2] = scriptVmPopFloat(vm);
-    position[1] = scriptVmPopFloat(vm);
-    position[0] = scriptVmPopFloat(vm);
+    target[2] = scriptVmPopFloat((ScriptVm *)(vm));
+    target[1] = scriptVmPopFloat((ScriptVm *)(vm));
+    target[0] = scriptVmPopFloat((ScriptVm *)(vm));
+    position[2] = scriptVmPopFloat((ScriptVm *)(vm));
+    position[1] = scriptVmPopFloat((ScriptVm *)(vm));
+    position[0] = scriptVmPopFloat((ScriptVm *)(vm));
     cameraSetEyeAndTarget(0, position, target);
 }
 

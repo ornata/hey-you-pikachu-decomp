@@ -97,7 +97,7 @@ void stringPrependBounded(u8 *destination, s32 capacity, u8 *prefix) {
 /// \returns One, yielding script execution.
 /// \note Original decompilation identifier: \c func_8011BEB0 (0x8011BEB0).
 s32 actorScriptYield(u8 *actor) {
-    scriptVmPushInteger(((RuntimeObjectPrefix *)actor)->state.actor->vmAddress, 0);
+    scriptVmPushInteger((ScriptVm *)(((RuntimeObjectPrefix *)actor)->state.actor->vmAddress), 0);
     return SCRIPT_COMMAND_YIELD;
 }
 
@@ -165,8 +165,8 @@ s32 actorScriptSetAttachmentMode(u8 *actor) {
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.bytes;
     sp18 = ((ActorScriptState *)sp1C)->vmAddress;
-    ((ActorScriptState *)sp1C)->attachmentMode = scriptVmPopInteger(sp18);
-    scriptVmPushInteger(sp18, 0);
+    ((ActorScriptState *)sp1C)->attachmentMode = scriptVmPopInteger((ScriptVm *)(sp18));
+    scriptVmPushInteger((ScriptVm *)(sp18), 0);
     return SCRIPT_COMMAND_CONTINUE;
 }
 
@@ -212,7 +212,7 @@ s32 actorScriptBuildSharedText(u8 *actor) {
             var_s0 -= 1;
         } while (var_s0 >= 0);
     }
-    scriptVmPushInteger(vmAddress, 0);
+    scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return SCRIPT_COMMAND_CONTINUE;
 }
 
@@ -235,7 +235,7 @@ s32 actorScriptBuildSharedTextAlternate(u8 *actor) {
             var_s0 -= 1;
         } while (var_s0 >= 0);
     }
-    scriptVmPushInteger(vmAddress, 0);
+    scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return SCRIPT_COMMAND_CONTINUE;
 }
 
@@ -244,7 +244,7 @@ s32 actorScriptBuildSharedTextAlternate(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011C150 (0x8011C150).
 s32 actorScriptPushZero(u8 *actor) {
-    scriptVmPushInteger(((RuntimeObjectPrefix *)actor)->state.actor->vmAddress, 0);
+    scriptVmPushInteger((ScriptVm *)(((RuntimeObjectPrefix *)actor)->state.actor->vmAddress), 0);
     return SCRIPT_COMMAND_CONTINUE;
 }
 
@@ -256,7 +256,7 @@ s32 actorScriptPushZero(u8 *actor) {
 s32 actorScriptPushRandomUnitFloat(u8 *actor) {
     u8 *vm = (u8 *)((ActorScriptObject *)actor)->scriptState->vmAddress;
 
-    scriptVmPushFloat((s32)vm, randomNext() * 2.3283064365386963e-10);
+    scriptVmPushFloat((ScriptVm *)((s32)vm), randomNext() * 2.3283064365386963e-10);
     return SCRIPT_COMMAND_CONTINUE;
 }
 
@@ -268,7 +268,7 @@ s32 actorScriptRandomBelow(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushInteger(sp1C, randomBelow(scriptVmPopInteger(sp1C)));
+    scriptVmPushInteger((ScriptVm *)(sp1C), randomBelow(scriptVmPopInteger((ScriptVm *)(sp1C))));
     return SCRIPT_COMMAND_CONTINUE;
 }
 
@@ -281,7 +281,7 @@ s32 actorScriptRandomBelowWithHistory(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushInteger(sp1C, randomBelowWithHistory(scriptVmPopInteger(sp1C)));
+    scriptVmPushInteger((ScriptVm *)(sp1C), randomBelowWithHistory(scriptVmPopInteger((ScriptVm *)(sp1C))));
     return SCRIPT_COMMAND_CONTINUE;
 }
 
@@ -293,7 +293,7 @@ s32 actorScriptPassThroughInteger(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushInteger(sp1C, scriptVmPopInteger(sp1C));
+    scriptVmPushInteger((ScriptVm *)(sp1C), scriptVmPopInteger((ScriptVm *)(sp1C)));
     return SCRIPT_COMMAND_CONTINUE;
 }
 
@@ -305,7 +305,7 @@ s32 actorScriptPassThroughInteger(u8 *actor) {
 s32 actorScriptPassThroughFloat(u8 *actor) {
     u8 *vm = (u8 *)((ActorScriptObject *)actor)->scriptState->vmAddress;
 
-    scriptVmPushFloat((s32)vm, scriptVmPopFloat((s32)vm));
+    scriptVmPushFloat((ScriptVm *)((s32)vm), scriptVmPopFloat((ScriptVm *)((s32)vm)));
     return SCRIPT_COMMAND_CONTINUE;
 }
 
@@ -318,7 +318,7 @@ s32 actorScriptResetTimer(u8 *actor) {
 
     vmBytes = (u8 *)((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->vmAddress;
     ((ScriptVm *)vmBytes)->elapsed = 0.0f;
-    scriptVmPushInteger((s32)vmBytes, 0);
+    scriptVmPushInteger((ScriptVm *)((s32)vmBytes), 0);
     return SCRIPT_COMMAND_CONTINUE;
 }
 
@@ -331,7 +331,7 @@ s32 actorScriptPushTimer(u8 *actor) {
     u8 *vmBytes;
 
     vmBytes = (u8 *)((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->vmAddress;
-    scriptVmPushFloat((s32)vmBytes, ((ScriptVm *)vmBytes)->elapsed);
+    scriptVmPushFloat((ScriptVm *)((s32)vmBytes), ((ScriptVm *)vmBytes)->elapsed);
     return SCRIPT_COMMAND_CONTINUE;
 }
 
@@ -356,7 +356,7 @@ s32 actorScriptEnqueueMessage(u8 *actor) {
     }
     messageBarEnqueue(((ScriptVm *)vmBytes)->messageStyle, ((ScriptVm *)vmBytes)->messageDuration,
                       (u8 *)&gActorScriptSharedTextBuffer);
-    scriptVmPushInteger((s32)vmBytes, 0);
+    scriptVmPushInteger((ScriptVm *)((s32)vmBytes), 0);
     return SCRIPT_COMMAND_CONTINUE;
 }
 
@@ -369,7 +369,7 @@ s32 actorScriptClearMessages(u8 *actor) {
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     messageBarClear();
-    scriptVmPushInteger(sp1C, 0);
+    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return SCRIPT_COMMAND_CONTINUE;
 }
 
@@ -381,8 +381,8 @@ s32 actorScriptSetMessageStyle(u8 *actor) {
     u8 *sp1C;
 
     sp1C = (u8 *)((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->vmAddress;
-    ((ScriptVm *)sp1C)->messageStyle = scriptVmPopInteger((s32)sp1C);
-    scriptVmPushInteger((s32)sp1C, 0);
+    ((ScriptVm *)sp1C)->messageStyle = scriptVmPopInteger((ScriptVm *)((s32)sp1C));
+    scriptVmPushInteger((ScriptVm *)((s32)sp1C), 0);
     return SCRIPT_COMMAND_CONTINUE;
 }
 
@@ -394,8 +394,8 @@ s32 actorScriptSetMessageDuration(u8 *actor) {
     u8 *sp1C;
 
     sp1C = (u8 *)((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->vmAddress;
-    ((ScriptVm *)sp1C)->messageDuration = scriptVmPopFloat((s32)sp1C);
-    scriptVmPushInteger((s32)sp1C, 0);
+    ((ScriptVm *)sp1C)->messageDuration = scriptVmPopFloat((ScriptVm *)((s32)sp1C));
+    scriptVmPushInteger((ScriptVm *)((s32)sp1C), 0);
     return SCRIPT_COMMAND_CONTINUE;
 }
 
@@ -419,7 +419,7 @@ s32 actorScriptAppendWindowText(u8 *actor) {
         } while (var_s0 >= 0);
     }
     textWindowAppendText((u8 *)&gActorScriptSharedTextBuffer);
-    scriptVmPushInteger(vmAddress, 0);
+    scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return SCRIPT_COMMAND_CONTINUE;
 }
 
@@ -441,7 +441,7 @@ s32 actorScriptEnterTextWindowMode(u8 *actor) {
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     textWindowEnterMode();
-    scriptVmPushInteger(sp1C, 0);
+    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return SCRIPT_COMMAND_CONTINUE;
 }
 
@@ -453,8 +453,8 @@ s32 actorScriptStartActionScript(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    actionScriptStart(actor, scriptVmPopInteger(sp1C));
-    scriptVmPushInteger(sp1C, 0);
+    actionScriptStart(actor, scriptVmPopInteger((ScriptVm *)(sp1C)));
+    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return SCRIPT_COMMAND_YIELD;
 }
 
@@ -468,7 +468,7 @@ s32 actorScriptStopActionScript(u8 *actor) {
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     actionScriptStop(actor);
-    scriptVmPushInteger(sp1C, 0);
+    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return SCRIPT_COMMAND_CONTINUE;
 }
 
@@ -482,13 +482,13 @@ s32 actorScriptSetTargetPosition(u8 *actor) {
     s32 vm;
 
     vm = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    pos[2] = scriptVmPopFloat(vm);
-    pos[1] = scriptVmPopFloat(vm);
-    pos[0] = scriptVmPopFloat(vm);
+    pos[2] = scriptVmPopFloat((ScriptVm *)(vm));
+    pos[1] = scriptVmPopFloat((ScriptVm *)(vm));
+    pos[0] = scriptVmPopFloat((ScriptVm *)(vm));
     actorSetTargetPosition(actor, pos);
     ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetMode = ACTOR_TARGET_FIXED;
     ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetDistanceAllowance = 0.0f;
-    scriptVmPushInteger(vm, 0);
+    scriptVmPushInteger((ScriptVm *)(vm), 0);
     return SCRIPT_COMMAND_CONTINUE;
 }
 
@@ -505,7 +505,7 @@ s32 actorScriptPushTargetApproachDistance(u8 *actor) {
     if (d < 0.0f) {
         d = 0.0f;
     }
-    scriptVmPushFloat((s32)vm, d);
+    scriptVmPushFloat((ScriptVm *)((s32)vm), d);
     return SCRIPT_COMMAND_CONTINUE;
 }
 
@@ -521,7 +521,7 @@ s32 actorScriptSetTargetToFallbackObject(u8 *actor) {
     actorSetTargetToFallbackObject(actor);
     ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetMode = ACTOR_TARGET_FIXED;
     ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetDistanceAllowance = 0.0f;
-    scriptVmPushInteger(sp1C, 0);
+    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return SCRIPT_COMMAND_CONTINUE;
 }
 
@@ -533,7 +533,7 @@ s32 actorScriptPushActionScriptStopped(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushInteger(sp1C, actionScriptIsStopped(actor));
+    scriptVmPushInteger((ScriptVm *)(sp1C), actionScriptIsStopped(actor));
     return SCRIPT_COMMAND_CONTINUE;
 }
 
@@ -545,7 +545,7 @@ s32 actorScriptPushLastScriptActionEnded(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushInteger(sp1C, actionScriptHasLastActionEnded(actor));
+    scriptVmPushInteger((ScriptVm *)(sp1C), actionScriptHasLastActionEnded(actor));
     return SCRIPT_COMMAND_CONTINUE;
 }
 
@@ -559,10 +559,10 @@ s32 actorScriptBeginPoseTransition(u8 *actor) {
     f32 sp1C;
 
     sp24 = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    sp1C = scriptVmPopFloat(sp24);
-    sp20 = scriptVmPopInteger(sp24);
+    sp1C = scriptVmPopFloat((ScriptVm *)(sp24));
+    sp20 = scriptVmPopInteger((ScriptVm *)(sp24));
     actionScriptStop(actor);
     actionBeginPoseTransition(actor, sp20, sp1C);
-    scriptVmPushInteger(sp24, 0);
+    scriptVmPushInteger((ScriptVm *)(sp24), 0);
     return SCRIPT_COMMAND_YIELD;
 }

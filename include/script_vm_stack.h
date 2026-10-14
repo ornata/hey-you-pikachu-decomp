@@ -7,18 +7,18 @@
 #include "script_vm.h"
 
 /// Push an integer value onto a script stack.
-/// \param vm Context address in the original 32-bit ABI, with room for another value.
+/// \param vm Context with room for another value.
 /// \param value Integer value to copy.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8011601C (0x8011601C).
-void scriptVmPushInteger(s32 vm, s32 value);
+void scriptVmPushInteger(ScriptVm *vm, s32 value);
 
 /// Push a floating-point value onto a script stack.
-/// \param vm Context address in the original 32-bit ABI, with room for another value.
+/// \param vm Context with room for another value.
 /// \param value Floating-point value to copy.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8011604C (0x8011604C).
-void scriptVmPushFloat(s32 vm, f32 value);
+void scriptVmPushFloat(ScriptVm *vm, f32 value);
 
 /// Push a borrowed string reference onto a script stack.
 /// \param vm Context with room for another value.
@@ -28,16 +28,16 @@ void scriptVmPushFloat(s32 vm, f32 value);
 void scriptVmPushStringPointer(ScriptVm *vm, char *text);
 
 /// Remove a numeric value from a script stack and convert it to an integer.
-/// \param vm Context address in the original 32-bit ABI, with a numeric value on top.
+/// \param vm Context with a numeric value on top.
 /// \returns Integer value, discarding any fractional part of a floating-point value.
 /// \note Original decompilation identifier: \c func_801160B4 (0x801160B4).
-s32 scriptVmPopInteger(s32 vm);
+s32 scriptVmPopInteger(ScriptVm *vm);
 
 /// Remove a numeric value from a script stack and convert it to a floating-point number.
-/// \param vm Context address in the original 32-bit ABI, with a numeric value on top.
+/// \param vm Context with a numeric value on top.
 /// \returns Converted floating-point value.
 /// \note Original decompilation identifier: \c func_801160DC (0x801160DC).
-f32 scriptVmPopFloat(s32 vm);
+f32 scriptVmPopFloat(ScriptVm *vm);
 
 /// Remove a script value and obtain its string representation.
 /// \param vm Context with a valid string or numeric value on top; formatted

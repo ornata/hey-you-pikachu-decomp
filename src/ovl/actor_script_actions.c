@@ -78,7 +78,7 @@ s32 actorScriptWaitForActionResult(u8 *actor) {
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.bytes;
     if (actionScriptIsStopped(actor) != 0) {
-        scriptVmPushInteger(((ActorScriptState *)sp1C)->vmAddress, 0);
+        scriptVmPushInteger((ScriptVm *)(((ActorScriptState *)sp1C)->vmAddress), 0);
         return SCRIPT_VM_YIELDED;
     }
     return SCRIPT_VM_WAITING_FOR_ACTION;
@@ -95,7 +95,7 @@ s32 actorScriptPlayAction(u8 *actor) {
 
     vmBytes = (u8 *)((ActorScriptState *)actorState)->vmAddress;
     if (((ScriptVm *)vmBytes)->actionInitializing != 0) {
-        actionScriptStart(actor, scriptVmPopInteger((s32)vmBytes));
+        actionScriptStart(actor, scriptVmPopInteger((ScriptVm *)((s32)vmBytes)));
         return SCRIPT_VM_WAITING_FOR_ACTION;
     }
     return actorScriptWaitForActionResult(actor);
@@ -113,7 +113,7 @@ s32 actorScriptWaitForActionOrMessage(u8 *actor) {
     actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
     messagePending = ((ActorScriptState *)actorState)->messagePending;
     if (messagePending != 0) {
-        scriptVmPushInteger(((ActorScriptState *)actorState)->vmAddress, messagePending);
+        scriptVmPushInteger((ScriptVm *)(((ActorScriptState *)actorState)->vmAddress), messagePending);
         actionScriptStop(actor);
         return SCRIPT_VM_YIELDED;
     }
@@ -131,7 +131,7 @@ s32 actorScriptPlayInterruptibleAction(u8 *actor) {
 
     vmBytes = (u8 *)((ActorScriptState *)actorState)->vmAddress;
     if (((ScriptVm *)vmBytes)->actionInitializing != 0) {
-        actionScriptStart(actor, scriptVmPopInteger((s32)vmBytes));
+        actionScriptStart(actor, scriptVmPopInteger((ScriptVm *)((s32)vmBytes)));
         return SCRIPT_VM_WAITING_FOR_ACTION;
     }
     return actorScriptWaitForActionOrMessage(actor);
@@ -146,10 +146,10 @@ s32 actorScriptThrowHeldItem(u8 *actor) {
     s32 anim;
 
     if (((ScriptVm *)((ActorScriptState *)state)->vmAddress)->actionInitializing != 0) {
-        anim = scriptVmPopInteger(((ActorScriptState *)state)->vmAddress);
+        anim = scriptVmPopInteger((ScriptVm *)(((ActorScriptState *)state)->vmAddress));
         TRACE("nerveThrowItem - %d\n", ((ActorScriptState *)state)->heldItemHandle);
         if (((ActorScriptState *)state)->heldItemHandle == 0) {
-            scriptVmPushInteger(((ActorScriptState *)state)->vmAddress, -1);
+            scriptVmPushInteger((ScriptVm *)(((ActorScriptState *)state)->vmAddress), -1);
             return SCRIPT_VM_YIELDED;
         }
         actionScriptStart(actor, anim);
@@ -171,19 +171,19 @@ s32 actorScriptAcquireItem(u8 *actor) {
     actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
     vmBytes = (u8 *)((ActorScriptState *)actorState)->vmAddress;
     if (((ScriptVm *)vmBytes)->actionInitializing != 0) {
-        ((ActorScriptState *)actorState)->searchItemRange = scriptVmPopFloat((s32)vmBytes);
+        ((ActorScriptState *)actorState)->searchItemRange = scriptVmPopFloat((ScriptVm *)((s32)vmBytes));
         ((ActorScriptState *)actorState)->searchItemKind =
-            scriptVmPopInteger(((ActorScriptState *)actorState)->vmAddress);
-        value = scriptVmPopInteger(((ActorScriptState *)actorState)->vmAddress);
+            scriptVmPopInteger((ScriptVm *)(((ActorScriptState *)actorState)->vmAddress));
+        value = scriptVmPopInteger((ScriptVm *)(((ActorScriptState *)actorState)->vmAddress));
         if (((ActorScriptState *)actorState)->heldItemHandle != 0) {
-            scriptVmPushInteger(((ActorScriptState *)actorState)->vmAddress, actorGetHeldItemKind(actor));
+            scriptVmPushInteger((ScriptVm *)(((ActorScriptState *)actorState)->vmAddress), actorGetHeldItemKind(actor));
             return SCRIPT_VM_YIELDED;
         }
         actionScriptStart(actor, value);
         goto block_6;
     }
     if (actionScriptIsStoppedAndLastActionEnded(actor) != 0) {
-        scriptVmPushInteger(((ActorScriptState *)actorState)->vmAddress, actorGetHeldItemKind(actor));
+        scriptVmPushInteger((ScriptVm *)(((ActorScriptState *)actorState)->vmAddress), actorGetHeldItemKind(actor));
         return SCRIPT_VM_YIELDED;
     }
 block_6:
@@ -204,16 +204,16 @@ s32 actorScriptEatHeldItem(u8 *actor) {
 
     state = ((RuntimeObjectPrefix *)actor)->state.bytes;
     if (((ScriptVm *)((ActorScriptState *)state)->vmAddress)->actionInitializing != 0) {
-        anim = scriptVmPopInteger(((ActorScriptState *)state)->vmAddress);
+        anim = scriptVmPopInteger((ScriptVm *)(((ActorScriptState *)state)->vmAddress));
         TRACE("nerveGrabItem - %d\n", ((ActorScriptState *)state)->heldItemHandle);
         obj = objectFindLiveByHandle(((ActorScriptState *)state)->heldItemHandle);
         if (obj == NULL) {
-            scriptVmPushInteger(((ActorScriptState *)state)->vmAddress, -1);
+            scriptVmPushInteger((ScriptVm *)(((ActorScriptState *)state)->vmAddress), -1);
             return SCRIPT_VM_YIELDED;
         }
         rec = ((RuntimeObjectPrefix *)obj)->state.bytes;
         if (((ItemStatePrefix *)rec)->flags & 0x800000) {
-            scriptVmPushInteger(((ActorScriptState *)state)->vmAddress, -1);
+            scriptVmPushInteger((ScriptVm *)(((ActorScriptState *)state)->vmAddress), -1);
             return SCRIPT_VM_YIELDED;
         }
         itemEnableShrinking(obj);
@@ -223,11 +223,11 @@ s32 actorScriptEatHeldItem(u8 *actor) {
     if (actionScriptIsStopped(actor) != 0) {
         obj = objectFindLiveByHandle(((ActorScriptState *)state)->heldItemHandle);
         if (obj == NULL) {
-            scriptVmPushInteger(((ActorScriptState *)state)->vmAddress, -1);
+            scriptVmPushInteger((ScriptVm *)(((ActorScriptState *)state)->vmAddress), -1);
         } else if (itemHasPlayerPickupHistory(obj) != 0) {
-            scriptVmPushInteger(((ActorScriptState *)state)->vmAddress, 1);
+            scriptVmPushInteger((ScriptVm *)(((ActorScriptState *)state)->vmAddress), 1);
         } else {
-            scriptVmPushInteger(((ActorScriptState *)state)->vmAddress, 0);
+            scriptVmPushInteger((ScriptVm *)(((ActorScriptState *)state)->vmAddress), 0);
         }
         TRACE("nerveEatItem - %d\n", ((ActorScriptState *)state)->heldItemHandle);
         actorConsumeHeldItem(actor);
@@ -275,8 +275,8 @@ s32 actorScriptPerformCostedAction(u8 *object) {
     state = ((RuntimeObjectPrefix *)object)->state.bytes;
     vm = (u8 *)((ActorScriptState *)state)->vmAddress;
     if (((ScriptVm *)vm)->actionInitializing != 0) {
-        count = scriptVmPopInteger((s32)vm);
-        action = scriptVmPopInteger(((ActorScriptState *)state)->vmAddress);
+        count = scriptVmPopInteger((ScriptVm *)((s32)vm));
+        action = scriptVmPopInteger((ScriptVm *)(((ActorScriptState *)state)->vmAddress));
         cost = gActorScriptCostedActions[action].cost * count;
         if (gActorScriptCostedActions[action].checkCost != 0 && ((ActorScriptState *)state)->actionResource < cost) {
             ((ActorScriptState *)state)->costedActionResult = 0;
@@ -289,7 +289,8 @@ s32 actorScriptPerformCostedAction(u8 *object) {
             actionScriptStart(object, gActorScriptCostedActions[action].animation);
         }
     } else if (actionScriptIsStopped(object) != 0) {
-        scriptVmPushInteger(((ActorScriptState *)state)->vmAddress, ((ActorScriptState *)state)->costedActionResult);
+        scriptVmPushInteger((ScriptVm *)(((ActorScriptState *)state)->vmAddress),
+                            ((ActorScriptState *)state)->costedActionResult);
         return SCRIPT_VM_YIELDED;
     }
     return SCRIPT_VM_WAITING_FOR_ACTION;
@@ -310,8 +311,8 @@ s32 actorScriptSelectControlScheme(u8 *actor) {
         return SCRIPT_VM_WAITING_FOR_ACTION;
     }
     sp1C = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    playerSelectControlScheme(scriptVmPopInteger(((ActorScriptState *)sp1C)->vmAddress));
-    scriptVmPushInteger(((ActorScriptState *)sp1C)->vmAddress, 0);
+    playerSelectControlScheme(scriptVmPopInteger((ScriptVm *)(((ActorScriptState *)sp1C)->vmAddress)));
+    scriptVmPushInteger((ScriptVm *)(((ActorScriptState *)sp1C)->vmAddress), 0);
     return SCRIPT_VM_YIELDED;
 }
 
@@ -355,7 +356,7 @@ s32 actorScriptFinishAreaTransition(u8 *actor) {
     }
     hudSetAreaLabelVisible(0);
     audioSetMusicDuckingInhibitFlags(0);
-    scriptVmPushInteger(((ActorScriptState *)sp1C)->vmAddress, 0);
+    scriptVmPushInteger((ScriptVm *)(((ActorScriptState *)sp1C)->vmAddress), 0);
     return SCRIPT_VM_YIELDED;
 }
 
@@ -388,11 +389,11 @@ s32 actorScriptTransformKind(u8 *object) {
     ((ScriptVm *)vm)->actionTimer -= gRuntimeFrameSeconds;
     if (((ScriptVm *)vm)->actionTimer > 0.0f)
         return SCRIPT_VM_WAITING_FOR_ACTION;
-    linked = actorReplaceKindPreservingScript(object, scriptVmPopInteger((s32)vm));
+    linked = actorReplaceKindPreservingScript(object, scriptVmPopInteger((ScriptVm *)((s32)vm)));
     actorSetModelEnvironmentColor(linked, 255, 200, 50, 255);
     actorTransitionModelEnvironmentColor(linked, 0, 0, 0, 0, 0.4f);
     audioPlayCue(30);
-    scriptVmPushInteger((s32)vm, ((RuntimeObjectPrefix *)linked)->handle);
+    scriptVmPushInteger((ScriptVm *)((s32)vm), ((RuntimeObjectPrefix *)linked)->handle);
     return SCRIPT_VM_YIELDED;
 }
 
@@ -410,11 +411,11 @@ s32 actorScriptOpenTextWindow(u8 *actor) {
         return SCRIPT_VM_WAITING_FOR_ACTION;
     }
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    sp2C = scriptVmPopInteger(vmAddress);
-    sp24 = scriptVmPopInteger(vmAddress);
-    textWindowOpen(scriptVmPopInteger(vmAddress), sp24, sp2C);
+    sp2C = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    sp24 = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    textWindowOpen(scriptVmPopInteger((ScriptVm *)(vmAddress)), sp24, sp2C);
     TRACE("messageSetup(%d,%d,%d)\n");
-    scriptVmPushInteger(vmAddress, 0);
+    scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return SCRIPT_VM_YIELDED;
 }
 
@@ -431,7 +432,7 @@ s32 actorScriptDispatchActionHandler(u8 *object) {
         if (actionScriptIsStopped(object) != 0) {
             actionScriptStart(object, 0x57);
         }
-        scriptVmPushInteger(((ActorScriptState *)state)->vmAddress, 0);
+        scriptVmPushInteger((ScriptVm *)(((ActorScriptState *)state)->vmAddress), 0);
         return SCRIPT_VM_YIELDED;
     case ACTOR_SCRIPT_ACTION_POLL_ACTION_STOPPED:
         return actorScriptPollActionStopped(object);

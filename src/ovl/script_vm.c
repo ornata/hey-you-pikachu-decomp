@@ -602,11 +602,11 @@ void scriptVmApplyComparisonOperator(u8 *vm, u8 op) {
 
 
 /// Push an integer onto the script value stack.
-/// \param vm Address of a script context with stack capacity available.
+/// \param vm Script context with stack capacity available.
 /// \param value Integer to push.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8011601C (0x8011601C).
-void scriptVmPushInteger(s32 vm, s32 value) {
+void scriptVmPushInteger(ScriptVm *vm, s32 value) {
     ScriptValue valueBox;
 
     scriptValueSetInteger(&valueBox, value);
@@ -614,11 +614,11 @@ void scriptVmPushInteger(s32 vm, s32 value) {
 }
 
 /// Push a floating-point number onto the script value stack.
-/// \param vm Address of a script context with stack capacity available.
+/// \param vm Script context with stack capacity available.
 /// \param value Floating-point number to push.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8011604C (0x8011604C).
-void scriptVmPushFloat(s32 vm, f32 value) {
+void scriptVmPushFloat(ScriptVm *vm, f32 value) {
     ScriptValue valueBox;
 
     scriptValueSetFloat(&valueBox, value);
@@ -638,22 +638,21 @@ void scriptVmPushStringPointer(ScriptVm *vm, char *text) {
 }
 
 /// Pop a numeric script value and convert it to an integer.
-/// \param vm Address of a script context with a numeric value on its stack.
+/// \param vm Script context with a numeric value on its stack.
 /// \returns The popped integer value, with any floating-point fraction discarded.
 /// \note Original decompilation identifier: \c func_801160B4 (0x801160B4).
-s32 scriptVmPopInteger(s32 vm) {
+s32 scriptVmPopInteger(ScriptVm *vm) {
     ScriptValue valueBox;
 
     scriptVmPopValue((u8 *)vm, &valueBox);
     return scriptValueGetInteger((u8 *)&valueBox);
 }
 
-
 /// Pop a numeric script value and convert it to a floating-point number.
-/// \param vm Address of a script context with a numeric value on its stack.
+/// \param vm Script context with a numeric value on its stack.
 /// \returns The popped floating-point value.
 /// \note Original decompilation identifier: \c func_801160DC (0x801160DC).
-f32 scriptVmPopFloat(s32 vm) {
+f32 scriptVmPopFloat(ScriptVm *vm) {
     ScriptValue valueBox;
 
     scriptVmPopValue((u8 *)vm, &valueBox);
@@ -792,7 +791,7 @@ loop_3:
         u8 *elements;
         s32 elementIndex;
         elements = (u8 *)scriptVmReadVariableReference((u8 *)vm);
-        elementIndex = scriptVmPopInteger((s32)vm);
+        elementIndex = scriptVmPopInteger((ScriptVm *)((s32)vm));
         scriptVmPushValue((u8 *)vm, (ScriptValue *)((u8(*)[5])elements)[elementIndex]);
         goto loop_2;
     }
@@ -803,7 +802,7 @@ loop_3:
         ScriptValue value;
         elements = scriptVmReadVariableReference((u8 *)vm);
         scriptVmPopValue((u8 *)vm, &value);
-        elementIndex = scriptVmPopInteger((s32)vm);
+        elementIndex = scriptVmPopInteger((ScriptVm *)((s32)vm));
         for (i = 0; i < 5; i++) {
             elements[elementIndex].bytes[i] = value.bytes[i];
         }
@@ -859,8 +858,8 @@ loop_3:
         ScriptValue sp58;
         s32 restoredFrameBase;
         scriptVmPopValue((u8 *)vm, &sp58);
-        restoredFrameIndex = scriptVmPopInteger((s32)vm);
-        restoredFrameBase = scriptVmPopInteger((s32)vm);
+        restoredFrameIndex = scriptVmPopInteger((ScriptVm *)((s32)vm));
+        restoredFrameBase = scriptVmPopInteger((ScriptVm *)((s32)vm));
         scriptVmRestoreStackDepth((u8 *)vm);
         scriptVmPushValue((u8 *)vm, &sp58);
         vm->localFrameBases[restoredFrameIndex] = restoredFrameBase;
@@ -883,8 +882,8 @@ loop_3:
         previousFrameBase = *localSlot;
         *localSlot = vm->stackDepth;
         vm->stackDepth = (s32)(vm->stackDepth + localCount);
-        scriptVmPushInteger((s32)vm, previousFrameBase);
-        scriptVmPushInteger((s32)vm, frameIndex);
+        scriptVmPushInteger((ScriptVm *)((s32)vm), previousFrameBase);
+        scriptVmPushInteger((ScriptVm *)((s32)vm), frameIndex);
         goto loop_2;
     }
     default:

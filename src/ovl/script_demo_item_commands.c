@@ -25,7 +25,7 @@ s32 scriptCommandBeginDemoTransition(u8 *object) {
 
     sp1C = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
     titleScreenBeginDemoTransition();
-    scriptVmPushInteger(sp1C, 0);
+    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return 0;
 }
 
@@ -37,7 +37,7 @@ s32 scriptCommandGetDemoIndex(u8 *object) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
-    scriptVmPushInteger(sp1C, titleScreenGetDemoIndex());
+    scriptVmPushInteger((ScriptVm *)(sp1C), titleScreenGetDemoIndex());
     return 0;
 }
 
@@ -57,7 +57,7 @@ s32 scriptCommandRemoveMazeBlock(u8 *object) {
     f32 edge[3];
     u8 *target;
     script = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
-    id = scriptVmPopInteger(script);
+    id = scriptVmPopInteger((ScriptVm *)(script));
     target = objectFindLiveByHandle(id);
     if (target != NULL && ((RuntimeObjectPrefix *)target)->kind == 0x88) {
         center[0] = ((RuntimeObjectPrefix *)target)->worldPosition[0];
@@ -81,7 +81,7 @@ s32 scriptCommandRemoveMazeBlock(u8 *object) {
         edge[1] = center[1];
         effectEmitterCreateForStyle(EFFECT_EMIT_BLACK_WISPS, &center[0], 3.0f, 0, 0, 0.0f);
     }
-    scriptVmPushInteger(script, 0);
+    scriptVmPushInteger((ScriptVm *)(script), 0);
     return 0;
 }
 
@@ -101,17 +101,17 @@ s32 scriptCommandCreateItemParticles(u8 *object) {
     u8 *sp2C;
 
     vmAddress = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
-    sp30 = scriptVmPopFloat(vmAddress);
-    sp34 = scriptVmPopFloat(vmAddress);
-    sp38 = scriptVmPopFloat(vmAddress);
-    sp3C = scriptVmPopInteger(vmAddress);
-    sp_pop = scriptVmPopInteger(vmAddress);
+    sp30 = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    sp34 = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    sp38 = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    sp3C = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    sp_pop = scriptVmPopInteger((ScriptVm *)(vmAddress));
     sp2C = objectResolveAvailableHandle(sp_pop);
     if (sp2C != 0) {
         itemStartDirectionMotion(sp2C, sp38, 100.0f, 1000.0f);
         particleClusterCreate(sp3C, sp38, sp34, sp30, sp2C);
     }
-    scriptVmPushInteger(vmAddress, 0);
+    scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 0;
 }
 
@@ -128,8 +128,8 @@ s32 scriptCommandGetItemReplacement(u8 *object) {
     s32 idx;
 
     sp1C = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
-    idx = scriptVmPopInteger(sp1C);
-    scriptVmPushInteger(sp1C, *(s32 *)((u8 *)&gItemKindReplacementEntries + idx * 0x74));
+    idx = scriptVmPopInteger((ScriptVm *)(sp1C));
+    scriptVmPushInteger((ScriptVm *)(sp1C), *(s32 *)((u8 *)&gItemKindReplacementEntries + idx * 0x74));
     return 0;
 }
 
@@ -146,8 +146,9 @@ s32 scriptCommandIsItemInCategory(u8 *object) {
 
     vmAddress = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
     sp24 = vmAddress;
-    sp1C = scriptVmPopInteger(vmAddress);
-    scriptVmPushInteger(vmAddress, itemKindIsInCategory(scriptVmPopInteger(vmAddress), sp1C));
+    sp1C = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    scriptVmPushInteger((ScriptVm *)(vmAddress),
+                        itemKindIsInCategory(scriptVmPopInteger((ScriptVm *)(vmAddress)), sp1C));
     return 0;
 }
 
@@ -160,7 +161,7 @@ s32 scriptCommandGetItemClass(u8 *object) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
-    scriptVmPushInteger(sp1C, itemGetClass(scriptVmPopInteger(sp1C)));
+    scriptVmPushInteger((ScriptVm *)(sp1C), itemGetClass(scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
 
@@ -173,7 +174,7 @@ s32 scriptCommandGetItemAvailabilityFlag(u8 *object) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
-    scriptVmPushInteger(sp1C, itemGetAvailabilityFlag(scriptVmPopInteger(sp1C)));
+    scriptVmPushInteger((ScriptVm *)(sp1C), itemGetAvailabilityFlag(scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
 
@@ -188,11 +189,11 @@ s32 scriptCommandReleaseItem(u8 *object) {
     u8 *resolvedObject;
 
     sp1C = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
-    resolvedObject = objectResolveAvailableHandle(scriptVmPopInteger(sp1C));
+    resolvedObject = objectResolveAvailableHandle(scriptVmPopInteger((ScriptVm *)(sp1C)));
     if (resolvedObject != 0) {
-        scriptVmPushInteger(sp1C, itemTryRelease(resolvedObject, 1));
+        scriptVmPushInteger((ScriptVm *)(sp1C), itemTryRelease(resolvedObject, 1));
     } else {
-        scriptVmPushInteger(sp1C, 0);
+        scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     }
     return 0;
 }
@@ -207,7 +208,7 @@ s32 scriptCommandStopAction(u8 *object) {
 
     sp1C = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
     actionStopPlayback(object);
-    scriptVmPushInteger(sp1C, 0);
+    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return 0;
 }
 
@@ -221,6 +222,7 @@ s32 scriptCommandAdvanceFriendship(u8 *object) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
-    scriptVmPushInteger(sp1C, playerAwardFriendshipMilestone(&gPlayerState, scriptVmPopInteger(sp1C)));
+    scriptVmPushInteger((ScriptVm *)(sp1C),
+                        playerAwardFriendshipMilestone(&gPlayerState, scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }

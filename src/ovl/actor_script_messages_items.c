@@ -49,7 +49,7 @@ s32 actorScriptTrackPlayerPrimaryObject(u8 *actor) {
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
     actorTrackPlayerPrimaryObject(actor);
     ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetDistanceAllowance = 0.0f;
-    scriptVmPushInteger(sp1C, 0);
+    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return 0;
 }
 
@@ -63,7 +63,7 @@ s32 actorScriptAcknowledgeMessage(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushInteger(sp1C, actorAcknowledgeScriptMessage(actor));
+    scriptVmPushInteger((ScriptVm *)(sp1C), actorAcknowledgeScriptMessage(actor));
     return 0;
 }
 
@@ -79,7 +79,8 @@ s32 actorScriptPushMessagePending(u8 *actor) {
     u8 *actorState;
 
     actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    scriptVmPushInteger(((ActorScriptState *)actorState)->vmAddress, ((ActorScriptState *)actorState)->messagePending);
+    scriptVmPushInteger((ScriptVm *)(((ActorScriptState *)actorState)->vmAddress),
+                        ((ActorScriptState *)actorState)->messagePending);
     return 0;
 }
 
@@ -91,7 +92,8 @@ s32 actorScriptPushMessageType(u8 *actor) {
     u8 *actorState;
 
     actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    scriptVmPushInteger(((ActorScriptState *)actorState)->vmAddress, ((ActorScriptState *)actorState)->message.type);
+    scriptVmPushInteger((ScriptVm *)(((ActorScriptState *)actorState)->vmAddress),
+                        ((ActorScriptState *)actorState)->message.type);
     return 0;
 }
 
@@ -103,7 +105,8 @@ s32 actorScriptPushMessageArgument0(u8 *actor) {
     u8 *actorState;
 
     actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    scriptVmPushInteger(((ActorScriptState *)actorState)->vmAddress, ((ActorScriptState *)actorState)->message.arg0);
+    scriptVmPushInteger((ScriptVm *)(((ActorScriptState *)actorState)->vmAddress),
+                        ((ActorScriptState *)actorState)->message.arg0);
     return 0;
 }
 
@@ -115,7 +118,8 @@ s32 actorScriptPushMessageArgument2(u8 *actor) {
     u8 *actorState;
 
     actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    scriptVmPushInteger(((ActorScriptState *)actorState)->vmAddress, ((ActorScriptState *)actorState)->message.arg2);
+    scriptVmPushInteger((ScriptVm *)(((ActorScriptState *)actorState)->vmAddress),
+                        ((ActorScriptState *)actorState)->message.arg2);
     return 0;
 }
 
@@ -127,7 +131,8 @@ s32 actorScriptPushMessageArgument3(u8 *actor) {
     u8 *actorState;
 
     actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    scriptVmPushInteger(((ActorScriptState *)actorState)->vmAddress, ((ActorScriptState *)actorState)->message.arg3);
+    scriptVmPushInteger((ScriptVm *)(((ActorScriptState *)actorState)->vmAddress),
+                        ((ActorScriptState *)actorState)->message.arg3);
     return 0;
 }
 
@@ -139,7 +144,8 @@ s32 actorScriptPushMessageArgument4(u8 *actor) {
     u8 *actorState;
 
     actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    scriptVmPushInteger(((ActorScriptState *)actorState)->vmAddress, ((ActorScriptState *)actorState)->message.arg4);
+    scriptVmPushInteger((ScriptVm *)(((ActorScriptState *)actorState)->vmAddress),
+                        ((ActorScriptState *)actorState)->message.arg4);
     return 0;
 }
 
@@ -158,15 +164,15 @@ s32 actorScriptCreateAttachedEffect(u8 *actor) {
     s32 value;
 
     vm = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    kind = scriptVmPopInteger(vm);
-    value = scriptVmPopInteger(vm);
+    kind = scriptVmPopInteger((ScriptVm *)(vm));
+    value = scriptVmPopInteger((ScriptVm *)(vm));
     attachedEffectCreate(actor, value, kind);
     if ((actor == ((u8 *)gPikachuActor)) && ((kind == 0xA6) || (kind == 0xA7) || (kind == 0xAF) || (kind == 0xB3))) {
         if (0.5 < randomNext() * 2.3283064365386963e-10) {
             progressAddValue(0x1A, 1);
         }
     }
-    scriptVmPushInteger(vm, 0);
+    scriptVmPushInteger((ScriptVm *)(vm), 0);
     return 0;
 }
 
@@ -183,11 +189,11 @@ s32 actorScriptFindNearestInFacingCone(u8 *actor) {
     f32 sp2C;
 
     vmAddress = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    sp2C = scriptVmPopFloat(vmAddress);
-    sp30 = scriptVmPopFloat(vmAddress);
-    sp34 = scriptVmPopInteger(vmAddress);
-    sp_pop = scriptVmPopInteger(vmAddress);
-    scriptVmPushInteger(vmAddress, actorFindNearestHandleInFacingCone(actor, sp_pop, sp34, sp30, sp2C));
+    sp2C = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    sp30 = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    sp34 = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    sp_pop = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    scriptVmPushInteger((ScriptVm *)(vmAddress), actorFindNearestHandleInFacingCone(actor, sp_pop, sp34, sp30, sp2C));
     return 0;
 }
 
@@ -200,7 +206,7 @@ s32 actorScriptReleaseHeldItem(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushInteger(sp1C, actorReleaseHeldItem(actor));
+    scriptVmPushInteger((ScriptVm *)(sp1C), actorReleaseHeldItem(actor));
     return 0;
 }
 
@@ -213,7 +219,7 @@ s32 actorScriptPushPlayerDistance(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushFloat(sp1C, objectGetPlayerDistance(actor));
+    scriptVmPushFloat((ScriptVm *)(sp1C), objectGetPlayerDistance(actor));
     return 0;
 }
 
@@ -226,10 +232,10 @@ s32 actorScriptGetPointDistance(u8 *actor) {
     s32 vm = ((ActorScriptObject *)actor)->scriptState->vmAddress;
     f32 d[3];
 
-    d[2] = scriptVmPopFloat(vm) - ((RuntimeObjectPrefix *)actor)->worldPosition[2];
-    d[1] = scriptVmPopFloat(vm) - ((RuntimeObjectPrefix *)actor)->worldPosition[1];
-    d[0] = scriptVmPopFloat(vm) - ((RuntimeObjectPrefix *)actor)->worldPosition[0];
-    scriptVmPushFloat(vm, vector3LengthApprox(d));
+    d[2] = scriptVmPopFloat((ScriptVm *)(vm)) - ((RuntimeObjectPrefix *)actor)->worldPosition[2];
+    d[1] = scriptVmPopFloat((ScriptVm *)(vm)) - ((RuntimeObjectPrefix *)actor)->worldPosition[1];
+    d[0] = scriptVmPopFloat((ScriptVm *)(vm)) - ((RuntimeObjectPrefix *)actor)->worldPosition[0];
+    scriptVmPushFloat((ScriptVm *)(vm), vector3LengthApprox(d));
     return 0;
 }
 
@@ -243,15 +249,15 @@ s32 actorScriptGetObjectPlayerDistance(u8 *actor) {
     u8 *obj;
 
     vm = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    obj = objectResolveAvailableHandle(scriptVmPopInteger(vm));
+    obj = objectResolveAvailableHandle(scriptVmPopInteger((ScriptVm *)(vm)));
     if (obj == NULL) {
-        scriptVmPushFloat(vm, -1.0f);
+        scriptVmPushFloat((ScriptVm *)(vm), -1.0f);
         return 0;
     }
     d[2] = ((PlayerControlPrefix *)&gPlayerState)->position[0] - ((RuntimeObjectPrefix *)obj)->worldPosition[0];
     d[1] = ((PlayerControlPrefix *)&gPlayerState)->position[1] - ((RuntimeObjectPrefix *)obj)->worldPosition[1];
     d[0] = ((PlayerControlPrefix *)&gPlayerState)->position[2] - ((RuntimeObjectPrefix *)obj)->worldPosition[2];
-    scriptVmPushFloat(vm, vector3LengthApprox(d));
+    scriptVmPushFloat((ScriptVm *)(vm), vector3LengthApprox(d));
     return 0;
 }
 
@@ -265,7 +271,7 @@ s32 actorScriptTrackEscapeFromPlayerSecondaryObject(u8 *actor) {
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
     actorTrackEscapeFromPlayerSecondaryObject(actor);
-    scriptVmPushInteger(sp1C, 0);
+    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return 0;
 }
 
@@ -279,7 +285,7 @@ s32 actorScriptChooseEscapeFromPlayer(u8 *actor) {
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
     actorChooseEscapePositionFromPlayer(actor);
-    scriptVmPushInteger(sp1C, 0);
+    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return 0;
 }
 
@@ -293,7 +299,7 @@ s32 actorScriptMoveToTargetPosition(u8 *actor) {
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
     actorMoveToTargetPosition(actor);
-    scriptVmPushInteger(sp1C, 0);
+    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return 0;
 }
 
@@ -309,9 +315,9 @@ s32 actorScriptSetRotationAxis(u8 *actor) {
 
     vmAddress = ((ActorScriptObject *)actor)->scriptState->vmAddress;
     sp24 = vmAddress;
-    sp1C = scriptVmPopInteger(vmAddress);
-    actorSetRotationAxisDegrees(actor, scriptVmPopFloat(vmAddress), sp1C);
-    scriptVmPushInteger(vmAddress, 0);
+    sp1C = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    actorSetRotationAxisDegrees(actor, scriptVmPopFloat((ScriptVm *)(vmAddress)), sp1C);
+    scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 0;
 }
 
@@ -347,7 +353,7 @@ s32 actorScriptSetCameraView(u8 *actor) {
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
     scriptVmSetPrimaryCameraView(sp1C);
-    scriptVmPushInteger(sp1C, 0);
+    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return 0;
 }
 
@@ -360,7 +366,7 @@ s32 actorScriptSavePlayerState(u8 *actor) {
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
     playerSaveState();
-    scriptVmPushInteger(sp1C, 0);
+    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return 0;
 }
 
@@ -373,7 +379,7 @@ s32 actorScriptRestorePlayerState(u8 *actor) {
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
     playerRestoreState();
-    scriptVmPushInteger(sp1C, 0);
+    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return 0;
 }
 
@@ -386,11 +392,11 @@ s32 actorScriptSetPlayerPosition(u8 *actor) {
     s32 vm = ((ActorScriptObject *)actor)->scriptState->vmAddress;
     f32 pos[3];
 
-    pos[2] = scriptVmPopFloat(vm);
-    pos[1] = scriptVmPopFloat(vm);
-    pos[0] = scriptVmPopFloat(vm);
+    pos[2] = scriptVmPopFloat((ScriptVm *)(vm));
+    pos[1] = scriptVmPopFloat((ScriptVm *)(vm));
+    pos[0] = scriptVmPopFloat((ScriptVm *)(vm));
     playerSetWorldPosition(pos);
-    scriptVmPushInteger(vm, 0);
+    scriptVmPushInteger((ScriptVm *)(vm), 0);
     return 0;
 }
 
@@ -403,8 +409,8 @@ s32 actorScriptSetPlayerYaw(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    playerSetViewYaw(scriptVmPopFloat(sp1C));
-    scriptVmPushInteger(sp1C, 0);
+    playerSetViewYaw(scriptVmPopFloat((ScriptVm *)(sp1C)));
+    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return 0;
 }
 
@@ -414,7 +420,7 @@ s32 actorScriptSetPlayerYaw(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011CF24 (0x8011CF24).
 s32 actorScriptPushPlayerViewYaw(u8 *actor) {
-    scriptVmPushFloat(((ActorScriptObject *)actor)->scriptState->vmAddress,
+    scriptVmPushFloat((ScriptVm *)(((ActorScriptObject *)actor)->scriptState->vmAddress),
                       ((PlayerControlPrefix *)&gPlayerState)->viewShake + ((PlayerControlPrefix *)&gPlayerState)->yaw);
     return 0;
 }
@@ -428,8 +434,8 @@ s32 actorScriptSetPlayerPitch(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    playerSetViewPitch(scriptVmPopFloat(sp1C));
-    scriptVmPushInteger(sp1C, 0);
+    playerSetViewPitch(scriptVmPopFloat((ScriptVm *)(sp1C)));
+    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return 0;
 }
 
@@ -439,7 +445,7 @@ s32 actorScriptSetPlayerPitch(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011CFA4 (0x8011CFA4).
 s32 actorScriptPushPlayerViewPitch(u8 *actor) {
-    scriptVmPushFloat(((ActorScriptObject *)actor)->scriptState->vmAddress,
+    scriptVmPushFloat((ScriptVm *)(((ActorScriptObject *)actor)->scriptState->vmAddress),
                       ((PlayerControlPrefix *)&gPlayerState)->pitch +
                           ((PlayerControlPrefix *)&gPlayerState)->pitchOffset);
     return 0;
@@ -454,7 +460,7 @@ s32 actorScriptPushHeldItemKind(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushInteger(sp1C, actorGetHeldItemKind(actor));
+    scriptVmPushInteger((ScriptVm *)(sp1C), actorGetHeldItemKind(actor));
     return 0;
 }
 
@@ -473,11 +479,11 @@ s32 actorScriptTestItemResponseTypeThree(u8 *actor) {
 
     vm = ((ActorScriptObject *)actor)->scriptState->vmAddress;
     result = 0;
-    kind = gItemKindThirdResponseEntries[scriptVmPopInteger(vm) * 0x74];
+    kind = gItemKindThirdResponseEntries[scriptVmPopInteger((ScriptVm *)(vm)) * 0x74];
     if ((kind == 2) || (kind == 4) || (kind == 5) || (kind == 6)) {
         result = 1;
     }
-    scriptVmPushInteger(vm, result);
+    scriptVmPushInteger((ScriptVm *)(vm), result);
     return 0;
 }
 
@@ -490,7 +496,8 @@ extern s32 gVoiceCommandLastRecognitionStatus;
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011D0A4 (0x8011D0A4).
 s32 actorScriptPushVoiceCommandStatus(u8 *actor) {
-    scriptVmPushInteger(((ActorScriptObject *)actor)->scriptState->vmAddress, gVoiceCommandLastRecognitionStatus);
+    scriptVmPushInteger((ScriptVm *)(((ActorScriptObject *)actor)->scriptState->vmAddress),
+                        gVoiceCommandLastRecognitionStatus);
     return 0;
 }
 
@@ -509,18 +516,18 @@ s32 actorScriptPostMessage(u8 *actor) {
 
     vm = ((ActorScriptObject *)actor)->scriptState->vmAddress;
     msg.arg1 = 0;
-    msg.arg4 = scriptVmPopInteger(vm);
-    msg.arg3 = scriptVmPopInteger(vm);
-    msg.arg2 = scriptVmPopInteger(vm);
-    msg.arg0 = scriptVmPopInteger(vm);
-    msg.type = scriptVmPopInteger(vm);
-    obj = objectFindLiveByHandle(scriptVmPopInteger(vm));
+    msg.arg4 = scriptVmPopInteger((ScriptVm *)(vm));
+    msg.arg3 = scriptVmPopInteger((ScriptVm *)(vm));
+    msg.arg2 = scriptVmPopInteger((ScriptVm *)(vm));
+    msg.arg0 = scriptVmPopInteger((ScriptVm *)(vm));
+    msg.type = scriptVmPopInteger((ScriptVm *)(vm));
+    obj = objectFindLiveByHandle(scriptVmPopInteger((ScriptVm *)(vm)));
     if (obj != NULL) {
         result = actorPostScriptMessage((s32)obj, msg, 0);
     } else {
         result = 0;
     }
-    scriptVmPushInteger(vm, result);
+    scriptVmPushInteger((ScriptVm *)(vm), result);
     return 0;
 }
 
@@ -536,8 +543,9 @@ s32 actorScriptFindInteractableItem(u8 *actor) {
 
     vmAddress = ((ActorScriptObject *)actor)->scriptState->vmAddress;
     sp24 = vmAddress;
-    sp1C = scriptVmPopFloat(vmAddress);
-    scriptVmPushInteger(vmAddress, actorFindInteractableItemKind(actor, scriptVmPopInteger(vmAddress), sp1C));
+    sp1C = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    scriptVmPushInteger((ScriptVm *)(vmAddress),
+                        actorFindInteractableItemKind(actor, scriptVmPopInteger((ScriptVm *)(vmAddress)), sp1C));
     return 0;
 }
 
@@ -550,7 +558,7 @@ s32 actorScriptPushOriginDistance(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushFloat(sp1C, objectGetOriginDistance(actor));
+    scriptVmPushFloat((ScriptVm *)(sp1C), objectGetOriginDistance(actor));
     return 0;
 }
 
@@ -563,7 +571,7 @@ s32 actorScriptGetObjectDistance(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushFloat(sp1C, objectGetDistanceToHandle(actor, scriptVmPopInteger(sp1C)));
+    scriptVmPushFloat((ScriptVm *)(sp1C), objectGetDistanceToHandle(actor, scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
 
@@ -576,7 +584,8 @@ s32 actorScriptGetObjectHeightDifference(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushFloat(sp1C, objectGetHeightDifferenceToHandle(actor, scriptVmPopInteger(sp1C)));
+    scriptVmPushFloat((ScriptVm *)(sp1C),
+                      objectGetHeightDifferenceToHandle(actor, scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
 
@@ -589,7 +598,7 @@ s32 actorScriptPushTargetHeightDifference(u8 *actor) {
     u8 *actorState;
 
     actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    scriptVmPushFloat(((ActorScriptState *)actorState)->vmAddress,
+    scriptVmPushFloat((ScriptVm *)(((ActorScriptState *)actorState)->vmAddress),
                       ((ActorScriptState *)actorState)->targetPosition[1] -
                           ((RuntimeObjectPrefix *)actor)->worldPosition[1]);
     return 0;
@@ -604,7 +613,8 @@ s32 actorScriptGetObjectHorizontalDistance(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushFloat(sp1C, objectGetHorizontalDistanceToHandle(actor, scriptVmPopInteger(sp1C)));
+    scriptVmPushFloat((ScriptVm *)(sp1C),
+                      objectGetHorizontalDistanceToHandle(actor, scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
 
@@ -617,7 +627,7 @@ s32 actorScriptPushHorizontalTargetDistance(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushFloat(sp1C, actorGetHorizontalTargetDistance(actor));
+    scriptVmPushFloat((ScriptVm *)(sp1C), actorGetHorizontalTargetDistance(actor));
     return 0;
 }
 
@@ -630,7 +640,7 @@ s32 actorScriptGetTargetCoordinate(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushFloat(sp1C, actorGetTargetCoordinate(actor, scriptVmPopInteger(sp1C)));
+    scriptVmPushFloat((ScriptVm *)(sp1C), actorGetTargetCoordinate(actor, scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
 
@@ -643,7 +653,7 @@ s32 actorScriptGetWorldCoordinate(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushFloat(sp1C, objectGetWorldCoordinate(actor, scriptVmPopInteger(sp1C)));
+    scriptVmPushFloat((ScriptVm *)(sp1C), objectGetWorldCoordinate(actor, scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
 
@@ -656,7 +666,7 @@ s32 actorScriptGetRotationCoordinate(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushFloat(sp1C, ((f32 *)(actor + 0xC))[scriptVmPopInteger(sp1C)]);
+    scriptVmPushFloat((ScriptVm *)(sp1C), ((f32 *)(actor + 0xC))[scriptVmPopInteger((ScriptVm *)(sp1C))]);
     return 0;
 }
 
@@ -669,7 +679,7 @@ s32 actorScriptPushActionElapsedTime(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushFloat(sp1C, actionScriptGetElapsedTime(actor));
+    scriptVmPushFloat((ScriptVm *)(sp1C), actionScriptGetElapsedTime(actor));
     return 0;
 }
 
@@ -682,7 +692,7 @@ s32 actorScriptPushActionDuration(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushFloat(sp1C, actionScriptGetDuration(actor));
+    scriptVmPushFloat((ScriptVm *)(sp1C), actionScriptGetDuration(actor));
     return 0;
 }
 
@@ -695,7 +705,7 @@ s32 actorScriptPushActionId(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushInteger(sp1C, actionScriptGetId(actor));
+    scriptVmPushInteger((ScriptVm *)(sp1C), actionScriptGetId(actor));
     return 0;
 }
 
@@ -708,7 +718,7 @@ s32 actorScriptPushMovementCollisionFlags(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushInteger(sp1C, actorGetMovementCollisionFlags(actor));
+    scriptVmPushInteger((ScriptVm *)(sp1C), actorGetMovementCollisionFlags(actor));
     return 0;
 }
 
@@ -725,7 +735,7 @@ s32 actorScriptTrackPlayerSecondaryObject(u8 *actor) {
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
     actorTrackObjectPosition(actor, ((PlayerModeState *)&gPlayerModeState)->objectHandles[1], 0.0f);
-    scriptVmPushInteger(sp1C, 0);
+    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return 0;
 }
 
@@ -739,7 +749,7 @@ s32 actorScriptTrackPlayerTertiaryObject(u8 *actor) {
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
     actorTrackObjectPosition(actor, ((PlayerModeState *)&gPlayerModeState)->objectHandles[2], 0.0f);
-    scriptVmPushInteger(sp1C, 0);
+    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return 0;
 }
 
@@ -755,8 +765,8 @@ s32 actorScriptRequestMicDictionary(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    micRequestDictionary(scriptVmPopInteger(sp1C));
-    scriptVmPushInteger(sp1C, 0);
+    micRequestDictionary(scriptVmPopInteger((ScriptVm *)(sp1C)));
+    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return 1;
 }
 
@@ -768,7 +778,7 @@ s32 actorScriptQueryRequestedMicDictionary(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushInteger(sp1C, micGetRequestedDictionary());
+    scriptVmPushInteger((ScriptVm *)(sp1C), micGetRequestedDictionary());
     return 0;
 }
 
@@ -787,15 +797,15 @@ s32 actorScriptChangeCuePreservingRate(u8 *actor) {
 
     handle = ((ActorScriptObject *)actor)->scriptState->vmAddress;
     audioGetCurrentCueState(&cur, &cur_t);
-    a = scriptVmPopFloat(handle);
-    b = scriptVmPopFloat(handle);
-    v = scriptVmPopInteger(handle);
+    a = scriptVmPopFloat((ScriptVm *)(handle));
+    b = scriptVmPopFloat((ScriptVm *)(handle));
+    v = scriptVmPopInteger((ScriptVm *)(handle));
     if (v != cur) {
         audioChangeCurrentCue(v, a, b);
         audioSetCurrentCueRate(cur_t);
-        scriptVmPushInteger(handle, 1);
+        scriptVmPushInteger((ScriptVm *)(handle), 1);
     } else {
-        scriptVmPushInteger(handle, 0);
+        scriptVmPushInteger((ScriptVm *)(handle), 0);
     }
     return 0;
 }
@@ -811,9 +821,9 @@ s32 actorScriptChangeCue(u8 *actor) {
     f64 b;
 
     handle = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    a = scriptVmPopFloat(handle);
-    b = scriptVmPopFloat(handle);
-    scriptVmPushInteger(handle, audioChangeCurrentCue(scriptVmPopInteger(handle), a, b));
+    a = scriptVmPopFloat((ScriptVm *)(handle));
+    b = scriptVmPopFloat((ScriptVm *)(handle));
+    scriptVmPushInteger((ScriptVm *)(handle), audioChangeCurrentCue(scriptVmPopInteger((ScriptVm *)(handle)), a, b));
     return 0;
 }
 
@@ -826,7 +836,7 @@ s32 actorScriptSetCueRate(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushInteger(sp1C, audioSetCurrentCueRate((f64)scriptVmPopFloat(sp1C)));
+    scriptVmPushInteger((ScriptVm *)(sp1C), audioSetCurrentCueRate((f64)scriptVmPopFloat((ScriptVm *)(sp1C))));
     return 0;
 }
 
@@ -839,7 +849,7 @@ s32 actorScriptPlayCue(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushInteger(sp1C, audioPlayCue(scriptVmPopInteger(sp1C)));
+    scriptVmPushInteger((ScriptVm *)(sp1C), audioPlayCue(scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
 
@@ -852,7 +862,7 @@ s32 actorScriptPlayTrackedSound(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushInteger(sp1C, actorPlayTrackedSound(actor, scriptVmPopInteger(sp1C)));
+    scriptVmPushInteger((ScriptVm *)(sp1C), actorPlayTrackedSound(actor, scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
 
@@ -865,7 +875,7 @@ s32 actorScriptPlaySoundEffect(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushInteger(sp1C, audioPlaySoundEffect(scriptVmPopInteger(sp1C)));
+    scriptVmPushInteger((ScriptVm *)(sp1C), audioPlaySoundEffect(scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
 
@@ -881,8 +891,9 @@ s32 actorScriptSetSoundEffectPan(u8 *actor) {
 
     vmAddress = ((ActorScriptObject *)actor)->scriptState->vmAddress;
     sp24 = vmAddress;
-    sp1C = scriptVmPopInteger(vmAddress);
-    scriptVmPushInteger(vmAddress, audioSetSoundEffectPan(scriptVmPopInteger(vmAddress), sp1C));
+    sp1C = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    scriptVmPushInteger((ScriptVm *)(vmAddress),
+                        audioSetSoundEffectPan(scriptVmPopInteger((ScriptVm *)(vmAddress)), sp1C));
     return 0;
 }
 
@@ -898,8 +909,9 @@ s32 actorScriptSetSoundEffectVolume(u8 *actor) {
 
     vmAddress = ((ActorScriptObject *)actor)->scriptState->vmAddress;
     sp24 = vmAddress;
-    sp1C = scriptVmPopInteger(vmAddress);
-    scriptVmPushInteger(vmAddress, audioSetSoundEffectVolume(scriptVmPopInteger(vmAddress), sp1C));
+    sp1C = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    scriptVmPushInteger((ScriptVm *)(vmAddress),
+                        audioSetSoundEffectVolume(scriptVmPopInteger((ScriptVm *)(vmAddress)), sp1C));
     return 0;
 }
 
@@ -912,7 +924,7 @@ s32 actorScriptSetSoundEffectVolume(u8 *actor) {
 s32 actorScriptSquareRoot(u8 *actor) {
     s32 vm = ((ActorScriptObject *)actor)->scriptState->vmAddress;
 
-    scriptVmPushFloat(vm, sqrt(scriptVmPopFloat(vm)));
+    scriptVmPushFloat((ScriptVm *)(vm), sqrt(scriptVmPopFloat((ScriptVm *)(vm))));
     return 0;
 }
 
@@ -931,13 +943,14 @@ s32 actorScriptFindItemInFacingCone(u8 *actor) {
     s32 sp34;
 
     vmAddress = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    sp34 = scriptVmPopInteger(vmAddress);
-    sp38 = scriptVmPopInteger(vmAddress);
-    sp3C = scriptVmPopFloat(vmAddress);
-    sp40 = scriptVmPopFloat(vmAddress);
-    sp44 = scriptVmPopInteger(vmAddress);
-    sp_pop = scriptVmPopInteger(vmAddress);
-    scriptVmPushInteger(vmAddress, actorFindItemHandleInFacingCone(actor, sp40, sp3C, sp_pop, sp44, sp38, sp34));
+    sp34 = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    sp38 = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    sp3C = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    sp40 = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    sp44 = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    sp_pop = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    scriptVmPushInteger((ScriptVm *)(vmAddress),
+                        actorFindItemHandleInFacingCone(actor, sp40, sp3C, sp_pop, sp44, sp38, sp34));
     return 0;
 }
 
@@ -951,14 +964,14 @@ s32 actorScriptSetDestination(u8 *actor) {
     s32 vm;
 
     vm = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    speed = scriptVmPopFloat(vm);
-    pos[2] = scriptVmPopFloat(vm);
-    pos[1] = scriptVmPopFloat(vm);
-    pos[0] = scriptVmPopFloat(vm);
+    speed = scriptVmPopFloat((ScriptVm *)(vm));
+    pos[2] = scriptVmPopFloat((ScriptVm *)(vm));
+    pos[1] = scriptVmPopFloat((ScriptVm *)(vm));
+    pos[0] = scriptVmPopFloat((ScriptVm *)(vm));
     actorSetTargetPosition(actor, pos);
     ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetMode = ACTOR_TARGET_FIXED;
     ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetDistanceAllowance = speed;
-    scriptVmPushInteger(vm, 0);
+    scriptVmPushInteger((ScriptVm *)(vm), 0);
     return 0;
 }
 
@@ -973,8 +986,9 @@ s32 actorScriptTrackObject(u8 *actor) {
 
     vmAddress = ((ActorScriptObject *)actor)->scriptState->vmAddress;
     sp24 = vmAddress;
-    sp1C = scriptVmPopFloat(vmAddress);
-    scriptVmPushInteger(vmAddress, actorTrackObjectPosition(actor, scriptVmPopInteger(vmAddress), sp1C));
+    sp1C = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    scriptVmPushInteger((ScriptVm *)(vmAddress),
+                        actorTrackObjectPosition(actor, scriptVmPopInteger((ScriptVm *)(vmAddress)), sp1C));
     return 0;
 }
 
@@ -990,8 +1004,9 @@ s32 actorScriptSetDestinationFromObject(u8 *actor) {
 
     vmAddress = ((ActorScriptObject *)actor)->scriptState->vmAddress;
     sp24 = vmAddress;
-    sp1C = scriptVmPopFloat(vmAddress);
-    scriptVmPushInteger(vmAddress, actorSetDestinationFromObject(actor, scriptVmPopInteger(vmAddress), sp1C));
+    sp1C = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    scriptVmPushInteger((ScriptVm *)(vmAddress),
+                        actorSetDestinationFromObject(actor, scriptVmPopInteger((ScriptVm *)(vmAddress)), sp1C));
     return 0;
 }
 
@@ -1004,7 +1019,7 @@ s32 actorScriptTrackEscapeFromObject(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushInteger(sp1C, actorTrackEscapeFromObject(actor, scriptVmPopInteger(sp1C)));
+    scriptVmPushInteger((ScriptVm *)(sp1C), actorTrackEscapeFromObject(actor, scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
 
@@ -1017,7 +1032,8 @@ s32 actorScriptChooseEscapeFromObject(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushInteger(sp1C, actorChooseEscapePositionFromHandle(actor, scriptVmPopInteger(sp1C)));
+    scriptVmPushInteger((ScriptVm *)(sp1C),
+                        actorChooseEscapePositionFromHandle(actor, scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
 
@@ -1030,7 +1046,7 @@ s32 actorScriptPushTargetDistanceAllowance(u8 *actor) {
     u8 *actorState;
 
     actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    scriptVmPushFloat(((ActorScriptState *)actorState)->vmAddress,
+    scriptVmPushFloat((ScriptVm *)(((ActorScriptState *)actorState)->vmAddress),
                       ((ActorScriptState *)actorState)->targetDistanceAllowance);
     return 0;
 }
@@ -1044,7 +1060,7 @@ s32 actorScriptPushTargetHandle(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushInteger(sp1C, actorGetAvailableTargetHandle(actor));
+    scriptVmPushInteger((ScriptVm *)(sp1C), actorGetAvailableTargetHandle(actor));
     return 0;
 }
 
@@ -1057,7 +1073,7 @@ s32 actorScriptPushTrackingMode(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushInteger(sp1C, actorGetTargetTrackingMode(actor));
+    scriptVmPushInteger((ScriptVm *)(sp1C), actorGetTargetTrackingMode(actor));
     return 0;
 }
 
@@ -1070,8 +1086,8 @@ s32 actorScriptSetTrackingMode(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    actorSetTargetTrackingMode(actor, scriptVmPopInteger(sp1C));
-    scriptVmPushInteger(sp1C, 0);
+    actorSetTargetTrackingMode(actor, scriptVmPopInteger((ScriptVm *)(sp1C)));
+    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return 0;
 }
 
@@ -1084,7 +1100,7 @@ s32 actorScriptGetObjectCategory(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushInteger(sp1C, objectGetScriptCategory(actor, scriptVmPopInteger(sp1C)));
+    scriptVmPushInteger((ScriptVm *)(sp1C), objectGetScriptCategory(actor, scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
 
@@ -1097,7 +1113,7 @@ s32 actorScriptGetObjectKind(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushInteger(sp1C, objectGetScriptKind(scriptVmPopInteger(sp1C)));
+    scriptVmPushInteger((ScriptVm *)(sp1C), objectGetScriptKind(scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
 
@@ -1110,7 +1126,7 @@ s32 actorScriptGetItemKind(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushInteger(sp1C, itemGetKindByHandle(scriptVmPopInteger(sp1C)));
+    scriptVmPushInteger((ScriptVm *)(sp1C), itemGetKindByHandle(scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
 
@@ -1123,7 +1139,7 @@ s32 actorScriptGetCreatureKind(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushInteger(sp1C, actorGetKindByHandle(scriptVmPopInteger(sp1C)));
+    scriptVmPushInteger((ScriptVm *)(sp1C), actorGetKindByHandle(scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
 
@@ -1136,7 +1152,7 @@ s32 actorScriptGetObjectType(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushInteger(sp1C, objectGetTypeByHandle(scriptVmPopInteger(sp1C)));
+    scriptVmPushInteger((ScriptVm *)(sp1C), objectGetTypeByHandle(scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
 
@@ -1149,7 +1165,7 @@ s32 actorScriptGetBoundingRadius(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushFloat(sp1C, objectGetBoundingRadiusByHandle(scriptVmPopInteger(sp1C)));
+    scriptVmPushFloat((ScriptVm *)(sp1C), objectGetBoundingRadiusByHandle(scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
 
@@ -1162,8 +1178,8 @@ s32 actorScriptSetDefaultActionMode(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    actorSetDefaultActionMode(actor, scriptVmPopInteger(sp1C));
-    scriptVmPushInteger(sp1C, 0);
+    actorSetDefaultActionMode(actor, scriptVmPopInteger((ScriptVm *)(sp1C)));
+    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return 0;
 }
 
@@ -1175,7 +1191,7 @@ s32 actorScriptPushDefaultActionMode(u8 *actor) {
     u8 *actorState;
 
     actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    scriptVmPushInteger(((ActorScriptState *)actorState)->vmAddress,
+    scriptVmPushInteger((ScriptVm *)(((ActorScriptState *)actorState)->vmAddress),
                         ((ActorScriptState *)actorState)->defaultActionMode);
     return 0;
 }
@@ -1192,9 +1208,9 @@ s32 actorScriptStartActionWithMode(u8 *actor) {
 
     vmAddress = ((ActorScriptObject *)actor)->scriptState->vmAddress;
     sp24 = vmAddress;
-    sp1C = (f32)scriptVmPopInteger(vmAddress);
-    actionScriptStartWithMode(actor, scriptVmPopInteger(vmAddress), (s32)sp1C);
-    scriptVmPushInteger(vmAddress, 0);
+    sp1C = (f32)scriptVmPopInteger((ScriptVm *)(vmAddress));
+    actionScriptStartWithMode(actor, scriptVmPopInteger((ScriptVm *)(vmAddress)), (s32)sp1C);
+    scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 1;
 }
 
@@ -1211,9 +1227,9 @@ s32 actorScriptStartTimedAction(u8 *actor) {
 
     vmAddress = ((ActorScriptObject *)actor)->scriptState->vmAddress;
     sp24 = vmAddress;
-    sp1C = scriptVmPopFloat(vmAddress);
-    actionScriptStartWithDurationBits(actor, scriptVmPopInteger(vmAddress), sp1C);
-    scriptVmPushInteger(vmAddress, 0);
+    sp1C = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    actionScriptStartWithDurationBits(actor, scriptVmPopInteger((ScriptVm *)(vmAddress)), sp1C);
+    scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 1;
 }
 
@@ -1226,7 +1242,7 @@ s32 actorScriptPushPlayerHeldItem(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushInteger(sp1C, playerGetHeldItemHandle());
+    scriptVmPushInteger((ScriptVm *)(sp1C), playerGetHeldItemHandle());
     return 0;
 }
 
@@ -1236,7 +1252,7 @@ s32 actorScriptPushPlayerHeldItem(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011DFA8 (0x8011DFA8).
 s32 actorScriptPushFriendshipLevel(u8 *actor) {
-    scriptVmPushInteger(((ActorScriptObject *)actor)->scriptState->vmAddress, gPlayerFriendshipLevel);
+    scriptVmPushInteger((ScriptVm *)(((ActorScriptObject *)actor)->scriptState->vmAddress), gPlayerFriendshipLevel);
     return 0;
 }
 
@@ -1246,7 +1262,7 @@ s32 actorScriptPushFriendshipLevel(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011DFD8 (0x8011DFD8).
 s32 actorScriptPushDeliveredVoiceCount(u8 *actor) {
-    scriptVmPushInteger(((ActorScriptObject *)actor)->scriptState->vmAddress, gPlayerVoiceMessageCount);
+    scriptVmPushInteger((ScriptVm *)(((ActorScriptObject *)actor)->scriptState->vmAddress), gPlayerVoiceMessageCount);
     return 0;
 }
 
@@ -1260,8 +1276,8 @@ s32 actorScriptGetPlayerCoordinate(u8 *actor) {
     s32 idx;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    idx = scriptVmPopInteger(sp1C);
-    scriptVmPushFloat(sp1C, *(f32 *)((u8 *)&gPlayerState + idx * 4));
+    idx = scriptVmPopInteger((ScriptVm *)(sp1C));
+    scriptVmPushFloat((ScriptVm *)(sp1C), *(f32 *)((u8 *)&gPlayerState + idx * 4));
     return 0;
 }
 
@@ -1274,7 +1290,7 @@ s32 actorScriptPushFacingErrorToPlayer(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushFloat(sp1C, objectGetFacingErrorToPlayer(actor));
+    scriptVmPushFloat((ScriptVm *)(sp1C), objectGetFacingErrorToPlayer(actor));
     return 0;
 }
 
@@ -1284,7 +1300,7 @@ s32 actorScriptPushFacingErrorToPlayer(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011E084 (0x8011E084).
 s32 actorScriptPushPlayerPoints(u8 *actor) {
-    scriptVmPushInteger(((ActorScriptObject *)actor)->scriptState->vmAddress, gPlayerProfilePoints);
+    scriptVmPushInteger((ScriptVm *)(((ActorScriptObject *)actor)->scriptState->vmAddress), gPlayerProfilePoints);
     return 0;
 }
 
@@ -1294,9 +1310,9 @@ s32 actorScriptPushPlayerPoints(u8 *actor) {
 /// \note Original decompilation identifier: \c func_8011E0B4 (0x8011E0B4).
 s32 actorScriptSetPlayerPoints(u8 *actor) {
     s32 id = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    s32 h = scriptVmPopInteger(id);
+    s32 h = scriptVmPopInteger((ScriptVm *)(id));
 
-    scriptVmPushInteger(id, ((PlayerControlPrefix *)&gPlayerState)->points = h);
+    scriptVmPushInteger((ScriptVm *)(id), ((PlayerControlPrefix *)&gPlayerState)->points = h);
     return 0;
 }
 
@@ -1309,7 +1325,7 @@ s32 actorScriptAdjustPlayerPoints(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushInteger(sp1C, playerAddPoints(scriptVmPopInteger(sp1C)));
+    scriptVmPushInteger((ScriptVm *)(sp1C), playerAddPoints(scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
 
@@ -1322,7 +1338,7 @@ extern s32 gPlayerCompanionTarget;
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011E138 (0x8011E138).
 s32 actorScriptPushPlayerMovementClass(u8 *actor) {
-    scriptVmPushInteger(((ActorScriptObject *)actor)->scriptState->vmAddress,
+    scriptVmPushInteger((ScriptVm *)(((ActorScriptObject *)actor)->scriptState->vmAddress),
                         ((PlayerControlPrefix *)((u8 *)&gPlayerCompanionTarget - 0x50))->movementClass);
     return 0;
 }
@@ -1335,6 +1351,6 @@ s32 actorScriptPushChaseDifficulty(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((ActorScriptObject *)actor)->scriptState->vmAddress;
-    scriptVmPushInteger(sp1C, playerGetChaseStage());
+    scriptVmPushInteger((ScriptVm *)(sp1C), playerGetChaseStage());
     return 0;
 }

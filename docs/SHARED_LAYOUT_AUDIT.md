@@ -522,3 +522,17 @@ still receives its established byte-context boundary.
 waiting actions and retaining the next scheduling state. No timing, return-value
 or state-transition behavior changes. Producer/header, callers and update-local
 changes each preserve the strict object baseline without added exceptions.
+
+## Typed numeric stack interfaces
+
+Integer and floating-point push/pop functions now take `ScriptVm *` in their
+definitions and shared stack header. Numeric payload and result types remain
+unchanged. Ghidra at `0x801160B4` confirms integer pop removes a value and applies
+the established numeric conversion. Callers retain their stack-capacity/type
+preconditions; this recovery adds no bounds checks or conversion behavior.
+
+All seven native-command source units and the interpreter use typed context
+arguments at these interfaces, including nested calls. Retained integer context
+addresses are converted explicitly at the call boundary. Every source unit
+independently passed strict comparison against all 483 baseline objects after
+its mutation; no new matching exception was needed.
