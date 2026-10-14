@@ -392,3 +392,18 @@ confirming two visible entries and a terminator. This establishes the copied
 prefix, not the full extent of the symbol's surrounding storage. Ghidra at
 `0x800346D8` confirms the snapshot reaches the shared renderer. Both source units
 preserve all baseline objects; no new matching exception is needed.
+
+## Canonical scrolling-backdrop camera view
+
+Scrolling-backdrop drawing now uses `MatrixCamera` directly, removing the
+address-derived `ScrollView333` record. The retained `gRenderCameraBackdropImages`
+symbol aliases the primary camera's backdrop-image member. Its containing-camera
+view uses that established member offset, preserving the original relocation
+identity while exposing image, dimensions and offsets through shared fields.
+Ghidra at `0x800333D4` confirms the five adjacent backdrop fields and draw roles.
+
+A checked private slice first established correspondence with all five shared
+members; the subsequent canonical view preserved every baseline object and made
+the slice unnecessary. This is a borrowed view of persistent camera storage,
+not an allocation or ownership transfer. The separate offset-updater compiler
+constraint remains unchanged.

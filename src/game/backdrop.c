@@ -147,19 +147,16 @@ void backdropUpdateViewOffsets(u8 *view) {
     *(s32 *)(view + 0x98) = (s32)(*(f32 *)(view + 0xA0) + *(s32 *)(view + 0x98));
 }
 
-/* The scrolling view is the first five words of D_800ABD7C's record:
- * image address, image width/height and the horizontal/vertical scroll. */
-typedef struct {
-    s32 image, width, height, x, y;
-} ScrollView333;
 void backdropUpdateViewOffsets(u8 *);
 
 /// Draw the active scrolling backdrop and its upper and lower fill bands.
 /// \param list Display-list cursor, advanced by the appended drawing commands.
 /// \returns Nothing.
+/// \note The retained image symbol aliases the primary camera backdropImage member; its containing-camera view preserves relocation identity.
 /// \note Original decompilation identifier: \c func_800333D4 (0x800333D4).
 void backdropDrawScrolling(Gfx **list) {
-    ScrollView333 *view = (ScrollView333 *)gRenderCameraBackdropImages;
+    MatrixCamera *view =
+        (MatrixCamera *)((u8 *)gRenderCameraBackdropImages - (u32) & ((MatrixCamera *)0)->backdropImage);
     s32 sourceY;
     s32 top;
     s32 bottom;
@@ -168,25 +165,25 @@ void backdropDrawScrolling(Gfx **list) {
         return;
     }
     backdropUpdateViewOffsets(((u8 *)gRenderCameras));
-    gSPSegment((*list)++, 9, osVirtualToPhysical((void *)view->image));
+    gSPSegment((*list)++, 9, osVirtualToPhysical((void *)view->backdropImage));
     gDPPipeSync((*list)++);
     gDPSetCycleType((*list)++, G_CYC_1CYCLE);
     gDPSetColorImage((*list)++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 320,
                      osVirtualToPhysical(gColorFramebuffer0 + gGraphicsFramebufferIndex * 0x25800));
-    while (view->x < 0) {
-        view->x += view->width;
+    while (view->backdropX < 0) {
+        view->backdropX += view->backdropWidth;
     }
-    while (view->x >= view->width) {
-        view->x -= view->width;
+    while (view->backdropX >= view->backdropWidth) {
+        view->backdropX -= view->backdropWidth;
     }
 
     /* Image scrolled down: the rows above it show the top band color. */
     top = 0;
-    sourceY = view->y;
-    if (view->y < 0) {
+    sourceY = view->backdropY;
+    if (view->backdropY < 0) {
         u8 *color;
 
-        top = -view->y;
+        top = -view->backdropY;
         color = gBackdropDescriptors + gActiveBackdropId * 32 + 8;
         sourceY = 0;
         if (top >= 220) {
@@ -199,11 +196,11 @@ void backdropDrawScrolling(Gfx **list) {
     }
 
     /* Image ends above the viewport bottom: fill below with the bottom band. */
-    if (view->height + top - sourceY < 219) {
+    if (view->backdropHeight + top - sourceY < 219) {
         u8 *color;
 
         color = gBackdropDescriptors + gActiveBackdropId * 32 + 12;
-        bottom = view->height + top - sourceY;
+        bottom = view->backdropHeight + top - sourceY;
         if (bottom <= 20) {
             renderFillFramebufferRectangle(20, 20, 299, 219, color[0], color[1], color[2], color[3]);
             return;
@@ -216,12 +213,12 @@ void backdropDrawScrolling(Gfx **list) {
     {
         s32 height;
 
-        if (view->y >= 0) {
-            height = view->height - sourceY;
-        } else if (view->height + top >= 220) {
+        if (view->backdropY >= 0) {
+            height = view->backdropHeight - sourceY;
+        } else if (view->backdropHeight + top >= 220) {
             height = 220 - top;
         } else {
-            height = view->height;
+            height = view->backdropHeight;
         }
         /* Clip the rows that would land above the viewport top. */
         bottom = 20 - top;
@@ -230,7 +227,8 @@ void backdropDrawScrolling(Gfx **list) {
             height -= bottom;
             top = 20;
         }
-        textureCopyRgba16Region(list, view->image, 20, top, view->width, 280, height, view->x, sourceY, 0, 1);
+        textureCopyRgba16Region(list, view->backdropImage, 20, top, view->backdropWidth, 280, height, view->backdropX,
+                                sourceY, 0, 1);
     }
 }
 
