@@ -13,7 +13,10 @@
 /// \param eventLimit Reader-specific event limit, representable as an unsigned byte.
 /// \param eventBuffer Caller-owned storage meeting the selected reader's contract, valid while registered.
 /// \param readerContext Borrowed context passed to the event reader, valid while the sequence is registered.
-/// \param eventReader Callback receiving the context, buffer, byte capacity, and output delay in seconds; it must emit complete supported MIDI messages within capacity and return their byte length.
+/// \param eventReader Retained callback receiving context, destination, reader-specific event limit
+/// and output delay. It must honor its destination-storage contract and produce complete supported events.
+/// \pre The callback must be valid at registration and while the sequence is registered;
+/// registration can request the first event immediately. Zero-delay event runs must be finite.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800060A8 (0x800060A8).
 void sequenceEngineRegisterSequence(EngineSequence *sequence, VoicePlayer *driver, ALBank *instrumentBank,

@@ -290,7 +290,10 @@ void sequenceEngineReadNextEvent(EngineSequence *sequence) {
 /// \param eventLimit Reader-specific event limit, representable as an unsigned byte.
 /// \param eventBuffer Caller-owned storage meeting the selected reader's contract, valid while registered.
 /// \param readerContext Borrowed context passed to the event reader, valid while the sequence is registered.
-/// \param eventReader Callback receiving the context, buffer, byte capacity, and output delay in seconds; it must emit complete supported MIDI messages within capacity and return their byte length.
+/// \param eventReader Retained callback receiving context, destination, reader-specific event limit
+/// and output delay. It must honor its destination-storage contract and produce complete supported events.
+/// \pre The callback must be valid at registration and while the sequence is registered;
+/// registration can request the first event immediately. Zero-delay event runs must be finite.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800060A8 (0x800060A8).
 void sequenceEngineRegisterSequence(EngineSequence *sequence, VoicePlayer *driver, ALBank *instrumentBank,
@@ -351,28 +354,29 @@ extern s32 gSequenceTremoloWaveform[];
 /// \param seq Sequence supplying channel and playback volume settings.
 /// \param voice Active sequence voice to evaluate.
 /// \returns The effective synthesizer volume, capped at 32767.
+/// \note Matching: retained channel and modulation byte views preserve target load scheduling.
 /// \note Original decompilation identifier: \c func_80006254 (0x80006254).
-s32 sequenceEngineGetVoiceVolume(u8 *driver, u8 *seq, u8 *voice) {
+s32 sequenceEngineGetVoiceVolume(VoicePlayer *driver, EngineSequence *seq, SequenceVoice *voice) {
     u8 *channel;
     s32 tremolo;
     u32 volume;
 
-    channel = seq;
-    channel += ((SequenceVoice *)voice)->channel * 0x1C;
+    channel = (u8 *)seq;
+    channel += voice->channel * 0x1C;
     if (channel[0x2C] != 0) {
-        tremolo = 256 - (s32)((u32)(*(u8 **)(voice + 0xC))[6] *
-                              (gSequenceTremoloWaveform[*(u16 *)(voice + 0x3A) >> 12] * channel[0x2C])) /
+        tremolo = 256 - (s32)((u32)(*(u8 **)((u8 *)voice + 0xC))[6] *
+                              (gSequenceTremoloWaveform[*(u16 *)((u8 *)voice + 0x3A) >> 12] * channel[0x2C])) /
                             256 / 128;
     } else {
         tremolo = 256;
     }
-    volume = (s32)(((SequenceVoice *)voice)->velocity * (32767 * (u32)driver[0x24])) / 128 / 128;
-    volume = ((((SequenceVoice *)voice)->sound)->sampleVolume * (channel[0x1F] * volume)) / 128 / 128;
+    volume = (s32)(voice->velocity * (32767 * (u32)((u8 *)driver)[0x24])) / 128 / 128;
+    volume = ((voice->sound)->sampleVolume * (channel[0x1F] * volume)) / 128 / 128;
     volume = (tremolo * volume) / 256;
     volume = (*(u16 *)(channel + 0x22) * volume) / 16384;
-    volume *= *(f64 *)(seq + 0x1E8);
-    volume = (*(u16 *)(seq + 0x1D4) * volume) / 16384;
-    volume = ((*(u32 *)(voice + 0x48) & 0xF000) * volume) / 65536;
+    volume *= *(f64 *)((u8 *)seq + 0x1E8);
+    volume = (*(u16 *)((u8 *)seq + 0x1D4) * volume) / 16384;
+    volume = ((*(u32 *)((u8 *)voice + 0x48) & 0xF000) * volume) / 65536;
     if (volume >= 32768) {
         volume = 32767;
     }
@@ -389,24 +393,24 @@ extern s32 gSequenceVibratoWaveform[];
 /// \returns The playback pitch multiplier relative to the sound sample.
 /// \note Matching: byte views of the voice key and portamento retain the original IDO expression scheduling.
 /// \note Original decompilation identifier: \c func_8000645C (0x8000645C).
-f64 sequenceEngineGetVoicePitchRatio(u8 *seq, u8 *voice) {
+f64 sequenceEngineGetVoicePitchRatio(EngineSequence *seq, SequenceVoice *voice) {
     u8 *channel;
     s32 vibrato;
     s32 depth;
     ALKeyMap *keymap;
 
-    channel = seq;
-    channel += voice[0x30] * 0x1C + 0x14;
+    channel = (u8 *)seq;
+    channel += ((u8 *)voice)[0x30] * 0x1C + 0x14;
     depth = channel[0x17];
     if (depth != 0) {
         vibrato =
-            (depth * (*(u8 **)(voice + 0xC))[0xA]) * gSequenceVibratoWaveform[*(u16 *)(voice + 0x38) >> 12] / 128 / 128;
+            (depth * (*(u8 **)((u8 *)voice + 0xC))[0xA]) * gSequenceVibratoWaveform[*(u16 *)((u8 *)voice + 0x38) >> 12] / 128 / 128;
     } else {
         vibrato = 0;
     }
-    keymap = (*(ALSound **)(voice + 0x10))->keyMap;
+    keymap = (*(ALSound **)((u8 *)voice + 0x10))->keyMap;
     return alCents2Ratio(((*(u16 *)(channel + 4) - 0x2000) * *(u16 *)(channel + 6) / 8192) * 100 / 128 +
-                         *(s16 *)(voice + 0x3C) + ((voice[0x31] - keymap->keyBase) * 100 - keymap->detune) + vibrato);
+                         *(s16 *)((u8 *)voice + 0x3C) + ((((u8 *)voice)[0x31] - keymap->keyBase) * 100 - keymap->detune) + vibrato);
 }
 
 /// Get the sequence voice update interval.
@@ -418,8 +422,8 @@ f64 sequenceEngineGetVoiceUpdateInterval(N_ALGlobals *synth) {
 }
 
 ALSound *sequenceEngineFindSound(EngineSequence *, u8, u8, u8);
-s32 sequenceEngineGetVoiceVolume(u8 *, u8 *, u8 *);
-f64 sequenceEngineGetVoicePitchRatio(u8 *, u8 *);
+s32 sequenceEngineGetVoiceVolume(VoicePlayer *, EngineSequence *, SequenceVoice *);
+f64 sequenceEngineGetVoicePitchRatio(EngineSequence *, SequenceVoice *);
 s32 n_alSynAllocVoice(struct N_ALVoice_s *, ALVoiceConfig *);
 void n_alSynStartVoiceParams(struct N_ALVoice_s *, ALWaveTable *, f32, s16, ALPan, u8, ALMicroTime);
 
@@ -458,14 +462,14 @@ void sequenceEngineNoteOn(VoicePlayer *driver, EngineSequence *seq, s32 channel,
             voice->velocity = velocity;
             voice->vibratoPhase = 0;
             voice->tremoloPhase = 0;
-            voice->volume = sequenceEngineGetVoiceVolume((u8 *)driver, (u8 *)seq, (u8 *)voice);
+            voice->volume = sequenceEngineGetVoiceVolume(driver, seq, voice);
             if (seq->channels[channel].portamentoEnabled) {
                 voice->portamento = (seq->channels[channel].lastKey - voice->key) * 100;
             } else {
                 voice->portamento = 0;
             }
             seq->channels[channel].lastKey = key;
-            voice->pitch = sequenceEngineGetVoicePitchRatio((u8 *)seq, (u8 *)voice);
+            voice->pitch = sequenceEngineGetVoicePitchRatio(seq, voice);
             voice->pan = sequenceEngineGetVoicePan(driver, seq, voice);
             n_alSynAllocVoice(&voice->native, &config);
             n_alSynStartVoiceParams(&voice->native, voice->sound->wavetable,
@@ -846,13 +850,13 @@ void sequenceEngineUpdateVoices(VoicePlayer *driver, EngineSequence *seq, f64 el
             }
         }
         if (voice->envelopeRate == 0) {
-            volume = sequenceEngineGetVoiceVolume((u8 *)driver, (u8 *)seq, (u8 *)voice);
+            volume = sequenceEngineGetVoiceVolume(driver, seq, voice);
             if (volume != (u16)voice->volume) {
                 voice->volume = volume;
                 n_alSynSetVol(&voice->native, voice->volume, (s32)(elapsed * 1000000.0));
             }
         }
-        pitch = sequenceEngineGetVoicePitchRatio((u8 *)seq, (u8 *)voice);
+        pitch = sequenceEngineGetVoicePitchRatio(seq, voice);
         if (pitch != voice->pitch) {
             voice->pitch = pitch;
             n_alSynSetPitch((struct N_ALVoice_s *)(&voice->native), pitch);

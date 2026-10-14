@@ -826,3 +826,28 @@ marker. The three bytes after the highlight flag remain unresolved; nothing in
 this recovery establishes that they are unused or padding. The inventory is now
 51 opaque declarations across 27 files. Every affected C unit passed the full
 strict baseline before the next was changed.
+
+## Sequence voice calculation and event-reader boundaries
+
+Volume and pitch helpers now accept the established driver, sequence and voice
+record types, with consistent declarations and all callers passing those types.
+Their retained byte expressions preserve the previously identified scheduling
+constraints; interface recovery is separate from replacing every internal load.
+A typed voice-stop trial still failed the ROM gate, both with direct native-voice
+access and a checked member-offset view, and was reverted.
+
+The registration callback contract no longer calls its third argument a buffer
+capacity: it is the reader-specific event limit. Callback and event storage must
+be valid during registration, which requests an event immediately, and while
+the sequence remains registered. Zero-delay runs must be finite. Completion is
+represented by negative delay; the pending byte-length field is not a negative
+end marker. Nonzero lengths must fit one byte, and lengths above 127 rely on
+the target signed-byte conversion. The dispatcher reads that stored length as
+an unsigned byte. The existing bounded retail-bank verifier covers the actual
+20-byte destination and selected reader, rather than assuming the limit equals
+the allocation size.
+
+Ghidra at `0x80006068` confirms callback/context at eight/four, limit at 0x1F1,
+destination pointer at 0x1F4, delay at 0x1F8 and result stored at 0x1F0. New
+checks cover callback, context, destination and delay offsets; the driver master
+volume offset 0x24 is also checked. No parser, event loop or allocation changes.

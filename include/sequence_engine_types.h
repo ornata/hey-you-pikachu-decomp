@@ -10,10 +10,13 @@
 /// Read one event from the registered sequence control state.
 /// \param state Borrowed playback and queued-control context to advance.
 /// \param event Caller-owned destination meeting the selected reader's storage contract.
-/// \param capacity Reader-specific event limit; it may exclude a leading status byte.
+/// \param eventLimit Reader-specific data limit; it may exclude a leading status byte.
 /// \param delta Receives the event delay in seconds, or -1 when releases have ended.
-/// \returns Event length, or zero when no event remains.
-typedef s32 (*SequenceEventReader)(SequenceControlState *state, u8 *event, s32 capacity, f64 *delta);
+/// \returns Complete event length from one through 255, or zero when no event remains.
+/// \pre Nonterminal delays must be finite and nonnegative; a negative delay denotes completion.
+/// Successive zero-delay events must eventually advance time or complete.
+/// \note Portability: event lengths above 127 depend on target signed-byte conversion.
+typedef s32 (*SequenceEventReader)(SequenceControlState *state, u8 *event, s32 eventLimit, f64 *delta);
 
 /// Per-channel controller storage owned by a registered sequence.
 typedef struct EngineChannel {
@@ -37,7 +40,7 @@ typedef struct EngineChannel {
 } EngineChannel;
 
 /// Callback and channel state for one registered sequence.
-/// Event storage and reader context are borrowed until the sequence is removed.
+/// Event storage, callback and reader context remain borrowed while the driver references the sequence.
 typedef struct EngineSequence {
     struct EngineSequence *next;         ///< Next registered sequence in the driver list.
     SequenceControlState *readerContext; ///< Borrowed playback and queued-control context.
@@ -50,7 +53,7 @@ typedef struct EngineSequence {
     f64 fadeRemaining;                   ///< Seconds remaining in the current master-volume fade.
     f64 fadeRate;                        ///< Master-volume change per second during the fade.
     f64 fadeLevel;                       ///< Current normalized master-volume fade level.
-    s8 eventLength;                      ///< Length of the pending event, or a negative end marker.
+    s8 eventLength;                      ///< Pending event byte length; zero means no event, and completion is carried by eventDelay.
     u8 eventLimit;                       ///< Reader-specific event limit; not an allocation-size guarantee.
     u8 unknown1F2[2];
     u8 *eventBuffer; ///< Caller-owned event storage.
@@ -69,5 +72,10 @@ typedef char EngineSequenceFadeRateOffsetCheck[((u32) & ((EngineSequence *)0)->f
 typedef char EngineSequenceFadeLevelOffsetCheck[((u32) & ((EngineSequence *)0)->fadeLevel == 0x1E8) ? 1 : -1];
 
 typedef char EngineSequenceEventLimitOffsetCheck[((u32) & ((EngineSequence *)0)->eventLimit == 0x1F1) ? 1 : -1];
+
+typedef char EngineSequenceContextOffsetCheck[((u32) & ((EngineSequence *)0)->readerContext == 4) ? 1 : -1];
+typedef char EngineSequenceReaderOffsetCheck[((u32) & ((EngineSequence *)0)->eventReader == 8) ? 1 : -1];
+typedef char EngineSequenceBufferOffsetCheck[((u32) & ((EngineSequence *)0)->eventBuffer == 0x1F4) ? 1 : -1];
+typedef char EngineSequenceDelayOffsetCheck[((u32) & ((EngineSequence *)0)->eventDelay == 0x1F8) ? 1 : -1];
 
 #endif

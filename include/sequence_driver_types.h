@@ -53,4 +53,6 @@ typedef char VoicePlayerSizeCheck[(sizeof(VoicePlayer) == 0x28) ? 1 : -1];
 typedef char VoicePlayerSequencesOffsetCheck[((u32) & ((VoicePlayer *)0)->sequences == 0x18) ? 1 : -1];
 typedef char VoicePlayerPoolOffsetCheck[((u32) & ((VoicePlayer *)0)->voices == 0x20) ? 1 : -1];
 
+typedef char VoicePlayerMasterVolumeOffsetCheck[((u32) & ((VoicePlayer *)0)->masterVolume == 0x24) ? 1 : -1];
+
 #endif
