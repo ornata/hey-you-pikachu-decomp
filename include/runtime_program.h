@@ -7,6 +7,8 @@
 #include <ultra64.h>
 
 /// Execute a runtime program's current lifecycle operation.
+/// \pre Initialization runs after runtime resource setup; update and drawing require an initialized program.
+/// \note Only program zero is present in the retained table. The hooks borrow current runtime state.
 /// \returns Nothing.
 typedef void (*RuntimeProgramCallback)(void);
 
@@ -18,7 +20,7 @@ typedef struct RuntimeProgramCallbackSlot {
     u8 skipped[12]; ///< Storage between this callback and the same slot of the next program.
 } RuntimeProgramCallbackSlot;
 
-/// Initialization-slot view; callbacks must remain callable while their program is active.
+/// Initialization-slot view for program zero; callbacks remain callable while the program is active.
 /// \note Original identifier: \c D_80063828 (0x80063828).
 extern RuntimeProgramCallbackSlot gRuntimeProgramInitializeEntries[];
 /// Update-slot view of the same program table.

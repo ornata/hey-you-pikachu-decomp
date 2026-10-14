@@ -102,3 +102,10 @@ under `make verify`. `python3 tools/item_callbacks.py --json` lists the targets.
 The explicit table extents come from the C catalog and mode dispatcher; linker
 symbol sizes also include or omit neighboring data and do not establish these bounds.
 Alternate tables, resource validity and callback side effects are outside the check.
+
+`make check-scene-callbacks` checks runtime program zero and the sampler and optional
+initializer of each of the 23 retained scene configurations. It resolves targets
+within their overlay section and checks that the linked scene catalog agrees with
+the source's explicit overlay selection. `python3 tools/scene_callbacks.py --json`
+lists the targets. This gate excludes cell lifecycle/event lists, alternate programs
+and resource validity.

@@ -1221,3 +1221,30 @@ releases it. Mode-dispatch postprocessing can therefore still inspect the state
 after shrinking disposal requests destruction. Borrowed pointers must not survive
 the actual sweep. These contracts concern the retained tables; alternate callbacks
 and arbitrary callback side effects are not validated by the signature checker.
+
+### Runtime and scene entry callback agreement
+
+The retained runtime table contains one 0x10-stride program: update at 0x80063820,
+draw at 0x80063824, initialization at 0x80063828 and a trailing zero word. All
+three callable entries are `void (void)`. Every written transition request selects
+program zero; accepting an arbitrary integer is not a table-bounds guarantee.
+The existing interior views preserve their original symbols and do not imply a
+complete allocation or additional programs.
+
+The 23-entry scene configuration catalog selects resources from distinct overlays
+that reuse virtual addresses. The new `make check-scene-callbacks` gate verifies
+all 49 populated runtime/scene entry hooks, resolving each scene target within its
+selected linked section and comparing each linked catalog pointer with the source's
+explicit overlay-plus-offset expression. It never chooses a scene function from
+virtual address alone. Tests include 23 overlays sharing one callback address, an
+incompatible target in the last overlay and a source/linker catalog disagreement.
+
+Scene sampling returns a nonnegative cell-type index, with zero representing an
+empty cell. The sampler's resources and callable code remain borrowed from the
+loaded scene. Scene initialization runs after common gameplay setup; area-owned
+resources must be released before repeating it. Named scene-initialization and
+cell-lifecycle callback types now express these contracts. Cell initialization
+receives a region with bounds and terrain established; cleanup runs before the
+region is freed and associated hierarchy destruction is requested. Their field
+offsets are checked. Cell lifecycle/event target tables still need a separate audit
+of their authored extents; the entry-hook gate does not claim to cover them.

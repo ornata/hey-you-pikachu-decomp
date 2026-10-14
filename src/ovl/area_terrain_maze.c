@@ -2108,7 +2108,7 @@ void mazeInitialize(void) {
 /// Release the previous area-owned objects before repeating scene initialization.
 /// \note Original decompilation identifier: \c func_8010E53C (0x8010E53C).
 void areaRunSceneInitializer(void) {
-    void (*initializer)(void);
+    SceneInitializeCallback initializer;
 
     initializer = gCurrentAreaConfiguration->initializeScene;
     if (initializer != NULL) {

@@ -13,8 +13,15 @@
 /// \param x World-space X coordinate.
 /// \param y World-space Y coordinate.
 /// \param z World-space Z coordinate.
-/// \returns The scene's occupancy classification; zero denotes an empty cell.
+/// \returns Nonnegative index into the current scene's cellTypes table; zero denotes an empty cell.
+/// \pre The scene overlay and classification resources remain loaded while the sampler is callable.
 typedef s32 (*SceneCellSampler)(f32 x, f32 y, f32 z);
+
+/// Initialize area-specific objects after common gameplay systems are ready.
+/// \pre The current scene overlay and configuration remain loaded for the call.
+/// Previously owned scene resources must be released before initialization is repeated.
+/// \returns Nothing.
+typedef void (*SceneInitializeCallback)(void);
 
 /// Borrowed coordinate table for one scene path.
 typedef struct ScenePathEntry {
@@ -67,7 +74,7 @@ typedef struct SceneConfigurationPrefix {
     s32 fogEnd;                    ///< Scene fog end value.
     u8 fogColor[4];                ///< Fog red, green, blue and alpha components.
     SceneCellSampler sampleCell;   ///< Classify a world position for maze construction.
-    void (*initializeScene)(void); ///< Optional area-specific initializer after common gameplay setup.
+    SceneInitializeCallback initializeScene; ///< Optional initializer borrowed from the loaded scene overlay.
     SceneItemPlacement *items;     ///< Borrowed, negative-kind-terminated item placements.
     AssetDescriptor
         renderAsset;            ///< Encoded area graphics and correction metadata; decoded storage is owned separately.

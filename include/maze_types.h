@@ -48,11 +48,18 @@ typedef struct MazeNode {
     struct MazeNode *linkedNode;  ///< Borrowed region associated by a configured event link.
 } MazeNode;
 
+/// Initialize or release resources associated with a terminal maze region.
+/// \param node Borrowed live region address; initialization sees established bounds and terrain,
+/// while cleanup runs before the region and its associated objects are released.
+/// \returns Nothing.
+/// \note The callback and its scene resources must remain loaded until the region is released.
+typedef void (*SceneCellLifecycleHandler)(u8 *node);
+
 /// Borrowed resources and lifecycle callbacks for one occupancy-sampler result.
 typedef struct SceneCellType {
     MazeGrid *terrain;        ///< Terrain surface assigned to the terminal region.
-    void (*initialize)(u8 *); ///< Optional initializer receiving the new region address.
-    void (*leave)(u8 *);      ///< Optional cleanup receiving the region before release.
+    SceneCellLifecycleHandler initialize; ///< Optional initializer receiving the new region address.
+    SceneCellLifecycleHandler leave; ///< Optional cleanup receiving the region before release.
     u8 *objectTemplate;       ///< Borrowed hierarchy template for the region's model.
     s32 unknown010;           ///< Offset 0x10; purpose remains unresolved.
 } SceneCellType;
@@ -74,4 +81,6 @@ typedef char MazeMinimumOffsetCheck[(((u32) & ((MazeNode *)0)->x) == 8) ? 1 : -1
 typedef char MazeExtentOffsetCheck[(((u32) & ((MazeNode *)0)->w) == 0x14) ? 1 : -1];
 typedef char MazeDepthOffsetCheck[(((u32) & ((MazeNode *)0)->depth) == 0x40) ? 1 : -1];
 typedef char MazeLinkedNodeOffsetCheck[(((u32) & ((MazeNode *)0)->linkedNode) == 0x4C) ? 1 : -1];
+typedef char SceneCellInitializeOffsetCheck[((u32) & ((SceneCellType *)0)->initialize == 4) ? 1 : -1];
+typedef char SceneCellLeaveOffsetCheck[((u32) & ((SceneCellType *)0)->leave == 8) ? 1 : -1];
 #endif
