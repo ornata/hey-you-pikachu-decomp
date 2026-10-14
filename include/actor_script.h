@@ -93,14 +93,7 @@ typedef struct ActorScriptState {
     ActorActionCueCommand *primaryCueCommand;     ///< Borrowed pending command in the primary cue program.
     ActorActionCueCommand *lastPrimaryCueProgram; ///< Borrowed primary program retained to detect repeated selection.
     ActorActionCueCommand *secondaryCueCommand;   ///< Borrowed pending command in the secondary cue program.
-    s32 actionScriptId;                           ///< Current action-script identifier, or -1 when stopped.
-    f32 actionScriptElapsed;                      ///< Elapsed action-script time in seconds.
-    f32 actionScriptDuration;                     ///< Time limit in seconds; negative means unlimited.
-    f32 actionScriptCommandTime;                  ///< Command clock held while the current command waits.
-    ActionScriptCommand *actionScriptCommand;     ///< Borrowed command cursor, or null when stopped.
-    s32 actionScriptSoundHandle;                  ///< Sound playback tracked by the sequencer, or zero.
-    u32 actionScriptLastRequestId;                ///< Last recorded action request, or zero before a request.
-    u32 actionScriptPendingRequestId;             ///< Action request awaited by the command, or zero.
+    ActionScriptState actionScript; ///< Owned timed sequencer state borrowing its command resource.
     s32 soundHandles[4]; ///< Four tracked spatial playback handles; zero denotes an empty slot.
     s32 nextSoundSlot;   ///< Next slot to consider for tracked spatial playback.
     s32 trackedVoice;    ///< Separately tracked character voice playback handle.
@@ -216,14 +209,15 @@ ACTOR_SCRIPT_OFFSET_CHECK(ActorSecondaryCueClockOffsetCheck, ActorScriptState, s
 ACTOR_SCRIPT_OFFSET_CHECK(ActorPrimaryCueCommandOffsetCheck, ActorScriptState, primaryCueCommand, 0x14C);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorLastPrimaryCueProgramOffsetCheck, ActorScriptState, lastPrimaryCueProgram, 0x150);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorSecondaryCueCommandOffsetCheck, ActorScriptState, secondaryCueCommand, 0x154);
-ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionScriptIdOffsetCheck, ActorScriptState, actionScriptId, 0x158);
-ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionElapsedOffsetCheck, ActorScriptState, actionScriptElapsed, 0x15C);
-ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionDurationOffsetCheck, ActorScriptState, actionScriptDuration, 0x160);
-ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionCommandTimeOffsetCheck, ActorScriptState, actionScriptCommandTime, 0x164);
-ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionCommandOffsetCheck, ActorScriptState, actionScriptCommand, 0x168);
-ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionSoundOffsetCheck, ActorScriptState, actionScriptSoundHandle, 0x16C);
-ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionLastRequestOffsetCheck, ActorScriptState, actionScriptLastRequestId, 0x170);
-ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionPendingRequestOffsetCheck, ActorScriptState, actionScriptPendingRequestId,
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateSequencerOffsetCheck, ActorScriptState, actionScript, 0x158);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionScriptIdOffsetCheck, ActorScriptState, actionScript.index, 0x158);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionElapsedOffsetCheck, ActorScriptState, actionScript.elapsed, 0x15C);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionDurationOffsetCheck, ActorScriptState, actionScript.duration, 0x160);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionCommandTimeOffsetCheck, ActorScriptState, actionScript.commandTime, 0x164);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionCommandOffsetCheck, ActorScriptState, actionScript.command, 0x168);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionSoundOffsetCheck, ActorScriptState, actionScript.soundHandle, 0x16C);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionLastRequestOffsetCheck, ActorScriptState, actionScript.lastRequestId, 0x170);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionPendingRequestOffsetCheck, ActorScriptState, actionScript.pendingRequestId,
                           0x174);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateSoundHandlesOffsetCheck, ActorScriptState, soundHandles, 0x178);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateNextSoundSlotOffsetCheck, ActorScriptState, nextSoundSlot, 0x188);

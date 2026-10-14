@@ -3177,9 +3177,7 @@
         "square_root.h",
         "vector_metrics.h"
       ],
-      "matching_exceptions": {
-        "scriptVmPushInteger calls": "The mailbox acknowledgement command supplies an unused third actor argument; a void compatibility declaration retains the original argument setup."
-      },
+      "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "actor + 0xC": [

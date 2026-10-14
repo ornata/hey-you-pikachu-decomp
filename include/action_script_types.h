@@ -25,7 +25,7 @@ typedef struct ActionScriptCommand {
 } ActionScriptCommand;
 
 /// Actor-owned sequencer state beginning at actor-state offset 0x158.
-/// This is an interior view of ActorScriptState, not a separately allocated record.
+/// Embedded as ActorScriptState.actionScript; it is not separately allocated.
 /// The command cursor borrows its resource and does not own command storage.
 /// Stopping command execution does not imply that the last requested action ended.
 typedef struct ActionScriptState {
@@ -46,6 +46,8 @@ struct ActorScriptState;
 /// \param state Actor-owned model and action state.
 /// \param script Actor-owned sequencer state with a valid current command.
 /// \returns Nonzero when the command may advance, or zero to retry on a later frame.
+/// \pre State must belong to object, and script must be that state's embedded sequencer.
+/// All arguments are borrowed for the call; command storage must outlive playback.
 typedef s32 (*ActionScriptCommandHandler)(u8 *object, struct ActorScriptState *state, ActionScriptState *script);
 
 typedef char ActionScriptCommandSizeCheck[(sizeof(ActionScriptCommand) == 0x10) ? 1 : -1];

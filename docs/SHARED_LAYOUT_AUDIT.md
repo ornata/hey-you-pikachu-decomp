@@ -936,3 +936,28 @@ The callback documentation describes purpose, parameters, borrowed lifetimes
 and clock mutation. Opcode behavior, control flow, resource bytes and original
 function/address notes are preserved. The full handler conversion, redundant
 state-cast removal and contract changes each passed all 483 original objects.
+
+## Embedded action sequencer and native-callback constraints
+
+`ActorScriptState` now embeds `ActionScriptState actionScript` at 0x158,
+replacing eight duplicate scalar/pointer declarations. The sequencer takes
+`&state->actionScript` directly; model initialization and query consumers use
+the same shared member. All eight absolute member checks remain and a check
+for the complete embedded record's start is added. The state remains 0x408
+bytes, and the sequencer remains 0x20 bytes ending before tracked sounds at
+0x178. Its callback contract now requires actor, state and embedded sequencer
+to refer to the same live actor, with borrowed command resources. No temporary
+compatibility aliases remain. Every source-unit migration and their removal
+passed the full original-object baseline.
+
+The player/world native-command family was also audited against the retained
+overlay table: all 74 actor-only functions appear as callback addresses, with
+matching entries spanning 0x8012B4C8 through 0x8012B818 among other native
+commands. The VM dispatcher supplies actor and context. Adding an unused
+`ScriptVm *` second formal failed the ROM gate for every one of these 74
+functions in individual trials, not merely as a combined rewrite. All were
+restored. The shared callback now explicitly documents the incompatible
+formal signatures and target-ABI dependency. A portable common signature
+requires further compiler parameter/register evidence; green lexical checks
+do not establish callback compatibility. Two stale push-integer compatibility
+notes are removed because those callers now use the canonical two-argument API.

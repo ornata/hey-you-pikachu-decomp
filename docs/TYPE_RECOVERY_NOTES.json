@@ -69,10 +69,7 @@
       "actorConsumeHeldItem": "The item transformation result and cause are s32. The caller retains an unused third object pointer through a compatibility declaration."
     },
     "src/ovl/actor_script_player_world.c": {
-      "actorScriptPushSelfHandle": "scriptVmPushInteger returns void. An unprototyped compatibility declaration retains this caller's unused third actor argument; a two-argument prototype rejects the retained call."
-    },
-    "src/ovl/actor_script_messages_items.c": {
-      "scriptVmPushInteger calls": "The mailbox acknowledgement command supplies an unused third actor argument; a void compatibility declaration retains the original argument setup."
+      "native callback signatures": "All 74 actor-only native handlers in this source are registered in the linked command table. Adding ScriptVm *unusedVm as a second formal fails ROM matching individually for every handler; all trials were reverted. Dispatch supplies actor and context through ScriptNativeCommand, so the incompatible formal signatures remain an explicit target-ABI exception. Next evidence: isolate IDO parameter-home/register allocation without changing handler behavior or dispatch bytes."
     },
     "src/ovl/actor_script_action_commands.c": {
       "scriptVmPushInteger calls": "A native command supplies an unused third actor argument; a void compatibility declaration retains the original argument setup."

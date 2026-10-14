@@ -175,7 +175,7 @@ f32 objectGetWorldCoordinate(u8 *object, s32 axis) {
 /// \note Original decompilation identifier: \c func_801174DC (0x801174DC).
 f32 actionScriptGetElapsedTime(u8 *object) {
     u8 *objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
-    return ((ActorScriptState *)objectState)->actionScriptElapsed;
+    return ((ActorScriptState *)objectState)->actionScript.elapsed;
 }
 
 /// Get the time limit of an object's current action script.
@@ -184,7 +184,7 @@ f32 actionScriptGetElapsedTime(u8 *object) {
 /// \note Original decompilation identifier: \c func_801174E8 (0x801174E8).
 f32 actionScriptGetDuration(u8 *object) {
     u8 *objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
-    return ((ActorScriptState *)objectState)->actionScriptDuration;
+    return ((ActorScriptState *)objectState)->actionScript.duration;
 }
 
 /// Get the identifier of an object's current action script.
@@ -193,7 +193,7 @@ f32 actionScriptGetDuration(u8 *object) {
 /// \note Original decompilation identifier: \c func_801174F4 (0x801174F4).
 s32 actionScriptGetId(u8 *object) {
     u8 *objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
-    return ((ActorScriptState *)objectState)->actionScriptId;
+    return ((ActorScriptState *)objectState)->actionScript.index;
 }
 
 /// Get the collision result of an actor's latest movement update.

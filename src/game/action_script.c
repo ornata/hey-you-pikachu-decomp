@@ -129,7 +129,7 @@ s32 actionScriptUpdate(u8 *object) {
     ActionScriptState *script;
 
     state = ((RuntimeObjectPrefix *)object)->state.actor;
-    script = (ActionScriptState *)&state->actionScriptId;
+    script = &state->actionScript;
     step = gRuntimeFrameSeconds;
     if (actionScriptIsStoppedAndLastActionEnded(object) == 0) {
         script->elapsed += step;
@@ -176,14 +176,14 @@ void actionScriptStart(u8 *object, s32 scriptId) {
     ActorScriptState *actorState;
 
     actorState = ((RuntimeObjectPrefix *)object)->state.actor;
-    actorState->actionScriptCommand = gActionScriptPrograms[scriptId];
-    actorState->actionScriptLastRequestId = 0;
-    actorState->actionScriptPendingRequestId = 0;
-    actorState->actionScriptSoundHandle = 0;
-    actorState->actionScriptId = scriptId;
-    actorState->actionScriptCommandTime = 0.0f;
-    actorState->actionScriptElapsed = 0.0f;
-    actorState->actionScriptDuration = -1.0f;
+    actorState->actionScript.command = gActionScriptPrograms[scriptId];
+    actorState->actionScript.lastRequestId = 0;
+    actorState->actionScript.pendingRequestId = 0;
+    actorState->actionScript.soundHandle = 0;
+    actorState->actionScript.index = scriptId;
+    actorState->actionScript.commandTime = 0.0f;
+    actorState->actionScript.elapsed = 0.0f;
+    actorState->actionScript.duration = -1.0f;
 }
 
 /// Start an action script with a default mode for actions that inherit it.
@@ -207,7 +207,7 @@ void actionScriptStartWithMode(u8 *object, s32 scriptId, s32 mode) {
 /// \note Original decompilation identifier: \c func_8001209C (0x8001209C).
 void actionScriptSetDuration(u8 *object, f32 duration) {
     ActorScriptState *actorState = ((RuntimeObjectPrefix *)object)->state.actor;
-    actorState->actionScriptDuration = duration;
+    actorState->actionScript.duration = duration;
 }
 
 /// Stop script command execution and request the current action to finish.
@@ -220,15 +220,15 @@ s32 *actionScriptStop(u8 *object) {
 
     actionRequestLoopExit(object);
     actionCancelPendingRequest(object);
-    state->actionScriptCommand = NULL;
+    state->actionScript.command = NULL;
     script = state;
     state = NULL;
-    script->actionScriptId = -1;
+    script->actionScript.index = -1;
     // Debug null check; its body is compiled out, but its block keeps the
     // return add out of the store block.
     if (script == NULL) {
     }
-    return &script->actionScriptId;
+    return &script->actionScript.index;
 }
 
 /// Check whether script command execution has stopped.
@@ -237,7 +237,7 @@ s32 *actionScriptStop(u8 *object) {
 /// \note Original decompilation identifier: \c func_800120F0 (0x800120F0).
 s32 actionScriptIsStopped(u8 *object) {
     ActorScriptState *actorState = ((RuntimeObjectPrefix *)object)->state.actor;
-    if (actorState->actionScriptCommand == NULL) {
+    if (actorState->actionScript.command == NULL) {
         return 1;
     }
     return 0;
@@ -252,11 +252,11 @@ s32 actionScriptHasLastActionEnded(u8 *object) {
     u32 currentRequestId;
 
     actorState = ((RuntimeObjectPrefix *)object)->state.actor;
-    if (actorState->actionScriptLastRequestId == 0) {
+    if (actorState->actionScript.lastRequestId == 0) {
         return 0;
     }
     currentRequestId = actionGetStoredRequestId(object);
-    if ((currentRequestId == 0) || (actorState->actionScriptLastRequestId < currentRequestId)) {
+    if ((currentRequestId == 0) || (actorState->actionScript.lastRequestId < currentRequestId)) {
         return 1;
     }
     return 0;
