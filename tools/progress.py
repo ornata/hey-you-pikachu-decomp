@@ -2,7 +2,7 @@
 """Report decompilation progress.
 
 Counting model (post re-split): every not-yet-matched function has a
-per-function asm file under asm/nonmatchings/ (splat omits the file
+per-function asm file under build/asm/nonmatchings/ (splat omits the file
 once the function lives in C), so:
 
     unmatched = nonmatchings .s files
@@ -39,7 +39,7 @@ def main() -> None:
     # unmatched = pragmas still referenced from C (stale .s files linger
     # on disk until the next re-split, so files alone over-count)
     import re as _re
-    PRAG = _re.compile(r'#pragma GLOBAL_ASM\("(asm/nonmatchings/[^"]+)"\)')
+    PRAG = _re.compile(r'#pragma GLOBAL_ASM\("((?:build/asm/nonmatchings|src/nonmatching)/[^"]+)"\)')
     referenced = set()
     for c in ROOT.glob("src/**/*.c"):
         referenced.update(PRAG.findall(strip_comments(c.read_text())))
@@ -62,7 +62,7 @@ def main() -> None:
         matched += len(CDEF.findall(text)) + len(KRDEF.findall(text))
 
     excluded = 0
-    for s in ROOT.glob("asm/**/*.s"):
+    for s in ROOT.glob("build/asm/**/*.s"):
         if "nonmatchings" in s.parts or "data" in s.parts:
             continue
         excluded += len(GLABEL.findall(s.read_text(errors="ignore")))

@@ -12,10 +12,10 @@ class FallbackTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             files = {
-                'src/game.c': '#pragma GLOBAL_ASM("asm/nonmatchings/f.s")\n#pragma GLOBAL_ASM("asm/data/d.s")\n',
-                'asm/nonmatchings/f.s': 'glabel fallback\n',
-                'asm/data/d.s': '.word 0\n',
-                'asm/os/unit.s': 'nonmatching other, 0x10\nglabel other\nnonmatching next, 0x20\nglabel next\n',
+                'src/game.c': '#pragma GLOBAL_ASM("build/asm/nonmatchings/f.s")\n#pragma GLOBAL_ASM("build/asm/data/d.s")\n',
+                'build/asm/nonmatchings/f.s': 'glabel fallback\n',
+                'build/asm/data/d.s': '.word 0\n',
+                'build/asm/os/unit.s': 'nonmatching other, 0x10\nglabel other\nnonmatching next, 0x20\nglabel next\n',
             }
             for relative, text in files.items():
                 path = root / relative
@@ -23,8 +23,8 @@ class FallbackTests(unittest.TestCase):
                 path.write_text(text)
             records, data = inventory(root)
             self.assertEqual(sorted(row[2] for row in records), ['fallback', 'next', 'other'])
-            self.assertEqual(data, {'asm/data/d.s'})
-            (root / 'asm/nonmatchings/f.s').unlink()
+            self.assertEqual(data, {'build/asm/data/d.s'})
+            (root / 'build/asm/nonmatchings/f.s').unlink()
             self.assertIn('(assembly not generated)', {row[2] for row in inventory(root)[0]})
 
 

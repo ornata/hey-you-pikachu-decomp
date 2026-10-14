@@ -24,7 +24,7 @@ Remaining game assembly fallbacks are listed by `make asm-fallbacks`.
 - Use the Ghidra MCP (see ../../AGENTS.md). Optional external helpers include m2c,
   asm-differ and decomp-permuter; obtain them separately when needed.
 - `src/nonmatching/` holds the ROM's own assembly for functions with no matching C yet;
-  SDK assembly belongs only in ignored `asm/`, never `src/nonmatching/`.
+  SDK assembly belongs only in ignored `build/asm/`, never `src/nonmatching/`.
 
 ## Incremental builds and verification
 

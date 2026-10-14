@@ -1,5 +1,5 @@
 # splat configuration — the single source of truth for the ROM layout.
-# asm/, build/pikachu.ld, build/undefined_*_auto.txt and assets/ are all
+# build/asm/, build/pikachu.ld, build/undefined_*_auto.txt and build/assets/ are all
 # GENERATED from this file + symbol_addrs.txt + your own ROM:
 #
 #   uv run splat split pikachu.yaml
@@ -18,10 +18,11 @@ options:
   # any non-ASCII byte makes spimdisasm fall back to words, which reassemble exactly.
   string_encoding: ASCII
 
-  asm_path: asm
+  asm_path: build/asm
   src_path: src
   build_path: build
-  asset_path: assets
+  cache_path: build/splat-cache
+  asset_path: build/assets
   ld_script_path: build/pikachu.ld
   symbol_addrs_path: symbol_addrs.txt
   undefined_funcs_auto_path: build/undefined_funcs_auto.txt

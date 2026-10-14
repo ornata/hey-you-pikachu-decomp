@@ -45,16 +45,14 @@ automatically; you can skip `nix develop` and run `make -j8` directly.
 
 Effectively, the situation is like this.
 
-```
- rom/baserom.us.z64 ─┬─(extract)──> assets/*.bin ───────────────┐
-                     │                                          │
- asm/*.s ────────────┼────────(GNU as)──> build/asm/*.o ────────┤
-                     │                                          ├─(ld + build/pikachu.ld)─> ELF
- src/*.c ──(asm-processor + IDO 5.3 cc)─> build/src/*.o ────────┘        │
-                                                                   (objcopy)
-                                                                         ▼
-                                                              build/pikachu.z64
-                                                                 sha1 == retail
+```text
+rom/baserom.us.z64 --(splat)--> build/asm/, build/assets/, build/pikachu.ld
+build/asm/*.s     --(GNU as)--> build/asm/*.o
+build/assets/*   --(GNU ld)--> build/assets/*.o
+src/**/*.c       --(IDO 5.3 + asm-processor)--> build/src/**/*.o
+
+build/**/*.o + linker/*.ld + build/pikachu.ld --(GNU ld)--> build/pikachu.elf
+build/pikachu.elf --(objcopy)--> build/pikachu.z64 --(SHA-1)--> retail match
 ```
 
 * **IDO 5.3** is the original 1998 SGI IRIX compiler, statically
@@ -70,7 +68,7 @@ Base split (yaml/symbols/asm layout) derives from
 [farisawan-2000/hey_you_pikachu].
 
 SDK-related headers in `include/` are local inputs excluded from version control;
-SDK implementations are generated under ignored `asm/` from the supplied ROM.
+SDK implementations are generated under ignored `build/asm/` from the supplied ROM.
 
 ## Status
 

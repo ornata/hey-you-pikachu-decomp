@@ -30,7 +30,7 @@ def inventory(root=ROOT):
             else:
                 data.add(relative)
 
-    for assembly in sorted((root / 'asm').rglob('*.s')):
+    for assembly in sorted((root / 'build/asm').rglob('*.s')):
         relative = str(assembly.relative_to(root))
         if relative in seen or 'nonmatchings' in assembly.parts or 'data' in assembly.parts:
             continue
@@ -46,8 +46,8 @@ def main():
     missing = sum(name == '(assembly not generated)' for _, _, name in records)
     print(f'ASM fallbacks: {len(records) - missing} function entries; '
           f'{len(data)} data-only GLOBAL_ASM blocks.')
-    if missing or not (ROOT / 'asm').exists():
-        print(f'ASM fallback inventory incomplete: generate asm/ with make split '
+    if missing or not (ROOT / 'build/asm').exists():
+        print(f'ASM fallback inventory incomplete: generate build/asm/ with make split '
               f'({missing} unresolved GLOBAL_ASM paths).')
     if args.verbose:
         for source, assembly, name in records:

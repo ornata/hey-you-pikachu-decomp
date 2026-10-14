@@ -6,9 +6,9 @@ from three kinds of objects:
 
    ROM offset   content                  built from
    ----------   ----------------------   -------------------------
-   0x000000     header + boot (IPL3)     asm/header.s, assets/boot.bin
-   0x001000     game code (~300 KB)      asm/*.s + src/*.c   <- the decomp
-   0x04B790     assets (~15.7 MB)        assets/4B790.bin
+   0x000000     header + boot (IPL3)     build/asm/header.s, build/assets/boot.bin
+   0x001000     game code (~300 KB)      build/asm/*.s + src/*.c   <- the decomp
+   0x04B790     assets (~15.7 MB)        build/assets/4B790.bin
    0x1000000    end of 16 MB ROM
 
 The two .bin slices are data we have not split further yet (the boot

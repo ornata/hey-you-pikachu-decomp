@@ -57,7 +57,7 @@ should be recorded here and at the site with the sanitizer name.
    `src/main.c`.
 
 5. **No C runtime.** `main` returns `void`, is called from hand-written
-   assembly (`asm/entry.s`) with BSS cleared manually and a stack
+   assembly (`build/asm/entry.s`) with BSS cleared manually and a stack
    pointer picked from a linker symbol. Freestanding, not hosted.
 
 6. **Stores below the stack pointer.** IDO "homes" unused incoming
