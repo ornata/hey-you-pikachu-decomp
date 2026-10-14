@@ -27,13 +27,11 @@ explains the distinction between new contributions and preexisting material.
 Applicable law and permission depend on jurisdiction and circumstances; obtain
 qualified review before public distribution or selecting a project-wide license.
 
-## History and local files
+## Local files
 
-Earlier commits and backup branches still contain removed material. Publish a
-tracked-tree export into a new repository with no imported history. Ignored local
-files are not part of that export and must not be copied into it. Do not publish
+Ignored local inputs are not part of the tracked repository. Do not publish
 ROMs, generated SDK assembly, assets, local headers, compiler binaries, or build
-artifacts.
+artifacts. Review tracked files before publishing.
 
 `make verify-clean` detects selected hygiene problems. It cannot prove that
 tracked source contains no protected expression or certify legal safety.

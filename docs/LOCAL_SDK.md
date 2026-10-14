@@ -33,15 +33,9 @@ an exported repository. The ROM gate verifies the complete result, including
 these generated sections. Game object comparisons verify that this change did
 not alter the retained game code.
 
-## Preparing the new repository
+## Publication checks
 
-Use a tracked-tree export of the accepted cleanup commit, such as `git archive`,
-then initialize a new repository in the exported directory. Do not copy this
-working directory recursively: it contains ignored local dependencies and ROM
-material. Do not push this repository's old refs, branches, or tags to the new
-repository. The cleanup branch still has history containing the removed files.
-
-Run `make verify-clean` before exporting. It checks accidental inclusion of SDK
-paths and other publication hygiene issues; it is not a copyright assessment.
-Review the export itself before publishing. See `LEGAL_STATUS.md` for the limits
-of this cleanup.
+Run `make verify-clean` before publishing. Ignored ROMs, generated SDK assembly,
+assets, local headers, compilers and build artifacts must remain local. The check
+covers selected hygiene issues, not copyright clearance; see
+[Rights and distribution status](LEGAL_STATUS.md).

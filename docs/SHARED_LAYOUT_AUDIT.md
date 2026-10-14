@@ -1,9 +1,8 @@
 # Shared layout evidence
 
-This audit records the scene, maze, player-control and textured-rectangle recovery
-after the C interface sweep. It does not certify the remaining project-wide
-layout work as complete. Shared types describe established storage and contracts;
-partial views do not establish an allocation size for their containing resource.
+This audit records recovered storage, ownership and interface evidence across
+the game subsystems. Unobserved semantics remain explicit in the recovery ledgers.
+Shared types describe established storage and contracts; partial views do not establish an allocation size for their containing resource.
 
 | Record | Established extent | Evidence and ownership |
 | --- | --- | --- |
@@ -1444,7 +1443,6 @@ that contradict the target's matching call representation.
 | LLVM-style header purpose and usable dependencies | All 293 non-SDK headers have Doxygen file-purpose summaries and compile independently under the pinned target compiler. The audit corrected m2c_macros.h's missing integer-type dependency. |
 | Keep verification strict | Object comparison, header-dependency scanning, publication checks and frozen-name checking are unchanged from main. Makefile changes add checks without changing compiler flags or relaxing relocation-addend comparison. |
 | Preserve ROM and original objects | Clean default build, make verify against the immutable saved build, and direct ROM byte comparison are required for acceptance; all 483 objects are compared. |
-| Leave integration separate | Work remains on codex/shared-layout-contracts; main is not rewritten by this continuation. |
 
 The final audit removed six stale matching notes for already-canonical camera,
 object-flag, appearance, item-transform and VM calls. Current source and
