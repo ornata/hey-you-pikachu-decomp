@@ -84,3 +84,9 @@ record member in `docs/OPAQUE_LAYOUTS.json`. It runs under `make verify`. Review
 known layout facts, missing evidence and matching constraints manually before
 changing a declaration's review; the tool never accepts or refreshes entries.
 Source-line movement does not invalidate a declaration's review.
+
+`make check-native-commands` checks every retained actor native-command table
+target against its written callback signature and runs under `make verify`.
+Use `python3 tools/native_commands.py --json` for the current selector catalog.
+The check requires the linked build; it does not infer stack effects or cover
+arbitrary caller-supplied VM tables.

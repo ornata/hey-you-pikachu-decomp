@@ -167,9 +167,11 @@ an aligned C word or numeric union: that changes the value stride.
 `ScriptVm` retains the original `0x2C8` extent. The value-stack depth and pointer
 are at `0x18` and `0x20`; saved depths, return offsets, and local-frame bases
 start at `0x28`, `0x12C`, and `0x22C`. The command table at `0x2AC` contains
-callbacks invoked with both the actor and its context. Unknown regions remain
-explicitly unknown. Native callback signatures describe the dispatch ABI;
-some native implementations consume only the actor argument.
+callbacks invoked with the actor; each command accesses its retained VM through
+actor state. The retained table at `0x8012B400` has 278 handlers and reserved null
+selector zero. All handlers share the actor-only callback signature.
+`python3 tools/native_commands.py --json` lists selectors, function names,
+addresses and source locations. Unknown regions remain explicitly unknown.
 
 Each `VoiceWord` at `0x8010452C` occupies sixteen bytes: display name, device
 text, command category, and command value. The former table symbols at

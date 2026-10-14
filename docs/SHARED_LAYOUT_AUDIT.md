@@ -553,10 +553,11 @@ unchanged. No matching exception was introduced.
 
 ## Native-command context and canonical actor object
 
-`ScriptNativeCommand` describes dispatch with a typed `ScriptVm` context. Ghidra
-at `0x8011BD50` confirms selection from the context's command table and passage
-of the actor and retained context to the chosen resident target. Dispatch uses
-that type directly without changing selectors or scheduling results.
+`ScriptNativeCommand` describes dispatch with the actor pointer. The typed VM
+context selects the command table and handlers access the retained context
+through actor state. The VM pointer live in register a1 at 0x8011BD50 is not
+evidence for an additional callback parameter: the actor-only call matches all
+original objects and agrees with every retained handler definition.
 
 All remaining `ActorScriptObject.scriptState` consumers now use
 `RuntimeObjectPrefix.state.actor`, including message/item commands and target
@@ -950,17 +951,12 @@ to refer to the same live actor, with borrowed command resources. No temporary
 compatibility aliases remain. Every source-unit migration and their removal
 passed the full original-object baseline.
 
-The player/world native-command family was also audited against the retained
-overlay table: all 74 actor-only functions appear as callback addresses, with
-matching entries spanning 0x8012B4C8 through 0x8012B818 among other native
-commands. The VM dispatcher supplies actor and context. Adding an unused
-`ScriptVm *` second formal failed the ROM gate for every one of these 74
-functions in individual trials, not merely as a combined rewrite. All were
-restored. The shared callback now explicitly documents the incompatible
-formal signatures and target-ABI dependency. A portable common signature
-requires further compiler parameter/register evidence; green lexical checks
-do not establish callback compatibility. Two stale push-integer compatibility
-notes are removed because those callers now use the canonical two-argument API.
+The player/world native-command family contributes 74 actor-only functions to
+the retained table. The complete native-table audit below establishes the common
+actor-only signature. Attempts to add a second VM formal changed code because
+that argument is not part of the recovered handler interface. Two stale
+push-integer compatibility notes were removed after their callers adopted the
+canonical two-argument stack API.
 
 ## Complete item-state allocation boundary
 
@@ -1018,3 +1014,27 @@ separate allocation sizes and pointer stores at child-state 0x7C. Checks retain
 the 0x80-byte child state, four-byte pointer union and controller offset, with
 camera weight additionally checked at 0xC. No allocation, callback selection
 or release behavior changes; the typed views pass all 483 original objects.
+
+## Complete retained native-command callback audit
+
+The retained table `D_8012B400` spans 0x8012B400 through 0x8012B85C: 279 words,
+with reserved null selector zero and 278 distinct non-null command targets.
+Every target resolves to a written game C definition returning s32 and accepting
+one actor pointer. Twelve handlers formerly used a signed integer actor-address
+parameter; their pointer interfaces now preserve the original target-address
+expressions internally and match all objects. Dispatch and the shared callback
+now take only the actor argument, with unchanged instruction bytes.
+
+`make check-native-commands` resolves the linked table's bounded extent and
+checks every target against its current written signature. It runs under
+`make verify`; `python3 tools/native_commands.py --json` also supplies a selector
+catalog with addresses, names and source locations. Unknown/ambiguous targets,
+unexpected nulls, missing reserved selector zero, extra parameters, integer
+address parameters and incompatible results fail the check. Tests exercise
+these boundaries independently of the ROM. The check covers this retained
+table, not arbitrary caller-supplied VM configurations or command stack effects.
+
+A live register value at a callback boundary alone is insufficient to infer an
+extra formal parameter. The complete producer/consumer audit and matching call
+representation resolve the earlier apparent native-callback ABI exception;
+its stale portability note and matching-ledger exception are removed.

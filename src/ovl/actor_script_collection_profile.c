@@ -615,11 +615,10 @@ s32 actorScriptConfigureCameraTransition(u8 *actor) {
 /// \param actor Actor address whose script VM supplies the destination kind and later receives the replacement actor handle.
 /// \returns Two, transferring execution to the transformation action handler.
 /// \note Original decompilation identifier: \c func_80120664 (0x80120664).
-s32 actorScriptStartKindTransformation(s32 actor) {
-    actorBeginScriptActionHandler((u8 *)actor, ACTOR_SCRIPT_ACTION_TRANSFORM_KIND);
+s32 actorScriptStartKindTransformation(u8 *actor) {
+    actorBeginScriptActionHandler((u8 *)((s32)actor), ACTOR_SCRIPT_ACTION_TRANSFORM_KIND);
     return 2;
 }
-
 
 /// Measure the distance between two available objects.
 /// \param actor Actor whose script VM supplies two object handles and receives their approximate three-dimensional distance, or minus one if either object is unavailable.

@@ -41,14 +41,10 @@ typedef union ScriptValue {
 
 struct ScriptVm;
 
-/// Native script command called with an actor and its retained context.
+/// Native script command called with the actor whose retained VM supplies its arguments.
 /// \param actor Actor executing the command.
-/// \param vm Script context providing command arguments and receiving results.
 /// \returns A ScriptNativeCommandResult scheduling request; other nonzero values also yield.
-/// \note Portability/UB: some retained handlers declare only the actor argument and
-/// are incompatible with this function type. Their calls rely on the target ABI
-/// ignoring the extra context argument; see docs/SHARED_LAYOUT_AUDIT.md.
-typedef s32 (*ScriptNativeCommand)(u8 *actor, struct ScriptVm *vm);
+typedef s32 (*ScriptNativeCommand)(u8 *actor);
 
 /// Borrowed program resources and stack capacity supplied when creating a VM.
 /// The observed prefix ends at 0x14; the complete resource allocation is unknown.

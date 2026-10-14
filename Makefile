@@ -225,7 +225,7 @@ compare-objects:
 .PHONY: compare-objects
 
 # BASELINE must be a previously accepted build, not the current output directory.
-verify: check check-names check-interfaces check-layouts check-sequence-bank verify-clean
+verify: check check-names check-native-commands check-interfaces check-layouts check-sequence-bank verify-clean
 	python3 -m pytest tests
 	python3 tools/source_quality.py --check-ledger
 	python3 tools/compare_objects.py $(BASELINE) $(BUILD)
@@ -250,3 +250,7 @@ check-sequence-bank:
 check-layouts:
 	python3 tools/layout_contracts.py --check
 .PHONY: check-layouts
+
+check-native-commands: $(BUILD)/pikachu.elf
+	python3 tools/native_commands.py --elf $(BUILD)/pikachu.elf
+.PHONY: check-native-commands

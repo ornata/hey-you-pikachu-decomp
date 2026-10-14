@@ -68,7 +68,7 @@ s32 actorScriptDispatchRegisteredCommand(u8 *actor) {
     s32 commandIndex = scriptVmReadIntegerOperand(vm);
     ScriptNativeCommand command = vm->commands[commandIndex];
 
-    return command(actor, vm);
+    return command(actor);
 }
 
 /// Prepend text to a string, truncating the combined text to fit its destination.
@@ -105,8 +105,8 @@ s32 actorScriptYield(u8 *actor) {
 /// \param actor Actor address whose script action is started; its VM supplies the action arguments and later receives the completion result.
 /// \returns Two, transferring script execution to the action handler.
 /// \note Original decompilation identifier: \c func_8011BEDC (0x8011BEDC).
-s32 actorScriptStartActionAndWait(s32 actor) {
-    actorBeginScriptActionHandler((u8 *)actor, ACTOR_SCRIPT_ACTION_PLAY_ACTION);
+s32 actorScriptStartActionAndWait(u8 *actor) {
+    actorBeginScriptActionHandler((u8 *)((s32)actor), ACTOR_SCRIPT_ACTION_PLAY_ACTION);
     return SCRIPT_COMMAND_WAIT_FOR_ACTION;
 }
 
@@ -114,8 +114,8 @@ s32 actorScriptStartActionAndWait(s32 actor) {
 /// \param actor Actor address whose current action must leave its loop; its VM later receives the completion result.
 /// \returns Two, transferring script execution to the action handler.
 /// \note Original decompilation identifier: \c func_8011BF00 (0x8011BF00).
-s32 actorScriptStartLoopExitAndWait(s32 actor) {
-    actorBeginScriptActionHandler((u8 *)actor, ACTOR_SCRIPT_ACTION_EXIT_ACTION_LOOP);
+s32 actorScriptStartLoopExitAndWait(u8 *actor) {
+    actorBeginScriptActionHandler((u8 *)((s32)actor), ACTOR_SCRIPT_ACTION_EXIT_ACTION_LOOP);
     return SCRIPT_COMMAND_WAIT_FOR_ACTION;
 }
 
@@ -123,8 +123,8 @@ s32 actorScriptStartLoopExitAndWait(s32 actor) {
 /// \param actor Actor address whose current action must leave its loop; its VM later receives the completion result.
 /// \returns Two, transferring script execution to the action handler.
 /// \note Original decompilation identifier: \c func_8011BF24 (0x8011BF24).
-s32 actorScriptStartLoopExitAndWaitAlternate(s32 actor) {
-    actorBeginScriptActionHandler((u8 *)actor, ACTOR_SCRIPT_ACTION_EXIT_ACTION_LOOP);
+s32 actorScriptStartLoopExitAndWaitAlternate(u8 *actor) {
+    actorBeginScriptActionHandler((u8 *)((s32)actor), ACTOR_SCRIPT_ACTION_EXIT_ACTION_LOOP);
     return SCRIPT_COMMAND_WAIT_FOR_ACTION;
 }
 
@@ -132,8 +132,8 @@ s32 actorScriptStartLoopExitAndWaitAlternate(s32 actor) {
 /// \param actor Actor address whose script action is started; its VM supplies the action arguments and later receives the completion result.
 /// \returns Two, transferring script execution to the action handler.
 /// \note Original decompilation identifier: \c func_8011BF48 (0x8011BF48).
-s32 actorScriptStartInterruptibleAction(s32 actor) {
-    actorBeginScriptActionHandler((u8 *)actor, ACTOR_SCRIPT_ACTION_PLAY_INTERRUPTIBLE_ACTION);
+s32 actorScriptStartInterruptibleAction(u8 *actor) {
+    actorBeginScriptActionHandler((u8 *)((s32)actor), ACTOR_SCRIPT_ACTION_PLAY_INTERRUPTIBLE_ACTION);
     return SCRIPT_COMMAND_WAIT_FOR_ACTION;
 }
 
@@ -141,8 +141,8 @@ s32 actorScriptStartInterruptibleAction(s32 actor) {
 /// \param actor Actor address whose script action is started; its VM supplies the action arguments and later receives the completion result.
 /// \returns Two, transferring script execution to the action handler.
 /// \note Original decompilation identifier: \c func_8011BF6C (0x8011BF6C).
-s32 actorScriptStartHeldItemThrow(s32 actor) {
-    actorBeginScriptActionHandler((u8 *)actor, ACTOR_SCRIPT_ACTION_THROW_HELD_ITEM);
+s32 actorScriptStartHeldItemThrow(u8 *actor) {
+    actorBeginScriptActionHandler((u8 *)((s32)actor), ACTOR_SCRIPT_ACTION_THROW_HELD_ITEM);
     return SCRIPT_COMMAND_WAIT_FOR_ACTION;
 }
 
@@ -150,8 +150,8 @@ s32 actorScriptStartHeldItemThrow(s32 actor) {
 /// \param actor Actor address whose script action is started; its VM supplies the action arguments and later receives the completion result.
 /// \returns Two, transferring script execution to the action handler.
 /// \note Original decompilation identifier: \c func_8011BF90 (0x8011BF90).
-s32 actorScriptStartItemAcquisition(s32 actor) {
-    actorBeginScriptActionHandler((u8 *)actor, ACTOR_SCRIPT_ACTION_ACQUIRE_ITEM);
+s32 actorScriptStartItemAcquisition(u8 *actor) {
+    actorBeginScriptActionHandler((u8 *)((s32)actor), ACTOR_SCRIPT_ACTION_ACQUIRE_ITEM);
     return SCRIPT_COMMAND_WAIT_FOR_ACTION;
 }
 
@@ -174,8 +174,8 @@ s32 actorScriptSetAttachmentMode(u8 *actor) {
 /// \param actor Actor address whose script VM supplies the eating action and later receives its result.
 /// \returns Two, transferring script execution to the action handler.
 /// \note Original decompilation identifier: \c func_8011BFF8 (0x8011BFF8).
-s32 actorScriptStartEatingHeldItem(s32 actor) {
-    actorBeginScriptActionHandler((u8 *)actor, ACTOR_SCRIPT_ACTION_EAT_HELD_ITEM);
+s32 actorScriptStartEatingHeldItem(u8 *actor) {
+    actorBeginScriptActionHandler((u8 *)((s32)actor), ACTOR_SCRIPT_ACTION_EAT_HELD_ITEM);
     return SCRIPT_COMMAND_WAIT_FOR_ACTION;
 }
 
@@ -183,8 +183,8 @@ s32 actorScriptStartEatingHeldItem(s32 actor) {
 /// \param actor Actor address whose script VM supplies an action selector followed by a repetition count and later receives the action result.
 /// \returns Two, transferring script execution to the action handler.
 /// \note Original decompilation identifier: \c func_8011C01C (0x8011C01C).
-s32 actorScriptStartCostedAction(s32 actor) {
-    actorBeginScriptActionHandler((u8 *)actor, ACTOR_SCRIPT_ACTION_PERFORM_COSTED_ACTION);
+s32 actorScriptStartCostedAction(u8 *actor) {
+    actorBeginScriptActionHandler((u8 *)((s32)actor), ACTOR_SCRIPT_ACTION_PERFORM_COSTED_ACTION);
     return SCRIPT_COMMAND_WAIT_FOR_ACTION;
 }
 
@@ -427,8 +427,8 @@ s32 actorScriptAppendWindowText(u8 *actor) {
 /// \param actor Actor whose script VM supplies the window indicator, font style, and view mode when the request can proceed; the VM receives zero after the request.
 /// \returns Two, transferring execution to the text-window action handler.
 /// \note Original decompilation identifier: \c func_8011C518 (0x8011C518).
-s32 actorScriptStartTextWindow(s32 actor) {
-    actorBeginScriptActionHandler((u8 *)actor, ACTOR_SCRIPT_ACTION_OPEN_TEXT_WINDOW);
+s32 actorScriptStartTextWindow(u8 *actor) {
+    actorBeginScriptActionHandler((u8 *)((s32)actor), ACTOR_SCRIPT_ACTION_OPEN_TEXT_WINDOW);
     return SCRIPT_COMMAND_WAIT_FOR_ACTION;
 }
 
