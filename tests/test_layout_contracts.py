@@ -6,7 +6,7 @@ import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
-from layout_contracts import inspect_records, inventory
+from layout_contracts import inspect_records, inventory, review_findings
 
 
 class LayoutInventoryTests(unittest.TestCase):
@@ -55,3 +55,35 @@ typedef struct { s32 unknown0C; } Record;
             result = inventory(root)
             self.assertEqual((result['members'], result['files']), (1, 1))
             self.assertEqual(result['findings'][0]['file'], 'include/game.h')
+
+    def test_initialized_anonymous_resource_has_stable_owner(self):
+        source = 'struct { s32 unknown0; } resource = {0};'
+        self.assertEqual(inspect_records(source, 'a.c')[0]['record'], 'resource')
+
+    def review(self, finding):
+        return dict(finding, known_facts='Four bytes after the header.', reason='Role unresolved.',
+                    next_evidence='Trace initialization and readers.',
+                    matching_constraint='Preserve width and offset.', evidence='a.h: declaration')
+
+    def test_review_accepts_line_movement_but_rejects_declaration_changes(self):
+        finding = inspect_records('struct A { s32 unknown0; };', 'a.h')[0]
+        review = self.review(finding)
+        moved = dict(finding, line=20)
+        self.assertEqual(review_findings([moved], [review]), [])
+        changed = dict(finding, declaration='u32 unknown0;')
+        errors = review_findings([changed], [review])
+        self.assertTrue(any('unreviewed' in item for item in errors))
+        self.assertTrue(any('stale' in item for item in errors))
+
+    def test_missing_and_duplicate_review_evidence_fails(self):
+        finding = inspect_records('struct A { s32 unknown0; };', 'a.h')[0]
+        review = self.review(finding)
+        review['next_evidence'] = ' '
+        errors = review_findings([finding], [review, review])
+        self.assertTrue(any('duplicate' in item for item in errors))
+        self.assertTrue(any('missing next_evidence' in item for item in errors))
+
+    def test_new_and_removed_members_require_manual_review(self):
+        finding = inspect_records('struct A { s32 unknown0; };', 'a.h')[0]
+        self.assertTrue(any('unreviewed' in item for item in review_findings([finding], [])))
+        self.assertTrue(any('stale' in item for item in review_findings([], [self.review(finding)])))

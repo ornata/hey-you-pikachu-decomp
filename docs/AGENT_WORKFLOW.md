@@ -78,3 +78,9 @@ as errors or invent types/names to make the inventory reach zero.
 Use `python3 tools/layout_contracts.py --json` to inventory offset-named opaque
 record members separately from the source-quality token counts. See
 `SHARED_LAYOUT_AUDIT.md` for the inventory's lexical scope and limitations.
+
+`make check-layouts` requires a current review of every offset-named opaque
+record member in `docs/OPAQUE_LAYOUTS.json`. It runs under `make verify`. Review
+known layout facts, missing evidence and matching constraints manually before
+changing a declaration's review; the tool never accepts or refreshes entries.
+Source-line movement does not invalidate a declaration's review.

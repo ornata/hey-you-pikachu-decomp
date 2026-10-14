@@ -774,3 +774,26 @@ the bytes and relocations. No comparator rule was relaxed.
 The opaque-member inventory is now 52 declarations across 28 files; the decrease
 comes from the presentation entry pointer's supported recovery. Other opaque
 fields retain their documented uncertainty.
+
+## Reviewed unresolved-layout ledger
+
+`OPAQUE_LAYOUTS.json` records all 52 declarations in the lexical opaque-member
+inventory, with source locations, declaration fingerprints, known layout facts,
+reasons for retaining the representation, next evidence needed and matching
+constraints. Record-specific investigations include kind 0xAF allocation and
+initialization, computed actor accesses, glyph resource consumers, audio event
+and controller paths, and resource-template symbol attributes. Defaults and
+alignment are explicitly insufficient evidence for semantic names.
+
+`make check-layouts` rejects new or changed declarations without reviews, stale
+entries, duplicates and absent evidence fields. It is part of `make verify`.
+Source-line movement is permitted; changing type, width, record or member
+identity requires review. Initialized anonymous resources use their variable
+names as stable owners. Tests cover these review boundaries in addition to
+comment/string masking, nested records, SDK exclusion and local variables.
+
+This ledger closes the missing per-declaration accounting for the inventory's
+scope. It does not prove the declarations semantically resolved, audit every
+possible opaque spelling or raw offset, or prove every callback lifetime.
+Further layout recovery must follow the recorded evidence rather than treat
+the presence of a review as proof of a complete type.

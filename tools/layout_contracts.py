@@ -26,7 +26,7 @@ def inspect_records(source, filename):
             end += 1
         if depth:
             raise ValueError(f'{filename}: unclosed record at line {code.count(chr(10), 0, start) + 1}')
-        tail = re.match(r'\s*(\w+)\s*;', code[end:])
+        tail = re.match(r'\s*(\w+)\s*(?:;|=)', code[end:])
         name = match[2] or (tail[1] if tail else f'anonymous@{code.count(chr(10), 0, start) + 1}')
         ranges.append((start, end, name))
     findings = []
@@ -57,12 +57,46 @@ def inventory(root):
             'members': len(findings), 'files': len({item['file'] for item in findings}), 'findings': findings}
 
 
+def finding_key(finding):
+    """Identify a declaration independently of source-line movement."""
+    return tuple(finding[key] for key in ('file', 'record', 'member', 'declaration'))
+
+
+def review_findings(findings, reviews):
+    """Reject new, changed, duplicate, stale or evidence-free review entries."""
+    errors = []
+    actual = {finding_key(item): item for item in findings}
+    accepted = {}
+    for item in reviews:
+        key = finding_key(item)
+        if key in accepted:
+            errors.append(f'duplicate review: {key}')
+        accepted[key] = item
+        for field in ('known_facts', 'reason', 'next_evidence', 'matching_constraint', 'evidence'):
+            if not isinstance(item.get(field), str) or not item[field].strip():
+                errors.append(f'missing {field}: {key}')
+    for key in actual.keys() - accepted.keys():
+        errors.append(f'unreviewed declaration: {key}')
+    for key in accepted.keys() - actual.keys():
+        errors.append(f'stale review: {key}')
+    return sorted(errors)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--json', action='store_true')
+    parser.add_argument('--check', action='store_true', help='Require a current, evidenced review for every finding')
     args = parser.parse_args()
     result = inventory(ROOT)
-    if args.json:
+    if args.check:
+        ledger = json.loads((ROOT / 'docs/OPAQUE_LAYOUTS.json').read_text())
+        errors = review_findings(result['findings'], ledger['reviews'])
+        for error in errors:
+            print('ERROR: ' + error)
+        if errors:
+            raise SystemExit(1)
+        print(f"OK: {result['members']} opaque declarations have current reviews")
+    elif args.json:
         print(json.dumps(result, indent=2))
     else:
         print(f"Opaque record members: {result['members']} across {result['files']} files")
