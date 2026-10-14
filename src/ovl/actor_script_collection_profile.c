@@ -186,7 +186,8 @@ s32 actorScriptAddProfileCounter(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011FDA0 (0x8011FDA0).
 s32 actorScriptPushPlayerName(u8 *actor) {
-    scriptVmPushStringPointer(((RuntimeObjectPrefix *)actor)->state.actor->vmAddress, (s32)gPlayerProfileName);
+    scriptVmPushStringPointer((ScriptVm *)(((RuntimeObjectPrefix *)actor)->state.actor->vmAddress),
+                              (char *)(gPlayerProfileName));
     return 0;
 }
 
@@ -202,7 +203,8 @@ s32 actorScriptGetItemDisplayName(u8 *actor) {
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     sp24 = vmAddress;
     sp1C = scriptVmPopInteger(vmAddress);
-    scriptVmPushStringPointer(vmAddress, (s32)itemGetDisplayName(scriptVmPopInteger(vmAddress), sp1C));
+    scriptVmPushStringPointer((ScriptVm *)(vmAddress),
+                              (char *)(itemGetDisplayName(scriptVmPopInteger(vmAddress), sp1C)));
     return 0;
 }
 
@@ -218,7 +220,8 @@ s32 actorScriptGetActorDisplayName(u8 *actor) {
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     sp24 = vmAddress;
     sp1C = scriptVmPopInteger(vmAddress);
-    scriptVmPushStringPointer(vmAddress, (s32)actorConfigGetDisplayName(scriptVmPopInteger(vmAddress), sp1C));
+    scriptVmPushStringPointer((ScriptVm *)(vmAddress),
+                              (char *)(actorConfigGetDisplayName(scriptVmPopInteger(vmAddress), sp1C)));
     return 0;
 }
 
@@ -230,7 +233,7 @@ s32 actorScriptGetDictionaryWordName(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushStringPointer(sp1C, (s32)voiceDictionaryGetWordName((u16)scriptVmPopInteger(sp1C)));
+    scriptVmPushStringPointer((ScriptVm *)(sp1C), (char *)(voiceDictionaryGetWordName((u16)scriptVmPopInteger(sp1C))));
     return 0;
 }
 
@@ -265,7 +268,7 @@ s32 actorScriptGetAreaName(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushStringPointer(sp1C, (s32)areaGetDisplayName(scriptVmPopInteger(sp1C)));
+    scriptVmPushStringPointer((ScriptVm *)(sp1C), (char *)(areaGetDisplayName(scriptVmPopInteger(sp1C))));
     return 0;
 }
 
@@ -277,7 +280,7 @@ s32 actorScriptGetAreaShortName(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushStringPointer(sp1C, (s32)areaGetRegionName(scriptVmPopInteger(sp1C)));
+    scriptVmPushStringPointer((ScriptVm *)(sp1C), (char *)(areaGetRegionName(scriptVmPopInteger(sp1C))));
     return 0;
 }
 
@@ -958,7 +961,7 @@ s32 actorScriptGetPokemonName(u8 *actor) {
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     idx = scriptVmPopInteger(sp1C);
-    scriptVmPushStringPointer(sp1C, *(s32 *)((u8 *)&gBedroomPokemonNames + idx * 4));
+    scriptVmPushStringPointer((ScriptVm *)(sp1C), (char *)(*(s32 *)((u8 *)&gBedroomPokemonNames + idx * 4)));
     return 0;
 }
 

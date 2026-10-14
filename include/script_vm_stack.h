@@ -4,7 +4,7 @@
 #ifndef SCRIPT_VM_STACK_H
 #define SCRIPT_VM_STACK_H
 
-#include <ultra64.h>
+#include "script_vm.h"
 
 /// Push an integer value onto a script stack.
 /// \param vm Context address in the original 32-bit ABI, with room for another value.
@@ -21,11 +21,11 @@ void scriptVmPushInteger(s32 vm, s32 value);
 void scriptVmPushFloat(s32 vm, f32 value);
 
 /// Push a borrowed string reference onto a script stack.
-/// \param vm Context address in the original 32-bit ABI, with room for another value.
-/// \param text String address in the original 32-bit ABI; storage must outlive use of the value.
+/// \param vm Context with room for another value.
+/// \param text Borrowed string; storage must outlive use of the stacked value.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80116084 (0x80116084).
-void scriptVmPushStringPointer(s32 vm, s32 text);
+void scriptVmPushStringPointer(ScriptVm *vm, char *text);
 
 /// Remove a numeric value from a script stack and convert it to an integer.
 /// \param vm Context address in the original 32-bit ABI, with a numeric value on top.

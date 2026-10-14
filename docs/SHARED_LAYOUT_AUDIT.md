@@ -494,3 +494,17 @@ Typed reset, destruction, internal creation/reset calls and the external actor
 destruction caller each preserve the full object baseline. The actor creator's
 separate local-allocation constraint remains documented; no new lifecycle
 exception is introduced.
+
+## Typed borrowed-string stack interface
+
+`scriptVmPushStringPointer` now accepts `ScriptVm *` and a borrowed `char *`
+instead of integer addresses. Its shared header documents that string storage
+must outlive use of the stacked value. Ghidra at `0x80116084` confirms construction
+of a string value and insertion into the context's stack without copying text.
+
+All seven collection/profile native-command callers explicitly convert their
+retained N64 context addresses at this interface. Player, item, actor, dictionary
+and area names remain borrowed; the bedroom catalog keeps its original signed
+address load before conversion, preserving symbol and load representation. The
+producer/header and caller source-unit changes each pass the strict baseline
+objects without an added compatibility exception.

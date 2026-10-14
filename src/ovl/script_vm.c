@@ -626,14 +626,14 @@ void scriptVmPushFloat(s32 vm, f32 value) {
 }
 
 /// Push a string pointer onto the script value stack.
-/// \param vm Address of a script context with stack capacity available.
-/// \param text Borrowed string address that must remain valid while the stacked value is used.
+/// \param vm Script context with stack capacity available.
+/// \param text Borrowed string that must remain valid while the stacked value is used.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80116084 (0x80116084).
-void scriptVmPushStringPointer(s32 vm, s32 text) {
+void scriptVmPushStringPointer(ScriptVm *vm, char *text) {
     ScriptValue valueBox;
 
-    scriptValueSetStringPointer(&valueBox, (char *)text);
+    scriptValueSetStringPointer(&valueBox, text);
     scriptVmPushValue((u8 *)vm, &valueBox);
 }
 
