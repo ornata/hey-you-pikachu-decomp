@@ -999,3 +999,22 @@ requires the object to be that current update object and state to belong to it.
 Motion key data remains borrowed throughout playback. Child evaluation retains
 its separate rotation workspace and ownership. Each interface conversion and
 the forward-declaration refinement passed all 483 original objects.
+
+## Typed optional child-facing controller views
+
+The child-motion pointer at 0x7C now uses `ChildFacingController`, a four-byte
+union of an owned storage pointer and distinct target/camera controller views.
+Only incomplete declarations are shared; complete `TargetFacingState` and
+`CameraFacingState` definitions remain private to their sole source unit.
+The target record retains two orientations and weight in 0x1C bytes, while the
+camera record retains one orientation and weight in 0x10 bytes. They are not
+interchangeable layouts. The installed lifecycle/update callbacks select the
+valid view; the release function uses only the common owned-storage pointer.
+
+The linked kind table pairs kind 0x2B initialization at 0x80015160 with target
+update at 0x80015704, and kind 0x43 initialization at 0x800151E4 with camera
+update at 0x80015AE8. Both release through 0x80014E54. Ghidra confirms their
+separate allocation sizes and pointer stores at child-state 0x7C. Checks retain
+the 0x80-byte child state, four-byte pointer union and controller offset, with
+camera weight additionally checked at 0xC. No allocation, callback selection
+or release behavior changes; the typed views pass all 483 original objects.

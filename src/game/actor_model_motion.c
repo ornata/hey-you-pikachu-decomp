@@ -188,7 +188,7 @@ void actorReleaseChildMotionState(u8 *actor) {
     u8 *facingController;
 
     state = ((RuntimeObjectPrefix *)actor)->state.pointer;
-    facingController = state->facingController;
+    facingController = state->facingController.storage;
     if (facingController != NULL) {
         heapFreeLocal(&gGameHeap, facingController);
     }
@@ -282,12 +282,13 @@ typedef char TargetFacingStateSizeCheck[(sizeof(TargetFacingState) == 0x1C) ? 1 
 typedef char TargetFacingStateWeightOffsetCheck[((u32)&((TargetFacingState *)0)->weight == 0x18) ? 1 : -1];
 
 /// Camera-facing orientation and blend weight owned by one child motion state.
-typedef struct FacingOrientation {
+typedef struct CameraFacingState {
     f32 angles[3]; ///< Last animated orientation before camera-facing adjustment.
     f32 weight; ///< Current influence of the camera-facing adjustment.
-} FacingOrientation;
+} CameraFacingState;
 
-typedef char FacingOrientationSizeCheck[(sizeof(FacingOrientation) == 0x10) ? 1 : -1];
+typedef char CameraFacingStateSizeCheck[(sizeof(CameraFacingState) == 0x10) ? 1 : -1];
+typedef char CameraFacingWeightOffsetCheck[((u32) & ((CameraFacingState *)0)->weight == 0xC) ? 1 : -1];
 
 /// Initialize a child object for blended facing toward its parent target.
 /// \param actor Child object whose current orientation initializes target-facing behavior.
@@ -308,7 +309,7 @@ void actorInitializeTargetFacingChildState(u8 *actor) {
     vec->previousAngles[1] = ((RuntimeObjectPrefix *)actor)->rotation[1];
     vec->previousAngles[2] = ((RuntimeObjectPrefix *)actor)->rotation[2];
     vec->weight = 0.0f;
-    state->facingController = vec;
+    state->facingController.target = vec;
 }
 
 /// Initialize a child object for blended facing toward the camera.
@@ -318,16 +319,16 @@ void actorInitializeTargetFacingChildState(u8 *actor) {
 /// \note Original decompilation identifier: \c func_800151E4 (0x800151E4).
 void actorInitializeCameraFacingChildState(u8 *actor) {
     ChildMotionState *state;
-    FacingOrientation *vec;
+    CameraFacingState *vec;
 
     actorInitializeChildMotionState(actor);
     state = ((RuntimeObjectPrefix *)actor)->state.pointer;
-    vec = (FacingOrientation *)heapAllocLocal(&gGameHeap, sizeof(FacingOrientation), 0x11C, actor);
+    vec = (CameraFacingState *)heapAllocLocal(&gGameHeap, sizeof(CameraFacingState), 0x11C, actor);
     vec->angles[0] = ((RuntimeObjectPrefix *)actor)->rotation[0];
     vec->angles[1] = ((RuntimeObjectPrefix *)actor)->rotation[1];
     vec->angles[2] = ((RuntimeObjectPrefix *)actor)->rotation[2];
     vec->weight = 0.0f;
-    state->facingController = vec;
+    state->facingController.camera = vec;
 }
 
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
@@ -548,7 +549,7 @@ void actorUpdateTargetFacingChild(u8 *object) {
 
     state = ((RuntimeObjectPrefix *)object)->state.pointer;
     parent = ((RuntimeObjectPrefix *)object)->root.bytes;
-    follow = state->facingController;
+    follow = state->facingController.target;
     parentState = ((RuntimeObjectPrefix *)parent)->state.actor;
     motionUpdateChildPlayback(object);
     weight = &follow->weight;
@@ -629,7 +630,7 @@ extern u8 gActorCameraFacingDirectionTransform[];
 /// \note Original decompilation identifier: \c func_80015AE8 (0x80015AE8).
 void actorUpdateCameraFacingChild(u8 *object) {
     ChildMotionState *state;
-    FacingOrientation *orientation;
+    CameraFacingState *orientation;
     f32 maxWeight = 2.0f;
     Vec3f direction;
     Vec3f original;
@@ -641,7 +642,7 @@ void actorUpdateCameraFacingChild(u8 *object) {
     f32 *weight;
 
     state = ((RuntimeObjectPrefix *)object)->state.pointer;
-    orientation = state->facingController;
+    orientation = state->facingController.camera;
     motionUpdateChildPlayback(object);
     weight = &orientation->weight;
     if ((actionGetAttributes(((RuntimeObjectPrefix *)object)->root.bytes) & 0x800000) &&
