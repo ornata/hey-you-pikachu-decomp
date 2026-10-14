@@ -15,21 +15,22 @@ typedef struct {
 } ItemText;
 
 /// Update an item while held.
-/// \param item Initialized item object.
+/// \param item Borrowed live item with initialized state; its current holder remains available.
 /// \returns Nothing.
 typedef void (*ItemHeldCallback)(u8 *item);
 /// Respond when an item is released from a holder.
-/// \param item Initialized item object being released.
-/// \param holderAddress Original holder object address, or zero when unavailable.
+/// \param item Borrowed live item being released, with its former hold state still visible.
+/// \param holderAddress Borrowed former actor-holder address, or zero for a player-held or missing holder.
+/// \note The target ABI represents this address as a 32-bit integer; it must not outlive the holder.
 /// \returns Nothing.
 typedef void (*ItemReleaseCallback)(u8 *item, s32 holderAddress);
 /// Prepare an item for launch.
-/// \param item Initialized item receiving launch behavior.
+/// \param item Borrowed initialized item after release, placement and launch velocity setup.
 /// \returns Nothing.
 typedef void (*ItemLaunchCallback)(u8 *item);
 /// Respond to an item's terrain collision.
-/// \param item Initialized item experiencing the collision.
-/// \param contactFlags Terrain contact mask describing the collision.
+/// \param item Borrowed initialized item experiencing contact; the hook may replace it.
+/// \param contactFlags Low 16 bits of the terrain contact mask.
 /// \returns Zero to suppress the optional automatic terrain response, or nonzero to allow it.
 typedef s32 (*ItemCollisionCallback)(u8 *item, u16 contactFlags);
 
@@ -75,5 +76,34 @@ typedef char ItemKindAvailabilityOffsetCheck[(((u32)&((ItemKind *)0)->availabili
 /// Per-kind item motion, rendering, response and description configuration.
 /// \note Original identifier: \c D_80125A40 (0x80125A40).
 extern ItemKind gItemKinds[];
+
+/// Borrowed interior view beginning at each kind's held-item hook.
+/// The remaining bytes overlap adjacent catalog fields; never allocate, copy or clear this view.
+typedef struct ItemKindHeldCallbackEntry {
+    ItemHeldCallback callback; ///< Optional held-item behavior.
+    u8 following[0x70]; ///< Storage through the next held-item hook view.
+} ItemKindHeldCallbackEntry;
+
+/// Borrowed interior view beginning at each kind's terrain-collision hook.
+/// The remaining bytes overlap adjacent catalog fields; never allocate, copy or clear this view.
+typedef struct ItemKindCollisionCallbackEntry {
+    ItemCollisionCallback callback; ///< Optional terrain-contact response.
+    u8 following[0x70]; ///< Storage through the next collision-hook view.
+} ItemKindCollisionCallbackEntry;
+
+typedef char ItemKindHeldViewStrideCheck[(sizeof(ItemKindHeldCallbackEntry) == sizeof(ItemKind)) ? 1 : -1];
+typedef char ItemKindCollisionViewStrideCheck[(sizeof(ItemKindCollisionCallbackEntry) == sizeof(ItemKind)) ? 1 : -1];
+typedef char ItemKindHeldOffsetCheck[(((u32) & ((ItemKind *)0)->hold) == 0x44) ? 1 : -1];
+typedef char ItemKindReleaseOffsetCheck[(((u32) & ((ItemKind *)0)->release) == 0x48) ? 1 : -1];
+typedef char ItemKindLaunchOffsetCheck[(((u32) & ((ItemKind *)0)->launch) == 0x4C) ? 1 : -1];
+typedef char ItemKindCollisionOffsetCheck[(((u32) & ((ItemKind *)0)->collide) == 0x50) ? 1 : -1];
+
+/// Held-item hook view of the persistent item catalog.
+/// \note Original identifier: \c D_80125A84 (0x80125A84).
+extern ItemKindHeldCallbackEntry gItemKindHeldCallbackEntries[];
+
+/// Terrain-contact hook view of the same catalog.
+/// \note Original identifier: \c D_80125A90 (0x80125A90).
+extern ItemKindCollisionCallbackEntry gItemKindCollisionCallbackEntries[];
 
 #endif

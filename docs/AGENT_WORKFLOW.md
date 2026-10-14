@@ -95,3 +95,10 @@ arbitrary caller-supplied VM tables.
 callback signatures for known retail kinds zero through 0xB3 and runs under
 `make verify`. Alternate tables and resource validity are outside this check.
 `python3 tools/object_draw_callbacks.py --json` lists the audited targets.
+
+`make check-item-callbacks` validates held, release, launch and collision hooks for
+all 166 retained item kinds, plus the seven required mode-update entries. It runs
+under `make verify`. `python3 tools/item_callbacks.py --json` lists the targets.
+The explicit table extents come from the C catalog and mode dispatcher; linker
+symbol sizes also include or omit neighboring data and do not establish these bounds.
+Alternate tables, resource validity and callback side effects are outside the check.

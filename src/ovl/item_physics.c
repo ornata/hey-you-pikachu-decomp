@@ -312,9 +312,6 @@ void itemPlayImpactSounds(u8 *object, s32 contactFlags, s32 surface) {
                          *((s16 *)((u8 *)&gItemKindSecondarySoundEntries + (((ItemStatePrefix *)sp1C)->kind * 0x74))));
 }
 
-/// Separate terrain-collision callback view of the item catalog, with a 116-byte stride.
-/// \note Original identifier: \c D_80125A90 (0x80125A90).
-extern u8 gItemKindCollisionCallbackEntries[];
 
 /// Handle item contact and invoke its kind-specific collision response.
 /// \param object Item involved in the contact.
@@ -328,7 +325,7 @@ s32 itemDispatchCollisionResponse(u8 *object, s32 flags) {
     ItemCollisionCallback callback;
 
     state = ((RuntimeObjectPrefix *)object)->state.bytes;
-    callback = *(ItemCollisionCallback *)(gItemKindCollisionCallbackEntries + ((ItemStatePrefix *)state)->kind * sizeof(ItemKind));
+    callback = gItemKindCollisionCallbackEntries[((ItemStatePrefix *)state)->kind].callback;
     if (flags & 0x40) {
         actorPostItemImpactMessage(((u8 *)gPikachuActor), object);
     }
@@ -511,9 +508,6 @@ void itemUpdateDriftingFlight(u8 *object) {
     ((RuntimeObjectPrefix *)object)->position[2] += dz;
 }
 
-/// Separate held-item callback view of the item catalog, with a 116-byte stride.
-/// \note Original identifier: \c D_80125A84 (0x80125A84).
-extern u8 gItemKindHeldCallbackEntries;
 
 /// Run the held-item behavior supplied by the item kind, when present.
 /// \param object Address of the held item.
@@ -523,7 +517,7 @@ extern u8 gItemKindHeldCallbackEntries;
 void itemRunHeldKindCallback(u8 *object, ItemStatePrefix *state) {
     ItemHeldCallback heldCallback;
 
-    heldCallback = *(ItemHeldCallback *)(&gItemKindHeldCallbackEntries + state->kind * sizeof(ItemKind));
+    heldCallback = gItemKindHeldCallbackEntries[state->kind].callback;
     if (heldCallback != NULL) {
         heldCallback(object);
     }

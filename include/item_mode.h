@@ -18,11 +18,13 @@ typedef enum ItemMode {
 } ItemMode;
 
 /// Advance one live item's active behavior for the current frame.
-/// \param object Live item with initialized state appropriate to its mode.
+/// \param object Borrowed live item with initialized state appropriate to its mode.
+/// The shrinking-disposal mode may request deferred destruction; borrowed state must not
+/// survive the object-system destruction sweep.
 /// \returns Nothing.
 typedef void (*ItemModeUpdateHandler)(u8 *object);
 
-/// Item behavior update callbacks indexed by ItemMode.
+/// Persistent non-null item behavior callbacks indexed by ItemMode zero through six.
 /// \note Original identifier: \c D_8012B950 (0x8012B950).
 extern ItemModeUpdateHandler gItemModeUpdateHandlers[];
 

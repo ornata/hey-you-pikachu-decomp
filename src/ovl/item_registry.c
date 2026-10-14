@@ -2176,6 +2176,8 @@ extern s32 gLiveItemCount;
 
 /// Remove an item from world participation and request its destruction.
 /// \param item Live, registered item to destroy; must not already be pending destruction.
+/// \note Object and state storage remain allocated until the deferred hierarchy destruction sweep;
+/// the item is removed from registry participation by this call.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80113B78 (0x80113B78).
 void itemDestroy(u8 *item) {

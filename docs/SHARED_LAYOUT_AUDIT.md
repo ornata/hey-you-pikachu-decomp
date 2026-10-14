@@ -1191,3 +1191,33 @@ grid updates retain explicit access views where additional typed locals change
 code generation. These views borrow the callback object and do not create new
 allocations or extend its lifetime. Every source-unit change passed the preserved
 483-object comparison and the retail ROM gate.
+
+### Item callback tables and destruction lifetime
+
+All 182 populated hooks in the 166-entry `gItemKinds` catalog and all seven
+`gItemModeUpdateHandlers` entries resolve to compatible written C definitions.
+`make check-item-callbacks` now enforces the return and argument types, including
+the collision mask's unsigned halfword width and the release hook's retained
+32-bit holder address. Kind hooks may be null; mode entries must be callable.
+The audited bounds come from the C catalog declaration and the seven mode values,
+confirmed against retained table words; ELF symbol extents do not bound these tables.
+
+Held hooks borrow the initialized item and execute before the held-mode timer is
+advanced. Release hooks see the former hold state before it is cleared, and receive
+a borrowed live actor-holder address or zero for a player-held or missing holder.
+Launch hooks run after release, placement and velocity setup. Collision hooks can
+transform the item and return zero to suppress the remaining automatic response.
+The collision dispatcher narrows contact flags to the callback's unsigned halfword.
+
+Held and collision aliases now use typed, 0x74-stride interior views with checked
+callback field offsets. These views overlap catalog records and never own storage;
+existing linker aliases are preserved. The source changes passed strict comparison
+against the preserved 483-object baseline.
+
+`itemDestroy` removes registry participation and requests deferred hierarchy
+destruction. It does not free item state immediately: `objectRequestHierarchyDestruction`
+marks the hierarchy, and `objectSweepDeferredHierarchyDestruction` eventually
+releases it. Mode-dispatch postprocessing can therefore still inspect the state
+after shrinking disposal requests destruction. Borrowed pointers must not survive
+the actual sweep. These contracts concern the retained tables; alternate callbacks
+and arbitrary callback side effects are not validated by the signature checker.
