@@ -875,3 +875,22 @@ it for the call. Contracts require a valid mode and pose index zero or one.
 Checks additionally cover the 0x10-byte angular-motion stride, pose offset zero
 and duration at 0x74, alongside the existing total extent and mode/index checks.
 Every changed source unit passed all 483 objects before the next semantic edit.
+
+## Item bounce allowance and held-callback state
+
+`ItemKind.initialBounceCount` replaces the offset-only `unk8` name. Item creation
+copies catalog offset eight into the item state's bounceCount; terrain response
+consumes and decrements that counter, clamping it at zero. Ghidra at 0x80113944
+confirms the catalog word copied into state offset 0x34. The new offset check
+preserves the catalog's original 0x74-byte stride. The held-kind callback helper
+now accepts `ItemStatePrefix *`, consistently at its two callers; it selects the
+callback using the established item kind without an internal state cast.
+The collision callback contract now describes zero as suppressing the optional
+automatic terrain response, rather than leaving result semantics unspecified.
+
+Opaque inventory now also recognizes the shorter `unk` offset spelling. This
+adds the catalog's unresolved halfword at 0x3E, word at 0x6C and byte at 0x70,
+with individual next-evidence records. The inventory consequently increases to
+54 declarations across 28 files; the increase reflects wider coverage, not new
+unknown fields. Known bounce-count recovery does not assign meanings to those
+three adjacent or trailing fields. Tests cover both placeholder spellings.

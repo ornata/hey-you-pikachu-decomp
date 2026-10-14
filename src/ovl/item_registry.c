@@ -2136,7 +2136,7 @@ u8 *itemCreate(f32 x, f32 y, f32 z, f32 pitch, f32 yaw, s32 kind) {
     state = (ItemStatePrefix *)((RuntimeObjectPrefix *)object)->state.bytes;
     state->kind = kind;
     state->flags = gItemKinds[kind].stateFlags | 0x1000000;
-    state->bounceCount = gItemKinds[kind].unk8;
+    state->bounceCount = gItemKinds[kind].initialBounceCount;
     state->searchPriority = gItemKinds[kind].growthMax;
     state->state = 0;
     state->owner = 0;

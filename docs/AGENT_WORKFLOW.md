@@ -76,7 +76,7 @@ checks that this ledger still matches the source. Do not treat raw-offset candid
 as errors or invent types/names to make the inventory reach zero.
 
 Use `python3 tools/layout_contracts.py --json` to inventory offset-named opaque
-record members separately from the source-quality token counts. See
+record members (both unknown and unk spellings) separately from source-quality token counts. See
 `SHARED_LAYOUT_AUDIT.md` for the inventory's lexical scope and limitations.
 
 `make check-layouts` requires a current review of every offset-named opaque

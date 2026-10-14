@@ -10,7 +10,7 @@ from source_quality import code_only
 ROOT = Path(__file__).resolve().parents[1]
 RECORD = re.compile(r'\b(struct|union)\s*(\w+)?\s*\{')
 MEMBER = re.compile(r'\b(?:[A-Za-z_]\w*\s+)+(?:\*\s*)*'
-                    r'(unknown[0-9A-Fa-f_]+)\s*(?:\[[^\]\n]+\])*\s*;')
+                    r'((?:unknown|unk)[0-9A-Fa-f_]+)\s*(?:\[[^\]\n]+\])*\s*;')
 
 
 def inspect_records(source, filename):
@@ -51,7 +51,7 @@ def inventory(root):
             relative = path.relative_to(root).as_posix()
             if relative not in excluded:
                 findings.extend(inspect_records(path.read_text(), relative))
-    return {'scope': 'Opaque scalar/pointer/array members named unknown plus an offset suffix in game struct/union definitions. '
+    return {'scope': 'Opaque scalar/pointer/array members named unknown or unk plus an offset suffix in game struct/union definitions. '
                      'Comments, literals, local variables and local SDK files are excluded. Other opaque naming, function-pointer declarations, '
                      'raw offsets and ownership/callback evidence need separate audit; this is not completion proof.',
             'members': len(findings), 'files': len({item['file'] for item in findings}), 'findings': findings}

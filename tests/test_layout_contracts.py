@@ -87,3 +87,7 @@ typedef struct { s32 unknown0C; } Record;
         finding = inspect_records('struct A { s32 unknown0; };', 'a.h')[0]
         self.assertTrue(any('unreviewed' in item for item in review_findings([finding], [])))
         self.assertTrue(any('stale' in item for item in review_findings([], [self.review(finding)])))
+
+    def test_short_and_long_offset_placeholder_spellings(self):
+        findings = inspect_records('struct A { s16 unk3E; u8 unknown_004; u32 unk6C; };', 'a.h')
+        self.assertEqual([item['member'] for item in findings], ['unk3E', 'unknown_004', 'unk6C'])

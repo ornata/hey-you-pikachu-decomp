@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "scope": "Opaque scalar/pointer/array members named unknown plus an offset suffix in game struct/union definitions. Comments, literals, local variables and local SDK files are excluded. Other opaque naming, function-pointer declarations, raw offsets and ownership/callback evidence need separate audit; this is not completion proof.",
+  "scope": "Opaque scalar/pointer/array members named unknown or unk plus an offset suffix in game struct/union definitions. Comments, literals, local variables and local SDK files are excluded. Other opaque naming, function-pointer declarations, raw offsets and ownership/callback evidence need separate audit; this is not completion proof.",
   "reviews": [
     {
       "file": "include/action_definition_types.h",
@@ -121,6 +121,42 @@
       "next_evidence": "Inspect font resource records and all glyph-metric consumers for byte-six/seven accesses, including computed record addresses; resource zeros alone do not prove padding.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
       "evidence": "include/font_image_types.h (record declaration and neighboring layout checks); docs/SHARED_LAYOUT_AUDIT.md (review scope and subsystem evidence)"
+    },
+    {
+      "file": "include/item_kind.h",
+      "record": "ItemKind",
+      "member": "unk3E",
+      "line": 53,
+      "declaration": "s16 unk3E;",
+      "known_facts": "A signed halfword at 0x3E follows the initial material animation and precedes two tracked sound identifiers.",
+      "reason": "No semantic interpretation is established by the named consumers; raw or interior-alias consumers still require review.",
+      "next_evidence": "Trace raw halfword reads in item initialization, material changes and kind-specific callbacks, and compare authored catalog values at 0x3E.",
+      "matching_constraint": "Preserve the 0x74-byte catalog stride, signedness, width, offsets, initializer values and original strict object symbols/relocations.",
+      "evidence": "include/item_kind.h (layout and size checks); src/ovl/item_registry.c (166 authored catalog rows and creation consumers)"
+    },
+    {
+      "file": "include/item_kind.h",
+      "record": "ItemKind",
+      "member": "unk6C",
+      "line": 62,
+      "declaration": "s32 unk6C;",
+      "known_facts": "A signed word at 0x6C follows the two persistent name/help text records.",
+      "reason": "No semantic interpretation is established by the named consumers; raw or interior-alias consumers still require review.",
+      "next_evidence": "Trace catalog-tail reads in item descriptions, interactions and scene-specific consumers, including interior-symbol aliases at 0x6C.",
+      "matching_constraint": "Preserve the 0x74-byte catalog stride, signedness, width, offsets, initializer values and original strict object symbols/relocations.",
+      "evidence": "include/item_kind.h (layout and size checks); src/ovl/item_registry.c (166 authored catalog rows and creation consumers)"
+    },
+    {
+      "file": "include/item_kind.h",
+      "record": "ItemKind",
+      "member": "unk70",
+      "line": 63,
+      "declaration": "u8 unk70;",
+      "known_facts": "A byte at 0x70 precedes itemClass and the availabilityField halfword in the 0x74-byte catalog record.",
+      "reason": "No semantic interpretation is established by the named consumers; raw or interior-alias consumers still require review.",
+      "next_evidence": "Trace byte-wide catalog-tail accesses in availability, classification and registry consumers; do not merge this byte with itemClass solely from adjacency.",
+      "matching_constraint": "Preserve the 0x74-byte catalog stride, signedness, width, offsets, initializer values and original strict object symbols/relocations.",
+      "evidence": "include/item_kind.h (layout and size checks); src/ovl/item_registry.c (166 authored catalog rows and creation consumers)"
     },
     {
       "file": "include/item_state.h",

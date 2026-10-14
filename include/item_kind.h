@@ -30,14 +30,14 @@ typedef void (*ItemLaunchCallback)(u8 *item);
 /// Respond to an item's terrain collision.
 /// \param item Initialized item experiencing the collision.
 /// \param contactFlags Terrain contact mask describing the collision.
-/// \returns Response status interpreted by item motion.
+/// \returns Zero to suppress the optional automatic terrain response, or nonzero to allow it.
 typedef s32 (*ItemCollisionCallback)(u8 *item, u16 contactFlags);
 
 /// Per-kind motion, rendering, response and description configuration.
 typedef struct {
     /* 0x00 */ s32 id;                        ///< Item kind identifier.
     /* 0x04 */ u32 stateFlags;                ///< Initial item behavior flags.
-    /* 0x08 */ s32 unk8;                      ///< Initial bounce allowance; other uses remain unresolved.
+    /* 0x08 */ s32 initialBounceCount;                      ///< Initial automatic-bounce allowance copied into item state.
     /* 0x0C */ s32 replacement;               ///< Replacement kind selected for transformation.
     /* 0x10 */ f32 growthMax;                 ///< Maximum replenishing search priority.
     /* 0x14 */ f32 growthRate;                ///< Search-priority replenishment rate.
@@ -66,6 +66,7 @@ typedef struct {
 } ItemKind;                                   /* size 0x74 */
 
 typedef char ItemKindSizeCheck[(sizeof(ItemKind) == 0x74) ? 1 : -1];
+typedef char ItemKindBounceCountOffsetCheck[(((u32) & ((ItemKind *)0)->initialBounceCount) == 8) ? 1 : -1];
 typedef char ItemKindFrictionOffsetCheck[(((u32) & ((ItemKind *)0)->frictionCoefficient) == 0x30) ? 1 : -1];
 typedef char ItemKindEffectsOffsetCheck[(((u32) & ((ItemKind *)0)->effect) == 0x40) ? 1 : -1];
 typedef char ItemKindMotionCoefficientOffsetCheck[(((u32)&((ItemKind *)0)->motionCoefficient) == 0x28) ? 1 : -1];

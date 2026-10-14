@@ -520,10 +520,10 @@ extern u8 gItemKindHeldCallbackEntries;
 /// \param state Borrowed initialized item state identifying the callback kind.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80122A6C (0x80122A6C).
-void itemRunHeldKindCallback(u8 *object, u8 *state) {
+void itemRunHeldKindCallback(u8 *object, ItemStatePrefix *state) {
     ItemHeldCallback heldCallback;
 
-    heldCallback = *(ItemHeldCallback *)(&gItemKindHeldCallbackEntries + ((ItemStatePrefix *)state)->kind * sizeof(ItemKind));
+    heldCallback = *(ItemHeldCallback *)(&gItemKindHeldCallbackEntries + state->kind * sizeof(ItemKind));
     if (heldCallback != NULL) {
         heldCallback(object);
     }
@@ -550,7 +550,7 @@ void itemUpdatePlayerHeld(u8 *object) {
     f32 *pos;
     u8 *state = ((RuntimeObjectPrefix *)object)->state.bytes;
 
-    itemRunHeldKindCallback(object, state);
+    itemRunHeldKindCallback(object, (ItemStatePrefix *)state);
     ((ItemStatePrefix *)state)->modeTime += gRuntimeFrameSeconds;
     pos = ((RuntimeObjectPrefix *)object)->position;
     pos[0] = 1.25f;
@@ -641,7 +641,7 @@ void itemUpdateActorHeld(u8 *object) {
         itemTryRelease(object, 1);
         return;
     }
-    itemRunHeldKindCallback(object, state);
+    itemRunHeldKindCallback(object, (ItemStatePrefix *)state);
     ((ItemStatePrefix *)state)->modeTime += gRuntimeFrameSeconds;
     parentState = ((RuntimeObjectPrefix *)parent)->state.bytes;
     actorGetConfiguredAttachmentPosition(parent, ((RuntimeObjectPrefix *)object)->radius, ((RuntimeObjectPrefix *)object)->position);
