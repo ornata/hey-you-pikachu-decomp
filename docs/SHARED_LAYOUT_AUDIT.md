@@ -407,3 +407,16 @@ members; the subsequent canonical view preserved every baseline object and made
 the slice unnecessary. This is a borrowed view of persistent camera storage,
 not an allocation or ownership transfer. The separate offset-updater compiler
 constraint remains unchanged.
+
+## Menu backdrop camera contract
+
+The menu no longer defines a private `MenuBackdropView`. Its retained scroll
+symbol is declared consistently as a floating-point scalar and yields the
+containing `MatrixCamera` through the checked shared scroll offset. Menu opening,
+closing and backdrop selection use the canonical `useBackdrop` member, preserving
+the original interior-symbol relocation identity. Ghidra at `0x8011A32C` confirms
+the opening transition's flag write next to the primary scroll value.
+
+The private camera alias borrows persistent rendering storage and changes no
+lifecycle policy. Canonical conversion passed the strict object baseline without
+new compatibility exceptions.

@@ -227,7 +227,7 @@ void backdropDrawScrolling(Gfx **list) {
             height -= bottom;
             top = 20;
         }
-        textureCopyRgba16Region(list, view->backdropImage, 20, top, view->backdropWidth, 280, height, view->backdropX,
+        textureCopyRgba16Region(list, (s32)view->backdropImage, 20, top, view->backdropWidth, 280, height, view->backdropX,
                                 sourceY, 0, 1);
     }
 }

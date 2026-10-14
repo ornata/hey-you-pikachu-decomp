@@ -1,3 +1,4 @@
+#include "camera_types.h"
 #include "player_camera.h"
 #include "object_template.h"
 #include "object_types.h"
@@ -127,14 +128,6 @@ MENU_OFFSET_CHECK(MenuItemNextOffsetCheck, MenuItem, next, 0x14);
 MENU_OFFSET_CHECK(MenuItemSubmenuOffsetCheck, MenuItem, submenu, 0x18);
 #undef MENU_OFFSET_CHECK
 
-/// Interior view at offset 0xA0 of a rendering view, borrowed by the menu.
-/// This pair is not the complete view and cannot be allocated independently.
-typedef struct MenuBackdropView {
-    f32 scroll;      ///< Accumulated horizontal backdrop scroll.
-    s32 useBackdrop; ///< Nonzero to draw the selected backdrop instead of the fill background.
-} MenuBackdropView;
-typedef char MenuBackdropViewSizeCheck[(sizeof(MenuBackdropView) == 8) ? 1 : -1];
-typedef char MenuBackdropFlagOffsetCheck[(((u32) & ((MenuBackdropView *)0)->useBackdrop) == 4) ? 1 : -1];
 
 /* 0x38-byte model records: unit scale, zero transform, segment address. */
 
@@ -880,7 +873,10 @@ void systemMenuHandleInput(void) {
 extern f32 gPlayerYaw, gPlayerViewShake;
 /// Separate view of accumulated primary camera horizontal backdrop scroll.
 /// \note Original identifier: \c D_800ABD90 (0x800ABD90).
-extern MenuBackdropView gPrimaryBackdropScroll;
+extern f32 gPrimaryBackdropScroll;
+/// Borrowed primary camera containing the retained scroll alias; preserves the original symbol relocation.
+#define PRIMARY_BACKDROP_CAMERA                                                                                        \
+    ((MatrixCamera *)((u8 *)&gPrimaryBackdropScroll - (u32) & ((MatrixCamera *)0)->backdropScroll))
 
 /// Advance the menu opening animation and enable menu interaction when it finishes.
 /// Requires live initialized menu models, player state, and an opening-phase start time.
@@ -905,7 +901,7 @@ void systemMenuUpdateOpeningAnimation(void) {
     gSystemMenuState.secondaryModel->rotation[1] = angle;
     objectUpdateHierarchy(gSystemMenuState.transitionModel);
     if (runtimeGetElapsedMilliseconds() - gSystemMenuState.started >= 400) {
-        ((MenuBackdropView *)&gPrimaryBackdropScroll)->useBackdrop = 0;
+        PRIMARY_BACKDROP_CAMERA->useBackdrop = 0;
         backdropSelectForView(0, 9, 0);
         systemMenuSetPhase(SYSTEM_MENU_INTERACTIVE);
     }
@@ -990,7 +986,7 @@ void systemMenuUpdateAnimation(void) {
         return;
     case SYSTEM_MENU_CLOSE_DELAY:
         if (runtimeGetElapsedMilliseconds() - *(u64 *)&gSystemMenuPhaseStartMilliseconds > 300) {
-            ((MenuBackdropView *)&gPrimaryBackdropScroll)->useBackdrop = 1;
+            PRIMARY_BACKDROP_CAMERA->useBackdrop = 1;
             backdropSelectForView(0, gCurrentAreaConfiguration->backdrop, 1);
             systemMenuSetPhase(SYSTEM_MENU_CLOSING);
             systemMenuUpdateClosingAnimation();
@@ -1224,7 +1220,7 @@ void systemMenuCancelSelection(s32 unused) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8011B184 (0x8011B184).
 void systemMenuGoHome(s32 unused) {
-    ((MenuBackdropView *)&gPrimaryBackdropScroll)->useBackdrop = 1;
+    PRIMARY_BACKDROP_CAMERA->useBackdrop = 1;
     backdropSelectForView(0, gCurrentAreaConfiguration->backdrop, 1);
     systemMenuExit();
     runtimeRequestGameModeChange(0xC);
@@ -1236,7 +1232,7 @@ void systemMenuGoHome(s32 unused) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8011B1D4 (0x8011B1D4).
 void systemMenuChangeArea(s32 area) {
-    ((MenuBackdropView *)&gPrimaryBackdropScroll)->useBackdrop = 1;
+    PRIMARY_BACKDROP_CAMERA->useBackdrop = 1;
     backdropSelectForView(0, gCurrentAreaConfiguration->backdrop, 1);
     systemMenuExit();
     areaRequestTransition(area, 0);
@@ -1251,7 +1247,7 @@ extern s32 gEyeCatchSelectedGroup;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8011B228 (0x8011B228).
 void systemMenuSelectEyeCatchGroup(s32 group) {
-    ((MenuBackdropView *)&gPrimaryBackdropScroll)->useBackdrop = 1;
+    PRIMARY_BACKDROP_CAMERA->useBackdrop = 1;
     backdropSelectForView(0, gCurrentAreaConfiguration->backdrop, 1);
     gEyeCatchSelectedGroup = group;
     systemMenuExit();
@@ -1284,7 +1280,7 @@ void systemMenuInvokeChapterUpdate(s32 chapter) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8011B2C8 (0x8011B2C8).
 void systemMenuOpenWorldMap(s32 unused) {
-    ((MenuBackdropView *)&gPrimaryBackdropScroll)->useBackdrop = 1;
+    PRIMARY_BACKDROP_CAMERA->useBackdrop = 1;
     backdropSelectForView(0, gCurrentAreaConfiguration->backdrop, 1);
     systemMenuExit();
     runtimeRequestGameModeChange(6);
