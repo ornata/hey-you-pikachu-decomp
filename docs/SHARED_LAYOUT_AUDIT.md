@@ -689,3 +689,35 @@ bytes after its initial window word. Their buffer and queue offsets differ.
 The cue record remains private because no other C unit shares it; the existing
 reader implementations and allocations are preserved. Renamed fields and
 parameters pass the full strict object baseline without a matching exception.
+
+## Player interaction callback contract
+
+All seven populated entries in `gPlayerInteractionActionHandlers` now implement
+`PlayerInteractionAction`: borrowed player storage in, integer handled status out.
+Slots 0, 3 and 4 remain null. The area callback interprets the player's first
+three floats as its world position; the save-prompt callback ignores its input.
+Other callbacks consume the player's selected target or held-item handle.
+The controller is used by dispatch to test activation input and is not a callback
+parameter. The callback type remains private to its sole source unit.
+
+Ghidra ROM disassembly at `0x801100A8` shows the pickup wrapper calling
+`0x8011271C` and returning without modifying `v0`. The callee returns zero on
+failure and one on success. At `0x80110414` the dispatcher calls the selected
+entry and likewise forwards `v0` unchanged. Thus an explicit pickup result
+recovers existing behavior rather than supplying a new default result.
+The seven written handlers, table entries, dispatch, and result tests now agree.
+A two-parameter representation failed the ROM gate and was reverted; the
+one-parameter representation passes all 483 original objects, including strict
+relocation identities. The old callback exception is removed.
+
+## Opaque record inventory
+
+`python3 tools/layout_contracts.py` (or `--json`) reports offset-named `unknown`
+scalar, pointer and array members in game struct/union definitions. The current
+inventory is 53 declarations across 29 files. Comments, literals, ordinary
+locals and locally supplied SDK files are excluded. This is a lexical inventory:
+inactive preprocessor branches are included, and function-pointer declarations,
+other opaque spellings, raw offsets and ownership evidence require separate
+review. An inventory entry does not establish padding, unused storage or a
+semantic role. Existing evidence and matching constraints remain in this audit
+and the recovery ledger; these counts do not certify completed shared layouts.

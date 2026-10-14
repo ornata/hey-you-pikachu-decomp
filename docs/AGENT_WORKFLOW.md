@@ -74,3 +74,7 @@ After source edits, update `TYPE_RECOVERY_NOTES.json` if evidence changes and re
 `TYPE_RECOVERY.json` with `python3 tools/source_quality.py --ledger`. `make verify`
 checks that this ledger still matches the source. Do not treat raw-offset candidates
 as errors or invent types/names to make the inventory reach zero.
+
+Use `python3 tools/layout_contracts.py --json` to inventory offset-named opaque
+record members separately from the source-quality token counts. See
+`SHARED_LAYOUT_AUDIT.md` for the inventory's lexical scope and limitations.

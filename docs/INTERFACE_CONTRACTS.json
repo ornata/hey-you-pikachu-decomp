@@ -497,15 +497,6 @@
       },
       "reason": "The node return and tree pointer are established. The pointer-shaped object key view matches; canonical integer-address keys change code in these callers. search_tree_lookup.h remains the canonical integer-key interface.",
       "next_evidence": "Isolate objectPrepareKindSearch and item lookup key argument scheduling, retaining key allocation extents and strict relocation identities."
-    },
-    {
-      "kind": "unspecified-callback",
-      "file": "src/ovl/player_companion.c",
-      "line": 137,
-      "name": "gPlayerInteractionActionHandlers",
-      "shape": "(*gPlayerInteractionActionHandlers[10])()",
-      "reason": "The original action table mixes pointer/integer argument views and one void-returning pickup handler. Dispatch forwards player and controller addresses and exposes an unspecified result for the void handler. Existing Doxygen contracts describe this incompatible callback ABI; no result or adapter is invented.",
-      "next_evidence": "Trace each callback and every dispatch-result consumer against ROM assembly, then establish a common callback contract or matching per-action adapters without inventing a pickup result."
     }
   ]
 }

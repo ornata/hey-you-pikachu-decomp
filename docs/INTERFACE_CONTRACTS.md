@@ -14,11 +14,11 @@ Compared with the starting commit `0f41200`:
 | Conflicting written signatures | 29 | 10 |
 | Direct-call arity disagreements | 19 | 11 |
 | K&R definitions | 5 | 2 |
-| Unspecified callback tables | 1 | 1 |
+| Unspecified callback tables | 1 | 0 |
 | Exported functions without a shared header | 178 | 1 |
 
-These are findings, not distinct broken functions. The 30 retained findings
-describe matching-only call representations or an unresolved callback ABI.
+These are findings, not distinct broken functions. The 29 retained findings
+describe matching-only call representations.
 Each exception records its exact signature or arity, source location, reason,
 and evidence needed to replace it. Arity exceptions also identify the caller.
 The sole function without a shared header is the inactive `heapDebugNoOp` hook,
@@ -44,8 +44,9 @@ The remaining compatibility views include heap allocation, collection hierarchy
 calls, integer versus pointer ROM offsets, the font helper's unused argument,
 the progress reader's dead formal argument, pointer-shaped tree keys, device
 word-count width, and the orbit query's return width. The interaction action
-table also mixes argument views and a void-returning handler. Its unspecified
-result is documented rather than replaced with an invented value.
+table now uses a common one-parameter callback contract. The pickup wrapper
+explicitly returns the existing item-pickup result, as confirmed by the ROM
+return register and dispatcher; no handler requires a controller argument.
 
 ## Verification and future changes
 

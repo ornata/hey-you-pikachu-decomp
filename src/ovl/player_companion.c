@@ -124,19 +124,24 @@ char *gPlayerInteractionPromptSuffixes[10] = {
     "???",
 };
 
-s32 playerRequestAreaInteractionEvent(s32);
+s32 playerRequestAreaInteractionEvent(u8 *);
 s32 playerThrowHeldItemAndFocus(u8 *);
 s32 playerTryEnterTargetPassage(u8 *);
-s32 playerRequestSavePrompt(s32);
+s32 playerRequestSavePrompt(u8 *);
 s32 playerConsumeInteractionProxy(u8 *);
-void playerPickUpInteractionTarget(u8 *);
+s32 playerPickUpInteractionTarget(u8 *);
 s32 playerRequestTargetCooperation(u8 *);
+
+/// Attempt the selected player interaction.
+/// \param player Borrowed player state supplying the interaction target or held item.
+/// \returns One if handled, or zero if the action is unavailable or fails.
+typedef s32 (*PlayerInteractionAction)(u8 *player);
 
 /// Action callbacks indexed by the pointed-object interaction action.
 /// \note Original identifier: \c D_80123B98 (0x80123B98).
-s32 (*gPlayerInteractionActionHandlers[10])() = {
+PlayerInteractionAction gPlayerInteractionActionHandlers[10] = {
     NULL,
-    (s32 (*)())playerPickUpInteractionTarget,
+    playerPickUpInteractionTarget,
     playerRequestTargetCooperation,
     NULL,
     NULL,
@@ -849,13 +854,12 @@ u16 playerFilterControllerInput(u16 keep, ControllerState *pad) {
 }
 
 /// Request an interaction event for the area region containing the player position.
-/// \param position Address of three floating-point world coordinates, represented as an integer.
+/// \param position Borrowed player position, beginning with three floating-point world coordinates.
 /// \returns One if the area callback reports a positive result, or zero otherwise.
 ///
-/// \note Requires initialized current-area events. Portability: the position address is passed as a 32-bit
-/// integer.
+/// \note Requires initialized current-area events.
 /// \note Original decompilation identifier: \c func_8010FE84 (0x8010FE84).
-s32 playerRequestAreaInteractionEvent(s32 position) {
+s32 playerRequestAreaInteractionEvent(u8 *position) {
     if (areaDispatchPositionEvent((f32 *)position, 2) > 0) {
         return 1;
     }
@@ -925,7 +929,7 @@ block_10:
 /// \param unused Unused interaction-action argument.
 /// \returns One, indicating that the transition was requested.
 /// \note Original decompilation identifier: \c func_8010FFA0 (0x8010FFA0).
-s32 playerRequestSavePrompt(s32 unused) {
+s32 playerRequestSavePrompt(u8 *unused) {
     runtimeRequestGameModeChange(7);
     return 1;
 }
@@ -965,10 +969,10 @@ s32 playerConsumeInteractionProxy(u8 *player) {
 
 /// Attempt to pick up the current interaction target.
 /// \param player Player record containing the target item handle.
-/// \returns Nothing.
+/// \returns One if the item was picked up, or zero if it is unavailable or cannot be picked up.
 /// \note Original decompilation identifier: \c func_801100A8 (0x801100A8).
-void playerPickUpInteractionTarget(u8 *player) {
-    playerPickUpItem(((PlayerControlPrefix *)player)->interactionTarget);
+s32 playerPickUpInteractionTarget(u8 *player) {
+    return playerPickUpItem(((PlayerControlPrefix *)player)->interactionTarget);
 }
 
 
@@ -1110,22 +1114,18 @@ block_8:
 /// \param player Player record providing activation permissions and a selected interaction action from zero
 /// through nine.
 /// \param controller Controller state supplying newly pressed activation input.
-/// \returns The selected action result, which is unspecified for actions without a defined result; zero when
-/// no action is dispatched.
+/// \returns One if the selected action was handled, or zero if it failed or no action was dispatched.
 ///
-/// \note Undefined behavior: action handlers have incompatible argument and return types. The original ABI
-/// passes the player address as either a pointer or integer and ignores extra arguments; the pickup handler
-/// has no defined return value.
 /// \note Original decompilation identifier: \c func_801103C8 (0x801103C8).
 s32 playerTryActivateInteraction(u8 *player, ControllerState *controller) {
-    s32 (*handler)(u8 *, u8 *);
+    PlayerInteractionAction handler;
 
     if (!(((PlayerControlPrefix *)player)->permissions & 0x400)) {
         return 0;
     }
     handler = gPlayerInteractionActionHandlers[((PlayerControlPrefix *)player)->modeState.interactionAction];
     if ((handler != NULL) && (controller->pressed & 0x8000)) {
-        return handler(player, (u8 *)controller);
+        return handler(player);
     }
     return 0;
 }
