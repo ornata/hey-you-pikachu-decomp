@@ -894,3 +894,24 @@ with individual next-evidence records. The inventory consequently increases to
 54 declarations across 28 files; the increase reflects wider coverage, not new
 unknown fields. Known bounce-count recovery does not assign meanings to those
 three adjacent or trailing fields. Tests cover both placeholder spellings.
+
+## Typed action selection and resource-layout equivalence
+
+The compatible-record, pose-transition and indexed-record helpers now receive
+`ActorScriptState *`; definitions, the forward declaration and all callers agree.
+Known state fields use members. The compatibility selector keeps a checked
+byte view of currentPoseId because the direct member read fails the ROM gate;
+the typed interface and checked offset pass all original objects. This remains
+an explicit matching constraint, rather than weakening either comparison.
+
+Ghidra at 0x8000EA88 confirms comparison of resource byte 0x12 against actor
+byte 0xFF and a 0x2C-byte copy into actor offset 0xEC. Shared checks now compare
+each selected resource member's relative offset and width with the actor view,
+including the initial/final pose selectors mapped to previous/current poses,
+callbacks, cue pointers and unresolved resource bytes. The copied extent ends
+exactly before actionStartPending at 0x118. These checks make the existing
+resource/state relationship explicit without merging unrelated actor storage
+or interpreting the unresolved two-byte resource field.
+
+A variadic heap diagnostic replacement was also tested and reverted after
+failing ROM matching; the retained K&R diagnostic exception remains unchanged.

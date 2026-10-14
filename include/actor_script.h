@@ -260,4 +260,30 @@ ACTOR_SCRIPT_OFFSET_CHECK(ActorStateAttachedEffectOffsetCheck, ActorScriptState,
 ACTOR_SCRIPT_OFFSET_CHECK(ActorMovementWorkspaceOffsetCheck, ActorScriptState, movementWorkspace, 0x1F8);
 #undef ACTOR_SCRIPT_OFFSET_CHECK
 
+/// The selected resource occupies actor bytes 0xEC through 0x117.
+/// Resource pose selectors become the actor's source and destination pose state.
+#define ACTOR_ACTION_RESOURCE_MEMBER_CHECK(name, actorField, resourceField) \
+    typedef char name[(((u32) & ((ActorScriptState *)0)->actorField - \
+                        (u32) & ((ActorScriptState *)0)->actionId == \
+                        (u32) & ((ActionDefinition *)0)->resourceField) && \
+                       sizeof(((ActorScriptState *)0)->actorField) == \
+                           sizeof(((ActionDefinition *)0)->resourceField)) ? 1 : -1]
+ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourceNameLayoutCheck, actionName, name);
+ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourceDurationLayoutCheck, actionDuration, duration);
+ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourceAttributesLayoutCheck, actionAttributes, attributes);
+ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourceMotionLayoutCheck, motionId, motionId);
+ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourceSourcePoseLayoutCheck, previousPoseId, initialPoseId);
+ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourceDestinationPoseLayoutCheck, currentPoseId, finalPoseId);
+ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourceContinuationLayoutCheck, continuationAction, continuationAction);
+ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourceReservedLayoutCheck, unknown102, unknown016);
+ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourceMovementLayoutCheck, actionMovementScale, movementScale);
+ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourceInitializerLayoutCheck, actionInitializer, initializer);
+ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourceUpdateLayoutCheck, actionCallback, update);
+ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourcePrimaryCueLayoutCheck, primaryCueProgram, primaryCueProgram);
+ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourceSecondaryCueLayoutCheck, secondaryCueProgram, secondaryCueProgram);
+#undef ACTOR_ACTION_RESOURCE_MEMBER_CHECK
+typedef char ActorActionResourceExtentCheck[
+    ((u32) & ((ActorScriptState *)0)->actionStartPending - (u32) & ((ActorScriptState *)0)->actionId ==
+     sizeof(ActionDefinition)) ? 1 : -1];
+
 #endif

@@ -1617,7 +1617,8 @@
         "word_map_lookup.h"
       ],
       "matching_exceptions": {
-        "actionUpdatePlayback": "Direct member reads in the two-term pose blend reverse the floating add operands under IDO. Two reads retain byte addressing through checked member offsets; all other recovered accesses use members. This representation matches the original object."
+        "actionUpdatePlayback": "Direct member reads in the two-term pose blend reverse the floating add operands under IDO. Two reads retain byte addressing through checked member offsets; all other recovered accesses use members. This representation matches the original object.",
+        "actionTryApplyCompatibleRecord": "Typed ActorScriptState parameters and all action-selection callers now match. Replacing the compatibility pose byte view with state->currentPoseId fails the ROM gate; retain the checked currentPoseId offset pending load/register-allocation evidence. Other state members in the three selection helpers use the shared type."
       },
       "locations": {
         "raw_offset_candidates": {
@@ -1633,31 +1634,31 @@
             "367:61"
           ],
           "var_v0 + 4": [
-            "489:73"
+            "490:73"
           ],
           "transition - 0x100": [
-            "627:29"
+            "628:29"
           ],
           "id + 0x100": [
-            "669:57"
+            "670:57"
           ],
           "i + 0x100": [
-            "679:58"
+            "680:58"
           ],
           "loopCount + 1": [
-            "765:93"
+            "766:93"
           ],
           "return -1": [
-            "936:9"
+            "937:9"
           ],
           "case -3": [
-            "956:5"
+            "957:5"
           ],
           "case -2": [
-            "958:5"
+            "959:5"
           ],
           "case -1": [
-            "960:5"
+            "961:5"
           ]
         }
       }

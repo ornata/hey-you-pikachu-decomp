@@ -40,7 +40,7 @@ void actionResolveNextTransition(u8 *);
 /// Separate view of fallback action identifiers in the action definitions, with a 0x2C-byte stride.
 /// \note Original identifier: \c D_8006B5A4 (0x8006B5A4).
 extern u8 gActionFallbackEntries[];
-void actionConfigurePoseTransition(u8 *, s32, f32);
+void actionConfigurePoseTransition(ActorScriptState *, s32, f32);
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
@@ -461,9 +461,10 @@ void actionStartPlayback(u8 *object) {
 /// \param record Action record whose referenced names, scripts, and callbacks remain valid while selected.
 /// \returns One when the record is applied; zero when its motion state is incompatible.
 /// \note Original decompilation identifier: \c func_8000EA88 (0x8000EA88).
-s32 actionTryApplyCompatibleRecord(u8 *state, ActionDefinition *record) {
-    if ((record->attributes & 7) != 1 || record->initialPoseId == state[0xFF]) {
-        *(ActionDefinition *)&((ActorScriptState *)state)->actionId = *record;
+s32 actionTryApplyCompatibleRecord(ActorScriptState *state, ActionDefinition *record) {
+    if ((record->attributes & 7) != 1 ||
+        record->initialPoseId == ((u8 *)state)[(u32) & ((ActorScriptState *)0)->currentPoseId]) {
+        *(ActionDefinition *)&state->actionId = *record;
         return 1;
     }
     TRACE("error: _setAction(%p): unknown action_type(%d)\n", state, record->attributes & 7);
@@ -476,7 +477,7 @@ s32 actionTryApplyCompatibleRecord(u8 *state, ActionDefinition *record) {
 /// \param duration Positive pose transition duration in seconds.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000EAF8 (0x8000EAF8).
-void actionConfigurePoseTransition(u8 *state, s32 nextAction, f32 duration) {
+void actionConfigurePoseTransition(ActorScriptState *state, s32 nextAction, f32 duration) {
     ActionDefinition *var_v0;
 
     if ((nextAction < 0) || (nextAction >= 0x14A)) {
@@ -484,20 +485,20 @@ void actionConfigurePoseTransition(u8 *state, s32 nextAction, f32 duration) {
     } else {
         var_v0 = &gActionDefinitions[nextAction];
     }
-    ((ActorScriptState *)state)->actionId = -2 - nextAction;
-    ((ActorScriptState *)state)->actionName = "\xCA\xE4\xB4\xD6"; /* EUC-JP "interpolation" */
-    TRACE("_setInterAct:  next-motion:%s  next-action:%s\n", *(char **)(var_v0 + 4), ((ActorScriptState *)state)->actionName);
-    ((ActorScriptState *)state)->actionDuration = var_v0->duration;
-    ((ActorScriptState *)state)->actionAttributes = (var_v0->attributes & 0x20100000) | 0x04010003;
-    ((ActorScriptState *)state)->motionId = var_v0->motionId;
-    ((ActorScriptState *)state)->previousPoseId = ((ActorScriptState *)state)->currentPoseId;
-    ((ActorScriptState *)state)->currentPoseId = var_v0->initialPoseId;
-    ((ActorScriptState *)state)->continuationAction = nextAction;
-    ((ActorScriptState *)state)->actionInitializer = NULL;
-    ((ActorScriptState *)state)->actionCallback = NULL;
-    ((ActorScriptState *)state)->actionMovementScale = duration;
-    ((ActorScriptState *)state)->primaryCueProgram = 0;
-    ((ActorScriptState *)state)->secondaryCueProgram = 0;
+    state->actionId = -2 - nextAction;
+    state->actionName = "\xCA\xE4\xB4\xD6"; /* EUC-JP "interpolation" */
+    TRACE("_setInterAct:  next-motion:%s  next-action:%s\n", *(char **)(var_v0 + 4), state->actionName);
+    state->actionDuration = var_v0->duration;
+    state->actionAttributes = (var_v0->attributes & 0x20100000) | 0x04010003;
+    state->motionId = var_v0->motionId;
+    state->previousPoseId = state->currentPoseId;
+    state->currentPoseId = var_v0->initialPoseId;
+    state->continuationAction = nextAction;
+    state->actionInitializer = NULL;
+    state->actionCallback = NULL;
+    state->actionMovementScale = duration;
+    state->primaryCueProgram = 0;
+    state->secondaryCueProgram = 0;
 }
 
 /// Load an indexed action record and configure its continuation.
@@ -506,7 +507,7 @@ void actionConfigurePoseTransition(u8 *state, s32 nextAction, f32 duration) {
 /// \param nextAction Continuation action identifier stored for subsequent playback.
 /// \returns One when the record is loaded; zero when the action identifier is invalid.
 /// \note Original decompilation identifier: \c func_8000EBA0 (0x8000EBA0).
-s32 actionLoadRecordByIndex(u8 *state, s32 actionId, s32 nextAction) {
+s32 actionLoadRecordByIndex(ActorScriptState *state, s32 actionId, s32 nextAction) {
     ActionDefinition *a;
 
     if (actionId < 0 || actionId >= 330) {
@@ -517,14 +518,14 @@ s32 actionLoadRecordByIndex(u8 *state, s32 actionId, s32 nextAction) {
     if (a == NULL) {
         return 0;
     }
-    *(ActionDefinition *)&((ActorScriptState *)state)->actionId = *a;
-    ((ActorScriptState *)state)->continuationAction = nextAction;
-    if ((((ActorScriptState *)state)->actionAttributes & 7) == 1 && ((((ActorScriptState *)state)->actionAttributes & 0x20000) || ((ActorScriptState *)state)->primaryCueProgram == 0)) {
-        ((ActorScriptState *)state)->primaryCueProgram = 0;
-        ((ActorScriptState *)state)->secondaryCueProgram = 0;
-        ((ActorScriptState *)state)->actionMovementScale = 2.0f;
+    *(ActionDefinition *)&state->actionId = *a;
+    state->continuationAction = nextAction;
+    if ((state->actionAttributes & 7) == 1 && ((state->actionAttributes & 0x20000) || state->primaryCueProgram == 0)) {
+        state->primaryCueProgram = 0;
+        state->secondaryCueProgram = 0;
+        state->actionMovementScale = 2.0f;
     }
-    ((ActorScriptState *)state)->actionAttributes &= 0xF9FFFFF7;
+    state->actionAttributes &= 0xF9FFFFF7;
     return 1;
 }
 
@@ -606,7 +607,7 @@ void actionResolveNextTransition(u8 *object) {
             if (sequence == NULL) {
                 sequence = gActionDefaultCommandSequence;
             }
-            if (actionTryApplyCompatibleRecord(state, next)) {
+            if (actionTryApplyCompatibleRecord((ActorScriptState *)state, next)) {
                 actionPrepareSelectedContext(state, sequence);
             } else if ((next->attributes & 0x02000000) && next->continuationAction != -1) {
                 nextIndex = next->continuationAction;
@@ -615,7 +616,7 @@ void actionResolveNextTransition(u8 *object) {
                 } else {
                     next = &gActionDefinitions[nextIndex];
                 }
-                if (actionTryApplyCompatibleRecord(state, next)) {
+                if (actionTryApplyCompatibleRecord((ActorScriptState *)state, next)) {
                     actionPrepareSelectedContext(state, sequence);
                 } else {
                     goto find_transition;
@@ -626,15 +627,15 @@ void actionResolveNextTransition(u8 *object) {
                 transition = wordMapLookup(&gActionPoseTransitionMap, next->initialPoseId + (state[0xFF] << 8));
                 animation = transition - 0x100;
                 if (transition == 0xFE) {
-                    actionConfigurePoseTransition(state, nextIndex, blendTime);
+                    actionConfigurePoseTransition((ActorScriptState *)state, nextIndex, blendTime);
                     actionPrepareSelectedContext(state, sequence);
                 } else if (animation == -3) {
                     *(ActionDefinition *)&((ActorScriptState *)state)->actionId = *next;
                     actionPrepareSelectedContext(state, sequence);
-                } else if (actionLoadRecordByIndex(state, animation, nextIndex)) {
+                } else if (actionLoadRecordByIndex((ActorScriptState *)state, animation, nextIndex)) {
                     actionPrepareSelectedContext(state, sequence);
                 } else if (previous == NULL) {
-                    actionConfigurePoseTransition(state, nextIndex, blendTime);
+                    actionConfigurePoseTransition((ActorScriptState *)state, nextIndex, blendTime);
                     actionPrepareSelectedContext(state, sequence);
                 } else {
                     *(ActionDefinition *)&((ActorScriptState *)state)->actionId = *previous;
@@ -891,7 +892,7 @@ void actionBeginPoseTransition(u8 *object, s32 actionId, f32 duration) {
     actionStopPlayback(object);
     ((ActorScriptState *)obj)->loopCount = 0;
     ((ActorScriptState *)obj)->actionStartPending = 1;
-    actionConfigurePoseTransition(obj, actionId, duration);
+    actionConfigurePoseTransition((ActorScriptState *)obj, actionId, duration);
     ((ActorScriptState *)obj)->continuationAction = -1;
     motionRequestCurrentData(object);
 }
