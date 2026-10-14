@@ -143,6 +143,16 @@ extern f32 gContactEffectInitialScale;
 /// \note Original identifier: \c D_80079260 (0x80079260).
 extern u8 gContactEffectHierarchyTemplate[];
 
+/// Owned contact-reaction state with a texture-animation cursor borrowing resident keys.
+typedef struct ContactEffectState {
+    s32 triggered;               ///< Nonzero after contact starts the reaction animation.
+    ValueTrack textureAnimation; ///< Retained texture frame and playback position.
+} ContactEffectState;
+
+typedef char ContactEffectStateSizeCheck[(sizeof(ContactEffectState) == 0x10) ? 1 : -1];
+typedef char ContactEffectAnimationOffsetCheck[((u32) & ((ContactEffectState *)0)->textureAnimation == 4) ? 1 : -1];
+typedef char ContactEffectFrameOffsetCheck[((u32) & ((ContactEffectState *)0)->textureAnimation.value == 0xC) ? 1 : -1];
+
 /// Create and register a contact-reactive effect at a world position.
 /// \param x World-space X coordinate.
 /// \param y World-space Y coordinate; negative values request ground placement using the corresponding positive search height.
@@ -157,16 +167,16 @@ u8 *contactEffectCreate(f32 x, f32 y, f32 z) {
         y = terrainGetWorldHeight(x, -y, z, 0) + 1.0f;
     }
     s = gContactEffectInitialScale;
-    *(f32 *)(p + 0x18) = x;
-    *(f32 *)(p + 0x1C) = y;
-    *(f32 *)(p + 0x20) = z;
-    *(f32 *)(p + 0x44) = x;
-    *(f32 *)(p + 0x48) = y;
-    *(f32 *)(p + 0x4C) = z;
-    *(f32 *)(p + 0x8) = s;
-    *(f32 *)(p + 0x4) = s;
-    *(f32 *)(p + 0x0) = s;
-    *(f32 *)(p + 0x24) = 3.0f;
+    ((RuntimeObjectPrefix *)p)->position[0] = x;
+    ((RuntimeObjectPrefix *)p)->position[1] = y;
+    ((RuntimeObjectPrefix *)p)->position[2] = z;
+    ((RuntimeObjectPrefix *)p)->worldPosition[0] = x;
+    ((RuntimeObjectPrefix *)p)->worldPosition[1] = y;
+    ((RuntimeObjectPrefix *)p)->worldPosition[2] = z;
+    ((RuntimeObjectPrefix *)p)->scale[2] = s;
+    ((RuntimeObjectPrefix *)p)->scale[1] = s;
+    ((RuntimeObjectPrefix *)p)->scale[0] = s;
+    ((RuntimeObjectPrefix *)p)->radius = 3.0f;
     objectRegisterActiveHierarchy(p);
     return p;
 }
@@ -176,13 +186,13 @@ u8 *contactEffectCreate(f32 x, f32 y, f32 z) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001D784 (0x8001D784).
 void contactEffectInitialize(u8 *effect) {
-    s32 *savedEffectState;
-    s32 *effectState;
+    ContactEffectState *savedEffectState;
+    ContactEffectState *effectState;
     effectState = heapAllocLocal(&gGameHeap, 0x10, 0x46);
     savedEffectState = effectState;
-    *effectState = 0;
-    animationIntegerTrackInitialize((ValueTrack *)((f32 *)(effectState + 1)), (ValueKey *)(gContactEffectIdleAnimation));
-    *(s32 **)(effect + 0x54) = savedEffectState;
+    effectState->triggered = 0;
+    animationIntegerTrackInitialize(&effectState->textureAnimation, (ValueKey *)(gContactEffectIdleAnimation));
+    ((RuntimeObjectPrefix *)effect)->state.pointer = savedEffectState;
 }
 
 /// Attraction strength between adjacent effects in the contact reaction chain.
@@ -200,31 +210,36 @@ extern f32 gContactEffectChainDamping;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001D7D8 (0x8001D7D8).
 void contactEffectUpdate(u8 *effect) {
-    s32 *state = *(s32 **)(effect + 0x54);
+    ContactEffectState *state = (ContactEffectState *)((RuntimeObjectPrefix *)effect)->state.pointer;
     f32 delta[3];
     s32 frame;
     s32 result;
     f32 pull;
-    if (*state == 0) {
-        delta[0] = *(f32 *)((u8 *)((s32)gPikachuActor) + 0x44) - *(f32 *)(effect + 0x44);
-        delta[1] = *(f32 *)((u8 *)((s32)gPikachuActor) + 0x48) - *(f32 *)(effect + 0x48);
-        delta[2] = *(f32 *)((u8 *)((s32)gPikachuActor) + 0x4C) - *(f32 *)(effect + 0x4C);
-        if ((*(f32 *)(effect + 0x24) + *(f32 *)((u8 *)((s32)gPikachuActor) + 0x24)) > vector3Length(delta)) {
-            *state = 1;
-            animationIntegerTrackInitialize((ValueTrack *)((f32 *)(state + 1)), (ValueKey *)(gContactEffectTriggeredAnimation));
+    if (state->triggered == 0) {
+        delta[0] = ((RuntimeObjectPrefix *)gPikachuActor)->worldPosition[0] -
+                   ((RuntimeObjectPrefix *)effect)->worldPosition[0];
+        delta[1] = ((RuntimeObjectPrefix *)gPikachuActor)->worldPosition[1] -
+                   ((RuntimeObjectPrefix *)effect)->worldPosition[1];
+        delta[2] = ((RuntimeObjectPrefix *)gPikachuActor)->worldPosition[2] -
+                   ((RuntimeObjectPrefix *)effect)->worldPosition[2];
+        if ((((RuntimeObjectPrefix *)effect)->radius + ((RuntimeObjectPrefix *)gPikachuActor)->radius) >
+            vector3Length(delta)) {
+            state->triggered = 1;
+            animationIntegerTrackInitialize(&state->textureAnimation, (ValueKey *)(gContactEffectTriggeredAnimation));
         }
     }
-    result = animationIntegerTrackEvaluate((ValueTrack *)(state + 1), &frame, gRuntimeFrameSeconds);
-    if (*state != 0) {
+    result = animationIntegerTrackEvaluate(&state->textureAnimation, &frame, gRuntimeFrameSeconds);
+    if (state->triggered != 0) {
         if (result == 1) {
             objectRequestHierarchyDestruction(effect);
         } else if (result == 2) {
             objectPlaySpatialSound(effect, 0x97, 20.0f, 100.0f);
             result = actorGetPartObjectHandle((u8 *)((s32)gPikachuActor), 0x79);
             pull = gContactEffectChainPull;
-            linkedEffectCreateChain(LINKED_EFFECT_REBOUND, *(f32 *)(effect + 0x44), *(f32 *)(effect + 0x48), *(f32 *)(effect + 0x4C),
-                                    gContactEffectChainScale, result, 1.0f, gContactEffectChainDamping, 2.0f, pull,
-                                    pull, 0xC2, 1, 8);
+            linkedEffectCreateChain(LINKED_EFFECT_REBOUND, ((RuntimeObjectPrefix *)effect)->worldPosition[0],
+                                    ((RuntimeObjectPrefix *)effect)->worldPosition[1],
+                                    ((RuntimeObjectPrefix *)effect)->worldPosition[2], gContactEffectChainScale, result,
+                                    1.0f, gContactEffectChainDamping, 2.0f, pull, pull, 0xC2, 1, 8);
         }
     }
     objectOrientAlongCameraView(effect);
@@ -237,9 +252,9 @@ void contactEffectUpdate(u8 *effect) {
 s32 contactEffectPrepareTextureForDraw(u8 *effect) {
     u8 *obj;
 
-    obj = *(u8 **)(effect + 0x54);
-    textureLoadForDraw(&gRenderDisplayListCursor, 5, *(s16 *)(obj + 0xC));
-    return *(s32 *)(effect + 0x30);
+    obj = ((RuntimeObjectPrefix *)effect)->state.bytes;
+    textureLoadForDraw(&gRenderDisplayListCursor, 5, ((ContactEffectState *)obj)->textureAnimation.value);
+    return (s32)((RuntimeObjectPrefix *)effect)->displayList;
 }
 
 /// Trigger an idle contact effect when a response identifies the active actor.
@@ -248,15 +263,16 @@ s32 contactEffectPrepareTextureForDraw(u8 *effect) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001D9A4 (0x8001D9A4).
 void contactEffectHandleActorResponse(u8 *effect, s32 *response) {
-    u8 *effectState;
-    u8 *savedEffectState;
+    ContactEffectState *effectState;
+    ContactEffectState *savedEffectState;
 
-    effectState = *(u8 **)(effect + 0x54);
-    if (*(s32 *)effectState == 0) {
+    effectState = (ContactEffectState *)((RuntimeObjectPrefix *)effect)->state.pointer;
+    if (effectState->triggered == 0) {
         savedEffectState = effectState;
         if (objectFindLiveByHandle(*response) == (u8 *)((s32)gPikachuActor)) {
-            *(s32 *)effectState = 1;
-            animationIntegerTrackInitialize((ValueTrack *)((f32 *)(effectState + 4)), (ValueKey *)(gContactEffectTriggeredAnimation));
+            effectState->triggered = 1;
+            animationIntegerTrackInitialize(&effectState->textureAnimation,
+                                            (ValueKey *)(gContactEffectTriggeredAnimation));
         }
     }
 }
@@ -288,17 +304,18 @@ void actorUpdateScriptAndModel(u8 *actor) {
 void actorUpdateScriptAndModelFollowingTarget(u8 *actor) {
     u8 *sp24;
 
-    sp24 = *(u8 **)(actor + 0x54);
+    sp24 = ((RuntimeObjectPrefix *)actor)->state.bytes;
     actorUpdateScriptVm(actor);
     actorUpdateModel(actor);
     if (actorResolveStoredTarget(actor) != 0) {
-        *(f32 *)(actor + 0x18) = *(f32 *)(sp24 + 0x1EC);
-        *(f32 *)(actor + 0x1C) = *(f32 *)(sp24 + 0x1F0);
-        *(f32 *)(actor + 0x20) = *(f32 *)(sp24 + 0x1F4);
-        *(f32 *)(actor + 0x1C) = *(f32 *)(actor + 0x24) + *(f32 *)(actor + 0x1C);
-        *(f32 *)(actor + 0x44) = *(f32 *)(actor + 0x18);
-        *(f32 *)(actor + 0x48) = *(f32 *)(actor + 0x1C);
-        *(f32 *)(actor + 0x4C) = *(f32 *)(actor + 0x20);
+        ((RuntimeObjectPrefix *)actor)->position[0] = ((ActorScriptState *)sp24)->targetPosition[0];
+        ((RuntimeObjectPrefix *)actor)->position[1] = ((ActorScriptState *)sp24)->targetPosition[1];
+        ((RuntimeObjectPrefix *)actor)->position[2] = ((ActorScriptState *)sp24)->targetPosition[2];
+        ((RuntimeObjectPrefix *)actor)->position[1] =
+            ((RuntimeObjectPrefix *)actor)->radius + ((RuntimeObjectPrefix *)actor)->position[1];
+        ((RuntimeObjectPrefix *)actor)->worldPosition[0] = ((RuntimeObjectPrefix *)actor)->position[0];
+        ((RuntimeObjectPrefix *)actor)->worldPosition[1] = ((RuntimeObjectPrefix *)actor)->position[1];
+        ((RuntimeObjectPrefix *)actor)->worldPosition[2] = ((RuntimeObjectPrefix *)actor)->position[2];
     }
 }
 

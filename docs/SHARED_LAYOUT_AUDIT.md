@@ -157,3 +157,18 @@ and evaluation order. The animation builder's separate retained-value byte curso
 remains the documented IDO matching exception; `ValueTrack.value` is a signed
 halfword, not a full-width integer. Each accepted source-unit change passed the
 strict object baseline before the clean acceptance build.
+
+## Contact-effect state and actor placement
+
+`ContactEffectState` is a private owned 0x10-byte allocation: a signed trigger
+flag followed by a `ValueTrack` borrowing resident animation keys. Allocation,
+initialization, contact responses, animation evaluation and texture selection
+agree on this layout; compile-time checks cover the extent, track offset 4 and
+signed frame offset 0xC. Ghidra at `0x8001D7D8` confirms contact detection, reaction
+transition and completion behavior. All four callbacks use the typed state.
+
+Contact-effect object positions, scale, radius, display list and private-state
+storage now use `RuntimeObjectPrefix`. Following actors use the established
+`ActorScriptState.targetPosition` and object local/world position members. No
+allocation size, lifecycle policy or gameplay logic changes accompany recovery.
+The source-unit changes each preserve all baseline objects.
