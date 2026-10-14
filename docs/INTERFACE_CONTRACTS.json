@@ -356,7 +356,7 @@
     {
       "kind": "call-arity",
       "file": "src/game/texture_images_word_map.c",
-      "line": 1299,
+      "line": 1310,
       "name": "heapAllocLocal",
       "shape": {
         "expected": 3,
@@ -369,7 +369,7 @@
     {
       "kind": "signature-mismatch",
       "file": "src/game/texture_images_word_map.c",
-      "line": 1283,
+      "line": 1294,
       "name": "heapAllocLocal",
       "shape": {
         "expected": [

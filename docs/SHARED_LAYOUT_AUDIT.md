@@ -420,3 +420,26 @@ the opening transition's flag write next to the primary scroll value.
 The private camera alias borrows persistent rendering storage and changes no
 lifecycle policy. Canonical conversion passed the strict object baseline without
 new compatibility exceptions.
+
+## Paired-texture descriptor contract
+
+The private `TexturePair` has ten established words: two image/palette/format/size
+sets followed by shared dimensions. Images and palettes remain borrowed 32-bit
+rendering addresses. Ghidra at `0x8004592C` confirms the initializer's ten stores;
+renderer consumers establish their upload roles. Size and offset checks cover
+the 0x28-byte record. Initialization now accepts `TexturePair *` directly and
+documents replacement without resource release. No other C unit shares this
+record, so it remains private. The typed interface preserves all baseline objects.
+
+## Actor storage requiring further evidence
+
+These fields remain unresolved rather than inferred from their sizes or defaults:
+
+| Storage | Current evidence | Next evidence |
+| --- | --- | --- |
+| Actor `0x5C` and `0xDC` words | No named-field consumer in current C; raw and indirect consumers have not been excluded. | Trace allocation clearing, assembly references and resource/script access before classifying as padding. |
+| Actor `0x102`, `0x122`, `0x142` two-byte gaps | Lie between established fields; alignment alone does not prove their purpose. | Exclude raw/indirect reads and writes before identifying padding. |
+| Actor `0x208` float / kind configuration `0x34` | Creation copies the configuration value multiplied by object scale. No other named-field consumer establishes a physical dimension. | Trace raw/indirect consumers and compare authored kind records. |
+| Actor `0x1A0` word | Approach setup stores a randomized floating value; its later role is unproven. | Trace action continuations and indirect consumers before assigning an angle or timing meaning. |
+
+This table records evidence limits; it does not certify these bytes are unused.

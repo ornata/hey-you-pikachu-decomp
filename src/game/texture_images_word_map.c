@@ -528,12 +528,23 @@ void textureDrawScaledRepeated(Gfx **out, TextureImage *texture, u32 x, u32 y, s
 
 /// Borrowed image and palette references for a pair of equally sized textures.
 typedef struct TexturePair {
-    s32 image0, palette0, format0, size0, image1, palette1, format1, size1;
-    u32 width, height;
+    s32 image0;        ///< Borrowed first image address in the target's 32-bit rendering ABI.
+    s32 palette0;      ///< Borrowed first palette address; ignored for non-indexed images.
+    s32 format0;       ///< First N64 image format.
+    s32 size0;         ///< First N64 texel-size identifier.
+    s32 image1;        ///< Borrowed second image address in the target's 32-bit rendering ABI.
+    s32 palette1;      ///< Borrowed second palette address; ignored for non-indexed images.
+    s32 format1;       ///< Second N64 image format.
+    s32 size1;         ///< Second N64 texel-size identifier.
+    u32 width, height; ///< Shared positive image dimensions in texels.
 } TexturePair;
 
+typedef char TexturePairSizeCheck[(sizeof(TexturePair) == 0x28) ? 1 : -1];
+typedef char TexturePairSecondImageOffsetCheck[((u32) & ((TexturePair *)0)->image1 == 0x10) ? 1 : -1];
+typedef char TexturePairDimensionsOffsetCheck[((u32) & ((TexturePair *)0)->width == 0x20) ? 1 : -1];
+
 /// Initialize a pair of texture images for combined rendering.
-/// \param descriptor Word-aligned storage for at least ten words; replaces any previous borrowed image references.
+/// \param descriptor Writable descriptor receiving borrowed image references; replaces previous references without releasing resources.
 /// \param image0 Borrowed RDP-readable image data with rows padded for its texel size; retained while used for rendering.
 /// \param palette0 Borrowed RDP-readable palette for an indexed image; retained while used for rendering.
 /// \param format0 N64 image format.
@@ -546,18 +557,18 @@ typedef struct TexturePair {
 /// \param height Positive shared image height in texels.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8004592C (0x8004592C).
-void texturePairInitialize(u8 *descriptor, s32 image0, s32 palette0, s32 format0, s32 size0, s32 image1, s32 palette1, s32 format1, s32 size1, s32 width,
-                   s32 height) {
-    ((TexturePair *)descriptor)->image0 = image0;
-    ((TexturePair *)descriptor)->palette0 = palette0;
-    ((TexturePair *)descriptor)->format0 = format0;
-    ((TexturePair *)descriptor)->size0 = size0;
-    ((TexturePair *)descriptor)->image1 = image1;
-    ((TexturePair *)descriptor)->palette1 = palette1;
-    ((TexturePair *)descriptor)->format1 = format1;
-    ((TexturePair *)descriptor)->size1 = size1;
-    ((TexturePair *)descriptor)->width = width;
-    ((TexturePair *)descriptor)->height = height;
+void texturePairInitialize(TexturePair *descriptor, s32 image0, s32 palette0, s32 format0, s32 size0, s32 image1,
+                           s32 palette1, s32 format1, s32 size1, s32 width, s32 height) {
+    descriptor->image0 = image0;
+    descriptor->palette0 = palette0;
+    descriptor->format0 = format0;
+    descriptor->size0 = size0;
+    descriptor->image1 = image1;
+    descriptor->palette1 = palette1;
+    descriptor->format1 = format1;
+    descriptor->size1 = size1;
+    descriptor->width = width;
+    descriptor->height = height;
 }
 
 /// Determine the texture-memory layout and row capacity for paired images.
