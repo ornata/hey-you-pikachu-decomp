@@ -46,7 +46,7 @@ typedef struct EngineSequence {
     SequenceControlState *readerContext; ///< Borrowed playback and queued-control context.
     SequenceEventReader eventReader;     ///< Event producer advancing the borrowed context.
     ALBank *bank;                        ///< Borrowed instrument bank for channel programs.
-    SequenceVoice *voices;               ///< Active voice list drawn from the driver-owned pool.
+    SequenceVoice *voices;               ///< Active voice list drawn from the caller-supplied pool.
     EngineChannel channels[16];          ///< Controller state for the sixteen MIDI channels.
     s16 volume;                          ///< Current master sequence volume.
     u8 unknown1D6[2];                    ///< Unresolved alignment storage.

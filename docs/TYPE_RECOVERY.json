@@ -807,16 +807,16 @@
       "locations": {
         "raw_offset_candidates": {
           "slot + 1": [
-            "130:36"
+            "132:36"
           ],
           "gAudioDmaPageBytes - 1": [
-            "131:49"
+            "133:49"
           ],
           "address + 0x80000000": [
-            "139:92"
+            "141:92"
           ],
           "buffer + 0x80000000": [
-            "277:68"
+            "280:68"
           ]
         }
       }

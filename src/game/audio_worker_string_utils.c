@@ -1,7 +1,9 @@
+/// \file
+/// Implements cached sample reads, the audio synthesis worker and byte-string utilities.
+
 #include "audio_worker.h"
 #include "audio_dma.h"
 #include "scheduler.h"
-/* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "string_bytes.h"
 void memoryFillBytes(u8 *p, s32 n, u8 c);
@@ -173,7 +175,7 @@ typedef struct AudioWorkerState {
     s32 maxCommands;            ///< Allocated synthesis-command capacity.
     Acmd *commands;             ///< Audio-heap-owned command buffer.
     OSMesgQueue *scheduler;     ///< Borrowed scheduler audio command queue.
-    void *buffers[2];           ///< Audio-heap-owned stereo output buffers.
+    s16 *buffers[2];            ///< CPU views of audio-heap-owned interleaved stereo sample buffers.
     s32 index;                  ///< Output-buffer slot selected for the next rendering call.
 } AudioWorkerState;
 
@@ -261,13 +263,14 @@ void audioWorkerStart(GameScheduler *scheduler, ALHeap *heap, OSId id, OSPri pri
 /// \note Original identifier: \c D_80060120 (0x80060120).
 extern u64 gAudioRspMicrocodeTextStart[];
 /// Render and play audio until shutdown or the renderer produces no commands.
-/// \param arg Initialized audio worker state.
+/// \param arg Borrowed initialized worker state, stable until the thread stops.
+/// Rendering resources and scheduler queues must remain valid through shutdown acknowledgment.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8004982C (0x8004982C).
 void audioWorkerThreadMain(void *arg) {
     AudioWorkerState *audio = arg;
     s32 commandCount;
-    void *buffer;
+    s16 *buffer;
     SchedulerTask task;
     OSMesg taskMessage;
     OSMesg aiMessage;

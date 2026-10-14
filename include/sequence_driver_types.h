@@ -6,7 +6,7 @@
 
 #include "n_synthInternals.h"
 
-/// Driver-owned playback record linked through active and free voice lists.
+/// Playback record in a caller-owned pool, linked through driver-managed active and free lists.
 /// Instrument and sound data are borrowed from the bank for the voice lifetime.
 typedef struct SequenceVoice {
     struct SequenceVoice *next;     ///< Next active or free voice.
@@ -38,6 +38,8 @@ typedef char SequenceVoicePitchOffsetCheck[(((u32) & ((SequenceVoice *)0)->pitch
 struct EngineSequence;
 
 /// Synthesizer registration and shared sequence playback controls.
+/// The driver borrows its synthesizer, voice pool, sequences and bank resources;
+/// their storage remains stable while registered callbacks can reference them.
 typedef struct VoicePlayer {
     ALPlayer node;                    ///< Synthesizer callback registration; valid while registered.
     N_ALGlobals *synth;               ///< Borrowed synthesizer context while registered.

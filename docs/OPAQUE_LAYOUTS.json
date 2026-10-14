@@ -188,11 +188,11 @@
       "member": "unknown010",
       "line": 64,
       "declaration": "s32 unknown010;",
-      "known_facts": "The cell classification resource includes a borrowed model template preceding the word at 0x10.",
+      "known_facts": "The 0x14-byte cell classification record contains borrowed terrain, optional initialization and cleanup hooks, and a borrowed model template preceding this word. The trailing word is zero in all 1,554 scene/cell pairs reachable from the 23 retained authored grids; their lifecycle hooks are also null.",
       "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Compare authored cell-type tables and trace maze region creation and scene-specific callbacks consuming the final word.",
+      "next_evidence": "Find a nonzero authored variant or an actual read/write consumer of offset 0x10 before assigning semantics. Zero-only retail contents and alignment do not establish whether this is unused storage, a flag or another field.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/maze_types.h (record declaration and neighboring layout checks); docs/SHARED_LAYOUT_AUDIT.md (review scope and subsystem evidence)"
+      "evidence": "include/maze_types.h; src/ovl/area_terrain_maze.c (mazeConfigureNodeModel, mazeDestroyNode); src/scenes/*.c (authored grid samplers); docs/SHARED_LAYOUT_AUDIT.md (Scene cell lifecycle and position-event resource audit)"
     },
     {
       "file": "include/midi_reader_types.h",

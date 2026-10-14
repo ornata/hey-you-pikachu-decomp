@@ -7,20 +7,23 @@
 #include "scheduler_types.h"
 
 /// Render synthesis commands and report their count for one stereo sample buffer.
-/// \param commands Writable command buffer with the configured capacity.
-/// \param count Receives the command count; zero ends playback.
-/// \param samples Physical output-buffer address supplied to synthesis commands.
-/// \param frames Number of stereo sample frames to render.
+/// \param commands Borrowed writable command buffer with the configured capacity.
+/// \param count Writable count slot, receiving a value from zero through the configured capacity;
+/// zero terminates the audio worker.
+/// \param samples Physical address of storage for frames interleaved stereo pairs of signed 16-bit samples.
+/// This target address is for synthesis commands and must not be dereferenced as a CPU pointer.
+/// \param frames Positive number of stereo sample frames to render.
 /// \returns Command cursor after the generated commands.
 typedef Acmd *(*AudioRenderCallback)(Acmd *commands, s32 *count, s16 *samples, s32 frames);
 
 /// Start the shared audio worker after scheduler and synthesizer initialization.
 /// Only one worker may be active; retained resources must remain valid until shutdown.
 /// \param scheduler Initialized scheduler receiving audio tasks.
-/// \param heap Audio heap owning command and output buffers through shutdown.
+/// \param heap Borrowed allocator descriptor used during startup; its backing command and output
+/// storage must remain allocated until shutdown acknowledgment.
 /// \param id Operating-system thread identifier.
 /// \param pri Worker thread priority.
-/// \param render Retained synthesis callback; its count must not exceed maxCommands.
+/// \param render Non-null synthesis callback retained until shutdown; its count must not exceed maxCommands.
 /// \param ucode Retained audio microcode text.
 /// \param ucodeData Retained audio microcode data.
 /// \param samples Positive stereo sample-frame count per output buffer.

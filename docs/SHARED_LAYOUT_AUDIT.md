@@ -1248,3 +1248,81 @@ receives a region with bounds and terrain established; cleanup runs before the
 region is freed and associated hierarchy destruction is requested. Their field
 offsets are checked. Cell lifecycle/event target tables still need a separate audit
 of their authored extents; the entry-hook gate does not claim to cover them.
+
+### Scene cell lifecycle and position-event resource audit
+
+The retained 23 scene samplers use authored cubic grids of signed cell-type
+indices, with absent layers and out-of-range coordinates returning zero. Reading
+every non-null layer, including the zero result, identifies 1,554 reachable
+scene/cell pairs. Every selected cell record has null initialization and cleanup
+hooks, and its unresolved trailing word at 0x10 is zero. This establishes the
+retail contents without assigning a meaning to the unused word or inferring
+records beyond the reachable indices.
+
+All 23 configured event-link lists begin with a null handler, so no configured
+position-event callback is installed by these resources. The dispatcher still
+supports callbacks returning a signed status from `(f32 *, u8 *, s32)`; its
+position and node arguments are borrowed for the call. The empty retail lists
+do not provide an implementation from which to infer stronger handler semantics.
+
+The survey used each configuration's linked overlay section, the sampler's
+explicit layer-table declaration and cubic bounds, and the actual authored layer
+words. Grid pointers supplied as absolute linker symbols were read in the
+selected scene section rather than resolved by address across overlays. Event
+lists were followed as complete 0x1C-byte records until the null-handler sentinel.
+The results below describe authored reachability, not the allocation size of
+cell-type tables or the behavior of hypothetical runtime resource edits.
+
+| Scene | Grid width | Reachable cell indices | Highest index |
+| --- | ---: | ---: | ---: |
+| bedroom | 16 | 59 | 59 |
+| entryway | 16 | 25 | 25 |
+| front_yard | 32 | 91 | 93 |
+| viridian_entrance | 32 | 45 | 46 |
+| viridian_forest | 32 | 146 | 147 |
+| viridian_deep | 32 | 132 | 133 |
+| springleaf_entrance | 32 | 135 | 136 |
+| oddish_meadow | 16 | 164 | 165 |
+| springleaf_field | 32 | 122 | 123 |
+| olivine_lakeshore | 32 | 115 | 116 |
+| olivine_lake | 32 | 101 | 102 |
+| ochre_entrance | 16 | 29 | 30 |
+| ochre_deep | 32 | 149 | 149 |
+| cobalt_island | 16 | 66 | 68 |
+| cobalt_coast | 64 | 48 | 49 |
+| abra_shop | 8 | 7 | 8 |
+| wilderness_camp | 16 | 19 | 19 |
+| ochre_fishing | 8 | 17 | 17 |
+| olivine_fishing | 8 | 21 | 21 |
+| cobalt_fishing | 8 | 28 | 29 |
+| viridian_edge | 8 | 16 | 17 |
+| playground | 8 | 17 | 18 |
+| credits | 4 | 2 | 3 |
+
+### Audio callback ABI and storage ownership
+
+The sample callback and factory retain the SDK's exact `ALDMAproc` and
+`ALDMANew` signatures: signed target address and length plus `void *` state,
+and a factory receiving `void *`. The factory's state argument is actually a
+writable pointer slot that receives null; changing it to `void **` would make
+the game factory incompatible with its SDK callback type. `audioInitialize`
+registers this factory through `ALSynConfig.dmaproc`. No SDK declarations or
+implementations were changed.
+
+The synthesis worker retains `n_alAudioFrame` with the `AudioRenderCallback`
+contract. Its output buffers now have CPU type `s16 *` for interleaved stereo
+samples. The callback receives a physical target address rather than that CPU
+view; it must not dereference the address as a CPU pointer. The worker supplies
+184 stereo frames and space for 512 commands in the retained startup. A zero
+command count ends the worker; nonzero counts must fit the command allocation.
+Command generation and DMA completion precede task submission, and scheduler/task and
+audio-interface completion bound reuse of the command and output storage.
+
+The `ALHeap` descriptors used for initialization and startup are borrowed only
+during those calls. Their backing allocations remain retained through shutdown
+acknowledgment. In particular, `audioInitialize` uses a local heap descriptor;
+its stack lifetime must not be confused with the lifetime of the resident audio
+heap's storage. Sequence voices are drawn from caller-supplied pool storage, with
+the driver managing active/free links; banks and sample resources remain borrowed
+while voices use them. The synthesizer player callback retains the SDK-compatible
+`void *` context and borrows the registered `VoicePlayer`.

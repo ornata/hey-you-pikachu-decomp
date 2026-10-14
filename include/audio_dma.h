@@ -7,7 +7,8 @@
 #include <ultra64.h>
 
 /// Initialize the sample cache before creating synthesizer DMA callbacks.
-/// \param heap Audio heap owning cache buffers and request storage for the cache lifetime.
+/// \param heap Borrowed allocator descriptor used during initialization; its backing buffers and request
+/// storage must remain allocated while the cache or synthesizer can reference them.
 /// \param slots Positive cache-entry count, at most 255.
 /// \param shift Base-two logarithm of the sample page size in bytes, from zero through 24.
 /// \returns One.
@@ -15,7 +16,8 @@
 s32 audioDmaInitialize(ALHeap *heap, s32 slots, s32 shift);
 
 /// Provide the shared sample-cache callback to the synthesizer.
-/// \param state Writable callback-state pointer slot, receiving null.
+/// \param state Borrowed writable callback-state pointer slot, receiving null;
+/// the SDK signature represents this pointer-to-pointer slot as void *.
 /// \returns Callback supplying physical sample addresses; new reads complete at audioDmaFinishFrame.
 /// Requests within a frame must fit the cache capacity, and each sample span must
 /// fit its cache page plus configured read-ahead storage.
