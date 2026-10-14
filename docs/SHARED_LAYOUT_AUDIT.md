@@ -269,3 +269,20 @@ terrain and event references. Ghidra at `0x8010B528` confirms terrain sampling's
 node extents. The visibility callback retains geometry byte reads after its
 direct-member trial failed the ROM gate; that focused exception is recorded.
 All accepted source-unit mutations preserve the strict baseline objects.
+
+## Player initialization and held-item interfaces
+
+Area initialization now uses shared player position, view angles, eye height,
+collision radius, controller masks/port, companion selection, airborne motion,
+held-item handle and behavior state. The three retained control-object handles
+come from shared object and sibling members. Existing entrance bounds and
+initialization order remain unchanged.
+
+Held-item throwing uses shared player position, eye height, view shake, pitch
+offset and held-item handle, plus the item's kind, handle, state and position.
+Ghidra at `0x8010FC48` confirms those view/launch inputs. Direct yaw and pitch
+reads each failed the ROM gate; their checked member-offset reads retain matching
+instructions and are recorded explicitly. Facing constraints use the established
+actor collision flags with an unsigned view, and position events borrow the
+active actor's world-position array. Every accepted mutation passed strict object
+comparison before proceeding.

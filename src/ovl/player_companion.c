@@ -772,6 +772,7 @@ extern f32 gItemKindMotionCoefficientEntries[];
 /// Throw the player held item along the current view direction with rumble feedback.
 /// \param player Player record providing held-item selection, eye position, and view orientation.
 /// \returns The thrown item handle, or zero if the held item is unavailable.
+/// \note Checked yaw and pitch member offsets preserve the original target compiler load ordering.
 /// \note Original decompilation identifier: \c func_8010FC48 (0x8010FC48).
 s32 playerThrowHeldItem(u8 *player) {
     s32 objectId;
@@ -784,26 +785,27 @@ s32 playerThrowHeldItem(u8 *player) {
     f32 direction[3];
     f32 origin[3];
     u8 *object;
-    object = objectFindLiveByHandle(*(s32 *)(player + 0x84));
+    object = objectFindLiveByHandle(((PlayerControlPrefix *)player)->heldItemHandle);
     if (object == NULL)
         return 0;
-    state = *(u8 **)(object + 0x54);
-    yaw = *(f32 *)(player + 0x18) + *(f32 *)(player + 0xC);
-    pitch = *(f32 *)(player + 0x10) + *(f32 *)(player + 0x14);
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
+    yaw = ((PlayerControlPrefix *)player)->viewShake + *(f32 *)(player + (u32) & ((PlayerControlPrefix *)0)->yaw);
+    pitch = ((PlayerControlPrefix *)player)->pitchOffset + *(f32 *)(player + (u32) & ((PlayerControlPrefix *)0)->pitch);
     vertical = mathSinDegrees(pitch) * 50.0f;
-    pitch = *(f32 *)(player + 0x10) + *(f32 *)(player + 0x14);
+    pitch = ((PlayerControlPrefix *)player)->pitchOffset + *(f32 *)(player + (u32) & ((PlayerControlPrefix *)0)->pitch);
     horizontal = mathCosDegrees(pitch) * 50.0f;
-    origin[0] = *(f32 *)player;
-    origin[1] = *(f32 *)(player + 0x1C) + *(f32 *)(player + 4);
-    origin[2] = *(f32 *)(player + 8);
+    origin[0] = ((PlayerControlPrefix *)player)->position[0];
+    origin[1] = ((PlayerControlPrefix *)player)->eyeHeight + ((PlayerControlPrefix *)player)->position[1];
+    origin[2] = ((PlayerControlPrefix *)player)->position[2];
     direction[0] = mathSinDegrees(yaw) * horizontal;
     direction[1] = -vertical;
     direction[2] = mathCosDegrees(yaw) * horizontal;
-    itemThrow(*(s32 *)(object + 0x38), origin, (f32 *)(object + 0x18), direction, 1);
-    volume = mathMapRangeClamped(0.5f, 0.02f, 2.0f, 0.2f,
-                                 *(f32 *)((u8 *)gItemKindMotionCoefficientEntries + *(s16 *)(state + 4) * 0x74));
+    itemThrow(((RuntimeObjectPrefix *)object)->handle, origin, ((RuntimeObjectPrefix *)object)->position, direction, 1);
+    volume = mathMapRangeClamped(
+        0.5f, 0.02f, 2.0f, 0.2f,
+        *(f32 *)((u8 *)gItemKindMotionCoefficientEntries + ((ItemStatePrefix *)state)->kind * 0x74));
     controllerRequestRumblePattern(0, volume, volume, volume * 0.5f);
-    objectId = *(s32 *)(object + 0x38);
+    objectId = ((RuntimeObjectPrefix *)object)->handle;
     TRACE("holdItem:%p\n", object);
     TRACE("item:%p\n", state);
     return objectId;
@@ -2076,34 +2078,36 @@ void playerInitializeForArea(void) {
     for (index = 0; index != 1; index++) {
         state = (u8 *)&gPlayerState + index * 0x100;
         spawns = gCurrentAreaConfiguration->spawns;
-        *(f32 *)(state + 0) = spawns[gRuntimeCurrentEntrance].playerPosition[0];
-        *(f32 *)(state + 8) = spawns[gRuntimeCurrentEntrance].playerPosition[2];
-        *(f32 *)(state + 4) =
-            terrainGetWorldHeightForQuery(gPlayerCollisionQueryMode, *(f32 *)(state + 0),
-                                          spawns[gRuntimeCurrentEntrance].playerPosition[1], *(f32 *)(state + 8), 0);
-        *(f32 *)(state + 0x1C) = 6.0f;
-        *(f32 *)(state + 0xC) = spawns[gRuntimeCurrentEntrance].playerYaw;
-        *(f32 *)(state + 0x10) = 0.0f;
-        *(f32 *)(state + 0x14) = 5.0f;
-        *(f32 *)(state + 0x18) = 0.0f;
+        ((PlayerControlPrefix *)state)->position[0] = spawns[gRuntimeCurrentEntrance].playerPosition[0];
+        ((PlayerControlPrefix *)state)->position[2] = spawns[gRuntimeCurrentEntrance].playerPosition[2];
+        ((PlayerControlPrefix *)state)->position[1] = terrainGetWorldHeightForQuery(
+            gPlayerCollisionQueryMode, ((PlayerControlPrefix *)state)->position[0],
+            spawns[gRuntimeCurrentEntrance].playerPosition[1], ((PlayerControlPrefix *)state)->position[2], 0);
+        ((PlayerControlPrefix *)state)->eyeHeight = 6.0f;
+        ((PlayerControlPrefix *)state)->yaw = spawns[gRuntimeCurrentEntrance].playerYaw;
+        ((PlayerControlPrefix *)state)->pitchOffset = 0.0f;
+        ((PlayerControlPrefix *)state)->pitch = 5.0f;
+        ((PlayerControlPrefix *)state)->viewShake = 0.0f;
         playerChangeMode(1);
         playerSetControlPermissions(state, 0xF0003F2F);
-        *(s32 *)(state + 0x2C) = index;
-        *(u16 *)(state + 0x30) = 0xFFFF;
-        *(u16 *)(state + 0x32) = 0;
-        *(s32 *)(state + 0x4C) = 0;
-        *(s32 *)(state + 0x50) = 0;
-        *(s32 *)(state + 0x64) = 0;
-        *(f32 *)(state + 0x68) = 0.0f;
-        *(f32 *)(state + 0x20) = 4.5f;
-        *(s32 *)(state + 0x84) = 0;
-        *(s32 *)(state + 0x78) = 0;
-        *(s32 *)(state + 0x80) = 0;
+        ((PlayerControlPrefix *)state)->controllerPort = index;
+        ((PlayerControlPrefix *)state)->keptButtons = 0xFFFF;
+        ((PlayerControlPrefix *)state)->handledButtons = 0;
+        ((PlayerControlPrefix *)state)->companionMode = 0;
+        ((PlayerControlPrefix *)state)->companionTarget = 0;
+        ((PlayerControlPrefix *)state)->airborne = 0;
+        ((PlayerControlPrefix *)state)->downwardVelocity = 0.0f;
+        ((PlayerControlPrefix *)state)->collisionRadius = 4.5f;
+        ((PlayerControlPrefix *)state)->heldItemHandle = 0;
+        ((PlayerControlPrefix *)state)->movementClass = 0;
+        ((PlayerControlPrefix *)state)->soundHandle = 0;
         model = playerCreateControlHierarchy();
-        *(s32 *)(state + 0x88) = *(s32 *)(model + 0x38);
-        *(s32 *)(state + 0x8C) = *(s32 *)(*(u8 **)(model + 0x28) + 0x38);
-        *(s32 *)(state + 0x90) = *(s32 *)(*(u8 **)(*(u8 **)(model + 0x28) + 0x28) + 0x38);
-        *(s32 *)(state + 0x98) = 6;
+        ((PlayerControlPrefix *)state)->modeState.objectHandles[0] = ((RuntimeObjectPrefix *)model)->handle;
+        ((PlayerControlPrefix *)state)->modeState.objectHandles[1] =
+            ((RuntimeObjectPrefix *)model)->sibling.object->handle;
+        ((PlayerControlPrefix *)state)->modeState.objectHandles[2] =
+            ((RuntimeObjectPrefix *)model)->sibling.object->sibling.object->handle;
+        ((PlayerControlPrefix *)state)->modeState.interactionAction = 6;
     }
     playerUpdateViewCamera((u8 *)&gPlayerState);
     playerChangeMode(0);
@@ -2686,8 +2690,8 @@ f32 actorConstrainFacingHeading(u8 *object, f32 angle) {
     u8 *state;
     u16 flags;
 
-    state = *(u8 **)(object + 0x54);
-    flags = *(u16 *)(state + 0x1EA);
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
+    flags = (u16)((ActorScriptState *)state)->movementCollisionFlags;
     if (!(actionGetAttributes(object) & 0x10)) {
         return angle;
     } else {
@@ -2744,6 +2748,6 @@ void pikachuUpdateScriptAndTriggers(void) {
     u8 *actor = (u8 *)((s32)gPikachuActor);
     if (actor != NULL) {
         actorUpdateScriptVm(actor);
-        areaDispatchPositionEvent((f32 *)((u8 *)gPikachuActor + 0x44), 3);
+        areaDispatchPositionEvent(gPikachuActor->worldPosition, 3);
     }
 }

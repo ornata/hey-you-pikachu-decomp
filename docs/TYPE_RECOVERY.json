@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 1045,
-      "unique_spellings": 570,
+      "occurrences": 999,
+      "unique_spellings": 538,
       "files": 66
     },
     "cast_offset_candidates": {
@@ -4160,7 +4160,8 @@
         "playerUpdateViewOnlyControl": "All placeholder fields are recovered. One angle read uses a checked member offset because direct members reverse the IDO floating add operands; the resulting object matches.",
         "playerSetInteractionHelpText": "The help text is a byte string. The 256-byte buffer retains split linker symbols, with a four-byte first symbol and adjacent retained words. The missing strlen argument is now supplied through the canonical unsigned byte-string interface; an explicit signed result conversion preserves the original bounded-string comparison.",
         "playerClassifyInteractionTarget held-item comparison": "The recovered named-field equality preserves instructions with player held-item handle on the left and candidate object handle on the right. The opposite source order exchanges IDO load registers and fails matching; retain this accepted order when editing the classifier.",
-        "playerUpdateControlHierarchy": "The player origin, eye height and collision clearance now use PlayerControlPrefix. Scene dimensions use the shared Vec3f component view checked against SceneConfigurationPrefix; direct configuration-array accesses fail ROM matching. Next evidence: isolate floating operand/load ordering before changing this scene view."
+        "playerUpdateControlHierarchy": "The player origin, eye height and collision clearance now use PlayerControlPrefix. Scene dimensions use the shared Vec3f component view checked against SceneConfigurationPrefix; direct configuration-array accesses fail ROM matching. Next evidence: isolate floating operand/load ordering before changing this scene view.",
+        "playerThrowHeldItem": "Direct PlayerControlPrefix yaw or pitch reads independently change generated instructions and fail the ROM gate. Other player and item fields in this callback match with direct members. Checked member-offset reads preserve the existing yaw/pitch access form and ROM bytes; isolate IDO floating operand/load ordering before removing those views."
       },
       "locations": {
         "raw_offset_candidates": {
@@ -4188,149 +4189,27 @@
           "nextGround + 0": [
             "691:22"
           ],
-          "player + 0x84": [
-            "787:46"
-          ],
-          "object + 0x54": [
-            "790:22",
-            "2689:22"
-          ],
-          "player + 0x18": [
-            "791:20"
-          ],
-          "player + 0xC": [
-            "791:46"
-          ],
-          "player + 0x10": [
-            "792:22",
-            "794:22"
-          ],
-          "player + 0x14": [
-            "792:48",
-            "794:48"
-          ],
-          "player + 0x1C": [
-            "797:26"
-          ],
-          "player + 4": [
-            "797:52"
-          ],
-          "player + 8": [
-            "798:26"
-          ],
-          "object + 0x38": [
-            "802:24",
-            "806:25"
-          ],
-          "object + 0x18": [
-            "802:56"
-          ],
-          "state + 4": [
-            "804:94",
-            "2081:18"
-          ],
           "gPlayerCompanionTarget - 0x50": [
-            "1046:36"
+            "1048:36"
           ],
           "gPlayerControllerPort - 0x2C": [
-            "1062:37",
-            "1063:37"
+            "1064:37",
+            "1065:37"
           ],
           "gPlayerHelpTextCursor + 1": [
-            "1411:46",
-            "1415:46"
+            "1413:46",
+            "1417:46"
           ],
           "gPlayerEyeHeight - 0x1C": [
-            "1883:37",
-            "2456:42",
-            "2468:42"
-          ],
-          "state + 0": [
-            "2079:18",
-            "2082:79"
-          ],
-          "state + 8": [
-            "2080:18",
-            "2083:103"
-          ],
-          "state + 0x1C": [
-            "2084:18"
-          ],
-          "state + 0xC": [
-            "2085:18"
-          ],
-          "state + 0x10": [
-            "2086:18"
-          ],
-          "state + 0x14": [
-            "2087:18"
-          ],
-          "state + 0x18": [
-            "2088:18"
-          ],
-          "state + 0x2C": [
-            "2091:18"
-          ],
-          "state + 0x30": [
-            "2092:18"
-          ],
-          "state + 0x32": [
-            "2093:18"
-          ],
-          "state + 0x4C": [
-            "2094:18"
-          ],
-          "state + 0x50": [
-            "2095:18"
-          ],
-          "state + 0x64": [
-            "2096:18"
-          ],
-          "state + 0x68": [
-            "2097:18"
-          ],
-          "state + 0x20": [
-            "2098:18"
-          ],
-          "state + 0x84": [
-            "2099:18"
-          ],
-          "state + 0x78": [
-            "2100:18"
-          ],
-          "state + 0x80": [
-            "2101:18"
-          ],
-          "state + 0x88": [
-            "2103:18"
-          ],
-          "model + 0x38": [
-            "2103:43"
-          ],
-          "state + 0x8C": [
-            "2104:18"
-          ],
-          "model + 0x28": [
-            "2104:52",
-            "2105:61"
-          ],
-          "state + 0x90": [
-            "2105:18"
-          ],
-          "state + 0x98": [
-            "2106:18"
+            "1885:37",
+            "2460:42",
+            "2472:42"
           ],
           "return -1": [
-            "2321:9"
+            "2325:9"
           ],
           "friendshipLevel + 1": [
-            "2326:48"
-          ],
-          "state + 0x1EA": [
-            "2690:22"
-          ],
-          "gPikachuActor + 0x44": [
-            "2747:49"
+            "2330:48"
           ]
         }
       }
