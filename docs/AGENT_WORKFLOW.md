@@ -21,8 +21,8 @@ Remaining game assembly fallbacks are listed by `make asm-fallbacks`.
 - After accepting a change: `uv run python tools/mkctx.py` if headers changed,
   `python3 tools/progress.py`, `bash tools/check_clean.sh`, `git diff --check`, and
   `python3 -m pytest tests`.
-- Use the Ghidra MCP (see AGENTS.md) and `tools/m2c` for first drafts; `tools/asm-differ` and
-  `tools/decomp-permuter` are fetched by `tools/setup.sh` if you want them.
+- Use the Ghidra MCP (see AGENTS.md). Optional external helpers include m2c,
+  asm-differ and decomp-permuter; obtain them separately when needed.
 - `src/nonmatching/` holds the ROM's own assembly for functions with no matching C yet;
   SDK assembly belongs only in ignored `asm/`, never `src/nonmatching/`.
 

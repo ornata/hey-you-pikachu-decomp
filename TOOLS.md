@@ -90,7 +90,6 @@ use that analysis copy as a build input.
 | `tools/ghidra_mcp.py` | Start/query the local Ghidra MCP server (section above). |
 | `tools/prepare_ghidra_symbols.py` | Prepare a separate analysis ELF when duplicate symbols block import. |
 | `tools/extract_assets.py`, `tools/rom.py` | Normalize the ROM dump and extract raw asset segments (keep outputs external). |
-| `tools/setup.sh` | Fetch compilers and helper projects, import the ROM. |
 | `tools/materialize_ultralib.py` | Verify or import locally supplied SDK-related headers (`docs/LOCAL_SDK_FILES.json`); no downloads. |
 | `tools/compile_positioned_unit.py` | Link a hand-written unit's accepted C into its original function slots (`POSITIONED_UNITS`). |
 | `tools/ido_binasm_patch.py` + `tools/binasm_patches/` | Compiler command for the one unit (`action_script_commands`) with an accepted assembler-input exception. |
@@ -98,7 +97,7 @@ use that analysis copy as a build input.
 | `tools/asm-processor/` | `GLOBAL_ASM` / data injection used by every C unit's build. |
 | `tools/run_game.sh` | Optional local runtime launch. |
 
-`tools/m2c/`, `tools/asm-differ/`, `tools/decomp-permuter/` and the IDO toolchains are fetched by
-`tools/setup.sh` and are git-ignored.
+Nix supplies the pinned IDO compiler. Optional m2c, asm-differ and decomp-permuter
+checkouts must be obtained separately; their `tools/` paths remain git-ignored.
 
 Tests: `python3 -m pytest tests`.

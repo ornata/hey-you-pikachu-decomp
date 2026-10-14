@@ -15,14 +15,14 @@ requires-python = ">=3.12"
 dependencies = [
     # ROM splitting
     "splat64[mips]>=0.37,<0.38",
-    # m2c (cloned, pinned in tools/setup.sh)
+    # m2c (optional external helper)
     "pycparser>=2.21",
-    # asm-differ (cloned, pinned in tools/setup.sh)
+    # asm-differ (optional external helper)
     "colorama>=0.4",
     "watchdog>=4",
     "levenshtein>=0.25",
     "cxxfilt>=0.3",
-    # decomp-permuter (cloned, pinned in tools/setup.sh)
+    # decomp-permuter (optional external helper)
     "toml>=0.10",
 ]
 

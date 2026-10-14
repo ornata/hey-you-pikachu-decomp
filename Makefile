@@ -115,7 +115,7 @@ distclean: clean
 # ---- split ------------------------------------------------------------
 
 $(BASEROM):
-	@echo "run tools/setup.sh first (normalizes your dump into $(BASEROM))" && exit 1
+	@echo "normalize your dump first: python3 tools/rom.py /path/to/dump.z64 $(BASEROM)" && exit 1
 
 split: $(BASEROM) pikachu.yaml symbol_addrs.txt
 	$(SPLAT)
