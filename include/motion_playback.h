@@ -7,6 +7,8 @@
 #include "ultra64.h"
 #include "motion_playback_types.h"
 
+struct ActorScriptState;
+
 /// Reset motion playback for an object and its animated children.
 /// \param object Object whose motion playback is reset.
 /// \returns Nothing.
@@ -43,10 +45,12 @@ void motionApplyRootOrientation(f32 *angles, u8 *object);
 
 /// Evaluate and apply the root orientation and movement of a motion.
 /// \param object Object receiving the root motion.
-/// \param state Initialized motion state containing root tracks and writable pending movement and velocity.
+/// \param state Actor-owned initialized root tracks and writable movement state.
 /// \param time Nonnegative time step in seconds by which to advance the root tracks.
 /// \returns Nothing.
+/// \pre Object must be the current hierarchy-update object and state must belong to it;
+/// borrowed motion keys must remain valid throughout playback.
 /// \note Original decompilation identifier: \c func_8000E408 (0x8000E408).
-void motionEvaluateRootTracks(u8 *object, u8 *state, f32 time);
+void motionEvaluateRootTracks(u8 *object, struct ActorScriptState *state, f32 time);
 
 #endif

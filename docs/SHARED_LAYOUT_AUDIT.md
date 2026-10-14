@@ -981,3 +981,21 @@ alongside existing item extent and direction offsets. Unresolved gaps remain
 opaque; the header no longer labels them reserved storage without evidence.
 The allocator, destructor and lighting-helper conversions each passed all 483
 original objects before the next change.
+
+## Typed root and child motion evaluation
+
+Root-track evaluation now receives the owning `ActorScriptState *` through
+its public declaration and definition; selected-action context preparation uses
+the same state type. Child rotation evaluation instead receives the distinct
+`ChildMotionState *`. Their callers pass the appropriate established views,
+and internal member access no longer recovers them from byte parameters.
+The public root-motion header uses a forward declaration of the actor state,
+avoiding a dependency on all actor-state member definitions.
+
+Ghidra at 0x8000E408 confirms root orientation tracks at 0x23C, movement tracks
+at 0x2B4, displacement at 0x1C0 and local motion at 0x1CC. Root evaluation adds
+to the shared movement of the current hierarchy update, so its contract now
+requires the object to be that current update object and state to belong to it.
+Motion key data remains borrowed throughout playback. Child evaluation retains
+its separate rotation workspace and ownership. Each interface conversion and
+the forward-declaration refinement passed all 483 original objects.

@@ -241,16 +241,18 @@ void motionStartTrackPlayback(u8 *object) {
 
 /// Evaluate and apply the root orientation and movement of a motion.
 /// \param object Object receiving the root motion.
-/// \param state Initialized motion state containing root tracks and writable pending movement and velocity.
+/// \param state Actor-owned initialized root tracks and writable movement state.
 /// \param time Nonnegative time step in seconds by which to advance the root tracks.
 /// \returns Nothing.
+/// \pre Object must be the current hierarchy-update object and state must belong to it;
+/// borrowed motion keys must remain valid throughout playback.
 /// \note Original decompilation identifier: \c func_8000E408 (0x8000E408).
-void motionEvaluateRootTracks(u8 *object, u8 *state, f32 time) {
+void motionEvaluateRootTracks(u8 *object, struct ActorScriptState *state, f32 time) {
     f32 position[3];
-    animationTrack3Evaluate(&((ActorScriptState *)state)->rootPlayback.orientationTrack, position, NULL, time);
-    animationDeltaTrack3Evaluate(&((ActorScriptState *)state)->rootMovementTrack, ((ActorScriptState *)state)->poseDisplacement, ((ActorScriptState *)state)->localMotion, time);
+    animationTrack3Evaluate(&state->rootPlayback.orientationTrack, position, NULL, time);
+    animationDeltaTrack3Evaluate(&state->rootMovementTrack, state->poseDisplacement, state->localMotion, time);
     motionApplyRootOrientation(position, object);
-    objectAddPendingLocalMovement(((ActorScriptState *)state)->poseDisplacement);
+    objectAddPendingLocalMovement(state->poseDisplacement);
 }
 
 /// Evaluate a child rotation track and end playback when the track finishes.
@@ -259,10 +261,10 @@ void motionEvaluateRootTracks(u8 *object, u8 *state, f32 time) {
 /// \param step Nonnegative time step in seconds by which to advance the rotation track.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000E470 (0x8000E470).
-void motionEvaluateChildRotation(u8 *obj, u8 *track, f32 step) {
+void motionEvaluateChildRotation(u8 *obj, ChildMotionState *track, f32 step) {
     s32 r;
 
-    r = animationTrack3Evaluate(&((ChildMotionState *)track)->playback.rotationTrack, ((RuntimeObjectPrefix *)obj)->rotation, NULL, step);
+    r = animationTrack3Evaluate(&track->playback.rotationTrack, ((RuntimeObjectPrefix *)obj)->rotation, NULL, step);
     while (((RuntimeObjectPrefix *)obj)->rotation[0] < 0.0f) {
         ((RuntimeObjectPrefix *)obj)->rotation[0] += 360.0f;
     }
@@ -534,15 +536,15 @@ s32 actionLoadRecordByIndex(ActorScriptState *state, s32 actionId, s32 nextActio
 /// \param sequence Borrowed default sequence address used when the action supplies no sequence; it must remain valid throughout playback.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000EC7C (0x8000EC7C).
-void actionPrepareSelectedContext(u8 *state, ActorActionCueCommand *sequence) {
-    ((ActorScriptState *)state)->loopExitRequested = 0;
-    ((ActorScriptState *)state)->pendingAction = -1;
-    ((ActorScriptState *)state)->activeRequestId = ((ActorScriptState *)state)->pendingRequestId;
-    ((ActorScriptState *)state)->pendingRequestId = 0;
-    ((ActorScriptState *)state)->selectedActionKind = ((ActorScriptState *)state)->pendingActionKind;
-    ((ActorScriptState *)state)->pendingActionKind = 0;
-    if (((ActorScriptState *)state)->primaryCueProgram == 0) {
-        ((ActorScriptState *)state)->primaryCueProgram = sequence;
+void actionPrepareSelectedContext(ActorScriptState *state, ActorActionCueCommand *sequence) {
+    state->loopExitRequested = 0;
+    state->pendingAction = -1;
+    state->activeRequestId = state->pendingRequestId;
+    state->pendingRequestId = 0;
+    state->selectedActionKind = state->pendingActionKind;
+    state->pendingActionKind = 0;
+    if (state->primaryCueProgram == 0) {
+        state->primaryCueProgram = sequence;
     }
 }
 
@@ -608,7 +610,7 @@ void actionResolveNextTransition(u8 *object) {
                 sequence = gActionDefaultCommandSequence;
             }
             if (actionTryApplyCompatibleRecord((ActorScriptState *)state, next)) {
-                actionPrepareSelectedContext(state, sequence);
+                actionPrepareSelectedContext((ActorScriptState *)state, sequence);
             } else if ((next->attributes & 0x02000000) && next->continuationAction != -1) {
                 nextIndex = next->continuationAction;
                 if (nextIndex < 0 || nextIndex >= 0x14A) {
@@ -617,7 +619,7 @@ void actionResolveNextTransition(u8 *object) {
                     next = &gActionDefinitions[nextIndex];
                 }
                 if (actionTryApplyCompatibleRecord((ActorScriptState *)state, next)) {
-                    actionPrepareSelectedContext(state, sequence);
+                    actionPrepareSelectedContext((ActorScriptState *)state, sequence);
                 } else {
                     goto find_transition;
                 }
@@ -628,15 +630,15 @@ void actionResolveNextTransition(u8 *object) {
                 animation = transition - 0x100;
                 if (transition == 0xFE) {
                     actionConfigurePoseTransition((ActorScriptState *)state, nextIndex, blendTime);
-                    actionPrepareSelectedContext(state, sequence);
+                    actionPrepareSelectedContext((ActorScriptState *)state, sequence);
                 } else if (animation == -3) {
                     *(ActionDefinition *)&((ActorScriptState *)state)->actionId = *next;
-                    actionPrepareSelectedContext(state, sequence);
+                    actionPrepareSelectedContext((ActorScriptState *)state, sequence);
                 } else if (actionLoadRecordByIndex((ActorScriptState *)state, animation, nextIndex)) {
-                    actionPrepareSelectedContext(state, sequence);
+                    actionPrepareSelectedContext((ActorScriptState *)state, sequence);
                 } else if (previous == NULL) {
                     actionConfigurePoseTransition((ActorScriptState *)state, nextIndex, blendTime);
-                    actionPrepareSelectedContext(state, sequence);
+                    actionPrepareSelectedContext((ActorScriptState *)state, sequence);
                 } else {
                     *(ActionDefinition *)&((ActorScriptState *)state)->actionId = *previous;
                 }
@@ -730,7 +732,7 @@ void actionUpdatePlayback(u8 *object) {
             break;
         case MOTION_PLAYBACK_TRACKS:
             motionCacheReadBlocking(&gMotionRomCache, ((ActorScriptState *)state)->motionId);
-            motionEvaluateRootTracks(object, state, step);
+            motionEvaluateRootTracks(object, (ActorScriptState *)state, step);
             break;
         case MOTION_PLAYBACK_POSE_BLEND:
             step = remaining / ((ActorScriptState *)state)->motionDuration;
@@ -772,7 +774,7 @@ void actionUpdatePlayback(u8 *object) {
     }
 }
 
-void motionEvaluateChildRotation(u8 *, u8 *, f32);
+void motionEvaluateChildRotation(u8 *, ChildMotionState *, f32);
 void motionBlendPosePair(u8 *, f32 *, f32);
 
 /// Advance child motion playback using its parent action timing.
@@ -790,7 +792,8 @@ void motionUpdateChildPlayback(u8 *object) {
         tgt = ((RuntimeObjectPrefix *)object)->root.object->state.bytes;
         switch ((u16)((ChildMotionState *)obj)->playbackMode) {
         case MOTION_PLAYBACK_TRACKS:
-            motionEvaluateChildRotation(object, obj, ((ActorScriptState *)tgt)->movementScale * gRuntimeFrameSeconds);
+            motionEvaluateChildRotation(object, (ChildMotionState *)obj,
+                                        ((ActorScriptState *)tgt)->movementScale * gRuntimeFrameSeconds);
             break;
         case MOTION_PLAYBACK_TIMED:
             ((ChildMotionState *)obj)->playbackMode = MOTION_PLAYBACK_DISABLED;
