@@ -8,6 +8,7 @@
 #include "messenger.h"
 #include "camera_types.h"
 #include "object_types.h"
+#include "item_types.h"
 #include "text_image_configurations.h"
 #include "interaction.h"
 #include "object_target_search.h"
@@ -91,7 +92,9 @@ void voiceCommandLaunchEffect(ScriptMessage message) {
         (gRuntimeGameMode == 0 || gRuntimeGameMode == 8 || gRuntimeGameMode == 0x12)) {
         special = 0;
         object = objectFindLiveByHandle(gPlayerHeldItemHandle);
-        if (object != NULL && ((state = *(u8 **)(object + 0x54), kind = *(s16 *)(state + 4)) == 0x51 || kind == 0x8A)) {
+        if (object != NULL &&
+            ((state = ((RuntimeObjectPrefix *)object)->state.bytes, kind = ((ItemStatePrefix *)state)->kind) == 0x51 ||
+             kind == 0x8A)) {
             special = 1;
             message.arg0 |= message.type << 20;
             message.type = 1;
@@ -352,10 +355,10 @@ void textPanelSetLineColor(TextPanel *panel, s32 line, s32 red, s32 green, s32 b
     s32 off;
 
     off = line * 4;
-    (*(u8 **)((u8 *)panel + 0xC))[off] = red;
-    (*(u8 **)((u8 *)panel + 0xC))[off + 1] = green;
-    (*(u8 **)((u8 *)panel + 0xC))[off + 2] = blue;
-    (*(u8 **)((u8 *)panel + 0xC))[off + 3] = alpha;
+    panel->colors[line][0] = red;
+    panel->colors[line][1] = green;
+    panel->colors[line][2] = blue;
+    panel->colors[line][3] = alpha;
 }
 
 /// Set the display color of every text-panel line.
@@ -468,24 +471,24 @@ void textPanelClear(TextPanel *panel) {
     s32 lineIndex;
     s32 lineCount;
 
-    lineCount = *(s32 *)panel;
+    lineCount = panel->count;
     imageByteOffset = 0;
     lineIndex = 0;
     if (lineCount > 0) {
         do {
-            imageAddress = *(s32 *)(*(u8 **)((u8 *)panel + 0x14) + imageByteOffset);
+            imageAddress = *(s32 *)((u8 *)panel->images + imageByteOffset);
             if (imageAddress != 0) {
                 textImageDestroy((TextImage *)imageAddress);
-                *(s32 *)(*(u8 **)((u8 *)panel + 0x14) + imageByteOffset) = 0;
-                lineCount = *(s32 *)panel;
+                *(s32 *)((u8 *)panel->images + imageByteOffset) = 0;
+                lineCount = panel->count;
             }
             lineIndex += 1;
             imageByteOffset += 4;
         } while (lineIndex < lineCount);
     }
-    _bzero(*(s32 *)((u8 *)panel + 0x18), (s32)(*(s32 *)((u8 *)panel + 0x10) * 4));
-    *(s32 *)((u8 *)panel + 4) = 0;
-    *(s32 *)panel = 0;
+    _bzero((s32)panel->entries, (s32)(panel->capacity * 4));
+    panel->nextEntry = 0;
+    panel->count = 0;
     textPanelAppend((struct TextPanel *)panel, gTextPanelClearedEmptyText);
 }
 

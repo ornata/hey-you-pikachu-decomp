@@ -344,3 +344,18 @@ the common object prefix. Pose extraction and blending use shared rotation
 components; playback restart uses the established actor movement scale. The
 existing private motion-track and pose workspaces remain distinct. Both source
 units preserve all 483 baseline objects after their accepted mutations.
+
+## Text-panel storage and eye-catch rectangles
+
+Text-panel line colors use the shared RGBA table. Clearing uses shared count,
+capacity, circular index, image table and entry table while retaining its byte
+image cursor and existing destruction order. Ghidra at `0x80012EE4` confirms
+the table layout and image-release behavior. Voice-command special-item selection
+uses shared object state and signed item kind.
+
+Eye-catch authored layouts and animated draw lists now use `TextureRectangle`;
+the duplicate `Rec36A60` and `TextureDraw370` views are removed. Initial placement
+updates rectangle origins and retains the negative-texture list terminator.
+Ghidra at `0x80037034` confirms both lists reach the common rectangle renderer.
+The shared size/scale checks cover both uses. Both source units preserve all
+strict baseline objects without additional matching exceptions.

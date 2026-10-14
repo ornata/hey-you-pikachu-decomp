@@ -39,16 +39,10 @@ extern s32 gEyeCatchStage;
 /// Owned image asset faded into the eye-catch foreground.
 /// \note Original identifier: \c D_800F2600 (0x800F2600).
 extern s32 gEyeCatchForegroundImage;
-typedef struct {
-    s32 id;
-    s32 x;
-    s32 y;
-    u8 pad[0x18];
-} Rec36A60;
 /// Eye-catch artwork, rectangle layout, animation keys and corner colors.
 typedef struct {
     s32 image;
-    Rec36A60 *records;
+    TextureRectangle *records;
     s16 x, y;
     s16 flags, count;
     s32 (*keys)[6];
@@ -66,16 +60,16 @@ extern EyeGroup36A gEyeCatchGroups[6];
 void eyeCatchInitialize(void) {
     s32 i;
     EyeGroup36A *g;
-    Rec36A60 *r;
+    TextureRectangle *r;
 
     for (i = 0, g = gEyeCatchGroups; i < 6; i++, g++) {
         r = g->records;
-        if (r->id >= 0) {
+        if (r->texture >= 0) {
             do {
                 r->x += g->x;
                 r->y += g->y;
                 r++;
-            } while (r->id >= 0);
+            } while (r->texture >= 0);
         }
     }
     gEyeCatchStageSeconds = 0.0f;
@@ -186,10 +180,6 @@ void eyeCatchRelease(void) {
     gEyeCatchSelectedGroup = -1;
 }
 
-typedef struct TextureDraw370 {
-    s32 texture, x, y, width, height, s, t;
-    f32 scaleX, scaleY;
-} TextureDraw370;
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
@@ -216,7 +206,7 @@ void eyeCatchDrawLayers(Gfx **displayList) {
     gDPPipeSync((*displayList)++);
     gDPSetRenderMode((*displayList)++, 0x504240, 0);
     gDPSetCombine((*displayList)++, 0xFFFFFF, 0xFFFCF279);
-    textureDrawRectangles(9, (TextureRectangle *)(s32 *)((EyeGroup36A *)gEyeCatchActiveGroup)->records, displayList);
+    textureDrawRectangles(9, ((EyeGroup36A *)gEyeCatchActiveGroup)->records, displayList);
     gDPPipeSync((*displayList)++);
     gDPSetRenderMode((*displayList)++, 0x504240, 0);
     gDPSetCombineLERP((*displayList)++, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE,
@@ -224,7 +214,7 @@ void eyeCatchDrawLayers(Gfx **displayList) {
     {
         s32 spA0;
         s32 sp9C;
-        TextureDraw370 desc[2];
+        TextureRectangle desc[2];
         var_s0 = gEyeCatchAnimationTracks;
         for (var_s4 = 0; var_s4 < ((EyeGroup36A *)gEyeCatchActiveGroup)->count; var_s4++) {
             desc[0].width = desc[0].height = -1;
@@ -246,7 +236,7 @@ void eyeCatchDrawLayers(Gfx **displayList) {
             }
             gDPSetPrimColor((*displayList)++, 0, 0, 0, 0, 0, spA0);
             desc[1].texture = -1;
-            textureDrawRectangles(9, (TextureRectangle *)&desc, displayList);
+            textureDrawRectangles(9, desc, displayList);
             var_s0 += 0x48;
         }
     }

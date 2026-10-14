@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 908,
-      "unique_spellings": 492,
+      "occurrences": 894,
+      "unique_spellings": 484,
       "files": 64
     },
     "cast_offset_candidates": {
@@ -1030,41 +1030,41 @@
       "locations": {
         "raw_offset_candidates": {
           "gEyeCatchProjectionMatrix + 0x80000000": [
-            "212:33"
+            "202:33"
           ],
           "gEyeCatchModelViewMatrix + 0x80000000": [
-            "213:33"
+            "203:33"
           ],
           "gEyeCatchBackdropVertices + 0x80000000": [
-            "214:33"
+            "204:33"
           ],
           "var_s0 + 0xC": [
-            "234:66"
+            "224:66"
           ],
           "var_s0 + 0x18": [
-            "236:66"
+            "226:66"
           ],
           "var_s0 + 0x24": [
-            "238:66"
+            "228:66"
           ],
           "var_s0 + 0x30": [
-            "240:66"
+            "230:66"
           ],
           "var_s0 + 0x3C": [
-            "241:66"
+            "231:66"
           ],
           "return -10": [
-            "353:5"
+            "343:5"
           ],
           "return -0xA": [
-            "367:5"
+            "357:5"
           ],
           "return -0x14": [
-            "375:5"
+            "365:5"
           ],
           "column + 2": [
-            "439:46",
-            "443:47"
+            "429:46",
+            "433:47"
           ]
         }
       }
@@ -2835,6 +2835,7 @@
         "heap_free.h",
         "image_outline.h",
         "interaction.h",
+        "item_types.h",
         "math_scalar.h",
         "messenger.h",
         "microphone_requests.h",
@@ -2856,60 +2857,26 @@
       },
       "locations": {
         "raw_offset_candidates": {
-          "object + 0x54": [
-            "94:50"
-          ],
-          "state + 4": [
-            "94:82"
-          ],
           "x0 - 10": [
-            "311:74"
+            "314:74"
           ],
           "y0 - 6": [
-            "311:98"
+            "314:98"
           ],
           "x1 + 8": [
-            "321:104"
+            "324:104"
           ],
           "y0 - 2": [
-            "322:58"
+            "325:58"
           ],
           "x0 - 8": [
-            "322:83"
+            "325:83"
           ],
           "images + 1": [
-            "329:20"
-          ],
-          "panel + 0xC": [
-            "355:21",
-            "356:21",
-            "357:21",
-            "358:21"
-          ],
-          "off + 1": [
-            "356:35"
-          ],
-          "off + 2": [
-            "357:35"
-          ],
-          "off + 3": [
-            "358:35"
+            "332:20"
           ],
           "count + 1": [
-            "432:51"
-          ],
-          "panel + 0x14": [
-            "476:52",
-            "479:41"
-          ],
-          "panel + 0x18": [
-            "486:27"
-          ],
-          "panel + 0x10": [
-            "486:63"
-          ],
-          "panel + 4": [
-            "487:20"
+            "435:51"
           ]
         }
       }
