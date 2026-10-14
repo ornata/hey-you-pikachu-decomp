@@ -371,7 +371,7 @@ void actionCommandLaunchHeldItem(u8 *actor, u8 *state, ActorActionCueCommand *co
     f32 ang7;
     f32 dir[3];
 
-    obj = (u8 *)objectFindLiveByHandle(*(s32 *)(state + 0x190));
+    obj = (u8 *)objectFindLiveByHandle(((ActorScriptState *)state)->heldItemHandle);
     if (obj == NULL) {
         return;
     }
@@ -380,7 +380,8 @@ void actionCommandLaunchHeldItem(u8 *actor, u8 *state, ActorActionCueCommand *co
     actorGetConfiguredAttachmentPosition(actor, *(f32 *)(obj + 0x24), pos);
     switch (l->kind) {
     case 0:
-        if (*(s32 *)(state + 0x19C) == 1 && (p = actorResolveStoredTarget(actor)) != NULL && *(u16 *)(p + 0x34) == 0x7F) {
+        if (((ActorScriptState *)state)->targetMode == 1 && (p = actorResolveStoredTarget(actor)) != NULL &&
+            *(u16 *)(p + 0x34) == 0x7F) {
             dx = gPlayerState.position[0] - *(f32 *)(obj + 0x18);
             dz = gPlayerState.position[2] - *(f32 *)(obj + 0x20);
             len = sqrtf(dx * dx + dz * dz);
@@ -424,9 +425,9 @@ void actionCommandLaunchHeldItem(u8 *actor, u8 *state, ActorActionCueCommand *co
         vel[2] = mathCosDegrees(ang7) * speed;
         break;
     case 5:
-        dir[0] = *(f32 *)(state + 0x1EC) - *(f32 *)(obj + 0x44);
-        dir[1] = *(f32 *)(state + 0x1F0) - *(f32 *)(obj + 0x48);
-        dir[2] = *(f32 *)(state + 0x1F4) - *(f32 *)(obj + 0x4C);
+        dir[0] = ((ActorScriptState *)state)->targetPosition[0] - *(f32 *)(obj + 0x44);
+        dir[1] = ((ActorScriptState *)state)->targetPosition[1] - *(f32 *)(obj + 0x48);
+        dir[2] = ((ActorScriptState *)state)->targetPosition[2] - *(f32 *)(obj + 0x4C);
         vector3Normalize((f32 *)dir);
         vel[0] = dir[0] * speed;
         vel[1] = dir[1] * speed;
@@ -436,7 +437,7 @@ void actionCommandLaunchHeldItem(u8 *actor, u8 *state, ActorActionCueCommand *co
         break;
     }
     itemThrow(*(s32 *)(obj + 0x38), (f32 *)(obj + 0x18), pos, vel, gActionLaunchThrowFlags[l->kind]);
-    *(u64 *)(state + 0x1A8) = runtimeGetElapsedMilliseconds();
+    ((ActorScriptState *)state)->lastInteractionMilliseconds = runtimeGetElapsedMilliseconds();
 }
 
 
@@ -452,10 +453,11 @@ void actionCommandPickUpNearbyItem(s32 actor, u8 *state, u8 *command, s32 elapse
     f32 pos[3];
     u8 *r;
 
-    if (objectFindLiveByHandle(*(s32 *)(state + 0x190)) == 0) {
+    if (objectFindLiveByHandle(((ActorScriptState *)state)->heldItemHandle) == 0) {
         actorGetConfiguredAttachmentPosition((u8 *)actor, 0.0f, pos);
-        r = itemFindNearest(pos, *(f32 *)(state + 0x1B4), 0.0f, 0.0f, 360.0f, *(s32 *)(state + 0x1B0),
-                          *(s32 *)(state + 0x1B0), *(s32 *)(command + 8), 0);
+        r = itemFindNearest(pos, ((ActorScriptState *)state)->searchItemRange, 0.0f, 0.0f, 360.0f,
+                            ((ActorScriptState *)state)->searchItemKind, ((ActorScriptState *)state)->searchItemKind,
+                            *(s32 *)(command + 8), 0);
         if (r != NULL) {
             actorTryHoldItem((u8 *)actor, *(s32 *)(r + 0x38), 0);
         }
@@ -481,7 +483,7 @@ void actionCommandCreateRandomHeldItem(u8 *object, u8 *state, ActorActionCueComm
     } position;
     u8 *spawned;
     SpawnChoice *choice;
-    if (objectFindLiveByHandle(*(s32 *)(state + 0x190)) == 0) {
+    if (objectFindLiveByHandle(((ActorScriptState *)state)->heldItemHandle) == 0) {
         actorGetConfiguredAttachmentPosition((u8 *)object, 0.0f, &position.x);
         choice = (SpawnChoice *)(*source)->args;
         count = choice->kindCount;
@@ -898,7 +900,8 @@ void actionCommandStunPlayerInRange(u8 *actor, u8 *state, ActorActionCueCommand 
     a = (ArgsSpawn *)command->args;
     dist = vector3Length(d);
     TRACE("vec:%f,%f,%f len:%f  stunRange:%f\n", d[0], d[1], d[2], dist, a->range);
-    if (dist <= a->range || (*(s32 *)(state + 0x19C) != 0 && gPlayerModeState == *(s32 *)(state + 0x198))) {
+    if (dist <= a->range || (((ActorScriptState *)state)->targetMode != 0 &&
+                             gPlayerModeState == ((ActorScriptState *)state)->targetHandle)) {
         playerBeginStun((u8 *)&gPlayerState, a->base);
     }
 }
@@ -952,11 +955,11 @@ void actionCommandConfigureHeldItem(s32 actor, u8 *state, u8 *command, f32 *elap
 
     if (p->id >= 0) {
         if (p->id < 6) {
-            *(s32 *)(state + 0x194) = p->id;
+            ((ActorScriptState *)state)->attachmentMode = p->id;
         }
     }
     if (p->val > 0.0f) {
-        v = (f32 *)objectFindLiveByHandle(*(s32 *)(state + 0x190));
+        v = (f32 *)objectFindLiveByHandle(((ActorScriptState *)state)->heldItemHandle);
         if (v != NULL) {
             f = gCurrentAreaConfiguration->objectScale * p->val;
             v[0] = f;

@@ -141,3 +141,19 @@ and the owner's default model part, using shared scale, local position and world
 position fields. Ghidra at `0x80036330` confirms the terrain-conforming vertex
 inputs. The shadow owns its rendering allocations, while owner and model references
 remain borrowed. Both source units preserve the full object baseline.
+
+## Actor-part and action-command consumers
+
+Model selection now reads the owning actor's shared held-item handle and attachment
+mode, then the resolved item's signed kind. Ghidra at `0x800148E0` confirms these
+fields and the default display-list fallback. Appearance and animated-texture draw
+callbacks use the shared display-list member; framebuffer command storage uses
+the checked `ActorPartTextureState.commandBuffers` array. Part shaking obtains
+its private state through the common object prefix.
+
+Action commands use shared held-item and stored-target fields, target coordinates,
+interaction time and exact-kind search inputs. These retain their scalar widths
+and evaluation order. The animation builder's separate retained-value byte cursor
+remains the documented IDO matching exception; `ValueTrack.value` is a signed
+halfword, not a full-width integer. Each accepted source-unit change passed the
+strict object baseline before the clean acceptance build.

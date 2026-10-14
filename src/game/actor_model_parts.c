@@ -26,6 +26,7 @@
 #include "actor_script.h"
 #include "heap_alloc.h"
 #include "object_types.h"
+#include "item_types.h"
 /// Owned animated-texture state for the tinted model part.
 /// Command storage belongs to this allocation; channel tracks borrow animation programs.
 typedef struct ActorPartTextureState {
@@ -568,7 +569,7 @@ void actorUpdatePartShake(u8 *object) {
     f32 rotation[3];
     if (((ActorScriptState *)state)->shakingPart != NULL) {
         child = ((ActorScriptState *)state)->shakingPart;
-        childState = *(u16 **)(child + 0x54);
+        childState = (u16 *)((RuntimeObjectPrefix *)child)->state.pointer;
         ((ActorScriptState *)state)->partShakeTimeRemaining -= gRuntimeFrameSeconds;
         if (((ActorScriptState *)state)->partShakeTimeRemaining <= 0.0f) {
             ((ActorScriptState *)state)->shakingPart = NULL;
@@ -668,8 +669,9 @@ s32 actorPartPrepareAnimatedTextureDraw(u8 *object) {
 
     obj = ((RuntimeObjectPrefix *)object)->state.bytes;
     actorPartBuildAnimatedTextureCommands(object, gGraphicsFramebufferIndex);
-    gSPSegment(gRenderDisplayListCursor++, 6, osVirtualToPhysical(obj + 0x50 + gGraphicsFramebufferIndex * 0x280));
-    return *(s32 *)(object + 0x30);
+    gSPSegment(gRenderDisplayListCursor++, 6,
+               osVirtualToPhysical(((ActorPartTextureState *)obj)->commandBuffers[gGraphicsFramebufferIndex]));
+    return (s32)((RuntimeObjectPrefix *)object)->displayList;
 }
 
 /// Find the actor model part controlled by an appearance slot.
@@ -749,7 +751,7 @@ s32 actorPartGetAppearanceSlot1Model(u8 *object) {
     u8 *actorState = ((RuntimeObjectPrefix *)object)->root.object->state.bytes;
     s32 variant = ((ActorScriptState *)actorState)->appearanceVariants[1];
     if (variant == 0) {
-        return *(s32 *)(object + 0x30);
+        return (s32)((RuntimeObjectPrefix *)object)->displayList;
     }
     return gActorAppearanceSlot1Models[variant];
 }
@@ -762,7 +764,7 @@ s32 actorPartGetAppearanceSlot0Model(u8 *object) {
     u8 *actorState = ((RuntimeObjectPrefix *)object)->root.object->state.bytes;
     s32 variant = ((ActorScriptState *)actorState)->appearanceVariants[0];
     if (variant == 0) {
-        return *(s32 *)(object + 0x30);
+        return (s32)((RuntimeObjectPrefix *)object)->displayList;
     }
     return gActorAppearanceSlot0Models[variant];
 }
@@ -776,13 +778,13 @@ u8 *actorPartGetLinkedItemModel(u8 *object) {
     s32 targetId;
     u8 *target;
     state = ((RuntimeObjectPrefix *)object)->root.object->state.bytes;
-    targetId = *(s32 *)(state + 0x190);
-    if (targetId == 0 || *(s32 *)(state + 0x194) != 3) {
-        return *(u8 **)(object + 0x30);
+    targetId = ((ActorScriptState *)state)->heldItemHandle;
+    if (targetId == 0 || ((ActorScriptState *)state)->attachmentMode != 3) {
+        return (u8 *)((RuntimeObjectPrefix *)object)->displayList;
     }
     target = objectResolveAvailableHandle(targetId);
-    if (target == NULL || *(s16 *)(*(u8 **)(target + 0x54) + 4) != 0x50) {
-        return *(u8 **)(object + 0x30);
+    if (target == NULL || ((ItemStatePrefix *)((RuntimeObjectPrefix *)target)->state.pointer)->kind != 0x50) {
+        return (u8 *)((RuntimeObjectPrefix *)object)->displayList;
     }
     return D_1049F80;
 }
