@@ -268,14 +268,20 @@ s32 inventoryRecordKeptItemsAndClearTemporarySlot(void) {
     return result;
 }
 
-/// Shallow presentation snapshot of the object prefix and four trailing bytes.
+#include "managed_object_types.h"
+
+/// Shallow presentation snapshot of the object prefix and search-entry reference.
 /// Borrowed links remain valid only while the original actor and its resources stay live.
 typedef struct PresentationObjectSnapshot {
     RuntimeObjectPrefix object; ///< Copied object transform, links and private-state reference.
-    u8 unknown058[4]; ///< Retained trailing object bytes whose role is unresolved.
+    TreeNode *entry; ///< Borrowed original search entry; the snapshot does not own or register it.
 } PresentationObjectSnapshot;
 
 typedef char PresentationObjectSnapshotSizeCheck[(sizeof(PresentationObjectSnapshot) == 0x5C) ? 1 : -1];
+typedef char PresentationSnapshotEntryOffsetCheck[
+    ((u32) & ((PresentationObjectSnapshot *)0)->entry == (u32) & ((ManagedObject *)0)->entry) ? 1 : -1];
+typedef char PresentationSnapshotExtentCheck[
+    (sizeof(PresentationObjectSnapshot) == (u32) & ((ManagedObject *)0)->node) ? 1 : -1];
 /// Saved actor record retained while presentation placement and pose are active.
 /// \note Original identifier: \c D_800F0C00 (0x800F0C00).
 extern PresentationObjectSnapshot gPresentationSavedActor;

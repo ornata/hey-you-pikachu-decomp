@@ -102,7 +102,7 @@
     {
       "kind": "call-arity",
       "file": "src/game/collection_presentation.c",
-      "line": 345,
+      "line": 351,
       "name": "actionScriptStop",
       "shape": {
         "expected": 1,
@@ -115,7 +115,7 @@
     {
       "kind": "unspecified-parameters",
       "file": "src/game/collection_presentation.c",
-      "line": 312,
+      "line": 318,
       "name": "actionScriptStop",
       "shape": "s32 *actionScriptStop()",
       "reason": "The result is the borrowed actor-state script-identifier field, as declared in action_script_stop.h. presentationRestoreActiveActor retains an ignored trailing presentation-state argument; removing it and adopting the canonical prototype fails the ROM gate.",
@@ -148,7 +148,7 @@
     {
       "kind": "signature-mismatch",
       "file": "src/game/collection_presentation.c",
-      "line": 366,
+      "line": 372,
       "name": "objectUpdateHierarchy",
       "shape": {
         "expected": [

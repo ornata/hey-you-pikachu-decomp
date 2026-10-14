@@ -745,3 +745,32 @@ later roles remain unproven. They retain offset names rather than being called
 unused or assigned padding semantics. The integer-versus-pointer key matching
 exceptions in lookup consumers remain separate from this visitor contract.
 Each changed C unit passed the full strict baseline before the next was edited.
+
+## Managed-object allocation and presentation snapshot
+
+`managed_object_types.h` now shares the 0x68-byte allocation previously private
+to the object manager. It contains the 0x58-byte runtime prefix, a search-entry
+pointer at 0x58 and an embedded 0xC-byte tree node at 0x5C. Ghidra at
+`0x80008160` confirms allocation of 0x68 bytes, clearing the first 0x5C bytes,
+and storing the allocation address plus 0x5C at offset 0x58. Registration supplies
+the node key and links. The shared header documents ownership, detachment before
+destruction, and the limits of shallow copies. Size and offset checks move with
+the layout rather than being duplicated in consumers.
+
+The presentation snapshot's formerly unidentified four bytes at 0x58 are that
+search-entry pointer. Its field is now typed `TreeNode *`; checks relate its
+offset and 0x5C-byte extent to `ManagedObject`. The snapshot borrows the original
+entry and does not contain the embedded node. Saving still copies the same bytes;
+restoration still restores selected transform and actor fields rather than
+registering the snapshot as another object. Both C units pass all 483 objects.
+
+The private interaction-proxy template also has a recognizable `ObjectTemplate`
+prefix, but substituting that shared type changed defined symbol attributes in
+`player_companion.o` and failed strict comparison despite identical ROM bytes.
+That trial was reverted. Its original resource extent and representation remain;
+a future conversion must preserve compiler-emitted symbol attributes as well as
+the bytes and relocations. No comparator rule was relaxed.
+
+The opaque-member inventory is now 52 declarations across 28 files; the decrease
+comes from the presentation entry pointer's supported recovery. Other opaque
+fields retain their documented uncertainty.

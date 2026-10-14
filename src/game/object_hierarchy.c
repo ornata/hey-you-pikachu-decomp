@@ -129,17 +129,7 @@ void objectRegisterHierarchyInSearchTree(u8 *);
 
 
 
-/// Object-manager allocation containing the hierarchy prefix and its tree entry.
-/// The entry pointer initially selects the embedded node at offset 0x5C.
-typedef struct ManagedObject {
-    RuntimeObjectPrefix base;
-    TreeNode *entry; ///< Borrowed active search entry, initially the embedded node.
-    TreeNode node;   ///< Embedded caller-owned node, initialized when registered.
-} ManagedObject;
-
-typedef char ManagedObjectSizeCheck[(sizeof(ManagedObject) == 0x68) ? 1 : -1];
-typedef char ManagedObjectEntryOffsetCheck[((u32)&((ManagedObject *)0)->entry == 0x58) ? 1 : -1];
-typedef char ManagedObjectNodeOffsetCheck[((u32)&((ManagedObject *)0)->node == 0x5C) ? 1 : -1];
+#include "managed_object_types.h"
 
 /// Resolve an indexed ROM table entry to its data address.
 /// \param base Cartridge address of a valid ROM table; its selected entry must identify readable data.
