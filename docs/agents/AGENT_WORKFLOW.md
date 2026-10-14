@@ -48,7 +48,7 @@ cmp rom/baserom.us.z64 build/pikachu.z64
 ```
 
 `make check-sequence-bank` validates the selected retail cue bank against the
-registered event limit and storage; see [Shared layout evidence](../SHARED_LAYOUT_AUDIT.md) for scope.
+registered event limit and storage; see [Interface contracts](../INTERFACE_CONTRACTS.md) for scope.
 
 `make verify` checks the ROM SHA1, frozen names, sequence-bank storage, publication hygiene, Python tests,
 object comparison, and whitespace. `BASE` selects the name-checker Git reference;
@@ -90,13 +90,14 @@ python3 tools/source_quality.py --check-ledger
 ```
 
 `make verify` checks ledger consistency. Keep the saved object baseline immutable;
-do not replace it to hide a failed comparison. See [Shared layout evidence](../SHARED_LAYOUT_AUDIT.md)
-and [Interface contracts](../INTERFACE_CONTRACTS.md) for storage facts and reviewed
+do not replace it to hide a failed comparison. See shared-header comments and
+[Interface contracts](../INTERFACE_CONTRACTS.md) for storage facts and reviewed
 ABI exceptions.
 
 Use `python3 tools/layout_contracts.py --json` to inventory offset-named opaque
-record members (both unknown and unk spellings) separately from source-quality token counts. See
-[Shared layout evidence](../SHARED_LAYOUT_AUDIT.md) for the inventory's lexical scope and limitations.
+record members (both unknown and unk spellings) separately from source-quality token counts.
+The scope and limitations are recorded in `docs/OPAQUE_LAYOUTS.json`; the tool is
+a lexical inventory, not a proof of semantic recovery.
 
 `make check-layouts` requires a current review of every offset-named opaque
 record member in `docs/OPAQUE_LAYOUTS.json`. It runs under `make verify`. Review

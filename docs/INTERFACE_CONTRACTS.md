@@ -50,18 +50,24 @@ return register and dispatcher; no handler requires a controller argument.
 
 ## Shared layout and callback continuation
 
-The shared-layout continuation is recorded in
-[SHARED_LAYOUT_AUDIT.md](SHARED_LAYOUT_AUDIT.md). It covers actor/object ownership,
-embedded actor VM and action sequencer state, complete item-state allocation,
-player/control state, scene resources, direction animation, MIDI and sequence
-playback, audio worker/cache lifetimes, and registered callback contracts.
+Shared headers document actor/object ownership, embedded VM and action state,
+item and player storage, scene resources, MIDI/sequence playback and audio
+lifetimes. Target size/offset assertions constrain the recovered layouts;
+[OPAQUE_LAYOUTS.json](OPAQUE_LAYOUTS.json) retains unresolved-member evidence.
 
 The retained native-command table has 278 actor-only handlers. Object-kind
 lifecycle, drawing, child-drawing and response slots agree across the audited
 180 kinds (537 populated slots). Item kind/mode tables have 189 populated slots;
 runtime and scene entry tables have 49. These linked-table checks supplement the
-lexical declaration audit. Remaining action, player-mode, controller, menu,
-effect and presentation callback evidence is recorded in the shared-layout audit.
+lexical declaration audit. Action, player-mode, controller, menu, effect and
+presentation callback contracts are documented with their owning types and
+dispatchers.
+
+`make check-sequence-bank` bounds and parses the selected retail bank at ROM
+0xB140C0 under its registered limit and storage of 20 bytes. Its 45 cues contain
+no SysEx events and require at most 18 bytes per write. This covers the selected
+bank, not alternate or constructed streams; the MIDI reader's SysEx contract
+still requires min(payload length, limit) + 1 bytes including the status byte.
 
 The 54 offset-named opaque members in 28 files retain individual reviews in
 [OPAQUE_LAYOUTS.json](OPAQUE_LAYOUTS.json), with known facts, missing evidence and
