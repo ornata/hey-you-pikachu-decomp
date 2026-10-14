@@ -1400,3 +1400,29 @@ stage indices. Ghidra at 0x800378F8 confirms the result handling and clock reset
 The extra trailing zero words following the four stage entries are not callable
 stages. Existing public update/start contracts still require callers to prepare
 an interlude and stop updating after completion.
+
+### Menu and effect callback contracts
+
+System-menu list presentation, entry selection and detail appending now have
+separate named callback types kept private to their owning unit. List callbacks
+borrow the current list and an initialized drawing context. Selection callbacks
+receive the entry-specific integer value and may request a runtime transition.
+Detail callbacks borrow the initialized shared text accumulator and obey its
+bounded append interface. All 26 populated callback slots in authored menu
+records match their signatures; the two dynamically installed music and
+sound-effect preview targets also use `void (s32)`. The callbacks, labels and
+menu-tree links must remain valid while the menu uses them.
+
+The linked-effect motion policies have three written `s32 (u8 *, f32 *)` targets.
+Their velocity vector is borrowed call-local storage and must not be retained.
+One selects unconstrained motion; other return values permit damping and
+neighbor pulls. The eight installed emitter policies have `void (u8 *)` targets,
+borrowing an initialized live emitter whose current target-relative position is
+already established. Effect state remains owned by the object lifecycle, and
+installed callback code must remain callable through that lifetime. Public effect
+constructors choose supported policies rather than publishing private records.
+
+A final header-summary inventory found Doxygen file-purpose comments in all
+293 non-SDK headers. This is documentation coverage, not evidence that unknown
+fields have been assigned meanings; the opaque-layout ledger remains the source
+for unresolved layout facts and required next evidence.

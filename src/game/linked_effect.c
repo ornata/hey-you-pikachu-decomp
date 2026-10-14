@@ -26,8 +26,9 @@
 #include "object_types.h"
 
 /// Compute a linked effect's requested velocity.
-/// \param object Effect with initialized private state.
-/// \param velocity Writable three-component motion output.
+/// \param object Borrowed live effect with initialized private state.
+/// \param velocity Borrowed writable X, Y, Z motion vector, valid only for this call.
+/// The callback must not retain its address.
 /// \returns One to use this motion alone, or another value to add damping and neighbor pulls.
 typedef s32 (*LinkedEffectMotionCallback)(u8 *object, f32 *velocity);
 

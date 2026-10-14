@@ -35,7 +35,8 @@
 #include "object_types.h"
 
 /// Emit particles from a live emitter during its update.
-/// \param emitter Borrowed emitter object with initialized state.
+/// \param emitter Borrowed live emitter object with initialized state and current target-relative position.
+/// The emitter owns its state; the callback must not retain the object beyond its destruction.
 /// \returns Nothing.
 typedef void (*EffectEmissionCallback)(u8 *emitter);
 

@@ -90,11 +90,31 @@ typedef struct MenuState {
 /// \note Original identifier: \c D_801340E8 (0x801340E8).
 MenuState gSystemMenuState;
 
+struct MenuList;
+
+/// Present list-specific content in the active system menu.
+/// \param menu Borrowed live current list with initialized selection and text-drawing context.
+/// \returns Nothing.
+/// \note Callback code and menu resources remain loaded while the list is active.
+typedef void (*MenuListCallback)(struct MenuList *menu);
+
+/// Apply the selected menu entry's action.
+/// \param value Entry-specific selection value; its meaning is established by that action.
+/// \returns Nothing.
+/// \pre The current menu and its selected entry are live; the action may request a mode transition.
+typedef void (*MenuSelectionCallback)(s32 value);
+
+/// Append dynamic information for the current menu entry.
+/// \pre The shared detail-text accumulator is initialized and the selected item is live.
+/// Appended text must obey the accumulator's bounded append interface.
+/// \returns Nothing.
+typedef void (*MenuDetailCallback)(void);
+
 /// Menu title, item chain and retained selection indices.
 typedef struct MenuList {
     char *title;                           ///< Borrowed display title, retained while the list is displayed.
     struct MenuItem *head;                 ///< Borrowed acyclic item chain.
-    void (*action)(struct MenuList *menu); ///< Optional list-specific drawing and input callback.
+    MenuListCallback action;               ///< Optional list-specific drawing and input callback.
     s32 selectedIndex;                     ///< Index used to resolve the selected menu item.
     s32 confirmedIndex;       ///< Confirmed setting row, or a negative value when confirmation is not tracked.
     s32 firstVisibleIndex;    ///< First item represented by the visible item rows.
@@ -104,10 +124,10 @@ typedef struct MenuList {
 /// Menu entry with optional selection action, detail callback and submenu.
 typedef struct MenuItem {
     char *label;                 ///< Borrowed row label, retained while the item is displayed.
-    void (*action)(s32 value);   ///< Optional selection callback receiving value.
+    MenuSelectionCallback action; ///< Optional selection callback receiving value.
     s32 value;                   ///< Argument supplied to the selection callback.
     char *text;                  ///< Optional borrowed detail message.
-    void (*appendDetails)(void); ///< Optional callback appending details for the selected item.
+    MenuDetailCallback appendDetails; ///< Optional callback appending details for the selected item.
     struct MenuItem *next;       ///< Next item in the containing list.
     MenuList *submenu;           ///< Optional borrowed list entered on selection.
 } MenuItem;
@@ -560,7 +580,7 @@ extern s32 gSystemMenuDetailTextLength;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80119908 (0x80119908).
 void systemMenuRefreshSelectedDetails(MenuState *state) {
-    void (*appendDetails)(void);
+    MenuDetailCallback appendDetails;
     char *detailText;
     MenuItem *var_v0;
 
@@ -677,7 +697,7 @@ void systemMenuDrawItemList(Gfx **displayList) {
     s32 index;
     s32 y;
     MenuList *menu;
-    void (*callback)(MenuList *);
+    MenuListCallback callback;
     menu = (MenuList *)gSystemMenuState.menu;
     textDrawBegin(*displayList);
     textDrawSetFont(0);
