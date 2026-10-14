@@ -141,12 +141,17 @@ void terrainDebugGridUpdateCell(u8 *obj) {
     TerrainDebugCellState *data;
     u32 flags;
     u8 *node;
-    parent = *(u8 **)(obj + 0x50);
-    data = *(TerrainDebugCellState **)(obj + 0x54);
+    parent = ((RuntimeObjectPrefix *)obj)->root.bytes;
+    data = (TerrainDebugCellState *)((RuntimeObjectPrefix *)obj)->state.pointer;
     node = NULL;
-    *(f32 *)(obj + 0x1C) = terrainGetWorldHeight(*(f32 *)(obj + 0x44), *(f32 *)(parent + 0x1C), *(f32 *)(obj + 0x4C), &node) -
-                           *(f32 *)(parent + 0x1C);
-    flags = terrainGetSurfaceAttributes(*(f32 *)(obj + 0x44), *(f32 *)(parent + 0x1C), *(f32 *)(obj + 0x4C), &node);
+    ((RuntimeObjectPrefix *)obj)->position[1] =
+        terrainGetWorldHeight(((RuntimeObjectPrefix *)obj)->worldPosition[0],
+                              ((RuntimeObjectPrefix *)parent)->position[1],
+                              ((RuntimeObjectPrefix *)obj)->worldPosition[2], &node) -
+        ((RuntimeObjectPrefix *)parent)->position[1];
+    flags = terrainGetSurfaceAttributes(((RuntimeObjectPrefix *)obj)->worldPosition[0],
+                                        ((RuntimeObjectPrefix *)parent)->position[1],
+                                        ((RuntimeObjectPrefix *)obj)->worldPosition[2], &node);
     switch (gTerrainDebugGridPropertyView) {
     case 1:
         data->color[0] = data->color[1] = data->color[2] = 0;
@@ -192,8 +197,8 @@ extern Gfx D_100CBB8[];
 /// \returns Zero.
 /// \note Original decompilation identifier: \c func_8002B1A4 (0x8002B1A4).
 s32 terrainDebugGridDrawCell(u8 *object) {
-    TerrainDebugCellState *d = *(TerrainDebugCellState **)(object + 0x54);
-    u8 *o = *(u8 **)(object + 0x50);
+    TerrainDebugCellState *d = (TerrainDebugCellState *)((RuntimeObjectPrefix *)object)->state.pointer;
+    u8 *o = ((RuntimeObjectPrefix *)object)->root.bytes;
     Rgb8 *c;
     s32 i;
 
@@ -203,7 +208,8 @@ s32 terrainDebugGridDrawCell(u8 *object) {
     gSPDisplayList(gRenderDisplayListCursor++, D_100CBB8);
     for (i = 0; i < 4; i++) {
         gSPMatrix(gRenderDisplayListCursor++,
-                  ((s32 *)(o + 0x3C))[(*(u16 *)(o + 0x36) & 0x8000) ? 1 : 0] + (d->matrixIndices[i] << 6),
+                  (s32)((RuntimeObjectPrefix *)o)->matrixBuffers[(((RuntimeObjectPrefix *)o)->flags & 0x8000) ? 1 : 0] +
+                      (d->matrixIndices[i] << 6),
                   G_MTX_LOAD);
         gSPVertex(gRenderDisplayListCursor++, &D_100CAD8[i], 1, i);
     }
@@ -239,27 +245,27 @@ u8 *terrainDebugGridCreate(s32 size) {
     s32 col;
     s32 index;
     root = objectCreateFromTemplate((ObjectTemplate *)(u8 *)&rootTemplate);
-    dimensions = *(s32 **)(root + 0x54);
+    dimensions = ((RuntimeObjectPrefix *)root)->state.words;
     *dimensions = size;
     tail = root;
     index = 1;
     for (row = 0; row < size + 1; row++) {
         for (col = 0; col < size + 1; col++) {
             cell = objectCreateFromTemplate((ObjectTemplate *)(u8 *)&cellTemplate);
-            data = *(TerrainDebugCellState **)(cell + 0x54);
-            *(f32 *)(cell + 0x18) = col - size / 2;
-            *(f32 *)(cell + 0x20) = row - size / 2;
+            data = (TerrainDebugCellState *)((RuntimeObjectPrefix *)cell)->state.pointer;
+            ((RuntimeObjectPrefix *)cell)->position[0] = col - size / 2;
+            ((RuntimeObjectPrefix *)cell)->position[2] = row - size / 2;
             data->matrixIndices[0] = index;
             data->matrixIndices[1] = index + size + 1;
             data->matrixIndices[2] = index + size + 2;
             data->matrixIndices[3] = index + 1;
-            *(u8 **)(tail + 0x28) = cell;
+            ((RuntimeObjectPrefix *)tail)->sibling.bytes = cell;
             index++;
             tail = cell;
         }
     }
-    *(u8 **)(root + 0x2C) = *(u8 **)(root + 0x28);
-    *(u8 **)(root + 0x28) = NULL;
+    ((RuntimeObjectPrefix *)root)->child.bytes = ((RuntimeObjectPrefix *)root)->sibling.bytes;
+    ((RuntimeObjectPrefix *)root)->sibling.bytes = NULL;
     objectMakeHierarchyRoot(root);
     objectAllocateHierarchyMatrixBuffers(root);
     objectRegisterActiveHierarchy(root);
@@ -276,21 +282,21 @@ u8 *terrainDebugGridCreate(s32 size) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002B574 (0x8002B574).
 void terrainDebugGridSetEnabled(u8 *object, s32 enabled) {
-    s32 *dimensions = *(s32 **)(object + 0x54);
+    s32 *dimensions = ((RuntimeObjectPrefix *)object)->state.words;
     s32 size = *dimensions;
-    u8 *node = *(u8 **)(object + 0x2C);
+    u8 *node = ((RuntimeObjectPrefix *)object)->child.bytes;
     s32 row;
     s32 col;
     TerrainDebugCellState *cell;
     row = 0;
     for (; row < size + 1; row++) {
         for (col = 0; col < size + 1; col++) {
-            cell = *(TerrainDebugCellState **)(node + 0x54);
+            cell = (TerrainDebugCellState *)((RuntimeObjectPrefix *)node)->state.pointer;
             if (col < size && row < size)
                 cell->enabled = enabled;
             else
                 cell->enabled = 0;
-            node = *(u8 **)(node + 0x28);
+            node = ((RuntimeObjectPrefix *)node)->sibling.bytes;
         }
     }
 }

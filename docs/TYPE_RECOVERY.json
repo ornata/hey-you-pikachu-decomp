@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 1116,
-      "unique_spellings": 603,
+      "occurrences": 1045,
+      "unique_spellings": 570,
       "files": 66
     },
     "cast_offset_candidates": {
@@ -2454,84 +2454,18 @@
           "gPlayerPositionY + 0": [
             "119:17"
           ],
-          "obj + 0x50": [
-            "144:23"
-          ],
-          "obj + 0x54": [
-            "145:40"
-          ],
-          "obj + 0x1C": [
-            "147:14"
-          ],
-          "obj + 0x44": [
-            "147:59",
-            "149:50"
-          ],
-          "parent + 0x1C": [
-            "147:81",
-            "148:37",
-            "149:72"
-          ],
-          "obj + 0x4C": [
-            "147:106",
-            "149:97"
-          ],
-          "object + 0x54": [
-            "195:60",
-            "279:33"
-          ],
-          "object + 0x50": [
-            "196:22"
-          ],
-          "o + 0x3C": [
-            "206:28"
-          ],
-          "o + 0x36": [
-            "206:49"
-          ],
-          "root + 0x54": [
-            "242:28"
-          ],
           "size + 1": [
-            "246:25",
-            "247:29",
-            "253:46",
-            "286:18",
-            "287:29"
-          ],
-          "cell + 0x54": [
-            "249:48"
-          ],
-          "cell + 0x18": [
-            "250:22"
-          ],
-          "cell + 0x20": [
-            "251:22"
+            "252:25",
+            "253:29",
+            "259:46",
+            "292:18",
+            "293:29"
           ],
           "size + 2": [
-            "254:46"
+            "260:46"
           ],
           "index + 1": [
-            "255:38"
-          ],
-          "tail + 0x28": [
-            "256:22"
-          ],
-          "root + 0x2C": [
-            "261:14"
-          ],
-          "root + 0x28": [
-            "261:38",
-            "262:14"
-          ],
-          "object + 0x2C": [
-            "281:25"
-          ],
-          "node + 0x54": [
-            "288:48"
-          ],
-          "node + 0x28": [
-            "293:29"
+            "261:38"
           ]
         }
       }
@@ -3722,16 +3656,17 @@
         "areaActivateNode": "The void hierarchy-flag clearing call retains an unused trailing node pointer from the ROM call.",
         "terrainCreateContactEffect": "Canonical randomBelow returns u32. Retain explicit s32 conversions of bounded samples in contact-effect count expressions to preserve signed comparisons and strict object bytes; removing these conversions changes the object even when the linked ROM matches.",
         "mazeInitializeRoot": "Root geometry now uses MazeNode. Cell dimensions use shared Vec3f with a checked scene-prefix component offset; direct array-field accesses fail the ROM gate. Next evidence: isolate initialization floating multiply/load ordering before removing the scalar view.",
-        "mazeClassifyNode": "SceneOccupancyView uses the shared sampler callback type and checked component/callback offsets. Replacing it with direct SceneConfigurationPrefix accesses changes target instructions and fails the ROM gate. Next evidence: isolate callback argument/load scheduling and loop reload behavior; the view must not allocate or copy scene configurations."
+        "mazeClassifyNode": "SceneOccupancyView uses the shared sampler callback type and checked component/callback offsets. Replacing it with direct SceneConfigurationPrefix accesses changes target instructions and fails the ROM gate. Next evidence: isolate callback argument/load scheduling and loop reload behavior; the view must not allocate or copy scene configurations.",
+        "areaIsNodeVisible": "Replacing the established MazeNode depth and geometry byte reads with direct members changes allocated instructions and fails the ROM gate. Other terrain sampling/model callbacks accept direct geometry members. Isolate visibility-test floating load/operand ordering before converting this function; preserve the existing model and camera representations."
       },
       "locations": {
         "address_globals": {
           "D_80133DE8": [
             "237:5",
-            "2070:12",
-            "2093:14",
-            "2094:14",
-            "2095:14"
+            "2076:12",
+            "2099:14",
+            "2100:14",
+            "2101:14"
           ]
         },
         "raw_offset_candidates": {
@@ -3812,19 +3747,14 @@
           ],
           "return -1": [
             "394:5",
-            "1679:29"
-          ],
-          "node + 0x20": [
-            "424:26",
-            "1357:30",
-            "2062:45"
+            "1685:29"
           ],
           "w - 1": [
             "513:79",
             "514:72",
             "535:79",
             "536:72",
-            "561:39",
+            "561:42",
             "570:15",
             "571:15",
             "682:58"
@@ -3837,28 +3767,6 @@
             "562:33",
             "684:58",
             "931:28"
-          ],
-          "node + 8": [
-            "561:25",
-            "615:19",
-            "1468:45"
-          ],
-          "node + 0x14": [
-            "561:58",
-            "933:75",
-            "1467:26"
-          ],
-          "node + 0x10": [
-            "564:25",
-            "616:19",
-            "873:27",
-            "934:33",
-            "1465:49"
-          ],
-          "node + 0x1C": [
-            "564:55",
-            "934:73",
-            "1465:18"
           ],
           "ix + 1": [
             "566:10",
@@ -3874,15 +3782,6 @@
             "697:43",
             "698:47"
           ],
-          "node + 0xC": [
-            "760:23",
-            "796:32",
-            "1470:57"
-          ],
-          "node + 0x8": [
-            "871:27",
-            "933:33"
-          ],
           "count - 1": [
             "932:25"
           ],
@@ -3892,8 +3791,20 @@
           "node + 0x40": [
             "1461:18"
           ],
+          "node + 0x1C": [
+            "1465:18"
+          ],
+          "node + 0x10": [
+            "1465:49"
+          ],
           "camera + 8": [
             "1466:19"
+          ],
+          "node + 0x14": [
+            "1467:26"
+          ],
+          "node + 8": [
+            "1468:45"
           ],
           "camera + 0": [
             "1469:19"
@@ -3901,102 +3812,39 @@
           "node + 0x18": [
             "1470:26"
           ],
+          "node + 0xC": [
+            "1470:57"
+          ],
           "camera + 4": [
             "1471:19"
           ],
-          "root + 0x14": [
-            "1580:18"
-          ],
-          "root + 0x10": [
-            "1581:18"
-          ],
-          "root + 0xC": [
-            "1582:18"
-          ],
-          "root + 0x18": [
-            "1583:18"
-          ],
-          "root + 0x1C": [
-            "1584:18"
-          ],
-          "root + 0x28": [
-            "1585:25"
-          ],
-          "root + 0x20": [
-            "1586:18"
-          ],
-          "root + 0": [
-            "1587:18",
-            "1594:64"
-          ],
-          "root + 4": [
-            "1588:18",
-            "1595:64"
-          ],
-          "root + 8": [
-            "1589:18",
-            "1596:64"
-          ],
-          "part + 0x18": [
-            "1591:22",
-            "1591:46"
-          ],
-          "part + 0x1C": [
-            "1592:22",
-            "1592:46"
-          ],
-          "part + 0x20": [
-            "1593:22",
-            "1593:46"
-          ],
-          "part + 0": [
-            "1594:22",
-            "1594:43"
-          ],
-          "part + 4": [
-            "1595:22",
-            "1595:43"
-          ],
-          "part + 8": [
-            "1596:22",
-            "1596:43"
-          ],
-          "part + 0x28": [
-            "1597:29"
-          ],
           "depth - 1": [
-            "1618:28",
-            "1720:79"
+            "1624:28",
+            "1726:79"
           ],
           "node + 0": [
-            "1711:18"
+            "1717:18"
           ],
           "node + 4": [
-            "1712:18"
-          ],
-          "node + 0x44": [
-            "1713:18"
-          ],
-          "node + 0x48": [
-            "1714:18"
+            "1718:18"
           ],
           "pos + 0x0": [
-            "1789:98",
-            "1794:24",
-            "1796:102"
+            "1795:98",
+            "1800:24",
+            "1802:102"
           ],
           "pos + 0x4": [
-            "1790:98",
-            "1794:45",
-            "1797:102"
+            "1796:98",
+            "1800:45",
+            "1803:102"
           ],
           "pos + 0x8": [
-            "1791:98",
-            "1794:66",
-            "1798:102"
+            "1797:98",
+            "1800:66",
+            "1804:102"
           ],
           "level - 1": [
-            "1795:66"
+            "1801:66"
           ]
         },
         "cast_offset_candidates": {
@@ -4010,16 +3858,16 @@
             "1124:29"
           ],
           "((u8 *)gCurrentAreaConfiguration) + 0x0": [
-            "1789:42",
-            "1796:46"
+            "1795:42",
+            "1802:46"
           ],
           "((u8 *)gCurrentAreaConfiguration) + 0x4": [
-            "1790:42",
-            "1797:46"
+            "1796:42",
+            "1803:46"
           ],
           "((u8 *)gCurrentAreaConfiguration) + 0x8": [
-            "1791:42",
-            "1798:46"
+            "1797:42",
+            "1804:46"
           ]
         }
       }

@@ -251,3 +251,21 @@ action outcome fields. Item friction passes the established X/Z velocity members
 by address, terrain effects receive the object's position, and maze events receive
 its world position. Existing preload/operand-order exceptions remain unchanged.
 Each of the four source units independently passed strict baseline comparison.
+
+## Terrain diagnostics and remaining maze consumers
+
+Terrain diagnostic cells now obtain their root, state, local/world positions,
+hierarchy links and selected matrix buffer through `RuntimeObjectPrefix`. The
+cell state's corner indices still select matrices within the root's owned buffer.
+Ghidra at `0x8002B380` confirms grid creation, corner-index assignment and conversion
+of the generated sibling chain into root children. Root private storage remains
+a single signed grid-size word; the small player view remains its documented
+matching constraint.
+
+Maze terrain sampling uses shared minimum coordinates and extents, while node
+lookup/activation/preparation use the child array. Model configuration uses shared
+rotations, positions, scales and sibling links; subdivision clears the shared
+terrain and event references. Ghidra at `0x8010B528` confirms terrain sampling's
+node extents. The visibility callback retains geometry byte reads after its
+direct-member trial failed the ROM gate; that focused exception is recorded.
+All accepted source-unit mutations preserve the strict baseline objects.

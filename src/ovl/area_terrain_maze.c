@@ -421,7 +421,7 @@ u8 *areaFindPositionNode(f32 x, f32 y, f32 z) {
         my = (*(f32 *)(node + (u32) & ((MazeNode *)0)->h)) * 0.5f + (*(f32 *)(node + (u32) & ((MazeNode *)0)->y));
         mz = (*(f32 *)(node + (u32) & ((MazeNode *)0)->d)) * 0.5f + (*(f32 *)(node + (u32) & ((MazeNode *)0)->z));
         oct = gMazeOctantIndices[mx < x][my < y][mz < z];
-        child = ((u8 **)(node + 0x20))[oct];
+        child = (u8 *)((MazeNode *)node)->children[oct];
         if (child == NULL) {
             return node;
         }
@@ -558,10 +558,10 @@ f32 terrainGetMazeHeight(f32 x, f32 z, u8 *node) {
     s32 ix, iz, nx, nz;
     f32 tx, tz;
     w = gTerrainMoundHeightGrid.w;
-    fx = ((x - *(f32 *)(node + 8)) * (w - 1)) / *(f32 *)(node + 0x14);
+    fx = ((x - ((MazeNode *)node)->x) * (w - 1)) / ((MazeNode *)node)->w;
     h = gTerrainMoundHeightGrid.h - 1;
     ix = fx;
-    fz = ((z - *(f32 *)(node + 0x10)) * h) / *(f32 *)(node + 0x1C);
+    fz = ((z - ((MazeNode *)node)->z) * h) / ((MazeNode *)node)->d;
     iz = fz;
     nx = ix + 1;
     nz = iz + 1;
@@ -612,8 +612,8 @@ f32 terrainGetTriangleHeight(f32 x, f32 z, u8 *node) {
     s32 i;
     f32 baseY, by, cy;
 
-    x -= *(f32 *)(node + 8);
-    z -= *(f32 *)(node + 0x10);
+    x -= ((MazeNode *)node)->x;
+    z -= ((MazeNode *)node)->z;
     for (i = 0; i < GRID(node)->w; i++) {
         ax = TRIANGLES(node)[i].a[0];
         az = TRIANGLES(node)[i].a[2];
@@ -757,7 +757,7 @@ f32 terrainGetWorldHeight(f32 x, f32 y, f32 z, u8 **previous) {
     if (node == NULL) {
         return 0.0f;
     }
-    height = *(f32 *)(node + 0xC) + x;
+    height = ((MazeNode *)node)->y + x;
     return height;
 }
 
@@ -793,7 +793,7 @@ f32 terrainGetWorldHeightForQuery(s32 unused, f32 x, f32 y, f32 z, u8 **previous
     if (node == NULL) {
         return 0.0f;
     } else {
-        worldHeight = *(f32 *)(node + 0xC) + height;
+        worldHeight = ((MazeNode *)node)->y + height;
     }
     return worldHeight;
 }
@@ -868,9 +868,9 @@ s32 terrainGetSurfaceAttributes(f32 x, f32 y, f32 z, u8 **cachedNode) {
         grid = GRID(node);
         mode = grid->mode;
         if (mode == 0) {
-            x -= *(f32 *)(node + 0x8);
+            x -= ((MazeNode *)node)->x;
             count = grid->w;
-            z -= *(f32 *)(node + 0x10);
+            z -= ((MazeNode *)node)->z;
             if (count > 0) {
                 triangle = (TerrainTriangle *)grid->cells;
                 do {
@@ -930,8 +930,8 @@ s32 terrainGetSurfaceAttributes(f32 x, f32 y, f32 z, u8 **cachedNode) {
             count = grid->w;
             maxRow = grid->h - 1;
             maxColumn = count - 1;
-            dx = ((x - *(f32 *)(node + 0x8)) * (f32)maxColumn) / *(f32 *)(node + 0x14);
-            dz = ((z - *(f32 *)(node + 0x10)) * (f32)maxRow) / *(f32 *)(node + 0x1C);
+            dx = ((x - ((MazeNode *)node)->x) * (f32)maxColumn) / ((MazeNode *)node)->w;
+            dz = ((z - ((MazeNode *)node)->z) * (f32)maxRow) / ((MazeNode *)node)->d;
             column = dx;
             row = dz;
             if (column < 0) {
@@ -1354,7 +1354,7 @@ void areaDeactivateNodeHierarchy(u8 *node) {
             objectSetHierarchyFlags(((MazeNode *)node)->objects[1].bytes, 0x80);
         }
         for (i = 0; i < 8; i++) {
-            child = ((u8 **)(node + 0x20))[i];
+            child = (u8 *)((MazeNode *)node)->children[i];
             if (child != NULL) {
                 areaDeactivateNodeHierarchy(child);
             }
@@ -1577,24 +1577,30 @@ void mazeConfigureNodeModel(MazeNode *node, s32 kind) {
             (ObjectTemplate *)(*(SceneCellType *)((u8 *)gCurrentAreaConfiguration->cellTypes + offset)).objectTemplate);
         root = objectRegisterActiveHierarchy(root);
         node->objects[1].bytes = root;
-        *(f32 *)(root + 0x14) = 0.0f;
-        *(f32 *)(root + 0x10) = 0.0f;
-        *(f32 *)(root + 0xC) = 0.0f;
-        *(f32 *)(root + 0x18) = node->x;
-        *(f32 *)(root + 0x1C) = node->y;
-        part = *(u8 **)(root + 0x28);
-        *(f32 *)(root + 0x20) = node->z;
-        *(f32 *)(root + 0) *= gCurrentAreaConfiguration->objectScale;
-        *(f32 *)(root + 4) *= gCurrentAreaConfiguration->objectScale;
-        *(f32 *)(root + 8) *= gCurrentAreaConfiguration->objectScale;
+        ((RuntimeObjectPrefix *)root)->rotation[2] = 0.0f;
+        ((RuntimeObjectPrefix *)root)->rotation[1] = 0.0f;
+        ((RuntimeObjectPrefix *)root)->rotation[0] = 0.0f;
+        ((RuntimeObjectPrefix *)root)->position[0] = node->x;
+        ((RuntimeObjectPrefix *)root)->position[1] = node->y;
+        part = ((RuntimeObjectPrefix *)root)->sibling.bytes;
+        ((RuntimeObjectPrefix *)root)->position[2] = node->z;
+        ((RuntimeObjectPrefix *)root)->scale[0] *= gCurrentAreaConfiguration->objectScale;
+        ((RuntimeObjectPrefix *)root)->scale[1] *= gCurrentAreaConfiguration->objectScale;
+        ((RuntimeObjectPrefix *)root)->scale[2] *= gCurrentAreaConfiguration->objectScale;
         while (part != NULL) {
-            *(f32 *)(part + 0x18) = *(f32 *)(part + 0x18) * gCurrentAreaConfiguration->objectScale + node->x;
-            *(f32 *)(part + 0x1C) = *(f32 *)(part + 0x1C) * gCurrentAreaConfiguration->objectScale + node->y;
-            *(f32 *)(part + 0x20) = *(f32 *)(part + 0x20) * gCurrentAreaConfiguration->objectScale + node->z;
-            *(f32 *)(part + 0) = *(f32 *)(part + 0) * *(f32 *)(root + 0);
-            *(f32 *)(part + 4) = *(f32 *)(part + 4) * *(f32 *)(root + 4);
-            *(f32 *)(part + 8) = *(f32 *)(part + 8) * *(f32 *)(root + 8);
-            part = *(u8 **)(part + 0x28);
+            ((RuntimeObjectPrefix *)part)->position[0] =
+                ((RuntimeObjectPrefix *)part)->position[0] * gCurrentAreaConfiguration->objectScale + node->x;
+            ((RuntimeObjectPrefix *)part)->position[1] =
+                ((RuntimeObjectPrefix *)part)->position[1] * gCurrentAreaConfiguration->objectScale + node->y;
+            ((RuntimeObjectPrefix *)part)->position[2] =
+                ((RuntimeObjectPrefix *)part)->position[2] * gCurrentAreaConfiguration->objectScale + node->z;
+            ((RuntimeObjectPrefix *)part)->scale[0] =
+                ((RuntimeObjectPrefix *)part)->scale[0] * ((RuntimeObjectPrefix *)root)->scale[0];
+            ((RuntimeObjectPrefix *)part)->scale[1] =
+                ((RuntimeObjectPrefix *)part)->scale[1] * ((RuntimeObjectPrefix *)root)->scale[1];
+            ((RuntimeObjectPrefix *)part)->scale[2] =
+                ((RuntimeObjectPrefix *)part)->scale[2] * ((RuntimeObjectPrefix *)root)->scale[2];
+            part = ((RuntimeObjectPrefix *)part)->sibling.bytes;
         }
     }
     if ((*(SceneCellType *)((u8 *)gCurrentAreaConfiguration->cellTypes + offset)).initialize != NULL) {
@@ -1710,8 +1716,8 @@ void mazeBuildNodeHierarchy(u8 *node, s32 depth, s32 forceSplit) {
     if (kind == 0) {
         *(s32 *)(node + 0) = 0;
         *(s32 *)(node + 4) = 0;
-        *(s32 *)(node + 0x44) = 0;
-        *(s32 *)(node + 0x48) = 0;
+        ((MazeNode *)node)->terrain = NULL;
+        ((MazeNode *)node)->event = NULL;
     } else if (kind == -1) {
         for (i = 0; i != 8; i++) {
             ((MazeNode *)node)->children[i] = (MazeNode *)areaAllocateNode();
@@ -2059,7 +2065,7 @@ void mazePrepareNodeObjects(u8 *node) {
             mazePrepareObjectHierarchy(((MazeNode *)node)->objects[1].address);
         }
         for (i = 0; i < 8; i++) {
-            mazePrepareNodeObjects(((u8 **)(node + 0x20))[i]);
+            mazePrepareNodeObjects((u8 *)((MazeNode *)node)->children[i]);
         }
     }
 }
