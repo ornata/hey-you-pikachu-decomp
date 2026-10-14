@@ -47,7 +47,10 @@ make verify BASE=main BASELINE=expected/build
 cmp rom/baserom.us.z64 build/pikachu.z64
 ```
 
-`make verify` checks the ROM SHA1, frozen names, publication hygiene, Python tests,
+`make check-sequence-bank` validates the selected retail cue bank against the
+registered event limit and storage; see `SHARED_LAYOUT_AUDIT.md` for scope.
+
+`make verify` checks the ROM SHA1, frozen names, sequence-bank storage, publication hygiene, Python tests,
 object comparison, and whitespace. `BASE` selects the name-checker Git reference;
 `BASELINE` selects the object baseline directory. Verification fails if the baseline
 is missing. Header changes also require regenerating context and reporting progress

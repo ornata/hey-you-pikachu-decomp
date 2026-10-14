@@ -647,6 +647,27 @@ A new offset check preserves the one-byte event limit at 0x1F1.
 A linear scan of the retail ROM found 45 header/track-compatible MIDI candidates;
 all parsed successfully and contained zero SysEx events. This supports those raw
 tracks only: it does not prove the complete registered/constructed input set,
-and does not relax the reader's storage precondition. Further evidence for a
-project-wide input guarantee requires following every registration and sequence
-resource path. Both source-unit changes preserve the strict baseline objects.
+and does not relax the reader's storage precondition. The current selected bank and direct registration path are verified below;
+alternate or constructed input still requires the documented precondition. Both source-unit changes preserve the strict baseline objects.
+
+## Selected cue bank and registered storage verification
+
+Runtime initialization selects the bank at ROM `0xB140C0`. Its revision-one table
+contains 45 offset/length pairs, and those pairs map exactly to the 45 MIDI tracks
+previously scanned. The C playback path resolves bank entries, starts a sequence
+and registers the four sequence slots with limit 20 and 20-byte event storage.
+Generated reset, note/sustain release and volume controls use one, three and
+eight bytes.
+
+`make check-sequence-bank` uses `tools/verify_sequence_bank.py` to bound every
+entry and track, walk supported events and check actual writes against storage.
+For the selected retail bank it verifies 45 cues, zero SysEx events and a maximum
+write of 18/20 bytes. The same check now runs in `make verify`; it does not alter
+the ROM comparator or object baseline. Eight synthetic tests cover running
+status, end-of-track handling, exact SysEx status-byte boundaries, truncated
+resources, unsupported meta lengths and generated-control storage.
+
+This proves the selected bank's storage requirement under the registered limit,
+not arbitrary alternate banks or caller-constructed streams. Public playback
+contracts now state the 20-byte limit and SysEx payload restriction. Allocation
+sizes, parser behavior and playback code remain unchanged.

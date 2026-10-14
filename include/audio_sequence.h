@@ -9,6 +9,7 @@
 /// Start a sequence at full volume using an available initialized playback slot.
 /// \param data ROM address of sequence data, available throughout playback.
 /// \returns Playback handle, or zero if all four sequence slots are busy.
+/// \pre MIDI events must fit the 20-byte playback buffer; SysEx payloads must be shorter than 20 bytes at the registered reader limit.
 /// \note Original decompilation identifier: \c func_8001FB5C (0x8001FB5C).
 s32 audioPlaySequence(s32 data);
 
@@ -16,6 +17,7 @@ s32 audioPlaySequence(s32 data);
 /// \param data ROM address of sequence data, available throughout playback.
 /// \param time Nonnegative fade duration in seconds; zero selects full volume immediately.
 /// \returns Playback handle, or zero when no sequence slot is available.
+/// \pre MIDI events must fit the 20-byte playback buffer; SysEx payloads must be shorter than 20 bytes at the registered reader limit.
 /// \note Original decompilation identifier: \c func_800200E0 (0x800200E0).
 s32 audioPlaySequenceWithFade(s32 data, f64 time);
 

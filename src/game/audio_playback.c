@@ -220,6 +220,7 @@ extern s32 gAudioNextPlaybackHandle;
 /// Start a sequence at full volume in an available playback slot.
 /// \param data ROM address of sequence data, available throughout playback.
 /// \returns The playback identifier, or zero if all sequence slots are busy.
+/// \pre MIDI events must fit the 20-byte playback buffer; SysEx payloads must be shorter than 20 bytes at the registered reader limit.
 /// \note Original decompilation identifier: \c func_8001FB5C (0x8001FB5C).
 s32 audioPlaySequence(s32 data) {
     s32 i;
@@ -425,6 +426,7 @@ void audioSetCategoryVolume(s32 categories, s32 volume) {
 /// \returns The playback identifier, or zero if all sequence slots are busy.
 ///
 /// \note NONPORTABLE: the loop setup shares a source line to preserve IDO scheduling.
+/// \pre MIDI events must fit the 20-byte playback buffer; SysEx payloads must be shorter than 20 bytes at the registered reader limit.
 /// \note Original decompilation identifier: \c func_800200E0 (0x800200E0).
 s32 audioPlaySequenceWithFade(s32 data, f64 time) {
     s32 id;

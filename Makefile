@@ -225,7 +225,7 @@ compare-objects:
 .PHONY: compare-objects
 
 # BASELINE must be a previously accepted build, not the current output directory.
-verify: check check-names check-interfaces verify-clean
+verify: check check-names check-interfaces check-sequence-bank verify-clean
 	python3 -m pytest tests
 	python3 tools/source_quality.py --check-ledger
 	python3 tools/compare_objects.py $(BASELINE) $(BUILD)
@@ -241,3 +241,8 @@ source-quality:
 check-interfaces:
 	python3 tools/interface_contracts.py --check
 .PHONY: check-interfaces
+
+# Check the selected retail cue bank against its registered event limit and storage.
+check-sequence-bank:
+	python3 tools/verify_sequence_bank.py rom/baserom.us.z64 --bank 0xB140C0 --event-limit 20 --storage 20
+.PHONY: check-sequence-bank
