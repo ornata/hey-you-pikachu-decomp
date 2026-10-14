@@ -285,6 +285,16 @@ void eyeCatchDrawFadingImage(Gfx **gdl) {
     }
 }
 
+/// Control signals distinct from the four nonnegative eye-catch stage indices.
+typedef enum EyeCatchStageSignal {
+    EYE_CATCH_KEEP_STAGE = -10, ///< Continue the current stage without restarting its clock.
+    EYE_CATCH_COMPLETE = -20    ///< Finish the interlude.
+} EyeCatchStageSignal;
+
+/// Advance the active eye-catch interlude stage.
+/// \pre Interlude resources and stage state are initialized and remain live for the call.
+/// \returns A next-stage index from zero through three, or an EyeCatchStageSignal.
+typedef s32 (*EyeCatchStageHandler)(void);
 
 /// Begin the screen reveal for an eye-catch interlude.
 /// \returns One, selecting the playback stage.
@@ -352,7 +362,7 @@ s32 eyeCatchUpdatePlayback(void) {
         audioStopCategories(AUDIO_CATEGORY_ALL, 0.8f);
         return 2;
     }
-    return -10;
+    return EYE_CATCH_KEEP_STAGE;
 }
 
 /// Remaining duration of the primary camera secondary overlay transition.
@@ -366,7 +376,7 @@ s32 eyeCatchWaitForExitFade(void) {
     if (gPrimarySecondaryOverlayRemainingSeconds == 0.0f) {
         return 3;
     }
-    return -0xA;
+    return EYE_CATCH_KEEP_STAGE;
 }
 
 /// Release the eye-catch interlude and signal completion.
@@ -374,7 +384,7 @@ s32 eyeCatchWaitForExitFade(void) {
 /// \note Original decompilation identifier: \c func_80037884 (0x80037884).
 s32 eyeCatchFinish(void) {
     eyeCatchRelease();
-    return -0x14;
+    return EYE_CATCH_COMPLETE;
 }
 
 void eyeCatchDrawLayers(Gfx **);
@@ -393,7 +403,7 @@ void eyeCatchDraw(Gfx **displayList) {
 
 /// Stage callbacks returning the next stage or the retained playback/completion signals.
 /// \note Original identifier: \c D_8009C3B4 (0x8009C3B4).
-extern s32 (*gEyeCatchStageHandlers[])(void);
+extern EyeCatchStageHandler gEyeCatchStageHandlers[];
 
 /// Advance the active eye-catch stage and report when the interlude completes.
 /// Requires an interlude prepared by eyeCatchBegin; stop updating after completion.
@@ -404,11 +414,11 @@ s32 eyeCatchUpdate(void) {
 
     gEyeCatchStageSeconds += gRuntimeFrameSeconds;
     next = gEyeCatchStageHandlers[gEyeCatchStage]();
-    if (next != -10 && next != gEyeCatchStage) {
+    if (next != EYE_CATCH_KEEP_STAGE && next != gEyeCatchStage) {
         gEyeCatchStage = next;
         gEyeCatchStageSeconds = 0.0f;
     }
-    if (gEyeCatchStage == -20) {
+    if (gEyeCatchStage == EYE_CATCH_COMPLETE) {
         gEyeCatchStage = 0;
         return 1;
     }

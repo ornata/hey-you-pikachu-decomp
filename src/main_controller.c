@@ -630,14 +630,24 @@ void controllerResetRumblePort(s32 port) {
     controllerScheduleRumbleInitialization(&gControllerRumbleMotorState[port]);
 }
 
+/// Advance one controller port's selected rumble lifecycle state.
+/// \param port Controller port index from zero through three.
+/// \pre Controller serial communication and per-port state are initialized;
+/// execution is serialized on the controller thread.
+/// \returns Nothing.
+typedef void (*ControllerRumbleStateHandler)(s32 port);
+
 /// Private dispatch table indexed by ControllerPatternLifecycle.
 typedef struct {
-    void (*handlers[4])(s32); ///< Per-port pattern state handlers.
+    ControllerRumbleStateHandler handlers[4]; ///< Per-port pattern state handlers.
 } ControllerPatternDispatch;
 /// Private dispatch table indexed by ControllerMotorLifecycle.
 typedef struct {
-    void (*handlers[5])(s32); ///< Per-port motor state handlers.
+    ControllerRumbleStateHandler handlers[5]; ///< Per-port motor state handlers.
 } ControllerMotorDispatch;
+
+typedef char ControllerPatternDispatchSizeCheck[(sizeof(ControllerPatternDispatch) == 0x10) ? 1 : -1];
+typedef char ControllerMotorDispatchSizeCheck[(sizeof(ControllerMotorDispatch) == 0x14) ? 1 : -1];
 /// Handlers for the rumble pattern lifecycle states.
 /// \note Original identifier: \c D_800633F0 (0x800633F0).
 extern ControllerPatternDispatch gControllerRumblePatternHandlers;

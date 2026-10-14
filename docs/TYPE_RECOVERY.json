@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 868,
-      "unique_spellings": 476,
+      "occurrences": 865,
+      "unique_spellings": 473,
       "files": 64
     },
     "cast_offset_candidates": {
@@ -1059,15 +1059,6 @@
           ],
           "animationAddress + 0x3C": [
             "242:66"
-          ],
-          "return -10": [
-            "355:5"
-          ],
-          "return -0xA": [
-            "369:5"
-          ],
-          "return -0x14": [
-            "377:5"
           ]
         }
       }
@@ -1462,16 +1453,16 @@
       "locations": {
         "raw_offset_candidates": {
           "offset + 48": [
-            "151:32"
+            "157:32"
           ],
           "offset + 40": [
-            "167:32"
+            "173:32"
           ],
           "actionResourceHudLevel + 0": [
-            "647:23"
+            "653:23"
           ],
           "secondaryMeterHudLevel + 0": [
-            "648:23"
+            "654:23"
           ]
         }
       }

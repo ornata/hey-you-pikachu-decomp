@@ -1377,3 +1377,26 @@ keep the original alias address and strict relocation identity. It aliases the
 primary player's embedded state at 0x88 and does not own another allocation.
 Player snapshots copy borrowed object handles and callbacks without extending
 their lifetimes; restoration requires those references to remain valid.
+
+### Remaining controller and presentation dispatch contracts
+
+The four rumble-pattern and five rumble-motor table entries resolve to
+`void (s32)` definitions receiving a controller port from zero through three.
+The controller thread serializes dispatch against its per-port lifecycle state.
+The private dispatch records now share a documented `ControllerRumbleStateHandler`
+type and retain checked sizes of 0x10 and 0x14. The private timing records remain
+in the controller unit. Unused `ControllerTimer`, `ControllerPulse`, dispatch
+records, startup handshake and diagnostic declarations at the end of `main.c`
+were leftovers from splitting out `main_controller.c`; removing them does not
+remove any allocated code or data, as confirmed by strict object comparison.
+
+HUD guide styles one through four have `void (Gfx **)` targets; style zero has
+a null callback. The named private callback borrows a writable command cursor
+and drawing resources valid through task completion. The four active eye-catch
+stages have `s32 (void)` targets. Their nonnegative results select stages zero
+through three, minus ten retains the current stage clock, and minus twenty
+signals completion. These two control signals now have enum names distinct from
+stage indices. Ghidra at 0x800378F8 confirms the result handling and clock reset.
+The extra trailing zero words following the four stage entries are not callable
+stages. Existing public update/start contracts still require callers to prepare
+an interlude and stop updating after completion.

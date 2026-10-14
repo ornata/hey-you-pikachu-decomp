@@ -41,15 +41,21 @@ extern ValueTrack gHudMotionIndicatorTrack;
 /// Animation identifier retained for the HUD motion indicator.
 /// \note Original identifier: \c D_800F0274 (0x800F0274).
 extern s32 gHudMotionIndicatorAnimation;
-/// HUD guide drawing callbacks indexed by guide style.
+/// Draw one guide style using the active HUD resources.
+/// \param displayList Borrowed writable display-list cursor with capacity for the guide commands;
+/// receives the cursor after those commands. Drawing resources remain live through task completion.
+/// \returns Nothing.
+typedef void (*HudGuideDrawCallback)(Gfx **displayList);
+
+/// HUD guide drawing callbacks indexed by styles zero through four; style zero is null.
 /// \note Original identifier: \c D_800890F0 (0x800890F0).
-extern void (*gHudGuideDrawCallbacks[])(Gfx **);
+extern HudGuideDrawCallback gHudGuideDrawCallbacks[];
 /// Selected HUD guide style; zero disables the guide.
 /// \note Original identifier: \c D_800F01F4 (0x800F01F4).
 extern s32 gHudGuideStyle;
 /// Draw callback selected for the active HUD guide style.
 /// \note Original identifier: \c D_800F01F8 (0x800F01F8).
-extern void (*gHudGuideDrawCallback)(Gfx **);
+extern HudGuideDrawCallback gHudGuideDrawCallback;
 
 #include "area_services.h"
 #include "hud.h"
