@@ -109,7 +109,8 @@ def hasm_ranges(yaml_text, directory, kinds=("hasm",)):
 
 def linker_symbols(tree):
     """Read explicit symbols, including alias scripts before and after their move."""
-    paths = ("symbol_addrs.txt", "rodata_aliases.ld", "linker/rodata_aliases.ld")
+    paths = ("symbol_addrs.txt", "config/symbol_addrs.txt",
+             "rodata_aliases.ld", "linker/rodata_aliases.ld")
     return symbols("\n".join(tree.read(path) or "" for path in paths))
 
 
@@ -119,8 +120,8 @@ def check(manifest, base, now):
     functions = manifest.get("frozen_functions", {})
     now_src = source_names(now, "src")
     now_syms = linker_symbols(now)
-    yaml_base = base.read("pikachu.yaml")
-    yaml_now = now.read("pikachu.yaml")
+    yaml_base = base.read("config/pikachu.yaml") or base.read("pikachu.yaml")
+    yaml_now = now.read("config/pikachu.yaml") or now.read("pikachu.yaml")
     base_syms_all = linker_symbols(base)
 
     def report(entry, message):

@@ -1,6 +1,6 @@
 # Hey You, Pikachu! (USA) — matching decompilation build
 #
-#    pikachu.yaml + symbol_addrs.txt + rom/baserom.us.z64
+#    config/pikachu.yaml + config/symbol_addrs.txt + rom/baserom.us.z64
 #        |            (uv run splat split)
 #        v
 #    build/asm/*.s  src/**/*.c skeletons  build/assets/*.bin  build/pikachu.ld
@@ -44,7 +44,7 @@ OBJCOPY := $(CROSS)objcopy
 IDO     ?= tools/ido-5.3/cc
 HEADER_DEPS := python3 tools/header_deps.py
 ASMPROC := python3 tools/asm-processor/build.py
-SPLAT   := uv run splat split pikachu.yaml
+SPLAT   := uv run splat split config/pikachu.yaml
 
 ASFLAGS := -mabi=32 -march=vr4300 -mtune=vr4300 -Iinclude
 I_FLAGS := -Iinclude -Iinclude/PR -Iinclude/libc -Isrc -I.
@@ -86,13 +86,13 @@ CFLAGS   = -c -Wab,-r4300_mul -non_shared -G0 -Xcpluscomm -Xfullwarn -signed \
 # re-cut hasm span would otherwise keep its old, overlapping contents.
 NEED_SPLIT := $(shell [ -f build/pikachu.ld ] \
                 && [ -f build/undefined_funcs_auto.txt ] && [ -f build/undefined_syms_auto.txt ] \
-                && [ build/pikachu.ld -nt pikachu.yaml ] \
-                && [ build/pikachu.ld -nt symbol_addrs.txt ] || echo 1)
+                && [ build/pikachu.ld -nt config/pikachu.yaml ] \
+                && [ build/pikachu.ld -nt config/symbol_addrs.txt ] || echo 1)
 ifneq ($(if $(MAKECMDGOALS),$(filter-out clean distclean split,$(MAKECMDGOALS)),default),)
 ifneq ($(NEED_SPLIT),)
 ifneq ($(wildcard rom/baserom.us.z64),)
 $(info splitting ROM...)
-DUMMY := $(shell rm -rf build/asm && uv run splat split pikachu.yaml >&2 || echo FAIL)
+DUMMY := $(shell rm -rf build/asm && uv run splat split config/pikachu.yaml >&2 || echo FAIL)
 ifeq ($(DUMMY),FAIL)
 $(error ROM split failed)
 endif
@@ -124,10 +124,10 @@ distclean: clean
 $(BASEROM):
 	@echo "normalize your dump first: python3 tools/rom.py /path/to/dump.z64 $(BASEROM)" && exit 1
 
-split: $(BASEROM) pikachu.yaml symbol_addrs.txt
+split: $(BASEROM) config/pikachu.yaml config/symbol_addrs.txt
 	$(SPLAT)
 
-build/pikachu.ld: pikachu.yaml symbol_addrs.txt $(BASEROM)
+build/pikachu.ld: config/pikachu.yaml config/symbol_addrs.txt $(BASEROM)
 	$(SPLAT)
 
 # ---- compile / assemble ----------------------------------------------

@@ -45,8 +45,8 @@ def tree(src="void osGetTime(void) {\n}\nvoid func_80100000(void) {\n}\n", syms=
     files = {
         "src/os/time.c": src,
         "src/game/p.c": "void proutSprintf(void) {\n}\nvoid gameOverride(void) {\n}\n",
-        "symbol_addrs.txt": "guMtxIdentF = 0x80058180;\nguMtxF2L = 0x800581D0;\n" + syms,
-        "pikachu.yaml": YAML,
+        "config/symbol_addrs.txt": "guMtxIdentF = 0x80058180;\nguMtxF2L = 0x800581D0;\n" + syms,
+        "config/pikachu.yaml": YAML,
     }
     files.update(extra or {})
     return FakeTree(files)
@@ -59,11 +59,21 @@ class FrozenNameTests(unittest.TestCase):
     def test_alias_script_move_preserves_protection(self):
         base, now = tree(), tree()
         for snapshot in (base, now):
-            snapshot.files_["symbol_addrs.txt"] = "guMtxF2L = 0x800581D0;\n"
+            snapshot.files_["config/symbol_addrs.txt"] = "guMtxF2L = 0x800581D0;\n"
         base.files_["rodata_aliases.ld"] = "guMtxIdentF = 0x80058180;\n"
         now.files_["linker/rodata_aliases.ld"] = base.files_["rodata_aliases.ld"]
         self.assertEqual(check(MANIFEST, base, now), [])
         now.files_["linker/rodata_aliases.ld"] = "guMtxIdentFast = 0x80058180;\n"
+        self.assertTrue(any(severity == "error" and "guMtxIdentF" in message
+                            for severity, message in check(MANIFEST, base, now)))
+
+    def test_config_move_preserves_checks_against_old_commits(self):
+        base, now = tree(), tree()
+        for name in ("pikachu.yaml", "symbol_addrs.txt"):
+            base.files_[name] = base.files_.pop("config/" + name)
+        self.assertEqual(check(MANIFEST, base, now), [])
+        now.files_["config/symbol_addrs.txt"] = now.files_["config/symbol_addrs.txt"].replace(
+            "guMtxIdentF", "guMtxIdentFast")
         self.assertTrue(any(severity == "error" and "guMtxIdentF" in message
                             for severity, message in check(MANIFEST, base, now)))
 
@@ -84,7 +94,7 @@ class FrozenNameTests(unittest.TestCase):
 
     def test_asm_symbol_rename_is_reported_by_address(self):
         now = tree()
-        now.files_["symbol_addrs.txt"] = "guMtxIdentFast = 0x80058180;\nguMtxF2L = 0x800581D0;\n"
+        now.files_["config/symbol_addrs.txt"] = "guMtxIdentFast = 0x80058180;\nguMtxF2L = 0x800581D0;\n"
         problems = check(MANIFEST, tree(), now)
         self.assertEqual(len(problems), 1)
         self.assertEqual(problems[0][0], "error")
@@ -127,16 +137,16 @@ class FrozenNameTests(unittest.TestCase):
     def test_sdk_c_may_become_generated_assembly(self):
         base = tree(syms="osGetTime = 0x80058240;\n")
         now = tree(src="", syms="osGetTime = 0x80058240;\n")
-        now.files_["pikachu.yaml"] = YAML.replace("c, os/other", "asm, os/other")
+        now.files_["config/pikachu.yaml"] = YAML.replace("c, os/other", "asm, os/other")
         self.assertEqual(check(MANIFEST, base, now), [])
-        now.files_["symbol_addrs.txt"] = now.files_["symbol_addrs.txt"].replace("80058240", "80058244")
+        now.files_["config/symbol_addrs.txt"] = now.files_["config/symbol_addrs.txt"].replace("80058240", "80058244")
         self.assertTrue(any("osGetTime" in p[1] for p in check(MANIFEST, base, now)))
 
     def test_generated_sdk_names_stay_frozen_in_a_fresh_history(self):
         base = tree(src="", syms="osGetTime = 0x80058240;\n")
-        base.files_["pikachu.yaml"] = YAML.replace("c, os/other", "asm, os/other")
+        base.files_["config/pikachu.yaml"] = YAML.replace("c, os/other", "asm, os/other")
         now = FakeTree(dict(base.files_))
-        now.files_["symbol_addrs.txt"] = now.files_["symbol_addrs.txt"].replace("osGetTime", "renamed")
+        now.files_["config/symbol_addrs.txt"] = now.files_["config/symbol_addrs.txt"].replace("osGetTime", "renamed")
         self.assertTrue(any("generated SDK symbol osGetTime" in p[1] for p in check(MANIFEST, base, now)))
 
     def test_helpers(self):

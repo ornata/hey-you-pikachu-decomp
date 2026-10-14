@@ -60,8 +60,8 @@ build/pikachu.elf --(objcopy)--> build/pikachu.z64 --(SHA-1)--> retail match
 * **asm-processor** lets one `.c` file mix matched C with
   `#pragma GLOBAL_ASM(...)` blocks, so code is decompiled one function
   at a time while the ROM keeps matching.
-* **splat** produced the original split (`pikachu.yaml`,
-  `symbol_addrs.txt`, `build/pikachu.ld`); re-run it only when re-splitting
+* **splat** produced the original split (`config/pikachu.yaml`,
+  `config/symbol_addrs.txt`, `build/pikachu.ld`); re-run it only when re-splitting
   segments. Make regenerates the split when its inputs change.
 
 Base split (yaml/symbols/asm layout) derives from

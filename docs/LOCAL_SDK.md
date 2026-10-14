@@ -26,7 +26,7 @@ in your local copies. Hashes identify accepted build inputs, not permission to
 redistribute them. A raw SDK installation may need different directory layout
 or may differ from these exact build inputs; the importer does not convert it.
 
-`pikachu.yaml` describes SDK units as assembly and their data as separate ROM
+`config/pikachu.yaml` describes SDK units as assembly and their data as separate ROM
 sections. Splat generates them from the supplied ROM into ignored `build/asm/`.
 Neither those files nor ROMs, extracted assets, objects, or compilers belong in
 an exported repository. The ROM gate verifies the complete result, including

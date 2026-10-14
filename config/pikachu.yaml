@@ -1,8 +1,8 @@
 # splat configuration — the single source of truth for the ROM layout.
 # build/asm/, build/pikachu.ld, build/undefined_*_auto.txt and build/assets/ are all
-# GENERATED from this file + symbol_addrs.txt + your own ROM:
+# GENERATED from this file + config/symbol_addrs.txt + your own ROM:
 #
-#   uv run splat split pikachu.yaml
+#   uv run splat split config/pikachu.yaml
 #
 # Subsegment cut points are measured function boundaries.
 name: Hey You, Pikachu! (USA)
@@ -10,7 +10,7 @@ sha1: da1a1e47a86720f9d54fb2d2d247480041bda824
 options:
   basename: pikachu
   target_path: rom/baserom.us.z64
-  base_path: .
+  base_path: ..
   compiler: IDO
   platform: n64
   header_encoding: ASCII
@@ -24,7 +24,7 @@ options:
   cache_path: build/splat-cache
   asset_path: build/assets
   ld_script_path: build/pikachu.ld
-  symbol_addrs_path: symbol_addrs.txt
+  symbol_addrs_path: config/symbol_addrs.txt
   undefined_funcs_auto_path: build/undefined_funcs_auto.txt
   undefined_syms_auto_path: build/undefined_syms_auto.txt
 
