@@ -3,6 +3,7 @@ build/
 assets/
 expected/
 .venv/
+.direnv/
 tools/ido-7.1/
 tools/m2c/
 tools/asm-differ/

@@ -41,7 +41,7 @@ LD      := $(CROSS)ld
 OBJCOPY := $(CROSS)objcopy
 
 # Game C matches IDO 5.3. SDK implementations are generated locally from the ROM.
-IDO     := tools/ido-5.3/cc
+IDO     ?= tools/ido-5.3/cc
 HEADER_DEPS := python3 tools/header_deps.py
 ASMPROC := python3 tools/asm-processor/build.py
 SPLAT   := uv run splat split pikachu.yaml

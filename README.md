@@ -17,7 +17,6 @@ possible to extend it.
 
 ## Requirements
 - nix
-- uv
 - A Hey You Pikachu ROM
 
 ## Quick start
@@ -28,8 +27,7 @@ possible to extend it.
 ; cp /path/to/your/dump.z64 rom/
 # If flakes are enabled, you can skip the --extra-experimental-features flag.
 ; nix --extra-experimental-features 'nix-command flakes' develop --command bash
-; ./tools/setup.sh --check
-; ./tools/setup.sh # repository-local compiler, helpers and locked Python environment
+; python3 tools/rom.py rom/dump.z64 rom/baserom.us.z64
 ; python3 tools/materialize_ultralib.py --from /path/to/local-sdk-inputs
 ; uv run --locked make -j8  # Produces build/pikachu.z64 + SHA-1 check
 ; uv run --locked make verify-clean
@@ -37,6 +35,11 @@ possible to extend it.
 
 Supports macOS and x86-64 Linux; tested on Apple Silicon. If flakes are already
 enabled, the shell command is just `nix develop --command bash`.
+Nix supplies IDO 5.3 and uv.
+
+With direnv installed and hooked into your shell, run `direnv allow` once in the
+repo. Entering the directory then loads Nix and the locked Python environment
+automatically; you can skip `nix develop` and run `make -j8` directly.
 
 ## Overview
 
