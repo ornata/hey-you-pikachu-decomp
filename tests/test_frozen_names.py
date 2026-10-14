@@ -56,6 +56,17 @@ class FrozenNameTests(unittest.TestCase):
     def test_unchanged_tree_is_clean(self):
         self.assertEqual(check(MANIFEST, tree(), tree()), [])
 
+    def test_alias_script_move_preserves_protection(self):
+        base, now = tree(), tree()
+        for snapshot in (base, now):
+            snapshot.files_["symbol_addrs.txt"] = "guMtxF2L = 0x800581D0;\n"
+        base.files_["rodata_aliases.ld"] = "guMtxIdentF = 0x80058180;\n"
+        now.files_["linker/rodata_aliases.ld"] = base.files_["rodata_aliases.ld"]
+        self.assertEqual(check(MANIFEST, base, now), [])
+        now.files_["linker/rodata_aliases.ld"] = "guMtxIdentFast = 0x80058180;\n"
+        self.assertTrue(any(severity == "error" and "guMtxIdentF" in message
+                            for severity, message in check(MANIFEST, base, now)))
+
     def test_renamed_source_function_is_reported(self):
         now = tree(src="void osGetTimeNew(void) {\n}\nvoid func_80100000(void) {\n}\n")
         problems = check(MANIFEST, tree(), now)

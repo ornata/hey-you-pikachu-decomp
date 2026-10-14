@@ -1,4 +1,4 @@
-# IDE-only config: clangd never builds anything here (IDO 7.1 does),
+# IDE-only config: clangd never builds anything here (IDO 5.3 does),
 # this just teaches it the include paths so editing is pleasant.
 CompileFlags:
   Add:

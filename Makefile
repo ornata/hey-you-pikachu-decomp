@@ -84,7 +84,9 @@ CFLAGS   = -c -Wab,-r4300_mul -non_shared -G0 -Xcpluscomm -Xfullwarn -signed \
 # (a new subsegment adds an asm file the stale glob would miss). asm/
 # is wiped first: splat never rewrites an existing hasm file, so a
 # re-cut hasm span would otherwise keep its old, overlapping contents.
-NEED_SPLIT := $(shell [ -f build/pikachu.ld ] && [ build/pikachu.ld -nt pikachu.yaml ] \
+NEED_SPLIT := $(shell [ -f build/pikachu.ld ] \
+                && [ -f build/undefined_funcs_auto.txt ] && [ -f build/undefined_syms_auto.txt ] \
+                && [ build/pikachu.ld -nt pikachu.yaml ] \
                 && [ build/pikachu.ld -nt symbol_addrs.txt ] || echo 1)
 ifneq ($(NEED_SPLIT),)
 ifneq ($(wildcard rom/baserom.us.z64),)
@@ -157,8 +159,8 @@ $(BUILD)/assets/%.o: assets/%.bin
 # any object builds (a -j race here corrupted builds nondeterministically)
 $(O_FILES): | $(BUILD)/pikachu.ld
 
-$(BUILD)/pikachu.elf: $(BUILD)/pikachu.ld menu_state_aliases.ld query_state_aliases.ld rodata_aliases.ld $(O_FILES)
-	$(LD) -T $(BUILD)/pikachu.ld -T undefined_funcs_auto.txt -T undefined_syms_auto.txt -T menu_state_aliases.ld -T query_state_aliases.ld -T rodata_aliases.ld \
+$(BUILD)/pikachu.elf: $(BUILD)/pikachu.ld linker/menu_state_aliases.ld linker/query_state_aliases.ld linker/rodata_aliases.ld $(O_FILES)
+	$(LD) -T $(BUILD)/pikachu.ld -T $(BUILD)/undefined_funcs_auto.txt -T $(BUILD)/undefined_syms_auto.txt -T linker/menu_state_aliases.ld -T linker/query_state_aliases.ld -T linker/rodata_aliases.ld \
 	      -Map $(BUILD)/pikachu.map -o $@
 
 # the ROM always builds (asm-differ iterates on non-matching states);

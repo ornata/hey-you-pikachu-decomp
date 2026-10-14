@@ -107,15 +107,21 @@ def hasm_ranges(yaml_text, directory, kinds=("hasm",)):
     return ranges
 
 
+def linker_symbols(tree):
+    """Read explicit symbols, including alias scripts before and after their move."""
+    paths = ("symbol_addrs.txt", "rodata_aliases.ld", "linker/rodata_aliases.ld")
+    return symbols("\n".join(tree.read(path) or "" for path in paths))
+
+
 def check(manifest, base, now):
     """Return [(severity, message)] for every frozen name that changed."""
     problems = []
     functions = manifest.get("frozen_functions", {})
     now_src = source_names(now, "src")
-    now_syms = symbols((now.read("symbol_addrs.txt") or "") + "\n" + (now.read("rodata_aliases.ld") or ""))
+    now_syms = linker_symbols(now)
     yaml_base = base.read("pikachu.yaml")
     yaml_now = now.read("pikachu.yaml")
-    base_syms_all = symbols((base.read("symbol_addrs.txt") or "") + "\n" + (base.read("rodata_aliases.ld") or ""))
+    base_syms_all = linker_symbols(base)
 
     def report(entry, message):
         fix = entry.get("port_fix")
@@ -141,7 +147,7 @@ def check(manifest, base, now):
                         report(entry, f"{path}: generated SDK symbol {name} @ {addr:#010x} changed")
         elif kind == "asm":
             ranges = hasm_ranges(yaml_base, directory) if yaml_base else []
-            base_syms = symbols((base.read("symbol_addrs.txt") or "") + "\n" + (base.read("rodata_aliases.ld") or ""))
+            base_syms = linker_symbols(base)
             by_addr = {}
             for name, addr in now_syms.items():
                 by_addr.setdefault(addr, set()).add(name)

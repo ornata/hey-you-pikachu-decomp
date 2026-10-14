@@ -49,7 +49,7 @@ Effectively, the situation is like this.
  rom/baserom.us.z64 ─┬─(extract)──> assets/*.bin ───────────────┐
                      │                                          │
  asm/*.s ────────────┼────────(GNU as)──> build/asm/*.o ────────┤
-                     │                                          ├─(ld + pikachu.ld)─> ELF
+                     │                                          ├─(ld + build/pikachu.ld)─> ELF
  src/*.c ──(asm-processor + IDO 5.3 cc)─> build/src/*.o ────────┘        │
                                                                    (objcopy)
                                                                          ▼
@@ -63,7 +63,7 @@ Effectively, the situation is like this.
   `#pragma GLOBAL_ASM(...)` blocks, so code is decompiled one function
   at a time while the ROM keeps matching.
 * **splat** produced the original split (`pikachu.yaml`,
-  `symbol_addrs.txt`, `pikachu.ld`); re-run it only when re-splitting
+  `symbol_addrs.txt`, `build/pikachu.ld`); re-run it only when re-splitting
   segments. Make regenerates the split when its inputs change.
 
 Base split (yaml/symbols/asm layout) derives from

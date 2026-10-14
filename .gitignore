@@ -100,3 +100,7 @@ um_out/
 /include/sys/regdef.h
 /include/ultra64.h
 /include/ultrahost.h
+
+# Local editor/agent settings and test caches.
+.claude/
+.pytest_cache/

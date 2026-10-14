@@ -1,11 +1,10 @@
 # splat configuration — the single source of truth for the ROM layout.
-# asm/, build/pikachu.ld, undefined_*_auto.txt and assets/ are all
+# asm/, build/pikachu.ld, build/undefined_*_auto.txt and assets/ are all
 # GENERATED from this file + symbol_addrs.txt + your own ROM:
 #
 #   uv run splat split pikachu.yaml
 #
-# Cut points are measured facts (see docs/NOTES.md); every subsegment
-# boundary lands on a known function start.
+# Subsegment cut points are measured function boundaries.
 name: Hey You, Pikachu! (USA)
 sha1: da1a1e47a86720f9d54fb2d2d247480041bda824
 options:
@@ -25,8 +24,8 @@ options:
   asset_path: assets
   ld_script_path: build/pikachu.ld
   symbol_addrs_path: symbol_addrs.txt
-  undefined_funcs_auto_path: undefined_funcs_auto.txt
-  undefined_syms_auto_path: undefined_syms_auto.txt
+  undefined_funcs_auto_path: build/undefined_funcs_auto.txt
+  undefined_syms_auto_path: build/undefined_syms_auto.txt
 
   find_file_boundaries: False
   migrate_rodata_to_functions: True
