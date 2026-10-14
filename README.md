@@ -103,12 +103,11 @@ message delivery, cooperative VM execution, and the lower-level action sequencer
 Although it's easy to run UBSan to find UB with modern compilers, UB known/understood
 by agents that did the porting work is documented in **[docs/UB.md]**.
 
-## Legal
+## Notice
 
-You must supply your own dump of a cartridge you own; this repo
-contains no Nintendo-copyrighted data, and the build refuses dumps that
-don't hash to the retail image. The decompiled sources document the
-original work for interoperability and preservation.
+This project claims no rights to the original game, SDK, or compiler; those rights
+remain with their respective owners. It provides reconstructed source code solely
+for educational purposes. You must supply your own ROM and local SDK inputs.
 
 [decompals/ido-static-recomp]: https://github.com/decompals/ido-static-recomp
 [farisawan-2000/hey_you_pikachu]: https://github.com/farisawan-2000/hey_you_pikachu

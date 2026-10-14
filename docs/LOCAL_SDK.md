@@ -37,5 +37,4 @@ not alter the retained game code.
 
 Run `make verify-clean` before publishing. Ignored ROMs, generated SDK assembly,
 assets, local headers, compilers and build artifacts must remain local. The check
-covers selected hygiene issues, not copyright clearance; see
-[Rights and distribution status](LEGAL_STATUS.md).
+covers selected hygiene issues; see the [project notice](../README.md#notice).
