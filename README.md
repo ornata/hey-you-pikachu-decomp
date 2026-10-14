@@ -18,15 +18,20 @@ possible to extend it.
 ## Quick start
 
 ```sh
-# Put your legally dumped ROM in rom.
-# I've tested .z64.
-cp my-rom ./rom
-# Set up build environment.
-./tools/setup.sh
+# Supply your legally dumped ROM in rom/ (.z64/.v64/.n64).
+mkdir -p rom
+cp /path/to/your/dump.z64 rom/
+# Nix must already be installed; setup never installs system packages.
+nix --extra-experimental-features 'nix-command flakes' develop --command bash
+./tools/setup.sh --check  # prerequisites only; no downloads or file changes
+./tools/setup.sh          # repository-local compiler, helpers and locked Python environment
 python3 tools/materialize_ultralib.py --from /path/to/local-sdk-inputs
-make -j # Produces build/pikachu.z64 + SHA-1 check
-make verify-clean # Check repo hygeine.
+uv run --locked make -j8  # Produces build/pikachu.z64 + SHA-1 check
+uv run --locked make verify-clean
 ```
+
+Supports macOS and x86-64 Linux; tested on Apple Silicon. If flakes are already
+enabled, the shell command is just `nix develop --command bash`.
 
 ## Overview
 

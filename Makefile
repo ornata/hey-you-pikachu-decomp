@@ -226,7 +226,7 @@ compare-objects:
 
 # BASELINE must be a previously accepted build, not the current output directory.
 verify: check check-names check-scene-callbacks check-item-callbacks check-object-draw-callbacks check-native-commands check-interfaces check-layouts check-sequence-bank verify-clean
-	python3 -m pytest tests
+	uv run --locked python -m pytest tests
 	python3 tools/source_quality.py --check-ledger
 	python3 tools/compare_objects.py $(BASELINE) $(BUILD)
 	git diff --check
