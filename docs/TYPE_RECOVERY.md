@@ -18,7 +18,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `temp_*` | 2,480 / 58 | 0 / 0 |
 | Raw offset candidates | 4,040 / 86 | 1,571 / 68 |
 
-Supplemental cast-base offset candidates: **73 occurrences / 15 files**.
+Supplemental cast-base offset candidates: **28 occurrences / 7 files**.
 This category was not tracked in the original baseline. The historical raw-offset
 metric recognizes identifier bases; explicit byte casts can move expressions out
 of that metric without recovering their layout. Both inventories are review
@@ -4666,3 +4666,14 @@ existing mutable third entry; collection titles use borrowed string pointers
 rather than integer addresses. Null tables and entries retain their original
 behavior. Complete configuration allocation size remains unproven, so the prefix
 still must not be used to allocate or copy configurations.
+
+## Shared scene member adoption
+
+Ten remaining consumers now use the established scene `objectScale`, `backdrop`,
+`subdivisionPower`, `farClip`, `nearClip` and `projectionExtent` members instead
+of byte-offset expressions. Each source unit independently preserves the full
+483-object baseline. Ghidra at `0x80024AE0` independently confirms the held-item
+scale input at configuration offset `0xC`. The supplemental cast-offset inventory
+fell from 73 to 28 occurrences, across seven files; the historical identifier-base
+metric is unchanged. Remaining dimension and renderer views retain their recorded
+matching constraints.

@@ -991,7 +991,7 @@ void systemMenuUpdateAnimation(void) {
     case SYSTEM_MENU_CLOSE_DELAY:
         if (runtimeGetElapsedMilliseconds() - *(u64 *)&gSystemMenuPhaseStartMilliseconds > 300) {
             ((MenuBackdropView *)&gPrimaryBackdropScroll)->useBackdrop = 1;
-            backdropSelectForView(0, *(s32 *)(((u8 *)gCurrentAreaConfiguration) + 0x64), 1);
+            backdropSelectForView(0, gCurrentAreaConfiguration->backdrop, 1);
             systemMenuSetPhase(SYSTEM_MENU_CLOSING);
             systemMenuUpdateClosingAnimation();
             return;

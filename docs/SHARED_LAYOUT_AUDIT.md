@@ -118,3 +118,12 @@ component loads because both direct-byte and bounded-array alternatives fail
 the ROM gate. The view borrows four RGBA bytes and owns no item resources.
 Encounter setup in the shop and deep forest now uses `ActorScriptState` target
 position/handle fields, shared object world positions and `ACTOR_TARGET_FOLLOW`.
+
+## Remaining common-field consumers
+
+Action commands, actor creation and movement, toolbox objects, collection
+presentation, title/menu backdrop selection, maze initialization, and the Ochre
+entrance and Cobalt Island initializers now use the shared scene members directly.
+The recovered scalar types retain their original widths, signedness and offsets;
+no control flow or expression ordering changes accompany this adoption. Each of
+the ten source-unit mutations passed the preserved object comparison separately.

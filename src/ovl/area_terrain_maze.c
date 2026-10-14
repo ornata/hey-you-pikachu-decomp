@@ -1320,7 +1320,7 @@ extern u8 gRenderCameraMatrixEntries[];
 s32 areaTestCameraVisibility(f32 margin, f32 *position, f32 *out) {
     f32 x, y, z, far;
     matrix34TransformPointVector((f32 *)(((u8 *)gRenderCameras) + gRenderCameraIndex * 0xE0 + 0x58), position, out);
-    far = *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0x24) * 1.7f;
+    far = gCurrentAreaConfiguration->farClip * 1.7f;
     z = -out[2];
     x = out[0];
     y = out[1];
@@ -1541,14 +1541,14 @@ void mazeInitializeRoot(void) {
     Vec3f dims;
     f32 length;
     gAreaMazeRoot = (MazeNode *)areaAllocateNode();
-    integerScale = integerPower(2, *(s32 *)(((u8 *)gCurrentAreaConfiguration) + 0x10));
+    integerScale = integerPower(2, gCurrentAreaConfiguration->subdivisionPower);
     ((MazeNode *)gAreaMazeRoot)->x = 0.0f;
     ((MazeNode *)gAreaMazeRoot)->y = 0.0f;
     ((MazeNode *)gAreaMazeRoot)->z = 0.0f;
     ((MazeNode *)gAreaMazeRoot)->w = (f32)integerScale * ((Vec3f *)((u8 *)gCurrentAreaConfiguration))->x;
     ((MazeNode *)gAreaMazeRoot)->h = (f32)integerScale * ((Vec3f *)((u8 *)gCurrentAreaConfiguration))->y;
     ((MazeNode *)gAreaMazeRoot)->d = (f32)integerScale * ((Vec3f *)((u8 *)gCurrentAreaConfiguration))->z;
-    gAreaMazeRoot->depth = *(s32 *)(((u8 *)gCurrentAreaConfiguration) + 0x10);
+    gAreaMazeRoot->depth = gCurrentAreaConfiguration->subdivisionPower;
     dims.x = ((Vec3f *)((u8 *)gCurrentAreaConfiguration))->x;
     dims.y = ((Vec3f *)((u8 *)gCurrentAreaConfiguration))->y;
     dims.z = ((Vec3f *)((u8 *)gCurrentAreaConfiguration))->z;
@@ -1556,8 +1556,8 @@ void mazeInitializeRoot(void) {
     gMazeVisibilityParameters.radiusScale =
         length * 0.5f / (mathSinDegrees(36.0f) * ((Vec3f *)((u8 *)gCurrentAreaConfiguration))->x);
     TRACE("blockSize: %f,%f,%f  _clipZFactor:%f  clipFar:%f clipNear:%f clipFactor:%f\n", dims.x, dims.y, dims.z,
-          *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0x2C), *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0x24),
-          *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0x28), gMazeVisibilityParameters.radiusScale);
+          gCurrentAreaConfiguration->projectionExtent, gCurrentAreaConfiguration->farClip,
+          gCurrentAreaConfiguration->nearClip, gMazeVisibilityParameters.radiusScale);
 }
 
 
@@ -1811,17 +1811,17 @@ void mazeReplaceBlock(u8 *pos, u8 *modelTemplate, MazeGrid *terrain, s32 level) 
         *(f32 *)(model + 0x18) = *(f32 *)(node + 0x8);
         *(f32 *)(model + 0x1C) = *(f32 *)(node + 0xC);
         *(f32 *)(model + 0x20) = *(f32 *)(node + 0x10);
-        *(f32 *)(model + 0x0) = *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC) * *(f32 *)(model + 0x0);
-        *(f32 *)(model + 0x4) = *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC) * *(f32 *)(model + 0x4);
-        *(f32 *)(model + 0x8) = *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC) * *(f32 *)(model + 0x8);
+        *(f32 *)(model + 0x0) = gCurrentAreaConfiguration->objectScale * *(f32 *)(model + 0x0);
+        *(f32 *)(model + 0x4) = gCurrentAreaConfiguration->objectScale * *(f32 *)(model + 0x4);
+        *(f32 *)(model + 0x8) = gCurrentAreaConfiguration->objectScale * *(f32 *)(model + 0x8);
         if (child != NULL) {
             do {
                 *(f32 *)(child + 0x18) =
-                    *(f32 *)(node + 0x8) + *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC) * *(f32 *)(child + 0x18);
+                    *(f32 *)(node + 0x8) + gCurrentAreaConfiguration->objectScale * *(f32 *)(child + 0x18);
                 *(f32 *)(child + 0x1C) =
-                    *(f32 *)(node + 0xC) + *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC) * *(f32 *)(child + 0x1C);
+                    *(f32 *)(node + 0xC) + gCurrentAreaConfiguration->objectScale * *(f32 *)(child + 0x1C);
                 *(f32 *)(child + 0x20) =
-                    *(f32 *)(node + 0x10) + *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC) * *(f32 *)(child + 0x20);
+                    *(f32 *)(node + 0x10) + gCurrentAreaConfiguration->objectScale * *(f32 *)(child + 0x20);
                 *(f32 *)(child + 0x0) = *(f32 *)(child + 0x0) * *(f32 *)(model + 0x0);
                 *(f32 *)(child + 0x4) = *(f32 *)(child + 0x4) * *(f32 *)(model + 0x4);
                 *(f32 *)(child + 0x8) = *(f32 *)(child + 0x8) * *(f32 *)(model + 0x8);

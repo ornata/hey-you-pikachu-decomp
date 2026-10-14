@@ -864,9 +864,9 @@ void presentationPlaceCollectionItem(u8 *item, f32 heightOffset) {
     v.y += heightOffset;
     matrix34TransformPointVector((f32 *)&gPresentationToWorldTransform, (f32 *)(&v), (f32 *)(item + 0x18));
     *(f32 *)(item + 0x10) += 3.0;
-    *(f32 *)(item + 0) = *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC);
-    *(f32 *)(item + 4) = *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC);
-    *(f32 *)(item + 8) = *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC);
+    *(f32 *)(item + 0) = gCurrentAreaConfiguration->objectScale;
+    *(f32 *)(item + 4) = gCurrentAreaConfiguration->objectScale;
+    *(f32 *)(item + 8) = gCurrentAreaConfiguration->objectScale;
     objectUpdateHierarchy(item);
 }
 
@@ -1198,7 +1198,7 @@ s32 presentationSelectArea0Card(s32 *actorAction, s32 *audioCue) {
         }
         progressAddValue(6, 1);
         progressSetValue(0x12, 0);
-        *(s32 *)(((u8 *)gCurrentAreaConfiguration) + 0x64) = 3;
+        gCurrentAreaConfiguration->backdrop = 3;
         scriptVmResetGlobals();
         playerSetChaseStage(progressGetValue(0xC));
         if (progressGetValue(0xC2) != 0) {
@@ -1223,7 +1223,7 @@ s32 presentationSelectArea0Card(s32 *actorAction, s32 *audioCue) {
         *audioCue = 0x15;
         return 9;
     }
-    *(s32 *)(((u8 *)gCurrentAreaConfiguration) + 0x64) = 1;
+    gCurrentAreaConfiguration->backdrop = 1;
     if (progressGetValue(0x11) != 0) {
         progressSetValue(0x1A, 0);
         progressSetValue(0x13, 0);
@@ -1287,15 +1287,15 @@ s32 presentationSelectArea2Card(s32 *actorAction, s32 *audioCue) {
         *audioCue = 0x15;
         return 2;
     case 8:
-        *(s32 *)(((u8 *)gCurrentAreaConfiguration) + 0x64) = 2;
+        gCurrentAreaConfiguration->backdrop = 2;
         *audioCue = 0x15;
         return 3;
     case 9:
-        *(s32 *)(((u8 *)gCurrentAreaConfiguration) + 0x64) = 2;
+        gCurrentAreaConfiguration->backdrop = 2;
         *audioCue = 0x15;
         return 4;
     case 3:
-        *(s32 *)(((u8 *)gCurrentAreaConfiguration) + 0x64) = 2;
+        gCurrentAreaConfiguration->backdrop = 2;
         *audioCue = 0x15;
         return 0;
     case 5:
@@ -1303,7 +1303,7 @@ s32 presentationSelectArea2Card(s32 *actorAction, s32 *audioCue) {
         return 5;
     case 7:
         if (progressGetValue(0x12) != 0) {
-            *(s32 *)(((u8 *)gCurrentAreaConfiguration) + 0x64) = 2;
+            gCurrentAreaConfiguration->backdrop = 2;
             *audioCue = 0x15;
             return 6;
         }

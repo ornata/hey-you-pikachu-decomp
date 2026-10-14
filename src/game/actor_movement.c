@@ -206,6 +206,7 @@ s32 actorScalePendingMovement(u8 *actor) {
 }
 
 #include "scene_configuration.h"
+#include "scene_types.h"
 
 /// Face the tracked target while stepping backward with slight lateral variation.
 /// \pre The actor must be the current object update; current area size settings must be initialized with a nonzero reference scale.
@@ -222,7 +223,7 @@ s32 actorBackstepTowardTarget(s32 actor, f32 speed) {
     amp = gRuntimeFrameSeconds * speed;
     actorRefreshTrackingTargetPosition((u8 *)actor);
     actorTurnTowardTarget((u8 *)actor, 300.0f);
-    amp *= 1.0 + (((*(f32 *)actor / *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC)) - 1.0f) * 0.5f);
+    amp *= 1.0 + (((*(f32 *)actor / gCurrentAreaConfiguration->objectScale) - 1.0f) * 0.5f);
     v[0] = (f32)((s32)randomBelow(10) - 4);
     v[1] = 0.0f;
     v[2] = -amp;
@@ -566,7 +567,7 @@ s32 actorAdvanceWithLateralVariation(u8 *actor) {
     f32 amp;
 
     amp = gRuntimeFrameSeconds * 400.0f;
-    amp *= 1.0 + (((*((f32 *)actor) / *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC)) - 1.0f) * 0.5f);
+    amp *= 1.0 + (((*((f32 *)actor) / gCurrentAreaConfiguration->objectScale) - 1.0f) * 0.5f);
     v[0] = (f32)((s32)randomBelow(10) - 4);
     v[1] = 0.0f;
     v[2] = amp;
@@ -585,7 +586,7 @@ s32 actorAdvanceQuicklyWithLateralVariation(u8 *actor) {
     f32 amp;
 
     amp = gRuntimeFrameSeconds * 600.0f;
-    amp *= 1.0 + (((*((f32 *)actor) / *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC)) - 1.0f) * 0.5f);
+    amp *= 1.0 + (((*((f32 *)actor) / gCurrentAreaConfiguration->objectScale) - 1.0f) * 0.5f);
     v[0] = (f32)((s32)randomBelow(10) - 4);
     v[1] = 0.0f;
     v[2] = amp;

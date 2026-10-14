@@ -4,6 +4,7 @@
 
 #include "togepi.h"
 #include "scene_configuration.h"
+#include "scene_types.h"
 extern u8 D_8013D380_scene_ochre_entrance[], D_8013DD80_scene_ochre_entrance[];
 extern f32 D_8013E8A0_scene_ochre_entrance;
 
@@ -18,19 +19,18 @@ void ochreEntranceInitializeResidents(void) {
             togepiCreate(D_8013E8A0_scene_ochre_entrance, 18.25f, 149.5f, 0.0f, 90.0f, D_8013DD80_scene_ochre_entrance,
                           3);
         } else {
-            actorCreateForKind(0xC, 192.5f, 18.25f, 149.5f, 0.0f, 90.0f,
-                               *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC) * 1.5f,
+            actorCreateForKind(0xC, 192.5f, 18.25f, 149.5f, 0.0f, 90.0f, gCurrentAreaConfiguration->objectScale * 1.5f,
                                D_8013DD80_scene_ochre_entrance, 3);
         }
     case 2:
-        actorCreateForKind(3, 187.5f, 18.25f, 164.0f, 0.0f, 100.0f, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC),
+        actorCreateForKind(3, 187.5f, 18.25f, 164.0f, 0.0f, 100.0f, gCurrentAreaConfiguration->objectScale,
                            D_8013DD80_scene_ochre_entrance, 2);
     case 1:
-        actorCreateForKind(4, 181.5f, 18.25f, 164.5f, 0.0f, 100.0f, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC),
+        actorCreateForKind(4, 181.5f, 18.25f, 164.5f, 0.0f, 100.0f, gCurrentAreaConfiguration->objectScale,
                            D_8013DD80_scene_ochre_entrance, 1);
         break;
     }
-    actorCreateForKind(1, 168.0f, 18.0f, 144.5f, 0.0f, 0.0f, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC),
+    actorCreateForKind(1, 168.0f, 18.0f, 144.5f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
                        D_8013D380_scene_ochre_entrance, 0);
 }
 

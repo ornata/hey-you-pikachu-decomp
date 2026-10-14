@@ -53,6 +53,7 @@ extern u8 gActorKindFirstAttachmentPartEntries[];
 /// \note Original identifier: \c D_80087FE4 (0x80087FE4).
 extern u8 gActorKindGroundReferencePartEntries[];
 #include "scene_configuration.h"
+#include "scene_types.h"
 /// Integer animation program used before the contact effect is triggered.
 /// \note Original identifier: \c D_8006B390 (0x8006B390).
 extern s32 gContactEffectIdleAnimation;
@@ -818,6 +819,6 @@ void togepiCreate(f32 x, f32 y, f32 z, f32 pitch, f32 yaw, u8 *script, s32 scrip
         sp30 = progressGetValue(0x18);
         scale = (((f32)sp30 / (f32)progressGetMaximum(0x18)) + 1.0f) * 0.5f;
     }
-    actorCreateForKind(0x16, x, y, z, pitch, yaw, scale * *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC), script,
+    actorCreateForKind(0x16, x, y, z, pitch, yaw, scale * gCurrentAreaConfiguration->objectScale, script,
                        scriptArgument);
 }

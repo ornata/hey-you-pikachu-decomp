@@ -732,6 +732,7 @@ extern u32 gTitleStartupPanelMilliseconds;
 /// \note Original identifier: \c D_800F25E8 (0x800F25E8).
 extern u32 gTitleSilhouetteMilliseconds;
 #include "scene_configuration.h"
+#include "scene_types.h"
 void titleScreenInitialize(void);
 void titleScreenResetLogoFade(void);
 void titleScreenSetMessage(void **, s32, s32);
@@ -963,7 +964,7 @@ void titleScreenUpdate(void) {
                 gTitleScreenState = 18;
                 break;
             }
-            backdropSelectForView(0, *(s32 *)(((u8 *)gCurrentAreaConfiguration) + 0x64), 0);
+            backdropSelectForView(0, gCurrentAreaConfiguration->backdrop, 0);
             gTitleScreenState = 0;
             controllerConfigureStickButtons(0, 0x1E, 0x1E, 0x1E, 0x1E);
             runtimeRequestGameModeChange(4);

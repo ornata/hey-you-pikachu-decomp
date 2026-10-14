@@ -932,6 +932,7 @@ void actionCommandStartDirectionMotion(s32 actor, u8 *state, u8 *command, s32 el
 }
 
 #include "scene_configuration.h"
+#include "scene_types.h"
 typedef struct {
     s32 id;
     f32 val;
@@ -957,7 +958,7 @@ void actionCommandConfigureHeldItem(s32 actor, u8 *state, u8 *command, f32 *elap
     if (p->val > 0.0f) {
         v = (f32 *)objectFindLiveByHandle(*(s32 *)(state + 0x190));
         if (v != NULL) {
-            f = *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC) * p->val;
+            f = gCurrentAreaConfiguration->objectScale * p->val;
             v[0] = f;
             v[1] = f;
             v[2] = f;
