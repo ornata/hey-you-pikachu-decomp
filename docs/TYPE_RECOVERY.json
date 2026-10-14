@@ -56,8 +56,8 @@
       "files": 68
     },
     "cast_offset_candidates": {
-      "occurrences": 79,
-      "unique_spellings": 19,
+      "occurrences": 73,
+      "unique_spellings": 17,
       "files": 15
     }
   },
@@ -1556,13 +1556,6 @@
           ]
         },
         "cast_offset_candidates": {
-          "((u8 *)gCurrentAreaConfiguration) + 0x74": [
-            "508:23",
-            "525:18",
-            "573:25",
-            "586:25",
-            "606:29"
-          ],
           "((u8 *)gCurrentAreaConfiguration) + 0xC": [
             "867:35",
             "868:35",
@@ -1575,9 +1568,6 @@
             "1294:18",
             "1298:18",
             "1306:22"
-          ],
-          "((u8 *)gCurrentAreaConfiguration) + 0x78": [
-            "1669:44"
           ]
         }
       }
@@ -4579,73 +4569,73 @@
         },
         "raw_offset_candidates": {
           "scene_bedroom_DATA_START + 0x21314": [
-            "147:5"
+            "147:34"
           ],
           "scene_entryway_DATA_START + 0x5A6C": [
-            "148:5"
+            "148:34"
           ],
           "scene_front_yard_DATA_START + 0x24A20": [
-            "149:5"
+            "149:34"
           ],
           "scene_viridian_entrance_DATA_START + 0x18904": [
-            "150:5"
+            "150:34"
           ],
           "scene_viridian_forest_DATA_START + 0x60C4": [
-            "151:5"
+            "151:34"
           ],
           "scene_viridian_deep_DATA_START + 0x15680": [
-            "152:5"
+            "152:34"
           ],
           "scene_springleaf_entrance_DATA_START + 0x22E9C": [
-            "153:5"
+            "153:34"
           ],
           "scene_oddish_meadow_DATA_START + 0x23368": [
-            "154:5"
+            "154:34"
           ],
           "scene_springleaf_field_DATA_START + 0x234B8": [
-            "155:5"
+            "155:34"
           ],
           "scene_olivine_lakeshore_DATA_START + 0xCC94": [
-            "156:5"
+            "156:34"
           ],
           "scene_olivine_lake_DATA_START + 0xCCE8": [
-            "157:5"
+            "157:34"
           ],
           "scene_ochre_entrance_DATA_START + 0x9858": [
-            "158:5"
+            "158:34"
           ],
           "scene_ochre_deep_DATA_START + 0x157A4": [
-            "159:5"
+            "159:34"
           ],
           "scene_cobalt_island_DATA_START + 0x1C698": [
-            "160:5"
+            "160:34"
           ],
           "scene_cobalt_coast_DATA_START + 0x12284": [
-            "161:5"
+            "161:34"
           ],
           "scene_abra_shop_DATA_START + 0xF114": [
-            "162:5"
+            "162:34"
           ],
           "scene_wilderness_camp_DATA_START + 0x64DC": [
-            "163:5"
+            "163:34"
           ],
           "scene_ochre_fishing_DATA_START + 0x111E0": [
-            "164:5"
+            "164:34"
           ],
           "scene_olivine_fishing_DATA_START + 0x10DB0": [
-            "165:5"
+            "165:34"
           ],
           "scene_cobalt_fishing_DATA_START + 0x10F50": [
-            "166:5"
+            "166:34"
           ],
           "scene_viridian_edge_DATA_START + 0xF2A8": [
-            "167:5"
+            "167:34"
           ],
           "scene_playground_DATA_START + 0xAA3C": [
-            "168:5"
+            "168:34"
           ],
           "scene_credits_DATA_START + 0xF4DC": [
-            "169:5"
+            "169:34"
           ],
           "w + 10": [
             "273:47"

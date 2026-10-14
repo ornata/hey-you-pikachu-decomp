@@ -18,7 +18,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `temp_*` | 2,480 / 58 | 0 / 0 |
 | Raw offset candidates | 4,040 / 86 | 1,571 / 68 |
 
-Supplemental cast-base offset candidates: **79 occurrences / 15 files**.
+Supplemental cast-base offset candidates: **73 occurrences / 15 files**.
 This category was not tracked in the original baseline. The historical raw-offset
 metric recognizes identifier bases; explicit byte casts can move expressions out
 of that metric without recovering their layout. Both inventories are review
@@ -4649,3 +4649,20 @@ The quality reporter supplements its historical identifier-offset metric with
 cast_offset_candidates. This keeps explicit byte-view accesses visible rather
 than treating a spelling change as recovered layout. Focused tests cover the new
 category's comment/string masking, repeated spellings and recovery-ledger evidence.
+
+### Entrance count and presentation configuration
+
+The scene word at 0x1C is recovered as spawnCount from the paired entrance table
+layout. All 23 configured counts are one through four. Nine independently named
+following objects bound the table exactly at count times the established 0x20
+spawn stride, covering all four count values; the evidence and boundaries are
+listed in SHARED_LAYOUT_AUDIT.md. Existing runtime indexing remains unchanged.
+The configuration pointer table now uses SceneConfigurationPrefix directly.
+
+The established configuration prefix extends to 0x7C with cardTextures at 0x74
+and collectionTitles at 0x78, backed by direct presentation consumers and target
+offset/size checks. Card lists retain their three used texture indices and
+existing mutable third entry; collection titles use borrowed string pointers
+rather than integer addresses. Null tables and entries retain their original
+behavior. Complete configuration allocation size remains unproven, so the prefix
+still must not be used to allocate or copy configurations.

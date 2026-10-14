@@ -143,30 +143,30 @@ OverlayRec gAreaOverlayDescriptors[23] = {
     SCENE_OVERLAY(credits),
 };
 
-u8 *gAreaConfigurations[23] = {
-    scene_bedroom_DATA_START + 0x21314,
-    scene_entryway_DATA_START + 0x5A6C,
-    scene_front_yard_DATA_START + 0x24A20,
-    scene_viridian_entrance_DATA_START + 0x18904,
-    scene_viridian_forest_DATA_START + 0x60C4,
-    scene_viridian_deep_DATA_START + 0x15680,
-    scene_springleaf_entrance_DATA_START + 0x22E9C,
-    scene_oddish_meadow_DATA_START + 0x23368,
-    scene_springleaf_field_DATA_START + 0x234B8,
-    scene_olivine_lakeshore_DATA_START + 0xCC94,
-    scene_olivine_lake_DATA_START + 0xCCE8,
-    scene_ochre_entrance_DATA_START + 0x9858,
-    scene_ochre_deep_DATA_START + 0x157A4,
-    scene_cobalt_island_DATA_START + 0x1C698,
-    scene_cobalt_coast_DATA_START + 0x12284,
-    scene_abra_shop_DATA_START + 0xF114,
-    scene_wilderness_camp_DATA_START + 0x64DC,
-    scene_ochre_fishing_DATA_START + 0x111E0,
-    scene_olivine_fishing_DATA_START + 0x10DB0,
-    scene_cobalt_fishing_DATA_START + 0x10F50,
-    scene_viridian_edge_DATA_START + 0xF2A8,
-    scene_playground_DATA_START + 0xAA3C,
-    scene_credits_DATA_START + 0xF4DC,
+SceneConfigurationPrefix *gAreaConfigurations[23] = {
+    (SceneConfigurationPrefix *)(scene_bedroom_DATA_START + 0x21314),
+    (SceneConfigurationPrefix *)(scene_entryway_DATA_START + 0x5A6C),
+    (SceneConfigurationPrefix *)(scene_front_yard_DATA_START + 0x24A20),
+    (SceneConfigurationPrefix *)(scene_viridian_entrance_DATA_START + 0x18904),
+    (SceneConfigurationPrefix *)(scene_viridian_forest_DATA_START + 0x60C4),
+    (SceneConfigurationPrefix *)(scene_viridian_deep_DATA_START + 0x15680),
+    (SceneConfigurationPrefix *)(scene_springleaf_entrance_DATA_START + 0x22E9C),
+    (SceneConfigurationPrefix *)(scene_oddish_meadow_DATA_START + 0x23368),
+    (SceneConfigurationPrefix *)(scene_springleaf_field_DATA_START + 0x234B8),
+    (SceneConfigurationPrefix *)(scene_olivine_lakeshore_DATA_START + 0xCC94),
+    (SceneConfigurationPrefix *)(scene_olivine_lake_DATA_START + 0xCCE8),
+    (SceneConfigurationPrefix *)(scene_ochre_entrance_DATA_START + 0x9858),
+    (SceneConfigurationPrefix *)(scene_ochre_deep_DATA_START + 0x157A4),
+    (SceneConfigurationPrefix *)(scene_cobalt_island_DATA_START + 0x1C698),
+    (SceneConfigurationPrefix *)(scene_cobalt_coast_DATA_START + 0x12284),
+    (SceneConfigurationPrefix *)(scene_abra_shop_DATA_START + 0xF114),
+    (SceneConfigurationPrefix *)(scene_wilderness_camp_DATA_START + 0x64DC),
+    (SceneConfigurationPrefix *)(scene_ochre_fishing_DATA_START + 0x111E0),
+    (SceneConfigurationPrefix *)(scene_olivine_fishing_DATA_START + 0x10DB0),
+    (SceneConfigurationPrefix *)(scene_cobalt_fishing_DATA_START + 0x10F50),
+    (SceneConfigurationPrefix *)(scene_viridian_edge_DATA_START + 0xF2A8),
+    (SceneConfigurationPrefix *)(scene_playground_DATA_START + 0xAA3C),
+    (SceneConfigurationPrefix *)(scene_credits_DATA_START + 0xF4DC),
 };
 
 char *gAreaDisplayNames[23] = {
@@ -2157,7 +2157,7 @@ extern s32 gRuntimeCurrentEntrance;
 void areaActivateDestination(void) {
     gRuntimeCurrentArea = gRuntimeNextArea;
     gRuntimeCurrentEntrance = gRuntimeNextEntrance;
-    gCurrentAreaConfiguration = (SceneConfigurationPrefix *)gAreaConfigurations[gRuntimeCurrentArea];
+    gCurrentAreaConfiguration = gAreaConfigurations[gRuntimeCurrentArea];
     TRACE("initArea(%p) curAreaNum:%d\n", ((u8 *)gCurrentAreaConfiguration), gRuntimeCurrentArea);
 }
 

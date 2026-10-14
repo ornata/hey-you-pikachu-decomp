@@ -7,7 +7,7 @@ partial views do not establish an allocation size for their containing resource.
 
 | Record | Established extent | Evidence and ownership |
 | --- | --- | --- |
-| `SceneConfigurationPrefix` | `0x74` bytes | Current-area consumers establish cell dimensions, callbacks, entrance poses, clipping, fog, asset metadata, backdrop state and path/script tables. Borrowed from the loaded area; do not allocate or copy a configuration through the prefix. |
+| `SceneConfigurationPrefix` | `0x7C` bytes | Current-area consumers establish cell dimensions, callbacks, entrance poses, clipping, fog, asset metadata, backdrop state, path/script tables, card textures and collection titles. Borrowed from the loaded area; do not allocate or copy a configuration through the prefix. |
 | `SceneEventLink` | `0x1C` bytes | `mazeConfigureEventLinks` advances by `0x1C`, reads source XYZ cell indices, installs the callback at `0xC`, and optionally resolves target indices at `0x10`. A null handler terminates the borrowed list. |
 | `MazeNode` | `0x50` bytes | Allocation and initialization establish the extent. Root geometry now uses the shared node; event installation and dispatch share its handler at `0x48` and linked region at `0x4C`. The maze owns nodes; linked-region references are borrowed. |
 | `SceneSpawnPoint` | `0x20` bytes | Player initialization selects entrances with a `0x20` stride and reads XYZ/yaw at `0..0xC`; companion spawning reads the following XYZ/yaw at `0x10..0x1C`. Borrowed entrance records remain in the loaded configuration. |
@@ -31,11 +31,34 @@ existing seven-word asset descriptor rather than a coincidentally sized record.
 Ghidra at `0x8010DEF8` independently confirms the event-link stride and member
 roles. Player initialization at `0x80111F40` confirms the paired entrance stride.
 
-The word at configuration offset `0x1C` remains explicitly opaque. Its role is
-not established; it is not declared padding or assigned an invented scalar
-meaning. Next evidence: trace configuration producers and indirect/script
-consumers before naming or retyping it. Presentation-specific configuration
-fields beyond this prefix also remain outside this completed entry.
+The word at configuration offset `0x1C` is the authored `spawnCount`. All 23
+configured values are between one and four and correspond to paired entrance
+records. Nine areas provide an independently named following object whose
+address bounds the spawn table exactly; their different counts validate the
+`0x20`-byte record relationship without deriving the boundary from the count.
+
+| Area | Count at `0x1C` | Spawn-table bytes before following object | Following object |
+| --- | ---: | ---: | --- |
+| Bedroom | 3 | `0x60` | `D_80134520_scene_bedroom` |
+| Front yard | 3 | `0x60` | `D_80134590_scene_front_yard` |
+| Springleaf entrance | 3 | `0x60` | `D_80134BB0_scene_springleaf_entrance` |
+| Oddish meadow | 3 | `0x60` | `D_80134DC0_scene_oddish_meadow` |
+| Springleaf field | 3 | `0x60` | `D_80134BE0_scene_springleaf_field` |
+| Olivine lake | 2 | `0x40` | `D_80141578_scene_olivine_lake` |
+| Ochre deep | 4 | `0x80` | `D_80134C80_scene_ochre_deep` |
+| Playground | 1 | `0x20` | `D_801344B0_scene_playground` |
+| Credits | 1 | `0x20` | `D_80143D04_scene_credits` |
+
+The runtime still relies on callers supplying valid entrance indices; recovery
+of this metadata does not add a bounds check or change selection behavior.
+The configuration pointer table now uses the shared prefix type directly.
+
+Presentation consumers establish `cardTextures` at `0x74` and `collectionTitles`
+at `0x78`. The former borrows per-scenario texture lists with three used indices;
+the latter borrows per-scenario strings. Tables or individual entries may be
+null. Card drawing and collection-title creation use these shared pointer fields
+directly, including the existing mutable third card texture. This extends the
+established prefix to `0x7C`; the complete allocation remains unproven.
 
 ## Retained matching representations
 

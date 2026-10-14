@@ -57,8 +57,8 @@ typedef struct SceneConfigurationPrefix {
     s32 subdivisionPower;          ///< Power of two used for maze subdivision.
     SceneCellType *cellTypes;      ///< Borrowed resource table indexed by occupancy classification.
     SceneEventLink *eventLinks;    ///< Borrowed event-link list, terminated by a null handler; null for none.
-    u8 unknown01C[4];              ///< Offset 0x1C; role is unproven, so preserve these bytes unchanged.
-    SceneSpawnPoint *spawns;       ///< Borrowed player and companion entrance poses.
+    s32 spawnCount;                ///< Authored number of paired entrance poses; callers supply a valid index.
+    SceneSpawnPoint *spawns;       ///< Borrowed table of spawnCount player and companion entrance poses.
     f32 farClip;                   ///< Far clipping distance for area visibility.
     f32 nearClip;                  ///< Near clipping distance for area visibility.
     f32 projectionExtent;          ///< Scene extent used to scale camera projection and maze visibility.
@@ -74,9 +74,12 @@ typedef struct SceneConfigurationPrefix {
     f32 backdropVerticalOffset; ///< Scene-specific vertical backdrop offset in screen pixels.
     u8 **actorScripts;          ///< Borrowed companion programs selected by scenario.
     ScenePathEntry *paths;      ///< Borrowed scene path table.
+    s32 **
+        cardTextures; ///< Borrowed per-scenario card texture lists with at least three indices; table or entries may be null.
+    u8 **collectionTitles; ///< Borrowed per-scenario null-terminated title strings; table or entries may be null.
 } SceneConfigurationPrefix;
 
-typedef char SceneConfigurationPrefixSizeCheck[(sizeof(SceneConfigurationPrefix) == 0x74) ? 1 : -1];
+typedef char SceneConfigurationPrefixSizeCheck[(sizeof(SceneConfigurationPrefix) == 0x7C) ? 1 : -1];
 typedef char
     SceneConfigurationScaleOffsetCheck[(((u32) & (((SceneConfigurationPrefix *)0)->objectScale)) == 0xC) ? 1 : -1];
 
@@ -84,6 +87,7 @@ typedef char SceneSpawnPointSizeCheck[(sizeof(SceneSpawnPoint) == 0x20) ? 1 : -1
 typedef char ScenePathEntrySizeCheck[(sizeof(ScenePathEntry) == 8) ? 1 : -1];
 typedef char SceneRegionStateSizeCheck[(sizeof(SceneRegionState) == 0x10) ? 1 : -1];
 typedef char CaveStateSizeCheck[(sizeof(CaveState) == 0x20) ? 1 : -1];
+typedef char SceneSpawnCountOffsetCheck[(((u32) & ((SceneConfigurationPrefix *)0)->spawnCount) == 0x1C) ? 1 : -1];
 typedef char SceneSpawnsOffsetCheck[(((u32) & ((SceneConfigurationPrefix *)0)->spawns) == 0x20) ? 1 : -1];
 typedef char SceneActorScriptsOffsetCheck[(((u32) & ((SceneConfigurationPrefix *)0)->actorScripts) == 0x6C) ? 1 : -1];
 typedef char ScenePathsOffsetCheck[(((u32) & ((SceneConfigurationPrefix *)0)->paths) == 0x70) ? 1 : -1];
@@ -103,5 +107,9 @@ typedef char
 typedef char ScenePlayerYawOffsetCheck[((u32) & ((SceneSpawnPoint *)0)->playerYaw == 0xC) ? 1 : -1];
 typedef char SceneActorPositionOffsetCheck[((u32) & ((SceneSpawnPoint *)0)->actorPosition == 0x10) ? 1 : -1];
 typedef char SceneActorYawOffsetCheck[((u32) & ((SceneSpawnPoint *)0)->actorYaw == 0x1C) ? 1 : -1];
+
+typedef char SceneCardTexturesOffsetCheck[((u32) & ((SceneConfigurationPrefix *)0)->cardTextures == 0x74) ? 1 : -1];
+typedef char
+    SceneCollectionTitlesOffsetCheck[((u32) & ((SceneConfigurationPrefix *)0)->collectionTitles == 0x78) ? 1 : -1];
 
 #endif

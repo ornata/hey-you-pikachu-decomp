@@ -505,7 +505,7 @@ void presentationDrawCurrentCardPanels(Gfx **gdl) {
     PresentationDrawTemplate t;
 
     t = gCardPresentationPanelTemplate;
-    ids = (*(s32 ***)(((u8 *)gCurrentAreaConfiguration) + 0x74))[gAreaScenarioIndex];
+    ids = gCurrentAreaConfiguration->cardTextures[gAreaScenarioIndex];
     if (ids != NULL) {
         gDPPipeSync((*gdl)++);
         gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
@@ -522,7 +522,7 @@ void presentationDrawCurrentCardPanels(Gfx **gdl) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80028AD4 (0x80028AD4).
 void presentationDrawCardScreen(Gfx **gdl) {
-    if (*(s32 *)(((u8 *)gCurrentAreaConfiguration) + 0x74) != 0) {
+    if (gCurrentAreaConfiguration->cardTextures != NULL) {
         backdropDraw(gdl);
         gDPPipeSync((*gdl)++);
         gDPSetCycleType((*gdl)++, G_CYC_1CYCLE);
@@ -570,7 +570,7 @@ void presentationUpdateCardMode(void) {
     s32 selectedImage;
     s32 *selectedImages;
 
-    cards = (*(s32 ***)(((u8 *)gCurrentAreaConfiguration) + 0x74));
+    cards = gCurrentAreaConfiguration->cardTextures;
     if ((cards == 0) || (cards[gAreaScenarioIndex] == 0) || (gCardPresentationSuppressed != 0)) {
         hudSetAreaLabelVisible(1);
         runtimeRequestGameModeChange(0);
@@ -583,7 +583,7 @@ void presentationUpdateCardMode(void) {
     switch (gCardPresentationStage) {
     case 0:
         controllerRequestRumbleReset(0);
-        if ((*(s32 ***)(((u8 *)gCurrentAreaConfiguration) + 0x74))[gAreaScenarioIndex] != 0) {
+        if (gCurrentAreaConfiguration->cardTextures[gAreaScenarioIndex] != 0) {
             if (gRuntimeCurrentArea == 11 || gRuntimeCurrentArea == 5 || gRuntimeCurrentArea == 13) {
                 scene11Images = gArea11CardChaseStageTextures;
                 scene5Images = gArea5CardChaseStageTextures;
@@ -603,7 +603,7 @@ void presentationUpdateCardMode(void) {
                     break;
                 }
                 selectedImage = selectedImages[playerGetChaseStage()];
-                (*(s32 ***)(((u8 *)gCurrentAreaConfiguration) + 0x74))[gAreaScenarioIndex][2] = selectedImage;
+                gCurrentAreaConfiguration->cardTextures[gAreaScenarioIndex][2] = selectedImage;
                 TRACE("title image changed, to %d\n", selectedImage);
             }
         }
@@ -1575,8 +1575,8 @@ extern s32 gCardPresentationActionScript;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002AA08 (0x8002AA08).
 void presentationInitializeForCurrentArea(void) {
-    s32 collectionTitleAddress;
-    s32 collectionTitleTableAddress;
+    u8 *collectionTitle;
+    u8 **collectionTitles;
     char *regionName;
 
     cameraResetOverlayColor(0, 0, 0, 0, 0);
@@ -1666,11 +1666,11 @@ void presentationInitializeForCurrentArea(void) {
         TRACE("ERROR : unknown area (%d) ?\n", gRuntimeCurrentArea);
         break;
     }
-    collectionTitleTableAddress = *(s32 *)(((u8 *)gCurrentAreaConfiguration) + 0x78);
-    if (collectionTitleTableAddress != 0) {
-        collectionTitleAddress = ((s32 *)collectionTitleTableAddress)[gAreaScenarioIndex];
-        if (collectionTitleAddress != 0) {
-            stringCopy(gCollectionPresentationTitleText, (const u8 *)collectionTitleAddress);
+    collectionTitles = gCurrentAreaConfiguration->collectionTitles;
+    if (collectionTitles != NULL) {
+        collectionTitle = collectionTitles[gAreaScenarioIndex];
+        if (collectionTitle != NULL) {
+            stringCopy(gCollectionPresentationTitleText, collectionTitle);
         }
     }
     regionName = areaGetRegionName(gRuntimeCurrentArea);
