@@ -1,47 +1,36 @@
-# Hey You, Pikachu! (USA) — Matching Decompilation
+# Hey You, Pikachu! (USA) Decompilation
 
-```
-                                 ,'\
-                   _.----.    __,'  |
-                 ,'      _`-,'   _,'
-                /    _.-'      ,'            HEY YOU, PIKACHU!
-               /  ,-'     o  _/                  (NPGE / USA)
-              |  /    __..--''
-              | |_.-''  ____ \              a byte-matching N64
-              ,'    _.-'    \ \                 decompilation
-             /  _.-'         \ \
-            (_,'   \          > )
-              \_    `.__     / /
-                `-._    ``--'_/        ROM:  16 MB,  CIC-NUS-6102
-                    `--..__,'          SHA1: da1a1e47...41bda824
-```
+This is a decompilation of Hey You, Pikachu for the N64 to C code, and assembly code where it seemed impossible to legally generate a valid C program via the IDO toolchain.
 
-This repo rebuilds the retail *Hey You, Pikachu!* ROM **byte for byte**
-from game C, locally generated SDK assembly, and binary asset slices extracted
-from a user-supplied ROM. Every
-build ends with a SHA-1 check against the retail dump — if it prints
-`OK: ROM matches`, the output is indistinguishable from the cartridge.
+This repository does not contain game assets. Individually, this repository cannot recreate Hey You Pikachu. In order to produce a game, you must provide your own ROM.
+
+This decompilation was done using AI. It may be used as a reference for other decompilation work, or used as-is.
+
+If you compile this repository with your provided ROM, the build system will check the built result's SHA-1 against the game's. On success, it will print `OK: ROM matches`.
+
+I've tested this on my laptop.
+
+I put this code up solely for educational purposes. Recently, decompilation projects have been popular amongst nonexpert engineers using AI.
+I wanted to understand the strengths and limitations of using AI for decompilation projects. Additionally, this game is interesting
+because of its use of the Nintendo VRU. I thought it might be interesting to see how the voice system works, and see if it would be
+possible to extend it.
 
 ## Quick start
 
 ```sh
-# 0. put your legally dumped ROM in rom/  (any of .z64/.v64/.n64 byte orders)
-./tools/setup.sh          # binutils (brew), checksum-pinned IDO, ROM normalize+verify
+# Put your legally dumped ROM in rom.
+# I've tested .z64.
+cp my-rom ./rom
+# Set up build environment.
+./tools/setup.sh
 python3 tools/materialize_ultralib.py --from /path/to/local-sdk-inputs
-make -j                   #   -> build/pikachu.z64  + SHA-1 check
-make verify-clean         # publication hygiene checks (not legal clearance)
+make -j # Produces build/pikachu.z64 + SHA-1 check
+make verify-clean # Check repo hygeine.
 ```
 
-Make is the build engine; decomp tooling (splat, asm-differ, decomp.me) assumes the
-Makefile layout and the toolchain is inherently non-hermetic, so there is no other build
-front end. Everything the build downloads is pinned: compilers by SHA-256, helper
-repositories by commit. SDK-related headers must be supplied locally; their SHA-256
-hashes are pinned in `docs/LOCAL_SDK_FILES.json`. See [Local SDK inputs](docs/LOCAL_SDK.md).
+## Overview
 
-Related repositories: `ido-remarks` (compiler-decision diagnostics) and `hey-you-pikachu-ai`
-(native port with local voice control).
-
-## How a matching decomp works
+Effectively, the situation is like this.
 
 ```
  rom/baserom.us.z64 ─┬─(extract)──> assets/*.bin ───────────────┐
@@ -56,9 +45,7 @@ Related repositories: `ido-remarks` (compiler-decision diagnostics) and `hey-you
 ```
 
 * **IDO 5.3** is the original 1998 SGI IRIX compiler, statically
-  recompiled by [decompals/ido-static-recomp] to run natively on this
-  machine (Apple Silicon included). Only this compiler reproduces the
-  retail game instruction stream; the default is `-O2 -mips2 -32 -G0`.
+  recompiled by [decompals/ido-static-recomp] to run natively on a modern machine.
 * **asm-processor** lets one `.c` file mix matched C with
   `#pragma GLOBAL_ASM(...)` blocks, so code is decompiled one function
   at a time while the ROM keeps matching.
@@ -67,16 +54,19 @@ Related repositories: `ido-remarks` (compiler-decision diagnostics) and `hey-you
   segments. Make regenerates the split when its inputs change.
 
 Base split (yaml/symbols/asm layout) derives from
-[farisawan-2000/hey_you_pikachu]. SDK-related headers in `include/` are
-local inputs excluded from version control; SDK implementations are generated
-under ignored `asm/` from the supplied ROM.
+[farisawan-2000/hey_you_pikachu].
+
+SDK-related headers in `include/` are local inputs excluded from version control;
+SDK implementations are generated under ignored `asm/` from the supplied ROM.
 
 ## Status
 
 The build reproduces the retail ROM byte for byte. Game functions remain in C,
-with one game assembly fallback under `src/nonmatching/`. SDK implementations
-are excluded from the source tree and regenerated locally. Run `make progress`
-for current game-source counts; generated SDK functions are excluded from those counts.
+with one game assembly fallback under `src/nonmatching/`
+
+SDK implementations are excluded from the source tree and regenerated locally.
+
+Run `make progress` for current game-source counts; generated SDK functions are excluded from those counts.
 
 | region | state |
 | ------ | ----- |
@@ -97,13 +87,10 @@ for function names and source paths. Machine-readable manifests remain in `docs/
 [Voice interaction and actor scripts](docs/VOICE_AND_SCRIPT_VM.md) traces recognition,
 message delivery, cooperative VM execution, and the lower-level action sequencer.
 
-## Undefined behavior policy
+## Undefined behaviour
 
-Matched C is a witness for machine code, not portable ISO C. Every site
-that leans on UB or implementation-defined behavior is annotated with
-`UB:` / `NONPORTABLE:` markers and indexed in **[docs/UB.md]** — read
-that before retargeting any of this code at a modern compiler, where
-marked sites may be deleted, reordered, or miscompile.
+Although it's easy to run UBSan to find UB with modern compilers, UB known/understood
+by agents that did the porting work is documented in **[docs/UB.md]**.
 
 ## Legal
 
