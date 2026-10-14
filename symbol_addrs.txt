@@ -3345,7 +3345,7 @@ gControllerCommandQueue = 0x800AD088;
 // Original: D_800AD0A0. Backing message slots for the controller thread command queue.
 gControllerCommandMessages = 0x800AD0A0;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800AD0E0. Per-port rumble motor state, pulse deadline and initialization retry state.
 gControllerRumbleMotorState = 0x800AD0E0;
 // Original: D_800AD140. Per-port rumble pattern state, end time, pulse interval and pulse duration.
@@ -3355,7 +3355,7 @@ gControllerRumblePatternHandlers = 0x800633F0;
 // Original: D_80063400. Handlers for the rumble motor lifecycle states.
 gControllerRumbleMotorHandlers = 0x80063400;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800AD540. Processed button and stick samples for all controller ports; scalar declarations view the primary held-button word.
 gControllerInputState = 0x800AD540;
 // Original: D_800AD544. Primary controller newly pressed buttons; aliases the pressed word of the processed sample.
@@ -3367,7 +3367,7 @@ gControllerButtonPressTicks = 0x800AD5A0;
 // Original: D_800AD7A0. Next auto-repeat deadline in OS clock ticks for each port and button bit.
 gControllerNextRepeatTicks = 0x800AD7A0;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800AD420. Recognition request used when recognition does not follow the trigger.
 gMicSessionRecognitionOverride = 0x800AD420;
 // Original: D_800AD424. Whether recognition requests follow the microphone trigger.
@@ -3399,13 +3399,13 @@ gMicSessionDevicePort = 0x800AD474;
 // Original: D_80063420. Combined held buttons from the preceding trigger update.
 gMicSessionPreviousTriggerButtons = 0x80063420;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_80063450. Persistent ring of microphone configuration requests submitted to the controller thread.
 gMicrophoneRequestRing = 0x80063450;
 // Original: D_800634F0. Next microphone configuration request slot, wrapping after eight submissions.
 gMicrophoneNextRequestIndex = 0x800634F0;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_8009D530. Device availability: zero for disconnected, one for ready, and two after an error.
 gVoiceRecognitionDeviceState = 0x8009D530;
 // Original: D_8009D534. Selected dictionary identifier, or minus one when none is selected.
@@ -3443,21 +3443,21 @@ gVoiceWordDefinitions = 0x8010452C;
 // Original: D_80106D2C. Vocabulary descriptors listing global word identifiers for each dictionary.
 gVoiceDictionaries = 0x80106D2C;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800AD1E0. Persistent EEPROM transfer state, payload staging buffer and backup-copy progress.
 gEepromTransferJob = 0x800AD1E0;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800F2620. Persistent peripheral-interface manager queue for cartridge transfers.
 gRomPiManagerQueue = 0x800F2620;
 // Original: D_800F2638. Backing storage for the peripheral-interface manager message queue.
 gRomPiManagerMessages = 0x800F2638;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800F2960. Global game heap header used by runtime resource and object allocations.
 gGameHeap = 0x800F2960;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800722D0. Whether gameplay exposes microphone interaction and its HUD indicator.
 gGameplayMicrophoneAvailable = 0x800722D0;
 // Original: D_800722D4. Whether gameplay permits recognized voice commands to launch messenger effects.
@@ -3497,13 +3497,13 @@ gTextPanelBackdropHorizontalScale = 0x800A2694;
 // Original: D_800A2690. High- and low-nibble masks for paired four-bit pixels.
 gImage4BitPixelMasks = 0x800A2690;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_80071D00. Action-script command stream addresses indexed by script identifier.
 gActionScriptPrograms = 0x80071D00;
 // Original: D_8006EE50. Action-script opcode handlers returning whether execution may advance.
 gActionScriptCommandHandlers = 0x8006EE50;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800AE4E4. Smoothed frame duration in seconds used by gameplay and animation updates.
 gRuntimeFrameSeconds = 0x800AE4E4;
 // Original: D_800AE4E8. Elapsed OS clock ticks for the most recent runtime frame.
@@ -3551,7 +3551,7 @@ gSaveSuccessPromptLines = 0x80063868;
 // Original: D_80063878. Ordered lines of the failed-save prompt.
 gSaveFailurePromptLines = 0x80063878;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800AE4C0. Scheduler event queue consumed by the runtime thread.
 gRuntimeEventQueue = 0x800AE4C0;
 // Original: D_800AE4D8. Runtime thread registration in the scheduler client list.
@@ -3615,7 +3615,7 @@ gRuntimePromptPanelConfiguration = 0x800B6794;
 // Original: D_800B6798. Controller buttons accepted to dismiss the save-result prompt.
 gRuntimeSaveAcknowledgeButtons = 0x800B6798;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_8009D524. Whether the scheduler has received the pre-NMI reset notification.
 gSchedulerResetPending = 0x8009D524;
 // Original: D_8009D520. Count of messages consumed by the display-event thread, including pre-NMI notifications.
@@ -3625,7 +3625,7 @@ gSchedulerAudioStack = 0x800F4AC0;
 // Original: D_800F6AC0. Graphics thread stack storage; its base is also the audio thread stack top.
 gSchedulerGraphicsStack = 0x800F6AC0;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800F2980. Owned pool of reusable scheduler graphics-task records.
 gGraphicsTaskPool = 0x800F2980;
 // Original: D_800F2984. Number of reusable graphics tasks in the pool.
@@ -3671,7 +3671,7 @@ gDebugTextGlyphs = 0x8009D454;
 // Original: D_800A7040. Default sixteen-entry RGBA5551 palette for indexed text images.
 gDefaultTextPaletteRgba5551 = 0x800A7040;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800ABCF0. Camera storage used for view transforms, viewports and color overlays.
 gRenderCameras = 0x800ABCF0;
 // Original: D_800ABDD0. Write cursor for the active graphics command list; also marks the camera-storage end.
@@ -3731,7 +3731,7 @@ gOverlayAlphaWeightScale = 0x8009FC90;
 // Original: D_8009FC9C. Additional aspect scale applied when constructing the camera viewport projection.
 gCameraProjectionAspectScale = 0x8009FC9C;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800B6930. Shared ROM cache owning loaded motion data and pending reads.
 gMotionRomCache = 0x800B6930;
 // Original: D_80077778. Motion archive offsets indexed by motion identifier, including the next-entry end offset.
@@ -3743,7 +3743,7 @@ gNoMotionDisplayName = 0x800A3624;
 // Original: D_B77EB0. Cartridge ROM start address of the motion archive.
 gMotionArchiveRomStart = 0xB77EB0;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800B67B0. Shared ROM cache owning loaded texture images, palettes and pending reads.
 gTextureRomCache = 0x800B67B0;
 // Original: D_8006B520. Texture descriptor tables indexed by texture bank.
@@ -3761,7 +3761,7 @@ gTextureRectangleSetupDisplayList = 0x100C8C8;
 // Original: D_D69490. Cartridge ROM start address of the texture image and palette archive.
 gTextureArchiveRomStart = 0xD69490;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800B6BB8. Cached actor asset storage addresses indexed by resource identifier.
 gActorAssetStorage = 0x800B6BB8;
 // Original: D_800B6B90. Shared asynchronous ROM-transfer queue for actor assets.
@@ -3799,7 +3799,7 @@ gContactEffectHierarchyTemplate = 0x80079260;
 // Original: D_800A3A68. Initial uniform scale of a contact-reactive effect.
 gContactEffectInitialScale = 0x800A3A68;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800B687C. Per-actor-kind part-table slot counts, including the root slot.
 gActorPartCounts = 0x800B687C;
 // Original: D_800B6918. Owned lookup mapping packed actor-kind and part identifiers to part-table slots.
@@ -3809,11 +3809,11 @@ gActorPartRegistrationData = 0x800760F0;
 // Original: D_800B6880. Interior reset span of per-kind part counters; retains the original separate symbol and extent.
 gActorPartCountResetSpan = 0x800B6880;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800760A8. Borrowed reference to the active Pikachu actor created for the current area.
 gPikachuActor = 0x800760A8;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800AD9E0. Current affine world transform shared by hierarchy traversal and actor motion consumers.
 gObjectTraversalTransform = 0x800AD9E0;
 // Original: D_800ADA10. Pending local movement accumulated during hierarchy traversal.
@@ -3853,7 +3853,7 @@ gRenderCameraMatrixEntries = 0x800ABD14;
 // Original: D_100C890. Segmented shared display list preparing object hierarchy drawing.
 gObjectDrawSetupDisplayList = 0x100C890;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800B6990. Handles of registered door and sign objects.
 gDoorObjectHandles = 0x800B6990;
 // Original: D_800B69B8. Number of registered door and sign objects.
@@ -3875,7 +3875,7 @@ gObjectResponseHandlers = 0x80078130;
 // Original: D_80078154. Per-kind response callback view of the object callback table, with a twenty-four-byte stride.
 gObjectKindResponseEntries = 0x80078154;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_80123450. Octree child Y placement in half-parent extents.
 gMazeChildOffsetY = 0x80123450;
 // Original: D_80123470. Octree child Z placement in half-parent extents.
@@ -3909,7 +3909,7 @@ gAreaFarVisibilityDistanceSquared = 0x80133DF8;
 // Original: D_80133DFC. Squared near-distance threshold used by area node visibility tests.
 gAreaNearVisibilityDistanceSquared = 0x80133DFC;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_80133E10. Temporary snapshot of the primary player record for later restoration.
 gSavedPlayerState = 0x80133E10;
 // Original: D_80133F10. Terrain query mode used for player movement and ground sampling.
@@ -3955,7 +3955,7 @@ gPlayerHeldItemHandle = 0x800EF724;
 // Original: D_800EF728. Separate symbol view of the primary player record's mode and camera-transition state.
 gPlayerModeState = 0x800EF728;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_80134030. Search tree indexing live items by kind and object handle.
 gItemSearchTree = 0x80134030;
 // Original: D_80134040. Number of live registered items in the current area.
@@ -3979,7 +3979,7 @@ gItemKindCollisionCallbackEntries = 0x80125A90;
 // Original: D_80125A84. Separate held-item callback view of the item catalog, with a 116-byte stride.
 gItemKindHeldCallbackEntries = 0x80125A84;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800F1B20. Owned keyed pool grouping registered objects for collision candidate queries.
 gCollisionCandidateRegistry = 0x800F1B20;
 // Original: D_800F1B40. X-axis alignment offset used by collision spatial hashing.
@@ -3987,7 +3987,7 @@ gCollisionGridAlignmentX = 0x800F1B40;
 // Original: D_800F1B44. Z-axis alignment offset used by collision spatial hashing.
 gCollisionGridAlignmentZ = 0x800F1B44;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800F1080. Double-buffered text images for the shared window page rows.
 gTextWindowPageImages = 0x800F1080;
 // Original: D_800F10A8. Owned text image used for the shared window input prompt.
@@ -4021,7 +4021,7 @@ gTextWindowIndicatorTrackIndexBase = 0x800F1AC8;
 // Original: D_80099DA4. Animation identifiers used to initialize the six window indicator tracks.
 gTextWindowIndicatorAnimationIds = 0x80099DA4;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800F06C0. Shared queued-message, timing, scrolling and text-image state for the message bar.
 gMessageBarState = 0x800F06C0;
 // Original: D_800F0B1C. Separate view of the message-bar image slot prepared for the next transition.
@@ -4031,7 +4031,7 @@ gMessageBarImageHandles = 0x800F0B20;
 // Original: D_800F0B2C. Retained displayed message text used to coalesce repeated message requests.
 gMessageBarCurrentText = 0x800F0B2C;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_8009A6F4. Storage widths and permitted value ranges indexed by progress field type.
 gProgressFieldTypeLimits = 0x8009A6F4;
 // Original: D_8009A754. Storage type identifiers indexed by resolved progress field ID.
@@ -4043,7 +4043,7 @@ gAreaProgressFieldSelectors = 0x8009AB28;
 // Original: D_8009A6F0. Save-control byte transferred independently from the progress records.
 gEepromSaveControl = 0x8009A6F0;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800F1BE0. Owned toolbox display state, item rows, placeholders and special storage slots.
 gToolboxState = 0x800F1BE0;
 // Original: D_8009A3F0. Linked model template cloned to create the toolbox display.
@@ -4109,7 +4109,7 @@ gToolboxOpeningDrawCount = 0x800F1CE0;
 // Original: D_800F1BE8. Separate view of the toolbox linked display part stored in the third object slot.
 gToolboxLinkedDisplayPart = 0x800F1BE8;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_8012A97C. Persistent SaveControl menu entry with its action, detail and submenu links.
 gSystemMenuSaveControlEntry = 0x8012A97C;
 // Original: D_8012A998. Persistent LoadControl menu entry with its action, detail and submenu links.
@@ -4247,7 +4247,7 @@ gSystemMenuModelPosition = 0x8012ACE0;
 // Original: D_8012ACEC. RGBA color drawn behind the system menu.
 gSystemMenuBackdropColor = 0x8012ACEC;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_8009B048. Backdrop sources, fill colors, dimensions and scrolling settings indexed by backdrop identifier.
 gBackdropDescriptors = 0x8009B048;
 // Original: D_8009B058. Separate image-width view of backdrop descriptors, with a 32-byte stride.
@@ -4279,7 +4279,7 @@ gPrimaryCameraTargetX = 0x800ABCFC;
 // Original: D_800ABD04. Separate view of the primary camera look-at Z coordinate.
 gPrimaryCameraTargetZ = 0x800ABD04;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800F01F4. Selected HUD guide style; zero disables the guide.
 gHudGuideStyle = 0x800F01F4;
 // Original: D_800F01F8. Draw callback selected for the active HUD guide style.
@@ -4301,7 +4301,7 @@ gHudMotionIndicatorAnimation = 0x800F0274;
 // Original: D_800F0284. Feature mask controlling the enabled HUD indicators.
 gHudEnabledFeatures = 0x800F0284;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800F0200. Three animation tracks drawing horizontal guidance toward off-screen Pikachu.
 gHudHorizontalDirectionTracks = 0x800F0200;
 // Original: D_800F020C. Separate view of the middle horizontal Pikachu guidance animation track.
@@ -4363,7 +4363,7 @@ gHudAlternateOverlayEnabled = 0x800F027C;
 // Original: D_800F0280. Nonzero when the auxiliary HUD icon is visible.
 gHudAuxiliaryIconVisible = 0x800F0280;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_8009B49C. Four text frames used for the animated title-menu cursor.
 gTitleCursorText = 0x8009B49C;
 // Original: D_8009B4AC. Text labels used to prepare title-screen menu images.
@@ -4435,7 +4435,7 @@ gTitleStartupPanelMilliseconds = 0x800F25E4;
 // Original: D_800F25E8. Elapsed-time checkpoint enforcing the silhouette minimum display period.
 gTitleSilhouetteMilliseconds = 0x800F25E8;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800EC9F0. Four sequence playback slots retaining control state and playback handles.
 gAudioSequenceSlots = 0x800EC9F0;
 // Original: D_800EE9B0. Boundary symbol immediately after the four sequence playback slots.
@@ -4465,7 +4465,7 @@ gAudioBankRomStart = 0x84F5F0;
 // Original: D_860C80. ROM start of audio samples following the bank definitions.
 gAudioSamplesRomStart = 0x860C80;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800F8EF0. Number of sample DMA reads whose completions must be collected this frame.
 gAudioDmaPendingReads = 0x800F8EF0;
 // Original: D_800F8EF4. Cache age counter advanced after sample DMA frame completion.
@@ -4505,7 +4505,7 @@ gAudioWorkerTaskMessage = 0x800FB114;
 // Original: D_800FB130. Single message slot backing the worker shutdown-acknowledgement queue.
 gAudioWorkerStopMessage = 0x800FB130;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_80099A40. Camera-relative position of the item shown in collection results.
 gCollectionItemPresentationPosition = 0x80099A40;
 // Original: D_80099A4C. Camera-relative actor position for the card presentation.
@@ -4533,7 +4533,7 @@ gCollectionPresentationSubtitleIndex = 0x800F0BF8;
 // Original: D_800F1070. Elapsed-millisecond deadline after which the card presentation can finish.
 gCardPresentationDismissalDeadline = 0x800F1070;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_80099A6C. Presentation-space focus targets used by the actor during cards and collection results.
 gPresentationActorFocusTargets = 0x80099A6C;
 // Original: D_80099A90. Texture rectangles for card presentation decorations.
@@ -4569,7 +4569,7 @@ gPresentationSavedActorState = 0x800F0C60;
 // Original: D_800F1068. Actor action script selected for the current area card presentation.
 gCardPresentationActionScript = 0x800F1068;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_8009B580. Selected eye-catch group index, or minus one when no interlude is selected.
 gEyeCatchSelectedGroup = 0x8009B580;
 // Original: D_800F25F0. Elapsed seconds in the current eye-catch stage.
@@ -4607,7 +4607,7 @@ gEyeCatchExitSoundChoices = 0x8009C394;
 // Original: D_8009C3B4. Stage callbacks returning the next stage or the retained playback/completion signals.
 gEyeCatchStageHandlers = 0x8009C3B4;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_8009D984. Whether the shared archive decoding workspace is in use.
 gArchiveDecoderBusy = 0x8009D984;
 // Original: D_800FB570. Shared Huffman decode table for code-length symbols and match-distance widths.
@@ -4623,7 +4623,7 @@ gArchiveSymbolCodeLengths = 0x800FB170;
 // Original: D_8009D960. Code-space contribution indexed by Huffman code length.
 gArchiveCodeSpaceWeights = 0x8009D960;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_80099DC0. Destination records containing area choices, unlock requirements, actor focus points and artwork.
 gWorldMapDestinations = 0x80099DC0;
 // Original: D_800F1BB0. Presentation focus point at the start of the current transition.
@@ -4669,7 +4669,7 @@ gWorldMapPreviousDestination = 0x8009A3C0;
 // Original: D_8009A3C4. Mapping from recognized destination values to map destination indices.
 gWorldMapVoiceDestinationIndices = 0x8009A3C4;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800A01FC. Seconds-to-microseconds scale for the initial button-repeat delay.
 gControllerInitialDelayMicrosecondsPerSecond = 0x800A01FC;
 // Original: D_800A0200. Seconds-to-microseconds scale for the button-repeat interval.
@@ -4680,13 +4680,13 @@ gControllerHoldMicrosecondsPerSecond = 0x800A0204;
 // Original: D_800A01E0. Diagnostic format string for a controller port with no valid sample.
 gControllerInvalidPortTraceFormat = 0x800A01E0;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_80063500. Index of the most recently submitted controller rumble request slot.
 gControllerRumbleRequestIndex = 0x80063500;
 // Original: D_800AD480. Eight retained request slots submitted asynchronously to the controller thread.
 gControllerRumbleRequests = 0x800AD480;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_80088C50. Model hierarchy template cloned to create an interaction marker.
 gInteractionMarkerModelTemplate = 0x80088C50;
 // Original: D_80088C88. Primary and secondary view-space regions used to classify interaction candidates.
@@ -4720,7 +4720,7 @@ gInteractionSecondaryMargin = 0x80088CAC;
 // Original: D_800A47BC. Scale converting the secondary region margin argument from tenths.
 gInteractionSecondaryMarginUnit = 0x800A47BC;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800A6CC0. Retained four-by-four floating-point identity matrix.
 gMatrix44Identity = 0x800A6CC0;
 // Original: D_800A6D00. Affine identity transform copied by matrix initialization.
@@ -4732,13 +4732,13 @@ gMathAsinLookupTable = 0x8009C400;
 // Original: D_8009CC04. Sine samples from zero through a quarter turn used by degree-angle lookup.
 gMathQuarterSineLookupTable = 0x8009CC04;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_8006B580. Exclusive upper bound associated with the retained random-selection history.
 gRandomHistoryRange = 0x8006B580;
 // Original: D_800B6810. Retained ordering of up to 32 choices used by history-aware random selection.
 gRandomSelectionHistory = 0x800B6810;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800A25B4. Upper action-time bound of the timed ground spin.
 gActorGroundSpinEndTime = 0x800A25B4;
 // Original: D_800A25B8. Lower action-time bound of the timed ground spin.
@@ -4766,7 +4766,7 @@ gActorDampedPulseSecondPhase = 0x800A25E0;
 // Original: D_800A25E8. Relative body-scale amplitude of the second damped pulse.
 gActorDampedPulseSecondAmplitude = 0x800A25E8;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800A3A6C. Attraction strength between adjacent effects in the contact reaction chain.
 gContactEffectChainPull = 0x800A3A6C;
 // Original: D_800A3A70. Uniform scale of effects spawned by the contact reaction.
@@ -4800,7 +4800,7 @@ gActorCreationCompleteHeapLabel = 0x800A4764;
 // Original: D_800A477C. Scale applied to per-segment actor ground-shadow radius.
 gActorShadowSegmentRadiusScale = 0x800A477C;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_8009999C. Integer appearance animation used while a messenger dissipates.
 gMessengerDissipationAnimation = 0x8009999C;
 // Original: D_80063800. Shared default sixteen-entry RGBA5551 palette for indexed text drawing.
@@ -4816,7 +4816,7 @@ gMessengerDirectFlightDisplayList = 0x01003560;
 // Original: D_10033E8. Model display list used for homing messenger flight.
 gMessengerHomingDisplayList = 0x010033E8;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_8006B590. Action records containing playback flags, motion identifiers and transition settings.
 gActionDefinitions = 0x8006B590;
 // Original: D_8006B5A4. Separate view of fallback action identifiers in the action definitions, with a 0x2C-byte stride.
@@ -4832,7 +4832,7 @@ gActionPoseTransitionMap = 0x800B6830;
 // Original: D_80091D18. Fallback command sequence used when an action has no configured sequence.
 gActionDefaultCommandSequence = 0x80091D18;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800A3A20. Range of randomized elapsed-time thresholds for release from rebound motion.
 gLinkedReboundReleaseTimeRange = 0x800A3A20;
 // Original: D_800A3A28. Minimum randomized elapsed-time threshold for release from rebound motion.
@@ -4858,7 +4858,7 @@ gLinkedEffectTemplateModel = 0x80079254;
 // Original: D_1000B08. Model display list used by linked effect objects.
 gLinkedEffectModelDisplayList = 0x01000B08;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_8006B320. Separate view of the default texture-frame animation program for attached effects.
 gAttachedEffectDefaultFrameProgram = 0x8006B320;
 // Original: D_8006B4B0. Shared integer animation programs controlling effect and marker opacity.
@@ -4872,25 +4872,25 @@ gAttachedEffectMinimumViewScale = 0x800A26A0;
 // Original: D_800A26A4. Scale coefficient applied to camera distance and owner size for attached effects.
 gAttachedEffectViewScaleCoefficient = 0x800A26A4;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800A61E8. Gain applied to the combined spatial volume of an ambient emitter.
 gAmbientAudioMixGain = 0x800A61E8;
 // Original: D_8009B350. Object template used to create ambient audio emitters.
 gAmbientAudioEmitterTemplate = 0x8009B350;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_8009B540. Object template used to create terrain-conforming ground shadows.
 gGroundShadowObjectTemplate = 0x8009B540;
 // Original: D_1007B90. 64-by-64 four-bit intensity texture used by ground-shadow grids.
 gGroundShadowIntensityTexture = 0x01007B90;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_80088E20. Hierarchy template used to create selectable landmarks.
 gLandmarkObjectTemplate = 0x80088E20;
 // Original: D_800B6C60. Shared text storage for the pirate cannon landmark description.
 gLandmarkCannonDescriptionBuffer = 0x800B6C60;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_80088EA0. Hierarchy template used to create cave interaction objects.
 gCaveObjectTemplate = 0x80088EA0;
 // Original: D_800A4860. Description text format for the supported cave interaction kind.
@@ -4898,17 +4898,17 @@ gCaveDescriptionFormat = 0x800A4860;
 // Original: D_800B6D30. Shared text storage returned by cave description requests.
 gCaveDescriptionBuffer = 0x800B6D30;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800999B0. Hierarchy template used to create objects that orbit a creature owner.
 gOrbitFollowerObjectTemplate = 0x800999B0;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_80088E60. Hierarchy template used to create rectangular scene interaction regions.
 gSceneRegionObjectTemplate = 0x80088E60;
 // Original: D_100CCB0. Geometry display list used to render scene-region occupancy highlights.
 gSceneRegionDisplayList = 0x0100CCB0;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_8009D550. Flag descriptions for the saved exception cause register.
 gFaultCauseFlagDescriptions = 0x8009D550;
 // Original: D_8009D6A0. Flag descriptions for the saved processor status register.
@@ -5006,7 +5006,7 @@ gFaultHandlerThread = 0x800F8B20;
 // Original: D_800F8EE8. Single-message backing storage for the fault notification queue.
 gFaultEventMessageStorage = 0x800F8EE8;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800F2A00. Default text-area left pixel coordinate.
 gTextDrawDefaultLeft = 0x800F2A00;
 // Original: D_800F2A04. Default text-area top pixel coordinate.
@@ -5056,7 +5056,7 @@ gTextDrawCursorY = 0x800F2A44;
 // Original: D_800A712C. Diagnostic format for text reaching or exceeding the supplied font column range.
 gFontColumnRangeErrorFormat = 0x800A712C;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800760C4. Model display-list addresses indexed by appearance slot zero variant.
 gActorAppearanceSlot0Models = 0x800760C4;
 // Original: D_800760AC. Model display-list addresses indexed by appearance slot one variant.
@@ -5088,7 +5088,7 @@ gActorActionMeterDisplayDeltaThreshold = 0x800A27B8;
 // Original: D_800A27BC. Low action-meter threshold requesting its display when the meter changes.
 gActorActionMeterDisplayLowThreshold = 0x800A27BC;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_80089474. Selected audio cue identifier, or minus one when no cue is selected.
 gCurrentAudioCueId = 0x80089474;
 // Original: D_80089470. Playback handle for the selected audio cue, or zero when inactive.
@@ -5108,7 +5108,7 @@ gActionLaunchThrowFlags = 0x800A4978;
 // Original: D_80089490. Timed action-command handlers indexed by opcode minus nineteen.
 gTimedActionCommandHandlers = 0x80089490;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_80077EA0. Hierarchy templates indexed by wisp style.
 gWispObjectTemplates = 0x80077EA0;
 // Original: D_80077EC8. Number of texture-frame tracks required by each wisp style.
@@ -5184,7 +5184,7 @@ gExpandingOrangeEffectFrameAnimation = 0x8006B3A8;
 // Original: D_80077E30. Object template for emitters of expanding orange effects.
 gOrangePulseEmitterObjectTemplate = 0x80077E30;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800A9000. Main scheduler context; its address also marks the boot-entry stack top.
 gMainSchedulerContext = 0x800A9000;
 // Original: D_800A9DE8. One-past-end address of the downward-growing idle-thread stack.
@@ -5202,7 +5202,7 @@ gFloatStoreZeroLowerTolerance = 0x8009FC98;
 // Original: D_80088F18. Whether final frame submission invokes the optional rendering hook.
 gRenderOptionalFrameHookEnabled = 0x80088F18;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800AC4C0. Thread record for controller polling, voice requests and rumble servicing.
 gControllerThread = 0x800AC4C0;
 // Original: D_800ACE70. Controller scheduler-client registration; its address also marks the controller-thread stack top.
@@ -5226,29 +5226,29 @@ gControllerRumbleIntervalMicrosecondsPerSecond = 0x8009FF1C;
 // Original: D_8009FF20. Seconds-to-microseconds factor for rumble pulse durations.
 gControllerRumblePulseMicrosecondsPerSecond = 0x8009FF20;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_8009D540. Borrowed callback for the active tree traversal; shared traversal state makes nested traversals unsupported.
 gSearchTreeActiveVisitor = 0x8009D540;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800635E0. Sixteen-sample unipolar waveform used for sequence-voice volume modulation.
 gSequenceTremoloWaveform = 0x800635E0;
 // Original: D_80063620. Sixteen-sample bipolar waveform used for sequence-voice pitch modulation.
 gSequenceVibratoWaveform = 0x80063620;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800A0210. Conversion factor from MIDI tempo microseconds to elapsed seconds.
 gMidiMicrosecondsToSeconds = 0x800A0210;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_8006B448. Integer animation program used by the horizontal movement indicator.
 gHudHorizontalMotionAnimation = 0x8006B448;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_8006B4EC. Integer animation programs controlling marker position offsets and scale axes.
 gInteractionMarkerTransformPrograms = 0x8006B4EC;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_80123B48. Surface attribute masks that obstruct each horizontal collision policy.
 gTerrainCollisionPolicySurfaceMasks = 0x80123B48;
 // Original: D_80133DF4. Retained block-count diagnostic word reset during maze initialization.
@@ -5256,7 +5256,7 @@ gMazeDiagnosticBlockCount = 0x80133DF4;
 // Original: D_80133E00. Maze visibility parameters containing the cell-radius scale and retained unknown storage.
 gMazeVisibilityParameters = 0x80133E00;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800B66FC. Retained padding word preceding the eight-byte-aligned frame-duration sample array.
 gRuntimeFrameTickAlignmentPadding = 0x800B66FC;
 // Original: D_800B6774. Retained unused word between game-mode entry state and prompt-panel storage.
@@ -5264,7 +5264,7 @@ gRuntimePromptPanelReservedPadding = 0x800B6774;
 // Original: D_800AD558. Second controller processed sample; also the start of the secondary-player input traversal.
 gControllerSecondPortInputState = 0x800AD558;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_8012A8D0. Hierarchy template for the menu opening and closing model.
 gSystemMenuTransitionModelTemplate = 0x8012A8D0;
 // Original: D_8012A908. Linked secondary model template in the menu transition hierarchy.
@@ -5280,7 +5280,7 @@ gSystemMenuSettingRowMarkerImage = 0x8013414C;
 // Original: D_8012BCA0. Music cue labels used to build the preview menu.
 gSystemMenuMusicCueLabels = 0x8012BCA0;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800999F0. Friendship messages indexed by the cleared chapter.
 gChapterFriendshipMessages = 0x800999F0;
 // Original: D_80099CD0. Actor response actions for presented items in response category two.
@@ -5294,7 +5294,7 @@ gPresentationActorJointMidpointHeight = 0x800F106C;
 // Original: D_8009B584. Whether collection results were bypassed because no kept items or chapter result required presentation.
 gCollectionResultsBypassed = 0x8009B584;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800EF780. Player profile name string borrowed by actor scripts.
 gPlayerProfileName = 0x800EF780;
 // Original: D_800EF7A0. Global script-variable storage containing 500 packed five-byte values.
@@ -5302,9 +5302,9 @@ gScriptVmGlobalValues = 0x800EF7A0;
 // Original: D_800F0168. Profile storage for 166 counters with values from zero through fifteen.
 gProfilePackedCounters = 0x800F0168;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_80123EA0. Encoded interaction label for object kind 0x89.
 gPlayerKind89InteractionLabel = 0x80123EA0;
 // Original: D_80123EA4. Status messages indexed by companion-control mode.
@@ -5314,23 +5314,23 @@ gFriendshipMilestoneProgressFlags = 0x80123EB0;
 // Original: D_80123F50. Unit-scale object template for descriptive interaction proxies of kind 0x8A.
 gInteractionProxyObjectTemplate = 0x80123F50;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_8009A6B0. Default pose shared by both direction-animation pose slots.
 gDirectionAnimationDefaultPose = 0x8009A6B0;
 // Original: D_8009A6D8. Direction-animation update callbacks indexed by nonzero motion mode.
 gDirectionAnimationUpdateHandlers = 0x8009A6D8;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_801340B0. Shared 32-byte numeric conversion text, overwritten by the next numeric string conversion.
 gScriptVmNumericTextBuffer = 0x801340B0;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_8012A660. Action-meter costs and success or insufficient-meter animation selections indexed by script action.
 gActorScriptCostedActions = 0x8012A660;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_80134220. Shared 80-byte text used by actor-script text and message commands.
 gActorScriptSharedTextBuffer = 0x80134220;
 // Original: D_80134220_0. Retained word storage within the shared actor-script text buffer.
@@ -5338,23 +5338,23 @@ gActorScriptSharedTextWordStorage = 0x80134224;
 // Original: D_80134220_1. Retained trailing storage within the shared actor-script text buffer.
 gActorScriptSharedTextTailStorage = 0x80134228;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_8012A6B0. Two preset text references available to scrolling-board hierarchies.
 gScrollBoardPresetTexts = 0x8012A6B0;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_8012B950. Item behavior update callbacks indexed by the current item mode.
 gItemModeUpdateHandlers = 0x8012B950;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_80076C80. Fixed direction transform used when blending child orientation toward the camera.
 gActorCameraFacingDirectionTransform = 0x80076C80;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800A4890. Target sequence volume requested during a fade followed by scheduled stop.
 gAudioSequenceStopFadeTargetVolume = 0x800A4890;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_80099D20. Terrain-property view selecting the diagnostic grid cell colors.
 gTerrainDebugGridPropertyView = 0x80099D20;
 // Original: D_80099D24. Object template for the terrain diagnostic grid hierarchy root.
@@ -5362,38 +5362,38 @@ gTerrainDebugGridRootTemplate = 0x80099D24;
 // Original: D_80099D5C. Object template for individual terrain diagnostic grid cells.
 gTerrainDebugGridCellTemplate = 0x80099D5C;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800F0B74. Pending completed-visit card and progress update, consumed by area-zero card selection.
 gCompletedVisitCardPending = 0x800F0B74;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_800AD9B4. Retained unused word preceding aligned controller repeat timing; original purpose remains unresolved.
 gControllerRepeatTimingReservedWord = 0x800AD9B4;
 // Original: D_800AD9DC. Retained unused word at the end of controller configuration; original purpose remains unresolved.
 gControllerConfigurationReservedWord = 0x800AD9DC;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_8009DCB0. Canonical SDK video-interface mode table indexed by runtime and scheduler mode selection.
 osViModeTable = 0x8009DCB0;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_80060120. Audio RSP microcode text start; also marks the end of the RSP boot code.
 gAudioRspMicrocodeTextStart = 0x80060120;
 // Original: D_800A8130. Audio RSP microcode data start supplied to audio task initialization.
 gAudioRspMicrocodeDataStart = 0x800A8130;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.
 // Original: D_8009D990. Probed voice-unit type; recognition initialization requires value one.
 osEngVoiceUnitType = 0x8009D990;
 // Original: D_8009D994. Five A/D-converter initialization commands; individual command meanings remain unresolved.
 gVoiceDeviceAdConverterCommands = 0x8009D994;
 
-// Recovered game-owned globals; see docs/GLOBAL_RECOVERY.json.
+// Recovered game-owned globals.

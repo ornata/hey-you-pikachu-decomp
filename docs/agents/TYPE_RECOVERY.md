@@ -43,10 +43,6 @@ location, function and source context.
 
 - `TYPE_RECOVERY.json` records current placeholder and raw-offset locations.
 - `TYPE_RECOVERY_NOTES.json` records matching constraints and next evidence needed.
-- `GLOBAL_RECOVERY.json` records accepted global names, original addresses and evidence.
-- `GLOBAL_RECOVERY_REFERENCE_AUDIT.json` records the bounded relocation investigation
-  of the three unresolved address-named globals. Its method and exclusions are
-  explicit; absence of a named relocation does not prove absence of all consumers.
 - [Shared layout evidence](../SHARED_LAYOUT_AUDIT.md) records storage and ownership facts.
 - [Interface contracts](../INTERFACE_CONTRACTS.md) describes the reviewed ABI exceptions.
 
