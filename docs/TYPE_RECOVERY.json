@@ -1622,47 +1622,48 @@
       ],
       "matching_exceptions": {
         "actionUpdatePlayback": "Direct member reads in the two-term pose blend reverse the floating add operands under IDO. Two reads retain byte addressing through checked member offsets; all other recovered accesses use members. This representation matches the original object.",
-        "actionTryApplyCompatibleRecord": "Typed ActorScriptState parameters and all action-selection callers now match. Replacing the compatibility pose byte view with state->currentPoseId fails the ROM gate; retain the checked currentPoseId offset pending load/register-allocation evidence. Other state members in the three selection helpers use the shared type."
+        "actionTryApplyCompatibleRecord": "Typed ActorScriptState parameters and all action-selection callers now match. Replacing the compatibility pose byte view with state->currentPoseId fails the ROM gate; retain the checked currentPoseId offset pending load/register-allocation evidence. Other state members in the three selection helpers use the shared type.",
+        "actionResolveNextTransition": "Replacing its byte-state local with ActorScriptState * and direct members changes instructions and fails the ROM gate. The three selection helpers already have typed state interfaces; retain the resolver view pending isolation of record-copy aliasing and call/load scheduling."
       },
       "locations": {
         "raw_offset_candidates": {
           "object + 4": [
-            "201:143",
-            "322:143"
+            "201:99",
+            "324:99"
           ],
           "from + 1": [
-            "331:23",
-            "346:56"
+            "333:23",
+            "348:56"
           ],
           "from + 0x30": [
-            "369:61"
+            "371:61"
           ],
           "var_v0 + 4": [
-            "492:73"
+            "493:73"
           ],
           "transition - 0x100": [
-            "630:29"
+            "631:29"
           ],
           "id + 0x100": [
-            "672:57"
+            "673:57"
           ],
           "i + 0x100": [
-            "682:58"
+            "683:58"
           ],
           "loopCount + 1": [
-            "768:93"
+            "765:49"
           ],
           "return -1": [
-            "940:9"
+            "937:9"
           ],
           "case -3": [
-            "960:5"
+            "957:5"
           ],
           "case -2": [
-            "962:5"
+            "959:5"
           ],
           "case -1": [
-            "964:5"
+            "961:5"
           ]
         }
       }

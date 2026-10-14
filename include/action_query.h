@@ -1,5 +1,5 @@
 /// \file
-/// Declares action attributes, movement scaling, motion identifiers and borrowed action names.
+/// Declares action attributes, gravity scaling, motion identifiers and borrowed action names.
 #ifndef ACTION_QUERY_H
 #define ACTION_QUERY_H
 #include <ultra64.h>
@@ -15,11 +15,11 @@ typedef enum ActionAttribute {
 /// \note Original decompilation identifier: \c func_8000F594 (0x8000F594).
 s32 actionGetAttributes(u8 *object);
 
-/// Retrieve the current action's movement scale.
+/// Retrieve the current action's gravity multiplier.
 /// \param object Live actor with initialized action state.
-/// \returns Current action movement scale, or one when playback is inactive.
+/// \returns Current action gravity multiplier, or one when playback is inactive.
 /// \note Original decompilation identifier: \c func_8000F5BC (0x8000F5BC).
-f32 actionGetMovementScale(u8 *object);
+f32 actionGetGravityScale(u8 *object);
 
 /// Get the motion identifier of the currently playing action.
 /// \param object Actor whose action state is accessed.

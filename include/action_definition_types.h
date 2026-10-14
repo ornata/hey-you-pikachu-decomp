@@ -19,7 +19,7 @@ typedef s32 (*ActorActionInitializer)(u8 *actor);
 typedef struct ActionDefinition {
     s32 id;                                     ///< Index of this definition in the action table.
     char *name;                                 ///< Borrowed display/debug name.
-    f32 duration;                               ///< Duration value supplied to selected action state.
+    f32 gravityScale; ///< Multiplier applied to the actor's gravity acceleration while this action is active.
     s32 attributes;                             ///< Playback kind and action behavior flags.
     s16 motionId;                               ///< Motion archive identifier.
     u8 initialPoseId;                           ///< Pose selector at the beginning of the action.

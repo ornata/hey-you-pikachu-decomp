@@ -1355,8 +1355,8 @@ void actorConstrainMovementToTerrain(u8 *object, f32 *displacement) {
             supported = 0;
         }
         if (supported != 0) {
-            gravityDelta = state->movementScale *
-                           (actionGetMovementScale(object) * 3.2666667f * gRuntimeFrameSeconds) * 30.0f;
+            gravityDelta =
+                state->movementScale * (actionGetGravityScale(object) * 3.2666667f * gRuntimeFrameSeconds) * 30.0f;
             if (collisionFlags & 0x100) {
                 gravityDelta *= 5.0f;
             }

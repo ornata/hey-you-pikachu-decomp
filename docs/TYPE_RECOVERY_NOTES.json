@@ -41,7 +41,8 @@
     },
     "src/game/motion_playback.c": {
       "actionUpdatePlayback": "Direct member reads in the two-term pose blend reverse the floating add operands under IDO. Two reads retain byte addressing through checked member offsets; all other recovered accesses use members. This representation matches the original object.",
-      "actionTryApplyCompatibleRecord": "Typed ActorScriptState parameters and all action-selection callers now match. Replacing the compatibility pose byte view with state->currentPoseId fails the ROM gate; retain the checked currentPoseId offset pending load/register-allocation evidence. Other state members in the three selection helpers use the shared type."
+      "actionTryApplyCompatibleRecord": "Typed ActorScriptState parameters and all action-selection callers now match. Replacing the compatibility pose byte view with state->currentPoseId fails the ROM gate; retain the checked currentPoseId offset pending load/register-allocation evidence. Other state members in the three selection helpers use the shared type.",
+      "actionResolveNextTransition": "Replacing its byte-state local with ActorScriptState * and direct members changes instructions and fails the ROM gate. The three selection helpers already have typed state interfaces; retain the resolver view pending isolation of record-copy aliasing and call/load scheduling."
     },
     "src/ovl/area_terrain_maze.c": {
       "areaFindPositionNode": "Checked geometry member-offset reads preserve IDO floating operand/register ordering; direct members change allocated bytes.",

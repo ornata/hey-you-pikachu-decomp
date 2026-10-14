@@ -1038,3 +1038,30 @@ A live register value at a callback boundary alone is insufficient to infer an
 extra formal parameter. The complete producer/consumer audit and matching call
 representation resolve the earlier apparent native-callback ABI exception;
 its stale portability note and matching-ledger exception are removed.
+
+## Typed motion initialization and recovered gravity coefficient
+
+Motion cache requests, playback reset, mode selection, track startup, pose
+transition startup, timed startup, action initialization, root-orientation
+application, action startup and the main action update now carry typed actor
+state locals. Track/pose setup and child updates keep child state typed separately
+from the owning actor state. The two checked pose-blend byte reads remain intact.
+The next-transition resolver's typed-local trial changed instructions and was
+reverted; its already typed selection-helper boundaries are unchanged. Each
+accepted conversion passed all 483 original objects.
+
+This audit also corrected a semantic field name: action-resource offset eight
+(and its selected actor copy at 0xF4) is the coefficient consumed by gravity
+acceleration, not an action duration. The only named getter returns that value
+while playback is active and one otherwise; Ghidra at 0x8000F5BC confirms the
+0xF4 read and inactive 1.0 result. The sole named caller multiplies it into the
+gravity-velocity change together with movement scale and frame time. The
+resource and actor fields are now `gravityScale` and `actionGravityScale`, and
+the getter is `actionGetGravityScale`. Original function/address notes remain.
+The shared resource-to-actor layout check uses the recovered field name.
+
+Actual track duration comes from the motion-duration table; pose and timed
+playback retain their separate duration and remaining-time fields. No time
+values, gravity constants, callback behavior or control flow changed. The
+renames, consumer migration and removal of the temporary migration alias all
+pass the strict original-object baseline.

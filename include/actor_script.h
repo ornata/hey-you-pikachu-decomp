@@ -60,7 +60,7 @@ typedef struct ActorScriptState {
     f32 environmentColorTimeRemaining; ///< Seconds remaining in the environment-color transition.
     s32 actionId;                      ///< Selected action identifier; negative values identify synthetic transitions.
     char *actionName;                  ///< Borrowed display/debug name of the selected action.
-    f32 actionDuration;                ///< Duration supplied by the selected action definition.
+    f32 actionGravityScale;            ///< Gravity multiplier supplied by the selected action definition.
     s32 actionAttributes;              ///< Behavior flags supplied by the selected action.
     s16 motionId;                      ///< Selected motion-data identifier.
     u8 previousPoseId;                 ///< Source pose selector used when composing an action transition.
@@ -263,7 +263,7 @@ ACTOR_SCRIPT_OFFSET_CHECK(ActorMovementWorkspaceOffsetCheck, ActorScriptState, m
                        sizeof(((ActorScriptState *)0)->actorField) == \
                            sizeof(((ActionDefinition *)0)->resourceField)) ? 1 : -1]
 ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourceNameLayoutCheck, actionName, name);
-ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourceDurationLayoutCheck, actionDuration, duration);
+ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourceGravityLayoutCheck, actionGravityScale, gravityScale);
 ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourceAttributesLayoutCheck, actionAttributes, attributes);
 ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourceMotionLayoutCheck, motionId, motionId);
 ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourceSourcePoseLayoutCheck, previousPoseId, initialPoseId);
