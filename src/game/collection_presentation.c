@@ -17,6 +17,7 @@
 #include "text_window.h"
 #include "script_vm_globals.h"
 #include "object_types.h"
+#include "item_types.h"
 #include "actor_script.h"
 #include "actor_behavior.h"
 #include "story_chapter.h"
@@ -217,9 +218,9 @@ void inventoryRecordKeptItemProgress(u8 *slot) {
 
     liveObject = objectFindLiveByHandle(*(s32 *)(slot + 4));
     if (liveObject != NULL) {
-        p = *(u8 **)(liveObject + 0x54);
-        TRACE("keeping item found, %s\n", itemGetDisplayName(*(s16 *)(p + 4), 1));
-        availabilityFlag = *(s16 *)(gItemKindAvailabilityFlagEntries + (*(s16 *)(p + 4) * 0x74));
+        p = ((RuntimeObjectPrefix *)liveObject)->state.bytes;
+        TRACE("keeping item found, %s\n", itemGetDisplayName(((ItemStatePrefix *)p)->kind, 1));
+        availabilityFlag = *(s16 *)(gItemKindAvailabilityFlagEntries + (((ItemStatePrefix *)p)->kind * 0x74));
         if (availabilityFlag != -1) {
             progressSetValue(availabilityFlag, 1);
         }
@@ -377,9 +378,9 @@ void presentationPlaceActiveActor(void *point) {
     f32 worldHeight;
     f32 newHeight;
     u8 *matrix = (u8 *)&gPresentationToWorldTransform;
-    u8 *state = *(u8 **)((u8 *)((s32)gPikachuActor) + 0x54);
+    u8 *state = gPikachuActor->state.bytes;
     presentationUpdateFocusPoint(&input);
-    matrix34TransformPointVector((f32 *)(matrix), (f32 *)(&input), (f32 *)(state + 0x1EC));
+    matrix34TransformPointVector((f32 *)(matrix), (f32 *)(&input), ((ActorScriptState *)state)->targetPosition);
     src = point;
     input.x = src[0];
     input.y = src[1];
@@ -388,15 +389,17 @@ void presentationPlaceActiveActor(void *point) {
     matrix34TransformPointVector((f32 *)(matrix), (f32 *)(&input), (f32 *)(output));
     player = (u8 *)((s32)gPikachuActor);
     worldHeight = world.y;
-    heightDelta = *(f32 *)(player + 0x48) - *(f32 *)(**(u8 ***)(player + 0x54) + 0x48);
+    heightDelta =
+        ((RuntimeObjectPrefix *)player)->worldPosition[1] -
+        ((RuntimeObjectPrefix *)((RuntimeObjectPrefix *)player)->state.actor->groundReference)->worldPosition[1];
     newHeight = worldHeight + heightDelta;
     world.y = newHeight;
-    *(f32 *)(player + 0x18) = world.x;
-    *(f32 *)((u8 *)((s32)gPikachuActor) + 0x1C) = world.y;
-    *(f32 *)((u8 *)((s32)gPikachuActor) + 0x20) = world.z;
-    *(f32 *)((u8 *)((s32)gPikachuActor) + 0x44) = world.x;
-    *(f32 *)((u8 *)((s32)gPikachuActor) + 0x48) = world.y;
-    *(f32 *)((u8 *)((s32)gPikachuActor) + 0x4C) = world.z;
+    ((RuntimeObjectPrefix *)player)->position[0] = world.x;
+    gPikachuActor->position[1] = world.y;
+    gPikachuActor->position[2] = world.z;
+    gPikachuActor->worldPosition[0] = world.x;
+    gPikachuActor->worldPosition[1] = world.y;
+    gPikachuActor->worldPosition[2] = world.z;
     objectUpdateHierarchy((u8 *)((s32)gPikachuActor));
 }
 
@@ -438,16 +441,17 @@ void presentationPrepareActiveActor(void *point) {
     d[1] = *(f32 *)(tgt + 4) - *(f32 *)(((s32)gPikachuActor) + 0x48);
     d[2] = *(f32 *)(tgt + 8) - *(f32 *)(((s32)gPikachuActor) + 0x4C);
     yaw = vector3GetYawDegrees(d);
-    actorAddRotationAxisDegrees((u8 *)((s32)gPikachuActor), -*(f32 *)(ext + 0xC), 0);
-    actorAddRotationAxisDegrees((u8 *)((s32)gPikachuActor), yaw - *(f32 *)(ext + 0x10), 1);
-    *(s32 *)(ext + 0x19C) = 0;
-    matrix34TransformPointVector((f32 *)&gPresentationToWorldTransform, (f32 *)(&gPresentationActorFocusTargets[1]), (f32 *)(ext + 0x1EC));
+    actorAddRotationAxisDegrees((u8 *)((s32)gPikachuActor), -((ActorScriptState *)ext)->orientation[0], 0);
+    actorAddRotationAxisDegrees((u8 *)((s32)gPikachuActor), yaw - ((ActorScriptState *)ext)->orientation[1], 1);
+    ((ActorScriptState *)ext)->targetMode = 0;
+    matrix34TransformPointVector((f32 *)&gPresentationToWorldTransform, (f32 *)(&gPresentationActorFocusTargets[1]),
+                                 ((ActorScriptState *)ext)->targetPosition);
     presentationResetFocusPoint(&gPresentationActorFocusTargets[1]);
     actionScriptStartWithMode((u8 *)((s32)gPikachuActor), 0x57, 2);
     firstJoint = actorFindPart((u8 *)((s32)gPikachuActor), firstJointId);
-    h = *(f32 *)(firstJoint + 0x48);
+    h = ((RuntimeObjectPrefix *)firstJoint)->worldPosition[1];
     secondJoint = actorFindPart((u8 *)((s32)gPikachuActor), secondJointId);
-    secondHeight = *(f32 *)(secondJoint + 0x48);
+    secondHeight = ((RuntimeObjectPrefix *)secondJoint)->worldPosition[1];
     gPresentationActorJointMidpointHeight = (h + secondHeight) / 2;
     actorSetBehaviorInhibitFlags((u8 *)((s32)gPikachuActor), ACTOR_INHIBIT_HORIZONTAL_MOVEMENT | ACTOR_INHIBIT_TERRAIN_AND_GRAVITY);
 }
@@ -698,9 +702,9 @@ void presentationSetCollectionItemText(u8 *object) {
     s32 value;
     s32 radix = 10;
     if (object != NULL) {
-        state = *(u8 **)(object + 0x54);
-        value = *(s32 *)((u8 *)gItemKindCollectionValueEntries + *(s16 *)(state + 4) * 0x74);
-        sprintf(buffer, "%s : @Y@Z%d", itemGetDisplayName(*(s16 *)(state + 4), 1), value);
+        state = ((RuntimeObjectPrefix *)object)->state.bytes;
+        value = *(s32 *)((u8 *)gItemKindCollectionValueEntries + ((ItemStatePrefix *)state)->kind * 0x74);
+        sprintf(buffer, "%s : @Y@Z%d", itemGetDisplayName(((ItemStatePrefix *)state)->kind, 1), value);
         while ((value /= radix) >= 2) {
         }
         gCollectionPresentationSubtitleIndex ^= 1;
@@ -842,11 +846,11 @@ s32 presentationGetItemCollectionValue(s32 id) {
     u8 *p;
 
     liveObject = objectFindLiveByHandle(id);
-    if (*(u16 *)(liveObject + 0x34) != 0x86) {
+    if (((RuntimeObjectPrefix *)liveObject)->kind != 0x86) {
         return 0;
     }
-    p = *(u8 **)(liveObject + 0x54);
-    return *(s32 *)((u8 *)gItemKindCollectionValueEntries + (*(s16 *)(p + 4) * 0x74));
+    p = ((RuntimeObjectPrefix *)liveObject)->state.bytes;
+    return *(s32 *)((u8 *)gItemKindCollectionValueEntries + (((ItemStatePrefix *)p)->kind * 0x74));
 }
 
 
@@ -862,11 +866,12 @@ void presentationPlaceCollectionItem(u8 *item, f32 heightOffset) {
     v.y = gCollectionItemPresentationPosition.y;
     v.z = gCollectionItemPresentationPosition.z;
     v.y += heightOffset;
-    matrix34TransformPointVector((f32 *)&gPresentationToWorldTransform, (f32 *)(&v), (f32 *)(item + 0x18));
-    *(f32 *)(item + 0x10) += 3.0;
-    *(f32 *)(item + 0) = gCurrentAreaConfiguration->objectScale;
-    *(f32 *)(item + 4) = gCurrentAreaConfiguration->objectScale;
-    *(f32 *)(item + 8) = gCurrentAreaConfiguration->objectScale;
+    matrix34TransformPointVector((f32 *)&gPresentationToWorldTransform, (f32 *)(&v),
+                                 ((RuntimeObjectPrefix *)item)->position);
+    ((RuntimeObjectPrefix *)item)->rotation[1] += 3.0;
+    ((RuntimeObjectPrefix *)item)->scale[0] = gCurrentAreaConfiguration->objectScale;
+    ((RuntimeObjectPrefix *)item)->scale[1] = gCurrentAreaConfiguration->objectScale;
+    ((RuntimeObjectPrefix *)item)->scale[2] = gCurrentAreaConfiguration->objectScale;
     objectUpdateHierarchy(item);
 }
 
@@ -888,8 +893,8 @@ void presentationChooseActorResponseToItem(s32 id) {
 
     previous = &gCollectionPreviousResponseIndex;
     object = objectFindLiveByHandle(id);
-    state = *(u8 **)(object + 0x54);
-    category = gItemKindResponseCategoryEntries[*(s16 *)(state + 4) * 0x74];
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
+    category = gItemKindResponseCategoryEntries[((ItemStatePrefix *)state)->kind * 0x74];
     index = randomBelow(4);
     if (index == *previous) {
         index++;

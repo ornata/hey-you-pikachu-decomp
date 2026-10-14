@@ -102,7 +102,7 @@
     {
       "kind": "call-arity",
       "file": "src/game/collection_presentation.c",
-      "line": 344,
+      "line": 345,
       "name": "actionScriptStop",
       "shape": {
         "expected": 1,
@@ -115,7 +115,7 @@
     {
       "kind": "unspecified-parameters",
       "file": "src/game/collection_presentation.c",
-      "line": 311,
+      "line": 312,
       "name": "actionScriptStop",
       "shape": "s32 *actionScriptStop()",
       "reason": "The result is the borrowed actor-state script-identifier field, as declared in action_script_stop.h. presentationRestoreActiveActor retains an ignored trailing presentation-state argument; removing it and adopting the canonical prototype fails the ROM gate.",
@@ -124,7 +124,7 @@
     {
       "kind": "signature-mismatch",
       "file": "src/game/collection_presentation.c",
-      "line": 194,
+      "line": 195,
       "name": "objectDrawHierarchyGroup",
       "shape": {
         "expected": [
@@ -148,7 +148,7 @@
     {
       "kind": "signature-mismatch",
       "file": "src/game/collection_presentation.c",
-      "line": 365,
+      "line": 366,
       "name": "objectUpdateHierarchy",
       "shape": {
         "expected": [
@@ -396,7 +396,7 @@
     {
       "kind": "signature-mismatch",
       "file": "src/game/toolbox.c",
-      "line": 709,
+      "line": 714,
       "name": "progressGetValue",
       "shape": {
         "expected": [

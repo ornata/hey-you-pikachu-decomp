@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 1215,
-      "unique_spellings": 631,
+      "occurrences": 1189,
+      "unique_spellings": 621,
       "files": 68
     },
     "cast_offset_candidates": {
@@ -1010,6 +1010,7 @@
         "hud.h",
         "item_kind.h",
         "item_text.h",
+        "item_types.h",
         "matrix_point.h",
         "matrix_types.h",
         "object_lookup.h",
@@ -1048,100 +1049,35 @@
         "*": "Unknown declarations and temporary local names are now recovered and individually match. Existing integer address representations and unrelated noncanonical declarations remain outside this token cleanup.",
         "presentationDrawCollectionItem": "Including canonical RuntimeObjectPrefix-pointer hierarchy update/draw declarations changes presentationDrawCollectionItem instruction bytes and fails ROM matching. Retain local legacy object-group declarations in this unit pending isolated call argument/register-allocation evidence.",
         "actionScriptStop callers": "The return is now the established borrowed s32 * script-identifier field. Canonical header adoption and removal of the unused presentation-state argument changes presentationRestoreActiveActor and fails the ROM gate in a forced rebuild. Keep the unprototyped argument view pending call setup/scheduling evidence.",
-        "hierarchy flag calls": "Including object_flags.h preserves final ROM bytes but changes allocated bytes in presentationPrepareActiveActor through its formerly implicit flag-set call, including with an explicit actor-pointer cast. Retain the local clear declaration and flag-set call representation pending strict object scheduling/relocation evidence."
+        "hierarchy flag calls": "Including object_flags.h preserves final ROM bytes but changes allocated bytes in presentationPrepareActiveActor through its formerly implicit flag-set call, including with an explicit actor-pointer cast. Retain the local clear declaration and flag-set call representation pending strict object scheduling/relocation evidence.",
+        "presentationPrepareActiveActor": "The actor global is canonically RuntimeObjectPrefix*. Independently replacing its state-pointer load or any of the three global world-position reads with direct members changes instructions and fails the ROM gate; redundant explicit object casts do not resolve it. Other orientation/target fields and joint-height reads match, as do direct actor members in presentationPlaceActiveActor. Retain these four integer-address expressions; isolate IDO global load/address reuse and call-boundary scheduling before replacing them."
       },
       "locations": {
         "raw_offset_candidates": {
           "slot + 4": [
-            "218:50",
-            "255:22"
-          ],
-          "liveObject + 0x54": [
-            "220:22",
-            "848:18"
-          ],
-          "p + 4": [
-            "221:71",
-            "222:82",
-            "849:71"
+            "219:50",
+            "256:22"
           ],
           "gToolboxBonusSlot + 4": [
-            "261:18"
+            "262:18"
           ],
           "gToolboxPurchaseSlot + 4": [
-            "265:19"
-          ],
-          "state + 0x1EC": [
-            "382:76"
-          ],
-          "player + 0x48": [
-            "391:28"
-          ],
-          "player + 0x54": [
-            "391:65"
-          ],
-          "player + 0x18": [
-            "394:14"
+            "266:19"
           ],
           "tgt + 0": [
-            "437:21"
+            "440:21"
           ],
           "tgt + 4": [
-            "438:21"
+            "441:21"
           ],
           "tgt + 8": [
-            "439:21"
-          ],
-          "ext + 0xC": [
-            "441:71"
-          ],
-          "ext + 0x10": [
-            "442:76"
-          ],
-          "ext + 0x19C": [
-            "443:14"
-          ],
-          "ext + 0x1EC": [
-            "444:126"
-          ],
-          "firstJoint + 0x48": [
-            "448:18"
-          ],
-          "secondJoint + 0x48": [
-            "450:29"
-          ],
-          "object + 0x54": [
-            "701:26",
-            "891:22"
-          ],
-          "state + 4": [
-            "702:75",
-            "703:68",
-            "892:58"
-          ],
-          "liveObject + 0x34": [
-            "845:18"
-          ],
-          "item + 0x18": [
-            "865:94"
-          ],
-          "item + 0x10": [
-            "866:14"
-          ],
-          "item + 0": [
-            "867:14"
-          ],
-          "item + 4": [
-            "868:14"
-          ],
-          "item + 8": [
-            "869:14"
+            "442:21"
           ],
           "gItemKind8FCollectionValue + 0x64": [
-            "1756:47"
+            "1761:47"
           ],
           "currentChapter + 1": [
-            "1774:18"
+            "1779:18"
           ]
         }
       }

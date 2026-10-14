@@ -204,3 +204,19 @@ Transfer confirmation keeps its duplicate-kind byte reads after direct members
 changed the ROM; this matching exception and next compiler evidence are recorded
 in the recovery ledger. The established layout is not in doubt. Every accepted
 source-unit trial preserved all 483 baseline objects.
+
+## Collection-presentation object and actor consumers
+
+Actor placement now uses the active actor's shared local/world position and
+state members. The retained ground-clearance offset comes from the actor state’s
+borrowed ground-reference part; Ghidra at `0x800285B8` confirms that relationship.
+Actor preparation uses shared orientation, target mode/position and model-part
+world heights. Its global state load and three global world-coordinate reads
+still require integer-address views: each direct-member trial independently
+failed the ROM gate. Those four accesses have a focused matching exception.
+
+Collection item placement, item text, collection-value lookup, inventory progress
+and response selection use shared object kind/state and signed item-kind members.
+Catalog interior aliases retain their symbol identities and strides. No prototype
+compatibility exception or relocation comparison has been weakened. Accepted
+source-unit trials all preserve the baseline objects.
