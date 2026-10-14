@@ -39,11 +39,13 @@ typedef union ScriptValue {
     u8 bytes[5]; ///< Complete target representation of the value.
 } ScriptValue;
 
+struct ScriptVm;
+
 /// Native script command called with an actor and its retained context.
 /// \param actor Actor executing the command.
 /// \param vm Script context providing command arguments and receiving results.
 /// \returns A ScriptNativeCommandResult scheduling request; other nonzero values also yield.
-typedef s32 (*ScriptNativeCommand)(u8 *actor, u8 *vm);
+typedef s32 (*ScriptNativeCommand)(u8 *actor, struct ScriptVm *vm);
 
 /// Borrowed program resources and stack capacity supplied when creating a VM.
 /// The observed prefix ends at 0x14; the complete resource allocation is unknown.

@@ -64,9 +64,9 @@ extern s32 gEyeCatchSelectedGroup;
 /// \see actorScriptYield
 /// \see actorScriptStartActionAndWait
 s32 actorScriptDispatchRegisteredCommand(u8 *actor) {
-    u8 *vm = (u8 *)((ActorScriptObject *)actor)->scriptState->vmAddress;
-    s32 commandIndex = scriptVmReadIntegerOperand((ScriptVm *)(vm));
-    ScriptNativeCommand command = ((ScriptVm *)vm)->commands[commandIndex];
+    ScriptVm *vm = (ScriptVm *)((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    s32 commandIndex = scriptVmReadIntegerOperand(vm);
+    ScriptNativeCommand command = vm->commands[commandIndex];
 
     return command(actor, vm);
 }
@@ -254,7 +254,7 @@ s32 actorScriptPushZero(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011C17C (0x8011C17C).
 s32 actorScriptPushRandomUnitFloat(u8 *actor) {
-    u8 *vm = (u8 *)((ActorScriptObject *)actor)->scriptState->vmAddress;
+    u8 *vm = (u8 *)((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
 
     scriptVmPushFloat((ScriptVm *)((s32)vm), randomNext() * 2.3283064365386963e-10);
     return SCRIPT_COMMAND_CONTINUE;
@@ -303,7 +303,7 @@ s32 actorScriptPassThroughInteger(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011C2A8 (0x8011C2A8).
 s32 actorScriptPassThroughFloat(u8 *actor) {
-    u8 *vm = (u8 *)((ActorScriptObject *)actor)->scriptState->vmAddress;
+    u8 *vm = (u8 *)((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
 
     scriptVmPushFloat((ScriptVm *)((s32)vm), scriptVmPopFloat((ScriptVm *)((s32)vm)));
     return SCRIPT_COMMAND_CONTINUE;
@@ -498,7 +498,7 @@ s32 actorScriptSetTargetPosition(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011C674 (0x8011C674).
 s32 actorScriptPushTargetApproachDistance(u8 *actor) {
-    u8 *vm = (u8 *)((ActorScriptObject *)actor)->scriptState->vmAddress;
+    u8 *vm = (u8 *)((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     f32 d = actorGetTargetDistance(actor) -
             ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetDistanceAllowance;
 

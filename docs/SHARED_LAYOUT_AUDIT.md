@@ -550,3 +550,17 @@ original constraint. All five external operand-reader calls use the shared typed
 context boundary. Producer/header and caller units each preserve the strict
 baseline; five-byte value copies and original expression evaluation order remain
 unchanged. No matching exception was introduced.
+
+## Native-command context and canonical actor object
+
+`ScriptNativeCommand` describes dispatch with a typed `ScriptVm` context. Ghidra
+at `0x8011BD50` confirms selection from the context's command table and passage
+of the actor and retained context to the chosen resident target. Dispatch uses
+that type directly without changing selectors or scheduling results.
+
+All remaining `ActorScriptObject.scriptState` consumers now use
+`RuntimeObjectPrefix.state.actor`, including message/item commands and target
+interaction. The redundant opaque 0x54-byte object view and its duplicate checks
+are removed; the common object prefix retains its size/state-offset checks.
+The voice/VM walkthrough names the canonical member. Producer/header and each
+consumer mutation preserve all strict baseline objects without added exceptions.

@@ -148,10 +148,12 @@ The first type-recovery pass introduces these headers:
 | [`actor_script.h`](../include/actor_script.h) | Actor-state prefix, pending mailbox, and shared post/acknowledge contracts |
 | [`script_vm.h`](../include/script_vm.h) | Five-byte values, known value tags, stack/return fields, execution states, and native-command callbacks |
 
-`ActorScriptObject.scriptState` is the link at object offset `0x54`.
+`RuntimeObjectPrefix.state.actor` is the link at object offset `0x54`.
 The recovered actor-state view names `vmAddress` at `0x1B8`,
 `messengerContactMode` at `0x214`, `messagePending` at `0x218`, and
-`message` at `0x21C`. This is a prefix view, not the actor's full allocation.
+`message` at `0x21C`. Initialization establishes a `0x408`-byte actor-state
+allocation. The separate runtime object prefix does not establish the actor
+object's full allocation or transfer ownership of referenced resources.
 Posting and acknowledgement at `0x80118E74` and `0x80119200`, together with the
 script getters beginning at `0x8011C884`, establish the shared layout.
 

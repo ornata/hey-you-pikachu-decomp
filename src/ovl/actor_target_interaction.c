@@ -169,7 +169,7 @@ void actorRefreshTrackingTargetPosition(u8 *actor) {
 /// \see actorAcknowledgeScriptMessage
 /// \see actorScriptPushMessagePending
 s32 actorPostScriptMessage(s32 obj, ScriptMessage msg, s32 force) {
-    ActorScriptState *state = ((ActorScriptObject *)obj)->scriptState;
+    ActorScriptState *state = ((RuntimeObjectPrefix *)obj)->state.actor;
 
     if ((force == 0) && (state->messagePending != 0)) {
         return 0;
