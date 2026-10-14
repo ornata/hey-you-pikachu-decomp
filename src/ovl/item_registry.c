@@ -2265,12 +2265,12 @@ typedef char
 /// Apply an item material, rendering style, and tint to the current drawing context when the item uses a
 /// material.
 /// \param item Initialized item being prepared for drawing.
-/// \returns Borrowed address of the object's drawing continuation list.
+/// \returns Borrowed object display list, or null when no drawing continuation is supplied.
 ///
 /// \note Requires an active display-list cursor with sufficient capacity and, when a material is enabled, the
 /// loaded item texture bank and valid material frame. Drawing resources remain owned by the item.
 /// \note Original decompilation identifier: \c func_80113CFC (0x80113CFC).
-s32 itemPrepareMaterial(u8 *item) {
+Gfx *itemPrepareMaterial(u8 *item) {
     ItemMaterialTintView *color;
     u8 *state;
     state = ((RuntimeObjectPrefix *)item)->state.bytes;
@@ -2314,9 +2314,8 @@ s32 itemPrepareMaterial(u8 *item) {
             gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, color->r, color->g, color->b, color->a);
         }
     }
-    return (s32)((RuntimeObjectPrefix *)item)->displayList;
+    return ((RuntimeObjectPrefix *)item)->displayList;
 }
-
 
 /// Exclude a live item from item searches and world collision queries.
 /// \param objectId Handle of a live item to exclude.

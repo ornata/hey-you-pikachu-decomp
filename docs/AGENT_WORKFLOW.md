@@ -90,3 +90,8 @@ target against its written callback signature and runs under `make verify`.
 Use `python3 tools/native_commands.py --json` for the current selector catalog.
 The check requires the linked build; it does not infer stack effects or cover
 arbitrary caller-supplied VM tables.
+
+`make check-object-draw-callbacks` validates drawing, child-drawing and response
+callback signatures for known retail kinds zero through 0xB3 and runs under
+`make verify`. Lifecycle hooks and alternate tables are outside this check.
+`python3 tools/object_draw_callbacks.py --json` lists the audited targets.

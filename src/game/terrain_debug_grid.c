@@ -194,9 +194,9 @@ extern Gfx D_100CBB8[];
 
 /// Render an enabled terrain diagnostic grid cell.
 /// \param object Grid cell object to render.
-/// \returns Zero.
+/// \returns Null.
 /// \note Original decompilation identifier: \c func_8002B1A4 (0x8002B1A4).
-s32 terrainDebugGridDrawCell(u8 *object) {
+Gfx *terrainDebugGridDrawCell(u8 *object) {
     TerrainDebugCellState *d = (TerrainDebugCellState *)((RuntimeObjectPrefix *)object)->state.pointer;
     u8 *o = ((RuntimeObjectPrefix *)object)->root.bytes;
     Rgb8 *c;

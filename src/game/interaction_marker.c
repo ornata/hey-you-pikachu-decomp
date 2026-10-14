@@ -286,9 +286,9 @@ void interactionMarkerUpdate(u8 *object) {
 
 /// Prepare display settings for an active interaction marker.
 /// \param object Interaction marker object to draw.
-/// \returns The marker display-list address, or zero when the marker is inactive.
+/// \returns Borrowed object display list, or null when no drawing continuation is supplied.
 /// \note Original decompilation identifier: \c func_8001EF58 (0x8001EF58).
-s32 interactionMarkerPrepareDraw(u8 *object) {
+Gfx *interactionMarkerPrepareDraw(u8 *object) {
     u8 *d = ((RuntimeObjectPrefix *)object)->state.bytes;
 
     if (((InteractionMarkerState *)d)->mode == 0) {
@@ -302,7 +302,7 @@ s32 interactionMarkerPrepareDraw(u8 *object) {
     } else {
         gDPSetRenderMode(gRenderDisplayListCursor++, 0x504A50, 0);
     }
-    return (s32)((RuntimeObjectPrefix *)object)->displayList;
+    return ((RuntimeObjectPrefix *)object)->displayList;
 }
 
 /// Get the preferred object from the current interaction scan.

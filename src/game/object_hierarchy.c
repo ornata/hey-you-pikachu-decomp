@@ -1083,16 +1083,13 @@ void objectInitializeTextureMotion(u8 *object) {
     ((RuntimeObjectPrefix *)object)->state.pointer = extent;
 }
 
-s32 objectApplySceneEnvironmentColorForDraw(u8 *);
-
-
-
+Gfx *objectApplySceneEnvironmentColorForDraw(u8 *);
 
 /// Apply animated texture scrolling and rotation for object drawing.
 /// \param obj Live object with initialized texture motion state; requires a display-list cursor with sufficient capacity.
-/// \returns Object drawing continuation link.
+/// \returns Borrowed object display list, or null when no drawing continuation is supplied.
 /// \note Original decompilation identifier: \c func_80008AFC (0x80008AFC).
-s32 objectApplyTextureMotionForDraw(u8 *obj) {
+Gfx *objectApplyTextureMotionForDraw(u8 *obj) {
     TextureMotion *motion;
     Gfx *gdl;
     s32 u, v;
@@ -1123,20 +1120,19 @@ s32 objectApplyTextureMotionForDraw(u8 *obj) {
     if (((RuntimeObjectPrefix *)obj)->kind == 0x97) {
         return objectApplySceneEnvironmentColorForDraw(obj);
     }
-    return (s32)((RuntimeObjectPrefix *)obj)->displayList;
+    return ((RuntimeObjectPrefix *)obj)->displayList;
 }
 
 /// Apply the scene environment color for object drawing.
 /// \param object Live object whose drawing continuation is returned; requires initialized scene data and sufficient display-list capacity.
-/// \returns Object drawing continuation link.
+/// \returns Borrowed object display list, or null when no drawing continuation is supplied.
 /// \note Original decompilation identifier: \c func_80008CE0 (0x80008CE0).
-s32 objectApplySceneEnvironmentColorForDraw(u8 *object) {
+Gfx *objectApplySceneEnvironmentColorForDraw(u8 *object) {
     gDPPipeSync(gRenderDisplayListCursor++);
     gDPSetEnvColor(gRenderDisplayListCursor++, gCurrentAreaConfiguration->fogColor[0],
                    gCurrentAreaConfiguration->fogColor[1], gCurrentAreaConfiguration->fogColor[2], 0);
-    return (s32)((RuntimeObjectPrefix *)object)->displayList;
+    return ((RuntimeObjectPrefix *)object)->displayList;
 }
-
 
 /// Update hierarchy visibility according to the object's interaction eligibility.
 /// \param object Object whose eligibility determines visibility for its hierarchy.

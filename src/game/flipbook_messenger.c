@@ -999,13 +999,13 @@ void messengerUpdate(u8 *object) {
 
 /// Prepare messenger opacity for drawing.
 /// \param object Messenger projectile with initialized state.
-/// \returns A borrowed address of the messenger model display list.
+/// \returns Borrowed object display list, or null when no drawing continuation is supplied.
 /// \note Original decompilation identifier: \c func_80026870 (0x80026870).
-s32 messengerPrepareDraw(u8 *object) {
+Gfx *messengerPrepareDraw(u8 *object) {
     u8 *p = ((RuntimeObjectPrefix *)object)->state.bytes;
 
     gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0xFF, 0xFF, 0xFF, ((MessengerFlightState *)p)->animation.value);
-    return (s32)((RuntimeObjectPrefix *)object)->displayList;
+    return ((RuntimeObjectPrefix *)object)->displayList;
 }
 
 /// Start the messenger homing phase.

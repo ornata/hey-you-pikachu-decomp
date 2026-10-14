@@ -78,9 +78,9 @@ void groundShadowUpdateVertices(u8 *, s32);
 
 /// Prepare the ground shadow for rendering when the current scene mode permits it.
 /// \param object Ground-shadow object to render.
-/// \returns The shadow display-list address, or zero when shadows are suppressed.
+/// \returns Borrowed object display list, or null when no drawing continuation is supplied.
 /// \note Original decompilation identifier: \c func_80036594 (0x80036594).
-s32 groundShadowPrepareDraw(u8 *object) {
+Gfx *groundShadowPrepareDraw(u8 *object) {
     GroundShadowGrid *grid = (GroundShadowGrid *)((RuntimeObjectPrefix *)object)->state.pointer;
 
     if (gRuntimeGameMode == 4 || gRuntimeGameMode == 5 || gRuntimeGameMode == 8 || gRuntimeGameMode == 9) {
@@ -88,9 +88,8 @@ s32 groundShadowPrepareDraw(u8 *object) {
     }
     groundShadowUpdateVertices(object, gGraphicsFramebufferIndex);
     gSPSegment(gRenderDisplayListCursor++, 3, osVirtualToPhysical(grid->vertices[gGraphicsFramebufferIndex]));
-    return (s32)grid->displayList;
+    return grid->displayList;
 }
-
 
 /// Keep the ground shadow positioned and scaled beneath its owner.
 /// \param object Ground-shadow object with a valid owner.

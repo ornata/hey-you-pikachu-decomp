@@ -1150,3 +1150,28 @@ graphics-task completion. Neither the returned bits nor rendering behavior
 changes. The drawing and response conversions passed all 483 original objects
 separately before final clean verification. The roll-state initializer's
 object-returning lifecycle representation remains outside these conversions.
+
+## Registered drawing-result sweep and regression gate
+
+The remaining texture/environment, item material, ground shadow, diagnostic
+terrain grid, attached/linked effect, interaction marker and messenger drawing
+hooks now return `Gfx *`. Their existing results are borrowed display lists or
+null; the diagnostic grid supplies no continuation. The texture-motion helper's
+forward declaration agrees with its environment-color continuation. Each of
+the eight source units passed all 483 original objects before the next changed.
+
+All 30 populated drawing slots in known retail kinds zero through 0xB3 now
+resolve to 25 distinct C definitions with the shared `Gfx *(*)(u8 *)` signature.
+Together with the 38 parent-only child-drawing slots and two typed response
+slots, all 70 audited drawing/response entries agree. The shared drawing
+contract documents that returned pointers may be segmented graphics addresses
+and are not necessarily CPU-dereferenceable.
+
+`make check-object-draw-callbacks` checks those three slots in the explicit
+0xB4-kind retained prefix and runs under `make verify`. Its JSON report lists
+kind, slot, target address, C definition and signature. Unknown or ambiguous
+C targets and incompatible signatures fail; optional null slots remain valid.
+Tests cover legacy integer results, extra child arguments, raw response views,
+unknown/ambiguous targets and record stride. The gate deliberately excludes
+lifecycle hooks, alternate tables, resource validity and kinds beyond the
+selected prefix; it is not a whole-object-system completion certificate.

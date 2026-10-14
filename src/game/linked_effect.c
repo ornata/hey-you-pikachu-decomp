@@ -214,16 +214,16 @@ typedef struct Rgba8 {
 
 /// Append drawing setup for a linked effect using its animated appearance.
 /// \param object Linked effect object with initialized motion state.
-/// \returns The borrowed effect model display-list address.
+/// \returns Borrowed object display list, or null when no drawing continuation is supplied.
 /// \note Original decompilation identifier: \c func_8001CC9C (0x8001CC9C).
-s32 linkedEffectPrepareDraw(u8 *object) {
+Gfx *linkedEffectPrepareDraw(u8 *object) {
     u8 *v = ((RuntimeObjectPrefix *)object)->state.bytes;
     Rgba8 *c;
 
     textureLoadForDraw(&gRenderDisplayListCursor, 5, ((LinkedEffectState *)v)->frameTrack.value);
     c = (Rgba8 *)((LinkedEffectState *)v)->color;
     gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, c->r, c->g, c->b, c->a);
-    return (s32)((RuntimeObjectPrefix *)object)->displayList;
+    return ((RuntimeObjectPrefix *)object)->displayList;
 }
 
 /// Borrowed reference to the active Pikachu actor created for the current area.

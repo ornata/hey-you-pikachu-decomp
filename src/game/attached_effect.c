@@ -191,14 +191,14 @@ void attachedEffectUpdate(u8 *obj) {
 
 /// Prepare the current animation frame and color for rendering an attached effect.
 /// \param object Attached effect object to render.
-/// \returns The effect geometry display-list address.
+/// \returns Borrowed object display list, or null when no drawing continuation is supplied.
 /// \note Original decompilation identifier: \c func_80013530 (0x80013530).
-s32 attachedEffectPrepareDraw(u8 *object) {
+Gfx *attachedEffectPrepareDraw(u8 *object) {
     u8 *v = ((RuntimeObjectPrefix *)object)->state.bytes;
     Rgba8 *c;
 
     textureLoadForDraw(&gRenderDisplayListCursor, 4, ((AttachedEffectState *)v)->frameTrack.value);
     c = &((AttachedEffectState *)v)->color;
     gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, c->r, c->g, c->b, c->a);
-    return (s32)((RuntimeObjectPrefix *)object)->displayList;
+    return ((RuntimeObjectPrefix *)object)->displayList;
 }

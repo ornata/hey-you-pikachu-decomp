@@ -13,6 +13,7 @@ typedef void (*ObjectLifecycleHandler)(u8 *object);
 /// \param object Live initialized object.
 /// \returns Borrowed drawing commands, or null when no commands are supplied;
 /// referenced storage must remain valid through graphics-task completion.
+/// \note The result may be a segmented graphics address and must not be assumed CPU-dereferenceable.
 typedef Gfx *(*ObjectDrawHandler)(u8 *object);
 /// Prepare drawing state for the current child using its parent resources.
 /// \param parent Live initialized parent supplying drawing resources.
