@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 889,
-      "unique_spellings": 481,
+      "occurrences": 887,
+      "unique_spellings": 480,
       "files": 64
     },
     "cast_offset_candidates": {
@@ -1756,19 +1756,15 @@
             "159:60"
           ],
           "reader + 0x13": [
-            "175:68"
+            "175:49"
           ],
           "windowStart + 0x400": [
             "190:61"
           ],
-          "reader + 0x10": [
-            "214:29",
-            "340:60"
-          ],
           "return -1": [
             "282:9",
-            "884:9",
-            "892:9"
+            "883:9",
+            "891:9"
           ],
           "i + 1": [
             "290:19"
@@ -1778,23 +1774,23 @@
           ],
           "position + 1": [
             "337:34",
-            "341:56"
+            "340:76"
           ],
           "gObjectSearchTreeRoot + 8": [
-            "520:31",
-            "1827:22"
+            "519:31",
+            "1826:22"
           ],
           "gObjectTransformStackDepth - 1": [
-            "590:40"
+            "589:40"
           ],
           "object + 0x24": [
-            "1082:35"
+            "1081:35"
           ],
           "widthShift + 4": [
-            "1083:42"
+            "1082:42"
           ],
           "heightShift + 4": [
-            "1084:42"
+            "1083:42"
           ]
         }
       }

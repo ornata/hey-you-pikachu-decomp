@@ -12,7 +12,7 @@
 /// \param address Complete sequence in cartridge ROM or readable memory; its track extent must fit in signed 32 bits.
 /// \returns The ticks-per-quarter-note division, or zero when the header is unsupported or invalid.
 /// \note Original decompilation identifier: \c func_80007808 (0x80007808).
-s32 midiReaderOpen(u8 *reader, s32 address);
+s32 midiReaderOpen(MidiReader *reader, s32 address);
 
 /// Restore a saved MIDI stream position and running status.
 /// \param reader Opened reader to reposition within the same sequence as the saved mark.

@@ -16,9 +16,9 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 891 / 64 |
+| Raw offset candidates | 4,040 / 86 | 887 / 64 |
 
-Supplemental cast-base offset candidates: **26 occurrences / 6 files**.
+Supplemental cast-base offset candidates: **23 occurrences / 5 files**.
 This category was not tracked in the original baseline. The historical raw-offset
 metric recognizes identifier bases; explicit byte casts can move expressions out
 of that metric without recovering their layout. Both inventories are review

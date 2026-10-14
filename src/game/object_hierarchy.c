@@ -83,7 +83,7 @@ extern Vec3f gObjectPendingLocalMovement;
 /// Current affine world transform shared by hierarchy traversal and actor motion consumers.
 /// \note Original identifier: \c D_800AD9E0 (0x800AD9E0).
 extern Matrix34 gObjectTraversalTransform;
-s32 romByteReaderInitialize(u8 *);
+s32 romByteReaderInitialize(RomByteReaderPrefix *);
 /// Segmented shared display list preparing object hierarchy drawing.
 /// \note Original identifier: \c D_100C890 (0x100C890).
 extern u8 gObjectDrawSetupDisplayList[];
@@ -152,7 +152,7 @@ u8 *romTableResolveEntry(u8 *base, s32 idx) {
     u8 b2;
     u8 b1;
 
-    romByteReaderInitialize(reader);
+    romByteReaderInitialize((RomByteReaderPrefix *)reader);
     romByteReaderRead((RomByteReaderPrefix *)reader, (s32)base);
     romByteReaderRead((RomByteReaderPrefix *)reader, (s32)(base + 1));
     romByteReaderRead((RomByteReaderPrefix *)reader, (s32)(base + 2));
@@ -170,10 +170,10 @@ u8 *romTableResolveEntry(u8 *base, s32 idx) {
 /// \returns Zero.
 /// \note Portability: Reader addresses are carried as 32-bit integers and the buffered cartridge path uses the N64 DMA interface.
 /// \note Original decompilation identifier: \c func_800076E0 (0x800076E0).
-s32 romByteReaderInitialize(u8 *reader) {
-    ((RomByteReaderPrefix *)reader)->windowStart = 0x80000000;
-    ((RomByteReaderPrefix *)reader)->alignedBuffer = (u8 *)(((u32)(reader + 0x13) >> 4) * 0x10);
-    osCreateMesgQueue(&((RomByteReaderPrefix *)reader)->queue, &((RomByteReaderPrefix *)reader)->completion, 1);
+s32 romByteReaderInitialize(RomByteReaderPrefix *reader) {
+    reader->windowStart = 0x80000000;
+    reader->alignedBuffer = (u8 *)(((u32)((u8 *)reader + 0x13) >> 4) * 0x10);
+    osCreateMesgQueue(&reader->queue, &reader->completion, 1);
     return 0;
 }
 
@@ -203,37 +203,37 @@ u8 romByteReaderRead(RomByteReaderPrefix *reader, s32 address) {
 /// \param address Complete sequence in cartridge ROM or readable memory; its track extent must fit in signed 32 bits.
 /// \returns The ticks-per-quarter-note division, or zero when the header is unsupported or invalid.
 /// \note Original decompilation identifier: \c func_80007808 (0x80007808).
-s32 midiReaderOpen(u8 *reader, s32 address) {
+s32 midiReaderOpen(MidiReader *reader, s32 address) {
     s32 trackLength;
     s32 savedDivision;
     s32 division;
-    ((MidiReader *)reader)->start = address;
-    ((MidiReader *)reader)->length = 0x16;
-    ((MidiReader *)reader)->runningStatus = 0;
-    ((MidiReader *)reader)->position = address;
-    romByteReaderInitialize(reader + 0x10);
-    if (midiReaderReadU32((MidiReader *)reader) != 0x4D546864) {
+    reader->start = address;
+    reader->length = 0x16;
+    reader->runningStatus = 0;
+    reader->position = address;
+    romByteReaderInitialize(&reader->cartridge);
+    if (midiReaderReadU32(reader) != 0x4D546864) {
         return 0;
     }
-    if (midiReaderReadU32((MidiReader *)reader) != 6) {
+    if (midiReaderReadU32(reader) != 6) {
         return 0;
     }
-    if (midiReaderReadU16((MidiReader *)reader) != 0) {
+    if (midiReaderReadU16(reader) != 0) {
         return 0;
     }
-    if (midiReaderReadU16((MidiReader *)reader) != 1) {
+    if (midiReaderReadU16(reader) != 1) {
         return 0;
     }
-    division = midiReaderReadU16((MidiReader *)reader);
+    division = midiReaderReadU16(reader);
     savedDivision = division;
     if (division & 0x8000) {
         return 0;
     }
-    if (midiReaderReadU32((MidiReader *)reader) != 0x4D54726B) {
+    if (midiReaderReadU32(reader) != 0x4D54726B) {
         return 0;
     }
-    trackLength = midiReaderReadU32((MidiReader *)reader);
-    ((MidiReader *)reader)->length = (s32)((((MidiReader *)reader)->length) + trackLength);
+    trackLength = midiReaderReadU32(reader);
+    reader->length = (s32)((reader->length) + trackLength);
     return savedDivision;
 }
 
@@ -337,8 +337,7 @@ u8 midiReaderReadByte(MidiReader *reader) {
         reader->position = (u32)(position + 1);
         return value;
     }
-    return romByteReaderRead((RomByteReaderPrefix *)((u8 *)reader + 0x10),
-                             (reader->position = (u32)(position + 1)) - 1);
+    return romByteReaderRead(&reader->cartridge, (reader->position = (u32)(position + 1)) - 1);
 }
 
 /// Read and consume a big-endian unsigned 16-bit MIDI stream value.

@@ -54,7 +54,7 @@ s32 midiSequenceStart(SequenceState *state, s32 romAddress) {
     s32 started;
     started = 0;
     if (state->stopped != 0) {
-        state->division = midiReaderOpen((u8 *)state, romAddress);
+        state->division = midiReaderOpen(&state->reader, romAddress);
         if (state->division == 0) {
             return 0;
         }
@@ -131,7 +131,7 @@ s32 midiSequenceReadEvent(SequenceState *state, u8 *event, s32 capacity, f64 *de
             *delta = -1.0;
             return 0;
         }
-        ticks = midiReaderReadEvent((MidiReader *)state, event, &length, capacity);
+        ticks = midiReaderReadEvent(&state->reader, event, &length, capacity);
         if (ticks < 0) {
             midiSequenceStop(state);
             continue;
@@ -162,7 +162,7 @@ s32 midiSequenceReadEvent(SequenceState *state, u8 *event, s32 capacity, f64 *de
                 state->sustain[event[0] & 0xF] = event[2];
                 break;
             case 0x66:
-                midiReaderSaveMark((MidiReader *)state, &state->loop);
+                midiReaderSaveMark(&state->reader, &state->loop);
                 state->hasLoop = 1;
                 continue;
             case 0x67:
@@ -173,7 +173,7 @@ s32 midiSequenceReadEvent(SequenceState *state, u8 *event, s32 capacity, f64 *de
                     midiSequenceEnableAllChannels(state);
                 ++state->repetitions;
                 if (state->hasLoop)
-                    midiReaderRestoreMark((MidiReader *)state, &state->loop);
+                    midiReaderRestoreMark(&state->reader, &state->loop);
                 continue;
             }
             break;

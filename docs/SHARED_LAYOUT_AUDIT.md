@@ -599,3 +599,17 @@ sizes are unchanged; the prefix is not a new allocation-size contract.
 The stream prefix's bytes 0xD through 0xF remain unresolved rather than inferred
 as padding. The shared type owns no sequence data; source storage stays borrowed.
 All source/header mutations preserve the strict baseline objects.
+
+## Typed MIDI opening and embedded-reader interfaces
+
+MIDI opening now accepts `MidiReader *` in its shared declaration and definition.
+Cartridge-reader initialization takes the shared active prefix; stream-byte reading
+passes the embedded cartridge member directly. Ghidra at `0x80007808` confirms
+cursor initialization, buffered-reader setup and format-zero/tick-timing checks.
+Existing backing-storage and minimum-allocation contracts remain unchanged.
+
+Sequence start, event decoding and loop mark save/restore pass `&state->reader`,
+replacing enclosing-state casts. The standalone ROM-table path retains its
+original stack buffer and explicitly views its active reader prefix. Both source
+units preserve every baseline object after mutation, with no new matching
+exception or change to timing, I/O or event parsing.
