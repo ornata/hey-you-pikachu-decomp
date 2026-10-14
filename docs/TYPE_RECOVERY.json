@@ -298,6 +298,7 @@
         "object_lookup.h",
         "object_matrix_buffers.h",
         "object_movement.h",
+        "object_response.h",
         "object_transform.h",
         "object_types.h",
         "object_update.h",

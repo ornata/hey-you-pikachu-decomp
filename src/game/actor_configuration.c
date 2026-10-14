@@ -1,4 +1,5 @@
 #include "contact_effect.h"
+#include "object_response.h"
 #include "render_state.h"
 #include "game_heap.h"
 #include "ground_shadow.h"
@@ -247,36 +248,35 @@ void contactEffectUpdate(u8 *effect) {
 
 /// Prepare the contact effect's current animation texture for drawing.
 /// \param effect Initialized effect object to draw.
-/// \returns Borrowed effect model display-list address represented as an integer.
+/// \returns Borrowed effect display list, valid with its resources through graphics-task completion.
 /// \note Original decompilation identifier: \c func_8001D96C (0x8001D96C).
-s32 contactEffectPrepareTextureForDraw(u8 *effect) {
+Gfx *contactEffectPrepareTextureForDraw(u8 *effect) {
     u8 *obj;
 
     obj = ((RuntimeObjectPrefix *)effect)->state.bytes;
     textureLoadForDraw(&gRenderDisplayListCursor, 5, ((ContactEffectState *)obj)->textureAnimation.value);
-    return (s32)((RuntimeObjectPrefix *)effect)->displayList;
+    return ((RuntimeObjectPrefix *)effect)->displayList;
 }
 
 /// Trigger an idle contact effect when a response identifies the active actor.
 /// \param effect Initialized effect object receiving the response.
-/// \param response Response whose first value is the responding object's handle.
+/// \param response Borrowed queued response; sourceHandle identifies the sending object.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001D9A4 (0x8001D9A4).
-void contactEffectHandleActorResponse(u8 *effect, s32 *response) {
+void contactEffectHandleActorResponse(u8 *effect, ObjectResponse *response) {
     ContactEffectState *effectState;
     ContactEffectState *savedEffectState;
 
     effectState = (ContactEffectState *)((RuntimeObjectPrefix *)effect)->state.pointer;
     if (effectState->triggered == 0) {
         savedEffectState = effectState;
-        if (objectFindLiveByHandle(*response) == (u8 *)((s32)gPikachuActor)) {
+        if (objectFindLiveByHandle(response->sourceHandle) == (u8 *)((s32)gPikachuActor)) {
             effectState->triggered = 1;
             animationIntegerTrackInitialize(&effectState->textureAnimation,
                                             (ValueKey *)(gContactEffectTriggeredAnimation));
         }
     }
 }
-
 
 /// Initialize an actor model and its part lookup storage.
 /// \param actor Actor to initialize.
@@ -425,9 +425,9 @@ void objectUpdateCameraFacingBillboard(u8 *object) {
 
 /// Advance a billboard's texture animation and prepare its current frame for drawing.
 /// \param object Billboard object with initialized texture-animation state.
-/// \returns Borrowed object model display-list address represented as an integer.
+/// \returns Borrowed object display list, valid with its resources through graphics-task completion.
 /// \note Original decompilation identifier: \c func_8001DD7C (0x8001DD7C).
-s32 objectDrawAnimatedBillboardTexture(u8 *object) {
+Gfx *objectDrawAnimatedBillboardTexture(u8 *object) {
     ValueTrack *track;
     s32 textureFrame;
 
@@ -437,7 +437,7 @@ s32 objectDrawAnimatedBillboardTexture(u8 *object) {
     gSPSetOtherMode(gRenderDisplayListCursor++, G_SETOTHERMODE_L, 3, 29, 0x1049D8);
     gDPSetCombine(gRenderDisplayListCursor++, 0xFFFEAC, 0xF0FCF238);
     textureLoadForDraw(&gRenderDisplayListCursor, 5, textureFrame);
-    return (s32)((RuntimeObjectPrefix *)object)->displayList;
+    return ((RuntimeObjectPrefix *)object)->displayList;
 }
 
 /// Yaw sway phase increment in degrees per child-motion update.

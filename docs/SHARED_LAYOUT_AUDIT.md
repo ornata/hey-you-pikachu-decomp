@@ -1130,3 +1130,23 @@ private effect records remain local; no unrelated effect state was merged.
 The obsolete harvested-draft note is replaced by a Doxygen file-purpose summary.
 Both the drawing-result and lifecycle-parameter sweeps passed all 483 original
 objects before documentation/formatting and the final clean verification.
+
+## Contact-effect response and billboard drawing contracts
+
+The contact-effect response hook now accepts `ObjectResponse *` and reads the
+established sourceHandle member rather than treating the borrowed record as
+an integer array. Ghidra at 0x8001D9A4 confirms the handle read at response
+offset zero before comparing the resolved object with the active actor.
+The source includes the response header directly, and new checks explicitly
+cover source handle at zero, flags at four and kind at six, alongside the
+existing 0xC-byte extent and payload at eight. The unresolved byte at seven
+remains uninitialized and unidentified; it is no longer called reserved without
+evidence. Response and payload ownership remain with the dispatcher.
+
+The contact-effect texture and animated-billboard drawing hooks now return
+`Gfx *`, agreeing with their registered drawing interface. Their existing
+results are borrowed object display lists, with drawing resources valid through
+graphics-task completion. Neither the returned bits nor rendering behavior
+changes. The drawing and response conversions passed all 483 original objects
+separately before final clean verification. The roll-state initializer's
+object-returning lifecycle representation remains outside these conversions.

@@ -14,7 +14,7 @@ typedef struct ObjectResponse {
     s32 sourceHandle; ///< Source object handle, or zero when absent.
     u16 flags;        ///< Bit zero marks an owned pointer payload requiring release.
     u8 kind;          ///< Response handler index; zero selects a packed impulse.
-    u8 unknown07;     ///< Uninitialized reserved byte; no interpretation established.
+    u8 unknown07;     ///< Uninitialized byte; no interpretation established.
     union {
         ObjectImpulse impulse; ///< Inline payload for response kind zero.
         void *owned;           ///< Owned payload when flags bit zero is set.
@@ -29,6 +29,9 @@ typedef void (*ObjectResponseHandler)(u8 *object, ObjectResponse *response);
 
 typedef char ObjectImpulseSizeCheck[(sizeof(ObjectImpulse) == 4) ? 1 : -1];
 typedef char ObjectResponseSizeCheck[(sizeof(ObjectResponse) == 0xC) ? 1 : -1];
+typedef char ObjectResponseSourceOffsetCheck[(((u32) & ((ObjectResponse *)0)->sourceHandle) == 0) ? 1 : -1];
+typedef char ObjectResponseFlagsOffsetCheck[(((u32) & ((ObjectResponse *)0)->flags) == 4) ? 1 : -1];
+typedef char ObjectResponseKindOffsetCheck[(((u32) & ((ObjectResponse *)0)->kind) == 6) ? 1 : -1];
 typedef char ObjectResponsePayloadOffsetCheck[(((u32) & ((ObjectResponse *)0)->payload) == 8) ? 1 : -1];
 
 /// Begin an empty response-system lifetime before objects submit responses.
