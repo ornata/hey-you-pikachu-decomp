@@ -65,7 +65,7 @@ extern s32 gEyeCatchSelectedGroup;
 /// \see actorScriptStartActionAndWait
 s32 actorScriptDispatchRegisteredCommand(u8 *actor) {
     u8 *vm = (u8 *)((ActorScriptObject *)actor)->scriptState->vmAddress;
-    s32 commandIndex = scriptVmReadIntegerOperand(vm);
+    s32 commandIndex = scriptVmReadIntegerOperand((ScriptVm *)(vm));
     ScriptNativeCommand command = ((ScriptVm *)vm)->commands[commandIndex];
 
     return command(actor, vm);
@@ -204,7 +204,7 @@ s32 actorScriptBuildSharedText(u8 *actor) {
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     gActorScriptSharedTextBuffer = 0;
-    var_s0 = scriptVmReadIntegerOperand((u8 *)vmAddress) - 1;
+    var_s0 = scriptVmReadIntegerOperand((ScriptVm *)(vmAddress)) - 1;
     if (var_s0 >= 0) {
         do {
             stringPrependBounded((u8 *)&gActorScriptSharedTextBuffer, 0x50,
@@ -227,7 +227,7 @@ s32 actorScriptBuildSharedTextAlternate(u8 *actor) {
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     gActorScriptSharedTextBuffer = 0;
-    var_s0 = scriptVmReadIntegerOperand((u8 *)vmAddress) - 1;
+    var_s0 = scriptVmReadIntegerOperand((ScriptVm *)(vmAddress)) - 1;
     if (var_s0 >= 0) {
         do {
             stringPrependBounded((u8 *)&gActorScriptSharedTextBuffer, 0x50,
@@ -346,7 +346,7 @@ s32 actorScriptEnqueueMessage(u8 *actor) {
 
     vmBytes = (u8 *)((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->vmAddress;
     gActorScriptSharedTextBuffer = 0;
-    var_s0 = scriptVmReadIntegerOperand(vmBytes) - 1;
+    var_s0 = scriptVmReadIntegerOperand((ScriptVm *)(vmBytes)) - 1;
     if (var_s0 >= 0) {
         do {
             stringPrependBounded((u8 *)&gActorScriptSharedTextBuffer, 0x50,
@@ -410,7 +410,7 @@ s32 actorScriptAppendWindowText(u8 *actor) {
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     gActorScriptSharedTextBuffer = 0;
-    var_s0 = scriptVmReadIntegerOperand((u8 *)vmAddress) - 1;
+    var_s0 = scriptVmReadIntegerOperand((ScriptVm *)(vmAddress)) - 1;
     if (var_s0 >= 0) {
         do {
             stringPrependBounded((u8 *)&gActorScriptSharedTextBuffer, 0x50,

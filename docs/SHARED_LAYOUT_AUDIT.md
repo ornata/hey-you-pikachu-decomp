@@ -515,8 +515,7 @@ objects without an added compatibility exception.
 use that shared declaration. Ghidra at `0x80116104` confirms direct borrowed
 string pointers, borrowed string-table entries and the shared numeric conversion
 buffer. The returned numeric text remains valid only until the next conversion;
-the existing 32-byte formatting precondition is unchanged. The value-pop helper
-still receives its established byte-context boundary.
+the existing 32-byte formatting precondition is unchanged. The value-pop helper now also accepts the shared typed context.
 
 `actorUpdateScriptVm` retains a typed context while advancing timers, servicing
 waiting actions and retaining the next scheduling state. No timing, return-value
@@ -536,3 +535,18 @@ arguments at these interfaces, including nested calls. Retained integer context
 addresses are converted explicitly at the call boundary. Every source unit
 independently passed strict comparison against all 483 baseline objects after
 its mutation; no new matching exception was needed.
+
+## Typed value-stack, frame and expression helpers
+
+Value push/pop, saved-depth and return-location helpers, operand and variable
+readers, expression operators and decimal parsing now accept `ScriptVm *`.
+Interpreter calls use that type directly; redundant byte/integer context casts
+are removed where strict matching permits. The public value/operand declarations
+retain original address notes and their existing capacity/type preconditions.
+
+Ghidra at `0x801156A0` confirms variable-reference resolution through saved local
+frame bases or global storage. Invalid frame/index behavior remains the documented
+original constraint. All five external operand-reader calls use the shared typed
+context boundary. Producer/header and caller units each preserve the strict
+baseline; five-byte value copies and original expression evaluation order remain
+unchanged. No matching exception was introduced.

@@ -56,9 +56,9 @@
       "files": 64
     },
     "cast_offset_candidates": {
-      "occurrences": 26,
-      "unique_spellings": 11,
-      "files": 6
+      "occurrences": 23,
+      "unique_spellings": 10,
+      "files": 5
     }
   },
   "policies": {
@@ -3133,13 +3133,6 @@
           "prefixLength - 1": [
             "86:70"
           ]
-        },
-        "cast_offset_candidates": {
-          "((u8 *)vmAddress) - 1": [
-            "207:40",
-            "230:40",
-            "413:40"
-          ]
         }
       }
     },
@@ -3939,22 +3932,22 @@
       "locations": {
         "raw_offset_candidates": {
           "savedDepthCount + 1": [
-            "166:65"
+            "166:37"
           ],
           "returnCount + 1": [
-            "184:61"
+            "184:33"
           ],
           "value + 1": [
             "220:15",
             "223:11"
           ],
           "operandOffset + 5": [
-            "327:43"
+            "327:29"
           ],
           "instructionOffset + 5": [
-            "782:43",
-            "833:47",
-            "851:43"
+            "781:43",
+            "832:47",
+            "850:43"
           ]
         }
       }

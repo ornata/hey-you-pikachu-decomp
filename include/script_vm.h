@@ -88,18 +88,21 @@ typedef struct ScriptVm {
 /// \param vm Context with space for another value.
 /// \param value Value to copy; its storage need not outlive the call.
 /// \returns Nothing.
-void scriptVmPushValue(u8 *vm, ScriptValue *value);
+/// \note Original identifier: \c func_80115228 (0x80115228).
+void scriptVmPushValue(ScriptVm *vm, ScriptValue *value);
 
 /// Remove and return the top typed value from a script context's value stack.
 /// \param vm Context with at least one active value.
 /// \param value Destination receiving the removed value.
 /// \returns Nothing.
-void scriptVmPopValue(u8 *vm, ScriptValue *value);
+/// \note Original identifier: \c func_801152DC (0x801152DC).
+void scriptVmPopValue(ScriptVm *vm, ScriptValue *value);
 
 /// Read the next numeric script operand and advance the instruction position.
 /// \param vm Context positioned at a valid numeric operand.
 /// \returns Operand converted to an integer.
-s32 scriptVmReadIntegerOperand(u8 *vm);
+/// \note Original identifier: \c func_8011566C (0x8011566C).
+s32 scriptVmReadIntegerOperand(ScriptVm *vm);
 
 typedef char ScriptVmConfigurationSizeCheck[(sizeof(ScriptVmConfiguration) == 0x14) ? 1 : -1];
 

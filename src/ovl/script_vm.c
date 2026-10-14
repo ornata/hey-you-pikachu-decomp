@@ -126,15 +126,15 @@ void scriptVmDestroy(ScriptVm *vm) {
     }
 }
 
-#define VM_SP(vm) (((ScriptVm *)(vm))->stackDepth)
-#define VM_STACK(vm) (((ScriptVm *)(vm))->values)
+#define VM_SP(vm) ((vm)->stackDepth)
+#define VM_STACK(vm) ((vm)->values)
 
 /// Push a typed value onto the script stack.
 /// \param vm Script context with room for another value.
 /// \param value Typed value to copy onto the stack.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80115228 (0x80115228).
-void scriptVmPushValue(u8 *vm, ScriptValue *value) {
+void scriptVmPushValue(ScriptVm *vm, ScriptValue *value) {
     s32 i;
 
     for (i = 0; i < 5; i++) {
@@ -148,7 +148,7 @@ void scriptVmPushValue(u8 *vm, ScriptValue *value) {
 /// \param value Output receiving the removed typed value.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_801152DC (0x801152DC).
-void scriptVmPopValue(u8 *vm, ScriptValue *value) {
+void scriptVmPopValue(ScriptVm *vm, ScriptValue *value) {
     s32 i;
 
     VM_SP(vm)--;
@@ -161,37 +161,37 @@ void scriptVmPopValue(u8 *vm, ScriptValue *value) {
 /// \param vm Script context with fewer than 64 saved stack depths.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8011538C (0x8011538C).
-void scriptVmSaveStackDepth(u8 *vm) {
-    ((ScriptVm *)vm)->savedDepths[((ScriptVm *)vm)->savedDepthCount] = (s32)((ScriptVm *)vm)->stackDepth;
-    ((ScriptVm *)vm)->savedDepthCount = (s32)(((ScriptVm *)vm)->savedDepthCount + 1);
+void scriptVmSaveStackDepth(ScriptVm *vm) {
+    vm->savedDepths[vm->savedDepthCount] = (s32)vm->stackDepth;
+    vm->savedDepthCount = (s32)(vm->savedDepthCount + 1);
 }
 
 /// Restore the most recently saved script value-stack depth.
 /// \param vm Script context with a saved stack depth to restore.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_801153B0 (0x801153B0).
-void scriptVmRestoreStackDepth(u8 *vm) {
-    ((ScriptVm *)vm)->savedDepthCount--;
-    ((ScriptVm *)vm)->stackDepth = ((ScriptVm *)vm)->savedDepths[((ScriptVm *)vm)->savedDepthCount];
+void scriptVmRestoreStackDepth(ScriptVm *vm) {
+    vm->savedDepthCount--;
+    vm->stackDepth = vm->savedDepths[vm->savedDepthCount];
 }
 
 /// Save the current script instruction location for a later return.
 /// \param vm Script context with fewer than 64 saved return locations.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_801153D0 (0x801153D0).
-void scriptVmSaveReturnLocation(u8 *vm) {
-    ((ScriptVm *)vm)->returnOffsets[((ScriptVm *)vm)->returnCount] = (s32)((ScriptVm *)vm)->instructionOffset;
-    ((ScriptVm *)vm)->returnCount = (s32)(((ScriptVm *)vm)->returnCount + 1);
+void scriptVmSaveReturnLocation(ScriptVm *vm) {
+    vm->returnOffsets[vm->returnCount] = (s32)vm->instructionOffset;
+    vm->returnCount = (s32)(vm->returnCount + 1);
 }
 
 /// Restore the most recent script return location when one is available.
 /// \param vm Script context whose return location is restored.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_801153F4 (0x801153F4).
-void scriptVmRestoreReturnLocation(u8 *vm) {
-    if (((ScriptVm *)vm)->returnCount > 0) {
-        ((ScriptVm *)vm)->returnCount--;
-        ((ScriptVm *)vm)->instructionOffset = ((ScriptVm *)vm)->returnOffsets[((ScriptVm *)vm)->returnCount];
+void scriptVmRestoreReturnLocation(ScriptVm *vm) {
+    if (vm->returnCount > 0) {
+        vm->returnCount--;
+        vm->instructionOffset = vm->returnOffsets[vm->returnCount];
     }
 }
 
@@ -283,7 +283,7 @@ s32 stdlibParseUnsignedDecimal(s32); /* extern */
 /// \param value Null-terminated string value or valid string-table reference to parse.
 /// \returns The parsed decimal value, or zero when the value is not a string.
 /// \note Original decompilation identifier: \c func_801155B0 (0x801155B0).
-s32 scriptValueParseDecimal(u8 *vm, ScriptValue *value) {
+s32 scriptValueParseDecimal(ScriptVm *vm, ScriptValue *value) {
     s32 stringIndex;
     s32 isString;
     char *text;
@@ -308,7 +308,7 @@ s32 scriptValueParseDecimal(u8 *vm, ScriptValue *value) {
         parsedValue = stdlibParseUnsignedDecimal((s32)text);
     } else {
         bcopy(&value->bytes[1], &stringIndex, 4);
-        text = ((ScriptVm *)vm)->stringTable[stringIndex];
+        text = vm->stringTable[stringIndex];
         parsedValue = stdlibParseUnsignedDecimal((s32)text);
     }
     return parsedValue;
@@ -318,13 +318,13 @@ s32 scriptValueParseDecimal(u8 *vm, ScriptValue *value) {
 /// \param vm Script context positioned at a valid numeric operand.
 /// \returns The operand converted to an integer.
 /// \note Original decompilation identifier: \c func_8011566C (0x8011566C).
-s32 scriptVmReadIntegerOperand(u8 *vm) {
+s32 scriptVmReadIntegerOperand(ScriptVm *vm) {
     s32 operandOffset;
     s32 operandAddress;
 
-    operandOffset = ((ScriptVm *)vm)->instructionOffset;
-    operandAddress = (s32)((ScriptVm *)vm)->program + operandOffset;
-    ((ScriptVm *)vm)->instructionOffset = operandOffset + 5;
+    operandOffset = vm->instructionOffset;
+    operandAddress = (s32)vm->program + operandOffset;
+    vm->instructionOffset = operandOffset + 5;
     return scriptValueGetInteger((u8 *)operandAddress);
 }
 
@@ -338,7 +338,7 @@ extern ScriptValue gScriptVmGlobalValues[500];
 ///
 /// \note UB: a frame below -1 returns an uninitialised pointer.
 /// \note Original decompilation identifier: \c func_801156A0 (0x801156A0).
-ScriptValue *scriptVmReadVariableReference(u8 *vm) {
+ScriptValue *scriptVmReadVariableReference(ScriptVm *vm) {
     s32 frame;
     s32 valueIndex;
     ScriptValue *value;
@@ -346,8 +346,8 @@ ScriptValue *scriptVmReadVariableReference(u8 *vm) {
     frame = scriptVmReadIntegerOperand(vm);
     valueIndex = scriptVmReadIntegerOperand(vm);
     if (frame >= 0) {
-        valueIndex = ((ScriptVm *)vm)->localFrameBases[frame] + valueIndex;
-        value = &((ScriptVm *)vm)->values[valueIndex];
+        valueIndex = vm->localFrameBases[frame] + valueIndex;
+        value = &vm->values[valueIndex];
     } else if (frame == -1) {
         value = &gScriptVmGlobalValues[valueIndex];
     }
@@ -359,7 +359,7 @@ ScriptValue *scriptVmReadVariableReference(u8 *vm) {
 /// \param op Unary operation: 3 negates, 4 complements, and 17 logically negates.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80115724 (0x80115724).
-void scriptVmApplyUnaryOperator(u8 *vm, u8 op) {
+void scriptVmApplyUnaryOperator(ScriptVm *vm, u8 op) {
     ScriptValue *box;
     s32 test;
     f32 f;
@@ -410,7 +410,7 @@ void scriptVmApplyUnaryOperator(u8 *vm, u8 op) {
 /// \param op Arithmetic operation: 5 adds, 6 subtracts, 7 multiplies, 8 divides, and 9 computes integer remainder or floating-point zero.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_801158D0 (0x801158D0).
-void scriptVmApplyArithmeticOperator(u8 *vm, u8 op) {
+void scriptVmApplyArithmeticOperator(ScriptVm *vm, u8 op) {
     ScriptValue right, left, result;
     f32 fv, fr, fl;
     s32 iv, ir, il;
@@ -472,7 +472,7 @@ void scriptVmApplyArithmeticOperator(u8 *vm, u8 op) {
 /// \param op Bitwise operation: 20 AND, 21 OR, 22 right shift, or 23 left shift.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80115B38 (0x80115B38).
-void scriptVmApplyBitwiseOperator(u8 *vm, u8 op) {
+void scriptVmApplyBitwiseOperator(ScriptVm *vm, u8 op) {
     ScriptValue right, left, result;
     s32 value, rhs, lhs;
     scriptVmPopValue(vm, &right);
@@ -513,7 +513,7 @@ f32 fabsf(f32);
 /// \param op Operation: 11 equality, 12 inequality, 13 greater, 14 less, 15 greater-or-equal, 16 less-or-equal, 18 logical AND, or 19 logical OR.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80115CBC (0x80115CBC).
-void scriptVmApplyComparisonOperator(u8 *vm, u8 op) {
+void scriptVmApplyComparisonOperator(ScriptVm *vm, u8 op) {
     ScriptValue right, left, result;
     s32 value;
     f32 fr, fl;
@@ -600,7 +600,6 @@ void scriptVmApplyComparisonOperator(u8 *vm, u8 op) {
     scriptVmPushValue(vm, &result);
 }
 
-
 /// Push an integer onto the script value stack.
 /// \param vm Script context with stack capacity available.
 /// \param value Integer to push.
@@ -610,7 +609,7 @@ void scriptVmPushInteger(ScriptVm *vm, s32 value) {
     ScriptValue valueBox;
 
     scriptValueSetInteger(&valueBox, value);
-    scriptVmPushValue((u8 *)vm, &valueBox);
+    scriptVmPushValue(vm, &valueBox);
 }
 
 /// Push a floating-point number onto the script value stack.
@@ -622,7 +621,7 @@ void scriptVmPushFloat(ScriptVm *vm, f32 value) {
     ScriptValue valueBox;
 
     scriptValueSetFloat(&valueBox, value);
-    scriptVmPushValue((u8 *)vm, &valueBox);
+    scriptVmPushValue(vm, &valueBox);
 }
 
 /// Push a string pointer onto the script value stack.
@@ -634,7 +633,7 @@ void scriptVmPushStringPointer(ScriptVm *vm, char *text) {
     ScriptValue valueBox;
 
     scriptValueSetStringPointer(&valueBox, text);
-    scriptVmPushValue((u8 *)vm, &valueBox);
+    scriptVmPushValue(vm, &valueBox);
 }
 
 /// Pop a numeric script value and convert it to an integer.
@@ -644,7 +643,7 @@ void scriptVmPushStringPointer(ScriptVm *vm, char *text) {
 s32 scriptVmPopInteger(ScriptVm *vm) {
     ScriptValue valueBox;
 
-    scriptVmPopValue((u8 *)vm, &valueBox);
+    scriptVmPopValue(vm, &valueBox);
     return scriptValueGetInteger((u8 *)&valueBox);
 }
 
@@ -655,7 +654,7 @@ s32 scriptVmPopInteger(ScriptVm *vm) {
 f32 scriptVmPopFloat(ScriptVm *vm) {
     ScriptValue valueBox;
 
-    scriptVmPopValue((u8 *)vm, &valueBox);
+    scriptVmPopValue(vm, &valueBox);
     return scriptValueGetFloat(&valueBox);
 }
 
@@ -668,7 +667,7 @@ char *scriptVmPopString(ScriptVm *vm) {
     char *text;
     s32 index;
     s32 test;
-    scriptVmPopValue((u8 *)vm, &box);
+    scriptVmPopValue(vm, &box);
     if (box.data.tag == SCRIPT_VALUE_STRING_INDEX || box.data.tag == SCRIPT_VALUE_STRING_POINTER)
         test = 1;
     else
@@ -746,20 +745,20 @@ loop_3:
         goto loop_2;
     case 31: {
         ScriptValue sp98;
-        scriptVmPopValue((u8 *)vm, &sp98);
+        scriptVmPopValue(vm, &sp98);
         goto loop_2;
     }
     case 3:
     case 4:
     case 17:
-        scriptVmApplyUnaryOperator((u8 *)vm, op);
+        scriptVmApplyUnaryOperator(vm, op);
         goto loop_2;
     case 5:
     case 6:
     case 7:
     case 8:
     case 9:
-        scriptVmApplyArithmeticOperator((u8 *)vm, op);
+        scriptVmApplyArithmeticOperator(vm, op);
         goto loop_2;
     case 11:
     case 12:
@@ -769,30 +768,30 @@ loop_3:
     case 16:
     case 18:
     case 19:
-        scriptVmApplyComparisonOperator((u8 *)vm, op);
+        scriptVmApplyComparisonOperator(vm, op);
         goto loop_2;
     case 20:
     case 21:
     case 22:
     case 23:
-        scriptVmApplyBitwiseOperator((u8 *)vm, op);
+        scriptVmApplyBitwiseOperator(vm, op);
         goto loop_2;
     case 24:
-        scriptVmPushValue((u8 *)vm, (ScriptValue *)(vm->program + vm->instructionOffset));
+        scriptVmPushValue(vm, (ScriptValue *)(vm->program + vm->instructionOffset));
         vm->instructionOffset = (s32)(vm->instructionOffset + 5);
         goto loop_3;
     case 25:
-        scriptVmPushValue((u8 *)vm, scriptVmReadVariableReference((u8 *)vm));
+        scriptVmPushValue(vm, scriptVmReadVariableReference(vm));
         goto loop_2;
     case 10:
-        scriptVmPopValue((u8 *)vm, scriptVmReadVariableReference((u8 *)vm));
+        scriptVmPopValue(vm, scriptVmReadVariableReference(vm));
         goto loop_2;
     case 33: {
         u8 *elements;
         s32 elementIndex;
-        elements = (u8 *)scriptVmReadVariableReference((u8 *)vm);
-        elementIndex = scriptVmPopInteger((ScriptVm *)((s32)vm));
-        scriptVmPushValue((u8 *)vm, (ScriptValue *)((u8(*)[5])elements)[elementIndex]);
+        elements = (u8 *)scriptVmReadVariableReference(vm);
+        elementIndex = scriptVmPopInteger(vm);
+        scriptVmPushValue(vm, (ScriptValue *)((u8(*)[5])elements)[elementIndex]);
         goto loop_2;
     }
     case 34: {
@@ -800,9 +799,9 @@ loop_3:
         s32 i;
         s32 elementIndex;
         ScriptValue value;
-        elements = scriptVmReadVariableReference((u8 *)vm);
-        scriptVmPopValue((u8 *)vm, &value);
-        elementIndex = scriptVmPopInteger((ScriptVm *)((s32)vm));
+        elements = scriptVmReadVariableReference(vm);
+        scriptVmPopValue(vm, &value);
+        elementIndex = scriptVmPopInteger(vm);
         for (i = 0; i < 5; i++) {
             elements[elementIndex].bytes[i] = value.bytes[i];
         }
@@ -825,7 +824,7 @@ loop_3:
     case 29: {
         s32 condition;
         ScriptValue sp6C;
-        scriptVmPopValue((u8 *)vm, &sp6C);
+        scriptVmPopValue(vm, &sp6C);
         condition = scriptValueGetInteger((u8 *)sp6C.bytes);
         if (condition == 0) {
             vm->instructionOffset = scriptValueGetInteger((u8 *)(vm->program + vm->instructionOffset));
@@ -849,7 +848,7 @@ loop_3:
         s32 callTargetOffset;
         callTargetOffset = scriptValueGetInteger((u8 *)(vm->program + vm->instructionOffset));
         vm->instructionOffset = (s32)(vm->instructionOffset + 5);
-        scriptVmSaveReturnLocation((u8 *)vm);
+        scriptVmSaveReturnLocation(vm);
         vm->instructionOffset = callTargetOffset;
         goto loop_2;
     }
@@ -857,13 +856,13 @@ loop_3:
         s32 restoredFrameIndex;
         ScriptValue sp58;
         s32 restoredFrameBase;
-        scriptVmPopValue((u8 *)vm, &sp58);
-        restoredFrameIndex = scriptVmPopInteger((ScriptVm *)((s32)vm));
-        restoredFrameBase = scriptVmPopInteger((ScriptVm *)((s32)vm));
-        scriptVmRestoreStackDepth((u8 *)vm);
-        scriptVmPushValue((u8 *)vm, &sp58);
+        scriptVmPopValue(vm, &sp58);
+        restoredFrameIndex = scriptVmPopInteger(vm);
+        restoredFrameBase = scriptVmPopInteger(vm);
+        scriptVmRestoreStackDepth(vm);
+        scriptVmPushValue(vm, &sp58);
         vm->localFrameBases[restoredFrameIndex] = restoredFrameBase;
-        scriptVmRestoreReturnLocation((u8 *)vm);
+        scriptVmRestoreReturnLocation(vm);
         goto loop_2;
     }
     case 32: {
@@ -872,18 +871,18 @@ loop_3:
         s32 frameIndex;
         s32 previousFrameBase;
         s32 *localSlot;
-        argumentCount = scriptVmReadIntegerOperand((u8 *)vm);
-        localCount = scriptVmReadIntegerOperand((u8 *)vm);
-        frameIndex = scriptVmReadIntegerOperand((u8 *)vm);
+        argumentCount = scriptVmReadIntegerOperand(vm);
+        localCount = scriptVmReadIntegerOperand(vm);
+        frameIndex = scriptVmReadIntegerOperand(vm);
         vm->stackDepth = (s32)(vm->stackDepth - argumentCount);
-        scriptVmSaveStackDepth((u8 *)vm);
+        scriptVmSaveStackDepth(vm);
         _bzero(((u8 *)vm->values) + ((vm->stackDepth + argumentCount) * 5), (localCount - argumentCount) * 5);
         localSlot = &vm->localFrameBases[frameIndex];
         previousFrameBase = *localSlot;
         *localSlot = vm->stackDepth;
         vm->stackDepth = (s32)(vm->stackDepth + localCount);
-        scriptVmPushInteger((ScriptVm *)((s32)vm), previousFrameBase);
-        scriptVmPushInteger((ScriptVm *)((s32)vm), frameIndex);
+        scriptVmPushInteger(vm, previousFrameBase);
+        scriptVmPushInteger(vm, frameIndex);
         goto loop_2;
     }
     default:
