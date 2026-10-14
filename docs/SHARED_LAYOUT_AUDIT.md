@@ -915,3 +915,24 @@ or interpreting the unresolved two-byte resource field.
 
 A variadic heap diagnostic replacement was also tested and reverted after
 failing ROM matching; the retained K&R diagnostic exception remains unchanged.
+
+## Uniform timed action-cue handler contract
+
+All 27 functions registered for timed cue opcodes 19 through 45 now share
+`TimedActionCueHandler`: live actor pointer, `ActorScriptState *`, borrowed
+`ActorActionCueCommand *` and writable floating-point clock pointer, returning
+void. The dispatcher passes the actor's typed state. Unused arguments now
+retain their actual dispatch types rather than integer substitutes. Private
+operand views and matching address expressions remain where required.
+
+The linked 27-word table at 0x80089490 was checked against every handler's
+original function address; every entry corresponds to a definition with the
+common signature. Ghidra at 0x80024DD0 confirms four-argument dispatch. Jump,
+wait and termination operations 46 through 49 remain dispatcher operations,
+outside the callback table. Selection tags below nineteen retain their existing
+meaning and do not invoke a handler.
+
+The callback documentation describes purpose, parameters, borrowed lifetimes
+and clock mutation. Opcode behavior, control flow, resource bytes and original
+function/address notes are preserved. The full handler conversion, redundant
+state-cast removal and contract changes each passed all 483 original objects.

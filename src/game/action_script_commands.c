@@ -219,10 +219,11 @@ u8 romWindowReadByte(CueBankRomWindow *reader, s32 address) {
 /// \param elapsed Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80023480 (0x80023480).
-void actionCommandConfigureActorPartAnimation(u8 *actor, u8 *state, u8 *command, f32 *elapsed) {
-    actorSetPartTextureAnimation(actor, *(f32 *)(command + 0xC), *(s32 *)(command + 0x10), *(s32 *)(command + 8));
+void actionCommandConfigureActorPartAnimation(u8 *actor, ActorScriptState *state, ActorActionCueCommand *command,
+                                              f32 *elapsed) {
+    actorSetPartTextureAnimation(actor, *(f32 *)(((u8 *)command) + 0xC), *(s32 *)(((u8 *)command) + 0x10),
+                                 *(s32 *)(((u8 *)command) + 8));
 }
-
 
 /// Changes the animation of the actor’s held item when that item is available.
 /// \param actor Unused actor argument.
@@ -231,15 +232,15 @@ void actionCommandConfigureActorPartAnimation(u8 *actor, u8 *state, u8 *command,
 /// \param elapsed Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800234B8 (0x800234B8).
-void actionCommandChangeHeldItemAnimation(s32 actor, u8 *state, u8 *command, f32 *elapsed) {
+void actionCommandChangeHeldItemAnimation(u8 *actor, ActorScriptState *state, ActorActionCueCommand *command,
+                                          f32 *elapsed) {
     u8 *liveObject;
 
-    liveObject = objectFindLiveByHandle(((ActorScriptState *)state)->heldItemHandle);
+    liveObject = objectFindLiveByHandle(state->heldItemHandle);
     if (liveObject != 0) {
         itemStartMaterialAnimation(liveObject, ((ActionScalarArguments *)((u8 *)command + 8))->integer);
     }
 }
-
 
 /// Plays a tracked actor sound with the pitch requested by an action command.
 /// \param actor Actor to receive the tracked sound.
@@ -248,9 +249,11 @@ void actionCommandChangeHeldItemAnimation(s32 actor, u8 *state, u8 *command, f32
 /// \param elapsed Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800234F8 (0x800234F8).
-void actionCommandPlayTrackedSoundWithPitch(s32 actor, u8 *state, u8 *command, f32 *elapsed) {
-    audioSetSoundEffectPitch(actorPlayTrackedSound(actor, ((ActionScalarArguments *)((u8 *)command + 8))->integer),
-                             ((ActionScalarArguments *)((u8 *)command + 8))->scalar);
+void actionCommandPlayTrackedSoundWithPitch(u8 *actor, ActorScriptState *state, ActorActionCueCommand *command,
+                                            f32 *elapsed) {
+    audioSetSoundEffectPitch(
+        actorPlayTrackedSound(((s32)actor), ((ActionScalarArguments *)((u8 *)command + 8))->integer),
+        ((ActionScalarArguments *)((u8 *)command + 8))->scalar);
 }
 
 #include "actor_interaction.h"
@@ -266,7 +269,8 @@ typedef struct {
 /// \param elapsed Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80023534 (0x80023534).
-void actionCommandPlayGroundContactEffects(u8 *object, u8 *state, ActorActionCueCommand *command, f32 *elapsed) {
+void actionCommandPlayGroundContactEffects(u8 *object, ActorScriptState *state, ActorActionCueCommand *command,
+                                           f32 *elapsed) {
     ActorActionCueCommand **source = &command;
     s32 ground;
     f64 random;
@@ -304,14 +308,14 @@ void actionCommandPlayGroundContactEffects(u8 *object, u8 *state, ActorActionCue
 /// \param elapsed Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80023674 (0x80023674).
-void actionCommandConfigureActorPartScale(s32 actor, u8 *state, u8 *command, f32 *elapsed) {
+void actionCommandConfigureActorPartScale(u8 *actor, ActorScriptState *state, ActorActionCueCommand *command,
+                                          f32 *elapsed) {
     u8 *p;
 
-    p = command + 8;
-    actorAppearanceSetVariant((u8 *)actor, *(s32 *)(command + 8), *(s32 *)(command + 0x10));
-    actorAppearanceSetScale((u8 *)actor, *(s32 *)p, *(f32 *)(p + 4));
+    p = ((u8 *)command) + 8;
+    actorAppearanceSetVariant(actor, *(s32 *)(((u8 *)command) + 8), *(s32 *)(((u8 *)command) + 0x10));
+    actorAppearanceSetScale(actor, *(s32 *)p, *(f32 *)(p + 4));
 }
-
 
 /// Sets the actor’s rendered color from an action command.
 /// \param actor Actor with an initialized tinted model part.
@@ -320,8 +324,8 @@ void actionCommandConfigureActorPartScale(s32 actor, u8 *state, u8 *command, f32
 /// \param elapsed Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800236C8 (0x800236C8).
-void actionCommandSetActorTint(s32 actor, s32 state, u8 *command, s32 elapsed) {
-    actorSetPartTint((u8 *)actor, command[0xB], *(f32 *)(command + 0xC), command[0x13]);
+void actionCommandSetActorTint(u8 *actor, ActorScriptState *state, ActorActionCueCommand *command, f32 *elapsed) {
+    actorSetPartTint(actor, ((u8 *)command)[0xB], *(f32 *)(((u8 *)command) + 0xC), ((u8 *)command)[0x13]);
 }
 
 /// Per-mode vertical launch factors, negated and multiplied by command speed.
@@ -359,7 +363,7 @@ typedef struct Launch {
 ///
 /// \note Portability: matching this function requires the accepted assembler-input boundary insertion declared in tools/binasm_patches/action_script_commands.json.
 /// \note Original decompilation identifier: \c func_80023788 (0x80023788).
-void actionCommandLaunchHeldItem(u8 *actor, u8 *state, ActorActionCueCommand *command, f32 *elapsed) {
+void actionCommandLaunchHeldItem(u8 *actor, ActorScriptState *state, ActorActionCueCommand *command, f32 *elapsed) {
     ActorActionCueCommand **source = &command;
     u8 *obj;
     f32 speed;
@@ -375,7 +379,7 @@ void actionCommandLaunchHeldItem(u8 *actor, u8 *state, ActorActionCueCommand *co
     f32 ang7;
     f32 dir[3];
 
-    obj = (u8 *)objectFindLiveByHandle(((ActorScriptState *)state)->heldItemHandle);
+    obj = (u8 *)objectFindLiveByHandle(state->heldItemHandle);
     if (obj == NULL) {
         return;
     }
@@ -384,7 +388,7 @@ void actionCommandLaunchHeldItem(u8 *actor, u8 *state, ActorActionCueCommand *co
     actorGetConfiguredAttachmentPosition(actor, ((RuntimeObjectPrefix *)obj)->radius, pos);
     switch (l->kind) {
     case 0:
-        if (((ActorScriptState *)state)->targetMode == 1 && (p = actorResolveStoredTarget(actor)) != NULL &&
+        if (state->targetMode == 1 && (p = actorResolveStoredTarget(actor)) != NULL &&
             ((RuntimeObjectPrefix *)p)->kind == 0x7F) {
             dx = gPlayerState.position[0] - ((RuntimeObjectPrefix *)obj)->position[0];
             dz = gPlayerState.position[2] - ((RuntimeObjectPrefix *)obj)->position[2];
@@ -399,14 +403,14 @@ void actionCommandLaunchHeldItem(u8 *actor, u8 *state, ActorActionCueCommand *co
     case 2:
     case 3:
     case 4:
-        ang = ((ActorScriptState *)state)->orientation[1] + gActionLaunchHeadingOffsets[l->kind];
+        ang = state->orientation[1] + gActionLaunchHeadingOffsets[l->kind];
         vel[0] = mathSinDegrees(ang) * speed;
         vel[1] = -gActionLaunchVerticalSpeedFactors[l->kind] * l->speed;
         vel[2] = mathCosDegrees(ang) * speed;
         break;
     case 6:
         speed *= randomNext() * 2.3283064365386963e-10 * 0.5 + 0.5;
-        ang6 = (((ActorScriptState *)state)->orientation[1] + gActionLaunchHeadingOffsets[l->kind]) +
+        ang6 = (state->orientation[1] + gActionLaunchHeadingOffsets[l->kind]) +
                (randomNext() * 2.3283064365386963e-10 - 0.5) * 90.0;
         vel[0] = mathSinDegrees(ang6) * speed;
         vel[1] = -gActionLaunchVerticalSpeedFactors[l->kind] * l->speed;
@@ -422,16 +426,16 @@ void actionCommandLaunchHeldItem(u8 *actor, u8 *state, ActorActionCueCommand *co
         fallingParticleCreate(randomBelow(7), randomBelow(3), pos, vel,
                       randomNext() * 2.3283064365386963e-10 * 0.4f + 0.8f);
         speed = randomNext() * 2.3283064365386963e-10 * 0.1f + 0.8f;
-        ang7 = (((ActorScriptState *)state)->orientation[1] + gActionLaunchHeadingOffsets[l->kind]) +
+        ang7 = (state->orientation[1] + gActionLaunchHeadingOffsets[l->kind]) +
                (randomNext() * 2.3283064365386963e-10 - 0.5) * 360.0;
         vel[0] = mathSinDegrees(ang7) * speed;
         vel[1] = -gActionLaunchVerticalSpeedFactors[l->kind] * l->speed;
         vel[2] = mathCosDegrees(ang7) * speed;
         break;
     case 5:
-        dir[0] = ((ActorScriptState *)state)->targetPosition[0] - ((RuntimeObjectPrefix *)obj)->worldPosition[0];
-        dir[1] = ((ActorScriptState *)state)->targetPosition[1] - ((RuntimeObjectPrefix *)obj)->worldPosition[1];
-        dir[2] = ((ActorScriptState *)state)->targetPosition[2] - ((RuntimeObjectPrefix *)obj)->worldPosition[2];
+        dir[0] = state->targetPosition[0] - ((RuntimeObjectPrefix *)obj)->worldPosition[0];
+        dir[1] = state->targetPosition[1] - ((RuntimeObjectPrefix *)obj)->worldPosition[1];
+        dir[2] = state->targetPosition[2] - ((RuntimeObjectPrefix *)obj)->worldPosition[2];
         vector3Normalize((f32 *)dir);
         vel[0] = dir[0] * speed;
         vel[1] = dir[1] * speed;
@@ -442,9 +446,8 @@ void actionCommandLaunchHeldItem(u8 *actor, u8 *state, ActorActionCueCommand *co
     }
     itemThrow(((RuntimeObjectPrefix *)obj)->handle, ((RuntimeObjectPrefix *)obj)->position, pos, vel,
               gActionLaunchThrowFlags[l->kind]);
-    ((ActorScriptState *)state)->lastInteractionMilliseconds = runtimeGetElapsedMilliseconds();
+    state->lastInteractionMilliseconds = runtimeGetElapsedMilliseconds();
 }
-
 
 /// Selects a nearby matching item for the actor to hold when it has no live held item.
 /// \param actor Actor that will hold the selected item.
@@ -453,18 +456,17 @@ void actionCommandLaunchHeldItem(u8 *actor, u8 *state, ActorActionCueCommand *co
 /// \param elapsed Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80023E30 (0x80023E30).
-void actionCommandPickUpNearbyItem(s32 actor, u8 *state, u8 *command, s32 elapsed) {
+void actionCommandPickUpNearbyItem(u8 *actor, ActorScriptState *state, ActorActionCueCommand *command, f32 *elapsed) {
     s32 pad[2]; /* unused, sizes the frame */
     f32 pos[3];
     u8 *r;
 
-    if (objectFindLiveByHandle(((ActorScriptState *)state)->heldItemHandle) == 0) {
-        actorGetConfiguredAttachmentPosition((u8 *)actor, 0.0f, pos);
-        r = itemFindNearest(pos, ((ActorScriptState *)state)->searchItemRange, 0.0f, 0.0f, 360.0f,
-                            ((ActorScriptState *)state)->searchItemKind, ((ActorScriptState *)state)->searchItemKind,
-                            *(s32 *)(command + 8), 0);
+    if (objectFindLiveByHandle(state->heldItemHandle) == 0) {
+        actorGetConfiguredAttachmentPosition(actor, 0.0f, pos);
+        r = itemFindNearest(pos, state->searchItemRange, 0.0f, 0.0f, 360.0f, state->searchItemKind,
+                            state->searchItemKind, *(s32 *)(((u8 *)command) + 8), 0);
         if (r != NULL) {
-            actorTryHoldItem((u8 *)actor, ((RuntimeObjectPrefix *)r)->handle, 0);
+            actorTryHoldItem(actor, ((RuntimeObjectPrefix *)r)->handle, 0);
         }
     }
 }
@@ -480,7 +482,8 @@ typedef struct SpawnChoice {
 /// \param unused Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80023ECC (0x80023ECC).
-void actionCommandCreateRandomHeldItem(u8 *object, u8 *state, ActorActionCueCommand *command, f32 *unused) {
+void actionCommandCreateRandomHeldItem(u8 *object, ActorScriptState *state, ActorActionCueCommand *command,
+                                       f32 *unused) {
     ActorActionCueCommand **source = &command;
     s32 count;
     struct {
@@ -488,7 +491,7 @@ void actionCommandCreateRandomHeldItem(u8 *object, u8 *state, ActorActionCueComm
     } position;
     u8 *spawned;
     SpawnChoice *choice;
-    if (objectFindLiveByHandle(((ActorScriptState *)state)->heldItemHandle) == 0) {
+    if (objectFindLiveByHandle(state->heldItemHandle) == 0) {
         actorGetConfiguredAttachmentPosition((u8 *)object, 0.0f, &position.x);
         choice = (SpawnChoice *)(*source)->args;
         count = choice->kindCount;
@@ -499,7 +502,6 @@ void actionCommandCreateRandomHeldItem(u8 *object, u8 *state, ActorActionCueComm
         }
     }
 }
-
 
 /// Creates a vertical stack of effects at a world position.
 /// \param position World-space base position as three consecutive coordinates.
@@ -559,7 +561,8 @@ typedef struct {
 /// \param unused Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80024074 (0x80024074).
-void actionCommandEmitPairedTargetedBursts(u8 *object, u8 *state, BurstCommand *command, s32 unused) {
+void actionCommandEmitPairedTargetedBursts(u8 *object, ActorScriptState *state, ActorActionCueCommand *command,
+                                           f32 *unused) {
     s32 count;
     s32 particles;
     f32 left[3];
@@ -573,10 +576,10 @@ void actionCommandEmitPairedTargetedBursts(u8 *object, u8 *state, BurstCommand *
         f32 lifetime;
         s32 kind;
     } *args;
-    args = (void *)&command->count;
-    count = args->count < ((ActorScriptState *)state)->targetedBurstAllowance ? args->count : ((ActorScriptState *)state)->targetedBurstAllowance;
+    args = (void *)&((BurstCommand *)command)->count;
+    count = args->count < state->targetedBurstAllowance ? args->count : state->targetedBurstAllowance;
     if (count > 0) {
-        ((ActorScriptState *)state)->targetedBurstAllowance -= count;
+        state->targetedBurstAllowance -= count;
         actorGetPartWorldPosition(object, 0x74, left);
         actorGetPartWorldPosition(object, 0x75, right);
         target = (f32 *)actorGetEffectTargetPosition(object);
@@ -599,7 +602,7 @@ void actionCommandEmitPairedTargetedBursts(u8 *object, u8 *state, BurstCommand *
         other = actorGetTrackingTarget(object);
         if (other != NULL && ((RuntimeObjectPrefix *)other)->kind == 0x86 &&
             itemTryTransformToReplacement(((RuntimeObjectPrefix *)other)->handle)) {
-            ((ActorScriptState *)state)->costedActionResult = 1;
+            state->costedActionResult = 1;
         }
     }
 }
@@ -616,7 +619,8 @@ typedef struct {
 /// \param unused2 Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002436C (0x8002436C).
-void actionCommandEmitParticlesAtTarget(u8 *object, u8 *unused, ActorActionCueCommand *command, f32 *unused2) {
+void actionCommandEmitParticlesAtTarget(u8 *object, ActorScriptState *unused, ActorActionCueCommand *command,
+                                        f32 *unused2) {
     EmitArgs *args = (EmitArgs *)command->args;
     u8 *target;
     switch (args->target) {
@@ -647,11 +651,12 @@ typedef struct {
 /// \param elapsed Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80024474 (0x80024474).
-void actionCommandCreateScatteredParticleEffect(u8 *actor, s32 state, u8 *command, s32 elapsed) {
+void actionCommandCreateScatteredParticleEffect(u8 *actor, ActorScriptState *state, ActorActionCueCommand *command,
+                                                f32 *elapsed) {
     u8 *resolved;
     u8 *object;
     GroundVector ground;
-    if (*(s32 *)(command + 8) == 2) {
+    if (*(s32 *)(((u8 *)command) + 8) == 2) {
         resolved = (u8 *)actorGetTrackingTarget(actor);
         object = resolved;
         if (object == NULL) {
@@ -666,7 +671,7 @@ void actionCommandCreateScatteredParticleEffect(u8 *actor, s32 state, u8 *comman
                                         ((RuntimeObjectPrefix *)object)->worldPosition[2], NULL);
     ground.v[2] = ((RuntimeObjectPrefix *)object)->worldPosition[2];
     effectEmitterCreateForStyle(EFFECT_EMIT_SCATTERED_PARTICLES, ((RuntimeObjectPrefix *)object)->worldPosition,
-                                *(f32 *)(command + 0xC), 0, ((RuntimeObjectPrefix *)object)->handle, -6.0f);
+                                *(f32 *)(((u8 *)command) + 0xC), 0, ((RuntimeObjectPrefix *)object)->handle, -6.0f);
 }
 
 /// Script operands for a converging effect around an actor or its linked part.
@@ -686,14 +691,15 @@ typedef char LinkedPartEffectLifetimeOffsetCheck[(((u32) & ((LinkedPartEffectArg
 /// \param elapsed Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80024520 (0x80024520).
-void actionCommandCreateLinkedPartEffect(u8 *actor, u8 *state, u8 *command, f32 *elapsed) {
+void actionCommandCreateLinkedPartEffect(u8 *actor, ActorScriptState *state, ActorActionCueCommand *command,
+                                         f32 *elapsed) {
     u8 *linkedPart;
     LinkedPartEffectArguments *commandArguments;
     LinkedPartEffectArguments *effectArguments;
     u8 *effectOwner;
 
     linkedPart = actorFindPart(actor, 0x79);
-    commandArguments = (LinkedPartEffectArguments *)(command + 8);
+    commandArguments = (LinkedPartEffectArguments *)(((u8 *)command) + 8);
     effectOwner = linkedPart;
     if (linkedPart == 0) {
         effectOwner = actor;
@@ -712,7 +718,8 @@ s32 itemTryTransformToReplacement(s32); /* extern */
 /// \param elapsed Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80024578 (0x80024578).
-void actionCommandCreateItemTransformationEffect(u8 *actor, u8 *state, u8 *command, f32 *elapsed) {
+void actionCommandCreateItemTransformationEffect(u8 *actor, ActorScriptState *state, ActorActionCueCommand *command,
+                                                 f32 *elapsed) {
     u8 *effectPosition;
 
     if (((ActionScalarArguments *)((u8 *)command + 8))->integer == 2) {
@@ -723,8 +730,8 @@ void actionCommandCreateItemTransformationEffect(u8 *actor, u8 *state, u8 *comma
     wispEffectCreate(0, ((RuntimeObjectPrefix *)actor)->worldPosition[0],
                      ((RuntimeObjectPrefix *)actor)->worldPosition[1] + 2.0f,
                      ((RuntimeObjectPrefix *)actor)->worldPosition[2]);
-    if (itemTryTransformToReplacement(((ActorScriptState *)state)->heldItemHandle) != 0) {
-        ((ActorScriptState *)state)->costedActionResult = 1;
+    if (itemTryTransformToReplacement(state->heldItemHandle) != 0) {
+        state->costedActionResult = 1;
     }
 }
 
@@ -745,10 +752,11 @@ typedef char
 /// \param elapsed Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80024618 (0x80024618).
-void actionCommandCreateFlickeringPartEffect(s32 actor, u8 *state, u8 *command, f32 *elapsed) {
-    FollowingEffectArguments *arguments = (FollowingEffectArguments *)(command + 8);
+void actionCommandCreateFlickeringPartEffect(u8 *actor, ActorScriptState *state, ActorActionCueCommand *command,
+                                             f32 *elapsed) {
+    FollowingEffectArguments *arguments = (FollowingEffectArguments *)(((u8 *)command) + 8);
 
-    flickeringEffectCreate(((RuntimeObjectPrefix *)actorGetDefaultPart((u8 *)actor))->handle, arguments->lifetime,
+    flickeringEffectCreate(((RuntimeObjectPrefix *)actorGetDefaultPart(actor))->handle, arguments->lifetime,
                            arguments->count);
 }
 
@@ -759,14 +767,14 @@ void actionCommandCreateFlickeringPartEffect(s32 actor, u8 *state, u8 *command, 
 /// \param elapsed Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80024658 (0x80024658).
-void actionCommandCreateStackedEffects(u8 *actor, u8 *state, u8 *command, f32 *elapsed) {
+void actionCommandCreateStackedEffects(u8 *actor, ActorScriptState *state, ActorActionCueCommand *command,
+                                       f32 *elapsed) {
     if (((ActionScalarArguments *)((u8 *)command + 8))->integer == 2) {
         effectCreateVerticalStack(actorGetEffectTargetPosition(actor));
         return;
     }
     effectCreateVerticalStack(actor + 0x44);
 }
-
 
 /// Create an animated radial effect that follows the actor.
 /// \param actor Actor receiving the effect.
@@ -775,8 +783,9 @@ void actionCommandCreateStackedEffects(u8 *actor, u8 *state, u8 *command, f32 *e
 /// \param elapsed Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800246B0 (0x800246B0).
-void actionCommandCreateAnimatedRadialEffect(u8 *actor, u8 *state, u8 *command, f32 *elapsed) {
-    FollowingEffectArguments *arguments = (FollowingEffectArguments *)(command + 8);
+void actionCommandCreateAnimatedRadialEffect(u8 *actor, ActorScriptState *state, ActorActionCueCommand *command,
+                                             f32 *elapsed) {
+    FollowingEffectArguments *arguments = (FollowingEffectArguments *)(((u8 *)command) + 8);
 
     animatedRadialEffectCreate(((RuntimeObjectPrefix *)actor)->handle, arguments->lifetime, arguments->count);
 }
@@ -794,7 +803,8 @@ typedef struct {
 /// \param unused Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800246E8 (0x800246E8).
-void actionCommandEmitEffectAtSelectedAttachment(u8 *object, u8 *state, ActorActionCueCommand *command, f32 *unused) {
+void actionCommandEmitEffectAtSelectedAttachment(u8 *object, ActorScriptState *state, ActorActionCueCommand *command,
+                                                 f32 *unused) {
     EmitArgs246 *args;
     u8 *other;
     s32 target;
@@ -821,7 +831,7 @@ void actionCommandEmitEffectAtSelectedAttachment(u8 *object, u8 *state, ActorAct
                                         ((RuntimeObjectPrefix *)other)->handle, ((RuntimeObjectPrefix *)object)->handle,
                                         ((RuntimeObjectPrefix *)object)->radius);
         } else {
-            effectEmitterCreateForStyle(args->kind, ((ActorScriptState *)state)->targetPosition, args->lifetime, 0,
+            effectEmitterCreateForStyle(args->kind, state->targetPosition, args->lifetime, 0,
                                         ((RuntimeObjectPrefix *)object)->handle,
                                         ((RuntimeObjectPrefix *)object)->radius);
         }
@@ -839,7 +849,8 @@ void actionCommandEmitEffectAtSelectedAttachment(u8 *object, u8 *state, ActorAct
 /// \param elapsed Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80024864 (0x80024864).
-void actionCommandCreateEffectAtActorOrTarget(u8 *actor, u8 *state, u8 *command, f32 *elapsed) {
+void actionCommandCreateEffectAtActorOrTarget(u8 *actor, ActorScriptState *state, ActorActionCueCommand *command,
+                                              f32 *elapsed) {
     s32 positionKind;
     u8 *trackingTarget;
 
@@ -866,7 +877,6 @@ void actionCommandCreateEffectAtActorOrTarget(u8 *actor, u8 *state, u8 *command,
     }
 }
 
-
 /// Creates an animated effect attached to the actor, replacing its previous attached effect.
 /// \param actor Actor supplying the effect owner or position.
 /// \param state Unused action-handler context.
@@ -874,7 +884,8 @@ void actionCommandCreateEffectAtActorOrTarget(u8 *actor, u8 *state, u8 *command,
 /// \param elapsed Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002490C (0x8002490C).
-void actionCommandCreateAttachedEffect(u8 *actor, u8 *state, u8 *command, f32 *elapsed) {
+void actionCommandCreateAttachedEffect(u8 *actor, ActorScriptState *state, ActorActionCueCommand *command,
+                                       f32 *elapsed) {
     attachedEffectCreate(actor, ((ActionScalarArguments *)((u8 *)command + 8))->integer,
                          (s32)((ActionScalarArguments *)((u8 *)command + 8))->scalar);
 }
@@ -900,7 +911,7 @@ typedef struct ArgsSpawn {
 /// \param elapsed Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80024948 (0x80024948).
-void actionCommandStunPlayerInRange(u8 *actor, u8 *state, ActorActionCueCommand *command, s32 elapsed) {
+void actionCommandStunPlayerInRange(u8 *actor, ActorScriptState *state, ActorActionCueCommand *command, f32 *elapsed) {
     u8 *o;
     ArgsSpawn *a;
     f32 dist;
@@ -913,12 +924,10 @@ void actionCommandStunPlayerInRange(u8 *actor, u8 *state, ActorActionCueCommand 
     a = (ArgsSpawn *)command->args;
     dist = vector3Length(d);
     TRACE("vec:%f,%f,%f len:%f  stunRange:%f\n", d[0], d[1], d[2], dist, a->range);
-    if (dist <= a->range || (((ActorScriptState *)state)->targetMode != 0 &&
-                             gPlayerModeState == ((ActorScriptState *)state)->targetHandle)) {
+    if (dist <= a->range || (state->targetMode != 0 && gPlayerModeState == state->targetHandle)) {
         playerBeginStun((u8 *)&gPlayerState, a->base);
     }
 }
-
 
 /* Script arguments: integer endpoints and a floating-point duration. */
 typedef struct {
@@ -934,17 +943,18 @@ typedef struct {
 /// \param elapsed Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80024A18 (0x80024A18).
-void actionCommandStartDirectionMotion(s32 actor, u8 *state, u8 *command, s32 elapsed) {
-    LaunchArgs24A18 *p = (LaunchArgs24A18 *)(command + 8);
+void actionCommandStartDirectionMotion(u8 *actor, ActorScriptState *state, ActorActionCueCommand *command,
+                                       f32 *elapsed) {
+    LaunchArgs24A18 *p = (LaunchArgs24A18 *)(((u8 *)command) + 8);
     DirectionAngularRates pts[2];
     s32 i;
 
     for (i = 0; i < 2; i++) {
         pts[i].pitch = p->start;
         pts[i].yaw = p->end;
-        directionAnimationSetNextPoseAngles(&((ActorScriptState *)state)->directionAnimation, -40.0f, 0.0f, i);
+        directionAnimationSetNextPoseAngles(&state->directionAnimation, -40.0f, 0.0f, i);
     }
-    directionAnimationStartMotion(&((ActorScriptState *)state)->directionAnimation, p->duration, pts);
+    directionAnimationStartMotion(&state->directionAnimation, p->duration, pts);
 }
 
 #include "scene_configuration.h"
@@ -961,18 +971,18 @@ typedef struct {
 /// \param elapsed Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80024AE0 (0x80024AE0).
-void actionCommandConfigureHeldItem(s32 actor, u8 *state, u8 *command, f32 *elapsed) {
-    Pair24AE0 *p = (Pair24AE0 *)(command + 8);
+void actionCommandConfigureHeldItem(u8 *actor, ActorScriptState *state, ActorActionCueCommand *command, f32 *elapsed) {
+    Pair24AE0 *p = (Pair24AE0 *)(((u8 *)command) + 8);
     f32 *v;
     f32 f;
 
     if (p->id >= 0) {
         if (p->id < 6) {
-            ((ActorScriptState *)state)->attachmentMode = p->id;
+            state->attachmentMode = p->id;
         }
     }
     if (p->val > 0.0f) {
-        v = (f32 *)objectFindLiveByHandle(((ActorScriptState *)state)->heldItemHandle);
+        v = (f32 *)objectFindLiveByHandle(state->heldItemHandle);
         if (v != NULL) {
             f = gCurrentAreaConfiguration->objectScale * p->val;
             v[0] = f;
@@ -982,7 +992,6 @@ void actionCommandConfigureHeldItem(s32 actor, u8 *state, u8 *command, f32 *elap
     }
 }
 
-
 /// Requests a transformation of the actor’s stored target item and optionally plays a sound when no replacement is produced.
 /// \param actor Actor whose stored target item is requested to transform.
 /// \param state Unused action-handler context.
@@ -990,14 +999,15 @@ void actionCommandConfigureHeldItem(s32 actor, u8 *state, u8 *command, f32 *elap
 /// \param elapsed Unused action-handler timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80024B70 (0x80024B70).
-void actionCommandTransformTargetItem(s32 actor, u8 *state, u8 *command, f32 *elapsed) {
+void actionCommandTransformTargetItem(u8 *actor, ActorScriptState *state, ActorActionCueCommand *command,
+                                      f32 *elapsed) {
     s32 replacementHandle;
     u8 *targetItem;
     u8 *transformArguments;
 
-    targetItem = actorResolveStoredTarget((u8 *)actor);
+    targetItem = actorResolveStoredTarget(actor);
     if ((targetItem == NULL) ||
-        (transformArguments = command + 8, ((u16)((RuntimeObjectPrefix *)targetItem)->kind != 0x86))) {
+        (transformArguments = ((u8 *)command) + 8, ((u16)((RuntimeObjectPrefix *)targetItem)->kind != 0x86))) {
         TRACE("Warning: Tried to change non_item_goal_obj\n");
         if (targetItem != NULL) {
             objectDebugReportNoOp(targetItem);
@@ -1026,7 +1036,8 @@ typedef struct ArgsMsg {
 /// \param unusedTiming Unused timing argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80024C30 (0x80024C30).
-void actionCommandNotifyStoredTarget(u8 *actor, s32 unusedState, ActorActionCueCommand *command, s32 unusedTiming) {
+void actionCommandNotifyStoredTarget(u8 *actor, ActorScriptState *unusedState, ActorActionCueCommand *command,
+                                     f32 *unusedTiming) {
     ArgsMsg *args;
     ScriptMessage m;
     u8 *o = actorResolveStoredTarget(actor);
@@ -1050,7 +1061,8 @@ void actionCommandNotifyStoredTarget(u8 *actor, s32 unusedState, ActorActionCueC
 /// \param clock Writable action script clock in seconds to adjust.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80024D00 (0x80024D00).
-void actionCommandAdvanceClock(s32 unusedActor, u8 *unusedState, u8 *command, f32 *clock) {
+void actionCommandAdvanceClock(u8 *unusedActor, ActorScriptState *unusedState, ActorActionCueCommand *command,
+                               f32 *clock) {
     *clock += ((ActionScalarArguments *)((u8 *)command + 8))->scalar;
 }
 
@@ -1061,9 +1073,10 @@ void actionCommandAdvanceClock(s32 unusedActor, u8 *unusedState, u8 *command, f3
 /// \param clock Writable action script clock in seconds to adjust.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80024D1C (0x80024D1C).
-void actionCommandAdvanceClockRandomly(s32 unusedActor, s32 unusedState, u8 *command, f32 *clock) {
-    s32 n = *(s32 *)(command + 8);
-    f32 amp = *(f32 *)(command + 0xC);
+void actionCommandAdvanceClockRandomly(u8 *unusedActor, ActorScriptState *unusedState, ActorActionCueCommand *command,
+                                       f32 *clock) {
+    s32 n = *(s32 *)(((u8 *)command) + 8);
+    f32 amp = *(f32 *)(((u8 *)command) + 0xC);
     s32 i;
 
     for (i = 0; i < n; i++) {
@@ -1075,10 +1088,16 @@ typedef struct CmdJump {
     ActorActionCueCommand *target;
     f32 reset;
 } CmdJump;
-typedef void (*CmdFn)(u8 *, u8 *, ActorActionCueCommand *, f32 *);
+/// Execute one ready timed actor cue using borrowed playback state.
+/// \param actor Live actor performing the cue.
+/// \param state Actor-owned initialized behavior state, borrowed for this call.
+/// \param command Borrowed current cue with operands valid for its opcode.
+/// \param clock Writable playback time in seconds; a handler may adjust it.
+/// \returns Nothing.
+typedef void (*TimedActionCueHandler)(u8 *actor, ActorScriptState *state, ActorActionCueCommand *command, f32 *clock);
 /// Timed action-command handlers indexed by opcode minus nineteen.
 /// \note Original identifier: \c D_80089490 (0x80089490).
-extern CmdFn gTimedActionCommandHandlers[];
+extern TimedActionCueHandler gTimedActionCommandHandlers[];
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
@@ -1091,7 +1110,7 @@ extern f32 gRuntimeFrameSeconds;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80024DD0 (0x80024DD0).
 void actorUpdateActionScript(u8 *actor, ActorActionCueCommand **nextCommand, f32 *clock) {
-    u8 *st = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    ActorScriptState *st = ((RuntimeObjectPrefix *)actor)->state.actor;
     ActorActionCueCommand *c;
     CmdJump *j;
     s32 op;
@@ -1117,7 +1136,7 @@ void actorUpdateActionScript(u8 *actor, ActorActionCueCommand **nextCommand, f32
             }
             break;
         case 47:
-            d = *(f32 *)(st + 0x134) - *(f32 *)(st + 0x138);
+            d = *(f32 *)((u8 *)st + 0x134) - *(f32 *)((u8 *)st + 0x138);
             if (d < 0.001f && d > -0.001f) {
                 *clock = 0.0f;
                 c++;
