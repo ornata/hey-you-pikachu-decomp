@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 1445,
-      "unique_spellings": 659,
+      "occurrences": 1263,
+      "unique_spellings": 638,
       "files": 68
     },
     "cast_offset_candidates": {
@@ -645,414 +645,174 @@
         "vector_operations.h"
       ],
       "matching_exceptions": {
-        "actorApproachTargetInThreeDimensions": "The shared maze root is MazeNode*. Bounds reads at checked MazeNode x/w/z/d offsets retain explicit byte views: direct member reads change allocated instructions under IDO. The canonical root ownership and allocation are established; a matching direct-field representation remains to be recovered."
+        "actorApproachTargetInThreeDimensions": "The shared maze root is MazeNode*. Bounds reads at checked MazeNode x/w/z/d offsets retain explicit byte views: direct member reads change allocated instructions under IDO. The canonical root ownership and allocation are established; a matching direct-field representation remains to be recovered.",
+        "actorAdvanceToTarget": "Adopting the established RuntimeObjectPrefix and ActorScriptState scalar members together in this callback changes allocated instructions and fails the ROM gate. Other movement callbacks accept these views. Retain this callback's byte accesses; isolate the individual field conversion and IDO load/address ordering before replacing it. Layout meaning is established, but a matching representation remains unresolved.",
+        "actorTumbleTowardTarget": "Adopting the established RuntimeObjectPrefix and ActorScriptState scalar members together in this callback changes allocated instructions and fails the ROM gate. Other movement callbacks accept these views. Retain this callback's byte accesses; isolate the individual field conversion and IDO load/address ordering before replacing it. Layout meaning is established, but a matching representation remains unresolved.",
+        "actorApproachTargetWithSlowScaleOscillation": "Adopting the established RuntimeObjectPrefix and ActorScriptState scalar members together in this callback changes allocated instructions and fails the ROM gate. Other movement callbacks accept these views. Retain this callback's byte accesses; isolate the individual field conversion and IDO load/address ordering before replacing it. Layout meaning is established, but a matching representation remains unresolved.",
+        "actorCheckTrackedTargetArrival": "Adopting the established RuntimeObjectPrefix and ActorScriptState scalar members together in this callback changes allocated instructions and fails the ROM gate. Other movement callbacks accept these views. Retain this callback's byte accesses; isolate the individual field conversion and IDO load/address ordering before replacing it. Layout meaning is established, but a matching representation remains unresolved."
       },
       "locations": {
         "raw_offset_candidates": {
-          "actor + 0x54": [
-            "71:20",
-            "177:20",
-            "199:21",
-            "222:20",
-            "262:20",
-            "311:20",
-            "331:20",
-            "373:20",
-            "394:31",
-            "417:20",
-            "450:31",
-            "466:31",
-            "478:31",
-            "543:20",
-            "616:20",
-            "637:26",
-            "682:20",
-            "727:20",
-            "748:20",
-            "773:20",
-            "786:27",
-            "804:20",
-            "955:20",
-            "1039:20",
-            "1160:20",
-            "1191:20",
-            "1232:20",
-            "1255:20"
-          ],
           "obj + 0x138": [
             "72:18"
           ],
           "obj + 0x1DC": [
             "75:22"
           ],
-          "obj + 0x1BC": [
-            "77:18",
-            "683:18"
-          ],
-          "object + 0x54": [
-            "140:22",
-            "523:22",
-            "840:22",
-            "898:22",
-            "1289:22"
-          ],
-          "target + 0x44": [
-            "142:29"
-          ],
-          "target + 0x48": [
-            "143:29",
-            "1318:35"
-          ],
-          "target + 0x4C": [
-            "144:29"
-          ],
-          "state + 0x1F8": [
-            "145:14",
-            "163:18",
-            "1092:18",
-            "1094:18",
-            "1097:22",
-            "1105:14",
-            "1105:40"
-          ],
           "state + 0x1A4": [
             "146:33",
-            "659:30",
-            "1319:22",
-            "1320:65"
-          ],
-          "state + 0x1EC": [
-            "147:37",
-            "147:80",
-            "525:22",
-            "655:29",
-            "842:29",
-            "900:18",
-            "901:18",
-            "902:25",
-            "903:18",
-            "911:29"
-          ],
-          "state + 0x1F4": [
-            "148:37",
-            "148:80",
-            "657:29",
-            "844:29",
-            "906:18",
-            "907:18",
-            "908:25",
-            "909:18",
-            "913:29"
+            "661:30"
           ],
           "state + 0x1A0": [
-            "153:14"
+            "155:14"
           ],
           "roll - 15": [
-            "153:31"
-          ],
-          "obj + 0x1F8": [
-            "180:18",
-            "182:25",
-            "183:25",
-            "184:25",
-            "959:18",
-            "961:18",
-            "1040:14",
-            "1058:18",
-            "1061:18",
-            "1065:73",
-            "1067:14",
-            "1067:38"
-          ],
-          "sp24 + 0x1F8": [
-            "201:23",
-            "202:23",
-            "203:23"
+            "155:31"
           ],
           "obj + 0x1EA": [
-            "231:18",
-            "549:91",
-            "969:18",
-            "1166:89",
-            "1197:65",
-            "1240:18"
-          ],
-          "obj + 0x1EC": [
-            "263:21",
-            "312:21",
-            "332:21",
-            "374:21",
-            "546:23",
-            "807:21",
-            "963:21",
-            "1163:21",
-            "1194:21",
-            "1234:21",
-            "1258:23"
-          ],
-          "actor + 0x44": [
-            "263:45",
-            "312:45",
-            "332:45",
-            "374:45",
-            "418:21",
-            "546:47",
-            "655:55",
-            "807:45",
-            "963:45",
-            "1163:45",
-            "1194:45",
-            "1234:45",
-            "1258:47"
-          ],
-          "obj + 0x1F4": [
-            "265:21",
-            "314:21",
-            "334:21",
-            "376:21",
-            "548:23",
-            "809:21",
-            "965:21",
-            "1165:21",
-            "1196:21",
-            "1236:21",
-            "1260:23"
-          ],
-          "actor + 0x4C": [
-            "265:45",
-            "314:45",
-            "334:45",
-            "376:45",
-            "420:21",
-            "548:47",
-            "657:55",
-            "809:45",
-            "965:45",
-            "1165:45",
-            "1196:45",
-            "1236:45",
-            "1260:47"
-          ],
-          "obj + 0x10": [
-            "266:72",
-            "315:66",
-            "335:66",
-            "377:66",
-            "422:33",
-            "427:43",
-            "428:22",
-            "430:28"
-          ],
-          "actorState + 0x1BC": [
-            "395:18",
-            "455:18",
-            "467:18"
+            "233:18",
+            "551:91",
+            "983:18",
+            "1185:89",
+            "1216:85",
+            "1259:18"
           ],
           "actorState + 0x1EA": [
-            "451:18"
+            "453:18"
           ],
           "actorState + 0x11C": [
-            "479:35"
+            "481:35"
           ],
           "object + 0x44": [
-            "524:24",
-            "842:55",
-            "911:55"
+            "526:24"
+          ],
+          "state + 0x1EC": [
+            "527:22",
+            "657:29"
+          ],
+          "actor + 0x54": [
+            "545:20",
+            "639:26",
+            "1179:20",
+            "1251:20"
+          ],
+          "obj + 0x1EC": [
+            "548:23",
+            "1182:21",
+            "1253:21"
+          ],
+          "actor + 0x44": [
+            "548:47",
+            "657:55",
+            "1182:45",
+            "1253:45"
+          ],
+          "obj + 0x1F4": [
+            "550:23",
+            "1184:21",
+            "1255:21"
+          ],
+          "actor + 0x4C": [
+            "550:47",
+            "659:55",
+            "1184:45",
+            "1255:45"
           ],
           "obj + 0x1A4": [
-            "549:40",
-            "810:42",
-            "966:42",
-            "1166:38",
-            "1237:37"
+            "551:40",
+            "1185:38",
+            "1256:37"
           ],
           "obj + 0x204": [
-            "549:64",
-            "810:18",
-            "966:18",
-            "1166:62",
-            "1197:38",
-            "1237:61"
-          ],
-          "obj + 0xC": [
-            "618:27",
-            "618:52",
-            "728:56",
-            "774:56"
-          ],
-          "actor + 0x1C": [
-            "621:14",
-            "621:39",
-            "650:14",
-            "957:64",
-            "1008:64",
-            "1009:18",
-            "1011:18",
-            "1025:64",
-            "1027:14"
+            "551:64",
+            "1185:62",
+            "1256:61"
           ],
           "state + 0xC": [
-            "647:26",
-            "647:51",
-            "1304:58"
+            "649:26",
+            "649:51"
+          ],
+          "actor + 0x1C": [
+            "652:14"
+          ],
+          "state + 0x1F4": [
+            "659:29"
           ],
           "state + 0x204": [
-            "659:56"
-          ],
-          "obj + 0x1F0": [
-            "749:19"
-          ],
-          "actor + 0x48": [
-            "749:43",
-            "958:18",
-            "961:42"
+            "661:56"
           ],
           "actor + 4": [
-            "749:69",
-            "1041:14"
-          ],
-          "actorState + 0xC": [
-            "788:56"
-          ],
-          "actorState + 0x10": [
-            "789:56"
-          ],
-          "state + 0x1F0": [
-            "843:29",
-            "905:14",
-            "912:29"
-          ],
-          "object + 0x48": [
-            "843:55",
-            "905:40",
-            "912:55"
-          ],
-          "object + 0x4C": [
-            "844:55",
-            "913:55"
-          ],
-          "state + 0x10": [
-            "864:26",
-            "866:26",
-            "934:57",
-            "934:112",
-            "1305:56"
+            "752:18",
+            "1057:14"
           ],
           "object + 4": [
-            "877:39"
+            "881:39"
           ],
           "object + 8": [
-            "878:35",
-            "938:35"
+            "882:35",
+            "949:35"
           ],
           "gAreaMazeRoot + 8": [
-            "900:50",
-            "901:50",
-            "902:96",
-            "903:89"
+            "904:73",
+            "905:73",
+            "907:70",
+            "909:67"
           ],
           "gAreaMazeRoot + 0x14": [
-            "902:57",
-            "903:50"
+            "907:31",
+            "909:28"
           ],
           "gAreaMazeRoot + 0x10": [
-            "906:50",
-            "907:50",
-            "908:96",
-            "909:89"
+            "912:73",
+            "913:73",
+            "915:70",
+            "917:67"
           ],
           "gAreaMazeRoot + 0x1C": [
-            "908:57",
-            "909:50"
-          ],
-          "actor + 0x18": [
-            "957:40",
-            "1008:40",
-            "1010:18",
-            "1010:43",
-            "1025:40",
-            "1026:14",
-            "1026:39"
-          ],
-          "actor + 0x20": [
-            "957:88",
-            "1008:88",
-            "1012:18",
-            "1012:43",
-            "1025:88",
-            "1028:14",
-            "1028:39"
+            "915:31",
+            "917:28"
           ],
           "y + 10": [
-            "1011:34"
+            "1026:55"
           ],
           "y + 11": [
-            "1027:30"
+            "1043:51"
           ],
           "actor + 0": [
-            "1041:36"
+            "1057:36"
+          ],
+          "pulseAngle + 210": [
+            "1082:82"
+          ],
+          "pulseAngle + 40": [
+            "1085:54",
+            "1124:56"
           ],
           "sampleAngle + 210": [
-            "1104:62"
-          ],
-          "object + 0x18": [
-            "1291:14"
-          ],
-          "attachment + 0x44": [
-            "1291:40"
-          ],
-          "object + 0x1C": [
-            "1292:14"
-          ],
-          "attachment + 0x48": [
-            "1292:40"
-          ],
-          "object + 0x20": [
-            "1293:14"
-          ],
-          "attachment + 0x4C": [
-            "1293:40"
+            "1122:62"
           ],
           "attachment + 0x36": [
-            "1294:18"
+            "1313:18"
           ],
           "attachment + 0x3C": [
-            "1298:32"
+            "1317:32"
           ],
           "object + 0x2C": [
-            "1309:34"
+            "1328:34"
           ],
           "part + 0x2C": [
-            "1311:29"
-          ],
-          "part + 0x54": [
-            "1312:34"
-          ],
-          "next + 0x54": [
-            "1313:34"
+            "1330:29"
           ],
           "partState + 4": [
-            "1314:22"
-          ],
-          "part + 0x14": [
-            "1315:22"
-          ],
-          "next + 0x14": [
-            "1315:46"
-          ],
-          "end + 0x48": [
-            "1318:61"
-          ],
-          "end + 0x14": [
-            "1320:22"
+            "1333:22"
           ]
         },
         "cast_offset_candidates": {
           "((f32 *)actor) + 0x54": [
-            "1057:26"
+            "1073:26"
           ],
           "((f32 *)object) + 0x54": [
-            "1090:28"
+            "1108:28"
           ]
         }
       }

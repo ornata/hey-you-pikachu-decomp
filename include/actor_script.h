@@ -26,6 +26,16 @@ typedef union ActorRootPlaybackWorkspace {
 
 typedef char ActorRootPlaybackWorkspaceSizeCheck[(sizeof(ActorRootPlaybackWorkspace) == 0x78) ? 1 : -1];
 
+/// Action-specific movement scratch storage; the active action selects the valid view.
+/// Values do not persist as a common physical quantity across action changes.
+typedef union ActorMovementWorkspace {
+    f32 approachScale;   ///< Multiplier applied to pending movement while finishing an approach.
+    f32 groundClearance; ///< Nonnegative height above sampled terrain recorded by the ground-check action.
+    f32 pulseAngle;      ///< Vertical scale-pulse phase in degrees.
+} ActorMovementWorkspace;
+
+typedef char ActorMovementWorkspaceSizeCheck[(sizeof(ActorMovementWorkspace) == 4) ? 1 : -1];
+
 /// Recovered prefix of actor state used by script-message consumers.
 /// \ingroup ActorScriptVm
 /// Unresolved storage and scalar roles retain explicit offset-based names. This view does not describe the
@@ -112,7 +122,7 @@ typedef struct ActorScriptState {
     u16 behaviorFlags;   ///< Flags controlling inhibition, cooperation and appearance persistence.
     s16 movementCollisionFlags; ///< Result of the latest constrained movement.
     f32 targetPosition[3];      ///< Stored target position in world coordinates.
-    u8 unknown1F8[4];
+    ActorMovementWorkspace movementWorkspace; ///< Scratch value selected by the current movement action.
     f32 collisionDepth;  ///< Vertical span used by horizontal clearance queries.
     f32 clearanceHeight; ///< Permitted clearance height above the starting position.
     f32 collisionWidth;  ///< Horizontal width used by terrain constraints.
@@ -256,6 +266,7 @@ ACTOR_SCRIPT_OFFSET_CHECK(ActorActionResourceHudLevelOffsetCheck, ActorScriptSta
 ACTOR_SCRIPT_OFFSET_CHECK(ActorSecondaryMeterHudLevelOffsetCheck, ActorScriptState, secondaryMeterHudLevel, 0x400);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateSecondaryMeterOffsetCheck, ActorScriptState, secondaryMeter, 0x3F8);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateAttachedEffectOffsetCheck, ActorScriptState, attachedEffectHandle, 0x404);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorMovementWorkspaceOffsetCheck, ActorScriptState, movementWorkspace, 0x1F8);
 #undef ACTOR_SCRIPT_OFFSET_CHECK
 
 #endif

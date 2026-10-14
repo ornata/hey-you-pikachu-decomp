@@ -172,3 +172,20 @@ storage now use `RuntimeObjectPrefix`. Following actors use the established
 `ActorScriptState.targetPosition` and object local/world position members. No
 allocation size, lifecycle policy or gameplay logic changes accompany recovery.
 The source-unit changes each preserve all baseline objects.
+
+## Movement action workspace and shared consumers
+
+The four-byte slot at actor-state offset `0x1F8` is an action-specific
+`ActorMovementWorkspace`: approach callbacks apply its `approachScale` to pending
+motion, the ground-check action records `groundClearance`, and vertical pulse
+actions use `pulseAngle` in degrees. These views share storage and are not
+simultaneously valid. Ghidra at `0x8000F934` and `0x80011528` confirms the approach
+multiplier and pulse phase. Size and offset checks preserve the layout. The
+separate randomized word at `0x1A0` remains unresolved beyond its observed store.
+
+Movement callbacks now use shared orientation, target coordinates, approach
+allowance, collision width, airborne status, and object transforms where the
+original objects permit. Four callbacks retain their byte views after direct
+member trials failed the ROM gate; their names and next evidence are recorded
+in the recovery ledger. Each accepted callback mutation was compared against
+all 483 baseline objects before proceeding.

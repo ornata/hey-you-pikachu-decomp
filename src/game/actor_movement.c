@@ -68,13 +68,13 @@ s32 actorUpdateTimedGroundSpin(u8 *actor) {
     u8 *obj;
     f32 a;
 
-    obj = *(u8 **)(actor + 0x54);
+    obj = ((RuntimeObjectPrefix *)actor)->state.bytes;
     a = *(f32 *)(obj + 0x138);
     if ((a < gActorGroundSpinEndTime) && (gActorGroundSpinStartTime < a)) {
         if ((a < gActorGroundSpinLiftEndTime) && (gActorGroundSpinLiftStartTime < a)) {
             *(f32 *)(obj + 0x1DC) = 10.0f * gRuntimeFrameSeconds;
         }
-        *(s32 *)(obj + 0x1BC) = 0;
+        ((ActorScriptState *)obj)->airborne = 0;
         actorAddRotationAxisDegrees((u8 *)actor, gActorGroundSpinYawRate * gRuntimeFrameSeconds, 1);
     }
     return 0;
@@ -137,15 +137,17 @@ s32 actorPrepareApproachCompletion(u8 *object, f32 speed) {
     f32 reference[3];
     s32 roll;
 
-    state = *(u8 **)(object + 0x54);
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
     target = actorFindPart((u8 *)object, 0x3E);
-    reference[0] = *(f32 *)(target + 0x44);
-    reference[1] = *(f32 *)(target + 0x48);
-    reference[2] = *(f32 *)(target + 0x4C);
-    *(f32 *)(state + 0x1F8) = 1.0f;
+    reference[0] = ((RuntimeObjectPrefix *)target)->worldPosition[0];
+    reference[1] = ((RuntimeObjectPrefix *)target)->worldPosition[1];
+    reference[2] = ((RuntimeObjectPrefix *)target)->worldPosition[2];
+    ((ActorScriptState *)state)->movementWorkspace.approachScale = 1.0f;
     distance = -(f64) * (f32 *)(state + 0x1A4) +
-               sqrt((f64)((*(f32 *)(state + 0x1EC) - reference[0]) * (*(f32 *)(state + 0x1EC) - reference[0]) +
-                          (*(f32 *)(state + 0x1F4) - reference[2]) * (*(f32 *)(state + 0x1F4) - reference[2])));
+               sqrt((f64)((((ActorScriptState *)state)->targetPosition[0] - reference[0]) *
+                              (((ActorScriptState *)state)->targetPosition[0] - reference[0]) +
+                          (((ActorScriptState *)state)->targetPosition[2] - reference[2]) *
+                              (((ActorScriptState *)state)->targetPosition[2] - reference[2])));
     if (distance < 0.0f) {
         distance = 0.0f;
     }
@@ -160,7 +162,7 @@ s32 actorPrepareApproachCompletion(u8 *object, f32 speed) {
         actorTurnTowardTarget((u8 *)object, 300.0f);
         actionSkipLoopingContinuations((u8 *)object);
         actionRequestLoopExit((u8 *)object);
-        *(f32 *)(state + 0x1F8) = (distance / speed);
+        ((ActorScriptState *)state)->movementWorkspace.approachScale = (distance / speed);
     }
     return 0;
 }
@@ -174,14 +176,14 @@ s32 actorTrackTargetAndScaleMovement(u8 *actor) {
     u8 *obj;
     f32 v[3];
 
-    obj = *(u8 **)(actor + 0x54);
+    obj = ((RuntimeObjectPrefix *)actor)->state.bytes;
     actorRefreshTrackingTargetPosition((u8 *)actor);
     actorTurnTowardTarget((u8 *)actor, 300.0f);
-    if (*(f32 *)(obj + 0x1F8) != 1.0f) {
+    if (((ActorScriptState *)obj)->movementWorkspace.approachScale != 1.0f) {
         objectGetPendingLocalMovement(v);
-        v[0] = *(f32 *)(obj + 0x1F8) * v[0];
-        v[1] = *(f32 *)(obj + 0x1F8) * v[1];
-        v[2] = *(f32 *)(obj + 0x1F8) * v[2];
+        v[0] = ((ActorScriptState *)obj)->movementWorkspace.approachScale * v[0];
+        v[1] = ((ActorScriptState *)obj)->movementWorkspace.approachScale * v[1];
+        v[2] = ((ActorScriptState *)obj)->movementWorkspace.approachScale * v[2];
         objectSetPendingLocalMovement(v);
     }
     return 0;
@@ -196,11 +198,11 @@ s32 actorScalePendingMovement(u8 *actor) {
     u8 *sp24;
     f32 sp[3];
 
-    sp24 = *(u8 **)(actor + 0x54);
+    sp24 = ((RuntimeObjectPrefix *)actor)->state.bytes;
     objectGetPendingLocalMovement(sp);
-    sp[0] *= *(f32 *)(sp24 + 0x1F8);
-    sp[1] *= *(f32 *)(sp24 + 0x1F8);
-    sp[2] *= *(f32 *)(sp24 + 0x1F8);
+    sp[0] *= ((ActorScriptState *)sp24)->movementWorkspace.approachScale;
+    sp[1] *= ((ActorScriptState *)sp24)->movementWorkspace.approachScale;
+    sp[2] *= ((ActorScriptState *)sp24)->movementWorkspace.approachScale;
     objectSetPendingLocalMovement(sp);
     return 0;
 }
@@ -219,7 +221,7 @@ s32 actorBackstepTowardTarget(s32 actor, f32 speed) {
     f32 amp;
     f32 v[3];
 
-    obj = *(u8 **)(actor + 0x54);
+    obj = ((RuntimeObjectPrefix *)actor)->state.bytes;
     amp = gRuntimeFrameSeconds * speed;
     actorRefreshTrackingTargetPosition((u8 *)actor);
     actorTurnTowardTarget((u8 *)actor, 300.0f);
@@ -259,11 +261,11 @@ s32 actorChooseAlignedTargetContinuation(u8 *actor) {
     u8 *obj;
     f32 v[3];
 
-    obj = *(u8 **)(actor + 0x54);
-    v[0] = *(f32 *)(obj + 0x1EC) - *(f32 *)(actor + 0x44);
+    obj = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    v[0] = ((ActorScriptState *)obj)->targetPosition[0] - ((RuntimeObjectPrefix *)actor)->worldPosition[0];
     v[1] = 0.0f;
-    v[2] = *(f32 *)(obj + 0x1F4) - *(f32 *)(actor + 0x4C);
-    if (fabsf(mathWrapSignedDegrees(vector3GetYawDegrees(v) - *(f32 *)(obj + 0x10))) < 10.0f) {
+    v[2] = ((ActorScriptState *)obj)->targetPosition[2] - ((RuntimeObjectPrefix *)actor)->worldPosition[2];
+    if (fabsf(mathWrapSignedDegrees(vector3GetYawDegrees(v) - ((ActorScriptState *)obj)->orientation[1])) < 10.0f) {
         actionSetContinuation((u8 *)actor, (0.5 < (f64)randomNext() * 2.3283064365386963e-10) ? 0xBF : 0xC0);
         return 1;
     }
@@ -308,11 +310,11 @@ s32 actorSelectLeftTargetContinuation(u8 *actor) {
     u8 *obj;
     f32 v[3];
 
-    obj = *(u8 **)(actor + 0x54);
-    v[0] = *(f32 *)(obj + 0x1EC) - *(f32 *)(actor + 0x44);
+    obj = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    v[0] = ((ActorScriptState *)obj)->targetPosition[0] - ((RuntimeObjectPrefix *)actor)->worldPosition[0];
     v[1] = 0.0f;
-    v[2] = *(f32 *)(obj + 0x1F4) - *(f32 *)(actor + 0x4C);
-    if (mathWrapSignedDegrees(vector3GetYawDegrees(v) - *(f32 *)(obj + 0x10)) < 0.0f) {
+    v[2] = ((ActorScriptState *)obj)->targetPosition[2] - ((RuntimeObjectPrefix *)actor)->worldPosition[2];
+    if (mathWrapSignedDegrees(vector3GetYawDegrees(v) - ((ActorScriptState *)obj)->orientation[1]) < 0.0f) {
         actionSetContinuation((u8 *)actor, 0x22);
         return 1;
     }
@@ -328,11 +330,11 @@ s32 actorSelectAlignedOrLeftTargetContinuation(u8 *actor) {
     f32 v[3];
     f32 d;
 
-    obj = *(u8 **)(actor + 0x54);
-    v[0] = *(f32 *)(obj + 0x1EC) - *(f32 *)(actor + 0x44);
+    obj = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    v[0] = ((ActorScriptState *)obj)->targetPosition[0] - ((RuntimeObjectPrefix *)actor)->worldPosition[0];
     v[1] = 0.0f;
-    v[2] = *(f32 *)(obj + 0x1F4) - *(f32 *)(actor + 0x4C);
-    d = mathWrapSignedDegrees(vector3GetYawDegrees(v) - *(f32 *)(obj + 0x10));
+    v[2] = ((ActorScriptState *)obj)->targetPosition[2] - ((RuntimeObjectPrefix *)actor)->worldPosition[2];
+    d = mathWrapSignedDegrees(vector3GetYawDegrees(v) - ((ActorScriptState *)obj)->orientation[1]);
     if (fabsf(d) < 20.0f) {
         actionSetContinuation((u8 *)actor, 0xBE);
         return 1;
@@ -370,11 +372,11 @@ s32 actorSelectAlternateAlignedOrLeftTargetContinuation(u8 *actor) {
     f32 v[3];
     f32 d;
 
-    obj = *(u8 **)(actor + 0x54);
-    v[0] = *(f32 *)(obj + 0x1EC) - *(f32 *)(actor + 0x44);
+    obj = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    v[0] = ((ActorScriptState *)obj)->targetPosition[0] - ((RuntimeObjectPrefix *)actor)->worldPosition[0];
     v[1] = 0.0f;
-    v[2] = *(f32 *)(obj + 0x1F4) - *(f32 *)(actor + 0x4C);
-    d = mathWrapSignedDegrees(vector3GetYawDegrees(v) - *(f32 *)(obj + 0x10));
+    v[2] = ((ActorScriptState *)obj)->targetPosition[2] - ((RuntimeObjectPrefix *)actor)->worldPosition[2];
+    d = mathWrapSignedDegrees(vector3GetYawDegrees(v) - ((ActorScriptState *)obj)->orientation[1]);
     if (fabsf(d) < 20.0f) {
         actionSetContinuation((u8 *)actor, 0xC1);
         return 1;
@@ -391,8 +393,8 @@ s32 actorSelectAlternateAlignedOrLeftTargetContinuation(u8 *actor) {
 /// \returns Always zero, leaving action completion to its normal timing.
 /// \note Original decompilation identifier: \c func_800100AC (0x800100AC).
 s32 actorUpdateAdaptiveTargetPivot(u8 *actor) {
-    u8 *actorState = *(u8 **)(actor + 0x54);
-    if (*(s32 *)(actorState + 0x1BC) != 0) {
+    u8 *actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    if (((ActorScriptState *)actorState)->airborne != 0) {
         actorPivotTowardTarget((u8 *)actor, 720.0f);
     } else {
         actorPivotTowardTarget((u8 *)actor, 240.0f);
@@ -414,20 +416,20 @@ s32 actorTurnAwayFromPlayer(s32 actor, f32 turnSpeed) {
     f32 a;
     s32 pad[2]; /* unused, sizes the frame */
 
-    obj = *(u8 **)(actor + 0x54);
-    v[0] = *(f32 *)(actor + 0x44) - gPlayerState.position[0];
+    obj = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    v[0] = ((RuntimeObjectPrefix *)actor)->worldPosition[0] - gPlayerState.position[0];
     v[1] = 0.0f;
-    v[2] = *(f32 *)(actor + 0x4C) - gPlayerState.position[2];
+    v[2] = ((RuntimeObjectPrefix *)actor)->worldPosition[2] - gPlayerState.position[2];
     a = vector3GetYawDegrees(v);
-    if (fabs((f64)(a - *(f32 *)(obj + 0x10))) < 1.0) {
+    if (fabs((f64)(a - ((ActorScriptState *)obj)->orientation[1])) < 1.0) {
         return 1;
     }
-    actorAddRotationAxisDegrees(
-        (u8 *)actor,
-        mathApproachAngleDegrees(*(f32 *)(obj + 0x10), a, 1.0f, 90.0f, turnSpeed * gRuntimeFrameSeconds) -
-            *(f32 *)(obj + 0x10),
-        1);
-    if (fabsf(a - *(f32 *)(obj + 0x10)) < 1.0f) {
+    actorAddRotationAxisDegrees((u8 *)actor,
+                                mathApproachAngleDegrees(((ActorScriptState *)obj)->orientation[1], a, 1.0f, 90.0f,
+                                                         turnSpeed * gRuntimeFrameSeconds) -
+                                    ((ActorScriptState *)obj)->orientation[1],
+                                1);
+    if (fabsf(a - ((ActorScriptState *)obj)->orientation[1]) < 1.0f) {
         return 1;
     }
     return 0;
@@ -447,12 +449,12 @@ s32 actorUpdateTurnAwayFromPlayer(u8 *actor) {
 /// \returns One when grounded or movement constraints select a continuation; otherwise zero.
 /// \note Original decompilation identifier: \c func_80010234 (0x80010234).
 s32 actorFinishOnLandingOrMovementConstraint(u8 *actor) {
-    u8 *actorState = *(u8 **)(actor + 0x54);
+    u8 *actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
     if (*(u16 *)(actorState + 0x1EA) != 0) {
         actionSetContinuation((u8 *)actor, 0x3D);
         return 1;
     }
-    if (*(s32 *)(actorState + 0x1BC) == 0) {
+    if (((ActorScriptState *)actorState)->airborne == 0) {
         return 1;
     }
     return 0;
@@ -463,8 +465,8 @@ s32 actorFinishOnLandingOrMovementConstraint(u8 *actor) {
 /// \returns One when grounded; otherwise zero.
 /// \note Original decompilation identifier: \c func_80010284 (0x80010284).
 s32 actorWaitUntilGrounded(u8 *actor) {
-    u8 *actorState = *(u8 **)(actor + 0x54);
-    if (*(s32 *)(actorState + 0x1BC) == 0) {
+    u8 *actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    if (((ActorScriptState *)actorState)->airborne == 0) {
         return 1;
     }
     return 0;
@@ -475,7 +477,7 @@ s32 actorWaitUntilGrounded(u8 *actor) {
 /// \returns One when the action should finish; otherwise zero.
 /// \note Original decompilation identifier: \c func_800102A8 (0x800102A8).
 s32 actorShouldEndRepeatedAction(u8 *actor) {
-    u8 *actorState = *(u8 **)(actor + 0x54);
+    u8 *actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
     if ((s32)randomBelow(*(s16 *)(actorState + 0x11C)) >= 4) {
         return 1;
     }
@@ -520,7 +522,7 @@ s32 actorFaceTargetPosition(u8 *object) {
     f32 *target;
     u8 *state;
     f32 angle;
-    state = *(u8 **)(object + 0x54);
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
     position = (f32 *)(object + 0x44);
     target = (f32 *)(state + 0x1EC);
     direction.x = target[0] - position[0];
@@ -613,12 +615,12 @@ s32 actorTumbleForward(u8 *actor) {
     f32 amp;
 
     amp = gRuntimeFrameSeconds * 4000.0f;
-    obj = *(u8 **)(actor + 0x54);
+    obj = ((RuntimeObjectPrefix *)actor)->state.bytes;
     actorAddRotationAxisDegrees((u8 *)actor, 45.0f, 0);
-    if ((90.0f < *(f32 *)(obj + 0xC)) && (*(f32 *)(obj + 0xC) < 270.0f)) {
+    if ((90.0f < ((ActorScriptState *)obj)->orientation[0]) && (((ActorScriptState *)obj)->orientation[0] < 270.0f)) {
         amp = -amp;
     }
-    *(f32 *)(actor + 0x1C) = *(f32 *)(actor + 0x1C) + 1.5f;
+    ((RuntimeObjectPrefix *)actor)->position[1] = ((RuntimeObjectPrefix *)actor)->position[1] + 1.5f;
     v[1] = 0.0f;
     v[0] = 0.0f;
     v[2] = amp;
@@ -679,8 +681,8 @@ s32 actorUpdateAirborneVerticalMovement(u8 *actor) {
     u8 *obj;
     f32 sp18[3];
 
-    obj = *(u8 **)(actor + 0x54);
-    if (*(s32 *)(obj + 0x1BC) != 0) {
+    obj = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    if (((ActorScriptState *)obj)->airborne != 0) {
         sp18[0] = 0.0f;
         sp18[1] = gActorAirborneVerticalStep;
         sp18[2] = 0.0f;
@@ -724,8 +726,8 @@ s32 actorSpinYaw(u8 *actor) {
 s32 actorResetPitch(u8 *actor) {
     u8 *obj;
 
-    obj = *(u8 **)(actor + 0x54);
-    actorAddRotationAxisDegrees((u8 *)actor, -*(f32 *)(obj + 0xC), 0);
+    obj = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    actorAddRotationAxisDegrees((u8 *)actor, -((ActorScriptState *)obj)->orientation[0], 0);
     return 0;
 }
 
@@ -745,8 +747,9 @@ s32 actorApproachTargetHeightWhileSpinning(u8 *actor) {
     f32 lim;
     s32 sgn;
 
-    obj = *(u8 **)(actor + 0x54);
-    d = (*(f32 *)(obj + 0x1F0) - *(f32 *)(actor + 0x48)) / *(f32 *)(actor + 4);
+    obj = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    d = (((ActorScriptState *)obj)->targetPosition[1] - ((RuntimeObjectPrefix *)actor)->worldPosition[1]) /
+        *(f32 *)(actor + 4);
     if (fabsf(d) < 1.0f) {
         return 1;
     }
@@ -770,8 +773,8 @@ s32 actorApproachTargetHeightWhileSpinning(u8 *actor) {
 s32 actorRestoreLevelPitch(u8 *actor) {
     u8 *obj;
 
-    obj = *(u8 **)(actor + 0x54);
-    actorAddRotationAxisDegrees((u8 *)actor, -*(f32 *)(obj + 0xC), 0);
+    obj = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    actorAddRotationAxisDegrees((u8 *)actor, -((ActorScriptState *)obj)->orientation[0], 0);
     return 0;
 }
 
@@ -783,10 +786,10 @@ s32 actorSetForwardTiltPose(u8 *actor) {
     u8 *actorState;
     u8 *sp24;
 
-    actorState = *(u8 **)(actor + 0x54);
+    actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
     sp24 = actorState;
-    actorAddRotationAxisDegrees((u8 *)actor, -*(f32 *)(actorState + 0xC), 0);
-    actorAddRotationAxisDegrees((u8 *)actor, -*(f32 *)(actorState + 0x10), 1);
+    actorAddRotationAxisDegrees((u8 *)actor, -((ActorScriptState *)actorState)->orientation[0], 0);
+    actorAddRotationAxisDegrees((u8 *)actor, -((ActorScriptState *)actorState)->orientation[1], 1);
     actorAddRotationAxisDegrees((u8 *)actor, -90.0f, 1);
     actorAddRotationAxisDegrees((u8 *)actor, 10.0f, 0);
     actorAddRotationAxisDegrees((u8 *)actor, 90.0f, 1);
@@ -801,13 +804,14 @@ s32 actorTrackTargetUntilInRange(u8 *actor) {
     u8 *obj;
     f32 v[3];
 
-    obj = *(u8 **)(actor + 0x54);
+    obj = ((RuntimeObjectPrefix *)actor)->state.bytes;
     actorRefreshTrackingTargetPosition((u8 *)actor);
     actorTurnTowardTarget((u8 *)actor, 300.0f);
-    v[0] = *(f32 *)(obj + 0x1EC) - *(f32 *)(actor + 0x44);
+    v[0] = ((ActorScriptState *)obj)->targetPosition[0] - ((RuntimeObjectPrefix *)actor)->worldPosition[0];
     v[1] = 0.0f;
-    v[2] = *(f32 *)(obj + 0x1F4) - *(f32 *)(actor + 0x4C);
-    if (*(f32 *)(obj + 0x204) + *(f32 *)(obj + 0x1A4) > vector3Length(v)) {
+    v[2] = ((ActorScriptState *)obj)->targetPosition[2] - ((RuntimeObjectPrefix *)actor)->worldPosition[2];
+    if (((ActorScriptState *)obj)->collisionWidth + ((ActorScriptState *)obj)->targetDistanceAllowance >
+        vector3Length(v)) {
         return 1;
     }
     return 0;
@@ -837,11 +841,11 @@ s32 actorApproachTargetInThreeDimensions(u8 *object) {
     f32 heading;
     s32 sign;
 
-    state = *(u8 **)(object + 0x54);
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
     actorRefreshTrackingTargetPosition(object);
-    direction[0] = *(f32 *)(state + 0x1EC) - *(f32 *)(object + 0x44);
-    direction[1] = *(f32 *)(state + 0x1F0) - *(f32 *)(object + 0x48);
-    direction[2] = *(f32 *)(state + 0x1F4) - *(f32 *)(object + 0x4C);
+    direction[0] = ((ActorScriptState *)state)->targetPosition[0] - ((RuntimeObjectPrefix *)object)->worldPosition[0];
+    direction[1] = ((ActorScriptState *)state)->targetPosition[1] - ((RuntimeObjectPrefix *)object)->worldPosition[1];
+    direction[2] = ((ActorScriptState *)state)->targetPosition[2] - ((RuntimeObjectPrefix *)object)->worldPosition[2];
     if (vector3Length(direction) < 1.0f + ((MovementState *)state)->radius) {
         return 1;
     }
@@ -861,9 +865,9 @@ s32 actorApproachTargetInThreeDimensions(u8 *object) {
         actorAddRotationAxisDegrees(
             object,
             mathApproachAngleDegrees(
-                *(f32 *)(state + 0x10), heading, 5.0f, 180.0f,
+                ((ActorScriptState *)state)->orientation[1], heading, 5.0f, 180.0f,
                 MOVE_MAX(300.0f * gRuntimeFrameSeconds, 179.0f - 100.0f * distance * gRuntimeFrameSeconds)) -
-                *(f32 *)(state + 0x10),
+                ((ActorScriptState *)state)->orientation[1],
             1);
     }
 
@@ -895,22 +899,26 @@ s32 actorApproachTargetWithinSceneBounds(u8 *object) {
     f32 heading;
     f32 turn;
 
-    state = *(u8 **)(object + 0x54);
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
     actorRefreshTrackingTargetPosition(object);
-    if (*(f32 *)(state + 0x1EC) < *(f32 *)((u8 *)gAreaMazeRoot + 8)) {
-        *(f32 *)(state + 0x1EC) = *(f32 *)((u8 *)gAreaMazeRoot + 8);
-    } else if (*(f32 *)(state + 0x1EC) > *(f32 *)((u8 *)gAreaMazeRoot + 0x14) + *(f32 *)((u8 *)gAreaMazeRoot + 8)) {
-        *(f32 *)(state + 0x1EC) = *(f32 *)((u8 *)gAreaMazeRoot + 0x14) + *(f32 *)((u8 *)gAreaMazeRoot + 8);
+    if (((ActorScriptState *)state)->targetPosition[0] < *(f32 *)((u8 *)gAreaMazeRoot + 8)) {
+        ((ActorScriptState *)state)->targetPosition[0] = *(f32 *)((u8 *)gAreaMazeRoot + 8);
+    } else if (((ActorScriptState *)state)->targetPosition[0] >
+               *(f32 *)((u8 *)gAreaMazeRoot + 0x14) + *(f32 *)((u8 *)gAreaMazeRoot + 8)) {
+        ((ActorScriptState *)state)->targetPosition[0] =
+            *(f32 *)((u8 *)gAreaMazeRoot + 0x14) + *(f32 *)((u8 *)gAreaMazeRoot + 8);
     }
-    *(f32 *)(state + 0x1F0) = *(f32 *)(object + 0x48);
-    if (*(f32 *)(state + 0x1F4) < *(f32 *)((u8 *)gAreaMazeRoot + 0x10)) {
-        *(f32 *)(state + 0x1F4) = *(f32 *)((u8 *)gAreaMazeRoot + 0x10);
-    } else if (*(f32 *)(state + 0x1F4) > *(f32 *)((u8 *)gAreaMazeRoot + 0x1C) + *(f32 *)((u8 *)gAreaMazeRoot + 0x10)) {
-        *(f32 *)(state + 0x1F4) = *(f32 *)((u8 *)gAreaMazeRoot + 0x1C) + *(f32 *)((u8 *)gAreaMazeRoot + 0x10);
+    ((ActorScriptState *)state)->targetPosition[1] = ((RuntimeObjectPrefix *)object)->worldPosition[1];
+    if (((ActorScriptState *)state)->targetPosition[2] < *(f32 *)((u8 *)gAreaMazeRoot + 0x10)) {
+        ((ActorScriptState *)state)->targetPosition[2] = *(f32 *)((u8 *)gAreaMazeRoot + 0x10);
+    } else if (((ActorScriptState *)state)->targetPosition[2] >
+               *(f32 *)((u8 *)gAreaMazeRoot + 0x1C) + *(f32 *)((u8 *)gAreaMazeRoot + 0x10)) {
+        ((ActorScriptState *)state)->targetPosition[2] =
+            *(f32 *)((u8 *)gAreaMazeRoot + 0x1C) + *(f32 *)((u8 *)gAreaMazeRoot + 0x10);
     }
-    direction[0] = *(f32 *)(state + 0x1EC) - *(f32 *)(object + 0x44);
-    direction[1] = *(f32 *)(state + 0x1F0) - *(f32 *)(object + 0x48);
-    direction[2] = *(f32 *)(state + 0x1F4) - *(f32 *)(object + 0x4C);
+    direction[0] = ((ActorScriptState *)state)->targetPosition[0] - ((RuntimeObjectPrefix *)object)->worldPosition[0];
+    direction[1] = ((ActorScriptState *)state)->targetPosition[1] - ((RuntimeObjectPrefix *)object)->worldPosition[1];
+    direction[2] = ((ActorScriptState *)state)->targetPosition[2] - ((RuntimeObjectPrefix *)object)->worldPosition[2];
     if (vector3Length(direction) < 1.0f + ((MovementState *)state)->radius) {
         return 1;
     }
@@ -930,8 +938,11 @@ s32 actorApproachTargetWithinSceneBounds(u8 *object) {
         heading = vector3GetYawDegrees(direction);
         turn = gRuntimeFrameSeconds;
         turn = MOVE_MAX(300.0f * turn, 179.0f - 100.0f * distance * turn);
-        actorAddRotationAxisDegrees(object,
-                      mathApproachAngleDegrees(*(f32 *)(state + 0x10), heading, 5.0f, 180.0f, turn) - *(f32 *)(state + 0x10), 1);
+        actorAddRotationAxisDegrees(
+            object,
+            mathApproachAngleDegrees(((ActorScriptState *)state)->orientation[1], heading, 5.0f, 180.0f, turn) -
+                ((ActorScriptState *)state)->orientation[1],
+            1);
     }
     movement[0] = 0;
     movement[1] = 0.0f;
@@ -952,18 +963,21 @@ s32 actorRecordGroundClearanceAndCheckTarget(u8 *actor) {
     f32 v[3];
     f32 y;
 
-    obj = *(u8 **)(actor + 0x54);
+    obj = ((RuntimeObjectPrefix *)actor)->state.bytes;
     actorRefreshTrackingTargetPosition((u8 *)actor);
-    y = terrainGetWorldHeight(*(f32 *)(actor + 0x18), *(f32 *)(actor + 0x1C), *(f32 *)(actor + 0x20), 0);
-    if (*(f32 *)(actor + 0x48) < y) {
-        *(f32 *)(obj + 0x1F8) = 0.0f;
+    y = terrainGetWorldHeight(((RuntimeObjectPrefix *)actor)->position[0], ((RuntimeObjectPrefix *)actor)->position[1],
+                              ((RuntimeObjectPrefix *)actor)->position[2], 0);
+    if (((RuntimeObjectPrefix *)actor)->worldPosition[1] < y) {
+        ((ActorScriptState *)obj)->movementWorkspace.groundClearance = 0.0f;
     } else {
-        *(f32 *)(obj + 0x1F8) = *(f32 *)(actor + 0x48) - y;
+        ((ActorScriptState *)obj)->movementWorkspace.groundClearance =
+            ((RuntimeObjectPrefix *)actor)->worldPosition[1] - y;
     }
-    v[0] = *(f32 *)(obj + 0x1EC) - *(f32 *)(actor + 0x44);
+    v[0] = ((ActorScriptState *)obj)->targetPosition[0] - ((RuntimeObjectPrefix *)actor)->worldPosition[0];
     v[1] = 0.0f;
-    v[2] = *(f32 *)(obj + 0x1F4) - *(f32 *)(actor + 0x4C);
-    if (*(f32 *)(obj + 0x204) + *(f32 *)(obj + 0x1A4) > vector3Length(v)) {
+    v[2] = ((ActorScriptState *)obj)->targetPosition[2] - ((RuntimeObjectPrefix *)actor)->worldPosition[2];
+    if (((ActorScriptState *)obj)->collisionWidth + ((ActorScriptState *)obj)->targetDistanceAllowance >
+        vector3Length(v)) {
         return 1;
     }
     if (*(u16 *)(obj + 0x1EA) != 0) {
@@ -1005,11 +1019,12 @@ s32 actorAdvanceWithGroundClearance(s32 actor, f32 speed) {
     v[1] = 0.0f;
     v[2] = gRuntimeFrameSeconds * speed;
     objectAddPendingLocalMovement(v);
-    y = terrainGetWorldHeight(*(f32 *)(actor + 0x18), *(f32 *)(actor + 0x1C), *(f32 *)(actor + 0x20), 0);
-    if (*(f32 *)(actor + 0x1C) - y < 10.0f) {
-        *(f32 *)(actor + 0x18) = *(f32 *)(actor + 0x18);
-        *(f32 *)(actor + 0x1C) = y + 10.0f;
-        *(f32 *)(actor + 0x20) = *(f32 *)(actor + 0x20);
+    y = terrainGetWorldHeight(((RuntimeObjectPrefix *)actor)->position[0], ((RuntimeObjectPrefix *)actor)->position[1],
+                              ((RuntimeObjectPrefix *)actor)->position[2], 0);
+    if (((RuntimeObjectPrefix *)actor)->position[1] - y < 10.0f) {
+        ((RuntimeObjectPrefix *)actor)->position[0] = ((RuntimeObjectPrefix *)actor)->position[0];
+        ((RuntimeObjectPrefix *)actor)->position[1] = y + 10.0f;
+        ((RuntimeObjectPrefix *)actor)->position[2] = ((RuntimeObjectPrefix *)actor)->position[2];
     }
     return 0;
 }
@@ -1022,10 +1037,11 @@ s32 actorFollowGroundAndFaceTarget(u8 *actor) {
     f32 y;
     actorRefreshTrackingTargetPosition((u8 *)actor);
     actorTurnTowardTarget((u8 *)actor, 300.0f);
-    y = terrainGetWorldHeight(*(f32 *)(actor + 0x18), *(f32 *)(actor + 0x1C), *(f32 *)(actor + 0x20), 0);
-    *(f32 *)(actor + 0x18) = *(f32 *)(actor + 0x18);
-    *(f32 *)(actor + 0x1C) = y + 11.5f;
-    *(f32 *)(actor + 0x20) = *(f32 *)(actor + 0x20);
+    y = terrainGetWorldHeight(((RuntimeObjectPrefix *)actor)->position[0], ((RuntimeObjectPrefix *)actor)->position[1],
+                              ((RuntimeObjectPrefix *)actor)->position[2], 0);
+    ((RuntimeObjectPrefix *)actor)->position[0] = ((RuntimeObjectPrefix *)actor)->position[0];
+    ((RuntimeObjectPrefix *)actor)->position[1] = y + 11.5f;
+    ((RuntimeObjectPrefix *)actor)->position[2] = ((RuntimeObjectPrefix *)actor)->position[2];
     return 0;
 }
 
@@ -1036,8 +1052,8 @@ s32 actorFollowGroundAndFaceTarget(u8 *actor) {
 s32 actorInitializeVerticalScalePulse(u8 *actor) {
     u8 *obj;
 
-    obj = *(u8 **)(actor + 0x54);
-    *(f32 *)(obj + 0x1F8) = 0.0f;
+    obj = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    ((ActorScriptState *)obj)->movementWorkspace.pulseAngle = 0.0f;
     *(f32 *)(actor + 4) = *(f32 *)(actor + 0);
     return 0;
 }
@@ -1055,16 +1071,18 @@ s32 actorUpdateVerticalScalePulse(u8 *actor) {
     f32 t;
 
     obj = *(u8 **)((u8 *)((f32 *)actor) + 0x54);
-    t = *(f32 *)(obj + 0x1F8);
+    t = ((ActorScriptState *)obj)->movementWorkspace.pulseAngle;
     if (360.0f <= t) {
         ((f32 *)actor)[1] = ((f32 *)actor)[0];
-        *(f32 *)(obj + 0x1F8) = 0.0f;
+        ((ActorScriptState *)obj)->movementWorkspace.pulseAngle = 0.0f;
         return 1;
     }
     ((f32 *)actor)[1] =
-        (1.0f + gActorVerticalPulseAmplitude * (mathSinDegrees(*(f32 *)(obj + 0x1F8) + 210.0f) - -0.5f)) *
+        (1.0f + gActorVerticalPulseAmplitude *
+                    (mathSinDegrees(((ActorScriptState *)obj)->movementWorkspace.pulseAngle + 210.0f) - -0.5f)) *
         ((f32 *)actor)[0];
-    *(f32 *)(obj + 0x1F8) = *(f32 *)(obj + 0x1F8) + 40.0f;
+    ((ActorScriptState *)obj)->movementWorkspace.pulseAngle =
+        ((ActorScriptState *)obj)->movementWorkspace.pulseAngle + 40.0f;
     return 0;
 }
 
@@ -1089,12 +1107,12 @@ s32 actorUpdateDampedVerticalScalePulses(u8 *object) {
     f64 phase;
     state = *(u8 **)((u8 *)((f32 *)object) + 0x54);
     amplitude = gActorDampedPulseInitialAmplitude;
-    if (*(f32 *)(state + 0x1F8) >= 1080.0f) {
+    if (((ActorScriptState *)state)->movementWorkspace.pulseAngle >= 1080.0f) {
         ((f32 *)object)[1] = ((f32 *)object)[0];
-        *(f32 *)(state + 0x1F8) = 0.0f;
+        ((ActorScriptState *)state)->movementWorkspace.pulseAngle = 0.0f;
         return 1;
     }
-    angle = *(f32 *)(state + 0x1F8);
+    angle = ((ActorScriptState *)state)->movementWorkspace.pulseAngle;
     phase = angle;
     sampleAngle = angle;
     if (gActorDampedPulseSecondPhase <= phase)
@@ -1102,7 +1120,8 @@ s32 actorUpdateDampedVerticalScalePulses(u8 *object) {
     if (719.0 < phase)
         amplitude = 0.02f;
     ((f32 *)object)[1] = (1.0f + amplitude * (mathSinDegrees(sampleAngle + 210.0f) - -0.5f)) * ((f32 *)object)[0];
-    *(f32 *)(state + 0x1F8) = *(f32 *)(state + 0x1F8) + 40.0f;
+    ((ActorScriptState *)state)->movementWorkspace.pulseAngle =
+        ((ActorScriptState *)state)->movementWorkspace.pulseAngle + 40.0f;
     return 0;
 }
 
@@ -1188,13 +1207,13 @@ s32 actorApproachTargetWithMediumScaleOscillation(u8 *actor) {
     u8 *obj;
     f32 v[3];
 
-    obj = *(u8 **)(actor + 0x54);
+    obj = ((RuntimeObjectPrefix *)actor)->state.bytes;
     actorRefreshTrackingTargetPosition((u8 *)actor);
     actorTurnTowardTarget((u8 *)actor, 300.0f);
-    v[0] = *(f32 *)(obj + 0x1EC) - *(f32 *)(actor + 0x44);
+    v[0] = ((ActorScriptState *)obj)->targetPosition[0] - ((RuntimeObjectPrefix *)actor)->worldPosition[0];
     v[1] = 0.0f;
-    v[2] = *(f32 *)(obj + 0x1F4) - *(f32 *)(actor + 0x4C);
-    if ((vector3Length(v) < *(f32 *)(obj + 0x204)) || (*(u16 *)(obj + 0x1EA) != 0)) {
+    v[2] = ((ActorScriptState *)obj)->targetPosition[2] - ((RuntimeObjectPrefix *)actor)->worldPosition[2];
+    if ((vector3Length(v) < ((ActorScriptState *)obj)->collisionWidth) || (*(u16 *)(obj + 0x1EA) != 0)) {
         return 1;
     }
     return actorAdvanceWithMediumScaleOscillation(actor);
@@ -1252,12 +1271,12 @@ s32 actorAdvanceWhileTrackingTarget(u8 *actor) {
     f32 out[3];
     f32 dir[3];
 
-    obj = *(u8 **)(actor + 0x54);
+    obj = ((RuntimeObjectPrefix *)actor)->state.bytes;
     actorRefreshTrackingTargetPosition((u8 *)actor);
     actorTurnTowardTarget((u8 *)actor, 300.0f);
-    dir[0] = *(f32 *)(obj + 0x1EC) - *(f32 *)(actor + 0x44);
+    dir[0] = ((ActorScriptState *)obj)->targetPosition[0] - ((RuntimeObjectPrefix *)actor)->worldPosition[0];
     dir[1] = 0.0f;
-    dir[2] = *(f32 *)(obj + 0x1F4) - *(f32 *)(actor + 0x4C);
+    dir[2] = ((ActorScriptState *)obj)->targetPosition[2] - ((RuntimeObjectPrefix *)actor)->worldPosition[2];
     out[1] = 0.0f;
     out[0] = 0.0f;
     out[2] = gRuntimeFrameSeconds * 500.0f;
@@ -1286,11 +1305,11 @@ s32 actorUpdateAttachedChainPose(u8 *object) {
     f32 distance;
     s32 buffer;
 
-    state = *(u8 **)(object + 0x54);
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
     attachment = actorFindPart(((u8 *)gPikachuActor), 0x35);
-    *(f32 *)(object + 0x18) = *(f32 *)(attachment + 0x44);
-    *(f32 *)(object + 0x1C) = *(f32 *)(attachment + 0x48);
-    *(f32 *)(object + 0x20) = *(f32 *)(attachment + 0x4C);
+    ((RuntimeObjectPrefix *)object)->position[0] = ((RuntimeObjectPrefix *)attachment)->worldPosition[0];
+    ((RuntimeObjectPrefix *)object)->position[1] = ((RuntimeObjectPrefix *)attachment)->worldPosition[1];
+    ((RuntimeObjectPrefix *)object)->position[2] = ((RuntimeObjectPrefix *)attachment)->worldPosition[2];
     if (*(u16 *)(attachment + 0x36) & 0x8000)
         buffer = 1;
     else
@@ -1301,23 +1320,26 @@ s32 actorUpdateAttachedChainPose(u8 *object) {
     direction[2] = -100.0f;
     matrix33TransformVector(matrix, direction, direction);
     vector3GetLookAnglesDegrees(direction, &pitch, &yaw);
-    actorAddRotationAxisDegrees(object, pitch - *(f32 *)(state + 0xC), 0);
-    actorAddRotationAxisDegrees(object, yaw - *(f32 *)(state + 0x10) + 90.0f, 1);
+    actorAddRotationAxisDegrees(object, pitch - ((ActorScriptState *)state)->orientation[0], 0);
+    actorAddRotationAxisDegrees(object, yaw - ((ActorScriptState *)state)->orientation[1] + 90.0f, 1);
     target = actorResolveStoredTarget(object);
     if (target != NULL) {
         end = actorFindPart(object, 0x73);
         part = *(u8 **)(*(u8 **)(object + 0x2C) + 0x2C);
         while (part != end) {
             next = *(u8 **)(part + 0x2C);
-            partState = *(u8 **)(part + 0x54);
-            nextState = *(u8 **)(next + 0x54);
+            partState = ((RuntimeObjectPrefix *)part)->state.bytes;
+            nextState = ((RuntimeObjectPrefix *)next)->state.bytes;
             *(f32 *)(partState + 4) = 0.0f;
-            *(f32 *)(part + 0x14) = *(f32 *)(next + 0x14) + *(f32 *)partState - *(f32 *)nextState;
+            ((RuntimeObjectPrefix *)part)->rotation[2] =
+                ((RuntimeObjectPrefix *)next)->rotation[2] + *(f32 *)partState - *(f32 *)nextState;
             part = next;
         }
-        distance = fabsf(*(f32 *)(target + 0x48) - *(f32 *)(end + 0x48));
-        if (*(f32 *)(state + 0x1A4) < distance) {
-            *(f32 *)(end + 0x14) = mathMapRangeClamped(*(f32 *)(state + 0x1A4), 0, 20.0f, -90.0f, distance);
+        distance =
+            fabsf(((RuntimeObjectPrefix *)target)->worldPosition[1] - ((RuntimeObjectPrefix *)end)->worldPosition[1]);
+        if (((ActorScriptState *)state)->targetDistanceAllowance < distance) {
+            ((RuntimeObjectPrefix *)end)->rotation[2] =
+                mathMapRangeClamped(((ActorScriptState *)state)->targetDistanceAllowance, 0, 20.0f, -90.0f, distance);
         }
     }
     return 0;
