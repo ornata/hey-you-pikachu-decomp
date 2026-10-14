@@ -174,7 +174,7 @@ void actorReleaseModelResources(u8 *actor) {
     actorState = ((RuntimeObjectPrefix *)actor)->state.actor;
     heapFreeLocal(&gGameHeap, (u8 *)actorState->modelDrawLists[0]);
     collisionGridUnregisterObject(actor, &actorState->collisionRegistration);
-    scriptVmDestroy((u8 *)actorState->vmAddress);
+    scriptVmDestroy((ScriptVm *)actorState->vmAddress);
     heapFreeLocal(&gGameHeap, actorState->partTable);
     heapFreeLocal(&gGameHeap, actorState);
 }

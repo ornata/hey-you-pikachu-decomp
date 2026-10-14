@@ -58,24 +58,24 @@ void _bzero(void *, s32); /* extern */
 /// \param vm Script context to reset, or null.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80115070 (0x80115070).
-void scriptVmReset(u8 *vm) {
+void scriptVmReset(ScriptVm *vm) {
     if (vm != NULL) {
-        ((ScriptVm *)vm)->executionState = SCRIPT_VM_READY;
-        ((ScriptVm *)vm)->instructionOffset = 0;
-        ((ScriptVm *)vm)->stackDepth = 0;
-        ((ScriptVm *)vm)->elapsed = 0.0f;
-        _bzero(((ScriptVm *)vm)->values, ((ScriptVm *)vm)->stackCapacity * sizeof(ScriptValue));
-        ((ScriptVm *)vm)->savedDepthCount = 0;
-        _bzero(((ScriptVm *)vm)->savedDepths, sizeof(((ScriptVm *)vm)->savedDepths));
-        ((ScriptVm *)vm)->returnCount = 0;
-        _bzero(((ScriptVm *)vm)->returnOffsets, sizeof(((ScriptVm *)vm)->returnOffsets));
-        _bzero(((ScriptVm *)vm)->localFrameBases, sizeof(((ScriptVm *)vm)->localFrameBases));
-        ((ScriptVm *)vm)->unknown2B0 = 0;
-        ((ScriptVm *)vm)->messageStyle = 0;
-        ((ScriptVm *)vm)->actionHandler = 0;
-        ((ScriptVm *)vm)->actionInitializing = 0;
-        ((ScriptVm *)vm)->messageDuration = 3.5f;
-        ((ScriptVm *)vm)->actionTimer = 0.0f;
+        vm->executionState = SCRIPT_VM_READY;
+        vm->instructionOffset = 0;
+        vm->stackDepth = 0;
+        vm->elapsed = 0.0f;
+        _bzero(vm->values, vm->stackCapacity * sizeof(ScriptValue));
+        vm->savedDepthCount = 0;
+        _bzero(vm->savedDepths, sizeof(vm->savedDepths));
+        vm->returnCount = 0;
+        _bzero(vm->returnOffsets, sizeof(vm->returnOffsets));
+        _bzero(vm->localFrameBases, sizeof(vm->localFrameBases));
+        vm->unknown2B0 = 0;
+        vm->messageStyle = 0;
+        vm->actionHandler = 0;
+        vm->actionInitializing = 0;
+        vm->messageDuration = 3.5f;
+        vm->actionTimer = 0.0f;
     }
 }
 
@@ -94,7 +94,7 @@ ScriptVm *scriptVmCreateWithCapacity(ScriptVmConfiguration *config, s32 capacity
     vm->stringTable = config->stringTable;
     vm->stackCapacity = capacity;
     vm->values = (ScriptValue *)heapAllocLocal((HpHdr *)&gGameHeap, capacity * sizeof(ScriptValue), 0xC6);
-    scriptVmReset((u8 *)vm);
+    scriptVmReset(vm);
     return vm;
 }
 
@@ -119,13 +119,12 @@ ScriptVm *scriptVmCreate(ScriptVmConfiguration *config) {
 /// \param vm Script context to release, or null.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_801151E4 (0x801151E4).
-void scriptVmDestroy(u8 *vm) {
+void scriptVmDestroy(ScriptVm *vm) {
     if (vm != NULL) {
-        heapFreeLocal(&gGameHeap, ((ScriptVm *)vm)->values);
+        heapFreeLocal(&gGameHeap, vm->values);
         heapFreeLocal(&gGameHeap, vm);
     }
 }
-
 
 #define VM_SP(vm) (((ScriptVm *)(vm))->stackDepth)
 #define VM_STACK(vm) (((ScriptVm *)(vm))->values)

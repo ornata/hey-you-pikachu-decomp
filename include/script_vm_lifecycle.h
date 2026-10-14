@@ -10,7 +10,7 @@
 /// \param vm Context to reuse, or null.
 /// \returns Nothing.
 /// \note Original identifier: \c func_80115070 (0x80115070).
-void scriptVmReset(u8 *vm);
+void scriptVmReset(ScriptVm *vm);
 
 /// Create a context with an explicit value-stack capacity.
 /// \param config Configuration whose borrowed program, strings, and commands must outlive the context.
@@ -30,6 +30,6 @@ ScriptVm *scriptVmCreate(ScriptVmConfiguration *config);
 /// \param vm Context to release, or null; its address becomes invalid after release.
 /// \returns Nothing.
 /// \note Original identifier: \c func_801151E4 (0x801151E4).
-void scriptVmDestroy(u8 *vm);
+void scriptVmDestroy(ScriptVm *vm);
 
 #endif

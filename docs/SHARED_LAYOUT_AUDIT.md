@@ -472,11 +472,25 @@ comments therefore describe an unresolved scaled configuration value, retaining
 `scriptVmCreateWithCapacity` and `scriptVmCreate` now return owned `ScriptVm *`
 contexts. The explicit-capacity creator uses a typed local for its configuration
 fields and owned value stack; Ghidra at `0x80115114` confirms construction and
-reset. The shared lifecycle header and definitions agree, and the reset boundary
-retains its existing byte-pointer ABI.
+reset. The shared lifecycle header and definitions agree. Reset and release now also
+accept typed contexts, preserving the target calling convention.
 
 Actor creation's reused byte-pointer local requires an explicit conversion from
 the typed result. A separate typed context local failed the ROM gate; the boundary
 cast preserves matching and has a focused ledger entry. Ownership and release
 requirements remain unchanged. Every accepted source-unit/header mutation passed
 strict comparison against all 483 baseline objects.
+
+## Typed VM reset and destruction
+
+The lifecycle interface consistently accepts or returns `ScriptVm *`. Reset
+accesses retained execution, stack and timing fields directly; destruction releases
+the owned value stack and then the context, retaining borrowed resources. Ghidra
+at `0x801151E4` confirms the two owned releases and null-context behavior. The
+actor model destructor converts its retained N64 context address to the canonical
+context pointer at the call boundary.
+
+Typed reset, destruction, internal creation/reset calls and the external actor
+destruction caller each preserve the full object baseline. The actor creator's
+separate local-allocation constraint remains documented; no new lifecycle
+exception is introduced.
