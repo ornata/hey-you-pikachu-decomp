@@ -185,7 +185,7 @@ void flipbookInitializeGeometry(u8 *object, u8 red, u8 green, u8 blue, u8 alpha)
     s32 i;
     y = (((Flipbook *)object)->stripCount * 16) / 2;
     halfWidth = ((Flipbook *)object)->width / 2;
-    vertices = *(Vtx **)(object + 0x64);
+    vertices = ((Flipbook *)object)->vertices;
     for (i = 0; i < ((Flipbook *)object)->stripCount; i++) {
         vertices[0].v.ob[0] = 0;
         vertices[0].v.ob[1] = y;
@@ -288,7 +288,7 @@ void flipbookBuildGeometryDisplayList(u8 *object) {
 /// \note Original decompilation identifier: \c func_800255A0 (0x800255A0).
 void flipbookResetImageDisplayLists(u8 *object) {
     s32 i;
-    Gfx *p = *(Gfx **)(object + 0x54);
+    Gfx *p = ((Flipbook *)object)->rowBranches[0];
 
     for (i = 0; i < ((Flipbook *)object)->stripCount * 2; i++) {
         gSPEndDisplayList(p++);
@@ -537,8 +537,8 @@ s32 scrollBoardCreateObject(s32 columns, s32 lines, u8 red, u8 green, u8 blue, u
     boardObject = objectCreateFromTemplate((ObjectTemplate *)gScrollBoardObjectTemplate);
     sp30 = boardObject;
     boardStateAddress = ((RuntimeObjectPrefix *)boardObject)->state.address;
-    flipbookInitialize((u8 *)(boardStateAddress + 0x14), columns, lines, red, green, blue, alpha, leadingOutline,
-                       trailingOutline);
+    flipbookInitialize((u8 *)&((ScrollBoardState *)boardStateAddress)->model, columns, lines, red, green, blue, alpha,
+                       leadingOutline, trailingOutline);
     return (s32)boardObject;
 }
 
@@ -687,11 +687,11 @@ s32 messengerGetActorContactMode(u8 *actor) {
     u16 actorKind;
     u8 *actorState;
 
-    actorKind = *(u16 *)(actor + 0x34);
+    actorKind = ((RuntimeObjectPrefix *)actor)->kind;
     if (((s32)actorKind <= 0) || ((s32)actorKind >= 0x26)) {
         return 0;
     }
-    actorState = *(u8 **)(actor + 0x54);
+    actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
     return ((ActorScriptState *)actorState)->messengerContactMode;
 }
 
@@ -857,9 +857,9 @@ void messengerUpdateHoming(u8 *object, s32 unused) {
     }
     target = ((RuntimeObjectPrefix *)linked)->root.bytes;
     mode = messengerGetActorContactMode(target);
-    delta[0] = (((RuntimeObjectPrefix *)linked)->worldPosition[0]) - (*((f32 *)(object + 0x18)));
-    delta[1] = (((RuntimeObjectPrefix *)linked)->worldPosition[1]) - (*((f32 *)(object + 0x1C)));
-    delta[2] = (((RuntimeObjectPrefix *)linked)->worldPosition[2]) - (*((f32 *)(object + 0x20)));
+    delta[0] = (((RuntimeObjectPrefix *)linked)->worldPosition[0]) - (((RuntimeObjectPrefix *)object)->position[0]);
+    delta[1] = (((RuntimeObjectPrefix *)linked)->worldPosition[1]) - (((RuntimeObjectPrefix *)object)->position[1]);
+    delta[2] = (((RuntimeObjectPrefix *)linked)->worldPosition[2]) - (((RuntimeObjectPrefix *)object)->position[2]);
     contactDistance = -1.0f;
     property = ((RuntimeObjectPrefix *)target)->kind;
     if ((((property > 0) && (property < 0x26)) && ((mode == 3) || (mode == 2))) &&
@@ -884,7 +884,7 @@ void messengerUpdateHoming(u8 *object, s32 unused) {
     if (contactDistance < 0.0f) {
         contactDistance = distance;
     }
-    if (contactDistance < ((*((f32 *)(linked + 0x24))) + 1.0f)) {
+    if (contactDistance < ((((RuntimeObjectPrefix *)linked)->radius) + 1.0f)) {
         messengerDeliver(object, linked, target, mode);
         return;
     }
@@ -1004,8 +1004,8 @@ void messengerUpdate(u8 *object) {
 s32 messengerPrepareDraw(u8 *object) {
     u8 *p = ((RuntimeObjectPrefix *)object)->state.bytes;
 
-    gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0xFF, 0xFF, 0xFF, *(s16 *)(p + 0x18));
-    return *(s32 *)(object + 0x30);
+    gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0xFF, 0xFF, 0xFF, ((MessengerFlightState *)p)->animation.value);
+    return (s32)((RuntimeObjectPrefix *)object)->displayList;
 }
 
 /// Start the messenger homing phase.
@@ -1045,6 +1045,7 @@ void messengerBeginDissipation(f32 *object) {
 /// Begin the messenger rebound after delivery, including applicable recipient feedback.
 /// \param object Messenger projectile with initialized state.
 /// \returns Nothing.
+/// \note The checked root-member offset preserves the target compiler's matching global-reference loads.
 /// \note Original decompilation identifier: \c func_80026964 (0x80026964).
 void messengerBeginRebound(u8 *object) {
     s32 count;
@@ -1059,9 +1060,9 @@ void messengerBeginRebound(u8 *object) {
     if (gTrackedMessengerHandle == ((RuntimeObjectPrefix *)object)->handle)
         gTrackedMessengerHandle = 0;
     linked = objectResolveAvailableHandle(((MessengerFlightState *)state)->linkedId);
-    if (linked != NULL && ((s32)gPikachuActor) == *(s32 *)(linked + 0x50)) {
+    if (linked != NULL && ((s32)gPikachuActor) == *(s32 *)(linked + (u32) & ((RuntimeObjectPrefix *)0)->root)) {
         target = actorGetDefaultPart((u8 *)gPikachuActor);
-        count = (s32)mathMapRangeClamped(0.0f, 2.0f, 4000.0f, 6.0f, (f32) * (s32 *)(state + 0x34));
+        count = (s32)mathMapRangeClamped(0.0f, 2.0f, 4000.0f, 6.0f, (f32)((MessengerFlightState *)state)->message.arg2);
         linkedEffectCreateChain(LINKED_EFFECT_FALLING, ((RuntimeObjectPrefix *)object)->worldPosition[0], ((RuntimeObjectPrefix *)object)->worldPosition[1], ((RuntimeObjectPrefix *)object)->worldPosition[2], 0.05f,
                       ((RuntimeObjectPrefix *)target)->handle, 0.7f, 0.5f, 5.0f, 0.03f, 0.03f, 0xC2, 1, count);
     }
@@ -1108,11 +1109,11 @@ void messengerCreate(s32 id, f32 *position, f32 *velocity, f32 scale, ScriptMess
     if (mode != 0) {
         state->mode = MESSENGER_COLLISION_FLIGHT;
         state->remainingTime = 5.0f;
-        *(u8 **)(object + 0x30) = gMessengerDirectFlightDisplayList;
+        ((RuntimeObjectPrefix *)object)->displayList = (Gfx *)gMessengerDirectFlightDisplayList;
     } else {
         state->mode = MESSENGER_LAUNCH;
         state->remainingTime = 0.1f;
-        *(u8 **)(object + 0x30) = gMessengerHomingDisplayList;
+        ((RuntimeObjectPrefix *)object)->displayList = (Gfx *)gMessengerHomingDisplayList;
     }
     state->linkedId = id;
     state->message = message;

@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 976,
-      "unique_spellings": 520,
+      "occurrences": 961,
+      "unique_spellings": 512,
       "files": 65
     },
     "cast_offset_candidates": {
@@ -1167,12 +1167,11 @@
         "text_panel.h",
         "vector_metrics.h"
       ],
-      "matching_exceptions": {},
+      "matching_exceptions": {
+        "messengerBeginRebound": "The linked object root reference is established at RuntimeObjectPrefix.root. A direct root.address read changes instructions and fails the ROM gate. The checked member-offset signed-word read preserves the original representation; the message payload uses direct ScriptMessage.arg2. Isolate IDO global actor/root load scheduling before replacing the checked root read."
+      },
       "locations": {
         "raw_offset_candidates": {
-          "object + 0x64": [
-            "188:26"
-          ],
           "y - 16": [
             "200:31",
             "210:31"
@@ -1187,9 +1186,6 @@
           "vtxIdx + 3": [
             "274:84"
           ],
-          "object + 0x54": [
-            "291:24"
-          ],
           "images + 1": [
             "333:63"
           ],
@@ -1198,41 +1194,6 @@
           ],
           "rowOffset + 16": [
             "480:67"
-          ],
-          "boardStateAddress + 0x14": [
-            "540:31"
-          ],
-          "actor + 0x34": [
-            "690:26"
-          ],
-          "actor + 0x54": [
-            "694:27"
-          ],
-          "object + 0x18": [
-            "860:81"
-          ],
-          "object + 0x1C": [
-            "861:81"
-          ],
-          "object + 0x20": [
-            "862:81"
-          ],
-          "linked + 0x24": [
-            "887:39"
-          ],
-          "p + 0x18": [
-            "1007:82"
-          ],
-          "object + 0x30": [
-            "1008:21",
-            "1111:18",
-            "1115:18"
-          ],
-          "linked + 0x50": [
-            "1062:60"
-          ],
-          "state + 0x34": [
-            "1064:85"
           ]
         }
       }

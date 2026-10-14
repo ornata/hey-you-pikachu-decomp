@@ -301,3 +301,18 @@ as creation. A missing owner requests follower destruction; retaining its handle
 does not extend the owner's lifetime. The existing terrain-query return-width
 compatibility declaration remains its recorded matching exception. Replacing
 the duplicate object view and creator offsets preserves all baseline objects.
+
+## Messenger and flipbook remaining consumers
+
+Flipbook geometry and command reset use the established vertex and branch fields;
+scroll-board initialization passes its embedded model by member reference.
+Messenger contact mode and homing use shared actor/object kind, state, position
+and radius. Drawing reads `ValueTrack.value` for opacity and the shared object
+display list; creation assigns that display-list member directly.
+
+Rebound reads the copied message's `arg2` through `MessengerFlightState.message`.
+Ghidra at `0x80026964` confirms the payload read and comparison of the linked
+object's root with the active actor. That comparison retains a checked root-member
+offset because a direct member failed the ROM gate; its next compiler evidence
+is recorded in the recovery ledger. No mailbox layout or delivery behavior changes.
+Every accepted source-unit trial preserved the strict baseline objects.

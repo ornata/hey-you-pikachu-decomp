@@ -160,6 +160,9 @@
     },
     "src/game/save_progress.c": {
       "progressReadFieldValue": "The second K&R formal is overwritten before use and omitted by progressGetValue. Moving it to a local and introducing a one-argument prototype fails the ROM gate. Its original register representation remains an explicit matching exception. Next evidence: Recover a one-argument definition that preserves the field-type register allocation and object bytes; do not initialize a dummy argument merely to silence the audit."
+    },
+    "src/game/flipbook_messenger.c": {
+      "messengerBeginRebound": "The linked object root reference is established at RuntimeObjectPrefix.root. A direct root.address read changes instructions and fails the ROM gate. The checked member-offset signed-word read preserves the original representation; the message payload uses direct ScriptMessage.arg2. Isolate IDO global actor/root load scheduling before replacing the checked root read."
     }
   },
   "baseline_totals": {
