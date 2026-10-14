@@ -3,10 +3,8 @@
 Navigation for the repository's `tools/` directory. Each tool's `--help` and module
 docstring are authoritative. Run commands from the repository root.
 
-The decompilation is complete: every function matches the ROM, and the few that remain as
-assembly are listed by `make asm-fallbacks`. The matching-campaign tooling (work queue,
-candidate verifier, experiment recipes, compiler-decision diagnostics) has been removed; the
-compiler diagnostics live in the separate ido-diagnostics repository.
+Use `make asm-fallbacks` to list functions still represented by assembly.
+Compiler-decision diagnostics live in the separate ido-diagnostics repository.
 
 ## Rules that still apply
 

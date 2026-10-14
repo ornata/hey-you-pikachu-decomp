@@ -67,13 +67,32 @@ Object comparison supplements the clean-ROM gate; it does not replace it.
 
 ## Type and name recovery
 
-See `TYPE_RECOVERY.md` for the recovered interfaces, baseline counts and remaining
-matching constraints. `make source-quality` reports semantic placeholders separately
-from matching-function progress; `JSON=1` includes occurrence locations and context.
-After source edits, update `TYPE_RECOVERY_NOTES.json` if evidence changes and regenerate
-`TYPE_RECOVERY.json` with `python3 tools/source_quality.py --ledger`. `make verify`
-checks that this ledger still matches the source. Do not treat raw-offset candidates
-as errors or invent types/names to make the inventory reach zero.
+Recover types and names from allocation, initialization, readers, writers and
+ROM assembly. Preserve access width, signedness, alignment, ownership, expression
+order and the matching calling convention. Partial record views do not establish
+allocation sizes. Do not replace unknown types mechanically with `void *`, invent
+names to lower counts, or merge interior symbols that change relocation addends.
+Original names remain in declaration comments.
+
+`make source-quality` reports current placeholders separately from matching-function
+progress; `JSON=1` includes locations and source context. Raw-offset candidates
+include scalar arithmetic and intentional byte access; they are review candidates,
+not errors. Spelling changes alone do not establish recovered layouts.
+
+`docs/TYPE_RECOVERY.json` inventories residual occurrences and available shared
+views. `docs/TYPE_RECOVERY_NOTES.json` records matching constraints and missing
+evidence; file-specific notes take precedence over category policies. After source
+locations or evidence change, update the notes and regenerate the ledger:
+
+```sh
+python3 tools/source_quality.py --ledger > docs/TYPE_RECOVERY.json
+python3 tools/source_quality.py --check-ledger
+```
+
+`make verify` checks ledger consistency. Keep the saved object baseline immutable;
+do not replace it to hide a failed comparison. See [Shared layout evidence](../SHARED_LAYOUT_AUDIT.md)
+and [Interface contracts](../INTERFACE_CONTRACTS.md) for storage facts and reviewed
+ABI exceptions.
 
 Use `python3 tools/layout_contracts.py --json` to inventory offset-named opaque
 record members (both unknown and unk spellings) separately from source-quality token counts. See
