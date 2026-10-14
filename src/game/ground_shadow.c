@@ -38,7 +38,7 @@ void groundShadowUpdateVertices(u8 *obj, s32 buffer) {
     f32 z;
     f32 height;
 
-    grid = *(GroundShadowGrid **)(obj + 0x54);
+    grid = (GroundShadowGrid *)((RuntimeObjectPrefix *)obj)->state.pointer;
     hit = 0;
     vertex = grid->vertices[buffer];
     for (row = 0; row < grid->count; row++) {
@@ -47,12 +47,15 @@ void groundShadowUpdateVertices(u8 *obj, s32 buffer) {
             do {
                 x = (row - (grid->count - 1) * 0.5f) * grid->spacing;
                 z = (column - (grid->count - 1) * 0.5f) * grid->spacing;
-                height = terrainGetWorldHeight(*(f32 *)(obj + 0x18) + *(f32 *)(obj + 0) * x, *(f32 *)(obj + 0x1C),
-                                       *(f32 *)(obj + 0x20) + *(f32 *)(obj + 8) * z, &hit);
-                height = MIN(height, *(f32 *)(*(u8 **)(obj + 0x50) + 0x1C) + 0.3f);
-                height -= *(f32 *)(obj + 0x1C);
+                height = terrainGetWorldHeight(
+                    ((RuntimeObjectPrefix *)obj)->position[0] + ((RuntimeObjectPrefix *)obj)->scale[0] * x,
+                    ((RuntimeObjectPrefix *)obj)->position[1],
+                    ((RuntimeObjectPrefix *)obj)->position[2] + ((RuntimeObjectPrefix *)obj)->scale[2] * z, &hit);
+                height =
+                    MIN(height, ((RuntimeObjectPrefix *)((RuntimeObjectPrefix *)obj)->root.bytes)->position[1] + 0.3f);
+                height -= ((RuntimeObjectPrefix *)obj)->position[1];
                 vertex->v.ob[0] = (s32)x;
-                vertex->v.ob[1] = (s32)((height + 0.17f) / *(f32 *)(obj + 4));
+                vertex->v.ob[1] = (s32)((height + 0.17f) / ((RuntimeObjectPrefix *)obj)->scale[1]);
                 vertex->v.ob[2] = (s32)z;
                 vertex->v.flag = 0;
                 vertex->v.tc[0] = ((row << 6) / (grid->count - 1)) << 5;
@@ -78,7 +81,7 @@ void groundShadowUpdateVertices(u8 *, s32);
 /// \returns The shadow display-list address, or zero when shadows are suppressed.
 /// \note Original decompilation identifier: \c func_80036594 (0x80036594).
 s32 groundShadowPrepareDraw(u8 *object) {
-    GroundShadowGrid *grid = *(GroundShadowGrid **)(object + 0x54);
+    GroundShadowGrid *grid = (GroundShadowGrid *)((RuntimeObjectPrefix *)object)->state.pointer;
 
     if (gRuntimeGameMode == 4 || gRuntimeGameMode == 5 || gRuntimeGameMode == 8 || gRuntimeGameMode == 9) {
         return 0;
@@ -94,19 +97,19 @@ s32 groundShadowPrepareDraw(u8 *object) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80036640 (0x80036640).
 void groundShadowUpdateTransform(u8 *object) {
-    f32 *o = (f32 *)object;
-    u8 *t;
-    f32 *s;
+    RuntimeObjectPrefix *shadow = (RuntimeObjectPrefix *)object;
+    RuntimeObjectPrefix *part;
+    RuntimeObjectPrefix *owner;
 
-    t = actorGetDefaultPart(*(u8 **)(object + 0x50));
-    s = *(f32 **)(object + 0x50);
-    o[6] = *(f32 *)(t + 0x44);
-    o[7] = *(f32 *)(t + 0x48);
-    o[8] = *(f32 *)(t + 0x4C);
-    o[0] = s[0];
-    o[1] = s[1];
-    o[2] = s[2];
-    o[7] = terrainGetWorldHeight(o[6], o[7], *(f32 *)(object + 0x20), NULL);
+    part = (RuntimeObjectPrefix *)actorGetDefaultPart(shadow->root.bytes);
+    owner = shadow->root.object;
+    shadow->position[0] = part->worldPosition[0];
+    shadow->position[1] = part->worldPosition[1];
+    shadow->position[2] = part->worldPosition[2];
+    shadow->scale[0] = owner->scale[0];
+    shadow->scale[1] = owner->scale[1];
+    shadow->scale[2] = owner->scale[2];
+    shadow->position[1] = terrainGetWorldHeight(shadow->position[0], shadow->position[1], shadow->position[2], NULL);
 }
 
 /// Release the rendering resources owned by a ground shadow.
@@ -114,7 +117,7 @@ void groundShadowUpdateTransform(u8 *object) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800366BC (0x800366BC).
 void groundShadowReleaseGeometry(u8 *object) {
-    GroundShadowGrid *shadowState = *(GroundShadowGrid **)(object + 0x54);
+    GroundShadowGrid *shadowState = (GroundShadowGrid *)((RuntimeObjectPrefix *)object)->state.pointer;
     heapFreeLocal(&gGameHeap, shadowState->displayList);
     heapFreeLocal(&gGameHeap, shadowState->vertices[0]);
 }
@@ -191,7 +194,7 @@ void groundShadowBuildDisplayList(GroundShadowGrid *);
 /// \note Original decompilation identifier: \c func_800369D4 (0x800369D4).
 u8 *groundShadowCreate(s32 count, f32 spacing) {
     u8 *obj = objectCreateFromTemplate((ObjectTemplate *)gGroundShadowObjectTemplate);
-    GroundShadowGrid *grid = *(GroundShadowGrid **)(obj + 0x54);
+    GroundShadowGrid *grid = (GroundShadowGrid *)((RuntimeObjectPrefix *)obj)->state.pointer;
     s32 size;
 
     grid->count = count;

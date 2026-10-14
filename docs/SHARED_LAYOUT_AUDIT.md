@@ -127,3 +127,17 @@ entrance and Cobalt Island initializers now use the shared scene members directl
 The recovered scalar types retain their original widths, signedness and offsets;
 no control flow or expression ordering changes accompany this adoption. Each of
 the ten source-unit mutations passed the preserved object comparison separately.
+
+## Maze replacement and ground-shadow consumers
+
+`mazeReplaceBlock` uses shared maze depth, model references and region coordinates,
+and shared object transforms and sibling links. Ghidra at `0x8010DC88` confirms
+the node/object access widths and offsets. The sibling chain retains its existing
+traversal order; this recovery adds no hierarchy restructuring.
+
+Ground-shadow consumers now obtain their owned `GroundShadowGrid` from the shared
+object state member. Transform updates distinguish the shadow, its borrowed owner
+and the owner's default model part, using shared scale, local position and world
+position fields. Ghidra at `0x80036330` confirms the terrain-conforming vertex
+inputs. The shadow owns its rendering allocations, while owner and model references
+remain borrowed. Both source units preserve the full object baseline.

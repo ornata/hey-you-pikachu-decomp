@@ -1789,43 +1789,52 @@ void mazeReplaceBlock(u8 *pos, u8 *modelTemplate, MazeGrid *terrain, s32 level) 
     node = areaFindPositionNode(*(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0x0) / 2 + *(f32 *)(pos + 0x0),
                                 *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0x4) / 2 + *(f32 *)(pos + 0x4),
                                 *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0x8) / 2 + *(f32 *)(pos + 0x8));
-    if (level < *(s16 *)(node + 0x40)) {
+    if (level < ((MazeNode *)node)->depth) {
         TRACE("block level mismatch (level %d, [%3.2f, %3.2f, %3.2f]), force to digging...\n", level,
               *(f32 *)(pos + 0x0), *(f32 *)(pos + 0x4), *(f32 *)(pos + 0x8));
-        mazeBuildNodeHierarchy(node, *(s16 *)(node + 0x40) - level - 1, 1);
+        mazeBuildNodeHierarchy(node, ((MazeNode *)node)->depth - level - 1, 1);
         node = areaFindPositionNode(*(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0x0) / 2 + *(f32 *)(pos + 0x0),
                                     *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0x4) / 2 + *(f32 *)(pos + 0x4),
                                     *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0x8) / 2 + *(f32 *)(pos + 0x8));
     }
-    if (*(u8 **)(node + 0x4) != NULL) {
-        objectRequestHierarchyDestruction(*(u8 **)(node + 0x4));
+    if (((MazeNode *)node)->objects[1].bytes != NULL) {
+        objectRequestHierarchyDestruction(((MazeNode *)node)->objects[1].bytes);
     }
     ((MazeNode *)node)->terrain = terrain;
     if (modelTemplate != NULL) {
         model = objectRegisterActiveHierarchy(objectCreateHierarchyFromTemplate((ObjectTemplate *)modelTemplate));
-        *(u8 **)(node + 0x4) = model;
-        *(f32 *)(model + 0x14) = 0.0f;
-        *(f32 *)(model + 0x10) = 0.0f;
-        *(f32 *)(model + 0xC) = 0.0f;
-        child = *(u8 **)(model + 0x28);
-        *(f32 *)(model + 0x18) = *(f32 *)(node + 0x8);
-        *(f32 *)(model + 0x1C) = *(f32 *)(node + 0xC);
-        *(f32 *)(model + 0x20) = *(f32 *)(node + 0x10);
-        *(f32 *)(model + 0x0) = gCurrentAreaConfiguration->objectScale * *(f32 *)(model + 0x0);
-        *(f32 *)(model + 0x4) = gCurrentAreaConfiguration->objectScale * *(f32 *)(model + 0x4);
-        *(f32 *)(model + 0x8) = gCurrentAreaConfiguration->objectScale * *(f32 *)(model + 0x8);
+        ((MazeNode *)node)->objects[1].bytes = model;
+        ((RuntimeObjectPrefix *)model)->rotation[2] = 0.0f;
+        ((RuntimeObjectPrefix *)model)->rotation[1] = 0.0f;
+        ((RuntimeObjectPrefix *)model)->rotation[0] = 0.0f;
+        child = ((RuntimeObjectPrefix *)model)->sibling.bytes;
+        ((RuntimeObjectPrefix *)model)->position[0] = ((MazeNode *)node)->x;
+        ((RuntimeObjectPrefix *)model)->position[1] = ((MazeNode *)node)->y;
+        ((RuntimeObjectPrefix *)model)->position[2] = ((MazeNode *)node)->z;
+        ((RuntimeObjectPrefix *)model)->scale[0] =
+            gCurrentAreaConfiguration->objectScale * ((RuntimeObjectPrefix *)model)->scale[0];
+        ((RuntimeObjectPrefix *)model)->scale[1] =
+            gCurrentAreaConfiguration->objectScale * ((RuntimeObjectPrefix *)model)->scale[1];
+        ((RuntimeObjectPrefix *)model)->scale[2] =
+            gCurrentAreaConfiguration->objectScale * ((RuntimeObjectPrefix *)model)->scale[2];
         if (child != NULL) {
             do {
-                *(f32 *)(child + 0x18) =
-                    *(f32 *)(node + 0x8) + gCurrentAreaConfiguration->objectScale * *(f32 *)(child + 0x18);
-                *(f32 *)(child + 0x1C) =
-                    *(f32 *)(node + 0xC) + gCurrentAreaConfiguration->objectScale * *(f32 *)(child + 0x1C);
-                *(f32 *)(child + 0x20) =
-                    *(f32 *)(node + 0x10) + gCurrentAreaConfiguration->objectScale * *(f32 *)(child + 0x20);
-                *(f32 *)(child + 0x0) = *(f32 *)(child + 0x0) * *(f32 *)(model + 0x0);
-                *(f32 *)(child + 0x4) = *(f32 *)(child + 0x4) * *(f32 *)(model + 0x4);
-                *(f32 *)(child + 0x8) = *(f32 *)(child + 0x8) * *(f32 *)(model + 0x8);
-                child = *(u8 **)(child + 0x28);
+                ((RuntimeObjectPrefix *)child)->position[0] =
+                    ((MazeNode *)node)->x +
+                    gCurrentAreaConfiguration->objectScale * ((RuntimeObjectPrefix *)child)->position[0];
+                ((RuntimeObjectPrefix *)child)->position[1] =
+                    ((MazeNode *)node)->y +
+                    gCurrentAreaConfiguration->objectScale * ((RuntimeObjectPrefix *)child)->position[1];
+                ((RuntimeObjectPrefix *)child)->position[2] =
+                    ((MazeNode *)node)->z +
+                    gCurrentAreaConfiguration->objectScale * ((RuntimeObjectPrefix *)child)->position[2];
+                ((RuntimeObjectPrefix *)child)->scale[0] =
+                    ((RuntimeObjectPrefix *)child)->scale[0] * ((RuntimeObjectPrefix *)model)->scale[0];
+                ((RuntimeObjectPrefix *)child)->scale[1] =
+                    ((RuntimeObjectPrefix *)child)->scale[1] * ((RuntimeObjectPrefix *)model)->scale[1];
+                ((RuntimeObjectPrefix *)child)->scale[2] =
+                    ((RuntimeObjectPrefix *)child)->scale[2] * ((RuntimeObjectPrefix *)model)->scale[2];
+                child = ((RuntimeObjectPrefix *)child)->sibling.bytes;
             } while (child != NULL);
         }
         mazePrepareNodeObjects(node);
