@@ -128,7 +128,7 @@ s32 itemResolveMapCollision(u8 *object, u16 contactFlags) {
     if ((hit & 0xF) == 5) {
         ((ItemStatePrefix *)st)->downwardVelocity = 0.0f;
     }
-    terrainCreateContactEffect((f32 *)(object + 0x18), hit);
+    terrainCreateContactEffect(((RuntimeObjectPrefix *)object)->position, hit);
     itemPlayImpactSounds(object, contactFlags, hit);
     if (--((ItemStatePrefix *)st)->bounceCount < 0) {
         ((ItemStatePrefix *)st)->bounceCount = 0;

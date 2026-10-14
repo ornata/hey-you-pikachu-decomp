@@ -181,7 +181,8 @@ s32 itemUpdateGroundVelocity(u8 *object, u8 *state, s32 cachedNode, s32 *spinnin
         var_f12 *= 0.3f;
         var_f14 *= 0.3f;
     }
-    itemApplyHorizontalFriction((f32 *)(state + 0x14), (f32 *)(state + 0x18), var_f12, var_f14, itemGetMotionCoefficient(object));
+    itemApplyHorizontalFriction(&((ItemStatePrefix *)state)->velocityX, &((ItemStatePrefix *)state)->velocityZ, var_f12,
+                                var_f14, itemGetMotionCoefficient(object));
     return 0;
 }
 
@@ -435,7 +436,7 @@ void itemUpdateGroundAndAirMotion(u8 *object) {
             if (((ItemStatePrefix *)state)->flags & 0x10000000) {
                 ((ItemStatePrefix *)state)->flags &= 0xEFFFFFFF;
             } else {
-                areaDispatchPositionEvent((f32 *)(object + 0x44), 5);
+                areaDispatchPositionEvent(((RuntimeObjectPrefix *)object)->worldPosition, 5);
             }
             ground = terrainGetSurfaceAttributes(((RuntimeObjectPrefix *)object)->position[0], ((RuntimeObjectPrefix *)object)->position[1],
                                    ((RuntimeObjectPrefix *)object)->position[2], &node);
@@ -664,7 +665,7 @@ void itemUpdateShrinkingDisposal(u8 *object) {
     u8 *state;
     f32 value;
     transform->scale[0] -= gRuntimeFrameSeconds * 0.01f;
-    state = *((u8 **)(object + 0x54));
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
     value = transform->scale[0];
     if (value < 0.0f) {
         transform->scale[2] = 0.0f;

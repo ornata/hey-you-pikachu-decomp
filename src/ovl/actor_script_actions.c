@@ -272,7 +272,7 @@ s32 actorScriptPerformCostedAction(u8 *object) {
     s32 count;
     u8 *vm;
     u8 *state;
-    state = *(u8 **)(object + 0x54);
+    state = ((RuntimeObjectPrefix *)object)->state.bytes;
     vm = (u8 *)((ActorScriptState *)state)->vmAddress;
     if (((ScriptVm *)vm)->actionInitializing != 0) {
         count = scriptVmPopInteger((s32)vm);

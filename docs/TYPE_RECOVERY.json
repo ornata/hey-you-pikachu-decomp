@@ -51,9 +51,9 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 1174,
-      "unique_spellings": 614,
-      "files": 68
+      "occurrences": 1116,
+      "unique_spellings": 603,
+      "files": 66
     },
     "cast_offset_candidates": {
       "occurrences": 28,
@@ -192,179 +192,75 @@
           ],
           "command + 0xC": [
             "221:50",
-            "320:58",
-            "658:99",
-            "1053:24"
+            "322:58",
+            "667:42",
+            "1064:24"
           ],
           "command + 0x10": [
             "221:75",
-            "307:76"
+            "309:76"
           ],
           "command + 8": [
             "221:101",
             "237:81",
             "250:92",
             "251:63",
-            "306:9",
-            "307:53",
-            "460:38",
-            "646:18",
-            "685:54",
-            "707:42",
-            "738:72",
-            "752:42",
-            "768:72",
-            "833:53",
-            "836:64",
-            "844:68",
-            "865:66",
-            "866:64",
-            "925:46",
-            "952:34",
-            "987:31",
-            "1041:48",
-            "1052:22"
-          ],
-          "object + 0x44": [
-            "275:51",
-            "655:28",
-            "656:50",
-            "658:74",
-            "795:57",
-            "800:57",
-            "803:57"
-          ],
-          "object + 0x48": [
-            "275:76",
-            "656:75"
-          ],
-          "object + 0x4C": [
-            "275:101",
-            "656:100",
-            "657:28"
+            "308:9",
+            "309:53",
+            "463:38",
+            "652:18",
+            "694:54",
+            "716:42",
+            "747:72",
+            "761:42",
+            "777:72",
+            "844:53",
+            "847:64",
+            "855:68",
+            "876:66",
+            "877:64",
+            "936:46",
+            "963:34",
+            "998:31",
+            "1052:48",
+            "1063:22"
           ],
           "p + 4": [
-            "308:62"
-          ],
-          "obj + 0x24": [
-            "380:58"
-          ],
-          "p + 0x34": [
-            "384:22"
-          ],
-          "obj + 0x18": [
-            "385:54",
-            "439:45"
-          ],
-          "obj + 0x20": [
-            "386:54"
-          ],
-          "state + 0x10": [
-            "398:24",
-            "405:26",
-            "421:26"
-          ],
-          "obj + 0x44": [
-            "428:76"
-          ],
-          "obj + 0x48": [
-            "429:76"
-          ],
-          "obj + 0x4C": [
-            "430:76"
-          ],
-          "obj + 0x38": [
-            "439:24"
-          ],
-          "r + 0x38": [
-            "462:52"
-          ],
-          "spawned + 0x38": [
-            "493:47"
+            "310:62"
           ],
           "trackingTarget + 0x44": [
-            "521:22"
+            "524:22"
           ],
           "actorStateAddress + 0x1EC": [
-            "523:12"
+            "526:12"
           ],
           "particles + 10": [
-            "582:32",
-            "588:32"
-          ],
-          "object + 0x10": [
-            "583:54",
-            "589:66"
-          ],
-          "object + 0x14": [
-            "584:36",
-            "590:36"
-          ],
-          "other + 0x34": [
-            "593:39"
-          ],
-          "other + 0x38": [
-            "593:103",
-            "809:101"
-          ],
-          "object + 0x38": [
-            "658:127",
-            "795:106",
-            "800:106",
-            "803:106",
-            "810:36",
-            "812:105"
-          ],
-          "effectOwner + 0x38": [
-            "691:45"
+            "585:32",
+            "592:32"
           ],
           "actor + 0x44": [
-            "756:31"
-          ],
-          "object + 0x24": [
-            "796:32",
-            "801:32",
-            "804:32",
-            "810:61",
-            "813:36"
-          ],
-          "other + 0x44": [
-            "809:61"
-          ],
-          "state + 0x1EC": [
-            "812:61"
+            "765:31"
           ],
           "o + 0": [
-            "897:21"
+            "908:21"
           ],
           "o + 4": [
-            "898:21"
+            "909:21"
           ],
           "o + 8": [
-            "899:21"
-          ],
-          "o + 0x34": [
-            "1022:31",
-            "1022:57"
-          ],
-          "actor + 0x38": [
-            "1028:27"
-          ],
-          "actor + 0x54": [
-            "1081:23",
-            "1137:22"
+            "910:21"
           ],
           "st + 0x134": [
-            "1107:26"
+            "1118:26"
           ],
           "st + 0x138": [
-            "1107:49"
+            "1118:49"
           ],
           "op - 19": [
-            "1120:41"
+            "1131:41"
           ],
           "p + 1": [
-            "1154:20"
+            "1165:20"
           ]
         }
       }
@@ -3612,48 +3508,6 @@
         }
       }
     },
-    "src/ovl/actor_script_actions.c": {
-      "known_views": [
-        "action_request.h",
-        "action_script_playback.h",
-        "action_script_query.h",
-        "action_script_stop.h",
-        "actor_color.h",
-        "actor_create.h",
-        "actor_held_item.h",
-        "actor_meters.h",
-        "actor_parts.h",
-        "actor_script.h",
-        "actor_script_action.h",
-        "audio_cue.h",
-        "camera_overlay.h",
-        "hud.h",
-        "item_queries.h",
-        "item_response.h",
-        "item_size.h",
-        "item_types.h",
-        "object_lookup.h",
-        "object_types.h",
-        "orange_effect.h",
-        "particle_cluster.h",
-        "player_control.h",
-        "player_interaction.h",
-        "random.h",
-        "script_vm.h",
-        "script_vm_stack.h",
-        "text_window.h"
-      ],
-      "matching_exceptions": {
-        "actorConsumeHeldItem": "The item transformation result and cause are s32. The caller retains an unused third object pointer through a compatibility declaration."
-      },
-      "locations": {
-        "raw_offset_candidates": {
-          "object + 0x54": [
-            "275:22"
-          ]
-        }
-      }
-    },
     "src/ovl/actor_script_messages_items.c": {
       "known_views": [
         "action_script_playback.h",
@@ -4208,32 +4062,20 @@
             "172:29",
             "175:23"
           ],
-          "state + 0x14": [
-            "184:41"
-          ],
-          "state + 0x18": [
-            "184:64"
-          ],
-          "object + 0x44": [
-            "438:51"
-          ],
           "bounceCount - 1U": [
-            "451:98"
+            "452:98"
           ],
           "wriggleAngle + 360": [
-            "587:114"
+            "588:114"
           ],
           "wriggleAngle - 360": [
-            "592:114"
+            "593:114"
           ],
           "spinSpeed + 360": [
-            "603:87"
+            "604:87"
           ],
           "spinSpeed - 360": [
-            "608:87"
-          ],
-          "object + 0x54": [
-            "667:23"
+            "609:87"
           ]
         }
       }
@@ -4388,35 +4230,6 @@
             "2766:77",
             "2769:76",
             "2773:77"
-          ]
-        }
-      }
-    },
-    "src/ovl/item_special_behaviors.c": {
-      "known_views": [
-        "actor_meters.h",
-        "area_services.h",
-        "item_mode.h",
-        "item_object.h",
-        "item_physics.h",
-        "item_response.h",
-        "item_size.h",
-        "item_special_behaviors.h",
-        "item_types.h",
-        "math_scalar.h",
-        "object_billboard.h",
-        "object_movement.h",
-        "object_types.h",
-        "pikachu_actor.h",
-        "scene_configuration.h",
-        "scene_types.h",
-        "terrain_surface.h"
-      ],
-      "matching_exceptions": {},
-      "locations": {
-        "raw_offset_candidates": {
-          "object + 0x18": [
-            "131:40"
           ]
         }
       }

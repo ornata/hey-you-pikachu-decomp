@@ -236,3 +236,18 @@ model setup and animated-texture return values also use the shared layouts.
 The old animated-texture return exception is resolved: offset 0x30 is the display
 list, not the child link asserted by the obsolete note. Both source units pass
 strict baseline comparison with the canonical display-list read.
+
+## Action-command and item-physics interfaces
+
+Action-command item launch, pickup, target notification and effect emission
+consumers use shared object positions, kind, handle and radius. Launch heading
+uses `ActorScriptState.orientation`; target emission uses its target-position
+array. Command payload records remain separate from object state, and their
+packed byte accesses retain the existing command representation.
+
+The costed script-action entry obtains its actor state from the shared object
+prefix. Ghidra at `0x80116BC4` confirms the retained VM address, resource check and
+action outcome fields. Item friction passes the established X/Z velocity members
+by address, terrain effects receive the object's position, and maze events receive
+its world position. Existing preload/operand-order exceptions remain unchanged.
+Each of the four source units independently passed strict baseline comparison.

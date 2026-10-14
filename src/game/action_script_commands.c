@@ -272,7 +272,9 @@ void actionCommandPlayGroundContactEffects(u8 *object, u8 *state, ActorActionCue
     s32 sound;
     s32 type;
     SoundAmplitude *args;
-    ground = terrainGetSurfaceAttributes(*(f32 *)(object + 0x44), *(f32 *)(object + 0x48), *(f32 *)(object + 0x4C), 0);
+    ground = terrainGetSurfaceAttributes(((RuntimeObjectPrefix *)object)->worldPosition[0],
+                                         ((RuntimeObjectPrefix *)object)->worldPosition[1],
+                                         ((RuntimeObjectPrefix *)object)->worldPosition[2], 0);
     args = (SoundAmplitude *)(*source)->args;
     if (args->amount > 0) {
         if (object == ((u8 *)gPikachuActor))
@@ -377,13 +379,13 @@ void actionCommandLaunchHeldItem(u8 *actor, u8 *state, ActorActionCueCommand *co
     }
     l = (Launch *)(*source)->args;
     speed = l->speed * 60.0f;
-    actorGetConfiguredAttachmentPosition(actor, *(f32 *)(obj + 0x24), pos);
+    actorGetConfiguredAttachmentPosition(actor, ((RuntimeObjectPrefix *)obj)->radius, pos);
     switch (l->kind) {
     case 0:
         if (((ActorScriptState *)state)->targetMode == 1 && (p = actorResolveStoredTarget(actor)) != NULL &&
-            *(u16 *)(p + 0x34) == 0x7F) {
-            dx = gPlayerState.position[0] - *(f32 *)(obj + 0x18);
-            dz = gPlayerState.position[2] - *(f32 *)(obj + 0x20);
+            ((RuntimeObjectPrefix *)p)->kind == 0x7F) {
+            dx = gPlayerState.position[0] - ((RuntimeObjectPrefix *)obj)->position[0];
+            dz = gPlayerState.position[2] - ((RuntimeObjectPrefix *)obj)->position[2];
             len = sqrtf(dx * dx + dz * dz);
             speed /= len;
             vel[0] = dx * speed;
@@ -395,14 +397,14 @@ void actionCommandLaunchHeldItem(u8 *actor, u8 *state, ActorActionCueCommand *co
     case 2:
     case 3:
     case 4:
-        ang = *(f32 *)(state + 0x10) + gActionLaunchHeadingOffsets[l->kind];
+        ang = ((ActorScriptState *)state)->orientation[1] + gActionLaunchHeadingOffsets[l->kind];
         vel[0] = mathSinDegrees(ang) * speed;
         vel[1] = -gActionLaunchVerticalSpeedFactors[l->kind] * l->speed;
         vel[2] = mathCosDegrees(ang) * speed;
         break;
     case 6:
         speed *= randomNext() * 2.3283064365386963e-10 * 0.5 + 0.5;
-        ang6 = (*(f32 *)(state + 0x10) + gActionLaunchHeadingOffsets[l->kind]) +
+        ang6 = (((ActorScriptState *)state)->orientation[1] + gActionLaunchHeadingOffsets[l->kind]) +
                (randomNext() * 2.3283064365386963e-10 - 0.5) * 90.0;
         vel[0] = mathSinDegrees(ang6) * speed;
         vel[1] = -gActionLaunchVerticalSpeedFactors[l->kind] * l->speed;
@@ -418,16 +420,16 @@ void actionCommandLaunchHeldItem(u8 *actor, u8 *state, ActorActionCueCommand *co
         fallingParticleCreate(randomBelow(7), randomBelow(3), pos, vel,
                       randomNext() * 2.3283064365386963e-10 * 0.4f + 0.8f);
         speed = randomNext() * 2.3283064365386963e-10 * 0.1f + 0.8f;
-        ang7 = (*(f32 *)(state + 0x10) + gActionLaunchHeadingOffsets[l->kind]) +
+        ang7 = (((ActorScriptState *)state)->orientation[1] + gActionLaunchHeadingOffsets[l->kind]) +
                (randomNext() * 2.3283064365386963e-10 - 0.5) * 360.0;
         vel[0] = mathSinDegrees(ang7) * speed;
         vel[1] = -gActionLaunchVerticalSpeedFactors[l->kind] * l->speed;
         vel[2] = mathCosDegrees(ang7) * speed;
         break;
     case 5:
-        dir[0] = ((ActorScriptState *)state)->targetPosition[0] - *(f32 *)(obj + 0x44);
-        dir[1] = ((ActorScriptState *)state)->targetPosition[1] - *(f32 *)(obj + 0x48);
-        dir[2] = ((ActorScriptState *)state)->targetPosition[2] - *(f32 *)(obj + 0x4C);
+        dir[0] = ((ActorScriptState *)state)->targetPosition[0] - ((RuntimeObjectPrefix *)obj)->worldPosition[0];
+        dir[1] = ((ActorScriptState *)state)->targetPosition[1] - ((RuntimeObjectPrefix *)obj)->worldPosition[1];
+        dir[2] = ((ActorScriptState *)state)->targetPosition[2] - ((RuntimeObjectPrefix *)obj)->worldPosition[2];
         vector3Normalize((f32 *)dir);
         vel[0] = dir[0] * speed;
         vel[1] = dir[1] * speed;
@@ -436,7 +438,8 @@ void actionCommandLaunchHeldItem(u8 *actor, u8 *state, ActorActionCueCommand *co
     default:
         break;
     }
-    itemThrow(*(s32 *)(obj + 0x38), (f32 *)(obj + 0x18), pos, vel, gActionLaunchThrowFlags[l->kind]);
+    itemThrow(((RuntimeObjectPrefix *)obj)->handle, ((RuntimeObjectPrefix *)obj)->position, pos, vel,
+              gActionLaunchThrowFlags[l->kind]);
     ((ActorScriptState *)state)->lastInteractionMilliseconds = runtimeGetElapsedMilliseconds();
 }
 
@@ -459,7 +462,7 @@ void actionCommandPickUpNearbyItem(s32 actor, u8 *state, u8 *command, s32 elapse
                             ((ActorScriptState *)state)->searchItemKind, ((ActorScriptState *)state)->searchItemKind,
                             *(s32 *)(command + 8), 0);
         if (r != NULL) {
-            actorTryHoldItem((u8 *)actor, *(s32 *)(r + 0x38), 0);
+            actorTryHoldItem((u8 *)actor, ((RuntimeObjectPrefix *)r)->handle, 0);
         }
     }
 }
@@ -490,7 +493,7 @@ void actionCommandCreateRandomHeldItem(u8 *object, u8 *state, ActorActionCueComm
         spawned =
             itemCreate(position.x, position.y, position.z, 0.0f, 0.0f, randomBelow(count) + choice->firstKind);
         if (spawned != NULL) {
-            actorTryHoldItem(object, *(s32 *)(spawned + 0x38), 1);
+            actorTryHoldItem(object, ((RuntimeObjectPrefix *)spawned)->handle, 1);
         }
     }
 }
@@ -579,18 +582,21 @@ void actionCommandEmitPairedTargetedBursts(u8 *object, u8 *state, BurstCommand *
             particles = randomBelow(10);
             random = randomNext();
             yaw = (s32)randomBelow(90);
-            ribbonEffectCreate(particles + 10, args->lifetime, 0.5f, random * 2.3283064365386963e-10 * 0.3f, args->kind, left[0],
-                          left[1], left[2], *(f32 *)(object + 0x10) - 120.0f + 30.0f - yaw,
-                          *(f32 *)(object + 0x14) + 45.0f - (s32)randomBelow(90), target);
+            ribbonEffectCreate(particles + 10, args->lifetime, 0.5f, random * 2.3283064365386963e-10 * 0.3f, args->kind,
+                               left[0], left[1], left[2],
+                               ((RuntimeObjectPrefix *)object)->rotation[1] - 120.0f + 30.0f - yaw,
+                               ((RuntimeObjectPrefix *)object)->rotation[2] + 45.0f - (s32)randomBelow(90), target);
             particles = randomBelow(10);
             random = randomNext();
             yaw = (s32)randomBelow(90);
             ribbonEffectCreate(particles + 10, args->lifetime, 0.5f, random * 2.3283064365386963e-10 * 0.3f, args->kind,
-                          right[0], right[1], right[2], *(f32 *)(object + 0x10) - 60.0f + 60.0f - yaw,
-                          *(f32 *)(object + 0x14) + 45.0f - (s32)randomBelow(90), target);
+                               right[0], right[1], right[2],
+                               ((RuntimeObjectPrefix *)object)->rotation[1] - 60.0f + 60.0f - yaw,
+                               ((RuntimeObjectPrefix *)object)->rotation[2] + 45.0f - (s32)randomBelow(90), target);
         }
         other = actorGetTrackingTarget(object);
-        if (other != NULL && *(u16 *)(other + 0x34) == 0x86 && itemTryTransformToReplacement(*(s32 *)(other + 0x38))) {
+        if (other != NULL && ((RuntimeObjectPrefix *)other)->kind == 0x86 &&
+            itemTryTransformToReplacement(((RuntimeObjectPrefix *)other)->handle)) {
             ((ActorScriptState *)state)->costedActionResult = 1;
         }
     }
@@ -652,10 +658,13 @@ void actionCommandCreateScatteredParticleEffect(u8 *actor, s32 state, u8 *comman
     } else {
         object = actor;
     }
-    ground.v[0] = *(f32 *)(object + 0x44);
-    ground.v[1] = terrainGetWorldHeight(*(f32 *)(object + 0x44), *(f32 *)(object + 0x48), *(f32 *)(object + 0x4C), NULL);
-    ground.v[2] = *(f32 *)(object + 0x4C);
-    effectEmitterCreateForStyle(EFFECT_EMIT_SCATTERED_PARTICLES, (f32 *)(object + 0x44), *(f32 *)(command + 0xC), 0, *(s32 *)(object + 0x38), -6.0f);
+    ground.v[0] = ((RuntimeObjectPrefix *)object)->worldPosition[0];
+    ground.v[1] = terrainGetWorldHeight(((RuntimeObjectPrefix *)object)->worldPosition[0],
+                                        ((RuntimeObjectPrefix *)object)->worldPosition[1],
+                                        ((RuntimeObjectPrefix *)object)->worldPosition[2], NULL);
+    ground.v[2] = ((RuntimeObjectPrefix *)object)->worldPosition[2];
+    effectEmitterCreateForStyle(EFFECT_EMIT_SCATTERED_PARTICLES, ((RuntimeObjectPrefix *)object)->worldPosition,
+                                *(f32 *)(command + 0xC), 0, ((RuntimeObjectPrefix *)object)->handle, -6.0f);
 }
 
 /// Script operands for a converging effect around an actor or its linked part.
@@ -688,8 +697,8 @@ void actionCommandCreateLinkedPartEffect(u8 *actor, u8 *state, u8 *command, f32 
         effectOwner = actor;
     }
     effectArguments = commandArguments;
-    convergingParticleEffectCreate(*(s32 *)(effectOwner + 0x38), effectArguments->lifetime, effectArguments->count,
-                                   effectArguments->style);
+    convergingParticleEffectCreate(((RuntimeObjectPrefix *)effectOwner)->handle, effectArguments->lifetime,
+                                   effectArguments->count, effectArguments->style);
 }
 
 s32 itemTryTransformToReplacement(s32); /* extern */
@@ -792,25 +801,27 @@ void actionCommandEmitEffectAtSelectedAttachment(u8 *object, u8 *state, ActorAct
     switch (args->posType) {
     case 0:
         target = actorGetPartObjectHandle(object, 0x76);
-        effectEmitterCreateForStyle(args->kind, (f32 *)(object + 0x44), args->lifetime, target, *(s32 *)(object + 0x38),
-                      *(f32 *)(object + 0x24));
+        effectEmitterCreateForStyle(args->kind, ((RuntimeObjectPrefix *)object)->worldPosition, args->lifetime, target,
+                                    ((RuntimeObjectPrefix *)object)->handle, ((RuntimeObjectPrefix *)object)->radius);
         break;
     case 1:
         target = actorGetPartObjectHandle(object, 0x74);
-        effectEmitterCreateForStyle(args->kind, (f32 *)(object + 0x44), args->lifetime, target, *(s32 *)(object + 0x38),
-                      *(f32 *)(object + 0x24));
+        effectEmitterCreateForStyle(args->kind, ((RuntimeObjectPrefix *)object)->worldPosition, args->lifetime, target,
+                                    ((RuntimeObjectPrefix *)object)->handle, ((RuntimeObjectPrefix *)object)->radius);
         target = actorGetPartObjectHandle(object, 0x75);
-        effectEmitterCreateForStyle(args->kind, (f32 *)(object + 0x44), args->lifetime, target, *(s32 *)(object + 0x38),
-                      *(f32 *)(object + 0x24));
+        effectEmitterCreateForStyle(args->kind, ((RuntimeObjectPrefix *)object)->worldPosition, args->lifetime, target,
+                                    ((RuntimeObjectPrefix *)object)->handle, ((RuntimeObjectPrefix *)object)->radius);
         break;
     case 2:
         other = actorGetTrackingTarget(object);
         if (other != NULL) {
-            effectEmitterCreateForStyle(args->kind, (f32 *)(other + 0x44), args->lifetime, *(s32 *)(other + 0x38),
-                          *(s32 *)(object + 0x38), *(f32 *)(object + 0x24));
+            effectEmitterCreateForStyle(args->kind, ((RuntimeObjectPrefix *)other)->worldPosition, args->lifetime,
+                                        ((RuntimeObjectPrefix *)other)->handle, ((RuntimeObjectPrefix *)object)->handle,
+                                        ((RuntimeObjectPrefix *)object)->radius);
         } else {
-            effectEmitterCreateForStyle(args->kind, (f32 *)(state + 0x1EC), args->lifetime, 0, *(s32 *)(object + 0x38),
-                          *(f32 *)(object + 0x24));
+            effectEmitterCreateForStyle(args->kind, ((ActorScriptState *)state)->targetPosition, args->lifetime, 0,
+                                        ((RuntimeObjectPrefix *)object)->handle,
+                                        ((RuntimeObjectPrefix *)object)->radius);
         }
         break;
     default:
@@ -1019,13 +1030,13 @@ void actionCommandNotifyStoredTarget(u8 *actor, s32 unusedState, ActorActionCueC
     u8 *o = actorResolveStoredTarget(actor);
 
     args = (ArgsMsg *)command->args;
-    if (o != NULL && *(u16 *)(o + 0x34) > 0 && *(u16 *)(o + 0x34) < 0x26) {
+    if (o != NULL && ((RuntimeObjectPrefix *)o)->kind > 0 && ((RuntimeObjectPrefix *)o)->kind < 0x26) {
         m.arg1 = 0;
         m.type = 0x10;
         m.arg0 = args->a;
         m.arg2 = args->c;
         m.arg3 = args->d;
-        m.arg4 = *(s32 *)(actor + 0x38);
+        m.arg4 = ((RuntimeObjectPrefix *)actor)->handle;
         actorPostScriptMessage((s32)o, m, 0);
     }
 }
@@ -1078,7 +1089,7 @@ extern f32 gRuntimeFrameSeconds;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80024DD0 (0x80024DD0).
 void actorUpdateActionScript(u8 *actor, ActorActionCueCommand **nextCommand, f32 *clock) {
-    u8 *st = *(u8 **)(actor + 0x54);
+    u8 *st = ((RuntimeObjectPrefix *)actor)->state.bytes;
     ActorActionCueCommand *c;
     CmdJump *j;
     s32 op;
@@ -1134,7 +1145,7 @@ out:
 /// \returns A borrowed selected script, the supplied list when no state selection is needed, or null if no script matches.
 /// \note Original decompilation identifier: \c func_80024F9C (0x80024F9C).
 ActorActionCueCommand *actorSelectActionScript(u8 *actor, ActorActionCueCommand *list, s32 unusedFlag) {
-    u8 *o = *(u8 **)(actor + 0x54);
+    u8 *o = ((RuntimeObjectPrefix *)actor)->state.bytes;
     ActorActionCueCommand *p;
     s32 st;
 
