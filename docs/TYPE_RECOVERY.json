@@ -51,9 +51,9 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 950,
-      "unique_spellings": 505,
-      "files": 65
+      "occurrences": 908,
+      "unique_spellings": 492,
+      "files": 64
     },
     "cast_offset_candidates": {
       "occurrences": 28,
@@ -959,61 +959,6 @@
         }
       }
     },
-    "src/game/collision_grid.c": {
-      "known_views": [
-        "collision_diagnostics.h",
-        "collision_registration.h",
-        "keyed_pool.h",
-        "keyed_pool_types.h",
-        "object_response.h",
-        "object_types.h",
-        "random.h",
-        "runtime_clock.h",
-        "runtime_control.h",
-        "text_image_create.h",
-        "text_window_images.h",
-        "vector_direction.h",
-        "vector_metrics.h"
-      ],
-      "matching_exceptions": {},
-      "locations": {
-        "raw_offset_candidates": {
-          "object + 0x24": [
-            "156:18",
-            "175:61"
-          ],
-          "object + 0x44": [
-            "159:28",
-            "171:66"
-          ],
-          "object + 0x4C": [
-            "160:28",
-            "173:66"
-          ],
-          "candidate + 0x36": [
-            "170:51"
-          ],
-          "candidate + 0x44": [
-            "171:37"
-          ],
-          "candidate + 0x48": [
-            "172:37"
-          ],
-          "object + 0x48": [
-            "172:66"
-          ],
-          "candidate + 0x4C": [
-            "173:37"
-          ],
-          "candidate + 0x24": [
-            "175:32"
-          ],
-          "candidate + 0x34": [
-            "177:38"
-          ]
-        }
-      }
-    },
     "src/game/doors_object_responses.c": {
       "known_views": [
         "area_services.h",
@@ -1689,94 +1634,43 @@
       },
       "locations": {
         "raw_offset_candidates": {
-          "object + 0x54": [
-            "79:18",
-            "115:28",
-            "128:28",
-            "141:22",
-            "191:22",
-            "311:22",
-            "376:28",
-            "395:20",
-            "419:18",
-            "576:22",
-            "785:20",
-            "816:18",
-            "841:32",
-            "852:28",
-            "886:20",
-            "984:20",
-            "996:28",
-            "1016:28"
-          ],
           "object + 4": [
             "201:143",
             "320:143"
           ],
-          "child + 0x54": [
-            "228:39",
-            "336:39"
-          ],
           "from + 1": [
             "329:23",
-            "342:56"
-          ],
-          "child + 0xC": [
-            "341:70"
-          ],
-          "child + 0x10": [
-            "341:93"
-          ],
-          "child + 0x14": [
-            "341:117"
+            "344:56"
           ],
           "from + 0x30": [
-            "365:61"
-          ],
-          "motionState + 0x130": [
-            "381:14"
-          ],
-          "object + 0x34": [
-            "432:26"
+            "367:61"
           ],
           "var_v0 + 4": [
-            "487:73"
+            "489:73"
           ],
           "transition - 0x100": [
-            "625:29"
+            "627:29"
           ],
           "id + 0x100": [
-            "667:57"
+            "669:57"
           ],
           "i + 0x100": [
-            "677:58"
+            "679:58"
           ],
           "loopCount + 1": [
-            "763:93"
-          ],
-          "object + 0x50": [
-            "787:33"
-          ],
-          "object + 0xC": [
-            "797:53"
-          ],
-          "object + 0x10": [
-            "797:76"
-          ],
-          "object + 0x14": [
-            "797:100"
+            "765:93"
           ],
           "return -1": [
-            "932:9"
+            "936:9"
           ],
           "case -3": [
-            "952:5"
+            "956:5"
           ],
           "case -2": [
-            "954:5"
+            "958:5"
           ],
           "case -1": [
-            "956:5"
+            "960:5"
           ]
         }
       }

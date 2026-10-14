@@ -144,6 +144,7 @@ extern f32 gCollisionGridAlignmentX, gCollisionGridAlignmentZ;
 /// \param object Object whose collision size and position are queried.
 /// \returns The last overlapping candidate visited in the current collision
 /// group, or NULL when that group contains no eligible overlap.
+/// \note The checked query-radius member offset preserves the matching target compiler representation.
 /// \note Original decompilation identifier: \c func_8002CCF8 (0x8002CCF8).
 u8 *collisionGridFindOverlap(u8 *object) {
     f32 distance;
@@ -153,11 +154,12 @@ u8 *collisionGridFindOverlap(u8 *object) {
     u8 *candidate;
     u8 *hit;
 
-    if (*(f32 *)(object + 0x24) < 0.001f) {
+    if (*(f32 *)(object + (u32) & ((RuntimeObjectPrefix *)0)->radius) < 0.001f) {
         return NULL;
     }
-    hash = (s32)((*(f32 *)(object + 0x44) + gCollisionGridAlignmentX) * 0.125f) * 0xAD +
-           (s32)((*(f32 *)(object + 0x4C) + gCollisionGridAlignmentZ) * 0.125f) * 0x8B + 0x1E240;
+    hash = (s32)((((RuntimeObjectPrefix *)object)->worldPosition[0] + gCollisionGridAlignmentX) * 0.125f) * 0xAD +
+           (s32)((((RuntimeObjectPrefix *)object)->worldPosition[2] + gCollisionGridAlignmentZ) * 0.125f) * 0x8B +
+           0x1E240;
     if (hash == 0) {
         key = 1;
     } else {
@@ -167,14 +169,19 @@ u8 *collisionGridFindOverlap(u8 *object) {
     candidate = (u8 *)keyedPoolIterateFirstForKey(&gCollisionCandidateRegistry, key);
     if (candidate != NULL) {
         do {
-            if (candidate != object && !(*(u16 *)(candidate + 0x36) & 0xC0)) {
-                delta[0] = *(f32 *)(candidate + 0x44) - *(f32 *)(object + 0x44);
-                delta[1] = *(f32 *)(candidate + 0x48) - *(f32 *)(object + 0x48);
-                delta[2] = *(f32 *)(candidate + 0x4C) - *(f32 *)(object + 0x4C);
+            if (candidate != object && !(((RuntimeObjectPrefix *)candidate)->flags & 0xC0)) {
+                delta[0] = ((RuntimeObjectPrefix *)candidate)->worldPosition[0] -
+                           ((RuntimeObjectPrefix *)object)->worldPosition[0];
+                delta[1] = ((RuntimeObjectPrefix *)candidate)->worldPosition[1] -
+                           ((RuntimeObjectPrefix *)object)->worldPosition[1];
+                delta[2] = ((RuntimeObjectPrefix *)candidate)->worldPosition[2] -
+                           ((RuntimeObjectPrefix *)object)->worldPosition[2];
                 distance = vector3Length(delta);
-                if (!(*(f32 *)(candidate + 0x24) + *(f32 *)(object + 0x24) < distance)) {
+                if (!(((RuntimeObjectPrefix *)candidate)->radius +
+                          *(f32 *)(object + (u32) & ((RuntimeObjectPrefix *)0)->radius) <
+                      distance)) {
                     hit = candidate;
-                    switch (*(u16 *)(candidate + 0x34)) {
+                    switch (((RuntimeObjectPrefix *)candidate)->kind) {
                     case 0x86:
                         if (collisionRequestImpulse(object, candidate, delta, distance) == 0)
                             goto done;

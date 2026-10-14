@@ -167,6 +167,9 @@
     "src/game/world_map.c": {
       "wholeMapUpdateActorPlacement": "Direct active-actor local X or world Y members independently fail ROM matching; state, target coordinates, other pose fields and joint heights match. Retain checked RuntimeObjectPrefix member offsets for these two reads/stores and isolate IDO global load/store scheduling before further conversion.",
       "wholeMapPrepareActor": "Direct global actor state and any world-position coordinate read independently fail ROM matching, while target and orientation members match. Checked RuntimeObjectPrefix offsets preserve those four accesses; isolate global address reuse and call-boundary scheduling before removing them."
+    },
+    "src/game/collision_grid.c": {
+      "collisionGridFindOverlap": "Direct reads of the queried object radius change generated instructions and fail the ROM gate. Candidate radius, object/candidate positions, candidate flags and kind all match with shared members. Retain checked RuntimeObjectPrefix.radius offsets for the query radius; isolate floating operand/load ordering before converting it."
     }
   },
   "baseline_totals": {

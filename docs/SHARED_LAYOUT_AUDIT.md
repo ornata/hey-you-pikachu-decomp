@@ -330,3 +330,17 @@ known-layout compiler representations, with focused ledger entries.
 Converging-particle spacing uses the established private state's signed count
 member at 0x28. Neither particle count nor actor behavior changes. Every accepted
 source-unit trial preserves the strict baseline objects.
+
+## Collision overlap and motion-playback consumers
+
+Collision overlap now uses shared query/candidate world positions and candidate
+radius, flags and kind. Ghidra at `0x8002CCF8` confirms those fields and overlap
+response selection. The queried object's radius independently failed a direct
+member trial; checked member offsets retain that read and its ledger records
+the next compiler evidence. Registry keys and overlap behavior are unchanged.
+
+Motion playback obtains object/part private state and root actor state through
+the common object prefix. Pose extraction and blending use shared rotation
+components; playback restart uses the established actor movement scale. The
+existing private motion-track and pose workspaces remain distinct. Both source
+units preserve all 483 baseline objects after their accepted mutations.
