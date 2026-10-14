@@ -1359,3 +1359,21 @@ Supported ownership comparisons and assignments now use named selectors. Pickup
 and release contracts correctly distinguish toolbox storage and suspension;
 release refuses both even when forced. Existing checked byte views and access
 widths are preserved where required for matching.
+
+### Player mode callbacks and interior state
+
+All 32 update slots in `gPlayerModes` are populated and resolve to
+`void (u8 *, ControllerState *)`; its three populated leave slots resolve to
+`void (u8 *)`. The private definitions retain a 0xC stride with checked leave
+and permissions offsets at four and eight. Updates receive the stack-local
+filtered controller copy in `playerUpdateInput`, so their input changes do not
+change the global controller cache or extend the input sample's lifetime.
+
+`playerChangeMode` calls the previous leave hook before selecting the new
+update, leave, permissions and mode. Ghidra at 0x801101D0 confirms the order and
+callback addresses. The interior `gPlayerModeState` symbol now has the established
+`PlayerModeState` type rather than an untyped byte-array declaration; accesses
+keep the original alias address and strict relocation identity. It aliases the
+primary player's embedded state at 0x88 and does not own another allocation.
+Player snapshots copy borrowed object handles and callbacks without extending
+their lifetimes; restoration requires those references to remain valid.

@@ -159,6 +159,8 @@ typedef struct {
     s32 permissions; ///< Active control permissions for this mode.
 } PlayerMode;
 typedef char PlayerModeSizeCheck[(sizeof(PlayerMode) == 0xC) ? 1 : -1];
+typedef char PlayerModeLeaveEntryOffsetCheck[((u32) & ((PlayerMode *)0)->leave == 4) ? 1 : -1];
+typedef char PlayerModePermissionsEntryOffsetCheck[((u32) & ((PlayerMode *)0)->permissions == 8) ? 1 : -1];
 
 void playerUpdateNormalControl(u8 *, ControllerState *);
 void playerUpdateStationaryLook(u8 *, ControllerState *);
@@ -1024,9 +1026,10 @@ extern s32 gPlayerPermissions;
 /// Separate symbol view of the primary player companion-control target handle.
 /// \note Original identifier: \c D_800EF6F0 (0x800EF6F0).
 extern u8 gPlayerCompanionTarget[];
-/// Separate symbol view of the primary player record's mode and camera-transition state.
+/// Borrowed interior symbol for the primary player record's embedded mode and camera-transition state.
+/// This aliases gPlayerState.modeState; it does not own a separate allocation.
 /// \note Original identifier: \c D_800EF728 (0x800EF728).
-extern u8 gPlayerModeState[];
+extern PlayerModeState gPlayerModeState;
 
 /// Change the primary player behavior mode, completing the previous mode and applying the new mode
 /// permissions.
@@ -1035,20 +1038,20 @@ extern u8 gPlayerModeState[];
 /// \note Original decompilation identifier: \c func_801101D0 (0x801101D0).
 void playerChangeMode(s32 mode) {
     PlayerMode *m;
-    u8 *mc = gPlayerModeState; /* the player's mode block (player + 0x88) */
+    PlayerModeState *mc = &gPlayerModeState;
 
     if (((PlayerControlPrefix *)&gPlayerState)->modeState.leave != 0) {
-        ((PlayerModeState *)gPlayerModeState)->leave((u8 *)&gPlayerState);
+        gPlayerModeState.leave((u8 *)&gPlayerState);
     }
     if (mode == 9) {
         controllerRequestRumblePattern(0, 1.5f, 0.2f, 0.15f);
     }
     TRACE("change player type %d\n", mode);
     m = &gPlayerModes[mode];
-    ((PlayerModeState *)mc)->update = m->update;
-    ((PlayerModeState *)mc)->leave = m->leave;
+    mc->update = m->update;
+    mc->leave = m->leave;
     gPlayerPermissions = m->permissions;
-    ((PlayerModeState *)mc)->mode = mode;
+    mc->mode = mode;
     ((PlayerControlPrefix *)((u8 *)gPlayerCompanionTarget - 0x50))->modeElapsed = 0.0f;
 }
 
@@ -1916,7 +1919,7 @@ void playerBeginStun(u8 *player, f32 duration) {
 
 
 /// Save a temporary snapshot of the primary player state for later restoration.
-/// \returns Nothing.
+/// \returns Nothing; borrowed object handles and callbacks retain their existing lifetimes.
 /// \note Original decompilation identifier: \c func_80111AC4 (0x80111AC4).
 void playerSaveState(void) {
     gSavedPlayerState = gPlayerState;

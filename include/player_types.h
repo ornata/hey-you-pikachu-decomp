@@ -15,19 +15,22 @@ typedef enum CompanionControlMode {
 } CompanionControlMode;
 
 /// Advance a player behavior mode for one input update.
-/// \param player Borrowed player record whose active mode is being serviced.
+/// \param player Borrowed initialized player whose active mode is being serviced.
+/// Its mode state and control permissions must agree with the selected update callback.
 /// \param controller Writable filtered input sample, borrowed only for the call.
 /// Changes do not alter the global controller cache.
 /// \returns Nothing.
 typedef void (*PlayerModeUpdate)(u8 *player, ControllerState *controller);
 
 /// Complete a player behavior mode before switching to another mode.
-/// \param player Borrowed player record leaving the active mode.
+/// \param player Borrowed initialized player leaving the active mode;
+/// the previous callback and permissions remain selected for this call.
 /// \returns Nothing.
 typedef void (*PlayerModeLeave)(u8 *player);
 
 /// Retained control hierarchy, interaction selection and camera-transition state.
-/// This block begins at offset 0x88 in the player record.
+/// This block begins at offset 0x88 in the player record and is never separately allocated.
+/// Object handles and callbacks are borrowed; copying it does not extend their lifetimes.
 typedef struct PlayerModeState {
     s32 objectHandles[3];      ///< Handles of the three player-control hierarchy objects.
     s32 mode;                  ///< Primary behavior mode selecting control callbacks.
