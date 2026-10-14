@@ -6,6 +6,12 @@
 
 #include "ultra64.h"
 
+/// Bounds of the retained appearance slots and their model-variant tables.
+enum {
+    ACTOR_APPEARANCE_SLOT_COUNT = 2, ///< Two independently selected model parts.
+    ACTOR_APPEARANCE_VARIANT_COUNT = 6 ///< Default model plus five table-selected variants.
+};
+
 /// Find the actor model part controlled by an appearance slot.
 /// \param actor Address of the actor whose appearance is queried or changed.
 /// \param slot Appearance slot: 0 for part 0x36, or 1 for part 0x3D.
@@ -31,7 +37,7 @@ f32 actorAppearanceGetScale(u8 *actor, s32 slot);
 /// Select the model variant for an actor appearance slot.
 /// \param actor Address of the actor whose appearance is queried or changed.
 /// \param slot Appearance slot: 0 for part 0x36, or 1 for part 0x3D.
-/// \param variant Valid model-variant identifier for the selected slot, or zero to use its default model.
+/// \param variant Model-variant identifier from zero through five; zero uses the part default model.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800147E4 (0x800147E4).
 void actorAppearanceSetVariant(u8 *actor, s32 slot, s32 variant);

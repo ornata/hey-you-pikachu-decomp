@@ -1085,3 +1085,29 @@ matching lifecycle registration and their direct callers. Each conversion passed
 all 483 original objects. Other lifecycle and draw-hook signature variants
 identified by the table audit still require individual producer/consumer review;
 this is not a claim that all object callback slots are fully normalized.
+
+## Typed actor-part appearance drawing
+
+The animated-texture hook, both appearance-slot model selectors and linked-item
+model selector now return `Gfx *`, agreeing with the registered object drawing
+callback contract. Default models retain the object's display-list pointer;
+variant models remain borrowed resources. Actor-state access in the selectors
+and variant getter/setter uses `ActorScriptState *`. These conversions preserve
+all original object bytes and relocations.
+
+The linked slot-one table at 0x800760AC and slot-zero table at 0x800760C4 each
+occupy 24 bytes: null/default entry zero and five nonzero model addresses. The
+part-ID table at 0x800760E8 occupies eight bytes. Public capacity constants and
+variant contracts now state two slots and six variants; declarations and target
+size checks retain those extents. Ghidra at 0x800148B0 confirms selection from
+slot zero using actor state at 0x2F0, with the object display list as fallback.
+The adjacent slot-one selector follows the same contract. No bounds checks or
+clamping are added; callers must provide a valid slot and variant.
+
+Model values include segmented graphics addresses. The callback comments make
+clear that these pointers are consumed under the active graphics segments and
+must not be dereferenced by the CPU. The linked-item variant at 0x01049F80 now
+has a typed display-list declaration with its original identifier/address note.
+The separate appearance scale API still returns a three-component scale view
+of the actor-owned part; its documentation and zero-offset check reflect that
+limited view rather than claiming a complete typed object return.

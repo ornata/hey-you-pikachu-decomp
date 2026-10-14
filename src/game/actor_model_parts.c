@@ -78,19 +78,25 @@ typedef char ActorPartLinkedRotationFactorOffsetCheck
 #include "spatial_math.h"
 /// Model display-list addresses indexed by appearance slot zero variant.
 /// \note Original identifier: \c D_800760C4 (0x800760C4).
-extern s32 gActorAppearanceSlot0Models[];
+extern Gfx *gActorAppearanceSlot0Models[ACTOR_APPEARANCE_VARIANT_COUNT];
 /// Model display-list addresses indexed by appearance slot one variant.
 /// \note Original identifier: \c D_800760AC (0x800760AC).
-extern s32 gActorAppearanceSlot1Models[];
+extern Gfx *gActorAppearanceSlot1Models[ACTOR_APPEARANCE_VARIANT_COUNT];
 /// Model-part identifiers controlled by each actor appearance slot.
 /// \note Original identifier: \c D_800760E8 (0x800760E8).
-extern s32 gActorAppearancePartIds[];
+extern s32 gActorAppearancePartIds[ACTOR_APPEARANCE_SLOT_COUNT];
+typedef char ActorAppearanceSlot0TableSizeCheck[(sizeof(gActorAppearanceSlot0Models) == 0x18) ? 1 : -1];
+typedef char ActorAppearanceSlot1TableSizeCheck[(sizeof(gActorAppearanceSlot1Models) == 0x18) ? 1 : -1];
+typedef char ActorAppearancePartTableSizeCheck[(sizeof(gActorAppearancePartIds) == 8) ? 1 : -1];
+typedef char ActorAppearanceScaleOffsetCheck[((u32) & ((RuntimeObjectPrefix *)0)->scale == 0) ? 1 : -1];
 void actorComposePartOrientation(Matrix34 *, s32, s32 *, s32);
 /// Signed part-identifier sequence used to track model-part relative roll.
 /// \note Original identifier: \c D_800A2770 (0x800A2770).
 extern u8 gActorRelativeRollPartSequence[];
 void actorPartBuildAnimatedTextureCommands(u8 *, s32);
-extern u8 D_1049F80[];
+/// Borrowed linked-item variant display list interpreted through the active graphics segments.
+/// \note Original identifier: \c D_1049F80 (0x01049F80).
+extern Gfx D_1049F80[];
 
 /// Invoke the inactive actor and linked-object diagnostic reports for this build.
 /// \param actor Actor whose linked object is included in the diagnostic request.
@@ -663,21 +669,22 @@ void actorUpdateGameplayModel(u8 *object) {
 /// Prepare the model part animated textures for the current draw.
 /// \param object Actor model part with initialized animated-texture state.
 /// \returns Borrowed address of the model part display list.
+/// \note Model pointers may be segmented graphics addresses; do not dereference them on the CPU.
 /// \note Original decompilation identifier: \c func_800146DC (0x800146DC).
-s32 actorPartPrepareAnimatedTextureDraw(u8 *object) {
+Gfx *actorPartPrepareAnimatedTextureDraw(u8 *object) {
     u8 *obj;
 
     obj = ((RuntimeObjectPrefix *)object)->state.bytes;
     actorPartBuildAnimatedTextureCommands(object, gGraphicsFramebufferIndex);
     gSPSegment(gRenderDisplayListCursor++, 6,
                osVirtualToPhysical(((ActorPartTextureState *)obj)->commandBuffers[gGraphicsFramebufferIndex]));
-    return (s32)((RuntimeObjectPrefix *)object)->displayList;
+    return ((RuntimeObjectPrefix *)object)->displayList;
 }
 
 /// Find the actor model part controlled by an appearance slot.
 /// \param actor Address of the actor whose appearance is queried or changed.
 /// \param slot Appearance slot: 0 for part 0x36, or 1 for part 0x3D.
-/// \returns A borrowed model part owned by the actor, or null when absent.
+/// \returns A borrowed scale-component view of the actor-owned model part, or null when absent.
 /// \note Original decompilation identifier: \c func_80014760 (0x80014760).
 f32 *actorAppearanceGetPart(u8 *actor, s32 slot) {
     return (f32 *)actorFindPart(actor, gActorAppearancePartIds[slot]);
@@ -710,12 +717,12 @@ f32 actorAppearanceGetScale(u8 *actor, s32 slot) {
 /// Select the model variant for an actor appearance slot.
 /// \param actor Address of the actor whose appearance is queried or changed.
 /// \param slot Appearance slot: 0 for part 0x36, or 1 for part 0x3D.
-/// \param variant Valid model-variant identifier for the selected slot, or zero to use its default model.
+/// \param variant Model-variant identifier from zero through five; zero uses the part default model.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800147E4 (0x800147E4).
 void actorAppearanceSetVariant(u8 *actor, s32 slot, s32 variant) {
-    u8 *actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    ((ActorScriptState *)actorState)->appearanceVariants[slot] = variant;
+    ActorScriptState *actorState = ((RuntimeObjectPrefix *)actor)->state.actor;
+    actorState->appearanceVariants[slot] = variant;
 }
 
 /// Query the model variant selected for an actor appearance slot.
@@ -724,8 +731,8 @@ void actorAppearanceSetVariant(u8 *actor, s32 slot, s32 variant) {
 /// \returns The selected model-variant identifier, or zero for the default model.
 /// \note Original decompilation identifier: \c func_800147F8 (0x800147F8).
 s32 actorAppearanceGetVariant(u8 *actor, s32 slot) {
-    u8 *actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    return ((ActorScriptState *)actorState)->appearanceVariants[slot];
+    ActorScriptState *actorState = ((RuntimeObjectPrefix *)actor)->state.actor;
+    return actorState->appearanceVariants[slot];
 }
 
 /// Restore default model variants and unit scale for both actor appearance slots.
@@ -746,12 +753,13 @@ void actorAppearanceReset(u8 *actor) {
 /// Select the model to draw for actor appearance slot 1.
 /// \param object Appearance part belonging to the actor whose variant is selected.
 /// \returns Borrowed address of the selected variant model, or the part default model.
+/// \note Model pointers may be segmented graphics addresses; do not dereference them on the CPU.
 /// \note Original decompilation identifier: \c func_80014880 (0x80014880).
-s32 actorPartGetAppearanceSlot1Model(u8 *object) {
-    u8 *actorState = ((RuntimeObjectPrefix *)object)->root.object->state.bytes;
-    s32 variant = ((ActorScriptState *)actorState)->appearanceVariants[1];
+Gfx *actorPartGetAppearanceSlot1Model(u8 *object) {
+    ActorScriptState *actorState = ((RuntimeObjectPrefix *)object)->root.object->state.actor;
+    s32 variant = actorState->appearanceVariants[1];
     if (variant == 0) {
-        return (s32)((RuntimeObjectPrefix *)object)->displayList;
+        return ((RuntimeObjectPrefix *)object)->displayList;
     }
     return gActorAppearanceSlot1Models[variant];
 }
@@ -759,12 +767,13 @@ s32 actorPartGetAppearanceSlot1Model(u8 *object) {
 /// Select the model to draw for actor appearance slot 0.
 /// \param object Appearance part belonging to the actor whose variant is selected.
 /// \returns Borrowed address of the selected variant model, or the part default model.
+/// \note Model pointers may be segmented graphics addresses; do not dereference them on the CPU.
 /// \note Original decompilation identifier: \c func_800148B0 (0x800148B0).
-s32 actorPartGetAppearanceSlot0Model(u8 *object) {
-    u8 *actorState = ((RuntimeObjectPrefix *)object)->root.object->state.bytes;
-    s32 variant = ((ActorScriptState *)actorState)->appearanceVariants[0];
+Gfx *actorPartGetAppearanceSlot0Model(u8 *object) {
+    ActorScriptState *actorState = ((RuntimeObjectPrefix *)object)->root.object->state.actor;
+    s32 variant = actorState->appearanceVariants[0];
     if (variant == 0) {
-        return (s32)((RuntimeObjectPrefix *)object)->displayList;
+        return ((RuntimeObjectPrefix *)object)->displayList;
     }
     return gActorAppearanceSlot0Models[variant];
 }
@@ -772,19 +781,20 @@ s32 actorPartGetAppearanceSlot0Model(u8 *object) {
 /// Select a model-part appearance appropriate to the actor linked item.
 /// \param object Model part belonging to the actor whose linked item is considered.
 /// \returns A borrowed linked-item variant model when applicable, otherwise the part default model.
+/// \note Model pointers may be segmented graphics addresses; do not dereference them on the CPU.
 /// \note Original decompilation identifier: \c func_800148E0 (0x800148E0).
-u8 *actorPartGetLinkedItemModel(u8 *object) {
-    u8 *state;
+Gfx *actorPartGetLinkedItemModel(u8 *object) {
+    ActorScriptState *state;
     s32 targetId;
     u8 *target;
-    state = ((RuntimeObjectPrefix *)object)->root.object->state.bytes;
-    targetId = ((ActorScriptState *)state)->heldItemHandle;
-    if (targetId == 0 || ((ActorScriptState *)state)->attachmentMode != 3) {
-        return (u8 *)((RuntimeObjectPrefix *)object)->displayList;
+    state = ((RuntimeObjectPrefix *)object)->root.object->state.actor;
+    targetId = state->heldItemHandle;
+    if (targetId == 0 || state->attachmentMode != 3) {
+        return ((RuntimeObjectPrefix *)object)->displayList;
     }
     target = objectResolveAvailableHandle(targetId);
     if (target == NULL || ((ItemStatePrefix *)((RuntimeObjectPrefix *)target)->state.pointer)->kind != 0x50) {
-        return (u8 *)((RuntimeObjectPrefix *)object)->displayList;
+        return ((RuntimeObjectPrefix *)object)->displayList;
     }
     return D_1049F80;
 }
