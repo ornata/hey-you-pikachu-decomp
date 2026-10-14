@@ -15,19 +15,24 @@ I wanted to understand the strengths and limitations of using AI for decompilati
 because of its use of the Nintendo VRU. I thought it might be interesting to see how the voice system works, and see if it would be
 possible to extend it.
 
+## Requirements
+- nix
+- uv
+- A Hey You Pikachu ROM
+
 ## Quick start
 
 ```sh
 # Supply your legally dumped ROM in rom/ (.z64/.v64/.n64).
-mkdir -p rom
-cp /path/to/your/dump.z64 rom/
-# Nix must already be installed; setup never installs system packages.
-nix --extra-experimental-features 'nix-command flakes' develop --command bash
-./tools/setup.sh --check  # prerequisites only; no downloads or file changes
-./tools/setup.sh          # repository-local compiler, helpers and locked Python environment
-python3 tools/materialize_ultralib.py --from /path/to/local-sdk-inputs
-uv run --locked make -j8  # Produces build/pikachu.z64 + SHA-1 check
-uv run --locked make verify-clean
+; mkdir -p rom
+; cp /path/to/your/dump.z64 rom/
+# If flakes are enabled, you can skip the --extra-experimental-features flag.
+; nix --extra-experimental-features 'nix-command flakes' develop --command bash
+; ./tools/setup.sh --check
+; ./tools/setup.sh # repository-local compiler, helpers and locked Python environment
+; python3 tools/materialize_ultralib.py --from /path/to/local-sdk-inputs
+; uv run --locked make -j8  # Produces build/pikachu.z64 + SHA-1 check
+; uv run --locked make verify-clean
 ```
 
 Supports macOS and x86-64 Linux; tested on Apple Silicon. If flakes are already
