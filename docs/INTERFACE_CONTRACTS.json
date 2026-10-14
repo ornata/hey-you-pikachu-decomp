@@ -247,7 +247,7 @@
     {
       "kind": "signature-mismatch",
       "file": "src/game/orbit_follower.c",
-      "line": 81,
+      "line": 74,
       "name": "terrainCheckHorizontalObstruction",
       "shape": {
         "expected": [

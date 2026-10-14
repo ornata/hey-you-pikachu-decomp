@@ -51,9 +51,9 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 999,
-      "unique_spellings": 538,
-      "files": 66
+      "occurrences": 976,
+      "unique_spellings": 520,
+      "files": 65
     },
     "cast_offset_candidates": {
       "occurrences": 28,
@@ -1954,87 +1954,6 @@
           ],
           "heightShift + 4": [
             "1097:42"
-          ]
-        }
-      }
-    },
-    "src/game/orbit_follower.c": {
-      "known_views": [
-        "game_heap.h",
-        "heap_alloc.h",
-        "math_angles.h",
-        "object_hierarchy_create.h",
-        "object_lifecycle.h",
-        "object_lookup.h",
-        "object_types.h",
-        "orbit_follower.h",
-        "random.h",
-        "terrain_height.h",
-        "vector_operations.h"
-      ],
-      "matching_exceptions": {
-        "terrainCheckHorizontalObstruction": "The canonical area_services.h result is u16 directional obstruction flags. The orbit caller retains a signed-word result view; changing to u16 fails the ROM gate, including with an explicitly discarded result. Next evidence: Isolate orbitFollowerUpdate call lowering and preserve the original unused-result instruction sequence before adopting the narrow return declaration."
-      },
-      "locations": {
-        "raw_offset_candidates": {
-          "obj + 0x54": [
-            "183:18"
-          ],
-          "d + 0": [
-            "184:14"
-          ],
-          "src + 0x38": [
-            "184:32"
-          ],
-          "d + 0xC": [
-            "185:14"
-          ],
-          "d + 0x10": [
-            "186:14",
-            "196:37"
-          ],
-          "d + 0x14": [
-            "187:14"
-          ],
-          "src + 0x34": [
-            "188:18"
-          ],
-          "d + 0x1C": [
-            "190:18",
-            "193:18"
-          ],
-          "obj + 0x18": [
-            "195:14",
-            "198:37"
-          ],
-          "src + 0x18": [
-            "195:37"
-          ],
-          "obj + 0x1C": [
-            "196:14",
-            "199:37"
-          ],
-          "src + 0x1C": [
-            "196:58"
-          ],
-          "obj + 0x20": [
-            "197:14",
-            "200:37"
-          ],
-          "src + 0x20": [
-            "197:37"
-          ],
-          "obj + 0x44": [
-            "198:14"
-          ],
-          "obj + 0x48": [
-            "199:14"
-          ],
-          "obj + 0x4C": [
-            "200:14"
-          ],
-          "obj + 0x10": [
-            "201:14"
           ]
         }
       }

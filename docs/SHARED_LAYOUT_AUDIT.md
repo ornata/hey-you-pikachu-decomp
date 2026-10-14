@@ -286,3 +286,18 @@ instructions and are recorded explicitly. Facing constraints use the established
 actor collision flags with an unsigned view, and position events borrow the
 active actor's world-position array. Every accepted mutation passed strict object
 comparison before proceeding.
+
+## Orbit follower object and lifecycle contract
+
+The follower no longer defines a duplicate `OrbitObject`: updates and creation
+use `RuntimeObjectPrefix` for transforms, world position, kind, handle and state.
+Its private owned `OrbitState` retains a borrowed owner handle, reset interval,
+orbit heading/rate and terrain-query dimensions/policy. Size and offset checks
+cover the 0x20-byte state, radius and policy. Ghidra at `0x8002728C` confirms the
+creator's owner reference, initial pose and collision-policy selection.
+
+The public follower header documents initialization and update callbacks as well
+as creation. A missing owner requests follower destruction; retaining its handle
+does not extend the owner's lifetime. The existing terrain-query return-width
+compatibility declaration remains its recorded matching exception. Replacing
+the duplicate object view and creator offsets preserves all baseline objects.

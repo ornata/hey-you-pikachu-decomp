@@ -19,16 +19,18 @@ void _bzero(void *, s32); /* extern */
 
 /// Owned orbit parameters shared by initialization and the follower update.
 typedef struct OrbitState {
-    s32 ownerId;
-    f32 timer;
-    f32 heading;
-    f32 radius;
-    f32 height;
-    f32 ceiling;
-    f32 turnRate;
-    s32 collisionKind;
+    s32 ownerId;       ///< Borrowed owner object handle; a missing owner ends the follower lifetime.
+    f32 timer;         ///< Seconds remaining before the next orbit reset; obstruction shortens this interval.
+    f32 heading;       ///< Desired orbit angle around the owner in degrees.
+    f32 radius;        ///< Horizontal clearance radius supplied to terrain queries.
+    f32 height;        ///< Follower height above terrain and owner reset position.
+    f32 ceiling;       ///< Clearance-query upper extent above the ground reference.
+    f32 turnRate;      ///< Signed angular rate of the desired orbit heading in degrees per second.
+    s32 collisionKind; ///< Terrain-query policy selected for the owner kind.
 } OrbitState;
 typedef char OrbitStateSizeCheck[(sizeof(OrbitState) == 0x20) ? 1 : -1];
+typedef char OrbitRadiusOffsetCheck[((u32) & ((OrbitState *)0)->radius == 0xC) ? 1 : -1];
+typedef char OrbitCollisionPolicyOffsetCheck[((u32) & ((OrbitState *)0)->collisionKind == 0x1C) ? 1 : -1];
 
 /// Initialize the movement state for an object that circles its owner.
 /// \param object Orbiting follower object to initialize.
@@ -48,15 +50,6 @@ void orbitFollowerInitialize(u8 *object) {
 
 
 
-typedef struct OrbitObject {
-    f32 scale[3];
-    f32 rotation[3];
-    f32 position[3];
-    u8 unknown24[0x20];
-    f32 world[3];
-    struct OrbitObject *parent;
-    OrbitState *state;
-} OrbitObject;
 
 #include "orbit_follower.h"
 #include "vector_operations.h"
@@ -87,9 +80,9 @@ extern f32 gRuntimeFrameSeconds;
 /// \param obj Orbiting follower object to update.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80026E54 (0x80026E54).
-void orbitFollowerUpdate(OrbitObject *obj) {
-    OrbitState *state = obj->state;
-    OrbitObject *owner;
+void orbitFollowerUpdate(RuntimeObjectPrefix *obj) {
+    OrbitState *state = (OrbitState *)obj->state.pointer;
+    RuntimeObjectPrefix *owner;
     f32 targetX;
     f32 targetZ;
     s32 signX;
@@ -104,7 +97,7 @@ void orbitFollowerUpdate(OrbitObject *obj) {
     f32 resetDuration = 10.0f;
     f32 collisionPenalty = 1.5f;
 
-    owner = (OrbitObject *)objectFindLiveByHandle(state->ownerId);
+    owner = (RuntimeObjectPrefix *)objectFindLiveByHandle(state->ownerId);
     if (owner == NULL) {
         objectRequestHierarchyDestruction((u8 *)obj);
         return;
@@ -117,21 +110,22 @@ void orbitFollowerUpdate(OrbitObject *obj) {
         obj->position[0] = owner->position[0];
         obj->position[1] = owner->position[1] + state->height;
         obj->position[2] = owner->position[2];
-        obj->world[0] = obj->position[0];
-        obj->world[1] = obj->position[1];
-        obj->world[2] = obj->position[2];
+        obj->worldPosition[0] = obj->position[0];
+        obj->worldPosition[1] = obj->position[1];
+        obj->worldPosition[2] = obj->position[2];
         return;
     }
     dx = mathSinDegrees(obj->rotation[1]) * speed * gRuntimeFrameSeconds;
     dz = mathCosDegrees(obj->rotation[1]) * speed * gRuntimeFrameSeconds;
     signX = dx > 0.0f ? 1 : dx < 0.0f ? -1 : 0;
-    collision =
-        terrainCheckHorizontalObstruction(state->collisionKind, obj->world[0] + dx, obj->world[1] + dy - state->height, obj->world[2] + dz,
-                      state->radius, state->height, obj->world[1] - state->height + state->ceiling, (f32)signX,
-                      (f32)(dz > 0.0f   ? 1
-                            : dz < 0.0f ? -1
-                                        : 0),
-                      &surface);
+    collision = terrainCheckHorizontalObstruction(state->collisionKind, obj->worldPosition[0] + dx,
+                                                  obj->worldPosition[1] + dy - state->height,
+                                                  obj->worldPosition[2] + dz, state->radius, state->height,
+                                                  obj->worldPosition[1] - state->height + state->ceiling, (f32)signX,
+                                                  (f32)(dz > 0.0f   ? 1
+                                                        : dz < 0.0f ? -1
+                                                                    : 0),
+                                                  &surface);
     flags = collision;
     if (collision & 9) {
         dx = 0.0f;
@@ -157,8 +151,8 @@ void orbitFollowerUpdate(OrbitObject *obj) {
     while (state->heading >= 360.0f) {
         state->heading -= 360.0f;
     }
-    targetX = owner->world[0] + mathCosDegrees(state->heading) * orbitRadius - obj->world[0];
-    targetZ = owner->world[2] + mathSinDegrees(state->heading) * orbitRadius - obj->world[2];
+    targetX = owner->worldPosition[0] + mathCosDegrees(state->heading) * orbitRadius - obj->worldPosition[0];
+    targetZ = owner->worldPosition[2] + mathSinDegrees(state->heading) * orbitRadius - obj->worldPosition[2];
     vector2NormalizeComponentsApprox(&targetX, &targetZ);
     obj->rotation[1] = mathUnitDirectionDegrees(targetZ, targetX);
 }
@@ -180,25 +174,25 @@ u8 *orbitFollowerCreate(u8 *owner, f32 radius, f32 height, f32 ceiling) {
     u8 *d;
 
     obj = objectCreateHierarchyFromTemplate((ObjectTemplate *)gOrbitFollowerObjectTemplate);
-    d = *(u8 **)(obj + 0x54);
-    *(s32 *)(d + 0) = *(s32 *)(src + 0x38);
-    *(f32 *)(d + 0xC) = radius;
-    *(f32 *)(d + 0x10) = height;
-    *(f32 *)(d + 0x14) = ceiling;
-    if (*(u16 *)(src + 0x34) == 0x25) {
+    d = ((RuntimeObjectPrefix *)obj)->state.bytes;
+    ((OrbitState *)d)->ownerId = ((RuntimeObjectPrefix *)src)->handle;
+    ((OrbitState *)d)->radius = radius;
+    ((OrbitState *)d)->height = height;
+    ((OrbitState *)d)->ceiling = ceiling;
+    if (((RuntimeObjectPrefix *)src)->kind == 0x25) {
         TRACE("actor type : ACTOR_PIKACHU\n");
-        *(s32 *)(d + 0x1C) = 3;
+        ((OrbitState *)d)->collisionKind = 3;
     } else {
         TRACE("actor type : ACTOR_POKEMON\n");
-        *(s32 *)(d + 0x1C) = 4;
+        ((OrbitState *)d)->collisionKind = 4;
     }
-    *(f32 *)(obj + 0x18) = *(f32 *)(src + 0x18);
-    *(f32 *)(obj + 0x1C) = *(f32 *)(d + 0x10) + *(f32 *)(src + 0x1C);
-    *(f32 *)(obj + 0x20) = *(f32 *)(src + 0x20);
-    *(f32 *)(obj + 0x44) = *(f32 *)(obj + 0x18);
-    *(f32 *)(obj + 0x48) = *(f32 *)(obj + 0x1C);
-    *(f32 *)(obj + 0x4C) = *(f32 *)(obj + 0x20);
-    *(f32 *)(obj + 0x10) = (s32)randomBelow(360);
+    ((RuntimeObjectPrefix *)obj)->position[0] = ((RuntimeObjectPrefix *)src)->position[0];
+    ((RuntimeObjectPrefix *)obj)->position[1] = ((OrbitState *)d)->height + ((RuntimeObjectPrefix *)src)->position[1];
+    ((RuntimeObjectPrefix *)obj)->position[2] = ((RuntimeObjectPrefix *)src)->position[2];
+    ((RuntimeObjectPrefix *)obj)->worldPosition[0] = ((RuntimeObjectPrefix *)obj)->position[0];
+    ((RuntimeObjectPrefix *)obj)->worldPosition[1] = ((RuntimeObjectPrefix *)obj)->position[1];
+    ((RuntimeObjectPrefix *)obj)->worldPosition[2] = ((RuntimeObjectPrefix *)obj)->position[2];
+    ((RuntimeObjectPrefix *)obj)->rotation[1] = (s32)randomBelow(360);
     objectRegisterActiveHierarchy(obj);
     return obj;
 }

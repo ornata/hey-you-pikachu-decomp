@@ -1,10 +1,22 @@
 /// \file
-/// Declares creation of terrain-constrained objects that orbit an owner.
+/// Declares lifecycle and creation interfaces for terrain-constrained objects that orbit an owner.
 
 #ifndef ORBIT_FOLLOWER_H
 #define ORBIT_FOLLOWER_H
 
-#include <ultra64.h>
+#include "object_types.h"
+
+/// Initialize the owned movement state of an orbiting follower.
+/// \param object New follower object with no unreleased movement state.
+/// \returns Nothing.
+/// \note Original decompilation identifier: \c func_80026DF0 (0x80026DF0).
+void orbitFollowerInitialize(u8 *object);
+
+/// Advance a follower around its owner within scene terrain constraints.
+/// \param obj Initialized follower whose owner handle is resolved for this update.
+/// \returns Nothing; requests follower destruction if the owner no longer exists.
+/// \note Original decompilation identifier: \c func_80026E54 (0x80026E54).
+void orbitFollowerUpdate(RuntimeObjectPrefix *obj);
 
 /// Create an orbiting follower for a creature.
 /// \param owner Creature object to follow.
