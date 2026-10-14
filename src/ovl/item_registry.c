@@ -1958,11 +1958,11 @@ void itemShrink(u8 *item, f32 rate) {
 /// uses its resources. Portability: collision registration uses a 32-bit integer object address.
 /// \note Original decompilation identifier: \c func_80113464 (0x80113464).
 void itemDestroyState(u8 *item) {
-    ItemStatePrefix *state;
+    ItemState *state;
 
-    state = (ItemStatePrefix *)((RuntimeObjectPrefix *)item)->state.bytes;
-    collisionGridUnregisterObject(item, &state->collisionKey);
-    heapFreeLocal(&gGameHeap, state->lighting[0]);
+    state = ((RuntimeObjectPrefix *)item)->state.item;
+    collisionGridUnregisterObject(item, &state->common.collisionKey);
+    heapFreeLocal(&gGameHeap, state->common.lighting[0]);
     heapFreeLocal(&gGameHeap, state);
 }
 
@@ -1973,14 +1973,12 @@ void itemDestroyState(u8 *item) {
 /// rendering finishes.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_801134B0 (0x801134B0).
-void itemBuildLightingDisplayList(u8 *state, s32 index) {
+void itemBuildLightingDisplayList(ItemState *state, s32 index) {
     Gfx *g;
     u8 *color;
-    g = ((ItemStatePrefix *)state)->lighting[index];
-    color = gItemKinds[((ItemStatePrefix *)state)->kind].color;
-    gSPSetLights2(g++, (*(Lights2 *)((ItemState *)state)
-                             ->direction.poses[((ItemState *)state)->direction.poseIndex]
-                             .raw));
+    g = state->common.lighting[index];
+    color = gItemKinds[state->common.kind].color;
+    gSPSetLights2(g++, (*(Lights2 *)state->direction.poses[state->direction.poseIndex].raw));
     gDPPipeSync(g++);
     gDPSetEnvColor(g++, color[0], color[1], color[2], color[3]);
     gSPEndDisplayList(g++);
@@ -2064,29 +2062,29 @@ void itemUpdate(u8 *object) {
         (collisionGridFindOverlap(object), itemCanBePickedUp(object, 1) != 0 || itemCanBePickedUp(object, 0) != 0)) {
         ((ItemStatePrefix *)state)->collisionKey = collisionGridRegisterObject(object);
     }
-    itemBuildLightingDisplayList(state, ((((RuntimeObjectPrefix *)object)->flags & 0x8000) ? 1 : 0) ^ 1);
+    itemBuildLightingDisplayList((ItemState *)state, ((((RuntimeObjectPrefix *)object)->flags & 0x8000) ? 1 : 0) ^ 1);
 }
 
 void _bzero(void *destination, u32 size);                                         /* extern */
-void itemBuildLightingDisplayList(u8 *, s32);                  /* extern */
+void itemBuildLightingDisplayList(ItemState *, s32);                              /* extern */
 
 /// Allocate and initialize the state resources for a new item.
 /// \returns Newly allocated item state, owned by the item that receives it.
 /// \note Original decompilation identifier: \c func_8011386C (0x8011386C).
-u8 *itemAllocateState(void) {
+ItemState *itemAllocateState(void) {
     s32 bufferIndex;
-    u8 *allocation;
+    ItemState *allocation;
     u8 *lightingStorage;
 
     allocation = heapAllocLocal(&gGameHeap, sizeof(ItemState), 0x2C7);
     _bzero(allocation, sizeof(ItemState));
-    ((ItemStatePrefix *)allocation)->kind = 0;
-    ((ItemStatePrefix *)allocation)->renderMode = 0;
-    directionAnimationReset(&((ItemState *)allocation)->direction);
-    ((ItemStatePrefix *)allocation)->idleMotionDelay = 5.5f;
+    allocation->common.kind = 0;
+    allocation->common.renderMode = 0;
+    directionAnimationReset(&allocation->direction);
+    allocation->common.idleMotionDelay = 5.5f;
     lightingStorage = heapAllocLocal(&gGameHeap, 0x70, 0x2D4);
-    ((ItemStatePrefix *)allocation)->lighting[0] = (Gfx *)lightingStorage;
-    ((ItemStatePrefix *)allocation)->lighting[1] = (Gfx *)(lightingStorage + 0x38);
+    allocation->common.lighting[0] = (Gfx *)lightingStorage;
+    allocation->common.lighting[1] = (Gfx *)(lightingStorage + 0x38);
     bufferIndex = 0;
     do {
         itemBuildLightingDisplayList(allocation, bufferIndex);
@@ -2100,7 +2098,7 @@ u8 *itemAllocateState(void) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8011391C (0x8011391C).
 void itemInitializeState(u8 *item) {
-    ((RuntimeObjectPrefix *)item)->state.bytes = itemAllocateState();
+    ((RuntimeObjectPrefix *)item)->state.item = itemAllocateState();
 }
 
 /// Whether newly created items receive hierarchy flag two; broader policy remains unresolved.

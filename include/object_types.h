@@ -8,6 +8,7 @@
 
 struct RuntimeObjectPrefix;
 struct ActorScriptState;
+struct ItemState;
 
 /// Object link with its original 32-bit address representation.
 /// The address view preserves callers that carry object handles as integers.
@@ -28,7 +29,10 @@ typedef union ObjectPrivateState {
     f32 *floats;
     Gfx **displayLists;
     struct ActorScriptState *actor;
+    struct ItemState *item; ///< Complete item-owned state for runtime kind 0x86.
 } ObjectPrivateState;
+
+typedef char ObjectPrivateStateSizeCheck[(sizeof(ObjectPrivateState) == 4) ? 1 : -1];
 
 /// Recovered object prefix shared by hierarchy, actor, and item code.
 /// This view ends at the private-state pointer. It is not the full allocation

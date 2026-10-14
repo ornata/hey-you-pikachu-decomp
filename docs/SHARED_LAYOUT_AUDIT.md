@@ -961,3 +961,23 @@ formal signatures and target-ABI dependency. A portable common signature
 requires further compiler parameter/register evidence; green lexical checks
 do not establish callback compatibility. Two stale push-integer compatibility
 notes are removed because those callers now use the canonical two-argument API.
+
+## Complete item-state allocation boundary
+
+The item allocator now returns `ItemState *` and initializes its common state
+and direction playback through the complete record. Initialization stores it
+in the new typed `ObjectPrivateState.item` view, selected by runtime kind 0x86.
+The union uses a forward declaration, avoiding a dependency on the complete
+item header for all object consumers. Destruction uses the same complete type,
+unregistering the collision key and releasing the lighting allocation and state
+under the existing lifetime preconditions. The private lighting builder and its
+callers now agree on `ItemState *`, including both direction poses.
+
+Ghidra at 0x8011386C confirms allocation and clearing of 0xF0 bytes, direction
+initialization at 0x70, and a separate 0x70-byte lighting allocation split into
+two 0x38-byte display buffers. This ownership is unchanged. Checks now make
+the common-state prefix at zero and four-byte private-state union explicit,
+alongside existing item extent and direction offsets. Unresolved gaps remain
+opaque; the header no longer labels them reserved storage without evidence.
+The allocator, destructor and lighting-helper conversions each passed all 483
+original objects before the next change.
