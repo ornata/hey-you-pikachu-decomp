@@ -359,3 +359,21 @@ updates rectangle origins and retains the negative-texture list terminator.
 Ghidra at `0x80037034` confirms both lists reach the common rectangle renderer.
 The shared size/scale checks cover both uses. Both source units preserve all
 strict baseline objects without additional matching exceptions.
+
+## Eye-catch descriptor and animation contracts
+
+`EyeCatchGroup` replaces the address-derived descriptor name and misleading
+unused `image` word. The last two bytes of that word are selection weights for
+progress values at most twelve and greater than twelve; Ghidra at `0x800379A0`
+confirms both weighted-selection passes. The first two bytes remain explicitly
+unresolved: no current C consumer establishes a role. Next evidence is tracing
+resource producers and any assembly or indirect consumer of those bytes.
+
+The descriptor borrows a terminated rectangle list and six animation-key arrays
+per animated layer, carries screen origins and foreground dimensions, selects
+the alternate entry/exit sound set, and supplies four backdrop corner colors.
+Compile-time extent and member checks preserve its 0x24-byte layout. Each owned
+layer workspace is six `ValueTrack` records (0x48 bytes), replacing the float-array
+view while retaining drawing's existing integer-address cursor. Initialization
+uses typed track addresses and borrowed keys. Every accepted source-unit trial
+preserves all 483 baseline objects.

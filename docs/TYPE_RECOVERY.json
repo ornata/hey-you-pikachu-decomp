@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 894,
-      "unique_spellings": 484,
+      "occurrences": 892,
+      "unique_spellings": 483,
       "files": 64
     },
     "cast_offset_candidates": {
@@ -1030,41 +1030,37 @@
       "locations": {
         "raw_offset_candidates": {
           "gEyeCatchProjectionMatrix + 0x80000000": [
-            "202:33"
+            "212:33"
           ],
           "gEyeCatchModelViewMatrix + 0x80000000": [
-            "203:33"
+            "213:33"
           ],
           "gEyeCatchBackdropVertices + 0x80000000": [
-            "204:33"
+            "214:33"
           ],
-          "var_s0 + 0xC": [
-            "224:66"
+          "animationAddress + 0xC": [
+            "234:66"
           ],
-          "var_s0 + 0x18": [
-            "226:66"
+          "animationAddress + 0x18": [
+            "236:66"
           ],
-          "var_s0 + 0x24": [
-            "228:66"
+          "animationAddress + 0x24": [
+            "238:66"
           ],
-          "var_s0 + 0x30": [
-            "230:66"
+          "animationAddress + 0x30": [
+            "240:66"
           ],
-          "var_s0 + 0x3C": [
-            "231:66"
+          "animationAddress + 0x3C": [
+            "242:66"
           ],
           "return -10": [
-            "343:5"
+            "355:5"
           ],
           "return -0xA": [
-            "357:5"
+            "369:5"
           ],
           "return -0x14": [
-            "365:5"
-          ],
-          "column + 2": [
-            "429:46",
-            "433:47"
+            "377:5"
           ]
         }
       }

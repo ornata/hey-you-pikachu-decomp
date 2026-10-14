@@ -16,7 +16,7 @@ Counts exclude comments, strings and character literals and cover game C under
 | `M2C_UNK*` | 1,012 / 71 | 0 / 0 |
 | Address-named globals | 6,650 / 102 | 7 / 3 |
 | `temp_*` | 2,480 / 58 | 0 / 0 |
-| Raw offset candidates | 4,040 / 86 | 894 / 64 |
+| Raw offset candidates | 4,040 / 86 | 892 / 64 |
 
 Supplemental cast-base offset candidates: **28 occurrences / 7 files**.
 This category was not tracked in the original baseline. The historical raw-offset

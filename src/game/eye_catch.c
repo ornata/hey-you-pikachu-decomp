@@ -39,19 +39,27 @@ extern s32 gEyeCatchStage;
 /// Owned image asset faded into the eye-catch foreground.
 /// \note Original identifier: \c D_800F2600 (0x800F2600).
 extern s32 gEyeCatchForegroundImage;
-/// Eye-catch artwork, rectangle layout, animation keys and corner colors.
-typedef struct {
-    s32 image;
-    TextureRectangle *records;
-    s16 x, y;
-    s16 flags, count;
-    s32 (*keys)[6];
-    s16 width, height;
-    u8 rgb[4][3];
-} EyeGroup36A;
+/// Resident eye-catch layout, selection weights, borrowed animation keys and backdrop colors.
+typedef struct EyeCatchGroup {
+    u8 unknown000[2];             ///< Bytes without an established consumer or meaning.
+    u8 selectionWeights[2];       ///< Selection weights for progress at most twelve and greater than twelve.
+    TextureRectangle *rectangles; ///< Borrowed negative-texture-terminated list, adjusted once at startup.
+    s16 originX, originY;         ///< Base screen position for static and animated rectangles.
+    s16 alternateSoundSet;  ///< Nonzero selects fixed entry/random exit sounds instead of random entry/fixed exit.
+    s16 animatedLayerCount; ///< Number of animated layers and six-track key sets.
+    ValueKey *(*animationKeys)[6];         ///< Borrowed key sets for X, Y, X/Y scale, texture and opacity.
+    s16 foregroundWidth, foregroundHeight; ///< Foreground image drawing dimensions.
+    u8 cornerColors[4][3];                 ///< Backdrop vertex RGB colors in corner order.
+} EyeCatchGroup;
+
+typedef char EyeCatchGroupSizeCheck[(sizeof(EyeCatchGroup) == 0x24) ? 1 : -1];
+typedef char EyeCatchWeightsOffsetCheck[((u32) & ((EyeCatchGroup *)0)->selectionWeights == 2) ? 1 : -1];
+typedef char EyeCatchRectanglesOffsetCheck[((u32) & ((EyeCatchGroup *)0)->rectangles == 4) ? 1 : -1];
+typedef char EyeCatchKeysOffsetCheck[((u32) & ((EyeCatchGroup *)0)->animationKeys == 0x10) ? 1 : -1];
+typedef char EyeCatchColorsOffsetCheck[((u32) & ((EyeCatchGroup *)0)->cornerColors == 0x18) ? 1 : -1];
 /// Six eye-catch group descriptors containing artwork, layout, animation and selection weights.
 /// \note Original identifier: \c D_8009C2AC (0x8009C2AC).
-extern EyeGroup36A gEyeCatchGroups[6];
+extern EyeCatchGroup gEyeCatchGroups[6];
 
 #include "eye_catch.h"
 /// Prepare eye-catch layouts and reset interlude state once at startup.
@@ -59,15 +67,15 @@ extern EyeGroup36A gEyeCatchGroups[6];
 /// \note Original decompilation identifier: \c func_80036A60 (0x80036A60).
 void eyeCatchInitialize(void) {
     s32 i;
-    EyeGroup36A *g;
+    EyeCatchGroup *g;
     TextureRectangle *r;
 
     for (i = 0, g = gEyeCatchGroups; i < 6; i++, g++) {
-        r = g->records;
+        r = g->rectangles;
         if (r->texture >= 0) {
             do {
-                r->x += g->x;
-                r->y += g->y;
+                r->x += g->originX;
+                r->y += g->originY;
                 r++;
             } while (r->texture >= 0);
         }
@@ -96,11 +104,13 @@ extern s32 gEyeCatchProjectionMatrix;
 /// \note Original identifier: \c D_800F2618 (0x800F2618).
 extern s32 gEyeCatchModelViewMatrix;
 
-#define EYE_GROUP ((EyeGroup36A *)gEyeCatchActiveGroup)
+#define EYE_GROUP ((EyeCatchGroup *)gEyeCatchActiveGroup)
 
 /// Six animation channels for each eye-catch layer.
-typedef f32 EyeTracks36A[6][3];
-#define EYE_TRACKS(group) (*(EyeTracks36A *)((group) * sizeof(EyeTracks36A) + gEyeCatchAnimationTracks))
+/// Six animation cursors owned by one animated eye-catch layer.
+typedef ValueTrack EyeCatchLayerTracks[6];
+typedef char EyeCatchLayerTracksSizeCheck[(sizeof(EyeCatchLayerTracks) == 0x48) ? 1 : -1];
+#define EYE_TRACKS(group) (*(EyeCatchLayerTracks *)((group) * sizeof(EyeCatchLayerTracks) + gEyeCatchAnimationTracks))
 
 /// Load and initialize the selected eye-catch interlude.
 /// Requires a selected group from zero through five and no unreleased interlude.
@@ -113,16 +123,16 @@ void eyeCatchBegin(void) {
 
     controllerRequestRumbleReset(0);
     gEyeCatchActiveGroup = (s32)&gEyeCatchGroups[gEyeCatchSelectedGroup];
-    count = EYE_GROUP->count;
+    count = EYE_GROUP->animatedLayerCount;
     if (count != 0) {
-        gEyeCatchAnimationTracks = (s32)heapAllocLocal((HpHdr *)&gGameHeap, count * sizeof(EyeTracks36A), 0x508);
-        for (group = 0; group < EYE_GROUP->count; group++) {
-            animationIntegerTrackInitialize((ValueTrack *)EYE_TRACKS(group)[0], (ValueKey *)EYE_GROUP->keys[group][0]);
-            animationIntegerTrackInitialize((ValueTrack *)EYE_TRACKS(group)[1], (ValueKey *)EYE_GROUP->keys[group][1]);
-            animationIntegerTrackInitialize((ValueTrack *)EYE_TRACKS(group)[2], (ValueKey *)EYE_GROUP->keys[group][2]);
-            animationIntegerTrackInitialize((ValueTrack *)EYE_TRACKS(group)[3], (ValueKey *)EYE_GROUP->keys[group][3]);
-            animationIntegerTrackInitialize((ValueTrack *)EYE_TRACKS(group)[4], (ValueKey *)EYE_GROUP->keys[group][4]);
-            animationIntegerTrackInitialize((ValueTrack *)EYE_TRACKS(group)[5], (ValueKey *)EYE_GROUP->keys[group][5]);
+        gEyeCatchAnimationTracks = (s32)heapAllocLocal((HpHdr *)&gGameHeap, count * sizeof(EyeCatchLayerTracks), 0x508);
+        for (group = 0; group < EYE_GROUP->animatedLayerCount; group++) {
+            animationIntegerTrackInitialize(&EYE_TRACKS(group)[0], (ValueKey *)EYE_GROUP->animationKeys[group][0]);
+            animationIntegerTrackInitialize(&EYE_TRACKS(group)[1], (ValueKey *)EYE_GROUP->animationKeys[group][1]);
+            animationIntegerTrackInitialize(&EYE_TRACKS(group)[2], (ValueKey *)EYE_GROUP->animationKeys[group][2]);
+            animationIntegerTrackInitialize(&EYE_TRACKS(group)[3], (ValueKey *)EYE_GROUP->animationKeys[group][3]);
+            animationIntegerTrackInitialize(&EYE_TRACKS(group)[4], (ValueKey *)EYE_GROUP->animationKeys[group][4]);
+            animationIntegerTrackInitialize(&EYE_TRACKS(group)[5], (ValueKey *)EYE_GROUP->animationKeys[group][5]);
         }
     }
     gEyeCatchForegroundImage = (s32)assetAllocateAndLoad(&gEyeCatchForegroundAssetDescriptor);
@@ -134,9 +144,9 @@ void eyeCatchBegin(void) {
         ((Vtx *)gEyeCatchBackdropVertices)[corner].v.flag = 0;
         ((Vtx *)gEyeCatchBackdropVertices)[corner].v.tc[0] = 0;
         ((Vtx *)gEyeCatchBackdropVertices)[corner].v.tc[1] = 0;
-        ((Vtx *)gEyeCatchBackdropVertices)[corner].v.cn[0] = EYE_GROUP->rgb[corner][0];
-        ((Vtx *)gEyeCatchBackdropVertices)[corner].v.cn[1] = EYE_GROUP->rgb[corner][1];
-        ((Vtx *)gEyeCatchBackdropVertices)[corner].v.cn[2] = EYE_GROUP->rgb[corner][2];
+        ((Vtx *)gEyeCatchBackdropVertices)[corner].v.cn[0] = EYE_GROUP->cornerColors[corner][0];
+        ((Vtx *)gEyeCatchBackdropVertices)[corner].v.cn[1] = EYE_GROUP->cornerColors[corner][1];
+        ((Vtx *)gEyeCatchBackdropVertices)[corner].v.cn[2] = EYE_GROUP->cornerColors[corner][2];
         ((Vtx *)gEyeCatchBackdropVertices)[corner].v.cn[3] = 0xFF;
     }
     gEyeCatchProjectionMatrix = (s32)heapAllocLocal((HpHdr *)&gGameHeap, sizeof(Mtx), 0x530);
@@ -190,8 +200,8 @@ extern f32 gRuntimeFrameSeconds;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80037034 (0x80037034).
 void eyeCatchDrawLayers(Gfx **displayList) {
-    s32 var_s0;
-    s32 var_s4;
+    s32 animationAddress;
+    s32 layerIndex;
 
     renderDrawColorOverlayWithDepth(0, 0, 0, 0xFF);
     gDPPipeSync((*displayList)++);
@@ -206,7 +216,7 @@ void eyeCatchDrawLayers(Gfx **displayList) {
     gDPPipeSync((*displayList)++);
     gDPSetRenderMode((*displayList)++, 0x504240, 0);
     gDPSetCombine((*displayList)++, 0xFFFFFF, 0xFFFCF279);
-    textureDrawRectangles(9, ((EyeGroup36A *)gEyeCatchActiveGroup)->records, displayList);
+    textureDrawRectangles(9, ((EyeCatchGroup *)gEyeCatchActiveGroup)->rectangles, displayList);
     gDPPipeSync((*displayList)++);
     gDPSetRenderMode((*displayList)++, 0x504240, 0);
     gDPSetCombineLERP((*displayList)++, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE,
@@ -215,20 +225,21 @@ void eyeCatchDrawLayers(Gfx **displayList) {
         s32 spA0;
         s32 sp9C;
         TextureRectangle desc[2];
-        var_s0 = gEyeCatchAnimationTracks;
-        for (var_s4 = 0; var_s4 < ((EyeGroup36A *)gEyeCatchActiveGroup)->count; var_s4++) {
+        animationAddress = gEyeCatchAnimationTracks;
+        for (layerIndex = 0; layerIndex < ((EyeCatchGroup *)gEyeCatchActiveGroup)->animatedLayerCount; layerIndex++) {
             desc[0].width = desc[0].height = -1;
             desc[0].s = desc[0].t = 0;
-            animationIntegerTrackEvaluate((ValueTrack *)(void *)var_s0, &sp9C, gRuntimeFrameSeconds);
-            desc[0].x = ((EyeGroup36A *)gEyeCatchActiveGroup)->x + sp9C;
-            animationIntegerTrackEvaluate((ValueTrack *)(void *)(var_s0 + 0xC), &sp9C, gRuntimeFrameSeconds);
-            desc[0].y = ((EyeGroup36A *)gEyeCatchActiveGroup)->y + sp9C;
-            animationIntegerTrackEvaluate((ValueTrack *)(void *)(var_s0 + 0x18), &sp9C, gRuntimeFrameSeconds);
+            animationIntegerTrackEvaluate((ValueTrack *)(void *)animationAddress, &sp9C, gRuntimeFrameSeconds);
+            desc[0].x = ((EyeCatchGroup *)gEyeCatchActiveGroup)->originX + sp9C;
+            animationIntegerTrackEvaluate((ValueTrack *)(void *)(animationAddress + 0xC), &sp9C, gRuntimeFrameSeconds);
+            desc[0].y = ((EyeCatchGroup *)gEyeCatchActiveGroup)->originY + sp9C;
+            animationIntegerTrackEvaluate((ValueTrack *)(void *)(animationAddress + 0x18), &sp9C, gRuntimeFrameSeconds);
             desc[0].scaleX = (f32)sp9C * 0.1f;
-            animationIntegerTrackEvaluate((ValueTrack *)(void *)(var_s0 + 0x24), &sp9C, gRuntimeFrameSeconds);
+            animationIntegerTrackEvaluate((ValueTrack *)(void *)(animationAddress + 0x24), &sp9C, gRuntimeFrameSeconds);
             desc[0].scaleY = (f32)sp9C * 0.1f;
-            animationIntegerTrackEvaluate((ValueTrack *)(void *)(var_s0 + 0x30), &desc[0].texture, gRuntimeFrameSeconds);
-            animationIntegerTrackEvaluate((ValueTrack *)(void *)(var_s0 + 0x3C), &spA0, gRuntimeFrameSeconds);
+            animationIntegerTrackEvaluate((ValueTrack *)(void *)(animationAddress + 0x30), &desc[0].texture,
+                                          gRuntimeFrameSeconds);
+            animationIntegerTrackEvaluate((ValueTrack *)(void *)(animationAddress + 0x3C), &spA0, gRuntimeFrameSeconds);
             if (spA0 < 0) {
                 spA0 = 0;
             } else if (spA0 >= 0x100) {
@@ -237,7 +248,7 @@ void eyeCatchDrawLayers(Gfx **displayList) {
             gDPSetPrimColor((*displayList)++, 0, 0, 0, 0, 0, spA0);
             desc[1].texture = -1;
             textureDrawRectangles(9, desc, displayList);
-            var_s0 += 0x48;
+            animationAddress += 0x48;
         }
     }
 }
@@ -262,8 +273,9 @@ void eyeCatchDrawFadingImage(Gfx **gdl) {
         gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
         gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 255, (s32)gEyeCatchForegroundAlpha);
         gDPSetCombineLERP((*gdl)++, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0);
-        textureDrawScaledRepeated(gdl, &tex, ((EyeGroup36A *)gEyeCatchActiveGroup)->width,
-                                  ((EyeGroup36A *)gEyeCatchActiveGroup)->height, 2, 2, 0, 0, 0.5f, 0.5f, 0, 0);
+        textureDrawScaledRepeated(gdl, &tex, ((EyeCatchGroup *)gEyeCatchActiveGroup)->foregroundWidth,
+                                  ((EyeCatchGroup *)gEyeCatchActiveGroup)->foregroundHeight, 2, 2, 0, 0, 0.5f, 0.5f, 0,
+                                  0);
         gEyeCatchForegroundAlpha += 127.5f * gRuntimeFrameSeconds;
         if (gEyeCatchForegroundAlpha < 0.0f) {
             gEyeCatchForegroundAlpha = 0.0f;
@@ -314,7 +326,7 @@ s32 eyeCatchUpdatePlayback(void) {
         break;
     case 1:
         if (gEyeCatchStageSeconds > 2.5f) {
-            if (((EyeGroup36A *)gEyeCatchActiveGroup)->flags != 0) {
+            if (((EyeCatchGroup *)gEyeCatchActiveGroup)->alternateSoundSet != 0) {
                 entrySound = audioPlaySoundEffect(0x6A);
             } else {
                 entrySound = audioPlaySoundEffect(gEyeCatchEntrySoundChoices[randomBelow(8)]);
@@ -325,7 +337,7 @@ s32 eyeCatchUpdatePlayback(void) {
         break;
     case 2:
         if (gEyeCatchStageSeconds > 3.77f) {
-            if (((EyeGroup36A *)gEyeCatchActiveGroup)->flags != 0) {
+            if (((EyeCatchGroup *)gEyeCatchActiveGroup)->alternateSoundSet != 0) {
                 exitSound = audioPlaySoundEffect(gEyeCatchExitSoundChoices[randomBelow(8)]);
             } else {
                 exitSound = audioPlaySoundEffect(0x66);
@@ -426,11 +438,11 @@ s32 eyeCatchChooseGroup(void) {
     }
     total = 0;
     for (i = 0; i < 6; i++) {
-        total += ((u8 *)&gEyeCatchGroups[i])[column + 2];
+        total += gEyeCatchGroups[i].selectionWeights[column];
     }
     choice = randomBelow(total);
     for (i = 0; i < 6; i++) {
-        choice -= ((u8 *)&gEyeCatchGroups[i])[column + 2];
+        choice -= gEyeCatchGroups[i].selectionWeights[column];
         if (choice < 0) {
             return i;
         }
