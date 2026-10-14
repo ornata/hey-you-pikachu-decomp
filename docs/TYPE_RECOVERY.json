@@ -51,14 +51,14 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 892,
-      "unique_spellings": 483,
+      "occurrences": 891,
+      "unique_spellings": 482,
       "files": 64
     },
     "cast_offset_candidates": {
-      "occurrences": 28,
-      "unique_spellings": 12,
-      "files": 7
+      "occurrences": 26,
+      "unique_spellings": 11,
+      "files": 6
     }
   },
   "policies": {
@@ -1450,32 +1450,21 @@
         "voice_recognition.h"
       ],
       "matching_exceptions": {
-        "hud player companion target read": "Canonical player_state.h storage and explicit player pointer calls match. Replacing the byte-offset read at 0x50 with gPlayerState.companionTarget changes code and fails the ROM gate. Retain the explicit byte view pending alias/load scheduling evidence; the shared field offset is established."
+        "hud player companion target read": "Canonical player_state.h storage and explicit player pointer calls match. Replacing the byte-offset read at 0x50 with gPlayerState.companionTarget changes code and fails the ROM gate. The byte view now uses the checked companionTarget member offset. Retain this representation pending alias/load scheduling evidence; the shared field offset is established."
       },
       "locations": {
         "raw_offset_candidates": {
           "offset + 48": [
-            "152:32"
+            "151:32"
           ],
           "offset + 40": [
-            "168:32"
-          ],
-          "gPlayerState + 0x50": [
-            "598:74"
+            "167:32"
           ],
           "actionResourceHudLevel + 0": [
             "647:23"
           ],
           "secondaryMeterHudLevel + 0": [
             "648:23"
-          ]
-        },
-        "cast_offset_candidates": {
-          "((u8 *)gPikachuActor) + 0x44": [
-            "135:102"
-          ],
-          "((u8 *)gPikachuActor) + 0x38": [
-            "598:25"
           ]
         }
       }
@@ -2525,16 +2514,16 @@
             "88:44"
           ],
           "x - 10": [
-            "263:36"
+            "265:36"
           ],
           "y - 4": [
-            "263:44"
+            "265:44"
           ],
           "maxWidth + 10": [
-            "263:55"
+            "265:55"
           ],
           "x + 16": [
-            "270:17"
+            "272:17"
           ]
         }
       }

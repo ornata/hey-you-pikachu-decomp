@@ -132,8 +132,7 @@ void hudDrawDirectionIndicators(Gfx **gdl) {
     s32 offset;
     s32 position;
     f32 limit;
-    if (areaTestCameraVisibility(((RuntimeObjectPrefix *)((u8 *)gPikachuActor))->radius * 2, (f32 *)(((u8 *)gPikachuActor) + 0x44),
-                                 direction) == 0) {
+    if (areaTestCameraVisibility(gPikachuActor->radius * 2, gPikachuActor->worldPosition, direction) == 0) {
         gDPPipeSync((*gdl)++);
         gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
         gDPSetCombineMode((*gdl)++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
@@ -595,7 +594,8 @@ void hudDrawMotionIndicators(Gfx **gdl) {
         showMotion = 1;
         showSelected = 1;
     } else if (playerGetCompanionControlMode((u8 *)&gPlayerState) &&
-               *(s32 *)(((u8 *)gPikachuActor) + 0x38) == *(s32 *)((u8 *)&gPlayerState + 0x50)) {
+               gPikachuActor->handle ==
+                   *(s32 *)((u8 *)&gPlayerState + (u32) & ((PlayerControlPrefix *)0)->companionTarget)) {
         selected = gHudCompanionActionAnimations[playerCanToggleCompanionControl()];
         showMotion = 1;
         showSelected = 1;

@@ -140,7 +140,7 @@
       "terrainDebugGridUpdatePosition": "Canonical player_state.h storage declaration matches when reads use the small PlayerGridView cast. Replacing its yaw/viewShake/position reads with the full PlayerControlPrefix changes ROM bytes. Retain the checked-offset-compatible local view and separate Y/Z symbols until IDO alias/load scheduling is isolated."
     },
     "src/game/hud.c": {
-      "hud player companion target read": "Canonical player_state.h storage and explicit player pointer calls match. Replacing the byte-offset read at 0x50 with gPlayerState.companionTarget changes code and fails the ROM gate. Retain the explicit byte view pending alias/load scheduling evidence; the shared field offset is established."
+      "hud player companion target read": "Canonical player_state.h storage and explicit player pointer calls match. Replacing the byte-offset read at 0x50 with gPlayerState.companionTarget changes code and fails the ROM gate. The byte view now uses the checked companionTarget member offset. Retain this representation pending alias/load scheduling evidence; the shared field offset is established."
     },
     "src/game/orbit_follower.c": {
       "terrainCheckHorizontalObstruction": "The canonical area_services.h result is u16 directional obstruction flags. The orbit caller retains a signed-word result view; changing to u16 fails the ROM gate, including with an explicitly discarded result. Next evidence: Isolate orbitFollowerUpdate call lowering and preserve the original unused-result instruction sequence before adopting the narrow return declaration."

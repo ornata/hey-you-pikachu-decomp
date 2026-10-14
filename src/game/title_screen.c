@@ -175,12 +175,14 @@ void titleScreenDrawStartupPanel(Gfx **gdl) {
     gDPSetCycleType((*gdl)++, G_CYC_1CYCLE);
 }
 
-typedef struct {
-    s32 w[27];
-} Tmpl6C;
+/// Start-prompt drawing snapshot, including its negative-texture terminator.
+typedef struct TitlePromptLayout {
+    TextureRectangle rectangles[3]; ///< Two visible rectangles and the list terminator.
+} TitlePromptLayout;
+typedef char TitlePromptLayoutSizeCheck[(sizeof(TitlePromptLayout) == 0x6C) ? 1 : -1];
 /// Sprite descriptors used to draw the pulsing Start prompt.
 /// \note Original identifier: \c D_8009B4CC (0x8009B4CC).
-extern Tmpl6C gTitleStartPromptSprites;
+extern TitlePromptLayout gTitleStartPromptSprites;
 /// Elapsed-time checkpoint for title introduction, prompt and demonstration transitions.
 /// \note Original identifier: \c D_800F2560 (0x800F2560).
 extern u32 gTitleIntroductionMilliseconds;
@@ -196,7 +198,7 @@ extern f32 gTitleStartPromptPhase;
 /// \note NONPORTABLE: callers pass the display-list cursor as s32 (32-bit pointers)
 /// \note Original decompilation identifier: \c func_800346D8 (0x800346D8).
 void titleScreenDrawStartPrompt(Gfx **gdl) {
-    Tmpl6C t = gTitleStartPromptSprites;
+    TitlePromptLayout t = gTitleStartPromptSprites;
     s32 a;
 
     if ((u64)runtimeGetElapsedMilliseconds() - (u32)gTitleIntroductionMilliseconds >= 0x2328) {
@@ -219,7 +221,7 @@ void titleScreenDrawStartPrompt(Gfx **gdl) {
         gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
         gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 255, a);
         gDPSetCombineLERP((*gdl)++, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0);
-        textureDrawRectangles(10, (TextureRectangle *)(u8 *)&t, gdl);
+        textureDrawRectangles(10, t.rectangles, gdl);
     }
 }
 

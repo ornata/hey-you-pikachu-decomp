@@ -377,3 +377,18 @@ layer workspace is six `ValueTrack` records (0x48 bytes), replacing the float-ar
 view while retaining drawing's existing integer-address cursor. Initialization
 uses typed track addresses and borrowed keys. Every accepted source-unit trial
 preserves all 483 baseline objects.
+
+## HUD actor references and title prompt
+
+HUD direction indicators use the active actor's shared radius and world position;
+companion indicators use its handle. Ghidra at `0x80021648` confirms direction-query
+inputs. The player companion target retains its existing matching byte view, now
+tied to a checked `PlayerControlPrefix.companionTarget` member offset.
+
+The title Start prompt replaces a 27-word view with `TitlePromptLayout`, a checked
+0x6C-byte drawing snapshot of three shared rectangles. Linked-image inspection
+at `gTitleStartPromptSprites` (`0x8009B4CC`) finds texture indices 0, 1 and -1,
+confirming two visible entries and a terminator. This establishes the copied
+prefix, not the full extent of the symbol's surrounding storage. Ghidra at
+`0x800346D8` confirms the snapshot reaches the shared renderer. Both source units
+preserve all baseline objects; no new matching exception is needed.
