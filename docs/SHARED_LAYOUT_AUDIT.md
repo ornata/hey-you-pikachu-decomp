@@ -508,3 +508,17 @@ and area names remain borrowed; the bedroom catalog keeps its original signed
 address load before conversion, preserving symbol and load representation. The
 producer/header and caller source-unit changes each pass the strict baseline
 objects without an added compatibility exception.
+
+## Typed string pop and scheduled VM update
+
+`scriptVmPopString` now accepts `ScriptVm *`, and all four text-command callers
+use that shared declaration. Ghidra at `0x80116104` confirms direct borrowed
+string pointers, borrowed string-table entries and the shared numeric conversion
+buffer. The returned numeric text remains valid only until the next conversion;
+the existing 32-byte formatting precondition is unchanged. The value-pop helper
+still receives its established byte-context boundary.
+
+`actorUpdateScriptVm` retains a typed context while advancing timers, servicing
+waiting actions and retaining the next scheduling state. No timing, return-value
+or state-transition behavior changes. Producer/header, callers and update-local
+changes each preserve the strict object baseline without added exceptions.

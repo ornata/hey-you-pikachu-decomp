@@ -664,12 +664,12 @@ f32 scriptVmPopFloat(s32 vm) {
 /// \param vm Context with a valid string or numeric value on its stack; numeric text must fit in 32 bytes including its terminator.
 /// \returns The borrowed referenced string, or shared temporary text for a numeric value that a later numeric conversion overwrites.
 /// \note Original decompilation identifier: \c func_80116104 (0x80116104).
-char *scriptVmPopString(u8 *vm) {
+char *scriptVmPopString(ScriptVm *vm) {
     ScriptValue box;
     char *text;
     s32 index;
     s32 test;
-    scriptVmPopValue(vm, &box);
+    scriptVmPopValue((u8 *)vm, &box);
     if (box.data.tag == SCRIPT_VALUE_STRING_INDEX || box.data.tag == SCRIPT_VALUE_STRING_POINTER)
         test = 1;
     else
@@ -684,7 +684,7 @@ char *scriptVmPopString(u8 *vm) {
             return text;
         }
         bcopy(&box.bytes[1], &index, 4);
-        return ((ScriptVm *)vm)->stringTable[index];
+        return vm->stringTable[index];
     }
     if (box.data.tag == SCRIPT_VALUE_INTEGER || box.data.tag == 2)
         test = 1;
@@ -696,7 +696,6 @@ char *scriptVmPopString(u8 *vm) {
         sprintf((char *)&gScriptVmNumericTextBuffer, "%f", scriptValueGetFloat(&box));
     return (char *)&gScriptVmNumericTextBuffer;
 }
-
 
 /// Evaluate a global script variable as an integer.
 /// \param index Valid index of a numeric global script variable.
@@ -906,24 +905,24 @@ extern f32 gRuntimeFrameSeconds;
 /// \see actorScriptDispatchActionHandler
 void actorUpdateScriptVm(u8 *actor) {
     u8 *st;
-    u8 *ctx;
+    ScriptVm *ctx;
     s32 state;
 
     st = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    ctx = (u8 *)((ActorScriptState *)st)->vmAddress;
+    ctx = (ScriptVm *)((ActorScriptState *)st)->vmAddress;
     if (ctx != NULL) {
-        state = ((ScriptVm *)ctx)->executionState;
-        ((ScriptVm *)ctx)->elapsed += gRuntimeFrameSeconds;
-        ((ScriptVm *)ctx)->totalElapsed += gRuntimeFrameSeconds;
+        state = ctx->executionState;
+        ctx->elapsed += gRuntimeFrameSeconds;
+        ctx->totalElapsed += gRuntimeFrameSeconds;
         if (state == SCRIPT_VM_WAITING_FOR_ACTION) {
-            ((ScriptVm *)ctx)->executionState = actorScriptDispatchActionHandler(actor);
-            ((ScriptVm *)ctx)->actionInitializing = 0;
+            ctx->executionState = actorScriptDispatchActionHandler(actor);
+            ctx->actionInitializing = 0;
         } else if ((state == SCRIPT_VM_YIELDED) || (state == SCRIPT_VM_READY)) {
-            ((ScriptVm *)ctx)->executionState = actorRunScriptVm(actor);
+            ctx->executionState = actorRunScriptVm(actor);
         } else if (state == SCRIPT_VM_FINISHED) { /* same as default; the ROM tests it */
-            ((ScriptVm *)ctx)->executionState = SCRIPT_VM_READY;
+            ctx->executionState = SCRIPT_VM_READY;
         } else {
-            ((ScriptVm *)ctx)->executionState = SCRIPT_VM_READY;
+            ctx->executionState = SCRIPT_VM_READY;
         }
     }
 }

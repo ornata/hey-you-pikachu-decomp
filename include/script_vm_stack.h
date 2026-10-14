@@ -45,6 +45,6 @@ f32 scriptVmPopFloat(s32 vm);
 /// \returns Borrowed string, or shared numeric text overwritten by the next
 /// numeric string conversion. Consume or copy numeric text before that conversion.
 /// \note Original identifier: \c func_80116104 (0x80116104).
-char *scriptVmPopString(u8 *vm);
+char *scriptVmPopString(ScriptVm *vm);
 
 #endif

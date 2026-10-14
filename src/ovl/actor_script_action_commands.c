@@ -207,7 +207,8 @@ s32 actorScriptBuildSharedText(u8 *actor) {
     var_s0 = scriptVmReadIntegerOperand((u8 *)vmAddress) - 1;
     if (var_s0 >= 0) {
         do {
-            stringPrependBounded((u8 *)&gActorScriptSharedTextBuffer, 0x50, (u8 *)scriptVmPopString((u8 *)vmAddress));
+            stringPrependBounded((u8 *)&gActorScriptSharedTextBuffer, 0x50,
+                                 (u8 *)scriptVmPopString((ScriptVm *)vmAddress));
             var_s0 -= 1;
         } while (var_s0 >= 0);
     }
@@ -229,7 +230,8 @@ s32 actorScriptBuildSharedTextAlternate(u8 *actor) {
     var_s0 = scriptVmReadIntegerOperand((u8 *)vmAddress) - 1;
     if (var_s0 >= 0) {
         do {
-            stringPrependBounded((u8 *)&gActorScriptSharedTextBuffer, 0x50, (u8 *)scriptVmPopString((u8 *)vmAddress));
+            stringPrependBounded((u8 *)&gActorScriptSharedTextBuffer, 0x50,
+                                 (u8 *)scriptVmPopString((ScriptVm *)vmAddress));
             var_s0 -= 1;
         } while (var_s0 >= 0);
     }
@@ -347,7 +349,8 @@ s32 actorScriptEnqueueMessage(u8 *actor) {
     var_s0 = scriptVmReadIntegerOperand(vmBytes) - 1;
     if (var_s0 >= 0) {
         do {
-            stringPrependBounded((u8 *)&gActorScriptSharedTextBuffer, 0x50, (u8 *)scriptVmPopString(vmBytes));
+            stringPrependBounded((u8 *)&gActorScriptSharedTextBuffer, 0x50,
+                                 (u8 *)scriptVmPopString((ScriptVm *)vmBytes));
             var_s0 -= 1;
         } while (var_s0 >= 0);
     }
@@ -410,7 +413,8 @@ s32 actorScriptAppendWindowText(u8 *actor) {
     var_s0 = scriptVmReadIntegerOperand((u8 *)vmAddress) - 1;
     if (var_s0 >= 0) {
         do {
-            stringPrependBounded((u8 *)&gActorScriptSharedTextBuffer, 0x50, (u8 *)scriptVmPopString((u8 *)vmAddress));
+            stringPrependBounded((u8 *)&gActorScriptSharedTextBuffer, 0x50,
+                                 (u8 *)scriptVmPopString((ScriptVm *)vmAddress));
             var_s0 -= 1;
         } while (var_s0 >= 0);
     }
