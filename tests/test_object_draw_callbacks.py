@@ -29,8 +29,21 @@ class ObjectDrawCallbackTests(unittest.TestCase):
                 result = audit_records([record], {1: ['callback']}, {'callback': definition})
                 self.assertTrue(any('incompatible' in error for error in result['errors']))
 
-    def test_optional_nulls_and_lifecycle_slots_are_outside_scope(self):
-        self.assertEqual(audit_records([(1, 2, 3, 0, 0, 0)], {}, {})['errors'], [])
+    def test_optional_nulls(self):
+        self.assertEqual(audit_records([(0, 0, 0, 0, 0, 0)], {}, {})['errors'], [])
+
+    def test_lifecycle_slots_require_actor_pointer_and_void_return(self):
+        for slot in range(3):
+            for returns, parameters, valid in [('void', ['u8*'], True),
+                                                ('s32', ['u8*'], False),
+                                                ('void', ['RuntimeObjectPrefix*'], False),
+                                                ('void', ['u8*', 'u8*'], False)]:
+                with self.subTest(slot=slot, returns=returns, parameters=parameters):
+                    record = [0] * 6
+                    record[slot] = 1
+                    result = audit_records([record], {1: ['hook']},
+                                           {'hook': self.definition(returns, parameters)})
+                    self.assertEqual(not result['errors'], valid)
 
     def test_unwritten_or_ambiguous_callback_targets_fail(self):
         for names, definitions in [({1: ['missing']}, {}),

@@ -1986,7 +1986,7 @@ typedef char SceneCellZViewOffsetCheck
 /// be available.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80111C4C (0x80111C4C).
-void playerUpdateControlHierarchy(void *object) {
+void playerUpdateControlHierarchy(u8 *object) {
     PlayerControlPrefix *origin;
     f32 projected[3];
     f32 delta[3];

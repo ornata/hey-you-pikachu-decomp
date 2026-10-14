@@ -111,15 +111,14 @@ extern f32 gPlayerPositionZ;
 /// \param object Grid root transform to update.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002AF88 (0x8002AF88).
-void terrainDebugGridUpdatePosition(f32 *object) {
+void terrainDebugGridUpdatePosition(u8 *object) {
     f32 pad; /* unused, but sizes the frame (angle lands at 0x18) */
     f32 angle = ((PlayerGridView *)&gPlayerState)->yaw + ((PlayerGridView *)&gPlayerState)->viewShake;
 
-    object[6] = mathSinDegrees(angle) * 15.0f + ((PlayerGridView *)&gPlayerState)->x;
-    object[7] = gPlayerPositionY + 0.1f;
-    object[8] = mathCosDegrees(angle) * 15.0f + gPlayerPositionZ;
+    ((f32 *)object)[6] = mathSinDegrees(angle) * 15.0f + ((PlayerGridView *)&gPlayerState)->x;
+    ((f32 *)object)[7] = gPlayerPositionY + 0.1f;
+    ((f32 *)object)[8] = mathCosDegrees(angle) * 15.0f + gPlayerPositionZ;
 }
-
 
 /// Initialize the state of a terrain diagnostic grid cell.
 /// \param object Grid cell object to initialize.
@@ -269,7 +268,7 @@ u8 *terrainDebugGridCreate(s32 size) {
     objectMakeHierarchyRoot(root);
     objectAllocateHierarchyMatrixBuffers(root);
     objectRegisterActiveHierarchy(root);
-    terrainDebugGridUpdatePosition((f32 *)root);
+    terrainDebugGridUpdatePosition((u8 *)root);
     objectRefreshHierarchyWorldPositions(root);
     terrainDebugGridSetEnabled(root, 1);
     TRACE("meshNum:%d\n", index);

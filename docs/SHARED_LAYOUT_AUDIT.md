@@ -1175,3 +1175,19 @@ Tests cover legacy integer results, extra child arguments, raw response views,
 unknown/ambiguous targets and record stride. The gate deliberately excludes
 lifecycle hooks, alternate tables, resource validity and kinds beyond the
 selected prefix; it is not a whole-object-system completion certificate.
+
+### Object lifecycle callback agreement
+
+The resident kind table's initialization, destruction and update hooks now share
+`void (u8 *)` across the audited kinds 0 through 0xB3. The table checker also
+covers these slots: all 537 populated lifecycle, drawing, child-drawing and
+response slots resolve to compatible written C definitions. Alternate tables,
+kinds beyond this prefix and resource validity remain outside its scope.
+
+Actor-part no-op hooks and maze visibility receive the borrowed object pointer.
+Paired orientation-cache and roll-motion initialization return no value; their
+registered callers do not consume a result. Orbit, ambient-emitter and diagnostic
+grid updates retain explicit access views where additional typed locals change
+code generation. These views borrow the callback object and do not create new
+allocations or extend its lifetime. Every source-unit change passed the preserved
+483-object comparison and the retail ROM gate.

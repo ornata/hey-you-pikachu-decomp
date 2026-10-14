@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check drawing/response callback types for the known retail object-kind range."""
+"""Check lifecycle, drawing and response callback types for the known retail object-kind range."""
 import argparse
 import json
 from pathlib import Path
@@ -9,13 +9,16 @@ from compare_objects import Elf
 from interface_contracts import report as interface_report
 
 ROOT = Path(__file__).resolve().parents[1]
-CONTRACTS = {3: ('draw', 'Gfx*', ['u8*']),
+CONTRACTS = {0: ('init', 'void', ['u8*']),
+             1: ('destroy', 'void', ['u8*']),
+             2: ('update', 'void', ['u8*']),
+             3: ('draw', 'Gfx*', ['u8*']),
              4: ('drawChild', 'void', ['u8*']),
              5: ('response', 'void', ['u8*', 'ObjectResponse*'])}
 
 
 def audit_records(records, names, definitions):
-    """Check non-null drawing/response targets without inferring lifecycle types."""
+    """Check every non-null hook against its written C callback contract."""
     findings = []
     errors = []
     for kind, record in enumerate(records):
@@ -61,7 +64,7 @@ def report(root, path, kind_count):
     definitions = {item['name']: item for item in interface_report(root)['declarations'] if item['definition']}
     result = audit_records(records, names, definitions)
     result.update(kind_count=kind_count,
-                  scope='Drawing, child-drawing and response slots in the explicitly selected retained kind range; excludes lifecycle hooks, alternate tables and resource validity.')
+                  scope='Lifecycle, drawing, child-drawing and response slots in the explicitly selected retained kind range; excludes alternate tables and resource validity.')
     return result
 
 
@@ -78,7 +81,7 @@ def main():
         for error in result['errors']:
             print('ERROR: ' + error)
         if not result['errors']:
-            print(f"OK: {len(result['entries'])} drawing/response slots agree across {result['kind_count']} audited kinds")
+            print(f"OK: {len(result['entries'])} object callback slots agree across {result['kind_count']} audited kinds")
     return bool(result['errors'])
 
 

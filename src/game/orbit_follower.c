@@ -80,8 +80,8 @@ extern f32 gRuntimeFrameSeconds;
 /// \param obj Orbiting follower object to update.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80026E54 (0x80026E54).
-void orbitFollowerUpdate(RuntimeObjectPrefix *obj) {
-    OrbitState *state = (OrbitState *)obj->state.pointer;
+void orbitFollowerUpdate(u8 *obj) {
+    OrbitState *state = (OrbitState *)((RuntimeObjectPrefix *)obj)->state.pointer;
     RuntimeObjectPrefix *owner;
     f32 targetX;
     f32 targetZ;
@@ -107,37 +107,42 @@ void orbitFollowerUpdate(RuntimeObjectPrefix *obj) {
         state->timer = resetDuration;
         state->turnRate = -state->turnRate;
         state->heading = (s32)randomBelow(360);
-        obj->position[0] = owner->position[0];
-        obj->position[1] = owner->position[1] + state->height;
-        obj->position[2] = owner->position[2];
-        obj->worldPosition[0] = obj->position[0];
-        obj->worldPosition[1] = obj->position[1];
-        obj->worldPosition[2] = obj->position[2];
+        ((RuntimeObjectPrefix *)obj)->position[0] = owner->position[0];
+        ((RuntimeObjectPrefix *)obj)->position[1] = owner->position[1] + state->height;
+        ((RuntimeObjectPrefix *)obj)->position[2] = owner->position[2];
+        ((RuntimeObjectPrefix *)obj)->worldPosition[0] = ((RuntimeObjectPrefix *)obj)->position[0];
+        ((RuntimeObjectPrefix *)obj)->worldPosition[1] = ((RuntimeObjectPrefix *)obj)->position[1];
+        ((RuntimeObjectPrefix *)obj)->worldPosition[2] = ((RuntimeObjectPrefix *)obj)->position[2];
         return;
     }
-    dx = mathSinDegrees(obj->rotation[1]) * speed * gRuntimeFrameSeconds;
-    dz = mathCosDegrees(obj->rotation[1]) * speed * gRuntimeFrameSeconds;
+    dx = mathSinDegrees(((RuntimeObjectPrefix *)obj)->rotation[1]) * speed * gRuntimeFrameSeconds;
+    dz = mathCosDegrees(((RuntimeObjectPrefix *)obj)->rotation[1]) * speed * gRuntimeFrameSeconds;
     signX = dx > 0.0f ? 1 : dx < 0.0f ? -1 : 0;
-    collision = terrainCheckHorizontalObstruction(state->collisionKind, obj->worldPosition[0] + dx,
-                                                  obj->worldPosition[1] + dy - state->height,
-                                                  obj->worldPosition[2] + dz, state->radius, state->height,
-                                                  obj->worldPosition[1] - state->height + state->ceiling, (f32)signX,
-                                                  (f32)(dz > 0.0f   ? 1
-                                                        : dz < 0.0f ? -1
-                                                                    : 0),
-                                                  &surface);
+    collision = terrainCheckHorizontalObstruction(
+        state->collisionKind, ((RuntimeObjectPrefix *)obj)->worldPosition[0] + dx,
+        ((RuntimeObjectPrefix *)obj)->worldPosition[1] + dy - state->height,
+        ((RuntimeObjectPrefix *)obj)->worldPosition[2] + dz, state->radius, state->height,
+        ((RuntimeObjectPrefix *)obj)->worldPosition[1] - state->height + state->ceiling, (f32)signX,
+        (f32)(dz > 0.0f   ? 1
+              : dz < 0.0f ? -1
+                          : 0),
+        &surface);
     flags = collision;
     if (collision & 9) {
         dx = 0.0f;
     } else {
-        obj->position[0] += dx;
+        ((RuntimeObjectPrefix *)obj)->position[0] += dx;
     }
     if (flags & 0x24) {
         dz = 0.0f;
     } else {
-        obj->position[2] += dz;
+        ((RuntimeObjectPrefix *)obj)->position[2] += dz;
     }
-    obj->position[1] = terrainGetWorldHeightForQuery(3, obj->position[0], obj->position[1], obj->position[2], &surface) + state->height;
+    ((RuntimeObjectPrefix *)obj)->position[1] =
+        terrainGetWorldHeightForQuery(3, ((RuntimeObjectPrefix *)obj)->position[0],
+                                      ((RuntimeObjectPrefix *)obj)->position[1],
+                                      ((RuntimeObjectPrefix *)obj)->position[2], &surface) +
+        state->height;
     if (flags != 0) {
         state->timer -= collisionPenalty;
         if (dx < 0.001f && dx > -0.001f && dz < 0.001f && dz > -0.001f) {
@@ -151,10 +156,12 @@ void orbitFollowerUpdate(RuntimeObjectPrefix *obj) {
     while (state->heading >= 360.0f) {
         state->heading -= 360.0f;
     }
-    targetX = owner->worldPosition[0] + mathCosDegrees(state->heading) * orbitRadius - obj->worldPosition[0];
-    targetZ = owner->worldPosition[2] + mathSinDegrees(state->heading) * orbitRadius - obj->worldPosition[2];
+    targetX = owner->worldPosition[0] + mathCosDegrees(state->heading) * orbitRadius -
+              ((RuntimeObjectPrefix *)obj)->worldPosition[0];
+    targetZ = owner->worldPosition[2] + mathSinDegrees(state->heading) * orbitRadius -
+              ((RuntimeObjectPrefix *)obj)->worldPosition[2];
     vector2NormalizeComponentsApprox(&targetX, &targetZ);
-    obj->rotation[1] = mathUnitDirectionDegrees(targetZ, targetX);
+    ((RuntimeObjectPrefix *)obj)->rotation[1] = mathUnitDirectionDegrees(targetZ, targetX);
 }
 
 /// Hierarchy template used to create objects that orbit a creature owner.

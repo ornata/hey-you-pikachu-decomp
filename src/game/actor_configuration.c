@@ -330,14 +330,13 @@ typedef char ObjectRollVelocityOffsetCheck[((u32)&((ObjectRollMotionState *)0)->
 
 /// Initialize roll motion state using the object's current roll.
 /// \param object Object receiving roll motion state.
-/// \returns The input object.
+/// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001DADC (0x8001DADC).
-u8 *objectInitializeRollMotionState(u8 *object) {
+void objectInitializeRollMotionState(u8 *object) {
     ObjectRollMotionState *rollState = heapAllocLocal(&gGameHeap, sizeof(ObjectRollMotionState), 0x61);
     _bzero(rollState, sizeof(ObjectRollMotionState));
     rollState->initialRoll = ((RuntimeObjectPrefix *)object)->rotation[2];
     ((RuntimeObjectPrefix *)object)->state.pointer = rollState;
-    return object;
 }
 
 /// Clear the object's roll velocity.

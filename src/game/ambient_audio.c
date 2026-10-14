@@ -121,13 +121,13 @@ extern f32 gRuntimeFrameSeconds;
 /// \param obj Ambient emitter object to update.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80033F20 (0x80033F20).
-void ambientAudioUpdate(RuntimeObjectPrefix *obj) {
+void ambientAudioUpdate(u8 *obj) {
     AmbientAudioState *ext;
     s32 volume;
     s32 pan;
 
-    ext = obj->state.pointer;
-    VEC3F_COPY(obj->worldPosition, obj->position);
+    ext = ((RuntimeObjectPrefix *)obj)->state.pointer;
+    VEC3F_COPY(((RuntimeObjectPrefix *)obj)->worldPosition, ((RuntimeObjectPrefix *)obj)->position);
     ext->timer -= gRuntimeFrameSeconds;
     if (ext->timer <= 0.0f) {
         ambientAudioPlayNextSound(ext);

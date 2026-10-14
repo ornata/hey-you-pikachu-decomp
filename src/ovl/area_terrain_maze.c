@@ -2006,7 +2006,7 @@ void areaUpdateNodeVisibility(u8 *arg0); /* extern */
 /// \param unused Unused callback argument.
 /// \returns Nothing; requires an initialized maze and active camera.
 /// \note Original decompilation identifier: \c func_8010E360 (0x8010E360).
-void mazeUpdateVisibility(s32 unused) {
+void mazeUpdateVisibility(u8 *unused) {
     areaRefreshVisibilityDistances(gRenderCameraIndex);
     areaUpdateNodeVisibility((u8 *)gAreaMazeRoot);
 }

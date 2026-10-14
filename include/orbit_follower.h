@@ -16,7 +16,7 @@ void orbitFollowerInitialize(u8 *object);
 /// \param obj Initialized follower whose owner handle is resolved for this update.
 /// \returns Nothing; requests follower destruction if the owner no longer exists.
 /// \note Original decompilation identifier: \c func_80026E54 (0x80026E54).
-void orbitFollowerUpdate(RuntimeObjectPrefix *obj);
+void orbitFollowerUpdate(u8 *obj);
 
 /// Create an orbiting follower for a creature.
 /// \param owner Creature object to follow.

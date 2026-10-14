@@ -157,15 +157,14 @@ void actorPartInitializeOrientationCache(u8 *object) {
 
 /// Initialize a model part to track two orientation changes from reference poses.
 /// \param object Model part receiving owned paired tracking state; previous state must already be released.
-/// \returns 1.
+/// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80013768 (0x80013768).
-s32 actorPartInitializePairedOrientationCaches(u8 *object) {
+void actorPartInitializePairedOrientationCaches(u8 *object) {
     ActorOrientationCache *allocation = heapAllocLocal(&gGameHeap, 2 * sizeof(ActorOrientationCache), 0xB9);
     _bzero(allocation, 2 * sizeof(ActorOrientationCache));
     allocation[0].captureReference = 1;
     allocation[1].captureReference = 1;
     ((RuntimeObjectPrefix *)object)->state.pointer = allocation;
-    return 1;
 }
 
 /// Linked part, rotation axis and response factor definitions for supported part kinds.
@@ -248,21 +247,21 @@ void actorPartReleaseAnimatedTextures(u8 *object) {
 /// \param unused Unused callback argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800139A0 (0x800139A0).
-void actorPartInitializeSharedNoOp(s32 unused) {
+void actorPartInitializeSharedNoOp(u8 *unused) {
 }
 
 /// Provide an inactive initialization hook for the linked-item appearance part.
 /// \param unused Unused callback argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800139A8 (0x800139A8).
-void actorPartInitializeLinkedItemNoOp(s32 unused) {
+void actorPartInitializeLinkedItemNoOp(u8 *unused) {
 }
 
 /// Provide an inactive model-part initialization hook for this build.
 /// \param unused Unused callback argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800139B0 (0x800139B0).
-void actorPartInitializeNoOp(s32 unused) {
+void actorPartInitializeNoOp(u8 *unused) {
 }
 
 /// Update a model part rotation from its designated linked part.
@@ -318,7 +317,7 @@ void actorPartFollowPrimaryRoll(u8 *object) {
 /// \param unused Unused callback argument.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80013AD8 (0x80013AD8).
-void actorPartUpdateNoOp(s32 unused) {
+void actorPartUpdateNoOp(u8 *unused) {
 }
 
 /// Adjust model-part orientation and scale to follow the actor primary pose.
