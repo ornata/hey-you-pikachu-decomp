@@ -1065,3 +1065,23 @@ playback retain their separate duration and remaining-time fields. No time
 values, gravity constants, callback behavior or control flow changed. The
 renames, consumer migration and removal of the temporary migration alias all
 pass the strict original-object baseline.
+
+## Object drawing callback contracts
+
+For the audited object kinds zero through 0xB3, all 38 populated child-drawing
+slots point to `actorDrawModelLightingSetup` or `itemDrawLighting`. Both accept
+one parent pointer. `ObjectChildDrawHandler` and the drawing dispatcher now
+agree on that parent-only signature, and the call matches every original object.
+Ghidra at 0x80009548 confirms the parent-kind callback selection in the current
+child render context. The contract describes borrowed parent resources and
+graphics-task lifetime; no separate child argument is required.
+
+The actor animated-texture and referenced-matrix draw hooks now return `Gfx *`
+instead of an integer address. Their existing return is the object's borrowed
+display-list pointer, matching `ObjectDrawHandler`; no drawing command or
+returned bit pattern changes. The child-state and animated-texture initializers
+also now receive the common object byte-pointer type rather than `void *`,
+matching lifecycle registration and their direct callers. Each conversion passed
+all 483 original objects. Other lifecycle and draw-hook signature variants
+identified by the table audit still require individual producer/consumer review;
+this is not a claim that all object callback slots are fully normalized.

@@ -14,11 +14,12 @@ typedef void (*ObjectLifecycleHandler)(u8 *object);
 /// \returns Borrowed drawing commands, or null when no commands are supplied;
 /// referenced storage must remain valid through graphics-task completion.
 typedef Gfx *(*ObjectDrawHandler)(u8 *object);
-/// Prepare drawing of a child under its parent.
-/// \param parent Live parent object.
-/// \param child Live child object.
+/// Prepare drawing state for the current child using its parent resources.
+/// \param parent Live initialized parent supplying drawing resources.
+/// \pre The current render context is initialized; referenced resources must
+/// remain valid through graphics-task completion.
 /// \returns Nothing.
-typedef void (*ObjectChildDrawHandler)(u8 *parent, u8 *child);
+typedef void (*ObjectChildDrawHandler)(u8 *parent);
 
 /// Persistent hooks indexed by runtime object kind; optional hooks may be null.
 typedef struct ObjectKindCallbacks {

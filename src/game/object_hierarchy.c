@@ -1448,7 +1448,7 @@ s32 objectDrawSearchTreeEntry(TreeNode *node, s32 unused) {
     if (object->matrixBuffers[0] != NULL && displayList != NULL) {
         parent = object->root.object;
         if (gObjectKindCallbacks[parent->kind].drawChild != NULL) {
-            gObjectKindCallbacks[parent->kind].drawChild((u8 *)parent, (u8 *)object);
+            gObjectKindCallbacks[parent->kind].drawChild((u8 *)parent);
         } else if (object->kind != 0x98 && object->kind != 0x95 && object->kind != 0x97) {
             gSPDisplayList(gRenderDisplayListCursor++, D_100C858);
         }

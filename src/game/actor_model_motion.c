@@ -88,8 +88,7 @@ void _bzero(void *, u32);
 extern Matrix34 gObjectTraversalTransform;
 s32 actorFindPartIndex(s32, s32);
 void actorUpdateAnimatedTextureDrawLists(u8 *, s32);
-void actorInitializeChildMotionState(void *);
-
+void actorInitializeChildMotionState(u8 *);
 
 /// Play a spatial sound for an actor and track its playback.
 /// \param actor Actor with initialized model state emitting the sound.
@@ -260,7 +259,7 @@ void actorInitializeModelState(u8 *actor) {
 /// \param actor Child object receiving newly owned motion state; existing state is not released.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80015110 (0x80015110).
-void actorInitializeChildMotionState(void *actor) {
+void actorInitializeChildMotionState(u8 *actor) {
     ChildMotionState *sp1C;
     ChildMotionState *allocation;
 
@@ -712,12 +711,13 @@ void actorUpdateCameraFacingChild(u8 *object) {
 
 /// Bind the referenced object transform for actor drawing.
 /// \param actor Actor with a valid referenced object transform.
-/// \returns Object drawing continuation link.
+/// \returns Borrowed drawing continuation display list, or null; referenced resources
+/// must remain valid through graphics-task completion.
 /// \note Original decompilation identifier: \c func_80015E34 (0x80015E34).
-s32 actorBindReferencedObjectMatrixForDraw(u8 *actor) {
+Gfx *actorBindReferencedObjectMatrixForDraw(u8 *actor) {
     gSPSegment(gRenderDisplayListCursor++, 7,
                osVirtualToPhysical(((RuntimeObjectPrefix *)actor)->root.object->matrixBuffers[(((RuntimeObjectPrefix *)actor)->root.object->flags & 0x8000) ? 1 : 0]));
-    return (s32)((RuntimeObjectPrefix *)actor)->displayList;
+    return ((RuntimeObjectPrefix *)actor)->displayList;
 }
 
 /// Update object rotation from the actor orientation state and reference transform.
@@ -1026,7 +1026,7 @@ void actorGetConfiguredAttachmentPosition(u8 *actor, f32 heightOffset, f32 *posi
 /// \param actor Component receiving newly owned animated texture state; existing state is not released.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80016658 (0x80016658).
-void actorAllocateAnimatedTextureState(void *actor) {
+void actorAllocateAnimatedTextureState(u8 *actor) {
     AnimatedTextureState *state;
     AnimatedTextureState *allocation;
 
@@ -1079,17 +1079,17 @@ void actorUpdateAnimatedTextureDrawLists(u8 *actor, s32 buffer) {
 
 /// Update and bind the actor animated textures for drawing.
 /// \param actor Animated texture component being drawn.
-/// \returns Object drawing continuation link.
+/// \returns Borrowed drawing continuation display list, or null; referenced resources
+/// must remain valid through graphics-task completion.
 /// \note Original decompilation identifier: \c func_80016808 (0x80016808).
-s32 actorBindAnimatedTexturesForDraw(u8 *actor) {
+Gfx *actorBindAnimatedTexturesForDraw(u8 *actor) {
     AnimatedTextureState *obj;
 
     obj = ((RuntimeObjectPrefix *)actor)->state.pointer;
     actorUpdateAnimatedTextureDrawLists(actor, gGraphicsFramebufferIndex);
     gSPSegment(gRenderDisplayListCursor++, 6, osVirtualToPhysical(obj->displayLists[gGraphicsFramebufferIndex]));
-    return (s32)((RuntimeObjectPrefix *)actor)->displayList;
+    return ((RuntimeObjectPrefix *)actor)->displayList;
 }
-
 
 /// Configure an actor animated texture component from texture and animation definitions.
 /// \param actor Actor with part 0x78 and allocated texture state; existing drawing buffers are not released.
