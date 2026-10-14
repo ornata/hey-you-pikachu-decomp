@@ -126,7 +126,7 @@ typedef struct ActorScriptState {
     f32 collisionDepth;  ///< Vertical span used by horizontal clearance queries.
     f32 clearanceHeight; ///< Permitted clearance height above the starting position.
     f32 collisionWidth;  ///< Horizontal width used by terrain constraints.
-    f32 unknown208;
+    f32 unknown208; ///< Scaled kind-configuration value; its role remains unproven.
     f32 groundOffset;          ///< Vertical offset subtracted from the ground-reference pose.
     s32 collisionRegistration; ///< Collision-grid registration key, or zero when unregistered.
 

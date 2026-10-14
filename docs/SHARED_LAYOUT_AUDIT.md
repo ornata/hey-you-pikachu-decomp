@@ -443,3 +443,26 @@ These fields remain unresolved rather than inferred from their sizes or defaults
 | Actor `0x1A0` word | Approach setup stores a randomized floating value; its later role is unproven. | Trace action continuations and indirect consumers before assigning an angle or timing meaning. |
 
 This table records evidence limits; it does not certify these bytes are unused.
+
+## Actor `0x208` fixed-offset access audit
+
+The linked executable's disassembly has one positive 520-byte (`0x208`)
+load/store displacement: `swc1 $f4,520(s2)` at `0x8001E400` in
+`actorCreateForKind` (`0x8001E1C4`). The source and resident Ghidra decompilation
+agree that creation stores kind-configuration offset `0x34` multiplied by scale.
+The negative 520-byte candidate at `0x8001392C` is a word store in
+`actorPartInitializeAnimatedTextures`' command-buffer initialization after its
+cursor advances by 0x280; it does not establish an actor-state reader.
+
+Reproduce the displacement inventory from the accepted linked image with:
+
+```sh
+mips-linux-gnu-objdump -d build/pikachu.elf > /tmp/pikachu-layout-disassembly.txt
+rg '\b(lwc1|swc1|lw|sw|lh|lhu|sh|lb|lbu|sb)\b.*520\(' /tmp/pikachu-layout-disassembly.txt
+```
+
+This scan does not prove the value is unused: biased bases, computed pointers,
+indexed accesses, block copies and script consumers still need data-flow tracing.
+Its size and scale operation do not establish a physical dimension. The source
+comments therefore describe an unresolved scaled configuration value, retaining
+`unknown208` and `unknown34` until stronger evidence exists.

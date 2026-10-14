@@ -110,7 +110,7 @@ typedef struct ActorKindConfig {
     f32 collisionDepth;            ///< Unscaled vertical span used by horizontal clearance queries.
     f32 clearanceHeight;           ///< Unscaled permitted clearance height.
     f32 collisionWidth;            ///< Unscaled horizontal collision width.
-    f32 unknown34;                 ///< Unresolved dimension copied to actor state at 0x208.
+    f32 unknown34;                 ///< Unresolved configuration value scaled into actor state at 0x208.
     f32 groundOffset;              ///< Unscaled ground-reference offset.
     s32 shadowSegmentCount;        ///< Number of ground-shadow segments, or nonpositive to omit the shadow.
     s32 defaultPartId;             ///< Default reference part identifier.
