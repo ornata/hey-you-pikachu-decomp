@@ -671,3 +671,21 @@ This proves the selected bank's storage requirement under the registered limit,
 not arbitrary alternate banks or caller-constructed streams. Public playback
 contracts now state the 20-byte limit and SysEx payload restriction. Allocation
 sizes, parser behavior and playback code remain unchanged.
+
+## Distinct cue-bank ROM window contract
+
+The private cue resolver uses `CueBankRomWindow` with descriptive transfer-storage,
+window-start, aligned-buffer and completion-queue/message fields. Initialization
+and byte-read parameters name the reader and address. Additional checks cover
+window start at 0x400 and aligned-buffer pointer at 0x404, alongside the existing
+0x424-byte extent and queue/message checks. Ghidra at `0x80023388` confirms setup.
+The linked retained symbol is at `0x800F0290`, satisfying its 16-byte alignment
+precondition; its ELF symbol has no size, so alignment alone is not an allocation
+size proof. Initialized storage must remain stable and reads must not overlap.
+
+This window is distinct from `RomByteReaderPrefix`: its transfer storage starts
+at offset zero with 0x400 bytes, while the word-aligned MIDI cache retains 0x410
+bytes after its initial window word. Their buffer and queue offsets differ.
+The cue record remains private because no other C unit shares it; the existing
+reader implementations and allocations are preserved. Renamed fields and
+parameters pass the full strict object baseline without a matching exception.

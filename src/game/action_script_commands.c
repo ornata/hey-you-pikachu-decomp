@@ -123,24 +123,26 @@ s32 audioPlayCue(s32 cue) {
     return audioPlaySequenceWithFade(audioGetCueDataRomAddress(gAudioCueBankRomAddress, cue), 0.0);
 }
 
-/// Private buffered ROM reader, valid only in sixteen-byte-aligned storage.
+/// Private cue-bank ROM reader, valid only in stable sixteen-byte-aligned storage.
 /// The cached base uses the original signed address comparison and empty sentinel.
-typedef struct RomWindow {
-    u8 data[0x400]; ///< Embedded transfer storage, borrowed by the aligned buffer view.
-    s32 base; ///< Cartridge address of the first cached byte, or 0x80000000 when empty.
-    u8 *buf; ///< Aligned view of data, valid for the reader lifetime.
-    OSMesgQueue mq; ///< Completion queue for the current blocking transfer.
-    OSMesg msg[1]; ///< Embedded queue backing storage.
-} RomWindow;
+typedef struct CueBankRomWindow {
+    u8 transferStorage[0x400];   ///< Embedded transfer storage, borrowed by the aligned buffer view.
+    s32 windowStart;             ///< Cartridge address of the first cached byte, or 0x80000000 when empty.
+    u8 *alignedBuffer;           ///< Aligned view of transferStorage, valid for the reader lifetime.
+    OSMesgQueue completionQueue; ///< Completion queue for the current blocking transfer.
+    OSMesg completionMessage[1]; ///< Embedded queue backing storage.
+} CueBankRomWindow;
 
-typedef char RomWindowSizeCheck[(sizeof(RomWindow) == 0x424) ? 1 : -1];
-typedef char RomWindowQueueOffsetCheck[(((u32)&((RomWindow *)0)->mq) == 0x408) ? 1 : -1];
-typedef char RomWindowMessageOffsetCheck[(((u32)&((RomWindow *)0)->msg) == 0x420) ? 1 : -1];
+typedef char CueWindowStartOffsetCheck[((u32) & ((CueBankRomWindow *)0)->windowStart == 0x400) ? 1 : -1];
+typedef char CueWindowBufferOffsetCheck[((u32) & ((CueBankRomWindow *)0)->alignedBuffer == 0x404) ? 1 : -1];
+typedef char CueWindowSizeCheck[(sizeof(CueBankRomWindow) == 0x424) ? 1 : -1];
+typedef char CueWindowQueueOffsetCheck[(((u32) & ((CueBankRomWindow *)0)->completionQueue) == 0x408) ? 1 : -1];
+typedef char CueWindowMessageOffsetCheck[(((u32) & ((CueBankRomWindow *)0)->completionMessage) == 0x420) ? 1 : -1];
 
-s32 romWindowInitialize(RomWindow *); /* extern */
+s32 romWindowInitialize(CueBankRomWindow *); /* extern */
 /// Buffered ROM reader used to resolve audio cue sequence addresses.
 /// \note Original identifier: \c D_800F0290 (0x800F0290).
-extern RomWindow gAudioCueBankRomReader;
+extern CueBankRomWindow gAudioCueBankRomReader;
 
 /// Selects the audio cue bank and prepares its ROM reader.
 /// \param bank ROM address of the audio cue bank.
@@ -152,7 +154,7 @@ s32 audioSelectCueBank(s32 bank) {
     return 0;
 }
 
-u8 romWindowReadByte(RomWindow *, s32);
+u8 romWindowReadByte(CueBankRomWindow *, s32);
 
 /// Gets the ROM address of a cue’s sequence data. Requires the cue-bank ROM reader to be initialized.
 /// \param base ROM address of the cue bank.
@@ -181,34 +183,34 @@ s32 audioGetCueDataRomAddress(s32 base, s32 index) {
 }
 
 /// Initializes a ROM reader for subsequent byte reads.
-/// \param window Sixteen-byte-aligned storage of at least 1060 bytes, valid throughout subsequent reads.
+/// \param reader Sixteen-byte-aligned storage of at least 1060 bytes, valid throughout subsequent reads.
 /// \returns Zero.
 /// \note Original decompilation identifier: \c func_80023388 (0x80023388).
-s32 romWindowInitialize(RomWindow *window) {
-    window->base = 0x80000000;
-    window->buf = (u8 *)((((u32)window + 0xF) >> 4) * 0x10);
-    osCreateMesgQueue(&window->mq, window->msg, 1);
+s32 romWindowInitialize(CueBankRomWindow *reader) {
+    reader->windowStart = 0x80000000;
+    reader->alignedBuffer = (u8 *)((((u32)reader + 0xF) >> 4) * 0x10);
+    osCreateMesgQueue(&reader->completionQueue, reader->completionMessage, 1);
     return 0;
 }
 
 /// Reads a byte from ROM, waiting for any required transfer to finish.
-/// \param w Initialized ROM reader to use.
-/// \param addr ROM address of the byte to read; the containing transfer window of 1024 bytes must be readable.
+/// \param reader Initialized aligned ROM reader; reads sharing its storage must not overlap.
+/// \param address ROM address of the byte to read; the containing transfer window of 1024 bytes must be readable.
 /// \returns The byte at the requested ROM address.
 /// \note Original decompilation identifier: \c func_800233D0 (0x800233D0).
-u8 romWindowReadByte(RomWindow *w, s32 addr) {
+u8 romWindowReadByte(CueBankRomWindow *reader, s32 address) {
     OSIoMesg io;
     OSMesg msg;
 
-    if (addr < w->base || addr >= w->base + 0x400) {
-        w->base = addr & ~0xF;
-        osInvalDCache(w->buf, 0x400);
-        osPiStartDma(&io, OS_MESG_PRI_HIGH, OS_READ, w->base, w->buf, 0x400, &w->mq);
-        osRecvMesg(&w->mq, &msg, OS_MESG_BLOCK);
+    if (address < reader->windowStart || address >= reader->windowStart + 0x400) {
+        reader->windowStart = address & ~0xF;
+        osInvalDCache(reader->alignedBuffer, 0x400);
+        osPiStartDma(&io, OS_MESG_PRI_HIGH, OS_READ, reader->windowStart, reader->alignedBuffer, 0x400,
+                     &reader->completionQueue);
+        osRecvMesg(&reader->completionQueue, &msg, OS_MESG_BLOCK);
     }
-    return *(w->buf + addr - w->base);
+    return *(reader->alignedBuffer + address - reader->windowStart);
 }
-
 
 /// Configures an actor part animation from an action command.
 /// \param actor Actor with an initialized tinted model part whose texture animation is configured.
