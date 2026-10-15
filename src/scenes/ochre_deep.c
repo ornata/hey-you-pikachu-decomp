@@ -1,3 +1,4 @@
+#include "actor_kind.h"
 /// Geometry of the ochre deep spatial lookup grid.
 enum { OCHRE_DEEP_GRID_LAYERS = 32, OCHRE_DEEP_GRID_SIDE = 32 };
 /// Height of one lookup layer in world-coordinate units.
@@ -117,7 +118,7 @@ s32 ochreDeepTryCreateProgressEncounter(void) {
         if (playerGetChaseStage() > 0) {
             item = itemCreate(D_8014AB90_scene_ochre_deep, 17.75F, 31.92F, 0.0F, 0.0F, 0x8F);
             encounterActor =
-                actorCreateForKind(0x17, 0, 0, 0, 0, 45.0F, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC) * 0.5,
+                actorCreateForKind(ACTOR_KIND_TOGEPI_EGG, 0, 0, 0, 0, 45.0F, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC) * 0.5,
                                    D_801479C0_scene_ochre_deep, 0);
             actorState = ((RuntimeObjectPrefix *)encounterActor)->state.actor;
             *(f32 *)(item + 8) = *(f32 *)(item + 4) = *(f32 *)(item + 0) = 0;
@@ -127,7 +128,7 @@ s32 ochreDeepTryCreateProgressEncounter(void) {
             actorState->targetHandle = ((RuntimeObjectPrefix *)item)->handle;
             actorState->targetMode = ACTOR_TARGET_FOLLOW;
             itemHideAndSuspend(((RuntimeObjectPrefix *)item)->handle);
-            actorCreateForKind(0xF, 0, 0, 0, 0, 0, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC),
+            actorCreateForKind(ACTOR_KIND_ABRA, 0, 0, 0, 0, 0, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC),
                                D_801478D8_scene_ochre_deep, 0);
             return 1;
         }
@@ -155,10 +156,10 @@ extern f32 D_8014ABA4_scene_ochre_deep;
 void ochreDeepInitializeObjects(void) {
     f32 position[3];
 
-    actorCreateForKind(0x13, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(ACTOR_KIND_MAGNEMITE, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        &D_801475C8_scene_ochre_deep, 0);
     if ((ochreDeepTryCreateProgressEncounter() == 0) && (progressGetValue(0x76) >= 2)) {
-        actorCreateForKind(0xE, 83.5F, 20.8F, 52.0F, 0, 0, gCurrentAreaConfiguration->objectScale,
+        actorCreateForKind(ACTOR_KIND_BUTTERFREE, 83.5F, 20.8F, 52.0F, 0, 0, gCurrentAreaConfiguration->objectScale,
                            &D_80147AE0_scene_ochre_deep, 0);
     }
     heapDebugReportFreeSpace(&gGameHeap, (const char *)&D_8014AB48_scene_ochre_deep);

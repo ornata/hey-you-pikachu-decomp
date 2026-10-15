@@ -28,6 +28,7 @@ CONTRACTS = {
 def action_calls(instructions):
     """Retain unresolved producers and separate command scheduling from stack results."""
     incoming = incoming_edges(instructions)
+    frames = {row['offset']: row for row in instructions if row['name'] == 'SCRIPT_OP_ENTER_FRAME'}
     result = []
     for index, call in enumerate(instructions):
         functions = call.get('native', {}).get('functions', [])
@@ -36,7 +37,7 @@ def action_calls(instructions):
         contract = CONTRACTS[functions[0]]
         row = dict(instruction_offset=call['offset'], function=functions[0], contract=contract)
         try:
-            values = recover_arguments(instructions, index, len(contract['arguments']), incoming=incoming, allow_float=True)
+            values = recover_arguments(instructions, index, len(contract['arguments']), incoming=incoming, allow_float=True, allow_symbolic=True, frame_entries=frames)
             row.update(status='recovered_arguments', arguments=dict(zip(contract['arguments'], values)))
             value = row['arguments'].get('script_id', {})
             if value.get('kind') in ('integer', 'float') and -2147483648 <= value['value'] < 2147483648:

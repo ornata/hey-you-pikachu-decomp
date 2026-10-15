@@ -1,3 +1,4 @@
+#include "actor_kind.h"
 /// Geometry of the cobalt fishing spatial lookup grid.
 enum { COBALT_FISHING_GRID_LAYERS = 8, COBALT_FISHING_GRID_SIDE = 8 };
 /// Height of one lookup layer in world-coordinate units.
@@ -82,7 +83,7 @@ void cobaltFishingSpawnRandomResident(s32 residentIndex) {
 /// Spawn the fixed type-nine resident for the fishing scene.
 /// \returns Nothing.
 void cobaltFishingSpawnResidentType9(void) {
-    actorCreateForKind(9, 93.0F, 5.0F, 30.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(ACTOR_KIND_METAPOD, 93.0F, 5.0F, 30.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_80144CA4_scene_cobalt_fishing, 0x63);
 }
 
@@ -99,28 +100,28 @@ void cobaltFishingSpawnProgressItem(void) {
 /// Spawn the fixed type-twenty resident for the fishing scene.
 /// \returns Nothing.
 void cobaltFishingSpawnResidentType20(void) {
-    actorCreateForKind(0x14, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(ACTOR_KIND_FISHING_ROD, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_80145198_scene_cobalt_fishing, 0x62);
 }
 
 /// Spawn the optional type-eighteen resident for the fishing scene.
 /// \returns Nothing.
 void cobaltFishingSpawnResidentType18(void) {
-    actorCreateForKind(0x12, 110.0F, 11.0F, 79.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(ACTOR_KIND_SLOWPOKE, 110.0F, 11.0F, 79.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_80145390_scene_cobalt_fishing, 0x63);
 }
 
 /// Spawn the fixed type-eleven resident for the fishing scene.
 /// \returns Nothing.
 void cobaltFishingSpawnResidentType11(void) {
-    actorCreateForKind(0xB, 130.0F, 5.25F, 28.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(ACTOR_KIND_LAPRAS, 130.0F, 5.25F, 28.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_80145640_scene_cobalt_fishing, 0x63);
 }
 
 /// Spawn the fixed type-ten resident for the fishing scene.
 /// \returns Nothing.
 void cobaltFishingSpawnResidentType10(void) {
-    actorCreateForKind(0xA, 113.0F, 8.0F, 5.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(ACTOR_KIND_DIGLETT, 113.0F, 8.0F, 5.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_8014573C_scene_cobalt_fishing, 0x61);
 }
 

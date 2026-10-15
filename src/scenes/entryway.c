@@ -1,3 +1,4 @@
+#include "actor_kind.h"
 /// Geometry of the entryway spatial lookup grid.
 enum { ENTRYWAY_GRID_LAYERS = 16, ENTRYWAY_GRID_SIDE = 16 };
 /// Height of one lookup layer in world-coordinate units.
@@ -17,7 +18,7 @@ extern u8 D_80139E38_scene_entryway[];
 /// \returns Nothing.
 void entrywayInitializeObjects(void) {
     toolboxClearCollection();
-    actorCreateForKind(1, 82.26F, 3.0F, 104.37F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(ACTOR_KIND_BULBASAUR, 82.26F, 3.0F, 104.37F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_80139E38_scene_entryway, 0);
 }
 

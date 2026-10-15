@@ -276,6 +276,7 @@
       "known_views": [
         "actor_assets.h",
         "actor_create.h",
+        "actor_kind.h",
         "actor_model.h",
         "actor_part_config.h",
         "actor_parts.h",
@@ -327,8 +328,8 @@
       "locations": {
         "raw_offset_candidates": {
           "kind - 1": [
-            "643:72",
-            "812:72"
+            "644:72",
+            "813:72"
           ]
         }
       }
@@ -3215,6 +3216,7 @@
         "action_script_playback.h",
         "actor_ground.h",
         "actor_held_item.h",
+        "actor_kind.h",
         "actor_movement.h",
         "actor_script.h",
         "actor_target.h",
@@ -3254,30 +3256,30 @@
       "locations": {
         "raw_offset_candidates": {
           "return -1": [
-            "91:9"
+            "92:9"
           ],
           "return -65536": [
-            "158:5",
-            "170:5",
-            "612:9",
-            "618:5",
-            "834:5",
-            "915:5",
-            "969:5",
-            "990:5",
-            "1009:5"
+            "159:5",
+            "171:5",
+            "613:9",
+            "619:5",
+            "835:5",
+            "916:5",
+            "970:5",
+            "991:5",
+            "1010:5"
           ],
           "gPlayerControllerPort + 4": [
-            "562:14"
+            "563:14"
           ],
           "gPlayerControllerPort + 6": [
-            "570:21"
+            "571:21"
           ],
           "offset + 4": [
-            "946:64"
+            "947:64"
           ],
           "offset + 8": [
-            "947:64"
+            "948:64"
           ]
         }
       }
@@ -3801,6 +3803,7 @@
         "action_query.h",
         "actor_behavior.h",
         "actor_create.h",
+        "actor_kind.h",
         "actor_parts.h",
         "actor_script.h",
         "actor_text.h",
@@ -3884,47 +3887,47 @@
       "locations": {
         "raw_offset_candidates": {
           "normal + 2": [
-            "659:80"
+            "660:80"
           ],
           "currentGround + 0": [
-            "687:38"
+            "688:38"
           ],
           "dy + 0": [
-            "695:64",
-            "715:86"
+            "696:64",
+            "716:86"
           ],
           "nextX + 0": [
-            "698:79",
-            "704:79"
+            "699:79",
+            "705:79"
           ],
           "nextZ + 0": [
-            "701:93",
-            "704:100"
+            "702:93",
+            "705:100"
           ],
           "nextGround + 0": [
-            "708:22"
+            "709:22"
           ],
           "gPlayerCompanionTarget - 0x50": [
-            "1065:36"
+            "1066:36"
           ],
           "gPlayerControllerPort - 0x2C": [
-            "1081:37",
-            "1082:37"
+            "1082:37",
+            "1083:37"
           ],
           "gPlayerHelpTextCursor + 1": [
-            "1422:40",
-            "1426:40"
+            "1423:40",
+            "1427:40"
           ],
           "gPlayerEyeHeight - 0x1C": [
-            "1902:37",
-            "2461:42",
-            "2473:42"
+            "1903:37",
+            "2462:42",
+            "2474:42"
           ],
           "return -1": [
-            "2333:9"
+            "2334:9"
           ],
           "friendshipLevel + 1": [
-            "2338:48"
+            "2339:48"
           ]
         }
       }
@@ -4073,6 +4076,7 @@
     "src/scenes/cobalt_coast.c": {
       "known_views": [
         "actor_create.h",
+        "actor_kind.h",
         "ambient_audio.h",
         "runtime_control.h",
         "scene_configuration.h",
@@ -4082,15 +4086,15 @@
       "locations": {
         "cast_offset_candidates": {
           "((u8 *)gCurrentAreaConfiguration) + 0xC": [
-            "26:71",
-            "35:76",
-            "44:75",
-            "53:73",
-            "62:73",
-            "71:75",
-            "90:75",
-            "99:74",
-            "108:74"
+            "27:89",
+            "36:91",
+            "45:93",
+            "54:93",
+            "63:92",
+            "72:93",
+            "91:89",
+            "100:92",
+            "109:92"
           ]
         }
       }
@@ -4098,6 +4102,7 @@
     "src/scenes/ochre_deep.c": {
       "known_views": [
         "actor_create.h",
+        "actor_kind.h",
         "actor_script.h",
         "actor_target.h",
         "ambient_audio.h",
@@ -4118,19 +4123,19 @@
       "locations": {
         "raw_offset_candidates": {
           "item + 8": [
-            "123:22"
+            "124:22"
           ],
           "item + 4": [
-            "123:43"
+            "124:43"
           ],
           "item + 0": [
-            "123:64"
+            "124:64"
           ]
         },
         "cast_offset_candidates": {
           "((u8 *)gCurrentAreaConfiguration) + 0xC": [
-            "120:70",
-            "130:61"
+            "121:87",
+            "131:73"
           ]
         }
       }
@@ -4138,6 +4143,7 @@
     "src/scenes/oddish_meadow.c": {
       "known_views": [
         "actor_create.h",
+        "actor_kind.h",
         "item_object.h",
         "landmark.h",
         "math_scalar.h",
@@ -4155,15 +4161,15 @@
       "locations": {
         "raw_offset_candidates": {
           "residentIndex + 0x6A": [
-            "51:30"
+            "52:30"
           ],
           "state - 2": [
-            "75:50"
+            "76:50"
           ],
           "i + 0x6A": [
-            "117:30",
-            "123:30",
-            "198:30"
+            "118:30",
+            "124:30",
+            "199:30"
           ]
         }
       }
@@ -4171,6 +4177,7 @@
     "src/scenes/springleaf_entrance.c": {
       "known_views": [
         "actor_create.h",
+        "actor_kind.h",
         "item_object.h",
         "landmark.h",
         "math_scalar.h",
@@ -4188,15 +4195,15 @@
       "locations": {
         "raw_offset_candidates": {
           "residentIndex + 0x65": [
-            "58:30"
+            "59:30"
           ],
           "state - 2": [
-            "81:50"
+            "82:50"
           ],
           "i + 0x65": [
-            "135:30",
-            "141:30",
-            "195:30"
+            "136:30",
+            "142:30",
+            "196:30"
           ]
         }
       }
@@ -4204,6 +4211,7 @@
     "src/scenes/springleaf_field.c": {
       "known_views": [
         "actor_create.h",
+        "actor_kind.h",
         "door.h",
         "item_object.h",
         "landmark.h",
@@ -4223,15 +4231,15 @@
       "locations": {
         "raw_offset_candidates": {
           "residentIndex + 0x70": [
-            "52:30"
+            "53:30"
           ],
           "state - 2": [
-            "75:50"
+            "76:50"
           ],
           "i + 0x70": [
-            "114:30",
-            "120:30",
-            "184:30"
+            "115:30",
+            "121:30",
+            "185:30"
           ]
         }
       }
@@ -4239,6 +4247,7 @@
     "src/scenes/viridian_deep.c": {
       "known_views": [
         "actor_create.h",
+        "actor_kind.h",
         "item_object.h",
         "landmark.h",
         "math_angles.h",
@@ -4253,19 +4262,19 @@
       "locations": {
         "raw_offset_candidates": {
           "index + 0x77": [
-            "62:31"
+            "63:31"
           ],
           "index + 0x7C": [
-            "63:30"
+            "64:30"
           ],
           "index + 5": [
-            "64:19"
+            "65:19"
           ],
           "index + 0x81": [
-            "65:31"
+            "66:31"
           ],
           "angle + 180": [
-            "75:106"
+            "76:124"
           ]
         }
       }

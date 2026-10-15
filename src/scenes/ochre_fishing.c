@@ -1,3 +1,4 @@
+#include "actor_kind.h"
 /// Geometry of the ochre fishing spatial lookup grid.
 enum { OCHRE_FISHING_GRID_LAYERS = 8, OCHRE_FISHING_GRID_SIDE = 8 };
 /// Height of one lookup layer in world-coordinate units.
@@ -81,7 +82,7 @@ void ochreFishingSpawnRandomResident(s32 residentIndex) {
 /// Spawn the fixed type-nine resident for the fishing scene.
 /// \returns Nothing.
 void ochreFishingSpawnResidentType9(void) {
-    actorCreateForKind(9, 54.0F, 8.0F, 67.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(ACTOR_KIND_METAPOD, 54.0F, 8.0F, 67.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_80144EF4_scene_ochre_fishing, 0x63);
 }
 
@@ -98,28 +99,28 @@ void ochreFishingSpawnProgressItem(void) {
 /// Spawn the fixed type-twenty resident for the fishing scene.
 /// \returns Nothing.
 void ochreFishingSpawnResidentType20(void) {
-    actorCreateForKind(0x14, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(ACTOR_KIND_FISHING_ROD, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_801453E8_scene_ochre_fishing, 0x62);
 }
 
 /// Spawn the optional type-one resident for the fishing scene.
 /// \returns Nothing.
 void ochreFishingSpawnResidentType1(void) {
-    actorCreateForKind(1, 64.0F, 12.0F, 45.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(ACTOR_KIND_BULBASAUR, 64.0F, 12.0F, 45.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_8014565C_scene_ochre_fishing, 0x46);
 }
 
 /// Spawn the fixed type-nineteen resident for the fishing scene.
 /// \returns Nothing.
 void ochreFishingSpawnResidentType19(void) {
-    actorCreateForKind(0x13, 104.0F, 24.0F, 72.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(ACTOR_KIND_MAGNEMITE, 104.0F, 24.0F, 72.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_801458F8_scene_ochre_fishing, 0x46);
 }
 
 /// Spawn the fixed type-ten resident for the fishing scene.
 /// \returns Nothing.
 void ochreFishingSpawnResidentType10(void) {
-    actorCreateForKind(0xA, 74.0F, 12.0F, 42.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(ACTOR_KIND_DIGLETT, 74.0F, 12.0F, 42.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_801459F4_scene_ochre_fishing, 0x61);
 }
 

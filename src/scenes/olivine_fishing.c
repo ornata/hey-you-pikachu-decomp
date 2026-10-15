@@ -1,3 +1,4 @@
+#include "actor_kind.h"
 /// Geometry of the olivine fishing spatial lookup grid.
 enum { OLIVINE_FISHING_GRID_LAYERS = 8, OLIVINE_FISHING_GRID_SIDE = 8 };
 /// Height of one lookup layer in world-coordinate units.
@@ -87,7 +88,7 @@ void olivineFishingSpawnRandomResident(s32 residentIndex, s32 suppressSpecialPoo
 /// Spawn the fixed type-nine resident for the fishing scene.
 /// \returns Nothing.
 void olivineFishingSpawnResidentType9(void) {
-    actorCreateForKind(9, 90.0F, 3.5F, 35.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(ACTOR_KIND_METAPOD, 90.0F, 3.5F, 35.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_80144920_scene_olivine_fishing, 0x63);
 }
 
@@ -104,28 +105,28 @@ void olivineFishingSpawnProgressItem(void) {
 /// Spawn the fixed type-twenty resident for the fishing scene.
 /// \returns Nothing.
 void olivineFishingSpawnResidentType20(void) {
-    actorCreateForKind(0x14, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(ACTOR_KIND_FISHING_ROD, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_80144E14_scene_olivine_fishing, 0x62);
 }
 
 /// Spawn the optional type-three resident for the fishing scene.
 /// \returns Nothing.
 void olivineFishingSpawnResidentType3(void) {
-    actorCreateForKind(3, 113.0F, 10.0F, 67.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(ACTOR_KIND_SQUIRTLE, 113.0F, 10.0F, 67.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_80145088_scene_olivine_fishing, 0x46);
 }
 
 /// Spawn the fixed type-seventeen resident for the fishing scene.
 /// \returns Nothing.
 void olivineFishingSpawnResidentType17(void) {
-    actorCreateForKind(0x11, 130.0F, 20.0F, 40.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(ACTOR_KIND_HAUNTER, 130.0F, 20.0F, 40.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_8014549C_scene_olivine_fishing, 0x46);
 }
 
 /// Spawn the fixed type-ten resident for the fishing scene.
 /// \returns Nothing.
 void olivineFishingSpawnResidentType10(void) {
-    actorCreateForKind(0xA, 110.0F, 8.0F, 10.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(ACTOR_KIND_DIGLETT, 110.0F, 8.0F, 10.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_80145598_scene_olivine_fishing, 0x61);
 }
 

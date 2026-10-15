@@ -1,3 +1,4 @@
+#include "actor_kind.h"
 /// Geometry of the springleaf field spatial lookup grid.
 enum { SPRINGLEAF_FIELD_GRID_LAYERS = 32, SPRINGLEAF_FIELD_GRID_SIDE = 32 };
 /// Height of one lookup layer in world-coordinate units.
@@ -60,7 +61,7 @@ void springleafFieldSpawnGrowthResident(f32 *position, s32 residentIndex) {
         // clang-format off
         random = randomNext(); scale = D_801594C4_scene_springleaf_field;
         // clang-format on
-        actorCreateForKind(5, position[0], position[1], position[2], 0.0F,
+        actorCreateForKind(ACTOR_KIND_ODDISH, position[0], position[1], position[2], 0.0F,
                            (f32)((f64)random * RANDOM_U32_UNIT_SCALE * D_801594C8_scene_springleaf_field),
                            mathPowInteger(scale, state) * gCurrentAreaConfiguration->objectScale, record,
                            residentIndex);
@@ -70,14 +71,14 @@ void springleafFieldSpawnGrowthResident(f32 *position, s32 residentIndex) {
         // clang-format off
         random = randomNext(); scale = D_801594D0_scene_springleaf_field;
         // clang-format on
-        actorCreateForKind(6, position[0], position[1], position[2], 0.0F,
+        actorCreateForKind(ACTOR_KIND_GLOOM, position[0], position[1], position[2], 0.0F,
                            (f32)((f64)random * RANDOM_U32_UNIT_SCALE * D_801594D8_scene_springleaf_field),
                            mathPowInteger(scale, state - 2) * gCurrentAreaConfiguration->objectScale, record,
                            residentIndex);
         return;
     }
     random = randomNext();
-    actorCreateForKind(7, position[0], position[1], position[2], 0.0F,
+    actorCreateForKind(ACTOR_KIND_VILEPLUME, position[0], position[1], position[2], 0.0F,
                        (f32)((f64)random * RANDOM_U32_UNIT_SCALE * D_801594E0_scene_springleaf_field),
                        gCurrentAreaConfiguration->objectScale, record, residentIndex);
 }
@@ -85,8 +86,8 @@ void springleafFieldSpawnGrowthResident(f32 *position, s32 residentIndex) {
 /// Prepare scene resources for evolved field residents.
 /// \returns Nothing.
 void springleafFieldPrepareEvolvedResidents(void) {
-    objectRequestHierarchyDestruction(actorCreateForKind(6, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, NULL, 0));
-    objectRequestHierarchyDestruction(actorCreateForKind(7, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, NULL, 0));
+    objectRequestHierarchyDestruction(actorCreateForKind(ACTOR_KIND_GLOOM, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, NULL, 0));
+    objectRequestHierarchyDestruction(actorCreateForKind(ACTOR_KIND_VILEPLUME, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, NULL, 0));
 }
 
 /// Spawn a field item with a randomized heading.
@@ -145,18 +146,18 @@ void springleafFieldInitializeObjects(void) {
     s32 kind;
     occupied = D_80157F70_scene_springleaf_field;
     if (progressGetValue(0x12) != 0) {
-        actorCreateForKind(3, 203.45F, 0.5F, 35.97F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+        actorCreateForKind(ACTOR_KIND_SQUIRTLE, 203.45F, 0.5F, 35.97F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                            gResidentAttentionScript_scene_springleaf_field, 0);
     }
     if (progressGetCurrentChapter() == 8) {
-        actorCreateForKind(17, 0, 0, 0, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+        actorCreateForKind(ACTOR_KIND_HAUNTER, 0, 0, 0, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                            D_80157B58_scene_springleaf_field, 0);
     }
     if (progressGetValue(0x76) >= 3) {
-        actorCreateForKind(14, 130.0F, 16.0F, 150.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+        actorCreateForKind(ACTOR_KIND_BUTTERFREE, 130.0F, 16.0F, 150.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                            D_80157C78_scene_springleaf_field, 0);
     }
-    actorCreateForKind(10, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(ACTOR_KIND_DIGLETT, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_8014E354_scene_springleaf_field, 0);
     runtimeCheckResetCheckpoint((const char *)D_80159474_scene_springleaf_field, 1);
     springleafFieldPrepareEvolvedResidents();

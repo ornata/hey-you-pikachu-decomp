@@ -1,3 +1,4 @@
+#include "actor_kind.h"
 /// Geometry of the bedroom spatial lookup grid.
 enum { BEDROOM_GRID_LAYERS = 16, BEDROOM_GRID_SIDE = 16 };
 /// Height of one lookup layer in world-coordinate units.
@@ -28,7 +29,7 @@ extern f32 D_801586DC_scene_bedroom;
 /// \returns Nothing.
 void bedroomInitializeObjects(void) {
     if (progressGetValue(0xF0) != 0) {
-        actorCreateForKind(0x15, 93.75F, 31.93000030517578F, 52.189998626708984F, 0.0F, D_801586DC_scene_bedroom,
+        actorCreateForKind(ACTOR_KIND_TELESCOPE, 93.75F, 31.93000030517578F, 52.189998626708984F, 0.0F, D_801586DC_scene_bedroom,
                            gCurrentAreaConfiguration->objectScale, 0, 0);
     }
     toolboxClearCollection();

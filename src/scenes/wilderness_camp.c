@@ -1,3 +1,4 @@
+#include "actor_kind.h"
 /// Geometry of the wilderness camp spatial lookup grid.
 enum { WILDERNESS_CAMP_GRID_LAYERS = 16, WILDERNESS_CAMP_GRID_SIDE = 16 };
 /// Height of one lookup layer in world-coordinate units.
@@ -16,7 +17,7 @@ extern s32 *D_8013CE38_scene_wilderness_camp[WILDERNESS_CAMP_GRID_LAYERS];
 /// Spawn the Wilderness Camp resident creature with its scene behavior.
 /// \returns Nothing.
 void wildernessCampSpawnResident(void) {
-    actorCreateForKind(0x11, 125.0F, 10.0F, 122.27F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(ACTOR_KIND_HAUNTER, 125.0F, 10.0F, 122.27F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_8013A878_scene_wilderness_camp, 0);
 }
 

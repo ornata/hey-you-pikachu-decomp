@@ -1,3 +1,4 @@
+#include "actor_kind.h"
 /// Geometry of the cobalt island spatial lookup grid.
 enum { COBALT_ISLAND_GRID_LAYERS = 16, COBALT_ISLAND_GRID_SIDE = 16 };
 /// Height of one lookup layer in world-coordinate units.
@@ -41,7 +42,7 @@ extern f64 D_80151E00_scene_cobalt_island;
 /// \param residentIndex Identifier assigned to the resident within the scene population.
 /// \returns Nothing.
 void cobaltIslandSpawnResidentType16(s32 residentIndex) {
-    actorCreateForKind(0x10, 0.0F, 0.0F, 0.0F, 0,
+    actorCreateForKind(ACTOR_KIND_TREASURE_CHEST, 0.0F, 0.0F, 0.0F, 0,
                        (f32)((f64)randomNext() * RANDOM_U32_UNIT_SCALE * D_80151E00_scene_cobalt_island),
                        gCurrentAreaConfiguration->objectScale, D_8014D854_scene_cobalt_island, residentIndex);
 }
@@ -51,7 +52,7 @@ extern u8 D_8014DCE8_scene_cobalt_island[];
 /// Spawn the fixed type-eleven resident for the island scene.
 /// \returns Nothing.
 void cobaltIslandSpawnResidentType11(void) {
-    actorCreateForKind(0xB, 160.0F, -1.0F, 400.0F, 0.0F, 180.0F, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(ACTOR_KIND_LAPRAS, 160.0F, -1.0F, 400.0F, 0.0F, 180.0F, gCurrentAreaConfiguration->objectScale,
                        D_8014DCE8_scene_cobalt_island, 0);
 }
 
@@ -61,7 +62,7 @@ extern f32 D_80151E08_scene_cobalt_island;
 /// Spawn the fixed type-eighteen resident for the island scene.
 /// \returns Nothing.
 void cobaltIslandSpawnResidentType18(void) {
-    actorCreateForKind(0x12, 301.0F, 6.66F, 61.0F, 0.0F, D_80151E08_scene_cobalt_island,
+    actorCreateForKind(ACTOR_KIND_SLOWPOKE, 301.0F, 6.66F, 61.0F, 0.0F, D_80151E08_scene_cobalt_island,
                        gCurrentAreaConfiguration->objectScale, D_8014E00C_scene_cobalt_island, 0);
 }
 
@@ -127,7 +128,7 @@ void cobaltIslandInitializeObjects(void) {
     }
     stage = progressGetValue(0x76U);
     if (stage >= 4) {
-        actorCreateForKind(0xE, 220.0F, 41.0F, 111.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+        actorCreateForKind(ACTOR_KIND_BUTTERFREE, 220.0F, 41.0F, 111.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                            D_8014E12C_scene_cobalt_island, 0);
     }
     cobaltIslandCreateSceneProps();

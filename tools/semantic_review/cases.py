@@ -378,6 +378,7 @@ def experiments():
     from .message_handle_domains import experiments as handle_experiments
     from .scenario_domains import experiments as scenario_experiments
     from .action_wait_domains import experiments as wait_experiments
+    from .actor_kind_domains import experiments as actor_experiments
 
     return (
         cases
@@ -397,6 +398,7 @@ def experiments():
         + handle_experiments()
         + scenario_experiments()
         + wait_experiments()
+        + actor_experiments()
     )
 
 

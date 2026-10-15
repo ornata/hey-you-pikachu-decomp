@@ -1,3 +1,4 @@
+#include "actor_kind.h"
 /// Geometry of the front yard spatial lookup grid.
 enum { FRONT_YARD_GRID_LAYERS = 32, FRONT_YARD_GRID_SIDE = 32 };
 /// Height of one lookup layer in world-coordinate units.
@@ -49,7 +50,7 @@ void frontYardInitializeObjects(void) {
     if (progressGetCurrentChapter() != 9) {
         if (progressGetCurrentChapter() == 8) {
             companion = itemCreate(145.0F, 1.5F, 150.0F, 0.0F, 0.0F, 0x8F);
-            state = ((RuntimeObjectPrefix *)actorCreateForKind(0x15, 0.0F, 0.0F, 0.0F, 0.0F, 45.0F,
+            state = ((RuntimeObjectPrefix *)actorCreateForKind(ACTOR_KIND_TELESCOPE, 0.0F, 0.0F, 0.0F, 0.0F, 45.0F,
                                                                gCurrentAreaConfiguration->objectScale, 0, 0))
                         ->state.bytes;
             ((ActorScriptState *)state)->targetPosition[0] = ((RuntimeObjectPrefix *)companion)->worldPosition[0];

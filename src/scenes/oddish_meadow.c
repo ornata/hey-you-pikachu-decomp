@@ -1,3 +1,4 @@
+#include "actor_kind.h"
 /// Geometry of the oddish meadow spatial lookup grid.
 enum { ODDISH_MEADOW_GRID_LAYERS = 16, ODDISH_MEADOW_GRID_SIDE = 16 };
 /// Height of one lookup layer in world-coordinate units.
@@ -59,7 +60,7 @@ void oddishMeadowSpawnGrowthResident(f32 *position, s32 residentIndex) {
         // clang-format off
         random = randomNext(); scale = D_80159454_scene_oddish_meadow;
         // clang-format on
-        actorCreateForKind(5, position[0], position[1], position[2], 0.0F,
+        actorCreateForKind(ACTOR_KIND_ODDISH, position[0], position[1], position[2], 0.0F,
                            (f32)((f64)random * RANDOM_U32_UNIT_SCALE * D_80159458_scene_oddish_meadow),
                            mathPowInteger(scale, state) * gCurrentAreaConfiguration->objectScale, record,
                            residentIndex);
@@ -70,14 +71,14 @@ void oddishMeadowSpawnGrowthResident(f32 *position, s32 residentIndex) {
         // clang-format off
         random = randomNext(); scale = D_80159460_scene_oddish_meadow;
         // clang-format on
-        actorCreateForKind(6, position[0], position[1], position[2], 0.0F,
+        actorCreateForKind(ACTOR_KIND_GLOOM, position[0], position[1], position[2], 0.0F,
                            (f32)((f64)random * RANDOM_U32_UNIT_SCALE * D_80159468_scene_oddish_meadow),
                            mathPowInteger(scale, state - 2) * gCurrentAreaConfiguration->objectScale, record,
                            residentIndex);
         return;
     }
     random = randomNext();
-    actorCreateForKind(7, position[0], position[1], position[2], 0.0F,
+    actorCreateForKind(ACTOR_KIND_VILEPLUME, position[0], position[1], position[2], 0.0F,
                        (f32)((f64)random * RANDOM_U32_UNIT_SCALE * D_80159470_scene_oddish_meadow),
                        gCurrentAreaConfiguration->objectScale, record, residentIndex);
 }
@@ -85,8 +86,8 @@ void oddishMeadowSpawnGrowthResident(f32 *position, s32 residentIndex) {
 /// Prepare scene resources for evolved meadow residents.
 /// \returns Nothing.
 void oddishMeadowPrepareEvolvedResidents(void) {
-    objectRequestHierarchyDestruction(actorCreateForKind(6, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, NULL, 0));
-    objectRequestHierarchyDestruction(actorCreateForKind(7, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, NULL, 0));
+    objectRequestHierarchyDestruction(actorCreateForKind(ACTOR_KIND_GLOOM, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, NULL, 0));
+    objectRequestHierarchyDestruction(actorCreateForKind(ACTOR_KIND_VILEPLUME, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, NULL, 0));
 }
 
 /// Spawn a meadow item with a randomized heading.
@@ -156,14 +157,14 @@ void oddishMeadowInitializeRegularObjects(void) {
 
     sp64 = D_80157F0C_scene_oddish_meadow;
     if (progressGetValue(0x76) >= 5) {
-        actorCreateForKind(0xE, 160.0F, 6.0F, 69.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+        actorCreateForKind(ACTOR_KIND_BUTTERFREE, 160.0F, 6.0F, 69.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                            &D_80157D40_scene_oddish_meadow, 0);
     }
     if (progressGetCurrentChapter() == 8) {
-        actorCreateForKind(1, 188.0F, 8.5F, 65.0F, 0.0F, 20.0F, gCurrentAreaConfiguration->objectScale,
+        actorCreateForKind(ACTOR_KIND_BULBASAUR, 188.0F, 8.5F, 65.0F, 0.0F, 20.0F, gCurrentAreaConfiguration->objectScale,
                            &D_8014F0BC_scene_oddish_meadow, 0);
     }
-    actorCreateForKind(0xA, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(ACTOR_KIND_DIGLETT, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        &D_8014E5D0_scene_oddish_meadow, 0);
     if (progressGetValue(0x12) == 0) {
         var_s0 = &D_8014EEA0_scene_oddish_meadow;
@@ -176,7 +177,7 @@ void oddishMeadowInitializeRegularObjects(void) {
     growthProgress = progressGetValue(0x6F);
     residentPosition = D_80134DC0_scene_oddish_meadow[positionIndex];
 
-    actorCreateForKind(5, residentPosition[0], residentPosition[1], residentPosition[2], 0.0F,
+    actorCreateForKind(ACTOR_KIND_ODDISH, residentPosition[0], residentPosition[1], residentPosition[2], 0.0F,
                        (f32)((f64)headingRandomBits * RANDOM_U32_UNIT_SCALE * D_80159480_scene_oddish_meadow),
                        (f32)(((f64)((f32)growthProgress / 5.0F) + 1.0) * (f64)gCurrentAreaConfiguration->objectScale),
                        var_s0, 5);
@@ -229,7 +230,7 @@ void oddishMeadowInitializeAlternateResidents(void) {
     s32 var_s0;
 
     for (var_s0 = 0; var_s0 < 5; var_s0++) {
-        actorCreateForKind(7, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+        actorCreateForKind(ACTOR_KIND_VILEPLUME, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                            &D_8014F348_scene_oddish_meadow, var_s0);
     }
 }

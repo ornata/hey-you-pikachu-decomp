@@ -102,6 +102,7 @@ def test_catalog_preserves_candidate_scope_and_direct_creation_evidence(tmp_path
     (tmp_path / 'src/example.c').write_text('void f(void) { actorCreateForKind(7, 0, 0, 0, 0, 0, 1, inventedConfig, 0); }')
     monkeypatch.setattr(module, 'ROOT', tmp_path)
     monkeypatch.setattr(module, 'companion_sites', lambda image: [])
+    monkeypatch.setattr(module, 'actor_kind_records', lambda image: [])
     raw = resource()
 
     class Elf:

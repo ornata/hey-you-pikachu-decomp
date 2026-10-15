@@ -1,3 +1,4 @@
+#include "actor_kind.h"
 #include "actor_ground.h"
 #include "player_state.h"
 #include "script_vm_stack.h"
@@ -379,7 +380,7 @@ void actorSetTargetTrackingMode(u8 *actor, s32 mode) {
 /// Classify an available object for actor scripts.
 /// \param actor Unused actor context accepted by the script interface.
 /// \param handle Handle of the object to classify.
-/// \returns One for items, two for object type 127, three for types 141 through 148, four for creatures, five for type 130, or zero for an unavailable or unsupported object.
+/// \returns One for items, two for object type 127, three for types 141 through 148, four for actor configurations including props, five for type 130, or zero for an unavailable or unsupported object.
 /// \note Original decompilation identifier: \c func_80117840 (0x80117840).
 s32 objectGetScriptCategory(u8 *actor, s32 handle) {
     u16 objectKind;
@@ -397,7 +398,7 @@ s32 objectGetScriptCategory(u8 *actor, s32 handle) {
         return SCRIPT_CATEGORY_TYPE_127;
     }
     if (((s32)objectKind > 0) && ((s32)objectKind < 0x26)) {
-        return SCRIPT_CATEGORY_CREATURE;
+        return SCRIPT_CATEGORY_ACTOR;
     }
     if (((s32)objectKind >= 0x82) && ((s32)objectKind < 0x83)) {
         return SCRIPT_CATEGORY_TYPE_130;
@@ -410,7 +411,7 @@ s32 objectGetScriptCategory(u8 *actor, s32 handle) {
 
 /// Get the kind identifier exposed to actor scripts for an available object.
 /// \param handle Handle of the object to query.
-/// \returns The item or creature kind, the object type for types 130 and 141 through 148, or zero for an unavailable or unsupported object.
+/// \returns The item or actor kind, the object type for types 130 and 141 through 148, or zero for an unavailable or unsupported object.
 /// \note Original decompilation identifier: \c func_801178EC (0x801178EC).
 s32 objectGetScriptKind(s32 handle) {
     s32 objectKind;
@@ -454,9 +455,9 @@ s16 itemGetKindByHandle(s32 handle) {
     return 0;
 }
 
-/// Get the creature kind associated with an available handle.
+/// Get the actor configuration kind associated with an available handle.
 /// \param handle Handle of the actor to query.
-/// \returns The creature kind, or zero if the handle is unavailable or does not identify a creature.
+/// \returns The ActorKind, including actor props, or zero for an unavailable handle or another object domain.
 /// \note Original decompilation identifier: \c func_801179E8 (0x801179E8).
 u16 actorGetKindByHandle(s32 handle) {
     u16 objectKind;
@@ -467,7 +468,7 @@ u16 actorGetKindByHandle(s32 handle) {
         return 0U;
     }
     objectKind = ((RuntimeObjectPrefix *)resolvedObject)->kind;
-    if (((s32)objectKind > 0) && ((s32)objectKind < 0x26)) {
+    if (((s32)objectKind > 0) && ((s32)objectKind <= ACTOR_KIND_PIKACHU)) {
         return objectKind;
     }
     return 0;

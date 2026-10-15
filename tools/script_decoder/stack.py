@@ -27,11 +27,12 @@ def incoming_edges(instructions):
     return incoming
 
 
-def recover_arguments(instructions, index, count, *, incoming=None, allow_float=False):
+def recover_arguments(instructions, index, count, *, incoming=None, allow_float=False, allow_symbolic=False, frame_entries=None):
     """Recover arguments in push order within 32 contiguous producer instructions."""
     if incoming is None:
         incoming = incoming_edges(instructions)
     cursor = index
+    by_offset = frame_entries if frame_entries is not None else ({row['offset']: row for row in instructions} if allow_symbolic else {})
 
     def argument():
         nonlocal cursor
@@ -56,11 +57,33 @@ def recover_arguments(instructions, index, count, *, incoming=None, allow_float=
             if frame is None or slot is None:
                 raise ValueError('Variable operand is unresolved.')
             return dict(kind='variable', frame=frame, slot=slot)
+        if allow_symbolic and row['name'] == 'SCRIPT_OP_LOAD_ELEMENT':
+            frame, slot = map(integer_operand, row['operands'])
+            if frame is None or slot is None:
+                raise ValueError('Array reference is unresolved.')
+            return dict(kind='array_element', frame=frame, slot=slot, index=argument())
+        if allow_symbolic and row['name'] == 'SCRIPT_OP_CALL':
+            target = integer_operand(row['operands'][0])
+            entry = by_offset.get(target, {})
+            if entry.get('name') != 'SCRIPT_OP_ENTER_FRAME':
+                raise ValueError('Script result needs a known frame-entry contract.')
+            arity, locals_count, frame = map(integer_operand, entry['operands'])
+            if arity is None or locals_count is None or frame is None or not 0 <= arity <= locals_count or not 0 <= frame < 32:
+                raise ValueError('Script frame contract is invalid.')
+            return dict(kind='script_return', target_offset=target,
+                        arguments=list(reversed([argument() for _ in range(arity)])),
+                        scope='Value on a returning path; callee behavior and path feasibility are not inferred.')
         if row['name'] == 'SCRIPT_OP_CALL_NATIVE':
             functions = row.get('native', {}).get('functions', [])
             if len(functions) == 1 and functions[0] in HANDLE_GETTERS:
                 return dict(kind='handle', role=HANDLE_GETTERS[functions[0]],
                             function=functions[0])
+            if allow_symbolic and functions == ['actorScriptRandomBelow']:
+                bound = argument()
+                result = dict(kind='native_result', function=functions[0], arguments=[bound])
+                if bound['kind'] == 'integer':
+                    result['integer_range'] = [0, max(0, bound['value'] - 1)]
+                return result
         if row['name'] == 'SCRIPT_OP_NEGATE':
             operand = argument()
             if operand['kind'] in ('integer', 'float') and (operand['kind'] != 'integer' or operand['value'] != -2147483648):
@@ -74,6 +97,9 @@ def recover_arguments(instructions, index, count, *, incoming=None, allow_float=
                 if -2147483648 <= value <= 2147483647:
                     return dict(kind='integer', value=value,
                                 expression=dict(operator='integer_add', left=left, right=right))
+            elif allow_symbolic:
+                return dict(kind='vm_operator', operator='add', operands=[left, right],
+                            scope='Original VM conversion/arithmetic semantics; numeric type and definedness are not established.')
             raise ValueError('Addition needs nonconstant or overflowing integer analysis.')
         raise ValueError('Argument needs stack-flow or native-call analysis.')
 

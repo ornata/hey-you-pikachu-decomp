@@ -1,3 +1,4 @@
+#include "actor_kind.h"
 /// Geometry of the olivine lake spatial lookup grid.
 enum { OLIVINE_LAKE_GRID_LAYERS = 32, OLIVINE_LAKE_GRID_SIDE = 32 };
 /// Height of one lookup layer in world-coordinate units.
@@ -110,7 +111,7 @@ void olivineLakeSpawnTintedResidentType12(void *position, f32 heading) {
     s32 *counter;
 
     counter = &D_80141644_scene_olivine_lake;
-    object = actorCreateForKind(0xC, ((f32 *)position)[0], ((f32 *)position)[1], ((f32 *)position)[2], 0.0F, heading,
+    object = actorCreateForKind(ACTOR_KIND_POLIWAG, ((f32 *)position)[0], ((f32 *)position)[1], ((f32 *)position)[2], 0.0F, heading,
                                 gCurrentAreaConfiguration->objectScale, &D_801404AC_scene_olivine_lake, *counter);
     index = *counter;
     if (*counter < 0) {
@@ -140,7 +141,7 @@ void olivineLakeSpawnRandomHeadingResidentType12(void *position) {
 /// \param heading Resident heading in degrees.
 /// \returns Nothing.
 void olivineLakeSpawnResidentType13(f32 *position, f32 heading) {
-    actorCreateForKind(0xD, position[0], position[1], position[2], 0.0F, heading,
+    actorCreateForKind(ACTOR_KIND_POLIWHIRL, position[0], position[1], position[2], 0.0F, heading,
                        gCurrentAreaConfiguration->objectScale, &D_80140854_scene_olivine_lake, 0);
 }
 
@@ -148,7 +149,7 @@ void olivineLakeSpawnResidentType13(f32 *position, f32 heading) {
 /// \param position Three-component world-space position.
 /// \returns Nothing.
 void olivineLakeSpawnResidentType17(f32 *position) {
-    actorCreateForKind(0x11, position[0], position[1], position[2], 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(ACTOR_KIND_HAUNTER, position[0], position[1], position[2], 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        &D_801412B4_scene_olivine_lake, 0);
 }
 

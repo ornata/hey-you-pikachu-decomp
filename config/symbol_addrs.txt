@@ -2648,7 +2648,7 @@ actorScriptPushTargetHandle = 0x8011DBF8;
 actorScriptPushTrackingMode = 0x8011DC30;
 actorScriptSetTrackingMode = 0x8011DC68;
 actorScriptGetItemKind = 0x8011DD38;
-actorScriptGetCreatureKind = 0x8011DD78;
+actorScriptGetActorKind = 0x8011DD78;
 
 actorScriptSetDestination = 0x8011DA00;
 actorScriptTrackObject = 0x8011DA8C;
@@ -2752,7 +2752,7 @@ actorScriptPushSelfHandle = 0x8011E6A8;
 actorScriptGetAreaPathPointCount = 0x8011E6D8;
 actorScriptGetAreaPathPointCoordinate = 0x8011E718;
 
-actorScriptFindCreatureNearPosition = 0x8011E77C;
+actorScriptFindActorNearPosition = 0x8011E77C;
 actorScriptFindItemNearPosition = 0x8011E828;
 actorScriptFindObjectInFacingCone = 0x8011E8E0;
 actorScriptFindObjectNearPosition = 0x8011E960;

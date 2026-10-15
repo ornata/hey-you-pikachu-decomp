@@ -1,3 +1,4 @@
+#include "actor_kind.h"
 #include "contact_effect.h"
 #include "object_response.h"
 #include "render_state.h"
@@ -832,6 +833,6 @@ void togepiCreate(f32 x, f32 y, f32 z, f32 pitch, f32 yaw, u8 *script, s32 scrip
         sp30 = progressGetValue(0x18);
         scale = (((f32)sp30 / (f32)progressGetMaximum(0x18)) + 1.0F) * 0.5F;
     }
-    actorCreateForKind(0x16, x, y, z, pitch, yaw, scale * gCurrentAreaConfiguration->objectScale, script,
+    actorCreateForKind(ACTOR_KIND_TOGEPI, x, y, z, pitch, yaw, scale * gCurrentAreaConfiguration->objectScale, script,
                        scriptArgument);
 }

@@ -1,3 +1,4 @@
+#include "actor_kind.h"
 /// Geometry of the playground spatial lookup grid.
 enum { PLAYGROUND_GRID_LAYERS = 8, PLAYGROUND_GRID_SIDE = 8 };
 /// Height of one lookup layer in world-coordinate units.
@@ -19,7 +20,7 @@ extern s32 *D_8015A04C_scene_playground[PLAYGROUND_GRID_LAYERS];
 /// Spawn the playground resident creature with its scene behavior.
 /// \returns Nothing.
 void playgroundSpawnResident(void) {
-    actorCreateForKind(0x13, 320.0F, 10.0F, 225.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(ACTOR_KIND_MAGNEMITE, 320.0F, 10.0F, 225.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_8013EE54_scene_playground, 0);
 }
 /// Create the playground cave, its linked landmark, and the resident creature.

@@ -1,3 +1,4 @@
+#include "actor_kind.h"
 /// Geometry of the olivine lakeshore spatial lookup grid.
 enum { OLIVINE_LAKESHORE_GRID_LAYERS = 32, OLIVINE_LAKESHORE_GRID_SIDE = 32 };
 /// Height of one lookup layer in world-coordinate units.
@@ -88,7 +89,7 @@ void lakeshoreSpawnColoredResident(f32 *position, f32 heading) {
     s32 *counter;
 
     counter = &D_80141444_scene_olivine_lakeshore;
-    object = actorCreateForKind(0xC, position[0], position[1], position[2], 0.0F, heading,
+    object = actorCreateForKind(ACTOR_KIND_POLIWAG, position[0], position[1], position[2], 0.0F, heading,
                                 gCurrentAreaConfiguration->objectScale, &D_801402D0_scene_olivine_lakeshore, *counter);
     index = *counter;
     if (*counter < 0) {
@@ -119,7 +120,7 @@ void lakeshoreSpawnColoredResidentRandomHeading(f32 *position) {
 /// \param heading Initial heading in degrees.
 /// \returns Nothing.
 void lakeshoreSpawnResidentType3(f32 *position, f32 heading) {
-    actorCreateForKind(3, position[0], position[1], position[2], 0.0F, heading, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(ACTOR_KIND_SQUIRTLE, position[0], position[1], position[2], 0.0F, heading, gCurrentAreaConfiguration->objectScale,
                        &D_8014069C_scene_olivine_lakeshore, 0);
 }
 
@@ -127,7 +128,7 @@ void lakeshoreSpawnResidentType3(f32 *position, f32 heading) {
 /// \param position Three-component scene position.
 /// \returns Nothing.
 void lakeshoreSpawnResidentType17(f32 *position) {
-    actorCreateForKind(0x11, position[0], position[1], position[2], 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(ACTOR_KIND_HAUNTER, position[0], position[1], position[2], 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        &D_801410FC_scene_olivine_lakeshore, 0);
 }
 

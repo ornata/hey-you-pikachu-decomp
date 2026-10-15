@@ -5,9 +5,10 @@
 #define ACTOR_CREATE_H
 
 #include <ultra64.h>
+#include "actor_kind.h"
 
 /// Create and register an actor of the requested kind with its resources ready for use.
-/// \param kind Valid actor kind to create.
+/// \param kind ActorKind configuration to create; the search endpoint alias is not a valid creation kind.
 /// \param x Initial world-space X coordinate.
 /// \param y Initial world-space Y coordinate.
 /// \param z Initial world-space Z coordinate.

@@ -1,3 +1,4 @@
+#include "actor_kind.h"
 /// Geometry of the abra shop spatial lookup grid.
 enum { ABRA_SHOP_GRID_LAYERS = 8, ABRA_SHOP_GRID_SIDE = 8 };
 /// Height of one lookup layer in world-coordinate units.
@@ -25,18 +26,18 @@ void abraShopInitializeObjects(void) {
     u8 *trackedItem;
     ActorScriptState *actorState;
 
-    actorCreateForKind(0xF, 100.0F, 1.2F, 95.0F, 0, 0, gCurrentAreaConfiguration->objectScale * 1.5F,
+    actorCreateForKind(ACTOR_KIND_ABRA, 100.0F, 1.2F, 95.0F, 0, 0, gCurrentAreaConfiguration->objectScale * 1.5F,
                        D_801431F8_scene_abra_shop, 0);
     if (progressGetValue(0x15) != 0 && progressGetValue(0x16) == 0) {
         level = progressGetValue(0x17);
         scale = (f32)level;
-        actorCreateForKind(0x17, 100.0F, 0.0F, 0.0F, 0, 0,
+        actorCreateForKind(ACTOR_KIND_TOGEPI_EGG, 100.0F, 0.0F, 0.0F, 0, 0,
                            ((scale / 5.0F + 1.0F) * (gCurrentAreaConfiguration->objectScale * 0.5F)),
                            D_8014363C_scene_abra_shop, 0);
     }
     if (progressGetCurrentChapter() == 8) {
         trackedItem = itemCreate(145.0F, 1.5F, 150.0F, 0.0F, 0.0F, 0x8F);
-        actorState = ((RuntimeObjectPrefix *)actorCreateForKind(0x15, 0.0F, 0.0F, 0.0F, 0.0F, 45.0F,
+        actorState = ((RuntimeObjectPrefix *)actorCreateForKind(ACTOR_KIND_TELESCOPE, 0.0F, 0.0F, 0.0F, 0.0F, 45.0F,
                                                                 gCurrentAreaConfiguration->objectScale, 0, 0))
                          ->state.actor;
         actorState->targetPosition[0] = ((RuntimeObjectPrefix *)trackedItem)->worldPosition[0];

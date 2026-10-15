@@ -1,4 +1,5 @@
 #include "object_target_search.h"
+#include "actor_kind.h"
 #include "common.h"
 
 
@@ -9,21 +10,21 @@
 /// \param distance Exclusive maximum target distance.
 /// \param rotation Three-component facing rotation in degrees; unused for an unrestricted cone.
 /// \param cone Maximum angular deviation in degrees, or 360 for all directions.
-/// \param minKind Inclusive minimum actor kind; 38 selects the first creature kind.
-/// \param maxKind Inclusive maximum actor kind; 38 selects Pikachu.
+/// \param minKind Inclusive minimum actor kind; ACTOR_SEARCH_RANGE_ENDPOINT selects Bulbasaur.
+/// \param maxKind Inclusive maximum actor kind; ACTOR_SEARCH_RANGE_ENDPOINT selects companion Pikachu.
 /// \returns The nearest qualifying actor, or null when none is found.
 /// \note Original decompilation identifier: \c func_80027380 (0x80027380).
 u8 *actorFindNearestInRange(u8 *self, Vec3f *origin, f32 distance, f32 *rotation, f32 cone, s32 minKind, s32 maxKind) {
-    if (minKind == 0x26) {
-        minKind = 1;
+    if (minKind == ACTOR_SEARCH_RANGE_ENDPOINT) {
+        minKind = ACTOR_KIND_BULBASAUR;
     }
-    if (maxKind == 0x26) {
-        maxKind = 0x25;
+    if (maxKind == ACTOR_SEARCH_RANGE_ENDPOINT) {
+        maxKind = ACTOR_KIND_PIKACHU;
     }
     return objectFindNearestTargetInView(self, origin, distance, rotation, cone, minKind, maxKind);
 }
 
-/// Search for nearby creatures and retain the result in the shared target-search state.
+/// Search for nearby actors and retain the result in the shared target-search state.
 /// \param self Address of the actor excluded from the search.
 /// \param origin Address of the three-component world-space search origin.
 /// \returns Nothing.

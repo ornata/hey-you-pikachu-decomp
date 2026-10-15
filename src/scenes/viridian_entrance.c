@@ -1,3 +1,4 @@
+#include "actor_kind.h"
 /// Geometry of the viridian entrance spatial lookup grid.
 enum { VIRIDIAN_ENTRANCE_GRID_LAYERS = 32, VIRIDIAN_ENTRANCE_GRID_SIDE = 32 };
 /// Height of one lookup layer in world-coordinate units.
@@ -77,7 +78,7 @@ void viridianEntranceInitializeModeTwoObjects(void) {
 
     viridianEntranceCreateSceneProp();
     for (i = 0; i < 6; i++) {
-        actorCreateForKind(0x24, 180.0F, 1.5F, 215.0F, 0, 0.0F, gCurrentAreaConfiguration->objectScale,
+        actorCreateForKind(ACTOR_KIND_PIKACHU_ALTERNATE, 180.0F, 1.5F, 215.0F, 0, 0.0F, gCurrentAreaConfiguration->objectScale,
                            D_8014CF3C_scene_viridian_entrance, i);
     }
 }

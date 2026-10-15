@@ -1,3 +1,4 @@
+#include "actor_kind.h"
 #include "runtime_mode.h"
 #include "progress_field_ids.h"
 #include "random_scale.h"
@@ -2667,7 +2668,7 @@ void pikachuSpawnForArea(void) {
     spots = gCurrentAreaConfiguration->spawns;
     kind = (s32)gCurrentAreaConfiguration->actorScripts[gAreaScenarioIndex];
     gPikachuActor = (RuntimeObjectPrefix *)actorCreateForKind(
-        0x25, spots[gRuntimeCurrentEntrance].actorPosition[0], spots[gRuntimeCurrentEntrance].actorPosition[1],
+        ACTOR_KIND_PIKACHU, spots[gRuntimeCurrentEntrance].actorPosition[0], spots[gRuntimeCurrentEntrance].actorPosition[1],
         spots[gRuntimeCurrentEntrance].actorPosition[2], 0.0F, spots[gRuntimeCurrentEntrance].actorYaw,
         gCurrentAreaConfiguration->objectScale, (u8 *)kind, 0);
 }

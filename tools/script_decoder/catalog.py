@@ -21,6 +21,7 @@ from tools.scene_catalog import configuration_locations
 from .messages import message_posts
 from .scenarios import scenario_domains, function_body
 from .actions import action_calls, action_resources
+from .actors import actor_kind_records
 
 
 def companion_sites(image):
@@ -130,6 +131,15 @@ def catalog(image, max_instructions=100000):
     sites = [(file, site) for file, text in source.items() for site in creation_sites(text)]
     assigned = [(file, site) for file, text in source.items() for site in assigned_creation_sites(text)]
     companions = companion_sites(image)
+    actors = actor_kind_records(image)
+    actor_by_name = {row['enum_name']: row for row in actors}
+
+    def bind(file, site):
+        row = dict(file=file, **site)
+        identity = actor_by_name.get(site['actor_kind_expression'])
+        if identity:
+            row.update(actor_kind=identity['actor_kind'], actor_identity=identity['default_name'])
+        return row
     names = opcode_names('vm')
     rows, decodes = [], {}
     for index, section in enumerate(image.elf.sections):
@@ -150,7 +160,7 @@ def catalog(image, max_instructions=100000):
             aliases = sorted({s[0] for s in image.symbols if s[1] == candidate['address'] and
                               (s[5] == index or s[5] == 0xFFF1 and
                                (s[0].endswith(section_name[1:]) if section_name.startswith('.scene_') else '_scene_' not in s[0]))})
-            bindings = [dict(file=file, **site) for file, site in sites if site['script_symbol'] in aliases]
+            bindings = [bind(file, site) for file, site in sites if site['script_symbol'] in aliases]
             roles = Counter()
             references, globals_used, frames, native_calls = [], set(), [], Counter()
             signature = hashlib.sha256()
@@ -173,7 +183,7 @@ def catalog(image, max_instructions=100000):
             rows.append(dict(**candidate, section=section_name, location=location,
                              candidate_basis='Aligned retained-table prefix with local program before header; not allocation/type proof.',
                              symbols=aliases, direct_creation_sites=bindings,
-                             assigned_creation_sites=[dict(file=file, **site) for file, site in assigned if site['script_symbol'] in aliases],
+                             assigned_creation_sites=[bind(file, site) for file, site in assigned if site['script_symbol'] in aliases],
                              companion_scenario_sites=[site for site in companions if site['section'] == section_name and site['address'] == candidate['address']],
                              instructions=len(decoded['instructions']), diagnostics=decoded['diagnostics'],
                              decoded_code_sha256=signature.hexdigest(), code_reference_roles=dict(roles),
@@ -202,6 +212,7 @@ def catalog(image, max_instructions=100000):
                                         for row in rows if not (row['direct_creation_sites'] or row['assigned_creation_sites'] or row['companion_scenario_sites'])],
                 distinct_decoded_code_hashes=len({row['decoded_code_sha256'] for row in rows}),
                 action_script_resources=action_resources(image, resource_ids),
+                actor_kinds=actors,
                 code_reference_roles=dict(roles), configurations=rows), decodes
 
 
@@ -223,7 +234,7 @@ def main(argv=None):
         report['elf_sha256'] = hashlib.sha256(args.elf.read_bytes()).hexdigest()
         report['decoder_sha256'] = hashlib.sha256(Path(__file__).with_name('formats.py').read_bytes()).hexdigest()
         report['analysis_sha256'] = {name: hashlib.sha256(Path(__file__).with_name(name + '.py').read_bytes()).hexdigest()
-                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios')}
+                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors')}
         files = {'catalog.json': report, **{name + '.json': row for name, row in decodes.items()}}
         # Validate every output before writing any content, including existing symlinks.
         for name in files:

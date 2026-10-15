@@ -66,3 +66,32 @@ def test_resource_chain_separates_timed_script_and_motion_and_rejects_bad_extent
     image = Image()
     image.stream = struct.pack('>ifii', 9, 0, 0, 0)
     assert action_resources(image, {0})[0]['status'] == 'unresolved'
+
+
+def test_symbolic_script_return_keeps_arity_without_inventing_a_constant_result():
+    native = {15: dict(address=0x80405000, functions=['actorScriptStartActionAndWait'], inline_operands=[])}
+    names = {24: 'SCRIPT_OP_PUSH_LITERAL', 25: 'SCRIPT_OP_LOAD_VARIABLE', 26: 'SCRIPT_OP_CALL',
+             27: 'SCRIPT_OP_CALL_NATIVE', 30: 'SCRIPT_OP_RETURN', 32: 'SCRIPT_OP_ENTER_FRAME', 35: 'SCRIPT_OP_FINISH'}
+    main = bytes([24]) + value(9) + bytes([26]) + value(19, 2) + bytes([27]) + value(15, 2) + bytes([35])
+    callee = bytes([32]) + value(1) + value(1) + value(1) + bytes([25]) + value(1) + value(0) + bytes([30])
+    decoded = decode_vm(main + callee, names, natives=native)
+    result = action_calls(decoded['instructions'])[0]
+    argument = result['arguments']['script_id']
+    assert argument['kind'] == 'script_return' and argument['target_offset'] == 19
+    assert argument['arguments'] == [dict(kind='integer', value=9)]
+    assert 'constant_script_id' not in result
+    bad = main + bytes([32]) + value(2) + value(1) + value(1) + callee[16:]
+    assert action_calls(decode_vm(bad, names, natives=native)['instructions'])[0]['status'] == 'unresolved'
+
+
+def test_indexed_random_choice_preserves_unknown_element_value_and_known_index_range():
+    names = {24: 'SCRIPT_OP_PUSH_LITERAL', 27: 'SCRIPT_OP_CALL_NATIVE', 33: 'SCRIPT_OP_LOAD_ELEMENT', 35: 'SCRIPT_OP_FINISH'}
+    natives = {6: dict(address=0x80405000, functions=['actorScriptRandomBelow'], inline_operands=[]),
+               15: dict(address=0x80406000, functions=['actorScriptStartActionAndWait'], inline_operands=[])}
+    program = (bytes([24]) + value(3) + bytes([27]) + value(6, 2) + bytes([33]) + value(1) + value(0) +
+               bytes([27]) + value(15, 2) + bytes([35]))
+    result = action_calls(decode_vm(program, names, natives=natives)['instructions'])[0]
+    argument = result['arguments']['script_id']
+    assert argument['kind'] == 'array_element' and argument['frame'] == 1 and argument['slot'] == 0
+    assert argument['index']['integer_range'] == [0, 2]
+    assert 'constant_script_id' not in result

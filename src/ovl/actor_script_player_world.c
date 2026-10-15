@@ -345,11 +345,11 @@ s32 actorScriptGetAreaPathPointCoordinate(u8 *actor) {
 }
 
 
-/// Find the nearest creature to a world position, excluding the executing actor.
-/// \param actor Actor whose script VM supplies X, Y, Z, inclusive minimum and maximum creature kinds (38 selects the respective range endpoint), then an exclusive maximum approximate distance, and receives the nearest handle or zero.
+/// Find the nearest actor to a world position, excluding the executing actor.
+/// \param actor Actor whose script VM supplies X, Y, Z, inclusive minimum and maximum actor kinds including props (38 selects the respective range endpoint), then an exclusive maximum approximate distance, and receives the nearest handle or zero.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011E77C (0x8011E77C).
-s32 actorScriptFindCreatureNearPosition(u8 *actor) {
+s32 actorScriptFindActorNearPosition(u8 *actor) {
     s32 vm;
     f32 x;
     f32 y;

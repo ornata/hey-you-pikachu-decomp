@@ -1132,11 +1132,11 @@ s32 actorScriptGetItemKind(u8 *actor) {
 }
 
 
-/// Replace an object handle on the script stack with its creature kind.
-/// \param actor Actor whose script VM supplies a handle and receives the creature kind, or zero for an unavailable handle or a non-creature object.
+/// Replace an object handle on the script stack with its actor configuration kind.
+/// \param actor Actor whose script VM supplies a handle and receives the ActorKind, including props, or zero for an unavailable handle or another object domain.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011DD78 (0x8011DD78).
-s32 actorScriptGetCreatureKind(u8 *actor) {
+s32 actorScriptGetActorKind(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;

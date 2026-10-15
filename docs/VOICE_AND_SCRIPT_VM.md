@@ -470,10 +470,14 @@ initialization update. The mode-setting interface requires a value representable
 in the original signed 16-bit storage; its retained numeric conversions remain
 unchanged. A VM scheduling result is separate from the value returned on its stack.
 
-Of 5,383 calls in the census (3,974 distinct code/offset sites), 5,338 have bounded
-argument expressions. The other 45 need stack-flow or native-result analysis and
-retain their reasons. Variable references remain coordinates rather than inferred
-constants. The 4,249 constant-ID requests resolve to 287 distinct timed programs.
+All 5,383 calls in the census (3,974 distinct code/offset sites) have bounded
+argument expressions. Recovery retains script-return expressions with arity from
+the target's frame-entry contract, indexed array reads, and random-choice results
+with known index ranges. These are structural expressions: callee behavior, array
+contents and returning-path feasibility remain unproven where not established.
+Variable references remain coordinates rather than inferred constants. Original
+VM arithmetic semantics remain explicit for symbolic additions. The 4,249
+constant-ID requests resolve to 287 distinct timed programs.
 `action_script_resources` contains their bounded END-terminated streams, hashes,
 motion requests and retained motion debug labels. All 287 decode without diagnostics.
 The program table's linked extent bounds reads; it does not establish a complete
@@ -503,6 +507,36 @@ Motion playback has separate completion checks. Two original-instruction cases
 contrast stopped sequencing with timed motion and running sequencing with disabled
 motion, checking the wait result and full declared stack/state footprint. This
 does not certify visible animation or the circumstances that reach either state.
+
+## Actor identities and script searches
+
+`ActorKind` in `actor_kind.h` names all 37 configurations in the retained actor
+query domain. Each identity is checked against its ROM-backed inspection name,
+configuration view and hierarchy template. All 37 root templates carry the
+corresponding runtime kind. The catalog's `actor_kinds` retains those links and
+the resource index; creation bindings attach the configured identity when the
+source supplies a known kind constant. Original names and configuration bytes
+remain local reports.
+
+The domain contains actor props as well as creatures. For example, 16 is a
+treasure chest, 20 a fishing rod and 21 a telescope. Script category 4 is therefore
+named `SCRIPT_CATEGORY_ACTOR`. Its kind getter is `actorScriptGetActorKind` and
+the corresponding position search is `actorScriptFindActorNearPosition`.
+Their numeric encodings and runtime behavior are preserved. Twelve original-
+instruction cases check prop identities, both Pikachu kinds, rejection of kind
+38 by the actor-kind query and separation from object type 130.
+
+Kinds 36 and 37 both have Pikachu inspection names but retain separate
+configurations and root templates. `ACTOR_KIND_PIKACHU_ALTERNATE` names the
+scene-authored variant; `ACTOR_KIND_PIKACHU` is the active companion's
+configuration. The catalog preserves both identities rather than merging names.
+
+The search operand 38 is `ACTOR_SEARCH_RANGE_ENDPOINT`. As a minimum it selects
+kind 1; as a maximum it selects kind 37. It is a search alias, not a creation
+configuration. Actor creation calls now use the named configuration constants.
+The field/entrance attention resident is Squirtle; the growth-resident creation
+paths select Oddish, Gloom and Vileplume according to saved growth state. The
+message-flow descriptions below remain scoped to their respective scripts.
 
 ## Actor mailbox categories
 
@@ -553,7 +587,7 @@ Its creation is conditional on progress field 0x12. At script offset 466 it send
 Pikachu category 13, argument 0 equal to 1, and its own handle in argument 2.
 The entrance's corresponding resource at 0x801573B8 sends the same payload at
 offset 369. This supports naming these resources for their attention-request
-role without assigning a creature or animation identity from numeric IDs.
+role. Their ROM-backed configuration identities identify both residents as Squirtle.
 
 For field scenario zero, the area table selects Pikachu configuration 0x80156884.
 Its message intake copies categories 13/14/15 into frame-zero slots 9–13 in

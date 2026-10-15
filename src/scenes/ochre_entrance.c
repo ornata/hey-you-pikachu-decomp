@@ -1,3 +1,4 @@
+#include "actor_kind.h"
 /// Geometry of the ochre entrance spatial lookup grid.
 enum { OCHRE_ENTRANCE_GRID_LAYERS = 16, OCHRE_ENTRANCE_GRID_SIDE = 16 };
 /// Height of one lookup layer in world-coordinate units.
@@ -26,18 +27,18 @@ void ochreEntranceInitializeResidents(void) {
             togepiCreate(D_8013E8A0_scene_ochre_entrance, 18.25F, 149.5F, 0.0F, 90.0F, D_8013DD80_scene_ochre_entrance,
                          3);
         } else {
-            actorCreateForKind(0xC, 192.5F, 18.25F, 149.5F, 0.0F, 90.0F, gCurrentAreaConfiguration->objectScale * 1.5F,
+            actorCreateForKind(ACTOR_KIND_POLIWAG, 192.5F, 18.25F, 149.5F, 0.0F, 90.0F, gCurrentAreaConfiguration->objectScale * 1.5F,
                                D_8013DD80_scene_ochre_entrance, 3);
         }
     case 2:
-        actorCreateForKind(3, 187.5F, 18.25F, 164.0F, 0.0F, 100.0F, gCurrentAreaConfiguration->objectScale,
+        actorCreateForKind(ACTOR_KIND_SQUIRTLE, 187.5F, 18.25F, 164.0F, 0.0F, 100.0F, gCurrentAreaConfiguration->objectScale,
                            D_8013DD80_scene_ochre_entrance, 2);
     case 1:
-        actorCreateForKind(4, 181.5F, 18.25F, 164.5F, 0.0F, 100.0F, gCurrentAreaConfiguration->objectScale,
+        actorCreateForKind(ACTOR_KIND_CHARMANDER, 181.5F, 18.25F, 164.5F, 0.0F, 100.0F, gCurrentAreaConfiguration->objectScale,
                            D_8013DD80_scene_ochre_entrance, 1);
         break;
     }
-    actorCreateForKind(1, 168.0F, 18.0F, 144.5F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(ACTOR_KIND_BULBASAUR, 168.0F, 18.0F, 144.5F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_8013D380_scene_ochre_entrance, 0);
 }
 
