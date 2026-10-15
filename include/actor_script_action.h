@@ -30,6 +30,8 @@ typedef enum ActorScriptActionHandler {
 /// \param actor Actor with a script context to update.
 /// \param handler An ActorScriptActionHandler selector.
 /// \returns Nothing.
+/// \note This request leaves stack arguments and results to the selected handler.
+/// Request completion does not mean that the action itself has completed.
 /// \note Original decompilation identifier: \c func_801167A0 (0x801167A0).
 void actorBeginScriptActionHandler(u8 *actor, s32 handler);
 

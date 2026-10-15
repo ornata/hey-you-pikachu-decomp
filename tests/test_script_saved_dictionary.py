@@ -84,3 +84,13 @@ def test_provided_review_clears_only_that_callback_and_missing_origin_review_sta
     result = analyze(rows, request)
     assert not result['origin_effect_reviewed']
     assert 'actorScriptQueryRequestedMicDictionary' in result['native_effect_frontier']
+
+
+def test_request_footprint_review_keeps_deferred_effects_unresolved():
+    rows, request = example(opaque=True)
+    result = analyze(rows, request, native_reviews={
+        'inventedMutator': dict(effect='select_action_handler', coverage='immediate_request_only')})
+    assert 'inventedMutator' in result['reviewed_immediate_native_effects']
+    assert 'inventedMutator' not in result['reviewed_native_effects']
+    assert 'inventedMutator' in result['native_effect_frontier']
+    assert result['deferred_native_effect_frontier'] == ['inventedMutator']

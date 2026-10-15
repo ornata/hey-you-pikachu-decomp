@@ -6,6 +6,8 @@ locals below the active depth, valid borrowed state and an intact VM context.
 They cover handler writes, not concurrent mutation or later lifecycle changes.
 Argument replacement also requires a numeric operand above every protected
 local and frame record; the static caller analysis does not prove that floor.
+Immediate action requests retain a separate deferred-effect frontier; their
+request footprint does not establish the later handler's writes or operands.
 """
 
 import hashlib
@@ -91,8 +93,16 @@ def native_frame_reviews(root=ROOT, manifest=None):
         supported_effect = ((review['effect'], review['arguments'], review['stack_delta']) in
                             (('append_scalar', 0, 1), ('replace_argument_with_scalar', 1, 0)) and
                             type(review['arguments']) is int and type(review['stack_delta']) is int)
+        action_request = (review['effect'] == 'select_action_handler' and
+                          type(review['arguments']) is int and review['arguments'] == 0 and
+                          type(review['stack_delta']) is int and review['stack_delta'] == 0 and
+                          review['result_tag'] == 'none' and review['scheduling'] == 'wait_for_action' and
+                          review.get('coverage') == 'immediate_request_only' and
+                          type(review.get('action_handler')) is int and 0 <= review['action_handler'] <= 14)
+        supported_effect = ((supported_effect and review['result_tag'] in ('integer', 'float') and
+                             review['scheduling'] in ('continue', 'yield')) or action_request)
         if (not agrees or not supported_effect or
-                review['result_tag'] not in ('integer', 'float') or review['scheduling'] not in ('continue', 'yield') or changed_helpers):
+                changed_helpers):
             stale_callbacks.append(review['function'])
         elif not stale_dependencies:
             active[review['function']] = review

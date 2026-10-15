@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "purpose": "Explicit scalar append and one-argument replacement write contracts; source changes revoke evidence until reviewed again.",
-  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases.",
+  "purpose": "Explicit scalar and immediate action-request storage contracts; source changes revoke evidence until reviewed again. Deferred handlers remain separate.",
+  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases. Twelve action-request wrappers and their two-field scheduling helper reviewed against original Ghidra801167A0 and all twelve original wrapper addresses; twenty-four direct original-instruction request cases guard all VM fields and pending/protected values.",
   "preconditions": [
     "Protected locals and frame metadata lie below the active stack depth.",
     "Append contracts require one free value slot; pointers and borrowed actor/global state are valid.",
@@ -1028,6 +1028,354 @@
         "VM-owned storage, borrowed records, globals and C-stack temporaries do not overlap. Only immediate handler writes are reviewed; later lifetime, concurrency and retail reachability remain unproven.",
         "Initialized nonzero-capacity handle pool with valid chains. Any live matching handle must identify valid ActorScriptState storage; this native performs no runtime-kind validation. Missing/destroy-pending handles return -1.",
         "No toolbox exclusion is applied here; this uses the live lookup directly, unlike available-handle queries."
+      ]
+    },
+    {
+      "function": "actorScriptStartActionAndWait",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "f02855c163d7b5d3190066df597e81b82b5b5764bfbb5fee0c2a6af3d293bcc0",
+      "effect": "select_action_handler",
+      "arguments": 0,
+      "stack_delta": 0,
+      "result_tag": "none",
+      "scheduling": "wait_for_action",
+      "coverage": "immediate_request_only",
+      "action_handler": 2,
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_actions.c",
+          "function": "actorBeginScriptActionHandler",
+          "sha256": "730df316779c26ec4f6a10011fadfc45fd9e8516e38f95767e1b3821e5d67938"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script_action.h",
+          "sha256": "37e7ff0a8d38d091300494231283e6a1d13fec521548e1576e4949ce87348f4c"
+        }
+      ],
+      "preconditions": [
+        "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
+        "The request returns scheduling result two without reading or writing stack operands. Deferred handler operands, results, context replacement and write effects remain unreviewed; this contract must not clear that deferred frontier."
+      ]
+    },
+    {
+      "function": "actorScriptStartLoopExitAndWait",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "d34c2103eadd02855ea664f39ba3d0c87c65d8e9bbd7bab55ab775f9f6493f4f",
+      "effect": "select_action_handler",
+      "arguments": 0,
+      "stack_delta": 0,
+      "result_tag": "none",
+      "scheduling": "wait_for_action",
+      "coverage": "immediate_request_only",
+      "action_handler": 3,
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_actions.c",
+          "function": "actorBeginScriptActionHandler",
+          "sha256": "730df316779c26ec4f6a10011fadfc45fd9e8516e38f95767e1b3821e5d67938"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script_action.h",
+          "sha256": "37e7ff0a8d38d091300494231283e6a1d13fec521548e1576e4949ce87348f4c"
+        }
+      ],
+      "preconditions": [
+        "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
+        "The request returns scheduling result two without reading or writing stack operands. Deferred handler operands, results, context replacement and write effects remain unreviewed; this contract must not clear that deferred frontier."
+      ]
+    },
+    {
+      "function": "actorScriptStartLoopExitAndWaitAlternate",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "0327d97e99dd4754196e089287d4dca8119b04b767ea42cd39b3197b355dca48",
+      "effect": "select_action_handler",
+      "arguments": 0,
+      "stack_delta": 0,
+      "result_tag": "none",
+      "scheduling": "wait_for_action",
+      "coverage": "immediate_request_only",
+      "action_handler": 3,
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_actions.c",
+          "function": "actorBeginScriptActionHandler",
+          "sha256": "730df316779c26ec4f6a10011fadfc45fd9e8516e38f95767e1b3821e5d67938"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script_action.h",
+          "sha256": "37e7ff0a8d38d091300494231283e6a1d13fec521548e1576e4949ce87348f4c"
+        }
+      ],
+      "preconditions": [
+        "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
+        "The request returns scheduling result two without reading or writing stack operands. Deferred handler operands, results, context replacement and write effects remain unreviewed; this contract must not clear that deferred frontier."
+      ]
+    },
+    {
+      "function": "actorScriptStartInterruptibleAction",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "a729f1789dc1954ffbe491604c46f0b63d2dc58d8c789cc0c5a8996c37ecffbc",
+      "effect": "select_action_handler",
+      "arguments": 0,
+      "stack_delta": 0,
+      "result_tag": "none",
+      "scheduling": "wait_for_action",
+      "coverage": "immediate_request_only",
+      "action_handler": 5,
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_actions.c",
+          "function": "actorBeginScriptActionHandler",
+          "sha256": "730df316779c26ec4f6a10011fadfc45fd9e8516e38f95767e1b3821e5d67938"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script_action.h",
+          "sha256": "37e7ff0a8d38d091300494231283e6a1d13fec521548e1576e4949ce87348f4c"
+        }
+      ],
+      "preconditions": [
+        "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
+        "The request returns scheduling result two without reading or writing stack operands. Deferred handler operands, results, context replacement and write effects remain unreviewed; this contract must not clear that deferred frontier."
+      ]
+    },
+    {
+      "function": "actorScriptStartHeldItemThrow",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "0ab9b3538f532fa681a2af30219a39fc716456dba766e76056b84335d3e81a68",
+      "effect": "select_action_handler",
+      "arguments": 0,
+      "stack_delta": 0,
+      "result_tag": "none",
+      "scheduling": "wait_for_action",
+      "coverage": "immediate_request_only",
+      "action_handler": 6,
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_actions.c",
+          "function": "actorBeginScriptActionHandler",
+          "sha256": "730df316779c26ec4f6a10011fadfc45fd9e8516e38f95767e1b3821e5d67938"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script_action.h",
+          "sha256": "37e7ff0a8d38d091300494231283e6a1d13fec521548e1576e4949ce87348f4c"
+        }
+      ],
+      "preconditions": [
+        "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
+        "The request returns scheduling result two without reading or writing stack operands. Deferred handler operands, results, context replacement and write effects remain unreviewed; this contract must not clear that deferred frontier."
+      ]
+    },
+    {
+      "function": "actorScriptStartItemAcquisition",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "2e2f049ea226405d621a36a2b9508ed4041e1289504520f9b76e953329796fca",
+      "effect": "select_action_handler",
+      "arguments": 0,
+      "stack_delta": 0,
+      "result_tag": "none",
+      "scheduling": "wait_for_action",
+      "coverage": "immediate_request_only",
+      "action_handler": 7,
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_actions.c",
+          "function": "actorBeginScriptActionHandler",
+          "sha256": "730df316779c26ec4f6a10011fadfc45fd9e8516e38f95767e1b3821e5d67938"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script_action.h",
+          "sha256": "37e7ff0a8d38d091300494231283e6a1d13fec521548e1576e4949ce87348f4c"
+        }
+      ],
+      "preconditions": [
+        "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
+        "The request returns scheduling result two without reading or writing stack operands. Deferred handler operands, results, context replacement and write effects remain unreviewed; this contract must not clear that deferred frontier."
+      ]
+    },
+    {
+      "function": "actorScriptStartEatingHeldItem",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "37140cb04864edd195e351a537a2febf75f86ce174eda94d49cc91157d92998e",
+      "effect": "select_action_handler",
+      "arguments": 0,
+      "stack_delta": 0,
+      "result_tag": "none",
+      "scheduling": "wait_for_action",
+      "coverage": "immediate_request_only",
+      "action_handler": 8,
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_actions.c",
+          "function": "actorBeginScriptActionHandler",
+          "sha256": "730df316779c26ec4f6a10011fadfc45fd9e8516e38f95767e1b3821e5d67938"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script_action.h",
+          "sha256": "37e7ff0a8d38d091300494231283e6a1d13fec521548e1576e4949ce87348f4c"
+        }
+      ],
+      "preconditions": [
+        "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
+        "The request returns scheduling result two without reading or writing stack operands. Deferred handler operands, results, context replacement and write effects remain unreviewed; this contract must not clear that deferred frontier."
+      ]
+    },
+    {
+      "function": "actorScriptStartCostedAction",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "c14067257a79ceda6f79bbdd78d4c5529b7d860b310d29f368d5c92f79fcae51",
+      "effect": "select_action_handler",
+      "arguments": 0,
+      "stack_delta": 0,
+      "result_tag": "none",
+      "scheduling": "wait_for_action",
+      "coverage": "immediate_request_only",
+      "action_handler": 9,
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_actions.c",
+          "function": "actorBeginScriptActionHandler",
+          "sha256": "730df316779c26ec4f6a10011fadfc45fd9e8516e38f95767e1b3821e5d67938"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script_action.h",
+          "sha256": "37e7ff0a8d38d091300494231283e6a1d13fec521548e1576e4949ce87348f4c"
+        }
+      ],
+      "preconditions": [
+        "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
+        "The request returns scheduling result two without reading or writing stack operands. Deferred handler operands, results, context replacement and write effects remain unreviewed; this contract must not clear that deferred frontier."
+      ]
+    },
+    {
+      "function": "actorScriptStartTextWindow",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "400e0de358cd27b11d5c0a7fd7b3c86137392ce8419e900541e3820f2e77a67b",
+      "effect": "select_action_handler",
+      "arguments": 0,
+      "stack_delta": 0,
+      "result_tag": "none",
+      "scheduling": "wait_for_action",
+      "coverage": "immediate_request_only",
+      "action_handler": 13,
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_actions.c",
+          "function": "actorBeginScriptActionHandler",
+          "sha256": "730df316779c26ec4f6a10011fadfc45fd9e8516e38f95767e1b3821e5d67938"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script_action.h",
+          "sha256": "37e7ff0a8d38d091300494231283e6a1d13fec521548e1576e4949ce87348f4c"
+        }
+      ],
+      "preconditions": [
+        "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
+        "The request returns scheduling result two without reading or writing stack operands. Deferred handler operands, results, context replacement and write effects remain unreviewed; this contract must not clear that deferred frontier."
+      ]
+    },
+    {
+      "function": "actorScriptStartControlSchemeChange",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "ed263652c0ad1849cd0dedf1ee8afce2e7ef539395c2b7e0b10b81740a0860e1",
+      "effect": "select_action_handler",
+      "arguments": 0,
+      "stack_delta": 0,
+      "result_tag": "none",
+      "scheduling": "wait_for_action",
+      "coverage": "immediate_request_only",
+      "action_handler": 10,
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_actions.c",
+          "function": "actorBeginScriptActionHandler",
+          "sha256": "730df316779c26ec4f6a10011fadfc45fd9e8516e38f95767e1b3821e5d67938"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script_action.h",
+          "sha256": "37e7ff0a8d38d091300494231283e6a1d13fec521548e1576e4949ce87348f4c"
+        }
+      ],
+      "preconditions": [
+        "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
+        "The request returns scheduling result two without reading or writing stack operands. Deferred handler operands, results, context replacement and write effects remain unreviewed; this contract must not clear that deferred frontier."
+      ]
+    },
+    {
+      "function": "actorScriptStartAreaTransition",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "ef3443243ba85c91fcfad1c48ab5eed9393d8f20d2a17a5a222f235b4de6b080",
+      "effect": "select_action_handler",
+      "arguments": 0,
+      "stack_delta": 0,
+      "result_tag": "none",
+      "scheduling": "wait_for_action",
+      "coverage": "immediate_request_only",
+      "action_handler": 11,
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_actions.c",
+          "function": "actorBeginScriptActionHandler",
+          "sha256": "730df316779c26ec4f6a10011fadfc45fd9e8516e38f95767e1b3821e5d67938"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script_action.h",
+          "sha256": "37e7ff0a8d38d091300494231283e6a1d13fec521548e1576e4949ce87348f4c"
+        }
+      ],
+      "preconditions": [
+        "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
+        "The request returns scheduling result two without reading or writing stack operands. Deferred handler operands, results, context replacement and write effects remain unreviewed; this contract must not clear that deferred frontier."
+      ]
+    },
+    {
+      "function": "actorScriptStartKindTransformation",
+      "file": "src/ovl/actor_script_collection_profile.c",
+      "sha256": "ce3b5c20de82ec5e1954066fb1452247ebe67c73d8a811367460bc4b63c78aee",
+      "effect": "select_action_handler",
+      "arguments": 0,
+      "stack_delta": 0,
+      "result_tag": "none",
+      "scheduling": "wait_for_action",
+      "coverage": "immediate_request_only",
+      "action_handler": 14,
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_actions.c",
+          "function": "actorBeginScriptActionHandler",
+          "sha256": "730df316779c26ec4f6a10011fadfc45fd9e8516e38f95767e1b3821e5d67938"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script_action.h",
+          "sha256": "37e7ff0a8d38d091300494231283e6a1d13fec521548e1576e4949ce87348f4c"
+        }
+      ],
+      "preconditions": [
+        "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
+        "The request returns scheduling result two without reading or writing stack operands. Deferred handler operands, results, context replacement and write effects remain unreviewed; this contract must not clear that deferred frontier."
       ]
     }
   ]

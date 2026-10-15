@@ -565,9 +565,37 @@ payloads use their integer encoding. The cases guard protected values, VM state
 and borrowed storage. They do not extend the contracts to invalid indices,
 unsupported conversions, later lifetimes or arbitrary gameplay paths.
 
-Thirty-three native reviews are active. Remaining callbacks stay explicitly listed
+Thirty-three scalar native reviews are active. Remaining callbacks stay explicitly listed
 in each saved-dictionary candidate's `native_effect_frontier`; a reviewed immediate
 footprint does not establish a runtime dictionary ID or unconditional restoration.
+
+### Deferred action requests
+
+Twelve additional reviews cover only the immediate request phase of action-start
+natives. The request selects `actionHandler`, sets `actionInitializing` and returns
+`SCRIPT_COMMAND_WAIT_FOR_ACTION`. It neither consumes arguments nor pushes a
+result. Arguments and any eventual result belong to the selected action handler.
+
+`actorUpdateScriptVm` chooses its branch using the VM state at update entry. A
+ready or yielded VM runs bytecode; a request makes that update finish in the waiting
+state. A waiting VM instead dispatches its action handler, records its returned
+state and clears `actionInitializing`. It does not resume bytecode in that same
+update, even if the handler has finished. A handler selecting another handler
+during dispatch does not retain a newly set initialization flag past that clear;
+such handoffs need their own review.
+
+Twenty-four authored original-instruction cases check all twelve request natives
+with two previous initialization values, guarding pending operands and frame data.
+Three separately seeded scheduler cases check request, stopped-poll and running-poll
+branches, including both clocks and the initialization clear. They establish these
+bounded transitions, without certifying a complete multi-frame game trajectory.
+
+The decoder lists request-only evidence in `reviewed_immediate_native_effects` and
+keeps its later effects in `deferred_native_effect_frontier` and the overall
+`native_effect_frontier`. These twelve reviews therefore do not clear deferred
+alias, stack, context-lifetime or gameplay obligations. There are 33 scalar contracts
+and 12 request-only contracts; the saved-dictionary frontier still contains 71
+distinct callbacks, including partially reviewed requests.
 
 ### Player view selection
 

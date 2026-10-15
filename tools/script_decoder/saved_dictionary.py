@@ -135,13 +135,18 @@ def saved_dictionary_analysis(instructions, request_offset, expression, budget=5
                 audit(target, visible and child_frame != frame)
 
     audit(entry, True, corridor)
-    frontier = sorted(natives - set(native_reviews))
+    deferred = {name for name in natives & set(native_reviews)
+                if native_reviews[name].get('coverage') == 'immediate_request_only'}
+    reviewed = set(native_reviews) - deferred
+    frontier = sorted(natives - reviewed)
     return dict(kind='saved_requested_dictionary_candidate', function_entry=entry, query_offset=query,
                 save_offset=save, request_offset=request_offset, local=dict(frame=frame, slot=slot),
                 save_dominates_request=True, bytecode_preserves_saved_local=not hazards and not diagnostics,
                 script_function_views=len(audited), write_hazards=hazards, diagnostics=diagnostics,
                 native_effect_frontier=frontier,
-                reviewed_native_effects=sorted(natives & set(native_reviews)),
+                reviewed_native_effects=sorted(natives & reviewed),
+                reviewed_immediate_native_effects=sorted(natives & set(native_reviews)),
+                deferred_native_effect_frontier=sorted(deferred),
                 origin_effect_reviewed='actorScriptQueryRequestedMicDictionary' in native_reviews,
                 native_review_preconditions=['Reviewed native operands must lie above protected locals and frame metadata; numeric conversions and borrowed storage must satisfy each callback contract. This analysis does not prove the operand floor.'],
                 scope='Static bytecode preservation under valid stack/array accesses and intact nonoverlapping frames; native effects, context replacement, runtime restoration and numeric ID remain unproven.')

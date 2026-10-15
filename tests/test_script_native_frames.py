@@ -60,6 +60,20 @@ def test_argument_replacement_requires_exact_reviewed_arity_and_delta(tmp_path):
         assert not native_frame_reviews(tmp_path, manifest)['active']
 
 
+def test_action_request_requires_explicit_phase_without_a_stack_result(tmp_path):
+    manifest = setup_review(tmp_path)
+    row = manifest['callbacks'][0]
+    row.update(effect='select_action_handler', arguments=0, stack_delta=0, result_tag='none',
+               scheduling='wait_for_action', coverage='immediate_request_only', action_handler=2)
+    assert set(native_frame_reviews(tmp_path, manifest)['active']) == {'getter'}
+    for field, invalid in (('coverage', 'complete'), ('result_tag', 'integer'), ('arguments', 1),
+                           ('stack_delta', 1), ('action_handler', 15), ('action_handler', True)):
+        previous = row[field]
+        row[field] = invalid
+        assert not native_frame_reviews(tmp_path, manifest)['active']
+        row[field] = previous
+
+
 def test_changed_dependency_or_unsupported_contract_keeps_callback_unreviewed(tmp_path):
     manifest = setup_review(tmp_path)
     path = tmp_path / 'unit.c'
