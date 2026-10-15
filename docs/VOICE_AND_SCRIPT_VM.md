@@ -669,6 +669,21 @@ destination remain stored. Selecting secondary-object escape preserves the
 previous allowance and destination. A fallback selection requires a live fallback
 object and copies its position without changing the old tracked handle.
 
+Three further runtime kinds have constructor-supported names:
+
+| Runtime kind | Meaning | Owned state and borrowed references |
+| --- | --- | --- |
+| `RUNTIME_OBJECT_KIND_PASSAGE` (0x87) | Door, sign, or gate | Sixteen-byte passage record: description kind, destination, entrance, access state |
+| `RUNTIME_OBJECT_KIND_INTERACTION_PROXY` (0x8A) | Descriptive interaction target | Sixteen-byte proxy record, including caller-defined context and borrowed description text |
+| `RUNTIME_OBJECT_KIND_CAVE` (0xB0) | Cave interaction point | Thirty-two-byte cave record with two anchors, a borrowed landmark, and description selector |
+
+Cave tail bytes remain uninterpreted. Proxy context means remaining uses in one
+consumer, but that does not establish its meaning for every creator. Runtime kind
+0x89 selects the save-prompt action; its physical identity and constructor remain
+unresolved. The generic state destructor alone establishes no allocation for it.
+Runtime tags and item-catalog IDs are separate domains: item kind 0x8A is a
+cardboard box, while runtime kind 0x8A identifies the proxy.
+
 The explicit object-tracking native consumes handle and allowance, then returns
 the target's script category. Zero is not a success predicate: an available object
 with an unsupported category still becomes the tracked destination. Both operands
@@ -790,6 +805,26 @@ and supplies integer zero even if an already-active window rejects opening.
 `text_window_requests` exposes the settings expressions and keeps that zero result
 separate from successful presentation. Fresh-window prompt allocation, font and
 image ownership remain obligations of the later-effect review.
+
+The auxiliary-icon and feature-mask HUD natives each consume one integer and
+return integer zero on the script stack, continuing execution. Both retain the raw
+signed word: auxiliary visibility is interpreted later as nonzero, and the feature
+setter does not discard unknown mask bits. Neither setter draws or submits work.
+The guide-style native can play an audio cue, and enabling alternate overlay mode
+submits two blocking microphone-configuration requests before clearing gameplay
+microphone permissions. Disabling the overlay does not restore those permissions.
+Audio, controller queue capacity, request lifetime and consumer scheduling remain
+explicit dependencies; those two natives have no complete immediate review yet.
+
+The default-action-mode setter retains the target's low sixteen bits; the messenger
+contact-mode setter retains the full signed word. Both replace their operand with
+integer zero and continue, without validating the later mode interpretation or
+starting an action. The object world-coordinate query consumes handle followed by
+axis. Availability is checked first: an unavailable object yields float zero;
+an available object yields its world coordinate for axis zero through two, or
+-65536 above two. Negative axes are unsupported because the original bound check
+is signed. These contracts still require the operand floor, valid borrowed state
+and disjoint writable storage described above.
 
 The source-bound manifest distinguishes scalar contracts, immediate request
 contracts and reviewed deferred phases. Other requests remain partially reviewed

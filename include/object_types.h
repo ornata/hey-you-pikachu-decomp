@@ -17,7 +17,10 @@ typedef enum RuntimeObjectKind {
     RUNTIME_OBJECT_KIND_PLAYER_CONTROL_ROOT = 0x7F,    ///< Root of the player-control collision hierarchy.
     RUNTIME_OBJECT_KIND_LANDMARK_CANNON = 0x8F,        ///< Interactable cannon landmark.
     RUNTIME_OBJECT_KIND_VOICE_REACTIVE_SPINNER = 0x82, ///< Voice-responsive rotation with owned speed state.
-    RUNTIME_OBJECT_KIND_ITEM = 0x86                    ///< Registered item with item-owned private state.
+    RUNTIME_OBJECT_KIND_ITEM = 0x86,                   ///< Registered item with item-owned private state.
+    RUNTIME_OBJECT_KIND_PASSAGE = 0x87,                ///< Door, sign, or gate with owned passage state.
+    RUNTIME_OBJECT_KIND_INTERACTION_PROXY = 0x8A,      ///< Descriptive interaction target with caller-defined context.
+    RUNTIME_OBJECT_KIND_CAVE = 0xB0                    ///< Cave with owned anchors and a borrowed linked landmark.
 } RuntimeObjectKind;
 
 /// Object link with its original 32-bit address representation.

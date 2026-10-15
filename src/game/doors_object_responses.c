@@ -88,7 +88,7 @@ u8 *doorCreate(f32 *position, s32 kind, s32 destination, s32 entrance, s32 acces
     p->entrance = entrance;
     p->kind = kind;
     p->accessState = accessState;
-    ((RuntimeObjectPrefix *)a)->kind = 0x87;
+    ((RuntimeObjectPrefix *)a)->kind = RUNTIME_OBJECT_KIND_PASSAGE;
     ((RuntimeObjectPrefix *)a)->state.pointer = p;
     r = objectRegisterActiveHierarchy(objectMakeHierarchyRoot(a));
     ((RuntimeObjectPrefix *)a)->position[0] = position[0];

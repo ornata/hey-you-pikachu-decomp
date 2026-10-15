@@ -1510,7 +1510,7 @@ s32 playerPrepareInteractionDescription(PlayerControlPrefix *player) {
         playerSetInteractionHelpText((u8 *)text);
         return item->handle;
     }
-    if (kind == 0x87) {
+    if (kind == RUNTIME_OBJECT_KIND_PASSAGE) {
         if (player->interactionFlags & INTERACTION_PRIMARY_REGION) {
             state = item->state.bytes;
             if (((PassageState *)state)->accessState != 0) {
@@ -1540,7 +1540,7 @@ s32 playerPrepareInteractionDescription(PlayerControlPrefix *player) {
         playerSetInteractionHelpText((u8 *)text);
         return item->handle;
     }
-    if (kind == 0xB0) {
+    if (kind == RUNTIME_OBJECT_KIND_CAVE) {
         sprintf(text, "%s", caveGetDescription((u8 *)item));
         playerSetInteractionHelpText((u8 *)text);
         return item->handle;
@@ -1550,7 +1550,7 @@ s32 playerPrepareInteractionDescription(PlayerControlPrefix *player) {
         playerSetInteractionHelpText((u8 *)text);
         return item->handle;
     }
-    if (kind == 0x8A) {
+    if (kind == RUNTIME_OBJECT_KIND_INTERACTION_PROXY) {
         reachSuffix = (s8 *)item->state.bytes;
         sprintf(text, "%s", ((InteractionProxyState *)reachSuffix)->description);
         TRACE("Illegal difficulty:%d\n", ((InteractionProxyState *)reachSuffix)->context);
@@ -1840,12 +1840,12 @@ s32 playerClassifyInteractionTarget(u8 *player, u8 *object, s32 flags) {
     if (kind == 0x25) {
         return 2;
     }
-    if (kind == 0xB0 || kind == RUNTIME_OBJECT_KIND_LANDMARK_CANNON) {
+    if (kind == RUNTIME_OBJECT_KIND_CAVE || kind == RUNTIME_OBJECT_KIND_LANDMARK_CANNON) {
         return 2;
     }
     if (!(flags & INTERACTION_PRIMARY_REGION) ||
         !(((PlayerControlPrefix *)player)->permissions & PLAYER_PERMISSION_INTERACTION_ACTIVATE)) {
-        if (kind == 0x87) {
+        if (kind == RUNTIME_OBJECT_KIND_PASSAGE) {
             return 9;
         }
         return 2;
@@ -1873,7 +1873,7 @@ s32 playerClassifyInteractionTarget(u8 *player, u8 *object, s32 flags) {
         ((PlayerControlPrefix *)player)->modeState.interactionAction = 1;
         return 3;
     }
-    if (kind == 0x87) {
+    if (kind == RUNTIME_OBJECT_KIND_PASSAGE) {
         state = ((RuntimeObjectPrefix *)object)->state.bytes;
         if (((PassageState *)state)->accessState) {
             return 5;
@@ -1893,7 +1893,7 @@ s32 playerClassifyInteractionTarget(u8 *player, u8 *object, s32 flags) {
         }
     }
     kind = ((RuntimeObjectPrefix *)object)->kind;
-    if (kind == 0x8A) {
+    if (kind == RUNTIME_OBJECT_KIND_INTERACTION_PROXY) {
         u8 *resultState = ((RuntimeObjectPrefix *)object)->state.bytes;
         ((PlayerControlPrefix *)player)->modeState.interactionAction = 9;
         return ((InteractionProxyState *)resultState)->interactionResult;
@@ -2495,7 +2495,7 @@ struct {
     /* 0x0C */ u8 unknownC[0x28];
     /* 0x34 */ u16 kind;
     /* 0x36 */ u8 unknown36[0xA];
-} gInteractionProxyObjectTemplate = {{1.0F, 1.0F, 1.0F}, {0}, 0x8A};
+} gInteractionProxyObjectTemplate = {{1.0F, 1.0F, 1.0F}, {0}, RUNTIME_OBJECT_KIND_INTERACTION_PROXY};
 
 /// Create and register a descriptive interaction target at a world position.
 /// \param position Three consecutive floating-point world coordinates in X, Y, Z order.
