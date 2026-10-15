@@ -2,7 +2,7 @@
 
 from pathlib import Path
 import pytest
-from tools.semantic_review.__main__ import save, summarize
+from tools.semantic_review.__main__ import save, summarize, merge_interpreter_evidence, needs_cross_engine_validation
 from tools.semantic_review.crosscheck import evaluate
 
 
@@ -35,3 +35,24 @@ def test_reports_cannot_escape_build_directory(tmp_path):
     with pytest.raises(ValueError, match="build/semantic-review"):
         save(tmp_path / "report.json", {})
     assert not (tmp_path / "report.json").exists()
+
+
+@pytest.mark.parametrize("first,second", [("contradicted", "supported"), ("supported", "contradicted")])
+def test_agreement_from_one_engine_cannot_hide_a_contradiction(first, second):
+    rows = merge_interpreter_evidence(
+        [dict(id="case", status=first)], dict(experiments=[dict(id="case", status=second)])
+    )
+    assert rows[0]["status"] == "contradicted"
+    assert needs_cross_engine_validation(dict(cross_validated=True), rows)
+
+
+def test_integer_probes_do_not_certify_unsupported_function_paths():
+    rows = merge_interpreter_evidence(
+        [dict(id="case", status="unsupported")],
+        dict(experiments=[dict(id="case", status="supported")]),
+    )
+    assert rows[0]["status"] == "supported"
+    assert rows[0]["unicorn_status"] == "unsupported"
+    assert needs_cross_engine_validation(dict(cross_validated=True), rows)
+    rows[0]["unicorn_status"] = "supported"
+    assert not needs_cross_engine_validation(dict(cross_validated=True), rows)

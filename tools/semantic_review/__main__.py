@@ -31,6 +31,35 @@ def summarize(results):
     }
 
 
+def merge_interpreter_evidence(results, interpreter):
+    """Retain either engine's contradiction and expose unsupported engine paths."""
+    verdicts = {row["id"]: row for row in interpreter["experiments"]}
+    for row in results:
+        if row["id"] not in verdicts:
+            continue
+        unicorn_status = row.get("unicorn_status", row["status"])
+        interpreter_status = verdicts[row["id"]]["status"]
+        row["unicorn_status"] = unicorn_status
+        row["interpreter_status"] = interpreter_status
+        row["status"] = (
+            "contradicted" if "contradicted" in (unicorn_status, interpreter_status)
+            else interpreter_status
+        )
+        row["evidence"] = row.get("evidence", "") + (
+            " Three original-instruction N64 interpreter runs checked the same predeclared observations."
+        )
+    return results
+
+
+def needs_cross_engine_validation(probes, results):
+    """Integer ISA agreement does not validate unsupported floating function paths."""
+    return not probes.get("cross_validated", False) or any(
+        row.get("unicorn_status", "supported") != "supported"
+        or row.get("interpreter_status", "supported") != "supported"
+        for row in results
+    )
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
@@ -118,15 +147,7 @@ def main(argv=None):
                     args.core,
                     args.output.parent / "crosscheck-runs",
                 )
-                verdicts = {row["id"]: row for row in interpreter["experiments"]}
-                for row in results:
-                    if row["id"] in verdicts:
-                        row["unicorn_status"] = row["status"]
-                        row["interpreter_status"] = verdicts[row["id"]]["status"]
-                        row["status"] = verdicts[row["id"]]["status"]
-                        row["evidence"] += (
-                            " Three original-instruction N64 interpreter runs checked the same predeclared observations."
-                        )
+                merge_interpreter_evidence(results, interpreter)
             pending = [row for row in results if row.get("status") == "inconclusive"]
             contracts = json.loads(
                 (ROOT / "tests/semantic_review/contracts.json").read_text()
@@ -140,12 +161,16 @@ def main(argv=None):
                 "outstanding": pending,
                 "static_contracts": contracts,
                 "summary": summarize(results),
-                "cross_engine_validation_required": not probes.get(
-                    "cross_validated", False
-                ),
+                "cross_engine_validation_required": needs_cross_engine_validation(probes, results),
             }
-            code = 1 if any(row["status"] == "contradicted" for row in results) else 0
-            if any(row["status"] == "unsupported" for row in results) and not code:
+            contradicted = probes.get("status") == "contradicted" or any(
+                row["status"] == "contradicted" for row in results
+            )
+            unsupported = probes.get("status") == "unsupported" or any(
+                row["status"] == "unsupported" for row in results
+            )
+            code = 1 if contradicted else 0
+            if unsupported and not code:
                 code = 2
         result["provenance"] = {
             "git_revision": subprocess.run(

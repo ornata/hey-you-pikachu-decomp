@@ -197,20 +197,48 @@ class Core:
 
 def replay_slice(snapshot: dict, rom: Path, core: Path, output: Path) -> dict:
     """Execute an explicitly synthetic CPU experiment in the N64 interpreter."""
+    mode = snapshot.get("floating_register_mode", "paired32")
+    if mode not in ("paired32", "wide64"):
+        raise Unsupported("unknown floating-register mode")
     machine = Core(core, output)
     seen = []
+    setup_pc = 0x807FFFF0
+    setup_bytes = None
     result = {
         "status": "unsupported",
         "experiment": "synthetic guest-memory injection",
         "engine": "mupen64plus-pure-interpreter",
+        "floating_register_mode": mode,
+        "cpu_setup": "Synthetic MTC0 Status before target entry; temporary instruction bytes restored.",
     }
 
     def step(m, pc):
+        nonlocal setup_bytes
         if not seen:
-            for mapping in snapshot["mappings"]:
-                raw = bytes.fromhex(mapping["data_hex"])
-                for i, b in enumerate(raw):
-                    m.lib.DebugMemWrite8(int(mapping["address"]) + i, b)
+            if setup_bytes is None:
+                if any(setup_pc <= snapshot[key] < setup_pc + 8 for key in ("start_pc", "stop_pc")):
+                    raise Unsupported("target entry/stop overlaps CPU setup instructions")
+                for mapping in snapshot["mappings"]:
+                    raw = bytes.fromhex(mapping["data_hex"])
+                    for i, b in enumerate(raw):
+                        m.lib.DebugMemWrite8(int(mapping["address"]) + i, b)
+                setup_bytes = m.read(setup_pc, 8)
+                # A guest MTC0 must update the core's FPR pointer layout. A raw
+                # CP0 debugger write changes Status without updating those pointers.
+                # COP1 enabled, interrupts disabled; paired32 is the game's MIPS2 ABI.
+                status = 0x20000000 if mode == "paired32" else 0x24000000
+                m.ptr(2, C.c_uint64, 32)[26] = status
+                for i, b in enumerate(bytes.fromhex("409a600000000000")):
+                    m.lib.DebugMemWrite8(setup_pc + i, b)
+                m.ptr(1, C.c_uint32)[0] = setup_pc
+                return
+            if pc != setup_pc + 4:
+                raise Unsupported("CPU setup did not reach the expected MTC0 boundary")
+            expected_status = 0x20000000 if mode == "paired32" else 0x24000000
+            if m.ptr(5, C.c_uint32, 32)[12] != expected_status:
+                raise Unsupported("CPU setup did not establish the requested Status")
+            for i, b in enumerate(setup_bytes):
+                m.lib.DebugMemWrite8(setup_pc + i, b)
             regs = m.ptr(2, C.c_uint64, 32)
             for i in range(32):
                 regs[i] = snapshot["registers"].get(f"gpr_{i}", 0)
@@ -218,8 +246,6 @@ def replay_slice(snapshot: dict, rom: Path, core: Path, output: Path) -> dict:
             m.ptr(4, C.c_uint64)[0] = snapshot["registers"].get("lo", 0)
             for i in range(32):
                 m.ptr(8, C.c_uint64, 32)[i] = snapshot["registers"].get(f"fpr_{i}", 0)
-            # Disable interrupts during isolated synthetic execution, enable COP1.
-            m.ptr(5, C.c_uint32, 32)[12] = 0x24000000
             m.ptr(1, C.c_uint32)[0] = snapshot["start_pc"]
             seen.append(snapshot["start_pc"])
             return
