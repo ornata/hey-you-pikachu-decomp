@@ -896,9 +896,20 @@ transferred context alone. The updater retains that same context across dispatch
 so its scheduling result is written to the replacement's VM. Other borrowed actor
 references, including global actor pointers and effect anchors, are not generally
 retargeted. This ownership transfer does not prove their later lifetime safety.
-The full transformation contract still requires the separate actor-resource
-decompression and constructor review; initialization and timed waiting alone
-cannot clear that frontier.
+Its conditional review covers all 37 actor configurations and the 15 nonnull
+initializers reached through 1,048 templates, together with effect constructors,
+cue transport and cold resource loads. All 35 compressed actor assets were decoded
+independently and by the original N64 interpreter: output hashes and sizes match,
+with output, input and shared-workspace guards intact. Those bounds cover the
+authenticated retail inputs; they do not establish malformed-archive safety.
+
+Actor assets occupy a permanent 36-entry cache, without font-cache-style eviction.
+Cold loads require serialized staging ownership and wait before decoding or freeing
+staging. Texture initialization uses a separate cache and transfer queue; waiting
+for actor assets does not synchronize textures. Their buffers must remain pinned
+through transfer completion and later renderer use. The factory interface records
+that synchronization requirement rather than promising all resources are immediately
+ready for arbitrary use.
 
 The held-item eating request selects handler eight without consuming its program
 operand. Initialization consumes that operand once. A missing or ineligible held

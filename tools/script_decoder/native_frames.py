@@ -84,6 +84,11 @@ _DEFERRED_PHASE_MODELS = {
              ('successor_initializing_wait', 0, 0, 'wait_for_action', None, None),
              ('wait_secondary_fade', 0, 0, 'wait_for_action', None, None),
              ('complete', 0, 1, 'yield', 0, None))),
+    14: ('transform_kind_after_timed_effect', 1,
+         'action_initializing_then_action_timer', None, (
+             ('initialize', 0, 0, 'wait_for_action', None, None),
+             ('wait', 0, 0, 'wait_for_action', None, None),
+             ('complete', 1, 0, 'yield', 'replacement_actor_handle', None))),
 }
 
 
@@ -93,6 +98,8 @@ def phase_contract_supported(deferred):
     if type(selector) is not int or selector not in _DEFERRED_PHASE_MODELS:
         return False
     effect, arguments, gate, followup, expected = _DEFERRED_PHASE_MODELS[selector]
+    if selector == 14 and deferred.get('preserved_context') != 'same_retained_vm_transferred_to_replacement_actor':
+        return False
     if (deferred.get('effect') != effect or type(deferred.get('arguments')) is not int or
             deferred['arguments'] != arguments or deferred.get('phase_gate') != gate or
             deferred.get('result_tag') != 'integer' or
