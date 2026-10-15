@@ -642,6 +642,27 @@ flag; pitch input requires both flags. The selection query can therefore return 
 while actual angle input remains disabled. Other permission encodings remain
 unchanged.
 
+### Player input filtering
+
+Control schemes retain a 16-bit input mask, separately from the 32-bit permission
+mask. Input masks combine controller button bits with `PLAYER_INPUT_STICK_X`
+(0x40) and `PLAYER_INPUT_STICK_Y` (0x80). The player's `keptInputs` field holds the
+mask; `handledInputs` records rejected or consumed inputs, including stick flags.
+For example, 0x8000 in an input mask means the A button. It does not mean the
+same-valued `PLAYER_PERMISSION_VIEW_CONTROL` permission.
+
+Filtering applies the mask to held, pressed, released and repeated button states.
+Disabled stick axes are suppressed; their input flag is reported when the rejected
+magnitude is at least fifty. Three authored original-instruction probes distinguish
+below-threshold suppression, the threshold boundary and independent A-button and
+horizontal-stick retention. These validate the input domains without certifying
+control-mode transitions.
+
+The deferred control-scheme request waits without consuming its operand while the
+game is in text-window mode. Applying a scheme also runs the previous player mode's
+optional leave callback before selecting new callbacks and permissions. Those
+callback effects remain a separate review obligation.
+
 ## Area scenario selection
 
 `presentationInitializeForCurrentArea` selects `gAreaScenarioIndex` from story

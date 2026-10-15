@@ -22,6 +22,13 @@ typedef enum PlayerPermissionFlag {
         0x8000 ///< Select direct view-angle control; view-input permission still gates actual input.
 } PlayerPermissionFlag;
 
+/// Synthetic stick-axis flags combined with controller button bits in input masks.
+/// These describe retained or rejected input, separately from player permissions.
+typedef enum PlayerInputFlag {
+    PLAYER_INPUT_STICK_X = 0x40, ///< Horizontal stick input.
+    PLAYER_INPUT_STICK_Y = 0x80  ///< Vertical stick input.
+} PlayerInputFlag;
+
 /// Advance a player behavior mode for one input update.
 /// \param player Borrowed initialized player whose active mode is being serviced.
 /// Its mode state and control permissions must agree with the selected update callback.
@@ -68,8 +75,8 @@ typedef struct PlayerControlPrefix {
     s32 permissions;      ///< Current control-permission mask.
     s32 savedPermissions; ///< Permissions retained for normal control.
     s32 controllerPort;   ///< Assigned controller port, or -1 for neutral input.
-    u16 keptButtons;      ///< Controller-button mask retained by the active scheme.
-    u16 handledButtons;   ///< Filtered or handled button status for the current frame.
+    u16 keptInputs;       ///< Retained controller buttons and synthetic stick-axis flags.
+    u16 handledInputs;    ///< Rejected or consumed button/stick input for the current frame.
     s32 previousStickY;   ///< Previous vertical stick input used to adjust movement speed.
     f32 movementSpeed;    ///< Retained speed selected from controller input.
     f32 focusRemaining;   ///< Time remaining in temporary target-focus mode.

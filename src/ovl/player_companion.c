@@ -225,21 +225,25 @@ PlayerMode gPlayerModes[32] = {
 typedef struct {
     s32 mode; ///< Behavior mode selected by this scheme.
     s32 port; ///< Controller port, or minus one for neutral input.
-    u16 keepMask; ///< Buttons retained by input filtering.
+    u16 keepMask; ///< Controller buttons and stick-axis flags retained by input filtering.
 } PlayerControlScheme;
 typedef char PlayerControlSchemeSizeCheck[(sizeof(PlayerControlScheme) == 0xC) ? 1 : -1];
 
 PlayerControlScheme gPlayerControlSchemes[28] = {
-    {0, -1, 0},      {1, 0, 0xFFFF},  {6, -1, 0},
-    {7, -1, 0},      {8, 0, 0x1000},  {9, -1, 0},
-    {10, 0, 0},      {11, 0, 0},      {12, 0, 0x4000},
-    {13, 0, 0},      {14, 0, 0},      {15, 0, 0x80},
-    {16, 0, 0x4080}, {17, 0, 0x40},   {18, 0, 0x108},
-    {19, 0, 0x404},  {20, 0, 0x40C0}, {21, 0, 0x404},
-    {22, 0, 0xC0},   {23, 0, 0xC0C0}, {24, 0, PLAYER_PERMISSION_VIEW_CONTROL},
-    {25, 0, 0x4000}, {26, 0, 0x60E3}, {27, 0, 0x20E3},
-    {28, 0, 0xC000}, {29, 0, 0x5000}, {30, 0, 0x5000},
-    {31, 0, 0x41C8},
+    {0, -1, 0},        {1, 0, 0xFFFF},
+    {6, -1, 0},        {7, -1, 0},
+    {8, 0, 0x1000},    {9, -1, 0},
+    {10, 0, 0},        {11, 0, 0},
+    {12, 0, 0x4000},   {13, 0, 0},
+    {14, 0, 0},        {15, 0, PLAYER_INPUT_STICK_Y},
+    {16, 0, 0x4080},   {17, 0, PLAYER_INPUT_STICK_X},
+    {18, 0, 0x108},    {19, 0, 0x404},
+    {20, 0, 0x40C0},   {21, 0, 0x404},
+    {22, 0, 0xC0},     {23, 0, 0xC0C0},
+    {24, 0, A_BUTTON}, {25, 0, 0x4000},
+    {26, 0, 0x60E3},   {27, 0, 0x20E3},
+    {28, 0, 0xC000},   {29, 0, 0x5000},
+    {30, 0, 0x5000},   {31, 0, 0x41C8},
 };
 
 #include "scene_configuration.h"
@@ -836,40 +840,39 @@ s32 playerThrowHeldItem(u8 *player) {
 }
 
 /// Remove controller input that is not permitted by the player input mask.
-/// \param keep Allowed button mask, with 0x40 enabling horizontal stick input and 0x80 enabling vertical
-/// stick input.
+/// \param keepMask Allowed controller button bits and PlayerInputFlag stick-axis flags.
 /// \param pad Writable controller state containing four button words and two signed stick words; filtered in
 /// place.
-/// \returns Removed held-button bits, plus 0x40 or 0x80 for a disabled stick axis whose magnitude was at
+/// \returns Removed held-button bits, plus PlayerInputFlag bits for a disabled stick axis whose magnitude was at
 /// least fifty.
 ///
 /// \note Controller stick values must remain in their supported range so magnitude calculations fit a signed
 /// integer.
 /// \note Original decompilation identifier: \c func_8010FDC8 (0x8010FDC8).
-u16 playerFilterControllerInput(u16 keep, ControllerState *pad) {
-    u16 dropped = pad->held & ~keep;
-    s32 v;
+u16 playerFilterControllerInput(u16 keepMask, ControllerState *pad) {
+    u16 blockedInputs = pad->held & ~keepMask;
+    s32 magnitude;
 
-    pad->held &= keep;
-    pad->pressed &= keep;
-    pad->released &= keep;
-    pad->repeated &= keep;
-    if (!(keep & 0x40)) {
-        v = (pad->stickX >= 0) ? pad->stickX : -pad->stickX;
-        if (v >= 50) {
-            dropped |= 0x40;
+    pad->held &= keepMask;
+    pad->pressed &= keepMask;
+    pad->released &= keepMask;
+    pad->repeated &= keepMask;
+    if (!(keepMask & PLAYER_INPUT_STICK_X)) {
+        magnitude = (pad->stickX >= 0) ? pad->stickX : -pad->stickX;
+        if (magnitude >= 50) {
+            blockedInputs |= PLAYER_INPUT_STICK_X;
         }
         pad->stickX = 0;
     }
-    if (!(keep & 0x80)) {
-        v = (pad->stickY >= 0) ? pad->stickY : -pad->stickY;
-        if (v >= 50) {
-            dropped |= 0x80;
+    if (!(keepMask & PLAYER_INPUT_STICK_Y)) {
+        magnitude = (pad->stickY >= 0) ? pad->stickY : -pad->stickY;
+        if (magnitude >= 50) {
+            blockedInputs |= PLAYER_INPUT_STICK_Y;
         }
         pad->stickY = 0;
     }
-    TRACE("contMask:0x%04x  err:0x%04x\n", keep, dropped);
-    return dropped;
+    TRACE("contMask:0x%04x  err:0x%04x\n", keepMask, blockedInputs);
+    return blockedInputs;
 }
 
 /// Request an interaction event for the area region containing the player position.
@@ -1084,7 +1087,7 @@ void playerApplyControlScheme(s32 scheme) {
     PlayerControlScheme *rec = &gPlayerControlSchemes[scheme];
 
     playerChangeMode(rec->mode);
-    ((PlayerControlPrefix *)((u8 *)&gPlayerControllerPort - 0x2C))->keptButtons = rec->keepMask;
+    ((PlayerControlPrefix *)((u8 *)&gPlayerControllerPort - 0x2C))->keptInputs = rec->keepMask;
     ((PlayerControlPrefix *)((u8 *)&gPlayerControllerPort - 0x2C))->controllerPort = rec->port;
 }
 
@@ -1652,13 +1655,13 @@ void playerUpdateRestrictedMovement(u8 *player, ControllerState *controller) {
         }
         if (controller->stickY < 0) {
             if (controller->stickY < -0x32) {
-                ((PlayerControlPrefix *)player)->handledButtons =
-                    (u16)(((PlayerControlPrefix *)player)->handledButtons | 0x80);
+                ((PlayerControlPrefix *)player)->handledInputs =
+                    (u16)(((PlayerControlPrefix *)player)->handledInputs | PLAYER_INPUT_STICK_Y);
             }
             controller->stickY = 0;
         } else {
-            ((PlayerControlPrefix *)player)->handledButtons =
-                (u16)(((PlayerControlPrefix *)player)->handledButtons & 0xFF7F);
+            ((PlayerControlPrefix *)player)->handledInputs =
+                (u16)(((PlayerControlPrefix *)player)->handledInputs & (0xFFFF ^ PLAYER_INPUT_STICK_Y));
         }
         playerCalculateMovementInput(controller, player, &sp2C, &sp28);
         playerStepGroundMovement(player, sp2C, sp28);
@@ -1678,11 +1681,11 @@ void playerUpdateRestrictedControl(u8 *player, ControllerState *controller) {
     f32 y;
     if (playerTryOpenMenu(player, controller) == 0) {
         if (playerTryActivateInteraction(player, controller) != 0) {
-            ((PlayerControlPrefix *)player)->handledButtons |= 0x8000;
+            ((PlayerControlPrefix *)player)->handledInputs |= A_BUTTON;
             return;
         }
         if (playerTryInspectTarget(player, controller) != 0) {
-            ((PlayerControlPrefix *)player)->handledButtons |= 0x4000;
+            ((PlayerControlPrefix *)player)->handledInputs |= B_BUTTON;
             return;
         }
         if (playerToggleCompanionControl(player, controller) == 0) {
@@ -2107,8 +2110,8 @@ void playerInitializeForArea(void) {
         playerChangeMode(1);
         playerSetControlPermissions(state, 0xF0003F2F);
         ((PlayerControlPrefix *)state)->controllerPort = index;
-        ((PlayerControlPrefix *)state)->keptButtons = 0xFFFF;
-        ((PlayerControlPrefix *)state)->handledButtons = 0;
+        ((PlayerControlPrefix *)state)->keptInputs = 0xFFFF;
+        ((PlayerControlPrefix *)state)->handledInputs = 0;
         ((PlayerControlPrefix *)state)->companionMode = 0;
         ((PlayerControlPrefix *)state)->companionTarget = 0;
         ((PlayerControlPrefix *)state)->airborne = 0;
@@ -2233,8 +2236,8 @@ void playerUpdateInput(s32 idx) {
         _bzero(&pad, sizeof(pad));
     } else {
         pad = gControllerInputState[port];
-        ((PlayerControlPrefix *)p)->handledButtons =
-            playerFilterControllerInput(((PlayerControlPrefix *)p)->keptButtons, &pad);
+        ((PlayerControlPrefix *)p)->handledInputs =
+            playerFilterControllerInput(((PlayerControlPrefix *)p)->keptInputs, &pad);
     }
     ((PlayerControlPrefix *)p)->modeState.update(p, &pad);
     playerUpdateViewCamera(p);
@@ -2465,7 +2468,7 @@ u8 playerGetChaseStage(void) {
 /// \returns One if toggling is available, or zero otherwise.
 /// \note Original decompilation identifier: \c func_80112830 (0x80112830).
 s32 playerCanToggleCompanionControl(void) {
-    if ((((PlayerControlPrefix *)((u8 *)&gPlayerEyeHeight - 0x1C))->keptButtons & 0x108) &&
+    if ((((PlayerControlPrefix *)((u8 *)&gPlayerEyeHeight - 0x1C))->keptInputs & 0x108) &&
         (progressGetCurrentChapter() >= 6) && (playerGetChaseStage() > 0)) {
         return 1;
     }
@@ -2477,7 +2480,7 @@ s32 playerCanToggleCompanionControl(void) {
 /// \returns One if stationary look control is available, or zero otherwise.
 /// \note Original decompilation identifier: \c func_8011288C (0x8011288C).
 s32 playerCanEnterStationaryLook(void) {
-    if ((((PlayerControlPrefix *)((u8 *)&gPlayerEyeHeight - 0x1C))->keptButtons & 0x404) &&
+    if ((((PlayerControlPrefix *)((u8 *)&gPlayerEyeHeight - 0x1C))->keptInputs & 0x404) &&
         (progressGetCurrentChapter() >= 6) && (playerGetChaseStage() > 0)) {
         return 1;
     }
