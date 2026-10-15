@@ -1,3 +1,10 @@
+/// Geometry of the front yard spatial lookup grid.
+enum { FRONT_YARD_GRID_LAYERS = 32, FRONT_YARD_GRID_SIDE = 32 };
+/// Height of one lookup layer in world-coordinate units.
+#define FRONT_YARD_GRID_LAYER_HEIGHT 10.0
+/// Width of a lookup cell along either horizontal axis in world-coordinate units.
+#define FRONT_YARD_GRID_CELL_WIDTH 10.0
+
 #include "area_services.h"
 #include "actor_target.h"
 #include "story_chapter.h"
@@ -56,26 +63,30 @@ void frontYardInitializeObjects(void) {
     }
 }
 
-extern s32 *D_801670A8_scene_front_yard[32];
+extern s32 *D_801670A8_scene_front_yard[FRONT_YARD_GRID_LAYERS];
 /// Look up the front-yard spatial-grid value at a world position.
 /// \param x World-space X coordinate.
 /// \param y World-space height coordinate.
 /// \param z World-space Z coordinate.
 /// \returns The spatial-cell value, or zero when the position maps outside the grid or to an absent layer.
+/// \pre Coordinates are finite and scaled indices fit a signed 32-bit integer.
+/// \note Negative positions within one cell of zero can select the zero-index cell.
+/// \note Original address: \c 0x80134404 in the front yard overlay.
 s32 frontYardGetSpatialCell(f32 x, f32 y, f32 z) {
     s32 *layer;
     s32 iy;
     s32 ix;
     s32 iz;
 
-    iy = (s32)((f64)y / 10.0);
-    if (iy < 0 || iy >= 32 || (ix = (s32)((f64)x / 10.0), ix < 0) || ix >= 32 || (iz = (s32)((f64)z / 10.0), iz < 0) ||
-        iz >= 32) {
+    iy = (s32)((f64)y / FRONT_YARD_GRID_LAYER_HEIGHT);
+    if (iy < 0 || iy >= FRONT_YARD_GRID_LAYERS || (ix = (s32)((f64)x / FRONT_YARD_GRID_CELL_WIDTH), ix < 0) ||
+        ix >= FRONT_YARD_GRID_SIDE || (iz = (s32)((f64)z / FRONT_YARD_GRID_CELL_WIDTH), iz < 0) ||
+        iz >= FRONT_YARD_GRID_SIDE) {
         return 0;
     }
     layer = D_801670A8_scene_front_yard[iy];
     if (layer == NULL) {
         return 0;
     }
-    return layer[(iz * 32) + ix];
+    return layer[(iz * FRONT_YARD_GRID_SIDE) + ix];
 }

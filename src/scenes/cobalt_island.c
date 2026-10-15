@@ -1,3 +1,10 @@
+/// Geometry of the cobalt island spatial lookup grid.
+enum { COBALT_ISLAND_GRID_LAYERS = 16, COBALT_ISLAND_GRID_SIDE = 16 };
+/// Height of one lookup layer in world-coordinate units.
+#define COBALT_ISLAND_GRID_LAYER_HEIGHT 15.0
+/// Width of a lookup cell along either horizontal axis in world-coordinate units.
+#define COBALT_ISLAND_GRID_CELL_WIDTH 20.0
+
 #include "random_scale.h"
 #include "player_chase.h"
 #include "random.h"
@@ -132,25 +139,29 @@ void cobaltIslandInitializeObjects(void) {
 void cobaltIslandSceneNoOp80134670(void) {
 }
 
-extern s32 *D_8018A28C_scene_cobalt_island[16];
+extern s32 *D_8018A28C_scene_cobalt_island[COBALT_ISLAND_GRID_LAYERS];
 /// Look up the island spatial-grid value at a world position.
 /// \param x World-space X coordinate.
 /// \param y World-space height coordinate.
 /// \param z World-space Z coordinate.
 /// \returns The spatial-cell value, or zero when the position maps outside the grid or to an absent layer.
+/// \pre Coordinates are finite and scaled indices fit a signed 32-bit integer.
+/// \note Negative positions within one cell of zero can select the zero-index cell.
+/// \note Original address: \c 0x80134678 in the cobalt island overlay.
 s32 cobaltIslandGetSpatialCell(f32 x, f32 y, f32 z) {
     s32 *layer;
     s32 iy;
     s32 ix;
     s32 iz;
-    iy = (s32)((f64)y / 15.0);
-    if (iy < 0 || iy >= 16 || (ix = (s32)((f64)x / 20.0), ix < 0) || ix >= 16 || (iz = (s32)((f64)z / 20.0), iz < 0) ||
-        iz >= 16) {
+    iy = (s32)((f64)y / COBALT_ISLAND_GRID_LAYER_HEIGHT);
+    if (iy < 0 || iy >= COBALT_ISLAND_GRID_LAYERS || (ix = (s32)((f64)x / COBALT_ISLAND_GRID_CELL_WIDTH), ix < 0) ||
+        ix >= COBALT_ISLAND_GRID_SIDE || (iz = (s32)((f64)z / COBALT_ISLAND_GRID_CELL_WIDTH), iz < 0) ||
+        iz >= COBALT_ISLAND_GRID_SIDE) {
         return 0;
     }
     layer = D_8018A28C_scene_cobalt_island[iy];
     if (layer == NULL) {
         return 0;
     }
-    return layer[(iz * 16) + ix];
+    return layer[(iz * COBALT_ISLAND_GRID_SIDE) + ix];
 }

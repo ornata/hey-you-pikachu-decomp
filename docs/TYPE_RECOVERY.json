@@ -1565,7 +1565,7 @@
       "locations": {
         "raw_offset_candidates": {
           "gMicSessionUploadingDictionary + 1": [
-            "264:13"
+            "273:13"
           ]
         }
       }
@@ -1929,6 +1929,7 @@
         "player_profile.h",
         "player_state.h",
         "player_types.h",
+        "progress_field_ids.h",
         "progress_fields.h",
         "progress_storage.h",
         "random.h",
@@ -1957,15 +1958,15 @@
       "locations": {
         "raw_offset_candidates": {
           "actorState + 0x1B8": [
-            "600:50"
+            "601:83"
           ],
           "gRuntimePromptPanelLineCount - 1": [
-            "1069:75"
+            "1070:75"
           ]
         },
         "cast_offset_candidates": {
           "((u8 *)gPikachuActor) + 0x54": [
-            "599:31"
+            "600:31"
           ]
         }
       }
@@ -4061,15 +4062,15 @@
       "locations": {
         "cast_offset_candidates": {
           "((u8 *)gCurrentAreaConfiguration) + 0xC": [
-            "19:71",
-            "28:76",
-            "37:75",
-            "46:73",
-            "55:73",
-            "64:75",
-            "83:75",
-            "92:74",
-            "101:74"
+            "26:71",
+            "35:76",
+            "44:75",
+            "53:73",
+            "62:73",
+            "71:75",
+            "90:75",
+            "99:74",
+            "108:74"
           ]
         }
       }
@@ -4097,19 +4098,19 @@
       "locations": {
         "raw_offset_candidates": {
           "item + 8": [
-            "116:22"
+            "123:22"
           ],
           "item + 4": [
-            "116:43"
+            "123:43"
           ],
           "item + 0": [
-            "116:64"
+            "123:64"
           ]
         },
         "cast_offset_candidates": {
           "((u8 *)gCurrentAreaConfiguration) + 0xC": [
-            "113:70",
-            "123:61"
+            "120:70",
+            "130:61"
           ]
         }
       }
@@ -4134,15 +4135,15 @@
       "locations": {
         "raw_offset_candidates": {
           "residentIndex + 0x6A": [
-            "44:30"
+            "51:30"
           ],
           "state - 2": [
-            "68:50"
+            "75:50"
           ],
           "i + 0x6A": [
-            "110:30",
-            "116:30",
-            "191:30"
+            "117:30",
+            "123:30",
+            "198:30"
           ]
         }
       }
@@ -4167,15 +4168,15 @@
       "locations": {
         "raw_offset_candidates": {
           "residentIndex + 0x65": [
-            "45:30"
+            "52:30"
           ],
           "state - 2": [
-            "68:50"
+            "75:50"
           ],
           "i + 0x65": [
-            "122:30",
-            "128:30",
-            "182:30"
+            "129:30",
+            "135:30",
+            "189:30"
           ]
         }
       }
@@ -4202,15 +4203,15 @@
       "locations": {
         "raw_offset_candidates": {
           "residentIndex + 0x70": [
-            "45:30"
+            "52:30"
           ],
           "state - 2": [
-            "68:50"
+            "75:50"
           ],
           "i + 0x70": [
-            "107:30",
-            "113:30",
-            "173:30"
+            "114:30",
+            "120:30",
+            "180:30"
           ]
         }
       }
@@ -4232,19 +4233,19 @@
       "locations": {
         "raw_offset_candidates": {
           "index + 0x77": [
-            "55:31"
+            "62:31"
           ],
           "index + 0x7C": [
-            "56:30"
+            "63:30"
           ],
           "index + 5": [
-            "57:19"
+            "64:19"
           ],
           "index + 0x81": [
-            "58:31"
+            "65:31"
           ],
           "angle + 180": [
-            "68:106"
+            "75:106"
           ]
         }
       }

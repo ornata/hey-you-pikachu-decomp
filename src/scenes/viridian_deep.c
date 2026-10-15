@@ -1,3 +1,10 @@
+/// Geometry of the viridian deep spatial lookup grid.
+enum { VIRIDIAN_DEEP_GRID_LAYERS = 32, VIRIDIAN_DEEP_GRID_SIDE = 32 };
+/// Height of one lookup layer in world-coordinate units.
+#define VIRIDIAN_DEEP_GRID_LAYER_HEIGHT 5.0
+/// Width of a lookup cell along either horizontal axis in world-coordinate units.
+#define VIRIDIAN_DEEP_GRID_CELL_WIDTH 10.0
+
 #include "math_scalar.h"
 #include "math_angles.h"
 #include "maze_scatter.h"
@@ -106,25 +113,29 @@ void viridianDeepInitializeObjects(void) {
     }
 }
 
-extern s32 *D_8015DBC8_scene_viridian_deep[32];
+extern s32 *D_8015DBC8_scene_viridian_deep[VIRIDIAN_DEEP_GRID_LAYERS];
 /// Look up the deep-forest spatial-grid value at a world position.
 /// \param x World-space X coordinate.
 /// \param y World-space height coordinate.
 /// \param z World-space Z coordinate.
 /// \returns The spatial-cell value, or zero when the position maps outside the grid or to an absent layer.
+/// \pre Coordinates are finite and scaled indices fit a signed 32-bit integer.
+/// \note Negative positions within one cell of zero can select the zero-index cell.
+/// \note Original address: \c 0x80134658 in the viridian deep overlay.
 s32 viridianDeepGetSpatialCell(f32 x, f32 y, f32 z) {
     s32 *layer;
     s32 iy;
     s32 ix;
     s32 iz;
-    iy = (s32)((f64)y / 5.0);
-    if (iy < 0 || iy >= 32 || (ix = (s32)((f64)x / 10.0), ix < 0) || ix >= 32 || (iz = (s32)((f64)z / 10.0), iz < 0) ||
-        iz >= 32) {
+    iy = (s32)((f64)y / VIRIDIAN_DEEP_GRID_LAYER_HEIGHT);
+    if (iy < 0 || iy >= VIRIDIAN_DEEP_GRID_LAYERS || (ix = (s32)((f64)x / VIRIDIAN_DEEP_GRID_CELL_WIDTH), ix < 0) ||
+        ix >= VIRIDIAN_DEEP_GRID_SIDE || (iz = (s32)((f64)z / VIRIDIAN_DEEP_GRID_CELL_WIDTH), iz < 0) ||
+        iz >= VIRIDIAN_DEEP_GRID_SIDE) {
         return 0;
     }
     layer = D_8015DBC8_scene_viridian_deep[iy];
     if (layer == NULL) {
         return 0;
     }
-    return layer[(iz * 32) + ix];
+    return layer[(iz * VIRIDIAN_DEEP_GRID_SIDE) + ix];
 }

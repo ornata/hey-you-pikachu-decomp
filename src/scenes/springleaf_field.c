@@ -1,3 +1,10 @@
+/// Geometry of the springleaf field spatial lookup grid.
+enum { SPRINGLEAF_FIELD_GRID_LAYERS = 32, SPRINGLEAF_FIELD_GRID_SIDE = 32 };
+/// Height of one lookup layer in world-coordinate units.
+#define SPRINGLEAF_FIELD_GRID_LAYER_HEIGHT 5.0
+/// Width of a lookup cell along either horizontal axis in world-coordinate units.
+#define SPRINGLEAF_FIELD_GRID_CELL_WIDTH 10.0
+
 #include "random_scale.h"
 #include "scene_types.h"
 #include "math_scalar.h"
@@ -196,25 +203,29 @@ void springleafFieldInitializeObjects(void) {
     }
 }
 
-extern s32 *D_8017D658_scene_springleaf_field[32];
+extern s32 *D_8017D658_scene_springleaf_field[SPRINGLEAF_FIELD_GRID_LAYERS];
 /// Look up the field spatial-grid value at a world position.
 /// \param x World-space X coordinate.
 /// \param y World-space height coordinate.
 /// \param z World-space Z coordinate.
 /// \returns The spatial-cell value, or zero when the position maps outside the grid or to an absent layer.
+/// \pre Coordinates are finite and scaled indices fit a signed 32-bit integer.
+/// \note Negative positions within one cell of zero can select the zero-index cell.
+/// \note Original address: \c 0x80134A44 in the springleaf field overlay.
 s32 springleafFieldGetSpatialCell(f32 x, f32 y, f32 z) {
     s32 *layer;
     s32 iy;
     s32 ix;
     s32 iz;
-    iy = (s32)((f64)y / 5.0);
-    if (iy < 0 || iy >= 32 || (ix = (s32)((f64)x / 10.0), ix < 0) || ix >= 32 || (iz = (s32)((f64)z / 10.0), iz < 0) ||
-        iz >= 32) {
+    iy = (s32)((f64)y / SPRINGLEAF_FIELD_GRID_LAYER_HEIGHT);
+    if (iy < 0 || iy >= SPRINGLEAF_FIELD_GRID_LAYERS ||
+        (ix = (s32)((f64)x / SPRINGLEAF_FIELD_GRID_CELL_WIDTH), ix < 0) || ix >= SPRINGLEAF_FIELD_GRID_SIDE ||
+        (iz = (s32)((f64)z / SPRINGLEAF_FIELD_GRID_CELL_WIDTH), iz < 0) || iz >= SPRINGLEAF_FIELD_GRID_SIDE) {
         return 0;
     }
     layer = D_8017D658_scene_springleaf_field[iy];
     if (layer == NULL) {
         return 0;
     }
-    return layer[(iz * 32) + ix];
+    return layer[(iz * SPRINGLEAF_FIELD_GRID_SIDE) + ix];
 }

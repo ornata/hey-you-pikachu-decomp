@@ -1,3 +1,10 @@
+/// Geometry of the ochre fishing spatial lookup grid.
+enum { OCHRE_FISHING_GRID_LAYERS = 8, OCHRE_FISHING_GRID_SIDE = 8 };
+/// Height of one lookup layer in world-coordinate units.
+#define OCHRE_FISHING_GRID_LAYER_HEIGHT 20.0
+/// Width of a lookup cell along either horizontal axis in world-coordinate units.
+#define OCHRE_FISHING_GRID_CELL_WIDTH 20.0
+
 #include "random_scale.h"
 #include "random.h"
 #include "runtime_control.h"
@@ -148,25 +155,29 @@ void ochreFishingInitializeObjects(void) {
 void ochreFishingSceneNoOp(void) {
 }
 
-extern s32 *D_801551B0_scene_ochre_fishing[8];
+extern s32 *D_801551B0_scene_ochre_fishing[OCHRE_FISHING_GRID_LAYERS];
 /// Look up the fishing-scene spatial-grid value at a world position.
 /// \param x World-space X coordinate.
 /// \param y World-space height coordinate.
 /// \param z World-space Z coordinate.
 /// \returns The spatial-cell value, or zero when the position maps outside the grid or to an absent layer.
+/// \pre Coordinates are finite and scaled indices fit a signed 32-bit integer.
+/// \note Negative positions within one cell of zero can select the zero-index cell.
+/// \note Original address: \c 0x80134790 in the ochre fishing overlay.
 s32 ochreFishingGetSpatialCell(f32 x, f32 y, f32 z) {
     s32 *layer;
     s32 iy;
     s32 ix;
     s32 iz;
-    iy = (s32)((f64)y / 20.0);
-    if (iy < 0 || iy >= 8 || (ix = (s32)((f64)x / 20.0), ix < 0) || ix >= 8 || (iz = (s32)((f64)z / 20.0), iz < 0) ||
-        iz >= 8) {
+    iy = (s32)((f64)y / OCHRE_FISHING_GRID_LAYER_HEIGHT);
+    if (iy < 0 || iy >= OCHRE_FISHING_GRID_LAYERS || (ix = (s32)((f64)x / OCHRE_FISHING_GRID_CELL_WIDTH), ix < 0) ||
+        ix >= OCHRE_FISHING_GRID_SIDE || (iz = (s32)((f64)z / OCHRE_FISHING_GRID_CELL_WIDTH), iz < 0) ||
+        iz >= OCHRE_FISHING_GRID_SIDE) {
         return 0;
     }
     layer = D_801551B0_scene_ochre_fishing[iy];
     if (layer == NULL) {
         return 0;
     }
-    return layer[(iz * 8) + ix];
+    return layer[(iz * OCHRE_FISHING_GRID_SIDE) + ix];
 }

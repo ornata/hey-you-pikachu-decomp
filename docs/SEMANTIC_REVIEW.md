@@ -141,3 +141,17 @@ low-word millisecond timestamps and saved play-time accounting. They include
 unresolved and out-of-dispatch values because requests do not validate modes.
 Names for supported modes come from their update/render consumers and request
 sites; these bounded request cases do not validate UI rendering or save I/O.
+
+Spatial-grid cases explicitly identify one of the 23 scene overlays and retain
+its authenticated retail directory and cell data. Float arguments use the paired
+O32 register inputs established by the original sampler instructions. Each scene
+has nonzero interior and negative-near-zero observations, absent-layer controls,
+and lower/upper coordinate bounds. These check lookup geometry and preserve
+truncation at negative boundaries; raw cell values do not establish collision or
+event semantics. Vertical layer spacing and horizontal cell spacing have separate
+private names even when their numeric values coincide.
+
+Amplifier timing constants retain OS-tick units and exact original encodings for
+held-trigger refresh, release grace and off-state re-enabling. Static instruction
+and call-site evidence establishes those roles; the names do not certify physical
+amplifier timing or recognition behavior.

@@ -1,3 +1,4 @@
+#include "progress_field_ids.h"
 #include "runtime_mode.h"
 #include "area_catalog.h"
 #include "player_profile.h"
@@ -587,7 +588,7 @@ void runtimeSecondaryPlayerInputNoOp(void *unused) {
 /// \note Original decompilation identifier: \c func_8000B23C (0x8000B23C).
 void runtimeAccumulatePlayTime(void) {
     TRACE("total game play time = %d\n", gRuntimeElapsedSeconds - gRuntimePlayTimeCheckpointSeconds);
-    progressAddValue(4, gRuntimeElapsedSeconds - gRuntimePlayTimeCheckpointSeconds);
+    progressAddValue(PROGRESS_FIELD_PLAY_TIME_SECONDS, gRuntimeElapsedSeconds - gRuntimePlayTimeCheckpointSeconds);
     gRuntimePlayTimeCheckpointSeconds = gRuntimeElapsedSeconds;
 }
 
@@ -597,7 +598,7 @@ void runtimeAccumulatePlayTime(void) {
 /// \note Original decompilation identifier: \c func_8000B288 (0x8000B288).
 void runtimeAccumulateActorScriptTime(void) {
     u8 *actorState = *(u8 **)(((u8 *)gPikachuActor) + 0x54);
-    progressAddValue(5, (s32) * (f32 *)(*(u8 **)(actorState + 0x1B8) + 0x10));
+    progressAddValue(PROGRESS_FIELD_SCRIPT_TIME_SECONDS, (s32) * (f32 *)(*(u8 **)(actorState + 0x1B8) + 0x10));
 }
 
 /// Request a game-mode transition and account for elapsed play time.
@@ -770,9 +771,9 @@ void runtimeUpdateGameMode(void) {
         } else {
             status = eepromGetQueuedTransferState();
             switch (status) {
-            case 2:
+            case EEPROM_TRANSFER_WRITING:
                 break;
-            case 0:
+            case EEPROM_TRANSFER_IDLE:
                 savedPrompt = gSaveSuccessPromptLines;
                 do {
                     textPanelAppend((TextPanel *)&gRuntimePromptPanelLineCount, (void *)*savedPrompt);
@@ -782,7 +783,7 @@ void runtimeUpdateGameMode(void) {
                 gRuntimeSaveAcknowledgeButtons = 0x8000;
                 runtimeRequestGameModeChange(GAME_MODE_SAVE_ACKNOWLEDGMENT);
                 break;
-            case 5:
+            case EEPROM_TRANSFER_WRITE_FAILED:
                 for (i = 0; i < 5; i++) {
                     textPanelAppend((TextPanel *)&gRuntimePromptPanelLineCount, (void *)gSaveFailurePromptLines[i]);
                 }

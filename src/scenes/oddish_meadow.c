@@ -1,3 +1,10 @@
+/// Geometry of the oddish meadow spatial lookup grid.
+enum { ODDISH_MEADOW_GRID_LAYERS = 16, ODDISH_MEADOW_GRID_SIDE = 16 };
+/// Height of one lookup layer in world-coordinate units.
+#define ODDISH_MEADOW_GRID_LAYER_HEIGHT 10.0
+/// Width of a lookup cell along either horizontal axis in world-coordinate units.
+#define ODDISH_MEADOW_GRID_CELL_WIDTH 20.0
+
 #include "random_scale.h"
 #include "scene_types.h"
 #include "math_scalar.h"
@@ -237,25 +244,29 @@ void oddishMeadowInitializeObjects(void) {
     oddishMeadowInitializeRegularObjects();
 }
 
-extern s32 *D_80189430_scene_oddish_meadow[16];
+extern s32 *D_80189430_scene_oddish_meadow[ODDISH_MEADOW_GRID_LAYERS];
 /// Look up the meadow spatial-grid value at a world position.
 /// \param x World-space X coordinate.
 /// \param y World-space height coordinate.
 /// \param z World-space Z coordinate.
 /// \returns The spatial-cell value, or zero when the position maps outside the grid or to an absent layer.
+/// \pre Coordinates are finite and scaled indices fit a signed 32-bit integer.
+/// \note Negative positions within one cell of zero can select the zero-index cell.
+/// \note Original address: \c 0x80134B68 in the oddish meadow overlay.
 s32 oddishMeadowGetSpatialCell(f32 x, f32 y, f32 z) {
     s32 *layer;
     s32 iy;
     s32 ix;
     s32 iz;
-    iy = (s32)((f64)y / 10.0);
-    if (iy < 0 || iy >= 16 || (ix = (s32)((f64)x / 20.0), ix < 0) || ix >= 16 || (iz = (s32)((f64)z / 20.0), iz < 0) ||
-        iz >= 16) {
+    iy = (s32)((f64)y / ODDISH_MEADOW_GRID_LAYER_HEIGHT);
+    if (iy < 0 || iy >= ODDISH_MEADOW_GRID_LAYERS || (ix = (s32)((f64)x / ODDISH_MEADOW_GRID_CELL_WIDTH), ix < 0) ||
+        ix >= ODDISH_MEADOW_GRID_SIDE || (iz = (s32)((f64)z / ODDISH_MEADOW_GRID_CELL_WIDTH), iz < 0) ||
+        iz >= ODDISH_MEADOW_GRID_SIDE) {
         return 0;
     }
     layer = D_80189430_scene_oddish_meadow[iy];
     if (layer == NULL) {
         return 0;
     }
-    return layer[(iz * 16) + ix];
+    return layer[(iz * ODDISH_MEADOW_GRID_SIDE) + ix];
 }

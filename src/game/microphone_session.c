@@ -148,6 +148,13 @@ void micSessionDisableAmplifier(void) {
     TRACE("AMP_OFF_B\n");
 }
 
+/// OS clock-tick intervals governing amplifier requests for this session.
+enum {
+    MIC_AMPLIFIER_TRIGGER_REFRESH_TICKS = 0xDF84758, ///< Refresh an active held-trigger request.
+    MIC_AMPLIFIER_RELEASE_GRACE_TICKS = 0xABA95,     ///< Retain amplification briefly after trigger release.
+    MIC_AMPLIFIER_OFF_REENABLE_TICKS = 0x1AD2748     ///< Re-enable amplification after an off interval.
+};
+
 /// Maintain the microphone amplifier according to trigger state and timing.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80003CF8 (0x80003CF8).
@@ -161,16 +168,18 @@ void micSessionUpdateAmplifier(void) {
         return;
     }
     if (gMicSessionTriggerActive != 0 &&
-        (gMicSessionPreviousTriggerActive == 0 || now - gMicSessionLastAmplifierOnTicks >= 0xDF84758)) {
+        (gMicSessionPreviousTriggerActive == 0 ||
+         now - gMicSessionLastAmplifierOnTicks >= MIC_AMPLIFIER_TRIGGER_REFRESH_TICKS)) {
         micSessionEnableAmplifier();
         return;
     }
     if (voiceRecognitionIsAmplifierEnabled() != 0) {
-        if (gMicSessionTriggerActive == 0 && (last = gMicSessionTriggerReleaseTicks, now - last >= 0xABA95) &&
+        if (gMicSessionTriggerActive == 0 &&
+            (last = gMicSessionTriggerReleaseTicks, now - last >= MIC_AMPLIFIER_RELEASE_GRACE_TICKS) &&
             last > gMicSessionLastAmplifierOffTicks) {
             micSessionDisableAmplifier();
         }
-    } else if (now - gMicSessionLastAmplifierOffTicks >= 0x1AD2748) {
+    } else if (now - gMicSessionLastAmplifierOffTicks >= MIC_AMPLIFIER_OFF_REENABLE_TICKS) {
         micSessionEnableAmplifier();
     }
 }
@@ -390,7 +399,7 @@ void micSessionDispatchRequest(MicConfigurationRequest *request) {
 void micSessionInitialize(s32 portMask) {
     gMicSessionTriggerToggleMode = 0;
     gMicSessionTriggerPortMask = 1;
-    gMicSessionTriggerButtonMask = 0x2000;
+    gMicSessionTriggerButtonMask = Z_TRIG;
     gMicSessionEnabled = 0;
     gMicSessionRecognitionOverride = 0;
     gMicSessionRecognitionFollowsTrigger = 1;
