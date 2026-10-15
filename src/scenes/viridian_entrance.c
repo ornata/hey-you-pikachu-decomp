@@ -78,8 +78,8 @@ void viridianEntranceInitializeModeTwoObjects(void) {
 
     viridianEntranceCreateSceneProp();
     for (i = 0; i < 6; i++) {
-        actorCreateForKind(ACTOR_KIND_PIKACHU_ALTERNATE, 180.0F, 1.5F, 215.0F, 0, 0.0F, gCurrentAreaConfiguration->objectScale,
-                           D_8014CF3C_scene_viridian_entrance, i);
+        actorCreateForKind(ACTOR_KIND_PIKACHU_ALTERNATE, 180.0F, 1.5F, 215.0F, 0, 0.0F,
+                           gCurrentAreaConfiguration->objectScale, D_8014CF3C_scene_viridian_entrance, i);
     }
 }
 

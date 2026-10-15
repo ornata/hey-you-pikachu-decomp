@@ -17,16 +17,16 @@ typedef s32 (*ActorActionInitializer)(u8 *actor);
 /// Names, callbacks and cue programs are borrowed for the lifetime of playback.
 /// This resource layout corresponds to actor-state bytes 0xEC through 0x117.
 typedef struct ActionDefinition {
-    s32 id;                                     ///< Index of this definition in the action table.
-    char *name;                                 ///< Borrowed display/debug name.
-    f32 gravityScale; ///< Multiplier applied to the actor's gravity acceleration while this action is active.
-    s32 attributes;                             ///< Playback kind and action behavior flags.
-    s16 motionId;                               ///< Motion archive identifier.
-    u8 initialPoseId;                           ///< Pose selector at the beginning of the action.
-    u8 finalPoseId;                             ///< Pose selector at the end of the action.
-    s16 continuationAction;                     ///< Next action identifier, or an out-of-range termination sentinel.
-    u8 unknown016[2];                           ///< Unresolved resource bytes retained without assigning meaning.
-    f32 movementScale;                          ///< Action movement multiplier or timed-playback duration.
+    s32 id;                 ///< Index of this definition in the action table.
+    char *name;             ///< Borrowed display/debug name.
+    f32 gravityScale;       ///< Multiplier applied to the actor's gravity acceleration while this action is active.
+    s32 attributes;         ///< Playback kind and action behavior flags.
+    s16 motionId;           ///< Motion archive identifier.
+    u8 initialPoseId;       ///< Pose selector at the beginning of the action.
+    u8 finalPoseId;         ///< Pose selector at the end of the action.
+    s16 continuationAction; ///< Next action identifier, or an out-of-range termination sentinel.
+    u8 unknown016[2];       ///< Unresolved resource bytes retained without assigning meaning.
+    f32 movementScale;      ///< Action movement multiplier or timed-playback duration.
     ActorActionInitializer initializer;         ///< Optional action acceptance/continuation callback.
     ActorActionUpdateCallback update;           ///< Optional per-frame behavior callback.
     ActorActionCueCommand *primaryCueProgram;   ///< Borrowed primary cue program or selection collection.

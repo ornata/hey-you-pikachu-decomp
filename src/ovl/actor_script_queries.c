@@ -37,8 +37,6 @@
 #include "scene_types.h"
 #include "object_types.h"
 
-
-
 /// Find an eligible item of the requested kind near an actor's facing direction, honoring its interaction cooldown.
 /// \param actor Actor supplying the reference position, facing, and cooldown.
 /// \param kind Item kind to search for.
@@ -64,7 +62,6 @@ s16 actorFindInteractableItemKind(u8 *actor, s32 kind, f32 distance) {
     return ((ItemStatePrefix *)rec)->kind;
 }
 
-
 /// Measure an object's distance from the world origin.
 /// \param object Object whose world position is queried.
 /// \returns The approximate three-dimensional distance from the world origin.
@@ -77,8 +74,6 @@ f32 objectGetOriginDistance(u8 *object) {
     pos[2] = ((RuntimeObjectPrefix *)object)->worldPosition[2];
     return vector3LengthApprox(pos);
 }
-
-
 
 /// Measure the distance between an object and an available target.
 /// \param object Object providing the reference position.
@@ -208,7 +203,6 @@ u16 actorGetMovementCollisionFlags(u8 *actor) {
     return (u16)((ActorScriptState *)actorState)->movementCollisionFlags;
 }
 
-
 #include "script_object_queries.h"
 /// Find an item near an actor within its facing cone and the requested filters.
 /// \param actor Actor supplying the search origin and facing.
@@ -220,10 +214,12 @@ u16 actorGetMovementCollisionFlags(u8 *actor) {
 /// \param weighted Nonzero to prefer items with greater selection priority and reset the selected item's priority.
 /// \returns The best qualifying item handle, or zero when none is found.
 /// \note Original decompilation identifier: \c func_8011750C (0x8011750C).
-s32 actorFindItemHandleInFacingCone(u8 *actor, f32 distance, f32 cone, s32 minKind, s32 maxKind, s32 filter, s32 weighted) {
+s32 actorFindItemHandleInFacingCone(u8 *actor, f32 distance, f32 cone, s32 minKind, s32 maxKind, s32 filter,
+                                    s32 weighted) {
     u8 *rec = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    u8 *item = itemFindNearest(((RuntimeObjectPrefix *)actor)->worldPosition, distance, ((ActorScriptState *)rec)->orientation[0],
-                               ((ActorScriptState *)rec)->orientation[1], cone, minKind, maxKind, filter, weighted);
+    u8 *item = itemFindNearest(((RuntimeObjectPrefix *)actor)->worldPosition, distance,
+                               ((ActorScriptState *)rec)->orientation[0], ((ActorScriptState *)rec)->orientation[1],
+                               cone, minKind, maxKind, filter, weighted);
 
     if (item == NULL) {
         return 0;
@@ -332,7 +328,6 @@ s32 actorChooseEscapePositionFromHandle(u8 *actor, s32 handle) {
     return objectGetScriptCategory(actor, handle);
 }
 
-
 /// Choose an escape destination away from the player and disable ongoing target tracking.
 /// \param actor Actor whose escape destination is selected.
 /// \returns Nothing.
@@ -345,7 +340,6 @@ void actorChooseEscapePositionFromPlayer(u8 *actor) {
     ((ActorScriptState *)actorState)->targetDistanceAllowance = 0.0F;
     actorChooseEscapePosition(actor, (f32 *)&gPlayerState);
 }
-
 
 /// Get the handle of an actor's available target.
 /// \param object Actor whose target is requested.
@@ -518,7 +512,6 @@ void actorSetDefaultActionMode(u8 *actor, s32 mode) {
     ((ActorScriptState *)actorState)->defaultActionMode = mode;
 }
 
-
 /// Start an object's action script with a specified time limit.
 /// \param object Address of the object that will execute the action script.
 /// \param scriptId Valid identifier of the action script to start.
@@ -540,7 +533,6 @@ extern s32 gPlayerHeldItemHandle;
 s32 playerGetHeldItemHandle(void) {
     return gPlayerHeldItemHandle;
 }
-
 
 /// Consider an object for preferred interaction and test whether it lies in an interaction region.
 /// \param object Object to evaluate as an interaction candidate.
@@ -568,14 +560,12 @@ void playerSetInputKeepMask(s32 mask) {
     *(s16 *)(gPlayerControllerPort + 4) = mask;
 }
 
-
 /// Get the player input blocked by the current control mask.
 /// \returns Blocked button bits, including bits 64 and 128 for sufficiently strong blocked analog input.
 /// \note Original decompilation identifier: \c func_80117B20 (0x80117B20).
 u16 playerGetBlockedInput(void) {
     return *(u16 *)(gPlayerControllerPort + 6) & 0xFFFF;
 }
-
 
 /// Request a player interaction mode targeting an actor.
 /// \param actor Actor to use as the interaction target.
@@ -585,7 +575,6 @@ u16 playerGetBlockedInput(void) {
 void playerSetActorInteractionMode(u8 *actor, s32 mode) {
     playerSetCompanionControlMode((u8 *)&gPlayerState, mode, 0, ((RuntimeObjectPrefix *)actor)->handle);
 }
-
 
 /// Query the player's current interaction mode.
 /// \returns The primary player companion-control selection.
@@ -603,7 +592,6 @@ s32 playerQueryInteractionMode(void) {
 s32 areaGetPathPointCount(s32 path) {
     return gCurrentAreaConfiguration->paths[path].count;
 }
-
 
 /// Get one world-space coordinate of a path point in the current area.
 /// \param path Valid path index in the current area.
@@ -623,9 +611,6 @@ f32 areaGetPathPointCoordinate(s32 path, s32 point, s32 axis) {
     }
     return -65536.0F;
 }
-
-
-
 
 /// Find the nearest actor to a world position within a kind range.
 /// \param object Object address to exclude from the search.
@@ -663,8 +648,6 @@ s32 itemFindHandleNearPosition(f32 *position, f32 distance, s32 minKind, s32 max
     return ((RuntimeObjectPrefix *)item)->handle;
 }
 
-
-
 /// Find the nearest object within a facing cone and kind range.
 /// \param object Object address supplying the search position and facing, excluded from the search.
 /// \param minKind Inclusive minimum object kind.
@@ -674,15 +657,15 @@ s32 itemFindHandleNearPosition(f32 *position, f32 distance, s32 minKind, s32 max
 /// \returns The nearest qualifying object handle, or zero when none is found.
 /// \note Original decompilation identifier: \c func_80117CEC (0x80117CEC).
 s32 objectFindNearestHandleInFacingCone(u8 *object, s32 minKind, s32 maxKind, f32 distance, f32 cone) {
-    u8 *spawned = objectFindNearestTargetInView(object, (Vec3f *)((RuntimeObjectPrefix *)object)->worldPosition, distance, ((RuntimeObjectPrefix *)object)->rotation, cone, minKind, maxKind);
+    u8 *spawned =
+        objectFindNearestTargetInView(object, (Vec3f *)((RuntimeObjectPrefix *)object)->worldPosition, distance,
+                                      ((RuntimeObjectPrefix *)object)->rotation, cone, minKind, maxKind);
 
     if (spawned == NULL) {
         return 0;
     }
     return ((RuntimeObjectPrefix *)spawned)->handle;
 }
-
-
 
 /// Find the nearest object to a world position within a kind range.
 /// \param object Object address to exclude from the search.
@@ -701,8 +684,6 @@ s32 objectFindNearestHandleFromPosition(u8 *object, f32 *position, s32 minKind, 
     }
     return ((RuntimeObjectPrefix *)spawned)->handle;
 }
-
-
 
 /// Set an available object's uniform scale relative to its area scaling convention.
 /// \param handle Handle of the object to resize; unavailable handles have no effect. Area-scaled objects require an initialized area with nonzero scale.
@@ -730,7 +711,6 @@ void objectSetUniformScaleByHandle(s32 handle, f32 scale) {
         ((RuntimeObjectPrefix *)obj)->radius = ((RuntimeObjectPrefix *)obj)->radius * scale / old;
     }
 }
-
 
 /// Get an available object's uniform scale relative to its area scaling convention.
 /// \param handle Handle of the object to query.
@@ -838,7 +818,6 @@ f32 objectGetWorldCoordinateByHandle(s32 handle, s32 axis) {
     return -65536.0F;
 }
 
-
 /// Get one coordinate of a ground position offset from an actor's heading.
 /// \param actor Actor supplying the reference position and heading.
 /// \param distance Horizontal distance from the actor.
@@ -862,8 +841,6 @@ f32 actorGetGroundOffsetCoordinate(u8 *actor, f32 distance, f32 angle, s32 axis)
     q[2] = p[2];
     return q[axis];
 }
-
-
 
 /// Query the ground material at an offset along an actor's heading.
 /// \param actor Actor supplying the reference position and heading.
@@ -973,7 +950,6 @@ f32 actorGetFollowingPathPointCoordinate(u8 *object, s32 handle, s32 axis) {
     return -65536.0F;
 }
 
-
 /// Get one coordinate of a cave's first scene anchor.
 /// \param handle Handle of a cave object; other object kinds are unsupported.
 /// \param axis Nonnegative coordinate axis: zero for X, one for Y, or two for Z.
@@ -1012,7 +988,6 @@ f32 caveGetSecondAnchorCoordinate(s32 handle, s32 axis) {
     }
     return -65536.0F;
 }
-
 
 /// Get the landmark associated with a cave.
 /// \param handle Handle of a cave with a valid linked landmark; other object kinds are unsupported.
@@ -1215,7 +1190,6 @@ s32 itemHasPlayerPickupHistory(u8 *item) {
     return 0;
 }
 
-
 /// Force release of the actor's held item and report its kind.
 /// \param actor Actor with initialized state whose held handle identifies an item when live.
 /// \returns The resolved item kind, or zero when no live held item is found.
@@ -1237,8 +1211,6 @@ s16 actorReleaseHeldItem(u8 *actor) {
     return ((ItemStatePrefix *)sp1C)->kind;
 }
 
-
-
 /// Find the nearest actor in an object facing cone, honoring script actor-kind aliases.
 /// \param object Live object providing the world-space search origin and facing, excluded from the search.
 /// \param minKind Inclusive minimum kind.
@@ -1248,7 +1220,8 @@ s16 actorReleaseHeldItem(u8 *actor) {
 /// \returns The nearest qualifying actor handle, or zero when none is found.
 /// \note Original decompilation identifier: \c func_80118984 (0x80118984).
 s32 actorFindNearestHandleInFacingCone(u8 *object, s32 minKind, s32 maxKind, f32 distance, f32 cone) {
-    u8 *spawned = actorFindNearestInRange(object, (Vec3f *)((RuntimeObjectPrefix *)object)->worldPosition, distance, ((RuntimeObjectPrefix *)object)->rotation, cone, minKind, maxKind);
+    u8 *spawned = actorFindNearestInRange(object, (Vec3f *)((RuntimeObjectPrefix *)object)->worldPosition, distance,
+                                          ((RuntimeObjectPrefix *)object)->rotation, cone, minKind, maxKind);
 
     if (spawned == NULL) {
         return 0;
@@ -1272,7 +1245,6 @@ void actorTrackEscapeFromPlayerSecondaryObject(u8 *actor) {
     ((ActorScriptState *)actorState)->targetMode = ACTOR_TARGET_ESCAPE;
 }
 
-
 /// Select the player's primary object as an actor's tracked movement target.
 /// \param actor Actor whose tracked target and follow mode are changed.
 /// \returns Nothing.
@@ -1284,7 +1256,6 @@ void actorTrackPlayerPrimaryObject(u8 *actor) {
     ((ActorScriptState *)actorState)->targetHandle = gPlayerModeState[0];
     ((ActorScriptState *)actorState)->targetMode = ACTOR_TARGET_FOLLOW;
 }
-
 
 /// Set the primary camera position and look-at target from script arguments.
 /// \param vm Script VM containing position X, Y, Z followed by target X, Y, Z, with target Z on top of the stack.

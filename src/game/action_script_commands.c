@@ -45,8 +45,6 @@
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-
-
 /// Common scalar argument pair in action bytecode; interpretation depends on the opcode.
 typedef struct ActionScalarArguments {
     s32 integer; ///< Integer selector or resource identifier supplied by the command.
@@ -102,7 +100,6 @@ s32 audioChangeCurrentCue(s32 cue, f64 fadeIn, f64 fadeOut) {
     return gCurrentAudioCuePlaybackHandle;
 }
 
-
 /// Records the requested playback rate and applies it to the current cue when that cue permits rate changes.
 /// \param rate Positive playback rate multiplier; one uses the original rate.
 /// \returns One if the playback rate was applied, or zero if no playback was updated.
@@ -114,7 +111,6 @@ s32 audioSetCurrentCueRate(f64 rate) {
     }
     return audioSetSequenceRate(gCurrentAudioCuePlaybackHandle, gCurrentAudioCuePlaybackRate);
 }
-
 
 /// Starts an audio cue at full volume.
 /// \param cue Valid cue ID in the initialized current audio cue bank.
@@ -344,12 +340,12 @@ const s32 gActionLaunchThrowFlags[8] = {1, 1, 1, 1, 1, 1, 1, 0};
 /// Trajectory selectors carried by ACTION_CUE_LAUNCH_HELD_ITEM.
 /// Directions describe positive command speeds; these are not item modes or VM opcodes.
 typedef enum ActionLaunchKind {
-    ACTION_LAUNCH_PLAYER_OR_FORWARD = 0, ///< Aim horizontally at the targeted player, or along the actor's heading.
-    ACTION_LAUNCH_FORWARD = 1,        ///< Actor heading with a positive vertical component.
-    ACTION_LAUNCH_OFFSET_HEADING = 2, ///< Actor heading plus 240 degrees, with a positive vertical component.
-    ACTION_LAUNCH_STEEP_UPWARD = 3,   ///< Actor heading with the largest positive vertical component.
-    ACTION_LAUNCH_DOWNWARD = 4,       ///< Actor heading with a negative vertical component.
-    ACTION_LAUNCH_TARGET_POSITION = 5, ///< Aim from the item's world position toward the stored target.
+    ACTION_LAUNCH_PLAYER_OR_FORWARD = 0,   ///< Aim horizontally at the targeted player, or along the actor's heading.
+    ACTION_LAUNCH_FORWARD = 1,             ///< Actor heading with a positive vertical component.
+    ACTION_LAUNCH_OFFSET_HEADING = 2,      ///< Actor heading plus 240 degrees, with a positive vertical component.
+    ACTION_LAUNCH_STEEP_UPWARD = 3,        ///< Actor heading with the largest positive vertical component.
+    ACTION_LAUNCH_DOWNWARD = 4,            ///< Actor heading with a negative vertical component.
+    ACTION_LAUNCH_TARGET_POSITION = 5,     ///< Aim from the item's world position toward the stored target.
     ACTION_LAUNCH_RANDOMIZED_HEADING = 6,  ///< Randomize speed and heading around the actor's heading plus 200 degrees.
     ACTION_LAUNCH_SCATTER_WITH_EFFECTS = 7 ///< Full-circle random heading with linked and falling-particle effects.
 } ActionLaunchKind;
@@ -521,7 +517,6 @@ void effectCreateVerticalStack(u8 *position) {
     wispEffectCreate(1, ((f32 *)position)[0], ((f32 *)position)[1] + 39.5F, ((f32 *)position)[2]);
 }
 
-
 /// Gets the position to use when directing an actor’s effects toward its target.
 /// \param actor Actor whose target position is requested.
 /// \returns A borrowed address of the tracking target’s world position, or the actor’s stored target position when no tracking target is available; valid while its owner remains live.
@@ -537,7 +532,6 @@ s32 actorGetEffectTargetPosition(u8 *actor) {
     }
     return actorStateAddress + 0x1EC;
 }
-
 
 /// Attempts to transform an item into its configured replacement.
 /// \param id Handle of the item to transform.
@@ -751,8 +745,7 @@ typedef struct FollowingEffectArguments {
 } FollowingEffectArguments;
 
 typedef char FollowingEffectArgumentsSizeCheck[(sizeof(FollowingEffectArguments) == 8) ? 1 : -1];
-typedef char
-    FollowingEffectLifetimeOffsetCheck[(((u32) & ((FollowingEffectArguments *)0)->lifetime) == 4) ? 1 : -1];
+typedef char FollowingEffectLifetimeOffsetCheck[(((u32) & ((FollowingEffectArguments *)0)->lifetime) == 4) ? 1 : -1];
 
 /// Create a flickering visual effect that follows the actor's default part.
 /// \param actor Actor whose default part receives the effect.
@@ -1169,7 +1162,6 @@ void actorUpdateActionScript(u8 *actor, ActorActionCueCommand **nextCommand, f32
 out:
     *nextCommand = c;
 }
-
 
 /// Select an action script for the actor's current action state.
 /// \param actor Actor whose action state selects the script.

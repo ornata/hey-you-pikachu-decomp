@@ -93,9 +93,9 @@ s32 soundEffectPlayerPlay(SoundEffectPlayer *player, ALSound *sound) {
             if (level > 32767) {
                 level = 32767;
             }
-            n_alSynStartVoiceParams(&player->voices[i].voice, sound->wavetable,
-                                    player->voices[i].basePitch * player->voices[i].rate, level,
-                                    player->mode == AUDIO_OUTPUT_STEREO ? player->voices[i].pan : AL_PAN_CENTER, player->voices[i].mix, 0);
+            n_alSynStartVoiceParams(
+                &player->voices[i].voice, sound->wavetable, player->voices[i].basePitch * player->voices[i].rate, level,
+                player->mode == AUDIO_OUTPUT_STEREO ? player->voices[i].pan : AL_PAN_CENTER, player->voices[i].mix, 0);
             break;
         }
     }

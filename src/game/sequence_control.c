@@ -4,7 +4,6 @@
 #include "common.h"
 #include "midi_sequence_types.h"
 
-
 /// Initialize sequence playback with no pending control requests.
 /// \param state Sequence control state to initialize.
 /// \returns Nothing.
@@ -16,7 +15,6 @@ void sequenceControlInitialize(SequenceControlState *state) {
     state->immediateLevel = -1.0;
     midiSequenceInitialize(&state->playback);
 }
-
 
 /// Request playback and an engine reset for a stopped sequence.
 /// \param state Initialized sequence control state.
@@ -131,8 +129,7 @@ s32 sequenceControlReadEvent(SequenceControlState *state, u8 *event, s32 capacit
         return result;
     }
     if (state->fadeDuration >= 0.0) {
-        result = sequenceControlEncodeVolumeEvent(state->fadeDuration,
-                                                  state->fadeLevel, event);
+        result = sequenceControlEncodeVolumeEvent(state->fadeDuration, state->fadeLevel, event);
         state->fadeDuration = -1.0;
         *delta = 0.0;
         return result;

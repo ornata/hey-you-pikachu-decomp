@@ -74,7 +74,7 @@ typedef struct InteractionProxyState {
     s32 context;           ///< Caller context; consumable proxies use it as remaining uses.
     s32 interactionResult; ///< Player interaction classification supplied by the proxy.
     s32 metadata;          ///< Caller metadata sent with a consumption message.
-    char *description; ///< Borrowed description string, valid throughout the proxy lifetime.
+    char *description;     ///< Borrowed description string, valid throughout the proxy lifetime.
 } InteractionProxyState;
 typedef char InteractionProxyStateSizeCheck[(sizeof(InteractionProxyState) == 0x10) ? 1 : -1];
 #define PROXY_OFFSET(field) ((u32) & (((InteractionProxyState *)0)->field))
@@ -160,8 +160,8 @@ PlayerInteractionAction gPlayerInteractionActionHandlers[10] = {
 /// Private behavior definition supplying callbacks and active control permissions.
 typedef struct {
     PlayerModeUpdate update; ///< Per-input-update callback.
-    PlayerModeLeave leave; ///< Optional mode completion callback.
-    s32 permissions; ///< Active control permissions for this mode.
+    PlayerModeLeave leave;   ///< Optional mode completion callback.
+    s32 permissions;         ///< Active control permissions for this mode.
 } PlayerMode;
 typedef char PlayerModeSizeCheck[(sizeof(PlayerMode) == 0xC) ? 1 : -1];
 typedef char PlayerModeLeaveEntryOffsetCheck[((u32) & ((PlayerMode *)0)->leave == 4) ? 1 : -1];
@@ -223,8 +223,8 @@ PlayerMode gPlayerModes[32] = {
 
 /// Private control-scheme definition selecting behavior, input port and retained buttons.
 typedef struct {
-    s32 mode; ///< Behavior mode selected by this scheme.
-    s32 port; ///< Controller port, or minus one for neutral input.
+    s32 mode;     ///< Behavior mode selected by this scheme.
+    s32 port;     ///< Controller port, or minus one for neutral input.
     u16 keepMask; ///< Controller buttons and stick-axis flags retained by input filtering.
 } PlayerControlScheme;
 typedef char PlayerControlSchemeSizeCheck[(sizeof(PlayerControlScheme) == 0xC) ? 1 : -1];
@@ -251,7 +251,6 @@ PlayerControlScheme gPlayerControlSchemes[28] = {
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;
-
 
 /// Set both the current and saved player control permissions.
 /// \param player Player record receiving the permissions.
@@ -284,7 +283,8 @@ void playerSaveCompanionControlMode(u8 *player) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8010E9A8 (0x8010E9A8).
 void playerRestoreCompanionControlMode(u8 *player) {
-    playerSetCompanionControlMode(player, ((PlayerControlPrefix *)player)->savedCompanionMode, 0, ((PlayerControlPrefix *)player)->savedCompanionTarget);
+    playerSetCompanionControlMode(player, ((PlayerControlPrefix *)player)->savedCompanionMode, 0,
+                                  ((PlayerControlPrefix *)player)->savedCompanionTarget);
 }
 
 /// Create and register the object hierarchy used by player control.
@@ -946,7 +946,6 @@ block_10:
     return 1;
 }
 
-
 /// Request the transition to the saved-game confirmation prompt.
 /// \param unused Unused interaction-action argument.
 /// \returns One, indicating that the transition was requested.
@@ -955,8 +954,6 @@ s32 playerRequestSavePrompt(u8 *unused) {
     runtimeRequestGameModeChange(GAME_MODE_FADE_TO_SAVE_PROMPT);
     return 1;
 }
-
-
 
 /// Use one unit of the selected interaction proxy, notify Pikachu, and remove the proxy when exhausted.
 /// \param player Player record whose current target is a consumable interaction proxy.
@@ -988,7 +985,6 @@ s32 playerConsumeInteractionProxy(u8 *player) {
     return 1;
 }
 
-
 /// Attempt to pick up the current interaction target.
 /// \param player Player record containing the target item handle.
 /// \returns One if the item was picked up, or zero if it is unavailable or cannot be picked up.
@@ -996,7 +992,6 @@ s32 playerConsumeInteractionProxy(u8 *player) {
 s32 playerPickUpInteractionTarget(u8 *player) {
     return playerPickUpItem(((PlayerControlPrefix *)player)->interactionTarget);
 }
-
 
 /// Request Pikachu cooperation with an eligible interaction target.
 /// \param player Player record containing the current interaction target.
@@ -1108,7 +1103,6 @@ void playerResumeNormalControl(void) {
     gPlayerPermissions = gPlayerSavedPermissions;
 }
 
-
 /// Handle a permitted menu request by opening the system menu or toolbox appropriate to current progress.
 /// \param player Player record providing menu permissions and tracked playback.
 /// \param controller Controller state supplying newly pressed buttons.
@@ -1205,7 +1199,6 @@ s32 playerTryEnterStationaryLook(u8 *player, ControllerState *controller) {
     }
     return 0;
 }
-
 
 /// Handle a permitted companion-control toggle request, selecting Pikachu or follow mode according to saved
 /// preferences.
@@ -1313,8 +1306,9 @@ void playerUpdateNormalControl(u8 *player, ControllerState *controller) {
     f32 sp24;
     f32 sp20;
 
-    if ((playerTryOpenMenu(player, controller) == 0) && (playerTryActivateInteraction(player, controller) == 0) && (playerTryInspectTarget(player, controller) == 0) &&
-        (playerTryEnterStationaryLook(player, controller) == 0) && (playerToggleCompanionControl(player, controller) == 0)) {
+    if ((playerTryOpenMenu(player, controller) == 0) && (playerTryActivateInteraction(player, controller) == 0) &&
+        (playerTryInspectTarget(player, controller) == 0) && (playerTryEnterStationaryLook(player, controller) == 0) &&
+        (playerToggleCompanionControl(player, controller) == 0)) {
         playerUpdateCompanionControl(player, controller);
         playerCalculateMovementInput(controller, player, &sp24, &sp20);
         playerStepGroundMovement(player, sp24, sp20);
@@ -1336,16 +1330,16 @@ void playerUpdateStationaryLook(u8 *player, ControllerState *controller) {
         if ((controller->pressed & 0x404) ||
             ((mode = ((PlayerControlPrefix *)player)->modeState.companionHoldRequired, mode != 0) &&
              !(controller->held & 0x10)) ||
-            ((mode == 0) && (controller->held & 0x10)) ||
-            playerTryActivateInteraction(player, controller) != 0 ||
+            ((mode == 0) && (controller->held & 0x10)) || playerTryActivateInteraction(player, controller) != 0 ||
             playerToggleCompanionControl(player, controller) != 0 || playerTryOpenMenu(player, controller) != 0) {
             playerResumeNormalControl();
             return;
         }
         dx = playerCalculateYawInput(player, controller, 0);
-        playerSetViewAngles(player, ((PlayerControlPrefix *)player)->yaw + dx,
-                            playerCalculatePitchInput(player, controller, progressGetValue(PROGRESS_FIELD_LOOK_FORWARD_UP)) +
-                                (*(f32 *)((s8 *)player + (u32) & ((PlayerControlPrefix *)0)->pitch)));
+        playerSetViewAngles(
+            player, ((PlayerControlPrefix *)player)->yaw + dx,
+            playerCalculatePitchInput(player, controller, progressGetValue(PROGRESS_FIELD_LOOK_FORWARD_UP)) +
+                (*(f32 *)((s8 *)player + (u32) & ((PlayerControlPrefix *)0)->pitch)));
         playerStepGroundMovement(player, 0.0F, 0.0F);
         playerUpdateAreaEvents(player);
     }
@@ -1371,7 +1365,6 @@ void playerToggleViewShake(u8 *player) {
     }
     ((PlayerControlPrefix *)player)->viewShake = -0.2F;
 }
-
 
 /// End player stun feedback by clearing view shake, fading the screen flash, and stopping rumble.
 /// \param player Player record whose view shake is cleared.
@@ -1652,7 +1645,8 @@ void playerUpdateRestrictedMovement(u8 *player, ControllerState *controller) {
     f32 sp2C;
     f32 sp28;
 
-    if ((playerTryOpenMenu(player, controller) == 0) && (playerTryActivateInteraction(player, controller) == 0) && (playerTryInspectTarget(player, controller) == 0)) {
+    if ((playerTryOpenMenu(player, controller) == 0) && (playerTryActivateInteraction(player, controller) == 0) &&
+        (playerTryInspectTarget(player, controller) == 0)) {
         if (controller->stickY != 0) {
             controller->stickX = 0;
         }
@@ -1711,7 +1705,6 @@ void playerUpdateRestrictedControl(u8 *player, ControllerState *controller) {
         }
     }
 }
-
 
 /// Advance view control and permitted interactions for a player mode without movement updates.
 /// \param player Player record whose view and control scheme may change.
@@ -1782,7 +1775,6 @@ void playerUpdateHeldItemInspection(u8 *player, ControllerState *controller) {
     }
 }
 
-
 /// Advance the configured smooth camera transition and apply the resulting primary camera view.
 /// \param player Player record containing the configured camera transition.
 /// \param unused Unused mode-update argument.
@@ -1799,10 +1791,12 @@ void playerUpdateCameraTransition(u8 *player, ControllerState *unused) {
     if (((PlayerControlPrefix *)player)->modeState.cameraRemaining < 0.0F) {
         ((PlayerControlPrefix *)player)->modeState.cameraRemaining = 0.0F;
     }
-    vector3InterpolateSmoothTimed(((PlayerControlPrefix *)player)->modeState.cameraEndEye, ((PlayerControlPrefix *)player)->modeState.cameraStartEye, sp3C,
+    vector3InterpolateSmoothTimed(((PlayerControlPrefix *)player)->modeState.cameraEndEye,
+                                  ((PlayerControlPrefix *)player)->modeState.cameraStartEye, sp3C,
                                   ((PlayerControlPrefix *)player)->modeState.cameraDuration,
                                   ((PlayerControlPrefix *)player)->modeState.cameraRemaining);
-    vector3InterpolateSmoothTimed(((PlayerControlPrefix *)player)->modeState.cameraEndTarget, ((PlayerControlPrefix *)player)->modeState.cameraStartTarget, sp30,
+    vector3InterpolateSmoothTimed(((PlayerControlPrefix *)player)->modeState.cameraEndTarget,
+                                  ((PlayerControlPrefix *)player)->modeState.cameraStartTarget, sp30,
                                   ((PlayerControlPrefix *)player)->modeState.cameraDuration,
                                   ((PlayerControlPrefix *)player)->modeState.cameraRemaining);
     cameraSetEyeAndTarget(0, sp3C, sp30);
@@ -1924,7 +1918,6 @@ void playerSelectControlScheme(s32 scheme) {
     gPlayerControllerPort = gPlayerControlSchemes[scheme].port;
 }
 
-
 /// Start a permitted timed player stun reaction with screen-flash and rumble feedback.
 /// \param player Primary player record providing stun permission and receiving the reaction.
 /// \param duration Requested stun duration in seconds.
@@ -1957,7 +1950,6 @@ void playerRestoreState(void) {
     playerUpdateViewCamera((u8 *)&gPlayerState);
 }
 
-
 /// Update the primary view camera from a player pose when player camera updates are enabled.
 /// \param player Player record providing world position, eye height, and view orientation.
 /// \returns Nothing.
@@ -1982,7 +1974,6 @@ void playerUpdateViewCamera(u8 *player) {
 void playerPlayTrackedSoundEffect(u8 *player, s32 soundId) {
     ((PlayerControlPrefix *)player)->soundHandle = audioPlaySoundEffect(soundId);
 }
-
 
 /// Stop the player tracked sound effect immediately and clear its playback selection.
 /// \param player Player record whose tracked playback should stop; no effect if none is selected.
@@ -2220,7 +2211,6 @@ s32 playerIsViewControlSelected(u8 *player) {
 
 void _bzero(void *, s32); /* extern */
 
-
 /// Advance a player control update using the assigned controller input.
 /// \param idx Player record index zero; a missing controller supplies neutral input.
 /// \returns Nothing.
@@ -2277,7 +2267,6 @@ void playerSetWorldPosition(const f32 *position) {
     TRACE("playerPassCheckPoint(%d)\n", position);
 }
 
-
 /// Set the primary player view yaw when view-angle changes are enabled.
 /// \param yaw Requested yaw in degrees, wrapped to a full turn.
 /// \returns Nothing.
@@ -2300,7 +2289,6 @@ void playerSetViewYaw(f32 yaw) {
 void playerSetViewPitch(f32 pitch) {
     playerSetViewAngles((u8 *)&gPlayerState, ((&gPlayerState))->yaw, pitch);
 }
-
 
 /// Reset the primary player view orientation and immediately refresh the primary camera.
 /// \returns Nothing.
@@ -2371,7 +2359,6 @@ const char *playerGetFriendshipTitle(const PlayerControlPrefix *player) {
 
     return titles[player->friendshipLevel];
 }
-
 
 /// Select the default player terrain-collision query mode.
 /// \param unused Unused initialization argument.
@@ -2444,7 +2431,6 @@ s32 playerPickUpItem(s32 id) {
     return 1;
 }
 
-
 /// Select the current chase stage and retain the furthest stage reached in saved progress.
 /// \param stage Requested chase stage; its low eight bits become the current stage, while saved furthest
 /// progress uses the full value.
@@ -2458,14 +2444,12 @@ void playerSetChaseStage(s32 stage) {
     }
 }
 
-
 /// Read the currently selected chase stage.
 /// \returns The current chase stage.
 /// \note Original decompilation identifier: \c func_80112824 (0x80112824).
 u8 playerGetChaseStage(void) {
     return gPlayerChaseStage;
 }
-
 
 /// Check whether story progress and the primary player input permissions allow companion-control toggling.
 /// \returns One if toggling is available, or zero otherwise.
@@ -2477,7 +2461,6 @@ s32 playerCanToggleCompanionControl(void) {
     }
     return 0;
 }
-
 
 /// Check whether story progress and the primary player input permissions allow stationary look control.
 /// \returns One if stationary look control is available, or zero otherwise.
@@ -2553,7 +2536,6 @@ void audioSetMusicDuckingInhibitFlags(s32 flags) {
     gGameplayMusicDuckingInhibitFlags = flags;
 }
 
-
 /// Apply the saved music-volume setting with a temporary volume multiplier.
 /// \param multiplier Finite multiplier of the saved volume; the scaled value must fit a signed integer before
 /// output clamping.
@@ -2578,7 +2560,6 @@ void audioApplySavedMusicVolume(f32 multiplier) {
     TRACE("setSongVolume(%f) vcur: %d/%d vol:%d\n", multiplier, savedVolume, progressGetMaximum(0xA), masterLevel);
     audioSetCategoryVolume(AUDIO_CATEGORY_SEQUENCES, masterLevel);
 }
-
 
 /// Apply the saved sound-effect volume setting with a temporary volume multiplier.
 /// \param multiplier Finite multiplier of the saved volume; the scaled value must fit a signed integer before
@@ -2681,11 +2662,10 @@ void pikachuSpawnForArea(void) {
     spots = gCurrentAreaConfiguration->spawns;
     kind = (s32)gCurrentAreaConfiguration->actorScripts[gAreaScenarioIndex];
     gPikachuActor = (RuntimeObjectPrefix *)actorCreateForKind(
-        ACTOR_KIND_PIKACHU, spots[gRuntimeCurrentEntrance].actorPosition[0], spots[gRuntimeCurrentEntrance].actorPosition[1],
-        spots[gRuntimeCurrentEntrance].actorPosition[2], 0.0F, spots[gRuntimeCurrentEntrance].actorYaw,
-        gCurrentAreaConfiguration->objectScale, (u8 *)kind, 0);
+        ACTOR_KIND_PIKACHU, spots[gRuntimeCurrentEntrance].actorPosition[0],
+        spots[gRuntimeCurrentEntrance].actorPosition[1], spots[gRuntimeCurrentEntrance].actorPosition[2], 0.0F,
+        spots[gRuntimeCurrentEntrance].actorYaw, gCurrentAreaConfiguration->objectScale, (u8 *)kind, 0);
 }
-
 
 /// Constrain a requested actor heading according to the active action facing restrictions.
 /// \param object Live actor with initialized action state and facing restrictions.
@@ -2747,8 +2727,6 @@ f32 actorConstrainFacingHeading(u8 *object, f32 angle) {
 
     return angle;
 }
-
-
 
 /// Advance the active Pikachu script and service area events at its world position; has no effect when no
 /// Pikachu actor is selected.

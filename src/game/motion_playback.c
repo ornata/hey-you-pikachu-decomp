@@ -29,7 +29,6 @@
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-
 s32 actionRequestMotionData(s32);
 /// Action records containing playback flags, motion identifiers and transition settings.
 /// \note Original identifier: \c D_8006B590 (0x8006B590).
@@ -454,7 +453,6 @@ void actionStartPlayback(u8 *object) {
     }
 }
 
-
 /// Apply an action record when it is compatible with the current motion state.
 /// \param state Actor action state receiving the record.
 /// \param record Action record whose referenced names, scripts, and callbacks remain valid while selected.
@@ -664,8 +662,7 @@ void actionInitializeTransitionMap(void) {
         key = (p->hi << 8) + p->lo;
         TRACE("firstPose:%d lastPose:%d act:%s\n", p->hi, p->lo, gActionDefinitions[p->id].name);
         if (wordMapLookup(&gActionPoseTransitionMap, key) == 0) {
-            TRACE("firstPose:%d lastPose:%d act:%s apply:%d\n", p->hi, p->lo,
-                  gActionDefinitions[p->id].name, p->id);
+            TRACE("firstPose:%d lastPose:%d act:%s apply:%d\n", p->hi, p->lo, gActionDefinitions[p->id].name, p->id);
             wordMapInsert(&gActionPoseTransitionMap, p->id + 0x100, key);
         }
     }
@@ -682,7 +679,6 @@ void actionInitializeTransitionMap(void) {
     }
     TRACE("total %d joint_actions applied\n", i);
 }
-
 
 /// Release the action pose-transition lookup map.
 /// \returns Nothing.

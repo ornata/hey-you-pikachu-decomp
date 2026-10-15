@@ -9,7 +9,7 @@
 #include "player_types.h"
 #include "script_vm_globals.h"
 
-void _bzero(void *, s32);                                     /* extern */
+void _bzero(void *, s32); /* extern */
 /// Current gameplay, menu or transition mode.
 /// \note Original identifier: \c D_800AE504 (0x800AE504).
 extern s32 gRuntimeGameMode;

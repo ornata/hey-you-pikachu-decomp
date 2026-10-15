@@ -10,8 +10,8 @@
 /// Operations accepted by queued controller rumble requests.
 typedef enum ControllerRumbleCommand {
     CONTROLLER_RUMBLE_START = 0, ///< Start or replace a timed pulse pattern.
-    CONTROLLER_RUMBLE_STOP = 1, ///< Cancel the pattern and request motor stopping.
-    CONTROLLER_RUMBLE_RESET = 2 ///< Cancel the pattern and reinitialize the accessory.
+    CONTROLLER_RUMBLE_STOP = 1,  ///< Cancel the pattern and request motor stopping.
+    CONTROLLER_RUMBLE_RESET = 2  ///< Cancel the pattern and reinitialize the accessory.
 } ControllerRumbleCommand;
 
 /// Caller-owned rumble command retained until the controller thread consumes it.

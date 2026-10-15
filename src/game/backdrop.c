@@ -227,13 +227,12 @@ void backdropDrawScrolling(Gfx **list) {
             height -= bottom;
             top = 20;
         }
-        textureCopyRgba16Region(list, (s32)view->backdropImage, 20, top, view->backdropWidth, 280, height, view->backdropX,
-                                sourceY, 0, 1);
+        textureCopyRgba16Region(list, (s32)view->backdropImage, 20, top, view->backdropWidth, 280, height,
+                                view->backdropX, sourceY, 0, 1);
     }
 }
 
 void *heapAllocLocal(HpHdr *, u32, u16, s32);
-
 
 /// Allocate a backdrop image buffer for a view.
 /// \param viewIndex Valid view index receiving the buffer.
@@ -247,10 +246,10 @@ void backdropAllocateViewBuffer(s32 viewIndex, u32 width, u32 height) {
     if (size < 0x1B580) {
         size = 0x1B580;
     }
-    ((MatrixCamera *)((u8 *)gRenderCameras))[viewIndex].backdropImage = heapAllocLocal(&gGameHeap, size ^ 0, 0x280, size);
+    ((MatrixCamera *)((u8 *)gRenderCameras))[viewIndex].backdropImage =
+        heapAllocLocal(&gGameHeap, size ^ 0, 0x280, size);
     ((MatrixCamera *)((u8 *)gRenderCameras))[viewIndex].useBackdrop = 1;
 }
-
 
 /// Allocate memory and load a ROM range for backdrop data.
 /// \param romStart First ROM byte to load.
@@ -267,7 +266,6 @@ s32 backdropLoadRomRange(s32 romStart, s32 romEnd) {
     romDmaReadBlocking(romStart, (u8 *)buf, len);
     return buf;
 }
-
 
 /// Load a backdrop asset into an allocated view buffer.
 /// \param idx Valid view index with a backdrop buffer large enough for the decoded asset.
@@ -402,7 +400,6 @@ s32 backdropGetWidth(s32 backdropId) {
 s32 backdropGetHeight(s32 backdropId) {
     return *(s32 *)(gBackdropHeightEntries + (backdropId << 5));
 }
-
 
 /// Get the currently selected backdrop descriptor index.
 /// \returns The active backdrop identifier.

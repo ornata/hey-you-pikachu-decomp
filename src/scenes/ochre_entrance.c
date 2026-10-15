@@ -27,15 +27,15 @@ void ochreEntranceInitializeResidents(void) {
             togepiCreate(D_8013E8A0_scene_ochre_entrance, 18.25F, 149.5F, 0.0F, 90.0F, D_8013DD80_scene_ochre_entrance,
                          3);
         } else {
-            actorCreateForKind(ACTOR_KIND_POLIWAG, 192.5F, 18.25F, 149.5F, 0.0F, 90.0F, gCurrentAreaConfiguration->objectScale * 1.5F,
-                               D_8013DD80_scene_ochre_entrance, 3);
+            actorCreateForKind(ACTOR_KIND_POLIWAG, 192.5F, 18.25F, 149.5F, 0.0F, 90.0F,
+                               gCurrentAreaConfiguration->objectScale * 1.5F, D_8013DD80_scene_ochre_entrance, 3);
         }
     case 2:
-        actorCreateForKind(ACTOR_KIND_SQUIRTLE, 187.5F, 18.25F, 164.0F, 0.0F, 100.0F, gCurrentAreaConfiguration->objectScale,
-                           D_8013DD80_scene_ochre_entrance, 2);
+        actorCreateForKind(ACTOR_KIND_SQUIRTLE, 187.5F, 18.25F, 164.0F, 0.0F, 100.0F,
+                           gCurrentAreaConfiguration->objectScale, D_8013DD80_scene_ochre_entrance, 2);
     case 1:
-        actorCreateForKind(ACTOR_KIND_CHARMANDER, 181.5F, 18.25F, 164.5F, 0.0F, 100.0F, gCurrentAreaConfiguration->objectScale,
-                           D_8013DD80_scene_ochre_entrance, 1);
+        actorCreateForKind(ACTOR_KIND_CHARMANDER, 181.5F, 18.25F, 164.5F, 0.0F, 100.0F,
+                           gCurrentAreaConfiguration->objectScale, D_8013DD80_scene_ochre_entrance, 1);
         break;
     }
     actorCreateForKind(ACTOR_KIND_BULBASAUR, 168.0F, 18.0F, 144.5F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,

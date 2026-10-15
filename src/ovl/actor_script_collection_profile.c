@@ -181,7 +181,6 @@ s32 actorScriptAddProfileCounter(u8 *actor) {
     return 0;
 }
 
-
 /// Provide the player profile name to the script.
 /// \param actor Actor whose script VM receives a borrowed reference to the current player-name string.
 /// \returns Zero, allowing script execution to continue.
@@ -322,7 +321,6 @@ s32 actorScriptGetItemCollectionValue(u8 *actor) {
     return 0;
 }
 
-
 /// Select Pikachu appearance variants and whether they persist across action changes.
 /// \param actor Actor whose script VM supplies appearance-slot zero and one variants followed by a nonzero value to preserve them across action changes, or zero to allow changes; the VM receives zero.
 /// \returns Zero, allowing script execution to continue.
@@ -341,7 +339,6 @@ s32 actorScriptSetPikachuAppearanceVariants(u8 *actor) {
     scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 0;
 }
-
 
 /// Request a timed transition to a new actor model environment color.
 /// \param actor Actor whose script VM supplies red, green, blue, and alpha components from zero through 255 followed by a nonnegative floating-point duration in seconds, and receives zero.
@@ -391,7 +388,6 @@ s32 actorScriptCreateEffectEmitter(u8 *actor) {
     scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 0;
 }
-
 
 /// Create an animated wisp effect at a world position.
 /// \param actor Actor whose script VM supplies a supported wisp style followed by floating-point world X, Y, and Z coordinates, and receives zero.
@@ -512,7 +508,6 @@ s32 actorScriptSetDoorAccessState(u8 *actor) {
     return 0;
 }
 
-
 /// Request a color transition for camera slot zero’s additional overlay blend.
 /// \param actor Actor whose script VM supplies red, green, blue, alpha, then a nonnegative duration in seconds and receives zero; color channels are limited to zero through 255.
 /// \returns Zero, allowing script execution to continue.
@@ -587,7 +582,6 @@ s32 actorScriptGetCreationScriptArgument(u8 *actor) {
     }
     return 0;
 }
-
 
 /// Configure a smooth primary-camera transition from the current view.
 /// \param actor Actor whose script VM supplies destination eye X/Y/Z, look-at target X/Y/Z, and transition duration in seconds as floating-point values, in that order; the VM receives zero.
@@ -683,7 +677,6 @@ s32 actorScriptPushNearClipDistance(u8 *actor) {
     return 0;
 }
 
-
 /// Provide the current scene far clipping distance.
 /// \param actor Actor whose script VM receives the far clipping distance as a floating-point value.
 /// \returns Zero, allowing script execution to continue.
@@ -694,7 +687,6 @@ s32 actorScriptPushFarClipDistance(u8 *actor) {
     scriptVmPushFloat((ScriptVm *)(handle), gCurrentAreaConfiguration->farClip);
     return 0;
 }
-
 
 /// Change the current scene near clipping distance.
 /// \param actor Actor whose script VM supplies a floating-point near clipping distance and receives zero.
@@ -711,7 +703,6 @@ s32 actorScriptSetNearClipDistance(u8 *actor) {
     return 0;
 }
 
-
 /// Change the current scene far clipping distance.
 /// \param actor Actor whose script VM supplies a floating-point far clipping distance and receives zero.
 /// \returns Zero, allowing script execution to continue.
@@ -727,7 +718,6 @@ s32 actorScriptSetFarClipDistance(u8 *actor) {
     return 0;
 }
 
-
 /// Provide the current scene fog start value.
 /// \param actor Actor whose script VM receives the fog start value as a floating-point number.
 /// \returns Zero, allowing script execution to continue.
@@ -737,7 +727,6 @@ s32 actorScriptPushFogStart(u8 *actor) {
                       (f32)gCurrentAreaConfiguration->fogStart);
     return 0;
 }
-
 
 /// Change the current scene fog start value.
 /// \param actor Actor whose script VM supplies a floating-point fog start value within the signed-integer range and receives zero; fractional values are truncated toward zero.
@@ -754,7 +743,6 @@ s32 actorScriptSetFogStart(u8 *actor) {
     return 0;
 }
 
-
 /// Provide the current scene fog end value.
 /// \param actor Actor whose script VM receives the fog end value as a floating-point number.
 /// \returns Zero, allowing script execution to continue.
@@ -764,7 +752,6 @@ s32 actorScriptPushFogEnd(u8 *actor) {
                       (f32)gCurrentAreaConfiguration->fogEnd);
     return 0;
 }
-
 
 /// Change the current scene fog end value.
 /// \param actor Actor whose script VM supplies a floating-point fog end value within the signed-integer range and receives zero; fractional values are truncated toward zero.
@@ -841,7 +828,6 @@ s32 actorScriptCreateScrollBoard(u8 *actor) {
     return 0;
 }
 
-
 /// Select preset text for a scrolling-board hierarchy.
 /// \param actor Actor whose script VM supplies a live scrolling-board hierarchy handle, a text preset index of zero or one, and a text style, in that order; the VM receives zero.
 /// \returns Zero, allowing script execution to continue.
@@ -860,7 +846,6 @@ s32 actorScriptSelectScrollBoardText(u8 *actor) {
     scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 0;
 }
-
 
 /// Change the scrolling speed of a scrolling-board hierarchy.
 /// \param actor Actor whose script VM supplies a live scrolling-board hierarchy handle followed by a floating-point speed in pixels per second, and receives zero; positive speeds advance, negative speeds reverse, and zero stops scrolling.
@@ -907,7 +892,6 @@ s32 actorScriptSetObjectTransform(u8 *actor) {
     return 0;
 }
 
-
 /// Provide the sine of a script-supplied angle.
 /// \param actor Actor whose script VM supplies an angle in degrees satisfying mathSinDegrees input limits and receives its approximate sine.
 /// \returns Zero, allowing script execution to continue.
@@ -919,7 +903,6 @@ s32 actorScriptSinDegrees(u8 *actor) {
     scriptVmPushFloat((ScriptVm *)(sp1C), mathSinDegrees(scriptVmPopFloat((ScriptVm *)(sp1C))));
     return 0;
 }
-
 
 /// Provide the cosine of a script-supplied angle.
 /// \param actor Actor whose script VM supplies an angle in degrees satisfying mathCosDegrees input limits and receives its approximate cosine.
@@ -950,7 +933,8 @@ s32 actorScriptGetPokemonNameDictionaryGroup(u8 *actor) {
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     catalogIndex = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    scriptVmPushInteger((ScriptVm *)(vmAddress), *(u8 *)((u8 *)&gBedroomPokemonNameDictionaryGroups + (catalogIndex * 1)));
+    scriptVmPushInteger((ScriptVm *)(vmAddress),
+                        *(u8 *)((u8 *)&gBedroomPokemonNameDictionaryGroups + (catalogIndex * 1)));
     return 0;
 }
 
@@ -968,7 +952,8 @@ s32 actorScriptGetPokemonName(u8 *actor) {
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     catalogIndex = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    scriptVmPushStringPointer((ScriptVm *)(vmAddress), (char *)(*(s32 *)((u8 *)&gBedroomPokemonNames + (catalogIndex * 4))));
+    scriptVmPushStringPointer((ScriptVm *)(vmAddress),
+                              (char *)(*(s32 *)((u8 *)&gBedroomPokemonNames + (catalogIndex * 4))));
     return 0;
 }
 
@@ -1032,7 +1017,6 @@ s32 actorScriptChoosePokemonName(u8 *actor) {
     return 0;
 }
 
-
 /// Find an item within the player viewing cone using script-supplied filters.
 /// \param actor Actor whose script VM supplies inclusive minimum and maximum item kinds, inclusive maximum approximate distance, maximum absolute horizontal angle in degrees, required item state, and a priority-selection flag, in that order; kind 165 selects the corresponding range endpoint, state six accepts any state, and a nonzero flag favors selection priority and resets the selected priority. The VM receives the selected handle or zero when none qualifies.
 /// \returns Zero, allowing script execution to continue.
@@ -1057,7 +1041,6 @@ s32 actorScriptFindItemFromPlayerView(u8 *actor) {
     return 0;
 }
 
-
 /// Find the nearest other actor within the player viewing cone.
 /// \param actor Actor excluded from the search whose script VM supplies inclusive minimum and maximum kinds, exclusive maximum approximate distance, and maximum horizontal angle in degrees; script kind aliases are honored and angles of at least 360 allow every direction. The VM receives the nearest qualifying handle or zero.
 /// \returns Zero, allowing script execution to continue.
@@ -1077,7 +1060,6 @@ s32 actorScriptFindActorFromPlayerView(u8 *actor) {
     scriptVmPushInteger((ScriptVm *)(vmAddress), actorFindNearestFromPlayerView(actor, sp_pop, sp34, sp30, sp2C));
     return 0;
 }
-
 
 /// Find the nearest other object within the player viewing cone.
 /// \param actor Actor excluded from the search whose script VM supplies inclusive minimum and maximum kinds, exclusive maximum approximate distance, and maximum horizontal angle in degrees; angles of at least 360 allow every direction. The VM receives the nearest qualifying handle or zero.
@@ -1099,7 +1081,6 @@ s32 actorScriptFindObjectFromPlayerView(u8 *actor) {
     return 0;
 }
 
-
 /// Report the player heading relative to the direction toward the actor.
 /// \param actor Actor whose script VM receives the player heading minus the direction toward this actor, wrapped to signed degrees.
 /// \returns Zero, allowing script execution to continue.
@@ -1112,7 +1093,6 @@ s32 actorScriptPushPlayerFacingError(u8 *actor) {
     return 0;
 }
 
-
 /// Report the actor heading relative to the direction toward a target.
 /// \param actor Actor whose script VM supplies a target identifier and receives its heading minus the target direction in degrees from zero inclusive to 360 exclusive, or minus one when the target is unavailable.
 /// \returns Zero, allowing script execution to continue.
@@ -1124,7 +1104,6 @@ s32 actorScriptGetTargetFacingError(u8 *actor) {
     scriptVmPushFloat((ScriptVm *)(sp1C), objectGetFacingErrorToTarget(actor, scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
-
 
 /// Set an available item size relative to its kind and scene scale.
 /// \param actor Actor whose script VM supplies a handle identifying an initialized item when available, followed by a floating-point relative scale, and receives zero; unavailable handles are unchanged.
@@ -1200,7 +1179,6 @@ s32 actorScriptPushAvailableItemSlots(u8 *actor) {
     scriptVmPushInteger((ScriptVm *)(sp1C), itemGetAvailableSlots());
     return 0;
 }
-
 
 /// Reset all global script variables to their initial values.
 /// \param actor Actor whose script VM receives zero after the shared global variables are reset.

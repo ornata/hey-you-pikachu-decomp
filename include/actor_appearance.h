@@ -8,7 +8,7 @@
 
 /// Bounds of the retained appearance slots and their model-variant tables.
 enum {
-    ACTOR_APPEARANCE_SLOT_COUNT = 2, ///< Two independently selected model parts.
+    ACTOR_APPEARANCE_SLOT_COUNT = 2,   ///< Two independently selected model parts.
     ACTOR_APPEARANCE_VARIANT_COUNT = 6 ///< Default model plus five table-selected variants.
 };
 

@@ -61,8 +61,8 @@
 /// \param useMaskT Nonzero to enable a height-based T addressing mask.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80042840 (0x80042840).
-void textureUploadTile(Gfx **displayList, s32 image, s32 palette, s32 format, s32 size, u32 width, u32 height, s32 wrapS,
-                   s32 wrapT, s32 useMaskS, s32 useMaskT) {
+void textureUploadTile(Gfx **displayList, s32 image, s32 palette, s32 format, s32 size, u32 width, u32 height,
+                       s32 wrapS, s32 wrapT, s32 useMaskS, s32 useMaskT) {
     s32 maskS;
     s32 maskT;
     Gfx *g = *displayList;
@@ -146,7 +146,8 @@ void textureUploadTile(Gfx **displayList, s32 image, s32 palette, s32 format, s3
 /// \param height Positive image height in texels.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80043000 (0x80043000).
-void textureImageInitialize(TextureImage *descriptor, s32 image, s32 palette, s32 format, s32 size, s32 width, s32 height) {
+void textureImageInitialize(TextureImage *descriptor, s32 image, s32 palette, s32 format, s32 size, s32 width,
+                            s32 height) {
     s32 r;
 
     descriptor->image = image;
@@ -219,7 +220,6 @@ void textureImageInitialize(TextureImage *descriptor, s32 image, s32 palette, s3
                        (lrs) << G_TEXTURE_IMAGE_FRAC, (lrt) << G_TEXTURE_IMAGE_FRAC);                                  \
     }
 
-
 /// Render a scaled texture with optional repetition and flipping.
 /// \param out Display-list cursor with sufficient capacity; receives the drawing commands and advances past them.
 /// \param texture Borrowed, initialized texture image descriptor.
@@ -238,8 +238,8 @@ void textureImageInitialize(TextureImage *descriptor, s32 image, s32 palette, s3
 /// \pre Width and height must be positive. At least two source rows must fit texture memory unless the image has only one row.
 /// \pre Four- and eight-bit images must use CI, I, or IA format; wrapped dimensions must be powers of two for whole-image repetition.
 /// \note Original decompilation identifier: \c func_800430C4 (0x800430C4).
-void textureDrawScaledRepeated(Gfx **out, TextureImage *texture, u32 x, u32 y, s32 wrapS, s32 wrapT, u32 repeatX, u32 repeatY,
-                   f32 scaleX, f32 scaleY, s32 flipX, s32 flipY) {
+void textureDrawScaledRepeated(Gfx **out, TextureImage *texture, u32 x, u32 y, s32 wrapS, s32 wrapT, u32 repeatX,
+                               u32 repeatY, f32 scaleX, f32 scaleY, s32 flipX, s32 flipY) {
     Gfx *dl;
     u32 maskS;
     u32 maskT;
@@ -642,8 +642,8 @@ void texturePairGetMemoryLayout(s32 *stripRows, s32 *secondTmem, u32 format0, u3
         }
         if (var_v1 < var_v0) {
             *stripRows = (s32)((((f64)((*stripRows * var_v0) / (var_v0 + var_v1)) - 1.5) < 1.0)
-                              ? 1.0
-                              : ((f64)((*stripRows * var_v0) / (var_v0 + var_v1)) - 1.5));
+                                   ? 1.0
+                                   : ((f64)((*stripRows * var_v0) / (var_v0 + var_v1)) - 1.5));
             if ((((var_v1 << 9) / (var_v0 + var_v1)) % 16) != 0) {
                 *secondTmem = (((var_v1 << 9) / (var_v0 + var_v1)) - (((var_v1 << 9) / (var_v0 + var_v1)) % 16)) + 0x10;
                 return;
@@ -652,8 +652,8 @@ void texturePairGetMemoryLayout(s32 *stripRows, s32 *secondTmem, u32 format0, u3
             return;
         }
         *stripRows = (s32)((((f64)((*stripRows * var_v1) / (var_v0 + var_v1)) - 1.5) < 1.0)
-                          ? 1.0
-                          : ((f64)((*stripRows * var_v1) / (var_v0 + var_v1)) - 1.5));
+                               ? 1.0
+                               : ((f64)((*stripRows * var_v1) / (var_v0 + var_v1)) - 1.5));
         *secondTmem = ((var_v1 << 9) / (var_v0 + var_v1)) - (((var_v1 << 9) / (var_v0 + var_v1)) % 16);
         return;
     }
@@ -663,7 +663,9 @@ void texturePairGetMemoryLayout(s32 *stripRows, s32 *secondTmem, u32 format0, u3
         return;
     }
     if (var_v1 < var_v0) {
-        *stripRows = (((*stripRows * var_v0) / ((var_v0 + var_v1) * 2)) < 1) ? 1 : ((*stripRows * var_v0) / ((var_v0 + var_v1) * 2));
+        *stripRows = (((*stripRows * var_v0) / ((var_v0 + var_v1) * 2)) < 1)
+                         ? 1
+                         : ((*stripRows * var_v0) / ((var_v0 + var_v1) * 2));
         if ((((var_v1 << 9) / (var_v0 + var_v1)) % 16) != 0) {
             *secondTmem = (((var_v1 << 9) / (var_v0 + var_v1)) - (((var_v1 << 9) / (var_v0 + var_v1)) % 16)) + 0x10;
             return;
@@ -671,7 +673,8 @@ void texturePairGetMemoryLayout(s32 *stripRows, s32 *secondTmem, u32 format0, u3
         *secondTmem = (var_v1 << 9) / (var_v0 + var_v1);
         return;
     }
-    *stripRows = (((*stripRows * var_v1) / ((var_v0 + var_v1) * 2)) < 1) ? 1 : ((*stripRows * var_v1) / ((var_v0 + var_v1) * 2));
+    *stripRows =
+        (((*stripRows * var_v1) / ((var_v0 + var_v1) * 2)) < 1) ? 1 : ((*stripRows * var_v1) / ((var_v0 + var_v1) * 2));
     *secondTmem = ((var_v1 << 8) / (var_v0 + var_v1)) - (((var_v1 << 8) / (var_v0 + var_v1)) % 16);
 }
 
@@ -694,8 +697,9 @@ void texturePairGetMemoryLayout(s32 *stripRows, s32 *secondTmem, u32 format0, u3
 /// \returns Nothing.
 /// \pre Upload tile zero followed by tile one without interleaving another pair; indexed images in a pair must share their palette.
 /// \note Original decompilation identifier: \c func_80045DFC (0x80045DFC).
-void texturePairUploadStrip(Gfx **displayList, s32 stripIndex, s32 image, s32 palette, s32 tile, s32 tmem, s32 format, s32 size,
-                   s32 width, s32 stripRows, s32 lastRow, s32 wrapS, s32 wrapT, s32 maskS, s32 maskT) {
+void texturePairUploadStrip(Gfx **displayList, s32 stripIndex, s32 image, s32 palette, s32 tile, s32 tmem, s32 format,
+                            s32 size, s32 width, s32 stripRows, s32 lastRow, s32 wrapS, s32 wrapT, s32 maskS,
+                            s32 maskT) {
     static s32 pendingPalette = 0;
     Gfx *g = *displayList;
     s32 aligned;
@@ -967,10 +971,10 @@ void texturePairDrawScaledRepeated(Gfx **displayListOut, TexturePair *texture, u
                 (s32)((u32)((s32)((f32)(flippedY + height) - ((f32)(stripIndex * stripRows) * scaleY * ((f32)repeatT))))
                       << 2);
         }
-        texturePairUploadStrip(&displayList, stripIndex, image0, palette0, 0, 0, format0, size0, width, stripRows, stripRows,
-                      wrapS, wrapT, maskS, maskT);
-        texturePairUploadStrip(&displayList, stripIndex, image1, palette1, 1, tmem1, format1, size1, width, stripRows, stripRows,
-                      wrapS, wrapT, maskS, maskT);
+        texturePairUploadStrip(&displayList, stripIndex, image0, palette0, 0, 0, format0, size0, width, stripRows,
+                               stripRows, wrapS, wrapT, maskS, maskT);
+        texturePairUploadStrip(&displayList, stripIndex, image1, palette1, 1, tmem1, format1, size1, width, stripRows,
+                               stripRows, wrapS, wrapT, maskS, maskT);
         rectangleLeft = x * 4;
         rectangleRight = (s32)((u32)((s32)(((f32)x) + ((f32)width * scaleX * ((f32)repeatS)))) << 2);
         gSPTextureRectangle(displayList++, rectangleLeft, upperY, rectangleRight, lowerY, 0, sourceS, sourceT, dsdx,
@@ -1028,8 +1032,8 @@ void texturePairDrawScaledRepeated(Gfx **displayListOut, TexturePair *texture, u
 /// \param maskWidth Nonzero to enable width-based horizontal addressing.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800473B4 (0x800473B4).
-void textureCopyRgba16Region(Gfx **displayList, s32 image, s32 x, s32 y, u32 imageWidth, s32 drawWidth, u32 height, s32 sourceX,
-                   s32 sourceY, s32 wrapS, s32 maskWidth) {
+void textureCopyRgba16Region(Gfx **displayList, s32 image, s32 x, s32 y, u32 imageWidth, s32 drawWidth, u32 height,
+                             s32 sourceX, s32 sourceY, s32 wrapS, s32 maskWidth) {
     Gfx *g = *displayList;
     s32 maskS;
     u32 dimension;
@@ -1123,8 +1127,8 @@ void textureCopyRgba16Region(Gfx **displayList, s32 image, s32 x, s32 y, u32 ima
 /// \returns Nothing.
 /// \pre Destination extents must be positive; screen and starting texture coordinates must be nonnegative and representable in the RDP coordinate fields.
 /// \note Original decompilation identifier: \c func_80047934 (0x80047934).
-void textureCopyWrappedRgba16(Gfx **displayList, void *image, s32 x, s32 y, u32 width, u32 height, s32 drawWidth, s32 drawHeight,
-                   s32 sourceS, s32 sourceT) {
+void textureCopyWrappedRgba16(Gfx **displayList, void *image, s32 x, s32 y, u32 width, u32 height, s32 drawWidth,
+                              s32 drawHeight, s32 sourceS, s32 sourceT) {
     Gfx *g = *displayList;
     s32 masks;
     s32 maskt;
@@ -1216,7 +1220,7 @@ void textureCopyWrappedRgba16(Gfx **displayList, void *image, s32 x, s32 y, u32 
 /// \note Portability: The row-expression spellings preserve the original IDO register allocation.
 /// \note Original decompilation identifier: \c func_80047C48 (0x80047C48).
 void textureDrawScaledRegion(Gfx **out, TextureImage *texture, u32 x, u32 y, u32 drawWidth, u32 drawHeight, u32 sourceX,
-                   u32 sourceY, u32 wrapS, u32 repeat, f32 scaleX, f32 scaleY) {
+                             u32 sourceY, u32 wrapS, u32 repeat, f32 scaleX, f32 scaleY) {
     Gfx *dl = *out;
     u32 mask;
     u32 dimension;
@@ -1338,7 +1342,6 @@ void wordMapInitialize(WordMap *map, s32 capacity) {
     map->slots = heapAllocLocal(&gGameHeap, len, 0x52, map);
     _bzero(map->slots, len);
 }
-
 
 /// Release a word map and reset it to an empty unallocated state.
 /// \param map Initialized map whose storage is released.

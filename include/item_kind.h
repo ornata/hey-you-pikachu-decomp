@@ -41,7 +41,7 @@ typedef s32 (*ItemCollisionCallback)(u8 *item, u16 contactFlags);
 typedef struct {
     /* 0x00 */ s32 id;                        ///< Item kind identifier.
     /* 0x04 */ u32 stateFlags;                ///< Initial item behavior flags.
-    /* 0x08 */ s32 initialBounceCount;                      ///< Initial automatic-bounce allowance copied into item state.
+    /* 0x08 */ s32 initialBounceCount;        ///< Initial automatic-bounce allowance copied into item state.
     /* 0x0C */ s32 replacement;               ///< Replacement kind selected for transformation.
     /* 0x10 */ f32 growthMax;                 ///< Maximum replenishing search priority.
     /* 0x14 */ f32 growthRate;                ///< Search-priority replenishment rate.
@@ -73,8 +73,8 @@ typedef char ItemKindSizeCheck[(sizeof(ItemKind) == 0x74) ? 1 : -1];
 typedef char ItemKindBounceCountOffsetCheck[(((u32) & ((ItemKind *)0)->initialBounceCount) == 8) ? 1 : -1];
 typedef char ItemKindFrictionOffsetCheck[(((u32) & ((ItemKind *)0)->frictionCoefficient) == 0x30) ? 1 : -1];
 typedef char ItemKindEffectsOffsetCheck[(((u32) & ((ItemKind *)0)->effect) == 0x40) ? 1 : -1];
-typedef char ItemKindMotionCoefficientOffsetCheck[(((u32)&((ItemKind *)0)->motionCoefficient) == 0x28) ? 1 : -1];
-typedef char ItemKindAvailabilityOffsetCheck[(((u32)&((ItemKind *)0)->availabilityField) == 0x72) ? 1 : -1];
+typedef char ItemKindMotionCoefficientOffsetCheck[(((u32) & ((ItemKind *)0)->motionCoefficient) == 0x28) ? 1 : -1];
+typedef char ItemKindAvailabilityOffsetCheck[(((u32) & ((ItemKind *)0)->availabilityField) == 0x72) ? 1 : -1];
 
 /// Per-kind item motion, rendering, response and description configuration.
 /// \note Original identifier: \c D_80125A40 (0x80125A40).
@@ -84,14 +84,14 @@ extern ItemKind gItemKinds[];
 /// The remaining bytes overlap adjacent catalog fields; never allocate, copy or clear this view.
 typedef struct ItemKindHeldCallbackEntry {
     ItemHeldCallback callback; ///< Optional held-item behavior.
-    u8 following[0x70]; ///< Storage through the next held-item hook view.
+    u8 following[0x70];        ///< Storage through the next held-item hook view.
 } ItemKindHeldCallbackEntry;
 
 /// Borrowed interior view beginning at each kind's terrain-collision hook.
 /// The remaining bytes overlap adjacent catalog fields; never allocate, copy or clear this view.
 typedef struct ItemKindCollisionCallbackEntry {
     ItemCollisionCallback callback; ///< Optional terrain-contact response.
-    u8 following[0x70]; ///< Storage through the next collision-hook view.
+    u8 following[0x70];             ///< Storage through the next collision-hook view.
 } ItemKindCollisionCallbackEntry;
 
 typedef char ItemKindHeldViewStrideCheck[(sizeof(ItemKindHeldCallbackEntry) == sizeof(ItemKind)) ? 1 : -1];

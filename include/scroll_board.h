@@ -18,7 +18,7 @@
 /// \returns Registered root managed through hierarchy destruction.
 /// \note Original identifier: \c func_80025D24 (0x80025D24).
 u8 *scrollBoardCreateHierarchy(s32 columns, s32 lines, u8 red, u8 green, u8 blue, u8 alpha, s32 leadingOutline,
-                              s32 trailingOutline);
+                               s32 trailingOutline);
 
 /// Assign borrowed text to a board and reset its scroll position, preserving speed.
 /// \param root Live hierarchy containing an initialized scrolling board.

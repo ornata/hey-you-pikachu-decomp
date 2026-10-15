@@ -8,12 +8,12 @@
 
 /// Behavior callbacks selected by the signed-byte item mode.
 typedef enum ItemMode {
-    ITEM_MODE_GROUND_AND_AIR = 0, ///< Terrain-aware free motion.
-    ITEM_MODE_DRIFTING_FLIGHT = 1, ///< Timed drifting flight.
-    ITEM_MODE_STATIONARY = 2, ///< World item without autonomous motion.
-    ITEM_MODE_PLAYER_HELD = 3, ///< Placement relative to the player camera.
-    ITEM_MODE_ACTOR_HELD = 4, ///< Placement at the actor holder's attachment.
-    ITEM_MODE_STORED = 5, ///< Stored item without autonomous motion.
+    ITEM_MODE_GROUND_AND_AIR = 0,    ///< Terrain-aware free motion.
+    ITEM_MODE_DRIFTING_FLIGHT = 1,   ///< Timed drifting flight.
+    ITEM_MODE_STATIONARY = 2,        ///< World item without autonomous motion.
+    ITEM_MODE_PLAYER_HELD = 3,       ///< Placement relative to the player camera.
+    ITEM_MODE_ACTOR_HELD = 4,        ///< Placement at the actor holder's attachment.
+    ITEM_MODE_STORED = 5,            ///< Stored item without autonomous motion.
     ITEM_MODE_SHRINKING_DISPOSAL = 6 ///< Shrink until destruction.
 } ItemMode;
 

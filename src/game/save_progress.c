@@ -28,11 +28,7 @@
 #define TRACE_LEAF (void)
 
 /// Extents of the owned progress payload and its initialized field-location table.
-enum {
-    PROGRESS_SAVE_RECORD_BYTES = 0x74,
-    PROGRESS_SAVED_FIELD_COUNT = 244,
-    PROGRESS_FIELD_LAYOUT_BYTES = 0x7A0
-};
+enum { PROGRESS_SAVE_RECORD_BYTES = 0x74, PROGRESS_SAVED_FIELD_COUNT = 244, PROGRESS_FIELD_LAYOUT_BYTES = 0x7A0 };
 
 /// Payload byte counts for three primary EEPROM records and their three backups.
 /// \note Portability: A word-aligned record preserves the original data placement;
@@ -45,13 +41,10 @@ s32 D_8009ADC0 = -1;
 /// Payload byte counts used to place primary EEPROM records and their backup copies.
 /// \note Original identifier: \c D_8009ADC4 (0x8009ADC4).
 EepromRecordSizeTable gEepromRecordPayloadSizes = {{1, PROGRESS_SAVE_RECORD_BYTES, PROGRESS_SAVE_RECORD_BYTES, 1,
-                                                PROGRESS_SAVE_RECORD_BYTES, PROGRESS_SAVE_RECORD_BYTES}};
+                                                    PROGRESS_SAVE_RECORD_BYTES, PROGRESS_SAVE_RECORD_BYTES}};
 /// Storage type identifiers indexed by resolved progress field ID.
 /// \note Original identifier: \c D_8009A754 (0x8009A754).
 extern s32 gProgressFieldTypes[];
-
-
-
 
 /// Sets one direction in a pose from pitch and yaw angles.
 /// \param pitch Direction pitch in degrees.
@@ -263,7 +256,6 @@ void weightedChoicePrepareTable(WeightedChoiceTable *t) {
     }
 }
 
-
 /// Chooses a key from a weighted selection table, preparing the table when needed.
 /// \param t Mutable selection table with a zero-key terminator and a positive total weight.
 /// \returns The selected nonzero key, or zero if the table yields no selection.
@@ -336,13 +328,13 @@ void progressStorageFinishFieldLayoutHook(void) {
 /// Location of one field within the owned packed progress-record buffer.
 typedef struct ProgressFieldStorage {
     s32 byteOffset; ///< Byte offset from the progress-record start.
-    s32 bitShift; ///< Low-bit position within a byte for packed sub-byte fields.
+    s32 bitShift;   ///< Low-bit position within a byte for packed sub-byte fields.
 } ProgressFieldStorage;
 
 typedef char ProgressFieldStorageSizeCheck[(sizeof(ProgressFieldStorage) == 8) ? 1 : -1];
-typedef char ProgressFieldLayoutExtentCheck[
-    (PROGRESS_SAVED_FIELD_COUNT * sizeof(ProgressFieldStorage) == PROGRESS_FIELD_LAYOUT_BYTES) ? 1 : -1];
-typedef char ProgressFieldShiftOffsetCheck[(((u32)&((ProgressFieldStorage *)0)->bitShift) == 4) ? 1 : -1];
+typedef char ProgressFieldLayoutExtentCheck
+    [(PROGRESS_SAVED_FIELD_COUNT * sizeof(ProgressFieldStorage) == PROGRESS_FIELD_LAYOUT_BYTES) ? 1 : -1];
+typedef char ProgressFieldShiftOffsetCheck[(((u32) & ((ProgressFieldStorage *)0)->bitShift) == 4) ? 1 : -1];
 /// Byte offsets and bit shifts used to access packed progress fields.
 /// \note Original identifier: \c D_800F1D30 (0x800F1D30).
 extern ProgressFieldStorage gProgressFieldStorageLayout[];
@@ -454,7 +446,8 @@ s32 progressStoreFieldValue(s32 fieldId, s32 value) {
     case PROGRESS_ENCODING_PACKED4:
     case PROGRESS_ENCODING_PACKED2:
     case PROGRESS_ENCODING_PACKED1:
-        mask = (((1 << (gProgressFieldTypeLimits[gProgressFieldTypes[fieldId]].bitWidth + 31)) << 1) - 1) << field->bitShift;
+        mask = (((1 << (gProgressFieldTypeLimits[gProgressFieldTypes[fieldId]].bitWidth + 31)) << 1) - 1)
+               << field->bitShift;
         bits = value << field->bitShift;
         byte = &gProgressSaveRecord[field->byteOffset];
         *byte &= ~mask;
@@ -587,7 +580,6 @@ void progressSaveControlDataToEeprom(void) {
     TRACE("pdSaveFCB_EEPROM: eepromWrite ans:%d\n", ans);
 }
 
-
 /// Requests save control data from EEPROM.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80032D0C (0x80032D0C).
@@ -596,7 +588,6 @@ void progressLoadControlDataFromEeprom(void) {
 
     TRACE("pdLoadFCB_EEPROM: eepromWrite ans:%d\n", ans);
 }
-
 
 /// Captures current gameplay progress and requests that its save record be written to EEPROM.
 /// \param record Progress record index, one or two, each with a backup record.
@@ -608,9 +599,9 @@ void progressSaveRecordToEeprom(s32 record) {
     progressSetValue(PROGRESS_FIELD_PROFILE_POINTS, gPlayerProfilePoints);
     progressSetValue(PROGRESS_FIELD_FRIENDSHIP_LEVEL, gPlayerFriendshipLevel);
     progressSetValue(PROGRESS_FIELD_VOICE_MESSAGE_COUNT, gPlayerVoiceMessageCount);
-    ans =
-        eepromRequestWrite(gEepromRecordBlockOffsets[record],
-                           gEepromRecordBlockOffsets[progressGetBackupRecordIndex(record)], &gProgressSaveRecord, PROGRESS_SAVE_RECORD_BYTES);
+    ans = eepromRequestWrite(gEepromRecordBlockOffsets[record],
+                             gEepromRecordBlockOffsets[progressGetBackupRecordIndex(record)], &gProgressSaveRecord,
+                             PROGRESS_SAVE_RECORD_BYTES);
     TRACE("pdSaveEEPROM: eepromWrite ans:%d\n", ans);
 }
 
@@ -621,13 +612,12 @@ s32 progressGetBackupRecordIndex(s32); /* extern */
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80032DC4 (0x80032DC4).
 void progressLoadRecordFromEeprom(s32 record) {
-    s32 ans =
-        eepromRequestRead(gEepromRecordBlockOffsets[record],
-                          gEepromRecordBlockOffsets[progressGetBackupRecordIndex(record)], gProgressSaveRecord, PROGRESS_SAVE_RECORD_BYTES);
+    s32 ans = eepromRequestRead(gEepromRecordBlockOffsets[record],
+                                gEepromRecordBlockOffsets[progressGetBackupRecordIndex(record)], gProgressSaveRecord,
+                                PROGRESS_SAVE_RECORD_BYTES);
 
     TRACE("pdLoadEEPROM: eepromRead ans:%d\n", ans);
 }
-
 
 /// Applies the loaded progress record to the active gameplay state and settings.
 /// \returns Nothing.

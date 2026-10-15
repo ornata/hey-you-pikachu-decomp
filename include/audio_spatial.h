@@ -15,7 +15,6 @@
 /// \param farDistance Distance at minimum volume, greater than nearDistance.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000C944 (0x8000C944).
-void audioGetPositionVolumeAndPan(f32 *position, Mtx camera, s32 *volume, s32 *pan,
-                                  f32 nearDistance, f32 farDistance);
+void audioGetPositionVolumeAndPan(f32 *position, Mtx camera, s32 *volume, s32 *pan, f32 nearDistance, f32 farDistance);
 
 #endif

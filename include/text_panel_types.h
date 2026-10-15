@@ -10,13 +10,13 @@
 /// Initialization establishes storage for capacity entries. ReleaseEntries releases
 /// image-entry storage but retains the separately allocated color table.
 typedef struct TextPanel {
-    s32 count;           ///< Number of retained lines, bounded by capacity.
-    s32 nextEntry;       ///< Circular entry index replaced by the next appended line.
-    s16 x, y;            ///< Display offset in screen pixels.
-    u8 (*colors)[4];     ///< Owned per-line RGBA color table.
-    s32 capacity;        ///< Number of entry slots, including the additional scroll line.
-    TextImage **images;         ///< Display-order image pointers in the shared entry allocation.
-    TextImage **entries;        ///< Circular image-entry pointers in the shared entry allocation.
+    s32 count;                ///< Number of retained lines, bounded by capacity.
+    s32 nextEntry;            ///< Circular entry index replaced by the next appended line.
+    s16 x, y;                 ///< Display offset in screen pixels.
+    u8 (*colors)[4];          ///< Owned per-line RGBA color table.
+    s32 capacity;             ///< Number of entry slots, including the additional scroll line.
+    TextImage **images;       ///< Display-order image pointers in the shared entry allocation.
+    TextImage **entries;      ///< Circular image-entry pointers in the shared entry allocation.
     FontImage *configuration; ///< Borrowed font descriptor, or null for defaults.
 } TextPanel;
 

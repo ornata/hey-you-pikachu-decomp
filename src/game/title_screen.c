@@ -447,7 +447,6 @@ void titleScreenDrawFrame(Gfx **cursor) {
     cameraDrawSecondaryOverlay(0);
 }
 
-
 #include "microphone_connection.h"
 #include "title_screen_state.h"
 /// Query the current startup and title-screen state.
@@ -456,7 +455,6 @@ void titleScreenDrawFrame(Gfx **cursor) {
 s32 titleScreenGetState(void) {
     return gTitleScreenState;
 }
-
 
 /// Select Continue when a saved game is available, or New Game otherwise.
 /// \returns Nothing.
@@ -482,7 +480,6 @@ void titleScreenRequestMenu(void) {
     }
 }
 
-
 /// Begin the transition to the next demonstration when the title screen is awaiting Start.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80035234 (0x80035234).
@@ -504,7 +501,6 @@ extern s32 gTitleDemoIndex;
 s32 titleScreenGetDemoIndex(void) {
     return gTitleDemoIndex;
 }
-
 
 /// Adjust the title-screen music volume.
 /// \param level Relative music level, clamped to 0 through 1; its product with 32767 must be representable as a signed integer.
@@ -540,7 +536,6 @@ void titleScreenSetMessage(void **list, s32 count, s32 y) {
         textPanelAppend(&gTitleMessagePanel, list[i]);
     }
 }
-
 
 /// Release the initialized title-screen message and mark its panel inactive, retaining its color storage.
 /// \returns Nothing.
@@ -642,7 +637,7 @@ s32 titleScreenHandleFileSelection(void) {
         gTitleScreenState = 0xD;
         return 0;
     }
-        return 0;
+    return 0;
 }
 
 /// Primary controller new and auto-repeated button presses; aliases the repeated word of the processed sample.

@@ -62,7 +62,6 @@ void romDmaReadBlocking(u32 romAddress, u8 *destination, s32 byteCount) {
     }
 }
 
-
 /// Initialize a bounded asynchronous ROM-transfer queue.
 /// \param queueState Writable DMA-queue state (0x28 bytes in this ABI).
 /// \param capacity Positive number of concurrent DMA requests to support.
@@ -78,7 +77,6 @@ void romDmaInitializeQueue(DmaQueue *queueState, s32 capacity) {
     queueState->cursor = 0;
     queueState->capacity = capacity;
 }
-
 
 /// Wait for outstanding ROM reads, then release the queue's resources.
 /// \param queueState Previously initialized DMA-queue state.

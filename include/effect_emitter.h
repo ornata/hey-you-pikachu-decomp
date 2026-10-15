@@ -27,6 +27,7 @@ typedef enum EffectEmissionStyle {
 /// \param offset Signed horizontal distance from the target, positive away from the reference.
 /// \returns Nothing; the object system manages emitter lifetime.
 /// \note Original identifier: \c func_8001940C (0x8001940C).
-void effectEmitterCreateForStyle(u32 kind, f32 *position, f32 lifetime, s32 targetHandle, s32 referenceHandle, f32 offset);
+void effectEmitterCreateForStyle(u32 kind, f32 *position, f32 lifetime, s32 targetHandle, s32 referenceHandle,
+                                 f32 offset);
 
 #endif

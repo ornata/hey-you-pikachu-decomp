@@ -56,7 +56,6 @@ s8 *landmarkGetCannonDescription(s32 unused) {
     return &gLandmarkCannonDescriptionBuffer;
 }
 
-
 /// Consider a landmark as a candidate for the current object selection.
 /// \param object Landmark to evaluate.
 /// \returns Nothing.

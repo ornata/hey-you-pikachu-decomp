@@ -35,7 +35,6 @@ void nodePoolInitialize(NodePool *pool, s32 count) {
     pool->free = pool->nodes;
 }
 
-
 /// Release the storage owned by a value pool.
 /// \param pool Initialized pool to destroy.
 /// \returns Nothing.

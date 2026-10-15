@@ -35,27 +35,27 @@ typedef s32 (*LinkedEffectMotionCallback)(u8 *object, f32 *velocity);
 
 /// Owned motion, neighbor constraints and animated appearance of one linked effect.
 typedef struct LinkedEffectState {
-    f32 elapsed; ///< Seconds accumulated since creation.
-    u8 *previous; ///< Borrowed preceding effect, or null.
-    u8 *next; ///< Borrowed following effect, or null.
-    f32 spacing; ///< Allowed separation from the following effect.
-    f32 previousPull; ///< Strength of correction toward the preceding effect.
-    f32 nextPull; ///< Strength of correction toward the following effect.
-    f32 damping; ///< Fraction of retained velocity used during constrained motion.
-    f32 velocity[3]; ///< Retained motion vector.
+    f32 elapsed;                         ///< Seconds accumulated since creation.
+    u8 *previous;                        ///< Borrowed preceding effect, or null.
+    u8 *next;                            ///< Borrowed following effect, or null.
+    f32 spacing;                         ///< Allowed separation from the following effect.
+    f32 previousPull;                    ///< Strength of correction toward the preceding effect.
+    f32 nextPull;                        ///< Strength of correction toward the following effect.
+    f32 damping;                         ///< Fraction of retained velocity used during constrained motion.
+    f32 velocity[3];                     ///< Retained motion vector.
     LinkedEffectMotionCallback callback; ///< Optional motion policy; null uses constrained motion alone.
-    s32 targetHandle; ///< Object-manager target identifier.
-    f32 speed; ///< Limit applied to target-directed motion.
-    f32 playbackRate; ///< Time multiplier for both appearance tracks.
-    ValueTrack frameTrack; ///< Texture-frame track borrowing resident keys.
-    ValueTrack opacityTrack; ///< Opacity track borrowing resident keys.
-    u8 color[4]; ///< Primitive RGBA; alpha follows the opacity track.
-    s32 contactPending; ///< Nonzero enables target contact for the current leading effect.
+    s32 targetHandle;                    ///< Object-manager target identifier.
+    f32 speed;                           ///< Limit applied to target-directed motion.
+    f32 playbackRate;                    ///< Time multiplier for both appearance tracks.
+    ValueTrack frameTrack;               ///< Texture-frame track borrowing resident keys.
+    ValueTrack opacityTrack;             ///< Opacity track borrowing resident keys.
+    u8 color[4];                         ///< Primitive RGBA; alpha follows the opacity track.
+    s32 contactPending;                  ///< Nonzero enables target contact for the current leading effect.
 } LinkedEffectState;
 
 typedef char LinkedEffectStateSizeCheck[(sizeof(LinkedEffectState) == 0x58) ? 1 : -1];
-#define LINKED_EFFECT_OFFSET_CHECK(name, member, offset) \
-    typedef char name[(((u32)&((LinkedEffectState *)0)->member) == (offset)) ? 1 : -1]
+#define LINKED_EFFECT_OFFSET_CHECK(name, member, offset)                                                               \
+    typedef char name[(((u32) & ((LinkedEffectState *)0)->member) == (offset)) ? 1 : -1]
 LINKED_EFFECT_OFFSET_CHECK(LinkedEffectCallbackOffsetCheck, callback, 0x28);
 LINKED_EFFECT_OFFSET_CHECK(LinkedEffectTargetOffsetCheck, targetHandle, 0x2C);
 LINKED_EFFECT_OFFSET_CHECK(LinkedEffectFrameOffsetCheck, frameTrack, 0x38);
@@ -98,7 +98,8 @@ void linkedEffectDestroy(u8 *object) {
         ((LinkedEffectState *)precedingState)->next = nextEffect;
     }
     if (nextEffect != 0) {
-        ((LinkedEffectState *)(followingState = ((RuntimeObjectPrefix *)nextEffect)->state.bytes))->previous = previousEffect;
+        ((LinkedEffectState *)(followingState = ((RuntimeObjectPrefix *)nextEffect)->state.bytes))->previous =
+            previousEffect;
     }
     heapFreeLocal(&gGameHeap, effectState);
 }
@@ -159,12 +160,14 @@ void linkedEffectUpdateMotion(u8 *object) {
         }
         neighbor = ((LinkedEffectState *)state)->previous;
         if (neighbor != NULL) {
-            linkedEffectAddNeighborPull(object, neighbor, ((LinkedEffectState *)((RuntimeObjectPrefix *)neighbor)->state.pointer)->spacing,
-                                        ((LinkedEffectState *)state)->previousPull, velocity);
+            linkedEffectAddNeighborPull(
+                object, neighbor, ((LinkedEffectState *)((RuntimeObjectPrefix *)neighbor)->state.pointer)->spacing,
+                ((LinkedEffectState *)state)->previousPull, velocity);
         }
         next = ((LinkedEffectState *)state)->next;
         if (next != NULL) {
-            linkedEffectAddNeighborPull(object, next, ((LinkedEffectState *)state)->spacing, ((LinkedEffectState *)state)->nextPull, velocity);
+            linkedEffectAddNeighborPull(object, next, ((LinkedEffectState *)state)->spacing,
+                                        ((LinkedEffectState *)state)->nextPull, velocity);
         }
     }
     ((LinkedEffectState *)state)->velocity[0] = velocity[0];
@@ -174,7 +177,6 @@ void linkedEffectUpdateMotion(u8 *object) {
         ((RuntimeObjectPrefix *)object)->position[axis] += velocity[axis] * gRuntimeFrameSeconds;
     }
 }
-
 
 /// Advance a linked effect's motion and appearance.
 /// \param object Linked effect object with initialized motion state.
@@ -267,7 +269,8 @@ s32 linkedEffectComputeTargetVelocity(u8 *object, f32 *velocity) {
     velocity[1] = (((RuntimeObjectPrefix *)target)->worldPosition[1] - ((RuntimeObjectPrefix *)object)->position[1]);
     velocity[2] = (((RuntimeObjectPrefix *)target)->worldPosition[2] - ((RuntimeObjectPrefix *)object)->position[2]);
     distance = vector3Normalize(velocity);
-    if ((((LinkedEffectState *)state)->contactPending != 0) && (distance < (((RuntimeObjectPrefix *)target)->radius + ((RuntimeObjectPrefix *)object)->radius))) {
+    if ((((LinkedEffectState *)state)->contactPending != 0) &&
+        (distance < (((RuntimeObjectPrefix *)target)->radius + ((RuntimeObjectPrefix *)object)->radius))) {
         next = ((LinkedEffectState *)state)->next;
         ((LinkedEffectState *)state)->contactPending = 0;
         flags = ((RuntimeObjectPrefix *)object)->flags;

@@ -93,15 +93,15 @@ typedef struct ActorScriptState {
     ActorActionCueCommand *primaryCueCommand;     ///< Borrowed pending command in the primary cue program.
     ActorActionCueCommand *lastPrimaryCueProgram; ///< Borrowed primary program retained to detect repeated selection.
     ActorActionCueCommand *secondaryCueCommand;   ///< Borrowed pending command in the secondary cue program.
-    ActionScriptState actionScript; ///< Owned timed sequencer state borrowing its command resource.
-    s32 soundHandles[4]; ///< Four tracked spatial playback handles; zero denotes an empty slot.
-    s32 nextSoundSlot;   ///< Next slot to consider for tracked spatial playback.
-    s32 trackedVoice;    ///< Separately tracked character voice playback handle.
-    s32 heldItemHandle;  ///< Object handle of the actor's held item, or zero.
-    s32 attachmentMode;  ///< Attachment selection used for held items and actor effects.
-    s32 targetHandle;    ///< Object handle used by stored-target resolution.
-    s32 targetMode;      ///< Mode selecting how the stored target is interpreted.
-    f32 unknown1A0;      ///< Randomized approach sample; its later purpose remains unresolved.
+    ActionScriptState actionScript;               ///< Owned timed sequencer state borrowing its command resource.
+    s32 soundHandles[4];                      ///< Four tracked spatial playback handles; zero denotes an empty slot.
+    s32 nextSoundSlot;                        ///< Next slot to consider for tracked spatial playback.
+    s32 trackedVoice;                         ///< Separately tracked character voice playback handle.
+    s32 heldItemHandle;                       ///< Object handle of the actor's held item, or zero.
+    s32 attachmentMode;                       ///< Attachment selection used for held items and actor effects.
+    s32 targetHandle;                         ///< Object handle used by stored-target resolution.
+    s32 targetMode;                           ///< Mode selecting how the stored target is interpreted.
+    f32 unknown1A0;                           ///< Randomized approach sample; its later purpose remains unresolved.
     f32 targetDistanceAllowance;              ///< Approach distance allowance for the stored target.
     u64 lastInteractionMilliseconds;          ///< Time origin for the item interaction cooldown.
     s32 searchItemKind;                       ///< Item kind used as both bounds of an exact-kind search.
@@ -257,12 +257,12 @@ ACTOR_SCRIPT_OFFSET_CHECK(ActorMovementWorkspaceOffsetCheck, ActorScriptState, m
 
 /// The selected resource occupies actor bytes 0xEC through 0x117.
 /// Resource pose selectors become the actor's source and destination pose state.
-#define ACTOR_ACTION_RESOURCE_MEMBER_CHECK(name, actorField, resourceField) \
-    typedef char name[(((u32) & ((ActorScriptState *)0)->actorField - \
-                        (u32) & ((ActorScriptState *)0)->actionId == \
-                        (u32) & ((ActionDefinition *)0)->resourceField) && \
-                       sizeof(((ActorScriptState *)0)->actorField) == \
-                           sizeof(((ActionDefinition *)0)->resourceField)) ? 1 : -1]
+#define ACTOR_ACTION_RESOURCE_MEMBER_CHECK(name, actorField, resourceField)                                            \
+    typedef char name[(((u32) & ((ActorScriptState *)0)->actorField - (u32) &                                          \
+                        ((ActorScriptState *)0)->actionId == (u32) & ((ActionDefinition *)0)->resourceField) &&        \
+                       sizeof(((ActorScriptState *)0)->actorField) == sizeof(((ActionDefinition *)0)->resourceField))  \
+                          ? 1                                                                                          \
+                          : -1]
 ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourceNameLayoutCheck, actionName, name);
 ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourceGravityLayoutCheck, actionGravityScale, gravityScale);
 ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourceAttributesLayoutCheck, actionAttributes, attributes);
@@ -275,10 +275,12 @@ ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourceMovementLayoutCheck, actio
 ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourceInitializerLayoutCheck, actionInitializer, initializer);
 ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourceUpdateLayoutCheck, actionCallback, update);
 ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourcePrimaryCueLayoutCheck, primaryCueProgram, primaryCueProgram);
-ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourceSecondaryCueLayoutCheck, secondaryCueProgram, secondaryCueProgram);
+ACTOR_ACTION_RESOURCE_MEMBER_CHECK(ActorActionResourceSecondaryCueLayoutCheck, secondaryCueProgram,
+                                   secondaryCueProgram);
 #undef ACTOR_ACTION_RESOURCE_MEMBER_CHECK
-typedef char ActorActionResourceExtentCheck[
-    ((u32) & ((ActorScriptState *)0)->actionStartPending - (u32) & ((ActorScriptState *)0)->actionId ==
-     sizeof(ActionDefinition)) ? 1 : -1];
+typedef char ActorActionResourceExtentCheck[((u32) & ((ActorScriptState *)0)->actionStartPending - (u32) &
+                                             ((ActorScriptState *)0)->actionId == sizeof(ActionDefinition))
+                                                ? 1
+                                                : -1];
 
 #endif

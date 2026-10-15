@@ -253,7 +253,6 @@ s32 actorBackstepQuickly(u8 *actor) {
     return actorBackstepTowardTarget((s32)actor, 400.0F);
 }
 
-
 /// Choose a random continuation once the actor is facing its target.
 /// \param actor Actor whose facing and continuation are inspected and updated.
 /// \returns One when a continuation is selected; otherwise zero.
@@ -272,7 +271,6 @@ s32 actorChooseAlignedTargetContinuation(u8 *actor) {
     }
     return 0;
 }
-
 
 /// Turn toward the tracked target and request a loop exit when aligned.
 /// \param actor Actor executing the turning behavior.
@@ -485,7 +483,6 @@ s32 actorShouldEndRepeatedAction(u8 *actor) {
     return 0;
 }
 
-
 /// Turn slowly toward the tracked target until aligned.
 /// \param actor Actor executing the turning behavior.
 /// \returns One when aligned with the constrained target heading; otherwise zero.
@@ -497,7 +494,6 @@ s32 actorTurnToTrackedTargetSlowly(u8 *actor) {
     }
     return 0;
 }
-
 
 /// Turn quickly toward the tracked target until aligned.
 /// \param actor Actor executing the turning behavior.
@@ -954,7 +950,6 @@ s32 actorApproachTargetWithinSceneBounds(u8 *object) {
 #undef MOVE_MAX
 #undef MOVE_MIN
 
-
 /// Record ground clearance and check whether the tracked target is within approach range.
 /// \param actor Actor whose ground clearance and target are inspected.
 /// \returns One when the target is in range or movement constraint flags are active; otherwise zero.
@@ -1002,7 +997,6 @@ s32 actorAdvanceAboveGround(u8 *actor) {
 s32 actorAdvanceAboveGroundQuickly(u8 *actor) {
     return actorAdvanceWithGroundClearance((s32)actor, 800.0F);
 }
-
 
 /// Track and advance toward the target while maintaining minimum ground clearance.
 /// \param actor Actor executing the movement behavior.
@@ -1288,7 +1282,6 @@ s32 actorAdvanceWhileTrackingTarget(u8 *actor) {
     objectAddPendingLocalMovement(out);
     return 0;
 }
-
 
 /// Position and orient an attached chain and adjust its pose for the target height.
 /// \param object Chain actor with initialized state and a valid chain ending at its designated end part; the primary actor attachment and its transform matrices must exist.

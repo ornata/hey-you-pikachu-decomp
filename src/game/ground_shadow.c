@@ -12,10 +12,10 @@
 
 /// Owned terrain-conforming geometry and two frame-specific vertex views.
 typedef struct GroundShadowGrid {
-    s32 count;          ///< Vertices along each side of the square grid.
-    f32 spacing;        ///< Distance between vertices before object scaling.
-    Gfx *displayList;   ///< Owned rendering command allocation.
-    Vtx *vertices[2];   ///< Two frame views into one owned vertex allocation.
+    s32 count;        ///< Vertices along each side of the square grid.
+    f32 spacing;      ///< Distance between vertices before object scaling.
+    Gfx *displayList; ///< Owned rendering command allocation.
+    Vtx *vertices[2]; ///< Two frame views into one owned vertex allocation.
 } GroundShadowGrid;
 
 typedef char GroundShadowGridSizeCheck[(sizeof(GroundShadowGrid) == 0x14) ? 1 : -1];
@@ -83,7 +83,8 @@ extern s32 gRuntimeGameMode;
 Gfx *groundShadowPrepareDraw(u8 *object) {
     GroundShadowGrid *grid = (GroundShadowGrid *)((RuntimeObjectPrefix *)object)->state.pointer;
 
-    if (gRuntimeGameMode == GAME_MODE_AREA_CARD || gRuntimeGameMode == GAME_MODE_COLLECTION_RESULTS || gRuntimeGameMode == GAME_MODE_WORLD_MAP || gRuntimeGameMode == 9) {
+    if (gRuntimeGameMode == GAME_MODE_AREA_CARD || gRuntimeGameMode == GAME_MODE_COLLECTION_RESULTS ||
+        gRuntimeGameMode == GAME_MODE_WORLD_MAP || gRuntimeGameMode == 9) {
         return 0;
     }
     groundShadowUpdateVertices(object, gGraphicsFramebufferIndex);

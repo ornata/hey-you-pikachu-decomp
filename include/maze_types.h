@@ -57,11 +57,11 @@ typedef void (*SceneCellLifecycleHandler)(u8 *node);
 
 /// Borrowed resources and lifecycle callbacks for one occupancy-sampler result.
 typedef struct SceneCellType {
-    MazeGrid *terrain;        ///< Terrain surface assigned to the terminal region.
+    MazeGrid *terrain;                    ///< Terrain surface assigned to the terminal region.
     SceneCellLifecycleHandler initialize; ///< Optional initializer receiving the new region address.
-    SceneCellLifecycleHandler leave; ///< Optional cleanup receiving the region before release.
-    u8 *objectTemplate;       ///< Borrowed hierarchy template for the region's model.
-    s32 unknown010;           ///< Offset 0x10; purpose remains unresolved.
+    SceneCellLifecycleHandler leave;      ///< Optional cleanup receiving the region before release.
+    u8 *objectTemplate;                   ///< Borrowed hierarchy template for the region's model.
+    s32 unknown010;                       ///< Offset 0x10; purpose remains unresolved.
 } SceneCellType;
 
 /// One configured item placement; a negative kind ends the placement list.

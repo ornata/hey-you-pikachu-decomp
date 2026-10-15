@@ -73,19 +73,21 @@ void viridianDeepSpawnResidentGroup(Position *position, s32 index) {
     sine = mathSinDegrees(angle);
     cosine = mathCosDegrees(angle);
     scale = mathPowInteger(D_8014B020_scene_viridian_deep, growth);
-    actorCreateForKind(ACTOR_KIND_CATERPIE, (sine * 8.0F) + position->x, position->y, (cosine * 8.0F) + position->z, 0.0F, angle + 180.0F,
-                       (scale *= gCurrentAreaConfiguration->objectScale) * 2.0F, record, index);
+    actorCreateForKind(ACTOR_KIND_CATERPIE, (sine * 8.0F) + position->x, position->y, (cosine * 8.0F) + position->z,
+                       0.0F, angle + 180.0F, (scale *= gCurrentAreaConfiguration->objectScale) * 2.0F, record, index);
     if (progressGetCurrentChapter() != 4) {
         if (first > 0) {
-            actorCreateForKind(ACTOR_KIND_METAPOD, D_8014989C_scene_viridian_deep[index][0], D_8014989C_scene_viridian_deep[index][1],
-                               D_8014989C_scene_viridian_deep[index][2], 0.0F, D_8014989C_scene_viridian_deep[index][3],
-                               gCurrentAreaConfiguration->objectScale, D_80149170_scene_viridian_deep, index);
+            actorCreateForKind(ACTOR_KIND_METAPOD, D_8014989C_scene_viridian_deep[index][0],
+                               D_8014989C_scene_viridian_deep[index][1], D_8014989C_scene_viridian_deep[index][2], 0.0F,
+                               D_8014989C_scene_viridian_deep[index][3], gCurrentAreaConfiguration->objectScale,
+                               D_80149170_scene_viridian_deep, index);
         }
         if (second > 0) {
-            actorCreateForKind(
-                ACTOR_KIND_METAPOD, D_8014989C_scene_viridian_deep[secondIndex][0], D_8014989C_scene_viridian_deep[secondIndex][1],
-                D_8014989C_scene_viridian_deep[secondIndex][2], 0.0F, D_8014989C_scene_viridian_deep[secondIndex][3],
-                gCurrentAreaConfiguration->objectScale, D_80149170_scene_viridian_deep, secondIndex);
+            actorCreateForKind(ACTOR_KIND_METAPOD, D_8014989C_scene_viridian_deep[secondIndex][0],
+                               D_8014989C_scene_viridian_deep[secondIndex][1],
+                               D_8014989C_scene_viridian_deep[secondIndex][2], 0.0F,
+                               D_8014989C_scene_viridian_deep[secondIndex][3], gCurrentAreaConfiguration->objectScale,
+                               D_80149170_scene_viridian_deep, secondIndex);
         }
     }
 }

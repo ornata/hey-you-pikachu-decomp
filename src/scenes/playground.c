@@ -29,7 +29,7 @@ void playgroundInitializeObjects(void) {
     u8 *object;
     object = caveCreate(D_801344D4_scene_playground, D_801344B0_scene_playground, D_801344BC_scene_playground, 0);
     caveSetLinkedLandmark(object, landmarkCreate(D_801344B0_scene_playground[6], D_801344B0_scene_playground[7],
-                                                      D_801344B0_scene_playground[8], 0x90));
+                                                 D_801344B0_scene_playground[8], 0x90));
     playgroundSpawnResident();
 }
 /// Look up the playground spatial-grid value at a world position.

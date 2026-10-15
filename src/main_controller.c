@@ -44,11 +44,8 @@ extern u64 gMainSchedulerContext[];
 /// \note Original identifier: \c D_800A9DE8 (0x800A9DE8).
 extern u64 gIdleThreadStackTop[];
 
-
 #define IDLE_THREAD_ID 10
 #define IDLE_THREAD_PRI 10
-
-
 
 /// Rumble pattern lifecycle selectors used by the controller thread.
 typedef enum ControllerPatternLifecycle {
@@ -69,24 +66,26 @@ typedef enum ControllerMotorLifecycle {
 
 /// Per-port rumble pattern timing, owned by the controller thread.
 typedef struct ControllerRumblePatternState {
-    s32 state; ///< ControllerPatternLifecycle selector.
-    u64 deadlineTicks; ///< Time when the complete pattern ends.
+    s32 state;          ///< ControllerPatternLifecycle selector.
+    u64 deadlineTicks;  ///< Time when the complete pattern ends.
     u64 nextPulseTicks; ///< Time when the next pulse may begin.
-    u64 intervalTicks; ///< Interval between pulse starts.
-    u64 pulseTicks; ///< Duration of each motor pulse.
+    u64 intervalTicks;  ///< Interval between pulse starts.
+    u64 pulseTicks;     ///< Duration of each motor pulse.
 } ControllerRumblePatternState;
 
 /// Per-port motor timing and accessory-initialization retry state.
 typedef struct ControllerRumbleMotorState {
-    s32 state; ///< ControllerMotorLifecycle selector.
+    s32 state;         ///< ControllerMotorLifecycle selector.
     u64 deadlineTicks; ///< Pulse expiry or next accessory-initialization attempt, selected by state.
-    s32 attempts; ///< Initialization failures or successful stop attempts, selected by state.
+    s32 attempts;      ///< Initialization failures or successful stop attempts, selected by state.
 } ControllerRumbleMotorState;
 
 typedef char ControllerRumblePatternSizeCheck[(sizeof(ControllerRumblePatternState) == 0x28) ? 1 : -1];
 typedef char ControllerRumbleMotorSizeCheck[(sizeof(ControllerRumbleMotorState) == 0x18) ? 1 : -1];
-typedef char ControllerRumbleDeadlineOffsetCheck[((u32)&((ControllerRumbleMotorState *)0)->deadlineTicks == 8) ? 1 : -1];
-typedef char ControllerRumbleAttemptsOffsetCheck[((u32)&((ControllerRumbleMotorState *)0)->attempts == 0x10) ? 1 : -1];
+typedef char
+    ControllerRumbleDeadlineOffsetCheck[((u32) & ((ControllerRumbleMotorState *)0)->deadlineTicks == 8) ? 1 : -1];
+typedef char
+    ControllerRumbleAttemptsOffsetCheck[((u32) & ((ControllerRumbleMotorState *)0)->attempts == 0x10) ? 1 : -1];
 
 /// Controller ports enabled by device initialization.
 /// Original: D_800ACE80 (0x800ACE80).
@@ -217,7 +216,6 @@ extern f32 gCameraPitchCosineLowerTolerance;
 /// \note Original identifier: \c D_803B5000 (0x803B5000).
 extern u8 gColorFramebuffer0[];
 
-
 /// Physical depth-buffer address used in graphics commands.
 /// \note Original identifier: \c D_38F800 (0x38F800).
 extern u8 gDepthBufferPhysicalAddress[];
@@ -232,7 +230,6 @@ extern f32 gFloatStoreZeroUpperTolerance;
 /// Lower bound of values stored as zero by the float tolerance helper.
 /// \note Original identifier: \c D_8009FC98 (0x8009FC98).
 extern f32 gFloatStoreZeroLowerTolerance;
-
 
 /// Additional aspect scale applied when constructing the camera viewport projection.
 /// \note Original identifier: \c D_8009FC9C (0x8009FC9C).
@@ -257,12 +254,11 @@ extern s32 gRenderInitialClearCount, gRuntimeCurrentProgram;
 /// \note Original identifier: \c D_80088F18 (0x80088F18).
 extern s32 gRenderOptionalFrameHookEnabled;
 
-
 /// Caller-owned startup record released after the worker acknowledges initialization.
 /// The worker must not retain this record after setting ready.
 typedef struct ControllerStartup {
-    s32 ready; ///< Zero during startup; one after device services are initialized.
-    s32 channelCount; ///< Number of enabled controller channels.
+    s32 ready;              ///< Zero during startup; one after device services are initialized.
+    s32 channelCount;       ///< Number of enabled controller channels.
     s32 microphonePortMask; ///< Ports eligible to host the microphone.
 } ControllerStartup;
 typedef char ControllerStartupSizeCheck[(sizeof(ControllerStartup) == 0xC) ? 1 : -1];
@@ -390,7 +386,8 @@ void controllerRefreshConnectionState(void) {
         if (gControllerPortStatus[i].errno == 0) {
             gControllerConnectedPortMask |= mask;
         }
-        if (gControllerPortStatus[i].errno != 0 || !(gControllerPortStatus[i].type & 4) || gControllerPortStatus[i].status != 1) {
+        if (gControllerPortStatus[i].errno != 0 || !(gControllerPortStatus[i].type & 4) ||
+            gControllerPortStatus[i].status != 1) {
             gControllerAccessoryState[i] = CONTROLLER_ACCESSORY_UNAVAILABLE;
         } else if (gControllerAccessoryState[i] == CONTROLLER_ACCESSORY_UNAVAILABLE) {
             gControllerAccessoryState[i] = CONTROLLER_ACCESSORY_PENDING;
@@ -503,7 +500,8 @@ extern char gControllerRumbleGiveUpFormat[];
 void controllerRetryRumbleInitialization(s32 port) {
     ControllerRumbleMotorState *p;
 
-    if ((controllerGetAccessoryState(port) != CONTROLLER_ACCESSORY_READY) && (controllerGetAccessoryState(port) != CONTROLLER_ACCESSORY_PENDING)) {
+    if ((controllerGetAccessoryState(port) != CONTROLLER_ACCESSORY_READY) &&
+        (controllerGetAccessoryState(port) != CONTROLLER_ACCESSORY_PENDING)) {
         DEBUG_PRINTF((gControllerRumbleWrongAccessoryFormat, port));
         gControllerRumbleMotorState[port].state = CONTROLLER_MOTOR_IDLE;
         return;
@@ -532,7 +530,8 @@ void controllerRetryRumbleInitialization(s32 port) {
 /// \param port Controller port index from zero through three; requires initialized controller communication.
 /// \returns Nothing.
 void controllerStartRumbleMotor(s32 port) {
-    if ((controllerGetAccessoryState(port) == CONTROLLER_ACCESSORY_READY) && (__osMotorAccess(controllerGetAccessoryStorage(port), 1) == 0)) {
+    if ((controllerGetAccessoryState(port) == CONTROLLER_ACCESSORY_READY) &&
+        (__osMotorAccess(controllerGetAccessoryStorage(port), 1) == 0)) {
         gControllerRumbleMotorState[port].state = CONTROLLER_MOTOR_WAIT_PULSE;
         return;
     }
@@ -545,7 +544,8 @@ void controllerStartRumbleMotor(s32 port) {
 void controllerStopRumbleMotor(s32 port) {
     ControllerRumbleMotorState *p;
 
-    if ((controllerGetAccessoryState(port) == CONTROLLER_ACCESSORY_READY) && (__osMotorAccess(controllerGetAccessoryStorage(port), 0) == 0)) {
+    if ((controllerGetAccessoryState(port) == CONTROLLER_ACCESSORY_READY) &&
+        (__osMotorAccess(controllerGetAccessoryStorage(port), 0) == 0)) {
         p = &gControllerRumbleMotorState[port];
         if (++p->attempts >= 3) {
             p->state = CONTROLLER_MOTOR_IDLE;
@@ -591,7 +591,6 @@ void controllerCancelRumblePattern(s32 port) {
     p->state = CONTROLLER_MOTOR_STOP;
     p->attempts = 0;
 }
-
 
 /// Advance an active rumble pattern, starting due pulses or requesting completion.
 /// \param port Controller port index from zero through three with an active pattern.

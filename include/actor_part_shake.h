@@ -15,5 +15,4 @@
 /// \note Original decompilation identifier: \c func_800144D4 (0x800144D4).
 void actorStartPartShake(u8 *actor, s32 part);
 
-
 #endif

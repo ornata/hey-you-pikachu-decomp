@@ -96,7 +96,6 @@ s32 searchTreeLocateRoot(TreeNode **rootAddress, s32 minimum, TreeCompare compar
     return result;
 }
 
-
 /// Find a matching entry in a search tree.
 /// \param tree Tree to search; its root may change.
 /// \param key Key to locate.
@@ -233,7 +232,6 @@ void searchTreeVisitAscending(TreeNode *root, TreeVisitor visitor) {
     searchTreeVisitAscendingAtDepth(root, 0);
     gSearchTreeActiveVisitor = 0;
 }
-
 
 /// Visit entries in descending order using the current tree visitor.
 /// \param node Subtree root, or NULL.

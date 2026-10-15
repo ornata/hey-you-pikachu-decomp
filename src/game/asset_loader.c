@@ -34,7 +34,6 @@ s32 assetDecompressAndPatch(u8 *destination, u8 *source, s32 size, s32 outputSiz
     return result;
 }
 
-
 /// Load a corrected asset from cartridge ROM into caller-provided storage.
 /// \param romAddress Cartridge address of the encoded asset.
 /// \param destination RAM address with room for the decoded asset.
@@ -50,7 +49,6 @@ void assetLoadAndPatchFromRom(s32 romAddress, u8 *destination, u8 *scratch, s32 
     romDmaReadBlocking(romAddress, scratch, (patchCount * 8) + encodedSize);
     assetDecompressAndPatch(destination, scratch, encodedSize, outputSize, patchOffset, patchCount);
 }
-
 
 /// Allocate and load a corrected asset described by a ROM asset record.
 /// \param info Asset descriptor containing its ROM address, decoded range,

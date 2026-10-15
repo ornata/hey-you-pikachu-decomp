@@ -24,9 +24,9 @@ typedef s32 (*TreeCompare)(TreeNode *node, s32 key);
 /// Search-tree root and retained comparison callback; two words remain unidentified.
 /// Search operations may replace the root while preserving caller-owned nodes.
 typedef struct SearchTree {
-    s32 unknown0; ///< Cleared on initialization; no established later role.
-    TreeNode *root; ///< Borrowed root of caller-owned linked entries, or null.
-    s32 unknown8; ///< Cleared on initialization; no established later role.
+    s32 unknown0;        ///< Cleared on initialization; no established later role.
+    TreeNode *root;      ///< Borrowed root of caller-owned linked entries, or null.
+    s32 unknown8;        ///< Cleared on initialization; no established later role.
     TreeCompare compare; ///< Retained ordering callback, valid for this tree's lifetime.
 } SearchTree;
 

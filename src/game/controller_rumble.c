@@ -3,8 +3,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 
-
-
 /// Index of the most recently submitted controller rumble request slot.
 /// \note Original identifier: \c D_80063500 (0x80063500).
 extern u32 gControllerRumbleRequestIndex;
@@ -63,7 +61,6 @@ void controllerRequestRumblePattern(s32 port, f32 durationSeconds, f32 intervalS
 void controllerRequestRumbleStop(s32 port) {
     controllerQueueRumbleCommand(port, CONTROLLER_RUMBLE_STOP, 0.0F, 0.0F, 0.0F);
 }
-
 
 /// Check whether a controller currently has an active rumble pattern.
 /// \param controller Controller port index, from 0 through 3.

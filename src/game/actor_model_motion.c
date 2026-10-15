@@ -60,8 +60,9 @@ typedef struct AnimatedTextureState {
     s32 commandsPerBuffer; ///< Reserved command count for each drawing buffer.
 } AnimatedTextureState;
 
-#define ANIMATED_TEXTURE_OFFSET_CHECK(field, offset) \
-    typedef char AnimatedTexture_##field##OffsetCheck[(((u32) & ((AnimatedTextureState *)0)->field) == (offset)) ? 1 : -1]
+#define ANIMATED_TEXTURE_OFFSET_CHECK(field, offset)                                                                   \
+    typedef char                                                                                                       \
+        AnimatedTexture_##field##OffsetCheck[(((u32) & ((AnimatedTextureState *)0)->field) == (offset)) ? 1 : -1]
 ANIMATED_TEXTURE_OFFSET_CHECK(textureIds, 0x4);
 ANIMATED_TEXTURE_OFFSET_CHECK(playbackRates, 0x10);
 ANIMATED_TEXTURE_OFFSET_CHECK(tracks, 0x1C);
@@ -157,7 +158,6 @@ void actorUpdateTrackedSoundSpatialization(f32 *position, s32 *voices) {
     }
 }
 
-
 #include "actor_model.h"
 #include "area_services.h"
 #include "object_update.h"
@@ -194,7 +194,6 @@ void actorReleaseChildMotionState(u8 *actor) {
     heapFreeLocal(&gGameHeap, state);
 }
 
-
 /// Prepare the model drawing setup for its textures, lighting, and environment color.
 /// \param actor Actor whose model drawing setup is prepared.
 /// \param model Model state with initialized lights, an active light index of zero or one, and drawing buffers.
@@ -212,7 +211,6 @@ void actorPrepareModelLightingDrawList(u8 *actor, ActorScriptState *model, s32 b
                    model->environmentColor[3]);
     gSPEndDisplayList(g++);
 }
-
 
 /// Allocate and initialize actor model state and its drawing resources.
 /// \param actor Actor with a cached model asset receiving newly owned model state; existing state is not released.
@@ -272,18 +270,18 @@ void actorInitializeChildMotionState(u8 *actor) {
 
 /// Target-facing history and blend weight owned by one child motion state.
 typedef struct TargetFacingState {
-    f32 motionAngles[3]; ///< Last animated orientation before target-facing adjustment.
+    f32 motionAngles[3];   ///< Last animated orientation before target-facing adjustment.
     f32 previousAngles[3]; ///< Orientation produced by the previous child update.
-    f32 weight; ///< Current influence of the target-facing adjustment.
+    f32 weight;            ///< Current influence of the target-facing adjustment.
 } TargetFacingState;
 
 typedef char TargetFacingStateSizeCheck[(sizeof(TargetFacingState) == 0x1C) ? 1 : -1];
-typedef char TargetFacingStateWeightOffsetCheck[((u32)&((TargetFacingState *)0)->weight == 0x18) ? 1 : -1];
+typedef char TargetFacingStateWeightOffsetCheck[((u32) & ((TargetFacingState *)0)->weight == 0x18) ? 1 : -1];
 
 /// Camera-facing orientation and blend weight owned by one child motion state.
 typedef struct CameraFacingState {
     f32 angles[3]; ///< Last animated orientation before camera-facing adjustment.
-    f32 weight; ///< Current influence of the camera-facing adjustment.
+    f32 weight;    ///< Current influence of the camera-facing adjustment.
 } CameraFacingState;
 
 typedef char CameraFacingStateSizeCheck[(sizeof(CameraFacingState) == 0x10) ? 1 : -1];
@@ -355,9 +353,12 @@ void actorUpdateGroundSlopePitch(u8 *object) {
     surface = NULL;
     headingX = mathSinDegrees(state->orientation[1]);
     headingZ = mathCosDegrees(state->orientation[1]);
-    height = terrainGetWorldHeight(((RuntimeObjectPrefix *)object)->worldPosition[0], ((RuntimeObjectPrefix *)object)->worldPosition[1], ((RuntimeObjectPrefix *)object)->worldPosition[2], &surface);
+    height = terrainGetWorldHeight(((RuntimeObjectPrefix *)object)->worldPosition[0],
+                                   ((RuntimeObjectPrefix *)object)->worldPosition[1],
+                                   ((RuntimeObjectPrefix *)object)->worldPosition[2], &surface);
     nextX = ((RuntimeObjectPrefix *)object)->worldPosition[0] + headingX;
-    nextHeight = terrainGetWorldHeight(nextX, ((RuntimeObjectPrefix *)object)->worldPosition[1], ((RuntimeObjectPrefix *)object)->worldPosition[2] + headingZ, &surface);
+    nextHeight = terrainGetWorldHeight(nextX, ((RuntimeObjectPrefix *)object)->worldPosition[1],
+                                       ((RuntimeObjectPrefix *)object)->worldPosition[2] + headingZ, &surface);
     heightDelta = height - nextHeight;
     if (surface == NULL) {
     }
@@ -374,7 +375,6 @@ void actorUpdateGroundSlopePitch(u8 *object) {
             state->orientation[0],
         0);
 }
-
 
 /// Add downhill drift to actor movement according to the nearby terrain slope.
 /// \param actor Actor whose position determines the terrain slope.
@@ -472,7 +472,6 @@ void actorSetModelEnvironmentColor(u8 *actor, u8 r, u8 g, u8 b, u8 a) {
     state->environmentColor[3] = a;
 }
 
-
 /// Advance motion playback for an actor child object.
 /// \param object Child object whose motion playback is updated.
 /// \returns Nothing.
@@ -488,7 +487,6 @@ void actorUpdateChildMotion(u8 *object) {
 void actorUpdateChildMotionCallback(u8 *object) {
     actorUpdateChildMotion(object);
 }
-
 
 /// Resolve the parent tracking position, including camera targets and the stored-position fallback.
 /// \param child Child object whose hierarchy root is the actor described by parentState.
@@ -518,8 +516,6 @@ void actorGetParentTrackingPosition(u8 *child, ActorScriptState *parentState, f3
     position[1] = parentState->targetPosition[1];
     position[2] = parentState->targetPosition[2];
 }
-
-
 
 /// Update child animation and blend its orientation toward the parent target when tracking is enabled.
 /// \param object Child object with initialized target-facing state and a valid actor hierarchy root.
@@ -561,8 +557,7 @@ void actorUpdateTargetFacingChild(u8 *object) {
             *weight = 0.0F;
         }
     }
-    if ((u16)state->playbackMode == MOTION_PLAYBACK_TRACKS ||
-        (u16)state->playbackMode == MOTION_PLAYBACK_POSE_BLEND) {
+    if ((u16)state->playbackMode == MOTION_PLAYBACK_TRACKS || (u16)state->playbackMode == MOTION_PLAYBACK_POSE_BLEND) {
         follow->motionAngles[0] = ((RuntimeObjectPrefix *)object)->rotation[0];
         follow->motionAngles[1] = ((RuntimeObjectPrefix *)object)->rotation[1];
         follow->motionAngles[2] = ((RuntimeObjectPrefix *)object)->rotation[2];
@@ -620,7 +615,6 @@ void actorUpdateTargetFacingChild(u8 *object) {
 /// \note Original identifier: \c D_80076C80 (0x80076C80).
 extern u8 gActorCameraFacingDirectionTransform[];
 
-
 /// Update child animation and blend its orientation toward the active camera when tracking is enabled.
 /// \param object Child object with initialized camera-facing state and a valid actor hierarchy root.
 /// \returns Nothing.
@@ -654,8 +648,7 @@ void actorUpdateCameraFacingChild(u8 *object) {
             *weight = 0.0F;
         }
     }
-    if ((u16)state->playbackMode == MOTION_PLAYBACK_TRACKS ||
-        (u16)state->playbackMode == MOTION_PLAYBACK_POSE_BLEND) {
+    if ((u16)state->playbackMode == MOTION_PLAYBACK_TRACKS || (u16)state->playbackMode == MOTION_PLAYBACK_POSE_BLEND) {
         orientation->angles[0] = ((RuntimeObjectPrefix *)object)->rotation[0];
         orientation->angles[1] = ((RuntimeObjectPrefix *)object)->rotation[1];
         orientation->angles[2] = ((RuntimeObjectPrefix *)object)->rotation[2];
@@ -713,8 +706,11 @@ void actorUpdateCameraFacingChild(u8 *object) {
 /// must remain valid through graphics-task completion.
 /// \note Original decompilation identifier: \c func_80015E34 (0x80015E34).
 Gfx *actorBindReferencedObjectMatrixForDraw(u8 *actor) {
-    gSPSegment(gRenderDisplayListCursor++, 7,
-               osVirtualToPhysical(((RuntimeObjectPrefix *)actor)->root.object->matrixBuffers[(((RuntimeObjectPrefix *)actor)->root.object->flags & 0x8000) ? 1 : 0]));
+    gSPSegment(
+        gRenderDisplayListCursor++, 7,
+        osVirtualToPhysical(
+            ((RuntimeObjectPrefix *)actor)
+                ->root.object->matrixBuffers[(((RuntimeObjectPrefix *)actor)->root.object->flags & 0x8000) ? 1 : 0]));
     return ((RuntimeObjectPrefix *)actor)->displayList;
 }
 
@@ -728,7 +724,9 @@ void actorUpdateObjectRotationFromState(u8 *actor) {
     state = ((RuntimeObjectPrefix *)actor)->state.actor;
     matrix34MakeRotationXYZDegrees(rotationMatrix, state->orientation[0], state->orientation[1], 0.0F);
     matrix33Multiply(&state->rootMotionTransform.m[0][0], rotationMatrix, rotationMatrix);
-    matrix33GetFoldedEulerDegrees(rotationMatrix, &((RuntimeObjectPrefix *)actor)->rotation[0], &((RuntimeObjectPrefix *)actor)->rotation[1], &((RuntimeObjectPrefix *)actor)->rotation[2]);
+    matrix33GetFoldedEulerDegrees(rotationMatrix, &((RuntimeObjectPrefix *)actor)->rotation[0],
+                                  &((RuntimeObjectPrefix *)actor)->rotation[1],
+                                  &((RuntimeObjectPrefix *)actor)->rotation[2]);
 }
 
 /// Set one actor orientation angle in degrees.
@@ -774,7 +772,6 @@ void actorAddRotationAxisDegrees(u8 *actor, f32 angle, s32 axis) {
         p[3] -= 360.0F;
     }
 }
-
 
 /// Rotate the actor on one axis when the current action permits turning.
 /// \param actor Actor whose orientation is updated.
@@ -868,7 +865,6 @@ s32 *actorRegisterPartIds(s32 actorType, s32 *partIds) {
 /// \note Original identifier: \c D_800760F0 (0x800760F0).
 extern s32 gActorPartRegistrationData;
 
-
 /// Initialize the actor part lookup from the configured actor types.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800162EC (0x800162EC).
@@ -894,14 +890,12 @@ void actorInitializePartRegistry(void) {
     actorInitializePartIdMap();
 }
 
-
 /// Release the actor part identifier lookup.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80016384 (0x80016384).
 void actorDestroyPartIdMap(void) {
     wordMapDestroy(&gActorPartIndexMap);
 }
-
 
 /// Find the index of a named part for an actor type.
 /// \param actorType Nonnegative actor type in the 15-bit actor-type range.
@@ -978,7 +972,6 @@ void actorGetPartWorldPosition(u8 *actor, s32 partId, f32 *position) {
     position[2] = ((RuntimeObjectPrefix *)part)->worldPosition[2];
 }
 
-
 /// Get the world-space attachment position selected by the actor attachment mode.
 /// \param actor Actor whose attachment mode and parts determine the position.
 /// \param heightOffset Vertical offset applied by the raised attachment mode.
@@ -993,17 +986,21 @@ void actorGetConfiguredAttachmentPosition(u8 *actor, f32 heightOffset, f32 *posi
     state = ((RuntimeObjectPrefix *)actor)->state.actor;
     switch ((u32)state->attachmentMode) {
     case 0:
-        actorGetPartWorldPosition(actor, actorConfigGetFirstAttachmentPartId(((RuntimeObjectPrefix *)actor)->kind), first);
-        actorGetPartWorldPosition(actor, actorConfigGetSecondAttachmentPartId(((RuntimeObjectPrefix *)actor)->kind), second);
+        actorGetPartWorldPosition(actor, actorConfigGetFirstAttachmentPartId(((RuntimeObjectPrefix *)actor)->kind),
+                                  first);
+        actorGetPartWorldPosition(actor, actorConfigGetSecondAttachmentPartId(((RuntimeObjectPrefix *)actor)->kind),
+                                  second);
         (position)[0] = (first[0] + second[0]) * 0.5F;
         (position)[1] = (f32)((first[1] + second[1]) * 0.5F);
         (position)[2] = (f32)((first[2] + second[2]) * 0.5F);
         return;
     case 1:
-        actorGetPartWorldPosition(actor, actorConfigGetFirstAttachmentPartId(((RuntimeObjectPrefix *)actor)->kind), position);
+        actorGetPartWorldPosition(actor, actorConfigGetFirstAttachmentPartId(((RuntimeObjectPrefix *)actor)->kind),
+                                  position);
         return;
     case 2:
-        actorGetPartWorldPosition(actor, actorConfigGetSecondAttachmentPartId(((RuntimeObjectPrefix *)actor)->kind), position);
+        actorGetPartWorldPosition(actor, actorConfigGetSecondAttachmentPartId(((RuntimeObjectPrefix *)actor)->kind),
+                                  position);
         return;
     case 3:
         actorGetPartWorldPosition(actor, 0x76, position);
@@ -1045,7 +1042,6 @@ void actorReleaseAnimatedTextureState(u8 *actor) {
     heapFreeLocal(&gGameHeap, obj->displayLists[0]);
     heapFreeLocal(&gGameHeap, obj);
 }
-
 
 /// Advance animated textures and prepare their drawing commands.
 /// \param actor Component with zero through three initialized texture tracks and allocated drawing buffers.
@@ -1180,7 +1176,6 @@ void actorUpdateNamedPartFlags(u8 *actor, s32 set, s32 clear, s32 *ids) {
     }
 }
 
-
 /// Find the lowest world height among the actor configured reference parts.
 /// \param actor Actor with a valid default reference part.
 /// \returns Lowest reference-part world height, including the default reference part.
@@ -1200,7 +1195,6 @@ f32 actorGetLowestReferencePartHeight(u8 *actor) {
     return min;
 }
 
-
 /// Measure actor ground clearance at a displaced reference position.
 /// \param actor Actor whose reference parts and ground offset determine clearance.
 /// \param collisionMode Collision-mode argument retained for the terrain query; currently unused by that query.
@@ -1210,7 +1204,8 @@ f32 actorGetLowestReferencePartHeight(u8 *actor) {
 /// \param surface Optional cached surface pointer, updated by the ground query.
 /// \returns Signed height above the ground after the actor ground offset is applied.
 /// \note Original decompilation identifier: \c func_80016BA8 (0x80016BA8).
-f32 actorMeasureGroundClearance(u8 *actor, s32 collisionMode, u8 *reference, f32 *displacement, f32 *groundHeight, u8 **surface) {
+f32 actorMeasureGroundClearance(u8 *actor, s32 collisionMode, u8 *reference, f32 *displacement, f32 *groundHeight,
+                                u8 **surface) {
     ActorScriptState *state;
     const s32 *p;
     u8 *e;
@@ -1224,11 +1219,12 @@ f32 actorMeasureGroundClearance(u8 *actor, s32 collisionMode, u8 *reference, f32
             top = ((RuntimeObjectPrefix *)e)->worldPosition[1];
         }
     }
-    *groundHeight =
-        terrainGetWorldHeightForQuery(collisionMode, ((RuntimeObjectPrefix *)reference)->worldPosition[0] + displacement[0], ((RuntimeObjectPrefix *)reference)->worldPosition[1], ((RuntimeObjectPrefix *)reference)->worldPosition[2] + displacement[2], surface);
+    *groundHeight = terrainGetWorldHeightForQuery(
+        collisionMode, ((RuntimeObjectPrefix *)reference)->worldPosition[0] + displacement[0],
+        ((RuntimeObjectPrefix *)reference)->worldPosition[1],
+        ((RuntimeObjectPrefix *)reference)->worldPosition[2] + displacement[2], surface);
     return top - *groundHeight - state->groundOffset;
 }
-
 
 /// Update scaled actor motion displacement with the applicable upward movement limit.
 /// \param state Actor state whose pending motion displacement is updated.
@@ -1275,7 +1271,8 @@ void actorUpdateGroundReferencePose(u8 *actor, u8 *reference, u8 *pose) {
     dy = (m[0][1] * w[0]) + (m[1][1] * w[1]) + (m[2][1] * w[2]);
     state->verticalPoseOffset += dy;
     ((RuntimeObjectPrefix *)pose)->position[0] = ((RuntimeObjectPrefix *)reference)->worldPosition[0];
-    ((RuntimeObjectPrefix *)pose)->position[1] = ((RuntimeObjectPrefix *)actor)->position[1] - state->verticalPoseOffset - state->groundOffset;
+    ((RuntimeObjectPrefix *)pose)->position[1] =
+        ((RuntimeObjectPrefix *)actor)->position[1] - state->verticalPoseOffset - state->groundOffset;
     ((RuntimeObjectPrefix *)pose)->position[2] = ((RuntimeObjectPrefix *)reference)->worldPosition[2];
     ((RuntimeObjectPrefix *)pose)->rotation[0] = state->orientation[0];
     ((RuntimeObjectPrefix *)pose)->rotation[1] = state->orientation[1];
@@ -1321,12 +1318,14 @@ void actorConstrainMovementToTerrain(u8 *object, f32 *displacement) {
         } else {
             collisionMode = 4;
         }
-        if (areaIsPositionOutsideBounds(((RuntimeObjectPrefix *)object)->worldPosition[0], ((RuntimeObjectPrefix *)object)->worldPosition[1],
-                          ((RuntimeObjectPrefix *)object)->worldPosition[2]) != 0) {
+        if (areaIsPositionOutsideBounds(((RuntimeObjectPrefix *)object)->worldPosition[0],
+                                        ((RuntimeObjectPrefix *)object)->worldPosition[1],
+                                        ((RuntimeObjectPrefix *)object)->worldPosition[2]) != 0) {
             objectDebugReportNoOp(object);
         }
-        collisionFlags = terrainGetSurfaceAttributes(((RuntimeObjectPrefix *)object)->worldPosition[0], ((RuntimeObjectPrefix *)object)->worldPosition[1],
-                                       ((RuntimeObjectPrefix *)object)->worldPosition[2], &surface);
+        collisionFlags = terrainGetSurfaceAttributes(((RuntimeObjectPrefix *)object)->worldPosition[0],
+                                                     ((RuntimeObjectPrefix *)object)->worldPosition[1],
+                                                     ((RuntimeObjectPrefix *)object)->worldPosition[2], &surface);
         if (collisionFlags & 0x100) {
             actorAddDownhillMovement(object, displacement, &surface);
             radius = state->clearanceHeight * 0.001F;
@@ -1338,10 +1337,10 @@ void actorConstrainMovementToTerrain(u8 *object, f32 *displacement) {
             state->movementCollisionFlags = terrainConstrainMovement(
                 collisionMode, ((RuntimeObjectPrefix *)reference)->worldPosition[0],
                 ((RuntimeObjectPrefix *)reference)->worldPosition[1],
-                ((RuntimeObjectPrefix *)reference)->worldPosition[2], state->collisionWidth,
-                state->collisionDepth, radius, displacement, &verticalCorrection,
-                displacement + 2, &surface);
-            clearance = actorMeasureGroundClearance(object, collisionMode, reference, displacement, &floorDelta, &surface);
+                ((RuntimeObjectPrefix *)reference)->worldPosition[2], state->collisionWidth, state->collisionDepth,
+                radius, displacement, &verticalCorrection, displacement + 2, &surface);
+            clearance =
+                actorMeasureGroundClearance(object, collisionMode, reference, displacement, &floorDelta, &surface);
             floorDelta = ((RuntimeObjectPrefix *)pose)->position[1] - floorDelta;
         } else {
             clearance = 0.0F;

@@ -96,8 +96,6 @@ char *gChapterFriendshipMessages[20] = {
     "You gazed at the stars\nwith ^6PIKACHU^^!\n\n^6PIKACHU^^ had no idea there\nwere so many stars in the sky.\n",
 };
 
-
-
 #define TEXTURE_DRAW_END {-1, 0, 0, 0, 0, 0, 0, 0.0f, 0.0f}
 
 /// Private presentation template holding up to three rectangles and a terminator.
@@ -207,11 +205,9 @@ void presentationDrawCurrentCardPanels(Gfx **);
 /// \note Original identifier: \c D_800F0B1C (0x800F0B1C).
 extern s32 gMessageBarWorkImageIndex;
 
-
 /// Interior availability progress-flag view of the item catalog, with a 116-byte stride.
 /// \note Original identifier: \c D_80125AB2 (0x80125AB2).
 extern u8 gItemKindAvailabilityFlagEntries[];
-
 
 /// Record the configured progress flag for a live item in a kept-item slot.
 /// \param slot Readable kept-item slot; any live handle must identify an initialized item with a valid catalog kind.
@@ -280,14 +276,15 @@ s32 inventoryRecordKeptItemsAndClearTemporarySlot(void) {
 /// Borrowed links remain valid only while the original actor and its resources stay live.
 typedef struct PresentationObjectSnapshot {
     RuntimeObjectPrefix object; ///< Copied object transform, links and private-state reference.
-    TreeNode *entry; ///< Borrowed original search entry; the snapshot does not own or register it.
+    TreeNode *entry;            ///< Borrowed original search entry; the snapshot does not own or register it.
 } PresentationObjectSnapshot;
 
 typedef char PresentationObjectSnapshotSizeCheck[(sizeof(PresentationObjectSnapshot) == 0x5C) ? 1 : -1];
-typedef char PresentationSnapshotEntryOffsetCheck[
-    ((u32) & ((PresentationObjectSnapshot *)0)->entry == (u32) & ((ManagedObject *)0)->entry) ? 1 : -1];
-typedef char PresentationSnapshotExtentCheck[
-    (sizeof(PresentationObjectSnapshot) == (u32) & ((ManagedObject *)0)->node) ? 1 : -1];
+typedef char PresentationSnapshotEntryOffsetCheck
+    [((u32) & ((PresentationObjectSnapshot *)0)->entry == (u32) & ((ManagedObject *)0)->entry) ? 1 : -1];
+typedef char PresentationSnapshotExtentCheck[(sizeof(PresentationObjectSnapshot) == (u32) & ((ManagedObject *)0)->node)
+                                                 ? 1
+                                                 : -1];
 /// Saved actor record retained while presentation placement and pose are active.
 /// \note Original identifier: \c D_800F0C00 (0x800F0C00).
 extern PresentationObjectSnapshot gPresentationSavedActor;
@@ -324,7 +321,6 @@ extern f32 gPlayerEyeHeight;
 s32 *actionScriptStop();
 void objectClearHierarchyFlags(u8 *, u16);
 
-
 /// Restore the active actor's saved transform and behavior settings, then resume its scene pose and camera.
 /// \returns Nothing; requires a saved snapshot of the same live, initialized actor.
 /// \note Portability: The unprototyped action-script stop call passes an extra argument ignored by the original ABI.
@@ -360,8 +356,6 @@ void presentationRestoreActiveActor(void) {
     cameraSetPositionAndAngles(0, gPlayerState.position[0], gPlayerPositionY + gPlayerEyeHeight, gPlayerPositionZ,
                                gPlayerPitchOffset + gPlayerPitch, gPlayerYaw + gPlayerViewShake, 0.0F);
 }
-
-
 
 /// Save the active actor's state before a presentation changes its pose and placement.
 /// \returns Nothing; requires a live actor with initialized model and behavior state.
@@ -465,7 +459,8 @@ void presentationPrepareActiveActor(void *point) {
     secondJoint = actorFindPart((u8 *)((s32)gPikachuActor), secondJointId);
     secondHeight = ((RuntimeObjectPrefix *)secondJoint)->worldPosition[1];
     gPresentationActorJointMidpointHeight = (h + secondHeight) / 2;
-    actorSetBehaviorInhibitFlags((u8 *)((s32)gPikachuActor), ACTOR_INHIBIT_HORIZONTAL_MOVEMENT | ACTOR_INHIBIT_TERRAIN_AND_GRAVITY);
+    actorSetBehaviorInhibitFlags((u8 *)((s32)gPikachuActor),
+                                 ACTOR_INHIBIT_HORIZONTAL_MOVEMENT | ACTOR_INHIBIT_TERRAIN_AND_GRAVITY);
 }
 
 /// Owned text image for the current area region name, or null if unavailable.
@@ -492,7 +487,6 @@ void presentationDrawAreaLabel(Gfx **gdl) {
         textDrawSetPalette(gDefaultTextPalette);
     }
 }
-
 
 /// Draws the decorative elements of the card presentation.
 /// \param gdl Display-list cursor to receive drawing commands and advance past them.
@@ -599,7 +593,8 @@ void presentationUpdateCardMode(void) {
     case 0:
         controllerRequestRumbleReset(0);
         if (gCurrentAreaConfiguration->cardTextures[gAreaScenarioIndex] != 0) {
-            if (gRuntimeCurrentArea == AREA_OCHRE_ENTRANCE || gRuntimeCurrentArea == AREA_VIRIDIAN_DEEP || gRuntimeCurrentArea == AREA_COBALT_ISLAND) {
+            if (gRuntimeCurrentArea == AREA_OCHRE_ENTRANCE || gRuntimeCurrentArea == AREA_VIRIDIAN_DEEP ||
+                gRuntimeCurrentArea == AREA_COBALT_ISLAND) {
                 scene11Images = gArea11CardChaseStageTextures;
                 scene5Images = gArea5CardChaseStageTextures;
                 scene13Images = gArea13CardChaseStageTextures;
@@ -688,8 +683,7 @@ void presentationCreateCollectionTitleText(void) {
 
     sprintf(sp18, "%s", gCollectionPresentationTitleText);
     gCollectionPresentationTitleImage = 0;
-    textImageCreateFromText((TextImage **)(&gCollectionPresentationTitleImage), (u8 *)(sp18),
-                            gTextImageConfigurations);
+    textImageCreateFromText((TextImage **)(&gCollectionPresentationTitleImage), (u8 *)(sp18), gTextImageConfigurations);
 }
 
 /// Interior collection-value view of the item catalog, with a 116-byte stride.
@@ -727,7 +721,6 @@ void presentationSetCollectionItemText(u8 *object) {
         textImageCreateFromText((TextImage **)((s32 *)slot), (u8 *)(buffer), gTextImageConfigurations);
     }
 }
-
 
 /// Draw the prepared collection title and any current item subtitle; requires a live title image.
 /// \param gdl Display-list cursor to receive drawing commands and advance past them.
@@ -799,7 +792,6 @@ void presentationDrawCollectionScore(Gfx **gdl) {
     }
 }
 
-
 /// Draws the decorative elements of the collection presentation.
 /// \param gdl Display-list cursor to receive drawing commands and advance past them.
 /// \returns Nothing.
@@ -846,7 +838,6 @@ void presentationDrawCollectionScreen(Gfx **gdl) {
     cameraDrawSecondaryOverlay(0);
 }
 
-
 /// Gets the collection score awarded for an item.
 /// \param id Handle of a live object; an item must have initialized state and a valid catalog kind.
 /// \returns The item’s collection value, or zero for an object that is not an item.
@@ -862,7 +853,6 @@ s32 presentationGetItemCollectionValue(s32 id) {
     p = ((RuntimeObjectPrefix *)liveObject)->state.bytes;
     return *(s32 *)((u8 *)gItemKindCollectionValueEntries + (((ItemStatePrefix *)p)->kind * 0x74));
 }
-
 
 /// Position, scale, and turn an item for the collection presentation.
 /// \param item Live item with an initialized model hierarchy; requires initialized area and presentation transforms.
@@ -1019,10 +1009,6 @@ s32 presentationUpdateItemCollectionSequence(void) {
         presentationPlaceCollectionItem(object, progress);
         break;
     case 2:
-
-
-
-
 
         if (selectedId == 1) {
         }
@@ -1400,7 +1386,6 @@ s32 presentationSelectViridianDeepScenario(s32 *actorAction, s32 *audioCue) {
     }
 }
 
-
 /// Select the springleaf-region scenario shared by companion scripts, cards and collection titles.
 /// \param actorAction Receives the active actor’s presentation action ID.
 /// \param audioCue Receives the presentation audio cue ID.
@@ -1465,7 +1450,6 @@ s32 presentationSelectCobaltCoastScenario(s32 *actorAction, s32 *audioCue) {
     *audioCue = 0x15;
     return 0;
 }
-
 
 /// Select the shop scenario shared by companion scripts, cards and collection titles.
 /// \param actorAction Receives the active actor’s presentation action ID.
@@ -1690,7 +1674,6 @@ void presentationInitializeForCurrentArea(void) {
     gCollectionPresentationSubtitleImages[1] = 0;
     gCollectionPresentationSubtitleIndex = 0;
 }
-
 
 /// Gets the current story chapter.
 /// \returns The current chapter number.

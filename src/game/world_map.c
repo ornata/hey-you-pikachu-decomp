@@ -50,14 +50,13 @@
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-
 /// World-map destination choices, presentation focus and menu artwork.
 typedef struct WorldMapDestination {
-    s32 areaIds[3];       ///< Area identifier for each chase stage; negative disables that stage.
-    s32 availabilityFlag; ///< Progress flag required for selection, or -1 for unconditional availability.
-    Vec3f focusPosition;  ///< Actor look-at point in presentation coordinates.
+    s32 areaIds[3];        ///< Area identifier for each chase stage; negative disables that stage.
+    s32 availabilityFlag;  ///< Progress flag required for selection, or -1 for unconditional availability.
+    Vec3f focusPosition;   ///< Actor look-at point in presentation coordinates.
     TextureRectangle icon; ///< Destination icon and its menu rectangle.
-    s32 badgeTextures[3]; ///< Badge texture for each chase stage; negative hides the badge.
+    s32 badgeTextures[3];  ///< Badge texture for each chase stage; negative hides the badge.
 } WorldMapDestination;
 
 typedef char WorldMapDestinationSizeCheck[(sizeof(WorldMapDestination) == 0x4C) ? 1 : -1];
@@ -112,7 +111,6 @@ void presentationResetFocusPoint(Vec3f *point) {
     gPresentationFocusTransitionStartMilliseconds = (u32)runtimeGetElapsedMilliseconds();
 }
 
-
 /// Update and obtain the shared presentation focus point during its transition.
 /// \param point Receives the current point in presentation coordinates.
 /// \returns Nothing.
@@ -125,7 +123,6 @@ void presentationUpdateFocusPoint(Vec3f *point) {
     gPresentationFocusCurrent.y = point->y;
     gPresentationFocusCurrent.z = point->z;
 }
-
 
 /// Check whether a map destination can be selected at the current difficulty.
 /// \param destination Valid index in the map-destination table.
@@ -479,7 +476,6 @@ void wholeMapSetState(s32 state) {
     gWorldMapState = state;
 }
 
-
 #define PLAYER (*(volatile s32 *)&gPikachuActor)
 
 /// Play the active actor's confirmation animation for the selected destination.
@@ -714,7 +710,6 @@ void wholeMapConfigureVoiceInput(void) {
     gGameplayVoiceCommandsAllowed = 1;
 }
 
-
 /// Select the whole-map backdrop for the current difficulty.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002E634 (0x8002E634).
@@ -838,7 +833,8 @@ void wholeMapUpdate(void) {
         return;
     case 5:
         if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
-            areaSetNextDestination(gWorldMapDestinations[gWorldMapSelectedDestination].areaIds[playerGetChaseStage()], 0);
+            areaSetNextDestination(gWorldMapDestinations[gWorldMapSelectedDestination].areaIds[playerGetChaseStage()],
+                                   0);
             runtimeRequestProgramChange(0);
             controllerConfigureStickButtons(0, 0x1E, 0x1E, 0x1E, 0x1E);
             wholeMapSetState(0);

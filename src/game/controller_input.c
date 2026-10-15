@@ -91,7 +91,6 @@ extern char gControllerInputTraceFormat[]; /* "send(%d, %d, %.3f, %.3f, %.3f)\n"
 /// \note Original identifier: \c D_800A01E0 (0x800A01E0).
 extern char gControllerInvalidPortTraceFormat[]; /* "pad-%d is invalid\n" */
 
-
 /// Update held, pressed, released, and repeated buttons from cached pad samples.
 /// Applies optional stick-derived direction bits and updates per-button timing.
 /// Does not poll hardware; ports with invalid samples retain their prior state.

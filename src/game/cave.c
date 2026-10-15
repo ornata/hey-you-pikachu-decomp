@@ -76,7 +76,6 @@ s8 *caveGetDescription(u8 *object) {
     return gCaveDescriptionBuffer;
 }
 
-
 /// Consider a cave object for the current interaction selection.
 /// \param object Cave interaction object to evaluate.
 /// \returns Nothing.

@@ -8,7 +8,7 @@
 
 /// One selectable key and its mutable selection weight.
 typedef struct WeightedChoiceEntry {
-    s32 key; ///< Nonzero choice key, or zero to terminate the entry array.
+    s32 key;    ///< Nonzero choice key, or zero to terminate the entry array.
     s32 weight; ///< Initial weight; cumulative threshold after table preparation.
 } WeightedChoiceEntry;
 
@@ -16,13 +16,13 @@ typedef struct WeightedChoiceEntry {
 /// Tables require at least two choices followed by a zero-key terminator.
 typedef struct WeightedChoiceTable {
     WeightedChoiceEntry *entries; ///< Choices and their writable terminator.
-    s32 lastChoiceIndex; ///< Last selectable entry index; zero marks an unprepared table.
+    s32 lastChoiceIndex;          ///< Last selectable entry index; zero marks an unprepared table.
 } WeightedChoiceTable;
 
 typedef char WeightedChoiceEntrySizeCheck[(sizeof(WeightedChoiceEntry) == 8) ? 1 : -1];
-typedef char WeightedChoiceWeightOffsetCheck[(((u32)&((WeightedChoiceEntry *)0)->weight) == 4) ? 1 : -1];
+typedef char WeightedChoiceWeightOffsetCheck[(((u32) & ((WeightedChoiceEntry *)0)->weight) == 4) ? 1 : -1];
 typedef char WeightedChoiceTableSizeCheck[(sizeof(WeightedChoiceTable) == 8) ? 1 : -1];
-typedef char WeightedChoiceIndexOffsetCheck[(((u32)&((WeightedChoiceTable *)0)->lastChoiceIndex) == 4) ? 1 : -1];
+typedef char WeightedChoiceIndexOffsetCheck[(((u32) & ((WeightedChoiceTable *)0)->lastChoiceIndex) == 4) ? 1 : -1];
 
 /// Prepares a weighted selection table for repeated random choices.
 /// \param table Writable table with nonnegative weights, a positive total fitting s32, and a zero-key terminator; prepared tables remain unchanged.

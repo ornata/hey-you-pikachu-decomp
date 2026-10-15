@@ -29,8 +29,8 @@ extern f32 D_801586DC_scene_bedroom;
 /// \returns Nothing.
 void bedroomInitializeObjects(void) {
     if (progressGetValue(0xF0) != 0) {
-        actorCreateForKind(ACTOR_KIND_TELESCOPE, 93.75F, 31.93000030517578F, 52.189998626708984F, 0.0F, D_801586DC_scene_bedroom,
-                           gCurrentAreaConfiguration->objectScale, 0, 0);
+        actorCreateForKind(ACTOR_KIND_TELESCOPE, 93.75F, 31.93000030517578F, 52.189998626708984F, 0.0F,
+                           D_801586DC_scene_bedroom, gCurrentAreaConfiguration->objectScale, 0, 0);
     }
     toolboxClearCollection();
     mazeSpawnAvailableItems(D_801554DC_scene_bedroom);

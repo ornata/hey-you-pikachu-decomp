@@ -23,7 +23,6 @@
 #include "item_kind.h"
 #include "object_types.h"
 
-
 /// Start item disposal with its transition sound.
 /// \param object Item to begin disposing of.
 /// \returns Nothing.
@@ -32,7 +31,6 @@ void itemBeginShrinkingDisposal(u8 *object) {
     itemPlayTrackedSound(object, (ItemStatePrefix *)((RuntimeObjectPrefix *)object)->state.bytes, 0xB7);
     itemSetMode(object, ITEM_MODE_SHRINKING_DISPOSAL);
 }
-
 
 /// Determine the normalized terrain response direction at an item.
 /// \param object Item whose terrain is sampled.
@@ -188,7 +186,6 @@ s32 itemUpdateGroundVelocity(u8 *object, u8 *state, s32 cachedNode, s32 *spinnin
     return 0;
 }
 
-
 /// Advance item rotation according to its rolling and angular-motion settings.
 /// \param object Item whose orientation is updated.
 /// \param state Item state containing its motion settings and angular velocity.
@@ -314,7 +311,6 @@ void itemPlayImpactSounds(u8 *object, s32 contactFlags, s32 surface) {
     itemPlayTrackedSound(object, sp1C, *((s16 *)((u8 *)&gItemKindSecondarySoundEntries + ((sp1C)->kind * 0x74))));
 }
 
-
 /// Handle item contact and invoke its kind-specific collision response.
 /// \param object Item involved in the contact.
 /// \param flags Collision contact flags supplied to the response callback.
@@ -361,7 +357,9 @@ void itemUpdateGroundAndAirMotion(u8 *object) {
 
     state = ((RuntimeObjectPrefix *)object)->state.bytes;
     node = NULL;
-    if (areaIsPositionOutsideBounds(((RuntimeObjectPrefix *)object)->worldPosition[0], ((RuntimeObjectPrefix *)object)->worldPosition[1], ((RuntimeObjectPrefix *)object)->worldPosition[2]) != 0) {
+    if (areaIsPositionOutsideBounds(((RuntimeObjectPrefix *)object)->worldPosition[0],
+                                    ((RuntimeObjectPrefix *)object)->worldPosition[1],
+                                    ((RuntimeObjectPrefix *)object)->worldPosition[2]) != 0) {
         itemDestroy(object);
         return;
     }
@@ -378,15 +376,17 @@ void itemUpdateGroundAndAirMotion(u8 *object) {
     dy = -((ItemStatePrefix *)state)->downwardVelocity * gRuntimeFrameSeconds;
     dz = ((ItemStatePrefix *)state)->velocityZ * gRuntimeFrameSeconds;
     if (((ItemStatePrefix *)state)->flags & 0x08000000) {
-        flags =
-            terrainConstrainMovement(7, ((RuntimeObjectPrefix *)object)->position[0], ((RuntimeObjectPrefix *)object)->position[1] - ((RuntimeObjectPrefix *)object)->radius,
-                          ((RuntimeObjectPrefix *)object)->position[2], ((RuntimeObjectPrefix *)object)->radius * 2,
-                          ((RuntimeObjectPrefix *)object)->radius * 2, ((RuntimeObjectPrefix *)object)->radius, &dx, &dy, &dz, &node);
+        flags = terrainConstrainMovement(
+            7, ((RuntimeObjectPrefix *)object)->position[0],
+            ((RuntimeObjectPrefix *)object)->position[1] - ((RuntimeObjectPrefix *)object)->radius,
+            ((RuntimeObjectPrefix *)object)->position[2], ((RuntimeObjectPrefix *)object)->radius * 2,
+            ((RuntimeObjectPrefix *)object)->radius * 2, ((RuntimeObjectPrefix *)object)->radius, &dx, &dy, &dz, &node);
     } else {
-        flags =
-            terrainConstrainMovement(5, ((RuntimeObjectPrefix *)object)->position[0], ((RuntimeObjectPrefix *)object)->position[1] - ((RuntimeObjectPrefix *)object)->radius,
-                          ((RuntimeObjectPrefix *)object)->position[2], ((RuntimeObjectPrefix *)object)->radius * 2,
-                          ((RuntimeObjectPrefix *)object)->radius * 2, ((RuntimeObjectPrefix *)object)->radius, &dx, &dy, &dz, &node);
+        flags = terrainConstrainMovement(
+            5, ((RuntimeObjectPrefix *)object)->position[0],
+            ((RuntimeObjectPrefix *)object)->position[1] - ((RuntimeObjectPrefix *)object)->radius,
+            ((RuntimeObjectPrefix *)object)->position[2], ((RuntimeObjectPrefix *)object)->radius * 2,
+            ((RuntimeObjectPrefix *)object)->radius * 2, ((RuntimeObjectPrefix *)object)->radius, &dx, &dy, &dz, &node);
     }
     collision = flags;
     if (collision != 0) {
@@ -435,8 +435,9 @@ void itemUpdateGroundAndAirMotion(u8 *object) {
             } else {
                 areaDispatchPositionEvent(((RuntimeObjectPrefix *)object)->worldPosition, 5);
             }
-            ground = terrainGetSurfaceAttributes(((RuntimeObjectPrefix *)object)->position[0], ((RuntimeObjectPrefix *)object)->position[1],
-                                   ((RuntimeObjectPrefix *)object)->position[2], &node);
+            ground = terrainGetSurfaceAttributes(((RuntimeObjectPrefix *)object)->position[0],
+                                                 ((RuntimeObjectPrefix *)object)->position[1],
+                                                 ((RuntimeObjectPrefix *)object)->position[2], &node);
             if ((ground & 0x70) == 0x70) {
                 ((ItemStatePrefix *)state)->velocityX = (f32)((randomNext() * RANDOM_U32_UNIT_SCALE * 20.0) + 20.0);
                 if ((randomNext() * RANDOM_U32_UNIT_SCALE) < 0.5) {
@@ -452,12 +453,14 @@ void itemUpdateGroundAndAirMotion(u8 *object) {
                     ((ItemStatePrefix *)state)->bounceCount = 0;
                 }
                 if (((ground & 0xF) == 5) || ((ground & 0xF) == 7)) {
-                    wispEffectCreate(9, ((RuntimeObjectPrefix *)object)->position[0], ((RuntimeObjectPrefix *)object)->position[1],
-                                  ((RuntimeObjectPrefix *)object)->position[2]);
+                    wispEffectCreate(9, ((RuntimeObjectPrefix *)object)->position[0],
+                                     ((RuntimeObjectPrefix *)object)->position[1],
+                                     ((RuntimeObjectPrefix *)object)->position[2]);
                     return;
                 }
-                wispEffectCreate(8, ((RuntimeObjectPrefix *)object)->position[0], ((RuntimeObjectPrefix *)object)->position[1],
-                              ((RuntimeObjectPrefix *)object)->position[2]);
+                wispEffectCreate(8, ((RuntimeObjectPrefix *)object)->position[0],
+                                 ((RuntimeObjectPrefix *)object)->position[1],
+                                 ((RuntimeObjectPrefix *)object)->position[2]);
                 return;
             }
             itemSetMode(object, ITEM_MODE_STATIONARY);
@@ -496,8 +499,9 @@ void itemUpdateDriftingFlight(u8 *object) {
     dy = -((ItemStatePrefix *)state)->downwardVelocity * gRuntimeFrameSeconds;
     radius = ((RuntimeObjectPrefix *)object)->radius;
     diameter = radius * 2;
-    if (terrainConstrainMovement(5, ((RuntimeObjectPrefix *)object)->position[0], ((RuntimeObjectPrefix *)object)->position[1] - radius, ((RuntimeObjectPrefix *)object)->position[2], diameter,
-                      diameter, radius, &dx, &dy, &dz, &node) &
+    if (terrainConstrainMovement(
+            5, ((RuntimeObjectPrefix *)object)->position[0], ((RuntimeObjectPrefix *)object)->position[1] - radius,
+            ((RuntimeObjectPrefix *)object)->position[2], diameter, diameter, radius, &dx, &dy, &dz, &node) &
         0x12) {
         itemPlayTrackedSound(object, (ItemStatePrefix *)state, 0xBD);
         itemSetMode(object, ITEM_MODE_SHRINKING_DISPOSAL);
@@ -507,7 +511,6 @@ void itemUpdateDriftingFlight(u8 *object) {
     ((RuntimeObjectPrefix *)object)->position[1] += dy;
     ((RuntimeObjectPrefix *)object)->position[2] += dz;
 }
-
 
 /// Run the held-item behavior supplied by the item kind, when present.
 /// \param object Address of the held item.
@@ -576,7 +579,8 @@ void pinataUpdateWriggle(u8 *item) {
     if ((randomBelow(0x64) == 0) || (((ItemStatePrefix *)state)->rotationVelocityX < 10.0F)) {
         ((ItemStatePrefix *)state)->rotationVelocityX = (f32)(s32)(randomBelow(0x32) + 0xA);
     }
-    ((ItemStatePrefix *)state)->motionPhase.wriggleAngle += ((ItemStatePrefix *)state)->rotationVelocityX * gRuntimeFrameSeconds;
+    ((ItemStatePrefix *)state)->motionPhase.wriggleAngle +=
+        ((ItemStatePrefix *)state)->rotationVelocityX * gRuntimeFrameSeconds;
     if (((ItemStatePrefix *)state)->motionPhase.wriggleAngle < 0.0F) {
         do {
             ((ItemStatePrefix *)state)->motionPhase.wriggleAngle =
@@ -639,7 +643,8 @@ void itemUpdateActorHeld(u8 *object) {
     itemRunHeldKindCallback(object, (ItemStatePrefix *)state);
     ((ItemStatePrefix *)state)->modeTime += gRuntimeFrameSeconds;
     parentState = ((RuntimeObjectPrefix *)parent)->state.bytes;
-    actorGetConfiguredAttachmentPosition(parent, ((RuntimeObjectPrefix *)object)->radius, ((RuntimeObjectPrefix *)object)->position);
+    actorGetConfiguredAttachmentPosition(parent, ((RuntimeObjectPrefix *)object)->radius,
+                                         ((RuntimeObjectPrefix *)object)->position);
     ((RuntimeObjectPrefix *)object)->worldPosition[0] = ((RuntimeObjectPrefix *)object)->position[0];
     ((RuntimeObjectPrefix *)object)->worldPosition[1] = ((RuntimeObjectPrefix *)object)->position[1];
     ((RuntimeObjectPrefix *)object)->worldPosition[2] = ((RuntimeObjectPrefix *)object)->position[2];
@@ -690,7 +695,6 @@ void itemUpdateShrinkingDisposal(u8 *object) {
 /// \note Original decompilation identifier: \c func_80122FF8 (0x80122FF8).
 void itemUpdateStationaryMode(u8 *unused) {
 }
-
 
 /// Update baseball-cap visibility for the primary actor held-item appearance.
 /// \param object Baseball-cap item to update.

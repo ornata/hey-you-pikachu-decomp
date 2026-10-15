@@ -111,8 +111,9 @@ void olivineLakeSpawnTintedResidentType12(void *position, f32 heading) {
     s32 *counter;
 
     counter = &D_80141644_scene_olivine_lake;
-    object = actorCreateForKind(ACTOR_KIND_POLIWAG, ((f32 *)position)[0], ((f32 *)position)[1], ((f32 *)position)[2], 0.0F, heading,
-                                gCurrentAreaConfiguration->objectScale, &D_801404AC_scene_olivine_lake, *counter);
+    object =
+        actorCreateForKind(ACTOR_KIND_POLIWAG, ((f32 *)position)[0], ((f32 *)position)[1], ((f32 *)position)[2], 0.0F,
+                           heading, gCurrentAreaConfiguration->objectScale, &D_801404AC_scene_olivine_lake, *counter);
     index = *counter;
     if (*counter < 0) {
         do {
@@ -149,8 +150,8 @@ void olivineLakeSpawnResidentType13(f32 *position, f32 heading) {
 /// \param position Three-component world-space position.
 /// \returns Nothing.
 void olivineLakeSpawnResidentType17(f32 *position) {
-    actorCreateForKind(ACTOR_KIND_HAUNTER, position[0], position[1], position[2], 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
-                       &D_801412B4_scene_olivine_lake, 0);
+    actorCreateForKind(ACTOR_KIND_HAUNTER, position[0], position[1], position[2], 0.0F, 0.0F,
+                       gCurrentAreaConfiguration->objectScale, &D_801412B4_scene_olivine_lake, 0);
 }
 
 /// Spawn the lake resident group at randomized scene positions.

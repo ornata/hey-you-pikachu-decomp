@@ -57,7 +57,6 @@ s32 animationTrackAdvanceKey(f32 *t, AnimationScalarKey **keys, f32 *out, s32 *i
     return 0;
 }
 
-
 /// Advance and evaluate a cubic scalar animation track.
 /// \param t Current key time in seconds, advanced before evaluation.
 /// \param keys Current key pointer, updated as the track advances.
@@ -93,7 +92,6 @@ s32 animationTrackEvaluateCubic(f32 *t, AnimationScalarKey **keys, f32 *out, f32
     return 0;
 }
 
-
 /// Advance and evaluate a linear scalar animation track.
 /// \param t Current key time in seconds, advanced before evaluation.
 /// \param keys Current key pointer, updated as the track advances.
@@ -123,7 +121,6 @@ s32 animationTrackEvaluateLinear(f32 *t, AnimationScalarKey **keys, f32 *out, f3
     return 0;
 }
 
-
 /// Advance and evaluate an animation curve according to its curve type.
 /// \param curve Curve descriptor; keyed curves advance their current key pointer.
 /// \param time Current curve time in seconds, updated by the step.
@@ -135,7 +132,8 @@ s32 animationTrackEvaluateLinear(f32 *t, AnimationScalarKey **keys, f32 *out, f3
 /// \note Keyed descriptors retain a 32-bit address word exposed as a writable key-pointer slot;
 /// this view relies on the target pointer width and original compiler aliasing behavior.
 /// \note Original decompilation identifier: \c func_8000A26C (0x8000A26C).
-s32 animationCurveEvaluate(AnimationCurveDescriptor *curve, f32 *time, f32 *value, f32 *velocity, s32 *keyIndex, f32 step) {
+s32 animationCurveEvaluate(AnimationCurveDescriptor *curve, f32 *time, f32 *value, f32 *velocity, s32 *keyIndex,
+                           f32 step) {
     switch (curve->kind) {
     case 0:
         *time += step;
@@ -145,15 +143,16 @@ s32 animationCurveEvaluate(AnimationCurveDescriptor *curve, f32 *time, f32 *valu
         }
         return 2;
     case 1:
-        return animationTrackEvaluateCubic(time, (AnimationScalarKey **)&curve->valueOrAddress, value, velocity, keyIndex, step);
+        return animationTrackEvaluateCubic(time, (AnimationScalarKey **)&curve->valueOrAddress, value, velocity,
+                                           keyIndex, step);
     case 2:
-        return animationTrackEvaluateLinear(time, (AnimationScalarKey **)&curve->valueOrAddress, value, velocity, keyIndex, step);
+        return animationTrackEvaluateLinear(time, (AnimationScalarKey **)&curve->valueOrAddress, value, velocity,
+                                            keyIndex, step);
     default:
         TRACE("error: calcAnime: Illegal keyType(%d)\n", curve->kind);
         return 2;
     }
 }
-
 
 /// Initialize three animation channels.
 /// \param dst Track state to initialize.
@@ -173,7 +172,6 @@ void animationTrack3Initialize(AnimationTrack3 *dst, AnimationCurveDescriptor *s
         dst->keyIndices[i] = 0;
     }
 }
-
 
 /// Initialize three animation channels for incremental output.
 /// \param dst Track state to initialize.
@@ -249,8 +247,9 @@ s32 animationDeltaTrack3Evaluate(AnimationDeltaTrack3 *track, f32 *output, f32 *
     allConstant = 1;
     do {
         previous = *value;
-        if (animationCurveEvaluate((AnimationCurveDescriptor *)((u8 *)track + (channel << 3)), (f32 *)((u8 *)track + (channel << 2) + 0x18),
-                                   value, velocity, (s32 *)((u8 *)track + (channel << 2) + 0x24), step) != 2) {
+        if (animationCurveEvaluate((AnimationCurveDescriptor *)((u8 *)track + (channel << 3)),
+                                   (f32 *)((u8 *)track + (channel << 2) + 0x18), value, velocity,
+                                   (s32 *)((u8 *)track + (channel << 2) + 0x24), step) != 2) {
             allConstant = 0;
             output[channel] += *value - previous;
         }

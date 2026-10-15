@@ -16,7 +16,7 @@ typedef struct HpHdr {
 } HpHdr;
 
 typedef char HpHdrSizeCheck[(sizeof(HpHdr) == 0x10) ? 1 : -1];
-typedef char HpHdrFirstOffsetCheck[(((u32)&((HpHdr *)0)->first) == 8) ? 1 : -1];
-typedef char HpHdrLastOffsetCheck[(((u32)&((HpHdr *)0)->last) == 0xC) ? 1 : -1];
+typedef char HpHdrFirstOffsetCheck[(((u32) & ((HpHdr *)0)->first) == 8) ? 1 : -1];
+typedef char HpHdrLastOffsetCheck[(((u32) & ((HpHdr *)0)->last) == 0xC) ? 1 : -1];
 
 #endif

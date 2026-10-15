@@ -117,9 +117,9 @@ s32 ochreDeepTryCreateProgressEncounter(void) {
     if (progressGetValue(0x15) == 0) {
         if (playerGetChaseStage() > 0) {
             item = itemCreate(D_8014AB90_scene_ochre_deep, 17.75F, 31.92F, 0.0F, 0.0F, 0x8F);
-            encounterActor =
-                actorCreateForKind(ACTOR_KIND_TOGEPI_EGG, 0, 0, 0, 0, 45.0F, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC) * 0.5,
-                                   D_801479C0_scene_ochre_deep, 0);
+            encounterActor = actorCreateForKind(ACTOR_KIND_TOGEPI_EGG, 0, 0, 0, 0, 45.0F,
+                                                *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC) * 0.5,
+                                                D_801479C0_scene_ochre_deep, 0);
             actorState = ((RuntimeObjectPrefix *)encounterActor)->state.actor;
             *(f32 *)(item + 8) = *(f32 *)(item + 4) = *(f32 *)(item + 0) = 0;
             actorState->targetPosition[0] = ((RuntimeObjectPrefix *)item)->worldPosition[0];
@@ -138,7 +138,6 @@ s32 ochreDeepTryCreateProgressEncounter(void) {
 
 extern u8 D_801475C8_scene_ochre_deep;
 extern u8 D_80147AE0_scene_ochre_deep;
-
 
 extern f32 D_8014A0EC_scene_ochre_deep[];
 extern f32 D_8014A110_scene_ochre_deep[];

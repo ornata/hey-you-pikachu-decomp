@@ -66,7 +66,6 @@ void doorRegistryReset(void) {
     gDoorObjectCount = 0;
 }
 
-
 /// Create and register a destination door or sign.
 /// \param position Three-component world position.
 /// \param kind Door or sign description type, from 0 through 3.
@@ -184,7 +183,6 @@ u8 *doorGetAccessDescription(u8 *object) {
     return (u8 *)gDoorAccessDescriptionBuffer;
 }
 
-
 /// Update a door object's interaction eligibility.
 /// \param object Door object to consider for interaction.
 /// \returns Nothing.
@@ -205,7 +203,6 @@ void objectResponsesInitialize(s32 capacity, s32 heapBytes) {
     keyedPoolInitialize(&gObjectResponseRegistry.pool, capacity);
 }
 
-
 /// Release the queued object-response registry and its storage.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001C4CC (0x8001C4CC).
@@ -213,7 +210,6 @@ void objectResponsesDestroy(void) {
     keyedPoolDestroy(&gObjectResponseRegistry.pool);
     heapFreeLocal(&gGameHeap, gObjectResponseHeapStorage);
 }
-
 
 /// Apply a queued item impulse and its visual reaction.
 /// \param object Target item object address.
@@ -243,7 +239,6 @@ ObjectResponseHandler gObjectResponseHandlers[] = {objectResponseApplyImpulse};
 void objectResponseDispatch(u8 *object, ObjectResponse *response) {
     gObjectResponseHandlers[response->kind](object, response);
 }
-
 
 /// Consume an object's pending responses, optionally invoking a callback for each.
 /// \param object Target object address whose pending responses are cleared.

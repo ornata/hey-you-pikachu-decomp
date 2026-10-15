@@ -58,8 +58,6 @@
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-
-
 #include "actor_model.h"
 #include "collision_diagnostics.h"
 #include "object_response_diagnostics.h"
@@ -126,10 +124,6 @@ extern s32 gActiveObjectHierarchyCount;
 s32 objectCompareSearchTreeOrder(TreeNode *, s32);
 void objectRegisterHierarchyInSearchTree(u8 *);
 
-
-
-
-
 #include "managed_object_types.h"
 
 /// Resolve an indexed ROM table entry to its data address.
@@ -181,8 +175,7 @@ u8 romByteReaderRead(RomByteReaderPrefix *reader, s32 address) {
     if (address < reader->windowStart || address >= reader->windowStart + 0x400) {
         reader->windowStart = address & ~0xF;
         osInvalDCache(reader->alignedBuffer, 0x400);
-        osPiStartDma(&io, OS_MESG_PRI_HIGH, OS_READ, reader->windowStart, reader->alignedBuffer, 0x400,
-                     &reader->queue);
+        osPiStartDma(&io, OS_MESG_PRI_HIGH, OS_READ, reader->windowStart, reader->alignedBuffer, 0x400, &reader->queue);
         while (osRecvMesg(&reader->queue, &msg, OS_MESG_NOBLOCK) != 0) {
         }
     }
@@ -250,11 +243,6 @@ s32 midiReaderSaveMark(MidiReader *reader, SequenceMark *mark) {
     return 1;
 }
 
-
-
-
-
-
 /// Consume and decode the next supported MIDI event.
 /// Requires complete channel-voice, SysEx, or meta events, valid running status, and meta lengths below 128.
 /// The sequence storage must remain readable through the event, including any discarded payload.
@@ -320,8 +308,6 @@ s32 midiReaderReadEvent(MidiReader *reader, u8 *event, s32 *size, s32 capacity) 
     return delta;
 }
 
-
-
 /// Read and consume the next MIDI stream byte.
 /// \param reader Initialized reader with a readable byte at its current position.
 /// \returns The next stream byte.
@@ -386,8 +372,6 @@ s32 midiReaderReadVariableLength(MidiReader *reader) {
     return (s32)quantity;
 }
 
-
-
 /// Provide the inactive per-object diagnostic report hook.
 /// \param objectAddress Address of the object to report; unused in this build.
 /// \returns Nothing.
@@ -412,7 +396,6 @@ void objectDebugReportRowNoOp(void) {
 /// \note Original decompilation identifier: \c func_80007CE0 (0x80007CE0).
 void objectManagerNoOp7CE0(s32 unused) {
 }
-
 
 /// Provide the inactive diagnostic visitor for an object search-tree entry.
 /// \param entryAddress Address of the entry to report; unused in this build.
@@ -469,7 +452,6 @@ void objectManagerNoOp7D44(void) {
 /// \note Original decompilation identifier: \c func_80007D4C (0x80007D4C).
 void objectManagerNoOp7D4C(s32 unused) {
 }
-
 
 /// Request object-response and collision diagnostics, which are inactive in this build.
 /// \returns Nothing.
@@ -691,9 +673,6 @@ s32 objectDetachChildLink(u8 *previous, u8 *object) {
     return firstChildAddress;
 }
 
-
-
-
 /// Create and initialize an object from its template.
 /// \param definition Readable object template with a valid runtime kind and initialized resources required by that kind.
 /// \returns Newly owned object; release it with objectDestroy when it is no longer in an active hierarchy.
@@ -742,7 +721,8 @@ s32 objectAssignHierarchyMatrixSlots(u8 *object, s32 index) {
         do {
             if (index > 0) {
                 for (i = 0; i < 2; i++) {
-                    ((RuntimeObjectPrefix *)p)->matrixBuffers[i] = ((RuntimeObjectPrefix *)p)->root.object->matrixBuffers[i] + (index << 6);
+                    ((RuntimeObjectPrefix *)p)->matrixBuffers[i] =
+                        ((RuntimeObjectPrefix *)p)->root.object->matrixBuffers[i] + (index << 6);
                 }
             }
             index++;
@@ -755,7 +735,6 @@ s32 objectAssignHierarchyMatrixSlots(u8 *object, s32 index) {
     return index;
 }
 
-
 /// Allocate transform buffers for an object hierarchy.
 /// \param root Live, acyclic hierarchy with assigned roots and no unreleased transform buffers; its required allocation size must fit in signed 32 bits.
 /// \returns Nothing.
@@ -767,12 +746,11 @@ void objectAllocateHierarchyMatrixBuffers(u8 *root) {
     n = objectAccumulateHierarchyCount(root, 0);
     ((RuntimeObjectPrefix *)root)->matrixBuffers[0] = heapAllocLocal(&gGameHeap, n << 7, 0x2F4);
     for (i = 1; i < 2; i++) {
-        ((RuntimeObjectPrefix *)root)->matrixBuffers[i] = ((RuntimeObjectPrefix *)root)->matrixBuffers[0] + ((n * i) << 6);
+        ((RuntimeObjectPrefix *)root)->matrixBuffers[i] =
+            ((RuntimeObjectPrefix *)root)->matrixBuffers[0] + ((n * i) << 6);
     }
     objectAssignHierarchyMatrixSlots(root, 0);
 }
-
-
 
 /// Create objects from a template hierarchy and associate them with a common root.
 /// \param definition Non-null, acyclic template hierarchy with valid runtime kinds and resources.
@@ -826,7 +804,8 @@ void objectAssignHierarchyRoot(u8 *object, u8 *root) {
         do {
             firstChild = ((RuntimeObjectPrefix *)var_s0)->child.bytes;
             ((RuntimeObjectPrefix *)var_s0)->root.bytes = root;
-            ((RuntimeObjectPrefix *)var_s0)->flags = (u16)(((RuntimeObjectPrefix *)var_s0)->flags & ~OBJECT_HIERARCHY_ROOT);
+            ((RuntimeObjectPrefix *)var_s0)->flags =
+                (u16)(((RuntimeObjectPrefix *)var_s0)->flags & ~OBJECT_HIERARCHY_ROOT);
             if (firstChild != NULL) {
                 objectAssignHierarchyRoot(firstChild, root);
             }
@@ -894,7 +873,6 @@ s32 objectCompareSearchTreeOrder(TreeNode *entry, s32 objectAddress) {
     }
     return 0;
 }
-
 
 /// Register objects throughout a hierarchy in the runtime object search tree.
 /// \param object First object whose siblings and descendants are registered, or null.
@@ -1015,15 +993,16 @@ void objectDestroyHierarchy(u8 *object) {
 void objectFaceCameraHorizontally(u8 *object) {
     f32 d[3];
 
-    d[0] = ((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].eye[0] - ((RuntimeObjectPrefix *)object)->worldPosition[0];
+    d[0] = ((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].eye[0] -
+           ((RuntimeObjectPrefix *)object)->worldPosition[0];
     d[1] = 0.0F;
-    d[2] = ((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].eye[2] - ((RuntimeObjectPrefix *)object)->worldPosition[2];
+    d[2] = ((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].eye[2] -
+           ((RuntimeObjectPrefix *)object)->worldPosition[2];
     ((RuntimeObjectPrefix *)object)->rotation[1] = vector3GetYawFromPositiveXDegrees(d);
     if (!(((RuntimeObjectPrefix *)object)->flags & 0x1008)) {
         ((RuntimeObjectPrefix *)object)->flags = ((RuntimeObjectPrefix *)object)->flags | 0x1000;
     }
 }
-
 
 /// Orient an object toward the active camera for drawing.
 /// \param object Object whose orientation is updated.
@@ -1161,15 +1140,16 @@ void objectUpdateHierarchyInteractionVisibility(u8 *object) {
     }
 }
 
-
 /// Measure the object world height relative to the ground beneath it.
 /// \param object Object whose world position is queried.
 /// \returns Signed height above the ground; uses ground height zero when no surface is found.
 /// \note Portability: The terrain call passes X and Z float bit patterns through integer parameters, relying on the original MIPS ABI.
 /// \note Original decompilation identifier: \c func_80008DA8 (0x80008DA8).
 f32 objectGetHeightAboveGround(u8 *object) {
-    return ((RuntimeObjectPrefix *)object)->worldPosition[1] - terrainGetWorldHeightForQuery(3, ((RuntimeObjectPrefix *)object)->worldPosition[0], ((RuntimeObjectPrefix *)object)->worldPosition[1],
-                                                        ((RuntimeObjectPrefix *)object)->worldPosition[2], 0);
+    return ((RuntimeObjectPrefix *)object)->worldPosition[1] -
+           terrainGetWorldHeightForQuery(3, ((RuntimeObjectPrefix *)object)->worldPosition[0],
+                                         ((RuntimeObjectPrefix *)object)->worldPosition[1],
+                                         ((RuntimeObjectPrefix *)object)->worldPosition[2], 0);
 }
 
 /// Enable object flags throughout an object hierarchy.
@@ -1222,16 +1202,18 @@ void objectUpdateHierarchyWorldPositions(u8 *object) {
             if (!((((RuntimeObjectPrefix *)object)->flags) & 0x1C0)) {
                 objectTransformStackPush(&gObjectTraversalTransform);
                 matrix34TranslateLocal(gObjectTraversalTransform.m, ((RuntimeObjectPrefix *)object)->position[0],
-                                       ((RuntimeObjectPrefix *)object)->position[1], ((RuntimeObjectPrefix *)object)->position[2]);
+                                       ((RuntimeObjectPrefix *)object)->position[1],
+                                       ((RuntimeObjectPrefix *)object)->position[2]);
                 if ((((RuntimeObjectPrefix *)object)->flags) & 0x1000) {
                     matrix33KeepScaleOnly(gObjectTraversalTransform.m[0]);
                 }
                 if ((((RuntimeObjectPrefix *)object)->kind) != 0x64) {
-                    matrix33ApplyRotationXYZDegrees((f32 *)&gObjectTraversalTransform, ((RuntimeObjectPrefix *)object)->rotation[0],
-                                                    ((RuntimeObjectPrefix *)object)->rotation[1],
-                                                    ((RuntimeObjectPrefix *)object)->rotation[2]);
+                    matrix33ApplyRotationXYZDegrees(
+                        (f32 *)&gObjectTraversalTransform, ((RuntimeObjectPrefix *)object)->rotation[0],
+                        ((RuntimeObjectPrefix *)object)->rotation[1], ((RuntimeObjectPrefix *)object)->rotation[2]);
                     matrix33ScaleLocal((f32 *)&gObjectTraversalTransform, ((RuntimeObjectPrefix *)object)->scale[0],
-                                       ((RuntimeObjectPrefix *)object)->scale[1], ((RuntimeObjectPrefix *)object)->scale[2]);
+                                       ((RuntimeObjectPrefix *)object)->scale[1],
+                                       ((RuntimeObjectPrefix *)object)->scale[2]);
                 }
                 firstChild = ((RuntimeObjectPrefix *)object)->child.bytes;
                 {
@@ -1274,7 +1256,6 @@ u8 *objectRefreshHierarchyWorldPositions(u8 *object) {
     return object;
 }
 
-
 /// Update hierarchy behavior, movement, and drawing transforms from the current reference transform.
 /// Requires initialized kind state, a live acyclic hierarchy, and enough traversal-stack capacity for its depth.
 /// Drawing transforms must fit signed 16.16 values and any matrix buffers must remain allocated.
@@ -1294,15 +1275,18 @@ void objectUpdateHierarchyFromCurrentTransform(u8 *object) {
                 gObjectKindCallbacks[((RuntimeObjectPrefix *)object)->kind].update(object);
             }
             if (!(((RuntimeObjectPrefix *)object)->flags & 0x100)) {
-                matrix34TranslateLocal(gObjectTraversalTransform.m, ((RuntimeObjectPrefix *)object)->position[0], ((RuntimeObjectPrefix *)object)->position[1],
+                matrix34TranslateLocal(gObjectTraversalTransform.m, ((RuntimeObjectPrefix *)object)->position[0],
+                                       ((RuntimeObjectPrefix *)object)->position[1],
                                        ((RuntimeObjectPrefix *)object)->position[2]);
                 if (((RuntimeObjectPrefix *)object)->flags & 0x1000) {
                     matrix33KeepScaleOnly(gObjectTraversalTransform.m[0]);
                 }
                 if (((RuntimeObjectPrefix *)object)->kind != 0x64) {
-                    matrix33ApplyRotationXYZDegrees((f32 *)&gObjectTraversalTransform, ((RuntimeObjectPrefix *)object)->rotation[0],
-                                                    ((RuntimeObjectPrefix *)object)->rotation[1], ((RuntimeObjectPrefix *)object)->rotation[2]);
-                    matrix33ScaleLocal((f32 *)&gObjectTraversalTransform, ((RuntimeObjectPrefix *)object)->scale[0], ((RuntimeObjectPrefix *)object)->scale[1],
+                    matrix33ApplyRotationXYZDegrees(
+                        (f32 *)&gObjectTraversalTransform, ((RuntimeObjectPrefix *)object)->rotation[0],
+                        ((RuntimeObjectPrefix *)object)->rotation[1], ((RuntimeObjectPrefix *)object)->rotation[2]);
+                    matrix33ScaleLocal((f32 *)&gObjectTraversalTransform, ((RuntimeObjectPrefix *)object)->scale[0],
+                                       ((RuntimeObjectPrefix *)object)->scale[1],
                                        ((RuntimeObjectPrefix *)object)->scale[2]);
                     if (gObjectPendingLocalMovement.x != 0.0F || gObjectPendingLocalMovement.y != 0.0F ||
                         gObjectPendingLocalMovement.z != 0.0F) {
@@ -1328,8 +1312,10 @@ void objectUpdateHierarchyFromCurrentTransform(u8 *object) {
                     ((RuntimeObjectPrefix *)object)->position[2] += offset[2];
                 }
                 if (((RuntimeObjectPrefix *)object)->matrixBuffers[0] != NULL) {
-                    matrix34ToFixedMtx(&gObjectTraversalTransform,
-                                       (Mtx *)((RuntimeObjectPrefix *)object)->matrixBuffers[((((RuntimeObjectPrefix *)object)->flags & 0x8000) ? 1 : 0) ^ 1]);
+                    matrix34ToFixedMtx(
+                        &gObjectTraversalTransform,
+                        (Mtx *)((RuntimeObjectPrefix *)object)
+                            ->matrixBuffers[((((RuntimeObjectPrefix *)object)->flags & 0x8000) ? 1 : 0) ^ 1]);
                     ((RuntimeObjectPrefix *)object)->flags ^= 0x8000;
                 }
                 ((RuntimeObjectPrefix *)object)->worldPosition[0] = ((f32 *)&gObjectTraversalTransform)[9];
@@ -1524,7 +1510,6 @@ void objectResetTraversalTransformAndMovement(void) {
     gObjectPendingLocalMovement.z = 0.0F;
 }
 
-
 /// Initialize the runtime object system and its supporting registries.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80009808 (0x80009808).
@@ -1540,7 +1525,6 @@ void objectSystemInitialize(void) {
     searchTreeInitialize(&gObjectSearchTree, &objectCompareSearchTreeOrder);
     interactionMarkerCreate();
 }
-
 
 /// Destroy registered object hierarchies and release the runtime object system.
 /// \returns Nothing.
@@ -1642,7 +1626,8 @@ void objectAdjustPitchAlongCameraView(u8 *object) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80009B38 (0x80009B38).
 void objectOrientTowardCamera(u8 *object) {
-    objectOrientAlongWorldSegment(object, ((RuntimeObjectPrefix *)object)->worldPosition, ((MatrixCamera *)((gRenderCameraIndex * 0xE0) + ((u8 *)gRenderCameras)))->eye);
+    objectOrientAlongWorldSegment(object, ((RuntimeObjectPrefix *)object)->worldPosition,
+                                  ((MatrixCamera *)((gRenderCameraIndex * 0xE0) + ((u8 *)gRenderCameras)))->eye);
 }
 
 /// Adjust object pitch toward the active camera while retaining its other orientation angles.
@@ -1650,7 +1635,8 @@ void objectOrientTowardCamera(u8 *object) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80009B78 (0x80009B78).
 void objectAdjustPitchTowardCamera(u8 *object) {
-    objectAdjustPitchAlongWorldSegment(object, ((RuntimeObjectPrefix *)object)->worldPosition, ((MatrixCamera *)((gRenderCameraIndex * 0xE0) + ((u8 *)gRenderCameras)))->eye);
+    objectAdjustPitchAlongWorldSegment(object, ((RuntimeObjectPrefix *)object)->worldPosition,
+                                       ((MatrixCamera *)((gRenderCameraIndex * 0xE0) + ((u8 *)gRenderCameras)))->eye);
 }
 
 typedef struct CamSlot {
@@ -1660,7 +1646,6 @@ typedef struct CamSlot {
 /// Camera storage viewed at retained matrix pointers, with 224 bytes per camera.
 /// \note Original identifier: \c D_800ABD14 (0x800ABD14).
 extern CamSlot gRenderCameraMatrixEntries[];
-
 
 /// Play a sound effect at an object position with spatial volume and panning.
 /// \param obj Live object emitting the sound; with an active camera matrix, its camera-space position must have nonzero length.
@@ -1678,13 +1663,12 @@ s32 objectPlaySpatialSound(u8 *obj, s32 kind, f32 near, f32 far) {
     if (gRenderCameraMatrixEntries[gRenderCameraIndex].mtx == NULL) {
         return h;
     }
-    audioGetPositionVolumeAndPan(((RuntimeObjectPrefix *)obj)->worldPosition, *gRenderCameraMatrixEntries[gRenderCameraIndex].mtx, &vol, &pan, near,
-                                 far);
+    audioGetPositionVolumeAndPan(((RuntimeObjectPrefix *)obj)->worldPosition,
+                                 *gRenderCameraMatrixEntries[gRenderCameraIndex].mtx, &vol, &pan, near, far);
     audioSetSoundEffectPan(h, pan);
     audioSetSoundEffectVolume(h, vol);
     return h;
 }
-
 
 /// Measure approximate world-space distance from an object to a point.
 /// \param object Object providing the first position.
@@ -1699,7 +1683,6 @@ f32 objectGetApproxDistanceToPoint(u8 *object, Vec3f *point) {
     d.z = ((RuntimeObjectPrefix *)object)->worldPosition[2] - point->z;
     return vector3LengthApprox((f32 *)&d);
 }
-
 
 /// Measure approximate world-space distance between two objects.
 /// \param first Object providing the first position.
@@ -1759,13 +1742,12 @@ typedef struct TargetPick {
 } TargetPick;
 
 typedef char TargetPickSizeCheck[(sizeof(TargetPick) == 0x54) ? 1 : -1];
-typedef char TargetPickConeOffsetCheck[((u32)&((TargetPick *)0)->cone == 0x48) ? 1 : -1];
+typedef char TargetPickConeOffsetCheck[((u32) & ((TargetPick *)0)->cone == 0x48) ? 1 : -1];
 /// Shared nearest-target search context, including origin, facing, kind range and best candidate.
 /// \note Original identifier: \c D_800AE3D8 (0x800AE3D8).
 extern TargetPick gObjectNearestTargetSearch;
 extern float fabsf(float);
 #pragma intrinsic(fabsf)
-
 
 /// Consider a search-tree object for the current nearest-target request.
 /// \param node Search-tree entry containing the candidate object.
@@ -1796,7 +1778,6 @@ s32 objectConsiderNearestTargetEntry(TreeNode *node, s32 depth) {
     }
     return 0;
 }
-
 
 /// Find the nearest object within a distance, kind range, and optional horizontal viewing angle.
 /// \param self Object excluded from consideration, or null.

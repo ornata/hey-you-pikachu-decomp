@@ -110,12 +110,18 @@ extern ValueTrack gHudVerticalDirectionInnerTrack;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800215C0 (0x800215C0).
 void hudInitializeDirectionIndicators(void) {
-    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudHorizontalDirectionTracks, gTextureFrameAnimationPrograms[221]);
-    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudHorizontalDirectionMiddleTrack, gTextureFrameAnimationPrograms[222]);
-    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudHorizontalDirectionInnerTrack, gTextureFrameAnimationPrograms[223]);
-    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalDirectionTracks, gTextureFrameAnimationPrograms[224]);
-    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalDirectionMiddleTrack, gTextureFrameAnimationPrograms[225]);
-    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalDirectionInnerTrack, gTextureFrameAnimationPrograms[226]);
+    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudHorizontalDirectionTracks,
+                                    gTextureFrameAnimationPrograms[221]);
+    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudHorizontalDirectionMiddleTrack,
+                                    gTextureFrameAnimationPrograms[222]);
+    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudHorizontalDirectionInnerTrack,
+                                    gTextureFrameAnimationPrograms[223]);
+    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalDirectionTracks,
+                                    gTextureFrameAnimationPrograms[224]);
+    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalDirectionMiddleTrack,
+                                    gTextureFrameAnimationPrograms[225]);
+    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalDirectionInnerTrack,
+                                    gTextureFrameAnimationPrograms[226]);
 }
 
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
@@ -272,7 +278,6 @@ void hudSetGuideStyle(s32 style) {
     gHudGuideDrawCallback = gHudGuideDrawCallbacks[style];
 }
 
-
 /// Query the selected HUD guide style.
 /// \returns The guide style identifier, or zero when the guide is disabled.
 /// \note Original decompilation identifier: \c func_80021D34 (0x80021D34).
@@ -344,7 +349,8 @@ void hudDrawRecognitionIndicator(Gfx **gdl) {
         if (state != gHudRecognitionIndicatorState) {
             gHudRecognitionIndicatorState = state;
             gHudRecognitionScale = gHudRecognitionPresentations[state].scale;
-            animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudRecognitionTrack, (ValueKey *)gHudRecognitionPresentations[state].animation);
+            animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudRecognitionTrack,
+                                            (ValueKey *)gHudRecognitionPresentations[state].animation);
         }
         animationIntegerTrackEvaluate((&gHudRecognitionTrack), &frame, gRuntimeFrameSeconds);
         if (frame >= 0) {
@@ -442,7 +448,9 @@ void hudDrawMicrophoneIndicators(Gfx **gdl) {
             if (state == 4) {
                 audioPlaySoundEffect(0xBF);
             }
-            animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudMicrophoneTrack, gTextureFrameAnimationPrograms[gHudMicrophoneAnimationIds[gHudMicrophoneIndicatorState]]);
+            animationIntegerTrackInitialize(
+                (ValueTrack *)(f32 *)&gHudMicrophoneTrack,
+                gTextureFrameAnimationPrograms[gHudMicrophoneAnimationIds[gHudMicrophoneIndicatorState]]);
         }
         previousFrame = gHudMicrophoneTrackFrame;
         animationIntegerTrackEvaluate((&gHudMicrophoneTrack), &frame, gRuntimeFrameSeconds);
@@ -557,8 +565,10 @@ extern s32 gHudHorizontalMotionTrack;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80022838 (0x80022838).
 void hudInitializeMotionIndicators(void) {
-    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalMotionTrack, gTextureFrameAnimationPrograms[hudGetVerticalMotionAnimation(0)]);
-    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudHorizontalMotionTrack, (ValueKey *)gHudHorizontalMotionAnimation);
+    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalMotionTrack,
+                                    gTextureFrameAnimationPrograms[hudGetVerticalMotionAnimation(0)]);
+    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudHorizontalMotionTrack,
+                                    (ValueKey *)gHudHorizontalMotionAnimation);
     gHudHorizontalMotionRemaining = 5.0F;
 }
 
@@ -567,7 +577,8 @@ void hudInitializeMotionIndicators(void) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80022894 (0x80022894).
 void hudSetActionIndicatorAnimation(s32 animation) {
-    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudMotionIndicatorTrack, gTextureFrameAnimationPrograms[animation]);
+    animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudMotionIndicatorTrack,
+                                    gTextureFrameAnimationPrograms[animation]);
     gHudMotionIndicatorAnimation = animation;
 }
 
@@ -665,7 +676,8 @@ void hudDrawMotionIndicators(Gfx **gdl) {
         motion->secondaryMeterHudLevel += dy;
         newBand = hudGetVerticalMotionAnimation((s32)motion->secondaryMeterHudLevel);
         if (oldBand != newBand) {
-            animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalMotionTrack, gTextureFrameAnimationPrograms[newBand]);
+            animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalMotionTrack,
+                                            gTextureFrameAnimationPrograms[newBand]);
         }
     }
     x = (s32)(motion->actionResourceHudLevel + 0.5F);
@@ -744,7 +756,6 @@ void hudDrawAreaLabel(Gfx **gdl) {
     }
 }
 
-
 /// Set whether the current area name is visible.
 /// \param visible Nonzero to show the area label, or zero to hide it.
 /// \returns Nothing.
@@ -782,7 +793,6 @@ extern s32 gHudAuxiliaryIconVisible;
 void hudSetAuxiliaryIconVisible(s32 visible) {
     gHudAuxiliaryIconVisible = visible;
 }
-
 
 /// Select which movement and microphone HUD indicators are enabled.
 /// \param features Feature mask: bit zero enables the selected action indicator, bit one enables movement indicators, and bit two enables microphone indicators.
@@ -830,7 +840,6 @@ void hudInitialize(void) {
     hudSetFeatureMask(7);
     hudSetGuideStyle(0);
 }
-
 
 /// Keep the horizontal movement indicator visible for at least the requested remaining duration.
 /// \param seconds Nonnegative minimum remaining horizontal-indicator display time in seconds.

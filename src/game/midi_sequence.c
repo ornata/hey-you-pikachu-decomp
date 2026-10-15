@@ -214,8 +214,7 @@ s32 midiSequenceReadEvent(SequenceState *state, u8 *event, s32 capacity, f64 *de
 /// \returns 1 when playback and pending releases have ended, or 0 otherwise.
 /// \note Original decompilation identifier: \c func_80005768 (0x80005768).
 s32 midiSequenceIsDrained(SequenceState *state) {
-    if ((state->stopped != 0) && (state->releaseNotes == 0) &&
-        (state->releaseSustain == 0)) {
+    if ((state->stopped != 0) && (state->releaseNotes == 0) && (state->releaseSustain == 0)) {
         return 1;
     }
     return 0;

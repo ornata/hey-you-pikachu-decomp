@@ -79,15 +79,15 @@ typedef enum SystemMenuPhase {
 
 /// Owned menu navigation state with borrowed menu-tree links and retained live-model pointers.
 typedef struct MenuState {
-    struct MenuList *menu;       ///< Borrowed current menu list.
-    struct MenuList *history[3]; ///< Borrowed parent lists, retained while navigating.
-    struct MenuItem *selected;   ///< Borrowed item whose details and row are displayed.
-    s32 depth; ///< Number of retained parent menu lists, from zero through three.
-    s32 phase; ///< SystemMenuPhase selector.
-    RuntimeObjectPrefix *transitionModel; ///< Live model used for opening and closing.
-    RuntimeObjectPrefix *secondaryModel; ///< Linked secondary transition model.
+    struct MenuList *menu;                 ///< Borrowed current menu list.
+    struct MenuList *history[3];           ///< Borrowed parent lists, retained while navigating.
+    struct MenuItem *selected;             ///< Borrowed item whose details and row are displayed.
+    s32 depth;                             ///< Number of retained parent menu lists, from zero through three.
+    s32 phase;                             ///< SystemMenuPhase selector.
+    RuntimeObjectPrefix *transitionModel;  ///< Live model used for opening and closing.
+    RuntimeObjectPrefix *secondaryModel;   ///< Linked secondary transition model.
     RuntimeObjectPrefix *interactiveModel; ///< Live model used while selecting menu entries.
-    u64 started; ///< Current phase's start time in runtime milliseconds.
+    u64 started;                           ///< Current phase's start time in runtime milliseconds.
 } MenuState;
 /// Owned menu navigation state with borrowed menu-tree links and retained live-model pointers.
 /// \note Original identifier: \c D_801340E8 (0x801340E8).
@@ -115,10 +115,10 @@ typedef void (*MenuDetailCallback)(void);
 
 /// Menu title, item chain and retained selection indices.
 typedef struct MenuList {
-    char *title;                           ///< Borrowed display title, retained while the list is displayed.
-    struct MenuItem *head;                 ///< Borrowed acyclic item chain.
-    MenuListCallback action;               ///< Optional list-specific drawing and input callback.
-    s32 selectedIndex;                     ///< Index used to resolve the selected menu item.
+    char *title;              ///< Borrowed display title, retained while the list is displayed.
+    struct MenuItem *head;    ///< Borrowed acyclic item chain.
+    MenuListCallback action;  ///< Optional list-specific drawing and input callback.
+    s32 selectedIndex;        ///< Index used to resolve the selected menu item.
     s32 confirmedIndex;       ///< Confirmed setting row, or a negative value when confirmation is not tracked.
     s32 firstVisibleIndex;    ///< First item represented by the visible item rows.
     s32 count;                ///< Number of entries in the item chain.
@@ -126,13 +126,13 @@ typedef struct MenuList {
 } MenuList;
 /// Menu entry with optional selection action, detail callback and submenu.
 typedef struct MenuItem {
-    char *label;                 ///< Borrowed row label, retained while the item is displayed.
-    MenuSelectionCallback action; ///< Optional selection callback receiving value.
-    s32 value;                   ///< Argument supplied to the selection callback.
-    char *text;                  ///< Optional borrowed detail message.
+    char *label;                      ///< Borrowed row label, retained while the item is displayed.
+    MenuSelectionCallback action;     ///< Optional selection callback receiving value.
+    s32 value;                        ///< Argument supplied to the selection callback.
+    char *text;                       ///< Optional borrowed detail message.
     MenuDetailCallback appendDetails; ///< Optional callback appending details for the selected item.
-    struct MenuItem *next;       ///< Next item in the containing list.
-    MenuList *submenu;           ///< Optional borrowed list entered on selection.
+    struct MenuItem *next;            ///< Next item in the containing list.
+    MenuList *submenu;                ///< Optional borrowed list entered on selection.
 } MenuItem;
 typedef char MenuStateSizeCheck[(sizeof(MenuState) == 0x30) ? 1 : -1];
 typedef char MenuListSizeCheck[(sizeof(MenuList) == 0x20) ? 1 : -1];
@@ -150,7 +150,6 @@ MENU_OFFSET_CHECK(MenuListVisibleOffsetCheck, MenuList, firstVisibleIndex, 0x14)
 MENU_OFFSET_CHECK(MenuItemNextOffsetCheck, MenuItem, next, 0x14);
 MENU_OFFSET_CHECK(MenuItemSubmenuOffsetCheck, MenuItem, submenu, 0x18);
 #undef MENU_OFFSET_CHECK
-
 
 /* 0x38-byte model records: unit scale, zero transform, segment address. */
 
@@ -441,7 +440,6 @@ void systemMenuSetPhase(s32 phase) {
     gSystemMenuState.phase = phase;
 }
 
-
 /// Save the current menu as the parent of the next submenu.
 /// Requires an initialized current menu and a history depth from zero through two.
 /// \returns Nothing.
@@ -563,8 +561,8 @@ void systemMenuPrepareDetailText(void) {
         }
         line[count] = 0;
         if (line[0] != 0) {
-            textImageCreateFromText(&gSystemMenuDetailImages[row][gSystemMenuDetailImageBuffer],
-                                    (u8 *)((s32)line), (FontImage *)((s32)gTextImageConfigurations));
+            textImageCreateFromText(&gSystemMenuDetailImages[row][gSystemMenuDetailImageBuffer], (u8 *)((s32)line),
+                                    (FontImage *)((s32)gTextImageConfigurations));
         }
     }
 }
@@ -649,31 +647,27 @@ void systemMenuRefreshItemDisplay(MenuState *state) {
     font = gTextImageConfigurations;
     if (state->phase == SYSTEM_MENU_CLOSE_DELAY) {
         gSystemMenuClosingEffectRow = randomBelow(6);
-        textImageCreateFromText(
-            &gSystemMenuRowImages[gSystemMenuClosingEffectRow][gSystemMenuRowImageBuffer],
-            (u8 *)((s32) "@j@j@j@j@j@j@j@j@j"), (FontImage *)((s32)font));
+        textImageCreateFromText(&gSystemMenuRowImages[gSystemMenuClosingEffectRow][gSystemMenuRowImageBuffer],
+                                (u8 *)((s32) "@j@j@j@j@j@j@j@j@j"), (FontImage *)((s32)font));
         return;
     }
     row = 0;
-    textImageCreateFromText(
-        &gSystemMenuRowImages[row][gSystemMenuRowImageBuffer],
-        (u8 *)((s32)menu->title), (FontImage *)((s32)font));
+    textImageCreateFromText(&gSystemMenuRowImages[row][gSystemMenuRowImageBuffer], (u8 *)((s32)menu->title),
+                            (FontImage *)((s32)font));
     item = menu->head;
     for (i = 0; i < menu->firstVisibleIndex; i++) {
         item = item->next;
     }
     for (i = row + 1; i != 6; i++) {
         if (item == NULL) {
-            textImageCreateFromText(
-                &gSystemMenuRowImages[i][gSystemMenuRowImageBuffer],
-                (u8 *)((s32) ""), (FontImage *)((s32)font));
+            textImageCreateFromText(&gSystemMenuRowImages[i][gSystemMenuRowImageBuffer], (u8 *)((s32) ""),
+                                    (FontImage *)((s32)font));
         } else {
             if ((i - 1) + menu->firstVisibleIndex == menu->selectedIndex) {
                 state->selected = item;
             }
-            textImageCreateFromText(
-                &gSystemMenuRowImages[i][gSystemMenuRowImageBuffer],
-                (u8 *)((s32)item->label), (FontImage *)((s32)font));
+            textImageCreateFromText(&gSystemMenuRowImages[i][gSystemMenuRowImageBuffer], (u8 *)((s32)item->label),
+                                    (FontImage *)((s32)font));
             item = item->next;
         }
     }
@@ -905,7 +899,8 @@ void systemMenuUpdateOpeningAnimation(void) {
     position[1] += 10.0F * mathSinDegrees(90.0F * progress);
     angle = 90.0F * progress;
     position[2] -= 10.0F * mathCosDegrees(angle);
-    matrix34TransformPointVector((f32 *)(&gSystemMenuInterfaceTransform), (f32 *)(position), gSystemMenuState.transitionModel->position);
+    matrix34TransformPointVector((f32 *)(&gSystemMenuInterfaceTransform), (f32 *)(position),
+                                 gSystemMenuState.transitionModel->position);
     gSystemMenuState.transitionModel->rotation[1] = gPlayerViewShake + gPlayerYaw + 180.0F;
     gSystemMenuState.transitionModel->rotation[0] = (1.0F - progress) * -90.0F;
     gSystemMenuState.secondaryModel->rotation[1] = angle;
@@ -935,7 +930,8 @@ void systemMenuUpdateClosingAnimation(void) {
     position[1] += 10.0F * mathSinDegrees((1.0F - progress) * 90.0F);
     angle = (1.0F - progress) * 90.0F;
     position[2] -= 10.0F * mathCosDegrees(angle);
-    matrix34TransformPointVector((f32 *)(&gSystemMenuInterfaceTransform), (f32 *)(position), gSystemMenuState.transitionModel->position);
+    matrix34TransformPointVector((f32 *)(&gSystemMenuInterfaceTransform), (f32 *)(position),
+                                 gSystemMenuState.transitionModel->position);
     gSystemMenuState.transitionModel->rotation[1] = gPlayerViewShake + gPlayerYaw + 180.0F;
     gSystemMenuState.transitionModel->rotation[0] = -90.0F * progress;
     gSystemMenuState.secondaryModel->rotation[1] = (1.0 - progress) * 90.0;
@@ -1025,7 +1021,6 @@ void systemMenuEnter(void) {
     controllerConfigureStickButtons(1, 0x1E, 0x1E, 0x1E, 0x1E);
 }
 
-
 /// Leave the system menu, hide its models, and restore gameplay controls.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8011A930 (0x8011A930).
@@ -1036,7 +1031,6 @@ void systemMenuExit(void) {
     objectSetHierarchyFlags((u8 *)gSystemMenuTransitionModel, 2);
     objectSetHierarchyFlags((u8 *)gSystemMenuInteractiveModel, 2);
 }
-
 
 /// Append total free memory and the largest available allocation to the menu details.
 /// \returns Nothing.
@@ -1058,10 +1052,12 @@ void systemMenuAppendMemoryDetails(void) {
 void systemMenuAppendProgressDetails(void) {
     char buffer[80];
     sprintf(buffer, "\n%s%s%s%s\n%s%s%s%s\n%s%s%s\ndis %d ang %d\nshop %d\n", progressGetValue(0xB9) ? "Pw" : "Xx",
-            progressGetValue(0xAC) ? "Ck" : "Xx", progressGetValue(0xBA) ? "Tb" : "Xx", progressGetValue(0x89) ? "Pn" : "Xx",
-            progressGetValue(0xAD) ? "Sp" : "Xx", progressGetValue(0xAF) ? "Dg" : "Xx", progressGetValue(0xBD) ? "Cy" : "Xx",
-            progressGetValue(0xAE) ? "Hr" : "Xx", progressGetValue(0xE) ? "Gc" : "Xx", progressGetValue(0xF) ? "Cs" : "Xx",
-            progressGetValue(0x10) ? "Cb" : "Xx", progressGetValue(0x13), progressGetValue(0x1A), progressGetValue(0x14));
+            progressGetValue(0xAC) ? "Ck" : "Xx", progressGetValue(0xBA) ? "Tb" : "Xx",
+            progressGetValue(0x89) ? "Pn" : "Xx", progressGetValue(0xAD) ? "Sp" : "Xx",
+            progressGetValue(0xAF) ? "Dg" : "Xx", progressGetValue(0xBD) ? "Cy" : "Xx",
+            progressGetValue(0xAE) ? "Hr" : "Xx", progressGetValue(0xE) ? "Gc" : "Xx",
+            progressGetValue(0xF) ? "Cs" : "Xx", progressGetValue(0x10) ? "Cb" : "Xx", progressGetValue(0x13),
+            progressGetValue(0x1A), progressGetValue(0x14));
     systemMenuAppendDetailText((u8 *)buffer);
 }
 
@@ -1086,7 +1082,6 @@ void systemMenuAppendDaysDetails(void) {
             days, (days >= 2) ? "s" : "");
     systemMenuAppendDetailText(buf);
 }
-
 
 /// Append the player status title, points balance, and voice count to the menu details.
 /// Requires initialized player state and a friendship title of at most 46 bytes.
@@ -1137,7 +1132,6 @@ void systemMenuDrawSlider(Gfx **displayList, s32 x, s32 y, s32 selected, f32 val
     selected = (s32)(80.0F * value) + x;
     gDPFillRectangle((*displayList)++, selected - 2, top - 3, selected + 2, bottom + 3);
 }
-
 
 /// Adjust the selected music or sound volume from controller input and draw both volume sliders.
 /// \param menu Live volume menu whose current row selects the setting to adjust.
@@ -1199,7 +1193,6 @@ void systemMenuUpdateVolumeSettings(MenuList *menu) {
                          (f32)channelBValue / (f32)channelBMaximum);
 }
 
-
 /// Cancel the current menu choice and return to its parent menu.
 /// \param unused Unused menu action value.
 /// \returns Nothing.
@@ -1207,7 +1200,6 @@ void systemMenuUpdateVolumeSettings(MenuList *menu) {
 void systemMenuCancelSelection(s32 unused) {
     systemMenuPopHistory();
 }
-
 
 /// Leave the system menu and request the go-home completion transition.
 /// \param unused Unused menu action value.
@@ -1219,7 +1211,6 @@ void systemMenuGoHome(s32 unused) {
     systemMenuExit();
     runtimeRequestGameModeChange(GAME_MODE_FADE_TO_COLLECTION);
 }
-
 
 /// Leave the system menu and request an area transition at its default spawn.
 /// \param area Destination area identifier.
@@ -1247,7 +1238,6 @@ void systemMenuSelectEyeCatchGroup(s32 group) {
     systemMenuExit();
 }
 
-
 /// Award an unearned friendship milestone and return home.
 /// \param milestone Friendship milestone index from zero through nineteen; an already earned milestone has no effect on friendship progress.
 /// \returns Nothing.
@@ -1267,7 +1257,6 @@ void systemMenuAwardFriendshipMilestoneAndGoHome(s32 milestone) {
 void systemMenuInvokeChapterUpdate(s32 chapter) {
     progressSetChapterAndUnlockMilestones(chapter);
 }
-
 
 /// Leave the system menu and enter the world-map transition.
 /// \param unused Unused menu action value.
@@ -1290,7 +1279,6 @@ void systemMenuPreviewMusic(s32 cueId) {
     audioSetCurrentCueRate(1.0);
 }
 
-
 /// Replace the current menu sound preview with a selected sound effect.
 /// \param soundId Valid sound-effect identifier to preview.
 /// \returns Nothing.
@@ -1302,7 +1290,6 @@ void systemMenuPreviewSoundEffect(s32 soundId) {
     gSystemMenuSoundPreviewHandle = audioPlaySoundEffect(soundId);
     TRACE("selectSound : %d %s\n", soundId, (systemMenuGetSelectedItem(gSystemMenuState.menu))->label);
 }
-
 
 /// Apply and save the selected mono or stereo output setting.
 /// \param mode One selects mono; two selects stereo.
@@ -1319,7 +1306,6 @@ void systemMenuSetAudioOutputMode(s32 mode) {
 /// \note Original decompilation identifier: \c func_8011B3D0 (0x8011B3D4).
 void systemMenuUnusedActionHook(void) {
 }
-
 
 /// Set the current chase progress and retain the furthest progress reached.
 /// \param value Requested chase progress; the current stage retains its low eight bits, while furthest progress uses the full value.
@@ -1437,7 +1423,6 @@ void systemMenuAppendSaveStatusDetails(void) {
     systemMenuAppendDetailText((u8 *)buffer);
 }
 
-
 /// Request a selected saved-game or control-data transfer to or from EEPROM.
 /// \param operation Zero or one loads saved-game file one or two; two or three saves file one or two; four loads control data and five saves control data. Other values request no transfer.
 /// \returns Nothing.
@@ -1504,11 +1489,11 @@ void systemMenuAppendItem(MenuList *menu, MenuItem *item) {
  * stub. Four stubs keep their submenu's value names as dead TRACEs. */
 /// Area labels used to build the debug area-selection menu.
 /// \note Original identifier: \c D_8012AD08 (0x8012AD08).
-char *gSystemMenuAreaLabels[SCENE_AREA_COUNT] = {"Room",         "GENKAN",      "Yard",         "ViridianA",      "ViridianB",
-                                   "ViridianC",    "SpringleafA", "SpringleafB",  "SpringleafC",    "OlivineA",
-                                   "OlivineB",     "OchreA",      "OchreB",       "CobaltA",        "CobaltB",
-                                   "Shop",         "Camp",        "OchreFishing", "OlivineFishing", "CobaltFishing",
-                                   "ViridianEdge", "Backyard",    "Ending"};
+char *gSystemMenuAreaLabels[SCENE_AREA_COUNT] = {
+    "Room",           "GENKAN",        "Yard",         "ViridianA", "ViridianB", "ViridianC",
+    "SpringleafA",    "SpringleafB",   "SpringleafC",  "OlivineA",  "OlivineB",  "OchreA",
+    "OchreB",         "CobaltA",       "CobaltB",      "Shop",      "Camp",      "OchreFishing",
+    "OlivineFishing", "CobaltFishing", "ViridianEdge", "Backyard",  "Ending"};
 /// Persistent AreaSelect menu list and retained selection state.
 /// \note Original identifier: \c D_8012AD64 (0x8012AD64).
 MenuList gSystemMenuAreaSelectList = {"Area Select", NULL, NULL, 0, 0, 0, 0, 0};

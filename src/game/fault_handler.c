@@ -26,9 +26,9 @@ void faultInspectRegisterFlags(u32 value, char *s, FlagDesc *desc) {
     }
 }
 
-s32 mathIsNaNFloat(f32);           /* extern */
-s32 mathIsInfiniteFloat(f32);      /* extern */
-s32 mathIsSubnormalFloat(f32);     /* extern */
+s32 mathIsNaNFloat(f32);       /* extern */
+s32 mathIsInfiniteFloat(f32);  /* extern */
+s32 mathIsSubnormalFloat(f32); /* extern */
 
 /// Inspect a single-precision value for the disabled fault report.
 /// \param labelAddress RAM address of the diagnostic label; unused in this build.
@@ -41,9 +41,9 @@ void faultInspectFloat(s32 labelAddress, f32 value) {
     }
 }
 
-s32 mathIsNaNDouble(f64);           /* extern */
-s32 mathIsInfiniteDouble(f64);      /* extern */
-s32 mathIsSubnormalDouble(f64);     /* extern */
+s32 mathIsNaNDouble(f64);       /* extern */
+s32 mathIsInfiniteDouble(f64);  /* extern */
+s32 mathIsSubnormalDouble(f64); /* extern */
 
 /// Inspect a double-precision value for the disabled fault report.
 /// \param labelAddress RAM address of the diagnostic label; unused in this build.

@@ -22,7 +22,6 @@ void motionCacheInitialize(void) {
     romCacheInitialize(&gMotionRomCache, 0x32000, 0x1F, 0x10);
 }
 
-
 /// Release the shared motion-data cache.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80017204 (0x80017204).

@@ -36,23 +36,23 @@
 /// Copied display text with its requested presentation settings.
 typedef struct QueuedMessage {
     char text[60]; ///< Owned encoded text including its terminator.
-    f32 duration; ///< Requested display duration in seconds.
-    s32 style;    ///< Font-style index.
+    f32 duration;  ///< Requested display duration in seconds.
+    s32 style;     ///< Font-style index.
 } QueuedMessage;
 
 /// Retained message queue, transition timers and owned image slots.
 typedef struct MessageBarState {
-    f32 elapsed; ///< Time since the current message became active.
-    f32 duration; ///< Current message display duration.
-    s32 queueWriteIndex; ///< Next queue slot available for insertion.
-    s32 queueReadIndex; ///< Next queued message awaiting activation.
-    f32 transitionRemaining; ///< Remaining display-transition time.
-    f32 scrollAngle; ///< Phase in degrees for wide-text scrolling.
-    QueuedMessage queued[16]; ///< Owned pending-message ring.
-    s32 displayImageIndex; ///< Image slot currently displayed.
-    s32 workImageIndex; ///< Image slot available for preparation.
+    f32 elapsed;                ///< Time since the current message became active.
+    f32 duration;               ///< Current message display duration.
+    s32 queueWriteIndex;        ///< Next queue slot available for insertion.
+    s32 queueReadIndex;         ///< Next queued message awaiting activation.
+    f32 transitionRemaining;    ///< Remaining display-transition time.
+    f32 scrollAngle;            ///< Phase in degrees for wide-text scrolling.
+    QueuedMessage queued[16];   ///< Owned pending-message ring.
+    s32 displayImageIndex;      ///< Image slot currently displayed.
+    s32 workImageIndex;         ///< Image slot available for preparation.
     TextImageHandle handles[3]; ///< Owned text images used during transitions.
-    u8 unknown46C[0x3C]; ///< Retained storage with no established role.
+    u8 unknown46C[0x3C];        ///< Retained storage with no established role.
 } MessageBarState;
 typedef char QueuedMessageSizeCheck[(sizeof(QueuedMessage) == 0x44) ? 1 : -1];
 typedef char MessageBarStateSizeCheck[(sizeof(MessageBarState) == 0x4A8) ? 1 : -1];
@@ -150,8 +150,8 @@ extern u8 gMessageBarCurrentText[];
 void messageBarActivateNext(void) {
     u8 *queueCursor = (u8 *)&gMessageBarState + (gMessageBarState.queueReadIndex * 0x44);
 
-    TRACE("_next: getIdx:%d setIdx:%d drawIdx:%d workIdx:%d\n", gMessageBarState.queueReadIndex, gMessageBarState.queueWriteIndex,
-          gMessageBarState.displayImageIndex, gMessageBarState.workImageIndex);
+    TRACE("_next: getIdx:%d setIdx:%d drawIdx:%d workIdx:%d\n", gMessageBarState.queueReadIndex,
+          gMessageBarState.queueWriteIndex, gMessageBarState.displayImageIndex, gMessageBarState.workImageIndex);
 
     gMessageBarState.duration = *(f32 *)((u8 *)&gMessageBarState + (gMessageBarState.queueReadIndex * 0x44) + 0x54);
     gMessageBarState.elapsed = 0.0F;
@@ -197,8 +197,7 @@ s32 messageBarUpdate(void) {
     if ((gMessageBarState.elapsed < gMessageBarState.duration) && (gMessageBarState.elapsed < interval)) {
         return 1;
     }
-    messageBarPrepareImage(gMessageBarState.workImageIndex,
-                           gMessageBarState.queued[gMessageBarState.queueReadIndex]);
+    messageBarPrepareImage(gMessageBarState.workImageIndex, gMessageBarState.queued[gMessageBarState.queueReadIndex]);
     if (++gMessageBarState.workImageIndex >= 3) {
         gMessageBarState.workImageIndex = 0;
     }
@@ -293,7 +292,6 @@ void messageBarClear(void) {
         gMessageBarState.workImageIndex = 0;
     }
 }
-
 
 /// Advance and draw the message bar with its current transition and scrolling state.
 /// \returns 1 when a message is drawn, or 0 when the display is idle.

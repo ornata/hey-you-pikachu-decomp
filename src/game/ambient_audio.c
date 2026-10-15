@@ -20,8 +20,8 @@
 /* One source line on purpose: IDO schedules per line, and the ROM's
  * register order only comes out when the three copies share one. */
 #define VEC3F_COPY(dst, src)                                                                                           \
-    (dst)[0] = (src)[0];                                                                                                 \
-    (dst)[1] = (src)[1];                                                                                                 \
+    (dst)[0] = (src)[0];                                                                                               \
+    (dst)[1] = (src)[1];                                                                                               \
     (dst)[2] = (src)[2]
 /// Owned ambient playback state borrowing its array of spatial source positions.
 typedef struct AmbientAudioState {

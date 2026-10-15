@@ -80,7 +80,6 @@ f32 vector2GetDirectionDegrees(u8 *vector) {
     return mathUnitDirectionDegrees(x, y);
 }
 
-
 /// Determine positional sound volume and stereo pan relative to the camera.
 /// \param pos World-space sound position with a nonzero distance from the camera.
 /// \param cam Camera transformation matrix.
@@ -471,7 +470,6 @@ void matrix3GetEulerAnglesDegrees(f32 *matrix, f32 *roll, f32 *pitch, f32 *yaw) 
     *yaw = mathUnitDirectionDegrees(cosYaw, sinYaw);
 }
 
-
 /// Normalize a planar vector using an approximate length.
 /// \param x First component, updated in place.
 /// \param y Second component, updated in place.
@@ -510,7 +508,6 @@ void vector2RotateComponentsDegrees(f32 angle, f32 *x, f32 *y) {
     *y = (originalX * sine) + (originalY * cosine);
 }
 
-
 /// Construct a view transform from a position and Euler orientation.
 /// \param position Three-component viewing position.
 /// \param angles Three Euler rotation angles in degrees, in the engine rotation order.
@@ -519,7 +516,7 @@ void vector2RotateComponentsDegrees(f32 angle, f32 *x, f32 *y) {
 /// \note Original decompilation identifier: \c func_8000D6D8 (0x8000D6D8).
 void matrix34MakeViewFromEulerDegrees(f32 *position, f32 *angles, f32 *matrix) {
     matrix34MakeRotationZYXDegrees(matrix, -angles[0], -angles[1], -angles[2]);
-    matrix34TranslateLocal((f32 (*)[3])matrix, -position[0], -position[1], -position[2]);
+    matrix34TranslateLocal((f32(*)[3])matrix, -position[0], -position[1], -position[2]);
 }
 
 /// Rotate an affine transform about the world Y axis.

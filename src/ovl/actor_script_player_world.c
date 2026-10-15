@@ -75,7 +75,6 @@ s32 actorScriptConsiderInteractionRegion(u8 *actor) {
     return 0;
 }
 
-
 /// Read whether actor visibility is enabled.
 /// \param actor Actor whose script VM receives one when it is marked visible, or zero when hidden.
 /// \returns Zero, allowing script execution to continue.
@@ -86,7 +85,6 @@ s32 actorScriptPushVisibilityEnabled(u8 *actor) {
     scriptVmPushInteger((ScriptVm *)(handle), (((RuntimeObjectPrefix *)actor)->flags & 2) ? 0 : 1);
     return 0;
 }
-
 
 /// Select which player controls remain enabled and yield script execution.
 /// \param actor Actor whose script VM supplies the input bits to retain, with bits 64 and 128 enabling the horizontal and vertical analog axes, and receives zero.
@@ -121,7 +119,6 @@ s32 actorScriptPushBlockedPlayerInput(u8 *actor) {
     return 0;
 }
 
-
 /// Request a player interaction mode targeting the actor.
 /// \param actor Actor whose script VM supplies zero for off, one for Pikachu mode, or two for follow mode, and receives zero; player permissions may prevent the change.
 /// \returns Zero, allowing script execution to continue.
@@ -135,7 +132,6 @@ s32 actorScriptSetPlayerInteractionMode(u8 *actor) {
     return 0;
 }
 
-
 /// Query the current player interaction mode.
 /// \param actor Actor whose script VM receives terrain material and surface attributes from the interaction-mode query.
 /// \returns Zero, allowing script execution to continue.
@@ -148,7 +144,6 @@ s32 actorScriptQueryPlayerInteractionMode(u8 *actor) {
     scriptVmPushInteger((ScriptVm *)(sp1C), playerQueryInteractionMode());
     return 0;
 }
-
 
 /// Read whether direct player view control is selected.
 /// \param actor Actor whose script VM receives one when the player view-control selection bit is set, or zero otherwise.
@@ -243,7 +238,6 @@ s32 actorScriptSetHeldItemReleaseAndGuide(u8 *actor) {
     return 0;
 }
 
-
 /// Set object activation and select the corresponding HUD guide.
 /// \param actor Actor whose script VM supplies an activation value (zero for off, nonzero for on) followed by an object handle, and receives the supplied activation value when supported or zero otherwise; a nonzero result selects guide style two, and zero disables the guide.
 /// \returns Zero, allowing script execution to continue.
@@ -291,7 +285,6 @@ s32 actorScriptPushInteractionMarkerMode(u8 *actor) {
     return 0;
 }
 
-
 /// Read the handle of the active Pikachu actor.
 /// \param actor Actor whose script VM receives the Pikachu handle; requires an active Pikachu actor.
 /// \returns Zero, allowing script execution to continue.
@@ -312,7 +305,6 @@ s32 actorScriptPushSelfHandle(u8 *actor) {
                         ((RuntimeObjectPrefix *)actor)->handle);
     return 0;
 }
-
 
 /// Read the number of points in a current-area path.
 /// \param actor Actor whose script VM supplies a valid current-area path index and receives its point count.
@@ -344,7 +336,6 @@ s32 actorScriptGetAreaPathPointCoordinate(u8 *actor) {
     return 0;
 }
 
-
 /// Find the nearest actor to a world position, excluding the executing actor.
 /// \param actor Actor whose script VM supplies X, Y, Z, inclusive minimum and maximum actor kinds including props (38 selects the respective range endpoint), then an exclusive maximum approximate distance, and receives the nearest handle or zero.
 /// \returns Zero, allowing script execution to continue.
@@ -373,7 +364,6 @@ s32 actorScriptFindActorNearPosition(u8 *actor) {
     return 0;
 }
 
-
 /// Find an item near a world position using kind, state, and priority filters.
 /// \param actor Actor whose script VM supplies X, Y, Z, inclusive minimum and maximum item kinds (165 selects the respective range endpoint), inclusive maximum approximate distance, required state (six accepts any), then a nonzero priority-weighting flag, and receives the selected handle or zero; weighted selection resets the selected item priority.
 /// \returns Zero, allowing script execution to continue.
@@ -400,7 +390,6 @@ s32 actorScriptFindItemNearPosition(u8 *actor) {
     return 0;
 }
 
-
 /// Find the nearest object in a facing cone, excluding the executing actor.
 /// \param actor Actor whose script VM supplies inclusive minimum and maximum kinds, exclusive maximum approximate distance, then maximum absolute horizontal angle in degrees (360 or greater permits all directions), and receives the nearest handle or zero.
 /// \returns Zero, allowing script execution to continue.
@@ -420,7 +409,6 @@ s32 actorScriptFindObjectInFacingCone(u8 *actor) {
     scriptVmPushInteger((ScriptVm *)(vmAddress), objectFindNearestHandleInFacingCone(actor, sp_pop, sp34, sp30, sp2C));
     return 0;
 }
-
 
 /// Find the nearest object to a world position, excluding the executing actor.
 /// \param actor Actor whose script VM supplies X, Y, Z, inclusive minimum and maximum kinds, then an exclusive maximum approximate distance, and receives the nearest handle or zero.
@@ -450,7 +438,6 @@ s32 actorScriptFindObjectNearPosition(u8 *actor) {
     return 0;
 }
 
-
 /// Resize an available object using its area-relative uniform scale.
 /// \param actor Actor whose script VM supplies an object handle followed by the requested scale and receives zero; unavailable handles have no effect, and available objects must have nonzero current scale, and area-scaled objects require initialized area data with nonzero scale.
 /// \returns Zero, allowing script execution to continue.
@@ -467,7 +454,6 @@ s32 actorScriptSetObjectUniformScale(u8 *actor) {
     scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 0;
 }
-
 
 /// Read an available object uniform scale relative to its area scaling convention.
 /// \param actor Actor whose script VM supplies an object handle and receives its uniform scale, or zero when unavailable; area-scaled objects require initialized area data with nonzero scale.
@@ -493,7 +479,6 @@ s32 actorScriptGetVoiceReactiveSpinnerSpeed(u8 *actor) {
     return 0;
 }
 
-
 /// Read the compact action status exposed to scripts for a creature.
 /// \param actor Actor whose script VM supplies a creature handle and receives its action status flags, or zero for a missing handle or a non-creature object.
 /// \returns Zero, allowing script execution to continue.
@@ -505,7 +490,6 @@ s32 actorScriptGetCreatureActionFlags(u8 *actor) {
     scriptVmPushInteger((ScriptVm *)(sp1C), actorGetScriptActionFlagsByHandle(scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
-
 
 /// Read one world-space coordinate of an available object.
 /// \param actor Actor whose script VM supplies an object handle followed by a nonnegative axis (zero for X, one for Y, two for Z), and receives the coordinate, zero for an unavailable handle, or -65536 for an axis greater than two.
@@ -523,7 +507,6 @@ s32 actorScriptGetObjectWorldCoordinate(u8 *actor) {
     return 0;
 }
 
-
 /// Provide the highlight state of a scene region to an actor script.
 /// \param actor Actor whose script VM supplies a scene-region handle and receives its highlight flag, or zero when the handle is not live; a live handle must identify initialized region state.
 /// \returns Zero, allowing script execution to continue.
@@ -535,7 +518,6 @@ s32 actorScriptIsSceneRegionHighlighted(u8 *actor) {
     scriptVmPushInteger((ScriptVm *)(sp1C), sceneRegionIsHighlightedByHandle(scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
-
 
 /// Read one coordinate of the first point in a path object.
 /// \param actor Actor whose script VM supplies a path handle with at least one initialized point followed by a nonnegative axis (zero for X, one for Y, two for Z), and receives the coordinate, zero for a missing handle, or -65536 for a non-path object or an axis greater than two.
@@ -553,7 +535,6 @@ s32 actorScriptGetFirstPathPointCoordinate(u8 *actor) {
     return 0;
 }
 
-
 /// Read a coordinate of the path destination following a waypoint near the actor.
 /// \param actor Actor whose script VM supplies a path handle with at least one waypoint and a complete three-coordinate end marker whose X is negative followed by a nonnegative axis (zero for X, one for Y, two for Z), and receives the coordinate following the first waypoint within three ground-distance units, or an end-marker coordinate when none qualifies; missing handles yield zero, and non-path objects or axes greater than two yield -65536.
 /// \returns Zero, allowing script execution to continue.
@@ -569,7 +550,6 @@ s32 actorScriptGetFollowingPathPointCoordinate(u8 *actor) {
     scriptVmPushFloat((ScriptVm *)(sp24), actorGetFollowingPathPointCoordinate(actor, sp20, sp1C));
     return 0;
 }
-
 
 /// Read one coordinate of a cave first scene anchor.
 /// \param actor Actor whose script VM supplies a cave handle followed by a nonnegative axis (zero for X, one for Y, two for Z), and receives the coordinate, zero for a missing handle, or -65536 for an axis greater than two; other object kinds are unsupported.
@@ -587,7 +567,6 @@ s32 actorScriptGetCaveFirstAnchorCoordinate(u8 *actor) {
     return 0;
 }
 
-
 /// Read one coordinate of a cave second scene anchor.
 /// \param actor Actor whose script VM supplies a cave handle followed by a nonnegative axis (zero for X, one for Y, two for Z), and receives the coordinate, zero for a missing handle, or -65536 for an axis greater than two; other object kinds are unsupported.
 /// \returns Zero, allowing script execution to continue.
@@ -603,7 +582,6 @@ s32 actorScriptGetCaveSecondAnchorCoordinate(u8 *actor) {
     scriptVmPushFloat((ScriptVm *)(vm), caveGetSecondAnchorCoordinate(a, b));
     return 0;
 }
-
 
 /// Read the landmark associated with a cave.
 /// \param actor Actor whose script VM supplies a cave handle and receives the linked landmark handle, or zero for a missing cave handle; a live cave must have a valid linked landmark, and other object kinds are unsupported.
@@ -635,7 +613,6 @@ s32 actorScriptGetGroundOffsetCoordinate(u8 *actor) {
     return 0;
 }
 
-
 /// Read ground material attributes below a world position.
 /// \param actor Actor whose script VM supplies X, Y, then Z and receives the terrain material-attribute value, or 0x77 when no terrain node is found.
 /// \returns Zero, allowing script execution to continue.
@@ -654,7 +631,6 @@ s32 actorScriptGetGroundMaterialAtPosition(u8 *actor) {
     return 0;
 }
 
-
 /// Probe ground material along the actor heading.
 /// \param actor Actor whose script VM supplies signed horizontal distance and receives terrain material and surface attributes; requires initialized actor heading; the probe uses the actor height.
 /// \returns Zero, allowing script execution to continue.
@@ -667,7 +643,6 @@ s32 actorScriptProbeGroundMaterialAhead(u8 *actor) {
                         actorProbeGroundMaterialAhead(actor, scriptVmPopFloat((ScriptVm *)(sp1C)), 0.0F));
     return 0;
 }
-
 
 /// Probe ground material ahead with a vertical query offset.
 /// \param actor Actor whose script VM supplies signed horizontal distance followed by vertical height offset and receives terrain material and surface attributes; requires initialized actor heading.
@@ -686,7 +661,6 @@ s32 actorScriptProbeGroundMaterialAtHeightOffset(u8 *actor) {
     return 0;
 }
 
-
 /// Read ground height along the actor heading.
 /// \param actor Actor whose script VM supplies signed horizontal distance and receives the ground height, or zero when no ground node is found; the query starts at the actor height.
 /// \returns Zero, allowing script execution to continue.
@@ -698,7 +672,6 @@ s32 actorScriptGetGroundHeightAhead(u8 *actor) {
     scriptVmPushFloat((ScriptVm *)(sp1C), actorGetGroundHeightAhead(actor, scriptVmPopFloat((ScriptVm *)(sp1C)), 0.0F));
     return 0;
 }
-
 
 /// Read ground height ahead with a vertical query offset.
 /// \param actor Actor whose script VM supplies signed horizontal distance followed by vertical height offset and receives the ground height, or zero when no ground node is found.
@@ -716,7 +689,6 @@ s32 actorScriptGetGroundHeightAtHeightOffset(u8 *actor) {
     return 0;
 }
 
-
 /// Read the current game mode.
 /// \param actor Actor whose script VM receives the current game-mode identifier.
 /// \returns Zero, allowing script execution to continue.
@@ -725,7 +697,6 @@ s32 actorScriptPushGameMode(u8 *actor) {
     scriptVmPushInteger((ScriptVm *)(((RuntimeObjectPrefix *)actor)->state.actor->vmAddress), gRuntimeGameMode);
     return 0;
 }
-
 
 /// Read held buttons from the first controller and yield script execution.
 /// \param actor Actor whose script VM receives the first controller held-button mask.
@@ -806,7 +777,6 @@ s32 actorScriptConfigureMicrophone(u8 *actor) {
     return 1;
 }
 
-
 /// Adjust the active Pikachu secondary gameplay meter.
 /// \param actor Actor whose script VM supplies a signed adjustment and receives the updated meter value clamped to zero through 100; requires an active Pikachu actor.
 /// \returns Zero, allowing script execution to continue.
@@ -819,7 +789,6 @@ s32 actorScriptAdjustPikachuSecondaryMeter(u8 *actor) {
                       actorAdjustSecondaryMeter(((u8 *)gPikachuActor), scriptVmPopFloat((ScriptVm *)(sp1C))));
     return 0;
 }
-
 
 /// Set the active Pikachu secondary gameplay meter.
 /// \param actor Actor whose script VM supplies a meter value and receives the assigned value clamped to zero through 100; requires an active Pikachu actor.
@@ -841,7 +810,6 @@ s32 actorScriptSetPikachuSecondaryMeter(u8 *actor) {
     return 0;
 }
 
-
 /// Read the active Pikachu secondary gameplay meter.
 /// \param actor Actor whose script VM receives the current secondary meter value; requires an active Pikachu actor.
 /// \returns Zero, allowing script execution to continue.
@@ -851,7 +819,6 @@ s32 actorScriptPushPikachuSecondaryMeter(u8 *actor) {
                       ((RuntimeObjectPrefix *)((u8 *)gPikachuActor))->state.actor->secondaryMeter);
     return 0;
 }
-
 
 /// Adjust the active Pikachu action resource and request its HUD display when appropriate.
 /// \param actor Actor whose script VM supplies a signed adjustment and receives the updated action resource clamped to zero through 100; requires an active Pikachu actor.
@@ -866,7 +833,6 @@ s32 actorScriptAdjustPikachuActionResource(u8 *actor) {
     return 0;
 }
 
-
 /// Read the active Pikachu action resource.
 /// \param actor Actor whose script VM receives the current action resource value; requires an active Pikachu actor.
 /// \returns Zero, allowing script execution to continue.
@@ -876,7 +842,6 @@ s32 actorScriptPushPikachuActionResource(u8 *actor) {
                       ((RuntimeObjectPrefix *)((u8 *)gPikachuActor))->state.actor->actionResource);
     return 0;
 }
-
 
 /// Create an item at a requested position and orientation.
 /// \param actor Actor whose script VM supplies X, Y, Z, pitch, yaw in degrees, then a valid item kind, and receives the created item handle; negative Y requests ground placement using its magnitude as the query height, with item size added to the ground height.
@@ -902,7 +867,6 @@ s32 actorScriptCreateItem(u8 *actor) {
                         ((RuntimeObjectPrefix *)itemCreate(sp_pop, sp3C, sp38, sp34, sp30, sp2C))->handle);
     return 0;
 }
-
 
 /// Create an item at a requested position and orientation without autonomous movement.
 /// \param actor Actor whose script VM supplies X, Y, Z, pitch, yaw in degrees, then a valid item kind, and receives the created item handle; negative Y requests ground placement using its magnitude as the query height, with item size added to the ground height.
@@ -981,7 +945,6 @@ s32 actorScriptMoveObjectAndReleaseHeldItem(u8 *actor) {
     return 0;
 }
 
-
 /// Replace an available item with a fresh item of a requested kind at the same position and orientation.
 /// \param actor Actor whose script VM supplies an item handle followed by a valid replacement kind, and receives the new item handle or zero for an unavailable original; other object kinds are unsupported.
 /// \returns Zero, allowing script execution to continue.
@@ -1029,7 +992,6 @@ s32 actorScriptPushHeldItemHandle(u8 *actor) {
     return 0;
 }
 
-
 /// Attempt to hold a requested item, forcing release from its current holder.
 /// \param actor Actor whose script VM supplies an item handle and receives its resulting held-item kind, or zero when it has no available held item; the previous held item is released only if the new item can be taken.
 /// \returns Zero, allowing script execution to continue.
@@ -1045,7 +1007,6 @@ s32 actorScriptTryHoldItem(u8 *actor) {
     scriptVmPushInteger((ScriptVm *)(vmAddress), actorGetHeldItemKind(actor));
     return 0;
 }
-
 
 /// Read the current state of a live item.
 /// \param actor Actor whose script VM supplies an item handle and receives the item state, or -1 for a missing handle or a non-item object.
@@ -1194,7 +1155,6 @@ s32 actorScriptRecordSupplyItem(u8 *actor) {
     return 0;
 }
 
-
 /// Read the remaining impact count of an available item.
 /// \param actor Actor whose script VM supplies an item handle and receives its remaining impact count, or -65536 when the handle is unavailable or identifies a non-item object.
 /// \returns Zero, allowing script execution to continue.
@@ -1206,7 +1166,6 @@ s32 actorScriptGetItemImpactCount(u8 *actor) {
     scriptVmPushInteger((ScriptVm *)(sp1C), itemGetImpactCount(scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
-
 
 /// Set the remaining impact count of an available item.
 /// \param actor Actor whose script VM supplies an item handle followed by the new count and receives one if updated, or zero when the handle is unavailable or identifies a non-item object.
@@ -1237,7 +1196,6 @@ s32 actorScriptPushTotalElapsedTime(u8 *actor) {
     scriptVmPushFloat((ScriptVm *)((s32)vmBytes), ((ScriptVm *)vmBytes)->totalElapsed);
     return 0;
 }
-
 
 /// Read ground height at a world position.
 /// \param actor Actor whose script VM supplies X, Y, then Z and receives the ground height, or zero when no terrain node is found.

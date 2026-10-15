@@ -61,11 +61,9 @@ void schedulerInitialize(GameScheduler *s, s32 id, s32 priority, u8 mode, u8 ret
     osSetEventMesg(OS_EVENT_SP, &s->rsp.queue, (OSMesg)SCHEDULER_EVENT_RSP_COMPLETE);
     osSetEventMesg(OS_EVENT_DP, &s->rdp.queue, (OSMesg)SCHEDULER_EVENT_RDP_COMPLETE);
     osSetEventMesg(OS_EVENT_PRENMI, &s->retrace.queue, (OSMesg)SCHEDULER_EVENT_PRE_NMI);
-    osCreateThread(&s->retraceThread, id + 2, schedulerRetraceThread, s, gSchedulerAudioStack,
-                   priority + 10);
+    osCreateThread(&s->retraceThread, id + 2, schedulerRetraceThread, s, gSchedulerAudioStack, priority + 10);
     osStartThread(&s->retraceThread);
-    osCreateThread(&s->audioThread, id + 1, schedulerAudioThread, s, gSchedulerGraphicsStack,
-                   priority + 5);
+    osCreateThread(&s->audioThread, id + 1, schedulerAudioThread, s, gSchedulerGraphicsStack, priority + 5);
     osStartThread(&s->audioThread);
     osCreateThread(&s->graphicsThread, id, schedulerGraphicsThread, s, gVoiceRecognitionDevicePort, priority);
     osStartThread(&s->graphicsThread);
@@ -195,7 +193,8 @@ void schedulerAudioThread(void *scheduler) {
     state = 0;
     for (;;) {
         osRecvMesg(&((GameScheduler *)scheduler)->audioCommand.queue, &taskMessage, OS_MESG_BLOCK);
-        osWritebackDCache(((SchedulerTask *)taskMessage)->task.t.data_ptr, ((SchedulerTask *)taskMessage)->task.t.data_size);
+        osWritebackDCache(((SchedulerTask *)taskMessage)->task.t.data_ptr,
+                          ((SchedulerTask *)taskMessage)->task.t.data_size);
         graphicsTask = ((GameScheduler *)scheduler)->graphicsTask;
         if (graphicsTask != 0) {
             osSpTaskYield();
@@ -281,7 +280,6 @@ void schedulerWaitForFramebuffer(GameScheduler *scheduler, SchedulerTask *task) 
         schedulerRemoveClient(scheduler, &link);
     }
 }
-
 
 /// Check whether a pre-reset notification has been received.
 /// \returns Nonzero after a pre-reset notification, or zero otherwise.

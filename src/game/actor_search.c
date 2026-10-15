@@ -2,8 +2,6 @@
 #include "actor_kind.h"
 #include "common.h"
 
-
-
 /// Find the nearest actor in a kind range, honoring the script actor-kind aliases.
 /// \param self Object excluded from the search, or null to exclude none.
 /// \param origin World-space search origin.

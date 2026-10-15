@@ -67,7 +67,6 @@ void lightBulbResetReleasedGlow(u8 *object, s32 unused) {
     }
 }
 
-
 /// Inflate an actor-held balloon and update its inflated state.
 /// \param object Item to update.
 /// \returns Nothing.
@@ -106,7 +105,6 @@ void balloonBeginReleasedFlight(u8 *object) {
     }
 }
 
-
 /// Resolve item contact with the map and play the appropriate impact effects.
 /// \param object Item to update.
 /// \param contactFlags Contact flags supplied by the item collision system.
@@ -124,7 +122,9 @@ s32 itemResolveMapCollision(u8 *object, u16 contactFlags) {
             return 0;
         }
     }
-    hit = terrainGetSurfaceAttributes(((RuntimeObjectPrefix *)object)->position[0], ((RuntimeObjectPrefix *)object)->position[1], ((RuntimeObjectPrefix *)object)->position[2], 0);
+    hit = terrainGetSurfaceAttributes(((RuntimeObjectPrefix *)object)->position[0],
+                                      ((RuntimeObjectPrefix *)object)->position[1],
+                                      ((RuntimeObjectPrefix *)object)->position[2], 0);
     if ((hit & 0xF) == 5) {
         ((ItemStatePrefix *)st)->downwardVelocity = 0.0F;
     }

@@ -12,8 +12,6 @@
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 
-
-
 /// Persistent ring of microphone configuration requests submitted to the controller thread.
 /// \note Original identifier: \c D_80063450 (0x80063450).
 extern MicConfigurationRequest gMicrophoneRequestRing[8];
@@ -149,14 +147,12 @@ void micRequestUnsupportedWordDictionary(s32 reserved0, s32 reserved1) {
 void micNoOp0489C(void) {
 }
 
-
 /// Check whether vocabulary upload is currently active.
 /// \returns One during an active upload, otherwise zero.
 /// \note Original decompilation identifier: \c func_800048A4 (0x800048A4).
 s32 micIsDictionaryUploadActive(void) {
     return micSessionIsDictionaryUploadActive();
 }
-
 
 /// Check readiness for the current microphone trigger.
 /// \returns One when the dictionary is settled and any active trigger has microphone input enabled.
@@ -165,14 +161,12 @@ s32 micIsTriggerReady(void) {
     return micSessionIsTriggerReady();
 }
 
-
 /// Read the current microphone trigger state.
 /// \returns Nonzero when the trigger is active, otherwise zero.
 /// \note Original decompilation identifier: \c func_800048E4 (0x800048E4).
 s32 micGetTriggerState(void) {
     return micSessionGetTriggerState();
 }
-
 
 /// Read the dictionary requested by microphone configuration.
 /// \returns Requested dictionary identifier.
@@ -181,14 +175,12 @@ s32 micGetRequestedDictionary(void) {
     return micSessionGetRequestedDictionary();
 }
 
-
 /// Read the selected recognition-device port.
 /// \returns Selected controller port, or minus one when unavailable.
 /// \note Original decompilation identifier: \c func_80004924 (0x80004924).
 s32 micGetDevicePort(void) {
     return micSessionGetDevicePort();
 }
-
 
 #include "microphone_connection.h"
 /// Check whether a controller port has a usable Voice Recognition Unit.

@@ -6,7 +6,6 @@
 #include "texture_cache.h"
 #include "texture_draw_types.h"
 
-
 /// Initialize the shared texture cache.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000C140 (0x8000C140).
@@ -14,14 +13,12 @@ void textureCacheInitialize(void) {
     romCacheInitialize(&gTextureRomCache, 0x1E000, 0x3D, 0x20);
 }
 
-
 /// Release the shared texture cache.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000C174 (0x8000C174).
 void textureCacheDestroy(void) {
     romCacheDestroy(&gTextureRomCache);
 }
-
 
 /// Texture descriptor tables indexed by texture bank.
 /// \note Original identifier: \c D_8006B520 (0x8006B520).
@@ -124,8 +121,8 @@ void textureDrawRectangles(s32 table, TextureRectangle *draw, Gfx **gdl) {
         }
         useMaskS = (texture.width & (texture.width - 1)) ? 0 : 1;
         useMaskT = (texture.height & (texture.height - 1)) ? 0 : 1;
-        textureUploadTile(gdl, texture.image, texture.palette, texture.format, texture.size, texture.width, texture.height, 0, 0, useMaskS,
-                      useMaskT);
+        textureUploadTile(gdl, texture.image, texture.palette, texture.format, texture.size, texture.width,
+                          texture.height, 0, 0, useMaskS, useMaskT);
         width = draw->width >= 0 ? draw->width : texture.width;
         height = draw->height >= 0 ? draw->height : texture.height;
         gSPTextureRectangle((*gdl)++, (u32)draw->x << 2, (u32)draw->y << 2,

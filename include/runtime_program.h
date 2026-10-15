@@ -17,7 +17,7 @@ typedef void (*RuntimeProgramCallback)(void);
 /// or a complete program allocation and must not be used to allocate, clear or copy program records.
 typedef struct RuntimeProgramCallbackSlot {
     RuntimeProgramCallback callback; ///< Optional initialization, update or drawing operation for this view.
-    u8 skipped[12]; ///< Storage between this callback and the same slot of the next program.
+    u8 skipped[12];                  ///< Storage between this callback and the same slot of the next program.
 } RuntimeProgramCallbackSlot;
 
 /// Initialization-slot view for program zero; callbacks remain callable while the program is active.

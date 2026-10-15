@@ -39,7 +39,6 @@
 #include "actor_script.h"
 #include "script_vm_stack.h"
 
-
 /// Select the player's primary object for following, retaining the stored destination.
 /// \param actor Actor whose tracking target is selected with zero distance allowance; its script VM receives zero.
 /// \returns Zero, allowing script execution to continue.
@@ -148,8 +147,6 @@ s32 actorScriptPushMessageArgument4(u8 *actor) {
     return 0;
 }
 
-
-
 /// Create an animated effect attached to the actor and record related Pikachu reaction progress.
 /// \param actor Actor whose script VM supplies a valid effect-definition index followed by a valid animation-track index and receives zero; its previous attached effect is replaced.
 /// \returns Zero, allowing script execution to continue.
@@ -176,7 +173,6 @@ s32 actorScriptCreateAttachedEffect(u8 *actor) {
     return 0;
 }
 
-
 /// Find the nearest actor in the current actor's facing cone.
 /// \param actor Actor whose script VM supplies minimum kind, maximum kind, exclusive distance limit, then cone angle; kind 38 selects the creature range and angles of 360 or greater allow all directions. Receives the nearest qualifying handle, or zero.
 /// \returns Zero, allowing script execution to continue.
@@ -197,7 +193,6 @@ s32 actorScriptFindNearestInFacingCone(u8 *actor) {
     return 0;
 }
 
-
 /// Force release of the actor's held item and report its kind.
 /// \param actor Actor whose held handle identifies an initialized item when live; its script VM receives the resolved kind or zero when the handle is not live.
 /// \returns Zero, allowing script execution to continue.
@@ -210,7 +205,6 @@ s32 actorScriptReleaseHeldItem(u8 *actor) {
     return 0;
 }
 
-
 /// Push the actor's approximate distance from the player.
 /// \param actor Actor whose script VM receives the approximate distance from its local position to the player position.
 /// \returns Zero, allowing script execution to continue.
@@ -222,7 +216,6 @@ s32 actorScriptPushPlayerDistance(u8 *actor) {
     scriptVmPushFloat((ScriptVm *)(sp1C), objectGetPlayerDistance(actor));
     return 0;
 }
-
 
 /// Replace a world position on the script stack with its distance from the actor.
 /// \param actor Actor whose script VM supplies world X, Y, Z (Z on top) and receives the approximate three-dimensional distance.
@@ -287,7 +280,6 @@ s32 actorScriptChooseEscapeFromPlayer(u8 *actor) {
     return 0;
 }
 
-
 /// Place the actor at its stored target position.
 /// \param actor Actor to reposition; its script VM receives zero.
 /// \returns Zero, allowing script execution to continue.
@@ -300,7 +292,6 @@ s32 actorScriptMoveToTargetPosition(u8 *actor) {
     scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return 0;
 }
-
 
 /// Set one axis of the actor's rotation from script arguments.
 /// \param actor Actor whose script VM supplies a finite angle in degrees followed by axis zero (pitch), one (yaw), or two (roll), and receives zero.
@@ -381,7 +372,6 @@ s32 actorScriptRestorePlayerState(u8 *actor) {
     return 0;
 }
 
-
 /// Move the player to a script-specified world position.
 /// \param actor Actor whose script VM supplies world X, Y, Z (Z on top) and receives zero.
 /// \returns Zero, allowing script execution to continue.
@@ -398,7 +388,6 @@ s32 actorScriptSetPlayerPosition(u8 *actor) {
     return 0;
 }
 
-
 /// Request a player heading angle, subject to player view-control permissions.
 /// \param actor Actor whose script VM supplies a yaw angle in degrees and receives zero.
 /// \returns Zero, allowing script execution to continue.
@@ -412,7 +401,6 @@ s32 actorScriptSetPlayerYaw(u8 *actor) {
     return 0;
 }
 
-
 /// Push the player's current view yaw.
 /// \param actor Actor whose script VM receives the view yaw in degrees.
 /// \returns Zero, allowing script execution to continue.
@@ -422,7 +410,6 @@ s32 actorScriptPushPlayerViewYaw(u8 *actor) {
                       ((&gPlayerState))->viewShake + ((&gPlayerState))->yaw);
     return 0;
 }
-
 
 /// Request a player view pitch, subject to player view-control permissions.
 /// \param actor Actor whose script VM supplies a pitch angle in degrees, limited to -60 through 60 when applied, and receives zero.
@@ -437,7 +424,6 @@ s32 actorScriptSetPlayerPitch(u8 *actor) {
     return 0;
 }
 
-
 /// Push the player's current view pitch.
 /// \param actor Actor whose script VM receives the view pitch in degrees.
 /// \returns Zero, allowing script execution to continue.
@@ -447,7 +433,6 @@ s32 actorScriptPushPlayerViewPitch(u8 *actor) {
                       ((&gPlayerState))->pitch + ((&gPlayerState))->pitchOffset);
     return 0;
 }
-
 
 /// Push the kind of item held by the actor.
 /// \param actor Actor whose held handle identifies an initialized item when live; its script VM receives the item kind or zero when the handle is not live.
@@ -498,9 +483,6 @@ s32 actorScriptPushVoiceCommandStatus(u8 *actor) {
     return 0;
 }
 
-
-
-
 /// Post a script message to another actor without replacing a pending message.
 /// \param actor Actor whose script VM supplies a handle identifying initialized actor state when live, message type, and arguments 0, 2, 3, 4 (argument 4 on top); argument 1 is zero. The VM receives one if accepted, or zero for a pending message or missing target.
 /// \returns Zero, allowing script execution to continue.
@@ -528,7 +510,6 @@ s32 actorScriptPostMessage(u8 *actor) {
     return 0;
 }
 
-
 /// Search for an eligible nearby item of a script-specified kind.
 /// \param actor Actor whose script VM supplies item kind followed by maximum distance and receives the qualifying kind, or zero during cooldown or when none qualifies.
 /// \returns Zero, allowing script execution to continue.
@@ -546,7 +527,6 @@ s32 actorScriptFindInteractableItem(u8 *actor) {
     return 0;
 }
 
-
 /// Push the actor's approximate distance from the world origin.
 /// \param actor Actor whose script VM receives the three-dimensional distance.
 /// \returns Zero, allowing script execution to continue.
@@ -558,7 +538,6 @@ s32 actorScriptPushOriginDistance(u8 *actor) {
     scriptVmPushFloat((ScriptVm *)(sp1C), objectGetOriginDistance(actor));
     return 0;
 }
-
 
 /// Replace a target handle on the script stack with its approximate distance from the actor.
 /// \param actor Actor whose script VM supplies a target handle and receives the distance, or -1 for an unavailable target.
@@ -572,7 +551,6 @@ s32 actorScriptGetObjectDistance(u8 *actor) {
     return 0;
 }
 
-
 /// Replace a target handle on the script stack with its height relative to the actor.
 /// \param actor Actor whose script VM supplies a target handle and receives target height minus actor height, or zero for an unavailable target.
 /// \returns Zero, allowing script execution to continue.
@@ -585,7 +563,6 @@ s32 actorScriptGetObjectHeightDifference(u8 *actor) {
                       objectGetHeightDifferenceToHandle(actor, scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
-
 
 /// Push the stored target position's height relative to the actor.
 /// \param actor Actor whose script VM receives target height minus actor height.
@@ -601,7 +578,6 @@ s32 actorScriptPushTargetHeightDifference(u8 *actor) {
     return 0;
 }
 
-
 /// Replace a target handle on the script stack with its horizontal distance from the actor.
 /// \param actor Actor whose script VM supplies a target handle and receives the approximate horizontal distance, or zero for an unavailable target.
 /// \returns Zero, allowing script execution to continue.
@@ -615,7 +591,6 @@ s32 actorScriptGetObjectHorizontalDistance(u8 *actor) {
     return 0;
 }
 
-
 /// Push the actor's approximate horizontal distance to its stored target position.
 /// \param actor Actor whose script VM receives the target distance.
 /// \returns Zero, allowing script execution to continue.
@@ -627,7 +602,6 @@ s32 actorScriptPushHorizontalTargetDistance(u8 *actor) {
     scriptVmPushFloat((ScriptVm *)(sp1C), actorGetHorizontalTargetDistance(actor));
     return 0;
 }
-
 
 /// Replace a coordinate axis on the script stack with a stored target coordinate.
 /// \param actor Actor whose script VM supplies a nonnegative axis (zero for X, one for Y, two for Z) and receives the target coordinate, or -65536 for an axis greater than two.
@@ -680,7 +654,6 @@ s32 actorScriptPushActionElapsedTime(u8 *actor) {
     return 0;
 }
 
-
 /// Push the time limit of the actor's current action script.
 /// \param actor Actor whose script VM receives the action time limit in seconds; a negative value indicates no limit.
 /// \returns Zero, allowing script execution to continue.
@@ -693,7 +666,6 @@ s32 actorScriptPushActionDuration(u8 *actor) {
     return 0;
 }
 
-
 /// Push the retained identifier of the actor's selected timed program.
 /// \param actor Actor whose script VM receives the selected program identifier or ACTION_SCRIPT_NO_PROGRAM; natural command completion retains the prior identifier.
 /// \returns Zero, allowing script execution to continue.
@@ -705,7 +677,6 @@ s32 actorScriptPushTimedProgramId(u8 *actor) {
     scriptVmPushInteger((ScriptVm *)(sp1C), actionScriptGetId(actor));
     return 0;
 }
-
 
 /// Push the actor's latest movement collision status.
 /// \param actor Actor whose script VM receives the collision flags, or zero when no collision was reported.
@@ -779,7 +750,6 @@ s32 actorScriptQueryRequestedMicDictionary(u8 *actor) {
     return 0;
 }
 
-
 /// Change the current audio cue when needed while preserving its requested playback rate.
 /// \param actor Actor whose script VM supplies a valid cue ID or a negative value for silence, nonnegative fade-out seconds, then nonnegative fade-in seconds; receives one when a change is requested or zero when the cue is already selected.
 /// \returns Zero, allowing script execution to continue.
@@ -807,7 +777,6 @@ s32 actorScriptChangeCuePreservingRate(u8 *actor) {
     return 0;
 }
 
-
 /// Transition the current audio cue using script-specified fade durations.
 /// \param actor Actor whose script VM supplies a valid cue ID or a negative value for silence, nonnegative fade-out seconds, then nonnegative fade-in seconds; a negative cue stops playback. Receives the new playback identifier, or zero for silence or unavailable capacity.
 /// \returns Zero, allowing script execution to continue.
@@ -824,7 +793,6 @@ s32 actorScriptChangeCue(u8 *actor) {
     return 0;
 }
 
-
 /// Set the requested playback rate of the current audio cue.
 /// \param actor Actor whose script VM supplies a positive playback rate multiplier and receives one if applied or zero if no playback was updated.
 /// \returns Zero, allowing script execution to continue.
@@ -836,7 +804,6 @@ s32 actorScriptSetCueRate(u8 *actor) {
     scriptVmPushInteger((ScriptVm *)(sp1C), audioSetCurrentCueRate((f64)scriptVmPopFloat((ScriptVm *)(sp1C))));
     return 0;
 }
-
 
 /// Start an audio cue at full volume.
 /// \param actor Actor whose script VM supplies a valid cue ID in the initialized current bank and receives the playback identifier, or zero if no slot is available.
@@ -850,7 +817,6 @@ s32 actorScriptPlayCue(u8 *actor) {
     return 0;
 }
 
-
 /// Play a spatial sound for the actor and track its playback.
 /// \param actor Actor whose script VM supplies an actor sound kind and receives the playback handle, or zero if playback could not start.
 /// \returns Zero, allowing script execution to continue.
@@ -863,7 +829,6 @@ s32 actorScriptPlayTrackedSound(u8 *actor) {
     return 0;
 }
 
-
 /// Start a sound effect from the loaded sound bank.
 /// \param actor Actor whose script VM supplies a valid index in the initialized sound bank and receives the playback identifier, or zero if no slot is available.
 /// \returns Zero, allowing script execution to continue.
@@ -875,7 +840,6 @@ s32 actorScriptPlaySoundEffect(u8 *actor) {
     scriptVmPushInteger((ScriptVm *)(sp1C), audioPlaySoundEffect(scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
-
 
 /// Adjust the stereo position of a playing sound effect.
 /// \param actor Actor whose script VM supplies a playback identifier followed by a pan value from 0 (left) to 255 (right), and receives the number of matching sound-effect slots updated.
@@ -893,7 +857,6 @@ s32 actorScriptSetSoundEffectPan(u8 *actor) {
                         audioSetSoundEffectPan(scriptVmPopInteger((ScriptVm *)(vmAddress)), sp1C));
     return 0;
 }
-
 
 /// Adjust the volume of a playing sound effect.
 /// \param actor Actor whose script VM supplies a playback identifier followed by a volume in units of 1/128 of the original volume, and receives the number of matching sound-effect slots updated.
@@ -924,7 +887,6 @@ s32 actorScriptSquareRoot(u8 *actor) {
     scriptVmPushFloat((ScriptVm *)(vm), sqrt(scriptVmPopFloat((ScriptVm *)(vm))));
     return 0;
 }
-
 
 /// Find an item near the actor within its facing cone and the requested filters.
 /// \param actor Actor whose script VM supplies minimum kind, maximum kind, distance, cone angle, item state, and weighted preference (preference on top). Kind 165 removes its bound, state six accepts any state, and nonzero preference enables priority weighting. Receives the selected item handle, or zero when none qualifies.
@@ -1021,7 +983,6 @@ s32 actorScriptTrackEscapeFromObject(u8 *actor) {
     return 0;
 }
 
-
 /// Choose a fixed escape destination away from an object.
 /// \param actor Actor whose script VM supplies a target handle and receives its script category, or zero for an unavailable or unsupported target.
 /// \returns Zero, allowing script execution to continue.
@@ -1034,7 +995,6 @@ s32 actorScriptChooseEscapeFromObject(u8 *actor) {
                         actorChooseEscapePositionFromHandle(actor, scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
-
 
 /// Push the actor's target distance allowance.
 /// \param actor Actor whose script VM receives the distance allowance used when approaching its destination.
@@ -1049,7 +1009,6 @@ s32 actorScriptPushTargetDistanceAllowance(u8 *actor) {
     return 0;
 }
 
-
 /// Push the handle of the actor's available target.
 /// \param actor Actor whose script VM receives its target handle, or zero when unavailable.
 /// \returns Zero, allowing script execution to continue.
@@ -1062,7 +1021,6 @@ s32 actorScriptPushTargetHandle(u8 *actor) {
     return 0;
 }
 
-
 /// Push the actor's current target tracking mode.
 /// \param actor Actor whose script VM receives its target tracking mode.
 /// \returns Zero, allowing script execution to continue.
@@ -1074,7 +1032,6 @@ s32 actorScriptPushTrackingMode(u8 *actor) {
     scriptVmPushInteger((ScriptVm *)(sp1C), actorGetTargetTrackingMode(actor));
     return 0;
 }
-
 
 /// Set the actor's target tracking mode from a script argument.
 /// \param actor Actor whose script VM supplies a mode (zero disables tracking, one follows, two escapes) and receives zero.
@@ -1089,7 +1046,6 @@ s32 actorScriptSetTrackingMode(u8 *actor) {
     return 0;
 }
 
-
 /// Replace an object handle on the script stack with its script category.
 /// \param actor Actor whose script VM supplies a handle and receives its category, or zero for an unavailable or unsupported object.
 /// \returns Zero, allowing script execution to continue.
@@ -1101,7 +1057,6 @@ s32 actorScriptGetObjectCategory(u8 *actor) {
     scriptVmPushInteger((ScriptVm *)(sp1C), objectGetScriptCategory(actor, scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
-
 
 /// Replace an object handle on the script stack with its script kind identifier.
 /// \param actor Actor whose script VM supplies a handle and receives its kind identifier, or zero for an unavailable or unsupported object.
@@ -1115,7 +1070,6 @@ s32 actorScriptGetObjectKind(u8 *actor) {
     return 0;
 }
 
-
 /// Replace an object handle on the script stack with its item kind.
 /// \param actor Actor whose script VM supplies a handle and receives the item kind, or zero for an unavailable handle or a non-item object.
 /// \returns Zero, allowing script execution to continue.
@@ -1127,7 +1081,6 @@ s32 actorScriptGetItemKind(u8 *actor) {
     scriptVmPushInteger((ScriptVm *)(sp1C), itemGetKindByHandle(scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
-
 
 /// Replace an object handle on the script stack with its actor configuration kind.
 /// \param actor Actor whose script VM supplies a handle and receives the ActorKind, including props, or zero for an unavailable handle or another object domain.
@@ -1141,7 +1094,6 @@ s32 actorScriptGetActorKind(u8 *actor) {
     return 0;
 }
 
-
 /// Replace an object handle on the script stack with its object type.
 /// \param actor Actor whose script VM supplies a handle and receives the object type, or zero for an unavailable handle.
 /// \returns Zero, allowing script execution to continue.
@@ -1154,7 +1106,6 @@ s32 actorScriptGetObjectType(u8 *actor) {
     return 0;
 }
 
-
 /// Replace an object handle on the script stack with its bounding radius.
 /// \param actor Actor whose script VM supplies a handle and receives the radius, or zero for an unavailable handle.
 /// \returns Zero, allowing script execution to continue.
@@ -1166,7 +1117,6 @@ s32 actorScriptGetBoundingRadius(u8 *actor) {
     scriptVmPushFloat((ScriptVm *)(sp1C), objectGetBoundingRadiusByHandle(scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
-
 
 /// Set the default mode for actions that inherit the actor's mode.
 /// \param actor Actor whose script VM supplies a default action mode representable as a signed 16-bit value and receives zero.
@@ -1194,7 +1144,6 @@ s32 actorScriptPushDefaultActionMode(u8 *actor) {
     return 0;
 }
 
-
 /// Start an action script with a default mode and yield actor script execution.
 /// \param actor Actor whose script VM supplies a valid action-script identifier followed by a default mode representable as a signed 16-bit value, and receives zero.
 /// \returns One, yielding script execution.
@@ -1211,7 +1160,6 @@ s32 actorScriptStartActionWithMode(u8 *actor) {
     scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 1;
 }
-
 
 /// Start an action script with a time limit and yield actor script execution.
 /// \param actor Actor whose script VM supplies a valid action-script identifier followed by a floating-point duration in seconds, and receives zero; a negative duration removes the limit.
@@ -1231,7 +1179,6 @@ s32 actorScriptStartTimedAction(u8 *actor) {
     return 1;
 }
 
-
 /// Push the handle of the item held by the player.
 /// \param actor Actor whose script VM receives the stored player held-item handle, or zero when none is recorded.
 /// \returns Zero, allowing script execution to continue.
@@ -1244,7 +1191,6 @@ s32 actorScriptPushPlayerHeldItem(u8 *actor) {
     return 0;
 }
 
-
 /// Read the current friendship level with Pikachu.
 /// \param actor Actor whose script VM receives the friendship level used for the friendship title.
 /// \returns Zero, allowing script execution to continue.
@@ -1254,7 +1200,6 @@ s32 actorScriptPushFriendshipLevel(u8 *actor) {
     return 0;
 }
 
-
 /// Read the number of voice messages delivered to Pikachu.
 /// \param actor Actor whose script VM receives the delivered voice-message count.
 /// \returns Zero, allowing script execution to continue.
@@ -1263,7 +1208,6 @@ s32 actorScriptPushDeliveredVoiceCount(u8 *actor) {
     scriptVmPushInteger((ScriptVm *)(((RuntimeObjectPrefix *)actor)->state.actor->vmAddress), gPlayerVoiceMessageCount);
     return 0;
 }
-
 
 /// Read one coordinate of the player position.
 /// \param actor Actor whose script VM supplies a position axis (zero for X, one for Y, two for Z) and receives that coordinate.
@@ -1291,7 +1235,6 @@ s32 actorScriptPushFacingErrorToPlayer(u8 *actor) {
     return 0;
 }
 
-
 /// Read the player profile points balance.
 /// \param actor Actor whose script VM receives the current points balance.
 /// \returns Zero, allowing script execution to continue.
@@ -1312,7 +1255,6 @@ s32 actorScriptSetPlayerPoints(u8 *actor) {
     scriptVmPushInteger((ScriptVm *)(id), ((&gPlayerState))->points = h);
     return 0;
 }
-
 
 /// Adjust the player profile points balance within its supported range.
 /// \param actor Actor whose script VM supplies a signed adjustment whose sum with the current balance fits a signed 32-bit value, and receives the resulting balance clamped to zero through 999999.

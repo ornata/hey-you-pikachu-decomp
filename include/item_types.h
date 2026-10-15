@@ -41,20 +41,20 @@ typedef char ItemMotionPhaseSizeCheck[(sizeof(ItemMotionPhase) == 4) ? 1 : -1];
 /// Unknown fields remain offset-named. This prefix is not the full allocation
 /// and must not be used to allocate, copy, or clear an item state.
 typedef struct ItemStatePrefix {
-    s32 flags;                   ///< Item behavior and lifecycle flags.
-    s16 kind;                    ///< Item-kind table index.
-    s8 state;                    ///< ItemOwnershipState selector; retained as a signed byte.
-    s8 mode;                     ///< Independent ItemMode behavior-update selector.
-    s32 owner;                   ///< Borrowed actor-holder handle in actor-held states; zero when unheld or player-held.
-    f32 baseRadius;              ///< Unscaled object radius retained for item resizing.
-    f32 downwardVelocity;        ///< Downward-positive vertical velocity.
-    f32 velocityX;               ///< Horizontal X velocity.
-    f32 velocityZ;               ///< Horizontal Z velocity.
-    f32 rotationVelocityX;       ///< X rotation rate; reused by kind-specific motion.
-    f32 rotationVelocityY;       ///< Y rotation rate; reused by kind-specific motion.
-    s32 soundHandle;             ///< Last tracked spatial sound handle.
-    f32 spinSpeed;               ///< Spin magnitude used by terrain response.
-    f32 modeTime;                ///< Elapsed time used by the active item mode.
+    s32 flags;             ///< Item behavior and lifecycle flags.
+    s16 kind;              ///< Item-kind table index.
+    s8 state;              ///< ItemOwnershipState selector; retained as a signed byte.
+    s8 mode;               ///< Independent ItemMode behavior-update selector.
+    s32 owner;             ///< Borrowed actor-holder handle in actor-held states; zero when unheld or player-held.
+    f32 baseRadius;        ///< Unscaled object radius retained for item resizing.
+    f32 downwardVelocity;  ///< Downward-positive vertical velocity.
+    f32 velocityX;         ///< Horizontal X velocity.
+    f32 velocityZ;         ///< Horizontal Z velocity.
+    f32 rotationVelocityX; ///< X rotation rate; reused by kind-specific motion.
+    f32 rotationVelocityY; ///< Y rotation rate; reused by kind-specific motion.
+    s32 soundHandle;       ///< Last tracked spatial sound handle.
+    f32 spinSpeed;         ///< Spin magnitude used by terrain response.
+    f32 modeTime;          ///< Elapsed time used by the active item mode.
     ItemMotionPhase motionPhase; ///< Phase or elapsed time selected by item kind and mode.
     s32 bounceCount;             ///< Remaining automatic bounce attempts.
     f32 searchPriority;          ///< Replenishing priority consumed by weighted item searches.

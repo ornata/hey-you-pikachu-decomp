@@ -48,10 +48,10 @@ typedef char ObjectPrivateStateSizeCheck[(sizeof(ObjectPrivateState) == 4) ? 1 :
 /// This view ends at the private-state pointer. It is not the full allocation
 /// and must not be used to allocate or copy a runtime object.
 typedef struct RuntimeObjectPrefix {
-    f32 scale[3];             ///< Local scale along each axis.
-    f32 rotation[3];          ///< Local Euler rotation in degrees.
-    f32 position[3];          ///< Local position relative to the hierarchy.
-    f32 radius;               ///< Visibility or collision radius; texture-motion kinds initially reuse this value for encoded motion settings.
+    f32 scale[3];    ///< Local scale along each axis.
+    f32 rotation[3]; ///< Local Euler rotation in degrees.
+    f32 position[3]; ///< Local position relative to the hierarchy.
+    f32 radius; ///< Visibility or collision radius; texture-motion kinds initially reuse this value for encoded motion settings.
     ObjectReference sibling;  ///< Next sibling in the hierarchy.
     ObjectReference child;    ///< First child in the hierarchy.
     Gfx *displayList;         ///< Borrowed model display list.

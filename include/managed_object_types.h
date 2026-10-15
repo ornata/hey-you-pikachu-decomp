@@ -14,8 +14,8 @@
 /// become an independently registered object or extend those resources' lifetimes.
 typedef struct ManagedObject {
     RuntimeObjectPrefix base; ///< Runtime transform, hierarchy links and kind-specific state.
-    TreeNode *entry; ///< Borrowed active search entry, initially pointing to node in this allocation.
-    TreeNode node; ///< Embedded tree entry whose lifetime is bounded by this object allocation.
+    TreeNode *entry;          ///< Borrowed active search entry, initially pointing to node in this allocation.
+    TreeNode node;            ///< Embedded tree entry whose lifetime is bounded by this object allocation.
 } ManagedObject;
 
 typedef char ManagedObjectSizeCheck[(sizeof(ManagedObject) == 0x68) ? 1 : -1];

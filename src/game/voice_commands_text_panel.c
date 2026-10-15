@@ -93,7 +93,8 @@ void voiceCommandLaunchEffect(ScriptMessage message) {
     u8 *state;
     s32 kind;
     if (gGameplayMicrophoneAvailable != 0 && gGameplayVoiceCommandsAllowed != 0 && gRuntimeCurrentProgram == 0 &&
-        (gRuntimeGameMode == GAME_MODE_GAMEPLAY || gRuntimeGameMode == GAME_MODE_WORLD_MAP || gRuntimeGameMode == GAME_MODE_TITLE)) {
+        (gRuntimeGameMode == GAME_MODE_GAMEPLAY || gRuntimeGameMode == GAME_MODE_WORLD_MAP ||
+         gRuntimeGameMode == GAME_MODE_TITLE)) {
         messengerMode = 0;
         object = objectFindLiveByHandle(gPlayerHeldItemHandle);
         if (object != NULL && ((state = ((RuntimeObjectPrefix *)object)->state.bytes,
@@ -190,7 +191,8 @@ s32 voiceCommandTakeMessage(ScriptMessage *out) {
     micRequestAmplifierOff();
     index = 1;
     while (1) {
-        if (*(gVoiceCommandDisplayName = (u8 *)voiceDictionaryGetWordName(((u16 *)&gVoiceCommandResultIndex)[1])) == 0) {
+        if (*(gVoiceCommandDisplayName = (u8 *)voiceDictionaryGetWordName(((u16 *)&gVoiceCommandResultIndex)[1])) ==
+            0) {
             gVoiceCommandDisplayName = gVoiceCommandUnrecognizedName;
             return 0;
         }
@@ -225,7 +227,6 @@ s32 voiceCommandTakeMessage(ScriptMessage *out) {
     out->arg4 = 0;
     return 1;
 }
-
 
 /// Process an available voice command using the current interaction candidate.
 /// \returns Nothing.
@@ -269,13 +270,13 @@ void textPanelInitialize(TextPanel *panel, s32 visibleLines) {
     panel->entries = panel->images + visibleLines;
     allocationSize = visibleLines * 4;
     allocation = heapAllocLocal(&gGameHeap, allocationSize, 0x3F);
-    panel->colors = (u8 (*)[4])allocation;
+    panel->colors = (u8(*)[4])allocation;
     _bzero((s32)allocation, allocationSize);
     panel->capacity = visibleLines;
     panel->configuration = NULL;
     textPanelSetColor(panel, 0xFF, 0xFF, 0xFF, 0xFF);
-    textureImageInitialize(&gTextPanelBackdropImage, (s32)gTextPanelBackdropPixels, (s32)gTextPanelBackdropPalette, 2, 0, 0x114,
-                           0x1C);
+    textureImageInitialize(&gTextPanelBackdropImage, (s32)gTextPanelBackdropPixels, (s32)gTextPanelBackdropPalette, 2,
+                           0, 0x114, 0x1C);
     textPanelAppend((struct TextPanel *)panel, gTextPanelInitialEmptyText);
 }
 
@@ -416,7 +417,6 @@ void textPanelSetTextConfiguration(TextPanel *panel, s32 configuration) {
     }
     panel->configuration = NULL;
 }
-
 
 /// Append a text entry, discarding the oldest entry when the panel is full.
 /// \param panel Initialized text panel receiving the entry.

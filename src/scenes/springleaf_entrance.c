@@ -92,8 +92,10 @@ void springleafEntranceSpawnGrowthResident(f32 *position, s32 residentIndex) {
 /// Prepare scene resources for evolved entrance residents.
 /// \returns Nothing.
 void springleafEntrancePrepareEvolvedResidents(void) {
-    objectRequestHierarchyDestruction(actorCreateForKind(ACTOR_KIND_GLOOM, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, NULL, 0));
-    objectRequestHierarchyDestruction(actorCreateForKind(ACTOR_KIND_VILEPLUME, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, NULL, 0));
+    objectRequestHierarchyDestruction(
+        actorCreateForKind(ACTOR_KIND_GLOOM, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, NULL, 0));
+    objectRequestHierarchyDestruction(
+        actorCreateForKind(ACTOR_KIND_VILEPLUME, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, NULL, 0));
 }
 
 /// Spawn an entrance item with a randomized heading.
@@ -114,8 +116,8 @@ void springleafEntranceSpawnItem(f32 *position, s32 itemKind) {
 /// \returns Nothing.
 void springleafEntranceSpawnFixedResident(void) {
     if (progressGetValue(0x12) == 0) {
-        actorCreateForKind(ACTOR_KIND_CHARMANDER, 165.5F, 38.0F, 225.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
-                           &D_8014E2B0_scene_springleaf_entrance, 0);
+        actorCreateForKind(ACTOR_KIND_CHARMANDER, 165.5F, 38.0F, 225.0F, 0.0F, 0.0F,
+                           gCurrentAreaConfiguration->objectScale, &D_8014E2B0_scene_springleaf_entrance, 0);
         return;
     }
     actorCreateForKind(ACTOR_KIND_CHARMANDER, 128.5F, 38.0F, 200.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
@@ -153,7 +155,6 @@ extern u8 D_8014E62C_scene_springleaf_entrance;
 extern u8 D_801574CC_scene_springleaf_entrance;
 extern u8 D_801575EC_scene_springleaf_entrance;
 
-
 extern u8 D_80158DE4_scene_springleaf_entrance;
 extern f32 D_80158E60_scene_springleaf_entrance;
 extern f32 D_80158E64_scene_springleaf_entrance;
@@ -168,13 +169,13 @@ void springleafEntranceInitializeObjects(void) {
 
     sp54 = D_80157938_scene_springleaf_entrance;
     if (progressGetValue(0x76) > 0) {
-        actorCreateForKind(ACTOR_KIND_BUTTERFREE, 125.0F, 16.2F, 267.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
-                           &D_801575EC_scene_springleaf_entrance, 0);
+        actorCreateForKind(ACTOR_KIND_BUTTERFREE, 125.0F, 16.2F, 267.0F, 0.0F, 0.0F,
+                           gCurrentAreaConfiguration->objectScale, &D_801575EC_scene_springleaf_entrance, 0);
     }
     springleafEntranceSpawnFixedResident();
     if (progressGetCurrentChapter() == 8) {
-        actorCreateForKind(ACTOR_KIND_POLIWAG, 207.69F, 10.5F, 239.56F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
-                           &D_801574CC_scene_springleaf_entrance, 0);
+        actorCreateForKind(ACTOR_KIND_POLIWAG, 207.69F, 10.5F, 239.56F, 0.0F, 0.0F,
+                           gCurrentAreaConfiguration->objectScale, &D_801574CC_scene_springleaf_entrance, 0);
     }
     actorCreateForKind(ACTOR_KIND_DIGLETT, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        &D_8014E62C_scene_springleaf_entrance, 0);

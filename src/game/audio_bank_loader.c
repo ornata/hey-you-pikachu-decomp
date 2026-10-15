@@ -3,7 +3,7 @@
 #include "common.h"
 
 /// Target offsets of the variable-length audio records consumed by relocation.
-#define AUDIO_BANK_OFFSET_CHECK(type, field, offset) \
+#define AUDIO_BANK_OFFSET_CHECK(type, field, offset)                                                                   \
     typedef char type##_##field##OffsetCheck[(((u32) & ((type *)0)->field) == (offset)) ? 1 : -1]
 AUDIO_BANK_OFFSET_CHECK(ALBank, instArray, 0xC);
 AUDIO_BANK_OFFSET_CHECK(ALInstrument, soundCount, 0xE);
@@ -156,7 +156,8 @@ void audioWaveTableRelocate(ALWaveTable *waveTable, s32 bankBase, s32 sampleBase
             waveTable->base = (u8 *)((s32)waveTable->base + sampleBase);
             waveTable->waveInfo.adpcmWave.book = (ALADPCMBook *)((s32)waveTable->waveInfo.adpcmWave.book + bankBase);
             if (waveTable->waveInfo.adpcmWave.loop != 0) {
-                waveTable->waveInfo.adpcmWave.loop = (ALADPCMloop *)((s32)waveTable->waveInfo.adpcmWave.loop + bankBase);
+                waveTable->waveInfo.adpcmWave.loop =
+                    (ALADPCMloop *)((s32)waveTable->waveInfo.adpcmWave.loop + bankBase);
             }
         }
     } else if (waveTable->type == AL_RAW16_WAVE) {

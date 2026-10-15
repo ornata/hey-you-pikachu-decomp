@@ -280,7 +280,6 @@ s32 areaIsPositionOutsideBounds(f32 x, f32 y, f32 z) {
     return 0;
 }
 
-
 /// Create an item at a random horizontal position near a supplied center.
 /// \param center Center world position in X, Y, Z order; its Y coordinate is passed to item creation.
 /// \param width Nonnegative side length of the square horizontal placement region.
@@ -330,7 +329,6 @@ void areaCreateContactEffectInRegion(f32 *region) {
     y -= terrainGetWorldHeight(x, y, z, 0);
     contactEffectCreate(x, y, z);
 }
-
 
 /// Create an item resting on terrain at a random horizontal position within an area region.
 /// \param region Area region providing horizontal placement bounds and the terrain query height.
@@ -1054,7 +1052,7 @@ void terrainCreateContactEffect(f32 *position, s32 material) {
                 dust[2] = (f32)((((f64)randomNext() * RANDOM_U32_UNIT_SCALE) - 0.5) * 10.0);
                 variant = (s32)randomBelow(3);
                 fallingParticleCreate(5, variant, position, dust,
-                              (f32)(((f64)randomNext() * RANDOM_U32_UNIT_SCALE * 0.5) + 0.6000000238418579));
+                                      (f32)(((f64)randomNext() * RANDOM_U32_UNIT_SCALE * 0.5) + 0.6000000238418579));
                 dustIndex += 1;
             } while (dustIndex < ((s32)randomBelow(3) + 3));
             return;
@@ -1070,7 +1068,7 @@ void terrainCreateContactEffect(f32 *position, s32 material) {
                 kind = (s32)randomBelow(2);
                 variant = (s32)randomBelow(3);
                 fallingParticleCreate(kind + 3, variant, position, chips,
-                              (f32)(((f64)randomNext() * RANDOM_U32_UNIT_SCALE * 0.5) + 1.0));
+                                      (f32)(((f64)randomNext() * RANDOM_U32_UNIT_SCALE * 0.5) + 1.0));
                 chipsIndex += 1;
             } while (chipsIndex < ((s32)randomBelow(0xA) + 5));
             return;
@@ -1098,7 +1096,8 @@ void terrainCreateContactEffect(f32 *position, s32 material) {
 ///
 /// \note Requires initialized current-area terrain and a positive vertical search spacing.
 /// \note Original decompilation identifier: \c func_8010C788 (0x8010C788).
-u16 terrainCheckHorizontalObstruction(s32 type, f32 x, f32 y, f32 z, f32 width, f32 height, f32 step, f32 dirX, f32 dirZ, u8 **previous) {
+u16 terrainCheckHorizontalObstruction(s32 type, f32 x, f32 y, f32 z, f32 width, f32 height, f32 step, f32 dirX,
+                                      f32 dirZ, u8 **previous) {
     u16 flags = 0;
     f32 halfWidth;
     f32 sample;
@@ -1173,8 +1172,8 @@ u16 terrainCheckHorizontalObstruction(s32 type, f32 x, f32 y, f32 z, f32 width, 
 /// \note Displacement outputs must be distinct. Inputs and horizontal distance must be finite, with the
 /// movement step count representable as a signed integer.
 /// \note Original decompilation identifier: \c func_8010CAA4 (0x8010CAA4).
-s32 terrainConstrainMovement(s32 queryKind, f32 x, f32 y, f32 z, f32 width, f32 depth, f32 height, f32 *deltaX, f32 *deltaY,
-                  f32 *deltaZ, u8 **hitNode) {
+s32 terrainConstrainMovement(s32 queryKind, f32 x, f32 y, f32 z, f32 width, f32 depth, f32 height, f32 *deltaX,
+                             f32 *deltaY, f32 *deltaZ, u8 **hitNode) {
     f32 stepX;
     f32 stepY;
     f32 stepZ;
@@ -1234,7 +1233,8 @@ s32 terrainConstrainMovement(s32 queryKind, f32 x, f32 y, f32 z, f32 width, f32 
             nextZ = z + stepZ;
 
             if ((stepX != 0.0F) || (stepZ != 0.0F)) {
-                collision = terrainCheckHorizontalObstruction(queryKind, nextX, nextY, nextZ, width, depth, topY, signX, signZ, hitNode);
+                collision = terrainCheckHorizontalObstruction(queryKind, nextX, nextY, nextZ, width, depth, topY, signX,
+                                                              signZ, hitNode);
                 mask = collision;
                 if (collision & 9) {
                     nextX = x;
@@ -1296,7 +1296,8 @@ s32 terrainConstrainMovement(s32 queryKind, f32 x, f32 y, f32 z, f32 width, f32 
 ///
 /// \note Requires initialized current-area terrain and a positive vertical search spacing.
 /// \note Original decompilation identifier: \c func_8010CE98 (0x8010CE98).
-void terrainGetDownhillHeightDifferences(f32 x, f32 y, f32 z, f32 maxSlope, f32 step, f32 *slopeX, f32 *slopeZ, u8 **node) {
+void terrainGetDownhillHeightDifferences(f32 x, f32 y, f32 z, f32 maxSlope, f32 step, f32 *slopeX, f32 *slopeZ,
+                                         u8 **node) {
     f32 heightX;
     f32 heightZ;
     f32 center;
@@ -1357,7 +1358,6 @@ s32 areaTestCameraVisibility(f32 margin, f32 *position, f32 *out) {
     return 0;
 }
 
-
 /// Deactivate an area node and its active descendants, disabling their associated objects.
 /// \param node Initialized area node hierarchy to deactivate.
 /// \returns Nothing.
@@ -1386,7 +1386,6 @@ void areaDeactivateNodeHierarchy(u8 *node) {
         }
     }
 }
-
 
 /// Activate an area node and enable its associated objects.
 /// \param node Initialized area node to activate.
@@ -1427,7 +1426,6 @@ void areaRefreshVisibilityDistances(s32 unused) {
     nearClip = gCurrentAreaConfiguration->nearClip;
     gAreaNearVisibilityDistanceSquared = nearClip * nearClip * 3.0F;
 }
-
 
 /// Check whether a world position lies within the active camera's horizontal view allowance.
 /// \param x World X coordinate.
@@ -1577,7 +1575,6 @@ void mazeInitializeRoot(void) {
           gCurrentAreaConfiguration->nearClip, gMazeVisibilityParameters.radiusScale);
 }
 
-
 /// Configure a maze node for its selected kind, creating its model and running the configured initializer
 /// when present.
 /// \param node Maze node with initialized world bounds and no existing model to replace.
@@ -1712,7 +1709,6 @@ s32 mazeClassifyNode(MazeNode *node) {
     return result;
 }
 
-
 /// Build a maze region's descendants and models from the current area's configuration.
 /// \param node New maze node with initialized bounds and remaining depth.
 /// \param depth Nonnegative recursive construction depth.
@@ -1808,7 +1804,7 @@ void mazeReplaceBlock(u8 *pos, u8 *modelTemplate, MazeGrid *terrain, s32 level) 
     u8 *model;
     u8 *child;
 
-    heapDebugReportFreeSpace(&gGameHeap, (const char *) "pre_changeMazeBlock");
+    heapDebugReportFreeSpace(&gGameHeap, (const char *)"pre_changeMazeBlock");
     node = areaFindPositionNode((*(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0x0) / 2) + *(f32 *)(pos + 0x0),
                                 (*(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0x4) / 2) + *(f32 *)(pos + 0x4),
                                 (*(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0x8) / 2) + *(f32 *)(pos + 0x8));
@@ -1861,7 +1857,7 @@ void mazeReplaceBlock(u8 *pos, u8 *modelTemplate, MazeGrid *terrain, s32 level) 
             } while (child != NULL);
         }
         mazePrepareNodeObjects(node);
-        heapDebugReportFreeSpace(&gGameHeap, (const char *) "aft_changeMazeBlock");
+        heapDebugReportFreeSpace(&gGameHeap, (const char *)"aft_changeMazeBlock");
     }
 }
 
@@ -1883,8 +1879,6 @@ void mazeConfigureEventLinks(void) {
     s32 offset;
     SceneEventLink *link;
     u8 *node;
-
-
 
     // clang-format off
     offset = 0; nextLink:
@@ -1912,7 +1906,6 @@ void mazeConfigureEventLinks(void) {
         goto nextLink;
     }
 }
-
 
 /// Release a maze node and its associated objects, invoking its configured leave callback when present.
 /// \param node Owned maze node to release after its descendants have been handled; invalid after this call.
@@ -1985,7 +1978,6 @@ void mazeBuild(void) {
     runtimeCheckResetCheckpoint("aft-setMazeEvent", 1);
 }
 
-
 /// Spawn the initial items listed in the current area's maze configuration.
 /// \returns Nothing.
 ///
@@ -2042,7 +2034,6 @@ void mazeFreezeStaticObjects(u8 *object) {
         object = ((RuntimeObjectPrefix *)object)->sibling.bytes;
     }
 }
-
 
 /// Prepare a maze object hierarchy for use and freeze its static objects.
 /// \param object Live object hierarchy address to prepare.
@@ -2189,7 +2180,6 @@ void *areaLoadNextOverlay(void) {
                               ovl->dataEnd, ovl->bssStart, ovl->bssEnd);
 }
 
-
 /// Spawn listed maze items whose saved availability permits them to appear.
 /// \param spawn Readable placement list terminated by item kind zero; preceding kinds must be valid catalog
 /// entries.
@@ -2208,7 +2198,8 @@ void mazeSpawnAvailableItems(ItemSpawn *spawn) {
             break;
         }
         if (progressGetValue(gItemKinds[entry->type].availabilityField)) {
-            itemSetMode(itemCreate(entry->x, entry->y, entry->z, entry->yaw, entry->pitch, entry->type), ITEM_MODE_STATIONARY);
+            itemSetMode(itemCreate(entry->x, entry->y, entry->z, entry->yaw, entry->pitch, entry->type),
+                        ITEM_MODE_STATIONARY);
         } else {
             TRACE("ERROR : not keeping item, %s\n", (char *)&gItemKinds[entry->type]);
         }

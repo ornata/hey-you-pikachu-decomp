@@ -48,9 +48,6 @@ void orbitFollowerInitialize(u8 *object) {
     ((RuntimeObjectPrefix *)object)->state.bytes = (u8 *)state;
 }
 
-
-
-
 #include "orbit_follower.h"
 #include "vector_operations.h"
 /// Check horizontal clearance at a candidate world position under the requested collision policy.

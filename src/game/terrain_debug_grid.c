@@ -33,11 +33,9 @@
 /// \note Original identifier: \c D_800999F0 (0x800999F0).
 extern s32 gChapterFriendshipMessages[];
 
-
 /// Separate view of the message-bar image slot prepared for the next transition.
 /// \note Original identifier: \c D_800F0B1C (0x800F0B1C).
 extern s32 gMessageBarWorkImageIndex;
-
 
 /// Interior availability progress-flag view of the item catalog, with a 116-byte stride.
 /// \note Original identifier: \c D_80125AB2 (0x80125AB2).
@@ -65,7 +63,6 @@ extern s32 gCollectionPresentationItem;
 /// \note Original identifier: \c D_80125AAC (0x80125AAC).
 extern s32 gItemKindCollectionValueEntries[];
 
-
 /// Owned render state of one terrain diagnostic cell.
 typedef struct TerrainDebugCellState {
     s32 enabled;          ///< Nonzero when this cell contributes geometry.
@@ -89,16 +86,16 @@ void terrainDebugGridInitializeRoot(u8 *object) {
 /// Small player view preserving the diagnostic grid's matching load scheduling.
 /// \note The full player prefix changes generated code in terrainDebugGridUpdatePosition.
 typedef struct PlayerGridView {
-    f32 x; ///< Primary player world X position.
-    f32 pad4[2]; ///< Y and Z position storage accessed through separate symbols.
-    f32 yaw; ///< View yaw in degrees.
+    f32 x;           ///< Primary player world X position.
+    f32 pad4[2];     ///< Y and Z position storage accessed through separate symbols.
+    f32 yaw;         ///< View yaw in degrees.
     f32 pitchOffset; ///< Walking pitch offset in degrees.
-    f32 pitch; ///< View pitch in degrees.
-    f32 viewShake; ///< Horizontal shake added to yaw in degrees.
+    f32 pitch;       ///< View pitch in degrees.
+    f32 viewShake;   ///< Horizontal shake added to yaw in degrees.
 } PlayerGridView;
 typedef char PlayerGridViewSizeCheck[(sizeof(PlayerGridView) == 0x1C) ? 1 : -1];
-typedef char PlayerGridYawOffsetCheck[(((u32)&((PlayerGridView *)0)->yaw) == 0xC) ? 1 : -1];
-typedef char PlayerGridShakeOffsetCheck[(((u32)&((PlayerGridView *)0)->viewShake) == 0x18) ? 1 : -1];
+typedef char PlayerGridYawOffsetCheck[(((u32) & ((PlayerGridView *)0)->yaw) == 0xC) ? 1 : -1];
+typedef char PlayerGridShakeOffsetCheck[(((u32) & ((PlayerGridView *)0)->viewShake) == 0x18) ? 1 : -1];
 /// Separate symbol view of the primary player record's position Y.
 /// \note Separate position symbols preserve the original independent address loads.
 /// \note Original identifier: \c D_800EF6A4 (0x800EF6A4).

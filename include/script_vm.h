@@ -79,27 +79,27 @@ typedef struct ScriptVmConfiguration {
 /// The context owns its value stack; saved depths and return offsets belong to
 /// the same running script. This layout is specific to the original N64 ABI.
 typedef struct ScriptVm {
-    s32 executionState;                                ///< Interpreter scheduling state retained between updates.
-    u8 *program;                                       ///< Borrowed script bytecode.
-    char **stringTable;                                ///< Borrowed table of borrowed null-terminated strings.
-    f32 elapsed;                                       ///< Time accumulated since the latest script reset.
-    f32 totalElapsed;                                  ///< Time accumulated across resets.
-    s32 instructionOffset;                             ///< Current position in the borrowed script program.
-    s32 stackDepth;                                    ///< Number of active values on the value stack.
-    s32 stackCapacity;                                 ///< Maximum number of values in the owned stack.
-    ScriptValue *values;                               ///< Owned value-stack storage.
-    s32 savedDepthCount;                               ///< Number of saved value-stack depths.
-    s32 savedDepths[SCRIPT_VM_SAVED_DEPTH_SLOTS];      ///< Value-stack depths awaiting restoration.
-    s32 returnCount;                                   ///< Number of saved script return locations.
-    s32 returnOffsets[SCRIPT_VM_RETURN_SLOTS];         ///< Program offsets awaiting a script return.
-    s32 localFrameBases[SCRIPT_VM_LOCAL_FRAME_SLOTS];       ///< Value-stack base for each local-variable frame.
-    ScriptNativeCommand *commands; ///< Borrowed native-command dispatch table.
-    s32 unknown2B0;                ///< Reset with the script context; its role remains unresolved.
-    s32 messageStyle;              ///< Font style for subsequently queued script messages.
-    f32 messageDuration;           ///< Display duration for subsequent messages in seconds.
-    f32 actionTimer;               ///< Countdown retained while a script action handler waits.
-    u32 actionHandler;             ///< Selector dispatched while waiting for an actor action.
-    s32 actionInitializing;        ///< Nonzero on the handler's first update.
+    s32 executionState;                               ///< Interpreter scheduling state retained between updates.
+    u8 *program;                                      ///< Borrowed script bytecode.
+    char **stringTable;                               ///< Borrowed table of borrowed null-terminated strings.
+    f32 elapsed;                                      ///< Time accumulated since the latest script reset.
+    f32 totalElapsed;                                 ///< Time accumulated across resets.
+    s32 instructionOffset;                            ///< Current position in the borrowed script program.
+    s32 stackDepth;                                   ///< Number of active values on the value stack.
+    s32 stackCapacity;                                ///< Maximum number of values in the owned stack.
+    ScriptValue *values;                              ///< Owned value-stack storage.
+    s32 savedDepthCount;                              ///< Number of saved value-stack depths.
+    s32 savedDepths[SCRIPT_VM_SAVED_DEPTH_SLOTS];     ///< Value-stack depths awaiting restoration.
+    s32 returnCount;                                  ///< Number of saved script return locations.
+    s32 returnOffsets[SCRIPT_VM_RETURN_SLOTS];        ///< Program offsets awaiting a script return.
+    s32 localFrameBases[SCRIPT_VM_LOCAL_FRAME_SLOTS]; ///< Value-stack base for each local-variable frame.
+    ScriptNativeCommand *commands;                    ///< Borrowed native-command dispatch table.
+    s32 unknown2B0;                                   ///< Reset with the script context; its role remains unresolved.
+    s32 messageStyle;                                 ///< Font style for subsequently queued script messages.
+    f32 messageDuration;                              ///< Display duration for subsequent messages in seconds.
+    f32 actionTimer;                                  ///< Countdown retained while a script action handler waits.
+    u32 actionHandler;                                ///< Selector dispatched while waiting for an actor action.
+    s32 actionInitializing;                           ///< Nonzero on the handler's first update.
 } ScriptVm;
 
 /// Copy a typed value onto a script context's value stack.

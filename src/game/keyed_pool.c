@@ -41,7 +41,6 @@ void keyedPoolInitialize(KeyedPool *pool, u32 count) {
     pool->active = 0;
 }
 
-
 /// Release the entry storage owned by a keyed pool without releasing its stored values.
 /// \param pool Pool header whose entry storage is to be released.
 /// \returns Nothing.

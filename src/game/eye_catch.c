@@ -423,7 +423,6 @@ s32 eyeCatchUpdate(void) {
     return 0;
 }
 
-
 /// Choose an eye-catch group using the current selection weights.
 /// \returns The selected group index from zero through five.
 ///

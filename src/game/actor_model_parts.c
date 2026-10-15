@@ -50,13 +50,13 @@ typedef char
 
 /// Resident parameters selecting a linked part and its angular response.
 typedef struct ActorPartLinkedRotationDefinition {
-    u16 linkedPartId; ///< Part identifier resolved within the owning actor.
-    u16 axis; ///< Rotation axis from zero through two.
+    u16 linkedPartId;   ///< Part identifier resolved within the owning actor.
+    u16 axis;           ///< Rotation axis from zero through two.
     f32 responseFactor; ///< Angular response to deviation from the captured reference.
 } ActorPartLinkedRotationDefinition;
 typedef char ActorPartLinkedRotationDefinitionSizeCheck[(sizeof(ActorPartLinkedRotationDefinition) == 8) ? 1 : -1];
-typedef char ActorPartLinkedRotationDefinitionFactorOffsetCheck[
-    (((u32)&((ActorPartLinkedRotationDefinition *)0)->responseFactor) == 4) ? 1 : -1];
+typedef char ActorPartLinkedRotationDefinitionFactorOffsetCheck
+    [(((u32) & ((ActorPartLinkedRotationDefinition *)0)->responseFactor) == 4) ? 1 : -1];
 
 /// Owned rotation-follower state borrowing another part from the same actor.
 typedef struct ActorPartLinkedRotationState {
@@ -113,7 +113,6 @@ void actorDebugReportLinkedObjectNoOp(u8 *actor, s32 unused) {
     objectDebugReportNoOp(actor);
 }
 
-
 /// Initialize actor model resources, parts, and default gameplay model settings.
 /// \param actor Actor whose model is initialized.
 /// \returns Nothing.
@@ -130,7 +129,6 @@ void actorInitializeGameplayModel(u8 *actor) {
     ((ActorScriptState *)actorState)->secondaryMeter = 0.0F;
 }
 
-
 /// Release actor model resources.
 /// \param object Actor whose model resources are released.
 /// \returns Nothing.
@@ -139,7 +137,7 @@ void actorReleaseGameplayModel(u8 *object) {
     actorReleaseModelResources(object);
 }
 
-void _bzero(void *, s32);                        /* extern */
+void _bzero(void *, s32); /* extern */
 
 /// Initialize a model part to track orientation changes from a reference pose.
 /// \param object Model part receiving owned orientation-tracking state; previous state must already be released.
@@ -181,7 +179,9 @@ void actorPartInitializeLinkedRotation(u8 *object) {
     state = (u8 *)heapAllocLocal(&gGameHeap, sizeof(ActorPartLinkedRotationState), 0xD6);
     _bzero(state, sizeof(ActorPartLinkedRotationState));
     record = (ActorPartLinkedRotationDefinition *)((u8 *)gActorPartLinkedRotationDefinitions +
-        (((RuntimeObjectPrefix *)object)->kind * sizeof(ActorPartLinkedRotationDefinition)) - 0x348);
+                                                   (((RuntimeObjectPrefix *)object)->kind *
+                                                    sizeof(ActorPartLinkedRotationDefinition)) -
+                                                   0x348);
     ((ActorPartLinkedRotationState *)state)->linkedPartId = record->linkedPartId;
     ((ActorPartLinkedRotationState *)state)->axis = record->axis;
     ((ActorPartLinkedRotationState *)state)->responseFactor = record->responseFactor;
@@ -214,7 +214,8 @@ void actorPartInitializeAnimatedTextures(u8 *object) {
     ((ActorPartTextureState *)state)->playbackRates[2] = 1.0F;
     animationIntegerTrackInitialize(&((ActorPartTextureState *)state)->tracks[0], gActorPartDefaultTextureAnimation);
     animationIntegerTrackInitialize(&((ActorPartTextureState *)state)->tracks[1], gActorPartDefaultTextureAnimation);
-    animationIntegerTrackInitialize(&((ActorPartTextureState *)state)->tracks[2], gActorPartDefaultThirdTextureAnimation);
+    animationIntegerTrackInitialize(&((ActorPartTextureState *)state)->tracks[2],
+                                    gActorPartDefaultThirdTextureAnimation);
     /* Initialize both command buffers directly; macro temporaries change the original frame. */
     for (i = 0, buffer = state; i != 2; i++, buffer += 0x280) {
         ((Gfx *)(buffer + 0x50))->words.w0 = (u32)G_ENDDL << 24;
@@ -285,13 +286,15 @@ void actorPartUpdateLinkedRotation(u8 *object) {
         angleSource = linkedPart;
         rotationByteOffset = axis * 4;
     } else {
-        linkedPart = actorFindPart(((RuntimeObjectPrefix *)object)->root.bytes, ((ActorPartLinkedRotationState *)state)->linkedPartId);
+        linkedPart = actorFindPart(((RuntimeObjectPrefix *)object)->root.bytes,
+                                   ((ActorPartLinkedRotationState *)state)->linkedPartId);
         angleSource = linkedPart;
         rotationByteOffset = axis * 4;
         ((ActorPartLinkedRotationState *)state)->linkedPart = linkedPart;
         ((ActorPartLinkedRotationState *)state)->referenceAngle = *(f32 *)(linkedPart + rotationByteOffset + 0xC);
     }
-    angleDelta = *(f32 *)(angleSource + rotationByteOffset + 0xC) - ((ActorPartLinkedRotationState *)state)->referenceAngle;
+    angleDelta =
+        *(f32 *)(angleSource + rotationByteOffset + 0xC) - ((ActorPartLinkedRotationState *)state)->referenceAngle;
     angle = mathLerpAngleDegrees(0.0F, angleDelta, ((ActorPartLinkedRotationState *)state)->responseFactor);
     *(f32 *)(object + rotationByteOffset + 0xC) = angle;
 }
@@ -411,7 +414,8 @@ void actorPartFollowBlendedOrientation(u8 *object) {
     f32 pitchScale;
     parent = ((RuntimeObjectPrefix *)object)->root.address;
     state = (ActorOrientationCache *)((RuntimeObjectPrefix *)object)->state.pointer;
-    actorEvaluateRelativePartOrientation(state, (Matrix34 *)first, parent, (s32)gActorBlendedOrientationFirstPartSequence);
+    actorEvaluateRelativePartOrientation(state, (Matrix34 *)first, parent,
+                                         (s32)gActorBlendedOrientationFirstPartSequence);
     actorEvaluateRelativePartOrientation(state + 1, (Matrix34 *)second, parent,
                                          (s32)gActorBlendedOrientationSecondPartSequence);
     matrix34BlendOrientation(0.5F, first, second, midpoint);
@@ -490,7 +494,9 @@ void actorPartBuildAnimatedTextureCommands(u8 *object, s32 buffer) {
     gSPBranchList(branches++, commands);
     gSPBranchList(branches++, commands);
     gDPPipeSync(commands++);
-    gDPSetPrimColor(commands++, 0, 0, ((ActorPartTextureState *)state)->tint[0], ((ActorPartTextureState *)state)->tint[1], ((ActorPartTextureState *)state)->tint[2], primitiveAlpha);
+    gDPSetPrimColor(commands++, 0, 0, ((ActorPartTextureState *)state)->tint[0],
+                    ((ActorPartTextureState *)state)->tint[1], ((ActorPartTextureState *)state)->tint[2],
+                    primitiveAlpha);
     gDPSetCombine(commands++, 0x30FEAC, 0x40FE7838);
     textureLoadForDraw(&commands, finalSegment, 0);
     gSPEndDisplayList(commands++);
@@ -552,14 +558,22 @@ void actorComposePartOrientation(Matrix34 *matrix, s32 owner, s32 *cursor, s32 f
             if (first != 0) {
                 first = 0;
                 if (id * direction > 0) {
-                    matrix34MakeRotationXYZDegrees((f32 *)matrix, ((RuntimeObjectPrefix *)node)->rotation[0], ((RuntimeObjectPrefix *)node)->rotation[1], ((RuntimeObjectPrefix *)node)->rotation[2]);
+                    matrix34MakeRotationXYZDegrees((f32 *)matrix, ((RuntimeObjectPrefix *)node)->rotation[0],
+                                                   ((RuntimeObjectPrefix *)node)->rotation[1],
+                                                   ((RuntimeObjectPrefix *)node)->rotation[2]);
                 } else {
-                    matrix34MakeRotationZYXDegrees((f32 *)matrix, -((RuntimeObjectPrefix *)node)->rotation[0], -((RuntimeObjectPrefix *)node)->rotation[1], -((RuntimeObjectPrefix *)node)->rotation[2]);
+                    matrix34MakeRotationZYXDegrees((f32 *)matrix, -((RuntimeObjectPrefix *)node)->rotation[0],
+                                                   -((RuntimeObjectPrefix *)node)->rotation[1],
+                                                   -((RuntimeObjectPrefix *)node)->rotation[2]);
                 }
             } else if (id * direction > 0) {
-                matrix33ApplyRotationXYZDegrees((f32 *)matrix, ((RuntimeObjectPrefix *)node)->rotation[0], ((RuntimeObjectPrefix *)node)->rotation[1], ((RuntimeObjectPrefix *)node)->rotation[2]);
+                matrix33ApplyRotationXYZDegrees((f32 *)matrix, ((RuntimeObjectPrefix *)node)->rotation[0],
+                                                ((RuntimeObjectPrefix *)node)->rotation[1],
+                                                ((RuntimeObjectPrefix *)node)->rotation[2]);
             } else {
-                matrix33ApplyRotationZYXDegrees((f32 *)matrix, -((RuntimeObjectPrefix *)node)->rotation[0], -((RuntimeObjectPrefix *)node)->rotation[1], -((RuntimeObjectPrefix *)node)->rotation[2]);
+                matrix33ApplyRotationZYXDegrees((f32 *)matrix, -((RuntimeObjectPrefix *)node)->rotation[0],
+                                                -((RuntimeObjectPrefix *)node)->rotation[1],
+                                                -((RuntimeObjectPrefix *)node)->rotation[2]);
             }
         }
     }
@@ -667,12 +681,19 @@ void actorUpdateGameplayModel(u8 *object) {
         actorUpdateScriptVm(object);
     }
     actorUpdateModel(object);
-    actorEvaluateRelativePartOrientation(&((ActorScriptState *)state)->primaryPoseReference, &((ActorScriptState *)state)->primaryPoseTransform, (s32)object,
+    actorEvaluateRelativePartOrientation(&((ActorScriptState *)state)->primaryPoseReference,
+                                         &((ActorScriptState *)state)->primaryPoseTransform, (s32)object,
                                          (s32)gActorPrimaryPosePartSequence);
-    matrix33GetFoldedEulerDegrees((f32 *)&((ActorScriptState *)state)->primaryPoseTransform, &((ActorScriptState *)state)->primaryPoseAngles[0], &((ActorScriptState *)state)->primaryPoseAngles[1], &((ActorScriptState *)state)->primaryPoseAngles[2]);
-    actorEvaluateRelativePartOrientation(&((ActorScriptState *)state)->secondaryPoseReference, &((ActorScriptState *)state)->secondaryPoseTransform, (s32)object,
+    matrix33GetFoldedEulerDegrees(
+        (f32 *)&((ActorScriptState *)state)->primaryPoseTransform, &((ActorScriptState *)state)->primaryPoseAngles[0],
+        &((ActorScriptState *)state)->primaryPoseAngles[1], &((ActorScriptState *)state)->primaryPoseAngles[2]);
+    actorEvaluateRelativePartOrientation(&((ActorScriptState *)state)->secondaryPoseReference,
+                                         &((ActorScriptState *)state)->secondaryPoseTransform, (s32)object,
                                          (s32)gActorSecondaryPosePartSequence);
-    matrix33GetFoldedEulerDegrees((f32 *)&((ActorScriptState *)state)->secondaryPoseTransform, &((ActorScriptState *)state)->secondaryPoseAngles[0], &((ActorScriptState *)state)->secondaryPoseAngles[1], &((ActorScriptState *)state)->secondaryPoseAngles[2]);
+    matrix33GetFoldedEulerDegrees((f32 *)&((ActorScriptState *)state)->secondaryPoseTransform,
+                                  &((ActorScriptState *)state)->secondaryPoseAngles[0],
+                                  &((ActorScriptState *)state)->secondaryPoseAngles[1],
+                                  &((ActorScriptState *)state)->secondaryPoseAngles[2]);
     actorUpdatePartShake(object);
     switch (actionGetAttributes(object) & 0xC0000000) {
     case 0:
@@ -833,7 +854,8 @@ void actorSetPartTextureAnimation(u8 *actor, f32 speed, s32 channel, s32 animati
     u8 *textureState;
     textureState = ((RuntimeObjectPrefix *)actorFindPart(actor, 0x79))->state.bytes;
     ((ActorPartTextureState *)textureState)->playbackRates[channel] = speed;
-    animationIntegerTrackInitialize(&((ActorPartTextureState *)textureState)->tracks[channel], (gTextureFrameAnimationPrograms[animation]));
+    animationIntegerTrackInitialize(&((ActorPartTextureState *)textureState)->tracks[channel],
+                                    (gTextureFrameAnimationPrograms[animation]));
 }
 
 /// Adjust the actor secondary gameplay meter within its allowed range.

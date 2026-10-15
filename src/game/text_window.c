@@ -56,11 +56,11 @@ extern s32 gTextWindowHistoryWriteIndex;
 extern s32 gTextWindowHistoryOldestIndex;
 /// Phases of the shared text-window presentation lifecycle.
 typedef enum TextWindowState {
-    TEXT_WINDOW_OPENING = 0,       ///< Window opening transition.
+    TEXT_WINDOW_OPENING = 0,        ///< Window opening transition.
     TEXT_WINDOW_AWAITING_INPUT = 1, ///< Current page is ready for advance input.
-    TEXT_WINDOW_CHANGING_PAGE = 2, ///< Transition to the next page.
-    TEXT_WINDOW_CLOSING = 3,       ///< Window closing transition.
-    TEXT_WINDOW_INACTIVE = 4       ///< No active window presentation.
+    TEXT_WINDOW_CHANGING_PAGE = 2,  ///< Transition to the next page.
+    TEXT_WINDOW_CLOSING = 3,        ///< Window closing transition.
+    TEXT_WINDOW_INACTIVE = 4        ///< No active window presentation.
 } TextWindowState;
 
 /// Current shared text-window transition state; four is inactive.
@@ -88,7 +88,8 @@ void textWindowInitialize(void) {
     gTextWindowIndicator = 1;
     gTextWindowState = TEXT_WINDOW_INACTIVE;
     for (i = 0; i < 6; i++) {
-        animationIntegerTrackInitialize(&gTextWindowInitializedIndicatorTracks[i], gTextureFrameAnimationPrograms[gTextWindowIndicatorAnimationIds[i]]);
+        animationIntegerTrackInitialize(&gTextWindowInitializedIndicatorTracks[i],
+                                        gTextureFrameAnimationPrograms[gTextWindowIndicatorAnimationIds[i]]);
     }
 }
 
@@ -212,7 +213,6 @@ void textWindowDrawBackground(Gfx **gdl, s32 alpha) {
     gDPFillRectangle((*gdl)++, 47, 55, 273, 205);
 }
 
-
 /// Draw the current text page at a screen position.
 /// \param list Display-list cursor to append drawing commands to and advance.
 /// \param x Left edge of the page in screen pixels.
@@ -267,7 +267,6 @@ void textWindowDrawPage(Gfx **gdl) {
     }
 }
 
-
 /// Draw the pulsing text-window input prompt.
 /// \param gdl Display-list cursor to append drawing commands to and advance.
 /// \returns Nothing.
@@ -283,7 +282,6 @@ void textWindowDrawPrompt(Gfx **gdl) {
     textDrawReset();
     textDrawSetPalette(gDefaultTextPalette);
 }
-
 
 /// Replace a line of the current text page.
 /// \param row Zero-based line index, from 0 through 4.
@@ -301,7 +299,6 @@ void textWindowSetLine(s32 row, u8 *text, s32 style) {
                                 &gTextImageConfigurations[style]);
     }
 }
-
 
 /// Replace the text-window input prompt.
 /// \param textAddress Address of the null-terminated prompt text.
@@ -364,7 +361,6 @@ u8 *textWindowPreparePage(u8 *text, s32 style) {
     }
     return input + 1;
 }
-
 
 /// Select a text page for display and retain it for backward navigation.
 /// \param text Page text to display using the current style; must remain valid while retained in history.
@@ -463,7 +459,6 @@ void textWindowDrawEmbedded(void) {
     textWindowDrawPrompt(&gRenderDisplayListCursor);
 }
 
-
 /// Display the first page of the pending message.
 /// \returns 1 when another page remains, or 0 otherwise.
 /// \note Original decompilation identifier: \c func_8002C3FC (0x8002C3FC).
@@ -479,7 +474,6 @@ s32 textWindowShowFirstPage(void) {
     }
     return 0;
 }
-
 
 /// Mark the text window inactive while retaining its text resources.
 /// \returns Nothing.

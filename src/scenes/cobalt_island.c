@@ -129,8 +129,8 @@ void cobaltIslandInitializeObjects(void) {
     }
     stage = progressGetValue(0x76U);
     if (stage >= 4) {
-        actorCreateForKind(ACTOR_KIND_BUTTERFREE, 220.0F, 41.0F, 111.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
-                           D_8014E12C_scene_cobalt_island, 0);
+        actorCreateForKind(ACTOR_KIND_BUTTERFREE, 220.0F, 41.0F, 111.0F, 0.0F, 0.0F,
+                           gCurrentAreaConfiguration->objectScale, D_8014E12C_scene_cobalt_island, 0);
     }
     cobaltIslandCreateSceneProps();
     landmarkCreate(220.0F, 31.0F, 111.0F, RUNTIME_OBJECT_KIND_LANDMARK_CANNON);

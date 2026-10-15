@@ -66,7 +66,8 @@ extern u64 *gGraphicsYieldBuffer;
 /// \param outputCapacity Positive graphics output-buffer capacity in 64-bit words whose byte size fits a signed 32-bit value.
 /// \returns Borrowed pointer to the globally owned graphics task pool.
 /// \note Original decompilation identifier: \c func_8003C500 (0x8003C500).
-SchedulerTask *graphicsTaskInitialize(OSMesgQueue *schedulerQueue, void *firstFramebuffer, void *secondFramebuffer, s32 taskCount, s32 outputCapacity) {
+SchedulerTask *graphicsTaskInitialize(OSMesgQueue *schedulerQueue, void *firstFramebuffer, void *secondFramebuffer,
+                                      s32 taskCount, s32 outputCapacity) {
     gGraphicsSchedulerQueue = schedulerQueue;
     gGraphicsTaskCapacity = taskCount;
     gGraphicsNextTaskIndex = 0;
@@ -83,9 +84,9 @@ SchedulerTask *graphicsTaskInitialize(OSMesgQueue *schedulerQueue, void *firstFr
 
 /// Borrowed graphics microcode resources and output-buffer policy.
 typedef struct GfxMicrocode {
-    u64 *text; ///< Microcode instructions retained through task completion.
-    u64 *data; ///< Microcode data retained through task completion.
-    s32 fifo; ///< Nonzero when the output descriptor carries the FIFO end address.
+    u64 *text;    ///< Microcode instructions retained through task completion.
+    u64 *data;    ///< Microcode data retained through task completion.
+    s32 fifo;     ///< Nonzero when the output descriptor carries the FIFO end address.
     u32 dataSize; ///< Retained descriptor metadata; submission uses the SDK fixed data size.
 } GfxMicrocode;
 typedef char GfxMicrocodeSizeCheck[(sizeof(GfxMicrocode) == 0x10) ? 1 : -1];
@@ -160,7 +161,7 @@ void graphicsTaskSubmit(s32 microcode, s32 flags, Gfx **start, Gfx **end, OSMesg
 /// The trailing bytes preserve the table stride and overlap the next descriptor;
 /// this view is borrowed and cannot be allocated as a complete descriptor.
 typedef struct MicrocodeDataView {
-    u8 *data; ///< Borrowed microcode data searched for a version identifier.
+    u8 *data;               ///< Borrowed microcode data searched for a version identifier.
     u8 strideRemainder[12]; ///< Unaccessed bytes through the next data-pointer view.
 } MicrocodeDataView;
 typedef char MicrocodeDataViewSizeCheck[(sizeof(MicrocodeDataView) == 0x10) ? 1 : -1];
@@ -251,7 +252,8 @@ void videoConfigureMode(OSViMode mode, s32 width, s32 height, s32 depth) {
 /// \param aspectScale Additional projection aspect scale.
 /// \returns Corrected projection aspect ratio.
 /// \note Original decompilation identifier: \c func_8003C9F0 (0x8003C9F0).
-f32 viewportSetPixelRectangle(Vp *viewport, s32 x0, s32 y0, s32 x1, s32 y1, s32 aspectDenominator, s32 aspectNumerator, f32 aspectScale) {
+f32 viewportSetPixelRectangle(Vp *viewport, s32 x0, s32 y0, s32 x1, s32 y1, s32 aspectDenominator, s32 aspectNumerator,
+                              f32 aspectScale) {
     s32 w = x1 - x0;
     s32 h = y1 - y0;
 
@@ -356,7 +358,6 @@ extern s32 gTextDrawScreenHeight;
 /// \note Original identifier: \c D_800F2A60 (0x800F2A60).
 extern RomCache gFontGlyphRomCache;
 
-
 /// Initialize text drawing for a screen and establish its default text area.
 /// \param width Screen width in pixels.
 /// \param height Screen height in pixels.
@@ -410,7 +411,6 @@ void textDrawBegin(Gfx *displayList) {
     textDrawSetColor(gTextDrawColorRgba[0], gTextDrawColorGreen, gTextDrawColorBlue, gTextDrawColorAlpha);
     gTextDrawPalette = gDefaultTextPaletteRgba5551;
 }
-
 
 /// Retrieve the current text drawing command position.
 /// \param cursor Receives the display-list position after commands emitted so far.
@@ -469,7 +469,6 @@ void textDrawReset(void) {
 /// \note Original identifier: \c D_800F2A40 (0x800F2A40).
 extern s32 gTextDrawCursorX;
 #include "libc/xstdio.h"
-
 
 typedef struct {
     u8 bytes[512];
@@ -542,7 +541,6 @@ void textDrawFitGlyphAtCursor(s32 width, s32 height) {
     }
 }
 
-
 /// Set the screen-bounded text area and reset the cursor to its upper-left corner.
 /// \param x0 X coordinate of one corner.
 /// \param y0 Y coordinate of one corner.
@@ -580,7 +578,6 @@ void textDrawSetCursor(s32 x, s32 y) {
     textDrawFitGlyphAtCursor(0x10, 0x10);
 }
 
-
 /// Set the text cursor's horizontal offset and adjust it to fit the next glyph.
 /// \param x Horizontal offset from the text area's left edge.
 /// \returns Nothing.
@@ -589,7 +586,6 @@ void textDrawSetCursorX(s32 x) {
     gTextDrawCursorX = gTextDrawAreaLeft + x;
     textDrawFitGlyphAtCursor(0x10, 0x10);
 }
-
 
 /// Set the text cursor's vertical offset and adjust it to fit the next glyph.
 /// \param y Vertical offset from the text area's top edge.
@@ -631,7 +627,6 @@ void textDrawSetPalette(const u16 *palette) {
     gTextDrawPalette = palette;
 }
 
-
 /// Select the font used for single-byte text characters.
 /// \param font Valid single-byte font-bank index for the characters to be drawn.
 /// \returns Nothing.
@@ -639,7 +634,6 @@ void textDrawSetPalette(const u16 *palette) {
 void textDrawSetFont(s32 font) {
     gTextDrawFontIndex = font;
 }
-
 
 /// Set the horizontal and vertical scale used for text drawing.
 /// \param scaleX Finite positive horizontal text scale compatible with representable drawing coordinates and texture steps.
@@ -651,7 +645,6 @@ void textDrawSetScale(f32 scaleX, f32 scaleY) {
     gTextDrawScaleY = scaleY;
 }
 
-
 /// Select proportional or fixed-cell text spacing.
 /// \param mode One for proportional spacing; other values select fixed-cell spacing.
 /// \returns Nothing.
@@ -659,7 +652,6 @@ void textDrawSetScale(f32 scaleX, f32 scaleY) {
 void textDrawSetSpacingMode(s32 mode) {
     gTextDrawSpacingMode = mode;
 }
-
 
 /// Retrieve the default text area's inclusive screen bounds.
 /// \param left Receives the left pixel coordinate.
@@ -706,7 +698,8 @@ void textDrawImageAtCursor(TextImage *image) {
 /// \returns Nothing.
 /// \pre The drawable source width is at most 4096 pixels and scaled texture steps fit signed integers.
 /// \note Original decompilation identifier: \c func_8003D764 (0x8003D764).
-void textImageDrawRectangle(Gfx **gfx, TextImage *image, s32 x0, s32 y0, s32 x1, s32 y1, s32 s, s32 t, f32 scaleX, f32 scaleY) {
+void textImageDrawRectangle(Gfx **gfx, TextImage *image, s32 x0, s32 y0, s32 x1, s32 y1, s32 s, s32 t, f32 scaleX,
+                            f32 scaleY) {
     s32 dsdx;
     s32 dtdy;
     s32 rows;
@@ -808,7 +801,6 @@ void textImageLoadRectangle(Gfx **dl, TextImage *image, s32 x0, s32 y0, s32 x1, 
         }
     }
 }
-
 
 /// Prepare a complete text image for drawing.
 /// \param cursor Display-list cursor to append to and advance.
@@ -1135,7 +1127,6 @@ s32 textImageCreateCustomFont(TextImage **out, u8 *text, FontImage *font) {
     return (s32)bitmap;
 }
 
-
 /// Find the glyph index for a supported encoded character.
 /// \returns The character's index within the font glyph table.
 /// \note The first argument is the character code; the unused second font argument may be omitted through
@@ -1233,7 +1224,6 @@ s32 fontImageGetCharacterAdvance(s32 code, FontImage *font, s32 spacingMode) {
     return r;
 }
 
-
 /// Check whether a character leaves horizontal margins within its font cell.
 /// \param code Encoded character to inspect.
 /// \param font Font containing character dimensions and metrics.
@@ -1249,7 +1239,6 @@ s32 fontImageCharacterHasSideMargins(s32 code, FontImage *font) {
     }
     return 1;
 }
-
 
 /// Determine the image width used to draw a character in a supplied font.
 /// \param code Encoded character to measure.
@@ -1695,7 +1684,6 @@ void fontCacheReleaseUses(void) {
 void fontCacheWaitForReads(void) {
     romCacheWaitForReads(&gFontGlyphRomCache);
 }
-
 
 /// Measure text using a supplied font and spacing mode.
 /// \param text Null-terminated text containing only complete supported characters and optional position/color controls.

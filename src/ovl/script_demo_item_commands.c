@@ -85,7 +85,6 @@ s32 scriptCommandRemoveMazeBlock(u8 *object) {
     return 0;
 }
 
-
 /// Animate the item identified by the script arguments and create its requested particle cluster, then provide a zero script result.
 /// \param object Actor whose script supplies an item handle, particle count, lifetime
 /// in seconds, radial scale, and particle scale, and receives zero.
@@ -133,7 +132,6 @@ s32 scriptCommandGetItemReplacement(u8 *object) {
     return 0;
 }
 
-
 /// Provide whether the script item-kind argument belongs to the requested category as the script result.
 /// \param object Actor whose script supplies an item kind and category and receives
 /// the membership result.
@@ -152,7 +150,6 @@ s32 scriptCommandIsItemInCategory(u8 *object) {
     return 0;
 }
 
-
 /// Provide the item class for the script item-kind argument as the script result.
 /// \param object Actor whose script supplies an item kind and receives its class.
 /// \returns Zero after handling the script command.
@@ -165,7 +162,6 @@ s32 scriptCommandGetItemClass(u8 *object) {
     return 0;
 }
 
-
 /// Provide the availability progress-field selector for the script item-kind argument as the script result.
 /// \param object Actor whose script supplies the item kind and receives the result.
 /// \returns Zero after handling the script command.
@@ -177,7 +173,6 @@ s32 scriptCommandGetItemAvailabilityFlag(u8 *object) {
     scriptVmPushInteger((ScriptVm *)(sp1C), itemGetAvailabilityFlag(scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
-
 
 /// Force release of the item identified by the script handle argument and provide its success status as the script result.
 /// \param object Actor whose script supplies the item handle and receives the release
@@ -211,7 +206,6 @@ s32 scriptCommandStopAction(u8 *object) {
     scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return 0;
 }
-
 
 /// Apply the script friendship milestone and provide its progress identifier, or -1 if already reached, as the script result.
 /// \param object Actor whose script supplies the friendship milestone and receives

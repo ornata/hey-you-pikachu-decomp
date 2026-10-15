@@ -62,8 +62,6 @@ typedef struct {
     s32 kind;
 } DefaultObject;
 
-
-
 /* This object's .data, 0x8009A3F0..0x8009A6B0, in address order. */
 
 /// Linked model template cloned to create the toolbox display.
@@ -203,7 +201,6 @@ extern s32 gToolboxStorageRow;
 void toolboxNoOp(s32 unused) {
 }
 
-
 /// Orient a toolbox object relative to the current camera.
 /// \param object Object whose local rotation is updated.
 /// \param pitch Additional pitch in degrees.
@@ -340,7 +337,6 @@ void toolboxHideObjects(void) {
     }
 }
 
-
 /// Make the toolbox and its tracked objects eligible for drawing.
 /// \returns Nothing; requires an initialized toolbox base object.
 /// \note Original decompilation identifier: \c func_8002EF88 (0x8002EF88).
@@ -374,7 +370,6 @@ void toolboxShowObjects(void) {
     }
 }
 
-
 /// Place an item in a toolbox slot and remove it from active scene interaction.
 /// \param slot Writable eight-byte entry receiving the item kind and handle; any prior entry is overwritten without destroying its item.
 /// \param object Live initialized item to track in storage; must remain live until removed or explicitly destroyed.
@@ -389,7 +384,8 @@ void toolboxStoreObjectInSlot(ToolboxSlot *slot, u8 *object) {
     itemTryRelease(object, 1);
     ((ItemStatePrefix *)objectState)->state = ITEM_OWNERSHIP_TOOLBOX;
     itemSetMode(object, ITEM_MODE_STORED);
-    ((ItemStatePrefix *)objectState)->flags = (s32)(((ItemStatePrefix *)objectState)->flags & ~(u32)ITEM_STATE_HELD_TRANSFER_ALLOWED);
+    ((ItemStatePrefix *)objectState)->flags =
+        (s32)(((ItemStatePrefix *)objectState)->flags & ~(u32)ITEM_STATE_HELD_TRANSFER_ALLOWED);
     objectSetHierarchyFlags(object, OBJECT_DRAW_GROUP_ALTERNATE);
     slot->id = ((RuntimeObjectPrefix *)object)->handle;
     slot->kind = (s32)((ItemStatePrefix *)objectState)->kind;
@@ -472,7 +468,6 @@ void toolboxStorePurchasedObject(u8 *object) {
     toolboxStoreObjectInSlot(&gToolboxPurchaseSlot, object);
 }
 
-
 /// Record acquisition of a supply item in persistent progress.
 /// \param itemKind Valid item catalog kind whose acquisition is being recorded.
 /// \returns One if the kind has a supply-item progress flag to set, or zero otherwise.
@@ -495,7 +490,6 @@ s32 toolboxRecordSupplyItem(s32 itemKind) {
     progressSetValue(availabilityFlag, 1);
     return 1;
 }
-
 
 /// Remove an eligible item from the toolbox and restore it to active scene interaction.
 /// \param row Toolbox row index: zero for Collection or one for Item Storage.
@@ -554,7 +548,8 @@ u8 *toolboxGiveObjectToPlayer(u8 *player, s32 row, s32 index) {
     ((ItemStatePrefix *)itemState)->state = ITEM_OWNERSHIP_PLAYER;
     ((ItemStatePrefix *)itemState)->owner = 0;
     itemSetMode(itemObject, ITEM_MODE_PLAYER_HELD);
-    ((ItemStatePrefix *)itemState)->flags = (s32)(((ItemStatePrefix *)itemState)->flags | ITEM_STATE_HELD_TRANSFER_ALLOWED);
+    ((ItemStatePrefix *)itemState)->flags =
+        (s32)(((ItemStatePrefix *)itemState)->flags | ITEM_STATE_HELD_TRANSFER_ALLOWED);
     ((PlayerControlPrefix *)player)->heldItemHandle = ((RuntimeObjectPrefix *)itemObject)->handle;
     toolboxScaleCurrentRow(&gToolboxState);
     return itemObject;
@@ -578,7 +573,6 @@ void toolboxShowItemMessage(u8 *object, char *fmt) {
     messageBarEnqueue(0, 3.5F, (u8 *)buf);
     gToolboxHelpMessageMilliseconds = runtimeGetElapsedMilliseconds();
 }
-
 
 /// Check whether an item's category belongs in a toolbox row.
 /// \param object Item object to check.
@@ -934,7 +928,6 @@ void toolboxLayoutCurrentRow(f32 angle, f32 height, f32 depth) {
         }
     }
 }
-
 
 /// Position and orient the toolbox display for its current row.
 /// \param t Initialized toolbox with row zero or one and a live base object.
@@ -1492,7 +1485,6 @@ void toolboxUpdateCarousel(void) {
     toolboxLayoutCurrentRow(angle, 0.0F, 0.0F);
     toolboxPlaceBaseForRow(&gToolboxState, 0);
 }
-
 
 /// Animate the selected toolbox row opening into its interactive display.
 /// \returns Nothing; requires initialized toolbox display objects.

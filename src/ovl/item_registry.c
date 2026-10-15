@@ -66,22 +66,22 @@ s32 D_80134040_0;
 /// Shared traversal state for a single nearest-item query.
 /// Origin and view transform also have retained interior linker symbols.
 typedef struct ItemQueryState {
-    /* 0x00 */ u8 *best; ///< Borrowed best eligible live item, or null.
-    /* 0x04 */ f32 bestDistance; ///< Best score after optional search-priority adjustment.
-    /* 0x08 */ f32 origin[3]; ///< Copied world-space query origin.
-    /* 0x14 */ f32 maxDistance; ///< Maximum unweighted approximate distance.
+    /* 0x00 */ u8 *best;          ///< Borrowed best eligible live item, or null.
+    /* 0x04 */ f32 bestDistance;  ///< Best score after optional search-priority adjustment.
+    /* 0x08 */ f32 origin[3];     ///< Copied world-space query origin.
+    /* 0x14 */ f32 maxDistance;   ///< Maximum unweighted approximate distance.
     /* 0x18 */ f32 transform[12]; ///< View transform for angular eligibility.
-    /* 0x48 */ f32 cone; ///< Maximum absolute viewing yaw offset in degrees.
-    /* 0x4C */ s32 minKind; ///< Inclusive lower kind bound.
-    /* 0x50 */ s32 maxKind; ///< Inclusive upper kind bound.
-    /* 0x54 */ s32 filter; ///< Required hold state, or six to accept every state.
+    /* 0x48 */ f32 cone;          ///< Maximum absolute viewing yaw offset in degrees.
+    /* 0x4C */ s32 minKind;       ///< Inclusive lower kind bound.
+    /* 0x50 */ s32 maxKind;       ///< Inclusive upper kind bound.
+    /* 0x54 */ s32 filter;        ///< Required hold state, or six to accept every state.
     /* 0x58 */ s32 weightEnabled; ///< Nonzero enables search-priority adjustment.
 } ItemQueryState;
 
 typedef char ItemQueryStateSizeCheck[(sizeof(ItemQueryState) == 0x5C) ? 1 : -1];
-typedef char ItemQueryOriginOffsetCheck[(((u32)&((ItemQueryState *)0)->origin) == 8) ? 1 : -1];
-typedef char ItemQueryTransformOffsetCheck[(((u32)&((ItemQueryState *)0)->transform) == 0x18) ? 1 : -1];
-typedef char ItemQueryWeightOffsetCheck[(((u32)&((ItemQueryState *)0)->weightEnabled) == 0x58) ? 1 : -1];
+typedef char ItemQueryOriginOffsetCheck[(((u32) & ((ItemQueryState *)0)->origin) == 8) ? 1 : -1];
+typedef char ItemQueryTransformOffsetCheck[(((u32) & ((ItemQueryState *)0)->transform) == 0x18) ? 1 : -1];
+typedef char ItemQueryWeightOffsetCheck[(((u32) & ((ItemQueryState *)0)->weightEnabled) == 0x58) ? 1 : -1];
 /// Shared nearest-item query context; traversal must not be reentered.
 /// \note Original identifier: \c D_80134048 (0x80134048).
 ItemQueryState gItemNearestSearch;
@@ -90,18 +90,16 @@ ItemQueryState gItemNearestSearch;
  * initializer string literals into .rodata in field order, ahead of the
  * functions' strings. */
 
-
-
 /// Inclusive item-kind bounds associated with a category identifier.
 typedef struct ItemCategoryRange {
-    s32 category; ///< Category identifier corresponding to the table index.
+    s32 category;    ///< Category identifier corresponding to the table index.
     s32 minimumKind; ///< Inclusive first item kind in the category.
     s32 maximumKind; ///< Inclusive last item kind in the category.
 } ItemCategoryRange;
 
 typedef char ItemCategoryRangeSizeCheck[(sizeof(ItemCategoryRange) == 0xC) ? 1 : -1];
-typedef char ItemCategoryMinimumOffsetCheck[(((u32)&((ItemCategoryRange *)0)->minimumKind) == 4) ? 1 : -1];
-typedef char ItemCategoryMaximumOffsetCheck[(((u32)&((ItemCategoryRange *)0)->maximumKind) == 8) ? 1 : -1];
+typedef char ItemCategoryMinimumOffsetCheck[(((u32) & ((ItemCategoryRange *)0)->minimumKind) == 4) ? 1 : -1];
+typedef char ItemCategoryMaximumOffsetCheck[(((u32) & ((ItemCategoryRange *)0)->maximumKind) == 8) ? 1 : -1];
 
 #include "actor_interaction.h"
 #include "item_physics.h"
@@ -1814,7 +1812,6 @@ s32 itemConsiderSearchCandidate(TreeNode *node, s32 depth) {
     return 0;
 }
 
-
 /// Find the best nearby item satisfying the requested kind, hold-state, and viewing constraints.
 /// \param origin Readable query world position in X, Y, Z order; copied during this call.
 /// \param maxDistance Nonnegative maximum approximate world-space distance from the origin.
@@ -1833,7 +1830,7 @@ s32 itemConsiderSearchCandidate(TreeNode *node, s32 depth) {
 /// reentered during traversal. The selected-state assignment preserves the original IDO register allocation.
 /// \note Original decompilation identifier: \c func_80113130 (0x80113130).
 u8 *itemFindNearest(f32 *origin, f32 maxDistance, f32 pitch, f32 yaw, f32 cone, s32 minKind, s32 maxKind, s32 filter,
-                  s32 weightEnabled) {
+                    s32 weightEnabled) {
     u8 *object;
     u8 *state;
     f32 rotation[3];
@@ -1886,7 +1883,6 @@ u8 *itemFindNearest(f32 *origin, f32 maxDistance, f32 pitch, f32 yaw, f32 cone, 
     }
     return gItemNearestSearch.best;
 }
-
 
 /// Play a spatial sound for an item and retain its playback handle.
 /// \param item Live item object address used as the sound source.
@@ -1959,7 +1955,6 @@ void itemShrink(u8 *item, f32 rate) {
     }
 }
 
-
 /// Release an item collision registration and owned state resources during destruction.
 /// \param item Item owning initialized state and rendering resources; those resources become invalid after
 /// release.
@@ -2000,7 +1995,6 @@ void itemBuildLightingDisplayList(ItemState *state, s32 index) {
 /// \note Original decompilation identifier: \c func_801135CC (0x801135CC).
 void itemUnusedUpdateHook(void) {
 }
-
 
 /// Separate symbol view of the primary player record's held item handle.
 /// \note Original identifier: \c D_800EF724 (0x800EF724).
@@ -2250,7 +2244,6 @@ s32 itemCompareSearchOrder(TreeNode *node, s32 itemAddress) {
     return 0;
 }
 
-
 /// Initialize an empty item registry for the current area.
 /// \returns Nothing.
 ///
@@ -2261,7 +2254,6 @@ void itemInitializeRegistry(void) {
     gLiveItemCount = 0;
     searchTreeInitialize(&gItemSearchTree, itemCompareSearchOrder);
 }
-
 
 /// Apply an item prepared lighting and environment color to the current drawing context.
 /// \param item Initialized item whose lighting is applied.
@@ -2355,7 +2347,6 @@ void itemRemoveFromSearchAndCollision(s32 objectId) {
     collisionGridUnregisterObject(sp1C,
                                   &((ItemStatePrefix *)((RuntimeObjectPrefix *)sp1C)->state.pointer)->collisionKey);
 }
-
 
 /// Make a live item available to item searches.
 /// \param objectId Handle of a live item to register.
@@ -2687,7 +2678,6 @@ s32 itemGetResponse(s32 responseType, s32 objectId) {
     return itemGetKindResponse(responseType, itemState->kind);
 }
 
-
 /// Apply a transformation cause to an item, retaining, replacing, or removing it as appropriate.
 /// \param id Initialized item handle, or a missing handle to return zero.
 /// \param mode Supported transformation-cause selector from zero through five.
@@ -2747,8 +2737,9 @@ s32 itemTransform(s32 id, s32 mode) {
         break;
     case 3:
     case 4:
-        effect = wispEffectCreate(mode == 3 ? 4 : 5, ((RuntimeObjectPrefix *)object)->worldPosition[0], ((RuntimeObjectPrefix *)object)->worldPosition[1],
-                               ((RuntimeObjectPrefix *)object)->worldPosition[2]);
+        effect = wispEffectCreate(mode == 3 ? 4 : 5, ((RuntimeObjectPrefix *)object)->worldPosition[0],
+                                  ((RuntimeObjectPrefix *)object)->worldPosition[1],
+                                  ((RuntimeObjectPrefix *)object)->worldPosition[2]);
         effectEmitterCreateForStyle(EFFECT_EMIT_BLACK_WISPS, (f32 *)(object + 0x44), 1.5F,
                                     ((RuntimeObjectPrefix *)effect)->handle, state->owner, effectOpacity);
         itemDestroy(object);
@@ -2758,8 +2749,9 @@ s32 itemTransform(s32 id, s32 mode) {
         break;
     }
     replacement =
-        itemCreate(((RuntimeObjectPrefix *)object)->worldPosition[0], ((RuntimeObjectPrefix *)object)->worldPosition[1], ((RuntimeObjectPrefix *)object)->worldPosition[2],
-                      ((RuntimeObjectPrefix *)object)->rotation[0], ((RuntimeObjectPrefix *)object)->rotation[1], replacementKind);
+        itemCreate(((RuntimeObjectPrefix *)object)->worldPosition[0], ((RuntimeObjectPrefix *)object)->worldPosition[1],
+                   ((RuntimeObjectPrefix *)object)->worldPosition[2], ((RuntimeObjectPrefix *)object)->rotation[0],
+                   ((RuntimeObjectPrefix *)object)->rotation[1], replacementKind);
     replacementState = (ItemStatePrefix *)((RuntimeObjectPrefix *)replacement)->state.pointer;
     inheritedFlags = state->flags & 0xDE000000;
     switch (*(u8 *)&state->state) {
@@ -2859,7 +2851,6 @@ void itemRestoreToWorld(s32 objectId) {
     }
 }
 
-
 /// Read a saved profile counter.
 /// \param index Profile counter index from zero through 165.
 /// \returns The counter value from zero through fifteen.
@@ -2872,7 +2863,6 @@ u8 profileGetCounter(s32 index) {
     }
     return v & 0xF;
 }
-
 
 /// Adjust a saved profile counter within its supported limits.
 /// \param idx Profile counter index from zero through 165.
@@ -2902,7 +2892,6 @@ u8 profileAddCounter(s32 idx, s32 delta) {
     *p |= bits;
     return delta;
 }
-
 
 /// Start timed visual direction motion when the item permits it, postponing its idle motion.
 /// \param item Initialized item receiving the visual motion.

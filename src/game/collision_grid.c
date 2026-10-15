@@ -20,8 +20,6 @@
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-
-
 /// Request a collision impulse for a target object.
 /// \param source Object responsible for the collision.
 /// \param target Object receiving the impulse request.
@@ -60,7 +58,7 @@ s32 collisionRequestImpulse(u8 *source, u8 *target, f32 *direction, f32 distance
     } else {
         impulse.bytes[3] = (s8)(s32)maximum;
     }
-        objectResponseQueueImpulse(source, target, impulse);
+    objectResponseQueueImpulse(source, target, impulse);
 
     return 1;
 }
@@ -113,7 +111,6 @@ s32 collisionGridRegisterObject(u8 *object) {
     }
     return 0;
 }
-
 
 /// Remove an object collision registration and clear its registration key.
 /// \param object Address of the registered object.
@@ -201,7 +198,6 @@ done:
     return hit;
 }
 
-
 /// Randomize the alignment used to group collision candidates.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002CED0 (0x8002CED0).
@@ -209,7 +205,6 @@ void collisionGridRandomizeAlignment(void) {
     gCollisionGridAlignmentX = (0.5 - randomNext() * RANDOM_U32_UNIT_SCALE) * 8.0;
     gCollisionGridAlignmentZ = (0.5 - randomNext() * RANDOM_U32_UNIT_SCALE) * 8.0;
 }
-
 
 /// Initialize the collision candidate registry.
 /// \returns Nothing.
@@ -219,7 +214,6 @@ void collisionGridInitialize(void) {
     gCollisionGridAlignmentX = 0.0F;
     gCollisionGridAlignmentZ = 0.0F;
 }
-
 
 /// Release the collision candidate registry.
 /// \returns Nothing.

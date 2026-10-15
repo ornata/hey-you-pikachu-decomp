@@ -28,8 +28,8 @@ typedef struct DirectionAngularMotion {
 
 /// Direction-animation phase stored in the signed 16-bit mode field.
 typedef enum DirectionAnimationMode {
-    DIRECTION_ANIMATION_STOPPED = 0, ///< Keep the selected pose unchanged.
-    DIRECTION_ANIMATION_TIMED = 1, ///< Apply requested angular motion for its duration.
+    DIRECTION_ANIMATION_STOPPED = 0,  ///< Keep the selected pose unchanged.
+    DIRECTION_ANIMATION_TIMED = 1,    ///< Apply requested angular motion for its duration.
     DIRECTION_ANIMATION_RETURNING = 2 ///< Return toward the default directions before reset.
 } DirectionAnimationMode;
 

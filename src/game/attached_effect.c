@@ -30,8 +30,8 @@ extern ValueKey *gAttachedEffectDefaultFrameProgram;
 /// Resident appearance and animation defaults for one attached-effect kind.
 typedef struct AttachedEffectDefinition {
     ObjectTemplate *objectTemplate; ///< Borrowed hierarchy template.
-    f32 baseScale; ///< Scale multiplier for view-dependent sizing.
-    s32 opacityProgramIndex; ///< Opacity key-program table index.
+    f32 baseScale;                  ///< Scale multiplier for view-dependent sizing.
+    s32 opacityProgramIndex;        ///< Opacity key-program table index.
 } AttachedEffectDefinition;
 typedef char AttachedEffectDefinitionSizeCheck[(sizeof(AttachedEffectDefinition) == 0xC) ? 1 : -1];
 
@@ -42,19 +42,19 @@ typedef struct Rgba8 {
 
 /// Owned animation and appearance state for an actor-attached effect.
 typedef struct AttachedEffectState {
-    u8 kind; ///< Effect-definition index selected at creation.
+    u8 kind;          ///< Effect-definition index selected at creation.
     s8 reverseFacing; ///< Nonzero turns the effect away from its camera-facing orientation.
     u8 unknown002[2];
-    u8 *owner; ///< Borrowed actor that anchors the effect.
-    f32 playbackRate; ///< Time multiplier shared by frame and opacity tracks.
-    ValueTrack frameTrack; ///< Texture-frame animation borrowing resident keys.
+    u8 *owner;               ///< Borrowed actor that anchors the effect.
+    f32 playbackRate;        ///< Time multiplier shared by frame and opacity tracks.
+    ValueTrack frameTrack;   ///< Texture-frame animation borrowing resident keys.
     ValueTrack opacityTrack; ///< Opacity animation borrowing resident keys.
-    Rgba8 color; ///< Primitive color; alpha follows the opacity track.
-    f32 baseScale; ///< Multiplier applied to view-dependent scale.
+    Rgba8 color;             ///< Primitive color; alpha follows the opacity track.
+    f32 baseScale;           ///< Multiplier applied to view-dependent scale.
 } AttachedEffectState;
 typedef char AttachedEffectStateSizeCheck[(sizeof(AttachedEffectState) == 0x2C) ? 1 : -1];
-#define ATTACHED_EFFECT_OFFSET_CHECK(name, member, offset) \
-    typedef char name[(((u32)&((AttachedEffectState *)0)->member) == (offset)) ? 1 : -1]
+#define ATTACHED_EFFECT_OFFSET_CHECK(name, member, offset)                                                             \
+    typedef char name[(((u32) & ((AttachedEffectState *)0)->member) == (offset)) ? 1 : -1]
 ATTACHED_EFFECT_OFFSET_CHECK(AttachedEffectOwnerOffsetCheck, owner, 0x4);
 ATTACHED_EFFECT_OFFSET_CHECK(AttachedEffectRateOffsetCheck, playbackRate, 0x8);
 ATTACHED_EFFECT_OFFSET_CHECK(AttachedEffectFrameOffsetCheck, frameTrack, 0xC);
@@ -87,7 +87,8 @@ u8 *attachedEffectCreate(u8 *owner, s32 kind, s32 track) {
     v = ((RuntimeObjectPrefix *)obj)->state.bytes;
     ((AttachedEffectState *)v)->kind = kind;
     ((AttachedEffectState *)v)->baseScale = def->baseScale;
-    animationIntegerTrackInitialize(&((AttachedEffectState *)v)->opacityTrack, gOpacityAnimationPrograms[def->opacityProgramIndex]);
+    animationIntegerTrackInitialize(&((AttachedEffectState *)v)->opacityTrack,
+                                    gOpacityAnimationPrograms[def->opacityProgramIndex]);
     animationIntegerTrackInitialize(&((AttachedEffectState *)v)->frameTrack, (gTextureFrameAnimationPrograms[track]));
     ((AttachedEffectState *)v)->owner = owner;
     ((AttachedEffectState *)v)->reverseFacing = 0;

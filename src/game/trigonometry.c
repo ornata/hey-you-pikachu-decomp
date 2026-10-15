@@ -16,7 +16,6 @@
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-
 /// Retained four-by-four floating-point identity matrix; no reader is identified.
 /// \note Original identifier: \c D_800A6CC0 (0x800A6CC0).
 const f32 gMatrix44Identity[4][4] = {
@@ -38,7 +37,6 @@ const s32 D_800A6D30[3][3] = {
     {1, 1, 1},
     {0, 1, 1},
 };
-
 
 f32 __cosf(f32); /* extern */
 f32 __sinf(f32); /* extern */
@@ -369,7 +367,6 @@ void matrix34TranslateLocal(f32 mf[4][3], f32 x, f32 y, f32 z) {
     }
 }
 
-
 /// Apply a local Euler rotation in X, then Y, then Z order.
 /// \param matrixAddress Matrix whose linear transform is updated in place.
 /// \param xDegrees Rotation about the X axis in degrees.
@@ -385,7 +382,6 @@ void matrix33ApplyRotationXYZDegrees(f32 *matrixAddress, f32 xDegrees, f32 yDegr
         matrix33Multiply(sp18, matrixAddress, matrixAddress);
     }
 }
-
 
 /// Apply a local Euler rotation in Z, then Y, then X order.
 /// \param matrixAddress Matrix whose linear transform is updated in place.
@@ -421,7 +417,6 @@ void matrix33ScaleLocal(f32 *matrix, f32 xScale, f32 yScale, f32 zScale) {
     matrix[5] = (matrix[5] * yScale);
     matrix[8] = (matrix[8] * zScale);
 }
-
 
 /// Build an affine rotation applying X, then Y, then Z rotations.
 /// \param m Output affine matrix.
@@ -813,7 +808,6 @@ f32 vector3Length(f32 *vector) {
     return sqrtf((x * x) + (y * y) + (z * z));
 }
 
-
 /// Approximate the length of a three-dimensional vector.
 /// \param vector Input three-component vector.
 /// \returns Approximate vector length.
@@ -1028,7 +1022,6 @@ void randomSeedFromSystem(void) {
         (word1 = (word1 & 0xFF0000) >> 16) | ((gRandomGeneratorState.named.word0 & 0xFFFFFF) << 8);
     gRandomGeneratorState.named.word0 = osGetCount();
 }
-
 
 /// Get a bounded value from the global pseudorandom generator.
 /// \param limit Exclusive upper bound; nonpositive values produce zero.

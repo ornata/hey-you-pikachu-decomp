@@ -29,7 +29,6 @@ void sequenceEngineUpdateVoices(VoicePlayer *, EngineSequence *, f64);
 void sequenceEngineAdvanceVolumeFade(EngineSequence *, f64);
 void sequenceEngineAdvanceEvents(VoicePlayer *, EngineSequence *, f64);
 
-
 /// Check whether sequence playback and pending release events have ended.
 /// \param player Sequence player to inspect.
 /// \returns One when playback and pending releases have ended; otherwise zero.
@@ -54,7 +53,6 @@ s32 sequenceEngineIsStopped(SequenceState *player) {
 s32 sequenceEngineSetRate(SequenceState *player, f64 rate) {
     return midiSequenceSetRate(player, rate);
 }
-
 
 /// Get the sequence playback speed multiplier.
 /// \param player Sequence player to inspect.
@@ -137,7 +135,7 @@ void sequenceEngineReleaseVoice(VoicePlayer *driver, EngineSequence *sequence, S
 
     releaseSeconds = (f64)voice->sound->envelope->releaseTime * 0.000001;
     if (releaseSeconds > 0.0) {
-        releaseVolumeRate = (s32)((f64) - voice->envelope / releaseSeconds);
+        releaseVolumeRate = (s32)((f64)-voice->envelope / releaseSeconds);
         voice->envelopeRate = releaseVolumeRate;
         if (releaseVolumeRate == 0) {
             voice->envelopeRate = -1;
@@ -172,7 +170,6 @@ s32 sequenceEngineSetSustain(VoicePlayer *driver, EngineSequence *sequence, s32 
     sequence->channels[channelIndex].sustain = sustain;
     return 0;
 }
-
 
 /// Determine the effective stereo pan for a sequence voice.
 /// \param driver Sequence driver supplying the output mode.
@@ -405,8 +402,8 @@ f64 sequenceEngineGetVoicePitchRatio(EngineSequence *seq, SequenceVoice *voice) 
     channel += (((u8 *)voice)[0x30] * 0x1C) + 0x14;
     depth = channel[0x17];
     if (depth != 0) {
-        vibrato =
-            (depth * (*(u8 **)((u8 *)voice + 0xC))[0xA]) * gSequenceVibratoWaveform[*(u16 *)((u8 *)voice + 0x38) >> 12] / 128 / 128;
+        vibrato = (depth * (*(u8 **)((u8 *)voice + 0xC))[0xA]) *
+                  gSequenceVibratoWaveform[*(u16 *)((u8 *)voice + 0x38) >> 12] / 128 / 128;
     } else {
         vibrato = 0;
     }
@@ -452,9 +449,8 @@ void sequenceEngineNoteOn(VoicePlayer *driver, EngineSequence *seq, s32 channel,
             voice->sound = sound;
             voice->envelope = 0xFFFF;
             voice->envelopeRate =
-                ((voice->sound->envelope->decayTime != 0) &&
-                 (voice->sound->envelope->decayVolume == 0))
-                    ? (f64) - voice->envelope / (0.000001 * voice->sound->envelope->decayTime)
+                ((voice->sound->envelope->decayTime != 0) && (voice->sound->envelope->decayVolume == 0))
+                    ? (f64)-voice->envelope / (0.000001 * voice->sound->envelope->decayTime)
                     : 0.0;
             voice->instrument = seq->channels[channel].instrument;
             voice->key = key;
@@ -472,8 +468,7 @@ void sequenceEngineNoteOn(VoicePlayer *driver, EngineSequence *seq, s32 channel,
             voice->pitch = sequenceEngineGetVoicePitchRatio(seq, voice);
             voice->pan = sequenceEngineGetVoicePan(driver, seq, voice);
             n_alSynAllocVoice(&voice->native, &config);
-            n_alSynStartVoiceParams(&voice->native, voice->sound->wavetable,
-                                    voice->pitch, voice->volume, voice->pan,
+            n_alSynStartVoiceParams(&voice->native, voice->sound->wavetable, voice->pitch, voice->volume, voice->pan,
                                     seq->channels[voice->channel].fxMix, 0);
             if (voice->envelopeRate != 0) {
                 n_alSynSetVol(&voice->native, 0, voice->sound->envelope->decayTime);
@@ -816,7 +811,6 @@ void sequenceEngineUpdateVoices(VoicePlayer *driver, EngineSequence *seq, f64 el
     voice = seq->voices;
     while (voice != NULL) {
 
-
         if (voice->envelopeRate != 0) {
         }
 
@@ -893,7 +887,8 @@ void n_alSynAddPlayer(ALPlayer *);
 /// \param voices Caller-owned pool with at least maxVoices records, valid while the driver is registered.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80007420 (0x80007420).
-void sequenceEngineInitializeDriver(VoicePlayer *p, N_ALGlobals *synth, s32 outputMode, s32 maxVoices, SequenceVoice *voices) {
+void sequenceEngineInitializeDriver(VoicePlayer *p, N_ALGlobals *synth, s32 outputMode, s32 maxVoices,
+                                    SequenceVoice *voices) {
     s32 i;
 
     p->synth = synth;

@@ -20,10 +20,10 @@
 /// The engine borrows its MIDI control state, instrument bank, and event buffer.
 /// Four slots share one contiguous allocation. The slot owns the event buffer borrowed by engine registration.
 typedef struct AudioSequenceSlot {
-    EngineSequence engine; ///< Embedded registered sequence engine state.
+    EngineSequence engine;       ///< Embedded registered sequence engine state.
     SequenceControlState player; ///< Embedded MIDI reader and queued playback controls.
-    s32 handle; ///< Playback handle issued by audioPlaySequence, or zero when free.
-    u8 eventBuffer[0x14]; ///< MIDI event bytes borrowed by the registered engine.
+    s32 handle;                  ///< Playback handle issued by audioPlaySequence, or zero when free.
+    u8 eventBuffer[0x14];        ///< MIDI event bytes borrowed by the registered engine.
 } AudioSequenceSlot;
 
 typedef char AudioSequenceSlotSizeCheck[(sizeof(AudioSequenceSlot) == 0x7F0) ? 1 : -1];
@@ -40,18 +40,18 @@ extern AudioSequenceSlot gAudioSequenceSlotsEnd; /* one past D_800EC9F0[3] */
 typedef struct AudioReverbSection {
     s32 inputDelayMs;  ///< Input delay in milliseconds.
     s32 outputDelayMs; ///< Output delay in milliseconds.
-    s32 feedback;     ///< Feedback coefficient supplied to the synthesizer.
-    s32 feedforward;  ///< Feedforward coefficient supplied to the synthesizer.
-    s32 gain;         ///< Section output gain parameter.
-    s32 chorusRate;   ///< Chorus rate parameter.
-    s32 chorusDepth;  ///< Chorus depth parameter.
-    s32 filter;       ///< Section filter parameter.
+    s32 feedback;      ///< Feedback coefficient supplied to the synthesizer.
+    s32 feedforward;   ///< Feedforward coefficient supplied to the synthesizer.
+    s32 gain;          ///< Section output gain parameter.
+    s32 chorusRate;    ///< Chorus rate parameter.
+    s32 chorusDepth;   ///< Chorus depth parameter.
+    s32 filter;        ///< Section filter parameter.
 } AudioReverbSection;
 
 /// Resident six-section reverb configuration; playback borrows it during setup.
 typedef struct AudioReverbPreset {
-    s32 sectionCount;  ///< Number of active entries in sections; six in the resident preset.
-    s32 delayLengthMs; ///< Total delay-buffer duration in milliseconds.
+    s32 sectionCount;               ///< Number of active entries in sections; six in the resident preset.
+    s32 delayLengthMs;              ///< Total delay-buffer duration in milliseconds.
     AudioReverbSection sections[6]; ///< Resident section parameters.
 } AudioReverbPreset;
 
@@ -133,12 +133,12 @@ s32 audioInitialize(GameScheduler *scheduler, OSId threadId, OSPri priority, u32
     config.dmaproc = audioDmaCreateCallback;
     config.outputRate = osAiSetFrequency(frequency);
     n_alInit(&gGameAudioSynthesizer, &config);
-    gAudioBankFile = audioBankLoad(
-        &heap, (s32)gAudioBankRomStart, (s32)(gAudioBankRomStart + AUDIO_BANK_SIZE), (s32)gAudioSamplesRomStart);
+    gAudioBankFile = audioBankLoad(&heap, (s32)gAudioBankRomStart, (s32)(gAudioBankRomStart + AUDIO_BANK_SIZE),
+                                   (s32)gAudioSamplesRomStart);
     audioInitializeSequencePlayers(&heap, gAudioBankFile);
     gSoundEffectPlayer = soundEffectPlayerCreate(&gGameAudioSynthesizer, &heap, 32);
-    audioWorkerStart(scheduler, &heap, threadId, priority, n_alAudioFrame,
-                     (u64 *)gAudioRspMicrocodeTextStart, (u64 *)gAudioRspMicrocodeDataStart, 0xB8, 0x200);
+    audioWorkerStart(scheduler, &heap, threadId, priority, n_alAudioFrame, (u64 *)gAudioRspMicrocodeTextStart,
+                     (u64 *)gAudioRspMicrocodeDataStart, 0xB8, 0x200);
     gAudioInitialized = 1;
     used = heap.cur - heap.base;
     if (used > 0x35B60) {
@@ -180,7 +180,6 @@ void audioSetOutputMode(s32 mode) {
     soundEffectPlayerSetOutputMode(gSoundEffectPlayer, mode);
 }
 
-
 /// Get the selected game audio output mode.
 /// \returns The current output mode.
 /// \note Original decompilation identifier: \c func_8001FA6C (0x8001FA6C).
@@ -191,7 +190,6 @@ s32 audioGetOutputMode(void) {
 /// Voice storage supplied to the game sequence driver.
 /// \note Original identifier: \c D_800EEA18 (0x800EEA18).
 extern SequenceVoice gAudioSequenceVoices[];
-
 
 /// Initialize the shared sequence synthesizer and its four playback slots.
 /// \param heap Unused audio heap.
@@ -236,7 +234,6 @@ s32 audioPlaySequence(s32 data) {
     return 0;
 }
 
-
 /// Stop selected categories of game audio.
 /// \param categories Category mask: bit zero selects sound effects and bit one selects sequences.
 /// \param fadeSeconds Nonnegative sequence fade duration in seconds; sound effects stop immediately.
@@ -274,7 +271,6 @@ s32 audioCountActive(s32 categories) {
     }
     return var_s1;
 }
-
 
 /// Count active playback slots associated with an audio identifier.
 /// \param handle Playback identifier; zero selects no playback.
@@ -314,7 +310,6 @@ ALSound *audioGetSoundDefinition(s32 id) {
     return NULL;
 }
 
-
 /// Start a sound effect using its bank index.
 /// \param soundId Valid sound-effect index in the loaded bank.
 /// \returns The playback identifier, or zero if no playback slot is available.
@@ -322,7 +317,6 @@ ALSound *audioGetSoundDefinition(s32 id) {
 s32 audioPlaySoundEffect(s32 soundId) {
     return soundEffectPlayerPlay(gSoundEffectPlayer, audioGetSoundDefinition(soundId));
 }
-
 
 /// Adjust a sound effect's volume immediately when newly started, or over ten milliseconds otherwise.
 /// \param id Playback identifier; zero selects no playback.
@@ -343,7 +337,6 @@ s32 audioSetSoundEffectPan(s32 id, s32 pan) {
     return soundEffectPlayerSetPan(gSoundEffectPlayer, id, pan);
 }
 
-
 /// Transpose a sound effect relative to its original pitch.
 /// \param id Playback identifier; zero selects no playback.
 /// \param semitones Finite pitch change in semitones; its value in cents must fit s32.
@@ -353,7 +346,6 @@ void audioSetSoundEffectPitch(s32 id, f32 semitones) {
     soundEffectPlayerSetPitch(gSoundEffectPlayer, id, (f64)alCents2Ratio((s32)(semitones * 100.0F)));
 }
 
-
 /// Set the synthesizer effect mix for a sound effect.
 /// \param id Playback identifier; zero selects no playback.
 /// \param mix Effect mix level from zero to 127.
@@ -362,7 +354,6 @@ void audioSetSoundEffectPitch(s32 id, f32 semitones) {
 void audioSetSoundEffectMix(s32 id, s32 mix) {
     soundEffectPlayerSetEffectMix(gSoundEffectPlayer, id, mix);
 }
-
 
 /// Change a sequence's playback rate.
 /// \param id Playback identifier; zero selects no playback.
@@ -384,7 +375,6 @@ s32 audioSetSequenceRate(s32 id, f64 rate) {
     return 0;
 }
 
-
 /// Get the playback rate of a sequence.
 /// \param id Playback identifier; zero selects no playback.
 /// \returns The sequence playback rate, or minus one if the identifier was not found.
@@ -403,7 +393,6 @@ f64 audioGetSequenceRate(s32 id) {
     return -1.0;
 }
 
-
 /// Set the master level for selected audio categories.
 /// \param categories Category mask: bit zero selects sound effects and bit one selects sequences.
 /// \param volume Master level: sequence volume uses a zero-to-65535 scale; sound effects use a zero-to-32767 scale.
@@ -417,7 +406,6 @@ void audioSetCategoryVolume(s32 categories, s32 volume) {
         soundEffectPlayerSetMasterVolume(gSoundEffectPlayer, volume);
     }
 }
-
 
 // clang-format off
 /// Start a sequence with a volume transition from thirty percent to full level.
@@ -447,7 +435,6 @@ s32 audioPlaySequenceWithFade(s32 data, f64 time) {
 /// \note Original identifier: \c D_800A4890 (0x800A4890).
 extern f64 gAudioSequenceStopFadeTargetVolume;
 
-
 // clang-format off
 /// Fade a sequence and schedule it to stop.
 /// \param id Playback identifier; zero selects no playback.
@@ -472,7 +459,6 @@ s32 audioFadeOutSequence(s32 id, f64 fadeSeconds) {
     return 0;
 }
 // clang-format on
-
 
 /// Stop sound effects or fade out a sequence associated with an audio identifier.
 /// \param handle Playback identifier; zero selects no playback.

@@ -97,18 +97,6 @@ void IdleMain(void *arg);
 #define IDLE_THREAD_ID 10
 #define IDLE_THREAD_PRI 10
 
-
-
-
-
-
-
-
-
-
-
-
-
 /// Controller ports enabled by device initialization.
 /// Original: D_800ACE80 (0x800ACE80).
 extern u8 gControllerEnabledPortMask;
@@ -348,7 +336,6 @@ void renderLoadAreaAssets(void) {
     heapFreeLocal(&gGameHeap, temporary);
 }
 
-
 /// Release the current area’s rendering asset allocation.
 /// \returns Nothing; requires a previously loaded area asset allocation.
 void renderUnloadAreaAssets(void) {
@@ -365,7 +352,7 @@ void cameraBuildInterfaceTransform(f32 *output) {
 
     sp1C = ((u8 *)gRenderCameras) + (gRenderCameraIndex * 0xE0);
     matrix34Identity((Matrix34 *)(MatrixBlock00800 *)output);
-    matrix34TranslateLocal((f32 (*)[3])output, *(f32 *)(sp1C + 0), *(f32 *)(sp1C + 4), *(f32 *)(sp1C + 8));
+    matrix34TranslateLocal((f32(*)[3])output, *(f32 *)(sp1C + 0), *(f32 *)(sp1C + 4), *(f32 *)(sp1C + 8));
     matrix33ApplyRotationXYZDegrees(output, -(gPlayerPitch + gPlayerPitchOffset),
                                     gPlayerViewShake + gPlayerYaw + 180.0F, 0.0F);
 }
@@ -479,7 +466,6 @@ void renderFillFramebufferRectangle(u32 left, u32 top, u32 right, u32 bottom, u8
     }
 }
 
-
 /// Draw the configured backdrop or clear the framebuffer to black.
 /// \param useBackdrop Nonzero draws the configured backdrop; zero fills the screen with opaque black.
 /// \returns Nothing.
@@ -572,10 +558,13 @@ void cameraUpdateOverlayColors(s32 cameraIndex, s32 advanceBlend) {
     MatrixCamera *cameraState;
 
     cameraState = (MatrixCamera *)(((u8 *)gRenderCameras) + (cameraIndex * 0xE0));
-    colorAdvanceTransition(cameraState->secondaryOverlayColor, cameraState->targetSecondaryOverlayColor, &cameraState->secondaryOverlayTimeRemaining);
-    colorAdvanceTransition(cameraState->baseOverlayColor, cameraState->targetBaseOverlayColor, &cameraState->baseOverlayTimeRemaining);
+    colorAdvanceTransition(cameraState->secondaryOverlayColor, cameraState->targetSecondaryOverlayColor,
+                           &cameraState->secondaryOverlayTimeRemaining);
+    colorAdvanceTransition(cameraState->baseOverlayColor, cameraState->targetBaseOverlayColor,
+                           &cameraState->baseOverlayTimeRemaining);
     if (advanceBlend != 0) {
-        colorAdvanceTransition(cameraState->blendOverlayColor, cameraState->targetBlendOverlayColor, &cameraState->blendOverlayTimeRemaining);
+        colorAdvanceTransition(cameraState->blendOverlayColor, cameraState->targetBlendOverlayColor,
+                               &cameraState->blendOverlayTimeRemaining);
     }
     cameraState->overlayColor[0] = cameraState->baseOverlayColor[0];
     cameraState->overlayColor[1] = cameraState->baseOverlayColor[1];
@@ -598,7 +587,8 @@ void cameraDrawOverlay(s32 index) {
         gDPSetCycleType(gRenderDisplayListCursor++, G_CYC_1CYCLE);
         gDPSetRenderMode(gRenderDisplayListCursor++, G_RM_AA_XLU_SURF, G_RM_AA_XLU_SURF2);
         gDPSetCombineMode(gRenderDisplayListCursor++, G_CC_PRIMITIVE, G_CC_PRIMITIVE);
-        gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, camera->overlayColor[0], camera->overlayColor[1], camera->overlayColor[2], camera->overlayColor[3]);
+        gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, camera->overlayColor[0], camera->overlayColor[1],
+                        camera->overlayColor[2], camera->overlayColor[3]);
         gSPDisplayList(gRenderDisplayListCursor++, gCameraOverlayRectangleDisplayList);
     }
 }
@@ -613,7 +603,9 @@ void cameraDrawSecondaryOverlay(s32 index) {
         gDPSetCycleType(gRenderDisplayListCursor++, G_CYC_1CYCLE);
         gDPSetRenderMode(gRenderDisplayListCursor++, G_RM_AA_XLU_SURF, G_RM_AA_XLU_SURF2);
         gDPSetCombineMode(gRenderDisplayListCursor++, G_CC_PRIMITIVE, G_CC_PRIMITIVE);
-        gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, camera->secondaryOverlayColor[0], camera->secondaryOverlayColor[1], camera->secondaryOverlayColor[2], camera->secondaryOverlayColor[3]);
+        gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, camera->secondaryOverlayColor[0],
+                        camera->secondaryOverlayColor[1], camera->secondaryOverlayColor[2],
+                        camera->secondaryOverlayColor[3]);
         gSPDisplayList(gRenderDisplayListCursor++, gCameraOverlayRectangleDisplayList);
     }
 }
@@ -1020,7 +1012,6 @@ void renderSubmitFrameBorder(void) {
     graphicsTaskSubmit(1, SCHEDULER_TASK_PRESENT_FRAMEBUFFER, &gRenderDisplayListStart, &gRenderDisplayListCursor,
                        &gRuntimeEventQueue);
 }
-
 
 /// Test whether a camera-space point lies within a configured viewing region.
 /// \param r Viewing region with inclusive forward-depth limits, horizontal and vertical scale factors, and lateral margin.

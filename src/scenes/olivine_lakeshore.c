@@ -120,16 +120,16 @@ void lakeshoreSpawnColoredResidentRandomHeading(f32 *position) {
 /// \param heading Initial heading in degrees.
 /// \returns Nothing.
 void lakeshoreSpawnResidentType3(f32 *position, f32 heading) {
-    actorCreateForKind(ACTOR_KIND_SQUIRTLE, position[0], position[1], position[2], 0.0F, heading, gCurrentAreaConfiguration->objectScale,
-                       &D_8014069C_scene_olivine_lakeshore, 0);
+    actorCreateForKind(ACTOR_KIND_SQUIRTLE, position[0], position[1], position[2], 0.0F, heading,
+                       gCurrentAreaConfiguration->objectScale, &D_8014069C_scene_olivine_lakeshore, 0);
 }
 
 /// Spawn the lakeshore type-seventeen resident at a requested position.
 /// \param position Three-component scene position.
 /// \returns Nothing.
 void lakeshoreSpawnResidentType17(f32 *position) {
-    actorCreateForKind(ACTOR_KIND_HAUNTER, position[0], position[1], position[2], 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
-                       &D_801410FC_scene_olivine_lakeshore, 0);
+    actorCreateForKind(ACTOR_KIND_HAUNTER, position[0], position[1], position[2], 0.0F, 0.0F,
+                       gCurrentAreaConfiguration->objectScale, &D_801410FC_scene_olivine_lakeshore, 0);
 }
 
 /// Spawn four colored residents at randomly selected scene positions, allowing repeated positions.

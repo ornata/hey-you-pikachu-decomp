@@ -86,8 +86,10 @@ void oddishMeadowSpawnGrowthResident(f32 *position, s32 residentIndex) {
 /// Prepare scene resources for evolved meadow residents.
 /// \returns Nothing.
 void oddishMeadowPrepareEvolvedResidents(void) {
-    objectRequestHierarchyDestruction(actorCreateForKind(ACTOR_KIND_GLOOM, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, NULL, 0));
-    objectRequestHierarchyDestruction(actorCreateForKind(ACTOR_KIND_VILEPLUME, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, NULL, 0));
+    objectRequestHierarchyDestruction(
+        actorCreateForKind(ACTOR_KIND_GLOOM, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, NULL, 0));
+    objectRequestHierarchyDestruction(
+        actorCreateForKind(ACTOR_KIND_VILEPLUME, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, NULL, 0));
 }
 
 /// Spawn a meadow item with a randomized heading.
@@ -136,7 +138,6 @@ extern u8 D_8014EEA0_scene_oddish_meadow;
 extern u8 D_8014F0BC_scene_oddish_meadow;
 extern u8 D_80157D40_scene_oddish_meadow;
 
-
 extern u8 D_80159404_scene_oddish_meadow;
 extern f64 D_80159480_scene_oddish_meadow;
 extern f32 D_80159488_scene_oddish_meadow;
@@ -157,12 +158,12 @@ void oddishMeadowInitializeRegularObjects(void) {
 
     sp64 = D_80157F0C_scene_oddish_meadow;
     if (progressGetValue(0x76) >= 5) {
-        actorCreateForKind(ACTOR_KIND_BUTTERFREE, 160.0F, 6.0F, 69.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
-                           &D_80157D40_scene_oddish_meadow, 0);
+        actorCreateForKind(ACTOR_KIND_BUTTERFREE, 160.0F, 6.0F, 69.0F, 0.0F, 0.0F,
+                           gCurrentAreaConfiguration->objectScale, &D_80157D40_scene_oddish_meadow, 0);
     }
     if (progressGetCurrentChapter() == 8) {
-        actorCreateForKind(ACTOR_KIND_BULBASAUR, 188.0F, 8.5F, 65.0F, 0.0F, 20.0F, gCurrentAreaConfiguration->objectScale,
-                           &D_8014F0BC_scene_oddish_meadow, 0);
+        actorCreateForKind(ACTOR_KIND_BULBASAUR, 188.0F, 8.5F, 65.0F, 0.0F, 20.0F,
+                           gCurrentAreaConfiguration->objectScale, &D_8014F0BC_scene_oddish_meadow, 0);
     }
     actorCreateForKind(ACTOR_KIND_DIGLETT, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        &D_8014E5D0_scene_oddish_meadow, 0);

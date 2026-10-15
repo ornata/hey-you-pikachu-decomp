@@ -99,27 +99,27 @@ extern f32 gRuntimeFrameSeconds;
 /// Pointer fields borrow templates, text and part lists from resident resources.
 /// Interior linker views elsewhere retain the original per-field relocations.
 typedef struct ActorKindConfig {
-    char *alternateName;           ///< Preferred inspection name when alternate text is requested.
-    char *alternateDescription;    ///< Preferred inspection description when alternate text is requested.
-    char *defaultName;             ///< Default inspection name.
-    char *defaultDescription;      ///< Default inspection description.
-    f32 markerDepth;               ///< Unscaled depth used to place an interaction marker.
-    f32 markerHeight;              ///< Unscaled height used to place an interaction marker.
-    ObjectTemplate *hierarchyTemplate;         ///< Borrowed actor hierarchy cloned during creation.
-    const s32 *groundReferenceIds; ///< Positive part IDs terminated by a nonpositive value.
-    s32 *animatedTextureParts;     ///< Borrowed part list for texture-animation initialization.
-    f32 visibilityRadius;          ///< Unscaled actor visibility and segmented-shadow radius.
-    f32 collisionDepth;            ///< Unscaled vertical span used by horizontal clearance queries.
-    f32 clearanceHeight;           ///< Unscaled permitted clearance height.
-    f32 collisionWidth;            ///< Unscaled horizontal collision width.
-    f32 unknown34;                 ///< Unresolved configuration value scaled into actor state at 0x208.
-    f32 groundOffset;              ///< Unscaled ground-reference offset.
-    s32 shadowSegmentCount;        ///< Number of ground-shadow segments, or nonpositive to omit the shadow.
-    s32 defaultPartId;             ///< Default reference part identifier.
-    s32 firstAttachmentPartId;     ///< First attachment reference part identifier.
-    s32 secondAttachmentPartId;    ///< Second attachment reference part identifier.
-    s32 initialAttachmentMode;      ///< Initial attachment-position selection mode.
-    s32 resourceIndex;             ///< Actor resource-table index.
+    char *alternateName;               ///< Preferred inspection name when alternate text is requested.
+    char *alternateDescription;        ///< Preferred inspection description when alternate text is requested.
+    char *defaultName;                 ///< Default inspection name.
+    char *defaultDescription;          ///< Default inspection description.
+    f32 markerDepth;                   ///< Unscaled depth used to place an interaction marker.
+    f32 markerHeight;                  ///< Unscaled height used to place an interaction marker.
+    ObjectTemplate *hierarchyTemplate; ///< Borrowed actor hierarchy cloned during creation.
+    const s32 *groundReferenceIds;     ///< Positive part IDs terminated by a nonpositive value.
+    s32 *animatedTextureParts;         ///< Borrowed part list for texture-animation initialization.
+    f32 visibilityRadius;              ///< Unscaled actor visibility and segmented-shadow radius.
+    f32 collisionDepth;                ///< Unscaled vertical span used by horizontal clearance queries.
+    f32 clearanceHeight;               ///< Unscaled permitted clearance height.
+    f32 collisionWidth;                ///< Unscaled horizontal collision width.
+    f32 unknown34;                     ///< Unresolved configuration value scaled into actor state at 0x208.
+    f32 groundOffset;                  ///< Unscaled ground-reference offset.
+    s32 shadowSegmentCount;            ///< Number of ground-shadow segments, or nonpositive to omit the shadow.
+    s32 defaultPartId;                 ///< Default reference part identifier.
+    s32 firstAttachmentPartId;         ///< First attachment reference part identifier.
+    s32 secondAttachmentPartId;        ///< Second attachment reference part identifier.
+    s32 initialAttachmentMode;         ///< Initial attachment-position selection mode.
+    s32 resourceIndex;                 ///< Actor resource-table index.
 } ActorKindConfig;
 
 typedef char ActorKindConfigSizeCheck[(sizeof(ActorKindConfig) == 0x54) ? 1 : -1];
@@ -135,8 +135,6 @@ ACTOR_KIND_OFFSET_CHECK(ActorKindDefaultPartOffsetCheck, defaultPartId, 0x40);
 ACTOR_KIND_OFFSET_CHECK(ActorKindAttachmentModeOffsetCheck, initialAttachmentMode, 0x4C);
 ACTOR_KIND_OFFSET_CHECK(ActorKindResourceOffsetCheck, resourceIndex, 0x50);
 #undef ACTOR_KIND_OFFSET_CHECK
-
-
 
 /// Initial uniform scale of a contact-reactive effect.
 /// \note Original identifier: \c D_800A3A68 (0x800A3A68).
@@ -284,7 +282,6 @@ void actorInitializeModelAndPartTable(u8 *actor) {
     actorAllocatePartTable(actor);
 }
 
-
 /// Advance an actor's script execution and model behavior.
 /// \param actor Actor whose script and model are updated.
 /// \returns Nothing.
@@ -319,11 +316,11 @@ void actorUpdateScriptAndModelFollowingTarget(u8 *actor) {
 /// Owned roll-motion state, separate from actor and child playback state.
 typedef struct ObjectRollMotionState {
     f32 initialRoll; ///< Object roll in degrees captured during initialization.
-    f32 velocity; ///< Roll change in degrees per second; reset before the current update.
+    f32 velocity;    ///< Roll change in degrees per second; reset before the current update.
 } ObjectRollMotionState;
 
 typedef char ObjectRollMotionStateSizeCheck[(sizeof(ObjectRollMotionState) == 8) ? 1 : -1];
-typedef char ObjectRollVelocityOffsetCheck[((u32)&((ObjectRollMotionState *)0)->velocity == 4) ? 1 : -1];
+typedef char ObjectRollVelocityOffsetCheck[((u32) & ((ObjectRollMotionState *)0)->velocity == 4) ? 1 : -1];
 
 /// Initialize roll motion state using the object's current roll.
 /// \param object Object receiving roll motion state.
@@ -350,7 +347,6 @@ void objectResetRollVelocity(u8 *object) {
         ((RuntimeObjectPrefix *)object)->rotation[2] += rollState->velocity * gRuntimeFrameSeconds;
     }
 }
-
 
 /// Advance child motion while spinning toward decreasing yaw.
 /// \param child Child object whose motion and yaw are updated.
@@ -491,14 +487,14 @@ void actorUpdateChildMotionAndCopyOrientation(u8 *object) {
 
 /// Actor cache entry metadata; corrected-asset ranges borrow the resident resource table.
 typedef struct ActorAssetDescriptor {
-    s32 index; ///< Expected slot in the actor asset resource table.
-    s32 compressed; ///< Zero selects a direct ROM copy; one selects corrected decompression at creation.
+    s32 index;             ///< Expected slot in the actor asset resource table.
+    s32 compressed;        ///< Zero selects a direct ROM copy; one selects corrected decompression at creation.
     AssetDescriptor asset; ///< ROM, decoded and correction ranges with their common bias.
 } ActorAssetDescriptor;
 
 typedef char ActorAssetDescriptorSizeCheck[(sizeof(ActorAssetDescriptor) == 0x24) ? 1 : -1];
-typedef char ActorAssetCompressionOffsetCheck[((u32)&((ActorAssetDescriptor *)0)->compressed == 4) ? 1 : -1];
-typedef char ActorAssetRangeOffsetCheck[((u32)&((ActorAssetDescriptor *)0)->asset == 8) ? 1 : -1];
+typedef char ActorAssetCompressionOffsetCheck[((u32) & ((ActorAssetDescriptor *)0)->compressed == 4) ? 1 : -1];
+typedef char ActorAssetRangeOffsetCheck[((u32) & ((ActorAssetDescriptor *)0)->asset == 8) ? 1 : -1];
 /// Actor resource descriptors recording compression, ROM ranges and relocated data ranges.
 /// \note Original identifier: \c D_800792A0 (0x800792A0).
 extern ActorAssetDescriptor gActorAssetResources[];
@@ -518,7 +514,6 @@ void actorAssetCacheInitialize(void) {
         }
     }
 }
-
 
 /// Release the actor asset read queue.
 /// \returns Nothing.
@@ -552,12 +547,12 @@ void actorAssetQueueLoadForKind(s32 kind) {
             source = heapAllocTailLocal(&gGameHeap, size, 0x10D);
             gActorCompressedAssetStaging = source;
             gActorAssetStorage[index] = heapAllocLocal(
-                &gGameHeap, gActorAssetResources[index].asset.decodedEnd - gActorAssetResources[index].asset.rangeBase, 0x113);
+                &gGameHeap, gActorAssetResources[index].asset.decodedEnd - gActorAssetResources[index].asset.rangeBase,
+                0x113);
         }
         romDmaReadQueued(&gActorAssetReadQueue, gActorAssetResources[index].asset.romAddress, source, size);
     }
 }
-
 
 /// Wait for pending actor asset reads to complete.
 /// \returns Nothing; completion does not decompress compressed assets.
@@ -654,8 +649,8 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
     if (kindConfig->shadowSegmentCount > 0) {
         sp48 = objectGetLastSibling(actor);
         shadowSegments = kindConfig->shadowSegmentCount;
-        part = groundShadowCreate(shadowSegments,
-                                  (kindConfig->visibilityRadius / (f32)shadowSegments) * gActorShadowSegmentRadiusScale);
+        part = groundShadowCreate(shadowSegments, (kindConfig->visibilityRadius / (f32)shadowSegments) *
+                                                      gActorShadowSegmentRadiusScale);
         ((RuntimeObjectPrefix *)part)->root.bytes = actor;
         ((RuntimeObjectPrefix *)sp48)->sibling.bytes = part;
     }
@@ -696,8 +691,9 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
     objectPrepareDistributedKindSearches(0x64, 4);
     ((ActorScriptState *)actorState)->fallbackObjectHandle =
         ((RuntimeObjectPrefix *)orbitFollowerCreate(actor, ((ActorScriptState *)actorState)->collisionWidth,
-                                                   ((ActorScriptState *)actorState)->collisionDepth,
-                                                   ((ActorScriptState *)actorState)->clearanceHeight))->handle;
+                                                    ((ActorScriptState *)actorState)->collisionDepth,
+                                                    ((ActorScriptState *)actorState)->clearanceHeight))
+            ->handle;
     if (script != 0) {
         part = (u8 *)scriptVmCreate((ScriptVmConfiguration *)script);
         ((ActorScriptState *)actorState)->vmAddress = (s32)part;
@@ -708,9 +704,9 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
         descriptor = &gActorAssetResources[kindConfig->resourceIndex];
         if (descriptor->compressed == 1) {
             sp50 = (void *)gActorAssetResources[kindConfig->resourceIndex].asset.rangeBase;
-            assetDecompressAndPatch(gActorAssetStorage[kindConfig->resourceIndex],
-                                    gActorCompressedAssetStaging, descriptor->asset.encodedEnd - (s32)sp50,
-                                    descriptor->asset.decodedEnd - (s32)sp50, descriptor->asset.patchStart - (s32)sp50,
+            assetDecompressAndPatch(gActorAssetStorage[kindConfig->resourceIndex], gActorCompressedAssetStaging,
+                                    descriptor->asset.encodedEnd - (s32)sp50, descriptor->asset.decodedEnd - (s32)sp50,
+                                    descriptor->asset.patchStart - (s32)sp50,
                                     descriptor->asset.patchCountValue - (s32)sp50);
             heapDebugReportFreeSpace(&gGameHeap, (const char *)gActorStagingReleaseStartHeapLabel);
             heapFreeLocal(&gGameHeap, gActorCompressedAssetStaging);
@@ -729,10 +725,13 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
 /// \note Original decompilation identifier: \c func_8001E568 (0x8001E568).
 u8 *actorReplaceKindPreservingScript(u8 *actor, s32 kind) {
     u8 *replacementActor;
-    replacementActor = actorCreateForKind(kind, ((RuntimeObjectPrefix *)actor)->worldPosition[0], ((RuntimeObjectPrefix *)actor)->worldPosition[1], ((RuntimeObjectPrefix *)actor)->worldPosition[2],
-                                          ((RuntimeObjectPrefix *)actor)->rotation[0], ((RuntimeObjectPrefix *)actor)->rotation[1], ((RuntimeObjectPrefix *)actor)->scale[0], 0,
-                                          ((RuntimeObjectPrefix *)actor)->state.actor->creationScriptArgument);
-    ((RuntimeObjectPrefix *)replacementActor)->state.actor->vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    replacementActor = actorCreateForKind(
+        kind, ((RuntimeObjectPrefix *)actor)->worldPosition[0], ((RuntimeObjectPrefix *)actor)->worldPosition[1],
+        ((RuntimeObjectPrefix *)actor)->worldPosition[2], ((RuntimeObjectPrefix *)actor)->rotation[0],
+        ((RuntimeObjectPrefix *)actor)->rotation[1], ((RuntimeObjectPrefix *)actor)->scale[0], 0,
+        ((RuntimeObjectPrefix *)actor)->state.actor->creationScriptArgument);
+    ((RuntimeObjectPrefix *)replacementActor)->state.actor->vmAddress =
+        ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress = 0;
     objectRequestHierarchyDestruction(actor);
     return replacementActor;

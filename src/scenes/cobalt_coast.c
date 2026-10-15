@@ -24,8 +24,8 @@ extern u8 D_80140BF8_scene_cobalt_coast[];
 /// Spawn the fixed type-2 resident for the coast scene.
 /// \returns Nothing.
 void cobaltCoastSpawnResidentType2(void) {
-    actorCreateForKind(ACTOR_KIND_VENUSAUR, 320.0F, 10.0F, 225.0F, 0.0F, 0.0F, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC),
-                       D_80140BF8_scene_cobalt_coast, 0);
+    actorCreateForKind(ACTOR_KIND_VENUSAUR, 320.0F, 10.0F, 225.0F, 0.0F, 0.0F,
+                       *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC), D_80140BF8_scene_cobalt_coast, 0);
 }
 
 extern u8 D_80144CAC_scene_cobalt_coast[];
@@ -33,8 +33,8 @@ extern u8 D_80144CAC_scene_cobalt_coast[];
 /// Spawn the fixed type-18 resident for the coast scene.
 /// \returns Nothing.
 void cobaltCoastSpawnResidentType18(void) {
-    actorCreateForKind(ACTOR_KIND_SLOWPOKE, 254.0F, 15.0F, 370.0F, 0.0F, 180.0F, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC),
-                       D_80144CAC_scene_cobalt_coast, 0);
+    actorCreateForKind(ACTOR_KIND_SLOWPOKE, 254.0F, 15.0F, 370.0F, 0.0F, 180.0F,
+                       *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC), D_80144CAC_scene_cobalt_coast, 0);
 }
 
 extern u8 D_801418D4_scene_cobalt_coast[];
@@ -42,8 +42,8 @@ extern u8 D_801418D4_scene_cobalt_coast[];
 /// Spawn the fixed type-3 resident for the coast scene.
 /// \returns Nothing.
 void cobaltCoastSpawnResidentType3(void) {
-    actorCreateForKind(ACTOR_KIND_SQUIRTLE, 354.98F, 6.41F, 285.68F, 0.0F, 270.0F, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC),
-                       D_801418D4_scene_cobalt_coast, 0);
+    actorCreateForKind(ACTOR_KIND_SQUIRTLE, 354.98F, 6.41F, 285.68F, 0.0F, 270.0F,
+                       *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC), D_801418D4_scene_cobalt_coast, 0);
 }
 
 extern u8 D_8014263C_scene_cobalt_coast[];
@@ -51,8 +51,8 @@ extern u8 D_8014263C_scene_cobalt_coast[];
 /// Spawn the fixed type-4 resident for the coast scene.
 /// \returns Nothing.
 void cobaltCoastSpawnResidentType4(void) {
-    actorCreateForKind(ACTOR_KIND_CHARMANDER, 310.3F, 6.53F, 264.0F, 0.0F, 350.0F, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC),
-                       D_8014263C_scene_cobalt_coast, 0);
+    actorCreateForKind(ACTOR_KIND_CHARMANDER, 310.3F, 6.53F, 264.0F, 0.0F, 350.0F,
+                       *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC), D_8014263C_scene_cobalt_coast, 0);
 }
 
 extern u8 D_80143334_scene_cobalt_coast[];
@@ -60,8 +60,8 @@ extern u8 D_80143334_scene_cobalt_coast[];
 /// Spawn the fixed type-1 resident for the coast scene.
 /// \returns Nothing.
 void cobaltCoastSpawnResidentType1(void) {
-    actorCreateForKind(ACTOR_KIND_BULBASAUR, 284.64F, 6.19F, 294.3F, 0.0F, 50.0F, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC),
-                       D_80143334_scene_cobalt_coast, 0);
+    actorCreateForKind(ACTOR_KIND_BULBASAUR, 284.64F, 6.19F, 294.3F, 0.0F, 50.0F,
+                       *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC), D_80143334_scene_cobalt_coast, 0);
 }
 
 extern u8 D_80144010_scene_cobalt_coast[];
@@ -69,8 +69,8 @@ extern u8 D_80144010_scene_cobalt_coast[];
 /// Spawn the fixed type-8 resident for the coast scene.
 /// \returns Nothing.
 void cobaltCoastSpawnResidentType8(void) {
-    actorCreateForKind(ACTOR_KIND_CATERPIE, 364.38F, 6.01F, 310.02F, 0.0F, 312.0F, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC),
-                       D_80144010_scene_cobalt_coast, 0);
+    actorCreateForKind(ACTOR_KIND_CATERPIE, 364.38F, 6.01F, 310.02F, 0.0F, 312.0F,
+                       *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC), D_80144010_scene_cobalt_coast, 0);
 }
 
 extern f32 D_801476B8_scene_cobalt_coast;
@@ -88,8 +88,8 @@ extern u8 D_801455D0_scene_cobalt_coast[];
 /// Spawn the fixed type-11 resident for the coast scene.
 /// \returns Nothing.
 void cobaltCoastSpawnResidentType11(void) {
-    actorCreateForKind(ACTOR_KIND_LAPRAS, 320.0F, 0.23F, 413.0F, 0.0F, 160.0F, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC),
-                       D_801455D0_scene_cobalt_coast, 0);
+    actorCreateForKind(ACTOR_KIND_LAPRAS, 320.0F, 0.23F, 413.0F, 0.0F, 160.0F,
+                       *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC), D_801455D0_scene_cobalt_coast, 0);
 }
 
 extern u8 D_801460FC_scene_cobalt_coast[];
@@ -97,8 +97,8 @@ extern u8 D_801460FC_scene_cobalt_coast[];
 /// Spawn the first fixed type-14 resident for the coast scene.
 /// \returns Nothing.
 void cobaltCoastSpawnFirstResidentType14(void) {
-    actorCreateForKind(ACTOR_KIND_BUTTERFREE, 310.0F, 0.0F, 350.0F, 0.0F, 320.0F, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC),
-                       D_801460FC_scene_cobalt_coast, 0);
+    actorCreateForKind(ACTOR_KIND_BUTTERFREE, 310.0F, 0.0F, 350.0F, 0.0F, 320.0F,
+                       *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC), D_801460FC_scene_cobalt_coast, 0);
 }
 
 extern u8 D_80146A8C_scene_cobalt_coast[];
@@ -106,8 +106,8 @@ extern u8 D_80146A8C_scene_cobalt_coast[];
 /// Spawn the second fixed type-14 resident for the coast scene.
 /// \returns Nothing.
 void cobaltCoastSpawnSecondResidentType14(void) {
-    actorCreateForKind(ACTOR_KIND_BUTTERFREE, 320.0F, 0.0F, 353.0F, 0.0F, 320.0F, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC),
-                       D_80146A8C_scene_cobalt_coast, 0);
+    actorCreateForKind(ACTOR_KIND_BUTTERFREE, 320.0F, 0.0F, 353.0F, 0.0F, 320.0F,
+                       *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC), D_80146A8C_scene_cobalt_coast, 0);
 }
 
 extern f32 D_80146AA0_scene_cobalt_coast[];

@@ -46,16 +46,6 @@ struct {
 /// \note Original identifier: \c D_8009B580 (0x8009B580).
 extern s32 gEyeCatchSelectedGroup;
 
-
-
-
-
-
-
-
-
-
-
 /// Dispatch the next registered command for an actor script.
 /// \param actor Actor whose script VM supplies a valid command selector and command arguments.
 /// \returns The selected command execution status.
@@ -213,7 +203,6 @@ s32 actorScriptBuildSharedText(u8 *actor) {
     return SCRIPT_COMMAND_CONTINUE;
 }
 
-
 /// Build shared script text through the alternate text command.
 /// \param actor Actor whose script supplies a nonnegative string count as an instruction operand and that many stack strings; the combined text follows argument order, is limited to 79 characters, and its VM receives zero.
 /// \returns Zero, allowing script execution to continue.
@@ -294,7 +283,6 @@ s32 actorScriptPassThroughInteger(u8 *actor) {
     return SCRIPT_COMMAND_CONTINUE;
 }
 
-
 /// Provide the supplied floating-point value as the script result.
 /// \param actor Actor whose script VM supplies a floating-point value and receives that same value.
 /// \returns Zero, allowing script execution to continue.
@@ -319,7 +307,6 @@ s32 actorScriptResetTimer(u8 *actor) {
     return SCRIPT_COMMAND_CONTINUE;
 }
 
-
 /// Provide the elapsed time on the resettable script timer.
 /// \param actor Actor whose script VM receives the number of elapsed seconds since the timer was reset.
 /// \returns Zero, allowing script execution to continue.
@@ -331,7 +318,6 @@ s32 actorScriptPushTimer(u8 *actor) {
     scriptVmPushFloat((ScriptVm *)((s32)vmBytes), ((ScriptVm *)vmBytes)->elapsed);
     return SCRIPT_COMMAND_CONTINUE;
 }
-
 
 /// Queue script text for display using the configured message style and duration.
 /// \param actor Actor whose script supplies a nonnegative string count as an instruction operand and that many stack strings, whose combined text in argument order must fit within 59 characters; its VM receives zero regardless of whether the message is accepted.
@@ -395,7 +381,6 @@ s32 actorScriptSetMessageDuration(u8 *actor) {
     scriptVmPushInteger((ScriptVm *)((s32)sp1C), 0);
     return SCRIPT_COMMAND_CONTINUE;
 }
-
 
 /// Append script text to the text window.
 /// \param actor Actor whose script supplies a nonnegative string count as an instruction operand and that many stack strings; the combined text follows argument order, is limited to 79 characters, and its VM receives zero.
@@ -469,7 +454,6 @@ s32 actorScriptStopActionScript(u8 *actor) {
     return SCRIPT_COMMAND_CONTINUE;
 }
 
-
 /// Set a fixed target position with no target-distance allowance.
 /// \param actor Actor whose script VM supplies the target X, Y, and Z coordinates as floating-point values and receives zero; tracked-target selection is cleared.
 /// \returns Zero, allowing script execution to continue.
@@ -489,7 +473,6 @@ s32 actorScriptSetTargetPosition(u8 *actor) {
     return SCRIPT_COMMAND_CONTINUE;
 }
 
-
 /// Report the remaining distance to approach the target.
 /// \param actor Actor whose script VM receives the approximate three-dimensional target distance minus its distance allowance, clamped to zero.
 /// \returns Zero, allowing script execution to continue.
@@ -505,7 +488,6 @@ s32 actorScriptPushTargetApproachDistance(u8 *actor) {
     scriptVmPushFloat((ScriptVm *)((s32)vm), d);
     return SCRIPT_COMMAND_CONTINUE;
 }
-
 
 /// Select the fallback object position as a fixed target with no distance allowance.
 /// \param actor Actor with a live fallback object whose current position supplies the target; tracked-target selection is cleared and its script VM receives zero.

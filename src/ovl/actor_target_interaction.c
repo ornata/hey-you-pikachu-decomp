@@ -146,7 +146,8 @@ void actorRefreshTrackingTargetPosition(u8 *actor) {
     u8 *state = ((RuntimeObjectPrefix *)actor)->state.bytes;
     u8 *target;
 
-    if ((((ActorScriptState *)state)->targetMode != ACTOR_TARGET_FIXED) && (((ActorScriptState *)state)->targetHandle != 0)) {
+    if ((((ActorScriptState *)state)->targetMode != ACTOR_TARGET_FIXED) &&
+        (((ActorScriptState *)state)->targetHandle != 0)) {
         target = actorResolveStoredTarget(actor);
         if (target != NULL) {
             if (((ActorScriptState *)state)->targetMode == ACTOR_TARGET_FOLLOW) {
@@ -204,7 +205,6 @@ s32 actorPostItemImpactMessage(u8 *actor, u8 *item) {
     msg.arg4 = ((RuntimeObjectPrefix *)item)->handle;
     return actorPostScriptMessage((s32)actor, msg, 0);
 }
-
 
 /// Attempt to make an actor hold the requested item, releasing its previous held item on success.
 /// \param actor Actor that will hold the item.
@@ -326,7 +326,6 @@ s32 actorAcknowledgeScriptMessage(u8 *actor) {
     return previousPending;
 }
 
-
 /// Select both actor appearance variants and whether they persist across action changes.
 /// \param actor Actor whose appearance is changed.
 /// \param slot0Variant Model variant for appearance slot zero.
@@ -346,7 +345,6 @@ void actorSetAppearanceVariants(u8 *actor, s32 slot0Variant, s32 slot1Variant, s
     }
 }
 
-
 /// Query ground height at an offset along the actor heading.
 /// \param actor Actor providing the position and heading.
 /// \param distance Signed horizontal distance along the actor heading.
@@ -362,7 +360,8 @@ f32 actorGetGroundHeightAhead(u8 *actor, f32 distance, f32 heightOffset) {
     pos[1] = ((RuntimeObjectPrefix *)actor)->worldPosition[1] + heightOffset;
     pos[2] = ((RuntimeObjectPrefix *)actor)->worldPosition[2] +
              (mathCosDegrees(((ActorScriptState *)state)->orientation[1]) * distance);
-    return terrainGetWorldHeightForQuery((((RuntimeObjectPrefix *)actor)->kind == 0x25) ? 3 : 4, pos[0], pos[1], pos[2], NULL);
+    return terrainGetWorldHeightForQuery((((RuntimeObjectPrefix *)actor)->kind == 0x25) ? 3 : 4, pos[0], pos[1], pos[2],
+                                         NULL);
 }
 
 /// Separate symbol view of the primary player record's view yaw.

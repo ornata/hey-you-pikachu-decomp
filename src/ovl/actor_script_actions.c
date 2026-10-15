@@ -35,7 +35,6 @@
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
-
 /// Consume an eligible held item and replenish the actor action resource.
 /// \param actor Actor whose held item is consumed.
 /// \returns One when an eligible item was processed, or zero when no eligible item is held.
@@ -86,7 +85,6 @@ s32 actorScriptWaitForSequencerStop(u8 *actor) {
     return SCRIPT_VM_WAITING_FOR_ACTION;
 }
 
-
 /// Start the timed program supplied by the script and wait for sequencing to stop.
 /// \param actor Actor whose script supplies a valid timed-program index or ACTION_SCRIPT_NO_PROGRAM and receives zero when sequencing stops.
 /// \returns One when complete, or two while waiting.
@@ -102,7 +100,6 @@ s32 actorScriptPlayAction(u8 *actor) {
     }
     return actorScriptWaitForSequencerStop(actor);
 }
-
 
 /// Wait for sequencing to stop or interrupt it when a script message is pending.
 /// \param actor Actor whose action and script mailbox are checked.
@@ -121,7 +118,6 @@ s32 actorScriptWaitForActionOrMessage(u8 *actor) {
     }
     return actorScriptWaitForSequencerStop(actor);
 }
-
 
 /// Start the script-selected timed program and wait for sequencing to stop or a pending message.
 /// \param actor Actor whose script supplies the action and receives its completion result.
@@ -160,7 +156,6 @@ s32 actorScriptThrowHeldItem(u8 *actor) {
     return actorScriptWaitForSequencerStop(actor);
 }
 
-
 /// Run the script-selected item acquisition action and report the held item kind.
 /// \param actor Actor whose script supplies the acquisition action and settings.
 /// \returns One when complete, or two while waiting; completion supplies the held item kind, or zero when absent, as the script result.
@@ -191,7 +186,6 @@ s32 actorScriptAcquireItem(u8 *actor) {
 block_6:
     return SCRIPT_VM_WAITING_FOR_ACTION;
 }
-
 
 /// Run the script-selected eating action, consume its held item, and handle any remaining item.
 /// \param actor Actor whose script supplies the eating action.
@@ -242,7 +236,6 @@ s32 actorScriptEatHeldItem(u8 *actor) {
     }
     return SCRIPT_VM_WAITING_FOR_ACTION;
 }
-
 
 /// Poll whether the actor action has stopped.
 /// \param object Actor whose action is checked.

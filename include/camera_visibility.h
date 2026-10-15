@@ -15,7 +15,7 @@ typedef struct CameraViewRegion {
     f32 margin;       ///< Additional lateral allowance in camera-space units.
 } CameraViewRegion;
 typedef char CameraViewRegionSizeCheck[(sizeof(CameraViewRegion) == 0x14) ? 1 : -1];
-typedef char CameraViewRegionMarginOffsetCheck[((u32)&((CameraViewRegion *)0)->margin == 0x10) ? 1 : -1];
+typedef char CameraViewRegionMarginOffsetCheck[((u32) & ((CameraViewRegion *)0)->margin == 0x10) ? 1 : -1];
 
 /// Test a camera-space position against a viewing region.
 /// \param region Region passed by value with inclusive depth limits.

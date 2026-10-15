@@ -49,17 +49,17 @@
 /// Private text model owning two panels and drawing storage.
 /// Panel colors survive destruction; caller-owned model storage remains valid.
 typedef struct Flipbook {
-    /* 0x00 */ TextPanel panels[2]; ///< Displayed and prepared text banks.
-    /* 0x40 */ s32 width; ///< Surface width in pixels.
-    /* 0x44 */ s32 stripCount; ///< Number of visible sixteen-pixel rows.
-    /* 0x48 */ s32 pendingSwap; ///< Nonzero when the next draw must select prepared text.
-    /* 0x4C */ s32 activeBank; ///< Currently displayed panel and command bank.
-    /* 0x50 */ Gfx *displayList; ///< Owned drawing allocation and surface display list.
-    /* 0x54 */ Gfx *rowBranches[2]; ///< Per-bank row branches within the drawing allocation.
-    /* 0x5C */ Gfx *commands[2]; ///< Per-bank text commands within the drawing allocation.
-    /* 0x64 */ Vtx *vertices; ///< Surface vertices within the drawing allocation.
-    /* 0x68 */ u8 pad68[4]; ///< Unresolved storage; no semantic interpretation established.
-    /* 0x6C */ u8 color[4]; ///< RGBA modulation color.
+    /* 0x00 */ TextPanel panels[2];  ///< Displayed and prepared text banks.
+    /* 0x40 */ s32 width;            ///< Surface width in pixels.
+    /* 0x44 */ s32 stripCount;       ///< Number of visible sixteen-pixel rows.
+    /* 0x48 */ s32 pendingSwap;      ///< Nonzero when the next draw must select prepared text.
+    /* 0x4C */ s32 activeBank;       ///< Currently displayed panel and command bank.
+    /* 0x50 */ Gfx *displayList;     ///< Owned drawing allocation and surface display list.
+    /* 0x54 */ Gfx *rowBranches[2];  ///< Per-bank row branches within the drawing allocation.
+    /* 0x5C */ Gfx *commands[2];     ///< Per-bank text commands within the drawing allocation.
+    /* 0x64 */ Vtx *vertices;        ///< Surface vertices within the drawing allocation.
+    /* 0x68 */ u8 pad68[4];          ///< Unresolved storage; no semantic interpretation established.
+    /* 0x6C */ u8 color[4];          ///< RGBA modulation color.
     /* 0x70 */ u8 outlineIndices[2]; ///< Leading and trailing outline indices; 255 disables an outline.
 } Flipbook;
 
@@ -70,16 +70,16 @@ typedef char FlipbookBankOffsetCheck[(((u32) & ((Flipbook *)0)->activeBank) == 0
 typedef char FlipbookBranchesOffsetCheck[(((u32) & ((Flipbook *)0)->rowBranches) == 0x54) ? 1 : -1];
 typedef char FlipbookColorOffsetCheck[(((u32) & ((Flipbook *)0)->color) == 0x6C) ? 1 : -1];
 typedef char FlipbookOutlinesOffsetCheck[(((u32) & ((Flipbook *)0)->outlineIndices) == 0x70) ? 1 : -1];
-typedef char FlipbookDrawingOffsetCheck[(((u32)&((Flipbook *)0)->displayList) == 0x50) ? 1 : -1];
-typedef char FlipbookVerticesOffsetCheck[(((u32)&((Flipbook *)0)->vertices) == 0x64) ? 1 : -1];
+typedef char FlipbookDrawingOffsetCheck[(((u32) & ((Flipbook *)0)->displayList) == 0x50) ? 1 : -1];
+typedef char FlipbookVerticesOffsetCheck[(((u32) & ((Flipbook *)0)->vertices) == 0x64) ? 1 : -1];
 
 /// Owned scrolling state and model, borrowing its assigned text-pointer array.
 typedef struct ScrollBoardState {
-    u8 **text; ///< Borrowed null-terminated array of encoded text pointers.
-    s32 topLine; ///< First text entry displayed by the model.
-    s32 textCount; ///< Number of assigned non-null text entries.
-    f32 rowOffset; ///< Vertical offset within the current sixteen-pixel row.
-    f32 speed; ///< Signed scrolling speed in pixels per second.
+    u8 **text;      ///< Borrowed null-terminated array of encoded text pointers.
+    s32 topLine;    ///< First text entry displayed by the model.
+    s32 textCount;  ///< Number of assigned non-null text entries.
+    f32 rowOffset;  ///< Vertical offset within the current sixteen-pixel row.
+    f32 speed;      ///< Signed scrolling speed in pixels per second.
     Flipbook model; ///< Owned text panels and drawing storage.
 } ScrollBoardState;
 
@@ -120,7 +120,8 @@ void flipbookResetImageDisplayLists(u8 *);
 /// \param trailingOutline Bottom and right outline palette index from 0 through 15, or -1 to disable it.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80025030 (0x80025030).
-void flipbookInitialize(u8 *object, s32 columns, s32 lines, u8 red, u8 green, u8 blue, u8 alpha, s32 leadingOutline, s32 trailingOutline) {
+void flipbookInitialize(u8 *object, s32 columns, s32 lines, u8 red, u8 green, u8 blue, u8 alpha, s32 leadingOutline,
+                        s32 trailingOutline) {
     s32 branchSize;
     u32 commandSize;
     s32 prefixSize;
@@ -295,7 +296,6 @@ void flipbookResetImageDisplayLists(u8 *object) {
     }
 }
 
-
 /// Prepare the latest text-display model content and color for drawing.
 /// \param f Initialized text-display model to prepare; a writable global drawing cursor must be available.
 /// \returns A borrowed display list owned by the model, valid until destruction.
@@ -383,12 +383,14 @@ void flipbookSetText(u8 *object, u8 **text, s32 count) {
             trailingOutline = (s8)((Flipbook *)object)->outlineIndices[1];
             if ((trailingOutline >= 0) && (trailingOutline < 0x10)) {
                 image4BitAddOffsetOutline((TextImage *)lineImage, 1, 0, 0, (s32)trailingOutline);
-                image4BitAddOffsetOutline((TextImage *)lineImage, 0, 1, 0, (s32) (s8)((Flipbook *)object)->outlineIndices[1]);
+                image4BitAddOffsetOutline((TextImage *)lineImage, 0, 1, 0,
+                                          (s32)(s8)((Flipbook *)object)->outlineIndices[1]);
             }
             leadingOutline = (s8)((Flipbook *)object)->outlineIndices[0];
             if ((leadingOutline >= 0) && (leadingOutline < 0x10)) {
                 image4BitAddOffsetOutline((TextImage *)lineImage, -1, 0, 0, (s32)leadingOutline);
-                image4BitAddOffsetOutline((TextImage *)lineImage, 0, -1, 0, (s32) (s8)((Flipbook *)object)->outlineIndices[0]);
+                image4BitAddOffsetOutline((TextImage *)lineImage, 0, -1, 0,
+                                          (s32)(s8)((Flipbook *)object)->outlineIndices[0]);
             }
             count -= 1;
             text++;
@@ -490,14 +492,12 @@ void scrollBoardUpdate(u8 *object) {
                 boardState->topLine = topLine;
                 TRACE("newTextIdx:%d\n", topLine);
                 TRACE("Error: textData_lines:%d < %d\n", boardState->textCount, topLine);
-                flipbookSetText((u8 *)&boardState->model, boardState->text + topLine,
-                                boardState->model.stripCount);
+                flipbookSetText((u8 *)&boardState->model, boardState->text + topLine, boardState->model.stripCount);
             }
         }
         ((RuntimeObjectPrefix *)object)->position[1] = boardState->rowOffset;
     }
 }
-
 
 /// Prepare the current scrolling text-board content for drawing.
 /// \param object Initialized scrolling text board with valid model state.
@@ -528,7 +528,8 @@ extern u8 gScrollBoardObjectTemplate[];
 /// \param trailingOutline Bottom and right outline palette index from 0 through 15, or -1 to disable it.
 /// \returns Address of an owned board object to release through object destruction.
 /// \note Original decompilation identifier: \c func_80025BE0 (0x80025BE0).
-s32 scrollBoardCreateObject(s32 columns, s32 lines, u8 red, u8 green, u8 blue, u8 alpha, s32 leadingOutline, s32 trailingOutline) {
+s32 scrollBoardCreateObject(s32 columns, s32 lines, u8 red, u8 green, u8 blue, u8 alpha, s32 leadingOutline,
+                            s32 trailingOutline) {
     u8 *sp30;
     u8 *boardObject;
     s32 boardStateAddress;
@@ -541,7 +542,6 @@ s32 scrollBoardCreateObject(s32 columns, s32 lines, u8 red, u8 green, u8 blue, u
                        leadingOutline, trailingOutline);
     return (s32)boardObject;
 }
-
 
 /// Assign scrolling text-board content and return to the beginning of non-null text, preserving scrolling speed.
 /// \param object Initialized scrolling text board with valid model state.
@@ -594,7 +594,8 @@ void scrollBoardSetSpeed(u8 *object, f32 speed) {
 /// \param trailingOutline Bottom and right outline palette index from 0 through 15, or -1 to disable it.
 /// \returns A registered hierarchy root to release through hierarchy destruction.
 /// \note Original decompilation identifier: \c func_80025D24 (0x80025D24).
-u8 *scrollBoardCreateHierarchy(s32 columns, s32 lines, u8 red, u8 green, u8 blue, u8 alpha, s32 leadingOutline, s32 trailingOutline) {
+u8 *scrollBoardCreateHierarchy(s32 columns, s32 lines, u8 red, u8 green, u8 blue, u8 alpha, s32 leadingOutline,
+                               s32 trailingOutline) {
     u8 *hierarchyRoot;
 
     hierarchyRoot = objectCreateDefault();
@@ -695,10 +696,10 @@ s32 messengerGetActorContactMode(u8 *actor) {
 
 /// Behaviors serviced by a messenger projectile's update callback.
 typedef enum MessengerFlightMode {
-    MESSENGER_LAUNCH = 0, ///< Initial homing-projectile launch interval.
-    MESSENGER_HOMING = 1, ///< Guided flight toward the recipient.
-    MESSENGER_DISSIPATING = 2, ///< Fading projectile awaiting removal.
-    MESSENGER_REBOUND = 3, ///< Brief flight after recipient contact.
+    MESSENGER_LAUNCH = 0,          ///< Initial homing-projectile launch interval.
+    MESSENGER_HOMING = 1,          ///< Guided flight toward the recipient.
+    MESSENGER_DISSIPATING = 2,     ///< Fading projectile awaiting removal.
+    MESSENGER_REBOUND = 3,         ///< Brief flight after recipient contact.
     MESSENGER_COLLISION_FLIGHT = 4 ///< Direct flight with collision delivery.
 } MessengerFlightMode;
 
@@ -737,7 +738,6 @@ void messengerAdvancePosition(u8 *object) {
 /// Integer appearance animation used when messenger state is initialized.
 /// \note Original identifier: \c D_8006B4E0 (0x8006B4E0).
 extern s32 gMessengerFlightAnimation;
-
 
 /// Initialize messenger projectile state and animation.
 /// \param object Projectile receiving owned state; previous state must already be released.
@@ -924,7 +924,6 @@ void messengerUpdateCollisionFlight(u8 *object, s32 unused) {
     }
 }
 
-
 /// Advance messenger dissipation and request removal when it finishes.
 /// \param object Messenger projectile with initialized state.
 /// \param animationStatus Animation completion status; 1 requests removal immediately.
@@ -992,7 +991,6 @@ void messengerUpdate(u8 *object) {
     objectOrientAlongCameraView(object);
 }
 
-
 /// Prepare messenger opacity for drawing.
 /// \param object Messenger projectile with initialized state.
 /// \returns Borrowed object display list, or null when no drawing continuation is supplied.
@@ -1027,7 +1025,8 @@ void messengerBeginDissipation(f32 *object) {
     projectileState = ((RuntimeObjectPrefix *)object)->state.bytes;
     ((MessengerFlightState *)projectileState)->mode = MESSENGER_DISSIPATING;
     ((MessengerFlightState *)projectileState)->remainingTime = 0.35F;
-    animationIntegerTrackInitialize(&((MessengerFlightState *)projectileState)->animation, (ValueKey *)((s32)gMessengerDissipationAnimation));
+    animationIntegerTrackInitialize(&((MessengerFlightState *)projectileState)->animation,
+                                    (ValueKey *)((s32)gMessengerDissipationAnimation));
     objectPlaySpatialSound((u8 *)object, 0xBD, 0.0F, 500.0F);
     if (gTrackedMessengerHandle == ((RuntimeObjectPrefix *)object)->handle) {
         gTrackedMessengerHandle = 0;
@@ -1066,7 +1065,6 @@ void messengerBeginRebound(u8 *object) {
             ((RuntimeObjectPrefix *)target)->handle, 0.7F, 0.5F, 5.0F, 0.03F, 0.03F, 0xC2, 1, count);
     }
 }
-
 
 /// Reset the tracked messenger projectile reference.
 /// \returns Nothing.

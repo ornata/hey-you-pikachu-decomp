@@ -86,8 +86,10 @@ void springleafFieldSpawnGrowthResident(f32 *position, s32 residentIndex) {
 /// Prepare scene resources for evolved field residents.
 /// \returns Nothing.
 void springleafFieldPrepareEvolvedResidents(void) {
-    objectRequestHierarchyDestruction(actorCreateForKind(ACTOR_KIND_GLOOM, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, NULL, 0));
-    objectRequestHierarchyDestruction(actorCreateForKind(ACTOR_KIND_VILEPLUME, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, NULL, 0));
+    objectRequestHierarchyDestruction(
+        actorCreateForKind(ACTOR_KIND_GLOOM, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, NULL, 0));
+    objectRequestHierarchyDestruction(
+        actorCreateForKind(ACTOR_KIND_VILEPLUME, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, NULL, 0));
 }
 
 /// Spawn a field item with a randomized heading.
@@ -131,7 +133,8 @@ extern FieldOccupancy D_80157F70_scene_springleaf_field;
 /// The scene overlay retains this resource for the resident's lifetime.
 /// \note Original identifier: \c D_801571E4_scene_springleaf_field (0x801571E4).
 extern u8 gResidentAttentionScript_scene_springleaf_field[];
-extern u8 D_80157B58_scene_springleaf_field[], D_80157C78_scene_springleaf_field[], D_8014E354_scene_springleaf_field[], D_80159474_scene_springleaf_field[];
+extern u8 D_80157B58_scene_springleaf_field[], D_80157C78_scene_springleaf_field[], D_8014E354_scene_springleaf_field[],
+    D_80159474_scene_springleaf_field[];
 extern f32 D_801594F0_scene_springleaf_field, D_801594F4_scene_springleaf_field, D_801594F8_scene_springleaf_field,
     D_801594FC_scene_springleaf_field;
 extern f32 D_80134BE0_scene_springleaf_field[][3];
@@ -146,16 +149,16 @@ void springleafFieldInitializeObjects(void) {
     s32 kind;
     occupied = D_80157F70_scene_springleaf_field;
     if (progressGetValue(0x12) != 0) {
-        actorCreateForKind(ACTOR_KIND_SQUIRTLE, 203.45F, 0.5F, 35.97F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
-                           gResidentAttentionScript_scene_springleaf_field, 0);
+        actorCreateForKind(ACTOR_KIND_SQUIRTLE, 203.45F, 0.5F, 35.97F, 0.0F, 0.0F,
+                           gCurrentAreaConfiguration->objectScale, gResidentAttentionScript_scene_springleaf_field, 0);
     }
     if (progressGetCurrentChapter() == 8) {
         actorCreateForKind(ACTOR_KIND_HAUNTER, 0, 0, 0, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                            D_80157B58_scene_springleaf_field, 0);
     }
     if (progressGetValue(0x76) >= 3) {
-        actorCreateForKind(ACTOR_KIND_BUTTERFREE, 130.0F, 16.0F, 150.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
-                           D_80157C78_scene_springleaf_field, 0);
+        actorCreateForKind(ACTOR_KIND_BUTTERFREE, 130.0F, 16.0F, 150.0F, 0.0F, 0.0F,
+                           gCurrentAreaConfiguration->objectScale, D_80157C78_scene_springleaf_field, 0);
     }
     actorCreateForKind(ACTOR_KIND_DIGLETT, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_8014E354_scene_springleaf_field, 0);

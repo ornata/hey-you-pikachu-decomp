@@ -272,7 +272,6 @@ void runtimeMainThreadEntry(void *);
 #include "runtime_services.h"
 #include "toolbox.h"
 
-
 void runtimeResetTiming(void);
 
 /// Provide the inactive operating-system and hardware information report.
@@ -559,7 +558,6 @@ s32 runtimeGetUiPulseAlpha(void) {
     }
     return var_v1 & 0xFF;
 }
-
 
 /// Request a runtime program transition and reset transient input and recognition state.
 /// \param program Runtime program identifier; only zero is supported by the retained table.
@@ -991,7 +989,7 @@ extern u8 ovl_BSS_END[];
 /// \note Matching/portability: ROM offsets retain the legacy pointer-width argument view in this caller.
 /// The canonical integer-offset declaration and explicit casts change ROM code; all addresses are 32 bits.
 void *overlayLoadFromRom(void *romStart, void *romEnd, void *destination, void *textStart, void *textEnd,
-                        void *dataStart, void *dataEnd, void *bssStart, void *bssEnd);
+                         void *dataStart, void *dataEnd, void *bssStart, void *bssEnd);
 extern u8 D_B140C0[];
 
 /// Run the main runtime thread through successive program lifecycles.
@@ -1068,8 +1066,8 @@ void runtimeStartMainThread(void *scheduler) {
 /// \note Original decompilation identifier: \c func_8000C094 (0x8000C094).
 void runtimeDrawPromptPanel(void) {
     if (gRuntimePromptPanelImages != 0) {
-        textPanelSetLineColor((TextPanel *)&gRuntimePromptPanelLineCount, gRuntimePromptPanelLineCount - 1, 0xFF, 0xFF, 0xFF,
-                              runtimeGetUiPulseAlpha());
+        textPanelSetLineColor((TextPanel *)&gRuntimePromptPanelLineCount, gRuntimePromptPanelLineCount - 1, 0xFF, 0xFF,
+                              0xFF, runtimeGetUiPulseAlpha());
         gDPPipeSync(gRenderDisplayListCursor++);
         gDPSetCycleType(gRenderDisplayListCursor++, G_CYC_1CYCLE);
         textPanelDraw((TextPanel *)&gRuntimePromptPanelLineCount, &gRenderDisplayListCursor, 2);

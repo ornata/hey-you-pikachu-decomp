@@ -20,15 +20,15 @@
 typedef struct HpBlk {
     struct HpBlk *prev; ///< Previous block in the same heap.
     struct HpBlk *next; ///< Next block in the same heap.
-    u32 size; ///< Payload capacity in bytes, excluding this metadata.
-    u16 flag; ///< Allocation category supplied by the caller, or 0xFFFF for a fresh free block.
-    u8 magic; ///< Metadata validity marker, 0xA5 while valid.
-    u8 tag; ///< Allocation state: zero for free, one for allocated.
+    u32 size;           ///< Payload capacity in bytes, excluding this metadata.
+    u16 flag;           ///< Allocation category supplied by the caller, or 0xFFFF for a fresh free block.
+    u8 magic;           ///< Metadata validity marker, 0xA5 while valid.
+    u8 tag;             ///< Allocation state: zero for free, one for allocated.
 } HpBlk;
 typedef char HpBlkSizeCheck[(sizeof(HpBlk) == 0x10) ? 1 : -1];
-typedef char HpBlkSizeOffsetCheck[(((u32)&((HpBlk *)0)->size) == 8) ? 1 : -1];
-typedef char HpBlkFlagOffsetCheck[(((u32)&((HpBlk *)0)->flag) == 0xC) ? 1 : -1];
-typedef char HpBlkTagOffsetCheck[(((u32)&((HpBlk *)0)->tag) == 0xF) ? 1 : -1];
+typedef char HpBlkSizeOffsetCheck[(((u32) & ((HpBlk *)0)->size) == 8) ? 1 : -1];
+typedef char HpBlkFlagOffsetCheck[(((u32) & ((HpBlk *)0)->flag) == 0xC) ? 1 : -1];
+typedef char HpBlkTagOffsetCheck[(((u32) & ((HpBlk *)0)->tag) == 0xF) ? 1 : -1];
 
 void _bzero(void *, s32);
 

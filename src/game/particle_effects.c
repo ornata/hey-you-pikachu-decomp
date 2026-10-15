@@ -44,11 +44,11 @@ typedef void (*EffectEmissionCallback)(u8 *emitter);
 /// State owned by a timed, target-following effect emitter.
 /// Targets are handles rather than retained object pointers. The callback must remain callable until destruction.
 typedef struct EffectEmitterState {
-    f32 remaining; ///< Remaining lifetime; nonpositive initial values disable automatic expiry.
-    s32 targetHandle; ///< Object to follow, or an unavailable handle to use the fallback position.
-    s32 referenceHandle; ///< Object defining the offset direction when both targets are available.
-    f32 offset; ///< Signed horizontal distance from the target away from the reference.
-    f32 cooldown; ///< Seconds until the emission callback may emit again.
+    f32 remaining;               ///< Remaining lifetime; nonpositive initial values disable automatic expiry.
+    s32 targetHandle;            ///< Object to follow, or an unavailable handle to use the fallback position.
+    s32 referenceHandle;         ///< Object defining the offset direction when both targets are available.
+    f32 offset;                  ///< Signed horizontal distance from the target away from the reference.
+    f32 cooldown;                ///< Seconds until the emission callback may emit again.
     EffectEmissionCallback emit; ///< Optional per-update emission callback.
 } EffectEmitterState;
 
@@ -57,7 +57,7 @@ typedef char EffectEmitterTargetOffsetCheck[(((u32) & ((EffectEmitterState *)0)-
 typedef char EffectEmitterReferenceOffsetCheck[(((u32) & ((EffectEmitterState *)0)->referenceHandle) == 8) ? 1 : -1];
 typedef char EffectEmitterOffsetOffsetCheck[(((u32) & ((EffectEmitterState *)0)->offset) == 0xC) ? 1 : -1];
 typedef char EffectEmitterCooldownOffsetCheck[(((u32) & ((EffectEmitterState *)0)->cooldown) == 0x10) ? 1 : -1];
-typedef char EffectEmitterCallbackOffsetCheck[((u32)&((EffectEmitterState *)0)->emit == 0x14) ? 1 : -1];
+typedef char EffectEmitterCallbackOffsetCheck[((u32) & ((EffectEmitterState *)0)->emit == 0x14) ? 1 : -1];
 
 /// Default opacity animation used when wisp state is initialized.
 /// \note Original identifier: \c D_8006B4C4 (0x8006B4C4).
@@ -84,12 +84,12 @@ typedef struct WispColor {
 
 /// Owned wisp drawing banks, frame tracks, opacity track and modulation color.
 typedef struct WispState {
-    s32 count; ///< Number of texture-frame tracks and drawing branches.
-    f32 playbackRate; ///< Time multiplier shared by frame and opacity playback.
-    Gfx *lists[2]; ///< Two drawing banks; lists[0] owns their shared allocation.
+    s32 count;          ///< Number of texture-frame tracks and drawing branches.
+    f32 playbackRate;   ///< Time multiplier shared by frame and opacity playback.
+    Gfx *lists[2];      ///< Two drawing banks; lists[0] owns their shared allocation.
     ValueTrack *tracks; ///< Owned per-branch texture-frame tracks.
     ValueTrack opacity; ///< Opacity playback state with borrowed key data.
-    WispColor color; ///< Red, green, blue and evaluated opacity.
+    WispColor color;    ///< Red, green, blue and evaluated opacity.
 } WispState;
 
 typedef char WispStateSizeCheck[(sizeof(WispState) == 0x24) ? 1 : -1];
@@ -139,7 +139,6 @@ s32 wispEffectUpdateDrawAnimation(u8 *effect, s32 buffer) {
     return 0;
 }
 
-
 /// Keep a wisp effect facing the current view.
 /// \param effect Live wisp effect whose orientation is updated.
 /// \returns Nothing.
@@ -148,7 +147,6 @@ void wispEffectUpdateFacing(u8 *effect) {
     objectOrientAlongCameraView(effect);
 }
 
-
 /// Keep a wisp effect facing the current view.
 /// \param effect Live wisp effect whose orientation is updated.
 /// \returns Nothing.
@@ -156,7 +154,6 @@ void wispEffectUpdateFacing(u8 *effect) {
 void wispEffectUpdateFacingAlternate(u8 *effect) {
     objectOrientAlongCameraView(effect);
 }
-
 
 /// Animate a wisp that drifts upward, expands, and turns toward the view.
 /// \param effect Live wisp effect to update.
@@ -176,7 +173,6 @@ void wispEffectUpdateDriftingMotion(u8 *effect) {
     objectOrientAlongCameraView(effect);
     ((RuntimeObjectPrefix *)effect)->rotation[0] += 50.0F * ((RuntimeObjectPrefix *)effect)->scale[0];
 }
-
 
 /// Move a wisp upward while keeping it facing the view.
 /// \param effect Live wisp effect to update.
@@ -412,10 +408,10 @@ extern s32 gRibbonAndClusterFrameAnimation;
 
 /// Owned steering target, lifetime, ground-contact state and appearance track.
 typedef struct RibbonControllerState {
-    f32 destination[3]; ///< World position toward which the ribbon steers.
-    f32 remaining; ///< Remaining lifetime in seconds.
-    s32 steeringFrame; ///< Update count until the next randomized steering direction.
-    s32 grounded; ///< Whether ground contact has already emitted a wisp.
+    f32 destination[3];   ///< World position toward which the ribbon steers.
+    f32 remaining;        ///< Remaining lifetime in seconds.
+    s32 steeringFrame;    ///< Update count until the next randomized steering direction.
+    s32 grounded;         ///< Whether ground contact has already emitted a wisp.
     ValueTrack animation; ///< Texture-frame playback with borrowed key data.
 } RibbonControllerState;
 
@@ -440,7 +436,8 @@ void ribbonEffectControllerInitialize(u8 *controller) {
     ((RibbonControllerState *)allocation)->destination[2] = 0.0F;
     ((RibbonControllerState *)allocation)->destination[1] = 0.0F;
     ((RibbonControllerState *)allocation)->destination[0] = 0.0F;
-    animationIntegerTrackInitialize(&((RibbonControllerState *)allocation)->animation, (ValueKey *)(gRibbonAndClusterFrameAnimation));
+    animationIntegerTrackInitialize(&((RibbonControllerState *)allocation)->animation,
+                                    (ValueKey *)(gRibbonAndClusterFrameAnimation));
     ((RuntimeObjectPrefix *)controller)->state.bytes = sp1C;
 }
 
@@ -701,8 +698,8 @@ extern u8 gRibbonTerminalDecorationTemplate[];
 /// creation.
 /// \returns Registered ribbon hierarchy root, managed by the object system.
 /// \note Original decompilation identifier: \c func_80018514 (0x80018514).
-u8 *ribbonEffectCreate(s32 count, f32 duration, f32 baseWidth, f32 widthVariation, s32 widthStyle, f32 x, f32 y, f32 z, f32 pitch, f32 yaw,
-                  f32 *destination) {
+u8 *ribbonEffectCreate(s32 count, f32 duration, f32 baseWidth, f32 widthVariation, s32 widthStyle, f32 x, f32 y, f32 z,
+                       f32 pitch, f32 yaw, f32 *destination) {
     u8 *root;
     Gfx *displayList;
     u8 *head;
@@ -827,7 +824,9 @@ void effectEmitterEmitBlackWisps(u8 *emitter) {
     if (((EffectEmitterState *)obj)->cooldown == 0.0F) {
         ((EffectEmitterState *)obj)->cooldown =
             (f32)(((f64)randomNext() * RANDOM_U32_UNIT_SCALE * 0.10000000149011612) + 0.10000000149011612);
-        wispEffectCreate(2, ((RuntimeObjectPrefix *)emitter)->worldPosition[0], ((RuntimeObjectPrefix *)emitter)->worldPosition[1], ((RuntimeObjectPrefix *)emitter)->worldPosition[2]);
+        wispEffectCreate(2, ((RuntimeObjectPrefix *)emitter)->worldPosition[0],
+                         ((RuntimeObjectPrefix *)emitter)->worldPosition[1],
+                         ((RuntimeObjectPrefix *)emitter)->worldPosition[2]);
     }
 }
 
@@ -842,7 +841,9 @@ void effectEmitterEmitWhiteWisps(u8 *emitter) {
     if (((EffectEmitterState *)obj)->cooldown == 0.0F) {
         ((EffectEmitterState *)obj)->cooldown =
             (f32)(((f64)randomNext() * RANDOM_U32_UNIT_SCALE * 0.6000000238418579) + 0.800000011920929);
-        wispEffectCreate(5, ((RuntimeObjectPrefix *)emitter)->worldPosition[0], ((RuntimeObjectPrefix *)emitter)->worldPosition[1], ((RuntimeObjectPrefix *)emitter)->worldPosition[2]);
+        wispEffectCreate(5, ((RuntimeObjectPrefix *)emitter)->worldPosition[0],
+                         ((RuntimeObjectPrefix *)emitter)->worldPosition[1],
+                         ((RuntimeObjectPrefix *)emitter)->worldPosition[2]);
     }
 }
 
@@ -868,7 +869,6 @@ void effectEmitterEmitScatteredParticles(u8 *emitter) {
         }
     }
 }
-
 
 /// Emit a falling-particle burst with accompanying sound when the emitter is ready.
 /// \param emitter Initialized effect emitter to update.
@@ -923,7 +923,8 @@ void effectEmitterEmitAudibleBurst(u8 *emitter) {
 /// \param blue Blue color component.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800190FC (0x800190FC).
-void effectEmitterEmitColoredParticle(u8 *emitter, f32 intervalRange, f32 minimumInterval, f32 spread, u8 red, u8 green, u8 blue) {
+void effectEmitterEmitColoredParticle(u8 *emitter, f32 intervalRange, f32 minimumInterval, f32 spread, u8 red, u8 green,
+                                      u8 blue) {
     u8 *v;
     u8 *e;
     f32 half;
@@ -995,31 +996,40 @@ void effectEmitterCreateWithCallback(f32 *, f32, s32, s32, f32, EffectEmissionCa
 /// \returns Nothing.
 ///
 /// \note Original decompilation identifier: \c func_8001940C (0x8001940C).
-void effectEmitterCreateForStyle(u32 kind, f32 *position, f32 lifetime, s32 targetHandle, s32 referenceHandle, f32 offset) {
+void effectEmitterCreateForStyle(u32 kind, f32 *position, f32 lifetime, s32 targetHandle, s32 referenceHandle,
+                                 f32 offset) {
     switch (kind) {
     case EFFECT_EMIT_BLACK_WISPS:
-        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, effectEmitterEmitBlackWisps);
+        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset,
+                                        effectEmitterEmitBlackWisps);
         break;
     case EFFECT_EMIT_PALE_GREEN_PARTICLES:
-        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, effectEmitterEmitPaleGreenParticles);
+        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset,
+                                        effectEmitterEmitPaleGreenParticles);
         break;
     case EFFECT_EMIT_YELLOW_PARTICLES:
-        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, effectEmitterEmitYellowParticles);
+        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset,
+                                        effectEmitterEmitYellowParticles);
         break;
     case EFFECT_EMIT_PINK_PARTICLES:
-        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, effectEmitterEmitPinkParticles);
+        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset,
+                                        effectEmitterEmitPinkParticles);
         break;
     case EFFECT_EMIT_GRAY_PARTICLES:
-        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, effectEmitterEmitGrayParticles);
+        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset,
+                                        effectEmitterEmitGrayParticles);
         break;
     case EFFECT_EMIT_WHITE_WISPS:
-        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, effectEmitterEmitWhiteWisps);
+        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset,
+                                        effectEmitterEmitWhiteWisps);
         break;
     case EFFECT_EMIT_SCATTERED_PARTICLES:
-        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, effectEmitterEmitScatteredParticles);
+        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset,
+                                        effectEmitterEmitScatteredParticles);
         break;
     case EFFECT_EMIT_AUDIBLE_BURST:
-        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset, effectEmitterEmitAudibleBurst);
+        effectEmitterCreateWithCallback(position, lifetime, targetHandle, referenceHandle, offset,
+                                        effectEmitterEmitAudibleBurst);
         break;
     }
 }
@@ -1040,7 +1050,8 @@ extern u8 gEffectEmitterObjectTemplate[];
 /// \returns Nothing.
 ///
 /// \note Original decompilation identifier: \c func_800195B0 (0x800195B0).
-void effectEmitterCreateWithCallback(f32 *position, f32 lifetime, s32 targetHandle, s32 referenceHandle, f32 offset, EffectEmissionCallback callback) {
+void effectEmitterCreateWithCallback(f32 *position, f32 lifetime, s32 targetHandle, s32 referenceHandle, f32 offset,
+                                     EffectEmissionCallback callback) {
     u8 *emitter = objectCreateFromTemplate((ObjectTemplate *)gEffectEmitterObjectTemplate);
     EffectEmitterState *state = ((RuntimeObjectPrefix *)emitter)->state.pointer;
     u8 *target;
@@ -1103,8 +1114,10 @@ void effectEmitterUpdate(u8 *emitter) {
         ((RuntimeObjectPrefix *)emitter)->position[2] = ((RuntimeObjectPrefix *)target)->worldPosition[2];
         reference = objectResolveAvailableHandle(state->referenceHandle);
         if (reference != NULL) {
-            dx = ((RuntimeObjectPrefix *)target)->worldPosition[0] - ((RuntimeObjectPrefix *)reference)->worldPosition[0];
-            dz = ((RuntimeObjectPrefix *)target)->worldPosition[2] - ((RuntimeObjectPrefix *)reference)->worldPosition[2];
+            dx = ((RuntimeObjectPrefix *)target)->worldPosition[0] -
+                 ((RuntimeObjectPrefix *)reference)->worldPosition[0];
+            dz = ((RuntimeObjectPrefix *)target)->worldPosition[2] -
+                 ((RuntimeObjectPrefix *)reference)->worldPosition[2];
             vector2NormalizeComponentsApprox(&dx, &dz);
             dx *= state->offset;
             dz *= state->offset;
@@ -1474,7 +1487,6 @@ void convergingParticleEffectDestroy(u8 *effect) {
     heapFreeLocal(&gGameHeap, state->displayList);
     heapFreeLocal(&gGameHeap, state);
 }
-
 
 /// Advance a converging particle effect around its target until its lifetime expires or the target
 /// disappears.
