@@ -565,7 +565,22 @@ payloads use their integer encoding. The cases guard protected values, VM state
 and borrowed storage. They do not extend the contracts to invalid indices,
 unsupported conversions, later lifetimes or arbitrary gameplay paths.
 
-Thirty-three scalar native reviews are active. Remaining callbacks stay explicitly listed
+Distance queries also retain their coordinate-frame distinctions:
+
+| Native | Position source | Result |
+| --- | --- | --- |
+| `actorScriptPushOriginDistance` | Object world position | Approximate distance to the origin |
+| `actorScriptPushPlayerDistance` | Object local position and primary player position | Approximate distance to the player |
+| `actorScriptPushTargetApproachDistance` | Actor local position and stored target position | Approximate distance minus approach allowance, clamped to zero |
+
+These natives append a float without consuming an operand. A stored target position
+does not imply that tracking has refreshed it. `actorScriptPushTargetHandle` appends
+the available stored-target handle even in fixed-target mode; it returns zero for
+missing, pending-destruction or toolbox-held targets. Its meaning differs from
+asking whether tracking is enabled. The scalar contracts require valid borrowed
+state, separate VM storage and room for the appended value.
+
+Scalar reviews remain active only while their source and helper bindings agree. Remaining callbacks stay explicitly listed
 in each saved-dictionary candidate's `native_effect_frontier`; a reviewed immediate
 footprint does not establish a runtime dictionary ID or unconditional restoration.
 
@@ -627,10 +642,27 @@ exception, requiring explicit handling in a portable host implementation. These
 cases establish phase footprints, without simulating timed-program advancement or
 certifying eventual completion.
 
-There are 33 scalar contracts and 12 immediate request contracts, three of which
-also have deferred reviews for timed-action startup or loop exit. Other requests
-remain partially reviewed and keep their later effects explicit in the
-saved-dictionary frontier.
+The costed-action request has a deferred selector-nine review. Initialization
+consumes a cost selector followed by a repetition count in push order. Five
+retained records select accepted and insufficient-resource timed programs and a
+cost per repetition. Two records waive the admission check while still charging
+resource. Admission reads the script actor's resource; charging adjusts its owning
+root's resource and clamps that balance to zero through 100. Those records need not
+be the same object. The repetition count also sets the later target-burst allowance.
+Running polls consume nothing; completion appends the retained outcome: initially
+zero for insufficient resource or three after acceptance, with one available from
+later response handling. This footprint does not prove that the program finishes.
+
+The text-window request retains indicator, style and scene-view mode until the
+runtime leaves text-window game mode. Its handler then consumes all three settings
+and supplies integer zero even if an already-active window rejects opening.
+`text_window_requests` exposes the settings expressions and keeps that zero result
+separate from successful presentation. Fresh-window prompt allocation, font and
+image ownership remain obligations of the later-effect review.
+
+The source-bound manifest distinguishes scalar contracts, immediate request
+contracts and reviewed deferred phases. Other requests remain partially reviewed
+and keep their later effects explicit in the saved-dictionary frontier.
 
 ### Player view selection
 
@@ -681,7 +713,7 @@ reachable or that its mode transition safely completes.
 
 ### Companion permissions and mode cleanup
 
-Fifteen individual permission bits now have consumer-established names. Besides
+The named permission bits have consumer-established roles. Besides
 view input and companion control, these cover movement updates, stored angle
 updates, area events, system/toolbox menu paths, interaction activation/inspection,
 horizontal-stick strafing, player-view camera suppression and conditional voice
@@ -692,8 +724,13 @@ run that path or establish all of its resource prerequisites.
 separately from the manual-input permission. `PLAYER_PERMISSION_STICK_STRAFE`
 gates horizontal stick movement; C-button strafing follows a separate path.
 `PLAYER_PERMISSION_SUPPRESS_VIEW_CAMERA_UPDATE` has negative polarity, preventing
-the player-view path from positioning the camera. Physics and inspection-window
-bits whose broader roles remain unresolved retain numeric encodings.
+the player-view path from positioning the camera.
+`PLAYER_PERMISSION_GRAVITY_AND_SLOPE` permits falling and slippery-slope motion;
+`PLAYER_PERMISSION_TERRAIN_COLLISION` enables terrain movement constraints.
+`PLAYER_PERMISSION_PREVENT_SLOW_DROPS` blocks slow horizontal movement over drops,
+so it does not imply that every ledge is impassable at every speed.
+`PLAYER_PERMISSION_INSPECTION_SCENE_UPDATES` permits scene updates while inspection
+text is active. Other unrecovered bits retain numeric encodings.
 Two authored original-instruction probes distinguish stored-angle updates from
 manual-input permission, guarding the full player record. They do not certify the
 movement, camera, menu or interaction paths.

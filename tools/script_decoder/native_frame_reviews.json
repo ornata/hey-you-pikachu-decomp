@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "purpose": "Explicit scalar and immediate action-request storage contracts; source changes revoke evidence until reviewed again. Deferred handlers remain separate.",
-  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases. Twelve action-request wrappers and their two-field scheduling helper reviewed against original Ghidra801167A0 and all twelve original wrapper addresses; twenty-four direct original-instruction request cases guard all VM fields and pending/protected values. Selector-three deferred dispatch and helper chain reviewed against original Ghidra80117098/8000F4C4/801167BC/800120F0 and eight guarded direct-dispatch/scheduler cases. Selector-two startup and waiting helpers reviewed against original Ghidra80116800/80012034; twelve guarded direct/scheduler cases cover numeric tags, original null sentinel, waiting and completion. Player input-mask field names now include synthetic stick flags, separately from permission flags; unchanged prefix layout and the reviewed permission/position reads were rechecked against matching objects before rebinding the two affected header dependencies. Additional permission names for Pikachu/follow selection and stun reaction leave the permission storage and reviewed view/position access unchanged; the two header dependencies were rechecked after strict matching verification. Ten additional permission names retain identical player storage and reviewed view/position accesses; header bindings rechecked after all483 objects and ROM matched. Selector-nine cost admission, root-resource adjustment and HUD helper were checked against Ghidra80116BC4/80014A3C, the authenticated five-record table and fourteen guarded original-instruction startup/poll/completion observations, including distinct actor/root resource records. The root and script actor states are explicitly distinguished. Acknowledgement native and helper checked against Ghidra8011C84C/80119200 and four original-instruction probes, including raw nonboolean word preservation; message fields remain unchanged.",
+  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases. Twelve action-request wrappers and their two-field scheduling helper reviewed against original Ghidra801167A0 and all twelve original wrapper addresses; twenty-four direct original-instruction request cases guard all VM fields and pending/protected values. Selector-three deferred dispatch and helper chain reviewed against original Ghidra80117098/8000F4C4/801167BC/800120F0 and eight guarded direct-dispatch/scheduler cases. Selector-two startup and waiting helpers reviewed against original Ghidra80116800/80012034; twelve guarded direct/scheduler cases cover numeric tags, original null sentinel, waiting and completion. Player input-mask field names now include synthetic stick flags, separately from permission flags; unchanged prefix layout and the reviewed permission/position reads were rechecked against matching objects before rebinding the two affected header dependencies. Additional permission names for Pikachu/follow selection and stun reaction leave the permission storage and reviewed view/position access unchanged; the two header dependencies were rechecked after strict matching verification. Ten additional permission names retain identical player storage and reviewed view/position accesses; header bindings rechecked after all483 objects and ROM matched. Selector-nine cost admission, root-resource adjustment and HUD helper were checked against Ghidra80116BC4/80014A3C, the authenticated five-record table and fourteen guarded original-instruction startup/poll/completion observations, including distinct actor/root resource records. The root and script actor states are explicitly distinguished. Acknowledgement native and helper checked against Ghidra8011C84C/80119200 and four original-instruction probes, including raw nonboolean word preservation; message fields remain unchanged. Four distance/target append contracts checked against original Ghidra801172D4/80118838/801187E4/8011C674/8011CB38/8011D208/8011DBF8/801177FC/80118B30/8003A5FC/8003A6F0 and twelve guarded original-instruction probes with distinct local/world coordinates, approach clamping, fixed/follow selection and unavailable-target exclusions. The actor-state header replaces only the producer-established four-byte approach sample with f32 and adds its offset assertion; all other declarations remain token-identical.",
   "preconditions": [
     "Protected locals and frame metadata lie below the active stack depth.",
     "Append contracts require one free value slot; pointers and borrowed actor/global state are valid.",
@@ -65,7 +65,7 @@
     {
       "kind": "file",
       "file": "include/actor_script.h",
-      "sha256": "7423558b735accb89ffff0cc77b48995d4c86f5fd8f7f2176f1ce26c1a484eb3"
+      "sha256": "2d96e8b4f6f85c31d33ad7ed35b7a02e6bca08007d8030e30bed9685755083de"
     },
     {
       "kind": "file",
@@ -1670,6 +1670,193 @@
         "Actor state, retained VM and owned value storage are valid and nonoverlapping; one free result slot remains above all protected locals and frame metadata.",
         "The helper reads the raw previous messagePending word and clears only that notification word, preserving the stored message payload. The native appends the previous word as an integer and returns continue, without consuming operands.",
         "This review covers immediate writes only. Pending values are normally notification flags; preservation of authored nonboolean words does not establish retail reachability. Concurrent delivery, mailbox lifetime and eventual script handling remain separate obligations."
+      ]
+    },
+    {
+      "function": "actorScriptPushOriginDistance",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "4672773a21a8bfa5c404b54439f348aaad5d4c2fd6ee9d9148697c7454c892a9",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "float",
+      "scheduling": "continue",
+      "result_semantics": "world position to origin",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "objectGetOriginDistance",
+          "sha256": "aadbdf9948421a0f009dc078929ae7ab7c946a9ec8c81c6af25ab2fa76cc3501"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/trigonometry.c",
+          "function": "vector3LengthApprox",
+          "sha256": "062827ecb270f1287ca9539e9b998f80957f0ab38f4c49ba8eb6fe8b913e0716"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/trigonometry.c",
+          "function": "mathHypotApprox",
+          "sha256": "e925a640644e7ef9935f9b3abb1e75bd4935bb059f4a152cc294a4885d75f92e"
+        }
+      ],
+      "preconditions": [
+        "Actor, actor state, VM and owned value storage are valid and nonoverlapping; one free result slot remains above protected locals/frame metadata.",
+        "Finite positions and allowances are required; local and world coordinates remain distinct. Approximate length helpers read only their C-stack vector; the primary player position is initialized when queried. The target-approach query uses stored coordinates without refreshing them or resolving tracking.",
+        "Only immediate handler writes are reviewed. These contracts do not establish hierarchy freshness, later object lifetime, concurrency, general numerical accuracy or retail reachability."
+      ]
+    },
+    {
+      "function": "actorScriptPushPlayerDistance",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "7bab5626dfb234da4cc7bd194744ff79c21026841cbd257d1dd47bdc94d2b3ea",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "float",
+      "scheduling": "continue",
+      "result_semantics": "local position to primary player position",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "objectGetPlayerDistance",
+          "sha256": "9996e202ab844d49dc5d8a5c963d6bcd60ecfa50a815d0af64e49ef34f3d9aaa"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/trigonometry.c",
+          "function": "vector3LengthApprox",
+          "sha256": "062827ecb270f1287ca9539e9b998f80957f0ab38f4c49ba8eb6fe8b913e0716"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/trigonometry.c",
+          "function": "mathHypotApprox",
+          "sha256": "e925a640644e7ef9935f9b3abb1e75bd4935bb059f4a152cc294a4885d75f92e"
+        }
+      ],
+      "preconditions": [
+        "Actor, actor state, VM and owned value storage are valid and nonoverlapping; one free result slot remains above protected locals/frame metadata.",
+        "Finite positions and allowances are required; local and world coordinates remain distinct. Approximate length helpers read only their C-stack vector; the primary player position is initialized when queried. The target-approach query uses stored coordinates without refreshing them or resolving tracking.",
+        "Only immediate handler writes are reviewed. These contracts do not establish hierarchy freshness, later object lifetime, concurrency, general numerical accuracy or retail reachability."
+      ]
+    },
+    {
+      "function": "actorScriptPushTargetApproachDistance",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "ee7652cc24b047c50e99df055d29403c57dacadc495dea7b45c092c76814bf2d",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "float",
+      "scheduling": "continue",
+      "result_semantics": "local position to stored target, minus allowance and clamped to zero",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "actorGetTargetDistance",
+          "sha256": "717da278a1f04898a2dbbd7f7aad575ef994c51ef99dfce1e54b4c6f5d3ce54c"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/trigonometry.c",
+          "function": "vector3LengthApprox",
+          "sha256": "062827ecb270f1287ca9539e9b998f80957f0ab38f4c49ba8eb6fe8b913e0716"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/trigonometry.c",
+          "function": "mathHypotApprox",
+          "sha256": "e925a640644e7ef9935f9b3abb1e75bd4935bb059f4a152cc294a4885d75f92e"
+        }
+      ],
+      "preconditions": [
+        "Actor, actor state, VM and owned value storage are valid and nonoverlapping; one free result slot remains above protected locals/frame metadata.",
+        "Finite positions and allowances are required; local and world coordinates remain distinct. Approximate length helpers read only their C-stack vector; the primary player position is initialized when queried. The target-approach query uses stored coordinates without refreshing them or resolving tracking.",
+        "Only immediate handler writes are reviewed. These contracts do not establish hierarchy freshness, later object lifetime, concurrency, general numerical accuracy or retail reachability."
+      ]
+    },
+    {
+      "function": "actorScriptPushTargetHandle",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "ca13af9fe94ff1f2f84038df6f4027991e8475bf46ac0ff7240b58261963a95e",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "available stored-target handle regardless of tracking mode",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "actorGetAvailableTargetHandle",
+          "sha256": "4b462fbe0296b830e1cb02b0782a1b8d7501f0d490becf0cc50913d40dca975d"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "objectResolveAvailableHandle",
+          "sha256": "13035c928d8cfa98f2d5bddd83912c671a57b188c5abc77aa7fa2aa84d669e4d"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/object_hierarchy.c",
+          "function": "objectFindLiveByHandle",
+          "sha256": "a04905a063945115cd20a841f611294f7784656739644dd48ba5230ee11881c9"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/keyed_pool.c",
+          "function": "keyedPoolGetValue",
+          "sha256": "515ff415ac8762af39e40b6969a0d563591ab0252fcc95f660b808c06964541d"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/keyed_pool.c",
+          "function": "keyedPoolFindEntry",
+          "sha256": "2c4d9787ed139519f2981eb227805c3b38046a0baf47287ae6ecc2156f5665c6"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "cdc5e63f556a44f11777d7f03c55829ceb41527515d853340397454bf950ee8e"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_flags.h",
+          "sha256": "135a2ddab3b6c3e703f08bc85faa083742809cf81a1edc43bd05469d2faac637"
+        },
+        {
+          "kind": "file",
+          "file": "include/item_types.h",
+          "sha256": "a11ff3ec0e7d9256425797d27c1d7222f58360b5f27a4bf4128119f9a762f991"
+        },
+        {
+          "kind": "file",
+          "file": "include/keyed_pool_types.h",
+          "sha256": "4c5ce15833971e0a7b7a25588eb674597474dba8a6d71b51cf78cf098c63a611"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_kind.h",
+          "sha256": "50ea3d3734cf9069bbb97cd961bf5416d9700f21efd7685836e7aa908bd46685"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_target_interaction.c",
+          "function": "actorResolveStoredTarget",
+          "sha256": "99ecc7f0d9de1dc8445081165517c88a0b3b352942de6ec7d4e10b2f50905d1d"
+        }
+      ],
+      "preconditions": [
+        "Actor, actor state, VM and owned value storage are valid and nonoverlapping; one free result slot remains above protected locals/frame metadata.",
+        "Initialized handle pool and borrowed target/item state are valid. Stored handle resolution excludes absent, pending-destruction and toolbox-held items; fixed target mode does not itself suppress this query. Lookup predecessor writes affect only a C-stack temporary.",
+        "Only immediate handler writes are reviewed. These contracts do not establish hierarchy freshness, later object lifetime, concurrency, general numerical accuracy or retail reachability."
       ]
     }
   ]

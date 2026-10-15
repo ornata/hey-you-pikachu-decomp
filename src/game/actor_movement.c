@@ -144,7 +144,7 @@ s32 actorPrepareApproachCompletion(u8 *object, f32 speed) {
     reference[1] = ((RuntimeObjectPrefix *)target)->worldPosition[1];
     reference[2] = ((RuntimeObjectPrefix *)target)->worldPosition[2];
     ((ActorScriptState *)state)->movementWorkspace.approachScale = 1.0F;
-    distance = -(f64) * (f32 *)(state + 0x1A4) +
+    distance = -(f64)((ActorScriptState *)state)->targetDistanceAllowance +
                sqrt((f64)(((((ActorScriptState *)state)->targetPosition[0] - reference[0]) *
                            (((ActorScriptState *)state)->targetPosition[0] - reference[0])) +
                           ((((ActorScriptState *)state)->targetPosition[2] - reference[2]) *
@@ -153,7 +153,7 @@ s32 actorPrepareApproachCompletion(u8 *object, f32 speed) {
         distance = 0.0F;
     }
     roll = randomBelow(0x3C);
-    *(f32 *)(state + 0x1A0) = roll - 15;
+    ((ActorScriptState *)state)->unknown1A0 = roll - 15;
     if ((distance / speed) < 1.5F) {
         if (speed == gActorSpecialApproachSpeed) {
             actionSetContinuation(object, 0xC6);

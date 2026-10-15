@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 842,
-      "unique_spellings": 463,
+      "occurrences": 840,
+      "unique_spellings": 462,
       "files": 65
     },
     "cast_offset_candidates": {
@@ -545,15 +545,8 @@
           "obj + 0x1DC": [
             "76:22"
           ],
-          "state + 0x1A4": [
-            "147:33",
-            "662:30"
-          ],
-          "state + 0x1A0": [
-            "156:14"
-          ],
           "roll - 15": [
-            "156:31"
+            "156:47"
           ],
           "obj + 0x1EA": [
             "234:18",
@@ -623,6 +616,9 @@
           ],
           "state + 0x1F4": [
             "660:29"
+          ],
+          "state + 0x1A4": [
+            "662:30"
           ],
           "state + 0x204": [
             "662:56"

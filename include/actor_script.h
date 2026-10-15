@@ -101,7 +101,7 @@ typedef struct ActorScriptState {
     s32 attachmentMode;  ///< Attachment selection used for held items and actor effects.
     s32 targetHandle;    ///< Object handle used by stored-target resolution.
     s32 targetMode;      ///< Mode selecting how the stored target is interpreted.
-    u8 unknown1A0[4];
+    f32 unknown1A0;      ///< Randomized approach sample; its later purpose remains unresolved.
     f32 targetDistanceAllowance;              ///< Approach distance allowance for the stored target.
     u64 lastInteractionMilliseconds;          ///< Time origin for the item interaction cooldown.
     s32 searchItemKind;                       ///< Item kind used as both bounds of an exact-kind search.
@@ -225,6 +225,7 @@ ACTOR_SCRIPT_OFFSET_CHECK(ActorStateTrackedVoiceOffsetCheck, ActorScriptState, t
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateHeldItemOffsetCheck, ActorScriptState, heldItemHandle, 0x190);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateAttachmentModeOffsetCheck, ActorScriptState, attachmentMode, 0x194);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateTargetHandleOffsetCheck, ActorScriptState, targetHandle, 0x198);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateApproachSampleOffsetCheck, ActorScriptState, unknown1A0, 0x1A0);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateAirborneOffsetCheck, ActorScriptState, airborne, 0x1BC);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateWorldMotionOffsetCheck, ActorScriptState, worldMotion, 0x1D8);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateBehaviorFlagsOffsetCheck, ActorScriptState, behaviorFlags, 0x1E8);

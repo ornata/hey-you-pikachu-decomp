@@ -79,12 +79,12 @@
       "record": "ActorScriptState",
       "member": "unknown1A0",
       "line": 104,
-      "declaration": "u8 unknown1A0[4];",
-      "known_facts": "Actor state is allocated and cleared as 0x408 bytes; established neighboring fields and shared offset checks constrain this declaration. Approach setup stores a random floating-point roll minus fifteen here.",
+      "declaration": "f32 unknown1A0;",
+      "known_facts": "Actor state is allocated and cleared as 0x408 bytes. Original approach setup (0x8000F934) converts randomBelow(60) minus fifteen to f32 and stores it at 0x1A0; the scalar view and explicit offset check preserve the four-byte storage and all neighboring offsets. No later reader is established.",
       "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
       "next_evidence": "Find a later reader of actor-state 0x1A0, including biased and computed accesses, before naming the random value as an angle, timer or offset.",
-      "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/actor_script.h (record declaration and neighboring layout checks)"
+      "matching_constraint": "Preserve the f32 store, four-byte extent, alignment and surrounding offsets; require unchanged ROM and strict original-object comparison for replacements.",
+      "evidence": "include/actor_script.h; src/game/actor_movement.c:actorPrepareApproachCompletion; original Ghidra func_8000F934 f32 conversion/store at actor state +0x1A0."
     },
     {
       "file": "include/actor_script.h",
