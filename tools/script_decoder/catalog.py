@@ -17,7 +17,33 @@ from .context import ROOT, LocalImage, native_layouts, opcode_names
 from .formats import decode_vm, integer_operand
 from .__main__ import OUTPUT, number
 from tools.source_quality import code_only
+from tools.scene_catalog import configuration_locations
 from .messages import message_posts
+
+
+def companion_sites(image):
+    """Follow only scenario zero through all 23 authenticated scene configurations."""
+    locations = configuration_locations(code_only((ROOT / 'src/ovl/area_terrain_maze.c').read_text()),
+                                        code_only((ROOT / 'include/area_catalog.h').read_text()))
+    table = image.symbol('gAreaConfigurations')
+    image.allowed = {'.boot', '.ovl'}
+    pointers, _ = image.read_address(table[1], 23 * 4)
+    result = []
+    for area_index, (base, offset) in enumerate(locations):
+        section = '.' + base.removesuffix('_DATA_START')
+        image.allowed = {'.boot', '.ovl', section}
+        configuration = image.symbol(base)[1] + offset
+        if struct.unpack_from('>I', pointers, area_index * 4)[0] != configuration:
+            raise ValueError('linked scene catalog disagrees with source overlay selection')
+        raw, _ = image.read_address(configuration, 0x7C)
+        scripts = struct.unpack_from('>I', raw, 0x6C)[0]
+        if scripts:
+            raw, _ = image.read_address(scripts, 4)
+            script = struct.unpack('>I', raw)[0]
+            result.append(dict(section=section, address=script, area_index=area_index,
+                               scene_configuration=configuration, scenario=0, actor_kind=0x25,
+                               source='src/ovl/player_companion.c:pikachuSpawnForArea'))
+    return result
 
 
 def candidates(raw, base, commands):
@@ -40,7 +66,7 @@ def candidates(raw, base, commands):
 
 
 def creation_sites(code):
-    """Locate direct creation calls; only a plain symbol in the script slot establishes a binding."""
+    """Locate exact symbol/address arguments; expressions and interior pointers remain unbound."""
     result = []
     for match in re.finditer(r'\bactorCreateForKind\s*\(', code):
         depth, start, parts = 1, match.end(), []
@@ -56,8 +82,9 @@ def creation_sites(code):
             elif token == ',' and depth == 1:
                 parts.append(code[start:offset].strip())
                 start = offset + 1
-        if len(parts) == 9 and re.fullmatch(r'[A-Za-z_]\w*', parts[7]):
-            result.append(dict(script_symbol=parts[7], actor_kind_expression=parts[0],
+        symbol = re.fullmatch(r'&?\s*([A-Za-z_]\w*)', parts[7]) if len(parts) == 9 else None
+        if symbol:
+            result.append(dict(script_symbol=symbol[1], actor_kind_expression=parts[0],
                                line=code.count('\n', 0, match.start()) + 1))
     return result
 
@@ -68,6 +95,7 @@ def catalog(image, max_instructions=100000):
     natives = native_layouts(image, image.table('D_8012B400', 279))
     source = {str(path.relative_to(ROOT)): code_only(path.read_text()) for path in (ROOT / 'src').rglob('*.c')}
     sites = [(file, site) for file, text in source.items() for site in creation_sites(text)]
+    companions = companion_sites(image)
     names = opcode_names('vm')
     rows, decodes = [], {}
     for index, section in enumerate(image.elf.sections):
@@ -111,6 +139,7 @@ def catalog(image, max_instructions=100000):
             rows.append(dict(**candidate, section=section_name, location=location,
                              candidate_basis='Aligned retained-table prefix with local program before header; not allocation/type proof.',
                              symbols=aliases, direct_creation_sites=bindings,
+                             companion_scenario_zero_sites=[site for site in companions if site['section'] == section_name and site['address'] == candidate['address']],
                              instructions=len(decoded['instructions']), diagnostics=decoded['diagnostics'],
                              decoded_code_sha256=signature.hexdigest(), code_reference_roles=dict(roles),
                              code_reference_uses=references, global_indices=sorted(globals_used),
@@ -128,6 +157,8 @@ def catalog(image, max_instructions=100000):
                 scope='Retained-table configuration candidates with local programs before their headers. No claim of exhaustive resource discovery or live execution.',
                 candidate_count=len(rows), diagnostic_free_candidates=len(complete),
                 directly_created_candidates=sum(bool(row['direct_creation_sites']) for row in rows),
+                companion_scenario_zero_candidates=sum(bool(row['companion_scenario_zero_sites']) for row in rows),
+                companion_scenario_zero_references=companions,
                 distinct_decoded_code_hashes=len({row['decoded_code_sha256'] for row in rows}),
                 code_reference_roles=dict(roles), configurations=rows), decodes
 

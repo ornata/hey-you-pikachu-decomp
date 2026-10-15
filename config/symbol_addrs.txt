@@ -1379,6 +1379,9 @@ springleafFieldInitializeDoor = 0x801345D4; // type:func segment:scene_springlea
 springleafFieldResetCompletedGrowth = 0x80134614; // type:func segment:scene_springleaf_field
 springleafFieldInitializeObjects = 0x801346A0; // type:func segment:scene_springleaf_field
 springleafFieldGetSpatialCell = 0x80134A44; // type:func segment:scene_springleaf_field
+gResidentAttentionScript_scene_springleaf_field = 0x801571E4; // segment:scene_springleaf_field
+gResidentAttentionScript_scene_springleaf_entrance = 0x801573B8; // segment:scene_springleaf_entrance
+gGrowthResidentReactionScript_scene_springleaf_entrance = 0x80156F04; // segment:scene_springleaf_entrance
 
 olivineLakeCreateProp = 0x80134270; // type:func segment:scene_olivine_lake
 olivineLakeCreateRandomizedGroupProps = 0x801342B0; // type:func segment:scene_olivine_lake

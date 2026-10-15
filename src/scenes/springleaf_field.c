@@ -126,7 +126,11 @@ typedef struct {
     s32 used[27];
 } FieldOccupancy;
 extern FieldOccupancy D_80157F70_scene_springleaf_field;
-extern u8 D_801571E4_scene_springleaf_field[], D_80157B58_scene_springleaf_field[], D_80157C78_scene_springleaf_field[], D_8014E354_scene_springleaf_field[], D_80159474_scene_springleaf_field[];
+/// Borrowed VM configuration for a resident that repeatedly requests Pikachu's attention.
+/// The scene overlay retains this resource for the resident's lifetime.
+/// \note Original identifier: \c D_801571E4_scene_springleaf_field (0x801571E4).
+extern u8 gResidentAttentionScript_scene_springleaf_field[];
+extern u8 D_80157B58_scene_springleaf_field[], D_80157C78_scene_springleaf_field[], D_8014E354_scene_springleaf_field[], D_80159474_scene_springleaf_field[];
 extern f32 D_801594F0_scene_springleaf_field, D_801594F4_scene_springleaf_field, D_801594F8_scene_springleaf_field,
     D_801594FC_scene_springleaf_field;
 extern f32 D_80134BE0_scene_springleaf_field[][3];
@@ -142,7 +146,7 @@ void springleafFieldInitializeObjects(void) {
     occupied = D_80157F70_scene_springleaf_field;
     if (progressGetValue(0x12) != 0) {
         actorCreateForKind(3, 203.45F, 0.5F, 35.97F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
-                           D_801571E4_scene_springleaf_field, 0);
+                           gResidentAttentionScript_scene_springleaf_field, 0);
     }
     if (progressGetCurrentChapter() == 8) {
         actorCreateForKind(17, 0, 0, 0, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,

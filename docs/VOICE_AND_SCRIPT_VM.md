@@ -374,8 +374,13 @@ and a local program preceding the header. A program-to-header window bounds the
 decode; it is not an inferred allocation size. Each candidate retains diagnostics,
 code fingerprints, frame operands, global-reference base indices, native calls and
 code-reference roles. Direct `actorCreateForKind` calls are linked only when the
-script argument is the exact configuration symbol. Other candidates remain
-explicitly unproven as live configurations. The results stay under
+script argument is an exact configuration symbol or its address; 70 candidates
+have such bindings. The catalog also follows scenario zero through each of the
+23 explicit area configurations to Pikachu's script, retaining the overlay at
+every pointer read. It validates the source area's selection against the linked,
+ROM-authenticated catalog. These are configured references, not a claim that
+every scene or script branch has executed. Other candidates remain explicitly
+unproven as live configurations. The results stay under
 `build/script-decoder/catalog/`; this scan does not discover every possible script
 layout or compressed resource.
 
@@ -406,23 +411,64 @@ categories 13, 15 and 14 before copying other categories into local slots. Match
 this byte window establishes the resource correspondence; it does not establish
 its complete allocation, actor ownership, or the meaning of every variable.
 
-The catalog's `script_message_posts` entries recover arguments for 138 of 150
-decoded calls to `actorScriptPostMessage`; 12 remain explicitly unresolved.
+The catalog's `script_message_posts` entries recover arguments for all 150
+decoded calls to `actorScriptPostMessage` in the configuration census.
 These counts include repeated configurations (120 distinct code/offset call
-sites). A recovered call has six contiguous literal/variable pushes and no
-competing entry into their interior. The argument order is recipient handle,
+sites). Recovery follows at most 32 contiguous producer instructions with no
+competing entry into their interior. Supported producers are integer literals,
+variable reads, four reviewed handle getters and representable constant integer
+addition. Other stack effects remain unresolved if encountered. The argument order is recipient handle,
 type, argument 0, argument 2, argument 3 and argument 4. The native handler sets
 argument 1 to zero, rejects missing recipients, requests unforced delivery and
 pushes success. Variable operands retain their frame/slot coordinates; they are
 not inferred actor identities or persistent variable names.
 
-Of those recovered calls, 126 construct category 13 across 15 scene sections.
+Of those recovered calls, 138 construct category 13 across 15 scene sections.
 Their payloads vary, so category 13 and its subcommands still need recipient-side
 analysis before receiving gameplay names. These category names establish
 producer contracts; they do not identify every recipient
 reaction or override arbitrary messages constructed by script code. Impact cases
 check the exact mailbox payload and pending-message rejection with synthetic
 velocities, without claiming collision or item-lifetime coverage.
+
+### Resident attention exchange
+
+The field's kind-3 resident uses
+`gResidentAttentionScript_scene_springleaf_field` (configuration 0x801571E4).
+Its creation is conditional on progress field 0x12. At script offset 466 it sends
+Pikachu category 13, argument 0 equal to 1, and its own handle in argument 2.
+The entrance's corresponding resource at 0x801573B8 sends the same payload at
+offset 369. This supports naming these resources for their attention-request
+role without assigning a creature or animation identity from numeric IDs.
+
+For field scenario zero, the area table selects Pikachu configuration 0x80156884.
+Its message intake copies categories 13/14/15 into frame-zero slots 9–13 in
+type/argument-0/argument-2/argument-3/argument-4 order. On the category-13,
+argument-0-equals-1 path at offsets 30487–30587, it reads the sender handle from
+slot 11, tracks that object and calls the response routine at offset 29859.
+That routine starts action 17 and sends the sender category 13 with argument 0
+equal to 3 before selecting further reactions. Another path uses the same
+incoming handle to establish tracking and selects local behavior state 7.
+These are static script paths; runtime acceptance and rendered reactions have
+not yet been observed for this exchange.
+
+The field resident's seven frame-zero slots have these scoped roles:
+
+| Slots | Role |
+| --- | --- |
+| 0–2 | Initial world position, retained for return positioning. |
+| 3 | Whether the current chapter is 8, affecting the exit path. |
+| 4 | Response count and exit threshold value; 8 ends the repetition. |
+| 5 | Initial total-elapsed timestamp for the delayed start. |
+| 6 | Per-attempt response stage, distinguishing the first reply and later sound. |
+
+These roles describe this resource only. Equal slot numbers in other scripts
+do not establish shared variables. The growth-resident reaction resource at
+0x80156F04 in the entrance uses a different contract: category 1 starts an escape
+reaction, while category 13 starts a Pikachu-facing action sequence and later
+sends category 13 with argument 0 equal to 2. Its creation argument selects the
+growth progress entry. Category 13 therefore cannot be assigned one universal
+payload layout or reaction name from the attention exchange alone.
 
 To compare a local live capture with the ROM-backed candidates:
 

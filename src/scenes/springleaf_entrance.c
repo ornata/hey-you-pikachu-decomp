@@ -29,7 +29,10 @@ extern f32 D_80157668_scene_springleaf_entrance[];
 #include "scene_configuration.h"
 
 extern u8 D_8014DF74_scene_springleaf_entrance;
-extern u8 D_80156F04_scene_springleaf_entrance;
+/// Borrowed VM configuration for growth-dependent resident reactions to Pikachu.
+/// The scene overlay retains the resource for each spawned resident's lifetime.
+/// \note Original identifier: \c D_80156F04_scene_springleaf_entrance (0x80156F04).
+extern u8 gGrowthResidentReactionScript_scene_springleaf_entrance;
 extern f32 D_80158E30_scene_springleaf_entrance;
 extern f64 D_80158E38_scene_springleaf_entrance;
 extern f32 D_80158E40_scene_springleaf_entrance;
@@ -37,7 +40,10 @@ extern f64 D_80158E48_scene_springleaf_entrance;
 extern f64 D_80158E50_scene_springleaf_entrance;
 extern f64 D_80158E58_scene_springleaf_entrance;
 extern u8 D_8014E2B0_scene_springleaf_entrance;
-extern u8 D_801573B8_scene_springleaf_entrance;
+/// Borrowed VM configuration for a resident that repeatedly requests Pikachu's attention.
+/// The scene overlay retains the resource for the resident's lifetime.
+/// \note Original identifier: \c D_801573B8_scene_springleaf_entrance (0x801573B8).
+extern u8 gResidentAttentionScript_scene_springleaf_entrance;
 
 /// Spawn an entrance resident according to its saved growth state.
 /// \param position Three-component scene position.
@@ -53,7 +59,7 @@ void springleafEntranceSpawnGrowthResident(f32 *position, s32 residentIndex) {
     if (progressGetValue(0x12) == 0) {
         record = &D_8014DF74_scene_springleaf_entrance;
     } else {
-        record = &D_80156F04_scene_springleaf_entrance;
+        record = &gGrowthResidentReactionScript_scene_springleaf_entrance;
     }
     if (state < 2) {
         /* Keep random sampling and scale selection together for IDO scheduling. */
@@ -112,7 +118,7 @@ void springleafEntranceSpawnFixedResident(void) {
         return;
     }
     actorCreateForKind(4, 128.5F, 38.0F, 200.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
-                       &D_801573B8_scene_springleaf_entrance, 0);
+                       &gResidentAttentionScript_scene_springleaf_entrance, 0);
 }
 
 /// Provide the entrance scene callback that requires no action.
