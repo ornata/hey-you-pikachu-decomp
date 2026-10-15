@@ -679,6 +679,29 @@ role, rather than a closed runtime domain: intervening script/native effects sti
 need review. A table link or argument expression does not prove that a request is
 reachable or that its mode transition safely completes.
 
+### Companion permissions and mode cleanup
+
+`PLAYER_PERMISSION_COMPANION_PIKACHU` (0x40000000) permits selecting Pikachu
+control; `PLAYER_PERMISSION_COMPANION_FOLLOW` (0x80000000) permits follow control.
+The user toggle also checks the permission for its current companion mode. Directly
+selecting off does not require either flag. These permissions differ from both the
+stored `CompanionControlMode` value and the retained input mask.
+
+Leaving target focus restores its saved companion mode and target only if that
+mode is currently permitted. Mode changes run this leave callback before replacing
+player permissions, so restoration uses the previous permissions. Four authored
+original-instruction probes distinguish the two permissions and accepted versus
+rejected restoration, guarding the full player record without displaying messages.
+The mode catalog names these recovered bits and retains all other permission bits
+explicitly in `unrecovered_permission_bits`.
+
+`PLAYER_PERMISSION_STUN` (0x20000000) gates starting the timed stun reaction.
+Leaving stun clears view shake, requests a screen fade and queues rumble stop;
+leaving help display requests an immediate screen fade. Rumble requests use retained
+queue slots and a blocking SDK message send. Their queue/thread ownership and later
+processing remain explicit dependencies of the full control-scheme transition
+review; these permission probes do not certify those asynchronous paths.
+
 ## Area scenario selection
 
 `presentationInitializeForCurrentArea` selects `gAreaScenarioIndex` from story

@@ -19,7 +19,10 @@ typedef enum CompanionControlMode {
 typedef enum PlayerPermissionFlag {
     PLAYER_PERMISSION_VIEW_INPUT = 0x200, ///< Permit controller input to change view angles.
     PLAYER_PERMISSION_VIEW_CONTROL =
-        0x8000 ///< Select direct view-angle control; view-input permission still gates actual input.
+        0x8000, ///< Select direct view-angle control; view-input permission still gates actual input.
+    PLAYER_PERMISSION_STUN = 0x20000000,              ///< Permit the timed player stun reaction.
+    PLAYER_PERMISSION_COMPANION_PIKACHU = 0x40000000, ///< Permit Pikachu control selection and its user toggle.
+    PLAYER_PERMISSION_COMPANION_FOLLOW = 0x80000000   ///< Permit follow control selection and its user toggle.
 } PlayerPermissionFlag;
 
 /// Synthetic stick-axis flags combined with controller button bits in input masks.

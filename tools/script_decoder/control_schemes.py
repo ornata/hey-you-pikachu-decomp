@@ -5,9 +5,22 @@ callback addresses nor a resolved index prove transition effects or reachability
 """
 
 import math
+import re
 import struct
 
+from .context import ROOT
 from .stack import incoming_edges, recover_arguments
+from tools.source_quality import code_only
+
+
+def permission_flags():
+    """Read explicitly recovered single-bit permission names without naming gaps."""
+    code = code_only((ROOT / 'include/player_types.h').read_text())
+    entries = re.findall(r'\b(PLAYER_PERMISSION_\w+)\s*=\s*(0[xX][0-9a-fA-F]+|\d+)\b', code)
+    flags = {int(value, 0): name for name, value in entries}
+    if len(flags) != len(entries) or not flags or any(not 0 < bit <= 0x80000000 or bit & (bit - 1) for bit in flags):
+        raise ValueError('recovered player permissions must be distinct single bits')
+    return flags
 
 
 def input_flags(mask):
@@ -26,6 +39,8 @@ def control_scheme_catalog(image, scheme_count=28, mode_count=32):
         raise ValueError('control scheme/mode counts exceed reviewed table bounds')
     image.allowed = {'.boot', '.ovl'}
     modes, schemes = [], []
+    permissions_by_bit = permission_flags()
+    recovered_mask = sum(permissions_by_bit)
     mode_base = image.symbol('gPlayerModes')[1]
     scheme_base = image.symbol('gPlayerControlSchemes')[1]
     for index in range(mode_count):
@@ -36,7 +51,9 @@ def control_scheme_catalog(image, scheme_count=28, mode_count=32):
         if not updates or leave and not leaves:
             raise ValueError('player mode callback is not a resolved function')
         modes.append(dict(mode=index, location=location, update_address=update, update_functions=updates,
-                          leave_address=leave, leave_functions=leaves, permission_mask=permissions))
+                          leave_address=leave, leave_functions=leaves, permission_mask=permissions,
+                          recovered_permissions=[name for bit, name in sorted(permissions_by_bit.items()) if permissions & bit],
+                          unrecovered_permission_bits=permissions & ~recovered_mask & 0xFFFFFFFF))
     for index in range(scheme_count):
         data, location = image.read_address(scheme_base + index * 12, 12)
         mode, port, mask = struct.unpack_from('>iiH', data)

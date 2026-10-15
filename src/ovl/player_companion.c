@@ -1228,13 +1228,13 @@ s32 playerToggleCompanionControl(u8 *player, ControllerState *controller) {
         }
         break;
     case 1:
-        if (!(((PlayerControlPrefix *)player)->permissions & 0x40000000)) {
+        if (!(((PlayerControlPrefix *)player)->permissions & PLAYER_PERMISSION_COMPANION_PIKACHU)) {
             return 0;
         }
         playerSetCompanionControlMode(player, 0, 0, ((RuntimeObjectPrefix *)(u8 *)((s32)gPikachuActor))->handle);
         return 1;
     case 2:
-        if (!(((PlayerControlPrefix *)player)->permissions & 0x80000000)) {
+        if (!(((PlayerControlPrefix *)player)->permissions & PLAYER_PERMISSION_COMPANION_FOLLOW)) {
             return 0;
         }
         playerSetCompanionControlMode(player, 0, 0, ((RuntimeObjectPrefix *)(u8 *)((s32)gPikachuActor))->handle);
@@ -1927,15 +1927,13 @@ void playerSelectControlScheme(s32 scheme) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80111A40 (0x80111A40).
 void playerBeginStun(u8 *player, f32 duration) {
-    if (((PlayerControlPrefix *)player)->permissions & 0x20000000) {
+    if (((PlayerControlPrefix *)player)->permissions & PLAYER_PERMISSION_STUN) {
         ((PlayerControlPrefix *)player)->stunRemaining = duration;
         playerChangeMode(3);
         cameraFadeOverlayToColor(0, 0xFF, 0xFF, 0xFF, 0x96, 0.6F);
         controllerRequestRumblePattern(0, duration, 0.2F, 0.18F);
     }
 }
-
-
 
 /// Save a temporary snapshot of the primary player state for later restoration.
 /// \returns Nothing; borrowed object handles and callbacks retain their existing lifetimes.
@@ -2185,8 +2183,10 @@ void playerSetCompanionControlMode(u8 *player, s32 mode, s32 showMessage, s32 ta
     static char *gCompanionControlModeMessages[3] = {"^4PIKACHU^^Mode^1OFF^^", "^4PIKACHU^^Mode^4ON",
                                                      "^4Follow^^Mode^4ON"};
 
-    if (((mode != COMPANION_CONTROL_PIKACHU) || (((PlayerControlPrefix *)player)->permissions & 0x40000000)) &&
-        ((mode != COMPANION_CONTROL_FOLLOW) || (((PlayerControlPrefix *)player)->permissions & 0x80000000))) {
+    if (((mode != COMPANION_CONTROL_PIKACHU) ||
+         (((PlayerControlPrefix *)player)->permissions & PLAYER_PERMISSION_COMPANION_PIKACHU)) &&
+        ((mode != COMPANION_CONTROL_FOLLOW) ||
+         (((PlayerControlPrefix *)player)->permissions & PLAYER_PERMISSION_COMPANION_FOLLOW))) {
         ((PlayerControlPrefix *)player)->companionTarget = targetHandle;
         ((PlayerControlPrefix *)player)->companionMode = mode;
         if (showMessage != 0) {
