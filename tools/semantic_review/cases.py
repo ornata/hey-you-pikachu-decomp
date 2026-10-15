@@ -384,6 +384,7 @@ def experiments():
     from .vocabulary_domains import experiments as vocabulary_experiments
     from .dictionary_request_domains import experiments as dictionary_experiments
     from .name_dictionary_domains import experiments as name_dictionary_experiments
+    from .dictionary_frame_domains import experiments as dictionary_frame_experiments
 
     return (
         cases
@@ -409,6 +410,7 @@ def experiments():
         + vocabulary_experiments()
         + dictionary_experiments()
         + name_dictionary_experiments()
+        + dictionary_frame_experiments()
     )
 
 

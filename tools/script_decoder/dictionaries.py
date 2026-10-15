@@ -8,6 +8,7 @@ runtime selection, delivery of a recognized word or branch reachability.
 from .stack import incoming_edges, recover_arguments
 from .vocabulary import dictionary_names
 from .name_catalog import name_dictionary_request
+from .saved_dictionary import saved_dictionary_analysis
 import re
 
 
@@ -28,6 +29,10 @@ def dictionary_requests(instructions, dictionaries, name_catalog=None):
             expression = recover_arguments(instructions, index, 1, incoming=incoming,
                                            allow_float=True, allow_symbolic=True, frame_entries=frames)[0]
             row.update(status='recovered_arguments', dictionary_id_expression=expression)
+            if expression['kind'] == 'variable':
+                saved = saved_dictionary_analysis(instructions, instruction['offset'], expression)
+                if saved is not None:
+                    row['saved_local_analysis'] = saved
             selection = name_dictionary_request(instructions, index, name_catalog)
             if selection is not None:
                 row['conditional_selection'] = selection

@@ -103,6 +103,22 @@ upload field. Six original-instruction cases check that distinction with three
 different requested IDs, including the unset value, while guarding the other fields.
 They do not exercise queue submission, microphone hardware or vocabulary upload.
 
+The other 18 symbolic requests read locals saved from the requested-dictionary
+query. `saved_local_analysis` checks that the save dominates the request and
+follows returning script calls with their frame bindings. A callee establishing
+the same frame number temporarily shadows the caller's local base; a callee
+using another frame can still write the caller's frame explicitly. The analyzer
+rejects direct overwrites, possible indexed writes, unresolved frame transitions
+and exhausted budgets. All 18 candidates pass its bytecode preservation check.
+
+That check assumes valid stack/array accesses and intact, nonoverlapping frames
+across yields. Native alias effects and context replacement remain separate
+review obligations, listed in `native_effect_frontier`; these candidates are not
+promoted to resolved runtime IDs or unconditional restoration claims. Two authored
+original-VM programs contrast same-frame shadowing with a deliberate caller-frame
+write, checking the full declared stack, VM state and query globals. They establish
+the frame distinction, without certifying arbitrary native effects or retail paths.
+
 ### 2. Consume a recognition result
 
 [Voice recognition](../src/game/voice_recognition.c) starts and polls VRU reads through
