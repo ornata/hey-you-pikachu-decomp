@@ -1,3 +1,4 @@
+#include "area_catalog.h"
 #include "runtime_control.h"
 #include "runtime_lifecycle.h"
 #include "controller_state.h"
@@ -814,13 +815,13 @@ void wholeMapUpdate(void) {
         if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
             scriptVmSetGlobalInteger(0, 1);
             if (playerGetChaseStage() == 0) {
-                areaSetNextDestination(0, 2);
+                areaSetNextDestination(AREA_BEDROOM, 2);
                 runtimeRequestProgramChange(0);
             } else {
                 if (playerGetChaseStage() == 1) {
-                    areaSetNextDestination(2, 1);
+                    areaSetNextDestination(AREA_FRONT_YARD, 1);
                 } else {
-                    areaSetNextDestination(2, 2);
+                    areaSetNextDestination(AREA_FRONT_YARD, 2);
                 }
                 runtimeRequestProgramChange(0);
             }

@@ -1,3 +1,4 @@
+#include "audio_output.h"
 /* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "n_synthInternals.h"
@@ -94,7 +95,7 @@ s32 soundEffectPlayerPlay(SoundEffectPlayer *player, ALSound *sound) {
             }
             n_alSynStartVoiceParams(&player->voices[i].voice, sound->wavetable,
                                     player->voices[i].basePitch * player->voices[i].rate, level,
-                                    player->mode == 2 ? player->voices[i].pan : 64, player->voices[i].mix, 0);
+                                    player->mode == AUDIO_OUTPUT_STEREO ? player->voices[i].pan : AL_PAN_CENTER, player->voices[i].mix, 0);
             break;
         }
     }
@@ -179,7 +180,7 @@ s32 soundEffectPlayerSetPan(SoundEffectPlayer *player, s32 id, s32 pan) {
     for (i = 0; i < q->count; i++) {
         if (id == q->voices[i].id) {
             q->voices[i].pan = pan;
-            if (q->mode == 2) {
+            if (q->mode == AUDIO_OUTPUT_STEREO) {
                 n_alSynSetPan(&q->voices[i].voice, effectivePan = q->voices[i].pan);
             }
             n++;
@@ -371,10 +372,10 @@ s32 soundEffectPlayerSetOutputMode(SoundEffectPlayer *player, s32 mode) {
         mask = osSetIntMask(OS_IM_NONE);
         for (i = 0; i < q->count; i++) {
             if (q->voices[i].id != 0) {
-                if (q->mode == 2) {
+                if (q->mode == AUDIO_OUTPUT_STEREO) {
                     pan = q->voices[i].pan;
                 } else {
-                    pan = 0x40;
+                    pan = AL_PAN_CENTER;
                 }
                 n_alSynSetPan(&q->voices[i].voice, pan);
                 changed++;
@@ -410,7 +411,7 @@ SoundEffectPlayer *soundEffectPlayerCreate(N_ALGlobals *synth, ALHeap *heap, s32
     p->synth = synth;
     p->count = count;
     p->volume = 0x7FFF;
-    p->mode = 2;
+    p->mode = AUDIO_OUTPUT_STEREO;
     p->voices = alHeapDBAlloc(NULL, 0, heap, count, sizeof(SoundEffectVoice));
     for (i = 0; i < count; i++) {
         p->voices[i].id = 0;

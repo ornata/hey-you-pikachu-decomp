@@ -1,3 +1,4 @@
+#include "area_catalog.h"
 #include "object_group.h"
 #include "runtime_lifecycle.h"
 #include "area_names.h"
@@ -594,7 +595,7 @@ void presentationUpdateCardMode(void) {
     case 0:
         controllerRequestRumbleReset(0);
         if (gCurrentAreaConfiguration->cardTextures[gAreaScenarioIndex] != 0) {
-            if (gRuntimeCurrentArea == 11 || gRuntimeCurrentArea == 5 || gRuntimeCurrentArea == 13) {
+            if (gRuntimeCurrentArea == AREA_OCHRE_ENTRANCE || gRuntimeCurrentArea == AREA_VIRIDIAN_DEEP || gRuntimeCurrentArea == AREA_COBALT_ISLAND) {
                 scene11Images = gArea11CardChaseStageTextures;
                 scene5Images = gArea5CardChaseStageTextures;
                 scene13Images = gArea13CardChaseStageTextures;
@@ -1103,7 +1104,7 @@ void presentationUpdateCollectionResultsMode(void) {
         controllerRequestRumbleReset(0);
         if ((inventoryRecordKeptItemsAndClearTemporarySlot() == 0) && (gPlayerFriendshipMilestone == -1)) {
             gCollectionResultsBypassed = 1;
-            areaSetNextDestination(0, 0);
+            areaSetNextDestination(AREA_BEDROOM, 0);
             runtimeRequestProgramChange(0);
             return;
         }
@@ -1173,7 +1174,7 @@ void presentationUpdateCollectionResultsMode(void) {
     case 6:
         if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
             gCollectionPresentationStage = 0;
-            areaSetNextDestination(0, 0);
+            areaSetNextDestination(AREA_BEDROOM, 0);
             runtimeRequestProgramChange(0);
         }
         presentationPlaceActiveActor(&gCollectionPresentationActorPosition);

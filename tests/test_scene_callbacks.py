@@ -24,6 +24,14 @@ class SceneCallbackTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 configuration_locations(source)
 
+    def test_symbolic_extent_still_requires_the_independent_retail_count(self):
+        source = catalog().replace('[23]', '[SCENE_AREA_COUNT]')
+        self.assertEqual(len(configuration_locations(source, 'enum { SCENE_AREA_COUNT = 23 };')), 23)
+        for header in [None, 'enum { SCENE_AREA_COUNT = 24 };', '// SCENE_AREA_COUNT = 23',
+                       'enum { SCENE_AREA_COUNT = 23, SCENE_AREA_COUNT = 23 };']:
+            with self.assertRaises(ValueError):
+                configuration_locations(source, header)
+
     def fixture(self, wrong_overlay=False, wrong_catalog=False):
         symbols, data = [], {}
         sections = [(0, 0, 0, 0, 0, 0)] * 26

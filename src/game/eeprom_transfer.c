@@ -9,23 +9,33 @@
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
+/// Byte extents of the private checksum-protected transfer image.
+enum { EEPROM_STAGING_BYTES = 512, EEPROM_CHECKSUM_BYTES = 4 };
+
+/// Failure score at which a block transfer reports a terminal error.
+enum { EEPROM_RETRY_FAILURE_SCORE_LIMIT = 11 };
+
+/// Outcome of the original copy while a backup copy is being processed.
+/// Negative values disable another backup attempt; these are progress markers, not page addresses.
+enum { EEPROM_BACKUP_FIRST_COPY_SUCCEEDED = -1, EEPROM_BACKUP_FIRST_COPY_FAILED = -2 };
+
 /// Private controller-thread transfer state and owned checksum-protected staging storage.
 typedef struct EepromJob {
-    s32 state; ///< EepromTransferState retained as a signed target word.
+    s32 state;   ///< EepromTransferState retained as a signed target word.
     s32 retries; ///< Accumulated transfer failures, reduced after successful blocks.
-    u8 page; ///< Current eight-byte EEPROM page.
+    u8 page;     ///< Current eight-byte EEPROM page.
     u8 padding09;
-    s16 backupPage; ///< Alternate starting page, or a negative backup-progress marker.
-    void *payload; ///< Borrowed payload pointer; read destinations remain valid until completion.
-    s32 payloadBytes; ///< Payload length excluding its four-byte checksum.
-    u8 *cursor; ///< Current block within owned staging storage.
-    s32 remainingBytes; ///< Payload and checksum bytes still pending.
-    u8 staging[0x200]; ///< Owned transfer payload and checksum storage.
+    s16 backupPage;                   ///< Alternate starting page, or a negative backup-progress marker.
+    void *payload;                    ///< Borrowed payload pointer; read destinations remain valid until completion.
+    s32 payloadBytes;                 ///< Payload length excluding its four-byte checksum.
+    u8 *cursor;                       ///< Current block within owned staging storage.
+    s32 remainingBytes;               ///< Payload and checksum bytes still pending.
+    u8 staging[EEPROM_STAGING_BYTES]; ///< Owned transfer payload and checksum storage.
 } EepromJob;
 
 typedef char EepromJobSizeCheck[(sizeof(EepromJob) == 0x21C) ? 1 : -1];
-typedef char EepromJobStagingOffsetCheck[((u32)&((EepromJob *)0)->staging == 0x1C) ? 1 : -1];
-typedef char EepromJobPayloadOffsetCheck[((u32)&((EepromJob *)0)->payload == 0xC) ? 1 : -1];
+typedef char EepromJobStagingOffsetCheck[((u32) & ((EepromJob *)0)->staging == 0x1C) ? 1 : -1];
+typedef char EepromJobPayloadOffsetCheck[((u32) & ((EepromJob *)0)->payload == 0xC) ? 1 : -1];
 
 /// Persistent EEPROM transfer state, payload staging buffer and backup-copy progress.
 /// \note Original identifier: \c D_800AD1E0 (0x800AD1E0).
@@ -35,8 +45,6 @@ extern EepromJob gEepromTransferJob;
 extern s32 gEepromDeviceType;
 void _bzero(void *, u32);
 
-
-
 /// Check whether the current EEPROM payload passes checksum validation.
 /// \returns 1 when the checksums match, 0 otherwise.
 /// \note Original decompilation identifier: \c eepromValidateStagedChecksum (0x800033D0).
@@ -45,7 +53,7 @@ s32 eepromValidateStagedChecksum(void) {
     s32 crc;
 
     crc = checksumCrc32(gEepromTransferJob.payloadBytes, gEepromTransferJob.staging);
-    bcopy(gEepromTransferJob.staging + gEepromTransferJob.payloadBytes, &stored, 4);
+    bcopy(gEepromTransferJob.staging + gEepromTransferJob.payloadBytes, &stored, EEPROM_CHECKSUM_BYTES);
     TRACE("loadCRC:%08x\nrealCRC:%08x\n\n", stored, crc);
     if (stored == crc) {
         return 1;
@@ -59,18 +67,18 @@ s32 eepromValidateStagedChecksum(void) {
 /// or 4 checksum mismatch.
 /// \note Original decompilation identifier: \c eepromReadNextBlock (0x80003438).
 s32 eepromReadNextBlock(void) {
-    if ((osEepromProbe(serialGetMessageQueue()) != 1) ||
+    if ((osEepromProbe(serialGetMessageQueue()) != EEPROM_TYPE_4K) ||
         (osEepromRead(serialGetMessageQueue(), gEepromTransferJob.page, gEepromTransferJob.cursor) != 0)) {
-        if (++gEepromTransferJob.retries >= 0xB) {
+        if (++gEepromTransferJob.retries >= EEPROM_RETRY_FAILURE_SCORE_LIMIT) {
             return EEPROM_TRANSFER_READ_FAILED;
         }
         return EEPROM_TRANSFER_READING;
     }
     gEepromTransferJob.retries /= 2;
-    gEepromTransferJob.remainingBytes -= 8;
+    gEepromTransferJob.remainingBytes -= EEPROM_BLOCK_SIZE;
     if (gEepromTransferJob.remainingBytes > 0) {
         gEepromTransferJob.page += 1;
-        gEepromTransferJob.cursor += 8;
+        gEepromTransferJob.cursor += EEPROM_BLOCK_SIZE;
         return EEPROM_TRANSFER_READING;
     }
     if (eepromValidateStagedChecksum() != 0) {
@@ -84,18 +92,18 @@ s32 eepromReadNextBlock(void) {
 /// \returns Transfer state: 0 complete, 2 pending, or 5 terminal write failure.
 /// \note Original decompilation identifier: \c eepromWriteNextBlock (0x80003540).
 s32 eepromWriteNextBlock(void) {
-    if ((osEepromProbe(serialGetMessageQueue()) != 1) ||
+    if ((osEepromProbe(serialGetMessageQueue()) != EEPROM_TYPE_4K) ||
         (osEepromWrite(serialGetMessageQueue(), gEepromTransferJob.page, gEepromTransferJob.cursor) != 0)) {
-        if (++gEepromTransferJob.retries >= 0xB) {
+        if (++gEepromTransferJob.retries >= EEPROM_RETRY_FAILURE_SCORE_LIMIT) {
             return EEPROM_TRANSFER_WRITE_FAILED;
         }
         return EEPROM_TRANSFER_WRITING;
     }
     gEepromTransferJob.retries /= 2;
-    gEepromTransferJob.remainingBytes -= 8;
+    gEepromTransferJob.remainingBytes -= EEPROM_BLOCK_SIZE;
     if (gEepromTransferJob.remainingBytes > 0) {
         gEepromTransferJob.page += 1;
-        gEepromTransferJob.cursor += 8;
+        gEepromTransferJob.cursor += EEPROM_BLOCK_SIZE;
         return EEPROM_TRANSFER_WRITING;
     }
     return EEPROM_TRANSFER_IDLE;
@@ -113,7 +121,7 @@ s32 eepromWriteNextBlock(void) {
 /// \note Original decompilation identifier: \c eepromStartRead (0x80003618).
 s32 eepromStartRead(s32 page, s32 backupPage, void *destination, s32 byteCount) {
     TRACE("eepromRead(%d, %d, %p, %d)\n", page, backupPage, destination, byteCount);
-    if (gEepromDeviceType != 1) {
+    if (gEepromDeviceType != EEPROM_TYPE_4K) {
         return EEPROM_TRANSFER_READ_FAILED;
     }
     if (eepromIsTransferBusy()) {
@@ -124,7 +132,7 @@ s32 eepromStartRead(s32 page, s32 backupPage, void *destination, s32 byteCount) 
     gEepromTransferJob.payload = destination;
     gEepromTransferJob.payloadBytes = byteCount;
     gEepromTransferJob.cursor = gEepromTransferJob.staging;
-    gEepromTransferJob.remainingBytes = gEepromTransferJob.payloadBytes + 4;
+    gEepromTransferJob.remainingBytes = gEepromTransferJob.payloadBytes + EEPROM_CHECKSUM_BYTES;
     gEepromTransferJob.state = EEPROM_TRANSFER_READING;
     gEepromTransferJob.retries = 0;
     return EEPROM_TRANSFER_IDLE;
@@ -143,7 +151,7 @@ s32 eepromStartRead(s32 page, s32 backupPage, void *destination, s32 byteCount) 
 s32 eepromStartWrite(s32 page, s32 backupPage, void *source, s32 byteCount) {
     s32 crc;
     TRACE("eepromWrite(%d, %d, %p, %d)\n", page, backupPage, source, byteCount);
-    if (gEepromDeviceType != 1) {
+    if (gEepromDeviceType != EEPROM_TYPE_4K) {
         return EEPROM_TRANSFER_WRITE_FAILED;
     }
     if (eepromIsTransferBusy()) {
@@ -152,13 +160,13 @@ s32 eepromStartWrite(s32 page, s32 backupPage, void *source, s32 byteCount) {
     bcopy(source, gEepromTransferJob.staging, byteCount);
     crc = checksumCrc32(byteCount, source);
     TRACE("calcCRC:%08x\n", crc);
-    bcopy(&crc, gEepromTransferJob.staging + byteCount, 4);
+    bcopy(&crc, gEepromTransferJob.staging + byteCount, EEPROM_CHECKSUM_BYTES);
     gEepromTransferJob.page = page;
     gEepromTransferJob.backupPage = backupPage;
     gEepromTransferJob.payload = source;
     gEepromTransferJob.payloadBytes = byteCount;
     gEepromTransferJob.cursor = gEepromTransferJob.staging;
-    gEepromTransferJob.remainingBytes = gEepromTransferJob.payloadBytes + 4;
+    gEepromTransferJob.remainingBytes = gEepromTransferJob.payloadBytes + EEPROM_CHECKSUM_BYTES;
     gEepromTransferJob.state = EEPROM_TRANSFER_WRITING;
     gEepromTransferJob.retries = 0;
     return EEPROM_TRANSFER_IDLE;
@@ -181,16 +189,17 @@ void eepromInitializeTransfers(void) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c eepromUpdateTransfer (0x800037F0).
 void eepromUpdateTransfer(void) {
-    if (gEepromDeviceType == 1) {
+    if (gEepromDeviceType == EEPROM_TYPE_4K) {
         switch (gEepromTransferJob.state) {
         case EEPROM_TRANSFER_READING:
             gEepromTransferJob.state = eepromReadNextBlock();
-            if ((gEepromTransferJob.state == EEPROM_TRANSFER_READ_FAILED) || (gEepromTransferJob.state == EEPROM_TRANSFER_CHECKSUM_FAILED)) {
+            if ((gEepromTransferJob.state == EEPROM_TRANSFER_READ_FAILED) ||
+                (gEepromTransferJob.state == EEPROM_TRANSFER_CHECKSUM_FAILED)) {
                 if (gEepromTransferJob.backupPage >= 0) {
                     gEepromTransferJob.page = gEepromTransferJob.backupPage;
-                    gEepromTransferJob.backupPage = -2;
+                    gEepromTransferJob.backupPage = EEPROM_BACKUP_FIRST_COPY_FAILED;
                     gEepromTransferJob.cursor = gEepromTransferJob.staging;
-                    gEepromTransferJob.remainingBytes = gEepromTransferJob.payloadBytes + 4;
+                    gEepromTransferJob.remainingBytes = gEepromTransferJob.payloadBytes + EEPROM_CHECKSUM_BYTES;
                     gEepromTransferJob.state = EEPROM_TRANSFER_READING;
                     gEepromTransferJob.retries = 0;
                 }
@@ -198,9 +207,11 @@ void eepromUpdateTransfer(void) {
             break;
         case EEPROM_TRANSFER_WRITING:
             gEepromTransferJob.state = eepromWriteNextBlock();
-            if ((gEepromTransferJob.state == EEPROM_TRANSFER_WRITE_FAILED) || (gEepromTransferJob.state == EEPROM_TRANSFER_IDLE)) {
+            if ((gEepromTransferJob.state == EEPROM_TRANSFER_WRITE_FAILED) ||
+                (gEepromTransferJob.state == EEPROM_TRANSFER_IDLE)) {
                 if (gEepromTransferJob.backupPage < 0) {
-                    if ((gEepromTransferJob.state == EEPROM_TRANSFER_WRITE_FAILED) && (gEepromTransferJob.backupPage == -2)) {
+                    if ((gEepromTransferJob.state == EEPROM_TRANSFER_WRITE_FAILED) &&
+                        (gEepromTransferJob.backupPage == EEPROM_BACKUP_FIRST_COPY_FAILED)) {
                         gEepromTransferJob.state = EEPROM_TRANSFER_WRITE_FAILED;
                     } else {
                         gEepromTransferJob.state = EEPROM_TRANSFER_IDLE;
@@ -208,12 +219,12 @@ void eepromUpdateTransfer(void) {
                 } else {
                     gEepromTransferJob.page = gEepromTransferJob.backupPage;
                     if (gEepromTransferJob.state == EEPROM_TRANSFER_WRITE_FAILED) {
-                        gEepromTransferJob.backupPage = -2;
+                        gEepromTransferJob.backupPage = EEPROM_BACKUP_FIRST_COPY_FAILED;
                     } else {
-                        gEepromTransferJob.backupPage = -1;
+                        gEepromTransferJob.backupPage = EEPROM_BACKUP_FIRST_COPY_SUCCEEDED;
                     }
                     gEepromTransferJob.cursor = gEepromTransferJob.staging;
-                    gEepromTransferJob.remainingBytes = gEepromTransferJob.payloadBytes + 4;
+                    gEepromTransferJob.remainingBytes = gEepromTransferJob.payloadBytes + EEPROM_CHECKSUM_BYTES;
                     gEepromTransferJob.state = EEPROM_TRANSFER_WRITING;
                     gEepromTransferJob.retries = 0;
                 }
@@ -256,7 +267,7 @@ void eepromDispatchRequest(EepromRequest *req) {
 /// read/write, or 3/4/5 for read/checksum/write failure.
 /// \note Original decompilation identifier: \c eepromGetTransferState (0x800039B4).
 s32 eepromGetTransferState(void) {
-    if (gEepromDeviceType != 1) {
+    if (gEepromDeviceType != EEPROM_TYPE_4K) {
         return 0;
     }
     return gEepromTransferJob.state;
@@ -269,7 +280,6 @@ s32 eepromGetDeviceType(void) {
     return gEepromDeviceType;
 }
 
-
 /// Test whether the EEPROM transfer state is nonterminal.
 /// \returns 1 while a transfer is busy, 0 when idle, unavailable, or failed.
 /// \note Original decompilation identifier: \c eepromIsTransferBusy (0x800039EC).
@@ -277,7 +287,8 @@ s32 eepromIsTransferBusy(void) {
     s32 transferState;
 
     transferState = eepromGetTransferState();
-    if ((transferState != EEPROM_TRANSFER_IDLE) && (transferState != EEPROM_TRANSFER_READ_FAILED) && (transferState != EEPROM_TRANSFER_CHECKSUM_FAILED) && (transferState != EEPROM_TRANSFER_WRITE_FAILED)) {
+    if ((transferState != EEPROM_TRANSFER_IDLE) && (transferState != EEPROM_TRANSFER_READ_FAILED) &&
+        (transferState != EEPROM_TRANSFER_CHECKSUM_FAILED) && (transferState != EEPROM_TRANSFER_WRITE_FAILED)) {
         return 1;
     }
     return 0;

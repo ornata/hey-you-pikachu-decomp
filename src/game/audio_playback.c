@@ -171,7 +171,7 @@ extern s32 gAudioOutputMode;
 extern VoicePlayer gAudioSequenceDriver;
 
 /// Set the output mode for sequence and sound-effect playback.
-/// \param mode One selects mono; two selects stereo.
+/// \param mode AudioOutputMode setting; other values are forwarded unchanged.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001FA28 (0x8001FA28).
 void audioSetOutputMode(s32 mode) {
@@ -202,7 +202,7 @@ void audioInitializeSequencePlayers(ALHeap *heap, ALBankFile *bankFile) {
     s32 i;
     AudioSequenceSlot *p;
 
-    sequenceEngineInitializeDriver(&gAudioSequenceDriver, n_alGlobals, 2, 0x28, gAudioSequenceVoices);
+    sequenceEngineInitializeDriver(&gAudioSequenceDriver, n_alGlobals, AUDIO_OUTPUT_STEREO, 0x28, gAudioSequenceVoices);
     for (i = 0; i < 4; i++) {
         p = &gAudioSequenceSlots[i];
         sequenceControlInitialize(&gAudioSequenceSlots[i].player);

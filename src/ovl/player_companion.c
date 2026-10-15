@@ -1,3 +1,4 @@
+#include "area_catalog.h"
 #include "vector3_types.h"
 #include "runtime_lifecycle.h"
 #include "system_menu.h"
@@ -2606,7 +2607,7 @@ void audioUpdateGameplayMusicDucking(void) {
     switch (gRuntimeGameMode) {
     case 0:
         if ((gPlayerPermissions & 0x08000000) &&
-            (gGameplayVoiceCommandsAllowed == 0 || gGameplayMicrophoneAvailable == 0) && gRuntimeCurrentArea != 0x16) {
+            (gGameplayVoiceCommandsAllowed == 0 || gGameplayMicrophoneAvailable == 0) && gRuntimeCurrentArea != AREA_CREDITS) {
             active = 1;
         }
         break;

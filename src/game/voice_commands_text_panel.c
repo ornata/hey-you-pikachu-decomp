@@ -1,3 +1,4 @@
+#include "area_catalog.h"
 #include "item_kind_ids.h"
 #include "game_heap.h"
 #include "texture_image.h"
@@ -111,7 +112,7 @@ void voiceCommandLaunchEffect(ScriptMessage message) {
         } else {
             target = actorFindPart(((u8 *)gPikachuActor), 0x2E);
         }
-        if (gRuntimeCurrentArea == 7) {
+        if (gRuntimeCurrentArea == AREA_ODDISH_MEADOW) {
             rotation[1] = gPlayerYaw + gPlayerViewShake;
             rotation[0] = 0.0F;
             rotation[2] = 0.0F;

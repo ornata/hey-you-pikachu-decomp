@@ -101,3 +101,11 @@ in `object_flags.h`; importing constants need not introduce a new function proto
 into a unit with a reviewed legacy call representation. Item transfer permission
 bypasses specific holder checks, not every pickup restriction. Model-dimension
 sentinels retain their exact floating-point literal and do not change catalog data.
+
+System cases cover cached EEPROM device/state predicates, the retry-score boundary,
+scene destination wrapping, and audio output mode/pan behavior. EEPROM retry cases
+enter an explicitly bounded original failure branch; they establish CPU behavior
+at that boundary, not physical EEPROM failures or retry timing. Scene identifiers
+follow the retained overlay catalog. Audio cases preserve the different handling
+of raw modes by the sequence and sound-effect drivers, including their storage
+widths; they make no claim about audible output.

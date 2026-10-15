@@ -1,3 +1,4 @@
+#include "area_catalog.h"
 #include "player_profile.h"
 #include "heap_initialize.h"
 #include "controller_service.h"
@@ -330,7 +331,7 @@ void runtimeInitializePlatform(s32 schedulerAddress) {
     gRuntimeCurrentProgram = 0;
     gRuntimeNextProgram = 0;
     gRuntimeGameMode = 0x12;
-    gRuntimeCurrentArea = gRuntimeNextArea = 0x16;
+    gRuntimeCurrentArea = gRuntimeNextArea = AREA_CREDITS;
     gRuntimeCurrentEntrance = gRuntimeNextEntrance = 0;
     gAreaScenarioIndex = 1;
     faultStartHandler(110, 110);
@@ -802,13 +803,13 @@ void runtimeUpdateGameMode(void) {
             textPanelReleaseEntries((TextPanel *)&gRuntimePromptPanelLineCount);
             gRuntimePromptPanelImages = 0;
             if (gRuntimeResetProfileAfterSave != 0) {
-                areaSetNextDestination(0x16, 0);
+                areaSetNextDestination(AREA_CREDITS, 0);
                 playerResetProfile();
                 progressSetChapterAndUnlockMilestones(0);
                 runtimeRequestGameModeChange(0x12);
                 runtimeRequestProgramChange(0);
             } else {
-                areaSetNextDestination(0, 0);
+                areaSetNextDestination(AREA_BEDROOM, 0);
                 runtimeRequestProgramChange(0);
             }
         }

@@ -1,3 +1,4 @@
+#include "area_catalog.h"
 #include "camera_types.h"
 #include "player_camera.h"
 #include "object_template.h"
@@ -1501,7 +1502,7 @@ void systemMenuAppendItem(MenuList *menu, MenuItem *item) {
  * stub. Four stubs keep their submenu's value names as dead TRACEs. */
 /// Area labels used to build the debug area-selection menu.
 /// \note Original identifier: \c D_8012AD08 (0x8012AD08).
-char *gSystemMenuAreaLabels[23] = {"Room",         "GENKAN",      "Yard",         "ViridianA",      "ViridianB",
+char *gSystemMenuAreaLabels[SCENE_AREA_COUNT] = {"Room",         "GENKAN",      "Yard",         "ViridianA",      "ViridianB",
                                    "ViridianC",    "SpringleafA", "SpringleafB",  "SpringleafC",    "OlivineA",
                                    "OlivineB",     "OchreA",      "OchreB",       "CobaltA",        "CobaltB",
                                    "Shop",         "Camp",        "OchreFishing", "OlivineFishing", "CobaltFishing",

@@ -1,3 +1,4 @@
+#include "area_catalog.h"
 #include "vector3_types.h"
 #include "runtime_lifecycle.h"
 #include "area_names.h"
@@ -117,7 +118,7 @@ f32 gTerrainMoundHeightSamples[36] = {
 /// \note Original identifier: \c D_80123594 (0x80123594).
 MazeGrid gTerrainMoundHeightGrid = {gTerrainMoundHeightSamples, gTerrainMoundHeightSamples, 6, 6, 1};
 
-OverlayRec gAreaOverlayDescriptors[23] = {
+OverlayRec gAreaOverlayDescriptors[SCENE_AREA_COUNT] = {
     SCENE_OVERLAY(bedroom),
     SCENE_OVERLAY(entryway),
     SCENE_OVERLAY(front_yard),
@@ -143,7 +144,7 @@ OverlayRec gAreaOverlayDescriptors[23] = {
     SCENE_OVERLAY(credits),
 };
 
-SceneConfigurationPrefix *gAreaConfigurations[23] = {
+SceneConfigurationPrefix *gAreaConfigurations[SCENE_AREA_COUNT] = {
     (SceneConfigurationPrefix *)(scene_bedroom_DATA_START + 0x21314),
     (SceneConfigurationPrefix *)(scene_entryway_DATA_START + 0x5A6C),
     (SceneConfigurationPrefix *)(scene_front_yard_DATA_START + 0x24A20),
@@ -169,7 +170,7 @@ SceneConfigurationPrefix *gAreaConfigurations[23] = {
     (SceneConfigurationPrefix *)(scene_credits_DATA_START + 0xF4DC),
 };
 
-char *gAreaDisplayNames[23] = {
+char *gAreaDisplayNames[SCENE_AREA_COUNT] = {
     "The Bedroom",
     "Entryway",
     "The Front Yard",
@@ -194,7 +195,7 @@ char *gAreaDisplayNames[23] = {
     "Pikachu's Playground",
     "Credits",
 };
-char *gAreaRegionNames[23] = {
+char *gAreaRegionNames[SCENE_AREA_COUNT] = {
     NULL,         NULL,      NULL,      "Viridian", "Viridian", "Viridian",   "Springleaf", "Springleaf",
     "Springleaf", "Olivine", "Olivine", "Ochre",    "Ochre",    "Cobalt",     "Cobalt",     "Abra's Shop",
     "Camp",       "Ochre",   "Olivine", "Cobalt",   "Viridian", "Playground", "The End",
@@ -2136,10 +2137,10 @@ extern s32 gRuntimeNextEntrance;
 void areaSetNextDestination(s32 area, s32 spawn) {
     gRuntimeNextArea = area;
     while (gRuntimeNextArea < 0) {
-        gRuntimeNextArea += 23;
+        gRuntimeNextArea += SCENE_AREA_COUNT;
     }
-    while (gRuntimeNextArea >= 23) {
-        gRuntimeNextArea -= 23;
+    while (gRuntimeNextArea >= SCENE_AREA_COUNT) {
+        gRuntimeNextArea -= SCENE_AREA_COUNT;
     }
     gRuntimeNextEntrance = spawn;
 }

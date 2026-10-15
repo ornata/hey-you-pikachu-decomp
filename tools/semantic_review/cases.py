@@ -366,6 +366,7 @@ def experiments():
 
     from .vm_control_domains import experiments as control_experiments
     from .item_numeric_domains import experiments as item_experiments
+    from .system_numeric_domains import experiments as system_experiments
 
     return (
         cases
@@ -373,7 +374,24 @@ def experiments():
         + participation_experiments()
         + control_experiments()
         + item_experiments()
+        + system_experiments()
     )
+
+
+def bounded_slice(address, size, offsets):
+    """Validate an optional CPU-slice boundary inside one original function."""
+    if set(offsets) != {"entry_offset", "stop_offset"}:
+        raise ValueError("slice requires explicit entry and stop offsets")
+    entry, stop = offsets["entry_offset"], offsets["stop_offset"]
+    if (
+        type(entry) is not int
+        or type(stop) is not int
+        or entry % 4
+        or stop % 4
+        or not 0 <= entry < stop < size
+    ):
+        raise ValueError("slice boundaries must be aligned and inside the function")
+    return address + entry, address + stop
 
 
 def capture_case(case, elf_path, rom_path):
@@ -386,6 +404,17 @@ def capture_case(case, elf_path, rom_path):
         if s[1] == 2
         for name, value, *_ in elf.symbols(i)
     }
+    start_pc, stop_pc = symbols[case["symbol"]], STOP
+    if "slice" in case:
+        sizes = {
+            name: size
+            for i, section in enumerate(elf.sections)
+            if section[1] == 2
+            for name, _, size, *_ in elf.symbols(i)
+        }
+        start_pc, stop_pc = bounded_slice(
+            start_pc, sizes[case["symbol"]], case["slice"]
+        )
     mappings = []
     authenticated = []
     # Retail resident and shared-overlay sections have disjoint virtual ranges.
@@ -455,8 +484,8 @@ def capture_case(case, elf_path, rom_path):
         schema_version=1,
         byte_order="big",
         rom_sha256=hashlib.sha256(rom).hexdigest(),
-        start_pc=symbols[case["symbol"]],
-        stop_pc=STOP,
+        start_pc=start_pc,
+        stop_pc=stop_pc,
         registers=regs,
         mappings=mappings,
         authenticated_code=authenticated,
@@ -500,7 +529,9 @@ def run_cases(rom_path, elf_path):
                 evidence="ROM-authenticated instructions; expected values predeclared from disassembly.",
                 reason=reason,
                 instructions=observed["instructions"],
-                limitations=observed.get("limitations", [])
+                scope=case.get("scope", "function entry"),
+                limitations=case.get("limitations", [])
+                + observed.get("limitations", [])
                 + [
                     "Synthetic initial state; gameplay reachability and R4300 cross-validation unverified."
                 ],

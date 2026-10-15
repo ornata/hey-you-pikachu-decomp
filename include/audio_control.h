@@ -5,6 +5,7 @@
 #define AUDIO_CONTROL_H
 
 #include <ultra64.h>
+#include "audio_output.h"
 
 /// Playback categories accepted by category-wide audio operations.
 typedef enum AudioCategory {
@@ -14,7 +15,7 @@ typedef enum AudioCategory {
 } AudioCategory;
 
 /// Apply the output setting to initialized sequence and sound-effect services.
-/// \param mode One selects mono; two selects stereo.
+/// \param mode AudioOutputMode setting; other raw values are forwarded unchanged.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001FA28 (0x8001FA28).
 void audioSetOutputMode(s32 mode);

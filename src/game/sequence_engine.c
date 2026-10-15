@@ -1,3 +1,4 @@
+#include "audio_output.h"
 #include "sequence_registration.h"
 #include "sequence_engine_types.h"
 #include "sequence_playback.h"
@@ -181,7 +182,7 @@ s32 sequenceEngineSetSustain(VoicePlayer *driver, EngineSequence *sequence, s32 
 s32 sequenceEngineGetVoicePan(VoicePlayer *driver, EngineSequence *sequence, SequenceVoice *voice) {
     s32 pan;
 
-    if (driver->outputMode == 1) {
+    if (driver->outputMode == AUDIO_OUTPUT_MONO) {
         return 0x40;
     }
     pan = voice->sound->samplePan + (sequence->channels[voice->channel].pan >> 7) - 0x40;

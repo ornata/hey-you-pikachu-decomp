@@ -1,3 +1,4 @@
+#include "area_catalog.h"
 #include "audio_control.h"
 #include "eeprom_io.h"
 #include "texture_image.h"
@@ -859,7 +860,7 @@ void titleScreenUpdate(void) {
             }
             gTitleScreenState = 2;
             runtimeRequestGameModeChange(0x12);
-            areaSetNextDestination(0x16, 0);
+            areaSetNextDestination(AREA_CREDITS, 0);
             runtimeRequestProgramChange(0);
         }
         break;
@@ -946,7 +947,7 @@ void titleScreenUpdate(void) {
             gTitleScreenState = 0;
             controllerConfigureStickButtons(0, 0x1E, 0x1E, 0x1E, 0x1E);
             runtimeRequestGameModeChange(4);
-            areaSetNextDestination(0, 0);
+            areaSetNextDestination(AREA_BEDROOM, 0);
             scriptVmResetGlobals();
             runtimeRequestProgramChange(0);
         }

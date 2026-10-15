@@ -73,18 +73,22 @@ def run(rom: Path, elf: Path, core: Path, output: Path, selected=(), repeats=3):
             status = (
                 "contradicted"
                 if False in verdicts
-                else "supported"
-                if len(runs) == repeats and all(value is True for value in verdicts)
-                else "unsupported"
+                else (
+                    "supported"
+                    if len(runs) == repeats and all(value is True for value in verdicts)
+                    else "unsupported"
+                )
             )
             rows.append(
                 {
                     "id": case["id"],
                     "status": status,
                     "interpreter_runs": runs,
+                    "scope": case.get("scope", "function entry"),
                     "unicorn_status": unicorn["status"],
                     "unicorn_expected_agree": evaluate(case, unicorn),
                     "limitations": [
+                        *case.get("limitations", []),
                         "Synthetic entry state, not proof of gameplay reachability or device fidelity.",
                         "Agreement covers declared byte ranges and specified return value only.",
                     ],

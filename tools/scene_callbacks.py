@@ -15,13 +15,17 @@ RUNTIME = ('gRuntimeProgramUpdateEntries', 'gRuntimeProgramDrawEntries',
            'gRuntimeProgramInitializeEntries')
 
 
-def configuration_locations(source):
+def configuration_locations(source, constants=None):
     """Read the explicit 23-entry scene catalog, rejecting unfamiliar expressions."""
     code = mask_source(source)
-    table = re.search(r'\bgAreaConfigurations\[23\]\s*=\s*\{([^}]+)\}', code)
+    table = re.search(r'\bgAreaConfigurations\[(23|SCENE_AREA_COUNT)\]\s*=\s*\{([^}]+)\}', code)
     if not table:
         raise ValueError('expected the retained 23-entry scene configuration catalog')
-    entries = [entry.strip() for entry in table[1].split(',') if entry.strip()]
+    if table[1] == 'SCENE_AREA_COUNT':
+        definitions = re.findall(r'\bSCENE_AREA_COUNT\s*=\s*(0x[0-9A-Fa-f]+|[0-9]+)\b', mask_source(constants or ''))
+        if len(definitions) != 1 or int(definitions[0], 0) != 23:
+            raise ValueError('scene extent must independently resolve to the retail count 23')
+    entries = [entry.strip() for entry in table[2].split(',') if entry.strip()]
     locations = []
     for entry in entries:
         match = re.fullmatch(r'\(SceneConfigurationPrefix\s*\*\)\s*\((scene_\w+_DATA_START)\s*\+\s*(0x[\dA-Fa-f]+)\)', entry)
@@ -66,7 +70,9 @@ def report(root, path):
         symbol = by_name[name]
         check(name, section_bytes(elf, symbol, 0, 4), 4,
               {0: ('callback', 'void', [])}, symbol[5])
-    locations = configuration_locations((root / 'src/ovl/area_terrain_maze.c').read_text())
+    constants = root / 'include/area_catalog.h'
+    locations = configuration_locations((root / 'src/ovl/area_terrain_maze.c').read_text(),
+                                        constants.read_text() if constants.exists() else None)
     catalog = section_bytes(elf, by_name['gAreaConfigurations'], 0, 23 * 4)
     for index, (base, offset) in enumerate(locations):
         symbol = by_name[base]
