@@ -15,6 +15,14 @@ I wanted to understand the strengths and limitations of using AI for decompilati
 because of its use of the Nintendo VRU. I thought it might be interesting to see how the voice system works, and see if it would be
 possible to extend it.
 
+I've taken the time to try and
+
+- Make sure that variable names make sense and eliminate magic numbers where possible
+- Use modern tooling like `clang-tidy` where possible, to make code more readable/portable
+- Mark undefined behaviour and other portability hazards in the code
+
+In order to try and verify
+
 ## Requirements
 - nix
 - A Hey You Pikachu ROM
@@ -112,11 +120,6 @@ python3 -m tools.script_decoder.catalog
 Listings go under `build/script-decoder/`. See the
 [decoder guide](docs/VOICE_AND_SCRIPT_VM.md#script-decoder) for local-ROM inputs
 and links from decoded operations to C handlers. Only synthetic examples are bundled.
-
-## Undefined behaviour
-
-Although it's easy to run UBSan to find UB with modern compilers, UB known/understood
-by agents that did the porting work is documented in **[docs/UB.md]**.
 
 ## Notice
 
