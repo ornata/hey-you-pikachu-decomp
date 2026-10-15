@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "purpose": "Explicit scalar, borrowed string-pointer and immediate action-request storage contracts; source changes revoke evidence until reviewed again. Deferred handlers remain separate.",
+  "purpose": "Explicit scalar, borrowed string-pointer, bounded inline-text and immediate action-request storage contracts; source changes revoke evidence until reviewed again. Deferred handlers remain separate.",
   "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases. Twelve action-request wrappers and their two-field scheduling helper reviewed against original Ghidra801167A0 and all twelve original wrapper addresses; twenty-four direct original-instruction request cases guard all VM fields and pending/protected values. Selector-three deferred dispatch and helper chain reviewed against original Ghidra80117098/8000F4C4/801167BC/800120F0 and eight guarded direct-dispatch/scheduler cases. Selector-two startup and waiting helpers reviewed against original Ghidra80116800/80012034; twelve guarded direct/scheduler cases cover numeric tags, original null sentinel, waiting and completion. Player input-mask field names now include synthetic stick flags, separately from permission flags; unchanged prefix layout and the reviewed permission/position reads were rechecked against matching objects before rebinding the two affected header dependencies. Additional permission names for Pikachu/follow selection and stun reaction leave the permission storage and reviewed view/position access unchanged; the two header dependencies were rechecked after strict matching verification. Ten additional permission names retain identical player storage and reviewed view/position accesses; header bindings rechecked after all483 objects and ROM matched. Selector-nine cost admission, root-resource adjustment and HUD helper were checked against Ghidra80116BC4/80014A3C, the authenticated five-record table and fourteen guarded original-instruction startup/poll/completion observations, including distinct actor/root resource records. The root and script actor states are explicitly distinguished. Acknowledgement native and helper checked against Ghidra8011C84C/80119200 and four original-instruction probes, including raw nonboolean word preservation; message fields remain unchanged. Four distance/target append contracts checked against original Ghidra801172D4/80118838/801187E4/8011C674/8011CB38/8011D208/8011DBF8/801177FC/80118B30/8003A5FC/8003A6F0 and twelve guarded original-instruction probes with distinct local/world coordinates, approach clamping, fixed/follow selection and unavailable-target exclusions. The actor-state header replaces only the producer-established four-byte approach sample with f32 and adds its offset assertion; all other declarations remain token-identical. Five further handle-consuming query contracts checked against original Ghidra8011730C/80117388/8011D240/8011D288/80117840/801178EC/8011DCB0/8011DCF8/80117E80/8011EA9C and23 guarded original-instruction observations. Runtime kind130 is authenticated against its retained callback record selecting80027430/8002747C, whose allocation and speed accesses establish the shared four-byte spinner state; six updater observations cover decay, negative retained values, voice-distance endpoints, speed cap and yaw wrap. Independent agent RNG review authenticated original wrapper/helper instructions and fifteen guarded interpreter observations at62bceac: inclusive unit-float endpoints including the observed rounding threshold, unsigned remainder for positive signed bounds, no advancement for nonpositive bounds, numeric conversion and unchanged protected VM storage. Reports retain original ROM/ELF/core/source fingerprints; FCR31 threshold is qualified to observed interpreter rounding. Independent tracking review disassembled wrappers/helpers and checked ten authored cases through three interpreter repetitions (30 supported observations,480 matching guarded regions) using frozen62bceac ELF/core inputs. Cases distinguish primary/secondary refresh, stale state after unavailable targets, zero category after a successful unsupported-kind selection, live fallback copying and escape selection preserving allowance/position. Two-operand replacement retains all three protected lower values. Agent-authenticated kind127 producer/callback and cannon landmark creation/help/selection consumers establish player-control-root and cannon identities. Category2 is named player control; category3 keeps its numeric range because145..148 lack established producers. Only enum spellings change in the reviewed classifier; all predicates and values remain unchanged. The clang-format actor-state header change was checked against afdde86: after C backslash-newline splicing all tokens are identical. Macro continuation placement alone changes the lexical fingerprint; the single header binding retains its reviewed layout and contract. Three constructor/callback-supported runtime tags are named PASSAGE0x87, INTERACTION_PROXY0x8A and CAVE0xB0. Original Ghidra8001C150/80112940/8001F4F0 and authenticated template/callback records establish these identities. Existing object-prefix layout and player consumers remain token-identical after reversing only the named numeric substitutions and removing the added enum entries; strict object and ROM comparison passed after each source unit. Only those affected reviewed bindings are updated. Item-catalog0x8A and unresolved runtime0x89 remain distinct. Embedded actor-state layout dependencies are bound globally: Matrix34, DirectionAnimation and ActionScriptState precede vmAddress, while ScriptMessage, animation tracks and orientation cache determine later field locations and the owning-state extent. Current N64 size/offset assertions and strict matching objects establish their reviewed layouts. A change to these declarations now revokes all contracts rather than only callbacks that happened to bind the nested headers separately.",
   "preconditions": [
     "Protected locals and frame metadata lie below the active stack depth.",
@@ -6354,6 +6354,978 @@
         "The wrapper supplies duration-1. The first matched slot selects0 microseconds when elapsed s64 is0, otherwise10000; that chosen duration is reused for subsequent matching slots. SDK node writes delta, type11 halfword, signed16 level data, rounded sample-duration at+0x10, next0, then appends. Positive initialized outputRate and finite representable conversion are required; _n_timeToSamples only reads synth rate and converts/alignment-masks the result."
       ],
       "evidence": "Read-only original Ghidra8011D8C0/8001FE78/80020E44/8004D1C0/8004DE74/8004DEC8/8004DD8C/8004E618 fixed-selector3 confirms operand order, matched-slot count and complete bounded game/SDK write paths. Original SDK osSetIntMask80053A00 plus __ll_mul800524B8 and __ll_rshift800525E4 generated annotations matched Ghidra original bytes; arithmetic helper writes are confined to outgoing C-stack storage. Actual SoundEffectVoice/SoundEffectPlayer/ALParam/N_ALVoice/N_PVoice/N_ALSynth layouts and global declarations were read and fingerprinted, including local-only SDK headers. Source/Ghidra evidence only; no runtime claim."
+    },
+    {
+      "function": "actorScriptPlaySoundEffect",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "36f71810a83e110aa7704d4921fd3718db1fcc683d6963acc01d5b24b1601c7a",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace sound-bank index with newly assigned logical playback handle, or0 when no logical slot is free. A nonzero handle does not prove physical allocation, start-update capacity or audible playback.",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/audio_playback.c",
+          "function": "audioPlaySoundEffect",
+          "sha256": "2602a8e3649a526560a2638f8e4049e7ff16d14d5c2b71bab28345bd649754f9"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/audio_playback.c",
+          "function": "audioGetSoundDefinition",
+          "sha256": "54f1e6bd57af75cb0463d4728260a231618e37e3dd5f69b012d301942e57fee4"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/sound_effect_player.c",
+          "function": "soundEffectPlayerPlay",
+          "sha256": "7ef2f78e4b42837908e177f20e82f91c2769f2180b73e6d084b55ebbb2e6fe70"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/audio_playback.c",
+          "sha256": "cc43d722ca73c5a3982af98875eccddfd45f9272edc9fd065c3ce9249e6b9e9d"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/sound_effect_player.c",
+          "sha256": "7b183df1221fda61283d083a592694e0c7dc15e610663a5f9721debf31136602"
+        },
+        {
+          "kind": "file",
+          "file": "include/audio_sound_effect.h",
+          "sha256": "c3c09dee96011e4f91dcbef126148189162adc63222b630ae44d08197d552285"
+        },
+        {
+          "kind": "file",
+          "file": "include/sound_effect_player.h",
+          "sha256": "6325b8f0ebf7e1bb0d362a8c34cd921ff88d2648ed6b1b4d06ddf39358b376e7"
+        },
+        {
+          "kind": "file",
+          "file": "include/audio_output.h",
+          "sha256": "c18ea8ff591a1e0eb8b1f902d3bedf07439b4a69975b077b68f0f8282d77f325"
+        },
+        {
+          "kind": "file",
+          "file": "include/n_synthInternals.h",
+          "sha256": "850d7a738cd632965d9b7e49820860b6a620d68b2ff020c07b0858b78d82e601"
+        },
+        {
+          "kind": "file",
+          "file": "include/synthInternals.h",
+          "sha256": "40637ec81232a64ee7e0176bdc8a5bfedbcdff14149ba72ea1a6e9e69ae0935b"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/libaudio.h",
+          "sha256": "79394db6c4f40308cb2f0eabf605cec641807398eb70aa271aa607d3df34c80c"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/os_exception.h",
+          "sha256": "161fe95ce76fbc9bf9c4ae6117fbcd59c5557e172841c57ff82a27972942723e"
+        },
+        {
+          "kind": "file",
+          "file": "docs/LOCAL_SDK_FILES.json",
+          "sha256": "76f91c2e6d465a60326a1a1c5367297c97438e12baa5749de26a53914b61fde3"
+        },
+        {
+          "kind": "file",
+          "file": "config/pikachu.yaml",
+          "sha256": "a56707cf81226745a3d0758e71a63285c21ff334fcc5eea8cba864ccf0cf39c6"
+        },
+        {
+          "kind": "file",
+          "file": "config/symbol_addrs.txt",
+          "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+        },
+        {
+          "kind": "file",
+          "file": "tools/materialize_ultralib.py",
+          "sha256": "b40bdd26d0444db7a0c853608d3c98b2aa5a0bf81cf3c488f62baee884d95664"
+        },
+        {
+          "kind": "file",
+          "file": "include/matrix_types.h",
+          "sha256": "c8135a6ac50293376b4778483db97059e725e00da65dd880a227262c8a430a9f"
+        },
+        {
+          "kind": "file",
+          "file": "include/direction_animation_types.h",
+          "sha256": "82506e5f032bbc145cefad1ed15d3b129706899a67d87c1074e2e40ddee0009b"
+        },
+        {
+          "kind": "file",
+          "file": "include/action_script_types.h",
+          "sha256": "1b1bb25b8810dc94e9bcfadf092f0ac823fa850cbc003ac00776dd63e9aade37"
+        }
+      ],
+      "preconditions": [
+        "One numeric sound index lies above protected locals/frame metadata; integer/code-reference or finite s32-representable float conversion is supported, with fractions truncated. Captured VM, actor and owned values remain live/disjoint from bank, slots, synth/physical/logical voices, update pools, OS/MMIO and scratch. No concurrent renderer, scheduler mutation, destruction or context replacement is covered.",
+        "Sound index is nonnegative and resolves through instrument(index/88)+124 and sound index%88 to a valid borrowed ALSound in bankArray[0]. Bank/instrument/sound/keymap fields are initialized and readable; definition samplePan is0..127. Sound and wavetable/sample/keymap resources remain live through later deferred synth use; no sound/sample bytes are copied or freed here. Invalid bank lookup has no null guard on a free-slot path.",
+        "Sound-effect player has stable nonnegative count fitting allocated0x50-byte slots, valid volume0..32767, and mode configuration. An inactive slot is owned and reusable; active physical/logical voice links and synth lame/free/allocated lists are initialized, acyclic and writable. The next shared handle is positive, unused and below INT_MAX before increment. Exhausted logical slots return0 without changing slots/handle counter.",
+        "On a free logical slot, stores affect id+0, borrowed sound+4, embedded N_ALVoice+8..+0x23, elapsed+0x28/+0x2C, baseVolume+0x30, volume+0x34, basePitch+0x38, pitch+0x3C, variation rate+0x40, mix+0x44 and pan+0x48. Trailing unknown+0x4C and logical link padding are preserved. osGetCount supplies optional volume/pitch variation without changing the shared gameplay RNG.",
+        "Original n_alSynAllocVoice clears/initializes the new N_ALVoice, then moves a lame/free physical voice to allocated list, steals an eligible priority<=10 voice with offset0, or leaves pvoice null. Physical allocation failure does not revoke the newly issued logical handle. Taking or stealing assigns physical.vvoice and new logical.pvoice/active; stealing also clears old logical.pvoice/active and sets physical offset0x228.",
+        "When stealing occurs, at least one free synth update node is mandatory: original8004D3F0 return is dereferenced without a null check for the initial mute/ramp update. That update has type11, level0, ramp0x170 samples and current timestamp; a further type15 stop update is conditional on remaining capacity. Nodes and old logical/physical owners are valid/nonoverlapping. Non-steal allocation uses no update node until start.",
+        "n_alSynStartVoiceParams does nothing with null pvoice or exhausted update pool. Otherwise it pops one node and queues type13 with timestamp, unity flag, finite computed pitch, signed16 level, pan, mix capped127, rounded sample-duration0 and borrowed wavetable pointer. Fixed enveloper selector3 only links node through physical head/tail or priorTail.next. No synth pull, DMA, indirect client callback or sample decoding occurs synchronously.",
+        "Volume variation uses unsigned target-word addition before the0..255 clamp; underflow can produce255, not0. Base pitch uses bounded byte key values and detune, with pure alCents2Ratio exponentiation; variation pitch is bounded by sound flags. SDK integer multiply/shift helpers write only C-stack arguments. osSetIntMask temporarily changes CP0/MI masking then restores it under stable OS-global state.",
+        "Authenticated original-ROM SDK and pinned local headers/configuration are required. Strict generated-object/ROM verification establishes reviewed SDK bytes; source-frame validation alone does not authenticate assembly. This closure covers immediate writes, not later synth callbacks, sample DMA/lifetimes, audible output or gameplay reachability. Scheduling continues and saved VM receives an integer logical handle or0."
+      ],
+      "evidence": "Original Ghidra8011D830/8001FE48/8001FD9C/800206B0..80020A9C establishes operand order, bank lookup and complete logical-slot writes. Newly reviewed SDK8004D370/8004D4B0/8004D5A0 closes physical allocation/steal/deferred-start;800560BC/800560E0 are pure list stores;8004DD8C/8004E618 selector3 only allocate/append update nodes;800532F0 is pure float exponentiation. Earlier authenticated SDK osGetCount/int-mask/arithmetic/time conversion paths remain required. Actual local SDK headers and game/global declarations are fingerprinted. No runtime evidence claimed."
+    },
+    {
+      "function": "actorScriptPlayTrackedSound",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "715ff4d0efff9d1f5c84beedab9ec7d536ac998a9f7a0fb51560ecb1fc06fd3c",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace sound kind with new logical sound handle and retain it in the actor tracking ring on nonzero result. Runtime kind0x25 and kind30..124 additionally replace trackedVoice, stopping the previous handle when active, even if the new result is0.",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/audio_playback.c",
+          "function": "audioPlaySoundEffect",
+          "sha256": "2602a8e3649a526560a2638f8e4049e7ff16d14d5c2b71bab28345bd649754f9"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/audio_playback.c",
+          "function": "audioGetSoundDefinition",
+          "sha256": "54f1e6bd57af75cb0463d4728260a231618e37e3dd5f69b012d301942e57fee4"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/sound_effect_player.c",
+          "function": "soundEffectPlayerPlay",
+          "sha256": "7ef2f78e4b42837908e177f20e82f91c2769f2180b73e6d084b55ebbb2e6fe70"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/audio_playback.c",
+          "sha256": "cc43d722ca73c5a3982af98875eccddfd45f9272edc9fd065c3ce9249e6b9e9d"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/sound_effect_player.c",
+          "sha256": "7b183df1221fda61283d083a592694e0c7dc15e610663a5f9721debf31136602"
+        },
+        {
+          "kind": "file",
+          "file": "include/audio_sound_effect.h",
+          "sha256": "c3c09dee96011e4f91dcbef126148189162adc63222b630ae44d08197d552285"
+        },
+        {
+          "kind": "file",
+          "file": "include/sound_effect_player.h",
+          "sha256": "6325b8f0ebf7e1bb0d362a8c34cd921ff88d2648ed6b1b4d06ddf39358b376e7"
+        },
+        {
+          "kind": "file",
+          "file": "include/audio_output.h",
+          "sha256": "c18ea8ff591a1e0eb8b1f902d3bedf07439b4a69975b077b68f0f8282d77f325"
+        },
+        {
+          "kind": "file",
+          "file": "include/n_synthInternals.h",
+          "sha256": "850d7a738cd632965d9b7e49820860b6a620d68b2ff020c07b0858b78d82e601"
+        },
+        {
+          "kind": "file",
+          "file": "include/synthInternals.h",
+          "sha256": "40637ec81232a64ee7e0176bdc8a5bfedbcdff14149ba72ea1a6e9e69ae0935b"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/libaudio.h",
+          "sha256": "79394db6c4f40308cb2f0eabf605cec641807398eb70aa271aa607d3df34c80c"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/os_exception.h",
+          "sha256": "161fe95ce76fbc9bf9c4ae6117fbcd59c5557e172841c57ff82a27972942723e"
+        },
+        {
+          "kind": "file",
+          "file": "docs/LOCAL_SDK_FILES.json",
+          "sha256": "76f91c2e6d465a60326a1a1c5367297c97438e12baa5749de26a53914b61fde3"
+        },
+        {
+          "kind": "file",
+          "file": "config/pikachu.yaml",
+          "sha256": "a56707cf81226745a3d0758e71a63285c21ff334fcc5eea8cba864ccf0cf39c6"
+        },
+        {
+          "kind": "file",
+          "file": "config/symbol_addrs.txt",
+          "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+        },
+        {
+          "kind": "file",
+          "file": "tools/materialize_ultralib.py",
+          "sha256": "b40bdd26d0444db7a0c853608d3c98b2aa5a0bf81cf3c488f62baee884d95664"
+        },
+        {
+          "kind": "file",
+          "file": "include/matrix_types.h",
+          "sha256": "c8135a6ac50293376b4778483db97059e725e00da65dd880a227262c8a430a9f"
+        },
+        {
+          "kind": "file",
+          "file": "include/direction_animation_types.h",
+          "sha256": "82506e5f032bbc145cefad1ed15d3b129706899a67d87c1074e2e40ddee0009b"
+        },
+        {
+          "kind": "file",
+          "file": "include/action_script_types.h",
+          "sha256": "1b1bb25b8810dc94e9bcfadf092f0ac823fa850cbc003ac00776dd63e9aade37"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/actor_model_motion.c",
+          "function": "actorPlayTrackedSound",
+          "sha256": "11ffe3d413f8dd700477c18ed3038166b0cd166a54d77b77de03e9238f061a89"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/object_hierarchy.c",
+          "function": "objectPlaySpatialSound",
+          "sha256": "49b755773bb88826d814a7ba150a1cf9a96fffa1bd560318b5ecb224ecc759bb"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/vector_math.c",
+          "function": "audioGetPositionVolumeAndPan",
+          "sha256": "f0d0a7c60c786503d53573b54b6427efbeff5a116390fe0d431d0875b124221c"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/trigonometry.c",
+          "function": "matrixFixedTo34",
+          "sha256": "219c46e4e2c32f88a1273eb548405c10b4da89673549aa7e744f43dabede32c7"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/trigonometry.c",
+          "function": "vector3Length",
+          "sha256": "2d20f379ec33b461f4d5e6e7e108880e84e1e67f99a464f63e38e70b9bd6cbbb"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/trigonometry.c",
+          "function": "mathMapRangeClamped",
+          "sha256": "9f7f5a2f87a89efdce61bba741ba65b67f9fd44491ee2e2954042647982a3919"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/trigonometry.c",
+          "function": "mathLineXAtY",
+          "sha256": "016893c6b3824bf1f643da8914e29aed3cdf85fb0d156f7dd08d22ce64650ed8"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/audio_playback.c",
+          "function": "audioCountPlayback",
+          "sha256": "ac2a85b85c117bb580fb37287ca9f394be72d7c32e3e88f4f26f6990d31e23f6"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/audio_playback.c",
+          "function": "audioSetSoundEffectPan",
+          "sha256": "d13723303db0b9508f32b5ea3e9ae533f7875ede174bc5f4a60395e3976eecc2"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/audio_playback.c",
+          "function": "audioSetSoundEffectVolume",
+          "sha256": "995589bf34c4144a85419271c2ce4cacc7cc783d37411f722e5b0d7e9fd153f2"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/audio_playback.c",
+          "function": "audioStopPlayback",
+          "sha256": "e9e7f8f0ae024f1b397d9a51268e019745edf772bc6e092ef972f84003bf8814"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/audio_playback.c",
+          "function": "audioFadeOutSequence",
+          "sha256": "a39f003981522b84c27376b3fda57ec9f17729e72699452ee1c8af3683bbf0d4"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/sound_effect_player.c",
+          "function": "soundEffectPlayerCountPlayback",
+          "sha256": "2ca98b8f31e8892afea070115426a2dd88fddd52c7f8cdfe308960529b49883f"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/sound_effect_player.c",
+          "function": "soundEffectPlayerSetPan",
+          "sha256": "600a91e6e9437807cdecf3d23b8ef12acd09afa509dd71ef8806e055c5b8d253"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/sound_effect_player.c",
+          "function": "soundEffectPlayerSetVolume",
+          "sha256": "efa1c3ed51d810052dcc54b4b8d6fb208b4170e3b6ef34dfdb309b055963097d"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/sound_effect_player.c",
+          "function": "soundEffectPlayerStop",
+          "sha256": "f940973ba7412cc3cfdd8b6d736fd8a9790e3cafc61a6cb095dadf86e840b983"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/sequence_engine.c",
+          "function": "sequenceEngineIsStopped",
+          "sha256": "28230df7f3ada9748f18eb2ec9db8e04aea47e4dee1538c6d584c82fd555fad8"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/midi_sequence.c",
+          "function": "midiSequenceIsStopped",
+          "sha256": "068552ac63f885e4aa0b7617963add13580df0b9c4dbdacc8b5bc18b9624220a"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/midi_sequence.c",
+          "function": "midiSequenceStop",
+          "sha256": "d5267087d309fe1534a4eb61d38c7ad8c3174eff24d11a3fe35e3428c5a9e055"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/midi_sequence.c",
+          "function": "midiSequencePlaybackTransitionHook",
+          "sha256": "e0c61c4c3656a5589c12701e8339869852b76f933014fa01295cbbde673af8fe"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/sequence_control.c",
+          "function": "sequenceControlRequestVolume",
+          "sha256": "d445ff3c0be942c34299dd76f367ed72cf9a2a63805a3cd379e7371ca0f5bded"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/sequence_control.c",
+          "function": "sequenceControlScheduleStop",
+          "sha256": "e0ed084df106283ea6ec48dfdc96e6da73be52125507543ac8e93cb6f9b09267"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/object_hierarchy.c",
+          "sha256": "d2e4e761161617f2989d1abbd165c9e4eb3089ffca22168f14c5efb73517f7eb"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_sound.h",
+          "sha256": "95c58b68dc7cd6480b6b6fdb1ae5e3b3f7bd4b0f2c7055f5646cfd2c6acdda61"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_audio.h",
+          "sha256": "58237ab564b64ecf6a41e02371dd2cd6644c5cb740ba30c8679c9952c4dc55d6"
+        },
+        {
+          "kind": "file",
+          "file": "include/audio_spatial.h",
+          "sha256": "020c93a17c06ec86b1cb5f389fcfb90d900909288d15c0de4cc4a14b53b21f12"
+        },
+        {
+          "kind": "file",
+          "file": "include/matrix_point.h",
+          "sha256": "b9c4fae03e004630b7b0c3e18b4fff48cb3a560b61e70739ec05cca12720fe22"
+        },
+        {
+          "kind": "file",
+          "file": "include/matrix_types.h",
+          "sha256": "c8135a6ac50293376b4778483db97059e725e00da65dd880a227262c8a430a9f"
+        },
+        {
+          "kind": "file",
+          "file": "include/camera_types.h",
+          "sha256": "e0b41d0d08f7ce4a2d9e0f287073ec094cb820d2d02638d39712141325161fc1"
+        },
+        {
+          "kind": "file",
+          "file": "include/camera_storage.h",
+          "sha256": "856b99b7234d58282b91b3f86f412b202b07f85a71753c8a47662cd605d6409b"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/mbi.h",
+          "sha256": "23f620aa81136ab27fda2aa3d9fa87da7c9ddbf645c3b4409910323dc4774f02"
+        },
+        {
+          "kind": "file",
+          "file": "include/midi_sequence_types.h",
+          "sha256": "bf66ec7c2dd9449e1cfc6745a75ef8893f60200458f83f569f80e827f50a458d"
+        },
+        {
+          "kind": "file",
+          "file": "include/midi_reader_types.h",
+          "sha256": "a7769d42267b413eeeb43e49e0590fc59cca57e0ec3c43feada865d15aeae9da"
+        },
+        {
+          "kind": "file",
+          "file": "include/midi_encoding.h",
+          "sha256": "c41bba40571ee17d57045afd4fa0887f0556f8de3c62c15dda1841de8af64b03"
+        },
+        {
+          "kind": "file",
+          "file": "include/sequence_engine_types.h",
+          "sha256": "84217ab179321dedc30e534dcae345a0763f4b0afa29ea9239ca7cd86fbf5748"
+        },
+        {
+          "kind": "file",
+          "file": "include/sequence_playback.h",
+          "sha256": "970759a4d6b287beae3d318a5c231acf21b54546328ebc9ca093965bfe4c3c6a"
+        },
+        {
+          "kind": "file",
+          "file": "include/sequence_control.h",
+          "sha256": "c99249c658d80c849e572287c3e8577c76bf88e3030bcb997552f68abd039ca9"
+        },
+        {
+          "kind": "file",
+          "file": "include/audio_sequence.h",
+          "sha256": "568eeee59ec2695edc015f3907df2833e0a928aec5d2d11159e8e2d49669d44c"
+        },
+        {
+          "kind": "file",
+          "file": "include/audio_playback_query.h",
+          "sha256": "f4714caafb2eeb46f7cd6a80b780a7a801f4d0690e490856123552550c50aa79"
+        },
+        {
+          "kind": "file",
+          "file": "include/audio_playback_stop.h",
+          "sha256": "7403dfb5bf4433dd538273c9c521f771679ff44899b621fc5c8188ab65f4c100"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script.h",
+          "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+        }
+      ],
+      "preconditions": [
+        "One numeric sound index lies above protected locals/frame metadata; integer/code-reference or finite s32-representable float conversion is supported, with fractions truncated. Captured VM, actor and owned values remain live/disjoint from bank, slots, synth/physical/logical voices, update pools, OS/MMIO and scratch. No concurrent renderer, scheduler mutation, destruction or context replacement is covered.",
+        "Sound index is nonnegative and resolves through instrument(index/88)+124 and sound index%88 to a valid borrowed ALSound in bankArray[0]. Bank/instrument/sound/keymap fields are initialized and readable; definition samplePan is0..127. Sound and wavetable/sample/keymap resources remain live through later deferred synth use; no sound/sample bytes are copied or freed here. Invalid bank lookup has no null guard on a free-slot path.",
+        "Sound-effect player has stable nonnegative count fitting allocated0x50-byte slots, valid volume0..32767, and mode configuration. An inactive slot is owned and reusable; active physical/logical voice links and synth lame/free/allocated lists are initialized, acyclic and writable. The next shared handle is positive, unused and below INT_MAX before increment. Exhausted logical slots return0 without changing slots/handle counter.",
+        "On a free logical slot, stores affect id+0, borrowed sound+4, embedded N_ALVoice+8..+0x23, elapsed+0x28/+0x2C, baseVolume+0x30, volume+0x34, basePitch+0x38, pitch+0x3C, variation rate+0x40, mix+0x44 and pan+0x48. Trailing unknown+0x4C and logical link padding are preserved. osGetCount supplies optional volume/pitch variation without changing the shared gameplay RNG.",
+        "Original n_alSynAllocVoice clears/initializes the new N_ALVoice, then moves a lame/free physical voice to allocated list, steals an eligible priority<=10 voice with offset0, or leaves pvoice null. Physical allocation failure does not revoke the newly issued logical handle. Taking or stealing assigns physical.vvoice and new logical.pvoice/active; stealing also clears old logical.pvoice/active and sets physical offset0x228.",
+        "When stealing occurs, at least one free synth update node is mandatory: original8004D3F0 return is dereferenced without a null check for the initial mute/ramp update. That update has type11, level0, ramp0x170 samples and current timestamp; a further type15 stop update is conditional on remaining capacity. Nodes and old logical/physical owners are valid/nonoverlapping. Non-steal allocation uses no update node until start.",
+        "n_alSynStartVoiceParams does nothing with null pvoice or exhausted update pool. Otherwise it pops one node and queues type13 with timestamp, unity flag, finite computed pitch, signed16 level, pan, mix capped127, rounded sample-duration0 and borrowed wavetable pointer. Fixed enveloper selector3 only links node through physical head/tail or priorTail.next. No synth pull, DMA, indirect client callback or sample decoding occurs synchronously.",
+        "Volume variation uses unsigned target-word addition before the0..255 clamp; underflow can produce255, not0. Base pitch uses bounded byte key values and detune, with pure alCents2Ratio exponentiation; variation pitch is bounded by sound flags. SDK integer multiply/shift helpers write only C-stack arguments. osSetIntMask temporarily changes CP0/MI masking then restores it under stable OS-global state.",
+        "Authenticated original-ROM SDK and pinned local headers/configuration are required. Strict generated-object/ROM verification establishes reviewed SDK bytes; source-frame validation alone does not authenticate assembly. This closure covers immediate writes, not later synth callbacks, sample DMA/lifetimes, audible output or gameplay reachability. Scheduling continues and saved VM receives an integer logical handle or0.",
+        "Actor has initialized state and nextSoundSlot0..3. Retained handles/ring entries and all four initialized sequence slots remain valid. A nonzero new sound scans up to4 ring entries using active playback counts, overwrites the first inactive entry or wrapped starting entry, then sets nextSoundSlot=(slot+1)%4; overwritten sound is not automatically stopped.",
+        "The active camera index is valid. A null camera matrix skips spatialization. Otherwise the borrowed64-byte fixed Mtx and world position remain readable; projection math and distance are finite with nonzero camera-space length. Matrix conversion/transform/length/range helpers only write C-stack scratch/output. Near20<far200 yields volume80..256 and pan0..255; reviewed per-handle setters apply their exact game/SDK queue writes.",
+        "Tracked voice replacement for runtime kind0x25 and sound30..124 calls audioCountPlayback then zero-duration audioStopPlayback on a prior active handle. It clears matching sound logical IDs and may append stop/free updates or move physical voices to lame list. Free with nonzero physical offset requires an available update node if caller expects release; when exhausted original helper leaves its physical link intact, without changing frame storage.",
+        "A sequence-handle match is also handled: active query reads stopped state, and zero fade writes immediate volume then releaseNotes/releaseSustain/stopped flags through source-bound no-op transition hook. Initialized sequence slots, MIDI/control layouts and stop-target volume remain valid; no MIDI start/read/PI transfer occurs along this stop-only branch.",
+        "Immediate actor writes are soundHandles+0x178..+0x184, nextSoundSlot+0x188 and conditionally trackedVoice+0x18C only. Additional writes remain inside the reviewed logical/physical/update/sequence control pools and CP0/MI masking. No object ownership transfer, script-context replacement or event-reader callback occurs."
+      ],
+      "evidence": "Original Ghidra8011D7E8/80014B60..80014C78/80009BB8/8000C944 traces tracked ring and spatial chain;80039D24/8003FB90/8003A5D0/8003AA14/8003A958 only write scratch.8001FD2C/8002110C/80005B70/800057A0 are bounded active queries.80020270/80020B68/8004D0B0/8004D120/8004DE40 close stop/free via reviewed update/list helpers, without a user callback.800201B8/800058F4/80005864/800052BC writes only queued volume/release/stop state;800051A0 is an original no-op. SDK start closure and pinned original-ROM/header prerequisites are shared with PlaySoundEffect. No runtime evidence claimed."
+    },
+    {
+      "function": "actorScriptRequestAreaTransition",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "0c68ced69d149056c89f2d4bc155c1ca434209430d6b0a16af446aac5113c9ce",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 2,
+      "stack_delta": -1,
+      "result_tag": "integer",
+      "scheduling": "yield",
+      "result_semantics": "Replace area and spawn with integer0 and yield; wrap area to0..22, retain full signed spawn and request mode11.",
+      "dependencies": [
+        {
+          "kind": "file",
+          "file": "src/game/runtime.c",
+          "sha256": "6d1b27a3c0c2c0608d402fe3341029d42555b88ab1cecad855f8de1b45fdf520"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/save_progress.c",
+          "sha256": "03fcec83e66ba712d4a3096287449258d2f57bf9a123acda605d281e80e49d32"
+        },
+        {
+          "kind": "file",
+          "file": "include/runtime_mode.h",
+          "sha256": "99748d645656d47e6a031b243a404a34cb61b149faa36f9e0aac42f02d6c4951"
+        },
+        {
+          "kind": "file",
+          "file": "include/runtime_control.h",
+          "sha256": "062e1a4f51a9e50c098e5cef177a6103179dd3a1e730889d45aed70a79786ebb"
+        },
+        {
+          "kind": "file",
+          "file": "include/runtime_clock.h",
+          "sha256": "ace26c6e3850092087202eb14a5392b092a5eda41290e8ce2aac127ea4800f39"
+        },
+        {
+          "kind": "file",
+          "file": "include/progress_field_ids.h",
+          "sha256": "becba3ef335829a348003831408c25e6739d0824127f3e3a566fb0198cf1bacb"
+        },
+        {
+          "kind": "file",
+          "file": "include/progress_field_types.h",
+          "sha256": "9c2c0450b682e4cb2278c1d3880bb74ec68701bada35773fa4cc33771924b7ea"
+        },
+        {
+          "kind": "file",
+          "file": "include/progress_fields.h",
+          "sha256": "8f8d456e6e32417ced73eeb945f40db0b02ee4951a3ce7e8dd84d8c8521432c4"
+        },
+        {
+          "kind": "file",
+          "file": "include/progress_value.h",
+          "sha256": "e1d7be308cd6a2ddb35b7c83db74ee7f9bd428546c88660bea0b23d2f00f884c"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "file",
+          "file": "src/ovl/area_terrain_maze.c",
+          "sha256": "2cb68d3ab7e188a2e12a982b74c3dabdf15b5fcada878f04d66003d775c427f7"
+        },
+        {
+          "kind": "file",
+          "file": "include/area_catalog.h",
+          "sha256": "d9d88f53d1163d0d5b4845492bc8cb8baa336bcab294d7ec323d11f2521def6c"
+        },
+        {
+          "kind": "file",
+          "file": "include/area_transition.h",
+          "sha256": "cfcad294bca39bca82b97cae728c9ae996905888cd55d68be899cd73adca08a5"
+        }
+      ],
+      "preconditions": [
+        "Actor, captured VM and owned values remain valid and disjoint from writable runtime globals and initialized progress record/layout storage. Consumed operands lie above all protected locals/frame metadata; append requires one free slot. No concurrent mutation, context replacement or later lifecycle transition is covered.",
+        "Original transition request stores the new mode, marks entry pending, stores low32 elapsed milliseconds and clears render-primed, then credits play time to progress field4 and updates its u64 checkpoint. It does not load an overlay, destroy actors, enter the requested mode or perform EEPROM/PI transfers immediately.",
+        "Progress field4 has initialized valid encoding/limits and bounded aligned layout inside the116-byte record. Its decoded value plus signed32 increment fits s32 before clamping. The increment is the target low32 word of unsigned64 elapsedSeconds-checkpointSeconds; monotonic nonwrapped elapsed difference<=INT_MAX is the ordinary play-time domain. Runtime clocks and metadata remain stable for the synchronous call.",
+        "Scheduling returns yield with integer zero already appended/replacing operands. The VM pointer is captured before helper calls and retained; later transition processing can invalidate contexts/resources and is outside this immediate footprint.",
+        "Area/spawn integer/code-reference payloads or finite floats truncate within s32. The two23-step wrap loops terminate for signed32 area without overflowing; spawn is stored without validation. A valid destination spawn is required only by later transition consumers."
+      ],
+      "evidence": "Source and read-only original Ghidra8011EFB0/8011FC0C/8010E598/8010E5E4/8000B2C8/8000B23C plus established progress read/store helpers. Original disassembly8010E598..8010E5E0 resolves a misleading decompiler overlap warning and confirms23-step wrapping/stores. Scope is the synchronous request and play-time bookkeeping, not deferred scene processing or successful transition. No runtime probe is claimed for these entries."
+    },
+    {
+      "function": "actorScriptRequestCollectionResults",
+      "file": "src/ovl/actor_script_collection_profile.c",
+      "sha256": "4840dcf7f5192f5d8c4e66b14f730a9682d42c6ba01dc724db9ed9083e44f29d",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "yield",
+      "result_semantics": "Append integer0 and yield after requesting mode12; no area destination is changed.",
+      "dependencies": [
+        {
+          "kind": "file",
+          "file": "src/game/runtime.c",
+          "sha256": "6d1b27a3c0c2c0608d402fe3341029d42555b88ab1cecad855f8de1b45fdf520"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/save_progress.c",
+          "sha256": "03fcec83e66ba712d4a3096287449258d2f57bf9a123acda605d281e80e49d32"
+        },
+        {
+          "kind": "file",
+          "file": "include/runtime_mode.h",
+          "sha256": "99748d645656d47e6a031b243a404a34cb61b149faa36f9e0aac42f02d6c4951"
+        },
+        {
+          "kind": "file",
+          "file": "include/runtime_control.h",
+          "sha256": "062e1a4f51a9e50c098e5cef177a6103179dd3a1e730889d45aed70a79786ebb"
+        },
+        {
+          "kind": "file",
+          "file": "include/runtime_clock.h",
+          "sha256": "ace26c6e3850092087202eb14a5392b092a5eda41290e8ce2aac127ea4800f39"
+        },
+        {
+          "kind": "file",
+          "file": "include/progress_field_ids.h",
+          "sha256": "becba3ef335829a348003831408c25e6739d0824127f3e3a566fb0198cf1bacb"
+        },
+        {
+          "kind": "file",
+          "file": "include/progress_field_types.h",
+          "sha256": "9c2c0450b682e4cb2278c1d3880bb74ec68701bada35773fa4cc33771924b7ea"
+        },
+        {
+          "kind": "file",
+          "file": "include/progress_fields.h",
+          "sha256": "8f8d456e6e32417ced73eeb945f40db0b02ee4951a3ce7e8dd84d8c8521432c4"
+        },
+        {
+          "kind": "file",
+          "file": "include/progress_value.h",
+          "sha256": "e1d7be308cd6a2ddb35b7c83db74ee7f9bd428546c88660bea0b23d2f00f884c"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        }
+      ],
+      "preconditions": [
+        "Actor, captured VM and owned values remain valid and disjoint from writable runtime globals and initialized progress record/layout storage. Consumed operands lie above all protected locals/frame metadata; append requires one free slot. No concurrent mutation, context replacement or later lifecycle transition is covered.",
+        "Original transition request stores the new mode, marks entry pending, stores low32 elapsed milliseconds and clears render-primed, then credits play time to progress field4 and updates its u64 checkpoint. It does not load an overlay, destroy actors, enter the requested mode or perform EEPROM/PI transfers immediately.",
+        "Progress field4 has initialized valid encoding/limits and bounded aligned layout inside the116-byte record. Its decoded value plus signed32 increment fits s32 before clamping. The increment is the target low32 word of unsigned64 elapsedSeconds-checkpointSeconds; monotonic nonwrapped elapsed difference<=INT_MAX is the ordinary play-time domain. Runtime clocks and metadata remain stable for the synchronous call.",
+        "Scheduling returns yield with integer zero already appended/replacing operands. The VM pointer is captured before helper calls and retained; later transition processing can invalidate contexts/resources and is outside this immediate footprint."
+      ],
+      "evidence": "Source and read-only original Ghidra8011EFB0/8011FC0C/8010E598/8010E5E4/8000B2C8/8000B23C plus established progress read/store helpers. Original disassembly8010E598..8010E5E0 resolves a misleading decompiler overlap warning and confirms23-step wrapping/stores. Scope is the synchronous request and play-time bookkeeping, not deferred scene processing or successful transition. No runtime probe is claimed for these entries."
+    },
+    {
+      "function": "actorScriptEnqueueMessage",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "94ebf568fd7432e5d5417fd8d804a4acbab8bbadd6f76516fe4db995d67804f0",
+      "effect": "inline_count_strings_then_append_scalar",
+      "arguments": "inline_count",
+      "stack_delta": "1-count",
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "inline_count": {
+        "encoding": "packed_script_value",
+        "bytes": 5,
+        "conversion": "scriptValueGetInteger",
+        "domain": "nonnegative_s32",
+        "instruction_offset_delta": 5
+      },
+      "sink": "message_bar",
+      "dependencies": [
+        {
+          "kind": "file",
+          "file": "src/ovl/actor_script_action_commands.c",
+          "sha256": "fc5b70604dd7ade8d577610a42f54b2a26d724c64400fbb2d7636932d8971b54"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script.h",
+          "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+        },
+        {
+          "kind": "file",
+          "file": "include/script_vm.h",
+          "sha256": "f9f9e4509166d6c9aac4d4687f973da7c3b719df7413be4d4f738182850e5b08"
+        },
+        {
+          "kind": "file",
+          "file": "include/text_image.h",
+          "sha256": "5b4df97c057c6d22586975ed6ec98bc00b7026631519b2e39e711edd923a3bac"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "84eead0150468d5b8692af98595b420c851eec23fa94e17ccacaaf488d9b89e1",
+          "function": "scriptVmReadIntegerOperand"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f",
+          "function": "scriptValueGetInteger"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "65711198ae9f9b49e76201296a699db7acc6f65486124180bc72b2ec5e86f753",
+          "function": "scriptVmPopString"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84",
+          "function": "scriptVmPopValue"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/message_bar.c",
+          "sha256": "205e64b0f2d0d9952169c0d28ac62ccd350d2f03c178f12528bec7bc6b9141f9"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/audio_worker_string_utils.c",
+          "sha256": "6c36f31e400b63f5f9e02fc3ba616cf5fd9a853eaf492600ef4ddc486fb6433c"
+        },
+        {
+          "kind": "file",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "cded04462b1f2fbece0ee8d937f9d4fcfc8c659719094b92768715d9669fe8fb"
+        },
+        {
+          "kind": "file",
+          "file": "include/libc/xstdio.h",
+          "sha256": "79410e135cc799a90d78afe08cd53c767bf1d19985598772bd41793aec9887d5"
+        },
+        {
+          "kind": "file",
+          "file": "docs/LOCAL_SDK_FILES.json",
+          "sha256": "76f91c2e6d465a60326a1a1c5367297c97438e12baa5749de26a53914b61fde3"
+        },
+        {
+          "kind": "file",
+          "file": "config/pikachu.yaml",
+          "sha256": "a56707cf81226745a3d0758e71a63285c21ff334fcc5eea8cba864ccf0cf39c6"
+        },
+        {
+          "kind": "file",
+          "file": "config/symbol_addrs.txt",
+          "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+        },
+        {
+          "kind": "file",
+          "file": "tools/materialize_ultralib.py",
+          "sha256": "b40bdd26d0444db7a0c853608d3c98b2aa5a0bf81cf3c488f62baee884d95664"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "94e6ff080eea82e2661ec2adbc45a33a6a2141b10ff8d1263f580c2c5433c6b1",
+          "function": "scriptValueGetFloat"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "d9c7386b407cc9e5e1ebe3d7ab6c7db1b7e40acb8c64150bb9ed6499fc2ce695",
+          "function": "scriptVmPushInteger"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "b83e2136925736f751b686cc364df9280a90f8564552393ee43778e69c593d4c",
+          "function": "scriptValueSetInteger"
+        }
+      ],
+      "preconditions": [
+        "PC identifies readable5-byte numeric count; conversion is integer/code-reference or finite float representable as s32. Count is0..currentDepth-protectedFloor, and depth-count has room for one appended zero. Count0 still needs one free slot. Negative counts and signed subtraction overflow are excluded.",
+        "String operands are prepended in pop order into shared80-byte area with capacity80, leaving at most79 content bytes and a terminator. Original sourcebuffer spans contiguous declarations at80134220/24/28; no pointers to C-stack data escape.",
+        "Final composed text length<=59 on all paths. Queue indices0..15 and current text readable for comparison length. Emptytext doesnothing; idle-prefixmatch resetselapsed/duration; fullqueue doesnothing; normalqueue copies terminatedtext andduration/style thenadvanceswriteindex. Nativealwayspushes0, ignoring sinkstatus. No images areallocated or freed.",
+        "Captured VM/context is preserved; only PC+5, count pops, oneinteger0push and documentedglobals mutate. No runtime/retailreachability/later display proof.",
+        "Popped values are valid tag3 string-table indices, tag4 nonnull readable terminated borrowed pointers, tag0 integer or tag2 code-reference s32, or tag1 finitef32. String-table indices valid and nonnegative; Writable construction/sink/native-stack regions are disjoint from VM values/program/table and borrowed source strings. Read-only source inputs may alias each other. Borrowed inputs must not alias shared32-byte numeric scratch, which numeric conversion overwrites. No unknown tags covered.",
+        "Integer/code-reference values format with immutable%d and signed32 argument: atmost11contentbytes plusNUL. Float values format with immutable%f, defaultprecision6; require actual originalformatter outputlength<=31 beforeNUL. Allfinitef32 is NOT safe. Conservative bounded subset abs(value)<=1e9 fits; other values require output-length evidence. Formatting and loop counts must terminate and enough native stack is required.",
+        "Original-ROM SDK implementations/pinnedlocal SDK inputs and strictSDKobjectcomparison required. Framevalidator fingerprintsSDKheader/config/materializer butdoesnotitselfauthenticateSDKassembly. sprintf800538E0 uses onlyfixed callback80053938->memcpy; _Printf800592D0,_Putfld80059918,_Litob8005DB10,_Ldtob8005DDB0,_Ldunscale8005E240,_Genld8005E2F8 modify onlyowned native-stack formatterrecords andthe suppliednumericoutput. Fixed%d/%f exclude%n and arbitrarycallbacks. Readonlydigit/power tables andintegerdivision helpers are partoforiginalSDKassumption.",
+        "Each numeric conversionwrites onlyitscontentbytes andNUL into32-byte gScriptVmNumericTextBuffer801340B0, leavingtailbytesunchanged. Resultborrowed untilnextnumericconversion. Eachreturnedstring is copiedimmediately byprepend beforethenextpop, so consecutive numeric operands are safe underdisjointinputpreconditions. Noallocatedformatterresources orretainednative-stack pointers escape."
+      ],
+      "evidence": "Read-only original Ghidra sprintf/Printf/Putfld/Litob/Ldtob/Ldunscale/Genld and existing game-source helpers; fixedformat paths only, static review without runtime claim. Thirteen bounded original-instruction interpreter probes at ab945f7 with frozen ELF/core and authenticated helper bytes confirm numeric count tags including finite2.9->2, PC+5, borrowed/indexed strings, integer/code/float formatting, empty/full/prefix-refresh queue cases and safe2499-character window tail. All retain three protected lower values and frame metadata. Count0 clears builder byte0 only; every prepend also writes its byte79 terminator. Numeric scratch overwrites prefix+NUL only, with remaining tail unchanged. Unsafe overflow cases were not executed."
+    },
+    {
+      "function": "actorScriptAppendWindowText",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "ef1e51b318b2235aa48e8284ad66aba6848a98cf655686396940bac5f6d1c6ac",
+      "effect": "inline_count_strings_then_append_scalar",
+      "arguments": "inline_count",
+      "stack_delta": "1-count",
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "inline_count": {
+        "encoding": "packed_script_value",
+        "bytes": 5,
+        "conversion": "scriptValueGetInteger",
+        "domain": "nonnegative_s32",
+        "instruction_offset_delta": 5
+      },
+      "sink": "pending_window",
+      "dependencies": [
+        {
+          "kind": "file",
+          "file": "src/ovl/actor_script_action_commands.c",
+          "sha256": "fc5b70604dd7ade8d577610a42f54b2a26d724c64400fbb2d7636932d8971b54"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script.h",
+          "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+        },
+        {
+          "kind": "file",
+          "file": "include/script_vm.h",
+          "sha256": "f9f9e4509166d6c9aac4d4687f973da7c3b719df7413be4d4f738182850e5b08"
+        },
+        {
+          "kind": "file",
+          "file": "include/text_image.h",
+          "sha256": "5b4df97c057c6d22586975ed6ec98bc00b7026631519b2e39e711edd923a3bac"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "84eead0150468d5b8692af98595b420c851eec23fa94e17ccacaaf488d9b89e1",
+          "function": "scriptVmReadIntegerOperand"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f",
+          "function": "scriptValueGetInteger"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "65711198ae9f9b49e76201296a699db7acc6f65486124180bc72b2ec5e86f753",
+          "function": "scriptVmPopString"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84",
+          "function": "scriptVmPopValue"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/text_window.c",
+          "sha256": "8d00fc253674ad62f4d7dc87cb047ef7442ad385f1e72a36f23ff7a325a7ac94"
+        },
+        {
+          "kind": "file",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "cded04462b1f2fbece0ee8d937f9d4fcfc8c659719094b92768715d9669fe8fb"
+        },
+        {
+          "kind": "file",
+          "file": "include/libc/xstdio.h",
+          "sha256": "79410e135cc799a90d78afe08cd53c767bf1d19985598772bd41793aec9887d5"
+        },
+        {
+          "kind": "file",
+          "file": "docs/LOCAL_SDK_FILES.json",
+          "sha256": "76f91c2e6d465a60326a1a1c5367297c97438e12baa5749de26a53914b61fde3"
+        },
+        {
+          "kind": "file",
+          "file": "config/pikachu.yaml",
+          "sha256": "a56707cf81226745a3d0758e71a63285c21ff334fcc5eea8cba864ccf0cf39c6"
+        },
+        {
+          "kind": "file",
+          "file": "config/symbol_addrs.txt",
+          "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+        },
+        {
+          "kind": "file",
+          "file": "tools/materialize_ultralib.py",
+          "sha256": "b40bdd26d0444db7a0c853608d3c98b2aa5a0bf81cf3c488f62baee884d95664"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "94e6ff080eea82e2661ec2adbc45a33a6a2141b10ff8d1263f580c2c5433c6b1",
+          "function": "scriptValueGetFloat"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "d9c7386b407cc9e5e1ebe3d7ab6c7db1b7e40acb8c64150bb9ed6499fc2ce695",
+          "function": "scriptVmPushInteger"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "b83e2136925736f751b686cc364df9280a90f8564552393ee43778e69c593d4c",
+          "function": "scriptValueSetInteger"
+        }
+      ],
+      "preconditions": [
+        "PC identifies readable5-byte numeric count; conversion is integer/code-reference or finite float representable as s32. Count is0..currentDepth-protectedFloor, and depth-count has room for one appended zero. Count0 still needs one free slot. Negative counts and signed subtraction overflow are excluded.",
+        "String operands are prepended in pop order into shared80-byte area with capacity80, leaving at most79 content bytes and a terminator. Original sourcebuffer spans contiguous declarations at80134220/24/28; no pointers to C-stack data escape.",
+        "Pendingwindow storage is exactly0x9C4 bytes beforeSceneViewMode. Initialpendingtext terminated, and initialLength+composedLength<=2499 with zero already present after final writtencontent. Helperwritesonlycontentbytes anddoesnotappendNUL. Its original0x9C5limitmustnotbeinterpretedasvalidallocationextent. No windowpage, imageorhistory updateoccurs.",
+        "Captured VM/context is preserved; only PC+5, count pops, oneinteger0push and documentedglobals mutate. No runtime/retailreachability/later display proof.",
+        "Popped values are valid tag3 string-table indices, tag4 nonnull readable terminated borrowed pointers, tag0 integer or tag2 code-reference s32, or tag1 finitef32. String-table indices valid and nonnegative; Writable construction/sink/native-stack regions are disjoint from VM values/program/table and borrowed source strings. Read-only source inputs may alias each other. Borrowed inputs must not alias shared32-byte numeric scratch, which numeric conversion overwrites. No unknown tags covered.",
+        "Integer/code-reference values format with immutable%d and signed32 argument: atmost11contentbytes plusNUL. Float values format with immutable%f, defaultprecision6; require actual originalformatter outputlength<=31 beforeNUL. Allfinitef32 is NOT safe. Conservative bounded subset abs(value)<=1e9 fits; other values require output-length evidence. Formatting and loop counts must terminate and enough native stack is required.",
+        "Original-ROM SDK implementations/pinnedlocal SDK inputs and strictSDKobjectcomparison required. Framevalidator fingerprintsSDKheader/config/materializer butdoesnotitselfauthenticateSDKassembly. sprintf800538E0 uses onlyfixed callback80053938->memcpy; _Printf800592D0,_Putfld80059918,_Litob8005DB10,_Ldtob8005DDB0,_Ldunscale8005E240,_Genld8005E2F8 modify onlyowned native-stack formatterrecords andthe suppliednumericoutput. Fixed%d/%f exclude%n and arbitrarycallbacks. Readonlydigit/power tables andintegerdivision helpers are partoforiginalSDKassumption.",
+        "Each numeric conversionwrites onlyitscontentbytes andNUL into32-byte gScriptVmNumericTextBuffer801340B0, leavingtailbytesunchanged. Resultborrowed untilnextnumericconversion. Eachreturnedstring is copiedimmediately byprepend beforethenextpop, so consecutive numeric operands are safe underdisjointinputpreconditions. Noallocatedformatterresources orretainednative-stack pointers escape."
+      ],
+      "evidence": "Read-only original Ghidra sprintf/Printf/Putfld/Litob/Ldtob/Ldunscale/Genld and existing game-source helpers; fixedformat paths only, static review without runtime claim. Thirteen bounded original-instruction interpreter probes at ab945f7 with frozen ELF/core and authenticated helper bytes confirm numeric count tags including finite2.9->2, PC+5, borrowed/indexed strings, integer/code/float formatting, empty/full/prefix-refresh queue cases and safe2499-character window tail. All retain three protected lower values and frame metadata. Count0 clears builder byte0 only; every prepend also writes its byte79 terminator. Numeric scratch overwrites prefix+NUL only, with remaining tail unchanged. Unsafe overflow cases were not executed."
     }
   ]
 }

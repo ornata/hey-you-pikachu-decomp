@@ -8,6 +8,9 @@ Argument replacement also requires a numeric operand above every protected
 local and frame record; the static caller analysis does not prove that floor.
 Borrowed string-pointer results retain explicit nullability and lifetime contracts;
 the five-byte value owns only its copied address payload, never the text.
+Inline-count text reviews separately bind packed count consumption, instruction
+advance and bounded string/formatter/sink storage. The caller analysis does not
+prove their count, type, length or alias prerequisites.
 Immediate action requests retain a separate deferred-effect frontier; their
 request footprint does not establish the later handler's writes or operands.
 """
@@ -114,9 +117,20 @@ def native_frame_reviews(root=ROOT, manifest=None):
             type(review.get('result_nullable')) is bool and
             isinstance(review.get('result_lifetime'), str) and bool(review['result_lifetime'].strip()) and
             bool(review.get('dependencies')))
+        count = review.get('inline_count')
+        inline_strings = (
+            review['effect'] == 'inline_count_strings_then_append_scalar' and
+            review['arguments'] == 'inline_count' and review['stack_delta'] == '1-count' and
+            review['result_tag'] == 'integer' and review['scheduling'] == 'continue' and
+            review.get('sink') in ('message_bar', 'pending_window') and isinstance(count, dict) and
+            count.get('encoding') == 'packed_script_value' and
+            type(count.get('bytes')) is int and count['bytes'] == 5 and
+            count.get('conversion') == 'scriptValueGetInteger' and count.get('domain') == 'nonnegative_s32' and
+            type(count.get('instruction_offset_delta')) is int and count['instruction_offset_delta'] == 5 and
+            bool(review.get('dependencies')))
         supported_effect = ((supported_effect and review['result_tag'] in ('integer', 'float') and
                              review['scheduling'] in ('continue', 'yield')) or action_request or
-                            borrowed_string_result)
+                            borrowed_string_result or inline_strings)
         if (not agrees or not supported_effect or
                 changed_helpers):
             stale_callbacks.append(review['function'])

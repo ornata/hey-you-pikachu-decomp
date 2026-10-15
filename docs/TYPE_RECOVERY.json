@@ -3140,11 +3140,11 @@
       "locations": {
         "raw_offset_candidates": {
           "capacity - 1": [
-            "75:72",
-            "85:17"
+            "74:72",
+            "84:17"
           ],
           "prefixLength - 1": [
-            "77:70"
+            "76:70"
           ]
         }
       }

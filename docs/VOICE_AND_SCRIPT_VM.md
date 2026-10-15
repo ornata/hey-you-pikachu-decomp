@@ -948,13 +948,49 @@ these contracts require the authenticated SDK, valid disjoint voice/update lists
 and the stated numeric domains. Later synth consumption and audible output are
 not established by the immediate result.
 
-Inline-count text commands keep a separate unresolved contract. Their packed
-instruction count is not a value-stack operand. They consume that many strings,
-using shared construction/conversion storage. Enqueue can construct up to 79
-characters but copies into a 60-byte queued-text field without bounding that copy;
-a safe insertion therefore needs a result of at most 59 bytes plus its terminator.
-Its zero script result does not report queue insertion success. This review does
-not change the matching implementation or classify arbitrary text lengths as safe.
+Inline-count text commands have a separate bounded contract. Their packed
+five-byte instruction count advances the PC and is not a value-stack operand.
+They consume that many string representations and append integer zero, a stack
+delta of one minus count. Counts must fit the operands above protected values.
+Borrowed/indexed strings require valid terminated storage and disjoint writable
+buffers. Integer/code values fit their shared decimal conversion buffer; floats
+require an original formatted result of at most 31 bytes before the terminator.
+Finite floating-point input alone does not establish that limit.
+
+Enqueue can construct up to 79 characters but copies into a 60-byte queued-text
+field without bounding that copy; a safe insertion therefore needs at most 59
+bytes plus its terminator. Its zero result does not report insertion success.
+Empty and full-queue paths can leave the queue unchanged; matching the displayed
+text's prefix can refresh duration instead. Pending-window append writes content
+without a terminator and requires a preexisting zero after the final character.
+It must stay within the actual 2,500-byte arena, leaving at most 2,499 characters;
+the original 0x9C5 helper limit can reach the adjacent scene-view word and does not
+establish a safe allocation size.
+
+Thirteen original-instruction probes cover the safe count/string/numeric paths,
+queue outcomes and final window character. They preserve protected VM state and
+adjacent storage; unsafe overflow paths were not executed. Saved-dictionary reports
+now list each inline call's literal count and conditional stack delta, while
+leaving operand placement, string lengths and alias conditions explicitly unproven.
+A known count outside the reviewed domain remains in the native-effect frontier.
+
+Sound-start natives assign logical handles before physical playback is guaranteed.
+A free logical slot can receive a nonzero handle even when no physical voice or
+start-update node is available. The original SDK records a deferred start update;
+it does not immediately fetch sample data. Voice stealing changes the previous
+voice and requires an available first update node because that allocation result
+is unchecked. Tracked sound also manages the actor's handle ring and can replace
+its tracked voice, stopping the previous handle even if the new result is zero.
+These immediate contracts require initialized original SDK lists and valid borrowed
+bank/sample records; deferred sample DMA and audible output remain separate.
+
+Area and collection requests already supply integer zero when they yield. Area
+requests wrap the supplied area through 23 identifiers and retain the spawn word
+without validation. Both request modes reset transition-entry/render state and
+credit elapsed play time through the initialized progress record. No overlay is
+loaded and no actor is destroyed during the request itself. Valid later spawn
+indices, transition completion and context/resource lifetimes remain obligations
+of subsequent runtime processing.
 
 The configuration word at offset 0xC remains unnamed, but its bounds are better
 understood. All 128 retained configurations share one 279-entry native table while
@@ -967,8 +1003,8 @@ requirements. Constructors ignore it and use a separate fixed 500-value global
 bank, however. Without an authoring declaration or original consumer, that
 correlation does not justify renaming the field or using it as a runtime bound.
 
-The source-bound manifest distinguishes scalar and borrowed string results, immediate
-request contracts and reviewed deferred phases. Other requests remain partially reviewed
+The source-bound manifest distinguishes scalar and borrowed string results, bounded
+inline-text contracts, immediate request contracts and reviewed deferred phases. Other requests remain partially reviewed
 and keep their later effects explicit in the saved-dictionary frontier.
 
 ### Player view selection

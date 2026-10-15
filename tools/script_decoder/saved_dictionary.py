@@ -27,6 +27,7 @@ def saved_dictionary_analysis(instructions, request_offset, expression, budget=5
         return None
     incoming = incoming_edges(instructions)
     graphs, diagnostics, hazards, natives, audited = {}, [], [], set(), set()
+    inline_requirements, inline_domain_conflicts = {}, set()
     remaining = budget
 
     def graph(start):
@@ -126,6 +127,22 @@ def saved_dictionary_analysis(instructions, request_offset, expression, budget=5
             if row['name'] == 'SCRIPT_OP_CALL_NATIVE' and offset != request_offset:
                 names = row.get('native', {}).get('functions', [])
                 natives.update(names or ['<unresolved native>'])
+                for name in names:
+                    review = native_reviews.get(name, {})
+                    if review.get('effect') != 'inline_count_strings_then_append_scalar':
+                        continue
+                    operands = dict(zip(row.get('operand_roles', []), row['operands']))
+                    operand = operands.get('string_count')
+                    count = integer_operand(operand) if operand is not None else None
+                    valid = count is not None and count >= 0
+                    if operand is not None and not valid:
+                        inline_domain_conflicts.add(name)
+                    inline_requirements[(start, offset, name)] = dict(
+                        function_entry=start, offset=offset, native=name, inline_count=count,
+                        count_domain_established=valid, instruction_offset_delta=5,
+                        stack_delta=1-count if valid else None, sink=review['sink'],
+                        operand_floor_proven=False, argument_types_lengths_aliases_proven=False,
+                        scope='Literal count and conditional footprint only; stack floor, strings, formatter and sink capacity remain caller obligations.')
             if row['name'] == 'SCRIPT_OP_CALL':
                 target = integer_operand(row['operands'][0])
                 header = by.get(target, {})
@@ -138,7 +155,7 @@ def saved_dictionary_analysis(instructions, request_offset, expression, budget=5
     audit(entry, True, corridor)
     deferred = {name for name in natives & set(native_reviews)
                 if native_reviews[name].get('coverage') == 'immediate_request_only' and name not in deferred_reviews}
-    reviewed = set(native_reviews) - deferred
+    reviewed = set(native_reviews) - deferred - inline_domain_conflicts
     frontier = sorted(natives - reviewed)
     return dict(kind='saved_requested_dictionary_candidate', function_entry=entry, query_offset=query,
                 save_offset=save, request_offset=request_offset, local=dict(frame=frame, slot=slot),
@@ -150,5 +167,7 @@ def saved_dictionary_analysis(instructions, request_offset, expression, budget=5
                 deferred_native_effect_frontier=sorted(deferred),
                 reviewed_deferred_effects=sorted(natives & set(native_reviews) & set(deferred_reviews)),
                 origin_effect_reviewed='actorScriptQueryRequestedMicDictionary' in native_reviews,
-                native_review_preconditions=['Reviewed native operands must lie above protected locals and frame metadata; numeric conversions and borrowed storage must satisfy each callback contract. This analysis does not prove the operand floor.'],
+                inline_native_call_requirements=list(inline_requirements.values()),
+                inline_count_domain_conflicts=sorted(inline_domain_conflicts),
+                native_review_preconditions=['Reviewed native operands must lie above protected locals and frame metadata; numeric conversions and borrowed storage must satisfy each callback contract. Inline string calls additionally require the stated count, input-tag, formatted-length, scratch-alias and sink-capacity conditions. This analysis does not prove the operand floor or string-storage conditions.'],
                 scope='Static bytecode preservation under valid stack/array accesses and intact nonoverlapping frames; native effects, context replacement, runtime restoration and numeric ID remain unproven.')
