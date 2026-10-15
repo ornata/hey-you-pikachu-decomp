@@ -454,7 +454,7 @@ void wholeMapPrepareActor(void) {
     angle = vector3GetYawDegrees(delta);
     actorAddRotationAxisDegrees((u8 *)((s32)gPikachuActor), -((ActorScriptState *)state)->orientation[0], pitchAxis);
     actorAddRotationAxisDegrees((u8 *)((s32)gPikachuActor), angle - ((ActorScriptState *)state)->orientation[1], 1);
-    ((ActorScriptState *)state)->targetMode = 0;
+    ((ActorScriptState *)state)->targetMode = ACTOR_TARGET_FIXED;
     matrix34TransformPointVector((f32 *)(&gWorldMapToWorldTransform),
                                  (f32 *)&gWorldMapDestinations[gWorldMapSelectedDestination].focusPosition,
                                  ((ActorScriptState *)state)->targetPosition);

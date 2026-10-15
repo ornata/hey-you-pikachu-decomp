@@ -23,6 +23,7 @@
 #include "object_types.h"
 #include "item_types.h"
 #include "actor_script.h"
+#include "actor_target.h"
 #include "actor_behavior.h"
 #include "story_chapter.h"
 #include "story_milestones.h"
@@ -453,7 +454,7 @@ void presentationPrepareActiveActor(void *point) {
     yaw = vector3GetYawDegrees(d);
     actorAddRotationAxisDegrees((u8 *)((s32)gPikachuActor), -((ActorScriptState *)ext)->orientation[0], 0);
     actorAddRotationAxisDegrees((u8 *)((s32)gPikachuActor), yaw - ((ActorScriptState *)ext)->orientation[1], 1);
-    ((ActorScriptState *)ext)->targetMode = 0;
+    ((ActorScriptState *)ext)->targetMode = ACTOR_TARGET_FIXED;
     matrix34TransformPointVector((f32 *)&gPresentationToWorldTransform, (f32 *)(&gPresentationActorFocusTargets[1]),
                                  ((ActorScriptState *)ext)->targetPosition);
     presentationResetFocusPoint(&gPresentationActorFocusTargets[1]);

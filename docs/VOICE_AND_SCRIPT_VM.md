@@ -248,9 +248,13 @@ enum in `src/ovl/script_vm.c`. Binary operands use the second-from-top stack val
 as the left operand: opcode 13 is greater-than, while 14 is less-than. Floating
 equality has separate named relative and absolute tolerances. Packed values use
 `SCRIPT_VALUE_BYTES` and `SCRIPT_VALUE_PAYLOAD_BYTES` from `script_vm.h`; their
-storage remains byte-aligned. Opcodes zero through two and value tag two retain
-their unresolved distinctions. The optional [semantic review](SEMANTIC_REVIEW.md)
-includes asymmetric integer and floating-equality scenarios for these operations.
+storage remains byte-aligned. Bytes zero through two each consume one opcode byte
+without changing the value stack; a following instruction still executes normally.
+Tag two follows the signed integer reader and is rejected by the decimal-string
+parser, just like tag zero. These consumer behaviors do not establish why the
+original script language distinguished the encodings, so their numeric forms
+remain explicit. The optional [semantic review](SEMANTIC_REVIEW.md) covers those
+contrasts alongside asymmetric integer and floating-equality scenarios.
 
 Dictionary selection uses `VOICE_DICTIONARY_NONE`, and consuming a result without
 a pending notification returns `VOICE_RECOGNITION_NO_RESULT`. Amplifier operation
@@ -259,3 +263,27 @@ Boolean. The session limits uploads to `MIC_DICTIONARY_UPLOAD_BATCH_WORDS` per
 update. Startup and injected-command/no-speech scenarios observe these paths
 without establishing physical VRU fidelity. Device command-status codes whose
 individual meanings remain unresolved retain their numeric forms.
+
+## Held-item launch selectors
+
+Cue operation `ACTION_CUE_LAUNCH_HELD_ITEM` (25) carries a signed launch-kind word
+and a floating speed argument. Its private `ActionLaunchKind` enum describes
+trajectories, separately from the cue operation, actor target mode and item mode.
+For positive command speeds:
+
+| Kind | Meaning |
+| --- | --- |
+| 0 | Aim horizontally at the player when following a live player target; otherwise use the actor's heading. |
+| 1 | Use the actor's heading with an upward component. |
+| 2 | Use the actor's heading plus 240 degrees with an upward component. |
+| 3 | Use the actor's heading with a steep upward component. |
+| 4 | Use the actor's heading with a downward component. |
+| 5 | Aim from the item's world position toward the stored three-dimensional target. |
+| 6 | Randomize speed and heading around actor heading plus 200 degrees. |
+| 7 | Randomize heading over a full circle and emit linked and falling-particle effects. |
+
+Kind 5 produces zero velocity when the target is too close to normalize. Kind 7
+chooses horizontal speed independently of the command speed; the command still
+scales its vertical component. Kinds outside zero through seven are unsupported.
+The original branches and three launch tables establish these descriptions;
+they do not establish animation intent, gameplay reachability or collision behavior.

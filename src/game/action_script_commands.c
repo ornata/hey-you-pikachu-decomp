@@ -341,16 +341,31 @@ const f32 gActionLaunchHeadingOffsets[8] = {0.0F, 0.0F, 240.0F, 0.0F, 0.0F, 0.0F
 /// \note Original identifier: \c D_800A4978 (0x800A4978).
 const s32 gActionLaunchThrowFlags[8] = {1, 1, 1, 1, 1, 1, 1, 0};
 
-typedef struct Launch {
-    s32 kind;
-    f32 speed;
-} Launch;
+/// Trajectory selectors carried by ACTION_CUE_LAUNCH_HELD_ITEM.
+/// Directions describe positive command speeds; these are not item modes or VM opcodes.
+typedef enum ActionLaunchKind {
+    ACTION_LAUNCH_PLAYER_OR_FORWARD = 0, ///< Aim horizontally at the targeted player, or along the actor's heading.
+    ACTION_LAUNCH_FORWARD = 1,        ///< Actor heading with a positive vertical component.
+    ACTION_LAUNCH_OFFSET_HEADING = 2, ///< Actor heading plus 240 degrees, with a positive vertical component.
+    ACTION_LAUNCH_STEEP_UPWARD = 3,   ///< Actor heading with the largest positive vertical component.
+    ACTION_LAUNCH_DOWNWARD = 4,       ///< Actor heading with a negative vertical component.
+    ACTION_LAUNCH_TARGET_POSITION = 5, ///< Aim from the item's world position toward the stored target.
+    ACTION_LAUNCH_RANDOMIZED_HEADING = 6,  ///< Randomize speed and heading around the actor's heading plus 200 degrees.
+    ACTION_LAUNCH_SCATTER_WITH_EFFECTS = 7 ///< Full-circle random heading with linked and falling-particle effects.
+} ActionLaunchKind;
+
+/// Borrowed payload of a held-item launch cue; the remaining cue word is unused here.
+typedef struct ActionLaunchArguments {
+    s32 kind;  ///< ActionLaunchKind selector, retained as a signed target word.
+    f32 speed; ///< Command speed; scatter mode selects its horizontal speed independently.
+} ActionLaunchArguments;
 
 /// Launches the actor’s held item according to the action command, when the item is available.
-/// \pre Player-directed mode 0 requires nonzero horizontal distance between the item and player.
+/// \pre Kind must be an ActionLaunchKind value. Player-directed launches require
+/// nonzero horizontal distance between the item and player.
 /// \param actor Actor launching the held item.
 /// \param state Actor state containing the held item and aiming information.
-/// \param command Action command specifying a launch mode from zero through seven and a speed multiplier.
+/// \param command Action command containing an ActionLaunchArguments payload.
 /// \param elapsed Unused action-handler timing argument.
 /// \returns Nothing.
 ///
@@ -367,7 +382,7 @@ void actionCommandLaunchHeldItem(u8 *actor, ActorScriptState *state, ActorAction
     f32 dz;
     f32 len;
     u8 *p;
-    Launch *l;
+    ActionLaunchArguments *l;
     f32 ang6;
     f32 ang7;
     f32 dir[3];
@@ -376,12 +391,12 @@ void actionCommandLaunchHeldItem(u8 *actor, ActorScriptState *state, ActorAction
     if (obj == NULL) {
         return;
     }
-    l = (Launch *)(*source)->args;
+    l = (ActionLaunchArguments *)(*source)->args;
     speed = l->speed * 60.0F;
     actorGetConfiguredAttachmentPosition(actor, ((RuntimeObjectPrefix *)obj)->radius, pos);
     switch (l->kind) {
-    case 0:
-        if (state->targetMode == 1 && (p = actorResolveStoredTarget(actor)) != NULL &&
+    case ACTION_LAUNCH_PLAYER_OR_FORWARD:
+        if (state->targetMode == ACTOR_TARGET_FOLLOW && (p = actorResolveStoredTarget(actor)) != NULL &&
             ((RuntimeObjectPrefix *)p)->kind == 0x7F) {
             dx = gPlayerState.position[0] - ((RuntimeObjectPrefix *)obj)->position[0];
             dz = gPlayerState.position[2] - ((RuntimeObjectPrefix *)obj)->position[2];
@@ -392,16 +407,16 @@ void actionCommandLaunchHeldItem(u8 *actor, ActorScriptState *state, ActorAction
             vel[2] = dz * speed;
             break;
         }
-    case 1:
-    case 2:
-    case 3:
-    case 4:
+    case ACTION_LAUNCH_FORWARD:
+    case ACTION_LAUNCH_OFFSET_HEADING:
+    case ACTION_LAUNCH_STEEP_UPWARD:
+    case ACTION_LAUNCH_DOWNWARD:
         ang = state->orientation[1] + gActionLaunchHeadingOffsets[l->kind];
         vel[0] = mathSinDegrees(ang) * speed;
         vel[1] = -gActionLaunchVerticalSpeedFactors[l->kind] * l->speed;
         vel[2] = mathCosDegrees(ang) * speed;
         break;
-    case 6:
+    case ACTION_LAUNCH_RANDOMIZED_HEADING:
         speed *= (randomNext() * RANDOM_U32_UNIT_SCALE * 0.5) + 0.5;
         ang6 = (state->orientation[1] + gActionLaunchHeadingOffsets[l->kind]) +
                ((randomNext() * RANDOM_U32_UNIT_SCALE - 0.5) * 90.0);
@@ -409,7 +424,7 @@ void actionCommandLaunchHeldItem(u8 *actor, ActorScriptState *state, ActorAction
         vel[1] = -gActionLaunchVerticalSpeedFactors[l->kind] * l->speed;
         vel[2] = mathCosDegrees(ang6) * speed;
         break;
-    case 7:
+    case ACTION_LAUNCH_SCATTER_WITH_EFFECTS:
         linkedEffectCreateChain(randomBelow(2) != 0 ? LINKED_EFFECT_REBOUND : LINKED_EFFECT_FALLING, pos[0], pos[1],
                                 pos[2], (randomNext() * RANDOM_U32_UNIT_SCALE * 0.1F) + 0.03F,
                                 actorGetPartObjectHandle(((u8 *)gPikachuActor), 0x79), 1.0F, 0.8F, 2.0F, 0.1F, 0.1F,
@@ -426,7 +441,7 @@ void actionCommandLaunchHeldItem(u8 *actor, ActorScriptState *state, ActorAction
         vel[1] = -gActionLaunchVerticalSpeedFactors[l->kind] * l->speed;
         vel[2] = mathCosDegrees(ang7) * speed;
         break;
-    case 5:
+    case ACTION_LAUNCH_TARGET_POSITION:
         dir[0] = state->targetPosition[0] - ((RuntimeObjectPrefix *)obj)->worldPosition[0];
         dir[1] = state->targetPosition[1] - ((RuntimeObjectPrefix *)obj)->worldPosition[1];
         dir[2] = state->targetPosition[2] - ((RuntimeObjectPrefix *)obj)->worldPosition[2];
@@ -918,7 +933,7 @@ void actionCommandStunPlayerInRange(u8 *actor, ActorScriptState *state, ActorAct
     a = (ArgsSpawn *)command->args;
     dist = vector3Length(d);
     TRACE("vec:%f,%f,%f len:%f  stunRange:%f\n", d[0], d[1], d[2], dist, a->range);
-    if (dist <= a->range || (state->targetMode != 0 && gPlayerModeState == state->targetHandle)) {
+    if (dist <= a->range || (state->targetMode != ACTOR_TARGET_FIXED && gPlayerModeState == state->targetHandle)) {
         playerBeginStun((u8 *)&gPlayerState, a->base);
     }
 }

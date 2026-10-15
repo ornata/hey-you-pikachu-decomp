@@ -85,6 +85,16 @@ def experiments():
             )
         )
 
+    # Original80116284 consumes each byte0..2 without a stack operation.
+    # A following literal distinguishes a one-byte no-op from an operand prefix.
+    add("ignored-byte.baseline", b"\xff", [11, 22], {}, 1, 2)
+    for code in (0, 1, 2):
+        add(f"ignored-byte.{code}", bytes([code, 255]), [11, 22], {}, 2, 2)
+        add(f"ignored-byte.before-literal.{code}", bytes([code, 24]) + value(123) + b"\xff",
+            [11, 22], {2: 123}, 8, 3)
+    add("ignored-byte.mixed", bytes([0, 1, 2, 24]) + value(123) + b"\xff",
+        [11, 22], {2: 123}, 10, 3)
+
     add("jump", bytes([28]) + value(7) + b"\xff\xff", [], {}, 8, 0)
     for condition, cursor in [(0, 8), (1, 7), (-1, 7)]:
         add(
