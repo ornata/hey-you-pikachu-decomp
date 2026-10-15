@@ -397,7 +397,14 @@ unproven as live configurations. The results stay under
 `build/script-decoder/catalog/`; this scan does not discover every possible script
 layout or compressed resource. Two of the 128 candidates currently have no
 recovered binding: resident configuration 0x8012B870 and front-yard configuration
-0x80158B7C. This is not evidence that they are unused.
+0x80158B7C. This is not evidence that they are unused. A search of 485 object
+relocation sections found only the resident program symbol's own configuration
+pointer, without recovering a caller of that configuration. Its empty program
+suggests a possible fallback resource, but no fallback registration is established.
+The front-yard program requests dictionary three, saved dictionary restoration
+and control scheme one. Those outgoing dependencies describe behavior, not a
+creation owner; six front-yard configurations share its metadata value of sixty.
+Equal virtual addresses in other overlays remain separate resources.
 
 Decoder report schema 2 calls tag 2 `code_reference` and records its uses in
 `code_reference_uses`. These references select bytecode offsets or configured
