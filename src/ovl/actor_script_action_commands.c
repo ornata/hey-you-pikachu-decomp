@@ -1,3 +1,9 @@
+/// \file
+/// Native actor-script dispatch and action scheduling commands.
+/// \ingroup ActorScriptVm
+///
+/// See docs/VOICE_AND_SCRIPT_VM.md for the subsystem walkthrough.
+
 #include "random_scale.h"
 #include "player_chase.h"
 #include "random.h"
@@ -14,13 +20,6 @@
 #include "action_script_playback.h"
 #include "action_script_query.h"
 #include "actor_script_action.h"
-/// \file
-/// Native actor-script dispatch and action scheduling commands.
-/// \ingroup ActorScriptVm
-///
-/// See docs/VOICE_AND_SCRIPT_VM.md for the subsystem walkthrough.
-
-/* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "object_types.h"
 #include "actor_script.h"

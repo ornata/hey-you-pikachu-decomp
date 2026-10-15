@@ -21,12 +21,16 @@ default: all
 
 BUILD := build
 
+# Keep the shared pre-commit formatting hook installed in every worktree that
+# builds. Idempotent; see tools/setup_hooks.sh.
+SETUP_HOOKS := $(shell sh tools/setup_hooks.sh >&2)
+
 BASEROM  := rom/baserom.us.z64
 TARGET   := $(BUILD)/pikachu.z64
 GOODSHA1 := da1a1e47a86720f9d54fb2d2d247480041bda824
 
 # SDK-related headers are local inputs, never distributed or downloaded here.
-NEED_LOCAL_SDK := $(if $(MAKECMDGOALS),$(filter-out clean distclean verify-clean check-names progress source-quality asm-fallbacks asm-fallback-summary compare-objects,$(MAKECMDGOALS)),default)
+NEED_LOCAL_SDK := $(if $(MAKECMDGOALS),$(filter-out clean distclean verify-clean check-names progress source-quality asm-fallbacks asm-fallback-summary compare-objects format-check,$(MAKECMDGOALS)),default)
 ifneq ($(strip $(NEED_LOCAL_SDK)),)
 LOCAL_SDK_OK := $(shell python3 tools/materialize_ultralib.py --check >/dev/null 2>&1 && echo ok)
 ifneq ($(LOCAL_SDK_OK),ok)
@@ -74,7 +78,7 @@ NEED_SPLIT := $(shell [ -f build/pikachu.ld ] \
                 && [ -f build/undefined_funcs_auto.txt ] && [ -f build/undefined_syms_auto.txt ] \
                 && [ build/pikachu.ld -nt config/pikachu.yaml ] \
                 && [ build/pikachu.ld -nt config/symbol_addrs.txt ] || echo 1)
-ifneq ($(if $(MAKECMDGOALS),$(filter-out clean distclean split,$(MAKECMDGOALS)),default),)
+ifneq ($(if $(MAKECMDGOALS),$(filter-out clean distclean split format-check,$(MAKECMDGOALS)),default),)
 ifneq ($(NEED_SPLIT),)
 ifneq ($(wildcard rom/baserom.us.z64),)
 $(info splitting ROM...)
@@ -197,6 +201,14 @@ run: $(TARGET)
 format:
 	clang-format -i $(C_FILES)
 
+# Fails if a staged C file is unformatted. The pre-commit hook installed by
+# setup-hooks applies the formatting instead.
+format-check:
+	@sh tools/format_staged.sh --check
+
+setup-hooks:
+	@sh tools/setup_hooks.sh
+
 # Semantic recovery inventory, independent of the matching-function census.
 source-quality:
 	python3 tools/source_quality.py $(if $(JSON),--json)
@@ -256,7 +268,7 @@ verify: check check-names check-scene-callbacks check-item-callbacks check-objec
 	python3 tools/compare_objects.py $(BASELINE) $(BUILD)
 	git diff --check
 
-.PHONY: default all clean distclean split check expected run format \
+.PHONY: default all clean distclean split check expected run format format-check setup-hooks \
         asm-fallback-summary asm-fallbacks verify-clean progress check-names \
         source-quality tidy semantic-review missing-dependencies \
         compare-objects check-interfaces check-layouts check-sequence-bank \

@@ -14,3 +14,7 @@ from the shell with `tools/ghidra_mcp.py call ...` (see
 
 Compiler-decision tooling (allocation, scheduler, cross-block moves) lives in the
 separate ido-diagnostics repository; it is not part of this tree.
+
+Commits are clang-formatted by a shared pre-commit hook that `make` installs in every
+worktree. Never commit with `--no-verify`; run `make format-check` before reporting work
+done. Rebases, cherry-picks and merges skip the hook, so format those results yourself.
