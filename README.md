@@ -21,7 +21,7 @@ I've taken the time to try and
 - Use modern tooling like `clang-tidy` where possible, to make code more readable/portable
 - Mark undefined behaviour and other portability hazards in the code
 
-In order to try and verify
+For info on how the game is architected, see [ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Requirements
 - nix
@@ -133,16 +133,15 @@ for educational purposes. You must supply your own ROM and local SDK inputs.
 
 ## Readability checks
 
+To run `clang-tidy` readability checks:
+
 ```sh
 nix develop .#lint --command bash
 uv run --locked make tidy
 # Optional: FILES=src/game/voice_commands_text_panel.c
 ```
 
-This read-only audit writes reports and proposed edits under `build/clang-tidy/`.
-Warnings are advisory; incomplete parsing exits nonzero. The progress reader’s
-retained K&R calling convention currently prevents a complete Clang parse.
-Clang does not build the game; any applied fix still needs ROM and object checks.
+## Semantic review
 
 The optional [semantic review](docs/SEMANTIC_REVIEW.md) tools use Unicorn and a
 pinned N64 interpreter to test recovered meanings. Numeric-literal inventories
