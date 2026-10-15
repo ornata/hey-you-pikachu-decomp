@@ -98,20 +98,20 @@ s32 gMazeChildOffsetY[8] = {0, 0, 0, 0, 1, 1, 1, 1};
 s32 gMazeChildOffsetZ[8] = {0, 0, 1, 1, 0, 0, 1, 1};
 
 f32 gTerrainFlatHeightSamples[25] = {
-    100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f,
-    100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f,
+    100.0F, 100.0F, 100.0F, 100.0F, 100.0F, 100.0F, 100.0F, 100.0F, 100.0F, 100.0F, 100.0F, 100.0F, 100.0F,
+    100.0F, 100.0F, 100.0F, 100.0F, 100.0F, 100.0F, 100.0F, 100.0F, 100.0F, 100.0F, 100.0F, 100.0F,
 };
 /// Grid descriptor for the constant-height terrain samples.
 /// \note Original identifier: \c D_801234F4 (0x801234F4).
 MazeGrid gTerrainFlatHeightGrid = {gTerrainFlatHeightSamples, gTerrainFlatHeightSamples, 5, 5, 1};
 
 f32 gTerrainMoundHeightSamples[36] = {
-    4.0f, 4.0f, 4.0f, 4.0f, 4.0f, 4.0f, //
-    4.0f, 4.5f, 4.5f, 4.5f, 4.5f, 4.0f, //
-    4.0f, 4.5f, 5.0f, 5.0f, 4.5f, 4.0f, //
-    4.0f, 4.5f, 5.0f, 5.0f, 4.5f, 4.0f, //
-    4.0f, 4.5f, 4.5f, 4.5f, 4.5f, 4.0f, //
-    4.0f, 4.0f, 4.0f, 4.0f, 4.0f, 4.0f, //
+    4.0F, 4.0F, 4.0F, 4.0F, 4.0F, 4.0F, //
+    4.0F, 4.5F, 4.5F, 4.5F, 4.5F, 4.0F, //
+    4.0F, 4.5F, 5.0F, 5.0F, 4.5F, 4.0F, //
+    4.0F, 4.5F, 5.0F, 5.0F, 4.5F, 4.0F, //
+    4.0F, 4.5F, 4.5F, 4.5F, 4.5F, 4.0F, //
+    4.0F, 4.0F, 4.0F, 4.0F, 4.0F, 4.0F, //
 };
 /// Grid descriptor used to interpolate solid maze block heights.
 /// \note Original identifier: \c D_80123594 (0x80123594).
@@ -215,7 +215,7 @@ u64 gAreaLastEventMilliseconds = 0;
 s32 gMazeOctantIndices[2][2][2] = {{{0, 2}, {4, 6}}, {{1, 3}, {5, 7}}};
 /// Friction coefficients indexed by supported terrain material identifiers.
 /// \note Original identifier: \c D_80123A28 (0x80123A28).
-f32 gTerrainMaterialFriction[8] = {1.0f, 0.8f, 2.0f, 1.2f, 1.8f, 4.0f, 0.9f, 1.0f};
+f32 gTerrainMaterialFriction[8] = {1.0F, 0.8F, 2.0F, 1.2F, 1.8F, 4.0F, 0.9F, 1.0F};
 s32 gTerrainMaterialSounds[8][8] = {{-1, -1, -1, -1, -1, -1, -1, -1},       {-1, 141, 196, 178, 180, 199, 200, 151},
                                     {-1, 141, 196, 178, 180, 199, -1, 151}, {142, 141, 196, 178, 180, 199, 142, 141},
                                     {-1, 141, 196, 178, 180, 199, -1, 151}, {-1, -1, 165, 179, 179, 198, -1, -1},
@@ -270,8 +270,8 @@ s32 areaIsPositionOutsideBounds(f32 x, f32 y, f32 z) {
     x -= ((MazeNode *)root)->x;
     y -= ((MazeNode *)root)->y;
     z -= ((MazeNode *)root)->z;
-    if ((x < -10.0f) || ((((MazeNode *)root)->w + 10.0f) < x) || (y < -10.0f) ||
-        (((2.0f * ((MazeNode *)root)->h) + 10.0f) < y) || (z < -10.0f) || ((((MazeNode *)root)->d + 10.0f) < z)) {
+    if ((x < -10.0F) || ((((MazeNode *)root)->w + 10.0F) < x) || (y < -10.0F) ||
+        (((2.0F * ((MazeNode *)root)->h) + 10.0F) < y) || (z < -10.0F) || ((((MazeNode *)root)->d + 10.0F) < z)) {
         return 1;
     }
     return 0;
@@ -287,10 +287,10 @@ s32 areaIsPositionOutsideBounds(f32 x, f32 y, f32 z) {
 void areaSpawnItemNearPosition(f32 *center, f32 width, s32 kind) {
     f32 v[3];
 
-    v[0] = center[0] + randomNext() * 2.3283064365386963e-10 * width - width * 0.5f;
+    v[0] = center[0] + (randomNext() * 2.3283064365386963e-10 * width) - (width * 0.5F);
     v[1] = center[1];
-    v[2] = center[2] + randomNext() * 2.3283064365386963e-10 * width - width * 0.5f;
-    itemCreate(v[0], v[1], v[2], 0.0f, 0.0f, kind);
+    v[2] = center[2] + (randomNext() * 2.3283064365386963e-10 * width) - (width * 0.5F);
+    itemCreate(v[0], v[1], v[2], 0.0F, 0.0F, kind);
 }
 
 /// Create an item at a random horizontal position within an area region, using the region's top height.
@@ -303,10 +303,10 @@ void areaSpawnItemInRegion(f32 *region, s32 kind) {
     f32 y;
     f32 z;
 
-    x = region[2] + region[5] * (randomNext() * 2.3283064365386963e-10);
+    x = region[2] + (region[5] * (randomNext() * 2.3283064365386963e-10));
     y = region[3] + region[6];
-    z = region[4] + region[7] * (randomNext() * 2.3283064365386963e-10);
-    itemCreate(x, y, z, 0.0f, 0.0f, kind);
+    z = region[4] + (region[7] * (randomNext() * 2.3283064365386963e-10));
+    itemCreate(x, y, z, 0.0F, 0.0F, kind);
 }
 
 #include "contact_effect.h"
@@ -321,9 +321,9 @@ void areaCreateContactEffectInRegion(f32 *region) {
     f32 y;
     f32 z;
 
-    x = region[2] + region[5] * (randomNext() * 2.3283064365386963e-10);
+    x = region[2] + (region[5] * (randomNext() * 2.3283064365386963e-10));
     y = region[3] + region[6];
-    z = region[4] + region[7] * (randomNext() * 2.3283064365386963e-10);
+    z = region[4] + (region[7] * (randomNext() * 2.3283064365386963e-10));
     y -= terrainGetWorldHeight(x, y, z, 0);
     contactEffectCreate(x, y, z);
 }
@@ -341,11 +341,11 @@ void areaSpawnGroundItemInRegion(f32 *region, s32 kind) {
     f32 ground;
     u8 *fx;
 
-    x = region[2] + region[5] * (randomNext() * 2.3283064365386963e-10);
+    x = region[2] + (region[5] * (randomNext() * 2.3283064365386963e-10));
     y = region[3] + region[6];
-    z = region[4] + region[7] * (randomNext() * 2.3283064365386963e-10);
+    z = region[4] + (region[7] * (randomNext() * 2.3283064365386963e-10));
     ground = terrainGetWorldHeight(x, y, z, 0);
-    fx = itemCreate(x, ground, z, 0.0f, 0.0f, kind);
+    fx = itemCreate(x, ground, z, 0.0F, 0.0F, kind);
     ((RuntimeObjectPrefix *)fx)->position[1] = ((RuntimeObjectPrefix *)fx)->radius + ground;
 }
 
@@ -417,9 +417,9 @@ u8 *areaFindPositionNode(f32 x, f32 y, f32 z) {
 
     node = (u8 *)gAreaMazeRoot;
     for (;;) {
-        mx = (*(f32 *)(node + (u32) & ((MazeNode *)0)->w)) * 0.5f + (*(f32 *)(node + (u32) & ((MazeNode *)0)->x));
-        my = (*(f32 *)(node + (u32) & ((MazeNode *)0)->h)) * 0.5f + (*(f32 *)(node + (u32) & ((MazeNode *)0)->y));
-        mz = (*(f32 *)(node + (u32) & ((MazeNode *)0)->d)) * 0.5f + (*(f32 *)(node + (u32) & ((MazeNode *)0)->z));
+        mx = ((*(f32 *)(node + (u32) & ((MazeNode *)0)->w)) * 0.5F) + (*(f32 *)(node + (u32) & ((MazeNode *)0)->x));
+        my = ((*(f32 *)(node + (u32) & ((MazeNode *)0)->h)) * 0.5F) + (*(f32 *)(node + (u32) & ((MazeNode *)0)->y));
+        mz = ((*(f32 *)(node + (u32) & ((MazeNode *)0)->d)) * 0.5F) + (*(f32 *)(node + (u32) & ((MazeNode *)0)->z));
         oct = gMazeOctantIndices[mx < x][my < y][mz < z];
         child = (u8 *)((MazeNode *)node)->children[oct];
         if (child == NULL) {
@@ -455,8 +455,8 @@ f32 terrainFindSurfaceLocalHeight(f32 x, f32 y, f32 z, u8 **cachedNode) {
         deltaX = x - ((MazeNode *)node)->x;
         deltaY = y - ((MazeNode *)node)->y;
         deltaZ = z - ((MazeNode *)node)->z;
-        if ((((MazeNode *)node)->terrain != 0) && (deltaX >= 0.0f) && (deltaX <= ((MazeNode *)node)->w) &&
-            (deltaY >= 0.0f) && (deltaZ >= 0.0f) && (deltaZ <= ((MazeNode *)node)->d)) {
+        if ((((MazeNode *)node)->terrain != 0) && (deltaX >= 0.0F) && (deltaX <= ((MazeNode *)node)->w) &&
+            (deltaY >= 0.0F) && (deltaZ >= 0.0F) && (deltaZ <= ((MazeNode *)node)->d)) {
             height = terrainGetNodeLocalHeight(x, z, node);
         } else {
             node = NULL;
@@ -471,14 +471,14 @@ f32 terrainFindSurfaceLocalHeight(f32 x, f32 y, f32 z, u8 **cachedNode) {
             node = areaFindPositionNode(x, y, z);
             if ((node != NULL) && (((MazeNode *)node)->terrain != 0)) {
                 height = terrainGetNodeLocalHeight(x, z, node);
-                if (height > 0.001f) {
+                if (height > 0.001F) {
                     break;
                 }
             }
             if (searchDown != 0) {
                 stepY = gCurrentAreaConfiguration->cellDimensions[1];
                 y -= stepY;
-                if (y < 0.0f) {
+                if (y < 0.0F) {
                     searchDown = 0;
                     y = stepY + originalY;
                 }
@@ -486,7 +486,7 @@ f32 terrainFindSurfaceLocalHeight(f32 x, f32 y, f32 z, u8 **cachedNode) {
                 y += gCurrentAreaConfiguration->cellDimensions[1];
                 if ((((MazeNode *)(u8 *)gAreaMazeRoot)->y + ((MazeNode *)(u8 *)gAreaMazeRoot)->h) < y) {
                     node = NULL;
-                    height = 0.0f;
+                    height = 0.0F;
                     break;
                 }
             }
@@ -518,7 +518,7 @@ f32 terrainSampleVertexHeight(s32 x, s32 y, u8 *node) {
     } else if (y > (*(MazeGrid **)(node + (u32) & ((MazeNode *)0)->terrain))->h - 1) {
         y = (*(MazeGrid **)(node + (u32) & ((MazeNode *)0)->terrain))->h - 1;
     }
-    return *(y * (*(MazeGrid **)(node + (u32) & ((MazeNode *)0)->terrain))->w +
+    return *((y * (*(MazeGrid **)(node + (u32) & ((MazeNode *)0)->terrain))->w) +
              ((*(MazeGrid **)(node + (u32) & ((MazeNode *)0)->terrain))->cells + x));
 }
 
@@ -540,7 +540,7 @@ f32 terrainSampleCellHeight(s32 x, s32 y, u8 *node) {
     } else if (y > (*(MazeGrid **)(node + (u32) & ((MazeNode *)0)->terrain))->h - 1) {
         y = (*(MazeGrid **)(node + (u32) & ((MazeNode *)0)->terrain))->h - 1;
     }
-    return *(y * (*(MazeGrid **)(node + (u32) & ((MazeNode *)0)->terrain))->w +
+    return *((y * (*(MazeGrid **)(node + (u32) & ((MazeNode *)0)->terrain))->w) +
              ((*(MazeGrid **)(node + (u32) & ((MazeNode *)0)->terrain))->cells + x));
 }
 
@@ -565,14 +565,16 @@ f32 terrainGetMazeHeight(f32 x, f32 z, u8 *node) {
     iz = fz;
     nx = ix + 1;
     nz = iz + 1;
-    if (nx < 0)
+    if (nx < 0) {
         nx = 0;
-    else if ((w - 1) < nx)
+    } else if ((w - 1) < nx) {
         nx = (w - 1);
-    if (nz < 0)
+    }
+    if (nz < 0) {
         nz = 0;
-    else if (h < nz)
+    } else if (h < nz) {
         nz = h;
+    }
     TRACE("ixz:(%d,%d) ixz_1:(%d,%d)\n", ix, iz, nx, nz);
     h = iz * w;
     v00 = gTerrainMoundHeightGrid.cells[ix + h];
@@ -582,8 +584,8 @@ f32 terrainGetMazeHeight(f32 x, f32 z, u8 *node) {
     v11 = gTerrainMoundHeightGrid.cells[nx + h];
     tx = fx - ix;
     tz = fz - iz;
-    fz = ((1.0f - tx) * v00) + tx * v10;
-    return ((1.0f - tz) * fz) + (tz * (((1.0f - tx) * v01) + tx * v11));
+    fz = ((1.0F - tx) * v00) + (tx * v10);
+    return ((1.0F - tz) * fz) + (tz * (((1.0F - tx) * v01) + tx * v11));
 }
 
 /* Mode-0 terrain triangle: XYZ vertices A, B and C, then the ground material. */
@@ -621,43 +623,51 @@ f32 terrainGetTriangleHeight(f32 x, f32 z, u8 *node) {
         bz = TRIANGLES(node)[i].b[2] - az;
         cx = TRIANGLES(node)[i].c[0] - ax;
         cz = TRIANGLES(node)[i].c[2] - az;
-        determinant = bz * cx - cz * bx;
-        if (fabsf(determinant) > 0.001f) {
+        determinant = (bz * cx) - (cz * bx);
+        if (fabsf(determinant) > 0.001F) {
             dx = x - ax;
             dz = z - az;
             u = (cx * dz - cz * dx) / determinant;
-            if (u < 0.0)
+            if (u < 0.0) {
                 continue;
+            }
             v = (bx * dz - bz * dx) / -determinant;
-            if (v < 0.0)
+            if (v < 0.0) {
                 continue;
-            if (u + v > 1.0f)
+            }
+            if (u + v > 1.0F) {
                 continue;
+            }
         } else {
             /* Degenerate projection: independent projections onto each edge. */
-            lengthB = bx * bx + bz * bz;
-            if (lengthB < 0.001f)
+            lengthB = (bx * bx) + (bz * bz);
+            if (lengthB < 0.001F) {
                 continue;
+            }
             dx = x - ax;
             dz = z - az;
             u = (bx * dx + bz * dz) / lengthB;
-            if (u < 0.0)
+            if (u < 0.0) {
                 continue;
-            lengthC = cx * cx + cz * cz;
-            if (lengthC < 0.001f)
+            }
+            lengthC = (cx * cx) + (cz * cz);
+            if (lengthC < 0.001F) {
                 continue;
+            }
             v = (cx * dx + cz * dz) / lengthC;
-            if (v < 0.0)
+            if (v < 0.0) {
                 continue;
-            if (u + v > 1.0f)
+            }
+            if (u + v > 1.0F) {
                 continue;
+            }
         }
         baseY = TRIANGLES(node)[i].a[1];
         by = TRIANGLES(node)[i].b[1] - baseY;
         cy = TRIANGLES(node)[i].c[1] - baseY;
-        return by * u + cy * v + baseY;
+        return (by * u) + (cy * v) + baseY;
     }
-    return 0.0f;
+    return 0.0F;
 }
 
 /// Evaluate a node's height-map terrain at a world horizontal position.
@@ -699,7 +709,7 @@ f32 terrainGetHeightMapHeight(f32 x, f32 z, u8 *node) {
     }
     tx = fx - ix;
     tz = fz - iz;
-    return ((1.0f - tz) * (((1.0f - tx) * v00) + (tx * v10))) + (tz * (((1.0f - tx) * v01) + (tx * v11)));
+    return ((1.0F - tz) * (((1.0F - tx) * v00) + (tx * v10))) + (tz * (((1.0F - tx) * v01) + (tx * v11)));
 }
 
 f32 terrainGetMazeHeight(f32, f32, u8 *);               /* extern */
@@ -717,7 +727,7 @@ f32 terrainGetNodeLocalHeight(f32 x, f32 z, u8 *node) {
 
     terrainGrid = (u8 *)((MazeNode *)node)->terrain;
     if ((terrainGrid == NULL) || (((MazeGrid *)terrainGrid)->cells == 0)) {
-        return 0.0f;
+        return 0.0F;
     }
     if (((MazeNode *)node)->objects[0].address != 0) {
         return terrainGetMazeHeight(x, z, node);
@@ -755,7 +765,7 @@ f32 terrainGetWorldHeight(f32 x, f32 y, f32 z, u8 **previous) {
         *previous = node;
     }
     if (node == NULL) {
-        return 0.0f;
+        return 0.0F;
     }
     height = ((MazeNode *)node)->y + x;
     return height;
@@ -791,7 +801,7 @@ f32 terrainGetWorldHeightForQuery(s32 unused, f32 x, f32 y, f32 z, u8 **previous
     position[1] = y;
     position[2] = z;
     if (node == NULL) {
-        return 0.0f;
+        return 0.0F;
     } else {
         worldHeight = ((MazeNode *)node)->y + height;
     }
@@ -877,7 +887,7 @@ s32 terrainGetSurfaceAttributes(f32 x, f32 y, f32 z, u8 **cachedNode) {
                     offset += sizeof(TerrainTriangle);
                     TRIANGLE_EDGES_XZ(triangle, ax, az, bx, bz, cx, cz);
                     det = (bz * cx) - (cz * bx);
-                    if (fabsf(det) > 0.001f) {
+                    if (fabsf(det) > 0.001F) {
                         dx = x - ax;
                         dz = z - az;
                         u = ((cx * dz) - (cz * dx)) / det;
@@ -888,13 +898,13 @@ s32 terrainGetSurfaceAttributes(f32 x, f32 y, f32 z, u8 **cachedNode) {
                         if ((f64)v < 0.0) {
                             continue;
                         }
-                        if ((u + v) > 1.0f) {
+                        if ((u + v) > 1.0F) {
                             continue;
                         }
                     } else {
                         /* Degenerate projection: project onto each edge independently. */
                         det = (bx * bx) + (bz * bz);
-                        if (det < 0.001f) {
+                        if (det < 0.001F) {
                             continue;
                         }
                         dx = x - ax;
@@ -904,14 +914,14 @@ s32 terrainGetSurfaceAttributes(f32 x, f32 y, f32 z, u8 **cachedNode) {
                             continue;
                         }
                         lengthC = (cx * cx) + (cz * cz);
-                        if (lengthC < 0.001f) {
+                        if (lengthC < 0.001F) {
                             continue;
                         }
                         w = ((cx * dx) + (cz * dz)) / lengthC;
                         if ((f64)w < 0.0) {
                             continue;
                         }
-                        if ((u + w) > 1.0f) {
+                        if ((u + w) > 1.0F) {
                             continue;
                         }
                     }
@@ -944,7 +954,7 @@ s32 terrainGetSurfaceAttributes(f32 x, f32 y, f32 z, u8 **cachedNode) {
             } else if (maxRow < row) {
                 row = maxRow;
             }
-            return *(u16 *)((u8 *)grid->attributes + column * 2 + row * count * 2);
+            return *(u16 *)((u8 *)grid->attributes + (column * 2) + (row * count * 2));
         }
         return 0x4000;
     }
@@ -998,11 +1008,11 @@ void terrainCreateContactEffect(f32 *position, s32 material) {
 
     switch (material & 0xF) {
     case 2:
-        position[1] = terrainGetWorldHeight(position[0], position[1], position[2], NULL) + 0.5f;
+        position[1] = terrainGetWorldHeight(position[0], position[1], position[2], NULL) + 0.5F;
         wispEffectCreate(7, position[0], position[1], position[2]);
         return;
     case 3:
-        position[1] = (f32)(terrainGetWorldHeight(position[0], position[1], position[2], NULL) + 0.5f);
+        position[1] = (f32)(terrainGetWorldHeight(position[0], position[1], position[2], NULL) + 0.5F);
         sprayIndex = 0;
         if (((s32)randomBelow(6) + 2) > 0) {
             do {
@@ -1021,7 +1031,7 @@ void terrainCreateContactEffect(f32 *position, s32 material) {
     default:
         return;
     case 1:
-        position[1] = (f32)(terrainGetWorldHeight(position[0], position[1], position[2], NULL) + 0.5f);
+        position[1] = (f32)(terrainGetWorldHeight(position[0], position[1], position[2], NULL) + 0.5F);
         dustIndex = 0;
         if (((s32)randomBelow(3) + 3) > 0) {
             do {
@@ -1086,31 +1096,31 @@ u16 terrainCheckHorizontalObstruction(s32 type, f32 x, f32 y, f32 z, f32 width, 
     f32 delta[3];
     f32 sideZ;
 
-    halfWidth = width * 0.5f;
-    sideZ = dirZ * halfWidth + z;
-    sideX = dirX * halfWidth + x;
+    halfWidth = width * 0.5F;
+    sideZ = (dirZ * halfWidth) + z;
+    sideX = (dirX * halfWidth) + x;
     if ((step < terrainGetWorldHeightForQuery(type, x, y, z, previous)) ||
         (mask = &gTerrainCollisionPolicySurfaceMasks[type], (terrainGetSurfaceAttributes(x, y, z, previous) & *mask)) ||
         (step < terrainGetWorldHeightForQuery(type, x, y + height, z, previous))) {
-        flags = dirX > 0.0f ? 1 : 8;
-        if (dirZ > 0.0f) {
+        flags = dirX > 0.0F ? 1 : 8;
+        if (dirZ > 0.0F) {
             flags |= 4;
         } else {
             flags |= 0x20;
         }
     } else {
-        if (dirZ != 0.0f) {
+        if (dirZ != 0.0F) {
             sample = sideZ;
             if ((step < terrainGetWorldHeightForQuery(type, x, y, sample, previous)) ||
                 (terrainGetSurfaceAttributes(x, y, sample, previous) & *mask)) {
-                flags = dirZ > 0.0f ? 4 : 0x20;
+                flags = dirZ > 0.0F ? 4 : 0x20;
             }
         }
-        if (dirX != 0.0f) {
+        if (dirX != 0.0F) {
             sample = sideX;
             if ((step < terrainGetWorldHeightForQuery(type, sample, y, z, previous)) ||
                 (terrainGetSurfaceAttributes(sample, y, z, previous) & *mask)) {
-                if (dirX > 0.0f) {
+                if (dirX > 0.0F) {
                     flags |= 1;
                 } else {
                     flags |= 8;
@@ -1122,7 +1132,7 @@ u16 terrainCheckHorizontalObstruction(s32 type, f32 x, f32 y, f32 z, f32 width, 
         delta[0] = *(f32 *)(((u8 *)gPikachuActor) + 0x44) - x;
         delta[1] = *(f32 *)(((u8 *)gPikachuActor) + 0x48) - y;
         delta[2] = *(f32 *)(((u8 *)gPikachuActor) + 0x4C) - z;
-        if (vector3Length((f32 *)delta) < 5.0f) {
+        if (vector3Length((f32 *)delta) < 5.0F) {
             flags |= 0x6D;
         }
     }
@@ -1179,24 +1189,24 @@ s32 terrainConstrainMovement(s32 queryKind, f32 x, f32 y, f32 z, f32 width, f32 
     s32 step;
     s32 stepCount;
 
-    if (*deltaX == 0.0f && *deltaZ == 0.0f) {
-        if (*deltaY == 0.0f) {
+    if (*deltaX == 0.0F && *deltaZ == 0.0F) {
+        if (*deltaY == 0.0F) {
             return 0;
         }
-        horizontalLength = 0.0f;
+        horizontalLength = 0.0F;
     } else {
         horizontalLength = sqrtf((*deltaX * *deltaX) + (*deltaZ * *deltaZ));
     }
-    signX = (*deltaX > 0.0f) ? 1 : ((*deltaX < 0.0f) ? -1 : 0);
+    signX = (*deltaX > 0.0F) ? 1 : ((*deltaX < 0.0F) ? -1 : 0);
     stepCount = 1;
-    signZ = (*deltaZ > 0.0f) ? 1 : ((*deltaZ < 0.0f) ? -1 : 0);
-    if (horizontalLength < 1.0f) {
+    signZ = (*deltaZ > 0.0F) ? 1 : ((*deltaZ < 0.0F) ? -1 : 0);
+    if (horizontalLength < 1.0F) {
         stepX = *deltaX;
         stepY = *deltaY;
         stepZ = *deltaZ;
     } else {
         stepCount = (s32)(horizontalLength * 1);
-        inverseSteps = 1.0f / (f32)stepCount;
+        inverseSteps = 1.0F / (f32)stepCount;
         stepX = *deltaX * inverseSteps;
         stepY = *deltaY * inverseSteps;
         stepZ = *deltaZ * inverseSteps;
@@ -1213,7 +1223,7 @@ s32 terrainConstrainMovement(s32 queryKind, f32 x, f32 y, f32 z, f32 width, f32 
             nextY = y + stepY;
             nextZ = z + stepZ;
 
-            if ((stepX != 0.0f) || (stepZ != 0.0f)) {
+            if ((stepX != 0.0F) || (stepZ != 0.0F)) {
                 collision = terrainCheckHorizontalObstruction(queryKind, nextX, nextY, nextZ, width, depth, topY, signX, signZ, hitNode);
                 mask = collision;
                 if (collision & 9) {
@@ -1223,7 +1233,7 @@ s32 terrainConstrainMovement(s32 queryKind, f32 x, f32 y, f32 z, f32 width, f32 
                     nextZ = z;
                 }
             }
-            if (stepY != 0.0f) {
+            if (stepY != 0.0F) {
                 groundY = terrainGetWorldHeight(nextX, y, nextZ, hitNode);
                 if (nextY < groundY) {
                     mask = mask | 0x10;
@@ -1243,18 +1253,18 @@ s32 terrainConstrainMovement(s32 queryKind, f32 x, f32 y, f32 z, f32 width, f32 
     }
     movedX = x - startX;
     *deltaX = movedX;
-    if ((movedX < 0.001f) && (*deltaX > -0.001f)) {
-        *deltaX = 0.0f;
+    if ((movedX < 0.001F) && (*deltaX > -0.001F)) {
+        *deltaX = 0.0F;
     }
     movedY = y - startY;
     *deltaY = movedY;
-    if ((movedY < 0.001f) && (movedY > -0.001f)) {
-        *deltaY = 0.0f;
+    if ((movedY < 0.001F) && (movedY > -0.001F)) {
+        *deltaY = 0.0F;
     }
     movedZ = z - startZ;
     *deltaZ = movedZ;
-    if ((movedZ < 0.001f) && (movedZ > -0.001f)) {
-        *deltaZ = 0.0f;
+    if ((movedZ < 0.001F) && (movedZ > -0.001F)) {
+        *deltaZ = 0.0F;
     }
     return mask;
 }
@@ -1288,16 +1298,16 @@ void terrainGetDownhillHeightDifferences(f32 x, f32 y, f32 z, f32 maxSlope, f32 
     heightX = terrainGetWorldHeight(x + step, y, z, node);
     heightZ = terrainGetWorldHeight(x, y, z + step, node);
     center = terrainGetWorldHeight(x, y, z, node);
-    step = 0.001f;
+    step = 0.001F;
     flatX = fabsf(center - heightX) <= ((fabsf(heightX) * step) + step) ? 1 : 0;
     if ((flatX != 0) || (deltaX = center - heightX, (maxSlope < fabsf(deltaX)))) {
-        *slopeX = 0.0f;
+        *slopeX = 0.0F;
     } else {
         *slopeX = deltaX;
     }
     flatZ = fabsf(center - heightZ) <= ((fabsf(heightZ) * step) + step) ? 1 : 0;
     if ((flatZ != 0) || (deltaZ = center - heightZ, (maxSlope < fabsf(deltaZ)))) {
-        *slopeZ = 0.0f;
+        *slopeZ = 0.0F;
     } else {
         *slopeZ = deltaZ;
     }
@@ -1319,16 +1329,18 @@ extern u8 gRenderCameraMatrixEntries[];
 /// \note Original decompilation identifier: \c func_8010CFF8 (0x8010CFF8).
 s32 areaTestCameraVisibility(f32 margin, f32 *position, f32 *out) {
     f32 x, y, z, far;
-    matrix34TransformPointVector((f32 *)(((u8 *)gRenderCameras) + gRenderCameraIndex * 0xE0 + 0x58), position, out);
-    far = gCurrentAreaConfiguration->farClip * 1.7f;
+    matrix34TransformPointVector((f32 *)(((u8 *)gRenderCameras) + (gRenderCameraIndex * 0xE0) + 0x58), position, out);
+    far = gCurrentAreaConfiguration->farClip * 1.7F;
     z = -out[2];
     x = out[0];
     y = out[1];
-    if (far < z)
+    if (far < z) {
         return 0;
-    z += margin * *(f32 *)(gRenderCameraMatrixEntries + gRenderCameraIndex * 0xE0 + 0x64);
-    if (x < z && -x < z && y < z && -y < z)
+    }
+    z += margin * *(f32 *)(gRenderCameraMatrixEntries + (gRenderCameraIndex * 0xE0) + 0x64);
+    if (x < z && -x < z && y < z && -y < z) {
         return 1;
+    }
     return 0;
 }
 
@@ -1404,9 +1416,9 @@ void areaRefreshVisibilityDistances(s32 unused) {
     f32 nearClip;
 
     farClip = gCurrentAreaConfiguration->farClip;
-    gAreaFarVisibilityDistanceSquared = farClip * farClip * 3.0f;
+    gAreaFarVisibilityDistanceSquared = farClip * farClip * 3.0F;
     nearClip = gCurrentAreaConfiguration->nearClip;
-    gAreaNearVisibilityDistanceSquared = nearClip * nearClip * 3.0f;
+    gAreaNearVisibilityDistanceSquared = nearClip * nearClip * 3.0F;
 }
 
 
@@ -1425,7 +1437,8 @@ s32 areaIsPositionInHorizontalView(f32 x, f32 y, f32 z, f32 margin) {
     f32 oz;
     f32 d;
 
-    matrix34TransformPoint((f32(*)[3])(gRenderCameraIndex * 0xE0 + 0x58 + ((u8 *)gRenderCameras)), x, y, z, &ox, &oy, &oz);
+    matrix34TransformPoint((f32(*)[3])((gRenderCameraIndex * 0xE0) + 0x58 + ((u8 *)gRenderCameras)), x, y, z, &ox, &oy,
+                           &oz);
     d = margin - oz;
     if ((ox < d) && (-ox < d)) {
         return 1;
@@ -1461,15 +1474,15 @@ s32 areaIsNodeVisible(u8 *node) {
     if (*(s16 *)(node + 0x40) >= 3) {
         return 1;
     }
-    camera = gRenderCameraIndex * 0xE0 + base;
-    z = *(f32 *)(node + 0x1C) * 0.5f + *(f32 *)(node + 0x10);
+    camera = (gRenderCameraIndex * 0xE0) + base;
+    z = (*(f32 *)(node + 0x1C) * 0.5F) + *(f32 *)(node + 0x10);
     dz = *(f32 *)(camera + 8) - z;
     center[2] = *(f32 *)(node + 0x14);
-    center[1] = center[2] * 0.5f + *(f32 *)(node + 8);
+    center[1] = (center[2] * 0.5F) + *(f32 *)(node + 8);
     dx = *(f32 *)(camera + 0) - center[1];
-    center[0] = *(f32 *)(node + 0x18) * 0.5f + *(f32 *)(node + 0xC);
+    center[0] = (*(f32 *)(node + 0x18) * 0.5F) + *(f32 *)(node + 0xC);
     dy = *(f32 *)(camera + 4) - center[0];
-    distance = dz * dz + (dx * dx + dy * dy);
+    distance = (dz * dz) + (dx * dx + dy * dy);
     if (gAreaFarVisibilityDistanceSquared < distance) {
         return 0;
     }
@@ -1542,9 +1555,9 @@ void mazeInitializeRoot(void) {
     f32 length;
     gAreaMazeRoot = (MazeNode *)areaAllocateNode();
     integerScale = integerPower(2, gCurrentAreaConfiguration->subdivisionPower);
-    ((MazeNode *)gAreaMazeRoot)->x = 0.0f;
-    ((MazeNode *)gAreaMazeRoot)->y = 0.0f;
-    ((MazeNode *)gAreaMazeRoot)->z = 0.0f;
+    ((MazeNode *)gAreaMazeRoot)->x = 0.0F;
+    ((MazeNode *)gAreaMazeRoot)->y = 0.0F;
+    ((MazeNode *)gAreaMazeRoot)->z = 0.0F;
     ((MazeNode *)gAreaMazeRoot)->w = (f32)integerScale * ((Vec3f *)((u8 *)gCurrentAreaConfiguration))->x;
     ((MazeNode *)gAreaMazeRoot)->h = (f32)integerScale * ((Vec3f *)((u8 *)gCurrentAreaConfiguration))->y;
     ((MazeNode *)gAreaMazeRoot)->d = (f32)integerScale * ((Vec3f *)((u8 *)gCurrentAreaConfiguration))->z;
@@ -1554,7 +1567,7 @@ void mazeInitializeRoot(void) {
     dims.z = ((Vec3f *)((u8 *)gCurrentAreaConfiguration))->z;
     length = vector3Length((f32 *)&dims);
     gMazeVisibilityParameters.radiusScale =
-        length * 0.5f / (mathSinDegrees(36.0f) * ((Vec3f *)((u8 *)gCurrentAreaConfiguration))->x);
+        length * 0.5F / (mathSinDegrees(36.0F) * ((Vec3f *)((u8 *)gCurrentAreaConfiguration))->x);
     TRACE("blockSize: %f,%f,%f  _clipZFactor:%f  clipFar:%f clipNear:%f clipFactor:%f\n", dims.x, dims.y, dims.z,
           gCurrentAreaConfiguration->projectionExtent, gCurrentAreaConfiguration->farClip,
           gCurrentAreaConfiguration->nearClip, gMazeVisibilityParameters.radiusScale);
@@ -1577,9 +1590,9 @@ void mazeConfigureNodeModel(MazeNode *node, s32 kind) {
             (ObjectTemplate *)(*(SceneCellType *)((u8 *)gCurrentAreaConfiguration->cellTypes + offset)).objectTemplate);
         root = objectRegisterActiveHierarchy(root);
         node->objects[1].bytes = root;
-        ((RuntimeObjectPrefix *)root)->rotation[2] = 0.0f;
-        ((RuntimeObjectPrefix *)root)->rotation[1] = 0.0f;
-        ((RuntimeObjectPrefix *)root)->rotation[0] = 0.0f;
+        ((RuntimeObjectPrefix *)root)->rotation[2] = 0.0F;
+        ((RuntimeObjectPrefix *)root)->rotation[1] = 0.0F;
+        ((RuntimeObjectPrefix *)root)->rotation[0] = 0.0F;
         ((RuntimeObjectPrefix *)root)->position[0] = node->x;
         ((RuntimeObjectPrefix *)root)->position[1] = node->y;
         part = ((RuntimeObjectPrefix *)root)->sibling.bytes;
@@ -1589,11 +1602,11 @@ void mazeConfigureNodeModel(MazeNode *node, s32 kind) {
         ((RuntimeObjectPrefix *)root)->scale[2] *= gCurrentAreaConfiguration->objectScale;
         while (part != NULL) {
             ((RuntimeObjectPrefix *)part)->position[0] =
-                ((RuntimeObjectPrefix *)part)->position[0] * gCurrentAreaConfiguration->objectScale + node->x;
+                (((RuntimeObjectPrefix *)part)->position[0] * gCurrentAreaConfiguration->objectScale) + node->x;
             ((RuntimeObjectPrefix *)part)->position[1] =
-                ((RuntimeObjectPrefix *)part)->position[1] * gCurrentAreaConfiguration->objectScale + node->y;
+                (((RuntimeObjectPrefix *)part)->position[1] * gCurrentAreaConfiguration->objectScale) + node->y;
             ((RuntimeObjectPrefix *)part)->position[2] =
-                ((RuntimeObjectPrefix *)part)->position[2] * gCurrentAreaConfiguration->objectScale + node->z;
+                (((RuntimeObjectPrefix *)part)->position[2] * gCurrentAreaConfiguration->objectScale) + node->z;
             ((RuntimeObjectPrefix *)part)->scale[0] =
                 ((RuntimeObjectPrefix *)part)->scale[0] * ((RuntimeObjectPrefix *)root)->scale[0];
             ((RuntimeObjectPrefix *)part)->scale[1] =
@@ -1615,12 +1628,12 @@ void mazeConfigureNodeModel(MazeNode *node, s32 kind) {
 /// \note Original decompilation identifier: \c func_8010D7FC (0x8010D7FC).
 void mazeConfigureChildBounds(MazeNode *parent, s32 index) {
     MazeNode *child = parent->children[index];
-    child->x = gMazeChildOffsetX[index] * parent->w * 0.5f + parent->x;
-    child->y = gMazeChildOffsetY[index] * parent->h * 0.5f + parent->y;
-    child->z = gMazeChildOffsetZ[index] * parent->d * 0.5f + parent->z;
-    child->w = parent->w * 0.5f;
-    child->h = parent->h * 0.5f;
-    child->d = parent->d * 0.5f;
+    child->x = (gMazeChildOffsetX[index] * parent->w * 0.5F) + parent->x;
+    child->y = (gMazeChildOffsetY[index] * parent->h * 0.5F) + parent->y;
+    child->z = (gMazeChildOffsetZ[index] * parent->d * 0.5F) + parent->z;
+    child->w = parent->w * 0.5F;
+    child->h = parent->h * 0.5F;
+    child->d = parent->d * 0.5F;
     child->depth = parent->depth - 1;
 }
 
@@ -1664,23 +1677,24 @@ s32 mazeClassifyNode(MazeNode *node) {
 
     count = integerPower(2, node->depth);
     result = ((SceneOccupancyView *)((u8 *)gCurrentAreaConfiguration))
-                 ->sample(node->x + ((SceneOccupancyView *)((u8 *)gCurrentAreaConfiguration))->width * 0.5f,
-                          node->y + ((SceneOccupancyView *)((u8 *)gCurrentAreaConfiguration))->height * 0.5f,
-                          node->z + ((SceneOccupancyView *)((u8 *)gCurrentAreaConfiguration))->depth * 0.5f);
+                 ->sample(node->x + (((SceneOccupancyView *)((u8 *)gCurrentAreaConfiguration))->width * 0.5F),
+                          node->y + (((SceneOccupancyView *)((u8 *)gCurrentAreaConfiguration))->height * 0.5F),
+                          node->z + (((SceneOccupancyView *)((u8 *)gCurrentAreaConfiguration))->depth * 0.5F));
     if (count >= 2) {
         for (x = 0; x < count; x++) {
             for (y = 0; y < count; y++) {
                 for (z = 0; z < count; z++) {
-                    if (x == 0 && y == 0 && z == 0)
+                    if (x == 0 && y == 0 && z == 0) {
                         continue;
+                    }
                     {
                         f32 px, py, pz;
                         width = ((SceneOccupancyView *)((u8 *)gCurrentAreaConfiguration))->width;
                         height = ((SceneOccupancyView *)((u8 *)gCurrentAreaConfiguration))->height;
                         depth = ((SceneOccupancyView *)((u8 *)gCurrentAreaConfiguration))->depth;
-                        px = node->x + x * width + width * 0.5f;
-                        py = node->y + y * height + height * 0.5f;
-                        pz = node->z + z * depth + depth * 0.5f;
+                        px = node->x + (x * width) + (width * 0.5F);
+                        py = node->y + (y * height) + (height * 0.5F);
+                        pz = node->z + (z * depth) + (depth * 0.5F);
                         if (((SceneOccupancyView *)((u8 *)gCurrentAreaConfiguration))->sample(px, py, pz) != 0) {
                             return -1;
                         }
@@ -1767,9 +1781,9 @@ void mazePlaceBlockObject(u8 *position, u8 *objectTemplate) {
 /// \note Original decompilation identifier: \c func_8010DC14 (0x8010DC14).
 void mazeRemoveBlockObject(u8 *object) {
     *(s32 *)areaFindPositionNode(
-        gCurrentAreaConfiguration->cellDimensions[0] / 2 + ((RuntimeObjectPrefix *)object)->position[0],
-        gCurrentAreaConfiguration->cellDimensions[1] / 2 + ((RuntimeObjectPrefix *)object)->position[1],
-        gCurrentAreaConfiguration->cellDimensions[2] / 2 + ((RuntimeObjectPrefix *)object)->position[2]) = 0;
+        (gCurrentAreaConfiguration->cellDimensions[0] / 2) + ((RuntimeObjectPrefix *)object)->position[0],
+        (gCurrentAreaConfiguration->cellDimensions[1] / 2) + ((RuntimeObjectPrefix *)object)->position[1],
+        (gCurrentAreaConfiguration->cellDimensions[2] / 2) + ((RuntimeObjectPrefix *)object)->position[2]) = 0;
     objectRequestHierarchyDestruction(object);
 }
 
@@ -1792,16 +1806,16 @@ void mazeReplaceBlock(u8 *pos, u8 *modelTemplate, MazeGrid *terrain, s32 level) 
     u8 *child;
 
     heapDebugReportFreeSpace(&gGameHeap, (const char *) "pre_changeMazeBlock");
-    node = areaFindPositionNode(*(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0x0) / 2 + *(f32 *)(pos + 0x0),
-                                *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0x4) / 2 + *(f32 *)(pos + 0x4),
-                                *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0x8) / 2 + *(f32 *)(pos + 0x8));
+    node = areaFindPositionNode((*(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0x0) / 2) + *(f32 *)(pos + 0x0),
+                                (*(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0x4) / 2) + *(f32 *)(pos + 0x4),
+                                (*(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0x8) / 2) + *(f32 *)(pos + 0x8));
     if (level < ((MazeNode *)node)->depth) {
         TRACE("block level mismatch (level %d, [%3.2f, %3.2f, %3.2f]), force to digging...\n", level,
               *(f32 *)(pos + 0x0), *(f32 *)(pos + 0x4), *(f32 *)(pos + 0x8));
         mazeBuildNodeHierarchy(node, ((MazeNode *)node)->depth - level - 1, 1);
-        node = areaFindPositionNode(*(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0x0) / 2 + *(f32 *)(pos + 0x0),
-                                    *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0x4) / 2 + *(f32 *)(pos + 0x4),
-                                    *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0x8) / 2 + *(f32 *)(pos + 0x8));
+        node = areaFindPositionNode((*(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0x0) / 2) + *(f32 *)(pos + 0x0),
+                                    (*(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0x4) / 2) + *(f32 *)(pos + 0x4),
+                                    (*(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0x8) / 2) + *(f32 *)(pos + 0x8));
     }
     if (((MazeNode *)node)->objects[1].bytes != NULL) {
         objectRequestHierarchyDestruction(((MazeNode *)node)->objects[1].bytes);
@@ -1810,9 +1824,9 @@ void mazeReplaceBlock(u8 *pos, u8 *modelTemplate, MazeGrid *terrain, s32 level) 
     if (modelTemplate != NULL) {
         model = objectRegisterActiveHierarchy(objectCreateHierarchyFromTemplate((ObjectTemplate *)modelTemplate));
         ((MazeNode *)node)->objects[1].bytes = model;
-        ((RuntimeObjectPrefix *)model)->rotation[2] = 0.0f;
-        ((RuntimeObjectPrefix *)model)->rotation[1] = 0.0f;
-        ((RuntimeObjectPrefix *)model)->rotation[0] = 0.0f;
+        ((RuntimeObjectPrefix *)model)->rotation[2] = 0.0F;
+        ((RuntimeObjectPrefix *)model)->rotation[1] = 0.0F;
+        ((RuntimeObjectPrefix *)model)->rotation[0] = 0.0F;
         child = ((RuntimeObjectPrefix *)model)->sibling.bytes;
         ((RuntimeObjectPrefix *)model)->position[0] = ((MazeNode *)node)->x;
         ((RuntimeObjectPrefix *)model)->position[1] = ((MazeNode *)node)->y;
@@ -1827,13 +1841,13 @@ void mazeReplaceBlock(u8 *pos, u8 *modelTemplate, MazeGrid *terrain, s32 level) 
             do {
                 ((RuntimeObjectPrefix *)child)->position[0] =
                     ((MazeNode *)node)->x +
-                    gCurrentAreaConfiguration->objectScale * ((RuntimeObjectPrefix *)child)->position[0];
+                    (gCurrentAreaConfiguration->objectScale * ((RuntimeObjectPrefix *)child)->position[0]);
                 ((RuntimeObjectPrefix *)child)->position[1] =
                     ((MazeNode *)node)->y +
-                    gCurrentAreaConfiguration->objectScale * ((RuntimeObjectPrefix *)child)->position[1];
+                    (gCurrentAreaConfiguration->objectScale * ((RuntimeObjectPrefix *)child)->position[1]);
                 ((RuntimeObjectPrefix *)child)->position[2] =
                     ((MazeNode *)node)->z +
-                    gCurrentAreaConfiguration->objectScale * ((RuntimeObjectPrefix *)child)->position[2];
+                    (gCurrentAreaConfiguration->objectScale * ((RuntimeObjectPrefix *)child)->position[2]);
                 ((RuntimeObjectPrefix *)child)->scale[0] =
                     ((RuntimeObjectPrefix *)child)->scale[0] * ((RuntimeObjectPrefix *)model)->scale[0];
                 ((RuntimeObjectPrefix *)child)->scale[1] =
@@ -1877,17 +1891,17 @@ void mazeConfigureEventLinks(void) {
         width = (gCurrentAreaConfiguration->cellDimensions[0]);
         height = (gCurrentAreaConfiguration->cellDimensions[1]);
         depth = (gCurrentAreaConfiguration->cellDimensions[2]);
-        x = ((f32)(link->sourceCell[0]) * width) + (width * 0.5f);
-        y = ((f32)(link->sourceCell[1]) * height) + (height * 0.5f);
-        z = ((f32)(link->sourceCell[2]) * depth) + (depth * 0.5f);
+        x = ((f32)(link->sourceCell[0]) * width) + (width * 0.5F);
+        y = ((f32)(link->sourceCell[1]) * height) + (height * 0.5F);
+        z = ((f32)(link->sourceCell[2]) * depth) + (depth * 0.5F);
         node = areaFindPositionNode(x, y, z);
         ((MazeNode *)node)->event = link->event;
         width = (gCurrentAreaConfiguration->cellDimensions[0]);
         height = (gCurrentAreaConfiguration->cellDimensions[1]);
         depth = (gCurrentAreaConfiguration->cellDimensions[2]);
-        x = ((f32)(link->targetCell[0]) * width) + (width * 0.5f);
-        y = ((f32)(link->targetCell[1]) * height) + (height * 0.5f);
-        z = ((f32)(link->targetCell[2]) * depth) + (depth * 0.5f);
+        x = ((f32)(link->targetCell[0]) * width) + (width * 0.5F);
+        y = ((f32)(link->targetCell[1]) * height) + (height * 0.5F);
+        z = ((f32)(link->targetCell[2]) * depth) + (depth * 0.5F);
         if (!((f64)x < 0.0) && !((f64)y < 0.0) && !((f64)z < 0.0)) {
             ((MazeNode *)node)->linkedNode = (MazeNode *)areaFindPositionNode(x, y, z);
         }
@@ -1905,12 +1919,12 @@ void mazeConfigureEventLinks(void) {
 void mazeDestroyNode(u8 *node) {
     u8 *pendingObject;
     s32 type = gCurrentAreaConfiguration->sampleCell(
-        (*(f32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) & ((SceneConfigurationPrefix *)0)->cellDimensions[0])) *
-                0.5f +
+        ((*(f32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) & ((SceneConfigurationPrefix *)0)->cellDimensions[0])) *
+         0.5F) +
             (*(f32 *)(node + (u32) & ((MazeNode *)0)->x)),
-        gCurrentAreaConfiguration->cellDimensions[1] * 0.5f + (*(f32 *)(node + (u32) & ((MazeNode *)0)->y)),
-        (*(f32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) & ((SceneConfigurationPrefix *)0)->cellDimensions[2])) *
-                0.5f +
+        (gCurrentAreaConfiguration->cellDimensions[1] * 0.5F) + (*(f32 *)(node + (u32) & ((MazeNode *)0)->y)),
+        ((*(f32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) & ((SceneConfigurationPrefix *)0)->cellDimensions[2])) *
+         0.5F) +
             (*(f32 *)(node + (u32) & ((MazeNode *)0)->z)));
 
     if (gCurrentAreaConfiguration->cellTypes[type].leave != NULL) {
@@ -1991,7 +2005,7 @@ void mazeSpawnConfiguredItems(void) {
         if (itemKind >= 0) {
             itemSetMode(itemCreate(((SceneItemPlacement *)var_s0)->position[0],
                                    ((SceneItemPlacement *)var_s0)->position[1],
-                                   ((SceneItemPlacement *)var_s0)->position[2], 0.0f, 0.0f, itemKind),
+                                   ((SceneItemPlacement *)var_s0)->position[2], 0.0F, 0.0F, itemKind),
                         ITEM_MODE_STATIONARY);
             var_s0 += 0x10;
             goto loop_2;
@@ -2096,9 +2110,9 @@ void mazeInitialize(void) {
     TRACE("totalBlockNum = %d\n", gMazeDiagnosticBlockCount);
     TRACE("sizeof(mazeBlockT) = %d\n", 0x50);
     mazeSpawnConfiguredItems();
-    ((f32 *)&D_80133DE8)[0] = 0.0f;
-    ((f32 *)&D_80133DE8)[1] = 0.0f;
-    ((f32 *)&D_80133DE8)[2] = 0.0f;
+    ((f32 *)&D_80133DE8)[0] = 0.0F;
+    ((f32 *)&D_80133DE8)[1] = 0.0F;
+    ((f32 *)&D_80133DE8)[2] = 0.0F;
 }
 
 /// Invoke the area's optional initializer after common gameplay setup.
@@ -2240,14 +2254,15 @@ void mazeScatterItems(f32 *positions, s32 count, WeightedChoiceTable *table, f32
     if (count > 0) {
         remaining = count;
         do {
-            position = (f32 *)((u8 *)positions + index * 12);
+            position = (f32 *)((u8 *)positions + (index * 12));
             if ((randomNext() * 2.3283064365386963e-10) < (f64)((f32)quota / (f32)remaining)) {
                 quota--;
-                itemSetMode(itemCreate(position[0], position[1], position[2], 0.0f, 0.0f, weightedChoiceSelectKey(table)),
-                              ITEM_MODE_STATIONARY);
+                itemSetMode(
+                    itemCreate(position[0], position[1], position[2], 0.0F, 0.0F, weightedChoiceSelectKey(table)),
+                    ITEM_MODE_STATIONARY);
             } else {
                 if ((randomNext() * 2.3283064365386963e-10) > 0.5) {
-                    position = (f32 *)((u8 *)positions + index * 12);
+                    position = (f32 *)((u8 *)positions + (index * 12));
                     contactEffectCreate(position[0], position[1], position[2]);
                 }
             }

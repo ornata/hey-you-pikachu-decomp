@@ -102,7 +102,7 @@ s32 actorPlayTrackedSound(u8 *actor, s32 kind) {
     s32 slot;
 
     state = ((RuntimeObjectPrefix *)actor)->state.actor;
-    handle = objectPlaySpatialSound(actor, kind, 20.0f, 200.0f);
+    handle = objectPlaySpatialSound(actor, kind, 20.0F, 200.0F);
     if (handle != 0) {
         for (attempt = 0, slot = state->nextSoundSlot; attempt < 4; attempt++) {
             if (audioCountPlayback(state->soundHandles[slot]) == 0) {
@@ -147,7 +147,7 @@ void actorUpdateTrackedSoundSpatialization(f32 *position, s32 *voices) {
                     continue;
                 }
                 audioGetPositionVolumeAndPan(position, *gRenderCameras[gRenderCameraIndex].matrices, &volume, &pan,
-                                             20.0f, 100.0f);
+                                             20.0F, 100.0F);
                 audioSetSoundEffectPan(*voices, pan);
                 audioSetSoundEffectVolume(*voices, volume);
             }
@@ -230,9 +230,9 @@ void actorInitializeModelState(u8 *actor) {
     state->playbackMode = 0;
     state->pendingAction = -1;
     state->messengerContactMode = 2;
-    state->motionDuration = 0.0f;
-    state->motionRemaining = 0.0f;
-    state->movementScale = 1.0f;
+    state->motionDuration = 0.0F;
+    state->motionRemaining = 0.0F;
+    state->movementScale = 1.0F;
     matrix34Identity((Matrix34 *)(u8 *)&state->rootMotionTransform);
     _bzero(&state->rootPlayback, sizeof(ActorRootPlaybackWorkspace));
     _bzero(&state->rootMovementTrack, sizeof(AnimationDeltaTrack3));
@@ -242,7 +242,7 @@ void actorInitializeModelState(u8 *actor) {
     state->trackedVoice = 0;
     state->actionScript.index = -1;
     state->searchItemKind = 0x43;
-    state->searchItemRange = 0.0f;
+    state->searchItemRange = 0.0F;
     directionAnimationReset(&state->directionAnimation);
     drawListStorage = heapAllocLocal(&gGameHeap, 0x80, 0xE8);
     state->modelDrawLists[0] = (Gfx *)drawListStorage;
@@ -307,7 +307,7 @@ void actorInitializeTargetFacingChildState(u8 *actor) {
     vec->previousAngles[0] = ((RuntimeObjectPrefix *)actor)->rotation[0];
     vec->previousAngles[1] = ((RuntimeObjectPrefix *)actor)->rotation[1];
     vec->previousAngles[2] = ((RuntimeObjectPrefix *)actor)->rotation[2];
-    vec->weight = 0.0f;
+    vec->weight = 0.0F;
     state->facingController.target = vec;
 }
 
@@ -326,7 +326,7 @@ void actorInitializeCameraFacingChildState(u8 *actor) {
     vec->angles[0] = ((RuntimeObjectPrefix *)actor)->rotation[0];
     vec->angles[1] = ((RuntimeObjectPrefix *)actor)->rotation[1];
     vec->angles[2] = ((RuntimeObjectPrefix *)actor)->rotation[2];
-    vec->weight = 0.0f;
+    vec->weight = 0.0F;
     state->facingController.camera = vec;
 }
 
@@ -361,16 +361,16 @@ void actorUpdateGroundSlopePitch(u8 *object) {
     heightDelta = height - nextHeight;
     if (surface == NULL) {
     }
-    length = sqrtf(heightDelta * heightDelta + 1.0f);
-    pitch = mathWrapSignedDegrees(mathUnitDirectionDegrees(1.0f / length, heightDelta / length));
-    if (pitch < -30.0f) {
-        pitch = -30.0f;
-    } else if (pitch > 30.0f) {
-        pitch = 30.0f;
+    length = sqrtf((heightDelta * heightDelta) + 1.0F);
+    pitch = mathWrapSignedDegrees(mathUnitDirectionDegrees(1.0F / length, heightDelta / length));
+    if (pitch < -30.0F) {
+        pitch = -30.0F;
+    } else if (pitch > 30.0F) {
+        pitch = 30.0F;
     }
     actorAddRotationAxisDegrees(
         object,
-        mathApproachAngleDegrees(state->orientation[0], pitch, 1.0f, 90.0f, 180.0f * gRuntimeFrameSeconds) -
+        mathApproachAngleDegrees(state->orientation[0], pitch, 1.0F, 90.0F, 180.0F * gRuntimeFrameSeconds) -
             state->orientation[0],
         0);
 }
@@ -386,13 +386,13 @@ void actorAddDownhillMovement(u8 *actor, f32 *displacement, u8 **surfaceCache) {
     Vec3f v;
     f32 f;
 
-    f = 0.2f;
+    f = 0.2F;
     v.y = f;
     terrainGetDownhillHeightDifferences(
         ((RuntimeObjectPrefix *)actor)->position[0], ((RuntimeObjectPrefix *)actor)->position[1],
-        ((RuntimeObjectPrefix *)actor)->position[2], 50.0f, v.y, &v.x, &v.z, surfaceCache);
+        ((RuntimeObjectPrefix *)actor)->position[2], 50.0F, v.y, &v.x, &v.z, surfaceCache);
     vector3Normalize((f32 *)&v);
-    f = 10.0f * gRuntimeFrameSeconds;
+    f = 10.0F * gRuntimeFrameSeconds;
     displacement[0] += v.x * f;
     displacement[2] += v.z * f;
 }
@@ -531,8 +531,8 @@ void actorGetParentTrackingPosition(u8 *child, ActorScriptState *parentState, f3
 /// \note Original decompilation identifier: \c func_80015704 (0x80015704).
 void actorUpdateTargetFacingChild(u8 *object) {
     ChildMotionState *state;
-    f32 rollOffset = 180.0f;
-    f32 fullTurn = 360.0f;
+    f32 rollOffset = 180.0F;
+    f32 fullTurn = 360.0F;
     u8 *parent;
     ActorScriptState *parentState;
     f32 delta[3];
@@ -553,14 +553,14 @@ void actorUpdateTargetFacingChild(u8 *object) {
     motionUpdateChildPlayback(object);
     weight = &follow->weight;
     if ((actionGetAttributes(parent) & 0x400000) && !(parentState->behaviorFlags & ACTOR_INHIBIT_TARGET_FACING)) {
-        *weight += 2.0f * gRuntimeFrameSeconds;
-        if (*weight > 2.0f) {
-            *weight = 2.0f;
+        *weight += 2.0F * gRuntimeFrameSeconds;
+        if (*weight > 2.0F) {
+            *weight = 2.0F;
         }
     } else {
-        *weight -= 5.0f * gRuntimeFrameSeconds;
-        if (*weight < 0.0f) {
-            *weight = 0.0f;
+        *weight -= 5.0F * gRuntimeFrameSeconds;
+        if (*weight < 0.0F) {
+            *weight = 0.0F;
         }
     }
     if ((u16)state->playbackMode == MOTION_PLAYBACK_TRACKS ||
@@ -570,7 +570,7 @@ void actorUpdateTargetFacingChild(u8 *object) {
         follow->motionAngles[2] = ((RuntimeObjectPrefix *)object)->rotation[2];
     } else {
     }
-    if (*weight > 0.0f) {
+    if (*weight > 0.0F) {
         actorGetParentTrackingPosition(object, parentState, position);
         delta[0] = position[0] - ((RuntimeObjectPrefix *)object)->worldPosition[0];
         delta[1] = position[1] - ((RuntimeObjectPrefix *)object)->worldPosition[1];
@@ -579,31 +579,31 @@ void actorUpdateTargetFacingChild(u8 *object) {
             matrix = gObjectTraversalTransform;
         } while (0);
         matrix33Transpose(&matrix.m[0][0]);
-        matrix.m[3][0] = 0.0f;
-        matrix.m[3][1] = 0.0f;
-        matrix.m[3][2] = 0.0f;
+        matrix.m[3][0] = 0.0F;
+        matrix.m[3][1] = 0.0F;
+        matrix.m[3][2] = 0.0F;
         matrix34TransformPointVector(&matrix.m[0][0], delta, delta);
-        length = vector3Normalize((f32 *)delta) * 50.0f;
+        length = vector3Normalize((f32 *)delta) * 50.0F;
         if (length < *weight) {
             *weight = length;
         }
         vector3FromZAxisPitchYawDegrees(follow->motionAngles[1], follow->motionAngles[2], initial);
         vector3FromZAxisPitchYawDegrees(follow->previousAngles[1], follow->previousAngles[2], previous);
         for (i = 0; i < 3; i++) {
-            delta[i] = (delta[i] * *weight + initial[i]) + 2.0f * (previous[i] * *weight);
+            delta[i] = (delta[i] * *weight + initial[i]) + (2.0F * (previous[i] * *weight));
         }
         vector3Normalize((f32 *)delta);
-        if (delta[0] > -0.5f) {
-            delta[0] = -0.5f;
+        if (delta[0] > -0.5F) {
+            delta[0] = -0.5F;
         }
-        if (delta[1] < -0.4f) {
-            delta[1] = -0.4f;
-        } else if (delta[1] > 0.4f) {
-            delta[1] = 0.4f;
+        if (delta[1] < -0.4F) {
+            delta[1] = -0.4F;
+        } else if (delta[1] > 0.4F) {
+            delta[1] = 0.4F;
         }
         vector3GetEulerDegrees(delta, &roll, &pitch, &yaw);
         roll += rollOffset;
-        while (roll < 0.0f) {
+        while (roll < 0.0F) {
             roll += fullTurn;
         }
         while (roll >= fullTurn) {
@@ -630,7 +630,7 @@ extern u8 gActorCameraFacingDirectionTransform[];
 void actorUpdateCameraFacingChild(u8 *object) {
     ChildMotionState *state;
     CameraFacingState *orientation;
-    f32 maxWeight = 2.0f;
+    f32 maxWeight = 2.0F;
     Vec3f direction;
     Vec3f original;
     Matrix34 matrix;
@@ -646,14 +646,14 @@ void actorUpdateCameraFacingChild(u8 *object) {
     weight = &orientation->weight;
     if ((actionGetAttributes(((RuntimeObjectPrefix *)object)->root.bytes) & 0x800000) &&
         !(((RuntimeObjectPrefix *)object)->root.object->state.actor->behaviorFlags & ACTOR_INHIBIT_CAMERA_FACING)) {
-        *weight += 2.0f * gRuntimeFrameSeconds;
+        *weight += 2.0F * gRuntimeFrameSeconds;
         if (*weight > maxWeight) {
             *weight = maxWeight;
         }
     } else {
-        *weight -= 5.0f * gRuntimeFrameSeconds;
-        if (*weight < 0.0f) {
-            *weight = 0.0f;
+        *weight -= 5.0F * gRuntimeFrameSeconds;
+        if (*weight < 0.0F) {
+            *weight = 0.0F;
         }
     }
     if ((u16)state->playbackMode == MOTION_PLAYBACK_TRACKS ||
@@ -662,7 +662,7 @@ void actorUpdateCameraFacingChild(u8 *object) {
         orientation->angles[1] = ((RuntimeObjectPrefix *)object)->rotation[1];
         orientation->angles[2] = ((RuntimeObjectPrefix *)object)->rotation[2];
     }
-    if (*weight > 0.0f) {
+    if (*weight > 0.0F) {
         direction.x = gRenderCameras[gRenderCameraIndex].eye[0] - ((RuntimeObjectPrefix *)object)->worldPosition[0];
         direction.y = gRenderCameras[gRenderCameraIndex].eye[1] - ((RuntimeObjectPrefix *)object)->worldPosition[1];
         direction.z = gRenderCameras[gRenderCameraIndex].eye[2] - ((RuntimeObjectPrefix *)object)->worldPosition[2];
@@ -671,9 +671,9 @@ void actorUpdateCameraFacingChild(u8 *object) {
             matrix = gObjectTraversalTransform;
         } while (0);
         matrix33Transpose(&matrix.m[0][0]);
-        matrix.m[3][0] = 0.0f;
-        matrix.m[3][1] = 0.0f;
-        matrix.m[3][2] = 0.0f;
+        matrix.m[3][0] = 0.0F;
+        matrix.m[3][1] = 0.0F;
+        matrix.m[3][2] = 0.0F;
         matrix34TransformPointVector(&matrix.m[0][0], &direction.x, &direction.x);
         vector3Normalize((f32 *)&direction);
         direction.x *= *weight;
@@ -684,26 +684,26 @@ void actorUpdateCameraFacingChild(u8 *object) {
         direction.y += original.y;
         direction.z += original.z;
         vector3Normalize((f32 *)&direction);
-        x = -0.99f;
-        if (direction.x < -0.99f) {
+        x = -0.99F;
+        if (direction.x < -0.99F) {
             direction.x = x;
         } else {
-            x = -0.8f;
-            if (direction.x > -0.8f) {
+            x = -0.8F;
+            if (direction.x > -0.8F) {
                 direction.x = x;
             }
         }
-        x = 0.2f;
-        if (direction.y < 0.2f) {
+        x = 0.2F;
+        if (direction.y < 0.2F) {
             direction.y = x;
         } else {
-            x = 0.3f;
-            if (direction.y > 0.3f) {
+            x = 0.3F;
+            if (direction.y > 0.3F) {
                 direction.y = x;
             }
         }
         vector3GetEulerDegrees(&direction.x, &pitch, &yaw, &roll);
-        ((RuntimeObjectPrefix *)object)->rotation[0] = -180.0f;
+        ((RuntimeObjectPrefix *)object)->rotation[0] = -180.0F;
         ((RuntimeObjectPrefix *)object)->rotation[1] = yaw;
         ((RuntimeObjectPrefix *)object)->rotation[2] = roll;
     }
@@ -728,7 +728,7 @@ void actorUpdateObjectRotationFromState(u8 *actor) {
     ActorScriptState *state;
     f32 rotationMatrix[12];
     state = ((RuntimeObjectPrefix *)actor)->state.actor;
-    matrix34MakeRotationXYZDegrees(rotationMatrix, state->orientation[0], state->orientation[1], 0.0f);
+    matrix34MakeRotationXYZDegrees(rotationMatrix, state->orientation[0], state->orientation[1], 0.0F);
     matrix33Multiply(&state->rootMotionTransform.m[0][0], rotationMatrix, rotationMatrix);
     matrix33GetFoldedEulerDegrees(rotationMatrix, &((RuntimeObjectPrefix *)actor)->rotation[0], &((RuntimeObjectPrefix *)actor)->rotation[1], &((RuntimeObjectPrefix *)actor)->rotation[2]);
 }
@@ -743,15 +743,15 @@ void actorSetRotationAxisDegrees(u8 *actor, f32 angle, s32 axis) {
     ActorScriptState *state;
 
     state = ((RuntimeObjectPrefix *)actor)->state.actor;
-    if (angle < 0.0f) {
+    if (angle < 0.0F) {
         do {
-            angle += 360.0f;
-        } while (angle < 0.0f);
+            angle += 360.0F;
+        } while (angle < 0.0F);
     }
-    if (angle >= 360.0f) {
+    if (angle >= 360.0F) {
         do {
-            angle -= 360.0f;
-        } while (angle >= 360.0f);
+            angle -= 360.0F;
+        } while (angle >= 360.0F);
     }
     state->orientation[axis] = angle;
 }
@@ -769,11 +769,11 @@ void actorAddRotationAxisDegrees(u8 *actor, f32 angle, s32 axis) {
     obj = ((RuntimeObjectPrefix *)actor)->state.bytes;
     p = &((f32 *)obj)[axis];
     p[3] = p[3] + angle;
-    while (p[3] < 0.0f) {
-        p[3] += 360.0f;
+    while (p[3] < 0.0F) {
+        p[3] += 360.0F;
     }
-    while (p[3] >= 360.0f) {
-        p[3] -= 360.0f;
+    while (p[3] >= 360.0F) {
+        p[3] -= 360.0F;
     }
 }
 
@@ -793,11 +793,11 @@ void actorAddActionRotationAxisDegrees(u8 *actor, f32 angle, s32 axis) {
         obj = ((RuntimeObjectPrefix *)actor)->state.bytes;
         p = &((f32 *)obj)[axis];
         p[3] = p[3] + angle;
-        while (p[3] < 0.0f) {
-            p[3] += 360.0f;
+        while (p[3] < 0.0F) {
+            p[3] += 360.0F;
         }
-        while (p[3] >= 360.0f) {
-            p[3] -= 360.0f;
+        while (p[3] >= 360.0F) {
+            p[3] -= 360.0F;
         }
     }
 }
@@ -814,18 +814,18 @@ void actorAddActionPitchAndYawDegrees(u8 *actor, f32 *angles) {
     if (actionGetAttributes(actor) & ACTION_ATTRIBUTE_ALLOW_TURNING) {
         state = ((RuntimeObjectPrefix *)actor)->state.actor;
         state->orientation[0] += angles[0];
-        while (state->orientation[0] < 0.0f) {
-            state->orientation[0] += 360.0f;
+        while (state->orientation[0] < 0.0F) {
+            state->orientation[0] += 360.0F;
         }
-        while (state->orientation[0] >= 360.0f) {
-            state->orientation[0] -= 360.0f;
+        while (state->orientation[0] >= 360.0F) {
+            state->orientation[0] -= 360.0F;
         }
         state->orientation[1] += angles[1];
-        while (state->orientation[1] < 0.0f) {
-            state->orientation[1] += 360.0f;
+        while (state->orientation[1] < 0.0F) {
+            state->orientation[1] += 360.0F;
         }
-        while (state->orientation[1] >= 360.0f) {
-            state->orientation[1] -= 360.0f;
+        while (state->orientation[1] >= 360.0F) {
+            state->orientation[1] -= 360.0F;
         }
     }
 }
@@ -997,9 +997,9 @@ void actorGetConfiguredAttachmentPosition(u8 *actor, f32 heightOffset, f32 *posi
     case 0:
         actorGetPartWorldPosition(actor, actorConfigGetFirstAttachmentPartId(((RuntimeObjectPrefix *)actor)->kind), first);
         actorGetPartWorldPosition(actor, actorConfigGetSecondAttachmentPartId(((RuntimeObjectPrefix *)actor)->kind), second);
-        ((f32 *)position)[0] = (first[0] + second[0]) * 0.5f;
-        ((f32 *)position)[1] = (f32)((first[1] + second[1]) * 0.5f);
-        ((f32 *)position)[2] = (f32)((first[2] + second[2]) * 0.5f);
+        ((f32 *)position)[0] = (first[0] + second[0]) * 0.5F;
+        ((f32 *)position)[1] = (f32)((first[1] + second[1]) * 0.5F);
+        ((f32 *)position)[2] = (f32)((first[2] + second[2]) * 0.5F);
         return;
     case 1:
         actorGetPartWorldPosition(actor, actorConfigGetFirstAttachmentPartId(((RuntimeObjectPrefix *)actor)->kind), position);
@@ -1106,7 +1106,7 @@ void actorInitializeAnimatedTextures(u8 *actor, s32 *parts) {
     state->count = 0;
     for (; (frame = parts[0]) >= 0; parts += 2) {
         state->textureIds[state->count] = frame;
-        state->playbackRates[state->count] = 1.0f;
+        state->playbackRates[state->count] = 1.0F;
         animationIntegerTrackInitialize(&state->tracks[state->count], gTextureFrameAnimationPrograms[parts[1]]);
         state->count++;
     }
@@ -1247,13 +1247,13 @@ void actorUpdateMotionDisplacement(ActorScriptState *state, s32 status) {
     state->worldMotion[1] = (f32)(state->worldMotion[1] * movementScale);
     state->worldMotion[2] = (f32)(state->worldMotion[2] * movementScale);
     if (status & 0x200) {
-        upwardLimit = 30.0f;
-        if (state->worldMotion[1] > 30.0f) {
+        upwardLimit = 30.0F;
+        if (state->worldMotion[1] > 30.0F) {
             goto block_4;
         }
     } else {
-        upwardLimit = 5.0f;
-        if (state->worldMotion[1] > 5.0f) {
+        upwardLimit = 5.0F;
+        if (state->worldMotion[1] > 5.0F) {
         block_4:
             state->worldMotion[1] = upwardLimit;
         }
@@ -1274,7 +1274,7 @@ void actorUpdateGroundReferencePose(u8 *actor, u8 *reference, u8 *pose) {
 
     state = ((RuntimeObjectPrefix *)actor)->state.actor;
     w = state->poseDisplacement;
-    dy = m[0][1] * w[0] + m[1][1] * w[1] + m[2][1] * w[2];
+    dy = (m[0][1] * w[0]) + (m[1][1] * w[1]) + (m[2][1] * w[2]);
     state->verticalPoseOffset += dy;
     ((RuntimeObjectPrefix *)pose)->position[0] = ((RuntimeObjectPrefix *)reference)->worldPosition[0];
     ((RuntimeObjectPrefix *)pose)->position[1] = ((RuntimeObjectPrefix *)actor)->position[1] - state->verticalPoseOffset - state->groundOffset;
@@ -1307,8 +1307,8 @@ void actorConstrainMovementToTerrain(u8 *object, f32 *displacement) {
     state = ((RuntimeObjectPrefix *)object)->state.actor;
     surface = 0;
     if (state->behaviorFlags & ACTOR_INHIBIT_HORIZONTAL_MOVEMENT) {
-        ((f32 *)displacement)[2] = 0.0f;
-        ((f32 *)displacement)[0] = 0.0f;
+        ((f32 *)displacement)[2] = 0.0F;
+        ((f32 *)displacement)[0] = 0.0F;
     }
     reference = actorGetDefaultPart(object);
     pose = state->groundReference;
@@ -1331,12 +1331,12 @@ void actorConstrainMovementToTerrain(u8 *object, f32 *displacement) {
                                        ((RuntimeObjectPrefix *)object)->worldPosition[2], &surface);
         if (collisionFlags & 0x100) {
             actorAddDownhillMovement(object, displacement, &surface);
-            radius = state->clearanceHeight * 0.001f;
+            radius = state->clearanceHeight * 0.001F;
         } else {
             radius = state->clearanceHeight;
         }
         if (gRuntimeCurrentProgram == 0) {
-            verticalCorrection = 0.0f;
+            verticalCorrection = 0.0F;
             state->movementCollisionFlags = terrainConstrainMovement(
                 collisionMode, ((RuntimeObjectPrefix *)reference)->worldPosition[0],
                 ((RuntimeObjectPrefix *)reference)->worldPosition[1],
@@ -1346,19 +1346,19 @@ void actorConstrainMovementToTerrain(u8 *object, f32 *displacement) {
             clearance = actorMeasureGroundClearance(object, collisionMode, reference, displacement, &floorDelta, &surface);
             floorDelta = ((RuntimeObjectPrefix *)pose)->position[1] - floorDelta;
         } else {
-            clearance = 0.0f;
-            floorDelta = 0.0f;
+            clearance = 0.0F;
+            floorDelta = 0.0F;
         }
-        if ((((status & 0x01000000) != 0) || (floorDelta > 0.0f)) && (clearance > 0.0f)) {
+        if ((((status & 0x01000000) != 0) || (floorDelta > 0.0F)) && (clearance > 0.0F)) {
             supported = 1;
         } else {
             supported = 0;
         }
         if (supported != 0) {
             gravityDelta =
-                state->movementScale * (actionGetGravityScale(object) * 3.2666667f * gRuntimeFrameSeconds) * 30.0f;
+                state->movementScale * (actionGetGravityScale(object) * 3.2666667F * gRuntimeFrameSeconds) * 30.0F;
             if (collisionFlags & 0x100) {
-                gravityDelta *= 5.0f;
+                gravityDelta *= 5.0F;
             }
             state->gravityVelocity -= gravityDelta;
             if ((status & 0x01000000) != 0) {
@@ -1372,18 +1372,18 @@ void actorConstrainMovementToTerrain(u8 *object, f32 *displacement) {
             }
         } else {
             actorUpdateMotionDisplacement(state, status);
-            state->gravityVelocity = 0.0f;
+            state->gravityVelocity = 0.0F;
         }
-        if ((((f32 *)displacement)[1] + clearance) >= 0.05f) {
+        if ((((f32 *)displacement)[1] + clearance) >= 0.05F) {
             state->airborne = 1;
             return;
         }
         state->airborne = 0;
-        if ((((f32 *)displacement)[1] + clearance) < 0.0f) {
-            ((f32 *)displacement)[1] = (f32)(0.03f - clearance);
-            if ((state->gravityVelocity + state->worldMotion[1]) < 0.0f) {
-                state->worldMotion[1] = 0.0f;
-                state->gravityVelocity = 0.0f;
+        if ((((f32 *)displacement)[1] + clearance) < 0.0F) {
+            ((f32 *)displacement)[1] = (f32)(0.03F - clearance);
+            if ((state->gravityVelocity + state->worldMotion[1]) < 0.0F) {
+                state->worldMotion[1] = 0.0F;
+                state->gravityVelocity = 0.0F;
             }
         }
     }

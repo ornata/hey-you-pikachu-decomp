@@ -76,8 +76,9 @@ void textureUploadTile(Gfx **displayList, s32 image, s32 palette, s32 format, s3
         count = 0;
         for (;;) {
             dimension >>= 1;
-            if (dimension == 0)
+            if (dimension == 0) {
                 break;
+            }
             count++;
         }
         maskS = count;
@@ -89,8 +90,9 @@ void textureUploadTile(Gfx **displayList, s32 image, s32 palette, s32 format, s3
         count = 0;
         for (;;) {
             dimension >>= 1;
-            if (dimension == 0)
+            if (dimension == 0) {
                 break;
+            }
             count++;
         }
         maskT = count;
@@ -263,8 +265,8 @@ void textureDrawScaledRepeated(Gfx **out, TextureImage *texture, u32 x, u32 y, s
     width = texture->width;
     height = texture->height;
     alignedWidth = texture->alignedWidth;
-    texelStepX = 1024.0f / scaleX;
-    texelStepY = 1024.0f / scaleY;
+    texelStepX = 1024.0F / scaleX;
+    texelStepY = 1024.0F / scaleY;
     ds = (s32)((f64)texelStepX + 0.5);
     dt = (s32)((f64)texelStepY + 0.5);
     gDPPipeSync(dl++);
@@ -326,7 +328,7 @@ void textureDrawScaledRepeated(Gfx **out, TextureImage *texture, u32 x, u32 y, s
             ds = (s32)(0U - (u32)ds);
         }
         if (flipY) {
-            adjustedY = (s32)(((f64)scaleY - 1.0) * (f64)(f32)height + 0.5) + y;
+            adjustedY = (s32)((((f64)scaleY - 1.0) * (f64)(f32)height) + 0.5) + y;
             t = step << 5;
             dt = (s32)(0U - (u32)dt);
         }
@@ -336,12 +338,12 @@ void textureDrawScaledRepeated(Gfx **out, TextureImage *texture, u32 x, u32 y, s
         for (index = 0; index * step < height - step - 1; index++) {
 
             if (!flipY) {
-                top = (s32)((u32)((s32)((f32)y + (f32)(index * step) * scaleY)) << 2);
-                bottom = (s32)((u32)((s32)((f32)y + (f32)((index + 1) * step) * scaleY * (f32)repeatY)) << 2);
+                top = (s32)((u32)((s32)((f32)y + ((f32)(index * step) * scaleY))) << 2);
+                bottom = (s32)((u32)((s32)((f32)y + ((f32)((index + 1) * step) * scaleY * (f32)repeatY))) << 2);
             } else {
-                top = (s32)((u32)((s32)((f32)(u32)(adjustedY + height) - (f32)((index + 1) * step) * scaleY)) << 2);
+                top = (s32)((u32)((s32)((f32)(u32)(adjustedY + height) - ((f32)((index + 1) * step) * scaleY))) << 2);
                 bottom =
-                    (s32)((u32)((s32)((f32)(u32)(adjustedY + height) - (f32)(index * step) * scaleY * (f32)repeatY))
+                    (s32)((u32)((s32)((f32)(u32)(adjustedY + height) - ((f32)(index * step) * scaleY * (f32)repeatY)))
                           << 2);
             }
             gDPLoadTextureTileCopyLrs_4b(dl++, image + ((alignedWidth * index * step) >> 1), format, alignedWidth,
@@ -352,12 +354,12 @@ void textureDrawScaledRepeated(Gfx **out, TextureImage *texture, u32 x, u32 y, s
         }
 
         if (!flipY) {
-            top = (s32)((u32)((s32)((f32)y + (f32)(index * step) * scaleY)) << 2);
-            bottom = (s32)((u32)((s32)((f32)y + (f32)height * scaleY * (f32)repeatY)) << 2);
+            top = (s32)((u32)((s32)((f32)y + ((f32)(index * step) * scaleY))) << 2);
+            bottom = (s32)((u32)((s32)((f32)y + ((f32)height * scaleY * (f32)repeatY))) << 2);
         } else {
             top = y * 4;
-            bottom =
-                (s32)((u32)((s32)((f32)(u32)(adjustedY + height) - (f32)(index * step) * scaleY * (f32)repeatY)) << 2);
+            bottom = (s32)((u32)((s32)((f32)(u32)(adjustedY + height) - ((f32)(index * step) * scaleY * (f32)repeatY)))
+                           << 2);
             t = (height - index * step) << 5;
         }
 
@@ -388,19 +390,19 @@ void textureDrawScaledRepeated(Gfx **out, TextureImage *texture, u32 x, u32 y, s
             ds = (s32)(0U - (u32)ds);
         }
         if (flipY) {
-            adjustedY = (s32)(((f64)scaleY - 1.0) * (f64)(f32)height + 0.5) + y;
+            adjustedY = (s32)((((f64)scaleY - 1.0) * (f64)(f32)height) + 0.5) + y;
             t = step << 5;
             dt = (s32)(0U - (u32)dt);
         }
         for (index = 0; index * step < height - step - 1; index++) {
 
             if (!flipY) {
-                top = (s32)((u32)((s32)((f32)y + (f32)(index * step) * scaleY)) << 2);
-                bottom = (s32)((u32)((s32)((f32)y + (f32)((index + 1) * step) * scaleY * (f32)repeatY)) << 2);
+                top = (s32)((u32)((s32)((f32)y + ((f32)(index * step) * scaleY))) << 2);
+                bottom = (s32)((u32)((s32)((f32)y + ((f32)((index + 1) * step) * scaleY * (f32)repeatY))) << 2);
             } else {
-                top = (s32)((u32)((s32)((f32)(u32)(adjustedY + height) - (f32)((index + 1) * step) * scaleY)) << 2);
+                top = (s32)((u32)((s32)((f32)(u32)(adjustedY + height) - ((f32)((index + 1) * step) * scaleY))) << 2);
                 bottom =
-                    (s32)((u32)((s32)((f32)(u32)(adjustedY + height) - (f32)(index * step) * scaleY * (f32)repeatY))
+                    (s32)((u32)((s32)((f32)(u32)(adjustedY + height) - ((f32)(index * step) * scaleY * (f32)repeatY)))
                           << 2);
             }
             gDPLoadTextureTileCopyLrs(dl++, image + (alignedWidth * index * step), format, G_IM_SIZ_8b, alignedWidth,
@@ -410,12 +412,12 @@ void textureDrawScaledRepeated(Gfx **out, TextureImage *texture, u32 x, u32 y, s
         }
 
         if (!flipY) {
-            top = (s32)((u32)((s32)((f32)y + (f32)(index * step) * scaleY)) << 2);
-            bottom = (s32)((u32)((s32)((f32)y + (f32)height * scaleY * (f32)repeatY)) << 2);
+            top = (s32)((u32)((s32)((f32)y + ((f32)(index * step) * scaleY))) << 2);
+            bottom = (s32)((u32)((s32)((f32)y + ((f32)height * scaleY * (f32)repeatY))) << 2);
         } else {
             top = y * 4;
-            bottom =
-                (s32)((u32)((s32)((f32)(u32)(adjustedY + height) - (f32)(index * step) * scaleY * (f32)repeatY)) << 2);
+            bottom = (s32)((u32)((s32)((f32)(u32)(adjustedY + height) - ((f32)(index * step) * scaleY * (f32)repeatY)))
+                           << 2);
             t = (height - index * step) << 5;
         }
 
@@ -435,19 +437,19 @@ void textureDrawScaledRepeated(Gfx **out, TextureImage *texture, u32 x, u32 y, s
             ds = (s32)(0U - (u32)ds);
         }
         if (flipY) {
-            adjustedY = (s32)(((f64)scaleY - 1.0) * (f64)(f32)height + 0.5) + y;
+            adjustedY = (s32)((((f64)scaleY - 1.0) * (f64)(f32)height) + 0.5) + y;
             t = step << 5;
             dt = (s32)(0U - (u32)dt);
         }
         for (index = 0; index * step < height - step - 1; index++) {
 
             if (!flipY) {
-                top = (s32)((u32)((s32)((f32)y + (f32)(index * step) * scaleY)) << 2);
-                bottom = (s32)((u32)((s32)((f32)y + (f32)((index + 1) * step) * scaleY * (f32)repeatY)) << 2);
+                top = (s32)((u32)((s32)((f32)y + ((f32)(index * step) * scaleY))) << 2);
+                bottom = (s32)((u32)((s32)((f32)y + ((f32)((index + 1) * step) * scaleY * (f32)repeatY))) << 2);
             } else {
-                top = (s32)((u32)((s32)((f32)(u32)(adjustedY + height) - (f32)((index + 1) * step) * scaleY)) << 2);
+                top = (s32)((u32)((s32)((f32)(u32)(adjustedY + height) - ((f32)((index + 1) * step) * scaleY))) << 2);
                 bottom =
-                    (s32)((u32)((s32)((f32)(u32)(adjustedY + height) - (f32)(index * step) * scaleY * (f32)repeatY))
+                    (s32)((u32)((s32)((f32)(u32)(adjustedY + height) - ((f32)(index * step) * scaleY * (f32)repeatY)))
                           << 2);
             }
             gDPLoadTextureTileCopyLrs(dl++, image + (alignedWidth * index * step * 2), format, G_IM_SIZ_16b,
@@ -459,12 +461,12 @@ void textureDrawScaledRepeated(Gfx **out, TextureImage *texture, u32 x, u32 y, s
         }
 
         if (!flipY) {
-            top = (s32)((u32)((s32)((f32)y + (f32)(index * step) * scaleY)) << 2);
-            bottom = (s32)((u32)((s32)((f32)y + (f32)height * scaleY * (f32)repeatY)) << 2);
+            top = (s32)((u32)((s32)((f32)y + ((f32)(index * step) * scaleY))) << 2);
+            bottom = (s32)((u32)((s32)((f32)y + ((f32)height * scaleY * (f32)repeatY))) << 2);
         } else {
             top = y * 4;
-            bottom =
-                (s32)((u32)((s32)((f32)(u32)(adjustedY + height) - (f32)(index * step) * scaleY * (f32)repeatY)) << 2);
+            bottom = (s32)((u32)((s32)((f32)(u32)(adjustedY + height) - ((f32)(index * step) * scaleY * (f32)repeatY)))
+                           << 2);
             t = (height - index * step) << 5;
         }
 
@@ -484,19 +486,19 @@ void textureDrawScaledRepeated(Gfx **out, TextureImage *texture, u32 x, u32 y, s
             ds = (s32)(0U - (u32)ds);
         }
         if (flipY) {
-            adjustedY = (s32)(((f64)scaleY - 1.0) * (f64)(f32)height + 0.5) + y;
+            adjustedY = (s32)((((f64)scaleY - 1.0) * (f64)(f32)height) + 0.5) + y;
             t = step << 5;
             dt = (s32)(0U - (u32)dt);
         }
         for (index = 0; index * step < height - step - 1; index++) {
 
             if (!flipY) {
-                top = (s32)((u32)((s32)((f32)y + (f32)(index * step) * scaleY)) << 2);
-                bottom = (s32)((u32)((s32)((f32)y + (f32)((index + 1) * step) * scaleY * (f32)repeatY)) << 2);
+                top = (s32)((u32)((s32)((f32)y + ((f32)(index * step) * scaleY))) << 2);
+                bottom = (s32)((u32)((s32)((f32)y + ((f32)((index + 1) * step) * scaleY * (f32)repeatY))) << 2);
             } else {
-                top = (s32)((u32)((s32)((f32)(u32)(adjustedY + height) - (f32)((index + 1) * step) * scaleY)) << 2);
+                top = (s32)((u32)((s32)((f32)(u32)(adjustedY + height) - ((f32)((index + 1) * step) * scaleY))) << 2);
                 bottom =
-                    (s32)((u32)((s32)((f32)(u32)(adjustedY + height) - (f32)(index * step) * scaleY * (f32)repeatY))
+                    (s32)((u32)((s32)((f32)(u32)(adjustedY + height) - ((f32)(index * step) * scaleY * (f32)repeatY)))
                           << 2);
             }
             gDPLoadTextureTileCopyLrs(dl++, image + (alignedWidth * index * step * 4), G_IM_FMT_RGBA, G_IM_SIZ_32b,
@@ -507,12 +509,12 @@ void textureDrawScaledRepeated(Gfx **out, TextureImage *texture, u32 x, u32 y, s
         }
 
         if (!flipY) {
-            top = (s32)((u32)((s32)((f32)y + (f32)(index * step) * scaleY)) << 2);
-            bottom = (s32)((u32)((s32)((f32)y + (f32)height * scaleY * (f32)repeatY)) << 2);
+            top = (s32)((u32)((s32)((f32)y + ((f32)(index * step) * scaleY))) << 2);
+            bottom = (s32)((u32)((s32)((f32)y + ((f32)height * scaleY * (f32)repeatY))) << 2);
         } else {
             top = y * 4;
-            bottom =
-                (s32)((u32)((s32)((f32)(u32)(adjustedY + height) - (f32)(index * step) * scaleY * (f32)repeatY)) << 2);
+            bottom = (s32)((u32)((s32)((f32)(u32)(adjustedY + height) - ((f32)(index * step) * scaleY * (f32)repeatY)))
+                           << 2);
             t = (height - index * step) << 5;
         }
 
@@ -687,41 +689,46 @@ void texturePairUploadStrip(Gfx **displayList, s32 stripIndex, s32 image, s32 pa
     static s32 pendingPalette = 0;
     Gfx *g = *displayList;
     s32 aligned;
-    if (format == G_IM_FMT_CI)
+    if (format == G_IM_FMT_CI) {
         pendingPalette = palette;
+    }
     switch (size) {
     case G_IM_SIZ_4b:
-        if (width & 15)
+        if (width & 15) {
             aligned = width - (width & 15) + 16;
-        else
+        } else {
             aligned = width;
+        }
         gDPLoadMultiTile_4b(g++, (u32)image + (((u32)aligned * (u32)stripIndex * (u32)stripRows) >> 1), tmem, tile,
                             format, aligned, stripRows, 0, 0, aligned - 1, lastRow, 0, wrapS, wrapT, maskS, maskT, 0,
                             0);
         break;
     case G_IM_SIZ_8b:
-        if (width & 7)
+        if (width & 7) {
             aligned = width - (width & 7) + 8;
-        else
+        } else {
             aligned = width;
+        }
         gDPLoadMultiTile(g++, (u32)image + ((u32)aligned * (u32)stripIndex * (u32)stripRows), tmem, tile, format,
                          G_IM_SIZ_8b, aligned, stripRows, 0, 0, aligned - 1, lastRow, 0, wrapS, wrapT, maskS, maskT, 0,
                          0);
         break;
     case G_IM_SIZ_16b:
-        if (width & 3)
+        if (width & 3) {
             aligned = width - (width & 3) + 4;
-        else
+        } else {
             aligned = width;
+        }
         gDPLoadMultiTile(g++, (u32)image + ((u32)aligned * (u32)stripIndex * (u32)stripRows * 2), tmem, tile, format,
                          G_IM_SIZ_16b, aligned, stripRows, 0, 0, aligned - 1, lastRow, 0, wrapS, wrapT, maskS, maskT, 0,
                          0);
         break;
     case G_IM_SIZ_32b:
-        if (width & 3)
+        if (width & 3) {
             aligned = width - (width & 3) + 4;
-        else
+        } else {
             aligned = width;
+        }
         gDPLoadMultiTile(g++, (u32)image + ((u32)aligned * (u32)stripIndex * (u32)stripRows * 4), tmem, tile, format,
                          G_IM_SIZ_32b, aligned, stripRows, 0, 0, aligned - 1, lastRow, 0, wrapS, wrapT, maskS, maskT, 0,
                          0);
@@ -804,8 +811,8 @@ void texturePairDrawScaledRepeated(Gfx **displayListOut, TexturePair *texture, u
     size1 = texture->size1;
     width = texture->width;
     height = texture->height;
-    dsdx = (s32)((f64)(1024.0f / scaleX) + 0.5);
-    dtdy = (s32)((f64)(1024.0f / scaleY) + 0.5);
+    dsdx = (s32)((f64)(1024.0F / scaleX) + 0.5);
+    dtdy = (s32)((f64)(1024.0F / scaleY) + 0.5);
     gDPPipeSync(displayList++);
     gDPSetCycleType(displayList++, G_CYC_2CYCLE);
     gDPSetTextureLOD(displayList++, G_TL_TILE);
@@ -847,8 +854,9 @@ void texturePairDrawScaledRepeated(Gfx **displayListOut, TexturePair *texture, u
     case 0:
         switch (size1) {
         case 0:
-            if (format1 != G_IM_FMT_CI)
+            if (format1 != G_IM_FMT_CI) {
                 break;
+            }
         case 1:
         case 2:
         case 3:
@@ -860,8 +868,9 @@ void texturePairDrawScaledRepeated(Gfx **displayListOut, TexturePair *texture, u
     case 1:
         switch (size1) {
         case 1:
-            if (format1 != G_IM_FMT_CI)
+            if (format1 != G_IM_FMT_CI) {
                 break;
+            }
         case 2:
         case 3:
             selectedSize = size1;
@@ -967,9 +976,9 @@ void texturePairDrawScaledRepeated(Gfx **displayListOut, TexturePair *texture, u
         sourceT = (height - stripIndex * stripRows) << 5;
     }
     texturePairUploadStrip(&displayList, stripIndex, image0, palette0, 0, 0, format0, size0, width, stripRows,
-                  height - stripIndex * stripRows - 1, wrapS, wrapT, maskS, maskT);
+                           height - (stripIndex * stripRows) - 1, wrapS, wrapT, maskS, maskT);
     texturePairUploadStrip(&displayList, stripIndex, image1, palette1, 1, tmem1, format1, size1, width, stripRows,
-                  height - stripIndex * stripRows - 1, wrapS, wrapT, maskS, maskT);
+                           height - (stripIndex * stripRows) - 1, wrapS, wrapT, maskS, maskT);
     rectangleLeft = x * 4;
     rectangleRight = (s32)((u32)((s32)(((f32)x) + ((f32)width * scaleX * ((f32)repeatS)))) << 2);
     gSPTextureRectangle(displayList++, rectangleLeft, upperY, rectangleRight, lowerY, 0, sourceS, sourceT, dsdx, dtdy);
@@ -1033,8 +1042,9 @@ void textureCopyRgba16Region(Gfx **displayList, s32 image, s32 x, s32 y, u32 ima
         dimension = imageWidth;
         for (;;) {
             dimension >>= 1;
-            if (dimension == 0)
+            if (dimension == 0) {
                 break;
+            }
             count++;
         }
         maskS = count;
@@ -1042,10 +1052,11 @@ void textureCopyRgba16Region(Gfx **displayList, s32 image, s32 x, s32 y, u32 ima
         maskS = 0;
     }
     remainder = (s32)imageWidth & 3;
-    if (remainder != 0)
+    if (remainder != 0) {
         alignedWidth = imageWidth - remainder + 4;
-    else
+    } else {
         alignedWidth = imageWidth;
+    }
     quotient = 0x800 / (s32)alignedWidth;
     capacity = (quotient < height) ? quotient : height;
     capacity -= 1;
@@ -1121,14 +1132,16 @@ void textureCopyWrappedRgba16(Gfx **displayList, void *image, s32 x, s32 y, u32 
     gDPSetCombineMode(g++, G_CC_DECALRGBA, G_CC_DECALRGBA);
     for (count = 0, dimension = width;; count++) {
         dimension >>= 1;
-        if (dimension == 0)
+        if (dimension == 0) {
             break;
+        }
     }
     masks = count;
     for (count = 0, dimension = height;; count++) {
         dimension >>= 1;
-        if (dimension == 0)
+        if (dimension == 0) {
             break;
+        }
     }
     maskt = count;
     gDPLoadTextureTileCopy(g++, image, G_IM_FMT_RGBA, G_IM_SIZ_16b, width, height, 0, 0, (s32)width - 1,
@@ -1208,10 +1221,12 @@ void textureDrawScaledRegion(Gfx **out, TextureImage *texture, u32 x, u32 y, u32
     s32 size = texture->size;
     u32 alignedWidth = texture->alignedWidth;
     s32 nextRow;
-    if (drawWidth == 0)
+    if (drawWidth == 0) {
         drawWidth = texture->width;
-    if (drawHeight == 0)
+    }
+    if (drawHeight == 0) {
         drawHeight = texture->height;
+    }
     drawHeight = (u32)((f32)drawHeight / scaleY);
     index = 0;
     drawHeight = (drawHeight > texture->height) ? texture->height : drawHeight;
@@ -1219,20 +1234,22 @@ void textureDrawScaledRegion(Gfx **out, TextureImage *texture, u32 x, u32 y, u32
     if (repeat) {
         for (;;) {
             dimension >>= 1;
-            if (dimension == 0)
+            if (dimension == 0) {
                 break;
+            }
             index++;
         }
         mask = index;
     } else {
-        if ((f32)texture->width * scaleX < (f32)drawWidth)
+        if ((f32)texture->width * scaleX < (f32)drawWidth) {
             drawWidth = (u32)((f32)texture->width * scaleX);
-        else
+        } else {
             drawWidth = (u32)(f32)drawWidth;
+        }
         mask = 0;
     }
-    dt = (s32)((f64)(1024.0f / scaleY) + 0.5);
-    ds = (s32)((f64)(1024.0f / scaleX) + 0.5);
+    dt = (s32)((f64)(1024.0F / scaleY) + 0.5);
+    ds = (s32)((f64)(1024.0F / scaleX) + 0.5);
     gDPPipeSync(dl++);
     gDPSetCycleType(dl++, G_CYC_1CYCLE);
     gDPSetTexturePersp(dl++, G_TP_NONE);
@@ -1249,17 +1266,17 @@ void textureDrawScaledRegion(Gfx **out, TextureImage *texture, u32 x, u32 y, u32
         step = (dimension < drawHeight) ? dimension : drawHeight;
         step = step - 1;
         for (index = 0; index * step < drawHeight - step - 1; index++) {
-            top = (s32)((u32)((s32)((f32)y + (f32)(index * step) * scaleY)) << 2);
+            top = (s32)((u32)((s32)((f32)y + ((f32)(index * step) * scaleY))) << 2);
             nextRow = (index + 1) * step;
-            bottom = (s32)((u32)((s32)((f32)y + (f32)nextRow * scaleY)) << 2);
+            bottom = (s32)((u32)((s32)((f32)y + ((f32)nextRow * scaleY))) << 2);
             gDPLoadTextureTileLrs_4b(dl++, image + ((alignedWidth * (index * step + sourceY)) >> 1), G_IM_FMT_CI,
                                      alignedWidth, drawHeight, 0, 0, (s32)alignedWidth - 1, step, 0, wrapS, G_TX_CLAMP,
                                      mask, 0, 0, 0);
             gSPTextureRectangle(dl++, x * 4, top, (x + drawWidth) * 4, bottom, 0, sourceX << 5, 0, ds, dt);
         }
         row = index * step;
-        top = (s32)((u32)((s32)((f32)y + (f32)row * scaleY)) << 2);
-        bottom = (s32)((u32)((s32)((f32)y + (f32)drawHeight * scaleY)) << 2);
+        top = (s32)((u32)((s32)((f32)y + ((f32)row * scaleY))) << 2);
+        bottom = (s32)((u32)((s32)((f32)y + ((f32)drawHeight * scaleY))) << 2);
         gDPLoadTextureTileCopyLrs_4b(dl++, image + ((alignedWidth * (index * step + sourceY)) >> 1), G_IM_FMT_CI,
                                      alignedWidth, drawHeight, 0, 0, (s32)alignedWidth - 1,
                                      drawHeight - index * step - 1, 0, wrapS, G_TX_CLAMP, mask, 0, 0, 0);
@@ -1271,17 +1288,17 @@ void textureDrawScaledRegion(Gfx **out, TextureImage *texture, u32 x, u32 y, u32
         step = (dimension < drawHeight) ? dimension : drawHeight;
         step = step - 1;
         for (index = 0; index * step < drawHeight - step - 1; index++) {
-            top = (s32)((u32)((s32)((f32)y + (f32)(index * step) * scaleY)) << 2);
+            top = (s32)((u32)((s32)((f32)y + ((f32)(index * step) * scaleY))) << 2);
             nextRow = (index + 1) * step;
-            bottom = (s32)((u32)((s32)((f32)y + (f32)nextRow * scaleY)) << 2);
+            bottom = (s32)((u32)((s32)((f32)y + ((f32)nextRow * scaleY))) << 2);
             gDPLoadTextureTileLrs(dl++, image + (alignedWidth * (index * step + sourceY) * 2), G_IM_FMT_RGBA,
                                   G_IM_SIZ_16b, alignedWidth, drawHeight, 0, 0, (s32)alignedWidth - 1, step, 0, wrapS,
                                   G_TX_CLAMP, mask, 0, 0, 0);
             gSPTextureRectangle(dl++, x * 4, top, (x + drawWidth) * 4, bottom, 0, sourceX << 5, 0, ds, dt);
         }
         row = index * step;
-        top = (s32)((u32)((s32)((f32)y + (f32)row * scaleY)) << 2);
-        bottom = (s32)((u32)((s32)((f32)y + (f32)drawHeight * scaleY)) << 2);
+        top = (s32)((u32)((s32)((f32)y + ((f32)row * scaleY))) << 2);
+        bottom = (s32)((u32)((s32)((f32)y + ((f32)drawHeight * scaleY))) << 2);
         gDPLoadTextureTileCopyLrs(dl++, image + alignedWidth * (index * step + sourceY) * 2, G_IM_FMT_RGBA,
                                   G_IM_SIZ_16b, alignedWidth, drawHeight, 0, 0, (s32)alignedWidth - 1,
                                   drawHeight - index * step - 1, 0, wrapS, G_TX_CLAMP, mask, 0, 0, 0);

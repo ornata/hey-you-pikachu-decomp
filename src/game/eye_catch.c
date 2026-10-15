@@ -80,7 +80,7 @@ void eyeCatchInitialize(void) {
             } while (r->texture >= 0);
         }
     }
-    gEyeCatchStageSeconds = 0.0f;
+    gEyeCatchStageSeconds = 0.0F;
     gEyeCatchAnimationTracks = 0;
     gEyeCatchActiveGroup = 0;
     gEyeCatchStage = 0;
@@ -150,10 +150,10 @@ void eyeCatchBegin(void) {
         ((Vtx *)gEyeCatchBackdropVertices)[corner].v.cn[3] = 0xFF;
     }
     gEyeCatchProjectionMatrix = (s32)heapAllocLocal((HpHdr *)&gGameHeap, sizeof(Mtx), 0x530);
-    guOrtho((Mtx *)gEyeCatchProjectionMatrix, 0.0f, 320.0f, 0.0f, 240.0f, -1.0f, -1000.0f, 1.0f);
+    guOrtho((Mtx *)gEyeCatchProjectionMatrix, 0.0F, 320.0F, 0.0F, 240.0F, -1.0F, -1000.0F, 1.0F);
     gEyeCatchModelViewMatrix = (s32)heapAllocLocal((HpHdr *)&gGameHeap, sizeof(Mtx), 0x537);
-    guRotate((Mtx *)gEyeCatchModelViewMatrix, 0.0f, 0.0f, 0.0f, 1.0f);
-    cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.0f);
+    guRotate((Mtx *)gEyeCatchModelViewMatrix, 0.0F, 0.0F, 0.0F, 1.0F);
+    cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.0F);
     cameraUpdateOverlayColors(0, 0);
 }
 #undef EYE_TRACKS
@@ -183,7 +183,7 @@ void eyeCatchRelease(void) {
     gEyeCatchForegroundImage = 0;
     gEyeCatchActiveGroup = 0;
     gEyeCatchAnimationTracks = 0;
-    gEyeCatchStageSeconds = 0.0f;
+    gEyeCatchStageSeconds = 0.0F;
     gEyeCatchStage = 0;
     gEyeCatchForegroundVisible = 0;
     gEyeCatchAudioStage = 0;
@@ -234,9 +234,9 @@ void eyeCatchDrawLayers(Gfx **displayList) {
             animationIntegerTrackEvaluate((ValueTrack *)(void *)(animationAddress + 0xC), &sp9C, gRuntimeFrameSeconds);
             desc[0].y = ((EyeCatchGroup *)gEyeCatchActiveGroup)->originY + sp9C;
             animationIntegerTrackEvaluate((ValueTrack *)(void *)(animationAddress + 0x18), &sp9C, gRuntimeFrameSeconds);
-            desc[0].scaleX = (f32)sp9C * 0.1f;
+            desc[0].scaleX = (f32)sp9C * 0.1F;
             animationIntegerTrackEvaluate((ValueTrack *)(void *)(animationAddress + 0x24), &sp9C, gRuntimeFrameSeconds);
-            desc[0].scaleY = (f32)sp9C * 0.1f;
+            desc[0].scaleY = (f32)sp9C * 0.1F;
             animationIntegerTrackEvaluate((ValueTrack *)(void *)(animationAddress + 0x30), &desc[0].texture,
                                           gRuntimeFrameSeconds);
             animationIntegerTrackEvaluate((ValueTrack *)(void *)(animationAddress + 0x3C), &spA0, gRuntimeFrameSeconds);
@@ -274,13 +274,13 @@ void eyeCatchDrawFadingImage(Gfx **gdl) {
         gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 255, (s32)gEyeCatchForegroundAlpha);
         gDPSetCombineLERP((*gdl)++, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0);
         textureDrawScaledRepeated(gdl, &tex, ((EyeCatchGroup *)gEyeCatchActiveGroup)->foregroundWidth,
-                                  ((EyeCatchGroup *)gEyeCatchActiveGroup)->foregroundHeight, 2, 2, 0, 0, 0.5f, 0.5f, 0,
+                                  ((EyeCatchGroup *)gEyeCatchActiveGroup)->foregroundHeight, 2, 2, 0, 0, 0.5F, 0.5F, 0,
                                   0);
-        gEyeCatchForegroundAlpha += 127.5f * gRuntimeFrameSeconds;
-        if (gEyeCatchForegroundAlpha < 0.0f) {
-            gEyeCatchForegroundAlpha = 0.0f;
-        } else if (gEyeCatchForegroundAlpha > 255.0f) {
-            gEyeCatchForegroundAlpha = 255.0f;
+        gEyeCatchForegroundAlpha += 127.5F * gRuntimeFrameSeconds;
+        if (gEyeCatchForegroundAlpha < 0.0F) {
+            gEyeCatchForegroundAlpha = 0.0F;
+        } else if (gEyeCatchForegroundAlpha > 255.0F) {
+            gEyeCatchForegroundAlpha = 255.0F;
         }
     }
 }
@@ -300,7 +300,7 @@ typedef s32 (*EyeCatchStageHandler)(void);
 /// \returns One, selecting the playback stage.
 /// \note Original decompilation identifier: \c func_800375D4 (0x800375D4).
 s32 eyeCatchStartReveal(void) {
-    cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 1.2000000476837158f);
+    cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 1.2000000476837158F);
     return 1;
 }
 
@@ -323,19 +323,19 @@ s32 eyeCatchUpdatePlayback(void) {
     s32 entrySound;
     s32 exitSound;
 
-    if ((gEyeCatchForegroundVisible == 0) && (gEyeCatchStageSeconds > 1.5f)) {
+    if ((gEyeCatchForegroundVisible == 0) && (gEyeCatchStageSeconds > 1.5F)) {
         gEyeCatchForegroundVisible = 1;
-        gEyeCatchForegroundAlpha = 0.0f;
+        gEyeCatchForegroundAlpha = 0.0F;
     }
     switch (gEyeCatchAudioStage) {
     case 0:
-        if (gEyeCatchStageSeconds > 0.0f) {
-            audioChangeCurrentCue(4, 0.1f, 0.1f);
+        if (gEyeCatchStageSeconds > 0.0F) {
+            audioChangeCurrentCue(4, 0.1F, 0.1F);
             gEyeCatchAudioStage += 1;
         }
         break;
     case 1:
-        if (gEyeCatchStageSeconds > 2.5f) {
+        if (gEyeCatchStageSeconds > 2.5F) {
             if (((EyeCatchGroup *)gEyeCatchActiveGroup)->alternateSoundSet != 0) {
                 entrySound = audioPlaySoundEffect(0x6A);
             } else {
@@ -346,7 +346,7 @@ s32 eyeCatchUpdatePlayback(void) {
         }
         break;
     case 2:
-        if (gEyeCatchStageSeconds > 3.77f) {
+        if (gEyeCatchStageSeconds > 3.77F) {
             if (((EyeCatchGroup *)gEyeCatchActiveGroup)->alternateSoundSet != 0) {
                 exitSound = audioPlaySoundEffect(gEyeCatchExitSoundChoices[randomBelow(8)]);
             } else {
@@ -357,9 +357,9 @@ s32 eyeCatchUpdatePlayback(void) {
         }
         break;
     }
-    if ((gControllerPrimaryPressedButtons != 0) || gEyeCatchStageSeconds > 7.5f) {
-        cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.8f);
-        audioStopCategories(AUDIO_CATEGORY_ALL, 0.8f);
+    if ((gControllerPrimaryPressedButtons != 0) || gEyeCatchStageSeconds > 7.5F) {
+        cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.8F);
+        audioStopCategories(AUDIO_CATEGORY_ALL, 0.8F);
         return 2;
     }
     return EYE_CATCH_KEEP_STAGE;
@@ -373,7 +373,7 @@ extern f32 gPrimarySecondaryOverlayRemainingSeconds;
 /// \returns Three when the screen fade is complete, or minus ten to remain in this stage.
 /// \note Original decompilation identifier: \c func_80037854 (0x80037854).
 s32 eyeCatchWaitForExitFade(void) {
-    if (gPrimarySecondaryOverlayRemainingSeconds == 0.0f) {
+    if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
         return 3;
     }
     return EYE_CATCH_KEEP_STAGE;
@@ -416,7 +416,7 @@ s32 eyeCatchUpdate(void) {
     next = gEyeCatchStageHandlers[gEyeCatchStage]();
     if (next != EYE_CATCH_KEEP_STAGE && next != gEyeCatchStage) {
         gEyeCatchStage = next;
-        gEyeCatchStageSeconds = 0.0f;
+        gEyeCatchStageSeconds = 0.0F;
     }
     if (gEyeCatchStage == EYE_CATCH_COMPLETE) {
         gEyeCatchStage = 0;
@@ -441,7 +441,7 @@ s32 eyeCatchChooseGroup(void) {
     s32 choice;
 
     level = (f32)progressGetValue(2);
-    if (level <= 12.0f) {
+    if (level <= 12.0F) {
         column = 0;
     } else {
         column = 1;

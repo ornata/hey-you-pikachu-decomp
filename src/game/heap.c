@@ -487,7 +487,7 @@ u8 *heapSelectAllocationRegion(u8 *heap, u32 desiredSize) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800387F8 (0x800387F8).
 void heapDrawUsageSegment(Gfx **gdl, s32 width, s32 owned, s32 *x0, s32 *x1, s32 y, s32 size, u32 total) {
-    *x1 = (u32)(width * size) / total + 20;
+    *x1 = ((u32)(width * size) / total) + 20;
     gDPPipeSync((*gdl)++);
     if (owned) {
         gDPSetPrimColor((*gdl)++, 0, 0, 255, 0, 0, 255);
@@ -518,7 +518,7 @@ void heapDrawUsage(HpHdr *heap, Gfx **gdl, s32 width, s32 y) {
     gDPSetCombineMode((*gdl)++, G_CC_PRIMITIVE, G_CC_PRIMITIVE);
     gDPSetRenderMode((*gdl)++, G_RM_OPA_SURF, G_RM_OPA_SURF2);
     width -= 40;
-    x1 = (u32)((heap->last - heap->first) * sizeof(HpBlk) * width) / (u32)heap->size + 20;
+    x1 = ((u32)((heap->last - heap->first) * sizeof(HpBlk) * width) / (u32)heap->size) + 20;
     gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 255, 255);
     gDPFillRectangle((*gdl)++, x1, y - 1, x1 + 1, y + 4);
     block = heap->first;

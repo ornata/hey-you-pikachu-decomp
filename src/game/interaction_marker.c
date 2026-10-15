@@ -87,7 +87,8 @@ s32 interactionConsiderObject(u8 *object) {
     f32 score;
     s32 i;
 
-    if (((RuntimeObjectPrefix *)object)->scale[0] == 0.0f || ((RuntimeObjectPrefix *)object)->scale[1] == 0.0f || ((RuntimeObjectPrefix *)object)->scale[2] == 0.0f) {
+    if (((RuntimeObjectPrefix *)object)->scale[0] == 0.0F || ((RuntimeObjectPrefix *)object)->scale[1] == 0.0F ||
+        ((RuntimeObjectPrefix *)object)->scale[2] == 0.0F) {
         return 0;
     }
     if (areaTestCameraVisibility(((RuntimeObjectPrefix *)object)->radius * 2, ((RuntimeObjectPrefix *)object)->worldPosition, projected)) {
@@ -98,25 +99,26 @@ s32 interactionConsiderObject(u8 *object) {
     if (gPlayerHeldItemHandle == ((RuntimeObjectPrefix *)object)->handle) {
         flags |= INTERACTION_SECONDARY_REGION | INTERACTION_PRIMARY_REGION;
     } else {
-        if (flags == 0)
+        if (flags == 0) {
             return 0;
+        }
         for (i = 0; i < 2; i++) {
             if (cameraTestViewPoint(gInteractionRegions[i], projected)) {
                 flags |= gInteractionRegionFlags[i];
             }
         }
         if (flags & INTERACTION_PRIMARY_REGION) {
-            if (((RuntimeObjectPrefix *)object)->worldPosition[1] - gPlayerPositionY > 12.0f) {
+            if (((RuntimeObjectPrefix *)object)->worldPosition[1] - gPlayerPositionY > 12.0F) {
                 flags = (flags & ~INTERACTION_PRIMARY_REGION) | INTERACTION_SECONDARY_REGION;
             }
         }
     }
     if (object != ((u8 *)gPikachuActor) && (flags & (INTERACTION_SECONDARY_REGION | INTERACTION_PRIMARY_REGION))) {
         if (gPlayerHeldItemHandle == ((RuntimeObjectPrefix *)object)->handle) {
-            score = -2147483648.0f;
+            score = -2147483648.0F;
         } else {
-            score =
-                ((horizontal = fabsf(projected[0])) * 50.0f - projected[2]) + (vertical = fabsf(projected[1])) * 40.0f;
+            score = ((horizontal = fabsf(projected[0])) * 50.0F - projected[2]) +
+                    ((vertical = fabsf(projected[1])) * 40.0F);
         }
         if (score < gInteractionCandidateScore) {
             gInteractionCandidateFlags = flags;
@@ -206,8 +208,9 @@ void interactionMarkerUpdate(u8 *object) {
         if (target != NULL) {
             mode = 1;
             gInteractionCandidateHandle = ((InteractionMarkerState *)state)->targetHandle;
-        } else
+        } else {
             mode = 0;
+        }
     }
     if (mode != 0 && target != NULL) {
         if (mode != ((InteractionMarkerState *)state)->mode ||
@@ -255,7 +258,7 @@ void interactionMarkerUpdate(u8 *object) {
             ((f32) ((InteractionMarkerState *)state)->tracks[MARKER_TRACK_SCALE_Z].value * unit) * ((RuntimeObjectPrefix *)object)->scale[0];
         if (((RuntimeObjectPrefix *)target)->kind == 0x86) {
             species = ((RuntimeObjectPrefix *)target)->state.bytes;
-            offset.vector.x = 0.0f;
+            offset.vector.x = 0.0F;
             offset.vector.y = gItemKinds[((ItemStatePrefix *)species)->kind].radiusZ * ((RuntimeObjectPrefix *)target)->scale[1];
             offset.vector.z = gItemKinds[((ItemStatePrefix *)species)->kind].radiusX * ((RuntimeObjectPrefix *)target)->scale[2];
         } else if (((RuntimeObjectPrefix *)target)->kind > 0 && ((RuntimeObjectPrefix *)target)->kind < 0x26) {
@@ -263,16 +266,16 @@ void interactionMarkerUpdate(u8 *object) {
             unit = gInteractionMarkerActorTrackUnitScale;
             offset.vector.y *= ((RuntimeObjectPrefix *)target)->scale[1];
             offset.vector.z *= ((RuntimeObjectPrefix *)target)->scale[2];
-            offset.vector.x = 0.0f;
+            offset.vector.x = 0.0F;
         } else {
-            offset.vector.x = 0.0f;
+            offset.vector.x = 0.0F;
             offset.vector.y = ((RuntimeObjectPrefix *)target)->radius;
             offset.vector.z = ((RuntimeObjectPrefix *)target)->radius;
         }
-        offset.vector.y =
-            (f32) ((InteractionMarkerState *)state)->tracks[MARKER_TRACK_HEIGHT].value * unit + gInteractionMarkerStyles[mode].heightFactor * offset.vector.y;
-        offset.vector.z = (f32) - ((InteractionMarkerState *)state)->tracks[MARKER_TRACK_DEPTH].value * unit -
-                          gInteractionMarkerStyles[mode].depthFactor * offset.vector.z;
+        offset.vector.y = ((f32)((InteractionMarkerState *)state)->tracks[MARKER_TRACK_HEIGHT].value * unit) +
+                          (gInteractionMarkerStyles[mode].heightFactor * offset.vector.y);
+        offset.vector.z = ((f32) - ((InteractionMarkerState *)state)->tracks[MARKER_TRACK_DEPTH].value * unit) -
+                          (gInteractionMarkerStyles[mode].depthFactor * offset.vector.z);
         objectAddPendingLocalMovement(offset.components);
     }
     ((InteractionMarkerState *)state)->targetHandle = gInteractionCandidateHandle;
@@ -280,7 +283,7 @@ void interactionMarkerUpdate(u8 *object) {
     gInteractionMarkerMode = mode;
     gInteractionCandidateFlags = 0;
     gInteractionCandidateHandle = 0;
-    gInteractionCandidateScore = 2147483648.0f;
+    gInteractionCandidateScore = 2147483648.0F;
 }
 
 

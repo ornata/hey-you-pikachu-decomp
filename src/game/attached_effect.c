@@ -113,8 +113,8 @@ void attachedEffectInitialize(u8 *object) {
     ((AttachedEffectState *)obj)->color.r = ((AttachedEffectState *)obj)->color.g =
         ((AttachedEffectState *)obj)->color.b = ((AttachedEffectState *)obj)->color.a = 0xFF;
     ((AttachedEffectState *)obj)->owner = NULL;
-    ((AttachedEffectState *)obj)->playbackRate = 1.0f;
-    ((AttachedEffectState *)obj)->baseScale = 1.0f;
+    ((AttachedEffectState *)obj)->playbackRate = 1.0F;
+    ((AttachedEffectState *)obj)->baseScale = 1.0F;
     ((RuntimeObjectPrefix *)object)->state.bytes = obj;
 }
 
@@ -161,24 +161,24 @@ void attachedEffectUpdate(u8 *obj) {
     delta[2] = ((RuntimeObjectPrefix *)obj)->worldPosition[2] - gRenderCameras[gRenderCameraIndex].eye[2];
     factor = vector3Length(delta);
     minimum = gAttachedEffectMinimumViewScale;
-    factor = (factor + ((RuntimeObjectPrefix *)owner)->scale[0] * 1000.0f) * gAttachedEffectViewScaleCoefficient;
+    factor = (factor + ((RuntimeObjectPrefix *)owner)->scale[0] * 1000.0F) * gAttachedEffectViewScaleCoefficient;
     if (factor < minimum) {
         factor = minimum;
-    } else if (factor > 4.0f) {
-        factor = 4.0f;
+    } else if (factor > 4.0F) {
+        factor = 4.0F;
     }
-    ((RuntimeObjectPrefix *)obj)->position[1] += ((RuntimeObjectPrefix *)owner)->radius * factor * 40.0f;
+    ((RuntimeObjectPrefix *)obj)->position[1] += ((RuntimeObjectPrefix *)owner)->radius * factor * 40.0F;
     factor *= ((AttachedEffectState *)state)->baseScale;
     ((RuntimeObjectPrefix *)obj)->scale[0] = factor;
     ((RuntimeObjectPrefix *)obj)->scale[1] = factor;
     ((RuntimeObjectPrefix *)obj)->scale[2] = factor;
     if (((AttachedEffectState *)state)->reverseFacing != 0) {
-        ((RuntimeObjectPrefix *)obj)->rotation[1] += 180.0f;
-        while (((RuntimeObjectPrefix *)obj)->rotation[1] < 0.0f) {
-            ((RuntimeObjectPrefix *)obj)->rotation[1] += 360.0f;
+        ((RuntimeObjectPrefix *)obj)->rotation[1] += 180.0F;
+        while (((RuntimeObjectPrefix *)obj)->rotation[1] < 0.0F) {
+            ((RuntimeObjectPrefix *)obj)->rotation[1] += 360.0F;
         }
-        while (((RuntimeObjectPrefix *)obj)->rotation[1] >= 360.0f) {
-            ((RuntimeObjectPrefix *)obj)->rotation[1] -= 360.0f;
+        while (((RuntimeObjectPrefix *)obj)->rotation[1] >= 360.0F) {
+            ((RuntimeObjectPrefix *)obj)->rotation[1] -= 360.0F;
         }
     }
     animationIntegerTrackEvaluate(&((AttachedEffectState *)state)->frameTrack, &value, step);

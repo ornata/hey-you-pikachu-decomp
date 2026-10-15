@@ -106,8 +106,8 @@ extern TitleLogoFade gTitleLogoFade;
 /// \note Original decompilation identifier: \c func_8003431C (0x8003431C).
 void titleScreenResetLogoFade(void) {
     gTitleLogoFade.finished = 0;
-    gTitleLogoFade.unknown4 = 0.0f;
-    gTitleLogoFade.alpha = 0.0f;
+    gTitleLogoFade.unknown4 = 0.0F;
+    gTitleLogoFade.alpha = 0.0F;
 }
 
 /// Loaded title logo image used by logo drawing.
@@ -128,13 +128,13 @@ void titleScreenDrawLogo(Gfx **gdl) {
     TextureImage tex;
 
     if (gTitleLogoFade.finished == 0) {
-        gTitleLogoFade.alpha += 300.0f * gRuntimeFrameSeconds;
-        if (gTitleLogoFade.alpha > 255.0f) {
-            gTitleLogoFade.alpha = 255.0f;
+        gTitleLogoFade.alpha += 300.0F * gRuntimeFrameSeconds;
+        if (gTitleLogoFade.alpha > 255.0F) {
+            gTitleLogoFade.alpha = 255.0F;
             gTitleLogoFade.finished = 1;
         }
     } else {
-        gTitleLogoFade.alpha = 255.0f;
+        gTitleLogoFade.alpha = 255.0F;
     }
     textureImageInitialize(&tex, gTitleLogoImage, 0, 0, 2, 0x108, 0x7E);
     gDPPipeSync((*gdl)++);
@@ -142,7 +142,7 @@ void titleScreenDrawLogo(Gfx **gdl) {
     gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
     gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 255, (s32)gTitleLogoFade.alpha);
     gDPSetCombineLERP((*gdl)++, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0);
-    textureDrawScaledRepeated(gdl, &tex, 0x1C, 0x19, 0, 0, 0, 0, 1.0f, 1.0f, 0, 0);
+    textureDrawScaledRepeated(gdl, &tex, 0x1C, 0x19, 0, 0, 0, 0, 1.0F, 1.0F, 0, 0);
 }
 
 /// Loaded artwork image used by startup panel drawing.
@@ -170,7 +170,7 @@ void titleScreenDrawStartupPanel(Gfx **gdl) {
     gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
     gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 255, 255);
     gDPSetCombineLERP((*gdl)++, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0);
-    textureDrawScaledRepeated(gdl, &tex, 0x60, 0x41, 2, 2, 0, 0, 1.0f, 1.0f, 0, 0);
+    textureDrawScaledRepeated(gdl, &tex, 0x60, 0x41, 2, 2, 0, 0, 1.0F, 1.0F, 0, 0);
     gDPPipeSync((*gdl)++);
     gDPSetCycleType((*gdl)++, G_CYC_1CYCLE);
 }
@@ -202,14 +202,14 @@ void titleScreenDrawStartPrompt(Gfx **gdl) {
     s32 a;
 
     if ((u64)runtimeGetElapsedMilliseconds() - (u32)gTitleIntroductionMilliseconds >= 0x2328) {
-        gTitleStartPromptPhase += 120.0f * gRuntimeFrameSeconds;
-        while (gTitleStartPromptPhase < 0.0f) {
-            gTitleStartPromptPhase += 360.0f;
+        gTitleStartPromptPhase += 120.0F * gRuntimeFrameSeconds;
+        while (gTitleStartPromptPhase < 0.0F) {
+            gTitleStartPromptPhase += 360.0F;
         }
-        while (gTitleStartPromptPhase >= 360.0f) {
-            gTitleStartPromptPhase -= 360.0f;
+        while (gTitleStartPromptPhase >= 360.0F) {
+            gTitleStartPromptPhase -= 360.0F;
         }
-        a = mathSinDegrees(gTitleStartPromptPhase) * 175.0f + 80.0f;
+        a = (mathSinDegrees(gTitleStartPromptPhase) * 175.0F) + 80.0F;
         if (a < 0) {
             a = 0;
         } else if (a >= 0x100) {
@@ -246,8 +246,9 @@ void titleScreenDrawMenu(Gfx **cursor, const s32 *items, s32 enabled, s32 unavai
     s32 width;
     for (count = 0; items[count] >= 0; count++) {
         width = gTitleMenuImages[items[count]]->width;
-        if (width >= maxWidth)
+        if (width >= maxWidth) {
             maxWidth = width;
+        }
     }
     if (count != 0) {
         s32 x, y;
@@ -260,33 +261,35 @@ void titleScreenDrawMenu(Gfx **cursor, const s32 *items, s32 enabled, s32 unavai
         maxWidth += 16;
         gDPSetPrimColor((*gdl)++, 0, 0, 0, 0, 0, 128);
         gDPSetCombineMode((*gdl)++, G_CC_PRIMITIVE, G_CC_PRIMITIVE);
-        x = 160 - maxWidth / 2;
-        y = 200 - count * 16;
+        x = 160 - (maxWidth / 2);
+        y = 200 - (count * 16);
         gDPFillRectangle((*gdl)++, x - 10, y - 4, x + maxWidth + 10, 204);
         textDrawBegin(*gdl);
         textDrawReset();
         textDrawSetPalette(gDefaultTextPalette);
         textDrawSetSpacingMode(1);
-        textDrawSetScale(1.0f, 1.0f);
+        textDrawSetScale(1.0F, 1.0F);
         textDrawSetArea(0, 0, 319, 239);
         textX = x + 16;
         for (i = 0; i < count; i++) {
-            textDrawSetCursor(textX, y + i * 16);
+            textDrawSetCursor(textX, y + (i * 16));
             if ((1 << i) & enabled) {
-                if (i == gTitleMenuSelection)
+                if (i == gTitleMenuSelection) {
                     textDrawSetColor(255, 255, 0, 255);
-                else
+                } else {
                     textDrawSetColor(255, 255, 255, 255);
-            } else if (i == gTitleMenuSelection)
+                }
+            } else if (i == gTitleMenuSelection) {
                 textDrawSetColor(255, 255, 40, 160);
-            else if (unavailableRed)
+            } else if (unavailableRed) {
                 textDrawSetColor(255, 50, 50, 140);
-            else
+            } else {
                 textDrawSetColor(120, 120, 255, 160);
+            }
             textDrawImageAtCursor((TextImage *)gTitleMenuImages[items[i]]);
         }
-        gTitleCursorFrame = (s32)((f32)runtimeGetElapsedMilliseconds() * 0.003f) % 4;
-        cursorY = gTitleMenuSelection * 16 + y;
+        gTitleCursorFrame = (s32)((f32)runtimeGetElapsedMilliseconds() * 0.003F) % 4;
+        cursorY = (gTitleMenuSelection * 16) + y;
         textDrawSetCursor(x, cursorY);
         textDrawSetColor(255, 255, 0, 255);
         textDrawImageAtCursor((TextImage *)gTitleCursorImages[gTitleCursorFrame]);
@@ -346,7 +349,7 @@ void titleScreenDrawStartupSilhouette(Gfx **gdl) {
     gDPSetPrimColor((*gdl)++, 0, 0, 0, 0, 0, 255);
     gDPSetCombineLERP((*gdl)++, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0);
     gDPPipeSync((*gdl)++);
-    textureDrawScaledRepeated(gdl, &tex, 0x60, 0x40, 2, 2, 0, 0, 1.0f, 1.0f, 0, 0);
+    textureDrawScaledRepeated(gdl, &tex, 0x60, 0x40, 2, 2, 0, 0, 1.0F, 1.0F, 0, 0);
     gDPPipeSync((*gdl)++);
     gDPSetCycleType((*gdl)++, G_CYC_1CYCLE);
 }
@@ -506,8 +509,8 @@ void titleScreenRequestMenu(void) {
 /// \note Original decompilation identifier: \c func_80035234 (0x80035234).
 void titleScreenBeginDemoTransition(void) {
     if (gTitleScreenState == 0xC) {
-        audioChangeCurrentCue(-1, 0.1f, 0.5);
-        cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFE, 1.5f);
+        audioChangeCurrentCue(-1, 0.1F, 0.5);
+        cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFE, 1.5F);
         gTitleScreenState = 0x10;
     }
 }
@@ -532,7 +535,7 @@ void titleScreenSetMusicVolume(f32 level) {
     s32 requestedVolume;
     s32 clampedVolume;
 
-    requestedVolume = (s32)(32767.0f * level);
+    requestedVolume = (s32)(32767.0F * level);
     clampedVolume = requestedVolume;
     if (requestedVolume < 0) {
         clampedVolume = 0;
@@ -554,8 +557,9 @@ void titleScreenSetMessage(void **list, s32 count, s32 y) {
     textPanelInitialize(&gTitleMessagePanel, count);
     textPanelSetTextConfiguration(&gTitleMessagePanel, 0);
     textPanelSetPosition(&gTitleMessagePanel, 0, y);
-    for (i = 0; i < count; i++)
+    for (i = 0; i < count; i++) {
         textPanelAppend(&gTitleMessagePanel, list[i]);
+    }
 }
 
 
@@ -674,8 +678,9 @@ extern s32 gControllerPrimaryRepeatedButtons, gTitleScreenState;
 s32 titleScreenHandleOverwriteConfirmation(void) {
     pikachuUpdateScriptAndTriggers();
     objectUpdateGroup(0x4000);
-    if (audioCountActive(AUDIO_CATEGORY_ALL) == 0)
+    if (audioCountActive(AUDIO_CATEGORY_ALL) == 0) {
         audioChangeCurrentCue(0, 0.0, 0.0);
+    }
     if (gControllerPrimaryRepeatedButtons & 0xC00) {
         if ((gControllerPrimaryRepeatedButtons & 0x800) && gTitleMenuSelection > 0) {
             audioPlaySoundEffect(0xC0);
@@ -767,13 +772,13 @@ void titleScreenUpdate(void) {
         progressLoadRecordFromEeprom(gRuntimeSaveParameters);
         if (controllerIsStandardPad(0) == 0) {
             titleScreenSetMessage(gTitleControllerMissingMessage, 5, 0x28);
-            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 0.0f);
+            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 0.0F);
             gTitleScreenState = 3;
             break;
         }
         if (micIsDeviceConnected(3) == 0) {
             titleScreenSetMessage(gTitleMicrophoneMissingMessage, 7, 0x28);
-            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 0.0f);
+            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 0.0F);
             gTitleScreenState = 4;
             break;
         }
@@ -781,7 +786,7 @@ void titleScreenUpdate(void) {
         break;
     case 4:
         if (gControllerPrimaryPressedButtons & 0x1000) {
-            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.0f);
+            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.0F);
             titleScreenClearMessage();
             gTitleScreenState = 2;
         }
@@ -791,24 +796,24 @@ void titleScreenUpdate(void) {
         controllerConfigureStickButtons(1, 0x1E, 0x1E, 0x1E, 0x1E);
         gTitleScreenState = 7;
         gTitleStartupPanelMilliseconds = runtimeGetElapsedMilliseconds();
-        cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 0.0f);
+        cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 0.0F);
         break;
     case 7:
         if (runtimeGetElapsedMilliseconds() - gTitleStartupPanelMilliseconds >= 0x579 ||
             (gEepromSaveControl != 0 && (*pressed & 0x9000))) {
-            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.4f);
+            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.4F);
             gTitleScreenState = 5;
         }
         break;
     case 5:
-        if (gPrimarySecondaryOverlayRemainingSeconds == 0.0f) {
-            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 0.5f);
-            titleScreenSetMusicVolume(1.0f);
+        if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
+            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 0.5F);
+            titleScreenSetMusicVolume(1.0F);
             audioChangeCurrentCue(0, 0.5, 0.0);
             audioPlaySoundEffect(0x89);
             gTitleIntroductionMilliseconds = runtimeGetElapsedMilliseconds();
             titleScreenResetLogoFade();
-            gTitleStartPromptPhase = 0.0f;
+            gTitleStartPromptPhase = 0.0F;
             gTitleScreenState = 6;
         }
         break;
@@ -830,14 +835,14 @@ void titleScreenUpdate(void) {
     case 8:
         if (runtimeGetElapsedMilliseconds() - gTitleIntroductionMilliseconds >= 0xBB9 || (*pressed & 0x9000)) {
             objectSetHierarchyFlags(((u8 *)gPikachuActor), 0x6000);
-            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.5f);
+            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.5F);
             gTitleScreenState = 9;
         }
         break;
     case 9:
-        if (gPrimarySecondaryOverlayRemainingSeconds == 0.0f) {
+        if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
             backdropSelectForView(0, 0x17, 0);
-            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 0.5f);
+            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 0.5F);
             gTitleScreenState = 10;
             gTitleSilhouetteMilliseconds = runtimeGetElapsedMilliseconds();
         }
@@ -845,15 +850,15 @@ void titleScreenUpdate(void) {
     case 10:
         if (runtimeGetElapsedMilliseconds() - gTitleIntroductionMilliseconds >= 0x1771 ||
             ((*pressed & 0x9000) && runtimeGetElapsedMilliseconds() - gTitleSilhouetteMilliseconds >= 0x3E9)) {
-            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.5f);
+            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.5F);
             gTitleScreenState = 11;
         }
         break;
     case 11:
         pikachuUpdateScriptAndTriggers();
-        if (gPrimarySecondaryOverlayRemainingSeconds == 0.0f) {
+        if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
             backdropSelectForView(0, gTitleDemoBackdropIds[gTitleDemoIndex], 0);
-            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 0.5f);
+            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 0.5F);
             gTitleScreenState = 12;
         }
         break;
@@ -861,10 +866,10 @@ void titleScreenUpdate(void) {
         pikachuUpdateScriptAndTriggers();
         objectUpdateGroup(0x4000);
         if (runtimeGetElapsedMilliseconds() - gTitleIntroductionMilliseconds >= 0x20103) {
-            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFE, 1.5f);
+            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFE, 1.5F);
             gTitleScreenState = 16;
         } else if ((*pressed & 0x1000) || gTitleMenuRequested != 0) {
-            titleScreenSetMusicVolume(0.75f);
+            titleScreenSetMusicVolume(0.75F);
             audioPlaySoundEffect(0xC5);
             titleScreenSelectDefaultChoice();
             gTitleScreenState = 13;
@@ -873,7 +878,7 @@ void titleScreenUpdate(void) {
     case 16:
         pikachuUpdateScriptAndTriggers();
         objectUpdateGroup(0x4000);
-        if (gPrimarySecondaryOverlayRemainingSeconds == 0.0f) {
+        if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
             gTitleDemoIndex++;
             while (gTitleDemoIndex < 0) {
                 gTitleDemoIndex += 4;
@@ -926,8 +931,8 @@ void titleScreenUpdate(void) {
         break;
     case 14:
         if (titleScreenHandleFileSelection() != 0) {
-            audioChangeCurrentCue(-1, 0.1f, 0.5);
-            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFE, 0.5f);
+            audioChangeCurrentCue(-1, 0.1F, 0.5);
+            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFE, 0.5F);
         }
         break;
     case 15:
@@ -935,8 +940,8 @@ void titleScreenUpdate(void) {
             titleScreenSetMessage(gTitleOverwriteMessage, 4, 0x40);
         }
         if (titleScreenHandleOverwriteConfirmation() != 0) {
-            audioChangeCurrentCue(-1, 0.1f, 0.5);
-            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFE, 0.5f);
+            audioChangeCurrentCue(-1, 0.1F, 0.5);
+            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFE, 0.5F);
         }
         if (gTitleScreenState != 15) {
             titleScreenClearMessage();
@@ -945,7 +950,7 @@ void titleScreenUpdate(void) {
     case 17:
         pikachuUpdateScriptAndTriggers();
         objectUpdateGroup(0x4000);
-        if (gPrimarySecondaryOverlayRemainingSeconds == 0.0f) {
+        if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
             if (gTitleLoadGameSelected == 0) {
                 progressResetRecordToDefaults();
                 progressUpdateChapterAfterVisit();
@@ -960,7 +965,7 @@ void titleScreenUpdate(void) {
                 } else {
                     gEepromSaveControl &= ~2;
                 }
-                cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 0.0f);
+                cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 0.0F);
                 progressResetRecordToDefaults();
                 titleScreenSetMessage(gTitleSaveLoadErrorMessage, 7, 0x28);
                 gTitleScreenState = 18;
@@ -977,7 +982,7 @@ void titleScreenUpdate(void) {
         break;
     case 18:
         if (gControllerPrimaryPressedButtons & 0x1000) {
-            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.0f);
+            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.0F);
             titleScreenClearMessage();
             gTitleScreenState = 5;
         }

@@ -277,10 +277,12 @@ void searchTreeVisitDescending(TreeNode *root, TreeVisitor visitor) {
 s32 searchTreeVisitRootRightLeftAtDepth(TreeNode *node, s32 depth) {
     s32 i;
     while (node != NULL) {
-        if (gSearchTreeActiveVisitor(node, depth))
+        if (gSearchTreeActiveVisitor(node, depth)) {
             return 1;
-        if (searchTreeVisitRootRightLeftAtDepth(node->links[1], depth + 1))
+        }
+        if (searchTreeVisitRootRightLeftAtDepth(node->links[1], depth + 1)) {
             return 1;
+        }
         node = node->links[0];
         depth++;
         if (node != NULL) {

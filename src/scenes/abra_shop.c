@@ -18,18 +18,18 @@ void abraShopInitializeObjects(void) {
     u8 *trackedItem;
     ActorScriptState *actorState;
 
-    actorCreateForKind(0xF, 100.0f, 1.2f, 95.0f, 0, 0, gCurrentAreaConfiguration->objectScale * 1.5f,
+    actorCreateForKind(0xF, 100.0F, 1.2F, 95.0F, 0, 0, gCurrentAreaConfiguration->objectScale * 1.5F,
                        D_801431F8_scene_abra_shop, 0);
     if (progressGetValue(0x15) != 0 && progressGetValue(0x16) == 0) {
         level = progressGetValue(0x17);
         scale = (f32)level;
-        actorCreateForKind(0x17, 100.0f, 0.0f, 0.0f, 0, 0,
-                           ((scale / 5.0f + 1.0f) * (gCurrentAreaConfiguration->objectScale * 0.5f)),
+        actorCreateForKind(0x17, 100.0F, 0.0F, 0.0F, 0, 0,
+                           ((scale / 5.0F + 1.0F) * (gCurrentAreaConfiguration->objectScale * 0.5F)),
                            D_8014363C_scene_abra_shop, 0);
     }
     if (progressGetCurrentChapter() == 8) {
-        trackedItem = itemCreate(145.0f, 1.5f, 150.0f, 0.0f, 0.0f, 0x8F);
-        actorState = ((RuntimeObjectPrefix *)actorCreateForKind(0x15, 0.0f, 0.0f, 0.0f, 0.0f, 45.0f,
+        trackedItem = itemCreate(145.0F, 1.5F, 150.0F, 0.0F, 0.0F, 0x8F);
+        actorState = ((RuntimeObjectPrefix *)actorCreateForKind(0x15, 0.0F, 0.0F, 0.0F, 0.0F, 45.0F,
                                                                 gCurrentAreaConfiguration->objectScale, 0, 0))
                          ->state.actor;
         actorState->targetPosition[0] = ((RuntimeObjectPrefix *)trackedItem)->worldPosition[0];
@@ -66,5 +66,5 @@ s32 abraShopGetSpatialCell(f32 x, f32 y, f32 z) {
     if (layer == NULL) {
         return 0;
     }
-    return layer[iz * 8 + ix];
+    return layer[(iz * 8) + ix];
 }

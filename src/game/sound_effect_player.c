@@ -57,26 +57,28 @@ s32 soundEffectPlayerPlay(SoundEffectPlayer *player, ALSound *sound) {
             config.unityPitch = 0;
             player->voices[i].elapsed = 0;
             if (((u8 *)sound)[15] >= 2) {
-                variation = osGetCount() % (((u8 *)sound)[15] * 2 + 1) - ((u8 *)sound)[15];
+                variation = (osGetCount() % (((u8 *)sound)[15] * 2 + 1)) - ((u8 *)sound)[15];
             } else {
                 variation = 0;
             }
             level = (u32)variation + sound->sampleVolume;
-            if (level < 0)
+            if (level < 0) {
                 level = 0;
-            if (level > 255)
+            }
+            if (level > 255) {
                 level = 255;
+            }
             player->voices[i].baseVolume = level;
             player->voices[i].basePitch =
-                alCents2Ratio(sound->keyMap->keyBase * -100 - sound->keyMap->detune + sound->keyMap->keyMin * 100);
+                alCents2Ratio((sound->keyMap->keyBase * -100) - sound->keyMap->detune + (sound->keyMap->keyMin * 100));
             if (sound->flags * 1200 / 255 >= 2) {
-                variation = osGetCount() % ((sound->flags * 1200 / 255) * 2 + 1) - (sound->flags * 1200 / 255);
+                variation = (osGetCount() % ((sound->flags * 1200 / 255) * 2 + 1)) - (sound->flags * 1200 / 255);
             } else {
                 variation = 0;
             }
             player->voices[i].rate = alCents2Ratio(variation);
             player->voices[i].volume = 128;
-            player->voices[i].pitch = 1.0f;
+            player->voices[i].pitch = 1.0F;
             player->voices[i].pan = sound->samplePan;
             player->voices[i].mix = 0;
             variation = gAudioNextPlaybackHandle;
@@ -87,8 +89,9 @@ s32 soundEffectPlayerPlay(SoundEffectPlayer *player, ALSound *sound) {
             n_alSynAllocVoice(&player->voices[i].voice, &config);
             level = (s64)player->voices[i].baseVolume * player->voices[i].volume;
             level = (level * player->volume) >> 15;
-            if (level > 32767)
+            if (level > 32767) {
                 level = 32767;
+            }
             n_alSynStartVoiceParams(&player->voices[i].voice, sound->wavetable,
                                     player->voices[i].basePitch * player->voices[i].rate, level,
                                     player->mode == 2 ? player->voices[i].pan : 64, player->voices[i].mix, 0);
@@ -168,8 +171,9 @@ s32 soundEffectPlayerSetPan(SoundEffectPlayer *player, s32 id, s32 pan) {
     u8 effectivePan;
     OSIntMask mask;
     s32 i;
-    if (id == 0)
+    if (id == 0) {
         return 0;
+    }
     q = player;
     mask = osSetIntMask(1);
     for (i = 0; i < q->count; i++) {
@@ -269,8 +273,9 @@ s32 soundEffectPlayerSetEffectMix(SoundEffectPlayer *player, s32 id, s32 mix) {
     u8 effectiveMix;
     OSIntMask mask;
     s32 i;
-    if (id == 0)
+    if (id == 0) {
         return 0;
+    }
     q = player;
     mask = osSetIntMask(1);
     for (i = 0; i < q->count; i++) {
@@ -342,7 +347,7 @@ ALMicroTime soundEffectPlayerUpdateLifetimes(void *player) {
                     n_alSynStopVoice((u8 *)&state->voices[i].voice);
                     n_alSynFreeVoice((u8 *)&state->voices[i].voice);
                 } else {
-                    state->voices[i].elapsed += state->voices[i].rate * state->voices[i].pitch * 5750.0f;
+                    state->voices[i].elapsed += state->voices[i].rate * state->voices[i].pitch * 5750.0F;
                 }
             }
         }
@@ -407,8 +412,9 @@ SoundEffectPlayer *soundEffectPlayerCreate(N_ALGlobals *synth, ALHeap *heap, s32
     p->volume = 0x7FFF;
     p->mode = 2;
     p->voices = alHeapDBAlloc(NULL, 0, heap, count, sizeof(SoundEffectVoice));
-    for (i = 0; i < count; i++)
+    for (i = 0; i < count; i++) {
         p->voices[i].id = 0;
+    }
     p->player.clientData = p;
     p->player.handler = soundEffectPlayerUpdateLifetimes;
     n_alSynAddPlayer(&p->player);

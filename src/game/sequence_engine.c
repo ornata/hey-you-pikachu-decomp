@@ -364,9 +364,9 @@ s32 sequenceEngineGetVoiceVolume(VoicePlayer *driver, EngineSequence *seq, Seque
     channel = (u8 *)seq;
     channel += voice->channel * 0x1C;
     if (channel[0x2C] != 0) {
-        tremolo = 256 - (s32)((u32)(*(u8 **)((u8 *)voice + 0xC))[6] *
-                              (gSequenceTremoloWaveform[*(u16 *)((u8 *)voice + 0x3A) >> 12] * channel[0x2C])) /
-                            256 / 128;
+        tremolo = 256 - ((s32)((u32)(*(u8 **)((u8 *)voice + 0xC))[6] *
+                               (gSequenceTremoloWaveform[*(u16 *)((u8 *)voice + 0x3A) >> 12] * channel[0x2C])) /
+                         256 / 128);
     } else {
         tremolo = 256;
     }
@@ -400,7 +400,7 @@ f64 sequenceEngineGetVoicePitchRatio(EngineSequence *seq, SequenceVoice *voice) 
     ALKeyMap *keymap;
 
     channel = (u8 *)seq;
-    channel += ((u8 *)voice)[0x30] * 0x1C + 0x14;
+    channel += (((u8 *)voice)[0x30] * 0x1C) + 0x14;
     depth = channel[0x17];
     if (depth != 0) {
         vibrato =
@@ -409,8 +409,9 @@ f64 sequenceEngineGetVoicePitchRatio(EngineSequence *seq, SequenceVoice *voice) 
         vibrato = 0;
     }
     keymap = (*(ALSound **)((u8 *)voice + 0x10))->keyMap;
-    return alCents2Ratio(((*(u16 *)(channel + 4) - 0x2000) * *(u16 *)(channel + 6) / 8192) * 100 / 128 +
-                         *(s16 *)((u8 *)voice + 0x3C) + ((((u8 *)voice)[0x31] - keymap->keyBase) * 100 - keymap->detune) + vibrato);
+    return alCents2Ratio((((*(u16 *)(channel + 4) - 0x2000) * *(u16 *)(channel + 6) / 8192) * 100 / 128) +
+                         *(s16 *)((u8 *)voice + 0x3C) +
+                         ((((u8 *)voice)[0x31] - keymap->keyBase) * 100 - keymap->detune) + vibrato);
 }
 
 /// Get the sequence voice update interval.

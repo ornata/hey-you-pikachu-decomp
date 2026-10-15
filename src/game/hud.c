@@ -151,12 +151,13 @@ void hudDrawDirectionIndicators(Gfx **gdl) {
                 animationIntegerTrackEvaluate((ValueTrack *)anim, &frame, gRuntimeFrameSeconds);
                 textureGetDescriptor(5, frame, &desc);
                 textureImageInitialize(&tex, desc.image, desc.palette, desc.format, desc.size, desc.width, desc.height);
-                if (direction[0] > 0.0f)
+                if (direction[0] > 0.0F) {
                     position = 260 - offset;
-                else
+                } else {
                     position = offset + 48;
-                textureDrawScaledRepeated(gdl, &tex, position, (240 - desc.height) / 2 - 8, 2, 2, 1, 1, 1.0f, 1.0f,
-                              direction[0] > 0.0f ? 0 : 1, 0);
+                }
+                textureDrawScaledRepeated(gdl, &tex, position, ((240 - desc.height) / 2) - 8, 2, 2, 1, 1, 1.0F, 1.0F,
+                                          direction[0] > 0.0F ? 0 : 1, 0);
                 offset += 12;
                 anim += 12;
             } while (anim != (u8 *)&gHudVerticalDirectionTracks);
@@ -169,12 +170,13 @@ void hudDrawDirectionIndicators(Gfx **gdl) {
                 animationIntegerTrackEvaluate((ValueTrack *)verticalAnim, &frame, gRuntimeFrameSeconds);
                 textureGetDescriptor(5, frame, &desc);
                 textureImageInitialize(&tex, desc.image, desc.palette, desc.format, desc.size, desc.width, desc.height);
-                if (direction[1] > 0.0f)
+                if (direction[1] > 0.0F) {
                     position = offset + 40;
-                else
+                } else {
                     position = 188 - offset;
-                textureDrawScaledRepeated(gdl, &tex, (320 - desc.width) / 2, position, 2, 2, 1, 1, 1.0f, 1.0f, 0,
-                              direction[1] > 0.0f ? 0 : 1);
+                }
+                textureDrawScaledRepeated(gdl, &tex, (320 - desc.width) / 2, position, 2, 2, 1, 1, 1.0F, 1.0F, 0,
+                                          direction[1] > 0.0F ? 0 : 1);
                 offset += 12;
                 verticalAnim += 12;
             } while (verticalAnim != (u8 *)&gHudVerticalMotionTrack);
@@ -350,21 +352,22 @@ void hudDrawRecognitionIndicator(Gfx **gdl) {
             scale = gHudRecognitionScale;
             if (gHudRecognitionIndicatorState == 1) {
                 if (micGetTriggerState() != 0) {
-                    scale += randomNext() * 2.3283064365386963e-10 * 0.15f;
+                    scale += randomNext() * 2.3283064365386963e-10 * 0.15F;
                 } else {
-                    scale += randomNext() * 2.3283064365386963e-10 * 0.05f;
+                    scale += randomNext() * 2.3283064365386963e-10 * 0.05F;
                 }
-                gHudRecognitionScale += gRuntimeFrameSeconds * 0.2f;
-                if (gHudRecognitionScale > 0.8f)
-                    gHudRecognitionScale = 0.8f;
+                gHudRecognitionScale += gRuntimeFrameSeconds * 0.2F;
+                if (gHudRecognitionScale > 0.8F) {
+                    gHudRecognitionScale = 0.8F;
+                }
             }
             gDPPipeSync(gp++);
             gDPSetCombineMode(gp++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
             gDPSetRenderMode(gp++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
             gDPSetPrimColor(gp++, 0, 0, 255, 255, 255, 255);
             textureGetDescriptor(5, frame, &desc);
-            x = (242.0f - desc.width * scale * 0.5f) * 1;
-            y = 196.0f - (f32)(u32)desc.height * scale * 0.5f;
+            x = (242.0F - desc.width * scale * 0.5F) * 1;
+            y = 196.0F - ((f32)(u32)desc.height * scale * 0.5F);
             textureImageInitialize(&tex, desc.image, desc.palette, desc.format, desc.size, desc.width, desc.height);
             textureDrawScaledRepeated(&gp, &tex, x, y, 2, 2, 1, 1, 1 * scale, scale, 0, 1);
             *gdl = gp;
@@ -405,21 +408,22 @@ void hudDrawMicrophoneIndicators(Gfx **gdl) {
     if (gGameplayMicrophoneAvailable != 0 && (gHudEnabledFeatures & 4)) {
         hudDrawRecognitionIndicator(gdl);
         if (micGetDevicePort() < 0) {
-            scale = 1.0f;
+            scale = 1.0F;
             state = 1;
         } else if (gGameplayVoiceCommandsAllowed == 0 || micIsTriggerReady() == 0) {
             state = 2;
-            scale = 0.7f;
+            scale = 0.7F;
         } else {
             if (micGetTriggerState() == 0) {
                 state = 3;
-                scale = 0.8f;
+                scale = 0.8F;
             } else {
-                if (gHudMicrophoneIndicatorState == 3 || gHudMicrophoneIndicatorState == 4)
+                if (gHudMicrophoneIndicatorState == 3 || gHudMicrophoneIndicatorState == 4) {
                     state = 4;
-                else
+                } else {
                     state = 5;
-                scale = 0.85f;
+                }
+                scale = 0.85F;
                 mode = voiceRecognitionGetCommandStatus();
                 switch (mode) {
                 case 3:
@@ -427,7 +431,7 @@ void hudDrawMicrophoneIndicators(Gfx **gdl) {
                     break;
                 case 5:
                     state = 7;
-                    scale = randomNext() * 2.3283064365386963e-10 * 0.1f + 0.95f;
+                    scale = (randomNext() * 2.3283064365386963e-10 * 0.1F) + 0.95F;
                     break;
                 }
             }
@@ -435,8 +439,9 @@ void hudDrawMicrophoneIndicators(Gfx **gdl) {
         if (state != gHudMicrophoneIndicatorState) {
             TRACE("micStateChange: %d -> %d\n", gHudMicrophoneIndicatorState, state);
             gHudMicrophoneIndicatorState = state;
-            if (state == 4)
+            if (state == 4) {
                 audioPlaySoundEffect(0xBF);
+            }
             animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudMicrophoneTrack, gTextureFrameAnimationPrograms[gHudMicrophoneAnimationIds[gHudMicrophoneIndicatorState]]);
         }
         previousFrame = gHudMicrophoneTrackFrame;
@@ -455,13 +460,14 @@ void hudDrawMicrophoneIndicators(Gfx **gdl) {
                         gHudMicrophoneColors[gHudMicrophoneIndicatorState][3]);
         textureGetDescriptor(5, frame, &desc);
         if (gHudMicrophoneIndicatorState == 1) {
-            x = 300.0f - desc.width * scale;
-            y = 220.0f - (f32)(u32)desc.height * scale;
-            if (frame != previousFrame && frame == 0x59)
+            x = 300.0F - (desc.width * scale);
+            y = 220.0F - ((f32)(u32)desc.height * scale);
+            if (frame != previousFrame && frame == 0x59) {
                 audioPlayCue(0x1A);
+            }
         } else {
-            x = (274.0f - desc.width * scale * 0.5f) * 1;
-            y = 200.0f - (f32)(u32)desc.height * scale * 0.5f;
+            x = (274.0F - desc.width * scale * 0.5F) * 1;
+            y = 200.0F - ((f32)(u32)desc.height * scale * 0.5F);
         }
         textureImageInitialize(&tex, desc.image, desc.palette, desc.format, desc.size, desc.width, desc.height);
         textureDrawScaledRepeated(&gp, &tex, x, y, 2, 2, 1, 1, 1 * scale, scale, 0, 1);
@@ -480,15 +486,15 @@ extern DrawRecord gHudAlternateOverlaySprites[9];
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80022608 (0x80022608).
 void hudDrawAlternateOverlay(Gfx **gdl) {
-    static f32 phase = 0.0f;
+    static f32 phase = 0.0F;
     s32 offset;
 
-    phase -= gRuntimeFrameSeconds * 32.0f;
-    while (phase < 0.0f) {
-        phase += 32.0f;
+    phase -= gRuntimeFrameSeconds * 32.0F;
+    while (phase < 0.0F) {
+        phase += 32.0F;
     }
-    while (phase >= 32.0f) {
-        phase -= 32.0f;
+    while (phase >= 32.0F) {
+        phase -= 32.0F;
     }
     offset = phase;
     gHudAlternateOverlaySprites[1].t = offset;
@@ -503,8 +509,8 @@ void hudDrawAlternateOverlay(Gfx **gdl) {
 /// Terminated sprite descriptors for the auxiliary HUD icon.
 /// \note Original identifier: \c D_800892D4 (0x800892D4).
 DrawRecord gHudAuxiliaryIconSprites[2] = {
-    {0x71, 0xAC, 0xB9, 0x40, 0x20, 0, 0, 1.0f, 1.0f},
-    {-1, 0, 0, 0, 0, 0, 0, 0.0f, 0.0f},
+    {0x71, 0xAC, 0xB9, 0x40, 0x20, 0, 0, 1.0F, 1.0F},
+    {-1, 0, 0, 0, 0, 0, 0, 0.0F, 0.0F},
 };
 
 /// Draw the auxiliary HUD icon.
@@ -528,7 +534,7 @@ s32 gHudVerticalMotionAnimationIds[] = {0xEC, 0xED, 0xE9, 0xEB, 0xEA};
 /// \returns The animation identifier for the corresponding movement range.
 /// \note Original decompilation identifier: \c func_800227E8 (0x800227E8).
 s32 hudGetVerticalMotionAnimation(s32 position) {
-    position = (s32)((f32)position * 0.15625f);
+    position = (s32)((f32)position * 0.15625F);
     if (position < 0) {
         position = 0;
     } else if (position >= 5) {
@@ -554,7 +560,7 @@ extern s32 gHudHorizontalMotionTrack;
 void hudInitializeMotionIndicators(void) {
     animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalMotionTrack, gTextureFrameAnimationPrograms[hudGetVerticalMotionAnimation(0)]);
     animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudHorizontalMotionTrack, (ValueKey *)gHudHorizontalMotionAnimation);
-    gHudHorizontalMotionRemaining = 5.0f;
+    gHudHorizontalMotionRemaining = 5.0F;
 }
 
 /// Select and restart the HUD action-indicator animation.
@@ -609,13 +615,16 @@ void hudDrawMotionIndicators(Gfx **gdl) {
         showMotion = 0;
         showSelected = 0;
     }
-    if (!(gHudEnabledFeatures & 1))
+    if (!(gHudEnabledFeatures & 1)) {
         showSelected = 0;
-    if (!(gHudEnabledFeatures & 2))
+    }
+    if (!(gHudEnabledFeatures & 2)) {
         showMotion = 0;
+    }
     if (showSelected) {
-        if (selected != gHudMotionIndicatorAnimation)
+        if (selected != gHudMotionIndicatorAnimation) {
             hudSetActionIndicatorAnimation(selected);
+        }
         animationIntegerTrackEvaluate((ValueTrack *)&gHudMotionIndicatorTrack, &gHudActionIndicatorSprites[0].texture,
                                       gRuntimeFrameSeconds);
         gDPPipeSync((*gdl)++);
@@ -623,50 +632,57 @@ void hudDrawMotionIndicators(Gfx **gdl) {
         gDPSetCombineMode((*gdl)++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
         gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 255, 136);
         textureDrawRectangles(5, (TextureRectangle *)(void *)gHudActionIndicatorSprites, gdl);
-        if (!showMotion)
+        if (!showMotion) {
             return;
+        }
     }
     {
         s32 oldBand;
         s32 newBand;
         oldBand = hudGetVerticalMotionAnimation((s32)motion->secondaryMeterHudLevel);
-        dx = motion->actionResource * 0.32f - motion->actionResourceHudLevel;
-        dy = motion->secondaryMeter * 0.32f - motion->secondaryMeterHudLevel;
-        if (gHudHorizontalMotionRemaining > 0.0f)
+        dx = (motion->actionResource * 0.32F) - motion->actionResourceHudLevel;
+        dy = (motion->secondaryMeter * 0.32F) - motion->secondaryMeterHudLevel;
+        if (gHudHorizontalMotionRemaining > 0.0F) {
             gHudHorizontalMotionRemaining -= gRuntimeFrameSeconds;
-        step = gRuntimeFrameSeconds * 32.0f;
+        }
+        step = gRuntimeFrameSeconds * 32.0F;
         negativeStep = -step;
-        if (dx < negativeStep)
+        if (dx < negativeStep) {
             dx = negativeStep;
-        else if (step < dx)
+        } else if (step < dx) {
             dx = step;
-        if (dy < negativeStep)
+        }
+        if (dy < negativeStep) {
             dy = negativeStep;
-        else if (step < dy)
+        } else if (step < dy) {
             dy = step;
+        }
         motion->actionResourceHudLevel += dx;
         motion->secondaryMeterHudLevel += dy;
         newBand = hudGetVerticalMotionAnimation((s32)motion->secondaryMeterHudLevel);
-        if (oldBand != newBand)
+        if (oldBand != newBand) {
             animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudVerticalMotionTrack, gTextureFrameAnimationPrograms[newBand]);
+        }
     }
-    x = (s32)(motion->actionResourceHudLevel + 0.5f);
-    y = (s32)(motion->secondaryMeterHudLevel + 0.5f);
-    if (x < 0)
+    x = (s32)(motion->actionResourceHudLevel + 0.5F);
+    y = (s32)(motion->secondaryMeterHudLevel + 0.5F);
+    if (x < 0) {
         x = 0;
-    else if (x >= 32)
+    } else if (x >= 32) {
         x = 31;
-    if (y < 0)
+    }
+    if (y < 0) {
         y = 0;
-    else if (y >= 32)
+    } else if (y >= 32) {
         y = 31;
+    }
     animationIntegerTrackEvaluate((ValueTrack *)&gHudVerticalMotionTrack, &frameY, gRuntimeFrameSeconds);
     animationIntegerTrackEvaluate((ValueTrack *)&gHudHorizontalMotionTrack, &frameX, gRuntimeFrameSeconds);
     gDPPipeSync((*gdl)++);
     gSPSetOtherMode((*gdl)++, G_SETOTHERMODE_L, G_MDSFT_RENDERMODE, 29, 0x504240);
     gDPSetCombineMode((*gdl)++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
     gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 255, 160);
-    if (gHudHorizontalMotionRemaining > 0.0f) {
+    if (gHudHorizontalMotionRemaining > 0.0F) {
         gHudHorizontalMotionSprites[0].t = x;
         gHudHorizontalMotionSprites[1].texture = frameX;
         textureDrawRectangles(5, (TextureRectangle *)(void *)gHudHorizontalMotionSprites, gdl);

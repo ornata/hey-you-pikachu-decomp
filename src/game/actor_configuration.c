@@ -164,8 +164,8 @@ u8 *contactEffectCreate(f32 x, f32 y, f32 z) {
     u8 *p = objectCreateHierarchyFromTemplate((ObjectTemplate *)&gContactEffectHierarchyTemplate);
     f32 s;
 
-    if (y < 0.0f) {
-        y = terrainGetWorldHeight(x, -y, z, 0) + 1.0f;
+    if (y < 0.0F) {
+        y = terrainGetWorldHeight(x, -y, z, 0) + 1.0F;
     }
     s = gContactEffectInitialScale;
     ((RuntimeObjectPrefix *)p)->position[0] = x;
@@ -177,7 +177,7 @@ u8 *contactEffectCreate(f32 x, f32 y, f32 z) {
     ((RuntimeObjectPrefix *)p)->scale[2] = s;
     ((RuntimeObjectPrefix *)p)->scale[1] = s;
     ((RuntimeObjectPrefix *)p)->scale[0] = s;
-    ((RuntimeObjectPrefix *)p)->radius = 3.0f;
+    ((RuntimeObjectPrefix *)p)->radius = 3.0F;
     objectRegisterActiveHierarchy(p);
     return p;
 }
@@ -234,13 +234,13 @@ void contactEffectUpdate(u8 *effect) {
         if (result == 1) {
             objectRequestHierarchyDestruction(effect);
         } else if (result == 2) {
-            objectPlaySpatialSound(effect, 0x97, 20.0f, 100.0f);
+            objectPlaySpatialSound(effect, 0x97, 20.0F, 100.0F);
             result = actorGetPartObjectHandle((u8 *)((s32)gPikachuActor), 0x79);
             pull = gContactEffectChainPull;
             linkedEffectCreateChain(LINKED_EFFECT_REBOUND, ((RuntimeObjectPrefix *)effect)->worldPosition[0],
                                     ((RuntimeObjectPrefix *)effect)->worldPosition[1],
                                     ((RuntimeObjectPrefix *)effect)->worldPosition[2], gContactEffectChainScale, result,
-                                    1.0f, gContactEffectChainDamping, 2.0f, pull, pull, 0xC2, 1, 8);
+                                    1.0F, gContactEffectChainDamping, 2.0F, pull, pull, 0xC2, 1, 8);
         }
     }
     objectOrientAlongCameraView(effect);
@@ -346,8 +346,8 @@ void objectInitializeRollMotionState(u8 *object) {
 void objectResetRollVelocity(u8 *object) {
     ObjectRollMotionState *rollState = ((RuntimeObjectPrefix *)object)->state.pointer;
 
-    rollState->velocity = 0.0f;
-    if (fabsf(rollState->velocity) < 1.0f) {
+    rollState->velocity = 0.0F;
+    if (fabsf(rollState->velocity) < 1.0F) {
         rollState->velocity = 0.0;
     } else {
         ((RuntimeObjectPrefix *)object)->rotation[2] += rollState->velocity * gRuntimeFrameSeconds;
@@ -362,16 +362,16 @@ void objectResetRollVelocity(u8 *object) {
 void actorUpdateChildWithNegativeYawSpin(u8 *child) {
     actorUpdateChildMotion(child);
     ((RuntimeObjectPrefix *)child)->rotation[1] =
-        (f32)(((RuntimeObjectPrefix *)child)->rotation[1] - (240.0f * gRuntimeFrameSeconds));
-    if (((RuntimeObjectPrefix *)child)->rotation[1] < 0.0f) {
+        (f32)(((RuntimeObjectPrefix *)child)->rotation[1] - (240.0F * gRuntimeFrameSeconds));
+    if (((RuntimeObjectPrefix *)child)->rotation[1] < 0.0F) {
         do {
-            ((RuntimeObjectPrefix *)child)->rotation[1] = (f32)(((RuntimeObjectPrefix *)child)->rotation[1] + 360.0f);
-        } while (((RuntimeObjectPrefix *)child)->rotation[1] < 0.0f);
+            ((RuntimeObjectPrefix *)child)->rotation[1] = (f32)(((RuntimeObjectPrefix *)child)->rotation[1] + 360.0F);
+        } while (((RuntimeObjectPrefix *)child)->rotation[1] < 0.0F);
     }
-    if (((RuntimeObjectPrefix *)child)->rotation[1] >= 360.0f) {
+    if (((RuntimeObjectPrefix *)child)->rotation[1] >= 360.0F) {
         do {
-            ((RuntimeObjectPrefix *)child)->rotation[1] = (f32)(((RuntimeObjectPrefix *)child)->rotation[1] - 360.0f);
-        } while (((RuntimeObjectPrefix *)child)->rotation[1] >= 360.0f);
+            ((RuntimeObjectPrefix *)child)->rotation[1] = (f32)(((RuntimeObjectPrefix *)child)->rotation[1] - 360.0F);
+        } while (((RuntimeObjectPrefix *)child)->rotation[1] >= 360.0F);
     }
 }
 
@@ -382,16 +382,16 @@ void actorUpdateChildWithNegativeYawSpin(u8 *child) {
 void actorUpdateChildWithPositiveYawSpin(u8 *child) {
     actorUpdateChildMotion(child);
     ((RuntimeObjectPrefix *)child)->rotation[1] =
-        (f32)(((RuntimeObjectPrefix *)child)->rotation[1] + (240.0f * gRuntimeFrameSeconds));
-    if (((RuntimeObjectPrefix *)child)->rotation[1] < 0.0f) {
+        (f32)(((RuntimeObjectPrefix *)child)->rotation[1] + (240.0F * gRuntimeFrameSeconds));
+    if (((RuntimeObjectPrefix *)child)->rotation[1] < 0.0F) {
         do {
-            ((RuntimeObjectPrefix *)child)->rotation[1] = (f32)(((RuntimeObjectPrefix *)child)->rotation[1] + 360.0f);
-        } while (((RuntimeObjectPrefix *)child)->rotation[1] < 0.0f);
+            ((RuntimeObjectPrefix *)child)->rotation[1] = (f32)(((RuntimeObjectPrefix *)child)->rotation[1] + 360.0F);
+        } while (((RuntimeObjectPrefix *)child)->rotation[1] < 0.0F);
     }
-    if (((RuntimeObjectPrefix *)child)->rotation[1] >= 360.0f) {
+    if (((RuntimeObjectPrefix *)child)->rotation[1] >= 360.0F) {
         do {
-            ((RuntimeObjectPrefix *)child)->rotation[1] = (f32)(((RuntimeObjectPrefix *)child)->rotation[1] - 360.0f);
-        } while (((RuntimeObjectPrefix *)child)->rotation[1] >= 360.0f);
+            ((RuntimeObjectPrefix *)child)->rotation[1] = (f32)(((RuntimeObjectPrefix *)child)->rotation[1] - 360.0F);
+        } while (((RuntimeObjectPrefix *)child)->rotation[1] >= 360.0F);
     }
 }
 
@@ -450,8 +450,8 @@ extern f32 gActorChildSwayRollPhaseStep;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001DE24 (0x8001DE24).
 void actorUpdateChildMotionWithSway(u8 *object) {
-    static f32 yawPhase = 0.0f;
-    static f32 rollPhase = 0.0f;
+    static f32 yawPhase = 0.0F;
+    static f32 rollPhase = 0.0F;
     RuntimeObjectPrefix *linked;
 
     actorUpdateChildMotion(object);
@@ -459,22 +459,22 @@ void actorUpdateChildMotionWithSway(u8 *object) {
     linked->rotation[0] = ((RuntimeObjectPrefix *)object)->rotation[0];
     linked->rotation[1] = ((RuntimeObjectPrefix *)object)->rotation[1];
     linked->rotation[2] = ((RuntimeObjectPrefix *)object)->rotation[2];
-    ((RuntimeObjectPrefix *)object)->rotation[0] = 0.0f;
-    ((RuntimeObjectPrefix *)object)->rotation[1] = mathSinDegrees(yawPhase) * 20.0f;
-    ((RuntimeObjectPrefix *)object)->rotation[2] = mathSinDegrees(rollPhase) * 5.0f;
+    ((RuntimeObjectPrefix *)object)->rotation[0] = 0.0F;
+    ((RuntimeObjectPrefix *)object)->rotation[1] = mathSinDegrees(yawPhase) * 20.0F;
+    ((RuntimeObjectPrefix *)object)->rotation[2] = mathSinDegrees(rollPhase) * 5.0F;
     yawPhase += gActorChildSwayYawPhaseStep;
     rollPhase += gActorChildSwayRollPhaseStep;
-    while (yawPhase < 0.0f) {
-        yawPhase += 360.0f;
+    while (yawPhase < 0.0F) {
+        yawPhase += 360.0F;
     }
-    while (yawPhase >= 360.0f) {
-        yawPhase -= 360.0f;
+    while (yawPhase >= 360.0F) {
+        yawPhase -= 360.0F;
     }
-    while (rollPhase < 0.0f) {
-        rollPhase += 360.0f;
+    while (rollPhase < 0.0F) {
+        rollPhase += 360.0F;
     }
-    while (rollPhase >= 360.0f) {
-        rollPhase -= 360.0f;
+    while (rollPhase >= 360.0F) {
+        rollPhase -= 360.0F;
     }
 }
 
@@ -544,7 +544,7 @@ void actorAssetQueueLoadForKind(s32 kind) {
     s32 size;
     u8 *source;
 
-    index = *(s32 *)(gActorKindResourceIndexEntries + kind * sizeof(ActorKindConfig));
+    index = *(s32 *)(gActorKindResourceIndexEntries + (kind * sizeof(ActorKindConfig)));
     if (gActorAssetStorage[index] == 0) {
         size = gActorAssetResources[index].asset.romEnd - gActorAssetResources[index].asset.romAddress;
         if (gActorAssetResources[index].compressed == 0) {
@@ -678,11 +678,11 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
     if (kindConfig == (ActorKindConfig *)gPikachuKindConfiguration) {
         part = actorFindPart(actor, 0x2F);
         if (part != NULL) {
-            ((RuntimeObjectPrefix *)part)->radius = 80.0f;
+            ((RuntimeObjectPrefix *)part)->radius = 80.0F;
         }
         part = actorFindPart(actor, 0x2D);
         if (part != NULL) {
-            ((RuntimeObjectPrefix *)part)->radius = 80.0f;
+            ((RuntimeObjectPrefix *)part)->radius = 80.0F;
         }
     }
     ((ActorScriptState *)actorState)->collisionDepth = (f32)(kindConfig->collisionDepth * scale);
@@ -690,7 +690,7 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
     ((ActorScriptState *)actorState)->collisionWidth = (f32)(kindConfig->collisionWidth * scale);
     ((ActorScriptState *)actorState)->unknown208 = (f32)(kindConfig->unknown34 * scale);
     ((ActorScriptState *)actorState)->groundOffset = (f32)(kindConfig->groundOffset * scale);
-    objectScaleHierarchyBounds(actor, 1.0f);
+    objectScaleHierarchyBounds(actor, 1.0F);
     objectRefreshHierarchyWorldPositions(actor);
     if (kindConfig->animatedTextureParts != NULL) {
         actorInitializeAnimatedTextures(actor, kindConfig->animatedTextureParts);
@@ -782,8 +782,9 @@ char *actorConfigGetDisplayName(s32 kind, s32 useDefault) {
     char *alternateName;
 
     if ((useDefault != 0) ||
-        (alternateName = *(char **)(gActorKindAlternateNameEntries + kind * sizeof(ActorKindConfig)), (alternateName == NULL))) {
-        return *(char **)(gActorKindDefaultNameEntries + kind * sizeof(ActorKindConfig));
+        (alternateName = *(char **)(gActorKindAlternateNameEntries + (kind * sizeof(ActorKindConfig))),
+         (alternateName == NULL))) {
+        return *(char **)(gActorKindDefaultNameEntries + (kind * sizeof(ActorKindConfig)));
     }
     return alternateName;
 }
@@ -797,9 +798,9 @@ char *actorConfigGetDescription(s32 kind, s32 useDefault) {
     char *alternateDescription;
 
     if ((useDefault != 0) ||
-        (alternateDescription = *(char **)(gActorKindAlternateDescriptionEntries + kind * sizeof(ActorKindConfig)),
+        (alternateDescription = *(char **)(gActorKindAlternateDescriptionEntries + (kind * sizeof(ActorKindConfig))),
          (alternateDescription == NULL))) {
-        return *(char **)(gActorKindDefaultDescriptionEntries + kind * sizeof(ActorKindConfig));
+        return *(char **)(gActorKindDefaultDescriptionEntries + (kind * sizeof(ActorKindConfig)));
     }
     return alternateDescription;
 }
@@ -813,7 +814,7 @@ void actorConfigGetInteractionMarkerDimensions(s32 kind, f32 *dimensions) {
     ActorKindConfig *kindConfig;
 
     kindConfig = &((ActorKindConfig *)gActorKindConfigurationsFromOne)[kind - 1];
-    dimensions[0] = 0.0f;
+    dimensions[0] = 0.0F;
     dimensions[1] = kindConfig->markerHeight;
     dimensions[2] = kindConfig->markerDepth;
 }
@@ -833,7 +834,7 @@ void togepiCreate(f32 x, f32 y, f32 z, f32 pitch, f32 yaw, u8 *script, s32 scrip
     {
         s32 sp30;
         sp30 = progressGetValue(0x18);
-        scale = (((f32)sp30 / (f32)progressGetMaximum(0x18)) + 1.0f) * 0.5f;
+        scale = (((f32)sp30 / (f32)progressGetMaximum(0x18)) + 1.0F) * 0.5F;
     }
     actorCreateForKind(0x16, x, y, z, pitch, yaw, scale * gCurrentAreaConfiguration->objectScale, script,
                        scriptArgument);

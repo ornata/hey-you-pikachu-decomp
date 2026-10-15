@@ -360,7 +360,7 @@ void runtimeInitializePlatform(s32 schedulerAddress) {
     osViSetSpecialFeatures(2);
     controllerStartThread((GameScheduler *)schedulerAddress, 4, 8);
     controllerSetRepeatMask(0xF0F);
-    controllerSetRepeatTiming(0.3f, 0.05f);
+    controllerSetRepeatTiming(0.3F, 0.05F);
     playerResetProfile();
     toolboxReset();
     _bzero(&gRuntimePromptPanelLineCount, 0x20);
@@ -457,7 +457,7 @@ void runtimeResetTiming(void) {
     gRuntimeNextFrameSampleIndex = 0;
     gRuntimeFrameSampleCount = 0;
     gRuntimeFrameSampleTickTotal = 0;
-    gRuntimeFrameSeconds = 0.01666666753590107f;
+    gRuntimeFrameSeconds = 0.01666666753590107F;
     gRuntimeElapsedMilliseconds = 0;
     gRuntimeElapsedSeconds = 0;
     gRuntimeMillisecondCheckpointMicroseconds = osGetTime() * 64 / 3000;
@@ -478,17 +478,20 @@ f32 runtimeSmoothFrameDuration(u64 delta) {
     gRuntimeFrameSampleTickTotal += delta - gRuntimeFrameTickSamples[gRuntimeNextFrameSampleIndex];
     gRuntimeFrameTickSamples[gRuntimeNextFrameSampleIndex] = delta;
     gRuntimeNextFrameSampleIndex++;
-    if (gRuntimeNextFrameSampleIndex >= 10)
+    if (gRuntimeNextFrameSampleIndex >= 10) {
         gRuntimeNextFrameSampleIndex = 0;
-    if (gRuntimeFrameSampleCount < 10)
+    }
+    if (gRuntimeFrameSampleCount < 10) {
         gRuntimeFrameSampleCount++;
+    }
     result = (f32)(gRuntimeFrameSampleTickTotal * 64 / 3000);
-    minimum = 0.001f;
-    result = result / 1000000.0f / (f32)gRuntimeFrameSampleCount;
-    if (result < minimum)
+    minimum = 0.001F;
+    result = result / 1000000.0F / (f32)gRuntimeFrameSampleCount;
+    if (result < minimum) {
         result = minimum;
-    else if (0.1f < result)
-        result = 0.1f;
+    } else if (0.1F < result) {
+        result = 0.1F;
+    }
     return result;
 }
 
@@ -532,7 +535,7 @@ u64 runtimeGetElapsedSeconds(void) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000B124 (0x8000B124).
 void runtimeResetUiPulse(void) {
-    gRuntimeUiPulseSeconds = 0.0f;
+    gRuntimeUiPulseSeconds = 0.0F;
 }
 
 /// Get the current opacity of the shared repeating UI pulse.
@@ -543,7 +546,7 @@ s32 runtimeGetUiPulseAlpha(void) {
     s32 var_v1;
     s32 tmp;
 
-    tmp = (mathSinDegrees((f32)((s32)(gRuntimeUiPulseSeconds * 1000.0f) % 1500) * 0.24f) * 127.0f) + 128.0f;
+    tmp = (mathSinDegrees((f32)((s32)(gRuntimeUiPulseSeconds * 1000.0F) % 1500) * 0.24F) * 127.0F) + 128.0F;
     var_v1 = tmp;
     if (tmp < 0) {
         var_v1 = 0;
@@ -667,10 +670,10 @@ void runtimeUpdateGameMode(void) {
         break;
     case 11:
         if (gRuntimeGameModeEntryPending != 0) {
-            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.8f);
+            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.8F);
             runtimeAccumulateActorScriptTime();
             gRuntimeGameModeEntryPending = 0;
-        } else if (gPrimarySecondaryOverlayRemainingSeconds == 0.0f) {
+        } else if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
             runtimeRequestProgramChange(0);
         }
         objectUpdateGroup(0);
@@ -678,10 +681,10 @@ void runtimeUpdateGameMode(void) {
     case 12:
         if (gRuntimeGameModeEntryPending != 0) {
             gCompletedVisitCardPending = 1;
-            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.8f);
+            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.8F);
             runtimeAccumulateActorScriptTime();
             gRuntimeGameModeEntryPending = 0;
-        } else if (gPrimarySecondaryOverlayRemainingSeconds == 0.0f) {
+        } else if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
             runtimeRequestGameModeChange(5);
         }
         objectUpdateGroup(0);
@@ -689,11 +692,11 @@ void runtimeUpdateGameMode(void) {
     case 6:
         if (gRuntimeGameModeEntryPending != 0) {
             audioStopCategories(AUDIO_CATEGORY_ALL, 0.10000000149011612);
-            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.8f);
+            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.8F);
             runtimeAccumulateActorScriptTime();
             controllerRequestRumbleReset(0);
             gRuntimeGameModeEntryPending = 0;
-        } else if (gPrimarySecondaryOverlayRemainingSeconds == 0.0f) {
+        } else if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
             audioStopCategories(AUDIO_CATEGORY_ALL, 0.0);
             runtimeRequestGameModeChange(8);
         }
@@ -706,11 +709,11 @@ void runtimeUpdateGameMode(void) {
         break;
     case 7:
         if (gRuntimeGameModeEntryPending != 0) {
-            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0x1E, 0.8f);
+            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0x1E, 0.8F);
             runtimeAccumulateActorScriptTime();
             controllerRequestRumbleReset(0);
             gRuntimeGameModeEntryPending = 0;
-        } else if (gPrimarySecondaryOverlayRemainingSeconds == 0.0f) {
+        } else if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
             runtimeRequestGameModeChange(0xE);
         }
         objectUpdateGroup(0);
@@ -795,7 +798,7 @@ void runtimeUpdateGameMode(void) {
     case 17:
         if (gRuntimeSaveAcknowledgeButtons & gControllerInputState[0].pressed) {
             audioStopCategories(AUDIO_CATEGORY_ALL, 0.10000000149011612);
-            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.0f);
+            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.0F);
             textPanelReleaseEntries((TextPanel *)&gRuntimePromptPanelLineCount);
             gRuntimePromptPanelImages = 0;
             if (gRuntimeResetProfileAfterSave != 0) {
@@ -845,7 +848,7 @@ s32 rspTryResetProgramCounter(void);
 /// \note Original decompilation identifier: \c func_8000BA1C (0x8000BA1C).
 void runtimeShutdownAndHalt(void) {
     s16 *message = NULL;
-    osViSetYScale(1.0f);
+    osViSetYScale(1.0F);
     controllerRequestRumbleReset(0);
     audioShutdown();
     if (gRuntimePendingGraphicsTasks != 0) {
@@ -863,8 +866,9 @@ void runtimeShutdownAndHalt(void) {
         } while (gRuntimePendingGraphicsTasks != 0);
     }
     for (;;) {
-        if (rspTryResetProgramCounter() == 0)
+        if (rspTryResetProgramCounter() == 0) {
             break;
+        }
         osRecvMesg(&gRuntimeEventQueue, (OSMesg *)&message, OS_MESG_BLOCK);
     }
     for (;;) {
@@ -910,38 +914,41 @@ void runtimeRunProgramEventLoop(void) {
                     runtimeUpdateTiming();
                     controllerUpdateInputState();
                     voiceCommandUpdate();
-                    if (gRuntimeRenderPrimed == 0)
+                    if (gRuntimeRenderPrimed == 0) {
                         resumed = 0;
-                    else {
+                    } else {
                         renderBeginFrame();
                         resumed = 1;
                     }
                     romCacheReleaseUses(&gMotionRomCache);
                     gRuntimeRenderPrimed = 1;
                     callback = gRuntimeProgramUpdateEntries[gRuntimeCurrentProgram].callback;
-                    if (callback != NULL)
+                    if (callback != NULL) {
                         callback();
+                    }
                     audioUpdateGameplayMusicDucking();
                     if (resumed != 0) {
                         renderSubmitFrameBorder();
                         gRuntimePendingGraphicsTasks++;
                     }
-                } else
+                } else {
                     return;
+                }
             }
             continue;
         case GAME_MESSAGE_FRAME_COMPLETE:
             gRuntimePendingGraphicsTasks--;
             if (startupFrames != 0) {
-                if (startupFrames < 4U)
+                if (startupFrames < 4U) {
                     startupFrames++;
-                else {
+                } else {
                     osViBlack(0);
                     startupFrames = 0;
                 }
             }
-            if (gRuntimeProgramChangeRequested != 0 && gRuntimePendingGraphicsTasks == 0)
+            if (gRuntimeProgramChangeRequested != 0 && gRuntimePendingGraphicsTasks == 0) {
                 return;
+            }
             continue;
         case GAME_MESSAGE_PRE_NMI:
             runtimeShutdownAndHalt();

@@ -283,10 +283,11 @@ void actionCommandPlayGroundContactEffects(u8 *object, ActorScriptState *state, 
                                          ((RuntimeObjectPrefix *)object)->worldPosition[2], 0);
     args = (SoundAmplitude *)(*source)->args;
     if (args->amount > 0) {
-        if (object == ((u8 *)gPikachuActor))
+        if (object == ((u8 *)gPikachuActor)) {
             type = 3;
-        else
+        } else {
             type = 4;
+        }
         sound = terrainGetMaterialSound(type, ground);
         if (sound >= 0) {
             handle = actorPlayTrackedSound(object, sound);
@@ -294,8 +295,9 @@ void actionCommandPlayGroundContactEffects(u8 *object, ActorScriptState *state, 
             audioSetSoundEffectPitch(handle, (random * 2.3283064365386963e-10 - 0.5) * args->amount * 3.0);
         }
     }
-    if (args->amount >= 2)
+    if (args->amount >= 2) {
         terrainCreateContactEffect((f32 *)(actorGetDefaultPart(object) + 0x44), ground);
+    }
 }
 
 /// ABI compatibility declaration: the ROM caller supplies an unused command pointer.
@@ -330,10 +332,10 @@ void actionCommandSetActorTint(u8 *actor, ActorScriptState *state, ActorActionCu
 
 /// Per-mode vertical launch factors, negated and multiplied by command speed.
 /// \note Original identifier: \c D_800A4938 (0x800A4938).
-const f32 gActionLaunchVerticalSpeedFactors[8] = {-30.0f, -30.0f, -60.0f, -600.0f, 300.0f, -30.0f, -60.0f, -0.4f};
+const f32 gActionLaunchVerticalSpeedFactors[8] = {-30.0F, -30.0F, -60.0F, -600.0F, 300.0F, -30.0F, -60.0F, -0.4F};
 /// Per-mode launch heading offsets in degrees.
 /// \note Original identifier: \c D_800A4958 (0x800A4958).
-const f32 gActionLaunchHeadingOffsets[8] = {0.0f, 0.0f, 240.0f, 0.0f, 0.0f, 0.0f, 200.0f, 0.0f};
+const f32 gActionLaunchHeadingOffsets[8] = {0.0F, 0.0F, 240.0F, 0.0F, 0.0F, 0.0F, 200.0F, 0.0F};
 /// Per-mode flags passed to the held-item throw interface.
 /// \note Original identifier: \c D_800A4978 (0x800A4978).
 const s32 gActionLaunchThrowFlags[8] = {1, 1, 1, 1, 1, 1, 1, 0};
@@ -384,7 +386,7 @@ void actionCommandLaunchHeldItem(u8 *actor, ActorScriptState *state, ActorAction
         return;
     }
     l = (Launch *)(*source)->args;
-    speed = l->speed * 60.0f;
+    speed = l->speed * 60.0F;
     actorGetConfiguredAttachmentPosition(actor, ((RuntimeObjectPrefix *)obj)->radius, pos);
     switch (l->kind) {
     case 0:
@@ -392,7 +394,7 @@ void actionCommandLaunchHeldItem(u8 *actor, ActorScriptState *state, ActorAction
             ((RuntimeObjectPrefix *)p)->kind == 0x7F) {
             dx = gPlayerState.position[0] - ((RuntimeObjectPrefix *)obj)->position[0];
             dz = gPlayerState.position[2] - ((RuntimeObjectPrefix *)obj)->position[2];
-            len = sqrtf(dx * dx + dz * dz);
+            len = sqrtf((dx * dx) + (dz * dz));
             speed /= len;
             vel[0] = dx * speed;
             vel[1] = -gActionLaunchVerticalSpeedFactors[l->kind] * l->speed;
@@ -409,25 +411,26 @@ void actionCommandLaunchHeldItem(u8 *actor, ActorScriptState *state, ActorAction
         vel[2] = mathCosDegrees(ang) * speed;
         break;
     case 6:
-        speed *= randomNext() * 2.3283064365386963e-10 * 0.5 + 0.5;
+        speed *= (randomNext() * 2.3283064365386963e-10 * 0.5) + 0.5;
         ang6 = (state->orientation[1] + gActionLaunchHeadingOffsets[l->kind]) +
-               (randomNext() * 2.3283064365386963e-10 - 0.5) * 90.0;
+               ((randomNext() * 2.3283064365386963e-10 - 0.5) * 90.0);
         vel[0] = mathSinDegrees(ang6) * speed;
         vel[1] = -gActionLaunchVerticalSpeedFactors[l->kind] * l->speed;
         vel[2] = mathCosDegrees(ang6) * speed;
         break;
     case 7:
-        linkedEffectCreateChain(
-            randomBelow(2) != 0 ? LINKED_EFFECT_REBOUND : LINKED_EFFECT_FALLING, pos[0], pos[1], pos[2], randomNext() * 2.3283064365386963e-10 * 0.1f + 0.03f,
-            actorGetPartObjectHandle(((u8 *)gPikachuActor), 0x79), 1.0f, 0.8f, 2.0f, 0.1f, 0.1f, 0xC2, 1, randomBelow(2) + 1);
+        linkedEffectCreateChain(randomBelow(2) != 0 ? LINKED_EFFECT_REBOUND : LINKED_EFFECT_FALLING, pos[0], pos[1],
+                                pos[2], (randomNext() * 2.3283064365386963e-10 * 0.1F) + 0.03F,
+                                actorGetPartObjectHandle(((u8 *)gPikachuActor), 0x79), 1.0F, 0.8F, 2.0F, 0.1F, 0.1F,
+                                0xC2, 1, randomBelow(2) + 1);
         vel[0] = (randomNext() * 2.3283064365386963e-10 - 0.5) * 8.0;
-        vel[1] = 0.0f;
+        vel[1] = 0.0F;
         vel[2] = (randomNext() * 2.3283064365386963e-10 - 0.5) * 8.0;
         fallingParticleCreate(randomBelow(7), randomBelow(3), pos, vel,
-                      randomNext() * 2.3283064365386963e-10 * 0.4f + 0.8f);
-        speed = randomNext() * 2.3283064365386963e-10 * 0.1f + 0.8f;
+                              (randomNext() * 2.3283064365386963e-10 * 0.4F) + 0.8F);
+        speed = (randomNext() * 2.3283064365386963e-10 * 0.1F) + 0.8F;
         ang7 = (state->orientation[1] + gActionLaunchHeadingOffsets[l->kind]) +
-               (randomNext() * 2.3283064365386963e-10 - 0.5) * 360.0;
+               ((randomNext() * 2.3283064365386963e-10 - 0.5) * 360.0);
         vel[0] = mathSinDegrees(ang7) * speed;
         vel[1] = -gActionLaunchVerticalSpeedFactors[l->kind] * l->speed;
         vel[2] = mathCosDegrees(ang7) * speed;
@@ -462,8 +465,8 @@ void actionCommandPickUpNearbyItem(u8 *actor, ActorScriptState *state, ActorActi
     u8 *r;
 
     if (objectFindLiveByHandle(state->heldItemHandle) == 0) {
-        actorGetConfiguredAttachmentPosition(actor, 0.0f, pos);
-        r = itemFindNearest(pos, state->searchItemRange, 0.0f, 0.0f, 360.0f, state->searchItemKind,
+        actorGetConfiguredAttachmentPosition(actor, 0.0F, pos);
+        r = itemFindNearest(pos, state->searchItemRange, 0.0F, 0.0F, 360.0F, state->searchItemKind,
                             state->searchItemKind, *(s32 *)(((u8 *)command) + 8), 0);
         if (r != NULL) {
             actorTryHoldItem(actor, ((RuntimeObjectPrefix *)r)->handle, 0);
@@ -492,11 +495,10 @@ void actionCommandCreateRandomHeldItem(u8 *object, ActorScriptState *state, Acto
     u8 *spawned;
     SpawnChoice *choice;
     if (objectFindLiveByHandle(state->heldItemHandle) == 0) {
-        actorGetConfiguredAttachmentPosition((u8 *)object, 0.0f, &position.x);
+        actorGetConfiguredAttachmentPosition((u8 *)object, 0.0F, &position.x);
         choice = (SpawnChoice *)(*source)->args;
         count = choice->kindCount;
-        spawned =
-            itemCreate(position.x, position.y, position.z, 0.0f, 0.0f, randomBelow(count) + choice->firstKind);
+        spawned = itemCreate(position.x, position.y, position.z, 0.0F, 0.0F, randomBelow(count) + choice->firstKind);
         if (spawned != NULL) {
             actorTryHoldItem(object, ((RuntimeObjectPrefix *)spawned)->handle, 1);
         }
@@ -509,8 +511,8 @@ void actionCommandCreateRandomHeldItem(u8 *object, ActorScriptState *state, Acto
 /// \note Original decompilation identifier: \c func_80023F6C (0x80023F6C).
 void effectCreateVerticalStack(u8 *position) {
     wispEffectCreate(1, ((f32 *)position)[0], ((f32 *)position)[1], ((f32 *)position)[2]);
-    wispEffectCreate(1, ((f32 *)position)[0], ((f32 *)position)[1] + 19.5f, ((f32 *)position)[2]);
-    wispEffectCreate(1, ((f32 *)position)[0], ((f32 *)position)[1] + 39.5f, ((f32 *)position)[2]);
+    wispEffectCreate(1, ((f32 *)position)[0], ((f32 *)position)[1] + 19.5F, ((f32 *)position)[2]);
+    wispEffectCreate(1, ((f32 *)position)[0], ((f32 *)position)[1] + 39.5F, ((f32 *)position)[2]);
 }
 
 
@@ -587,17 +589,17 @@ void actionCommandEmitPairedTargetedBursts(u8 *object, ActorScriptState *state, 
             particles = randomBelow(10);
             random = randomNext();
             yaw = (s32)randomBelow(90);
-            ribbonEffectCreate(particles + 10, args->lifetime, 0.5f, random * 2.3283064365386963e-10 * 0.3f, args->kind,
+            ribbonEffectCreate(particles + 10, args->lifetime, 0.5F, random * 2.3283064365386963e-10 * 0.3F, args->kind,
                                left[0], left[1], left[2],
-                               ((RuntimeObjectPrefix *)object)->rotation[1] - 120.0f + 30.0f - yaw,
-                               ((RuntimeObjectPrefix *)object)->rotation[2] + 45.0f - (s32)randomBelow(90), target);
+                               ((RuntimeObjectPrefix *)object)->rotation[1] - 120.0F + 30.0F - yaw,
+                               ((RuntimeObjectPrefix *)object)->rotation[2] + 45.0F - (s32)randomBelow(90), target);
             particles = randomBelow(10);
             random = randomNext();
             yaw = (s32)randomBelow(90);
-            ribbonEffectCreate(particles + 10, args->lifetime, 0.5f, random * 2.3283064365386963e-10 * 0.3f, args->kind,
+            ribbonEffectCreate(particles + 10, args->lifetime, 0.5F, random * 2.3283064365386963e-10 * 0.3F, args->kind,
                                right[0], right[1], right[2],
-                               ((RuntimeObjectPrefix *)object)->rotation[1] - 60.0f + 60.0f - yaw,
-                               ((RuntimeObjectPrefix *)object)->rotation[2] + 45.0f - (s32)randomBelow(90), target);
+                               ((RuntimeObjectPrefix *)object)->rotation[1] - 60.0F + 60.0F - yaw,
+                               ((RuntimeObjectPrefix *)object)->rotation[2] + 45.0F - (s32)randomBelow(90), target);
         }
         other = actorGetTrackingTarget(object);
         if (other != NULL && ((RuntimeObjectPrefix *)other)->kind == 0x86 &&
@@ -629,16 +631,19 @@ void actionCommandEmitParticlesAtTarget(u8 *object, ActorScriptState *unused, Ac
         break;
     case 2:
         target = actorGetTrackingTarget(object);
-        if (target == NULL)
+        if (target == NULL) {
             return;
+        }
         break;
     default:
         target = actorGetDefaultPart(object);
         break;
     }
-    if (target == NULL)
+    if (target == NULL) {
         target = object;
-    particleClusterCreate(args->count, args->lifetime, 5.0f, randomNext() * 2.3283064365386963e-10 * 0.4f + 0.1f, target);
+    }
+    particleClusterCreate(args->count, args->lifetime, 5.0F, (randomNext() * 2.3283064365386963e-10 * 0.4F) + 0.1F,
+                          target);
 }
 
 typedef struct {
@@ -671,7 +676,7 @@ void actionCommandCreateScatteredParticleEffect(u8 *actor, ActorScriptState *sta
                                         ((RuntimeObjectPrefix *)object)->worldPosition[2], NULL);
     ground.v[2] = ((RuntimeObjectPrefix *)object)->worldPosition[2];
     effectEmitterCreateForStyle(EFFECT_EMIT_SCATTERED_PARTICLES, ((RuntimeObjectPrefix *)object)->worldPosition,
-                                *(f32 *)(((u8 *)command) + 0xC), 0, ((RuntimeObjectPrefix *)object)->handle, -6.0f);
+                                *(f32 *)(((u8 *)command) + 0xC), 0, ((RuntimeObjectPrefix *)object)->handle, -6.0F);
 }
 
 /// Script operands for a converging effect around an actor or its linked part.
@@ -728,7 +733,7 @@ void actionCommandCreateItemTransformationEffect(u8 *actor, ActorScriptState *st
         return;
     }
     wispEffectCreate(0, ((RuntimeObjectPrefix *)actor)->worldPosition[0],
-                     ((RuntimeObjectPrefix *)actor)->worldPosition[1] + 2.0f,
+                     ((RuntimeObjectPrefix *)actor)->worldPosition[1] + 2.0F,
                      ((RuntimeObjectPrefix *)actor)->worldPosition[2]);
     if (itemTryTransformToReplacement(state->heldItemHandle) != 0) {
         state->costedActionResult = 1;
@@ -952,7 +957,7 @@ void actionCommandStartDirectionMotion(u8 *actor, ActorScriptState *state, Actor
     for (i = 0; i < 2; i++) {
         pts[i].pitch = p->start;
         pts[i].yaw = p->end;
-        directionAnimationSetNextPoseAngles(&state->directionAnimation, -40.0f, 0.0f, i);
+        directionAnimationSetNextPoseAngles(&state->directionAnimation, -40.0F, 0.0F, i);
     }
     directionAnimationStartMotion(&state->directionAnimation, p->duration, pts);
 }
@@ -981,7 +986,7 @@ void actionCommandConfigureHeldItem(u8 *actor, ActorScriptState *state, ActorAct
             state->attachmentMode = p->id;
         }
     }
-    if (p->val > 0.0f) {
+    if (p->val > 0.0F) {
         v = (f32 *)objectFindLiveByHandle(state->heldItemHandle);
         if (v != NULL) {
             f = gCurrentAreaConfiguration->objectScale * p->val;
@@ -1015,10 +1020,10 @@ void actionCommandTransformTargetItem(u8 *actor, ActorScriptState *state, ActorA
     } else {
         replacementHandle = itemTransform(((RuntimeObjectPrefix *)targetItem)->handle,
                                           ((ActionScalarArguments *)transformArguments)->integer);
-        if ((((ActionScalarArguments *)transformArguments)->scalar >= 0.0f) &&
+        if ((((ActionScalarArguments *)transformArguments)->scalar >= 0.0F) &&
             ((replacementHandle == 0) || (replacementHandle == ((RuntimeObjectPrefix *)targetItem)->handle))) {
-            objectPlaySpatialSound(targetItem, (s32)((ActionScalarArguments *)transformArguments)->scalar, 20.0f,
-                                   100.0f);
+            objectPlaySpatialSound(targetItem, (s32)((ActionScalarArguments *)transformArguments)->scalar, 20.0F,
+                                   100.0F);
         }
     }
 }
@@ -1131,14 +1136,14 @@ void actorUpdateActionScript(u8 *actor, ActorActionCueCommand **nextCommand, f32
         case 46:
             j = (CmdJump *)c->args;
             c = j->target;
-            if (j->reset != 0.0f) {
-                *clock = 0.0f;
+            if (j->reset != 0.0F) {
+                *clock = 0.0F;
             }
             break;
         case 47:
             d = *(f32 *)((u8 *)st + 0x134) - *(f32 *)((u8 *)st + 0x138);
-            if (d < 0.001f && d > -0.001f) {
-                *clock = 0.0f;
+            if (d < 0.001F && d > -0.001F) {
+                *clock = 0.0F;
                 c++;
             } else {
                 goto out;

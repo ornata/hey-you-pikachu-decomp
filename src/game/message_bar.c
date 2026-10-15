@@ -101,22 +101,23 @@ void voiceReactiveSpinnerUpdate(u8 *object) {
     volatile f32 *dt = &gRuntimeFrameSeconds;
 
     if (voiceRecognitionGetCommandStatus() == 5) {
-        *speed += mathMapRangeClamped(0.0f, 2000.0f, 40.0f, 0.0f,
-                                      objectGetApproxDistanceToPoint(object, (Vec3f *)gRenderCameras[gRenderCameraIndex].eye)) *
+        *speed += mathMapRangeClamped(
+                      0.0F, 2000.0F, 40.0F, 0.0F,
+                      objectGetApproxDistanceToPoint(object, (Vec3f *)gRenderCameras[gRenderCameraIndex].eye)) *
                   *dt;
-        if (*speed > 600.0f) {
-            *speed = 600.0f;
+        if (*speed > 600.0F) {
+            *speed = 600.0F;
         }
     }
-    if (*speed > 0.0f) {
-        *speed -= 300.0f * *dt;
-        if (*speed > 0.0f) {
+    if (*speed > 0.0F) {
+        *speed -= 300.0F * *dt;
+        if (*speed > 0.0F) {
             *(f32 *)(object + 0x10) += *speed * *dt;
-            while (*(f32 *)(object + 0x10) < 0.0f) {
-                *(f32 *)(object + 0x10) += 360.0f;
+            while (*(f32 *)(object + 0x10) < 0.0F) {
+                *(f32 *)(object + 0x10) += 360.0F;
             }
-            while (*(f32 *)(object + 0x10) >= 360.0f) {
-                *(f32 *)(object + 0x10) -= 360.0f;
+            while (*(f32 *)(object + 0x10) >= 360.0F) {
+                *(f32 *)(object + 0x10) -= 360.0F;
             }
         }
     }
@@ -148,14 +149,14 @@ extern u8 gMessageBarCurrentText[];
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002767C (0x8002767C).
 void messageBarActivateNext(void) {
-    u8 *queueCursor = (u8 *)&gMessageBarState + gMessageBarState.queueReadIndex * 0x44;
+    u8 *queueCursor = (u8 *)&gMessageBarState + (gMessageBarState.queueReadIndex * 0x44);
 
     TRACE("_next: getIdx:%d setIdx:%d drawIdx:%d workIdx:%d\n", gMessageBarState.queueReadIndex, gMessageBarState.queueWriteIndex,
           gMessageBarState.displayImageIndex, gMessageBarState.workImageIndex);
 
-    gMessageBarState.duration = *(f32 *)((u8 *)&gMessageBarState + gMessageBarState.queueReadIndex * 0x44 + 0x54);
-    gMessageBarState.elapsed = 0.0f;
-    gMessageBarState.scrollAngle = 0.0f;
+    gMessageBarState.duration = *(f32 *)((u8 *)&gMessageBarState + (gMessageBarState.queueReadIndex * 0x44) + 0x54);
+    gMessageBarState.elapsed = 0.0F;
+    gMessageBarState.scrollAngle = 0.0F;
     stringCopy(gMessageBarCurrentText, queueCursor + 0x18);
     if (++gMessageBarState.queueReadIndex >= 0x10) {
         gMessageBarState.queueReadIndex = 0;
@@ -163,7 +164,7 @@ void messageBarActivateNext(void) {
     if (++gMessageBarState.displayImageIndex >= 3) {
         gMessageBarState.displayImageIndex = 0;
     }
-    gMessageBarState.transitionRemaining = 0.0f;
+    gMessageBarState.transitionRemaining = 0.0F;
 }
 
 /// Advance the message bar display timer and queued-message transitions.
@@ -178,14 +179,14 @@ s32 messageBarUpdate(void) {
         if (gMessageBarState.elapsed < gMessageBarState.duration) {
             return 1;
         }
-        gMessageBarState.duration = 0.0f;
-        gMessageBarState.elapsed = 0.0f;
+        gMessageBarState.duration = 0.0F;
+        gMessageBarState.elapsed = 0.0F;
         return 0;
     }
     pending = gMessageBarState.queueWriteIndex - gMessageBarState.queueReadIndex;
-    if (gMessageBarState.transitionRemaining > 0.0f) {
+    if (gMessageBarState.transitionRemaining > 0.0F) {
         gMessageBarState.transitionRemaining -= gRuntimeFrameSeconds;
-        if (gMessageBarState.transitionRemaining <= 0.0f) {
+        if (gMessageBarState.transitionRemaining <= 0.0F) {
             messageBarActivateNext();
         }
         return 1;
@@ -193,7 +194,7 @@ s32 messageBarUpdate(void) {
     if (pending < 0) {
         pending += 16;
     }
-    interval = mathMapRangeClamped(1.0f, 0.05f, 4.0f, 0.05f, pending);
+    interval = mathMapRangeClamped(1.0F, 0.05F, 4.0F, 0.05F, pending);
     if ((gMessageBarState.elapsed < gMessageBarState.duration) && (gMessageBarState.elapsed < interval)) {
         return 1;
     }
@@ -202,11 +203,11 @@ s32 messageBarUpdate(void) {
     if (++gMessageBarState.workImageIndex >= 3) {
         gMessageBarState.workImageIndex = 0;
     }
-    if (gMessageBarState.duration == 0.0f) {
+    if (gMessageBarState.duration == 0.0F) {
         messageBarActivateNext();
         return 1;
     }
-    gMessageBarState.transitionRemaining = 0.25f;
+    gMessageBarState.transitionRemaining = 0.25F;
     return 1;
 }
 
@@ -259,7 +260,7 @@ s32 messageBarEnqueue(s32 style, f32 duration, u8 *text) {
     }
     if (gMessageBarState.queueReadIndex == gMessageBarState.queueWriteIndex &&
         memoryCompareBytes(gMessageBarCurrentText, text, strlen(text)) == 0) {
-        gMessageBarState.elapsed = 0.0f;
+        gMessageBarState.elapsed = 0.0F;
         gMessageBarState.duration = duration;
         return 1;
     }
@@ -283,9 +284,9 @@ s32 messageBarEnqueue(s32 style, f32 duration, u8 *text) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80027A88 (0x80027A88).
 void messageBarClear(void) {
-    gMessageBarState.duration = 0.0f;
+    gMessageBarState.duration = 0.0F;
     gMessageBarState.elapsed = gMessageBarState.duration;
-    gMessageBarState.transitionRemaining = 0.0f;
+    gMessageBarState.transitionRemaining = 0.0F;
     gMessageBarState.queueReadIndex = gMessageBarState.queueWriteIndex;
     gMessageBarState.workImageIndex = gMessageBarState.displayImageIndex;
     gMessageBarState.workImageIndex++;
@@ -302,9 +303,9 @@ s32 messageBarUpdateAndDraw(void) {
     f32 fadeTime;
     s32 slot;
     f32 scroll;
-    f32 transition = 1.0f;
-    f32 opacity = 1.0f;
-    f32 textOpacity = 1.0f;
+    f32 transition = 1.0F;
+    f32 opacity = 1.0F;
+    f32 textOpacity = 1.0F;
     s32 textTop = 22;
     s32 offset;
     s32 edge;
@@ -313,37 +314,37 @@ s32 messageBarUpdateAndDraw(void) {
         return 0;
     }
     slot = gMessageBarState.displayImageIndex;
-    if (gMessageBarState.elapsed >= 2.8f) {
-        fadeTime = gMessageBarState.duration - 2.8f;
-        if (fadeTime > 0.1f) {
+    if (gMessageBarState.elapsed >= 2.8F) {
+        fadeTime = gMessageBarState.duration - 2.8F;
+        if (fadeTime > 0.1F) {
             textOpacity = opacity = (gMessageBarState.duration - gMessageBarState.elapsed) / fadeTime;
         } else {
-            textOpacity = opacity = 0.0f;
+            textOpacity = opacity = 0.0F;
         }
     }
-    if (opacity < 0.0f) {
-        opacity = 0.0f;
-    } else if (opacity > 1.0f) {
-        opacity = 1.0f;
+    if (opacity < 0.0F) {
+        opacity = 0.0F;
+    } else if (opacity > 1.0F) {
+        opacity = 1.0F;
     }
-    if (textOpacity < 0.1f) {
-        textOpacity = 0.1f;
-    } else if (textOpacity > 1.0f) {
-        textOpacity = 1.0f;
+    if (textOpacity < 0.1F) {
+        textOpacity = 0.1F;
+    } else if (textOpacity > 1.0F) {
+        textOpacity = 1.0F;
     }
-    if (gMessageBarState.transitionRemaining != 0.0f) {
-        transition = gMessageBarState.transitionRemaining * 4.0f;
-        if (transition < 0.0f) {
-            transition = 0.0f;
-        } else if (transition > 1.0f) {
-            transition = 1.0f;
+    if (gMessageBarState.transitionRemaining != 0.0F) {
+        transition = gMessageBarState.transitionRemaining * 4.0F;
+        if (transition < 0.0F) {
+            transition = 0.0F;
+        } else if (transition > 1.0F) {
+            transition = 1.0F;
         }
-        opacity = mathMapRangeClamped(0.0f, 1.0f, 1.0f, opacity, transition);
+        opacity = mathMapRangeClamped(0.0F, 1.0F, 1.0F, opacity, transition);
     }
     gDPPipeSync(gRenderDisplayListCursor++);
     gDPSetCycleType(gRenderDisplayListCursor++, G_CYC_1CYCLE);
     gDPSetRenderMode(gRenderDisplayListCursor++, 0, 0x504240);
-    gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 10, 10, 10, (u32)(210.0f * opacity));
+    gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 10, 10, 10, (u32)(210.0F * opacity));
     gDPSetCombineMode(gRenderDisplayListCursor++, G_CC_PRIMITIVE, G_CC_PRIMITIVE);
     gDPFillRectangle(gRenderDisplayListCursor++, 20, 20, 299, 40);
     textDrawBegin(gRenderDisplayListCursor);
@@ -356,33 +357,33 @@ s32 messageBarUpdateAndDraw(void) {
     gDPSetRenderMode(gRenderDisplayListCursor++, 0, 0x504A50);
     gDPSetCombineLERP(gRenderDisplayListCursor++, 0, 0, 0, TEXEL0, PRIMITIVE, 0, TEXEL0, 0, 0, 0, 0, TEXEL0, PRIMITIVE,
                       0, TEXEL0, 0);
-    gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 255, 255, 255, (u32)(255.0f * textOpacity));
+    gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 255, 255, 255, (u32)(255.0F * textOpacity));
     if (gMessageBarState.handles[slot].image->width < 272) {
         offset = 0;
     } else {
-        scroll = -mathCosDegrees(gMessageBarState.scrollAngle) * 0.7f + 0.5f;
-        if (scroll < 0.0f) {
-            scroll = 0.0f;
-        } else if (scroll > 1.0f) {
-            scroll = 1.0f;
+        scroll = (-mathCosDegrees(gMessageBarState.scrollAngle) * 0.7F) + 0.5F;
+        if (scroll < 0.0F) {
+            scroll = 0.0F;
+        } else if (scroll > 1.0F) {
+            scroll = 1.0F;
         }
         offset = (gMessageBarState.handles[slot].image->width - 271) * scroll;
-        if (gMessageBarState.transitionRemaining == 0.0f) {
-            gMessageBarState.scrollAngle += gRuntimeFrameSeconds * 75.0f;
-            while (gMessageBarState.scrollAngle < 0.0f) {
-                gMessageBarState.scrollAngle += 360.0f;
+        if (gMessageBarState.transitionRemaining == 0.0F) {
+            gMessageBarState.scrollAngle += gRuntimeFrameSeconds * 75.0F;
+            while (gMessageBarState.scrollAngle < 0.0F) {
+                gMessageBarState.scrollAngle += 360.0F;
             }
-            while (gMessageBarState.scrollAngle >= 360.0f) {
-                gMessageBarState.scrollAngle -= 360.0f;
+            while (gMessageBarState.scrollAngle >= 360.0F) {
+                gMessageBarState.scrollAngle -= 360.0F;
             }
             TRACE("drawIdx:%d\n", slot);
         }
     }
-    edge = (s32)(271.0f * transition) + 24;
+    edge = (s32)(271.0F * transition) + 24;
     textImageDrawRectangle(&gRenderDisplayListCursor, gMessageBarState.handles[slot].image, 24, textTop, edge, 38,
-                           offset, 0, 1.0f, 1.0f);
+                           offset, 0, 1.0F, 1.0F);
     slot++;
-    if (gMessageBarState.transitionRemaining == 0.0f) {
+    if (gMessageBarState.transitionRemaining == 0.0F) {
         return 1;
     }
     if (slot >= 3) {
@@ -392,9 +393,9 @@ s32 messageBarUpdateAndDraw(void) {
     gDPSetRenderMode(gRenderDisplayListCursor++, 0, 0x504A50);
     gDPSetCombineLERP(gRenderDisplayListCursor++, 0, 0, 0, TEXEL0, PRIMITIVE, 0, TEXEL0, 0, 0, 0, 0, TEXEL0, PRIMITIVE,
                       0, TEXEL0, 0);
-    gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 255, 255, 255, (s32)((1.0f - transition) * 255.0f));
+    gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 255, 255, 255, (s32)((1.0F - transition) * 255.0F));
     textImageDrawRectangle(&gRenderDisplayListCursor, gMessageBarState.handles[slot].image, edge, textTop, 295, 38, 0,
-                           0, 1.0f, 1.0f);
+                           0, 1.0F, 1.0F);
     gSPTexture(gRenderDisplayListCursor++, 0x7FFF, 0, 0, 0, G_OFF);
     gMoveWd(gRenderDisplayListCursor++, G_MW_FOG, 0x10, 0x7FFF);
     return 1;

@@ -26,7 +26,8 @@ s32 viridianEdgeGetSpatialCell(f32 x, f32 y, f32 z) {
         return 0;
     }
     layer = D_8015BF30_scene_viridian_edge[iy];
-    if (layer == NULL)
+    if (layer == NULL) {
         return 0;
-    return layer[iz * 8 + ix];
+    }
+    return layer[(iz * 8) + ix];
 }

@@ -167,11 +167,14 @@ void wispEffectUpdateDriftingMotion(u8 *effect) {
     ((RuntimeObjectPrefix *)effect)->position[0] += (1.0 - (u32)randomNext() * 2.3283064365386963e-10 * 2) * gRuntimeFrameSeconds;
     ((RuntimeObjectPrefix *)effect)->position[1] += ((u32)randomNext() * 2.3283064365386963e-10 * 6) * gRuntimeFrameSeconds;
     ((RuntimeObjectPrefix *)effect)->position[2] += (1.0 - (u32)randomNext() * 2.3283064365386963e-10 * 2) * gRuntimeFrameSeconds;
-    ((RuntimeObjectPrefix *)effect)->scale[0] += ((u32)randomNext() * 2.3283064365386963e-10 * 0.01f) * gRuntimeFrameSeconds;
-    ((RuntimeObjectPrefix *)effect)->scale[1] += ((u32)randomNext() * 2.3283064365386963e-10 * 0.01f) * gRuntimeFrameSeconds;
-    ((RuntimeObjectPrefix *)effect)->scale[2] += ((u32)randomNext() * 2.3283064365386963e-10 * 0.01f) * gRuntimeFrameSeconds;
+    ((RuntimeObjectPrefix *)effect)->scale[0] +=
+        ((u32)randomNext() * 2.3283064365386963e-10 * 0.01F) * gRuntimeFrameSeconds;
+    ((RuntimeObjectPrefix *)effect)->scale[1] +=
+        ((u32)randomNext() * 2.3283064365386963e-10 * 0.01F) * gRuntimeFrameSeconds;
+    ((RuntimeObjectPrefix *)effect)->scale[2] +=
+        ((u32)randomNext() * 2.3283064365386963e-10 * 0.01F) * gRuntimeFrameSeconds;
     objectOrientAlongCameraView(effect);
-    ((RuntimeObjectPrefix *)effect)->rotation[0] += 50.0f * ((RuntimeObjectPrefix *)effect)->scale[0];
+    ((RuntimeObjectPrefix *)effect)->rotation[0] += 50.0F * ((RuntimeObjectPrefix *)effect)->scale[0];
 }
 
 
@@ -181,7 +184,7 @@ void wispEffectUpdateDriftingMotion(u8 *effect) {
 /// \note Original decompilation identifier: \c func_8001777C (0x8001777C).
 void wispEffectUpdateRisingMotion(u8 *effect) {
     ((RuntimeObjectPrefix *)effect)->position[1] =
-        (f32)(((RuntimeObjectPrefix *)effect)->position[1] + (18.0f * gRuntimeFrameSeconds));
+        (f32)(((RuntimeObjectPrefix *)effect)->position[1] + (18.0F * gRuntimeFrameSeconds));
     objectOrientAlongCameraView(effect);
 }
 
@@ -221,7 +224,7 @@ void wispEffectInitialize(u8 *effect) {
     allocation->lists[1] = 0;
     allocation->lists[0] = 0;
     allocation->tracks = 0;
-    allocation->playbackRate = 1.0f;
+    allocation->playbackRate = 1.0F;
     ((RuntimeObjectPrefix *)effect)->state.pointer = allocation;
 }
 
@@ -329,70 +332,70 @@ u8 *wispEffectCreate(s32 kind, f32 x, f32 y, f32 z) {
     animationIntegerTrackInitialize(&state->opacity, (gOpacityAnimationPrograms[gWispOpacityProgramIndices[kind]]));
     switch (kind) {
     case 0:
-        obj->scale[0] = 0.01f;
-        obj->scale[1] = 0.01f;
-        obj->scale[2] = 0.01f;
+        obj->scale[0] = 0.01F;
+        obj->scale[1] = 0.01F;
+        obj->scale[2] = 0.01F;
         animationIntegerTrackInitialize(state->tracks, (ValueKey *)(gWispStyle0FrameAnimation));
         break;
     case 1:
-        obj->scale[0] = 0.01f;
-        obj->scale[1] = 0.01f;
-        obj->scale[2] = 0.01f;
+        obj->scale[0] = 0.01F;
+        obj->scale[1] = 0.01F;
+        obj->scale[2] = 0.01F;
         animationIntegerTrackInitialize(state->tracks, (ValueKey *)(gWispStyle1FirstFrameAnimation));
         animationIntegerTrackInitialize(&state->tracks[1], (ValueKey *)(gWispStyle1SecondFrameAnimation));
         break;
     case 2:
-        obj->scale[0] = 0.01f;
-        obj->scale[1] = 0.01f;
-        obj->scale[2] = 0.01f;
+        obj->scale[0] = 0.01F;
+        obj->scale[1] = 0.01F;
+        obj->scale[2] = 0.01F;
         animationIntegerTrackInitialize(state->tracks, (ValueKey *)(gWispStyle2FrameAnimation));
         state->color.b = 0;
         state->color.g = 0;
         state->color.r = 0;
         break;
     case 3:
-        obj->scale[0] = 0.1f;
-        obj->scale[1] = (f64)randomNext() * 2.3283064365386963e-10 * 0.10000000149011612 + 0.05000000074505806;
-        obj->scale[2] = (f64)randomNext() * 2.3283064365386963e-10 * 0.05000000074505806 + 0.05000000074505806;
+        obj->scale[0] = 0.1F;
+        obj->scale[1] = ((f64)randomNext() * 2.3283064365386963e-10 * 0.10000000149011612) + 0.05000000074505806;
+        obj->scale[2] = ((f64)randomNext() * 2.3283064365386963e-10 * 0.05000000074505806) + 0.05000000074505806;
         animationIntegerTrackInitialize(state->tracks, (ValueKey *)(gWispStyle3FrameAnimation));
         state->color.r = 0xFF;
         state->color.g = 0xFF;
         state->color.b = 0x99;
         break;
     case 4:
-        obj->scale[0] = 0.003f;
-        obj->scale[1] = 0.003f;
-        obj->scale[2] = 0.003f;
+        obj->scale[0] = 0.003F;
+        obj->scale[1] = 0.003F;
+        obj->scale[2] = 0.003F;
         animationIntegerTrackInitialize(state->tracks, (ValueKey *)(gWispStyle4FrameAnimation));
         break;
     case 5:
-        obj->scale[0] = 0.02f;
-        obj->scale[1] = 0.02f;
-        obj->scale[2] = 0.02f;
+        obj->scale[0] = 0.02F;
+        obj->scale[1] = 0.02F;
+        obj->scale[2] = 0.02F;
         animationIntegerTrackInitialize(state->tracks, (ValueKey *)(gBillboardTextureAnimation));
         break;
     case 6:
-        obj->scale[0] = 0.03f;
-        obj->scale[1] = 0.03f;
-        obj->scale[2] = 0.03f;
+        obj->scale[0] = 0.03F;
+        obj->scale[1] = 0.03F;
+        obj->scale[2] = 0.03F;
         animationIntegerTrackInitialize(state->tracks, (ValueKey *)(gWispStyle6FrameAnimation));
         break;
     case 7:
-        obj->scale[0] = 0.03f;
-        obj->scale[1] = 0.03f;
-        obj->scale[2] = 0.03f;
+        obj->scale[0] = 0.03F;
+        obj->scale[1] = 0.03F;
+        obj->scale[2] = 0.03F;
         animationIntegerTrackInitialize(state->tracks, (ValueKey *)(gWispStyle7FrameAnimation));
         break;
     case 8:
-        obj->scale[0] = 0.2f;
-        obj->scale[1] = 0.2f;
-        obj->scale[2] = 0.2f;
+        obj->scale[0] = 0.2F;
+        obj->scale[1] = 0.2F;
+        obj->scale[2] = 0.2F;
         animationIntegerTrackInitialize(state->tracks, (ValueKey *)(gWispStyle8FrameAnimation));
         break;
     case 9:
-        obj->scale[0] = 0.2f;
-        obj->scale[1] = 0.2f;
-        obj->scale[2] = 0.2f;
+        obj->scale[0] = 0.2F;
+        obj->scale[1] = 0.2F;
+        obj->scale[2] = 0.2F;
         animationIntegerTrackInitialize(state->tracks, (ValueKey *)(gWispStyle9FrameAnimation));
         break;
     default:
@@ -434,9 +437,9 @@ void ribbonEffectControllerInitialize(u8 *controller) {
     sp1C = allocation;
     ((RibbonControllerState *)allocation)->steeringFrame = 0;
     ((RibbonControllerState *)allocation)->grounded = 0;
-    ((RibbonControllerState *)allocation)->destination[2] = 0.0f;
-    ((RibbonControllerState *)allocation)->destination[1] = 0.0f;
-    ((RibbonControllerState *)allocation)->destination[0] = 0.0f;
+    ((RibbonControllerState *)allocation)->destination[2] = 0.0F;
+    ((RibbonControllerState *)allocation)->destination[1] = 0.0F;
+    ((RibbonControllerState *)allocation)->destination[0] = 0.0F;
     animationIntegerTrackInitialize(&((RibbonControllerState *)allocation)->animation, (ValueKey *)(gRibbonAndClusterFrameAnimation));
     ((RuntimeObjectPrefix *)controller)->state.bytes = sp1C;
 }
@@ -470,7 +473,7 @@ Gfx *ribbonEffectCreateDisplayList(s32 count) {
     if (count >= 2) {
         do {
             gSPMatrix(g++, (i << 6) + 0x07000040, G_MTX_LOAD);
-            alphaRamp = i * 239.0f / count + 16.0f;
+            alphaRamp = (i * 239.0F / count) + 16.0F;
             alpha = (u32)alphaRamp;
             gDPSetPrimColor(g++, 0, 0, 255, 255, 255, alpha);
             if (i & 1) {
@@ -571,9 +574,9 @@ void ribbonEffectControllerUpdate(u8 *controller) {
     } else {
         vector3GetZAxisAnglesDegrees(d, &yaw, &pitch);
         ((RuntimeObjectPrefix *)src)->rotation[1] =
-            mathLerpAngleDegrees(((RuntimeObjectPrefix *)src)->rotation[1], yaw, 0.3f);
+            mathLerpAngleDegrees(((RuntimeObjectPrefix *)src)->rotation[1], yaw, 0.3F);
         ((RuntimeObjectPrefix *)src)->rotation[2] =
-            mathLerpAngleDegrees(((RuntimeObjectPrefix *)src)->rotation[2], pitch, 0.3f);
+            mathLerpAngleDegrees(((RuntimeObjectPrefix *)src)->rotation[2], pitch, 0.3F);
     }
     ((RuntimeObjectPrefix *)((RuntimeObjectPrefix *)controller)->sibling.pointer)->position[0] =
         ((RuntimeObjectPrefix *)controller)->position[0];
@@ -582,10 +585,10 @@ void ribbonEffectControllerUpdate(u8 *controller) {
     ((RuntimeObjectPrefix *)((RuntimeObjectPrefix *)controller)->sibling.pointer)->position[2] =
         ((RuntimeObjectPrefix *)controller)->position[2];
     h = objectGetHeightAboveGround(controller);
-    if (h < 1.2000000476837158f) {
+    if (h < 1.2000000476837158F) {
         if (state->grounded == 0) {
-            if (h < -1.0f) {
-                h = 0.0f;
+            if (h < -1.0F) {
+                h = 0.0F;
             }
             wispEffectCreate(4, ((RuntimeObjectPrefix *)controller)->worldPosition[0],
                              ((RuntimeObjectPrefix *)controller)->worldPosition[1] - h,
@@ -597,7 +600,7 @@ void ribbonEffectControllerUpdate(u8 *controller) {
         state->grounded = 0;
     }
     state->remaining -= gRuntimeFrameSeconds;
-    if (state->remaining < 0.0f) {
+    if (state->remaining < 0.0F) {
         objectRequestHierarchyDestruction(((RuntimeObjectPrefix *)controller)->root.bytes);
     }
 }
@@ -731,15 +734,16 @@ u8 *ribbonEffectCreate(s32 count, f32 duration, f32 baseWidth, f32 widthVariatio
         tail = part;
         switch (widthStyle) {
         case 0:
-            ((RuntimeObjectPrefix *)part)->scale[2] = mathSinDegrees(i * 30) * widthVariation + baseWidth;
+            ((RuntimeObjectPrefix *)part)->scale[2] = (mathSinDegrees(i * 30) * widthVariation) + baseWidth;
             break;
         case 1:
             ((RuntimeObjectPrefix *)part)->scale[2] =
-                (1.0 - ((f64)randomNext() * 2.3283064365386963e-10) * 2) * (f64)widthVariation + (f64)baseWidth;
+                ((1.0 - ((f64)randomNext() * 2.3283064365386963e-10) * 2) * (f64)widthVariation) + (f64)baseWidth;
             break;
         }
-        if (i & 1)
+        if (i & 1) {
             ((RuntimeObjectPrefix *)part)->scale[2] = -((RuntimeObjectPrefix *)part)->scale[2];
+        }
     }
     part = objectCreateFromTemplate((ObjectTemplate *)gRibbonControllerObjectTemplate);
     state = ((RuntimeObjectPrefix *)part)->state.pointer;
@@ -763,14 +767,14 @@ u8 *ribbonEffectCreate(s32 count, f32 duration, f32 baseWidth, f32 widthVariatio
     ((RuntimeObjectPrefix *)head)->worldPosition[0] = x;
     ((RuntimeObjectPrefix *)head)->worldPosition[1] = y;
     ((RuntimeObjectPrefix *)head)->worldPosition[2] = z;
-    ((RuntimeObjectPrefix *)head)->rotation[0] = 0.0f;
+    ((RuntimeObjectPrefix *)head)->rotation[0] = 0.0F;
     ((RuntimeObjectPrefix *)head)->rotation[1] = pitch;
     ((RuntimeObjectPrefix *)head)->rotation[2] = yaw;
     ((RuntimeObjectPrefix *)part)->child.bytes = head;
     part = objectCreateFromTemplate((ObjectTemplate *)gRibbonTerminalDecorationTemplate);
-    ((RuntimeObjectPrefix *)part)->scale[0] = baseWidth * 0.01f;
-    ((RuntimeObjectPrefix *)part)->scale[1] = baseWidth * 0.01f;
-    ((RuntimeObjectPrefix *)part)->scale[2] = baseWidth * 0.01f;
+    ((RuntimeObjectPrefix *)part)->scale[0] = baseWidth * 0.01F;
+    ((RuntimeObjectPrefix *)part)->scale[1] = baseWidth * 0.01F;
+    ((RuntimeObjectPrefix *)part)->scale[2] = baseWidth * 0.01F;
     ((RuntimeObjectPrefix *)tail)->sibling.bytes = part;
     objectMakeHierarchyRoot(root);
     objectAllocateHierarchyMatrixBuffers(root);
@@ -789,7 +793,7 @@ s32 particleClusterCreateDisplayList(s32 count) {
     Gfx *base;
     Gfx *dl;
     s32 i;
-    base = (Gfx *)heapAllocLocal(&gGameHeap, count * 3 * sizeof(Gfx) + 240, 0x427);
+    base = (Gfx *)heapAllocLocal(&gGameHeap, (count * 3 * sizeof(Gfx)) + 240, 0x427);
     dl = base;
     gDPPipeSync(dl++);
     gSPGeometryMode(dl++, -1, 0x200005);
@@ -821,7 +825,7 @@ void effectEmitterEmitBlackWisps(u8 *emitter) {
     u8 *obj;
 
     obj = ((RuntimeObjectPrefix *)emitter)->state.bytes;
-    if (((EffectEmitterState *)obj)->cooldown == 0.0f) {
+    if (((EffectEmitterState *)obj)->cooldown == 0.0F) {
         ((EffectEmitterState *)obj)->cooldown =
             (f32)(((f64)randomNext() * 2.3283064365386963e-10 * 0.10000000149011612) + 0.10000000149011612);
         wispEffectCreate(2, ((RuntimeObjectPrefix *)emitter)->worldPosition[0], ((RuntimeObjectPrefix *)emitter)->worldPosition[1], ((RuntimeObjectPrefix *)emitter)->worldPosition[2]);
@@ -836,7 +840,7 @@ void effectEmitterEmitWhiteWisps(u8 *emitter) {
     u8 *obj;
 
     obj = ((RuntimeObjectPrefix *)emitter)->state.bytes;
-    if (((EffectEmitterState *)obj)->cooldown == 0.0f) {
+    if (((EffectEmitterState *)obj)->cooldown == 0.0F) {
         ((EffectEmitterState *)obj)->cooldown =
             (f32)(((f64)randomNext() * 2.3283064365386963e-10 * 0.6000000238418579) + 0.800000011920929);
         wispEffectCreate(5, ((RuntimeObjectPrefix *)emitter)->worldPosition[0], ((RuntimeObjectPrefix *)emitter)->worldPosition[1], ((RuntimeObjectPrefix *)emitter)->worldPosition[2]);
@@ -852,13 +856,16 @@ void effectEmitterEmitScatteredParticles(u8 *emitter) {
     s32 n;
 
     v = ((RuntimeObjectPrefix *)emitter)->state.bytes;
-    if (((EffectEmitterState *)v)->cooldown == 0.0f) {
+    if (((EffectEmitterState *)v)->cooldown == 0.0F) {
         ((EffectEmitterState *)v)->cooldown =
-            (f64)randomNext() * 2.3283064365386963e-10 * 0.009999999776482582 + 0.009999999776482582;
+            ((f64)randomNext() * 2.3283064365386963e-10 * 0.009999999776482582) + 0.009999999776482582;
         for (n = randomBelow(3); n != 0; n--) {
-            wispEffectCreate(3, ((RuntimeObjectPrefix *)emitter)->worldPosition[0] + ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * 5.0,
-                          ((RuntimeObjectPrefix *)emitter)->worldPosition[1],
-                          ((RuntimeObjectPrefix *)emitter)->worldPosition[2] + ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * 5.0);
+            wispEffectCreate(3,
+                             ((RuntimeObjectPrefix *)emitter)->worldPosition[0] +
+                                 (((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * 5.0),
+                             ((RuntimeObjectPrefix *)emitter)->worldPosition[1],
+                             ((RuntimeObjectPrefix *)emitter)->worldPosition[2] +
+                                 (((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * 5.0));
         }
     }
 }
@@ -878,12 +885,12 @@ void effectEmitterEmitAudibleBurst(u8 *emitter) {
     s32 i;
 
     state = ((RuntimeObjectPrefix *)emitter)->state.bytes;
-    if (((EffectEmitterState *)state)->cooldown == 0.0f) {
+    if (((EffectEmitterState *)state)->cooldown == 0.0F) {
         n = randomBelow(3);
         ((EffectEmitterState *)state)->cooldown =
-            (f64)randomNext() * 2.3283064365386963e-10 * 0.009999999776482582 + 0.009999999776482582;
+            ((f64)randomNext() * 2.3283064365386963e-10 * 0.009999999776482582) + 0.009999999776482582;
         count = n + 1;
-        sound = objectPlaySpatialSound(emitter, 0xA3, (f32)count * 20.0f, (f32)count * 100.0f);
+        sound = objectPlaySpatialSound(emitter, 0xA3, (f32)count * 20.0F, (f32)count * 100.0F);
         if (sound != 0) {
             audioSetSoundEffectPitch(sound, ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * 3.0);
         }
@@ -892,7 +899,7 @@ void effectEmitterEmitAudibleBurst(u8 *emitter) {
             state = emitter + 0x44;
             do {
                 direction[0] = ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * 15.0;
-                direction[1] = (f64)randomNext() * 2.3283064365386963e-10 * 5.0 + 8.0;
+                direction[1] = ((f64)randomNext() * 2.3283064365386963e-10 * 5.0) + 8.0;
                 direction[2] = ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * 15.0;
                 if (randomBelow(2) != 0) {
                     kind = 0;
@@ -900,7 +907,8 @@ void effectEmitterEmitAudibleBurst(u8 *emitter) {
                     kind = 1;
                 }
                 fallingParticleCreate(6, kind, (f32 *)state, direction,
-                              (f64)randomNext() * 2.3283064365386963e-10 * 0.4000000059604645 + 1.600000023841858);
+                                      ((f64)randomNext() * 2.3283064365386963e-10 * 0.4000000059604645) +
+                                          1.600000023841858);
             } while (--i != 0);
         }
     }
@@ -922,19 +930,24 @@ void effectEmitterEmitColoredParticle(u8 *emitter, f32 intervalRange, f32 minimu
     f32 half;
 
     v = ((RuntimeObjectPrefix *)emitter)->state.bytes;
-    if (((EffectEmitterState *)v)->cooldown == 0.0f) {
-        ((EffectEmitterState *)v)->cooldown = (f64)randomNext() * 2.3283064365386963e-10 * intervalRange + minimumInterval;
-        half = 0.5f * spread;
-        e = wispEffectCreate(2, ((RuntimeObjectPrefix *)emitter)->worldPosition[0] + ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * spread,
-                          ((RuntimeObjectPrefix *)emitter)->worldPosition[1] + (f64)randomNext() * 2.3283064365386963e-10 * half,
-                          ((RuntimeObjectPrefix *)emitter)->worldPosition[2] + ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * spread);
+    if (((EffectEmitterState *)v)->cooldown == 0.0F) {
+        ((EffectEmitterState *)v)->cooldown =
+            ((f64)randomNext() * 2.3283064365386963e-10 * intervalRange) + minimumInterval;
+        half = 0.5F * spread;
+        e = wispEffectCreate(2,
+                             ((RuntimeObjectPrefix *)emitter)->worldPosition[0] +
+                                 (((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * spread),
+                             ((RuntimeObjectPrefix *)emitter)->worldPosition[1] +
+                                 ((f64)randomNext() * 2.3283064365386963e-10 * half),
+                             ((RuntimeObjectPrefix *)emitter)->worldPosition[2] +
+                                 (((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * spread));
         v = ((RuntimeObjectPrefix *)e)->state.bytes;
         ((WispState *)v)->color.r = red;
         ((WispState *)v)->color.g = green;
         ((WispState *)v)->color.b = blue;
-        ((RuntimeObjectPrefix *)e)->scale[2] = 0.0f;
-        ((RuntimeObjectPrefix *)e)->scale[1] = 0.0f;
-        ((RuntimeObjectPrefix *)e)->scale[0] = 0.0f;
+        ((RuntimeObjectPrefix *)e)->scale[2] = 0.0F;
+        ((RuntimeObjectPrefix *)e)->scale[1] = 0.0F;
+        ((RuntimeObjectPrefix *)e)->scale[0] = 0.0F;
     }
 }
 
@@ -943,7 +956,7 @@ void effectEmitterEmitColoredParticle(u8 *emitter, f32 intervalRange, f32 minimu
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800192F0 (0x800192F0).
 void effectEmitterEmitPaleGreenParticles(u8 *emitter) {
-    effectEmitterEmitColoredParticle(emitter, 0.1f, 0.03f, 1.0f, 0xB7, 0xFF, 0xC1);
+    effectEmitterEmitColoredParticle(emitter, 0.1F, 0.03F, 1.0F, 0xB7, 0xFF, 0xC1);
 }
 
 /// Emit yellow particles when the emitter is ready.
@@ -951,7 +964,7 @@ void effectEmitterEmitPaleGreenParticles(u8 *emitter) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80019338 (0x80019338).
 void effectEmitterEmitYellowParticles(u8 *emitter) {
-    effectEmitterEmitColoredParticle(emitter, 0.1f, 0.03f, 1.0f, 0xFF, 0xFF, 0);
+    effectEmitterEmitColoredParticle(emitter, 0.1F, 0.03F, 1.0F, 0xFF, 0xFF, 0);
 }
 
 /// Emit pink particles when the emitter is ready.
@@ -959,7 +972,7 @@ void effectEmitterEmitYellowParticles(u8 *emitter) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001937C (0x8001937C).
 void effectEmitterEmitPinkParticles(u8 *emitter) {
-    effectEmitterEmitColoredParticle(emitter, 0.1f, 0.03f, 1.0f, 0xE0, 0x44, 0x77);
+    effectEmitterEmitColoredParticle(emitter, 0.1F, 0.03F, 1.0F, 0xE0, 0x44, 0x77);
 }
 
 /// Emit gray particles when the emitter is ready.
@@ -967,7 +980,7 @@ void effectEmitterEmitPinkParticles(u8 *emitter) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800193C4 (0x800193C4).
 void effectEmitterEmitGrayParticles(u8 *emitter) {
-    effectEmitterEmitColoredParticle(emitter, 0.15f, 0.04f, 1.0f, 0xE0, 0xE0, 0xE0);
+    effectEmitterEmitColoredParticle(emitter, 0.15F, 0.04F, 1.0F, 0xE0, 0xE0, 0xE0);
 }
 
 void effectEmitterCreateWithCallback(f32 *, f32, s32, s32, f32, EffectEmissionCallback);
@@ -1039,7 +1052,7 @@ void effectEmitterCreateWithCallback(f32 *position, f32 lifetime, s32 targetHand
     state->referenceHandle = referenceHandle;
     state->offset = offset;
     state->emit = callback;
-    state->cooldown = 0.0f;
+    state->cooldown = 0.0F;
     target = objectResolveAvailableHandle(targetHandle);
     if (target != NULL) {
         ((RuntimeObjectPrefix *)emitter)->position[0] = ((RuntimeObjectPrefix *)target)->worldPosition[0];
@@ -1104,15 +1117,15 @@ void effectEmitterUpdate(u8 *emitter) {
     if (state->emit != NULL) {
         (state->emit)(emitter);
     }
-    if (state->remaining > 0.0f) {
+    if (state->remaining > 0.0F) {
         state->remaining -= gRuntimeFrameSeconds;
-        if (state->remaining <= 0.0f) {
+        if (state->remaining <= 0.0F) {
             objectRequestHierarchyDestruction(emitter);
         }
     }
     state->cooldown -= gRuntimeFrameSeconds;
-    if (state->cooldown < 0.0f) {
-        state->cooldown = 0.0f;
+    if (state->cooldown < 0.0F) {
+        state->cooldown = 0.0F;
     }
 }
 
@@ -1189,11 +1202,11 @@ void particleClusterElementUpdate(u8 *element) {
     for (i = 1; i < 3; i++) {
         ((RuntimeObjectPrefix *)element)->rotation[i] +=
             ((f64)randomNext() * 2.3283064365386963e-10 * 30.0 + 60.0) * gRuntimeFrameSeconds;
-        while (((RuntimeObjectPrefix *)element)->rotation[i] < 0.0f) {
-            ((RuntimeObjectPrefix *)element)->rotation[i] += 360.0f;
+        while (((RuntimeObjectPrefix *)element)->rotation[i] < 0.0F) {
+            ((RuntimeObjectPrefix *)element)->rotation[i] += 360.0F;
         }
-        while (((RuntimeObjectPrefix *)element)->rotation[i] >= 360.0f) {
-            ((RuntimeObjectPrefix *)element)->rotation[i] -= 360.0f;
+        while (((RuntimeObjectPrefix *)element)->rotation[i] >= 360.0F) {
+            ((RuntimeObjectPrefix *)element)->rotation[i] -= 360.0F;
         }
     }
     objectAdjustPitchAlongCameraView(element);
@@ -1306,8 +1319,8 @@ u8 *fallingParticleCreate(s32 kind, s32 motionStyle, f32 *position, f32 *velocit
     ((RuntimeObjectPrefix *)obj)->worldPosition[1] = position[1];
     ((RuntimeObjectPrefix *)obj)->worldPosition[2] = position[2];
     ((RuntimeObjectPrefix *)obj)->rotation[0] = (s32)randomBelow(360);
-    ((RuntimeObjectPrefix *)obj)->rotation[2] = 0.0f;
-    ((RuntimeObjectPrefix *)obj)->rotation[1] = 0.0f;
+    ((RuntimeObjectPrefix *)obj)->rotation[2] = 0.0F;
+    ((RuntimeObjectPrefix *)obj)->rotation[1] = 0.0F;
     ((RuntimeObjectPrefix *)obj)->displayList = (Gfx *)gFallingParticleModels[kind];
     state->lifetime = lifetime;
     state->mode = motionStyle;
@@ -1315,7 +1328,7 @@ u8 *fallingParticleCreate(s32 kind, s32 motionStyle, f32 *position, f32 *velocit
     state->velocity[1] = velocity[1];
     state->velocity[2] = velocity[2];
     animationIntegerTrackInitialize(&state->animation, (ValueKey *)(gFallingParticleInitialScaleAnimation));
-    scale = 0.029999999329447746f;
+    scale = 0.029999999329447746F;
     state->scale = scale;
     ((RuntimeObjectPrefix *)obj)->scale[0] = scale;
     ((RuntimeObjectPrefix *)obj)->scale[1] = state->scale;
@@ -1352,70 +1365,70 @@ void fallingParticleUpdate(u8 *particle) {
     FallingParticleState *state;
 
     state = ((RuntimeObjectPrefix *)particle)->state.pointer;
-    if (state->lifetime > 0.0f) {
+    if (state->lifetime > 0.0F) {
         state->lifetime = (f32)(state->lifetime - gRuntimeFrameSeconds);
-        if (state->lifetime <= 0.0f) {
-            state->lifetime = 0.0f;
+        if (state->lifetime <= 0.0F) {
+            state->lifetime = 0.0F;
             animationIntegerTrackInitialize(&state->animation,
                                             (ValueKey *)(gFallingParticleDisappearanceScaleAnimation));
         }
     }
     animationIntegerTrackEvaluate(&state->animation, &sample, gRuntimeFrameSeconds);
-    if ((sample == 0) && (state->lifetime <= 0.0f)) {
+    if ((sample == 0) && (state->lifetime <= 0.0F)) {
         objectRequestHierarchyDestruction(particle);
         return;
     }
-    scale = (f32)sample * state->scale * 0.1f;
+    scale = (f32)sample * state->scale * 0.1F;
     ((RuntimeObjectPrefix *)particle)->scale[0] = scale;
     ((RuntimeObjectPrefix *)particle)->scale[1] = scale;
     ((RuntimeObjectPrefix *)particle)->scale[2] = scale;
     switch (state->mode) {
     case FALLING_PARTICLE_BILLBOARD_SPIN:
         objectOrientAlongCameraView(particle);
-        ((RuntimeObjectPrefix *)particle)->rotation[0] += ((mathSinDegrees(state->lifetime * 80.0f) + 1.0f) * 180.0f);
-        if (((RuntimeObjectPrefix *)particle)->rotation[0] < 0.0f) {
+        ((RuntimeObjectPrefix *)particle)->rotation[0] += ((mathSinDegrees(state->lifetime * 80.0F) + 1.0F) * 180.0F);
+        if (((RuntimeObjectPrefix *)particle)->rotation[0] < 0.0F) {
             do {
-                ((RuntimeObjectPrefix *)particle)->rotation[0] += 360.0f;
-            } while (((RuntimeObjectPrefix *)particle)->rotation[0] < 0.0f);
+                ((RuntimeObjectPrefix *)particle)->rotation[0] += 360.0F;
+            } while (((RuntimeObjectPrefix *)particle)->rotation[0] < 0.0F);
         }
-        if (((RuntimeObjectPrefix *)particle)->rotation[0] >= 360.0f) {
+        if (((RuntimeObjectPrefix *)particle)->rotation[0] >= 360.0F) {
             do {
                 ((RuntimeObjectPrefix *)particle)->rotation[0] =
-                    (f32)(((RuntimeObjectPrefix *)particle)->rotation[0] - 360.0f);
-            } while (((RuntimeObjectPrefix *)particle)->rotation[0] >= 360.0f);
+                    (f32)(((RuntimeObjectPrefix *)particle)->rotation[0] - 360.0F);
+            } while (((RuntimeObjectPrefix *)particle)->rotation[0] >= 360.0F);
         }
         break;
     case FALLING_PARTICLE_BILLBOARD_SWAY:
         objectOrientAlongCameraView(particle);
-        ((RuntimeObjectPrefix *)particle)->rotation[0] += ((mathCosDegrees(state->lifetime * 200.0f) + 1.0f) * 180.0f);
-        if (((RuntimeObjectPrefix *)particle)->rotation[0] < 0.0f) {
+        ((RuntimeObjectPrefix *)particle)->rotation[0] += ((mathCosDegrees(state->lifetime * 200.0F) + 1.0F) * 180.0F);
+        if (((RuntimeObjectPrefix *)particle)->rotation[0] < 0.0F) {
             do {
-                ((RuntimeObjectPrefix *)particle)->rotation[0] += 360.0f;
-            } while (((RuntimeObjectPrefix *)particle)->rotation[0] < 0.0f);
+                ((RuntimeObjectPrefix *)particle)->rotation[0] += 360.0F;
+            } while (((RuntimeObjectPrefix *)particle)->rotation[0] < 0.0F);
         }
-        if (((RuntimeObjectPrefix *)particle)->rotation[0] >= 360.0f) {
+        if (((RuntimeObjectPrefix *)particle)->rotation[0] >= 360.0F) {
             do {
                 ((RuntimeObjectPrefix *)particle)->rotation[0] =
-                    (f32)(((RuntimeObjectPrefix *)particle)->rotation[0] - 360.0f);
-            } while (((RuntimeObjectPrefix *)particle)->rotation[0] >= 360.0f);
+                    (f32)(((RuntimeObjectPrefix *)particle)->rotation[0] - 360.0F);
+            } while (((RuntimeObjectPrefix *)particle)->rotation[0] >= 360.0F);
         }
         ((RuntimeObjectPrefix *)particle)->position[0] +=
-            (mathCosDegrees(state->lifetime * 200.0f) * gRuntimeFrameSeconds);
+            (mathCosDegrees(state->lifetime * 200.0F) * gRuntimeFrameSeconds);
         ((RuntimeObjectPrefix *)particle)->position[2] +=
-            (2.0f * mathCosDegrees(state->lifetime * 310.0f) * gRuntimeFrameSeconds);
+            (2.0F * mathCosDegrees(state->lifetime * 310.0F) * gRuntimeFrameSeconds);
         break;
     case FALLING_PARTICLE_TUMBLING:
         ((RuntimeObjectPrefix *)particle)->rotation[0] =
-            (f32)((mathSinDegrees(state->lifetime * 40.0f) + 1.0f) * 180.0f);
-        ((RuntimeObjectPrefix *)particle)->rotation[1] = (mathSinDegrees(state->lifetime * 300.0f) + 1.0f) * 180.0f;
-        ((RuntimeObjectPrefix *)particle)->rotation[2] = 0.0f;
+            (f32)((mathSinDegrees(state->lifetime * 40.0F) + 1.0F) * 180.0F);
+        ((RuntimeObjectPrefix *)particle)->rotation[1] = (mathSinDegrees(state->lifetime * 300.0F) + 1.0F) * 180.0F;
+        ((RuntimeObjectPrefix *)particle)->rotation[2] = 0.0F;
         break;
     }
-    state->velocity[1] = (f32)(state->velocity[1] - (3.266666651f * gRuntimeFrameSeconds * 0.1f * 30.0f));
-    if (state->velocity[1] < -10.0f) {
-        state->velocity[1] = -10.0f;
-    } else if (state->velocity[1] > 10.0f) {
-        state->velocity[1] = 10.0f;
+    state->velocity[1] = (f32)(state->velocity[1] - (3.266666651F * gRuntimeFrameSeconds * 0.1F * 30.0F));
+    if (state->velocity[1] < -10.0F) {
+        state->velocity[1] = -10.0F;
+    } else if (state->velocity[1] > 10.0F) {
+        state->velocity[1] = 10.0F;
     }
     ((RuntimeObjectPrefix *)particle)->position[0] += (state->velocity[0] * gRuntimeFrameSeconds);
     ((RuntimeObjectPrefix *)particle)->position[1] += (state->velocity[1] * gRuntimeFrameSeconds);
@@ -1487,25 +1500,25 @@ void convergingParticleEffectUpdate(u8 *effect) {
     state = ((RuntimeObjectPrefix *)effect)->state.bytes;
     ((ConvergingParticleState *)state)->remaining -= gRuntimeFrameSeconds;
     target = objectResolveAvailableHandle(((ConvergingParticleState *)state)->target);
-    if (((ConvergingParticleState *)state)->remaining < 0.0f || target == NULL) {
+    if (((ConvergingParticleState *)state)->remaining < 0.0F || target == NULL) {
         objectRequestHierarchyDestruction(effect);
         return;
     }
     animationIntegerTrackEvaluate(&((ConvergingParticleState *)state)->alphaAnimation, &tmp, gRuntimeFrameSeconds);
     animationIntegerTrackEvaluate(&((ConvergingParticleState *)state)->textureAnimation, &tmp, gRuntimeFrameSeconds);
     fraction = ((ConvergingParticleState *)state)->remaining / ((ConvergingParticleState *)state)->lifetime;
-    step = (1.0f / (f32)((ConvergingParticleState *)state)->count) * 0.5f;
-    vector3FromPitchYawDegrees((s32)randomBelow(10), ((ConvergingParticleState *)state)->remaining * 200.0f, center);
-    center[0] = center[0] * 0.1f + ((RuntimeObjectPrefix *)target)->worldPosition[0];
-    center[1] = center[1] * 0.1f + ((RuntimeObjectPrefix *)target)->worldPosition[1];
-    center[2] = center[2] * 0.1f + ((RuntimeObjectPrefix *)target)->worldPosition[2];
+    step = (1.0F / (f32)((ConvergingParticleState *)state)->count) * 0.5F;
+    vector3FromPitchYawDegrees((s32)randomBelow(10), ((ConvergingParticleState *)state)->remaining * 200.0F, center);
+    center[0] = (center[0] * 0.1F) + ((RuntimeObjectPrefix *)target)->worldPosition[0];
+    center[1] = (center[1] * 0.1F) + ((RuntimeObjectPrefix *)target)->worldPosition[1];
+    center[2] = (center[2] * 0.1F) + ((RuntimeObjectPrefix *)target)->worldPosition[2];
     for (i = 0, state = effect; state != NULL; state = ((RuntimeObjectPrefix *)state)->sibling.bytes) {
-        age = i * step + fraction;
-        scale = 0.15f * age;
+        age = (i * step) + fraction;
+        scale = 0.15F * age;
         ((RuntimeObjectPrefix *)state)->scale[0] = scale;
         ((RuntimeObjectPrefix *)state)->scale[1] = scale;
         ((RuntimeObjectPrefix *)state)->scale[2] = scale;
-        radius = mathMapRangeClamped(0.6f, 0.15f, 0.8f, 1.0f, age) * 10.0f;
+        radius = mathMapRangeClamped(0.6F, 0.15F, 0.8F, 1.0F, age) * 10.0F;
         delta[0] = ((RuntimeObjectPrefix *)state)->worldPosition[0] - center[0];
         delta[1] = ((RuntimeObjectPrefix *)state)->worldPosition[1] - center[1];
         delta[2] = ((RuntimeObjectPrefix *)state)->worldPosition[2] - center[2];
@@ -1582,11 +1595,12 @@ u8 *convergingParticleEffectCreate(s32 targetId, f32 lifetime, s32 count, s32 st
     s32 i;
     Gfx *commands;
     target = objectResolveAvailableHandle(targetId);
-    if (target == NULL)
+    if (target == NULL) {
         return NULL;
+    }
     first = objectCreateFromTemplate((ObjectTemplate *)gConvergingParticleObjectTemplate);
     state = ((RuntimeObjectPrefix *)first)->state.pointer;
-    state->displayList = (Gfx *)heapAllocLocal(&gGameHeap, count * 4 * sizeof(Gfx) + 0x80, 0x74E);
+    state->displayList = (Gfx *)heapAllocLocal(&gGameHeap, (count * 4 * sizeof(Gfx)) + 0x80, 0x74E);
     state->target = targetId;
     state->remaining = lifetime;
     state->lifetime = lifetime;
@@ -1596,15 +1610,15 @@ u8 *convergingParticleEffectCreate(s32 targetId, f32 lifetime, s32 count, s32 st
     animationIntegerTrackInitialize(&state->alphaAnimation, (ValueKey *)(gMessengerFlightAnimation));
     randomA = randomBelow(60);
     randomB = randomBelow(60);
-    vector3FromPitchYawDegrees((f32)(randomB + randomA) - 80.0f, (s32)randomBelow(360), direction);
-    direction[0] *= 10.0f;
-    direction[1] *= 10.0f;
-    direction[2] *= 10.0f;
+    vector3FromPitchYawDegrees((f32)(randomB + randomA) - 80.0F, (s32)randomBelow(360), direction);
+    direction[0] *= 10.0F;
+    direction[1] *= 10.0F;
+    direction[2] *= 10.0F;
     ((RuntimeObjectPrefix *)first)->position[0] = ((RuntimeObjectPrefix *)target)->worldPosition[0] + direction[0];
     ((RuntimeObjectPrefix *)first)->position[1] = ((RuntimeObjectPrefix *)target)->worldPosition[1] + direction[1];
     ((RuntimeObjectPrefix *)first)->position[2] = ((RuntimeObjectPrefix *)target)->worldPosition[2] + direction[2];
     ((RuntimeObjectPrefix *)first)->scale[2] = ((RuntimeObjectPrefix *)first)->scale[1] =
-        ((RuntimeObjectPrefix *)first)->scale[0] = 0.15f;
+        ((RuntimeObjectPrefix *)first)->scale[0] = 0.15F;
     ((RuntimeObjectPrefix *)first)->worldPosition[0] = ((RuntimeObjectPrefix *)first)->position[0];
     ((RuntimeObjectPrefix *)first)->worldPosition[1] = ((RuntimeObjectPrefix *)first)->position[1];
     ((RuntimeObjectPrefix *)first)->worldPosition[2] = ((RuntimeObjectPrefix *)first)->position[2];
@@ -1615,15 +1629,15 @@ u8 *convergingParticleEffectCreate(s32 targetId, f32 lifetime, s32 count, s32 st
         tail = object;
         randomA = randomBelow(60);
         randomB = randomBelow(60);
-        vector3FromPitchYawDegrees((f32)(randomB + randomA) - 80.0f, (s32)randomBelow(360), direction);
-        direction[0] *= 10.0f;
-        direction[1] *= 10.0f;
-        direction[2] *= 10.0f;
+        vector3FromPitchYawDegrees((f32)(randomB + randomA) - 80.0F, (s32)randomBelow(360), direction);
+        direction[0] *= 10.0F;
+        direction[1] *= 10.0F;
+        direction[2] *= 10.0F;
         ((RuntimeObjectPrefix *)object)->position[0] = ((RuntimeObjectPrefix *)target)->worldPosition[0] + direction[0];
         ((RuntimeObjectPrefix *)object)->position[1] = ((RuntimeObjectPrefix *)target)->worldPosition[1] + direction[1];
         ((RuntimeObjectPrefix *)object)->position[2] = ((RuntimeObjectPrefix *)target)->worldPosition[2] + direction[2];
         ((RuntimeObjectPrefix *)object)->scale[2] = ((RuntimeObjectPrefix *)object)->scale[1] =
-            ((RuntimeObjectPrefix *)object)->scale[0] = 0.15f;
+            ((RuntimeObjectPrefix *)object)->scale[0] = 0.15F;
         ((RuntimeObjectPrefix *)object)->worldPosition[0] = ((RuntimeObjectPrefix *)object)->position[0];
         ((RuntimeObjectPrefix *)object)->worldPosition[1] = ((RuntimeObjectPrefix *)object)->position[1];
         ((RuntimeObjectPrefix *)object)->worldPosition[2] = ((RuntimeObjectPrefix *)object)->position[2];
@@ -1704,7 +1718,7 @@ void flickeringEffectUpdate(u8 *effect) {
     state = ((RuntimeObjectPrefix *)effect)->state.pointer;
     state->duration -= gRuntimeFrameSeconds;
     t = objectResolveAvailableHandle(state->targetId);
-    if (state->duration < 0.0f || t == NULL) {
+    if (state->duration < 0.0F || t == NULL) {
         objectRequestHierarchyDestruction(effect);
         return;
     }
@@ -1777,8 +1791,9 @@ u8 *flickeringEffectCreate(s32 targetId, f32 duration, s32 count) {
     Gfx *dl;
     s32 i;
     target = objectResolveAvailableHandle(targetId);
-    if (target == NULL)
+    if (target == NULL) {
         return NULL;
+    }
     object = objectCreateFromTemplate((ObjectTemplate *)gFlickeringEffectObjectTemplate);
     state = ((RuntimeObjectPrefix *)object)->state.pointer;
     state->displayList = (Gfx *)heapAllocLocal(&gGameHeap, (count * 4 + 16) * sizeof(Gfx), 0x809);
@@ -1788,7 +1803,7 @@ u8 *flickeringEffectCreate(s32 targetId, f32 duration, s32 count) {
     ((RuntimeObjectPrefix *)object)->position[1] = ((RuntimeObjectPrefix *)target)->worldPosition[1];
     ((RuntimeObjectPrefix *)object)->position[2] = ((RuntimeObjectPrefix *)target)->worldPosition[2];
     ((RuntimeObjectPrefix *)object)->scale[2] = ((RuntimeObjectPrefix *)object)->scale[1] =
-        ((RuntimeObjectPrefix *)object)->scale[0] = 0.2f;
+        ((RuntimeObjectPrefix *)object)->scale[0] = 0.2F;
     ((RuntimeObjectPrefix *)object)->worldPosition[0] = ((RuntimeObjectPrefix *)object)->position[0];
     ((RuntimeObjectPrefix *)object)->worldPosition[1] = ((RuntimeObjectPrefix *)object)->position[1];
     ((RuntimeObjectPrefix *)object)->worldPosition[2] = ((RuntimeObjectPrefix *)object)->position[2];
@@ -1798,8 +1813,8 @@ u8 *flickeringEffectCreate(s32 targetId, f32 duration, s32 count) {
         ((RuntimeObjectPrefix *)previous)->sibling.bytes = child;
         previous = child;
         ((RuntimeObjectPrefix *)child)->scale[2] = ((RuntimeObjectPrefix *)child)->scale[1] =
-            ((RuntimeObjectPrefix *)child)->scale[0] = 1.0f;
-        ((RuntimeObjectPrefix *)child)->rotation[0] = i * 137.5f;
+            ((RuntimeObjectPrefix *)child)->scale[0] = 1.0F;
+        ((RuntimeObjectPrefix *)child)->rotation[0] = i * 137.5F;
     }
     ((RuntimeObjectPrefix *)object)->child.bytes = ((RuntimeObjectPrefix *)object)->sibling.bytes;
     ((RuntimeObjectPrefix *)object)->sibling.bytes = NULL;
@@ -1882,14 +1897,14 @@ void animatedRadialEffectUpdate(u8 *effect) {
     state = ((RuntimeObjectPrefix *)effect)->state.pointer;
     state->duration -= gRuntimeFrameSeconds;
     t = objectResolveAvailableHandle(state->targetId);
-    if (state->duration < 0.0f || t == NULL) {
+    if (state->duration < 0.0F || t == NULL) {
         objectRequestHierarchyDestruction(effect);
         return;
     }
     animationIntegerTrackEvaluate(&state->alphaAnimation, &tmp, gRuntimeFrameSeconds);
     animationIntegerTrackEvaluate(&state->frameAnimation, &tmp, gRuntimeFrameSeconds);
     ((RuntimeObjectPrefix *)effect)->position[0] = ((RuntimeObjectPrefix *)t)->worldPosition[0];
-    ((RuntimeObjectPrefix *)effect)->position[1] = ((RuntimeObjectPrefix *)t)->worldPosition[1] + 2.0f;
+    ((RuntimeObjectPrefix *)effect)->position[1] = ((RuntimeObjectPrefix *)t)->worldPosition[1] + 2.0F;
     ((RuntimeObjectPrefix *)effect)->position[2] = ((RuntimeObjectPrefix *)t)->worldPosition[2];
     ((RuntimeObjectPrefix *)effect)->worldPosition[0] = ((RuntimeObjectPrefix *)effect)->position[0];
     ((RuntimeObjectPrefix *)effect)->worldPosition[1] = ((RuntimeObjectPrefix *)effect)->position[1];
@@ -1897,7 +1912,7 @@ void animatedRadialEffectUpdate(u8 *effect) {
     objectOrientAlongCameraView(effect);
     for (cursor = ((RuntimeObjectPrefix *)effect)->child.bytes; cursor != NULL;
          cursor = ((RuntimeObjectPrefix *)cursor)->sibling.bytes) {
-        ((RuntimeObjectPrefix *)cursor)->scale[1] *= 1.0099999904632568f;
+        ((RuntimeObjectPrefix *)cursor)->scale[1] *= 1.0099999904632568F;
     }
 }
 
@@ -1950,8 +1965,9 @@ u8 *animatedRadialEffectCreate(s32 targetId, f32 duration, s32 count) {
     u8 *target;
     s32 i;
     target = objectResolveAvailableHandle(targetId);
-    if (target == NULL)
+    if (target == NULL) {
         return NULL;
+    }
     object = objectCreateFromTemplate((ObjectTemplate *)gAnimatedRadialEffectObjectTemplate);
     state = ((RuntimeObjectPrefix *)object)->state.pointer;
     state->displayList = (Gfx *)heapAllocLocal(&gGameHeap, (count * 4 + 16) * sizeof(Gfx), 0x8B2);
@@ -1963,7 +1979,7 @@ u8 *animatedRadialEffectCreate(s32 targetId, f32 duration, s32 count) {
     ((RuntimeObjectPrefix *)object)->position[1] = ((RuntimeObjectPrefix *)target)->worldPosition[1];
     ((RuntimeObjectPrefix *)object)->position[2] = ((RuntimeObjectPrefix *)target)->worldPosition[2];
     ((RuntimeObjectPrefix *)object)->scale[2] = ((RuntimeObjectPrefix *)object)->scale[1] =
-        ((RuntimeObjectPrefix *)object)->scale[0] = 0.06f;
+        ((RuntimeObjectPrefix *)object)->scale[0] = 0.06F;
     ((RuntimeObjectPrefix *)object)->worldPosition[0] = ((RuntimeObjectPrefix *)object)->position[0];
     ((RuntimeObjectPrefix *)object)->worldPosition[1] = ((RuntimeObjectPrefix *)object)->position[1];
     ((RuntimeObjectPrefix *)object)->worldPosition[2] = ((RuntimeObjectPrefix *)object)->position[2];
@@ -1972,7 +1988,7 @@ u8 *animatedRadialEffectCreate(s32 targetId, f32 duration, s32 count) {
         child = objectCreateDefault();
         ((RuntimeObjectPrefix *)previous)->sibling.bytes = child;
         previous = child;
-        ((RuntimeObjectPrefix *)child)->rotation[0] = i * (360.0f / count);
+        ((RuntimeObjectPrefix *)child)->rotation[0] = i * (360.0F / count);
     }
     ((RuntimeObjectPrefix *)object)->child.bytes = ((RuntimeObjectPrefix *)object)->sibling.bytes;
     ((RuntimeObjectPrefix *)object)->sibling.bytes = NULL;
@@ -2026,10 +2042,10 @@ u8 *expandingOrangeEffectCreate(s32 targetHandle, f32 lifetime) {
     state->remaining = lifetime;
     state->targetHandle = targetHandle;
     animationIntegerTrackInitialize(&state->animation, (ValueKey *)(gExpandingOrangeEffectFrameAnimation));
-    state->scale = 0.5f;
-    ((RuntimeObjectPrefix *)sp1C)->scale[2] = 0.5f;
-    ((RuntimeObjectPrefix *)sp1C)->scale[1] = 0.5f;
-    ((RuntimeObjectPrefix *)sp1C)->scale[0] = 0.5f;
+    state->scale = 0.5F;
+    ((RuntimeObjectPrefix *)sp1C)->scale[2] = 0.5F;
+    ((RuntimeObjectPrefix *)sp1C)->scale[1] = 0.5F;
+    ((RuntimeObjectPrefix *)sp1C)->scale[0] = 0.5F;
     objectRegisterActiveHierarchy(sp1C);
     return sp1C;
 }
@@ -2060,14 +2076,14 @@ void expandingOrangeEffectUpdate(u8 *effect) {
     state = ((RuntimeObjectPrefix *)effect)->state.pointer;
     state->remaining -= gRuntimeFrameSeconds;
     t = objectResolveAvailableHandle(state->targetHandle);
-    if (state->remaining < 0.0f) {
+    if (state->remaining < 0.0F) {
         objectRequestHierarchyDestruction(effect);
         return;
     }
     animationIntegerTrackEvaluate(&state->animation, &tmp, gRuntimeFrameSeconds);
-    state->scale += gRuntimeFrameSeconds * 3.0f;
-    if (state->scale > 3.5f) {
-        state->scale = 3.5f;
+    state->scale += gRuntimeFrameSeconds * 3.0F;
+    if (state->scale > 3.5F) {
+        state->scale = 3.5F;
     }
     if (t != NULL) {
         ((RuntimeObjectPrefix *)effect)->position[0] = ((RuntimeObjectPrefix *)t)->worldPosition[0];
@@ -2096,7 +2112,7 @@ Gfx *expandingOrangeEffectPrepareDraw(u8 *effect) {
     u8 alpha;
 
     state = ((RuntimeObjectPrefix *)effect)->state.pointer;
-    alpha = mathMapRangeClamped(0.5f, 255.0f, 3.5f, 0.0f, state->scale);
+    alpha = mathMapRangeClamped(0.5F, 255.0F, 3.5F, 0.0F, state->scale);
     textureLoadForDraw(&gRenderDisplayListCursor, 5, state->animation.value);
     gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0xFF, 0x96, 0, alpha);
     return ((RuntimeObjectPrefix *)effect)->displayList;
@@ -2136,18 +2152,18 @@ void orangePulseEmitterUpdate(u8 *emitter) {
     OrangePulseEmitterState *state = ((RuntimeObjectPrefix *)emitter)->state.pointer;
 
     state->remaining -= gRuntimeFrameSeconds;
-    if (state->remaining < 0.0f) {
+    if (state->remaining < 0.0F) {
         objectRequestHierarchyDestruction(emitter);
         return;
     }
     state->cooldown -= gRuntimeFrameSeconds;
-    if (state->cooldown < 0.0f) {
-        state->cooldown = 0.30000001192092896f;
+    if (state->cooldown < 0.0F) {
+        state->cooldown = 0.30000001192092896F;
         if (objectResolveAvailableHandle(state->targetHandle) != 0) {
-            expandingOrangeEffectCreate(state->targetHandle, 1.0f);
+            expandingOrangeEffectCreate(state->targetHandle, 1.0F);
             return;
         }
-        state->remaining = 0.0f;
+        state->remaining = 0.0F;
     }
 }
 

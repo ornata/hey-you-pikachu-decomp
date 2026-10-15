@@ -109,13 +109,13 @@ typedef char ChaseStageTexturesSizeCheck[(sizeof(ChaseStageTextures) == 0xC) ? 1
 
 /// Camera-relative position of the item shown in collection results.
 /// \note Original identifier: \c D_80099A40 (0x80099A40).
-Vec3f gCollectionItemPresentationPosition = {2.5f, -0.5f, -10.0f};
+Vec3f gCollectionItemPresentationPosition = {2.5F, -0.5F, -10.0F};
 /// Camera-relative actor position for the card presentation.
 /// \note Original identifier: \c D_80099A4C (0x80099A4C).
-Vec3f gCardPresentationActorPosition = {-2.6f, -4.0f, -11.0f};
+Vec3f gCardPresentationActorPosition = {-2.6F, -4.0F, -11.0F};
 /// Camera-relative actor position for collection results.
 /// \note Original identifier: \c D_80099A58 (0x80099A58).
-Vec3f gCollectionPresentationActorPosition = {-4.5f, -4.0f, -12.7f};
+Vec3f gCollectionPresentationActorPosition = {-4.5F, -4.0F, -12.7F};
 /// Current stage of the collection results presentation.
 /// \note Original identifier: \c D_80099A64 (0x80099A64).
 u32 gCollectionPresentationStage = 0;
@@ -125,24 +125,24 @@ s32 gCardPresentationStage = 0;
 /// Presentation-space focus targets used by the actor during cards and collection results.
 /// \note Original identifier: \c D_80099A6C (0x80099A6C).
 Vec3f gPresentationActorFocusTargets[3] = {
-    {0.0f, 0.0f, 0.0f},
-    {-3.0f, 1.0f, -5.0f},
-    {3.0f, 1.0f, -5.0f},
+    {0.0F, 0.0F, 0.0F},
+    {-3.0F, 1.0F, -5.0F},
+    {3.0F, 1.0F, -5.0F},
 };
 /// Texture rectangles for card presentation decorations.
 /// \note Original identifier: \c D_80099A90 (0x80099A90).
 PresentationDrawTemplate gCardPresentationDecorationTemplate = {{
-    {0x23, 0x14, 0xB8, -1, -1, 0, 0, 1.0f, 1.0f},
-    {0x24, 0x44, 0xB8, -1, -1, 0, 0, 1.0f, 1.0f},
-    {0x25, 0x65, 0xCC, -1, -1, 0, 0, 1.0f, 1.0f},
+    {0x23, 0x14, 0xB8, -1, -1, 0, 0, 1.0F, 1.0F},
+    {0x24, 0x44, 0xB8, -1, -1, 0, 0, 1.0F, 1.0F},
+    {0x25, 0x65, 0xCC, -1, -1, 0, 0, 1.0F, 1.0F},
     TEXTURE_DRAW_END,
 }};
 /// Card panel rectangles whose textures come from the selected area card.
 /// \note Original identifier: \c D_80099B20 (0x80099B20).
 PresentationDrawTemplate gCardPresentationPanelTemplate = {{
-    {0, 0x30, 0x3C, 0x80, 0x20, 0, 0, 1.0f, 1.0f},
-    {0, 0xB0, 0x3C, 0x60, 0x20, 0, 0, 1.0f, 1.0f},
-    {0, 0xD4, 0x5C, 0x40, 0x20, 0, 0, 1.0f, 1.0f},
+    {0, 0x30, 0x3C, 0x80, 0x20, 0, 0, 1.0F, 1.0F},
+    {0, 0xB0, 0x3C, 0x60, 0x20, 0, 0, 1.0F, 1.0F},
+    {0, 0xD4, 0x5C, 0x40, 0x20, 0, 0, 1.0F, 1.0F},
     TEXTURE_DRAW_END,
 }};
 /// Third card panel texture indexed by chase stage for area 11.
@@ -157,12 +157,12 @@ ChaseStageTextures gArea13CardChaseStageTextures = {{-1, 0xE, 0xF}};
 /// Texture rectangles for collection result decorations.
 /// \note Original identifier: \c D_80099BD4 (0x80099BD4).
 TextureRectangle gCollectionPresentationDecorations[7] = {
-    {0x29, 0x1C, 0x10, 0x40, 0x40, 0, 0, 1.0f, 1.0f},
-    {0x2A, 0x5C, 0x10, 0x80, 0x40, 0, 0, 1.0f, 1.0f},
-    {0x2B, 0xDC, 0x10, 0x40, 0x40, 0, 0, 1.0f, 1.0f},
-    {0x26, 0x8C, 0xBF, 0x20, 0x20, 0, 0, 1.0f, 1.0f},
-    {0x27, 0xAC, 0xBF, 0x40, 0x20, 0, 0, 1.0f, 1.0f},
-    {0x28, 0xEC, 0xBF, 0x20, 0x20, 0, 0, 1.0f, 1.0f},
+    {0x29, 0x1C, 0x10, 0x40, 0x40, 0, 0, 1.0F, 1.0F},
+    {0x2A, 0x5C, 0x10, 0x80, 0x40, 0, 0, 1.0F, 1.0F},
+    {0x2B, 0xDC, 0x10, 0x40, 0x40, 0, 0, 1.0F, 1.0F},
+    {0x26, 0x8C, 0xBF, 0x20, 0x20, 0, 0, 1.0F, 1.0F},
+    {0x27, 0xAC, 0xBF, 0x40, 0x20, 0, 0, 1.0F, 1.0F},
+    {0x28, 0xEC, 0xBF, 0x20, 0x20, 0, 0, 1.0F, 1.0F},
     TEXTURE_DRAW_END,
 };
 /// Actor response actions for presented items in response category two.
@@ -349,10 +349,10 @@ void presentationRestoreActiveActor(void) {
     ((ActorScriptState *)ext)->rootMotionHeading = gPresentationSavedActorState.rootMotionHeading;
     ((ActorScriptState *)ext)->behaviorFlags = gPresentationSavedActorState.behaviorFlags;
     actionScriptStop(((s32)gPikachuActor), &gPresentationSavedActorState);
-    actionBeginPoseTransition((u8 *)((s32)gPikachuActor), 0x4A, 0.1f);
+    actionBeginPoseTransition((u8 *)((s32)gPikachuActor), 0x4A, 0.1F);
     objectClearHierarchyFlags((u8 *)((s32)gPikachuActor), 0x2000);
     cameraSetPositionAndAngles(0, gPlayerState.position[0], gPlayerPositionY + gPlayerEyeHeight, gPlayerPositionZ,
-                               gPlayerPitchOffset + gPlayerPitch, gPlayerYaw + gPlayerViewShake, 0.0f);
+                               gPlayerPitchOffset + gPlayerPitch, gPlayerYaw + gPlayerViewShake, 0.0F);
 }
 
 
@@ -625,8 +625,8 @@ void presentationUpdateCardMode(void) {
         actionScriptStartWithMode((u8 *)((s32)gPikachuActor), gCardPresentationActionScript, 2);
         presentationSetFocusTarget(gPresentationActorFocusTargets);
         cameraResetOverlayColor(0, 0, 0, 0, 0);
-        cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 0.6f);
-        audioChangeCurrentCue(gCardPresentationAudioCue, (f64)0.1f, (f64)0.1f);
+        cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 0.6F);
+        audioChangeCurrentCue(gCardPresentationAudioCue, (f64)0.1F, (f64)0.1F);
         switch (gCardPresentationAudioCue) {
         case 20:
             gCardPresentationDismissalDeadline = (u32)(runtimeGetElapsedMilliseconds() + 0x1CCA);
@@ -639,7 +639,7 @@ void presentationUpdateCardMode(void) {
         gCardPresentationStage = 1;
         return;
     case 1:
-        if (gPrimarySecondaryOverlayRemainingSeconds == 0.0f) {
+        if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
             gCardPresentationStage = 2;
         }
         presentationPlaceActiveActor(&gCardPresentationActorPosition);
@@ -647,14 +647,14 @@ void presentationUpdateCardMode(void) {
     case 2:
         now = (u32)runtimeGetElapsedMilliseconds();
         if ((gControllerPrimaryRepeatedButtons != 0) || ((u32)gCardPresentationDismissalDeadline < now)) {
-            audioChangeCurrentCue(-1, (f64)0.1f, (f64)0.1f);
-            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFE, 0.8f);
+            audioChangeCurrentCue(-1, (f64)0.1F, (f64)0.1F);
+            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFE, 0.8F);
             gCardPresentationStage = 3;
         }
         presentationPlaceActiveActor(&gCardPresentationActorPosition);
         return;
     case 3:
-        if (gPrimarySecondaryOverlayRemainingSeconds == 0.0f) {
+        if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
             backdropSelectForView(0, gCurrentAreaConfiguration->backdrop, 1);
             presentationRestoreActiveActor();
             hudSetAreaLabelVisible(1);
@@ -709,7 +709,7 @@ void presentationSetCollectionItemText(u8 *object) {
     s32 radix = 10;
     if (object != NULL) {
         state = ((RuntimeObjectPrefix *)object)->state.bytes;
-        value = *(s32 *)((u8 *)gItemKindCollectionValueEntries + ((ItemStatePrefix *)state)->kind * 0x74);
+        value = *(s32 *)((u8 *)gItemKindCollectionValueEntries + (((ItemStatePrefix *)state)->kind * 0x74));
         sprintf(buffer, "%s : @Y@Z%d", itemGetDisplayName(((ItemStatePrefix *)state)->kind, 1), value);
         while ((value /= radix) >= 2) {
         }
@@ -904,10 +904,12 @@ void presentationChooseActorResponseToItem(s32 id) {
     index = randomBelow(4);
     if (index == *previous) {
         index++;
-        while (index < 0)
+        while (index < 0) {
             index += 4;
-        while (index >= 4)
+        }
+        while (index >= 4) {
             index -= 4;
+        }
     }
     *previous = index;
     switch (category) {
@@ -921,8 +923,9 @@ void presentationChooseActorResponseToItem(s32 id) {
         break;
     case 1:
         presentationSetFocusTarget(&gPresentationActorFocusTargets[randomBelow(3)]);
-        if (randomNext() * (1.0 / 4294967296.0) < 0.3)
+        if (randomNext() * (1.0 / 4294967296.0) < 0.3) {
             return;
+        }
         action = gPresentationItemCategory1ResponseActions[index];
         break;
     default:
@@ -998,14 +1001,15 @@ s32 presentationUpdateItemCollectionSequence(void) {
     case 1:
         object = objectFindLiveByHandle(selectedId);
         elapsedTicks = (f32)(runtimeGetElapsedMilliseconds() - transitionTime);
-        progress = elapsedTicks / 600.0f;
+        progress = elapsedTicks / 600.0F;
         if (progress >= 1.0) {
             transitionTime = runtimeGetElapsedMilliseconds();
             transitionState = 2;
             presentationChooseActorResponseToItem(selectedId);
             value = presentationGetItemCollectionValue(selectedId);
-            if (value >= 5000)
+            if (value >= 5000) {
                 audioPlayCue(0x1D);
+            }
             playerPlayTrackedSoundEffect((u8 *)&gPlayerState, 0xAE);
             gCollectionPresentationScore += value;
             presentationRefreshCollectionScoreText();
@@ -1024,17 +1028,17 @@ s32 presentationUpdateItemCollectionSequence(void) {
         }
         object = objectFindLiveByHandle(selectedId);
         elapsedTicks = (f32)(runtimeGetElapsedMilliseconds() - transitionTime);
-        progress = elapsedTicks / 1000.0f;
+        progress = elapsedTicks / 1000.0F;
         if (progress >= 1.0 || gControllerPrimaryRepeatedButtons != 0) {
             transitionTime = runtimeGetElapsedMilliseconds();
             transitionState = 3;
         }
-        presentationPlaceCollectionItem(object, 0.0f);
+        presentationPlaceCollectionItem(object, 0.0F);
         break;
     case 3:
         object = objectFindLiveByHandle(selectedId);
         elapsedTicks = (f32)(runtimeGetElapsedMilliseconds() - transitionTime);
-        progress = elapsedTicks / 300.0f;
+        progress = elapsedTicks / 300.0F;
         if (progress >= 1.0) {
             u32 completedAt = runtimeGetElapsedMilliseconds();
             index = selectionIndex;
@@ -1111,8 +1115,8 @@ void presentationUpdateCollectionResultsMode(void) {
         gCollectionResultsBypassed = 0;
         backdropSelectForView(0, 0xB, 0);
         cameraResetOverlayColor(0, 0, 0, 0, 0);
-        cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 0.6f);
-        audioStopCategories(AUDIO_CATEGORY_ALL, 0.6f);
+        cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 0.6F);
+        audioStopCategories(AUDIO_CATEGORY_ALL, 0.6F);
         presentationPrepareActiveActor(&gCollectionPresentationActorPosition);
         gCollectionPresentationScore = 0;
         presentationRefreshCollectionScoreText();
@@ -1120,7 +1124,7 @@ void presentationUpdateCollectionResultsMode(void) {
         gCollectionPresentationStage = 1;
         return;
     case 1:
-        if (gPrimarySecondaryOverlayRemainingSeconds == 0.0f) {
+        if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
             gCollectionPresentationStage = 2;
         }
         presentationPlaceActiveActor(&gCollectionPresentationActorPosition);
@@ -1156,8 +1160,8 @@ void presentationUpdateCollectionResultsMode(void) {
         return;
     case 4:
         if (gControllerPrimaryRepeatedButtons & 0x8000) {
-            audioStopCategories(AUDIO_CATEGORY_ALL, 0.1f);
-            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFE, 0.8f);
+            audioStopCategories(AUDIO_CATEGORY_ALL, 0.1F);
+            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFE, 0.8F);
             gCollectionPresentationStage = 6;
         }
         presentationPlaceActiveActor(&gCollectionPresentationActorPosition);
@@ -1165,14 +1169,14 @@ void presentationUpdateCollectionResultsMode(void) {
     case 5:
         if ((gControllerPrimaryRepeatedButtons != 0) ||
             (runtimeGetElapsedMilliseconds() - (u64)gCollectionResultsWaitStartMilliseconds >= 0xBB9)) {
-            audioStopCategories(AUDIO_CATEGORY_ALL, 0.1f);
-            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFE, 0.8f);
+            audioStopCategories(AUDIO_CATEGORY_ALL, 0.1F);
+            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFE, 0.8F);
             gCollectionPresentationStage = 6;
         }
         presentationPlaceActiveActor(&gCollectionPresentationActorPosition);
         return;
     case 6:
-        if (gPrimarySecondaryOverlayRemainingSeconds == 0.0f) {
+        if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
             gCollectionPresentationStage = 0;
             areaSetNextDestination(0, 0);
             runtimeRequestProgramChange(0);
@@ -1591,7 +1595,7 @@ void presentationInitializeForCurrentArea(void) {
     char *regionName;
 
     cameraResetOverlayColor(0, 0, 0, 0, 0);
-    cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.0f);
+    cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.0F);
     if (gRuntimeCurrentEntrance != 0) {
         gCardPresentationSuppressed = 1;
     } else {

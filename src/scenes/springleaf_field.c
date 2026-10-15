@@ -52,7 +52,7 @@ void springleafFieldSpawnGrowthResident(f32 *position, s32 residentIndex) {
         // clang-format off
         random = randomNext(); scale = D_801594C4_scene_springleaf_field;
         // clang-format on
-        actorCreateForKind(5, position[0], position[1], position[2], 0.0f,
+        actorCreateForKind(5, position[0], position[1], position[2], 0.0F,
                            (f32)((f64)random * 2.3283064365386963e-10 * D_801594C8_scene_springleaf_field),
                            mathPowInteger(scale, state) * gCurrentAreaConfiguration->objectScale, record,
                            residentIndex);
@@ -62,14 +62,14 @@ void springleafFieldSpawnGrowthResident(f32 *position, s32 residentIndex) {
         // clang-format off
         random = randomNext(); scale = D_801594D0_scene_springleaf_field;
         // clang-format on
-        actorCreateForKind(6, position[0], position[1], position[2], 0.0f,
+        actorCreateForKind(6, position[0], position[1], position[2], 0.0F,
                            (f32)((f64)random * 2.3283064365386963e-10 * D_801594D8_scene_springleaf_field),
                            mathPowInteger(scale, state - 2) * gCurrentAreaConfiguration->objectScale, record,
                            residentIndex);
         return;
     }
     random = randomNext();
-    actorCreateForKind(7, position[0], position[1], position[2], 0.0f,
+    actorCreateForKind(7, position[0], position[1], position[2], 0.0F,
                        (f32)((f64)(u32)random * 2.3283064365386963e-10 * D_801594E0_scene_springleaf_field),
                        gCurrentAreaConfiguration->objectScale, record, residentIndex);
 }
@@ -77,8 +77,8 @@ void springleafFieldSpawnGrowthResident(f32 *position, s32 residentIndex) {
 /// Prepare scene resources for evolved field residents.
 /// \returns Nothing.
 void springleafFieldPrepareEvolvedResidents(void) {
-    objectRequestHierarchyDestruction(actorCreateForKind(6, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, NULL, 0));
-    objectRequestHierarchyDestruction(actorCreateForKind(7, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, NULL, 0));
+    objectRequestHierarchyDestruction(actorCreateForKind(6, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, NULL, 0));
+    objectRequestHierarchyDestruction(actorCreateForKind(7, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, NULL, 0));
 }
 
 /// Spawn a field item with a randomized heading.
@@ -86,8 +86,8 @@ void springleafFieldPrepareEvolvedResidents(void) {
 /// \param itemKind Supported item-definition identifier.
 /// \returns Nothing.
 void springleafFieldSpawnItem(f32 *position, s32 itemKind) {
-    itemCreate(position[0], position[1], position[2], 0.0f,
-                  (f32)((f64)randomNext() * 2.3283064365386963e-10 * D_801594E8_scene_springleaf_field), itemKind);
+    itemCreate(position[0], position[1], position[2], 0.0F,
+               (f32)((f64)randomNext() * 2.3283064365386963e-10 * D_801594E8_scene_springleaf_field), itemKind);
 }
 
 /// Initialize the field scene door.
@@ -103,12 +103,14 @@ void springleafFieldResetCompletedGrowth(void) {
     s32 i;
     s32 count = 0;
     for (i = 0; i < 5; i++) {
-        if (progressGetValue(i + 0x70) >= 4)
+        if (progressGetValue(i + 0x70) >= 4) {
             count++;
+        }
     }
     if (gRuntimeCurrentEntrance != 2 && count == 5) {
-        for (i = 0; i != 5; i++)
+        for (i = 0; i != 5; i++) {
             progressSetValue(i + 0x70, 0);
+        }
     }
 }
 
@@ -131,26 +133,26 @@ void springleafFieldInitializeObjects(void) {
     s32 kind;
     occupied = D_80157F70_scene_springleaf_field;
     if (progressGetValue(0x12) != 0) {
-        actorCreateForKind(3, 203.45f, 0.5f, 35.97f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+        actorCreateForKind(3, 203.45F, 0.5F, 35.97F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                            D_801571E4_scene_springleaf_field, 0);
     }
     if (progressGetCurrentChapter() == 8) {
-        actorCreateForKind(17, 0, 0, 0, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+        actorCreateForKind(17, 0, 0, 0, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                            D_80157B58_scene_springleaf_field, 0);
     }
     if (progressGetValue(0x76) >= 3) {
-        actorCreateForKind(14, 130.0f, 16.0f, 150.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+        actorCreateForKind(14, 130.0F, 16.0F, 150.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                            D_80157C78_scene_springleaf_field, 0);
     }
-    actorCreateForKind(10, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(10, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_8014E354_scene_springleaf_field, 0);
     runtimeCheckResetCheckpoint((const char *)D_80159474_scene_springleaf_field, 1);
     springleafFieldPrepareEvolvedResidents();
     springleafFieldResetCompletedGrowth();
     if (progressGetValue(0x4F) == 0) {
-        position[0] = 72.0f;
+        position[0] = 72.0F;
         position[1] = D_801594F0_scene_springleaf_field;
-        position[2] = 59.0f;
+        position[2] = 59.0F;
         springleafFieldSpawnGrowthResident(position, 0);
         i = 1;
     } else {
@@ -167,8 +169,9 @@ void springleafFieldInitializeObjects(void) {
     i = 0;
     count = 0;
     do {
-        if (progressGetValue(i + 0x70) >= 2)
+        if (progressGetValue(i + 0x70) >= 2) {
             count++;
+        }
         i++;
     } while (i < 5);
     i = 0;
@@ -176,17 +179,18 @@ void springleafFieldInitializeObjects(void) {
         selected = randomBelow(27);
         if (!occupied.used[selected]) {
             kind = 0x7A;
-            if (i < count)
+            if (i < count) {
                 kind = 0x7B;
+            }
             springleafFieldSpawnItem(D_80134BE0_scene_springleaf_field[selected], kind);
             occupied.used[selected] = 1;
             i++;
         }
     } while (i < 7);
-    mazeScatterItems(D_80157CF4_scene_springleaf_field, 0x35, &D_80157CEC_scene_springleaf_field, 0.7f);
+    mazeScatterItems(D_80157CF4_scene_springleaf_field, 0x35, &D_80157CEC_scene_springleaf_field, 0.7F);
     if (progressGetValue(0x12) == 0) {
-        landmarkCreate(D_801594F4_scene_springleaf_field, 10.5f, 35.97f, 0x90);
-        landmarkCreate(D_801594F8_scene_springleaf_field, D_801594FC_scene_springleaf_field, 91.0f, 0x8E);
+        landmarkCreate(D_801594F4_scene_springleaf_field, 10.5F, 35.97F, 0x90);
+        landmarkCreate(D_801594F8_scene_springleaf_field, D_801594FC_scene_springleaf_field, 91.0F, 0x8E);
         springleafFieldInitializeDoor();
     }
 }
@@ -204,10 +208,12 @@ s32 springleafFieldGetSpatialCell(f32 x, f32 y, f32 z) {
     s32 iz;
     iy = (s32)((f64)y / 5.0);
     if (iy < 0 || iy >= 32 || (ix = (s32)((f64)x / 10.0), ix < 0) || ix >= 32 || (iz = (s32)((f64)z / 10.0), iz < 0) ||
-        iz >= 32)
+        iz >= 32) {
         return 0;
+    }
     layer = D_8017D658_scene_springleaf_field[iy];
-    if (layer == NULL)
+    if (layer == NULL) {
         return 0;
-    return layer[iz * 32 + ix];
+    }
+    return layer[(iz * 32) + ix];
 }

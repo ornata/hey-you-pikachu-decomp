@@ -228,7 +228,7 @@ void objectResponseApplyImpulse(u8 *object, ObjectResponse *response) {
     v[1] = (f32)(s8)response->payload.impulse.bytes[3] * v[1];
     v[2] = (f32)(s8)response->payload.impulse.bytes[3] * v[2];
     itemAddVelocity(((RuntimeObjectPrefix *)object)->handle, v);
-    itemStartDirectionMotion(object, 0.5f, 1000.0f, 0.0f);
+    itemStartDirectionMotion(object, 0.5F, 1000.0F, 0.0F);
 }
 
 /// Response callbacks indexed by response kind.

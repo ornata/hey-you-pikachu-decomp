@@ -34,19 +34,19 @@ extern u8 D_8014E9F4_scene_viridian_entrance[];
 void viridianEntranceCreateAccessObject(void) {
     f32 position[3];
 
-    position[0] = 160.0f;
-    position[1] = 7.5f;
-    position[2] = 262.0f;
+    position[0] = 160.0F;
+    position[1] = 7.5F;
+    position[2] = 262.0F;
     interactionProxyCreate(position, 1, 4, 0, (char *)D_8014E9F4_scene_viridian_entrance);
 }
 
 /// Create and register the entrance items required by the saved progress stage.
 /// \returns Nothing.
 void viridianEntranceCreateTrackedItems(void) {
-    toolboxStoreObjectInRow((s32)itemCreate(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1), 0);
-    toolboxStoreObjectInRow((s32)itemCreate(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 5), 0);
-    toolboxStoreObjectInRow((s32)itemCreate(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 6), 0);
-    toolboxStoreObjectInRow((s32)itemCreate(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 7), 0);
+    toolboxStoreObjectInRow((s32)itemCreate(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1), 0);
+    toolboxStoreObjectInRow((s32)itemCreate(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 5), 0);
+    toolboxStoreObjectInRow((s32)itemCreate(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 6), 0);
+    toolboxStoreObjectInRow((s32)itemCreate(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 7), 0);
 }
 
 /// Populate the normal forest entrance with scenery, a prop, access, and progress-dependent items.
@@ -70,7 +70,7 @@ void viridianEntranceInitializeModeTwoObjects(void) {
 
     viridianEntranceCreateSceneProp();
     for (i = 0; i < 6; i++) {
-        actorCreateForKind(0x24, 180.0f, 1.5f, 215.0f, 0, 0.0f, gCurrentAreaConfiguration->objectScale,
+        actorCreateForKind(0x24, 180.0F, 1.5F, 215.0F, 0, 0.0F, gCurrentAreaConfiguration->objectScale,
                            D_8014CF3C_scene_viridian_entrance, i);
     }
 }
@@ -106,7 +106,8 @@ s32 viridianEntranceGetSpatialCell(f32 x, f32 y, f32 z) {
         return 0;
     }
     layer = D_8017467C_scene_viridian_entrance[iy];
-    if (layer == 0)
+    if (layer == 0) {
         return 0;
-    return layer[iz * 32 + ix];
+    }
+    return layer[(iz * 32) + ix];
 }

@@ -42,7 +42,7 @@ void controllerQueueRumbleCommand(s32 port, s32 command, f32 durationSeconds, f3
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80004A0C (0x80004A0C).
 void controllerRequestRumbleReset(s32 port) {
-    controllerQueueRumbleCommand(port, CONTROLLER_RUMBLE_RESET, 0.0f, 0.0f, 0.0f);
+    controllerQueueRumbleCommand(port, CONTROLLER_RUMBLE_RESET, 0.0F, 0.0F, 0.0F);
 }
 
 /// Request a timed pattern of controller rumble pulses.
@@ -61,7 +61,7 @@ void controllerRequestRumblePattern(s32 port, f32 durationSeconds, f32 intervalS
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80004A78 (0x80004A78).
 void controllerRequestRumbleStop(s32 port) {
-    controllerQueueRumbleCommand(port, CONTROLLER_RUMBLE_STOP, 0.0f, 0.0f, 0.0f);
+    controllerQueueRumbleCommand(port, CONTROLLER_RUMBLE_STOP, 0.0F, 0.0F, 0.0F);
 }
 
 

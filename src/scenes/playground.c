@@ -12,7 +12,7 @@ extern s32 *D_8015A04C_scene_playground[8];
 /// Spawn the playground resident creature with its scene behavior.
 /// \returns Nothing.
 void playgroundSpawnResident(void) {
-    actorCreateForKind(0x13, 320.0f, 10.0f, 225.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(0x13, 320.0F, 10.0F, 225.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_8013EE54_scene_playground, 0);
 }
 /// Create the playground cave, its linked landmark, and the resident creature.
@@ -40,7 +40,8 @@ s32 playgroundGetSpatialCell(f32 x, f32 y, f32 z) {
         return 0;
     }
     layer = D_8015A04C_scene_playground[iy];
-    if (layer == NULL)
+    if (layer == NULL) {
         return 0;
-    return layer[iz * 8 + ix];
+    }
+    return layer[(iz * 8) + ix];
 }

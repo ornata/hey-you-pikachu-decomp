@@ -38,10 +38,11 @@ void cobaltFishingSpawnRandomResident(s32 residentIndex) {
     s32 threshold;
     s32 kind;
     s32 roll;
-    if (progressGetValue(0x1F) != 0)
+    if (progressGetValue(0x1F) != 0) {
         offset = 0;
-    else
+    } else {
         offset = 4;
+    }
     roll = (s32)(randomNext() * 2.3283064365386963e-10 * 100.0);
     count = 9 - offset;
     /* Keep loop entry together to preserve IDO setup scheduling. */
@@ -64,7 +65,7 @@ void cobaltFishingSpawnRandomResident(s32 residentIndex) {
         } while (i != count);
     }
     if (selected != -1) {
-        actorCreateForKind(selected, 93.0f, 5.0f, 35.0f, 0, 0, gCurrentAreaConfiguration->objectScale,
+        actorCreateForKind(selected, 93.0F, 5.0F, 35.0F, 0, 0, gCurrentAreaConfiguration->objectScale,
                            D_80142E90_scene_cobalt_fishing, residentIndex);
         runtimeCheckResetCheckpoint((const char *)D_80147C94_scene_cobalt_fishing, 1);
     }
@@ -73,7 +74,7 @@ void cobaltFishingSpawnRandomResident(s32 residentIndex) {
 /// Spawn the fixed type-nine resident for the fishing scene.
 /// \returns Nothing.
 void cobaltFishingSpawnResidentType9(void) {
-    actorCreateForKind(9, 93.0f, 5.0f, 30.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(9, 93.0F, 5.0F, 30.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_80144CA4_scene_cobalt_fishing, 0x63);
 }
 
@@ -81,45 +82,45 @@ void cobaltFishingSpawnResidentType9(void) {
 /// \returns Nothing.
 void cobaltFishingSpawnProgressItem(void) {
     if (progressGetValue(0x1F) != 0) {
-        itemCreate(93.0f, 8.0f, 67.0f, 0.0f, 0.0f, 0x53);
+        itemCreate(93.0F, 8.0F, 67.0F, 0.0F, 0.0F, 0x53);
         return;
     }
-    itemCreate(93.0f, 8.0f, 67.0f, 0.0f, 0.0f, 0x52);
+    itemCreate(93.0F, 8.0F, 67.0F, 0.0F, 0.0F, 0x52);
 }
 
 /// Spawn the fixed type-twenty resident for the fishing scene.
 /// \returns Nothing.
 void cobaltFishingSpawnResidentType20(void) {
-    actorCreateForKind(0x14, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(0x14, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_80145198_scene_cobalt_fishing, 0x62);
 }
 
 /// Spawn the optional type-eighteen resident for the fishing scene.
 /// \returns Nothing.
 void cobaltFishingSpawnResidentType18(void) {
-    actorCreateForKind(0x12, 110.0f, 11.0f, 79.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(0x12, 110.0F, 11.0F, 79.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_80145390_scene_cobalt_fishing, 0x63);
 }
 
 /// Spawn the fixed type-eleven resident for the fishing scene.
 /// \returns Nothing.
 void cobaltFishingSpawnResidentType11(void) {
-    actorCreateForKind(0xB, 130.0f, 5.25f, 28.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(0xB, 130.0F, 5.25F, 28.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_80145640_scene_cobalt_fishing, 0x63);
 }
 
 /// Spawn the fixed type-ten resident for the fishing scene.
 /// \returns Nothing.
 void cobaltFishingSpawnResidentType10(void) {
-    actorCreateForKind(0xA, 113.0f, 8.0f, 5.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(0xA, 113.0F, 8.0F, 5.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_8014573C_scene_cobalt_fishing, 0x61);
 }
 
 /// Create the fishing scene's ambient audio emitter.
 /// \returns Nothing.
 void cobaltFishingCreateAmbientAudio(void) {
-    ambientAudioCreate(&D_801457C0_scene_cobalt_fishing, 1, 7.0f, 3.0f, 0x2B, 0x2B, 1.0f, 1,
-                  (Vec3f *)&D_801457C0_scene_cobalt_fishing);
+    ambientAudioCreate(&D_801457C0_scene_cobalt_fishing, 1, 7.0F, 3.0F, 0x2B, 0x2B, 1.0F, 1,
+                       (Vec3f *)&D_801457C0_scene_cobalt_fishing);
 }
 
 /// Populate the fishing scene with randomized residents, fixed residents, an item, and ambient audio.
@@ -161,10 +162,12 @@ s32 cobaltFishingGetSpatialCell(f32 x, f32 y, f32 z) {
     s32 iz;
     iy = (s32)((f64)y / 20.0);
     if (iy < 0 || iy >= 8 || (ix = (s32)((f64)x / 20.0), ix < 0) || ix >= 8 || (iz = (s32)((f64)z / 20.0), iz < 0) ||
-        iz >= 8)
+        iz >= 8) {
         return 0;
+    }
     layer = D_80151708_scene_cobalt_fishing[iy];
-    if (layer == NULL)
+    if (layer == NULL) {
         return 0;
-    return layer[iz * 8 + ix];
+    }
+    return layer[(iz * 8) + ix];
 }

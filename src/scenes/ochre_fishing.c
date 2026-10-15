@@ -37,10 +37,11 @@ void ochreFishingSpawnRandomResident(s32 residentIndex) {
     s32 threshold;
     s32 kind;
     s32 roll;
-    if (progressGetValue(0x1F) != 0)
+    if (progressGetValue(0x1F) != 0) {
         offset = 0;
-    else
+    } else {
         offset = 1;
+    }
     roll = (s32)(randomNext() * 2.3283064365386963e-10 * 100.0);
     count = 5 - offset;
     /* Keep loop entry together to preserve IDO setup scheduling. */
@@ -63,7 +64,7 @@ void ochreFishingSpawnRandomResident(s32 residentIndex) {
         } while (i != count);
     }
     if (selected != -1) {
-        actorCreateForKind(selected, 54.0f, 8.0f, 72.0f, 0, 0, gCurrentAreaConfiguration->objectScale,
+        actorCreateForKind(selected, 54.0F, 8.0F, 72.0F, 0, 0, gCurrentAreaConfiguration->objectScale,
                            D_801430E4_scene_ochre_fishing, residentIndex);
         runtimeCheckResetCheckpoint((const char *)D_801480FC_scene_ochre_fishing, 1);
     }
@@ -72,7 +73,7 @@ void ochreFishingSpawnRandomResident(s32 residentIndex) {
 /// Spawn the fixed type-nine resident for the fishing scene.
 /// \returns Nothing.
 void ochreFishingSpawnResidentType9(void) {
-    actorCreateForKind(9, 54.0f, 8.0f, 67.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(9, 54.0F, 8.0F, 67.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_80144EF4_scene_ochre_fishing, 0x63);
 }
 
@@ -80,45 +81,45 @@ void ochreFishingSpawnResidentType9(void) {
 /// \returns Nothing.
 void ochreFishingSpawnProgressItem(void) {
     if (progressGetValue(0x1F) != 0) {
-        itemCreate(54.0f, 12.0f, 104.0f, 0.0f, 0.0f, 0x53);
+        itemCreate(54.0F, 12.0F, 104.0F, 0.0F, 0.0F, 0x53);
         return;
     }
-    itemCreate(54.0f, 12.0f, 104.0f, 0.0f, 0.0f, 0x52);
+    itemCreate(54.0F, 12.0F, 104.0F, 0.0F, 0.0F, 0x52);
 }
 
 /// Spawn the fixed type-twenty resident for the fishing scene.
 /// \returns Nothing.
 void ochreFishingSpawnResidentType20(void) {
-    actorCreateForKind(0x14, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(0x14, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_801453E8_scene_ochre_fishing, 0x62);
 }
 
 /// Spawn the optional type-one resident for the fishing scene.
 /// \returns Nothing.
 void ochreFishingSpawnResidentType1(void) {
-    actorCreateForKind(1, 64.0f, 12.0f, 45.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(1, 64.0F, 12.0F, 45.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_8014565C_scene_ochre_fishing, 0x46);
 }
 
 /// Spawn the fixed type-nineteen resident for the fishing scene.
 /// \returns Nothing.
 void ochreFishingSpawnResidentType19(void) {
-    actorCreateForKind(0x13, 104.0f, 24.0f, 72.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(0x13, 104.0F, 24.0F, 72.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_801458F8_scene_ochre_fishing, 0x46);
 }
 
 /// Spawn the fixed type-ten resident for the fishing scene.
 /// \returns Nothing.
 void ochreFishingSpawnResidentType10(void) {
-    actorCreateForKind(0xA, 74.0f, 12.0f, 42.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(0xA, 74.0F, 12.0F, 42.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_801459F4_scene_ochre_fishing, 0x61);
 }
 
 /// Create the fishing scene's ambient audio emitter.
 /// \returns Nothing.
 void ochreFishingCreateAmbientAudio(void) {
-    ambientAudioCreate(&D_80145A50_scene_ochre_fishing, 0, 10000.0f, 0.0f, 0x88, 0x88, 1.0f, 1,
-                  (Vec3f *)&D_80145A50_scene_ochre_fishing);
+    ambientAudioCreate(&D_80145A50_scene_ochre_fishing, 0, 10000.0F, 0.0F, 0x88, 0x88, 1.0F, 1,
+                       (Vec3f *)&D_80145A50_scene_ochre_fishing);
 }
 
 /// Populate the fishing scene with randomized residents, fixed residents, an item, and ambient audio.
@@ -159,10 +160,12 @@ s32 ochreFishingGetSpatialCell(f32 x, f32 y, f32 z) {
     s32 iz;
     iy = (s32)((f64)y / 20.0);
     if (iy < 0 || iy >= 8 || (ix = (s32)((f64)x / 20.0), ix < 0) || ix >= 8 || (iz = (s32)((f64)z / 20.0), iz < 0) ||
-        iz >= 8)
+        iz >= 8) {
         return 0;
+    }
     layer = D_801551B0_scene_ochre_fishing[iy];
-    if (layer == NULL)
+    if (layer == NULL) {
         return 0;
-    return layer[iz * 8 + ix];
+    }
+    return layer[(iz * 8) + ix];
 }

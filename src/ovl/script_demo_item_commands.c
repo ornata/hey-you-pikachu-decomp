@@ -63,23 +63,23 @@ s32 scriptCommandRemoveMazeBlock(u8 *object) {
         center[0] = ((RuntimeObjectPrefix *)target)->worldPosition[0];
         center[1] = ((RuntimeObjectPrefix *)target)->worldPosition[1];
         center[2] = ((RuntimeObjectPrefix *)target)->worldPosition[2];
-        center[0] += ((RuntimeObjectPrefix *)target)->radius * gCurrentAreaConfiguration->objectScale * 0.5f;
-        center[2] += ((RuntimeObjectPrefix *)target)->radius * gCurrentAreaConfiguration->objectScale * 0.5f;
+        center[0] += ((RuntimeObjectPrefix *)target)->radius * gCurrentAreaConfiguration->objectScale * 0.5F;
+        center[2] += ((RuntimeObjectPrefix *)target)->radius * gCurrentAreaConfiguration->objectScale * 0.5F;
         edge[0] = center[0];
         edge[1] = center[1];
         edge[2] = center[2];
-        edge[0] += 1.0f;
-        edge[2] += 1.0f;
-        effectEmitterCreateForStyle(EFFECT_EMIT_BLACK_WISPS, &edge[0], 3.0f, 0, 0, 0.0f);
+        edge[0] += 1.0F;
+        edge[2] += 1.0F;
+        effectEmitterCreateForStyle(EFFECT_EMIT_BLACK_WISPS, &edge[0], 3.0F, 0, 0, 0.0F);
         mazeRemoveBlockObject(target);
         x = center[0];
         z = center[2];
-        x -= 1.0f;
-        z -= 1.0f;
+        x -= 1.0F;
+        z -= 1.0F;
         edge[0] = x;
         edge[2] = z;
         edge[1] = center[1];
-        effectEmitterCreateForStyle(EFFECT_EMIT_BLACK_WISPS, &center[0], 3.0f, 0, 0, 0.0f);
+        effectEmitterCreateForStyle(EFFECT_EMIT_BLACK_WISPS, &center[0], 3.0F, 0, 0, 0.0F);
     }
     scriptVmPushInteger((ScriptVm *)(script), 0);
     return 0;
@@ -108,7 +108,7 @@ s32 scriptCommandCreateItemParticles(u8 *object) {
     sp_pop = scriptVmPopInteger((ScriptVm *)(vmAddress));
     sp2C = objectResolveAvailableHandle(sp_pop);
     if (sp2C != 0) {
-        itemStartDirectionMotion(sp2C, sp38, 100.0f, 1000.0f);
+        itemStartDirectionMotion(sp2C, sp38, 100.0F, 1000.0F);
         particleClusterCreate(sp3C, sp38, sp34, sp30, sp2C);
     }
     scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
@@ -129,7 +129,7 @@ s32 scriptCommandGetItemReplacement(u8 *object) {
 
     sp1C = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
     idx = scriptVmPopInteger((ScriptVm *)(sp1C));
-    scriptVmPushInteger((ScriptVm *)(sp1C), *(s32 *)((u8 *)&gItemKindReplacementEntries + idx * 0x74));
+    scriptVmPushInteger((ScriptVm *)(sp1C), *(s32 *)((u8 *)&gItemKindReplacementEntries + (idx * 0x74)));
     return 0;
 }
 

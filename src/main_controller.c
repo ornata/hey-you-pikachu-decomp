@@ -611,8 +611,9 @@ void controllerUpdateRumblePattern(s32 port) {
         timer->state = CONTROLLER_PATTERN_CANCEL;
         return;
     }
-    if (osGetTime() < timer->nextPulseTicks)
+    if (osGetTime() < timer->nextPulseTicks) {
         return;
+    }
     timer->nextPulseTicks += timer->intervalTicks;
     if (osGetTime() > timer->nextPulseTicks) {
         timer->nextPulseTicks = osGetTime();

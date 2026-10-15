@@ -68,54 +68,58 @@ typedef struct {
 /// Linked model template cloned to create the toolbox display.
 /// \note Original identifier: \c D_8009A3F0 (0x8009A3F0).
 ObjectTemplate gToolboxModelTemplate[6] = {
-    {{1.0f, 1.0f, 1.0f},
-     {0.0f, 0.0f, 0.0f},
-     {0.0f, 0.0f, 0.0f},
-     606.1f,
+    {{1.0F, 1.0F, 1.0F},
+     {0.0F, 0.0F, 0.0F},
+     {0.0F, 0.0F, 0.0F},
+     606.1F,
      NULL,
      &gToolboxModelTemplate[1],
      (Gfx *)0x0104F2F0,
-     0, 0},
-    {{1.0f, 1.0f, 1.0f},
-     {0.0f, 0.0f, 0.0f},
-     {0.0f, 0.0f, 0.0f},
-     142.5f,
+     0,
+     0},
+    {{1.0F, 1.0F, 1.0F},
+     {0.0F, 0.0F, 0.0F},
+     {0.0F, 0.0F, 0.0F},
+     142.5F,
      &gToolboxModelTemplate[2],
      NULL,
      (Gfx *)0x0104F508,
-     0, 0},
-    {{1.0f, 1.0f, 1.0f},
-     {0.0f, 0.0f, 0.0f},
-     {0.0f, 312.1642f, 0.0f},
-     612.1f,
+     0,
+     0},
+    {{1.0F, 1.0F, 1.0F},
+     {0.0F, 0.0F, 0.0F},
+     {0.0F, 312.1642F, 0.0F},
+     612.1F,
      &gToolboxModelTemplate[4],
      &gToolboxModelTemplate[3],
      (Gfx *)0x0104FA00,
-     0, 0},
-    {{1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {5.9223f, 0.0f, 0.0f}, 196.7f, NULL, NULL, (Gfx *)0x0104FD90, 0, 0},
-    {{1.0f, 1.0f, 1.0f},
-     {0.0f, 0.0f, 0.0f},
-     {0.0f, 0.0f, 0.0f},
-     606.1f,
+     0,
+     0},
+    {{1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F}, {5.9223F, 0.0F, 0.0F}, 196.7F, NULL, NULL, (Gfx *)0x0104FD90, 0, 0},
+    {{1.0F, 1.0F, 1.0F},
+     {0.0F, 0.0F, 0.0F},
+     {0.0F, 0.0F, 0.0F},
+     606.1F,
      NULL,
      &gToolboxModelTemplate[5],
      (Gfx *)0x010501F0,
-     0, 0},
-    {{1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, 582.1f, NULL, NULL, (Gfx *)0x01050648, 0, 0},
+     0,
+     0},
+    {{1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F}, {0.0F, 0.0F, 0.0F}, 582.1F, NULL, NULL, (Gfx *)0x01050648, 0, 0},
 };
 
 /// Model template cloned for unoccupied toolbox slot displays.
 /// \note Original identifier: \c D_8009A540 (0x8009A540).
 ObjectTemplate gToolboxPlaceholderTemplate[2] = {
-    {{1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, 0.0f, NULL, &gToolboxPlaceholderTemplate[1], 0, 0, 0},
-    {{1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, 257.0f, NULL, NULL, (Gfx *)0x01008860, 0x98, 0},
+    {{1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F}, {0.0F, 0.0F, 0.0F}, 0.0F, NULL, &gToolboxPlaceholderTemplate[1], 0, 0, 0},
+    {{1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F}, {0.0F, 0.0F, 0.0F}, 257.0F, NULL, NULL, (Gfx *)0x01008860, 0x98, 0},
 };
 
 /// Base-object anchor positions indexed by Collection or Item Storage row.
 /// \note Original identifier: \c D_8009A5B0 (0x8009A5B0).
 Vec3f gToolboxRowAnchors[2] = {
-    {-1.5f, -2.5f, -20.0f},
-    {0.0f, -2.5f, -20.0f},
+    {-1.5F, -2.5F, -20.0F},
+    {0.0F, -2.5F, -20.0F},
 };
 
 /// Initial Item Storage kinds and progress selectors controlling their availability.
@@ -151,7 +155,7 @@ char *gToolboxRowTitles[2] = {"Collection", "Item Storage"};
 
 /// Off-screen world position used to park toolbox objects.
 /// \note Original identifier: \c D_8009A654 (0x8009A654).
-Vec3f gToolboxParkingPosition = {1000.0f, 1000.0f, 1000.0f};
+Vec3f gToolboxParkingPosition = {1000.0F, 1000.0F, 1000.0F};
 
 /// Index of the next toolbox help message to display.
 /// \note Original identifier: \c D_8009A660 (0x8009A660).
@@ -160,8 +164,8 @@ s32 gToolboxNextHelpMessage = 0;
 /// Terminated sprite list used to draw toolbox navigation feedback.
 /// \note Original identifier: \c D_8009A664 (0x8009A664).
 TextureRectangle gToolboxNavigationSprites[2] = {
-    {0xF8, 0, 0, 32, 32, 0, 0, 1.0f, 1.0f},
-    {-1, 0, 0, 0, 0, 0, 0, 0.0f, 0.0f},
+    {0xF8, 0, 0, 32, 32, 0, 0, 1.0F, 1.0F},
+    {-1, 0, 0, 0, 0, 0, 0, 0.0F, 0.0F},
 };
 
 /// RGBA color of the depth-aware overlay behind the toolbox.
@@ -212,8 +216,8 @@ void toolboxSetObjectCameraRotation(u8 *object, f32 pitch, f32 yaw) {
     f32 sp1C[12];
 
     matrix34MakeRotationXYZDegrees(sp1C, gPlayerState.pitchOffset + gPlayerState.pitch,
-                                   gPlayerState.yaw + gPlayerState.viewShake, 0.0f);
-    matrix33ApplyRotationZYXDegrees(sp1C, pitch, yaw, 0.0f);
+                                   gPlayerState.yaw + gPlayerState.viewShake, 0.0F);
+    matrix33ApplyRotationZYXDegrees(sp1C, pitch, yaw, 0.0F);
     matrix33GetFoldedEulerDegrees(sp1C, &((RuntimeObjectPrefix *)object)->rotation[0],
                                   &((RuntimeObjectPrefix *)object)->rotation[1],
                                   &((RuntimeObjectPrefix *)object)->rotation[2]);
@@ -262,9 +266,9 @@ void toolboxScaleCurrentRow(ToolboxState *t) {
             id = v;
         }
         if (i == 0) {
-            toolboxSetObjectScale(id, 0.5f);
+            toolboxSetObjectScale(id, 0.5F);
         } else {
-            toolboxSetObjectScale(id, 0.3f);
+            toolboxSetObjectScale(id, 0.3F);
         }
     }
 }
@@ -576,7 +580,7 @@ void toolboxShowItemMessage(u8 *object, char *fmt) {
 
     p = (s16 *)((RuntimeObjectPrefix *)object)->state.pointer;
     sprintf(buf, fmt, itemGetDisplayName(((ItemStatePrefix *)p)->kind, 1));
-    messageBarEnqueue(0, 3.5f, (u8 *)buf);
+    messageBarEnqueue(0, 3.5F, (u8 *)buf);
     gToolboxHelpMessageMilliseconds = runtimeGetElapsedMilliseconds();
 }
 
@@ -644,7 +648,7 @@ void toolboxConfirmItemTransfer(u8 *player) {
     case 5:
         playerPlayTrackedSoundEffect(player, 0xC5);
         gToolboxExitAction = 2;
-        messageBarEnqueue(0, 0.1f, (u8 *)" ");
+        messageBarEnqueue(0, 0.1F, (u8 *)" ");
         toolboxSetMode((u8 *)&gToolboxState, 3);
         return;
     case 2:
@@ -668,7 +672,7 @@ void toolboxConfirmItemTransfer(u8 *player) {
             data = ((RuntimeObjectPrefix *)held)->state.bytes;
             do {
                 other = objectFindLiveByHandle(
-                    *(s32 *)((u8 *)gToolboxItemHandleEntries + gToolboxState.row * 0x50 + i * 8));
+                    *(s32 *)((u8 *)gToolboxItemHandleEntries + (gToolboxState.row * 0x50) + (i * 8)));
                 if (other != NULL) {
                     otherState = ((RuntimeObjectPrefix *)other)->state.bytes;
                     if (*(s16 *)(data + 4) == *(s16 *)(otherState + 4)) {
@@ -683,8 +687,9 @@ void toolboxConfirmItemTransfer(u8 *player) {
         itemTryRelease(held, 1);
     }
     taken = toolboxGiveObjectToPlayer(player, gToolboxSelectedRow, 0);
-    if (held != NULL)
+    if (held != NULL) {
         toolboxStoreObjectAt((s32)held, gToolboxSelectedRow, 0);
+    }
     if (taken != NULL && held != NULL) {
         playerPlayTrackedSoundEffect(player, 0xC5);
         toolboxShowItemMessage(held, "You stored the ^4%s^^.");
@@ -702,7 +707,7 @@ void toolboxConfirmItemTransfer(u8 *player) {
         return;
     }
     playerPlayTrackedSoundEffect(player, 0x92);
-    messageBarEnqueue(0, 2.0f, (u8 *)"There isn't anything there.");
+    messageBarEnqueue(0, 2.0F, (u8 *)"There isn't anything there.");
 }
 
 /// Reads a saved progress field for toolbox supply restoration.
@@ -727,7 +732,7 @@ void toolboxRestoreStoredObjects(u8 *table) {
         slot = table + offset;
         if (gToolboxDefaultStoredItems[i].flag == -1 || progressGetValue(gToolboxDefaultStoredItems[i].flag) != 0) {
             toolboxStoreObjectAt(
-                (s32)itemCreate(1000.0f, 1000.0f, 1000.0f, 0.0f, 0.0f, gToolboxDefaultStoredItems[i].kind), 1, i);
+                (s32)itemCreate(1000.0F, 1000.0F, 1000.0F, 0.0F, 0.0F, gToolboxDefaultStoredItems[i].kind), 1, i);
         } else {
             *(s32 *)(slot + 0x7C) = 0;
             *(s32 *)(slot + 0x78) = 0;
@@ -736,18 +741,18 @@ void toolboxRestoreStoredObjects(u8 *table) {
     for (i = 0, offset = 0; i < 10; offset += 8, i++) {
         slot = table + offset;
         if (*(u32 *)(slot + 0x28) != 0) {
-            toolboxStoreObjectAt((s32)itemCreate(1000.0f, 1000.0f, 1000.0f, 0.0f, 0.0f, *(s32 *)(slot + 0x28)), 0, i);
+            toolboxStoreObjectAt((s32)itemCreate(1000.0F, 1000.0F, 1000.0F, 0.0F, 0.0F, *(s32 *)(slot + 0x28)), 0, i);
         }
     }
     slot = table + 0xF0;
     if (*(s32 *)slot != 0) {
-        object = itemCreate(1000.0f, 1000.0f, 1000.0f, 0.0f, 0.0f, *(s32 *)slot);
+        object = itemCreate(1000.0F, 1000.0F, 1000.0F, 0.0F, 0.0F, *(s32 *)slot);
         *(s32 *)slot = 0;
         toolboxStoreBonusObject(object);
     }
     slot = table + 0xF8;
     if (*(s32 *)slot != 0) {
-        object = itemCreate(1000.0f, 1000.0f, 1000.0f, 0.0f, 0.0f, *(s32 *)slot);
+        object = itemCreate(1000.0F, 1000.0F, 1000.0F, 0.0F, 0.0F, *(s32 *)slot);
         *(s32 *)slot = 0;
         toolboxStorePurchasedObject(object);
     }
@@ -791,15 +796,15 @@ void toolboxCreateDisplayObjects(void) {
         object = objectCreateHierarchyFromTemplate(gToolboxPlaceholderTemplate);
         objectSetHierarchyFlags(object, 0x2000);
         objectRegisterActiveHierarchy(object);
-        ((RuntimeObjectPrefix *)object)->rotation[0] = 0.0f;
-        ((RuntimeObjectPrefix *)object)->rotation[1] = 0.0f;
-        ((RuntimeObjectPrefix *)object)->rotation[2] = 0.0f;
-        ((RuntimeObjectPrefix *)object)->position[0] = 0.0f;
-        ((RuntimeObjectPrefix *)object)->position[1] = 0.0f;
-        ((RuntimeObjectPrefix *)object)->position[2] = 0.0f;
-        *(f32 *)(object + 0) = gCurrentAreaConfiguration->objectScale * 0.3f;
-        *(f32 *)(object + 4) = gCurrentAreaConfiguration->objectScale * 0.3f;
-        *(f32 *)(object + 8) = gCurrentAreaConfiguration->objectScale * 0.3f;
+        ((RuntimeObjectPrefix *)object)->rotation[0] = 0.0F;
+        ((RuntimeObjectPrefix *)object)->rotation[1] = 0.0F;
+        ((RuntimeObjectPrefix *)object)->rotation[2] = 0.0F;
+        ((RuntimeObjectPrefix *)object)->position[0] = 0.0F;
+        ((RuntimeObjectPrefix *)object)->position[1] = 0.0F;
+        ((RuntimeObjectPrefix *)object)->position[2] = 0.0F;
+        *(f32 *)(object + 0) = gCurrentAreaConfiguration->objectScale * 0.3F;
+        *(f32 *)(object + 4) = gCurrentAreaConfiguration->objectScale * 0.3F;
+        *(f32 *)(object + 8) = gCurrentAreaConfiguration->objectScale * 0.3F;
         gToolboxState.spareIds[i] = ((RuntimeObjectPrefix *)object)->handle;
     }
     for (i = 0; i < 2; i++) {
@@ -842,20 +847,20 @@ void toolboxResetRowRotation(ToolboxState *t) {
     u8 *o;
     s32 i;
 
-    ((RuntimeObjectPrefix *)t->objects[1])->rotation[0] = 0.0f;
-    ((RuntimeObjectPrefix *)t->objects[1])->rotation[1] = 0.0f;
-    ((RuntimeObjectPrefix *)t->objects[1])->rotation[2] = 0.0f;
-    ((RuntimeObjectPrefix *)t->objects[2])->position[0] = 0.0f;
-    ((RuntimeObjectPrefix *)t->objects[2])->position[1] = 0.0f;
-    ((RuntimeObjectPrefix *)t->objects[2])->position[2] = 0.0f;
+    ((RuntimeObjectPrefix *)t->objects[1])->rotation[0] = 0.0F;
+    ((RuntimeObjectPrefix *)t->objects[1])->rotation[1] = 0.0F;
+    ((RuntimeObjectPrefix *)t->objects[1])->rotation[2] = 0.0F;
+    ((RuntimeObjectPrefix *)t->objects[2])->position[0] = 0.0F;
+    ((RuntimeObjectPrefix *)t->objects[2])->position[1] = 0.0F;
+    ((RuntimeObjectPrefix *)t->objects[2])->position[2] = 0.0F;
     t->spin = 0;
-    t->rotation = 180.0f;
+    t->rotation = 180.0F;
     for (i = 0; i < 10; i++) {
         if (t->slots[t->row][i].id != 0) {
             o = objectFindLiveByHandle(t->slots[t->row][i].id);
-            ((RuntimeObjectPrefix *)o)->rotation[0] = 0.0f;
-            ((RuntimeObjectPrefix *)o)->rotation[1] = 0.0f;
-            ((RuntimeObjectPrefix *)o)->rotation[2] = 0.0f;
+            ((RuntimeObjectPrefix *)o)->rotation[0] = 0.0F;
+            ((RuntimeObjectPrefix *)o)->rotation[1] = 0.0F;
+            ((RuntimeObjectPrefix *)o)->rotation[2] = 0.0F;
         }
     }
 }
@@ -891,31 +896,34 @@ void toolboxLayoutCurrentRow(f32 angle, f32 height, f32 depth) {
     f32 *spin = &gToolboxRowRotation;
     Vec3f position;
     {
-        u8 *row = (u8 *)&gToolboxState + gToolboxState.row * 0x50;
+        u8 *row = (u8 *)&gToolboxState + (gToolboxState.row * 0x50);
         slot = (ToolboxSlot *)(row + 0x28);
     }
     for (i = 0; i < 10; i++) {
-        if (slot->id != 0)
+        if (slot->id != 0) {
             object = objectFindLiveByHandle(slot->id);
-        else
+        } else {
             object = objectFindLiveByHandle(gToolboxState.spareIds[i]);
-        direction = (i * 36.0f + angle) - 90.0f;
-        position.x = 2.0f * mathCosDegrees(direction);
-        position.y = mathSinDegrees(direction) * 0.5f + height;
-        position.z = (-6.0f + depth) - mathSinDegrees(direction) * 1.5f;
+        }
+        direction = (i * 36.0F + angle) - 90.0F;
+        position.x = 2.0F * mathCosDegrees(direction);
+        position.y = (mathSinDegrees(direction) * 0.5F) + height;
+        position.z = (-6.0F + depth) - (mathSinDegrees(direction) * 1.5F);
         matrix34TransformPointVector((f32 *)&gToolboxInterfaceTransform, (f32 *)(&position),
                                      ((RuntimeObjectPrefix *)object)->position);
         if (i != 0 || ((RuntimeObjectPrefix *)object)->kind != 0x86) {
-            toolboxSetObjectCameraRotation(object, -5.0f, 180.0f);
+            toolboxSetObjectCameraRotation(object, -5.0F, 180.0F);
         } else {
             rotation = *spin;
-            rotation += gRuntimeFrameSeconds * 100.0f;
-            while (rotation < 0.0f)
-                rotation += 360.0f;
-            while (rotation >= 360.0f)
-                rotation -= 360.0f;
+            rotation += gRuntimeFrameSeconds * 100.0F;
+            while (rotation < 0.0F) {
+                rotation += 360.0F;
+            }
+            while (rotation >= 360.0F) {
+                rotation -= 360.0F;
+            }
             *spin = rotation;
-            toolboxSetObjectCameraRotation(object, -5.0f, rotation);
+            toolboxSetObjectCameraRotation(object, -5.0F, rotation);
         }
         objectUpdateHierarchy((RuntimeObjectPrefix *)object);
         slot++;
@@ -923,12 +931,12 @@ void toolboxLayoutCurrentRow(f32 angle, f32 height, f32 depth) {
     if (gPlayerHeldItemHandle != 0) {
         object = objectFindLiveByHandle(gPlayerHeldItemHandle);
         if (object != NULL) {
-            VEC3_SET(position, 0, -1.5f, -4.0f);
+            VEC3_SET(position, 0, -1.5F, -4.0F);
             matrix34TransformPointVector((f32 *)&gToolboxInterfaceTransform, (f32 *)(&position),
                                          ((RuntimeObjectPrefix *)object)->position);
-            ((RuntimeObjectPrefix *)object)->rotation[0] = 0.0f;
-            ((RuntimeObjectPrefix *)object)->rotation[1] = 0.0f;
-            ((RuntimeObjectPrefix *)object)->rotation[2] = 0.0f;
+            ((RuntimeObjectPrefix *)object)->rotation[0] = 0.0F;
+            ((RuntimeObjectPrefix *)object)->rotation[1] = 0.0F;
+            ((RuntimeObjectPrefix *)object)->rotation[2] = 0.0F;
             objectUpdateHierarchy((RuntimeObjectPrefix *)object);
         }
     }
@@ -949,9 +957,9 @@ void toolboxPlaceBaseForRow(ToolboxState *t, f32 dy) {
     v.y += dy;
     matrix34TransformPointVector((f32 *)&gToolboxInterfaceTransform, (f32 *)(&v), (f32 *)(t->objects[0] + 0x18));
     if (t->row == 0) {
-        toolboxSetObjectCameraRotation(t->objects[0], -5.0f, 210.0f);
+        toolboxSetObjectCameraRotation(t->objects[0], -5.0F, 210.0F);
     } else {
-        toolboxSetObjectCameraRotation(t->objects[0], -5.0f, 180.0f);
+        toolboxSetObjectCameraRotation(t->objects[0], -5.0F, 180.0F);
     }
     objectUpdateHierarchy((RuntimeObjectPrefix *)t->objects[0]);
 }
@@ -965,7 +973,7 @@ void toolboxUpdateHelpMessage(void) {
 
     if ((u64)runtimeGetElapsedMilliseconds() - (u32)gToolboxHelpMessageMilliseconds >= 0xBB9) {
         v = *cur;
-        messageBarEnqueue(0, 3.5f, (u8 *)gToolboxHelpMessages[v]);
+        messageBarEnqueue(0, 3.5F, (u8 *)gToolboxHelpMessages[v]);
         v = *cur + 1;
         while (v < 0) {
             v += 6;
@@ -999,7 +1007,7 @@ void toolboxDrawRowTitle(s32 address) {
     textDrawReset();
     textDrawSetPalette(gDefaultTextPalette);
     textDrawSetSpacingMode(1);
-    textDrawSetScale(1.0f, 1.0f);
+    textDrawSetScale(1.0F, 1.0F);
     textDrawSetArea(0, 0, 319, 239);
     textDrawSetColor(255, 255, 255, 254);
     textDrawSetCursor(36, 190);
@@ -1032,10 +1040,10 @@ void toolboxDrawIcon(Gfx **gdl, s32 texture, s32 x, s32 y, s32 width, s32 height
     }
     gSPDisplayList((*gdl)++, gTextureRectangleSetupDisplayList);
     textureUploadTile(gdl, t.image, t.palette, t.format, t.size, t.width, t.height, 0, 0, 1, 1);
-    gSPTextureRectangle((*gdl)++, x * 4, y * 4, (s32)((x + (width - 1) * scaleX) * 4.0f),
-                        (s32)((y + (height - 1) * scaleY) * 4.0f), 0, 0, -32,
-                        (s32)(1024.0f / scaleX >= 0.0f ? 1024.0f / scaleX + 0.5f : 1024.0f / scaleX - 0.5f),
-                        (s32)(-1024.0f / scaleY >= 0.0f ? -1024.0f / scaleY + 0.5f : -1024.0f / scaleY - 0.5f));
+    gSPTextureRectangle((*gdl)++, x * 4, y * 4, (s32)((x + (width - 1) * scaleX) * 4.0F),
+                        (s32)((y + (height - 1) * scaleY) * 4.0F), 0, 0, -32,
+                        (s32)(1024.0F / scaleX >= 0.0F ? 1024.0F / scaleX + 0.5F : 1024.0F / scaleX - 0.5F),
+                        (s32)(-1024.0F / scaleY >= 0.0F ? -1024.0F / scaleY + 0.5F : -1024.0F / scaleY - 0.5F));
     gSPTexture((*gdl)++, 0x7FFF, 0, 0, 0, G_OFF);
     gMoveWd((*gdl)++, G_MW_FOG, 0x10, 0x7FFF);
 }
@@ -1088,64 +1096,64 @@ void toolboxDrawNavigation(s32 address) {
     gDPSetCombineMode((*gdl)++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
     now = runtimeGetElapsedMilliseconds();
     elapsed = now - gToolboxTransitionMilliseconds;
-    phase = elapsed / 200.0f;
+    phase = elapsed / 200.0F;
     distance = phase >= 0.5 ? phase - 0.5 : -(phase - 0.5);
     if (gToolboxRotationStep == 1) {
         scaleL = (0.5 - distance) + 1.0;
-        sizeL = (s32)(32.0f * scaleL);
-        xL = 52 - sizeL / 2;
+        sizeL = (s32)(32.0F * scaleL);
+        xL = 52 - (sizeL / 2);
         do {
-            yL = 128 - sizeL / 2;
+            yL = 128 - (sizeL / 2);
             gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 255, 255);
             toolboxDrawIcon(gdl, 245, xL, yL, 32, 32, scaleL, scaleL);
         } while (0);
     } else {
         gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 255, 128);
-        toolboxDrawIcon(gdl, 245, 36, 112, 32, 32, 1.0f, 1.0f);
+        toolboxDrawIcon(gdl, 245, 36, 112, 32, 32, 1.0F, 1.0F);
     }
     if (gToolboxRotationStep == -1) {
         scaleR = (0.5 - distance) + 1.0;
         sizeR = (s32)(32 * scaleR);
-        xR = 268 - sizeR / 2;
+        xR = 268 - (sizeR / 2);
         do {
-            yR = 128 - sizeR / 2;
+            yR = 128 - (sizeR / 2);
             gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 255, 255);
             toolboxDrawIcon(gdl, 246, xR, yR, 32, 32, scaleR, scaleR);
         } while (0);
     } else {
         gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 255, 128);
-        toolboxDrawIcon(gdl, 246, 252, 112, 32, 32, 1.0f, 1.0f);
+        toolboxDrawIcon(gdl, 246, 252, 112, 32, 32, 1.0F, 1.0F);
     }
     if (*row == 1) {
         if (gToolboxMode == 3 && gToolboxExitAction != 2 && *row != gToolboxRequestedRow) {
-            phase = elapsed / 300.0f;
+            phase = elapsed / 300.0F;
             distance = phase >= 0.5 ? phase - 0.5 : -(phase - 0.5);
-            scaleU = (0.5 - distance) + 1.0f;
+            scaleU = (0.5 - distance) + 1.0F;
             gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 255, 255);
-            sizeU = (s32)(32.0f * scaleU);
+            sizeU = (s32)(32.0F * scaleU);
             halfU = sizeU / 2;
             xU = 160 - halfU;
             yU = 68 - halfU;
             toolboxDrawIcon(gdl, 247, xU, yU, 32, 32, scaleU, scaleU);
         } else {
             gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 255, 128);
-            toolboxDrawIcon(gdl, 247, 144, 52, 32, 32, 1.0f, 1.0f);
+            toolboxDrawIcon(gdl, 247, 144, 52, 32, 32, 1.0F, 1.0F);
         }
     }
     if (*row == 0) {
         if (gToolboxMode == 3 && *row != gToolboxRequestedRow) {
-            phase = elapsed / 300.0f;
+            phase = elapsed / 300.0F;
             distance = phase >= 0.5 ? phase - 0.5 : -(phase - 0.5);
-            scaleD = (0.5 - distance) + 1.0f;
+            scaleD = (0.5 - distance) + 1.0F;
             gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 255, 255);
-            sizeD = (s32)(32.0f * scaleD);
+            sizeD = (s32)(32.0F * scaleD);
             halfD = sizeD / 2;
             xD = 160 - halfD;
             yD = 196 - halfD;
             toolboxDrawIcon(gdl, 244, xD, yD, 32, 32, scaleD, scaleD);
         } else {
             gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 255, 128);
-            toolboxDrawIcon(gdl, 244, 144, 180, 32, 32, 1.0f, 1.0f);
+            toolboxDrawIcon(gdl, 244, 144, 180, 32, 32, 1.0F, 1.0F);
         }
     }
     if (gToolboxRotationStep == 0) {
@@ -1153,23 +1161,25 @@ void toolboxDrawNavigation(s32 address) {
         if (object != NULL) {
             if (*row == 0) {
                 scaleO = (f64) * (f32 *)(object + 0x24) * 4.0;
-                if ((f64)scaleO < 1.0)
-                    scaleO = 1.0f;
-                else if ((f64)scaleO > 4.0)
-                    scaleO = 4.0f;
+                if ((f64)scaleO < 1.0) {
+                    scaleO = 1.0F;
+                } else if ((f64)scaleO > 4.0) {
+                    scaleO = 4.0F;
+                }
                 gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 255, 200);
             } else {
                 id = gToolboxState.slots[gToolboxSelectedRow][0].kind;
-                if (gItemKindClassEntries[id][0] == 2 || gItemKindClassEntries[id][0] == 5)
+                if (gItemKindClassEntries[id][0] == 2 || gItemKindClassEntries[id][0] == 5) {
                     return;
-                scaleO = 2.0f;
+                }
+                scaleO = 2.0F;
                 gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 150, 200);
             }
             gToolboxNavigationSprites[0].width = 32;
             gToolboxNavigationSprites[0].height = 32;
             gToolboxNavigationSprites[0].scaleX = scaleO;
             gToolboxNavigationSprites[0].scaleY = scaleO;
-            sizeO = (s32)(32.0f * scaleO);
+            sizeO = (s32)(32.0F * scaleO);
             halfO = sizeO / 2;
             xO = 160 - halfO;
             yO = 150 - halfO;
@@ -1280,7 +1290,7 @@ void toolboxOpen(s32 row, s32 useHeld) {
     }
     if (held != NULL) {
         objectSetHierarchyFlags(held, 0x2000);
-        toolboxSetObjectScale(gPlayerHeldItemHandle, 0.5f);
+        toolboxSetObjectScale(gPlayerHeldItemHandle, 0.5F);
     }
     toolboxShowObjects();
     controllerConfigureStickButtons(1, 0x1E, 0x1E, 0x1E, 0x1E);
@@ -1304,7 +1314,7 @@ void toolboxFinishClosing(void) {
     }
     if (*held != 0) {
         objectClearHierarchyFlags(objectFindLiveByHandle(*held), 0x2000);
-        toolboxSetObjectScale(*held, 1.0f);
+        toolboxSetObjectScale(*held, 1.0F);
     }
     messageBarClear();
     toolboxHideObjects();
@@ -1364,7 +1374,7 @@ void toolboxHandleInput(void) {
         buttons = gControllerPrimaryRepeatedButtons;
         if (buttons & 0x1000) {
             gToolboxExitAction = 0;
-            messageBarEnqueue(0, 1.0f, (u8 *)"You closed the tool box.");
+            messageBarEnqueue(0, 1.0F, (u8 *)"You closed the tool box.");
             toolboxSetMode((u8 *)&gToolboxState, 3);
             playerPlayTrackedSoundEffect((u8 *)&gPlayerState, 0xB8);
             return;
@@ -1407,11 +1417,11 @@ void toolboxHandleInput(void) {
 
                 id = gToolboxState.slots[gToolboxState.row][0].id;
                 if (id == 0) {
-                    toolboxSetObjectScale(gToolboxPlaceholderHandles, 0.3f);
+                    toolboxSetObjectScale(gToolboxPlaceholderHandles, 0.3F);
                 } else {
-                    toolboxSetObjectScale(id, 0.3f);
+                    toolboxSetObjectScale(id, 0.3F);
                 }
-                gToolboxRowRotation = 180.0f;
+                gToolboxRowRotation = 180.0F;
                 return;
             }
             if (((buttons & 0x400) && (gToolboxSelectedRow == 0)) ||
@@ -1465,8 +1475,8 @@ void toolboxUpdateCarousel(void) {
     u64 now;
     ToolboxSlot *row = gToolboxState.slots[gToolboxState.row];
     f32 angle;
-    f32 degreesPerSpin = 36.0f;
-    f32 duration = 200.0f;
+    f32 degreesPerSpin = 36.0F;
+    f32 duration = 200.0F;
     f32 t;
 
     if (gToolboxState.spin != 0) {
@@ -1475,9 +1485,9 @@ void toolboxUpdateCarousel(void) {
         if (t >= duration) {
             toolboxRotateRowEntries(&gToolboxState);
             if (row[0].id == 0) {
-                toolboxSetObjectScale(gToolboxPlaceholderHandles, 0.5f);
+                toolboxSetObjectScale(gToolboxPlaceholderHandles, 0.5F);
             } else {
-                toolboxSetObjectScale(row[0].id, 0.5f);
+                toolboxSetObjectScale(row[0].id, 0.5F);
             }
             gToolboxRotationStep = 0;
         }
@@ -1485,7 +1495,7 @@ void toolboxUpdateCarousel(void) {
         t = 0;
     }
     angle = gToolboxRotationStep * degreesPerSpin * t / duration;
-    toolboxLayoutCurrentRow(angle, 0.0f, 0.0f);
+    toolboxLayoutCurrentRow(angle, 0.0F, 0.0F);
     toolboxPlaceBaseForRow(&gToolboxState, 0);
 }
 
@@ -1498,18 +1508,18 @@ void toolboxAnimateRowOpening(void) {
     f32 t = runtimeGetElapsedMilliseconds() - gToolboxTransitionMilliseconds;
     f32 k;
 
-    if (t >= 300.0f) {
-        t = 300.0f;
+    if (t >= 300.0F) {
+        t = 300.0F;
         gToolboxMode = 2;
     }
     if (*row == 0) {
-        k = t / 300.0f;
-        *(f32 *)(gToolboxState.objects[1] + 0xC) = -k * 90.0f;
-        toolboxLayoutCurrentRow(360.0f * k, -1.0f * k * k + 1.0f, gToolboxRowAnchors[*row].z * (1.0f - k));
+        k = t / 300.0F;
+        *(f32 *)(gToolboxState.objects[1] + 0xC) = -k * 90.0F;
+        toolboxLayoutCurrentRow(360.0F * k, (-1.0F * k * k) + 1.0F, gToolboxRowAnchors[*row].z * (1.0F - k));
     } else {
-        k = t / 300.0f;
-        *(f32 *)(gToolboxState.objects[2] + 0x20) = k * 250.0f;
-        toolboxLayoutCurrentRow(360.0f * k, k * k - 1.0f, gToolboxRowAnchors[*row].z * (1.0f - k));
+        k = t / 300.0F;
+        *(f32 *)(gToolboxState.objects[2] + 0x20) = k * 250.0F;
+        toolboxLayoutCurrentRow(360.0F * k, (k * k) - 1.0F, gToolboxRowAnchors[*row].z * (1.0F - k));
     }
     toolboxPlaceBaseForRow(&gToolboxState, 0);
 }
@@ -1522,20 +1532,20 @@ void toolboxAnimateRowClosing(void) {
     f32 t = runtimeGetElapsedMilliseconds() - gToolboxTransitionMilliseconds;
     f32 k;
 
-    if (t >= 300.0f) {
-        toolboxLayoutCurrentRow(0.0f, 0.0f, 2000.0f);
+    if (t >= 300.0F) {
+        toolboxLayoutCurrentRow(0.0F, 0.0F, 2000.0F);
         toolboxPlaceBaseForRow(&gToolboxState, 0);
         toolboxSetMode((u8 *)&gToolboxState, 4);
         return;
     }
     if (*row == 0) {
-        k = t / 300.0f;
-        *(f32 *)(gToolboxState.objects[1] + 0xC) = -(1.0f - k) * 90.0f;
-        toolboxLayoutCurrentRow(360.0f * k, -1.0f * k * k + 1.0f, gToolboxRowAnchors[*row].z * k);
+        k = t / 300.0F;
+        *(f32 *)(gToolboxState.objects[1] + 0xC) = -(1.0F - k) * 90.0F;
+        toolboxLayoutCurrentRow(360.0F * k, (-1.0F * k * k) + 1.0F, gToolboxRowAnchors[*row].z * k);
     } else {
-        k = t / 300.0f;
-        *(f32 *)(gToolboxState.objects[2] + 0x20) = (1.0f - k) * 250.0f;
-        toolboxLayoutCurrentRow(360.0f * k, (1.0f - k) * (1.0f - k) - 1.0f, gToolboxRowAnchors[*row].z * k);
+        k = t / 300.0F;
+        *(f32 *)(gToolboxState.objects[2] + 0x20) = (1.0F - k) * 250.0F;
+        toolboxLayoutCurrentRow(360.0F * k, ((1.0F - k) * (1.0F - k)) - 1.0F, gToolboxRowAnchors[*row].z * k);
     }
     toolboxPlaceBaseForRow(&gToolboxState, 0);
 }
@@ -1549,9 +1559,9 @@ void toolboxAnimateBaseTransition(void) {
     u64 now = runtimeGetElapsedMilliseconds();
     f32 t = now - gToolboxTransitionMilliseconds;
 
-    if (t >= 200.0f || gToolboxExitAction != 0) {
+    if (t >= 200.0F || gToolboxExitAction != 0) {
         if (gToolboxMode == 0) {
-            toolboxPlaceBaseForRow(&gToolboxState, 0.0f);
+            toolboxPlaceBaseForRow(&gToolboxState, 0.0F);
             toolboxSetMode((u8 *)&gToolboxState, 1);
             playerPlayTrackedSoundEffect((u8 *)&gPlayerState, 0xB9);
             if (gToolboxSelectedRow == 0) {
@@ -1566,13 +1576,13 @@ void toolboxAnimateBaseTransition(void) {
         }
     } else {
         if (gToolboxMode == 0) {
-            toolboxLayoutCurrentRow(0.0f, 0.0f, 2000.0f);
-            toolboxPlaceBaseForRow(&gToolboxState, t / 200.0f * 15.0f + -15.0f);
+            toolboxLayoutCurrentRow(0.0F, 0.0F, 2000.0F);
+            toolboxPlaceBaseForRow(&gToolboxState, (t / 200.0F * 15.0F) + -15.0F);
             return;
         }
         if (gToolboxMode == 4) {
-            toolboxLayoutCurrentRow(0.0f, 0.0f, 2000.0f);
-            toolboxPlaceBaseForRow(&gToolboxState, t / 200.0f * -15.0f);
+            toolboxLayoutCurrentRow(0.0F, 0.0F, 2000.0F);
+            toolboxPlaceBaseForRow(&gToolboxState, t / 200.0F * -15.0F);
         }
     }
 }

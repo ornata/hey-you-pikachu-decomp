@@ -32,7 +32,7 @@ void keyedPoolInitialize(KeyedPool *pool, u32 count) {
     node--;
     pool->entries->previous = node;
     node->next = pool->entries;
-    pool->free = pool->entries + pool->capacity / 2;
+    pool->free = pool->entries + (pool->capacity / 2);
     pool->free->previous->next = NULL;
     pool->free->previous = NULL;
     pool->head = NULL;

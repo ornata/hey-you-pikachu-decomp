@@ -9,7 +9,7 @@ extern s32 *D_8013CE38_scene_wilderness_camp[16];
 /// Spawn the Wilderness Camp resident creature with its scene behavior.
 /// \returns Nothing.
 void wildernessCampSpawnResident(void) {
-    actorCreateForKind(0x11, 125.0f, 10.0f, 122.27f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(0x11, 125.0F, 10.0F, 122.27F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_8013A878_scene_wilderness_camp, 0);
 }
 
@@ -34,7 +34,8 @@ s32 wildernessCampGetSpatialCell(f32 x, f32 y, f32 z) {
         return 0;
     }
     layer = D_8013CE38_scene_wilderness_camp[iy];
-    if (layer == NULL)
+    if (layer == NULL) {
         return 0;
-    return layer[iz * 16 + ix];
+    }
+    return layer[(iz * 16) + ix];
 }

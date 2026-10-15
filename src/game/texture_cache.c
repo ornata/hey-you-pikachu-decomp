@@ -106,10 +106,12 @@ void textureDrawRectangles(s32 table, TextureRectangle *draw, Gfx **gdl) {
     }
     if (draw->texture < 0) {
     }
-    if (draw->scaleX < gTextureScalePositiveTolerance && gTextureScaleXNegativeTolerance < draw->scaleX)
+    if (draw->scaleX < gTextureScalePositiveTolerance && gTextureScaleXNegativeTolerance < draw->scaleX) {
         return;
-    if (draw->scaleY < gTextureScalePositiveTolerance && gTextureScaleYNegativeTolerance < draw->scaleY)
+    }
+    if (draw->scaleY < gTextureScalePositiveTolerance && gTextureScaleYNegativeTolerance < draw->scaleY) {
         return;
+    }
     gSPDisplayList((*gdl)++, gTextureRectangleSetupDisplayList);
     while (draw->texture >= 0) {
         textureGetDescriptor(table, draw->texture, &texture);
@@ -126,11 +128,11 @@ void textureDrawRectangles(s32 table, TextureRectangle *draw, Gfx **gdl) {
         width = draw->width >= 0 ? draw->width : texture.width;
         height = draw->height >= 0 ? draw->height : texture.height;
         gSPTextureRectangle((*gdl)++, (u32)draw->x << 2, (u32)draw->y << 2,
-                            (s32)((draw->x + width * draw->scaleX) * 4.0f),
-                            (s32)((draw->y + height * draw->scaleY) * 4.0f), G_TX_RENDERTILE, (u32)draw->s << 5,
+                            (s32)((draw->x + width * draw->scaleX) * 4.0F),
+                            (s32)((draw->y + height * draw->scaleY) * 4.0F), G_TX_RENDERTILE, (u32)draw->s << 5,
                             ((u32)texture.height - (u32)draw->t - 1U) << 5,
-                            (s32)((ds = 1024.0f / draw->scaleX) >= 0.0f ? ds + 0.5f : ds - 0.5f),
-                            (s32)((dt = -1024.0f / draw->scaleY) >= 0.0f ? dt + 0.5f : dt - 0.5f));
+                            (s32)((ds = 1024.0F / draw->scaleX) >= 0.0F ? ds + 0.5F : ds - 0.5F),
+                            (s32)((dt = -1024.0F / draw->scaleY) >= 0.0F ? dt + 0.5F : dt - 0.5F));
         draw++;
     }
     gSPTexture((*gdl)++, 0x7FFF, 0, 0, 0, G_OFF);

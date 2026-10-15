@@ -51,7 +51,7 @@ void oddishMeadowSpawnGrowthResident(f32 *position, s32 residentIndex) {
         // clang-format off
         random = randomNext(); scale = D_80159454_scene_oddish_meadow;
         // clang-format on
-        actorCreateForKind(5, position[0], position[1], position[2], 0.0f,
+        actorCreateForKind(5, position[0], position[1], position[2], 0.0F,
                            (f32)((f64)random * 2.3283064365386963e-10 * D_80159458_scene_oddish_meadow),
                            mathPowInteger(scale, state) * gCurrentAreaConfiguration->objectScale, record,
                            residentIndex);
@@ -62,14 +62,14 @@ void oddishMeadowSpawnGrowthResident(f32 *position, s32 residentIndex) {
         // clang-format off
         random = randomNext(); scale = D_80159460_scene_oddish_meadow;
         // clang-format on
-        actorCreateForKind(6, position[0], position[1], position[2], 0.0f,
+        actorCreateForKind(6, position[0], position[1], position[2], 0.0F,
                            (f32)((f64)random * 2.3283064365386963e-10 * D_80159468_scene_oddish_meadow),
                            mathPowInteger(scale, state - 2) * gCurrentAreaConfiguration->objectScale, record,
                            residentIndex);
         return;
     }
     random = randomNext();
-    actorCreateForKind(7, position[0], position[1], position[2], 0.0f,
+    actorCreateForKind(7, position[0], position[1], position[2], 0.0F,
                        (f32)((f64)(u32)random * 2.3283064365386963e-10 * D_80159470_scene_oddish_meadow),
                        gCurrentAreaConfiguration->objectScale, record, residentIndex);
 }
@@ -77,8 +77,8 @@ void oddishMeadowSpawnGrowthResident(f32 *position, s32 residentIndex) {
 /// Prepare scene resources for evolved meadow residents.
 /// \returns Nothing.
 void oddishMeadowPrepareEvolvedResidents(void) {
-    objectRequestHierarchyDestruction(actorCreateForKind(6, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, NULL, 0));
-    objectRequestHierarchyDestruction(actorCreateForKind(7, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, NULL, 0));
+    objectRequestHierarchyDestruction(actorCreateForKind(6, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, NULL, 0));
+    objectRequestHierarchyDestruction(actorCreateForKind(7, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, NULL, 0));
 }
 
 /// Spawn a meadow item with a randomized heading.
@@ -91,8 +91,8 @@ void oddishMeadowSpawnItem(f32 *position, s32 itemKind) {
 
     headingRandomBits = randomNext();
     var_f6 = (f64)(u32)headingRandomBits;
-    itemCreate(position[0], position[1], position[2], 0.0f,
-                  (f32)(var_f6 * 2.3283064365386963e-10 * D_80159478_scene_oddish_meadow), itemKind);
+    itemCreate(position[0], position[1], position[2], 0.0F,
+               (f32)(var_f6 * 2.3283064365386963e-10 * D_80159478_scene_oddish_meadow), itemKind);
 }
 
 /// Provide the meadow scene callback that requires no action.
@@ -106,12 +106,14 @@ void oddishMeadowResetCompletedGrowth(void) {
     s32 i;
     s32 count = 0;
     for (i = 0; i < 5; i++) {
-        if (progressGetValue(i + 0x6A) >= 4)
+        if (progressGetValue(i + 0x6A) >= 4) {
             count++;
+        }
     }
     if (count == 5) {
-        for (i = 0; i < 5; i++)
+        for (i = 0; i < 5; i++) {
             progressSetValue(i + 0x6A, 0);
+        }
     }
 }
 
@@ -146,14 +148,14 @@ void oddishMeadowInitializeRegularObjects(void) {
 
     sp64 = D_80157F0C_scene_oddish_meadow;
     if (progressGetValue(0x76) >= 5) {
-        actorCreateForKind(0xE, 160.0f, 6.0f, 69.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+        actorCreateForKind(0xE, 160.0F, 6.0F, 69.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                            &D_80157D40_scene_oddish_meadow, 0);
     }
     if (progressGetCurrentChapter() == 8) {
-        actorCreateForKind(1, 188.0f, 8.5f, 65.0f, 0.0f, 20.0f, gCurrentAreaConfiguration->objectScale,
+        actorCreateForKind(1, 188.0F, 8.5F, 65.0F, 0.0F, 20.0F, gCurrentAreaConfiguration->objectScale,
                            &D_8014F0BC_scene_oddish_meadow, 0);
     }
-    actorCreateForKind(0xA, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(0xA, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        &D_8014E5D0_scene_oddish_meadow, 0);
     if (progressGetValue(0x12) == 0) {
         var_s0 = &D_8014EEA0_scene_oddish_meadow;
@@ -166,9 +168,9 @@ void oddishMeadowInitializeRegularObjects(void) {
     growthProgress = progressGetValue(0x6F);
     residentPosition = D_80134DC0_scene_oddish_meadow[positionIndex];
 
-    actorCreateForKind(5, residentPosition[0], residentPosition[1], residentPosition[2], 0.0f,
+    actorCreateForKind(5, residentPosition[0], residentPosition[1], residentPosition[2], 0.0F,
                        (f32)((f64)headingRandomBits * 2.3283064365386963e-10 * D_80159480_scene_oddish_meadow),
-                       (f32)(((f64)((f32)growthProgress / 5.0f) + 1.0) * (f64)gCurrentAreaConfiguration->objectScale),
+                       (f32)(((f64)((f32)growthProgress / 5.0F) + 1.0) * (f64)gCurrentAreaConfiguration->objectScale),
                        var_s0, 5);
     runtimeCheckResetCheckpoint((const char *)&D_80159404_scene_oddish_meadow, 1);
     oddishMeadowPrepareEvolvedResidents();
@@ -203,13 +205,13 @@ void oddishMeadowInitializeRegularObjects(void) {
         }
     } while (i < 0xA);
     if (progressGetCurrentChapter() != 8) {
-        mazeScatterItems(D_80157DBC_scene_oddish_meadow, 0x1C, &D_80157DB4_scene_oddish_meadow, 0.7f);
+        mazeScatterItems(D_80157DBC_scene_oddish_meadow, 0x1C, &D_80157DB4_scene_oddish_meadow, 0.7F);
     } else {
-        mazeScatterItems(D_80157DBC_scene_oddish_meadow, 0x1C, &D_80157DB4_scene_oddish_meadow, 0.3f);
+        mazeScatterItems(D_80157DBC_scene_oddish_meadow, 0x1C, &D_80157DB4_scene_oddish_meadow, 0.3F);
     }
     if (progressGetValue(0x12) == 0) {
-        landmarkCreate(D_80159488_scene_oddish_meadow, 8.0f, 137.47f, 0x90);
-        landmarkCreate(D_8015948C_scene_oddish_meadow, D_80159490_scene_oddish_meadow, 249.0f, 0x8E);
+        landmarkCreate(D_80159488_scene_oddish_meadow, 8.0F, 137.47F, 0x90);
+        landmarkCreate(D_8015948C_scene_oddish_meadow, D_80159490_scene_oddish_meadow, 249.0F, 0x8E);
     }
 }
 
@@ -219,7 +221,7 @@ void oddishMeadowInitializeAlternateResidents(void) {
     s32 var_s0;
 
     for (var_s0 = 0; var_s0 < 5; var_s0++) {
-        actorCreateForKind(7, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+        actorCreateForKind(7, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                            &D_8014F348_scene_oddish_meadow, var_s0);
     }
 }
@@ -247,10 +249,12 @@ s32 oddishMeadowGetSpatialCell(f32 x, f32 y, f32 z) {
     s32 iz;
     iy = (s32)((f64)y / 10.0);
     if (iy < 0 || iy >= 16 || (ix = (s32)((f64)x / 20.0), ix < 0) || ix >= 16 || (iz = (s32)((f64)z / 20.0), iz < 0) ||
-        iz >= 16)
+        iz >= 16) {
         return 0;
+    }
     layer = D_80189430_scene_oddish_meadow[iy];
-    if (layer == NULL)
+    if (layer == NULL) {
         return 0;
-    return layer[iz * 16 + ix];
+    }
+    return layer[(iz * 16) + ix];
 }

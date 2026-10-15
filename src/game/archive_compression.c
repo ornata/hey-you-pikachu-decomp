@@ -28,7 +28,7 @@ s32 archiveBuildFromSources(s32 memberCount, s32 *sourceAddresses, s32 *sourceBy
     offset = (offset * 2 + 1) * sizeof(s32);
     i = 0;
     if (memberCount > 0) {
-        sizes = (s32 *)((u8 *)archiveOutput + memberCount * sizeof(s32));
+        sizes = (s32 *)((u8 *)archiveOutput + (memberCount * sizeof(s32)));
         inputLengths = sourceByteCounts;
         inputSources = sourceAddresses;
         ends = archiveOutput;
@@ -111,11 +111,11 @@ void *archiveLoadMember(s32 memberIndex, s32 archiveAddress, void *outputBuffer)
     u8 *buffer;
     size = romDmaReadWord(archiveAddress);
     if (memberIndex != 0) {
-        entry = archiveAddress + memberIndex * sizeof(s32);
+        entry = archiveAddress + (memberIndex * sizeof(s32));
         start = romDmaReadWord(entry);
     } else {
         start = (size * 2 + 1) * sizeof(s32);
-        entry = archiveAddress + memberIndex * sizeof(s32);
+        entry = archiveAddress + (memberIndex * sizeof(s32));
     }
     length = romDmaReadWord(entry + 4) - start;
     buffer = heapAllocTailLocal(&gGameHeap, (u32)length, 0x5F);
@@ -242,7 +242,7 @@ s32 archiveDecompressMember(u8 *input, u8 *output) {
                     i &= 0x1FF;
                     distance = i != 0;
                     while (i > 1) {
-                        distance = (s32)((u32)distance * 2U + (u32)(((bits >> available) & 0x1FF) >> 8));
+                        distance = (s32)(((u32)distance * 2U) + (u32)(((bits >> available) & 0x1FF) >> 8));
                         available--;
                         if (available < 0) {
                             bits = *source++ + ((bits & 255) << 8);
@@ -451,8 +451,9 @@ void archiveBuildDecodeTable(s32 symbols, s32 total, u16 *table) {
             if (length == gArchiveSymbolCodeLengths[symbol]) {
                 bits = length < 9 ? length : ((length - 1) & 3) + 5;
                 bits = (bits << 9) + symbol;
-                for (i = 0; i < copies; i++)
+                for (i = 0; i < copies; i++) {
                     *table++ = bits;
+                }
             }
         }
         copies >>= 1;

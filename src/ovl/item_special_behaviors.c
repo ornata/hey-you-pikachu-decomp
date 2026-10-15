@@ -25,7 +25,7 @@
 void baseballCapResetReleasedScale(u8 *object, s32 unused) {
     u8 *objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
     if (((ItemStatePrefix *)objectState)->state == ITEM_OWNERSHIP_PIKACHU) {
-        itemSetScale(object, 1.0f);
+        itemSetScale(object, 1.0F);
     }
 }
 
@@ -44,13 +44,13 @@ void lightBulbUpdateHeldGlow(u8 *object) {
     if (((ItemStatePrefix *)rec)->state == ITEM_OWNERSHIP_PIKACHU) {
         if (!((ItemStatePrefix *)rec)->modeTime) {
             itemStartMaterialAnimation(object, 0xF4);
-            ((ItemStatePrefix *)rec)->motionPhase.glowCountdown = 0.0f;
+            ((ItemStatePrefix *)rec)->motionPhase.glowCountdown = 0.0F;
         }
         timer = &((ItemStatePrefix *)rec)->motionPhase.glowCountdown;
         *timer -= gRuntimeFrameSeconds;
-        if (*timer <= 0.0f) {
-            *timer = 1.0f;
-            actorAdjustActionMeter((u8 *)((s32)gPikachuActor), -10.0f);
+        if (*timer <= 0.0F) {
+            *timer = 1.0F;
+            actorAdjustActionMeter((u8 *)((s32)gPikachuActor), -10.0F);
         }
     }
 }
@@ -77,8 +77,8 @@ void balloonUpdateHeldInflation(u8 *object) {
     f32 scale;
 
     if (((ItemStatePrefix *)rec)->state == ITEM_OWNERSHIP_PIKACHU) {
-        scale = mathMapRangeClamped(0.0f, 1.0f, 6.0f, 10.0f, ((ItemStatePrefix *)rec)->modeTime);
-        if (scale > 3.0f) {
+        scale = mathMapRangeClamped(0.0F, 1.0F, 6.0F, 10.0F, ((ItemStatePrefix *)rec)->modeTime);
+        if (scale > 3.0F) {
             ((ItemStatePrefix *)rec)->flags |= 0x400000;
         } else {
             ((ItemStatePrefix *)rec)->flags &= ~0x400000;
@@ -97,12 +97,12 @@ void balloonBeginReleasedFlight(u8 *object) {
     u8 *sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)object)->state.bytes;
-    if ((gCurrentAreaConfiguration->objectScale * 7.0f) < ((RuntimeObjectPrefix *)object)->scale[0]) {
+    if ((gCurrentAreaConfiguration->objectScale * 7.0F) < ((RuntimeObjectPrefix *)object)->scale[0]) {
         itemSetMode(object, ITEM_MODE_DRIFTING_FLIGHT);
-        ((ItemStatePrefix *)sp1C)->motionPhase.flightElapsed = 0.0f;
-        ((ItemStatePrefix *)sp1C)->velocityZ = 0.0f;
-        ((ItemStatePrefix *)sp1C)->velocityX = 0.0f;
-        ((ItemStatePrefix *)sp1C)->downwardVelocity = -4.0f;
+        ((ItemStatePrefix *)sp1C)->motionPhase.flightElapsed = 0.0F;
+        ((ItemStatePrefix *)sp1C)->velocityZ = 0.0F;
+        ((ItemStatePrefix *)sp1C)->velocityX = 0.0F;
+        ((ItemStatePrefix *)sp1C)->downwardVelocity = -4.0F;
     }
 }
 
@@ -126,7 +126,7 @@ s32 itemResolveMapCollision(u8 *object, u16 contactFlags) {
     }
     hit = terrainGetSurfaceAttributes(((RuntimeObjectPrefix *)object)->position[0], ((RuntimeObjectPrefix *)object)->position[1], ((RuntimeObjectPrefix *)object)->position[2], 0);
     if ((hit & 0xF) == 5) {
-        ((ItemStatePrefix *)st)->downwardVelocity = 0.0f;
+        ((ItemStatePrefix *)st)->downwardVelocity = 0.0F;
     }
     terrainCreateContactEffect(((RuntimeObjectPrefix *)object)->position, hit);
     itemPlayImpactSounds(object, contactFlags, hit);
@@ -144,8 +144,8 @@ void itemInitializeFlightSpin(u8 *object) {
     u8 *objectState;
 
     objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
-    ((ItemStatePrefix *)objectState)->rotationVelocityX = 0.0f;
-    ((ItemStatePrefix *)objectState)->rotationVelocityY = 600.0f;
+    ((ItemStatePrefix *)objectState)->rotationVelocityX = 0.0F;
+    ((ItemStatePrefix *)objectState)->rotationVelocityY = 600.0F;
 }
 
 /// Advance the item current behavior and apply its orientation rules.
@@ -157,9 +157,9 @@ void itemUpdateModeAndOrientation(u8 *object) {
 
     gItemModeUpdateHandlers[((ItemStatePrefix *)state)->mode](object);
     if (((ItemStatePrefix *)state)->flags & 0x800) {
-        ((RuntimeObjectPrefix *)object)->rotation[0] = 0.0f;
-        ((RuntimeObjectPrefix *)object)->rotation[1] = 0.0f;
-        ((RuntimeObjectPrefix *)object)->rotation[2] = 0.0f;
+        ((RuntimeObjectPrefix *)object)->rotation[0] = 0.0F;
+        ((RuntimeObjectPrefix *)object)->rotation[1] = 0.0F;
+        ((RuntimeObjectPrefix *)object)->rotation[2] = 0.0F;
     }
     if (((ItemStatePrefix *)state)->flags & 0x40000) {
         objectOrientTowardCamera(object);

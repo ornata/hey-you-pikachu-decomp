@@ -58,8 +58,8 @@ void motionExtractHeadingFromMatrix(f32 *matrix, f32 *heading) {
     x = matrix[0];
     z = matrix[2];
     len = sqrtf((x * x) + (z * z));
-    if ((len < 0.001f) && (-0.001f < len)) {
-        *heading = 0.0f;
+    if ((len < 0.001F) && (-0.001F < len)) {
+        *heading = 0.0F;
     }
     x /= len;
     z /= len;
@@ -127,8 +127,8 @@ void motionResetPlayback(u8 *object) {
     ActorScriptState *motionState;
     motionState = ((RuntimeObjectPrefix *)object)->state.actor;
     motionState->loopCount = 0;
-    motionState->motionDuration = 0.0f;
-    motionState->motionRemaining = 0.0f;
+    motionState->motionDuration = 0.0F;
+    motionState->motionRemaining = 0.0F;
     motionSetPlaybackMode(object, MOTION_PLAYBACK_DISABLED);
 }
 
@@ -215,12 +215,12 @@ void motionStartTrackPlayback(u8 *object) {
                 data += 0x18;
                 animationDeltaTrack3Initialize(&state->rootMovementTrack, (AnimationCurveDescriptor *)data, base);
             }
-            rotation[0] = 0.0f;
-            rotation[1] = 0.0f;
-            rotation[2] = 0.0f;
+            rotation[0] = 0.0F;
+            rotation[1] = 0.0F;
+            rotation[2] = 0.0F;
             _bzero(state->rootMovementTrack.previousValues, sizeof(state->rootMovementTrack.previousValues));
-            animationDeltaTrack3Evaluate(&state->rootMovementTrack, rotation, NULL, 0.0f);
-            animationTrack3Evaluate(&state->rootPlayback.orientationTrack, position, NULL, 0.0f);
+            animationDeltaTrack3Evaluate(&state->rootMovementTrack, rotation, NULL, 0.0F);
+            animationTrack3Evaluate(&state->rootPlayback.orientationTrack, position, NULL, 0.0F);
             matrix34MakeRotationXYZDegrees((f32 *)&state->rootMotionTransform, position[0], position[1], position[2]);
             motionExtractHeadingFromMatrix((f32 *)&state->rootMotionTransform, &state->rootMotionHeading);
         } else {
@@ -267,23 +267,23 @@ void motionEvaluateChildRotation(u8 *obj, ChildMotionState *track, f32 step) {
     s32 r;
 
     r = animationTrack3Evaluate(&track->playback.rotationTrack, ((RuntimeObjectPrefix *)obj)->rotation, NULL, step);
-    while (((RuntimeObjectPrefix *)obj)->rotation[0] < 0.0f) {
-        ((RuntimeObjectPrefix *)obj)->rotation[0] += 360.0f;
+    while (((RuntimeObjectPrefix *)obj)->rotation[0] < 0.0F) {
+        ((RuntimeObjectPrefix *)obj)->rotation[0] += 360.0F;
     }
-    while (((RuntimeObjectPrefix *)obj)->rotation[0] >= 360.0f) {
-        ((RuntimeObjectPrefix *)obj)->rotation[0] -= 360.0f;
+    while (((RuntimeObjectPrefix *)obj)->rotation[0] >= 360.0F) {
+        ((RuntimeObjectPrefix *)obj)->rotation[0] -= 360.0F;
     }
-    while (((RuntimeObjectPrefix *)obj)->rotation[1] < 0.0f) {
-        ((RuntimeObjectPrefix *)obj)->rotation[1] += 360.0f;
+    while (((RuntimeObjectPrefix *)obj)->rotation[1] < 0.0F) {
+        ((RuntimeObjectPrefix *)obj)->rotation[1] += 360.0F;
     }
-    while (((RuntimeObjectPrefix *)obj)->rotation[1] >= 360.0f) {
-        ((RuntimeObjectPrefix *)obj)->rotation[1] -= 360.0f;
+    while (((RuntimeObjectPrefix *)obj)->rotation[1] >= 360.0F) {
+        ((RuntimeObjectPrefix *)obj)->rotation[1] -= 360.0F;
     }
-    while (((RuntimeObjectPrefix *)obj)->rotation[2] < 0.0f) {
-        ((RuntimeObjectPrefix *)obj)->rotation[2] += 360.0f;
+    while (((RuntimeObjectPrefix *)obj)->rotation[2] < 0.0F) {
+        ((RuntimeObjectPrefix *)obj)->rotation[2] += 360.0F;
     }
-    while (((RuntimeObjectPrefix *)obj)->rotation[2] >= 360.0f) {
-        ((RuntimeObjectPrefix *)obj)->rotation[2] -= 360.0f;
+    while (((RuntimeObjectPrefix *)obj)->rotation[2] >= 360.0F) {
+        ((RuntimeObjectPrefix *)obj)->rotation[2] -= 360.0F;
     }
     if (r == 1) {
         ((ChildMotionState *)track)->playbackMode = MOTION_PLAYBACK_DISABLED;
@@ -307,10 +307,10 @@ void motionStartPoseTransition(u8 *object) {
     u8 *child;
     f32 childRotation[3];
     ChildMotionState *childState;
-    f32 blendWeight = 1.0f;
+    f32 blendWeight = 1.0F;
     s32 rootKindLimit = 0x26;
     s32 rotationMode = MOTION_PLAYBACK_POSE_BLEND;
-    f32 transformTime = 0.0f;
+    f32 transformTime = 0.0F;
 
     state = ((RuntimeObjectPrefix *)object)->state.actor;
     motionCacheRead(&gMotionRomCache, state->motionId, &base);
@@ -333,7 +333,7 @@ void motionStartPoseTransition(u8 *object) {
             current = from + 1;
             matrix34MakeRotationXYZDegrees((f32 *)current, rotation[0], rotation[1], rotation[2]);
             motionExtractHeadingFromMatrix((f32 *)current, angles);
-            state->rootMotionHeading = 0.0f;
+            state->rootMotionHeading = 0.0F;
         } else {
             child = actorFindPart(object, entry->objectKind);
             if (child != NULL) {
@@ -363,12 +363,12 @@ void motionStartPoseTransition(u8 *object) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000E81C (0x8000E81C).
 void motionBlendPosePair(u8 *from, f32 *out, f32 t) {
-    if (t < 0.0f) {
-        t = 0.0f;
-    } else if (t > 1.0f) {
-        t = 1.0f;
+    if (t < 0.0F) {
+        t = 0.0F;
+    } else if (t > 1.0F) {
+        t = 1.0F;
     }
-    matrix34BlendOrientation(1.0f - t, (f32 *)from, (f32 *)(from + 0x30), out);
+    matrix34BlendOrientation(1.0F - t, (f32 *)from, (f32 *)(from + 0x30), out);
 }
 
 /// Start timed motion playback using the current action duration.
@@ -384,7 +384,7 @@ void motionStartTimedPlayback(u8 *object) {
     duration = motionState->actionMovementScale;
     TRACE("interTime:%f\n", duration);
     motionState->playbackMode = MOTION_PLAYBACK_TIMED;
-    motionState->movementScale = 1.0f;
+    motionState->movementScale = 1.0F;
     motionState->motionDuration = duration;
     motionState->motionRemaining = duration;
 }
@@ -426,13 +426,13 @@ void actionStartPlayback(u8 *object) {
     mode = state->actionAttributes & 7;
     TRACE("_startAction: actionType:%d\n", mode);
     state->actionStartPending = 0;
-    state->secondaryCueClock = 0.0f;
+    state->secondaryCueClock = 0.0F;
     state->secondaryCueCommand = actorSelectActionScript(object, state->secondaryCueProgram, 0);
     if (state->loopCount == 0) {
         state->loopCount = 1;
         anim = actorSelectActionScript(object, state->primaryCueProgram, 1);
         if (anim != 0 && (anim != state->lastPrimaryCueProgram ||
-                          (1.2f < state->primaryCueClock && !(state->actionAttributes & 8)))) {
+                          (1.2F < state->primaryCueClock && !(state->actionAttributes & 8)))) {
             TRACE("lastAfcKey:%p\n    afcKey:%p\n", state->lastPrimaryCueProgram, anim);
             if (((RuntimeObjectPrefix *)object)->kind == 0x25) {
                 if (!(state->behaviorFlags & ACTOR_BEHAVIOR_PRESERVE_APPEARANCE)) {
@@ -442,7 +442,7 @@ void actionStartPlayback(u8 *object) {
             }
             state->primaryCueCommand = anim;
             state->lastPrimaryCueProgram = anim;
-            state->primaryCueClock = 0.0f;
+            state->primaryCueClock = 0.0F;
         }
     }
     switch (mode) {
@@ -526,7 +526,7 @@ s32 actionLoadRecordByIndex(ActorScriptState *state, s32 actionId, s32 nextActio
     if ((state->actionAttributes & 7) == 1 && ((state->actionAttributes & 0x20000) || state->primaryCueProgram == 0)) {
         state->primaryCueProgram = 0;
         state->secondaryCueProgram = 0;
-        state->actionMovementScale = 2.0f;
+        state->actionMovementScale = 2.0F;
     }
     state->actionAttributes &= 0xF9FFFFF7;
     return 1;
@@ -585,7 +585,7 @@ void actionResolveNextTransition(u8 *object) {
     }
     ((ActorScriptState *)state)->loopCount = 0;
     ((ActorScriptState *)state)->actionStartPending = 1;
-    blendTime = 0.2f;
+    blendTime = 0.2F;
     for (;;) {
         prevIndex = ((ActorScriptState *)state)->continuationAction;
         if (prevIndex < 0 || prevIndex >= 0x14A) {
@@ -710,9 +710,9 @@ void actionUpdatePlayback(u8 *object) {
     ActorScriptState *state;
 
     state = ((RuntimeObjectPrefix *)object)->state.actor;
-    state->poseDisplacement[0] = 0.0f;
-    state->poseDisplacement[1] = 0.0f;
-    state->poseDisplacement[2] = 0.0f;
+    state->poseDisplacement[0] = 0.0F;
+    state->poseDisplacement[1] = 0.0F;
+    state->poseDisplacement[2] = 0.0F;
     if (state->actionStartPending != 0) {
         actionStartPlayback(object);
     }
@@ -722,7 +722,7 @@ void actionUpdatePlayback(u8 *object) {
         step = state->movementScale * gRuntimeFrameSeconds;
         state->motionRemaining = (f32)(state->motionRemaining - step);
         remaining = state->motionRemaining;
-        if (remaining <= 0.0f) {
+        if (remaining <= 0.0F) {
             step += remaining;
         }
         mode = (u16)state->playbackMode;
@@ -736,7 +736,7 @@ void actionUpdatePlayback(u8 *object) {
         case MOTION_PLAYBACK_POSE_BLEND:
             step = remaining / state->motionDuration;
             state->verticalPoseOffset =
-                (f32)(((*(f32 *)((s8 *)state + (u32) & ((ActorScriptState *)0)->defaultPoseOffset)) * (1.0f - step)) +
+                (f32)(((*(f32 *)((s8 *)state + (u32) & ((ActorScriptState *)0)->defaultPoseOffset)) * (1.0F - step)) +
                       ((*(f32 *)((s8 *)state + (u32) & ((ActorScriptState *)0)->verticalPoseOffset)) * step));
             TRACE("rate:%f  centerHeight:%f  default:%f\n", step, state->verticalPoseOffset, state->defaultPoseOffset);
             motionBlendPosePair((u8 *)state->rootPlayback.posePair, (f32 *)&state->rootMotionTransform, step);
@@ -751,13 +751,13 @@ void actionUpdatePlayback(u8 *object) {
             callbackResult = callback(object);
             result = callbackResult;
             if (callbackResult == 1) {
-                state->motionRemaining = 0.0f;
+                state->motionRemaining = 0.0F;
             }
             remaining = state->motionRemaining;
         } else {
             remaining = state->motionRemaining;
         }
-        if (!(remaining > 0.0f)) {
+        if (!(remaining > 0.0F)) {
             TRACE("IS_LOOP:%d  attr:%04x, stopFlag:%d\n", state->actionAttributes & 8, state->actionAttributes,
                   state->loopExitRequested);
             if ((state->actionAttributes & 8) && (state->loopExitRequested == 0) && (result == 0) &&
@@ -821,7 +821,7 @@ s32 actionRequestPlayback(u8 *object, s32 id, s32 kind, s32 *out) {
     v = ((RuntimeObjectPrefix *)object)->state.bytes;
     TRACE("\n\nactRequest: %s\n", actionGetName(id));
     if (actionRequestMotionData(id) == 0) {
-        actionRequestMotionData(*(s16 *)(gActionFallbackEntries + id * 0x2C));
+        actionRequestMotionData(*(s16 *)(gActionFallbackEntries + (id * 0x2C)));
     }
     ((ActorScriptState *)v)->pendingAction = id;
     ((ActorScriptState *)v)->pendingActionKind = kind;
@@ -920,7 +920,7 @@ f32 actionGetGravityScale(u8 *object) {
 
     objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
     if ((u16)((ActorScriptState *)objectState)->playbackMode == MOTION_PLAYBACK_DISABLED) {
-        return 1.0f;
+        return 1.0F;
     }
     return ((ActorScriptState *)objectState)->actionGravityScale;
 }

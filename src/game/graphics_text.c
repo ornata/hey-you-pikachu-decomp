@@ -139,17 +139,20 @@ void graphicsTaskSubmit(s32 microcode, s32 flags, Gfx **start, Gfx **end, OSMesg
     task->flags = flags;
     task->reply = reply;
     size = flags & 0x40;
-    if (size)
+    if (size) {
         task->message = &gGraphicsFrameCompletionMessage;
-    else
+    } else {
         task->message = &gGraphicsPartialCompletionMessage;
+    }
     task->framebuffer = gGraphicsFramebuffers[gGraphicsFramebufferIndex];
     osWritebackDCacheAll();
     osSendMesg(gGraphicsSchedulerQueue, task, OS_MESG_BLOCK);
-    if (size)
+    if (size) {
         gGraphicsFramebufferIndex ^= 1;
-    if (++gGraphicsNextTaskIndex >= gGraphicsTaskCapacity)
+    }
+    if (++gGraphicsNextTaskIndex >= gGraphicsTaskCapacity) {
         gGraphicsNextTaskIndex = 0;
+    }
     *start = *end;
 }
 
@@ -252,12 +255,12 @@ f32 viewportSetPixelRectangle(Vp *viewport, s32 x0, s32 y0, s32 x1, s32 y1, s32 
     s32 w = x1 - x0;
     s32 h = y1 - y0;
 
-    viewport->vp.vscale[0] = w * 2 + 2;
-    viewport->vp.vscale[1] = h * 2 + 2;
+    viewport->vp.vscale[0] = (w * 2) + 2;
+    viewport->vp.vscale[1] = (h * 2) + 2;
     viewport->vp.vtrans[3] = 0;
     viewport->vp.vscale[2] = 0x1FF;
     // clang-format off
-    viewport->vp.vtrans[0] = x0 * 4 + w * 2 + 2; viewport->vp.vtrans[1] = y0 * 4 + h * 2 + 2;
+    viewport->vp.vtrans[0] = (x0 * 4) + (w * 2) + 2; viewport->vp.vtrans[1] = (y0 * 4) + (h * 2) + 2;
     // clang-format on
     viewport->vp.vtrans[2] = 0x1FF;
     viewport->vp.vscale[3] = viewport->vp.vtrans[3];
@@ -292,29 +295,31 @@ void debugTextDrawFramebuffers(u8 *text, s32 x, s32 y) {
 
     if (gVideoFramebufferWidth != 0) {
         for (i = 0; i < 2; i++) {
-            output = (u16 *)gGraphicsFramebuffers[i] + gVideoFramebufferWidth * y + x;
+            output = (u16 *)gGraphicsFramebuffers[i] + (gVideoFramebufferWidth * y) + x;
             cursor = text;
             if (*cursor != 0) {
                 do {
                     ch = *cursor;
-                    if (ch >= '0' && ch < ':')
+                    if (ch >= '0' && ch < ':') {
                         ch -= '0';
-                    else if (ch >= 'a' && ch < '{')
+                    } else if (ch >= 'a' && ch < '{') {
                         ch -= 'a' - 10;
-                    else if (ch >= 'A' && ch < '[')
+                    } else if (ch >= 'A' && ch < '[') {
                         ch -= 'A' - 10;
-                    else if (ch == ':')
+                    } else if (ch == ':') {
                         ch = 37;
-                    else
+                    } else {
                         ch = 36;
+                    }
                     for (row = 0, scanline = output; row < 5; row++) {
                         column = 0;
                         bits = ((u8(*)[5]) & font)[ch][row];
                         for (; column < 8; column++) {
-                            if (bits & 0x80)
+                            if (bits & 0x80) {
                                 color = 0xFFFF;
-                            else
+                            } else {
                                 color = 1;
+                            }
                             scanline[column] = color;
                             (&scanline[column])[gVideoFramebufferWidth] = color;
                             bits <<= 1;
@@ -363,10 +368,10 @@ void textDrawInitialize(s32 width, s32 height, s32 cachedGlyphCount) {
     cachedGlyphCount = 10;
     gTextDrawScreenWidth = width;
     gTextDrawScreenHeight = height;
-    gTextDrawDefaultLeft = width / cachedGlyphCount - 1;
-    gTextDrawDefaultTop = height / cachedGlyphCount - 1;
-    gTextDrawDefaultRight = width - width / cachedGlyphCount;
-    gTextDrawDefaultBottom = height - height / cachedGlyphCount;
+    gTextDrawDefaultLeft = (width / cachedGlyphCount) - 1;
+    gTextDrawDefaultTop = (height / cachedGlyphCount) - 1;
+    gTextDrawDefaultRight = width - (width / cachedGlyphCount);
+    gTextDrawDefaultBottom = height - (height / cachedGlyphCount);
     textDrawReset();
 }
 
@@ -455,8 +460,8 @@ void textDrawReset(void) {
     textDrawSetCursor(0, 0);
     gTextDrawFontIndex = 0;
     gTextDrawSpacingMode = 1;
-    gTextDrawScaleX = 1.0f;
-    gTextDrawScaleY = 1.0f;
+    gTextDrawScaleX = 1.0F;
+    gTextDrawScaleY = 1.0F;
     gTextDrawPalette = gDefaultTextPaletteRgba5551;
 }
 
@@ -506,10 +511,11 @@ void textDrawPrintf(const char *format, ...) {
             textDrawWideCharacter(code);
             break;
         default:
-            if (*cursor == '\n')
+            if (*cursor == '\n') {
                 gTextDrawCursorX = *right;
-            else
+            } else {
                 textDrawCharacter(*cursor);
+            }
             break;
         }
         cursor++;
@@ -527,12 +533,12 @@ extern s32 gTextDrawCursorY;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8003D1E0 (0x8003D1E0).
 void textDrawFitGlyphAtCursor(s32 width, s32 height) {
-    if ((s32)(width * gTextDrawScaleX + 0.5) + gTextDrawCursorX > gTextDrawAreaRight) {
+    if ((s32)((width * gTextDrawScaleX) + 0.5) + gTextDrawCursorX > gTextDrawAreaRight) {
         gTextDrawCursorX = gTextDrawAreaLeft;
-        gTextDrawCursorY += (s32)(height * gTextDrawScaleY + 0.5);
+        gTextDrawCursorY += (s32)((height * gTextDrawScaleY) + 0.5);
     }
-    while ((s32)((height - 1) * gTextDrawScaleY + 0.5) + gTextDrawCursorY > gTextDrawAreaBottom) {
-        gTextDrawCursorY -= (s32)(height * gTextDrawScaleY + 0.5);
+    while ((s32)(((height - 1) * gTextDrawScaleY) + 0.5) + gTextDrawCursorY > gTextDrawAreaBottom) {
+        gTextDrawCursorY -= (s32)((height * gTextDrawScaleY) + 0.5);
     }
 }
 
@@ -678,8 +684,8 @@ void textDrawImageAtCursor(TextImage *image) {
     s32 height = image->height;
     s32 dx, dy;
     textImageLoadTexture(&gTextDrawDisplayListCursor, image);
-    dx = (s32)(1024.0f / gTextDrawScaleX + 0.5);
-    dy = (s32)(1024.0f / gTextDrawScaleY + 0.5);
+    dx = (s32)((1024.0F / gTextDrawScaleX) + 0.5);
+    dy = (s32)((1024.0F / gTextDrawScaleY) + 0.5);
     gSPTextureRectangle(gTextDrawDisplayListCursor++, gTextDrawCursorX * 4, gTextDrawCursorY * 4,
                         ((s32)(width * gTextDrawScaleX) + gTextDrawCursorX) * 4,
                         (gTextDrawCursorY + (s32)(height * gTextDrawScaleY)) * 4, G_TX_RENDERTILE, 0, 0, dx, dy);
@@ -736,8 +742,8 @@ void textImageDrawRectangle(Gfx **gfx, TextImage *image, s32 x0, s32 y0, s32 x1,
         return;
     }
     rows = 0x1000 / width;
-    dsdx = (s32)(1024.0f / scaleX + 0.5f);
-    dtdy = (s32)(1024.0f / scaleY + 0.5f);
+    dsdx = (s32)((1024.0F / scaleX) + 0.5F);
+    dtdy = (s32)((1024.0F / scaleY) + 0.5F);
     while (height > 0) {
         if (height < rows) {
             rows = height;
@@ -747,7 +753,7 @@ void textImageDrawRectangle(Gfx **gfx, TextImage *image, s32 x0, s32 y0, s32 x1,
         height -= rows;
         gSPTextureRectangle((*gfx)++, x0 << 2, y0 << 2, (x0 + width) << 2, (y0 + rows) << 2, G_TX_RENDERTILE, s << 5,
                             t << 5, dsdx, dtdy);
-        y0 = (s32)(y0 + rows * scaleY);
+        y0 = (s32)(y0 + (rows * scaleY));
         t += rows;
     }
 }
@@ -775,14 +781,18 @@ void textImageLoadRectangle(Gfx **dl, TextImage *image, s32 x0, s32 y0, s32 x1, 
         y0 = y1;
         y1 = t;
     }
-    if (x0 < 0)
+    if (x0 < 0) {
         x0 = 0;
-    if (y0 < 0)
+    }
+    if (y0 < 0) {
         y0 = 0;
-    if (x1 > img->width - 1)
+    }
+    if (x1 > img->width - 1) {
         x1 = img->width - 1;
-    if (y1 > img->height - 1)
+    }
+    if (y1 > img->height - 1) {
         y1 = img->height - 1;
+    }
     if (x1 >= x0 && y1 >= y0) {
         gDPPipeSync((*dl)++);
         if (img != NULL) {
@@ -970,12 +980,12 @@ void textDrawWideCharacter(s32 code) {
     gDPLoadTextureBlock_4b(gTextDrawDisplayListCursor++, fontCacheReadGlyph(offset, NULL), G_IM_FMT_I, 16, 16, 0,
                            G_TX_WRAP, G_TX_WRAP, 0, 0, 0, 0);
     textDrawFitGlyphAtCursor(16, 16);
-    dx = (s32)(1024.0f / gTextDrawScaleX + 0.5);
-    dy = (s32)(1024.0f / gTextDrawScaleY + 0.5);
+    dx = (s32)((1024.0F / gTextDrawScaleX) + 0.5);
+    dy = (s32)((1024.0F / gTextDrawScaleY) + 0.5);
     gSPTextureRectangle(gTextDrawDisplayListCursor++, gTextDrawCursorX * 4, gTextDrawCursorY * 4,
-                        ((s32)(16.0f * gTextDrawScaleX) + gTextDrawCursorX) * 4,
-                        (gTextDrawCursorY + (s32)(16.0f * gTextDrawScaleY)) * 4, 0, 0, 0, dx, dy);
-    gTextDrawCursorX += (s32)(16.0f * gTextDrawScaleX + 0.5);
+                        ((s32)(16.0F * gTextDrawScaleX) + gTextDrawCursorX) * 4,
+                        (gTextDrawCursorY + (s32)(16.0F * gTextDrawScaleY)) * 4, 0, 0, 0, dx, dy);
+    gTextDrawCursorX += (s32)((16.0F * gTextDrawScaleX) + 0.5);
 }
 
 /// Draw a single-byte character using the current font and spacing, advancing the text cursor.
@@ -992,31 +1002,35 @@ void textDrawCharacter(u8 character) {
     s32 cellWidth;
     s32 dx;
     s32 dy;
-    offset = fontGetGlyphMetrics(character + gTextDrawFontIndex * 0xC0 - 0x20, &width, &height, &baseline);
-    if (gTextDrawSpacingMode == 1)
+    offset = fontGetGlyphMetrics(character + (gTextDrawFontIndex * 0xC0) - 0x20, &width, &height, &baseline);
+    if (gTextDrawSpacingMode == 1) {
         cellWidth = 0;
-    else
+    } else {
         cellWidth = 8;
+    }
     paddedWidth = (width + 1) & 0xFE;
     gDPLoadTextureTile_4b(gTextDrawDisplayListCursor++, fontCacheReadGlyph(offset, NULL), G_IM_FMT_I, paddedWidth,
                           height, 0, 0, (paddedWidth - 1) << 2, (height - 1) << 2, 0, G_TX_WRAP, G_TX_WRAP, 0, 0, 0, 0);
-    if (gTextDrawSpacingMode == 1 && width < 3)
+    if (gTextDrawSpacingMode == 1 && width < 3) {
         width = 3;
+    }
     textDrawFitGlyphAtCursor(gTextDrawSpacingMode == 1 ? width + 1 : cellWidth, 16);
     margin = (cellWidth - width) / 2;
-    if (gTextDrawSpacingMode != 1)
-        gTextDrawCursorX += (s32)(margin * gTextDrawScaleX + 0.5);
+    if (gTextDrawSpacingMode != 1) {
+        gTextDrawCursorX += (s32)((margin * gTextDrawScaleX) + 0.5);
+    }
     baseline -= 12;
-    dx = (s32)(1024.0f / gTextDrawScaleX + 0.5);
-    dy = (s32)(1024.0f / gTextDrawScaleY + 0.5);
+    dx = (s32)((1024.0F / gTextDrawScaleX) + 0.5);
+    dy = (s32)((1024.0F / gTextDrawScaleY) + 0.5);
     gSPTextureRectangle(gTextDrawDisplayListCursor++, gTextDrawCursorX * 4,
                         (gTextDrawCursorY + (s32)(-baseline * gTextDrawScaleY + 0.5)) * 4,
                         ((s32)(width * gTextDrawScaleX + 0.5) + gTextDrawCursorX) * 4,
                         (gTextDrawCursorY + (s32)((height - baseline) * gTextDrawScaleY + 0.5)) * 4, 0, 0, 0, dx, dy);
-    if (gTextDrawSpacingMode != 1)
-        gTextDrawCursorX += (s32)((cellWidth - margin) * gTextDrawScaleX + 0.5);
-    else
-        gTextDrawCursorX += (s32)((width + 1) * gTextDrawScaleX + 0.5);
+    if (gTextDrawSpacingMode != 1) {
+        gTextDrawCursorX += (s32)(((cellWidth - margin) * gTextDrawScaleX) + 0.5);
+    } else {
+        gTextDrawCursorX += (s32)(((width + 1) * gTextDrawScaleX) + 0.5);
+    }
 }
 
 s32 fontImageMeasureText(u8 *, FontImage *, s32);
@@ -1060,7 +1074,7 @@ s32 textImageCreateCustomFont(TextImage **out, u8 *text, FontImage *font) {
         return bytes;
     }
     width = fontImageMeasureText(text, font, gTextDrawSpacingMode);
-    width = width % 4 + width;
+    width = (width % 4) + width;
     bytes = width * height * 4 / 8;
     if (bytes > 0x1000) {
         TRACE("ERROR : Too large sprite!\n");
@@ -1092,8 +1106,9 @@ s32 textImageCreateCustomFont(TextImage **out, u8 *text, FontImage *font) {
                             scanline = (u8 *)heapAllocLocal((HpHdr *)&gGameHeap, rowBytes, 0x372);
                             bcopy(glyph, scanline, rowBytes);
                             if (color != 15) {
-                                for (i = 0; i < rowBytes; i++)
+                                for (i = 0; i < rowBytes; i++) {
                                     scanline[i] &= ((u32)color << 4) + (u32)color;
+                                }
                             }
                             bcopy(scanline + cropOffset, dest, inkWidth);
                             heapFreeLocal(&gGameHeap, scanline);
@@ -1517,7 +1532,7 @@ s32 textDecodePositionControl(u8 **input, s32 *code, s32 *position) {
                     break;
                 }
                 p++;
-                n = n * 10 + c - '0';
+                n = (n * 10) + c - '0';
             }
             if (i == 0) {
                 TRACE_LEAF("COLUMN CODE ERROR!\n");
@@ -1618,7 +1633,7 @@ s32 fontImageGetCharacterRight(s32 code, FontImage *font, s32 spacingMode) {
         if (spacingMode == 1) {
             return 1;
         }
-        return v / 2 - 1;
+        return (v / 2) - 1;
     }
     if (spacingMode == 1) {
         return font->glyphs[fontImageGetGlyphIndex(code, (s32)font)].right;

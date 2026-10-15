@@ -20,18 +20,18 @@
 /// Retained four-by-four floating-point identity matrix; no reader is identified.
 /// \note Original identifier: \c D_800A6CC0 (0x800A6CC0).
 const f32 gMatrix44Identity[4][4] = {
-    {1.0f, 0.0f, 0.0f, 0.0f},
-    {0.0f, 1.0f, 0.0f, 0.0f},
-    {0.0f, 0.0f, 1.0f, 0.0f},
-    {0.0f, 0.0f, 0.0f, 1.0f},
+    {1.0F, 0.0F, 0.0F, 0.0F},
+    {0.0F, 1.0F, 0.0F, 0.0F},
+    {0.0F, 0.0F, 1.0F, 0.0F},
+    {0.0F, 0.0F, 0.0F, 1.0F},
 };
 /// Affine identity transform copied by matrix initialization.
 /// \note Original identifier: \c D_800A6D00 (0x800A6D00).
 const Matrix34 gMatrix34Identity = {{
-    {1.0f, 0.0f, 0.0f},
-    {0.0f, 1.0f, 0.0f},
-    {0.0f, 0.0f, 1.0f},
-    {0.0f, 0.0f, 0.0f},
+    {1.0F, 0.0F, 0.0F},
+    {0.0F, 1.0F, 0.0F},
+    {0.0F, 0.0F, 1.0F},
+    {0.0F, 0.0F, 0.0F},
 }};
 const s32 D_800A6D30[3][3] = {
     {1, 1, 0},
@@ -63,22 +63,22 @@ f32 mathAtanRadians(f32 x) {
     f32 x2;
     f32 r;
 
-    if (x == 0.0f) {
-        return 0.0f;
+    if (x == 0.0F) {
+        return 0.0F;
     }
     if (x > 1.0) {
         fold = 1;
-        x = 1.0f / x;
+        x = 1.0F / x;
     } else if (x < -1.0) {
         fold = 2;
-        x = 1.0f / x;
+        x = 1.0F / x;
     } else {
         fold = 0;
     }
     x2 = x * x;
-    r = (x2 / (x2 / (x2 / (x2 / (x2 / (x2 / -0.10810675f + -44.57192f) + -0.1619081f) + -15.774018f) + -0.55556977f) +
-               -3.000003f) +
-         1.0f) *
+    r = (x2 / (x2 / (x2 / (x2 / (x2 / (x2 / -0.10810675F + -44.57192F) + -0.1619081F) + -15.774018F) + -0.55556977F) +
+               -3.000003F) +
+         1.0F) *
         x;
     switch (fold) {
     case 0:
@@ -88,7 +88,7 @@ f32 mathAtanRadians(f32 x) {
     case 2:
         return -1.5707963267948966 - r;
     }
-    return 0.0f;
+    return 0.0F;
 }
 
 f32 fabsf(f32);
@@ -102,16 +102,16 @@ f32 fabsf(f32);
 /// \returns Direction in radians; a zero Y component produces zero.
 /// \note Original decompilation identifier: \c func_80038CDC (0x80038CDC).
 f32 mathDirectionRadians(f32 y, f32 x) {
-    if (x > 0.0f) {
+    if (x > 0.0F) {
         return mathAtanRadians(y / x);
     }
-    if (x < 0.0f) {
+    if (x < 0.0F) {
         return SIGN(y) * (3.141592653589793 - mathAtanRadians(fabsf(y / x)));
     }
-    if (y != 0.0f) {
+    if (y != 0.0F) {
         return SIGN(y) * 1.5707963267948966;
     }
-    return 0.0f;
+    return 0.0F;
 }
 
 #undef SIGN
@@ -125,12 +125,12 @@ f32 mathAsinClampedRadians(f32 value) {
 
     wideValue = (f64)value;
     if (0.99999 < wideValue) {
-        return 1.5707964f;
+        return 1.5707964F;
     }
     if (wideValue < -0.99999) {
-        return -1.5707964f;
+        return -1.5707964F;
     }
-    return mathAtanRadians(value / sqrtf(1.0f - (value * value)));
+    return mathAtanRadians(value / sqrtf(1.0F - (value * value)));
 }
 
 /// Compute an inverse cosine with saturation near the domain endpoints.
@@ -142,12 +142,12 @@ f32 mathAcosClampedRadians(f32 value) {
 
     wideValue = (f64)value;
     if (0.99999 < wideValue) {
-        return 0.0f;
+        return 0.0F;
     }
     if (wideValue < -0.99999) {
-        return 3.1415927f;
+        return 3.1415927F;
     }
-    return (f32)(1.5707963267948966 - (f64)mathAtanRadians(value / sqrtf(1.0f - (value * value))));
+    return (f32)(1.5707963267948966 - (f64)mathAtanRadians(value / sqrtf(1.0F - (value * value))));
 }
 
 /// Compute the cosecant of an angle.
@@ -155,7 +155,7 @@ f32 mathAcosClampedRadians(f32 value) {
 /// \returns Cosecant of the angle.
 /// \note Original decompilation identifier: \c func_80038F18 (0x80038F18).
 f32 mathCosecantRadians(f32 angle) {
-    return 1.0f / __sinf(angle);
+    return 1.0F / __sinf(angle);
 }
 
 /// Compute the secant of an angle.
@@ -163,7 +163,7 @@ f32 mathCosecantRadians(f32 angle) {
 /// \returns Secant of the angle.
 /// \note Original decompilation identifier: \c func_80038F40 (0x80038F40).
 f32 mathSecantRadians(f32 angle) {
-    return 1.0f / __cosf(angle);
+    return 1.0F / __cosf(angle);
 }
 
 f32 mathTanRadians(f32);
@@ -173,7 +173,7 @@ f32 mathTanRadians(f32);
 /// \returns Cotangent of the angle.
 /// \note Original decompilation identifier: \c func_80038F68 (0x80038F68).
 f32 mathCotangentRadians(f32 angle) {
-    return 1.0f / mathTanRadians(angle);
+    return 1.0F / mathTanRadians(angle);
 }
 
 /// Provide the disabled diagnostic report for an affine matrix.
@@ -221,7 +221,7 @@ void matrixFixedDebugReport(Mtx *m) {
     TRACE("Mtx %p\n", m);
     for (i = 0; i < 4; i++) {
         for (j = 0; j < 4; j++) {
-            TRACE("%5.3f ", m->m[i][j] / 65536.0f);
+            TRACE("%5.3f ", m->m[i][j] / 65536.0F);
         }
         TRACE("\n");
     }
@@ -253,15 +253,15 @@ void matrix33Multiply(f32 *a, f32 *b, f32 *c) {
     f32 bz1 = b[5];
     f32 bz2 = b[8];
 
-    c[0] = bx0 * ax0 + bx1 * ay0 + bx2 * az0;
-    c[3] = bx0 * ax1 + bx1 * ay1 + bx2 * az1;
-    c[6] = bx0 * ax2 + bx1 * ay2 + bx2 * az2;
-    c[1] = by0 * ax0 + by1 * ay0 + by2 * az0;
-    c[4] = by0 * ax1 + by1 * ay1 + by2 * az1;
-    c[7] = by0 * ax2 + by1 * ay2 + by2 * az2;
-    c[2] = bz0 * ax0 + bz1 * ay0 + bz2 * az0;
-    c[5] = bz0 * ax1 + bz1 * ay1 + bz2 * az1;
-    c[8] = bz0 * ax2 + bz1 * ay2 + bz2 * az2;
+    c[0] = (bx0 * ax0) + (bx1 * ay0) + (bx2 * az0);
+    c[3] = (bx0 * ax1) + (bx1 * ay1) + (bx2 * az1);
+    c[6] = (bx0 * ax2) + (bx1 * ay2) + (bx2 * az2);
+    c[1] = (by0 * ax0) + (by1 * ay0) + (by2 * az0);
+    c[4] = (by0 * ax1) + (by1 * ay1) + (by2 * az1);
+    c[7] = (by0 * ax2) + (by1 * ay2) + (by2 * az2);
+    c[2] = (bz0 * ax0) + (bz1 * ay0) + (bz2 * az0);
+    c[5] = (bz0 * ax1) + (bz1 * ay1) + (bz2 * az1);
+    c[8] = (bz0 * ax2) + (bz1 * ay2) + (bz2 * az2);
 }
 
 /// Compose an affine transform with a 4x4 transform as b times a.
@@ -279,23 +279,23 @@ void matrix34ComposeWith44(f32 *a, f32 *b, f32 *c) {
     f32 b01 = b[1], b11 = b[5], b21 = b[9], b31 = b[13];
     f32 b02 = b[2], b12 = b[6], b22 = b[10], b32 = b[14];
     f32 b03 = b[3], b13 = b[7], b23 = b[11], b33 = b[15];
-    c[0] = b00 * a00 + b10 * a01 + b20 * a02;
-    c[4] = b00 * a10 + b10 * a11 + b20 * a12;
-    c[8] = b00 * a20 + b10 * a21 + b20 * a22;
-    c[12] = b00 * a30 + b10 * a31 + b20 * a32 + b30;
-    c[1] = b01 * a00 + b11 * a01 + b21 * a02;
-    c[5] = b01 * a10 + b11 * a11 + b21 * a12;
-    c[9] = b01 * a20 + b11 * a21 + b21 * a22;
-    c[13] = b01 * a30 + b11 * a31 + b21 * a32 + b31;
-    c[2] = b02 * a00 + b12 * a01 + b22 * a02;
-    c[6] = b02 * a10 + b12 * a11 + b22 * a12;
-    c[10] = b02 * a20 + b12 * a21 + b22 * a22;
-    c[14] = b02 * a30 + b12 * a31 + b22 * a32 + b32;
-    c[3] = b03 * a00 + b13 * a01 + b23 * a02;
+    c[0] = (b00 * a00) + (b10 * a01) + (b20 * a02);
+    c[4] = (b00 * a10) + (b10 * a11) + (b20 * a12);
+    c[8] = (b00 * a20) + (b10 * a21) + (b20 * a22);
+    c[12] = (b00 * a30) + (b10 * a31) + (b20 * a32) + b30;
+    c[1] = (b01 * a00) + (b11 * a01) + (b21 * a02);
+    c[5] = (b01 * a10) + (b11 * a11) + (b21 * a12);
+    c[9] = (b01 * a20) + (b11 * a21) + (b21 * a22);
+    c[13] = (b01 * a30) + (b11 * a31) + (b21 * a32) + b31;
+    c[2] = (b02 * a00) + (b12 * a01) + (b22 * a02);
+    c[6] = (b02 * a10) + (b12 * a11) + (b22 * a12);
+    c[10] = (b02 * a20) + (b12 * a21) + (b22 * a22);
+    c[14] = (b02 * a30) + (b12 * a31) + (b22 * a32) + b32;
+    c[3] = (b03 * a00) + (b13 * a01) + (b23 * a02);
     // clang-format off
-    c[7] = b03 * a10 + b13 * a11 + b23 * a12; c[11] = b03 * a20 + b13 * a21 + b23 * a22;
+    c[7] = (b03 * a10) + (b13 * a11) + (b23 * a12); c[11] = (b03 * a20) + (b13 * a21) + (b23 * a22);
     // clang-format on
-    c[15] = b03 * a30 + b13 * a31 + b23 * a32 + b33;
+    c[15] = (b03 * a30) + (b13 * a31) + (b23 * a32) + b33;
 }
 
 #include "spatial_math.h"
@@ -310,9 +310,9 @@ void matrix34ComposeWith44(f32 *a, f32 *b, f32 *c) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8003953C (0x8003953C).
 void matrix34TransformPoint(f32 mf[4][3], f32 x, f32 y, f32 z, f32 *ox, f32 *oy, f32 *oz) {
-    *ox = mf[0][0] * x + mf[1][0] * y + mf[2][0] * z + mf[3][0];
-    *oy = mf[0][1] * x + mf[1][1] * y + mf[2][1] * z + mf[3][1];
-    *oz = mf[0][2] * x + mf[1][2] * y + mf[2][2] * z + mf[3][2];
+    *ox = (mf[0][0] * x) + (mf[1][0] * y) + (mf[2][0] * z) + mf[3][0];
+    *oy = (mf[0][1] * x) + (mf[1][1] * y) + (mf[2][1] * z) + mf[3][1];
+    *oz = (mf[0][2] * x) + (mf[1][2] * y) + (mf[2][2] * z) + mf[3][2];
 }
 
 /// Transform a three-dimensional direction vector.
@@ -326,9 +326,9 @@ void matrix33TransformVector(f32 *matrix, f32 *vector, f32 *output) {
     f32 y = vector[1];
     f32 z = vector[2];
 
-    output[0] = matrix[0] * x + matrix[3] * y + matrix[6] * z;
-    output[1] = matrix[1] * x + matrix[4] * y + matrix[7] * z;
-    output[2] = matrix[2] * x + matrix[5] * y + matrix[8] * z;
+    output[0] = (matrix[0] * x) + (matrix[3] * y) + (matrix[6] * z);
+    output[1] = (matrix[1] * x) + (matrix[4] * y) + (matrix[7] * z);
+    output[2] = (matrix[2] * x) + (matrix[5] * y) + (matrix[8] * z);
 }
 
 /// Transform a point with signed-byte coordinates.
@@ -342,9 +342,9 @@ void matrix34TransformBytePoint(f32 mf[4][3], s8 *in, s8 *out) {
     s32 y = in[1];
     s32 z = in[2];
 
-    out[0] = mf[0][0] * x + mf[1][0] * y + mf[2][0] * z + mf[3][0];
-    out[1] = mf[0][1] * x + mf[1][1] * y + mf[2][1] * z + mf[3][1];
-    out[2] = mf[0][2] * x + mf[1][2] * y + mf[2][2] * z + mf[3][2];
+    out[0] = (mf[0][0] * x) + (mf[1][0] * y) + (mf[2][0] * z) + mf[3][0];
+    out[1] = (mf[0][1] * x) + (mf[1][1] * y) + (mf[2][1] * z) + mf[3][1];
+    out[2] = (mf[0][2] * x) + (mf[1][2] * y) + (mf[2][2] * z) + mf[3][2];
 }
 
 /// Apply a translation in the local coordinate system.
@@ -355,10 +355,10 @@ void matrix34TransformBytePoint(f32 mf[4][3], s8 *in, s8 *out) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8003973C (0x8003973C).
 void matrix34TranslateLocal(f32 mf[4][3], f32 x, f32 y, f32 z) {
-    if (x != 0.0f || y != 0.0f || z != 0.0f) {
-        mf[3][0] += mf[0][0] * x + mf[1][0] * y + mf[2][0] * z;
-        mf[3][1] += mf[0][1] * x + mf[1][1] * y + mf[2][1] * z;
-        mf[3][2] += mf[0][2] * x + mf[1][2] * y + mf[2][2] * z;
+    if (x != 0.0F || y != 0.0F || z != 0.0F) {
+        mf[3][0] += (mf[0][0] * x) + (mf[1][0] * y) + (mf[2][0] * z);
+        mf[3][1] += (mf[0][1] * x) + (mf[1][1] * y) + (mf[2][1] * z);
+        mf[3][2] += (mf[0][2] * x) + (mf[1][2] * y) + (mf[2][2] * z);
     }
 }
 
@@ -373,7 +373,7 @@ void matrix34TranslateLocal(f32 mf[4][3], f32 x, f32 y, f32 z) {
 void matrix33ApplyRotationXYZDegrees(f32 *matrixAddress, f32 xDegrees, f32 yDegrees, f32 zDegrees) {
     f32 sp18[12];
 
-    if ((xDegrees != 0.0f) || (yDegrees != 0.0f) || (zDegrees != 0.0f)) {
+    if ((xDegrees != 0.0F) || (yDegrees != 0.0F) || (zDegrees != 0.0F)) {
         matrix34MakeRotationXYZDegrees(sp18, xDegrees, yDegrees, zDegrees);
         matrix33Multiply(sp18, matrixAddress, matrixAddress);
     }
@@ -390,7 +390,7 @@ void matrix33ApplyRotationXYZDegrees(f32 *matrixAddress, f32 xDegrees, f32 yDegr
 void matrix33ApplyRotationZYXDegrees(f32 *matrixAddress, f32 xDegrees, f32 yDegrees, f32 zDegrees) {
     f32 sp18[12];
 
-    if ((xDegrees != 0.0f) || (yDegrees != 0.0f) || (zDegrees != 0.0f)) {
+    if ((xDegrees != 0.0F) || (yDegrees != 0.0F) || (zDegrees != 0.0F)) {
         matrix34MakeRotationZYXDegrees(sp18, xDegrees, yDegrees, zDegrees);
         matrix33Multiply(sp18, matrixAddress, matrixAddress);
     }
@@ -431,7 +431,7 @@ void matrix34MakeRotationXYZDegrees(f32 *m, f32 x, f32 y, f32 z) {
     f32 cy;
     f32 cz;
 
-    if (x == 0.0f && y == 0.0f && z == 0.0f) {
+    if (x == 0.0F && y == 0.0F && z == 0.0F) {
         matrix34Identity((Matrix34 *)m);
         return;
     }
@@ -441,17 +441,17 @@ void matrix34MakeRotationXYZDegrees(f32 *m, f32 x, f32 y, f32 z) {
     cy = mathCosDegrees(y);
     sz = mathSinDegrees(z);
     cz = mathCosDegrees(z);
-    m[9] = 0.0f;
-    m[10] = 0.0f;
-    m[11] = 0.0f;
+    m[9] = 0.0F;
+    m[10] = 0.0F;
+    m[11] = 0.0F;
     m[0] = cy * cz;
     m[1] = cy * sz;
     m[2] = -sy;
-    m[3] = sx * sy * cz - cx * sz;
-    m[4] = sx * sy * sz + cx * cz;
+    m[3] = (sx * sy * cz) - (cx * sz);
+    m[4] = (sx * sy * sz) + (cx * cz);
     m[5] = sx * cy;
-    m[6] = cx * sy * cz + sx * sz;
-    m[7] = cx * sy * sz - sx * cz;
+    m[6] = (cx * sy * cz) + (sx * sz);
+    m[7] = (cx * sy * sz) - (sx * cz);
     m[8] = cx * cy;
 }
 
@@ -470,7 +470,7 @@ void matrix34MakeRotationZYXDegrees(f32 *m, f32 x, f32 y, f32 z) {
     f32 cy;
     f32 cz;
 
-    if (x == 0.0f && y == 0.0f && z == 0.0f) {
+    if (x == 0.0F && y == 0.0F && z == 0.0F) {
         matrix34Identity((Matrix34 *)m);
         return;
     }
@@ -480,16 +480,16 @@ void matrix34MakeRotationZYXDegrees(f32 *m, f32 x, f32 y, f32 z) {
     cy = mathCosDegrees(y);
     sz = mathSinDegrees(z);
     cz = mathCosDegrees(z);
-    m[9] = 0.0f;
-    m[10] = 0.0f;
-    m[11] = 0.0f;
+    m[9] = 0.0F;
+    m[10] = 0.0F;
+    m[11] = 0.0F;
     m[6] = sy;
     m[0] = cy * cz;
-    m[1] = sx * sy * cz + cx * sz;
-    m[2] = -cx * sy * cz + sx * sz;
+    m[1] = (sx * sy * cz) + (cx * sz);
+    m[2] = (-cx * sy * cz) + (sx * sz);
     m[3] = -cy * sz;
-    m[4] = -sx * sy * sz + cx * cz;
-    m[5] = cx * sy * sz + sx * cz;
+    m[4] = (-sx * sy * sz) + (cx * cz);
+    m[5] = (cx * sy * sz) + (sx * cz);
     m[7] = -sx * cy;
     m[8] = cx * cy;
 }
@@ -530,10 +530,10 @@ void matrix34To44(f32 *source, f32 *destination) {
         }
         dst++;
     }
-    destination[0xB] = 0.0f;
-    destination[7] = 0.0f;
-    destination[3] = 0.0f;
-    destination[0xF] = 1.0f;
+    destination[0xB] = 0.0F;
+    destination[7] = 0.0F;
+    destination[3] = 0.0F;
+    destination[0xF] = 1.0F;
 }
 
 /// Convert the affine components of a fixed-point matrix to floating point.
@@ -550,7 +550,7 @@ void matrixFixedTo34(Mtx m, f32 *out) {
 
     for (i = 0; i < 4; i++) {
         for (j = 0; j < 3; j++) {
-            *dst++ = *ip++ + (u32)*fp++ * (1.0f / 65536.0f);
+            *dst++ = *ip++ + ((u32)*fp++ * (1.0F / 65536.0F));
         }
         ip++;
         fp++;
@@ -572,7 +572,7 @@ void matrix44ToFixed(f32 *mf, Mtx *m) {
 
     for (i = 0; i < 4; i++) {
         for (j = 0; j < 4; j++) {
-            e = *src++ * 65536.0f;
+            e = *src++ * 65536.0F;
             *ip++ = e >> 16;
             *fp++ = e & 0xFFFF;
         }
@@ -596,7 +596,7 @@ void matrixFixedPartsTo44(FixedMatrixParts matrix, f32 *out) {
     s32 j;
     for (i = 0; i < 4; i++) {
         for (j = 0; j < 4; j++) {
-            *dest++ = *integer++ + (u32)*fraction++ * (1.0f / 65536.0f);
+            *dest++ = *integer++ + ((u32)*fraction++ * (1.0F / 65536.0F));
         }
     }
 }
@@ -626,15 +626,15 @@ void matrix33KeepScaleOnly(f32 *m) {
     f32 z1 = m[5];
     f32 z2 = m[8];
 
-    m[0] = sqrtf(x0 * x0 + y0 * y0 + z0 * z0);
-    m[4] = sqrtf(x1 * x1 + y1 * y1 + z1 * z1);
-    m[8] = sqrtf(x2 * x2 + y2 * y2 + z2 * z2);
-    m[1] = 0.0f;
-    m[2] = 0.0f;
-    m[3] = 0.0f;
-    m[5] = 0.0f;
-    m[6] = 0.0f;
-    m[7] = 0.0f;
+    m[0] = sqrtf((x0 * x0) + (y0 * y0) + (z0 * z0));
+    m[4] = sqrtf((x1 * x1) + (y1 * y1) + (z1 * z1));
+    m[8] = sqrtf((x2 * x2) + (y2 * y2) + (z2 * z2));
+    m[1] = 0.0F;
+    m[2] = 0.0F;
+    m[3] = 0.0F;
+    m[5] = 0.0F;
+    m[6] = 0.0F;
+    m[7] = 0.0F;
 }
 
 /// Transpose a 3x3 matrix in place.
@@ -677,7 +677,7 @@ f32 mathCosRadiansQuantized(f32 rad) {
     s32 v;
 
     ROUND_WRAP(v, t);
-    return coss(v) * 3.0518509e-05f;
+    return coss(v) * 3.0518509e-05F;
 }
 
 /// Approximate the sine of a radian angle.
@@ -690,7 +690,7 @@ f32 mathSinRadiansQuantized(f32 rad) {
     s32 v;
 
     ROUND_WRAP(v, t);
-    return sins(v) * 3.0518509e-05f;
+    return sins(v) * 3.0518509e-05F;
 }
 
 #undef ROUND_WRAP
@@ -706,40 +706,40 @@ f32 mathAngularIntervalOverlapDegrees(f32 start, f32 end, f32 otherStart, f32 ot
 
     end = end - start;
     otherStart = otherStart - start;
-    if (end < 0.0f) {
+    if (end < 0.0F) {
         do {
-            end += 360.0f;
-        } while (end < 0.0f);
+            end += 360.0F;
+        } while (end < 0.0F);
     }
     otherEnd = otherEnd - start;
-    if (end >= 360.0f) {
+    if (end >= 360.0F) {
         do {
-            end -= 360.0f;
-        } while (end >= 360.0f);
+            end -= 360.0F;
+        } while (end >= 360.0F);
     }
-    if (otherStart < 0.0f) {
+    if (otherStart < 0.0F) {
         do {
-            otherStart += 360.0f;
-        } while (otherStart < 0.0f);
+            otherStart += 360.0F;
+        } while (otherStart < 0.0F);
     }
-    if (otherStart >= 360.0f) {
+    if (otherStart >= 360.0F) {
         do {
-            otherStart -= 360.0f;
-        } while (otherStart >= 360.0f);
+            otherStart -= 360.0F;
+        } while (otherStart >= 360.0F);
     }
-    if (otherEnd < 0.0f) {
+    if (otherEnd < 0.0F) {
         do {
-            otherEnd += 360.0f;
-        } while (otherEnd < 0.0f);
+            otherEnd += 360.0F;
+        } while (otherEnd < 0.0F);
     }
-    if (otherEnd >= 360.0f) {
+    if (otherEnd >= 360.0F) {
         do {
-            otherEnd -= 360.0f;
-        } while (otherEnd >= 360.0f);
+            otherEnd -= 360.0F;
+        } while (otherEnd >= 360.0F);
     }
     if (otherStart <= otherEnd) {
         if (end <= otherStart) {
-            return 0.0f;
+            return 0.0F;
         }
         if (end <= otherEnd) {
             return end - otherStart;
@@ -766,7 +766,7 @@ void vector3PackNormalBytes(f32 *source, u8 *destination) {
     s32 i;
 
     for (i = 0; i < 3; i++) {
-        *dst++ = (s8)(s32)(*src++ * 127.0f);
+        *dst++ = (s8)(s32)(*src++ * 127.0F);
     }
 }
 
@@ -783,7 +783,7 @@ void vector3UnpackNormalBytes(s8 *src, f32 *dst) {
     d = dst;
     s = src;
     for (i = 0; i < 3; i++) {
-        *d = *s * 0.007874016f;
+        *d = *s * 0.007874016F;
         d++;
         s++;
     }
@@ -830,21 +830,21 @@ f32 mathHypot(f32 x, f32 y) {
 f32 mathHypotScaled(f32 x, f32 y) {
     f32 yOverX;
     f32 xOverY;
-    if (x < 0.0f) {
+    if (x < 0.0F) {
         x = -x;
     }
-    if (y < 0.0f) {
+    if (y < 0.0F) {
         y = -y;
     }
     if (x < y) {
         xOverY = x / y;
-        return sqrtf((xOverY * xOverY) + 1.0f) * y;
+        return sqrtf((xOverY * xOverY) + 1.0F) * y;
     }
-    if (x == 0.0f) {
-        return 0.0f;
+    if (x == 0.0F) {
+        return 0.0F;
     }
     yOverX = y / x;
-    return sqrtf((yOverX * yOverX) + 1.0f) * x;
+    return sqrtf((yOverX * yOverX) + 1.0F) * x;
 }
 
 /// Approximate the length of a planar vector.
@@ -857,25 +857,28 @@ f32 mathHypotApprox(f32 a, f32 b) {
     f32 ratio;
     f32 square;
     f32 correction;
-    if (a < 0.0f)
+    if (a < 0.0F) {
         a = -a;
-    if (b < 0.0f)
+    }
+    if (b < 0.0F) {
         b = -b;
+    }
     if (a < b) {
         swap = a;
         a = b;
         b = swap;
     }
-    if (a == 0.0f)
-        return 0.0f;
+    if (a == 0.0F) {
+        return 0.0F;
+    }
     ratio = b / a;
     square = ratio * ratio;
-    correction = square / (4.0f + square);
+    correction = square / (4.0F + square);
     a += 2 * a * correction;
     b *= correction;
     ratio = b / a;
     square = ratio * ratio;
-    correction = square / (4.0f + square);
+    correction = square / (4.0F + square);
     a += 2 * a * correction;
     b *= correction;
     return a;
@@ -890,13 +893,13 @@ f32 vector3Normalize(f32 *vector) {
     f32 inverseLength;
 
     length = vector3Length(vector);
-    if (length <= 0.001f) {
-        vector[2] = 0.0f;
-        vector[1] = 0.0f;
-        vector[0] = 0.0f;
-        return 0.0f;
+    if (length <= 0.001F) {
+        vector[2] = 0.0F;
+        vector[1] = 0.0F;
+        vector[0] = 0.0F;
+        return 0.0F;
     }
-    inverseLength = 1.0f / length;
+    inverseLength = 1.0F / length;
     vector[0] = (f32)(vector[0] * inverseLength);
     vector[1] = (f32)(vector[1] * inverseLength);
     vector[2] = (f32)(vector[2] * inverseLength);
@@ -924,10 +927,10 @@ s32 triangleGetUnitNormal(f32 *a, f32 *b, f32 *c, f32 *n) {
     ax = a[0] - a[1];
     bx = b[0] - b[1];
     cx = c[0] - c[1];
-    n[0] = bz * cx - cz * bx;
-    n[1] = cz * ax - az * cx;
-    n[2] = az * bx - bz * ax;
-    return vector3Normalize(n) > 0.0f;
+    n[0] = (bz * cx) - (cz * bx);
+    n[1] = (cz * ax) - (az * cx);
+    n[2] = (az * bx) - (bz * ax);
+    return vector3Normalize(n) > 0.0F;
 }
 
 /// Compute the dot product of two three-dimensional vectors.
@@ -961,7 +964,7 @@ f32 mathLineXAtY(f32 x0, f32 y0, f32 x1, f32 y1, f32 y) {
         var_f16 = y0;
     }
     if ((y < var_f0) || (var_f16 < y)) {
-        return 2.1474836e9f;
+        return 2.1474836e9F;
     }
     return (((x1 - x0) * (y - y0)) / (y1 - y0)) + x0;
 }
@@ -1059,54 +1062,56 @@ void colorHsvToRgb(f32 *hsv, u8 *rgb) {
     f32 ramp;
     s32 degrees;
     s32 sectorSize = 60;
-    if (s == 0.0f) {
+    if (s == 0.0F) {
         b = v;
         g = v;
         r = v;
     } else {
-        chroma = v * s / 100.0f;
+        chroma = v * s / 100.0F;
         ramp = chroma;
-        while (h < 0.0f)
-            h += 360.0f;
-        while (h >= 360.0f)
-            h -= 360.0f;
+        while (h < 0.0F) {
+            h += 360.0F;
+        }
+        while (h >= 360.0F) {
+            h -= 360.0F;
+        }
         degrees = h;
         switch ((u32)degrees / sectorSize) {
         case 0:
             r = v;
-            g = (v - chroma) + (degrees % sectorSize) * ramp / 60.0f;
+            g = (v - chroma) + ((degrees % sectorSize) * ramp / 60.0F);
             b = v - chroma;
             break;
         case 1:
-            r = v - (degrees % sectorSize) * ramp / 60.0f;
+            r = v - ((degrees % sectorSize) * ramp / 60.0F);
             g = v;
             b = v - chroma;
             break;
         case 2:
             g = v;
             r = v - chroma;
-            b = (v - chroma) + (degrees % sectorSize) * ramp / 60.0f;
+            b = (v - chroma) + ((degrees % sectorSize) * ramp / 60.0F);
             break;
         case 3:
             b = v;
             r = v - chroma;
-            g = v - (degrees % sectorSize) * ramp / 60.0f;
+            g = v - ((degrees % sectorSize) * ramp / 60.0F);
             break;
         case 4:
-            r = (v - chroma) + (degrees % sectorSize) * ramp / 60.0f;
+            r = (v - chroma) + ((degrees % sectorSize) * ramp / 60.0F);
             g = v - chroma;
             b = v;
             break;
         case 5:
             r = v;
             g = v - chroma;
-            b = v - (degrees % sectorSize) * ramp / 60.0f;
+            b = v - ((degrees % sectorSize) * ramp / 60.0F);
             break;
         }
     }
-    *rgb++ = (u32)(r * 2.55f + 0.005f);
-    *rgb++ = (u32)(g * 2.55f + 0.005f);
-    *rgb = (u32)(b * 2.55f + 0.005f);
+    *rgb++ = (u32)((r * 2.55F) + 0.005F);
+    *rgb++ = (u32)((g * 2.55F) + 0.005F);
+    *rgb = (u32)((b * 2.55F) + 0.005F);
 }
 /// Convert an RGB color to an HSV color.
 /// \param rgb Input red, green, and blue components in the range 0 through 255.
@@ -1114,31 +1119,34 @@ void colorHsvToRgb(f32 *hsv, u8 *rgb) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8003B094 (0x8003B094).
 void colorRgbToHsv(u8 *rgb, f32 *hsv) {
-    f32 r = (u32)*rgb++ / 2.55f;
-    f32 g = (u32)*rgb++ / 2.55f;
-    f32 b = (u32)*rgb / 2.55f;
+    f32 r = (u32)*rgb++ / 2.55F;
+    f32 g = (u32)*rgb++ / 2.55F;
+    f32 b = (u32)*rgb / 2.55F;
     f32 max;
     f32 min;
     if (r == g && r == b) {
         hsv += 2;
         *hsv = r;
-        hsv[-2] = 0.0f;
-        hsv[-1] = 0.0f;
+        hsv[-2] = 0.0F;
+        hsv[-1] = 0.0F;
         return;
     }
     max = r > (g > b ? g : b) ? r : (g > b ? g : b);
     min = r < (g < b ? g : b) ? r : (g < b ? g : b);
-    if (r == max)
-        hsv[0] = (g - b) * 60.0f / (max - min);
-    else if (g == max)
-        hsv[0] = (b - r) * 60.0f / (max - min) + 120.0f;
-    else if (b == max)
-        hsv[0] = (r - g) * 60.0f / (max - min) + 240.0f;
-    while (hsv[0] < 0.0f)
-        hsv[0] += 360.0f;
-    while (hsv[0] >= 360.0f)
-        hsv[0] -= 360.0f;
-    hsv[1] = (max - min) * 100.0f / max;
+    if (r == max) {
+        hsv[0] = (g - b) * 60.0F / (max - min);
+    } else if (g == max) {
+        hsv[0] = ((b - r) * 60.0F / (max - min)) + 120.0F;
+    } else if (b == max) {
+        hsv[0] = ((r - g) * 60.0F / (max - min)) + 240.0F;
+    }
+    while (hsv[0] < 0.0F) {
+        hsv[0] += 360.0F;
+    }
+    while (hsv[0] >= 360.0F) {
+        hsv[0] -= 360.0F;
+    }
+    hsv[1] = (max - min) * 100.0F / max;
     hsv += 2;
     *hsv = max;
 }
@@ -1157,34 +1165,34 @@ f32 mathUnitDirectionDegrees(f32 x, f32 y) {
     f32 a;
     f32 ax;
 
-    if (ay < 0.70711f) {
-        a = gMathAsinLookupTable[(s32)(ay * 1448.1481f)] * 0.005493164f;
-        if (y >= 0.0f) {
-            if (x >= 0.0f) {
+    if (ay < 0.70711F) {
+        a = gMathAsinLookupTable[(s32)(ay * 1448.1481F)] * 0.005493164F;
+        if (y >= 0.0F) {
+            if (x >= 0.0F) {
                 return a;
             }
-            return 180.0f - a;
+            return 180.0F - a;
         }
-        if (x >= 0.0f) {
-            return 360.0f - a;
+        if (x >= 0.0F) {
+            return 360.0F - a;
         }
-        return 180.0f + a;
+        return 180.0F + a;
     }
     ax = fabsf(x);
-    if (ax > 0.70711f) {
-        ax = 0.70711f;
+    if (ax > 0.70711F) {
+        ax = 0.70711F;
     }
-    a = gMathAsinLookupTable[(s32)(ax * 1448.1481f)] * 0.005493164f;
-    if (y >= 0.0f) {
-        if (x >= 0.0f) {
-            return 90.0f - a;
+    a = gMathAsinLookupTable[(s32)(ax * 1448.1481F)] * 0.005493164F;
+    if (y >= 0.0F) {
+        if (x >= 0.0F) {
+            return 90.0F - a;
         }
-        return 90.0f + a;
+        return 90.0F + a;
     }
-    if (x >= 0.0f) {
-        return 270.0f + a;
+    if (x >= 0.0F) {
+        return 270.0F + a;
     }
-    return 270.0f - a;
+    return 270.0F - a;
 }
 
 /// Evaluate a clamped inverse sine without exposing the result.
@@ -1192,12 +1200,12 @@ f32 mathUnitDirectionDegrees(f32 x, f32 y) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8003B49C (0x8003B49C).
 void mathQueryAsinDegreesNoResult(f32 value) {
-    if (value < -1.0f) {
-        value = -1.0f;
-    } else if (value > 1.0f) {
-        value = 1.0f;
+    if (value < -1.0F) {
+        value = -1.0F;
+    } else if (value > 1.0F) {
+        value = 1.0F;
     }
-    mathUnitDirectionDegrees(sqrtf(1.0f - (value * value)), value);
+    mathUnitDirectionDegrees(sqrtf(1.0F - (value * value)), value);
 }
 
 /// Evaluate a clamped inverse cosine without exposing the result.
@@ -1205,12 +1213,12 @@ void mathQueryAsinDegreesNoResult(f32 value) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8003B50C (0x8003B50C).
 void mathQueryAcosDegreesNoResult(f32 value) {
-    if (value < -1.0f) {
-        value = -1.0f;
-    } else if (value > 1.0f) {
-        value = 1.0f;
+    if (value < -1.0F) {
+        value = -1.0F;
+    } else if (value > 1.0F) {
+        value = 1.0F;
     }
-    mathUnitDirectionDegrees(value, sqrtf(1.0f - (value * value)));
+    mathUnitDirectionDegrees(value, sqrtf(1.0F - (value * value)));
 }
 
 /// Determine the sign of the cosine of a degree angle.
@@ -1218,20 +1226,20 @@ void mathQueryAcosDegreesNoResult(f32 value) {
 /// \returns -1 for negative cosine, 0 at a quarter or three-quarter turn, or 1 otherwise.
 /// \note Original decompilation identifier: \c func_8003B578 (0x8003B578).
 s32 mathCosSignDegrees(f32 angle) {
-    if (angle < 0.0f) {
+    if (angle < 0.0F) {
         do {
-            angle += 360.0f;
-        } while (angle < 0.0f);
+            angle += 360.0F;
+        } while (angle < 0.0F);
     }
-    if (angle >= 360.0f) {
+    if (angle >= 360.0F) {
         do {
-            angle -= 360.0f;
-        } while (angle >= 360.0f);
+            angle -= 360.0F;
+        } while (angle >= 360.0F);
     }
-    if ((angle > 90.0f) && (angle < 270.0f)) {
+    if ((angle > 90.0F) && (angle < 270.0F)) {
         return -1;
     }
-    if ((angle == 90.0f) || (angle == 270.0f)) {
+    if ((angle == 90.0F) || (angle == 270.0F)) {
         return 0;
     }
     return 1;
@@ -1248,18 +1256,18 @@ f32 mathAngleDistanceDegrees(f32 from, f32 to) {
 
     if (to < from) {
         do {
-            d += 360.0f;
-        } while (d < 0.0f);
+            d += 360.0F;
+        } while (d < 0.0F);
     }
-    if (d >= 360.0f) {
+    if (d >= 360.0F) {
         do {
-            d -= 360.0f;
-        } while (d >= 360.0f);
+            d -= 360.0F;
+        } while (d >= 360.0F);
     }
-    if (d <= 180.0f) {
+    if (d <= 180.0F) {
         r = d;
     } else {
-        r = 360.0f - d;
+        r = 360.0F - d;
     }
     return r;
 }
@@ -1271,20 +1279,20 @@ f32 mathAngleDistanceDegrees(f32 from, f32 to) {
 f32 mathWrapSignedDegrees(f32 angle) {
     f32 r;
 
-    if (angle < 0.0f) {
+    if (angle < 0.0F) {
         do {
-            angle += 360.0f;
-        } while (angle < 0.0f);
+            angle += 360.0F;
+        } while (angle < 0.0F);
     }
-    if (angle >= 360.0f) {
+    if (angle >= 360.0F) {
         do {
-            angle -= 360.0f;
-        } while (angle >= 360.0f);
+            angle -= 360.0F;
+        } while (angle >= 360.0F);
     }
-    if (angle <= 180.0f) {
+    if (angle <= 180.0F) {
         r = angle;
     } else {
-        r = angle - 360.0f;
+        r = angle - 360.0F;
     }
     return r;
 }
@@ -1300,49 +1308,49 @@ void matrix33GetEulerDegrees(f32 *, f32 *, f32 *, f32 *);
 /// \note Original decompilation identifier: \c func_8003B764 (0x8003B764).
 void matrix33GetFoldedEulerDegrees(f32 *matrix, f32 *roll, f32 *pitch, f32 *yaw) {
     matrix33GetEulerDegrees(matrix, roll, pitch, yaw);
-    if (*roll < 0.0f) {
+    if (*roll < 0.0F) {
         do {
-            *roll += 360.0f;
-        } while (*roll < 0.0f);
+            *roll += 360.0F;
+        } while (*roll < 0.0F);
     }
-    if (*roll >= 360.0f) {
+    if (*roll >= 360.0F) {
         do {
-            *roll -= 360.0f;
-        } while (*roll >= 360.0f);
+            *roll -= 360.0F;
+        } while (*roll >= 360.0F);
     }
-    if ((*roll > 90.0f) && (*roll <= 270.0f)) {
-        *roll += 180.0f;
-        *pitch = 180.0f - *pitch;
-        *yaw += 180.0f;
-        if (*roll < 0.0f) {
+    if ((*roll > 90.0F) && (*roll <= 270.0F)) {
+        *roll += 180.0F;
+        *pitch = 180.0F - *pitch;
+        *yaw += 180.0F;
+        if (*roll < 0.0F) {
             do {
-                *roll += 360.0f;
-            } while (*roll < 0.0f);
+                *roll += 360.0F;
+            } while (*roll < 0.0F);
         }
-        if (*roll >= 360.0f) {
+        if (*roll >= 360.0F) {
             do {
-                *roll -= 360.0f;
-            } while (*roll >= 360.0f);
+                *roll -= 360.0F;
+            } while (*roll >= 360.0F);
         }
-        if (*pitch < 0.0f) {
+        if (*pitch < 0.0F) {
             do {
-                *pitch += 360.0f;
-            } while (*pitch < 0.0f);
+                *pitch += 360.0F;
+            } while (*pitch < 0.0F);
         }
-        if (*pitch >= 360.0f) {
+        if (*pitch >= 360.0F) {
             do {
-                *pitch -= 360.0f;
-            } while (*pitch >= 360.0f);
+                *pitch -= 360.0F;
+            } while (*pitch >= 360.0F);
         }
-        if (*yaw < 0.0f) {
+        if (*yaw < 0.0F) {
             do {
-                *yaw += 360.0f;
-            } while (*yaw < 0.0f);
+                *yaw += 360.0F;
+            } while (*yaw < 0.0F);
         }
-        if (*yaw >= 360.0f) {
+        if (*yaw >= 360.0F) {
             do {
-                *yaw -= 360.0f;
-            } while (*yaw >= 360.0f);
+                *yaw -= 360.0F;
+            } while (*yaw >= 360.0F);
         }
     }
 }
@@ -1358,16 +1366,17 @@ void matrix33GetEulerDegrees(f32 *m, f32 *roll, f32 *pitch, f32 *yaw) {
     f32 x = m[0];
     f32 y = m[1];
     f32 z = -m[2];
-    f32 horizontal = sqrtf(x * x + y * y);
+    f32 horizontal = sqrtf((x * x) + (y * y));
     f32 cosine;
     f32 sine;
     s32 verticalSign;
-    if (horizontal < 0.001f && horizontal > -0.001f) {
-        if (z <= 0.0f)
-            *pitch = 270.0f;
-        else
-            *pitch = 90.0f;
-        *roll = 0.0f;
+    if (horizontal < 0.001F && horizontal > -0.001F) {
+        if (z <= 0.0F) {
+            *pitch = 270.0F;
+        } else {
+            *pitch = 90.0F;
+        }
+        *roll = 0.0F;
         x = m[4];
         y = m[3];
         *yaw = mathUnitDirectionDegrees(x, -y);
@@ -1375,18 +1384,21 @@ void matrix33GetEulerDegrees(f32 *m, f32 *roll, f32 *pitch, f32 *yaw) {
     }
     x /= horizontal;
     y /= horizontal;
-    if (z < 0.001f && z > -0.001f)
+    if (z < 0.001F && z > -0.001F) {
         cosine = m[8];
-    else
+    } else {
         cosine = (-(z * y) * m[3] + m[4] * (z * x)) / z;
-    if (cosine < -1.0f)
-        cosine = -1.0f;
-    else if (cosine > 1.0f)
-        cosine = 1.0f;
-    sine = sqrtf(1.0f - cosine * cosine);
-    verticalSign = m[5] > 0.0f ? 1 : m[5] < 0.0f ? -1 : 0;
-    if ((horizontal > 0.0f ? 1 : horizontal < 0.0f ? -1 : 0) != verticalSign)
+    }
+    if (cosine < -1.0F) {
+        cosine = -1.0F;
+    } else if (cosine > 1.0F) {
+        cosine = 1.0F;
+    }
+    sine = sqrtf(1.0F - (cosine * cosine));
+    verticalSign = m[5] > 0.0F ? 1 : m[5] < 0.0F ? -1 : 0;
+    if ((horizontal > 0.0F ? 1 : horizontal < 0.0F ? -1 : 0) != verticalSign) {
         sine = -sine;
+    }
     *roll = mathUnitDirectionDegrees(cosine, sine);
     *pitch = mathUnitDirectionDegrees(horizontal, z);
     *yaw = mathUnitDirectionDegrees(x, y);
@@ -1402,34 +1414,35 @@ void vector3GetZAxisAnglesDegrees(f32 *vector, f32 *yaw, f32 *pitch) {
     f32 x = vector[0];
     f32 y = vector[1];
     f32 z = vector[2];
-    f32 length = x * x + y * y + z * z;
+    f32 length = (x * x) + (y * y) + (z * z);
     f32 horizontal;
     f32 inverse;
     f32 nx;
     f32 ny;
     f32 negativeZ;
-    if (length <= 0.001f) {
-        *pitch = 0.0f;
-        *yaw = 0.0f;
+    if (length <= 0.001F) {
+        *pitch = 0.0F;
+        *yaw = 0.0F;
         return;
     }
-    inverse = 1.0f / sqrtf(length);
+    inverse = 1.0F / sqrtf(length);
     x *= inverse;
     y *= inverse;
     z *= inverse;
     negativeZ = -z;
-    if (negativeZ >= 1.0f || negativeZ <= -1.0f) {
-        if (negativeZ > 0.0f)
-            *yaw = 90.0f;
-        else
-            *yaw = 270.0f;
-        *pitch = 0.0f;
+    if (negativeZ >= 1.0F || negativeZ <= -1.0F) {
+        if (negativeZ > 0.0F) {
+            *yaw = 90.0F;
+        } else {
+            *yaw = 270.0F;
+        }
+        *pitch = 0.0F;
         return;
     }
-    horizontal = sqrtf(1.0f - negativeZ * negativeZ);
+    horizontal = sqrtf(1.0F - (negativeZ * negativeZ));
     nx = x / horizontal;
     ny = y / horizontal;
-    if (nx < 0.0f) {
+    if (nx < 0.0F) {
         horizontal = -horizontal;
         nx = -nx;
         ny = -ny;
@@ -1458,49 +1471,49 @@ void vector3GetEulerDegrees(f32 *vector, f32 *roll, f32 *pitch, f32 *yaw) {
     f32 ny;
     f32 product;
     f32 sine;
-    if (length <= 0.001f) {
-        *yaw = 0.0f;
-        *pitch = 0.0f;
-        *roll = 0.0f;
+    if (length <= 0.001F) {
+        *yaw = 0.0F;
+        *pitch = 0.0F;
+        *roll = 0.0F;
         return;
     }
-    inverse = 1.0f / sqrtf(length);
+    inverse = 1.0F / sqrtf(length);
     x *= inverse;
     y *= inverse;
     z *= inverse;
     negativeZ = -z;
     axis = negativeZ;
-    if ((negativeZ >= 0.999f) || (negativeZ <= (-0.999f))) {
-        if (negativeZ > 0.0f) {
-            *pitch = 90.0f;
+    if ((negativeZ >= 0.999F) || (negativeZ <= (-0.999F))) {
+        if (negativeZ > 0.0F) {
+            *pitch = 90.0F;
         } else {
-            *pitch = 270.0f;
+            *pitch = 270.0F;
         }
-        *yaw = 0.0f;
-        *roll = 0.0f;
+        *yaw = 0.0F;
+        *roll = 0.0F;
         return;
     }
-    if (negativeZ < (-1.f)) {
-        axis = -1.0f;
-    } else if (negativeZ > 1.0f) {
-        axis = 1.0f;
+    if (negativeZ < (-1.F)) {
+        axis = -1.0F;
+    } else if (negativeZ > 1.0F) {
+        axis = 1.0F;
     }
-    horizontal = sqrtf(1.0f - (axis * axis));
+    horizontal = sqrtf(1.0F - (axis * axis));
     nx = x / horizontal;
     ny = y / horizontal;
-    if (nx < 0.0f) {
+    if (nx < 0.0F) {
         horizontal = -horizontal;
         nx = -nx;
         ny = -ny;
     }
-    sine = sqrtf(1.0f - y * y);
-    if ((sine < 0.001f) && (sine > (-0.001f))) {
-        *roll = 0.0f;
+    sine = sqrtf(1.0F - (y * y));
+    if ((sine < 0.001F) && (sine > (-0.001F))) {
+        *roll = 0.0F;
     } else {
         product = axis * ny;
         sine = product / sine;
-        if ((0.001f > product) && (product > (-0.001f))) {
-            *roll = 0.0f;
+        if ((0.001F > product) && (product > (-0.001F))) {
+            *roll = 0.0F;
         } else {
             *roll = mathUnitDirectionDegrees((sine * nx) / product, sine);
         }
@@ -1538,23 +1551,23 @@ void vector3GetLookAnglesDegrees(f32 *vector, f32 *pitch, f32 *yaw) {
     ySquared = y * y;
     zSquared = z * z;
     lengthSquared = xSquared + ySquared + zSquared;
-    if (lengthSquared <= 0.001f) {
-        *yaw = 0.0f;
-        *pitch = 0.0f;
+    if (lengthSquared <= 0.001F) {
+        *yaw = 0.0F;
+        *pitch = 0.0F;
         return;
     }
     length = sqrtf(lengthSquared);
-    inverseLength = 1.0f / length;
+    inverseLength = 1.0F / length;
     x *= inverseLength;
     y *= inverseLength;
     z *= inverseLength;
-    if ((y >= 1.0f) || (y <= -1.0f)) {
-        if (y > 0.0f) {
-            *pitch = 90.0f;
+    if ((y >= 1.0F) || (y <= -1.0F)) {
+        if (y > 0.0F) {
+            *pitch = 90.0F;
         } else {
-            *pitch = 270.0f;
+            *pitch = 270.0F;
         }
-        *yaw = 0.0f;
+        *yaw = 0.0F;
         return;
     } else {
         horizontalSquared = 1.0f - (y * y);
@@ -1576,17 +1589,17 @@ void mathOrderShortestArcDegrees(f32 *start, f32 *end) {
     f32 d = *end - *start;
     f32 t;
 
-    if (d < 0.0f) {
+    if (d < 0.0F) {
         do {
-            d += 360.0f;
-        } while (d < 0.0f);
+            d += 360.0F;
+        } while (d < 0.0F);
     }
-    if (d >= 360.0f) {
+    if (d >= 360.0F) {
         do {
-            d -= 360.0f;
-        } while (d >= 360.0f);
+            d -= 360.0F;
+        } while (d >= 360.0F);
     }
-    if (!(d <= 180.0f)) {
+    if (!(d <= 180.0F)) {
         t = *start;
         *start = *end;
         *end = t;
@@ -1603,22 +1616,22 @@ f32 mathLerpAngleDegrees(f32 from, f32 to, f32 t) {
     f32 a;
 
     a = to - from;
-    while (a < 0.0f) {
-        a += 360.0f;
+    while (a < 0.0F) {
+        a += 360.0F;
     }
-    while (a >= 360.0f) {
-        a -= 360.0f;
+    while (a >= 360.0F) {
+        a -= 360.0F;
     }
-    if (a <= 180.0f) {
-        a = a * t + from;
+    if (a <= 180.0F) {
+        a = (a * t) + from;
     } else {
-        a = from - (360.0f - a) * t;
+        a = from - ((360.0F - a) * t);
     }
-    while (a < 0.0f) {
-        a += 360.0f;
+    while (a < 0.0F) {
+        a += 360.0F;
     }
-    while (a >= 360.0f) {
-        a -= 360.0f;
+    while (a >= 360.0F) {
+        a -= 360.0F;
     }
     return a;
 }
@@ -1635,27 +1648,27 @@ f32 mathApproachAngleDegrees(f32 from, f32 to, f32 lo, f32 stepDistance, f32 hi)
     f32 d;
     f32 nlo;
 
-    while (from < 0.0f) {
-        from += 360.0f;
+    while (from < 0.0F) {
+        from += 360.0F;
     }
-    while (from >= 360.0f) {
-        from -= 360.0f;
+    while (from >= 360.0F) {
+        from -= 360.0F;
     }
-    while (to < 0.0f) {
-        to += 360.0f;
+    while (to < 0.0F) {
+        to += 360.0F;
     }
-    while (to >= 360.0f) {
-        to -= 360.0f;
+    while (to >= 360.0F) {
+        to -= 360.0F;
     }
     d = to - from;
-    while (d < 0.0f) {
-        d += 360.0f;
+    while (d < 0.0F) {
+        d += 360.0F;
     }
-    while (d >= 360.0f) {
-        d -= 360.0f;
+    while (d >= 360.0F) {
+        d -= 360.0F;
     }
-    if (d > 180.0f) {
-        d = 360.0f - d;
+    if (d > 180.0F) {
+        d = 360.0F - d;
         hi = -hi;
         nlo = -lo;
     } else {
@@ -1677,14 +1690,14 @@ extern f32 gMathQuarterSineLookupTable[];
 /// \returns Approximate sine of the angle.
 /// \note Original decompilation identifier: \c func_8003C3DC (0x8003C3DC).
 f32 mathSinDegrees(f32 deg) {
-    f32 t = deg * 5.688889f;
+    f32 t = deg * 5.688889F;
     f32 r;
     s32 i;
 
     if (t >= 0) {
-        r = t + 0.5f;
+        r = t + 0.5F;
     } else {
-        r = t - 0.5f;
+        r = t - 0.5F;
     }
     i = (s32)r & 0x7FF;
     if (i < 0x400) {
@@ -1699,7 +1712,7 @@ f32 mathSinDegrees(f32 deg) {
     if (i < 0x800) {
         return -gMathQuarterSineLookupTable[0x200 - (i & 0x1FF)];
     }
-    return 0.0f;
+    return 0.0F;
 }
 
 /// Approximate the cosine of a degree angle.
@@ -1707,5 +1720,5 @@ f32 mathSinDegrees(f32 deg) {
 /// \returns Approximate cosine of the angle.
 /// \note Original decompilation identifier: \c func_8003C4D0 (0x8003C4D0).
 f32 mathCosDegrees(f32 angle) {
-    return mathSinDegrees(angle + 90.0f);
+    return mathSinDegrees(angle + 90.0F);
 }

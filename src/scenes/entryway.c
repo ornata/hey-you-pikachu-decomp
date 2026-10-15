@@ -10,7 +10,7 @@ extern u8 D_80139E38_scene_entryway[];
 /// \returns Nothing.
 void entrywayInitializeObjects(void) {
     toolboxClearCollection();
-    actorCreateForKind(1, 82.26f, 3.0f, 104.37f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(1, 82.26F, 3.0F, 104.37F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_80139E38_scene_entryway, 0);
 }
 
@@ -35,5 +35,5 @@ s32 entrywayGetSpatialCell(f32 x, f32 y, f32 z) {
     if (layer == NULL) {
         return 0;
     }
-    return layer[iz * 16 + ix];
+    return layer[(iz * 16) + ix];
 }

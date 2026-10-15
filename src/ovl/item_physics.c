@@ -40,11 +40,10 @@ void itemBeginShrinkingDisposal(u8 *object) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_801217F4 (0x801217F4).
 void itemGetTerrainResponseDirection(u8 *object, f32 *direction, u8 **cachedNode) {
-    direction[1] = 0.2f;
-    terrainGetDownhillHeightDifferences(((RuntimeObjectPrefix *)object)->position[0],
-                                        ((RuntimeObjectPrefix *)object)->position[1],
-                                        ((RuntimeObjectPrefix *)object)->position[2], 50.0f, 0.2f, direction,
-                                        &direction[2], cachedNode);
+    direction[1] = 0.2F;
+    terrainGetDownhillHeightDifferences(
+        ((RuntimeObjectPrefix *)object)->position[0], ((RuntimeObjectPrefix *)object)->position[1],
+        ((RuntimeObjectPrefix *)object)->position[2], 50.0F, 0.2F, direction, &direction[2], cachedNode);
     vector3Normalize(direction);
 }
 
@@ -65,30 +64,33 @@ s32 itemUpdateSpin(u8 *object, s32 surfaceAttributes, s32 applyDecay) {
     f32 step;
 
     state = ((RuntimeObjectPrefix *)object)->state.bytes;
-    if (!(((ItemStatePrefix *)state)->flags & ITEM_STATE_SPIN_ENABLED) || (((ItemStatePrefix *)state)->spinSpeed <= 0.0f)) {
-        ((ItemStatePrefix *)state)->spinSpeed = 0.0f;
+    if (!(((ItemStatePrefix *)state)->flags & ITEM_STATE_SPIN_ENABLED) ||
+        (((ItemStatePrefix *)state)->spinSpeed <= 0.0F)) {
+        ((ItemStatePrefix *)state)->spinSpeed = 0.0F;
         return 0;
     }
     if (applyDecay != 0) {
         step = terrainGetFriction(surfaceAttributes);
-        ((ItemStatePrefix *)state)->spinSpeed = ((ItemStatePrefix *)state)->spinSpeed - gRuntimeFrameSeconds * step;
-        ((RuntimeObjectPrefix *)object)->rotation[0] = mathMapRangeClamped(0.8f, 60.0f, 4.0f, 0.0f, ((ItemStatePrefix *)state)->spinSpeed);
+        ((ItemStatePrefix *)state)->spinSpeed = ((ItemStatePrefix *)state)->spinSpeed - (gRuntimeFrameSeconds * step);
+        ((RuntimeObjectPrefix *)object)->rotation[0] =
+            mathMapRangeClamped(0.8F, 60.0F, 4.0F, 0.0F, ((ItemStatePrefix *)state)->spinSpeed);
     }
-    step = mathMapRangeClamped(0.0f, 0.0f, 3.2f, 900.0f, ((ItemStatePrefix *)state)->spinSpeed) * gRuntimeFrameSeconds;
+    step = mathMapRangeClamped(0.0F, 0.0F, 3.2F, 900.0F, ((ItemStatePrefix *)state)->spinSpeed) * gRuntimeFrameSeconds;
     ((RuntimeObjectPrefix *)object)->rotation[1] += step;
-    if (((RuntimeObjectPrefix *)object)->rotation[1] < 0.0f) {
+    if (((RuntimeObjectPrefix *)object)->rotation[1] < 0.0F) {
         do {
-            ((RuntimeObjectPrefix *)object)->rotation[1] = (f32)(((RuntimeObjectPrefix *)object)->rotation[1] + 360.0f);
-        } while (((RuntimeObjectPrefix *)object)->rotation[1] < 0.0f);
+            ((RuntimeObjectPrefix *)object)->rotation[1] = (f32)(((RuntimeObjectPrefix *)object)->rotation[1] + 360.0F);
+        } while (((RuntimeObjectPrefix *)object)->rotation[1] < 0.0F);
     }
-    if (((RuntimeObjectPrefix *)object)->rotation[1] >= 360.0f) {
+    if (((RuntimeObjectPrefix *)object)->rotation[1] >= 360.0F) {
         do {
-            ((RuntimeObjectPrefix *)object)->rotation[1] = (f32)(((RuntimeObjectPrefix *)object)->rotation[1] - 360.0f);
-        } while (((RuntimeObjectPrefix *)object)->rotation[1] >= 360.0f);
+            ((RuntimeObjectPrefix *)object)->rotation[1] = (f32)(((RuntimeObjectPrefix *)object)->rotation[1] - 360.0F);
+        } while (((RuntimeObjectPrefix *)object)->rotation[1] >= 360.0F);
     }
-    ((RuntimeObjectPrefix *)object)->rotation[2] = 0.0f;
-    if (((ItemStatePrefix *)state)->spinSpeed < 4.0f)
+    ((RuntimeObjectPrefix *)object)->rotation[2] = 0.0F;
+    if (((ItemStatePrefix *)state)->spinSpeed < 4.0F) {
         return 0;
+    }
     return 1;
 }
 
@@ -110,19 +112,21 @@ void itemApplyHorizontalFriction(f32 *x, f32 *z, f32 rate, f32 threshold, f32 sc
     dx = *x;
     dz = *z;
     if (vector2NormalizeComponentsApprox(&dx, &dz) < threshold * scale) {
-        *z = 0.0f;
-        *x = 0.0f;
+        *z = 0.0F;
+        *x = 0.0F;
         return;
     }
     rate *= scale * gRuntimeFrameSeconds;
     dx *= rate;
     dz *= rate;
     valueX = *x;
-    if (fabsf(dx) > fabsf(valueX))
+    if (fabsf(dx) > fabsf(valueX)) {
         dx = valueX;
+    }
     valueZ = *z;
-    if (fabsf(dz) > fabsf(valueZ))
+    if (fabsf(dz) > fabsf(valueZ)) {
         dz = valueZ;
+    }
     *x -= dx;
     *z -= dz;
 }
@@ -159,27 +163,27 @@ s32 itemUpdateGroundVelocity(u8 *object, u8 *state, s32 cachedNode, s32 *spinnin
         *spinning = 0;
     }
     itemGetTerrainResponseDirection(object, slope, (u8 **)cachedNode);
-    if ((var_v1 != 0) || (slope[0] > 0.01f) || (slope[0] < -0.01f) || (slope[2] > 0.01f) || (slope[2] < -0.01f)) {
+    if ((var_v1 != 0) || (slope[0] > 0.01F) || (slope[0] < -0.01F) || (slope[2] > 0.01F) || (slope[2] < -0.01F)) {
         f32 accelerationStep;
-        accelerationStep = 900.0f * gRuntimeFrameSeconds;
+        accelerationStep = 900.0F * gRuntimeFrameSeconds;
         ((ItemStatePrefix *)state)->velocityX =
             (f32)((slope[0] * accelerationStep) + (*(f32 *)((s8 *)state + (u32) & ((ItemStatePrefix *)0)->velocityX)));
         ((ItemStatePrefix *)state)->velocityZ =
             (f32)((slope[2] * accelerationStep) + (*(f32 *)((s8 *)state + (u32) & ((ItemStatePrefix *)0)->velocityZ)));
     }
     friction = terrainGetFriction(sp4C);
-    friction = 60.0f * friction;
+    friction = 60.0F * friction;
     var_f12 = ((ItemKind *)(gItemKindFrictionEntries - 0x30))[((ItemStatePrefix *)state)->kind].frictionCoefficient *
               friction;
     var_f14 =
-        ((ItemKind *)(gItemKindFrictionEntries - 0x30))[((ItemStatePrefix *)state)->kind].frictionCoefficient * 3.0f;
+        ((ItemKind *)(gItemKindFrictionEntries - 0x30))[((ItemStatePrefix *)state)->kind].frictionCoefficient * 3.0F;
     if (*spinning != 0) {
-        var_f12 *= 0.8f;
-        var_f14 *= 0.8f;
+        var_f12 *= 0.8F;
+        var_f14 *= 0.8F;
     }
     if (var_v1 != 0) {
-        var_f12 *= 0.3f;
-        var_f14 *= 0.3f;
+        var_f12 *= 0.3F;
+        var_f14 *= 0.3F;
     }
     itemApplyHorizontalFriction(&((ItemStatePrefix *)state)->velocityX, &((ItemStatePrefix *)state)->velocityZ, var_f12,
                                 var_f14, itemGetMotionCoefficient(object));
@@ -202,50 +206,50 @@ void itemUpdateRollingRotation(u8 *object, u8 *state) {
     if (!(itemFlags & 0x01000000)) {
         if (itemFlags & 0x10) {
             ((ItemStatePrefix *)state)->rotationVelocityX =
-                (f32)((2.0f * ((ItemStatePrefix *)state)->velocityX) / gRuntimeFrameSeconds);
+                (f32)((2.0F * ((ItemStatePrefix *)state)->velocityX) / gRuntimeFrameSeconds);
             ((ItemStatePrefix *)state)->rotationVelocityY =
-                (f32)((2.0f * ((ItemStatePrefix *)state)->velocityZ) / gRuntimeFrameSeconds);
+                (f32)((2.0F * ((ItemStatePrefix *)state)->velocityZ) / gRuntimeFrameSeconds);
         } else if (itemFlags & 8) {
             sp38 = ((ItemStatePrefix *)state)->velocityX;
             sp34 = ((ItemStatePrefix *)state)->velocityZ;
             ((ItemStatePrefix *)state)->rotationVelocityX =
-                (f32)((57.295776f * vector2NormalizeComponentsApprox(&sp38, &sp34)) /
+                (f32)((57.295776F * vector2NormalizeComponentsApprox(&sp38, &sp34)) /
                       (*(f32 *)((s8 *)object + (u32) & ((RuntimeObjectPrefix *)0)->radius)));
             if (!(((ItemStatePrefix *)state)->flags & 0x01000000)) {
                 ((ItemStatePrefix *)state)->rotationVelocityY =
                     (f32)(mathApproachAngleDegrees(((RuntimeObjectPrefix *)object)->rotation[1],
-                                                   mathUnitDirectionDegrees(sp34, sp38), 0.2f, 60.0f, 300.0f) -
+                                                   mathUnitDirectionDegrees(sp34, sp38), 0.2F, 60.0F, 300.0F) -
                           ((RuntimeObjectPrefix *)object)->rotation[1]);
             }
-            ((RuntimeObjectPrefix *)object)->rotation[2] = 0.0f;
+            ((RuntimeObjectPrefix *)object)->rotation[2] = 0.0F;
         } else {
-            ((ItemStatePrefix *)state)->rotationVelocityX *= 0.9f;
-            ((ItemStatePrefix *)state)->rotationVelocityY *= 0.9f;
+            ((ItemStatePrefix *)state)->rotationVelocityX *= 0.9F;
+            ((ItemStatePrefix *)state)->rotationVelocityY *= 0.9F;
         }
     }
     ((RuntimeObjectPrefix *)object)->rotation[0] +=
         (((ItemStatePrefix *)state)->rotationVelocityX * gRuntimeFrameSeconds);
-    if (((RuntimeObjectPrefix *)object)->rotation[0] < 0.0f) {
+    if (((RuntimeObjectPrefix *)object)->rotation[0] < 0.0F) {
         do {
-            ((RuntimeObjectPrefix *)object)->rotation[0] += 360.0f;
-        } while (((RuntimeObjectPrefix *)object)->rotation[0] < 0.0f);
+            ((RuntimeObjectPrefix *)object)->rotation[0] += 360.0F;
+        } while (((RuntimeObjectPrefix *)object)->rotation[0] < 0.0F);
     }
-    if (((RuntimeObjectPrefix *)object)->rotation[0] >= 360.0f) {
+    if (((RuntimeObjectPrefix *)object)->rotation[0] >= 360.0F) {
         do {
-            ((RuntimeObjectPrefix *)object)->rotation[0] -= 360.0f;
-        } while (((RuntimeObjectPrefix *)object)->rotation[0] >= 360.0f);
+            ((RuntimeObjectPrefix *)object)->rotation[0] -= 360.0F;
+        } while (((RuntimeObjectPrefix *)object)->rotation[0] >= 360.0F);
     }
     ((RuntimeObjectPrefix *)object)->rotation[1] +=
         (((ItemStatePrefix *)state)->rotationVelocityY * gRuntimeFrameSeconds);
-    if (((RuntimeObjectPrefix *)object)->rotation[1] < 0.0f) {
+    if (((RuntimeObjectPrefix *)object)->rotation[1] < 0.0F) {
         do {
-            ((RuntimeObjectPrefix *)object)->rotation[1] += 360.0f;
-        } while (((RuntimeObjectPrefix *)object)->rotation[1] < 0.0f);
+            ((RuntimeObjectPrefix *)object)->rotation[1] += 360.0F;
+        } while (((RuntimeObjectPrefix *)object)->rotation[1] < 0.0F);
     }
-    if (((RuntimeObjectPrefix *)object)->rotation[1] >= 360.0f) {
+    if (((RuntimeObjectPrefix *)object)->rotation[1] >= 360.0F) {
         do {
-            ((RuntimeObjectPrefix *)object)->rotation[1] -= 360.0f;
-        } while (((RuntimeObjectPrefix *)object)->rotation[1] >= 360.0f);
+            ((RuntimeObjectPrefix *)object)->rotation[1] -= 360.0F;
+        } while (((RuntimeObjectPrefix *)object)->rotation[1] >= 360.0F);
     }
 }
 
@@ -260,22 +264,24 @@ void itemUpdateRollingRotation(u8 *object, u8 *state) {
 void itemApplyGroundBounce(u8 *object, ItemStatePrefix *state, s32 cachedNode) {
     f32 reflection;
     f32 normal[3];
-    if ((state->flags & ITEM_STATE_SPIN_ENABLED) && state->downwardVelocity > 9.0f) {
-        state->velocityX *= 0.2f;
-        state->velocityZ *= 0.2f;
+    if ((state->flags & ITEM_STATE_SPIN_ENABLED) && state->downwardVelocity > 9.0F) {
+        state->velocityX *= 0.2F;
+        state->velocityZ *= 0.2F;
     }
-    if (state->downwardVelocity < 9.0f || !(state->flags & 4)) {
-        state->downwardVelocity = 0.0f;
+    if (state->downwardVelocity < 9.0F || !(state->flags & 4)) {
+        state->downwardVelocity = 0.0F;
     } else {
         itemGetTerrainResponseDirection(object, normal, (u8 **)cachedNode);
         vector3Normalize((f32 *)normal);
-        reflection = (state->velocityX * normal[0] - state->downwardVelocity * normal[1]) + normal[2] * state->velocityZ;
-        reflection *= -2.0f;
-        state->velocityX = normal[0] * reflection + (state->velocityX);
-        state->downwardVelocity = ((state->downwardVelocity) - normal[1] * reflection) * 0.7f;
-        state->velocityZ = normal[2] * reflection + (state->velocityZ);
-        if (-state->downwardVelocity < 9.0f)
-            state->downwardVelocity = 0.0f;
+        reflection =
+            (state->velocityX * normal[0] - state->downwardVelocity * normal[1]) + (normal[2] * state->velocityZ);
+        reflection *= -2.0F;
+        state->velocityX = (normal[0] * reflection) + (state->velocityX);
+        state->downwardVelocity = ((state->downwardVelocity) - normal[1] * reflection) * 0.7F;
+        state->velocityZ = (normal[2] * reflection) + (state->velocityZ);
+        if (-state->downwardVelocity < 9.0F) {
+            state->downwardVelocity = 0.0F;
+        }
     }
 }
 
@@ -373,7 +379,7 @@ void itemUpdateGroundAndAirMotion(u8 *object) {
     }
     speed = itemGetMotionCoefficient(object);
     ((ItemStatePrefix *)state)->downwardVelocity =
-        (f32)(((ItemStatePrefix *)state)->downwardVelocity + (3.2666667f * gRuntimeFrameSeconds * speed * 30.0f));
+        (f32)(((ItemStatePrefix *)state)->downwardVelocity + (3.2666667F * gRuntimeFrameSeconds * speed * 30.0F));
     dx = ((ItemStatePrefix *)state)->velocityX * gRuntimeFrameSeconds;
     dy = -((ItemStatePrefix *)state)->downwardVelocity * gRuntimeFrameSeconds;
     dz = ((ItemStatePrefix *)state)->velocityZ * gRuntimeFrameSeconds;
@@ -391,23 +397,23 @@ void itemUpdateGroundAndAirMotion(u8 *object) {
     collision = flags;
     if (collision != 0) {
         if (((flags & 0x6D) || ((flags & 0x12) && (((ItemStatePrefix *)state)->flags & 0x01000000) &&
-                                (fabsf(((ItemStatePrefix *)state)->downwardVelocity) > 18.0f))) &&
-            ((fabsf(((ItemStatePrefix *)state)->velocityX) > 9.0f) ||
-             (fabsf(((ItemStatePrefix *)state)->downwardVelocity) > 9.0f) ||
-             (fabsf(((ItemStatePrefix *)state)->velocityZ) > 9.0f))) {
+                                (fabsf(((ItemStatePrefix *)state)->downwardVelocity) > 18.0F))) &&
+            ((fabsf(((ItemStatePrefix *)state)->velocityX) > 9.0F) ||
+             (fabsf(((ItemStatePrefix *)state)->downwardVelocity) > 9.0F) ||
+             (fabsf(((ItemStatePrefix *)state)->velocityZ) > 9.0F))) {
             ((ItemStatePrefix *)state)->flags |= 0x200000;
         }
         if (flags & 0x10) {
             itemApplyGroundBounce(object, (ItemStatePrefix *)state, (s32)&node);
         }
         if (flags & 2) {
-            ((ItemStatePrefix *)state)->downwardVelocity *= -0.7f;
+            ((ItemStatePrefix *)state)->downwardVelocity *= -0.7F;
         }
         if (flags & 9) {
-            ((ItemStatePrefix *)state)->velocityX *= -0.7f;
+            ((ItemStatePrefix *)state)->velocityX *= -0.7F;
         }
         if (flags & 0x24) {
-            ((ItemStatePrefix *)state)->velocityZ *= -0.7f;
+            ((ItemStatePrefix *)state)->velocityZ *= -0.7F;
         }
     }
     ((RuntimeObjectPrefix *)object)->position[0] += dx;
@@ -419,17 +425,17 @@ void itemUpdateGroundAndAirMotion(u8 *object) {
             itemBeginShrinkingDisposal(object);
             return;
         }
-        if ((dx != 0.0f) || (dy != 0.0f) || (dz != 0.0f) || (((ItemStatePrefix *)state)->flags & 0x01000000) ||
-            (((ItemStatePrefix *)state)->spinSpeed > 0.0f)) {
+        if ((dx != 0.0F) || (dy != 0.0F) || (dz != 0.0F) || (((ItemStatePrefix *)state)->flags & 0x01000000) ||
+            (((ItemStatePrefix *)state)->spinSpeed > 0.0F)) {
             if (drag == 0) {
                 itemUpdateRollingRotation(object, state);
             }
         } else {
-            ((ItemStatePrefix *)state)->velocityZ = 0.0f;
-            ((ItemStatePrefix *)state)->downwardVelocity = 0.0f;
-            ((ItemStatePrefix *)state)->velocityX = 0.0f;
-            ((ItemStatePrefix *)state)->rotationVelocityY = 0.0f;
-            ((ItemStatePrefix *)state)->rotationVelocityX = 0.0f;
+            ((ItemStatePrefix *)state)->velocityZ = 0.0F;
+            ((ItemStatePrefix *)state)->downwardVelocity = 0.0F;
+            ((ItemStatePrefix *)state)->velocityX = 0.0F;
+            ((ItemStatePrefix *)state)->rotationVelocityY = 0.0F;
+            ((ItemStatePrefix *)state)->rotationVelocityX = 0.0F;
             if (((ItemStatePrefix *)state)->flags & 0x10000000) {
                 ((ItemStatePrefix *)state)->flags &= 0xEFFFFFFF;
             } else {
@@ -447,7 +453,7 @@ void itemUpdateGroundAndAirMotion(u8 *object) {
                     ((ItemStatePrefix *)state)->velocityZ = -((ItemStatePrefix *)state)->velocityZ;
                 }
                 ((ItemStatePrefix *)state)->bounceCount = (s32)((u32)((ItemStatePrefix *)state)->bounceCount - 1U);
-                ((ItemStatePrefix *)state)->downwardVelocity = -60.0f;
+                ((ItemStatePrefix *)state)->downwardVelocity = -60.0F;
                 if (((ItemStatePrefix *)state)->bounceCount < 0) {
                     ((ItemStatePrefix *)state)->bounceCount = 0;
                 }
@@ -486,11 +492,11 @@ void itemUpdateDriftingFlight(u8 *object) {
     state = ((RuntimeObjectPrefix *)object)->state.bytes;
     node = NULL;
     ((ItemStatePrefix *)state)->motionPhase.flightElapsed += gRuntimeFrameSeconds;
-    if (((ItemStatePrefix *)state)->motionPhase.flightElapsed > 10.0f) {
+    if (((ItemStatePrefix *)state)->motionPhase.flightElapsed > 10.0F) {
         itemSetMode(object, ITEM_MODE_SHRINKING_DISPOSAL);
         return;
     }
-    wave = 2.0f * mathCosDegrees(((ItemStatePrefix *)state)->motionPhase.flightElapsed * 120.0f);
+    wave = 2.0F * mathCosDegrees(((ItemStatePrefix *)state)->motionPhase.flightElapsed * 120.0F);
     dx = (((ItemStatePrefix *)state)->velocityX + wave) * gRuntimeFrameSeconds;
     dz = (((ItemStatePrefix *)state)->velocityZ + wave) * gRuntimeFrameSeconds;
     dy = -((ItemStatePrefix *)state)->downwardVelocity * gRuntimeFrameSeconds;
@@ -547,16 +553,16 @@ void itemUpdatePlayerHeld(u8 *object) {
     itemRunHeldKindCallback(object, (ItemStatePrefix *)state);
     ((ItemStatePrefix *)state)->modeTime += gRuntimeFrameSeconds;
     pos = ((RuntimeObjectPrefix *)object)->position;
-    pos[0] = 1.25f;
-    pos[1] = -0.9f;
-    pos[2] = -3.0f;
+    pos[0] = 1.25F;
+    pos[1] = -0.9F;
+    pos[2] = -3.0F;
     cameraViewPointToWorld(pos);
     ((RuntimeObjectPrefix *)object)->worldPosition[0] = ((RuntimeObjectPrefix *)object)->position[0];
     ((RuntimeObjectPrefix *)object)->worldPosition[1] = ((RuntimeObjectPrefix *)object)->position[1];
     ((RuntimeObjectPrefix *)object)->worldPosition[2] = ((RuntimeObjectPrefix *)object)->position[2];
     ((RuntimeObjectPrefix *)object)->rotation[0] = gPlayerPitchOffset + gPlayerPitch;
     ((RuntimeObjectPrefix *)object)->rotation[1] = gPlayerYaw + gPlayerViewShake;
-    ((RuntimeObjectPrefix *)object)->rotation[2] = 0.0f;
+    ((RuntimeObjectPrefix *)object)->rotation[2] = 0.0F;
 }
 
 /// Animate the piñata wriggling while held.
@@ -573,37 +579,39 @@ void pinataUpdateWriggle(u8 *item) {
 
     state = ((RuntimeObjectPrefix *)item)->state.bytes;
     model = ((RuntimeObjectPrefix *)item)->child.bytes;
-    if ((randomBelow(0x64) == 0) || (((ItemStatePrefix *)state)->rotationVelocityX < 10.0f)) {
+    if ((randomBelow(0x64) == 0) || (((ItemStatePrefix *)state)->rotationVelocityX < 10.0F)) {
         ((ItemStatePrefix *)state)->rotationVelocityX = (f32)(s32)(randomBelow(0x32) + 0xA);
     }
     ((ItemStatePrefix *)state)->motionPhase.wriggleAngle += ((ItemStatePrefix *)state)->rotationVelocityX * gRuntimeFrameSeconds;
-    if (((ItemStatePrefix *)state)->motionPhase.wriggleAngle < 0.0f) {
+    if (((ItemStatePrefix *)state)->motionPhase.wriggleAngle < 0.0F) {
         do {
-            ((ItemStatePrefix *)state)->motionPhase.wriggleAngle = (f32)(((ItemStatePrefix *)state)->motionPhase.wriggleAngle + 360.0f);
-        } while (((ItemStatePrefix *)state)->motionPhase.wriggleAngle < 0.0f);
+            ((ItemStatePrefix *)state)->motionPhase.wriggleAngle =
+                (f32)(((ItemStatePrefix *)state)->motionPhase.wriggleAngle + 360.0F);
+        } while (((ItemStatePrefix *)state)->motionPhase.wriggleAngle < 0.0F);
     }
-    if (((ItemStatePrefix *)state)->motionPhase.wriggleAngle >= 360.0f) {
+    if (((ItemStatePrefix *)state)->motionPhase.wriggleAngle >= 360.0F) {
         do {
-            ((ItemStatePrefix *)state)->motionPhase.wriggleAngle = (f32)(((ItemStatePrefix *)state)->motionPhase.wriggleAngle - 360.0f);
-        } while (((ItemStatePrefix *)state)->motionPhase.wriggleAngle >= 360.0f);
+            ((ItemStatePrefix *)state)->motionPhase.wriggleAngle =
+                (f32)(((ItemStatePrefix *)state)->motionPhase.wriggleAngle - 360.0F);
+        } while (((ItemStatePrefix *)state)->motionPhase.wriggleAngle >= 360.0F);
     }
     ((RuntimeObjectPrefix *)model)->rotation[1] =
-        (f32)(mathSinDegrees(((ItemStatePrefix *)state)->motionPhase.wriggleAngle) * 40.0f);
-    if ((randomBelow(0x64) == 0) || (((ItemStatePrefix *)state)->rotationVelocityY < 10.0f)) {
+        (f32)(mathSinDegrees(((ItemStatePrefix *)state)->motionPhase.wriggleAngle) * 40.0F);
+    if ((randomBelow(0x64) == 0) || (((ItemStatePrefix *)state)->rotationVelocityY < 10.0F)) {
         ((ItemStatePrefix *)state)->rotationVelocityY = (f32)(s32)(randomBelow(0x64) + 0x190);
     }
     ((ItemStatePrefix *)state)->spinSpeed += ((ItemStatePrefix *)state)->rotationVelocityY * gRuntimeFrameSeconds;
-    if (((ItemStatePrefix *)state)->spinSpeed < 0.0f) {
+    if (((ItemStatePrefix *)state)->spinSpeed < 0.0F) {
         do {
-            ((ItemStatePrefix *)state)->spinSpeed = (f32)(((ItemStatePrefix *)state)->spinSpeed + 360.0f);
-        } while (((ItemStatePrefix *)state)->spinSpeed < 0.0f);
+            ((ItemStatePrefix *)state)->spinSpeed = (f32)(((ItemStatePrefix *)state)->spinSpeed + 360.0F);
+        } while (((ItemStatePrefix *)state)->spinSpeed < 0.0F);
     }
-    if (((ItemStatePrefix *)state)->spinSpeed >= 360.0f) {
+    if (((ItemStatePrefix *)state)->spinSpeed >= 360.0F) {
         do {
-            ((ItemStatePrefix *)state)->spinSpeed = (f32)(((ItemStatePrefix *)state)->spinSpeed - 360.0f);
-        } while (((ItemStatePrefix *)state)->spinSpeed >= 360.0f);
+            ((ItemStatePrefix *)state)->spinSpeed = (f32)(((ItemStatePrefix *)state)->spinSpeed - 360.0F);
+        } while (((ItemStatePrefix *)state)->spinSpeed >= 360.0F);
     }
-    angle = mathSinDegrees(((ItemStatePrefix *)state)->spinSpeed) * 15.0f;
+    angle = mathSinDegrees(((ItemStatePrefix *)state)->spinSpeed) * 15.0F;
 
     /* clang-format off */
     index = 0; do {
@@ -611,7 +619,7 @@ void pinataUpdateWriggle(u8 *item) {
         model = ((RuntimeObjectPrefix *)model)->child.bytes;
         ((RuntimeObjectPrefix *)model)->rotation[1] = angle;
         if (!(index & 1)) {
-            angle = -angle * 0.9f;
+            angle = -angle * 0.9F;
         }
         index += 1;
     } while (index != 3);
@@ -646,8 +654,9 @@ void itemUpdateActorHeld(u8 *object) {
     ((RuntimeObjectPrefix *)object)->rotation[1] = ((ActorScriptState *)parentState)->orientation[1];
     ((RuntimeObjectPrefix *)object)->rotation[2] = ((ActorScriptState *)parentState)->orientation[2];
     kind = ((ItemStatePrefix *)state)->kind;
-    if ((kind == 0x4E || kind == 0x4F) && ((RuntimeObjectPrefix *)object)->scale[0] < 0.049999997f)
+    if ((kind == 0x4E || kind == 0x4F) && ((RuntimeObjectPrefix *)object)->scale[0] < 0.049999997F) {
         pinataUpdateWriggle(object);
+    }
 }
 
 /// Animate an item shrinking away and remove it when finished.
@@ -658,27 +667,27 @@ void itemUpdateShrinkingDisposal(u8 *object) {
     RuntimeObjectPrefix *transform = (RuntimeObjectPrefix *)object;
     u8 *state;
     f32 value;
-    transform->scale[0] -= gRuntimeFrameSeconds * 0.01f;
+    transform->scale[0] -= gRuntimeFrameSeconds * 0.01F;
     state = ((RuntimeObjectPrefix *)object)->state.bytes;
     value = transform->scale[0];
-    if (value < 0.0f) {
-        transform->scale[2] = 0.0f;
-        transform->scale[1] = 0.0f;
-        transform->scale[0] = 0.0f;
+    if (value < 0.0F) {
+        transform->scale[2] = 0.0F;
+        transform->scale[1] = 0.0F;
+        transform->scale[0] = 0.0F;
         itemPlayTrackedSound(object, (ItemStatePrefix *)state, 0xBD);
         itemDestroy(object);
         return;
     }
     transform->scale[2] = (transform->scale[1] = transform->scale[0]);
-    transform->rotation[2] = 0.0f;
-    transform->rotation[1] = 0.0f;
-    transform->rotation[0] += gRuntimeFrameSeconds * 400.0f;
-    while (transform->rotation[0] < 0.0f) {
-        transform->rotation[0] += 360.0f;
+    transform->rotation[2] = 0.0F;
+    transform->rotation[1] = 0.0F;
+    transform->rotation[0] += gRuntimeFrameSeconds * 400.0F;
+    while (transform->rotation[0] < 0.0F) {
+        transform->rotation[0] += 360.0F;
     }
 
-    while (transform->rotation[0] >= 360.0f) {
-        transform->rotation[0] -= 360.0f;
+    while (transform->rotation[0] >= 360.0F) {
+        transform->rotation[0] -= 360.0F;
     }
 }
 
@@ -698,8 +707,8 @@ void baseballCapUpdateHeldVisibility(u8 *object) {
     u8 *objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
     if ((((ItemStatePrefix *)objectState)->state == ITEM_OWNERSHIP_PIKACHU) &&
         (((ActorScriptState *)((RuntimeObjectPrefix *)((u8 *)gPikachuActor))->state.pointer)->attachmentMode == 3)) {
-        itemSetScale(object, 0.0f);
+        itemSetScale(object, 0.0F);
         return;
     }
-    itemSetScale(object, 1.0f);
+    itemSetScale(object, 1.0F);
 }

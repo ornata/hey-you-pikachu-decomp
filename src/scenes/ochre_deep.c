@@ -52,8 +52,8 @@ extern u8 D_8014A0DC_scene_ochre_deep[];
 /// Create the deep-forest scene's ambient audio emitter.
 /// \returns Nothing.
 void ochreDeepCreateAmbientAudio(void) {
-    ambientAudioCreate(D_8014A188_scene_ochre_deep, 0, 10000.0f, 0.0f, 0x88, 0x88, 1.0f, 2,
-                  (Vec3f *)D_8014A188_scene_ochre_deep);
+    ambientAudioCreate(D_8014A188_scene_ochre_deep, 0, 10000.0F, 0.0F, 0x88, 0x88, 1.0F, 2,
+                       (Vec3f *)D_8014A188_scene_ochre_deep);
 }
 
 /// Initialize the deep-forest scene door.
@@ -68,7 +68,7 @@ void ochreDeepInitializeDoor(void) {
 void ochreDeepCreateVariantTwoProps(void) {
     s32 i;
     for (i = 0; i < 3; i++) {
-        mazeReplaceBlock(D_80134C98_scene_ochre_deep + i * 12, D_80148084_scene_ochre_deep,
+        mazeReplaceBlock(D_80134C98_scene_ochre_deep + (i * 12), D_80148084_scene_ochre_deep,
                          (MazeGrid *)D_801481AC_scene_ochre_deep, 0);
     }
 }
@@ -108,9 +108,9 @@ s32 ochreDeepTryCreateProgressEncounter(void) {
 
     if (progressGetValue(0x15) == 0) {
         if (playerGetChaseStage() > 0) {
-            item = itemCreate(D_8014AB90_scene_ochre_deep, 17.75f, 31.92f, 0.0f, 0.0f, 0x8F);
+            item = itemCreate(D_8014AB90_scene_ochre_deep, 17.75F, 31.92F, 0.0F, 0.0F, 0x8F);
             encounterActor =
-                actorCreateForKind(0x17, 0, 0, 0, 0, 45.0f, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC) * 0.5,
+                actorCreateForKind(0x17, 0, 0, 0, 0, 45.0F, *(f32 *)(((u8 *)gCurrentAreaConfiguration) + 0xC) * 0.5,
                                    D_801479C0_scene_ochre_deep, 0);
             actorState = ((RuntimeObjectPrefix *)encounterActor)->state.actor;
             *(f32 *)(item + 8) = *(f32 *)(item + 4) = *(f32 *)(item + 0) = 0;
@@ -149,40 +149,40 @@ extern f32 D_8014ABA4_scene_ochre_deep;
 void ochreDeepInitializeObjects(void) {
     f32 position[3];
 
-    actorCreateForKind(0x13, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(0x13, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        &D_801475C8_scene_ochre_deep, 0);
     if ((ochreDeepTryCreateProgressEncounter() == 0) && (progressGetValue(0x76) >= 2)) {
-        actorCreateForKind(0xE, 83.5f, 20.8f, 52.0f, 0, 0, gCurrentAreaConfiguration->objectScale,
+        actorCreateForKind(0xE, 83.5F, 20.8F, 52.0F, 0, 0, gCurrentAreaConfiguration->objectScale,
                            &D_80147AE0_scene_ochre_deep, 0);
     }
     heapDebugReportFreeSpace(&gGameHeap, (const char *)&D_8014AB48_scene_ochre_deep);
     if (playerGetChaseStage() == 0) {
-        mazeScatterItems(D_80147AF4_scene_ochre_deep, 0x22, &D_8014807C_scene_ochre_deep, 0.7f);
+        mazeScatterItems(D_80147AF4_scene_ochre_deep, 0x22, &D_8014807C_scene_ochre_deep, 0.7F);
     } else if (playerGetChaseStage() == 1) {
-        mazeScatterItems(D_80147AF4_scene_ochre_deep, 0x22, &D_8014807C_scene_ochre_deep, 0.4f);
-        mazeScatterItems(D_80147C8C_scene_ochre_deep, 0x24, &D_8014807C_scene_ochre_deep, 0.7f);
+        mazeScatterItems(D_80147AF4_scene_ochre_deep, 0x22, &D_8014807C_scene_ochre_deep, 0.4F);
+        mazeScatterItems(D_80147C8C_scene_ochre_deep, 0x24, &D_8014807C_scene_ochre_deep, 0.7F);
     } else if (playerGetChaseStage() == 2) {
-        mazeScatterItems(D_80147AF4_scene_ochre_deep, 0x22, &D_8014807C_scene_ochre_deep, 0.2f);
-        mazeScatterItems(D_80147C8C_scene_ochre_deep, 0x24, &D_8014807C_scene_ochre_deep, 0.3f);
-        mazeScatterItems(D_80147E3C_scene_ochre_deep, 0x22, &D_8014807C_scene_ochre_deep, 0.5f);
+        mazeScatterItems(D_80147AF4_scene_ochre_deep, 0x22, &D_8014807C_scene_ochre_deep, 0.2F);
+        mazeScatterItems(D_80147C8C_scene_ochre_deep, 0x24, &D_8014807C_scene_ochre_deep, 0.3F);
+        mazeScatterItems(D_80147E3C_scene_ochre_deep, 0x22, &D_8014807C_scene_ochre_deep, 0.5F);
     }
     heapDebugReportFreeSpace(&gGameHeap, (const char *)&D_8014AB54_scene_ochre_deep);
-    position[0] = 130.0f;
+    position[0] = 130.0F;
     position[1] = D_8014AB94_scene_ochre_deep;
     position[2] = D_8014AB98_scene_ochre_deep;
-    sceneRegionCreate(position, 9.0f, 9.0f, D_8014A0EC_scene_ochre_deep);
-    position[0] = 217.0f;
+    sceneRegionCreate(position, 9.0F, 9.0F, D_8014A0EC_scene_ochre_deep);
+    position[0] = 217.0F;
     position[1] = D_8014AB9C_scene_ochre_deep;
-    position[2] = 151.0f;
-    sceneRegionCreate(position, 41.0f, 38.0f, D_8014A110_scene_ochre_deep);
-    position[0] = 74.0f;
+    position[2] = 151.0F;
+    sceneRegionCreate(position, 41.0F, 38.0F, D_8014A110_scene_ochre_deep);
+    position[0] = 74.0F;
     position[1] = D_8014ABA0_scene_ochre_deep;
-    position[2] = 225.0f;
-    sceneRegionCreate(position, 25.0f, 13.0f, D_8014A134_scene_ochre_deep);
-    position[0] = 83.5f;
+    position[2] = 225.0F;
+    sceneRegionCreate(position, 25.0F, 13.0F, D_8014A134_scene_ochre_deep);
+    position[0] = 83.5F;
     position[1] = D_8014ABA4_scene_ochre_deep;
-    position[2] = 52.0f;
-    sceneRegionCreate(position, 61.5f, 38.0f, D_8014A164_scene_ochre_deep);
+    position[2] = 52.0F;
+    sceneRegionCreate(position, 61.5F, 38.0F, D_8014A164_scene_ochre_deep);
     if (playerGetChaseStage() == 2) {
         ochreDeepCreateVariantTwoProps();
     }
@@ -208,10 +208,12 @@ s32 ochreDeepGetSpatialCell(f32 x, f32 y, f32 z) {
     s32 iz;
     iy = (s32)((f64)y / 10.0);
     if (iy < 0 || iy >= 32 || (ix = (s32)((f64)x / 10.0), ix < 0) || ix >= 32 || (iz = (s32)((f64)z / 10.0), iz < 0) ||
-        iz >= 32)
+        iz >= 32) {
         return 0;
+    }
     layer = D_8018C048_scene_ochre_deep[iy];
-    if (layer == NULL)
+    if (layer == NULL) {
         return 0;
-    return layer[iz * 32 + ix];
+    }
+    return layer[(iz * 32) + ix];
 }

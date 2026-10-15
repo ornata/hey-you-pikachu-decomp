@@ -21,7 +21,7 @@ extern f32 D_801586DC_scene_bedroom;
 /// \returns Nothing.
 void bedroomInitializeObjects(void) {
     if (progressGetValue(0xF0) != 0) {
-        actorCreateForKind(0x15, 93.75f, 31.93000030517578f, 52.189998626708984f, 0.0f, D_801586DC_scene_bedroom,
+        actorCreateForKind(0x15, 93.75F, 31.93000030517578F, 52.189998626708984F, 0.0F, D_801586DC_scene_bedroom,
                            gCurrentAreaConfiguration->objectScale, 0, 0);
     }
     toolboxClearCollection();
@@ -51,7 +51,8 @@ s32 bedroomGetSpatialCell(f32 x, f32 y, f32 z) {
         return 0;
     }
     layer = D_8015E458_scene_bedroom[iy];
-    if (layer == 0)
+    if (layer == 0) {
         return 0;
-    return layer[iz * 16 + ix];
+    }
+    return layer[(iz * 16) + ix];
 }

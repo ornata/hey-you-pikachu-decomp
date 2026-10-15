@@ -268,28 +268,33 @@ s32 midiReaderReadEvent(MidiReader *reader, u8 *event, s32 *size, s32 capacity) 
     s32 length;
     s32 i;
     s32 j;
-    if (reader->position >= reader->start + reader->length)
+    if (reader->position >= reader->start + reader->length) {
         return -1;
+    }
     delta = midiReaderReadVariableLength(reader);
     event[0] = midiReaderReadByte(reader);
     switch (event[0]) {
     case 0xF0:
     case 0xF7:
         length = midiReaderReadVariableLength(reader);
-        for (i = 0; i < length && i < capacity; i++)
+        for (i = 0; i < length && i < capacity; i++) {
             event[i + 1] = midiReaderReadByte(reader);
-        for (; i < length; i++)
+        }
+        for (; i < length; i++) {
             midiReaderReadByte(reader);
+        }
         *size = (s32)((u32)length + 1U);
         break;
     case 0xFF:
         event[1] = midiReaderReadByte(reader);
         event[2] = midiReaderReadByte(reader);
         reader->runningStatus = 0;
-        for (j = 3; j < event[2] + 3 && j < capacity; j++)
+        for (j = 3; j < event[2] + 3 && j < capacity; j++) {
             event[j] = midiReaderReadByte(reader);
-        for (; j < event[2] + 3; j++)
+        }
+        for (; j < event[2] + 3; j++) {
             midiReaderReadByte(reader);
+        }
         *size = j;
         break;
     default:
@@ -300,12 +305,14 @@ s32 midiReaderReadEvent(MidiReader *reader, u8 *event, s32 *size, s32 capacity) 
             event[1] = event[0];
             event[0] = reader->runningStatus;
         }
-        if ((event[0] & 0xF0) == 0xC0 || (event[0] & 0xF0) == 0xD0)
+        if ((event[0] & 0xF0) == 0xC0 || (event[0] & 0xF0) == 0xD0) {
             *size = 2;
-        else
+        } else {
             *size = 3;
-        if (*size == 3)
+        }
+        if (*size == 3) {
             event[2] = midiReaderReadByte(reader);
+        }
         break;
     }
     return delta;
@@ -508,7 +515,7 @@ void objectPrepareDistributedKindSearches(u16 kind, s32 searchCount) {
     objectPrepareSearchTreeAtKey(kind, 0);
     start = *(s32 *)(*(u8 **)(gObjectSearchTreeRoot + 8) + 0x38);
     for (i = 1; i < searchCount; i++) {
-        objectPrepareSearchTreeAtKey(kind, (now - start) * i / searchCount + start);
+        objectPrepareSearchTreeAtKey(kind, ((now - start) * i / searchCount) + start);
     }
 }
 
@@ -850,7 +857,7 @@ void objectScaleHierarchyBounds(u8 *object, f32 parentScale) {
         do {
             firstChild = ((RuntimeObjectPrefix *)object)->child.bytes;
             combinedScale = ((RuntimeObjectPrefix *)object)->scale[0] * parentScale;
-            ((RuntimeObjectPrefix *)object)->radius *= combinedScale * 0.5f;
+            ((RuntimeObjectPrefix *)object)->radius *= combinedScale * 0.5F;
             if (firstChild != NULL) {
                 objectScaleHierarchyBounds(firstChild, combinedScale);
             }
@@ -1007,7 +1014,7 @@ void objectFaceCameraHorizontally(u8 *object) {
     f32 d[3];
 
     d[0] = ((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].eye[0] - ((RuntimeObjectPrefix *)object)->worldPosition[0];
-    d[1] = 0.0f;
+    d[1] = 0.0F;
     d[2] = ((MatrixCamera *)((u8 *)gRenderCameras))[gRenderCameraIndex].eye[2] - ((RuntimeObjectPrefix *)object)->worldPosition[2];
     ((RuntimeObjectPrefix *)object)->rotation[1] = vector3GetYawFromPositiveXDegrees(d);
     if (!(((RuntimeObjectPrefix *)object)->flags & 0x1008)) {
@@ -1069,17 +1076,18 @@ void objectInitializeTextureMotion(u8 *object) {
     extent = heapAllocLocal(&gGameHeap, 16, 0x491);
     _bzero(extent, 16);
     packed.word = (u32) * (f32 *)(object + 0x24);
-    extent->sMask = (1 << (packed.fields.widthShift + 4)) * 2 - 1;
-    extent->tMask = (1 << (packed.fields.heightShift + 4)) * 2 - 1;
-    radius = packed.fields.radius * 2.0f;
-    angle = packed.fields.angle * 11.25f;
+    extent->sMask = ((1 << (packed.fields.widthShift + 4)) * 2) - 1;
+    extent->tMask = ((1 << (packed.fields.heightShift + 4)) * 2) - 1;
+    radius = packed.fields.radius * 2.0F;
+    angle = packed.fields.angle * 11.25F;
     elevationStep = packed.fields.elevation;
-    elevation = (elevationStep >= 0 ? elevationStep : -elevationStep) * 5.0f;
-    if (elevationStep < 0)
+    elevation = (elevationStep >= 0 ? elevationStep : -elevationStep) * 5.0F;
+    if (elevationStep < 0) {
         elevation = -elevation;
-    extent->scrollS = mathCosDegrees(angle) * radius * 32.0f;
-    extent->scrollT = mathSinDegrees(angle) * radius * 32.0f;
-    extent->rotationRate = elevation * 32.0f;
+    }
+    extent->scrollS = mathCosDegrees(angle) * radius * 32.0F;
+    extent->scrollT = mathSinDegrees(angle) * radius * 32.0F;
+    extent->rotationRate = elevation * 32.0F;
     ((RuntimeObjectPrefix *)object)->state.pointer = extent;
 }
 
@@ -1097,23 +1105,23 @@ Gfx *objectApplyTextureMotionForDraw(u8 *obj) {
     s32 sine, cosine;
 
     motion = (TextureMotion *)((RuntimeObjectPrefix *)obj)->state.pointer;
-    time = (f32)(runtimeGetElapsedMilliseconds() & 0x7FFFF) * 0.001f;
-    if (motion->scrollS != 0.0f) {
+    time = (f32)(runtimeGetElapsedMilliseconds() & 0x7FFFF) * 0.001F;
+    if (motion->scrollS != 0.0F) {
         u = (s32)(motion->scrollS * time) & motion->sMask;
     } else {
         u = 0;
     }
-    if (motion->scrollT != 0.0f) {
+    if (motion->scrollT != 0.0F) {
         v = (s32)(motion->scrollT * time) & motion->tMask;
     } else {
         v = 0;
     }
     gdl = gRenderDisplayListCursor++;
     gMoveWd(gdl, G_MW_FOG, 0x0C, _SHIFTL(u, 16, 16) | _SHIFTL(v, 0, 16));
-    if (motion->rotationRate != 0.0f) {
-        angle = (f32)((s32)(motion->rotationRate * time) % 11520) * 0.03125f;
-        sine = (s32)(mathCosDegrees(angle) * 32767.0f);
-        cosine = (s32)(mathSinDegrees(angle) * 32767.0f);
+    if (motion->rotationRate != 0.0F) {
+        angle = (f32)((s32)(motion->rotationRate * time) % 11520) * 0.03125F;
+        sine = (s32)(mathCosDegrees(angle) * 32767.0F);
+        cosine = (s32)(mathSinDegrees(angle) * 32767.0F);
         gSPTexture(gRenderDisplayListCursor++, sine, cosine, 0, 0, 1);
         gMoveWd(gRenderDisplayListCursor++, G_MW_FOG, 0x10, _SHIFTL(-cosine, 16, 16) | _SHIFTL(sine, 0, 16));
     }
@@ -1288,17 +1296,17 @@ void objectUpdateHierarchyFromCurrentTransform(u8 *object) {
                                                     ((RuntimeObjectPrefix *)object)->rotation[1], ((RuntimeObjectPrefix *)object)->rotation[2]);
                     matrix33ScaleLocal((f32 *)&gObjectTraversalTransform, ((RuntimeObjectPrefix *)object)->scale[0], ((RuntimeObjectPrefix *)object)->scale[1],
                                        ((RuntimeObjectPrefix *)object)->scale[2]);
-                    if (gObjectPendingLocalMovement.x != 0.0f || gObjectPendingLocalMovement.y != 0.0f ||
-                        gObjectPendingLocalMovement.z != 0.0f) {
+                    if (gObjectPendingLocalMovement.x != 0.0F || gObjectPendingLocalMovement.y != 0.0F ||
+                        gObjectPendingLocalMovement.z != 0.0F) {
                         matrix33TransformVector((f32 *)&gObjectTraversalTransform, (f32 *)&gObjectPendingLocalMovement,
                                                 (f32 *)&offset);
-                        gObjectPendingLocalMovement.x = 0.0f;
-                        gObjectPendingLocalMovement.y = 0.0f;
-                        gObjectPendingLocalMovement.z = 0.0f;
+                        gObjectPendingLocalMovement.x = 0.0F;
+                        gObjectPendingLocalMovement.y = 0.0F;
+                        gObjectPendingLocalMovement.z = 0.0F;
                     } else {
-                        offset[0] = 0.0f;
-                        offset[1] = 0.0f;
-                        offset[2] = 0.0f;
+                        offset[0] = 0.0F;
+                        offset[1] = 0.0F;
+                        offset[2] = 0.0F;
                     }
                     kind = ((RuntimeObjectPrefix *)object)->kind;
                     if (kind > 0 && kind < 0x26) {
@@ -1502,9 +1510,9 @@ void objectDrawHierarchyGroup(RuntimeObjectPrefix *object, s32 group) {
 /// \note Original decompilation identifier: \c func_800097D0 (0x800097D0).
 void objectResetTraversalTransformAndMovement(void) {
     matrix34Identity((Matrix34 *)&gObjectTraversalTransform);
-    gObjectPendingLocalMovement.x = 0.0f;
-    gObjectPendingLocalMovement.y = 0.0f;
-    gObjectPendingLocalMovement.z = 0.0f;
+    gObjectPendingLocalMovement.x = 0.0F;
+    gObjectPendingLocalMovement.y = 0.0F;
+    gObjectPendingLocalMovement.z = 0.0F;
 }
 
 
@@ -1565,8 +1573,8 @@ f32 objectOrientAlongWorldSegment(u8 *object, f32 *start, f32 *end) {
     v[1] = end[1] - start[1];
     v[2] = end[2] - start[2];
     len = vector3Normalize(v);
-    if (len == 0.0f) {
-        return 0.0f;
+    if (len == 0.0F) {
+        return 0.0F;
     }
     vector3GetEulerDegrees(v, &sp34, &sp30, &sp2C);
     ((RuntimeObjectPrefix *)object)->rotation[0] = sp34;
@@ -1590,10 +1598,11 @@ f32 objectAdjustPitchAlongWorldSegment(u8 *object, f32 *start, f32 *end) {
     v[1] = end[1] - start[1];
     v[2] = end[2] - start[2];
     len = vector3Normalize(v);
-    if (len == 0.0f) {
-        return 0.0f;
+    if (len == 0.0F) {
+        return 0.0F;
     }
-    matrix34MakeRotationZYXDegrees((f32 *)&m, 0.0f, -((RuntimeObjectPrefix *)object)->rotation[1], -((RuntimeObjectPrefix *)object)->rotation[2]);
+    matrix34MakeRotationZYXDegrees((f32 *)&m, 0.0F, -((RuntimeObjectPrefix *)object)->rotation[1],
+                                   -((RuntimeObjectPrefix *)object)->rotation[2]);
     matrix34TransformPointVector((f32 *)&m, v, v);
     ((RuntimeObjectPrefix *)object)->rotation[0] = mathUnitDirectionDegrees(v[1], v[2]);
     return len;
@@ -1765,9 +1774,10 @@ s32 objectConsiderNearestTargetEntry(TreeNode *node, s32 depth) {
     if (obj == gObjectNearestTargetSearch.self) {
         return 0;
     }
-    if (gObjectNearestTargetSearch.cone < 360.0f &&
-        gObjectNearestTargetSearch.cone < fabsf(mathWrapSignedDegrees(matrix34GetTransformedPointYawDegrees(
-                                              (f32 *)&gObjectNearestTargetSearch.facing, ((RuntimeObjectPrefix *)obj)->worldPosition)))) {
+    if (gObjectNearestTargetSearch.cone < 360.0F &&
+        gObjectNearestTargetSearch.cone <
+            fabsf(mathWrapSignedDegrees(matrix34GetTransformedPointYawDegrees(
+                (f32 *)&gObjectNearestTargetSearch.facing, ((RuntimeObjectPrefix *)obj)->worldPosition)))) {
         return 0;
     }
     d = objectGetApproxDistanceToPoint(obj, &gObjectNearestTargetSearch.origin);
@@ -1801,12 +1811,12 @@ u8 *objectFindNearestTargetInView(u8 *self, Vec3f *origin, f32 dist, f32 *rot, f
     gObjectNearestTargetSearch.dist = dist;
     gObjectNearestTargetSearch.minKind = minKind;
     gObjectNearestTargetSearch.maxKind = maxKind;
-    if (cone < 360.0f) {
+    if (cone < 360.0F) {
         matrix34MakeViewFromEulerDegrees((f32 *)origin, rot, (f32 *)&gObjectNearestTargetSearch.facing);
         gObjectNearestTargetSearch.cone = cone;
     } else {
         matrix34Identity((Matrix34 *)&gObjectNearestTargetSearch.facing);
-        gObjectNearestTargetSearch.cone = 360.0f;
+        gObjectNearestTargetSearch.cone = 360.0F;
     }
     objectPrepareKindSearch(minKind);
     first = *(u8 **)(gObjectSearchTreeRoot + 8);

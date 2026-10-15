@@ -162,7 +162,7 @@ void textWindowDrawIndicator(Gfx **gdl, s32 alpha) {
     TextureRectangle rectangles[2];
     s32 origin = 31;
     s32 size = 48;
-    f32 scale = 1.0f;
+    f32 scale = 1.0F;
     s32 rendererTable = 5;
     s32 texture;
     TRACE("alpha:%d\n", alpha);
@@ -238,7 +238,7 @@ void textWindowDrawPageAt(Gfx **list, s32 x, s32 y, s32 alpha) {
     for (i = 0; i < 5; i++) {
         image = (TextImage *)gTextWindowPageImages[i][gTextWindowPageImageBuffer];
         if (image != NULL) {
-            textImageDrawRectangle(list, image, x, y, image->width + x, image->height + y, 0, 0, 1.0f, 1.0f);
+            textImageDrawRectangle(list, image, x, y, image->width + x, image->height + y, 0, 0, 1.0F, 1.0F);
             y += ((TextImage *)gTextWindowPageImages[i][gTextWindowPageImageBuffer])->height + 4;
         } else {
             y += 20;
@@ -260,7 +260,7 @@ void textWindowDrawPage(Gfx **gdl) {
     if (gTextWindowState == TEXT_WINDOW_CHANGING_PAGE) {
         textWindowDrawPageAt(
             gdl, 0x35, 0x53,
-            mathMapRangeClamped(0.0f, 255.0f, 90.0f, 10.0f,
+            mathMapRangeClamped(0.0F, 255.0F, 90.0F, 10.0F,
                                 runtimeGetElapsedMilliseconds() - (u64)gTextWindowStateStartMilliseconds));
     } else {
         textWindowDrawPageAt(gdl, 0x36, 0x54, 0x50);
@@ -278,7 +278,7 @@ void textWindowDrawPrompt(Gfx **gdl) {
     textDrawReset();
     textDrawSetPalette(gDefaultTextPalette);
     textDrawSetColor(0xFF, 0xFF, 0xFF, runtimeGetUiPulseAlpha());
-    textDrawSetCursor((0x140 - gTextWindowPromptImage->width) / 2 - 0x20, 0x9F);
+    textDrawSetCursor(((0x140 - gTextWindowPromptImage->width) / 2) - 0x20, 0x9F);
     textDrawImageAtCursor((TextImage *)gTextWindowPromptImage);
     textDrawGetDisplayListCursor(gdl);
     textDrawReset();
@@ -568,10 +568,11 @@ void textWindowUpdate(void) {
         break;
     case TEXT_WINDOW_AWAITING_INPUT:
         if (gControllerPrimaryRepeatedButtons & 0x8000) {
-            if (gTextWindowContinuation == 0)
+            if (gTextWindowContinuation == 0) {
                 textWindowSetState(TEXT_WINDOW_CLOSING);
-            else
+            } else {
                 textWindowSetState(TEXT_WINDOW_CHANGING_PAGE);
+            }
         }
         gControllerPrimaryRepeatedButtons = 0;
         gControllerPrimaryReleasedButtons = 0;
@@ -592,15 +593,17 @@ void textWindowUpdate(void) {
         }
         break;
     case TEXT_WINDOW_CLOSING:
-        if (runtimeGetElapsedMilliseconds() - (u64)gTextWindowStateStartMilliseconds > 300)
+        if (runtimeGetElapsedMilliseconds() - (u64)gTextWindowStateStartMilliseconds > 300) {
             textWindowFinish();
+        }
         break;
     }
     i = 0;
     if (gTextWindowSceneViewMode != 0) {
         for (; i < 3; i++) {
-            if (i > 0)
+            if (i > 0) {
                 continue;
+            }
             playerUpdateInput(i);
         }
         pikachuUpdateScriptAndTriggers();

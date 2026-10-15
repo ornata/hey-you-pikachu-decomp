@@ -287,8 +287,8 @@ u8 *playerCreateControlHierarchy(void) {
     ((RuntimeObjectPrefix *)controlRoot)->kind = 0x7F;
     ((RuntimeObjectPrefix *)controlRoot)->sibling.bytes = sp20;
     ((RuntimeObjectPrefix *)sp20)->sibling.bytes = secondCollisionObject;
-    ((RuntimeObjectPrefix *)sp20)->radius = 4.5f;
-    ((RuntimeObjectPrefix *)secondCollisionObject)->radius = 4.5f;
+    ((RuntimeObjectPrefix *)sp20)->radius = 4.5F;
+    ((RuntimeObjectPrefix *)secondCollisionObject)->radius = 4.5F;
     objectRegisterActiveHierarchy(objectMakeHierarchyRoot(controlRoot));
     return controlRoot;
 }
@@ -313,16 +313,16 @@ f32 playerCalculateYawInput(u8 *object, ControllerState *controller, s32 invert)
 
     if (!(((PlayerControlPrefix *)object)->permissions & 0x200) ||
         ((stick = controller->stickX), (stick >= 0 ? stick : -stick) < 11)) {
-        return 0.0f;
+        return 0.0F;
     }
     if (stick >= 0x32) {
-        response = -60.0f * gRuntimeFrameSeconds;
+        response = -60.0F * gRuntimeFrameSeconds;
     } else if (stick < -0x31) {
-        response = 60.0f * gRuntimeFrameSeconds;
+        response = 60.0F * gRuntimeFrameSeconds;
     } else {
-        normalized = (f32)stick * 0.011764706f;
-        response = (f32) - (normalized > 0.0f ? 1 : (normalized < 0.0f ? -1 : 0)) * gRuntimeFrameSeconds *
-                               ((48.0f * (normalized * normalized)) + 12.0f);
+        normalized = (f32)stick * 0.011764706F;
+        response = (f32) - (normalized > 0.0F ? 1 : (normalized < 0.0F ? -1 : 0)) * gRuntimeFrameSeconds *
+                               ((48.0F * (normalized * normalized)) + 12.0F);
     }
     if (invert != 0) {
         return -response;
@@ -344,21 +344,24 @@ f32 playerCalculatePitchInput(u8 *player, ControllerState *controller, s32 inver
     s32 flags;
     s32 input;
     flags = ((PlayerControlPrefix *)player)->permissions;
-    if (!(flags & 0x200) || !(flags & 0x8000))
-        return 0.0f;
+    if (!(flags & 0x200) || !(flags & 0x8000)) {
+        return 0.0F;
+    }
     input = controller->stickY;
-    if (input >= 50)
-        delta = 60.0f * gRuntimeFrameSeconds;
-    else if (input >= 20)
-        delta = 12.0f * gRuntimeFrameSeconds;
-    else if (input < -49)
-        delta = -60.0f * gRuntimeFrameSeconds;
-    else if (input < -19)
-        delta = -12.0f * gRuntimeFrameSeconds;
-    else
-        return 0.0f;
-    if (invert != 0)
+    if (input >= 50) {
+        delta = 60.0F * gRuntimeFrameSeconds;
+    } else if (input >= 20) {
+        delta = 12.0F * gRuntimeFrameSeconds;
+    } else if (input < -49) {
+        delta = -60.0F * gRuntimeFrameSeconds;
+    } else if (input < -19) {
+        delta = -12.0F * gRuntimeFrameSeconds;
+    } else {
+        return 0.0F;
+    }
+    if (invert != 0) {
         return -delta;
+    }
     return delta;
 }
 
@@ -388,39 +391,41 @@ void playerCalculateMovementInput(ControllerState *pad, u8 *obj, f32 *dx, f32 *d
     f32 factor;
     f32 change;
     f32 oldSpeed;
-    f32 threshold = 20.0f;
+    f32 threshold = 20.0F;
     s32 buttons;
-    *dx = 0.0f;
-    *dz = 0.0f;
-    x = ((PlayerControlPrefix *)obj)->permissions & 0x2000 ? (f32)pad->stickX : 0.0f;
+    *dx = 0.0F;
+    *dz = 0.0F;
+    x = ((PlayerControlPrefix *)obj)->permissions & 0x2000 ? (f32)pad->stickX : 0.0F;
     z = (f32)pad->stickY;
     previous[0] = (f32)((PlayerControlPrefix *)obj)->previousStickY;
     ((PlayerControlPrefix *)obj)->previousStickY = (s32)z;
     buttons = pad->held;
     if (buttons & 3) {
-        x = buttons & 1 ? 50.0f : -50.0f;
-    } else if ((fabsf(x) >= 60.0f || fabsf(z) <= 10.0f) && ((PlayerControlPrefix *)obj)->companionMode == 0) {
-        if (fabsf(z) <= 10.0f)
-            ((PlayerControlPrefix *)obj)->movementSpeed = 0.0f;
+        x = buttons & 1 ? 50.0F : -50.0F;
+    } else if ((fabsf(x) >= 60.0F || fabsf(z) <= 10.0F) && ((PlayerControlPrefix *)obj)->companionMode == 0) {
+        if (fabsf(z) <= 10.0F) {
+            ((PlayerControlPrefix *)obj)->movementSpeed = 0.0F;
+        }
         return;
     }
     if (fabsf(z) >= threshold) {
         change = fabsf(z - previous[0]);
-        factor = z > 0.0f ? 0.009f : 0.007f;
-        speed = change * factor / gRuntimeFrameSeconds + 8.0f;
+        factor = z > 0.0F ? 0.009F : 0.007F;
+        speed = (change * factor / gRuntimeFrameSeconds) + 8.0F;
         oldSpeed = ((PlayerControlPrefix *)obj)->movementSpeed;
-        speed = (oldSpeed < speed ? speed : oldSpeed) < 25.0f ? (oldSpeed < speed ? speed : oldSpeed) : 25.0f;
+        speed = (oldSpeed < speed ? speed : oldSpeed) < 25.0F ? (oldSpeed < speed ? speed : oldSpeed) : 25.0F;
     } else {
-        if (fabsf(x) > 10.0f)
-            speed = fabsf(x) > threshold ? 25.0f : 8.0f;
-        else
-            speed = 0.0f;
+        if (fabsf(x) > 10.0F) {
+            speed = fabsf(x) > threshold ? 25.0F : 8.0F;
+        } else {
+            speed = 0.0F;
+        }
     }
     ((PlayerControlPrefix *)obj)->movementSpeed = speed;
-    if (!(speed < 0.001f) || !(speed > -0.001f)) {
+    if (!(speed < 0.001F) || !(speed > -0.001F)) {
         speed *= gRuntimeFrameSeconds;
-        *dx = -x * 0.011764706f * speed;
-        *dz = z * 0.011764706f * speed;
+        *dx = -x * 0.011764706F * speed;
+        *dz = z * 0.011764706F * speed;
         vector2RotateComponentsDegrees(-((PlayerControlPrefix *)obj)->yaw, dx, dz);
     }
 }
@@ -437,20 +442,26 @@ void playerCalculateMovementInput(ControllerState *pad, u8 *obj, f32 *dx, f32 *d
 /// \note Original decompilation identifier: \c func_8010EF00 (0x8010EF00).
 void playerSetViewAngles(u8 *player, f32 x, f32 z) {
     if (((PlayerControlPrefix *)player)->permissions & 2) {
-        while (x < 0.0f)
-            x += 360.0f;
-        while (x >= 360.0f)
-            x -= 360.0f;
-        while (z < 0.0f)
-            z += 360.0f;
-        while (z >= 360.0f)
-            z -= 360.0f;
-        if (z >= 180.0f)
-            z -= 360.0f;
-        if (z > 60.0f)
-            z = 60.0f;
-        else if (z < -60.0f)
-            z = -60.0f;
+        while (x < 0.0F) {
+            x += 360.0F;
+        }
+        while (x >= 360.0F) {
+            x -= 360.0F;
+        }
+        while (z < 0.0F) {
+            z += 360.0F;
+        }
+        while (z >= 360.0F) {
+            z -= 360.0F;
+        }
+        if (z >= 180.0F) {
+            z -= 360.0F;
+        }
+        if (z > 60.0F) {
+            z = 60.0F;
+        } else if (z < -60.0F) {
+            z = -60.0F;
+        }
         ((PlayerControlPrefix *)player)->yaw = x;
         ((PlayerControlPrefix *)player)->pitch = z;
     }
@@ -500,17 +511,17 @@ void playerTrackCompanionViewTarget(u8 *player, ControllerState *controller, u8 
         x = input >= 0 ? input : -input;
         input = controller->stickY;
         y = input >= 0 ? input : -input;
-        speed = mathMapRangeClamped(0.0f, 60.0f, 50.0f, 10.0f, (f32)(y + x));
+        speed = mathMapRangeClamped(0.0F, 60.0F, 50.0F, 10.0F, (f32)(y + x));
         direction[0] = ((RuntimeObjectPrefix *)target)->worldPosition[0] - ((PlayerControlPrefix *)player)->position[0];
         direction[1] = ((RuntimeObjectPrefix *)target)->worldPosition[1] - ((PlayerControlPrefix *)player)->position[1];
         direction[2] = ((RuntimeObjectPrefix *)target)->worldPosition[2] - ((PlayerControlPrefix *)player)->position[2];
         direction[1] -= ((PlayerControlPrefix *)player)->eyeHeight;
         vector3GetYawAndProjectedPitchDegrees(direction, &yaw, &pitch);
-        result = mathApproachAngleDegrees(((PlayerControlPrefix *)player)->yaw, yaw, 0.2f, speed,
-                                          60.0f * gRuntimeFrameSeconds);
+        result = mathApproachAngleDegrees(((PlayerControlPrefix *)player)->yaw, yaw, 0.2F, speed,
+                                          60.0F * gRuntimeFrameSeconds);
         playerSetViewAngles((u8 *)player, result,
-                            mathApproachAngleDegrees(((PlayerControlPrefix *)player)->pitch, pitch, 0.2f, speed,
-                                                     60.0f * gRuntimeFrameSeconds));
+                            mathApproachAngleDegrees(((PlayerControlPrefix *)player)->pitch, pitch, 0.2F, speed,
+                                                     60.0F * gRuntimeFrameSeconds));
     }
 }
 
@@ -544,12 +555,12 @@ void playerApplyFollowMovementInput(ControllerState *controller, u8 *player, u8 
                 direction[2] =
                     ((PlayerControlPrefix *)player)->position[2] - ((RuntimeObjectPrefix *)target)->worldPosition[2];
                 distance = vector3Length(direction);
-                if (distance > 20.0f)
-                    controller->stickY =
-                        (s32)mathMapRangeClamped(25.0f, 20.0f, 40.0f, 50.0f, distance);
-                if (distance < 12.0f)
-                    controller->stickY =
-                        (s32)mathMapRangeClamped(15.0f, -20.0f, 0.0f, -50.0f, distance);
+                if (distance > 20.0F) {
+                    controller->stickY = (s32)mathMapRangeClamped(25.0F, 20.0F, 40.0F, 50.0F, distance);
+                }
+                if (distance < 12.0F) {
+                    controller->stickY = (s32)mathMapRangeClamped(15.0F, -20.0F, 0.0F, -50.0F, distance);
+                }
             }
         }
     }
@@ -557,7 +568,7 @@ void playerApplyFollowMovementInput(ControllerState *controller, u8 *player, u8 
 
 /// Footstep travel thresholds indexed by movement class; the airborne class suppresses footsteps.
 /// \note Original identifier: \c D_80123E90 (0x80123E90).
-f32 gPlayerFootstepDistanceThresholds[4] = {5.0f, 8.0f, 9.0f, 2147483648.0f};
+f32 gPlayerFootstepDistanceThresholds[4] = {5.0F, 8.0F, 9.0F, 2147483648.0F};
 
 /// Play a material-specific footstep when accumulated travel reaches the current movement class threshold.
 /// \param player Player motion record providing movement class zero through three and accumulated travel
@@ -570,7 +581,7 @@ void playerPlayFootstepSound(u8 *player, s32 ground) {
 
     if (!(((PlayerControlPrefix *)player)->footstepDistance <
           gPlayerFootstepDistanceThresholds[((PlayerControlPrefix *)player)->movementClass])) {
-        ((PlayerControlPrefix *)player)->footstepDistance = 0.0f;
+        ((PlayerControlPrefix *)player)->footstepDistance = 0.0F;
         snd = terrainGetMaterialSound(1, ground);
         if (snd >= 0) {
             audioSetSoundEffectVolume(audioPlaySoundEffect(snd), 0xA0);
@@ -628,88 +639,88 @@ void playerStepGroundMovement(u8 *motion, f32 dx, f32 dz) {
                                                ((PlayerControlPrefix *)motion)->position[2], &node);
         if ((((PlayerControlPrefix *)motion)->airborne == 0) && (material & 0x100)) {
             ((PlayerControlPrefix *)motion)->slopeSpeed =
-                (f32)(((PlayerControlPrefix *)motion)->slopeSpeed + (20.0f * gRuntimeFrameSeconds));
-            if (((PlayerControlPrefix *)motion)->slopeSpeed > 10.0f) {
-                ((PlayerControlPrefix *)motion)->slopeSpeed = 10.0f;
+                (f32)(((PlayerControlPrefix *)motion)->slopeSpeed + (20.0F * gRuntimeFrameSeconds));
+            if (((PlayerControlPrefix *)motion)->slopeSpeed > 10.0F) {
+                ((PlayerControlPrefix *)motion)->slopeSpeed = 10.0F;
             }
         } else {
             ((PlayerControlPrefix *)motion)->slopeSpeed =
-                (f32)(((PlayerControlPrefix *)motion)->slopeSpeed - (30.0f * gRuntimeFrameSeconds));
-            if (((PlayerControlPrefix *)motion)->slopeSpeed < 0.0f) {
-                ((PlayerControlPrefix *)motion)->slopeSpeed = 0.0f;
+                (f32)(((PlayerControlPrefix *)motion)->slopeSpeed - (30.0F * gRuntimeFrameSeconds));
+            if (((PlayerControlPrefix *)motion)->slopeSpeed < 0.0F) {
+                ((PlayerControlPrefix *)motion)->slopeSpeed = 0.0F;
             }
         }
-        if (((PlayerControlPrefix *)motion)->slopeSpeed <= 0.0f) {
-            dy = -((PlayerControlPrefix *)motion)->downwardVelocity - (3.2666667f * gRuntimeFrameSeconds);
+        if (((PlayerControlPrefix *)motion)->slopeSpeed <= 0.0F) {
+            dy = -((PlayerControlPrefix *)motion)->downwardVelocity - (3.2666667F * gRuntimeFrameSeconds);
             goto block_14;
         }
-        normal[1] = 0.2f;
+        normal[1] = 0.2F;
         terrainGetDownhillHeightDifferences(
             ((PlayerControlPrefix *)motion)->position[0], ((PlayerControlPrefix *)motion)->position[1],
-            ((PlayerControlPrefix *)motion)->position[2], 50.0f, 0.2f, normal, normal + 2, &node);
+            ((PlayerControlPrefix *)motion)->position[2], 50.0F, 0.2F, normal, normal + 2, &node);
         vector3Normalize(normal);
         dx += normal[0] * ((PlayerControlPrefix *)motion)->slopeSpeed;
         dz += normal[2] * ((PlayerControlPrefix *)motion)->slopeSpeed;
-        dy = -((PlayerControlPrefix *)motion)->downwardVelocity - (3.2666667f * gRuntimeFrameSeconds * 3.0f);
+        dy = -((PlayerControlPrefix *)motion)->downwardVelocity - (3.2666667F * gRuntimeFrameSeconds * 3.0F);
     } else {
-        ((PlayerControlPrefix *)motion)->slopeSpeed = 0.0f;
-        dy = 0.0f;
+        ((PlayerControlPrefix *)motion)->slopeSpeed = 0.0F;
+        dy = 0.0F;
     }
 block_14:
     currentGround = terrainGetWorldHeightForQuery(
         gPlayerCollisionQueryMode, ((PlayerControlPrefix *)motion)->position[0],
-        ((PlayerControlPrefix *)motion)->position[1] + 0.03f, ((PlayerControlPrefix *)motion)->position[2], &node);
+        ((PlayerControlPrefix *)motion)->position[1] + 0.03F, ((PlayerControlPrefix *)motion)->position[2], &node);
     if (((PlayerControlPrefix *)motion)->permissions & 8) {
         if (material & 0x100) {
-            height = 0.55f;
+            height = 0.55F;
         } else {
-            height = 5.5f;
+            height = 5.5F;
         }
         node = NULL;
         if (((PlayerControlPrefix *)motion)->airborne != 0) {
             terrainConstrainMovement(gPlayerCollisionQueryMode, ((PlayerControlPrefix *)motion)->position[0],
-                                     ((PlayerControlPrefix *)motion)->position[1] + 0.03f,
+                                     ((PlayerControlPrefix *)motion)->position[1] + 0.03F,
                                      ((PlayerControlPrefix *)motion)->position[2],
                                      ((PlayerControlPrefix *)motion)->collisionRadius,
                                      ((PlayerControlPrefix *)motion)->eyeHeight, height, &dx, &dy, &dz, &node);
         } else {
             terrainConstrainMovement(gPlayerCollisionQueryMode, ((PlayerControlPrefix *)motion)->position[0],
-                                     currentGround + 0.03f, ((PlayerControlPrefix *)motion)->position[2],
+                                     currentGround + 0.03F, ((PlayerControlPrefix *)motion)->position[2],
                                      ((PlayerControlPrefix *)motion)->collisionRadius,
                                      ((PlayerControlPrefix *)motion)->eyeHeight, height, &dx, &dy, &dz, &node);
         }
     }
     blockedDrop = 0;
-    if (dy < 0.0f) {
+    if (dy < 0.0F) {
         nextX = ((PlayerControlPrefix *)motion)->position[0] + dx;
-        nextY = ((PlayerControlPrefix *)motion)->position[1] + dy + 0.03f;
+        nextY = ((PlayerControlPrefix *)motion)->position[1] + dy + 0.03F;
         nextZ = ((PlayerControlPrefix *)motion)->position[2] + dz;
         cornerHeight = terrainGetWorldHeightForQuery(gPlayerCollisionQueryMode, nextX, nextY, nextZ, &node);
-        nextGround = terrainGetWorldHeightForQuery(gPlayerCollisionQueryMode, nextX + 0.1f, nextY, nextZ, &node);
+        nextGround = terrainGetWorldHeightForQuery(gPlayerCollisionQueryMode, nextX + 0.1F, nextY, nextZ, &node);
         if (cornerHeight < nextGround && nextY < nextGround) {
         }
-        nextGround = terrainGetWorldHeightForQuery(gPlayerCollisionQueryMode, nextX, nextY, nextZ + 0.1f, &node);
+        nextGround = terrainGetWorldHeightForQuery(gPlayerCollisionQueryMode, nextX, nextY, nextZ + 0.1F, &node);
         if (cornerHeight < nextGround && nextY < nextGround) {
         }
-        nextGround = terrainGetWorldHeightForQuery(gPlayerCollisionQueryMode, nextX + 0.1f, nextY, nextZ + 0.1f, &node);
+        nextGround = terrainGetWorldHeightForQuery(gPlayerCollisionQueryMode, nextX + 0.1F, nextY, nextZ + 0.1F, &node);
         if (nextGround < cornerHeight) {
             nextGround = cornerHeight;
         }
-        if (nextY < (nextGround + 0.03f)) {
+        if (nextY < (nextGround + 0.03F)) {
             blockedDrop = 1;
-            dy = 0.0f;
+            dy = 0.0F;
         }
     }
     nextGround =
         terrainGetWorldHeightForQuery(gPlayerCollisionQueryMode, ((PlayerControlPrefix *)motion)->position[0] + dx,
-                                      ((PlayerControlPrefix *)motion)->position[1] + dy + 0.03f,
+                                      ((PlayerControlPrefix *)motion)->position[1] + dy + 0.03F,
                                       ((PlayerControlPrefix *)motion)->position[2] + dz, &node);
     speed = sqrtf((dx * dx) + (dz * dz)) / gRuntimeFrameSeconds;
-    if ((((PlayerControlPrefix *)motion)->permissions & 0x10) && ((currentGround - nextGround) > 1.0f) &&
-        (speed < 16.5f)) {
-        speed = 0.0f;
-        dx = 0.0f;
-        dz = 0.0f;
+    if ((((PlayerControlPrefix *)motion)->permissions & 0x10) && ((currentGround - nextGround) > 1.0F) &&
+        (speed < 16.5F)) {
+        speed = 0.0F;
+        dx = 0.0F;
+        dz = 0.0F;
     }
     distance[0] =
         ((PlayerControlPrefix *)motion)->position[0] - ((RuntimeObjectPrefix *)(u8 *)((s32)gPikachuActor))->worldPosition[0];
@@ -718,10 +729,10 @@ block_14:
     distance[2] =
         ((PlayerControlPrefix *)motion)->position[2] - ((RuntimeObjectPrefix *)(u8 *)((s32)gPikachuActor))->worldPosition[2];
     oldDistance = vector3Length(distance);
-    if (oldDistance < 2.5f) {
+    if (oldDistance < 2.5F) {
         if (controllerIsRumblePatternActive(0) == 0) {
             if (((f64)randomNext() * 2.3283064365386963e-10) < 0.30000001192092896) {
-                controllerRequestRumblePattern(0, 0.3f, 0.2f, 0.01f);
+                controllerRequestRumblePattern(0, 0.3F, 0.2F, 0.01F);
             }
         }
         distance[0] += dx;
@@ -730,14 +741,14 @@ block_14:
         if (vector3Length(distance) < oldDistance) {
             ((PlayerControlPrefix *)motion)->viewShake =
                 (f32)((((f64)randomNext() * 2.3283064365386963e-10) - 0.5) * 0.800000011920929);
-            dx *= 0.7f;
-            dz *= 0.7f;
-            speed *= 0.7f;
+            dx *= 0.7F;
+            dz *= 0.7F;
+            speed *= 0.7F;
         }
     }
-    if (speed > 16.5f) {
+    if (speed > 16.5F) {
         ((PlayerControlPrefix *)motion)->movementClass = 2;
-    } else if (speed > 8.0f) {
+    } else if (speed > 8.0F) {
         ((PlayerControlPrefix *)motion)->movementClass = 1;
     } else {
         ((PlayerControlPrefix *)motion)->movementClass = 0;
@@ -754,7 +765,7 @@ block_14:
     if ((nextGround < ((PlayerControlPrefix *)motion)->position[1]) && (blockedDrop == 0)) {
         ((PlayerControlPrefix *)motion)->movementClass = 3;
         ((PlayerControlPrefix *)motion)->airborne = 1;
-        ((PlayerControlPrefix *)motion)->footstepDistance = 9.0f;
+        ((PlayerControlPrefix *)motion)->footstepDistance = 9.0F;
     } else {
         ((PlayerControlPrefix *)motion)->airborne = 0;
         playerPlayFootstepSound(motion, material);
@@ -763,12 +774,12 @@ block_14:
         if (((PlayerControlPrefix *)motion)->position[1] < nextGround) {
             ((PlayerControlPrefix *)motion)->position[1] = nextGround;
         }
-        if (dy < 0.0f) {
-            dy = 0.0f;
+        if (dy < 0.0F) {
+            dy = 0.0F;
         }
     }
-    if (dy > 0.7f) {
-        dy = 0.7f;
+    if (dy > 0.7F) {
+        dy = 0.7F;
     }
     ((PlayerControlPrefix *)motion)->downwardVelocity = (f32)-dy;
 }
@@ -793,14 +804,15 @@ s32 playerThrowHeldItem(u8 *player) {
     f32 origin[3];
     u8 *object;
     object = objectFindLiveByHandle(((PlayerControlPrefix *)player)->heldItemHandle);
-    if (object == NULL)
+    if (object == NULL) {
         return 0;
+    }
     state = ((RuntimeObjectPrefix *)object)->state.bytes;
     yaw = ((PlayerControlPrefix *)player)->viewShake + *(f32 *)(player + (u32) & ((PlayerControlPrefix *)0)->yaw);
     pitch = ((PlayerControlPrefix *)player)->pitchOffset + *(f32 *)(player + (u32) & ((PlayerControlPrefix *)0)->pitch);
-    vertical = mathSinDegrees(pitch) * 50.0f;
+    vertical = mathSinDegrees(pitch) * 50.0F;
     pitch = ((PlayerControlPrefix *)player)->pitchOffset + *(f32 *)(player + (u32) & ((PlayerControlPrefix *)0)->pitch);
-    horizontal = mathCosDegrees(pitch) * 50.0f;
+    horizontal = mathCosDegrees(pitch) * 50.0F;
     origin[0] = ((PlayerControlPrefix *)player)->position[0];
     origin[1] = ((PlayerControlPrefix *)player)->eyeHeight + ((PlayerControlPrefix *)player)->position[1];
     origin[2] = ((PlayerControlPrefix *)player)->position[2];
@@ -809,9 +821,9 @@ s32 playerThrowHeldItem(u8 *player) {
     direction[2] = mathCosDegrees(yaw) * horizontal;
     itemThrow(((RuntimeObjectPrefix *)object)->handle, origin, ((RuntimeObjectPrefix *)object)->position, direction, 1);
     volume = mathMapRangeClamped(
-        0.5f, 0.02f, 2.0f, 0.2f,
-        *(f32 *)((u8 *)gItemKindMotionCoefficientEntries + ((ItemStatePrefix *)state)->kind * 0x74));
-    controllerRequestRumblePattern(0, volume, volume, volume * 0.5f);
+        0.5F, 0.02F, 2.0F, 0.2F,
+        *(f32 *)((u8 *)gItemKindMotionCoefficientEntries + (((ItemStatePrefix *)state)->kind * 0x74)));
+    controllerRequestRumblePattern(0, volume, volume, volume * 0.5F);
     objectId = ((RuntimeObjectPrefix *)object)->handle;
     TRACE("holdItem:%p\n", object);
     TRACE("item:%p\n", state);
@@ -883,7 +895,7 @@ s32 playerThrowHeldItemAndFocus(u8 *player) {
     }
     thrownItemHandle = playerThrowHeldItem(player);
     if (thrownItemHandle != 0) {
-        playerBeginTargetFocus(player, thrownItemHandle, 10.0f);
+        playerBeginTargetFocus(player, thrownItemHandle, 10.0F);
     }
     return 1;
 }
@@ -1044,7 +1056,7 @@ void playerChangeMode(s32 mode) {
         gPlayerModeState.leave((u8 *)&gPlayerState);
     }
     if (mode == 9) {
-        controllerRequestRumblePattern(0, 1.5f, 0.2f, 0.15f);
+        controllerRequestRumblePattern(0, 1.5F, 0.2F, 0.15F);
     }
     TRACE("change player type %d\n", mode);
     m = &gPlayerModes[mode];
@@ -1052,7 +1064,7 @@ void playerChangeMode(s32 mode) {
     mc->leave = m->leave;
     gPlayerPermissions = m->permissions;
     mc->mode = mode;
-    ((PlayerControlPrefix *)((u8 *)gPlayerCompanionTarget - 0x50))->modeElapsed = 0.0f;
+    ((PlayerControlPrefix *)((u8 *)gPlayerCompanionTarget - 0x50))->modeElapsed = 0.0F;
 }
 
 /// Separate symbol view of the primary player record's controller port.
@@ -1263,14 +1275,16 @@ s32 playerUpdateCompanionControl(u8 *player, ControllerState *controller) {
         break;
     case 1:
         target = playerResolveCompanionViewTarget(player);
-        if (target == NULL)
+        if (target == NULL) {
             return 0;
+        }
         playerTrackCompanionViewTarget(player, controller, target);
         break;
     case 2:
         target = playerResolveCompanionViewTarget(player);
-        if (target == NULL)
+        if (target == NULL) {
             return 0;
+        }
         playerTrackCompanionViewTarget(player, controller, target);
         playerApplyFollowMovementInput(controller, player, target);
         break;
@@ -1327,7 +1341,7 @@ void playerUpdateStationaryLook(u8 *player, ControllerState *controller) {
         playerSetViewAngles((u8 *)player, ((PlayerControlPrefix *)player)->yaw + dx,
                             playerCalculatePitchInput(player, controller, progressGetValue(7)) +
                                 (*(f32 *)((s8 *)player + (u32) & ((PlayerControlPrefix *)0)->pitch)));
-        playerStepGroundMovement(player, 0.0f, 0.0f);
+        playerStepGroundMovement(player, 0.0F, 0.0F);
         playerUpdateAreaEvents(player);
     }
 }
@@ -1346,11 +1360,11 @@ void playerUpdateMenuOnly(u8 *player, ControllerState *controller) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_801109E8 (0x801109E8).
 void playerToggleViewShake(u8 *player) {
-    if (((PlayerControlPrefix *)player)->viewShake < 0.0f) {
-        ((PlayerControlPrefix *)player)->viewShake = 0.2f;
+    if (((PlayerControlPrefix *)player)->viewShake < 0.0F) {
+        ((PlayerControlPrefix *)player)->viewShake = 0.2F;
         return;
     }
-    ((PlayerControlPrefix *)player)->viewShake = -0.2f;
+    ((PlayerControlPrefix *)player)->viewShake = -0.2F;
 }
 
 
@@ -1359,8 +1373,8 @@ void playerToggleViewShake(u8 *player) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80110A24 (0x80110A24).
 void playerFinishStun(u8 *player) {
-    ((PlayerControlPrefix *)player)->viewShake = 0.0f;
-    cameraFadeOverlayToColor(0, 0, 0, 0, 0, 0.8f);
+    ((PlayerControlPrefix *)player)->viewShake = 0.0F;
+    cameraFadeOverlayToColor(0, 0, 0, 0, 0, 0.8F);
     controllerRequestRumbleStop(0);
 }
 
@@ -1376,7 +1390,7 @@ void playerUpdateStun(u8 *player, ControllerState *controller) {
     if (playerTryOpenMenu(player, controller) == 0) {
         ((PlayerControlPrefix *)player)->stunRemaining =
             (f32)(((PlayerControlPrefix *)player)->stunRemaining - gRuntimeFrameSeconds);
-        if (((PlayerControlPrefix *)player)->stunRemaining < 0.0f) {
+        if (((PlayerControlPrefix *)player)->stunRemaining < 0.0F) {
             if (progressGetCurrentChapter() == 4) {
                 playerChangeMode(0x1B);
                 return;
@@ -1394,7 +1408,7 @@ void playerUpdateStun(u8 *player, ControllerState *controller) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80110B04 (0x80110B04).
 void playerUpdateBriefViewShake(u8 *player, ControllerState *unused) {
-    if (((PlayerControlPrefix *)player)->modeElapsed < 1.5f) {
+    if (((PlayerControlPrefix *)player)->modeElapsed < 1.5F) {
         playerToggleViewShake(player);
     }
 }
@@ -1408,19 +1422,22 @@ void playerUpdateBriefViewShake(u8 *player, ControllerState *unused) {
 s32 playerShowNextHelpLine(void) {
     u8 line[0x100];
     u8 *dst;
-    if (((u32) * (u8 *)gPlayerHelpTextCursor) == 0)
+    if (((u32) * (u8 *)gPlayerHelpTextCursor) == 0) {
         return 0;
+    }
     dst = line;
     while (((u32) * (u8 *)gPlayerHelpTextCursor) != 0 && ((u32) * (u8 *)gPlayerHelpTextCursor) != '\n') {
         *dst++ = ((u32) * (u8 *)gPlayerHelpTextCursor);
         gPlayerHelpTextCursor = (u8 *)((u8 *)gPlayerHelpTextCursor + 1);
     }
     *dst = 0;
-    if (((u32) * (u8 *)gPlayerHelpTextCursor) == '\n')
+    if (((u32) * (u8 *)gPlayerHelpTextCursor) == '\n') {
         gPlayerHelpTextCursor = (u8 *)((u8 *)gPlayerHelpTextCursor + 1);
-    messageBarEnqueue(0, 2147483648.0f, line);
-    if (*(u8 *)gPlayerHelpTextCursor != 0)
+    }
+    messageBarEnqueue(0, 2147483648.0F, line);
+    if (*(u8 *)gPlayerHelpTextCursor != 0) {
         return 1;
+    }
     return 0;
 }
 
@@ -1552,7 +1569,7 @@ s32 playerPrepareInteractionDescription(PlayerControlPrefix *player) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_801110D8 (0x801110D8).
 void playerFinishHelpDisplay(u8 *unused) {
-    cameraFadeOverlayToColor(0, 0, 0, 0, 0, 0.0f);
+    cameraFadeOverlayToColor(0, 0, 0, 0, 0, 0.0F);
 }
 
 s32 playerShowNextHelpLine(void);                   /* extern */
@@ -1605,20 +1622,19 @@ void playerUpdateTargetFocus(u8 *player, ControllerState *controller) {
     s32 y;
     if (playerTryOpenMenu(player, controller) == 0) {
         if (playerTryActivateInteraction(player, controller) != 0) {
-            ((PlayerControlPrefix *)player)->focusRemaining = 0.0f;
+            ((PlayerControlPrefix *)player)->focusRemaining = 0.0F;
             return;
         }
         if (playerTryInspectTarget(player, controller) == 0) {
             target = playerResolveCompanionViewTarget(player);
             ((PlayerControlPrefix *)player)->focusRemaining -= gRuntimeFrameSeconds;
-            if (((PlayerControlPrefix *)player)->focusRemaining < 0.0f ||
-                controller->pressed != 0 ||
-                ((x = controller->stickX) >= 0 ? x : -x) >= 11 ||
-                ((y = controller->stickY) >= 0 ? y : -y) >= 11 || target == NULL) {
+            if (((PlayerControlPrefix *)player)->focusRemaining < 0.0F || controller->pressed != 0 ||
+                ((x = controller->stickX) >= 0 ? x : -x) >= 11 || ((y = controller->stickY) >= 0 ? y : -y) >= 11 ||
+                target == NULL) {
                 playerResumeNormalControl();
             } else {
                 playerTrackCompanionViewTarget(player, controller, target);
-                playerStepGroundMovement(player, 0.0f, 0.0f);
+                playerStepGroundMovement(player, 0.0F, 0.0F);
                 playerUpdateAreaEvents(player);
             }
         }
@@ -1779,8 +1795,8 @@ void playerUpdateCameraTransition(u8 *player, ControllerState *unused) {
 
     ((PlayerControlPrefix *)player)->modeState.cameraRemaining =
         (f32)(((PlayerControlPrefix *)player)->modeState.cameraRemaining - gRuntimeFrameSeconds);
-    if (((PlayerControlPrefix *)player)->modeState.cameraRemaining < 0.0f) {
-        ((PlayerControlPrefix *)player)->modeState.cameraRemaining = 0.0f;
+    if (((PlayerControlPrefix *)player)->modeState.cameraRemaining < 0.0F) {
+        ((PlayerControlPrefix *)player)->modeState.cameraRemaining = 0.0F;
     }
     vector3InterpolateSmoothTimed(((PlayerControlPrefix *)player)->modeState.cameraEndEye, ((PlayerControlPrefix *)player)->modeState.cameraStartEye, sp3C,
                                   ((PlayerControlPrefix *)player)->modeState.cameraDuration,
@@ -1811,24 +1827,30 @@ s32 playerClassifyInteractionTarget(u8 *player, u8 *object, s32 flags) {
     ((PlayerControlPrefix *)player)->interactionFlags = flags;
     ((PlayerControlPrefix *)player)->modeState.interactionAction = 6;
     ((PlayerControlPrefix *)player)->interactionTarget = 0;
-    if (object == NULL || !(((PlayerControlPrefix *)player)->permissions & 0xC00))
+    if (object == NULL || !(((PlayerControlPrefix *)player)->permissions & 0xC00)) {
         return 0;
+    }
     ((PlayerControlPrefix *)player)->interactionTarget = ((RuntimeObjectPrefix *)object)->handle;
-    if (playerGetChaseStage() <= 0)
+    if (playerGetChaseStage() <= 0) {
         return 2;
+    }
     if (((PlayerControlPrefix *)player)->heldItemHandle == ((RuntimeObjectPrefix *)object)->handle) {
-        if (((ItemStatePrefix *)((RuntimeObjectPrefix *)object)->state.bytes)->kind != 0x8A)
+        if (((ItemStatePrefix *)((RuntimeObjectPrefix *)object)->state.bytes)->kind != 0x8A) {
             ((PlayerControlPrefix *)player)->modeState.interactionAction = 5;
+        }
         return 0;
     }
     kind = ((RuntimeObjectPrefix *)object)->kind;
-    if (kind == 0x25)
+    if (kind == 0x25) {
         return 2;
-    if (kind == 0xB0 || kind == 0x8F)
+    }
+    if (kind == 0xB0 || kind == 0x8F) {
         return 2;
+    }
     if (!(flags & INTERACTION_PRIMARY_REGION) || !(((PlayerControlPrefix *)player)->permissions & 0x400)) {
-        if (kind == 0x87)
+        if (kind == 0x87) {
             return 9;
+        }
         return 2;
     }
     if (kind > 0 && kind < 0x26) {
@@ -1848,15 +1870,17 @@ s32 playerClassifyInteractionTarget(u8 *player, u8 *object, s32 flags) {
             ((PlayerControlPrefix *)player)->modeState.interactionAction = 2;
             return 4;
         }
-        if (!itemCanBePickedUp(object, 1))
+        if (!itemCanBePickedUp(object, 1)) {
             return 2;
+        }
         ((PlayerControlPrefix *)player)->modeState.interactionAction = 1;
         return 3;
     }
     if (kind == 0x87) {
         state = ((RuntimeObjectPrefix *)object)->state.bytes;
-        if (((PassageState *)state)->accessState)
+        if (((PassageState *)state)->accessState) {
             return 5;
+        }
         ((PlayerControlPrefix *)player)->modeState.interactionAction = 7;
         if (((PassageState *)state)->kind == 2 || ((PassageState *)state)->kind == 3) {
             switch (((PassageState *)state)->destination) {
@@ -1867,8 +1891,9 @@ s32 playerClassifyInteractionTarget(u8 *player, u8 *object, s32 flags) {
             case 2:
                 return 8;
             }
-        } else
+        } else {
             return 4;
+        }
     }
     kind = ((RuntimeObjectPrefix *)object)->kind;
     if (kind == 0x8A) {
@@ -1911,8 +1936,8 @@ void playerBeginStun(u8 *player, f32 duration) {
     if (((PlayerControlPrefix *)player)->permissions & 0x20000000) {
         ((PlayerControlPrefix *)player)->stunRemaining = duration;
         playerChangeMode(3);
-        cameraFadeOverlayToColor(0, 0xFF, 0xFF, 0xFF, 0x96, 0.6f);
-        controllerRequestRumblePattern(0, duration, 0.2f, 0.18f);
+        cameraFadeOverlayToColor(0, 0xFF, 0xFF, 0xFF, 0x96, 0.6F);
+        controllerRequestRumblePattern(0, duration, 0.2F, 0.18F);
     }
 }
 
@@ -1949,7 +1974,7 @@ void playerUpdateViewCamera(u8 *player) {
             ((PlayerControlPrefix *)player)->eyeHeight + ((PlayerControlPrefix *)player)->position[1],
             ((PlayerControlPrefix *)player)->position[2],
             ((PlayerControlPrefix *)player)->pitchOffset + ((PlayerControlPrefix *)player)->pitch,
-            ((PlayerControlPrefix *)player)->yaw + ((PlayerControlPrefix *)player)->viewShake, 0.0f);
+            ((PlayerControlPrefix *)player)->yaw + ((PlayerControlPrefix *)player)->viewShake, 0.0F);
     }
 }
 
@@ -2017,14 +2042,14 @@ void playerUpdateControlHierarchy(u8 *object) {
     sine = mathSinDegrees(yaw);
     cosine = mathCosDegrees(yaw);
     reach = ((Vec3f *)((u8 *)gCurrentAreaConfiguration))->x;
-    if ((reach * 1.5f) < distance) {
+    if ((reach * 1.5F) < distance) {
         projected[0] = origin->position[0] + (sine * reach);
         projected[1] = origin->position[1];
         projected[2] = origin->position[2] + (cosine * ((Vec3f *)((u8 *)gCurrentAreaConfiguration))->z);
     } else {
-        projected[0] = origin->position[0] + (sine * distance * 0.6666667f);
+        projected[0] = origin->position[0] + (sine * distance * 0.6666667F);
         projected[1] = origin->position[1];
-        projected[2] = origin->position[2] + (cosine * distance * 0.6666667f);
+        projected[2] = origin->position[2] + (cosine * distance * 0.6666667F);
     }
     child = ((RuntimeObjectPrefix *)object)->sibling.pointer;
     ((RuntimeObjectPrefix *)object)->position[0] = projected[0];
@@ -2041,11 +2066,11 @@ void playerUpdateControlHierarchy(u8 *object) {
     ((RuntimeObjectPrefix *)child)->worldPosition[1] = (f32)origin->position[1];
     ((RuntimeObjectPrefix *)child)->worldPosition[2] = (f32)origin->position[2];
     surface = NULL;
-    hitX = sine * 20.0f;
-    hitY = 0.0f;
-    hitZ = cosine * 20.0f;
-    terrainConstrainMovement(1, origin->position[0], origin->position[1] + 0.03f, origin->position[2],
-                             origin->collisionRadius, origin->eyeHeight, 5.5f, &hitX, &hitY, &hitZ, &surface);
+    hitX = sine * 20.0F;
+    hitY = 0.0F;
+    hitZ = cosine * 20.0F;
+    terrainConstrainMovement(1, origin->position[0], origin->position[1] + 0.03F, origin->position[2],
+                             origin->collisionRadius, origin->eyeHeight, 5.5F, &hitX, &hitY, &hitZ, &surface);
     hitX += origin->position[0];
     hitY += origin->position[1];
     hitZ += origin->position[2];
@@ -2079,18 +2104,18 @@ void playerInitializeForArea(void) {
     playerInitializeCollisionQueryMode(1);
     playerSetInteractionHelpText((u8 *)"");
     for (index = 0; index != 1; index++) {
-        state = (u8 *)&gPlayerState + index * 0x100;
+        state = (u8 *)&gPlayerState + (index * 0x100);
         spawns = gCurrentAreaConfiguration->spawns;
         ((PlayerControlPrefix *)state)->position[0] = spawns[gRuntimeCurrentEntrance].playerPosition[0];
         ((PlayerControlPrefix *)state)->position[2] = spawns[gRuntimeCurrentEntrance].playerPosition[2];
         ((PlayerControlPrefix *)state)->position[1] = terrainGetWorldHeightForQuery(
             gPlayerCollisionQueryMode, ((PlayerControlPrefix *)state)->position[0],
             spawns[gRuntimeCurrentEntrance].playerPosition[1], ((PlayerControlPrefix *)state)->position[2], 0);
-        ((PlayerControlPrefix *)state)->eyeHeight = 6.0f;
+        ((PlayerControlPrefix *)state)->eyeHeight = 6.0F;
         ((PlayerControlPrefix *)state)->yaw = spawns[gRuntimeCurrentEntrance].playerYaw;
-        ((PlayerControlPrefix *)state)->pitchOffset = 0.0f;
-        ((PlayerControlPrefix *)state)->pitch = 5.0f;
-        ((PlayerControlPrefix *)state)->viewShake = 0.0f;
+        ((PlayerControlPrefix *)state)->pitchOffset = 0.0F;
+        ((PlayerControlPrefix *)state)->pitch = 5.0F;
+        ((PlayerControlPrefix *)state)->viewShake = 0.0F;
         playerChangeMode(1);
         playerSetControlPermissions(state, 0xF0003F2F);
         ((PlayerControlPrefix *)state)->controllerPort = index;
@@ -2099,8 +2124,8 @@ void playerInitializeForArea(void) {
         ((PlayerControlPrefix *)state)->companionMode = 0;
         ((PlayerControlPrefix *)state)->companionTarget = 0;
         ((PlayerControlPrefix *)state)->airborne = 0;
-        ((PlayerControlPrefix *)state)->downwardVelocity = 0.0f;
-        ((PlayerControlPrefix *)state)->collisionRadius = 4.5f;
+        ((PlayerControlPrefix *)state)->downwardVelocity = 0.0F;
+        ((PlayerControlPrefix *)state)->collisionRadius = 4.5F;
         ((PlayerControlPrefix *)state)->heldItemHandle = 0;
         ((PlayerControlPrefix *)state)->movementClass = 0;
         ((PlayerControlPrefix *)state)->soundHandle = 0;
@@ -2115,7 +2140,7 @@ void playerInitializeForArea(void) {
     playerUpdateViewCamera((u8 *)&gPlayerState);
     playerChangeMode(0);
     gGameplayMusicDucked = 0;
-    audioApplySavedMusicVolume(1.0f);
+    audioApplySavedMusicVolume(1.0F);
     audioSetMusicDuckingInhibitFlags(3);
 }
 
@@ -2124,29 +2149,33 @@ void playerInitializeForArea(void) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80112138 (0x80112138).
 void playerRecenterWalkingView(u8 *state) {
-    f32 scale = 2.0f;
+    f32 scale = 2.0F;
 
-    if (((PlayerControlPrefix *)state)->viewShake > 0.0f) {
-        ((PlayerControlPrefix *)state)->viewShake = ((PlayerControlPrefix *)state)->viewShake - (60.0f * gRuntimeFrameSeconds * scale);
-        if (((PlayerControlPrefix *)state)->viewShake < 0.0f) {
-            ((PlayerControlPrefix *)state)->viewShake = 0.0f;
+    if (((PlayerControlPrefix *)state)->viewShake > 0.0F) {
+        ((PlayerControlPrefix *)state)->viewShake =
+            ((PlayerControlPrefix *)state)->viewShake - (60.0F * gRuntimeFrameSeconds * scale);
+        if (((PlayerControlPrefix *)state)->viewShake < 0.0F) {
+            ((PlayerControlPrefix *)state)->viewShake = 0.0F;
         }
-    } else if (((PlayerControlPrefix *)state)->viewShake < 0.0f) {
-        ((PlayerControlPrefix *)state)->viewShake = ((PlayerControlPrefix *)state)->viewShake + (60.0f * gRuntimeFrameSeconds * scale);
-        if (((PlayerControlPrefix *)state)->viewShake > 0.0f) {
-            ((PlayerControlPrefix *)state)->viewShake = 0.0f;
+    } else if (((PlayerControlPrefix *)state)->viewShake < 0.0F) {
+        ((PlayerControlPrefix *)state)->viewShake =
+            ((PlayerControlPrefix *)state)->viewShake + (60.0F * gRuntimeFrameSeconds * scale);
+        if (((PlayerControlPrefix *)state)->viewShake > 0.0F) {
+            ((PlayerControlPrefix *)state)->viewShake = 0.0F;
         }
     }
 
-    if (((PlayerControlPrefix *)state)->pitch > 5.0f) {
-        ((PlayerControlPrefix *)state)->pitch = ((PlayerControlPrefix *)state)->pitch - (60.0f * gRuntimeFrameSeconds * scale);
-        if (((PlayerControlPrefix *)state)->pitch < 5.0f) {
-            ((PlayerControlPrefix *)state)->pitch = 5.0f;
+    if (((PlayerControlPrefix *)state)->pitch > 5.0F) {
+        ((PlayerControlPrefix *)state)->pitch =
+            ((PlayerControlPrefix *)state)->pitch - (60.0F * gRuntimeFrameSeconds * scale);
+        if (((PlayerControlPrefix *)state)->pitch < 5.0F) {
+            ((PlayerControlPrefix *)state)->pitch = 5.0F;
         }
-    } else if (((PlayerControlPrefix *)state)->pitch < 5.0f) {
-        ((PlayerControlPrefix *)state)->pitch = ((PlayerControlPrefix *)state)->pitch + (60.0f * gRuntimeFrameSeconds * scale);
-        if (((PlayerControlPrefix *)state)->pitch > 5.0f) {
-            ((PlayerControlPrefix *)state)->pitch = 5.0f;
+    } else if (((PlayerControlPrefix *)state)->pitch < 5.0F) {
+        ((PlayerControlPrefix *)state)->pitch =
+            ((PlayerControlPrefix *)state)->pitch + (60.0F * gRuntimeFrameSeconds * scale);
+        if (((PlayerControlPrefix *)state)->pitch > 5.0F) {
+            ((PlayerControlPrefix *)state)->pitch = 5.0F;
         }
     }
 }
@@ -2170,7 +2199,7 @@ void playerSetCompanionControlMode(u8 *player, s32 mode, s32 showMessage, s32 ta
         ((PlayerControlPrefix *)player)->companionTarget = targetHandle;
         ((PlayerControlPrefix *)player)->companionMode = mode;
         if (showMessage != 0) {
-            messageBarEnqueue(0, 2.0f, (u8 *)gCompanionControlModeMessages[mode]);
+            messageBarEnqueue(0, 2.0F, (u8 *)gCompanionControlModeMessages[mode]);
         }
     }
 }
@@ -2249,7 +2278,7 @@ void playerSetInteractionHelpText(u8 *text) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80112480 (0x80112480).
 void playerSetWorldPosition(const f32 *position) {
-    ((PlayerControlPrefix *)&gPlayerState)->downwardVelocity = 0.0f;
+    ((PlayerControlPrefix *)&gPlayerState)->downwardVelocity = 0.0F;
     ((PlayerControlPrefix *)&gPlayerState)->position[0] = position[0];
     ((PlayerControlPrefix *)&gPlayerState)->position[1] = position[1];
     ((PlayerControlPrefix *)&gPlayerState)->position[2] = position[2];
@@ -2287,16 +2316,16 @@ void playerSetViewPitch(f32 pitch) {
 ///
 /// \note Original decompilation identifier: \c func_80112520 (0x80112520).
 void playerResetViewOrientation(void) {
-    ((PlayerControlPrefix *)&gPlayerState)->pitch = 0.0f;
-    ((PlayerControlPrefix *)&gPlayerState)->viewShake = 0.0f;
-    ((PlayerControlPrefix *)&gPlayerState)->yaw = 0.0f;
-    ((PlayerControlPrefix *)&gPlayerState)->pitchOffset = 0.0f;
+    ((PlayerControlPrefix *)&gPlayerState)->pitch = 0.0F;
+    ((PlayerControlPrefix *)&gPlayerState)->viewShake = 0.0F;
+    ((PlayerControlPrefix *)&gPlayerState)->yaw = 0.0F;
+    ((PlayerControlPrefix *)&gPlayerState)->pitchOffset = 0.0F;
     cameraSetPositionAndAngles(
         0, ((PlayerControlPrefix *)&gPlayerState)->position[0],
         ((PlayerControlPrefix *)&gPlayerState)->eyeHeight + ((PlayerControlPrefix *)&gPlayerState)->position[1],
         ((PlayerControlPrefix *)&gPlayerState)->position[2],
         ((PlayerControlPrefix *)&gPlayerState)->pitchOffset + ((PlayerControlPrefix *)&gPlayerState)->pitch,
-        ((PlayerControlPrefix *)&gPlayerState)->yaw + ((PlayerControlPrefix *)&gPlayerState)->viewShake, 0.0f);
+        ((PlayerControlPrefix *)&gPlayerState)->yaw + ((PlayerControlPrefix *)&gPlayerState)->viewShake, 0.0F);
 }
 
 /// Saved progress flag identifiers indexed by friendship milestone.
@@ -2503,7 +2532,7 @@ struct {
     /* 0x0C */ u8 unknownC[0x28];
     /* 0x34 */ u16 kind;
     /* 0x36 */ u8 unknown36[0xA];
-} gInteractionProxyObjectTemplate = {{1.0f, 1.0f, 1.0f}, {0}, 0x8A};
+} gInteractionProxyObjectTemplate = {{1.0F, 1.0F, 1.0F}, {0}, 0x8A};
 
 /// Create and register a descriptive interaction target at a world position.
 /// \param position Three consecutive floating-point world coordinates in X, Y, Z order.
@@ -2618,8 +2647,9 @@ void audioUpdateGameplayMusicDucking(void) {
     switch (gRuntimeGameMode) {
     case 0:
         if ((gPlayerPermissions & 0x08000000) &&
-            (gGameplayVoiceCommandsAllowed == 0 || gGameplayMicrophoneAvailable == 0) && gRuntimeCurrentArea != 0x16)
+            (gGameplayVoiceCommandsAllowed == 0 || gGameplayMicrophoneAvailable == 0) && gRuntimeCurrentArea != 0x16) {
             active = 1;
+        }
         break;
     case 3:
         active = 1;
@@ -2628,11 +2658,11 @@ void audioUpdateGameplayMusicDucking(void) {
     if (active != 0) {
         if (gGameplayMusicDucked == 0 && !(gGameplayMusicDuckingInhibitFlags & 1)) {
             gGameplayMusicDucked = 1;
-            audioApplySavedMusicVolume(0.75f);
+            audioApplySavedMusicVolume(0.75F);
         }
     } else if (gGameplayMusicDucked != 0 && !(gGameplayMusicDuckingInhibitFlags & 2)) {
         gGameplayMusicDucked = 0;
-        audioApplySavedMusicVolume(1.0f);
+        audioApplySavedMusicVolume(1.0F);
     }
 }
 
@@ -2675,7 +2705,7 @@ void pikachuSpawnForArea(void) {
     kind = (s32)gCurrentAreaConfiguration->actorScripts[gAreaScenarioIndex];
     gPikachuActor = (RuntimeObjectPrefix *)actorCreateForKind(
         0x25, spots[gRuntimeCurrentEntrance].actorPosition[0], spots[gRuntimeCurrentEntrance].actorPosition[1],
-        spots[gRuntimeCurrentEntrance].actorPosition[2], 0.0f, spots[gRuntimeCurrentEntrance].actorYaw,
+        spots[gRuntimeCurrentEntrance].actorPosition[2], 0.0F, spots[gRuntimeCurrentEntrance].actorYaw,
         gCurrentAreaConfiguration->objectScale, (u8 *)kind, 0);
 }
 

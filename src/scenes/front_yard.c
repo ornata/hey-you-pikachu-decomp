@@ -41,8 +41,8 @@ void frontYardInitializeObjects(void) {
 
     if (progressGetCurrentChapter() != 9) {
         if (progressGetCurrentChapter() == 8) {
-            companion = itemCreate(145.0f, 1.5f, 150.0f, 0.0f, 0.0f, 0x8F);
-            state = ((RuntimeObjectPrefix *)actorCreateForKind(0x15, 0.0f, 0.0f, 0.0f, 0.0f, 45.0f,
+            companion = itemCreate(145.0F, 1.5F, 150.0F, 0.0F, 0.0F, 0x8F);
+            state = ((RuntimeObjectPrefix *)actorCreateForKind(0x15, 0.0F, 0.0F, 0.0F, 0.0F, 45.0F,
                                                                gCurrentAreaConfiguration->objectScale, 0, 0))
                         ->state.bytes;
             ((ActorScriptState *)state)->targetPosition[0] = (f32)((RuntimeObjectPrefix *)companion)->worldPosition[0];
@@ -77,5 +77,5 @@ s32 frontYardGetSpatialCell(f32 x, f32 y, f32 z) {
     if (layer == NULL) {
         return 0;
     }
-    return layer[iz * 32 + ix];
+    return layer[(iz * 32) + ix];
 }

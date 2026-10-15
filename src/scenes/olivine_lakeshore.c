@@ -80,7 +80,7 @@ void lakeshoreSpawnColoredResident(f32 *position, f32 heading) {
     s32 *counter;
 
     counter = &D_80141444_scene_olivine_lakeshore;
-    object = actorCreateForKind(0xC, position[0], position[1], position[2], 0.0f, heading,
+    object = actorCreateForKind(0xC, position[0], position[1], position[2], 0.0F, heading,
                                 gCurrentAreaConfiguration->objectScale, &D_801402D0_scene_olivine_lakeshore, *counter);
     index = *counter;
     if (*counter < 0) {
@@ -94,7 +94,7 @@ void lakeshoreSpawnColoredResident(f32 *position, f32 heading) {
         } while (index >= 5);
     }
     color = D_80141448_scene_olivine_lakeshore[index];
-    actorTransitionModelEnvironmentColor(object, color[0], color[1], color[2], color[3], 0.5f);
+    actorTransitionModelEnvironmentColor(object, color[0], color[1], color[2], color[3], 0.5F);
     (*counter)++;
 }
 
@@ -111,7 +111,7 @@ void lakeshoreSpawnColoredResidentRandomHeading(f32 *position) {
 /// \param heading Initial heading in degrees.
 /// \returns Nothing.
 void lakeshoreSpawnResidentType3(f32 *position, f32 heading) {
-    actorCreateForKind(3, position[0], position[1], position[2], 0.0f, heading, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(3, position[0], position[1], position[2], 0.0F, heading, gCurrentAreaConfiguration->objectScale,
                        &D_8014069C_scene_olivine_lakeshore, 0);
 }
 
@@ -119,7 +119,7 @@ void lakeshoreSpawnResidentType3(f32 *position, f32 heading) {
 /// \param position Three-component scene position.
 /// \returns Nothing.
 void lakeshoreSpawnResidentType17(f32 *position) {
-    actorCreateForKind(0x11, position[0], position[1], position[2], 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(0x11, position[0], position[1], position[2], 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        &D_801410FC_scene_olivine_lakeshore, 0);
 }
 
@@ -130,18 +130,21 @@ void lakeshoreSpawnRandomResidents(void) {
     s32 chosen;
     /* Original code clears this table but never marks a selected position. */
     s32 occupied[16];
-    for (i = 0; i < 16; i++)
+    for (i = 0; i < 16; i++) {
         occupied[i] = 0;
+    }
     for (i = 0; i != 4; i++) {
         chosen = randomBelow(16);
         while (occupied[chosen] != 0) {
             chosen++;
-            while (chosen < 0)
+            while (chosen < 0) {
                 chosen += 16;
-            while (chosen >= 16)
+            }
+            while (chosen >= 16) {
                 chosen -= 16;
+            }
         }
-        lakeshoreSpawnColoredResidentRandomHeading((f32 *)((u8 *)D_8013489C_scene_olivine_lakeshore + chosen * 12));
+        lakeshoreSpawnColoredResidentRandomHeading((f32 *)((u8 *)D_8013489C_scene_olivine_lakeshore + (chosen * 12)));
     }
 }
 
@@ -151,10 +154,10 @@ void lakeshoreInitializeObjects(void) {
     doorRegistryReset();
     lakeshoreInitializeProps();
     runtimeCheckResetCheckpoint((const char *)D_801420A4_scene_olivine_lakeshore, 1);
-    lakeshoreSpawnResidentType3(D_8014145C_scene_olivine_lakeshore, 310.0f);
+    lakeshoreSpawnResidentType3(D_8014145C_scene_olivine_lakeshore, 310.0F);
     lakeshoreSpawnRandomResidents();
     lakeshoreSpawnResidentType17(D_80141474_scene_olivine_lakeshore);
-    lakeshoreSpawnColoredResident(D_80141468_scene_olivine_lakeshore, 10.0f);
+    lakeshoreSpawnColoredResident(D_80141468_scene_olivine_lakeshore, 10.0F);
 }
 extern s32 *D_801550F4_scene_olivine_lakeshore[32];
 /// Look up the lakeshore spatial-grid value at a world position.
@@ -169,10 +172,12 @@ s32 lakeshoreGetSpatialCell(f32 x, f32 y, f32 z) {
     s32 iz;
     iy = (s32)((f64)y / 5.0);
     if (iy < 0 || iy >= 32 || (ix = (s32)((f64)x / 10.0), ix < 0) || ix >= 32 || (iz = (s32)((f64)z / 10.0), iz < 0) ||
-        iz >= 32)
+        iz >= 32) {
         return 0;
+    }
     layer = D_801550F4_scene_olivine_lakeshore[iy];
-    if (layer == NULL)
+    if (layer == NULL) {
         return 0;
-    return layer[iz * 32 + ix];
+    }
+    return layer[(iz * 32) + ix];
 }

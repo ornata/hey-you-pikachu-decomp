@@ -24,8 +24,9 @@ void viridianDeepRemoveTrackedItems(void) {
     for (i = 0; i != 2; i++) {
         for (j = 0; j != 10; j++) {
             object = toolboxTakeObject(i, j);
-            if (object != NULL)
+            if (object != NULL) {
                 itemDestroy(object);
+            }
         }
     }
 }
@@ -54,26 +55,29 @@ void viridianDeepSpawnResidentGroup(Position *position, s32 index) {
     first = progressGetValue(index + 0x7C);
     secondIndex = index + 5;
     second = progressGetValue(index + 0x81);
-    if (progressGetCurrentChapter() != 4)
+    if (progressGetCurrentChapter() != 4) {
         record = D_80148ABC_scene_viridian_deep;
-    else
+    } else {
         record = D_80148DAC_scene_viridian_deep;
-    angle = -135.0f - index * 60.0f;
+    }
+    angle = -135.0F - (index * 60.0F);
     sine = mathSinDegrees(angle);
     cosine = mathCosDegrees(angle);
     scale = mathPowInteger(D_8014B020_scene_viridian_deep, growth);
-    actorCreateForKind(8, sine * 8.0f + position->x, position->y, cosine * 8.0f + position->z, 0.0f, angle + 180.0f,
-                       (scale *= gCurrentAreaConfiguration->objectScale) * 2.0f, record, index);
+    actorCreateForKind(8, (sine * 8.0F) + position->x, position->y, (cosine * 8.0F) + position->z, 0.0F, angle + 180.0F,
+                       (scale *= gCurrentAreaConfiguration->objectScale) * 2.0F, record, index);
     if (progressGetCurrentChapter() != 4) {
-        if (first > 0)
+        if (first > 0) {
             actorCreateForKind(9, D_8014989C_scene_viridian_deep[index][0], D_8014989C_scene_viridian_deep[index][1],
-                               D_8014989C_scene_viridian_deep[index][2], 0.0f, D_8014989C_scene_viridian_deep[index][3],
+                               D_8014989C_scene_viridian_deep[index][2], 0.0F, D_8014989C_scene_viridian_deep[index][3],
                                gCurrentAreaConfiguration->objectScale, D_80149170_scene_viridian_deep, index);
-        if (second > 0)
+        }
+        if (second > 0) {
             actorCreateForKind(
                 9, D_8014989C_scene_viridian_deep[secondIndex][0], D_8014989C_scene_viridian_deep[secondIndex][1],
-                D_8014989C_scene_viridian_deep[secondIndex][2], 0.0f, D_8014989C_scene_viridian_deep[secondIndex][3],
+                D_8014989C_scene_viridian_deep[secondIndex][2], 0.0F, D_8014989C_scene_viridian_deep[secondIndex][3],
                 gCurrentAreaConfiguration->objectScale, D_80149170_scene_viridian_deep, secondIndex);
+        }
     }
 }
 
@@ -86,19 +90,20 @@ void viridianDeepInitializeObjects(void) {
     s32 i;
     Position position;
     for (i = 0; i != 5; i++) {
-        position.x = 162.0f;
-        position.y = 1.25f;
-        position.z = 151.0f;
+        position.x = 162.0F;
+        position.y = 1.25F;
+        position.z = 151.0F;
         viridianDeepSpawnResidentGroup(&position, i);
     }
     if (progressGetCurrentChapter() != 4) {
-        actorCreateForKind(14, 160.0f, 5.0f, 145.0f, 0.0f, D_8014B024_scene_viridian_deep,
+        actorCreateForKind(14, 160.0F, 5.0F, 145.0F, 0.0F, D_8014B024_scene_viridian_deep,
                            gCurrentAreaConfiguration->objectScale, D_80149888_scene_viridian_deep, 0);
-        mazeScatterItems(D_8014993C_scene_viridian_deep, 0x5B, &D_80149DB8_scene_viridian_deep, 0.5f);
-        landmarkCreate(162.0f, 1.25f, 151.0f, 0x8D);
-        landmarkCreate(D_8014B028_scene_viridian_deep, D_8014B02C_scene_viridian_deep, 175.27f, 0x8E);
-    } else
+        mazeScatterItems(D_8014993C_scene_viridian_deep, 0x5B, &D_80149DB8_scene_viridian_deep, 0.5F);
+        landmarkCreate(162.0F, 1.25F, 151.0F, 0x8D);
+        landmarkCreate(D_8014B028_scene_viridian_deep, D_8014B02C_scene_viridian_deep, 175.27F, 0x8E);
+    } else {
         viridianDeepRemoveTrackedItems();
+    }
 }
 
 extern s32 *D_8015DBC8_scene_viridian_deep[32];
@@ -114,10 +119,12 @@ s32 viridianDeepGetSpatialCell(f32 x, f32 y, f32 z) {
     s32 iz;
     iy = (s32)((f64)y / 5.0);
     if (iy < 0 || iy >= 32 || (ix = (s32)((f64)x / 10.0), ix < 0) || ix >= 32 || (iz = (s32)((f64)z / 10.0), iz < 0) ||
-        iz >= 32)
+        iz >= 32) {
         return 0;
+    }
     layer = D_8015DBC8_scene_viridian_deep[iy];
-    if (layer == NULL)
+    if (layer == NULL) {
         return 0;
-    return layer[iz * 32 + ix];
+    }
+    return layer[(iz * 32) + ix];
 }

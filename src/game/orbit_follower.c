@@ -43,8 +43,8 @@ void orbitFollowerInitialize(u8 *object) {
     allocation = heapAllocLocal(&gGameHeap, 0x20, 0x3C);
     state = (OrbitState *)allocation;
     _bzero(allocation, 0x20);
-    state->timer = 10.0f;
-    state->turnRate = 45.0f;
+    state->timer = 10.0F;
+    state->turnRate = 45.0F;
     ((RuntimeObjectPrefix *)object)->state.bytes = (u8 *)state;
 }
 
@@ -86,16 +86,16 @@ void orbitFollowerUpdate(u8 *obj) {
     f32 targetX;
     f32 targetZ;
     s32 signX;
-    f32 speed = 75.0f;
+    f32 speed = 75.0F;
     f32 dx;
-    f32 dy = 0.0f;
+    f32 dy = 0.0F;
     f32 dz;
     u16 flags;
     s32 collision;
     u8 *surface = NULL;
-    f32 orbitRadius = 30.0f;
-    f32 resetDuration = 10.0f;
-    f32 collisionPenalty = 1.5f;
+    f32 orbitRadius = 30.0F;
+    f32 resetDuration = 10.0F;
+    f32 collisionPenalty = 1.5F;
 
     owner = (RuntimeObjectPrefix *)objectFindLiveByHandle(state->ownerId);
     if (owner == NULL) {
@@ -103,7 +103,7 @@ void orbitFollowerUpdate(u8 *obj) {
         return;
     }
     state->timer -= gRuntimeFrameSeconds;
-    if (state->timer < 0.0f) {
+    if (state->timer < 0.0F) {
         state->timer = resetDuration;
         state->turnRate = -state->turnRate;
         state->heading = (s32)randomBelow(360);
@@ -117,24 +117,24 @@ void orbitFollowerUpdate(u8 *obj) {
     }
     dx = mathSinDegrees(((RuntimeObjectPrefix *)obj)->rotation[1]) * speed * gRuntimeFrameSeconds;
     dz = mathCosDegrees(((RuntimeObjectPrefix *)obj)->rotation[1]) * speed * gRuntimeFrameSeconds;
-    signX = dx > 0.0f ? 1 : dx < 0.0f ? -1 : 0;
+    signX = dx > 0.0F ? 1 : dx < 0.0F ? -1 : 0;
     collision = terrainCheckHorizontalObstruction(
         state->collisionKind, ((RuntimeObjectPrefix *)obj)->worldPosition[0] + dx,
         ((RuntimeObjectPrefix *)obj)->worldPosition[1] + dy - state->height,
         ((RuntimeObjectPrefix *)obj)->worldPosition[2] + dz, state->radius, state->height,
         ((RuntimeObjectPrefix *)obj)->worldPosition[1] - state->height + state->ceiling, (f32)signX,
-        (f32)(dz > 0.0f   ? 1
-              : dz < 0.0f ? -1
+        (f32)(dz > 0.0F   ? 1
+              : dz < 0.0F ? -1
                           : 0),
         &surface);
     flags = collision;
     if (collision & 9) {
-        dx = 0.0f;
+        dx = 0.0F;
     } else {
         ((RuntimeObjectPrefix *)obj)->position[0] += dx;
     }
     if (flags & 0x24) {
-        dz = 0.0f;
+        dz = 0.0F;
     } else {
         ((RuntimeObjectPrefix *)obj)->position[2] += dz;
     }
@@ -145,20 +145,20 @@ void orbitFollowerUpdate(u8 *obj) {
         state->height;
     if (flags != 0) {
         state->timer -= collisionPenalty;
-        if (dx < 0.001f && dx > -0.001f && dz < 0.001f && dz > -0.001f) {
+        if (dx < 0.001F && dx > -0.001F && dz < 0.001F && dz > -0.001F) {
             state->heading += state->turnRate;
         }
     }
     state->heading += state->turnRate * gRuntimeFrameSeconds;
-    while (state->heading < 0.0f) {
-        state->heading += 360.0f;
+    while (state->heading < 0.0F) {
+        state->heading += 360.0F;
     }
-    while (state->heading >= 360.0f) {
-        state->heading -= 360.0f;
+    while (state->heading >= 360.0F) {
+        state->heading -= 360.0F;
     }
-    targetX = owner->worldPosition[0] + mathCosDegrees(state->heading) * orbitRadius -
+    targetX = owner->worldPosition[0] + (mathCosDegrees(state->heading) * orbitRadius) -
               ((RuntimeObjectPrefix *)obj)->worldPosition[0];
-    targetZ = owner->worldPosition[2] + mathSinDegrees(state->heading) * orbitRadius -
+    targetZ = owner->worldPosition[2] + (mathSinDegrees(state->heading) * orbitRadius) -
               ((RuntimeObjectPrefix *)obj)->worldPosition[2];
     vector2NormalizeComponentsApprox(&targetX, &targetZ);
     ((RuntimeObjectPrefix *)obj)->rotation[1] = mathUnitDirectionDegrees(targetZ, targetX);

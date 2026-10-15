@@ -102,7 +102,7 @@ void olivineLakeSpawnTintedResidentType12(void *position, f32 heading) {
     s32 *counter;
 
     counter = &D_80141644_scene_olivine_lake;
-    object = actorCreateForKind(0xC, ((f32 *)position)[0], ((f32 *)position)[1], ((f32 *)position)[2], 0.0f, heading,
+    object = actorCreateForKind(0xC, ((f32 *)position)[0], ((f32 *)position)[1], ((f32 *)position)[2], 0.0F, heading,
                                 gCurrentAreaConfiguration->objectScale, &D_801404AC_scene_olivine_lake, *counter);
     index = *counter;
     if (*counter < 0) {
@@ -115,8 +115,8 @@ void olivineLakeSpawnTintedResidentType12(void *position, f32 heading) {
             index -= 5;
         } while (index >= 5);
     }
-    color = (u8 *)D_80141648_scene_olivine_lake + index * 4;
-    actorTransitionModelEnvironmentColor(object, color[0], color[1], color[2], color[3], 0.5f);
+    color = (u8 *)D_80141648_scene_olivine_lake + (index * 4);
+    actorTransitionModelEnvironmentColor(object, color[0], color[1], color[2], color[3], 0.5F);
     (*counter)++;
 }
 
@@ -132,7 +132,7 @@ void olivineLakeSpawnRandomHeadingResidentType12(void *position) {
 /// \param heading Resident heading in degrees.
 /// \returns Nothing.
 void olivineLakeSpawnResidentType13(f32 *position, f32 heading) {
-    actorCreateForKind(0xD, position[0], position[1], position[2], 0.0f, heading,
+    actorCreateForKind(0xD, position[0], position[1], position[2], 0.0F, heading,
                        gCurrentAreaConfiguration->objectScale, &D_80140854_scene_olivine_lake, 0);
 }
 
@@ -140,7 +140,7 @@ void olivineLakeSpawnResidentType13(f32 *position, f32 heading) {
 /// \param position Three-component world-space position.
 /// \returns Nothing.
 void olivineLakeSpawnResidentType17(f32 *position) {
-    actorCreateForKind(0x11, position[0], position[1], position[2], 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(0x11, position[0], position[1], position[2], 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        &D_801412B4_scene_olivine_lake, 0);
 }
 
@@ -152,19 +152,22 @@ void olivineLakeSpawnRandomResidentGroup(void) {
     /* Original code clears this table but never marks a selected position. */
     s32 occupied[15];
     s32 randomIndex;
-    for (i = 0; i < 15; i++)
+    for (i = 0; i < 15; i++) {
         occupied[i] = 0;
+    }
     for (i = 0; i != 5; i++) {
         randomIndex = randomBelow(15);
         chosen = randomIndex;
         while (occupied[chosen] != 0) {
             chosen++;
-            while (chosen < 0)
+            while (chosen < 0) {
                 chosen += 15;
-            while (chosen >= 15)
+            }
+            while (chosen >= 15) {
                 chosen -= 15;
+            }
         }
-        olivineLakeSpawnRandomHeadingResidentType12((f32 *)((u8 *)D_80134ABC_scene_olivine_lake + chosen * 12));
+        olivineLakeSpawnRandomHeadingResidentType12((f32 *)((u8 *)D_80134ABC_scene_olivine_lake + (chosen * 12)));
     }
 }
 
@@ -184,7 +187,7 @@ void olivineLakeInitializeObjects(void) {
     olivineLakeCreateRandomizedGroupProps();
     olivineLakeCreatePropArrangement();
     runtimeCheckResetCheckpoint((const char *)D_80142304_scene_olivine_lake, 1);
-    olivineLakeSpawnResidentType13((f32 *)&a, 227.0f);
+    olivineLakeSpawnResidentType13((f32 *)&a, 227.0F);
     olivineLakeSpawnResidentType17((f32 *)&b);
     olivineLakeSpawnRandomResidentGroup();
 }
@@ -201,10 +204,12 @@ s32 olivineLakeGetSpatialCell(f32 x, f32 y, f32 z) {
     s32 iz;
     iy = (s32)((f64)y / 5.0);
     if (iy < 0 || iy >= 32 || (ix = (s32)((f64)x / 10.0), ix < 0) || ix >= 32 || (iz = (s32)((f64)z / 10.0), iz < 0) ||
-        iz >= 32)
+        iz >= 32) {
         return 0;
+    }
     layer = D_80150ED4_scene_olivine_lake[iy];
-    if (layer == NULL)
+    if (layer == NULL) {
         return 0;
-    return layer[iz * 32 + ix];
+    }
+    return layer[(iz * 32) + ix];
 }

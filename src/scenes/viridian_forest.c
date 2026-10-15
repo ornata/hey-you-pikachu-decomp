@@ -46,7 +46,8 @@ s32 viridianForestGetSpatialCell(f32 x, f32 y, f32 z) {
         return 0;
     }
     layer = D_8014DB20_scene_viridian_forest[iy];
-    if (layer == 0)
+    if (layer == 0) {
         return 0;
-    return layer[iz * 32 + ix];
+    }
+    return layer[(iz * 32) + ix];
 }

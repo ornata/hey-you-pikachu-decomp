@@ -38,12 +38,13 @@ void olivineFishingSpawnRandomResident(s32 residentIndex, s32 suppressSpecialPoo
     s32 threshold;
     s32 kind;
     s32 roll;
-    if (progressGetValue(0x9E) != 0 && suppressSpecialPool == 0)
+    if (progressGetValue(0x9E) != 0 && suppressSpecialPool == 0) {
         offset = 0;
-    else if (progressGetValue(0x1F) != 0)
+    } else if (progressGetValue(0x1F) != 0) {
         offset = 1;
-    else
+    } else {
         offset = 2;
+    }
     roll = (s32)(randomNext() * 2.3283064365386963e-10 * 100.0);
     count = 7 - offset;
     /* Keep loop entry together to preserve IDO setup scheduling. */
@@ -69,7 +70,7 @@ void olivineFishingSpawnRandomResident(s32 residentIndex, s32 suppressSpecialPoo
         } while (i != count);
     }
     if (selected != -1) {
-        actorCreateForKind(selected, 90.0f, 3.5f, 40.0f, 0, 0, gCurrentAreaConfiguration->objectScale,
+        actorCreateForKind(selected, 90.0F, 3.5F, 40.0F, 0, 0, gCurrentAreaConfiguration->objectScale,
                            D_80142B94_scene_olivine_fishing, residentIndex);
         runtimeCheckResetCheckpoint((const char *)D_80147B00_scene_olivine_fishing, 1);
     }
@@ -78,7 +79,7 @@ void olivineFishingSpawnRandomResident(s32 residentIndex, s32 suppressSpecialPoo
 /// Spawn the fixed type-nine resident for the fishing scene.
 /// \returns Nothing.
 void olivineFishingSpawnResidentType9(void) {
-    actorCreateForKind(9, 90.0f, 3.5f, 35.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(9, 90.0F, 3.5F, 35.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_80144920_scene_olivine_fishing, 0x63);
 }
 
@@ -86,37 +87,37 @@ void olivineFishingSpawnResidentType9(void) {
 /// \returns Nothing.
 void olivineFishingSpawnProgressItem(void) {
     if (progressGetValue(0x1F) != 0) {
-        itemCreate(90.0f, 8.0f, 72.0f, 0.0f, 0.0f, 0x53);
+        itemCreate(90.0F, 8.0F, 72.0F, 0.0F, 0.0F, 0x53);
         return;
     }
-    itemCreate(90.0f, 8.0f, 72.0f, 0.0f, 0.0f, 0x52);
+    itemCreate(90.0F, 8.0F, 72.0F, 0.0F, 0.0F, 0x52);
 }
 
 /// Spawn the fixed type-twenty resident for the fishing scene.
 /// \returns Nothing.
 void olivineFishingSpawnResidentType20(void) {
-    actorCreateForKind(0x14, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(0x14, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_80144E14_scene_olivine_fishing, 0x62);
 }
 
 /// Spawn the optional type-three resident for the fishing scene.
 /// \returns Nothing.
 void olivineFishingSpawnResidentType3(void) {
-    actorCreateForKind(3, 113.0f, 10.0f, 67.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(3, 113.0F, 10.0F, 67.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_80145088_scene_olivine_fishing, 0x46);
 }
 
 /// Spawn the fixed type-seventeen resident for the fishing scene.
 /// \returns Nothing.
 void olivineFishingSpawnResidentType17(void) {
-    actorCreateForKind(0x11, 130.0f, 20.0f, 40.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(0x11, 130.0F, 20.0F, 40.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_8014549C_scene_olivine_fishing, 0x46);
 }
 
 /// Spawn the fixed type-ten resident for the fishing scene.
 /// \returns Nothing.
 void olivineFishingSpawnResidentType10(void) {
-    actorCreateForKind(0xA, 110.0f, 8.0f, 10.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(0xA, 110.0F, 8.0F, 10.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        D_80145598_scene_olivine_fishing, 0x61);
 }
 
@@ -163,10 +164,12 @@ s32 olivineFishingGetSpatialCell(f32 x, f32 y, f32 z) {
     s32 iz;
     iy = (s32)((f64)y / 20.0);
     if (iy < 0 || iy >= 8 || (ix = (s32)((f64)x / 20.0), ix < 0) || ix >= 8 || (iz = (s32)((f64)z / 20.0), iz < 0) ||
-        iz >= 8)
+        iz >= 8) {
         return 0;
+    }
     layer = D_8014D218_scene_olivine_fishing[iy];
-    if (layer == NULL)
+    if (layer == NULL) {
         return 0;
-    return layer[iz * 8 + ix];
+    }
+    return layer[(iz * 8) + ix];
 }

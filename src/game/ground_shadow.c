@@ -45,17 +45,17 @@ void groundShadowUpdateVertices(u8 *obj, s32 buffer) {
         column = 0;
         if (grid->count > 0) {
             do {
-                x = (row - (grid->count - 1) * 0.5f) * grid->spacing;
-                z = (column - (grid->count - 1) * 0.5f) * grid->spacing;
+                x = (row - (grid->count - 1) * 0.5F) * grid->spacing;
+                z = (column - (grid->count - 1) * 0.5F) * grid->spacing;
                 height = terrainGetWorldHeight(
-                    ((RuntimeObjectPrefix *)obj)->position[0] + ((RuntimeObjectPrefix *)obj)->scale[0] * x,
+                    ((RuntimeObjectPrefix *)obj)->position[0] + (((RuntimeObjectPrefix *)obj)->scale[0] * x),
                     ((RuntimeObjectPrefix *)obj)->position[1],
-                    ((RuntimeObjectPrefix *)obj)->position[2] + ((RuntimeObjectPrefix *)obj)->scale[2] * z, &hit);
+                    ((RuntimeObjectPrefix *)obj)->position[2] + (((RuntimeObjectPrefix *)obj)->scale[2] * z), &hit);
                 height =
-                    MIN(height, ((RuntimeObjectPrefix *)((RuntimeObjectPrefix *)obj)->root.bytes)->position[1] + 0.3f);
+                    MIN(height, ((RuntimeObjectPrefix *)((RuntimeObjectPrefix *)obj)->root.bytes)->position[1] + 0.3F);
                 height -= ((RuntimeObjectPrefix *)obj)->position[1];
                 vertex->v.ob[0] = (s32)x;
-                vertex->v.ob[1] = (s32)((height + 0.17f) / ((RuntimeObjectPrefix *)obj)->scale[1]);
+                vertex->v.ob[1] = (s32)((height + 0.17F) / ((RuntimeObjectPrefix *)obj)->scale[1]);
                 vertex->v.ob[2] = (s32)z;
                 vertex->v.flag = 0;
                 vertex->v.tc[0] = ((row << 6) / (grid->count - 1)) << 5;
@@ -152,7 +152,7 @@ void groundShadowBuildDisplayList(GroundShadowGrid *grid) {
     s32 row;
     s32 column;
     s32 index;
-    s32 size = grid->count * grid->count * sizeof(Gfx) + 0x80;
+    s32 size = (grid->count * grid->count * sizeof(Gfx)) + 0x80;
 
     g = (Gfx *)heapAllocLocal(&gGameHeap, size, 0xBB);
     grid->displayList = g;

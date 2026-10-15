@@ -115,9 +115,9 @@ void terrainDebugGridUpdatePosition(u8 *object) {
     f32 pad; /* unused, but sizes the frame (angle lands at 0x18) */
     f32 angle = ((PlayerGridView *)&gPlayerState)->yaw + ((PlayerGridView *)&gPlayerState)->viewShake;
 
-    ((f32 *)object)[6] = mathSinDegrees(angle) * 15.0f + ((PlayerGridView *)&gPlayerState)->x;
-    ((f32 *)object)[7] = gPlayerPositionY + 0.1f;
-    ((f32 *)object)[8] = mathCosDegrees(angle) * 15.0f + gPlayerPositionZ;
+    ((f32 *)object)[6] = (mathSinDegrees(angle) * 15.0F) + ((PlayerGridView *)&gPlayerState)->x;
+    ((f32 *)object)[7] = gPlayerPositionY + 0.1F;
+    ((f32 *)object)[8] = (mathCosDegrees(angle) * 15.0F) + gPlayerPositionZ;
 }
 
 /// Initialize the state of a terrain diagnostic grid cell.
@@ -154,30 +154,39 @@ void terrainDebugGridUpdateCell(u8 *obj) {
     switch (gTerrainDebugGridPropertyView) {
     case 1:
         data->color[0] = data->color[1] = data->color[2] = 0;
-        if (flags & 2)
+        if (flags & 2) {
             data->color[0] = 255;
-        if (flags & 4)
+        }
+        if (flags & 4) {
             data->color[1] = 255;
-        if (flags & 1)
+        }
+        if (flags & 1) {
             data->color[2] = 255;
+        }
         break;
     case 2:
         data->color[0] = data->color[1] = data->color[2] = 255;
-        if (flags & 0x8000)
+        if (flags & 0x8000) {
             data->color[0] = 0;
-        if (flags & 0x100)
+        }
+        if (flags & 0x100) {
             data->color[1] = 0;
-        if (flags & 0x4000)
+        }
+        if (flags & 0x4000) {
             data->color[2] = 0;
+        }
         break;
     case 3:
         data->color[0] = data->color[1] = data->color[2] = 255;
-        if (flags & 0x20)
+        if (flags & 0x20) {
             data->color[0] = 0;
-        if (flags & 0x10)
+        }
+        if (flags & 0x10) {
             data->color[1] = 0;
-        if (flags & 0x40)
+        }
+        if (flags & 0x40) {
             data->color[2] = 0;
+        }
         break;
     default:
         TRACE("ERROR: Unknown meshType:%d\n", gTerrainDebugGridPropertyView);
@@ -252,8 +261,8 @@ u8 *terrainDebugGridCreate(s32 size) {
         for (col = 0; col < size + 1; col++) {
             cell = objectCreateFromTemplate((ObjectTemplate *)(u8 *)&cellTemplate);
             data = (TerrainDebugCellState *)((RuntimeObjectPrefix *)cell)->state.pointer;
-            ((RuntimeObjectPrefix *)cell)->position[0] = col - size / 2;
-            ((RuntimeObjectPrefix *)cell)->position[2] = row - size / 2;
+            ((RuntimeObjectPrefix *)cell)->position[0] = col - (size / 2);
+            ((RuntimeObjectPrefix *)cell)->position[2] = row - (size / 2);
             data->matrixIndices[0] = index;
             data->matrixIndices[1] = index + size + 1;
             data->matrixIndices[2] = index + size + 2;
@@ -291,10 +300,11 @@ void terrainDebugGridSetEnabled(u8 *object, s32 enabled) {
     for (; row < size + 1; row++) {
         for (col = 0; col < size + 1; col++) {
             cell = (TerrainDebugCellState *)((RuntimeObjectPrefix *)node)->state.pointer;
-            if (col < size && row < size)
+            if (col < size && row < size) {
                 cell->enabled = enabled;
-            else
+            } else {
                 cell->enabled = 0;
+            }
             node = ((RuntimeObjectPrefix *)node)->sibling.bytes;
         }
     }

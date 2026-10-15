@@ -32,25 +32,25 @@ s32 collisionRequestImpulse(u8 *source, u8 *target, f32 *direction, f32 distance
     ObjectImpulse impulse;
     f32 randomDirection[3];
     f32 strength;
-    f32 maximum = 10.0f;
+    f32 maximum = 10.0F;
 
     if (objectResponsesGetFreeCapacity() < 4) {
         return 0;
     }
     /* Original behavior: the fallback is stored locally, but direction remains the input pointer. */
-    if (distance < 0.001f) {
-        randomDirection[0] = (randomNext() * 2.3283064365386963e-10 - 0.5) * 1.2f;
-        randomDirection[1] = 0.5f;
-        randomDirection[2] = (randomNext() * 2.3283064365386963e-10 - 0.5) * 1.2f;
+    if (distance < 0.001F) {
+        randomDirection[0] = (randomNext() * 2.3283064365386963e-10 - 0.5) * 1.2F;
+        randomDirection[1] = 0.5F;
+        randomDirection[2] = (randomNext() * 2.3283064365386963e-10 - 0.5) * 1.2F;
         strength = maximum;
     } else {
-        strength = 1.0f / distance;
-        direction[0] = direction[0] * strength + (randomNext() * 2.3283064365386963e-10 - 0.5) * 0.001f;
-        direction[1] = direction[1] * strength + (randomNext() * 2.3283064365386963e-10 - 0.5) * 0.001f;
-        direction[2] = direction[2] * strength + (randomNext() * 2.3283064365386963e-10 - 0.5) * 0.001f;
+        strength = 1.0F / distance;
+        direction[0] = (direction[0] * strength) + ((randomNext() * 2.3283064365386963e-10 - 0.5) * 0.001F);
+        direction[1] = (direction[1] * strength) + ((randomNext() * 2.3283064365386963e-10 - 0.5) * 0.001F);
+        direction[2] = (direction[2] * strength) + ((randomNext() * 2.3283064365386963e-10 - 0.5) * 0.001F);
         strength *= maximum;
     }
-    if (strength < 0.001f) {
+    if (strength < 0.001F) {
         return 1;
     } else {
         vector3PackNormalBytes(direction, impulse.bytes);
@@ -96,11 +96,12 @@ s32 collisionGridRegisterObject(u8 *object) {
     s32 key;
     s32 h;
 
-    if ((((RuntimeObjectPrefix *)object)->flags & 0xF0) || ((RuntimeObjectPrefix *)object)->radius < 0.001f) {
+    if ((((RuntimeObjectPrefix *)object)->flags & 0xF0) || ((RuntimeObjectPrefix *)object)->radius < 0.001F) {
         return 0;
     }
-    h = (s32)((((RuntimeObjectPrefix *)object)->worldPosition[0] + gCollisionGridAlignmentX) * 0.125f) * 0xAD +
-        (s32)((((RuntimeObjectPrefix *)object)->worldPosition[2] + gCollisionGridAlignmentZ) * 0.125f) * 0x8B + 0x1E240;
+    h = ((s32)((((RuntimeObjectPrefix *)object)->worldPosition[0] + gCollisionGridAlignmentX) * 0.125F) * 0xAD) +
+        ((s32)((((RuntimeObjectPrefix *)object)->worldPosition[2] + gCollisionGridAlignmentZ) * 0.125F) * 0x8B) +
+        0x1E240;
     if (h == 0) {
         key = 1;
     } else {
@@ -154,11 +155,11 @@ u8 *collisionGridFindOverlap(u8 *object) {
     u8 *candidate;
     u8 *hit;
 
-    if (*(f32 *)(object + (u32) & ((RuntimeObjectPrefix *)0)->radius) < 0.001f) {
+    if (*(f32 *)(object + (u32) & ((RuntimeObjectPrefix *)0)->radius) < 0.001F) {
         return NULL;
     }
-    hash = (s32)((((RuntimeObjectPrefix *)object)->worldPosition[0] + gCollisionGridAlignmentX) * 0.125f) * 0xAD +
-           (s32)((((RuntimeObjectPrefix *)object)->worldPosition[2] + gCollisionGridAlignmentZ) * 0.125f) * 0x8B +
+    hash = ((s32)((((RuntimeObjectPrefix *)object)->worldPosition[0] + gCollisionGridAlignmentX) * 0.125F) * 0xAD) +
+           ((s32)((((RuntimeObjectPrefix *)object)->worldPosition[2] + gCollisionGridAlignmentZ) * 0.125F) * 0x8B) +
            0x1E240;
     if (hash == 0) {
         key = 1;
@@ -183,8 +184,9 @@ u8 *collisionGridFindOverlap(u8 *object) {
                     hit = candidate;
                     switch (((RuntimeObjectPrefix *)candidate)->kind) {
                     case 0x86:
-                        if (collisionRequestImpulse(object, candidate, delta, distance) == 0)
+                        if (collisionRequestImpulse(object, candidate, delta, distance) == 0) {
                             goto done;
+                        }
                         break;
                     default:
                         break;
@@ -213,8 +215,8 @@ void collisionGridRandomizeAlignment(void) {
 /// \note Original decompilation identifier: \c func_8002CFA8 (0x8002CFA8).
 void collisionGridInitialize(void) {
     keyedPoolInitialize(&gCollisionCandidateRegistry, 0x1F3);
-    gCollisionGridAlignmentX = 0.0f;
-    gCollisionGridAlignmentZ = 0.0f;
+    gCollisionGridAlignmentX = 0.0F;
+    gCollisionGridAlignmentZ = 0.0F;
 }
 
 

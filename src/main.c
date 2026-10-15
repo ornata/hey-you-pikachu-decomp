@@ -287,11 +287,11 @@ void renderInitializeResources(void) {
         camera += 0xE0;
     } while (camera < (u8 *)&gRenderDisplayListCursor);
     cameraResetOverlayColor(0, 0, 0, 0, 0);
-    cameraFadeOverlayToColor(0, 0, 0, 0, 0, 0.0f);
-    cameraFadePrimarySecondaryOverlay(0, 0, 0, 255, 0.0f);
+    cameraFadeOverlayToColor(0, 0, 0, 0, 0, 0.0F);
+    cameraFadePrimarySecondaryOverlay(0, 0, 0, 255, 0.0F);
     gCameraElapsedTintNeedsOrigin = 1;
     gCameraElapsedTintEnabled = 0;
-    gCameraElapsedTintInitialSeconds = 0.0f;
+    gCameraElapsedTintInitialSeconds = 0.0F;
     /* Same scheduling requirement for the display-list buffer pair. */
     // clang-format off
     buffer = gRenderCommandBuffers; do {
@@ -317,11 +317,11 @@ void renderLoadAreaAssets(void) {
         *(u32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.rangeBase);
     gAreaRenderAssets = heapAllocLocal(&gGameHeap, outputSize, 0x140);
     heapDebugNoOp(&gGameHeap, gAreaRenderAssets);
-    scratchSize = (s32)(*(u32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) &
-                                 ((SceneConfigurationPrefix *)0)->renderAsset.patchCountValue) -
-                        *(u32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) &
-                                 ((SceneConfigurationPrefix *)0)->renderAsset.rangeBase)) *
-                      8 +
+    scratchSize = ((s32)(*(u32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) &
+                                  ((SceneConfigurationPrefix *)0)->renderAsset.patchCountValue) -
+                         *(u32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) &
+                                  ((SceneConfigurationPrefix *)0)->renderAsset.rangeBase)) *
+                   8) +
                   (s32)(*(u32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) &
                                  ((SceneConfigurationPrefix *)0)->renderAsset.encodedEnd) -
                         *(u32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) &
@@ -361,11 +361,11 @@ void renderUnloadAreaAssets(void) {
 void cameraBuildInterfaceTransform(f32 *output) {
     u8 *sp1C;
 
-    sp1C = ((u8 *)gRenderCameras) + gRenderCameraIndex * 0xE0;
+    sp1C = ((u8 *)gRenderCameras) + (gRenderCameraIndex * 0xE0);
     matrix34Identity((Matrix34 *)(MatrixBlock00800 *)output);
     matrix34TranslateLocal((f32 (*)[3])output, *(f32 *)(sp1C + 0), *(f32 *)(sp1C + 4), *(f32 *)(sp1C + 8));
     matrix33ApplyRotationXYZDegrees((f32 *)output, -(gPlayerPitch + gPlayerPitchOffset),
-                                    gPlayerViewShake + gPlayerYaw + 180.0f, 0.0f);
+                                    gPlayerViewShake + gPlayerYaw + 180.0F, 0.0F);
 }
 
 /// Whether the next display-list setup must emit the one-time initial render state.
@@ -406,7 +406,7 @@ extern f32 gCameraPitchCosineLowerTolerance;
 /// \param roll Camera up-vector angle in degrees, measured from positive Y toward positive X.
 /// \returns Nothing.
 void cameraSetPositionAndAngles(s32 index, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 roll) {
-    MatrixCamera *camera = (MatrixCamera *)(((u8 *)gRenderCameras) + index * 0xE0);
+    MatrixCamera *camera = (MatrixCamera *)(((u8 *)gRenderCameras) + (index * 0xE0));
     f32 denominator;
     f32 slope;
     /* IDO schedules these three position stores together. */
@@ -415,7 +415,7 @@ void cameraSetPositionAndAngles(s32 index, f32 x, f32 y, f32 z, f32 pitch, f32 y
     // clang-format on
     denominator = mathCosDegrees(pitch);
     if (denominator < gCameraPitchCosineUpperTolerance && gCameraPitchCosineLowerTolerance < denominator) {
-        slope = 100.0f;
+        slope = 100.0F;
     } else {
         slope = mathSinDegrees(pitch) / denominator;
     }
@@ -424,7 +424,7 @@ void cameraSetPositionAndAngles(s32 index, f32 x, f32 y, f32 z, f32 pitch, f32 y
     camera->target[2] = mathCosDegrees(yaw) + z;
     camera->up[0] = mathSinDegrees(roll);
     camera->up[1] = mathCosDegrees(roll);
-    camera->up[2] = 0.0f;
+    camera->up[2] = 0.0F;
 }
 
 /// Aim a camera from a world-space eye position toward a target with world-up orientation.
@@ -435,16 +435,16 @@ void cameraSetPositionAndAngles(s32 index, f32 x, f32 y, f32 z, f32 pitch, f32 y
 void cameraSetEyeAndTarget(s32 cameraIndex, f32 *eye, f32 *target) {
     u8 *cameraState;
 
-    cameraState = ((u8 *)gRenderCameras) + cameraIndex * 0xE0;
+    cameraState = ((u8 *)gRenderCameras) + (cameraIndex * 0xE0);
     ((MatrixCamera *)cameraState)->eye[0] = eye[0];
     ((MatrixCamera *)cameraState)->eye[1] = eye[1];
     ((MatrixCamera *)cameraState)->eye[2] = eye[2];
     ((MatrixCamera *)cameraState)->target[0] = target[0];
     ((MatrixCamera *)cameraState)->target[1] = target[1];
     ((MatrixCamera *)cameraState)->target[2] = target[2];
-    ((MatrixCamera *)cameraState)->up[2] = 0.0f;
-    ((MatrixCamera *)cameraState)->up[0] = 0.0f;
-    ((MatrixCamera *)cameraState)->up[1] = 1.0f;
+    ((MatrixCamera *)cameraState)->up[2] = 0.0F;
+    ((MatrixCamera *)cameraState)->up[0] = 0.0F;
+    ((MatrixCamera *)cameraState)->up[1] = 1.0F;
 }
 
 /// First color framebuffer storage used for drawing and presentation.
@@ -461,10 +461,12 @@ extern u8 gColorFramebuffer0[];
 /// \param a One-bit alpha value, zero or one.
 /// \returns Nothing.
 void renderFillFramebufferRectangle(u32 left, u32 top, u32 right, u32 bottom, u8 r, u8 g, u8 b, u8 a) {
-    if (right >= 320)
+    if (right >= 320) {
         right = 319;
-    if (bottom >= 240)
+    }
+    if (bottom >= 240) {
         bottom = 239;
+    }
     if (left < right && top < bottom) {
         gDPPipeSync(gRenderDisplayListCursor++);
         gDPSetCycleType(gRenderDisplayListCursor++, G_CYC_FILL);
@@ -514,22 +516,25 @@ void colorBlendToward(u8 *dest, u8 *source, f32 weight) {
     s32 i;
     s32 value;
     f32 inverse;
-    if (weight <= 0.0f) {
-        for (i = 0; i < 4; i++)
+    if (weight <= 0.0F) {
+        for (i = 0; i < 4; i++) {
             dest[i] = source[i];
+        }
         return;
     }
-    if (weight < 0.0f)
-        weight = 0.0f;
-    else if (weight > 1.0f)
-        weight = 1.0f;
-    inverse = 1.0f - weight;
+    if (weight < 0.0F) {
+        weight = 0.0F;
+    } else if (weight > 1.0F) {
+        weight = 1.0F;
+    }
+    inverse = 1.0F - weight;
     for (i = 0; i < 4; i++) {
-        value = (u32)*dest * weight + (u32)*source * inverse;
-        if (value < 0)
+        value = ((u32)*dest * weight) + ((u32)*source * inverse);
+        if (value < 0) {
             value = 0;
-        else if (value > 255)
+        } else if (value > 255) {
             value = 255;
+        }
         *dest = value;
         dest++;
         source++;
@@ -546,13 +551,13 @@ void colorAdvanceTransition(u8 *color, u8 *target, f32 *remaining) {
     f32 var_f12;
 
     *remaining -= gRuntimeFrameSeconds;
-    if (*remaining < 0.0f) {
-        *remaining = 0.0f;
+    if (*remaining < 0.0F) {
+        *remaining = 0.0F;
     }
     if (*remaining <= gRuntimeFrameSeconds) {
-        var_f12 = 0.0f;
+        var_f12 = 0.0F;
     } else {
-        var_f12 = 1.0f - (gRuntimeFrameSeconds / *remaining);
+        var_f12 = 1.0F - (gRuntimeFrameSeconds / *remaining);
     }
     colorBlendToward(color, target, var_f12);
 }
@@ -564,7 +569,7 @@ void colorAdvanceTransition(u8 *color, u8 *target, f32 *remaining) {
 void cameraUpdateOverlayColors(s32 cameraIndex, s32 advanceBlend) {
     MatrixCamera *cameraState;
 
-    cameraState = (MatrixCamera *)(((u8 *)gRenderCameras) + cameraIndex * 0xE0);
+    cameraState = (MatrixCamera *)(((u8 *)gRenderCameras) + (cameraIndex * 0xE0));
     colorAdvanceTransition(cameraState->secondaryOverlayColor, cameraState->targetSecondaryOverlayColor, &cameraState->secondaryOverlayTimeRemaining);
     colorAdvanceTransition(cameraState->baseOverlayColor, cameraState->targetBaseOverlayColor, &cameraState->baseOverlayTimeRemaining);
     if (advanceBlend != 0) {
@@ -585,7 +590,7 @@ extern Gfx gCameraOverlayRectangleDisplayList[];
 /// \param index Valid camera slot whose overlay is drawn in the current drawing context.
 /// \returns Nothing.
 void cameraDrawOverlay(s32 index) {
-    MatrixCamera *camera = (MatrixCamera *)(((u8 *)gRenderCameras) + index * 0xE0);
+    MatrixCamera *camera = (MatrixCamera *)(((u8 *)gRenderCameras) + (index * 0xE0));
     if (camera->overlayColor[3] != 0) {
         gDPPipeSync(gRenderDisplayListCursor++);
         gDPSetCycleType(gRenderDisplayListCursor++, G_CYC_1CYCLE);
@@ -600,7 +605,7 @@ void cameraDrawOverlay(s32 index) {
 /// \param index Valid camera slot whose secondary overlay is drawn in the current drawing context.
 /// \returns Nothing.
 void cameraDrawSecondaryOverlay(s32 index) {
-    MatrixCamera *camera = (MatrixCamera *)(((u8 *)gRenderCameras) + index * 0xE0);
+    MatrixCamera *camera = (MatrixCamera *)(((u8 *)gRenderCameras) + (index * 0xE0));
     if (camera->secondaryOverlayColor[3] != 0) {
         gDPPipeSync(gRenderDisplayListCursor++);
         gDPSetCycleType(gRenderDisplayListCursor++, G_CYC_1CYCLE);
@@ -619,7 +624,7 @@ extern s32 gCameraElapsedTintEnabled;
 /// \param initialElapsed Initial elapsed time in seconds used when the effect first starts; negative values are ignored.
 /// \returns Nothing.
 void cameraEnableElapsedTimeTint(f32 initialElapsed) {
-    if (initialElapsed >= 0.0f) {
+    if (initialElapsed >= 0.0F) {
         gCameraElapsedTintInitialSeconds = initialElapsed;
         gCameraElapsedTintEnabled = 1;
     }
@@ -672,7 +677,7 @@ extern f32 gFloatStoreZeroLowerTolerance;
 /// \returns Nothing.
 void floatStoreWithZeroTolerance(f32 value, f32 *output) {
     if ((value < gFloatStoreZeroUpperTolerance) && (gFloatStoreZeroLowerTolerance < value)) {
-        *output = 0.0f;
+        *output = 0.0F;
         return;
     }
     *output = value;
@@ -689,7 +694,7 @@ void floatStoreWithZeroTolerance(f32 value, f32 *output) {
 void cameraFadeOverlayToColor(s32 cameraIndex, s32 red, s32 green, s32 blue, s32 alpha, f32 duration) {
     u8 *sp20;
 
-    sp20 = ((u8 *)gRenderCameras) + cameraIndex * 0xE0;
+    sp20 = ((u8 *)gRenderCameras) + (cameraIndex * 0xE0);
     floatStoreWithZeroTolerance(duration, (f32 *)(sp20 + 0xC4));
     colorStoreClampedRgba(red, green, blue, alpha, sp20 + 0xBC);
 }
@@ -716,7 +721,7 @@ void cameraFadePrimaryOverlayBlend(s32 red, s32 green, s32 blue, s32 alpha, f32 
 void cameraResetOverlayColor(s32 cameraIndex, s32 red, s32 green, s32 blue, s32 alpha) {
     u8 *sp20;
 
-    sp20 = ((u8 *)gRenderCameras) + cameraIndex * 0xE0;
+    sp20 = ((u8 *)gRenderCameras) + (cameraIndex * 0xE0);
     colorStoreClampedRgba(red, green, blue, alpha, sp20 + 0xB8);
     colorStoreClampedRgba(red, green, blue, alpha, sp20 + 0xC0);
     colorStoreClampedRgba(0, 0, 0, 0, sp20 + 0xCC);
@@ -771,24 +776,23 @@ s32 cameraBuildViewProjection(s32 index, Vp *viewport, Mtx *buffer) {
     f32 distance;
     MatrixCamera *camera;
     MatrixCamera *cameras = (MatrixCamera *)((u8 *)gRenderCameras);
-    camera = (MatrixCamera *)((u8 *)cameras + index * sizeof(*cameras));
-    guPerspective(buffer, &normalize, 45.0f,
-                  viewportSetPixelRectangle(viewport, camera->viewport[0], camera->viewport[1],
-                                            camera->viewport[2], camera->viewport[3], 320, 240,
-                                            gCameraProjectionAspectScale),
-                  0.5f, 1000.0f, 1.0f);
+    camera = (MatrixCamera *)((u8 *)cameras + (index * sizeof(*cameras)));
+    guPerspective(buffer, &normalize, 45.0F,
+                  viewportSetPixelRectangle(viewport, camera->viewport[0], camera->viewport[1], camera->viewport[2],
+                                            camera->viewport[3], 320, 240, gCameraProjectionAspectScale),
+                  0.5F, 1000.0F, 1.0F);
     view = buffer + 1;
     guLookAt(view, camera->eye[0], camera->eye[1], camera->eye[2], camera->target[0], camera->target[1],
              camera->target[2], camera->up[0], camera->up[1], camera->up[2]);
     guMtxCatL(view, buffer, buffer);
     matrixFixedTo34(*view, camera->view.values);
-    distance = gCurrentAreaConfiguration->projectionExtent / mathSinDegrees(36.0f);
+    distance = gCurrentAreaConfiguration->projectionExtent / mathSinDegrees(36.0F);
     camera->distance = distance;
-    scale = mathCosDegrees(36.0f) * distance;
+    scale = mathCosDegrees(36.0F) * distance;
     camera->scaled = camera->view;
     for (row = 0; row < 4; row++) {
         cameras[index].scaled.values[row * 3] *= scale;
-        cameras[index].scaled.values[row * 3 + 1] *= scale;
+        cameras[index].scaled.values[(row * 3) + 1] *= scale;
     }
     camera->matrices = buffer;
     return normalize;
@@ -802,7 +806,7 @@ void cameraApplyRenderingState(s32 cameraIndex) {
     u8 *sp18;
     s32 perspectiveNormalization;
 
-    sp18 = gRenderTaskViewports + gGraphicsNextTaskIndex * 0x10;
+    sp18 = gRenderTaskViewports + (gGraphicsNextTaskIndex * 0x10);
     sp1C = gRenderTaskMatrices + (gGraphicsNextTaskIndex << 7);
     perspectiveNormalization = cameraBuildViewProjection(cameraIndex, (Vp *)sp18, (Mtx *)sp1C);
     gSPPerspNormalize(gRenderDisplayListCursor++, perspectiveNormalization);
@@ -853,7 +857,7 @@ void cameraUpdateElapsedTimeTint(s32 cameraIndex) {
 
     if (gCameraElapsedTintEnabled == 0) {
         gCameraElapsedTintNeedsOrigin = 1;
-        gCameraElapsedTintInitialSeconds = 0.0f;
+        gCameraElapsedTintInitialSeconds = 0.0F;
         return;
     }
     if (gCameraElapsedTintNeedsOrigin != 0) {
@@ -861,12 +865,12 @@ void cameraUpdateElapsedTimeTint(s32 cameraIndex) {
         gCameraElapsedTintNeedsOrigin = 0;
         return;
     }
-    elapsedTintAlpha = (u32)(2.0f * (actorGetPrimaryScriptElapsedTime() - gCameraElapsedTintOriginSeconds));
+    elapsedTintAlpha = (u32)(2.0F * (actorGetPrimaryScriptElapsedTime() - gCameraElapsedTintOriginSeconds));
     clampedTintAlpha = elapsedTintAlpha;
     if (elapsedTintAlpha >= 0x97U) {
         clampedTintAlpha = 0x96;
     }
-    cameraFadeOverlayToColor(cameraIndex, 0x6E, 0x28, 0x2D, clampedTintAlpha, 0.0f);
+    cameraFadeOverlayToColor(cameraIndex, 0x6E, 0x28, 0x2D, clampedTintAlpha, 0.0F);
 }
 
 extern Gfx D_100C7E0[];

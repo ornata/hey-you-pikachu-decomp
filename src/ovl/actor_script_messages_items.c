@@ -48,7 +48,7 @@ s32 actorScriptTrackPlayerPrimaryObject(u8 *actor) {
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     actorTrackPlayerPrimaryObject(actor);
-    ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetDistanceAllowance = 0.0f;
+    ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetDistanceAllowance = 0.0F;
     scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return 0;
 }
@@ -251,7 +251,7 @@ s32 actorScriptGetObjectPlayerDistance(u8 *actor) {
     vm = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     obj = objectResolveAvailableHandle(scriptVmPopInteger((ScriptVm *)(vm)));
     if (obj == NULL) {
-        scriptVmPushFloat((ScriptVm *)(vm), -1.0f);
+        scriptVmPushFloat((ScriptVm *)(vm), -1.0F);
         return 0;
     }
     d[2] = ((PlayerControlPrefix *)&gPlayerState)->position[0] - ((RuntimeObjectPrefix *)obj)->worldPosition[0];
@@ -734,7 +734,7 @@ s32 actorScriptTrackPlayerSecondaryObject(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    actorTrackObjectPosition(actor, ((PlayerModeState *)&gPlayerModeState)->objectHandles[1], 0.0f);
+    actorTrackObjectPosition(actor, ((PlayerModeState *)&gPlayerModeState)->objectHandles[1], 0.0F);
     scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return 0;
 }
@@ -748,7 +748,7 @@ s32 actorScriptTrackPlayerTertiaryObject(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    actorTrackObjectPosition(actor, ((PlayerModeState *)&gPlayerModeState)->objectHandles[2], 0.0f);
+    actorTrackObjectPosition(actor, ((PlayerModeState *)&gPlayerModeState)->objectHandles[2], 0.0F);
     scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return 0;
 }
@@ -1277,7 +1277,7 @@ s32 actorScriptGetPlayerCoordinate(u8 *actor) {
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     idx = scriptVmPopInteger((ScriptVm *)(sp1C));
-    scriptVmPushFloat((ScriptVm *)(sp1C), *(f32 *)((u8 *)&gPlayerState + idx * 4));
+    scriptVmPushFloat((ScriptVm *)(sp1C), *(f32 *)((u8 *)&gPlayerState + (idx * 4)));
     return 0;
 }
 

@@ -52,8 +52,9 @@ s16 actorFindInteractableItemKind(u8 *actor, s32 kind, f32 distance) {
     if (runtimeGetElapsedMilliseconds() - ((ActorScriptState *)state)->lastInteractionMilliseconds < 500) {
         return 0;
     }
-    item = itemFindNearest(((RuntimeObjectPrefix *)actor)->worldPosition, distance, ((ActorScriptState *)state)->orientation[0],
-                           ((ActorScriptState *)state)->orientation[1], 45.0f, kind, kind, 0, 0);
+    item = itemFindNearest(((RuntimeObjectPrefix *)actor)->worldPosition, distance,
+                           ((ActorScriptState *)state)->orientation[0], ((ActorScriptState *)state)->orientation[1],
+                           45.0F, kind, kind, 0, 0);
     if ((item == NULL) || (itemCanBePickedUp(item, 0) == 0)) {
         return 0;
     }
@@ -87,7 +88,7 @@ f32 objectGetDistanceToHandle(u8 *object, s32 handle) {
     f32 d[3];
 
     if (obj == NULL) {
-        return -1.0f;
+        return -1.0F;
     }
     d[0] = ((RuntimeObjectPrefix *)obj)->worldPosition[0] - ((RuntimeObjectPrefix *)object)->worldPosition[0];
     d[1] = ((RuntimeObjectPrefix *)obj)->worldPosition[1] - ((RuntimeObjectPrefix *)object)->worldPosition[1];
@@ -105,7 +106,7 @@ f32 objectGetHeightDifferenceToHandle(u8 *object, s32 handle) {
 
     resolvedObject = objectResolveAvailableHandle(handle);
     if (resolvedObject == NULL) {
-        return 0.0f;
+        return 0.0F;
     }
     return ((RuntimeObjectPrefix *)resolvedObject)->worldPosition[1] -
            ((RuntimeObjectPrefix *)object)->worldPosition[1];
@@ -121,10 +122,10 @@ f32 objectGetHorizontalDistanceToHandle(u8 *object, s32 handle) {
     f32 dir[3];
 
     if (obj == NULL) {
-        return 0.0f;
+        return 0.0F;
     }
     dir[0] = ((RuntimeObjectPrefix *)obj)->worldPosition[0] - ((RuntimeObjectPrefix *)object)->worldPosition[0];
-    dir[1] = 0.0f;
+    dir[1] = 0.0F;
     dir[2] = ((RuntimeObjectPrefix *)obj)->worldPosition[2] - ((RuntimeObjectPrefix *)object)->worldPosition[2];
     return vector3LengthApprox(dir);
 }
@@ -138,7 +139,7 @@ f32 actorGetHorizontalTargetDistance(u8 *actor) {
     u8 *state = ((RuntimeObjectPrefix *)actor)->state.bytes;
 
     dir[0] = ((ActorScriptState *)state)->targetPosition[0] - ((RuntimeObjectPrefix *)actor)->worldPosition[0];
-    dir[1] = 0.0f;
+    dir[1] = 0.0F;
     dir[2] = ((ActorScriptState *)state)->targetPosition[2] - ((RuntimeObjectPrefix *)actor)->worldPosition[2];
     return vector3LengthApprox(dir);
 }
@@ -154,7 +155,7 @@ f32 actorGetTargetCoordinate(u8 *actor, s32 axis) {
     if (axis < 3) {
         return ((ActorScriptState *)rec)->targetPosition[axis];
     }
-    return -65536.0f;
+    return -65536.0F;
 }
 
 /// Get one coordinate of an object's world position.
@@ -166,7 +167,7 @@ f32 objectGetWorldCoordinate(u8 *object, s32 axis) {
     if (axis < 3) {
         return ((RuntimeObjectPrefix *)object)->worldPosition[axis];
     }
-    return -65536.0f;
+    return -65536.0F;
 }
 
 /// Get the elapsed time of an object's current action script.
@@ -297,7 +298,7 @@ s32 actorTrackEscapeFromObject(u8 *actor, s32 handle) {
     }
     ((ActorScriptState *)sp1C)->targetMode = ACTOR_TARGET_ESCAPE;
     ((ActorScriptState *)sp1C)->targetHandle = handle;
-    ((ActorScriptState *)sp1C)->targetDistanceAllowance = 0.0f;
+    ((ActorScriptState *)sp1C)->targetDistanceAllowance = 0.0F;
     actorChooseEscapePosition(actor, ((RuntimeObjectPrefix *)resolvedObject)->worldPosition);
     return objectGetScriptCategory(actor, handle);
 }
@@ -322,7 +323,7 @@ s32 actorChooseEscapePositionFromHandle(u8 *actor, s32 handle) {
           ITEM_OWNERSHIP_TOOLBOX))) {
         return 0;
     }
-    ((ActorScriptState *)actorState)->targetDistanceAllowance = 0.0f;
+    ((ActorScriptState *)actorState)->targetDistanceAllowance = 0.0F;
     actorChooseEscapePosition(actor, ((RuntimeObjectPrefix *)targetObject)->worldPosition);
     return objectGetScriptCategory(actor, handle);
 }
@@ -337,7 +338,7 @@ void actorChooseEscapePositionFromPlayer(u8 *actor) {
 
     actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
     ((ActorScriptState *)actorState)->targetMode = ACTOR_TARGET_FIXED;
-    ((ActorScriptState *)actorState)->targetDistanceAllowance = 0.0f;
+    ((ActorScriptState *)actorState)->targetDistanceAllowance = 0.0F;
     actorChooseEscapePosition(actor, (f32 *)&gPlayerState);
 }
 
@@ -495,7 +496,7 @@ f32 objectGetBoundingRadiusByHandle(s32 handle) {
 
     resolvedObject = objectResolveAvailableHandle(handle);
     if (resolvedObject == NULL) {
-        return 0.0f;
+        return 0.0F;
     }
     return ((RuntimeObjectPrefix *)resolvedObject)->radius;
 }
@@ -608,13 +609,13 @@ f32 areaGetPathPointCoordinate(s32 path, s32 point, s32 axis) {
     ScenePathEntry *entry;
 
     if (axis >= 3) {
-        return -65536.0f;
+        return -65536.0F;
     }
     entry = &gCurrentAreaConfiguration->paths[path];
     if (point < entry->count) {
         return entry->points[point][axis];
     }
-    return -65536.0f;
+    return -65536.0F;
 }
 
 
@@ -629,7 +630,8 @@ f32 areaGetPathPointCoordinate(s32 path, s32 point, s32 axis) {
 /// \returns The nearest qualifying object handle, or zero when none is found.
 /// \note Original decompilation identifier: \c func_80117C18 (0x80117C18).
 s32 actorFindNearestHandleFromPosition(u8 *object, f32 *position, s32 minKind, s32 maxKind, f32 distance) {
-    u8 *spawned = actorFindNearestInRange(object, (Vec3f *)position, distance, ((RuntimeObjectPrefix *)object)->rotation, 360.0f, minKind, maxKind);
+    u8 *spawned = actorFindNearestInRange(object, (Vec3f *)position, distance,
+                                          ((RuntimeObjectPrefix *)object)->rotation, 360.0F, minKind, maxKind);
 
     if (spawned == NULL) {
         return 0;
@@ -647,7 +649,7 @@ s32 actorFindNearestHandleFromPosition(u8 *object, f32 *position, s32 minKind, s
 /// \returns The best qualifying item handle, or zero when none is found.
 /// \note Original decompilation identifier: \c func_80117C74 (0x80117C74).
 s32 itemFindHandleNearPosition(f32 *position, f32 distance, s32 minKind, s32 maxKind, s32 filter, s32 weighted) {
-    u8 *item = itemFindNearest(position, distance, 0.0f, 0.0f, 360.0f, minKind, maxKind, filter, weighted);
+    u8 *item = itemFindNearest(position, distance, 0.0F, 0.0F, 360.0F, minKind, maxKind, filter, weighted);
 
     if (item == NULL) {
         return 0;
@@ -685,7 +687,8 @@ s32 objectFindNearestHandleInFacingCone(u8 *object, s32 minKind, s32 maxKind, f3
 /// \returns The nearest qualifying object handle, or zero when none is found.
 /// \note Original decompilation identifier: \c func_80117D4C (0x80117D4C).
 s32 objectFindNearestHandleFromPosition(u8 *object, f32 *position, s32 minKind, s32 maxKind, f32 distance) {
-    u8 *spawned = objectFindNearestTargetInView(object, (Vec3f *)position, distance, ((RuntimeObjectPrefix *)object)->rotation, 360.0f, minKind, maxKind);
+    u8 *spawned = objectFindNearestTargetInView(object, (Vec3f *)position, distance,
+                                                ((RuntimeObjectPrefix *)object)->rotation, 360.0F, minKind, maxKind);
 
     if (spawned == NULL) {
         return 0;
@@ -734,7 +737,7 @@ f32 objectGetUniformScaleByHandle(s32 handle) {
 
     resolvedObject = objectResolveAvailableHandle(handle);
     if (resolvedObject == NULL) {
-        return 0.0f;
+        return 0.0F;
     }
     if (((RuntimeObjectPrefix *)resolvedObject)->flags & 4) {
         var_f2 = ((RuntimeObjectPrefix *)resolvedObject)->scale[0] / gCurrentAreaConfiguration->objectScale;
@@ -756,17 +759,17 @@ f32 voiceReactiveSpinnerGetSpeedByHandle(s32 handle) {
 
     resolvedObject = objectResolveAvailableHandle(handle);
     if (resolvedObject == NULL) {
-        return 0.0f;
+        return 0.0F;
     }
     objectKind = ((RuntimeObjectPrefix *)resolvedObject)->kind;
     if (objectKind == 0x82) {
         spinnerState = ((RuntimeObjectPrefix *)resolvedObject)->state.floats;
         rotationSpeed = *spinnerState;
-        if (rotationSpeed > 0.0f) {
+        if (rotationSpeed > 0.0F) {
             return rotationSpeed;
         }
     }
-    return 0.0f;
+    return 0.0F;
 }
 
 
@@ -823,12 +826,12 @@ f32 objectGetWorldCoordinateByHandle(s32 handle, s32 axis) {
 
     resolvedObject = objectResolveAvailableHandle(handle);
     if (resolvedObject == NULL) {
-        return 0.0f;
+        return 0.0F;
     }
     if (axis < 3) {
         return ((RuntimeObjectPrefix *)resolvedObject)->worldPosition[axis];
     }
-    return -65536.0f;
+    return -65536.0F;
 }
 
 
@@ -846,10 +849,10 @@ f32 actorGetGroundOffsetCoordinate(u8 *actor, f32 distance, f32 angle, s32 axis)
 
     state = ((RuntimeObjectPrefix *)actor)->state.bytes;
     p[0] = ((RuntimeObjectPrefix *)actor)->worldPosition[0] +
-           mathSinDegrees(((ActorScriptState *)state)->orientation[1] + angle) * distance;
+           (mathSinDegrees(((ActorScriptState *)state)->orientation[1] + angle) * distance);
     p[1] = ((RuntimeObjectPrefix *)actor)->worldPosition[1];
     p[2] = ((RuntimeObjectPrefix *)actor)->worldPosition[2] +
-           mathCosDegrees(((ActorScriptState *)state)->orientation[1] + angle) * distance;
+           (mathCosDegrees(((ActorScriptState *)state)->orientation[1] + angle) * distance);
     q[0] = p[0];
     q[1] = terrainGetWorldHeight(p[0], p[1], p[2], 0);
     q[2] = p[2];
@@ -868,11 +871,11 @@ s32 actorProbeGroundMaterialAhead(u8 *actor, f32 distance, f32 heightOffset) {
     u8 *state = ((RuntimeObjectPrefix *)actor)->state.bytes;
 
     return terrainGetSurfaceAttributes(((RuntimeObjectPrefix *)actor)->worldPosition[0] +
-                                    mathSinDegrees(((ActorScriptState *)state)->orientation[1]) * distance,
-                                ((RuntimeObjectPrefix *)actor)->worldPosition[1] + heightOffset,
-                                ((RuntimeObjectPrefix *)actor)->worldPosition[2] +
-                                    mathCosDegrees(((ActorScriptState *)state)->orientation[1]) * distance,
-                                0);
+                                           (mathSinDegrees(((ActorScriptState *)state)->orientation[1]) * distance),
+                                       ((RuntimeObjectPrefix *)actor)->worldPosition[1] + heightOffset,
+                                       ((RuntimeObjectPrefix *)actor)->worldPosition[2] +
+                                           (mathCosDegrees(((ActorScriptState *)state)->orientation[1]) * distance),
+                                       0);
 }
 
 /// Query whether a scene region is highlighted.
@@ -901,7 +904,7 @@ f32 pathGetFirstPointCoordinateByHandle(s32 handle, s32 axis) {
     u8 *rec;
 
     if (obj == NULL) {
-        return 0.0f;
+        return 0.0F;
     }
     if (((RuntimeObjectPrefix *)obj)->kind == 0xAF) {
         rec = ((RuntimeObjectPrefix *)obj)->state.bytes;
@@ -909,7 +912,7 @@ f32 pathGetFirstPointCoordinateByHandle(s32 handle, s32 axis) {
             return ((SceneRegionState *)rec)->points[axis];
         }
     }
-    return -65536.0f;
+    return -65536.0F;
 }
 
 typedef struct PathVector {
@@ -931,8 +934,9 @@ f32 actorGetFollowingPathPointCoordinate(u8 *object, s32 handle, s32 axis) {
     PathVector position;
     u8 *pathObject;
     pathObject = objectFindLiveByHandle(handle);
-    if (pathObject == NULL)
-        return 0.0f;
+    if (pathObject == NULL) {
+        return 0.0F;
+    }
     index = 0;
     offset = 0;
     if (((RuntimeObjectPrefix *)pathObject)->kind == 0xAF) {
@@ -951,15 +955,18 @@ f32 actorGetFollowingPathPointCoordinate(u8 *object, s32 handle, s32 axis) {
             // clang-format on
             offset += 12;
             index++;
-            if (*(f32 *)((u8 *)pathState->points + offset) < 0.0f)
+            if (*(f32 *)((u8 *)pathState->points + offset) < 0.0F) {
                 break;
-            if (vector3Length(&delta.v[0]) <= 3.0f)
+            }
+            if (vector3Length(&delta.v[0]) <= 3.0F) {
                 break;
+            }
         }
-        if (axis < 3)
-            return *(f32 *)((u8 *)pathState->points + index * 12 + axis * 4);
+        if (axis < 3) {
+            return *(f32 *)((u8 *)pathState->points + (index * 12) + (axis * 4));
+        }
     }
-    return -65536.0f;
+    return -65536.0F;
 }
 
 
@@ -974,13 +981,13 @@ f32 caveGetFirstAnchorCoordinate(s32 handle, s32 axis) {
 
     liveObject = objectFindLiveByHandle(handle);
     if (liveObject == NULL) {
-        return 0.0f;
+        return 0.0F;
     }
     v = ((RuntimeObjectPrefix *)liveObject)->state.pointer;
     if (axis < 3) {
         return v->firstAnchor[axis];
     }
-    return -65536.0f;
+    return -65536.0F;
 }
 
 /// Get one coordinate of a cave's second scene anchor.
@@ -993,13 +1000,13 @@ f32 caveGetSecondAnchorCoordinate(s32 handle, s32 axis) {
     u8 *rec;
 
     if (obj == NULL) {
-        return 0.0f;
+        return 0.0F;
     }
     rec = ((RuntimeObjectPrefix *)obj)->state.bytes;
     if (axis < 3) {
         return ((CaveState *)rec)->secondAnchor[axis];
     }
-    return -65536.0f;
+    return -65536.0F;
 }
 
 
@@ -1030,7 +1037,7 @@ s32 caveGetLinkedLandmarkHandle(s32 handle) {
 /// \note Original decompilation identifier: \c func_801184C0 (0x801184C0).
 s32 itemFindHandleFromPlayerView(s32 minKind, s32 maxKind, f32 distance, f32 cone, s32 filter, s32 weighted) {
     u8 *item =
-        itemFindNearest((f32 *)&gPlayerState, distance, 0.0f,
+        itemFindNearest((f32 *)&gPlayerState, distance, 0.0F,
                         ((PlayerControlPrefix *)&gPlayerState)->yaw + ((PlayerControlPrefix *)&gPlayerState)->viewShake,
                         cone, minKind, maxKind, filter, weighted);
 
@@ -1054,11 +1061,12 @@ s32 actorFindNearestFromPlayerView(u8 *object, s32 minKind, s32 maxKind, f32 dis
     f32 rotation[3];
     origin = (f32 *)&gPlayerState;
     rotation[1] = origin[6] + origin[3];
-    rotation[0] = 0.0f;
-    rotation[2] = 0.0f;
+    rotation[0] = 0.0F;
+    rotation[2] = 0.0F;
     result = actorFindNearestInRange(object, (Vec3f *)origin, distance, rotation, cone, minKind, maxKind);
-    if (result == NULL)
+    if (result == NULL) {
         return 0;
+    }
     return ((RuntimeObjectPrefix *)result)->handle;
 }
 
@@ -1076,8 +1084,8 @@ s32 objectFindNearestFromPlayerView(u8 *self, s32 minKind, s32 maxKind, f32 dist
     f32 rotation[3];
     origin = (f32 *)&gPlayerState;
     rotation[1] = origin[6] + origin[3];
-    rotation[0] = 0.0f;
-    rotation[2] = 0.0f;
+    rotation[0] = 0.0F;
+    rotation[2] = 0.0F;
     item = objectFindNearestTargetInView(self, (Vec3f *)origin, distance, rotation, cone, minKind, maxKind);
     if (item == NULL) {
         return 0;
@@ -1112,17 +1120,17 @@ void actorChooseEscapePosition(u8 *object, f32 *target) {
     direction[0] = target[0] - ((RuntimeObjectPrefix *)object)->worldPosition[0];
     direction[1] = target[1] - ((RuntimeObjectPrefix *)object)->worldPosition[1];
     direction[2] = target[2] - ((RuntimeObjectPrefix *)object)->worldPosition[2];
-    if (vector3Normalize((f32 *)direction) == 0.0f) {
+    if (vector3Normalize((f32 *)direction) == 0.0F) {
         actorSetTargetToFallbackObject(object);
         return;
     }
-    distance = *(f32 *)((u8 *)gCurrentAreaConfiguration) * 4.0f;
+    distance = *(f32 *)((u8 *)gCurrentAreaConfiguration) * 4.0F;
     angle = (s32)(randomBelow(60) - 15);
     trig = mathCosDegrees(angle);
-    rotated[0] = direction[0] * trig - direction[2] * mathSinDegrees(angle);
+    rotated[0] = (direction[0] * trig) - (direction[2] * mathSinDegrees(angle));
     rotated[1] = direction[1];
     trig = mathSinDegrees(angle);
-    rotated[2] = direction[0] * trig + direction[2] * mathCosDegrees(angle);
+    rotated[2] = (direction[0] * trig) + (direction[2] * mathCosDegrees(angle));
     rotated[0] *= distance;
     rotated[1] *= distance;
     rotated[2] *= distance;

@@ -115,9 +115,9 @@ void presentationResetFocusPoint(Vec3f *point) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002D348 (0x8002D348).
 void presentationUpdateFocusPoint(Vec3f *point) {
-    vector3InterpolateSmoothTimed((f32 *)&gPresentationFocusStart, (f32 *)&gPresentationFocusTarget, (f32 *)point, 600.0f,
-                                  (f32)runtimeGetElapsedMilliseconds() -
-                                      (f32)gPresentationFocusTransitionStartMilliseconds);
+    vector3InterpolateSmoothTimed(
+        (f32 *)&gPresentationFocusStart, (f32 *)&gPresentationFocusTarget, (f32 *)point, 600.0F,
+        (f32)runtimeGetElapsedMilliseconds() - (f32)gPresentationFocusTransitionStartMilliseconds);
     gPresentationFocusCurrent.x = point->x;
     gPresentationFocusCurrent.y = point->y;
     gPresentationFocusCurrent.z = point->z;
@@ -234,7 +234,7 @@ void wholeMapDrawDestinations(Gfx **gdl) {
                     badge.item.x = icon.item.x + 55;
                 }
                 alpha = runtimeGetUiPulseAlpha() & 255;
-                badge.item.y = (s32)(((index & 1) ? 0.01f : -0.01f) * (f32)(u32)alpha + (f32)icon.item.y);
+                badge.item.y = (s32)((((index & 1) ? 0.01F : -0.01F) * (f32)(u32)alpha) + (f32)icon.item.y);
                 badge.item.texture = texture;
                 textureDrawRectangles(rendererTable, (TextureRectangle *)&badge.item, gdl);
             }
@@ -280,8 +280,8 @@ void wholeMapDrawLockedDestinations(Gfx **gdl) {
         rectangles[i].height = 64;
         rectangles[i].s = 0;
         rectangles[i].t = 0;
-        rectangles[i].scaleX = 1.0f;
-        rectangles[i].scaleY = 1.0f;
+        rectangles[i].scaleX = 1.0F;
+        rectangles[i].scaleY = 1.0F;
     }
     for (i = 0; i < 9; i++) {
         if (wholeMapIsDestinationLocked(i)) {
@@ -324,8 +324,9 @@ void wholeMapDrawLockedDestinations(Gfx **gdl) {
         textureDrawRectangles(7, (TextureRectangle *)rectangles, gdl);
     }
     angle = (s32)((u32)*counter + 5U);
-    while (angle < 0)
+    while (angle < 0) {
         angle += 360;
+    }
     *counter = angle;
     if (angle >= 360) {
         do {
@@ -394,7 +395,7 @@ void wholeMapUpdateActorPlacement(void) {
     Vec3f position;
     s32 firstJointId = 0x47;
     s32 secondJointId = 0x4C;
-    f32 averageDivisor = 2.0f;
+    f32 averageDivisor = 2.0F;
     Vec3f reference;
     f32 height;
     f32 otherHeight;
@@ -447,7 +448,7 @@ void wholeMapPrepareActor(void) {
     f32 angle;
     u8 *state;
     state = *(u8 **)((u8 *)((s32)gPikachuActor) + (u32) & ((RuntimeObjectPrefix *)0)->state);
-    camera = ((u8 *)gRenderCameras) + gRenderCameraIndex * 0xE0;
+    camera = ((u8 *)gRenderCameras) + (gRenderCameraIndex * 0xE0);
     objectSetHierarchyFlags((u8 *)((s32)gPikachuActor), flags);
     wholeMapUpdateActorPlacement();
     actionScriptStop((u8 *)((s32)gPikachuActor));
@@ -592,7 +593,7 @@ void wholeMapHandleInput(void) {
     s32 confirmMask;
     pressed = &gControllerPrimaryRepeatedButtons;
     if (*pressed & 0x4000) {
-        cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFE, 0.6f);
+        cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFE, 0.6F);
         audioChangeCurrentCue(-1, 0.1, 1.0);
         wholeMapSetState(4);
         return;
@@ -792,7 +793,7 @@ void wholeMapUpdate(void) {
         wholeMapConfigureVoiceInput();
         wholeMapSelectBackdrop();
         cameraResetOverlayColor(0, 0, 0, 0, 0);
-        cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 0.4f);
+        cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 0.4F);
         wholeMapSelectInitialDestination();
         wholeMapPrepareActor();
         controllerConfigureStickButtons(1, 0x1E, 0x1E, 0x1E, 0x1E);
@@ -813,7 +814,7 @@ void wholeMapUpdate(void) {
         objectUpdateGroup(0x4000);
         return;
     case 1:
-        if (gPrimarySecondaryOverlayRemainingSeconds == 0.0f) {
+        if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
             wholeMapSetState(2);
         }
         wholeMapUpdateActorPlacement();
@@ -826,7 +827,7 @@ void wholeMapUpdate(void) {
         return;
     case 3:
         if (runtimeGetElapsedMilliseconds() - (u64)gWorldMapStateStartMilliseconds >= 0x5DD) {
-            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFE, 0.6f);
+            cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFE, 0.6F);
             audioChangeCurrentCue(-1, 0.1, 1.0);
             wholeMapSetState(5);
         }
@@ -834,7 +835,7 @@ void wholeMapUpdate(void) {
         objectUpdateGroup(0x4000);
         return;
     case 4:
-        if (gPrimarySecondaryOverlayRemainingSeconds == 0.0f) {
+        if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
             scriptVmSetGlobalInteger(0, 1);
             if (playerGetChaseStage() == 0) {
                 areaSetNextDestination(0, 2);
@@ -856,7 +857,7 @@ void wholeMapUpdate(void) {
         objectUpdateGroup(0x4000);
         return;
     case 5:
-        if (gPrimarySecondaryOverlayRemainingSeconds == 0.0f) {
+        if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
             areaSetNextDestination(gWorldMapDestinations[gWorldMapSelectedDestination].areaIds[playerGetChaseStage()], 0);
             runtimeRequestProgramChange(0);
             controllerConfigureStickButtons(0, 0x1E, 0x1E, 0x1E, 0x1E);

@@ -27,7 +27,7 @@ u8 *landmarkCreate(f32 x, f32 y, f32 z, s32 landmarkId) {
     f32 s;
 
     obj = objectCreateHierarchyFromTemplate((ObjectTemplate *)gLandmarkObjectTemplate);
-    s = 0.1f;
+    s = 0.1F;
     ((RuntimeObjectPrefix *)obj)->scale[2] = s;
     ((RuntimeObjectPrefix *)obj)->scale[1] = s;
     ((RuntimeObjectPrefix *)obj)->scale[0] = s;

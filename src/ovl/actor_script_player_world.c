@@ -663,7 +663,7 @@ s32 actorScriptProbeGroundMaterialAhead(u8 *actor) {
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     scriptVmPushInteger((ScriptVm *)(sp1C),
-                        actorProbeGroundMaterialAhead(actor, scriptVmPopFloat((ScriptVm *)(sp1C)), 0.0f));
+                        actorProbeGroundMaterialAhead(actor, scriptVmPopFloat((ScriptVm *)(sp1C)), 0.0F));
     return 0;
 }
 
@@ -694,7 +694,7 @@ s32 actorScriptGetGroundHeightAhead(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushFloat((ScriptVm *)(sp1C), actorGetGroundHeightAhead(actor, scriptVmPopFloat((ScriptVm *)(sp1C)), 0.0f));
+    scriptVmPushFloat((ScriptVm *)(sp1C), actorGetGroundHeightAhead(actor, scriptVmPopFloat((ScriptVm *)(sp1C)), 0.0F));
     return 0;
 }
 
@@ -834,7 +834,7 @@ s32 actorScriptSetPikachuSecondaryMeter(u8 *actor) {
     v = scriptVmPopFloat((ScriptVm *)(sp1C));
 
     // clang-format off
-    if (v < 0.0f) { v = 0.0f; } else if (v > 100.0f) { v = 100.0f; } ((RuntimeObjectPrefix *)((u8 *)gPikachuActor))->state.actor->secondaryMeter = v;
+    if (v < 0.0F) { v = 0.0F; } else if (v > 100.0F) { v = 100.0F; } ((RuntimeObjectPrefix *)((u8 *)gPikachuActor))->state.actor->secondaryMeter = v;
     // clang-format on
     scriptVmPushFloat((ScriptVm *)(sp1C), ((RuntimeObjectPrefix *)((u8 *)gPikachuActor))->state.actor->secondaryMeter);
     return 0;

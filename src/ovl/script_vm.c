@@ -63,7 +63,7 @@ void scriptVmReset(ScriptVm *vm) {
         vm->executionState = SCRIPT_VM_READY;
         vm->instructionOffset = 0;
         vm->stackDepth = 0;
-        vm->elapsed = 0.0f;
+        vm->elapsed = 0.0F;
         _bzero(vm->values, vm->stackCapacity * sizeof(ScriptValue));
         vm->savedDepthCount = 0;
         _bzero(vm->savedDepths, sizeof(vm->savedDepths));
@@ -74,8 +74,8 @@ void scriptVmReset(ScriptVm *vm) {
         vm->messageStyle = 0;
         vm->actionHandler = 0;
         vm->actionInitializing = 0;
-        vm->messageDuration = 3.5f;
-        vm->actionTimer = 0.0f;
+        vm->messageDuration = 3.5F;
+        vm->actionTimer = 0.0F;
     }
 }
 
@@ -88,7 +88,7 @@ ScriptVm *scriptVmCreateWithCapacity(ScriptVmConfiguration *config, s32 capacity
     ScriptVm *vm;
     vm = heapAllocLocal((HpHdr *)&gGameHeap, sizeof(ScriptVm), 0xB3);
     _bzero(vm, sizeof(ScriptVm));
-    vm->totalElapsed = 0.0f;
+    vm->totalElapsed = 0.0F;
     vm->commands = config->commands;
     vm->program = config->program;
     vm->stringTable = config->stringTable;
@@ -365,16 +365,19 @@ void scriptVmApplyUnaryOperator(ScriptVm *vm, u8 op) {
     f32 f;
     s32 i;
     box = VM_STACK(vm) + VM_SP(vm) - 1;
-    if (box->data.tag == SCRIPT_VALUE_STRING_INDEX || box->data.tag == SCRIPT_VALUE_STRING_POINTER)
+    if (box->data.tag == SCRIPT_VALUE_STRING_INDEX || box->data.tag == SCRIPT_VALUE_STRING_POINTER) {
         test = 1;
-    else
+    } else {
         test = 0;
-    if (test)
+    }
+    if (test) {
         scriptValueSetInteger(box, scriptValueParseDecimal(vm, box));
-    if (box->data.tag == SCRIPT_VALUE_FLOAT)
+    }
+    if (box->data.tag == SCRIPT_VALUE_FLOAT) {
         test = 1;
-    else
+    } else {
         test = 0;
+    }
     if (test) {
         f = scriptValueGetFloat(box);
         switch (op) {
@@ -415,11 +418,13 @@ void scriptVmApplyArithmeticOperator(ScriptVm *vm, u8 op) {
     f32 fv, fr, fl;
     s32 iv, ir, il;
     scriptVmPopValue(vm, &right);
-    if ((right.data.tag == SCRIPT_VALUE_STRING_INDEX || right.data.tag == SCRIPT_VALUE_STRING_POINTER) ? 1 : 0)
+    if ((right.data.tag == SCRIPT_VALUE_STRING_INDEX || right.data.tag == SCRIPT_VALUE_STRING_POINTER) ? 1 : 0) {
         scriptValueSetInteger(&right, scriptValueParseDecimal(vm, &right));
+    }
     scriptVmPopValue(vm, &left);
-    if ((right.data.tag == SCRIPT_VALUE_STRING_INDEX || right.data.tag == SCRIPT_VALUE_STRING_POINTER) ? 1 : 0)
+    if ((right.data.tag == SCRIPT_VALUE_STRING_INDEX || right.data.tag == SCRIPT_VALUE_STRING_POINTER) ? 1 : 0) {
         scriptValueSetInteger(&right, scriptValueParseDecimal(vm, &right));
+    }
     if ((right.data.tag == SCRIPT_VALUE_FLOAT ? 1 : 0) || (left.data.tag == SCRIPT_VALUE_FLOAT ? 1 : 0)) {
         fr = scriptValueGetFloat(&right);
         fl = scriptValueGetFloat(&left);
@@ -437,7 +442,7 @@ void scriptVmApplyArithmeticOperator(ScriptVm *vm, u8 op) {
             fv = fl / fr;
             break;
         case 9:
-            fv = 0.0f;
+            fv = 0.0F;
             break;
         }
         scriptValueSetFloat(&result, fv);
@@ -476,11 +481,13 @@ void scriptVmApplyBitwiseOperator(ScriptVm *vm, u8 op) {
     ScriptValue right, left, result;
     s32 value, rhs, lhs;
     scriptVmPopValue(vm, &right);
-    if ((right.data.tag == SCRIPT_VALUE_STRING_INDEX || right.data.tag == SCRIPT_VALUE_STRING_POINTER) ? 1 : 0)
+    if ((right.data.tag == SCRIPT_VALUE_STRING_INDEX || right.data.tag == SCRIPT_VALUE_STRING_POINTER) ? 1 : 0) {
         scriptValueSetInteger(&right, scriptValueParseDecimal(vm, &right));
+    }
     scriptVmPopValue(vm, &left);
-    if ((right.data.tag == SCRIPT_VALUE_STRING_INDEX || right.data.tag == SCRIPT_VALUE_STRING_POINTER) ? 1 : 0)
+    if ((right.data.tag == SCRIPT_VALUE_STRING_INDEX || right.data.tag == SCRIPT_VALUE_STRING_POINTER) ? 1 : 0) {
         scriptValueSetInteger(&right, scriptValueParseDecimal(vm, &right));
+    }
     if ((right.data.tag == SCRIPT_VALUE_FLOAT ? 1 : 0) || (left.data.tag == SCRIPT_VALUE_FLOAT ? 1 : 0)) {
         scriptValueSetInteger(&result, 0);
     } else {
@@ -519,39 +526,47 @@ void scriptVmApplyComparisonOperator(ScriptVm *vm, u8 op) {
     f32 fr, fl;
     s32 ir, il;
     scriptVmPopValue(vm, &right);
-    if ((right.data.tag == SCRIPT_VALUE_STRING_INDEX || right.data.tag == SCRIPT_VALUE_STRING_POINTER) ? 1 : 0)
+    if ((right.data.tag == SCRIPT_VALUE_STRING_INDEX || right.data.tag == SCRIPT_VALUE_STRING_POINTER) ? 1 : 0) {
         scriptValueSetInteger(&right, scriptValueParseDecimal(vm, &right));
+    }
     scriptVmPopValue(vm, &left);
-    if ((right.data.tag == SCRIPT_VALUE_STRING_INDEX || right.data.tag == SCRIPT_VALUE_STRING_POINTER) ? 1 : 0)
+    if ((right.data.tag == SCRIPT_VALUE_STRING_INDEX || right.data.tag == SCRIPT_VALUE_STRING_POINTER) ? 1 : 0) {
         scriptValueSetInteger(&right, scriptValueParseDecimal(vm, &right));
+    }
     value = 0;
     if ((right.data.tag == SCRIPT_VALUE_FLOAT ? 1 : 0) || (left.data.tag == SCRIPT_VALUE_FLOAT ? 1 : 0)) {
         fr = scriptValueGetFloat(&right);
         fl = scriptValueGetFloat(&left);
         switch (op) {
         case 11:
-            if (fabsf(fr - fl) <= fabsf(fl) * 0.001f + 0.001f)
+            if (fabsf(fr - fl) <= (fabsf(fl) * 0.001F) + 0.001F) {
                 value = 1;
+            }
             break;
         case 12:
-            if (!(fabsf(fr - fl) <= fabsf(fl) * 0.001f + 0.001f))
+            if (!(fabsf(fr - fl) <= (fabsf(fl) * 0.001F) + 0.001F)) {
                 value = 1;
+            }
             break;
         case 13:
-            if (fr < fl)
+            if (fr < fl) {
                 value = 1;
+            }
             break;
         case 14:
-            if (fl < fr)
+            if (fl < fr) {
                 value = 1;
+            }
             break;
         case 15:
-            if (fr <= fl)
+            if (fr <= fl) {
                 value = 1;
+            }
             break;
         case 16:
-            if (fl <= fr)
+            if (fl <= fr) {
                 value = 1;
+            }
             break;
         case 18:
             value = (s32)fr && (s32)fl;
@@ -565,28 +580,34 @@ void scriptVmApplyComparisonOperator(ScriptVm *vm, u8 op) {
         il = scriptValueGetInteger(&left);
         switch (op) {
         case 11:
-            if (il == ir)
+            if (il == ir) {
                 value = 1;
+            }
             break;
         case 12:
-            if (il != ir)
+            if (il != ir) {
                 value = 1;
+            }
             break;
         case 13:
-            if (ir < il)
+            if (ir < il) {
                 value = 1;
+            }
             break;
         case 14:
-            if (il < ir)
+            if (il < ir) {
                 value = 1;
+            }
             break;
         case 15:
-            if (il >= ir)
+            if (il >= ir) {
                 value = 1;
+            }
             break;
         case 16:
-            if (ir >= il)
+            if (ir >= il) {
                 value = 1;
+            }
             break;
         case 18:
             value = ir && il;
@@ -668,15 +689,17 @@ char *scriptVmPopString(ScriptVm *vm) {
     s32 index;
     s32 test;
     scriptVmPopValue(vm, &box);
-    if (box.data.tag == SCRIPT_VALUE_STRING_INDEX || box.data.tag == SCRIPT_VALUE_STRING_POINTER)
+    if (box.data.tag == SCRIPT_VALUE_STRING_INDEX || box.data.tag == SCRIPT_VALUE_STRING_POINTER) {
         test = 1;
-    else
+    } else {
         test = 0;
+    }
     if (test) {
-        if (box.data.tag == SCRIPT_VALUE_STRING_POINTER)
+        if (box.data.tag == SCRIPT_VALUE_STRING_POINTER) {
             test = 1;
-        else
+        } else {
             test = 0;
+        }
         if (test) {
             bcopy(&box.bytes[1], &text, 4);
             return text;
@@ -684,14 +707,16 @@ char *scriptVmPopString(ScriptVm *vm) {
         bcopy(&box.bytes[1], &index, 4);
         return vm->stringTable[index];
     }
-    if (box.data.tag == SCRIPT_VALUE_INTEGER || box.data.tag == 2)
+    if (box.data.tag == SCRIPT_VALUE_INTEGER || box.data.tag == 2) {
         test = 1;
-    else
+    } else {
         test = 0;
-    if (test)
+    }
+    if (test) {
         sprintf((char *)&gScriptVmNumericTextBuffer, "%d", scriptValueGetInteger(&box));
-    else
+    } else {
         sprintf((char *)&gScriptVmNumericTextBuffer, "%f", scriptValueGetFloat(&box));
+    }
     return (char *)&gScriptVmNumericTextBuffer;
 }
 
@@ -700,7 +725,7 @@ char *scriptVmPopString(ScriptVm *vm) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80116224 (0x80116224).
 void scriptVmEvaluateGlobalInteger(s32 index) {
-    scriptValueGetInteger((ScriptValue *)(((u8 *)&gScriptVmGlobalValues + index * 5)));
+    scriptValueGetInteger((ScriptValue *)(((u8 *)&gScriptVmGlobalValues + (index * 5))));
 }
 
 
@@ -730,7 +755,7 @@ s32 actorRunScriptVm(u8 *actor) {
     owner = ((RuntimeObjectPrefix *)actor)->state.bytes;
     vm = (ScriptVm *)((ActorScriptState *)owner)->vmAddress;
     if (vm == NULL) {
-        messageBarEnqueue(0, 3600.0f, (u8 *)"No PPU");
+        messageBarEnqueue(0, 3600.0F, (u8 *)"No PPU");
         goto block_29;
     }
 loop_2:

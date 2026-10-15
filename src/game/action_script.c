@@ -44,10 +44,11 @@ s32 actionScriptCommandStartAction(u8 *object, ActorScriptState *state, ActionSc
         }
         script->lastRequestId = script->pendingRequestId;
     }
-    if (current != script->pendingRequestId)
+    if (current != script->pendingRequestId) {
         return 0;
+    }
     script->pendingRequestId = 0;
-    script->commandTime = 0.0f;
+    script->commandTime = 0.0F;
     return 1;
 }
 
@@ -135,7 +136,7 @@ s32 actionScriptUpdate(u8 *object) {
         script->elapsed += step;
     }
     duration = script->duration;
-    if ((duration >= 0.0f) && (duration <= script->elapsed)) {
+    if ((duration >= 0.0F) && (duration <= script->elapsed)) {
         script->soundHandle = 0;
         script->command = NULL;
         return -1;
@@ -181,9 +182,9 @@ void actionScriptStart(u8 *object, s32 scriptId) {
     actorState->actionScript.pendingRequestId = 0;
     actorState->actionScript.soundHandle = 0;
     actorState->actionScript.index = scriptId;
-    actorState->actionScript.commandTime = 0.0f;
-    actorState->actionScript.elapsed = 0.0f;
-    actorState->actionScript.duration = -1.0f;
+    actorState->actionScript.commandTime = 0.0F;
+    actorState->actionScript.elapsed = 0.0F;
+    actorState->actionScript.duration = -1.0F;
 }
 
 /// Start an action script with a default mode for actions that inherit it.

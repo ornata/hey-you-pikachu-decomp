@@ -273,7 +273,7 @@ void flipbookBuildGeometryDisplayList(u8 *object) {
         gSPDisplayList(gp++, (Gfx *)0x06000000 + i);
         gSP2Triangles(gp++, vtxIdx, vtxIdx + 1, vtxIdx + 2, 0, vtxIdx, vtxIdx + 2, vtxIdx + 3, 0);
         vtxIdx += 4;
-        if (gp - ((Flipbook *)object)->displayList > *count * 8 + 20) {
+        if (gp - ((Flipbook *)object)->displayList > (*count * 8) + 20) {
             TRACE("ERROR: gpSize over:%d\n", gp - ((Flipbook *)object)->displayList);
         }
     }
@@ -450,7 +450,7 @@ extern f32 gRuntimeFrameSeconds;
 void scrollBoardUpdate(u8 *object) {
     ScrollBoardState *boardState;
     f32 scrollSpeed;
-    f32 zero = 0.0f;
+    f32 zero = 0.0F;
     s32 lastTopLine;
     s32 topLine;
 
@@ -460,30 +460,30 @@ void scrollBoardUpdate(u8 *object) {
         if (zero != scrollSpeed) {
             topLine = boardState->topLine;
             boardState->rowOffset = (f32)(boardState->rowOffset + (scrollSpeed * gRuntimeFrameSeconds));
-            if (scrollSpeed > 0.0f) {
-                if (boardState->rowOffset >= 16.0f) {
+            if (scrollSpeed > 0.0F) {
+                if (boardState->rowOffset >= 16.0F) {
                     do {
                         topLine += 1;
-                        boardState->rowOffset = (f32)(boardState->rowOffset - 16.0f);
-                    } while (boardState->rowOffset >= 16.0f);
+                        boardState->rowOffset = (f32)(boardState->rowOffset - 16.0F);
+                    } while (boardState->rowOffset >= 16.0F);
                 }
                 lastTopLine = boardState->textCount - boardState->model.stripCount;
                 if (topLine >= lastTopLine) {
                     topLine = lastTopLine;
-                    boardState->speed = 0.0f;
-                    boardState->rowOffset = 0.0f;
+                    boardState->speed = 0.0F;
+                    boardState->rowOffset = 0.0F;
                 }
             } else {
-                if (boardState->rowOffset < 0.0f) {
+                if (boardState->rowOffset < 0.0F) {
                     do {
                         topLine -= 1;
-                        boardState->rowOffset = (f32)(boardState->rowOffset + 16.0f);
-                    } while (boardState->rowOffset < 0.0f);
+                        boardState->rowOffset = (f32)(boardState->rowOffset + 16.0F);
+                    } while (boardState->rowOffset < 0.0F);
                 }
                 if (topLine < 0) {
                     topLine = 0;
-                    boardState->speed = 0.0f;
-                    boardState->rowOffset = 0.0f;
+                    boardState->speed = 0.0F;
+                    boardState->rowOffset = 0.0F;
                 }
             }
             if (topLine != boardState->topLine) {
@@ -566,8 +566,8 @@ void scrollBoardSetText(u8 *object, u8 **list, s32 style) {
     ((ScrollBoardState *)v)->textCount = n;
     ((ScrollBoardState *)v)->text = list;
     ((ScrollBoardState *)v)->topLine = 0;
-    ((ScrollBoardState *)v)->rowOffset = 0.0f;
-    ((RuntimeObjectPrefix *)object)->position[1] = 0.0f;
+    ((ScrollBoardState *)v)->rowOffset = 0.0F;
+    ((RuntimeObjectPrefix *)object)->position[1] = 0.0F;
     textPanelSetTextConfiguration(&((ScrollBoardState *)v)->model.panels[0], style);
     textPanelSetTextConfiguration(&((ScrollBoardState *)v)->model.panels[1], style);
     flipbookSetText((u8 *)&((ScrollBoardState *)v)->model, list, ((ScrollBoardState *)v)->model.stripCount);
@@ -635,35 +635,35 @@ void scrollBoardSetHierarchySpeed(u8 *root, f32 speed) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80025DF4 (0x80025DF4).
 void objectSetUniformTransform(u8 *object, f32 *position, f32 *rotation, f32 scale) {
-    if (rotation[0] < 0.0f) {
+    if (rotation[0] < 0.0F) {
         do {
-            rotation[0] = (f32)(rotation[0] + 360.0f);
-        } while (rotation[0] < 0.0f);
+            rotation[0] = (f32)(rotation[0] + 360.0F);
+        } while (rotation[0] < 0.0F);
     }
-    if (rotation[0] >= 360.0f) {
+    if (rotation[0] >= 360.0F) {
         do {
-            rotation[0] = (f32)(rotation[0] - 360.0f);
-        } while (rotation[0] >= 360.0f);
+            rotation[0] = (f32)(rotation[0] - 360.0F);
+        } while (rotation[0] >= 360.0F);
     }
-    if (rotation[1] < 0.0f) {
+    if (rotation[1] < 0.0F) {
         do {
-            rotation[1] = (f32)(rotation[1] + 360.0f);
-        } while (rotation[1] < 0.0f);
+            rotation[1] = (f32)(rotation[1] + 360.0F);
+        } while (rotation[1] < 0.0F);
     }
-    if (rotation[1] >= 360.0f) {
+    if (rotation[1] >= 360.0F) {
         do {
-            rotation[1] = (f32)(rotation[1] - 360.0f);
-        } while (rotation[1] >= 360.0f);
+            rotation[1] = (f32)(rotation[1] - 360.0F);
+        } while (rotation[1] >= 360.0F);
     }
-    if (rotation[2] < 0.0f) {
+    if (rotation[2] < 0.0F) {
         do {
-            rotation[2] = (f32)(rotation[2] + 360.0f);
-        } while (rotation[2] < 0.0f);
+            rotation[2] = (f32)(rotation[2] + 360.0F);
+        } while (rotation[2] < 0.0F);
     }
-    if (rotation[2] >= 360.0f) {
+    if (rotation[2] >= 360.0F) {
         do {
-            rotation[2] = (f32)(rotation[2] - 360.0f);
-        } while (rotation[2] >= 360.0f);
+            rotation[2] = (f32)(rotation[2] - 360.0F);
+        } while (rotation[2] >= 360.0F);
     }
     ((RuntimeObjectPrefix *)object)->position[0] = (f32)position[0];
     ((RuntimeObjectPrefix *)object)->position[1] = (f32)position[1];
@@ -752,8 +752,8 @@ void messengerInitializeObject(u8 *object) {
     allocation = heapAllocLocal((HpHdr *)&gGameHeap, sizeof(MessengerFlightState), 0xCA);
     projectileState = allocation;
     _bzero(allocation, sizeof(MessengerFlightState));
-    projectileState->remainingTime = 0.0f;
-    projectileState->phase = 0.0f;
+    projectileState->remainingTime = 0.0F;
+    projectileState->phase = 0.0F;
     animationIntegerTrackInitialize(&projectileState->animation, (ValueKey *)(gMessengerFlightAnimation));
     ((RuntimeObjectPrefix *)object)->state.pointer = projectileState;
 }
@@ -775,7 +775,7 @@ void messengerDestroyObject(u8 *object) {
 /// \note Original decompilation identifier: \c func_800260B8 (0x800260B8).
 void messengerUpdateLaunch(u8 *object, s32 unused) {
     u8 *projectileState = ((RuntimeObjectPrefix *)object)->state.bytes;
-    if (((MessengerFlightState *)projectileState)->remainingTime < 0.0f) {
+    if (((MessengerFlightState *)projectileState)->remainingTime < 0.0F) {
         messengerBeginHoming(object);
     }
 }
@@ -804,17 +804,18 @@ void messengerDeliver(u8 *object, u8 *source, u8 *target, s32 mode) {
         messengerBeginDissipation((f32 *)object);
         return;
     }
-    if (mode == 1)
+    if (mode == 1) {
         ((MessengerFlightState *)state)->message.type = 0;
+    }
     force = target == (u8 *)((s32)gPikachuActor) ? 1 : 0;
     actorPostScriptMessage((s32)target, ((MessengerFlightState *)state)->message, force);
     if (target == (u8 *)((s32)gPikachuActor)) {
         gPlayerState.deliveredVoiceMessageCount += 1;
-        actorAdjustSecondaryMeter((u8 *)((s32)gPikachuActor), 1.0f);
+        actorAdjustSecondaryMeter((u8 *)((s32)gPikachuActor), 1.0F);
         sourceKind = ((RuntimeObjectPrefix *)source)->kind;
-        if (sourceKind == 0x2C || sourceKind == 0x2E)
+        if (sourceKind == 0x2C || sourceKind == 0x2E) {
             animation = sourceKind;
-        else {
+        } else {
             animation = randomNext() * 2.3283064365386963e-10 > 0.5 ? 0x2C : 0x2E;
         }
         actorStartPartShake((u8 *)((s32)gPikachuActor), animation);
@@ -823,7 +824,7 @@ void messengerDeliver(u8 *object, u8 *source, u8 *target, s32 mode) {
         messengerBeginRebound(object);
         return;
     }
-    objectPlaySpatialSound(object, 0xBB, 0.0f, 500.0f);
+    objectPlaySpatialSound(object, 0xBB, 0.0F, 500.0F);
     objectRequestHierarchyDestruction(object);
     gTrackedMessengerHandle = 0;
 }
@@ -847,7 +848,7 @@ void messengerUpdateHoming(u8 *object, s32 unused) {
     MessengerFlightState *state;
     s32 component;
     state = ((RuntimeObjectPrefix *)object)->state.pointer;
-    if (state->remainingTime < 0.0f) {
+    if (state->remainingTime < 0.0F) {
         messengerBeginDissipation((f32 *)object);
     }
     linked = objectResolveAvailableHandle(state->linkedId);
@@ -860,46 +861,46 @@ void messengerUpdateHoming(u8 *object, s32 unused) {
     delta[0] = (((RuntimeObjectPrefix *)linked)->worldPosition[0]) - (((RuntimeObjectPrefix *)object)->position[0]);
     delta[1] = (((RuntimeObjectPrefix *)linked)->worldPosition[1]) - (((RuntimeObjectPrefix *)object)->position[1]);
     delta[2] = (((RuntimeObjectPrefix *)linked)->worldPosition[2]) - (((RuntimeObjectPrefix *)object)->position[2]);
-    contactDistance = -1.0f;
+    contactDistance = -1.0F;
     property = ((RuntimeObjectPrefix *)target)->kind;
     if ((((property > 0) && (property < 0x26)) && ((mode == 3) || (mode == 2))) &&
         (((property = actionGetAttributes(target), property & 0x10000)) || ((mode == 3) && (!(property & 0x8000))))) {
         contactDistance = vector3Length((f32 *)delta);
-        delta[0] += 2.0f * mathCosDegrees(state->phase);
-        delta[1] += ((2.0f * mathSinDegrees(2.0f * state->phase)) * 0.4f) + 2.0f;
-        delta[2] += 2.0f * mathSinDegrees(state->phase);
-        state->phase += 200.0f * gRuntimeFrameSeconds;
-        if (state->phase < 0.0f) {
+        delta[0] += 2.0F * mathCosDegrees(state->phase);
+        delta[1] += ((2.0F * mathSinDegrees(2.0F * state->phase)) * 0.4F) + 2.0F;
+        delta[2] += 2.0F * mathSinDegrees(state->phase);
+        state->phase += 200.0F * gRuntimeFrameSeconds;
+        if (state->phase < 0.0F) {
             do {
-                state->phase += 360.0f;
-            } while (state->phase < 0.0f);
+                state->phase += 360.0F;
+            } while (state->phase < 0.0F);
         }
-        if (state->phase >= 360.0f) {
+        if (state->phase >= 360.0F) {
             do {
-                state->phase -= 360.0f;
-            } while (state->phase >= 360.0f);
+                state->phase -= 360.0F;
+            } while (state->phase >= 360.0F);
         }
     }
     distance = vector3Normalize((f32 *)delta);
-    if (contactDistance < 0.0f) {
+    if (contactDistance < 0.0F) {
         contactDistance = distance;
     }
-    if (contactDistance < ((((RuntimeObjectPrefix *)linked)->radius) + 1.0f)) {
+    if (contactDistance < ((((RuntimeObjectPrefix *)linked)->radius) + 1.0F)) {
         messengerDeliver(object, linked, target, mode);
         return;
     }
-    if (distance > 200.0f) {
+    if (distance > 200.0F) {
         messengerBeginDissipation((f32 *)object);
         return;
     }
-    if (state->remainingTime <= 1.5f) {
-        state->velocity[0] = 0.0f;
-        state->velocity[1] = 0.0f;
-        state->velocity[2] = 0.0f;
+    if (state->remainingTime <= 1.5F) {
+        state->velocity[0] = 0.0F;
+        state->velocity[1] = 0.0F;
+        state->velocity[2] = 0.0F;
     }
-    curve = mathMapRangeClamped(1.5f, 8.0f, 3.0f, 0.4f, state->remainingTime);
+    curve = mathMapRangeClamped(1.5F, 8.0F, 3.0F, 0.4F, state->remainingTime);
     step = ((curve < distance) ? (curve) : (distance)) / gRuntimeFrameSeconds;
-    curve = mathMapRangeClamped(1.0f, 0, 30.0f, 0.99f, distance);
+    curve = mathMapRangeClamped(1.0F, 0, 30.0F, 0.99F, distance);
     for (component = 0; component < 3; component++) {
         state->velocity[component] = (state->velocity[component] * curve) + (delta[component] * step);
     }
@@ -914,7 +915,7 @@ void messengerUpdateCollisionFlight(u8 *object, s32 unused) {
     u8 *sp18;
     u8 *overlappingObject;
     u8 *projectileState = ((RuntimeObjectPrefix *)object)->state.bytes;
-    if (((MessengerFlightState *)projectileState)->remainingTime < 0.0f) {
+    if (((MessengerFlightState *)projectileState)->remainingTime < 0.0F) {
         messengerBeginDissipation((f32 *)object);
     }
     overlappingObject = collisionGridFindOverlap(object);
@@ -933,12 +934,12 @@ void messengerUpdateCollisionFlight(u8 *object, s32 unused) {
 /// \note Original decompilation identifier: \c func_800266DC (0x800266DC).
 void messengerUpdateDissipation(u8 *object, s32 animationStatus) {
     MessengerFlightState *state = ((RuntimeObjectPrefix *)object)->state.pointer;
-    f32 k = 0.8f;
+    f32 k = 0.8F;
 
     state->velocity[0] = state->velocity[0] * k;
-    state->velocity[1] = state->velocity[1] + 0.1f;
+    state->velocity[1] = state->velocity[1] + 0.1F;
     state->velocity[2] = state->velocity[2] * k;
-    if (animationStatus == 1 || state->remainingTime < 0.0f) {
+    if (animationStatus == 1 || state->remainingTime < 0.0F) {
         objectRequestHierarchyDestruction(object);
     }
 }
@@ -950,7 +951,7 @@ void messengerUpdateDissipation(u8 *object, s32 animationStatus) {
 /// \note Original decompilation identifier: \c func_80026758 (0x80026758).
 void messengerUpdateRebound(u8 *object, s32 unused) {
     u8 *projectileState = ((RuntimeObjectPrefix *)object)->state.bytes;
-    if (((MessengerFlightState *)projectileState)->remainingTime < 0.0f) {
+    if (((MessengerFlightState *)projectileState)->remainingTime < 0.0F) {
         messengerBeginDissipation((f32 *)object);
     }
 }
@@ -1017,8 +1018,8 @@ void messengerBeginHoming(u8 *object) {
 
     objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
     ((MessengerFlightState *)objectState)->mode = MESSENGER_HOMING;
-    ((MessengerFlightState *)objectState)->phase = 0.0f;
-    ((MessengerFlightState *)objectState)->remainingTime = 3.0f;
+    ((MessengerFlightState *)objectState)->phase = 0.0F;
+    ((MessengerFlightState *)objectState)->remainingTime = 3.0F;
 }
 
 /// Begin the messenger dissipation animation, double its scale, and release its tracked status.
@@ -1030,13 +1031,13 @@ void messengerBeginDissipation(f32 *object) {
     u8 *projectileState;
     projectileState = ((RuntimeObjectPrefix *)object)->state.bytes;
     ((MessengerFlightState *)projectileState)->mode = MESSENGER_DISSIPATING;
-    ((MessengerFlightState *)projectileState)->remainingTime = 0.35f;
+    ((MessengerFlightState *)projectileState)->remainingTime = 0.35F;
     animationIntegerTrackInitialize(&((MessengerFlightState *)projectileState)->animation, (ValueKey *)((s32)gMessengerDissipationAnimation));
-    objectPlaySpatialSound((u8 *)object, 0xBD, 0.0f, 500.0f);
+    objectPlaySpatialSound((u8 *)object, 0xBD, 0.0F, 500.0F);
     if (gTrackedMessengerHandle == ((RuntimeObjectPrefix *)object)->handle) {
         gTrackedMessengerHandle = 0;
     }
-    object[0] = 2.0f * object[0];
+    object[0] = 2.0F * object[0];
     doubledScale = object[0];
     object[2] = doubledScale;
     object[1] = doubledScale;
@@ -1054,17 +1055,20 @@ void messengerBeginRebound(u8 *object) {
     u8 *linked;
     state = ((RuntimeObjectPrefix *)object)->state.bytes;
     ((MessengerFlightState *)state)->mode = MESSENGER_REBOUND;
-    ((MessengerFlightState *)state)->remainingTime = 0.3f;
-    objectPlaySpatialSound(object, 0xBC, 0.0f, 250.0f);
+    ((MessengerFlightState *)state)->remainingTime = 0.3F;
+    objectPlaySpatialSound(object, 0xBC, 0.0F, 250.0F);
     ((MessengerFlightState *)state)->velocity[1] = -((MessengerFlightState *)state)->velocity[1];
-    if (gTrackedMessengerHandle == ((RuntimeObjectPrefix *)object)->handle)
+    if (gTrackedMessengerHandle == ((RuntimeObjectPrefix *)object)->handle) {
         gTrackedMessengerHandle = 0;
+    }
     linked = objectResolveAvailableHandle(((MessengerFlightState *)state)->linkedId);
     if (linked != NULL && ((s32)gPikachuActor) == *(s32 *)(linked + (u32) & ((RuntimeObjectPrefix *)0)->root)) {
         target = actorGetDefaultPart((u8 *)gPikachuActor);
-        count = (s32)mathMapRangeClamped(0.0f, 2.0f, 4000.0f, 6.0f, (f32)((MessengerFlightState *)state)->message.arg2);
-        linkedEffectCreateChain(LINKED_EFFECT_FALLING, ((RuntimeObjectPrefix *)object)->worldPosition[0], ((RuntimeObjectPrefix *)object)->worldPosition[1], ((RuntimeObjectPrefix *)object)->worldPosition[2], 0.05f,
-                      ((RuntimeObjectPrefix *)target)->handle, 0.7f, 0.5f, 5.0f, 0.03f, 0.03f, 0xC2, 1, count);
+        count = (s32)mathMapRangeClamped(0.0F, 2.0F, 4000.0F, 6.0F, (f32)((MessengerFlightState *)state)->message.arg2);
+        linkedEffectCreateChain(
+            LINKED_EFFECT_FALLING, ((RuntimeObjectPrefix *)object)->worldPosition[0],
+            ((RuntimeObjectPrefix *)object)->worldPosition[1], ((RuntimeObjectPrefix *)object)->worldPosition[2], 0.05F,
+            ((RuntimeObjectPrefix *)target)->handle, 0.7F, 0.5F, 5.0F, 0.03F, 0.03F, 0xC2, 1, count);
     }
 }
 
@@ -1100,19 +1104,20 @@ void messengerCreate(s32 id, f32 *position, f32 *velocity, f32 scale, ScriptMess
     MessengerFlightState *state;
     u8 *previous;
     object = objectCreateHierarchyFromTemplate((ObjectTemplate *)gMessengerObjectTemplate);
-    if (flags != 0)
+    if (flags != 0) {
         objectSetHierarchyFlags(object, 0x6000);
+    }
     ((RuntimeObjectPrefix *)object)->scale[0] = scale;
     ((RuntimeObjectPrefix *)object)->scale[1] = scale;
     ((RuntimeObjectPrefix *)object)->scale[2] = scale;
     state = ((RuntimeObjectPrefix *)object)->state.pointer;
     if (mode != 0) {
         state->mode = MESSENGER_COLLISION_FLIGHT;
-        state->remainingTime = 5.0f;
+        state->remainingTime = 5.0F;
         ((RuntimeObjectPrefix *)object)->displayList = (Gfx *)gMessengerDirectFlightDisplayList;
     } else {
         state->mode = MESSENGER_LAUNCH;
-        state->remainingTime = 0.1f;
+        state->remainingTime = 0.1F;
         ((RuntimeObjectPrefix *)object)->displayList = (Gfx *)gMessengerHomingDisplayList;
     }
     state->linkedId = id;
@@ -1127,12 +1132,13 @@ void messengerCreate(s32 id, f32 *position, f32 *velocity, f32 scale, ScriptMess
     ((RuntimeObjectPrefix *)object)->worldPosition[1] = position[1];
     ((RuntimeObjectPrefix *)object)->worldPosition[2] = position[2];
     previous = objectFindLiveByHandle(gTrackedMessengerHandle);
-    if (previous != NULL)
+    if (previous != NULL) {
         messengerBeginDissipation((f32 *)previous);
+    }
     gTrackedMessengerHandle = ((RuntimeObjectPrefix *)object)->handle;
-    objectScaleHierarchyBounds(object, 1.0f);
+    objectScaleHierarchyBounds(object, 1.0F);
     objectRegisterActiveHierarchy(object);
-    objectPlaySpatialSound(object, 0xBA, 0.0f, 500.0f);
+    objectPlaySpatialSound(object, 0xBA, 0.0F, 500.0F);
     TRACE("sendMessenger(%d, (%.3f, %.3f, %.3f), (%.3f, %.3f, %.3f), %.3f,\n\t\t(%d, %d, 0x%x, %d, %d), %d, %d)\n", id,
           position[0], position[1], position[2], velocity[0], velocity[1], velocity[2], scale, message.type,
           message.arg0, message.arg1, message.arg2, message.arg3, mode, flags);
@@ -1164,15 +1170,15 @@ void messengerGetCameraLaunch(f32 *position, f32 *velocity, s32 mode) {
     if (basis == NULL) {
     }
     matrix33Transpose(basis);
-    VEC3_SET(position, 1.0f, -1.0f, -3.0f);
+    VEC3_SET(position, 1.0F, -1.0F, -3.0F);
     matrix33TransformVector(basis, position, position);
     position[0] += gRenderCameras[gRenderCameraIndex].eye[0];
     position[1] += gRenderCameras[gRenderCameraIndex].eye[1];
     position[2] += gRenderCameras[gRenderCameraIndex].eye[2];
     if (mode != 0) {
-        VEC3_SET(velocity, 0.0f, 1.0f, -75.0f);
+        VEC3_SET(velocity, 0.0F, 1.0F, -75.0F);
     } else {
-        VEC3_SET(velocity, -1.0f, 7.0f, -15.0f);
+        VEC3_SET(velocity, -1.0F, 7.0F, -15.0F);
     }
     matrix33TransformVector(basis, velocity, velocity);
 }

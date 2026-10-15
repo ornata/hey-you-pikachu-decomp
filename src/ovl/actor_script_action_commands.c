@@ -85,10 +85,12 @@ void stringPrependBounded(u8 *destination, s32 capacity, u8 *prefix) {
     }
     for (length = 0; destination[length] != 0 && length < capacity - prefixLength - 1; length++) {
     }
-    for (; length >= 0; length--)
+    for (; length >= 0; length--) {
         destination[length + prefixLength] = destination[length];
-    for (i = 0; i < prefixLength; i++)
+    }
+    for (i = 0; i < prefixLength; i++) {
         destination[i] = prefix[i];
+    }
     destination[capacity - 1] = 0;
 }
 
@@ -317,7 +319,7 @@ s32 actorScriptResetTimer(u8 *actor) {
     u8 *vmBytes;
 
     vmBytes = (u8 *)((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->vmAddress;
-    ((ScriptVm *)vmBytes)->elapsed = 0.0f;
+    ((ScriptVm *)vmBytes)->elapsed = 0.0F;
     scriptVmPushInteger((ScriptVm *)((s32)vmBytes), 0);
     return SCRIPT_COMMAND_CONTINUE;
 }
@@ -487,7 +489,7 @@ s32 actorScriptSetTargetPosition(u8 *actor) {
     pos[0] = scriptVmPopFloat((ScriptVm *)(vm));
     actorSetTargetPosition(actor, pos);
     ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetMode = ACTOR_TARGET_FIXED;
-    ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetDistanceAllowance = 0.0f;
+    ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetDistanceAllowance = 0.0F;
     scriptVmPushInteger((ScriptVm *)(vm), 0);
     return SCRIPT_COMMAND_CONTINUE;
 }
@@ -502,8 +504,8 @@ s32 actorScriptPushTargetApproachDistance(u8 *actor) {
     f32 d = actorGetTargetDistance(actor) -
             ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetDistanceAllowance;
 
-    if (d < 0.0f) {
-        d = 0.0f;
+    if (d < 0.0F) {
+        d = 0.0F;
     }
     scriptVmPushFloat((ScriptVm *)((s32)vm), d);
     return SCRIPT_COMMAND_CONTINUE;
@@ -520,7 +522,7 @@ s32 actorScriptSetTargetToFallbackObject(u8 *actor) {
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     actorSetTargetToFallbackObject(actor);
     ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetMode = ACTOR_TARGET_FIXED;
-    ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetDistanceAllowance = 0.0f;
+    ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetDistanceAllowance = 0.0F;
     scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return SCRIPT_COMMAND_CONTINUE;
 }

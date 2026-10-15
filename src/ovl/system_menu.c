@@ -170,19 +170,23 @@ void systemMenuSyncSoundSettingSelection(s32 arg0);
 extern ObjectTemplate gSystemMenuSecondaryModelTemplate;
 /// Hierarchy template for the menu opening and closing model.
 /// \note Original identifier: \c D_8012A8D0 (0x8012A8D0).
-ObjectTemplate gSystemMenuTransitionModelTemplate = {
-    {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f},
-    200.0f, NULL, &gSystemMenuSecondaryModelTemplate, (Gfx *)0x0100AF28, 0, 0};
+ObjectTemplate gSystemMenuTransitionModelTemplate = {{1.0F, 1.0F, 1.0F},
+                                                     {0.0F, 0.0F, 0.0F},
+                                                     {0.0F, 0.0F, 0.0F},
+                                                     200.0F,
+                                                     NULL,
+                                                     &gSystemMenuSecondaryModelTemplate,
+                                                     (Gfx *)0x0100AF28,
+                                                     0,
+                                                     0};
 /// Linked secondary model template in the menu transition hierarchy.
 /// \note Original identifier: \c D_8012A908 (0x8012A908).
 ObjectTemplate gSystemMenuSecondaryModelTemplate = {
-    {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f},
-    200.0f, NULL, NULL, (Gfx *)0x0100B2D8, 0, 0};
+    {1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F}, {0.0F, 0.0F, 0.0F}, 200.0F, NULL, NULL, (Gfx *)0x0100B2D8, 0, 0};
 /// Model template drawn while the menu accepts input or waits to close.
 /// \note Original identifier: \c D_8012A940 (0x8012A940).
 ObjectTemplate gSystemMenuInteractiveModelTemplate = {
-    {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f},
-    92.0f, NULL, NULL, (Gfx *)0x0100BEE0, 0, 0};
+    {1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F}, {0.0F, 0.0F, 0.0F}, 92.0F, NULL, NULL, (Gfx *)0x0100BEE0, 0, 0};
 /// Randomly selected text row used by the menu closing effect.
 /// \note Original identifier: \c D_8012A978 (0x8012A978).
 s32 gSystemMenuClosingEffectRow = 0;
@@ -351,7 +355,7 @@ MenuItem gSystemMenuPlayerStatusEntry = {
 MenuList gSystemMenuRootList = {"Menu", &gSystemMenuPlayerStatusEntry, NULL, 0, -1, 0, 0, 0};
 /// Base position used to place the system-menu model.
 /// \note Original identifier: \c D_8012ACE0 (0x8012ACE0).
-f32 gSystemMenuModelPosition[3] = {0.0f, 0.0f, -13.0f};
+f32 gSystemMenuModelPosition[3] = {0.0F, 0.0F, -13.0F};
 /// RGBA color drawn behind the system menu.
 /// \note Original identifier: \c D_8012ACEC (0x8012ACEC).
 u8 gSystemMenuBackdropColor[4] = {0, 0, 0, 0x80};
@@ -419,7 +423,7 @@ void systemMenuRestoreAudio(void) {
         audioStopPlayback(gSystemMenuSoundPreviewHandle, 0.0);
     }
     audioGetCurrentCueState(&sp34, &sp28);
-    if ((sp34 != gSystemMenuSavedAudioCue) || (fabs(sp28 - gSystemMenuSavedAudioRate) > 0.001f)) {
+    if ((sp34 != gSystemMenuSavedAudioCue) || (fabs(sp28 - gSystemMenuSavedAudioRate) > 0.001F)) {
         audioChangeCurrentCue(gSystemMenuSavedAudioCue, 1.0, 1.0);
         audioSetCurrentCueRate(gSystemMenuSavedAudioRate);
     }
@@ -554,16 +558,18 @@ void systemMenuPrepareDetailText(void) {
             line[count++] = c;
             text++;
             if (count >= 16) {
-                if (*text == '\n')
+                if (*text == '\n') {
                     text++;
+                }
                 break;
             }
             c = *text;
         }
         line[count] = 0;
-        if (line[0] != 0)
+        if (line[0] != 0) {
             textImageCreateFromText(&gSystemMenuDetailImages[row][gSystemMenuDetailImageBuffer],
                                     (u8 *)((s32)line), (FontImage *)((s32)gTextImageConfigurations));
+        }
     }
 }
 
@@ -613,7 +619,7 @@ void systemMenuDrawDetails(Gfx **displayList) {
     textDrawReset();
     textDrawSetPalette(gDefaultTextPalette);
     textDrawSetSpacingMode(1);
-    textDrawSetScale(1.0f, 1.0f);
+    textDrawSetScale(1.0F, 1.0F);
     textDrawSetArea(0, 0, 319, 239);
     textDrawSetColor(0, 0, 0, 254);
     y = 38;
@@ -704,7 +710,7 @@ void systemMenuDrawItemList(Gfx **displayList) {
     textDrawReset();
     textDrawSetPalette(gDefaultTextPalette);
     textDrawSetSpacingMode(1);
-    textDrawSetScale(1.0f, 1.0f);
+    textDrawSetScale(1.0F, 1.0F);
     textDrawSetArea(0, 0, 319, 239);
     y = 54;
     for (index = 0; index < 5; index++, y += 16) {
@@ -721,8 +727,9 @@ void systemMenuDrawItemList(Gfx **displayList) {
     }
     y = 38;
     for (index = 0; index < 6; index++, y += 16) {
-        if (gSystemMenuRowImages[index][gSystemMenuRowImageBuffer] == NULL)
+        if (gSystemMenuRowImages[index][gSystemMenuRowImageBuffer] == NULL) {
             break;
+        }
         if (index == 0) {
             textDrawSetCursor(40, y);
             textDrawSetColor(0, 0, 0, 254);
@@ -738,8 +745,9 @@ void systemMenuDrawItemList(Gfx **displayList) {
     }
     textDrawGetDisplayListCursor(displayList);
     callback = menu->action;
-    if (callback != NULL)
+    if (callback != NULL) {
         callback(menu);
+    }
 }
 
 /// Draw the brief system-menu closing effect while it remains active.
@@ -760,9 +768,9 @@ void systemMenuDrawClosingEffect(Gfx **displayList) {
         textDrawReset();
         textDrawSetPalette(gDefaultTextPalette);
         textDrawSetSpacingMode(1);
-        textDrawSetScale(1.0f, 1.0f);
+        textDrawSetScale(1.0F, 1.0F);
         textDrawSetArea(0, 0, 319, 239);
-        textDrawSetCursor(36, gSystemMenuClosingEffectRow * 16 + 38);
+        textDrawSetCursor(36, (gSystemMenuClosingEffectRow * 16) + 38);
         textDrawSetColor(0, 0, 0, 254);
         textDrawImageAtCursor(*image);
         textDrawGetDisplayListCursor(displayList);
@@ -907,17 +915,17 @@ void systemMenuUpdateOpeningAnimation(void) {
     f32 angle;
     f32 progress;
 
-    progress = (f32)(runtimeGetElapsedMilliseconds() - gSystemMenuState.started) / 400.0f;
+    progress = (f32)(runtimeGetElapsedMilliseconds() - gSystemMenuState.started) / 400.0F;
     position[0] = gSystemMenuModelPosition[0];
     position[1] = gSystemMenuModelPosition[1];
     position[2] = gSystemMenuModelPosition[2];
-    position[1] -= 10.0f;
-    position[1] += 10.0f * mathSinDegrees(90.0f * progress);
-    angle = 90.0f * progress;
-    position[2] -= 10.0f * mathCosDegrees(angle);
+    position[1] -= 10.0F;
+    position[1] += 10.0F * mathSinDegrees(90.0F * progress);
+    angle = 90.0F * progress;
+    position[2] -= 10.0F * mathCosDegrees(angle);
     matrix34TransformPointVector((f32 *)(&gSystemMenuInterfaceTransform), (f32 *)(position), gSystemMenuState.transitionModel->position);
-    gSystemMenuState.transitionModel->rotation[1] = gPlayerViewShake + gPlayerYaw + 180.0f;
-    gSystemMenuState.transitionModel->rotation[0] = (1.0f - progress) * -90.0f;
+    gSystemMenuState.transitionModel->rotation[1] = gPlayerViewShake + gPlayerYaw + 180.0F;
+    gSystemMenuState.transitionModel->rotation[0] = (1.0F - progress) * -90.0F;
     gSystemMenuState.secondaryModel->rotation[1] = angle;
     objectUpdateHierarchy(gSystemMenuState.transitionModel);
     if (runtimeGetElapsedMilliseconds() - gSystemMenuState.started >= 400) {
@@ -937,17 +945,17 @@ void systemMenuUpdateClosingAnimation(void) {
     f32 angle;
     f32 progress;
 
-    progress = (f32)(runtimeGetElapsedMilliseconds() - gSystemMenuState.started) / 400.0f;
+    progress = (f32)(runtimeGetElapsedMilliseconds() - gSystemMenuState.started) / 400.0F;
     position[0] = gSystemMenuModelPosition[0];
     position[1] = gSystemMenuModelPosition[1];
     position[2] = gSystemMenuModelPosition[2];
-    position[1] -= 10.0f;
-    position[1] += 10.0f * mathSinDegrees((1.0f - progress) * 90.0f);
-    angle = (1.0f - progress) * 90.0f;
-    position[2] -= 10.0f * mathCosDegrees(angle);
+    position[1] -= 10.0F;
+    position[1] += 10.0F * mathSinDegrees((1.0F - progress) * 90.0F);
+    angle = (1.0F - progress) * 90.0F;
+    position[2] -= 10.0F * mathCosDegrees(angle);
     matrix34TransformPointVector((f32 *)(&gSystemMenuInterfaceTransform), (f32 *)(position), gSystemMenuState.transitionModel->position);
-    gSystemMenuState.transitionModel->rotation[1] = gPlayerViewShake + gPlayerYaw + 180.0f;
-    gSystemMenuState.transitionModel->rotation[0] = -90.0f * progress;
+    gSystemMenuState.transitionModel->rotation[1] = gPlayerViewShake + gPlayerYaw + 180.0F;
+    gSystemMenuState.transitionModel->rotation[0] = -90.0F * progress;
     gSystemMenuState.secondaryModel->rotation[1] = (1.0 - progress) * 90.0;
     objectUpdateHierarchy(gSystemMenuState.transitionModel);
     if (runtimeGetElapsedMilliseconds() - gSystemMenuState.started >= 400) {
@@ -975,17 +983,17 @@ extern f32 gPlayerViewShake;
 void systemMenuUpdateModelTilt(void) {
     f32 position[3];
     RuntimeObjectPrefix *object;
-    f32 basePitch = -15.0f;
-    f32 axisDivisor = 2.0f;
-    position[0] = -6.8f;
-    position[1] = -3.15f;
+    f32 basePitch = -15.0F;
+    f32 axisDivisor = 2.0F;
+    position[0] = -6.8F;
+    position[1] = -3.15F;
     object = gSystemMenuInteractiveModel;
-    position[2] = -15.0f;
+    position[2] = -15.0F;
     matrix34TransformPointVector((f32 *)(&gSystemMenuInterfaceTransform), (f32 *)(position), object->position);
     object->rotation[0] = basePitch;
-    object->rotation[1] = gPlayerViewShake + gPlayerYaw + 180.0f + 23.0f;
-    object->rotation[2] = 0.0f;
-    object->rotation[0] = basePitch - (f32)gControllerPrimaryStickY / axisDivisor;
+    object->rotation[1] = gPlayerViewShake + gPlayerYaw + 180.0F + 23.0F;
+    object->rotation[2] = 0.0F;
+    object->rotation[0] = basePitch - ((f32)gControllerPrimaryStickY / axisDivisor);
     object->rotation[1] += (f32)gControllerPrimaryStickX / axisDivisor;
     objectUpdateHierarchy(object);
 }
@@ -1160,7 +1168,7 @@ void systemMenuDrawSlider(Gfx **displayList, s32 x, s32 y, s32 selected, f32 val
     } else {
         gDPSetPrimColor((*displayList)++, 0, 0, 0, 0, 0, 140);
     }
-    selected = (s32)(80.0f * value) + x;
+    selected = (s32)(80.0F * value) + x;
     gDPFillRectangle((*displayList)++, selected - 2, top - 3, selected + 2, bottom + 3);
 }
 
@@ -1200,7 +1208,7 @@ void systemMenuUpdateVolumeSettings(MenuList *menu) {
                 channelAValue = channelAMaximum;
             }
             progressSetValue(0xA, channelAValue);
-            audioApplySavedMusicVolume(1.0f);
+            audioApplySavedMusicVolume(1.0F);
         } else if (selection == 1) {
             if (gControllerPrimaryRepeatedButtons & 0x100) {
                 channelBValue += 1;
@@ -1214,7 +1222,7 @@ void systemMenuUpdateVolumeSettings(MenuList *menu) {
                 channelBValue = channelBMaximum;
             }
             progressSetValue(0xB, channelBValue);
-            audioApplySavedSoundEffectVolume(1.0f);
+            audioApplySavedSoundEffectVolume(1.0F);
         }
     }
     channelASelected = menu->selectedIndex == 0 ? 1 : 0;
@@ -1845,13 +1853,13 @@ void systemMenuInitialize(void) {
     model->scale[2] = gCurrentAreaConfiguration->objectScale * 5.0;
     state->transitionModel = model;
     state->secondaryModel = model->child.object;
-    state->transitionModel->rotation[0] = 0.0f;
-    state->transitionModel->rotation[1] = 0.0f;
-    state->transitionModel->rotation[2] = 0.0f;
-    state->secondaryModel->rotation[0] = 0.0f;
-    state->secondaryModel->rotation[1] = 0.0f;
-    state->secondaryModel->rotation[2] = 0.0f;
-    state->secondaryModel->rotation[1] = 90.0f;
+    state->transitionModel->rotation[0] = 0.0F;
+    state->transitionModel->rotation[1] = 0.0F;
+    state->transitionModel->rotation[2] = 0.0F;
+    state->secondaryModel->rotation[0] = 0.0F;
+    state->secondaryModel->rotation[1] = 0.0F;
+    state->secondaryModel->rotation[2] = 0.0F;
+    state->secondaryModel->rotation[1] = 90.0F;
     model = (RuntimeObjectPrefix *)objectCreateHierarchyFromTemplate(&gSystemMenuInteractiveModelTemplate);
     objectSetHierarchyFlags((u8 *)model, 0x2002);
     objectRegisterActiveHierarchy((u8 *)model);
@@ -1859,7 +1867,7 @@ void systemMenuInitialize(void) {
     model->scale[1] = gCurrentAreaConfiguration->objectScale;
     model->scale[2] = gCurrentAreaConfiguration->objectScale;
     state->interactiveModel = model;
-    model->rotation[2] = model->rotation[1] = model->rotation[0] = 0.0f;
+    model->rotation[2] = model->rotation[1] = model->rotation[0] = 0.0F;
     scene = progressGetCurrentChapter();
     if (scene != 4 && scene != 6 && scene != 8 && gRuntimeCurrentArea >= 3 && progressGetValue(0x12) == 0) {
         systemMenuAppendItem(&gSystemMenuRootList, &gSystemMenuGoHomeEntry);

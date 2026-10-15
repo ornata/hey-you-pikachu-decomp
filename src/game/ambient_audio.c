@@ -56,7 +56,7 @@ AMBIENT_STATE_OFFSET_CHECK(timer, 0x24);
 /// \note Original decompilation identifier: \c func_80033BD0 (0x80033BD0).
 void ambientAudioPlayNextSound(AmbientAudioState *ext) {
     s32 sound;
-    ext->timer = randomNext() * (1.0 / 4294967296.0) * ext->delayRange + ext->delay;
+    ext->timer = (randomNext() * (1.0 / 4294967296.0) * ext->delayRange) + ext->delay;
     sound = randomNext() * (1.0 / 4294967296.0) < ext->probability ? ext->first : ext->second;
     switch (ext->playbackKind) {
     case AMBIENT_AUDIO_SOUND_EFFECT:
@@ -101,16 +101,18 @@ void ambientAudioGetSpatialMix(AmbientAudioState *ext, s32 *volume, s32 *pan) {
     // clang-format on
     for (; i < ext->count; i++, pos++) {
         audioGetPositionVolumeAndPan(&pos->x, *gRenderCameras[gRenderCameraIndex].matrices, &sampleVolume, &samplePan,
-                                     2.0f, 100.0f);
+                                     2.0F, 100.0F);
         left += sampleVolume * samplePan / 256;
-        right += sampleVolume - sampleVolume * samplePan / 256;
+        right += sampleVolume - (sampleVolume * samplePan / 256);
     }
     *volume = (left + right) / sqrtf(ext->count) * gAmbientAudioMixGain;
-    *pan = (f32)left / (left + right) * 256.0f;
-    if (*volume > 256)
+    *pan = (f32)left / (left + right) * 256.0F;
+    if (*volume > 256) {
         *volume = 256;
-    if (*pan > 256)
+    }
+    if (*pan > 256) {
         *pan = 256;
+    }
 }
 
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
@@ -129,7 +131,7 @@ void ambientAudioUpdate(u8 *obj) {
     ext = ((RuntimeObjectPrefix *)obj)->state.pointer;
     VEC3F_COPY(((RuntimeObjectPrefix *)obj)->worldPosition, ((RuntimeObjectPrefix *)obj)->position);
     ext->timer -= gRuntimeFrameSeconds;
-    if (ext->timer <= 0.0f) {
+    if (ext->timer <= 0.0F) {
         ambientAudioPlayNextSound(ext);
     }
     if (ext->voice != 0) {
@@ -210,8 +212,8 @@ u8 *ambientAudioCreate(f32 *position, s32 kind, f32 delay, f32 delayRange, s32 f
     fx->first = firstSound;
     fx->second = secondSound;
     fx->probability = firstProbability;
-    if (delay > 30.0f) {
-        fx->timer = 0.0f;
+    if (delay > 30.0F) {
+        fx->timer = 0.0F;
     } else {
         fx->timer = delay / 2;
     }

@@ -48,7 +48,7 @@ void backdropDrawFixed(Gfx **list) {
                          osVirtualToPhysical(gColorFramebuffer0 + gGraphicsFramebufferIndex * 0x25800));
         gDPPipeSync((*list)++);
         textureCopyRgba16Region(list, gRenderCameraBackdropImages[0][0], 20, 20,
-                                *(s32 *)(gBackdropWidthEntries + gActiveBackdropId * 32), 280, 200, 0, 0, 2, 0);
+                                *(s32 *)(gBackdropWidthEntries + (gActiveBackdropId * 32)), 280, 200, 0, 0, 2, 0);
         gDPPipeSync((*list)++);
     }
 }
@@ -71,12 +71,12 @@ void backdropAdvanceScroll(f32 delta) {
     f32 *cur = &gPrimaryBackdropScroll;
 
     ((MatrixCamera *)((u8 *)gRenderCameras))->backdropScroll += delta;
-    if (((MatrixCamera *)((u8 *)gRenderCameras))->backdropScroll < 0.0f) {
+    if (((MatrixCamera *)((u8 *)gRenderCameras))->backdropScroll < 0.0F) {
         n = gPrimaryBackdropWidth;
         a = *cur;
         do {
             a += n;
-        } while (a < 0.0f);
+        } while (a < 0.0F);
         gPrimaryBackdropScroll = a;
     }
     n = gPrimaryBackdropWidth;
@@ -120,30 +120,32 @@ void backdropUpdateViewOffsets(u8 *view) {
     f32 deltaY;
     f32 pitch;
     f32 yaw;
-    f32 zero = 0.0f;
+    f32 zero = 0.0F;
     s32 offsetY;
     MatrixCamera *camera = (MatrixCamera *)((u8 *)gRenderCameras);
-    horizontalSquared = (camera->target[0] - camera->eye[0]) * (camera->target[0] - camera->eye[0]) +
-                        (camera->target[2] - camera->eye[2]) * (camera->target[2] - camera->eye[2]);
+    horizontalSquared = ((camera->target[0] - camera->eye[0]) * (camera->target[0] - camera->eye[0])) +
+                        ((camera->target[2] - camera->eye[2]) * (camera->target[2] - camera->eye[2]));
     deltaY = camera->target[1] - camera->eye[1];
-    length = sqrtf(deltaY * deltaY + horizontalSquared);
+    length = sqrtf((deltaY * deltaY) + horizontalSquared);
     if (length < gBackdropDirectionLengthTolerance) {
         pitch = zero;
     } else {
         deltaY /= length;
-        pitch = mathWrapSignedDegrees(360.0f - mathUnitDirectionDegrees(sqrtf(horizontalSquared) / length, deltaY));
-        if (pitch < -90.0f)
-            pitch = -90.0f;
-        else if (pitch > 90.0f)
-            pitch = 90.0f;
+        pitch = mathWrapSignedDegrees(360.0F - mathUnitDirectionDegrees(sqrtf(horizontalSquared) / length, deltaY));
+        if (pitch < -90.0F) {
+            pitch = -90.0F;
+        } else if (pitch > 90.0F) {
+            pitch = 90.0F;
+        }
     }
     yaw = mathUnitDirectionDegrees(gPrimaryCameraTargetX - camera->eye[0], gPrimaryCameraTargetZ - gPrimaryCameraEyeZ);
     offsetY = (s32)(gCurrentAreaConfiguration->backdropVerticalOffset +
-                    (((s32)(240.0f * pitch * gBackdropPitchToScreenScale) + 40) - *(f32 *)(view + 4) * 1.5f));
+                    (((s32)(240.0F * pitch * gBackdropPitchToScreenScale) + 40) - *(f32 *)(view + 4) * 1.5F));
     *(s32 *)(view + 0x98) = (s32)(yaw * gBackdropYawToPixelScale);
     *(s32 *)(view + 0x9C) = offsetY;
-    if (zero != *(f32 *)(gBackdropScrollRateEntries + gActiveBackdropId * 32))
-        backdropAdvanceScroll(*(f32 *)(gBackdropScrollRateEntries + gActiveBackdropId * 32) * gRuntimeFrameSeconds);
+    if (zero != *(f32 *)(gBackdropScrollRateEntries + (gActiveBackdropId * 32))) {
+        backdropAdvanceScroll(*(f32 *)(gBackdropScrollRateEntries + (gActiveBackdropId * 32)) * gRuntimeFrameSeconds);
+    }
     *(s32 *)(view + 0x98) = (s32)(*(f32 *)(view + 0xA0) + *(s32 *)(view + 0x98));
 }
 
@@ -184,7 +186,7 @@ void backdropDrawScrolling(Gfx **list) {
         u8 *color;
 
         top = -view->backdropY;
-        color = gBackdropDescriptors + gActiveBackdropId * 32 + 8;
+        color = gBackdropDescriptors + (gActiveBackdropId * 32) + 8;
         sourceY = 0;
         if (top >= 220) {
             renderFillFramebufferRectangle(20, 20, 299, 219, color[0], color[1], color[2], color[3]);
@@ -199,7 +201,7 @@ void backdropDrawScrolling(Gfx **list) {
     if (view->backdropHeight + top - sourceY < 219) {
         u8 *color;
 
-        color = gBackdropDescriptors + gActiveBackdropId * 32 + 12;
+        color = gBackdropDescriptors + (gActiveBackdropId * 32) + 12;
         bottom = view->backdropHeight + top - sourceY;
         if (bottom <= 20) {
             renderFillFramebufferRectangle(20, 20, 299, 219, color[0], color[1], color[2], color[3]);
@@ -360,7 +362,7 @@ void backdropSelectForView(s32 viewIndex, s32 backdropId, s32 sharedScratch) {
     viewState = (viewIndex * 0xE0) + ((u8 *)gRenderCameras);
     ((MatrixCamera *)viewState)->backdropWidth = (s32)((BackdropDescriptor *)backdropDescriptor)->width;
     ((MatrixCamera *)viewState)->backdropHeight = (s32)((BackdropDescriptor *)backdropDescriptor)->height;
-    ((MatrixCamera *)viewState)->backdropScroll = 0.0f;
+    ((MatrixCamera *)viewState)->backdropScroll = 0.0F;
     if (((BackdropDescriptor *)backdropDescriptor)->encoding == 0) {
         romRange = ((BackdropDescriptor *)backdropDescriptor)->source;
         backdropLoadRawImage(viewIndex, ((BackdropRomRange *)romRange)->start, ((BackdropRomRange *)romRange)->end);

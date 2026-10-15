@@ -52,7 +52,7 @@ s32 actorConsumeHeldItem(u8 *actor) {
         return 0;
     }
     itemTransform(((RuntimeObjectPrefix *)liveObject)->handle, 0);
-    actorAdjustActionMeter(actor, 10.0f);
+    actorAdjustActionMeter(actor, 10.0F);
     return 1;
 }
 
@@ -329,8 +329,8 @@ s32 actorScriptBeginAreaTransition(u8 *actor) {
     vmBytes = (u8 *)((ActorScriptState *)actorState)->vmAddress;
     if (((ScriptVm *)vmBytes)->actionInitializing != 0) {
         hudSetAreaLabelVisible(1);
-    } else if (((ScriptVm *)vmBytes)->totalElapsed > 1.5f) {
-        cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 0.6f);
+    } else if (((ScriptVm *)vmBytes)->totalElapsed > 1.5F) {
+        cameraFadePrimarySecondaryOverlay(0, 0, 0, 0, 0.6F);
         actorBeginScriptActionHandler(actor, ACTOR_SCRIPT_ACTION_FINISH_AREA_TRANSITION);
     }
     return SCRIPT_VM_WAITING_FOR_ACTION;
@@ -351,7 +351,7 @@ s32 actorScriptFinishAreaTransition(u8 *actor) {
     if (((ScriptVm *)((ActorScriptState *)sp1C)->vmAddress)->actionInitializing != 0) {
         return SCRIPT_VM_WAITING_FOR_ACTION;
     }
-    if (gPrimarySecondaryOverlayRemainingSeconds > 0.0f) {
+    if (gPrimarySecondaryOverlayRemainingSeconds > 0.0F) {
         return SCRIPT_VM_WAITING_FOR_ACTION;
     }
     hudSetAreaLabelVisible(0);
@@ -376,22 +376,23 @@ s32 actorScriptTransformKind(u8 *object) {
     state = ((RuntimeObjectPrefix *)object)->state.bytes;
     vm = (u8 *)((ActorScriptState *)state)->vmAddress;
     if (((ScriptVm *)vm)->actionInitializing != 0) {
-        actorTransitionModelEnvironmentColor(object, 255, 200, 50, 255, 0.6f);
+        actorTransitionModelEnvironmentColor(object, 255, 200, 50, 255, 0.6F);
         random = randomNext();
         linked = actorGetDefaultPart(object);
         randomFraction = random * 2.3283064365386963e-10;
-        particleClusterCreate(10, 1.7f, 3.0f, randomFraction * 0.2f + 0.5, linked);
-        orangePulseEmitterCreate(((RuntimeObjectPrefix *)object)->handle, 2.0f);
-        ((ScriptVm *)vm)->actionTimer = 2.0f;
+        particleClusterCreate(10, 1.7F, 3.0F, (randomFraction * 0.2F) + 0.5, linked);
+        orangePulseEmitterCreate(((RuntimeObjectPrefix *)object)->handle, 2.0F);
+        ((ScriptVm *)vm)->actionTimer = 2.0F;
         audioPlayCue(31);
         return SCRIPT_VM_WAITING_FOR_ACTION;
     }
     ((ScriptVm *)vm)->actionTimer -= gRuntimeFrameSeconds;
-    if (((ScriptVm *)vm)->actionTimer > 0.0f)
+    if (((ScriptVm *)vm)->actionTimer > 0.0F) {
         return SCRIPT_VM_WAITING_FOR_ACTION;
+    }
     linked = actorReplaceKindPreservingScript(object, scriptVmPopInteger((ScriptVm *)((s32)vm)));
     actorSetModelEnvironmentColor(linked, 255, 200, 50, 255);
-    actorTransitionModelEnvironmentColor(linked, 0, 0, 0, 0, 0.4f);
+    actorTransitionModelEnvironmentColor(linked, 0, 0, 0, 0, 0.4F);
     audioPlayCue(30);
     scriptVmPushInteger((ScriptVm *)((s32)vm), ((RuntimeObjectPrefix *)linked)->handle);
     return SCRIPT_VM_YIELDED;

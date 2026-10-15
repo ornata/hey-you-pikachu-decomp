@@ -79,17 +79,18 @@ s32 actorTurnTowardTarget(u8 *object, f32 speed) {
     f32 heading;
     state = ((RuntimeObjectPrefix *)object)->state.bytes;
     direction[0] = ((ActorScriptState *)state)->targetPosition[0] - ((RuntimeObjectPrefix *)object)->worldPosition[0];
-    direction[1] = 0.0f;
+    direction[1] = 0.0F;
     direction[2] = ((ActorScriptState *)state)->targetPosition[2] - ((RuntimeObjectPrefix *)object)->worldPosition[2];
     heading = vector3GetYawDegrees(direction);
     angle = actorConstrainFacingHeading(object, heading);
-    actorAddRotationAxisDegrees(
-        object,
-        mathApproachAngleDegrees(((ActorScriptState *)state)->orientation[1], angle, 1.0f, 90.0f, speed * gRuntimeFrameSeconds) -
-            ((ActorScriptState *)state)->orientation[1],
-        1);
-    if (fabsf(mathWrapSignedDegrees(angle - ((ActorScriptState *)state)->orientation[1])) < 1.0f)
+    actorAddRotationAxisDegrees(object,
+                                mathApproachAngleDegrees(((ActorScriptState *)state)->orientation[1], angle, 1.0F,
+                                                         90.0F, speed * gRuntimeFrameSeconds) -
+                                    ((ActorScriptState *)state)->orientation[1],
+                                1);
+    if (fabsf(mathWrapSignedDegrees(angle - ((ActorScriptState *)state)->orientation[1])) < 1.0F) {
         return 1;
+    }
     return 0;
 }
 
@@ -113,25 +114,27 @@ s32 actorPivotTowardTarget(u8 *object, f32 speed) {
     f32 magnitude;
     state = ((RuntimeObjectPrefix *)object)->state.bytes;
     direction[0] = ((ActorScriptState *)state)->targetPosition[0] - ((RuntimeObjectPrefix *)object)->worldPosition[0];
-    direction[1] = 0.0f;
+    direction[1] = 0.0F;
     direction[2] = ((ActorScriptState *)state)->targetPosition[2] - ((RuntimeObjectPrefix *)object)->worldPosition[2];
     heading = vector3GetYawDegrees(direction);
     angle = actorConstrainFacingHeading(object, heading);
-    turn = mathApproachAngleDegrees(((ActorScriptState *)state)->orientation[1], angle, 1.0f, 90.0f, speed * gRuntimeFrameSeconds) -
+    turn = mathApproachAngleDegrees(((ActorScriptState *)state)->orientation[1], angle, 1.0F, 90.0F,
+                                    speed * gRuntimeFrameSeconds) -
            ((ActorScriptState *)state)->orientation[1];
     sine = mathSinDegrees(turn);
     cosine = mathCosDegrees(turn);
-    offset = (1.0f - cosine) * 90.0f;
+    offset = (1.0F - cosine) * 90.0F;
     objectGetPendingLocalMovement(vector);
-    lateral = -sine * 90.0f;
-    vector[0] = lateral * cosine - offset * sine;
-    vector[2] = lateral * sine + offset * cosine;
+    lateral = -sine * 90.0F;
+    vector[0] = (lateral * cosine) - (offset * sine);
+    vector[2] = (lateral * sine) + (offset * cosine);
     objectSetPendingLocalMovement(vector);
     actorAddRotationAxisDegrees(object, turn, 1);
     error = mathWrapSignedDegrees(angle - ((ActorScriptState *)state)->orientation[1]);
     magnitude = fabsf(error);
-    if (magnitude < 1.0f)
+    if (magnitude < 1.0F) {
         return 1;
+    }
     return 0;
 }
 
@@ -357,10 +360,10 @@ f32 actorGetGroundHeightAhead(u8 *actor, f32 distance, f32 heightOffset) {
     f32 pos[3];
 
     pos[0] = ((RuntimeObjectPrefix *)actor)->worldPosition[0] +
-             mathSinDegrees(((ActorScriptState *)state)->orientation[1]) * distance;
+             (mathSinDegrees(((ActorScriptState *)state)->orientation[1]) * distance);
     pos[1] = ((RuntimeObjectPrefix *)actor)->worldPosition[1] + heightOffset;
     pos[2] = ((RuntimeObjectPrefix *)actor)->worldPosition[2] +
-             mathCosDegrees(((ActorScriptState *)state)->orientation[1]) * distance;
+             (mathCosDegrees(((ActorScriptState *)state)->orientation[1]) * distance);
     return terrainGetWorldHeightForQuery((((RuntimeObjectPrefix *)actor)->kind == 0x25) ? 3 : 4, pos[0], pos[1], pos[2], NULL);
 }
 
@@ -413,7 +416,7 @@ f32 objectGetFacingErrorToTarget(u8 *object, s32 targetId) {
 
     resolvedObject = objectResolveAvailableHandle(targetId);
     if (resolvedObject == NULL) {
-        return -1.0f;
+        return -1.0F;
     }
     sp28 =
         ((RuntimeObjectPrefix *)resolvedObject)->worldPosition[0] - ((RuntimeObjectPrefix *)object)->worldPosition[0];
@@ -422,15 +425,15 @@ f32 objectGetFacingErrorToTarget(u8 *object, s32 targetId) {
     vector2NormalizeComponentsApprox(&sp28, &sp24);
     dir = mathUnitDirectionDegrees(sp24, sp28);
     var_f2 = ((RuntimeObjectPrefix *)object)->rotation[1] - dir;
-    if (var_f2 < 0.0f) {
+    if (var_f2 < 0.0F) {
         do {
-            var_f2 += 360.0f;
-        } while (var_f2 < 0.0f);
+            var_f2 += 360.0F;
+        } while (var_f2 < 0.0F);
     }
-    if (var_f2 >= 360.0f) {
+    if (var_f2 >= 360.0F) {
         do {
-            var_f2 -= 360.0f;
-        } while (var_f2 >= 360.0f);
+            var_f2 -= 360.0F;
+        } while (var_f2 >= 360.0F);
     }
     return var_f2;
 }

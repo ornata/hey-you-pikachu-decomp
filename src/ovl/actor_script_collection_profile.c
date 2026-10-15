@@ -299,7 +299,7 @@ s32 actorScriptGetItemCatalogTag(u8 *actor) {
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     idx = scriptVmPopInteger((ScriptVm *)(sp1C));
-    scriptVmPushInteger((ScriptVm *)(sp1C), *(s16 *)((u8 *)&gItemKindCatalogTagEntries + idx * 0x74));
+    scriptVmPushInteger((ScriptVm *)(sp1C), *(s16 *)((u8 *)&gItemKindCatalogTagEntries + (idx * 0x74)));
     return 0;
 }
 
@@ -317,7 +317,7 @@ s32 actorScriptGetItemCollectionValue(u8 *actor) {
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     idx = scriptVmPopInteger((ScriptVm *)(sp1C));
-    scriptVmPushInteger((ScriptVm *)(sp1C), *(s32 *)((u8 *)&gItemKindCollectionValueEntries + idx * 0x74));
+    scriptVmPushInteger((ScriptVm *)(sp1C), *(s32 *)((u8 *)&gItemKindCollectionValueEntries + (idx * 0x74)));
     return 0;
 }
 
@@ -637,7 +637,7 @@ s32 actorScriptGetAvailableObjectDistance(u8 *actor) {
     objB = objectResolveAvailableHandle(idB);
     objA = objectResolveAvailableHandle(idA);
     if ((objB == NULL) || (objA == NULL)) {
-        scriptVmPushFloat((ScriptVm *)(vm), -1.0f);
+        scriptVmPushFloat((ScriptVm *)(vm), -1.0F);
     } else {
         scriptVmPushFloat((ScriptVm *)(vm), objectGetApproxDistance(objB, objA));
     }
@@ -946,7 +946,7 @@ s32 actorScriptGetPokemonNameCategory(u8 *actor) {
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     idx = scriptVmPopInteger((ScriptVm *)(sp1C));
-    scriptVmPushInteger((ScriptVm *)(sp1C), *(u8 *)((u8 *)&gBedroomPokemonNameCategories + idx * 1));
+    scriptVmPushInteger((ScriptVm *)(sp1C), *(u8 *)((u8 *)&gBedroomPokemonNameCategories + (idx * 1)));
     return 0;
 }
 
@@ -964,7 +964,7 @@ s32 actorScriptGetPokemonName(u8 *actor) {
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     idx = scriptVmPopInteger((ScriptVm *)(sp1C));
-    scriptVmPushStringPointer((ScriptVm *)(sp1C), (char *)(*(s32 *)((u8 *)&gBedroomPokemonNames + idx * 4)));
+    scriptVmPushStringPointer((ScriptVm *)(sp1C), (char *)(*(s32 *)((u8 *)&gBedroomPokemonNames + (idx * 4))));
     return 0;
 }
 
@@ -1004,19 +1004,22 @@ s32 actorScriptChoosePokemonName(u8 *actor) {
                 candidate = -1;
                 break;
             }
-            if (index == 100)
+            if (index == 100) {
                 index = 0;
+            }
         }
     } while (candidate == -1);
     gBedroomPokemonNameHistory[head++] = candidate;
-    if (head == 100)
+    if (head == 100) {
         head = 0;
-    if (count < 100)
+    }
+    if (count < 100) {
         count++;
-    else {
+    } else {
         tail++;
-        if (tail == 100)
+        if (tail == 100) {
             tail = 0;
+        }
     }
     gBedroomPokemonNameHistoryHead = head;
     gBedroomPokemonNameHistoryTail = tail;

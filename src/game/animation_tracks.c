@@ -39,11 +39,11 @@ s32 animationTrackAdvanceKey(f32 *t, AnimationScalarKey **keys, f32 *out, s32 *i
         return 2;
     }
     *t += step;
-    tick = 0.03333333507180214f;
+    tick = 0.03333333507180214F;
     for (;;) {
         if ((*kp)->len == 0xFF) {
-            *out = (*kp)->base + (*kp)->frac * (1.0f / 256.0f);
-            *t = 0.0f;
+            *out = (*kp)->base + ((*kp)->frac * (1.0F / 256.0F));
+            *t = 0.0F;
             return 1;
         }
         d = (*kp)->len * tick;
@@ -85,10 +85,10 @@ s32 animationTrackEvaluateCubic(f32 *t, AnimationScalarKey **keys, f32 *out, f32
     a = k->a;
     b = k->b;
     c = k->c;
-    base = k->frac * (1.0f / 256.0f) + k->base;
-    *out = ((a * x + b) * x + c) * x + base;
+    base = (k->frac * (1.0F / 256.0F)) + k->base;
+    *out = (((a * x + b) * x + c) * x) + base;
     if (vel != NULL) {
-        *vel = 3.0f * x * x * a + (x + x) * b + c;
+        *vel = (3.0F * x * x * a) + ((x + x) * b) + c;
     }
     return 0;
 }
@@ -116,7 +116,7 @@ s32 animationTrackEvaluateLinear(f32 *t, AnimationScalarKey **keys, f32 *out, f3
     x = *t;
     a = (*keys)->a;
     b = (*keys)->b;
-    *out = a * x + b;
+    *out = (a * x) + b;
     if (vel != NULL) {
         *vel = a;
     }
@@ -139,9 +139,9 @@ s32 animationCurveEvaluate(AnimationCurveDescriptor *curve, f32 *time, f32 *valu
     switch (curve->kind) {
     case 0:
         *time += step;
-        *value = curve->valueOrAddress * (1.0f / 65536.0f);
+        *value = curve->valueOrAddress * (1.0F / 65536.0F);
         if (velocity != NULL) {
-            *velocity = 0.0f;
+            *velocity = 0.0F;
         }
         return 2;
     case 1:
@@ -169,7 +169,7 @@ void animationTrack3Initialize(AnimationTrack3 *dst, AnimationCurveDescriptor *s
         if (src->kind != 0) {
             dst->curves[i].valueOrAddress = src->valueOrAddress + off;
         }
-        dst->times[i] = 0.0f;
+        dst->times[i] = 0.0F;
         dst->keyIndices[i] = 0;
     }
 }
@@ -189,8 +189,8 @@ void animationDeltaTrack3Initialize(AnimationDeltaTrack3 *dst, AnimationCurveDes
         if (src->kind != 0) {
             dst->curves[i].valueOrAddress = src->valueOrAddress + off;
         }
-        dst->previousValues[i] = 0.0f;
-        dst->times[i] = 0.0f;
+        dst->previousValues[i] = 0.0F;
+        dst->times[i] = 0.0F;
         dst->keyIndices[i] = 0;
     }
 }
@@ -273,8 +273,8 @@ void animationIntegerTrackInitialize(ValueTrack *track, ValueKey *keys) {
     s32 sp1C;
     track->key = keys;
     track->value = 0;
-    track->time = 0.0f;
-    animationIntegerTrackEvaluate(track, &sp1C, 0.0f);
+    track->time = 0.0F;
+    animationIntegerTrackEvaluate(track, &sp1C, 0.0F);
 }
 
 /// Evaluate the current integer animation value and advance its time.
@@ -297,7 +297,7 @@ s32 animationIntegerTrackEvaluate(ValueTrack *state, s32 *out, f32 step) {
     }
     for (;;) {
         duration = key->duration;
-        if (duration < 0.0f) {
+        if (duration < 0.0F) {
             if (key->mode == 3) {
                 key += key->start;
                 track->key = key;
@@ -305,7 +305,7 @@ s32 animationIntegerTrackEvaluate(ValueTrack *state, s32 *out, f32 step) {
             }
             *out = key->start;
             track->value = *out;
-            track->time = 0.0f;
+            track->time = 0.0F;
             return 1;
         }
         if (key->mode == 2) {

@@ -31,8 +31,8 @@ u8 *actorFindNearestInRange(u8 *self, Vec3f *origin, f32 distance, f32 *rotation
 void actorSearchNearby(s32 self, s32 origin) {
     f32 sp2C[3];
 
-    sp2C[0] = 0.0f;
-    sp2C[1] = 0.0f;
-    sp2C[2] = 0.0f;
-    objectFindNearestTargetInView((u8 *)self, (Vec3f *)origin, 50.0f, sp2C, 360.0f, 1, 0x25);
+    sp2C[0] = 0.0F;
+    sp2C[1] = 0.0F;
+    sp2C[2] = 0.0F;
+    objectFindNearestTargetInView((u8 *)self, (Vec3f *)origin, 50.0F, sp2C, 360.0F, 1, 0x25);
 }

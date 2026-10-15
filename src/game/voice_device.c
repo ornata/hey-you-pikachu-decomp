@@ -26,36 +26,44 @@ s32 voiceDeviceInitialize(OSMesgQueue *mq, OSVoiceHandle *hd, s32 channel) {
     hd->__mq = mq;
     hd->__mode = 0;
     ret = __osVoiceGetStatus(mq, channel, &status);
-    if (ret != 0)
+    if (ret != 0) {
         return ret;
+    }
     ret = __osContChannelReset(mq, channel);
-    if (ret != 0)
+    if (ret != 0) {
         return CONT_ERR_CONTRFAIL;
+    }
     start = osGetCount();
     while ((u64)osGetCount() - start < 2343750) {
     }
     ret = __osVoiceGetStatus(mq, channel, &status);
-    if (ret != 0)
+    if (ret != 0) {
         return ret;
+    }
     __osVoiceContRead2(hd->__mq, hd->__channel, 0, data);
     osEngVoiceUnitType = data[0] | (data[1] << 8);
     for (i = 0; i < 5; i++) {
         ret = __osVoiceSetADConverter(mq, channel, gVoiceDeviceAdConverterCommands[i]);
-        if (ret != 0)
+        if (ret != 0) {
             return ret;
+        }
     }
     ret = __osVoiceGetStatus(mq, channel, &status);
-    if (ret != 0)
+    if (ret != 0) {
         return ret;
-    if (status & 2)
+    }
+    if (status & 2) {
         return CONT_ERR_VOICE_NO_RESPONSE;
+    }
     *(u32 *)command = 0x100;
     ret = __osVoiceContWrite4(mq, channel, 0, command);
-    if (ret != 0)
+    if (ret != 0) {
         return ret;
+    }
     ret = __osVoiceCheckResult(hd, &status);
-    if (ret & 0xFF00)
+    if (ret & 0xFF00) {
         ret = CONT_ERR_INVALID;
+    }
     return ret;
 }
 
@@ -72,16 +80,19 @@ s32 voiceDeviceRegisterWord(OSVoiceHandle *hd, u8 *word) {
     u8 command[80];
     u8 *cursor;
     ret = __osVoiceGetStatus(hd->__mq, hd->__channel, &status);
-    if (ret != 0)
+    if (ret != 0) {
         return ret;
-    if (status & 2)
+    }
+    if (status & 2) {
         return CONT_ERR_VOICE_NO_RESPONSE;
+    }
     length = 0;
     cursor = word;
     for (;;) {
         cursor += 2;
-        if ((((cursor[-1] << 8) | cursor[-2]) & 0xFFFF) == 0)
+        if ((((cursor[-1] << 8) | cursor[-2]) & 0xFFFF) == 0) {
             break;
+        }
         length += 2;
     }
     _bzero(command, 80);
@@ -91,25 +102,30 @@ s32 voiceDeviceRegisterWord(OSVoiceHandle *hd, u8 *word) {
     }
     command[74 - i] = 3;
     ret = __osVoiceContWrite20(hd->__mq, hd->__channel, 0, command);
-    if (ret != 0)
+    if (ret != 0) {
         return ret;
+    }
     ret = __osVoiceContWrite20(hd->__mq, hd->__channel, 0, command + 20);
-    if (ret != 0)
+    if (ret != 0) {
         return ret;
+    }
     ret = __osVoiceContWrite20(hd->__mq, hd->__channel, 0, command + 40);
-    if (ret != 0)
+    if (ret != 0) {
         return ret;
+    }
     ret = __osVoiceContWrite20(hd->__mq, hd->__channel, 0, command + 60);
-    if (ret != 0)
+    if (ret != 0) {
         return ret;
+    }
     ret = __osVoiceCheckResult(hd, &status);
     if (ret != 0) {
-        if (ret & 0x100)
+        if (ret & 0x100) {
             ret = 0xD;
-        else if (ret & 0x200)
+        } else if (ret & 0x200) {
             ret = 0xE;
-        else if (ret & 0xFF00)
+        } else if (ret & 0xFF00) {
             ret = CONT_ERR_INVALID;
+        }
     }
     return ret;
 }
@@ -127,10 +143,12 @@ s32 voiceDeviceSetDictionaryMask(OSVoiceHandle *hd, u8 *mask, s32 bytes) {
     u8 status;
     u8 command[40];
     ret = __osVoiceGetStatus(hd->__mq, hd->__channel, &status);
-    if (ret != 0)
+    if (ret != 0) {
         return ret;
-    if (status & 2)
+    }
+    if (status & 2) {
         return CONT_ERR_VOICE_NO_RESPONSE;
+    }
     length = (bytes & 1) ? bytes + 1 : bytes;
     _bzero(command, 40);
     command[38 - length] = 4;
@@ -138,16 +156,19 @@ s32 voiceDeviceSetDictionaryMask(OSVoiceHandle *hd, u8 *mask, s32 bytes) {
         command[i - length + 40] = mask[i];
         command[i - length + 41] = mask[i + 1];
     }
-    if (bytes & 1)
+    if (bytes & 1) {
         command[39] = 0;
+    }
     ret = __osVoiceContWrite20(hd->__mq, hd->__channel, 0, command);
-    if (ret == 0)
+    if (ret == 0) {
         ret = __osVoiceCheckResult(hd, &status);
+    }
     ret = __osVoiceContWrite20(hd->__mq, hd->__channel, 0, command + 20);
     if (ret == 0) {
         ret = __osVoiceCheckResult(hd, &status);
-        if (ret & 0xFF00)
+        if (ret & 0xFF00) {
             ret = CONT_ERR_INVALID;
+        }
     }
     return ret;
 }
@@ -162,18 +183,22 @@ s32 voiceDeviceClearDictionary(OSVoiceHandle *hd, u16 word) {
     u8 status;
     u8 command[4];
     ret = __osVoiceGetStatus(hd->__mq, hd->__channel, &status);
-    if (ret != 0)
+    if (ret != 0) {
         return ret;
-    if (status & 2)
+    }
+    if (status & 2) {
         return CONT_ERR_VOICE_NO_RESPONSE;
+    }
     *(u32 *)command = 0x02000000;
     command[2] = word & 0xFF;
     command[3] = (word & 0xFF00) >> 8;
     ret = __osVoiceContWrite4(hd->__mq, hd->__channel, 0, command);
-    if (ret != 0)
+    if (ret != 0) {
         return ret;
+    }
     ret = __osVoiceCheckResult(hd, &status);
-    if (ret & 0xFF00)
+    if (ret & 0xFF00) {
         ret = CONT_ERR_INVALID;
+    }
     return ret;
 }

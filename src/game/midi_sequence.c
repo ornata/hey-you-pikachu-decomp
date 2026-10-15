@@ -140,8 +140,9 @@ s32 midiSequenceReadEvent(SequenceState *state, u8 *event, s32 capacity, f64 *de
         *delta += elapsed / state->rate;
         switch (event[0] & 0xF0) {
         case 0xF0:
-            if (event[0] == 0xF0 || event[0] == 0xF7)
+            if (event[0] == 0xF0 || event[0] == 0xF7) {
                 continue;
+            }
             if (event[0] == 0xFF) {
                 sub = event[1];
                 switch (sub) {
@@ -167,13 +168,15 @@ s32 midiSequenceReadEvent(SequenceState *state, u8 *event, s32 capacity, f64 *de
                 continue;
             case SEQUENCE_MARK_LOOP_END:
                 state->releaseNotes = 1;
-                if (state->repetitions % 3 > 0 && state->repetitions >= 4)
+                if (state->repetitions % 3 > 0 && state->repetitions >= 4) {
                     midiSequenceRandomizeUpperChannels(state);
-                else
+                } else {
                     midiSequenceEnableAllChannels(state);
+                }
                 ++state->repetitions;
-                if (state->hasLoop)
+                if (state->hasLoop) {
                     midiReaderRestoreMark(&state->reader, &state->loop);
+                }
                 continue;
             }
             break;

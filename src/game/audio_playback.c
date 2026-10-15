@@ -116,14 +116,14 @@ s32 audioInitialize(GameScheduler *scheduler, OSId threadId, OSPri priority, u32
     config.params[0] = preset->sectionCount;
     config.params[1] = ((s32)(preset->delayLengthMs * frequency) / 1000) & ~7;
     for (i = 0; i < preset->sectionCount; i++) {
-        config.params[i * 8 + 2] = ((s32)(preset->sections[i].inputDelayMs * frequency) / 1000) & ~7;
-        config.params[i * 8 + 3] = ((s32)(preset->sections[i].outputDelayMs * frequency) / 1000) & ~7;
-        config.params[i * 8 + 4] = preset->sections[i].feedback;
-        config.params[i * 8 + 5] = preset->sections[i].feedforward;
-        config.params[i * 8 + 6] = preset->sections[i].gain;
-        config.params[i * 8 + 7] = preset->sections[i].chorusRate;
-        config.params[i * 8 + 8] = preset->sections[i].chorusDepth;
-        config.params[i * 8 + 9] = preset->sections[i].filter;
+        config.params[(i * 8) + 2] = ((s32)(preset->sections[i].inputDelayMs * frequency) / 1000) & ~7;
+        config.params[(i * 8) + 3] = ((s32)(preset->sections[i].outputDelayMs * frequency) / 1000) & ~7;
+        config.params[(i * 8) + 4] = preset->sections[i].feedback;
+        config.params[(i * 8) + 5] = preset->sections[i].feedforward;
+        config.params[(i * 8) + 6] = preset->sections[i].gain;
+        config.params[(i * 8) + 7] = preset->sections[i].chorusRate;
+        config.params[(i * 8) + 8] = preset->sections[i].chorusDepth;
+        config.params[(i * 8) + 9] = preset->sections[i].filter;
     }
     config.maxVVoices = 0;
     config.maxPVoices = 32;
@@ -302,7 +302,7 @@ s32 audioCountPlayback(s32 id) {
 /// \note Original decompilation identifier: \c func_8001FD9C (0x8001FD9C).
 ALSound *audioGetSoundDefinition(s32 id) {
     ALBank *bank = gAudioBankFile->bankArray[0];
-    s32 prog = id / 88 + 124;
+    s32 prog = (id / 88) + 124;
     s32 key;
 
     if (prog < bank->instCount) {
@@ -350,7 +350,7 @@ s32 audioSetSoundEffectPan(s32 id, s32 pan) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8001FEFC (0x8001FEFC).
 void audioSetSoundEffectPitch(s32 id, f32 semitones) {
-    soundEffectPlayerSetPitch(gSoundEffectPlayer, id, (f64)alCents2Ratio((s32)(semitones * 100.0f)));
+    soundEffectPlayerSetPitch(gSoundEffectPlayer, id, (f64)alCents2Ratio((s32)(semitones * 100.0F)));
 }
 
 

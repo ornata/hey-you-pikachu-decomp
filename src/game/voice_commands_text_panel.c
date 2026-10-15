@@ -99,20 +99,22 @@ void voiceCommandLaunchEffect(ScriptMessage message) {
             message.arg0 |= message.type << 20;
             message.type = 1;
         }
-        scale = mathMapRangeClamped((f32)gVoiceCommandMinimumVoiceLevel, gVoiceCommandMinimumEffectScale, 8000.0f, 0.2f,
+        scale = mathMapRangeClamped((f32)gVoiceCommandMinimumVoiceLevel, gVoiceCommandMinimumEffectScale, 8000.0F, 0.2F,
                                     (f32)(u32)gVoiceCommandRecognitionResult.voice_level);
-        if (special != 0)
-            scale *= 2.0f;
-        if (gVoiceCommandRecognitionResult.warning != 0)
+        if (special != 0) {
+            scale *= 2.0F;
+        }
+        if (gVoiceCommandRecognitionResult.warning != 0) {
             target = actorFindPart(((u8 *)gPikachuActor), 0x2C);
-        else
+        } else {
             target = actorFindPart(((u8 *)gPikachuActor), 0x2E);
+        }
         if (gRuntimeCurrentArea == 7) {
             rotation[1] = gPlayerYaw + gPlayerViewShake;
-            rotation[0] = 0.0f;
-            rotation[2] = 0.0f;
-            nearby = objectFindNearestTargetInView(NULL, (Vec3f *)gRenderCameras[gRenderCameraIndex].eye, 15.0f,
-                                                   rotation, 60.0f, 0x82, 0x82);
+            rotation[0] = 0.0F;
+            rotation[2] = 0.0F;
+            nearby = objectFindNearestTargetInView(NULL, (Vec3f *)gRenderCameras[gRenderCameraIndex].eye, 15.0F,
+                                                   rotation, 60.0F, 0x82, 0x82);
             if (nearby != NULL) {
                 cameraX = gRenderCameras[gRenderCameraIndex].eye[0];
                 cameraY = gRenderCameras[gRenderCameraIndex].eye[1];
@@ -126,16 +128,17 @@ void voiceCommandLaunchEffect(ScriptMessage message) {
                 targetDistance = vector3Length(targetDelta);
                 if (vector3Length(nearbyDelta) < targetDistance) {
                     target = nearby;
-                    velocity[0] = 0.0f;
-                    velocity[1] = 0.0f;
-                    velocity[2] = 0.0f;
+                    velocity[0] = 0.0F;
+                    velocity[1] = 0.0F;
+                    velocity[2] = 0.0F;
                 }
             }
         }
-        if (gRuntimeGameMode == 8 || gRuntimeGameMode == 0x12)
+        if (gRuntimeGameMode == 8 || gRuntimeGameMode == 0x12) {
             mode = 1;
-        else
+        } else {
             mode = 0;
+        }
         messengerGetCameraLaunch(position, velocity, special);
         messengerCreate(((RuntimeObjectPrefix *)target)->handle, position, velocity, scale, message, special, mode);
     }
@@ -299,8 +302,9 @@ void textPanelDraw(TextPanel *panel, Gfx **gdl, s32 mode) {
     s32 x0, y0, x1, y1;
     s32 i;
 
-    if (mode >= 3)
+    if (mode >= 3) {
         mode = 0;
+    }
     textDrawSetArea(0, 0, 319, 239);
     textDrawGetDefaultArea(&x0, &y0, &x1, &y1);
     if (mode != 0) {
@@ -308,14 +312,14 @@ void textPanelDraw(TextPanel *panel, Gfx **gdl, s32 mode) {
         gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
         switch (mode) {
         case 1:
-            textDrawSetScale(1.0f, 1.0f);
+            textDrawSetScale(1.0F, 1.0F);
             gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 255, 160);
             gDPSetCombineMode((*gdl)++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
-            textureDrawScaledRegion(gdl, &gTextPanelBackdropImage, (u32)(x0 - 10.0f), panel->y + y0 - 6, 256, 0, 0, 0, 2,
-                                    0, gTextPanelBackdropHorizontalScale, 1.0f);
+            textureDrawScaledRegion(gdl, &gTextPanelBackdropImage, (u32)(x0 - 10.0F), panel->y + y0 - 6, 256, 0, 0, 0,
+                                    2, 0, gTextPanelBackdropHorizontalScale, 1.0F);
             break;
         case 2:
-            textDrawSetScale(1.0f, 1.0f);
+            textDrawSetScale(1.0F, 1.0F);
             gDPSetPrimColor((*gdl)++, 0, 0, 0, 0, 0, 180);
             gDPSetCombineMode((*gdl)++, G_CC_PRIMITIVE, G_CC_PRIMITIVE);
             {
@@ -332,7 +336,7 @@ void textPanelDraw(TextPanel *panel, Gfx **gdl, s32 mode) {
     image = panel->images + 1;
     for (i = 1; i < panel->count; i++, image++) {
         if (*image != NULL) {
-            textDrawSetCursor(panel->x + x0, panel->y + y0 + i * 16 - 16);
+            textDrawSetCursor(panel->x + x0, panel->y + y0 + (i * 16) - 16);
             color = panel->colors[i];
             textDrawSetColor(color[0], color[1], color[2], color[3]);
             textDrawImageAtCursor((TextImage *)*image);
@@ -427,11 +431,13 @@ s32 textPanelAppend(TextPanel *panel, void *text) {
         textImageDestroy(oldImage);
         *slot = 0;
     }
-    if (*(u8 *)text != 0)
+    if (*(u8 *)text != 0) {
         textImageCreateFromText((TextImage **)((s32)slot), (u8 *)((s32)text), (FontImage *)((s32)panel->configuration));
+    }
     panel->count += 1;
-    if (capacity < panel->count)
+    if (capacity < panel->count) {
         panel->count = capacity;
+    }
     index = (panel->nextEntry + capacity - panel->count + 1) % capacity;
     for (i = 0; i < panel->count; i++) {
         panel->images[i] = panel->entries[index];

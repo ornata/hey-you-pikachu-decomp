@@ -95,8 +95,9 @@ s32 audioDmaInitialize(ALHeap *heap, s32 slots, s32 shift) {
     gAudioDmaPageSlots = alHeapDBAlloc(NULL, 0, heap, 1, pages);
     gAudioDmaCacheEntries = alHeapDBAlloc(NULL, 0, heap, 1, gAudioDmaCacheCapacity * sizeof(AudioDmaCacheEntry));
     gAudioDmaIoMessages = alHeapDBAlloc(NULL, 0, heap, 1, gAudioDmaCacheCapacity * sizeof(OSIoMesg));
-    for (i = 0; i < pages; i++)
+    for (i = 0; i < pages; i++) {
         gAudioDmaPageSlots[i] = 0;
+    }
     for (i = 0; i < (s32)gAudioDmaCacheCapacity; i++) {
         gAudioDmaCacheEntries[i].lastUseFrame = gAudioDmaCacheFrame;
         gAudioDmaCacheEntries[i].buffer = alHeapDBAlloc(NULL, 0, heap, 1, gAudioDmaPageBytes + gAudioDmaReadAheadBytes);
@@ -123,8 +124,9 @@ s32 audioDmaResolveSample(s32 address, s32 length, void *state) {
     slot = gAudioDmaPageSlots[page];
     if (slot == 0) {
         for (i = 1, slot = 0; i < (s32)gAudioDmaCacheCapacity; i++) {
-            if (gAudioDmaCacheEntries[i].lastUseFrame < gAudioDmaCacheEntries[slot].lastUseFrame)
+            if (gAudioDmaCacheEntries[i].lastUseFrame < gAudioDmaCacheEntries[slot].lastUseFrame) {
                 slot = i;
+            }
         }
         if (gAudioDmaCacheEntries[slot].address != 0) {
             gAudioDmaPageSlots[gAudioDmaCacheEntries[slot].address >> gAudioDmaPageShift] = 0;
@@ -278,8 +280,9 @@ void audioWorkerThreadMain(void *arg) {
         buffer = audio->buffers[audio->index];
         audio->index ^= 1;
         audio->render(audio->commands, &commandCount, (s16 *)((u32)buffer + 0x80000000), audio->samples);
-        if (commandCount == 0)
+        if (commandCount == 0) {
             break;
+        }
         task.next = NULL;
         task.reply = &audio->taskQueue;
         task.message = NULL;

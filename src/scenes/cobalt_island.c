@@ -23,7 +23,7 @@ void cobaltIslandSpawnItemType8(f32 *position) {
     f32 x = position[0];
     f32 y = position[1];
     f32 z = position[2];
-    itemSetMode(itemCreate(x, y, z, 0.0f, 0.0f, 8), ITEM_MODE_STATIONARY);
+    itemSetMode(itemCreate(x, y, z, 0.0F, 0.0F, 8), ITEM_MODE_STATIONARY);
 }
 
 extern u8 D_8014D854_scene_cobalt_island[];
@@ -33,7 +33,7 @@ extern f64 D_80151E00_scene_cobalt_island;
 /// \param residentIndex Identifier assigned to the resident within the scene population.
 /// \returns Nothing.
 void cobaltIslandSpawnResidentType16(s32 residentIndex) {
-    actorCreateForKind(0x10, 0.0f, 0.0f, 0.0f, 0,
+    actorCreateForKind(0x10, 0.0F, 0.0F, 0.0F, 0,
                        (f32)((f64)randomNext() * 2.3283064365386963e-10 * D_80151E00_scene_cobalt_island),
                        gCurrentAreaConfiguration->objectScale, D_8014D854_scene_cobalt_island, residentIndex);
 }
@@ -43,7 +43,7 @@ extern u8 D_8014DCE8_scene_cobalt_island[];
 /// Spawn the fixed type-eleven resident for the island scene.
 /// \returns Nothing.
 void cobaltIslandSpawnResidentType11(void) {
-    actorCreateForKind(0xB, 160.0f, -1.0f, 400.0f, 0.0f, 180.0f, gCurrentAreaConfiguration->objectScale,
+    actorCreateForKind(0xB, 160.0F, -1.0F, 400.0F, 0.0F, 180.0F, gCurrentAreaConfiguration->objectScale,
                        D_8014DCE8_scene_cobalt_island, 0);
 }
 
@@ -53,7 +53,7 @@ extern f32 D_80151E08_scene_cobalt_island;
 /// Spawn the fixed type-eighteen resident for the island scene.
 /// \returns Nothing.
 void cobaltIslandSpawnResidentType18(void) {
-    actorCreateForKind(0x12, 301.0f, 6.66f, 61.0f, 0.0f, D_80151E08_scene_cobalt_island,
+    actorCreateForKind(0x12, 301.0F, 6.66F, 61.0F, 0.0F, D_80151E08_scene_cobalt_island,
                        gCurrentAreaConfiguration->objectScale, D_8014E00C_scene_cobalt_island, 0);
 }
 
@@ -89,8 +89,8 @@ extern f32 D_80150D80_scene_cobalt_island[];
 /// Create the island scene's ambient audio emitter.
 /// \returns Nothing.
 void cobaltIslandCreateAmbientAudio(void) {
-    ambientAudioCreate(D_80150D80_scene_cobalt_island, 1, 4.0f, 4.0f, 0x2B, 0x2B, 1.0f, 3,
-                  (Vec3f *)D_80150D80_scene_cobalt_island);
+    ambientAudioCreate(D_80150D80_scene_cobalt_island, 1, 4.0F, 4.0F, 0x2B, 0x2B, 1.0F, 3,
+                       (Vec3f *)D_80150D80_scene_cobalt_island);
 }
 
 extern f32 D_80134A34_scene_cobalt_island[][3];
@@ -119,11 +119,11 @@ void cobaltIslandInitializeObjects(void) {
     }
     stage = progressGetValue(0x76U);
     if (stage >= 4) {
-        actorCreateForKind(0xE, 220.0f, 41.0f, 111.0f, 0.0f, 0.0f, gCurrentAreaConfiguration->objectScale,
+        actorCreateForKind(0xE, 220.0F, 41.0F, 111.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                            D_8014E12C_scene_cobalt_island, 0);
     }
     cobaltIslandCreateSceneProps();
-    landmarkCreate(220.0f, 31.0f, 111.0f, 0x8F);
+    landmarkCreate(220.0F, 31.0F, 111.0F, 0x8F);
 }
 
 /// Provide an island-scene callback that requires no action.
@@ -144,10 +144,12 @@ s32 cobaltIslandGetSpatialCell(f32 x, f32 y, f32 z) {
     s32 iz;
     iy = (s32)((f64)y / 15.0);
     if (iy < 0 || iy >= 16 || (ix = (s32)((f64)x / 20.0), ix < 0) || ix >= 16 || (iz = (s32)((f64)z / 20.0), iz < 0) ||
-        iz >= 16)
+        iz >= 16) {
         return 0;
+    }
     layer = D_8018A28C_scene_cobalt_island[iy];
-    if (layer == NULL)
+    if (layer == NULL) {
         return 0;
-    return layer[iz * 16 + ix];
+    }
+    return layer[(iz * 16) + ix];
 }

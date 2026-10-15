@@ -26,7 +26,7 @@ s32 assetDecompressAndPatch(u8 *destination, u8 *source, s32 size, s32 outputSiz
     u8 *output = destination;
     result = archiveDecompressMember(source, destination);
     for (i = 0; i != count; i++) {
-        AssetPatch *patch = (AssetPatch *)(i * sizeof(AssetPatch) + patchOffset + source);
+        AssetPatch *patch = (AssetPatch *)((i * sizeof(AssetPatch)) + patchOffset + source);
         s32 offset = patch->offset;
         s32 value = patch->value;
         *(s32 *)(output + offset) = value;

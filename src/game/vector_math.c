@@ -30,8 +30,8 @@ f32 matrix34GetZRowYZAngleDegrees(u8 *matrix) {
     projectedZ = *(f32 *)(matrix + 0x20);
     projectedY = *(f32 *)(matrix + 0x14);
     projectionLength = sqrtf((projectedZ * projectedZ) + (projectedY * projectedY));
-    if ((projectionLength < 0.001f) && (-0.001f < projectionLength)) {
-        return 0.0f;
+    if ((projectionLength < 0.001F) && (-0.001F < projectionLength)) {
+        return 0.0F;
     }
     projectedZ /= projectionLength;
     projectedY /= projectionLength;
@@ -54,7 +54,7 @@ void matrix34EvaluateXBasisElevationDegrees(u8 *matrix) {
     negativeBasisZ = -*(f32 *)(matrix + 8);
     projectionLength = sqrtf((basisY * basisY) + (basisX * basisX));
     signedProjectionLength = projectionLength;
-    if (*(f32 *)(matrix + 0x20) <= 0.0f) {
+    if (*(f32 *)(matrix + 0x20) <= 0.0F) {
         signedProjectionLength = -projectionLength;
     }
     mathUnitDirectionDegrees(signedProjectionLength, negativeBasisZ);
@@ -72,8 +72,8 @@ f32 vector2GetDirectionDegrees(u8 *vector) {
     x = *(f32 *)(vector + 0);
     y = *(f32 *)(vector + 4);
     length = sqrtf((x * x) + (y * y));
-    if ((length < 0.001f) && (-0.001f < length)) {
-        return 0.0f;
+    if ((length < 0.001F) && (-0.001F < length)) {
+        return 0.0F;
     }
     x /= length;
     y /= length;
@@ -100,14 +100,14 @@ void audioGetPositionVolumeAndPan(f32 *pos, Mtx cam, s32 *vol, s32 *pan, f32 nea
     matrixFixedTo34(cam, m);
     matrix34TransformPointVector(m, pos, v);
     dist = vector3Length(v);
-    p = v[0] / dist * 128.0f;
+    p = v[0] / dist * 128.0F;
     if (p < -128) {
         p = -128;
     } else if (p >= 128) {
         p = 127;
     }
     p += 128;
-    level = mathMapRangeClamped(near, 256.0f, far, 80.0f, dist);
+    level = mathMapRangeClamped(near, 256.0F, far, 80.0F, dist);
     *vol = level;
     *pan = p;
 }
@@ -141,8 +141,8 @@ f32 vector3GetYawDegrees(f32 *vector) {
     x = vector[0];
     z = vector[2];
     horizontalLength = sqrtf((x * x) + (z * z));
-    if ((horizontalLength < 0.001f) && (-0.001f < horizontalLength)) {
-        return 0.0f;
+    if ((horizontalLength < 0.001F) && (-0.001F < horizontalLength)) {
+        return 0.0F;
     }
     x /= horizontalLength;
     z /= horizontalLength;
@@ -156,16 +156,16 @@ f32 vector3GetYawDegrees(f32 *vector) {
 f32 vector3GetYawFromPositiveXDegrees(f32 *vector) {
     f32 var_f2;
 
-    var_f2 = vector3GetYawDegrees(vector) - 90.0f;
-    if (var_f2 < 0.0f) {
+    var_f2 = vector3GetYawDegrees(vector) - 90.0F;
+    if (var_f2 < 0.0F) {
         do {
-            var_f2 += 360.0f;
-        } while (var_f2 < 0.0f);
+            var_f2 += 360.0F;
+        } while (var_f2 < 0.0F);
     }
-    if (var_f2 >= 360.0f) {
+    if (var_f2 >= 360.0F) {
         do {
-            var_f2 -= 360.0f;
-        } while (var_f2 >= 360.0f);
+            var_f2 -= 360.0F;
+        } while (var_f2 >= 360.0F);
     }
     return var_f2;
 }
@@ -188,21 +188,21 @@ s32 vector3ApproachTarget(f32 *target, f32 *position, f32 speed) {
     s32 count;
     s32 i;
 
-    count = gRuntimeFrameSeconds * 60.0f > 1 ? gRuntimeFrameSeconds * 60.0f : 1;
-    step = 0.2f / count;
+    count = gRuntimeFrameSeconds * 60.0F > 1 ? gRuntimeFrameSeconds * 60.0F : 1;
+    step = 0.2F / count;
     speed *= step;
     for (i = 0; i < count; i++) {
         delta[0] = target[0] - position[0];
         delta[1] = target[1] - position[1];
         delta[2] = target[2] - position[2];
         distanceSquared = vector3Length(delta);
-        if (distanceSquared <= 1.0f) {
+        if (distanceSquared <= 1.0F) {
             position[0] = target[0];
             position[1] = target[1];
             position[2] = target[2];
             return -1;
         }
-        distance = mathMapRangeClamped(1.0f, step, 100.0f, speed, distanceSquared);
+        distance = mathMapRangeClamped(1.0F, step, 100.0F, speed, distanceSquared);
         scale = distance / sqrtf(distanceSquared);
         position[0] += delta[0] * scale;
         position[1] += delta[1] * scale;
@@ -222,15 +222,15 @@ void vector3GetYawAndProjectedPitchDegrees(f32 *direction, f32 *yaw, f32 *pitch)
     v[0] = direction[0];
     v[1] = direction[1];
     v[2] = direction[2];
-    if (vector3Normalize(v) == 0.0f) {
-        *yaw = 0.0f;
-        *pitch = 0.0f;
+    if (vector3Normalize(v) == 0.0F) {
+        *yaw = 0.0F;
+        *pitch = 0.0F;
         return;
     }
     *yaw = vector3GetYawDegrees(v);
-    *pitch = 360.0f - mathUnitDirectionDegrees(fabsf(v[0]), v[1]);
-    if (*pitch >= 180.0f) {
-        *pitch -= 360.0f;
+    *pitch = 360.0F - mathUnitDirectionDegrees(fabsf(v[0]), v[1]);
+    if (*pitch >= 180.0F) {
+        *pitch -= 360.0F;
     }
 }
 
@@ -303,34 +303,36 @@ void vector3GetZAxisAnglesNearHeading(f32 *vector, f32 heading, f32 *pitch, f32 
     zSquared = z * z;
     lengthSquared = xSquared + ySquared + zSquared;
     length = sqrtf(lengthSquared);
-    if (length < 0.001f && -0.001f < length) {
-        x = 1.0f;
-        z = 0.0f;
-        y = 0.0f;
+    if (length < 0.001F && -0.001F < length) {
+        x = 1.0F;
+        z = 0.0F;
+        y = 0.0F;
     } else {
-        length = 1.0f / length;
+        length = 1.0F / length;
         x *= length;
         y *= length;
         z *= length;
     }
     sinPitch = -z;
-    if (0.999f <= sinPitch || sinPitch <= -0.999f) {
-        if (sinPitch > 0.0f)
-            *pitch = 90.0f;
-        else
-            *pitch = 270.0f;
+    if (0.999F <= sinPitch || sinPitch <= -0.999F) {
+        if (sinPitch > 0.0F) {
+            *pitch = 90.0F;
+        } else {
+            *pitch = 270.0F;
+        }
         *yaw = heading;
         return;
     }
-    if (sinPitch < -1.0f)
-        sinPitch = -1.0f;
-    else if (sinPitch > 1.0f)
-        sinPitch = 1.0f;
-    cosPitch = sqrtf(1.0f - sinPitch * sinPitch);
+    if (sinPitch < -1.0F) {
+        sinPitch = -1.0F;
+    } else if (sinPitch > 1.0F) {
+        sinPitch = 1.0F;
+    }
+    cosPitch = sqrtf(1.0F - (sinPitch * sinPitch));
     cosYaw = x / cosPitch;
     sinYaw = y / cosPitch;
     direction = mathCosSignDegrees(heading);
-    if ((direction < 0 && cosYaw > 0.0f) || (direction > 0 && cosYaw < 0.0f)) {
+    if ((direction < 0 && cosYaw > 0.0F) || (direction > 0 && cosYaw < 0.0F)) {
         cosPitch = -cosPitch;
         cosYaw = -cosYaw;
         sinYaw = -sinYaw;
@@ -365,31 +367,31 @@ s32 vector3GetZAxisPitchYawDegrees(f32 *v, f32 *pitch, f32 *yaw) {
     x = v[0];
     y = v[1];
     z = v[2];
-    len = sqrtf(x * x + y * y + z * z);
-    if (len < 0.001f && len > -0.001f) {
-        *yaw = 0.0f;
-        *pitch = 0.0f;
+    len = sqrtf((x * x) + (y * y) + (z * z));
+    if (len < 0.001F && len > -0.001F) {
+        *yaw = 0.0F;
+        *pitch = 0.0F;
         return 0;
     }
-    len = 1.0f / len;
+    len = 1.0F / len;
     VEC3_SCALE(x, y, z, len);
     n = -z;
     s = n;
-    if (n >= 0.999f || n <= -0.999f) {
-        if (n > 0.0f) {
-            *pitch = 90.0f;
+    if (n >= 0.999F || n <= -0.999F) {
+        if (n > 0.0F) {
+            *pitch = 90.0F;
         } else {
-            *pitch = 270.0f;
+            *pitch = 270.0F;
         }
-        *yaw = 0.0f;
+        *yaw = 0.0F;
         return 0;
     }
-    if (n < -1.0f) {
-        s = -1.0f;
-    } else if (n > 1.0f) {
-        s = 1.0f;
+    if (n < -1.0F) {
+        s = -1.0F;
+    } else if (n > 1.0F) {
+        s = 1.0F;
     }
-    c = sqrtf(1.0f - s * s);
+    c = sqrtf(1.0F - (s * s));
     qx = x / c;
     qy = y / c;
     *pitch = mathUnitDirectionDegrees(c, s);
@@ -415,50 +417,50 @@ void matrix3GetEulerAnglesDegrees(f32 *matrix, f32 *roll, f32 *pitch, f32 *yaw) 
     f32 cosYaw;
 
     sinPitch = -matrix[2];
-    if ((sinPitch <= -0.999f) || (0.999f <= sinPitch)) {
-        if (sinPitch <= 0.0f) {
-            *pitch = 270.0f;
+    if ((sinPitch <= -0.999F) || (0.999F <= sinPitch)) {
+        if (sinPitch <= 0.0F) {
+            *pitch = 270.0F;
         } else {
-            *pitch = 90.0f;
+            *pitch = 90.0F;
         }
-        *roll = 0.0f;
+        *roll = 0.0F;
         cosYaw = matrix[4];
         *yaw = mathUnitDirectionDegrees(cosYaw, -matrix[3]);
         return;
     }
-    if ((sinPitch < 0.001f) && (-0.001f < sinPitch)) {
-        *pitch = 0.0f;
+    if ((sinPitch < 0.001F) && (-0.001F < sinPitch)) {
+        *pitch = 0.0F;
         cosYaw = matrix[0];
         sinYaw = matrix[1];
         cosRoll = matrix[8];
         sinRoll = matrix[5];
     } else {
-        if (sinPitch < -1.0f) {
-            sinPitch = -1.0f;
-        } else if (sinPitch > 1.0f) {
-            sinPitch = 1.0f;
+        if (sinPitch < -1.0F) {
+            sinPitch = -1.0F;
+        } else if (sinPitch > 1.0F) {
+            sinPitch = 1.0F;
         }
-        cosPitch = sqrtf(1.0f - (sinPitch * sinPitch));
+        cosPitch = sqrtf(1.0F - (sinPitch * sinPitch));
         cosYaw = matrix[0] / cosPitch;
-        if (cosYaw < -1.0f) {
-            cosYaw = -1.0f;
-        } else if (cosYaw > 1.0f) {
-            cosYaw = 1.0f;
+        if (cosYaw < -1.0F) {
+            cosYaw = -1.0F;
+        } else if (cosYaw > 1.0F) {
+            cosYaw = 1.0F;
         }
-        sinYaw = sqrtf(1.0f - (cosYaw * cosYaw));
-        if (matrix[1] < 0.0f) {
+        sinYaw = sqrtf(1.0F - (cosYaw * cosYaw));
+        if (matrix[1] < 0.0F) {
             sinYaw = -sinYaw;
         }
         cosRoll = ((-(sinPitch * sinYaw) * matrix[3]) + (matrix[4] * (sinPitch * cosYaw))) / sinPitch;
-        if (cosRoll < -1.0f) {
-            cosRoll = -1.0f;
-        } else if (cosRoll > 1.0f) {
-            cosRoll = 1.0f;
+        if (cosRoll < -1.0F) {
+            cosRoll = -1.0F;
+        } else if (cosRoll > 1.0F) {
+            cosRoll = 1.0F;
         }
         rollSquared = cosRoll * cosRoll;
-        sinRoll = sqrtf(1.0f - rollSquared);
-        verticalSign = matrix[5] > 0.0f ? 1 : (matrix[5] < 0.0f ? -1 : 0);
-        if ((cosPitch > 0.0f ? 1 : (cosPitch < 0.0f ? -1 : 0)) != verticalSign) {
+        sinRoll = sqrtf(1.0F - rollSquared);
+        verticalSign = matrix[5] > 0.0F ? 1 : (matrix[5] < 0.0F ? -1 : 0);
+        if ((cosPitch > 0.0F ? 1 : (cosPitch < 0.0F ? -1 : 0)) != verticalSign) {
             sinRoll = -sinRoll;
         }
         *pitch = mathUnitDirectionDegrees(cosPitch, sinPitch);
@@ -477,10 +479,10 @@ f32 vector2NormalizeComponentsApprox(f32 *x, f32 *y) {
     f32 length;
 
     length = mathHypotApprox(*x, *y);
-    if (length <= 0.001f) {
-        *y = 0.0f;
-        *x = 0.0f;
-        return 0.0f;
+    if (length <= 0.001F) {
+        *y = 0.0F;
+        *x = 0.0F;
+        return 0.0F;
     }
     *x /= length;
     *y /= length;
@@ -535,11 +537,11 @@ void matrix34RotateWorldYDegrees(f32 angle, f32 *m) {
     f32 z2;
     f32 z3;
 
-    while (angle < 0.0f) {
-        angle += 360.0f;
+    while (angle < 0.0F) {
+        angle += 360.0F;
     }
-    while (angle >= 360.0f) {
-        angle -= 360.0f;
+    while (angle >= 360.0F) {
+        angle -= 360.0F;
     }
     c = mathCosDegrees(angle);
     s = mathSinDegrees(angle);
@@ -551,14 +553,14 @@ void matrix34RotateWorldYDegrees(f32 angle, f32 *m) {
     z1 = m[5];
     z2 = m[8];
     z3 = m[11];
-    m[0] = c * x0 + s * z0;
-    m[3] = c * x1 + s * z1;
-    m[6] = c * x2 + s * z2;
-    m[9] = c * x3 + s * z3;
-    m[2] = -s * x0 + c * z0;
-    m[5] = -s * x1 + c * z1;
-    m[8] = -s * x2 + c * z2;
-    m[11] = -s * x3 + c * z3;
+    m[0] = (c * x0) + (s * z0);
+    m[3] = (c * x1) + (s * z1);
+    m[6] = (c * x2) + (s * z2);
+    m[9] = (c * x3) + (s * z3);
+    m[2] = (-s * x0) + (c * z0);
+    m[5] = (-s * x1) + (c * z1);
+    m[8] = (-s * x2) + (c * z2);
+    m[11] = (-s * x3) + (c * z3);
 }
 
 /// Find the first table entry at least as large as a requested value.
@@ -590,9 +592,9 @@ void matrix34BlendOrientation(f32 w, f32 *a, f32 *b, f32 *out) {
     f32 *dst = out;
     s32 i;
     f32 complement;
-    complement = 1.0f - w;
+    complement = 1.0F - w;
     for (i = 0; i < 9; i++) {
-        *dst = complement * *left + *right * w;
+        *dst = (complement * *left) + (*right * w);
         left++;
         right++;
         dst++;
@@ -600,9 +602,9 @@ void matrix34BlendOrientation(f32 w, f32 *a, f32 *b, f32 *out) {
     vector3Normalize(out);
     vector3Normalize(out + 3);
     vector3Normalize(out + 6);
-    out[9] = 0.0f;
-    out[10] = 0.0f;
-    out[11] = 0.0f;
+    out[9] = 0.0F;
+    out[10] = 0.0F;
+    out[11] = 0.0F;
 }
 
 /// Get the horizontal direction of a point after an affine transformation.
@@ -646,9 +648,9 @@ f32 mathCubicHermite(f32 start, f32 end, f32 startSlope, f32 endSlope, f32 durat
     quadraticSlope = timeSquared * inverse;
     endSlopeWeight = cubic - quadraticSlope;
     startSlopeWeight = endSlopeWeight - quadraticSlope + time;
-    startWeight = cubicPosition - quadratic + 1.0f;
+    startWeight = cubicPosition - quadratic + 1.0F;
     endWeight = quadratic - cubicPosition;
-    return startWeight * start + end * endWeight + startSlope * startSlopeWeight + endSlope * endSlopeWeight;
+    return (startWeight * start) + (end * endWeight) + (startSlope * startSlopeWeight) + (endSlope * endSlopeWeight);
 }
 
 f32 mathCubicHermite(f32, f32, f32, f32, f32, f32);
@@ -668,14 +670,14 @@ s32 vector3InterpolateSmoothTimed(f32 *a, f32 *b, f32 *out, f32 len, f32 t) {
     if (len < t) {
         t = len;
     }
-    out[0] = mathCubicHermite(a[0], b[0], 0.0f, 0.0f, len, t);
-    out[1] = mathCubicHermite(a[1], b[1], 0.0f, 0.0f, len, t);
-    out[2] = mathCubicHermite(a[2], b[2], 0.0f, 0.0f, len, t);
+    out[0] = mathCubicHermite(a[0], b[0], 0.0F, 0.0F, len, t);
+    out[1] = mathCubicHermite(a[1], b[1], 0.0F, 0.0F, len, t);
+    out[2] = mathCubicHermite(a[2], b[2], 0.0F, 0.0F, len, t);
     d[0] = b[0] - out[0];
     d[1] = b[1] - out[1];
     d[2] = b[2] - out[2];
     dist = vector3Length(d);
-    if (dist < 0.001f && -0.001f < dist) {
+    if (dist < 0.001F && -0.001F < dist) {
         out[0] = b[0];
         out[1] = b[1];
         out[2] = b[2];
@@ -694,7 +696,7 @@ f32 mathPowInteger(f32 base, s32 exponent) {
     s32 remainingExponent;
 
     remainingExponent = (exponent >= 0) ? exponent : -exponent;
-    result = 1.0f;
+    result = 1.0F;
     for (; remainingExponent != 0; remainingExponent >>= 1) {
         if (remainingExponent & 1) {
             result *= base;
@@ -704,7 +706,7 @@ f32 mathPowInteger(f32 base, s32 exponent) {
     if (exponent >= 0) {
         return result;
     }
-    return 1.0f / result;
+    return 1.0F / result;
 }
 
 /// Compute the standard CRC-32 checksum of a byte buffer.
