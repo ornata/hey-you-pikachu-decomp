@@ -19,6 +19,9 @@ typedef enum CompanionControlMode {
 typedef enum PlayerPermissionFlag {
     PLAYER_PERMISSION_MOVEMENT = 0x1,                       ///< Permit player terrain-movement updates.
     PLAYER_PERMISSION_VIEW_ANGLE_UPDATE = 0x2,              ///< Permit changes to stored yaw and pitch.
+    PLAYER_PERMISSION_GRAVITY_AND_SLOPE = 0x4,              ///< Permit falling and motion along slippery slopes.
+    PLAYER_PERMISSION_TERRAIN_COLLISION = 0x8,              ///< Constrain player movement against terrain.
+    PLAYER_PERMISSION_PREVENT_SLOW_DROPS = 0x10,            ///< Prevent slow horizontal movement over terrain drops.
     PLAYER_PERMISSION_AREA_EVENTS = 0x20,                   ///< Permit player-position area events.
     PLAYER_PERMISSION_TOOLBOX = 0x100,                      ///< Permit the toolbox menu request path.
     PLAYER_PERMISSION_VIEW_INPUT = 0x200,                   ///< Permit controller input to change view angles.
@@ -29,6 +32,7 @@ typedef enum PlayerPermissionFlag {
     PLAYER_PERMISSION_SUPPRESS_VIEW_CAMERA_UPDATE = 0x4000, ///< Suppress camera positioning from the player view.
     PLAYER_PERMISSION_VIEW_CONTROL =
         0x8000, ///< Select direct view-angle control; view-input permission still gates actual input.
+    PLAYER_PERMISSION_INSPECTION_SCENE_UPDATES = 0x10000, ///< Continue scene updates during inspection text.
     PLAYER_PERMISSION_VOICE_MUSIC_DUCKING =
         0x08000000,                      ///< Permit conditional music ducking when voice input is unavailable.
     PLAYER_PERMISSION_STUN = 0x20000000, ///< Permit the timed player stun reaction.

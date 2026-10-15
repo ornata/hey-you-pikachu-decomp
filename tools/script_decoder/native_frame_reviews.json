@@ -439,7 +439,7 @@
         {
           "kind": "file",
           "file": "include/player_types.h",
-          "sha256": "47f0f117d187347ac120e7357a0690e68ec662fc9e29466ca219dae19a6b73bf"
+          "sha256": "0056df08b11d051f4243ed3806c8bd6fba129b936ac71cd6584ac7e1cfb6df85"
         }
       ],
       "preconditions": [
@@ -906,7 +906,7 @@
         {
           "kind": "file",
           "file": "include/player_types.h",
-          "sha256": "47f0f117d187347ac120e7357a0690e68ec662fc9e29466ca219dae19a6b73bf"
+          "sha256": "0056df08b11d051f4243ed3806c8bd6fba129b936ac71cd6584ac7e1cfb6df85"
         },
         {
           "kind": "file",

@@ -642,7 +642,7 @@ void playerStepGroundMovement(u8 *motion, f32 dx, f32 dz) {
         return;
     }
     material = 0;
-    if (flags & 4) {
+    if (flags & PLAYER_PERMISSION_GRAVITY_AND_SLOPE) {
         material = terrainGetSurfaceAttributes(((PlayerControlPrefix *)motion)->position[0],
                                                ((PlayerControlPrefix *)motion)->position[1],
                                                ((PlayerControlPrefix *)motion)->position[2], &node);
@@ -679,7 +679,7 @@ block_14:
     currentGround = terrainGetWorldHeightForQuery(
         gPlayerCollisionQueryMode, ((PlayerControlPrefix *)motion)->position[0],
         ((PlayerControlPrefix *)motion)->position[1] + 0.03F, ((PlayerControlPrefix *)motion)->position[2], &node);
-    if (((PlayerControlPrefix *)motion)->permissions & 8) {
+    if (((PlayerControlPrefix *)motion)->permissions & PLAYER_PERMISSION_TERRAIN_COLLISION) {
         if (material & 0x100) {
             height = 0.55F;
         } else {
@@ -725,8 +725,8 @@ block_14:
                                       ((PlayerControlPrefix *)motion)->position[1] + dy + 0.03F,
                                       ((PlayerControlPrefix *)motion)->position[2] + dz, &node);
     speed = sqrtf((dx * dx) + (dz * dz)) / gRuntimeFrameSeconds;
-    if ((((PlayerControlPrefix *)motion)->permissions & 0x10) && ((currentGround - nextGround) > 1.0F) &&
-        (speed < 16.5F)) {
+    if ((((PlayerControlPrefix *)motion)->permissions & PLAYER_PERMISSION_PREVENT_SLOW_DROPS) &&
+        ((currentGround - nextGround) > 1.0F) && (speed < 16.5F)) {
         speed = 0.0F;
         dx = 0.0F;
         dz = 0.0F;
@@ -779,7 +779,8 @@ block_14:
         ((PlayerControlPrefix *)motion)->airborne = 0;
         playerPlayFootstepSound(motion, material);
     }
-    if ((((PlayerControlPrefix *)motion)->airborne == 0) || !(((PlayerControlPrefix *)motion)->permissions & 4)) {
+    if ((((PlayerControlPrefix *)motion)->airborne == 0) ||
+        !(((PlayerControlPrefix *)motion)->permissions & PLAYER_PERMISSION_GRAVITY_AND_SLOPE)) {
         if (((PlayerControlPrefix *)motion)->position[1] < nextGround) {
             ((PlayerControlPrefix *)motion)->position[1] = nextGround;
         }
@@ -1168,7 +1169,10 @@ s32 playerTryInspectTarget(u8 *player, ControllerState *controller) {
     ret = 0;
     if (controller->pressed & 0x4000) {
         playerPrepareInteractionDescription((PlayerControlPrefix *)player);
-        if (textWindowOpen(2, 0, (((PlayerControlPrefix *)player)->permissions & 0x10000) ? 1 : 0) == 0) {
+        if (textWindowOpen(2, 0,
+                           (((PlayerControlPrefix *)player)->permissions & PLAYER_PERMISSION_INSPECTION_SCENE_UPDATES)
+                               ? 1
+                               : 0) == 0) {
             return 0;
         }
         textWindowAppendText(gPlayerHelpTextBuffer);
