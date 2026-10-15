@@ -370,6 +370,7 @@ def experiments():
     from .progress_numeric_domains import experiments as progress_experiments
     from .action_cue_numeric_domains import experiments as cue_experiments
     from .runtime_numeric_domains import experiments as runtime_experiments
+    from .scene_grid_numeric_domains import experiments as grid_experiments
 
     return (
         cases
@@ -381,6 +382,7 @@ def experiments():
         + progress_experiments()
         + cue_experiments()
         + runtime_experiments()
+        + grid_experiments()
     )
 
 
@@ -400,6 +402,38 @@ def bounded_slice(address, size, offsets):
     return address + entry, address + stop
 
 
+def selected_code_sections(symbol_section, requested_overlay=None):
+    """Require explicit identity for a scene sharing addresses with other overlays."""
+    sections = [".boot", ".ovl"]
+    if symbol_section in sections and requested_overlay is None:
+        return sections
+    if (
+        symbol_section.startswith(".scene_")
+        and requested_overlay == symbol_section
+        and requested_overlay != ".scene_"
+    ):
+        return sections + [symbol_section]
+    raise ValueError("target requires its exact ELF scene overlay identity")
+
+
+def initial_registers(args, fpr_pairs=None):
+    """Build O32 integer arguments and explicitly supplied paired FPR bit patterns."""
+    regs = {"gpr_29": STACK | 0xFFFFFFFF00000000, "gpr_31": STOP | 0xFFFFFFFF00000000}
+    regs.update({
+        f"gpr_{4 + i}": (value & 0xFFFFFFFF)
+        | (0xFFFFFFFF00000000 if value & 0x80000000 else 0)
+        for i, value in enumerate(args)
+    })
+    for index, value in (fpr_pairs or {}).items():
+        if (
+            type(index) is not int or not 0 <= index <= 30 or index % 2
+            or type(value) is not int or not 0 <= value < 1 << 64
+        ):
+            raise ValueError("FPR pairs require even register indices and unsigned64-bit patterns")
+        regs[f"fpr_{index}"] = value
+    return regs
+
+
 def capture_case(case, elf_path, rom_path):
     """Load locally authenticated retail sections and synthetic writable state."""
     elf = Elf(Path(elf_path))
@@ -411,6 +445,16 @@ def capture_case(case, elf_path, rom_path):
         for name, value, *_ in elf.symbols(i)
     }
     start_pc, stop_pc = symbols[case["symbol"]], STOP
+    symbol_sections = {
+        name: index
+        for i, section in enumerate(elf.sections)
+        if section[1] == 2
+        for name, _, _, _, _, index in elf.symbols(i)
+    }
+    index = symbol_sections[case["symbol"]]
+    if not 0 < index < len(elf.sections):
+        raise ValueError("target has no executable ELF section")
+    code_sections = selected_code_sections(elf.names[index], case.get("overlay"))
     if "slice" in case:
         sizes = {
             name: size
@@ -423,8 +467,8 @@ def capture_case(case, elf_path, rom_path):
         )
     mappings = []
     authenticated = []
-    # Retail resident and shared-overlay sections have disjoint virtual ranges.
-    for name in (".boot", ".ovl"):
+    # Load only the declared scene; different scene overlays share virtual addresses.
+    for name in code_sections:
         i = elf.names.index(name)
         section = elf.sections[i]
         address = section[3]
@@ -434,6 +478,9 @@ def capture_case(case, elf_path, rom_path):
             raise ValueError(f"{name}: linked section differs from original ROM")
         start = address & ~4095
         size = ((address - start + len(raw) + 4095) // 4096) * 4096
+        if any(start < mapping["address"] + mapping["size"] and mapping["address"] < start + size
+               for mapping in mappings):
+            raise ValueError("authenticated overlay page ranges overlap")
         mappings.append(
             dict(
                 address=start,
@@ -478,17 +525,11 @@ def capture_case(case, elf_path, rom_path):
     mappings.append(
         dict(address=RAM, size=len(ram), permissions="rwx", data_hex=ram.hex())
     )
-    regs = {"gpr_29": STACK | 0xFFFFFFFF00000000, "gpr_31": STOP | 0xFFFFFFFF00000000}
-    regs.update(
-        {
-            f"gpr_{4 + i}": (value & 0xFFFFFFFF)
-            | (0xFFFFFFFF00000000 if value & 0x80000000 else 0)
-            for i, value in enumerate(case["args"])
-        }
-    )
+    regs = initial_registers(case["args"], case.get("fpr_pairs"))
     return dict(
         schema_version=1,
         byte_order="big",
+        floating_register_mode="paired32",
         rom_sha256=hashlib.sha256(rom).hexdigest(),
         start_pc=start_pc,
         stop_pc=stop_pc,
