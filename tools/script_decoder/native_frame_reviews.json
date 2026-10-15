@@ -3173,6 +3173,219 @@
         "Already-earned flag leaves player/save storage unchanged and returns-1. A new flag is written before player fields; no atomic transaction is promised. Level increment wraps modulo256; valid title lookup afterward is a separate precondition."
       ],
       "evidence": "Source and read-only original Ghidra80121770/80112598/801125AC, original20-word table at80123EB0 and packed-one catalog entries: one integer pop, earned early return-1, progress flag write, conditional byte level increment and milestone word store, saved-VM integer push, continue. Runtime review not performed for this entry."
+    },
+    {
+      "function": "actorScriptIsSceneRegionHighlighted",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "33ad826c146353894c97dd6ac2bad6e983dfeed1834068503b42c70690a7058a",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace the region handle with the raw unsigned highlighted byte (0..255), or zero for a missing/destruction-pending handle; no boolean normalization.",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f",
+          "function": "scriptVmPopInteger"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84",
+          "function": "scriptVmPopValue"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f",
+          "function": "scriptValueGetInteger"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/object_hierarchy.c",
+          "sha256": "a04905a063945115cd20a841f611294f7784656739644dd48ba5230ee11881c9",
+          "function": "objectFindLiveByHandle"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/keyed_pool.c",
+          "sha256": "515ff415ac8762af39e40b6969a0d563591ab0252fcc95f660b808c06964541d",
+          "function": "keyedPoolGetValue"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/keyed_pool.c",
+          "sha256": "2c4d9787ed139519f2981eb227805c3b38046a0baf47287ae6ecc2156f5665c6",
+          "function": "keyedPoolFindEntry"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "5c6be0e1e3245596fea4fd556d8ad41fbda62414191a56eda982d6395f5589bf"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script.h",
+          "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+        },
+        {
+          "kind": "file",
+          "file": "include/script_vm.h",
+          "sha256": "f9f9e4509166d6c9aac4d4687f973da7c3b719df7413be4d4f738182850e5b08"
+        },
+        {
+          "kind": "file",
+          "file": "include/keyed_pool_types.h",
+          "sha256": "4c5ce15833971e0a7b7a25588eb674597474dba8a6d71b51cf78cf098c63a611"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_flags.h",
+          "sha256": "135a2ddab3b6c3e703f08bc85faa083742809cf81a1edc43bd05469d2faac637"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "sha256": "cb9996b98596346ad09f73c36e3dbeeebd6bca1e863af33661ba30eb85711e78",
+          "function": "sceneRegionIsHighlightedByHandle"
+        },
+        {
+          "kind": "file",
+          "file": "include/scene_types.h",
+          "sha256": "a6bf4259a1711764693beeeab6075f4377d64e20a7920328981227031e288e63"
+        },
+        {
+          "kind": "file",
+          "file": "include/scene_region.h",
+          "sha256": "23c97d16df5740a11d9db0a0571a3defa5efbea899638ee86ed49ca7e6337696"
+        }
+      ],
+      "preconditions": [
+        "Operands lie above every protected local/frame record; captured actor, ActorScriptState, VM and owned stack remain live. Replacement leaves earlier stack values and frame metadata intact.",
+        "Operands are integer/code-reference payloads or finite numeric floats whose truncation is s32-representable. No strings, invalid conversion, concurrent destruction or context replacement is covered.",
+        "Initialized positive-capacity handle pool and valid chains are required. The live lookup rejects absent handles and object destruction flags 0x30; it does not validate object kind or apply toolbox availability filtering.",
+        "VM-owned values, borrowed object/state/catalog storage and helper C-stack temporaries are nonoverlapping. Helpers preserve captured VM/context; keyed lookup writes its predecessor only through a C-stack temporary. These are immediate static source contracts, not runtime, retail reachability or lifetime proofs.",
+        "Any live matching handle must identify valid initialized SceneRegionState: byte +8 is highlighted. This helper does not check kind 0xAF. Ordinary region updates write 0/1; arbitrary stored byte values are returned unchanged."
+      ],
+      "evidence": "Read-only source and original Ghidra8011EB6C/8011816C/80007E8C: captured VM, integer operand replacement, live-handle filter and unsigned byte load at region state+8; continue status. No runtime probe claimed."
+    },
+    {
+      "function": "actorScriptGetLiveItemResponse",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "6dfae37c1eafffd577c53d58942e0ca17b4bd1eb38ca1f8bc5da1f34807fc3a8",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 2,
+      "stack_delta": -1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace response category followed by item handle with the unsigned configured response code (0..255), or zero for a missing/destruction-pending handle, item flag 0x800000, or a category outside 1..5.",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f",
+          "function": "scriptVmPopInteger"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84",
+          "function": "scriptVmPopValue"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f",
+          "function": "scriptValueGetInteger"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/object_hierarchy.c",
+          "sha256": "a04905a063945115cd20a841f611294f7784656739644dd48ba5230ee11881c9",
+          "function": "objectFindLiveByHandle"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/keyed_pool.c",
+          "sha256": "515ff415ac8762af39e40b6969a0d563591ab0252fcc95f660b808c06964541d",
+          "function": "keyedPoolGetValue"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/keyed_pool.c",
+          "sha256": "2c4d9787ed139519f2981eb227805c3b38046a0baf47287ae6ecc2156f5665c6",
+          "function": "keyedPoolFindEntry"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "5c6be0e1e3245596fea4fd556d8ad41fbda62414191a56eda982d6395f5589bf"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script.h",
+          "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+        },
+        {
+          "kind": "file",
+          "file": "include/script_vm.h",
+          "sha256": "f9f9e4509166d6c9aac4d4687f973da7c3b719df7413be4d4f738182850e5b08"
+        },
+        {
+          "kind": "file",
+          "file": "include/keyed_pool_types.h",
+          "sha256": "4c5ce15833971e0a7b7a25588eb674597474dba8a6d71b51cf78cf098c63a611"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_flags.h",
+          "sha256": "135a2ddab3b6c3e703f08bc85faa083742809cf81a1edc43bd05469d2faac637"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/item_registry.c",
+          "sha256": "abd1805f80d122e7b3fdb520f584e0ec131ba774191aa90cab54b533276b6be2",
+          "function": "itemGetResponse"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/item_registry.c",
+          "sha256": "69c129814fbce9f2577e1e25d41d70ecd28583b80f9637c178336da58e88652c",
+          "function": "itemGetKindResponse"
+        },
+        {
+          "kind": "file",
+          "file": "src/ovl/item_registry.c",
+          "sha256": "ab395f2740ebb39534f312f0bc1460d80f5a143daa6a7e0cae5fc5d9018a303d"
+        },
+        {
+          "kind": "file",
+          "file": "include/item_types.h",
+          "sha256": "a11ff3ec0e7d9256425797d27c1d7222f58360b5f27a4bf4128119f9a762f991"
+        },
+        {
+          "kind": "file",
+          "file": "include/item_kind.h",
+          "sha256": "42d4c755a39b5db20d8e0f36b16a9553781a19a0634eac09dc589d5cfbdd8631"
+        },
+        {
+          "kind": "file",
+          "file": "include/item_response.h",
+          "sha256": "4c0ddcd8be97daf2bb1786a00c1ce3931183217db6b472f3347642e4e053bcfb"
+        }
+      ],
+      "preconditions": [
+        "Operands lie above every protected local/frame record; captured actor, ActorScriptState, VM and owned stack remain live. Replacement leaves earlier stack values and frame metadata intact.",
+        "Operands are integer/code-reference payloads or finite numeric floats whose truncation is s32-representable. No strings, invalid conversion, concurrent destruction or context replacement is covered.",
+        "Initialized positive-capacity handle pool and valid chains are required. The live lookup rejects absent handles and object destruction flags 0x30; it does not validate object kind or apply toolbox availability filtering.",
+        "VM-owned values, borrowed object/state/catalog storage and helper C-stack temporaries are nonoverlapping. Helpers preserve captured VM/context; keyed lookup writes its predecessor only through a C-stack temporary. These are immediate static source contracts, not runtime, retail reachability or lifetime proofs.",
+        "Top operand is the item handle; the preceding operand is response category. Any live matching handle must identify initialized ItemStatePrefix with u32 flags at +0 and signed s16 kind at +4. Other runtime kinds are unsupported; no dynamic kind validation occurs.",
+        "On nonsuppressed valid-category paths the signed kind must be 0..165 and select the live shared-overlay gItemKinds catalog. Catalog stride is 0x74; response bytes at +0x18..0x1C are zero-extended. Invalid categories return zero without catalog access. Catalog availabilityField and item ownership are not consulted."
+      ],
+      "evidence": "Read-only source and original Ghidra8011FA04/80114788/801146A4/80007E8C: handle then category pops, captured VM, live-handle filter, u32 flags, signed s16 kind, response category1..5 and catalog unsigned byte load; integer replacement and continue. No runtime probe claimed."
     }
   ]
 }

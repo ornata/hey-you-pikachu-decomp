@@ -566,6 +566,26 @@ payloads use their integer encoding. The cases guard protected values, VM state
 and borrowed storage. They do not extend the contracts to invalid indices,
 unsupported conversions, later lifetimes or arbitrary gameplay paths.
 
+The scene-region highlight query replaces a handle with the region's unsigned
+highlight byte, or zero if the object is missing or pending destruction. The query
+does not check the object's kind or normalize the byte. Region updates ordinarily
+produce zero or one: the player must be within the horizontal bounds and at or
+above the region, and Pikachu satisfying those tests first suppresses highlighting.
+Highlighting therefore does not mean occupancy by either character.
+
+The live-item response query consumes response category followed by item handle.
+Missing objects and item-state flag 0x00800000 produce zero. Categories one through
+five select unsigned catalog response bytes; other categories produce zero. The
+helper does not validate object kind, kind index, or catalog availability. A live
+handle must identify valid item state with an initialized catalog kind.
+
+Item display names are borrowed catalog strings. Selector zero prefers the
+alternate name and falls back to the default; selector one selects the default;
+other selectors return null. Even a valid selector can return null if the catalog
+name is absent. The VM stores the pointer with its string tag, without copying or
+owning the text. Catalog and string lifetime remain caller obligations. This
+string-pointer footprint is documented separately from the scalar contract schema.
+
 Four additional update contracts distinguish stored values from success flags:
 
 | Native | Operands in push order | Integer result |
