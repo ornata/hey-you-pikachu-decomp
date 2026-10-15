@@ -196,6 +196,9 @@ def decode_records(data, names, kind, address=None):
                               2: 'actionScriptCommandStopAfterIterations',
                               3: 'actionScriptCommandWaitForIterations'}.get(code, 'actionScriptUpdate')
             row['arguments'] = args
+            if code == 0:
+                row['action_request'] = dict(motion_action_id=args[0], kind=args[1],
+                                             inherits_default_kind=args[1] == 18)
             if not 0 <= code <= 4:
                 errors.append(f'{offset:#x}: unsupported sequencer opcode {code}')
             rows.append(row)

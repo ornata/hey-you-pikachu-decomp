@@ -16,6 +16,10 @@ typedef enum ActionScriptOpcode {
     ACTION_SCRIPT_END = 4 ///< End command execution.
 } ActionScriptOpcode;
 
+/// Special kind operand of a sequencer start-action command.
+/// This command operand is distinct from the cue collection's fallback tag.
+enum { ACTION_SCRIPT_INHERIT_DEFAULT_KIND = 18 };
+
 /// Fixed-size command borrowed from an action-script resource.
 /// Argument meanings depend on the opcode; this is separate from actor VM bytecode.
 typedef struct ActionScriptCommand {

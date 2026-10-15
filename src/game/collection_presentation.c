@@ -36,6 +36,7 @@
 #include "camera_interface.h"
 #include "action_continuation.h"
 #include "action_script_playback.h"
+#include "action_script_ids.h"
 #include "action_script_query.h"
 #include "camera_overlay.h"
 #include "camera_pose.h"
@@ -1424,7 +1425,7 @@ s32 presentationSelectSpringleafScenario(s32 *actorAction, s32 *audioCue) {
 /// \note Original decompilation identifier: \c func_8002A6F8 (0x8002A6F8).
 s32 presentationSelectOlivineScenario(s32 *actorAction, s32 *audioCue) {
     progressGetCurrentChapter();
-    *actorAction = 0xA8;
+    *actorAction = ACTION_SCRIPT_LOOK_AROUND;
     *audioCue = 0x15;
     return 0;
 }

@@ -20,6 +20,7 @@ from tools.source_quality import code_only
 from tools.scene_catalog import configuration_locations
 from .messages import message_posts
 from .scenarios import scenario_domains, function_body
+from .actions import action_calls, action_resources
 
 
 def companion_sites(image):
@@ -179,6 +180,7 @@ def catalog(image, max_instructions=100000):
                              code_reference_uses=references, global_indices=sorted(globals_used),
                              frame_operands=frames, native_calls=dict(native_calls),
                              script_message_posts=message_posts(decoded['instructions']),
+                             native_action_calls=action_calls(decoded['instructions']),
                              listing=identity + '.json'))
             decodes[identity] = decoded
     if not rows:
@@ -187,6 +189,7 @@ def catalog(image, max_instructions=100000):
     roles = Counter()
     for row in complete:
         roles.update(row['code_reference_roles'])
+    resource_ids = {call['constant_script_id'] for row in rows for call in row['native_action_calls'] if 'constant_script_id' in call}
     return dict(schema_version=2, rom_sha1=image.sha1,
                 scope='Retained-table configuration candidates with local programs before their headers. No claim of exhaustive resource discovery or live execution.',
                 candidate_count=len(rows), diagnostic_free_candidates=len(complete),
@@ -198,6 +201,7 @@ def catalog(image, max_instructions=100000):
                                              next_evidence='Find an owning producer or live context; absence of recovered bindings does not prove disuse.')
                                         for row in rows if not (row['direct_creation_sites'] or row['assigned_creation_sites'] or row['companion_scenario_sites'])],
                 distinct_decoded_code_hashes=len({row['decoded_code_sha256'] for row in rows}),
+                action_script_resources=action_resources(image, resource_ids),
                 code_reference_roles=dict(roles), configurations=rows), decodes
 
 
@@ -218,6 +222,8 @@ def main(argv=None):
         report, decodes = catalog(image, args.max_instructions)
         report['elf_sha256'] = hashlib.sha256(args.elf.read_bytes()).hexdigest()
         report['decoder_sha256'] = hashlib.sha256(Path(__file__).with_name('formats.py').read_bytes()).hexdigest()
+        report['analysis_sha256'] = {name: hashlib.sha256(Path(__file__).with_name(name + '.py').read_bytes()).hexdigest()
+                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios')}
         files = {'catalog.json': report, **{name + '.json': row for name, row in decodes.items()}}
         # Validate every output before writing any content, including existing symlinks.
         for name in files:

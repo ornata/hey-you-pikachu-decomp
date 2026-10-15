@@ -2531,7 +2531,7 @@ scriptVmEvaluateGlobalInteger = 0x80116224;
 actorRunScriptVm = 0x80116284;
 
 actorBeginScriptActionHandler = 0x801167A0;
-actorScriptWaitForActionResult = 0x801167BC;
+actorScriptWaitForSequencerStop = 0x801167BC;
 actorScriptPlayAction = 0x80116800;
 actorScriptWaitForActionOrMessage = 0x80116858;
 actorScriptPlayInterruptibleAction = 0x801168A8;

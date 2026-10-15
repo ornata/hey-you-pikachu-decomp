@@ -71,11 +71,11 @@ void actorBeginScriptActionHandler(u8 *actor, s32 handler) {
     ((ScriptVm *)((ActorScriptState *)actorState)->vmAddress)->actionHandler = handler;
 }
 
-/// Wait for the actor action to stop and provide a zero script result when it does.
-/// \param actor Actor whose action is awaited.
-/// \returns One when the wait completes, or two while the action continues.
+/// Wait for timed sequencing to stop and provide a zero script result.
+/// \param actor Actor whose sequencer is awaited; motion playback may remain active after sequencing stops.
+/// \returns One when sequencing has stopped, or two while command execution continues.
 /// \note Original decompilation identifier: \c func_801167BC (0x801167BC).
-s32 actorScriptWaitForActionResult(u8 *actor) {
+s32 actorScriptWaitForSequencerStop(u8 *actor) {
     u8 *sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.bytes;
@@ -87,8 +87,8 @@ s32 actorScriptWaitForActionResult(u8 *actor) {
 }
 
 
-/// Start the action supplied by the script and wait for it to stop.
-/// \param actor Actor whose script supplies the action and receives its completion result.
+/// Start the timed program supplied by the script and wait for sequencing to stop.
+/// \param actor Actor whose script supplies a valid timed-program index and receives zero when sequencing stops.
 /// \returns One when complete, or two while waiting.
 /// \note Original decompilation identifier: \c func_80116800 (0x80116800).
 s32 actorScriptPlayAction(u8 *actor) {
@@ -100,11 +100,11 @@ s32 actorScriptPlayAction(u8 *actor) {
         actionScriptStart(actor, scriptVmPopInteger((ScriptVm *)((s32)vmBytes)));
         return SCRIPT_VM_WAITING_FOR_ACTION;
     }
-    return actorScriptWaitForActionResult(actor);
+    return actorScriptWaitForSequencerStop(actor);
 }
 
 
-/// Wait for an action to stop or interrupt it when a script message is pending.
+/// Wait for sequencing to stop or interrupt it when a script message is pending.
 /// \param actor Actor whose action and script mailbox are checked.
 /// \returns One when complete, or two while waiting; completion provides the pending-message flag or zero as the script result.
 /// \note Original decompilation identifier: \c func_80116858 (0x80116858).
@@ -119,11 +119,11 @@ s32 actorScriptWaitForActionOrMessage(u8 *actor) {
         actionScriptStop(actor);
         return SCRIPT_VM_YIELDED;
     }
-    return actorScriptWaitForActionResult(actor);
+    return actorScriptWaitForSequencerStop(actor);
 }
 
 
-/// Start the script-selected action and wait for completion or a pending message.
+/// Start the script-selected timed program and wait for sequencing to stop or a pending message.
 /// \param actor Actor whose script supplies the action and receives its completion result.
 /// \returns One when complete, or two while waiting; completion supplies the pending-message flag or zero as the script result.
 /// \note Original decompilation identifier: \c func_801168A8 (0x801168A8).
@@ -157,7 +157,7 @@ s32 actorScriptThrowHeldItem(u8 *actor) {
         actionScriptStart(actor, anim);
         return SCRIPT_VM_WAITING_FOR_ACTION;
     }
-    return actorScriptWaitForActionResult(actor);
+    return actorScriptWaitForSequencerStop(actor);
 }
 
 
@@ -443,7 +443,7 @@ s32 actorScriptDispatchActionHandler(u8 *object) {
         return actorScriptPlayAction(object);
     case ACTOR_SCRIPT_ACTION_EXIT_ACTION_LOOP:
         actionRequestLoopExit(object);
-        return actorScriptWaitForActionResult(object);
+        return actorScriptWaitForSequencerStop(object);
     case ACTOR_SCRIPT_ACTION_WAIT_FOR_ACTION_OR_MESSAGE:
         return actorScriptWaitForActionOrMessage(object);
     case ACTOR_SCRIPT_ACTION_PLAY_INTERRUPTIBLE_ACTION:

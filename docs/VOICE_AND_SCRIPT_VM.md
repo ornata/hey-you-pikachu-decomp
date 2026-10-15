@@ -137,7 +137,7 @@ The actor update stores an execution state separately:
 
 An action handler can remain in state 2 across updates, then return 1 so bytecode
 can resume on a later update. See `actorUpdateScriptVm`, `actorScriptYield`,
-`actorScriptStartActionAndWait`, and `actorScriptWaitForActionResult`.
+`actorScriptStartActionAndWait`, and `actorScriptWaitForSequencerStop`.
 
 The lower-level [action sequencer](../src/game/action_script.c) is a separate system.
 It schedules timed action requests, iteration waits, and sounds. Its callback return
@@ -440,6 +440,69 @@ zero while leaving those outputs unchanged. Six original-instruction experiments
 check these outputs, return indices and fallback preservation in three interpreter
 repetitions each. Unicorn remains unsupported for these cases. Other selector
 domains currently rely on matching source and authenticated scene-table evidence.
+
+## From VM action requests to motion
+
+The native selector, timed-program ID and motion-action ID are separate domains:
+
+```mermaid
+flowchart LR
+    VM[VM native selector 15] --> Native[Start action and wait]
+    Native --> Program[Timed program 168]
+    Program --> Request[Start motion action 87 with kind 0]
+    Request --> Motion[Motion definition and playback]
+```
+
+The catalog's `native_action_calls` records arguments and scheduling contracts
+for six reviewed commands. Arguments below are listed in script push order.
+
+| Native command | Arguments | Consumption and result |
+| --- | --- | --- |
+| `actorScriptStartActionAndWait` | Timed-program ID | Deferred; wait for sequencing to stop, then receive zero. |
+| `actorScriptStartInterruptibleAction` | Timed-program ID | Deferred; wait for sequencing to stop or a message, then receive zero or the pending flag. |
+| `actorScriptStartActionScript` | Timed-program ID | Immediate; receive zero and yield. |
+| `actorScriptStartActionWithMode` | Timed-program ID, default kind | Immediate; receive zero and yield. |
+| `actorScriptStartTimedAction` | Timed-program ID, duration in seconds | Immediate; receive zero and yield; negative duration disables the limit. |
+| `actorScriptSetDefaultActionMode` | Default kind | Immediate; receive zero and continue. |
+
+Deferred commands retain their operands until the selected action handler's
+initialization update. The mode-setting interface requires a value representable
+in the original signed 16-bit storage; its retained numeric conversions remain
+unchanged. A VM scheduling result is separate from the value returned on its stack.
+
+Of 5,383 calls in the census (3,974 distinct code/offset sites), 5,338 have bounded
+argument expressions. The other 45 need stack-flow or native-result analysis and
+retain their reasons. Variable references remain coordinates rather than inferred
+constants. The 4,249 constant-ID requests resolve to 287 distinct timed programs.
+`action_script_resources` contains their bounded END-terminated streams, hashes,
+motion requests and retained motion debug labels. All 287 decode without diagnostics.
+The program table's linked extent bounds reads; it does not establish a complete
+resource allocation or prove the requested paths execute.
+
+The motion labels support these names in `action_script_ids.h`:
+
+| Timed program | Requested motion | Established role |
+| --- | --- | --- |
+| 17 | 190 | Turn toward the desired heading. |
+| 168 | 87 | Look around. |
+| 358 | 288 | Face the destination while underground. |
+| 365 | 293 | Move toward the destination. |
+
+The observed opening voice flow starts timed program 168. Its debug-label-supported
+role is now named `ACTION_SCRIPT_LOOK_AROUND`; rendered motion and emotional
+interpretation remain unverified. Original program bytes and labels remain local
+ROM-derived reports rather than tracked resource data.
+
+In a sequencer start-action command, kind 18 means
+`ACTION_SCRIPT_INHERIT_DEFAULT_KIND`: use the actor's configured default kind.
+The cue collection's tag 18 has its own fallback-selection role. The decoder
+preserves that distinction with `inherits_default_kind` on sequencer requests.
+
+`actorScriptWaitForSequencerStop` completes when timed command execution stops.
+Motion playback has separate completion checks. Two original-instruction cases
+contrast stopped sequencing with timed motion and running sequencing with disabled
+motion, checking the wait result and full declared stack/state footprint. This
+does not certify visible animation or the circumstances that reach either state.
 
 ## Actor mailbox categories
 

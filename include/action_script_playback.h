@@ -5,17 +5,18 @@
 #define ACTION_SCRIPT_PLAYBACK_H
 
 #include "ultra64.h"
+#include "action_script_ids.h"
 
 /// Start an object action script without a duration limit.
 /// \param object Object that will execute the script.
-/// \param scriptId Valid index of the action script to start.
+/// \param scriptId Valid timed-program index, including the known ActionScriptId values; distinct from a motion-action ID.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80012034 (0x80012034).
 void actionScriptStart(u8 *object, s32 scriptId);
 
 /// Start an action script with a default mode for actions that inherit it.
 /// \param object Object that will execute the script.
-/// \param scriptId Valid index of the action script to start.
+/// \param scriptId Valid timed-program index; distinct from a motion-action ID.
 /// \param mode Default action mode for commands that request the inherited mode.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80012078 (0x80012078).

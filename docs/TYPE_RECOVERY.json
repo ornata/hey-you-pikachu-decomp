@@ -872,6 +872,7 @@
     "src/game/collection_presentation.c": {
       "known_views": [
         "action_continuation.h",
+        "action_script_ids.h",
         "action_script_playback.h",
         "action_script_query.h",
         "actor_behavior.h",
@@ -946,29 +947,29 @@
       "locations": {
         "raw_offset_candidates": {
           "slot + 4": [
-            "224:50",
-            "261:22"
+            "225:50",
+            "262:22"
           ],
           "gToolboxBonusSlot + 4": [
-            "267:18"
+            "268:18"
           ],
           "gToolboxPurchaseSlot + 4": [
-            "271:19"
+            "272:19"
           ],
           "tgt + 0": [
-            "451:21"
-          ],
-          "tgt + 4": [
             "452:21"
           ],
-          "tgt + 8": [
+          "tgt + 4": [
             "453:21"
           ],
+          "tgt + 8": [
+            "454:21"
+          ],
           "gItemKind8FCollectionValue + 0x64": [
-            "1757:47"
+            "1758:47"
           ],
           "currentChapter + 1": [
-            "1775:18"
+            "1776:18"
           ]
         }
       }

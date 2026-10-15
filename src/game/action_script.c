@@ -36,7 +36,7 @@ s32 actionScriptCommandStartAction(u8 *object, ActorScriptState *state, ActionSc
     if ((current == 0 || script->pendingRequestId < current) && state->pendingAction == -1) {
         args = (*saved)->args;
         kind = args[1];
-        if (kind == 0x12) {
+        if (kind == ACTION_SCRIPT_INHERIT_DEFAULT_KIND) {
             kind = state->defaultActionMode;
         }
         if (actionRequestPlayback(object, args[0], kind, (s32 *)&script->pendingRequestId)) {
