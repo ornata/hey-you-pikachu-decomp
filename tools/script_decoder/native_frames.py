@@ -94,7 +94,9 @@ def native_frame_reviews(root=ROOT, manifest=None):
             stale_callback_dependencies[review['function']] = changed_helpers
         supported_effect = ((review['effect'], review['arguments'], review['stack_delta']) in
                             (('append_scalar', 0, 1), ('replace_argument_with_scalar', 1, 0),
-                             ('replace_arguments_with_scalar', 2, -1)) and
+                             ('replace_arguments_with_scalar', 2, -1),
+                             ('replace_arguments_with_scalar', 4, -3),
+                             ('replace_arguments_with_scalar', 6, -5)) and
                             type(review['arguments']) is int and type(review['stack_delta']) is int)
         action_request = (review['effect'] == 'select_action_handler' and
                           type(review['arguments']) is int and review['arguments'] == 0 and

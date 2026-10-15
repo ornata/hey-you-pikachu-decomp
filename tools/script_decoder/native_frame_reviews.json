@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "purpose": "Explicit scalar, borrowed string-pointer and immediate action-request storage contracts; source changes revoke evidence until reviewed again. Deferred handlers remain separate.",
-  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases. Twelve action-request wrappers and their two-field scheduling helper reviewed against original Ghidra801167A0 and all twelve original wrapper addresses; twenty-four direct original-instruction request cases guard all VM fields and pending/protected values. Selector-three deferred dispatch and helper chain reviewed against original Ghidra80117098/8000F4C4/801167BC/800120F0 and eight guarded direct-dispatch/scheduler cases. Selector-two startup and waiting helpers reviewed against original Ghidra80116800/80012034; twelve guarded direct/scheduler cases cover numeric tags, original null sentinel, waiting and completion. Player input-mask field names now include synthetic stick flags, separately from permission flags; unchanged prefix layout and the reviewed permission/position reads were rechecked against matching objects before rebinding the two affected header dependencies. Additional permission names for Pikachu/follow selection and stun reaction leave the permission storage and reviewed view/position access unchanged; the two header dependencies were rechecked after strict matching verification. Ten additional permission names retain identical player storage and reviewed view/position accesses; header bindings rechecked after all483 objects and ROM matched. Selector-nine cost admission, root-resource adjustment and HUD helper were checked against Ghidra80116BC4/80014A3C, the authenticated five-record table and fourteen guarded original-instruction startup/poll/completion observations, including distinct actor/root resource records. The root and script actor states are explicitly distinguished. Acknowledgement native and helper checked against Ghidra8011C84C/80119200 and four original-instruction probes, including raw nonboolean word preservation; message fields remain unchanged. Four distance/target append contracts checked against original Ghidra801172D4/80118838/801187E4/8011C674/8011CB38/8011D208/8011DBF8/801177FC/80118B30/8003A5FC/8003A6F0 and twelve guarded original-instruction probes with distinct local/world coordinates, approach clamping, fixed/follow selection and unavailable-target exclusions. The actor-state header replaces only the producer-established four-byte approach sample with f32 and adds its offset assertion; all other declarations remain token-identical. Five further handle-consuming query contracts checked against original Ghidra8011730C/80117388/8011D240/8011D288/80117840/801178EC/8011DCB0/8011DCF8/80117E80/8011EA9C and23 guarded original-instruction observations. Runtime kind130 is authenticated against its retained callback record selecting80027430/8002747C, whose allocation and speed accesses establish the shared four-byte spinner state; six updater observations cover decay, negative retained values, voice-distance endpoints, speed cap and yaw wrap. Independent agent RNG review authenticated original wrapper/helper instructions and fifteen guarded interpreter observations at62bceac: inclusive unit-float endpoints including the observed rounding threshold, unsigned remainder for positive signed bounds, no advancement for nonpositive bounds, numeric conversion and unchanged protected VM storage. Reports retain original ROM/ELF/core/source fingerprints; FCR31 threshold is qualified to observed interpreter rounding. Independent tracking review disassembled wrappers/helpers and checked ten authored cases through three interpreter repetitions (30 supported observations,480 matching guarded regions) using frozen62bceac ELF/core inputs. Cases distinguish primary/secondary refresh, stale state after unavailable targets, zero category after a successful unsupported-kind selection, live fallback copying and escape selection preserving allowance/position. Two-operand replacement retains all three protected lower values. Agent-authenticated kind127 producer/callback and cannon landmark creation/help/selection consumers establish player-control-root and cannon identities. Category2 is named player control; category3 keeps its numeric range because145..148 lack established producers. Only enum spellings change in the reviewed classifier; all predicates and values remain unchanged. The clang-format actor-state header change was checked against afdde86: after C backslash-newline splicing all tokens are identical. Macro continuation placement alone changes the lexical fingerprint; the single header binding retains its reviewed layout and contract. Three constructor/callback-supported runtime tags are named PASSAGE0x87, INTERACTION_PROXY0x8A and CAVE0xB0. Original Ghidra8001C150/80112940/8001F4F0 and authenticated template/callback records establish these identities. Existing object-prefix layout and player consumers remain token-identical after reversing only the named numeric substitutions and removing the added enum entries; strict object and ROM comparison passed after each source unit. Only those affected reviewed bindings are updated. Item-catalog0x8A and unresolved runtime0x89 remain distinct.",
+  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases. Twelve action-request wrappers and their two-field scheduling helper reviewed against original Ghidra801167A0 and all twelve original wrapper addresses; twenty-four direct original-instruction request cases guard all VM fields and pending/protected values. Selector-three deferred dispatch and helper chain reviewed against original Ghidra80117098/8000F4C4/801167BC/800120F0 and eight guarded direct-dispatch/scheduler cases. Selector-two startup and waiting helpers reviewed against original Ghidra80116800/80012034; twelve guarded direct/scheduler cases cover numeric tags, original null sentinel, waiting and completion. Player input-mask field names now include synthetic stick flags, separately from permission flags; unchanged prefix layout and the reviewed permission/position reads were rechecked against matching objects before rebinding the two affected header dependencies. Additional permission names for Pikachu/follow selection and stun reaction leave the permission storage and reviewed view/position access unchanged; the two header dependencies were rechecked after strict matching verification. Ten additional permission names retain identical player storage and reviewed view/position accesses; header bindings rechecked after all483 objects and ROM matched. Selector-nine cost admission, root-resource adjustment and HUD helper were checked against Ghidra80116BC4/80014A3C, the authenticated five-record table and fourteen guarded original-instruction startup/poll/completion observations, including distinct actor/root resource records. The root and script actor states are explicitly distinguished. Acknowledgement native and helper checked against Ghidra8011C84C/80119200 and four original-instruction probes, including raw nonboolean word preservation; message fields remain unchanged. Four distance/target append contracts checked against original Ghidra801172D4/80118838/801187E4/8011C674/8011CB38/8011D208/8011DBF8/801177FC/80118B30/8003A5FC/8003A6F0 and twelve guarded original-instruction probes with distinct local/world coordinates, approach clamping, fixed/follow selection and unavailable-target exclusions. The actor-state header replaces only the producer-established four-byte approach sample with f32 and adds its offset assertion; all other declarations remain token-identical. Five further handle-consuming query contracts checked against original Ghidra8011730C/80117388/8011D240/8011D288/80117840/801178EC/8011DCB0/8011DCF8/80117E80/8011EA9C and23 guarded original-instruction observations. Runtime kind130 is authenticated against its retained callback record selecting80027430/8002747C, whose allocation and speed accesses establish the shared four-byte spinner state; six updater observations cover decay, negative retained values, voice-distance endpoints, speed cap and yaw wrap. Independent agent RNG review authenticated original wrapper/helper instructions and fifteen guarded interpreter observations at62bceac: inclusive unit-float endpoints including the observed rounding threshold, unsigned remainder for positive signed bounds, no advancement for nonpositive bounds, numeric conversion and unchanged protected VM storage. Reports retain original ROM/ELF/core/source fingerprints; FCR31 threshold is qualified to observed interpreter rounding. Independent tracking review disassembled wrappers/helpers and checked ten authored cases through three interpreter repetitions (30 supported observations,480 matching guarded regions) using frozen62bceac ELF/core inputs. Cases distinguish primary/secondary refresh, stale state after unavailable targets, zero category after a successful unsupported-kind selection, live fallback copying and escape selection preserving allowance/position. Two-operand replacement retains all three protected lower values. Agent-authenticated kind127 producer/callback and cannon landmark creation/help/selection consumers establish player-control-root and cannon identities. Category2 is named player control; category3 keeps its numeric range because145..148 lack established producers. Only enum spellings change in the reviewed classifier; all predicates and values remain unchanged. The clang-format actor-state header change was checked against afdde86: after C backslash-newline splicing all tokens are identical. Macro continuation placement alone changes the lexical fingerprint; the single header binding retains its reviewed layout and contract. Three constructor/callback-supported runtime tags are named PASSAGE0x87, INTERACTION_PROXY0x8A and CAVE0xB0. Original Ghidra8001C150/80112940/8001F4F0 and authenticated template/callback records establish these identities. Existing object-prefix layout and player consumers remain token-identical after reversing only the named numeric substitutions and removing the added enum entries; strict object and ROM comparison passed after each source unit. Only those affected reviewed bindings are updated. Item-catalog0x8A and unresolved runtime0x89 remain distinct. Embedded actor-state layout dependencies are bound globally: Matrix34, DirectionAnimation and ActionScriptState precede vmAddress, while ScriptMessage, animation tracks and orientation cache determine later field locations and the owning-state extent. Current N64 size/offset assertions and strict matching objects establish their reviewed layouts. A change to these declarations now revokes all contracts rather than only callbacks that happened to bind the nested headers separately.",
   "preconditions": [
     "Protected locals and frame metadata lie below the active stack depth.",
     "Append contracts require one free value slot; pointers and borrowed actor/global state are valid.",
@@ -71,6 +71,36 @@
       "kind": "file",
       "file": "include/object_types.h",
       "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+    },
+    {
+      "kind": "file",
+      "file": "include/matrix_types.h",
+      "sha256": "c8135a6ac50293376b4778483db97059e725e00da65dd880a227262c8a430a9f"
+    },
+    {
+      "kind": "file",
+      "file": "include/direction_animation_types.h",
+      "sha256": "82506e5f032bbc145cefad1ed15d3b129706899a67d87c1074e2e40ddee0009b"
+    },
+    {
+      "kind": "file",
+      "file": "include/action_script_types.h",
+      "sha256": "1b1bb25b8810dc94e9bcfadf092f0ac823fa850cbc003ac00776dd63e9aade37"
+    },
+    {
+      "kind": "file",
+      "file": "include/script_message.h",
+      "sha256": "53389698082ce465f025225e0d8a11b5a49d278ec8a76f484e4adf0a0fac7505"
+    },
+    {
+      "kind": "file",
+      "file": "include/animation_tracks.h",
+      "sha256": "cb8ae02394bd3d838aa968bd4fee5bb23ad6517028bddc2957cfd2d7c4c6c40a"
+    },
+    {
+      "kind": "file",
+      "file": "include/actor_orientation_cache.h",
+      "sha256": "2835fe1e1ea52dfa1896425d52967fc040279bf94c29406d25967c014531939a"
     }
   ],
   "callbacks": [
@@ -4232,6 +4262,1407 @@
         "The helper returns a borrowed pointer to selectedProgramId which this wrapper discards; no command storage is freed, callback invoked, audio stopped, or immediate motion reset performed. Later action-loop handling lies outside this footprint."
       ],
       "evidence": "Read-only original Ghidra8011C5BC saves VM, calls800120AC and appends0.800120AC calls8000F4C4 (sh1 at actor state+0x11E) and8000F51C (sh-1 at+0x120, sw0 at+0x12C, sh0 at+0x140), then sw0 at+0x168 and sw-1 at+0x158. Source definitions and actor/action layouts agree. No runtime evidence claimed."
+    },
+    {
+      "function": "actorScriptFindObjectInFacingCone",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "b8891b397069e00ac4b43a1999d30b8ca2418c6b244fc1a0c464b14373deb7e5",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 4,
+      "stack_delta": -3,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "operand_order": "minKind,maxKind,distance,cone",
+      "result_semantics": "Replace ordered search operands with selected handle or zero; Uses executing object worldPosition and RuntimeObjectPrefix.rotation; excludes executing object.",
+      "dependencies": [
+        {
+          "kind": "file",
+          "file": "src/game/search_tree.c",
+          "sha256": "bee9fb7f21b83c7bf80f1a6a5faf2d757148b13dea5ac681a5295f5eabbd3b55"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/object_hierarchy.c",
+          "sha256": "d2e4e761161617f2989d1abbd165c9e4eb3089ffca22168f14c5efb73517f7eb"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/actor_search.c",
+          "sha256": "552b6f9af5363d3bdd17e3069e9757b47a5b0a78af659392666fd664a655d8fa"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/vector_math.c",
+          "sha256": "bc6182aae1eae42d43261fac14526253798f88bdf868762540b9c87cf66d91ff"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/trigonometry.c",
+          "sha256": "d43f5d0191eda333607d321693694367d35ccf392b257f8f1652acbe10721d9a"
+        },
+        {
+          "kind": "file",
+          "file": "src/ovl/item_registry.c",
+          "sha256": "ab395f2740ebb39534f312f0bc1460d80f5a143daa6a7e0cae5fc5d9018a303d"
+        },
+        {
+          "kind": "file",
+          "file": "src/ovl/actor_script_queries.c",
+          "sha256": "183125c5ebd50bb33a38e204e7a71215d2050776a234a51ec8b988501155a9fe"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script.h",
+          "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+        },
+        {
+          "kind": "file",
+          "file": "include/script_vm.h",
+          "sha256": "f9f9e4509166d6c9aac4d4687f973da7c3b719df7413be4d4f738182850e5b08"
+        },
+        {
+          "kind": "file",
+          "file": "include/item_types.h",
+          "sha256": "a11ff3ec0e7d9256425797d27c1d7222f58360b5f27a4bf4128119f9a762f991"
+        },
+        {
+          "kind": "file",
+          "file": "include/search_tree_types.h",
+          "sha256": "c9d0f6ce4bf53f8398b04cc9984e276a89422b2dccbc236a9e20ddbafb03390f"
+        },
+        {
+          "kind": "file",
+          "file": "include/player_types.h",
+          "sha256": "0056df08b11d051f4243ed3806c8bd6fba129b936ac71cd6584ac7e1cfb6df85"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_kind.h",
+          "sha256": "50ea3d3734cf9069bbb97cd961bf5416d9700f21efd7685836e7aa908bd46685"
+        },
+        {
+          "kind": "file",
+          "file": "include/matrix_types.h",
+          "sha256": "c8135a6ac50293376b4778483db97059e725e00da65dd880a227262c8a430a9f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f",
+          "function": "scriptVmPopInteger"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "6ab64e75a64605c75c85f685e506c90c9970819578d94a601eb7b1bae774744b",
+          "function": "scriptVmPopFloat"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84",
+          "function": "scriptVmPopValue"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f",
+          "function": "scriptValueGetInteger"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "94e6ff080eea82e2661ec2adbc45a33a6a2141b10ff8d1263f580c2c5433c6b1",
+          "function": "scriptValueGetFloat"
+        },
+        {
+          "kind": "file",
+          "file": "include/search_tree_traversal.h",
+          "sha256": "c54a1eabdf3a59197424b0f9fb6fea7dc6b66defefddac6d768acc86e3fc006f"
+        },
+        {
+          "kind": "file",
+          "file": "include/search_tree_lookup.h",
+          "sha256": "8c9cfa8bd6a7ad4173ad12c5063543e295b9b1a6ad1c0329904652a4ddbce144"
+        },
+        {
+          "kind": "file",
+          "file": "include/managed_object_types.h",
+          "sha256": "6bb22fcf1f03c3f9498008757e7c580a55254b2b42bc03fa0f286736545bb44a"
+        }
+      ],
+      "preconditions": [
+        "All operands are numeric and lie above protected locals/frame metadata. Integer conversions truncate finite floats representable as s32; float conversions accept integer/code-reference or float values. Query positions, rotations, distance and cone are finite; distances nonnegative. Restrict angles/coordinates to magnitudes permitting ordinary arithmetic and terminating angle-normalization loops.",
+        "Actor, captured VM, value storage, registered objects and state, query contexts, tree nodes and helper C-stack temporaries remain valid and nonoverlapping. VM storage must not alias either search tree, query context or selected item searchPriority.",
+        "Search is synchronous and nonreentrant. Object tree uses objectCompareSearchTreeOrder; item tree uses itemCompareSearchOrder. No arbitrary comparator/visitor hooks are covered. Comparators only read valid kind/handle fields, and ascending visitors are the exact reviewed objectConsiderNearestTargetEntry/itemConsiderSearchCandidate callbacks.",
+        "Two preparatory searchTreeFind calls can replace the shared tree root and mutate borrowed registry-node links; no allocation or ownership transfer occurs. Ascending traversal overwrites shared gSearchTreeActiveVisitor with the reviewed callback and clears it to zero rather than restoring an earlier visitor. Recursion requires finite acyclic valid trees and enough native stack.",
+        "Queries overwrite shared gObjectNearestTargetSearch or gItemNearestSearch and its origin/view-transform interior aliases. Object queries update best pointer/distance; item queries update best pointer/weighted distance. Result is borrowed object handle or zero. Only immediate VM replacement, these search-state/tree mutations and item weighting reset are reviewed; no runtime/retail reachability, concurrent destruction or later handle lifetime is proven.",
+        "Uses executing object worldPosition and RuntimeObjectPrefix.rotation; excludes executing object.",
+        "Object kind bounds are0..65535 and fit target u16 storage and establish a valid ordered registry range. Search prep narrows minKind through RuntimeObjectPrefix.kind; comparator orders kind then unsigned handle. The object search tree must have a nonnull root: the helper dereferences its root value before checking the first object. Candidates are registered objects; no separate destruction-flag/availability lookup is performed.",
+        "Cone>=360 disables angular filtering; smaller cones use absolute wrapped transformed yaw and inclusive angular boundary. Approximate distance must be strictly less than current best/initial maximum. Equal distances retain first traversal candidate."
+      ],
+      "evidence": "Independent source/original-Ghidra review of wrapper, typed query, preparatory splay lookups, exact comparator/visitor callbacks, distance/angle helpers and weighted selection; helper storage/layout bindings are explicit. Source/Ghidra covers the stated conditional footprint, not arbitrary callbacks, malformed trees or eventual handle lifetime. Eleven authored original-instruction interpreter searches with frozen3501dbb source/ELF/core and32 authenticated helper/native byte spans cover singleton object limits/self/kind exclusion and empty/singleton/two-node item limits/state filter/endpoint/weighting. All use unrestricted cones, guard three lower values and frame metadata, and match declared query/tree/item writes. An additional bounded empty-object prefix proves operand consumption only, stopping before the query call. Weighting maps priority0..2 to penalty200..0; probes distinguish1->100 and0/2 endpoints. Narrow cones and malformed inputs were not runtime-tested."
+    },
+    {
+      "function": "actorScriptFindNearestInFacingCone",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "8660c6941471cc6a468bcb01d880d085cdb76b8d904c63ac2d1962b48f02ea2e",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 4,
+      "stack_delta": -3,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "operand_order": "minKind,maxKind,distance,cone",
+      "result_semantics": "Replace ordered search operands with selected handle or zero; Uses executing object worldPosition and RuntimeObjectPrefix.rotation; excludes executing object. Actor alias endpoint38 maps minimum to first creature kind and maximum to Pikachu.",
+      "dependencies": [
+        {
+          "kind": "file",
+          "file": "src/game/search_tree.c",
+          "sha256": "bee9fb7f21b83c7bf80f1a6a5faf2d757148b13dea5ac681a5295f5eabbd3b55"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/object_hierarchy.c",
+          "sha256": "d2e4e761161617f2989d1abbd165c9e4eb3089ffca22168f14c5efb73517f7eb"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/actor_search.c",
+          "sha256": "552b6f9af5363d3bdd17e3069e9757b47a5b0a78af659392666fd664a655d8fa"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/vector_math.c",
+          "sha256": "bc6182aae1eae42d43261fac14526253798f88bdf868762540b9c87cf66d91ff"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/trigonometry.c",
+          "sha256": "d43f5d0191eda333607d321693694367d35ccf392b257f8f1652acbe10721d9a"
+        },
+        {
+          "kind": "file",
+          "file": "src/ovl/item_registry.c",
+          "sha256": "ab395f2740ebb39534f312f0bc1460d80f5a143daa6a7e0cae5fc5d9018a303d"
+        },
+        {
+          "kind": "file",
+          "file": "src/ovl/actor_script_queries.c",
+          "sha256": "183125c5ebd50bb33a38e204e7a71215d2050776a234a51ec8b988501155a9fe"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script.h",
+          "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+        },
+        {
+          "kind": "file",
+          "file": "include/script_vm.h",
+          "sha256": "f9f9e4509166d6c9aac4d4687f973da7c3b719df7413be4d4f738182850e5b08"
+        },
+        {
+          "kind": "file",
+          "file": "include/item_types.h",
+          "sha256": "a11ff3ec0e7d9256425797d27c1d7222f58360b5f27a4bf4128119f9a762f991"
+        },
+        {
+          "kind": "file",
+          "file": "include/search_tree_types.h",
+          "sha256": "c9d0f6ce4bf53f8398b04cc9984e276a89422b2dccbc236a9e20ddbafb03390f"
+        },
+        {
+          "kind": "file",
+          "file": "include/player_types.h",
+          "sha256": "0056df08b11d051f4243ed3806c8bd6fba129b936ac71cd6584ac7e1cfb6df85"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_kind.h",
+          "sha256": "50ea3d3734cf9069bbb97cd961bf5416d9700f21efd7685836e7aa908bd46685"
+        },
+        {
+          "kind": "file",
+          "file": "include/matrix_types.h",
+          "sha256": "c8135a6ac50293376b4778483db97059e725e00da65dd880a227262c8a430a9f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f",
+          "function": "scriptVmPopInteger"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "6ab64e75a64605c75c85f685e506c90c9970819578d94a601eb7b1bae774744b",
+          "function": "scriptVmPopFloat"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84",
+          "function": "scriptVmPopValue"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f",
+          "function": "scriptValueGetInteger"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "94e6ff080eea82e2661ec2adbc45a33a6a2141b10ff8d1263f580c2c5433c6b1",
+          "function": "scriptValueGetFloat"
+        },
+        {
+          "kind": "file",
+          "file": "include/search_tree_traversal.h",
+          "sha256": "c54a1eabdf3a59197424b0f9fb6fea7dc6b66defefddac6d768acc86e3fc006f"
+        },
+        {
+          "kind": "file",
+          "file": "include/search_tree_lookup.h",
+          "sha256": "8c9cfa8bd6a7ad4173ad12c5063543e295b9b1a6ad1c0329904652a4ddbce144"
+        },
+        {
+          "kind": "file",
+          "file": "include/managed_object_types.h",
+          "sha256": "6bb22fcf1f03c3f9498008757e7c580a55254b2b42bc03fa0f286736545bb44a"
+        }
+      ],
+      "preconditions": [
+        "All operands are numeric and lie above protected locals/frame metadata. Integer conversions truncate finite floats representable as s32; float conversions accept integer/code-reference or float values. Query positions, rotations, distance and cone are finite; distances nonnegative. Restrict angles/coordinates to magnitudes permitting ordinary arithmetic and terminating angle-normalization loops.",
+        "Actor, captured VM, value storage, registered objects and state, query contexts, tree nodes and helper C-stack temporaries remain valid and nonoverlapping. VM storage must not alias either search tree, query context or selected item searchPriority.",
+        "Search is synchronous and nonreentrant. Object tree uses objectCompareSearchTreeOrder; item tree uses itemCompareSearchOrder. No arbitrary comparator/visitor hooks are covered. Comparators only read valid kind/handle fields, and ascending visitors are the exact reviewed objectConsiderNearestTargetEntry/itemConsiderSearchCandidate callbacks.",
+        "Two preparatory searchTreeFind calls can replace the shared tree root and mutate borrowed registry-node links; no allocation or ownership transfer occurs. Ascending traversal overwrites shared gSearchTreeActiveVisitor with the reviewed callback and clears it to zero rather than restoring an earlier visitor. Recursion requires finite acyclic valid trees and enough native stack.",
+        "Queries overwrite shared gObjectNearestTargetSearch or gItemNearestSearch and its origin/view-transform interior aliases. Object queries update best pointer/distance; item queries update best pointer/weighted distance. Result is borrowed object handle or zero. Only immediate VM replacement, these search-state/tree mutations and item weighting reset are reviewed; no runtime/retail reachability, concurrent destruction or later handle lifetime is proven.",
+        "Uses executing object worldPosition and RuntimeObjectPrefix.rotation; excludes executing object. Actor alias endpoint38 maps minimum to first creature kind and maximum to Pikachu.",
+        "Object kind bounds are0..65535 and fit target u16 storage and establish a valid ordered registry range. Search prep narrows minKind through RuntimeObjectPrefix.kind; comparator orders kind then unsigned handle. The object search tree must have a nonnull root: the helper dereferences its root value before checking the first object. Candidates are registered objects; no separate destruction-flag/availability lookup is performed.",
+        "Cone>=360 disables angular filtering; smaller cones use absolute wrapped transformed yaw and inclusive angular boundary. Approximate distance must be strictly less than current best/initial maximum. Equal distances retain first traversal candidate."
+      ],
+      "evidence": "Independent source/original-Ghidra review of wrapper, typed query, preparatory splay lookups, exact comparator/visitor callbacks, distance/angle helpers and weighted selection; helper storage/layout bindings are explicit. Source/Ghidra covers the stated conditional footprint, not arbitrary callbacks, malformed trees or eventual handle lifetime."
+    },
+    {
+      "function": "actorScriptFindObjectNearPosition",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "a909a8c16d552cdeeb9533e166b79df1d83489d2e82b28d1a1dcd4c577d5269d",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 6,
+      "stack_delta": -5,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "operand_order": "X,Y,Z,minKind,maxKind,distance",
+      "result_semantics": "Replace ordered search operands with selected handle or zero; Search origin copied from three numeric operands into a C-stack position. No angular restriction; executing object is excluded.",
+      "dependencies": [
+        {
+          "kind": "file",
+          "file": "src/game/search_tree.c",
+          "sha256": "bee9fb7f21b83c7bf80f1a6a5faf2d757148b13dea5ac681a5295f5eabbd3b55"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/object_hierarchy.c",
+          "sha256": "d2e4e761161617f2989d1abbd165c9e4eb3089ffca22168f14c5efb73517f7eb"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/actor_search.c",
+          "sha256": "552b6f9af5363d3bdd17e3069e9757b47a5b0a78af659392666fd664a655d8fa"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/vector_math.c",
+          "sha256": "bc6182aae1eae42d43261fac14526253798f88bdf868762540b9c87cf66d91ff"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/trigonometry.c",
+          "sha256": "d43f5d0191eda333607d321693694367d35ccf392b257f8f1652acbe10721d9a"
+        },
+        {
+          "kind": "file",
+          "file": "src/ovl/item_registry.c",
+          "sha256": "ab395f2740ebb39534f312f0bc1460d80f5a143daa6a7e0cae5fc5d9018a303d"
+        },
+        {
+          "kind": "file",
+          "file": "src/ovl/actor_script_queries.c",
+          "sha256": "183125c5ebd50bb33a38e204e7a71215d2050776a234a51ec8b988501155a9fe"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script.h",
+          "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+        },
+        {
+          "kind": "file",
+          "file": "include/script_vm.h",
+          "sha256": "f9f9e4509166d6c9aac4d4687f973da7c3b719df7413be4d4f738182850e5b08"
+        },
+        {
+          "kind": "file",
+          "file": "include/item_types.h",
+          "sha256": "a11ff3ec0e7d9256425797d27c1d7222f58360b5f27a4bf4128119f9a762f991"
+        },
+        {
+          "kind": "file",
+          "file": "include/search_tree_types.h",
+          "sha256": "c9d0f6ce4bf53f8398b04cc9984e276a89422b2dccbc236a9e20ddbafb03390f"
+        },
+        {
+          "kind": "file",
+          "file": "include/player_types.h",
+          "sha256": "0056df08b11d051f4243ed3806c8bd6fba129b936ac71cd6584ac7e1cfb6df85"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_kind.h",
+          "sha256": "50ea3d3734cf9069bbb97cd961bf5416d9700f21efd7685836e7aa908bd46685"
+        },
+        {
+          "kind": "file",
+          "file": "include/matrix_types.h",
+          "sha256": "c8135a6ac50293376b4778483db97059e725e00da65dd880a227262c8a430a9f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f",
+          "function": "scriptVmPopInteger"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "6ab64e75a64605c75c85f685e506c90c9970819578d94a601eb7b1bae774744b",
+          "function": "scriptVmPopFloat"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84",
+          "function": "scriptVmPopValue"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f",
+          "function": "scriptValueGetInteger"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "94e6ff080eea82e2661ec2adbc45a33a6a2141b10ff8d1263f580c2c5433c6b1",
+          "function": "scriptValueGetFloat"
+        },
+        {
+          "kind": "file",
+          "file": "include/search_tree_traversal.h",
+          "sha256": "c54a1eabdf3a59197424b0f9fb6fea7dc6b66defefddac6d768acc86e3fc006f"
+        },
+        {
+          "kind": "file",
+          "file": "include/search_tree_lookup.h",
+          "sha256": "8c9cfa8bd6a7ad4173ad12c5063543e295b9b1a6ad1c0329904652a4ddbce144"
+        },
+        {
+          "kind": "file",
+          "file": "include/managed_object_types.h",
+          "sha256": "6bb22fcf1f03c3f9498008757e7c580a55254b2b42bc03fa0f286736545bb44a"
+        }
+      ],
+      "preconditions": [
+        "All operands are numeric and lie above protected locals/frame metadata. Integer conversions truncate finite floats representable as s32; float conversions accept integer/code-reference or float values. Query positions, rotations, distance and cone are finite; distances nonnegative. Restrict angles/coordinates to magnitudes permitting ordinary arithmetic and terminating angle-normalization loops.",
+        "Actor, captured VM, value storage, registered objects and state, query contexts, tree nodes and helper C-stack temporaries remain valid and nonoverlapping. VM storage must not alias either search tree, query context or selected item searchPriority.",
+        "Search is synchronous and nonreentrant. Object tree uses objectCompareSearchTreeOrder; item tree uses itemCompareSearchOrder. No arbitrary comparator/visitor hooks are covered. Comparators only read valid kind/handle fields, and ascending visitors are the exact reviewed objectConsiderNearestTargetEntry/itemConsiderSearchCandidate callbacks.",
+        "Two preparatory searchTreeFind calls can replace the shared tree root and mutate borrowed registry-node links; no allocation or ownership transfer occurs. Ascending traversal overwrites shared gSearchTreeActiveVisitor with the reviewed callback and clears it to zero rather than restoring an earlier visitor. Recursion requires finite acyclic valid trees and enough native stack.",
+        "Queries overwrite shared gObjectNearestTargetSearch or gItemNearestSearch and its origin/view-transform interior aliases. Object queries update best pointer/distance; item queries update best pointer/weighted distance. Result is borrowed object handle or zero. Only immediate VM replacement, these search-state/tree mutations and item weighting reset are reviewed; no runtime/retail reachability, concurrent destruction or later handle lifetime is proven.",
+        "Search origin copied from three numeric operands into a C-stack position. No angular restriction; executing object is excluded.",
+        "Object kind bounds are0..65535 and fit target u16 storage and establish a valid ordered registry range. Search prep narrows minKind through RuntimeObjectPrefix.kind; comparator orders kind then unsigned handle. The object search tree must have a nonnull root: the helper dereferences its root value before checking the first object. Candidates are registered objects; no separate destruction-flag/availability lookup is performed.",
+        "Cone>=360 disables angular filtering; smaller cones use absolute wrapped transformed yaw and inclusive angular boundary. Approximate distance must be strictly less than current best/initial maximum. Equal distances retain first traversal candidate."
+      ],
+      "evidence": "Independent source/original-Ghidra review of wrapper, typed query, preparatory splay lookups, exact comparator/visitor callbacks, distance/angle helpers and weighted selection; helper storage/layout bindings are explicit. Source/Ghidra covers the stated conditional footprint, not arbitrary callbacks, malformed trees or eventual handle lifetime."
+    },
+    {
+      "function": "actorScriptFindItemInFacingCone",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "de330679e001086ddf6da8ad52ac31f22a5c243caff12b840f587937ceecf82a",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 6,
+      "stack_delta": -5,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "operand_order": "minKind,maxKind,distance,cone,filter,weighted",
+      "result_semantics": "Replace ordered search operands with selected handle or zero; Origin is executing actor worldPosition; pitch/yaw come from ActorScriptState.orientation. No explicit self exclusion in item query.",
+      "dependencies": [
+        {
+          "kind": "file",
+          "file": "src/game/search_tree.c",
+          "sha256": "bee9fb7f21b83c7bf80f1a6a5faf2d757148b13dea5ac681a5295f5eabbd3b55"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/object_hierarchy.c",
+          "sha256": "d2e4e761161617f2989d1abbd165c9e4eb3089ffca22168f14c5efb73517f7eb"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/actor_search.c",
+          "sha256": "552b6f9af5363d3bdd17e3069e9757b47a5b0a78af659392666fd664a655d8fa"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/vector_math.c",
+          "sha256": "bc6182aae1eae42d43261fac14526253798f88bdf868762540b9c87cf66d91ff"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/trigonometry.c",
+          "sha256": "d43f5d0191eda333607d321693694367d35ccf392b257f8f1652acbe10721d9a"
+        },
+        {
+          "kind": "file",
+          "file": "src/ovl/item_registry.c",
+          "sha256": "ab395f2740ebb39534f312f0bc1460d80f5a143daa6a7e0cae5fc5d9018a303d"
+        },
+        {
+          "kind": "file",
+          "file": "src/ovl/actor_script_queries.c",
+          "sha256": "183125c5ebd50bb33a38e204e7a71215d2050776a234a51ec8b988501155a9fe"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script.h",
+          "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+        },
+        {
+          "kind": "file",
+          "file": "include/script_vm.h",
+          "sha256": "f9f9e4509166d6c9aac4d4687f973da7c3b719df7413be4d4f738182850e5b08"
+        },
+        {
+          "kind": "file",
+          "file": "include/item_types.h",
+          "sha256": "a11ff3ec0e7d9256425797d27c1d7222f58360b5f27a4bf4128119f9a762f991"
+        },
+        {
+          "kind": "file",
+          "file": "include/search_tree_types.h",
+          "sha256": "c9d0f6ce4bf53f8398b04cc9984e276a89422b2dccbc236a9e20ddbafb03390f"
+        },
+        {
+          "kind": "file",
+          "file": "include/player_types.h",
+          "sha256": "0056df08b11d051f4243ed3806c8bd6fba129b936ac71cd6584ac7e1cfb6df85"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_kind.h",
+          "sha256": "50ea3d3734cf9069bbb97cd961bf5416d9700f21efd7685836e7aa908bd46685"
+        },
+        {
+          "kind": "file",
+          "file": "include/matrix_types.h",
+          "sha256": "c8135a6ac50293376b4778483db97059e725e00da65dd880a227262c8a430a9f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f",
+          "function": "scriptVmPopInteger"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "6ab64e75a64605c75c85f685e506c90c9970819578d94a601eb7b1bae774744b",
+          "function": "scriptVmPopFloat"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84",
+          "function": "scriptVmPopValue"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f",
+          "function": "scriptValueGetInteger"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "94e6ff080eea82e2661ec2adbc45a33a6a2141b10ff8d1263f580c2c5433c6b1",
+          "function": "scriptValueGetFloat"
+        },
+        {
+          "kind": "file",
+          "file": "include/math_scalar.h",
+          "sha256": "868db2e2fa4ea865f37216086199d007c047761dbe694ab367cacbf2ad7bb0bc"
+        },
+        {
+          "kind": "file",
+          "file": "include/search_tree_traversal.h",
+          "sha256": "c54a1eabdf3a59197424b0f9fb6fea7dc6b66defefddac6d768acc86e3fc006f"
+        },
+        {
+          "kind": "file",
+          "file": "include/search_tree_lookup.h",
+          "sha256": "8c9cfa8bd6a7ad4173ad12c5063543e295b9b1a6ad1c0329904652a4ddbce144"
+        },
+        {
+          "kind": "file",
+          "file": "include/integer_animation_types.h",
+          "sha256": "e906c93373726e061a836d764d62dc11d0dc32aa39607f9f695aa337c0c2a10e"
+        }
+      ],
+      "preconditions": [
+        "All operands are numeric and lie above protected locals/frame metadata. Integer conversions truncate finite floats representable as s32; float conversions accept integer/code-reference or float values. Query positions, rotations, distance and cone are finite; distances nonnegative. Restrict angles/coordinates to magnitudes permitting ordinary arithmetic and terminating angle-normalization loops.",
+        "Actor, captured VM, value storage, registered objects and state, query contexts, tree nodes and helper C-stack temporaries remain valid and nonoverlapping. VM storage must not alias either search tree, query context or selected item searchPriority.",
+        "Search is synchronous and nonreentrant. Object tree uses objectCompareSearchTreeOrder; item tree uses itemCompareSearchOrder. No arbitrary comparator/visitor hooks are covered. Comparators only read valid kind/handle fields, and ascending visitors are the exact reviewed objectConsiderNearestTargetEntry/itemConsiderSearchCandidate callbacks.",
+        "Two preparatory searchTreeFind calls can replace the shared tree root and mutate borrowed registry-node links; no allocation or ownership transfer occurs. Ascending traversal overwrites shared gSearchTreeActiveVisitor with the reviewed callback and clears it to zero rather than restoring an earlier visitor. Recursion requires finite acyclic valid trees and enough native stack.",
+        "Queries overwrite shared gObjectNearestTargetSearch or gItemNearestSearch and its origin/view-transform interior aliases. Object queries update best pointer/distance; item queries update best pointer/weighted distance. Result is borrowed object handle or zero. Only immediate VM replacement, these search-state/tree mutations and item weighting reset are reviewed; no runtime/retail reachability, concurrent destruction or later handle lifetime is proven.",
+        "Origin is executing actor worldPosition; pitch/yaw come from ActorScriptState.orientation. No explicit self exclusion in item query.",
+        "Item kind bounds are0..165 in supported authored domains; endpoint165 rewrites minimum to1 or maximum to164. Require mapped minimum<=maximum. Required hold-state filter0..5, or6 accepts all. No separate live-handle lookup or suppression flags are checked: registry must contain eligible valid items.",
+        "Cone>=180 disables angular filtering; smaller cones use absolute wrapped transformed yaw with inclusive angular boundary. Raw approximate distance<=maximum is accepted. Nonzero weighted adds clamped priority penalty (priority0..2 maps200..0); strict weighted best-distance comparison retains the first tie. A selected weighted item has searchPriority reset to0 even though this is named as a search."
+      ],
+      "evidence": "Independent source/original-Ghidra review of wrapper, typed query, preparatory splay lookups, exact comparator/visitor callbacks, distance/angle helpers and weighted selection; helper storage/layout bindings are explicit. Source/Ghidra covers the stated conditional footprint, not arbitrary callbacks, malformed trees or eventual handle lifetime. Eleven authored original-instruction interpreter searches with frozen3501dbb source/ELF/core and32 authenticated helper/native byte spans cover singleton object limits/self/kind exclusion and empty/singleton/two-node item limits/state filter/endpoint/weighting. All use unrestricted cones, guard three lower values and frame metadata, and match declared query/tree/item writes. An additional bounded empty-object prefix proves operand consumption only, stopping before the query call. Weighting maps priority0..2 to penalty200..0; probes distinguish1->100 and0/2 endpoints. Narrow cones and malformed inputs were not runtime-tested."
+    },
+    {
+      "function": "actorScriptFindItemFromPlayerView",
+      "file": "src/ovl/actor_script_collection_profile.c",
+      "sha256": "540c4ab2703cb88c22071fb4cbc4dea71a880e3940cdf54b86d9bd3716115ddb",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 6,
+      "stack_delta": -5,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "operand_order": "minKind,maxKind,distance,cone,filter,weighted",
+      "result_semantics": "Replace ordered search operands with selected handle or zero; Origin is player position; pitch zero and yaw player yaw plus viewShake. Executing actor does not supply search origin.",
+      "dependencies": [
+        {
+          "kind": "file",
+          "file": "src/game/search_tree.c",
+          "sha256": "bee9fb7f21b83c7bf80f1a6a5faf2d757148b13dea5ac681a5295f5eabbd3b55"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/object_hierarchy.c",
+          "sha256": "d2e4e761161617f2989d1abbd165c9e4eb3089ffca22168f14c5efb73517f7eb"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/actor_search.c",
+          "sha256": "552b6f9af5363d3bdd17e3069e9757b47a5b0a78af659392666fd664a655d8fa"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/vector_math.c",
+          "sha256": "bc6182aae1eae42d43261fac14526253798f88bdf868762540b9c87cf66d91ff"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/trigonometry.c",
+          "sha256": "d43f5d0191eda333607d321693694367d35ccf392b257f8f1652acbe10721d9a"
+        },
+        {
+          "kind": "file",
+          "file": "src/ovl/item_registry.c",
+          "sha256": "ab395f2740ebb39534f312f0bc1460d80f5a143daa6a7e0cae5fc5d9018a303d"
+        },
+        {
+          "kind": "file",
+          "file": "src/ovl/actor_script_queries.c",
+          "sha256": "183125c5ebd50bb33a38e204e7a71215d2050776a234a51ec8b988501155a9fe"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script.h",
+          "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+        },
+        {
+          "kind": "file",
+          "file": "include/script_vm.h",
+          "sha256": "f9f9e4509166d6c9aac4d4687f973da7c3b719df7413be4d4f738182850e5b08"
+        },
+        {
+          "kind": "file",
+          "file": "include/item_types.h",
+          "sha256": "a11ff3ec0e7d9256425797d27c1d7222f58360b5f27a4bf4128119f9a762f991"
+        },
+        {
+          "kind": "file",
+          "file": "include/search_tree_types.h",
+          "sha256": "c9d0f6ce4bf53f8398b04cc9984e276a89422b2dccbc236a9e20ddbafb03390f"
+        },
+        {
+          "kind": "file",
+          "file": "include/player_types.h",
+          "sha256": "0056df08b11d051f4243ed3806c8bd6fba129b936ac71cd6584ac7e1cfb6df85"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_kind.h",
+          "sha256": "50ea3d3734cf9069bbb97cd961bf5416d9700f21efd7685836e7aa908bd46685"
+        },
+        {
+          "kind": "file",
+          "file": "include/matrix_types.h",
+          "sha256": "c8135a6ac50293376b4778483db97059e725e00da65dd880a227262c8a430a9f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f",
+          "function": "scriptVmPopInteger"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "6ab64e75a64605c75c85f685e506c90c9970819578d94a601eb7b1bae774744b",
+          "function": "scriptVmPopFloat"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84",
+          "function": "scriptVmPopValue"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f",
+          "function": "scriptValueGetInteger"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "94e6ff080eea82e2661ec2adbc45a33a6a2141b10ff8d1263f580c2c5433c6b1",
+          "function": "scriptValueGetFloat"
+        },
+        {
+          "kind": "file",
+          "file": "include/math_scalar.h",
+          "sha256": "868db2e2fa4ea865f37216086199d007c047761dbe694ab367cacbf2ad7bb0bc"
+        },
+        {
+          "kind": "file",
+          "file": "include/search_tree_traversal.h",
+          "sha256": "c54a1eabdf3a59197424b0f9fb6fea7dc6b66defefddac6d768acc86e3fc006f"
+        },
+        {
+          "kind": "file",
+          "file": "include/search_tree_lookup.h",
+          "sha256": "8c9cfa8bd6a7ad4173ad12c5063543e295b9b1a6ad1c0329904652a4ddbce144"
+        },
+        {
+          "kind": "file",
+          "file": "include/integer_animation_types.h",
+          "sha256": "e906c93373726e061a836d764d62dc11d0dc32aa39607f9f695aa337c0c2a10e"
+        },
+        {
+          "kind": "file",
+          "file": "include/player_state.h",
+          "sha256": "714569e664352e5b35c5f6cba7fa9fd8724691ff7eb44a596885c37442ec8088"
+        }
+      ],
+      "preconditions": [
+        "All operands are numeric and lie above protected locals/frame metadata. Integer conversions truncate finite floats representable as s32; float conversions accept integer/code-reference or float values. Query positions, rotations, distance and cone are finite; distances nonnegative. Restrict angles/coordinates to magnitudes permitting ordinary arithmetic and terminating angle-normalization loops.",
+        "Actor, captured VM, value storage, registered objects and state, query contexts, tree nodes and helper C-stack temporaries remain valid and nonoverlapping. VM storage must not alias either search tree, query context or selected item searchPriority.",
+        "Search is synchronous and nonreentrant. Object tree uses objectCompareSearchTreeOrder; item tree uses itemCompareSearchOrder. No arbitrary comparator/visitor hooks are covered. Comparators only read valid kind/handle fields, and ascending visitors are the exact reviewed objectConsiderNearestTargetEntry/itemConsiderSearchCandidate callbacks.",
+        "Two preparatory searchTreeFind calls can replace the shared tree root and mutate borrowed registry-node links; no allocation or ownership transfer occurs. Ascending traversal overwrites shared gSearchTreeActiveVisitor with the reviewed callback and clears it to zero rather than restoring an earlier visitor. Recursion requires finite acyclic valid trees and enough native stack.",
+        "Queries overwrite shared gObjectNearestTargetSearch or gItemNearestSearch and its origin/view-transform interior aliases. Object queries update best pointer/distance; item queries update best pointer/weighted distance. Result is borrowed object handle or zero. Only immediate VM replacement, these search-state/tree mutations and item weighting reset are reviewed; no runtime/retail reachability, concurrent destruction or later handle lifetime is proven.",
+        "Origin is player position; pitch zero and yaw player yaw plus viewShake. Executing actor does not supply search origin.",
+        "Item kind bounds are0..165 in supported authored domains; endpoint165 rewrites minimum to1 or maximum to164. Require mapped minimum<=maximum. Required hold-state filter0..5, or6 accepts all. No separate live-handle lookup or suppression flags are checked: registry must contain eligible valid items.",
+        "Cone>=180 disables angular filtering; smaller cones use absolute wrapped transformed yaw with inclusive angular boundary. Raw approximate distance<=maximum is accepted. Nonzero weighted adds clamped priority penalty (priority0..2 maps200..0); strict weighted best-distance comparison retains the first tie. A selected weighted item has searchPriority reset to0 even though this is named as a search."
+      ],
+      "evidence": "Independent source/original-Ghidra review of wrapper, typed query, preparatory splay lookups, exact comparator/visitor callbacks, distance/angle helpers and weighted selection; helper storage/layout bindings are explicit. Source/Ghidra covers the stated conditional footprint, not arbitrary callbacks, malformed trees or eventual handle lifetime."
+    },
+    {
+      "function": "actorScriptAdjustPikachuSecondaryMeter",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "234a4f6897bf526c63399cbc69f95524110888054c06efeee83c06590dcb9663",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "float",
+      "scheduling": "continue",
+      "result_semantics": "Replace one floating-converted adjustment with the active Pikachu root actor secondary meter after a single-precision addition clamped to0..100. The calling actor can differ from Pikachu and its root.",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopFloat",
+          "sha256": "6ab64e75a64605c75c85f685e506c90c9970819578d94a601eb7b1bae774744b"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetFloat",
+          "sha256": "94e6ff080eea82e2661ec2adbc45a33a6a2141b10ff8d1263f580c2c5433c6b1"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/actor_model_parts.c",
+          "function": "actorAdjustSecondaryMeter",
+          "sha256": "0b9e24966d9afd6bafcf7f47d6b07d36d6c0a8cdce8d30aa95d80f5b40f841e6"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_meters.h",
+          "sha256": "cd945ddb6601e0fefd1f5a296ea84e16c1b7a939ac73998553e42cd9366e9dd8"
+        },
+        {
+          "kind": "file",
+          "file": "include/pikachu_actor.h",
+          "sha256": "576cffbae2f4e6b522ea2506052bd8a0e4d298947b17543d13d20387d67b8e35"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script.h",
+          "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+        },
+        {
+          "kind": "file",
+          "file": "include/matrix_types.h",
+          "sha256": "c8135a6ac50293376b4778483db97059e725e00da65dd880a227262c8a430a9f"
+        },
+        {
+          "kind": "file",
+          "file": "include/direction_animation_types.h",
+          "sha256": "82506e5f032bbc145cefad1ed15d3b129706899a67d87c1074e2e40ddee0009b"
+        },
+        {
+          "kind": "file",
+          "file": "include/action_script_types.h",
+          "sha256": "1b1bb25b8810dc94e9bcfadf092f0ac823fa850cbc003ac00776dd63e9aade37"
+        },
+        {
+          "kind": "file",
+          "file": "include/script_message.h",
+          "sha256": "53389698082ce465f025225e0d8a11b5a49d278ec8a76f484e4adf0a0fac7505"
+        },
+        {
+          "kind": "file",
+          "file": "include/animation_tracks.h",
+          "sha256": "cb8ae02394bd3d838aa968bd4fee5bb23ad6517028bddc2957cfd2d7c4c6c40a"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_orientation_cache.h",
+          "sha256": "2835fe1e1ea52dfa1896425d52967fc040279bf94c29406d25967c014531939a"
+        }
+      ],
+      "preconditions": [
+        "Actor, actor state, captured VM and value storage remain valid and disjoint from helper-written gameplay/global storage. Helpers retain the captured VM; no concurrent mutation, context replacement or lifecycle change is covered.",
+        "Consumed operands lie above every protected local/frame record; append contracts require one free value slot. Numeric integer/code-reference and float conversions follow the reviewed value helpers; any float-to-integer conversion is finite and s32-representable.",
+        "Only specified helper writes and established VM push/pop values/depth are reviewed. Scheduling returns continue without a deferred handler. Evidence is source/Ghidra only; runtime, gameplay reachability and later resource lifetimes remain unproven.",
+        "gPikachuActor, its root.object and root actor state are live; secondaryMeter is at root state+0x3F8. The adjustment, old meter and their f32 sum are finite. Only this meter changes in gameplay storage; no meter HUD timer/level or primary action resource is changed."
+      ],
+      "evidence": "Original Ghidra8011F0E4 loads gPikachuActor800760A8, forwards popped f32 bits in a1, and pushes helper f0 as float.800149D0 follows object+0x50 then root+0x54, adds and clamps at state+0x3F8 with no calls. Source and object/actor layouts agree; no runtime evidence claimed."
+    },
+    {
+      "function": "actorScriptSetDestination",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "6828d9fd98d88de59bcf0cae1c1c9ab5a023feabb76aca257ede95d1f665499c",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 4,
+      "stack_delta": -3,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Consume worldX, worldY, worldZ and distance allowance (allowance on top), replacing four operands with integer zero. Copy destination to actor state+0x1EC/+0x1F0/+0x1F4; set targetMode+0x19C=0 and allowance+0x1A4. Stored targetHandle is retained.",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopFloat",
+          "sha256": "6ab64e75a64605c75c85f685e506c90c9970819578d94a601eb7b1bae774744b"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetFloat",
+          "sha256": "94e6ff080eea82e2661ec2adbc45a33a6a2141b10ff8d1263f580c2c5433c6b1"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "actorSetTargetPosition",
+          "sha256": "cb156e251120846fe95fd388f0ef6825a224ecbb66d86fc24b752fef45d69bbc"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_target.h",
+          "sha256": "fd3d5467b5edc16cd76afef9d5edbc7acd093aa5f5b9541ee30387ba32a78c87"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script.h",
+          "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+        },
+        {
+          "kind": "file",
+          "file": "include/matrix_types.h",
+          "sha256": "c8135a6ac50293376b4778483db97059e725e00da65dd880a227262c8a430a9f"
+        },
+        {
+          "kind": "file",
+          "file": "include/direction_animation_types.h",
+          "sha256": "82506e5f032bbc145cefad1ed15d3b129706899a67d87c1074e2e40ddee0009b"
+        },
+        {
+          "kind": "file",
+          "file": "include/action_script_types.h",
+          "sha256": "1b1bb25b8810dc94e9bcfadf092f0ac823fa850cbc003ac00776dd63e9aade37"
+        }
+      ],
+      "preconditions": [
+        "Actor, actor state, captured VM and value storage remain valid and disjoint from helper-written gameplay/global storage. Helpers retain the captured VM; no concurrent mutation, context replacement or lifecycle change is covered.",
+        "Consumed operands lie above every protected local/frame record; append contracts require one free value slot. Numeric integer/code-reference and float conversions follow the reviewed value helpers; any float-to-integer conversion is finite and s32-representable.",
+        "Only specified helper writes and established VM push/pop values/depth are reviewed. Scheduling returns continue without a deferred handler. Evidence is source/Ghidra only; runtime, gameplay reachability and later resource lifetimes remain unproven.",
+        "All four operands yield finite f32 values. Four operands are above protected frame/local values; stack delta is-3. World coordinates are copied from C-stack scratch and never retained by pointer. Allowance is copied directly without clamp."
+      ],
+      "evidence": "Original Ghidra8011DA00 performs four popFloat calls in allowance/Z/Y/X order, calls80118644 three float stores, then writes mode0 and allowance before pushInteger0. Only these five actor-state words and normal VM pop/push storage change. No runtime evidence claimed."
+    },
+    {
+      "function": "actorScriptTrackEscapeFromObject",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "2e98d673415928f42fdb519ea3aa8b4262ae2afdd7cb91718b62f84e42f53194",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace handle with target category, possibly zero for a successfully selected unsupported kind. Unavailable handles clear only target mode. Available targets set escape mode2, handle and zero allowance; choose an escape destination or copy the live fallback position for near-zero separation.",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "actorTrackEscapeFromObject",
+          "sha256": "070e5280970f4b3d39c548024b8ab3563628d75835175d102ffb35293cb75b14"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "actorChooseEscapePosition",
+          "sha256": "f0b96d9d6ed92353f7257e92ef3aa41fc40801f6b365d6c11b132b786774b1b3"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "objectResolveAvailableHandle",
+          "sha256": "13035c928d8cfa98f2d5bddd83912c671a57b188c5abc77aa7fa2aa84d669e4d"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "objectGetScriptCategory",
+          "sha256": "92860fad5522c8e77866fbd18d3521f7ce52e120ab3280ef54034d05bbf99452"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "actorSetTargetToFallbackObject",
+          "sha256": "79cef2176926fabd3a9adfcc73dfd8d63b8d59ba1a2a75fd2293a15123482506"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/object_hierarchy.c",
+          "function": "objectFindLiveByHandle",
+          "sha256": "a04905a063945115cd20a841f611294f7784656739644dd48ba5230ee11881c9"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/keyed_pool.c",
+          "function": "keyedPoolGetValue",
+          "sha256": "515ff415ac8762af39e40b6969a0d563591ab0252fcc95f660b808c06964541d"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/keyed_pool.c",
+          "function": "keyedPoolFindEntry",
+          "sha256": "2c4d9787ed139519f2981eb227805c3b38046a0baf47287ae6ecc2156f5665c6"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/trigonometry.c",
+          "function": "vector3Length",
+          "sha256": "2d20f379ec33b461f4d5e6e7e108880e84e1e67f99a464f63e38e70b9bd6cbbb"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/trigonometry.c",
+          "function": "vector3Normalize",
+          "sha256": "e8982d3bbb1935ba544bc26ce60dd228705d6f6a385fec561094929d845966c3"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/trigonometry.c",
+          "function": "randomBelow",
+          "sha256": "9870e6b471c7c3c0c1771218966c2bf787e40eb30ba1884f8addfab6e61fa754"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/trigonometry.c",
+          "function": "randomNext",
+          "sha256": "03137dd2546aa2abf4099a0d6768ca2401f61657b9f915822b81b788e003fd56"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/trigonometry.c",
+          "function": "mathSinDegrees",
+          "sha256": "b3c16e890527166a4e71de97b24205157927252fd3d2355fdad7dd56b604ed00"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/trigonometry.c",
+          "function": "mathCosDegrees",
+          "sha256": "52480831da75f53fb0fe0de8f7759a8590ec7607185bdeb4b9915d96c7c6f925"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/trigonometry.c",
+          "sha256": "d43f5d0191eda333607d321693694367d35ccf392b257f8f1652acbe10721d9a"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_flags.h",
+          "sha256": "135a2ddab3b6c3e703f08bc85faa083742809cf81a1edc43bd05469d2faac637"
+        },
+        {
+          "kind": "file",
+          "file": "include/keyed_pool_types.h",
+          "sha256": "4c5ce15833971e0a7b7a25588eb674597474dba8a6d71b51cf78cf098c63a611"
+        },
+        {
+          "kind": "file",
+          "file": "include/item_types.h",
+          "sha256": "a11ff3ec0e7d9256425797d27c1d7222f58360b5f27a4bf4128119f9a762f991"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_kind.h",
+          "sha256": "50ea3d3734cf9069bbb97cd961bf5416d9700f21efd7685836e7aa908bd46685"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script.h",
+          "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+        },
+        {
+          "kind": "file",
+          "file": "include/scene_configuration.h",
+          "sha256": "64af441a44b5184c71a3f23969dfc629e10b7bc71c75ad99f0bf53957b0011b0"
+        },
+        {
+          "kind": "file",
+          "file": "include/scene_types.h",
+          "sha256": "a6bf4259a1711764693beeeab6075f4377d64e20a7920328981227031e288e63"
+        },
+        {
+          "kind": "file",
+          "file": "include/random.h",
+          "sha256": "68aa3ecc6cc019f345c83213311579fb96f735047b53c748e08fe7e16f6f6b85"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_script_query.h",
+          "sha256": "5041ea33e8fef3cc0ba7167db83f2afc942045fb792cc390359f35546560d8a6"
+        },
+        {
+          "kind": "file",
+          "file": "include/matrix_types.h",
+          "sha256": "c8135a6ac50293376b4778483db97059e725e00da65dd880a227262c8a430a9f"
+        },
+        {
+          "kind": "file",
+          "file": "include/direction_animation_types.h",
+          "sha256": "82506e5f032bbc145cefad1ed15d3b129706899a67d87c1074e2e40ddee0009b"
+        },
+        {
+          "kind": "file",
+          "file": "include/action_script_types.h",
+          "sha256": "1b1bb25b8810dc94e9bcfadf092f0ac823fa850cbc003ac00776dd63e9aade37"
+        },
+        {
+          "kind": "file",
+          "file": "include/script_message.h",
+          "sha256": "53389698082ce465f025225e0d8a11b5a49d278ec8a76f484e4adf0a0fac7505"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/object_hierarchy.c",
+          "sha256": "d2e4e761161617f2989d1abbd165c9e4eb3089ffca22168f14c5efb73517f7eb"
+        }
+      ],
+      "preconditions": [
+        "Actor, actor state, captured VM and value storage remain valid and disjoint from helper-written gameplay/global storage. Helpers retain the captured VM; no concurrent mutation, context replacement or lifecycle change is covered.",
+        "Consumed operands lie above every protected local/frame record; append contracts require one free value slot. Numeric integer/code-reference and float conversions follow the reviewed value helpers; any float-to-integer conversion is finite and s32-representable.",
+        "Only specified helper writes and established VM push/pop values/depth are reviewed. Scheduling returns continue without a deferred handler. Evidence is source/Ghidra only; runtime, gameplay reachability and later resource lifetimes remain unproven.",
+        "Initialized positive-capacity object pool and valid borrowed objects/item states are required. Unavailable means zero/missing/deletion-marked handle or toolbox item. Invalid lookup preserves old handle, allowance, target vector and RNG state.",
+        "Actor/target world positions and intermediate vector math are finite. When normalized separation length is at most0.001, fallbackObjectHandle must resolve live; its world position is copied without null guard and RNG is unchanged.",
+        "For nondegenerate separation the current area configuration is live; cellDimensions[0] and scaled/intermediate coordinates are finite, and positive cell width is required for the stated away-from-target meaning. Exactly one shared four-word RNG advance chooses angle(random%60)-15, hence-15..44 degrees. Sine table is valid for indices0..512; angle conversion fits s32.",
+        "Only actor targetMode/targetHandle/allowance/targetPosition and, on the nondegenerate path, four RNG words800F2970..800F297C change. Normalize writes C-stack scratch; trig helpers only read lookup data; pool predecessor output targets C-stack scratch. No ownership changes or retained target pointer occur."
+      ],
+      "evidence": "Read-only original Ghidra8011DB3C/801176A8/8011866C/80118890/80117840/80118ACC and read-only pool chain confirm branches and target stores.8003A5D0 uses sqrt.S,8003A7C0 normalizes C-stack vector with threshold;8003AB20 calls8003AB68 once, which stores only four RNG words;8003C3DC/8003C4D0 only read sine data. Source declarations/helpers independently agree. No runtime evidence claimed."
+    },
+    {
+      "function": "actorScriptConsiderInteractionRegion",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "ddf51d058c76156aee9103aa8a08d82a0ce70cb1df0457cfd54fe77235173f0b",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Append integer one when candidate has either interaction-region bit, otherwise zero. Independently consider non-Pikachu eligible objects for preferred candidate; region eligibility does not imply selection and Pikachu can be eligible without replacing the preferred candidate.",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "interactionConsiderObjectInRegion",
+          "sha256": "36cfee62b7594cae88ec4a727c5d97a25ccca9c7570b738fbea8418e69cf8ee2"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/interaction_marker.c",
+          "function": "interactionConsiderObject",
+          "sha256": "f88f4e1bbd3080742fec27000c373b18bf4cfd192c5ddfd4a84c0897a05d6088"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/area_terrain_maze.c",
+          "function": "areaTestCameraVisibility",
+          "sha256": "f06671e9d6c2d25c70b8e591537536a8ef326daf96c3991b92de0f1cfdbfd5e3"
+        },
+        {
+          "kind": "function",
+          "file": "src/main.c",
+          "function": "cameraTestViewPoint",
+          "sha256": "7bd3ccd47879339bb6af63d45b4324cd07046b80c3e344a74a993e7aba1cf08d"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/interaction_marker.c",
+          "sha256": "9e5632d053ee188e915298d3441172cfd81d7b6d63feafe6306fd34f196ae5ce"
+        },
+        {
+          "kind": "file",
+          "file": "src/ovl/area_terrain_maze.c",
+          "sha256": "2cb68d3ab7e188a2e12a982b74c3dabdf15b5fcada878f04d66003d775c427f7"
+        },
+        {
+          "kind": "file",
+          "file": "src/main.c",
+          "sha256": "d805db3a73122ad5110d83c1074277bf0439e28c4f8a81f529935196d2c832a6"
+        },
+        {
+          "kind": "file",
+          "file": "include/interaction.h",
+          "sha256": "710166720c4da2261d6613136ff12b68dae003feea3fb049425adc41edc5056b"
+        },
+        {
+          "kind": "file",
+          "file": "include/camera_visibility.h",
+          "sha256": "f37dd47091248444407ea3dbc04bbf3915c923ca4f5040dd2723ab74d812892b"
+        },
+        {
+          "kind": "file",
+          "file": "include/camera_types.h",
+          "sha256": "e0b41d0d08f7ce4a2d9e0f287073ec094cb820d2d02638d39712141325161fc1"
+        },
+        {
+          "kind": "file",
+          "file": "include/matrix_point.h",
+          "sha256": "b9c4fae03e004630b7b0c3e18b4fff48cb3a560b61e70739ec05cca12720fe22"
+        },
+        {
+          "kind": "file",
+          "file": "include/scene_configuration.h",
+          "sha256": "64af441a44b5184c71a3f23969dfc629e10b7bc71c75ad99f0bf53957b0011b0"
+        },
+        {
+          "kind": "file",
+          "file": "include/scene_types.h",
+          "sha256": "a6bf4259a1711764693beeeab6075f4377d64e20a7920328981227031e288e63"
+        },
+        {
+          "kind": "file",
+          "file": "include/player_state.h",
+          "sha256": "714569e664352e5b35c5f6cba7fa9fd8724691ff7eb44a596885c37442ec8088"
+        },
+        {
+          "kind": "file",
+          "file": "include/player_types.h",
+          "sha256": "0056df08b11d051f4243ed3806c8bd6fba129b936ac71cd6584ac7e1cfb6df85"
+        },
+        {
+          "kind": "file",
+          "file": "include/pikachu_actor.h",
+          "sha256": "576cffbae2f4e6b522ea2506052bd8a0e4d298947b17543d13d20387d67b8e35"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+        },
+        {
+          "kind": "file",
+          "file": "config/pikachu.yaml",
+          "sha256": "a56707cf81226745a3d0758e71a63285c21ff334fcc5eea8cba864ccf0cf39c6"
+        },
+        {
+          "kind": "file",
+          "file": "config/symbol_addrs.txt",
+          "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+        },
+        {
+          "kind": "file",
+          "file": "include/matrix_types.h",
+          "sha256": "c8135a6ac50293376b4778483db97059e725e00da65dd880a227262c8a430a9f"
+        },
+        {
+          "kind": "file",
+          "file": "include/direction_animation_types.h",
+          "sha256": "82506e5f032bbc145cefad1ed15d3b129706899a67d87c1074e2e40ddee0009b"
+        },
+        {
+          "kind": "file",
+          "file": "include/action_script_types.h",
+          "sha256": "1b1bb25b8810dc94e9bcfadf092f0ac823fa850cbc003ac00776dd63e9aade37"
+        },
+        {
+          "kind": "file",
+          "file": "include/camera_storage.h",
+          "sha256": "856b99b7234d58282b91b3f86f412b202b07f85a71753c8a47662cd605d6409b"
+        }
+      ],
+      "preconditions": [
+        "Actor, actor state, captured VM and value storage remain valid and disjoint from helper-written gameplay/global storage. Helpers retain the captured VM; no concurrent mutation, context replacement or lifecycle change is covered.",
+        "Consumed operands lie above every protected local/frame record; append contracts require one free value slot. Numeric integer/code-reference and float conversions follow the reviewed value helpers; any float-to-integer conversion is finite and s32-representable.",
+        "Only specified helper writes and established VM push/pop values/depth are reviewed. Scheduling returns continue without a deferred handler. Evidence is source/Ghidra only; runtime, gameplay reachability and later resource lifetimes remain unproven.",
+        "Valid initialized current area, active camera index/storage/matrix and two20-byte interaction regions with retained flags2/1 are required. Object scale/radius/world position, projected values and candidate score are finite; radius and clip configuration satisfy the view-test domain.",
+        "Zero in any scale component returns ineligible without candidate writes. Held-handle equality forces both region bits after projection even if camera visibility rejected; nonheld invisible objects return ineligible. Primary-region objects more than12 units above playerY are reclassified secondary.",
+        "Only candidate score800B6C50, handle800B6C54 and flags800B6C58 may change, and only for a non-Pikachu object with region bits and score strictly below the old score. Held objects use score-2147483648. Other scores are50*abs(projectedX)-projectedZ+40*abs(projectedY). Ties preserve previous candidate.",
+        "Projection and view helpers write only projected C-stack scratch and outgoing ABI argument storage; no display list, camera record, actor or player storage changes. matrix34TransformPointVector is generated original-ROM hasm, not a C definition; its mapping/declaration are bound and its original instruction footprint is reviewed explicitly."
+      ],
+      "evidence": "Original Ghidra8011E214/80117ADC/8001E830..8001EA74 establishes append, boolean region reduction and three conditional candidate stores.8010CFF8 calls8003FB90 then reads area/camera; original8003FB90 has only three swc1 stores to output a2+0/+4/+8 and no calls;800024C8 is a read-only region test except outgoing C-stack argument stores. Original data800A4780 contains flags2,1. Source/layout/config mapping agree; no runtime evidence claimed."
+    },
+    {
+      "function": "actorScriptUpdateChapterAfterVisit",
+      "file": "src/ovl/actor_script_collection_profile.c",
+      "sha256": "d61ef7f04fc0b1b61f727020044312fc873fa8791ab6f22418f5b074be8c54ee",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Append resulting chapter after visit objectives and milestone unlock writes. Chapter3 counts visits;5/7 require objective conjunctions;8 may revert to7;9 reverts to7 and marks completion. Other valid chapters advance by one. All paths reapply chapter/unlock updates.",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressResolveFieldId",
+          "sha256": "bc9edb823ea95081219e7c5a011c4f2fc5b996c25adba7582a258d3f3edb561f"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressGetValue",
+          "sha256": "fb8b1f81a82ac75b37f30ad1e87f9e0bdbf809cb5ca47a14554437957988c1e3"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressSetValue",
+          "sha256": "37c9e42b3cfb95faeccdd8dfa2b40b730d78f478bf487f6709af3947be9344ee"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressAddValue",
+          "sha256": "bad5d639931e0551722e84b3af4bebaced7758c0971e22da4fe5d70f9213d959"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressReadFieldValue",
+          "sha256": "f8f8bacd90eaa18363e2b0a17e2c6c1d38998f3dac28851f5744e5c07a38c998"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressStoreFieldValue",
+          "sha256": "193a91e748dce20dc1511e7a0acc31d4b79e4bf9b2ec602c0019ba71f85ce96d"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/save_progress.c",
+          "sha256": "03fcec83e66ba712d4a3096287449258d2f57bf9a123acda605d281e80e49d32"
+        },
+        {
+          "kind": "file",
+          "file": "include/progress_field_ids.h",
+          "sha256": "becba3ef335829a348003831408c25e6739d0824127f3e3a566fb0198cf1bacb"
+        },
+        {
+          "kind": "file",
+          "file": "include/progress_field_types.h",
+          "sha256": "9c2c0450b682e4cb2278c1d3880bb74ec68701bada35773fa4cc33771924b7ea"
+        },
+        {
+          "kind": "file",
+          "file": "include/progress_fields.h",
+          "sha256": "8f8d456e6e32417ced73eeb945f40db0b02ee4951a3ce7e8dd84d8c8521432c4"
+        },
+        {
+          "kind": "file",
+          "file": "include/progress_value.h",
+          "sha256": "e1d7be308cd6a2ddb35b7c83db74ee7f9bd428546c88660bea0b23d2f00f884c"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/collection_presentation.c",
+          "function": "progressUpdateChapterAfterVisit",
+          "sha256": "6125ae3229e63ee0a50ee697b070b89c1ff1ab1aaa536c948aad59bca816ebc3"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/collection_presentation.c",
+          "function": "progressSetChapterAndUnlockMilestones",
+          "sha256": "016f6174a3c3458fc7f054d214af82ab283add19a4946dde09b8cfc9c650e349"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/player_companion.c",
+          "function": "playerSetChaseStage",
+          "sha256": "bcc8f09b005091521df3a3fdd657241ac2e587f2ea07916358dd6cd64cac82f4"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/collection_presentation.c",
+          "sha256": "ff292f80b35a1140948d2a791da86bf086812ed902e999726b186cfb13230523"
+        },
+        {
+          "kind": "file",
+          "file": "include/story_chapter.h",
+          "sha256": "48fe7f29db111e285941505acad7137db44d68da217d3c99db9da304764a795c"
+        },
+        {
+          "kind": "file",
+          "file": "include/story_milestones.h",
+          "sha256": "23291b8b6c648db7957cbd5fdd5b22d47390edebba62953e0d57691ff073fd19"
+        },
+        {
+          "kind": "file",
+          "file": "include/player_chase.h",
+          "sha256": "0ee751814616109ad3da22b25865a9c283c2d0a7469bbb3767f0621b2bc660ef"
+        },
+        {
+          "kind": "file",
+          "file": "include/player_profile.h",
+          "sha256": "1e08904f8626aedd4e0d41c303d3ede9283f13abe39ecc82fcd3100e324f892f"
+        },
+        {
+          "kind": "file",
+          "file": "include/matrix_types.h",
+          "sha256": "c8135a6ac50293376b4778483db97059e725e00da65dd880a227262c8a430a9f"
+        },
+        {
+          "kind": "file",
+          "file": "include/direction_animation_types.h",
+          "sha256": "82506e5f032bbc145cefad1ed15d3b129706899a67d87c1074e2e40ddee0009b"
+        },
+        {
+          "kind": "file",
+          "file": "include/action_script_types.h",
+          "sha256": "1b1bb25b8810dc94e9bcfadf092f0ac823fa850cbc003ac00776dd63e9aade37"
+        },
+        {
+          "kind": "file",
+          "file": "include/player_types.h",
+          "sha256": "0056df08b11d051f4243ed3806c8bd6fba129b936ac71cd6584ac7e1cfb6df85"
+        }
+      ],
+      "preconditions": [
+        "Actor, actor state, captured VM and value storage remain valid and disjoint from helper-written gameplay/global storage. Helpers retain the captured VM; no concurrent mutation, context replacement or lifecycle change is covered.",
+        "Consumed operands lie above every protected local/frame record; append contracts require one free value slot. Numeric integer/code-reference and float conversions follow the reviewed value helpers; any float-to-integer conversion is finite and s32-representable.",
+        "Only specified helper writes and established VM push/pop values/depth are reviewed. Scheduling returns continue without a deferred handler. Evidence is source/Ghidra only; runtime, gameplay reachability and later resource lifetimes remain unproven.",
+        "Initial chapter is0..9. Progress record/types/layout are initialized and valid for all accessed fixed field IDs, with aligned bounded word/halfword locations and packed fields entirely inside one byte. Limits match encoding; no EEPROM operation is performed.",
+        "At chapter3 increment field0xD and advance to4 plus chase stage1 when stored count>=4. At5, fields0x20/0xB9/0xBA/0xAC all nonzero advance to6, stage2, and clear0x1A/0x13/0x14. At7,0xE must be zero, profilePoints>itemKind8FCollectionValue+100 (sum fits s32), and fields0x23/0xAD/0xAF/0xBD/0xAE all nonzero to advance8. At8 field0xF0 chooses9 versus7;9 sets0xE=1 and returns7.",
+        "Store chosen chapter0; chapter>0 sets0x44, chapter>=3 additionally sets0x3B/0x3E/0x3C, chapter>=5 additionally sets0x3D/0x3F/0x43. Chase-stage paths store current byte800EF797 and preserve the maximum saved field0xC. Other gameplay writes are restricted to selected progress record bytes/bits."
+      ],
+      "evidence": "Original Ghidra80121228/8002AD9C complete switch and8002AD04 unlock stores agree with source.801127DC writes chase byte and conditionally saved field0xC through reviewed80032C44; remaining helper chain is reviewed width-bounded progress access. Return chosen chapter is independently passed into VM append; no callback, allocation or context replacement. No runtime evidence claimed."
     }
   ]
 }

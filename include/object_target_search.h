@@ -12,7 +12,8 @@
 /// \param cone Maximum absolute horizontal viewing angle in degrees; at least 360 disables filtering.
 /// \param minKind Inclusive minimum runtime kind.
 /// \param maxKind Inclusive maximum runtime kind.
-/// \returns Borrowed live object, or null when no target qualifies.
+/// \pre The registered-object tree contains at least one valid object.
+/// \returns Borrowed registered object, or null when no target qualifies.
 u8 *objectFindNearestTargetInView(u8 *self, Vec3f *origin, f32 distance, f32 *rotation, f32 cone, s32 minKind,
                                   s32 maxKind);
 
@@ -24,7 +25,8 @@ u8 *objectFindNearestTargetInView(u8 *self, Vec3f *origin, f32 distance, f32 *ro
 /// \param cone Maximum absolute horizontal viewing angle; at least 360 disables filtering.
 /// \param minKind Inclusive minimum kind; 38 selects the first creature kind.
 /// \param maxKind Inclusive maximum kind; 38 selects Pikachu.
-/// \returns Borrowed live actor, or null when no target qualifies.
+/// \pre The registered-object tree contains at least one valid object.
+/// \returns Borrowed registered actor, or null when no target qualifies.
 u8 *actorFindNearestInRange(u8 *self, Vec3f *origin, f32 distance, f32 *rotation, f32 cone, s32 minKind, s32 maxKind);
 /// Find an actor near a supplied position, using script kind aliases.
 /// \param object Live object excluded from the search.
@@ -32,6 +34,7 @@ u8 *actorFindNearestInRange(u8 *self, Vec3f *origin, f32 distance, f32 *rotation
 /// \param minKind Inclusive minimum kind; 38 selects the first creature kind.
 /// \param maxKind Inclusive maximum kind; 38 selects Pikachu.
 /// \param distance Exclusive maximum approximate distance.
+/// \pre The registered-object tree contains at least one valid object.
 /// \returns Nearest qualifying handle, or zero when none qualifies.
 s32 actorFindNearestHandleFromPosition(u8 *object, f32 *position, s32 minKind, s32 maxKind, f32 distance);
 
@@ -41,6 +44,7 @@ s32 actorFindNearestHandleFromPosition(u8 *object, f32 *position, s32 minKind, s
 /// \param maxKind Inclusive maximum runtime kind.
 /// \param distance Exclusive maximum approximate distance.
 /// \param cone Maximum horizontal angle in degrees; at least 360 disables filtering.
+/// \pre The registered-object tree contains at least one valid object.
 /// \returns Nearest qualifying handle, or zero when none qualifies.
 s32 objectFindNearestHandleInFacingCone(u8 *object, s32 minKind, s32 maxKind, f32 distance, f32 cone);
 
@@ -50,6 +54,7 @@ s32 objectFindNearestHandleInFacingCone(u8 *object, s32 minKind, s32 maxKind, f3
 /// \param minKind Inclusive minimum runtime kind.
 /// \param maxKind Inclusive maximum runtime kind.
 /// \param distance Exclusive maximum approximate distance.
+/// \pre The registered-object tree contains at least one valid object.
 /// \returns Nearest qualifying handle, or zero when none qualifies.
 s32 objectFindNearestHandleFromPosition(u8 *object, f32 *position, s32 minKind, s32 maxKind, f32 distance);
 
@@ -59,6 +64,7 @@ s32 objectFindNearestHandleFromPosition(u8 *object, f32 *position, s32 minKind, 
 /// \param maxKind Inclusive maximum kind.
 /// \param distance Exclusive maximum approximate distance from the search origin.
 /// \param cone Maximum horizontal angle in degrees; 360 or greater permits all directions.
+/// \pre The registered-object tree contains at least one valid object.
 /// \returns The nearest qualifying actor handle, or zero when none is found.
 /// \note Original decompilation identifier: \c func_80118984 (0x80118984).
 s32 actorFindNearestHandleInFacingCone(u8 *object, s32 minKind, s32 maxKind, f32 distance, f32 cone);

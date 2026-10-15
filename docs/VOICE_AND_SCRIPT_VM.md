@@ -500,6 +500,8 @@ concurrent changes.
 
 The decoder validates explicit source fingerprints for each reviewed callback,
 its scalar-push helpers, stack macros and relevant value/command definitions.
+Embedded actor layouts are bound as well as helper bodies: changing a nested
+record can move VM or gameplay fields without changing a caller.
 Source or dependency changes revoke the affected evidence rather than creating a
 new review. Tests require the checked-in reviews to remain current. Unreviewed
 callbacks remain explicit in `native_effect_frontier`.
@@ -860,6 +862,58 @@ already stopped. Each native's protected-value and alias conditions remain expli
 Changing a cue has a separate three-operand and ROM/sequence-startup review
 frontier, including failed allocation/start behavior; the cue-rate contract does
 not cover that path.
+
+Search natives return handles but also change shared search state. Object and
+actor facing searches consume minimum kind, maximum kind, distance and cone.
+Position searches consume X/Y/Z, minimum kind, maximum kind and distance. Item
+searches consume minimum kind, maximum kind, distance, cone, state filter and
+weighted preference. Each replaces all its operands with one integer handle or
+zero. Every consumed operand must lie above protected locals and frame records.
+
+Object searches use an exclusive approximate-distance limit and exclude the
+executing object. They require a nonempty initialized object tree. Actor endpoint
+38 maps to the first creature kind for the minimum and Pikachu for the maximum.
+Object facing uses the object's rotation; actor item search uses actor-state
+orientation, and player-view item search uses player position and view yaw.
+
+Item searches use an inclusive raw-distance limit. Endpoint 165 maps to minimum
+one or maximum 164; state filter six bypasses ownership-state filtering. A weighted
+search adds a penalty mapping priority zero through two to two hundred through
+zero, clamped at the endpoints. It then clears the selected item's priority.
+Weighting can select a farther item, and the ranked score may exceed the raw
+maximum distance. Ties retain the first qualifying traversal candidate. Cone
+limits are also distinct: object cones of at least 360 and item cones of at least
+180 disable angular filtering.
+
+Both query families overwrite shared contexts and perform splay lookups that may
+change tree roots and links. Traversal installs its own callback and clears it
+instead of restoring an earlier visitor. They are nonreentrant; registry nodes,
+objects and query storage must remain valid and disjoint from the VM. No new
+allocation or ownership transfer occurs, and no separate available-handle lookup
+extends the returned handle's lifetime. Empty initialized item trees return zero.
+
+Eleven authored original-instruction searches verify unrestricted-cone boundaries,
+kind/state exclusion, empty item trees, priority weighting/reset and protected VM
+storage. A separate object prefix stops before calling the query helper; it does
+not establish support for an empty object tree. Narrow-cone behavior has source
+and original-instruction review but no runtime coverage in these probes.
+
+Five additional state contracts retain their own distinctions. Fixed destination
+consumes X/Y/Z/allowance, supplies zero, selects fixed targeting and preserves the
+old stored handle. Escape tracking can return category zero after successful
+selection; an unavailable handle clears only mode. Separation at most 0.001 uses
+the live fallback object without RNG advancement; otherwise one RNG advance
+chooses an angle from -15 through 44 degrees. The secondary-meter native adjusts
+the active Pikachu's owning root, which may differ from the calling actor.
+
+Interaction-region eligibility does not guarantee selection as preferred target.
+Only a strictly better eligible score replaces the candidate; ties preserve it,
+and Pikachu itself cannot replace it. Chapter advancement is also conditional:
+visits and objective flags gate particular chapters, and chapters eight or nine
+can revert to seven. The native reapplies milestone unlock writes even when the
+chapter remains unchanged. These are source-bound immediate contracts under valid
+camera, actor, progress and borrowed-resource prerequisites; later gameplay and
+persistence remain separate obligations.
 
 The source-bound manifest distinguishes scalar and borrowed string results, immediate
 request contracts and reviewed deferred phases. Other requests remain partially reviewed
