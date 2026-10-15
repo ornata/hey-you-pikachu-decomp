@@ -287,3 +287,75 @@ chooses horizontal speed independently of the command speed; the command still
 scales its vertical component. Kinds outside zero through seven are unsupported.
 The original branches and three launch tables establish these descriptions;
 they do not establish animation intent, gameplay reachability or collision behavior.
+
+## Script decoder
+
+The independent Python reader supports three separate formats:
+
+| Format | Representation | Consumer |
+| --- | --- | --- |
+| `vm` | One-byte opcodes with packed five-byte operands | `actorRunScriptVm` |
+| `cue` | Twenty-byte timed cues and selection tags | `actorUpdateActionScript` |
+| `sequence` | Sixteen-byte action-sequencer records | `actionScriptUpdate` |
+
+Start with a newly authored example, without a ROM:
+
+```sh
+python3 -m tools.script_decoder vm --demo
+python3 -m tools.script_decoder cue --demo
+python3 -m tools.script_decoder sequence --demo
+```
+
+Each command writes `listing.txt` and `listing.json` under
+`build/script-decoder/demo-FORMAT/`. The text shows labels, operand roles, candidate
+branches/calls and source locations. JSON also records raw tag/payload encodings,
+unresolved tag-2 uses, opcode/tag counts, diagnostics and unparsed byte ranges.
+No extracted retail scripts or strings are bundled with the tool or examples.
+
+For your normalized USA ROM, supply an explicit window. For example, after a
+matching build, the first retained action-sequencer program can be read with:
+
+```sh
+python3 -m tools.script_decoder sequence --symbol 0x8006EE60 \
+  --elf build/pikachu.elf --bytes 0x20
+```
+
+Use `--rom-offset OFFSET --bytes LENGTH` for a known ROM range, or
+`--symbol SYMBOL_OR_ADDRESS --elf build/pikachu.elf --bytes LENGTH` for a known
+mapped program. Scene addresses require the exact `--section .scene_NAME`.
+The tool authenticates mapped ELF section bytes against the supplied ROM;
+it does not guess which overlay was active during a runtime capture.
+
+For a VM configuration, use `vm --config SYMBOL_OR_ADDRESS --elf ... --bytes ...`.
+This reads the established configuration prefix and follows its program pointer
+within the explicit mappings. Add `--native-count COUNT` to bound its command
+table. For a standalone VM program, native resolution instead takes
+`--native-table SYMBOL_OR_ADDRESS --native-count COUNT`. Counts include any
+reserved null slot. The retained `D_8012B400` table has 279 slots, including slot 0.
+Alternative tables must be identified explicitly; their slots need not agree.
+
+Native-handler links come from the authenticated table, not merely matching
+selector numbers. Four retained text handlers also consume an inline packed
+string-count operand. Their reviewed layouts preserve the next instruction
+boundary. Unknown handler layouts stop that path; argument stack effects and
+dynamic return locations remain unresolved. VM calls expose both their target
+and return continuation, while conditional branches expose both possible paths.
+Use repeated `--entry OFFSET` options to inspect additional known VM entry points.
+VM targets are offsets from the program start: keep that start at window offset
+zero rather than rebasing a fragment taken from the middle of a program.
+
+Decompressed or captured script windows can be read with
+`--input /path/to/local/script.bin --bytes LENGTH`, optionally adding
+`--input-offset OFFSET`. Such inputs are explicitly marked as lacking ROM
+authentication. Decompression, heap relocation, string extraction and automatic
+resource discovery are outside this decoder. `--bytes` bounds a read; it does not
+assert that the complete allocation or program size is known.
+Raw VM inputs may still use `--elf`, `--native-table` and `--native-count` to resolve
+handlers from your ROM. The report authenticates those tables separately and
+continues to mark the input script as unauthenticated.
+
+All listings stay under ignored `build/script-decoder/`; `--output` may select a
+subdirectory there. Keep extracted content and generated listings local. The CLI
+returns 0 for a decode without diagnostics, 1 for a partial decode with diagnostics,
+and 2 for an input or mapping error. None of these results establishes execution,
+gameplay reachability, resource ownership or a recovered source-language meaning.

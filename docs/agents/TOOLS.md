@@ -93,6 +93,7 @@ use that analysis copy as a build input.
 | `tools/set_o32abi_bit.py` | Tag IDO `-mips3 -32` objects as o32 so GNU ld links them. |
 | `tools/asm-processor/` | `GLOBAL_ASM` / data injection used by every C unit's build. |
 | `tools/run_game.sh` | Optional local runtime launch. |
+| `tools/script_decoder/` | Decode local VM bytecode, actor cues and action-sequencer records; `python3 -m tools.script_decoder vm --demo` uses synthetic data. |
 
 Nix supplies the pinned IDO compiler. Optional m2c, asm-differ and decomp-permuter
 checkouts must be obtained separately; their `tools/` paths remain git-ignored.

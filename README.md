@@ -100,6 +100,17 @@ for function names and source paths. Machine-readable manifests remain in `docs/
 [Voice interaction and actor scripts](docs/VOICE_AND_SCRIPT_VM.md) traces recognition,
 message delivery, cooperative VM execution, and the lower-level action sequencer.
 
+Try the script decoder without a ROM:
+
+```sh
+python3 -m tools.script_decoder vm --demo
+# Also supports: cue --demo, sequence --demo
+```
+
+Listings go under `build/script-decoder/`. See the
+[decoder guide](docs/VOICE_AND_SCRIPT_VM.md#script-decoder) for local-ROM inputs
+and links from decoded operations to C handlers. Only synthetic examples are bundled.
+
 ## Undefined behaviour
 
 Although it's easy to run UBSan to find UB with modern compilers, UB known/understood
