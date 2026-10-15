@@ -183,14 +183,14 @@ s32 sequenceEngineGetVoicePan(VoicePlayer *driver, EngineSequence *sequence, Seq
     s32 pan;
 
     if (driver->outputMode == AUDIO_OUTPUT_MONO) {
-        return 0x40;
+        return AL_PAN_CENTER;
     }
-    pan = voice->sound->samplePan + (sequence->channels[voice->channel].pan >> 7) - 0x40;
-    if (pan < 0) {
-        pan = 0;
+    pan = voice->sound->samplePan + (sequence->channels[voice->channel].pan >> 7) - AL_PAN_CENTER;
+    if (pan < AL_PAN_LEFT) {
+        pan = AL_PAN_LEFT;
     }
-    if (pan >= 0x80) {
-        pan = 0x7F;
+    if (pan >= AL_PAN_RIGHT + 1) {
+        pan = AL_PAN_RIGHT;
     }
     return pan;
 }

@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 843,
-      "unique_spellings": 463,
+      "occurrences": 844,
+      "unique_spellings": 464,
       "files": 64
     },
     "cast_offset_candidates": {
@@ -2092,6 +2092,9 @@
         "raw_offset_candidates": {
           "voiceRecord + 0x14": [
             "121:56"
+          ],
+          "AL_PAN_RIGHT + 1": [
+            "192:16"
           ],
           "channel + 0x24": [
             "254:18"
