@@ -621,6 +621,34 @@ branches with full storage guards. Visibility enable and disable use separate
 states, rather than a claimed live game trajectory. Unicorn raised unsupported
 CPU exceptions for these fixtures; its runs supply no acceptance evidence.
 
+Further source-bound contracts distinguish immediate placement from movement
+updates. `actorScriptMoveToTargetPosition` copies the stored target into both
+local and cached world coordinates, even when the actor has a separate hierarchy
+root. It performs no coordinate conversion, traversal or seek completion, and
+leaves velocity, tracking, target handles and timers unchanged. Later updates
+can therefore move it again.
+
+The uniform-scale query returns the first stored scale component. For objects
+with area scaling enabled, it divides that component by the current area's scale;
+it does not combine the other axes. Unavailable handles, including pending
+destruction and toolbox-owned items, return floating zero. Initialized area data
+and a finite nonzero area scale remain prerequisites for that branch.
+
+Thirteen original-instruction probes cover placement with distinct local/world
+coordinates and a separate root, raw signed area IDs, unavailable objects, and
+positive/negative scale values with area scaling enabled or disabled. Full
+storage guards preserve unrelated records and protected VM values. These cases
+establish immediate effects, without rendered-hierarchy or lifetime guarantees.
+
+`actorScriptPlayCue` consumes a cue ID and returns a logical playback handle,
+continuing execution. It does not change the current-cue selection. Startup at
+full volume is immediate; exhausted slots return zero. A positive handle records
+slot assignment even when MIDI header initialization fails, so it does not prove
+audible playback. The source-bound review includes bank-cache and first-header
+transfers under explicit PI-manager, queue, buffer and scheduling preconditions;
+later MIDI decoding and synthesis remain separate. No new runtime probe of this
+cue native is claimed.
+
 The alternate shared-text builder has a separate `shared_text` sink contract. Its
 inline count consumes that many representations and returns integer zero. Text is
 the first 79 bytes of concatenation in argument order, retained until another
@@ -728,6 +756,34 @@ area-relative selector must resolve to a valid field; these update helpers do no
 reject the missing-field sentinel. Addition must fit signed 32-bit arithmetic
 before clamping. The area selection and borrowed metadata must remain stable.
 These operations change in-memory storage; they do not write EEPROM.
+
+The catalog's `progress_fields` authenticates all 244 field encodings, eight
+encoding-limit records and 161 area-selector cells. `progress_field_requests`
+links read/minimum/maximum/set/add operands to these records, attaching recovered
+names only where the source establishes them. Symbolic selectors remain
+expressions. Area-relative requests retain every current-area alternative,
+including absent entries; the containing script's scene is not assumed to be
+the runtime current area. No live save contents or field meanings are inferred
+from an encoding or numeric ID alone.
+
+Progress read contracts require a direct field in 0–243 or an area-relative
+selector that resolves to one. Bit 30 selects a row from the seven-row table;
+the current area chooses its column. Missing entries contain -1, which these
+getters do not reject. The final retained row/area cell is also absent; a symbol's
+shorter inferred size must not hide that final table word. Minimum and maximum
+come from the field's encoding rather than a gameplay-specific threshold.
+Value reads sign-extend signed encodings, zero-extend unsigned encodings and
+extract packed fields without clamping. Packed masks retain original MIPS
+variable-shift behavior; their oversized C shift counts are not portable host C.
+The current-area native simply returns the signed global word without enforcing
+the loaded-area range. These getters perform no EEPROM operations or callbacks.
+
+Twenty-four progress-getter cases replayed three times use the original field
+layout initializer and guard all tables, the live save record, layout, VM and
+stack. They cover all seven encodings present in the retail catalog; signed
+halfword encoding is absent. Row six/current area eight resolves to field 116
+and is exercised by all three getters. Row six/current area 22 resolves to -1
+and is recorded as an excluded unsafe call, rather than tested as a valid getter.
 
 Friendship awards affect the primary player, independently of the calling actor.
 An already-earned milestone leaves the player and progress flag unchanged. A new

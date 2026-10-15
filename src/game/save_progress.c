@@ -378,6 +378,8 @@ void progressInitializeFieldStorageLayout(void) {
 /// \note UB: K&R definition; callers pass only idx, so type is a dead parameter reused as a local
 /// (the ROM keeps it in a1)
 /// \note Original decompilation identifier: \c func_80032830 (0x80032830).
+/// \note Portability: packed-field masks rely on original MIPS variable-shift semantics;
+/// evaluating their oversized shift counts as ordinary host C is undefined.
 s32 progressReadFieldValue(fieldId, type)
 s32 fieldId;
 s32 type;
@@ -416,6 +418,8 @@ s32 type;
 /// \param value Requested field value.
 /// \returns The value stored after applying the field’s limits.
 /// \note Original decompilation identifier: \c func_80032968 (0x80032968).
+/// \note Portability: packed-field masks rely on original MIPS variable-shift semantics;
+/// evaluating their oversized shift counts as ordinary host C is undefined.
 s32 progressStoreFieldValue(s32 fieldId, s32 value) {
     ProgressFieldTypeLimits *limits = &gProgressFieldTypeLimits[gProgressFieldTypes[fieldId]];
     u8 *save = gProgressSaveRecord;
