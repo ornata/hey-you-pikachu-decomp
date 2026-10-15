@@ -105,6 +105,8 @@ def test_catalog_preserves_candidate_scope_and_direct_creation_evidence(tmp_path
     monkeypatch.setattr(module, 'actor_kind_records', lambda image: [])
     monkeypatch.setattr(module, 'vocabulary_catalog', lambda image: {'scope': 'Invented vocabulary fixture.'})
     monkeypatch.setattr(module, 'pokemon_name_catalog', lambda image, vocabulary: None)
+    monkeypatch.setattr(module, 'control_scheme_catalog', lambda image: {
+        'schemes': [], 'modes': [], 'scope': 'Invented control fixture.'})
     raw = resource()
 
     class Elf:
@@ -134,6 +136,7 @@ def test_catalog_preserves_candidate_scope_and_direct_creation_evidence(tmp_path
     assert report['candidate_count'] == report['diagnostic_free_candidates'] == 1
     assert report['directly_created_candidates'] == 1
     assert report['voice_vocabulary'] == {'scope': 'Invented vocabulary fixture.'}
+    assert report['player_control_schemes']['scope'] == 'Invented control fixture.'
     row = report['configurations'][0]
     assert row['direct_creation_sites'][0]['script_symbol'] == 'inventedConfig'
     assert row['frame_operands'] == [dict(argument_count=0, local_count=0, frame_index=0)]

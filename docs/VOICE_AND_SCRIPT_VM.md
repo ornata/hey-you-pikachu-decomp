@@ -663,6 +663,22 @@ game is in text-window mode. Applying a scheme also runs the previous player mod
 optional leave callback before selecting new callbacks and permissions. Those
 callback effects remain a separate review obligation.
 
+The decoder's `player_control_schemes` catalog authenticates all 28 scheme records
+and 32 behavior-mode records. Each scheme links its mode, controller port and
+retained input mask; each mode links update/leave callbacks and permissions. The
+three leave callbacks are `playerFinishStun`, `playerFinishHelpDisplay` and
+`playerFinishTargetFocus`. Their effects include screen/rumble cleanup or restoring
+companion control, and remain explicit in `leave_callback_frontier`.
+
+Across the retained configuration views, all 323 control-scheme requests have
+bounded argument expressions. The 322 literal requests select valid catalog
+indices; one playground request uses frame-one local zero. In configuration
+`scene_playground/8013e1bc`, that local has literal assignment sites for schemes 16
+and 1 before the request. These are candidate values for its scoped control-resume
+role, rather than a closed runtime domain: intervening script/native effects still
+need review. A table link or argument expression does not prove that a request is
+reachable or that its mode transition safely completes.
+
 ## Area scenario selection
 
 `presentationInitializeForCurrentArea` selects `gAreaScenarioIndex` from story

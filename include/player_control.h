@@ -70,6 +70,9 @@ void playerApplyControlScheme(s32 scheme);
 /// Select the primary control scheme and controller assignment.
 /// \param scheme Control-scheme identifier from zero through twenty-seven.
 /// \returns Nothing.
+/// \note Requires initialized primary player state and the resources needed by
+/// its previous mode's completion callback. Borrowed resources must remain valid
+/// throughout the transition.
 /// \note Original decompilation identifier: \c func_80111A00 (0x80111A00).
 void playerSelectControlScheme(s32 scheme);
 
