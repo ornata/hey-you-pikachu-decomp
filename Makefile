@@ -21,6 +21,10 @@ default: all
 
 BUILD := build
 
+# Keep the shared pre-commit formatting hook installed in every worktree that
+# builds. Idempotent; see tools/setup_hooks.sh.
+SETUP_HOOKS := $(shell sh tools/setup_hooks.sh >&2)
+
 BASEROM  := rom/baserom.us.z64
 TARGET   := $(BUILD)/pikachu.z64
 GOODSHA1 := da1a1e47a86720f9d54fb2d2d247480041bda824
@@ -197,10 +201,13 @@ run: $(TARGET)
 format:
 	clang-format -i $(C_FILES)
 
-# Fails if a staged C file is unformatted. The pre-commit hook (enable with
-# `git config core.hooksPath .githooks`) applies the formatting instead.
+# Fails if a staged C file is unformatted. The pre-commit hook installed by
+# setup-hooks applies the formatting instead.
 format-check:
 	@sh tools/format_staged.sh --check
+
+setup-hooks:
+	@sh tools/setup_hooks.sh
 
 # Semantic recovery inventory, independent of the matching-function census.
 source-quality:
@@ -261,7 +268,7 @@ verify: check check-names check-scene-callbacks check-item-callbacks check-objec
 	python3 tools/compare_objects.py $(BASELINE) $(BUILD)
 	git diff --check
 
-.PHONY: default all clean distclean split check expected run format format-check \
+.PHONY: default all clean distclean split check expected run format format-check setup-hooks \
         asm-fallback-summary asm-fallbacks verify-clean progress check-names \
         source-quality tidy semantic-review missing-dependencies \
         compare-objects check-interfaces check-layouts check-sequence-bank \
