@@ -80,6 +80,19 @@ def action_context(registers, vm_address, read_word):
     return result
 
 
+def capture_program(read, program, size, output):
+    """Save a bounded, read-only live byte window; its extent is not an allocation claim."""
+    if not 1 <= size <= 65536 or not 0x80000000 <= program < program + size <= 0x80800000:
+        raise ValueError("program capture must fit RDRAM and contain 1..65536 bytes")
+    raw = read(program, size)
+    if len(raw) != size:
+        raise ValueError("short live program read")
+    path = Path(output) / f"program-{program:08x}.bin"
+    path.write_bytes(raw)
+    return dict(program=program, size=size, file=path.name,
+                sha256=hashlib.sha256(raw).hexdigest())
+
+
 def remove_owned_breakpoints(core, addresses):
     """Remove only this driver's execution breakpoints after execution ends.
 
@@ -104,6 +117,7 @@ def run(
     response=None,
     gfx=None,
     poll_bound=3300,
+    capture_program_bytes=0,
 ):
     """Run a blank-save scenario to a deterministic voice-poll boundary.
 
@@ -111,6 +125,8 @@ def run(
     original program; all injected values enter through the input plugin ABI.
     """
     output = Path(output)
+    if not 0 <= capture_program_bytes <= 65536:
+        raise ValueError("program capture size must be 0..65536")
     output.mkdir(parents=True, exist_ok=True)
     state = output / "state"
     if state.exists() and any(state.iterdir()):
@@ -139,6 +155,7 @@ def run(
     lib.SetControllerValue.argtypes = [C.c_uint]
     events, hits, pending_calls, branches = [], {}, {}, {}
     installed = set()
+    captured_programs = set()
     armed, last_state, completed, active_actor = False, None, False, 0
     log = (output / "runtime-events.jsonl").open("w")
 
@@ -290,6 +307,10 @@ def run(
                 offset = read32(vm + 0x14)
                 if kind == "branch_before":
                     program = read32(vm + 4)
+                    if capture_program_bytes and hits.get("poll", 0) >= 2000 and program not in captured_programs:
+                        captured = capture_program(m.read, program, capture_program_bytes, output)
+                        record("program_capture", vm=vm, actor=actor, **captured)
+                        captured_programs.add(program)
                     branches[(sp, vm)] = dict(
                         actor=actor,
                         vm=vm,
@@ -359,6 +380,8 @@ if __name__ == "__main__":
     p.add_argument("--poll-bound", type=int, default=3300)
     p.add_argument("--mode", choices=["pulse", "none", "adaptive"], default="adaptive")
     p.add_argument("--control", action="store_true")
+    p.add_argument("--capture-program-bytes", type=int, default=0,
+                   help="Read this many live program bytes once per address after poll 2000 (max 65536)")
     a = p.parse_args()
     response = (
         None
@@ -382,6 +405,7 @@ if __name__ == "__main__":
         response,
         a.gfx,
         a.poll_bound,
+        a.capture_program_bytes,
     )
     print(
         json.dumps(

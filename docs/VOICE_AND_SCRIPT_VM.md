@@ -397,13 +397,41 @@ Scheduler notifications use the separate `GameMessageKind` domain.
 | 16: action notification | `actionCommandNotifyStoredTarget` | Cue values in arguments 0/2/3; sender actor handle in argument 4. |
 | 17: proxy used | `playerConsumeInteractionProxy` | Proxy metadata in argument 0, remaining uses in 2 and proxy handle in 4. |
 
-The credits-overlay candidate at program address 0x8013C0E4 reproduces the message
-filter offsets and targets recorded by the existing opening voice scenario. It
-tests categories 13, 15 and 14 before copying other categories into local slots.
-A forest-edge candidate shares those checkpoints; live resource-byte capture is
-still needed to distinguish their full identity. Category 13 also needs its
-script-side producers reconciled. These
-category names establish producer contracts; they do not identify every recipient
+The opening voice scenario executes program 0x8013C0E4. A read-only live capture
+at poll 2086 matches all 29,924 bytes from that address to configuration
+0x801435C8 in `.scene_viridian_edge`. The credits candidate at the same program
+address differs at byte 10. Independently, all 19,105 conditional branches in the
+retained observation window agree with the forest-edge decode. The program tests
+categories 13, 15 and 14 before copying other categories into local slots. Matching
+this byte window establishes the resource correspondence; it does not establish
+its complete allocation, actor ownership, or the meaning of every variable.
+
+The catalog's `script_message_posts` entries recover arguments for 138 of 150
+decoded calls to `actorScriptPostMessage`; 12 remain explicitly unresolved.
+These counts include repeated configurations (120 distinct code/offset call
+sites). A recovered call has six contiguous literal/variable pushes and no
+competing entry into their interior. The argument order is recipient handle,
+type, argument 0, argument 2, argument 3 and argument 4. The native handler sets
+argument 1 to zero, rejects missing recipients, requests unforced delivery and
+pushes success. Variable operands retain their frame/slot coordinates; they are
+not inferred actor identities or persistent variable names.
+
+Of those recovered calls, 126 construct category 13 across 15 scene sections.
+Their payloads vary, so category 13 and its subcommands still need recipient-side
+analysis before receiving gameplay names. These category names establish
+producer contracts; they do not identify every recipient
 reaction or override arbitrary messages constructed by script code. Impact cases
 check the exact mailbox payload and pending-message rejection with synthetic
 velocities, without claiming collision or item-lifetime coverage.
+
+To compare a local live capture with the ROM-backed candidates:
+
+```sh
+python3 -m tools.script_decoder.live --runtime build/semantic-review/decoded-live-program/runtime.json
+```
+
+The voice runtime driver accepts `--capture-program-bytes 29924` to save one
+read-only window per observed program address after poll 2000. Captures remain
+under the local runtime output directory. The comparison authenticates the ROM,
+ELF mappings, runtime ROM digest and captured-file digest, and reports every
+same-address candidate separately. A shorter shared prefix can remain ambiguous.

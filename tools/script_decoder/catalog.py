@@ -17,6 +17,7 @@ from .context import ROOT, LocalImage, native_layouts, opcode_names
 from .formats import decode_vm, integer_operand
 from .__main__ import OUTPUT, number
 from tools.source_quality import code_only
+from .messages import message_posts
 
 
 def candidates(raw, base, commands):
@@ -114,6 +115,7 @@ def catalog(image, max_instructions=100000):
                              decoded_code_sha256=signature.hexdigest(), code_reference_roles=dict(roles),
                              code_reference_uses=references, global_indices=sorted(globals_used),
                              frame_operands=frames, native_calls=dict(native_calls),
+                             script_message_posts=message_posts(decoded['instructions']),
                              listing=identity + '.json'))
             decodes[identity] = decoded
     if not rows:
