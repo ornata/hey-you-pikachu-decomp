@@ -139,6 +139,19 @@ def test_changed_dependency_or_unsupported_contract_keeps_callback_unreviewed(tm
     assert not report['active'] and report['stale_callbacks'] == ['getter']
 
 
+def test_two_argument_replacement_requires_its_exact_effect_and_stack_delta(tmp_path):
+    manifest = setup_review(tmp_path)
+    row = manifest['callbacks'][0]
+    row.update(effect='replace_arguments_with_scalar', arguments=2, stack_delta=-1)
+    assert set(native_frame_reviews(tmp_path, manifest)['active']) == {'getter'}
+    for field, invalid in (('arguments', 1), ('arguments', 3), ('stack_delta', 0),
+                           ('stack_delta', -2), ('effect', 'replace_argument_with_scalar')):
+        previous = row[field]
+        row[field] = invalid
+        assert not native_frame_reviews(tmp_path, manifest)['active']
+        row[field] = previous
+
+
 def test_callback_specific_helper_changes_revoke_only_dependent_reviews(tmp_path):
     code = ('void firstHelper(void) { writeFirst(); }\nvoid secondHelper(void) { writeSecond(); }\n'
             's32 first(void) { firstHelper(); return 0; }\ns32 second(void) { secondHelper(); return 0; }')

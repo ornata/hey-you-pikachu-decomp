@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "purpose": "Explicit scalar and immediate action-request storage contracts; source changes revoke evidence until reviewed again. Deferred handlers remain separate.",
-  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases. Twelve action-request wrappers and their two-field scheduling helper reviewed against original Ghidra801167A0 and all twelve original wrapper addresses; twenty-four direct original-instruction request cases guard all VM fields and pending/protected values. Selector-three deferred dispatch and helper chain reviewed against original Ghidra80117098/8000F4C4/801167BC/800120F0 and eight guarded direct-dispatch/scheduler cases. Selector-two startup and waiting helpers reviewed against original Ghidra80116800/80012034; twelve guarded direct/scheduler cases cover numeric tags, original null sentinel, waiting and completion. Player input-mask field names now include synthetic stick flags, separately from permission flags; unchanged prefix layout and the reviewed permission/position reads were rechecked against matching objects before rebinding the two affected header dependencies. Additional permission names for Pikachu/follow selection and stun reaction leave the permission storage and reviewed view/position access unchanged; the two header dependencies were rechecked after strict matching verification. Ten additional permission names retain identical player storage and reviewed view/position accesses; header bindings rechecked after all483 objects and ROM matched. Selector-nine cost admission, root-resource adjustment and HUD helper were checked against Ghidra80116BC4/80014A3C, the authenticated five-record table and fourteen guarded original-instruction startup/poll/completion observations, including distinct actor/root resource records. The root and script actor states are explicitly distinguished. Acknowledgement native and helper checked against Ghidra8011C84C/80119200 and four original-instruction probes, including raw nonboolean word preservation; message fields remain unchanged. Four distance/target append contracts checked against original Ghidra801172D4/80118838/801187E4/8011C674/8011CB38/8011D208/8011DBF8/801177FC/80118B30/8003A5FC/8003A6F0 and twelve guarded original-instruction probes with distinct local/world coordinates, approach clamping, fixed/follow selection and unavailable-target exclusions. The actor-state header replaces only the producer-established four-byte approach sample with f32 and adds its offset assertion; all other declarations remain token-identical. Five further handle-consuming query contracts checked against original Ghidra8011730C/80117388/8011D240/8011D288/80117840/801178EC/8011DCB0/8011DCF8/80117E80/8011EA9C and23 guarded original-instruction observations. Runtime kind130 is authenticated against its retained callback record selecting80027430/8002747C, whose allocation and speed accesses establish the shared four-byte spinner state; six updater observations cover decay, negative retained values, voice-distance endpoints, speed cap and yaw wrap. Independent agent RNG review authenticated original wrapper/helper instructions and fifteen guarded interpreter observations at62bceac: inclusive unit-float endpoints including the observed rounding threshold, unsigned remainder for positive signed bounds, no advancement for nonpositive bounds, numeric conversion and unchanged protected VM storage. Reports retain original ROM/ELF/core/source fingerprints; FCR31 threshold is qualified to observed interpreter rounding.",
+  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases. Twelve action-request wrappers and their two-field scheduling helper reviewed against original Ghidra801167A0 and all twelve original wrapper addresses; twenty-four direct original-instruction request cases guard all VM fields and pending/protected values. Selector-three deferred dispatch and helper chain reviewed against original Ghidra80117098/8000F4C4/801167BC/800120F0 and eight guarded direct-dispatch/scheduler cases. Selector-two startup and waiting helpers reviewed against original Ghidra80116800/80012034; twelve guarded direct/scheduler cases cover numeric tags, original null sentinel, waiting and completion. Player input-mask field names now include synthetic stick flags, separately from permission flags; unchanged prefix layout and the reviewed permission/position reads were rechecked against matching objects before rebinding the two affected header dependencies. Additional permission names for Pikachu/follow selection and stun reaction leave the permission storage and reviewed view/position access unchanged; the two header dependencies were rechecked after strict matching verification. Ten additional permission names retain identical player storage and reviewed view/position accesses; header bindings rechecked after all483 objects and ROM matched. Selector-nine cost admission, root-resource adjustment and HUD helper were checked against Ghidra80116BC4/80014A3C, the authenticated five-record table and fourteen guarded original-instruction startup/poll/completion observations, including distinct actor/root resource records. The root and script actor states are explicitly distinguished. Acknowledgement native and helper checked against Ghidra8011C84C/80119200 and four original-instruction probes, including raw nonboolean word preservation; message fields remain unchanged. Four distance/target append contracts checked against original Ghidra801172D4/80118838/801187E4/8011C674/8011CB38/8011D208/8011DBF8/801177FC/80118B30/8003A5FC/8003A6F0 and twelve guarded original-instruction probes with distinct local/world coordinates, approach clamping, fixed/follow selection and unavailable-target exclusions. The actor-state header replaces only the producer-established four-byte approach sample with f32 and adds its offset assertion; all other declarations remain token-identical. Five further handle-consuming query contracts checked against original Ghidra8011730C/80117388/8011D240/8011D288/80117840/801178EC/8011DCB0/8011DCF8/80117E80/8011EA9C and23 guarded original-instruction observations. Runtime kind130 is authenticated against its retained callback record selecting80027430/8002747C, whose allocation and speed accesses establish the shared four-byte spinner state; six updater observations cover decay, negative retained values, voice-distance endpoints, speed cap and yaw wrap. Independent agent RNG review authenticated original wrapper/helper instructions and fifteen guarded interpreter observations at62bceac: inclusive unit-float endpoints including the observed rounding threshold, unsigned remainder for positive signed bounds, no advancement for nonpositive bounds, numeric conversion and unchanged protected VM storage. Reports retain original ROM/ELF/core/source fingerprints; FCR31 threshold is qualified to observed interpreter rounding. Independent tracking review disassembled wrappers/helpers and checked ten authored cases through three interpreter repetitions (30 supported observations,480 matching guarded regions) using frozen62bceac ELF/core inputs. Cases distinguish primary/secondary refresh, stale state after unavailable targets, zero category after a successful unsupported-kind selection, live fallback copying and escape selection preserving allowance/position. Two-operand replacement retains all three protected lower values.",
   "preconditions": [
     "Protected locals and frame metadata lie below the active stack depth.",
     "Append contracts require one free value slot; pointers and borrowed actor/global state are valid.",
@@ -2436,6 +2436,374 @@
         "Actor, VM, owned value storage and four-word RNG state remain valid and nonoverlapping with protected locals/frame metadata; no concurrent RNG mutation.",
         "One integer/code-reference operand or finite s32-representable float lies above protected locals/frame metadata. Float conversion truncates toward zero. Positive signed limits advance once and return unsigned output modulo limit; nonpositive limits return zero without advancing.",
         "Only immediate pop/push and RNG state writes are reviewed; CPU-stack scratch remains separate. Authored seeds and endpoint observations do not establish retail reachability, statistical quality, arbitrary sequence behavior or physical-device fidelity."
+      ]
+    },
+    {
+      "function": "actorScriptTrackObject",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "e28fd9b18e3cbc2d9b94843cc148baae8edb358e0bccd9cda27e69be6f2b4cae",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 2,
+      "stack_delta": -1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Select available target with allowance; return category, which can be zero after successful selection.",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "actorTrackObjectPosition",
+          "sha256": "d79891c692dc3670dcdd6f3dfe0f99a3c470c6b210598fb71193d0ca3eb63b3a"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "objectResolveAvailableHandle",
+          "sha256": "13035c928d8cfa98f2d5bddd83912c671a57b188c5abc77aa7fa2aa84d669e4d"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/object_hierarchy.c",
+          "function": "objectFindLiveByHandle",
+          "sha256": "a04905a063945115cd20a841f611294f7784656739644dd48ba5230ee11881c9"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/keyed_pool.c",
+          "function": "keyedPoolGetValue",
+          "sha256": "515ff415ac8762af39e40b6969a0d563591ab0252fcc95f660b808c06964541d"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/keyed_pool.c",
+          "function": "keyedPoolFindEntry",
+          "sha256": "2c4d9787ed139519f2981eb227805c3b38046a0baf47287ae6ecc2156f5665c6"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "bd5f21d0f56127f87b7d89ecc94806630978597afab7cd59a3f131ba1d0959c2"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_flags.h",
+          "sha256": "135a2ddab3b6c3e703f08bc85faa083742809cf81a1edc43bd05469d2faac637"
+        },
+        {
+          "kind": "file",
+          "file": "include/item_types.h",
+          "sha256": "a11ff3ec0e7d9256425797d27c1d7222f58360b5f27a4bf4128119f9a762f991"
+        },
+        {
+          "kind": "file",
+          "file": "include/keyed_pool_types.h",
+          "sha256": "4c5ce15833971e0a7b7a25588eb674597474dba8a6d71b51cf78cf098c63a611"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_kind.h",
+          "sha256": "50ea3d3734cf9069bbb97cd961bf5416d9700f21efd7685836e7aa908bd46685"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "objectGetScriptCategory",
+          "sha256": "e8d268842fa35a88d9d0a7687da5e90ccc52e9191902b51d1e3fd2ab308d8ae0"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_script_query.h",
+          "sha256": "70d10f50390242e8fcaf77d33893746361440a490f6261975ee53dd3154587cf"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "actorSetTargetPosition",
+          "sha256": "cb156e251120846fe95fd388f0ef6825a224ecbb66d86fc24b752fef45d69bbc"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopFloat",
+          "sha256": "6ab64e75a64605c75c85f685e506c90c9970819578d94a601eb7b1bae774744b"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetFloat",
+          "sha256": "94e6ff080eea82e2661ec2adbc45a33a6a2141b10ff8d1263f580c2c5433c6b1"
+        }
+      ],
+      "preconditions": [
+        "Actor state, captured VM and owned value storage stay live and nonoverlapping with target writes. Appends require one free slot; the two-operand contract requires both handle and allowance above protected locals/frame metadata.",
+        "Handle and allowance operands use integer/code-reference or finite numeric float conversions; float-to-integer handle conversion must be s32-representable. Initialized positive-capacity handle pool and valid borrowed objects/item state are required on lookup paths. A live fallback object is mandatory for the unchecked fallback copy.",
+        "Primary and secondary-escape selection retain raw player handles without lookup or position refresh; their later tracking updates are outside this immediate review. Full tracking with an unavailable handle clears only mode, preserving stale handle, allowance and position. Category zero is not a selection-success predicate.",
+        "Captured VM is preserved through every reviewed helper; only established pop/push values/depth and the specified actor target fields change. No concurrent destruction, context replacement or mutation of borrowed state is covered. Retail reachability and future movement/lifetimes remain unproven."
+      ]
+    },
+    {
+      "function": "actorScriptSetTargetToFallbackObject",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "631ac51da56c57250060636c889b1ec03b83ed687b2291a3557eac4168314449",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Copy live fallback world position; select fixed mode and zero allowance, preserving tracked handle.",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "actorSetTargetToFallbackObject",
+          "sha256": "79cef2176926fabd3a9adfcc73dfd8d63b8d59ba1a2a75fd2293a15123482506"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/object_hierarchy.c",
+          "function": "objectFindLiveByHandle",
+          "sha256": "a04905a063945115cd20a841f611294f7784656739644dd48ba5230ee11881c9"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/keyed_pool.c",
+          "function": "keyedPoolGetValue",
+          "sha256": "515ff415ac8762af39e40b6969a0d563591ab0252fcc95f660b808c06964541d"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/keyed_pool.c",
+          "function": "keyedPoolFindEntry",
+          "sha256": "2c4d9787ed139519f2981eb227805c3b38046a0baf47287ae6ecc2156f5665c6"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "bd5f21d0f56127f87b7d89ecc94806630978597afab7cd59a3f131ba1d0959c2"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_flags.h",
+          "sha256": "135a2ddab3b6c3e703f08bc85faa083742809cf81a1edc43bd05469d2faac637"
+        },
+        {
+          "kind": "file",
+          "file": "include/item_types.h",
+          "sha256": "a11ff3ec0e7d9256425797d27c1d7222f58360b5f27a4bf4128119f9a762f991"
+        },
+        {
+          "kind": "file",
+          "file": "include/keyed_pool_types.h",
+          "sha256": "4c5ce15833971e0a7b7a25588eb674597474dba8a6d71b51cf78cf098c63a611"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_kind.h",
+          "sha256": "50ea3d3734cf9069bbb97cd961bf5416d9700f21efd7685836e7aa908bd46685"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_script_query.h",
+          "sha256": "70d10f50390242e8fcaf77d33893746361440a490f6261975ee53dd3154587cf"
+        }
+      ],
+      "preconditions": [
+        "Actor state, captured VM and owned value storage stay live and nonoverlapping with target writes. Appends require one free slot; the two-operand contract requires both handle and allowance above protected locals/frame metadata.",
+        "Handle and allowance operands use integer/code-reference or finite numeric float conversions; float-to-integer handle conversion must be s32-representable. Initialized positive-capacity handle pool and valid borrowed objects/item state are required on lookup paths. A live fallback object is mandatory for the unchecked fallback copy.",
+        "Primary and secondary-escape selection retain raw player handles without lookup or position refresh; their later tracking updates are outside this immediate review. Full tracking with an unavailable handle clears only mode, preserving stale handle, allowance and position. Category zero is not a selection-success predicate.",
+        "Captured VM is preserved through every reviewed helper; only established pop/push values/depth and the specified actor target fields change. No concurrent destruction, context replacement or mutation of borrowed state is covered. Retail reachability and future movement/lifetimes remain unproven."
+      ]
+    },
+    {
+      "function": "actorScriptTrackPlayerPrimaryObject",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "e1e985fcf6d074fd35eb030f06b89230584f824a214796cf8cd147621bd8ae73",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Select raw primary handle and follow mode with zero allowance, without resolving or refreshing stored position.",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "actorTrackPlayerPrimaryObject",
+          "sha256": "4fda1f5238e0bec718cf0b859a7b643eaf566967899d116317f99388ab6a69bc"
+        },
+        {
+          "kind": "file",
+          "file": "include/player_types.h",
+          "sha256": "0056df08b11d051f4243ed3806c8bd6fba129b936ac71cd6584ac7e1cfb6df85"
+        }
+      ],
+      "preconditions": [
+        "Actor state, captured VM and owned value storage stay live and nonoverlapping with target writes. Appends require one free slot; the two-operand contract requires both handle and allowance above protected locals/frame metadata.",
+        "Handle and allowance operands use integer/code-reference or finite numeric float conversions; float-to-integer handle conversion must be s32-representable. Initialized positive-capacity handle pool and valid borrowed objects/item state are required on lookup paths. A live fallback object is mandatory for the unchecked fallback copy.",
+        "Primary and secondary-escape selection retain raw player handles without lookup or position refresh; their later tracking updates are outside this immediate review. Full tracking with an unavailable handle clears only mode, preserving stale handle, allowance and position. Category zero is not a selection-success predicate.",
+        "Captured VM is preserved through every reviewed helper; only established pop/push values/depth and the specified actor target fields change. No concurrent destruction, context replacement or mutation of borrowed state is covered. Retail reachability and future movement/lifetimes remain unproven."
+      ]
+    },
+    {
+      "function": "actorScriptTrackPlayerSecondaryObject",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "26fc59986310816649ed642fa1916beb255873ab1292266679ef4500602d0856",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Select available secondary target with zero allowance and fresh target position; unavailable target clears only tracking mode.",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "actorTrackObjectPosition",
+          "sha256": "d79891c692dc3670dcdd6f3dfe0f99a3c470c6b210598fb71193d0ca3eb63b3a"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "objectResolveAvailableHandle",
+          "sha256": "13035c928d8cfa98f2d5bddd83912c671a57b188c5abc77aa7fa2aa84d669e4d"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/object_hierarchy.c",
+          "function": "objectFindLiveByHandle",
+          "sha256": "a04905a063945115cd20a841f611294f7784656739644dd48ba5230ee11881c9"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/keyed_pool.c",
+          "function": "keyedPoolGetValue",
+          "sha256": "515ff415ac8762af39e40b6969a0d563591ab0252fcc95f660b808c06964541d"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/keyed_pool.c",
+          "function": "keyedPoolFindEntry",
+          "sha256": "2c4d9787ed139519f2981eb227805c3b38046a0baf47287ae6ecc2156f5665c6"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "bd5f21d0f56127f87b7d89ecc94806630978597afab7cd59a3f131ba1d0959c2"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_flags.h",
+          "sha256": "135a2ddab3b6c3e703f08bc85faa083742809cf81a1edc43bd05469d2faac637"
+        },
+        {
+          "kind": "file",
+          "file": "include/item_types.h",
+          "sha256": "a11ff3ec0e7d9256425797d27c1d7222f58360b5f27a4bf4128119f9a762f991"
+        },
+        {
+          "kind": "file",
+          "file": "include/keyed_pool_types.h",
+          "sha256": "4c5ce15833971e0a7b7a25588eb674597474dba8a6d71b51cf78cf098c63a611"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_kind.h",
+          "sha256": "50ea3d3734cf9069bbb97cd961bf5416d9700f21efd7685836e7aa908bd46685"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "objectGetScriptCategory",
+          "sha256": "e8d268842fa35a88d9d0a7687da5e90ccc52e9191902b51d1e3fd2ab308d8ae0"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_script_query.h",
+          "sha256": "70d10f50390242e8fcaf77d33893746361440a490f6261975ee53dd3154587cf"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "actorSetTargetPosition",
+          "sha256": "cb156e251120846fe95fd388f0ef6825a224ecbb66d86fc24b752fef45d69bbc"
+        },
+        {
+          "kind": "file",
+          "file": "include/player_types.h",
+          "sha256": "0056df08b11d051f4243ed3806c8bd6fba129b936ac71cd6584ac7e1cfb6df85"
+        }
+      ],
+      "preconditions": [
+        "Actor state, captured VM and owned value storage stay live and nonoverlapping with target writes. Appends require one free slot; the two-operand contract requires both handle and allowance above protected locals/frame metadata.",
+        "Handle and allowance operands use integer/code-reference or finite numeric float conversions; float-to-integer handle conversion must be s32-representable. Initialized positive-capacity handle pool and valid borrowed objects/item state are required on lookup paths. A live fallback object is mandatory for the unchecked fallback copy.",
+        "Primary and secondary-escape selection retain raw player handles without lookup or position refresh; their later tracking updates are outside this immediate review. Full tracking with an unavailable handle clears only mode, preserving stale handle, allowance and position. Category zero is not a selection-success predicate.",
+        "Captured VM is preserved through every reviewed helper; only established pop/push values/depth and the specified actor target fields change. No concurrent destruction, context replacement or mutation of borrowed state is covered. Retail reachability and future movement/lifetimes remain unproven."
+      ]
+    },
+    {
+      "function": "actorScriptTrackEscapeFromPlayerSecondaryObject",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "cb9dd5e32f0d488405682c71589aee0a32db8df02e75a093ad12c5005196b6ef",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Select raw secondary handle and escape mode, preserving stored position and allowance.",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "actorTrackEscapeFromPlayerSecondaryObject",
+          "sha256": "6b249aca4131ddb562fb6b2ab0941577e4a439822a6c22f2e03a52e28af79502"
+        },
+        {
+          "kind": "file",
+          "file": "include/player_types.h",
+          "sha256": "0056df08b11d051f4243ed3806c8bd6fba129b936ac71cd6584ac7e1cfb6df85"
+        }
+      ],
+      "preconditions": [
+        "Actor state, captured VM and owned value storage stay live and nonoverlapping with target writes. Appends require one free slot; the two-operand contract requires both handle and allowance above protected locals/frame metadata.",
+        "Handle and allowance operands use integer/code-reference or finite numeric float conversions; float-to-integer handle conversion must be s32-representable. Initialized positive-capacity handle pool and valid borrowed objects/item state are required on lookup paths. A live fallback object is mandatory for the unchecked fallback copy.",
+        "Primary and secondary-escape selection retain raw player handles without lookup or position refresh; their later tracking updates are outside this immediate review. Full tracking with an unavailable handle clears only mode, preserving stale handle, allowance and position. Category zero is not a selection-success predicate.",
+        "Captured VM is preserved through every reviewed helper; only established pop/push values/depth and the specified actor target fields change. No concurrent destruction, context replacement or mutation of borrowed state is covered. Retail reachability and future movement/lifetimes remain unproven."
       ]
     }
   ]

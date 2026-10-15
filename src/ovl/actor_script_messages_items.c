@@ -40,21 +40,19 @@
 #include "script_vm_stack.h"
 
 
-/// Track the player's primary object as the actor's movement destination.
+/// Select the player's primary object for following, retaining the stored destination.
 /// \param actor Actor whose tracking target is selected with zero distance allowance; its script VM receives zero.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011C800 (0x8011C800).
 s32 actorScriptTrackPlayerPrimaryObject(u8 *actor) {
-    s32 sp1C;
+    ScriptVm *vm;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    vm = (ScriptVm *)((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     actorTrackPlayerPrimaryObject(actor);
     ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetDistanceAllowance = 0.0F;
-    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
+    scriptVmPushInteger(vm, 0);
     return 0;
 }
-
-
 
 /// Acknowledge the actor's pending script message.
 /// \param actor Actor whose pending-message flag is cleared and whose script VM receives its previous value.
@@ -263,20 +261,18 @@ s32 actorScriptGetObjectPlayerDistance(u8 *actor) {
     return 0;
 }
 
-
-/// Track the player's secondary object as the actor's escape source.
+/// Select the player's secondary object as the escape source, retaining destination and allowance.
 /// \param actor Actor whose escape tracking is selected; its script VM receives zero.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011CC94 (0x8011CC94).
 s32 actorScriptTrackEscapeFromPlayerSecondaryObject(u8 *actor) {
-    s32 sp1C;
+    ScriptVm *vm;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    vm = (ScriptVm *)((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     actorTrackEscapeFromPlayerSecondaryObject(actor);
-    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
+    scriptVmPushInteger(vm, 0);
     return 0;
 }
-
 
 /// Choose a fixed escape destination away from the player.
 /// \param actor Actor whose escape destination is selected and ongoing tracking disabled; requires a live fallback target when the positions coincide. Its script VM receives zero.
@@ -727,19 +723,19 @@ s32 actorScriptPushMovementCollisionFlags(u8 *actor) {
 /// \note Original identifier: \c D_800EF728 (0x800EF728).
 extern s32 gPlayerModeState;
 
-/// Track the player's secondary object as the actor's movement destination.
+/// Track an available player secondary object as the actor's movement destination.
+/// An unavailable target disables tracking while retaining the stored handle, destination, and allowance.
 /// \param actor Actor whose tracking destination is changed with zero distance allowance; its script VM receives zero.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011D548 (0x8011D548).
 s32 actorScriptTrackPlayerSecondaryObject(u8 *actor) {
-    s32 sp1C;
+    ScriptVm *vm;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    vm = (ScriptVm *)((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     actorTrackObjectPosition(actor, ((PlayerModeState *)&gPlayerModeState)->objectHandles[1], 0.0F);
-    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
+    scriptVmPushInteger(vm, 0);
     return 0;
 }
-
 
 /// Track the player's tertiary object as the actor's movement destination.
 /// \param actor Actor whose tracking destination is changed with zero distance allowance; its script VM receives zero.
@@ -753,7 +749,6 @@ s32 actorScriptTrackPlayerTertiaryObject(u8 *actor) {
     scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return 0;
 }
-
 
 /// Request a speech recognition dictionary and yield script execution.
 /// \param actor Actor whose script VM supplies the dictionary identifier and receives zero.
@@ -977,23 +972,25 @@ s32 actorScriptSetDestination(u8 *actor) {
     return 0;
 }
 
-/// Select a moving object as the actor's tracked destination.
+/// Select an available moving object as the actor's tracked destination.
+/// A zero category can accompany a successful target selection for an unsupported object category.
+/// An unavailable target disables tracking while retaining the stored handle, destination, and allowance.
 /// \param actor Actor whose script VM supplies a target handle followed by a distance allowance, and receives the target script category or zero for an unavailable or unsupported target.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011DA8C (0x8011DA8C).
 s32 actorScriptTrackObject(u8 *actor) {
     s32 vmAddress;
-    s32 sp24;
-    f32 sp1C;
+    s32 unusedVmAddress;
+    f32 distanceAllowance;
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    sp24 = vmAddress;
-    sp1C = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    scriptVmPushInteger((ScriptVm *)(vmAddress),
-                        actorTrackObjectPosition(actor, scriptVmPopInteger((ScriptVm *)(vmAddress)), sp1C));
+    unusedVmAddress = vmAddress;
+    distanceAllowance = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    scriptVmPushInteger(
+        (ScriptVm *)(vmAddress),
+        actorTrackObjectPosition(actor, scriptVmPopInteger((ScriptVm *)(vmAddress)), distanceAllowance));
     return 0;
 }
-
 
 /// Choose an object's current position as a fixed destination.
 /// \param actor Actor whose script VM supplies a target handle followed by a distance allowance, and receives the target script category or zero for an unavailable or unsupported target.
@@ -1011,7 +1008,6 @@ s32 actorScriptSetDestinationFromObject(u8 *actor) {
                         actorSetDestinationFromObject(actor, scriptVmPopInteger((ScriptVm *)(vmAddress)), sp1C));
     return 0;
 }
-
 
 /// Select an object as the actor's tracked escape source.
 /// \param actor Actor whose script VM supplies a target handle and receives its script category, or zero for an unavailable or unsupported target.

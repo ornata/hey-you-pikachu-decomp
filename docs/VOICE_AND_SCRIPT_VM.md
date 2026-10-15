@@ -597,6 +597,21 @@ and otherwise returns zero. These are distinct storage and query contracts.
 Category five identifies this object class; its script kind query returns runtime
 kind 130, rather than an item-catalog or actor-configuration identifier.
 
+Target selection also has distinct immediate contracts. Selecting the player's
+primary object stores the handle and enables following without resolving the
+object or refreshing the stored destination. Selecting the secondary object uses
+the full tracking operation, which copies an available object's world position.
+If that lookup fails, tracking is disabled but the previous handle, allowance and
+destination remain stored. Selecting secondary-object escape preserves the
+previous allowance and destination. A fallback selection requires a live fallback
+object and copies its position without changing the old tracked handle.
+
+The explicit object-tracking native consumes handle and allowance, then returns
+the target's script category. Zero is not a success predicate: an available object
+with an unsupported category still becomes the tracked destination. Both operands
+must be above protected saved values and frame records; the integer result occupies
+the lower consumed slot.
+
 Scalar reviews remain active only while their source and helper bindings agree. Remaining callbacks stay explicitly listed
 in each saved-dictionary candidate's `native_effect_frontier`; a reviewed immediate
 footprint does not establish a runtime dictionary ID or unconditional restoration.
