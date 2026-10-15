@@ -351,14 +351,18 @@ def experiments():
                 (0x800F8AD4, word(0)),
                 (
                     RAM + 0x100,
-                    (bytes(result) + b"\xa5" * 2)
-                    if pending == 1 and output
-                    else b"\xa5" * 32,
+                    (
+                        (bytes(result) + b"\xa5" * 2)
+                        if pending == 1 and output
+                        else b"\xa5" * 32
+                    ),
                 ),
             ],
             0xFEDC if pending == 1 else -1,
         )
-    return cases
+    from .numeric_domains import experiments as numeric_experiments
+
+    return cases + numeric_experiments()
 
 
 def capture_case(case, elf_path, rom_path):

@@ -26,6 +26,20 @@ typedef enum ScriptVmExecutionState {
     SCRIPT_VM_ERROR = 5               ///< Missing context or invalid opcode was reported.
 } ScriptVmExecutionState;
 
+/// Byte extents of the packed script-value encoding.
+/// These integer constants retain signed integer arithmetic at bytecode cursors.
+enum {
+    SCRIPT_VALUE_PAYLOAD_BYTES = 4, ///< Numeric payload or target address, excluding the tag.
+    SCRIPT_VALUE_BYTES = 5          ///< Complete encoded value, including its one-byte tag.
+};
+
+/// Storage extents of the retained VM stacks; accesses still require valid depths.
+enum {
+    SCRIPT_VM_SAVED_DEPTH_SLOTS = 64, ///< Saved value-stack depths.
+    SCRIPT_VM_RETURN_SLOTS = 64,      ///< Saved bytecode return locations.
+    SCRIPT_VM_LOCAL_FRAME_SLOTS = 32  ///< Local-variable frame bases.
+};
+
 /// A script operand or stack value with a tag and four payload bytes.
 /// \ingroup ActorScriptVm
 /// Numeric values, string indices, and borrowed string addresses share this
@@ -33,10 +47,10 @@ typedef enum ScriptVmExecutionState {
 /// have byte alignment and must not be accessed through an aligned word pointer.
 typedef union ScriptValue {
     struct {
-        u8 tag;        ///< Value category, including the recovered ScriptValueTag values.
-        u8 payload[4]; ///< Number, string-table index, or borrowed string address.
+        u8 tag;                                 ///< Value category, including the recovered ScriptValueTag values.
+        u8 payload[SCRIPT_VALUE_PAYLOAD_BYTES]; ///< Number, string-table index, or borrowed string address.
     } data;
-    u8 bytes[5]; ///< Complete target representation of the value.
+    u8 bytes[SCRIPT_VALUE_BYTES]; ///< Complete target representation of the value.
 } ScriptValue;
 
 struct ScriptVm;
@@ -62,20 +76,20 @@ typedef struct ScriptVmConfiguration {
 /// The context owns its value stack; saved depths and return offsets belong to
 /// the same running script. This layout is specific to the original N64 ABI.
 typedef struct ScriptVm {
-    s32 executionState;            ///< Interpreter scheduling state retained between updates.
-    u8 *program;                   ///< Borrowed script bytecode.
-    char **stringTable;            ///< Borrowed table of borrowed null-terminated strings.
-    f32 elapsed;                   ///< Time accumulated since the latest script reset.
-    f32 totalElapsed;              ///< Time accumulated across resets.
-    s32 instructionOffset;         ///< Current position in the borrowed script program.
-    s32 stackDepth;                ///< Number of active values on the value stack.
-    s32 stackCapacity;             ///< Maximum number of values in the owned stack.
-    ScriptValue *values;           ///< Owned value-stack storage.
-    s32 savedDepthCount;           ///< Number of saved value-stack depths.
-    s32 savedDepths[64];           ///< Value-stack depths awaiting restoration.
-    s32 returnCount;               ///< Number of saved script return locations.
-    s32 returnOffsets[64];         ///< Program offsets awaiting a script return.
-    s32 localFrameBases[32];       ///< Value-stack base for each local-variable frame.
+    s32 executionState;                                ///< Interpreter scheduling state retained between updates.
+    u8 *program;                                       ///< Borrowed script bytecode.
+    char **stringTable;                                ///< Borrowed table of borrowed null-terminated strings.
+    f32 elapsed;                                       ///< Time accumulated since the latest script reset.
+    f32 totalElapsed;                                  ///< Time accumulated across resets.
+    s32 instructionOffset;                             ///< Current position in the borrowed script program.
+    s32 stackDepth;                                    ///< Number of active values on the value stack.
+    s32 stackCapacity;                                 ///< Maximum number of values in the owned stack.
+    ScriptValue *values;                               ///< Owned value-stack storage.
+    s32 savedDepthCount;                               ///< Number of saved value-stack depths.
+    s32 savedDepths[SCRIPT_VM_SAVED_DEPTH_SLOTS];      ///< Value-stack depths awaiting restoration.
+    s32 returnCount;                                   ///< Number of saved script return locations.
+    s32 returnOffsets[SCRIPT_VM_RETURN_SLOTS];         ///< Program offsets awaiting a script return.
+    s32 localFrameBases[SCRIPT_VM_LOCAL_FRAME_SLOTS];       ///< Value-stack base for each local-variable frame.
     ScriptNativeCommand *commands; ///< Borrowed native-command dispatch table.
     s32 unknown2B0;                ///< Reset with the script context; its role remains unresolved.
     s32 messageStyle;              ///< Font style for subsequently queued script messages.

@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 833,
-      "unique_spellings": 465,
+      "occurrences": 829,
+      "unique_spellings": 463,
       "files": 64
     },
     "cast_offset_candidates": {
@@ -3861,18 +3861,10 @@
       "locations": {
         "raw_offset_candidates": {
           "savedDepthCount + 1": [
-            "166:37"
+            "213:37"
           ],
           "returnCount + 1": [
-            "184:33"
-          ],
-          "operandOffset + 5": [
-            "327:29"
-          ],
-          "instructionOffset + 5": [
-            "820:43",
-            "871:47",
-            "889:43"
+            "231:33"
           ]
         }
       }

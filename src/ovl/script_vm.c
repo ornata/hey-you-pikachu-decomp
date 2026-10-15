@@ -34,6 +34,53 @@
 #include "script_vm_globals.h"
 #include "script_value.h"
 
+/// Recovered operations encoded by one byte of actor-script bytecode.
+/// Binary operations use the second-from-top value as the left operand.
+/// Bytes zero through two are accepted without a visible operation; their
+/// distinct source-language roles remain unresolved and retain numeric spelling.
+typedef enum ScriptOpcode {
+    SCRIPT_OP_NEGATE = 3,            ///< Numeric negation.
+    SCRIPT_OP_BITWISE_NOT = 4,       ///< Integer bitwise complement; floating input produces integer zero.
+    SCRIPT_OP_ADD = 5,               ///< Left operand plus right operand.
+    SCRIPT_OP_SUBTRACT = 6,          ///< Left operand minus right operand.
+    SCRIPT_OP_MULTIPLY = 7,          ///< Product of the operands.
+    SCRIPT_OP_DIVIDE = 8,            ///< Left operand divided by right operand; integer division truncates toward zero.
+    SCRIPT_OP_REMAINDER = 9,         ///< Integer remainder; floating input produces floating zero.
+    SCRIPT_OP_STORE_VARIABLE = 10,   ///< Assign a popped value to a referenced variable.
+    SCRIPT_OP_EQUAL = 11,            ///< Equality, using the retained tolerance for floating values.
+    SCRIPT_OP_NOT_EQUAL = 12,        ///< Inequality, using the retained tolerance for floating values.
+    SCRIPT_OP_GREATER_THAN = 13,     ///< Left operand greater than right operand.
+    SCRIPT_OP_LESS_THAN = 14,        ///< Left operand less than right operand.
+    SCRIPT_OP_GREATER_OR_EQUAL = 15, ///< Left operand greater than or equal to right operand.
+    SCRIPT_OP_LESS_OR_EQUAL = 16,    ///< Left operand less than or equal to right operand.
+    SCRIPT_OP_LOGICAL_NOT = 17,      ///< Logical negation of one operand.
+    SCRIPT_OP_LOGICAL_AND = 18,      ///< Logical conjunction of the converted integer operands.
+    SCRIPT_OP_LOGICAL_OR = 19,       ///< Logical disjunction of the converted integer operands.
+    SCRIPT_OP_BITWISE_AND = 20,      ///< Integer bitwise conjunction.
+    SCRIPT_OP_BITWISE_OR = 21,       ///< Integer bitwise disjunction.
+    SCRIPT_OP_SHIFT_RIGHT = 22,      ///< Signed integer right shift by the right operand.
+    SCRIPT_OP_SHIFT_LEFT = 23,       ///< Integer left shift by the right operand.
+    SCRIPT_OP_PUSH_LITERAL = 24,     ///< Push an encoded value from the bytecode.
+    SCRIPT_OP_LOAD_VARIABLE = 25,    ///< Push the value of a referenced variable.
+    SCRIPT_OP_CALL = 26,             ///< Call a bytecode offset with a saved return location.
+    SCRIPT_OP_CALL_NATIVE = 27,      ///< Invoke a registered native command.
+    SCRIPT_OP_JUMP = 28,             ///< Continue at the encoded bytecode offset.
+    SCRIPT_OP_JUMP_IF_ZERO = 29,     ///< Branch to the encoded offset when the popped condition is zero.
+    SCRIPT_OP_RETURN = 30,           ///< Return a value and restore the caller frame and return location.
+    SCRIPT_OP_DISCARD = 31,          ///< Discard the top value.
+    SCRIPT_OP_ENTER_FRAME = 32,      ///< Establish the called function's argument and local-variable frame.
+    SCRIPT_OP_LOAD_ELEMENT = 33,     ///< Push an indexed value from a referenced value array.
+    SCRIPT_OP_STORE_ELEMENT = 34,    ///< Assign a popped value to an indexed element of a referenced array.
+    SCRIPT_OP_FINISH = 35,           ///< Finish the program and clear its retained execution depths.
+} ScriptOpcode;
+
+/// Default number of values for configurations without a positive capacity.
+enum { SCRIPT_VM_DEFAULT_STACK_CAPACITY = 200 };
+
+/// Relative and absolute tolerances used by floating equality comparisons.
+#define SCRIPT_VALUE_RELATIVE_EQUALITY_TOLERANCE 0.001F
+#define SCRIPT_VALUE_ABSOLUTE_EQUALITY_TOLERANCE 0.001F
+
 /// Shared 32-byte numeric conversion text, overwritten by the next numeric string conversion.
 /// \note Original identifier: \c D_801340B0 (0x801340B0).
 struct {
@@ -108,7 +155,7 @@ ScriptVm *scriptVmCreate(ScriptVmConfiguration *config) {
 
     if (configuredCapacity <= 0) {
         TRACE(("WARNING : stack size out of range, %d\n", configuredCapacity));
-        capacity = 0xC8;
+        capacity = SCRIPT_VM_DEFAULT_STACK_CAPACITY;
     } else {
         capacity = configuredCapacity;
     }
@@ -137,7 +184,7 @@ void scriptVmDestroy(ScriptVm *vm) {
 void scriptVmPushValue(ScriptVm *vm, ScriptValue *value) {
     s32 i;
 
-    for (i = 0; i < 5; i++) {
+    for (i = 0; i < SCRIPT_VALUE_BYTES; i++) {
         VM_STACK(vm)[VM_SP(vm)].bytes[i] = value->bytes[i];
     }
     VM_SP(vm)++;
@@ -152,7 +199,7 @@ void scriptVmPopValue(ScriptVm *vm, ScriptValue *value) {
     s32 i;
 
     VM_SP(vm)--;
-    for (i = 0; i < 5; i++) {
+    for (i = 0; i < SCRIPT_VALUE_BYTES; i++) {
         value->bytes[i] = VM_STACK(vm)[VM_SP(vm)].bytes[i];
     }
 }
@@ -217,10 +264,10 @@ s32 scriptValueGetInteger(ScriptValue *value) {
         isInteger = 0;
     }
     if (isInteger != 0) {
-        bcopy(value->data.payload, &integerValue, 4);
+        bcopy(value->data.payload, &integerValue, SCRIPT_VALUE_PAYLOAD_BYTES);
         return integerValue;
     }
-    bcopy(value->data.payload, &floatValue, 4);
+    bcopy(value->data.payload, &floatValue, SCRIPT_VALUE_PAYLOAD_BYTES);
     return floatValue;
 }
 
@@ -239,10 +286,10 @@ f32 scriptValueGetFloat(ScriptValue *value) {
         isFloat = 0;
     }
     if (isFloat) {
-        bcopy(value->data.payload, &floatValue, 4);
+        bcopy(value->data.payload, &floatValue, SCRIPT_VALUE_PAYLOAD_BYTES);
         return floatValue;
     }
-    bcopy(value->data.payload, &integerValue, 4);
+    bcopy(value->data.payload, &integerValue, SCRIPT_VALUE_PAYLOAD_BYTES);
     return integerValue;
 }
 
@@ -253,7 +300,7 @@ f32 scriptValueGetFloat(ScriptValue *value) {
 /// \note Original decompilation identifier: \c func_8011550C (0x8011550C).
 void scriptValueSetFloat(ScriptValue *value, f32 number) {
     value->data.tag = SCRIPT_VALUE_FLOAT;
-    bcopy(&number, value->data.payload, 4);
+    bcopy(&number, value->data.payload, SCRIPT_VALUE_PAYLOAD_BYTES);
 }
 
 /// Assign an integer to a script value.
@@ -263,7 +310,7 @@ void scriptValueSetFloat(ScriptValue *value, f32 number) {
 /// \note Original decompilation identifier: \c func_80115544 (0x80115544).
 void scriptValueSetInteger(ScriptValue *value, s32 number) {
     value->data.tag = SCRIPT_VALUE_INTEGER;
-    bcopy(&number, value->data.payload, 4);
+    bcopy(&number, value->data.payload, SCRIPT_VALUE_PAYLOAD_BYTES);
 }
 
 /// Assign a string pointer to a script value.
@@ -273,7 +320,7 @@ void scriptValueSetInteger(ScriptValue *value, s32 number) {
 /// \note Original decompilation identifier: \c func_80115578 (0x80115578).
 void scriptValueSetStringPointer(ScriptValue *value, char *text) {
     value->data.tag = SCRIPT_VALUE_STRING_POINTER;
-    bcopy(&text, value->data.payload, 4);
+    bcopy(&text, value->data.payload, SCRIPT_VALUE_PAYLOAD_BYTES);
 }
 
 s32 stdlibParseUnsignedDecimal(s32); /* extern */
@@ -304,10 +351,10 @@ s32 scriptValueParseDecimal(ScriptVm *vm, ScriptValue *value) {
         isPointer = 0;
     }
     if (isPointer != 0) {
-        bcopy(&value->bytes[1], &text, 4);
+        bcopy(&value->bytes[1], &text, SCRIPT_VALUE_PAYLOAD_BYTES);
         parsedValue = stdlibParseUnsignedDecimal((s32)text);
     } else {
-        bcopy(&value->bytes[1], &stringIndex, 4);
+        bcopy(&value->bytes[1], &stringIndex, SCRIPT_VALUE_PAYLOAD_BYTES);
         text = vm->stringTable[stringIndex];
         parsedValue = stdlibParseUnsignedDecimal((s32)text);
     }
@@ -324,7 +371,7 @@ s32 scriptVmReadIntegerOperand(ScriptVm *vm) {
 
     operandOffset = vm->instructionOffset;
     operandAddress = (s32)vm->program + operandOffset;
-    vm->instructionOffset = operandOffset + 5;
+    vm->instructionOffset = operandOffset + SCRIPT_VALUE_BYTES;
     return scriptValueGetInteger((ScriptValue *)(operandAddress));
 }
 
@@ -356,7 +403,7 @@ ScriptValue *scriptVmReadVariableReference(ScriptVm *vm) {
 
 /// Replace the top script value with the result of a unary operation.
 /// \param vm Context with a numeric or valid decimal-string operand on its stack; integer negation requires a representable result.
-/// \param op Unary operation: 3 negates, 4 complements, and 17 logically negates.
+/// \param op SCRIPT_OP_NEGATE, SCRIPT_OP_BITWISE_NOT, or SCRIPT_OP_LOGICAL_NOT.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80115724 (0x80115724).
 void scriptVmApplyUnaryOperator(ScriptVm *vm, u8 op) {
@@ -381,26 +428,26 @@ void scriptVmApplyUnaryOperator(ScriptVm *vm, u8 op) {
     if (test) {
         f = scriptValueGetFloat(box);
         switch (op) {
-        case 3:
+        case SCRIPT_OP_NEGATE:
             scriptValueSetFloat(box, -f);
             break;
-        case 0x11:
+        case SCRIPT_OP_LOGICAL_NOT:
             scriptValueSetFloat(box, !f);
             break;
-        case 4:
+        case SCRIPT_OP_BITWISE_NOT:
             scriptValueSetInteger(box, 0);
             break;
         }
     } else {
         i = scriptValueGetInteger(box);
         switch (op) {
-        case 3:
+        case SCRIPT_OP_NEGATE:
             scriptValueSetInteger(box, -i);
             break;
-        case 0x11:
+        case SCRIPT_OP_LOGICAL_NOT:
             scriptValueSetInteger(box, !i);
             break;
-        case 4:
+        case SCRIPT_OP_BITWISE_NOT:
             scriptValueSetInteger(box, ~i);
             break;
         }
@@ -410,7 +457,7 @@ void scriptVmApplyUnaryOperator(ScriptVm *vm, u8 op) {
 /// Replace two script operands with their arithmetic result.
 /// \param vm Context with a numeric left operand and a numeric or valid decimal-string right operand.
 /// \pre Integer results must be representable; integer division and remainder require a nonzero divisor and exclude the minimum integer divided by -1.
-/// \param op Arithmetic operation: 5 adds, 6 subtracts, 7 multiplies, 8 divides, and 9 computes integer remainder or floating-point zero.
+/// \param op Arithmetic ScriptOpcode; SCRIPT_OP_REMAINDER produces zero for floating-point operands.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_801158D0 (0x801158D0).
 void scriptVmApplyArithmeticOperator(ScriptVm *vm, u8 op) {
@@ -435,19 +482,19 @@ void scriptVmApplyArithmeticOperator(ScriptVm *vm, u8 op) {
         fr = scriptValueGetFloat(&right);
         fl = scriptValueGetFloat(&left);
         switch (op) {
-        case 5:
+        case SCRIPT_OP_ADD:
             fv = fl + fr;
             break;
-        case 6:
+        case SCRIPT_OP_SUBTRACT:
             fv = fl - fr;
             break;
-        case 7:
+        case SCRIPT_OP_MULTIPLY:
             fv = fl * fr;
             break;
-        case 8:
+        case SCRIPT_OP_DIVIDE:
             fv = fl / fr;
             break;
-        case 9:
+        case SCRIPT_OP_REMAINDER:
             fv = 0.0F;
             break;
         }
@@ -456,19 +503,19 @@ void scriptVmApplyArithmeticOperator(ScriptVm *vm, u8 op) {
         ir = scriptValueGetInteger(&right);
         il = scriptValueGetInteger(&left);
         switch (op) {
-        case 5:
+        case SCRIPT_OP_ADD:
             iv = il + ir;
             break;
-        case 6:
+        case SCRIPT_OP_SUBTRACT:
             iv = il - ir;
             break;
-        case 7:
+        case SCRIPT_OP_MULTIPLY:
             iv = il * ir;
             break;
-        case 8:
+        case SCRIPT_OP_DIVIDE:
             iv = il / ir;
             break;
-        case 9:
+        case SCRIPT_OP_REMAINDER:
             iv = il % ir;
             break;
         }
@@ -480,7 +527,7 @@ void scriptVmApplyArithmeticOperator(ScriptVm *vm, u8 op) {
 /// Replace two script operands with their bitwise-operation result.
 /// \param vm Context with a numeric left operand and a numeric or valid decimal-string right operand; either floating-point operand produces zero.
 /// \pre Integer shift counts must be 0 through 31; left shifts require a nonnegative operand and a representable result.
-/// \param op Bitwise operation: 20 AND, 21 OR, 22 right shift, or 23 left shift.
+/// \param op SCRIPT_OP_BITWISE_AND, SCRIPT_OP_BITWISE_OR, SCRIPT_OP_SHIFT_RIGHT, or SCRIPT_OP_SHIFT_LEFT.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80115B38 (0x80115B38).
 void scriptVmApplyBitwiseOperator(ScriptVm *vm, u8 op) {
@@ -504,16 +551,16 @@ void scriptVmApplyBitwiseOperator(ScriptVm *vm, u8 op) {
         rhs = scriptValueGetInteger(&right);
         lhs = scriptValueGetInteger(&left);
         switch (op) {
-        case 20:
+        case SCRIPT_OP_BITWISE_AND:
             value = lhs & rhs;
             break;
-        case 21:
+        case SCRIPT_OP_BITWISE_OR:
             value = lhs | rhs;
             break;
-        case 22:
+        case SCRIPT_OP_SHIFT_RIGHT:
             value = lhs >> rhs;
             break;
-        case 23:
+        case SCRIPT_OP_SHIFT_LEFT:
             value = lhs << rhs;
             break;
         }
@@ -527,7 +574,7 @@ f32 fabsf(f32);
 /// Replace two script operands with an integer comparison or logical result.
 /// \param vm Context with a numeric left operand and a numeric or valid decimal-string right operand.
 /// \pre Floating-point operands of logical operations must be representable as integers; their fractional parts do not affect truth values.
-/// \param op Operation: 11 equality, 12 inequality, 13 greater, 14 less, 15 greater-or-equal, 16 less-or-equal, 18 logical AND, or 19 logical OR.
+/// \param op A comparison or logical ScriptOpcode; floating equality uses relative and absolute tolerances.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80115CBC (0x80115CBC).
 void scriptVmApplyComparisonOperator(ScriptVm *vm, u8 op) {
@@ -552,40 +599,42 @@ void scriptVmApplyComparisonOperator(ScriptVm *vm, u8 op) {
         fr = scriptValueGetFloat(&right);
         fl = scriptValueGetFloat(&left);
         switch (op) {
-        case 11:
-            if (fabsf(fr - fl) <= (fabsf(fl) * 0.001F) + 0.001F) {
+        case SCRIPT_OP_EQUAL:
+            if (fabsf(fr - fl) <=
+                (fabsf(fl) * SCRIPT_VALUE_RELATIVE_EQUALITY_TOLERANCE) + SCRIPT_VALUE_ABSOLUTE_EQUALITY_TOLERANCE) {
                 value = 1;
             }
             break;
-        case 12:
-            if (!(fabsf(fr - fl) <= (fabsf(fl) * 0.001F) + 0.001F)) {
+        case SCRIPT_OP_NOT_EQUAL:
+            if (!(fabsf(fr - fl) <=
+                  (fabsf(fl) * SCRIPT_VALUE_RELATIVE_EQUALITY_TOLERANCE) + SCRIPT_VALUE_ABSOLUTE_EQUALITY_TOLERANCE)) {
                 value = 1;
             }
             break;
-        case 13:
+        case SCRIPT_OP_GREATER_THAN:
             if (fr < fl) {
                 value = 1;
             }
             break;
-        case 14:
+        case SCRIPT_OP_LESS_THAN:
             if (fl < fr) {
                 value = 1;
             }
             break;
-        case 15:
+        case SCRIPT_OP_GREATER_OR_EQUAL:
             if (fr <= fl) {
                 value = 1;
             }
             break;
-        case 16:
+        case SCRIPT_OP_LESS_OR_EQUAL:
             if (fl <= fr) {
                 value = 1;
             }
             break;
-        case 18:
+        case SCRIPT_OP_LOGICAL_AND:
             value = (s32)fr && (s32)fl;
             break;
-        case 19:
+        case SCRIPT_OP_LOGICAL_OR:
             value = (s32)fr || (s32)fl;
             break;
         }
@@ -593,40 +642,40 @@ void scriptVmApplyComparisonOperator(ScriptVm *vm, u8 op) {
         ir = scriptValueGetInteger(&right);
         il = scriptValueGetInteger(&left);
         switch (op) {
-        case 11:
+        case SCRIPT_OP_EQUAL:
             if (il == ir) {
                 value = 1;
             }
             break;
-        case 12:
+        case SCRIPT_OP_NOT_EQUAL:
             if (il != ir) {
                 value = 1;
             }
             break;
-        case 13:
+        case SCRIPT_OP_GREATER_THAN:
             if (ir < il) {
                 value = 1;
             }
             break;
-        case 14:
+        case SCRIPT_OP_LESS_THAN:
             if (il < ir) {
                 value = 1;
             }
             break;
-        case 15:
+        case SCRIPT_OP_GREATER_OR_EQUAL:
             if (il >= ir) {
                 value = 1;
             }
             break;
-        case 16:
+        case SCRIPT_OP_LESS_OR_EQUAL:
             if (ir >= il) {
                 value = 1;
             }
             break;
-        case 18:
+        case SCRIPT_OP_LOGICAL_AND:
             value = ir && il;
             break;
-        case 19:
+        case SCRIPT_OP_LOGICAL_OR:
             value = ir || il;
             break;
         }
@@ -715,10 +764,10 @@ char *scriptVmPopString(ScriptVm *vm) {
             test = 0;
         }
         if (test) {
-            bcopy(&box.bytes[1], &text, 4);
+            bcopy(&box.bytes[1], &text, SCRIPT_VALUE_PAYLOAD_BYTES);
             return text;
         }
-        bcopy(&box.bytes[1], &index, 4);
+        bcopy(&box.bytes[1], &index, SCRIPT_VALUE_PAYLOAD_BYTES);
         return vm->stringTable[index];
     }
     if (box.data.tag == SCRIPT_VALUE_INTEGER || box.data.tag == 2) {
@@ -739,9 +788,8 @@ char *scriptVmPopString(ScriptVm *vm) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80116224 (0x80116224).
 void scriptVmEvaluateGlobalInteger(s32 index) {
-    scriptValueGetInteger((ScriptValue *)(((u8 *)&gScriptVmGlobalValues + (index * 5))));
+    scriptValueGetInteger((ScriptValue *)(((u8 *)&gScriptVmGlobalValues + (index * SCRIPT_VALUE_BYTES))));
 }
-
 
 /// Assign an integer to a global script variable.
 /// \param index Valid global script-variable index.
@@ -782,58 +830,58 @@ loop_3:
     case 1:
     case 2:
         goto loop_2;
-    case 31: {
+    case SCRIPT_OP_DISCARD: {
         ScriptValue sp98;
         scriptVmPopValue(vm, &sp98);
         goto loop_2;
     }
-    case 3:
-    case 4:
-    case 17:
+    case SCRIPT_OP_NEGATE:
+    case SCRIPT_OP_BITWISE_NOT:
+    case SCRIPT_OP_LOGICAL_NOT:
         scriptVmApplyUnaryOperator(vm, op);
         goto loop_2;
-    case 5:
-    case 6:
-    case 7:
-    case 8:
-    case 9:
+    case SCRIPT_OP_ADD:
+    case SCRIPT_OP_SUBTRACT:
+    case SCRIPT_OP_MULTIPLY:
+    case SCRIPT_OP_DIVIDE:
+    case SCRIPT_OP_REMAINDER:
         scriptVmApplyArithmeticOperator(vm, op);
         goto loop_2;
-    case 11:
-    case 12:
-    case 13:
-    case 14:
-    case 15:
-    case 16:
-    case 18:
-    case 19:
+    case SCRIPT_OP_EQUAL:
+    case SCRIPT_OP_NOT_EQUAL:
+    case SCRIPT_OP_GREATER_THAN:
+    case SCRIPT_OP_LESS_THAN:
+    case SCRIPT_OP_GREATER_OR_EQUAL:
+    case SCRIPT_OP_LESS_OR_EQUAL:
+    case SCRIPT_OP_LOGICAL_AND:
+    case SCRIPT_OP_LOGICAL_OR:
         scriptVmApplyComparisonOperator(vm, op);
         goto loop_2;
-    case 20:
-    case 21:
-    case 22:
-    case 23:
+    case SCRIPT_OP_BITWISE_AND:
+    case SCRIPT_OP_BITWISE_OR:
+    case SCRIPT_OP_SHIFT_RIGHT:
+    case SCRIPT_OP_SHIFT_LEFT:
         scriptVmApplyBitwiseOperator(vm, op);
         goto loop_2;
-    case 24:
+    case SCRIPT_OP_PUSH_LITERAL:
         scriptVmPushValue(vm, (ScriptValue *)(vm->program + vm->instructionOffset));
-        vm->instructionOffset = (s32)(vm->instructionOffset + 5);
+        vm->instructionOffset = (s32)(vm->instructionOffset + SCRIPT_VALUE_BYTES);
         goto loop_3;
-    case 25:
+    case SCRIPT_OP_LOAD_VARIABLE:
         scriptVmPushValue(vm, scriptVmReadVariableReference(vm));
         goto loop_2;
-    case 10:
+    case SCRIPT_OP_STORE_VARIABLE:
         scriptVmPopValue(vm, scriptVmReadVariableReference(vm));
         goto loop_2;
-    case 33: {
+    case SCRIPT_OP_LOAD_ELEMENT: {
         u8 *elements;
         s32 elementIndex;
         elements = (u8 *)scriptVmReadVariableReference(vm);
         elementIndex = scriptVmPopInteger(vm);
-        scriptVmPushValue(vm, (ScriptValue *)((u8(*)[5])elements)[elementIndex]);
+        scriptVmPushValue(vm, (ScriptValue *)((u8(*)[SCRIPT_VALUE_BYTES])elements)[elementIndex]);
         goto loop_2;
     }
-    case 34: {
+    case SCRIPT_OP_STORE_ELEMENT: {
         ScriptValue *elements;
         s32 i;
         s32 elementIndex;
@@ -841,26 +889,26 @@ loop_3:
         elements = scriptVmReadVariableReference(vm);
         scriptVmPopValue(vm, &value);
         elementIndex = scriptVmPopInteger(vm);
-        for (i = 0; i < 5; i++) {
+        for (i = 0; i < SCRIPT_VALUE_BYTES; i++) {
             elements[elementIndex].bytes[i] = value.bytes[i];
         }
         goto loop_2;
     }
-    case 35:
+    case SCRIPT_OP_FINISH:
         vm->instructionOffset = 0;
         vm->stackDepth = 0;
         vm->savedDepthCount = 0;
         vm->returnCount = 0;
         TRACE(("PPU - process end.\n"));
         return SCRIPT_VM_FINISHED;
-    case 28: {
+    case SCRIPT_OP_JUMP: {
         s32 address;
         TRACE(("%d\n", vm->instructionOffset));
         address = scriptValueGetInteger((ScriptValue *)((vm->program + vm->instructionOffset)));
         vm->instructionOffset = address;
         goto loop_2;
     }
-    case 29: {
+    case SCRIPT_OP_JUMP_IF_ZERO: {
         s32 condition;
         ScriptValue sp6C;
         scriptVmPopValue(vm, &sp6C);
@@ -868,11 +916,11 @@ loop_3:
         if (condition == 0) {
             vm->instructionOffset = scriptValueGetInteger((ScriptValue *)((vm->program + vm->instructionOffset)));
         } else {
-            vm->instructionOffset = (s32)(vm->instructionOffset + 5);
+            vm->instructionOffset = (s32)(vm->instructionOffset + SCRIPT_VALUE_BYTES);
         }
         goto loop_2;
     }
-    case 27: {
+    case SCRIPT_OP_CALL_NATIVE: {
         s32 commandStatus;
         commandStatus = actorScriptDispatchRegisteredCommand(actor);
         if (commandStatus == SCRIPT_COMMAND_CONTINUE) {
@@ -883,15 +931,15 @@ loop_3:
         }
         return SCRIPT_VM_YIELDED;
     }
-    case 26: {
+    case SCRIPT_OP_CALL: {
         s32 callTargetOffset;
         callTargetOffset = scriptValueGetInteger((ScriptValue *)((vm->program + vm->instructionOffset)));
-        vm->instructionOffset = (s32)(vm->instructionOffset + 5);
+        vm->instructionOffset = (s32)(vm->instructionOffset + SCRIPT_VALUE_BYTES);
         scriptVmSaveReturnLocation(vm);
         vm->instructionOffset = callTargetOffset;
         goto loop_2;
     }
-    case 30: {
+    case SCRIPT_OP_RETURN: {
         s32 restoredFrameIndex;
         ScriptValue sp58;
         s32 restoredFrameBase;
@@ -904,7 +952,7 @@ loop_3:
         scriptVmRestoreReturnLocation(vm);
         goto loop_2;
     }
-    case 32: {
+    case SCRIPT_OP_ENTER_FRAME: {
         s32 argumentCount;
         s32 localCount;
         s32 frameIndex;
@@ -915,7 +963,8 @@ loop_3:
         frameIndex = scriptVmReadIntegerOperand(vm);
         vm->stackDepth = (vm->stackDepth - argumentCount);
         scriptVmSaveStackDepth(vm);
-        _bzero(((u8 *)vm->values) + ((vm->stackDepth + argumentCount) * 5), (localCount - argumentCount) * 5);
+        _bzero(((u8 *)vm->values) + ((vm->stackDepth + argumentCount) * SCRIPT_VALUE_BYTES),
+               (localCount - argumentCount) * SCRIPT_VALUE_BYTES);
         localSlot = &vm->localFrameBases[frameIndex];
         previousFrameBase = *localSlot;
         *localSlot = vm->stackDepth;
@@ -963,7 +1012,6 @@ void actorUpdateScriptVm(u8 *actor) {
         }
     }
 }
-
 
 /// Reset all global script variables to their initial values.
 /// \returns Nothing.

@@ -242,3 +242,12 @@ Start with `micSessionUpdate`, then follow `voiceCommandUpdate`, `messengerDeliv
 native dispatch into the `actor_script_*.c` files and then into the gameplay helper
 it calls. Existing function comments retain original decompilation identifiers and
 addresses for comparison with disassembly.
+
+The interpreter names its recovered byte operations with the private `ScriptOpcode`
+enum in `src/ovl/script_vm.c`. Binary operands use the second-from-top stack value
+as the left operand: opcode 13 is greater-than, while 14 is less-than. Floating
+equality has separate named relative and absolute tolerances. Packed values use
+`SCRIPT_VALUE_BYTES` and `SCRIPT_VALUE_PAYLOAD_BYTES` from `script_vm.h`; their
+storage remains byte-aligned. Opcodes zero through two and value tag two retain
+their unresolved distinctions. The optional [semantic review](SEMANTIC_REVIEW.md)
+includes asymmetric integer and floating-equality scenarios for these operations.
