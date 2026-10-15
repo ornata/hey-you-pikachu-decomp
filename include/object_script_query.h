@@ -14,20 +14,20 @@ typedef enum ObjectScriptCategory {
     SCRIPT_CATEGORY_ITEM = 1,
     SCRIPT_CATEGORY_TYPE_127 = 2,
     SCRIPT_CATEGORY_TYPES_141_TO_148 = 3,
-    SCRIPT_CATEGORY_ACTOR = 4, ///< Actor configurations, including actor props.
-    SCRIPT_CATEGORY_TYPE_130 = 5
+    SCRIPT_CATEGORY_ACTOR = 4,                 ///< Actor configurations, including actor props.
+    SCRIPT_CATEGORY_VOICE_REACTIVE_SPINNER = 5 ///< Voice-reactive rotation objects.
 } ObjectScriptCategory;
 
 /// Classify an available object for actor scripts.
 /// \param actor Unused actor context accepted by the script interface.
 /// \param handle Handle of the object to classify.
-/// \returns One for items, two for object type 127, three for types 141 through 148, four for ActorKind configurations including props, five for type 130, or zero for an unavailable or unsupported object.
+/// \returns One for items, two for object type 127, three for types 141 through 148, four for ActorKind configurations including props, five for voice-reactive spinners, or zero for an unavailable or unsupported object.
 /// \note Original decompilation identifier: \c func_80117840 (0x80117840).
 s32 objectGetScriptCategory(u8 *actor, s32 handle);
 
 /// Get the kind identifier exposed to actor scripts for an available object.
 /// \param handle Handle of the object to query.
-/// \returns The item or actor kind, the object type for types 130 and 141 through 148, or zero for an unavailable or unsupported object.
+/// \returns The item or actor kind, the runtime kind for voice-reactive spinners and types 141 through 148, or zero for an unavailable or unsupported object.
 /// \note Original decompilation identifier: \c func_801178EC (0x801178EC).
 s32 objectGetScriptKind(s32 handle);
 

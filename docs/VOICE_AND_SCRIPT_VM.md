@@ -535,7 +535,8 @@ handles truncate toward zero. Invalid numeric conversions remain outside the rev
 
 The domains are distinct: `RUNTIME_OBJECT_KIND_ITEM` (134 / 0x86) selects item-owned
 state, whose item-catalog kind is a separate value. Actor configuration kinds span
-1 through 37, including props. Runtime tag 130 remains unnamed. Toolbox items and
+1 through 37, including props. Runtime tag 130 is the voice-reactive spinner, whose
+script category is five. Toolbox items and
 destroy-pending objects are unavailable to these handle queries. Twenty-four
 authored original-instruction cases check these branches and argument replacement,
 guarding the VM, saved values, handle pool and borrowed records. Held-item fixtures
@@ -579,6 +580,22 @@ the available stored-target handle even in fixed-target mode; it returns zero fo
 missing, pending-destruction or toolbox-held targets. Its meaning differs from
 asking whether tracking is enabled. The scalar contracts require valid borrowed
 state, separate VM storage and room for the appended value.
+
+The handle-consuming distance and height natives both use world coordinates.
+Distance returns -1 for an unavailable target; height difference returns zero,
+which is also a valid result for two objects at the same height. Both replace one
+handle operand with a float and use the available-handle exclusions above.
+
+Runtime kind `RUNTIME_OBJECT_KIND_VOICE_REACTIVE_SPINNER` (130) is established by
+its authenticated lifecycle table entry: `voiceReactiveSpinnerInitialize` allocates
+four bytes, `voiceReactiveSpinnerUpdate` advances rotation, and the state destructor
+releases the allocation. `VoiceReactiveSpinnerState` names the shared rotation-speed
+field. Recorded recognition status five enables distance-dependent acceleration;
+the updater also applies decay and wraps yaw. Decay may leave the stored speed
+negative, while `voiceReactiveSpinnerGetSpeedByHandle` reports only positive speed
+and otherwise returns zero. These are distinct storage and query contracts.
+Category five identifies this object class; its script kind query returns runtime
+kind 130, rather than an item-catalog or actor-configuration identifier.
 
 Scalar reviews remain active only while their source and helper bindings agree. Remaining callbacks stay explicitly listed
 in each saved-dictionary candidate's `native_effect_frontier`; a reviewed immediate

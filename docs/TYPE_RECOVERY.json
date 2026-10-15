@@ -51,7 +51,7 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 840,
+      "occurrences": 836,
       "unique_spellings": 462,
       "files": 65
     },
@@ -1515,6 +1515,7 @@
         "text_image_configurations.h",
         "text_image_create.h",
         "text_window.h",
+        "voice_reactive_spinner_types.h",
         "voice_recognition.h"
       ],
       "matching_exceptions": {
@@ -1522,16 +1523,6 @@
       },
       "locations": {
         "raw_offset_candidates": {
-          "object + 0x54": [
-            "100:28"
-          ],
-          "object + 0x10": [
-            "115:22",
-            "116:29",
-            "117:26",
-            "119:29",
-            "120:26"
-          ],
           "queueCursor + 0x18": [
             "159:40"
           ],
@@ -3244,7 +3235,8 @@
         "script_vm_stack.h",
         "terrain_height.h",
         "terrain_surface.h",
-        "vector_metrics.h"
+        "vector_metrics.h",
+        "voice_reactive_spinner_types.h"
       ],
       "matching_exceptions": {
         "player-view search wrappers": "Player yaw and view-shake reads retain the float-array view: direct checked player members change ROM code generation. Returned object handles use the shared RuntimeObjectPrefix member. Preserve floating addition ordering while seeking a matching named representation."
@@ -3252,30 +3244,34 @@
       "locations": {
         "raw_offset_candidates": {
           "return -1": [
-            "92:9"
+            "93:9"
           ],
           "return -65536": [
-            "159:5",
-            "171:5",
-            "613:9",
-            "619:5",
-            "835:5",
-            "916:5",
-            "970:5",
-            "991:5",
-            "1010:5"
+            "160:5",
+            "172:5",
+            "616:9",
+            "622:5",
+            "836:5",
+            "917:5",
+            "971:5",
+            "992:5",
+            "1011:5"
+          ],
+          "RUNTIME_OBJECT_KIND_VOICE_REACTIVE_SPINNER + 1": [
+            "405:28",
+            "434:23"
           ],
           "gPlayerControllerPort + 4": [
-            "563:14"
+            "566:14"
           ],
           "gPlayerControllerPort + 6": [
-            "571:21"
+            "574:21"
           ],
           "offset + 4": [
-            "947:64"
+            "948:64"
           ],
           "offset + 8": [
-            "948:64"
+            "949:64"
           ]
         }
       }

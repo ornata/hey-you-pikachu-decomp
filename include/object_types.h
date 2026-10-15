@@ -14,6 +14,7 @@ struct ItemState;
 /// Other encodings remain numeric. These tags are distinct from item-catalog IDs;
 /// the runtime object's kind field retains its original unsigned 16-bit storage.
 typedef enum RuntimeObjectKind {
+    RUNTIME_OBJECT_KIND_VOICE_REACTIVE_SPINNER = 0x82, ///< Voice-responsive rotation with owned speed state.
     RUNTIME_OBJECT_KIND_ITEM = 0x86 ///< Registered item with item-owned private state.
 } RuntimeObjectKind;
 

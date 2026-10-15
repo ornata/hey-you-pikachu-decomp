@@ -23,6 +23,7 @@
 #include "object_lookup.h"
 #include "heap_alloc.h"
 #include "object_types.h"
+#include "voice_reactive_spinner_types.h"
 #include "text_image.h"
 #include "heap_types.h"
 
@@ -76,13 +77,13 @@ void _bzero(void *, s32); /* extern */
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80027430 (0x80027430).
 void voiceReactiveSpinnerInitialize(u8 *object) {
-    s32 sp1C;
-    s32 allocationAddress;
+    VoiceReactiveSpinnerState *state;
+    VoiceReactiveSpinnerState *allocation;
 
-    allocationAddress = (s32)heapAllocLocal((&gGameHeap), 4, 0x27);
-    sp1C = allocationAddress;
-    _bzero((void *)allocationAddress, 4);
-    ((RuntimeObjectPrefix *)object)->state.address = sp1C;
+    allocation = (VoiceReactiveSpinnerState *)heapAllocLocal((&gGameHeap), sizeof(VoiceReactiveSpinnerState), 0x27);
+    state = allocation;
+    _bzero(allocation, sizeof(VoiceReactiveSpinnerState));
+    ((RuntimeObjectPrefix *)object)->state.pointer = state;
 }
 
 /// Camera slot selected for the current drawing context.
@@ -97,32 +98,31 @@ extern f32 gRuntimeFrameSeconds;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002747C (0x8002747C).
 void voiceReactiveSpinnerUpdate(u8 *object) {
-    f32 *speed = *(f32 **)(object + 0x54);
+    VoiceReactiveSpinnerState *state = (VoiceReactiveSpinnerState *)((RuntimeObjectPrefix *)object)->state.pointer;
     volatile f32 *dt = &gRuntimeFrameSeconds;
 
     if (voiceRecognitionGetCommandStatus() == 5) {
-        *speed += mathMapRangeClamped(
-                      0.0F, 2000.0F, 40.0F, 0.0F,
-                      objectGetApproxDistanceToPoint(object, (Vec3f *)gRenderCameras[gRenderCameraIndex].eye)) *
-                  *dt;
-        if (*speed > 600.0F) {
-            *speed = 600.0F;
+        state->rotationSpeed += mathMapRangeClamped(0.0F, 2000.0F, 40.0F, 0.0F,
+                                                    objectGetApproxDistanceToPoint(
+                                                        object, (Vec3f *)gRenderCameras[gRenderCameraIndex].eye)) *
+                                *dt;
+        if (state->rotationSpeed > 600.0F) {
+            state->rotationSpeed = 600.0F;
         }
     }
-    if (*speed > 0.0F) {
-        *speed -= 300.0F * *dt;
-        if (*speed > 0.0F) {
-            *(f32 *)(object + 0x10) += *speed * *dt;
-            while (*(f32 *)(object + 0x10) < 0.0F) {
-                *(f32 *)(object + 0x10) += 360.0F;
+    if (state->rotationSpeed > 0.0F) {
+        state->rotationSpeed -= 300.0F * *dt;
+        if (state->rotationSpeed > 0.0F) {
+            ((RuntimeObjectPrefix *)object)->rotation[1] += state->rotationSpeed * *dt;
+            while (((RuntimeObjectPrefix *)object)->rotation[1] < 0.0F) {
+                ((RuntimeObjectPrefix *)object)->rotation[1] += 360.0F;
             }
-            while (*(f32 *)(object + 0x10) >= 360.0F) {
-                *(f32 *)(object + 0x10) -= 360.0F;
+            while (((RuntimeObjectPrefix *)object)->rotation[1] >= 360.0F) {
+                ((RuntimeObjectPrefix *)object)->rotation[1] -= 360.0F;
             }
         }
     }
 }
-
 
 /// Prepare a text image for a queued display message.
 /// \param index Text-image slot to replace, from 0 through 2.
