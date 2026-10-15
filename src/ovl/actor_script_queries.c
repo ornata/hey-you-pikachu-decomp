@@ -232,6 +232,8 @@ s32 actorFindItemHandleInFacingCone(u8 *actor, f32 distance, f32 cone, s32 minKi
 }
 
 /// Track an available object as an actor's movement destination. Otherwise disable target tracking.
+/// Unavailable targets leave the previous handle, destination, and allowance stored.
+/// A zero category does not establish whether a destination was selected.
 /// \param actor Actor whose destination is changed.
 /// \param handle Handle of the target object.
 /// \param distanceAllowance Distance allowance used when approaching the destination.
@@ -381,7 +383,7 @@ void actorSetTargetTrackingMode(u8 *actor, s32 mode) {
 /// Classify an available object for actor scripts.
 /// \param actor Unused actor context accepted by the script interface.
 /// \param handle Handle of the object to classify.
-/// \returns One for items, two for object type 127, three for types 141 through 148, four for actor configurations including props, five for voice-reactive spinners, or zero for an unavailable or unsupported object.
+/// \returns One for items, two for player-control roots, three for types 141 through 148, four for actor configurations including props, five for voice-reactive spinners, or zero for an unavailable or unsupported object.
 /// \note Original decompilation identifier: \c func_80117840 (0x80117840).
 s32 objectGetScriptCategory(u8 *actor, s32 handle) {
     u16 objectKind;
@@ -395,8 +397,8 @@ s32 objectGetScriptCategory(u8 *actor, s32 handle) {
     if (objectKind == RUNTIME_OBJECT_KIND_ITEM) {
         return SCRIPT_CATEGORY_ITEM;
     }
-    if (objectKind == 0x7F) {
-        return SCRIPT_CATEGORY_TYPE_127;
+    if (objectKind == RUNTIME_OBJECT_KIND_PLAYER_CONTROL_ROOT) {
+        return SCRIPT_CATEGORY_PLAYER_CONTROL;
     }
     if (((s32)objectKind > 0) && ((s32)objectKind < 0x26)) {
         return SCRIPT_CATEGORY_ACTOR;

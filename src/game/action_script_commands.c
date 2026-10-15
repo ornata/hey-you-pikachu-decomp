@@ -397,7 +397,7 @@ void actionCommandLaunchHeldItem(u8 *actor, ActorScriptState *state, ActorAction
     switch (l->kind) {
     case ACTION_LAUNCH_PLAYER_OR_FORWARD:
         if (state->targetMode == ACTOR_TARGET_FOLLOW && (p = actorResolveStoredTarget(actor)) != NULL &&
-            ((RuntimeObjectPrefix *)p)->kind == 0x7F) {
+            ((RuntimeObjectPrefix *)p)->kind == RUNTIME_OBJECT_KIND_PLAYER_CONTROL_ROOT) {
             dx = gPlayerState.position[0] - ((RuntimeObjectPrefix *)obj)->position[0];
             dz = gPlayerState.position[2] - ((RuntimeObjectPrefix *)obj)->position[2];
             len = sqrtf((dx * dx) + (dz * dz));

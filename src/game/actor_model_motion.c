@@ -502,7 +502,7 @@ void actorGetParentTrackingPosition(u8 *child, ActorScriptState *parentState, f3
     if (parentState->targetMode == ACTOR_TARGET_FOLLOW) {
         targetObject = actorResolveStoredTarget(((RuntimeObjectPrefix *)child)->root.bytes);
         if (targetObject != NULL) {
-            if (((RuntimeObjectPrefix *)targetObject)->kind == 0x7F) {
+            if (((RuntimeObjectPrefix *)targetObject)->kind == RUNTIME_OBJECT_KIND_PLAYER_CONTROL_ROOT) {
                 position[0] = gRenderCameras[gRenderCameraIndex].eye[0];
                 position[1] = gRenderCameras[gRenderCameraIndex].eye[1];
                 position[2] = gRenderCameras[gRenderCameraIndex].eye[2];

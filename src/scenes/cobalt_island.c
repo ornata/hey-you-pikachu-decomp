@@ -12,6 +12,7 @@ enum { COBALT_ISLAND_GRID_LAYERS = 16, COBALT_ISLAND_GRID_SIDE = 16 };
 #include "ambient_audio.h"
 #include "item_mode.h"
 #include "landmark.h"
+#include "object_types.h"
 #include "common.h"
 #include "item_object.h"
 #include "actor_create.h"
@@ -132,7 +133,7 @@ void cobaltIslandInitializeObjects(void) {
                            D_8014E12C_scene_cobalt_island, 0);
     }
     cobaltIslandCreateSceneProps();
-    landmarkCreate(220.0F, 31.0F, 111.0F, 0x8F);
+    landmarkCreate(220.0F, 31.0F, 111.0F, RUNTIME_OBJECT_KIND_LANDMARK_CANNON);
 }
 
 /// Provide an island-scene callback that requires no action.

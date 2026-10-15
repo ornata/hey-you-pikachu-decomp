@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "purpose": "Explicit scalar and immediate action-request storage contracts; source changes revoke evidence until reviewed again. Deferred handlers remain separate.",
-  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases. Twelve action-request wrappers and their two-field scheduling helper reviewed against original Ghidra801167A0 and all twelve original wrapper addresses; twenty-four direct original-instruction request cases guard all VM fields and pending/protected values. Selector-three deferred dispatch and helper chain reviewed against original Ghidra80117098/8000F4C4/801167BC/800120F0 and eight guarded direct-dispatch/scheduler cases. Selector-two startup and waiting helpers reviewed against original Ghidra80116800/80012034; twelve guarded direct/scheduler cases cover numeric tags, original null sentinel, waiting and completion. Player input-mask field names now include synthetic stick flags, separately from permission flags; unchanged prefix layout and the reviewed permission/position reads were rechecked against matching objects before rebinding the two affected header dependencies. Additional permission names for Pikachu/follow selection and stun reaction leave the permission storage and reviewed view/position access unchanged; the two header dependencies were rechecked after strict matching verification. Ten additional permission names retain identical player storage and reviewed view/position accesses; header bindings rechecked after all483 objects and ROM matched. Selector-nine cost admission, root-resource adjustment and HUD helper were checked against Ghidra80116BC4/80014A3C, the authenticated five-record table and fourteen guarded original-instruction startup/poll/completion observations, including distinct actor/root resource records. The root and script actor states are explicitly distinguished. Acknowledgement native and helper checked against Ghidra8011C84C/80119200 and four original-instruction probes, including raw nonboolean word preservation; message fields remain unchanged. Four distance/target append contracts checked against original Ghidra801172D4/80118838/801187E4/8011C674/8011CB38/8011D208/8011DBF8/801177FC/80118B30/8003A5FC/8003A6F0 and twelve guarded original-instruction probes with distinct local/world coordinates, approach clamping, fixed/follow selection and unavailable-target exclusions. The actor-state header replaces only the producer-established four-byte approach sample with f32 and adds its offset assertion; all other declarations remain token-identical. Five further handle-consuming query contracts checked against original Ghidra8011730C/80117388/8011D240/8011D288/80117840/801178EC/8011DCB0/8011DCF8/80117E80/8011EA9C and23 guarded original-instruction observations. Runtime kind130 is authenticated against its retained callback record selecting80027430/8002747C, whose allocation and speed accesses establish the shared four-byte spinner state; six updater observations cover decay, negative retained values, voice-distance endpoints, speed cap and yaw wrap. Independent agent RNG review authenticated original wrapper/helper instructions and fifteen guarded interpreter observations at62bceac: inclusive unit-float endpoints including the observed rounding threshold, unsigned remainder for positive signed bounds, no advancement for nonpositive bounds, numeric conversion and unchanged protected VM storage. Reports retain original ROM/ELF/core/source fingerprints; FCR31 threshold is qualified to observed interpreter rounding. Independent tracking review disassembled wrappers/helpers and checked ten authored cases through three interpreter repetitions (30 supported observations,480 matching guarded regions) using frozen62bceac ELF/core inputs. Cases distinguish primary/secondary refresh, stale state after unavailable targets, zero category after a successful unsupported-kind selection, live fallback copying and escape selection preserving allowance/position. Two-operand replacement retains all three protected lower values.",
+  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases. Twelve action-request wrappers and their two-field scheduling helper reviewed against original Ghidra801167A0 and all twelve original wrapper addresses; twenty-four direct original-instruction request cases guard all VM fields and pending/protected values. Selector-three deferred dispatch and helper chain reviewed against original Ghidra80117098/8000F4C4/801167BC/800120F0 and eight guarded direct-dispatch/scheduler cases. Selector-two startup and waiting helpers reviewed against original Ghidra80116800/80012034; twelve guarded direct/scheduler cases cover numeric tags, original null sentinel, waiting and completion. Player input-mask field names now include synthetic stick flags, separately from permission flags; unchanged prefix layout and the reviewed permission/position reads were rechecked against matching objects before rebinding the two affected header dependencies. Additional permission names for Pikachu/follow selection and stun reaction leave the permission storage and reviewed view/position access unchanged; the two header dependencies were rechecked after strict matching verification. Ten additional permission names retain identical player storage and reviewed view/position accesses; header bindings rechecked after all483 objects and ROM matched. Selector-nine cost admission, root-resource adjustment and HUD helper were checked against Ghidra80116BC4/80014A3C, the authenticated five-record table and fourteen guarded original-instruction startup/poll/completion observations, including distinct actor/root resource records. The root and script actor states are explicitly distinguished. Acknowledgement native and helper checked against Ghidra8011C84C/80119200 and four original-instruction probes, including raw nonboolean word preservation; message fields remain unchanged. Four distance/target append contracts checked against original Ghidra801172D4/80118838/801187E4/8011C674/8011CB38/8011D208/8011DBF8/801177FC/80118B30/8003A5FC/8003A6F0 and twelve guarded original-instruction probes with distinct local/world coordinates, approach clamping, fixed/follow selection and unavailable-target exclusions. The actor-state header replaces only the producer-established four-byte approach sample with f32 and adds its offset assertion; all other declarations remain token-identical. Five further handle-consuming query contracts checked against original Ghidra8011730C/80117388/8011D240/8011D288/80117840/801178EC/8011DCB0/8011DCF8/80117E80/8011EA9C and23 guarded original-instruction observations. Runtime kind130 is authenticated against its retained callback record selecting80027430/8002747C, whose allocation and speed accesses establish the shared four-byte spinner state; six updater observations cover decay, negative retained values, voice-distance endpoints, speed cap and yaw wrap. Independent agent RNG review authenticated original wrapper/helper instructions and fifteen guarded interpreter observations at62bceac: inclusive unit-float endpoints including the observed rounding threshold, unsigned remainder for positive signed bounds, no advancement for nonpositive bounds, numeric conversion and unchanged protected VM storage. Reports retain original ROM/ELF/core/source fingerprints; FCR31 threshold is qualified to observed interpreter rounding. Independent tracking review disassembled wrappers/helpers and checked ten authored cases through three interpreter repetitions (30 supported observations,480 matching guarded regions) using frozen62bceac ELF/core inputs. Cases distinguish primary/secondary refresh, stale state after unavailable targets, zero category after a successful unsupported-kind selection, live fallback copying and escape selection preserving allowance/position. Two-operand replacement retains all three protected lower values. Agent-authenticated kind127 producer/callback and cannon landmark creation/help/selection consumers establish player-control-root and cannon identities. Category2 is named player control; category3 keeps its numeric range because145..148 lack established producers. Only enum spellings change in the reviewed classifier; all predicates and values remain unchanged.",
   "preconditions": [
     "Protected locals and frame metadata lie below the active stack depth.",
     "Append contracts require one free value slot; pointers and borrowed actor/global state are valid.",
@@ -70,7 +70,7 @@
     {
       "kind": "file",
       "file": "include/object_types.h",
-      "sha256": "bd5f21d0f56127f87b7d89ecc94806630978597afab7cd59a3f131ba1d0959c2"
+      "sha256": "5c6be0e1e3245596fea4fd556d8ad41fbda62414191a56eda982d6395f5589bf"
     }
   ],
   "callbacks": [
@@ -543,7 +543,7 @@
         {
           "kind": "file",
           "file": "include/object_types.h",
-          "sha256": "bd5f21d0f56127f87b7d89ecc94806630978597afab7cd59a3f131ba1d0959c2"
+          "sha256": "5c6be0e1e3245596fea4fd556d8ad41fbda62414191a56eda982d6395f5589bf"
         },
         {
           "kind": "file",
@@ -633,7 +633,7 @@
         {
           "kind": "file",
           "file": "include/object_types.h",
-          "sha256": "bd5f21d0f56127f87b7d89ecc94806630978597afab7cd59a3f131ba1d0959c2"
+          "sha256": "5c6be0e1e3245596fea4fd556d8ad41fbda62414191a56eda982d6395f5589bf"
         },
         {
           "kind": "file",
@@ -723,7 +723,7 @@
         {
           "kind": "file",
           "file": "include/object_types.h",
-          "sha256": "bd5f21d0f56127f87b7d89ecc94806630978597afab7cd59a3f131ba1d0959c2"
+          "sha256": "5c6be0e1e3245596fea4fd556d8ad41fbda62414191a56eda982d6395f5589bf"
         },
         {
           "kind": "file",
@@ -1824,7 +1824,7 @@
         {
           "kind": "file",
           "file": "include/object_types.h",
-          "sha256": "bd5f21d0f56127f87b7d89ecc94806630978597afab7cd59a3f131ba1d0959c2"
+          "sha256": "5c6be0e1e3245596fea4fd556d8ad41fbda62414191a56eda982d6395f5589bf"
         },
         {
           "kind": "file",
@@ -1915,7 +1915,7 @@
         {
           "kind": "file",
           "file": "include/object_types.h",
-          "sha256": "bd5f21d0f56127f87b7d89ecc94806630978597afab7cd59a3f131ba1d0959c2"
+          "sha256": "5c6be0e1e3245596fea4fd556d8ad41fbda62414191a56eda982d6395f5589bf"
         },
         {
           "kind": "file",
@@ -2019,7 +2019,7 @@
         {
           "kind": "file",
           "file": "include/object_types.h",
-          "sha256": "bd5f21d0f56127f87b7d89ecc94806630978597afab7cd59a3f131ba1d0959c2"
+          "sha256": "5c6be0e1e3245596fea4fd556d8ad41fbda62414191a56eda982d6395f5589bf"
         },
         {
           "kind": "file",
@@ -2111,7 +2111,7 @@
         {
           "kind": "file",
           "file": "include/object_types.h",
-          "sha256": "bd5f21d0f56127f87b7d89ecc94806630978597afab7cd59a3f131ba1d0959c2"
+          "sha256": "5c6be0e1e3245596fea4fd556d8ad41fbda62414191a56eda982d6395f5589bf"
         },
         {
           "kind": "file",
@@ -2137,12 +2137,12 @@
           "kind": "function",
           "file": "src/ovl/actor_script_queries.c",
           "function": "objectGetScriptCategory",
-          "sha256": "e8d268842fa35a88d9d0a7687da5e90ccc52e9191902b51d1e3fd2ab308d8ae0"
+          "sha256": "92860fad5522c8e77866fbd18d3521f7ce52e120ab3280ef54034d05bbf99452"
         },
         {
           "kind": "file",
           "file": "include/object_script_query.h",
-          "sha256": "70d10f50390242e8fcaf77d33893746361440a490f6261975ee53dd3154587cf"
+          "sha256": "5041ea33e8fef3cc0ba7167db83f2afc942045fb792cc390359f35546560d8a6"
         }
       ],
       "preconditions": [
@@ -2208,7 +2208,7 @@
         {
           "kind": "file",
           "file": "include/object_types.h",
-          "sha256": "bd5f21d0f56127f87b7d89ecc94806630978597afab7cd59a3f131ba1d0959c2"
+          "sha256": "5c6be0e1e3245596fea4fd556d8ad41fbda62414191a56eda982d6395f5589bf"
         },
         {
           "kind": "file",
@@ -2312,7 +2312,7 @@
         {
           "kind": "file",
           "file": "include/object_types.h",
-          "sha256": "bd5f21d0f56127f87b7d89ecc94806630978597afab7cd59a3f131ba1d0959c2"
+          "sha256": "5c6be0e1e3245596fea4fd556d8ad41fbda62414191a56eda982d6395f5589bf"
         },
         {
           "kind": "file",
@@ -2500,7 +2500,7 @@
         {
           "kind": "file",
           "file": "include/object_types.h",
-          "sha256": "bd5f21d0f56127f87b7d89ecc94806630978597afab7cd59a3f131ba1d0959c2"
+          "sha256": "5c6be0e1e3245596fea4fd556d8ad41fbda62414191a56eda982d6395f5589bf"
         },
         {
           "kind": "file",
@@ -2526,12 +2526,12 @@
           "kind": "function",
           "file": "src/ovl/actor_script_queries.c",
           "function": "objectGetScriptCategory",
-          "sha256": "e8d268842fa35a88d9d0a7687da5e90ccc52e9191902b51d1e3fd2ab308d8ae0"
+          "sha256": "92860fad5522c8e77866fbd18d3521f7ce52e120ab3280ef54034d05bbf99452"
         },
         {
           "kind": "file",
           "file": "include/object_script_query.h",
-          "sha256": "70d10f50390242e8fcaf77d33893746361440a490f6261975ee53dd3154587cf"
+          "sha256": "5041ea33e8fef3cc0ba7167db83f2afc942045fb792cc390359f35546560d8a6"
         },
         {
           "kind": "function",
@@ -2597,7 +2597,7 @@
         {
           "kind": "file",
           "file": "include/object_types.h",
-          "sha256": "bd5f21d0f56127f87b7d89ecc94806630978597afab7cd59a3f131ba1d0959c2"
+          "sha256": "5c6be0e1e3245596fea4fd556d8ad41fbda62414191a56eda982d6395f5589bf"
         },
         {
           "kind": "file",
@@ -2622,7 +2622,7 @@
         {
           "kind": "file",
           "file": "include/object_script_query.h",
-          "sha256": "70d10f50390242e8fcaf77d33893746361440a490f6261975ee53dd3154587cf"
+          "sha256": "5041ea33e8fef3cc0ba7167db83f2afc942045fb792cc390359f35546560d8a6"
         }
       ],
       "preconditions": [
@@ -2724,7 +2724,7 @@
         {
           "kind": "file",
           "file": "include/object_types.h",
-          "sha256": "bd5f21d0f56127f87b7d89ecc94806630978597afab7cd59a3f131ba1d0959c2"
+          "sha256": "5c6be0e1e3245596fea4fd556d8ad41fbda62414191a56eda982d6395f5589bf"
         },
         {
           "kind": "file",
@@ -2750,12 +2750,12 @@
           "kind": "function",
           "file": "src/ovl/actor_script_queries.c",
           "function": "objectGetScriptCategory",
-          "sha256": "e8d268842fa35a88d9d0a7687da5e90ccc52e9191902b51d1e3fd2ab308d8ae0"
+          "sha256": "92860fad5522c8e77866fbd18d3521f7ce52e120ab3280ef54034d05bbf99452"
         },
         {
           "kind": "file",
           "file": "include/object_script_query.h",
-          "sha256": "70d10f50390242e8fcaf77d33893746361440a490f6261975ee53dd3154587cf"
+          "sha256": "5041ea33e8fef3cc0ba7167db83f2afc942045fb792cc390359f35546560d8a6"
         },
         {
           "kind": "function",

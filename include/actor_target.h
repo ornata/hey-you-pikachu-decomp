@@ -73,13 +73,13 @@ void actorSetTargetPosition(u8 *actor, f32 *position);
 /// \note Original decompilation identifier: \c func_8011866C (0x8011866C).
 void actorChooseEscapePosition(u8 *object, f32 *target);
 
-/// Select the player's primary object as an actor's tracked movement target.
+/// Select the player's primary object as an actor's tracked movement target without refreshing its stored destination.
 /// \param actor Actor whose tracked target and follow mode are changed.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80118A00 (0x80118A00).
 void actorTrackPlayerPrimaryObject(u8 *actor);
 
-/// Select the player's secondary object as an actor's tracked escape source.
+/// Select the player's secondary object as an actor's tracked escape source, retaining destination and allowance.
 /// \param actor Actor whose tracked target and escape mode are changed.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_801189E4 (0x801189E4).
@@ -105,6 +105,8 @@ f32 actorGetHorizontalTargetDistance(u8 *actor);
 f32 actorGetTargetCoordinate(u8 *actor, s32 axis);
 
 /// Track an available object as an actor's movement destination. Otherwise disable target tracking.
+/// Unavailable targets retain the previous handle, destination, and allowance.
+/// A zero category does not establish whether a destination was selected.
 /// \param actor Actor whose destination is changed.
 /// \param handle Handle of the target object.
 /// \param distanceAllowance Distance allowance used when approaching the destination.

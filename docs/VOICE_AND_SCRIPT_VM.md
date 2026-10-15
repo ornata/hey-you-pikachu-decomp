@@ -597,6 +597,19 @@ and otherwise returns zero. These are distinct storage and query contracts.
 Category five identifies this object class; its script kind query returns runtime
 kind 130, rather than an item-catalog or actor-configuration identifier.
 
+Category two identifies the player-control hierarchy root, runtime kind 127.
+`playerCreateControlHierarchy` establishes this identity. Tracking consumers treat
+it specially: look-at positioning uses the selected camera eye, while the held-item
+launch path aims toward the player position. It is a control hierarchy object,
+distinct from the primary player-state record and from item-catalog kind 127.
+
+Runtime kind 143 identifies the cannon landmark created on Cobalt Island and
+described by the cannon interaction helper. Runtime kinds 141, 142 and 144 are also
+constructed through `landmarkCreate`, but their precise landscape identities remain
+unresolved. No retained source producer establishes kinds 145 through 148. The
+script classifier accepts that entire range as category three, so its enum retains
+the numeric range rather than asserting that every member has a recovered identity.
+
 Target selection also has distinct immediate contracts. Selecting the player's
 primary object stores the handle and enables following without resolving the
 object or refreshing the stored destination. Selecting the secondary object uses

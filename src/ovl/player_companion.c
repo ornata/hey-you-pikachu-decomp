@@ -298,7 +298,7 @@ u8 *playerCreateControlHierarchy(void) {
     controlRoot = objectCreateDefault();
     sp20 = objectCreateDefault();
     secondCollisionObject = objectCreateDefault();
-    ((RuntimeObjectPrefix *)controlRoot)->kind = 0x7F;
+    ((RuntimeObjectPrefix *)controlRoot)->kind = RUNTIME_OBJECT_KIND_PLAYER_CONTROL_ROOT;
     ((RuntimeObjectPrefix *)controlRoot)->sibling.bytes = sp20;
     ((RuntimeObjectPrefix *)sp20)->sibling.bytes = secondCollisionObject;
     ((RuntimeObjectPrefix *)sp20)->radius = 4.5F;
@@ -1552,7 +1552,7 @@ s32 playerPrepareInteractionDescription(PlayerControlPrefix *player) {
         playerSetInteractionHelpText((u8 *)text);
         return item->handle;
     }
-    if (kind == 0x8F) {
+    if (kind == RUNTIME_OBJECT_KIND_LANDMARK_CANNON) {
         sprintf(text, "%s", landmarkGetCannonDescription((s32)item));
         playerSetInteractionHelpText((u8 *)text);
         return item->handle;
@@ -1846,7 +1846,7 @@ s32 playerClassifyInteractionTarget(u8 *player, u8 *object, s32 flags) {
     if (kind == 0x25) {
         return 2;
     }
-    if (kind == 0xB0 || kind == 0x8F) {
+    if (kind == 0xB0 || kind == RUNTIME_OBJECT_KIND_LANDMARK_CANNON) {
         return 2;
     }
     if (!(flags & INTERACTION_PRIMARY_REGION) ||
