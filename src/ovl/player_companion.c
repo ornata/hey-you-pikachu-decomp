@@ -966,7 +966,7 @@ s32 playerConsumeInteractionProxy(u8 *player) {
     state = ((RuntimeObjectPrefix *)obj)->state.bytes;
     ((InteractionProxyState *)state)->context -= 1;
     msg.arg1 = 0;
-    msg.type = 0x11;
+    msg.type = SCRIPT_MESSAGE_PROXY_USED;
     msg.arg0 = ((InteractionProxyState *)state)->metadata;
     msg.arg2 = ((InteractionProxyState *)state)->context;
     msg.arg3 = 0;
@@ -1021,7 +1021,7 @@ s32 playerRequestTargetCooperation(u8 *player) {
         return 0;
     }
     msg.arg1 = 0;
-    msg.type = 0xF;
+    msg.type = SCRIPT_MESSAGE_COOPERATION_REQUEST;
     msg.arg0 = 0;
     msg.arg2 = 0;
     msg.arg3 = 0;

@@ -1054,7 +1054,7 @@ void actionCommandNotifyStoredTarget(u8 *actor, ActorScriptState *unusedState, A
     args = (ArgsMsg *)command->args;
     if (o != NULL && ((RuntimeObjectPrefix *)o)->kind > 0 && ((RuntimeObjectPrefix *)o)->kind < 0x26) {
         m.arg1 = 0;
-        m.type = 0x10;
+        m.type = SCRIPT_MESSAGE_ACTION_NOTIFICATION;
         m.arg0 = args->a;
         m.arg2 = args->c;
         m.arg3 = args->d;

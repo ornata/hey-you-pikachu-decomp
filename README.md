@@ -105,6 +105,8 @@ Try the script decoder without a ROM:
 ```sh
 python3 -m tools.script_decoder vm --demo
 # Also supports: cue --demo, sequence --demo
+# After a matching build, catalog local VM configuration candidates:
+python3 -m tools.script_decoder.catalog
 ```
 
 Listings go under `build/script-decoder/`. See the

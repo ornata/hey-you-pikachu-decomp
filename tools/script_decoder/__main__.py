@@ -59,6 +59,7 @@ def main(argv=None):
     parser.add_argument('--address', type=number, help='known virtual base of a direct ROM-offset or raw-input window')
     parser.add_argument('--input-offset', type=number, default=0, help='offset within --input (default zero)')
     parser.add_argument('--entry', type=number, action='append', help='VM entry offset within the program window (repeatable)')
+    parser.add_argument('--max-instructions', type=number, default=10000, help='VM decode budget, at most 100000 (default 10000)')
     parser.add_argument('--native-table', help='explicit native table address/symbol; requires --elf and --native-count')
     parser.add_argument('--native-count', type=number, help='explicit native table bound; includes null slot0 when present')
     parser.add_argument('--output', type=Path, help='output directory under build/script-decoder/')
@@ -75,6 +76,8 @@ def main(argv=None):
             raise ValueError('--address must be an unsigned 32-bit target address')
         if args.input_offset and args.input is None:
             raise ValueError('--input-offset requires --input')
+        if not 1 <= args.max_instructions <= 100000:
+            raise ValueError('--max-instructions must be between 1 and 100000')
         native_table, natives, cue_handlers, config = args.native_table, None, None, None
         image = None
         address = args.address
@@ -145,10 +148,10 @@ def main(argv=None):
                     scope='Lookup tables only; the input script is not authenticated against ROM.')
         names = opcode_names(args.format)
         if args.format == 'vm':
-            result = decode_vm(data, names, tuple(args.entry or (0,)), natives)
+            result = decode_vm(data, names, tuple(args.entry or (0,)), natives, args.max_instructions)
         else:
             result = decode_records(data, names, args.format, address)
-        result.update(schema_version=1, provenance=provenance,
+        result.update(schema_version=2, provenance=provenance,
                       window_sha256=hashlib.sha256(data).hexdigest(),
                       schema_source_sha256={path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest()
                                             for path in (ENUM_SOURCES[args.format][0],
@@ -163,7 +166,7 @@ def main(argv=None):
         result['counts'] = dict(opcodes=dict(Counter(str(row['opcode']) for row in result['instructions'])),
                                 value_tags=dict(Counter(str(value['tag']) for row in result['instructions']
                                                         for value in row.get('operands', []))))
-        result['unresolved_tag2_uses'] = [
+        result['code_reference_uses'] = [
             dict(offset=row['offset'] + 1 + 5 * i, instruction_offset=row['offset'],
                  role=row['operand_roles'][i], value=value['value'])
             for row in result['instructions'] for i, value in enumerate(row.get('operands', []))

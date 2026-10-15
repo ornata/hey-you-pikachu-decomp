@@ -29,11 +29,11 @@ def floating(raw):
 
 
 def packed(raw):
-    """Describe a five-byte value without resolving strings or guessing tag2's origin."""
+    """Describe a five-byte value without resolving strings or inventing compiler intent."""
     tag, bits = raw[0], raw[1:]
     result = dict(tag=tag, payload_hex=bits.hex())
     if tag in (0, 2):
-        result.update(kind='integer' if tag == 0 else 'unresolved_integer_like',
+        result.update(kind='integer' if tag == 0 else 'code_reference',
                       value=int.from_bytes(bits, 'big', signed=True))
     elif tag == 1:
         result.update(kind='float', value=floating(bits))
@@ -59,12 +59,12 @@ def decode_vm(data, names, entries=(0,), natives=None, limit=10000):
     """Walk bounded static successors; native stack effects and returns stay opaque."""
     rows, occupied, pending, errors = {}, {}, list(reversed(entries)), []
     while pending:
-        if len(rows) >= limit:
-            errors.append('instruction budget exhausted; remaining paths are unparsed')
-            break
         offset = pending.pop()
         if offset in rows:
             continue
+        if len(rows) >= limit:
+            errors.append('instruction budget exhausted; remaining paths are unparsed')
+            break
         if offset < 0 or offset >= len(data):
             errors.append(f'control-flow target {offset:#x} is outside the supplied window')
             continue

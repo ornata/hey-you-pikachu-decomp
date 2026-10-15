@@ -213,8 +213,8 @@ are separate conditions. An actual program can choose how to handle each one.
 ## Bytecode reference and reading order
 
 Script values occupy five bytes: a tag followed by a four-byte payload. Numeric
-accessors treat tags 0 and 2 as integers; setters emit 0 for integers and 1 for
-floats. String access distinguishes table indices (tag 3) from borrowed pointers
+accessors treat integer tag 0 and code-reference tag 2 as integers; setters emit
+0 for integers and 1 for floats. String access distinguishes table indices (tag 3) from borrowed pointers
 (tag 4). The recovered code also contains conversions; consult the value accessors
 before assigning meaning to another tag.
 
@@ -250,10 +250,11 @@ equality has separate named relative and absolute tolerances. Packed values use
 `SCRIPT_VALUE_BYTES` and `SCRIPT_VALUE_PAYLOAD_BYTES` from `script_vm.h`; their
 storage remains byte-aligned. Bytes zero through two each consume one opcode byte
 without changing the value stack; a following instruction still executes normally.
-Tag two follows the signed integer reader and is rejected by the decimal-string
-parser, just like tag zero. These consumer behaviors do not establish why the
-original script language distinguished the encodings, so their numeric forms
-remain explicit. The optional [semantic review](SEMANTIC_REVIEW.md) covers those
+`SCRIPT_VALUE_CODE_REFERENCE` (tag two) carries bytecode offsets and native-command
+selectors in the retained configuration corpus. It follows the signed integer
+reader and is rejected by the decimal-string parser, just like integer tag zero.
+The name describes those observed roles; the original compiler terminology is
+unknown. The optional [semantic review](SEMANTIC_REVIEW.md) covers those
 contrasts alongside asymmetric integer and floating-equality scenarios.
 
 Dictionary selection uses `VOICE_DICTIONARY_NONE`, and consuming a result without
@@ -309,7 +310,7 @@ python3 -m tools.script_decoder sequence --demo
 Each command writes `listing.txt` and `listing.json` under
 `build/script-decoder/demo-FORMAT/`. The text shows labels, operand roles, candidate
 branches/calls and source locations. JSON also records raw tag/payload encodings,
-unresolved tag-2 uses, opcode/tag counts, diagnostics and unparsed byte ranges.
+code-reference uses, opcode/tag counts, diagnostics and unparsed byte ranges.
 No extracted retail scripts or strings are bundled with the tool or examples.
 
 For your normalized USA ROM, supply an explicit window. For example, after a
@@ -341,6 +342,7 @@ boundary. Unknown handler layouts stop that path; argument stack effects and
 dynamic return locations remain unresolved. VM calls expose both their target
 and return continuation, while conditional branches expose both possible paths.
 Use repeated `--entry OFFSET` options to inspect additional known VM entry points.
+Larger programs can raise the explicit budget with `--max-instructions 100000`.
 VM targets are offsets from the program start: keep that start at window offset
 zero rather than rebasing a fragment taken from the middle of a program.
 
@@ -359,3 +361,49 @@ subdirectory there. Keep extracted content and generated listings local. The CLI
 returns 0 for a decode without diagnostics, 1 for a partial decode with diagnostics,
 and 2 for an input or mapping error. None of these results establishes execution,
 gameplay reachability, resource ownership or a recovered source-language meaning.
+
+To catalog the retained layout across the resident and scene sections:
+
+```sh
+python3 -m tools.script_decoder.catalog --elf build/pikachu.elf
+```
+
+The catalog authenticates every scanned section and keeps its overlay identity.
+It finds aligned configuration candidates that reference the retained native table
+and a local program preceding the header. A program-to-header window bounds the
+decode; it is not an inferred allocation size. Each candidate retains diagnostics,
+code fingerprints, frame operands, global-reference base indices, native calls and
+code-reference roles. Direct `actorCreateForKind` calls are linked only when the
+script argument is the exact configuration symbol. Other candidates remain
+explicitly unproven as live configurations. The results stay under
+`build/script-decoder/catalog/`; this scan does not discover every possible script
+layout or compressed resource.
+
+Decoder report schema 2 calls tag 2 `code_reference` and records its uses in
+`code_reference_uses`. These references select bytecode offsets or configured
+native-command slots; their payloads retain signed integer conversion behavior.
+The catalog preserves separate entries for overlays even when virtual addresses
+coincide, and fingerprints decoded code to expose repeated programs.
+
+## Actor mailbox categories
+
+`ActorScriptMessageKind` names categories with established gameplay producers.
+Scheduler notifications use the separate `GameMessageKind` domain.
+
+| Category | Producer | Payload |
+| --- | --- | --- |
+| 14: item impact | `actorPostItemImpactMessage` | Item handle in arguments 0/4; speed magnitude in argument 2. |
+| 15: cooperation request | `playerRequestTargetCooperation` | Selected interaction target handle in argument 4. |
+| 16: action notification | `actionCommandNotifyStoredTarget` | Cue values in arguments 0/2/3; sender actor handle in argument 4. |
+| 17: proxy used | `playerConsumeInteractionProxy` | Proxy metadata in argument 0, remaining uses in 2 and proxy handle in 4. |
+
+The credits-overlay candidate at program address 0x8013C0E4 reproduces the message
+filter offsets and targets recorded by the existing opening voice scenario. It
+tests categories 13, 15 and 14 before copying other categories into local slots.
+A forest-edge candidate shares those checkpoints; live resource-byte capture is
+still needed to distinguish their full identity. Category 13 also needs its
+script-side producers reconciled. These
+category names establish producer contracts; they do not identify every recipient
+reaction or override arbitrary messages constructed by script code. Impact cases
+check the exact mailbox payload and pending-message rejection with synthetic
+velocities, without claiming collision or item-lifetime coverage.

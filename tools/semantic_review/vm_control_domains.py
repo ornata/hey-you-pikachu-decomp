@@ -9,8 +9,8 @@ def experiments():
     """Exercise each recovered control-flow family with guarded packed values."""
     from .cases import RAM, word
 
-    def value(number):
-        return b"\0" + word(number)
+    def value(number, tag=0):
+        return bytes([tag]) + word(number)
 
     cases = []
 
@@ -66,6 +66,9 @@ def experiments():
             "native-continue": 0x8011C8B0,
             "native-yield": 0x8011BEB0,
             "native-wait": 0x8011BEDC,
+            "code-reference.native-continue": 0x8011C8B0,
+            "code-reference.native-yield": 0x8011BEB0,
+            "code-reference.native-wait": 0x8011BEDC,
         }
         if name in native:
             patches.append((RAM + 0x5000, word(native[name])))
@@ -168,4 +171,13 @@ def experiments():
         final[0x2C0:0x2C8] = word(2) + word(1)
 
     add("native-wait", program, [], {}, 6, 0, configure=wait, expected=2)
+    # Retail control operands use tag2; expectations remain independent numbers.
+    add("code-reference.jump", bytes([28]) + value(7, 2) + b"\xff\xff", [], {}, 8, 0)
+    for condition, cursor in ((0, 8), (1, 7)):
+        add(f"code-reference.conditional.{condition}", bytes([29]) + value(7, 2) + b"\xff\xff",
+            [condition], {}, cursor, 0)
+    program = bytes([27]) + value(0, 2) + b"\xff"
+    add("code-reference.native-continue", program, [], {0: 0x1234}, 7, 1)
+    add("code-reference.native-yield", program, [], {0: 0}, 6, 1, expected=1)
+    add("code-reference.native-wait", program, [], {}, 6, 0, configure=wait, expected=2)
     return cases

@@ -39,6 +39,7 @@ def test_cycles_finish_and_unreachable_bytes_do_not_trigger_linear_guessing():
     assert not vm(bytes([35, 255]))['diagnostics']
     assert vm(bytes([255]))['diagnostics']
     assert vm(bytes([0, 1, 2, 35]), limit=2)['diagnostics']
+    assert not vm(bytes([28]) + value(0), limit=1)['diagnostics']
 
 
 def test_lengths_and_operand_roles_cover_each_embedded_operand_family():
@@ -57,7 +58,7 @@ def test_lengths_and_operand_roles_cover_each_embedded_operand_family():
 
 def test_unknown_tags_and_nonfinite_payloads_stay_explicit():
     unresolved = packed(value(-17, tag=2))
-    assert unresolved['kind'] == 'unresolved_integer_like'
+    assert unresolved['kind'] == 'code_reference'
     assert unresolved['tag'] == 2 and unresolved['value'] == -17
     assert packed(value(123, tag=99)) == dict(tag=99, payload_hex='0000007b', kind='unknown')
     assert packed(value(-1, tag=3))['value'] == -1

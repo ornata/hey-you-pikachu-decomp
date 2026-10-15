@@ -356,11 +356,11 @@
       "member": "unknown00C",
       "line": 55,
       "declaration": "s32 unknown00C;",
-      "known_facts": "The configuration retains native commands before this word and stack capacity after it.",
+      "known_facts": "The word lies between native commands and stack capacity. Original constructors at 0x80115114 and 0x801151B0 do not read it. In the 128 retained-table configuration candidates, every value is a multiple of five and is at least the byte span of all statically decoded global-reference base indices; indexed array extents and unused declarations are not established by that observation.",
       "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace every configuration initializer and VM construction caller, including assembly-only paths, to find a consumer for configuration offset 0xC.",
+      "next_evidence": "Reconcile the word with declared global storage, especially indexed arrays and unused variables, and find an authoring producer or another consumer. A correlation with five-byte value storage alone does not establish its exact metadata contract.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/script_vm.h (record declaration and neighboring layout checks)"
+      "evidence": "include/script_vm.h; original constructor instructions 0x80115114/0x801151B0; tools/script_decoder/catalog.py reproduces bounded local corpus observations without committing resource contents."
     },
     {
       "file": "include/script_vm.h",

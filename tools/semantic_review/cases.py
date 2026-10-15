@@ -374,6 +374,7 @@ def experiments():
     from .midi_numeric_domains import experiments as midi_experiments
     from .midi_controller_numeric_domains import experiments as controller_experiments
     from .state_selector_domains import experiments as selector_experiments
+    from .message_kind_domains import experiments as message_experiments
 
     return (
         cases
@@ -389,6 +390,7 @@ def experiments():
         + midi_experiments()
         + controller_experiments()
         + selector_experiments()
+        + message_experiments()
     )
 
 

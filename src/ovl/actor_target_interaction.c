@@ -197,7 +197,7 @@ s32 actorPostItemImpactMessage(u8 *actor, u8 *item) {
     dir[1] = -((ItemStatePrefix *)state)->downwardVelocity;
     dir[2] = ((ItemStatePrefix *)state)->velocityZ;
     msg.arg1 = 0;
-    msg.type = 0xE;
+    msg.type = SCRIPT_MESSAGE_ITEM_IMPACT;
     msg.arg0 = ((RuntimeObjectPrefix *)item)->handle;
     msg.arg2 = vector3Length(dir);
     msg.arg3 = 0;

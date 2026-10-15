@@ -7,11 +7,14 @@
 #include <ultra64.h>
 #include "script_vm_commands.h"
 
-/// Recovered script value tags; tag 2 remains an unresolved integer-like form.
+/// Recovered script value tags, including references encoded as integer payloads.
+/// Code references occur at bytecode targets and native-command selectors in
+/// the retained configuration corpus; the original compiler terminology is unknown.
 /// \ingroup ActorScriptVm
 typedef enum ScriptValueTag {
     SCRIPT_VALUE_INTEGER = 0,
     SCRIPT_VALUE_FLOAT = 1,
+    SCRIPT_VALUE_CODE_REFERENCE = 2, ///< Bytecode offset or configured native-command selector; read as an integer.
     SCRIPT_VALUE_STRING_INDEX = 3,
     SCRIPT_VALUE_STRING_POINTER = 4
 } ScriptValueTag;

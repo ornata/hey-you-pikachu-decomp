@@ -181,7 +181,7 @@ format geometry also have legitimate numeric representations. The inventory's
 categories are lexical: a shift may encode a packed field rather than a flag,
 and a bracket may select a component rather than declare a capacity.
 
-Unresolved values remain explicit. These include the VM's value tag 2 and opcode
+Unresolved values remain explicit. These include the VM's distinct ignored opcode
 bytes 0–2, raw voice command statuses, action-kind tags, runtime modes 9/10,
 resource selectors and unidentified flag bits. Naming them requires evidence from
 their specific producers, consumers or resource catalogs. Observing a branch alone
@@ -191,7 +191,10 @@ Selector scenarios contrast the ignored VM bytes with a following literal and
 check unchanged stack storage. Numeric-tag cases compare tags 0 and 2 at signed
 integer boundaries, reject both in the decimal-string parser and contrast their
 reader with fractional floating input. These are synthetic consumer tests, not
-evidence for the original language's distinction or retail occurrence of tag 2.
+evidence for the original language's terminology. The local configuration catalog
+separately identifies tag 2 as a code-reference encoding at bytecode targets and
+native-command selectors. Additional original-instruction cases exercise that tag
+through jumps, conditional branches and native continue/yield/action-wait results.
 
 The numeric inventory and category/domain retention report belong under
 `build/magic-numbers/`. Runtime reports retain each engine's verdict separately;

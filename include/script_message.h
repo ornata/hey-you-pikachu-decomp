@@ -6,6 +6,16 @@
 
 #include <ultra64.h>
 
+/// Actor-mailbox categories established by their gameplay producers.
+/// These encodings are separate from scheduler GameMessageKind values.
+/// Other categories, including dictionary-defined voice commands, remain producer-defined.
+typedef enum ActorScriptMessageKind {
+    SCRIPT_MESSAGE_ITEM_IMPACT = 14,         ///< Item handle in arguments 0/4 and impact speed in argument 2.
+    SCRIPT_MESSAGE_COOPERATION_REQUEST = 15, ///< Requested interaction target handle in argument 4.
+    SCRIPT_MESSAGE_ACTION_NOTIFICATION = 16, ///< Cue arguments in 0/2/3 and sending actor handle in argument 4.
+    SCRIPT_MESSAGE_PROXY_USED = 17           ///< Proxy metadata in argument 0, remaining uses in 2, proxy handle in 4.
+} ActorScriptMessageKind;
+
 /// Message copied into an actor's single pending-message slot.
 ///
 /// Argument meanings are defined by the producer. Voice commands carry a

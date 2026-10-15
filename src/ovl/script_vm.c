@@ -258,7 +258,7 @@ s32 scriptValueGetInteger(ScriptValue *value) {
     f32 floatValue;
     s32 isInteger;
 
-    if ((value->data.tag == SCRIPT_VALUE_INTEGER) || (value->data.tag == 2)) {
+    if ((value->data.tag == SCRIPT_VALUE_INTEGER) || (value->data.tag == SCRIPT_VALUE_CODE_REFERENCE)) {
         isInteger = 1;
     } else {
         isInteger = 0;
@@ -770,7 +770,7 @@ char *scriptVmPopString(ScriptVm *vm) {
         bcopy(&box.bytes[1], &index, SCRIPT_VALUE_PAYLOAD_BYTES);
         return vm->stringTable[index];
     }
-    if (box.data.tag == SCRIPT_VALUE_INTEGER || box.data.tag == 2) {
+    if (box.data.tag == SCRIPT_VALUE_INTEGER || box.data.tag == SCRIPT_VALUE_CODE_REFERENCE) {
         test = 1;
     } else {
         test = 0;
