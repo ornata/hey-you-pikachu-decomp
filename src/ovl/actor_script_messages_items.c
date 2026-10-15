@@ -638,39 +638,39 @@ s32 actorScriptPushHorizontalTargetDistance(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011D390 (0x8011D390).
 s32 actorScriptGetTargetCoordinate(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushFloat((ScriptVm *)(sp1C), actorGetTargetCoordinate(actor, scriptVmPopInteger((ScriptVm *)(sp1C))));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushFloat((ScriptVm *)(vmAddress),
+                      actorGetTargetCoordinate(actor, scriptVmPopInteger((ScriptVm *)(vmAddress))));
     return 0;
 }
-
 
 /// Replace a coordinate axis on the script stack with an actor world coordinate.
 /// \param actor Actor whose script VM supplies a nonnegative axis (zero for X, one for Y, two for Z) and receives the world coordinate, or -65536 for an axis greater than two.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011D3D8 (0x8011D3D8).
 s32 actorScriptGetWorldCoordinate(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushFloat((ScriptVm *)(sp1C), objectGetWorldCoordinate(actor, scriptVmPopInteger((ScriptVm *)(sp1C))));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushFloat((ScriptVm *)(vmAddress),
+                      objectGetWorldCoordinate(actor, scriptVmPopInteger((ScriptVm *)(vmAddress))));
     return 0;
 }
-
 
 /// Replace a rotation axis on the script stack with the actor's rotation angle.
 /// \param actor Actor whose script VM supplies a valid rotation axis (zero, one, or two) and receives its angle in degrees.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011D420 (0x8011D420).
 s32 actorScriptGetRotationCoordinate(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushFloat((ScriptVm *)(sp1C), ((f32 *)(actor + 0xC))[scriptVmPopInteger((ScriptVm *)(sp1C))]);
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushFloat((ScriptVm *)(vmAddress),
+                      ((RuntimeObjectPrefix *)actor)->rotation[scriptVmPopInteger((ScriptVm *)(vmAddress))]);
     return 0;
 }
-
 
 /// Push the elapsed time of the actor's current action script.
 /// \param actor Actor whose script VM receives elapsed action time in seconds.
@@ -1274,15 +1274,14 @@ s32 actorScriptPushDeliveredVoiceCount(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011E008 (0x8011E008).
 s32 actorScriptGetPlayerCoordinate(u8 *actor) {
-    s32 sp1C;
-    s32 idx;
+    s32 vmAddress;
+    s32 axis;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    idx = scriptVmPopInteger((ScriptVm *)(sp1C));
-    scriptVmPushFloat((ScriptVm *)(sp1C), *(f32 *)((u8 *)&gPlayerState + (idx * 4)));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    axis = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    scriptVmPushFloat((ScriptVm *)(vmAddress), gPlayerState.position[axis]);
     return 0;
 }
-
 
 /// Push the actor's facing error relative to the player.
 /// \param actor Actor whose script VM receives the signed facing error in degrees.

@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 843,
-      "unique_spellings": 464,
+      "occurrences": 842,
+      "unique_spellings": 463,
       "files": 65
     },
     "cast_offset_candidates": {
@@ -3204,11 +3204,8 @@
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
-          "actor + 0xC": [
-            "670:52"
-          ],
           "gPlayerCompanionTarget - 0x50": [
-            "1344:57"
+            "1343:57"
           ]
         }
       }

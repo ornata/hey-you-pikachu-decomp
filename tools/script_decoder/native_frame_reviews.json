@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "purpose": "Explicit scalar append and one-argument replacement write contracts; source changes revoke evidence until reviewed again.",
-  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases.",
+  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases.",
   "preconditions": [
     "Protected locals and frame metadata lie below the active stack depth.",
-    "One value slot is available; pointers and borrowed actor/global state are valid.",
+    "Append contracts require one free value slot; pointers and borrowed actor/global state are valid.",
     "The VM context and its owned value storage remain intact; concurrent writes and later lifecycle changes are outside this handler-footprint review.",
     "Helper lookups require the initialized pools, save metadata and borrowed records stated by each callback review.",
     "For argument replacement, consumed operands lie above all protected locals/frame metadata and satisfy the callback numeric-conversion contract; static bytecode preservation does not prove this operand floor."
@@ -756,6 +756,278 @@
         "One operand lies above all protected locals and frame metadata. Integer/code-reference payloads or finite floats representable as s32 are supported; float handles truncate toward zero.",
         "The initialized nonzero-capacity handle pool has valid chains and valid borrowed live records. Tag 134 identifies valid ItemState storage; other tags do not acquire an item interpretation. VM-owned storage, heap records, globals and C-stack temporaries do not overlap.",
         "Toolbox items and destroy-pending records are unavailable. This immediate footprint review does not establish later object liveness or retail reachability."
+      ]
+    },
+    {
+      "function": "actorScriptGetWorldCoordinate",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "c59e4bf6d5722e3ac14a603896194e1e89c671f3049d73137c14f2e37f25dbca",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "float",
+      "scheduling": "continue",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "objectGetWorldCoordinate",
+          "sha256": "bae93799ccdde5cad636368c467e883cf6cc71b37b1d27f4812ed998a3636795"
+        }
+      ],
+      "preconditions": [
+        "One operand lies above all protected locals/frame metadata. Integer/code-reference payloads or finite floats representable as s32 are supported; floats truncate toward zero.",
+        "VM-owned storage, borrowed records, globals and C-stack temporaries do not overlap. Only immediate handler writes are reviewed; later lifetime, concurrency and retail reachability remain unproven.",
+        "Nonnegative axis after integer conversion; axes zero through two read actor world position, larger axes return -65536."
+      ]
+    },
+    {
+      "function": "actorScriptGetTargetCoordinate",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "ae431b6b861f03ceb7625e701f3fc6e6b57692a7b3bdd2afd9029aefb769add1",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "float",
+      "scheduling": "continue",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "actorGetTargetCoordinate",
+          "sha256": "978ec794e133746089ceae6f0b6c14acc280f17319980838d2cb72eacb8b1061"
+        }
+      ],
+      "preconditions": [
+        "One operand lies above all protected locals/frame metadata. Integer/code-reference payloads or finite floats representable as s32 are supported; floats truncate toward zero.",
+        "VM-owned storage, borrowed records, globals and C-stack temporaries do not overlap. Only immediate handler writes are reviewed; later lifetime, concurrency and retail reachability remain unproven.",
+        "Nonnegative axis after integer conversion; axes zero through two read stored target position, larger axes return -65536."
+      ]
+    },
+    {
+      "function": "actorScriptGetRotationCoordinate",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "16567a02ff82ab257df39f40bad7581ef103807277f13f73c6cde8c7abcd13a9",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "float",
+      "scheduling": "continue",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        }
+      ],
+      "preconditions": [
+        "One operand lies above all protected locals/frame metadata. Integer/code-reference payloads or finite floats representable as s32 are supported; floats truncate toward zero.",
+        "VM-owned storage, borrowed records, globals and C-stack temporaries do not overlap. Only immediate handler writes are reviewed; later lifetime, concurrency and retail reachability remain unproven.",
+        "Axis after integer conversion is zero through two; reads local rotation in degrees, without a bounds check."
+      ]
+    },
+    {
+      "function": "actorScriptGetPlayerCoordinate",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "95595b9161697931d069a782c1101ab3244770e6f61a1c3d40a58644f40241e6",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "float",
+      "scheduling": "continue",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "file",
+          "file": "include/player_types.h",
+          "sha256": "b72915c2e3322fcd4ef7e11f3eff2f2d7d53badd3f78603aaeb1731c2286e00c"
+        },
+        {
+          "kind": "file",
+          "file": "include/player_state.h",
+          "sha256": "714569e664352e5b35c5f6cba7fa9fd8724691ff7eb44a596885c37442ec8088"
+        }
+      ],
+      "preconditions": [
+        "One operand lies above all protected locals/frame metadata. Integer/code-reference payloads or finite floats representable as s32 are supported; floats truncate toward zero.",
+        "VM-owned storage, borrowed records, globals and C-stack temporaries do not overlap. Only immediate handler writes are reviewed; later lifetime, concurrency and retail reachability remain unproven.",
+        "Axis after integer conversion is zero through two; initialized primary player position is borrowed, without a bounds check."
+      ]
+    },
+    {
+      "function": "actorScriptGetProfileCounter",
+      "file": "src/ovl/actor_script_collection_profile.c",
+      "sha256": "5a82dbd14a082554fb1636c32f8bdcfd7e0955e633b466bc5acbe45152af248a",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/item_registry.c",
+          "function": "profileGetCounter",
+          "sha256": "38575b0191bf02cb24d6755c04c56d7348fbf2cc95e7200c7823a7f2d03ec916"
+        },
+        {
+          "kind": "file",
+          "file": "include/profile_counters.h",
+          "sha256": "5e2fbfe1ee81ea0c105e1f0f75d6532cbdfdda6b7b2291e01869975bf63b0754"
+        }
+      ],
+      "preconditions": [
+        "One operand lies above all protected locals/frame metadata. Integer/code-reference payloads or finite floats representable as s32 are supported; floats truncate toward zero.",
+        "VM-owned storage, borrowed records, globals and C-stack temporaries do not overlap. Only immediate handler writes are reviewed; later lifetime, concurrency and retail reachability remain unproven.",
+        "Index after integer conversion is zero through 165. The initialized 83-byte profile storage holds low-nibble even counters and high-nibble odd counters, returning zero through fifteen."
+      ]
+    },
+    {
+      "function": "actorScriptGetCreationScriptArgument",
+      "file": "src/ovl/actor_script_collection_profile.c",
+      "sha256": "4e9f4574a1aa5f6806d2deb3818d5093f625ae039ddffec7e98972b85a4a05a3",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/object_hierarchy.c",
+          "function": "objectFindLiveByHandle",
+          "sha256": "a04905a063945115cd20a841f611294f7784656739644dd48ba5230ee11881c9"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/keyed_pool.c",
+          "function": "keyedPoolGetValue",
+          "sha256": "515ff415ac8762af39e40b6969a0d563591ab0252fcc95f660b808c06964541d"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/keyed_pool.c",
+          "function": "keyedPoolFindEntry",
+          "sha256": "2c4d9787ed139519f2981eb227805c3b38046a0baf47287ae6ecc2156f5665c6"
+        },
+        {
+          "kind": "file",
+          "file": "include/keyed_pool_types.h",
+          "sha256": "4c5ce15833971e0a7b7a25588eb674597474dba8a6d71b51cf78cf098c63a611"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_flags.h",
+          "sha256": "135a2ddab3b6c3e703f08bc85faa083742809cf81a1edc43bd05469d2faac637"
+        }
+      ],
+      "preconditions": [
+        "One operand lies above all protected locals/frame metadata. Integer/code-reference payloads or finite floats representable as s32 are supported; floats truncate toward zero.",
+        "VM-owned storage, borrowed records, globals and C-stack temporaries do not overlap. Only immediate handler writes are reviewed; later lifetime, concurrency and retail reachability remain unproven.",
+        "Initialized nonzero-capacity handle pool with valid chains. Any live matching handle must identify valid ActorScriptState storage; this native performs no runtime-kind validation. Missing/destroy-pending handles return -1.",
+        "No toolbox exclusion is applied here; this uses the live lookup directly, unlike available-handle queries."
       ]
     }
   ]

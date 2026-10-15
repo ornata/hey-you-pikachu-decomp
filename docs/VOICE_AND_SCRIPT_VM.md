@@ -541,7 +541,31 @@ authored original-instruction cases check these branches and argument replacemen
 guarding the VM, saved values, handle pool and borrowed records. Held-item fixtures
 also use the constructor-established tag and full item-state allocation.
 
-Twenty-seven native reviews are active. Remaining callbacks stay explicitly listed
+Six further one-argument contracts cover numeric getters:
+
+| Getter | Supported input after integer conversion | Stack result |
+| --- | --- | --- |
+| World coordinate | Nonnegative axis | World X/Y/Z, or -65536 above two |
+| Stored target coordinate | Nonnegative axis | Target X/Y/Z, or -65536 above two |
+| Local rotation coordinate | Axis zero through two | Local angle in degrees |
+| Player coordinate | Axis zero through two | Primary player world X/Y/Z |
+| Profile counter | Index zero through 165 | Saved counter from zero through fifteen |
+| Creation script argument | Handle identifying valid actor state when live | Retained creation argument, or -1 when not live |
+
+Rotation, player and profile getters do not enforce their supported index bounds.
+The creation-argument getter uses the live-object lookup directly, without the
+available-handle query's toolbox exclusion or an actor-kind check. Valid actor
+state is a caller obligation. The profile's 83 bytes hold even counters in the
+low nibble and odd counters in the high nibble.
+
+Thirty-five authored original-instruction cases cover all coordinate axes,
+world/target sentinels, profile endpoint nibbles and live/missing/destroy-pending
+creation-argument lookups. Fractional inputs truncate toward zero; code-reference
+payloads use their integer encoding. The cases guard protected values, VM state
+and borrowed storage. They do not extend the contracts to invalid indices,
+unsupported conversions, later lifetimes or arbitrary gameplay paths.
+
+Thirty-three native reviews are active. Remaining callbacks stay explicitly listed
 in each saved-dictionary candidate's `native_effect_frontier`; a reviewed immediate
 footprint does not establish a runtime dictionary ID or unconditional restoration.
 
