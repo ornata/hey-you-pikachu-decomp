@@ -229,10 +229,10 @@ s32 actorScriptSetHeldItemReleaseAndGuide(u8 *actor) {
     if (liveObject != NULL) {
         itemFlags = (s32 *)((RuntimeObjectPrefix *)liveObject)->state.bytes;
         if (sp18 != 0) {
-            *itemFlags |= 0x40000000;
+            *itemFlags |= ITEM_STATE_HELD_TRANSFER_ALLOWED;
             hudSetGuideStyle(4);
         } else {
-            *itemFlags &= 0xBFFFFFFF;
+            *itemFlags &= ~(u32)ITEM_STATE_HELD_TRANSFER_ALLOWED;
             hudSetGuideStyle(0);
         }
     } else {

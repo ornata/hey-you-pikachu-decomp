@@ -122,3 +122,16 @@ across the complete progress record. They do not establish the full layout
 allocator or physical persistence. The signed-halfword encoding is retained from
 the original accessor branches and limits table; no retained retail field selects it.
 Runtime review should use an immutable linked ELF while source builds are active.
+
+Actor-cue cases distinguish action-kind selection tags from timed operations. They
+cover due-time boundaries, jump targets and clock resets, synchronization of motion
+timers, both stopping codes, and deterministic/random clock handlers. The retained
+handler table establishes the operation-to-function mapping; these cases do not
+exercise every effect, sound, or item side effect of those handlers.
+
+Isolated interpreter replay defaults to the game's paired 32-bit floating-register
+layout. A temporary guest `MTC0 Status` establishes the core's register pointers
+before target entry; its scratch bytes and the requested registers are restored.
+The contrasting wide-register probe checks that the mode selection takes effect.
+Neither probe certifies floating rounding state: FCR31 is unavailable through this
+debugger API and remains an explicit limitation.

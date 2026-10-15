@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 845,
-      "unique_spellings": 464,
+      "occurrences": 844,
+      "unique_spellings": 463,
       "files": 64
     },
     "cast_offset_candidates": {
@@ -235,16 +235,13 @@
             "917:21"
           ],
           "st + 0x134": [
-            "1133:32"
+            "1136:32"
           ],
           "st + 0x138": [
-            "1133:61"
-          ],
-          "op - 19": [
-            "1146:41"
+            "1136:61"
           ],
           "p + 1": [
-            "1180:20"
+            "1183:20"
           ]
         },
         "cast_offset_candidates": {

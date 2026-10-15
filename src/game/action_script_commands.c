@@ -1078,6 +1078,9 @@ void actionCommandAdvanceClockRandomly(u8 *unusedActor, ActorScriptState *unused
     }
 }
 
+/// Exclusive absolute motion-timer difference accepted by the cue synchronization operation.
+#define ACTION_CUE_MOTION_SYNC_TOLERANCE 0.001F
+
 typedef struct CmdJump {
     ActorActionCueCommand *target;
     f32 reset;
@@ -1117,33 +1120,33 @@ void actorUpdateActionScript(u8 *actor, ActorActionCueCommand **nextCommand, f32
     }
     while (c->time <= *clock) {
         op = c->opcode;
-        if (op < 19) {
+        if (op < ACTION_CUE_FIRST_HANDLER) {
             c++;
             continue;
         }
         switch (op) {
-        case 46:
+        case ACTION_CUE_JUMP:
             j = (CmdJump *)c->args;
             c = j->target;
             if (j->reset != 0.0F) {
                 *clock = 0.0F;
             }
             break;
-        case 47:
+        case ACTION_CUE_SYNC_MOTION_CLOCK:
             d = *(f32 *)((u8 *)st + 0x134) - *(f32 *)((u8 *)st + 0x138);
-            if (d < 0.001F && d > -0.001F) {
+            if (d < ACTION_CUE_MOTION_SYNC_TOLERANCE && d > -ACTION_CUE_MOTION_SYNC_TOLERANCE) {
                 *clock = 0.0F;
                 c++;
             } else {
                 goto out;
             }
             break;
-        case 48:
-        case 49:
+        case ACTION_CUE_STOP:
+        case ACTION_CUE_END_COLLECTION:
             *nextCommand = NULL;
             return;
         default:
-            gTimedActionCommandHandlers[op - 19](actor, st, c, clock);
+            gTimedActionCommandHandlers[op - ACTION_CUE_FIRST_HANDLER](actor, st, c, clock);
             c++;
             break;
         }
@@ -1164,7 +1167,7 @@ ActorActionCueCommand *actorSelectActionScript(u8 *actor, ActorActionCueCommand 
     ActorActionCueCommand *p;
     s32 st;
 
-    if (((ActorScriptState *)o)->selectedActionKind == 0x12) {
+    if (((ActorScriptState *)o)->selectedActionKind == ACTION_CUE_ANY_ACTION) {
         if (unusedFlag != 0) {
             return list;
         }
@@ -1175,8 +1178,8 @@ ActorActionCueCommand *actorSelectActionScript(u8 *actor, ActorActionCueCommand 
         return NULL;
     }
     st = ((ActorScriptState *)o)->selectedActionKind;
-    for (; p->opcode != 0x31; p++) {
-        if (p->opcode == 0x12 || p->opcode == st) {
+    for (; p->opcode != ACTION_CUE_END_COLLECTION; p++) {
+        if (p->opcode == ACTION_CUE_ANY_ACTION || p->opcode == st) {
             return p + 1;
         }
     }
