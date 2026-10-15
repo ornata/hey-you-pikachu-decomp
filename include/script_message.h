@@ -13,7 +13,9 @@ typedef enum ActorScriptMessageKind {
     SCRIPT_MESSAGE_ITEM_IMPACT = 14,         ///< Item handle in arguments 0/4 and impact speed in argument 2.
     SCRIPT_MESSAGE_COOPERATION_REQUEST = 15, ///< Requested interaction target handle in argument 4.
     SCRIPT_MESSAGE_ACTION_NOTIFICATION = 16, ///< Cue arguments in 0/2/3 and sending actor handle in argument 4.
-    SCRIPT_MESSAGE_PROXY_USED = 17           ///< Proxy metadata in argument 0, remaining uses in 2, proxy handle in 4.
+    SCRIPT_MESSAGE_PROXY_USED = 17,          ///< Proxy metadata in argument 0, remaining uses in 2, proxy handle in 4.
+    SCRIPT_MESSAGE_WORLD_MAP_DESTINATION =
+        18 ///< Recognized map destination selector in argument 0, including special training.
 } ActorScriptMessageKind;
 
 /// Message copied into an actor's single pending-message slot.

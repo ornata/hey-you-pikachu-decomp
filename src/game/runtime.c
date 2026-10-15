@@ -21,6 +21,7 @@
 #include "controller_input.h"
 #include "controller_rumble.h"
 #include "microphone_requests.h"
+#include "voice_recognition.h"
 #include "text_window.h"
 #include "message_bar.h"
 #include "actor_assets.h"
@@ -422,7 +423,7 @@ void runtimeInitializeSceneGameplay(void) {
     micRequestRecognitionFollowsTrigger(0);
     gGameplayMicrophoneAvailable = 0;
     gGameplayVoiceCommandsAllowed = 0;
-    micRequestDictionary(0);
+    micRequestDictionary(VOICE_DICTIONARY_DEFAULT);
     textWindowInitialize();
     heapDebugReportFreeSpace(&gGameHeap, "after initMessageMode()");
     runtimeCheckResetCheckpoint("pre-areaInit", 1);

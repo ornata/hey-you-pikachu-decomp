@@ -13,9 +13,14 @@ typedef enum VoiceRecognitionDeviceState {
     VOICE_RECOGNITION_ERROR = 2        ///< Device operation failed and recovery is required.
 } VoiceRecognitionDeviceState;
 
-/// Dictionary-selection sentinel; ordinary dictionary identifiers are nonnegative.
-/// This describes retained selection fields, not whether hardware vocabulary was cleared.
-enum { VOICE_DICTIONARY_NONE = -1 };
+/// Named dictionary selections with established gameplay callers.
+/// Other nonnegative identifiers remain dictionary-defined. Selection and request
+/// fields do not establish whether device vocabulary has finished uploading.
+typedef enum VoiceDictionaryId {
+    VOICE_DICTIONARY_NONE = -1,     ///< No retained dictionary selection or upload.
+    VOICE_DICTIONARY_DEFAULT = 0,   ///< Default requested at gameplay startup or when session configuration is unset.
+    VOICE_DICTIONARY_WORLD_MAP = 31 ///< Vocabulary requested for whole-map destination selection.
+} VoiceDictionaryId;
 
 /// Result-index sentinel returned when no completed recognition result is pending.
 enum { VOICE_RECOGNITION_NO_RESULT = -1 };

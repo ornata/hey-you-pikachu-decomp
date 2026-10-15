@@ -62,12 +62,23 @@ def phrase_names():
     return names
 
 
+def dictionary_names():
+    """Read explicitly named selections while leaving other descriptors numeric."""
+    code = code_only((ROOT / 'include/voice_recognition.h').read_text())
+    pairs = re.findall(r'\b(VOICE_DICTIONARY_\w+)\s*=\s*(-?\d+)', code)
+    names = {int(value): name for name, value in pairs}
+    if names != {-1: 'VOICE_DICTIONARY_NONE', 0: 'VOICE_DICTIONARY_DEFAULT', 31: 'VOICE_DICTIONARY_WORLD_MAP'}:
+        raise ValueError('named dictionary selections need renewed caller/resource review')
+    return names
+
+
 def vocabulary_catalog(image, dictionary_count=43, *, validate_phrases=True):
     """Link a reviewed descriptor prefix to bounded words and gameplay metadata."""
     if not 1 <= dictionary_count <= 256:
         raise ValueError('dictionary prefix bound must be between 1 and 256')
     bank = VocabularyBank(image)
     phrases = phrase_names() if validate_phrases else {}
+    selections = dictionary_names()
     words_address = image.symbol('gVoiceWordDefinitions')[1]
     dictionaries_address = image.symbol('gVoiceDictionaries')[1]
     span = dictionaries_address - words_address
@@ -101,7 +112,10 @@ def vocabulary_catalog(image, dictionary_count=43, *, validate_phrases=True):
             raise ValueError('dictionary word ID lies outside the bounded word view')
         for index, word in enumerate(ids):
             words[word]['dictionary_memberships'].append(dict(dictionary_id=identifier, entry_index=index))
-        dictionaries.append(dict(dictionary_id=identifier, count=count, word_ids=ids, location=location))
+        descriptor = dict(dictionary_id=identifier, count=count, word_ids=ids, location=location)
+        if identifier in selections:
+            descriptor['recovered_name'] = selections[identifier]
+        dictionaries.append(descriptor)
     following, following_location = bank.read(dictionaries_address + dictionary_count * 8, 8)
     if phrases and {word['command_value'] for word in words if 'recovered_phrase_name' in word and word['dictionary_memberships']} != set(phrases):
         raise ValueError('named phrases need membership in the reviewed dictionary prefix')

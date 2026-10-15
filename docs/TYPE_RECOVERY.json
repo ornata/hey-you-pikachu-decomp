@@ -1972,7 +1972,8 @@
         "text_window.h",
         "texture_cache.h",
         "toolbox.h",
-        "voice_commands.h"
+        "voice_commands.h",
+        "voice_recognition.h"
       ],
       "matching_exceptions": {
         "overlayLoadFromRom": "The correct void * result is now shared. The runtime caller retains pointer-width ROM offsets and RAM ranges; canonical u32 ROM offsets plus casts fail the ROM gate, including with an explicitly discarded result. The loader and area consumer use overlay_loader.h. Next evidence: Isolate runtimeMainThreadEntry argument lowering. ROM offsets are numeric cartridge addresses, all target addresses are 32 bits, and the returned end-of-BSS address is ignored here."
@@ -1980,15 +1981,15 @@
       "locations": {
         "raw_offset_candidates": {
           "actorState + 0x1B8": [
-            "601:83"
+            "602:83"
           ],
           "gRuntimePromptPanelLineCount - 1": [
-            "1070:75"
+            "1071:75"
           ]
         },
         "cast_offset_candidates": {
           "((u8 *)gPikachuActor) + 0x54": [
-            "600:31"
+            "601:31"
           ]
         }
       }
@@ -2985,12 +2986,14 @@
         "runtime_control.h",
         "runtime_lifecycle.h",
         "runtime_services.h",
+        "script_message.h",
         "script_vm_globals.h",
         "texture_rectangles.h",
         "toolbox.h",
         "vector3_types.h",
         "vector_interpolation.h",
         "vector_operations.h",
+        "voice_recognition.h",
         "world_map.h"
       ],
       "matching_exceptions": {
@@ -3000,32 +3003,32 @@
       "locations": {
         "raw_offset_candidates": {
           "x - 27": [
-            "233:46"
-          ],
-          "x + 55": [
             "235:46"
           ],
+          "x + 55": [
+            "237:46"
+          ],
           "x - 16": [
-            "294:31",
-            "318:27"
+            "296:31",
+            "320:27"
           ],
           "y + 8": [
-            "295:31"
+            "297:31"
           ],
           "y - 8": [
-            "319:27"
+            "321:27"
           ],
           "counter + 5U": [
-            "326:25"
+            "328:25"
           ],
           "camera + 0": [
-            "448:25"
-          ],
-          "camera + 4": [
             "450:25"
           ],
-          "camera + 8": [
+          "camera + 4": [
             "452:25"
+          ],
+          "camera + 8": [
+            "454:25"
           ]
         }
       }

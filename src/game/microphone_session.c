@@ -255,8 +255,8 @@ void micSessionResetAndFindDevice(void) {
 
     gMicSessionTriggerActive = gMicSessionPreviousTriggerActive = 0;
     gMicSessionUploadingDictionary = gMicSessionUploadedDictionary = VOICE_DICTIONARY_NONE;
-    if (gMicSessionRequestedDictionary == -1) {
-        gMicSessionRequestedDictionary = 0;
+    if (gMicSessionRequestedDictionary == VOICE_DICTIONARY_NONE) {
+        gMicSessionRequestedDictionary = VOICE_DICTIONARY_DEFAULT;
     }
     gMicSessionAmplifierOffRequested = 0;
     gMicSessionLastDeviceScanTicks = gMicSessionLastAmplifierOnTicks = gMicSessionLastAmplifierOffTicks =
@@ -348,9 +348,10 @@ void micSessionUpdate(void) {
     }
 }
 
-/// Apply a microphone configuration request and acknowledge its completion.
+/// Apply a microphone configuration request and acknowledge its dispatch.
 /// \param request Configuration request to apply and acknowledge.
 /// \returns Nothing.
+/// \note Dictionary dispatch changes requested state; device upload can finish on later updates.
 /// \note Original decompilation identifier: \c func_8000432C (0x8000432C).
 void micSessionDispatchRequest(MicConfigurationRequest *request) {
     switch (request->command) {

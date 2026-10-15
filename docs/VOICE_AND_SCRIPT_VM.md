@@ -59,6 +59,27 @@ vocabulary bytes remain in ignored local reports. Eight authored dictionary
 cases check the original metadata getters, including reordered word IDs, distinct
 categories and invalid-selection/index results; they do not exercise recognition.
 
+`VOICE_DICTIONARY_DEFAULT` (0) is requested at gameplay startup and supplies the
+session fallback when its requested ID is unset. `VOICE_DICTIONARY_WORLD_MAP` (31)
+is requested by `wholeMapConfigureVoiceInput`; its 24 entries include destination
+words carrying `SCRIPT_MESSAGE_WORLD_MAP_DESTINATION` (18). The map menu interprets
+argument 0 as a destination selector, including a special-training request. These
+selectors are distinct from map destination indices and scene area IDs.
+
+The catalog records all 255 decoded `actorScriptRequestMicDictionary` calls.
+Of these, 236 have literal integer-converted IDs resolving within the reviewed
+dictionary prefix; 19 retain symbolic expressions. Each request remains in its
+configuration's overlay and retains existing creation/scenario bindings. Reverse
+links on dictionary descriptors connect them to those request sites and to written
+C requests. These are possible resource uses, not scene ownership or executed paths.
+
+The request native consumes one dictionary ID, pushes zero and yields. Configuration
+dispatch changes the requested ID and acknowledges dispatch; uploading and uploaded
+IDs remain independent. The native query reads requested state rather than either
+upload field. Six original-instruction cases check that distinction with three
+different requested IDs, including the unset value, while guarding the other fields.
+They do not exercise queue submission, microphone hardware or vocabulary upload.
+
 ### 2. Consume a recognition result
 
 [Voice recognition](../src/game/voice_recognition.c) starts and polls VRU reads through

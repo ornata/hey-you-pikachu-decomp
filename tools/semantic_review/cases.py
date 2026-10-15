@@ -382,6 +382,7 @@ def experiments():
     from .program_selection_domains import experiments as program_experiments
     from .table_lookup_domains import experiments as table_experiments
     from .vocabulary_domains import experiments as vocabulary_experiments
+    from .dictionary_request_domains import experiments as dictionary_experiments
 
     return (
         cases
@@ -405,6 +406,7 @@ def experiments():
         + program_experiments()
         + table_experiments()
         + vocabulary_experiments()
+        + dictionary_experiments()
     )
 
 

@@ -24,6 +24,7 @@ from .actions import action_calls, action_resources
 from .actors import actor_kind_records
 from .functions import action_producer_functions
 from .vocabulary import vocabulary_catalog
+from .dictionaries import dictionary_requests, source_dictionary_requests, attach_dictionary_usage
 
 
 def companion_sites(image):
@@ -134,6 +135,7 @@ def catalog(image, max_instructions=100000):
     assigned = [(file, site) for file, text in source.items() for site in assigned_creation_sites(text)]
     companions = companion_sites(image)
     actors = actor_kind_records(image)
+    vocabulary = vocabulary_catalog(image)
     actor_by_name = {row['enum_name']: row for row in actors}
 
     def bind(file, site):
@@ -195,6 +197,7 @@ def catalog(image, max_instructions=100000):
                              script_message_posts=message_posts(decoded['instructions']),
                              native_action_calls=actions,
                              action_producer_functions=action_producer_functions(decoded['instructions'], actions),
+                             voice_dictionary_requests=dictionary_requests(decoded['instructions'], vocabulary.get('dictionaries', [])),
                              listing=identity + '.json'))
             decodes[identity] = decoded
     if not rows:
@@ -206,6 +209,8 @@ def catalog(image, max_instructions=100000):
     resource_ids = {call['constant_script_id'] for row in rows for call in row['native_action_calls'] if 'constant_script_id' in call}
     resource_ids.update(value for row in rows for function in row['action_producer_functions']
                         if function['static_return_domain_complete'] for value in function['integer_return_domain'])
+    source_requests = source_dictionary_requests(source, vocabulary.get('dictionaries', []))
+    attach_dictionary_usage(vocabulary, rows, source_requests)
     return dict(schema_version=2, rom_sha1=image.sha1,
                 scope='Retained-table configuration candidates with local programs before their headers. No claim of exhaustive resource discovery or live execution.',
                 candidate_count=len(rows), diagnostic_free_candidates=len(complete),
@@ -219,7 +224,8 @@ def catalog(image, max_instructions=100000):
                 distinct_decoded_code_hashes=len({row['decoded_code_sha256'] for row in rows}),
                 action_script_resources=action_resources(image, resource_ids),
                 actor_kinds=actors,
-                voice_vocabulary=vocabulary_catalog(image),
+                voice_vocabulary=vocabulary,
+                voice_dictionary_source_requests=source_requests,
                 code_reference_roles=dict(roles), configurations=rows), decodes
 
 
@@ -241,7 +247,7 @@ def main(argv=None):
         report['elf_sha256'] = hashlib.sha256(args.elf.read_bytes()).hexdigest()
         report['decoder_sha256'] = hashlib.sha256(Path(__file__).with_name('formats.py').read_bytes()).hexdigest()
         report['analysis_sha256'] = {name: hashlib.sha256(Path(__file__).with_name(name + '.py').read_bytes()).hexdigest()
-                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary')}
+                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries')}
         files = {'catalog.json': report, **{name + '.json': row for name, row in decodes.items()}}
         # Validate every output before writing any content, including existing symlinks.
         for name in files:

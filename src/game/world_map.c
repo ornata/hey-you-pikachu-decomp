@@ -15,6 +15,8 @@
 #include "area_transition.h"
 #include "controller_input.h"
 #include "microphone_requests.h"
+#include "voice_recognition.h"
+#include "script_message.h"
 #include "audio_sound_effect.h"
 #include "attached_effect.h"
 #include "script_vm_globals.h"
@@ -597,7 +599,7 @@ void wholeMapHandleInput(void) {
     }
     if (actorAcknowledgeScriptMessage((u8 *)((s32)gPikachuActor)) != 0) {
         input = &gPikachuActor->state.actor->message;
-        if (input->type == 0x12) {
+        if (input->type == SCRIPT_MESSAGE_WORLD_MAP_DESTINATION) {
             if (input->arg0 == 10 && playerGetChaseStage() == 2) {
                 specialPosition = gWorldMapSpecialDestinationFocus;
                 gWorldMapSelectedDestination = 10;
@@ -703,7 +705,7 @@ extern s32 gGameplayVoiceCommandsAllowed;
 /// \note Original decompilation identifier: \c func_8002E5DC (0x8002E5DC).
 void wholeMapConfigureVoiceInput(void) {
     TRACE("restart skit.\n");
-    micRequestDictionary(0x1F);
+    micRequestDictionary(VOICE_DICTIONARY_WORLD_MAP);
     actorSetMessengerContactMode((u8 *)((s32)gPikachuActor), 2);
     hudSetFeatureMask(4);
     micRequestRecognitionOverride(1);
