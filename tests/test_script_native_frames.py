@@ -30,6 +30,7 @@ def test_checked_in_reviews_have_current_source_and_dependency_bindings():
     assert not report['stale_dependencies'] and not report['stale_callbacks']
     assert not report['stale_deferred_reviews']
     assert 'actorScriptStartLoopExitAndWait' in report['active_deferred']
+    assert 'actorScriptStartActionAndWait' in report['active_deferred']
     assert 'actorScriptQueryRequestedMicDictionary' in report['active']
     assert 'actorScriptPushTotalElapsedTime' in report['active']
 
@@ -98,6 +99,27 @@ def test_deferred_dependency_revokes_only_later_phase_and_selector_is_bound(tmp_
     assert set(report['active']) == {'getter'}
     assert not report['active_deferred']
     assert report['stale_deferred_reviews']['getter']['changed_dependencies']
+
+
+def test_deferred_start_consumes_one_argument_only_during_initialization(tmp_path):
+    manifest = setup_review(tmp_path)
+    row = manifest['callbacks'][0]
+    row.update(effect='select_action_handler', arguments=0, stack_delta=0, result_tag='none',
+               scheduling='wait_for_action', coverage='immediate_request_only', action_handler=2)
+    deferred = dict(action_handler=2, effect='start_program_then_conditional_zero_append', arguments=1,
+                    initialization_stack_delta=-1, initialization_scheduling='wait_for_action',
+                    waiting_stack_delta=0, completion_stack_delta=1,
+                    waiting_scheduling='wait_for_action', completion_scheduling='yield',
+                    dependencies=manifest['dependencies'])
+    row['deferred_review'] = deferred
+    assert set(native_frame_reviews(tmp_path, manifest)['active_deferred']) == {'getter'}
+    for field, invalid in (('arguments', 0), ('initialization_stack_delta', 0),
+                           ('initialization_scheduling', 'yield'), ('action_handler', 3)):
+        previous = deferred[field]
+        deferred[field] = invalid
+        report = native_frame_reviews(tmp_path, manifest)
+        assert not report['active_deferred'] and report['active']
+        deferred[field] = previous
 
 
 def test_changed_dependency_or_unsupported_contract_keeps_callback_unreviewed(tmp_path):

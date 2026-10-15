@@ -119,10 +119,15 @@ def native_frame_reviews(root=ROOT, manifest=None):
                 unchanged = False
             if not unchanged:
                 changed.append(dependency)
-        valid = (review.get('coverage') == 'immediate_request_only' and review.get('action_handler') == 3 and
-                 type(deferred.get('action_handler')) is int and deferred['action_handler'] == 3 and
-                 deferred.get('effect') == 'loop_exit_then_conditional_zero_append' and
-                 type(deferred.get('arguments')) is int and deferred['arguments'] == 0 and
+        selector = deferred.get('action_handler')
+        reviewed_effect = (
+            selector == 3 and deferred.get('effect') == 'loop_exit_then_conditional_zero_append' and deferred.get('arguments') == 0 or
+            selector == 2 and deferred.get('effect') == 'start_program_then_conditional_zero_append' and deferred.get('arguments') == 1 and
+            type(deferred.get('initialization_stack_delta')) is int and deferred['initialization_stack_delta'] == -1 and
+            deferred.get('initialization_scheduling') == 'wait_for_action')
+        valid = (review.get('coverage') == 'immediate_request_only' and type(selector) is int and
+                 selector == review.get('action_handler') and reviewed_effect and
+                 type(deferred.get('arguments')) is int and
                  deferred.get('waiting_stack_delta') == 0 and deferred.get('completion_stack_delta') == 1 and
                  type(deferred.get('waiting_stack_delta')) is int and type(deferred.get('completion_stack_delta')) is int and
                  deferred.get('waiting_scheduling') == 'wait_for_action' and deferred.get('completion_scheduling') == 'yield' and

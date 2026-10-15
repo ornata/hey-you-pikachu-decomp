@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "purpose": "Explicit scalar and immediate action-request storage contracts; source changes revoke evidence until reviewed again. Deferred handlers remain separate.",
-  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases. Twelve action-request wrappers and their two-field scheduling helper reviewed against original Ghidra801167A0 and all twelve original wrapper addresses; twenty-four direct original-instruction request cases guard all VM fields and pending/protected values. Selector-three deferred dispatch and helper chain reviewed against original Ghidra80117098/8000F4C4/801167BC/800120F0 and eight guarded direct-dispatch/scheduler cases.",
+  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases. Twelve action-request wrappers and their two-field scheduling helper reviewed against original Ghidra801167A0 and all twelve original wrapper addresses; twenty-four direct original-instruction request cases guard all VM fields and pending/protected values. Selector-three deferred dispatch and helper chain reviewed against original Ghidra80117098/8000F4C4/801167BC/800120F0 and eight guarded direct-dispatch/scheduler cases. Selector-two startup and waiting helpers reviewed against original Ghidra80116800/80012034; twelve guarded direct/scheduler cases cover numeric tags, original null sentinel, waiting and completion.",
   "preconditions": [
     "Protected locals and frame metadata lie below the active stack depth.",
     "Append contracts require one free value slot; pointers and borrowed actor/global state are valid.",
@@ -1057,7 +1057,86 @@
       "preconditions": [
         "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
         "The request returns scheduling result two without reading or writing stack operands. Deferred handler operands, results, context replacement and write effects remain unreviewed; this contract must not clear that deferred frontier."
-      ]
+      ],
+      "deferred_review": {
+        "action_handler": 2,
+        "effect": "start_program_then_conditional_zero_append",
+        "arguments": 1,
+        "initialization_stack_delta": -1,
+        "initialization_scheduling": "wait_for_action",
+        "waiting_stack_delta": 0,
+        "completion_stack_delta": 1,
+        "waiting_scheduling": "wait_for_action",
+        "completion_scheduling": "yield",
+        "dependencies": [
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "function": "actorScriptDispatchActionHandler",
+            "sha256": "e3e6746d411e3a9075fb9416d4007315a55fb47a83b4723d618a0d9dc72dd575"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "function": "actorScriptPlayAction",
+            "sha256": "9fa803d8ad922b48b3e5d2b877821d6f88a1fa6ae8d23b44fe8d9f78314d077b"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "function": "actorScriptWaitForSequencerStop",
+            "sha256": "aaeba1f2743f6d29c4317b2c8889a67d97f470ee23b0beb37a5cebf0455f2505"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/action_script.c",
+            "function": "actionScriptStart",
+            "sha256": "e53fc9f311fb49da04c1e77dc1c40cf739dfee554f85e49a15aef4b26b0ca257"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/action_script.c",
+            "function": "actionScriptIsStopped",
+            "sha256": "952ba58dc54050194e25912a37f214d33fbdf2af29f91f48b9c2ca6dd76b3ba9"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "scriptVmPopInteger",
+            "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "scriptVmPopValue",
+            "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "scriptValueGetInteger",
+            "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "actorUpdateScriptVm",
+            "sha256": "8f8aee40236f03cd3802e4944351029e97768892e9cff400831a09bda3a7632c"
+          },
+          {
+            "kind": "file",
+            "file": "include/action_script_ids.h",
+            "sha256": "444367ac3e76e056f62a750dafbe871388cfb5b1e056f11248ba00605c1e4544"
+          }
+        ],
+        "preconditions": [
+          "The initializing selector-two handler has one valid numeric program ID above protected locals/frame metadata. Integer/code-reference payloads or finite floats representable as s32 are supported; floats truncate toward zero.",
+          "The program ID has a valid retained table entry. ACTION_SCRIPT_NO_PROGRAM (-1) is an original-target exception requiring its authenticated null backing; other invalid indices and portable host C semantics are outside this review.",
+          "Actor state, VM and owned value storage remain intact and nonoverlapping. Scheduler updates clear initialization after dispatch, so polling does not consume the program again. One free completion slot remains above protected records.",
+          "Initialization selects commands and resets only the eight established sequencer fields; independent motion is preserved and the handler returns waiting even for no commands. Later polls leave values unchanged while commands remain, or append integer zero and yield when stopped.",
+          "These footprints do not establish command advancement, termination, rendering, retail path feasibility or arbitrary concurrent context/state replacement."
+        ]
+      }
     },
     {
       "function": "actorScriptStartLoopExitAndWait",

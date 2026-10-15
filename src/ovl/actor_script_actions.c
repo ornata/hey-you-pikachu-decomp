@@ -88,16 +88,16 @@ s32 actorScriptWaitForSequencerStop(u8 *actor) {
 
 
 /// Start the timed program supplied by the script and wait for sequencing to stop.
-/// \param actor Actor whose script supplies a valid timed-program index and receives zero when sequencing stops.
+/// \param actor Actor whose script supplies a valid timed-program index or ACTION_SCRIPT_NO_PROGRAM and receives zero when sequencing stops.
 /// \returns One when complete, or two while waiting.
 /// \note Original decompilation identifier: \c func_80116800 (0x80116800).
 s32 actorScriptPlayAction(u8 *actor) {
-    u8 *vmBytes;
-    u8 *actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    ScriptVm *vm;
+    ActorScriptState *actorState = ((RuntimeObjectPrefix *)actor)->state.actor;
 
-    vmBytes = (u8 *)((ActorScriptState *)actorState)->vmAddress;
-    if (((ScriptVm *)vmBytes)->actionInitializing != 0) {
-        actionScriptStart(actor, scriptVmPopInteger((ScriptVm *)((s32)vmBytes)));
+    vm = (ScriptVm *)actorState->vmAddress;
+    if (vm->actionInitializing != 0) {
+        actionScriptStart(actor, scriptVmPopInteger(vm));
         return SCRIPT_VM_WAITING_FOR_ACTION;
     }
     return actorScriptWaitForSequencerStop(actor);

@@ -610,9 +610,27 @@ completion. The decoder exposes validated later effects in `active_deferred` and
 `reviewed_deferred_effects`. Changes to the dispatch/helper chain revoke this later
 review independently of the immediate request review.
 
-There are 33 scalar contracts and 12 immediate request contracts, two of which also
-have a deferred loop-exit review. Other requests remain partially reviewed and keep
-their later effects explicit in the saved-dictionary frontier.
+The timed-action request additionally has a deferred selector-two review. Its
+initializing handler consumes one program ID, resets the established sequencer
+fields and returns waiting. Later polls do not consume that operand again: they
+leave VM values untouched while a command remains, or append integer zero and yield
+when sequencing stops. The scheduler's initialization clear separates these phases.
+This contract requires a valid numeric program operand above protected records,
+valid table backing and intact, separate actor/VM storage throughout the wait.
+
+Twelve authored original-instruction cases check initialization with integer,
+finite fractional and code-reference operands, no-program selection, waiting and
+completion through direct and scheduler dispatch. The original no-program sentinel
+preserves independent motion and still returns waiting on initialization; completion
+requires the later poll. Its negative C array index remains an authenticated target
+exception, requiring explicit handling in a portable host implementation. These
+cases establish phase footprints, without simulating timed-program advancement or
+certifying eventual completion.
+
+There are 33 scalar contracts and 12 immediate request contracts, three of which
+also have deferred reviews for timed-action startup or loop exit. Other requests
+remain partially reviewed and keep their later effects explicit in the
+saved-dictionary frontier.
 
 ### Player view selection
 
