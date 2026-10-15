@@ -408,25 +408,27 @@ s32 actorScriptTransformKind(u8 *object) {
     return SCRIPT_VM_YIELDED;
 }
 
-
 /// Request a text window using the script-supplied indicator, style, and view mode.
-/// \param actor Actor whose script supplies the window settings.
-/// \returns One after the request and a zero script result, or two while the game mode delays the request.
+/// \param actor Actor whose script supplies indicator, style, and scene-view mode in push order.
+/// Nonzero scene-view mode permits scene updates while the text window is active.
+/// \returns Two without consuming settings while in text-window game mode; otherwise one
+/// after consuming all three settings and supplying a zero script result. Zero does not indicate
+/// that the window opened: an already-active window can reject the request.
 /// \note Original decompilation identifier: \c func_80117014 (0x80117014).
 s32 actorScriptOpenTextWindow(u8 *actor) {
-    s32 sp2C;
-    s32 vmAddress;
-    s32 sp24;
+    s32 viewMode;
+    ScriptVm *vm;
+    s32 style;
 
     if (gRuntimeGameMode == GAME_MODE_TEXT_WINDOW) {
         return SCRIPT_VM_WAITING_FOR_ACTION;
     }
-    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    sp2C = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    sp24 = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    textWindowOpen(scriptVmPopInteger((ScriptVm *)(vmAddress)), sp24, sp2C);
+    vm = (ScriptVm *)((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    viewMode = scriptVmPopInteger(vm);
+    style = scriptVmPopInteger(vm);
+    textWindowOpen(scriptVmPopInteger(vm), style, viewMode);
     TRACE("messageSetup(%d,%d,%d)\n");
-    scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
+    scriptVmPushInteger(vm, 0);
     return SCRIPT_VM_YIELDED;
 }
 
