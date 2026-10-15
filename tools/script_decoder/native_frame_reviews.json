@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "purpose": "Explicit scalar and immediate action-request storage contracts; source changes revoke evidence until reviewed again. Deferred handlers remain separate.",
-  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases. Twelve action-request wrappers and their two-field scheduling helper reviewed against original Ghidra801167A0 and all twelve original wrapper addresses; twenty-four direct original-instruction request cases guard all VM fields and pending/protected values. Selector-three deferred dispatch and helper chain reviewed against original Ghidra80117098/8000F4C4/801167BC/800120F0 and eight guarded direct-dispatch/scheduler cases. Selector-two startup and waiting helpers reviewed against original Ghidra80116800/80012034; twelve guarded direct/scheduler cases cover numeric tags, original null sentinel, waiting and completion. Player input-mask field names now include synthetic stick flags, separately from permission flags; unchanged prefix layout and the reviewed permission/position reads were rechecked against matching objects before rebinding the two affected header dependencies. Additional permission names for Pikachu/follow selection and stun reaction leave the permission storage and reviewed view/position access unchanged; the two header dependencies were rechecked after strict matching verification. Ten additional permission names retain identical player storage and reviewed view/position accesses; header bindings rechecked after all483 objects and ROM matched. Selector-nine cost admission, root-resource adjustment and HUD helper were checked against Ghidra80116BC4/80014A3C, the authenticated five-record table and fourteen guarded original-instruction startup/poll/completion observations, including distinct actor/root resource records. The root and script actor states are explicitly distinguished.",
+  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases. Twelve action-request wrappers and their two-field scheduling helper reviewed against original Ghidra801167A0 and all twelve original wrapper addresses; twenty-four direct original-instruction request cases guard all VM fields and pending/protected values. Selector-three deferred dispatch and helper chain reviewed against original Ghidra80117098/8000F4C4/801167BC/800120F0 and eight guarded direct-dispatch/scheduler cases. Selector-two startup and waiting helpers reviewed against original Ghidra80116800/80012034; twelve guarded direct/scheduler cases cover numeric tags, original null sentinel, waiting and completion. Player input-mask field names now include synthetic stick flags, separately from permission flags; unchanged prefix layout and the reviewed permission/position reads were rechecked against matching objects before rebinding the two affected header dependencies. Additional permission names for Pikachu/follow selection and stun reaction leave the permission storage and reviewed view/position access unchanged; the two header dependencies were rechecked after strict matching verification. Ten additional permission names retain identical player storage and reviewed view/position accesses; header bindings rechecked after all483 objects and ROM matched. Selector-nine cost admission, root-resource adjustment and HUD helper were checked against Ghidra80116BC4/80014A3C, the authenticated five-record table and fourteen guarded original-instruction startup/poll/completion observations, including distinct actor/root resource records. The root and script actor states are explicitly distinguished. Acknowledgement native and helper checked against Ghidra8011C84C/80119200 and four original-instruction probes, including raw nonboolean word preservation; message fields remain unchanged.",
   "preconditions": [
     "Protected locals and frame metadata lie below the active stack depth.",
     "Append contracts require one free value slot; pointers and borrowed actor/global state are valid.",
@@ -1647,6 +1647,29 @@
       "preconditions": [
         "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
         "The request returns scheduling result two without reading or writing stack operands. Deferred handler operands, results, context replacement and write effects remain unreviewed; this contract must not clear that deferred frontier."
+      ]
+    },
+    {
+      "function": "actorScriptAcknowledgeMessage",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "6c85f11d907f7f018a366a6b18dde1d3a5d6045a2c6f03b1fbbe91494aff5df1",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_target_interaction.c",
+          "function": "actorAcknowledgeScriptMessage",
+          "sha256": "119b9cd9815ac852aa2bc31f58178242738e3904ee9c12b04ed4414f874337ae"
+        }
+      ],
+      "preconditions": [
+        "Actor state, retained VM and owned value storage are valid and nonoverlapping; one free result slot remains above all protected locals and frame metadata.",
+        "The helper reads the raw previous messagePending word and clears only that notification word, preserving the stored message payload. The native appends the previous word as an integer and returns continue, without consuming operands.",
+        "This review covers immediate writes only. Pending values are normally notification flags; preservation of authored nonboolean words does not establish retail reachability. Concurrent delivery, mailbox lifetime and eventual script handling remain separate obligations."
       ]
     }
   ]
