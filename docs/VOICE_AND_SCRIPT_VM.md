@@ -601,6 +601,13 @@ Scalar reviews remain active only while their source and helper bindings agree. 
 in each saved-dictionary candidate's `native_effect_frontier`; a reviewed immediate
 footprint does not establish a runtime dictionary ID or unconditional restoration.
 
+The unit-float native advances the shared generator once and appends a float in
+inclusive `[0,1]`. Single-precision rounding can produce one; callers must not
+assume an exclusive upper endpoint. The bounded-integer native replaces one numeric
+operand with a value below its positive signed limit. Nonpositive limits return
+zero without advancing the generator. These contracts describe the range and state
+effects, without asserting a statistical distribution or gameplay reachability.
+
 ### Deferred action requests
 
 Twelve additional reviews cover only the immediate request phase of action-start

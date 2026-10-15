@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "purpose": "Explicit scalar and immediate action-request storage contracts; source changes revoke evidence until reviewed again. Deferred handlers remain separate.",
-  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases. Twelve action-request wrappers and their two-field scheduling helper reviewed against original Ghidra801167A0 and all twelve original wrapper addresses; twenty-four direct original-instruction request cases guard all VM fields and pending/protected values. Selector-three deferred dispatch and helper chain reviewed against original Ghidra80117098/8000F4C4/801167BC/800120F0 and eight guarded direct-dispatch/scheduler cases. Selector-two startup and waiting helpers reviewed against original Ghidra80116800/80012034; twelve guarded direct/scheduler cases cover numeric tags, original null sentinel, waiting and completion. Player input-mask field names now include synthetic stick flags, separately from permission flags; unchanged prefix layout and the reviewed permission/position reads were rechecked against matching objects before rebinding the two affected header dependencies. Additional permission names for Pikachu/follow selection and stun reaction leave the permission storage and reviewed view/position access unchanged; the two header dependencies were rechecked after strict matching verification. Ten additional permission names retain identical player storage and reviewed view/position accesses; header bindings rechecked after all483 objects and ROM matched. Selector-nine cost admission, root-resource adjustment and HUD helper were checked against Ghidra80116BC4/80014A3C, the authenticated five-record table and fourteen guarded original-instruction startup/poll/completion observations, including distinct actor/root resource records. The root and script actor states are explicitly distinguished. Acknowledgement native and helper checked against Ghidra8011C84C/80119200 and four original-instruction probes, including raw nonboolean word preservation; message fields remain unchanged. Four distance/target append contracts checked against original Ghidra801172D4/80118838/801187E4/8011C674/8011CB38/8011D208/8011DBF8/801177FC/80118B30/8003A5FC/8003A6F0 and twelve guarded original-instruction probes with distinct local/world coordinates, approach clamping, fixed/follow selection and unavailable-target exclusions. The actor-state header replaces only the producer-established four-byte approach sample with f32 and adds its offset assertion; all other declarations remain token-identical. Five further handle-consuming query contracts checked against original Ghidra8011730C/80117388/8011D240/8011D288/80117840/801178EC/8011DCB0/8011DCF8/80117E80/8011EA9C and23 guarded original-instruction observations. Runtime kind130 is authenticated against its retained callback record selecting80027430/8002747C, whose allocation and speed accesses establish the shared four-byte spinner state; six updater observations cover decay, negative retained values, voice-distance endpoints, speed cap and yaw wrap.",
+  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases. Twelve action-request wrappers and their two-field scheduling helper reviewed against original Ghidra801167A0 and all twelve original wrapper addresses; twenty-four direct original-instruction request cases guard all VM fields and pending/protected values. Selector-three deferred dispatch and helper chain reviewed against original Ghidra80117098/8000F4C4/801167BC/800120F0 and eight guarded direct-dispatch/scheduler cases. Selector-two startup and waiting helpers reviewed against original Ghidra80116800/80012034; twelve guarded direct/scheduler cases cover numeric tags, original null sentinel, waiting and completion. Player input-mask field names now include synthetic stick flags, separately from permission flags; unchanged prefix layout and the reviewed permission/position reads were rechecked against matching objects before rebinding the two affected header dependencies. Additional permission names for Pikachu/follow selection and stun reaction leave the permission storage and reviewed view/position access unchanged; the two header dependencies were rechecked after strict matching verification. Ten additional permission names retain identical player storage and reviewed view/position accesses; header bindings rechecked after all483 objects and ROM matched. Selector-nine cost admission, root-resource adjustment and HUD helper were checked against Ghidra80116BC4/80014A3C, the authenticated five-record table and fourteen guarded original-instruction startup/poll/completion observations, including distinct actor/root resource records. The root and script actor states are explicitly distinguished. Acknowledgement native and helper checked against Ghidra8011C84C/80119200 and four original-instruction probes, including raw nonboolean word preservation; message fields remain unchanged. Four distance/target append contracts checked against original Ghidra801172D4/80118838/801187E4/8011C674/8011CB38/8011D208/8011DBF8/801177FC/80118B30/8003A5FC/8003A6F0 and twelve guarded original-instruction probes with distinct local/world coordinates, approach clamping, fixed/follow selection and unavailable-target exclusions. The actor-state header replaces only the producer-established four-byte approach sample with f32 and adds its offset assertion; all other declarations remain token-identical. Five further handle-consuming query contracts checked against original Ghidra8011730C/80117388/8011D240/8011D288/80117840/801178EC/8011DCB0/8011DCF8/80117E80/8011EA9C and23 guarded original-instruction observations. Runtime kind130 is authenticated against its retained callback record selecting80027430/8002747C, whose allocation and speed accesses establish the shared four-byte spinner state; six updater observations cover decay, negative retained values, voice-distance endpoints, speed cap and yaw wrap. Independent agent RNG review authenticated original wrapper/helper instructions and fifteen guarded interpreter observations at62bceac: inclusive unit-float endpoints including the observed rounding threshold, unsigned remainder for positive signed bounds, no advancement for nonpositive bounds, numeric conversion and unchanged protected VM storage. Reports retain original ROM/ELF/core/source fingerprints; FCR31 threshold is qualified to observed interpreter rounding.",
   "preconditions": [
     "Protected locals and frame metadata lie below the active stack depth.",
     "Append contracts require one free value slot; pointers and borrowed actor/global state are valid.",
@@ -2351,6 +2351,91 @@
         "Actor, VM, value storage, initialized handle pool and borrowed object/private state are valid and nonoverlapping. Pool capacity is positive and its chains terminate. Unavailable handles include pending destruction and toolbox-owned items.",
         "Kinds and category meanings remain separate domains. A live spinner requires the constructor-established four-byte speed state; its stored speed can be nonpositive even though the query then returns zero.",
         "Only immediate one-operand replacement and read-only helper storage effects are reviewed. Lookup predecessor writes target C-stack storage. Later lifetimes, concurrent mutation, invalid state and retail reachability remain outside this contract."
+      ]
+    },
+    {
+      "function": "actorScriptPushRandomUnitFloat",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "a5f3f670e52570eaa36f35a23ca90c4b572f684215ed97e49f924bc611521be5",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "float",
+      "scheduling": "continue",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/game/trigonometry.c",
+          "function": "randomNext",
+          "sha256": "03137dd2546aa2abf4099a0d6768ca2401f61657b9f915822b81b788e003fd56"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/trigonometry.c",
+          "sha256": "d43f5d0191eda333607d321693694367d35ccf392b257f8f1652acbe10721d9a"
+        },
+        {
+          "kind": "file",
+          "file": "include/random_scale.h",
+          "sha256": "ec6b749a4a75390f64d4ea5cccd20711ce238280f13defc8e41c375ea72ce666"
+        }
+      ],
+      "preconditions": [
+        "Actor, VM, owned value storage and four-word RNG state remain valid and nonoverlapping with protected locals/frame metadata; no concurrent RNG mutation.",
+        "One free value slot is available. Exactly one generator advance appends a float in inclusive [0,1]. Rounding can produce 1.0; no exclusive endpoint or statistical distribution guarantee is claimed.",
+        "Only immediate pop/push and RNG state writes are reviewed; CPU-stack scratch remains separate. Authored seeds and endpoint observations do not establish retail reachability, statistical quality, arbitrary sequence behavior or physical-device fidelity."
+      ]
+    },
+    {
+      "function": "actorScriptRandomBelow",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "49a7b01053d7a9ad570f4175042842e3a171c0d1fbe6cdaf4e6daee7ab4b9870",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/game/trigonometry.c",
+          "function": "randomNext",
+          "sha256": "03137dd2546aa2abf4099a0d6768ca2401f61657b9f915822b81b788e003fd56"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/trigonometry.c",
+          "sha256": "d43f5d0191eda333607d321693694367d35ccf392b257f8f1652acbe10721d9a"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/trigonometry.c",
+          "function": "randomBelow",
+          "sha256": "9870e6b471c7c3c0c1771218966c2bf787e40eb30ba1884f8addfab6e61fa754"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        }
+      ],
+      "preconditions": [
+        "Actor, VM, owned value storage and four-word RNG state remain valid and nonoverlapping with protected locals/frame metadata; no concurrent RNG mutation.",
+        "One integer/code-reference operand or finite s32-representable float lies above protected locals/frame metadata. Float conversion truncates toward zero. Positive signed limits advance once and return unsigned output modulo limit; nonpositive limits return zero without advancing.",
+        "Only immediate pop/push and RNG state writes are reviewed; CPU-stack scratch remains separate. Authored seeds and endpoint observations do not establish retail reachability, statistical quality, arbitrary sequence behavior or physical-device fidelity."
       ]
     }
   ]

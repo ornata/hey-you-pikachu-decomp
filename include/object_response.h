@@ -14,7 +14,7 @@ typedef struct ObjectResponse {
     s32 sourceHandle; ///< Source object handle, or zero when absent.
     u16 flags;        ///< Bit zero marks an owned pointer payload requiring release.
     u8 kind;          ///< Response handler index; zero selects a packed impulse.
-    u8 unknown07;     ///< Uninitialized byte; no interpretation established.
+    u8 unknown07;     ///< Not initialized by the response constructor; no established consumer.
     union {
         ObjectImpulse impulse; ///< Inline payload for response kind zero.
         void *owned;           ///< Owned payload when flags bit zero is set.

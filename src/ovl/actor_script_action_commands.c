@@ -245,27 +245,27 @@ s32 actorScriptPushZero(u8 *actor) {
     return SCRIPT_COMMAND_CONTINUE;
 }
 
-
-/// Provide a random floating-point value in the unit interval.
+/// Advance the shared generator and append a random float in the inclusive unit interval.
 /// \param actor Actor whose script VM receives a random value from zero through one.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011C17C (0x8011C17C).
 s32 actorScriptPushRandomUnitFloat(u8 *actor) {
-    u8 *vm = (u8 *)((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    ScriptVm *vm = (ScriptVm *)((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
 
-    scriptVmPushFloat((ScriptVm *)((s32)vm), randomNext() * RANDOM_U32_UNIT_SCALE);
+    scriptVmPushFloat(vm, randomNext() * RANDOM_U32_UNIT_SCALE);
     return SCRIPT_COMMAND_CONTINUE;
 }
 
-/// Provide a random integer below a script-supplied limit.
+/// Replace a script-supplied limit with a bounded random integer.
+/// Nonpositive limits leave the shared generator unchanged.
 /// \param actor Actor whose script VM supplies an exclusive upper bound and receives a random nonnegative integer below it, or zero for a nonpositive bound.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011C1F0 (0x8011C1F0).
 s32 actorScriptRandomBelow(u8 *actor) {
-    s32 sp1C;
+    ScriptVm *vm;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushInteger((ScriptVm *)(sp1C), randomBelow(scriptVmPopInteger((ScriptVm *)(sp1C))));
+    vm = (ScriptVm *)((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushInteger(vm, randomBelow(scriptVmPopInteger(vm)));
     return SCRIPT_COMMAND_CONTINUE;
 }
 

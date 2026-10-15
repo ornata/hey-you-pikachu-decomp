@@ -284,11 +284,11 @@
       "member": "unknown07",
       "line": 17,
       "declaration": "u8 unknown07;",
-      "known_facts": "The 0xC-byte response has a kind byte at six and payload at eight; the intervening byte is not initialized by the known producer.",
+      "known_facts": "Original constructor 0x8001C764 allocates 0xC bytes and initializes word zero, halfword four and byte six, leaving byte seven untouched. The impulse producer 0x8001C804 writes only 0x08..0x0B. No consumer establishes the role of byte seven.",
       "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
       "next_evidence": "Trace response allocation, all kind dispatchers and whole-record copies for an actual byte-seven consumer; do not read an uninitialized byte to infer meaning.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/object_response.h (record declaration and neighboring layout checks)"
+      "evidence": "include/object_response.h; src/game/doors_object_responses.c:objectResponseCreate (0x8001C764) and impulse producer 0x8001C804; read-only Ghidra store widths."
     },
     {
       "file": "include/player_types.h",
@@ -476,9 +476,9 @@
       "member": "unknown01C",
       "line": 24,
       "declaration": "s32 unknown01C;",
-      "known_facts": "The 0x100-byte toolbox state has mode at 0x18, this word at 0x1C and a 64-bit timestamp at 0x20.",
+      "known_facts": "The 0x100-byte state places mode at 0x18, this explicit word at 0x1C and u64 timestamp at 0x20. This position is compatible with target u64 alignment, which does not by itself prove unused padding.",
       "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace toolbox transitions, initialization and retained global aliases at 0x1C; distinguish an actual mode field from alignment storage.",
+      "next_evidence": "Find a direct or computed use of 0x1C..0x1F, or independent original-layout evidence, before naming it or removing the explicit word.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
       "evidence": "include/toolbox_types.h (record declaration and neighboring layout checks)"
     },
@@ -500,11 +500,11 @@
       "member": "unknown00C",
       "line": 34,
       "declaration": "u8 unknown00C[8];",
-      "known_facts": "Three playback rates, three ValueTracks, double-buffered drawing commands and a collision key constrain this private layout.",
+      "known_facts": "Initializer 0x80013848 allocates and clears 0x558 bytes. Three playback rates occupy 0x00..0x0B; the three established ValueTracks begin at 0x14. This cleared eight-byte gap is outside both established arrays.",
       "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace actor part initialization, texture updates, collision registration and command-buffer construction at the exact gaps; packed color writes may cover more than named components.",
+      "next_evidence": "Find a direct or computed reader/writer of 0x0C..0x13 before treating the gap as channels, typed fields or removable padding.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "src/game/actor_model_parts.c (record declaration and neighboring layout checks)"
+      "evidence": "src/game/actor_model_parts.c:actorPartInitializeAnimatedTextures (0x80013848), actorPartBuildAnimatedTextureCommands (0x80013EDC); read-only Ghidra allocation, clearing and three-channel loop."
     },
     {
       "file": "src/game/actor_model_parts.c",
@@ -512,11 +512,11 @@
       "member": "unknown038",
       "line": 36,
       "declaration": "u8 unknown038[0x18];",
-      "known_facts": "Three playback rates, three ValueTracks, double-buffered drawing commands and a collision key constrain this private layout.",
+      "known_facts": "The cleared 0x558-byte state contains three ValueTracks at 0x14..0x37. Drawing commands start at 0x50 and extend to 0x54F. The established command builder iterates exactly three channels, so 0x38..0x4F is outside the known track array.",
       "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace actor part initialization, texture updates, collision registration and command-buffer construction at the exact gaps; packed color writes may cover more than named components.",
+      "next_evidence": "Find a direct or computed use of 0x38..0x4F; do not infer additional tracks from neighboring offsets or remove the cleared storage.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "src/game/actor_model_parts.c (record declaration and neighboring layout checks)"
+      "evidence": "src/game/actor_model_parts.c:actorPartInitializeAnimatedTextures (0x80013848), actorPartBuildAnimatedTextureCommands (0x80013EDC); read-only Ghidra and written three-channel bounds."
     },
     {
       "file": "src/game/actor_model_parts.c",
