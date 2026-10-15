@@ -81,7 +81,7 @@ use that analysis copy as a build input.
 
 | Tool | Purpose |
 | --- | --- |
-| `make asm-fallbacks` / `tools/asm_fallbacks.py` | List functions the default build still assembles (`src/nonmatching/`). |
+| `make asm-fallbacks` / `tools/asm_fallbacks.py` | List C assembly fallbacks and standalone game/SDK assembly separately. |
 | `tools/progress.py` | Matched/unmatched counts per unit. |
 | `tools/mkctx.py` | Preprocessed context for m2c/decomp.me after header changes. |
 | `tools/check_clean.sh` | Tracked-content hygiene check (no ROM, assets or blobs). |

@@ -122,7 +122,8 @@ segments:
       - [0x42EA0, c, game/fault_handler]
       - [0x43440, c, game/texture_images_word_map]
       - [0x49B50, c, game/square_root]
-      - [0x49B60, c, game/unused_absolute_value]
+      # Preserve the return-only entry and trailing abs.d bytes as one unit.
+      - [0x49B60, hasm, game/unused_absolute_value]
       - [0x49B70, hasm, game/matrix_concatenate]
       - [0x49D60, c, game/audio_worker_string_utils]
       - [0x4A890, c, game/archive_compression]

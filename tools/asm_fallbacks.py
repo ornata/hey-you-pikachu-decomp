@@ -44,8 +44,12 @@ def main():
     args = parser.parse_args()
     records, data = inventory()
     missing = sum(name == '(assembly not generated)' for _, _, name in records)
-    print(f'ASM fallbacks: {len(records) - missing} function entries; '
-          f'{len(data)} data-only GLOBAL_ASM blocks.')
+    fallbacks = sum(source != assembly and name != '(assembly not generated)'
+                    for source, assembly, name in records)
+    standalone = sum(source == assembly for source, assembly, _ in records)
+    print(f'GLOBAL_ASM fallbacks: {fallbacks} function entries; '
+          f'{len(data)} data-only blocks.')
+    print(f'Standalone assembly: {standalone} function entries (game and SDK).')
     if missing or not (ROOT / 'build/asm').exists():
         print(f'ASM fallback inventory incomplete: generate build/asm/ with make split '
               f'({missing} unresolved GLOBAL_ASM paths).')

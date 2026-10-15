@@ -44,6 +44,9 @@ progressGetCurrentChapter = 0x8002ACE4;
 progressGetValue = 0x80032C1C;
 titleScreenClearMessage = 0x800353A4;
 sqrt = 0x80048F50;
+// Retained return-only absolute-value stub, including its trailing instruction.
+// Original identifiers: func_80048F60; func_80048F68 labels the tail at +8.
+unusedAbsoluteValueStub = 0x80048F60; // type:func size:0x10 segment:boot
 memcpy = 0x800499F0;
 strlen = 0x80049AAC;
 strchr = 0x80049B74;

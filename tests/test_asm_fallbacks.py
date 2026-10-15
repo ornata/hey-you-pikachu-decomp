@@ -30,3 +30,13 @@ class FallbackTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+def test_standalone_assembly_is_not_reported_as_a_c_fallback(monkeypatch, capsys):
+    import asm_fallbacks
+    monkeypatch.setattr(asm_fallbacks, 'inventory', lambda: ([('build/asm/game/stub.s', 'build/asm/game/stub.s', 'stub')], set()))
+    monkeypatch.setattr(sys, 'argv', ['asm_fallbacks.py'])
+    asm_fallbacks.main()
+    output = capsys.readouterr().out
+    assert 'GLOBAL_ASM fallbacks: 0 function entries' in output
+    assert 'Standalone assembly: 1 function entries' in output

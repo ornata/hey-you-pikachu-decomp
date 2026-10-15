@@ -72,8 +72,8 @@ SDK implementations are generated under ignored `build/asm/` from the supplied R
 
 ## Status
 
-The build reproduces the retail ROM byte for byte. Game functions remain in C,
-with one game assembly fallback under `src/nonmatching/`.
+The build reproduces the retail ROM byte for byte. Game C units have no function
+fallbacks; low-level routines remain preserved as standalone assembly.
 
 SDK implementations are excluded from the source tree and regenerated locally.
 
