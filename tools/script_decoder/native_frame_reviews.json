@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "purpose": "Explicit scalar and immediate action-request storage contracts; source changes revoke evidence until reviewed again. Deferred handlers remain separate.",
-  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases. Twelve action-request wrappers and their two-field scheduling helper reviewed against original Ghidra801167A0 and all twelve original wrapper addresses; twenty-four direct original-instruction request cases guard all VM fields and pending/protected values. Selector-three deferred dispatch and helper chain reviewed against original Ghidra80117098/8000F4C4/801167BC/800120F0 and eight guarded direct-dispatch/scheduler cases. Selector-two startup and waiting helpers reviewed against original Ghidra80116800/80012034; twelve guarded direct/scheduler cases cover numeric tags, original null sentinel, waiting and completion. Player input-mask field names now include synthetic stick flags, separately from permission flags; unchanged prefix layout and the reviewed permission/position reads were rechecked against matching objects before rebinding the two affected header dependencies. Additional permission names for Pikachu/follow selection and stun reaction leave the permission storage and reviewed view/position access unchanged; the two header dependencies were rechecked after strict matching verification. Ten additional permission names retain identical player storage and reviewed view/position accesses; header bindings rechecked after all483 objects and ROM matched.",
+  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases. Twelve action-request wrappers and their two-field scheduling helper reviewed against original Ghidra801167A0 and all twelve original wrapper addresses; twenty-four direct original-instruction request cases guard all VM fields and pending/protected values. Selector-three deferred dispatch and helper chain reviewed against original Ghidra80117098/8000F4C4/801167BC/800120F0 and eight guarded direct-dispatch/scheduler cases. Selector-two startup and waiting helpers reviewed against original Ghidra80116800/80012034; twelve guarded direct/scheduler cases cover numeric tags, original null sentinel, waiting and completion. Player input-mask field names now include synthetic stick flags, separately from permission flags; unchanged prefix layout and the reviewed permission/position reads were rechecked against matching objects before rebinding the two affected header dependencies. Additional permission names for Pikachu/follow selection and stun reaction leave the permission storage and reviewed view/position access unchanged; the two header dependencies were rechecked after strict matching verification. Ten additional permission names retain identical player storage and reviewed view/position accesses; header bindings rechecked after all483 objects and ROM matched. Selector-nine cost admission, root-resource adjustment and HUD helper were checked against Ghidra80116BC4/80014A3C, the authenticated five-record table and fourteen guarded original-instruction startup/poll/completion observations, including distinct actor/root resource records. The root and script actor states are explicitly distinguished.",
   "preconditions": [
     "Protected locals and frame metadata lie below the active stack depth.",
     "Append contracts require one free value slot; pointers and borrowed actor/global state are valid.",
@@ -1431,7 +1431,107 @@
       "preconditions": [
         "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
         "The request returns scheduling result two without reading or writing stack operands. Deferred handler operands, results, context replacement and write effects remain unreviewed; this contract must not clear that deferred frontier."
-      ]
+      ],
+      "deferred_review": {
+        "action_handler": 9,
+        "effect": "costed_program_then_conditional_result_append",
+        "arguments": 2,
+        "initialization_stack_delta": -2,
+        "initialization_scheduling": "wait_for_action",
+        "waiting_stack_delta": 0,
+        "completion_stack_delta": 1,
+        "waiting_scheduling": "wait_for_action",
+        "completion_scheduling": "yield",
+        "dependencies": [
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "function": "actorScriptDispatchActionHandler",
+            "sha256": "e3e6746d411e3a9075fb9416d4007315a55fb47a83b4723d618a0d9dc72dd575"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "function": "actorScriptPerformCostedAction",
+            "sha256": "fe2f4ab9fc7fd81778e0c84d69e49cbee5d48ffb165049abaa8517f3b6dbcff6"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/action_script.c",
+            "function": "actionScriptStart",
+            "sha256": "e53fc9f311fb49da04c1e77dc1c40cf739dfee554f85e49a15aef4b26b0ca257"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/action_script.c",
+            "function": "actionScriptIsStopped",
+            "sha256": "952ba58dc54050194e25912a37f214d33fbdf2af29f91f48b9c2ca6dd76b3ba9"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/actor_model_parts.c",
+            "function": "actorAdjustActionMeter",
+            "sha256": "727f83b26d5bb6d9c7417da71e569c4d5d2ec69d1c9c4764afec5f19bf81fd0a"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/hud.c",
+            "function": "hudExtendHorizontalMotionDisplay",
+            "sha256": "7e6ab93a28a27701b4ce7e941ffda5196b4608bf1416047fe456e307cf99a772"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "scriptVmPopInteger",
+            "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "scriptVmPopValue",
+            "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "scriptValueGetInteger",
+            "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "actorUpdateScriptVm",
+            "sha256": "8f8aee40236f03cd3802e4944351029e97768892e9cff400831a09bda3a7632c"
+          },
+          {
+            "kind": "file",
+            "file": "src/ovl/actor_script_actions.c",
+            "sha256": "d456fd7c67ebf72492d3ed06cee7ad50bb4e283c6bfc4f333ddd9aa75f6e9835"
+          },
+          {
+            "kind": "file",
+            "file": "src/game/actor_model_parts.c",
+            "sha256": "3d4b997f428ebb819d28500d2deab5534d27fb330338174b42cb53cc0e92140e"
+          },
+          {
+            "kind": "file",
+            "file": "src/game/hud.c",
+            "sha256": "7ebce910250ed2e285457cc2efe99608aacccd222daca6da65d3eea6a2acfa40"
+          },
+          {
+            "kind": "file",
+            "file": "include/action_script_ids.h",
+            "sha256": "444367ac3e76e056f62a750dafbe871388cfb5b1e056f11248ba00605c1e4544"
+          }
+        ],
+        "preconditions": [
+          "Two numeric startup operands, cost selector then repetition count, lie above protected locals and frame metadata. Integer/code-reference values or finite s32-representable floats are supported; floats truncate toward zero. Selector is zero through four in the authenticated retained table prefix. Repetition count and resource calculations must remain valid finite gameplay values.",
+          "Actor state, owning-root state, VM, value storage and HUD scalar are valid and do not alias protected VM storage. The owning root may be this actor or a distinct valid actor. The root resource is adjusted while admission checks read the script actor resource; this review does not silently equate the two.",
+          "Initialization consumes the count and selector, selects the accepted or insufficient timed program, and always returns waiting. The resource check can be disabled without disabling the charge. The meter helper clamps to zero through 100 and may extend the HUD timer; target-burst allowance and retained outcome are actor-state writes.",
+          "Scheduler initialization clearing prevents repeated operand consumption. Running polls leave values unchanged; stopped polls append the current retained integer outcome and yield, with a free result slot. Initial outcomes zero and three may be changed to one by separate response handlers before completion.",
+          "The five records occupy an authenticated 80-byte prefix ending at the next named data view. Program advancement, other response writes, eventual completion, retail reachability, lifetime and concurrent state/context replacement are outside this footprint review."
+        ]
+      }
     },
     {
       "function": "actorScriptStartTextWindow",

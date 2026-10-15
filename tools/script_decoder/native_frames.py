@@ -124,6 +124,9 @@ def native_frame_reviews(root=ROOT, manifest=None):
             selector == 3 and deferred.get('effect') == 'loop_exit_then_conditional_zero_append' and deferred.get('arguments') == 0 or
             selector == 2 and deferred.get('effect') == 'start_program_then_conditional_zero_append' and deferred.get('arguments') == 1 and
             type(deferred.get('initialization_stack_delta')) is int and deferred['initialization_stack_delta'] == -1 and
+            deferred.get('initialization_scheduling') == 'wait_for_action' or
+            selector == 9 and deferred.get('effect') == 'costed_program_then_conditional_result_append' and deferred.get('arguments') == 2 and
+            type(deferred.get('initialization_stack_delta')) is int and deferred['initialization_stack_delta'] == -2 and
             deferred.get('initialization_scheduling') == 'wait_for_action')
         valid = (review.get('coverage') == 'immediate_request_only' and type(selector) is int and
                  selector == review.get('action_handler') and reviewed_effect and

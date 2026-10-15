@@ -255,44 +255,52 @@ s32 actorScriptPollActionStopped(u8 *object) {
     return SCRIPT_VM_WAITING_FOR_ACTION;
 }
 
-typedef struct ActionCost {
-    s32 animation;
-    s32 insufficientAnimation;
-    f32 cost;
-    s32 checkCost;
-} ActionCost;
-/// Action-meter costs and success or insufficient-meter animation selections indexed by script action.
+/// Program selections and per-repetition resource policy for a costed script action.
+typedef struct ActorScriptActionCost {
+    s32 programId;                  ///< Timed program selected when the request is accepted.
+    s32 insufficientProgramId;      ///< Timed program selected when resource is insufficient.
+    f32 repetitionCost;             ///< Action resource charged for each requested repetition.
+    s32 requiresSufficientResource; ///< Nonzero rejects requests exceeding the available resource.
+} ActorScriptActionCost;
+
+typedef char ActorScriptActionCostSizeCheck[(sizeof(ActorScriptActionCost) == 0x10) ? 1 : -1];
+/// Five retained action-cost records indexed by selectors zero through four.
+/// Selectors three and four share the first two program pairs but waive the resource check.
+/// This neighbor-delimited view does not establish a larger allocation or bounds checking.
 /// \note Original identifier: \c D_8012A660 (0x8012A660).
-extern ActionCost gActorScriptCostedActions[];
+extern ActorScriptActionCost gActorScriptCostedActions[];
 /// Perform a script-selected action subject to its resource cost and report its outcome.
-/// \param object Actor whose script supplies the action and repetition count.
-/// \returns One when complete, or two while waiting; completion supplies the stored action outcome as the script result.
+/// \param object Actor whose script supplies a valid cost selector followed by a repetition count.
+/// The actor and its owning root must have valid action-resource state.
+/// \returns One when complete, or two while waiting. The script result is zero after insufficient
+/// resource, three after an accepted start, or one when later response handling changes the outcome.
+/// \note Startup consumes both operands; polling consumes none. Completion supplies one integer result.
+/// A disabled resource check permits the request but still charges the clamped action resource.
 /// \note Original decompilation identifier: \c func_80116BC4 (0x80116BC4).
 s32 actorScriptPerformCostedAction(u8 *object) {
     f32 cost;
-    s32 action;
-    s32 count;
-    u8 *vm;
-    u8 *state;
-    state = ((RuntimeObjectPrefix *)object)->state.bytes;
-    vm = (u8 *)((ActorScriptState *)state)->vmAddress;
-    if (((ScriptVm *)vm)->actionInitializing != 0) {
-        count = scriptVmPopInteger((ScriptVm *)((s32)vm));
-        action = scriptVmPopInteger((ScriptVm *)(((ActorScriptState *)state)->vmAddress));
-        cost = gActorScriptCostedActions[action].cost * count;
-        if (gActorScriptCostedActions[action].checkCost != 0 && ((ActorScriptState *)state)->actionResource < cost) {
-            ((ActorScriptState *)state)->costedActionResult = 0;
-            ((ActorScriptState *)state)->targetedBurstAllowance = 0;
-            actionScriptStart(object, gActorScriptCostedActions[action].insufficientAnimation);
+    s32 costSelector;
+    s32 repetitions;
+    ScriptVm *vm;
+    ActorScriptState *state;
+    state = ((RuntimeObjectPrefix *)object)->state.actor;
+    vm = (ScriptVm *)state->vmAddress;
+    if (vm->actionInitializing != 0) {
+        repetitions = scriptVmPopInteger(vm);
+        costSelector = scriptVmPopInteger((ScriptVm *)state->vmAddress);
+        cost = gActorScriptCostedActions[costSelector].repetitionCost * repetitions;
+        if (gActorScriptCostedActions[costSelector].requiresSufficientResource != 0 && state->actionResource < cost) {
+            state->costedActionResult = 0;
+            state->targetedBurstAllowance = 0;
+            actionScriptStart(object, gActorScriptCostedActions[costSelector].insufficientProgramId);
         } else {
             actorAdjustActionMeter(object, -cost);
-            ((ActorScriptState *)state)->costedActionResult = 3;
-            ((ActorScriptState *)state)->targetedBurstAllowance = count;
-            actionScriptStart(object, gActorScriptCostedActions[action].animation);
+            state->costedActionResult = 3;
+            state->targetedBurstAllowance = repetitions;
+            actionScriptStart(object, gActorScriptCostedActions[costSelector].programId);
         }
     } else if (actionScriptIsStopped(object) != 0) {
-        scriptVmPushInteger((ScriptVm *)(((ActorScriptState *)state)->vmAddress),
-                            ((ActorScriptState *)state)->costedActionResult);
+        scriptVmPushInteger((ScriptVm *)(state->vmAddress), state->costedActionResult);
         return SCRIPT_VM_YIELDED;
     }
     return SCRIPT_VM_WAITING_FOR_ACTION;

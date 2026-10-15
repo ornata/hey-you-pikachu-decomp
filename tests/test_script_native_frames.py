@@ -112,14 +112,19 @@ def test_deferred_start_consumes_one_argument_only_during_initialization(tmp_pat
                     waiting_scheduling='wait_for_action', completion_scheduling='yield',
                     dependencies=manifest['dependencies'])
     row['deferred_review'] = deferred
-    assert set(native_frame_reviews(tmp_path, manifest)['active_deferred']) == {'getter'}
-    for field, invalid in (('arguments', 0), ('initialization_stack_delta', 0),
-                           ('initialization_scheduling', 'yield'), ('action_handler', 3)):
-        previous = deferred[field]
-        deferred[field] = invalid
-        report = native_frame_reviews(tmp_path, manifest)
-        assert not report['active_deferred'] and report['active']
-        deferred[field] = previous
+    for selector, effect, arguments in ((2, 'start_program_then_conditional_zero_append', 1),
+                                        (9, 'costed_program_then_conditional_result_append', 2)):
+        row['action_handler'] = selector
+        deferred.update(action_handler=selector, effect=effect, arguments=arguments,
+                        initialization_stack_delta=-arguments)
+        assert set(native_frame_reviews(tmp_path, manifest)['active_deferred']) == {'getter'}
+        for field, invalid in (('arguments', 0), ('initialization_stack_delta', 0),
+                               ('initialization_scheduling', 'yield'), ('action_handler', 3)):
+            previous = deferred[field]
+            deferred[field] = invalid
+            report = native_frame_reviews(tmp_path, manifest)
+            assert not report['active_deferred'] and report['active']
+            deferred[field] = previous
 
 
 def test_changed_dependency_or_unsupported_contract_keeps_callback_unreviewed(tmp_path):
