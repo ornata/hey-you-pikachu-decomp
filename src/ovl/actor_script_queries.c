@@ -241,7 +241,7 @@ s32 actorTrackObjectPosition(u8 *actor, s32 handle, f32 distanceAllowance) {
     u8 *target = objectResolveAvailableHandle(handle);
 
     if ((target == NULL) ||
-        ((((RuntimeObjectPrefix *)target)->kind == 0x86) &&
+        ((((RuntimeObjectPrefix *)target)->kind == RUNTIME_OBJECT_KIND_ITEM) &&
          (((ItemStatePrefix *)((RuntimeObjectPrefix *)target)->state.bytes)->state == ITEM_OWNERSHIP_TOOLBOX))) {
         ((ActorScriptState *)state)->targetMode = ACTOR_TARGET_FIXED;
         return 0;
@@ -269,7 +269,7 @@ s32 actorSetDestinationFromObject(u8 *actor, s32 handle, f32 distanceAllowance) 
     actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
     ((ActorScriptState *)actorState)->targetMode = ACTOR_TARGET_FIXED;
     if ((resolvedObject == NULL) ||
-        ((((RuntimeObjectPrefix *)resolvedObject)->kind == 0x86) &&
+        ((((RuntimeObjectPrefix *)resolvedObject)->kind == RUNTIME_OBJECT_KIND_ITEM) &&
          (((ItemStatePrefix *)((RuntimeObjectPrefix *)resolvedObject)->state.bytes)->state ==
           ITEM_OWNERSHIP_TOOLBOX))) {
         return 0;
@@ -291,7 +291,7 @@ s32 actorTrackEscapeFromObject(u8 *actor, s32 handle) {
     sp1C = ((RuntimeObjectPrefix *)actor)->state.bytes;
     resolvedObject = objectResolveAvailableHandle(handle);
     if ((resolvedObject == NULL) ||
-        ((((RuntimeObjectPrefix *)resolvedObject)->kind == 0x86) &&
+        ((((RuntimeObjectPrefix *)resolvedObject)->kind == RUNTIME_OBJECT_KIND_ITEM) &&
          (((ItemStatePrefix *)((RuntimeObjectPrefix *)resolvedObject)->state.bytes)->state ==
           ITEM_OWNERSHIP_TOOLBOX))) {
         ((ActorScriptState *)sp1C)->targetMode = ACTOR_TARGET_FIXED;
@@ -319,7 +319,7 @@ s32 actorChooseEscapePositionFromHandle(u8 *actor, s32 handle) {
     actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
     ((ActorScriptState *)actorState)->targetMode = ACTOR_TARGET_FIXED;
     if ((resolvedObject == NULL) ||
-        ((((RuntimeObjectPrefix *)resolvedObject)->kind == 0x86) &&
+        ((((RuntimeObjectPrefix *)resolvedObject)->kind == RUNTIME_OBJECT_KIND_ITEM) &&
          (((ItemStatePrefix *)((RuntimeObjectPrefix *)resolvedObject)->state.bytes)->state ==
           ITEM_OWNERSHIP_TOOLBOX))) {
         return 0;
@@ -391,7 +391,7 @@ s32 objectGetScriptCategory(u8 *actor, s32 handle) {
         return SCRIPT_CATEGORY_UNAVAILABLE;
     }
     objectKind = ((RuntimeObjectPrefix *)resolvedObject)->kind;
-    if (objectKind == 0x86) {
+    if (objectKind == RUNTIME_OBJECT_KIND_ITEM) {
         return SCRIPT_CATEGORY_ITEM;
     }
     if (objectKind == 0x7F) {
@@ -422,7 +422,7 @@ s32 objectGetScriptKind(s32 handle) {
         return 0;
     }
     objectKind = ((RuntimeObjectPrefix *)resolvedObject)->kind;
-    if (objectKind == 0x86) {
+    if (objectKind == RUNTIME_OBJECT_KIND_ITEM) {
         return itemGetKindByHandle(handle);
     }
     if ((objectKind > 0) && (objectKind < 0x26)) {
@@ -448,7 +448,7 @@ s16 itemGetKindByHandle(s32 handle) {
     if (obj == NULL) {
         return 0;
     }
-    if (((RuntimeObjectPrefix *)obj)->kind == 0x86) {
+    if (((RuntimeObjectPrefix *)obj)->kind == RUNTIME_OBJECT_KIND_ITEM) {
         rec = ((RuntimeObjectPrefix *)obj)->state.bytes;
         return ((ItemStatePrefix *)rec)->kind;
     }
@@ -1327,7 +1327,7 @@ u8 *objectResolveAvailableHandle(s32 handle) {
         return NULL;
     }
     liveObject = objectFindLiveByHandle(handle);
-    if ((liveObject != NULL) && (((RuntimeObjectPrefix *)liveObject)->kind == 0x86) &&
+    if ((liveObject != NULL) && (((RuntimeObjectPrefix *)liveObject)->kind == RUNTIME_OBJECT_KIND_ITEM) &&
         (((ItemStatePrefix *)((RuntimeObjectPrefix *)liveObject)->state.bytes)->state == ITEM_OWNERSHIP_TOOLBOX)) {
         return NULL;
     }

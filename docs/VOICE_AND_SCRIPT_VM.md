@@ -520,11 +520,30 @@ valid chains and a valid item state for a live held handle. Chapter lookup requi
 initialized progress metadata and save storage. These conditions remain explicit.
 
 Helper dependencies are attached to their individual callback reviews, so a helper
-change reopens the affected review without discarding unrelated evidence. Twenty-four
-native reviews are active; 79 effects remain in the saved-dictionary frontier.
+change reopens the affected review without discarding unrelated evidence.
 Fourteen authored original-instruction cases cover helper lookup branches, unsigned
 collision flags, independent view flags and guarded scalar appends. They establish
 immediate write footprints, without proving broader object lifetimes or scheduling.
+
+Three further contracts cover `actorScriptGetItemKind`, `actorScriptGetActorKind`
+and `actorScriptGetObjectType`. Each replaces one numeric handle with an integer
+result, leaving the stack depth unchanged. This preserves saved locals only if
+the argument lies above every protected local and frame record. The decoder
+reports that additional precondition; it does not prove the operand floor.
+Integer and code-reference payloads are read as integers; supported finite float
+handles truncate toward zero. Invalid numeric conversions remain outside the review.
+
+The domains are distinct: `RUNTIME_OBJECT_KIND_ITEM` (134 / 0x86) selects item-owned
+state, whose item-catalog kind is a separate value. Actor configuration kinds span
+1 through 37, including props. Runtime tag 130 remains unnamed. Toolbox items and
+destroy-pending objects are unavailable to these handle queries. Twenty-four
+authored original-instruction cases check these branches and argument replacement,
+guarding the VM, saved values, handle pool and borrowed records. Held-item fixtures
+also use the constructor-established tag and full item-state allocation.
+
+Twenty-seven native reviews are active. Remaining callbacks stay explicitly listed
+in each saved-dictionary candidate's `native_effect_frontier`; a reviewed immediate
+footprint does not establish a runtime dictionary ID or unconditional restoration.
 
 ### Player view selection
 

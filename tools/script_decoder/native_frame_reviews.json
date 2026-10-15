@@ -1,12 +1,13 @@
 {
   "schema_version": 1,
-  "purpose": "Current reviewed scalar-append native write contracts; source changes revoke evidence until reviewed again.",
-  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary.",
+  "purpose": "Explicit scalar append and one-argument replacement write contracts; source changes revoke evidence until reviewed again.",
+  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases.",
   "preconditions": [
     "Protected locals and frame metadata lie below the active stack depth.",
     "One value slot is available; pointers and borrowed actor/global state are valid.",
     "The VM context and its owned value storage remain intact; concurrent writes and later lifecycle changes are outside this handler-footprint review.",
-    "Helper lookups require the initialized pools, save metadata and borrowed records stated by each callback review."
+    "Helper lookups require the initialized pools, save metadata and borrowed records stated by each callback review.",
+    "For argument replacement, consumed operands lie above all protected locals/frame metadata and satisfy the callback numeric-conversion contract; static bytecode preservation does not prove this operand floor."
   ],
   "dependencies": [
     {
@@ -60,6 +61,16 @@
       "kind": "file",
       "file": "include/script_vm_commands.h",
       "sha256": "89dd5af53ff9f3da6b05812e09d3f816719a5122f3038d0d0f25c3e7968980fc"
+    },
+    {
+      "kind": "file",
+      "file": "include/actor_script.h",
+      "sha256": "7423558b735accb89ffff0cc77b48995d4c86f5fd8f7f2176f1ce26c1a484eb3"
+    },
+    {
+      "kind": "file",
+      "file": "include/object_types.h",
+      "sha256": "cdc5e63f556a44f11777d7f03c55829ceb41527515d853340397454bf950ee8e"
     }
   ],
   "callbacks": [
@@ -475,6 +486,276 @@
       ],
       "preconditions": [
         "Interaction state is valid; the returned handle does not prove object liveness."
+      ]
+    },
+    {
+      "function": "actorScriptGetItemKind",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "0dc4c4e148c7fb9b78e96c5059945af0e54bbb5825d57a1d8bb4baffd84b107f",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "objectResolveAvailableHandle",
+          "sha256": "13035c928d8cfa98f2d5bddd83912c671a57b188c5abc77aa7fa2aa84d669e4d"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/object_hierarchy.c",
+          "function": "objectFindLiveByHandle",
+          "sha256": "a04905a063945115cd20a841f611294f7784656739644dd48ba5230ee11881c9"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/keyed_pool.c",
+          "function": "keyedPoolGetValue",
+          "sha256": "515ff415ac8762af39e40b6969a0d563591ab0252fcc95f660b808c06964541d"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/keyed_pool.c",
+          "function": "keyedPoolFindEntry",
+          "sha256": "2c4d9787ed139519f2981eb227805c3b38046a0baf47287ae6ecc2156f5665c6"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "cdc5e63f556a44f11777d7f03c55829ceb41527515d853340397454bf950ee8e"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_flags.h",
+          "sha256": "135a2ddab3b6c3e703f08bc85faa083742809cf81a1edc43bd05469d2faac637"
+        },
+        {
+          "kind": "file",
+          "file": "include/item_types.h",
+          "sha256": "a11ff3ec0e7d9256425797d27c1d7222f58360b5f27a4bf4128119f9a762f991"
+        },
+        {
+          "kind": "file",
+          "file": "include/keyed_pool_types.h",
+          "sha256": "4c5ce15833971e0a7b7a25588eb674597474dba8a6d71b51cf78cf098c63a611"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_kind.h",
+          "sha256": "50ea3d3734cf9069bbb97cd961bf5416d9700f21efd7685836e7aa908bd46685"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "itemGetKindByHandle",
+          "sha256": "85446444eb54669af1fda4bf3caa8a74b310fb7861dba5de839ecbdc44a9cb90"
+        }
+      ],
+      "preconditions": [
+        "One operand lies above all protected locals and frame metadata. Integer/code-reference payloads or finite floats representable as s32 are supported; float handles truncate toward zero.",
+        "The initialized nonzero-capacity handle pool has valid chains and valid borrowed live records. Tag 134 identifies valid ItemState storage; other tags do not acquire an item interpretation. VM-owned storage, heap records, globals and C-stack temporaries do not overlap.",
+        "Toolbox items and destroy-pending records are unavailable. This immediate footprint review does not establish later object liveness or retail reachability."
+      ]
+    },
+    {
+      "function": "actorScriptGetActorKind",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "204f6757295b755c56dbc32cfa2513d0225b14b5d1a1e11ab5c33860a0d78cdb",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "objectResolveAvailableHandle",
+          "sha256": "13035c928d8cfa98f2d5bddd83912c671a57b188c5abc77aa7fa2aa84d669e4d"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/object_hierarchy.c",
+          "function": "objectFindLiveByHandle",
+          "sha256": "a04905a063945115cd20a841f611294f7784656739644dd48ba5230ee11881c9"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/keyed_pool.c",
+          "function": "keyedPoolGetValue",
+          "sha256": "515ff415ac8762af39e40b6969a0d563591ab0252fcc95f660b808c06964541d"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/keyed_pool.c",
+          "function": "keyedPoolFindEntry",
+          "sha256": "2c4d9787ed139519f2981eb227805c3b38046a0baf47287ae6ecc2156f5665c6"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "cdc5e63f556a44f11777d7f03c55829ceb41527515d853340397454bf950ee8e"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_flags.h",
+          "sha256": "135a2ddab3b6c3e703f08bc85faa083742809cf81a1edc43bd05469d2faac637"
+        },
+        {
+          "kind": "file",
+          "file": "include/item_types.h",
+          "sha256": "a11ff3ec0e7d9256425797d27c1d7222f58360b5f27a4bf4128119f9a762f991"
+        },
+        {
+          "kind": "file",
+          "file": "include/keyed_pool_types.h",
+          "sha256": "4c5ce15833971e0a7b7a25588eb674597474dba8a6d71b51cf78cf098c63a611"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_kind.h",
+          "sha256": "50ea3d3734cf9069bbb97cd961bf5416d9700f21efd7685836e7aa908bd46685"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "actorGetKindByHandle",
+          "sha256": "9658efba2c58d60e12ff7fd9ab9579d339edbb85ae737dae1af7709b746c4a4b"
+        }
+      ],
+      "preconditions": [
+        "One operand lies above all protected locals and frame metadata. Integer/code-reference payloads or finite floats representable as s32 are supported; float handles truncate toward zero.",
+        "The initialized nonzero-capacity handle pool has valid chains and valid borrowed live records. Tag 134 identifies valid ItemState storage; other tags do not acquire an item interpretation. VM-owned storage, heap records, globals and C-stack temporaries do not overlap.",
+        "Toolbox items and destroy-pending records are unavailable. This immediate footprint review does not establish later object liveness or retail reachability."
+      ]
+    },
+    {
+      "function": "actorScriptGetObjectType",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "633710ee3efb20e43ab0e56b652af63c7f2225029a37b95370f8143eca579eda",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "objectResolveAvailableHandle",
+          "sha256": "13035c928d8cfa98f2d5bddd83912c671a57b188c5abc77aa7fa2aa84d669e4d"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/object_hierarchy.c",
+          "function": "objectFindLiveByHandle",
+          "sha256": "a04905a063945115cd20a841f611294f7784656739644dd48ba5230ee11881c9"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/keyed_pool.c",
+          "function": "keyedPoolGetValue",
+          "sha256": "515ff415ac8762af39e40b6969a0d563591ab0252fcc95f660b808c06964541d"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/keyed_pool.c",
+          "function": "keyedPoolFindEntry",
+          "sha256": "2c4d9787ed139519f2981eb227805c3b38046a0baf47287ae6ecc2156f5665c6"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "cdc5e63f556a44f11777d7f03c55829ceb41527515d853340397454bf950ee8e"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_flags.h",
+          "sha256": "135a2ddab3b6c3e703f08bc85faa083742809cf81a1edc43bd05469d2faac637"
+        },
+        {
+          "kind": "file",
+          "file": "include/item_types.h",
+          "sha256": "a11ff3ec0e7d9256425797d27c1d7222f58360b5f27a4bf4128119f9a762f991"
+        },
+        {
+          "kind": "file",
+          "file": "include/keyed_pool_types.h",
+          "sha256": "4c5ce15833971e0a7b7a25588eb674597474dba8a6d71b51cf78cf098c63a611"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_kind.h",
+          "sha256": "50ea3d3734cf9069bbb97cd961bf5416d9700f21efd7685836e7aa908bd46685"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "objectGetTypeByHandle",
+          "sha256": "4828f63a4a161aa2bc80e82c51ff4c46f96fc9ae7f3c3fd60c1779c7cb487a41"
+        }
+      ],
+      "preconditions": [
+        "One operand lies above all protected locals and frame metadata. Integer/code-reference payloads or finite floats representable as s32 are supported; float handles truncate toward zero.",
+        "The initialized nonzero-capacity handle pool has valid chains and valid borrowed live records. Tag 134 identifies valid ItemState storage; other tags do not acquire an item interpretation. VM-owned storage, heap records, globals and C-stack temporaries do not overlap.",
+        "Toolbox items and destroy-pending records are unavailable. This immediate footprint review does not establish later object liveness or retail reachability."
       ]
     }
   ]

@@ -50,6 +50,16 @@ def test_changed_callback_revokes_review_without_inventing_a_replacement(tmp_pat
     assert not report['active'] and report['stale_callbacks'] == ['getter']
 
 
+def test_argument_replacement_requires_exact_reviewed_arity_and_delta(tmp_path):
+    manifest = setup_review(tmp_path)
+    row = manifest['callbacks'][0]
+    row.update(effect='replace_argument_with_scalar', arguments=1, stack_delta=0)
+    assert set(native_frame_reviews(tmp_path, manifest)['active']) == {'getter'}
+    for arguments, delta in ((0, 0), (1, 1), (2, -1), (True, 0), (1, False)):
+        row.update(arguments=arguments, stack_delta=delta)
+        assert not native_frame_reviews(tmp_path, manifest)['active']
+
+
 def test_changed_dependency_or_unsupported_contract_keeps_callback_unreviewed(tmp_path):
     manifest = setup_review(tmp_path)
     path = tmp_path / 'unit.c'

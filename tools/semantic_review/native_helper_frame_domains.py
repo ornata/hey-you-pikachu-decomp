@@ -41,10 +41,12 @@ def experiments():
         values = b''.join(b'\0' + word(number) for number in (31, 0, 1)) + b'\xa5' * 25
         wanted_values = values[:15] + b'\0' + word(result) + values[20:]
         held = bytearray(b'\xa5' * 0x60)
-        held[0x34:0x3C] = (130).to_bytes(2, 'big') + (0x10 if name == 'held-destroy-pending' else 1).to_bytes(2, 'big') + word(7)
+        held[0x34:0x3C] = (134).to_bytes(2, 'big') + (0x10 if name == 'held-destroy-pending' else 1).to_bytes(2, 'big') + word(7)
         held[0x54:0x58] = word(RAM + 0x6000)
-        item = bytearray(b'\xa5' * 0x6C)
+        item = bytearray(b'\xa5' * 0xF0)
+        item[:4] = word(0)
         item[4:6] = b'\0\x05'
+        item[6:12] = b'\0' * 6
         pool = b''.join(word(number) for number in (RAM + 0x4000, 0, RAM + 0x4000, RAM + 0x4000, 0, 1, 8, 1))
         entry = word(7) + word(RAM + 0x5000) + b'\0' * 12
         record = bytearray(b'\xa5' * 116)

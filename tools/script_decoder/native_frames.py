@@ -4,6 +4,8 @@ Fingerprints bind an existing human review; they never infer a contract or
 refresh evidence. Scalar append reviews require free stack capacity, protected
 locals below the active depth, valid borrowed state and an intact VM context.
 They cover handler writes, not concurrent mutation or later lifecycle changes.
+Argument replacement also requires a numeric operand above every protected
+local and frame record; the static caller analysis does not prove that floor.
 """
 
 import hashlib
@@ -86,7 +88,10 @@ def native_frame_reviews(root=ROOT, manifest=None):
                 changed_helpers.append(dependency)
         if changed_helpers:
             stale_callback_dependencies[review['function']] = changed_helpers
-        if (not agrees or review['effect'] != 'append_scalar' or review['arguments'] != 0 or review['stack_delta'] != 1 or
+        supported_effect = ((review['effect'], review['arguments'], review['stack_delta']) in
+                            (('append_scalar', 0, 1), ('replace_argument_with_scalar', 1, 0)) and
+                            type(review['arguments']) is int and type(review['stack_delta']) is int)
+        if (not agrees or not supported_effect or
                 review['result_tag'] not in ('integer', 'float') or review['scheduling'] not in ('continue', 'yield') or changed_helpers):
             stale_callbacks.append(review['function'])
         elif not stale_dependencies:

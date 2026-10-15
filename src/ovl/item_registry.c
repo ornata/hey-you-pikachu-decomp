@@ -2148,7 +2148,7 @@ u8 *itemCreate(f32 x, f32 y, f32 z, f32 pitch, f32 yaw, s32 kind) {
     TRACE("makeItem(%.2f, %.2f, %.2f, %d) ", x, y, z, kind);
     TRACE("(%s)\n", gItemKinds[kind].text[0].name);
     object = objectCreateHierarchyFromTemplate((ObjectTemplate *)gItemKinds[kind].model);
-    SET_OBJECT_TYPE(object, 0x86);
+    SET_OBJECT_TYPE(object, RUNTIME_OBJECT_KIND_ITEM);
     itemInitializeState(object);
     state = (ItemStatePrefix *)((RuntimeObjectPrefix *)object)->state.bytes;
     state->kind = kind;

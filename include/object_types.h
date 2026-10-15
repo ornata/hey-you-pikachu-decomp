@@ -10,6 +10,13 @@ struct RuntimeObjectPrefix;
 struct ActorScriptState;
 struct ItemState;
 
+/// Named runtime object tags established by their constructors and consumers.
+/// Other encodings remain numeric. These tags are distinct from item-catalog IDs;
+/// the runtime object's kind field retains its original unsigned 16-bit storage.
+typedef enum RuntimeObjectKind {
+    RUNTIME_OBJECT_KIND_ITEM = 0x86 ///< Registered item with item-owned private state.
+} RuntimeObjectKind;
+
 /// Object link with its original 32-bit address representation.
 /// The address view preserves callers that carry object handles as integers.
 typedef union ObjectReference {
@@ -29,7 +36,7 @@ typedef union ObjectPrivateState {
     f32 *floats;
     Gfx **displayLists;
     struct ActorScriptState *actor;
-    struct ItemState *item; ///< Complete item-owned state for runtime kind 0x86.
+    struct ItemState *item; ///< Complete item-owned state for RUNTIME_OBJECT_KIND_ITEM.
 } ObjectPrivateState;
 
 typedef char ObjectPrivateStateSizeCheck[(sizeof(ObjectPrivateState) == 4) ? 1 : -1];
