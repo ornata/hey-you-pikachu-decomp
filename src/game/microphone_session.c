@@ -451,7 +451,7 @@ s32 eepromRequestRead(s32 page, s32 backupPage, void *destination, s32 byteCount
     gEepromQueuedRequest.backupPage = backupPage;
     gEepromQueuedRequest.buffer = destination;
     gEepromQueuedRequest.byteCount = byteCount;
-    osSendMesg(controllerGetCommandQueue(), &gEepromQueuedRequest, 1);
+    osSendMesg(controllerGetCommandQueue(), &gEepromQueuedRequest, OS_MESG_BLOCK);
     if (gEepromQueuedRequest.pending != 0) {
         do {
             osYieldThread();
@@ -482,7 +482,7 @@ s32 eepromRequestWrite(s32 page, s32 backupPage, void *source, s32 byteCount) {
     gEepromQueuedRequest.backupPage = backupPage;
     gEepromQueuedRequest.buffer = source;
     gEepromQueuedRequest.byteCount = byteCount;
-    osSendMesg(controllerGetCommandQueue(), &gEepromQueuedRequest, 1);
+    osSendMesg(controllerGetCommandQueue(), &gEepromQueuedRequest, OS_MESG_BLOCK);
     while (gEepromQueuedRequest.pending != 0) {
         osYieldThread();
     }

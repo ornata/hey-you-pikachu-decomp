@@ -53,7 +53,7 @@ void audioDmaFinishFrame(void) {
         var_s0 = 0;
         if ((s32)gAudioDmaPendingReads > 0) {
             do {
-                osRecvMesg(&gAudioDmaCompletionQueue, &sp30, 1);
+                osRecvMesg(&gAudioDmaCompletionQueue, &sp30, OS_MESG_BLOCK);
                 var_s0 += 1;
             } while (var_s0 < (s32)gAudioDmaPendingReads);
         }
@@ -155,7 +155,7 @@ extern s32 gAudioWorkerStopRequested;
 /// \note Original decompilation identifier: \c func_80049680 (0x80049680).
 void audioWorkerStopAndWait(void) {
     gAudioWorkerStopRequested = 1;
-    osRecvMesg(&gAudioWorkerStopQueue, NULL, 1);
+    osRecvMesg(&gAudioWorkerStopQueue, NULL, OS_MESG_BLOCK);
 }
 
 /// Retained audio worker prefix with audio-heap-owned command and sample buffers.

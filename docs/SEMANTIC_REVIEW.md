@@ -86,3 +86,18 @@ Reports, saves, upstream clones and native binaries stay under `build/semantic-r
 Native object files use temporary directories removed after building, so strict game
 object verification retains its full inventory. Captures may contain original game
 bytes and remain untracked. Normal builds do not require review dependencies.
+
+## Reviewed numeric domains
+
+The numeric scenarios include integer VM operators, finite floating equality,
+bytecode calls/returns and frames, packed array access, native continuation/yield/
+action-wait results, actor flag widths, item holder restrictions, forced release,
+item display-name selection and the nominal live-item threshold. They retain
+numeric encodings as independent expectations rather than importing the recovered
+C enum values. Detailed observations and engine limitations remain in the reports.
+
+Object draw/update group bits live in `object_group.h`, separate from interfaces
+in `object_flags.h`; importing constants need not introduce a new function prototype
+into a unit with a reviewed legacy call representation. Item transfer permission
+bypasses specific holder checks, not every pickup restriction. Model-dimension
+sentinels retain their exact floating-point literal and do not change catalog data.

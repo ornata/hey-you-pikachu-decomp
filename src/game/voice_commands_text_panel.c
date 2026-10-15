@@ -1,3 +1,4 @@
+#include "item_kind_ids.h"
 #include "game_heap.h"
 #include "texture_image.h"
 #include "math_scalar.h"
@@ -93,9 +94,9 @@ void voiceCommandLaunchEffect(ScriptMessage message) {
         (gRuntimeGameMode == 0 || gRuntimeGameMode == 8 || gRuntimeGameMode == 0x12)) {
         messengerMode = 0;
         object = objectFindLiveByHandle(gPlayerHeldItemHandle);
-        if (object != NULL &&
-            ((state = ((RuntimeObjectPrefix *)object)->state.bytes, kind = ((ItemStatePrefix *)state)->kind) == 0x51 ||
-             kind == 0x8A)) {
+        if (object != NULL && ((state = ((RuntimeObjectPrefix *)object)->state.bytes,
+                                kind = ((ItemStatePrefix *)state)->kind) == ITEM_KIND_MEGAPHONE ||
+                               kind == ITEM_KIND_CARDBOARD_BOX)) {
             messengerMode = 1;
             message.arg0 |= message.type << 20;
             message.type = 1;

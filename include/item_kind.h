@@ -34,6 +34,9 @@ typedef void (*ItemLaunchCallback)(u8 *item);
 /// \returns Zero to suppress the optional automatic terrain response, or nonzero to allow it.
 typedef s32 (*ItemCollisionCallback)(u8 *item, u16 contactFlags);
 
+/// Select model-derived size or extents instead of a catalog dimension override.
+#define ITEM_DIMENSION_FROM_MODEL (-100000.0F)
+
 /// Per-kind motion, rendering, response and description configuration.
 typedef struct {
     /* 0x00 */ s32 id;                        ///< Item kind identifier.
@@ -44,12 +47,12 @@ typedef struct {
     /* 0x14 */ f32 growthRate;                ///< Search-priority replenishment rate.
     /* 0x18 */ u8 response[5];                ///< Transformation responses for causes one through five.
     /* 0x20 */ f32 scale;                     ///< Default scale relative to the scene scale.
-    /* 0x24 */ f32 size;                      ///< Radius override, or the retained sentinel for the model default.
+    /* 0x24 */ f32 size;                      ///< Radius override, or ITEM_DIMENSION_FROM_MODEL for the model default.
     /* 0x28 */ f32 motionCoefficient;         ///< Base coefficient for gravity and horizontal friction.
     /* 0x2C */ f32 speed;                     ///< Multiplier applied to launch velocity.
     /* 0x30 */ f32 frictionCoefficient;       ///< Multiplier for terrain friction and horizontal motion thresholds.
-    /* 0x34 */ f32 radiusX;                   ///< Horizontal collision extent along X.
-    /* 0x38 */ f32 radiusZ;                   ///< Horizontal collision extent along Z.
+    /* 0x34 */ f32 radiusX;                   ///< Horizontal collision extent along X, or ITEM_DIMENSION_FROM_MODEL.
+    /* 0x38 */ f32 radiusZ;                   ///< Horizontal collision extent along Z, or ITEM_DIMENSION_FROM_MODEL.
     /* 0x3C */ s16 animation;                 ///< Initial material animation-track identifier.
     /* 0x3E */ s16 unk3E;                     ///< Offset 0x3E; purpose remains unresolved.
     /* 0x40 */ s16 effect[2];                 ///< Tracked sound identifiers selected by bounce allowance.

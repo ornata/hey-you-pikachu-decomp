@@ -362,7 +362,18 @@ def experiments():
         )
     from .numeric_domains import experiments as numeric_experiments
 
-    return cases + numeric_experiments()
+    from .participation_domains import experiments as participation_experiments
+
+    from .vm_control_domains import experiments as control_experiments
+    from .item_numeric_domains import experiments as item_experiments
+
+    return (
+        cases
+        + numeric_experiments()
+        + participation_experiments()
+        + control_experiments()
+        + item_experiments()
+    )
 
 
 def capture_case(case, elf_path, rom_path):

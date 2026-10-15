@@ -1099,7 +1099,7 @@ void messengerCreate(s32 id, f32 *position, f32 *velocity, f32 scale, ScriptMess
     u8 *previous;
     object = objectCreateHierarchyFromTemplate((ObjectTemplate *)gMessengerObjectTemplate);
     if (flags != 0) {
-        objectSetHierarchyFlags(object, 0x6000);
+        objectSetHierarchyFlags(object, OBJECT_DRAW_GROUP_ALTERNATE | OBJECT_UPDATE_GROUP_ALTERNATE);
     }
     ((RuntimeObjectPrefix *)object)->scale[0] = scale;
     ((RuntimeObjectPrefix *)object)->scale[1] = scale;

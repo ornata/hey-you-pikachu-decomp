@@ -48,7 +48,7 @@ s32 soundEffectPlayerPlay(SoundEffectPlayer *player, ALSound *sound) {
     ALVoiceConfig config;
     s32 i;
     s64 level;
-    mask = osSetIntMask(1);
+    mask = osSetIntMask(OS_IM_NONE);
     for (i = 0; i < q->count; i++) {
         if (player->voices[i].id == 0) {
             player->voices[i].sound = sound;
@@ -116,7 +116,7 @@ s32 soundEffectPlayerStopAll(SoundEffectPlayer *player) {
     OSIntMask mask;
     s32 i;
 
-    mask = osSetIntMask(1);
+    mask = osSetIntMask(OS_IM_NONE);
     for (i = 0; i < q->count; i++) {
         if (player->voices[i].id != 0) {
             player->voices[i].id = 0;
@@ -145,7 +145,7 @@ s32 soundEffectPlayerStop(SoundEffectPlayer *player, s32 id) {
         return 0;
     }
     q = player;
-    mask = osSetIntMask(1);
+    mask = osSetIntMask(OS_IM_NONE);
     for (i = 0; i < q->count; i++) {
         if (id == player->voices[i].id) {
             player->voices[i].id = 0;
@@ -175,7 +175,7 @@ s32 soundEffectPlayerSetPan(SoundEffectPlayer *player, s32 id, s32 pan) {
         return 0;
     }
     q = player;
-    mask = osSetIntMask(1);
+    mask = osSetIntMask(OS_IM_NONE);
     for (i = 0; i < q->count; i++) {
         if (id == q->voices[i].id) {
             q->voices[i].pan = pan;
@@ -207,7 +207,7 @@ s32 soundEffectPlayerSetPitch(SoundEffectPlayer *player, s32 id, f64 pitch) {
         return 0;
     }
     q = player;
-    mask = osSetIntMask(1);
+    mask = osSetIntMask(OS_IM_NONE);
     for (i = 0; i < q->count; i++) {
         if (id == q->voices[i].id) {
             effectivePitch = pitch;
@@ -239,7 +239,7 @@ s32 soundEffectPlayerSetVolume(SoundEffectPlayer *player, s32 id, s32 volume, s3
         return 0;
     }
     q = player;
-    mask = osSetIntMask(1);
+    mask = osSetIntMask(OS_IM_NONE);
     for (i = 0, offset = 0; i < q->count; i++, offset += sizeof(SoundEffectVoice)) {
         if (id == ((SoundEffectVoice *)((u8 *)q->voices + offset))->id) {
             if (duration < 0) {
@@ -277,7 +277,7 @@ s32 soundEffectPlayerSetEffectMix(SoundEffectPlayer *player, s32 id, s32 mix) {
         return 0;
     }
     q = player;
-    mask = osSetIntMask(1);
+    mask = osSetIntMask(OS_IM_NONE);
     for (i = 0; i < q->count; i++) {
         if (id == q->voices[i].id) {
             q->voices[i].mix = mix;
@@ -368,7 +368,7 @@ s32 soundEffectPlayerSetOutputMode(SoundEffectPlayer *player, s32 mode) {
     s32 pan;
     if (q->mode != mode) {
         q->mode = mode;
-        mask = osSetIntMask(1);
+        mask = osSetIntMask(OS_IM_NONE);
         for (i = 0; i < q->count; i++) {
             if (q->voices[i].id != 0) {
                 if (q->mode == 2) {

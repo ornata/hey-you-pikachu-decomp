@@ -425,7 +425,7 @@ void controllerInitializeDevices(s32 count) {
 /// \returns Nothing; waits for serial I/O completion and requires initialized controller communication.
 void controllerQueryDevices(void) {
     osContStartQuery(&gSerialCompletionQueue);
-    osRecvMesg(&gSerialCompletionQueue, NULL, 1);
+    osRecvMesg(&gSerialCompletionQueue, NULL, OS_MESG_BLOCK);
     osContGetQuery(gControllerPortStatus);
     controllerRefreshConnectionState();
 }

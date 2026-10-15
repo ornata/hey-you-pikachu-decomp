@@ -47,8 +47,8 @@ void romDmaReadBlocking(u32 romAddress, u8 *destination, s32 byteCount) {
             } else {
                 chunkBytes = remainingBytes;
             }
-            osPiStartDma(&ioMessage, 0, 0, romAddress, destination, (u32)chunkBytes, &completionQueue);
-            osRecvMesg(&completionQueue, NULL, 1);
+            osPiStartDma(&ioMessage, 0, OS_READ, romAddress, destination, (u32)chunkBytes, &completionQueue);
+            osRecvMesg(&completionQueue, NULL, OS_MESG_BLOCK);
             remainingBytes -= chunkBytes;
             romAddress += chunkBytes;
             destination += chunkBytes;
@@ -102,10 +102,10 @@ void romDmaAcknowledgeCompletion(s32 *pendingCount) {
 s32 romDmaPollQueue(DmaQueue *queueState) {
     OSMesgQueue *completionQueue;
     completionQueue = &queueState->queue;
-    if (osRecvMesg(completionQueue, NULL, 0) == 0) {
+    if (osRecvMesg(completionQueue, NULL, OS_MESG_NOBLOCK) == 0) {
         do {
             romDmaAcknowledgeCompletion(&queueState->pending);
-        } while (osRecvMesg(completionQueue, NULL, 0) == 0);
+        } while (osRecvMesg(completionQueue, NULL, OS_MESG_NOBLOCK) == 0);
     }
     return queueState->pending;
 }
@@ -178,7 +178,7 @@ s32 romDmaReadQueued(DmaQueue *queueState, u32 romAddress, u8 *destination, u32 
 void romDmaWaitForQueue(DmaQueue *queueState) {
     if (queueState->pending > 0) {
         do {
-            osRecvMesg(&queueState->queue, NULL, 1);
+            osRecvMesg(&queueState->queue, NULL, OS_MESG_BLOCK);
             romDmaAcknowledgeCompletion(&queueState->pending);
         } while (queueState->pending > 0);
     }

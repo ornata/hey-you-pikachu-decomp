@@ -74,14 +74,14 @@ void creditsSpawnResidentType17(void) {
 void creditsSpawnAlternateResidentType14(void) {
     objectSetHierarchyFlags(actorCreateForKind(14, 0, 0, 0, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                                                D_8014382C_scene_credits, 0),
-                            0x6000);
+                            OBJECT_DRAW_GROUP_ALTERNATE | OBJECT_UPDATE_GROUP_ALTERNATE);
 }
 /// Spawn the type-five resident for the alternate credits mode.
 /// \returns Nothing.
 void creditsSpawnAlternateResidentType5(void) {
     objectSetHierarchyFlags(
         actorCreateForKind(5, 0, 0, 0, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale, D_80143CD0_scene_credits, 0),
-        0x6000);
+        OBJECT_DRAW_GROUP_ALTERNATE | OBJECT_UPDATE_GROUP_ALTERNATE);
 }
 /// Populate the credits scene for the current game mode.
 /// \returns Nothing.

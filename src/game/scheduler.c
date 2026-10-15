@@ -135,7 +135,7 @@ void schedulerRemoveClient(GameScheduler *scheduler, SchedulerClient *client) {
     SchedulerClient *prev = NULL;
     u32 mask;
 
-    mask = osSetIntMask(1);
+    mask = osSetIntMask(OS_IM_NONE);
     while (p != NULL) {
         if (p == client) {
             if (prev != NULL) {
@@ -163,7 +163,7 @@ void schedulerNotifyClients(GameScheduler *scheduler, OSMesg message) {
     client = scheduler->clients;
     if (client != NULL) {
         do {
-            osSendMesg(client->queue, message, 0);
+            osSendMesg(client->queue, message, OS_MESG_NOBLOCK);
             client = client->next;
         } while (client != NULL);
     }
@@ -232,19 +232,19 @@ void schedulerGraphicsThread(void *scheduler) {
     completionMessage = NULL;
     taskMessage = NULL;
 loop_1:
-    osRecvMesg(&((GameScheduler *)scheduler)->graphicsCommand.queue, &taskMessage, 1);
+    osRecvMesg(&((GameScheduler *)scheduler)->graphicsCommand.queue, &taskMessage, OS_MESG_BLOCK);
     schedulerWaitForFramebuffer(scheduler, taskMessage);
     if (((GameScheduler *)scheduler)->audioTask != 0) {
         ((GameScheduler *)scheduler)->waitingGraphicsTask = taskMessage;
-        osRecvMesg(&((GameScheduler *)scheduler)->reply.queue, &completionMessage, 1);
+        osRecvMesg(&((GameScheduler *)scheduler)->reply.queue, &completionMessage, OS_MESG_BLOCK);
         ((GameScheduler *)scheduler)->waitingGraphicsTask = NULL;
     }
     ((GameScheduler *)scheduler)->graphicsTask = taskMessage;
     osSpTaskLoad(&((SchedulerTask *)taskMessage)->task);
     osSpTaskStartGo(&((SchedulerTask *)taskMessage)->task);
-    osRecvMesg(&((GameScheduler *)scheduler)->rsp.queue, &completionMessage, 1);
+    osRecvMesg(&((GameScheduler *)scheduler)->rsp.queue, &completionMessage, OS_MESG_BLOCK);
     ((GameScheduler *)scheduler)->graphicsTask = NULL;
-    osRecvMesg(&((GameScheduler *)scheduler)->rdp.queue, &completionMessage, 1);
+    osRecvMesg(&((GameScheduler *)scheduler)->rdp.queue, &completionMessage, OS_MESG_BLOCK);
     if (((SchedulerTask *)taskMessage)->flags & 0x40) {
         ((GameScheduler *)scheduler)->frameCount = (u32)(((GameScheduler *)scheduler)->frameCount + 1);
         osViSwapBuffer(((SchedulerTask *)taskMessage)->framebuffer);
@@ -253,7 +253,7 @@ loop_1:
             ((GameScheduler *)scheduler)->startupBlack = 0;
         }
     }
-    osSendMesg(((SchedulerTask *)taskMessage)->reply, ((SchedulerTask *)taskMessage)->message, 1);
+    osSendMesg(((SchedulerTask *)taskMessage)->reply, ((SchedulerTask *)taskMessage)->message, OS_MESG_BLOCK);
     goto loop_1;
 }
 

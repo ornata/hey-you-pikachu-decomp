@@ -1,3 +1,4 @@
+#include "object_group.h"
 #include "runtime_lifecycle.h"
 #include "area_names.h"
 #include "player_profile.h"
@@ -350,7 +351,7 @@ void presentationRestoreActiveActor(void) {
     ((ActorScriptState *)ext)->behaviorFlags = gPresentationSavedActorState.behaviorFlags;
     actionScriptStop(((s32)gPikachuActor), &gPresentationSavedActorState);
     actionBeginPoseTransition((u8 *)((s32)gPikachuActor), 0x4A, 0.1F);
-    objectClearHierarchyFlags((u8 *)((s32)gPikachuActor), 0x2000);
+    objectClearHierarchyFlags((u8 *)((s32)gPikachuActor), OBJECT_DRAW_GROUP_ALTERNATE);
     cameraSetPositionAndAngles(0, gPlayerState.position[0], gPlayerPositionY + gPlayerEyeHeight, gPlayerPositionZ,
                                gPlayerPitchOffset + gPlayerPitch, gPlayerYaw + gPlayerViewShake, 0.0F);
 }
@@ -439,7 +440,7 @@ void presentationPrepareActiveActor(void *point) {
     u8 *ext = *(u8 **)(((s32)gPikachuActor) + 0x54);
 
     tgt = (u8 *)&gRenderCameras[gRenderCameraIndex];
-    objectSetHierarchyFlags(((s32)gPikachuActor), 0x2000);
+    objectSetHierarchyFlags(((s32)gPikachuActor), OBJECT_DRAW_GROUP_ALTERNATE);
     presentationPlaceActiveActor(point);
     actionScriptStop((u8 *)((s32)gPikachuActor));
     actionStopPlayback((u8 *)((s32)gPikachuActor));
@@ -536,7 +537,7 @@ void presentationDrawCardScreen(Gfx **gdl) {
         backdropDraw(gdl);
         gDPPipeSync((*gdl)++);
         gDPSetCycleType((*gdl)++, G_CYC_1CYCLE);
-        objectDrawHierarchyGroup(((s32)gPikachuActor), 0x2000);
+        objectDrawHierarchyGroup(((s32)gPikachuActor), OBJECT_DRAW_GROUP_ALTERNATE);
         presentationDrawAreaLabel(gdl);
         presentationDrawCurrentCardPanels(gdl);
         presentationDrawCardDecorations(gdl);
@@ -816,7 +817,7 @@ extern s32 gCollectionPresentationItem;
 /// \note Original decompilation identifier: \c func_80029494 (0x80029494).
 void presentationDrawCollectionItem(void) {
     if (gCollectionPresentationItem != 0) {
-        objectDrawHierarchyGroup(gCollectionPresentationItem, 0x2000);
+        objectDrawHierarchyGroup(gCollectionPresentationItem, OBJECT_DRAW_GROUP_ALTERNATE);
     }
 }
 
@@ -826,7 +827,7 @@ void presentationDrawCollectionItem(void) {
 /// \note Original decompilation identifier: \c func_800294C4 (0x800294C4).
 void presentationDrawCollectionScreen(Gfx **gdl) {
     backdropDraw(gdl);
-    objectDrawHierarchyGroup(((s32)gPikachuActor), 0x2000);
+    objectDrawHierarchyGroup(((s32)gPikachuActor), OBJECT_DRAW_GROUP_ALTERNATE);
     presentationDrawCollectionItem();
     if (gCollectionPresentationStage != 4 && gCollectionPresentationStage != 6) {
         presentationDrawCollectionDecorations(gdl);

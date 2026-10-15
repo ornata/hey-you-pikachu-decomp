@@ -21,7 +21,7 @@ void controllerPollPads(void) {
         serialQueue = serialGetMessageQueue();
         completionQueue = serialQueue;
         osContStartReadData(serialQueue);
-        osRecvMesg(completionQueue, NULL, 1);
+        osRecvMesg(completionQueue, NULL, OS_MESG_BLOCK);
         osContGetReadData(gControllerPadSamples);
     }
 }

@@ -537,7 +537,8 @@ s32 objectGetNextHandle(void) {
 u8 *objectFindLiveByHandle(s32 handle) {
     u8 *r = (u8 *)keyedPoolGetValue(&gObjectHandlePool, handle);
 
-    if (r == NULL || (((RuntimeObjectPrefix *)r)->flags & 0x30)) {
+    if (r == NULL ||
+        (((RuntimeObjectPrefix *)r)->flags & (OBJECT_HIERARCHY_DESTROY_READY | OBJECT_HIERARCHY_DESTROY_REQUESTED))) {
         return NULL;
     }
     return r;
@@ -1370,7 +1371,7 @@ extern u8 gObjectUpdateViewport[];
 extern u8 gObjectUpdateCameraMatrices[];
 
 /// Update active object hierarchies belonging to the selected runtime group.
-/// \param group Object group selector: zero or 0x4000.
+/// \param group Zero for the default update group, or OBJECT_UPDATE_GROUP_ALTERNATE.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80009344 (0x80009344).
 void objectUpdateGroup(s32 group) {
@@ -1384,14 +1385,14 @@ void objectUpdateGroup(s32 group) {
     nodePoolIterateFirst(&gActiveObjectHierarchies, (s32 *)&hierarchy);
     if (hierarchy != NULL) {
         do {
-            if ((group == (hierarchy->flags & 0x4000)) && !(hierarchy->flags & (OBJECT_HIERARCHY_DESTROY_READY | OBJECT_HIERARCHY_DESTROY_REQUESTED))) {
+            if ((group == (hierarchy->flags & OBJECT_UPDATE_GROUP_ALTERNATE)) &&
+                !(hierarchy->flags & (OBJECT_HIERARCHY_DESTROY_READY | OBJECT_HIERARCHY_DESTROY_REQUESTED))) {
                 objectUpdateHierarchy(hierarchy);
             }
             nodePoolIterateNext(&gActiveObjectHierarchies, (s32 *)&hierarchy);
         } while (hierarchy != NULL);
     }
 }
-
 
 /// Advance pending hierarchy destruction and release hierarchies ready for removal.
 /// \returns Nothing.
@@ -1426,7 +1427,8 @@ void objectRequestGroupDestruction(s32 group) {
     nodePoolIterateFirst(&gActiveObjectHierarchies, (s32 *)&hierarchy);
     if (hierarchy != NULL) {
         do {
-            if ((group == (hierarchy->flags & 0x4000)) && !(hierarchy->flags & (OBJECT_HIERARCHY_DESTROY_READY | OBJECT_HIERARCHY_DESTROY_REQUESTED))) {
+            if ((group == (hierarchy->flags & OBJECT_UPDATE_GROUP_ALTERNATE)) &&
+                !(hierarchy->flags & (OBJECT_HIERARCHY_DESTROY_READY | OBJECT_HIERARCHY_DESTROY_REQUESTED))) {
                 objectRequestHierarchyDestruction((u8 *)hierarchy);
             }
             nodePoolIterateNext(&gActiveObjectHierarchies, (s32 *)&hierarchy);
@@ -1447,7 +1449,7 @@ s32 objectDrawSearchTreeEntry(TreeNode *node, s32 unused) {
     RuntimeObjectPrefix *parent;
 
     object = (RuntimeObjectPrefix *)node->value;
-    if (gObjectDrawGroup != (object->flags & 0x2000) || (object->flags & 0xB3)) {
+    if (gObjectDrawGroup != (object->flags & OBJECT_DRAW_GROUP_ALTERNATE) || (object->flags & 0xB3)) {
         return 0;
     }
     displayList = object->displayList;
@@ -1469,7 +1471,7 @@ s32 objectDrawSearchTreeEntry(TreeNode *node, s32 unused) {
 }
 
 /// Draw registered objects belonging to the selected draw group.
-/// \param group Draw group selector: zero or 0x2000.
+/// \param group Zero for the default draw group, or OBJECT_DRAW_GROUP_ALTERNATE.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800096D4 (0x800096D4).
 void objectDrawGroup(s32 group) {
@@ -1501,7 +1503,7 @@ void objectDrawHierarchyForCurrentGroup(u8 *object) {
 
 /// Draw the selected group of objects within a hierarchy.
 /// \param object First object whose siblings and descendants are considered, or null.
-/// \param group Draw group selector: zero or 0x2000.
+/// \param group Zero for the default draw group, or OBJECT_DRAW_GROUP_ALTERNATE.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80009784 (0x80009784).
 void objectDrawHierarchyGroup(RuntimeObjectPrefix *object, s32 group) {

@@ -3,6 +3,7 @@
 #ifndef OBJECT_FLAGS_H
 #define OBJECT_FLAGS_H
 #include <ultra64.h>
+#include "object_group.h"
 
 /// Proven hierarchy-management flags; other flags retain their numeric forms.
 typedef enum ObjectHierarchyFlag {

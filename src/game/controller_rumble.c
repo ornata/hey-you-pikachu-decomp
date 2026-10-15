@@ -34,7 +34,7 @@ void controllerQueueRumbleCommand(s32 port, s32 command, f32 durationSeconds, f3
     slot->durationSeconds = durationSeconds;
     slot->command = command;
     slot->port = port;
-    osSendMesg(controllerGetCommandQueue(), slot, 1);
+    osSendMesg(controllerGetCommandQueue(), slot, OS_MESG_BLOCK);
 }
 
 /// Request that a controller's rumble state be reset.

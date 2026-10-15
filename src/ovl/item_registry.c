@@ -1,3 +1,4 @@
+#include "item_kind_ids.h"
 #include "runtime_lifecycle.h"
 #include "render_state.h"
 #include "game_heap.h"
@@ -681,7 +682,7 @@ ItemKind gItemKinds[166] = {
           "A light, airy ^4mushroom^^\n^d\"It's filled with sleeping gas.\n^dI wonder... ^4How's it smell^d?\"^^" } },
       0x2D, 0x1, 0x1, -1 },
     /* 0x28: truffle top */
-    { 0x28, 0x220, 0x14, 0x0, 1.0F, 0.1F, { 0xF, 0x14, 0x14, 0x8, 0x14 },
+    { 0x28, ITEM_STATE_SPIN_ENABLED | ITEM_STATE_MATERIAL_ENABLED, 0x14, 0x0, 1.0F, 0.1F, { 0xF, 0x14, 0x14, 0x8, 0x14 },
       0.7F, 170.0F, 1.0F, 1.0F, 1.0F, 96.2F, 96.2F, 0x108, 0x33, { 0x97, 0x97 },
       NULL, NULL, NULL, itemResolveMapCollision, &gItemModelTemplates[20], { 0xAA, 0x50, 0x14, 0x64 },
       { { "mushroom", NULL },
@@ -753,7 +754,7 @@ ItemKind gItemKinds[166] = {
           "A cooked ^4mushroom^^\n^d\"This ^4mushroom^d has a\n^ddelicious rich scent.\"^^" } },
       0xBE, 0x1, 0x1, -1 },
     /* 0x31: light bulb */
-    { 0x31, 0x200, 0x3, 0x0, 1.0F, 0.1F, { 0xF, 0x10, 0x1, 0x1, 0x1 },
+    { 0x31, ITEM_STATE_MATERIAL_ENABLED, 0x3, 0x0, 1.0F, 0.1F, { 0xF, 0x10, 0x1, 0x1, 0x1 },
       1.0F, 160.0F, 1.0F, 1.0F, 2.0F, 90.0F, 132.0F, 0xF3, 0xD, { 0x97, 0x97 },
       lightBulbUpdateHeldGlow, lightBulbResetReleasedGlow, NULL, itemResolveMapCollision, &gItemModelTemplates[21], { 0x0, 0x0, 0x0, 0x0 },
       { { "light bulb", NULL },
@@ -1009,7 +1010,7 @@ ItemKind gItemKinds[166] = {
           "A replica of a trainer's cap\n^d\"This is the trademark of a\n^dtrainer. It's pretty stylish.\"^^" } },
       0xF8C, 0x2, 0x1, -1 },
     /* 0x51: megaphone */
-    { 0x51, 0x400, 0x14, 0x0, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
+    { ITEM_KIND_MEGAPHONE, 0x400, 0x14, 0x0, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 160.0F, 1.0F, 0.1F, 10.0F, 60.0F, 113.0F, 0x108, 0x65, { 0xC3, 0xC3 },
       NULL, NULL, NULL, itemResolveMapCollision, &gItemModelTemplates[15], { 0x0, 0x0, 0x0, 0x0 },
       { { "megaphone", NULL },
@@ -1018,7 +1019,7 @@ ItemKind gItemKinds[166] = {
       0x0, 0x1, 0x3, 0x23 },
     /* 0x52: fishing hook */
     { 0x52, 0x0, 0x5, 0x0, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0xF },
-      1.0F, -100000.0F, 1.0F, 0.2F, 3.0F, -100000.0F, -100000.0F, 0x108, 0x6E, { 0x98, 0x98 },
+      1.0F, ITEM_DIMENSION_FROM_MODEL, 1.0F, 0.2F, 3.0F, ITEM_DIMENSION_FROM_MODEL, ITEM_DIMENSION_FROM_MODEL, 0x108, 0x6E, { 0x98, 0x98 },
       NULL, NULL, NULL, itemResolveMapCollision, &gItemModelTemplates[113], { 0xFF, 0x20, 0x0, 0x80 },
       { { "hook", NULL },
         { "fishing hook",
@@ -1026,7 +1027,7 @@ ItemKind gItemKinds[166] = {
       0x0, 0x1, 0x2, 0x1E },
     /* 0x53: lucky hook */
     { 0x53, 0x0, 0x5, 0x0, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0xF },
-      1.0F, -100000.0F, 1.0F, 0.2F, 3.0F, -100000.0F, -100000.0F, 0x108, 0x6E, { 0x98, 0x98 },
+      1.0F, ITEM_DIMENSION_FROM_MODEL, 1.0F, 0.2F, 3.0F, ITEM_DIMENSION_FROM_MODEL, ITEM_DIMENSION_FROM_MODEL, 0x108, 0x6E, { 0x98, 0x98 },
       NULL, NULL, NULL, itemResolveMapCollision, &gItemModelTemplates[113], { 0x0, 0x20, 0xFF, 0x80 },
       { { "hook", NULL },
         { "lucky hook",
@@ -1073,7 +1074,7 @@ ItemKind gItemKinds[166] = {
           "A coin made of gold\n^d\"Look at it glitter. It's\n^dbeautiful. I want one too!\"^^" } },
       0x5DC, 0x0, 0x1, 0xC8 },
     /* 0x59: chocolate coin */
-    { 0x59, 0x200, 0x8, 0x0, 1.0F, 0.1F, { 0x19, 0x19, 0x19, 0x19, 0x19 },
+    { 0x59, ITEM_STATE_MATERIAL_ENABLED, 0x8, 0x0, 1.0F, 0.1F, { 0x19, 0x19, 0x19, 0x19, 0x19 },
       1.0F, 40.0F, 1.0F, 1.0F, 1.0F, 56.0F, 80.0F, 0x101, 0x62, { 0x97, 0x97 },
       NULL, NULL, NULL, itemResolveMapCollision, &gItemModelTemplates[121], { 0x0, 0x0, 0x0, 0x0 },
       { { "coin", NULL },
@@ -1209,7 +1210,7 @@ ItemKind gItemKinds[166] = {
           "A ball made of glass\n^d\"I used to play with ^4marble^ds,\n^dtoo, when I was a kid.\"^^" } },
       0x64, 0x1, 0x1, 0xD3 },
     /* 0x6A: stew */
-    { 0x6A, 0x200, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
+    { 0x6A, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
       1.0F, 60.0F, 1.0F, 1.0F, 2.0F, 70.0F, 125.0F, 0xF9, 0x63, { 0x98, 0x98 },
       NULL, NULL, NULL, itemResolveMapCollision, &gItemModelTemplates[120], { 0xC8, 0xC8, 0x20, 0x80 },
       { { "stew", NULL },
@@ -1217,7 +1218,7 @@ ItemKind gItemKinds[166] = {
           "Tasty stew\n" } },
       0x3D4, 0x2, 0x1, -1 },
     /* 0x6B: stew */
-    { 0x6B, 0x200, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
+    { 0x6B, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
       1.0F, 60.0F, 1.0F, 1.0F, 2.0F, 70.0F, 125.0F, 0xF9, 0x63, { 0x98, 0x98 },
       NULL, NULL, NULL, itemResolveMapCollision, &gItemModelTemplates[120], { 0x0, 0x0, 0x0, 0x0 },
       { { "stew", NULL },
@@ -1225,7 +1226,7 @@ ItemKind gItemKinds[166] = {
           "A typical plate of stew\n" } },
       0x30C, 0x2, 0x1, -1 },
     /* 0x6C: weird stew */
-    { 0x6C, 0x200, 0x2, 0x0, 1.0F, 0.2F, { 0x4, 0x4, 0x4, 0x7, 0x4 },
+    { 0x6C, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x4, 0x4, 0x4, 0x7, 0x4 },
       1.0F, 60.0F, 1.0F, 1.0F, 2.0F, 70.0F, 125.0F, 0xFA, 0x54, { 0x98, 0x98 },
       NULL, NULL, NULL, itemResolveMapCollision, &gItemModelTemplates[120], { 0x0, 0x0, 0x0, 0x0 },
       { { "stew", NULL },
@@ -1233,7 +1234,7 @@ ItemKind gItemKinds[166] = {
           "Weird tasting stew\n" } },
       0xC8, 0x1, 0x1, -1 },
     /* 0x6D: stir-fry */
-    { 0x6D, 0x200, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
+    { 0x6D, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
       1.0F, 60.0F, 1.0F, 1.0F, 2.0F, 70.0F, 125.0F, 0xFB, 0x6F, { 0x98, 0x98 },
       NULL, NULL, NULL, itemResolveMapCollision, &gItemModelTemplates[120], { 0xC8, 0xC8, 0x20, 0x80 },
       { { "stir-fry", NULL },
@@ -1241,7 +1242,7 @@ ItemKind gItemKinds[166] = {
           "Tasty fried vegetables\n" } },
       0x2BC, 0x2, 0x1, -1 },
     /* 0x6E: stir-fry */
-    { 0x6E, 0x200, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
+    { 0x6E, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
       1.0F, 60.0F, 1.0F, 1.0F, 2.0F, 70.0F, 125.0F, 0xFB, 0x6F, { 0x98, 0x98 },
       NULL, NULL, NULL, itemResolveMapCollision, &gItemModelTemplates[120], { 0x0, 0x0, 0x0, 0x0 },
       { { "stir-fry", NULL },
@@ -1249,7 +1250,7 @@ ItemKind gItemKinds[166] = {
           "A typical plate of stir-fry\n" } },
       0x1F4, 0x2, 0x1, -1 },
     /* 0x6F: weird stir-fry */
-    { 0x6F, 0x200, 0x2, 0x0, 1.0F, 0.2F, { 0x4, 0x4, 0x4, 0x7, 0x4 },
+    { 0x6F, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x4, 0x4, 0x4, 0x7, 0x4 },
       1.0F, 60.0F, 1.0F, 1.0F, 2.0F, 70.0F, 125.0F, 0xFC, 0x55, { 0x98, 0x98 },
       NULL, NULL, NULL, itemResolveMapCollision, &gItemModelTemplates[120], { 0x0, 0x0, 0x0, 0x0 },
       { { "stir-fry", NULL },
@@ -1257,7 +1258,7 @@ ItemKind gItemKinds[166] = {
           "Weird tasting stir-fry\n" } },
       0x96, 0x1, 0x1, -1 },
     /* 0x70: soup */
-    { 0x70, 0x200, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
+    { 0x70, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
       1.0F, 60.0F, 1.0F, 1.0F, 2.0F, 70.0F, 125.0F, 0xFD, 0x5B, { 0x98, 0x98 },
       NULL, NULL, NULL, itemResolveMapCollision, &gItemModelTemplates[120], { 0xC8, 0xC8, 0x20, 0x80 },
       { { "soup", NULL },
@@ -1265,7 +1266,7 @@ ItemKind gItemKinds[166] = {
           "Tasty soup\n" } },
       0x30C, 0x2, 0x1, -1 },
     /* 0x71: soup */
-    { 0x71, 0x200, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
+    { 0x71, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
       1.0F, 60.0F, 1.0F, 1.0F, 2.0F, 70.0F, 125.0F, 0xFD, 0x5B, { 0x98, 0x98 },
       NULL, NULL, NULL, itemResolveMapCollision, &gItemModelTemplates[120], { 0x0, 0x0, 0x0, 0x0 },
       { { "soup", NULL },
@@ -1273,7 +1274,7 @@ ItemKind gItemKinds[166] = {
           "A typical bowl of soup\n" } },
       0x244, 0x2, 0x1, -1 },
     /* 0x72: weird soup */
-    { 0x72, 0x200, 0x2, 0x0, 1.0F, 0.2F, { 0x4, 0x4, 0x4, 0x7, 0x4 },
+    { 0x72, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x4, 0x4, 0x4, 0x7, 0x4 },
       1.0F, 60.0F, 1.0F, 1.0F, 2.0F, 70.0F, 125.0F, 0xFE, 0x56, { 0x98, 0x98 },
       NULL, NULL, NULL, itemResolveMapCollision, &gItemModelTemplates[120], { 0x0, 0x0, 0x0, 0x0 },
       { { "soup", NULL },
@@ -1281,7 +1282,7 @@ ItemKind gItemKinds[166] = {
           "Weird tasting soup\n" } },
       0xB4, 0x1, 0x1, -1 },
     /* 0x73: goulash */
-    { 0x73, 0x200, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
+    { 0x73, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
       1.0F, 60.0F, 1.0F, 1.0F, 2.0F, 70.0F, 125.0F, 0xFD, 0x5B, { 0x98, 0x98 },
       NULL, NULL, NULL, itemResolveMapCollision, &gItemModelTemplates[120], { 0x0, 0x0, 0x0, 0x0 },
       { { "goulash", NULL },
@@ -1289,7 +1290,7 @@ ItemKind gItemKinds[166] = {
           "Tasty goulash\n" } },
       0x5DC, 0x2, 0x1, -1 },
     /* 0x74: goulash */
-    { 0x74, 0x200, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
+    { 0x74, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
       1.0F, 60.0F, 1.0F, 1.0F, 2.0F, 70.0F, 125.0F, 0xFD, 0x5B, { 0x98, 0x98 },
       NULL, NULL, NULL, itemResolveMapCollision, &gItemModelTemplates[120], { 0x0, 0x0, 0x0, 0x0 },
       { { "goulash", NULL },
@@ -1297,7 +1298,7 @@ ItemKind gItemKinds[166] = {
           "Average tasting goulash\n" } },
       0x4B0, 0x2, 0x1, -1 },
     /* 0x75: weird goulash */
-    { 0x75, 0x200, 0x2, 0x0, 1.0F, 0.2F, { 0x4, 0x4, 0x4, 0x7, 0x4 },
+    { 0x75, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x4, 0x4, 0x4, 0x7, 0x4 },
       1.0F, 60.0F, 1.0F, 1.0F, 2.0F, 70.0F, 125.0F, 0xFE, 0x56, { 0x98, 0x98 },
       NULL, NULL, NULL, itemResolveMapCollision, &gItemModelTemplates[120], { 0x0, 0x0, 0x0, 0x0 },
       { { "goulash", NULL },
@@ -1305,7 +1306,7 @@ ItemKind gItemKinds[166] = {
           "Weird tasting goulash\n" } },
       0x190, 0x1, 0x1, -1 },
     /* 0x76: cookie */
-    { 0x76, 0x200, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
+    { 0x76, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
       1.0F, 45.0F, 1.0F, 1.0F, 2.0F, 60.0F, 60.0F, 0x100, 0x5F, { 0x98, 0x98 },
       NULL, NULL, NULL, itemResolveMapCollision, &gItemModelTemplates[121], { 0x78, 0x50, 0x0, 0x96 },
       { { "cookie", NULL },
@@ -1313,7 +1314,7 @@ ItemKind gItemKinds[166] = {
           "A tasty cookie\n" } },
       0x3E8, 0x2, 0x1, -1 },
     /* 0x77: cookie */
-    { 0x77, 0x200, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
+    { 0x77, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
       1.0F, 45.0F, 1.0F, 1.0F, 2.0F, 60.0F, 60.0F, 0x103, 0x5F, { 0x98, 0x98 },
       NULL, NULL, NULL, itemResolveMapCollision, &gItemModelTemplates[121], { 0x78, 0x50, 0x0, 0xC8 },
       { { "cookie", NULL },
@@ -1321,7 +1322,7 @@ ItemKind gItemKinds[166] = {
           "An average tasting cookie\n" } },
       0x258, 0x2, 0x1, -1 },
     /* 0x78: weird cookie */
-    { 0x78, 0x200, 0x2, 0x0, 1.0F, 0.2F, { 0x4, 0x4, 0x4, 0x7, 0x4 },
+    { 0x78, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x4, 0x4, 0x4, 0x7, 0x4 },
       1.0F, 45.0F, 1.0F, 1.0F, 2.0F, 60.0F, 60.0F, 0x103, 0x5F, { 0x98, 0x98 },
       NULL, NULL, NULL, itemResolveMapCollision, &gItemModelTemplates[121], { 0x19, 0x14, 0x0, 0xC8 },
       { { "cookie", NULL },
@@ -1329,7 +1330,7 @@ ItemKind gItemKinds[166] = {
           "A weird tasting cookie\n" } },
       0x12C, 0x1, 0x1, -1 },
     /* 0x79: mystery soup */
-    { 0x79, 0x200, 0x2, 0x0, 1.0F, 0.2F, { 0x4, 0x4, 0x4, 0x7, 0x4 },
+    { 0x79, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x4, 0x4, 0x4, 0x7, 0x4 },
       1.0F, 60.0F, 1.0F, 1.0F, 2.0F, 70.0F, 125.0F, 0xFF, 0x56, { 0x98, 0x98 },
       NULL, NULL, NULL, itemResolveMapCollision, &gItemModelTemplates[120], { 0x0, 0x0, 0x0, 0x0 },
       { { "mystery soup", NULL },
@@ -1465,7 +1466,7 @@ ItemKind gItemKinds[166] = {
           "A wooden box\n^d\"A 'Z' is carved on the lid.\n^dI wonder if anything is inside.\"^^" } },
       0xA, 0x1, 0x1, -1 },
     /* 0x8A: cardboard box */
-    { 0x8A, 0x8480, 0x5, 0x0, 1.0F, 0.1F, { 0xF, 0x12, 0x4, 0x7, 0x12 },
+    { ITEM_KIND_CARDBOARD_BOX, 0x8480, 0x5, 0x0, 1.0F, 0.1F, { 0xF, 0x12, 0x4, 0x7, 0x12 },
       1.0F, 300.0F, 5.0F, 0.1F, 4.0F, 150.0F, 150.0F, 0x108, 0x6E, { 0x98, 0x98 },
       NULL, NULL, NULL, itemResolveMapCollision, &gItemModelTemplates[109], { 0x0, 0x0, 0x0, 0x0 },
       { { "box", NULL },
@@ -1506,7 +1507,7 @@ ItemKind gItemKinds[166] = {
       0x110A8, 0x1, 0x1, -1 },
     /* 0x8F: telescope */
     { 0x8F, 0x18440, 0x5, 0x0, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
-      1.0F, -100000.0F, 300.0F, 0.1F, 4.0F, -100000.0F, -100000.0F, 0x108, 0x6E, { 0x98, 0x98 },
+      1.0F, ITEM_DIMENSION_FROM_MODEL, 300.0F, 0.1F, 4.0F, ITEM_DIMENSION_FROM_MODEL, ITEM_DIMENSION_FROM_MODEL, 0x108, 0x6E, { 0x98, 0x98 },
       NULL, NULL, NULL, itemResolveMapCollision, &gItemModelTemplates[117], { 0x0, 0x0, 0x0, 0x0 },
       { { "telescope", NULL },
         { "telescope",
@@ -1514,7 +1515,7 @@ ItemKind gItemKinds[166] = {
       0x4E20, 0x1, 0x1, 0xF0 },
     /* 0x90: board */
     { 0x90, 0x86C0, 0xA, 0x0, 1.0F, 0.3F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
-      1.0F, -100000.0F, 10.0F, 0.1F, 1.0F, -100000.0F, -100000.0F, 0x106, 0x6E, { 0x97, 0x97 },
+      1.0F, ITEM_DIMENSION_FROM_MODEL, 10.0F, 0.1F, 1.0F, ITEM_DIMENSION_FROM_MODEL, ITEM_DIMENSION_FROM_MODEL, 0x106, 0x6E, { 0x97, 0x97 },
       NULL, NULL, NULL, itemResolveMapCollision, &gItemModelTemplates[105], { 0x0, 0x0, 0x0, 0x0 },
       { { "board", NULL },
         { "board",
@@ -1666,7 +1667,7 @@ ItemKind gItemKinds[166] = {
       0x0, 0x2, 0x1, -1 },
     /* 0xA3: tool box */
     { 0xA3, 0x400, 0xA, 0x0, 1.0F, 0.3F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
-      0.3F, -100000.0F, 10.0F, 0.1F, 1.0F, 0.0F, 0.0F, 0x108, 0x6E, { 0x97, 0x97 },
+      0.3F, ITEM_DIMENSION_FROM_MODEL, 10.0F, 0.1F, 1.0F, 0.0F, 0.0F, 0x108, 0x6E, { 0x97, 0x97 },
       NULL, NULL, NULL, itemResolveMapCollision, &gItemModelTemplates[116], { 0x0, 0x0, 0x0, 0x0 },
       { { "tool box", NULL },
         { "tool box",
@@ -2054,10 +2055,13 @@ void itemUpdate(u8 *object) {
         itemShrink(object, 0.12F);
     }
     if (!(((RuntimeObjectPrefix *)object)->flags & 2) &&
-        ((flags = ((ItemStatePrefix *)state)->flags, (((ItemStatePrefix *)state)->materialAnimationActive != 0 && (flags & 0x200))) || (flags & 0x100000))) {
+        ((flags = ((ItemStatePrefix *)state)->flags,
+          (((ItemStatePrefix *)state)->materialAnimationActive != 0 && (flags & ITEM_STATE_MATERIAL_ENABLED))) ||
+         (flags & 0x100000))) {
         animationIntegerTrackEvaluate(&((ItemStatePrefix *)state)->materialTrack, &changed, gRuntimeFrameSeconds);
         child = ((RuntimeObjectPrefix *)object)->child.bytes;
-        if (child != NULL && !(((RuntimeObjectPrefix *)object)->flags & 2) && (((ItemStatePrefix *)state)->flags & 0x100000)) {
+        if (child != NULL && !(((RuntimeObjectPrefix *)object)->flags & 2) &&
+            (((ItemStatePrefix *)state)->flags & 0x100000)) {
             if (changed != 0) {
                 objectClearHierarchyFlags(child, 2);
             } else {
@@ -2081,7 +2085,7 @@ void itemUpdate(u8 *object) {
     itemBuildLightingDisplayList((ItemState *)state, ((((RuntimeObjectPrefix *)object)->flags & 0x8000) ? 1 : 0) ^ 1);
 }
 
-void _bzero(void *destination, u32 size);                                         /* extern */
+void _bzero(void *destination, u32 size); /* extern */
 
 /// Allocate and initialize the state resources for a new item.
 /// \returns Newly allocated item state, owned by the item that receives it.
@@ -2153,16 +2157,16 @@ u8 *itemCreate(f32 x, f32 y, f32 z, f32 pitch, f32 yaw, s32 kind) {
     state->searchPriority = gItemKinds[kind].growthMax;
     state->state = ITEM_OWNERSHIP_WORLD;
     state->owner = 0;
-    state->mode = 0;
+    state->mode = ITEM_MODE_GROUND_AND_AIR;
     animationIntegerTrackInitialize(&state->materialTrack, gTextureFrameAnimationPrograms[gItemKinds[kind].animation]);
-    if (gItemKinds[kind].size != -100000.0F) {
+    if (gItemKinds[kind].size != ITEM_DIMENSION_FROM_MODEL) {
         *(f32 *)(object + 0x24) = gItemKinds[kind].size;
     }
     state->baseRadius = *(f32 *)(object + 0x24);
-    if (gItemKinds[kind].radiusX == -100000.0F) {
+    if (gItemKinds[kind].radiusX == ITEM_DIMENSION_FROM_MODEL) {
         gItemKinds[kind].radiusX = *(f32 *)(object + 0x24) * 0.5F;
     }
-    if (gItemKinds[kind].radiusZ == -100000.0F) {
+    if (gItemKinds[kind].radiusZ == ITEM_DIMENSION_FROM_MODEL) {
         gItemKinds[kind].radiusZ = *(f32 *)(object + 0x24) * 0.5F;
     }
     objectRegisterActiveHierarchy(object);
@@ -2390,7 +2394,7 @@ s32 itemTryRelease(u8 *object, s32 force) {
     case ITEM_OWNERSHIP_SUSPENDED:
         return 0;
     case ITEM_OWNERSHIP_PLAYER:
-        if (force == 0 && !(((ItemStatePrefix *)state)->flags & 0x40000000)) {
+        if (force == 0 && !(((ItemStatePrefix *)state)->flags & ITEM_STATE_HELD_TRANSFER_ALLOWED)) {
             return 0;
         }
         gPlayerHeldItemHandle = 0;
@@ -2400,7 +2404,7 @@ s32 itemTryRelease(u8 *object, s32 force) {
         found = objectFindLiveByHandle(((ItemStatePrefix *)state)->owner);
         other = found;
         if (found != NULL) {
-            if (force == 0 && !(((ItemStatePrefix *)state)->flags & 0x40000000)) {
+            if (force == 0 && !(((ItemStatePrefix *)state)->flags & ITEM_STATE_HELD_TRANSFER_ALLOWED)) {
                 return 0;
             }
             ((RuntimeObjectPrefix *)found)->state.actor->heldItemHandle = 0;
@@ -2420,7 +2424,7 @@ s32 itemTryRelease(u8 *object, s32 force) {
     ((ItemStatePrefix *)state)->owner = 0;
     ((ItemStatePrefix *)state)->modeTime = 0.0F;
     itemSetMode(object, ITEM_MODE_GROUND_AND_AIR);
-    ((ItemStatePrefix *)state)->flags &= 0xBFFFFFFF;
+    ((ItemStatePrefix *)state)->flags &= ~(u32)ITEM_STATE_HELD_TRANSFER_ALLOWED;
     return 1;
 }
 
@@ -2460,8 +2464,8 @@ void itemThrow(s32 id, f32 *origin, f32 *target, f32 *velocity, s32 effect) {
     delta[1] = target[1] - origin[1];
     delta[2] = target[2] - origin[2];
     radius = ((RuntimeObjectPrefix *)object)->radius;
-    terrainConstrainMovement(7, origin[0], origin[1] - radius, origin[2], radius * 2, radius * 2, radius, &delta[0], &delta[1],
-                  &delta[2], 0);
+    terrainConstrainMovement(7, origin[0], origin[1] - radius, origin[2], radius * 2, radius * 2, radius, &delta[0],
+                             &delta[1], &delta[2], 0);
     ((RuntimeObjectPrefix *)object)->position[0] = origin[0] + delta[0];
     ((RuntimeObjectPrefix *)object)->position[1] = origin[1] + delta[1];
     ((RuntimeObjectPrefix *)object)->position[2] = origin[2] + delta[2];
@@ -2498,14 +2502,13 @@ void itemAddVelocity(s32 objectId, f32 *velocity) {
     liveObject = objectFindLiveByHandle(objectId);
     itemState = ((RuntimeObjectPrefix *)liveObject)->state.bytes;
     if ((((ItemStatePrefix *)itemState)->state == ITEM_OWNERSHIP_WORLD) &&
-        (((ItemStatePrefix *)itemState)->mode != 6)) {
+        (((ItemStatePrefix *)itemState)->mode != ITEM_MODE_SHRINKING_DISPOSAL)) {
         ((ItemStatePrefix *)itemState)->velocityX += velocity[0];
         ((ItemStatePrefix *)itemState)->downwardVelocity -= velocity[1];
         ((ItemStatePrefix *)itemState)->velocityZ += velocity[2];
         itemSetMode(liveObject, ITEM_MODE_GROUND_AND_AIR);
     }
 }
-
 
 /// Change an item's behavior mode and apply the mode's participation rules.
 /// \param item Initialized item object to configure.
@@ -2515,11 +2518,11 @@ void itemAddVelocity(s32 objectId, f32 *velocity) {
 void itemSetMode(u8 *item, s32 mode) {
     ItemStatePrefix *state = (ItemStatePrefix *)((RuntimeObjectPrefix *)item)->state.pointer;
 
-    if (mode == 6) {
+    if (mode == ITEM_MODE_SHRINKING_DISPOSAL) {
         state->flags &= 0x1FFFFEFF;
         state->flags |= 0x8000C0;
     }
-    if ((mode == 2) && !(state->flags & 2)) {
+    if ((mode == ITEM_MODE_STATIONARY) && !(state->flags & 2)) {
         objectSetHierarchyFlags(item, 0x400);
     } else if (((RuntimeObjectPrefix *)item)->flags & 0x700) {
         objectClearHierarchyFlags(item, 0x700);
@@ -2544,7 +2547,7 @@ s32 itemCanBePickedUp(u8 *item, s32 byPlayer) {
     }
     if (byPlayer != 0) {
         if (((ownershipState == ITEM_OWNERSHIP_PIKACHU) || (ownershipState == ITEM_OWNERSHIP_OTHER_ACTOR)) &&
-            !(((ItemStatePrefix *)itemState)->flags & 0x40000000)) {
+            !(((ItemStatePrefix *)itemState)->flags & ITEM_STATE_HELD_TRANSFER_ALLOWED)) {
             return 0;
         }
         if (((ItemStatePrefix *)itemState)->flags & 0x04000040) {
@@ -2553,7 +2556,8 @@ s32 itemCanBePickedUp(u8 *item, s32 byPlayer) {
         return 1;
     }
     itemFlags = ((ItemStatePrefix *)itemState)->flags;
-    if ((itemFlags & 0x80) || ((ownershipState == ITEM_OWNERSHIP_PLAYER) && !(itemFlags & 0x40000000))) {
+    if ((itemFlags & 0x80) ||
+        ((ownershipState == ITEM_OWNERSHIP_PLAYER) && !(itemFlags & ITEM_STATE_HELD_TRANSFER_ALLOWED))) {
         return 0;
     }
     return 1;
@@ -2573,7 +2577,6 @@ s32 itemAllowsCooperation(u8 *item) {
     }
     return 0;
 }
-
 
 /// Start an item material animation from its beginning.
 /// \param item Initialized item object receiving the animation.
@@ -2710,7 +2713,7 @@ s32 itemTransform(s32 id, s32 mode) {
     }
     state = (ItemStatePrefix *)((RuntimeObjectPrefix *)object)->state.pointer;
     TRACE("itemChange(%p(%s), %d)\n", object, gItemKinds[state->kind].text[0].name, mode);
-    if ((state->mode == 6) || (state->state == ITEM_OWNERSHIP_TOOLBOX)) {
+    if ((state->mode == ITEM_MODE_SHRINKING_DISPOSAL) || (state->state == ITEM_OWNERSHIP_TOOLBOX)) {
         return id;
     }
     replacementKind = gItemKinds[state->kind].replacement;
@@ -2992,12 +2995,14 @@ char *itemGetHelpText(s32 kind, s32 helpType) {
     }
 }
 
+/// Nominal live-item allowance used by availability queries; this is not an allocation bound.
+enum { ITEM_NOMINAL_LIVE_CAPACITY = 60 };
 
 /// Read the remaining capacity for live items.
 /// \returns Sixty minus the live item count; negative if callers have exceeded the nominal capacity.
 /// \note Original decompilation identifier: \c func_80114FC0 (0x80114FC0).
 s32 itemGetAvailableSlots(void) {
-    return 0x3C - gLiveItemCount;
+    return ITEM_NOMINAL_LIVE_CAPACITY - gLiveItemCount;
 }
 
 /// Check whether an item kind belongs to a configured category.

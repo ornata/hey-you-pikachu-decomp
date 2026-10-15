@@ -364,7 +364,7 @@ void wholeMapDraw(Gfx **gdl) {
     gDPSetCycleType((*gdl)++, G_CYC_1CYCLE);
     wholeMapDrawDestinations(gdl);
     wholeMapDrawLockedDestinations(gdl);
-    objectDrawGroup(0x2000);
+    objectDrawGroup(OBJECT_DRAW_GROUP_ALTERNATE);
     gDPPipeSync((*gdl)++);
     gDPSetCycleType((*gdl)++, G_CYC_1CYCLE);
     wholeMapDrawDifficultyOverlay(gdl);
@@ -787,19 +787,19 @@ void wholeMapUpdate(void) {
         }
         wholeMapSetState(1);
         TRACE("whole map initialized.\n");
-        objectUpdateGroup(0x4000);
+        objectUpdateGroup(OBJECT_UPDATE_GROUP_ALTERNATE);
         return;
     case 1:
         if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
             wholeMapSetState(2);
         }
         wholeMapUpdateActorPlacement();
-        objectUpdateGroup(0x4000);
+        objectUpdateGroup(OBJECT_UPDATE_GROUP_ALTERNATE);
         return;
     case 2:
         wholeMapHandleInput();
         wholeMapUpdateActorPlacement();
-        objectUpdateGroup(0x4000);
+        objectUpdateGroup(OBJECT_UPDATE_GROUP_ALTERNATE);
         return;
     case 3:
         if (runtimeGetElapsedMilliseconds() - (u64)gWorldMapStateStartMilliseconds >= 0x5DD) {
@@ -808,7 +808,7 @@ void wholeMapUpdate(void) {
             wholeMapSetState(5);
         }
         wholeMapUpdateActorPlacement();
-        objectUpdateGroup(0x4000);
+        objectUpdateGroup(OBJECT_UPDATE_GROUP_ALTERNATE);
         return;
     case 4:
         if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
@@ -830,7 +830,7 @@ void wholeMapUpdate(void) {
             TRACE("whole map canceled.\n");
         }
         wholeMapUpdateActorPlacement();
-        objectUpdateGroup(0x4000);
+        objectUpdateGroup(OBJECT_UPDATE_GROUP_ALTERNATE);
         return;
     case 5:
         if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
@@ -841,7 +841,7 @@ void wholeMapUpdate(void) {
             TRACE("whole map finished.\n");
         }
         wholeMapUpdateActorPlacement();
-        objectUpdateGroup(0x4000);
+        objectUpdateGroup(OBJECT_UPDATE_GROUP_ALTERNATE);
         return;
     default:
         return;

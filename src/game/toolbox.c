@@ -388,8 +388,8 @@ void toolboxStoreObjectInSlot(ToolboxSlot *slot, u8 *object) {
     itemTryRelease(object, 1);
     ((ItemStatePrefix *)objectState)->state = ITEM_OWNERSHIP_TOOLBOX;
     itemSetMode(object, ITEM_MODE_STORED);
-    ((ItemStatePrefix *)objectState)->flags = (s32)(((ItemStatePrefix *)objectState)->flags & 0xBFFFFFFF);
-    objectSetHierarchyFlags(object, 0x2000);
+    ((ItemStatePrefix *)objectState)->flags = (s32)(((ItemStatePrefix *)objectState)->flags & ~(u32)ITEM_STATE_HELD_TRANSFER_ALLOWED);
+    objectSetHierarchyFlags(object, OBJECT_DRAW_GROUP_ALTERNATE);
     slot->id = ((RuntimeObjectPrefix *)object)->handle;
     slot->kind = (s32)((ItemStatePrefix *)objectState)->kind;
     itemRemoveFromSearchAndCollision(((RuntimeObjectPrefix *)object)->handle);
@@ -524,8 +524,8 @@ u8 *toolboxTakeObject(s32 row, s32 col) {
     ((ItemStatePrefix *)ext)->state = ITEM_OWNERSHIP_WORLD;
     ((ItemStatePrefix *)ext)->owner = 0;
     itemSetMode(obj, ITEM_MODE_GROUND_AND_AIR);
-    ((ItemStatePrefix *)ext)->flags &= 0xBFFFFFFF;
-    objectClearHierarchyFlags(obj, 0x2000);
+    ((ItemStatePrefix *)ext)->flags &= ~(u32)ITEM_STATE_HELD_TRANSFER_ALLOWED;
+    objectClearHierarchyFlags(obj, OBJECT_DRAW_GROUP_ALTERNATE);
     itemRegisterForSearch(((RuntimeObjectPrefix *)obj)->handle);
     slot->kind = 0;
     slot->id = 0;
@@ -549,11 +549,11 @@ u8 *toolboxGiveObjectToPlayer(u8 *player, s32 row, s32 index) {
     }
     itemState = ((RuntimeObjectPrefix *)itemObject)->state.bytes;
     sp24 = itemState;
-    objectSetHierarchyFlags(itemObject, 0x2000);
+    objectSetHierarchyFlags(itemObject, OBJECT_DRAW_GROUP_ALTERNATE);
     ((ItemStatePrefix *)itemState)->state = ITEM_OWNERSHIP_PLAYER;
     ((ItemStatePrefix *)itemState)->owner = 0;
     itemSetMode(itemObject, ITEM_MODE_PLAYER_HELD);
-    ((ItemStatePrefix *)itemState)->flags = (s32)(((ItemStatePrefix *)itemState)->flags | 0x40000000);
+    ((ItemStatePrefix *)itemState)->flags = (s32)(((ItemStatePrefix *)itemState)->flags | ITEM_STATE_HELD_TRANSFER_ALLOWED);
     ((PlayerControlPrefix *)player)->heldItemHandle = ((RuntimeObjectPrefix *)itemObject)->handle;
     toolboxScaleCurrentRow(&gToolboxState);
     return itemObject;
@@ -769,7 +769,7 @@ void toolboxCreateDisplayObjects(void) {
     u8 **objects = &gToolboxState.objects[1];
 
     object = objectCreateHierarchyFromTemplate(gToolboxModelTemplate);
-    objectSetHierarchyFlags(object, 0x2000);
+    objectSetHierarchyFlags(object, OBJECT_DRAW_GROUP_ALTERNATE);
     objectRegisterActiveHierarchy(object);
     *(f32 *)(object + 0) = gCurrentAreaConfiguration->objectScale;
     *(f32 *)(object + 4) = gCurrentAreaConfiguration->objectScale;
@@ -787,7 +787,7 @@ void toolboxCreateDisplayObjects(void) {
     gToolboxPurchaseHandle = 0;
     for (i = 0; i < 10; i++) {
         object = objectCreateHierarchyFromTemplate(gToolboxPlaceholderTemplate);
-        objectSetHierarchyFlags(object, 0x2000);
+        objectSetHierarchyFlags(object, OBJECT_DRAW_GROUP_ALTERNATE);
         objectRegisterActiveHierarchy(object);
         ((RuntimeObjectPrefix *)object)->rotation[0] = 0.0F;
         ((RuntimeObjectPrefix *)object)->rotation[1] = 0.0F;
@@ -1223,7 +1223,7 @@ void toolboxDrawFrame(s32 address) {
         return;
     }
     row = gToolboxState.slots[gToolboxSelectedRow];
-    objectDrawHierarchyGroup((RuntimeObjectPrefix *)(s32)hdr[0], 0x2000);
+    objectDrawHierarchyGroup((RuntimeObjectPrefix *)(s32)hdr[0], OBJECT_DRAW_GROUP_ALTERNATE);
     toolboxUpdateHelpMessage();
     for (i = 0; i < 10; i++) {
         if (row[i].id == 0) {
@@ -1232,13 +1232,13 @@ void toolboxDrawFrame(s32 address) {
             obj = objectFindLiveByHandle(row[i].id);
         }
         if (obj != 0) {
-            objectDrawHierarchyGroup((RuntimeObjectPrefix *)(s32)obj, 0x2000);
+            objectDrawHierarchyGroup((RuntimeObjectPrefix *)(s32)obj, OBJECT_DRAW_GROUP_ALTERNATE);
         }
     }
     if (gPlayerHeldItemHandle != 0) {
         obj = objectFindLiveByHandle(gPlayerHeldItemHandle);
         if (obj != 0) {
-            objectDrawHierarchyGroup((RuntimeObjectPrefix *)(s32)obj, 0x2000);
+            objectDrawHierarchyGroup((RuntimeObjectPrefix *)(s32)obj, OBJECT_DRAW_GROUP_ALTERNATE);
         }
     }
     if (gToolboxMode == 5) {
@@ -1289,7 +1289,7 @@ void toolboxOpen(s32 row, s32 useHeld) {
         objectFindLiveByHandle(r[i].id);
     }
     if (held != NULL) {
-        objectSetHierarchyFlags(held, 0x2000);
+        objectSetHierarchyFlags(held, OBJECT_DRAW_GROUP_ALTERNATE);
         toolboxSetObjectScale(gPlayerHeldItemHandle, 0.5F);
     }
     toolboxShowObjects();
@@ -1312,7 +1312,7 @@ void toolboxFinishClosing(void) {
         objectFindLiveByHandle(row[i].id);
     }
     if (*held != 0) {
-        objectClearHierarchyFlags(objectFindLiveByHandle(*held), 0x2000);
+        objectClearHierarchyFlags(objectFindLiveByHandle(*held), OBJECT_DRAW_GROUP_ALTERNATE);
         toolboxSetObjectScale(*held, 1.0F);
     }
     messageBarClear();

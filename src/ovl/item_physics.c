@@ -154,7 +154,7 @@ s32 itemUpdateGroundVelocity(u8 *object, u8 *state, s32 cachedNode, s32 *spinnin
                                        ((RuntimeObjectPrefix *)object)->position[1],
                                        ((RuntimeObjectPrefix *)object)->position[2], (u8 **)cachedNode);
     var_v1 = ((sp4C & 0x100) || ((sp4C & 0x70) == 0x70)) ? 1 : 0;
-    if (((ItemStatePrefix *)state)->flags & 0x20) {
+    if (((ItemStatePrefix *)state)->flags & ITEM_STATE_SPIN_ENABLED) {
         *spinning = itemUpdateSpin(object, sp4C, 1);
     } else {
         *spinning = 0;

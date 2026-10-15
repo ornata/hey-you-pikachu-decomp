@@ -771,13 +771,13 @@ void systemMenuDrawFrame(Gfx **displayList) {
     switch (gSystemMenuPhase) { /* irregular */
     case SYSTEM_MENU_INTERACTIVE:
         backdropDraw(displayList);
-        objectDrawHierarchyGroup(gSystemMenuInteractiveModel, 0x2000);
+        objectDrawHierarchyGroup(gSystemMenuInteractiveModel, OBJECT_DRAW_GROUP_ALTERNATE);
         systemMenuDrawItemList(displayList);
         systemMenuDrawDetails(displayList);
         break;
     case SYSTEM_MENU_CLOSE_DELAY:
         backdropDraw(displayList);
-        objectDrawHierarchyGroup(gSystemMenuInteractiveModel, 0x2000);
+        objectDrawHierarchyGroup(gSystemMenuInteractiveModel, OBJECT_DRAW_GROUP_ALTERNATE);
         systemMenuDrawClosingEffect(displayList);
         break;
     case SYSTEM_MENU_OPENING:
@@ -788,7 +788,7 @@ void systemMenuDrawFrame(Gfx **displayList) {
         cameraUpdateOverlayColors(gRenderCameraIndex, 0);
         cameraDrawOverlay(gRenderCameraIndex);
         cameraDrawSecondaryOverlay(gRenderCameraIndex);
-        objectDrawHierarchyGroup(gSystemMenuTransitionModel, 0x2000);
+        objectDrawHierarchyGroup(gSystemMenuTransitionModel, OBJECT_DRAW_GROUP_ALTERNATE);
         break;
     }
     textDrawReset();

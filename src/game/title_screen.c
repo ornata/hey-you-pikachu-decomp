@@ -395,20 +395,20 @@ void titleScreenDrawFrame(Gfx **cursor) {
     case 16:
         backdropDraw(cursor);
         titleScreenDrawLogo(cursor);
-        objectDrawGroup(0x2000);
+        objectDrawGroup(OBJECT_DRAW_GROUP_ALTERNATE);
         hudDrawMicrophoneIndicators(cursor);
         titleScreenDrawStartPrompt(cursor);
         break;
     case 17:
         backdropDraw(cursor);
         titleScreenDrawLogo(cursor);
-        objectDrawGroup(0x2000);
+        objectDrawGroup(OBJECT_DRAW_GROUP_ALTERNATE);
         hudDrawMicrophoneIndicators(cursor);
         break;
     case 13:
         backdropDraw(cursor);
         titleScreenDrawLogo(cursor);
-        objectDrawGroup(0x2000);
+        objectDrawGroup(OBJECT_DRAW_GROUP_ALTERNATE);
         hudDrawMicrophoneIndicators(cursor);
         if (gEepromSaveControl != 0) {
             titleScreenDrawMenu(cursor, gTitleMainMenuItems, 3, 0);
@@ -419,7 +419,7 @@ void titleScreenDrawFrame(Gfx **cursor) {
     case 14:
         backdropDraw(cursor);
         titleScreenDrawLogo(cursor);
-        objectDrawGroup(0x2000);
+        objectDrawGroup(OBJECT_DRAW_GROUP_ALTERNATE);
         hudDrawMicrophoneIndicators(cursor);
         if (gTitleLoadGameSelected != 0) {
             titleScreenDrawMenu(cursor, gTitleLoadGameFileMenuItems, gTitleEnabledFileChoices, 1);
@@ -430,7 +430,7 @@ void titleScreenDrawFrame(Gfx **cursor) {
     case 15:
         backdropDraw(cursor);
         titleScreenDrawLogo(cursor);
-        objectDrawGroup(0x2000);
+        objectDrawGroup(OBJECT_DRAW_GROUP_ALTERNATE);
         hudDrawMicrophoneIndicators(cursor);
         titleScreenDrawMessage(cursor);
         titleScreenDrawMenu(cursor, gTitleOverwriteMenuItems, 0xFFFF, 0);
@@ -589,7 +589,7 @@ s32 titleScreenHandleFileSelection(void) {
     s32 nextSelection;
 
     pikachuUpdateScriptAndTriggers();
-    objectUpdateGroup(0x4000);
+    objectUpdateGroup(OBJECT_UPDATE_GROUP_ALTERNATE);
     if (audioCountActive(AUDIO_CATEGORY_ALL) == 0) {
         audioChangeCurrentCue(0, 0.0, 0.0);
     }
@@ -653,7 +653,7 @@ extern s32 gControllerPrimaryRepeatedButtons, gTitleScreenState;
 /// \note Original decompilation identifier: \c func_8003563C (0x8003563C).
 s32 titleScreenHandleOverwriteConfirmation(void) {
     pikachuUpdateScriptAndTriggers();
-    objectUpdateGroup(0x4000);
+    objectUpdateGroup(OBJECT_UPDATE_GROUP_ALTERNATE);
     if (audioCountActive(AUDIO_CATEGORY_ALL) == 0) {
         audioChangeCurrentCue(0, 0.0, 0.0);
     }
@@ -805,7 +805,7 @@ void titleScreenUpdate(void) {
         break;
     case 8:
         if (runtimeGetElapsedMilliseconds() - gTitleIntroductionMilliseconds >= 0xBB9 || (*pressed & 0x9000)) {
-            objectSetHierarchyFlags(((u8 *)gPikachuActor), 0x6000);
+            objectSetHierarchyFlags(((u8 *)gPikachuActor), OBJECT_DRAW_GROUP_ALTERNATE | OBJECT_UPDATE_GROUP_ALTERNATE);
             cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.5F);
             gTitleScreenState = 9;
         }
@@ -835,7 +835,7 @@ void titleScreenUpdate(void) {
         break;
     case 12:
         pikachuUpdateScriptAndTriggers();
-        objectUpdateGroup(0x4000);
+        objectUpdateGroup(OBJECT_UPDATE_GROUP_ALTERNATE);
         if (runtimeGetElapsedMilliseconds() - gTitleIntroductionMilliseconds >= 0x20103) {
             cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFE, 1.5F);
             gTitleScreenState = 16;
@@ -848,7 +848,7 @@ void titleScreenUpdate(void) {
         break;
     case 16:
         pikachuUpdateScriptAndTriggers();
-        objectUpdateGroup(0x4000);
+        objectUpdateGroup(OBJECT_UPDATE_GROUP_ALTERNATE);
         if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
             gTitleDemoIndex++;
             while (gTitleDemoIndex < 0) {
@@ -865,7 +865,7 @@ void titleScreenUpdate(void) {
         break;
     case 13:
         pikachuUpdateScriptAndTriggers();
-        objectUpdateGroup(0x4000);
+        objectUpdateGroup(OBJECT_UPDATE_GROUP_ALTERNATE);
         if (audioCountActive(AUDIO_CATEGORY_ALL) == 0) {
             audioChangeCurrentCue(0, 0.0, 0.0);
         }
@@ -920,7 +920,7 @@ void titleScreenUpdate(void) {
         break;
     case 17:
         pikachuUpdateScriptAndTriggers();
-        objectUpdateGroup(0x4000);
+        objectUpdateGroup(OBJECT_UPDATE_GROUP_ALTERNATE);
         if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
             if (gTitleLoadGameSelected == 0) {
                 progressResetRecordToDefaults();

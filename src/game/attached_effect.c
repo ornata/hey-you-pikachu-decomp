@@ -81,7 +81,7 @@ u8 *attachedEffectCreate(u8 *owner, s32 kind, s32 track) {
     def = &gAttachedEffectDefinitions[kind];
     obj = objectCreateHierarchyFromTemplate(def->objectTemplate);
     if (gRuntimeGameMode == 8 || gRuntimeGameMode == 0x12) {
-        objectSetHierarchyFlags(obj, 0x6000);
+        objectSetHierarchyFlags(obj, OBJECT_DRAW_GROUP_ALTERNATE | OBJECT_UPDATE_GROUP_ALTERNATE);
     }
     v = ((RuntimeObjectPrefix *)obj)->state.bytes;
     ((AttachedEffectState *)v)->kind = kind;

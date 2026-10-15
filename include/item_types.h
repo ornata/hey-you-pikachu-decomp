@@ -9,17 +9,23 @@
 #include "integer_animation_types.h"
 
 /// Proven item-state flags; other bits retain their numeric representation.
-typedef enum ItemStateFlag { ITEM_STATE_SPIN_ENABLED = 0x20, ITEM_STATE_MATERIAL_ENABLED = 0x200 } ItemStateFlag;
+typedef enum ItemStateFlag {
+    ITEM_STATE_SPIN_ENABLED = 0x20,      ///< Enable the item's angular spin response.
+    ITEM_STATE_MATERIAL_ENABLED = 0x200, ///< Enable the item material draw path.
+    /// Bypass holder-specific restrictions on pickup and unforced release.
+    /// Other item restrictions still apply; successful release clears this permission.
+    ITEM_STATE_HELD_TRANSFER_ALLOWED = 0x40000000
+} ItemStateFlag;
 
 /// Item ownership and world-participation states, stored as a signed byte.
 /// These selectors are independent of the ItemMode behavior-update selector.
 typedef enum ItemOwnershipState {
-    ITEM_OWNERSHIP_WORLD = 0, ///< Unheld world item; other flags still govern participation.
-    ITEM_OWNERSHIP_PLAYER = 1, ///< Held by the player; owner is zero.
-    ITEM_OWNERSHIP_PIKACHU = 2, ///< Held by the primary companion; owner is its object handle.
+    ITEM_OWNERSHIP_WORLD = 0,       ///< Unheld world item; other flags still govern participation.
+    ITEM_OWNERSHIP_PLAYER = 1,      ///< Held by the player; owner is zero.
+    ITEM_OWNERSHIP_PIKACHU = 2,     ///< Held by the primary companion; owner is its object handle.
     ITEM_OWNERSHIP_OTHER_ACTOR = 3, ///< Held by another actor; owner is its object handle.
-    ITEM_OWNERSHIP_TOOLBOX = 4, ///< Retained in toolbox storage and excluded from item searches.
-    ITEM_OWNERSHIP_SUSPENDED = 5 ///< Hidden item with world participation suspended.
+    ITEM_OWNERSHIP_TOOLBOX = 4,     ///< Retained in toolbox storage and excluded from item searches.
+    ITEM_OWNERSHIP_SUSPENDED = 5    ///< Hidden item with world participation suspended.
 } ItemOwnershipState;
 
 /// Kind- and mode-specific storage reused for angular motion and timers.
