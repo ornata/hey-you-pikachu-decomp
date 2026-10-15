@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "purpose": "Explicit scalar and immediate action-request storage contracts; source changes revoke evidence until reviewed again. Deferred handlers remain separate.",
-  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases. Twelve action-request wrappers and their two-field scheduling helper reviewed against original Ghidra801167A0 and all twelve original wrapper addresses; twenty-four direct original-instruction request cases guard all VM fields and pending/protected values. Selector-three deferred dispatch and helper chain reviewed against original Ghidra80117098/8000F4C4/801167BC/800120F0 and eight guarded direct-dispatch/scheduler cases. Selector-two startup and waiting helpers reviewed against original Ghidra80116800/80012034; twelve guarded direct/scheduler cases cover numeric tags, original null sentinel, waiting and completion. Player input-mask field names now include synthetic stick flags, separately from permission flags; unchanged prefix layout and the reviewed permission/position reads were rechecked against matching objects before rebinding the two affected header dependencies. Additional permission names for Pikachu/follow selection and stun reaction leave the permission storage and reviewed view/position access unchanged; the two header dependencies were rechecked after strict matching verification. Ten additional permission names retain identical player storage and reviewed view/position accesses; header bindings rechecked after all483 objects and ROM matched. Selector-nine cost admission, root-resource adjustment and HUD helper were checked against Ghidra80116BC4/80014A3C, the authenticated five-record table and fourteen guarded original-instruction startup/poll/completion observations, including distinct actor/root resource records. The root and script actor states are explicitly distinguished. Acknowledgement native and helper checked against Ghidra8011C84C/80119200 and four original-instruction probes, including raw nonboolean word preservation; message fields remain unchanged. Four distance/target append contracts checked against original Ghidra801172D4/80118838/801187E4/8011C674/8011CB38/8011D208/8011DBF8/801177FC/80118B30/8003A5FC/8003A6F0 and twelve guarded original-instruction probes with distinct local/world coordinates, approach clamping, fixed/follow selection and unavailable-target exclusions. The actor-state header replaces only the producer-established four-byte approach sample with f32 and adds its offset assertion; all other declarations remain token-identical. Five further handle-consuming query contracts checked against original Ghidra8011730C/80117388/8011D240/8011D288/80117840/801178EC/8011DCB0/8011DCF8/80117E80/8011EA9C and23 guarded original-instruction observations. Runtime kind130 is authenticated against its retained callback record selecting80027430/8002747C, whose allocation and speed accesses establish the shared four-byte spinner state; six updater observations cover decay, negative retained values, voice-distance endpoints, speed cap and yaw wrap. Independent agent RNG review authenticated original wrapper/helper instructions and fifteen guarded interpreter observations at62bceac: inclusive unit-float endpoints including the observed rounding threshold, unsigned remainder for positive signed bounds, no advancement for nonpositive bounds, numeric conversion and unchanged protected VM storage. Reports retain original ROM/ELF/core/source fingerprints; FCR31 threshold is qualified to observed interpreter rounding. Independent tracking review disassembled wrappers/helpers and checked ten authored cases through three interpreter repetitions (30 supported observations,480 matching guarded regions) using frozen62bceac ELF/core inputs. Cases distinguish primary/secondary refresh, stale state after unavailable targets, zero category after a successful unsupported-kind selection, live fallback copying and escape selection preserving allowance/position. Two-operand replacement retains all three protected lower values. Agent-authenticated kind127 producer/callback and cannon landmark creation/help/selection consumers establish player-control-root and cannon identities. Category2 is named player control; category3 keeps its numeric range because145..148 lack established producers. Only enum spellings change in the reviewed classifier; all predicates and values remain unchanged.",
+  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases. Twelve action-request wrappers and their two-field scheduling helper reviewed against original Ghidra801167A0 and all twelve original wrapper addresses; twenty-four direct original-instruction request cases guard all VM fields and pending/protected values. Selector-three deferred dispatch and helper chain reviewed against original Ghidra80117098/8000F4C4/801167BC/800120F0 and eight guarded direct-dispatch/scheduler cases. Selector-two startup and waiting helpers reviewed against original Ghidra80116800/80012034; twelve guarded direct/scheduler cases cover numeric tags, original null sentinel, waiting and completion. Player input-mask field names now include synthetic stick flags, separately from permission flags; unchanged prefix layout and the reviewed permission/position reads were rechecked against matching objects before rebinding the two affected header dependencies. Additional permission names for Pikachu/follow selection and stun reaction leave the permission storage and reviewed view/position access unchanged; the two header dependencies were rechecked after strict matching verification. Ten additional permission names retain identical player storage and reviewed view/position accesses; header bindings rechecked after all483 objects and ROM matched. Selector-nine cost admission, root-resource adjustment and HUD helper were checked against Ghidra80116BC4/80014A3C, the authenticated five-record table and fourteen guarded original-instruction startup/poll/completion observations, including distinct actor/root resource records. The root and script actor states are explicitly distinguished. Acknowledgement native and helper checked against Ghidra8011C84C/80119200 and four original-instruction probes, including raw nonboolean word preservation; message fields remain unchanged. Four distance/target append contracts checked against original Ghidra801172D4/80118838/801187E4/8011C674/8011CB38/8011D208/8011DBF8/801177FC/80118B30/8003A5FC/8003A6F0 and twelve guarded original-instruction probes with distinct local/world coordinates, approach clamping, fixed/follow selection and unavailable-target exclusions. The actor-state header replaces only the producer-established four-byte approach sample with f32 and adds its offset assertion; all other declarations remain token-identical. Five further handle-consuming query contracts checked against original Ghidra8011730C/80117388/8011D240/8011D288/80117840/801178EC/8011DCB0/8011DCF8/80117E80/8011EA9C and23 guarded original-instruction observations. Runtime kind130 is authenticated against its retained callback record selecting80027430/8002747C, whose allocation and speed accesses establish the shared four-byte spinner state; six updater observations cover decay, negative retained values, voice-distance endpoints, speed cap and yaw wrap. Independent agent RNG review authenticated original wrapper/helper instructions and fifteen guarded interpreter observations at62bceac: inclusive unit-float endpoints including the observed rounding threshold, unsigned remainder for positive signed bounds, no advancement for nonpositive bounds, numeric conversion and unchanged protected VM storage. Reports retain original ROM/ELF/core/source fingerprints; FCR31 threshold is qualified to observed interpreter rounding. Independent tracking review disassembled wrappers/helpers and checked ten authored cases through three interpreter repetitions (30 supported observations,480 matching guarded regions) using frozen62bceac ELF/core inputs. Cases distinguish primary/secondary refresh, stale state after unavailable targets, zero category after a successful unsupported-kind selection, live fallback copying and escape selection preserving allowance/position. Two-operand replacement retains all three protected lower values. Agent-authenticated kind127 producer/callback and cannon landmark creation/help/selection consumers establish player-control-root and cannon identities. Category2 is named player control; category3 keeps its numeric range because145..148 lack established producers. Only enum spellings change in the reviewed classifier; all predicates and values remain unchanged. The clang-format actor-state header change was checked against afdde86: after C backslash-newline splicing all tokens are identical. Macro continuation placement alone changes the lexical fingerprint; the single header binding retains its reviewed layout and contract.",
   "preconditions": [
     "Protected locals and frame metadata lie below the active stack depth.",
     "Append contracts require one free value slot; pointers and borrowed actor/global state are valid.",
@@ -65,7 +65,7 @@
     {
       "kind": "file",
       "file": "include/actor_script.h",
-      "sha256": "2d96e8b4f6f85c31d33ad7ed35b7a02e6bca08007d8030e30bed9685755083de"
+      "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
     },
     {
       "kind": "file",
@@ -2805,6 +2805,374 @@
         "Primary and secondary-escape selection retain raw player handles without lookup or position refresh; their later tracking updates are outside this immediate review. Full tracking with an unavailable handle clears only mode, preserving stale handle, allowance and position. Category zero is not a selection-success predicate.",
         "Captured VM is preserved through every reviewed helper; only established pop/push values/depth and the specified actor target fields change. No concurrent destruction, context replacement or mutation of borrowed state is covered. Retail reachability and future movement/lifetimes remain unproven."
       ]
+    },
+    {
+      "function": "actorScriptAddProfileCounter",
+      "file": "src/ovl/actor_script_collection_profile.c",
+      "sha256": "fcfce24c0ba5fb471a5b4614cb576509a45c6430a004ac723b0b09707d42501c",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 2,
+      "stack_delta": -1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Consume counter index then signed adjustment (adjustment on top); replace both with updated counter clamped to0..15. Modify only its selected packed nibble, preserving the neighbor.",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/item_registry.c",
+          "function": "profileGetCounter",
+          "sha256": "38575b0191bf02cb24d6755c04c56d7348fbf2cc95e7200c7823a7f2d03ec916"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/item_registry.c",
+          "function": "profileAddCounter",
+          "sha256": "7b1058158d248da54eb1253fc215e06f8161f93010478671113d20de02aa793f"
+        },
+        {
+          "kind": "file",
+          "file": "include/profile_counters.h",
+          "sha256": "5e2fbfe1ee81ea0c105e1f0f75d6532cbdfdda6b7b2291e01869975bf63b0754"
+        }
+      ],
+      "preconditions": [
+        "All consumed operands lie above protected locals/frame metadata. Integer/code-reference payloads or finite s32-representable floats are supported; floats truncate toward zero.",
+        "The live actor retains its captured VM and valid owned value storage through the synchronous call. VM/value/actor storage is disjoint from writable profile counters, progress record and primary player fields. No concurrent mutation, context replacement or destruction is covered.",
+        "Only established pop/push value/depth effects and the stated gameplay storage writes are reviewed. Scheduling returns continue; no deferred action is installed. Retail reachability, subsequent lifetimes and EEPROM persistence are outside this source/Ghidra review.",
+        "Index is0..165 into83 bytes; even indices select low nibble and odd indices high nibble. The signed adjustment plus current0..15 value fits s32 before clamping. Two stores update the containing byte, so atomicity is not promised."
+      ],
+      "evidence": "Source and read-only original Ghidra8011FD50/80114CC8/80114D04: two integer pops, signed add/clamp, low/high-nibble byte stores, u8 result, saved-VM integer push and continue. Runtime review not performed for this entry."
+    },
+    {
+      "function": "actorScriptAddProgressValue",
+      "file": "src/ovl/actor_script_collection_profile.c",
+      "sha256": "41aa4b0b770d3af742754bd5af2c62c366d4d30feff36b5772558e93001ffd15",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 2,
+      "stack_delta": -1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Consume valid field selector then signed adjustment (value on top); replace both with the resulting clamped stored integer. Only the selected save word/halfword/byte or packed bit range changes.",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressResolveFieldId",
+          "sha256": "bc9edb823ea95081219e7c5a011c4f2fc5b996c25adba7582a258d3f3edb561f"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressGetValue",
+          "sha256": "fb8b1f81a82ac75b37f30ad1e87f9e0bdbf809cb5ca47a14554437957988c1e3"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressSetValue",
+          "sha256": "37c9e42b3cfb95faeccdd8dfa2b40b730d78f478bf487f6709af3947be9344ee"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressReadFieldValue",
+          "sha256": "f8f8bacd90eaa18363e2b0a17e2c6c1d38998f3dac28851f5744e5c07a38c998"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressStoreFieldValue",
+          "sha256": "193a91e748dce20dc1511e7a0acc31d4b79e4bf9b2ec602c0019ba71f85ce96d"
+        },
+        {
+          "kind": "file",
+          "file": "include/progress_fields.h",
+          "sha256": "8f8d456e6e32417ced73eeb945f40db0b02ee4951a3ce7e8dd84d8c8521432c4"
+        },
+        {
+          "kind": "file",
+          "file": "include/progress_value.h",
+          "sha256": "e1d7be308cd6a2ddb35b7c83db74ee7f9bd428546c88660bea0b23d2f00f884c"
+        },
+        {
+          "kind": "file",
+          "file": "include/progress_field_types.h",
+          "sha256": "9c2c0450b682e4cb2278c1d3880bb74ec68701bada35773fa4cc33771924b7ea"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/save_progress.c",
+          "sha256": "03fcec83e66ba712d4a3096287449258d2f57bf9a123acda605d281e80e49d32"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressAddValue",
+          "sha256": "bad5d639931e0551722e84b3af4bebaced7758c0971e22da4fe5d70f9213d959"
+        }
+      ],
+      "preconditions": [
+        "All consumed operands lie above protected locals/frame metadata. Integer/code-reference payloads or finite s32-representable floats are supported; floats truncate toward zero.",
+        "The live actor retains its captured VM and valid owned value storage through the synchronous call. VM/value/actor storage is disjoint from writable profile counters, progress record and primary player fields. No concurrent mutation, context replacement or destruction is covered.",
+        "Only established pop/push value/depth effects and the stated gameplay storage writes are reviewed. Scheduling returns continue; no deferred action is installed. Retail reachability, subsequent lifetimes and EEPROM persistence are outside this source/Ghidra review.",
+        "Progress storage is initialized: resolved field ID is0..243, encoding is0..7, signed limits match its representation, word/halfword locations are aligned, and its full write range lies within the116-byte save record. Packed fields fit wholly within one byte.",
+        "An area-relative selector must index valid selector/current-area storage and resolve to a valid field, never the missing-field sentinel-1. Current area and selector tables remain stable; add resolves separately before reading and writing. Unsupported selectors/layouts are not checked by the helper.",
+        "Current decoded value plus signed adjustment fits s32 before clamping; the original addu is not an overflow-safe saturation primitive."
+      ],
+      "evidence": "Source and read-only original Ghidra801202A8/80032B78/80032830/80032968/80032C44/80032C70: two integer pops, valid selector resolution, signed type-limit clamp and width-specific stores, saved-VM integer push, continue. Original96-byte limits table at8009A6F4 confirms encoding bounds. Runtime review not performed for this entry."
+    },
+    {
+      "function": "actorScriptSetProgressValue",
+      "file": "src/ovl/actor_script_collection_profile.c",
+      "sha256": "aed38df6d37839a6b8ebe41c8e63428db634547b73a8d159b423b488fb14a2b7",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 2,
+      "stack_delta": -1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Consume valid field selector then requested value (value on top); replace both with the resulting clamped stored integer. Only the selected save word/halfword/byte or packed bit range changes.",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressResolveFieldId",
+          "sha256": "bc9edb823ea95081219e7c5a011c4f2fc5b996c25adba7582a258d3f3edb561f"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressGetValue",
+          "sha256": "fb8b1f81a82ac75b37f30ad1e87f9e0bdbf809cb5ca47a14554437957988c1e3"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressSetValue",
+          "sha256": "37c9e42b3cfb95faeccdd8dfa2b40b730d78f478bf487f6709af3947be9344ee"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressReadFieldValue",
+          "sha256": "f8f8bacd90eaa18363e2b0a17e2c6c1d38998f3dac28851f5744e5c07a38c998"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressStoreFieldValue",
+          "sha256": "193a91e748dce20dc1511e7a0acc31d4b79e4bf9b2ec602c0019ba71f85ce96d"
+        },
+        {
+          "kind": "file",
+          "file": "include/progress_fields.h",
+          "sha256": "8f8d456e6e32417ced73eeb945f40db0b02ee4951a3ce7e8dd84d8c8521432c4"
+        },
+        {
+          "kind": "file",
+          "file": "include/progress_value.h",
+          "sha256": "e1d7be308cd6a2ddb35b7c83db74ee7f9bd428546c88660bea0b23d2f00f884c"
+        },
+        {
+          "kind": "file",
+          "file": "include/progress_field_types.h",
+          "sha256": "9c2c0450b682e4cb2278c1d3880bb74ec68701bada35773fa4cc33771924b7ea"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/save_progress.c",
+          "sha256": "03fcec83e66ba712d4a3096287449258d2f57bf9a123acda605d281e80e49d32"
+        }
+      ],
+      "preconditions": [
+        "All consumed operands lie above protected locals/frame metadata. Integer/code-reference payloads or finite s32-representable floats are supported; floats truncate toward zero.",
+        "The live actor retains its captured VM and valid owned value storage through the synchronous call. VM/value/actor storage is disjoint from writable profile counters, progress record and primary player fields. No concurrent mutation, context replacement or destruction is covered.",
+        "Only established pop/push value/depth effects and the stated gameplay storage writes are reviewed. Scheduling returns continue; no deferred action is installed. Retail reachability, subsequent lifetimes and EEPROM persistence are outside this source/Ghidra review.",
+        "Progress storage is initialized: resolved field ID is0..243, encoding is0..7, signed limits match its representation, word/halfword locations are aligned, and its full write range lies within the116-byte save record. Packed fields fit wholly within one byte.",
+        "An area-relative selector must index valid selector/current-area storage and resolve to a valid field, never the missing-field sentinel-1. Current area and selector tables remain stable; add resolves separately before reading and writing. Unsupported selectors/layouts are not checked by the helper."
+      ],
+      "evidence": "Source and read-only original Ghidra801202F8/80032B78/80032830/80032968/80032C44: two integer pops, valid selector resolution, signed type-limit clamp and width-specific stores, saved-VM integer push, continue. Original96-byte limits table at8009A6F4 confirms encoding bounds. Runtime review not performed for this entry."
+    },
+    {
+      "function": "scriptCommandAdvanceFriendship",
+      "file": "src/ovl/script_demo_item_commands.c",
+      "sha256": "2f51fee4d4aa0ca54b70c07b0d8bb3dd9ffea65f2b3956fa4b1155af03b402a8",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace milestone with awarded progress flag0xB0..0xC3 or-1 if already earned. New nonzero milestones increment primary-player friendshipLevel by exactly one with u8 wrap; milestone0 leaves level unchanged. Store the awarded milestone; do not enforce milestone ordering.",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressResolveFieldId",
+          "sha256": "bc9edb823ea95081219e7c5a011c4f2fc5b996c25adba7582a258d3f3edb561f"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressGetValue",
+          "sha256": "fb8b1f81a82ac75b37f30ad1e87f9e0bdbf809cb5ca47a14554437957988c1e3"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressSetValue",
+          "sha256": "37c9e42b3cfb95faeccdd8dfa2b40b730d78f478bf487f6709af3947be9344ee"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressReadFieldValue",
+          "sha256": "f8f8bacd90eaa18363e2b0a17e2c6c1d38998f3dac28851f5744e5c07a38c998"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressStoreFieldValue",
+          "sha256": "193a91e748dce20dc1511e7a0acc31d4b79e4bf9b2ec602c0019ba71f85ce96d"
+        },
+        {
+          "kind": "file",
+          "file": "include/progress_fields.h",
+          "sha256": "8f8d456e6e32417ced73eeb945f40db0b02ee4951a3ce7e8dd84d8c8521432c4"
+        },
+        {
+          "kind": "file",
+          "file": "include/progress_value.h",
+          "sha256": "e1d7be308cd6a2ddb35b7c83db74ee7f9bd428546c88660bea0b23d2f00f884c"
+        },
+        {
+          "kind": "file",
+          "file": "include/progress_field_types.h",
+          "sha256": "9c2c0450b682e4cb2278c1d3880bb74ec68701bada35773fa4cc33771924b7ea"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/save_progress.c",
+          "sha256": "03fcec83e66ba712d4a3096287449258d2f57bf9a123acda605d281e80e49d32"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/player_companion.c",
+          "function": "playerGetFriendshipMilestoneFlag",
+          "sha256": "2e19660e574aee1669ff4e3e7878745328d2f9ed2d99971e86ecdca4e4eba5d1"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/player_companion.c",
+          "function": "playerAwardFriendshipMilestone",
+          "sha256": "e6519b91a1de305cef8d2ff1231dca812efc815846238de5237a63d63f602ea0"
+        },
+        {
+          "kind": "file",
+          "file": "include/player_friendship.h",
+          "sha256": "6b4181dc5d4d80abfccc0ca2873533f60b8542c7a27c196cef382f7812123fe6"
+        },
+        {
+          "kind": "file",
+          "file": "include/player_types.h",
+          "sha256": "0056df08b11d051f4243ed3806c8bd6fba129b936ac71cd6584ac7e1cfb6df85"
+        },
+        {
+          "kind": "file",
+          "file": "include/player_profile.h",
+          "sha256": "1e08904f8626aedd4e0d41c303d3ede9283f13abe39ecc82fcd3100e324f892f"
+        },
+        {
+          "kind": "file",
+          "file": "src/ovl/player_companion.c",
+          "sha256": "9c164fb08784fd622f168a326fe54394e196e674f5dd9d7a6e8d4c8d05ef9ea5"
+        },
+        {
+          "kind": "file",
+          "file": "include/player_state.h",
+          "sha256": "714569e664352e5b35c5f6cba7fa9fd8724691ff7eb44a596885c37442ec8088"
+        }
+      ],
+      "preconditions": [
+        "All consumed operands lie above protected locals/frame metadata. Integer/code-reference payloads or finite s32-representable floats are supported; floats truncate toward zero.",
+        "The live actor retains its captured VM and valid owned value storage through the synchronous call. VM/value/actor storage is disjoint from writable profile counters, progress record and primary player fields. No concurrent mutation, context replacement or destruction is covered.",
+        "Only established pop/push value/depth effects and the stated gameplay storage writes are reviewed. Scheduling returns continue; no deferred action is installed. Retail reachability, subsequent lifetimes and EEPROM persistence are outside this source/Ghidra review.",
+        "Progress storage is initialized: resolved field ID is0..243, encoding is0..7, signed limits match its representation, word/halfword locations are aligned, and its full write range lies within the116-byte save record. Packed fields fit wholly within one byte.",
+        "An area-relative selector must index valid selector/current-area storage and resolve to a valid field, never the missing-field sentinel-1. Current area and selector tables remain stable; add resolves separately before reading and writing. Unsupported selectors/layouts are not checked by the helper.",
+        "Milestone is0..19 and the retained20-word milestone-to-progress table remains valid. Its mapped flag has initialized packed-one storage. The borrowed primary player is writable at friendshipLevel+0xF6 and friendshipMilestone+0xF8.",
+        "Already-earned flag leaves player/save storage unchanged and returns-1. A new flag is written before player fields; no atomic transaction is promised. Level increment wraps modulo256; valid title lookup afterward is a separate precondition."
+      ],
+      "evidence": "Source and read-only original Ghidra80121770/80112598/801125AC, original20-word table at80123EB0 and packed-one catalog entries: one integer pop, earned early return-1, progress flag write, conditional byte level increment and milestone word store, saved-VM integer push, continue. Runtime review not performed for this entry."
     }
   ]
 }

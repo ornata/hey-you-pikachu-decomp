@@ -566,6 +566,36 @@ payloads use their integer encoding. The cases guard protected values, VM state
 and borrowed storage. They do not extend the contracts to invalid indices,
 unsupported conversions, later lifetimes or arbitrary gameplay paths.
 
+Four additional update contracts distinguish stored values from success flags:
+
+| Native | Operands in push order | Integer result |
+| --- | --- | --- |
+| `actorScriptAddProfileCounter` | Counter index, signed adjustment | Updated counter, clamped to zero through fifteen |
+| `actorScriptAddProgressValue` | Field selector, signed adjustment | Updated value, clamped to the field's range |
+| `actorScriptSetProgressValue` | Field selector, requested value | Requested value clamped to the field's range |
+| `scriptCommandAdvanceFriendship` | Milestone zero through nineteen | Awarded progress flag, or -1 if already earned |
+
+These handlers continue execution immediately. Counter updates preserve the other
+nibble in the same byte. Progress updates preserve neighboring packed fields and
+use the initialized field encoding's signed or unsigned limits. A direct or
+area-relative selector must resolve to a valid field; these update helpers do not
+reject the missing-field sentinel. Addition must fit signed 32-bit arithmetic
+before clamping. The area selection and borrowed metadata must remain stable.
+These operations change in-memory storage; they do not write EEPROM.
+
+Friendship awards affect the primary player, independently of the calling actor.
+An already-earned milestone leaves the player and progress flag unchanged. A new
+milestone sets its flag and records its index; a nonzero index also increments the
+friendship level by exactly one, with byte wrap. Milestone zero does not increment
+the level. Awards need not arrive in numeric order. A returned flag therefore does
+not establish that the resulting level is valid for every later title lookup.
+
+The two-operand contracts replace the lower consumed slot; the friendship contract
+replaces its one operand. Protected locals and frame records must remain below
+those operands, and writable profile/player/progress storage must not overlap the
+VM or its values. Source and original-instruction review establishes these
+conditional footprints, not arbitrary-memory safety or persistence to a save device.
+
 Distance queries also retain their coordinate-frame distinctions:
 
 | Native | Position source | Result |
@@ -704,6 +734,35 @@ be the same object. The repetition count also sets the later target-burst allowa
 Running polls consume nothing; completion appends the retained outcome: initially
 zero for insufficient resource or three after acceptance, with one available from
 later response handling. This footprint does not prove that the program finishes.
+
+The held-item eating request selects handler eight without consuming its program
+operand. Initialization consumes that operand once. A missing or ineligible held
+item supplies -1 immediately; otherwise the handler enables shrinking, starts the
+selected program and waits. Waiting polls leave the stack alone. The scheduler
+clears initialization after dispatch; invoking the dispatcher directly does not.
+
+When sequencing stops, the handler resolves the current held item and appends -1
+if missing, one if it has player-pickup history, or zero otherwise. It then attempts
+consumption. The result describes the item before that attempt: **zero or one does
+not prove consumption**. An item that became ineligible after initialization can
+still produce zero or one. Eligible processing attempts transformation and adjusts
+the owning/root actor's action resource by ten, capped at one hundred; transformation
+can retain or replace the item, and its return is ignored.
+
+If a live item remains in the actor's held slot, the handler starts program 0x4F
+and selects handler one. That successor waits for sequencing to stop and supplies
+no further result. The eating result can therefore already be on the stack while
+the VM is still waiting. Across the full action, the program operand is replaced
+by one integer; during initialization and waiting the stack is temporarily one
+slot shallower. Protected frame values must lie below that operand.
+
+Ten authored original-instruction interpreter probes cover the request, rejected
+and eligible initialization, active waiting, missing and newly ineligible completion,
+pickup history, and successor polling. These are independent phase states, not a
+complete retail gameplay trajectory. Allocation, item replacement/destruction,
+registry callbacks, ownership transfer and eventual animation completion remain
+explicit dependencies. This partial review does not clear the eating request's
+unresolved deferred-effect frontier.
 
 The text-window request retains indicator, style and scene-view mode until the
 runtime leaves text-window game mode. Its handler then consumes all three settings

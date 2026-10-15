@@ -187,10 +187,13 @@ block_6:
     return SCRIPT_VM_WAITING_FOR_ACTION;
 }
 
-/// Run the script-selected eating action, consume its held item, and handle any remaining item.
-/// \param actor Actor whose script supplies the eating action.
-/// \returns One when complete or the item is unavailable, otherwise two while waiting.
-/// The script result is -1 for an unavailable or ineligible item, one for a player-picked-up item, or zero otherwise.
+/// Run the selected eating action and attempt to consume the current held item.
+/// \param actor Actor whose script supplies one eating-program operand and receives
+/// -1 when initialization rejects the item or completion finds it missing; otherwise
+/// the result is one for player-pickup history or zero without that history.
+/// \returns One when finished, or two while the eating or follow-up action waits.
+/// \note The result describes the item before the consumption attempt and does not
+/// guarantee consumption. A result can already be available during follow-up waiting.
 /// \note Original decompilation identifier: \c func_80116A4C (0x80116A4C).
 s32 actorScriptEatHeldItem(u8 *actor) {
     u8 *state;
