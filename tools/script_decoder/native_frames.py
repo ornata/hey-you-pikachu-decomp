@@ -151,6 +151,14 @@ def native_frame_reviews(root=ROOT, manifest=None):
             if not unchanged:
                 changed.append(dependency)
         selector = deferred.get('action_handler')
+        mode_gate = (
+            selector == 10 and deferred.get('effect') == 'poll_game_mode_then_replace_scheme_argument' and
+            deferred.get('phase_gate') == 'runtime_game_mode_only' and
+            deferred.get('uses_initialization_flag') is False and
+            type(deferred.get('waiting_game_mode')) is int and deferred['waiting_game_mode'] == 3 and
+            type(deferred.get('completion_result')) is int and deferred['completion_result'] == 0 and
+            deferred.get('arguments') == 1 and
+            'initialization_stack_delta' not in deferred and 'initialization_scheduling' not in deferred)
         reviewed_effect = (
             selector == 3 and deferred.get('effect') == 'loop_exit_then_conditional_zero_append' and deferred.get('arguments') == 0 or
             selector == 2 and deferred.get('effect') == 'start_program_then_conditional_zero_append' and deferred.get('arguments') == 1 and
@@ -158,11 +166,12 @@ def native_frame_reviews(root=ROOT, manifest=None):
             deferred.get('initialization_scheduling') == 'wait_for_action' or
             selector == 9 and deferred.get('effect') == 'costed_program_then_conditional_result_append' and deferred.get('arguments') == 2 and
             type(deferred.get('initialization_stack_delta')) is int and deferred['initialization_stack_delta'] == -2 and
-            deferred.get('initialization_scheduling') == 'wait_for_action')
+            deferred.get('initialization_scheduling') == 'wait_for_action' or mode_gate)
         valid = (review.get('coverage') == 'immediate_request_only' and type(selector) is int and
                  selector == review.get('action_handler') and reviewed_effect and
                  type(deferred.get('arguments')) is int and
-                 deferred.get('waiting_stack_delta') == 0 and deferred.get('completion_stack_delta') == 1 and
+                 deferred.get('waiting_stack_delta') == 0 and
+                 deferred.get('completion_stack_delta') == (0 if mode_gate else 1) and
                  type(deferred.get('waiting_stack_delta')) is int and type(deferred.get('completion_stack_delta')) is int and
                  deferred.get('waiting_scheduling') == 'wait_for_action' and deferred.get('completion_scheduling') == 'yield' and
                  bool(deferred.get('dependencies')))

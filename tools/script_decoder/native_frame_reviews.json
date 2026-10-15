@@ -1619,7 +1619,382 @@
       "preconditions": [
         "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
         "The request returns scheduling result two without reading or writing stack operands. Deferred handler operands, results, context replacement and write effects remain unreviewed; this contract must not clear that deferred frontier."
-      ]
+      ],
+      "deferred_review": {
+        "action_handler": 10,
+        "effect": "poll_game_mode_then_replace_scheme_argument",
+        "arguments": 1,
+        "phase_gate": "runtime_game_mode_only",
+        "waiting_stack_delta": 0,
+        "completion_stack_delta": 0,
+        "waiting_scheduling": "wait_for_action",
+        "completion_scheduling": "yield",
+        "waiting_condition": "gRuntimeGameMode==GAME_MODE_TEXT_WINDOW(3)",
+        "consumption": "one numeric scheme popped only on completion path; integer0 immediately pushed",
+        "dependencies": [
+          {
+            "kind": "file",
+            "file": "src/ovl/player_companion.c",
+            "sha256": "92a192d0c2d6c84ab3fbd7be87f976ba4c27e16410cb00f7e8aa5785ff119d94"
+          },
+          {
+            "kind": "file",
+            "file": "src/game/controller_rumble.c",
+            "sha256": "9b5d2ebaa48525e499f17dccea1ab961db76811fdaa76ca5dce8a21116a327ab"
+          },
+          {
+            "kind": "file",
+            "file": "src/main.c",
+            "sha256": "d805db3a73122ad5110d83c1074277bf0439e28c4f8a81f529935196d2c832a6"
+          },
+          {
+            "kind": "file",
+            "file": "include/player_types.h",
+            "sha256": "0056df08b11d051f4243ed3806c8bd6fba129b936ac71cd6584ac7e1cfb6df85"
+          },
+          {
+            "kind": "file",
+            "file": "include/player_state.h",
+            "sha256": "714569e664352e5b35c5f6cba7fa9fd8724691ff7eb44a596885c37442ec8088"
+          },
+          {
+            "kind": "file",
+            "file": "include/controller_types.h",
+            "sha256": "f5a5d0c9cf18c689d50638f633b2ef488fc90975854050875311b1eafde18047"
+          },
+          {
+            "kind": "file",
+            "file": "include/controller_commands.h",
+            "sha256": "b025efc98ef4411b78547e5243c3b0a29f9e800ebf99576f4e35573622b46cc7"
+          },
+          {
+            "kind": "file",
+            "file": "include/game_message.h",
+            "sha256": "02909f6c14c187481d544f5e915d15bc5883da53867842605c5de1ddc7175303"
+          },
+          {
+            "kind": "file",
+            "file": "include/script_vm.h",
+            "sha256": "f9f9e4509166d6c9aac4d4687f973da7c3b719df7413be4d4f738182850e5b08"
+          },
+          {
+            "kind": "file",
+            "file": "include/actor_script.h",
+            "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+          },
+          {
+            "kind": "file",
+            "file": "include/object_types.h",
+            "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+          },
+          {
+            "kind": "file",
+            "file": "include/runtime_mode.h",
+            "sha256": "99748d645656d47e6a031b243a404a34cb61b149faa36f9e0aac42f02d6c4951"
+          },
+          {
+            "kind": "file",
+            "file": "include/actor_script_action.h",
+            "sha256": "37e7ff0a8d38d091300494231283e6a1d13fec521548e1576e4949ce87348f4c"
+          },
+          {
+            "kind": "file",
+            "file": "include/PR/os_message.h",
+            "sha256": "40e7350399ac69591974b7f15eb8b0650958702f4943ebd288b77792196676fe"
+          },
+          {
+            "kind": "file",
+            "file": "include/PR/os_thread.h",
+            "sha256": "a1cd0aa5227e6c238c30c6e022a9de252e8a547a465b8d2f82905d446c3a9ebf"
+          },
+          {
+            "kind": "file",
+            "file": "docs/LOCAL_SDK_FILES.json",
+            "sha256": "76f91c2e6d465a60326a1a1c5367297c97438e12baa5749de26a53914b61fde3"
+          },
+          {
+            "kind": "file",
+            "file": "config/pikachu.yaml",
+            "sha256": "a56707cf81226745a3d0758e71a63285c21ff334fcc5eea8cba864ccf0cf39c6"
+          },
+          {
+            "kind": "file",
+            "file": "config/symbol_addrs.txt",
+            "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+          },
+          {
+            "kind": "file",
+            "file": "tools/materialize_ultralib.py",
+            "sha256": "b40bdd26d0444db7a0c853608d3c98b2aa5a0bf81cf3c488f62baee884d95664"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "sha256": "e3e6746d411e3a9075fb9416d4007315a55fb47a83b4723d618a0d9dc72dd575",
+            "function": "actorScriptDispatchActionHandler"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "sha256": "1919683f75e15a57fcfd081ea602c6eeff96179ff817e6cbc420f8a7bf36d59b",
+            "function": "actorScriptSelectControlScheme"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "sha256": "730df316779c26ec4f6a10011fadfc45fd9e8516e38f95767e1b3821e5d67938",
+            "function": "actorBeginScriptActionHandler"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f",
+            "function": "scriptVmPopInteger"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84",
+            "function": "scriptVmPopValue"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f",
+            "function": "scriptValueGetInteger"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "sha256": "d9c7386b407cc9e5e1ebe3d7ab6c7db1b7e40acb8c64150bb9ed6499fc2ce695",
+            "function": "scriptVmPushInteger"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "sha256": "ee2857209fceeb6c5767a3a733019cdbea389851514e320a212eb8556d8c51fd",
+            "function": "scriptVmPushValue"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "sha256": "b83e2136925736f751b686cc364df9280a90f8564552393ee43778e69c593d4c",
+            "function": "scriptValueSetInteger"
+          },
+          {
+            "kind": "function",
+            "file": "src/main_controller.c",
+            "sha256": "82182dae868d2210e6407dbcd5cbef6e57738dbd2481a9934cde82897f3ae1ad",
+            "function": "controllerGetCommandQueue"
+          },
+          {
+            "kind": "file",
+            "file": "src/game/microphone_requests.c",
+            "sha256": "94e81108d9edd99e10b0916b509eda7281e00e7e9c11e2f7db3dfe628832ef4b"
+          },
+          {
+            "kind": "file",
+            "file": "src/game/microphone_session.c",
+            "sha256": "967de2d1101120114e376830c7eb622c7ce082abfad2dcad845d8ab20aa01375"
+          },
+          {
+            "kind": "file",
+            "file": "src/main_controller.c",
+            "sha256": "0c8203997ad177c615a84a5f832d7f3b1df02d283df647766f9fb63d526fcca0"
+          },
+          {
+            "kind": "file",
+            "file": "include/microphone_configuration.h",
+            "sha256": "0937734fb3d7b3972df758ffc84710cf5e233897902347b97544a22c51792ff8"
+          },
+          {
+            "kind": "file",
+            "file": "include/microphone_requests.h",
+            "sha256": "1f903d939567ed8d03a95ce834a3c7795b36be3bc14b309e41fb16273e9dd06c"
+          },
+          {
+            "kind": "file",
+            "file": "include/microphone_session_query.h",
+            "sha256": "3542f193b3e56006676421e9ef75e337dca92f1ef6a669154a485814d5597a3c"
+          },
+          {
+            "kind": "file",
+            "file": "include/controller_rumble.h",
+            "sha256": "9a6a9ba0a45cc8d2e8c30ab0a65d42ed82f989d82eb649f60f4f33282360413e"
+          },
+          {
+            "kind": "file",
+            "file": "include/ultra64.h",
+            "sha256": "f20e88de98f687b2572e41a0a1b351f89e420c4d10c1ff9da381122a53898450"
+          },
+          {
+            "kind": "file",
+            "file": "include/PR/os.h",
+            "sha256": "510f8071814067e478263d966e6b14013c0040f7ce7020043d4eeb00b1a1db35"
+          },
+          {
+            "kind": "file",
+            "file": "include/PR/ultratypes.h",
+            "sha256": "94e5b09ca40c5e4d65da3b92bed7e206e610ee7f589e9eef417f6bc7a1742fe7"
+          },
+          {
+            "kind": "file",
+            "file": "include/PR/R4300.h",
+            "sha256": "cee95a00719507433940ffc0283e6637279a197fc02b9858379308f45533fb09"
+          },
+          {
+            "kind": "file",
+            "file": "Makefile",
+            "sha256": "93511fec0229601cad6789e0f5ab4571c5f8b085578713b31faf7226e1f9e4e5"
+          },
+          {
+            "kind": "file",
+            "file": "build/asm/os/sendmesg.s",
+            "sha256": "9fe5fa7f0b12cbaba366b3770e275cb33a781936e7996cdb5aa61c2f246c8d52"
+          },
+          {
+            "kind": "file",
+            "file": "build/asm/os/recvmesg.s",
+            "sha256": "3f97ce6ad0a96d367f0193e1ad267d331579fafada2bf35082db1e629794d0ac"
+          },
+          {
+            "kind": "file",
+            "file": "build/asm/os/startthread.s",
+            "sha256": "4ff78bbda57d1d9ad6ce1679e55daafd9bc72c90e6cc3cc41b7baa22de25f696"
+          },
+          {
+            "kind": "file",
+            "file": "build/asm/os/exceptasm.s",
+            "sha256": "5aea74af5436240f4f50a5891a8d477f30aaef5b92845f98fe0cd3532ede8b37"
+          },
+          {
+            "kind": "file",
+            "file": "build/asm/os/createmesgqueue.s",
+            "sha256": "1acd1a8aec8f85ea9eb060eb88355ca39bf4cb6cd2295161b0d6531733cbfe13"
+          },
+          {
+            "kind": "file",
+            "file": "include/camera_storage.h",
+            "sha256": "856b99b7234d58282b91b3f86f412b202b07f85a71753c8a47662cd605d6409b"
+          },
+          {
+            "kind": "file",
+            "file": "include/camera_types.h",
+            "sha256": "e0b41d0d08f7ce4a2d9e0f287073ec094cb820d2d02638d39712141325161fc1"
+          },
+          {
+            "kind": "file",
+            "file": "include/camera_overlay.h",
+            "sha256": "0da2961a530c0ce494cbd969e4bfcb38bd49213f4961f48a7d2a3b8b559bdcb3"
+          },
+          {
+            "kind": "file",
+            "file": "include/color_transition.h",
+            "sha256": "926dc8ac98ec7d813e4ad59c5c85261445adbe0311f993fe6ad99643393ce889"
+          }
+        ],
+        "preconditions": [
+          "Immediate request selects handler10, sets actionInitializing and returns WAIT_FOR_ACTION without consuming operands. Deferred dispatch tests game mode3 before actor/VM access; that branch waits without consumption, regardless of actionInitializing.",
+          "Completion requires one numeric operand above protected locals/frame metadata; finite float conversion fits s32 and selects scheme0..27. The captured actor state, its vmAddress and VM/value storage remain live and unchanged throughout the helper chain and any queue suspension. Actor/player/VM/camera/request/kernel records and C stacks do not overlap.",
+          "Use the original28 control schemes and32 player modes, with the old leave hook NULL or exactly playerFinishStun, playerFinishHelpDisplay or playerFinishTargetFocus. The hook uses old permissions before the new mode permissions are written. New update/leave callbacks are retained without invocation.",
+          "The primary player and camera slot0 are initialized and writable, with original near-zero float tolerances. Saved companion mode0..2 and target handle remain valid borrowed state for later use. Restore calls showMessage0 and does not enqueue message text.",
+          "Completion writes the selected mode/update/leave, permissions, modeElapsed0, retained-input u16 mask and controller port. Old stun clears viewShake, requests camera overlay RGBA0/duration0.8 and rumble stop; old help requests RGBA0/duration0; old focus conditionally restores saved companion mode/target. New mode9 (scheme5) queues rumble1.5/0.2/0.15. These requests do not prove motor completion or later camera update.",
+          "OS_MESG_BLOCK is invoked from a valid ordinary libultra thread, not an interrupt/exception callback; CP0/MI access and initialized exception/dispatch machinery are available. Current running-thread record, ready queue and queue wait lists are valid, distinct, writable records with sentinel termination and priority ordering; caller stack/context satisfy original o32/64-bit-save/FPU alignment and context rules.",
+          "OSMesgQueue is initialized: positive msgCount, 0<=validCount<=msgCount, 0<=first<msgCount, writable four-byte pointer slots and valid sentinel-backed mtqueue/fullqueue lists. Queue, storage, live thread contexts, stacks, ring requests and caller actor/VM/value storage are nonoverlapping. The actual controller queue is 0x800AD088, capacity16, backing0x800AD0A0.",
+          "Full queue suspends the sender and may suspend repeatedly after rechecking space. Returning requires eventual dequeue, wakeup, priority scheduling and restoration of this same live thread with its still-valid stack/continuation. No finite completion time or successful scheduling fairness is guaranteed by osSendMesg.",
+          "A waiting receiver may be popped, made runnable and dispatched before send returns; full-queue blocking can also execute other threads. Those threads/interrupts have separately scoped effects: no concurrent mutation, replacement or destruction of the reviewed caller actor, VM, value stack, protected locals/frame records or borrowed inputs. This is a native-frame noninterference assumption, not proof of whole-game scheduling or arbitrary thread behavior.",
+          "Rumble producers likewise serialize index selection and writes and must not overwrite a slot before its prior consumer finishes reading. Eight 0x18-byte slots are indexed by preincrement-and-wrap, unlike microphone post-send advancement. Returned queue submission does not acknowledge dispatch or motor completion.",
+          "Interrupt-disable returns the previous IE bit and restore ORs that bit into current Status; it does not restore the entire initial Status. Original CP0/MI masks, global mask and valid resumable contexts are required. Interrupt-mask changes and hardware events outside the atomic queue steps remain separately modeled interference, not silently excluded.",
+          "Running-thread state is4 and the running thread is absent from ready/wait lists. Queued blocked senders/receivers have state8 and valid queue back-links; ready nodes have state2, descending signed priorities, and a tail sentinel (nextNULL, priority-1). Dispatch always has at least one real runnable thread (normally idle), never the sentinel as a resumable context. Resumed caller preserves its stack, cached operands/VM pointer and required callee-saved/FPU state.",
+          "Rumble packet padding retains existing bytes; no zero-initialization is implied. Ring slots remain live until the consumer finishes, and producers serialize index selection/copy/enqueue. OS queue capacity16 does not protect eight-slot reuse.",
+          "Review covers returning synchronous storage effects under the stated scheduling/noninterference conditions. It does not prove later callbacks, gameplay reachability, device completion or unconditional queue liveness."
+        ],
+        "evidence": "Read-only original Ghidra80116CF8 confirms mode3 returns2 before actor access; otherwise pop scheme,80111A00, push0 and return1, with no actionInitializing read. Original801101D0/80110288 authenticate old leave-before-new-permissions ordering, mode9 rumble, retained callbacks and input/port writes. Original80110A24/801110D8/80111164 close all three retained leave hooks. Frozen original-ROM SDK queue/scheduler ranges close blocking/wakeup/resumption; source and layout dependencies must remain current. No runtime claim.",
+        "uses_initialization_flag": false,
+        "waiting_game_mode": 3,
+        "completion_result": 0,
+        "sdk_instruction_ranges": [
+          {
+            "function": "osSendMesg",
+            "address": "0x80053190",
+            "size": 332,
+            "rom_offset": "0x53d90",
+            "sha256": "0422bf5ad85265fb9bab17eef54b9725e0df648fbe9e9a1366f3cb150d7dd5ad"
+          },
+          {
+            "function": "osRecvMesg",
+            "address": "0x80051550",
+            "size": 312,
+            "rom_offset": "0x52150",
+            "sha256": "43051c9d88c1cbb9a1210fa1dc6ef0f3edb22f4bacb296158d8cbd65cfcc5abb"
+          },
+          {
+            "function": "osCreateMesgQueue",
+            "address": "0x800516e0",
+            "size": 44,
+            "rom_offset": "0x522e0",
+            "sha256": "722e99b14443e8fc39d3fda597c0309818e51d128cb0952b7bf3558650e7a791"
+          },
+          {
+            "function": "osStartThread",
+            "address": "0x80050bf0",
+            "size": 336,
+            "rom_offset": "0x517f0",
+            "sha256": "bf001131da5edb35e7f4bea2eff6d51619d31a95b2424198c242daee20955bcb"
+          },
+          {
+            "function": "__osEnqueueAndYield",
+            "address": "0x80057c44",
+            "size": 256,
+            "rom_offset": "0x58844",
+            "sha256": "d5ef2d3f73d0cdca7cd679cfb616e73bcdd5695b71c303561e12b9faa1e76caf"
+          },
+          {
+            "function": "__osEnqueueThread",
+            "address": "0x80057d44",
+            "size": 72,
+            "rom_offset": "0x58944",
+            "sha256": "8091a95dae39c6b1fc1a33a413913174da32d2a1c61971b45d5170e8b51c54f6"
+          },
+          {
+            "function": "__osPopThread",
+            "address": "0x80057d8c",
+            "size": 16,
+            "rom_offset": "0x5898c",
+            "sha256": "9cfacc440af965d2989166dd711ef58ae5a92e68c6ef3cf399a0403e1fd36afe"
+          },
+          {
+            "function": "__osDispatchThread",
+            "address": "0x80057da4",
+            "size": 380,
+            "rom_offset": "0x589a4",
+            "sha256": "da4b95aa2be6f0aabea67c4314bac423c573b965aed913be6e216b98c8ac28e4"
+          },
+          {
+            "function": "__osDisableInt",
+            "address": "0x80057ff0",
+            "size": 112,
+            "rom_offset": "0x58bf0",
+            "sha256": "182263f540080608a1c5a341601192b55c811ebb017644a55bc8061a0bb2a8d2"
+          },
+          {
+            "function": "__osRestoreInt",
+            "address": "0x80058060",
+            "size": 32,
+            "rom_offset": "0x58c60",
+            "sha256": "760fabe684a57096a1f98fb972d27fc9ae0f5b227768fa227ed73c15b4ad1e09"
+          }
+        ],
+        "sdk_storage_effects": [
+          "Nonfull send: store message pointer at msg[(first+validCount)%msgCount], increment validCount. Payload bytes are not copied or acknowledged.",
+          "Full send: running thread state halfword+0x10=8; enqueue in &queue.fullqueue. On receiver wake: pop queue.mtqueue, set receiver state2 and enqueue ready queue. Higher priority receiver can preempt sender via ready-queue yield.",
+          "Priority insertion writes thread.next, predecessor.next/queue-head and thread.queue(+8). Pop writes only queue-head, leaving popped next/queue fields until subsequent insertion.",
+          "Yield saves thread Status+0x118 with EXL set, callee-saved s0..s7 at+0x98..D0, gp+E8,sp+F0,s8+F8,ra+100,returnPC+11C, RCPmask+128. If fp flag+18 nonzero, also F20/F22/F24/F26/F28/F30 at+180..1A8 and FCSR+12C.",
+          "Dispatch pops ready queue at8009F898, writes running-thread global8009F8A0 and state4; restores GPR/HI/LO/CP0Status/EPC/FPU state, writes MI interrupt mask atA430000C using the authenticated table800A7D40 and global mask8009DC80, then ERET. External runnable-thread execution is not attributed to caller helpers.",
+          "Own send stack frame56 bytes plus writable caller argument homes; osStartThread adds40 bytes on wake/preemption path. Other resumed threads have separate live stacks and contexts. Ready/wait sentinel at8009F890 has next0 and priority below real threads.",
+          "Original __osDisableInt mask-race branch also reads8009F9B8; its literal access must be preserved rather than assuming it dereferences runningThread. Fast mask-stable path does not take that branch."
+        ]
+      }
     },
     {
       "function": "actorScriptStartAreaTransition",
@@ -8633,6 +9008,244 @@
         "Own send stack frame56 bytes plus writable caller argument homes; osStartThread adds40 bytes on wake/preemption path. Other resumed threads have separate live stacks and contexts. Ready/wait sentinel at8009F890 has next0 and priority below real threads.",
         "Original __osDisableInt mask-race branch also reads8009F9B8; its literal access must be preserved rather than assuming it dereferences runningThread. Fast mask-stable path does not take that branch."
       ]
+    },
+    {
+      "function": "actorScriptCreateAttachedEffect",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "e20caf2f3f177b41f9b447af6dda897f356fd2644feae3595ebaccf10665bf55",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 2,
+      "stack_delta": -1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Consumes effect-kind then track-index push order and supplies integer zero after creating/replacing attached effect.",
+      "dependencies": [
+        {
+          "kind": "file",
+          "file": "src/game/attached_effect.c",
+          "sha256": "e80bcfb4c134c04a03aebe0b2b539504a886adb83bb87cbd7eb0941c89a7dce2"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/object_hierarchy.c",
+          "sha256": "d2e4e761161617f2989d1abbd165c9e4eb3089ffca22168f14c5efb73517f7eb"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/heap.c",
+          "sha256": "280524bfad61c25044f571ae783e6655d09e7f56036ed110a62ed9966d89fcf0"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/keyed_pool.c",
+          "sha256": "5a31121fe5bab247aa97e052cd21560b467b315c6000601ee8b2299fb5d48953"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/node_pool.c",
+          "sha256": "b6c3871fbc89f29ad8db38a727167e5e2e8d34824ee026608d5e32b697c49acc"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/search_tree.c",
+          "sha256": "bee9fb7f21b83c7bf80f1a6a5faf2d757148b13dea5ac681a5295f5eabbd3b55"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/animation_tracks.c",
+          "sha256": "e2050b5bc9269e1a9db31ace2465f32a80a7308e59c7b6e41f9d28f3f7a15f2b"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/trigonometry.c",
+          "sha256": "d43f5d0191eda333607d321693694367d35ccf392b257f8f1652acbe10721d9a"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/save_progress.c",
+          "sha256": "03fcec83e66ba712d4a3096287449258d2f57bf9a123acda605d281e80e49d32"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_template.h",
+          "sha256": "4ac4abe8965ed6eb5ae1f8c32153a0b670b14ebe030d4f7bbb4fbee84c098a26"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_kind_callbacks.h",
+          "sha256": "16b8c7d03046d15ff1cbeef889b8568337d7637b7039a7c6f9c0e2ab4d1eaa8f"
+        },
+        {
+          "kind": "file",
+          "file": "include/heap_types.h",
+          "sha256": "6d3628051e08874ce30b1de4c016bf89538e3eaf7bd7e1d3c337a9b9c3bd8bd9"
+        },
+        {
+          "kind": "file",
+          "file": "include/keyed_pool_types.h",
+          "sha256": "4c5ce15833971e0a7b7a25588eb674597474dba8a6d71b51cf78cf098c63a611"
+        },
+        {
+          "kind": "file",
+          "file": "include/search_tree_types.h",
+          "sha256": "c9d0f6ce4bf53f8398b04cc9984e276a89422b2dccbc236a9e20ddbafb03390f"
+        },
+        {
+          "kind": "file",
+          "file": "include/animation_tracks.h",
+          "sha256": "cb8ae02394bd3d838aa968bd4fee5bb23ad6517028bddc2957cfd2d7c4c6c40a"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script.h",
+          "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+        },
+        {
+          "kind": "file",
+          "file": "include/runtime_mode.h",
+          "sha256": "99748d645656d47e6a031b243a404a34cb61b149faa36f9e0aac42f02d6c4951"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_flags.h",
+          "sha256": "135a2ddab3b6c3e703f08bc85faa083742809cf81a1edc43bd05469d2faac637"
+        },
+        {
+          "kind": "file",
+          "file": "include/node_pool.h",
+          "sha256": "33bbd509f6df4a3b309f2a092d4e8f256e898933989af421bca975b2031d502d"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressResolveFieldId",
+          "sha256": "bc9edb823ea95081219e7c5a011c4f2fc5b996c25adba7582a258d3f3edb561f"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressGetValue",
+          "sha256": "fb8b1f81a82ac75b37f30ad1e87f9e0bdbf809cb5ca47a14554437957988c1e3"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressSetValue",
+          "sha256": "37c9e42b3cfb95faeccdd8dfa2b40b730d78f478bf487f6709af3947be9344ee"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressReadFieldValue",
+          "sha256": "f8f8bacd90eaa18363e2b0a17e2c6c1d38998f3dac28851f5744e5c07a38c998"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressStoreFieldValue",
+          "sha256": "193a91e748dce20dc1511e7a0acc31d4b79e4bf9b2ec602c0019ba71f85ce96d"
+        },
+        {
+          "kind": "file",
+          "file": "include/progress_fields.h",
+          "sha256": "8f8d456e6e32417ced73eeb945f40db0b02ee4951a3ce7e8dd84d8c8521432c4"
+        },
+        {
+          "kind": "file",
+          "file": "include/progress_value.h",
+          "sha256": "e1d7be308cd6a2ddb35b7c83db74ee7f9bd428546c88660bea0b23d2f00f884c"
+        },
+        {
+          "kind": "file",
+          "file": "include/progress_field_types.h",
+          "sha256": "9c2c0450b682e4cb2278c1d3880bb74ec68701bada35773fa4cc33771924b7ea"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressAddValue",
+          "sha256": "bad5d639931e0551722e84b3af4bebaced7758c0971e22da4fe5d70f9213d959"
+        },
+        {
+          "kind": "file",
+          "file": "include/game_heap.h",
+          "sha256": "7dfe617d50f618f81a0b8d818a6b8b7b852ab34f4a0e5d0dfdfdb852daf31ce9"
+        },
+        {
+          "kind": "file",
+          "file": "include/random.h",
+          "sha256": "68aa3ecc6cc019f345c83213311579fb96f735047b53c748e08fe7e16f6f6b85"
+        },
+        {
+          "kind": "file",
+          "file": "include/attached_effect.h",
+          "sha256": "2c52dc3eb0d551aeef6502969ca5b7264c36279834ee52e4bfb6256ec5b045ff"
+        },
+        {
+          "kind": "file",
+          "file": "include/opacity_animation_programs.h",
+          "sha256": "d9c8e55c839b9cc76e060f0884c827f3d3539619565107331f6902e026a72328"
+        },
+        {
+          "kind": "file",
+          "file": "include/texture_animation_programs.h",
+          "sha256": "b2ab8bac5ec76401f8103510c282e0c7b727aaca2ac5eae4bb5ae4bdc9354cd4"
+        },
+        {
+          "kind": "file",
+          "file": "docs/LOCAL_SDK_FILES.json",
+          "sha256": "76f91c2e6d465a60326a1a1c5367297c97438e12baa5749de26a53914b61fde3"
+        },
+        {
+          "kind": "file",
+          "file": "config/pikachu.yaml",
+          "sha256": "a56707cf81226745a3d0758e71a63285c21ff334fcc5eea8cba864ccf0cf39c6"
+        },
+        {
+          "kind": "file",
+          "file": "config/symbol_addrs.txt",
+          "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+        },
+        {
+          "kind": "file",
+          "file": "tools/materialize_ultralib.py",
+          "sha256": "b40bdd26d0444db7a0c853608d3c98b2aa5a0bf81cf3c488f62baee884d95664"
+        }
+      ],
+      "preconditions": [
+        "Effect kind is 0..2 and selects the authenticated retail definition prefix at 0x80074EB8 (36 bytes; SHA256 79429f5f6a1ba07741c428e9d8945de089cd49aebd370b92a9d7fb64ff69bc99). Templates at 0x80074E10, 0x80074E80 and 0x80074E48 have kind 0xAC and null sibling/child links. The retail kind initializer is attachedEffectInitialize; arbitrary callbacks are not substituted.",
+        "Two valid numeric operands lie above protected locals and frame metadata. Actor state, VM, owned values, C stack, live object hierarchies and registries are nonoverlapping except documented borrowed links. VM and value storage remain live throughout this synchronous call; concurrent updates and destruction sweeps are excluded.",
+        "The initialized game heap has valid block headers and sufficient free blocks for an object (0x68), effect state (0x2C) and matrix buffers (0x80), accounting for allocator alignment. Newly allocated payloads and all heap metadata writes are disjoint from existing live VM/context/value allocations. Allocation failure is not handled safely by these constructors.",
+        "The object handle pool has positive capacity and a free entry; its next ID remains representable and valid. The active hierarchy pool also has a free entry. Registry links and search tree nodes are valid, acyclic and disjoint from VM storage; the search comparator is objectCompareSearchTreeOrder. Pool relocation, list append and search-tree splaying may modify existing registry nodes without modifying VM payload storage.",
+        "The track index, default frame program and opacity programs zero/one select valid readable resident ValueKey programs. Their initialization/evaluation terminates with defined arithmetic; it writes only new tracks and C-stack results. Borrowed resources remain live through deferred use.",
+        "The old attached-effect handle, if live, resolves to a valid finite acyclic hierarchy disjoint from VM storage. Replacement only flags that hierarchy with 0x62; it invokes no old update/destructor and frees no state. New registration and the owner handle write do not replace or free actor state or its VM.",
+        "For primary Pikachu tracks 0xA6, 0xA7, 0xAF and 0xB3, RNG state and initialized progress field 0x1A layout/save storage are valid and disjoint from VM storage. Adding one to the current progress value fits signed 32 bits. The optional branch advances RNG words and updates the bounded progress-record field. Deferred effect updates, rendering and destruction remain outside this immediate footprint.",
+        "The original SDK zero/copy helpers and retail template/callback data are authenticated by strict generated-object and ROM verification. Source fingerprints alone do not authenticate borrowed ROM resources or generated SDK implementations."
+      ],
+      "evidence": "Original definition prefix SHA25679429f5f6a1ba07741c428e9d8945de089cd49aebd370b92a9d7fb64ff69bc99 and three templates authenticated against ROM; kind0xAC callback entry80079160 selects initializer80013254. Original Ghidra constructor80013130, object creation80008160/80008450, registration and heap/pool/tree chains close synchronous writes. New allocations are0x68 object,0x2C state and0x80 matrices; no update/draw/destructor callback runs. Original flagging800087BC traverses the old hierarchy without freeing it. Static original-instruction review only."
     }
   ]
 }

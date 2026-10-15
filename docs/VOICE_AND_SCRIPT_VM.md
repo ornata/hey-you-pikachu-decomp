@@ -516,8 +516,10 @@ Three retained attached-effect definitions at `0x80074EB8` select templates of
 runtime kind `0xAC`, with no child or sibling templates. Their scales are
 `0.1`, `1`, `1`; opacity-program selectors are `0`, `0`, `1`.
 This establishes the observed prefix, rather than an allocation bound inferred
-from an ELF symbol size. Creation still needs a complete allocator, handle-pool
-and matrix-storage review before its frame contract can be accepted. Replacing
+from an ELF symbol size. The immediate creation contract covers the heap,
+handle pool, active list, search tree and animation initialization. It requires
+successful separate allocations of `0x68` bytes for the object, `0x2C` for state
+and `0x80` for matrices, plus available registry capacity. Replacing
 the actor's old attachment only requests hierarchy destruction; freeing happens
 later. The four special companion tracks `0xA6`, `0xA7`, `0xAF`, `0xB3` also
 advance the RNG and can increment progress field `0x1A`.
@@ -526,9 +528,17 @@ Control-scheme action selector 10 waits in game mode 3 before accessing the VM.
 Otherwise it consumes one scheme, applies it, appends zero and yields. Unlike
 program-start actions, it does not test `actionInitializing`; treating that flag
 as a universal action phase gate would be incorrect. Its retained callbacks can
-request rumble. Text-window selector 13 also waits in mode 3, but its remaining
-review requires owned image destruction and the heap/glyph creation chain.
-Neither deferred contract is promoted solely from its operand shape.
+request rumble. Its deferred review includes those hooks and the original blocking
+queue/scheduler path, under the stated lifetime and noninterference conditions.
+Nine authored original-instruction probes cover the early mode-three wait,
+initialization zero/one, numeric conversion and real player helpers without rumble.
+Target-focus cleanup restores the saved companion selection under the old
+permissions; installing new permissions afterward does not retry a denied restore.
+These probes guard the complete player record, protected VM values and callback
+tables, but do not exercise blocking services or subsequent player input.
+Text-window selector 13 also waits in mode 3, but its remaining review requires
+owned image destruction and the heap/glyph creation chain; operand shape alone
+does not establish that closure.
 
 Microphone dictionary and configuration natives have returning-call contracts
 through the original blocking message queue. A full queue can suspend the caller;
