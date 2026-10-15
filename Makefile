@@ -51,28 +51,14 @@ I_FLAGS := -Iinclude -Iinclude/PR -Iinclude/libc -Isrc -I.
 # Compiler settings for retained game C; scene-specific ISA pins follow.
 OPT := -O2
 MIPS := -mips2
-# Scene lookups: every unit below has an exact measured MIPS1 match.
-$(BUILD)/src/scenes/bedroom.o: MIPS := -mips1
-$(BUILD)/src/scenes/viridian_entrance.o: MIPS := -mips1
-$(BUILD)/src/scenes/viridian_forest.o: MIPS := -mips1
-$(BUILD)/src/scenes/wilderness_camp.o: MIPS := -mips1
-$(BUILD)/src/scenes/viridian_edge.o: MIPS := -mips1
-$(BUILD)/src/scenes/playground.o: MIPS := -mips1
-$(BUILD)/src/scenes/entryway.o: MIPS := -mips1
-$(BUILD)/src/scenes/front_yard.o: MIPS := -mips1
-$(BUILD)/src/scenes/olivine_fishing.o: MIPS := -mips1
-$(BUILD)/src/scenes/olivine_lake.o: MIPS := -mips1
-$(BUILD)/src/scenes/ochre_fishing.o: MIPS := -mips1
-$(BUILD)/src/scenes/oddish_meadow.o: MIPS := -mips1
-$(BUILD)/src/scenes/olivine_lakeshore.o: MIPS := -mips1
-$(BUILD)/src/scenes/springleaf_field.o: MIPS := -mips1
-$(BUILD)/src/scenes/cobalt_island.o: MIPS := -mips1
-$(BUILD)/src/scenes/springleaf_entrance.o: MIPS := -mips1
-$(BUILD)/src/scenes/cobalt_coast.o: MIPS := -mips1
-$(BUILD)/src/scenes/cobalt_fishing.o: MIPS := -mips1
-$(BUILD)/src/scenes/ochre_deep.o: MIPS := -mips1
-$(BUILD)/src/scenes/abra_shop.o: MIPS := -mips1
-$(BUILD)/src/scenes/ochre_entrance.o: MIPS := -mips1
+# Scene units with an exact measured MIPS1 match; everything else builds -mips2.
+MIPS1_SCENES := bedroom viridian_entrance viridian_forest wilderness_camp \
+                viridian_edge playground entryway front_yard \
+                olivine_fishing olivine_lake ochre_fishing oddish_meadow \
+                olivine_lakeshore springleaf_field cobalt_island springleaf_entrance \
+                cobalt_coast cobalt_fishing ochre_deep abra_shop \
+                ochre_entrance viridian_deep credits
+$(foreach s,$(MIPS1_SCENES),$(BUILD)/src/scenes/$(s).o): MIPS := -mips1
 # src/ovl (resident overlay): measured 5.3 -O2 over all 701 m2c drafts
 # (141 exact, none needing 7.1 or -O1), so no pins.
 CFLAGS   = -c -Wab,-r4300_mul -non_shared -G0 -Xcpluscomm -Xfullwarn -signed \
@@ -168,8 +154,8 @@ $(BUILD)/pikachu.elf: $(BUILD)/pikachu.ld linker/menu_state_aliases.ld linker/qu
 	$(LD) -T $(BUILD)/pikachu.ld -T $(BUILD)/undefined_funcs_auto.txt -T $(BUILD)/undefined_syms_auto.txt -T linker/menu_state_aliases.ld -T linker/query_state_aliases.ld -T linker/rodata_aliases.ld \
 	      -Map $(BUILD)/pikachu.map -o $@
 
-# the ROM always builds (asm-differ iterates on non-matching states);
-# only `check` (the default) enforces the byte match
+# The ROM always builds so asm-differ can iterate on non-matching states;
+# only `check` (the default) enforces the byte match.
 $(TARGET): $(BUILD)/pikachu.elf
 	$(OBJCOPY) $< -O binary $@
 
@@ -211,75 +197,68 @@ run: $(TARGET)
 format:
 	clang-format -i $(C_FILES)
 
-.PHONY: verify-clean asm-fallback-summary asm-fallbacks default all check check-names clean distclean split expected progress run format
+# Semantic recovery inventory, independent of the matching-function census.
+source-quality:
+	python3 tools/source_quality.py $(if $(JSON),--json)
 
-$(BUILD)/src/scenes/viridian_deep.o: MIPS := -mips1
+# Optional, read-only readability analysis; IDO still builds the ROM.
+tidy:
+	@uv run --locked python tools/clang_tidy.py $(if $(FILES),--files $(FILES))
 
-$(BUILD)/src/scenes/credits.o: MIPS := -mips1
+# Optional review tools supplement the matching/object gates.
+semantic-review: check
+	uv run --locked --group review python -m tools.semantic_review check $(if $(REVIEW_CORE),--core $(REVIEW_CORE))
+
+# ---- verification -----------------------------------------------------
 
 # Missing dependency files force a rebuild once, including existing checkouts.
 # Included files only add prerequisites; the default goal remains "default".
-DEP_OBJECTS := $(AS_FILES:.s=.o) $(foreach f,$(C_FILES),$(BUILD)/$(f:.c=.o))
+DEP_OBJECTS  := $(AS_FILES:.s=.o) $(foreach f,$(C_FILES),$(BUILD)/$(f:.c=.o))
 MISSING_DEPS := $(foreach o,$(DEP_OBJECTS),$(if $(wildcard $(o:.o=.d)),,$(o)))
-.PHONY: missing-dependencies
 $(MISSING_DEPS): missing-dependencies
 -include $(DEP_OBJECTS:.o=.d) $(wildcard $(BUILD)/src/*/*.asmproc.d)
+
 .DELETE_ON_ERROR:
 
+# BASELINE must be a previously accepted build, not the current output directory.
 BASELINE ?= expected/build
+
 compare-objects:
 	python3 tools/compare_objects.py $(BASELINE) $(BUILD)
-.PHONY: compare-objects
 
-# BASELINE must be a previously accepted build, not the current output directory.
+# Reviewed ABI exceptions are fingerprinted; new or stale findings fail verification.
+check-interfaces:
+	python3 tools/interface_contracts.py --check
+
+check-layouts:
+	python3 tools/layout_contracts.py --check
+
+# Check the selected retail cue bank against its registered event limit and storage.
+check-sequence-bank:
+	python3 tools/verify_sequence_bank.py rom/baserom.us.z64 --bank 0xB140C0 --event-limit 20 --storage 20
+
+# These read the linked ELF, so they need the build first.
+check-native-commands: $(BUILD)/pikachu.elf
+	python3 tools/native_commands.py --elf $<
+
+check-object-draw-callbacks: $(BUILD)/pikachu.elf
+	python3 tools/object_draw_callbacks.py --elf $< --kind-count 0xB4
+
+check-item-callbacks: $(BUILD)/pikachu.elf
+	python3 tools/item_callbacks.py --elf $<
+
+check-scene-callbacks: $(BUILD)/pikachu.elf
+	python3 tools/scene_callbacks.py --elf $<
+
 verify: check check-names check-scene-callbacks check-item-callbacks check-object-draw-callbacks check-native-commands check-interfaces check-layouts check-sequence-bank verify-clean
 	uv run --locked python -m pytest tests
 	python3 tools/source_quality.py --check-ledger
 	python3 tools/compare_objects.py $(BASELINE) $(BUILD)
 	git diff --check
-.PHONY: verify
 
-# Semantic recovery inventory, independent of the matching-function census.
-source-quality:
-	python3 tools/source_quality.py $(if $(JSON),--json)
-.PHONY: source-quality
-
-# Reviewed ABI exceptions are fingerprinted; new or stale findings fail verification.
-check-interfaces:
-	python3 tools/interface_contracts.py --check
-.PHONY: check-interfaces
-
-# Check the selected retail cue bank against its registered event limit and storage.
-check-sequence-bank:
-	python3 tools/verify_sequence_bank.py rom/baserom.us.z64 --bank 0xB140C0 --event-limit 20 --storage 20
-.PHONY: check-sequence-bank
-
-check-layouts:
-	python3 tools/layout_contracts.py --check
-.PHONY: check-layouts
-
-check-native-commands: $(BUILD)/pikachu.elf
-	python3 tools/native_commands.py --elf $(BUILD)/pikachu.elf
-.PHONY: check-native-commands
-
-check-object-draw-callbacks: $(BUILD)/pikachu.elf
-	python3 tools/object_draw_callbacks.py --elf $(BUILD)/pikachu.elf --kind-count 0xB4
-.PHONY: check-object-draw-callbacks
-
-check-item-callbacks: $(BUILD)/pikachu.elf
-	python3 tools/item_callbacks.py --elf $(BUILD)/pikachu.elf
-.PHONY: check-item-callbacks
-
-check-scene-callbacks: $(BUILD)/pikachu.elf
-	python3 tools/scene_callbacks.py --elf $(BUILD)/pikachu.elf
-.PHONY: check-scene-callbacks
-
-# Optional, read-only readability analysis; IDO still builds the ROM.
-tidy:
-	@uv run --locked python tools/clang_tidy.py $(if $(FILES),--files $(FILES))
-.PHONY: tidy
-
-# Optional review tools supplement the matching/object gates.
-semantic-review: check
-	uv run --locked --group review python -m tools.semantic_review check $(if $(REVIEW_CORE),--core $(REVIEW_CORE))
-.PHONY: semantic-review
+.PHONY: default all clean distclean split check expected run format \
+        asm-fallback-summary asm-fallbacks verify-clean progress check-names \
+        source-quality tidy semantic-review missing-dependencies \
+        compare-objects check-interfaces check-layouts check-sequence-bank \
+        check-native-commands check-object-draw-callbacks check-item-callbacks \
+        check-scene-callbacks verify
