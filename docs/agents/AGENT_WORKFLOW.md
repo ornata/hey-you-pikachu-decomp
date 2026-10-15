@@ -19,7 +19,7 @@ Remaining game assembly fallbacks are listed by `make asm-fallbacks`.
   for scope and the reviewed ABI exceptions; do not refresh exceptions without
   reviewing their source and matching evidence.
 - After accepting a change: `uv run python tools/mkctx.py` if headers changed,
-  `python3 tools/progress.py`, `bash tools/check_clean.sh`, `git diff --check`, and
+  `uv run --locked python tools/progress.py`, `bash tools/check_clean.sh`, `git diff --check`, and
   `python3 -m pytest tests`.
 - Use the Ghidra MCP (see ../../AGENTS.md). Optional external helpers include m2c,
   asm-differ and decomp-permuter; obtain them separately when needed.

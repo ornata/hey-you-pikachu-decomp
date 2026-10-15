@@ -195,7 +195,7 @@ verify-clean:
 	@bash tools/check_clean.sh
 
 progress:
-	uv run python tools/progress.py
+	@uv run --locked python tools/progress.py $(if $(filter 1,$(JSON)),--json) $(if $(filter 1,$(STRICT)),--strict)
 
 # fails if a frozen name (docs/FROZEN_NAMES.json) changed since BASE (default HEAD)
 check-names:

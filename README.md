@@ -73,11 +73,13 @@ SDK implementations are generated under ignored `build/asm/` from the supplied R
 ## Status
 
 The build reproduces the retail ROM byte for byte. Game functions remain in C,
-with one game assembly fallback under `src/nonmatching/`
+with one game assembly fallback under `src/nonmatching/`.
 
 SDK implementations are excluded from the source tree and regenerated locally.
 
-Run `make progress` for current game-source counts; generated SDK functions are excluded from those counts.
+Run `make progress` for the source census, or `make progress JSON=1` for its inventory.
+`STRICT=1` rejects incomplete inventories or unknown fallback byte sizes. Sizes
+come from the linked build; this census does not replace the ROM check.
 
 | region | state |
 | ------ | ----- |
