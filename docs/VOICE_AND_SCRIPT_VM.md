@@ -496,6 +496,56 @@ the frame distinction, without certifying arbitrary native effects or retail pat
 
 ### Native storage effects
 
+The cue-change and HUD-guide contracts include the original SDK's PI transport,
+queue and scheduler paths. A returning call requires successful queue admission,
+a live request until completion, an accessible aligned DMA window, and delivery
+of its completion event. Game code ignores submission errors: failure can leave
+the call blocked or spinning after consuming operands. A returned sequence handle
+does not establish accepted MIDI data or audible playback. These are static
+original-instruction reviews, with transport conditions recorded in the manifest.
+
+Releasing a held item appends its resolved kind even when release is refused.
+The retail release table has only two nonnull hooks: light-bulb material reset
+and baseball-cap scale reset. The reviewed helper closure includes those hooks,
+holder handles, item state and hierarchy writes. It requires valid separate
+storage and terminating animation/hierarchy traversal. Eating an item remains a
+separate review: replacement creation, registry ownership and deferred destruction
+need additional evidence; the default banana-to-peel path alone is insufficient.
+
+Three retained attached-effect definitions at `0x80074EB8` select templates of
+runtime kind `0xAC`, with no child or sibling templates. Their scales are
+`0.1`, `1`, `1`; opacity-program selectors are `0`, `0`, `1`.
+This establishes the observed prefix, rather than an allocation bound inferred
+from an ELF symbol size. Creation still needs a complete allocator, handle-pool
+and matrix-storage review before its frame contract can be accepted. Replacing
+the actor's old attachment only requests hierarchy destruction; freeing happens
+later. The four special companion tracks `0xA6`, `0xA7`, `0xAF`, `0xB3` also
+advance the RNG and can increment progress field `0x1A`.
+
+Control-scheme action selector 10 waits in game mode 3 before accessing the VM.
+Otherwise it consumes one scheme, applies it, appends zero and yields. Unlike
+program-start actions, it does not test `actionInitializing`; treating that flag
+as a universal action phase gate would be incorrect. Its retained callbacks can
+request rumble. Text-window selector 13 also waits in mode 3, but its remaining
+review requires owned image destruction and the heap/glyph creation chain.
+Neither deferred contract is promoted solely from its operand shape.
+
+Microphone dictionary and configuration natives have returning-call contracts
+through the original blocking message queue. A full queue can suspend the caller;
+a waiting receiver can run before the send returns. Caller VM storage must remain
+live and untouched across that scheduling interval. The controller queue holds
+16 pointers, while microphone requests occupy only eight reusable 20-byte slots:
+queue capacity does not prevent premature slot reuse. Serialized producers and
+consumer completion before reuse are explicit requirements. Submission acknowledges
+queue admission, rather than dictionary upload or device completion.
+
+Configuration queues raw override and trigger-following values, then normalizes
+availability and voice permission to Boolean globals. Unused packet fields retain
+arbitrary existing stack bytes in the original full-record copy. SDK instruction
+range hashes and generated local assembly dependencies bind the queue review;
+those implementations remain local build inputs. Missing inputs revoke the
+contracts until the matching build materializes them.
+
 Sixteen immediate scalar-append contracts are recorded in
 `tools/script_decoder/native_frame_reviews.json`: fifteen direct getters/yield
 callbacks and the requested-dictionary query. These callbacks

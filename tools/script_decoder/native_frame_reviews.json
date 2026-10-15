@@ -7326,6 +7326,1313 @@
         "Each numeric conversionwrites onlyitscontentbytes andNUL into32-byte gScriptVmNumericTextBuffer801340B0, leavingtailbytesunchanged. Resultborrowed untilnextnumericconversion. Eachreturnedstring is copiedimmediately byprepend beforethenextpop, so consecutive numeric operands are safe underdisjointinputpreconditions. Noallocatedformatterresources orretainednative-stack pointers escape."
       ],
       "evidence": "Read-only original Ghidra sprintf/Printf/Putfld/Litob/Ldtob/Ldunscale/Genld and existing game-source helpers; fixedformat paths only, static review without runtime claim. Thirteen bounded original-instruction interpreter probes at ab945f7 with frozen ELF/core and authenticated helper bytes confirm numeric count tags including finite2.9->2, PC+5, borrowed/indexed strings, integer/code/float formatting, empty/full/prefix-refresh queue cases and safe2499-character window tail. All retain three protected lower values and frame metadata. Count0 clears builder byte0 only; every prepend also writes its byte79 terminator. Numeric scratch overwrites prefix+NUL only, with remaining tail unchanged. Unsafe overflow cases were not executed."
+    },
+    {
+      "function": "actorScriptChangeCue",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "4054d0483648d239cf06f0fb27ab81b4bb34acb4d41f4984029c205c64d25ab3",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 3,
+      "stack_delta": -2,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Consume bottom-to-top cue ID, fadeOut, fadeIn; replace with current logical sequence playback handle or0. Negative cue stops current cue and returns0; nonzero handle does not prove MIDI header acceptance or playback.",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopFloat",
+          "sha256": "6ab64e75a64605c75c85f685e506c90c9970819578d94a601eb7b1bae774744b"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetFloat",
+          "sha256": "94e6ff080eea82e2661ec2adbc45a33a6a2141b10ff8d1263f580c2c5433c6b1"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/action_script_commands.c",
+          "function": "audioGetCueDataRomAddress",
+          "sha256": "4c575f64ef50f7393a03015e0c331a55e0738b8ecde1e6cf1fbf198d6bb766e6"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/action_script_commands.c",
+          "function": "romWindowReadByte",
+          "sha256": "cf1a2fb6dc0c5b74d10232a674645971f72037b0c1ddd3e2e6c87ce25a50cfd2"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/audio_playback.c",
+          "function": "audioPlaySequenceWithFade",
+          "sha256": "182d3a47c9c6ecf0a1ab70d8e0565576162d9b9f0e1b19a0d7d9184fa72ab34f"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/audio_playback.c",
+          "function": "audioPlaySequence",
+          "sha256": "6afa548eb64906b55b4b7ea2b0424b7602e473cd7b37e9b1ef3166270d74ebc4"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/sequence_engine.c",
+          "function": "sequenceEngineIsStopped",
+          "sha256": "28230df7f3ada9748f18eb2ec9db8e04aea47e4dee1538c6d584c82fd555fad8"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/sequence_control.c",
+          "function": "sequenceControlStart",
+          "sha256": "87118334020a2af539be0a393e01ae2617f0b18e0690595e4f3e8b8560ef8e1b"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/sequence_control.c",
+          "function": "sequenceControlRequestVolume",
+          "sha256": "d445ff3c0be942c34299dd76f367ed72cf9a2a63805a3cd379e7371ca0f5bded"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/midi_sequence.c",
+          "function": "midiSequenceIsStopped",
+          "sha256": "068552ac63f885e4aa0b7617963add13580df0b9c4dbdacc8b5bc18b9624220a"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/midi_sequence.c",
+          "function": "midiSequenceStart",
+          "sha256": "0c2605da24b614dd475c3293e66ef19aa9837976366e773d7a2e553be9d9ab05"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/midi_sequence.c",
+          "function": "midiSequencePlaybackTransitionHook",
+          "sha256": "e0c61c4c3656a5589c12701e8339869852b76f933014fa01295cbbde673af8fe"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/object_hierarchy.c",
+          "function": "midiReaderOpen",
+          "sha256": "3f71dc779aabd1b14f2451d37635e3f4e82f5b97a643d525e66370bcc178ee39"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/object_hierarchy.c",
+          "function": "midiReaderReadU32",
+          "sha256": "e1a7bf37871fddceb1555c704eb3393090b4422b5469715ad13ddcdd14c0ae15"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/object_hierarchy.c",
+          "function": "midiReaderReadU16",
+          "sha256": "8b1277e169572e301c6cee070734fea316c99036aeac6aebf49fa75461007a7a"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/object_hierarchy.c",
+          "function": "midiReaderReadByte",
+          "sha256": "a8c7f6ebc34fec7d0877856ae590a7a68ef846b207b93425fd9fd4e7e5e03eae"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/object_hierarchy.c",
+          "function": "romByteReaderInitialize",
+          "sha256": "902aea18aef7fd58fd3b83a85e2ad4f4282925c79b3f5bbbd68ed955f8ae0a30"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/object_hierarchy.c",
+          "function": "romByteReaderRead",
+          "sha256": "01ad7216627247be72b2acf3bea800cf56ac527d5943a68565f1e3666a831e74"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/action_script_commands.c",
+          "sha256": "e8868c27e38c551657c25cf656d6614a055d9358c9fff7357169b364ae923a68"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/audio_playback.c",
+          "sha256": "cc43d722ca73c5a3982af98875eccddfd45f9272edc9fd065c3ce9249e6b9e9d"
+        },
+        {
+          "kind": "file",
+          "file": "include/audio_cue.h",
+          "sha256": "8e1accef3c6ed7149d0be7e52fb3288e57769e0f0cff245ead0c9e8530d37e32"
+        },
+        {
+          "kind": "file",
+          "file": "include/audio_sequence.h",
+          "sha256": "568eeee59ec2695edc015f3907df2833e0a928aec5d2d11159e8e2d49669d44c"
+        },
+        {
+          "kind": "file",
+          "file": "include/sequence_playback.h",
+          "sha256": "970759a4d6b287beae3d318a5c231acf21b54546328ebc9ca093965bfe4c3c6a"
+        },
+        {
+          "kind": "file",
+          "file": "include/sequence_control.h",
+          "sha256": "c99249c658d80c849e572287c3e8577c76bf88e3030bcb997552f68abd039ca9"
+        },
+        {
+          "kind": "file",
+          "file": "include/midi_sequence.h",
+          "sha256": "4fe9362070ff0b20b0ed68305263431bf27d66009981d9b699c054c0139639ba"
+        },
+        {
+          "kind": "file",
+          "file": "include/midi_reader.h",
+          "sha256": "92d915a9900cd0ad1c324b6740a945fe499459ee2df5b8a02ece4b024e843a88"
+        },
+        {
+          "kind": "file",
+          "file": "include/midi_reader_types.h",
+          "sha256": "a7769d42267b413eeeb43e49e0590fc59cca57e0ec3c43feada865d15aeae9da"
+        },
+        {
+          "kind": "file",
+          "file": "include/midi_sequence_types.h",
+          "sha256": "bf66ec7c2dd9449e1cfc6745a75ef8893f60200458f83f569f80e827f50a458d"
+        },
+        {
+          "kind": "file",
+          "file": "include/midi_encoding.h",
+          "sha256": "c41bba40571ee17d57045afd4fa0887f0556f8de3c62c15dda1841de8af64b03"
+        },
+        {
+          "kind": "file",
+          "file": "include/sequence_engine_types.h",
+          "sha256": "84217ab179321dedc30e534dcae345a0763f4b0afa29ea9239ca7cd86fbf5748"
+        },
+        {
+          "kind": "file",
+          "file": "include/sequence_driver_types.h",
+          "sha256": "c7f5368c7e7076e003f5db6297e6647cc9beb32c0321ba7043b39ac06322b7c8"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script.h",
+          "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+        },
+        {
+          "kind": "file",
+          "file": "include/script_vm.h",
+          "sha256": "f9f9e4509166d6c9aac4d4687f973da7c3b719df7413be4d4f738182850e5b08"
+        },
+        {
+          "kind": "file",
+          "file": "include/script_value.h",
+          "sha256": "c1cb20c87f4e54325f445007e9d889e5a29769d6b7c71ff8f20386caa8fe8b93"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/os_message.h",
+          "sha256": "40e7350399ac69591974b7f15eb8b0650958702f4943ebd288b77792196676fe"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/os_pi.h",
+          "sha256": "3a97ba00150d6f9e4b4279029ae44fc184adf87e0f42175bad3a5539ba6c8242"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/os_thread.h",
+          "sha256": "a1cd0aa5227e6c238c30c6e022a9de252e8a547a465b8d2f82905d446c3a9ebf"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/os_exception.h",
+          "sha256": "161fe95ce76fbc9bf9c4ae6117fbcd59c5557e172841c57ff82a27972942723e"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/os_cache.h",
+          "sha256": "4948cef26a84468e098b82c80f1bbdb546ec7de948a2992b5aacee9823be631c"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/os_reg.h",
+          "sha256": "3ac9ee33351e07cc97a8f62a1b0775a3d2017b13e05776aa2d1e5a6027fc6428"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/os_internal.h",
+          "sha256": "6e4de33297a86011b97fdbfa33ecc1c22e527000be56228b53a29e1bd6952354"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/ultratypes.h",
+          "sha256": "94e5b09ca40c5e4d65da3b92bed7e206e610ee7f589e9eef417f6bc7a1742fe7"
+        },
+        {
+          "kind": "file",
+          "file": "docs/LOCAL_SDK_FILES.json",
+          "sha256": "76f91c2e6d465a60326a1a1c5367297c97438e12baa5749de26a53914b61fde3"
+        },
+        {
+          "kind": "file",
+          "file": "config/pikachu.yaml",
+          "sha256": "a56707cf81226745a3d0758e71a63285c21ff334fcc5eea8cba864ccf0cf39c6"
+        },
+        {
+          "kind": "file",
+          "file": "config/symbol_addrs.txt",
+          "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+        },
+        {
+          "kind": "file",
+          "file": "tools/materialize_ultralib.py",
+          "sha256": "b40bdd26d0444db7a0c853608d3c98b2aa5a0bf81cf3c488f62baee884d95664"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/action_script_commands.c",
+          "function": "audioChangeCurrentCue",
+          "sha256": "55b89f9ef61e345aa231d633e07d6fe0b563c209127cc386d5e59e865b953da4"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/audio_playback.c",
+          "function": "audioFadeOutSequence",
+          "sha256": "a39f003981522b84c27376b3fda57ec9f17729e72699452ee1c8af3683bbf0d4"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/sequence_control.c",
+          "function": "sequenceControlScheduleStop",
+          "sha256": "e0ed084df106283ea6ec48dfdc96e6da73be52125507543ac8e93cb6f9b09267"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/midi_sequence.c",
+          "function": "midiSequenceStop",
+          "sha256": "d5267087d309fe1534a4eb61d38c7ad8c3174eff24d11a3fe35e3428c5a9e055"
+        }
+      ],
+      "preconditions": [
+        "Numeric operands lie above protected frame metadata/locals. Integer conversion accepts integer/code-reference or finite signed32-representable floats (truncating fractions). Fade operands convert to f32 before promotion to f64. Saved actor, actor state, VM and its value storage remain live; no concurrent VM mutator, destruction or context replacement is covered.",
+        "Owned VM/value storage is disjoint from cue globals, shared cue-bank reader, all four0x7F0-byte sequence slots, reader/cache backing, caller and PI-worker C stacks, OS queue/backing/thread/context state and hardware buffers. Initialized sequence slots and their embedded0x5D8 control/player states remain stable except reviewed writes. Sequence worker callbacks do not run concurrently on these same slots during this source-frame call.",
+        "Nonnegative cue IDs select readable bank entries at base+8*ID+4..7 without signed/address overflow. Cue-bank reader800F0290 is initialized,16-byte aligned, with its aligned1024-byte buffer wholly within its first0x400 bytes, valid embedded one-message queue and stable cache window. Reads sharing either reader are serialized; no cache reinitialization or borrowed resource replacement occurs mid-call.",
+        "Every cartridge cache miss reads exactly1024 bytes from address&~15 into a16-byte-aligned owned RDRAM buffer. The whole ROM window must be accessible, destination in cached KSEG0 with correct direct physical translation and original cartridge base80000308 selecting the supplied ROM, and destination disjoint from queue/control/VM metadata. For MidiReader, align-up(reader+4,16)..+1024 lies within embedded0x410-byte storage; cue reader requires its stricter16-byte base alignment. Cache invalidation on these full aligned lines does not flush neighboring partial lines.",
+        "Original authenticated retail SDK implementation and pinned local SDK headers/configuration are required. Strict generated-object and ROM verification authenticates reviewed SDK bytes; source-frame validation alone does not. Valid initialized OS kernel threads, queue wait lists, sentinels, runnable/current contexts and interrupt state remain live/nonoverlapping with VM values. Thread suspension/resumption preserves caller C stack and stack OSIoMesg until its own completed transfer is dequeued.",
+        "On every requested transfer the original PI manager8009EE40 must be active, with valid command/event/access queues and fixed dma function pointer8005A030 installed by osCreatePiManager80053E30. High-priority osPiStartDma uses nonblocking osJamMesg: command queue must have admission capacity. Its inactive/full return-1 is ignored by game code; a failed submission is outside the returning contract, never assumed successful.",
+        "PI bus becomes ready, access token and worker execution are available, physical read starts successfully and PI completion interrupt/event is delivered. Nonblocking MIDI receive spins require interrupt/preemption progress sufficient to run the PI worker; no claim of termination under starvation. Event queue receives the matching event, and each private completion queue starts empty, has capacity1 and no unrelated producers/consumers or stale messages. Worker nonblocking completion send must succeed; failed raw DMA or missing/dropped completion otherwise leaves cue blocked or MIDI spinning.",
+        "PI worker type11 path only reads the live OSIoMesg, acquires/releases its access queue token, programs PI registers and waits for its event before posting the same request pointer to retQueue. It never frees or owns the caller request. Request pointer remains live until matching completion; after posting, the normal worker path accesses manager/access queue, not that request. Hardware DMA writes exactly the owned1024-byte destination; no arbitrary dma/edma callback or disk path is admitted.",
+        "Synchronous SDK call footprint comprises initialized OSIoMesg fields type/priority/retQueue/DRAM/device/size/handle (status byte unchanged), queue metadata/backing, waiting/runnable thread links/context and interrupt/cache state. PI-worker/interrupt completion additionally writes kernel/event/access queues, worker stack and PI MMIO plus the bounded DMA buffer. Other thread behavior is separately constrained by nonalias/liveness; it is not attributed to the native source body.",
+        "A stopped slot is selected first; startup assigns its handle then writes resetPending=1, stopDelay=-1, fadeDuration=-1 and opens its reader. Open writes start/position/length22/runningStatus0, initializes cache queue, then reads at most22 header bytes. Supported format is MThd length6 format0 one track, division without bit15, MTrk and signed32-fitting tracklength+22. Header rejection may leave partial reader/control writes and division0; issued handle still increments regardless of startup success.",
+        "Successful nonzero division additionally writes tempo500000, hasLoop0, rate1, channelMask0xFFFF,repetitions0,stopped0; transition hook800051A0 is original no-op. Startup immediateLevel=1 then fade helper immediateLevel=0.3 and requested fade/immediate target1. Matching handles across all slots can be updated; returned0 when slots exhausted still scans slots whose handle is0. Shared next handle is positive, unique and below INT_MAX before increment.",
+        "This is complete immediate storage-footprint review under explicit transport/kernel preconditions, not later event decoding, deferred synth output, audible behavior, gameplay reachability or unconditional I/O termination. Original-assembly static support only; no runtime trace is claimed.",
+        "Fade durations are finite nonnegative f32 values. audioFadeOutSequence first updates all matching old nonzero handles: duration0 writes immediate volume and releaseNotes/releaseSustain/stopped; positive duration writes fadeDuration/fadeLevel and shortens stopDelay. Old handle0 skips this path. Stop target gStopFadeTargetVolume800A4890 is finite initialized storage.",
+        "cue>=0 stores cueID, resolves bank and starts sequence, stores returned handle and requested cue rate1. Negative cue stores cueID-1 and handle0 while preserving requested rate and avoiding all bank/reader/PI startup. Saved VM receives integer result only after helper returns; transport failure may leave operands consumed and intermediate audio state written without a pushed result."
+      ],
+      "evidence": "Original native8011D6F0 pops fadeIn then fadeOut then cue;80023150 applies fadeOut to old cue before selecting new. Globals80089470/74/80 carry logical handle/ID/requested f64 rate.800201B8/80005864/800052BC close stop path. Original Ghidra SDK800533F0 initializes request and returns nonblocking jam/send result;80059040 retrieves manager queue;800516E0 writes six queue fields;80058EF0/80053190/80051550 implement bounded backing/count/first writes plus kernel wait/wake.80053E30 installs rawDMA8005A030, edma8005A100 and worker8005A2E0. Original jump table800A8010 maps type11 to8005A574;8005A588..8005A5A4 invokes fixed rawDMA with read/device/DRAM/size;8005A67C..8005A6B4 waits PI event, posts request and releases token without rereading request afterward.8005A030 polls PI busy, translates destination80050EC0, programs PI DRAM/cart/read-length registers and returns0 for read. Original osInvalDCache80053340..800533EB authenticated through Ghidra read_bytes against generated instruction annotations, SHA256 f8a381ee23df95612ed0fb5ddcef245f947b01e12d78364fa5b45491f4eb7b55; aligned1024 path uses hit-invalidate only. Game800233D0/80007728 distinguish blocking versus spinning receive, both ignore submit errors.800076E0/80007808/80007B9C/80007BE4/80007C1C close readers;8001FB5C/800200E0/80005808/800058F4/8000522C/800057A0 close sequence/control writes;800051A0 hook is no-op. No runtime evidence."
+    },
+    {
+      "function": "actorScriptSetHudGuideStyle",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "4b67571200c38a356eb84caf9ed283f34c2aacaffe05368f1252810893b088b2",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace guide style0..4 with integer0 after updating selected guide style and borrowed draw callback; changed nonzero style first attempts selection cue0x21.",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopFloat",
+          "sha256": "6ab64e75a64605c75c85f685e506c90c9970819578d94a601eb7b1bae774744b"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetFloat",
+          "sha256": "94e6ff080eea82e2661ec2adbc45a33a6a2141b10ff8d1263f580c2c5433c6b1"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/action_script_commands.c",
+          "function": "audioGetCueDataRomAddress",
+          "sha256": "4c575f64ef50f7393a03015e0c331a55e0738b8ecde1e6cf1fbf198d6bb766e6"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/action_script_commands.c",
+          "function": "romWindowReadByte",
+          "sha256": "cf1a2fb6dc0c5b74d10232a674645971f72037b0c1ddd3e2e6c87ce25a50cfd2"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/audio_playback.c",
+          "function": "audioPlaySequenceWithFade",
+          "sha256": "182d3a47c9c6ecf0a1ab70d8e0565576162d9b9f0e1b19a0d7d9184fa72ab34f"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/audio_playback.c",
+          "function": "audioPlaySequence",
+          "sha256": "6afa548eb64906b55b4b7ea2b0424b7602e473cd7b37e9b1ef3166270d74ebc4"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/sequence_engine.c",
+          "function": "sequenceEngineIsStopped",
+          "sha256": "28230df7f3ada9748f18eb2ec9db8e04aea47e4dee1538c6d584c82fd555fad8"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/sequence_control.c",
+          "function": "sequenceControlStart",
+          "sha256": "87118334020a2af539be0a393e01ae2617f0b18e0690595e4f3e8b8560ef8e1b"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/sequence_control.c",
+          "function": "sequenceControlRequestVolume",
+          "sha256": "d445ff3c0be942c34299dd76f367ed72cf9a2a63805a3cd379e7371ca0f5bded"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/midi_sequence.c",
+          "function": "midiSequenceIsStopped",
+          "sha256": "068552ac63f885e4aa0b7617963add13580df0b9c4dbdacc8b5bc18b9624220a"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/midi_sequence.c",
+          "function": "midiSequenceStart",
+          "sha256": "0c2605da24b614dd475c3293e66ef19aa9837976366e773d7a2e553be9d9ab05"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/midi_sequence.c",
+          "function": "midiSequencePlaybackTransitionHook",
+          "sha256": "e0c61c4c3656a5589c12701e8339869852b76f933014fa01295cbbde673af8fe"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/object_hierarchy.c",
+          "function": "midiReaderOpen",
+          "sha256": "3f71dc779aabd1b14f2451d37635e3f4e82f5b97a643d525e66370bcc178ee39"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/object_hierarchy.c",
+          "function": "midiReaderReadU32",
+          "sha256": "e1a7bf37871fddceb1555c704eb3393090b4422b5469715ad13ddcdd14c0ae15"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/object_hierarchy.c",
+          "function": "midiReaderReadU16",
+          "sha256": "8b1277e169572e301c6cee070734fea316c99036aeac6aebf49fa75461007a7a"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/object_hierarchy.c",
+          "function": "midiReaderReadByte",
+          "sha256": "a8c7f6ebc34fec7d0877856ae590a7a68ef846b207b93425fd9fd4e7e5e03eae"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/object_hierarchy.c",
+          "function": "romByteReaderInitialize",
+          "sha256": "902aea18aef7fd58fd3b83a85e2ad4f4282925c79b3f5bbbd68ed955f8ae0a30"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/object_hierarchy.c",
+          "function": "romByteReaderRead",
+          "sha256": "01ad7216627247be72b2acf3bea800cf56ac527d5943a68565f1e3666a831e74"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/action_script_commands.c",
+          "sha256": "e8868c27e38c551657c25cf656d6614a055d9358c9fff7357169b364ae923a68"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/audio_playback.c",
+          "sha256": "cc43d722ca73c5a3982af98875eccddfd45f9272edc9fd065c3ce9249e6b9e9d"
+        },
+        {
+          "kind": "file",
+          "file": "include/audio_cue.h",
+          "sha256": "8e1accef3c6ed7149d0be7e52fb3288e57769e0f0cff245ead0c9e8530d37e32"
+        },
+        {
+          "kind": "file",
+          "file": "include/audio_sequence.h",
+          "sha256": "568eeee59ec2695edc015f3907df2833e0a928aec5d2d11159e8e2d49669d44c"
+        },
+        {
+          "kind": "file",
+          "file": "include/sequence_playback.h",
+          "sha256": "970759a4d6b287beae3d318a5c231acf21b54546328ebc9ca093965bfe4c3c6a"
+        },
+        {
+          "kind": "file",
+          "file": "include/sequence_control.h",
+          "sha256": "c99249c658d80c849e572287c3e8577c76bf88e3030bcb997552f68abd039ca9"
+        },
+        {
+          "kind": "file",
+          "file": "include/midi_sequence.h",
+          "sha256": "4fe9362070ff0b20b0ed68305263431bf27d66009981d9b699c054c0139639ba"
+        },
+        {
+          "kind": "file",
+          "file": "include/midi_reader.h",
+          "sha256": "92d915a9900cd0ad1c324b6740a945fe499459ee2df5b8a02ece4b024e843a88"
+        },
+        {
+          "kind": "file",
+          "file": "include/midi_reader_types.h",
+          "sha256": "a7769d42267b413eeeb43e49e0590fc59cca57e0ec3c43feada865d15aeae9da"
+        },
+        {
+          "kind": "file",
+          "file": "include/midi_sequence_types.h",
+          "sha256": "bf66ec7c2dd9449e1cfc6745a75ef8893f60200458f83f569f80e827f50a458d"
+        },
+        {
+          "kind": "file",
+          "file": "include/midi_encoding.h",
+          "sha256": "c41bba40571ee17d57045afd4fa0887f0556f8de3c62c15dda1841de8af64b03"
+        },
+        {
+          "kind": "file",
+          "file": "include/sequence_engine_types.h",
+          "sha256": "84217ab179321dedc30e534dcae345a0763f4b0afa29ea9239ca7cd86fbf5748"
+        },
+        {
+          "kind": "file",
+          "file": "include/sequence_driver_types.h",
+          "sha256": "c7f5368c7e7076e003f5db6297e6647cc9beb32c0321ba7043b39ac06322b7c8"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script.h",
+          "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+        },
+        {
+          "kind": "file",
+          "file": "include/script_vm.h",
+          "sha256": "f9f9e4509166d6c9aac4d4687f973da7c3b719df7413be4d4f738182850e5b08"
+        },
+        {
+          "kind": "file",
+          "file": "include/script_value.h",
+          "sha256": "c1cb20c87f4e54325f445007e9d889e5a29769d6b7c71ff8f20386caa8fe8b93"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/os_message.h",
+          "sha256": "40e7350399ac69591974b7f15eb8b0650958702f4943ebd288b77792196676fe"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/os_pi.h",
+          "sha256": "3a97ba00150d6f9e4b4279029ae44fc184adf87e0f42175bad3a5539ba6c8242"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/os_thread.h",
+          "sha256": "a1cd0aa5227e6c238c30c6e022a9de252e8a547a465b8d2f82905d446c3a9ebf"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/os_exception.h",
+          "sha256": "161fe95ce76fbc9bf9c4ae6117fbcd59c5557e172841c57ff82a27972942723e"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/os_cache.h",
+          "sha256": "4948cef26a84468e098b82c80f1bbdb546ec7de948a2992b5aacee9823be631c"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/os_reg.h",
+          "sha256": "3ac9ee33351e07cc97a8f62a1b0775a3d2017b13e05776aa2d1e5a6027fc6428"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/os_internal.h",
+          "sha256": "6e4de33297a86011b97fdbfa33ecc1c22e527000be56228b53a29e1bd6952354"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/ultratypes.h",
+          "sha256": "94e5b09ca40c5e4d65da3b92bed7e206e610ee7f589e9eef417f6bc7a1742fe7"
+        },
+        {
+          "kind": "file",
+          "file": "docs/LOCAL_SDK_FILES.json",
+          "sha256": "76f91c2e6d465a60326a1a1c5367297c97438e12baa5749de26a53914b61fde3"
+        },
+        {
+          "kind": "file",
+          "file": "config/pikachu.yaml",
+          "sha256": "a56707cf81226745a3d0758e71a63285c21ff334fcc5eea8cba864ccf0cf39c6"
+        },
+        {
+          "kind": "file",
+          "file": "config/symbol_addrs.txt",
+          "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+        },
+        {
+          "kind": "file",
+          "file": "tools/materialize_ultralib.py",
+          "sha256": "b40bdd26d0444db7a0c853608d3c98b2aa5a0bf81cf3c488f62baee884d95664"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/action_script_commands.c",
+          "function": "audioPlayCue",
+          "sha256": "274e2676dbbe1bf32a1d1732f01b17165f1bd3a79738ba3f2b5d15425868b293"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/hud.c",
+          "function": "hudSetGuideStyle",
+          "sha256": "6ccacba1c7eb63866def5dbdf234c88b782563e193b359443b47e1af8dfec957"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/hud.c",
+          "sha256": "7ebce910250ed2e285457cc2efe99608aacccd222daca6da65d3eea6a2acfa40"
+        },
+        {
+          "kind": "file",
+          "file": "include/hud.h",
+          "sha256": "9c1ea0143831cf8cfff75038a12b305df4dbde4c6fb1174a4784f7199668aeca"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/mbi.h",
+          "sha256": "23f620aa81136ab27fda2aa3d9fa87da7c9ddbf645c3b4409910323dc4774f02"
+        }
+      ],
+      "preconditions": [
+        "Numeric operands lie above protected frame metadata/locals. Integer conversion accepts integer/code-reference or finite signed32-representable floats (truncating fractions). Fade operands convert to f32 before promotion to f64. Saved actor, actor state, VM and its value storage remain live; no concurrent VM mutator, destruction or context replacement is covered.",
+        "Owned VM/value storage is disjoint from cue globals, shared cue-bank reader, all four0x7F0-byte sequence slots, reader/cache backing, caller and PI-worker C stacks, OS queue/backing/thread/context state and hardware buffers. Initialized sequence slots and their embedded0x5D8 control/player states remain stable except reviewed writes. Sequence worker callbacks do not run concurrently on these same slots during this source-frame call.",
+        "Nonnegative cue IDs select readable bank entries at base+8*ID+4..7 without signed/address overflow. Cue-bank reader800F0290 is initialized,16-byte aligned, with its aligned1024-byte buffer wholly within its first0x400 bytes, valid embedded one-message queue and stable cache window. Reads sharing either reader are serialized; no cache reinitialization or borrowed resource replacement occurs mid-call.",
+        "Every cartridge cache miss reads exactly1024 bytes from address&~15 into a16-byte-aligned owned RDRAM buffer. The whole ROM window must be accessible, destination in cached KSEG0 with correct direct physical translation and original cartridge base80000308 selecting the supplied ROM, and destination disjoint from queue/control/VM metadata. For MidiReader, align-up(reader+4,16)..+1024 lies within embedded0x410-byte storage; cue reader requires its stricter16-byte base alignment. Cache invalidation on these full aligned lines does not flush neighboring partial lines.",
+        "Original authenticated retail SDK implementation and pinned local SDK headers/configuration are required. Strict generated-object and ROM verification authenticates reviewed SDK bytes; source-frame validation alone does not. Valid initialized OS kernel threads, queue wait lists, sentinels, runnable/current contexts and interrupt state remain live/nonoverlapping with VM values. Thread suspension/resumption preserves caller C stack and stack OSIoMesg until its own completed transfer is dequeued.",
+        "On every requested transfer the original PI manager8009EE40 must be active, with valid command/event/access queues and fixed dma function pointer8005A030 installed by osCreatePiManager80053E30. High-priority osPiStartDma uses nonblocking osJamMesg: command queue must have admission capacity. Its inactive/full return-1 is ignored by game code; a failed submission is outside the returning contract, never assumed successful.",
+        "PI bus becomes ready, access token and worker execution are available, physical read starts successfully and PI completion interrupt/event is delivered. Nonblocking MIDI receive spins require interrupt/preemption progress sufficient to run the PI worker; no claim of termination under starvation. Event queue receives the matching event, and each private completion queue starts empty, has capacity1 and no unrelated producers/consumers or stale messages. Worker nonblocking completion send must succeed; failed raw DMA or missing/dropped completion otherwise leaves cue blocked or MIDI spinning.",
+        "PI worker type11 path only reads the live OSIoMesg, acquires/releases its access queue token, programs PI registers and waits for its event before posting the same request pointer to retQueue. It never frees or owns the caller request. Request pointer remains live until matching completion; after posting, the normal worker path accesses manager/access queue, not that request. Hardware DMA writes exactly the owned1024-byte destination; no arbitrary dma/edma callback or disk path is admitted.",
+        "Synchronous SDK call footprint comprises initialized OSIoMesg fields type/priority/retQueue/DRAM/device/size/handle (status byte unchanged), queue metadata/backing, waiting/runnable thread links/context and interrupt/cache state. PI-worker/interrupt completion additionally writes kernel/event/access queues, worker stack and PI MMIO plus the bounded DMA buffer. Other thread behavior is separately constrained by nonalias/liveness; it is not attributed to the native source body.",
+        "A stopped slot is selected first; startup assigns its handle then writes resetPending=1, stopDelay=-1, fadeDuration=-1 and opens its reader. Open writes start/position/length22/runningStatus0, initializes cache queue, then reads at most22 header bytes. Supported format is MThd length6 format0 one track, division without bit15, MTrk and signed32-fitting tracklength+22. Header rejection may leave partial reader/control writes and division0; issued handle still increments regardless of startup success.",
+        "Successful nonzero division additionally writes tempo500000, hasLoop0, rate1, channelMask0xFFFF,repetitions0,stopped0; transition hook800051A0 is original no-op. Startup immediateLevel=1 then fade helper immediateLevel=0.3 and requested fade/immediate target1. Matching handles across all slots can be updated; returned0 when slots exhausted still scans slots whose handle is0. Shared next handle is positive, unique and below INT_MAX before increment.",
+        "This is complete immediate storage-footprint review under explicit transport/kernel preconditions, not later event decoding, deferred synth output, audible behavior, gameplay reachability or unconditional I/O termination. Original-assembly static support only; no runtime trace is claimed.",
+        "Converted style is0..4; callback table800890F0 has all five initialized readable entries. Changed nonzero style plays cue0x21 before writing style800F01F4 and selected callback800F01F8; unchanged or zero style skips sound but still writes both. Selected callback is borrowed and never invoked in this call; its lifetime extends through later HUD draw.",
+        "Audio selection feedback does not change current-cue handle/ID/rate globals; it uses sequence helper directly. If transport fails/blocks, guide style/callback writes and final VM result have not occurred although operand was already consumed."
+      ],
+      "evidence": "Original native8011E4AC consumes one integer and pushes0;80021CDC compares style then conditionally calls80023244 cue0x21 before style/callback stores. Table and callback declaration bound in hud.c; no draw callback executes. Original Ghidra SDK800533F0 initializes request and returns nonblocking jam/send result;80059040 retrieves manager queue;800516E0 writes six queue fields;80058EF0/80053190/80051550 implement bounded backing/count/first writes plus kernel wait/wake.80053E30 installs rawDMA8005A030, edma8005A100 and worker8005A2E0. Original jump table800A8010 maps type11 to8005A574;8005A588..8005A5A4 invokes fixed rawDMA with read/device/DRAM/size;8005A67C..8005A6B4 waits PI event, posts request and releases token without rereading request afterward.8005A030 polls PI busy, translates destination80050EC0, programs PI DRAM/cart/read-length registers and returns0 for read. Original osInvalDCache80053340..800533EB authenticated through Ghidra read_bytes against generated instruction annotations, SHA256 f8a381ee23df95612ed0fb5ddcef245f947b01e12d78364fa5b45491f4eb7b55; aligned1024 path uses hit-invalidate only. Game800233D0/80007728 distinguish blocking versus spinning receive, both ignore submit errors.800076E0/80007808/80007B9C/80007BE4/80007C1C close readers;8001FB5C/800200E0/80005808/800058F4/8000522C/800057A0 close sequence/control writes;800051A0 hook is no-op. No runtime evidence."
+    },
+    {
+      "function": "actorScriptReleaseHeldItem",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "724a1eb8bdf24f8fe79c71d9568f7250b4f00cd2bd18bc886c2f5de6e0fee02c",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Resolved held-item kind, including release-refused states; zero when held handle is not live.",
+      "dependencies": [
+        {
+          "kind": "file",
+          "file": "src/ovl/actor_script_queries.c",
+          "sha256": "183125c5ebd50bb33a38e204e7a71215d2050776a234a51ec8b988501155a9fe"
+        },
+        {
+          "kind": "file",
+          "file": "src/ovl/item_registry.c",
+          "sha256": "ab395f2740ebb39534f312f0bc1460d80f5a143daa6a7e0cae5fc5d9018a303d"
+        },
+        {
+          "kind": "file",
+          "file": "src/ovl/item_special_behaviors.c",
+          "sha256": "601e2e3a91c7b79e74bd16fc4994a75a23166e03dffc86a86c7bd1c4460e68c1"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/object_hierarchy.c",
+          "sha256": "d2e4e761161617f2989d1abbd165c9e4eb3089ffca22168f14c5efb73517f7eb"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/keyed_pool.c",
+          "sha256": "5a31121fe5bab247aa97e052cd21560b467b315c6000601ee8b2299fb5d48953"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/animation_tracks.c",
+          "sha256": "e2050b5bc9269e1a9db31ace2465f32a80a7308e59c7b6e41f9d28f3f7a15f2b"
+        },
+        {
+          "kind": "file",
+          "file": "include/item_kind.h",
+          "sha256": "42d4c755a39b5db20d8e0f36b16a9553781a19a0634eac09dc589d5cfbdd8631"
+        },
+        {
+          "kind": "file",
+          "file": "include/item_state.h",
+          "sha256": "66ce3c31096af2f71fac6a4a386e5228fea920993dabf32ec37dd71a54331723"
+        },
+        {
+          "kind": "file",
+          "file": "include/item_types.h",
+          "sha256": "a11ff3ec0e7d9256425797d27c1d7222f58360b5f27a4bf4128119f9a762f991"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+        },
+        {
+          "kind": "file",
+          "file": "include/animation_tracks.h",
+          "sha256": "cb8ae02394bd3d838aa968bd4fee5bb23ad6517028bddc2957cfd2d7c4c6c40a"
+        }
+      ],
+      "preconditions": [
+        "Valid actor, VM and one free result slot; actor/object/item state, hierarchy nodes, pool records, globals, animation tracks and C stack are nonoverlapping with VM and owned value storage. Protected locals/frame metadata lie below active depth.",
+        "Held handle when live identifies an initialized retail item kind0..165. All referenced holder handles resolve to valid player or actor records; initialized object handle pool, item catalog and area configuration remain intact throughout call.",
+        "Use exactly the frozen retail callback table: only kind49/lightBulbResetReleasedGlow and kind80/baseballCapResetReleasedScale have release hooks. Animation program0xF3 and all traversed item hierarchy nodes are valid; the animation evaluator terminates; hierarchy is finite and acyclic.",
+        "No concurrent/deferred callbacks run during this synchronous request. Actual item owner need not be requesting actor; any resolved actor holder has valid separate actor state. Release can clear holder-held handles, player-held global, item ownership/mode/flags/material track and hierarchy scale/radius/flags, but does not replace/free VM storage."
+      ]
+    },
+    {
+      "function": "actorScriptRequestMicDictionary",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "3af1fde4fce90c4c95c6618c62373672415b25cb9aa40d805bf4f3b12427a797",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "yield",
+      "result_semantics": "Integer zero after successful blocking pointer submission; microphone configuration can take effect asynchronously.",
+      "dependencies": [
+        {
+          "kind": "file",
+          "file": "src/game/microphone_requests.c",
+          "sha256": "94e81108d9edd99e10b0916b509eda7281e00e7e9c11e2f7db3dfe628832ef4b"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/microphone_session.c",
+          "sha256": "967de2d1101120114e376830c7eb622c7ce082abfad2dcad845d8ab20aa01375"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/controller_rumble.c",
+          "sha256": "9b5d2ebaa48525e499f17dccea1ab961db76811fdaa76ca5dce8a21116a327ab"
+        },
+        {
+          "kind": "file",
+          "file": "src/main_controller.c",
+          "sha256": "0c8203997ad177c615a84a5f832d7f3b1df02d283df647766f9fb63d526fcca0"
+        },
+        {
+          "kind": "file",
+          "file": "include/microphone_configuration.h",
+          "sha256": "0937734fb3d7b3972df758ffc84710cf5e233897902347b97544a22c51792ff8"
+        },
+        {
+          "kind": "file",
+          "file": "include/microphone_requests.h",
+          "sha256": "1f903d939567ed8d03a95ce834a3c7795b36be3bc14b309e41fb16273e9dd06c"
+        },
+        {
+          "kind": "file",
+          "file": "include/microphone_session_query.h",
+          "sha256": "3542f193b3e56006676421e9ef75e337dca92f1ef6a669154a485814d5597a3c"
+        },
+        {
+          "kind": "file",
+          "file": "include/controller_commands.h",
+          "sha256": "b025efc98ef4411b78547e5243c3b0a29f9e800ebf99576f4e35573622b46cc7"
+        },
+        {
+          "kind": "file",
+          "file": "include/controller_rumble.h",
+          "sha256": "9a6a9ba0a45cc8d2e8c30ab0a65d42ed82f989d82eb649f60f4f33282360413e"
+        },
+        {
+          "kind": "file",
+          "file": "include/game_message.h",
+          "sha256": "02909f6c14c187481d544f5e915d15bc5883da53867842605c5de1ddc7175303"
+        },
+        {
+          "kind": "file",
+          "file": "include/ultra64.h",
+          "sha256": "f20e88de98f687b2572e41a0a1b351f89e420c4d10c1ff9da381122a53898450"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/os.h",
+          "sha256": "510f8071814067e478263d966e6b14013c0040f7ce7020043d4eeb00b1a1db35"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/os_message.h",
+          "sha256": "40e7350399ac69591974b7f15eb8b0650958702f4943ebd288b77792196676fe"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/os_thread.h",
+          "sha256": "a1cd0aa5227e6c238c30c6e022a9de252e8a547a465b8d2f82905d446c3a9ebf"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/ultratypes.h",
+          "sha256": "94e5b09ca40c5e4d65da3b92bed7e206e610ee7f589e9eef417f6bc7a1742fe7"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/R4300.h",
+          "sha256": "cee95a00719507433940ffc0283e6637279a197fc02b9858379308f45533fb09"
+        },
+        {
+          "kind": "file",
+          "file": "docs/LOCAL_SDK_FILES.json",
+          "sha256": "76f91c2e6d465a60326a1a1c5367297c97438e12baa5749de26a53914b61fde3"
+        },
+        {
+          "kind": "file",
+          "file": "tools/materialize_ultralib.py",
+          "sha256": "b40bdd26d0444db7a0c853608d3c98b2aa5a0bf81cf3c488f62baee884d95664"
+        },
+        {
+          "kind": "file",
+          "file": "config/pikachu.yaml",
+          "sha256": "a56707cf81226745a3d0758e71a63285c21ff334fcc5eea8cba864ccf0cf39c6"
+        },
+        {
+          "kind": "file",
+          "file": "config/symbol_addrs.txt",
+          "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+        },
+        {
+          "kind": "file",
+          "file": "Makefile",
+          "sha256": "93511fec0229601cad6789e0f5ab4571c5f8b085578713b31faf7226e1f9e4e5"
+        },
+        {
+          "kind": "file",
+          "file": "build/asm/os/sendmesg.s",
+          "sha256": "9fe5fa7f0b12cbaba366b3770e275cb33a781936e7996cdb5aa61c2f246c8d52"
+        },
+        {
+          "kind": "file",
+          "file": "build/asm/os/recvmesg.s",
+          "sha256": "3f97ce6ad0a96d367f0193e1ad267d331579fafada2bf35082db1e629794d0ac"
+        },
+        {
+          "kind": "file",
+          "file": "build/asm/os/startthread.s",
+          "sha256": "4ff78bbda57d1d9ad6ce1679e55daafd9bc72c90e6cc3cc41b7baa22de25f696"
+        },
+        {
+          "kind": "file",
+          "file": "build/asm/os/exceptasm.s",
+          "sha256": "5aea74af5436240f4f50a5891a8d477f30aaef5b92845f98fe0cd3532ede8b37"
+        },
+        {
+          "kind": "file",
+          "file": "build/asm/os/createmesgqueue.s",
+          "sha256": "1acd1a8aec8f85ea9eb060eb88355ca39bf4cb6cd2295161b0d6531733cbfe13"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPushInteger",
+          "sha256": "d9c7386b407cc9e5e1ebe3d7ab6c7db1b7e40acb8c64150bb9ed6499fc2ce695"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPushValue",
+          "sha256": "ee2857209fceeb6c5767a3a733019cdbea389851514e320a212eb8556d8c51fd"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueSetInteger",
+          "sha256": "b83e2136925736f751b686cc364df9280a90f8564552393ee43778e69c593d4c"
+        },
+        {
+          "kind": "file",
+          "file": "include/script_vm.h",
+          "sha256": "f9f9e4509166d6c9aac4d4687f973da7c3b719df7413be4d4f738182850e5b08"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script.h",
+          "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+        }
+      ],
+      "preconditions": [
+        "OS_MESG_BLOCK is invoked from a valid ordinary libultra thread, not an interrupt/exception callback; CP0/MI access and initialized exception/dispatch machinery are available. Current running-thread record, ready queue and queue wait lists are valid, distinct, writable records with sentinel termination and priority ordering; caller stack/context satisfy original o32/64-bit-save/FPU alignment and context rules.",
+        "OSMesgQueue is initialized: positive msgCount, 0<=validCount<=msgCount, 0<=first<msgCount, writable four-byte pointer slots and valid sentinel-backed mtqueue/fullqueue lists. Queue, storage, live thread contexts, stacks, ring requests and caller actor/VM/value storage are nonoverlapping. The actual controller queue is 0x800AD088, capacity16, backing0x800AD0A0.",
+        "Full queue suspends the sender and may suspend repeatedly after rechecking space. Returning requires eventual dequeue, wakeup, priority scheduling and restoration of this same live thread with its still-valid stack/continuation. No finite completion time or successful scheduling fairness is guaranteed by osSendMesg.",
+        "A waiting receiver may be popped, made runnable and dispatched before send returns; full-queue blocking can also execute other threads. Those threads/interrupts have separately scoped effects: no concurrent mutation, replacement or destruction of the reviewed caller actor, VM, value stack, protected locals/frame records or borrowed inputs. This is a native-frame noninterference assumption, not proof of whole-game scheduling or arbitrary thread behavior.",
+        "Only serialized microphone producers may select/copy/enqueue/advance the microphone index; preserve the index across queue getter and blocked send. The selected microphone slot must no longer be retained by an earlier request before overwrite. Eight 0x14-byte slots are reused after eight submissions; capacity16 queue blocking does not prevent ring reuse. Payload lifetime continues through controller dispatch; enqueue completion alone does not imply pending==0. Dispatch clears pending in the retained ring copy, not the original caller packet.",
+        "Rumble producers likewise serialize index selection and writes and must not overwrite a slot before its prior consumer finishes reading. Eight 0x18-byte slots are indexed by preincrement-and-wrap, unlike microphone post-send advancement. Returned queue submission does not acknowledge dispatch or motor completion.",
+        "Unused microphone packet padding and command-unused argument words may contain arbitrary existing stack bytes; preserve the full20-byte target copy and constrain only command-required fields. Rumble type padding is preserved. Neither packet nor queue operation may be modeled as zero-initializing unused bytes.",
+        "Interrupt-disable returns the previous IE bit and restore ORs that bit into current Status; it does not restore the entire initial Status. Original CP0/MI masks, global mask and valid resumable contexts are required. Interrupt-mask changes and hardware events outside the atomic queue steps remain separately modeled interference, not silently excluded.",
+        "Caller actor/state/VM/value array are valid, stable and nonoverlapping with every request, queue, thread context and stack. 1 numeric operands lie above all protected caller-local/frame storage; float conversion is finite and fits s32. Cached VM and owned values remain intact throughout suspension and resumption.",
+        "Dictionary wrapper replaces its one operand with integer0. Configure wrapper pops topmost permission, availability, follows-trigger and override values; it queues raw override then follows-trigger values, normalizes the other two to Boolean globals800722D0/800722D4, and appends integer0. Only queue admission is synchronous; later device uploads and arbitrary consumer behavior are outside this native-frame contract.",
+        "Require original SDK bytes authenticated to the frozen ROM/strict object baseline. Local SDK assembly dependencies intentionally refer to ignored build/asm inputs; only their fingerprints, not their implementation contents, may be published.",
+        "Running-thread state is4 and the running thread is absent from ready/wait lists. Queued blocked senders/receivers have state8 and valid queue back-links; ready nodes have state2, descending signed priorities, and a tail sentinel (nextNULL, priority-1). Dispatch always has at least one real runnable thread (normally idle), never the sentinel as a resumable context. Resumed caller preserves its stack, cached operands/VM pointer and required callee-saved/FPU state."
+      ],
+      "evidence": "Original Ghidra natives8011D5D0/8011F030, micQueueConfigurationRequest80004670, controllerQueueRumbleCommand80004970 and controllerGetCommandQueue8000287C. Frozen ELF disassembly authenticates the listed original-ROM SDK instruction ranges, including handwritten queue scheduler primitives. Static footprint review only; no runtime emulation or whole-scheduler proof.",
+      "sdk_instruction_ranges": [
+        {
+          "function": "osSendMesg",
+          "address": "0x80053190",
+          "size": 332,
+          "rom_offset": "0x53d90",
+          "sha256": "0422bf5ad85265fb9bab17eef54b9725e0df648fbe9e9a1366f3cb150d7dd5ad"
+        },
+        {
+          "function": "osRecvMesg",
+          "address": "0x80051550",
+          "size": 312,
+          "rom_offset": "0x52150",
+          "sha256": "43051c9d88c1cbb9a1210fa1dc6ef0f3edb22f4bacb296158d8cbd65cfcc5abb"
+        },
+        {
+          "function": "osCreateMesgQueue",
+          "address": "0x800516e0",
+          "size": 44,
+          "rom_offset": "0x522e0",
+          "sha256": "722e99b14443e8fc39d3fda597c0309818e51d128cb0952b7bf3558650e7a791"
+        },
+        {
+          "function": "osStartThread",
+          "address": "0x80050bf0",
+          "size": 336,
+          "rom_offset": "0x517f0",
+          "sha256": "bf001131da5edb35e7f4bea2eff6d51619d31a95b2424198c242daee20955bcb"
+        },
+        {
+          "function": "__osEnqueueAndYield",
+          "address": "0x80057c44",
+          "size": 256,
+          "rom_offset": "0x58844",
+          "sha256": "d5ef2d3f73d0cdca7cd679cfb616e73bcdd5695b71c303561e12b9faa1e76caf"
+        },
+        {
+          "function": "__osEnqueueThread",
+          "address": "0x80057d44",
+          "size": 72,
+          "rom_offset": "0x58944",
+          "sha256": "8091a95dae39c6b1fc1a33a413913174da32d2a1c61971b45d5170e8b51c54f6"
+        },
+        {
+          "function": "__osPopThread",
+          "address": "0x80057d8c",
+          "size": 16,
+          "rom_offset": "0x5898c",
+          "sha256": "9cfacc440af965d2989166dd711ef58ae5a92e68c6ef3cf399a0403e1fd36afe"
+        },
+        {
+          "function": "__osDispatchThread",
+          "address": "0x80057da4",
+          "size": 380,
+          "rom_offset": "0x589a4",
+          "sha256": "da4b95aa2be6f0aabea67c4314bac423c573b965aed913be6e216b98c8ac28e4"
+        },
+        {
+          "function": "__osDisableInt",
+          "address": "0x80057ff0",
+          "size": 112,
+          "rom_offset": "0x58bf0",
+          "sha256": "182263f540080608a1c5a341601192b55c811ebb017644a55bc8061a0bb2a8d2"
+        },
+        {
+          "function": "__osRestoreInt",
+          "address": "0x80058060",
+          "size": 32,
+          "rom_offset": "0x58c60",
+          "sha256": "760fabe684a57096a1f98fb972d27fc9ae0f5b227768fa227ed73c15b4ad1e09"
+        }
+      ],
+      "sdk_storage_effects": [
+        "Nonfull send: store message pointer at msg[(first+validCount)%msgCount], increment validCount. Payload bytes are not copied or acknowledged.",
+        "Full send: running thread state halfword+0x10=8; enqueue in &queue.fullqueue. On receiver wake: pop queue.mtqueue, set receiver state2 and enqueue ready queue. Higher priority receiver can preempt sender via ready-queue yield.",
+        "Priority insertion writes thread.next, predecessor.next/queue-head and thread.queue(+8). Pop writes only queue-head, leaving popped next/queue fields until subsequent insertion.",
+        "Yield saves thread Status+0x118 with EXL set, callee-saved s0..s7 at+0x98..D0, gp+E8,sp+F0,s8+F8,ra+100,returnPC+11C, RCPmask+128. If fp flag+18 nonzero, also F20/F22/F24/F26/F28/F30 at+180..1A8 and FCSR+12C.",
+        "Dispatch pops ready queue at8009F898, writes running-thread global8009F8A0 and state4; restores GPR/HI/LO/CP0Status/EPC/FPU state, writes MI interrupt mask atA430000C using the authenticated table800A7D40 and global mask8009DC80, then ERET. External runnable-thread execution is not attributed to caller helpers.",
+        "Own send stack frame56 bytes plus writable caller argument homes; osStartThread adds40 bytes on wake/preemption path. Other resumed threads have separate live stacks and contexts. Ready/wait sentinel at8009F890 has next0 and priority below real threads.",
+        "Original __osDisableInt mask-race branch also reads8009F9B8; its literal access must be preserved rather than assuming it dereferences runningThread. Fast mask-stable path does not take that branch."
+      ]
+    },
+    {
+      "function": "actorScriptConfigureMicrophone",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "7dce6dd1ac119a90ad215d31748be77888a41df4dadbaf57d78aec3edfe71696",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 4,
+      "stack_delta": -3,
+      "result_tag": "integer",
+      "scheduling": "yield",
+      "result_semantics": "Integer zero after successful blocking pointer submission; microphone configuration can take effect asynchronously.",
+      "dependencies": [
+        {
+          "kind": "file",
+          "file": "src/game/microphone_requests.c",
+          "sha256": "94e81108d9edd99e10b0916b509eda7281e00e7e9c11e2f7db3dfe628832ef4b"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/microphone_session.c",
+          "sha256": "967de2d1101120114e376830c7eb622c7ce082abfad2dcad845d8ab20aa01375"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/controller_rumble.c",
+          "sha256": "9b5d2ebaa48525e499f17dccea1ab961db76811fdaa76ca5dce8a21116a327ab"
+        },
+        {
+          "kind": "file",
+          "file": "src/main_controller.c",
+          "sha256": "0c8203997ad177c615a84a5f832d7f3b1df02d283df647766f9fb63d526fcca0"
+        },
+        {
+          "kind": "file",
+          "file": "include/microphone_configuration.h",
+          "sha256": "0937734fb3d7b3972df758ffc84710cf5e233897902347b97544a22c51792ff8"
+        },
+        {
+          "kind": "file",
+          "file": "include/microphone_requests.h",
+          "sha256": "1f903d939567ed8d03a95ce834a3c7795b36be3bc14b309e41fb16273e9dd06c"
+        },
+        {
+          "kind": "file",
+          "file": "include/microphone_session_query.h",
+          "sha256": "3542f193b3e56006676421e9ef75e337dca92f1ef6a669154a485814d5597a3c"
+        },
+        {
+          "kind": "file",
+          "file": "include/controller_commands.h",
+          "sha256": "b025efc98ef4411b78547e5243c3b0a29f9e800ebf99576f4e35573622b46cc7"
+        },
+        {
+          "kind": "file",
+          "file": "include/controller_rumble.h",
+          "sha256": "9a6a9ba0a45cc8d2e8c30ab0a65d42ed82f989d82eb649f60f4f33282360413e"
+        },
+        {
+          "kind": "file",
+          "file": "include/game_message.h",
+          "sha256": "02909f6c14c187481d544f5e915d15bc5883da53867842605c5de1ddc7175303"
+        },
+        {
+          "kind": "file",
+          "file": "include/ultra64.h",
+          "sha256": "f20e88de98f687b2572e41a0a1b351f89e420c4d10c1ff9da381122a53898450"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/os.h",
+          "sha256": "510f8071814067e478263d966e6b14013c0040f7ce7020043d4eeb00b1a1db35"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/os_message.h",
+          "sha256": "40e7350399ac69591974b7f15eb8b0650958702f4943ebd288b77792196676fe"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/os_thread.h",
+          "sha256": "a1cd0aa5227e6c238c30c6e022a9de252e8a547a465b8d2f82905d446c3a9ebf"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/ultratypes.h",
+          "sha256": "94e5b09ca40c5e4d65da3b92bed7e206e610ee7f589e9eef417f6bc7a1742fe7"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/R4300.h",
+          "sha256": "cee95a00719507433940ffc0283e6637279a197fc02b9858379308f45533fb09"
+        },
+        {
+          "kind": "file",
+          "file": "docs/LOCAL_SDK_FILES.json",
+          "sha256": "76f91c2e6d465a60326a1a1c5367297c97438e12baa5749de26a53914b61fde3"
+        },
+        {
+          "kind": "file",
+          "file": "tools/materialize_ultralib.py",
+          "sha256": "b40bdd26d0444db7a0c853608d3c98b2aa5a0bf81cf3c488f62baee884d95664"
+        },
+        {
+          "kind": "file",
+          "file": "config/pikachu.yaml",
+          "sha256": "a56707cf81226745a3d0758e71a63285c21ff334fcc5eea8cba864ccf0cf39c6"
+        },
+        {
+          "kind": "file",
+          "file": "config/symbol_addrs.txt",
+          "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+        },
+        {
+          "kind": "file",
+          "file": "Makefile",
+          "sha256": "93511fec0229601cad6789e0f5ab4571c5f8b085578713b31faf7226e1f9e4e5"
+        },
+        {
+          "kind": "file",
+          "file": "build/asm/os/sendmesg.s",
+          "sha256": "9fe5fa7f0b12cbaba366b3770e275cb33a781936e7996cdb5aa61c2f246c8d52"
+        },
+        {
+          "kind": "file",
+          "file": "build/asm/os/recvmesg.s",
+          "sha256": "3f97ce6ad0a96d367f0193e1ad267d331579fafada2bf35082db1e629794d0ac"
+        },
+        {
+          "kind": "file",
+          "file": "build/asm/os/startthread.s",
+          "sha256": "4ff78bbda57d1d9ad6ce1679e55daafd9bc72c90e6cc3cc41b7baa22de25f696"
+        },
+        {
+          "kind": "file",
+          "file": "build/asm/os/exceptasm.s",
+          "sha256": "5aea74af5436240f4f50a5891a8d477f30aaef5b92845f98fe0cd3532ede8b37"
+        },
+        {
+          "kind": "file",
+          "file": "build/asm/os/createmesgqueue.s",
+          "sha256": "1acd1a8aec8f85ea9eb060eb88355ca39bf4cb6cd2295161b0d6531733cbfe13"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPushInteger",
+          "sha256": "d9c7386b407cc9e5e1ebe3d7ab6c7db1b7e40acb8c64150bb9ed6499fc2ce695"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPushValue",
+          "sha256": "ee2857209fceeb6c5767a3a733019cdbea389851514e320a212eb8556d8c51fd"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueSetInteger",
+          "sha256": "b83e2136925736f751b686cc364df9280a90f8564552393ee43778e69c593d4c"
+        },
+        {
+          "kind": "file",
+          "file": "include/script_vm.h",
+          "sha256": "f9f9e4509166d6c9aac4d4687f973da7c3b719df7413be4d4f738182850e5b08"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script.h",
+          "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+        }
+      ],
+      "preconditions": [
+        "OS_MESG_BLOCK is invoked from a valid ordinary libultra thread, not an interrupt/exception callback; CP0/MI access and initialized exception/dispatch machinery are available. Current running-thread record, ready queue and queue wait lists are valid, distinct, writable records with sentinel termination and priority ordering; caller stack/context satisfy original o32/64-bit-save/FPU alignment and context rules.",
+        "OSMesgQueue is initialized: positive msgCount, 0<=validCount<=msgCount, 0<=first<msgCount, writable four-byte pointer slots and valid sentinel-backed mtqueue/fullqueue lists. Queue, storage, live thread contexts, stacks, ring requests and caller actor/VM/value storage are nonoverlapping. The actual controller queue is 0x800AD088, capacity16, backing0x800AD0A0.",
+        "Full queue suspends the sender and may suspend repeatedly after rechecking space. Returning requires eventual dequeue, wakeup, priority scheduling and restoration of this same live thread with its still-valid stack/continuation. No finite completion time or successful scheduling fairness is guaranteed by osSendMesg.",
+        "A waiting receiver may be popped, made runnable and dispatched before send returns; full-queue blocking can also execute other threads. Those threads/interrupts have separately scoped effects: no concurrent mutation, replacement or destruction of the reviewed caller actor, VM, value stack, protected locals/frame records or borrowed inputs. This is a native-frame noninterference assumption, not proof of whole-game scheduling or arbitrary thread behavior.",
+        "Only serialized microphone producers may select/copy/enqueue/advance the microphone index; preserve the index across queue getter and blocked send. The selected microphone slot must no longer be retained by an earlier request before overwrite. Eight 0x14-byte slots are reused after eight submissions; capacity16 queue blocking does not prevent ring reuse. Payload lifetime continues through controller dispatch; enqueue completion alone does not imply pending==0. Dispatch clears pending in the retained ring copy, not the original caller packet.",
+        "Rumble producers likewise serialize index selection and writes and must not overwrite a slot before its prior consumer finishes reading. Eight 0x18-byte slots are indexed by preincrement-and-wrap, unlike microphone post-send advancement. Returned queue submission does not acknowledge dispatch or motor completion.",
+        "Unused microphone packet padding and command-unused argument words may contain arbitrary existing stack bytes; preserve the full20-byte target copy and constrain only command-required fields. Rumble type padding is preserved. Neither packet nor queue operation may be modeled as zero-initializing unused bytes.",
+        "Interrupt-disable returns the previous IE bit and restore ORs that bit into current Status; it does not restore the entire initial Status. Original CP0/MI masks, global mask and valid resumable contexts are required. Interrupt-mask changes and hardware events outside the atomic queue steps remain separately modeled interference, not silently excluded.",
+        "Caller actor/state/VM/value array are valid, stable and nonoverlapping with every request, queue, thread context and stack. 4 numeric operands lie above all protected caller-local/frame storage; float conversion is finite and fits s32. Cached VM and owned values remain intact throughout suspension and resumption.",
+        "Dictionary wrapper replaces its one operand with integer0. Configure wrapper pops topmost permission, availability, follows-trigger and override values; it queues raw override then follows-trigger values, normalizes the other two to Boolean globals800722D0/800722D4, and appends integer0. Only queue admission is synchronous; later device uploads and arbitrary consumer behavior are outside this native-frame contract.",
+        "Require original SDK bytes authenticated to the frozen ROM/strict object baseline. Local SDK assembly dependencies intentionally refer to ignored build/asm inputs; only their fingerprints, not their implementation contents, may be published.",
+        "Running-thread state is4 and the running thread is absent from ready/wait lists. Queued blocked senders/receivers have state8 and valid queue back-links; ready nodes have state2, descending signed priorities, and a tail sentinel (nextNULL, priority-1). Dispatch always has at least one real runnable thread (normally idle), never the sentinel as a resumable context. Resumed caller preserves its stack, cached operands/VM pointer and required callee-saved/FPU state."
+      ],
+      "evidence": "Original Ghidra natives8011D5D0/8011F030, micQueueConfigurationRequest80004670, controllerQueueRumbleCommand80004970 and controllerGetCommandQueue8000287C. Frozen ELF disassembly authenticates the listed original-ROM SDK instruction ranges, including handwritten queue scheduler primitives. Static footprint review only; no runtime emulation or whole-scheduler proof.",
+      "sdk_instruction_ranges": [
+        {
+          "function": "osSendMesg",
+          "address": "0x80053190",
+          "size": 332,
+          "rom_offset": "0x53d90",
+          "sha256": "0422bf5ad85265fb9bab17eef54b9725e0df648fbe9e9a1366f3cb150d7dd5ad"
+        },
+        {
+          "function": "osRecvMesg",
+          "address": "0x80051550",
+          "size": 312,
+          "rom_offset": "0x52150",
+          "sha256": "43051c9d88c1cbb9a1210fa1dc6ef0f3edb22f4bacb296158d8cbd65cfcc5abb"
+        },
+        {
+          "function": "osCreateMesgQueue",
+          "address": "0x800516e0",
+          "size": 44,
+          "rom_offset": "0x522e0",
+          "sha256": "722e99b14443e8fc39d3fda597c0309818e51d128cb0952b7bf3558650e7a791"
+        },
+        {
+          "function": "osStartThread",
+          "address": "0x80050bf0",
+          "size": 336,
+          "rom_offset": "0x517f0",
+          "sha256": "bf001131da5edb35e7f4bea2eff6d51619d31a95b2424198c242daee20955bcb"
+        },
+        {
+          "function": "__osEnqueueAndYield",
+          "address": "0x80057c44",
+          "size": 256,
+          "rom_offset": "0x58844",
+          "sha256": "d5ef2d3f73d0cdca7cd679cfb616e73bcdd5695b71c303561e12b9faa1e76caf"
+        },
+        {
+          "function": "__osEnqueueThread",
+          "address": "0x80057d44",
+          "size": 72,
+          "rom_offset": "0x58944",
+          "sha256": "8091a95dae39c6b1fc1a33a413913174da32d2a1c61971b45d5170e8b51c54f6"
+        },
+        {
+          "function": "__osPopThread",
+          "address": "0x80057d8c",
+          "size": 16,
+          "rom_offset": "0x5898c",
+          "sha256": "9cfacc440af965d2989166dd711ef58ae5a92e68c6ef3cf399a0403e1fd36afe"
+        },
+        {
+          "function": "__osDispatchThread",
+          "address": "0x80057da4",
+          "size": 380,
+          "rom_offset": "0x589a4",
+          "sha256": "da4b95aa2be6f0aabea67c4314bac423c573b965aed913be6e216b98c8ac28e4"
+        },
+        {
+          "function": "__osDisableInt",
+          "address": "0x80057ff0",
+          "size": 112,
+          "rom_offset": "0x58bf0",
+          "sha256": "182263f540080608a1c5a341601192b55c811ebb017644a55bc8061a0bb2a8d2"
+        },
+        {
+          "function": "__osRestoreInt",
+          "address": "0x80058060",
+          "size": 32,
+          "rom_offset": "0x58c60",
+          "sha256": "760fabe684a57096a1f98fb972d27fc9ae0f5b227768fa227ed73c15b4ad1e09"
+        }
+      ],
+      "sdk_storage_effects": [
+        "Nonfull send: store message pointer at msg[(first+validCount)%msgCount], increment validCount. Payload bytes are not copied or acknowledged.",
+        "Full send: running thread state halfword+0x10=8; enqueue in &queue.fullqueue. On receiver wake: pop queue.mtqueue, set receiver state2 and enqueue ready queue. Higher priority receiver can preempt sender via ready-queue yield.",
+        "Priority insertion writes thread.next, predecessor.next/queue-head and thread.queue(+8). Pop writes only queue-head, leaving popped next/queue fields until subsequent insertion.",
+        "Yield saves thread Status+0x118 with EXL set, callee-saved s0..s7 at+0x98..D0, gp+E8,sp+F0,s8+F8,ra+100,returnPC+11C, RCPmask+128. If fp flag+18 nonzero, also F20/F22/F24/F26/F28/F30 at+180..1A8 and FCSR+12C.",
+        "Dispatch pops ready queue at8009F898, writes running-thread global8009F8A0 and state4; restores GPR/HI/LO/CP0Status/EPC/FPU state, writes MI interrupt mask atA430000C using the authenticated table800A7D40 and global mask8009DC80, then ERET. External runnable-thread execution is not attributed to caller helpers.",
+        "Own send stack frame56 bytes plus writable caller argument homes; osStartThread adds40 bytes on wake/preemption path. Other resumed threads have separate live stacks and contexts. Ready/wait sentinel at8009F890 has next0 and priority below real threads.",
+        "Original __osDisableInt mask-race branch also reads8009F9B8; its literal access must be preserved rather than assuming it dereferences runningThread. Fast mask-stable path does not take that branch."
+      ]
     }
   ]
 }
