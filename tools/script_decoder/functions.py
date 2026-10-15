@@ -7,6 +7,7 @@ functions, or arbitrary native side effects that replace execution contexts.
 
 from .formats import integer_operand
 from .stack import incoming_edges, recover_arguments
+from .table_returns import guarded_table_return
 
 
 def function_summary(instructions, entry, limit=10000):
@@ -45,6 +46,10 @@ def function_summary(instructions, entry, limit=10000):
                 result['expression'] = expression
                 if expression['kind'] in ('integer', 'float') and -2147483648 <= expression['value'] < 2147483648:
                     result['integer_conversion'] = int(expression['value'])
+                elif expression['kind'] == 'array_element':
+                    lookup = guarded_table_return(instructions, indices[offset], incoming, frame_index, locals_count)
+                    if lookup is not None:
+                        result['resolved_lookup'] = lookup
             except ValueError as error:
                 result['reason'] = str(error)
             returns.append(result)
@@ -59,13 +64,15 @@ def function_summary(instructions, entry, limit=10000):
         if not successors:
             diagnostics.append(f'{offset:#x}: no understood continuation')
         pending.extend(edge['offset'] for edge in successors)
-    complete = bool(returns) and not diagnostics and all('integer_conversion' in row for row in returns)
+    complete = bool(returns) and not diagnostics and all('integer_conversion' in row or 'resolved_lookup' in row for row in returns)
+    domain = {row['integer_conversion'] for row in returns if 'integer_conversion' in row}
+    domain.update(value for row in returns for value in row.get('resolved_lookup', {}).get('integer_return_domain', []))
     return dict(entry_offset=entry, argument_count=arguments, local_count=locals_count, frame_index=frame_index,
                 visited_instructions=len(visited), returns=sorted(returns, key=lambda row: row['instruction_offset']),
-                integer_return_domain=sorted({row['integer_conversion'] for row in returns if 'integer_conversion' in row}),
+                integer_return_domain=sorted(domain),
                 static_return_domain_complete=complete, calls=calls, nonreturning_exits=sorted(exits),
                 diagnostics=diagnostics,
-                scope='Integer-converted values on static returning paths; no termination, path-feasibility or callee-purity proof.')
+                scope='Integer-converted values on static returning paths with valid nonoverlapping active frames; no termination, path-feasibility or callee-purity proof.')
 
 
 def action_producer_functions(instructions, calls):

@@ -90,17 +90,18 @@ def recover_arguments(instructions, index, count, *, incoming=None, allow_float=
                 return dict(kind=operand['kind'], value=-operand['value'],
                             expression=dict(operator='negate', operand=operand))
             raise ValueError('Negation needs unresolved or overflowing arithmetic.')
-        if row['name'] == 'SCRIPT_OP_ADD':
+        if row['name'] in ('SCRIPT_OP_ADD', 'SCRIPT_OP_SUBTRACT'):
+            operator = 'add' if row['name'] == 'SCRIPT_OP_ADD' else 'subtract'
             right, left = argument(), argument()
             if left['kind'] == right['kind'] == 'integer':
-                value = left['value'] + right['value']
+                value = left['value'] + right['value'] if operator == 'add' else left['value'] - right['value']
                 if -2147483648 <= value <= 2147483647:
                     return dict(kind='integer', value=value,
-                                expression=dict(operator='integer_add', left=left, right=right))
+                                expression=dict(operator='integer_' + operator, left=left, right=right))
             elif allow_symbolic:
-                return dict(kind='vm_operator', operator='add', operands=[left, right],
+                return dict(kind='vm_operator', operator=operator, operands=[left, right],
                             scope='Original VM conversion/arithmetic semantics; numeric type and definedness are not established.')
-            raise ValueError('Addition needs nonconstant or overflowing integer analysis.')
+            raise ValueError('Arithmetic needs nonconstant or overflowing integer analysis.')
         raise ValueError('Argument needs stack-flow or native-call analysis.')
 
     return list(reversed([argument() for _ in range(count)]))

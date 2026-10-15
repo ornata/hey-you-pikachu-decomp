@@ -380,6 +380,7 @@ def experiments():
     from .action_wait_domains import experiments as wait_experiments
     from .actor_kind_domains import experiments as actor_experiments
     from .program_selection_domains import experiments as program_experiments
+    from .table_lookup_domains import experiments as table_experiments
 
     return (
         cases
@@ -401,6 +402,7 @@ def experiments():
         + wait_experiments()
         + actor_experiments()
         + program_experiments()
+        + table_experiments()
     )
 
 

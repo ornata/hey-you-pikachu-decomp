@@ -485,8 +485,8 @@ resource allocation or prove the requested paths execute.
 
 The catalog also summarizes functions whose return values select timed programs.
 It follows branches and returning call continuations without entering callees.
-Of 18 producer summaries, five have complete static integer return domains;
-13 retain unresolved return expressions. A complete domain bounds values on the
+All 18 producer summaries have complete static integer return domains. A complete
+domain bounds values on the
 decoded returning paths, without proving termination, path feasibility or native
 side effects. These domains supplement literal requests in the resource census.
 
@@ -497,8 +497,24 @@ motion request. The matching implementation obtains the null command pointer
 through a negative array index: the preceding word is an unused zero operand in
 the final program's END record. This is outside the declared C array view;
 host ports must handle the sentinel explicitly. The decoder authenticates this
-backing layout and reports it separately from the 287 ordinary program streams.
+backing layout and reports it separately from ordinary program streams.
 Other negative IDs remain unresolved.
+
+The shared response selector's last nonliteral return reads a ten-entry local
+table. An inclusive check bounds the source value to 23 through 32; subtraction
+of 23 selects the initialized element. Recovery requires a contiguous guard,
+initialization and read with no competing entry into their interior. It rejects
+missing writes, intervening mutations and bounds sourced from the initialized
+frame. Valid nonoverlapping active frames remain a precondition. These lookup
+domains expand the census to 292 ordinary programs plus the no-program sentinel.
+Six authored original-interpreter cases check guard boundaries, fallback, packed
+table writes and fractional-index truncation; they do not prove retail reachability.
+
+In the bedroom script, frame 0 slot 9 receives the current message type and slot
+10 receives message argument 0 before response selection. The shared selector
+therefore maps message data to timed programs, with a caller-supplied flag affecting
+one branch. This identifies the coordinates in that script, without assigning a
+universal meaning to those slots in other programs or naming every argument value.
 
 `ActionScriptState.selectedProgramId` retains the selected program even after
 natural END stops command execution. `actionScriptGetId` and the native callback
