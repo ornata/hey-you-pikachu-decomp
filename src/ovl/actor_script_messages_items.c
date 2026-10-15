@@ -1164,7 +1164,6 @@ s32 actorScriptStartActionWithMode(u8 *actor) {
 /// Start an action script with a time limit and yield actor script execution.
 /// \param actor Actor whose script VM supplies a valid action-script identifier followed by a floating-point duration in seconds, and receives zero; a negative duration removes the limit.
 /// \returns One, yielding script execution.
-/// \note Portability/UB: The duration helper is defined with an integer bit-pattern parameter but declared with a float here, relying on the original ABI.
 /// \note Original decompilation identifier: \c func_8011DF18 (0x8011DF18).
 s32 actorScriptStartTimedAction(u8 *actor) {
     s32 vmAddress;

@@ -92,11 +92,11 @@
       "member": "unknown208",
       "line": 122,
       "declaration": "f32 unknown208;",
-      "known_facts": "Actor state is allocated and cleared as 0x408 bytes; established neighboring fields and shared offset checks constrain this declaration. Creation stores ActorKindConfig.unknown34 times scale; the linked fixed-displacement scan found only that positive-offset store. The fixed-displacement scan found one positive 0x208 access, the creation store. The negative-520 store at 0x8001392C belongs to actorPartInitializeAnimatedTextures after its command cursor advances by 0x280; it does not identify an actor-state reader. Biased bases, computed/indexed accesses, block copies and scripts were not excluded; scale multiplication does not establish a physical dimension.",
-      "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace biased, computed and script accesses that can read state 0x208; the fixed-displacement scan does not exclude such consumers.",
+      "known_facts": "Receives ActorKindConfig+0x34 multiplied by actor scale during creation at original0x8001E3F8..0x8001E400. It is adjacent to collision depth, clearance height, width and ground offset.",
+      "reason": "The producer establishes a scale-adjusted quantity, but adjacency does not establish collision, hearing, sight or interaction semantics.",
+      "next_evidence": "Find original and biased/interior loads of this word and a discriminating consumer before choosing a semantic name.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/actor_script.h (record declaration and neighboring layout checks); actorCreateForKind (0x8001E1C4), store swc1 $f4,520(s2) at 0x8001E400; linked positive-0x208 load/store displacement scan"
+      "evidence": "Authenticated37-record catalog at0x8008801C and actorCreateForKind0x8001E1C4 producer instructions."
     },
     {
       "file": "include/font_image_types.h",
@@ -272,11 +272,11 @@
       "member": "unknown064",
       "line": 45,
       "declaration": "u8 unknown064[0x18];",
-      "known_facts": "The 0x80-byte state contains mode at zero, a 0x60-byte workspace at four and an optional controller pointer at 0x7C.",
-      "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace every child update callback and mode transition, separating the track/pose workspace from optional controller storage before interpreting the gap.",
+      "known_facts": "Original actorInitializeChildMotionState0x80015110 allocates and zeroes0x80 bytes. The known track/pose union ends at0x64; the owned facing-controller pointer starts at0x7C. actorReleaseChildMotionState0x80014E54 frees the controller separately, then the state.",
+      "reason": "This is allocated and cleared storage; those facts do not identify subfields or prove padding.",
+      "next_evidence": "Inspect original motion/facing callbacks for accesses through child-state or workspace-biased pointers into0x64..0x7B.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/motion_playback_types.h (record declaration and neighboring layout checks)"
+      "evidence": "Read-only Ghidra allocation/clear/destructor instructions authenticated against original ROM through LocalImage."
     },
     {
       "file": "include/object_response.h",
@@ -356,11 +356,11 @@
       "member": "unknown00C",
       "line": 55,
       "declaration": "s32 unknown00C;",
-      "known_facts": "The word lies between native commands and stack capacity. Original constructors at 0x80115114 and 0x801151B0 do not read it. In the 128 retained-table configuration candidates, every value is a multiple of five and is at least the byte span of all statically decoded global-reference base indices; indexed array extents and unused declarations are not established by that observation.",
-      "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Reconcile the word with declared global storage, especially indexed arrays and unused variables, and find an authoring producer or another consumer. A correlation with five-byte value storage alone does not establish its exact metadata contract.",
+      "known_facts": "Original scriptVmCreateWithCapacity0x80115114 reads program/strings/commands at+0/+4/+8; scriptVmCreate0x801151B0 reads capacity at+0x10. Neither copies the intervening+0xC word into the VM. All128 authenticated retained configurations share the279-entry native table at0x8012B400, while this word takes12 values0..410, each divisible by packed-value size5. Every decoded literal global index fits5*(index+1)<=word; all40 zero-word configurations have no decoded globals. Eight nonzero value groups reach the bound; three retain spare slots. The runtime global bank is independently fixed at500 values.",
+      "reason": "The data strongly suggests authored global-value byte requirements, but no original runtime consumer or declared-global authoring/compiler provenance establishes that interpretation. It is not a native-command count: bedroom config0x8013A164 has word60 and invokes selector278. It is not local-frame count: front-yard word60 accompanies99 entry locals.",
+      "next_evidence": "Find original authoring/compiler declarations or another resource consumer that associates this word with declared globals. Correlation with decoded uses establishes a bounded candidate, not runtime allocation or author intent; retain unknown00C until that link is established.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/script_vm.h; original constructor instructions 0x80115114/0x801151B0; tools/script_decoder/catalog.py reproduces bounded local corpus observations without committing resource contents."
+      "evidence": "Original create functions0x80115114/0x801151B0 and authenticated configuration layouts. Independent reauthentication of128 prefixes against frozen original ELF/ROM and catalog global-use census; parent recomputed divisibility, shared-table and per-index bounds. Native selector counterexample from bedroom0x8013A164; fixedbank declaration include/script_vm_globals.h."
     },
     {
       "file": "include/script_vm.h",
@@ -368,11 +368,11 @@
       "member": "unknown2B0",
       "line": 80,
       "declaration": "s32 unknown2B0;",
-      "known_facts": "The word at 0x2B0 follows the native-command table and precedes message style; context reset clears it.",
-      "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Trace interpreter, native commands and alternate context creators for reads or nonzero writes, including integer context-address aliases.",
+      "known_facts": "Original scriptVmReset0x80115070 stores zero at0x801150E8. The word follows the retained native-command pointer and precedes message style. Frame operations use explicit frame indices supplied by bytecode or stack.",
+      "reason": "Reset behavior is established, but no later purpose is proven; explicit frame indexing does not establish this word as local-frame depth.",
+      "next_evidence": "Search original later load/store sites and trace alternate reset/context consumers; retain signed word until a role is demonstrated.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "include/script_vm.h (record declaration and neighboring layout checks)"
+      "evidence": "Original reset store0x801150E8 plus explicit frame-index opcode/VM consumer review."
     },
     {
       "file": "include/search_tree_types.h",
@@ -488,11 +488,11 @@
       "member": "unknown34",
       "line": 114,
       "declaration": "f32 unknown34;",
-      "known_facts": "The configuration value at 0x34 is scaled into actor-state offset 0x208 during creation. The fixed-displacement scan found one positive 0x208 access, the creation store. The negative-520 store at 0x8001392C belongs to actorPartInitializeAnimatedTextures after its command cursor advances by 0x280; it does not identify an actor-state reader. Biased bases, computed/indexed accesses, block copies and scripts were not excluded; scale multiplication does not establish a physical dimension.",
-      "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Find a consumer of actor-state 0x208, including biased pointers, scripts and kind-specific callbacks, before assigning a dimension or behavior name.",
+      "known_facts": "The authenticated37-record catalog at0x8008801C stores positive floats100..700. Original actorCreateForKind loads this field at0x8001E3F8, scales it by actor size and stores actor-state+0x208 at0x8001E400.",
+      "reason": "An authored base quantity is established, but neither units nor gameplay purpose follow from the nearby collision fields.",
+      "next_evidence": "Trace original loads from actor-state+0x208, including biased/interior pointers, and compare scale-dependent behavior before assigning units or a subsystem name.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "src/game/actor_configuration.c (record declaration and neighboring layout checks); actorCreateForKind (0x8001E1C4), store swc1 $f4,520(s2) at 0x8001E400; linked positive-0x208 load/store displacement scan"
+      "evidence": "Authenticated catalog and original actorCreateForKind0x8001E1C4 instructions0x8001E3F8..0x8001E400; no decompiler boundary inference."
     },
     {
       "file": "src/game/actor_model_parts.c",

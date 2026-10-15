@@ -915,6 +915,58 @@ chapter remains unchanged. These are source-bound immediate contracts under vali
 camera, actor, progress and borrowed-resource prerequisites; later gameplay and
 persistence remain separate obligations.
 
+Three ordinary timed-program startup natives differ from deferred action requests.
+`actorScriptStartActionScript` consumes one program ID; `actorScriptStartActionWithMode`
+consumes program ID and inherited default mode; `actorScriptStartTimedAction`
+consumes program ID and duration. They immediately supply integer zero and yield,
+without installing a waiting handler or advancing any timed commands. Startup
+selects borrowed command storage and resets sequencer clocks, requests and tracked
+sound handle. Clearing that handle does not stop the sound. No-program selection
+uses the authenticated null predecessor, preserving independent motion; portable
+hosts must handle that sentinel explicitly. Mode uses signed16 storage; duration
+is f32, with negative values removing the limit. Thirteen original-instruction
+probes cover program endpoints, the sentinel, mode bounds, numeric conversion,
+negative zero and unchanged protected frame/motion state.
+
+Color commands consume red, green, blue, alpha and duration, then supply zero.
+Primary-overlay blending clamps channels to zero through 255 and applies its
+strict near-zero duration tolerance. Actor environment transition instead keeps
+the low byte of each channel and stores the raw duration. Both update transition
+targets, without immediately replacing the displayed color. Subsequent interpolation
+and valid-duration policies remain separate. Clearing messages likewise supplies
+zero, resets display timers and logically discards queued entries; it retains
+queued text and image resources rather than freeing them.
+
+Sound pan and volume setters consume playback handle followed by the new value
+and return the number of matching logical slots. That count includes slots without
+a physical voice and updates rejected by an exhausted SDK parameter pool. Pan
+zero through 255 maps to zero through 126; only stereo output submits its synth
+update. Volume retains its multiplier and uses the first matching slot to choose
+a zero or ten-millisecond default ramp, reused for duplicate matches. Reviewed
+original SDK paths briefly change interrupt masks and append parameter updates;
+these contracts require the authenticated SDK, valid disjoint voice/update lists
+and the stated numeric domains. Later synth consumption and audible output are
+not established by the immediate result.
+
+Inline-count text commands keep a separate unresolved contract. Their packed
+instruction count is not a value-stack operand. They consume that many strings,
+using shared construction/conversion storage. Enqueue can construct up to 79
+characters but copies into a 60-byte queued-text field without bounding that copy;
+a safe insertion therefore needs a result of at most 59 bytes plus its terminator.
+Its zero script result does not report queue insertion success. This review does
+not change the matching implementation or classify arbitrary text lengths as safe.
+
+The configuration word at offset 0xC remains unnamed, but its bounds are better
+understood. All 128 retained configurations share one 279-entry native table while
+this word varies from zero through 410, so it is not the native-command count.
+Every value is divisible by the five-byte packed-value size, and every decoded
+literal global reference fits below that many bytes. All forty zero-word
+configurations have no decoded globals; eight nonzero groups reach the bound and
+three have spare slots. This is strongly consistent with authored global-storage
+requirements. Constructors ignore it and use a separate fixed 500-value global
+bank, however. Without an authoring declaration or original consumer, that
+correlation does not justify renaming the field or using it as a runtime bound.
+
 The source-bound manifest distinguishes scalar and borrowed string results, immediate
 request contracts and reviewed deferred phases. Other requests remain partially reviewed
 and keep their later effects explicit in the saved-dictionary frontier.
