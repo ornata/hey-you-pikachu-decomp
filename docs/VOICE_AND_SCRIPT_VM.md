@@ -73,6 +73,29 @@ configuration's overlay and retains existing creation/scenario bindings. Reverse
 links on dictionary descriptors connect them to those request sites and to written
 C requests. These are possible resource uses, not scene ownership or executed paths.
 
+One symbolic request belongs to the bedroom Pokémon-name activity. Its native
+`actorScriptGetPokemonNameDictionaryGroup` reads the per-name group in
+`gBedroomPokemonNameDictionaryGroups`. The group is a voice vocabulary partition,
+not a Pokémon species, elemental type or message category. The 153 retained
+catalog entries use groups 2 through 12; the script requests dictionary
+`18 + group - 1`, giving IDs 19 through 29. It compares the group with a cached
+value before issuing the request. The catalog indices and the recent-selection
+history's 100 slots now have named extents in the source.
+
+The decoder's `bedroom_name_catalog` authenticates both scene tables and links
+each entry to command category 10, command value `catalog_index + 8`, and matching
+word membership in its computed dictionary. All 153 entries have that membership.
+Six catalog labels lack an exact vocabulary-label match because of case,
+punctuation or alternate recognition spellings; the report preserves both views.
+It does not merge catalog indices with global word IDs.
+
+The request analyzer recognizes the guarded group conversion and records a
+conditional dictionary domain. Its precondition is a valid catalog argument from
+0 through 152 with intact, nonoverlapping VM frames. It does not prove caller
+arguments, activity reachability or upload completion. Three authored-table cases
+exercise the original native at endpoint indices and check unsigned-byte conversion;
+the synthetic value 255 is not a retained retail group.
+
 The request native consumes one dictionary ID, pushes zero and yields. Configuration
 dispatch changes the requested ID and acknowledges dispatch; uploading and uploaded
 IDs remain independent. The native query reads requested state rather than either

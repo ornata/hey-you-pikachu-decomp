@@ -37,7 +37,7 @@ gDirectionAnimationDefaultDirections = gDirectionAnimationDefaultPose + 0x10;
 gItemCreationHierarchyFlag2Enabled = 0x80088F20;
 
 /* Bedroom scene name catalog and selection-history views; valid only while loaded. */
-gBedroomPokemonNameCategories = 0x8015516C;
+gBedroomPokemonNameDictionaryGroups = 0x8015516C;
 gBedroomPokemonNames = 0x80155208;
 gBedroomPokemonNameHistory = 0x8015546C;
 gBedroomPokemonNameHistoryHead = 0x801554D0;

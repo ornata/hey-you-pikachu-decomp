@@ -7,10 +7,11 @@ runtime selection, delivery of a recognized word or branch reachability.
 
 from .stack import incoming_edges, recover_arguments
 from .vocabulary import dictionary_names
+from .name_catalog import name_dictionary_request
 import re
 
 
-def dictionary_requests(instructions, dictionaries):
+def dictionary_requests(instructions, dictionaries, name_catalog=None):
     """Keep request expressions and link only supported literal IDs to descriptors."""
     descriptors = {row['dictionary_id']: row for row in dictionaries}
     incoming = incoming_edges(instructions)
@@ -27,6 +28,10 @@ def dictionary_requests(instructions, dictionaries):
             expression = recover_arguments(instructions, index, 1, incoming=incoming,
                                            allow_float=True, allow_symbolic=True, frame_entries=frames)[0]
             row.update(status='recovered_arguments', dictionary_id_expression=expression)
+            selection = name_dictionary_request(instructions, index, name_catalog)
+            if selection is not None:
+                row['conditional_selection'] = selection
+                row['dictionary_id_domain'] = selection['dictionary_id_domain']
             if expression['kind'] in ('integer', 'float') and -2147483648 <= expression['value'] < 2147483648:
                 identifier = int(expression['value'])
                 row['constant_dictionary_id'] = identifier
@@ -87,8 +92,9 @@ def attach_dictionary_usage(vocabulary, configurations, source_requests):
                  listing=candidate['listing'], instruction_offset=request['instruction_offset'],
                  direct_creation_sites=candidate['direct_creation_sites'],
                  assigned_creation_sites=candidate['assigned_creation_sites'],
-                 companion_scenario_sites=candidate['companion_scenario_sites'])
+                 companion_scenario_sites=candidate['companion_scenario_sites'],
+                 basis='literal' if 'constant_dictionary_id' in request else 'conditional_name_catalog_domain')
             for candidate in configurations for request in candidate['voice_dictionary_requests']
-            if request.get('constant_dictionary_id') == identifier]
+            if request.get('constant_dictionary_id') == identifier or identifier in request.get('dictionary_id_domain', [])]
         descriptor['source_requests'] = [row for row in source_requests if row.get('constant_dictionary_id') == identifier]
         descriptor['usage_scope'] = 'Static requests with configured source bindings; no scene ownership, upload or execution claim. Empty usage does not establish disuse.'

@@ -104,6 +104,7 @@ def test_catalog_preserves_candidate_scope_and_direct_creation_evidence(tmp_path
     monkeypatch.setattr(module, 'companion_sites', lambda image: [])
     monkeypatch.setattr(module, 'actor_kind_records', lambda image: [])
     monkeypatch.setattr(module, 'vocabulary_catalog', lambda image: {'scope': 'Invented vocabulary fixture.'})
+    monkeypatch.setattr(module, 'pokemon_name_catalog', lambda image, vocabulary: None)
     raw = resource()
 
     class Elf:

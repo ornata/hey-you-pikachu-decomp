@@ -933,45 +933,48 @@ s32 actorScriptCosDegrees(u8 *actor) {
     return 0;
 }
 
-/// Bedroom name-catalog category codes indexed by catalog entry.
-/// \note Original identifier: \c D_8015516C (0x8015516C).
-extern u8 gBedroomPokemonNameCategories[];
+/// Extents of the bedroom name activity's catalog and recent-selection history.
+enum { BEDROOM_POKEMON_NAME_COUNT = 153, BEDROOM_POKEMON_NAME_HISTORY_CAPACITY = 100 };
 
-/// Provide the category associated with a Pokémon name catalog entry.
-/// \param actor Actor whose script VM supplies a catalog index from zero through 152 and receives its category code; requires the bedroom scene data.
+/// Voice dictionary groups indexed by bedroom name-catalog entry.
+/// \note Original identifier: \c D_8015516C (0x8015516C).
+extern u8 gBedroomPokemonNameDictionaryGroups[BEDROOM_POKEMON_NAME_COUNT];
+
+/// Provide the voice dictionary group associated with a Pokémon name catalog entry.
+/// \param actor Actor whose script VM supplies a catalog index from zero through 152 and receives its voice dictionary group; requires the bedroom scene data.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_80120D78 (0x80120D78).
-s32 actorScriptGetPokemonNameCategory(u8 *actor) {
-    s32 sp1C;
-    s32 idx;
+s32 actorScriptGetPokemonNameDictionaryGroup(u8 *actor) {
+    s32 vmAddress;
+    s32 catalogIndex;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    idx = scriptVmPopInteger((ScriptVm *)(sp1C));
-    scriptVmPushInteger((ScriptVm *)(sp1C), *(u8 *)((u8 *)&gBedroomPokemonNameCategories + (idx * 1)));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    catalogIndex = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    scriptVmPushInteger((ScriptVm *)(vmAddress), *(u8 *)((u8 *)&gBedroomPokemonNameDictionaryGroups + (catalogIndex * 1)));
     return 0;
 }
 
 /// Bedroom name-catalog string references indexed by catalog entry.
 /// \note Original identifier: \c D_80155208 (0x80155208).
-extern char *gBedroomPokemonNames[];
+extern char *gBedroomPokemonNames[BEDROOM_POKEMON_NAME_COUNT];
 
 /// Provide a selected name from the bedroom Pokémon name catalog.
 /// \param actor Actor whose script VM supplies a catalog index from zero through 152 and receives a borrowed name string; requires the bedroom scene data.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_80120DB8 (0x80120DB8).
 s32 actorScriptGetPokemonName(u8 *actor) {
-    s32 sp1C;
-    s32 idx;
+    s32 vmAddress;
+    s32 catalogIndex;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    idx = scriptVmPopInteger((ScriptVm *)(sp1C));
-    scriptVmPushStringPointer((ScriptVm *)(sp1C), (char *)(*(s32 *)((u8 *)&gBedroomPokemonNames + (idx * 4))));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    catalogIndex = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    scriptVmPushStringPointer((ScriptVm *)(vmAddress), (char *)(*(s32 *)((u8 *)&gBedroomPokemonNames + (catalogIndex * 4))));
     return 0;
 }
 
 /// Ring history of up to 100 previously selected bedroom name-catalog indices.
 /// \note Original identifier: \c D_8015546C (0x8015546C).
-extern u8 gBedroomPokemonNameHistory[];
+extern u8 gBedroomPokemonNameHistory[BEDROOM_POKEMON_NAME_HISTORY_CAPACITY];
 /// Next insertion index in the bedroom name-selection history.
 /// \note Original identifier: \c D_801554D0 (0x801554D0).
 extern s32 gBedroomPokemonNameHistoryHead;
@@ -998,27 +1001,27 @@ s32 actorScriptChoosePokemonName(u8 *actor) {
     tail = gBedroomPokemonNameHistoryTail;
     count = gBedroomPokemonNameHistoryCount;
     do {
-        candidate = randomBelow(153);
+        candidate = randomBelow(BEDROOM_POKEMON_NAME_COUNT);
         index = tail;
         for (i = 0; i < count; i++) {
             if (candidate == gBedroomPokemonNameHistory[index++]) {
                 candidate = -1;
                 break;
             }
-            if (index == 100) {
+            if (index == BEDROOM_POKEMON_NAME_HISTORY_CAPACITY) {
                 index = 0;
             }
         }
     } while (candidate == -1);
     gBedroomPokemonNameHistory[head++] = candidate;
-    if (head == 100) {
+    if (head == BEDROOM_POKEMON_NAME_HISTORY_CAPACITY) {
         head = 0;
     }
-    if (count < 100) {
+    if (count < BEDROOM_POKEMON_NAME_HISTORY_CAPACITY) {
         count++;
     } else {
         tail++;
-        if (tail == 100) {
+        if (tail == BEDROOM_POKEMON_NAME_HISTORY_CAPACITY) {
             tail = 0;
         }
     }

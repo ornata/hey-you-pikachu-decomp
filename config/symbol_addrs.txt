@@ -3305,7 +3305,7 @@ func_80057B5C = 0x80057B5C;
 
 actorScriptGetItemCollectionValue = 0x8011FFFC;
 
-actorScriptGetPokemonNameCategory = 0x80120D78;
+actorScriptGetPokemonNameDictionaryGroup = 0x80120D78;
 
 voiceReactiveSpinnerGetSpeedByHandle = 0x80117E80;
 
