@@ -6,19 +6,7 @@ header coverage. Every finding in this scope has been resolved or reviewed in
 [INTERFACE_CONTRACTS.json](INTERFACE_CONTRACTS.json). Assembly-only functions and
 SDK interfaces are not assigned inferred contracts by this audit.
 
-Compared with the starting commit `0f41200`:
-
-| Finding | Before | After |
-| --- | ---: | ---: |
-| Unspecified parameter declarations | 66 | 5 |
-| Conflicting written signatures | 29 | 10 |
-| Direct-call arity disagreements | 19 | 11 |
-| K&R definitions | 5 | 2 |
-| Unspecified callback tables | 1 | 0 |
-| Exported functions without a shared header | 178 | 1 |
-
-These are findings, not distinct broken functions. The 29 retained findings
-describe matching-only call representations.
+Retained findings describe matching-only call representations.
 Each exception records its exact signature or arity, source location, reason,
 and evidence needed to replace it. Arity exceptions also identify the caller.
 The sole function without a shared header is the inactive `heapDebugNoOp` hook,

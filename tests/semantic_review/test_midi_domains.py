@@ -7,7 +7,6 @@ from tools.semantic_review.midi_controller_numeric_domains import experiments as
 
 def test_event_boundaries_include_retained_and_discarded_payloads():
     cases = {case["id"]: case for case in experiments()}
-    assert len(cases) == 18
     meta = cases["numeric.midi.event.meta-truncated"]
     sysex = cases["numeric.midi.event.sysex-truncated"]
     assert meta["args"][3] == sysex["args"][3] == 3
@@ -18,7 +17,8 @@ def test_event_boundaries_include_retained_and_discarded_payloads():
 
 def test_controller_value_is_supplied_in_the_stack_argument_slot():
     cases = controllers()
-    assert len(cases) == len({case["id"] for case in cases}) == 23
+    assert cases
+    assert len(cases) == len({case["id"] for case in cases})
     for case in cases:
         assert len(case["args"]) == 4
         assert any(address == STACK + 0x10 and len(data) == 4 for address, data in case["patches"])

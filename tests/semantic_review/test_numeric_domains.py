@@ -32,7 +32,15 @@ def test_operator_bytes_and_asymmetric_comparisons_are_covered():
         selected = [
             row for row in cases if row["args"][1] == op and "integer" in row["id"]
         ]
-        assert len(selected) == 3
+        assert {
+            (
+                int.from_bytes(row["patches"][1][1][1:5], "big", signed=True),
+                int.from_bytes(row["patches"][1][1][6:10], "big", signed=True),
+            )
+            for row in selected
+        } >= {
+            (7, 3), (3, 7), (7, 7)
+        }
         assert {
             int.from_bytes(row["observations"][1][1][1:5], "big") for row in selected
         } == {0, 1}

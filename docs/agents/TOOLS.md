@@ -89,7 +89,6 @@ use that analysis copy as a build input.
 | `tools/prepare_ghidra_symbols.py` | Prepare a separate analysis ELF when duplicate symbols block import. |
 | `tools/extract_assets.py`, `tools/rom.py` | Normalize the ROM dump and extract raw asset segments (keep outputs external). |
 | `tools/materialize_ultralib.py` | Verify or import locally supplied SDK-related headers (`docs/LOCAL_SDK_FILES.json`); no downloads. |
-| `tools/compile_positioned_unit.py` | Link a hand-written unit's accepted C into its original function slots (`POSITIONED_UNITS`). |
 | `tools/ido_binasm_patch.py` + `tools/binasm_patches/` | Compiler command for the one unit (`action_script_commands`) with an accepted assembler-input exception. |
 | `tools/set_o32abi_bit.py` | Tag IDO `-mips3 -32` objects as o32 so GNU ld links them. |
 | `tools/asm-processor/` | `GLOBAL_ASM` / data injection used by every C unit's build. |

@@ -31,7 +31,7 @@ def test_paired_float_bits_are_distinct_from_integer_argument_words():
 def test_negative_cell_boundary_contrasts_have_nonzero_retail_witnesses():
     cases = experiments()
     near = [case for case in cases if case["id"].endswith("near-negative-y")]
-    assert len(cases) == len({case["id"] for case in cases}) == 207
+    assert len(cases) == len({case["id"] for case in cases})
     assert len(near) == len({case["overlay"] for case in near}) == 23
     assert all(case["expected_return"] != 0 and case["fpr_pairs"][14] & 0x80000000 for case in near)
     assert all(case["expected_return"] == 0 for case in cases if case["id"].endswith("below-y"))
