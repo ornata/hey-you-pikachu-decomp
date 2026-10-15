@@ -1536,7 +1536,7 @@
       "locations": {
         "raw_offset_candidates": {
           "gMicSessionUploadingDictionary + 1": [
-            "257:13"
+            "264:13"
           ]
         }
       }
@@ -2858,10 +2858,10 @@
       "locations": {
         "raw_offset_candidates": {
           "return -1": [
-            "181:9",
-            "431:5",
-            "445:5",
-            "487:9"
+            "179:9",
+            "424:5",
+            "436:5",
+            "476:9"
           ]
         }
       }

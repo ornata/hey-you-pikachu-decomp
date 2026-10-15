@@ -21,6 +21,10 @@
 #define TRACE if (0) osSyncPrintf
 // clang-format on
 
+/// Maximum vocabulary words registered during one session update.
+/// The final update may register fewer words when the vocabulary is exhausted.
+enum { MIC_DICTIONARY_UPLOAD_BATCH_WORDS = 10 };
+
 /* controller/pad polling state, 0x800AD420.. */
 /// Recognition request used when recognition does not follow the trigger.
 /// \note Original identifier: \c D_800AD420 (0x800AD420).
@@ -107,7 +111,8 @@ void micSessionUpdateTrigger(void) {
         }
     }
     if (gMicSessionTriggerToggleMode != 0) {
-        if ((heldButtons & gMicSessionTriggerButtonMask) && !(gMicSessionPreviousTriggerButtons & gMicSessionTriggerButtonMask)) {
+        if ((heldButtons & gMicSessionTriggerButtonMask) &&
+            !(gMicSessionPreviousTriggerButtons & gMicSessionTriggerButtonMask)) {
             gMicSessionTriggerActive = !gMicSessionTriggerActive;
             TRACE("mic toggle %s\n", gMicSessionTriggerActive ? "ON" : "OFF");
         }
@@ -128,7 +133,7 @@ void micSessionUpdateTrigger(void) {
 /// \note Original decompilation identifier: \c func_80003C98 (0x80003C98).
 void micSessionEnableAmplifier(void) {
     TRACE("AMP_ON\n");
-    voiceRecognitionSetAmplifier(8);
+    voiceRecognitionSetAmplifier(VOICE_AMPLIFIER_ON);
     gMicSessionLastAmplifierOnTicks = osGetTime();
     TRACE("AMP_ON_B\n");
 }
@@ -138,7 +143,7 @@ void micSessionEnableAmplifier(void) {
 /// \note Original decompilation identifier: \c func_80003CC8 (0x80003CC8).
 void micSessionDisableAmplifier(void) {
     TRACE("AMP_OFF\n");
-    voiceRecognitionSetAmplifier(0);
+    voiceRecognitionSetAmplifier(VOICE_AMPLIFIER_OFF);
     gMicSessionLastAmplifierOffTicks = osGetTime();
     TRACE("AMP_OFF_B\n");
 }
@@ -155,12 +160,14 @@ void micSessionUpdateAmplifier(void) {
         gMicSessionAmplifierOffRequested = 0;
         return;
     }
-    if (gMicSessionTriggerActive != 0 && (gMicSessionPreviousTriggerActive == 0 || now - gMicSessionLastAmplifierOnTicks >= 0xDF84758)) {
+    if (gMicSessionTriggerActive != 0 &&
+        (gMicSessionPreviousTriggerActive == 0 || now - gMicSessionLastAmplifierOnTicks >= 0xDF84758)) {
         micSessionEnableAmplifier();
         return;
     }
     if (voiceRecognitionIsAmplifierEnabled() != 0) {
-        if (gMicSessionTriggerActive == 0 && (last = gMicSessionTriggerReleaseTicks, now - last >= 0xABA95) && last > gMicSessionLastAmplifierOffTicks) {
+        if (gMicSessionTriggerActive == 0 && (last = gMicSessionTriggerReleaseTicks, now - last >= 0xABA95) &&
+            last > gMicSessionLastAmplifierOffTicks) {
             micSessionDisableAmplifier();
         }
     } else if (now - gMicSessionLastAmplifierOffTicks >= 0x1AD2748) {
@@ -183,7 +190,6 @@ void micSessionUpdateRecognitionEnable(s32 enabled) {
     gVoiceRecognitionReadRequested = 0;
 }
 
-
 /// Advance the pending change to the requested voice dictionary.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80003F30 (0x80003F30).
@@ -200,10 +206,10 @@ void micSessionUpdateDictionary(void) {
         }
     } else {
     block_4:
-        if (voiceDictionaryUpload(gMicSessionUploadingDictionary, 0xA) == 1) {
+        if (voiceDictionaryUpload(gMicSessionUploadingDictionary, MIC_DICTIONARY_UPLOAD_BATCH_WORDS) == 1) {
             gMicSessionUploadedDictionary = gMicSessionUploadingDictionary;
             TRACE("_changeDic: _sendincDicNum:%d\n", gMicSessionUploadedDictionary);
-            gMicSessionUploadingDictionary = -1;
+            gMicSessionUploadingDictionary = VOICE_DICTIONARY_NONE;
         }
     }
 }
@@ -212,16 +218,16 @@ void micSessionUpdateDictionary(void) {
  * voice handle to it and record it in D_800AD474 when the unit initializes. */
 #define SCAN_VOICE_PORT(port, status)                                                                                  \
     do {                                                                                                               \
-        TRACE("_micAvailPort:0x%02x\n", gMicSessionEligibleDevicePortMask);                                                                   \
+        TRACE("_micAvailPort:0x%02x\n", gMicSessionEligibleDevicePortMask);                                            \
         for ((port) = 0; (port) != MAXCONTROLLERS; (port)++) {                                                         \
-            if ((1 << (port)) & gMicSessionEligibleDevicePortMask) {                                                                          \
+            if ((1 << (port)) & gMicSessionEligibleDevicePortMask) {                                                   \
                 TRACE(" checking port(%d)\n", (port));                                                                 \
-                if (((status) = controllerGetPortStatus(port), (status)->errno == 0) &&                                          \
+                if (((status) = controllerGetPortStatus(port), (status)->errno == 0) &&                                \
                     (((status)->type & CONT_TYPE_MASK) == CONT_TYPE_VOICE)) {                                          \
                     TRACE("mic found:%d\n", (port));                                                                   \
-                    voiceRecognitionInitialize(serialGetMessageQueue(), (port));                                                       \
-                    if (voiceRecognitionGetDeviceState() == VOICE_RECOGNITION_READY) {                                                                        \
-                        gMicSessionDevicePort = (port);                                                                           \
+                    voiceRecognitionInitialize(serialGetMessageQueue(), (port));                                       \
+                    if (voiceRecognitionGetDeviceState() == VOICE_RECOGNITION_READY) {                                 \
+                        gMicSessionDevicePort = (port);                                                                \
                     } else {                                                                                           \
                         TRACE("failed to initialize mic(port %d)\n", (port));                                          \
                     }                                                                                                  \
@@ -239,12 +245,13 @@ void micSessionResetAndFindDevice(void) {
     OSContStatus *status;
 
     gMicSessionTriggerActive = gMicSessionPreviousTriggerActive = 0;
-    gMicSessionUploadingDictionary = gMicSessionUploadedDictionary = -1;
+    gMicSessionUploadingDictionary = gMicSessionUploadedDictionary = VOICE_DICTIONARY_NONE;
     if (gMicSessionRequestedDictionary == -1) {
         gMicSessionRequestedDictionary = 0;
     }
     gMicSessionAmplifierOffRequested = 0;
-    gMicSessionLastDeviceScanTicks = gMicSessionLastAmplifierOnTicks = gMicSessionLastAmplifierOffTicks = gMicSessionTriggerReleaseTicks = osGetTime();
+    gMicSessionLastDeviceScanTicks = gMicSessionLastAmplifierOnTicks = gMicSessionLastAmplifierOffTicks =
+        gMicSessionTriggerReleaseTicks = osGetTime();
     gMicSessionDevicePort = -1;
     SCAN_VOICE_PORT(port, status);
 }
@@ -294,7 +301,8 @@ s32 micSessionIsDeviceConnected(s32 port) {
     OSContStatus *status;
 
     status = controllerGetPortStatus(port);
-    if ((status->errno == 0) && ((status->type & 0x1F07) == 0x100) && (voiceRecognitionGetDeviceState() == VOICE_RECOGNITION_READY)) {
+    if ((status->errno == 0) && ((status->type & CONT_TYPE_MASK) == CONT_TYPE_VOICE) &&
+        (voiceRecognitionGetDeviceState() == VOICE_RECOGNITION_READY)) {
         return 1;
     }
     TRACE(" mic-disconnect\n  errno:%d\n  type:0x%08x\n  connect:%d\n", status->errno, status->type, port);
@@ -311,7 +319,8 @@ void micSessionUpdate(void) {
         if ((gMicSessionDevicePort >= 0) && (micSessionIsDeviceConnected(gMicSessionDevicePort) != 0)) {
             micSessionUpdateTrigger();
             micSessionUpdateAmplifier();
-            if ((gMicSessionUploadedDictionary != gMicSessionRequestedDictionary) || (micSessionIsDictionaryUploadActive() != 0)) {
+            if ((gMicSessionUploadedDictionary != gMicSessionRequestedDictionary) ||
+                (micSessionIsDictionaryUploadActive() != 0)) {
                 micSessionUpdateRecognitionEnable(0);
                 micSessionUpdateDictionary();
             } else if (gMicSessionRecognitionFollowsTrigger != 0) {
@@ -390,14 +399,12 @@ void micSessionInitialize(s32 portMask) {
     micSessionResetAndFindDevice();
 }
 
-
 /// Query the EEPROM device type without exposing the result.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c n_alSeqpDelete (0x80004460).
 void eepromQueryDeviceTypeNoResult(void) {
     eepromGetDeviceType();
 }
-
 
 /// Check whether an EEPROM request or transfer is outstanding.
 /// \returns 1 while a request or transfer is busy, or 0 otherwise.
@@ -418,7 +425,6 @@ void eepromWaitForIdle(void) {
         } while (eepromIsRequestOrTransferBusy() != 0);
     }
 }
-
 
 /// Get the state of the EEPROM transfer managed by queued requests.
 /// \returns 0 when idle or unavailable, 1/2 for read/write in progress, or 3/4/5 for read/checksum/write failure.

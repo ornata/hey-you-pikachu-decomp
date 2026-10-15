@@ -251,3 +251,11 @@ equality has separate named relative and absolute tolerances. Packed values use
 storage remains byte-aligned. Opcodes zero through two and value tag two retain
 their unresolved distinctions. The optional [semantic review](SEMANTIC_REVIEW.md)
 includes asymmetric integer and floating-equality scenarios for these operations.
+
+Dictionary selection uses `VOICE_DICTIONARY_NONE`, and consuming a result without
+a pending notification returns `VOICE_RECOGNITION_NO_RESULT`. Amplifier operation
+arguments use `VoiceAmplifierSetting`; the retained amplifier state remains a
+Boolean. The session limits uploads to `MIC_DICTIONARY_UPLOAD_BATCH_WORDS` per
+update. Startup and injected-command/no-speech scenarios observe these paths
+without establishing physical VRU fidelity. Device command-status codes whose
+individual meanings remain unresolved retain their numeric forms.

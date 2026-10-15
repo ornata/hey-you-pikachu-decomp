@@ -9,9 +9,23 @@
 /// Recorded availability of the recognition device, distinct from command/read progress.
 typedef enum VoiceRecognitionDeviceState {
     VOICE_RECOGNITION_UNAVAILABLE = 0, ///< Disconnected or not yet confirmed.
-    VOICE_RECOGNITION_READY = 1, ///< Initialized device available for operations.
-    VOICE_RECOGNITION_ERROR = 2 ///< Device operation failed and recovery is required.
+    VOICE_RECOGNITION_READY = 1,       ///< Initialized device available for operations.
+    VOICE_RECOGNITION_ERROR = 2        ///< Device operation failed and recovery is required.
 } VoiceRecognitionDeviceState;
+
+/// Dictionary-selection sentinel; ordinary dictionary identifiers are nonnegative.
+/// This describes retained selection fields, not whether hardware vocabulary was cleared.
+enum { VOICE_DICTIONARY_NONE = -1 };
+
+/// Result-index sentinel returned when no completed recognition result is pending.
+enum { VOICE_RECOGNITION_NO_RESULT = -1 };
+
+/// Amplifier settings accepted by the game-facing recognition interface.
+/// These are device-operation arguments, distinct from the retained Boolean amplifier state.
+typedef enum VoiceAmplifierSetting {
+    VOICE_AMPLIFIER_OFF = 0, ///< Disable microphone amplification.
+    VOICE_AMPLIFIER_ON = 8   ///< Enable microphone amplification.
+} VoiceAmplifierSetting;
 
 /// Session-policy request for recognition reading, distinct from an active read.
 /// The microphone session writes this flag; recognition polling services it.
@@ -89,7 +103,7 @@ s32 voiceRecognitionIsReadActive(void);
 s32 voiceRecognitionGetDeviceState(void);
 
 /// Set the microphone amplifier on a ready recognition device.
-/// \param flag Eight to enable the amplifier, or zero to disable it.
+/// \param flag VOICE_AMPLIFIER_ON to enable the amplifier, or VOICE_AMPLIFIER_OFF to disable it.
 /// \returns Zero on success, minus one when unavailable, or a device error code.
 /// \note Original decompilation identifier: \c func_80040E64 (0x80040E64).
 s32 voiceRecognitionSetAmplifier(u8 flag);

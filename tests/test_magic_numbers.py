@@ -106,3 +106,18 @@ def test_utf8_byte_offsets_and_pointer_arithmetic_are_review_candidates(tmp_path
     ][0]
     assert entry["line"] == 2 and entry["category"] == "numeric_candidate"
     assert entry["offset"] == len(source[: source.index("17")].encode())
+
+
+def test_equal_enum_values_remain_separate_domains(tmp_path):
+    source = (
+        "enum ItemMode { ITEM_HELD = 3, ITEM_STORED };\n"
+        "enum ScriptState { SCRIPT_WAITING = 3, SCRIPT_DONE };\n"
+    )
+    result = inventory(
+        report(tmp_path, source, [source.index("3"), source.rindex("3")]), tmp_path
+    )
+    domains = result["named_domains"]
+    assert [d["name"] for d in domains] == ["ItemMode", "ScriptState"]
+    assert [d["constants"][0]["value"] for d in domains] == [3, 3]
+    assert [d["constants"][1]["value"] for d in domains] == [4, 4]
+    assert domains[0]["constants"][0]["name"] != domains[1]["constants"][0]["name"]

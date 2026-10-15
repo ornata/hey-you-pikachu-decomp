@@ -112,6 +112,57 @@ def classify(code, offset, functions, declarations):
     return category, function
 
 
+def named_domains(cache):
+    """List existing enum domains; equal values never imply interchangeable roles."""
+    result = []
+    pattern = re.compile(r"\benum\s*(\w+)?\s*\{([^{}]*)\}\s*(\w+)?", re.S)
+    for path, (_, _, code, _) in sorted(cache.items()):
+        for match in pattern.finditer(code):
+            constants = []
+            previous = -1
+            for member in match[2].split(","):
+                member = member.strip()
+                if not member:
+                    continue
+                parts = re.fullmatch(r"([A-Za-z_]\w*)\s*(?:=\s*(.*))?", member, re.S)
+                if not parts:
+                    continue
+                expression = parts[2].strip() if parts[2] is not None else None
+                if expression is None:
+                    value = previous + 1 if previous is not None else None
+                elif re.fullmatch(r"-?(?:0[xX][0-9A-Fa-f]+|[0-9]+)[uUlL]*", expression):
+                    raw = re.sub(r"[uUlL]+$", "", expression)
+                    sign = -1 if raw.startswith("-") else 1
+                    raw = raw.lstrip("-")
+                    value = sign * int(
+                        raw,
+                        (
+                            16
+                            if raw.lower().startswith("0x")
+                            else 8 if len(raw) > 1 and raw.startswith("0") else 10
+                        ),
+                    )
+                else:
+                    value = None
+                constants.append(
+                    dict(name=parts[1], expression=expression, value=value)
+                )
+                previous = value
+            result.append(
+                dict(
+                    path=path,
+                    name=match[1] or match[3] or None,
+                    scope=(
+                        "shared-header"
+                        if path.startswith("include/")
+                        else "source-unit"
+                    ),
+                    constants=constants,
+                )
+            )
+    return result
+
+
 def inventory(report, root):
     """Deduplicate owned diagnostics and reject stale source snapshots."""
     cache = {}
@@ -187,6 +238,7 @@ def inventory(report, root):
         affected_files=len({e["path"] for e in entries}),
         counts=dict(sorted(Counter(e["category"] for e in entries).items())),
         review_groups=len(groups),
+        named_domains=named_domains(cache),
         entries=entries,
     )
 

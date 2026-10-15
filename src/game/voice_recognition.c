@@ -45,7 +45,7 @@ extern s32 gVoiceSelectedDictionary;
 /// \returns The global word identifier, or zero when no dictionary is selected.
 /// \note Original decompilation identifier: \c func_80040440 (0x80040440).
 s32 voiceDictionaryGetWordId(u16 index) {
-    if (gVoiceSelectedDictionary != -1) {
+    if (gVoiceSelectedDictionary != VOICE_DICTIONARY_NONE) {
         return gVoiceDictionaries[gVoiceSelectedDictionary].wordIds[index];
     }
     return 0;
@@ -77,7 +77,6 @@ void voiceRecognitionResetProgress(void) {
     gVoiceRecognitionReadActive = 0;
     gVoiceAmplifierEnabled = 1;
 }
-
 
 /// Clear recognition requests and reset dictionary and read progress.
 /// \returns Nothing.
@@ -141,7 +140,7 @@ void voiceRecognitionInitialize(OSMesgQueue *queue, s32 channel) {
     for (i = 0; i < 2; i++) {
         gVoiceRecognitionLastDeviceError = voiceDeviceInitialize(queue, &gVoiceRecognitionHandle, channel);
         if (osEngVoiceUnitType != 1) {
-            gVoiceRecognitionLastDeviceError = 5;
+            gVoiceRecognitionLastDeviceError = CONT_ERR_INVALID;
         }
         TRACE("mic64Error:%d osEngVoiceUnitType:%d\n", gVoiceRecognitionLastDeviceError, osEngVoiceUnitType);
         if (gVoiceRecognitionLastDeviceError == 0) {
@@ -158,7 +157,6 @@ void voiceRecognitionInitialize(OSMesgQueue *queue, s32 channel) {
     gVoiceRecognitionResultPending = 0;
     TRACE("mic64Init() End\n");
 }
-
 
 /// Clear the device dictionary through the retained target call representation.
 /// \param handle Initialized voice handle.
@@ -184,7 +182,7 @@ s32 voiceDictionaryClearDevice(s32 wordCount) {
     if (gVoiceRecognitionLastDeviceError == 0) {
         return 0;
     }
-    if (gVoiceRecognitionLastDeviceError == 1) {
+    if (gVoiceRecognitionLastDeviceError == CONT_ERR_NO_CONTROLLER) {
         gVoiceRecognitionDeviceState = VOICE_RECOGNITION_UNAVAILABLE;
         voiceRecognitionResetRequests();
     } else {
@@ -204,7 +202,7 @@ extern s32 gVoiceSelectedDictionaryWordCount;
  * characters, including the zero terminator. */
 #define VOICE_COPY_WORD_TEXT(dst, index, src, i)                                                                       \
     do {                                                                                                               \
-        (src) = gVoiceWordDefinitions[voiceDictionaryGetWordId(index)].text;                                                      \
+        (src) = gVoiceWordDefinitions[voiceDictionaryGetWordId(index)].text;                                           \
         for ((i) = 0;; (i)++) {                                                                                        \
             u16 c = (((src)[0] << 8) | (src)[1]) & 0xFFFF;                                                             \
             (dst)[i] = c;                                                                                              \
@@ -251,7 +249,7 @@ s32 voiceDictionaryUpload(s32 dictionary, s32 batch) {
         gVoiceRecognitionLastDeviceError = voiceDeviceRegisterWord(&gVoiceRecognitionHandle, (u8 *)word);
         if (gVoiceRecognitionLastDeviceError == 0) {
             gVoiceDictionaryNextWordIndex++;
-        } else if (gVoiceRecognitionLastDeviceError == 1) {
+        } else if (gVoiceRecognitionLastDeviceError == CONT_ERR_NO_CONTROLLER) {
             gVoiceRecognitionDeviceState = VOICE_RECOGNITION_UNAVAILABLE;
             voiceRecognitionResetRequests();
             return 0;
@@ -284,7 +282,7 @@ s32 voiceRecognitionStartRequestedRead(void) {
         gVoiceRecognitionLastDeviceError = osVoiceStartReadData(&gVoiceRecognitionHandle);
         if (gVoiceRecognitionLastDeviceError == 0) {
             ret = 1;
-        } else if (gVoiceRecognitionLastDeviceError == 1) {
+        } else if (gVoiceRecognitionLastDeviceError == CONT_ERR_NO_CONTROLLER) {
             gVoiceRecognitionDeviceState = VOICE_RECOGNITION_UNAVAILABLE;
             voiceRecognitionResetRequests();
         } else {
@@ -321,11 +319,11 @@ void voiceRecognitionPoll(void) {
             gVoiceRecognitionResultPending = 1;
             gVoiceRecognitionReadActive = 0;
             gVoiceRecognitionCommandStatus = 7;
-        } else if (gVoiceRecognitionLastDeviceError == 1) {
+        } else if (gVoiceRecognitionLastDeviceError == CONT_ERR_NO_CONTROLLER) {
             VOICE_DEVICE_STATE_VOLATILE = VOICE_RECOGNITION_UNAVAILABLE;
             voiceRecognitionResetRequests();
             return;
-        } else if (gVoiceRecognitionLastDeviceError != 0xC) {
+        } else if (gVoiceRecognitionLastDeviceError != CONT_ERR_NOT_READY) {
             VOICE_DEVICE_STATE_VOLATILE = VOICE_RECOGNITION_ERROR;
             voiceRecognitionResetRequests();
             return;
@@ -339,7 +337,7 @@ void voiceRecognitionPoll(void) {
                     gVoiceRecognitionReadActive = 0;
                     return;
                 }
-                if (gVoiceRecognitionLastDeviceError == 1) {
+                if (gVoiceRecognitionLastDeviceError == CONT_ERR_NO_CONTROLLER) {
                     VOICE_DEVICE_STATE_VOLATILE = VOICE_RECOGNITION_UNAVAILABLE;
                     voiceRecognitionResetRequests();
                     return;
@@ -359,10 +357,9 @@ void voiceRecognitionPoll(void) {
     }
 }
 
-
 /// Consume the pending recognition result.
 /// \param out Optional destination for the complete result; unchanged when none is pending.
-/// \returns The first device answer as a dictionary-local index, or -1 when no
+/// \returns The first device answer as a dictionary-local index, or VOICE_RECOGNITION_NO_RESULT when no
 /// result is pending. Check the returned result's answer count before using the index.
 /// \note Original decompilation identifier: \c func_80040BA0 (0x80040BA0).
 /// \note Consumes the pending-result notification even when out is null. Results
@@ -375,14 +372,14 @@ s32 voiceRecognitionTakeResult(OSVoiceData *out) {
     u32 mask;
 
     mask = osGetIntMask();
-    osSetIntMask(1);
+    osSetIntMask(OS_IM_NONE);
     if (gVoiceRecognitionResultPending == 1) {
         if (out != NULL) {
             *out = gVoiceRecognitionResult;
         }
         r = gVoiceRecognitionResult.answer[0];
     } else {
-        r = -1;
+        r = VOICE_RECOGNITION_NO_RESULT;
     }
     gVoiceRecognitionResultPending = 0;
     osSetIntMask(mask);
@@ -396,7 +393,6 @@ s32 voiceRecognitionGetCommandStatus(void) {
     return gVoiceRecognitionCommandStatus;
 }
 
-
 /// Check whether a recognition read is active.
 /// \returns Nonzero while a read is active, or zero otherwise.
 /// \note Original decompilation identifier: \c func_80040C80 (0x80040C80).
@@ -404,20 +400,17 @@ s32 voiceRecognitionIsReadActive(void) {
     return gVoiceRecognitionReadActive;
 }
 
-
 /// Get the display name of a selected-dictionary entry.
 /// \param index Dictionary-local word index.
 /// \returns A borrowed word-name pointer, or an empty string when the index is
 /// out of range or no dictionary is selected.
 /// \note Original decompilation identifier: \c func_80040C8C (0x80040C8C).
 char *voiceDictionaryGetWordName(u16 index) {
-    if (index < gVoiceSelectedDictionaryWordCount && gVoiceSelectedDictionary != -1) {
+    if (index < gVoiceSelectedDictionaryWordCount && gVoiceSelectedDictionary != VOICE_DICTIONARY_NONE) {
         return gVoiceWordDefinitions[voiceDictionaryGetWordId(index)].name;
     }
     return "";
 }
-
-
 
 /// Get the game command type associated with a selected-dictionary word.
 /// \param index Dictionary-local word index.
@@ -425,13 +418,11 @@ char *voiceDictionaryGetWordName(u16 index) {
 /// dictionary is selected.
 /// \note Original decompilation identifier: \c func_80040CF8 (0x80040CF8).
 s32 voiceDictionaryGetCommandType(u16 index) {
-    if (index < gVoiceSelectedDictionaryWordCount && gVoiceSelectedDictionary != -1) {
+    if (index < gVoiceSelectedDictionaryWordCount && gVoiceSelectedDictionary != VOICE_DICTIONARY_NONE) {
         return gVoiceWordDefinitions[voiceDictionaryGetWordId(index)].commandType;
     }
     return -1;
 }
-
-
 
 /// Get the game command value associated with a selected-dictionary word.
 /// \param index Dictionary-local word index.
@@ -439,12 +430,11 @@ s32 voiceDictionaryGetCommandType(u16 index) {
 /// dictionary is selected.
 /// \note Original decompilation identifier: \c func_80040D60 (0x80040D60).
 s32 voiceDictionaryGetCommandValue(u16 index) {
-    if (index < gVoiceSelectedDictionaryWordCount && gVoiceSelectedDictionary != -1) {
+    if (index < gVoiceSelectedDictionaryWordCount && gVoiceSelectedDictionary != VOICE_DICTIONARY_NONE) {
         return gVoiceWordDefinitions[voiceDictionaryGetWordId(index)].commandValue;
     }
     return -1;
 }
-
 
 /// Get the voice recognition device availability state.
 /// \returns 1 when ready, 0 when disconnected or unconfirmed, or 2 after an initialization or device error.
@@ -452,7 +442,6 @@ s32 voiceDictionaryGetCommandValue(u16 index) {
 s32 voiceRecognitionGetDeviceState(void) {
     return gVoiceRecognitionDeviceState;
 }
-
 
 /// Check whether a voice recognition device is connected to a controller port.
 /// \param queue Serial-interface message queue used for the controller query.
@@ -465,10 +454,10 @@ s32 voiceRecognitionProbePort(OSMesgQueue *queue, s32 channel) {
 
     gVoiceRecognitionDevicePort = channel;
     osContStartQuery(queue);
-    osRecvMesg(queue, NULL, 1);
+    osRecvMesg(queue, NULL, OS_MESG_BLOCK);
     osContGetQuery(sp20);
     p = &sp20[channel];
-    if (p->errno == 0 && (p->type & 0x1F07) == 0x100) {
+    if (p->errno == 0 && (p->type & CONT_TYPE_MASK) == CONT_TYPE_VOICE) {
         return 1;
     }
     gVoiceRecognitionDeviceState = VOICE_RECOGNITION_UNAVAILABLE;
@@ -478,7 +467,7 @@ s32 voiceRecognitionProbePort(OSMesgQueue *queue, s32 channel) {
 s32 __osVoiceSetADConverter(s32, s32, u8);
 
 /// Set the microphone amplifier state on the ready voice recognition device.
-/// \param flag Amplifier setting: 8 to enable or 0 to disable.
+/// \param flag VOICE_AMPLIFIER_ON to enable amplification, or VOICE_AMPLIFIER_OFF to disable it.
 /// \returns Zero on success, -1 when the device is unavailable, or a device error code.
 /// \note Original decompilation identifier: \c func_80040E64 (0x80040E64).
 s32 voiceRecognitionSetAmplifier(u8 flag) {
@@ -486,11 +475,12 @@ s32 voiceRecognitionSetAmplifier(u8 flag) {
         gVoiceAmplifierEnabled = 0;
         return -1;
     }
-    gVoiceRecognitionLastDeviceError = __osVoiceSetADConverter((s32)gVoiceRecognitionHandle.__mq, gVoiceRecognitionHandle.__channel, flag);
+    gVoiceRecognitionLastDeviceError =
+        __osVoiceSetADConverter((s32)gVoiceRecognitionHandle.__mq, gVoiceRecognitionHandle.__channel, flag);
     if (gVoiceRecognitionLastDeviceError != 0) {
         voiceRecognitionResetRequests();
     } else if (flag != 0) {
-        if (flag == 8) {
+        if (flag == VOICE_AMPLIFIER_ON) {
             gVoiceAmplifierEnabled = 1;
         } else {
             TRACE("MIC64_ERROR: Invalid flag: %d\n", flag);
