@@ -6,6 +6,7 @@
 
 #include "script_message.h"
 #include "voice_recognition.h"
+#include "voice_phrases.h"
 
 /// Gameplay quality flags combined with device warnings in message argument 1.
 /// \ingroup VoiceInteraction

@@ -43,6 +43,22 @@ recognition requests, waits for the current read to become inactive, and registe
 words in batches of ten. Recognition polling resumes when uploading is complete.
 See `micSessionUpdate`, `micSessionUpdateDictionary`, and `voiceDictionaryUpload`.
 
+The decoder's `voice_vocabulary` catalog reads the separate vocabulary DMA bank,
+whose original loader copies ROM 0xA9800..0xB3C70 to 0x80100680. It records a
+neighbor-delimited view of 640 word definitions and a reviewed prefix of 43
+dictionary descriptors, containing 2,053 ordered entries. All 640 words have
+membership in that prefix. These bounds do not prove that arbitrary dictionary
+requests are valid. Display bytes and device vocabulary bytes remain separate;
+the latter are not interpreted as ordinary display text.
+
+Each word links its dictionary-local indices, global word ID, message category
+and command value. Multiple words can share a command value, and a value can
+have different vocabulary labels across dictionaries. The report retains those
+associations instead of treating a value as a universal word identity. Original
+vocabulary bytes remain in ignored local reports. Eight authored dictionary
+cases check the original metadata getters, including reordered word IDs, distinct
+categories and invalid-selection/index results; they do not exercise recognition.
+
 ### 2. Consume a recognition result
 
 [Voice recognition](../src/game/voice_recognition.c) starts and polls VRU reads through
@@ -515,6 +531,31 @@ In the bedroom script, frame 0 slot 9 receives the current message type and slot
 therefore maps message data to timed programs, with a caller-supplied flag affecting
 one branch. This identifies the coordinates in that script, without assigning a
 universal meaning to those slots in other programs or naming every argument value.
+
+For message category 2, values 23 through 32 consistently identify ten
+Pikachu-like phrases. `VoicePikachuPhraseValue` in `voice_phrases.h` names that
+scoped domain. Thirteen retained word records cover those ten values; alternate
+records remain separate with their own dictionary memberships. The decoder checks
+the names against the retained display labels and requires dictionary membership.
+These are recognized phrases, without a recovered translation or emotional meaning.
+
+The bedroom response selector's guarded table connects them to timed programs:
+
+| Phrase selector | Timed program |
+| --- | --- |
+| `VOICE_PHRASE_PIKA_PIKACHU` | 51 |
+| `VOICE_PHRASE_PIKA_PIKA_PI` | 268 |
+| `VOICE_PHRASE_PI_PIKACHU` | 135 |
+| `VOICE_PHRASE_PI_PIKA_PI` | 34 |
+| `VOICE_PHRASE_PIKKA` | 204 |
+| `VOICE_PHRASE_PIKA` | 259 |
+| `VOICE_PHRASE_PIKAPIKA` | 175 |
+| `VOICE_PHRASE_PI_KA` | 155 |
+| `VOICE_PHRASE_PI_KA_KA` | 22 |
+| `VOICE_PHRASE_PI_KAKAPI` | 150 |
+
+This is a static message-to-program connection, not evidence of microphone input,
+successful delivery, rendered reactions or retail-path reachability.
 
 `ActionScriptState.selectedProgramId` retains the selected program even after
 natural END stops command execution. `actionScriptGetId` and the native callback

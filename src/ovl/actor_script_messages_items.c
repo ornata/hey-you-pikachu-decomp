@@ -772,8 +772,9 @@ s32 actorScriptRequestMicDictionary(u8 *actor) {
 }
 
 /// Query the requested voice dictionary.
-/// \param actor Actor whose script VM receives an unspecified legacy result from the dictionary query.
+/// \param actor Actor whose script VM receives the requested dictionary identifier.
 /// \returns Zero, allowing script execution to continue.
+/// \note The requested dictionary may differ from the vocabulary currently registered with the device.
 /// \note Original decompilation identifier: \c func_8011D610 (0x8011D610).
 s32 actorScriptQueryRequestedMicDictionary(u8 *actor) {
     s32 sp1C;

@@ -23,6 +23,7 @@ from .scenarios import scenario_domains, function_body
 from .actions import action_calls, action_resources
 from .actors import actor_kind_records
 from .functions import action_producer_functions
+from .vocabulary import vocabulary_catalog
 
 
 def companion_sites(image):
@@ -218,6 +219,7 @@ def catalog(image, max_instructions=100000):
                 distinct_decoded_code_hashes=len({row['decoded_code_sha256'] for row in rows}),
                 action_script_resources=action_resources(image, resource_ids),
                 actor_kinds=actors,
+                voice_vocabulary=vocabulary_catalog(image),
                 code_reference_roles=dict(roles), configurations=rows), decodes
 
 
@@ -239,7 +241,7 @@ def main(argv=None):
         report['elf_sha256'] = hashlib.sha256(args.elf.read_bytes()).hexdigest()
         report['decoder_sha256'] = hashlib.sha256(Path(__file__).with_name('formats.py').read_bytes()).hexdigest()
         report['analysis_sha256'] = {name: hashlib.sha256(Path(__file__).with_name(name + '.py').read_bytes()).hexdigest()
-                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns')}
+                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary')}
         files = {'catalog.json': report, **{name + '.json': row for name, row in decodes.items()}}
         # Validate every output before writing any content, including existing symlinks.
         for name in files:
