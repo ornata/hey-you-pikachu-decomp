@@ -1,3 +1,4 @@
+#include "runtime_mode.h"
 #include "area_catalog.h"
 #include "player_profile.h"
 #include "heap_initialize.h"
@@ -330,7 +331,7 @@ void runtimeInitializePlatform(s32 schedulerAddress) {
     s32 mode;
     gRuntimeCurrentProgram = 0;
     gRuntimeNextProgram = 0;
-    gRuntimeGameMode = 0x12;
+    gRuntimeGameMode = GAME_MODE_TITLE;
     gRuntimeCurrentArea = gRuntimeNextArea = AREA_CREDITS;
     gRuntimeCurrentEntrance = gRuntimeNextEntrance = 0;
     gAreaScenarioIndex = 1;
@@ -382,8 +383,8 @@ extern s32 gGameplayVoiceCommandsAllowed;
 /// \note Original decompilation identifier: \c func_8000A9C0 (0x8000A9C0).
 void runtimeInitializeSceneGameplay(void) {
     areaActivateDestination();
-    if (gRuntimeGameMode != 0x12) {
-        runtimeRequestGameModeChange(4);
+    if (gRuntimeGameMode != GAME_MODE_TITLE) {
+        runtimeRequestGameModeChange(GAME_MODE_AREA_CARD);
     }
     presentationInitializeForCurrentArea();
     if (progressHasFieldInCurrentArea(0x40000000) != 0) {
@@ -600,7 +601,7 @@ void runtimeAccumulateActorScriptTime(void) {
 }
 
 /// Request a game-mode transition and account for elapsed play time.
-/// \param mode Valid game-mode identifier to enter.
+/// \param mode RuntimeGameMode identifier to enter; raw values are stored without validation.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000B2C8 (0x8000B2C8).
 void runtimeRequestGameModeChange(s32 mode) {
@@ -642,11 +643,11 @@ void runtimeUpdateGameMode(void) {
 
     objectSweepDeferredHierarchyDestruction();
     switch (gRuntimeGameMode) {
-    case 0:
+    case GAME_MODE_GAMEPLAY:
         player = 0;
         if (gEyeCatchSelectedGroup != -1) {
             eyeCatchBegin();
-            runtimeRequestGameModeChange(0xD);
+            runtimeRequestGameModeChange(GAME_MODE_EYE_CATCH);
         } else {
             do {
                 if (player <= 0) {
@@ -654,22 +655,22 @@ void runtimeUpdateGameMode(void) {
                 }
                 player += 1;
             } while (player != 3);
-            if ((gRuntimeGameMode == 0) || (gRuntimeGameMode == 3)) {
+            if ((gRuntimeGameMode == GAME_MODE_GAMEPLAY) || (gRuntimeGameMode == GAME_MODE_TEXT_WINDOW)) {
                 pikachuUpdateScriptAndTriggers();
                 objectUpdateGroup(0);
             }
         }
         break;
-    case 18:
+    case GAME_MODE_TITLE:
         titleScreenUpdate();
         break;
-    case 4:
+    case GAME_MODE_AREA_CARD:
         presentationUpdateCardMode();
         break;
-    case 5:
+    case GAME_MODE_COLLECTION_RESULTS:
         presentationUpdateCollectionResultsMode();
         break;
-    case 11:
+    case GAME_MODE_FADE_TO_AREA_LOAD:
         if (gRuntimeGameModeEntryPending != 0) {
             cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.8F);
             runtimeAccumulateActorScriptTime();
@@ -679,18 +680,18 @@ void runtimeUpdateGameMode(void) {
         }
         objectUpdateGroup(0);
         break;
-    case 12:
+    case GAME_MODE_FADE_TO_COLLECTION:
         if (gRuntimeGameModeEntryPending != 0) {
             gCompletedVisitCardPending = 1;
             cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.8F);
             runtimeAccumulateActorScriptTime();
             gRuntimeGameModeEntryPending = 0;
         } else if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
-            runtimeRequestGameModeChange(5);
+            runtimeRequestGameModeChange(GAME_MODE_COLLECTION_RESULTS);
         }
         objectUpdateGroup(0);
         break;
-    case 6:
+    case GAME_MODE_FADE_TO_WORLD_MAP:
         if (gRuntimeGameModeEntryPending != 0) {
             audioStopCategories(AUDIO_CATEGORY_ALL, 0.10000000149011612);
             cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.8F);
@@ -699,27 +700,27 @@ void runtimeUpdateGameMode(void) {
             gRuntimeGameModeEntryPending = 0;
         } else if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
             audioStopCategories(AUDIO_CATEGORY_ALL, 0.0);
-            runtimeRequestGameModeChange(8);
+            runtimeRequestGameModeChange(GAME_MODE_WORLD_MAP);
         }
         objectUpdateGroup(0);
         break;
-    case 13:
+    case GAME_MODE_EYE_CATCH:
         if (eyeCatchUpdate() != 0) {
-            runtimeRequestGameModeChange(0);
+            runtimeRequestGameModeChange(GAME_MODE_GAMEPLAY);
         }
         break;
-    case 7:
+    case GAME_MODE_FADE_TO_SAVE_PROMPT:
         if (gRuntimeGameModeEntryPending != 0) {
             cameraFadePrimarySecondaryOverlay(0, 0, 0, 0x1E, 0.8F);
             runtimeAccumulateActorScriptTime();
             controllerRequestRumbleReset(0);
             gRuntimeGameModeEntryPending = 0;
         } else if (gPrimarySecondaryOverlayRemainingSeconds == 0.0F) {
-            runtimeRequestGameModeChange(0xE);
+            runtimeRequestGameModeChange(GAME_MODE_SAVE_CONFIRMATION);
         }
         objectUpdateGroup(0);
         break;
-    case 14:
+    case GAME_MODE_SAVE_CONFIRMATION:
         if (gRuntimeGameModeEntryPending != 0) {
             textPanelInitialize((TextPanel *)&gRuntimePromptPanelLineCount, 5);
             textPanelSetTextConfiguration((TextPanel *)&gRuntimePromptPanelLineCount, 0);
@@ -734,11 +735,11 @@ void runtimeUpdateGameMode(void) {
         } else if (gControllerInputState[0].pressed & 0x8000) {
             textPanelReleaseEntries((TextPanel *)&gRuntimePromptPanelLineCount);
             gRuntimePromptPanelImages = 0;
-            runtimeRequestGameModeChange(0x10);
+            runtimeRequestGameModeChange(GAME_MODE_SAVE_CONTROL);
         }
         objectUpdateGroup(0);
         break;
-    case 16:
+    case GAME_MODE_SAVE_CONTROL:
         if (gRuntimeGameModeEntryPending != 0) {
             switch (*(s32 *)gRuntimeSaveParameters) {
             case 1:
@@ -754,11 +755,11 @@ void runtimeUpdateGameMode(void) {
             progressSaveControlDataToEeprom();
             gRuntimeGameModeEntryPending = 0;
         } else if (eepromIsRequestOrTransferBusy() != 0) {
-            runtimeRequestGameModeChange(0xF);
+            runtimeRequestGameModeChange(GAME_MODE_SAVE_RECORD);
         }
         objectUpdateGroup(0);
         break;
-    case 15:
+    case GAME_MODE_SAVE_RECORD:
         if (gRuntimeGameModeEntryPending != 0) {
             playerPlayTrackedSoundEffect((u8 *)&gPlayerState, 0x86);
             progressSaveRecordToEeprom(*(s32 *)gRuntimeSaveParameters);
@@ -779,7 +780,7 @@ void runtimeUpdateGameMode(void) {
                 } while (savedPrompt != gSaveFailurePromptLines);
                 runtimeResetUiPulse();
                 gRuntimeSaveAcknowledgeButtons = 0x8000;
-                runtimeRequestGameModeChange(0x11);
+                runtimeRequestGameModeChange(GAME_MODE_SAVE_ACKNOWLEDGMENT);
                 break;
             case 5:
                 for (i = 0; i < 5; i++) {
@@ -787,7 +788,7 @@ void runtimeUpdateGameMode(void) {
                 }
                 runtimeResetUiPulse();
                 gRuntimeSaveAcknowledgeButtons = 0x1000;
-                runtimeRequestGameModeChange(0x11);
+                runtimeRequestGameModeChange(GAME_MODE_SAVE_ACKNOWLEDGMENT);
                 break;
             default:
                 TRACE("Illegal saveState:%d\n", status);
@@ -796,7 +797,7 @@ void runtimeUpdateGameMode(void) {
         }
         objectUpdateGroup(0);
         break;
-    case 17:
+    case GAME_MODE_SAVE_ACKNOWLEDGMENT:
         if (gRuntimeSaveAcknowledgeButtons & gControllerInputState[0].pressed) {
             audioStopCategories(AUDIO_CATEGORY_ALL, 0.10000000149011612);
             cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.0F);
@@ -806,7 +807,7 @@ void runtimeUpdateGameMode(void) {
                 areaSetNextDestination(AREA_CREDITS, 0);
                 playerResetProfile();
                 progressSetChapterAndUnlockMilestones(0);
-                runtimeRequestGameModeChange(0x12);
+                runtimeRequestGameModeChange(GAME_MODE_TITLE);
                 runtimeRequestProgramChange(0);
             } else {
                 areaSetNextDestination(AREA_BEDROOM, 0);
@@ -815,18 +816,18 @@ void runtimeUpdateGameMode(void) {
         }
         objectUpdateGroup(0);
         break;
-    case 1:
+    case GAME_MODE_TOOLBOX:
         toolboxHandleInput();
         toolboxUpdateDisplay();
         break;
-    case 2:
+    case GAME_MODE_SYSTEM_MENU:
         systemMenuHandleInput();
         systemMenuUpdateAnimation();
         break;
-    case 3:
+    case GAME_MODE_TEXT_WINDOW:
         textWindowUpdate();
         break;
-    case 8:
+    case GAME_MODE_WORLD_MAP:
         wholeMapUpdate();
         break;
     default:

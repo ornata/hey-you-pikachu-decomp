@@ -5,9 +5,10 @@
 #define RUNTIME_CONTROL_H
 
 #include "ultra64.h"
+#include "runtime_mode.h"
 
 /// Request a game-mode transition and account for elapsed play time.
-/// \param mode Valid game-mode identifier to enter.
+/// \param mode RuntimeGameMode identifier to enter; raw values are stored without validation.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8000B2C8 (0x8000B2C8).
 void runtimeRequestGameModeChange(s32 mode);

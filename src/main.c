@@ -1,3 +1,4 @@
+#include "runtime_mode.h"
 #include "scene_types.h"
 #include "runtime_lifecycle.h"
 #include "camera_projection.h"
@@ -880,7 +881,7 @@ extern OSMesgQueue gRuntimeEventQueue;
 void renderDrawCurrentMode(void) {
     gSPDisplayList(gRenderDisplayListCursor++, D_100C7E0);
     switch (gRuntimeGameMode) {
-    case 0:
+    case GAME_MODE_GAMEPLAY:
         objectDrawGroup(0);
         cameraUpdateElapsedTimeTint(gRenderCameraIndex);
         cameraUpdateOverlayColors(gRenderCameraIndex, 1);
@@ -890,56 +891,56 @@ void renderDrawCurrentMode(void) {
         cameraDrawSecondaryOverlay(gRenderCameraIndex);
         hudDrawAreaLabel(&gRenderDisplayListCursor);
         break;
-    case 18:
+    case GAME_MODE_TITLE:
         titleScreenDrawFrame(&gRenderDisplayListCursor);
         break;
-    case 4:
+    case GAME_MODE_AREA_CARD:
         presentationDrawCardScreen(&gRenderDisplayListCursor);
         break;
-    case 5:
+    case GAME_MODE_COLLECTION_RESULTS:
         presentationDrawCollectionScreen(&gRenderDisplayListCursor);
         break;
-    case 6:
-    case 11:
-    case 12:
+    case GAME_MODE_FADE_TO_WORLD_MAP:
+    case GAME_MODE_FADE_TO_AREA_LOAD:
+    case GAME_MODE_FADE_TO_COLLECTION:
         objectDrawGroup(0);
         cameraUpdateOverlayColors(gRenderCameraIndex, 0);
         cameraDrawOverlay(gRenderCameraIndex);
         hudDraw(&gRenderDisplayListCursor);
         cameraDrawSecondaryOverlay(gRenderCameraIndex);
         break;
-    case 13:
+    case GAME_MODE_EYE_CATCH:
         eyeCatchDraw(&gRenderDisplayListCursor);
         cameraUpdateOverlayColors(gRenderCameraIndex, 0);
         cameraDrawSecondaryOverlay(gRenderCameraIndex);
         break;
-    case 7:
-    case 14:
-    case 17:
+    case GAME_MODE_FADE_TO_SAVE_PROMPT:
+    case GAME_MODE_SAVE_CONFIRMATION:
+    case GAME_MODE_SAVE_ACKNOWLEDGMENT:
         objectDrawGroup(0);
         cameraUpdateOverlayColors(gRenderCameraIndex, 0);
         cameraDrawOverlay(gRenderCameraIndex);
         cameraDrawSecondaryOverlay(gRenderCameraIndex);
         runtimeDrawPromptPanel();
         break;
-    case 15:
-    case 16:
+    case GAME_MODE_SAVE_RECORD:
+    case GAME_MODE_SAVE_CONTROL:
         objectDrawGroup(0);
         cameraUpdateOverlayColors(gRenderCameraIndex, 0);
         cameraDrawOverlay(gRenderCameraIndex);
         cameraDrawSecondaryOverlay(gRenderCameraIndex);
         break;
-    case 1:
+    case GAME_MODE_TOOLBOX:
         toolboxDrawFrame((s32)&gRenderDisplayListCursor);
         messageBarUpdateAndDraw();
         break;
-    case 2:
+    case GAME_MODE_SYSTEM_MENU:
         systemMenuDrawFrame(&gRenderDisplayListCursor);
         break;
-    case 3:
+    case GAME_MODE_TEXT_WINDOW:
         textWindowDrawFrame();
         break;
-    case 8:
+    case GAME_MODE_WORLD_MAP:
         wholeMapDraw(&gRenderDisplayListCursor);
         break;
     }

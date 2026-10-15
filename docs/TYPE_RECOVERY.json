@@ -918,6 +918,7 @@
         "runtime_clock.h",
         "runtime_control.h",
         "runtime_lifecycle.h",
+        "runtime_mode.h",
         "scene_configuration.h",
         "scene_types.h",
         "script_vm_globals.h",
@@ -944,29 +945,29 @@
       "locations": {
         "raw_offset_candidates": {
           "slot + 4": [
-            "222:50",
-            "259:22"
+            "223:50",
+            "260:22"
           ],
           "gToolboxBonusSlot + 4": [
-            "265:18"
+            "266:18"
           ],
           "gToolboxPurchaseSlot + 4": [
-            "269:19"
+            "270:19"
           ],
           "tgt + 0": [
-            "449:21"
-          ],
-          "tgt + 4": [
             "450:21"
           ],
-          "tgt + 8": [
+          "tgt + 4": [
             "451:21"
           ],
+          "tgt + 8": [
+            "452:21"
+          ],
           "gItemKind8FCollectionValue + 0x64": [
-            "1755:47"
+            "1756:47"
           ],
           "currentChapter + 1": [
-            "1773:18"
+            "1774:18"
           ]
         }
       }
@@ -1286,28 +1287,29 @@
         "object_create.h",
         "object_types.h",
         "render_state.h",
+        "runtime_mode.h",
         "terrain_height.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "count - 1": [
-            "48:35",
-            "49:38",
-            "61:56",
-            "62:59",
-            "170:31",
-            "172:41"
+            "49:35",
+            "50:38",
+            "62:56",
+            "63:59",
+            "171:31",
+            "173:41"
           ],
           "height + 0": [
-            "58:42"
+            "59:42"
           ],
           "index + 1": [
-            "173:39"
+            "174:39"
           ],
           "count + 1": [
-            "173:64",
-            "173:99"
+            "174:64",
+            "174:99"
           ]
         }
       }
@@ -1935,6 +1937,7 @@
         "runtime_clock.h",
         "runtime_control.h",
         "runtime_lifecycle.h",
+        "runtime_mode.h",
         "runtime_program.h",
         "runtime_services.h",
         "scene_configuration.h",
@@ -1954,15 +1957,15 @@
       "locations": {
         "raw_offset_candidates": {
           "actorState + 0x1B8": [
-            "599:50"
+            "600:50"
           ],
           "gRuntimePromptPanelLineCount - 1": [
-            "1068:75"
+            "1069:75"
           ]
         },
         "cast_offset_candidates": {
           "((u8 *)gPikachuActor) + 0x54": [
-            "598:31"
+            "599:31"
           ]
         }
       }
@@ -2244,6 +2247,7 @@
         "render_state.h",
         "runtime_clock.h",
         "runtime_control.h",
+        "runtime_mode.h",
         "runtime_services.h",
         "text_draw.h",
         "text_image.h",
@@ -2258,14 +2262,14 @@
       "locations": {
         "raw_offset_candidates": {
           "height + 4": [
-            "242:74"
+            "243:74"
           ],
           "input + 1": [
-            "348:24",
-            "364:12"
+            "349:24",
+            "365:12"
           ],
           "gTextWindowHistoryOldestIndex + 1": [
-            "385:36"
+            "386:36"
           ]
         }
       }
@@ -2487,6 +2491,7 @@
         "runtime_clock.h",
         "runtime_control.h",
         "runtime_lifecycle.h",
+        "runtime_mode.h",
         "scene_configuration.h",
         "scene_types.h",
         "script_vm_globals.h",
@@ -2506,22 +2511,22 @@
       "locations": {
         "raw_offset_candidates": {
           "words + 4": [
-            "84:72"
+            "85:72"
           ],
           "words + 8": [
-            "88:44"
+            "89:44"
           ],
           "x - 10": [
-            "256:36"
+            "257:36"
           ],
           "y - 4": [
-            "256:44"
+            "257:44"
           ],
           "maxWidth + 10": [
-            "256:55"
+            "257:55"
           ],
           "x + 16": [
-            "263:17"
+            "264:17"
           ]
         }
       }
@@ -2561,6 +2566,7 @@
         "runtime_clock.h",
         "runtime_control.h",
         "runtime_lifecycle.h",
+        "runtime_mode.h",
         "scene_configuration.h",
         "scene_types.h",
         "text_draw.h",
@@ -2584,108 +2590,108 @@
       "locations": {
         "raw_offset_candidates": {
           "liveObject + 0": [
-            "241:18"
-          ],
-          "liveObject + 4": [
             "242:18"
           ],
-          "liveObject + 8": [
+          "liveObject + 4": [
             "243:18"
           ],
+          "liveObject + 8": [
+            "244:18"
+          ],
           "bytes + 4": [
-            "436:102",
-            "456:78",
-            "470:78"
+            "437:102",
+            "457:78",
+            "471:78"
           ],
           "table + 0x18": [
-            "612:14"
-          ],
-          "table + 0x20": [
             "613:14"
           ],
+          "table + 0x20": [
+            "614:14"
+          ],
           "data + 4": [
-            "672:34"
+            "673:34"
           ],
           "otherState + 4": [
-            "672:56"
+            "673:56"
           ],
           "slot + 0x7C": [
-            "731:22"
-          ],
-          "slot + 0x78": [
             "732:22"
           ],
+          "slot + 0x78": [
+            "733:22"
+          ],
           "slot + 0x28": [
-            "737:22",
-            "738:98"
+            "738:22",
+            "739:98"
           ],
           "table + 0xF0": [
-            "741:12"
+            "742:12"
           ],
           "table + 0xF8": [
-            "747:12"
+            "748:12"
           ],
           "object + 0": [
-            "774:14",
-            "798:18"
-          ],
-          "object + 4": [
             "775:14",
             "799:18"
           ],
-          "object + 8": [
+          "object + 4": [
             "776:14",
             "800:18"
           ],
+          "object + 8": [
+            "777:14",
+            "801:18"
+          ],
           "row + 0x28": [
-            "892:32"
+            "893:32"
           ],
           "cur + 1": [
-            "969:14"
+            "970:14"
           ],
           "width + 40": [
-            "996:41"
+            "997:41"
           ],
           "width - 1": [
-            "1035:61"
+            "1036:61"
           ],
           "height - 1": [
-            "1036:37"
+            "1037:37"
           ],
           "scaleX + 0": [
-            "1037:68"
+            "1038:68"
           ],
           "scaleX - 0": [
-            "1037:94"
+            "1038:94"
           ],
           "scaleY + 0": [
-            "1038:70"
+            "1039:70"
           ],
           "scaleY - 0": [
-            "1038:97"
+            "1039:97"
           ],
           "phase - 0": [
-            "1105:31",
-            "1105:47",
-            "1135:39",
-            "1135:55",
-            "1151:39",
-            "1151:55"
+            "1106:31",
+            "1106:47",
+            "1136:39",
+            "1136:55",
+            "1152:39",
+            "1152:55"
           ],
           "object + 0x24": [
-            "1168:42"
+            "1169:42"
           ],
           "state + 4": [
-            "1271:48"
+            "1272:48"
           ],
           "now - 0xBB8": [
-            "1298:39"
+            "1299:39"
           ],
           "i - 1": [
-            "1452:26"
+            "1453:26"
           ],
           "i + 1": [
-            "1458:26"
+            "1459:26"
           ]
         }
       }
@@ -2821,6 +2827,7 @@
         "object_target_search.h",
         "object_types.h",
         "pikachu_actor.h",
+        "runtime_mode.h",
         "text_draw.h",
         "text_image.h",
         "text_image_configurations.h",
@@ -2836,25 +2843,25 @@
       "locations": {
         "raw_offset_candidates": {
           "x0 - 10": [
-            "325:74"
+            "326:74"
           ],
           "y0 - 6": [
-            "325:98"
+            "326:98"
           ],
           "x1 + 8": [
-            "335:104"
+            "336:104"
           ],
           "y0 - 2": [
-            "336:58"
+            "337:58"
           ],
           "x0 - 8": [
-            "336:83"
+            "337:83"
           ],
           "images + 1": [
-            "343:20"
+            "344:20"
           ],
           "count + 1": [
-            "448:51"
+            "449:51"
           ]
         }
       }
@@ -3038,6 +3045,7 @@
         "render_state.h",
         "rom_dma.h",
         "runtime_lifecycle.h",
+        "runtime_mode.h",
         "runtime_program.h",
         "runtime_services.h",
         "scene_configuration.h",
@@ -3056,37 +3064,37 @@
       "locations": {
         "raw_offset_candidates": {
           "sp1C + 0": [
-            "366:57"
+            "367:57"
           ],
           "sp1C + 4": [
-            "366:77"
+            "367:77"
           ],
           "sp1C + 8": [
-            "366:97"
+            "367:97"
           ],
           "gPlayerYaw + 180": [
-            "368:56"
+            "369:56"
           ],
           "sp20 + 0xC4": [
-            "694:51"
+            "695:51"
           ],
           "sp20 + 0xBC": [
-            "695:52"
+            "696:52"
           ],
           "sp20 + 0xB8": [
-            "721:52"
-          ],
-          "sp20 + 0xC0": [
             "722:52"
           ],
+          "sp20 + 0xC0": [
+            "723:52"
+          ],
           "sp20 + 0xCC": [
-            "723:39"
+            "724:39"
           ],
           "buffer + 1": [
-            "780:12"
+            "781:12"
           ],
           "sp1C + 0x80000000": [
-            "810:43"
+            "811:43"
           ]
         }
       }
@@ -3324,6 +3332,7 @@
         "runtime_clock.h",
         "runtime_control.h",
         "runtime_lifecycle.h",
+        "runtime_mode.h",
         "scene_configuration.h",
         "scene_types.h",
         "spatial_math.h",
@@ -3349,211 +3358,211 @@
       "locations": {
         "address_globals": {
           "D_80133DE8": [
-            "239:5",
-            "2098:8",
+            "240:5",
             "2099:8",
-            "2100:8"
+            "2100:8",
+            "2101:8"
           ]
         },
         "raw_offset_candidates": {
           "scene_bedroom_DATA_START + 0x21314": [
-            "149:34"
-          ],
-          "scene_entryway_DATA_START + 0x5A6C": [
             "150:34"
           ],
-          "scene_front_yard_DATA_START + 0x24A20": [
+          "scene_entryway_DATA_START + 0x5A6C": [
             "151:34"
           ],
-          "scene_viridian_entrance_DATA_START + 0x18904": [
+          "scene_front_yard_DATA_START + 0x24A20": [
             "152:34"
           ],
-          "scene_viridian_forest_DATA_START + 0x60C4": [
+          "scene_viridian_entrance_DATA_START + 0x18904": [
             "153:34"
           ],
-          "scene_viridian_deep_DATA_START + 0x15680": [
+          "scene_viridian_forest_DATA_START + 0x60C4": [
             "154:34"
           ],
-          "scene_springleaf_entrance_DATA_START + 0x22E9C": [
+          "scene_viridian_deep_DATA_START + 0x15680": [
             "155:34"
           ],
-          "scene_oddish_meadow_DATA_START + 0x23368": [
+          "scene_springleaf_entrance_DATA_START + 0x22E9C": [
             "156:34"
           ],
-          "scene_springleaf_field_DATA_START + 0x234B8": [
+          "scene_oddish_meadow_DATA_START + 0x23368": [
             "157:34"
           ],
-          "scene_olivine_lakeshore_DATA_START + 0xCC94": [
+          "scene_springleaf_field_DATA_START + 0x234B8": [
             "158:34"
           ],
-          "scene_olivine_lake_DATA_START + 0xCCE8": [
+          "scene_olivine_lakeshore_DATA_START + 0xCC94": [
             "159:34"
           ],
-          "scene_ochre_entrance_DATA_START + 0x9858": [
+          "scene_olivine_lake_DATA_START + 0xCCE8": [
             "160:34"
           ],
-          "scene_ochre_deep_DATA_START + 0x157A4": [
+          "scene_ochre_entrance_DATA_START + 0x9858": [
             "161:34"
           ],
-          "scene_cobalt_island_DATA_START + 0x1C698": [
+          "scene_ochre_deep_DATA_START + 0x157A4": [
             "162:34"
           ],
-          "scene_cobalt_coast_DATA_START + 0x12284": [
+          "scene_cobalt_island_DATA_START + 0x1C698": [
             "163:34"
           ],
-          "scene_abra_shop_DATA_START + 0xF114": [
+          "scene_cobalt_coast_DATA_START + 0x12284": [
             "164:34"
           ],
-          "scene_wilderness_camp_DATA_START + 0x64DC": [
+          "scene_abra_shop_DATA_START + 0xF114": [
             "165:34"
           ],
-          "scene_ochre_fishing_DATA_START + 0x111E0": [
+          "scene_wilderness_camp_DATA_START + 0x64DC": [
             "166:34"
           ],
-          "scene_olivine_fishing_DATA_START + 0x10DB0": [
+          "scene_ochre_fishing_DATA_START + 0x111E0": [
             "167:34"
           ],
-          "scene_cobalt_fishing_DATA_START + 0x10F50": [
+          "scene_olivine_fishing_DATA_START + 0x10DB0": [
             "168:34"
           ],
-          "scene_viridian_edge_DATA_START + 0xF2A8": [
+          "scene_cobalt_fishing_DATA_START + 0x10F50": [
             "169:34"
           ],
-          "scene_playground_DATA_START + 0xAA3C": [
+          "scene_viridian_edge_DATA_START + 0xF2A8": [
             "170:34"
           ],
-          "scene_credits_DATA_START + 0xF4DC": [
+          "scene_playground_DATA_START + 0xAA3C": [
             "171:34"
           ],
+          "scene_credits_DATA_START + 0xF4DC": [
+            "172:34"
+          ],
           "w + 10": [
-            "275:47"
+            "276:47"
           ],
           "d + 10": [
-            "276:97"
+            "277:97"
           ],
           "return -1": [
-            "396:5",
-            "1704:29"
+            "397:5",
+            "1705:29"
           ],
           "w - 1": [
-            "511:79",
-            "512:72",
-            "533:79",
-            "534:72",
-            "568:42",
-            "577:17",
-            "578:15",
-            "712:58"
+            "512:79",
+            "513:72",
+            "534:79",
+            "535:72",
+            "569:42",
+            "578:17",
+            "579:15",
+            "713:58"
           ],
           "h - 1": [
-            "516:79",
-            "517:72",
-            "538:79",
-            "539:72",
-            "569:33",
-            "714:58",
-            "958:28"
+            "517:79",
+            "518:72",
+            "539:79",
+            "540:72",
+            "570:33",
+            "715:58",
+            "959:28"
           ],
           "ix + 1": [
-            "573:10",
-            "717:41",
-            "719:41",
-            "726:39",
-            "728:39"
+            "574:10",
+            "718:41",
+            "720:41",
+            "727:39",
+            "729:39"
           ],
           "iz + 1": [
-            "574:10",
-            "718:45",
-            "719:49",
-            "727:43",
-            "728:47"
+            "575:10",
+            "719:45",
+            "720:49",
+            "728:43",
+            "729:47"
           ],
           "count - 1": [
-            "959:25"
+            "960:25"
           ],
           "kind + 3": [
-            "1071:39"
+            "1072:39"
           ],
           "node + 0x40": [
-            "1480:18"
+            "1481:18"
           ],
           "node + 0x1C": [
-            "1484:19"
-          ],
-          "node + 0x10": [
-            "1484:51"
-          ],
-          "camera + 8": [
             "1485:19"
           ],
+          "node + 0x10": [
+            "1485:51"
+          ],
+          "camera + 8": [
+            "1486:19"
+          ],
           "node + 0x14": [
-            "1486:26"
+            "1487:26"
           ],
           "node + 8": [
-            "1487:47"
+            "1488:47"
           ],
           "camera + 0": [
-            "1488:19"
+            "1489:19"
           ],
           "node + 0x18": [
-            "1489:27"
+            "1490:27"
           ],
           "node + 0xC": [
-            "1489:59"
+            "1490:59"
           ],
           "camera + 4": [
-            "1490:19"
+            "1491:19"
           ],
           "depth - 1": [
-            "1640:28",
-            "1745:79"
+            "1641:28",
+            "1746:79"
           ],
           "node + 0": [
-            "1736:18"
-          ],
-          "node + 4": [
             "1737:18"
           ],
-          "pos + 0x0": [
-            "1811:100",
-            "1816:24",
-            "1818:104"
+          "node + 4": [
+            "1738:18"
           ],
-          "pos + 0x4": [
+          "pos + 0x0": [
             "1812:100",
-            "1816:45",
+            "1817:24",
             "1819:104"
           ],
-          "pos + 0x8": [
+          "pos + 0x4": [
             "1813:100",
-            "1816:66",
+            "1817:45",
             "1820:104"
           ],
+          "pos + 0x8": [
+            "1814:100",
+            "1817:66",
+            "1821:104"
+          ],
           "level - 1": [
-            "1817:66"
+            "1818:66"
           ]
         },
         "cast_offset_candidates": {
           "((u8 *)gPikachuActor) + 0x44": [
-            "1142:29"
-          ],
-          "((u8 *)gPikachuActor) + 0x48": [
             "1143:29"
           ],
-          "((u8 *)gPikachuActor) + 0x4C": [
+          "((u8 *)gPikachuActor) + 0x48": [
             "1144:29"
           ],
-          "((u8 *)gCurrentAreaConfiguration) + 0x0": [
-            "1811:43",
-            "1818:47"
+          "((u8 *)gPikachuActor) + 0x4C": [
+            "1145:29"
           ],
-          "((u8 *)gCurrentAreaConfiguration) + 0x4": [
+          "((u8 *)gCurrentAreaConfiguration) + 0x0": [
             "1812:43",
             "1819:47"
           ],
-          "((u8 *)gCurrentAreaConfiguration) + 0x8": [
+          "((u8 *)gCurrentAreaConfiguration) + 0x4": [
             "1813:43",
             "1820:47"
+          ],
+          "((u8 *)gCurrentAreaConfiguration) + 0x8": [
+            "1814:43",
+            "1821:47"
           ]
         }
       }
@@ -3824,6 +3833,7 @@
         "random_scale.h",
         "runtime_control.h",
         "runtime_lifecycle.h",
+        "runtime_mode.h",
         "scene_configuration.h",
         "scene_types.h",
         "script_vm_execution.h",
@@ -3853,47 +3863,47 @@
       "locations": {
         "raw_offset_candidates": {
           "normal + 2": [
-            "658:80"
+            "659:80"
           ],
           "currentGround + 0": [
-            "686:38"
+            "687:38"
           ],
           "dy + 0": [
-            "694:64",
-            "714:86"
+            "695:64",
+            "715:86"
           ],
           "nextX + 0": [
-            "697:79",
-            "703:79"
+            "698:79",
+            "704:79"
           ],
           "nextZ + 0": [
-            "700:93",
-            "703:100"
+            "701:93",
+            "704:100"
           ],
           "nextGround + 0": [
-            "707:22"
+            "708:22"
           ],
           "gPlayerCompanionTarget - 0x50": [
-            "1064:36"
+            "1065:36"
           ],
           "gPlayerControllerPort - 0x2C": [
-            "1080:37",
-            "1081:37"
+            "1081:37",
+            "1082:37"
           ],
           "gPlayerHelpTextCursor + 1": [
-            "1421:40",
-            "1425:40"
+            "1422:40",
+            "1426:40"
           ],
           "gPlayerEyeHeight - 0x1C": [
-            "1901:37",
-            "2460:42",
-            "2472:42"
+            "1902:37",
+            "2461:42",
+            "2473:42"
           ],
           "return -1": [
-            "2332:9"
+            "2333:9"
           ],
           "friendshipLevel + 1": [
-            "2337:48"
+            "2338:48"
           ]
         }
       }
@@ -3976,6 +3986,7 @@
         "runtime_clock.h",
         "runtime_control.h",
         "runtime_lifecycle.h",
+        "runtime_mode.h",
         "scene_configuration.h",
         "scene_types.h",
         "story_chapter.h",
@@ -3992,48 +4003,48 @@
       "locations": {
         "raw_offset_candidates": {
           "depth + 1": [
-            "450:47"
+            "451:47"
           ],
           "row + 1": [
-            "664:14"
+            "665:14"
           ],
           "i - 1": [
-            "670:18"
+            "671:18"
           ],
           "index - 1": [
-            "722:18"
+            "723:18"
           ],
           "count - 1": [
-            "832:51"
+            "833:51"
           ],
           "firstVisibleIndex + 4": [
-            "869:48"
+            "870:48"
           ],
           "selectedIndex - 4": [
-            "870:51"
+            "871:51"
           ],
           "gPlayerYaw + 180": [
-            "908:72",
-            "938:72",
-            "969:46"
+            "909:72",
+            "939:72",
+            "970:46"
           ],
           "y + 3": [
-            "1123:14"
+            "1124:14"
           ],
           "x + 80": [
-            "1124:13"
+            "1125:13"
           ],
           "selected - 2": [
-            "1137:40"
+            "1138:40"
           ],
           "top - 3": [
-            "1137:54"
+            "1138:54"
           ],
           "selected + 2": [
-            "1137:63"
+            "1138:63"
           ],
           "bottom + 3": [
-            "1137:77"
+            "1138:77"
           ]
         }
       }

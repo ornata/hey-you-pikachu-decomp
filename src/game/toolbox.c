@@ -1,3 +1,4 @@
+#include "runtime_mode.h"
 #include "runtime_lifecycle.h"
 #include "player_state.h"
 #include "render_state.h"
@@ -1263,7 +1264,7 @@ void toolboxOpen(s32 row, s32 useHeld) {
     s32 i;
 
     controllerRequestRumbleReset(0);
-    runtimeRequestGameModeChange(1);
+    runtimeRequestGameModeChange(GAME_MODE_TOOLBOX);
     held = objectFindLiveByHandle(gPlayerHeldItemHandle);
     if (held != NULL) {
         state = ((RuntimeObjectPrefix *)held)->state.bytes;
@@ -1320,7 +1321,7 @@ void toolboxFinishClosing(void) {
     controllerConfigureStickButtons(0, 0x1E, 0x1E, 0x1E, 0x1E);
     switch (gToolboxExitAction) {
     case 0:
-        runtimeRequestGameModeChange(0);
+        runtimeRequestGameModeChange(GAME_MODE_GAMEPLAY);
         break;
     case 1:
         toolboxOpen(gToolboxRequestedRow, 0);

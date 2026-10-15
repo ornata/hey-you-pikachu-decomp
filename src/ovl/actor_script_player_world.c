@@ -1,3 +1,4 @@
+#include "runtime_mode.h"
 #include "object_script_query.h"
 #include "actor_ground.h"
 #include "player_state.h"
@@ -112,7 +113,7 @@ s32 actorScriptPushBlockedPlayerInput(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    if (gRuntimeGameMode == 3) {
+    if (gRuntimeGameMode == GAME_MODE_TEXT_WINDOW) {
         scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     } else {
         scriptVmPushInteger((ScriptVm *)(sp1C), playerGetBlockedInput());

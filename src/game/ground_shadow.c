@@ -1,3 +1,4 @@
+#include "runtime_mode.h"
 #include "render_state.h"
 #include "game_heap.h"
 #include "ground_shadow.h"
@@ -82,7 +83,7 @@ extern s32 gRuntimeGameMode;
 Gfx *groundShadowPrepareDraw(u8 *object) {
     GroundShadowGrid *grid = (GroundShadowGrid *)((RuntimeObjectPrefix *)object)->state.pointer;
 
-    if (gRuntimeGameMode == 4 || gRuntimeGameMode == 5 || gRuntimeGameMode == 8 || gRuntimeGameMode == 9) {
+    if (gRuntimeGameMode == GAME_MODE_AREA_CARD || gRuntimeGameMode == GAME_MODE_COLLECTION_RESULTS || gRuntimeGameMode == GAME_MODE_WORLD_MAP || gRuntimeGameMode == 9) {
         return 0;
     }
     groundShadowUpdateVertices(object, gGraphicsFramebufferIndex);

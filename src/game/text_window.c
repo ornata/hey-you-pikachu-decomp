@@ -1,3 +1,4 @@
+#include "runtime_mode.h"
 #include "player_control.h"
 #include "render_state.h"
 #include "controller_state.h"
@@ -401,7 +402,7 @@ void textWindowFinish(void) {
         }
     }
     gTextWindowState = TEXT_WINDOW_INACTIVE;
-    runtimeRequestGameModeChange(0);
+    runtimeRequestGameModeChange(GAME_MODE_GAMEPLAY);
     playerSetControllerPort(0);
 }
 
@@ -609,7 +610,7 @@ void textWindowUpdate(void) {
 void textWindowEnterMode(void) {
     playerSetControllerPort(-1);
     gTextWindowContinuation = textWindowShowPage((u8 *)gTextWindowPendingText);
-    runtimeRequestGameModeChange(3);
+    runtimeRequestGameModeChange(GAME_MODE_TEXT_WINDOW);
 }
 
 /// X-axis alignment offset used by collision spatial hashing.

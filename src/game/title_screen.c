@@ -1,3 +1,4 @@
+#include "runtime_mode.h"
 #include "area_catalog.h"
 #include "audio_control.h"
 #include "eeprom_io.h"
@@ -859,7 +860,7 @@ void titleScreenUpdate(void) {
                 gTitleDemoIndex -= 4;
             }
             gTitleScreenState = 2;
-            runtimeRequestGameModeChange(0x12);
+            runtimeRequestGameModeChange(GAME_MODE_TITLE);
             areaSetNextDestination(AREA_CREDITS, 0);
             runtimeRequestProgramChange(0);
         }
@@ -946,7 +947,7 @@ void titleScreenUpdate(void) {
             backdropSelectForView(0, gCurrentAreaConfiguration->backdrop, 0);
             gTitleScreenState = 0;
             controllerConfigureStickButtons(0, 0x1E, 0x1E, 0x1E, 0x1E);
-            runtimeRequestGameModeChange(4);
+            runtimeRequestGameModeChange(GAME_MODE_AREA_CARD);
             areaSetNextDestination(AREA_BEDROOM, 0);
             scriptVmResetGlobals();
             runtimeRequestProgramChange(0);

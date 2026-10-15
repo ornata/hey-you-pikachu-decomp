@@ -1,3 +1,4 @@
+#include "runtime_mode.h"
 #include "render_state.h"
 #include "texture_setup.h"
 #include "camera_storage.h"
@@ -80,7 +81,7 @@ u8 *attachedEffectCreate(u8 *owner, s32 kind, s32 track) {
     AttachedEffectDefinition *def;
     def = &gAttachedEffectDefinitions[kind];
     obj = objectCreateHierarchyFromTemplate(def->objectTemplate);
-    if (gRuntimeGameMode == 8 || gRuntimeGameMode == 0x12) {
+    if (gRuntimeGameMode == GAME_MODE_WORLD_MAP || gRuntimeGameMode == GAME_MODE_TITLE) {
         objectSetHierarchyFlags(obj, OBJECT_DRAW_GROUP_ALTERNATE | OBJECT_UPDATE_GROUP_ALTERNATE);
     }
     v = ((RuntimeObjectPrefix *)obj)->state.bytes;

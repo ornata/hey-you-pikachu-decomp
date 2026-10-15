@@ -1,3 +1,4 @@
+#include "runtime_mode.h"
 #include "random_scale.h"
 #include "player_control.h"
 #include "random.h"
@@ -308,7 +309,7 @@ extern s32 gRuntimeGameMode;
 s32 actorScriptSelectControlScheme(u8 *actor) {
     u8 *sp1C;
 
-    if (gRuntimeGameMode == 3) {
+    if (gRuntimeGameMode == GAME_MODE_TEXT_WINDOW) {
         return SCRIPT_VM_WAITING_FOR_ACTION;
     }
     sp1C = ((RuntimeObjectPrefix *)actor)->state.bytes;
@@ -409,7 +410,7 @@ s32 actorScriptOpenTextWindow(u8 *actor) {
     s32 vmAddress;
     s32 sp24;
 
-    if (gRuntimeGameMode == 3) {
+    if (gRuntimeGameMode == GAME_MODE_TEXT_WINDOW) {
         return SCRIPT_VM_WAITING_FOR_ACTION;
     }
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;

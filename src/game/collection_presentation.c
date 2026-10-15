@@ -1,3 +1,4 @@
+#include "runtime_mode.h"
 #include "progress_field_ids.h"
 #include "area_catalog.h"
 #include "object_group.h"
@@ -585,7 +586,7 @@ void presentationUpdateCardMode(void) {
     cards = gCurrentAreaConfiguration->cardTextures;
     if ((cards == 0) || (cards[gAreaScenarioIndex] == 0) || (gCardPresentationSuppressed != 0)) {
         hudSetAreaLabelVisible(1);
-        runtimeRequestGameModeChange(0);
+        runtimeRequestGameModeChange(GAME_MODE_GAMEPLAY);
         return;
     }
     cameraBuildInterfaceTransform((f32 *)&gPresentationToWorldTransform);
@@ -660,7 +661,7 @@ void presentationUpdateCardMode(void) {
             backdropSelectForView(0, gCurrentAreaConfiguration->backdrop, 1);
             presentationRestoreActiveActor();
             hudSetAreaLabelVisible(1);
-            runtimeRequestGameModeChange(0);
+            runtimeRequestGameModeChange(GAME_MODE_GAMEPLAY);
             gCardPresentationStage = 0;
             return;
         }

@@ -1,3 +1,4 @@
+#include "runtime_mode.h"
 #include "area_names.h"
 #include "player_profile.h"
 #include "pikachu_actor.h"
@@ -105,7 +106,7 @@ s32 actorScriptRequestCollectionResults(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    runtimeRequestGameModeChange(0xC);
+    runtimeRequestGameModeChange(GAME_MODE_FADE_TO_COLLECTION);
     scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return 1;
 }
@@ -123,7 +124,7 @@ s32 actorScriptRequestSavePrompt(u8 *actor) {
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     gRuntimeResetProfileAfterSave = scriptVmPopInteger((ScriptVm *)(sp1C));
-    runtimeRequestGameModeChange(7);
+    runtimeRequestGameModeChange(GAME_MODE_FADE_TO_SAVE_PROMPT);
     scriptVmPushInteger((ScriptVm *)(sp1C), 0);
     return 1;
 }

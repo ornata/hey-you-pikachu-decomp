@@ -1,3 +1,4 @@
+#include "runtime_mode.h"
 #include "area_catalog.h"
 #include "item_kind_ids.h"
 #include "game_heap.h"
@@ -92,7 +93,7 @@ void voiceCommandLaunchEffect(ScriptMessage message) {
     u8 *state;
     s32 kind;
     if (gGameplayMicrophoneAvailable != 0 && gGameplayVoiceCommandsAllowed != 0 && gRuntimeCurrentProgram == 0 &&
-        (gRuntimeGameMode == 0 || gRuntimeGameMode == 8 || gRuntimeGameMode == 0x12)) {
+        (gRuntimeGameMode == GAME_MODE_GAMEPLAY || gRuntimeGameMode == GAME_MODE_WORLD_MAP || gRuntimeGameMode == GAME_MODE_TITLE)) {
         messengerMode = 0;
         object = objectFindLiveByHandle(gPlayerHeldItemHandle);
         if (object != NULL && ((state = ((RuntimeObjectPrefix *)object)->state.bytes,
@@ -137,7 +138,7 @@ void voiceCommandLaunchEffect(ScriptMessage message) {
                 }
             }
         }
-        if (gRuntimeGameMode == 8 || gRuntimeGameMode == 0x12) {
+        if (gRuntimeGameMode == GAME_MODE_WORLD_MAP || gRuntimeGameMode == GAME_MODE_TITLE) {
             messengerFlags = 1;
         } else {
             messengerFlags = 0;

@@ -1,3 +1,4 @@
+#include "runtime_mode.h"
 #include "progress_field_ids.h"
 #include "area_catalog.h"
 #include "camera_types.h"
@@ -1012,7 +1013,7 @@ void systemMenuEnter(void) {
     controllerRequestRumbleReset(0);
     gSystemMenuSoundPreviewHandle = 0;
     audioGetCurrentCueState(&gSystemMenuSavedAudioCue, &gSystemMenuSavedAudioRate);
-    runtimeRequestGameModeChange(2);
+    runtimeRequestGameModeChange(GAME_MODE_SYSTEM_MENU);
     systemMenuSetPhase(SYSTEM_MENU_OPENING);
     objectClearHierarchyFlags((u8 *)gSystemMenuState.transitionModel, 2);
     objectClearHierarchyFlags((u8 *)gSystemMenuState.interactiveModel, 2);
@@ -1030,7 +1031,7 @@ void systemMenuEnter(void) {
 /// \note Original decompilation identifier: \c func_8011A930 (0x8011A930).
 void systemMenuExit(void) {
     TRACE("Exit system menu mode.\n");
-    runtimeRequestGameModeChange(0);
+    runtimeRequestGameModeChange(GAME_MODE_GAMEPLAY);
     controllerConfigureStickButtons(0, 0x1E, 0x1E, 0x1E, 0x1E);
     objectSetHierarchyFlags((u8 *)gSystemMenuTransitionModel, 2);
     objectSetHierarchyFlags((u8 *)gSystemMenuInteractiveModel, 2);
@@ -1216,7 +1217,7 @@ void systemMenuGoHome(s32 unused) {
     PRIMARY_BACKDROP_CAMERA->useBackdrop = 1;
     backdropSelectForView(0, gCurrentAreaConfiguration->backdrop, 1);
     systemMenuExit();
-    runtimeRequestGameModeChange(0xC);
+    runtimeRequestGameModeChange(GAME_MODE_FADE_TO_COLLECTION);
 }
 
 
@@ -1276,7 +1277,7 @@ void systemMenuOpenWorldMap(s32 unused) {
     PRIMARY_BACKDROP_CAMERA->useBackdrop = 1;
     backdropSelectForView(0, gCurrentAreaConfiguration->backdrop, 1);
     systemMenuExit();
-    runtimeRequestGameModeChange(6);
+    runtimeRequestGameModeChange(GAME_MODE_FADE_TO_WORLD_MAP);
 }
 
 /// Preview a music cue at its normal playback rate.

@@ -135,3 +135,9 @@ before target entry; its scratch bytes and the requested registers are restored.
 The contrasting wide-register probe checks that the mode selection takes effect.
 Neither probe certifies floating rounding state: FCR31 is unavailable through this
 debugger API and remains an explicit limitation.
+
+Runtime-mode request cases check raw identifier storage, entry/render flags,
+low-word millisecond timestamps and saved play-time accounting. They include
+unresolved and out-of-dispatch values because requests do not validate modes.
+Names for supported modes come from their update/render consumers and request
+sites; these bounded request cases do not validate UI rendering or save I/O.

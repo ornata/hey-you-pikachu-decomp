@@ -1,3 +1,4 @@
+#include "runtime_mode.h"
 #include "player_profile.h"
 #include "player_state.h"
 #include "profile_counters.h"
@@ -32,7 +33,7 @@ void playerResetProfile(void) {
     ((&gPlayerState))->deliveredVoiceMessageCount = 0;
     ((&gPlayerState))->friendshipMilestone = -1;
     ((&gPlayerState))->chaseStage = 0;
-    if (gRuntimeGameMode == 0x12) {
+    if (gRuntimeGameMode == GAME_MODE_TITLE) {
         progressSetChapterAndUnlockMilestones(0);
     }
 }

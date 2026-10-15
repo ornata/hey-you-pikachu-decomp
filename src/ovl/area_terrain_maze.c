@@ -1,3 +1,4 @@
+#include "runtime_mode.h"
 #include "random_scale.h"
 #include "area_catalog.h"
 #include "vector3_types.h"
@@ -2153,7 +2154,7 @@ void areaSetNextDestination(s32 area, s32 spawn) {
 /// \note Original decompilation identifier: \c func_8010E5E4 (0x8010E5E4).
 void areaRequestTransition(s32 area, s32 spawn) {
     areaSetNextDestination(area, spawn);
-    runtimeRequestGameModeChange(0xB);
+    runtimeRequestGameModeChange(GAME_MODE_FADE_TO_AREA_LOAD);
 }
 
 /// Identifier of the currently loaded area.

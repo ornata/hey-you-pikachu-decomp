@@ -1,3 +1,4 @@
+#include "runtime_mode.h"
 #include "progress_field_ids.h"
 #include "random_scale.h"
 #include "area_catalog.h"
@@ -924,7 +925,7 @@ s32 playerTryEnterTargetPassage(u8 *player) {
         TRACE("difficulty = %d\n", ((PassageState *)passageState)->destination);
         playerSetChaseStage(((PassageState *)passageState)->destination);
         scriptVmResetGlobals();
-        runtimeRequestGameModeChange(6);
+        runtimeRequestGameModeChange(GAME_MODE_FADE_TO_WORLD_MAP);
         goto block_10;
     }
     if (gRuntimeCurrentArea == ((PassageState *)passageState)->destination) {
@@ -941,7 +942,7 @@ block_10:
 /// \returns One, indicating that the transition was requested.
 /// \note Original decompilation identifier: \c func_8010FFA0 (0x8010FFA0).
 s32 playerRequestSavePrompt(u8 *unused) {
-    runtimeRequestGameModeChange(7);
+    runtimeRequestGameModeChange(GAME_MODE_FADE_TO_SAVE_PROMPT);
     return 1;
 }
 
@@ -2607,13 +2608,13 @@ extern s32 gRuntimeGameMode;
 void audioUpdateGameplayMusicDucking(void) {
     s32 active = 0;
     switch (gRuntimeGameMode) {
-    case 0:
+    case GAME_MODE_GAMEPLAY:
         if ((gPlayerPermissions & 0x08000000) &&
             (gGameplayVoiceCommandsAllowed == 0 || gGameplayMicrophoneAvailable == 0) && gRuntimeCurrentArea != AREA_CREDITS) {
             active = 1;
         }
         break;
-    case 3:
+    case GAME_MODE_TEXT_WINDOW:
         active = 1;
         break;
     }
