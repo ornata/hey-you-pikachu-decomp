@@ -580,6 +580,10 @@ The decoder validates explicit source fingerprints for each reviewed callback,
 its scalar-push helpers, stack macros and relevant value/command definitions.
 Embedded actor layouts are bound as well as helper bodies: changing a nested
 record can move VM or gameplay fields without changing a caller.
+The manifest shares identical frozen dependencies by source identity. Reference
+expansion preserves the original review records, rejects missing definitions and
+never refreshes fingerprints. Compaction was checked for exact activation equivalence,
+idempotence and revocation of every affected review after a shared-helper tamper.
 Source or dependency changes revoke the affected evidence rather than creating a
 new review. The catalog reports stale reviews and excludes them from active contracts. Unreviewed
 callbacks remain explicit in `native_effect_frontier`.
@@ -668,6 +672,49 @@ The permission change precedes any guide-selection cue transport. Ten guarded
 original-instruction cases check rotation, scale and held-item branches. Guide
 changes that trigger audio were not executed by these probes and retain the
 source-bound transport preconditions.
+
+Player-position assignment consumes X/Y/Z, updates the primary player and clears
+only downward velocity. Camera-update permission can suppress its camera refresh;
+otherwise the original angle-table and camera-storage contracts apply. It does
+not place the calling actor or guarantee that later movement will stop.
+Interaction-mode assignment also targets the primary player, using the calling
+actor's handle. Modes one and two have separate permission gates; other converted
+words are stored without validation. The zero result does not report acceptance.
+
+Secondary-meter assignment targets active Pikachu independently of the caller.
+Finite values clamp to zero through one hundred, retaining negative zero. The
+action-resource getter is separate and performs no adjustment or HUD request.
+Action elapsed and duration getters retain their respective values independently
+of VM clocks and command activity; duration is not time remaining. Bounding-radius
+lookup returns the stored radius for available objects, without an area conversion.
+Fifteen original-instruction cases check the player setters with distinct records;
+position observations cover the camera-suppressed path. The active-camera branch
+has a source/helper review, without a new runtime trace. Nonfinite meter inputs
+are outside the numeric contract.
+
+The item catalog links both creation natives' X/Y/Z/pitch/yaw/kind expressions
+to 166 retained configurations and their borrowed display labels. Kinds zero
+and 165 have no model template; the creation contract admits one through 164.
+A kind can be linked independently when earlier coordinate producers remain
+unresolved; those rows explicitly report kind-only recovery. A nonnull template
+is necessary, with allocation, registry, animation, terrain and later borrowed-resource
+obligations remaining explicit. A structural link
+alone does not establish creation safety or execution.
+
+The ordinary item-creation review covers all 122 reachable retail templates and
+the sole nonnull texture-motion initializer, with the original allocator and
+registry helpers. It covers material-track initialization and the negative-Y
+ground-placement path under bounded terrain/index/arithmetic preconditions.
+Construction registers the item, can fill cached collision radii in the shared
+kind catalog, and returns its handle. It does not enforce an item-count limit,
+run simulation or drawing, or establish later rendering-resource lifetimes.
+The stationary variant has the same creation contract followed by mode-two
+participation rules. That mode assignment changes hierarchy flags conditionally;
+it does not run physics, drawing or an extra initializer. Three original-instruction
+creations exercise a simple item, cold catalog radii and a texture-motion child.
+All real initialization helpers ran, with protected VM/caller storage unchanged.
+The fixture has sufficient storage, positive Y and area scale one; negative-Y
+terrain placement, exhaustion and later physics have no new runtime evidence.
 
 The alternate shared-text builder has a separate `shared_text` sink contract. Its
 inline count consumes that many representations and returns integer zero. Text is
@@ -805,8 +852,28 @@ routine gates the corresponding modes. Two-bit storage also admits three, whose
 meaning is not established by those progression writes. Togepi hatching is
 recorded after the kind-transformation native returns. These are script and
 producer meanings, not claims that every path is reachable in a live session.
-Fields 31 and 93 remain numeric: fishing/visit consumers alone do not establish
-their underlying narrative milestone.
+Field 93 remains numeric because its visit/tutorial milestone is unresolved.
+The lucky-hook flag names persistent fishing access rather than current item
+ownership or a particular narrative episode.
+
+Further decoded producer/consumer links recover these saved roles:
+
+| Field | Meaning |
+| --- | --- |
+| 21 | Forest Togepi-egg encounter recorded; enables the unhatched egg at Abra shop. |
+| 31 | Lucky hook and expanded fishing residents unlocked. |
+| 100 | Next meadow visit uses five Vileplume; cleared on arrival. |
+| 111 | Special Oddish growth/scale progress; the recovered threshold phase resets at forty. |
+| 154 | Lucky-hook explanation path processed. |
+| 155 | Adaptive fishing proficiency, zero through fifteen. Success raises it; failure paths halve it; it also affects fishing-resident size. |
+| 156 / 157 | Cumulative caught-Pokemon count / largest single-visit count. Storage caps them at 65535 / 255. |
+| 158 / 159 | All-species / all-world-record congratulations paths recorded. |
+
+The fishing script's labels and arithmetic distinguish proficiency, cumulative
+catches and the best daily count. One-shot notice flags record script processing,
+not proof that the player saw the dialogue. The meadow flag is pending setup,
+rather than a permanent evolution ledger. Egg-found state does not identify an
+item owner or current holder. These names retain those narrower established roles.
 
 Progress read contracts require a direct field in 0–243 or an area-relative
 selector that resolves to one. Bit 30 selects a row from the seven-row table;

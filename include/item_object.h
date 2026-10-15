@@ -35,12 +35,14 @@ void itemSetMaterialFrame(u8 *item, s32 frame);
 /// \param z World Z coordinate.
 /// \param pitch Initial rotation about the X axis in degrees.
 /// \param yaw Initial rotation about the Y axis in degrees.
-/// \param kind Item kind identifier from zero through 165 with a valid model and animation configuration.
+/// \param kind Retained item kind from one through 164 with valid model and animation resources;
+/// catalog endpoints zero and 165 have no model.
 /// \returns Registered item managed by the object system.
 ///
 /// \note Requires initialized registry, object resources, and area configuration; ground placement also
-/// requires initialized terrain. The caller must enforce any item-count limit. Portability: registry keys use
-/// 32-bit integer object addresses.
+/// requires initialized terrain. Sufficient allocation and registry capacity must be available; the caller
+/// enforces any item-count limit. Borrowed model and animation resources must remain live while used by the
+/// item. Portability: registry keys use 32-bit integer object addresses.
 /// \note Original decompilation identifier: \c func_80113944 (0x80113944).
 u8 *itemCreate(f32 x, f32 y, f32 z, f32 pitch, f32 yaw, s32 kind);
 

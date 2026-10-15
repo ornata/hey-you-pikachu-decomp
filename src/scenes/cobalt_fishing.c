@@ -1,3 +1,4 @@
+#include "progress_field_ids.h"
 #include "actor_kind.h"
 /// Geometry of the cobalt fishing spatial lookup grid.
 enum { COBALT_FISHING_GRID_LAYERS = 8, COBALT_FISHING_GRID_SIDE = 8 };
@@ -47,7 +48,7 @@ void cobaltFishingSpawnRandomResident(s32 residentIndex) {
     s32 threshold;
     s32 kind;
     s32 roll;
-    if (progressGetValue(0x1F) != 0) {
+    if (progressGetValue(PROGRESS_FIELD_LUCKY_HOOK_UNLOCKED) != 0) {
         offset = 0;
     } else {
         offset = 4;
@@ -58,7 +59,7 @@ void cobaltFishingSpawnRandomResident(s32 residentIndex) {
     // clang-format off
     offset = 0; i = 0; if (count > 0) { do {
             // clang-format on
-            if (progressGetValue(0x1F) != 0) {
+            if (progressGetValue(PROGRESS_FIELD_LUCKY_HOOK_UNLOCKED) != 0) {
                 threshold = ((FishingResidentChoice *)((u8 *)&D_80145750_scene_cobalt_fishing + offset))->threshold;
                 kind = ((FishingResidentChoice *)((u8 *)&D_80145750_scene_cobalt_fishing + offset))->kind;
             } else {
@@ -90,7 +91,7 @@ void cobaltFishingSpawnResidentType9(void) {
 /// Spawn the fishing-scene item selected by saved progress.
 /// \returns Nothing.
 void cobaltFishingSpawnProgressItem(void) {
-    if (progressGetValue(0x1F) != 0) {
+    if (progressGetValue(PROGRESS_FIELD_LUCKY_HOOK_UNLOCKED) != 0) {
         itemCreate(93.0F, 8.0F, 67.0F, 0.0F, 0.0F, 0x53);
         return;
     }

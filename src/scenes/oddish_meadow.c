@@ -1,3 +1,4 @@
+#include "progress_field_ids.h"
 #include "actor_kind.h"
 /// Geometry of the oddish meadow spatial lookup grid.
 enum { ODDISH_MEADOW_GRID_LAYERS = 16, ODDISH_MEADOW_GRID_SIDE = 16 };
@@ -175,7 +176,7 @@ void oddishMeadowInitializeRegularObjects(void) {
     positionIndex = randomBelow(0x28);
     (sp64.used)[positionIndex] = 1;
     headingRandomBits = randomNext();
-    growthProgress = progressGetValue(0x6F);
+    growthProgress = progressGetValue(PROGRESS_FIELD_ODDISH_GROWTH_PROGRESS);
     residentPosition = D_80134DC0_scene_oddish_meadow[positionIndex];
 
     actorCreateForKind(ACTOR_KIND_ODDISH, residentPosition[0], residentPosition[1], residentPosition[2], 0.0F,
@@ -239,7 +240,7 @@ void oddishMeadowInitializeAlternateResidents(void) {
 /// Select and initialize the regular or alternate meadow setup from saved scene state.
 /// \returns Nothing.
 void oddishMeadowInitializeObjects(void) {
-    if (progressGetValue(0x64) != 0) {
+    if (progressGetValue(PROGRESS_FIELD_VILEPLUME_MEADOW_VISIT_PENDING) != 0) {
         oddishMeadowInitializeAlternateResidents();
         return;
     }

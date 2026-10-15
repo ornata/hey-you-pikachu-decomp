@@ -29,7 +29,8 @@ void abraShopInitializeObjects(void) {
 
     actorCreateForKind(ACTOR_KIND_ABRA, 100.0F, 1.2F, 95.0F, 0, 0, gCurrentAreaConfiguration->objectScale * 1.5F,
                        D_801431F8_scene_abra_shop, 0);
-    if (progressGetValue(0x15) != 0 && progressGetValue(PROGRESS_FIELD_TOGEPI_HATCHED) == 0) {
+    if (progressGetValue(PROGRESS_FIELD_TOGEPI_EGG_FOUND) != 0 &&
+        progressGetValue(PROGRESS_FIELD_TOGEPI_HATCHED) == 0) {
         level = progressGetValue(PROGRESS_FIELD_TOGEPI_EGG_GROWTH_STAGE);
         scale = (f32)level;
         actorCreateForKind(ACTOR_KIND_TOGEPI_EGG, 100.0F, 0.0F, 0.0F, 0, 0,

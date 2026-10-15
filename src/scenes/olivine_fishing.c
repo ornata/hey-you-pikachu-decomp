@@ -1,3 +1,4 @@
+#include "progress_field_ids.h"
 #include "actor_kind.h"
 /// Geometry of the olivine fishing spatial lookup grid.
 enum { OLIVINE_FISHING_GRID_LAYERS = 8, OLIVINE_FISHING_GRID_SIDE = 8 };
@@ -47,9 +48,9 @@ void olivineFishingSpawnRandomResident(s32 residentIndex, s32 suppressSpecialPoo
     s32 threshold;
     s32 kind;
     s32 roll;
-    if (progressGetValue(0x9E) != 0 && suppressSpecialPool == 0) {
+    if (progressGetValue(PROGRESS_FIELD_FISHING_ALL_SPECIES_NOTICE_RECORDED) != 0 && suppressSpecialPool == 0) {
         offset = 0;
-    } else if (progressGetValue(0x1F) != 0) {
+    } else if (progressGetValue(PROGRESS_FIELD_LUCKY_HOOK_UNLOCKED) != 0) {
         offset = 1;
     } else {
         offset = 2;
@@ -60,10 +61,10 @@ void olivineFishingSpawnRandomResident(s32 residentIndex, s32 suppressSpecialPoo
     // clang-format off
     offset = 0; i = 0; if (count > 0) { do {
             // clang-format on
-            if (progressGetValue(0x9E) != 0 && suppressSpecialPool == 0) {
+            if (progressGetValue(PROGRESS_FIELD_FISHING_ALL_SPECIES_NOTICE_RECORDED) != 0 && suppressSpecialPool == 0) {
                 threshold = ((FishingResidentChoice *)((u8 *)&D_80145604_scene_olivine_fishing + offset))->threshold;
                 kind = ((FishingResidentChoice *)((u8 *)&D_80145604_scene_olivine_fishing + offset))->kind;
-            } else if (progressGetValue(0x1F) != 0) {
+            } else if (progressGetValue(PROGRESS_FIELD_LUCKY_HOOK_UNLOCKED) != 0) {
                 threshold = ((FishingResidentChoice *)((u8 *)&D_801455AC_scene_olivine_fishing + offset))->threshold;
                 kind = ((FishingResidentChoice *)((u8 *)&D_801455AC_scene_olivine_fishing + offset))->kind;
             } else {
@@ -95,7 +96,7 @@ void olivineFishingSpawnResidentType9(void) {
 /// Spawn the fishing-scene item selected by saved progress.
 /// \returns Nothing.
 void olivineFishingSpawnProgressItem(void) {
-    if (progressGetValue(0x1F) != 0) {
+    if (progressGetValue(PROGRESS_FIELD_LUCKY_HOOK_UNLOCKED) != 0) {
         itemCreate(90.0F, 8.0F, 72.0F, 0.0F, 0.0F, 0x53);
         return;
     }

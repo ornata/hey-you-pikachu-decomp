@@ -1,3 +1,4 @@
+#include "progress_field_ids.h"
 #include "actor_kind.h"
 /// Geometry of the ochre deep spatial lookup grid.
 enum { OCHRE_DEEP_GRID_LAYERS = 32, OCHRE_DEEP_GRID_SIDE = 32 };
@@ -114,7 +115,7 @@ s32 ochreDeepTryCreateProgressEncounter(void) {
     u8 *encounterActor;
     ActorScriptState *actorState;
 
-    if (progressGetValue(0x15) == 0) {
+    if (progressGetValue(PROGRESS_FIELD_TOGEPI_EGG_FOUND) == 0) {
         if (playerGetChaseStage() > 0) {
             item = itemCreate(D_8014AB90_scene_ochre_deep, 17.75F, 31.92F, 0.0F, 0.0F, 0x8F);
             encounterActor = actorCreateForKind(ACTOR_KIND_TOGEPI_EGG, 0, 0, 0, 0, 45.0F,

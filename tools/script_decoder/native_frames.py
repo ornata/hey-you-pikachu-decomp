@@ -123,10 +123,87 @@ def phase_contract_supported(deferred):
         for phase, shape in zip(phases, expected))
 
 
+def expand_review_dependencies(manifest):
+    """Resolve shared frozen records without changing review or fingerprint data.
+
+    Schema one remains readable. Schema two allows source-identity references or
+    inline dependency records; missing references fail before any review activates.
+    The input is never mutated.
+    """
+    version = manifest.get('schema_version', 1)
+    if version == 1:
+        return manifest
+    if version != 2 or not isinstance(manifest.get('dependency_catalog'), dict):
+        raise ValueError('unsupported native-review dependency schema')
+    catalog = manifest['dependency_catalog']
+
+    def dependency(value):
+        if isinstance(value, str):
+            if value not in catalog or not isinstance(catalog[value], dict):
+                raise ValueError('missing native-review dependency: ' + value)
+            return dict(catalog[value])
+        if isinstance(value, dict):
+            return dict(value)
+        raise ValueError('invalid native-review dependency record')
+
+    def walk(value):
+        if isinstance(value, dict):
+            result = {}
+            for key, child in value.items():
+                if key == 'dependency_catalog':
+                    continue
+                if key == 'dependencies':
+                    if not isinstance(child, list):
+                        raise ValueError('native-review dependencies must be a list')
+                    result[key] = [dependency(item) for item in child]
+                else:
+                    result[key] = walk(child)
+            return result
+        if isinstance(value, list):
+            return [walk(child) for child in value]
+        return value
+    result = walk(manifest)
+    result['schema_version'] = 1
+    return result
+
+
+def compact_review_dependencies(manifest):
+    """Intern identical frozen records; never refresh hashes or accept a review."""
+    manifest = expand_review_dependencies(manifest)
+    catalog = {}
+
+    def reference(record):
+        if not isinstance(record, dict) or record.get('kind') not in ('file', 'function', 'macro'):
+            raise ValueError('invalid frozen dependency for compaction')
+        key = ':'.join(str(record[k]) for k in ('kind', 'file', 'function', 'macro') if k in record)
+        if key in catalog and catalog[key] != record:
+            # Retain distinct historical fingerprints or metadata rather than
+            # replacing an older review with a newer dependency definition.
+            digest = hashlib.sha256(json.dumps(record, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+            key += '@' + digest
+        if key in catalog and catalog[key] != record:
+            raise ValueError('conflicting frozen dependency identity')
+        catalog[key] = dict(record)
+        return key
+
+    def walk(value):
+        if isinstance(value, dict):
+            return {key: [reference(item) for item in child] if key == 'dependencies' else walk(child)
+                    for key, child in value.items()}
+        if isinstance(value, list):
+            return [walk(child) for child in value]
+        return value
+    result = walk(manifest)
+    result['schema_version'] = 2
+    result['dependency_catalog'] = dict(sorted(catalog.items()))
+    return result
+
+
 def native_frame_reviews(root=ROOT, manifest=None):
     """Activate only explicitly reviewed callbacks with unchanged dependencies."""
     if manifest is None:
         manifest = json.loads((root / 'tools/script_decoder/native_frame_reviews.json').read_text())
+    manifest = expand_review_dependencies(manifest)
     cache, stale_dependencies, stale_callbacks, stale_callback_dependencies = {}, [], [], {}
 
     def digest(row):

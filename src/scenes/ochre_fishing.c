@@ -1,3 +1,4 @@
+#include "progress_field_ids.h"
 #include "actor_kind.h"
 /// Geometry of the ochre fishing spatial lookup grid.
 enum { OCHRE_FISHING_GRID_LAYERS = 8, OCHRE_FISHING_GRID_SIDE = 8 };
@@ -46,7 +47,7 @@ void ochreFishingSpawnRandomResident(s32 residentIndex) {
     s32 threshold;
     s32 kind;
     s32 roll;
-    if (progressGetValue(0x1F) != 0) {
+    if (progressGetValue(PROGRESS_FIELD_LUCKY_HOOK_UNLOCKED) != 0) {
         offset = 0;
     } else {
         offset = 1;
@@ -57,7 +58,7 @@ void ochreFishingSpawnRandomResident(s32 residentIndex) {
     // clang-format off
     offset = 0; i = 0; if (count > 0) { do {
             // clang-format on
-            if (progressGetValue(0x1F) != 0) {
+            if (progressGetValue(PROGRESS_FIELD_LUCKY_HOOK_UNLOCKED) != 0) {
                 threshold = ((FishingResidentChoice *)((u8 *)&D_80145A08_scene_ochre_fishing + offset))->threshold;
                 kind = ((FishingResidentChoice *)((u8 *)&D_80145A08_scene_ochre_fishing + offset))->kind;
             } else {
@@ -89,7 +90,7 @@ void ochreFishingSpawnResidentType9(void) {
 /// Spawn the fishing-scene item selected by saved progress.
 /// \returns Nothing.
 void ochreFishingSpawnProgressItem(void) {
-    if (progressGetValue(0x1F) != 0) {
+    if (progressGetValue(PROGRESS_FIELD_LUCKY_HOOK_UNLOCKED) != 0) {
         itemCreate(54.0F, 12.0F, 104.0F, 0.0F, 0.0F, 0x53);
         return;
     }

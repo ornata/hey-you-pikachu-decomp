@@ -17,13 +17,25 @@ enum {
     PROGRESS_FIELD_COMPANION_TOGGLE_FOLLOW =
         8,                          ///< One enables follow movement with companion control; zero selects view tracking.
     PROGRESS_FIELD_MONO_OUTPUT = 9, ///< One selects mono output; zero selects stereo.
-    PROGRESS_FIELD_MUSIC_VOLUME = 10,                  ///< Saved sequence/music volume from zero through fifteen.
-    PROGRESS_FIELD_SOUND_EFFECT_VOLUME = 11,           ///< Saved sound-effect volume from zero through fifteen.
-    PROGRESS_FIELD_CHASE_STAGE = 12,                   ///< Highest saved player chase stage.
-    PROGRESS_FIELD_GAME_CLEARED = 14,                  ///< Saved game-clear flag enabling post-clear progression.
-    PROGRESS_FIELD_TOGEPI_HATCHED = 22,                ///< Togepi egg has completed its transformation into Togepi.
+    PROGRESS_FIELD_MUSIC_VOLUME = 10,        ///< Saved sequence/music volume from zero through fifteen.
+    PROGRESS_FIELD_SOUND_EFFECT_VOLUME = 11, ///< Saved sound-effect volume from zero through fifteen.
+    PROGRESS_FIELD_CHASE_STAGE = 12,         ///< Highest saved player chase stage.
+    PROGRESS_FIELD_GAME_CLEARED = 14,        ///< Saved game-clear flag enabling post-clear progression.
+    PROGRESS_FIELD_TOGEPI_EGG_FOUND = 21,    ///< Forest egg encounter recorded; enables the unhatched egg at Abra shop.
+    PROGRESS_FIELD_TOGEPI_HATCHED = 22,      ///< Togepi egg has completed its transformation into Togepi.
     PROGRESS_FIELD_TOGEPI_EGG_GROWTH_STAGE = 23,       ///< Egg growth advanced by qualifying Abra-shop item turn-ins.
+    PROGRESS_FIELD_LUCKY_HOOK_UNLOCKED = 31,           ///< Lucky hook and expanded fishing residents available.
     PROGRESS_FIELD_OCHRE_ENTRANCE_RESIDENT_STAGE = 86, ///< Zero through three selects additional entrance residents.
+    PROGRESS_FIELD_VILEPLUME_MEADOW_VISIT_PENDING =
+        100,                                     ///< Next meadow visit uses five Vileplume; consumed on arrival.
+    PROGRESS_FIELD_ODDISH_GROWTH_PROGRESS = 111, ///< Special meadow Oddish growth and scale progress.
+    PROGRESS_FIELD_LUCKY_HOOK_EXPLANATION_RECORDED = 154, ///< Fishing script has processed the lucky-hook explanation.
+    PROGRESS_FIELD_FISHING_PROFICIENCY = 155,             ///< Adaptive fishing score, zero through fifteen.
+    PROGRESS_FIELD_FISHING_TOTAL_CATCH_COUNT = 156,       ///< Cumulative caught Pokemon across fishing visits.
+    PROGRESS_FIELD_FISHING_BEST_DAILY_CATCH_COUNT = 157,  ///< Largest saved single-visit catch count, capped at 255.
+    PROGRESS_FIELD_FISHING_ALL_SPECIES_NOTICE_RECORDED = 158, ///< All-species congratulations path processed.
+    PROGRESS_FIELD_FISHING_ALL_WORLD_RECORDS_NOTICE_RECORDED =
+        159,                                      ///< All-world-record congratulations path processed.
     PROGRESS_FIELD_FRONT_YARD_DOOR_ENABLED = 160, ///< Bedroom passage to the front yard replaces its initial proxy.
     PROGRESS_FIELD_QUIZ_VARIANT_UNLOCK_STAGE =
         162 ///< Zero: picture quiz; one: shadow unlocked; two: strobe-shadow unlocked.

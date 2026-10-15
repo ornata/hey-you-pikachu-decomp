@@ -1335,7 +1335,7 @@ void systemMenuSetDisappearanceFlags(s32 arg0) {
     progressSetValue(0x1C, arg0);
     progressSetValue(0x1D, arg0);
     progressSetValue(0x1E, arg0);
-    progressSetValue(0x1F, arg0);
+    progressSetValue(PROGRESS_FIELD_LUCKY_HOOK_UNLOCKED, arg0);
     progressSetValue(0x20, arg0);
     progressSetValue(0x21, arg0);
     progressSetValue(0x22, arg0);
