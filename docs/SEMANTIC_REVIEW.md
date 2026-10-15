@@ -110,7 +110,15 @@ follow the retained overlay catalog. Audio cases preserve the different handling
 of raw modes by the sequence and sound-effect drivers, including their storage
 widths; they make no claim about audible output.
 
-The unsigned RNG unit scale retains its exact double literal. Direct call-site
-substitutions preserve casts and evaluation order; subsequent conversion to float
+The unsigned RNG unit scale retains its exact double literal. Substitutions at
+direct calls and verified local-variable uses preserve casts and evaluation order; subsequent conversion to float
 can still round a result to one. The saved mono-output field retains its one-bit
 range and the existing subtraction used to convert between saved and driver values.
+
+Progress-field cases exercise the retail signed-word, unsigned-halfword, signed-byte,
+unsigned-byte and packed four-/two-/one-bit encodings. Synthetic aligned field
+locations isolate sign extension, clamping and preservation of neighboring bits
+across the complete progress record. They do not establish the full layout
+allocator or physical persistence. The signed-halfword encoding is retained from
+the original accessor branches and limits table; no retained retail field selects it.
+Runtime review should use an immutable linked ELF while source builds are active.

@@ -367,6 +367,7 @@ def experiments():
     from .vm_control_domains import experiments as control_experiments
     from .item_numeric_domains import experiments as item_experiments
     from .system_numeric_domains import experiments as system_experiments
+    from .progress_numeric_domains import experiments as progress_experiments
 
     return (
         cases
@@ -375,6 +376,7 @@ def experiments():
         + control_experiments()
         + item_experiments()
         + system_experiments()
+        + progress_experiments()
     )
 
 

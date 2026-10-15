@@ -1,3 +1,4 @@
+#include "random_scale.h"
 #include "player_control.h"
 #include "random.h"
 #include "particle_cluster.h"
@@ -379,7 +380,7 @@ s32 actorScriptTransformKind(u8 *object) {
         actorTransitionModelEnvironmentColor(object, 255, 200, 50, 255, 0.6F);
         random = randomNext();
         linked = actorGetDefaultPart(object);
-        randomFraction = random * 2.3283064365386963e-10;
+        randomFraction = random * RANDOM_U32_UNIT_SCALE;
         particleClusterCreate(10, 1.7F, 3.0F, (randomFraction * 0.2F) + 0.5, linked);
         orangePulseEmitterCreate(((RuntimeObjectPrefix *)object)->handle, 2.0F);
         ((ScriptVm *)vm)->actionTimer = 2.0F;

@@ -1,3 +1,4 @@
+#include "progress_field_ids.h"
 #include "area_catalog.h"
 #include "runtime_control.h"
 #include "runtime_lifecycle.h"
@@ -826,7 +827,7 @@ void wholeMapUpdate(void) {
                 runtimeRequestProgramChange(0);
             }
             controllerConfigureStickButtons(0, 0x1E, 0x1E, 0x1E, 0x1E);
-            playerSetChaseStage(progressGetValue(0xC));
+            playerSetChaseStage(progressGetValue(PROGRESS_FIELD_CHASE_STAGE));
             wholeMapSetState(0);
             TRACE("whole map canceled.\n");
         }

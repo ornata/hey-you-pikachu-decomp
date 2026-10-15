@@ -1,3 +1,4 @@
+#include "progress_field_ids.h"
 #include "random_scale.h"
 #include "area_catalog.h"
 #include "vector3_types.h"
@@ -1330,7 +1331,7 @@ void playerUpdateStationaryLook(u8 *player, ControllerState *controller) {
         }
         dx = playerCalculateYawInput(player, controller, 0);
         playerSetViewAngles(player, ((PlayerControlPrefix *)player)->yaw + dx,
-                            playerCalculatePitchInput(player, controller, progressGetValue(7)) +
+                            playerCalculatePitchInput(player, controller, progressGetValue(PROGRESS_FIELD_LOOK_FORWARD_UP)) +
                                 (*(f32 *)((s8 *)player + (u32) & ((PlayerControlPrefix *)0)->pitch)));
         playerStepGroundMovement(player, 0.0F, 0.0F);
         playerUpdateAreaEvents(player);
@@ -1680,7 +1681,7 @@ void playerUpdateRestrictedControl(u8 *player, ControllerState *controller) {
         if (playerToggleCompanionControl(player, controller) == 0) {
             if (((PlayerControlPrefix *)player)->permissions & 0x8000) {
                 dx = playerCalculateYawInput(player, controller, 0);
-                dz = playerCalculatePitchInput(player, controller, progressGetValue(7));
+                dz = playerCalculatePitchInput(player, controller, progressGetValue(PROGRESS_FIELD_LOOK_FORWARD_UP));
                 playerSetViewAngles(player, ((PlayerControlPrefix *)player)->yaw + dx,
                                     dz + ((PlayerControlPrefix *)player)->pitch);
                 if (controller->pressed & 0x404) {
@@ -1720,7 +1721,7 @@ void playerUpdateViewOnlyControl(u8 *player, ControllerState *pad) {
     }
     dx = playerCalculateYawInput(player, pad, 0);
     playerSetViewAngles(player, ((PlayerControlPrefix *)player)->yaw + dx,
-                        playerCalculatePitchInput(player, pad, progressGetValue(7)) +
+                        playerCalculatePitchInput(player, pad, progressGetValue(PROGRESS_FIELD_LOOK_FORWARD_UP)) +
                             (*(f32 *)((s8 *)player + (u32) & ((PlayerControlPrefix *)0)->pitch)));
 }
 
@@ -2438,8 +2439,8 @@ s32 playerPickUpItem(s32 id) {
 /// \note Original decompilation identifier: \c func_801127DC (0x801127DC).
 void playerSetChaseStage(s32 stage) {
     gPlayerChaseStage = stage;
-    if (stage >= progressGetValue(0xC)) {
-        progressSetValue(0xC, stage);
+    if (stage >= progressGetValue(PROGRESS_FIELD_CHASE_STAGE)) {
+        progressSetValue(PROGRESS_FIELD_CHASE_STAGE, stage);
     }
 }
 

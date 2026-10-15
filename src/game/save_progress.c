@@ -27,6 +27,13 @@
  * discarded comma expression that keeps only the format string. */
 #define TRACE_LEAF (void)
 
+/// Extents of the owned progress payload and its initialized field-location table.
+enum {
+    PROGRESS_SAVE_RECORD_BYTES = 0x74,
+    PROGRESS_SAVED_FIELD_COUNT = 244,
+    PROGRESS_FIELD_LAYOUT_BYTES = 0x7A0
+};
+
 /// Payload byte counts for three primary EEPROM records and their three backups.
 /// \note Portability: A word-aligned record preserves the original data placement;
 /// an array declaration would receive eight-byte alignment from IDO.
@@ -37,7 +44,8 @@ typedef char EepromRecordSizeTableSizeCheck[(sizeof(EepromRecordSizeTable) == 0x
 s32 D_8009ADC0 = -1;
 /// Payload byte counts used to place primary EEPROM records and their backup copies.
 /// \note Original identifier: \c D_8009ADC4 (0x8009ADC4).
-EepromRecordSizeTable gEepromRecordPayloadSizes = {{1, 0x74, 0x74, 1, 0x74, 0x74}};
+EepromRecordSizeTable gEepromRecordPayloadSizes = {{1, PROGRESS_SAVE_RECORD_BYTES, PROGRESS_SAVE_RECORD_BYTES, 1,
+                                                PROGRESS_SAVE_RECORD_BYTES, PROGRESS_SAVE_RECORD_BYTES}};
 /// Storage type identifiers indexed by resolved progress field ID.
 /// \note Original identifier: \c D_8009A754 (0x8009A754).
 extern s32 gProgressFieldTypes[];
@@ -281,7 +289,7 @@ s32 weightedChoiceSelectKey(WeightedChoiceTable *t) {
  * two objects occupy 0x7A bytes, naturally rounded to 0x80 by the BSS section. */
 /// Packed progress-field record transferred to and from EEPROM.
 /// \note Original identifier: \c D_800F24D0 (0x800F24D0).
-u8 gProgressSaveRecord[0x74];
+u8 gProgressSaveRecord[PROGRESS_SAVE_RECORD_BYTES];
 /// EEPROM block offsets for the six primary and backup records.
 /// \note Original identifier: \c D_800F2544 (0x800F2544).
 u8 gEepromRecordBlockOffsets[6];
@@ -332,6 +340,8 @@ typedef struct ProgressFieldStorage {
 } ProgressFieldStorage;
 
 typedef char ProgressFieldStorageSizeCheck[(sizeof(ProgressFieldStorage) == 8) ? 1 : -1];
+typedef char ProgressFieldLayoutExtentCheck[
+    (PROGRESS_SAVED_FIELD_COUNT * sizeof(ProgressFieldStorage) == PROGRESS_FIELD_LAYOUT_BYTES) ? 1 : -1];
 typedef char ProgressFieldShiftOffsetCheck[(((u32)&((ProgressFieldStorage *)0)->bitShift) == 4) ? 1 : -1];
 /// Byte offsets and bit shifts used to access packed progress fields.
 /// \note Original identifier: \c D_800F1D30 (0x800F1D30).
@@ -346,7 +356,7 @@ void progressInitializeFieldStorageLayout(void) {
     s32 i;
     s32 width;
     s32 bytes;
-    for (type = 0; type < 8; type++) {
+    for (type = 0; type < PROGRESS_ENCODING_COUNT; type++) {
         width = gProgressFieldTypeLimits[type].bitWidth;
         if (bit != 0) {
             bit = 0;
@@ -354,7 +364,7 @@ void progressInitializeFieldStorageLayout(void) {
         }
         bytes = (width + 7) / 8;
         offset = ((offset + bytes - 1) / bytes) * bytes;
-        for (i = 0; i < 244; i++) {
+        for (i = 0; i < PROGRESS_SAVED_FIELD_COUNT; i++) {
             if (type == gProgressFieldTypes[i]) {
                 gProgressFieldStorageLayout[i].bitShift = bit;
                 bit += width;
@@ -386,19 +396,19 @@ s32 type;
     type = gProgressFieldTypes[fieldId];
     f = &gProgressFieldStorageLayout[fieldId];
     switch (type) {
-    case 0:
+    case PROGRESS_ENCODING_S32:
         return *(s32 *)(gProgressSaveRecord + f->byteOffset);
-    case 1:
+    case PROGRESS_ENCODING_S16:
         return *(s16 *)(gProgressSaveRecord + f->byteOffset);
-    case 2:
+    case PROGRESS_ENCODING_U16:
         return *(u16 *)(gProgressSaveRecord + f->byteOffset);
-    case 3:
+    case PROGRESS_ENCODING_S8:
         return *(s8 *)(gProgressSaveRecord + f->byteOffset);
-    case 4:
+    case PROGRESS_ENCODING_U8:
         return *(u8 *)(gProgressSaveRecord + f->byteOffset);
-    case 5:
-    case 6:
-    case 7:
+    case PROGRESS_ENCODING_PACKED4:
+    case PROGRESS_ENCODING_PACKED2:
+    case PROGRESS_ENCODING_PACKED1:
         v = gProgressSaveRecord[f->byteOffset] >> f->bitShift;
         v &= ((1 << (gProgressFieldTypeLimits[type].bitWidth + 31)) << 1) - 1;
         return v;
@@ -426,24 +436,24 @@ s32 progressStoreFieldValue(s32 fieldId, s32 value) {
     else if (value > limits->maximum)
         value = limits->maximum;
     switch (gProgressFieldTypes[fieldId]) {
-    case 0:
+    case PROGRESS_ENCODING_S32:
         *(s32 *)(save + field->byteOffset) = value;
         break;
-    case 1:
+    case PROGRESS_ENCODING_S16:
         *(s16 *)(save + field->byteOffset) = value;
         break;
-    case 2:
+    case PROGRESS_ENCODING_U16:
         *(u16 *)(save + field->byteOffset) = value;
         break;
-    case 3:
+    case PROGRESS_ENCODING_S8:
         *(s8 *)(save + field->byteOffset) = value;
         break;
-    case 4:
+    case PROGRESS_ENCODING_U8:
         *(u8 *)(save + field->byteOffset) = value;
         break;
-    case 5:
-    case 6:
-    case 7:
+    case PROGRESS_ENCODING_PACKED4:
+    case PROGRESS_ENCODING_PACKED2:
+    case PROGRESS_ENCODING_PACKED1:
         mask = (((1 << (gProgressFieldTypeLimits[gProgressFieldTypes[fieldId]].bitWidth + 31)) << 1) - 1) << field->bitShift;
         bits = value << field->bitShift;
         byte = &gProgressSaveRecord[field->byteOffset];
@@ -595,12 +605,12 @@ void progressLoadControlDataFromEeprom(void) {
 void progressSaveRecordToEeprom(s32 record) {
     s32 ans;
 
-    progressSetValue(1, gPlayerProfilePoints);
-    progressSetValue(2, gPlayerFriendshipLevel);
-    progressSetValue(3, gPlayerVoiceMessageCount);
+    progressSetValue(PROGRESS_FIELD_PROFILE_POINTS, gPlayerProfilePoints);
+    progressSetValue(PROGRESS_FIELD_FRIENDSHIP_LEVEL, gPlayerFriendshipLevel);
+    progressSetValue(PROGRESS_FIELD_VOICE_MESSAGE_COUNT, gPlayerVoiceMessageCount);
     ans =
         eepromRequestWrite(gEepromRecordBlockOffsets[record],
-                           gEepromRecordBlockOffsets[progressGetBackupRecordIndex(record)], &gProgressSaveRecord, 0x74);
+                           gEepromRecordBlockOffsets[progressGetBackupRecordIndex(record)], &gProgressSaveRecord, PROGRESS_SAVE_RECORD_BYTES);
     TRACE("pdSaveEEPROM: eepromWrite ans:%d\n", ans);
 }
 
@@ -613,7 +623,7 @@ s32 progressGetBackupRecordIndex(s32); /* extern */
 void progressLoadRecordFromEeprom(s32 record) {
     s32 ans =
         eepromRequestRead(gEepromRecordBlockOffsets[record],
-                          gEepromRecordBlockOffsets[progressGetBackupRecordIndex(record)], gProgressSaveRecord, 0x74);
+                          gEepromRecordBlockOffsets[progressGetBackupRecordIndex(record)], gProgressSaveRecord, PROGRESS_SAVE_RECORD_BYTES);
 
     TRACE("pdLoadEEPROM: eepromRead ans:%d\n", ans);
 }
@@ -623,14 +633,14 @@ void progressLoadRecordFromEeprom(s32 record) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80032E10 (0x80032E10).
 void progressApplyLoadedRecord(void) {
-    playerSetChaseStage(progressGetValue(0xC));
-    gPlayerProfilePoints = progressGetValue(1);
-    gPlayerFriendshipLevel = progressGetValue(2);
-    gPlayerVoiceMessageCount = progressGetValue(3);
+    playerSetChaseStage(progressGetValue(PROGRESS_FIELD_CHASE_STAGE));
+    gPlayerProfilePoints = progressGetValue(PROGRESS_FIELD_PROFILE_POINTS);
+    gPlayerFriendshipLevel = progressGetValue(PROGRESS_FIELD_FRIENDSHIP_LEVEL);
+    gPlayerVoiceMessageCount = progressGetValue(PROGRESS_FIELD_VOICE_MESSAGE_COUNT);
     audioSetOutputMode(AUDIO_OUTPUT_STEREO - progressGetValue(PROGRESS_FIELD_MONO_OUTPUT));
     audioApplySavedMusicVolume(1.0f);
     audioApplySavedSoundEffectVolume(1.0f);
-    progressSetChapterAndUnlockMilestones(progressGetValue(0));
+    progressSetChapterAndUnlockMilestones(progressGetValue(PROGRESS_FIELD_CHAPTER));
 }
 
 void _bzero(void *, s32); /* extern */
@@ -639,7 +649,7 @@ void _bzero(void *, s32); /* extern */
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80032EAC (0x80032EAC).
 void progressResetRecordToDefaults(void) {
-    _bzero(&gProgressSaveRecord, 0x74);
+    _bzero(&gProgressSaveRecord, PROGRESS_SAVE_RECORD_BYTES);
     progressSetValue(0x44, 1);
     progressSetValue(0x3B, 1);
     progressSetValue(0x56, 1);
@@ -653,8 +663,8 @@ void progressInitializeEepromRecordLocations(void);
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80032F30 (0x80032F30).
 void progressInitializeSaveStorage(void) {
-    _bzero(gProgressSaveRecord, 0x74);
-    _bzero(gProgressFieldStorageLayout, 0x7A0);
+    _bzero(gProgressSaveRecord, PROGRESS_SAVE_RECORD_BYTES);
+    _bzero(gProgressFieldStorageLayout, PROGRESS_FIELD_LAYOUT_BYTES);
     progressStorageBeginInitializationHook();
     progressStoragePrepareFieldLayoutHook();
     progressInitializeFieldStorageLayout();

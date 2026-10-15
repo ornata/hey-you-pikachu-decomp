@@ -1,3 +1,4 @@
+#include "progress_field_ids.h"
 #include "area_catalog.h"
 #include "object_group.h"
 #include "runtime_lifecycle.h"
@@ -1211,7 +1212,7 @@ s32 presentationSelectArea0Card(s32 *actorAction, s32 *audioCue) {
         progressSetValue(0x12, 0);
         gCurrentAreaConfiguration->backdrop = 3;
         scriptVmResetGlobals();
-        playerSetChaseStage(progressGetValue(0xC));
+        playerSetChaseStage(progressGetValue(PROGRESS_FIELD_CHASE_STAGE));
         if (progressGetValue(0xC2) != 0) {
             progressAddValue(0x13, 1);
         } else {
@@ -1692,7 +1693,7 @@ void presentationInitializeForCurrentArea(void) {
 /// \returns The current chapter number.
 /// \note Original decompilation identifier: \c osAfterPreNMI (0x8002ACE4).
 s32 progressGetCurrentChapter(void) {
-    return progressGetValue(0);
+    return progressGetValue(PROGRESS_FIELD_CHAPTER);
 }
 
 /// Sets the current story chapter and unlocks the milestones available at that chapter.
@@ -1704,7 +1705,7 @@ s32 progressGetCurrentChapter(void) {
 void progressSetChapterAndUnlockMilestones(s32 chapter) {
     if (chapter < 0 || chapter > 9) {
     }
-    progressSetValue(0, chapter);
+    progressSetValue(PROGRESS_FIELD_CHAPTER, chapter);
     if (chapter > 0) {
         progressSetValue(0x44, 1);
         if (chapter >= 3) {
@@ -1731,7 +1732,7 @@ s32 progressUpdateChapterAfterVisit(void) {
     s32 currentChapter;
     s32 var_s0;
 
-    currentChapter = progressGetValue(0);
+    currentChapter = progressGetValue(PROGRESS_FIELD_CHAPTER);
     var_s0 = currentChapter;
     switch (currentChapter) {
     case 3:

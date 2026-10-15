@@ -1,3 +1,4 @@
+#include "progress_field_ids.h"
 #include "runtime_lifecycle.h"
 #include "audio_sound_effect.h"
 #include "audio_control.h"
@@ -437,7 +438,7 @@ s32 eyeCatchChooseGroup(void) {
     s32 i;
     s32 choice;
 
-    level = (f32)progressGetValue(2);
+    level = (f32)progressGetValue(PROGRESS_FIELD_FRIENDSHIP_LEVEL);
     if (level <= 12.0F) {
         column = 0;
     } else {

@@ -1,3 +1,4 @@
+#include "random_scale.h"
 #include "math_scalar.h"
 #include "random.h"
 #include "runtime_control.h"
@@ -53,7 +54,7 @@ void springleafEntranceSpawnGrowthResident(f32 *position, s32 residentIndex) {
         random = randomNext(); scale = D_80158E30_scene_springleaf_entrance;
         // clang-format on
         actorCreateForKind(5, position[0], position[1], position[2], 0.0F,
-                           (f32)((f64)random * 2.3283064365386963e-10 * D_80158E38_scene_springleaf_entrance),
+                           (f32)((f64)random * RANDOM_U32_UNIT_SCALE * D_80158E38_scene_springleaf_entrance),
                            mathPowInteger(scale, state) * gCurrentAreaConfiguration->objectScale, record,
                            residentIndex);
         return;
@@ -63,14 +64,14 @@ void springleafEntranceSpawnGrowthResident(f32 *position, s32 residentIndex) {
         random = randomNext(); scale = D_80158E40_scene_springleaf_entrance;
         // clang-format on
         actorCreateForKind(6, position[0], position[1], position[2], 0.0F,
-                           (f32)((f64)random * 2.3283064365386963e-10 * D_80158E48_scene_springleaf_entrance),
+                           (f32)((f64)random * RANDOM_U32_UNIT_SCALE * D_80158E48_scene_springleaf_entrance),
                            mathPowInteger(scale, state - 2) * gCurrentAreaConfiguration->objectScale, record,
                            residentIndex);
         return;
     }
     random = randomNext();
     actorCreateForKind(7, position[0], position[1], position[2], 0.0F,
-                       (f32)((f64)random * 2.3283064365386963e-10 * D_80158E50_scene_springleaf_entrance),
+                       (f32)((f64)random * RANDOM_U32_UNIT_SCALE * D_80158E50_scene_springleaf_entrance),
                        gCurrentAreaConfiguration->objectScale, record, residentIndex);
 }
 
@@ -92,7 +93,7 @@ void springleafEntranceSpawnItem(f32 *position, s32 itemKind) {
     headingRandomBits = randomNext();
     var_f6 = (f64)(u32)headingRandomBits;
     itemCreate(position[0], position[1], position[2], 0.0F,
-               (f32)(var_f6 * 2.3283064365386963e-10 * D_80158E58_scene_springleaf_entrance), itemKind);
+               (f32)(var_f6 * RANDOM_U32_UNIT_SCALE * D_80158E58_scene_springleaf_entrance), itemKind);
 }
 
 /// Spawn the entrance resident at the location selected by saved scene state.

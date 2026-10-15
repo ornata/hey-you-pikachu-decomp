@@ -51,7 +51,7 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 844,
+      "occurrences": 845,
       "unique_spellings": 464,
       "files": 64
     },
@@ -202,14 +202,15 @@
             "884:64",
             "1060:48"
           ],
-          "p + 4": [
-            "320:56"
-          ],
           "RANDOM_U32_UNIT_SCALE - 0": [
+            "296:56",
             "407:33",
             "417:34",
             "419:34",
             "424:33"
+          ],
+          "p + 4": [
+            "320:56"
           ],
           "trackingTarget + 0x44": [
             "521:22"
@@ -913,6 +914,7 @@
         "player_state.h",
         "presentation_draw.h",
         "presentation_focus.h",
+        "progress_field_ids.h",
         "progress_fields.h",
         "progress_value.h",
         "random.h",
@@ -945,29 +947,29 @@
       "locations": {
         "raw_offset_candidates": {
           "slot + 4": [
-            "221:50",
-            "258:22"
+            "222:50",
+            "259:22"
           ],
           "gToolboxBonusSlot + 4": [
-            "264:18"
+            "265:18"
           ],
           "gToolboxPurchaseSlot + 4": [
-            "268:19"
+            "269:19"
           ],
           "tgt + 0": [
-            "448:21"
-          ],
-          "tgt + 4": [
             "449:21"
           ],
-          "tgt + 8": [
+          "tgt + 4": [
             "450:21"
           ],
+          "tgt + 8": [
+            "451:21"
+          ],
           "gItemKind8FCollectionValue + 0x64": [
-            "1754:47"
+            "1755:47"
           ],
           "currentChapter + 1": [
-            "1772:18"
+            "1773:18"
           ]
         }
       }
@@ -1047,6 +1049,7 @@
         "heap_free.h",
         "heap_types.h",
         "integer_animation.h",
+        "progress_field_ids.h",
         "progress_value.h",
         "random.h",
         "runtime_lifecycle.h",
@@ -1057,28 +1060,28 @@
       "locations": {
         "raw_offset_candidates": {
           "gEyeCatchProjectionMatrix + 0x80000000": [
-            "212:33"
-          ],
-          "gEyeCatchModelViewMatrix + 0x80000000": [
             "213:33"
           ],
-          "gEyeCatchBackdropVertices + 0x80000000": [
+          "gEyeCatchModelViewMatrix + 0x80000000": [
             "214:33"
           ],
+          "gEyeCatchBackdropVertices + 0x80000000": [
+            "215:33"
+          ],
           "animationAddress + 0xC": [
-            "234:66"
+            "235:66"
           ],
           "animationAddress + 0x18": [
-            "236:66"
+            "237:66"
           ],
           "animationAddress + 0x24": [
-            "238:66"
+            "239:66"
           ],
           "animationAddress + 0x30": [
-            "240:66"
+            "241:66"
           ],
           "animationAddress + 0x3C": [
-            "242:66"
+            "243:66"
           ]
         }
       }
@@ -1992,31 +1995,31 @@
       "locations": {
         "address_globals": {
           "D_8009ADC0": [
-            "37:5"
+            "44:5"
           ]
         },
         "raw_offset_candidates": {
           "pose + 0x10": [
-            "59:34"
+            "67:34"
           ],
           "animation + 0x28": [
-            "174:34"
+            "182:34"
           ],
           "rec + 1": [
-            "210:59"
+            "218:59"
           ],
           "entries + 1": [
-            "246:16"
+            "254:16"
           ],
           "width + 7": [
-            "355:18"
+            "365:18"
           ],
           "bytes - 1": [
-            "356:29"
+            "366:29"
           ],
           "bitWidth + 31": [
-            "403:53",
-            "447:80"
+            "413:53",
+            "457:80"
           ]
         }
       }
@@ -2950,6 +2953,7 @@
         "player_chase.h",
         "player_interaction.h",
         "presentation_focus.h",
+        "progress_field_ids.h",
         "progress_value.h",
         "random.h",
         "runtime_clock.h",
@@ -2971,32 +2975,32 @@
       "locations": {
         "raw_offset_candidates": {
           "x - 27": [
-            "232:46"
+            "233:46"
           ],
           "x + 55": [
-            "234:46"
+            "235:46"
           ],
           "x - 16": [
-            "293:31",
-            "317:27"
-          ],
-          "y + 8": [
-            "294:31"
-          ],
-          "y - 8": [
+            "294:31",
             "318:27"
           ],
+          "y + 8": [
+            "295:31"
+          ],
+          "y - 8": [
+            "319:27"
+          ],
           "counter + 5U": [
-            "325:25"
+            "326:25"
           ],
           "camera + 0": [
-            "447:25"
+            "448:25"
           ],
           "camera + 4": [
-            "449:25"
+            "450:25"
           ],
           "camera + 8": [
-            "451:25"
+            "452:25"
           ]
         }
       }
@@ -3816,6 +3820,7 @@
         "player_profile.h",
         "player_state.h",
         "player_types.h",
+        "progress_field_ids.h",
         "progress_fields.h",
         "progress_value.h",
         "random.h",
@@ -3851,47 +3856,47 @@
       "locations": {
         "raw_offset_candidates": {
           "normal + 2": [
-            "657:80"
+            "658:80"
           ],
           "currentGround + 0": [
-            "685:38"
+            "686:38"
           ],
           "dy + 0": [
-            "693:64",
-            "713:86"
+            "694:64",
+            "714:86"
           ],
           "nextX + 0": [
-            "696:79",
-            "702:79"
+            "697:79",
+            "703:79"
           ],
           "nextZ + 0": [
-            "699:93",
-            "702:100"
+            "700:93",
+            "703:100"
           ],
           "nextGround + 0": [
-            "706:22"
+            "707:22"
           ],
           "gPlayerCompanionTarget - 0x50": [
-            "1063:36"
+            "1064:36"
           ],
           "gPlayerControllerPort - 0x2C": [
-            "1079:37",
-            "1080:37"
+            "1080:37",
+            "1081:37"
           ],
           "gPlayerHelpTextCursor + 1": [
-            "1420:40",
-            "1424:40"
+            "1421:40",
+            "1425:40"
           ],
           "gPlayerEyeHeight - 0x1C": [
-            "1900:37",
-            "2459:42",
-            "2471:42"
+            "1901:37",
+            "2460:42",
+            "2472:42"
           ],
           "return -1": [
-            "2331:9"
+            "2332:9"
           ],
           "friendshipLevel + 1": [
-            "2336:48"
+            "2337:48"
           ]
         }
       }
@@ -4111,6 +4116,7 @@
         "object_lifecycle.h",
         "progress_fields.h",
         "random.h",
+        "random_scale.h",
         "runtime_control.h",
         "scene_configuration.h",
         "scene_types.h",
@@ -4120,15 +4126,15 @@
       "locations": {
         "raw_offset_candidates": {
           "residentIndex + 0x6A": [
-            "43:30"
+            "44:30"
           ],
           "state - 2": [
-            "67:50"
+            "68:50"
           ],
           "i + 0x6A": [
-            "109:30",
-            "115:30",
-            "190:30"
+            "110:30",
+            "116:30",
+            "191:30"
           ]
         }
       }
@@ -4143,6 +4149,7 @@
         "object_lifecycle.h",
         "progress_fields.h",
         "random.h",
+        "random_scale.h",
         "runtime_control.h",
         "scene_configuration.h",
         "scene_types.h",
@@ -4152,15 +4159,15 @@
       "locations": {
         "raw_offset_candidates": {
           "residentIndex + 0x65": [
-            "44:30"
+            "45:30"
           ],
           "state - 2": [
-            "67:50"
+            "68:50"
           ],
           "i + 0x65": [
-            "121:30",
-            "127:30",
-            "181:30"
+            "122:30",
+            "128:30",
+            "182:30"
           ]
         }
       }

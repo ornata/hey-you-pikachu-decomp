@@ -54,7 +54,7 @@ void springleafFieldSpawnGrowthResident(f32 *position, s32 residentIndex) {
         random = randomNext(); scale = D_801594C4_scene_springleaf_field;
         // clang-format on
         actorCreateForKind(5, position[0], position[1], position[2], 0.0F,
-                           (f32)((f64)random * 2.3283064365386963e-10 * D_801594C8_scene_springleaf_field),
+                           (f32)((f64)random * RANDOM_U32_UNIT_SCALE * D_801594C8_scene_springleaf_field),
                            mathPowInteger(scale, state) * gCurrentAreaConfiguration->objectScale, record,
                            residentIndex);
         return;
@@ -64,14 +64,14 @@ void springleafFieldSpawnGrowthResident(f32 *position, s32 residentIndex) {
         random = randomNext(); scale = D_801594D0_scene_springleaf_field;
         // clang-format on
         actorCreateForKind(6, position[0], position[1], position[2], 0.0F,
-                           (f32)((f64)random * 2.3283064365386963e-10 * D_801594D8_scene_springleaf_field),
+                           (f32)((f64)random * RANDOM_U32_UNIT_SCALE * D_801594D8_scene_springleaf_field),
                            mathPowInteger(scale, state - 2) * gCurrentAreaConfiguration->objectScale, record,
                            residentIndex);
         return;
     }
     random = randomNext();
     actorCreateForKind(7, position[0], position[1], position[2], 0.0F,
-                       (f32)((f64)random * 2.3283064365386963e-10 * D_801594E0_scene_springleaf_field),
+                       (f32)((f64)random * RANDOM_U32_UNIT_SCALE * D_801594E0_scene_springleaf_field),
                        gCurrentAreaConfiguration->objectScale, record, residentIndex);
 }
 

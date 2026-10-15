@@ -1380,10 +1380,10 @@ void systemMenuSetGameClearProgress(s32 arg0) {
 void systemMenuSetVerticalLookMode(s32 normal) {
     TRACE("selStickReverse %d\n", normal);
     if (normal != 0) {
-        progressSetValue(7, 1);
+        progressSetValue(PROGRESS_FIELD_LOOK_FORWARD_UP, 1);
         return;
     }
-    progressSetValue(7, 0);
+    progressSetValue(PROGRESS_FIELD_LOOK_FORWARD_UP, 0);
 }
 
 /// Save-control byte transferred independently from the progress records.
@@ -1762,7 +1762,7 @@ MenuItem *systemMenuBuildExtrasMenu(void) {
 void systemMenuSyncLookSettingSelection(s32 unused) {
     s32 lookSetting;
 
-    lookSetting = progressGetValue(7);
+    lookSetting = progressGetValue(PROGRESS_FIELD_LOOK_FORWARD_UP);
     gSystemMenuControlList.confirmedIndex = lookSetting;
     gSystemMenuControlList.selectedIndex = lookSetting;
 }

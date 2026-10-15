@@ -293,7 +293,7 @@ void actionCommandPlayGroundContactEffects(u8 *object, ActorScriptState *state, 
         if (sound >= 0) {
             handle = actorPlayTrackedSound(object, sound);
             random = randomNext();
-            audioSetSoundEffectPitch(handle, (random * 2.3283064365386963e-10 - 0.5) * args->amount * 3.0);
+            audioSetSoundEffectPitch(handle, (random * RANDOM_U32_UNIT_SCALE - 0.5) * args->amount * 3.0);
         }
     }
     if (args->amount >= 2) {
@@ -580,14 +580,14 @@ void actionCommandEmitPairedTargetedBursts(u8 *object, ActorScriptState *state, 
             particles = randomBelow(10);
             random = randomNext();
             yaw = (s32)randomBelow(90);
-            ribbonEffectCreate(particles + 10, args->lifetime, 0.5F, random * 2.3283064365386963e-10 * 0.3F, args->kind,
+            ribbonEffectCreate(particles + 10, args->lifetime, 0.5F, random * RANDOM_U32_UNIT_SCALE * 0.3F, args->kind,
                                left[0], left[1], left[2],
                                ((RuntimeObjectPrefix *)object)->rotation[1] - 120.0F + 30.0F - yaw,
                                ((RuntimeObjectPrefix *)object)->rotation[2] + 45.0F - (s32)randomBelow(90), target);
             particles = randomBelow(10);
             random = randomNext();
             yaw = (s32)randomBelow(90);
-            ribbonEffectCreate(particles + 10, args->lifetime, 0.5F, random * 2.3283064365386963e-10 * 0.3F, args->kind,
+            ribbonEffectCreate(particles + 10, args->lifetime, 0.5F, random * RANDOM_U32_UNIT_SCALE * 0.3F, args->kind,
                                right[0], right[1], right[2],
                                ((RuntimeObjectPrefix *)object)->rotation[1] - 60.0F + 60.0F - yaw,
                                ((RuntimeObjectPrefix *)object)->rotation[2] + 45.0F - (s32)randomBelow(90), target);
