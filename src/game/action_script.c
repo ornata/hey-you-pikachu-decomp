@@ -168,10 +168,11 @@ s32 actionScriptUpdate(u8 *object) {
     return 0;
 }
 
-/// Start an object action script without a duration limit.
+/// Select timed sequencing for an object without a duration limit.
 /// \param object Object that will execute the script.
-/// \param scriptId Valid index of the action script to start.
+/// \param scriptId Valid timed-program index, or ACTION_SCRIPT_NO_PROGRAM to select no commands while preserving motion playback.
 /// \returns Nothing.
+/// \note Portability/UB: The no-program sentinel uses an out-of-bounds C array view in the matching implementation. Host ports must handle its null-command behavior explicitly.
 /// \note Original decompilation identifier: \c func_80012034 (0x80012034).
 void actionScriptStart(u8 *object, s32 scriptId) {
     ActorScriptState *actorState;
@@ -181,7 +182,7 @@ void actionScriptStart(u8 *object, s32 scriptId) {
     actorState->actionScript.lastRequestId = 0;
     actorState->actionScript.pendingRequestId = 0;
     actorState->actionScript.soundHandle = 0;
-    actorState->actionScript.index = scriptId;
+    actorState->actionScript.selectedProgramId = scriptId;
     actorState->actionScript.commandTime = 0.0F;
     actorState->actionScript.elapsed = 0.0F;
     actorState->actionScript.duration = -1.0F;
@@ -224,12 +225,12 @@ s32 *actionScriptStop(u8 *object) {
     state->actionScript.command = NULL;
     script = state;
     state = NULL;
-    script->actionScript.index = -1;
+    script->actionScript.selectedProgramId = ACTION_SCRIPT_NO_PROGRAM;
     // Debug null check; its body is compiled out, but its block keeps the
     // return add out of the store block.
     if (script == NULL) {
     }
-    return &script->actionScript.index;
+    return &script->actionScript.selectedProgramId;
 }
 
 /// Check whether script command execution has stopped.

@@ -483,6 +483,36 @@ motion requests and retained motion debug labels. All 287 decode without diagnos
 The program table's linked extent bounds reads; it does not establish a complete
 resource allocation or prove the requested paths execute.
 
+The catalog also summarizes functions whose return values select timed programs.
+It follows branches and returning call continuations without entering callees.
+Of 18 producer summaries, five have complete static integer return domains;
+13 retain unresolved return expressions. A complete domain bounds values on the
+decoded returning paths, without proving termination, path feasibility or native
+side effects. These domains supplement literal requests in the resource census.
+
+One recovered result is `ACTION_SCRIPT_NO_PROGRAM` (-1). This selects no timed
+commands while preserving independent motion playback. It is distinct from
+`actionScriptStop`, which also requests motion-loop exit and cancels a pending
+motion request. The matching implementation obtains the null command pointer
+through a negative array index: the preceding word is an unused zero operand in
+the final program's END record. This is outside the declared C array view;
+host ports must handle the sentinel explicitly. The decoder authenticates this
+backing layout and reports it separately from the 287 ordinary program streams.
+Other negative IDs remain unresolved.
+
+`ActionScriptState.selectedProgramId` retains the selected program even after
+natural END stops command execution. `actionScriptGetId` and the native callback
+`actorScriptPushTimedProgramId` expose that selection; command activity must be
+queried separately. Explicit stop or no-program selection sets the ID to -1.
+Six bounded original-instruction cases check selection, retained IDs and natural
+completion. They do not establish complete playback lifecycles or rendering.
+
+For example, a playground companion function returns one of -1, 29, 87, 89,
+156, 176, 178 and 179. Its tests of the retained selection and command activity,
+together with the programs' motion labels, support an idle-variation selector:
+it preserves an active stance by returning -1, or selects a variation. The
+labels support motion descriptions, without establishing an emotional meaning.
+
 The motion labels support these names in `action_script_ids.h`:
 
 | Timed program | Requested motion | Established role |

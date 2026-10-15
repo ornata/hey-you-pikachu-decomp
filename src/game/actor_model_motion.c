@@ -240,7 +240,7 @@ void actorInitializeModelState(u8 *actor) {
     state->nextSoundSlot = 0;
     _bzero(state->soundHandles, 0x10);
     state->trackedVoice = 0;
-    state->actionScript.index = -1;
+    state->actionScript.selectedProgramId = ACTION_SCRIPT_NO_PROGRAM;
     state->searchItemKind = 0x43;
     state->searchItemRange = 0.0F;
     directionAnimationReset(&state->directionAnimation);

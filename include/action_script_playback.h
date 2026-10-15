@@ -9,14 +9,14 @@
 
 /// Start an object action script without a duration limit.
 /// \param object Object that will execute the script.
-/// \param scriptId Valid timed-program index, including the known ActionScriptId values; distinct from a motion-action ID.
+/// \param scriptId Valid timed-program index or ACTION_SCRIPT_NO_PROGRAM; distinct from a motion-action ID.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80012034 (0x80012034).
 void actionScriptStart(u8 *object, s32 scriptId);
 
 /// Start an action script with a default mode for actions that inherit it.
 /// \param object Object that will execute the script.
-/// \param scriptId Valid timed-program index; distinct from a motion-action ID.
+/// \param scriptId Valid timed-program index or ACTION_SCRIPT_NO_PROGRAM; distinct from a motion-action ID.
 /// \param mode Default action mode for commands that request the inherited mode.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80012078 (0x80012078).
@@ -59,9 +59,9 @@ f32 actionScriptGetElapsedTime(u8 *object);
 /// \note Original decompilation identifier: \c func_801174E8 (0x801174E8).
 f32 actionScriptGetDuration(u8 *object);
 
-/// Get the identifier of an object's current action script.
-/// \param object Object whose action script is queried.
-/// \returns The current script identifier, or -1 when the script is stopped.
+/// Get the retained identifier of an object's selected timed program.
+/// \param object Object whose timed-program selection is queried.
+/// \returns The selected identifier, including ACTION_SCRIPT_NO_PROGRAM after explicit stop or no-program selection; natural command completion retains the prior identifier.
 /// \note Original decompilation identifier: \c func_801174F4 (0x801174F4).
 s32 actionScriptGetId(u8 *object);
 

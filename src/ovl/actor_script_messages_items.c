@@ -698,11 +698,11 @@ s32 actorScriptPushActionDuration(u8 *actor) {
 }
 
 
-/// Push the identifier of the actor's current action script.
-/// \param actor Actor whose script VM receives the action script identifier, or -1 when stopped.
+/// Push the retained identifier of the actor's selected timed program.
+/// \param actor Actor whose script VM receives the selected program identifier or ACTION_SCRIPT_NO_PROGRAM; natural command completion retains the prior identifier.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011D4D8 (0x8011D4D8).
-s32 actorScriptPushActionId(u8 *actor) {
+s32 actorScriptPushTimedProgramId(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;

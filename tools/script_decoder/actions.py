@@ -58,13 +58,27 @@ def action_resources(image, identifiers, record_limit=4096):
     definitions = image.symbol('gActionDefinitions')
     image.allowed = {'.boot', '.ovl'}
     results = []
-    names = {int(value): name for name, value in re.findall(r'\b(ACTION_SCRIPT_\w+)\s*=\s*(\d+)\b', code_only((ROOT / 'include/action_script_ids.h').read_text()))}
+    names = {int(value): name for name, value in re.findall(r'\b(ACTION_SCRIPT_\w+)\s*=\s*(-?\d+)\b', code_only((ROOT / 'include/action_script_ids.h').read_text()))}
     for identifier in sorted(identifiers):
         row = dict(script_id=identifier, table_view_bytes=table[2],
-                   scope='Requested slot within the linked table view; no complete allocation or execution claim.')
+                   scope='Literal request or static return candidate; ordinary IDs use the linked table view, -1 uses authenticated sentinel backing. No complete allocation or execution claim.')
         if identifier in names:
             row['recovered_name'] = names[identifier]
         try:
+            if identifier == -1:
+                # The fixed retail consumer indexes one word before its declared
+                # table view. Authenticate both the null word and its provenance
+                # as the final END operand of the last positive-ID program.
+                raw, slot = image.read_address(table[1] - 4, 4)
+                end, _ = image.read_address(table[1] - 16, 16)
+                last, _ = image.read_address(table[1] + table[2] - 4, 4)
+                if raw != b'\0' * 4 or struct.unpack_from('>i', end)[0] != 4 or struct.unpack('>I', last)[0] != table[1] - 32:
+                    raise ValueError('no-program sentinel is not backed by its retained null END operand')
+                row.update(status='no_program', address=0, table_slot=slot, consumed_bytes=0,
+                           backing='Final unused END operand of the last positive-ID timed program.',
+                           portability='Negative indexing lies outside the declared C array view; host ports must handle the sentinel explicitly.')
+                results.append(row)
+                continue
             if not 0 <= identifier < table[2] // 4:
                 raise ValueError('script ID lies outside the bounded linked table view')
             raw, slot = image.read_address(table[1] + identifier * 4, 4)

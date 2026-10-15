@@ -2641,7 +2641,7 @@ actorScriptGetWorldCoordinate = 0x8011D3D8;
 
 actorScriptPushActionElapsedTime = 0x8011D468;
 actorScriptPushActionDuration = 0x8011D4A0;
-actorScriptPushActionId = 0x8011D4D8;
+actorScriptPushTimedProgramId = 0x8011D4D8;
 actorScriptPushMovementCollisionFlags = 0x8011D510;
 actorScriptPushTargetDistanceAllowance = 0x8011DBCC;
 actorScriptPushTargetHandle = 0x8011DBF8;

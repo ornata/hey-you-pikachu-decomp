@@ -95,3 +95,22 @@ def test_indexed_random_choice_preserves_unknown_element_value_and_known_index_r
     assert argument['kind'] == 'array_element' and argument['frame'] == 1 and argument['slot'] == 0
     assert argument['index']['integer_range'] == [0, 2]
     assert 'constant_script_id' not in result
+
+
+def test_no_program_sentinel_requires_retained_null_backing_and_does_not_allow_other_negative_ids():
+    class SentinelImage(Image):
+        def read_address(self, address, size):
+            if address == 0x80401004:
+                return struct.pack('>I', 0x80401000 - 32), dict(address=address)
+            if 0x80401000 - 32 <= address < 0x80401000:
+                start = address - (0x80401000 - 32)
+                return self.stream[start:start + size], dict(address=address)
+            return super().read_address(address, size)
+
+    image = SentinelImage()
+    rows = action_resources(image, {-2, -1})
+    assert rows[0]['status'] == 'unresolved'
+    assert rows[1]['status'] == 'no_program' and rows[1]['address'] == 0
+    assert rows[1]['recovered_name'] == 'ACTION_SCRIPT_NO_PROGRAM'
+    image.stream = image.stream[:-4] + struct.pack('>I', 1)
+    assert action_resources(image, {-1})[0]['status'] == 'unresolved'

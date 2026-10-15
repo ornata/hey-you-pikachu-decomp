@@ -22,6 +22,7 @@ from .messages import message_posts
 from .scenarios import scenario_domains, function_body
 from .actions import action_calls, action_resources
 from .actors import actor_kind_records
+from .functions import action_producer_functions
 
 
 def companion_sites(image):
@@ -180,6 +181,7 @@ def catalog(image, max_instructions=100000):
                 if 'native_selector' in row:
                     native_calls[str(row['native_selector'])] += 1
             identity = f'{section_name[1:]}/{candidate["address"]:08x}'
+            actions = action_calls(decoded['instructions'])
             rows.append(dict(**candidate, section=section_name, location=location,
                              candidate_basis='Aligned retained-table prefix with local program before header; not allocation/type proof.',
                              symbols=aliases, direct_creation_sites=bindings,
@@ -190,7 +192,8 @@ def catalog(image, max_instructions=100000):
                              code_reference_uses=references, global_indices=sorted(globals_used),
                              frame_operands=frames, native_calls=dict(native_calls),
                              script_message_posts=message_posts(decoded['instructions']),
-                             native_action_calls=action_calls(decoded['instructions']),
+                             native_action_calls=actions,
+                             action_producer_functions=action_producer_functions(decoded['instructions'], actions),
                              listing=identity + '.json'))
             decodes[identity] = decoded
     if not rows:
@@ -200,6 +203,8 @@ def catalog(image, max_instructions=100000):
     for row in complete:
         roles.update(row['code_reference_roles'])
     resource_ids = {call['constant_script_id'] for row in rows for call in row['native_action_calls'] if 'constant_script_id' in call}
+    resource_ids.update(value for row in rows for function in row['action_producer_functions']
+                        if function['static_return_domain_complete'] for value in function['integer_return_domain'])
     return dict(schema_version=2, rom_sha1=image.sha1,
                 scope='Retained-table configuration candidates with local programs before their headers. No claim of exhaustive resource discovery or live execution.',
                 candidate_count=len(rows), diagnostic_free_candidates=len(complete),
@@ -234,7 +239,7 @@ def main(argv=None):
         report['elf_sha256'] = hashlib.sha256(args.elf.read_bytes()).hexdigest()
         report['decoder_sha256'] = hashlib.sha256(Path(__file__).with_name('formats.py').read_bytes()).hexdigest()
         report['analysis_sha256'] = {name: hashlib.sha256(Path(__file__).with_name(name + '.py').read_bytes()).hexdigest()
-                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors')}
+                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions')}
         files = {'catalog.json': report, **{name + '.json': row for name, row in decodes.items()}}
         # Validate every output before writing any content, including existing symlinks.
         for name in files:

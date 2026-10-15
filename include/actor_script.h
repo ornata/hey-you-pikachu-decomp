@@ -210,7 +210,7 @@ ACTOR_SCRIPT_OFFSET_CHECK(ActorPrimaryCueCommandOffsetCheck, ActorScriptState, p
 ACTOR_SCRIPT_OFFSET_CHECK(ActorLastPrimaryCueProgramOffsetCheck, ActorScriptState, lastPrimaryCueProgram, 0x150);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorSecondaryCueCommandOffsetCheck, ActorScriptState, secondaryCueCommand, 0x154);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateSequencerOffsetCheck, ActorScriptState, actionScript, 0x158);
-ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionScriptIdOffsetCheck, ActorScriptState, actionScript.index, 0x158);
+ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionScriptIdOffsetCheck, ActorScriptState, actionScript.selectedProgramId, 0x158);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionElapsedOffsetCheck, ActorScriptState, actionScript.elapsed, 0x15C);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionDurationOffsetCheck, ActorScriptState, actionScript.duration, 0x160);
 ACTOR_SCRIPT_OFFSET_CHECK(ActorStateActionCommandTimeOffsetCheck, ActorScriptState, actionScript.commandTime, 0x164);

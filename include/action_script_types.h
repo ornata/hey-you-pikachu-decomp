@@ -5,6 +5,7 @@
 #define ACTION_SCRIPT_TYPES_H
 
 #include <ultra64.h>
+#include "action_script_ids.h"
 
 /// Timed command selectors in the action sequencer resource format.
 /// These values are separate from actor VM bytecode opcodes.
@@ -33,7 +34,7 @@ typedef struct ActionScriptCommand {
 /// The command cursor borrows its resource and does not own command storage.
 /// Stopping command execution does not imply that the last requested action ended.
 typedef struct ActionScriptState {
-    s32 index; ///< Selected script identifier, or minus one after an explicit stop.
+    s32 selectedProgramId; ///< Retained timed-program selection or ACTION_SCRIPT_NO_PROGRAM; command completion preserves it.
     f32 elapsed; ///< Elapsed script time in seconds.
     f32 duration; ///< Time limit in seconds; a negative value disables the limit.
     f32 commandTime; ///< Command clock in seconds, held while a command waits.

@@ -189,13 +189,13 @@ f32 actionScriptGetDuration(u8 *object) {
     return ((ActorScriptState *)objectState)->actionScript.duration;
 }
 
-/// Get the identifier of an object's current action script.
-/// \param object Object whose action script is queried.
-/// \returns The current script identifier, or -1 when the script is stopped.
+/// Get the retained identifier of an object's selected timed program.
+/// \param object Object whose timed-program selection is queried.
+/// \returns The selected identifier, including ACTION_SCRIPT_NO_PROGRAM after explicit stop or no-program selection; natural command completion retains the prior identifier.
 /// \note Original decompilation identifier: \c func_801174F4 (0x801174F4).
 s32 actionScriptGetId(u8 *object) {
     u8 *objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
-    return ((ActorScriptState *)objectState)->actionScript.index;
+    return ((ActorScriptState *)objectState)->actionScript.selectedProgramId;
 }
 
 /// Get the collision result of an actor's latest movement update.
