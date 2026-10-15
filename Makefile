@@ -273,3 +273,8 @@ check-item-callbacks: $(BUILD)/pikachu.elf
 check-scene-callbacks: $(BUILD)/pikachu.elf
 	python3 tools/scene_callbacks.py --elf $(BUILD)/pikachu.elf
 .PHONY: check-scene-callbacks
+
+# Optional, read-only readability analysis; IDO still builds the ROM.
+tidy:
+	@uv run --locked python tools/clang_tidy.py $(if $(FILES),--files $(FILES))
+.PHONY: tidy

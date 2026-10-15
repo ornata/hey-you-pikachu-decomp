@@ -1,0 +1,9 @@
+# Advisory analysis only. IDO remains the matching compiler.
+Checks: '-*,readability-*'
+WarningsAsErrors: ''
+HeaderFilterRegex: '^$'
+SystemHeaders: false
+FormatStyle: none
+CheckOptions:
+  readability-identifier-length.IgnoredVariableNames: '^(i|j|k|x|y|z|u|v|w|t|n)$'
+  readability-identifier-length.IgnoredParameterNames: '^(i|j|k|x|y|z|u|v|w|t|n)$'

@@ -114,3 +114,16 @@ for educational purposes. You must supply your own ROM and local SDK inputs.
 [decompals/ido-static-recomp]: https://github.com/decompals/ido-static-recomp
 [farisawan-2000/hey_you_pikachu]: https://github.com/farisawan-2000/hey_you_pikachu
 [docs/UB.md]: docs/UB.md
+
+## Readability checks
+
+```sh
+nix develop .#lint --command bash
+uv run --locked make tidy
+# Optional: FILES=src/game/voice_commands_text_panel.c
+```
+
+This read-only audit writes reports and proposed edits under `build/clang-tidy/`.
+Warnings are advisory; incomplete parsing exits nonzero. The progress reader’s
+retained K&R calling convention currently prevents a complete Clang parse.
+Clang does not build the game; any applied fix still needs ROM and object checks.

@@ -71,14 +71,18 @@
               ln -s ${bintools}/bin/${bintools.targetPrefix}$tool "$out/bin/mips-linux-gnu-$tool"
             done
           '';
-        in {
-          default = pkgs.mkShellNoCC {
+          development = pkgs.mkShellNoCC {
             packages = [ shellBash mipsTools pkgs.gnumake pkgs.python312 pkgs.uv
                          pkgs.git pkgs.curl pkgs.gnutar pkgs.gzip pkgs.coreutils pkgs.perl ];
             UV_PYTHON = "${pkgs.python312}/bin/python3";
             UV_PYTHON_DOWNLOADS = "never";
             IDO = "${ido}/libexec/ido/cc";
           };
+        in {
+          default = development;
+          lint = development.overrideAttrs (old: {
+            nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ pkgs.llvmPackages.clang-tools ];
+          });
         });
     };
 }
