@@ -1,3 +1,4 @@
+#include "midi_encoding.h"
 #include "audio_output.h"
 #include "sequence_registration.h"
 #include "sequence_engine_types.h"
@@ -157,7 +158,7 @@ void sequenceEngineReleaseVoice(VoicePlayer *driver, EngineSequence *sequence, S
 s32 sequenceEngineSetSustain(VoicePlayer *driver, EngineSequence *sequence, s32 channelIndex, s32 sustain) {
     SequenceVoice *voice;
 
-    if ((sequence->channels[channelIndex].sustain >= 0x40) && (sustain < 0x40)) {
+    if ((sequence->channels[channelIndex].sustain >= MIDI_SUSTAIN_ON_MIN) && (sustain < MIDI_SUSTAIN_ON_MIN)) {
         voice = sequence->voices;
         if (voice != NULL) {
             do {
@@ -262,7 +263,7 @@ s32 sequenceEngineResetControllers(VoicePlayer *driver, EngineSequence *seq) {
         channel[0xE] = 0;
         channel[0xC] = 0x40;
         *(s16 *)channel = 0x2000;
-    } while (i != 16);
+    } while (i != MIDI_CHANNEL_COUNT);
     voice = seq->voices;
     if (voice != NULL) {
         do {
@@ -308,7 +309,7 @@ void sequenceEngineRegisterSequence(EngineSequence *sequence, VoicePlayer *drive
     sequence->eventReader = eventReader;
     sequence->eventLimit = eventLimit;
     sequence->eventBuffer = eventBuffer;
-    for (i = 0; i < 16; i++) {
+    for (i = 0; i < MIDI_CHANNEL_COUNT; i++) {
         sequence->channels[i].sustain = 0;
     }
     sequenceEngineResetControllers(driver, sequence);
@@ -502,7 +503,7 @@ void sequenceEngineNoteOff(VoicePlayer *driver, EngineSequence *sequence, s32 ch
         do {
             if ((key == voice->key) && (channel == voice->channel) && (voice->keyDown != 0)) {
                 voice->keyDown = 0;
-                if (sequence->channels[channel].sustain >= 0x40) {
+                if (sequence->channels[channel].sustain >= MIDI_SUSTAIN_ON_MIN) {
                     voice->sustainDeferred = 1;
                 } else {
                     sequenceEngineReleaseVoice(driver, sequence, voice);
@@ -545,13 +546,13 @@ void sequenceEngineSetPitchBend(EngineSequence *sequence, s32 channel, s32 lowBi
 /// \param value Seven-bit MIDI data-entry value.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800068EC (0x800068EC).
-void sequenceEngineApplyDataEntry(u8 *channel, s32 isLowPart, s32 value) {
-    if ((channel[0x13] | (channel[0x12] << 7)) == 0) {
+void sequenceEngineApplyDataEntry(EngineChannel *channel, s32 isLowPart, s32 value) {
+    if (((channel->rpnHigh << MIDI_WIDE_PART_BITS) | channel->rpnLow) == MIDI_RPN_PITCH_BEND_SENSITIVITY) {
         if (isLowPart != 0) {
-            *(u16 *)(channel + 6) = (*(u16 *)(channel + 6) & 0x3F80) | value;
+            channel->pitchBendRange = (channel->pitchBendRange & MIDI_WIDE_HIGH_MASK) | value;
             return;
         }
-        *(u16 *)(channel + 6) = value << 7;
+        channel->pitchBendRange = value << MIDI_WIDE_PART_BITS;
     }
 }
 
@@ -567,74 +568,71 @@ void sequenceEngineControlChange(VoicePlayer *driver, EngineSequence *seq, s32 c
     SequenceVoice *voice;
     SequenceVoice *current;
     switch (controller) {
-    case 0:
-        seq->channels[channel].bank = value << 7;
+    case MIDI_CTRL_BANK_MSB:
+        seq->channels[channel].bank = value << MIDI_WIDE_PART_BITS;
         break;
-    case 32:
-        seq->channels[channel].bank =
-            (seq->channels[channel].bank & 0x3F80) | value;
+    case MIDI_CTRL_BANK_LSB:
+        seq->channels[channel].bank = (seq->channels[channel].bank & MIDI_WIDE_HIGH_MASK) | value;
         break;
-    case 1:
+    case MIDI_CTRL_MODULATION:
         seq->channels[channel].vibratoDepth = value;
         seq->channels[channel].tremoloDepth = value;
         break;
-    case 5:
+    case MIDI_CTRL_PORTAMENTO_TIME:
         seq->channels[channel].portamentoTime = value;
         break;
-    case 6:
-        sequenceEngineApplyDataEntry((u8 *)&seq->channels[channel], 0, value);
+    case MIDI_CTRL_DATA_ENTRY_MSB:
+        sequenceEngineApplyDataEntry(&seq->channels[channel], 0, value);
         break;
-    case 38:
-        sequenceEngineApplyDataEntry((u8 *)&seq->channels[channel], 1, value);
+    case MIDI_CTRL_DATA_ENTRY_LSB:
+        sequenceEngineApplyDataEntry(&seq->channels[channel], 1, value);
         break;
-    case 7:
+    case AL_MIDI_VOLUME_CTRL:
         seq->channels[channel].volume = value;
         break;
-    case 10:
-        seq->channels[channel].pan = value << 7;
+    case AL_MIDI_PAN_CTRL:
+        seq->channels[channel].pan = value << MIDI_WIDE_PART_BITS;
         for (voice = seq->voices; voice != NULL; voice = voice->next) {
             if (channel == voice->channel) {
                 sequenceEngineUpdateVoicePan(driver, seq, voice);
             }
         }
         break;
-    case 42:
-        seq->channels[channel].pan =
-            (seq->channels[channel].pan & 0x3F80) | value;
+    case MIDI_CTRL_PAN_LSB:
+        seq->channels[channel].pan = (seq->channels[channel].pan & MIDI_WIDE_HIGH_MASK) | value;
         for (voice = seq->voices; voice != NULL; voice = voice->next) {
             if (channel == voice->channel) {
                 sequenceEngineUpdateVoicePan(driver, seq, voice);
             }
         }
         break;
-    case 11:
-        seq->channels[channel].expression = value << 7;
+    case MIDI_CTRL_EXPRESSION:
+        seq->channels[channel].expression = value << MIDI_WIDE_PART_BITS;
         break;
-    case 64:
+    case AL_MIDI_SUSTAIN_CTRL:
         sequenceEngineSetSustain(driver, seq, channel, value);
         break;
-    case 65:
+    case MIDI_CTRL_PORTAMENTO_ENABLE:
         seq->channels[channel].portamentoEnabled = value;
         break;
-    case 84:
+    case MIDI_CTRL_PORTAMENTO_SOURCE_NOTE:
         seq->channels[channel].lastKey = value;
         break;
-    case 91:
+    case AL_MIDI_FX1_CTRL:
         seq->channels[channel].fxMix = value;
         for (voice = seq->voices; voice != NULL; voice = voice->next) {
             if (channel == voice->channel) {
-                n_alSynSetFXMix(&voice->native,
-                                seq->channels[voice->channel].fxMix);
+                n_alSynSetFXMix(&voice->native, seq->channels[voice->channel].fxMix);
             }
         }
         break;
-    case 100:
+    case MIDI_CTRL_RPN_LSB:
         seq->channels[channel].rpnLow = value;
         break;
-    case 101:
+    case MIDI_CTRL_RPN_MSB:
         seq->channels[channel].rpnHigh = value;
         break;
-    case 120:
+    case MIDI_CTRL_ALL_SOUND_OFF:
         for (current = seq->voices; current != NULL; current = voice) {
             voice = current->next;
             if (channel == current->channel) {
@@ -642,10 +640,10 @@ void sequenceEngineControlChange(VoicePlayer *driver, EngineSequence *seq, s32 c
             }
         }
         break;
-    case 121:
+    case MIDI_CTRL_RESET_CONTROLLERS:
         sequenceEngineResetChannelControllers(driver, seq, channel);
         break;
-    case 123:
+    case MIDI_CTRL_ALL_NOTES_OFF:
         for (current = seq->voices; current != NULL; current = voice) {
             voice = current->next;
             if (channel == current->channel) {
@@ -669,7 +667,7 @@ void sequenceEngineHandleSystemEvent(VoicePlayer *driver, EngineSequence *seq, u
     f64 level;
     type = event[0];
     switch (type) {
-    case 0xF0:
+    case AL_MIDI_SysEx:
         if (event[1] == 0x7F && event[3] == 4 && event[4] == 1) {
             seq->volume = (event[6] << 7) | event[5];
             return;
@@ -685,7 +683,7 @@ void sequenceEngineHandleSystemEvent(VoicePlayer *driver, EngineSequence *seq, u
             seq->fadeLevel = level;
         }
         return;
-    case 0xFF:
+    case AL_MIDI_SystemReset:
         sequenceEngineResetControllers(driver, seq);
         break;
     }

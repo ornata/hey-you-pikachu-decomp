@@ -371,6 +371,8 @@ def experiments():
     from .action_cue_numeric_domains import experiments as cue_experiments
     from .runtime_numeric_domains import experiments as runtime_experiments
     from .scene_grid_numeric_domains import experiments as grid_experiments
+    from .midi_numeric_domains import experiments as midi_experiments
+    from .midi_controller_numeric_domains import experiments as controller_experiments
 
     return (
         cases
@@ -383,6 +385,8 @@ def experiments():
         + cue_experiments()
         + runtime_experiments()
         + grid_experiments()
+        + midi_experiments()
+        + controller_experiments()
     )
 
 

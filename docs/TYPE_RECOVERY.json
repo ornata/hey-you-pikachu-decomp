@@ -51,9 +51,9 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 844,
-      "unique_spellings": 463,
-      "files": 64
+      "occurrences": 843,
+      "unique_spellings": 464,
+      "files": 65
     },
     "cast_offset_candidates": {
       "occurrences": 41,
@@ -1699,6 +1699,7 @@
         "matrix_point.h",
         "matrix_translation.h",
         "matrix_types.h",
+        "midi_encoding.h",
         "midi_reader.h",
         "midi_sequence_types.h",
         "node_pool.h",
@@ -1741,50 +1742,50 @@
       "locations": {
         "raw_offset_candidates": {
           "base + 1": [
-            "147:60"
-          ],
-          "base + 2": [
             "148:60"
           ],
-          "base + 3": [
+          "base + 2": [
             "149:60"
           ],
+          "base + 3": [
+            "150:60"
+          ],
           "reader + 0x13": [
-            "165:49"
+            "166:49"
           ],
           "windowStart + 0x400": [
-            "180:61"
+            "181:61"
           ],
           "return -1": [
-            "272:9",
-            "880:9",
-            "888:9"
+            "273:9",
+            "882:9",
+            "890:9"
           ],
           "i + 1": [
-            "281:19"
+            "282:19"
           ],
           "length + 1U": [
-            "286:28"
+            "287:28"
           ],
           "position + 1": [
-            "334:34",
-            "337:76"
+            "336:34",
+            "339:76"
           ],
           "gObjectSearchTreeRoot + 8": [
-            "516:31",
-            "1829:22"
+            "518:31",
+            "1831:22"
           ],
           "gObjectTransformStackDepth - 1": [
-            "587:40"
+            "589:40"
           ],
           "object + 0x24": [
-            "1078:35"
+            "1080:35"
           ],
           "widthShift + 4": [
-            "1079:43"
+            "1081:43"
           ],
           "heightShift + 4": [
-            "1080:43"
+            "1082:43"
           ]
         }
       }
@@ -1885,6 +1886,24 @@
           ],
           "entry + 1": [
             "48:26"
+          ]
+        }
+      }
+    },
+    "src/game/rom_dma.c": {
+      "known_views": [
+        "game_heap.h",
+        "heap_alloc.h",
+        "heap_free.h",
+        "heap_types.h",
+        "rom_dma.h"
+      ],
+      "matching_exceptions": {},
+      "locations": {
+        "raw_offset_candidates": {
+          "ROM_DMA_CHUNK_BYTES + 1U": [
+            "50:40",
+            "166:35"
           ]
         }
       }
@@ -2034,25 +2053,25 @@
       "locations": {
         "raw_offset_candidates": {
           "id + 2": [
-            "56:39"
+            "64:39"
           ],
           "priority + 10": [
-            "57:20"
+            "65:20"
           ],
           "id + 1": [
-            "59:37"
+            "67:37"
           ],
           "priority + 5": [
-            "60:20"
+            "68:20"
           ],
           "scheduler + 0x74": [
-            "97:42"
+            "105:42"
           ],
           "scheduler + 2": [
-            "105:53"
+            "113:53"
           ],
           "frameCount + 1": [
-            "249:88"
+            "257:88"
           ]
         }
       }
@@ -2079,6 +2098,7 @@
     "src/game/sequence_engine.c": {
       "known_views": [
         "audio_output.h",
+        "midi_encoding.h",
         "midi_sequence.h",
         "n_synthInternals.h",
         "sequence_driver.h",
@@ -2095,78 +2115,75 @@
       "locations": {
         "raw_offset_candidates": {
           "voiceRecord + 0x14": [
-            "121:56"
+            "122:56"
           ],
           "AL_PAN_RIGHT + 1": [
-            "192:16"
+            "193:16"
           ],
           "channel + 0x24": [
-            "254:18"
+            "255:18"
           ],
           "channel + 0x14": [
-            "255:28"
+            "256:28"
           ],
           "channel - 2": [
-            "261:18"
+            "262:18"
           ],
           "soundCount - 1": [
-            "329:46"
+            "330:46"
           ],
           "middle - 1": [
-            "341:20"
+            "342:20"
           ],
           "middle + 1": [
-            "343:19"
+            "344:19"
           ],
           "voice + 0xC": [
-            "368:53",
-            "408:38"
+            "369:53",
+            "409:38"
           ],
           "voice + 0x3A": [
-            "369:73"
+            "370:73"
           ],
           "channel + 0x22": [
-            "377:24"
+            "378:24"
           ],
           "seq + 0x1E8": [
-            "378:30"
-          ],
-          "seq + 0x1D4": [
             "379:30"
           ],
+          "seq + 0x1D4": [
+            "380:30"
+          ],
           "voice + 0x48": [
-            "380:31"
+            "381:31"
           ],
           "voice + 0x38": [
-            "408:100"
+            "409:100"
           ],
           "voice + 0x10": [
-            "412:35"
+            "413:35"
           ],
           "channel + 4": [
-            "413:38"
+            "414:38"
           ],
           "channel + 6": [
-            "413:72",
-            "551:22",
-            "551:47",
-            "554:18"
+            "414:72"
           ],
           "voice + 0x3C": [
-            "414:41"
+            "415:41"
           ],
           "portamentoTime + 1": [
-            "839:71",
-            "845:71"
+            "837:71",
+            "843:71"
           ],
           "return -1": [
-            "885:5"
+            "883:5"
           ],
           "maxVoices - 1": [
-            "907:21"
+            "905:21"
           ],
           "i + 1": [
-            "908:40"
+            "906:40"
           ]
         }
       }
@@ -3051,6 +3068,7 @@
         "runtime_services.h",
         "scene_configuration.h",
         "scene_types.h",
+        "scheduler_types.h",
         "system_menu.h",
         "text_window.h",
         "texture_cache.h",
@@ -3065,37 +3083,37 @@
       "locations": {
         "raw_offset_candidates": {
           "sp1C + 0": [
-            "367:57"
+            "368:57"
           ],
           "sp1C + 4": [
-            "367:77"
+            "368:77"
           ],
           "sp1C + 8": [
-            "367:97"
+            "368:97"
           ],
           "gPlayerYaw + 180": [
-            "369:56"
+            "370:56"
           ],
           "sp20 + 0xC4": [
-            "695:51"
+            "696:51"
           ],
           "sp20 + 0xBC": [
-            "696:52"
+            "697:52"
           ],
           "sp20 + 0xB8": [
-            "722:52"
-          ],
-          "sp20 + 0xC0": [
             "723:52"
           ],
+          "sp20 + 0xC0": [
+            "724:52"
+          ],
           "sp20 + 0xCC": [
-            "724:39"
+            "725:39"
           ],
           "buffer + 1": [
-            "781:12"
+            "782:12"
           ],
           "sp1C + 0x80000000": [
-            "811:43"
+            "812:43"
           ]
         }
       }

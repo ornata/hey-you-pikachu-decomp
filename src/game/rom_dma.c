@@ -5,6 +5,11 @@
 #include "rom_dma.h"
 #include "heap_types.h"
 
+/// Capacity of the retained peripheral-interface manager message storage.
+enum { ROM_PI_MANAGER_QUEUE_CAPACITY = 200 };
+/// Largest read submitted as one transfer by the blocking and queued readers.
+enum { ROM_DMA_CHUNK_BYTES = 0x4000 };
+
 /// Run the ROM-I/O startup hook, which is empty in this build.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c romDmaInitializeHook (0x80037AE0).
@@ -16,13 +21,13 @@ void romDmaInitializeHook(void) {
 extern OSMesgQueue gRomPiManagerQueue;
 /// Backing storage for the peripheral-interface manager message queue.
 /// \note Original identifier: \c D_800F2638 (0x800F2638).
-extern OSMesg gRomPiManagerMessages[200];
+extern OSMesg gRomPiManagerMessages[ROM_PI_MANAGER_QUEUE_CAPACITY];
 
 /// Initialize the peripheral-interface manager for cartridge transfers.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c romDmaCreatePiManager (0x80037AE8).
 void romDmaCreatePiManager(void) {
-    osCreatePiManager(0x96, &gRomPiManagerQueue, gRomPiManagerMessages, 0xC8);
+    osCreatePiManager(OS_PRIORITY_PIMGR, &gRomPiManagerQueue, gRomPiManagerMessages, ROM_PI_MANAGER_QUEUE_CAPACITY);
 }
 
 /// Read ROM into RAM and wait until the entire read completes.
@@ -42,12 +47,13 @@ void romDmaReadBlocking(u32 romAddress, u8 *destination, s32 byteCount) {
     remainingBytes = byteCount;
     if (byteCount != 0) {
         do {
-            if ((u32)remainingBytes >= 0x4001U) {
-                chunkBytes = 0x4000;
+            if ((u32)remainingBytes >= ROM_DMA_CHUNK_BYTES + 1U) {
+                chunkBytes = ROM_DMA_CHUNK_BYTES;
             } else {
                 chunkBytes = remainingBytes;
             }
-            osPiStartDma(&ioMessage, 0, OS_READ, romAddress, destination, (u32)chunkBytes, &completionQueue);
+            osPiStartDma(&ioMessage, OS_MESG_PRI_NORMAL, OS_READ, romAddress, destination, (u32)chunkBytes,
+                         &completionQueue);
             osRecvMesg(&completionQueue, NULL, OS_MESG_BLOCK);
             remainingBytes -= chunkBytes;
             romAddress += chunkBytes;
@@ -157,8 +163,8 @@ s32 romDmaReadQueued(DmaQueue *queueState, u32 romAddress, u8 *destination, u32 
     remainingBytes = byteCount;
     if (byteCount != 0) {
         do {
-            if (remainingBytes >= 0x4001U) {
-                chunkBytes = 0x4000;
+            if (remainingBytes >= ROM_DMA_CHUNK_BYTES + 1U) {
+                chunkBytes = ROM_DMA_CHUNK_BYTES;
             } else {
                 chunkBytes = remainingBytes;
             }

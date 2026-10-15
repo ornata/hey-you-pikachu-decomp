@@ -155,3 +155,19 @@ Amplifier timing constants retain OS-tick units and exact original encodings for
 held-trigger refresh, release grace and off-state re-enabling. Static instruction
 and call-site evidence establishes those roles; the names do not certify physical
 amplifier timing or recognition behavior.
+
+MIDI decoder cases retain independent numeric streams for variable-length quantity
+boundaries, running status, channel-message lengths, SysEx/meta events and truncated
+payloads. They check consumed input, the full reader record and output guards.
+The original SysEx running-status retention and logical lengths of discarded
+payloads remain unchanged. Message status, system-family classification, controller
+identifiers and quantity continuation bits have separate names or canonical SDK
+constants; equal numeric values do not make those roles interchangeable.
+
+Controller-state cases cover coarse/fine bank, pan and data-entry updates,
+registered-parameter selection and stored controller values with an empty voice
+list. The controller identifiers agree with the
+[MIDI Association table](https://midi.org/midi-1-0-control-change-messages);
+these names do not normalize portamento values or change the engine's fractional
+bend-sensitivity representation. Active-voice effects and audible conformance
+remain outside these cases.

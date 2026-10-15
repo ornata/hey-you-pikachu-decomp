@@ -3,6 +3,14 @@
 #include "common.h"
 #include "scheduler_types.h"
 
+/// Scheduler-owned SDK event tokens, distinct from client GameMessageKind values.
+enum {
+    SCHEDULER_EVENT_RETRACE = 0x29A,
+    SCHEDULER_EVENT_RSP_COMPLETE = 0x29B,
+    SCHEDULER_EVENT_RDP_COMPLETE = 0x29C,
+    SCHEDULER_EVENT_PRE_NMI = 0x29D
+};
+
 /// Whether the scheduler has received the pre-NMI reset notification.
 /// \note Original identifier: \c D_8009D524 (0x8009D524).
 extern volatile s32 gSchedulerResetPending;
@@ -40,19 +48,19 @@ void schedulerInitialize(GameScheduler *s, s32 id, s32 priority, u8 mode, u8 ret
     s->frameCount = 0;
     s->retraceMessage = GAME_MESSAGE_RETRACE;
     s->preNmiMessage = GAME_MESSAGE_PRE_NMI;
-    osCreateMesgQueue(&s->retrace.queue, s->retrace.messages, 8);
-    osCreateMesgQueue(&s->rsp.queue, s->rsp.messages, 8);
-    osCreateMesgQueue(&s->rdp.queue, s->rdp.messages, 8);
-    osCreateMesgQueue(&s->graphicsCommand.queue, s->graphicsCommand.messages, 8);
-    osCreateMesgQueue(&s->audioCommand.queue, s->audioCommand.messages, 8);
-    osCreateMesgQueue(&s->reply.queue, s->reply.messages, 8);
+    osCreateMesgQueue(&s->retrace.queue, s->retrace.messages, SCHEDULER_QUEUE_CAPACITY);
+    osCreateMesgQueue(&s->rsp.queue, s->rsp.messages, SCHEDULER_QUEUE_CAPACITY);
+    osCreateMesgQueue(&s->rdp.queue, s->rdp.messages, SCHEDULER_QUEUE_CAPACITY);
+    osCreateMesgQueue(&s->graphicsCommand.queue, s->graphicsCommand.messages, SCHEDULER_QUEUE_CAPACITY);
+    osCreateMesgQueue(&s->audioCommand.queue, s->audioCommand.messages, SCHEDULER_QUEUE_CAPACITY);
+    osCreateMesgQueue(&s->reply.queue, s->reply.messages, SCHEDULER_QUEUE_CAPACITY);
     osCreateViManager(OS_PRIORITY_VIMGR);
     osViSetMode(&osViModeTable[mode]);
     osViBlack(TRUE);
-    osViSetEvent(&s->retrace.queue, (OSMesg)0x29A, retraces);
-    osSetEventMesg(OS_EVENT_SP, &s->rsp.queue, (OSMesg)0x29B);
-    osSetEventMesg(OS_EVENT_DP, &s->rdp.queue, (OSMesg)0x29C);
-    osSetEventMesg(OS_EVENT_PRENMI, &s->retrace.queue, (OSMesg)0x29D);
+    osViSetEvent(&s->retrace.queue, (OSMesg)SCHEDULER_EVENT_RETRACE, retraces);
+    osSetEventMesg(OS_EVENT_SP, &s->rsp.queue, (OSMesg)SCHEDULER_EVENT_RSP_COMPLETE);
+    osSetEventMesg(OS_EVENT_DP, &s->rdp.queue, (OSMesg)SCHEDULER_EVENT_RDP_COMPLETE);
+    osSetEventMesg(OS_EVENT_PRENMI, &s->retrace.queue, (OSMesg)SCHEDULER_EVENT_PRE_NMI);
     osCreateThread(&s->retraceThread, id + 2, schedulerRetraceThread, s, gSchedulerAudioStack,
                    priority + 10);
     osStartThread(&s->retraceThread);
@@ -97,10 +105,10 @@ void schedulerRetraceThread(void *scheduler) {
         osRecvMesg((OSMesgQueue *)((u8 *)scheduler + 0x74), &msg, OS_MESG_BLOCK);
         gSchedulerDisplayEventCount++;
         switch ((s32)msg) {
-        case 0x29A:
+        case SCHEDULER_EVENT_RETRACE:
             schedulerNotifyClients(scheduler, scheduler);
             break;
-        case 0x29D:
+        case SCHEDULER_EVENT_PRE_NMI:
             gSchedulerResetPending = 1;
             schedulerNotifyClients(scheduler, (u8 *)scheduler + 2);
             break;
@@ -245,7 +253,7 @@ loop_1:
     osRecvMesg(&((GameScheduler *)scheduler)->rsp.queue, &completionMessage, OS_MESG_BLOCK);
     ((GameScheduler *)scheduler)->graphicsTask = NULL;
     osRecvMesg(&((GameScheduler *)scheduler)->rdp.queue, &completionMessage, OS_MESG_BLOCK);
-    if (((SchedulerTask *)taskMessage)->flags & 0x40) {
+    if (((SchedulerTask *)taskMessage)->flags & SCHEDULER_TASK_PRESENT_FRAMEBUFFER) {
         ((GameScheduler *)scheduler)->frameCount = (u32)(((GameScheduler *)scheduler)->frameCount + 1);
         osViSwapBuffer(((SchedulerTask *)taskMessage)->framebuffer);
         if ((((GameScheduler *)scheduler)->startupBlack != 0) && (((GameScheduler *)scheduler)->frameCount >= 0x15U)) {

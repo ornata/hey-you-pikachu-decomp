@@ -1,3 +1,4 @@
+#include "midi_encoding.h"
 #include "scene_types.h"
 #include "runtime_lifecycle.h"
 #include "camera_projection.h"
@@ -274,8 +275,8 @@ s32 midiReaderReadEvent(MidiReader *reader, u8 *event, s32 *size, s32 capacity) 
     delta = midiReaderReadVariableLength(reader);
     event[0] = midiReaderReadByte(reader);
     switch (event[0]) {
-    case 0xF0:
-    case 0xF7:
+    case AL_MIDI_SysEx:
+    case AL_MIDI_EOX:
         length = midiReaderReadVariableLength(reader);
         for (i = 0; i < length && i < capacity; i++) {
             event[i + 1] = midiReaderReadByte(reader);
@@ -285,7 +286,7 @@ s32 midiReaderReadEvent(MidiReader *reader, u8 *event, s32 *size, s32 capacity) 
         }
         *size = (s32)((u32)length + 1U);
         break;
-    case 0xFF:
+    case AL_MIDI_Meta:
         event[1] = midiReaderReadByte(reader);
         event[2] = midiReaderReadByte(reader);
         reader->runningStatus = 0;
@@ -298,14 +299,15 @@ s32 midiReaderReadEvent(MidiReader *reader, u8 *event, s32 *size, s32 capacity) 
         *size = j;
         break;
     default:
-        if (event[0] & 0x80) {
+        if (event[0] & MIDI_STATUS_FLAG) {
             event[1] = midiReaderReadByte(reader);
             reader->runningStatus = event[0];
         } else {
             event[1] = event[0];
             event[0] = reader->runningStatus;
         }
-        if ((event[0] & 0xF0) == 0xC0 || (event[0] & 0xF0) == 0xD0) {
+        if ((event[0] & AL_MIDI_StatusMask) == AL_MIDI_ProgramChange ||
+            (event[0] & AL_MIDI_StatusMask) == AL_MIDI_ChannelPressure) {
             *size = 2;
         } else {
             *size = 3;
@@ -374,12 +376,12 @@ s32 midiReaderReadVariableLength(MidiReader *reader) {
 
     firstByte = midiReaderReadByte(reader);
     quantity = firstByte;
-    if (firstByte & 0x80) {
-        quantity = firstByte & 0x7F;
+    if (firstByte & MIDI_VLQ_CONTINUE) {
+        quantity = firstByte & MIDI_VLQ_PAYLOAD_MASK;
         do {
             nextByte = midiReaderReadByte(reader);
-            quantity = (quantity << 7) + (nextByte & 0x7F);
-        } while (nextByte & 0x80);
+            quantity = (quantity << MIDI_VLQ_GROUP_BITS) + (nextByte & MIDI_VLQ_PAYLOAD_MASK);
+        } while (nextByte & MIDI_VLQ_CONTINUE);
     }
     return (s32)quantity;
 }

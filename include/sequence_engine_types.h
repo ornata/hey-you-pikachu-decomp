@@ -6,6 +6,7 @@
 
 #include "sequence_driver_types.h"
 #include "midi_sequence_types.h"
+#include "midi_encoding.h"
 
 /// Read one event from the registered sequence control state.
 /// \param state Borrowed playback and queued-control context to advance.
@@ -42,25 +43,28 @@ typedef struct EngineChannel {
 /// Callback and channel state for one registered sequence.
 /// Event storage, callback and reader context remain borrowed while the driver references the sequence.
 typedef struct EngineSequence {
-    struct EngineSequence *next;         ///< Next registered sequence in the driver list.
-    SequenceControlState *readerContext; ///< Borrowed playback and queued-control context.
-    SequenceEventReader eventReader;     ///< Event producer advancing the borrowed context.
-    ALBank *bank;                        ///< Borrowed instrument bank for channel programs.
-    SequenceVoice *voices;               ///< Active voice list drawn from the caller-supplied pool.
-    EngineChannel channels[16];          ///< Controller state for the sixteen MIDI channels.
-    s16 volume;                          ///< Current master sequence volume.
-    u8 unknown1D6[2];                    ///< Unresolved alignment storage.
-    f64 fadeRemaining;                   ///< Seconds remaining in the current master-volume fade.
-    f64 fadeRate;                        ///< Master-volume change per second during the fade.
-    f64 fadeLevel;                       ///< Current normalized master-volume fade level.
-    s8 eventLength;                      ///< Pending event byte length; zero means no event, and completion is carried by eventDelay.
-    u8 eventLimit;                       ///< Reader-specific event limit; not an allocation-size guarantee.
+    struct EngineSequence *next;                ///< Next registered sequence in the driver list.
+    SequenceControlState *readerContext;        ///< Borrowed playback and queued-control context.
+    SequenceEventReader eventReader;            ///< Event producer advancing the borrowed context.
+    ALBank *bank;                               ///< Borrowed instrument bank for channel programs.
+    SequenceVoice *voices;                      ///< Active voice list drawn from the caller-supplied pool.
+    EngineChannel channels[MIDI_CHANNEL_COUNT]; ///< Controller state for the sixteen MIDI channels.
+    s16 volume;                                 ///< Current master sequence volume.
+    u8 unknown1D6[2];                           ///< Unresolved alignment storage.
+    f64 fadeRemaining;                          ///< Seconds remaining in the current master-volume fade.
+    f64 fadeRate;                               ///< Master-volume change per second during the fade.
+    f64 fadeLevel;                              ///< Current normalized master-volume fade level.
+    s8 eventLength; ///< Pending event byte length; zero means no event, and completion is carried by eventDelay.
+    u8 eventLimit;  ///< Reader-specific event limit; not an allocation-size guarantee.
     u8 unknown1F2[2];
     u8 *eventBuffer; ///< Caller-owned event storage.
     f64 eventDelay;  ///< Seconds remaining before the pending event is dispatched.
 } EngineSequence;
 
 typedef char EngineChannelPanOffsetCheck[(((u32) & ((EngineChannel *)0)->pan) == 8) ? 1 : -1];
+typedef char EngineChannelBendRangeOffsetCheck[(((u32) & ((EngineChannel *)0)->pitchBendRange) == 6) ? 1 : -1];
+typedef char EngineChannelRpnHighOffsetCheck[(((u32) & ((EngineChannel *)0)->rpnHigh) == 0x12) ? 1 : -1];
+typedef char EngineChannelRpnLowOffsetCheck[(((u32) & ((EngineChannel *)0)->rpnLow) == 0x13) ? 1 : -1];
 typedef char EngineChannelEffectsOffsetCheck[(((u32) & ((EngineChannel *)0)->fxMix) == 0xC) ? 1 : -1];
 typedef char EngineChannelVibratoOffsetCheck[(((u32) & ((EngineChannel *)0)->vibratoDepth) == 0x17) ? 1 : -1];
 typedef char EngineChannelSizeCheck[(sizeof(EngineChannel) == 0x1C) ? 1 : -1];

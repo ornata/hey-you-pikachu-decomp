@@ -6,6 +6,10 @@
 
 #include <ultra64.h>
 #include "midi_reader_types.h"
+#include "midi_encoding.h"
+
+/// Maximum held notes retained by one MIDI stream's release bookkeeping.
+enum { MIDI_SEQUENCE_NOTE_CAPACITY = 32 };
 
 /// Game-authored MIDI controllers for sequence loop playback.
 typedef enum SequencePlaybackMarker {
@@ -15,30 +19,30 @@ typedef enum SequencePlaybackMarker {
 
 /// Saved MIDI reader position and running status for a sequence loop.
 typedef struct SequenceMark {
-    s32 position; ///< Saved address of the next unread sequence byte.
+    s32 position;     ///< Saved address of the next unread sequence byte.
     u8 runningStatus; ///< Saved channel status for events that omit their status byte.
-    u8 unknown5[3]; ///< Unresolved trailing storage; not written by mark save/restore.
+    u8 unknown5[3];   ///< Unresolved trailing storage; not written by mark save/restore.
 } SequenceMark;
 /// MIDI reader, tempo, held notes and pending playback releases.
 /// Reader storage is shared with the MIDI stream and cartridge-cache interfaces.
 /// Initialized storage must remain stable while the reader and playback retain it.
 typedef struct SequenceState {
-    MidiReader reader; ///< Retained cursor and buffered cartridge storage.
-    s16 division;      ///< Tick-based timing division returned by MIDI initialization.
-    s16 unknown446;    ///< Unresolved storage between timing division and tempo.
-    s32 tempo;         ///< Microseconds per quarter note, updated by tempo events.
-    s32 unknown44C;    ///< Unresolved word preceding the playback-rate value.
-    f64 rate; ///< Positive playback-speed multiplier.
-    s32 noteCount;        ///< Number of tracked held notes, bounded by 32.
-    s32 noteChannels[32]; ///< MIDI channel of each tracked note, paired with noteKeys.
-    s32 noteKeys[32];     ///< MIDI key of each tracked note, paired with noteChannels.
-    s32 sustain[16];      ///< Retained sustain-controller level for each MIDI channel.
-    u8 stopped;        ///< Nonzero after playback stops.
-    u8 releaseNotes;   ///< Pending note-off release pass.
-    u8 releaseSustain; ///< Pending sustain release pass.
-    u8 hasLoop;        ///< Nonzero after a loop-start marker establishes a saved mark.
-    SequenceMark loop; ///< Saved stream mark used by loop-end markers.
-    u16 channelMask; ///< Channels whose note events are enabled.
+    MidiReader reader;                             ///< Retained cursor and buffered cartridge storage.
+    s16 division;                                  ///< Tick-based timing division returned by MIDI initialization.
+    s16 unknown446;                                ///< Unresolved storage between timing division and tempo.
+    s32 tempo;                                     ///< Microseconds per quarter note, updated by tempo events.
+    s32 unknown44C;                                ///< Unresolved word preceding the playback-rate value.
+    f64 rate;                                      ///< Positive playback-speed multiplier.
+    s32 noteCount;                                 ///< Number of tracked held notes, bounded by 32.
+    s32 noteChannels[MIDI_SEQUENCE_NOTE_CAPACITY]; ///< MIDI channel of each tracked note, paired with noteKeys.
+    s32 noteKeys[MIDI_SEQUENCE_NOTE_CAPACITY];     ///< MIDI key of each tracked note, paired with noteChannels.
+    s32 sustain[MIDI_CHANNEL_COUNT];               ///< Retained sustain-controller level for each MIDI channel.
+    u8 stopped;                                    ///< Nonzero after playback stops.
+    u8 releaseNotes;                               ///< Pending note-off release pass.
+    u8 releaseSustain;                             ///< Pending sustain release pass.
+    u8 hasLoop;                                    ///< Nonzero after a loop-start marker establishes a saved mark.
+    SequenceMark loop;                             ///< Saved stream mark used by loop-end markers.
+    u16 channelMask;                               ///< Channels whose note events are enabled.
     u16 repetitions; ///< Loop-end count used to select enabled channels on later iterations.
 } SequenceState;
 
@@ -46,12 +50,12 @@ typedef struct SequenceState {
 /// Negative request times or levels mean that no corresponding request is pending.
 typedef struct SequenceControlState {
     SequenceState playback; ///< Owned MIDI playback state advanced by queued controls.
-    s32 resetPending; ///< Emit an engine reset before subsequent MIDI events.
-    u8 unknown5B4[4]; ///< Unresolved bytes between reset request and queued stop time.
-    f64 stopDelay;      ///< Seconds until playback must stop; zero stops immediately.
-    f64 fadeDuration;   ///< Duration of a queued volume fade in seconds.
-    f64 fadeLevel;      ///< Target volume fraction for the queued fade.
-    f64 immediateLevel; ///< Volume fraction to apply before the next event.
+    s32 resetPending;       ///< Emit an engine reset before subsequent MIDI events.
+    u8 unknown5B4[4];       ///< Unresolved bytes between reset request and queued stop time.
+    f64 stopDelay;          ///< Seconds until playback must stop; zero stops immediately.
+    f64 fadeDuration;       ///< Duration of a queued volume fade in seconds.
+    f64 fadeLevel;          ///< Target volume fraction for the queued fade.
+    f64 immediateLevel;     ///< Volume fraction to apply before the next event.
 } SequenceControlState;
 
 typedef char SequenceMarkSizeCheck[(sizeof(SequenceMark) == 8) ? 1 : -1];

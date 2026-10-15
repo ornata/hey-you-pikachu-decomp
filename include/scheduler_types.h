@@ -11,22 +11,28 @@ typedef struct SchedulerClient {
     OSMesgQueue *queue;           ///< Borrowed queue receiving retrace and reset events.
 } SchedulerClient;
 
+/// Scheduler-owned task options, separate from the nested SDK OSTask flags.
+enum { SCHEDULER_TASK_PRESENT_FRAMEBUFFER = 0x40 };
+
 /// Task submission shared by graphics producers and scheduler workers.
 /// The submitter retains the record and its borrowed resources until completion.
 typedef struct SchedulerTask {
     struct SchedulerTask *next; ///< Next task in a submitter's pool.
     u32 state;                  ///< Submitter's task-availability state.
-    u32 flags;                  ///< Scheduling flags; 0x40 requests framebuffer presentation.
+    u32 flags;                  ///< Scheduling flags; SCHEDULER_TASK_PRESENT_FRAMEBUFFER requests presentation.
     void *framebuffer;          ///< Borrowed target framebuffer.
     OSTask task;                ///< SDK task descriptor retained through RSP completion.
     OSMesgQueue *reply;         ///< Borrowed completion queue.
     OSMesg message;             ///< Completion message delivered to the reply queue.
 } SchedulerTask;
 
+/// Message slots retained by each scheduler-owned queue.
+enum { SCHEDULER_QUEUE_CAPACITY = 8 };
+
 /// An event queue with storage for eight scheduler messages.
 typedef struct SchedulerQueue {
-    OSMesgQueue queue;  ///< Event queue retained for the scheduler lifetime.
-    OSMesg messages[8]; ///< Owned message slots for this queue.
+    OSMesgQueue queue;                         ///< Event queue retained for the scheduler lifetime.
+    OSMesg messages[SCHEDULER_QUEUE_CAPACITY]; ///< Owned message slots for this queue.
 } SchedulerQueue;
 
 /// Retained queues, worker threads and task ownership for the game scheduler.

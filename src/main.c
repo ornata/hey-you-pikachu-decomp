@@ -1,4 +1,5 @@
 #include "runtime_mode.h"
+#include "scheduler_types.h"
 #include "scene_types.h"
 #include "runtime_lifecycle.h"
 #include "camera_projection.h"
@@ -1016,7 +1017,8 @@ void renderSubmitFrameBorder(void) {
     gDPSetScissor(gRenderDisplayListCursor++, G_SC_NON_INTERLACE, 0, 0, 319, 239);
     gDPFillRectangle(gRenderDisplayListCursor++, 299, 20, 300, 220);
     gDPFillRectangle(gRenderDisplayListCursor++, 20, 219, 300, 220);
-    graphicsTaskSubmit(1, 64, &gRenderDisplayListStart, &gRenderDisplayListCursor, &gRuntimeEventQueue);
+    graphicsTaskSubmit(1, SCHEDULER_TASK_PRESENT_FRAMEBUFFER, &gRenderDisplayListStart, &gRenderDisplayListCursor,
+                       &gRuntimeEventQueue);
 }
 
 

@@ -1,3 +1,4 @@
+#include "midi_encoding.h"
 #include "midi_reader.h"
 #include "midi_sequence.h"
 #include "common.h"
@@ -21,7 +22,7 @@ s32 midiSequenceInitialize(SequenceState *state) {
     state->releaseNotes = 0;
     state->releaseSustain = 0;
     state->noteCount = 0;
-    for (i = 0; i < 16; i++) {
+    for (i = 0; i < MIDI_CHANNEL_COUNT; i++) {
         state->sustain[i] = 0;
     }
     return 0;
@@ -106,11 +107,11 @@ s32 midiSequenceReadEvent(SequenceState *state, u8 *event, s32 capacity, f64 *de
     *delta = 0.0;
     for (;;) {
         if (state->releaseSustain) {
-            for (channel = 0; channel < 16; channel++) {
-                if (state->sustain[channel] >= 64) {
+            for (channel = 0; channel < MIDI_CHANNEL_COUNT; channel++) {
+                if (state->sustain[channel] >= MIDI_SUSTAIN_ON_MIN) {
                     state->sustain[channel] = 0;
-                    event[0] = channel | 0xB0;
-                    event[1] = 64;
+                    event[0] = channel | AL_MIDI_ControlChange;
+                    event[1] = AL_MIDI_SUSTAIN_CTRL;
                     event[2] = 0;
                     return 3;
                 }
@@ -120,7 +121,7 @@ s32 midiSequenceReadEvent(SequenceState *state, u8 *event, s32 capacity, f64 *de
         if (state->releaseNotes) {
             if (state->noteCount != 0) {
                 --state->noteCount;
-                event[0] = state->noteChannels[state->noteCount] | 0x90;
+                event[0] = state->noteChannels[state->noteCount] | AL_MIDI_NoteOn;
                 event[1] = state->noteKeys[state->noteCount];
                 event[2] = 0;
                 return 3;
@@ -138,29 +139,29 @@ s32 midiSequenceReadEvent(SequenceState *state, u8 *event, s32 capacity, f64 *de
         }
         elapsed = (ticks * gMidiMicrosecondsToSeconds * state->tempo) / state->division;
         *delta += elapsed / state->rate;
-        switch (event[0] & 0xF0) {
-        case 0xF0:
-            if (event[0] == 0xF0 || event[0] == 0xF7) {
+        switch (event[0] & AL_MIDI_StatusMask) {
+        case MIDI_SYSTEM_CLASS:
+            if (event[0] == AL_MIDI_SysEx || event[0] == AL_MIDI_EOX) {
                 continue;
             }
-            if (event[0] == 0xFF) {
+            if (event[0] == AL_MIDI_Meta) {
                 sub = event[1];
                 switch (sub) {
-                case 0x51:
+                case AL_MIDI_META_TEMPO:
                     state->tempo = ((event[3] << 16) | ((u32)event[4] << 8)) | (u32)event[5];
                     break;
-                case 0x2F:
+                case AL_MIDI_META_EOT:
                     midiSequenceStop(state);
                     break;
                 }
                 continue;
             }
             break;
-        case 0xB0:
+        case AL_MIDI_ControlChange:
             sub = event[1];
             switch (sub) {
-            case 0x40:
-                state->sustain[event[0] & 0xF] = event[2];
+            case AL_MIDI_SUSTAIN_CTRL:
+                state->sustain[event[0] & AL_MIDI_ChannelMask] = event[2];
                 break;
             case SEQUENCE_MARK_LOOP_START:
                 midiReaderSaveMark(&state->reader, &state->loop);
@@ -180,19 +181,20 @@ s32 midiSequenceReadEvent(SequenceState *state, u8 *event, s32 capacity, f64 *de
                 continue;
             }
             break;
-        case 0x90:
+        case AL_MIDI_NoteOn:
             if (event[2] != 0) {
-                if (((1 << (event[0] & 0xF)) & state->channelMask) && state->noteCount < 32) {
-                    state->noteChannels[state->noteCount] = event[0] & 0xF;
+                if (((1 << (event[0] & AL_MIDI_ChannelMask)) & state->channelMask) &&
+                    state->noteCount < MIDI_SEQUENCE_NOTE_CAPACITY) {
+                    state->noteChannels[state->noteCount] = event[0] & AL_MIDI_ChannelMask;
                     state->noteKeys[state->noteCount] = event[1];
                     ++state->noteCount;
                     break;
                 }
                 continue;
             }
-        case 0x80:
+        case AL_MIDI_NoteOff:
             for (i = 0; i < state->noteCount; i++) {
-                if (state->noteChannels[i] == (event[0] & 0xF) && state->noteKeys[i] == event[1]) {
+                if (state->noteChannels[i] == (event[0] & AL_MIDI_ChannelMask) && state->noteKeys[i] == event[1]) {
                     --state->noteCount;
                     state->noteChannels[i] = state->noteChannels[state->noteCount];
                     state->noteKeys[i] = state->noteKeys[state->noteCount];
