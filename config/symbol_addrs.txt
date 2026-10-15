@@ -2730,7 +2730,7 @@ actorScriptPushPlayerPoints = 0x8011E084;
 actorScriptSetPlayerPoints = 0x8011E0B4;
 actorScriptAdjustPlayerPoints = 0x8011E0F8;
 
-actorScriptPushChaseDifficulty = 0x8011E168;
+actorScriptPushChaseStage = 0x8011E168;
 
 actorScriptTestItemResponseTypeThree = 0x8011D01C;
 

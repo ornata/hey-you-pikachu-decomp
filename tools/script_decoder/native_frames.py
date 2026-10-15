@@ -197,7 +197,7 @@ def native_frame_reviews(root=ROOT, manifest=None):
             review['effect'] == 'inline_count_strings_then_append_scalar' and
             review['arguments'] == 'inline_count' and review['stack_delta'] == '1-count' and
             review['result_tag'] == 'integer' and review['scheduling'] == 'continue' and
-            review.get('sink') in ('message_bar', 'pending_window') and isinstance(count, dict) and
+            review.get('sink') in ('message_bar', 'pending_window', 'shared_text') and isinstance(count, dict) and
             count.get('encoding') == 'packed_script_value' and
             type(count.get('bytes')) is int and count['bytes'] == 5 and
             count.get('conversion') == 'scriptValueGetInteger' and count.get('domain') == 'nonnegative_s32' and

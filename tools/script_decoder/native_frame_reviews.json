@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "purpose": "Explicit scalar, borrowed string-pointer, bounded inline-text and immediate action-request storage contracts; source changes revoke evidence until reviewed again. Deferred handlers remain separate.",
-  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases. Twelve action-request wrappers and their two-field scheduling helper reviewed against original Ghidra801167A0 and all twelve original wrapper addresses; twenty-four direct original-instruction request cases guard all VM fields and pending/protected values. Selector-three deferred dispatch and helper chain reviewed against original Ghidra80117098/8000F4C4/801167BC/800120F0 and eight guarded direct-dispatch/scheduler cases. Selector-two startup and waiting helpers reviewed against original Ghidra80116800/80012034; twelve guarded direct/scheduler cases cover numeric tags, original null sentinel, waiting and completion. Player input-mask field names now include synthetic stick flags, separately from permission flags; unchanged prefix layout and the reviewed permission/position reads were rechecked against matching objects before rebinding the two affected header dependencies. Additional permission names for Pikachu/follow selection and stun reaction leave the permission storage and reviewed view/position access unchanged; the two header dependencies were rechecked after strict matching verification. Ten additional permission names retain identical player storage and reviewed view/position accesses; header bindings rechecked after all483 objects and ROM matched. Selector-nine cost admission, root-resource adjustment and HUD helper were checked against Ghidra80116BC4/80014A3C, the authenticated five-record table and fourteen guarded original-instruction startup/poll/completion observations, including distinct actor/root resource records. The root and script actor states are explicitly distinguished. Acknowledgement native and helper checked against Ghidra8011C84C/80119200 and four original-instruction probes, including raw nonboolean word preservation; message fields remain unchanged. Four distance/target append contracts checked against original Ghidra801172D4/80118838/801187E4/8011C674/8011CB38/8011D208/8011DBF8/801177FC/80118B30/8003A5FC/8003A6F0 and twelve guarded original-instruction probes with distinct local/world coordinates, approach clamping, fixed/follow selection and unavailable-target exclusions. The actor-state header replaces only the producer-established four-byte approach sample with f32 and adds its offset assertion; all other declarations remain token-identical. Five further handle-consuming query contracts checked against original Ghidra8011730C/80117388/8011D240/8011D288/80117840/801178EC/8011DCB0/8011DCF8/80117E80/8011EA9C and23 guarded original-instruction observations. Runtime kind130 is authenticated against its retained callback record selecting80027430/8002747C, whose allocation and speed accesses establish the shared four-byte spinner state; six updater observations cover decay, negative retained values, voice-distance endpoints, speed cap and yaw wrap. Independent agent RNG review authenticated original wrapper/helper instructions and fifteen guarded interpreter observations at62bceac: inclusive unit-float endpoints including the observed rounding threshold, unsigned remainder for positive signed bounds, no advancement for nonpositive bounds, numeric conversion and unchanged protected VM storage. Reports retain original ROM/ELF/core/source fingerprints; FCR31 threshold is qualified to observed interpreter rounding. Independent tracking review disassembled wrappers/helpers and checked ten authored cases through three interpreter repetitions (30 supported observations,480 matching guarded regions) using frozen62bceac ELF/core inputs. Cases distinguish primary/secondary refresh, stale state after unavailable targets, zero category after a successful unsupported-kind selection, live fallback copying and escape selection preserving allowance/position. Two-operand replacement retains all three protected lower values. Agent-authenticated kind127 producer/callback and cannon landmark creation/help/selection consumers establish player-control-root and cannon identities. Category2 is named player control; category3 keeps its numeric range because145..148 lack established producers. Only enum spellings change in the reviewed classifier; all predicates and values remain unchanged. The clang-format actor-state header change was checked against afdde86: after C backslash-newline splicing all tokens are identical. Macro continuation placement alone changes the lexical fingerprint; the single header binding retains its reviewed layout and contract. Three constructor/callback-supported runtime tags are named PASSAGE0x87, INTERACTION_PROXY0x8A and CAVE0xB0. Original Ghidra8001C150/80112940/8001F4F0 and authenticated template/callback records establish these identities. Existing object-prefix layout and player consumers remain token-identical after reversing only the named numeric substitutions and removing the added enum entries; strict object and ROM comparison passed after each source unit. Only those affected reviewed bindings are updated. Item-catalog0x8A and unresolved runtime0x89 remain distinct. Embedded actor-state layout dependencies are bound globally: Matrix34, DirectionAnimation and ActionScriptState precede vmAddress, while ScriptMessage, animation tracks and orientation cache determine later field locations and the owning-state extent. Current N64 size/offset assertions and strict matching objects establish their reviewed layouts. A change to these declarations now revokes all contracts rather than only callbacks that happened to bind the nested headers separately.",
+  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases. Twelve action-request wrappers and their two-field scheduling helper reviewed against original Ghidra801167A0 and all twelve original wrapper addresses; twenty-four direct original-instruction request cases guard all VM fields and pending/protected values. Selector-three deferred dispatch and helper chain reviewed against original Ghidra80117098/8000F4C4/801167BC/800120F0 and eight guarded direct-dispatch/scheduler cases. Selector-two startup and waiting helpers reviewed against original Ghidra80116800/80012034; twelve guarded direct/scheduler cases cover numeric tags, original null sentinel, waiting and completion. Player input-mask field names now include synthetic stick flags, separately from permission flags; unchanged prefix layout and the reviewed permission/position reads were rechecked against matching objects before rebinding the two affected header dependencies. Additional permission names for Pikachu/follow selection and stun reaction leave the permission storage and reviewed view/position access unchanged; the two header dependencies were rechecked after strict matching verification. Ten additional permission names retain identical player storage and reviewed view/position accesses; header bindings rechecked after all483 objects and ROM matched. Selector-nine cost admission, root-resource adjustment and HUD helper were checked against Ghidra80116BC4/80014A3C, the authenticated five-record table and fourteen guarded original-instruction startup/poll/completion observations, including distinct actor/root resource records. The root and script actor states are explicitly distinguished. Acknowledgement native and helper checked against Ghidra8011C84C/80119200 and four original-instruction probes, including raw nonboolean word preservation; message fields remain unchanged. Four distance/target append contracts checked against original Ghidra801172D4/80118838/801187E4/8011C674/8011CB38/8011D208/8011DBF8/801177FC/80118B30/8003A5FC/8003A6F0 and twelve guarded original-instruction probes with distinct local/world coordinates, approach clamping, fixed/follow selection and unavailable-target exclusions. The actor-state header replaces only the producer-established four-byte approach sample with f32 and adds its offset assertion; all other declarations remain token-identical. Five further handle-consuming query contracts checked against original Ghidra8011730C/80117388/8011D240/8011D288/80117840/801178EC/8011DCB0/8011DCF8/80117E80/8011EA9C and23 guarded original-instruction observations. Runtime kind130 is authenticated against its retained callback record selecting80027430/8002747C, whose allocation and speed accesses establish the shared four-byte spinner state; six updater observations cover decay, negative retained values, voice-distance endpoints, speed cap and yaw wrap. Independent agent RNG review authenticated original wrapper/helper instructions and fifteen guarded interpreter observations at62bceac: inclusive unit-float endpoints including the observed rounding threshold, unsigned remainder for positive signed bounds, no advancement for nonpositive bounds, numeric conversion and unchanged protected VM storage. Reports retain original ROM/ELF/core/source fingerprints; FCR31 threshold is qualified to observed interpreter rounding. Independent tracking review disassembled wrappers/helpers and checked ten authored cases through three interpreter repetitions (30 supported observations,480 matching guarded regions) using frozen62bceac ELF/core inputs. Cases distinguish primary/secondary refresh, stale state after unavailable targets, zero category after a successful unsupported-kind selection, live fallback copying and escape selection preserving allowance/position. Two-operand replacement retains all three protected lower values. Agent-authenticated kind127 producer/callback and cannon landmark creation/help/selection consumers establish player-control-root and cannon identities. Category2 is named player control; category3 keeps its numeric range because145..148 lack established producers. Only enum spellings change in the reviewed classifier; all predicates and values remain unchanged. The clang-format actor-state header change was checked against afdde86: after C backslash-newline splicing all tokens are identical. Macro continuation placement alone changes the lexical fingerprint; the single header binding retains its reviewed layout and contract. Three constructor/callback-supported runtime tags are named PASSAGE0x87, INTERACTION_PROXY0x8A and CAVE0xB0. Original Ghidra8001C150/80112940/8001F4F0 and authenticated template/callback records establish these identities. Existing object-prefix layout and player consumers remain token-identical after reversing only the named numeric substitutions and removing the added enum entries; strict object and ROM comparison passed after each source unit. Only those affected reviewed bindings are updated. Item-catalog0x8A and unresolved runtime0x89 remain distinct. Embedded actor-state layout dependencies are bound globally: Matrix34, DirectionAnimation and ActionScriptState precede vmAddress, while ScriptMessage, animation tracks and orientation cache determine later field locations and the owning-state extent. Current N64 size/offset assertions and strict matching objects establish their reviewed layouts. A change to these declarations now revokes all contracts rather than only callbacks that happened to bind the nested headers separately. Chase-stage native renamed from the misleading difficulty name at unchanged address 8011E168; the sole symbol-map spelling change was reviewed and map bindings renewed after ROM and all483 objects matched. Native leaf contracts additionally checked against Ghidra8011E168/80112824/8011C2E0/8011C270/8011D4D8/801174F4. Eighteen guarded original-instruction probes independently confirm unsigned chase-byte edges, resettable-clock isolation, numeric integer conversion and retained timed-program identifiers with null/non-null command cursors; lower values, frame records and unrelated actor/player/VM storage are unchanged. Invalid tags and nonfinite/out-of-range conversions remain excluded. Twelve target/suppression cases passed three original-instruction N64 interpreter replays each, guarding complete actor/state/VM/value storage and child flags; enable/disable observations use separate authored states. Unicorn CPU exceptions for these fixtures are unsupported observations, not acceptance.",
   "preconditions": [
     "Protected locals and frame metadata lie below the active stack depth.",
     "Append contracts require one free value slot; pointers and borrowed actor/global state are valid.",
@@ -2565,7 +2565,7 @@
           {
             "kind": "file",
             "file": "config/symbol_addrs.txt",
-            "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+            "sha256": "961534034d13cb197798ec0942bd9efa85a50d51cd4c85b95020decbecc4f220"
           },
           {
             "kind": "file",
@@ -3469,7 +3469,7 @@
           {
             "kind": "file",
             "file": "config/symbol_addrs.txt",
-            "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+            "sha256": "961534034d13cb197798ec0942bd9efa85a50d51cd4c85b95020decbecc4f220"
           },
           {
             "kind": "file",
@@ -4030,7 +4030,7 @@
           {
             "kind": "file",
             "file": "config/symbol_addrs.txt",
-            "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+            "sha256": "961534034d13cb197798ec0942bd9efa85a50d51cd4c85b95020decbecc4f220"
           },
           {
             "kind": "file",
@@ -4542,7 +4542,7 @@
           {
             "kind": "file",
             "file": "config/symbol_addrs.txt",
-            "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+            "sha256": "961534034d13cb197798ec0942bd9efa85a50d51cd4c85b95020decbecc4f220"
           }
         ],
         "preconditions": [
@@ -4897,7 +4897,7 @@
           {
             "kind": "file",
             "file": "config/symbol_addrs.txt",
-            "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+            "sha256": "961534034d13cb197798ec0942bd9efa85a50d51cd4c85b95020decbecc4f220"
           },
           {
             "kind": "file",
@@ -12816,7 +12816,7 @@
         {
           "kind": "file",
           "file": "config/symbol_addrs.txt",
-          "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+          "sha256": "961534034d13cb197798ec0942bd9efa85a50d51cd4c85b95020decbecc4f220"
         },
         {
           "kind": "file",
@@ -13506,7 +13506,7 @@
         {
           "kind": "file",
           "file": "config/symbol_addrs.txt",
-          "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+          "sha256": "961534034d13cb197798ec0942bd9efa85a50d51cd4c85b95020decbecc4f220"
         },
         {
           "kind": "file",
@@ -13640,7 +13640,7 @@
         {
           "kind": "file",
           "file": "config/symbol_addrs.txt",
-          "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+          "sha256": "961534034d13cb197798ec0942bd9efa85a50d51cd4c85b95020decbecc4f220"
         },
         {
           "kind": "file",
@@ -13792,7 +13792,7 @@
         {
           "kind": "file",
           "file": "config/symbol_addrs.txt",
-          "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+          "sha256": "961534034d13cb197798ec0942bd9efa85a50d51cd4c85b95020decbecc4f220"
         },
         {
           "kind": "file",
@@ -13933,7 +13933,7 @@
         {
           "kind": "file",
           "file": "config/symbol_addrs.txt",
-          "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+          "sha256": "961534034d13cb197798ec0942bd9efa85a50d51cd4c85b95020decbecc4f220"
         },
         {
           "kind": "file",
@@ -14488,7 +14488,7 @@
         {
           "kind": "file",
           "file": "config/symbol_addrs.txt",
-          "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+          "sha256": "961534034d13cb197798ec0942bd9efa85a50d51cd4c85b95020decbecc4f220"
         },
         {
           "kind": "file",
@@ -14621,7 +14621,7 @@
         {
           "kind": "file",
           "file": "config/symbol_addrs.txt",
-          "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+          "sha256": "961534034d13cb197798ec0942bd9efa85a50d51cd4c85b95020decbecc4f220"
         },
         {
           "kind": "file",
@@ -14934,7 +14934,7 @@
         {
           "kind": "file",
           "file": "config/symbol_addrs.txt",
-          "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+          "sha256": "961534034d13cb197798ec0942bd9efa85a50d51cd4c85b95020decbecc4f220"
         },
         {
           "kind": "file",
@@ -15259,7 +15259,7 @@
         {
           "kind": "file",
           "file": "config/symbol_addrs.txt",
-          "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+          "sha256": "961534034d13cb197798ec0942bd9efa85a50d51cd4c85b95020decbecc4f220"
         },
         {
           "kind": "file",
@@ -15495,7 +15495,7 @@
         {
           "kind": "file",
           "file": "config/symbol_addrs.txt",
-          "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+          "sha256": "961534034d13cb197798ec0942bd9efa85a50d51cd4c85b95020decbecc4f220"
         },
         {
           "kind": "file",
@@ -15785,7 +15785,7 @@
         {
           "kind": "file",
           "file": "config/symbol_addrs.txt",
-          "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+          "sha256": "961534034d13cb197798ec0942bd9efa85a50d51cd4c85b95020decbecc4f220"
         },
         {
           "kind": "file",
@@ -16184,7 +16184,7 @@
         {
           "kind": "file",
           "file": "config/symbol_addrs.txt",
-          "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+          "sha256": "961534034d13cb197798ec0942bd9efa85a50d51cd4c85b95020decbecc4f220"
         },
         {
           "kind": "file",
@@ -16538,7 +16538,7 @@
         {
           "kind": "file",
           "file": "config/symbol_addrs.txt",
-          "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+          "sha256": "961534034d13cb197798ec0942bd9efa85a50d51cd4c85b95020decbecc4f220"
         },
         {
           "kind": "file",
@@ -17061,7 +17061,7 @@
         {
           "kind": "file",
           "file": "config/symbol_addrs.txt",
-          "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+          "sha256": "961534034d13cb197798ec0942bd9efa85a50d51cd4c85b95020decbecc4f220"
         },
         {
           "kind": "file",
@@ -17330,6 +17330,666 @@
           "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
         }
       ]
+    },
+    {
+      "file": "src/ovl/actor_script_messages_items.c",
+      "function": "actorScriptPushChaseStage",
+      "sha256": "e84867b0d8e7a614d1021c3de5c39d0a6d0a0f7e7724269f7f9955d79a706839",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "preconditions": [
+        "Actor, state, VM and values are valid, stable and nonoverlapping; consumed operands lie above protected locals and metadata; append requires one free slot.",
+        "Reads the current unsigned eight-bit player chase stage, not saved furthest-stage progress; initialized player state is required."
+      ],
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/player_companion.c",
+          "function": "playerGetChaseStage",
+          "sha256": "d9fee8c9c50a48be31c0bbea822d33b6710da85045ad27eba292587296ef6c10"
+        },
+        {
+          "kind": "file",
+          "file": "include/player_chase.h",
+          "sha256": "0ee751814616109ad3da22b25865a9c283c2d0a7469bbb3767f0621b2bc660ef"
+        },
+        {
+          "kind": "file",
+          "file": "include/player_types.h",
+          "sha256": "0056df08b11d051f4243ed3806c8bd6fba129b936ac71cd6584ac7e1cfb6df85"
+        }
+      ]
+    },
+    {
+      "file": "src/ovl/actor_script_action_commands.c",
+      "function": "actorScriptResetTimer",
+      "sha256": "4fe97ae4660e8c28bafa7deef32f67867267195afd698974c4a5a95c7d1213c2",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "preconditions": [
+        "Actor, state, VM and values are valid, stable and nonoverlapping; consumed operands lie above protected locals and metadata; append requires one free slot.",
+        "Sets VM elapsed to positive floating zero and appends integer zero; totalElapsed and action elapsed are separate and unchanged."
+      ],
+      "dependencies": []
+    },
+    {
+      "file": "src/ovl/actor_script_action_commands.c",
+      "function": "actorScriptPassThroughInteger",
+      "sha256": "1956aff1a20a6a814665dd27963fe46e8bfb12888995d079636bc9dd6c264579",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "preconditions": [
+        "Actor, state, VM and values are valid, stable and nonoverlapping; consumed operands lie above protected locals and metadata; append requires one free slot.",
+        "Numeric operand satisfies scriptValueGetInteger conversion domain; float truncation produces an integer result, not preservation of the original tag or payload."
+      ],
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        }
+      ]
+    },
+    {
+      "file": "src/ovl/actor_script_messages_items.c",
+      "function": "actorScriptPushTimedProgramId",
+      "sha256": "c753ce22d865ded4dd72f2607f85b1861524fbbeda03c95b0b9503107692eba7",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "preconditions": [
+        "Actor, state, VM and values are valid, stable and nonoverlapping; consumed operands lie above protected locals and metadata; append requires one free slot.",
+        "Reads the retained selectedProgramId even if commands are null; this is not an active-program predicate."
+      ],
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "actionScriptGetId",
+          "sha256": "6c169ed2ebb5088780f3edb8fd3c022a6da0ffc545519e24d7dda97d79245c1d"
+        },
+        {
+          "kind": "file",
+          "file": "include/action_script_playback.h",
+          "sha256": "373daede18ba14d9a5877936001a51dcbdca63c7ad9da27925be380e39da03a4"
+        }
+      ]
+    },
+    {
+      "function": "actorScriptSetTargetPosition",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "2fd39ddcc23b98221f2955f300f48c53004d828f222588d7806bdc2d81f64172",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 3,
+      "stack_delta": -2,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "integer_zero",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopFloat",
+          "sha256": "6ab64e75a64605c75c85f685e506c90c9970819578d94a601eb7b1bae774744b"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetFloat",
+          "sha256": "94e6ff080eea82e2661ec2adbc45a33a6a2141b10ff8d1263f580c2c5433c6b1"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPushInteger",
+          "sha256": "d9c7386b407cc9e5e1ebe3d7ab6c7db1b7e40acb8c64150bb9ed6499fc2ce695"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPushValue",
+          "sha256": "ee2857209fceeb6c5767a3a733019cdbea389851514e320a212eb8556d8c51fd"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueSetInteger",
+          "sha256": "b83e2136925736f751b686cc364df9280a90f8564552393ee43778e69c593d4c"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "actorSetTargetPosition",
+          "sha256": "cb156e251120846fe95fd388f0ef6825a224ecbb66d86fc24b752fef45d69bbc"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script.h",
+          "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_behavior.h",
+          "sha256": "ddfca5fd02b3012a6a5e720ce161d00cad4e81c1eedbc58bb5b9c16f08dce213"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_target.h",
+          "sha256": "fd3d5467b5edc16cd76afef9d5edbc7acd093aa5f5b9541ee30387ba32a78c87"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+        },
+        {
+          "kind": "file",
+          "file": "include/script_vm.h",
+          "sha256": "f9f9e4509166d6c9aac4d4687f973da7c3b719df7413be4d4f738182850e5b08"
+        },
+        {
+          "kind": "file",
+          "file": "include/script_vm_commands.h",
+          "sha256": "89dd5af53ff9f3da6b05812e09d3f816719a5122f3038d0d0f25c3e7968980fc"
+        }
+      ],
+      "preconditions": [
+        "Valid actor/state, retained VM and owned value storage remain live and nonoverlapping with C stack and any traversed object hierarchy. No concurrent state/context replacement occurs. Numeric operands lie above all protected locals/frame records; appending the result does not overwrite protected storage.",
+        "Integer operands accept integer/code-reference values or finite signed-32-representable floats with truncation. Boolean controls test the converted integer against zero, so negative nonzero values enable suppression. Result is integer zero and native scheduling continues.",
+        "Push order X,Y,Z; pops float Z,Y,X into local coordinates. Writes targetPosition at actor-state0x1EC..1F7, targetMode word0x19C=0 and targetDistanceAllowance float0x1A4=0. It disables tracking interpretation but does not clear stored target handles or start movement. Float operands are accepted numeric values under scriptVmPopFloat conversion; no coordinate-space conversion occurs."
+      ],
+      "evidence": "ROM-authenticated original function 8011C5F4..8011C674; original Ghidra instructions confirm pop order, stores and masks."
+    },
+    {
+      "function": "actorScriptSetHorizontalMovementSuppressed",
+      "file": "src/ovl/actor_script_collection_profile.c",
+      "sha256": "644b3ea46ddcb7c74c58b6b04be95f27770d363808b09c3edbe6d4d2094285c3",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "integer_zero",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopFloat",
+          "sha256": "6ab64e75a64605c75c85f685e506c90c9970819578d94a601eb7b1bae774744b"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetFloat",
+          "sha256": "94e6ff080eea82e2661ec2adbc45a33a6a2141b10ff8d1263f580c2c5433c6b1"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPushInteger",
+          "sha256": "d9c7386b407cc9e5e1ebe3d7ab6c7db1b7e40acb8c64150bb9ed6499fc2ce695"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPushValue",
+          "sha256": "ee2857209fceeb6c5767a3a733019cdbea389851514e320a212eb8556d8c51fd"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueSetInteger",
+          "sha256": "b83e2136925736f751b686cc364df9280a90f8564552393ee43778e69c593d4c"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script.h",
+          "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_behavior.h",
+          "sha256": "ddfca5fd02b3012a6a5e720ce161d00cad4e81c1eedbc58bb5b9c16f08dce213"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_target.h",
+          "sha256": "fd3d5467b5edc16cd76afef9d5edbc7acd093aa5f5b9541ee30387ba32a78c87"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+        },
+        {
+          "kind": "file",
+          "file": "include/script_vm.h",
+          "sha256": "f9f9e4509166d6c9aac4d4687f973da7c3b719df7413be4d4f738182850e5b08"
+        },
+        {
+          "kind": "file",
+          "file": "include/script_vm_commands.h",
+          "sha256": "89dd5af53ff9f3da6b05812e09d3f816719a5122f3038d0d0f25c3e7968980fc"
+        }
+      ],
+      "preconditions": [
+        "Valid actor/state, retained VM and owned value storage remain live and nonoverlapping with C stack and any traversed object hierarchy. No concurrent state/context replacement occurs. Numeric operands lie above all protected locals/frame records; appending the result does not overwrite protected storage.",
+        "Integer operands accept integer/code-reference values or finite signed-32-representable floats with truncation. Boolean controls test the converted integer against zero, so negative nonzero values enable suppression. Result is integer zero and native scheduling continues.",
+        "Writes only behaviorFlags unsigned halfword0x1E8: nonzero sets mask4 and zero clears mask4; all other bits retained. It does not immediately zero movement, alter terrain/gravity inhibition or change object flags. Subsequent movement update uses this bit to zero horizontal displacement."
+      ],
+      "evidence": "ROM-authenticated original function 8011FB10..8011FB7C; original Ghidra instructions confirm pop order, stores and masks."
+    },
+    {
+      "function": "actorScriptSetInteractionVisibilitySuppressed",
+      "file": "src/ovl/actor_script_collection_profile.c",
+      "sha256": "de23f9d9c6682c9fe5d0c6409fc2637a7cae40d4bd93a493339719fa46e931d4",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "integer_zero",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopFloat",
+          "sha256": "6ab64e75a64605c75c85f685e506c90c9970819578d94a601eb7b1bae774744b"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetFloat",
+          "sha256": "94e6ff080eea82e2661ec2adbc45a33a6a2141b10ff8d1263f580c2c5433c6b1"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPushInteger",
+          "sha256": "d9c7386b407cc9e5e1ebe3d7ab6c7db1b7e40acb8c64150bb9ed6499fc2ce695"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPushValue",
+          "sha256": "ee2857209fceeb6c5767a3a733019cdbea389851514e320a212eb8556d8c51fd"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueSetInteger",
+          "sha256": "b83e2136925736f751b686cc364df9280a90f8564552393ee43778e69c593d4c"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/object_hierarchy.c",
+          "function": "objectSetHierarchyFlags",
+          "sha256": "bd6c60e677a410581966e6d8cf2fa9134e3ae3b43e8aff17e81421e0daf1487a"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script.h",
+          "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_behavior.h",
+          "sha256": "ddfca5fd02b3012a6a5e720ce161d00cad4e81c1eedbc58bb5b9c16f08dce213"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_target.h",
+          "sha256": "fd3d5467b5edc16cd76afef9d5edbc7acd093aa5f5b9541ee30387ba32a78c87"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+        },
+        {
+          "kind": "file",
+          "file": "include/script_vm.h",
+          "sha256": "f9f9e4509166d6c9aac4d4687f973da7c3b719df7413be4d4f738182850e5b08"
+        },
+        {
+          "kind": "file",
+          "file": "include/script_vm_commands.h",
+          "sha256": "89dd5af53ff9f3da6b05812e09d3f816719a5122f3038d0d0f25c3e7968980fc"
+        }
+      ],
+      "preconditions": [
+        "Valid actor/state, retained VM and owned value storage remain live and nonoverlapping with C stack and any traversed object hierarchy. No concurrent state/context replacement occurs. Numeric operands lie above all protected locals/frame records; appending the result does not overwrite protected storage.",
+        "Integer operands accept integer/code-reference values or finite signed-32-representable floats with truncation. Boolean controls test the converted integer against zero, so negative nonzero values enable suppression. Result is integer zero and native scheduling continues.",
+        "Nonzero recursively sets object flag2 across supplied actor sibling/child hierarchy and sets behaviorFlags unsigned halfword0x1E8 mask0x20. Zero clears only behavior mask0x20; it does not immediately clear hierarchy flag2. Future automatic visibility updates can change object visibility again. Traversed hierarchy is finite/acyclic, with valid nodes disjoint from VM/value storage. No kind update/draw/destructor callback runs during flag traversal."
+      ],
+      "evidence": "ROM-authenticated original function 8011FEB0..8011FF28; original Ghidra instructions confirm pop order, stores and masks."
+    },
+    {
+      "function": "actorScriptSetTrackingMode",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "6e7914788bac36e4c5b9dc390096b53d749db6068a90b019e9114f1aec396196",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "integer_zero",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopFloat",
+          "sha256": "6ab64e75a64605c75c85f685e506c90c9970819578d94a601eb7b1bae774744b"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetFloat",
+          "sha256": "94e6ff080eea82e2661ec2adbc45a33a6a2141b10ff8d1263f580c2c5433c6b1"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPushInteger",
+          "sha256": "d9c7386b407cc9e5e1ebe3d7ab6c7db1b7e40acb8c64150bb9ed6499fc2ce695"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPushValue",
+          "sha256": "ee2857209fceeb6c5767a3a733019cdbea389851514e320a212eb8556d8c51fd"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueSetInteger",
+          "sha256": "b83e2136925736f751b686cc364df9280a90f8564552393ee43778e69c593d4c"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "actorSetTargetTrackingMode",
+          "sha256": "b9470056092b55441307853afa3890c0a014a498d887aa66b5c93407863de861"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script.h",
+          "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_behavior.h",
+          "sha256": "ddfca5fd02b3012a6a5e720ce161d00cad4e81c1eedbc58bb5b9c16f08dce213"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_target.h",
+          "sha256": "fd3d5467b5edc16cd76afef9d5edbc7acd093aa5f5b9541ee30387ba32a78c87"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+        },
+        {
+          "kind": "file",
+          "file": "include/script_vm.h",
+          "sha256": "f9f9e4509166d6c9aac4d4687f973da7c3b719df7413be4d4f738182850e5b08"
+        },
+        {
+          "kind": "file",
+          "file": "include/script_vm_commands.h",
+          "sha256": "89dd5af53ff9f3da6b05812e09d3f816719a5122f3038d0d0f25c3e7968980fc"
+        }
+      ],
+      "preconditions": [
+        "Valid actor/state, retained VM and owned value storage remain live and nonoverlapping with C stack and any traversed object hierarchy. No concurrent state/context replacement occurs. Numeric operands lie above all protected locals/frame records; appending the result does not overwrite protected storage.",
+        "Integer operands accept integer/code-reference values or finite signed-32-representable floats with truncation. Boolean controls test the converted integer against zero, so negative nonzero values enable suppression. Result is integer zero and native scheduling continues.",
+        "Stores the complete converted signed word at targetMode0x19C; no normalization or bounds check. Established meanings are0 fixed,1 follow and2 escape. It does not resolve/refresh target objects, move the actor, clear handles or update targetPosition/distance allowance. Other numeric values remain raw stored modes; this footprint does not promise their deferred behavior."
+      ],
+      "evidence": "ROM-authenticated original function 8011DC68..8011DCB0; original Ghidra instructions confirm pop order, stores and masks."
+    },
+    {
+      "function": "actorScriptBuildSharedTextAlternate",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "82a4cc0daff7c0caeb3ccc336ff7c547eecbbe9c2fb7ffe0937b1cdca36852fd",
+      "effect": "inline_count_strings_then_append_scalar",
+      "arguments": "inline_count",
+      "stack_delta": "1-count",
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "inline_count": {
+        "encoding": "packed_script_value",
+        "bytes": 5,
+        "conversion": "scriptValueGetInteger",
+        "domain": "nonnegative_s32",
+        "instruction_offset_delta": 5
+      },
+      "sink": "shared_text",
+      "dependencies": [
+        {
+          "kind": "file",
+          "file": "src/ovl/actor_script_action_commands.c",
+          "sha256": "fc5b70604dd7ade8d577610a42f54b2a26d724c64400fbb2d7636932d8971b54"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script.h",
+          "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+        },
+        {
+          "kind": "file",
+          "file": "include/script_vm.h",
+          "sha256": "f9f9e4509166d6c9aac4d4687f973da7c3b719df7413be4d4f738182850e5b08"
+        },
+        {
+          "kind": "file",
+          "file": "include/text_image.h",
+          "sha256": "5b4df97c057c6d22586975ed6ec98bc00b7026631519b2e39e711edd923a3bac"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "84eead0150468d5b8692af98595b420c851eec23fa94e17ccacaaf488d9b89e1",
+          "function": "scriptVmReadIntegerOperand"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f",
+          "function": "scriptValueGetInteger"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "65711198ae9f9b49e76201296a699db7acc6f65486124180bc72b2ec5e86f753",
+          "function": "scriptVmPopString"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84",
+          "function": "scriptVmPopValue"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/audio_worker_string_utils.c",
+          "sha256": "6c36f31e400b63f5f9e02fc3ba616cf5fd9a853eaf492600ef4ddc486fb6433c"
+        },
+        {
+          "kind": "file",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "cded04462b1f2fbece0ee8d937f9d4fcfc8c659719094b92768715d9669fe8fb"
+        },
+        {
+          "kind": "file",
+          "file": "include/libc/xstdio.h",
+          "sha256": "79410e135cc799a90d78afe08cd53c767bf1d19985598772bd41793aec9887d5"
+        },
+        {
+          "kind": "file",
+          "file": "docs/LOCAL_SDK_FILES.json",
+          "sha256": "76f91c2e6d465a60326a1a1c5367297c97438e12baa5749de26a53914b61fde3"
+        },
+        {
+          "kind": "file",
+          "file": "config/pikachu.yaml",
+          "sha256": "a56707cf81226745a3d0758e71a63285c21ff334fcc5eea8cba864ccf0cf39c6"
+        },
+        {
+          "kind": "file",
+          "file": "config/symbol_addrs.txt",
+          "sha256": "961534034d13cb197798ec0942bd9efa85a50d51cd4c85b95020decbecc4f220"
+        },
+        {
+          "kind": "file",
+          "file": "tools/materialize_ultralib.py",
+          "sha256": "b40bdd26d0444db7a0c853608d3c98b2aa5a0bf81cf3c488f62baee884d95664"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "94e6ff080eea82e2661ec2adbc45a33a6a2141b10ff8d1263f580c2c5433c6b1",
+          "function": "scriptValueGetFloat"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "d9c7386b407cc9e5e1ebe3d7ab6c7db1b7e40acb8c64150bb9ed6499fc2ce695",
+          "function": "scriptVmPushInteger"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "sha256": "b83e2136925736f751b686cc364df9280a90f8564552393ee43778e69c593d4c",
+          "function": "scriptValueSetInteger"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_action_commands.c",
+          "function": "stringPrependBounded",
+          "sha256": "a370b29b8023e6c842115072082d1c403bc0b88e9eac584b00dfc2e81c5500a7"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPushValue",
+          "sha256": "ee2857209fceeb6c5767a3a733019cdbea389851514e320a212eb8556d8c51fd"
+        }
+      ],
+      "preconditions": [
+        "The PC identifies a readable five-byte numeric count: integer/code-reference or finite float convertible to s32. Count is nonnegative and no greater than currentDepth minus protectedFloor. After consuming it, capacity permits one result; count zero still needs a free slot. Signed subtraction overflow is excluded.",
+        "Valid actor, state, VM, program and value storage remain stable. The command advances PC by five bytes, consumes count values and appends integer zero. Shared text and numeric scratch are its only global write regions; no display, allocation or runtime reachability claim follows.",
+        "Operands have tag 3 with valid nonnegative string-table indices, tag 4 with nonnull readable borrowed strings, tag 0 integers, tag 2 code-reference s32 values, or tag 1 finite f32 values. Unknown tags are excluded. Construction, sink and native-stack storage are disjoint from VM values, program, tables and borrowed strings. Read-only strings may alias one another, but cannot alias the numeric scratch buffer.",
+        "Integer/code-reference formatting uses fixed %d: at most eleven content bytes plus NUL. Fixed %f with default precision six must produce at most 31 bytes before NUL; finite f32 alone is insufficient. abs(value) <= 1e9 is a conservative sufficient subset; other floats require output-length evidence. Formatting and count loops terminate with sufficient native stack.",
+        "Original-ROM SDK implementations, pinned local SDK inputs and strict object comparison remain required. Source fingerprints alone do not authenticate SDK assembly. sprintf at 800538E0 uses the fixed callback at 80053938 and memcpy. _Printf, _Putfld, _Litob, _Ldtob, _Ldunscale and _Genld write owned native-stack formatter records and supplied output only. Fixed %d/%f exclude %n and arbitrary callbacks; read-only digit/power tables and division helpers remain original SDK assumptions.",
+        "Numeric conversion writes content and NUL into the 32-byte gScriptVmNumericTextBuffer at 801340B0, retaining its tail. Its borrowed result lasts until the next conversion. Immediate prepend copies each result before the next pop, allowing consecutive numeric operands under these disjointness conditions. No allocated formatter resources or native-stack pointers escape.",
+        "The retained 80-byte shared buffer spans contiguous declarations at 80134220/24/28 through 8013426F. Count zero clears only byte zero. Each prepend writes byte 79 as NUL, shifts the bounded suffix backward and copies at most 79 prefix bytes. A source scan can read byte 79 before testing its bound: sources must be readable through NUL or the first 80 bytes. Destination scans remain within the 80-byte buffer.",
+        "Text is the leftmost 79 bytes of concatenation in bottom-to-top argument order, with truncation after each prepend. It remains borrowed shared storage until another shared-text builder or message command overwrites it. The result value is integer zero, with no ownership transfer or new string-pointer result. Message-bar, window, history and image state are unchanged. The message-bar 59-byte limit does not apply. No runtime probe for this alternate callback is claimed."
+      ],
+      "evidence": "Original Ghidra8011C0C8..8011C14C confirms the wrapper, count reader8011566C (PC+5), PopString80116104 and prepend8011BD9C with capacity80. Ghidra8011BD9C..8011BEAC confirms bounded scans, reverse shifts, copies and final termination; 80116104..80116220 confirms string-index/pointer and fixed numeric-format paths. The source-bound SDK formatter closure and its preconditions were separately reused from the EnqueueMessage review, without inheriting a runtime claim.",
+      "runtime_status": "untested"
     }
   ]
 }

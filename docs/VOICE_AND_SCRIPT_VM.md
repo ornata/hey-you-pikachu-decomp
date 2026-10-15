@@ -567,7 +567,7 @@ range hashes and generated local assembly dependencies bind the queue review;
 those implementations remain local build inputs. Missing inputs revoke the
 contracts until the matching build materializes them.
 
-Sixteen immediate scalar-append contracts are recorded in
+The initial sixteen immediate scalar-append contracts are recorded in
 `tools/script_decoder/native_frame_reviews.json`: fifteen direct getters/yield
 callbacks and the requested-dictionary query. These callbacks
 consume no arguments and append one integer or float. They preserve existing
@@ -581,7 +581,7 @@ its scalar-push helpers, stack macros and relevant value/command definitions.
 Embedded actor layouts are bound as well as helper bodies: changing a nested
 record can move VM or gameplay fields without changing a caller.
 Source or dependency changes revoke the affected evidence rather than creating a
-new review. Tests require the checked-in reviews to remain current. Unreviewed
+new review. The catalog reports stale reviews and excludes them from active contracts. Unreviewed
 callbacks remain explicit in `native_effect_frontier`.
 
 Sixteen authored original-instruction cases check the fifteen direct
@@ -590,6 +590,44 @@ frame metadata, VM state and globals. `actorScriptPushTotalElapsedTime` now name
 the clock accumulated across script resets, separately from the resettable timer
 read by `actorScriptPushTimer`. The cases use distinct clock values and establish
 handler footprints, without a scheduler, hardware or complete-lifetime proof.
+
+Additional source-bound contracts cover the current chase stage, resettable timer,
+integer conversion, selected timed-program identifier and target/suppression
+setters. `actorScriptPushChaseStage` reads the current unsigned byte, separately
+from saved furthest-stage progress. Resetting the timer clears `elapsed` and
+appends zero; it preserves `totalElapsed` and action time. Integer pass-through
+converts the operand to an integer, so a floating operand does not retain its tag.
+The selected timed-program identifier remains readable after natural completion;
+it is not a test for an active command.
+
+Eighteen original-instruction probes check these four scalar commands with
+protected values, frame metadata and distinct actor/player storage. Chase-byte
+edges through 255 remain unsigned; tested finite floats truncate toward zero;
+timer reset preserves the accumulated clock; null command cursors retain the
+selected identifier. Invalid tags, nonfinite or out-of-range conversions and
+complete gameplay lifetimes remain outside these observations.
+
+Target-position arguments are pushed X, Y, Z. The command selects fixed tracking
+and zero allowance, retaining the stored target handle. Tracking-mode assignment
+stores the converted word; it does not resolve a target or validate the mode.
+Horizontal suppression toggles its own behavior flag. Interaction-visibility
+suppression hides the hierarchy when enabled; disabling it resumes automatic
+updates without immediately unhiding objects. These effects leave later movement,
+visibility and object lifetimes to their respective update paths.
+
+Twelve authored original-instruction cases, each replayed three times in the N64
+interpreter, check target coordinate order, raw tracking modes and suppression
+branches with full storage guards. Visibility enable and disable use separate
+states, rather than a claimed live game trajectory. Unicorn raised unsupported
+CPU exceptions for these fixtures; its runs supply no acceptance evidence.
+
+The alternate shared-text builder has a separate `shared_text` sink contract. Its
+inline count consumes that many representations and returns integer zero. Text is
+the first 79 bytes of concatenation in argument order, retained until another
+shared-text command overwrites it. It neither queues nor displays the result.
+Numeric operands still require bounded formatter output and borrowed inputs must
+not alias construction or scratch storage. This contract is based on original
+instructions and helper review; it has no separate runtime probe.
 
 Eight helper-backed getter contracts follow their read-only helper chains: chapter,
 held-item kind, movement collision flags, target mode, player held item, view-control

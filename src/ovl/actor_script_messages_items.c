@@ -1281,11 +1281,11 @@ s32 actorScriptPushPlayerMovementClass(u8 *actor) {
     return 0;
 }
 
-/// Read the current chase difficulty setting.
-/// \param actor Actor whose script VM receives the current chase difficulty.
+/// Read the current chase stage.
+/// \param actor Actor whose script VM receives the current unsigned eight-bit chase stage, distinct from saved furthest-stage progress.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011E168 (0x8011E168).
-s32 actorScriptPushChaseDifficulty(u8 *actor) {
+s32 actorScriptPushChaseStage(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
