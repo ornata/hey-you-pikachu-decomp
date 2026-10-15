@@ -73,3 +73,14 @@ def test_native_alias_effects_are_an_explicit_frontier_even_with_safe_bytecode()
     assert result['bytecode_preserves_saved_local']
     assert 'inventedMutator' in result['native_effect_frontier']
     assert 'native effects' in result['scope']
+
+
+def test_provided_review_clears_only_that_callback_and_missing_origin_review_stays_explicit():
+    rows, request = example(opaque=True)
+    result = analyze(rows, request, native_reviews={'actorScriptQueryRequestedMicDictionary': {'effect': 'append_scalar'}})
+    assert result['origin_effect_reviewed']
+    assert 'actorScriptQueryRequestedMicDictionary' not in result['native_effect_frontier']
+    assert 'inventedMutator' in result['native_effect_frontier']
+    result = analyze(rows, request)
+    assert not result['origin_effect_reviewed']
+    assert 'actorScriptQueryRequestedMicDictionary' in result['native_effect_frontier']

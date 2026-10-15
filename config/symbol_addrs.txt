@@ -2803,7 +2803,7 @@ actorScriptPushHeldItemHandle = 0x8011F574;
 
 actorScriptTryHoldItem = 0x8011F5A0;
 actorScriptGetItemState = 0x8011F5F4;
-actorScriptPushElapsedTime = 0x8011F970;
+actorScriptPushTotalElapsedTime = 0x8011F970;
 
 actorScriptGetGroundMaterialAtPosition = 0x8011EDA0;
 actorScriptGetGroundHeightAtPosition = 0x8011F99C;

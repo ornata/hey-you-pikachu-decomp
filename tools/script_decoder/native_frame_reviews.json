@@ -1,0 +1,238 @@
+{
+  "schema_version": 1,
+  "purpose": "Current reviewed scalar-append native write contracts; source changes revoke evidence until reviewed again.",
+  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases.",
+  "preconditions": [
+    "Protected locals and frame metadata lie below the active stack depth.",
+    "One value slot is available; pointers and borrowed actor/global state are valid.",
+    "The VM context and its owned value storage remain intact; concurrent writes and later lifecycle changes are outside this handler-footprint review."
+  ],
+  "dependencies": [
+    {
+      "kind": "function",
+      "file": "src/ovl/script_vm.c",
+      "function": "scriptVmPushValue",
+      "sha256": "ee2857209fceeb6c5767a3a733019cdbea389851514e320a212eb8556d8c51fd"
+    },
+    {
+      "kind": "function",
+      "file": "src/ovl/script_vm.c",
+      "function": "scriptVmPushInteger",
+      "sha256": "d9c7386b407cc9e5e1ebe3d7ab6c7db1b7e40acb8c64150bb9ed6499fc2ce695"
+    },
+    {
+      "kind": "function",
+      "file": "src/ovl/script_vm.c",
+      "function": "scriptVmPushFloat",
+      "sha256": "fd33174a7c7a21b74ad340f740d532243d6d094191cfa3e127c70b3b9191c10a"
+    },
+    {
+      "kind": "function",
+      "file": "src/ovl/script_vm.c",
+      "function": "scriptValueSetInteger",
+      "sha256": "b83e2136925736f751b686cc364df9280a90f8564552393ee43778e69c593d4c"
+    },
+    {
+      "kind": "function",
+      "file": "src/ovl/script_vm.c",
+      "function": "scriptValueSetFloat",
+      "sha256": "b9a37e6fc2429c753b45f7c984d87bd0b557cb040f09685c4a365409905c1ded"
+    },
+    {
+      "kind": "function",
+      "file": "src/game/microphone_requests.c",
+      "function": "micGetRequestedDictionary",
+      "sha256": "4df3b30adbb4339a970fe52b85e606dd22e876f8067d7bdd473362445de0141b"
+    },
+    {
+      "kind": "function",
+      "file": "src/game/microphone_session.c",
+      "function": "micSessionGetRequestedDictionary",
+      "sha256": "9cc8413e31ef776af2def0d971c7567b60dbd1df80660a7d9d2a386fedd608e1"
+    },
+    {
+      "kind": "macro",
+      "file": "src/ovl/script_vm.c",
+      "macro": "VM_SP",
+      "sha256": "8b5447ac617ac59cd77e5329f2847fc2c2089c22951d84dc44a25f49bfd63735"
+    },
+    {
+      "kind": "macro",
+      "file": "src/ovl/script_vm.c",
+      "macro": "VM_STACK",
+      "sha256": "04806dd9e4d37e602bd7cba503ae622c599995de1975e4e07254ad936590b964"
+    },
+    {
+      "kind": "file",
+      "file": "include/script_vm.h",
+      "sha256": "f9f9e4509166d6c9aac4d4687f973da7c3b719df7413be4d4f738182850e5b08"
+    },
+    {
+      "kind": "file",
+      "file": "include/script_vm_commands.h",
+      "sha256": "89dd5af53ff9f3da6b05812e09d3f816719a5122f3038d0d0f25c3e7968980fc"
+    }
+  ],
+  "callbacks": [
+    {
+      "function": "actorScriptIsPrimaryOverlayBlendComplete",
+      "file": "src/ovl/actor_script_collection_profile.c",
+      "sha256": "bcbd2f7f89d8371c680e664382da9e68337e059a294294864768ad5e886669a2",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue"
+    },
+    {
+      "function": "actorScriptPushDefaultActionMode",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "73708fa96e757dd593b307eaac8a633c8c56fdde395a626d4cc9615bc33d8a10",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue"
+    },
+    {
+      "function": "actorScriptPushTotalElapsedTime",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "1d97f7fb3a089fcb674302974023554992ed787a42ec3e3ce9c47ddedeecbf16",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "float",
+      "scheduling": "continue"
+    },
+    {
+      "function": "actorScriptPushFriendshipLevel",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "5dde65d6cd23bc748ab49bc29e273b4005a2efbef0c451fdc14ab6ac5b59d078",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue"
+    },
+    {
+      "function": "actorScriptPushGameMode",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "3cc4a5bea9178039b0046283d2d3f6fa5be19403a691db36fe9d90d6eaf3c266",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue"
+    },
+    {
+      "function": "actorScriptPushHeldItemHandle",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "ddec8be21d00c81c48629996d6309b893e5cbff8fc46a1e65074fefef2ba2afc",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue"
+    },
+    {
+      "function": "actorScriptPushMessageArgument0",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "9d10e6aaf747218938fd3fc296940d354a8cdef41e96037100de6499df2c86df",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue"
+    },
+    {
+      "function": "actorScriptPushMessageArgument2",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "2cfc1f3c4bbec5cfde02713e288bb86e2fa895b7414599adb9bd28bb03eb8cd4",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue"
+    },
+    {
+      "function": "actorScriptPushMessageArgument3",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "c62b957abc2b69d040ffd82a2faaa1cc536e08feb9087d831f4c26f0c9f1d250",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue"
+    },
+    {
+      "function": "actorScriptPushMessageArgument4",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "00e259295b5d51a9734f5326fff313627d1653e0effc3102a216b7d59086ba67",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue"
+    },
+    {
+      "function": "actorScriptPushMessageType",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "4274df9247dcec29dacecb50255c60faaadd59acef1e294435ae4aa1fad5b2c0",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue"
+    },
+    {
+      "function": "actorScriptPushPikachuSecondaryMeter",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "8721fbd34faadde2ad86189c39af9ac61742710dd84c55cc14671ca30b3ed7f1",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "float",
+      "scheduling": "continue"
+    },
+    {
+      "function": "actorScriptPushTargetDistanceAllowance",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "133eb3c7e83a75552c7dec48a6f4ef64fd33800b939b168540dc3852597100f6",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "float",
+      "scheduling": "continue"
+    },
+    {
+      "function": "actorScriptPushTimer",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "78efbe421c180f47c6d20ffcba3efc2e5eb62e5438832224001e233ec32135ec",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "float",
+      "scheduling": "continue"
+    },
+    {
+      "function": "actorScriptYield",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "2e6a0257f19222d964c1af0d42e4753817f9839733a0d7a40cfb2c45992b173f",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "yield"
+    },
+    {
+      "function": "actorScriptQueryRequestedMicDictionary",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "1e192169a5b71e8ca676ec442b8ccef1f64d11634cfaee9669c1f2451f876ecd",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue"
+    }
+  ]
+}

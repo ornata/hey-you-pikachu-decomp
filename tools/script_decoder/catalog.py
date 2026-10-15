@@ -26,6 +26,7 @@ from .functions import action_producer_functions
 from .vocabulary import vocabulary_catalog
 from .dictionaries import dictionary_requests, source_dictionary_requests, attach_dictionary_usage
 from .name_catalog import pokemon_name_catalog
+from .native_frames import native_frame_reviews
 
 
 def companion_sites(image):
@@ -138,6 +139,7 @@ def catalog(image, max_instructions=100000):
     actors = actor_kind_records(image)
     vocabulary = vocabulary_catalog(image)
     name_catalog = pokemon_name_catalog(image, vocabulary)
+    frame_reviews = native_frame_reviews()
     actor_by_name = {row['enum_name']: row for row in actors}
 
     def bind(file, site):
@@ -199,7 +201,7 @@ def catalog(image, max_instructions=100000):
                              script_message_posts=message_posts(decoded['instructions']),
                              native_action_calls=actions,
                              action_producer_functions=action_producer_functions(decoded['instructions'], actions),
-                             voice_dictionary_requests=dictionary_requests(decoded['instructions'], vocabulary.get('dictionaries', []), name_catalog),
+                             voice_dictionary_requests=dictionary_requests(decoded['instructions'], vocabulary.get('dictionaries', []), name_catalog, frame_reviews['active']),
                              listing=identity + '.json'))
             decodes[identity] = decoded
     if not rows:
@@ -228,6 +230,7 @@ def catalog(image, max_instructions=100000):
                 actor_kinds=actors,
                 voice_vocabulary=vocabulary,
                 bedroom_name_catalog=name_catalog,
+                native_frame_effect_reviews=frame_reviews,
                 voice_dictionary_source_requests=source_requests,
                 code_reference_roles=dict(roles), configurations=rows), decodes
 
@@ -250,7 +253,8 @@ def main(argv=None):
         report['elf_sha256'] = hashlib.sha256(args.elf.read_bytes()).hexdigest()
         report['decoder_sha256'] = hashlib.sha256(Path(__file__).with_name('formats.py').read_bytes()).hexdigest()
         report['analysis_sha256'] = {name: hashlib.sha256(Path(__file__).with_name(name + '.py').read_bytes()).hexdigest()
-                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary')}
+                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames')}
+        report['native_frame_review_sha256'] = hashlib.sha256(Path(__file__).with_name('native_frame_reviews.json').read_bytes()).hexdigest()
         files = {'catalog.json': report, **{name + '.json': row for name, row in decodes.items()}}
         # Validate every output before writing any content, including existing symlinks.
         for name in files:

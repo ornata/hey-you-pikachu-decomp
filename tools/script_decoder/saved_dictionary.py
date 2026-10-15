@@ -9,10 +9,11 @@ from .formats import integer_operand
 from .stack import incoming_edges
 
 
-def saved_dictionary_analysis(instructions, request_offset, expression, budget=50000):
+def saved_dictionary_analysis(instructions, request_offset, expression, budget=50000, native_reviews=None):
     """Trace a dominating requested-ID save and audit writes across script calls."""
     if expression.get('kind') != 'variable':
         return None
+    native_reviews = native_reviews or {}
     by = {row['offset']: row for row in instructions}
     indices = {row['offset']: i for i, row in enumerate(instructions)}
     entries = [offset for offset, row in by.items() if offset < request_offset and row['name'] == 'SCRIPT_OP_ENTER_FRAME']
@@ -94,6 +95,7 @@ def saved_dictionary_analysis(instructions, request_offset, expression, budget=5
     if len(dominating) != 1:
         return None
     save, query = dominating[0]
+    natives.add('actorScriptQueryRequestedMicDictionary')
     reverse = {}
     for node, successors in caller.items():
         for successor in successors:
@@ -133,10 +135,12 @@ def saved_dictionary_analysis(instructions, request_offset, expression, budget=5
                 audit(target, visible and child_frame != frame)
 
     audit(entry, True, corridor)
-    frontier = sorted(natives - {'actorScriptQueryRequestedMicDictionary'})
+    frontier = sorted(natives - set(native_reviews))
     return dict(kind='saved_requested_dictionary_candidate', function_entry=entry, query_offset=query,
                 save_offset=save, request_offset=request_offset, local=dict(frame=frame, slot=slot),
                 save_dominates_request=True, bytecode_preserves_saved_local=not hazards and not diagnostics,
                 script_function_views=len(audited), write_hazards=hazards, diagnostics=diagnostics,
                 native_effect_frontier=frontier,
+                reviewed_native_effects=sorted(natives & set(native_reviews)),
+                origin_effect_reviewed='actorScriptQueryRequestedMicDictionary' in native_reviews,
                 scope='Static bytecode preservation under valid stack/array accesses and intact nonoverlapping frames; native effects, context replacement, runtime restoration and numeric ID remain unproven.')

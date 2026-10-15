@@ -1224,13 +1224,13 @@ s32 actorScriptSetItemImpactCount(u8 *actor) {
     return 0;
 }
 
-/// Read elapsed time for the current actor script.
-/// \param actor Actor whose script VM receives its elapsed script time in seconds.
+/// Read total elapsed time accumulated by the actor's script context.
+/// \param actor Actor whose script VM receives accumulated seconds, preserved across script resets.
 /// \returns Zero, allowing script execution to continue.
 ///
 /// \note Portability: The VM pointer is carried in an s32, requiring 32-bit pointers.
 /// \note Original decompilation identifier: \c func_8011F970 (0x8011F970).
-s32 actorScriptPushElapsedTime(u8 *actor) {
+s32 actorScriptPushTotalElapsedTime(u8 *actor) {
     u8 *vmBytes;
 
     vmBytes = (u8 *)((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;

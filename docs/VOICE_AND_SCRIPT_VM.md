@@ -119,6 +119,29 @@ original-VM programs contrast same-frame shadowing with a deliberate caller-fram
 write, checking the full declared stack, VM state and query globals. They establish
 the frame distinction, without certifying arbitrary native effects or retail paths.
 
+Sixteen immediate scalar-append contracts are recorded in
+`tools/script_decoder/native_frame_reviews.json`: fifteen direct getters/yield
+callbacks and the previously checked requested-dictionary query. These callbacks
+consume no arguments and append one integer or float. They preserve existing
+locals only when those locals and frame metadata lie below the active stack depth,
+one value slot is available, borrowed state is valid and the context remains intact.
+Their return may continue or yield; this review does not cover later lifecycle or
+concurrent changes.
+
+The decoder validates explicit source fingerprints for each reviewed callback,
+its scalar-push helpers, stack macros and relevant value/command definitions.
+Source or dependency changes revoke the affected evidence rather than creating a
+new review. Tests require the checked-in reviews to remain current. The active
+reviews reduce the saved-dictionary native frontier from 102 to 87 callbacks;
+those remaining effects are still unproven.
+
+Sixteen authored original-instruction cases check the fifteen newly reviewed
+callbacks, including both blend-status branches, while guarding saved locals,
+frame metadata, VM state and globals. `actorScriptPushTotalElapsedTime` now names
+the clock accumulated across script resets, separately from the resettable timer
+read by `actorScriptPushTimer`. The cases use distinct clock values and establish
+handler footprints, without a scheduler, hardware or complete-lifetime proof.
+
 ### 2. Consume a recognition result
 
 [Voice recognition](../src/game/voice_recognition.c) starts and polls VRU reads through
