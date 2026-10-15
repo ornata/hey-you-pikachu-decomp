@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "expectations_declared_from": "Original MIPS instruction listings; no host compilation of recovered C",
+  "claims": [
+    {"id": "hierarchy.flags", "instructions": "80008DE8..80008EB4", "expectation": "Only the 16-bit field at +0x36 changes across first child +0x2C and sibling +0x28. Argument is narrowed to 16 bits.", "boundary": "Synthetic acyclic tree; does not prove hierarchy lifetime."},
+    {"id": "item.pickup", "instructions": "801144EC..8011459C", "expectation": "Signed ownership byte +6 rejects 4/5; nonzero holder selector and zero selector have different masks; permission bit30 overrides owner restrictions only.", "boundary": "No allocation, held callbacks, collision or physical interaction."},
+    {"id": "item.cooperation", "instructions": "801145A0..801145CC", "expectation": "Requires both bit8 and bit31 of the state word.", "boundary": "Bit meaning remains a contextual interpretation."},
+    {"id": "audio.output", "instructions": "8001FA6C..8001FA74", "expectation": "Returns unchanged word at 80088EE8 without writes.", "boundary": "Does not validate audible output or device mode."},
+    {"id": "scene.path-count", "instructions": "80117B88..80117BA0", "expectation": "Current config at 80133DE4 selects pointer +0x70, stride8, count word at entry+0.", "boundary": "Valid index precondition; no scene transition or resource lifetime."},
+    {"id": "render.identity", "instructions": "8003A058..8003A090", "expectation": "Copies twelve words from retail identity constant at800A6D00, preserving guards.", "boundary": "No RSP, rendering or visual correctness claim."}
+  ],
+  "emulator_only": ["ROM DMA scheduling and interrupts", "Actor destruction and resource ownership lifetimes", "Item physics and collision", "Scene transitions and overlay replacement", "RSP graphics and audible output"]
+}

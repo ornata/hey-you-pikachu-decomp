@@ -127,3 +127,7 @@ This read-only audit writes reports and proposed edits under `build/clang-tidy/`
 Warnings are advisory; incomplete parsing exits nonzero. The progress reader’s
 retained K&R calling convention currently prevents a complete Clang parse.
 Clang does not build the game; any applied fix still needs ROM and object checks.
+
+The optional [semantic review](docs/SEMANTIC_REVIEW.md) tools use Unicorn and a
+pinned N64 interpreter to test recovered meanings. Numeric-literal inventories
+separate recovery candidates from retained data and verification constants.

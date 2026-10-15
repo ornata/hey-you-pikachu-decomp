@@ -278,3 +278,8 @@ check-scene-callbacks: $(BUILD)/pikachu.elf
 tidy:
 	@uv run --locked python tools/clang_tidy.py $(if $(FILES),--files $(FILES))
 .PHONY: tidy
+
+# Optional review tools supplement the matching/object gates.
+semantic-review: check
+	uv run --locked --group review python -m tools.semantic_review check $(if $(REVIEW_CORE),--core $(REVIEW_CORE))
+.PHONY: semantic-review

@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "name": "retail-opening-pikachu-name",
+  "max_seconds": 120,
+  "response": {
+    "num_results": 1,
+    "mic_level": 8000,
+    "voice_level": 8000,
+    "voice_length": 200,
+    "matches": [
+      0,
+      0
+    ]
+  },
+  "expected": {
+    "window_start": 2000,
+    "poll_bound": 3300,
+    "prepared_message": [
+      2,
+      0,
+      0,
+      8000,
+      200,
+      0
+    ],
+    "branch": {
+      "instruction_offset": 4124,
+      "condition": 1,
+      "target": 4310,
+      "next_offset": 4130
+    },
+    "action_id": 168,
+    "messenger_mode": 2,
+    "action_vm_offset": 21493,
+    "action_context": {
+      "caller_ra": 2148624440,
+      "vm_action_selector": 2,
+      "action_initializing": 1
+    }
+  },
+  "evidence": [
+    "Original instructions 80012508..800126A8 translate the first dictionary-local answer into a six-word gameplay message; candidate is initially zero.",
+    "Original instructions 800260F8..800261AC deliver the messenger payload, with recipient mode recorded separately.",
+    "Original instructions 80118E74..80118EE4 copy six mailbox words and set pending on accepted delivery.",
+    "Original instructions 8011C8B0..8011C904 push mailbox type and arg0 onto the same actor's VM stack.",
+    "Script offsets 4083..4129 read native selector 29 three times and test type != 13 && type != 15 && type != 14; opcode 29 at 4124 jumps to 4310 on zero, otherwise continues at 4130.",
+    "Original instructions 80115CBC..80116014 implement integer inequality (opcode 12) and logical conjunction (opcode 18); 8011648C..801164D0 implement the conditional branch.",
+    "Script offset 21481 pushes action 168; native selector 15 at 21487 selects the action-wait handler. The VM remains at offset 21493 while actorScriptPlayAction starts action 168. Its animation or emotion name is unresolved. The no-speech control must not start it within the declared poll window.",
+    "Ghidra original instructions 8011BEDC..8011BF00 select handler 2; 8011711C..80117124 dispatch it to actorScriptPlayAction; 80116800..80116840 pop the action and call actionScriptStart with return address 80116838."
+  ],
+  "limitations": [
+    "Starts with blank local saves and supplies controller input plus one synthetic device recognition result; this does not test speech recognition.",
+    "The no-speech control holds the VRU speech-active signal inactive while replaying the same controller policy.",
+    "Expected message, branch and action come from a separate diagnostic command/control pair plus original instruction and script inspection; raw acceptance traces retain observations outside the declared window.",
+    "Graphics enable task completion; rendered appearance and dummy audio output are not assessed."
+  ]
+}

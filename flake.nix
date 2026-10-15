@@ -80,6 +80,11 @@
           };
         in {
           default = development;
+          review = development.overrideAttrs (old: {
+            nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [
+              pkgs.clang pkgs.pkg-config pkgs.SDL2 pkgs.zlib pkgs.libpng
+            ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [ pkgs.libGL ];
+          });
           lint = development.overrideAttrs (old: {
             nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ pkgs.llvmPackages.clang-tools ];
           });

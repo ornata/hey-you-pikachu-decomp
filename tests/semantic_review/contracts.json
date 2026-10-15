@@ -1,0 +1,260 @@
+{
+  "schema_version": 1,
+  "scope": "Risk-selected hypotheses for independent runtime review across actor/object, item, scene/resource, queue/save and audio/render interfaces. Expectations were specified before runtime traces; no runtime capture has been reviewed for these claims. Static evidence uses instruction listings rather than decompiler-generated C.",
+  "rom_sha1": "da1a1e47a86720f9d54fb2d2d247480041bda824",
+  "claims": [
+    {
+      "id": "object-state-release",
+      "subsystem": "actor-object",
+      "location": {
+        "file": "src/game/object_hierarchy.c",
+        "address": "0x800086E0",
+        "symbol": "objectReleaseStateAllocation"
+      },
+      "proposition": "A nonnull state pointer is freed without clearing object+0x54.",
+      "expected_observation": "For null state no allocator call; for nonnull state one free(state); object+0x54 retains its old bits.",
+      "static_status": "supported",
+      "static_evidence": {
+        "tool": "Ghidra MCP disassemble",
+        "binary": "/pikachu-resident.elf-325eb9",
+        "instructions": "800086e8 lw a1,0x54(a0); 800086f0 beql a1,zero,0x80008704; 800086f8 jal 0x80038548; 80008708 jr ra",
+        "justification": "No store targets object; free argument loaded from its state slot."
+      },
+      "runtime_status": "inconclusive",
+      "limitations": [
+        "Allocator ownership and absence of aliases require lifetime captures.",
+        "Static observations do not establish execution coverage or independently validate recovered semantic names."
+      ]
+    },
+    {
+      "id": "object-hierarchy-destroy-order",
+      "subsystem": "actor-object",
+      "location": {
+        "file": "src/game/object_hierarchy.c",
+        "address": "0x800087DC",
+        "symbol": "objectDestroyHierarchy"
+      },
+      "proposition": "Children are destroyed before their parent and next siblings are saved before destroying the current object.",
+      "expected_observation": "On a two-child hierarchy, callbacks observe child destruction before parent and every sibling once; null root produces none.",
+      "static_status": "supported",
+      "static_evidence": {
+        "tool": "Ghidra MCP disassemble",
+        "binary": "/pikachu-resident.elf-325eb9",
+        "instructions": "800087f4 lw a0,0x2c(s1); 80008800 jal 0x800087dc; 80008808 lw s0,0x28(s1); 8000880c jal 0x80008710; 80008814 bne s0,zero,0x800087f4",
+        "justification": "Recursive child call precedes local destruction; next sibling captured first."
+      },
+      "runtime_status": "inconclusive",
+      "limitations": [
+        "Assumes acyclic links and callbacks do not invalidate saved siblings.",
+        "Static observations do not establish execution coverage or independently validate recovered semantic names."
+      ]
+    },
+    {
+      "id": "item-mode-six-flags",
+      "subsystem": "item",
+      "location": {
+        "file": "src/ovl/item_registry.c",
+        "address": "0x8011443C",
+        "symbol": "itemSetMode"
+      },
+      "proposition": "Mode six masks flags with 0x1FFFFEFF, adds 0x008000C0, and stores mode as a byte at state+7.",
+      "expected_observation": "Seed independent flags, set mode six, compare the exact mask/or and byte write; capture hierarchy flag calls separately.",
+      "static_status": "supported",
+      "static_evidence": {
+        "tool": "Ghidra MCP disassemble",
+        "binary": "/pikachu-resident.elf-325eb9",
+        "instructions": "80114450 lw v0,0x54(a0); 80114458 lui at,0x1fff; 8011445c ori at,at,0xfeff; 80114460 and t7,t6,at; 80114468 ori at,at,0xc0; 80114474 sw t9,0x0(v0); 801144d8 sb a2,0x7(v0)",
+        "justification": "Direct mask and width agree with the proposed mode field."
+      },
+      "runtime_status": "inconclusive",
+      "limitations": [
+        "Meaning of every affected bit and gameplay reachability remain unverified.",
+        "Static observations do not establish execution coverage or independently validate recovered semantic names."
+      ]
+    },
+    {
+      "id": "item-pickup-terminal-ownership",
+      "subsystem": "item",
+      "location": {
+        "file": "src/ovl/item_registry.c",
+        "address": "0x801144EC",
+        "symbol": "itemCanBePickedUp"
+      },
+      "proposition": "Ownership byte values four and five reject pickup regardless of holder selector.",
+      "expected_observation": "With ownership four/five and varied flags/byPlayer, return zero and do not write item state.",
+      "static_status": "supported",
+      "static_evidence": {
+        "tool": "Ghidra MCP disassemble",
+        "binary": "/pikachu-resident.elf-325eb9",
+        "instructions": "801144f4 lb v1,0x6(v0); 801144f8 beq v1,at,0x80114508; 80114500 bne v1,at,0x80114510; 80114508 jr ra; 8011450c or v0,zero,zero",
+        "justification": "Early returns precede holder-dependent branches."
+      },
+      "runtime_status": "inconclusive",
+      "limitations": [
+        "Names of ownership states and other pickup rules need additional scenarios.",
+        "Static observations do not establish execution coverage or independently validate recovered semantic names."
+      ]
+    },
+    {
+      "id": "scene-region-borrowed-points",
+      "subsystem": "scene-resource",
+      "location": {
+        "file": "src/game/scene_region.c",
+        "address": "0x8001F1F0",
+        "symbol": "sceneRegionCreate"
+      },
+      "proposition": "Region creation stores the supplied waypoint pointer in a separate 16-byte state rather than copying waypoint data.",
+      "expected_observation": "Observe allocation size 16 and state+12 equal input points; alter one live waypoint under controlled capture and verify reader uses it.",
+      "static_status": "supported",
+      "static_evidence": {
+        "tool": "Ghidra MCP disassemble",
+        "binary": "/pikachu-resident.elf-325eb9",
+        "instructions": "8001f274 li a1,0x10; 8001f2d4 jal 0x800380f4; 8001f2f4 lw t4,0x6c(sp); 8001f2f8 sw t4,0xc(v0); 8001f300 sw v0,0x54(a0)",
+        "justification": "Pointer identity is retained, so storage must outlive its consumers."
+      },
+      "runtime_status": "inconclusive",
+      "limitations": [
+        "Whole scene-unload ordering and negative-X termination are outside this function.",
+        "Static observations do not establish execution coverage or independently validate recovered semantic names."
+      ]
+    },
+    {
+      "id": "actor-cache-reservation-not-readiness",
+      "subsystem": "scene-resource",
+      "location": {
+        "file": "src/game/actor_configuration.c",
+        "address": "0x8001E04C",
+        "symbol": "actorAssetQueueLoadForKind"
+      },
+      "proposition": "An uncached compressed asset reserves decoded storage and queues ROM data into a distinct staging buffer; this function performs no decompression.",
+      "expected_observation": "Record two allocations and queued destination; cache pointer differs from staging; cached second request queues no read.",
+      "static_status": "supported",
+      "static_evidence": {
+        "tool": "Ghidra MCP disassemble",
+        "binary": "/pikachu-resident-functions.elf-b65af7",
+        "instructions": "8001e088 bne t9,zero,0x8001e15c; 8001e104 jal 0x800381d4; 8001e114 sw v0,0x6c48(at); 8001e130 jal 0x800380f4; 8001e140 sw v0,0x0(a3); 8001e150 lw a2,0x24(sp); 8001e154 jal 0x80037e14",
+        "justification": "Decoded cache reservation is separate from the retained staging pointer and DMA destination."
+      },
+      "runtime_status": "inconclusive",
+      "limitations": [
+        "Synchronization, staging release, and repeated uncached request safety need caller-level traces.",
+        "Static observations do not establish execution coverage or independently validate recovered semantic names."
+      ]
+    },
+    {
+      "id": "dma-poll-completion-accounting",
+      "subsystem": "queue-save",
+      "location": {
+        "file": "src/game/rom_dma.c",
+        "address": "0x80037CD8",
+        "symbol": "romDmaPollQueue"
+      },
+      "proposition": "Polling consumes currently available completions nonblocking and returns remaining pending count.",
+      "expected_observation": "Supply zero/one/several completion messages with valid pending count; calls use mode zero and pending decreases once per successful receive.",
+      "static_status": "supported",
+      "static_evidence": {
+        "tool": "Ghidra MCP disassemble",
+        "binary": "/pikachu-resident.elf-325eb9",
+        "instructions": "80037cf8 jal 0x80051550; 80037cfc or a2,zero,zero; 80037d08 jal 0x80037cc8; 80037d18 jal 0x80051550; 80037d20 beq v0,zero,0x80037d08; 80037d2c lw v0,0x0(s0)",
+        "justification": "Receive success controls decrement loop; returned word is the pending counter."
+      },
+      "runtime_status": "inconclusive",
+      "limitations": [
+        "Queue ordering, interrupts and malformed pending counts require full-system coverage.",
+        "Static observations do not establish execution coverage or independently validate recovered semantic names."
+      ]
+    },
+    {
+      "id": "progress-store-clamp-and-width",
+      "subsystem": "queue-save",
+      "location": {
+        "file": "src/game/save_progress.c",
+        "address": "0x80032968",
+        "symbol": "progressStoreFieldValue"
+      },
+      "proposition": "Field storage clamps signed input against type-specific bounds, uses type-specific write widths, and returns the clamped value.",
+      "expected_observation": "Exercise below-minimum/in-range/above-maximum values per field type; verify return and exact byte write footprint, including neighboring packed bits.",
+      "static_status": "supported",
+      "static_evidence": {
+        "tool": "Ghidra MCP disassemble",
+        "binary": "/pikachu-resident-functions.elf-b65af7",
+        "instructions": "8003299c slt at,a1,a3; 800329b4 slt at,a3,a1; 800329c0 or a1,a3,zero; 800329fc sw a1,0x0(t5); 80032a24 sh a1,0x0(t8); 80032a74 sb a1,0x0(t7); 80032b14 or v0,a1,zero",
+        "justification": "Signed comparisons select bounds; dispatch explicitly distinguishes word/halfword/byte and packed stores."
+      },
+      "runtime_status": "inconclusive",
+      "limitations": [
+        "Requires valid field metadata; packed signed-shift behavior and EEPROM persistence are not validated here.",
+        "Static observations do not establish execution coverage or independently validate recovered semantic names."
+      ]
+    },
+    {
+      "id": "audio-shutdown-acknowledgment",
+      "subsystem": "audio-render",
+      "location": {
+        "file": "src/game/audio_worker_string_utils.c",
+        "address": "0x80049680",
+        "symbol": "audioWorkerStopAndWait"
+      },
+      "proposition": "Shutdown sets a request then waits for an acknowledgement message; request alone does not prove worker resources are unused.",
+      "expected_observation": "Delay acknowledgement; caller remains blocked after request until worker sends stop message.",
+      "static_status": "supported",
+      "static_evidence": {
+        "tool": "Ghidra MCP disassemble",
+        "binary": "/pikachu-resident.elf-325eb9",
+        "instructions": "80049688 li t6,0x1; 80049694 sw t6,-0x4ecc(at); 80049698 addiu a0,a0,-0x4ee8; 800496a0 jal 0x80051550; 800496a4 li a2,0x1",
+        "justification": "Store precedes blocking queue receive."
+      },
+      "runtime_status": "inconclusive",
+      "limitations": [
+        "Scheduling, deadlock preconditions and actual resource lifetime require running worker traces.",
+        "Static observations do not establish execution coverage or independently validate recovered semantic names."
+      ]
+    },
+    {
+      "id": "audio-render-zero-termination",
+      "subsystem": "audio-render",
+      "location": {
+        "file": "src/game/audio_worker_string_utils.c",
+        "address": "0x8004982C",
+        "symbol": "audioWorkerThreadMain"
+      },
+      "proposition": "Renderer receives commands, count pointer, transformed sample pointer and sample frames; zero count skips task submission and acknowledges shutdown.",
+      "expected_observation": "Renderer writes zero count; no synthesis submit/AI buffer calls occur; stop acknowledgement precedes thread stop.",
+      "static_status": "supported",
+      "static_evidence": {
+        "tool": "Ghidra MCP disassemble",
+        "binary": "/pikachu-resident.elf-325eb9",
+        "instructions": "80049880 lw a0,0x221c(s0); 80049898 or a1,s6,zero; 8004989c lw a3,0x220c(s0); 800498a0 jalr t9; 800498a4 addu a2,s2,s7; 800498b4 beq t0,zero,0x80049980; 80049988 jal 0x80053190; 80049990 jal 0x80055450",
+        "justification": "Four ABI arguments and the zero-count branch are explicit."
+      },
+      "runtime_status": "inconclusive",
+      "limitations": [
+        "Pointer transformation is target-specific; callback bounds and audible/RSP correctness remain unverified.",
+        "Static observations do not establish execution coverage or independently validate recovered semantic names."
+      ]
+    },
+    {
+      "id": "object-draw-result-contract",
+      "subsystem": "audio-render",
+      "location": {
+        "file": "src/game/object_hierarchy.c",
+        "address": "0x80009548",
+        "symbol": "objectDrawSearchTreeEntry"
+      },
+      "proposition": "The draw callback receives the object and its returned display-list pointer replaces the default; null prevents display-list emission.",
+      "expected_observation": "Eligible object with matrix and callback returning null emits no object matrix/list commands; callback returning a valid list selects that list.",
+      "static_status": "supported",
+      "static_evidence": {
+        "tool": "Ghidra MCP disassemble",
+        "binary": "/pikachu-resident-functions.elf-b65af7",
+        "instructions": "800095a0 or a0,a1,zero; 800095ac jalr v0; 800095b8 or t0,v0,zero; 800095c8 beql t0,zero,0x800096c4; 800096b8 sw t0,0x4(v0)",
+        "justification": "Callback return flows directly into draw eligibility and command data."
+      },
+      "runtime_status": "inconclusive",
+      "limitations": [
+        "Graphics microcode validity, visual output and root drawChild effects need full-system tests.",
+        "Static observations do not establish execution coverage or independently validate recovered semantic names."
+      ]
+    }
+  ]
+}

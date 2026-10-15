@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "name": "retail-voice-dictionary-startup",
+  "checkpoint_pcs": [
+    2147748300
+  ],
+  "max_dispatches": 100000000,
+  "max_seconds": 45,
+  "controller": [
+    0
+  ],
+  "vru": {
+    "present": true,
+    "results": []
+  },
+  "expected": {
+    "dictionary_clear_count": 1,
+    "dictionary_words": 59,
+    "batch_size": 10,
+    "final_cursor": 59,
+    "between_uploads": 1
+  },
+  "limitations": [
+    "Startup dictionary upload only; no physical VRU, recognition, gameplay, graphics or audible output claim."
+  ],
+  "trace_pcs": [
+    2147747508
+  ],
+  "trace_memory": [
+    {
+      "address": 2148502280,
+      "size": 12
+    }
+  ],
+  "max_trace_hits": 32,
+  "memory": [
+    {
+      "address": 2148502280,
+      "size": 12
+    }
+  ]
+}

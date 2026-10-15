@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "name": "live-original-ROM-boot-export",
+  "replay_slice": {
+    "start_pc": 2751463488,
+    "stop_pc": 2751463492,
+    "memory": [{"address": 2751463424, "size": 4096, "permissions": "rwx"}],
+    "code": [{"address": 2751463488, "size": 64, "rom_offset": 64, "overlay": "ipl3"}],
+    "max_instructions": 16
+  },
+  "expected_replay": "unsupported: the first IPL3 instruction accesses COP0",
+  "limitations": ["Exercises live snapshot export and ROM authentication; does not establish gameplay or boot-ROM replay support."]
+}
