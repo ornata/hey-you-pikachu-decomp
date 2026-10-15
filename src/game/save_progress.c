@@ -1,3 +1,4 @@
+#include "progress_field_ids.h"
 #include "player_profile.h"
 #include "audio_settings.h"
 #include "audio_control.h"
@@ -626,7 +627,7 @@ void progressApplyLoadedRecord(void) {
     gPlayerProfilePoints = progressGetValue(1);
     gPlayerFriendshipLevel = progressGetValue(2);
     gPlayerVoiceMessageCount = progressGetValue(3);
-    audioSetOutputMode(2 - progressGetValue(9));
+    audioSetOutputMode(AUDIO_OUTPUT_STEREO - progressGetValue(PROGRESS_FIELD_MONO_OUTPUT));
     audioApplySavedMusicVolume(1.0f);
     audioApplySavedSoundEffectVolume(1.0f);
     progressSetChapterAndUnlockMilestones(progressGetValue(0));

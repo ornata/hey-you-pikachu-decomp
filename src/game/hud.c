@@ -1,3 +1,4 @@
+#include "random_scale.h"
 #include "runtime_lifecycle.h"
 #include "microphone_query.h"
 #include "player_state.h"
@@ -351,9 +352,9 @@ void hudDrawRecognitionIndicator(Gfx **gdl) {
             scale = gHudRecognitionScale;
             if (gHudRecognitionIndicatorState == 1) {
                 if (micGetTriggerState() != 0) {
-                    scale += randomNext() * 2.3283064365386963e-10 * 0.15F;
+                    scale += randomNext() * RANDOM_U32_UNIT_SCALE * 0.15F;
                 } else {
-                    scale += randomNext() * 2.3283064365386963e-10 * 0.05F;
+                    scale += randomNext() * RANDOM_U32_UNIT_SCALE * 0.05F;
                 }
                 gHudRecognitionScale += gRuntimeFrameSeconds * 0.2F;
                 if (gHudRecognitionScale > 0.8F) {
@@ -430,7 +431,7 @@ void hudDrawMicrophoneIndicators(Gfx **gdl) {
                     break;
                 case 5:
                     state = 7;
-                    scale = (randomNext() * 2.3283064365386963e-10 * 0.1F) + 0.95F;
+                    scale = (randomNext() * RANDOM_U32_UNIT_SCALE * 0.1F) + 0.95F;
                     break;
                 }
             }

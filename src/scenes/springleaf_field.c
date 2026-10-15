@@ -1,3 +1,4 @@
+#include "random_scale.h"
 #include "scene_types.h"
 #include "math_scalar.h"
 #include "random.h"
@@ -87,7 +88,7 @@ void springleafFieldPrepareEvolvedResidents(void) {
 /// \returns Nothing.
 void springleafFieldSpawnItem(f32 *position, s32 itemKind) {
     itemCreate(position[0], position[1], position[2], 0.0F,
-               (f32)((f64)randomNext() * 2.3283064365386963e-10 * D_801594E8_scene_springleaf_field), itemKind);
+               (f32)((f64)randomNext() * RANDOM_U32_UNIT_SCALE * D_801594E8_scene_springleaf_field), itemKind);
 }
 
 /// Initialize the field scene door.

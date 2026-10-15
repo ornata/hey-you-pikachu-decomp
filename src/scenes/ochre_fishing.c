@@ -1,3 +1,4 @@
+#include "random_scale.h"
 #include "random.h"
 #include "runtime_control.h"
 #include "ambient_audio.h"
@@ -42,7 +43,7 @@ void ochreFishingSpawnRandomResident(s32 residentIndex) {
     } else {
         offset = 1;
     }
-    roll = (s32)(randomNext() * 2.3283064365386963e-10 * 100.0);
+    roll = (s32)(randomNext() * RANDOM_U32_UNIT_SCALE * 100.0);
     count = 5 - offset;
     /* Keep loop entry together to preserve IDO setup scheduling. */
     // clang-format off
@@ -135,7 +136,7 @@ void ochreFishingInitializeObjects(void) {
     ochreFishingSpawnResidentType9();
     ochreFishingSpawnProgressItem();
     ochreFishingSpawnResidentType20();
-    if ((randomNext() * 2.3283064365386963e-10) < 0.5) {
+    if ((randomNext() * RANDOM_U32_UNIT_SCALE) < 0.5) {
         ochreFishingSpawnResidentType1();
     }
     ochreFishingSpawnResidentType19();

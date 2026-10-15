@@ -1,3 +1,4 @@
+#include "random_scale.h"
 #include "player_chase.h"
 #include "random.h"
 #include "ambient_audio.h"
@@ -34,7 +35,7 @@ extern f64 D_80151E00_scene_cobalt_island;
 /// \returns Nothing.
 void cobaltIslandSpawnResidentType16(s32 residentIndex) {
     actorCreateForKind(0x10, 0.0F, 0.0F, 0.0F, 0,
-                       (f32)((f64)randomNext() * 2.3283064365386963e-10 * D_80151E00_scene_cobalt_island),
+                       (f32)((f64)randomNext() * RANDOM_U32_UNIT_SCALE * D_80151E00_scene_cobalt_island),
                        gCurrentAreaConfiguration->objectScale, D_8014D854_scene_cobalt_island, residentIndex);
 }
 

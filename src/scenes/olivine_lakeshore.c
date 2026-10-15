@@ -1,3 +1,4 @@
+#include "random_scale.h"
 #include "door.h"
 #include "random.h"
 #include "runtime_control.h"
@@ -103,7 +104,7 @@ void lakeshoreSpawnColoredResident(f32 *position, f32 heading) {
 /// \returns Nothing.
 void lakeshoreSpawnColoredResidentRandomHeading(f32 *position) {
     lakeshoreSpawnColoredResident(position,
-                                  (f32)(randomNext() * 2.3283064365386963e-10 * D_801420E8_scene_olivine_lakeshore));
+                                  (f32)(randomNext() * RANDOM_U32_UNIT_SCALE * D_801420E8_scene_olivine_lakeshore));
 }
 
 /// Spawn the lakeshore type-three resident at a requested position and heading.

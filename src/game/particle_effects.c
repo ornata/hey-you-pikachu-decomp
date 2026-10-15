@@ -1,3 +1,4 @@
+#include "random_scale.h"
 /// \file
 /// Implements wisp, ribbon, and particle effect creation, updates, and drawing.
 
@@ -165,13 +166,13 @@ void wispEffectUpdateFacingAlternate(u8 *effect) {
 /// \note Original decompilation identifier: \c func_800174F0 (0x800174F0).
 void wispEffectUpdateDriftingMotion(u8 *effect) {
     ((RuntimeObjectPrefix *)effect)->position[0] +=
-        (1.0 - randomNext() * 2.3283064365386963e-10 * 2) * gRuntimeFrameSeconds;
-    ((RuntimeObjectPrefix *)effect)->position[1] += (randomNext() * 2.3283064365386963e-10 * 6) * gRuntimeFrameSeconds;
+        (1.0 - randomNext() * RANDOM_U32_UNIT_SCALE * 2) * gRuntimeFrameSeconds;
+    ((RuntimeObjectPrefix *)effect)->position[1] += (randomNext() * RANDOM_U32_UNIT_SCALE * 6) * gRuntimeFrameSeconds;
     ((RuntimeObjectPrefix *)effect)->position[2] +=
-        (1.0 - randomNext() * 2.3283064365386963e-10 * 2) * gRuntimeFrameSeconds;
-    ((RuntimeObjectPrefix *)effect)->scale[0] += (randomNext() * 2.3283064365386963e-10 * 0.01F) * gRuntimeFrameSeconds;
-    ((RuntimeObjectPrefix *)effect)->scale[1] += (randomNext() * 2.3283064365386963e-10 * 0.01F) * gRuntimeFrameSeconds;
-    ((RuntimeObjectPrefix *)effect)->scale[2] += (randomNext() * 2.3283064365386963e-10 * 0.01F) * gRuntimeFrameSeconds;
+        (1.0 - randomNext() * RANDOM_U32_UNIT_SCALE * 2) * gRuntimeFrameSeconds;
+    ((RuntimeObjectPrefix *)effect)->scale[0] += (randomNext() * RANDOM_U32_UNIT_SCALE * 0.01F) * gRuntimeFrameSeconds;
+    ((RuntimeObjectPrefix *)effect)->scale[1] += (randomNext() * RANDOM_U32_UNIT_SCALE * 0.01F) * gRuntimeFrameSeconds;
+    ((RuntimeObjectPrefix *)effect)->scale[2] += (randomNext() * RANDOM_U32_UNIT_SCALE * 0.01F) * gRuntimeFrameSeconds;
     objectOrientAlongCameraView(effect);
     ((RuntimeObjectPrefix *)effect)->rotation[0] += 50.0F * ((RuntimeObjectPrefix *)effect)->scale[0];
 }
@@ -354,8 +355,8 @@ u8 *wispEffectCreate(s32 kind, f32 x, f32 y, f32 z) {
         break;
     case 3:
         obj->scale[0] = 0.1F;
-        obj->scale[1] = ((f64)randomNext() * 2.3283064365386963e-10 * 0.10000000149011612) + 0.05000000074505806;
-        obj->scale[2] = ((f64)randomNext() * 2.3283064365386963e-10 * 0.05000000074505806) + 0.05000000074505806;
+        obj->scale[1] = ((f64)randomNext() * RANDOM_U32_UNIT_SCALE * 0.10000000149011612) + 0.05000000074505806;
+        obj->scale[2] = ((f64)randomNext() * RANDOM_U32_UNIT_SCALE * 0.05000000074505806) + 0.05000000074505806;
         animationIntegerTrackInitialize(state->tracks, (ValueKey *)(gWispStyle3FrameAnimation));
         state->color.r = 0xFF;
         state->color.g = 0xFF;
@@ -736,7 +737,7 @@ u8 *ribbonEffectCreate(s32 count, f32 duration, f32 baseWidth, f32 widthVariatio
             break;
         case 1:
             ((RuntimeObjectPrefix *)part)->scale[2] =
-                ((1.0 - ((f64)randomNext() * 2.3283064365386963e-10) * 2) * (f64)widthVariation) + (f64)baseWidth;
+                ((1.0 - ((f64)randomNext() * RANDOM_U32_UNIT_SCALE) * 2) * (f64)widthVariation) + (f64)baseWidth;
             break;
         }
         if (i & 1) {
@@ -825,7 +826,7 @@ void effectEmitterEmitBlackWisps(u8 *emitter) {
     obj = ((RuntimeObjectPrefix *)emitter)->state.bytes;
     if (((EffectEmitterState *)obj)->cooldown == 0.0F) {
         ((EffectEmitterState *)obj)->cooldown =
-            (f32)(((f64)randomNext() * 2.3283064365386963e-10 * 0.10000000149011612) + 0.10000000149011612);
+            (f32)(((f64)randomNext() * RANDOM_U32_UNIT_SCALE * 0.10000000149011612) + 0.10000000149011612);
         wispEffectCreate(2, ((RuntimeObjectPrefix *)emitter)->worldPosition[0], ((RuntimeObjectPrefix *)emitter)->worldPosition[1], ((RuntimeObjectPrefix *)emitter)->worldPosition[2]);
     }
 }
@@ -840,7 +841,7 @@ void effectEmitterEmitWhiteWisps(u8 *emitter) {
     obj = ((RuntimeObjectPrefix *)emitter)->state.bytes;
     if (((EffectEmitterState *)obj)->cooldown == 0.0F) {
         ((EffectEmitterState *)obj)->cooldown =
-            (f32)(((f64)randomNext() * 2.3283064365386963e-10 * 0.6000000238418579) + 0.800000011920929);
+            (f32)(((f64)randomNext() * RANDOM_U32_UNIT_SCALE * 0.6000000238418579) + 0.800000011920929);
         wispEffectCreate(5, ((RuntimeObjectPrefix *)emitter)->worldPosition[0], ((RuntimeObjectPrefix *)emitter)->worldPosition[1], ((RuntimeObjectPrefix *)emitter)->worldPosition[2]);
     }
 }
@@ -856,14 +857,14 @@ void effectEmitterEmitScatteredParticles(u8 *emitter) {
     v = ((RuntimeObjectPrefix *)emitter)->state.bytes;
     if (((EffectEmitterState *)v)->cooldown == 0.0F) {
         ((EffectEmitterState *)v)->cooldown =
-            ((f64)randomNext() * 2.3283064365386963e-10 * 0.009999999776482582) + 0.009999999776482582;
+            ((f64)randomNext() * RANDOM_U32_UNIT_SCALE * 0.009999999776482582) + 0.009999999776482582;
         for (n = randomBelow(3); n != 0; n--) {
             wispEffectCreate(3,
                              ((RuntimeObjectPrefix *)emitter)->worldPosition[0] +
-                                 (((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * 5.0),
+                                 (((f64)randomNext() * RANDOM_U32_UNIT_SCALE - 0.5) * 5.0),
                              ((RuntimeObjectPrefix *)emitter)->worldPosition[1],
                              ((RuntimeObjectPrefix *)emitter)->worldPosition[2] +
-                                 (((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * 5.0));
+                                 (((f64)randomNext() * RANDOM_U32_UNIT_SCALE - 0.5) * 5.0));
         }
     }
 }
@@ -886,26 +887,26 @@ void effectEmitterEmitAudibleBurst(u8 *emitter) {
     if (((EffectEmitterState *)state)->cooldown == 0.0F) {
         n = randomBelow(3);
         ((EffectEmitterState *)state)->cooldown =
-            ((f64)randomNext() * 2.3283064365386963e-10 * 0.009999999776482582) + 0.009999999776482582;
+            ((f64)randomNext() * RANDOM_U32_UNIT_SCALE * 0.009999999776482582) + 0.009999999776482582;
         count = n + 1;
         sound = objectPlaySpatialSound(emitter, 0xA3, (f32)count * 20.0F, (f32)count * 100.0F);
         if (sound != 0) {
-            audioSetSoundEffectPitch(sound, ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * 3.0);
+            audioSetSoundEffectPitch(sound, ((f64)randomNext() * RANDOM_U32_UNIT_SCALE - 0.5) * 3.0);
         }
         i = n;
         if (count != 1) {
             state = emitter + 0x44;
             do {
-                direction[0] = ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * 15.0;
-                direction[1] = ((f64)randomNext() * 2.3283064365386963e-10 * 5.0) + 8.0;
-                direction[2] = ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * 15.0;
+                direction[0] = ((f64)randomNext() * RANDOM_U32_UNIT_SCALE - 0.5) * 15.0;
+                direction[1] = ((f64)randomNext() * RANDOM_U32_UNIT_SCALE * 5.0) + 8.0;
+                direction[2] = ((f64)randomNext() * RANDOM_U32_UNIT_SCALE - 0.5) * 15.0;
                 if (randomBelow(2) != 0) {
                     kind = 0;
                 } else {
                     kind = 1;
                 }
                 fallingParticleCreate(6, kind, (f32 *)state, direction,
-                                      ((f64)randomNext() * 2.3283064365386963e-10 * 0.4000000059604645) +
+                                      ((f64)randomNext() * RANDOM_U32_UNIT_SCALE * 0.4000000059604645) +
                                           1.600000023841858);
             } while (--i != 0);
         }
@@ -930,15 +931,15 @@ void effectEmitterEmitColoredParticle(u8 *emitter, f32 intervalRange, f32 minimu
     v = ((RuntimeObjectPrefix *)emitter)->state.bytes;
     if (((EffectEmitterState *)v)->cooldown == 0.0F) {
         ((EffectEmitterState *)v)->cooldown =
-            ((f64)randomNext() * 2.3283064365386963e-10 * intervalRange) + minimumInterval;
+            ((f64)randomNext() * RANDOM_U32_UNIT_SCALE * intervalRange) + minimumInterval;
         half = 0.5F * spread;
         e = wispEffectCreate(2,
                              ((RuntimeObjectPrefix *)emitter)->worldPosition[0] +
-                                 (((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * spread),
+                                 (((f64)randomNext() * RANDOM_U32_UNIT_SCALE - 0.5) * spread),
                              ((RuntimeObjectPrefix *)emitter)->worldPosition[1] +
-                                 ((f64)randomNext() * 2.3283064365386963e-10 * half),
+                                 ((f64)randomNext() * RANDOM_U32_UNIT_SCALE * half),
                              ((RuntimeObjectPrefix *)emitter)->worldPosition[2] +
-                                 (((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * spread));
+                                 (((f64)randomNext() * RANDOM_U32_UNIT_SCALE - 0.5) * spread));
         v = ((RuntimeObjectPrefix *)e)->state.bytes;
         ((WispState *)v)->color.r = red;
         ((WispState *)v)->color.g = green;
@@ -1198,7 +1199,7 @@ void particleClusterElementUpdate(u8 *element) {
 
     for (i = 1; i < 3; i++) {
         ((RuntimeObjectPrefix *)element)->rotation[i] +=
-            ((f64)randomNext() * 2.3283064365386963e-10 * 30.0 + 60.0) * gRuntimeFrameSeconds;
+            ((f64)randomNext() * RANDOM_U32_UNIT_SCALE * 30.0 + 60.0) * gRuntimeFrameSeconds;
         while (((RuntimeObjectPrefix *)element)->rotation[i] < 0.0F) {
             ((RuntimeObjectPrefix *)element)->rotation[i] += 360.0F;
         }
@@ -1730,12 +1731,12 @@ void flickeringEffectUpdate(u8 *effect) {
         hi = 0.30000001192092896;
         lo = 0.4000000059604645;
         do {
-            if ((f64)randomNext() * 2.3283064365386963e-10 < lo) {
+            if ((f64)randomNext() * RANDOM_U32_UNIT_SCALE < lo) {
                 ((RuntimeObjectPrefix *)p)->rotation[0] = (s32)randomBelow(360);
             }
-            if ((f64)randomNext() * 2.3283064365386963e-10 < hi) {
-                ((RuntimeObjectPrefix *)p)->position[1] = ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * 5.0;
-                ((RuntimeObjectPrefix *)p)->position[2] = ((f64)randomNext() * 2.3283064365386963e-10 - 0.5) * 5.0;
+            if ((f64)randomNext() * RANDOM_U32_UNIT_SCALE < hi) {
+                ((RuntimeObjectPrefix *)p)->position[1] = ((f64)randomNext() * RANDOM_U32_UNIT_SCALE - 0.5) * 5.0;
+                ((RuntimeObjectPrefix *)p)->position[2] = ((f64)randomNext() * RANDOM_U32_UNIT_SCALE - 0.5) * 5.0;
             }
             p = ((RuntimeObjectPrefix *)p)->sibling.bytes;
         } while (p != NULL);

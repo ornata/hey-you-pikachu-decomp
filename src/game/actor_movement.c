@@ -1,3 +1,4 @@
+#include "random_scale.h"
 #include "player_state.h"
 #include "matrix_basic.h"
 #include "math_scalar.h"
@@ -266,7 +267,7 @@ s32 actorChooseAlignedTargetContinuation(u8 *actor) {
     v[1] = 0.0F;
     v[2] = ((ActorScriptState *)obj)->targetPosition[2] - ((RuntimeObjectPrefix *)actor)->worldPosition[2];
     if (fabsf(mathWrapSignedDegrees(vector3GetYawDegrees(v) - ((ActorScriptState *)obj)->orientation[1])) < 10.0F) {
-        actionSetContinuation(actor, (0.5 < (f64)randomNext() * 2.3283064365386963e-10) ? 0xBF : 0xC0);
+        actionSetContinuation(actor, (0.5 < (f64)randomNext() * RANDOM_U32_UNIT_SCALE) ? 0xBF : 0xC0);
         return 1;
     }
     return 0;

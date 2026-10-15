@@ -1,3 +1,4 @@
+#include "random_scale.h"
 #include "area_catalog.h"
 #include "vector3_types.h"
 #include "runtime_lifecycle.h"
@@ -288,9 +289,9 @@ s32 areaIsPositionOutsideBounds(f32 x, f32 y, f32 z) {
 void areaSpawnItemNearPosition(f32 *center, f32 width, s32 kind) {
     f32 v[3];
 
-    v[0] = center[0] + (randomNext() * 2.3283064365386963e-10 * width) - (width * 0.5F);
+    v[0] = center[0] + (randomNext() * RANDOM_U32_UNIT_SCALE * width) - (width * 0.5F);
     v[1] = center[1];
-    v[2] = center[2] + (randomNext() * 2.3283064365386963e-10 * width) - (width * 0.5F);
+    v[2] = center[2] + (randomNext() * RANDOM_U32_UNIT_SCALE * width) - (width * 0.5F);
     itemCreate(v[0], v[1], v[2], 0.0F, 0.0F, kind);
 }
 
@@ -304,9 +305,9 @@ void areaSpawnItemInRegion(f32 *region, s32 kind) {
     f32 y;
     f32 z;
 
-    x = region[2] + (region[5] * (randomNext() * 2.3283064365386963e-10));
+    x = region[2] + (region[5] * (randomNext() * RANDOM_U32_UNIT_SCALE));
     y = region[3] + region[6];
-    z = region[4] + (region[7] * (randomNext() * 2.3283064365386963e-10));
+    z = region[4] + (region[7] * (randomNext() * RANDOM_U32_UNIT_SCALE));
     itemCreate(x, y, z, 0.0F, 0.0F, kind);
 }
 
@@ -322,9 +323,9 @@ void areaCreateContactEffectInRegion(f32 *region) {
     f32 y;
     f32 z;
 
-    x = region[2] + (region[5] * (randomNext() * 2.3283064365386963e-10));
+    x = region[2] + (region[5] * (randomNext() * RANDOM_U32_UNIT_SCALE));
     y = region[3] + region[6];
-    z = region[4] + (region[7] * (randomNext() * 2.3283064365386963e-10));
+    z = region[4] + (region[7] * (randomNext() * RANDOM_U32_UNIT_SCALE));
     y -= terrainGetWorldHeight(x, y, z, 0);
     contactEffectCreate(x, y, z);
 }
@@ -342,9 +343,9 @@ void areaSpawnGroundItemInRegion(f32 *region, s32 kind) {
     f32 ground;
     u8 *fx;
 
-    x = region[2] + (region[5] * (randomNext() * 2.3283064365386963e-10));
+    x = region[2] + (region[5] * (randomNext() * RANDOM_U32_UNIT_SCALE));
     y = region[3] + region[6];
-    z = region[4] + (region[7] * (randomNext() * 2.3283064365386963e-10));
+    z = region[4] + (region[7] * (randomNext() * RANDOM_U32_UNIT_SCALE));
     ground = terrainGetWorldHeight(x, y, z, 0);
     fx = itemCreate(x, ground, z, 0.0F, 0.0F, kind);
     ((RuntimeObjectPrefix *)fx)->position[1] = ((RuntimeObjectPrefix *)fx)->radius + ground;
@@ -1028,14 +1029,14 @@ void terrainCreateContactEffect(f32 *position, s32 material) {
         sprayIndex = 0;
         if (((s32)randomBelow(6) + 2) > 0) {
             do {
-                spray[0] = (f32)((((f64)randomNext() * 2.3283064365386963e-10) - 0.5) * 8.0);
-                spray[1] = (f32)((f64)randomNext() * 2.3283064365386963e-10 * 5.0);
-                spray[2] = (f32)((((f64)randomNext() * 2.3283064365386963e-10) - 0.5) * 8.0);
+                spray[0] = (f32)((((f64)randomNext() * RANDOM_U32_UNIT_SCALE) - 0.5) * 8.0);
+                spray[1] = (f32)((f64)randomNext() * RANDOM_U32_UNIT_SCALE * 5.0);
+                spray[2] = (f32)((((f64)randomNext() * RANDOM_U32_UNIT_SCALE) - 0.5) * 8.0);
                 kind = (s32)randomBelow(3);
                 variant = (s32)randomBelow(3);
                 fallingParticleCreate(
                     kind, variant, position, spray,
-                    (f32)(((f64)randomNext() * 2.3283064365386963e-10 * 0.4000000059604645) + 0.800000011920929));
+                    (f32)(((f64)randomNext() * RANDOM_U32_UNIT_SCALE * 0.4000000059604645) + 0.800000011920929));
                 sprayIndex += 1;
             } while (sprayIndex < ((s32)randomBelow(6) + 2));
             return;
@@ -1047,12 +1048,12 @@ void terrainCreateContactEffect(f32 *position, s32 material) {
         dustIndex = 0;
         if (((s32)randomBelow(3) + 3) > 0) {
             do {
-                dust[0] = (f32)((((f64)randomNext() * 2.3283064365386963e-10) - 0.5) * 10.0);
-                dust[1] = (f32)((f64)randomNext() * 2.3283064365386963e-10 * 3.0);
-                dust[2] = (f32)((((f64)randomNext() * 2.3283064365386963e-10) - 0.5) * 10.0);
+                dust[0] = (f32)((((f64)randomNext() * RANDOM_U32_UNIT_SCALE) - 0.5) * 10.0);
+                dust[1] = (f32)((f64)randomNext() * RANDOM_U32_UNIT_SCALE * 3.0);
+                dust[2] = (f32)((((f64)randomNext() * RANDOM_U32_UNIT_SCALE) - 0.5) * 10.0);
                 variant = (s32)randomBelow(3);
                 fallingParticleCreate(5, variant, position, dust,
-                              (f32)(((f64)randomNext() * 2.3283064365386963e-10 * 0.5) + 0.6000000238418579));
+                              (f32)(((f64)randomNext() * RANDOM_U32_UNIT_SCALE * 0.5) + 0.6000000238418579));
                 dustIndex += 1;
             } while (dustIndex < ((s32)randomBelow(3) + 3));
             return;
@@ -1062,13 +1063,13 @@ void terrainCreateContactEffect(f32 *position, s32 material) {
         chipsIndex = 0;
         if (((s32)randomBelow(0xA) + 5) > 0) {
             do {
-                chips[0] = (f32)((((f64)randomNext() * 2.3283064365386963e-10) - 0.5) * 10.0);
-                chips[1] = (f32)((f64)randomNext() * 2.3283064365386963e-10 * 8.0);
-                chips[2] = (f32)((((f64)randomNext() * 2.3283064365386963e-10) - 0.5) * 10.0);
+                chips[0] = (f32)((((f64)randomNext() * RANDOM_U32_UNIT_SCALE) - 0.5) * 10.0);
+                chips[1] = (f32)((f64)randomNext() * RANDOM_U32_UNIT_SCALE * 8.0);
+                chips[2] = (f32)((((f64)randomNext() * RANDOM_U32_UNIT_SCALE) - 0.5) * 10.0);
                 kind = (s32)randomBelow(2);
                 variant = (s32)randomBelow(3);
                 fallingParticleCreate(kind + 3, variant, position, chips,
-                              (f32)(((f64)randomNext() * 2.3283064365386963e-10 * 0.5) + 1.0));
+                              (f32)(((f64)randomNext() * RANDOM_U32_UNIT_SCALE * 0.5) + 1.0));
                 chipsIndex += 1;
             } while (chipsIndex < ((s32)randomBelow(0xA) + 5));
             return;
@@ -2237,13 +2238,13 @@ void mazeScatterItems(f32 *positions, s32 count, WeightedChoiceTable *table, f32
         remaining = count;
         do {
             position = (f32 *)((u8 *)positions + (index * 12));
-            if ((randomNext() * 2.3283064365386963e-10) < (f64)((f32)quota / (f32)remaining)) {
+            if ((randomNext() * RANDOM_U32_UNIT_SCALE) < (f64)((f32)quota / (f32)remaining)) {
                 quota--;
                 itemSetMode(
                     itemCreate(position[0], position[1], position[2], 0.0F, 0.0F, weightedChoiceSelectKey(table)),
                     ITEM_MODE_STATIONARY);
             } else {
-                if ((randomNext() * 2.3283064365386963e-10) > 0.5) {
+                if ((randomNext() * RANDOM_U32_UNIT_SCALE) > 0.5) {
                     position = (f32 *)((u8 *)positions + (index * 12));
                     contactEffectCreate(position[0], position[1], position[2]);
                 }

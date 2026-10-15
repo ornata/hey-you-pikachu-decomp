@@ -1,3 +1,4 @@
+#include "random_scale.h"
 #include "player_camera.h"
 #include "audio_sound_effect.h"
 #include "player_profile.h"
@@ -169,7 +170,7 @@ s32 actorScriptCreateAttachedEffect(u8 *actor) {
     attachedEffectCreate(actor, effectKind, trackIndex);
     if ((actor == ((u8 *)gPikachuActor)) &&
         ((trackIndex == 0xA6) || (trackIndex == 0xA7) || (trackIndex == 0xAF) || (trackIndex == 0xB3))) {
-        if (0.5 < randomNext() * 2.3283064365386963e-10) {
+        if (0.5 < randomNext() * RANDOM_U32_UNIT_SCALE) {
             progressAddValue(0x1A, 1);
         }
     }

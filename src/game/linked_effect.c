@@ -1,3 +1,4 @@
+#include "random_scale.h"
 #include "render_state.h"
 #include "texture_setup.h"
 #include "vector_metrics.h"
@@ -330,7 +331,7 @@ s32 linkedEffectComputeReboundVelocity(u8 *object, f32 *velocity) {
 
     objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
     if (((LinkedEffectState *)objectState)->previous != 0 &&
-        ((f64)randomNext() * 2.3283064365386963e-10 * gLinkedReboundReleaseTimeRange) +
+        ((f64)randomNext() * RANDOM_U32_UNIT_SCALE * gLinkedReboundReleaseTimeRange) +
                 gLinkedReboundReleaseTimeMinimum <
             (f64)((LinkedEffectState *)objectState)->elapsed) {
         ((LinkedEffectState *)objectState)->callback = NULL;
@@ -368,7 +369,7 @@ s32 linkedEffectComputeFallingVelocity(u8 *object, f32 *velocity) {
 
     objectState = ((RuntimeObjectPrefix *)object)->state.bytes;
     if (((LinkedEffectState *)objectState)->previous != 0 &&
-        ((f64)randomNext() * 2.3283064365386963e-10 * gLinkedFallingReleaseTimeRange) +
+        ((f64)randomNext() * RANDOM_U32_UNIT_SCALE * gLinkedFallingReleaseTimeRange) +
                 gLinkedFallingReleaseTimeMinimum <
             (f64)((LinkedEffectState *)objectState)->elapsed) {
         ((LinkedEffectState *)objectState)->callback = NULL;
@@ -408,13 +409,13 @@ void linkedEffectInitializeVelocity(s32 kind, u8 *object) {
     ((LinkedEffectState *)state)->velocity[2] = mathSinDegrees(angle) * 10.0F;
     switch (kind) {
     case LINKED_EFFECT_RISING_TARGET:
-        ((LinkedEffectState *)state)->velocity[1] = ((f64)randomNext() * 2.3283064365386963e-10 * 1.0F) + 3.0;
+        ((LinkedEffectState *)state)->velocity[1] = ((f64)randomNext() * RANDOM_U32_UNIT_SCALE * 1.0F) + 3.0;
         return;
     case LINKED_EFFECT_REBOUND:
-        ((LinkedEffectState *)state)->velocity[1] = ((f64)randomNext() * 2.3283064365386963e-10 * 5.0) + 30.0;
+        ((LinkedEffectState *)state)->velocity[1] = ((f64)randomNext() * RANDOM_U32_UNIT_SCALE * 5.0) + 30.0;
         return;
     case LINKED_EFFECT_FALLING:
-        ((LinkedEffectState *)state)->velocity[1] = ((f64)randomNext() * 2.3283064365386963e-10 * 2.0F) + 8.0;
+        ((LinkedEffectState *)state)->velocity[1] = ((f64)randomNext() * RANDOM_U32_UNIT_SCALE * 2.0F) + 8.0;
         return;
     }
 }

@@ -1,3 +1,4 @@
+#include "progress_field_ids.h"
 #include "area_catalog.h"
 #include "camera_types.h"
 #include "player_camera.h"
@@ -1309,7 +1310,7 @@ void systemMenuPreviewSoundEffect(s32 soundId) {
 void systemMenuSetAudioOutputMode(s32 mode) {
     TRACE("selChannel %d\n", mode);
     audioSetOutputMode(mode);
-    progressSetValue(9, 2 - mode);
+    progressSetValue(PROGRESS_FIELD_MONO_OUTPUT, AUDIO_OUTPUT_STEREO - mode);
 }
 
 /// Provide an inactive system-menu action hook.
@@ -1773,7 +1774,7 @@ void systemMenuSyncLookSettingSelection(s32 unused) {
 void systemMenuSyncSoundSettingSelection(s32 unused) {
     s32 soundSetting;
 
-    soundSetting = progressGetValue(9);
+    soundSetting = progressGetValue(PROGRESS_FIELD_MONO_OUTPUT);
     gSystemMenuSoundList.confirmedIndex = soundSetting;
     gSystemMenuSoundList.selectedIndex = soundSetting;
 }

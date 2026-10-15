@@ -1,3 +1,4 @@
+#include "random_scale.h"
 #include "player_chase.h"
 #include "random.h"
 #include "backdrop_view.h"
@@ -252,7 +253,7 @@ s32 actorScriptPushZero(u8 *actor) {
 s32 actorScriptPushRandomUnitFloat(u8 *actor) {
     u8 *vm = (u8 *)((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
 
-    scriptVmPushFloat((ScriptVm *)((s32)vm), randomNext() * 2.3283064365386963e-10);
+    scriptVmPushFloat((ScriptVm *)((s32)vm), randomNext() * RANDOM_U32_UNIT_SCALE);
     return SCRIPT_COMMAND_CONTINUE;
 }
 

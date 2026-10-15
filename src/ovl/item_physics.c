@@ -1,3 +1,4 @@
+#include "random_scale.h"
 #include "math_scalar.h"
 #include "pikachu_actor.h"
 #include "vector_metrics.h"
@@ -437,12 +438,12 @@ void itemUpdateGroundAndAirMotion(u8 *object) {
             ground = terrainGetSurfaceAttributes(((RuntimeObjectPrefix *)object)->position[0], ((RuntimeObjectPrefix *)object)->position[1],
                                    ((RuntimeObjectPrefix *)object)->position[2], &node);
             if ((ground & 0x70) == 0x70) {
-                ((ItemStatePrefix *)state)->velocityX = (f32)((randomNext() * 2.3283064365386963e-10 * 20.0) + 20.0);
-                if ((randomNext() * 2.3283064365386963e-10) < 0.5) {
+                ((ItemStatePrefix *)state)->velocityX = (f32)((randomNext() * RANDOM_U32_UNIT_SCALE * 20.0) + 20.0);
+                if ((randomNext() * RANDOM_U32_UNIT_SCALE) < 0.5) {
                     ((ItemStatePrefix *)state)->velocityX = -((ItemStatePrefix *)state)->velocityX;
                 }
-                ((ItemStatePrefix *)state)->velocityZ = (f32)((randomNext() * 2.3283064365386963e-10 * 20.0) + 20.0);
-                if ((randomNext() * 2.3283064365386963e-10) < 0.5) {
+                ((ItemStatePrefix *)state)->velocityZ = (f32)((randomNext() * RANDOM_U32_UNIT_SCALE * 20.0) + 20.0);
+                if ((randomNext() * RANDOM_U32_UNIT_SCALE) < 0.5) {
                     ((ItemStatePrefix *)state)->velocityZ = -((ItemStatePrefix *)state)->velocityZ;
                 }
                 ((ItemStatePrefix *)state)->bounceCount = (s32)((u32)((ItemStatePrefix *)state)->bounceCount - 1U);

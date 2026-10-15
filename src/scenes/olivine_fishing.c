@@ -1,3 +1,4 @@
+#include "random_scale.h"
 #include "random.h"
 #include "runtime_control.h"
 #include "ambient_audio.h"
@@ -45,7 +46,7 @@ void olivineFishingSpawnRandomResident(s32 residentIndex, s32 suppressSpecialPoo
     } else {
         offset = 2;
     }
-    roll = (s32)(randomNext() * 2.3283064365386963e-10 * 100.0);
+    roll = (s32)(randomNext() * RANDOM_U32_UNIT_SCALE * 100.0);
     count = 7 - offset;
     /* Keep loop entry together to preserve IDO setup scheduling. */
     // clang-format off
@@ -129,7 +130,7 @@ void olivineFishingInitializeObjects(void) {
 
     var_s0 = 0;
     var_s1 = 0;
-    if ((randomNext() * 2.3283064365386963e-10) < 0.5) {
+    if ((randomNext() * RANDOM_U32_UNIT_SCALE) < 0.5) {
         var_s1 = 1;
     }
     do {

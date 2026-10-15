@@ -109,3 +109,8 @@ at that boundary, not physical EEPROM failures or retry timing. Scene identifier
 follow the retained overlay catalog. Audio cases preserve the different handling
 of raw modes by the sequence and sound-effect drivers, including their storage
 widths; they make no claim about audible output.
+
+The unsigned RNG unit scale retains its exact double literal. Direct call-site
+substitutions preserve casts and evaluation order; subsequent conversion to float
+can still round a result to one. The saved mono-output field retains its one-bit
+range and the existing subtraction used to convert between saved and driver values.

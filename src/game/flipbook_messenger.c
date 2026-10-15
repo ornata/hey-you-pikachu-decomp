@@ -1,3 +1,4 @@
+#include "random_scale.h"
 #include "text_image.h"
 #include "player_state.h"
 #include "render_state.h"
@@ -813,7 +814,7 @@ void messengerDeliver(u8 *object, u8 *source, u8 *target, s32 mode) {
         if (sourceKind == 0x2C || sourceKind == 0x2E) {
             animation = sourceKind;
         } else {
-            animation = randomNext() * 2.3283064365386963e-10 > 0.5 ? 0x2C : 0x2E;
+            animation = randomNext() * RANDOM_U32_UNIT_SCALE > 0.5 ? 0x2C : 0x2E;
         }
         actorStartPartShake((u8 *)((s32)gPikachuActor), animation);
     }

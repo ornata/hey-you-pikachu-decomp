@@ -1,3 +1,4 @@
+#include "random_scale.h"
 #include "random.h"
 #include "runtime_control.h"
 #include "ambient_audio.h"
@@ -43,7 +44,7 @@ void cobaltFishingSpawnRandomResident(s32 residentIndex) {
     } else {
         offset = 4;
     }
-    roll = (s32)(randomNext() * 2.3283064365386963e-10 * 100.0);
+    roll = (s32)(randomNext() * RANDOM_U32_UNIT_SCALE * 100.0);
     count = 9 - offset;
     /* Keep loop entry together to preserve IDO setup scheduling. */
     // clang-format off
@@ -136,7 +137,7 @@ void cobaltFishingInitializeObjects(void) {
     cobaltFishingSpawnResidentType9();
     cobaltFishingSpawnProgressItem();
     cobaltFishingSpawnResidentType20();
-    if ((randomNext() * 2.3283064365386963e-10) < D_80147CD0_scene_cobalt_fishing) {
+    if ((randomNext() * RANDOM_U32_UNIT_SCALE) < D_80147CD0_scene_cobalt_fishing) {
         cobaltFishingSpawnResidentType18();
     }
     cobaltFishingSpawnResidentType11();

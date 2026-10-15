@@ -1,3 +1,4 @@
+#include "random_scale.h"
 #include "area_catalog.h"
 #include "vector3_types.h"
 #include "runtime_lifecycle.h"
@@ -727,7 +728,7 @@ block_14:
     oldDistance = vector3Length(distance);
     if (oldDistance < 2.5F) {
         if (controllerIsRumblePatternActive(0) == 0) {
-            if (((f64)randomNext() * 2.3283064365386963e-10) < 0.30000001192092896) {
+            if (((f64)randomNext() * RANDOM_U32_UNIT_SCALE) < 0.30000001192092896) {
                 controllerRequestRumblePattern(0, 0.3F, 0.2F, 0.01F);
             }
         }
@@ -736,7 +737,7 @@ block_14:
         distance[2] += dz;
         if (vector3Length(distance) < oldDistance) {
             ((PlayerControlPrefix *)motion)->viewShake =
-                (f32)((((f64)randomNext() * 2.3283064365386963e-10) - 0.5) * 0.800000011920929);
+                (f32)((((f64)randomNext() * RANDOM_U32_UNIT_SCALE) - 0.5) * 0.800000011920929);
             dx *= 0.7F;
             dz *= 0.7F;
             speed *= 0.7F;

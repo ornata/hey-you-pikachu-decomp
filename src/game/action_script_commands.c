@@ -1,3 +1,4 @@
+#include "random_scale.h"
 #include "player_control.h"
 #include "player_state.h"
 #include "audio_sound_effect.h"
@@ -401,26 +402,26 @@ void actionCommandLaunchHeldItem(u8 *actor, ActorScriptState *state, ActorAction
         vel[2] = mathCosDegrees(ang) * speed;
         break;
     case 6:
-        speed *= (randomNext() * 2.3283064365386963e-10 * 0.5) + 0.5;
+        speed *= (randomNext() * RANDOM_U32_UNIT_SCALE * 0.5) + 0.5;
         ang6 = (state->orientation[1] + gActionLaunchHeadingOffsets[l->kind]) +
-               ((randomNext() * 2.3283064365386963e-10 - 0.5) * 90.0);
+               ((randomNext() * RANDOM_U32_UNIT_SCALE - 0.5) * 90.0);
         vel[0] = mathSinDegrees(ang6) * speed;
         vel[1] = -gActionLaunchVerticalSpeedFactors[l->kind] * l->speed;
         vel[2] = mathCosDegrees(ang6) * speed;
         break;
     case 7:
         linkedEffectCreateChain(randomBelow(2) != 0 ? LINKED_EFFECT_REBOUND : LINKED_EFFECT_FALLING, pos[0], pos[1],
-                                pos[2], (randomNext() * 2.3283064365386963e-10 * 0.1F) + 0.03F,
+                                pos[2], (randomNext() * RANDOM_U32_UNIT_SCALE * 0.1F) + 0.03F,
                                 actorGetPartObjectHandle(((u8 *)gPikachuActor), 0x79), 1.0F, 0.8F, 2.0F, 0.1F, 0.1F,
                                 0xC2, 1, randomBelow(2) + 1);
-        vel[0] = (randomNext() * 2.3283064365386963e-10 - 0.5) * 8.0;
+        vel[0] = (randomNext() * RANDOM_U32_UNIT_SCALE - 0.5) * 8.0;
         vel[1] = 0.0F;
-        vel[2] = (randomNext() * 2.3283064365386963e-10 - 0.5) * 8.0;
+        vel[2] = (randomNext() * RANDOM_U32_UNIT_SCALE - 0.5) * 8.0;
         fallingParticleCreate(randomBelow(7), randomBelow(3), pos, vel,
-                              (randomNext() * 2.3283064365386963e-10 * 0.4F) + 0.8F);
-        speed = (randomNext() * 2.3283064365386963e-10 * 0.1F) + 0.8F;
+                              (randomNext() * RANDOM_U32_UNIT_SCALE * 0.4F) + 0.8F);
+        speed = (randomNext() * RANDOM_U32_UNIT_SCALE * 0.1F) + 0.8F;
         ang7 = (state->orientation[1] + gActionLaunchHeadingOffsets[l->kind]) +
-               ((randomNext() * 2.3283064365386963e-10 - 0.5) * 360.0);
+               ((randomNext() * RANDOM_U32_UNIT_SCALE - 0.5) * 360.0);
         vel[0] = mathSinDegrees(ang7) * speed;
         vel[1] = -gActionLaunchVerticalSpeedFactors[l->kind] * l->speed;
         vel[2] = mathCosDegrees(ang7) * speed;
@@ -632,7 +633,7 @@ void actionCommandEmitParticlesAtTarget(u8 *object, ActorScriptState *unused, Ac
     if (target == NULL) {
         target = object;
     }
-    particleClusterCreate(args->count, args->lifetime, 5.0F, (randomNext() * 2.3283064365386963e-10 * 0.4F) + 0.1F,
+    particleClusterCreate(args->count, args->lifetime, 5.0F, (randomNext() * RANDOM_U32_UNIT_SCALE * 0.4F) + 0.1F,
                           target);
 }
 
@@ -1073,7 +1074,7 @@ void actionCommandAdvanceClockRandomly(u8 *unusedActor, ActorScriptState *unused
     s32 i;
 
     for (i = 0; i < n; i++) {
-        *clock += randomNext() * 2.3283064365386963e-10 * amp;
+        *clock += randomNext() * RANDOM_U32_UNIT_SCALE * amp;
     }
 }
 

@@ -1,3 +1,4 @@
+#include "random_scale.h"
 #include "vector_metrics.h"
 #include "random.h"
 #include "runtime_control.h"
@@ -39,15 +40,15 @@ s32 collisionRequestImpulse(u8 *source, u8 *target, f32 *direction, f32 distance
     }
     /* Original behavior: the fallback is stored locally, but direction remains the input pointer. */
     if (distance < 0.001F) {
-        randomDirection[0] = (randomNext() * 2.3283064365386963e-10 - 0.5) * 1.2F;
+        randomDirection[0] = (randomNext() * RANDOM_U32_UNIT_SCALE - 0.5) * 1.2F;
         randomDirection[1] = 0.5F;
-        randomDirection[2] = (randomNext() * 2.3283064365386963e-10 - 0.5) * 1.2F;
+        randomDirection[2] = (randomNext() * RANDOM_U32_UNIT_SCALE - 0.5) * 1.2F;
         strength = maximum;
     } else {
         strength = 1.0F / distance;
-        direction[0] = (direction[0] * strength) + ((randomNext() * 2.3283064365386963e-10 - 0.5) * 0.001F);
-        direction[1] = (direction[1] * strength) + ((randomNext() * 2.3283064365386963e-10 - 0.5) * 0.001F);
-        direction[2] = (direction[2] * strength) + ((randomNext() * 2.3283064365386963e-10 - 0.5) * 0.001F);
+        direction[0] = (direction[0] * strength) + ((randomNext() * RANDOM_U32_UNIT_SCALE - 0.5) * 0.001F);
+        direction[1] = (direction[1] * strength) + ((randomNext() * RANDOM_U32_UNIT_SCALE - 0.5) * 0.001F);
+        direction[2] = (direction[2] * strength) + ((randomNext() * RANDOM_U32_UNIT_SCALE - 0.5) * 0.001F);
         strength *= maximum;
     }
     if (strength < 0.001F) {
@@ -205,8 +206,8 @@ done:
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002CED0 (0x8002CED0).
 void collisionGridRandomizeAlignment(void) {
-    gCollisionGridAlignmentX = (0.5 - randomNext() * 2.3283064365386963e-10) * 8.0;
-    gCollisionGridAlignmentZ = (0.5 - randomNext() * 2.3283064365386963e-10) * 8.0;
+    gCollisionGridAlignmentX = (0.5 - randomNext() * RANDOM_U32_UNIT_SCALE) * 8.0;
+    gCollisionGridAlignmentZ = (0.5 - randomNext() * RANDOM_U32_UNIT_SCALE) * 8.0;
 }
 
 

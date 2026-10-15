@@ -1,3 +1,4 @@
+#include "random_scale.h"
 #include "door.h"
 #include "random.h"
 #include "runtime_control.h"
@@ -50,7 +51,7 @@ void olivineLakeCreateRandomizedGroupProps(void) {
         offset = 0;
         if (count > 0) {
             do {
-                if (0.3 < randomNext() * 2.3283064365386963e-10) {
+                if (0.3 < randomNext() * RANDOM_U32_UNIT_SCALE) {
                     olivineLakeCreateProp(D_80134B70_scene_olivine_lake[*selection].positions + offset, 0);
                 } else {
                     olivineLakeCreateProp(D_80134B70_scene_olivine_lake[*selection].positions + offset, style);
@@ -124,7 +125,7 @@ void olivineLakeSpawnTintedResidentType12(void *position, f32 heading) {
 /// \param position Three-component world-space position.
 /// \returns Nothing.
 void olivineLakeSpawnRandomHeadingResidentType12(void *position) {
-    olivineLakeSpawnTintedResidentType12(position, (f32)(randomNext() * 2.3283064365386963e-10 * 360.0));
+    olivineLakeSpawnTintedResidentType12(position, (f32)(randomNext() * RANDOM_U32_UNIT_SCALE * 360.0));
 }
 
 /// Spawn a type-thirteen lake resident at the requested position and heading.

@@ -1,3 +1,4 @@
+#include "random_scale.h"
 #include "render_state.h"
 #include "game_heap.h"
 #include "matrix_basic.h"
@@ -647,7 +648,7 @@ void actorStartPartShake(u8 *actor, s32 part) {
     }
     ((ActorScriptState *)obj)->shakingPart = t;
     ((ActorScriptState *)obj)->partShakeTimeRemaining =
-        (f32)((((f64)randomNext() * 2.3283064365386963e-10 * 0.5) + 0.5) * gActorPartShakeMaximumSeconds);
+        (f32)((((f64)randomNext() * RANDOM_U32_UNIT_SCALE * 0.5) + 0.5) * gActorPartShakeMaximumSeconds);
 }
 
 /// Signed part-identifier sequence defining the actor primary tracked pose.
