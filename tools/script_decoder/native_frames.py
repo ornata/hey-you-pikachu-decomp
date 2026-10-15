@@ -6,6 +6,8 @@ locals below the active depth, valid borrowed state and an intact VM context.
 They cover handler writes, not concurrent mutation or later lifecycle changes.
 Argument replacement also requires a numeric operand above every protected
 local and frame record; the static caller analysis does not prove that floor.
+Borrowed string-pointer results retain explicit nullability and lifetime contracts;
+the five-byte value owns only its copied address payload, never the text.
 Immediate action requests retain a separate deferred-effect frontier; their
 request footprint does not establish the later handler's writes or operands.
 """
@@ -100,8 +102,18 @@ def native_frame_reviews(root=ROOT, manifest=None):
                           review['result_tag'] == 'none' and review['scheduling'] == 'wait_for_action' and
                           review.get('coverage') == 'immediate_request_only' and
                           type(review.get('action_handler')) is int and 0 <= review['action_handler'] <= 14)
+        borrowed_string_result = (
+            review['effect'] == 'replace_arguments_with_borrowed_string_pointer' and
+            type(review['arguments']) is int and review['arguments'] == 2 and
+            type(review['stack_delta']) is int and review['stack_delta'] == -1 and
+            review['result_tag'] == 'string_pointer' and review['scheduling'] == 'continue' and
+            review.get('result_ownership') == 'borrowed' and
+            type(review.get('result_nullable')) is bool and
+            isinstance(review.get('result_lifetime'), str) and bool(review['result_lifetime'].strip()) and
+            bool(review.get('dependencies')))
         supported_effect = ((supported_effect and review['result_tag'] in ('integer', 'float') and
-                             review['scheduling'] in ('continue', 'yield')) or action_request)
+                             review['scheduling'] in ('continue', 'yield')) or action_request or
+                            borrowed_string_result)
         if (not agrees or not supported_effect or
                 changed_helpers):
             stale_callbacks.append(review['function'])

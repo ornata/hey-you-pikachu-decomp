@@ -583,8 +583,16 @@ Item display names are borrowed catalog strings. Selector zero prefers the
 alternate name and falls back to the default; selector one selects the default;
 other selectors return null. Even a valid selector can return null if the catalog
 name is absent. The VM stores the pointer with its string tag, without copying or
-owning the text. Catalog and string lifetime remain caller obligations. This
-string-pointer footprint is documented separately from the scalar contract schema.
+owning the text. Catalog and string lifetime remain caller obligations. A separate
+borrowed string pointer contract records
+this five-byte result, its nullability and the lifetime obligation; it does not
+classify the pointer as an integer or infer ownership from a successful call.
+Eleven authored original-instruction probes confirm the selection and numeric
+conversion branches, including null defaults and unsupported selectors. An unmapped
+authored address is returned unchanged, demonstrating that the native does not
+validate or dereference the string. Protected values, frame metadata and invented
+catalog/text storage remain unchanged. The inactive former selector slot is not
+cleared. These observations establish the immediate footprint, not safe later use.
 
 Four additional update contracts distinguish stored values from success flags:
 
@@ -826,8 +834,35 @@ an available object yields its world coordinate for axis zero through two, or
 is signed. These contracts still require the operand floor, valid borrowed state
 and disjoint writable storage described above.
 
-The source-bound manifest distinguishes scalar contracts, immediate request
-contracts and reviewed deferred phases. Other requests remain partially reviewed
+Additional immediate contracts preserve several distinctions between data and
+side effects:
+
+| Native | Operands in push order | Result and immediate effect |
+| --- | --- | --- |
+| `scriptCommandGetItemClass` | Valid item kind | Signed class byte; values above 127 sign-extend |
+| `scriptCommandIsItemInCategory` | Item kind, category zero through eighteen | Integer membership in the category's inclusive signed bounds |
+| `actorScriptSetDoorAccessState` | Created door-registry index, access state | Integer zero; stores the full access-state word in the live passage |
+| `actorScriptSetCueRate` | Numeric rate | Integer handle-found result; retains the requested rate and updates the first matching slot when applicable |
+| `actorScriptEnableElapsedTimeTint` | Initial elapsed seconds | Integer zero; nonnegative finite input enables tint and records initial seconds, while negative input preserves both |
+| `actorScriptStopActionScript` | None | Integer zero; requests sequencer loop exit and cancels pending action selection |
+
+Item-class lookup does not check the kind bounds. Category membership does not
+index the item catalog: any signed item value can be compared, but the category
+index must be valid. Door lookup requires an initialized registry entry with a
+live passage; it does not handle a missing object safely. None of these helpers
+validates later access-state meanings or starts a transition.
+
+Cue-rate success means that a matching handle was found, including a stopped
+slot; it does not establish audible playback. Cue ID two retains the requested
+rate but skips slot lookup and returns zero. Tint enablement leaves its time-origin
+fields unchanged. Stopping the sequencer is not a promise that actor motion has
+already stopped. Each native's protected-value and alias conditions remain explicit.
+Changing a cue has a separate three-operand and ROM/sequence-startup review
+frontier, including failed allocation/start behavior; the cue-rate contract does
+not cover that path.
+
+The source-bound manifest distinguishes scalar and borrowed string results, immediate
+request contracts and reviewed deferred phases. Other requests remain partially reviewed
 and keep their later effects explicit in the saved-dictionary frontier.
 
 ### Player view selection
