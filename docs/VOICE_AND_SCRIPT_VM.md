@@ -496,6 +496,13 @@ the frame distinction, without certifying arbitrary native effects or retail pat
 
 ### Native storage effects
 
+The 18 catalogued saved-dictionary analyses reach 103 distinct native callbacks.
+Each now has the required conditional footprint review, including deferred phases
+where reached. This clears their native-effect frontier under the recorded
+conditions; it does not prove operand floors, resource validity, context lifetime
+or runtime dictionary restoration. Other native commands and deferred actions
+outside these corridors still need review.
+
 The cue-change and HUD-guide contracts include the original SDK's PI transport,
 queue and scheduler paths. A returning call requires successful queue admission,
 a live request until completion, an accessible aligned DMA window, and delivery
@@ -508,9 +515,9 @@ Releasing a held item appends its resolved kind even when release is refused.
 The retail release table has only two nonnull hooks: light-bulb material reset
 and baseball-cap scale reset. The reviewed helper closure includes those hooks,
 holder handles, item state and hierarchy writes. It requires valid separate
-storage and terminating animation/hierarchy traversal. Eating an item remains a
-separate review: replacement creation, registry ownership and deferred destruction
-need additional evidence; the default banana-to-peel path alone is insufficient.
+storage and terminating animation/hierarchy traversal. Eating has its own conditional
+phase review, including replacement creation and registry removal. Deferred
+destruction and actor/VM lifetime between invocations remain separate obligations.
 
 Three retained attached-effect definitions at `0x80074EB8` select templates of
 runtime kind `0xAC`, with no child or sibling templates. Their scales are
@@ -536,9 +543,13 @@ Target-focus cleanup restores the saved companion selection under the old
 permissions; installing new permissions afterward does not retry a denied restore.
 These probes guard the complete player record, protected VM values and callback
 tables, but do not exercise blocking services or subsequent player input.
-Text-window selector 13 also waits in mode 3, but its remaining review requires
-owned image destruction and the heap/glyph creation chain; operand shape alone
-does not establish that closure.
+Text-window selector 13 also waits in mode 3. Its conditional review includes owned
+image destruction and the heap/glyph creation chain, including cache misses and
+DMA completion. Position controls can reset measured width, so every glyph's
+placement must fit the final image independently. Cache reclamation only visits
+an unpinned prefix; free entries elsewhere do not guarantee allocation succeeds.
+The manifest records these bounds, successful-allocation requirements and borrowed
+glyph lifetimes explicitly.
 
 Microphone dictionary and configuration natives have returning-call contracts
 through the original blocking message queue. A full queue can suspend the caller;
@@ -871,17 +882,27 @@ slot shallower. Protected frame values must lie below that operand.
 Ten authored original-instruction interpreter probes cover the request, rejected
 and eligible initialization, active waiting, missing and newly ineligible completion,
 pickup history, and successor polling. These are independent phase states, not a
-complete retail gameplay trajectory. Allocation, item replacement/destruction,
-registry callbacks, ownership transfer and eventual animation completion remain
-explicit dependencies. This partial review does not clear the eating request's
-unresolved deferred-effect frontier.
+complete retail gameplay trajectory. The separate static helper review covers
+allocation, replacement, registry removal and ownership transfer for all 39 nonzero
+catalog replacement targets. Their 39 model templates use kinds zero and `0x98`,
+both with null initialization callbacks; holding a replacement invokes no held
+update callback synchronously. This bound includes eligibility changed by mutable
+item flags. Successful allocations, valid resources and intact actor/VM storage
+remain prerequisites. Eventual animation completion and lifetime across arbitrary
+world updates are not established by the handler footprint.
 
 The text-window request retains indicator, style and scene-view mode until the
 runtime leaves text-window game mode. Its handler then consumes all three settings
 and supplies integer zero even if an already-active window rejects opening.
 `text_window_requests` exposes the settings expressions and keeps that zero result
-separate from successful presentation. Fresh-window prompt allocation, font and
-image ownership remain obligations of the later-effect review.
+separate from successful presentation. The later-effect review covers fresh prompt
+allocation, font and image ownership under its resource and transport conditions.
+Seven full original-instruction probes and one helper-entry probe cover mode-three
+waiting, active-window rejection and numeric conversion, guarding protected values
+and the complete window state. They do not exercise successful image generation
+or rendering. Page history and continuation pointers remain borrowed; displaying
+a page does not extend the source text's lifetime. Entering window mode also
+assigns neutral player input and accounts elapsed play time, without an EEPROM save.
 
 The auxiliary-icon and feature-mask HUD natives each consume one integer and
 return integer zero on the script stack, continuing execution. Both retain the raw

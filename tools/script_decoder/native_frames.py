@@ -152,13 +152,40 @@ def native_frame_reviews(root=ROOT, manifest=None):
                 changed.append(dependency)
         selector = deferred.get('action_handler')
         mode_gate = (
-            selector == 10 and deferred.get('effect') == 'poll_game_mode_then_replace_scheme_argument' and
+            (selector, deferred.get('effect'), deferred.get('arguments')) in
+            ((10, 'poll_game_mode_then_replace_scheme_argument', 1),
+             (13, 'poll_game_mode_then_replace_text_window_arguments', 3)) and
             deferred.get('phase_gate') == 'runtime_game_mode_only' and
             deferred.get('uses_initialization_flag') is False and
             type(deferred.get('waiting_game_mode')) is int and deferred['waiting_game_mode'] == 3 and
             type(deferred.get('completion_result')) is int and deferred['completion_result'] == 0 and
-            deferred.get('arguments') == 1 and
             'initialization_stack_delta' not in deferred and 'initialization_scheduling' not in deferred)
+        phases = deferred.get('phases')
+        eating_phases = (
+            selector == 8 and deferred.get('effect') == 'eat_with_early_rejection_or_result_before_followup' and
+            deferred.get('phase_gate') == 'action_initializing_then_sequence_stop' and
+            deferred.get('arguments') == 1 and deferred.get('result_tag') == 'integer' and
+            type(deferred.get('followup_action_handler')) is int and deferred['followup_action_handler'] == 1 and
+            isinstance(phases, list) and len(phases) == 6)
+        if eating_phases:
+            expected = (
+                ('initialize_reject', 1, 0, 'yield', -1, None),
+                ('initialize_accept', 1, -1, 'wait_for_action', None, None),
+                ('wait', 0, 0, 'wait_for_action', None, None),
+                ('consume_and_finish', 0, 1, 'yield', 'pre_consumption_item_history', None),
+                ('consume_and_followup', 0, 1, 'wait_for_action', 'pre_consumption_item_history', 1),
+                ('followup_wait_or_finish', 0, 0, 'wait_for_action_or_yield', None, None))
+            eating_phases = all(
+                isinstance(phase, dict) and
+                type(phase.get('consumed_arguments')) is int and type(phase.get('stack_delta')) is int and
+                (phase.get('phase'), phase['consumed_arguments'], phase['stack_delta'],
+                 phase.get('scheduling'), phase.get('result'), phase.get('next_action_handler')) == shape and
+                ('result' not in phase or type(phase['result']) is type(shape[4])) and
+                ('next_action_handler' not in phase or type(phase['next_action_handler']) is int)
+                for phase, shape in zip(phases, expected))
+            eating_phases = eating_phases and not any(
+                key in deferred for key in ('initialization_stack_delta', 'initialization_scheduling', 'waiting_stack_delta',
+                                             'completion_stack_delta', 'waiting_scheduling', 'completion_scheduling'))
         reviewed_effect = (
             selector == 3 and deferred.get('effect') == 'loop_exit_then_conditional_zero_append' and deferred.get('arguments') == 0 or
             selector == 2 and deferred.get('effect') == 'start_program_then_conditional_zero_append' and deferred.get('arguments') == 1 and
@@ -166,14 +193,16 @@ def native_frame_reviews(root=ROOT, manifest=None):
             deferred.get('initialization_scheduling') == 'wait_for_action' or
             selector == 9 and deferred.get('effect') == 'costed_program_then_conditional_result_append' and deferred.get('arguments') == 2 and
             type(deferred.get('initialization_stack_delta')) is int and deferred['initialization_stack_delta'] == -2 and
-            deferred.get('initialization_scheduling') == 'wait_for_action' or mode_gate)
+            deferred.get('initialization_scheduling') == 'wait_for_action' or mode_gate or eating_phases)
+        scalar_phases = (
+            deferred.get('waiting_stack_delta') == 0 and
+            deferred.get('completion_stack_delta') == (1 - deferred['arguments'] if mode_gate else 1) and
+            type(deferred.get('waiting_stack_delta')) is int and type(deferred.get('completion_stack_delta')) is int and
+            deferred.get('waiting_scheduling') == 'wait_for_action' and deferred.get('completion_scheduling') == 'yield')
         valid = (review.get('coverage') == 'immediate_request_only' and type(selector) is int and
                  selector == review.get('action_handler') and reviewed_effect and
                  type(deferred.get('arguments')) is int and
-                 deferred.get('waiting_stack_delta') == 0 and
-                 deferred.get('completion_stack_delta') == (0 if mode_gate else 1) and
-                 type(deferred.get('waiting_stack_delta')) is int and type(deferred.get('completion_stack_delta')) is int and
-                 deferred.get('waiting_scheduling') == 'wait_for_action' and deferred.get('completion_scheduling') == 'yield' and
+                 (eating_phases or scalar_phases) and
                  bool(deferred.get('dependencies')))
         if valid and not changed:
             active_deferred[name] = deferred

@@ -14,7 +14,7 @@ def text_window_requests(instructions):
         row = dict(instruction_offset=instruction['offset'], function='actorScriptStartTextWindow',
                    consumption='deferred_until_outside_text_window_mode',
                    completion_result='integer_zero_even_if_window_open_is_rejected',
-                   scope='Structural settings and reviewed request semantics; no proof that a window opens, renders, completes or is reachable. Fresh prompt allocation and ownership remain unreviewed.')
+                   scope='Structural settings and request semantics; conditional ownership/transport reviews are recorded separately in native_frame_effect_reviews. No proof that a window opens, renders, completes or is reachable.')
         try:
             values = recover_arguments(instructions, index, 3, incoming=incoming, allow_float=True,
                                        allow_symbolic=True, frame_entries=frames)
