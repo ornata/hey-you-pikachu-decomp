@@ -1,3 +1,4 @@
+#include "progress_field_ids.h"
 #include "actor_kind.h"
 /// Geometry of the abra shop spatial lookup grid.
 enum { ABRA_SHOP_GRID_LAYERS = 8, ABRA_SHOP_GRID_SIDE = 8 };
@@ -28,8 +29,8 @@ void abraShopInitializeObjects(void) {
 
     actorCreateForKind(ACTOR_KIND_ABRA, 100.0F, 1.2F, 95.0F, 0, 0, gCurrentAreaConfiguration->objectScale * 1.5F,
                        D_801431F8_scene_abra_shop, 0);
-    if (progressGetValue(0x15) != 0 && progressGetValue(0x16) == 0) {
-        level = progressGetValue(0x17);
+    if (progressGetValue(0x15) != 0 && progressGetValue(PROGRESS_FIELD_TOGEPI_HATCHED) == 0) {
+        level = progressGetValue(PROGRESS_FIELD_TOGEPI_EGG_GROWTH_STAGE);
         scale = (f32)level;
         actorCreateForKind(ACTOR_KIND_TOGEPI_EGG, 100.0F, 0.0F, 0.0F, 0, 0,
                            ((scale / 5.0F + 1.0F) * (gCurrentAreaConfiguration->objectScale * 0.5F)),

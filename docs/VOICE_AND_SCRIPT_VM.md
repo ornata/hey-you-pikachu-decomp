@@ -649,6 +649,26 @@ transfers under explicit PI-manager, queue, buffer and scheduling preconditions;
 later MIDI decoding and synthesis remain separate. No new runtime probe of this
 cue native is claimed.
 
+The rotation setter consumes angle then axis, returning zero. Valid axes are
+pitch, yaw and roll; it changes actor-state orientation rather than the object's
+separate rotation fields. Angle wrapping must terminate: finite values alone do
+not guarantee progress for repeated floating-point additions/subtractions of
+360 at large magnitudes.
+
+Uniform-scale assignment consumes handle then requested scale. It updates all
+three scale components and adjusts radius using the prior X scale and the area
+scaling convention. Area-scaled objects need a finite nonzero area factor, and
+the computed old scale must remain finite and nonzero. A requested zero scale
+is supported, but makes a subsequent rescale require separate care. Neither
+setter traverses descendants, runs callbacks or refreshes collision structures.
+
+Held-item release control changes the ordinary-release permission and selects
+HUD guide four or zero; it does not physically release or transfer the item.
+The permission change precedes any guide-selection cue transport. Ten guarded
+original-instruction cases check rotation, scale and held-item branches. Guide
+changes that trigger audio were not executed by these probes and retain the
+source-bound transport preconditions.
+
 The alternate shared-text builder has a separate `shared_text` sink contract. Its
 inline count consumes that many representations and returns integer zero. Text is
 the first 79 bytes of concatenation in argument order, retained until another
@@ -765,6 +785,28 @@ expressions. Area-relative requests retain every current-area alternative,
 including absent entries; the containing script's scene is not assumed to be
 the runtime current area. No live save contents or field meanings are inferred
 from an encoding or numeric ID alone.
+
+Recovered field names now distinguish these saved roles:
+
+| Field | Meaning |
+| --- | --- |
+| 6 | Completed visits, displayed as days spent with Pikachu. |
+| 8 | Select follow movement when enabling companion control; zero selects Pikachu view tracking. |
+| 10 / 11 | Saved music / sound-effect volume, each zero through fifteen. |
+| 14 | Game-clear flag enabling post-clear behavior. |
+| 22 / 23 | Togepi hatched / egg growth stage. Qualifying Abra-shop turn-ins advance growth up to five on the recovered path; storage permits fifteen. |
+| 86 | Additional Ochre entrance resident stage, zero through three; not a count including the unconditional Bulbasaur. |
+| 160 | Bedroom passage to the front yard enabled instead of its initial descriptive proxy. |
+| 162 | Bedroom quiz unlock stage: picture, shadow, then strobe-shadow. |
+
+The bedroom script advances quiz stage zero to one after at least eight correct
+picture-quiz answers, and one to two after a perfect shadow round. Its selection
+routine gates the corresponding modes. Two-bit storage also admits three, whose
+meaning is not established by those progression writes. Togepi hatching is
+recorded after the kind-transformation native returns. These are script and
+producer meanings, not claims that every path is reachable in a live session.
+Fields 31 and 93 remain numeric: fishing/visit consumers alone do not establish
+their underlying narrative milestone.
 
 Progress read contracts require a direct field in 0–243 or an area-relative
 selector that resolves to one. Bit 30 selects a row from the seven-row table;
@@ -1579,6 +1621,16 @@ capacity, aliases and context/resource lifetimes remain preconditions. This does
 not upgrade the saved-dictionary analysis into a preservation proof.
 
 ## Actor mailbox categories
+
+The post-message native consumes target handle, type and arguments 0, 2, 3, 4
+in that push order; it supplies argument 1 as zero. It copies into one mailbox
+and returns one if accepted, zero for a missing/destroying target or a nonzero
+pending word. Self-targeting is allowed when mailbox state is valid and disjoint
+from VM/value/frame storage. It does not validate target kind, consume the
+message, retain the sender's temporary record or guarantee payload-pointer
+lifetimes. Producers and consumers must serialize access; the copy is not atomic.
+Seven original-instruction cases replayed three times guard self/other delivery,
+pending rejection, missing/destroying targets and signed payload order.
 
 `ActorScriptMessageKind` names categories with established gameplay producers.
 Scheduler notifications use the separate `GameMessageKind` domain.

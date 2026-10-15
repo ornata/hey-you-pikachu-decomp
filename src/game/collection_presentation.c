@@ -1197,7 +1197,7 @@ s32 presentationSelectBedroomScenario(s32 *actorAction, s32 *audioCue) {
         if ((gCollectionResultsBypassed != 0) && (progressGetCurrentChapter() >= 5)) {
             gEyeCatchSelectedGroup = eyeCatchChooseGroup();
         }
-        progressAddValue(6, 1);
+        progressAddValue(PROGRESS_FIELD_DAYS_WITH_PIKACHU, 1);
         progressSetValue(0x12, 0);
         gCurrentAreaConfiguration->backdrop = 3;
         scriptVmResetGlobals();
@@ -1215,7 +1215,7 @@ s32 presentationSelectBedroomScenario(s32 *actorAction, s32 *audioCue) {
                 progressSetValue(0x11, 1);
             } else {
                 sp18 = randomBelow(progressGetValue(0x14));
-                if ((progressGetValue(0xE) != 0) && (sp18 >= 0xE)) {
+                if ((progressGetValue(PROGRESS_FIELD_GAME_CLEARED) != 0) && (sp18 >= 0xE)) {
                     progressSetValue(0x12, 1);
                 }
             }
@@ -1738,9 +1738,10 @@ s32 progressUpdateChapterAfterVisit(void) {
         }
         break;
     case 7:
-        if ((progressGetValue(0xE) == 0) && ((gItemKind8FCollectionValue + 0x64) < gPlayerProfilePoints) &&
-            (progressGetValue(0x23) != 0) && (progressGetValue(0xAD) != 0) && (progressGetValue(0xAF) != 0) &&
-            (progressGetValue(0xBD) != 0) && (progressGetValue(0xAE) != 0)) {
+        if ((progressGetValue(PROGRESS_FIELD_GAME_CLEARED) == 0) &&
+            ((gItemKind8FCollectionValue + 0x64) < gPlayerProfilePoints) && (progressGetValue(0x23) != 0) &&
+            (progressGetValue(0xAD) != 0) && (progressGetValue(0xAF) != 0) && (progressGetValue(0xBD) != 0) &&
+            (progressGetValue(0xAE) != 0)) {
             var_s0 += 1;
         }
         break;
@@ -1753,7 +1754,7 @@ s32 progressUpdateChapterAfterVisit(void) {
         break;
     case 9:
         var_s0 = 7;
-        progressSetValue(0xE, 1);
+        progressSetValue(PROGRESS_FIELD_GAME_CLEARED, 1);
         break;
     default:
         var_s0 = currentChapter + 1;

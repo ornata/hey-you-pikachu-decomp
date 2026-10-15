@@ -1055,7 +1055,7 @@ void systemMenuAppendProgressDetails(void) {
             progressGetValue(0xAC) ? "Ck" : "Xx", progressGetValue(0xBA) ? "Tb" : "Xx",
             progressGetValue(0x89) ? "Pn" : "Xx", progressGetValue(0xAD) ? "Sp" : "Xx",
             progressGetValue(0xAF) ? "Dg" : "Xx", progressGetValue(0xBD) ? "Cy" : "Xx",
-            progressGetValue(0xAE) ? "Hr" : "Xx", progressGetValue(0xE) ? "Gc" : "Xx",
+            progressGetValue(0xAE) ? "Hr" : "Xx", progressGetValue(PROGRESS_FIELD_GAME_CLEARED) ? "Gc" : "Xx",
             progressGetValue(0xF) ? "Cs" : "Xx", progressGetValue(0x10) ? "Cb" : "Xx", progressGetValue(0x13),
             progressGetValue(0x1A), progressGetValue(0x14));
     systemMenuAppendDetailText((u8 *)buffer);
@@ -1068,10 +1068,10 @@ void systemMenuAppendDaysDetails(void) {
     char buf[64];
     s32 days;
 
-    if (progressGetValue(6) >= 100000) {
+    if (progressGetValue(PROGRESS_FIELD_DAYS_WITH_PIKACHU) >= 100000) {
         days = 99999;
     } else {
-        days = progressGetValue(6);
+        days = progressGetValue(PROGRESS_FIELD_DAYS_WITH_PIKACHU);
     }
     sprintf(buf, "Days spent\n with PIKACHU\n\n%s%d day%s",
             (days < 10)      ? "#052"
@@ -1149,10 +1149,10 @@ void systemMenuUpdateVolumeSettings(MenuList *menu) {
     s32 *pressed;
 
     pressed = &gControllerPrimaryRepeatedButtons;
-    channelAMaximum = progressGetMaximum(0xA);
-    channelBMaximum = progressGetMaximum(0xB);
-    channelAValue = progressGetValue(0xA);
-    channelBValue = progressGetValue(0xB);
+    channelAMaximum = progressGetMaximum(PROGRESS_FIELD_MUSIC_VOLUME);
+    channelBMaximum = progressGetMaximum(PROGRESS_FIELD_SOUND_EFFECT_VOLUME);
+    channelAValue = progressGetValue(PROGRESS_FIELD_MUSIC_VOLUME);
+    channelBValue = progressGetValue(PROGRESS_FIELD_SOUND_EFFECT_VOLUME);
     if (*pressed != 0) {
         selection = menu->selectedIndex;
         if (selection == 0) {
@@ -1167,7 +1167,7 @@ void systemMenuUpdateVolumeSettings(MenuList *menu) {
             } else if (channelAMaximum < channelAValue) {
                 channelAValue = channelAMaximum;
             }
-            progressSetValue(0xA, channelAValue);
+            progressSetValue(PROGRESS_FIELD_MUSIC_VOLUME, channelAValue);
             audioApplySavedMusicVolume(1.0F);
         } else if (selection == 1) {
             if (gControllerPrimaryRepeatedButtons & 0x100) {
@@ -1181,7 +1181,7 @@ void systemMenuUpdateVolumeSettings(MenuList *menu) {
             } else if (channelBMaximum < channelBValue) {
                 channelBValue = channelBMaximum;
             }
-            progressSetValue(0xB, channelBValue);
+            progressSetValue(PROGRESS_FIELD_SOUND_EFFECT_VOLUME, channelBValue);
             audioApplySavedSoundEffectVolume(1.0F);
         }
     }
@@ -1357,7 +1357,7 @@ void systemMenuSetEarlyVisitCount(s32 arg0) {
 /// \note Original decompilation identifier: \c func_8011B4D4 (0x8011B4D4).
 void systemMenuSetGameClearProgress(s32 arg0) {
     TRACE("selGameClearFlag %d\n", arg0);
-    progressSetValue(0xE, arg0);
+    progressSetValue(PROGRESS_FIELD_GAME_CLEARED, arg0);
 }
 
 /// Save the selected vertical-look control setting.
@@ -1815,7 +1815,7 @@ void systemMenuInitialize(void) {
     if (scene != 4 && scene != 6 && scene != 8 && gRuntimeCurrentArea >= 3 && progressGetValue(0x12) == 0) {
         systemMenuAppendItem(&gSystemMenuRootList, &gSystemMenuGoHomeEntry);
     }
-    if (progressGetValue(0xE)) {
+    if (progressGetValue(PROGRESS_FIELD_GAME_CLEARED)) {
         systemMenuAppendItem(&gSystemMenuRootList, systemMenuBuildExtrasMenu());
     }
     gSystemMenuRootList.firstVisibleIndex = 0;

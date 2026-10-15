@@ -1,3 +1,4 @@
+#include "progress_field_ids.h"
 #include "actor_kind.h"
 /// Geometry of the bedroom spatial lookup grid.
 enum { BEDROOM_GRID_LAYERS = 16, BEDROOM_GRID_SIDE = 16 };
@@ -35,7 +36,7 @@ void bedroomInitializeObjects(void) {
     toolboxClearCollection();
     mazeSpawnAvailableItems(D_801554DC_scene_bedroom);
     doorRegistryReset();
-    if (progressGetValue(0xA0) != 0) {
+    if (progressGetValue(PROGRESS_FIELD_FRONT_YARD_DOOR_ENABLED) != 0) {
         doorCreate(D_80134520_scene_bedroom, 0, 2, 0, 0);
     } else {
         interactionProxyCreate(D_80134520_scene_bedroom, 1, 4, 0, (char *)D_80158674_scene_bedroom);

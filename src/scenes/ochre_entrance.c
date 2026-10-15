@@ -1,3 +1,4 @@
+#include "progress_field_ids.h"
 #include "actor_kind.h"
 /// Geometry of the ochre entrance spatial lookup grid.
 enum { OCHRE_ENTRANCE_GRID_LAYERS = 16, OCHRE_ENTRANCE_GRID_SIDE = 16 };
@@ -19,11 +20,11 @@ extern f32 D_8013E8A0_scene_ochre_entrance;
 /// Populate the forest entrance with residents appropriate to saved progress.
 /// \returns Nothing.
 void ochreEntranceInitializeResidents(void) {
-    switch (progressGetValue(0x56)) {
+    switch (progressGetValue(PROGRESS_FIELD_OCHRE_ENTRANCE_RESIDENT_STAGE)) {
     case 0:
         break;
     default:
-        if (progressGetValue(0x16) != 0 && randomBelow(3) == 0) {
+        if (progressGetValue(PROGRESS_FIELD_TOGEPI_HATCHED) != 0 && randomBelow(3) == 0) {
             togepiCreate(D_8013E8A0_scene_ochre_entrance, 18.25F, 149.5F, 0.0F, 90.0F, D_8013DD80_scene_ochre_entrance,
                          3);
         } else {

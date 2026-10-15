@@ -646,9 +646,9 @@ void progressResetRecordToDefaults(void) {
     _bzero(&gProgressSaveRecord, PROGRESS_SAVE_RECORD_BYTES);
     progressSetValue(0x44, 1);
     progressSetValue(0x3B, 1);
-    progressSetValue(0x56, 1);
-    progressSetValue(0xA, progressGetMaximum(0xA));
-    progressSetValue(0xB, progressGetMaximum(0xB) / 2);
+    progressSetValue(PROGRESS_FIELD_OCHRE_ENTRANCE_RESIDENT_STAGE, 1);
+    progressSetValue(PROGRESS_FIELD_MUSIC_VOLUME, progressGetMaximum(PROGRESS_FIELD_MUSIC_VOLUME));
+    progressSetValue(PROGRESS_FIELD_SOUND_EFFECT_VOLUME, progressGetMaximum(PROGRESS_FIELD_SOUND_EFFECT_VOLUME) / 2);
 }
 
 void progressInitializeEepromRecordLocations(void);

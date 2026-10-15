@@ -1217,7 +1217,7 @@ s32 playerToggleCompanionControl(u8 *player, ControllerState *controller) {
     companionMode = ((PlayerControlPrefix *)player)->companionMode;
     switch (companionMode) {
     case 0:
-        if (progressGetValue(8) != 0) {
+        if (progressGetValue(PROGRESS_FIELD_COMPANION_TOGGLE_FOLLOW) != 0) {
             playerSetCompanionControlMode(player, 2, 0, ((RuntimeObjectPrefix *)(u8 *)((s32)gPikachuActor))->handle);
         } else {
             playerSetCompanionControlMode(player, 1, 0, ((RuntimeObjectPrefix *)(u8 *)((s32)gPikachuActor))->handle);
@@ -2549,15 +2549,17 @@ void audioApplySavedMusicVolume(f32 multiplier) {
     s32 savedVolume;
     s32 masterLevel;
 
-    savedVolume = progressGetValue(0xA);
-    scaledVolume = (s32)((f32)((s32)(savedVolume * 0x7FFF) / progressGetMaximum(0xA)) * multiplier);
+    savedVolume = progressGetValue(PROGRESS_FIELD_MUSIC_VOLUME);
+    scaledVolume =
+        (s32)((f32)((s32)(savedVolume * 0x7FFF) / progressGetMaximum(PROGRESS_FIELD_MUSIC_VOLUME)) * multiplier);
     masterLevel = scaledVolume;
     if (scaledVolume < 0) {
         masterLevel = 0;
     } else if (scaledVolume >= 0x8000) {
         masterLevel = 0x7FFF;
     }
-    TRACE("setSongVolume(%f) vcur: %d/%d vol:%d\n", multiplier, savedVolume, progressGetMaximum(0xA), masterLevel);
+    TRACE("setSongVolume(%f) vcur: %d/%d vol:%d\n", multiplier, savedVolume,
+          progressGetMaximum(PROGRESS_FIELD_MUSIC_VOLUME), masterLevel);
     audioSetCategoryVolume(AUDIO_CATEGORY_SEQUENCES, masterLevel);
 }
 
@@ -2574,15 +2576,17 @@ void audioApplySavedSoundEffectVolume(f32 multiplier) {
     s32 savedVolume;
     s32 masterLevel;
 
-    savedVolume = progressGetValue(0xB);
-    scaledVolume = (s32)((f32)((s32)(savedVolume * 0xFFFF) / progressGetMaximum(0xB)) * multiplier);
+    savedVolume = progressGetValue(PROGRESS_FIELD_SOUND_EFFECT_VOLUME);
+    scaledVolume =
+        (s32)((f32)((s32)(savedVolume * 0xFFFF) / progressGetMaximum(PROGRESS_FIELD_SOUND_EFFECT_VOLUME)) * multiplier);
     masterLevel = scaledVolume;
     if (scaledVolume < 0) {
         masterLevel = 0;
     } else if (scaledVolume >= 0x10000) {
         masterLevel = 0xFFFF;
     }
-    TRACE("setSfxVolume(%f) vcur: %d/%d vol:%d\n", multiplier, savedVolume, progressGetMaximum(0xB), masterLevel);
+    TRACE("setSfxVolume(%f) vcur: %d/%d vol:%d\n", multiplier, savedVolume,
+          progressGetMaximum(PROGRESS_FIELD_SOUND_EFFECT_VOLUME), masterLevel);
     audioSetCategoryVolume(AUDIO_CATEGORY_SOUND_EFFECTS, masterLevel);
 }
 
