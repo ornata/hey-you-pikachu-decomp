@@ -4,10 +4,12 @@ Actor kinds include props and distinct same-name configurations. The records
 establish configuration identity, not rendering, behavior or live allocation.
 """
 
+import math
 import re
 import struct
 
 from .context import ROOT
+from .stack import incoming_edges, recover_arguments
 from tools.source_quality import code_only
 
 
@@ -62,3 +64,39 @@ def actor_kind_records(image, kinds=None):
                          resource_index=struct.unpack_from('>i', data, 0x50)[0],
                          scope='Retained configuration identity; distinct names/indices are not merged.'))
     return rows
+
+
+def actor_transformation_requests(instructions, actors):
+    """Link a retained replacement-kind operand to its configuration identity."""
+    incoming = incoming_edges(instructions)
+    frames = {row['offset']: row for row in instructions if row['name'] == 'SCRIPT_OP_ENTER_FRAME'}
+    known = {row['actor_kind']: row for row in actors}
+    result = []
+    for index, instruction in enumerate(instructions):
+        if instruction.get('native', {}).get('functions') != ['actorScriptStartKindTransformation']:
+            continue
+        row = dict(instruction_offset=instruction['offset'], function='actorScriptStartKindTransformation',
+                   consumption='deferred_until_transformation_timer_elapsed',
+                   completion_result='replacement_actor_handle',
+                   context_ownership='same_vm_transferred_to_replacement',
+                   scope='Structural operand/configuration link; operand floor, resource validity, reachability and eventual replacement are not established.')
+        try:
+            value = recover_arguments(instructions, index, 1, incoming=incoming, allow_float=True,
+                                      allow_symbolic=True, frame_entries=frames)[0]
+            row.update(status='recovered_arguments', kind_expression=value)
+            if value['kind'] in ('integer', 'float'):
+                number = value['value']
+                if math.isfinite(number) and -2147483648 <= number < 2147483648:
+                    kind = int(number)
+                    row.update(constant_actor_kind=kind, valid_creation_kind=kind in known)
+                    if kind in known:
+                        actor = known[kind]
+                        row['replacement'] = {key: actor[key] for key in
+                                              ('actor_kind', 'enum_name', 'configuration', 'default_name',
+                                               'hierarchy_template', 'resource_index')}
+                else:
+                    row['numeric_conversion'] = 'outside_supported_s32_conversion'
+        except ValueError as error:
+            row.update(status='unresolved_arguments', reason=str(error))
+        result.append(row)
+    return result

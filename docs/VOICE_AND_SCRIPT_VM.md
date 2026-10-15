@@ -1451,6 +1451,39 @@ The field/entrance attention resident is Squirtle; the growth-resident creation
 paths select Oddish, Gloom and Vileplume according to saved growth state. The
 message-flow descriptions below remain scoped to their respective scripts.
 
+The catalog also links `actor_transformation_requests` to replacement actor
+configurations when the operand is a recovered constant. Nine of ten retained
+requests have constant kinds; the entryway request retains its local expression.
+These links describe requested identity, not successful creation or completion.
+Transformation transfers the same VM to the replacement actor; callers must keep
+its operands and context valid throughout the deferred operation.
+
+The entryway configuration at `0x80139E38` starts on a Bulbasaur. After a nonzero
+message acknowledgement, its script reads the current object type and advances
+by ten when the low twenty bits of message argument zero equal 81, otherwise by
+one. A result at least 37 becomes 1; a result below 1 becomes 36. Overshoot is
+discarded rather than reduced modulo 36: 26 plus ten becomes 36, while 27 plus
+ten becomes 1. This retains alternate Pikachu kind 36 and excludes companion
+kind 37. The producer meaning of message value 81 remains unresolved.
+
+Seventy-six original-instruction probes cover starting kinds 1–37, message values
+80/81 and positive high-bit variants. They start after acknowledgement and stop
+at the transformation request, checking the staged kind, frame records and full
+value buffer. They do not establish earlier message reachability, negative
+arguments, successful replacement or later resource lifetimes.
+
+`caller_frame_analysis` supplies a separate conditional evaluation-stack analysis
+for diagnostic-free listings. It accounts for local storage and both frame
+metadata words, summarizes returning calls, and requires exactly one result
+above metadata at `RETURN`. Unknown native contracts, recursive calls, unequal
+depth joins and budget exhaustion remain explicit diagnostics. Deferred requests
+use only active source-bound returning protocols; waits need not terminate.
+Reported peaks are relative slot requirements under the reviewed native transient
+footprints. Operand types, variable/array
+bounds, frame-metadata integrity, signed byte-offset arithmetic, actual allocation
+capacity, aliases and context/resource lifetimes remain preconditions. This does
+not upgrade the saved-dictionary analysis into a preservation proof.
+
 ## Actor mailbox categories
 
 `ActorScriptMessageKind` names categories with established gameplay producers.

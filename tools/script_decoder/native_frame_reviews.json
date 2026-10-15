@@ -17261,6 +17261,75 @@
         "Own send stack frame56 bytes plus writable caller argument homes; osStartThread adds40 bytes on wake/preemption path. Other resumed threads have separate live stacks and contexts. Ready/wait sentinel at8009F890 has next0 and priority below real threads.",
         "Original __osDisableInt mask-race branch also reads8009F9B8; its literal access must be preserved rather than assuming it dereferences runningThread. Fast mask-stable path does not take that branch."
       ]
+    },
+    {
+      "file": "src/ovl/actor_script_player_world.c",
+      "function": "actorScriptPushSelfHandle",
+      "sha256": "070fb5814e99eec4c444e7f43996e5a878af6bb3114c26188838f31528354939",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "preconditions": [
+        "Copies the executing actor raw handle without resolving availability.",
+        "Actor, state, VM and operand storage are valid, stable and nonoverlapping; one free append slot lies above protected locals and frame metadata."
+      ]
+    },
+    {
+      "file": "src/ovl/actor_script_player_world.c",
+      "function": "actorScriptPushPikachuHandle",
+      "sha256": "25b1cb7073df085aa72713248a32879e7f02605919115bcf15142c0f8f4c4383",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "preconditions": [
+        "Requires a readable active gPikachuActor; copies its raw handle without availability resolution. The global may alias the executing actor.",
+        "Actor, state, VM and operand storage are valid, stable and nonoverlapping; one free append slot lies above protected locals and frame metadata."
+      ],
+      "dependencies": [
+        {
+          "kind": "file",
+          "file": "include/pikachu_actor.h",
+          "sha256": "576cffbae2f4e6b522ea2506052bd8a0e4d298947b17543d13d20387d67b8e35"
+        }
+      ]
+    },
+    {
+      "file": "src/ovl/actor_script_action_commands.c",
+      "function": "actorScriptSetMessageStyle",
+      "sha256": "07c2cbe1e7dad53177632c21851e610aca007cf1ea96edf5a244d7382b6d72d7",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "preconditions": [
+        "One numeric operand lies above protected locals and frame metadata; actor/state/VM/value storage is valid, stable and nonoverlapping.",
+        "Stores the converted signed word in messageStyle and replaces the argument with zero. This handler does not validate a font index; validity for later consumers is a separate obligation."
+      ],
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        }
+      ]
     }
   ]
 }

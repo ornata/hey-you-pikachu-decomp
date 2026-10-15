@@ -21,7 +21,7 @@ from tools.scene_catalog import configuration_locations
 from .messages import message_posts
 from .scenarios import scenario_domains, function_body
 from .actions import action_calls, action_resources
-from .actors import actor_kind_records
+from .actors import actor_kind_records, actor_transformation_requests
 from .functions import action_producer_functions
 from .vocabulary import vocabulary_catalog
 from .dictionaries import dictionary_requests, source_dictionary_requests, attach_dictionary_usage
@@ -29,6 +29,7 @@ from .name_catalog import pokemon_name_catalog
 from .native_frames import native_frame_reviews
 from .control_schemes import control_scheme_catalog, control_scheme_requests
 from .windows import text_window_requests
+from .caller_frames import analyze_caller_frames
 
 
 def companion_sites(image):
@@ -206,6 +207,9 @@ def catalog(image, max_instructions=100000):
                              action_producer_functions=action_producer_functions(decoded['instructions'], actions),
                              player_control_scheme_requests=control_scheme_requests(decoded['instructions'], controls['schemes']),
                              text_window_requests=text_window_requests(decoded['instructions']),
+                             actor_transformation_requests=actor_transformation_requests(decoded['instructions'], actors),
+                             caller_frame_analysis=(analyze_caller_frames(decoded['instructions'], frame_reviews['active'], frame_reviews['active_deferred'])
+                                                    if not decoded['diagnostics'] else dict(scope='Not analyzed: incomplete decoded CFG.')),
                              voice_dictionary_requests=dictionary_requests(decoded['instructions'], vocabulary.get('dictionaries', []), name_catalog,
                                                                            frame_reviews['active'], frame_reviews['active_deferred']),
                              listing=identity + '.json'))
@@ -260,7 +264,7 @@ def main(argv=None):
         report['elf_sha256'] = hashlib.sha256(args.elf.read_bytes()).hexdigest()
         report['decoder_sha256'] = hashlib.sha256(Path(__file__).with_name('formats.py').read_bytes()).hexdigest()
         report['analysis_sha256'] = {name: hashlib.sha256(Path(__file__).with_name(name + '.py').read_bytes()).hexdigest()
-                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames', 'control_schemes', 'windows')}
+                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames', 'control_schemes', 'windows', 'caller_frames')}
         report['native_frame_review_sha256'] = hashlib.sha256(Path(__file__).with_name('native_frame_reviews.json').read_bytes()).hexdigest()
         files = {'catalog.json': report, **{name + '.json': row for name, row in decodes.items()}}
         # Validate every output before writing any content, including existing symlinks.
