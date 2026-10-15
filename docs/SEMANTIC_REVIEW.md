@@ -171,3 +171,24 @@ list. The controller identifiers agree with the
 these names do not normalize portamento values or change the engine's fractional
 bend-sensitivity representation. Active-voice effects and audible conformance
 remain outside these cases.
+
+## Retained numeric values
+
+Zero magic-number findings is not a recovery target. Keep ABI size/offset checks
+literal so they remain independent of the definitions they check. Numeric enum
+definitions, authored tables, mathematical coefficients, component indices and
+format geometry also have legitimate numeric representations. The inventory's
+categories are lexical: a shift may encode a packed field rather than a flag,
+and a bracket may select a component rather than declare a capacity.
+
+Unresolved values remain explicit. These include the VM's value tag 2 and operator
+entries 0–2, raw voice command statuses, launch-kind tags, runtime modes 9/10,
+resource selectors and unidentified flag bits. Naming them requires evidence from
+their specific producers, consumers or resource catalogs. Observing a branch alone
+does not establish a device state, animation meaning or gameplay intent.
+
+The numeric inventory and category/domain retention report belong under
+`build/magic-numbers/`. Runtime reports retain each engine's verdict separately;
+an interpreter observation cannot clear an unsupported Unicorn path or override
+a contradiction. Combining reports must check the registered case inventory and
+preserve the provenance of each input report.
