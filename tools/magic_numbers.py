@@ -81,6 +81,13 @@ def regions(code):
         elif stack:
             start, kind = stack.pop()
             declarations.append((start, match.end(), kind))
+    # C89 compile-time assertions need not contain SizeCheck/OffsetCheck in
+    # their names, and their predicates may span several source lines.
+    for match in re.finditer(
+        r"\btypedef\s+char\s+\w+\s*\[[^;]+\?\s*1\s*:\s*-\s*1\s*\]\s*;",
+        code,
+    ):
+        declarations.append((match.start(), match.end(), "verification_literal"))
     return functions, declarations
 
 
@@ -90,9 +97,8 @@ def classify(code, offset, functions, declarations):
     end = code.find("\n", offset)
     line = code[start : end if end >= 0 else len(code)]
     function = next((name for lo, hi, name in functions if lo <= offset < hi), None)
-    if re.search(
-        r"\b(sizeof|offsetof)\b|\w*(?:SizeCheck|OffsetCheck|OFFSET_CHECK|MEMBER_CHECK)\b",
-        line,
+    if any(lo <= offset < hi and kind == "verification_literal" for lo, hi, kind in declarations) or re.search(
+        r"\b\w*(?:OFFSET_CHECK|MEMBER_CHECK)\s*\(", line
     ):
         category = "verification_literal"
     elif re.match(r"\s*#\s*define\s+", line):
@@ -232,6 +238,7 @@ def inventory(report, root):
         ].append(entry)
     return dict(
         schema_version=1,
+        classifier_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         scope="Clang findings, not all numeric tokens or a semantic proof; lexical categories are review hints.",
         coverage=report["coverage"],
         occurrences=len(entries),

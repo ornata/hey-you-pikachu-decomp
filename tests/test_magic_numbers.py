@@ -80,6 +80,19 @@ def test_macro_expansion_is_not_a_source_literal(tmp_path):
     assert entry["category"] == "macro_expansion_candidate"
 
 
+def test_assertion_shape_matters_more_than_check_name_or_sizeof(tmp_path):
+    source = (
+        "typedef char BufferCheck[\n ((unsigned)&((struct View *)0)->buffer == 17) ? 1 : -1];\n"
+        "typedef char OrdinaryCheck[17];\n"
+        "int example(void) { return sizeof(int) * 17; }\n"
+    )
+    positions = [i for i in range(len(source)) if source.startswith("17", i)]
+    entries = inventory(report(tmp_path, source, positions), tmp_path)["entries"]
+    assert [entry["category"] for entry in entries] == [
+        "verification_literal", "array_bound_candidate", "numeric_candidate"
+    ]
+
+
 def test_partial_ast_remains_explicit_and_complete_header_report_wins(tmp_path):
     source = "int example(void) { return 17; }\n"
     data = report(tmp_path, source, [source.index("17")], "unsupported")
