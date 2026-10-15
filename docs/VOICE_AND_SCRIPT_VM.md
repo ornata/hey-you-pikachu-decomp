@@ -681,6 +681,23 @@ reachable or that its mode transition safely completes.
 
 ### Companion permissions and mode cleanup
 
+Fifteen individual permission bits now have consumer-established names. Besides
+view input and companion control, these cover movement updates, stored angle
+updates, area events, system/toolbox menu paths, interaction activation/inspection,
+horizontal-stick strafing, player-view camera suppression and conditional voice
+music ducking. These flags permit or suppress a consumer path; they do not themselves
+run that path or establish all of its resource prerequisites.
+
+`PLAYER_PERMISSION_VIEW_ANGLE_UPDATE` permits changes to stored yaw/pitch,
+separately from the manual-input permission. `PLAYER_PERMISSION_STICK_STRAFE`
+gates horizontal stick movement; C-button strafing follows a separate path.
+`PLAYER_PERMISSION_SUPPRESS_VIEW_CAMERA_UPDATE` has negative polarity, preventing
+the player-view path from positioning the camera. Physics and inspection-window
+bits whose broader roles remain unresolved retain numeric encodings.
+Two authored original-instruction probes distinguish stored-angle updates from
+manual-input permission, guarding the full player record. They do not certify the
+movement, camera, menu or interaction paths.
+
 `PLAYER_PERMISSION_COMPANION_PIKACHU` (0x40000000) permits selecting Pikachu
 control; `PLAYER_PERMISSION_COMPANION_FOLLOW` (0x80000000) permits follow control.
 The user toggle also checks the permission for its current companion mode. Directly

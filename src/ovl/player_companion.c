@@ -409,7 +409,7 @@ void playerCalculateMovementInput(ControllerState *pad, u8 *obj, f32 *dx, f32 *d
     s32 buttons;
     *dx = 0.0F;
     *dz = 0.0F;
-    x = ((PlayerControlPrefix *)obj)->permissions & 0x2000 ? (f32)pad->stickX : 0.0F;
+    x = ((PlayerControlPrefix *)obj)->permissions & PLAYER_PERMISSION_STICK_STRAFE ? (f32)pad->stickX : 0.0F;
     z = (f32)pad->stickY;
     previous[0] = (f32)((PlayerControlPrefix *)obj)->previousStickY;
     ((PlayerControlPrefix *)obj)->previousStickY = (s32)z;
@@ -455,7 +455,7 @@ void playerCalculateMovementInput(ControllerState *pad, u8 *obj, f32 *dx, f32 *d
 /// value.
 /// \note Original decompilation identifier: \c func_8010EF00 (0x8010EF00).
 void playerSetViewAngles(u8 *player, f32 yaw, f32 pitch) {
-    if (((PlayerControlPrefix *)player)->permissions & 2) {
+    if (((PlayerControlPrefix *)player)->permissions & PLAYER_PERMISSION_VIEW_ANGLE_UPDATE) {
         while (yaw < 0.0F) {
             yaw += 360.0F;
         }
@@ -637,7 +637,7 @@ void playerStepGroundMovement(u8 *motion, f32 dx, f32 dz) {
 
     node = NULL;
     flags = ((PlayerControlPrefix *)motion)->permissions;
-    if (!(flags & 1)) {
+    if (!(flags & PLAYER_PERMISSION_MOVEMENT)) {
         ((PlayerControlPrefix *)motion)->movementClass = 0;
         return;
     }
@@ -731,12 +731,12 @@ block_14:
         dx = 0.0F;
         dz = 0.0F;
     }
-    distance[0] =
-        ((PlayerControlPrefix *)motion)->position[0] - ((RuntimeObjectPrefix *)(u8 *)((s32)gPikachuActor))->worldPosition[0];
-    distance[1] =
-        ((PlayerControlPrefix *)motion)->position[1] - ((RuntimeObjectPrefix *)(u8 *)((s32)gPikachuActor))->worldPosition[1];
-    distance[2] =
-        ((PlayerControlPrefix *)motion)->position[2] - ((RuntimeObjectPrefix *)(u8 *)((s32)gPikachuActor))->worldPosition[2];
+    distance[0] = ((PlayerControlPrefix *)motion)->position[0] -
+                  ((RuntimeObjectPrefix *)(u8 *)((s32)gPikachuActor))->worldPosition[0];
+    distance[1] = ((PlayerControlPrefix *)motion)->position[1] -
+                  ((RuntimeObjectPrefix *)(u8 *)((s32)gPikachuActor))->worldPosition[1];
+    distance[2] = ((PlayerControlPrefix *)motion)->position[2] -
+                  ((RuntimeObjectPrefix *)(u8 *)((s32)gPikachuActor))->worldPosition[2];
     oldDistance = vector3Length(distance);
     if (oldDistance < 2.5F) {
         if (controllerIsRumblePatternActive(0) == 0) {
@@ -1116,14 +1116,14 @@ void playerResumeNormalControl(void) {
 s32 playerTryOpenMenu(u8 *player, ControllerState *controller) {
     if ((playerGetChaseStage() <= 0) || (progressGetValue(0x12) != 0)) {
         if ((controller->pressed & 0x1000) &&
-            (((PlayerControlPrefix *)player)->permissions & 0x1000)) {
+            (((PlayerControlPrefix *)player)->permissions & PLAYER_PERMISSION_SYSTEM_MENU)) {
             playerStopTrackedSoundEffect(player);
             systemMenuEnter();
             return 1;
         }
         goto block_8;
     }
-    if ((controller->pressed & 0x1000) && (((PlayerControlPrefix *)player)->permissions & 0x100)) {
+    if ((controller->pressed & 0x1000) && (((PlayerControlPrefix *)player)->permissions & PLAYER_PERMISSION_TOOLBOX)) {
         playerStopTrackedSoundEffect(player);
         toolboxOpen(-1, 1);
         return 1;
@@ -1142,7 +1142,7 @@ block_8:
 s32 playerTryActivateInteraction(u8 *player, ControllerState *controller) {
     PlayerInteractionAction handler;
 
-    if (!(((PlayerControlPrefix *)player)->permissions & 0x400)) {
+    if (!(((PlayerControlPrefix *)player)->permissions & PLAYER_PERMISSION_INTERACTION_ACTIVATE)) {
         return 0;
     }
     handler = gPlayerInteractionActionHandlers[((PlayerControlPrefix *)player)->modeState.interactionAction];
@@ -1162,7 +1162,7 @@ s32 playerPrepareInteractionDescription(PlayerControlPrefix *);
 s32 playerTryInspectTarget(u8 *player, ControllerState *controller) {
     s32 ret;
 
-    if (!(((PlayerControlPrefix *)player)->permissions & 0x800)) {
+    if (!(((PlayerControlPrefix *)player)->permissions & PLAYER_PERMISSION_INTERACTION_INSPECT)) {
         return 0;
     }
     ret = 0;
@@ -1177,7 +1177,6 @@ s32 playerTryInspectTarget(u8 *player, ControllerState *controller) {
     }
     return ret;
 }
-
 
 /// Handle a permitted stationary-look request and turn off companion tracking.
 /// \param player Primary player record receiving the stationary-look selection.
@@ -1252,7 +1251,7 @@ s32 playerToggleCompanionControl(u8 *player, ControllerState *controller) {
 /// disabled or a repeated event is deferred.
 /// \note Original decompilation identifier: \c func_801106C0 (0x801106C0).
 s32 playerUpdateAreaEvents(u8 *player) {
-    if (((PlayerControlPrefix *)player)->permissions & 0x20) {
+    if (((PlayerControlPrefix *)player)->permissions & PLAYER_PERMISSION_AREA_EVENTS) {
         return areaDispatchPositionEvent((f32 *)player, 1);
     }
     return 0;
@@ -1825,7 +1824,8 @@ s32 playerClassifyInteractionTarget(u8 *player, u8 *object, s32 flags) {
     ((PlayerControlPrefix *)player)->interactionFlags = flags;
     ((PlayerControlPrefix *)player)->modeState.interactionAction = 6;
     ((PlayerControlPrefix *)player)->interactionTarget = 0;
-    if (object == NULL || !(((PlayerControlPrefix *)player)->permissions & 0xC00)) {
+    if (object == NULL || !(((PlayerControlPrefix *)player)->permissions &
+                            (PLAYER_PERMISSION_INTERACTION_ACTIVATE | PLAYER_PERMISSION_INTERACTION_INSPECT))) {
         return 0;
     }
     ((PlayerControlPrefix *)player)->interactionTarget = ((RuntimeObjectPrefix *)object)->handle;
@@ -1845,7 +1845,8 @@ s32 playerClassifyInteractionTarget(u8 *player, u8 *object, s32 flags) {
     if (kind == 0xB0 || kind == 0x8F) {
         return 2;
     }
-    if (!(flags & INTERACTION_PRIMARY_REGION) || !(((PlayerControlPrefix *)player)->permissions & 0x400)) {
+    if (!(flags & INTERACTION_PRIMARY_REGION) ||
+        !(((PlayerControlPrefix *)player)->permissions & PLAYER_PERMISSION_INTERACTION_ACTIVATE)) {
         if (kind == 0x87) {
             return 9;
         }
@@ -1901,7 +1902,6 @@ s32 playerClassifyInteractionTarget(u8 *player, u8 *object, s32 flags) {
     }
     return 4;
 }
-
 
 /// Assign the controller used by the primary player.
 /// \param port Controller port from zero through three; other values supply neutral input.
@@ -1960,7 +1960,7 @@ void playerRestoreState(void) {
 ///
 /// \note Original decompilation identifier: \c func_80111B68 (0x80111B68).
 void playerUpdateViewCamera(u8 *player) {
-    if (!(((PlayerControlPrefix *)player)->permissions & 0x4000)) {
+    if (!(((PlayerControlPrefix *)player)->permissions & PLAYER_PERMISSION_SUPPRESS_VIEW_CAMERA_UPDATE)) {
         cameraSetPositionAndAngles(
             0, ((PlayerControlPrefix *)player)->position[0],
             ((PlayerControlPrefix *)player)->eyeHeight + ((PlayerControlPrefix *)player)->position[1],
@@ -1969,7 +1969,6 @@ void playerUpdateViewCamera(u8 *player) {
             ((PlayerControlPrefix *)player)->yaw + ((PlayerControlPrefix *)player)->viewShake, 0.0F);
     }
 }
-
 
 /// Start a sound effect and remember its playback for later stopping.
 /// \param player Player record receiving the new playback handle.
@@ -2619,8 +2618,9 @@ void audioUpdateGameplayMusicDucking(void) {
     s32 active = 0;
     switch (gRuntimeGameMode) {
     case GAME_MODE_GAMEPLAY:
-        if ((gPlayerPermissions & 0x08000000) &&
-            (gGameplayVoiceCommandsAllowed == 0 || gGameplayMicrophoneAvailable == 0) && gRuntimeCurrentArea != AREA_CREDITS) {
+        if ((gPlayerPermissions & PLAYER_PERMISSION_VOICE_MUSIC_DUCKING) &&
+            (gGameplayVoiceCommandsAllowed == 0 || gGameplayMicrophoneAvailable == 0) &&
+            gRuntimeCurrentArea != AREA_CREDITS) {
             active = 1;
         }
         break;

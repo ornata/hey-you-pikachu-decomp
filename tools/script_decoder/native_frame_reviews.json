@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "purpose": "Explicit scalar and immediate action-request storage contracts; source changes revoke evidence until reviewed again. Deferred handlers remain separate.",
-  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases. Twelve action-request wrappers and their two-field scheduling helper reviewed against original Ghidra801167A0 and all twelve original wrapper addresses; twenty-four direct original-instruction request cases guard all VM fields and pending/protected values. Selector-three deferred dispatch and helper chain reviewed against original Ghidra80117098/8000F4C4/801167BC/800120F0 and eight guarded direct-dispatch/scheduler cases. Selector-two startup and waiting helpers reviewed against original Ghidra80116800/80012034; twelve guarded direct/scheduler cases cover numeric tags, original null sentinel, waiting and completion. Player input-mask field names now include synthetic stick flags, separately from permission flags; unchanged prefix layout and the reviewed permission/position reads were rechecked against matching objects before rebinding the two affected header dependencies. Additional permission names for Pikachu/follow selection and stun reaction leave the permission storage and reviewed view/position access unchanged; the two header dependencies were rechecked after strict matching verification.",
+  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases. Twelve action-request wrappers and their two-field scheduling helper reviewed against original Ghidra801167A0 and all twelve original wrapper addresses; twenty-four direct original-instruction request cases guard all VM fields and pending/protected values. Selector-three deferred dispatch and helper chain reviewed against original Ghidra80117098/8000F4C4/801167BC/800120F0 and eight guarded direct-dispatch/scheduler cases. Selector-two startup and waiting helpers reviewed against original Ghidra80116800/80012034; twelve guarded direct/scheduler cases cover numeric tags, original null sentinel, waiting and completion. Player input-mask field names now include synthetic stick flags, separately from permission flags; unchanged prefix layout and the reviewed permission/position reads were rechecked against matching objects before rebinding the two affected header dependencies. Additional permission names for Pikachu/follow selection and stun reaction leave the permission storage and reviewed view/position access unchanged; the two header dependencies were rechecked after strict matching verification. Ten additional permission names retain identical player storage and reviewed view/position accesses; header bindings rechecked after all483 objects and ROM matched.",
   "preconditions": [
     "Protected locals and frame metadata lie below the active stack depth.",
     "Append contracts require one free value slot; pointers and borrowed actor/global state are valid.",
@@ -439,7 +439,7 @@
         {
           "kind": "file",
           "file": "include/player_types.h",
-          "sha256": "f36f2c213184d39806a415d5eb8ab7bc96c5d30ae59cdacaaf2a3052ef15edc2"
+          "sha256": "47f0f117d187347ac120e7357a0690e68ec662fc9e29466ca219dae19a6b73bf"
         }
       ],
       "preconditions": [
@@ -906,7 +906,7 @@
         {
           "kind": "file",
           "file": "include/player_types.h",
-          "sha256": "f36f2c213184d39806a415d5eb8ab7bc96c5d30ae59cdacaaf2a3052ef15edc2"
+          "sha256": "47f0f117d187347ac120e7357a0690e68ec662fc9e29466ca219dae19a6b73bf"
         },
         {
           "kind": "file",

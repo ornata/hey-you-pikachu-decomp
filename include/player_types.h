@@ -17,10 +17,21 @@ typedef enum CompanionControlMode {
 /// Recovered flags within the player's retained permission mask.
 /// Other permission bits retain their existing numeric encodings.
 typedef enum PlayerPermissionFlag {
-    PLAYER_PERMISSION_VIEW_INPUT = 0x200, ///< Permit controller input to change view angles.
+    PLAYER_PERMISSION_MOVEMENT = 0x1,                       ///< Permit player terrain-movement updates.
+    PLAYER_PERMISSION_VIEW_ANGLE_UPDATE = 0x2,              ///< Permit changes to stored yaw and pitch.
+    PLAYER_PERMISSION_AREA_EVENTS = 0x20,                   ///< Permit player-position area events.
+    PLAYER_PERMISSION_TOOLBOX = 0x100,                      ///< Permit the toolbox menu request path.
+    PLAYER_PERMISSION_VIEW_INPUT = 0x200,                   ///< Permit controller input to change view angles.
+    PLAYER_PERMISSION_INTERACTION_ACTIVATE = 0x400,         ///< Permit activation of the selected interaction.
+    PLAYER_PERMISSION_INTERACTION_INSPECT = 0x800,          ///< Permit inspection text for the selected target.
+    PLAYER_PERMISSION_SYSTEM_MENU = 0x1000,                 ///< Permit the system-menu request path.
+    PLAYER_PERMISSION_STICK_STRAFE = 0x2000,                ///< Permit strafing from horizontal stick input.
+    PLAYER_PERMISSION_SUPPRESS_VIEW_CAMERA_UPDATE = 0x4000, ///< Suppress camera positioning from the player view.
     PLAYER_PERMISSION_VIEW_CONTROL =
         0x8000, ///< Select direct view-angle control; view-input permission still gates actual input.
-    PLAYER_PERMISSION_STUN = 0x20000000,              ///< Permit the timed player stun reaction.
+    PLAYER_PERMISSION_VOICE_MUSIC_DUCKING =
+        0x08000000,                      ///< Permit conditional music ducking when voice input is unavailable.
+    PLAYER_PERMISSION_STUN = 0x20000000, ///< Permit the timed player stun reaction.
     PLAYER_PERMISSION_COMPANION_PIKACHU = 0x40000000, ///< Permit Pikachu control selection and its user toggle.
     PLAYER_PERMISSION_COMPANION_FOLLOW = 0x80000000   ///< Permit follow control selection and its user toggle.
 } PlayerPermissionFlag;

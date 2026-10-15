@@ -22,7 +22,7 @@ class Image:
 
     def read_address(self, address, size):
         records = {0x80401000: struct.pack('>III', 0x80403000, 0, 0x8000),
-                   0x8040100C: struct.pack('>III', 0x80403004, 0x80403008, 0xC0001200),
+                   0x8040100C: struct.pack('>III', 0x80403004, 0x80403008, 0xC0400200),
                    0x80402000: struct.pack('>iiH2x', 32 if self.bad_mode else 1, 0, 0x8040),
                    0x8040200C: struct.pack('>iiH2x', 0, -1, 0x80)}
         assert size == 12
@@ -36,7 +36,7 @@ def test_table_links_preserve_input_domains_modes_and_leave_frontier():
     assert result['modes'][0]['permission_mask'] == 0x8000
     assert set(result['modes'][1]['recovered_permissions']) == {
         'PLAYER_PERMISSION_VIEW_INPUT', 'PLAYER_PERMISSION_COMPANION_PIKACHU', 'PLAYER_PERMISSION_COMPANION_FOLLOW'}
-    assert result['modes'][1]['unrecovered_permission_bits'] == 0x1000
+    assert result['modes'][1]['unrecovered_permission_bits'] == 0x400000
     assert result['leave_callback_frontier'] == ['inventedLeave']
     with pytest.raises(ValueError, match='invalid mode'):
         control_scheme_catalog(Image(True), 2, 2)
