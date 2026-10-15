@@ -49,6 +49,73 @@ def function_source(code, name):
     raise ValueError('unclosed reviewed function definition')
 
 
+_DEFERRED_PHASE_MODELS = {
+    5: ('start_program_then_message_or_sequencer_result', 1,
+        'action_initializing_then_message_or_sequence_stop', None, (
+            ('initialize', 1, -1, 'wait_for_action', None, None),
+            ('wait', 0, 0, 'wait_for_action', None, None),
+            ('interrupt', 0, 1, 'yield', 'pending_message_word', None),
+            ('complete', 0, 1, 'yield', 0, None))),
+    6: ('held_handle_gate_start_program_then_sequencer_result', 1,
+        'action_initializing_then_sequence_stop', None, (
+            ('initialize_reject', 1, 0, 'yield', -1, None),
+            ('initialize_accept', 1, -1, 'wait_for_action', None, None),
+            ('wait', 0, 0, 'wait_for_action', None, None),
+            ('complete', 0, 1, 'yield', 0, None))),
+    7: ('acquisition_settings_then_handle_gate_or_full_action_poll', 3,
+        'action_initializing_then_sequence_and_last_action_end', None, (
+            ('initialize_existing_handle', 3, -2, 'yield', 'held_item_kind', None),
+            ('initialize_start', 3, -3, 'wait_for_action', None, None),
+            ('wait', 0, 0, 'wait_for_action', None, None),
+            ('complete', 0, 1, 'yield', 'held_item_kind', None))),
+    8: ('eat_with_early_rejection_or_result_before_followup', 1,
+        'action_initializing_then_sequence_stop', 1, (
+            ('initialize_reject', 1, 0, 'yield', -1, None),
+            ('initialize_accept', 1, -1, 'wait_for_action', None, None),
+            ('wait', 0, 0, 'wait_for_action', None, None),
+            ('consume_and_finish', 0, 1, 'yield', 'pre_consumption_item_history', None),
+            ('consume_and_followup', 0, 1, 'wait_for_action', 'pre_consumption_item_history', 1),
+            ('followup_wait_or_finish', 0, 0, 'wait_for_action_or_yield', None, None))),
+    11: ('show_area_label_then_handoff_and_wait_secondary_overlay', 0,
+         'action_initializing_then_accumulated_time_then_secondary_overlay', 12, (
+             ('initialize_show_label', 0, 0, 'wait_for_action', None, None),
+             ('wait_accumulated_time', 0, 0, 'wait_for_action', None, None),
+             ('fade_and_handoff', 0, 0, 'wait_for_action', None, 12),
+             ('successor_initializing_wait', 0, 0, 'wait_for_action', None, None),
+             ('wait_secondary_fade', 0, 0, 'wait_for_action', None, None),
+             ('complete', 0, 1, 'yield', 0, None))),
+}
+
+
+def phase_contract_supported(deferred):
+    """Recognize reviewed branch phases without flattening rejection or handoff effects."""
+    selector = deferred.get('action_handler')
+    if type(selector) is not int or selector not in _DEFERRED_PHASE_MODELS:
+        return False
+    effect, arguments, gate, followup, expected = _DEFERRED_PHASE_MODELS[selector]
+    if (deferred.get('effect') != effect or type(deferred.get('arguments')) is not int or
+            deferred['arguments'] != arguments or deferred.get('phase_gate') != gate or
+            deferred.get('result_tag') != 'integer' or
+            deferred.get('followup_action_handler') != followup or
+            followup is not None and type(deferred.get('followup_action_handler')) is not int):
+        return False
+    phases = deferred.get('phases')
+    if not isinstance(phases, list) or len(phases) != len(expected):
+        return False
+    if any(key in deferred for key in ('initialization_stack_delta', 'initialization_scheduling',
+                                      'waiting_stack_delta', 'completion_stack_delta',
+                                      'waiting_scheduling', 'completion_scheduling')):
+        return False
+    return all(
+        isinstance(phase, dict) and
+        type(phase.get('consumed_arguments')) is int and type(phase.get('stack_delta')) is int and
+        (phase.get('phase'), phase['consumed_arguments'], phase['stack_delta'],
+         phase.get('scheduling'), phase.get('result'), phase.get('next_action_handler')) == shape and
+        ('result' not in phase or type(phase['result']) is type(shape[4])) and
+        ('next_action_handler' not in phase or type(phase['next_action_handler']) is int)
+        for phase, shape in zip(phases, expected))
+
+
 def native_frame_reviews(root=ROOT, manifest=None):
     """Activate only explicitly reviewed callbacks with unchanged dependencies."""
     if manifest is None:
@@ -160,32 +227,7 @@ def native_frame_reviews(root=ROOT, manifest=None):
             type(deferred.get('waiting_game_mode')) is int and deferred['waiting_game_mode'] == 3 and
             type(deferred.get('completion_result')) is int and deferred['completion_result'] == 0 and
             'initialization_stack_delta' not in deferred and 'initialization_scheduling' not in deferred)
-        phases = deferred.get('phases')
-        eating_phases = (
-            selector == 8 and deferred.get('effect') == 'eat_with_early_rejection_or_result_before_followup' and
-            deferred.get('phase_gate') == 'action_initializing_then_sequence_stop' and
-            deferred.get('arguments') == 1 and deferred.get('result_tag') == 'integer' and
-            type(deferred.get('followup_action_handler')) is int and deferred['followup_action_handler'] == 1 and
-            isinstance(phases, list) and len(phases) == 6)
-        if eating_phases:
-            expected = (
-                ('initialize_reject', 1, 0, 'yield', -1, None),
-                ('initialize_accept', 1, -1, 'wait_for_action', None, None),
-                ('wait', 0, 0, 'wait_for_action', None, None),
-                ('consume_and_finish', 0, 1, 'yield', 'pre_consumption_item_history', None),
-                ('consume_and_followup', 0, 1, 'wait_for_action', 'pre_consumption_item_history', 1),
-                ('followup_wait_or_finish', 0, 0, 'wait_for_action_or_yield', None, None))
-            eating_phases = all(
-                isinstance(phase, dict) and
-                type(phase.get('consumed_arguments')) is int and type(phase.get('stack_delta')) is int and
-                (phase.get('phase'), phase['consumed_arguments'], phase['stack_delta'],
-                 phase.get('scheduling'), phase.get('result'), phase.get('next_action_handler')) == shape and
-                ('result' not in phase or type(phase['result']) is type(shape[4])) and
-                ('next_action_handler' not in phase or type(phase['next_action_handler']) is int)
-                for phase, shape in zip(phases, expected))
-            eating_phases = eating_phases and not any(
-                key in deferred for key in ('initialization_stack_delta', 'initialization_scheduling', 'waiting_stack_delta',
-                                             'completion_stack_delta', 'waiting_scheduling', 'completion_scheduling'))
+        explicit_phases = phase_contract_supported(deferred)
         reviewed_effect = (
             selector == 3 and deferred.get('effect') == 'loop_exit_then_conditional_zero_append' and deferred.get('arguments') == 0 or
             selector == 2 and deferred.get('effect') == 'start_program_then_conditional_zero_append' and deferred.get('arguments') == 1 and
@@ -193,7 +235,7 @@ def native_frame_reviews(root=ROOT, manifest=None):
             deferred.get('initialization_scheduling') == 'wait_for_action' or
             selector == 9 and deferred.get('effect') == 'costed_program_then_conditional_result_append' and deferred.get('arguments') == 2 and
             type(deferred.get('initialization_stack_delta')) is int and deferred['initialization_stack_delta'] == -2 and
-            deferred.get('initialization_scheduling') == 'wait_for_action' or mode_gate or eating_phases)
+            deferred.get('initialization_scheduling') == 'wait_for_action' or mode_gate or explicit_phases)
         scalar_phases = (
             deferred.get('waiting_stack_delta') == 0 and
             deferred.get('completion_stack_delta') == (1 - deferred['arguments'] if mode_gate else 1) and
@@ -202,7 +244,7 @@ def native_frame_reviews(root=ROOT, manifest=None):
         valid = (review.get('coverage') == 'immediate_request_only' and type(selector) is int and
                  selector == review.get('action_handler') and reviewed_effect and
                  type(deferred.get('arguments')) is int and
-                 (eating_phases or scalar_phases) and
+                 (explicit_phases or scalar_phases) and
                  bool(deferred.get('dependencies')))
         if valid and not changed:
             active_deferred[name] = deferred

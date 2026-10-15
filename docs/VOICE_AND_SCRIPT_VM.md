@@ -858,6 +858,48 @@ Running polls consume nothing; completion appends the retained outcome: initiall
 zero for insufficient resource or three after acceptance, with one available from
 later response handling. This footprint does not prove that the program finishes.
 
+Interruptible playback, selector five, starts its program before checking for
+messages on later polls. A pending message then takes precedence over sequencing
+status: the handler supplies its raw integer flag and stops command execution,
+without acknowledging the mailbox or stopping independent motion. With no message,
+sequencing must stop before it supplies zero.
+
+Throwing, selector six, consumes the program even when the held handle is zero;
+that case supplies -1 immediately. A stale nonzero handle still permits startup.
+Later completion supplies zero when sequencing stops. This handler itself neither
+releases nor launches an item, so its result does not establish a successful throw.
+
+Acquisition, selector seven, consumes program, kind filter and range, retaining the
+settings even when an existing raw held handle bypasses startup. A live handle
+supplies the item kind; a stale one supplies zero. Later completion requires both
+stopped sequencing and a nonzero recorded request that has ended or been superseded.
+Startup clears that recorded request: a program that records no action can remain
+waiting after sequencing stops. Eighteen original-instruction dispatcher probes
+cover these three handlers and their real helper chains, guarding protected values,
+actor state and handle-pool storage. They are independent phase states, not proof
+of throwing, acquisition or termination in a complete game trajectory.
+
+The area-transition request selects handler eleven. Initialization only shows the
+area label; subsequent polling tests accumulated VM time strictly greater than
+1.5 seconds. Requesting it does not restart that clock. Fade setup selects handler
+twelve, whose newly set initialization flag is cleared by the updater before the
+next dispatch. The successor waits while fade time is positive, then hides the
+label, clears music-ducking inhibit flags and supplies zero. Neither setter draws
+the label or changes audio volume immediately. Ten original-instruction probes
+cover the equality boundary, handoff and successor states, including updater
+bookkeeping. Actual fade advancement and area loading are separate operations.
+
+Kind transformation transfers the original VM to a newly created actor instead of
+copying it. The original actor's VM address is cleared before its hierarchy is
+marked for deferred destruction; its later destructor therefore leaves the
+transferred context alone. The updater retains that same context across dispatch,
+so its scheduling result is written to the replacement's VM. Other borrowed actor
+references, including global actor pointers and effect anchors, are not generally
+retargeted. This ownership transfer does not prove their later lifetime safety.
+The full transformation contract still requires the separate actor-resource
+decompression and constructor review; initialization and timed waiting alone
+cannot clear that frontier.
+
 The held-item eating request selects handler eight without consuming its program
 operand. Initialization consumes that operand once. A missing or ineligible held
 item supplies -1 immediately; otherwise the handler enables shrinking, starts the
@@ -911,8 +953,12 @@ setter does not discard unknown mask bits. Neither setter draws or submits work.
 The guide-style native can play an audio cue, and enabling alternate overlay mode
 submits two blocking microphone-configuration requests before clearing gameplay
 microphone permissions. Disabling the overlay does not restore those permissions.
-Audio, controller queue capacity, request lifetime and consumer scheduling remain
-explicit dependencies; those two natives have no complete immediate review yet.
+The overlay word retains its raw signed value. Zero only stores that word; any
+nonzero value submits override-disable followed by trigger-follow-disable, then
+clears permissions only after both submissions return. These natives have
+conditional immediate reviews through their audio and controller helper chains;
+queue capacity, retained-ring lifetime and consumer scheduling remain explicit
+prerequisites. Enqueue completion does not acknowledge a device operation.
 
 The default-action-mode setter retains the target's low sixteen bits; the messenger
 contact-mode setter retains the full signed word. Both replace their operand with

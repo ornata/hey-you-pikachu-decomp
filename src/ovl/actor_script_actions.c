@@ -122,6 +122,7 @@ s32 actorScriptWaitForActionOrMessage(u8 *actor) {
 /// Start the script-selected timed program and wait for sequencing to stop or a pending message.
 /// \param actor Actor whose script supplies the action and receives its completion result.
 /// \returns One when complete, or two while waiting; completion supplies the pending-message flag or zero as the script result.
+/// \note Interruption preserves the pending message. The result retains the flag's integer value without Boolean normalization.
 /// \note Original decompilation identifier: \c func_801168A8 (0x801168A8).
 s32 actorScriptPlayInterruptibleAction(u8 *actor) {
     u8 *vmBytes;
@@ -138,6 +139,7 @@ s32 actorScriptPlayInterruptibleAction(u8 *actor) {
 /// Start the script-selected held-item throwing action and wait for it to stop.
 /// \param actor Actor whose held item is thrown by the selected action.
 /// \returns One when complete or no held item is available, otherwise two; the script result is -1 for a missing item or zero after the action stops.
+/// \note A nonzero held handle permits startup without establishing that the item is live. Zero reports sequencing completion, not a successful throw.
 /// \note Original decompilation identifier: \c func_80116900 (0x80116900).
 s32 actorScriptThrowHeldItem(u8 *actor) {
     u8 *state = ((RuntimeObjectPrefix *)actor)->state.bytes;
@@ -157,8 +159,10 @@ s32 actorScriptThrowHeldItem(u8 *actor) {
 }
 
 /// Run the script-selected item acquisition action and report the held item kind.
-/// \param actor Actor whose script supplies the acquisition action and settings.
+/// \param actor Actor whose script supplies the program, item-kind filter and search range in push order.
 /// \returns One when complete, or two while waiting; completion supplies the held item kind, or zero when absent, as the script result.
+/// \note Search settings are retained even when an existing held handle completes the request immediately.
+/// Otherwise completion requires both stopped sequencing and an ended or superseded last action.
 /// \note Original decompilation identifier: \c func_80116984 (0x80116984).
 s32 actorScriptAcquireItem(u8 *actor) {
     s32 value;
@@ -327,6 +331,7 @@ s32 actorScriptSelectControlScheme(u8 *actor) {
 /// Show the area label and begin the area-transition fade when its delay has elapsed.
 /// \param actor Actor whose script context controls the transition.
 /// \returns Two while this handler or its selected successor waits for the transition.
+/// \note The delay uses the VM's total elapsed clock; requesting this action does not restart that clock.
 /// \note Original decompilation identifier: \c func_80116D58 (0x80116D58).
 s32 actorScriptBeginAreaTransition(u8 *actor) {
     u8 *vmBytes;

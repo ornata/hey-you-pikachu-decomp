@@ -101,6 +101,26 @@
       "kind": "file",
       "file": "include/actor_orientation_cache.h",
       "sha256": "2835fe1e1ea52dfa1896425d52967fc040279bf94c29406d25967c014531939a"
+    },
+    {
+      "kind": "file",
+      "file": "include/motion_playback_types.h",
+      "sha256": "a9f29997bc0cf851f840880bfd78d8ad974d902ad1bb88603d55e342ecf0e010"
+    },
+    {
+      "kind": "file",
+      "file": "include/action_definition_types.h",
+      "sha256": "08a9daa83089379deeaf2e3f31334cb0eee086c51b62f187471a831490c7719e"
+    },
+    {
+      "kind": "file",
+      "file": "include/actor_action_callbacks.h",
+      "sha256": "0129564234b245a4b8f0851ac476a00a1e7aae3260497f0731ef155618007465"
+    },
+    {
+      "kind": "file",
+      "file": "include/actor_action_cue.h",
+      "sha256": "146bb59d9ddd562e60abbbec79678091fb82e362bd441c19ce07d0787d81babe"
     }
   ],
   "callbacks": [
@@ -1344,8 +1364,283 @@
       ],
       "preconditions": [
         "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
-        "The request returns scheduling result two without reading or writing stack operands. Deferred handler operands, results, context replacement and write effects remain unreviewed; this contract must not clear that deferred frontier."
-      ]
+        "The request returns scheduling result two without reading or writing stack operands. Deferred handler phases are reviewed separately under their source-bound ownership and stack conditions."
+      ],
+      "deferred_review": {
+        "action_handler": 5,
+        "effect": "start_program_then_message_or_sequencer_result",
+        "arguments": 1,
+        "dependencies": [
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "function": "actorScriptDispatchActionHandler",
+            "sha256": "e3e6746d411e3a9075fb9416d4007315a55fb47a83b4723d618a0d9dc72dd575"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "function": "actorScriptPlayAction",
+            "sha256": "9fa803d8ad922b48b3e5d2b877821d6f88a1fa6ae8d23b44fe8d9f78314d077b"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "function": "actorScriptWaitForSequencerStop",
+            "sha256": "aaeba1f2743f6d29c4317b2c8889a67d97f470ee23b0beb37a5cebf0455f2505"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/action_script.c",
+            "function": "actionScriptStart",
+            "sha256": "e53fc9f311fb49da04c1e77dc1c40cf739dfee554f85e49a15aef4b26b0ca257"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/action_script.c",
+            "function": "actionScriptIsStopped",
+            "sha256": "952ba58dc54050194e25912a37f214d33fbdf2af29f91f48b9c2ca6dd76b3ba9"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "scriptVmPopInteger",
+            "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "scriptVmPopValue",
+            "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "scriptValueGetInteger",
+            "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "actorUpdateScriptVm",
+            "sha256": "8f8aee40236f03cd3802e4944351029e97768892e9cff400831a09bda3a7632c"
+          },
+          {
+            "kind": "file",
+            "file": "include/action_script_ids.h",
+            "sha256": "444367ac3e76e056f62a750dafbe871388cfb5b1e056f11248ba00605c1e4544"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "sha256": "6fb8b953367a6f90410096f9c5e211887a32d0074582e5607816bd260978f558",
+            "function": "actorScriptPlayInterruptibleAction"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "sha256": "134b0779a5442dcab97101c5281e38407670da069f8bdd68d616375beb351efe",
+            "function": "actorScriptWaitForActionOrMessage"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "sha256": "a4c1190400dc876045693ffaa36a24424fc874a24370e0b2b10aba4b0464c17a",
+            "function": "actorScriptThrowHeldItem"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "sha256": "d61a5d66210b9eb3c78e109ea7f53db3a749b94c46ea701fed95cb97d79df4e1",
+            "function": "actorScriptAcquireItem"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/action_script.c",
+            "sha256": "e2c86256e4a5b10a2ace25084d05300611fc38fdc250c8b448f8f5379427357e",
+            "function": "actionScriptStop"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/action_script.c",
+            "sha256": "ac5164a895ecc7ef9bfb322d33895fcb21c2b469f9c968a93552e5a0842096e5",
+            "function": "actionScriptIsStoppedAndLastActionEnded"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/action_script.c",
+            "sha256": "c40da46597a69e3d679851ee6e48569676731301a6929552fdd63fb8bcaa2d6f",
+            "function": "actionScriptHasLastActionEnded"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/motion_playback.c",
+            "sha256": "74257b62a02a4907a54956ef5b8443595935219026fe815c401cee0a1c64df8e",
+            "function": "actionGetStoredRequestId"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/motion_playback.c",
+            "sha256": "367a20435b8426a9db96d1b0ae7fc4403b23c73abf739ed3dcc5ad8d7cb4aeb7",
+            "function": "actionRequestLoopExit"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/motion_playback.c",
+            "sha256": "59819f75331275ef990b044fe5ba785e7c98162b1b4709070f4de2f5fa3e3a71",
+            "function": "actionCancelPendingRequest"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_queries.c",
+            "sha256": "b415508ec1d70376ed821b6ed6870432d928cde361e14d058742e6aa68506978",
+            "function": "actorGetHeldItemKind"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/object_hierarchy.c",
+            "sha256": "a04905a063945115cd20a841f611294f7784656739644dd48ba5230ee11881c9",
+            "function": "objectFindLiveByHandle"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/keyed_pool.c",
+            "sha256": "515ff415ac8762af39e40b6969a0d563591ab0252fcc95f660b808c06964541d",
+            "function": "keyedPoolGetValue"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/keyed_pool.c",
+            "sha256": "2c4d9787ed139519f2981eb227805c3b38046a0baf47287ae6ecc2156f5665c6",
+            "function": "keyedPoolFindEntry"
+          },
+          {
+            "kind": "file",
+            "file": "include/object_types.h",
+            "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+          },
+          {
+            "kind": "file",
+            "file": "include/actor_script.h",
+            "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+          },
+          {
+            "kind": "file",
+            "file": "include/script_vm.h",
+            "sha256": "f9f9e4509166d6c9aac4d4687f973da7c3b719df7413be4d4f738182850e5b08"
+          },
+          {
+            "kind": "file",
+            "file": "include/item_types.h",
+            "sha256": "a11ff3ec0e7d9256425797d27c1d7222f58360b5f27a4bf4128119f9a762f991"
+          },
+          {
+            "kind": "file",
+            "file": "include/keyed_pool_types.h",
+            "sha256": "4c5ce15833971e0a7b7a25588eb674597474dba8a6d71b51cf78cf098c63a611"
+          },
+          {
+            "kind": "file",
+            "file": "include/object_flags.h",
+            "sha256": "135a2ddab3b6c3e703f08bc85faa083742809cf81a1edc43bd05469d2faac637"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f",
+            "function": "scriptVmPopInteger"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "sha256": "6ab64e75a64605c75c85f685e506c90c9970819578d94a601eb7b1bae774744b",
+            "function": "scriptVmPopFloat"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84",
+            "function": "scriptVmPopValue"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f",
+            "function": "scriptValueGetInteger"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "sha256": "94e6ff080eea82e2661ec2adbc45a33a6a2141b10ff8d1263f580c2c5433c6b1",
+            "function": "scriptValueGetFloat"
+          },
+          {
+            "kind": "file",
+            "file": "include/motion_playback_types.h",
+            "sha256": "a9f29997bc0cf851f840880bfd78d8ad974d902ad1bb88603d55e342ecf0e010"
+          },
+          {
+            "kind": "file",
+            "file": "include/action_definition_types.h",
+            "sha256": "08a9daa83089379deeaf2e3f31334cb0eee086c51b62f187471a831490c7719e"
+          },
+          {
+            "kind": "file",
+            "file": "include/actor_action_callbacks.h",
+            "sha256": "0129564234b245a4b8f0851ac476a00a1e7aae3260497f0731ef155618007465"
+          },
+          {
+            "kind": "file",
+            "file": "include/actor_action_cue.h",
+            "sha256": "146bb59d9ddd562e60abbbec79678091fb82e362bd441c19ce07d0787d81babe"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "actorUpdateScriptVm",
+            "sha256": "8f8aee40236f03cd3802e4944351029e97768892e9cff400831a09bda3a7632c"
+          }
+        ],
+        "preconditions": [
+          "Actor, actor state, VM and owned value storage remain live, separate and nonoverlapping with helper-written motion/sequencer/pool state and C stack. The same VM is selected throughout any helper chain; concurrent replacement/destruction and arbitrary world-update lifetime effects are excluded.",
+          "All consumed numeric operands lie above protected locals/frame metadata. Integer/code-reference values and finite signed32-representable float values are supported for integer conversion; float conversion of the search-range operand is valid. Appending a later result requires one free value slot above protected storage.",
+          "Whenever a branch starts a timed program, its ID selects a retained readable entry. ACTION_SCRIPT_NO_PROGRAM(-1) uses the authenticated original-target null predecessor backing; other invalid indices and portable host indexing are outside this review. No command executes during startup; only established sequencer fields reset, without stopping independent motion.",
+          "The normal actorUpdateScriptVm wrapper clears actionInitializing after dispatch. These handlers leave that flag unchanged; direct repeated initializing calls can consume operands repeatedly and are not an ordinary action trajectory. Phase footprints do not prove sequencing advancement, eventual completion or gameplay reachability.",
+          "Initializing always consumes the program and waits, even with a pending message. Noninitial dispatch gives a nonzero pending message priority over sequencing status: it appends the raw signed flag, requests loop exit, cancels pending action fields and stops command execution. Mailbox flag and payload remain intact; no Boolean normalization or acknowledgement occurs.",
+          "Without a pending message, an active command waits without stack effects; a null command appends0 and yields. Stop writes loopExitRequested1, pendingAction-1, pendingRequestId0, pendingActionKind0, commandNULL and selectedProgramId-1. Other sequencer counters/timers, sound handle and active motion remain unchanged."
+        ],
+        "evidence": "OriginalGhidra801168A8/80116900/80116984/801188D4 and existingselector2 source review; static evidence only.",
+        "phase_gate": "action_initializing_then_message_or_sequence_stop",
+        "phases": [
+          {
+            "phase": "initialize",
+            "consumed_arguments": 1,
+            "stack_delta": -1,
+            "scheduling": "wait_for_action"
+          },
+          {
+            "phase": "wait",
+            "consumed_arguments": 0,
+            "stack_delta": 0,
+            "scheduling": "wait_for_action"
+          },
+          {
+            "phase": "interrupt",
+            "consumed_arguments": 0,
+            "stack_delta": 1,
+            "scheduling": "yield",
+            "result": "pending_message_word"
+          },
+          {
+            "phase": "complete",
+            "consumed_arguments": 0,
+            "stack_delta": 1,
+            "scheduling": "yield",
+            "result": 0
+          }
+        ],
+        "result_tag": "integer"
+      }
     },
     {
       "function": "actorScriptStartHeldItemThrow",
@@ -1373,8 +1668,283 @@
       ],
       "preconditions": [
         "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
-        "The request returns scheduling result two without reading or writing stack operands. Deferred handler operands, results, context replacement and write effects remain unreviewed; this contract must not clear that deferred frontier."
-      ]
+        "The request returns scheduling result two without reading or writing stack operands. Deferred handler phases are reviewed separately under their source-bound ownership and stack conditions."
+      ],
+      "deferred_review": {
+        "action_handler": 6,
+        "effect": "held_handle_gate_start_program_then_sequencer_result",
+        "arguments": 1,
+        "dependencies": [
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "function": "actorScriptDispatchActionHandler",
+            "sha256": "e3e6746d411e3a9075fb9416d4007315a55fb47a83b4723d618a0d9dc72dd575"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "function": "actorScriptPlayAction",
+            "sha256": "9fa803d8ad922b48b3e5d2b877821d6f88a1fa6ae8d23b44fe8d9f78314d077b"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "function": "actorScriptWaitForSequencerStop",
+            "sha256": "aaeba1f2743f6d29c4317b2c8889a67d97f470ee23b0beb37a5cebf0455f2505"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/action_script.c",
+            "function": "actionScriptStart",
+            "sha256": "e53fc9f311fb49da04c1e77dc1c40cf739dfee554f85e49a15aef4b26b0ca257"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/action_script.c",
+            "function": "actionScriptIsStopped",
+            "sha256": "952ba58dc54050194e25912a37f214d33fbdf2af29f91f48b9c2ca6dd76b3ba9"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "scriptVmPopInteger",
+            "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "scriptVmPopValue",
+            "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "scriptValueGetInteger",
+            "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "actorUpdateScriptVm",
+            "sha256": "8f8aee40236f03cd3802e4944351029e97768892e9cff400831a09bda3a7632c"
+          },
+          {
+            "kind": "file",
+            "file": "include/action_script_ids.h",
+            "sha256": "444367ac3e76e056f62a750dafbe871388cfb5b1e056f11248ba00605c1e4544"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "sha256": "6fb8b953367a6f90410096f9c5e211887a32d0074582e5607816bd260978f558",
+            "function": "actorScriptPlayInterruptibleAction"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "sha256": "134b0779a5442dcab97101c5281e38407670da069f8bdd68d616375beb351efe",
+            "function": "actorScriptWaitForActionOrMessage"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "sha256": "a4c1190400dc876045693ffaa36a24424fc874a24370e0b2b10aba4b0464c17a",
+            "function": "actorScriptThrowHeldItem"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "sha256": "d61a5d66210b9eb3c78e109ea7f53db3a749b94c46ea701fed95cb97d79df4e1",
+            "function": "actorScriptAcquireItem"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/action_script.c",
+            "sha256": "e2c86256e4a5b10a2ace25084d05300611fc38fdc250c8b448f8f5379427357e",
+            "function": "actionScriptStop"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/action_script.c",
+            "sha256": "ac5164a895ecc7ef9bfb322d33895fcb21c2b469f9c968a93552e5a0842096e5",
+            "function": "actionScriptIsStoppedAndLastActionEnded"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/action_script.c",
+            "sha256": "c40da46597a69e3d679851ee6e48569676731301a6929552fdd63fb8bcaa2d6f",
+            "function": "actionScriptHasLastActionEnded"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/motion_playback.c",
+            "sha256": "74257b62a02a4907a54956ef5b8443595935219026fe815c401cee0a1c64df8e",
+            "function": "actionGetStoredRequestId"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/motion_playback.c",
+            "sha256": "367a20435b8426a9db96d1b0ae7fc4403b23c73abf739ed3dcc5ad8d7cb4aeb7",
+            "function": "actionRequestLoopExit"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/motion_playback.c",
+            "sha256": "59819f75331275ef990b044fe5ba785e7c98162b1b4709070f4de2f5fa3e3a71",
+            "function": "actionCancelPendingRequest"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_queries.c",
+            "sha256": "b415508ec1d70376ed821b6ed6870432d928cde361e14d058742e6aa68506978",
+            "function": "actorGetHeldItemKind"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/object_hierarchy.c",
+            "sha256": "a04905a063945115cd20a841f611294f7784656739644dd48ba5230ee11881c9",
+            "function": "objectFindLiveByHandle"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/keyed_pool.c",
+            "sha256": "515ff415ac8762af39e40b6969a0d563591ab0252fcc95f660b808c06964541d",
+            "function": "keyedPoolGetValue"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/keyed_pool.c",
+            "sha256": "2c4d9787ed139519f2981eb227805c3b38046a0baf47287ae6ecc2156f5665c6",
+            "function": "keyedPoolFindEntry"
+          },
+          {
+            "kind": "file",
+            "file": "include/object_types.h",
+            "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+          },
+          {
+            "kind": "file",
+            "file": "include/actor_script.h",
+            "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+          },
+          {
+            "kind": "file",
+            "file": "include/script_vm.h",
+            "sha256": "f9f9e4509166d6c9aac4d4687f973da7c3b719df7413be4d4f738182850e5b08"
+          },
+          {
+            "kind": "file",
+            "file": "include/item_types.h",
+            "sha256": "a11ff3ec0e7d9256425797d27c1d7222f58360b5f27a4bf4128119f9a762f991"
+          },
+          {
+            "kind": "file",
+            "file": "include/keyed_pool_types.h",
+            "sha256": "4c5ce15833971e0a7b7a25588eb674597474dba8a6d71b51cf78cf098c63a611"
+          },
+          {
+            "kind": "file",
+            "file": "include/object_flags.h",
+            "sha256": "135a2ddab3b6c3e703f08bc85faa083742809cf81a1edc43bd05469d2faac637"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f",
+            "function": "scriptVmPopInteger"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "sha256": "6ab64e75a64605c75c85f685e506c90c9970819578d94a601eb7b1bae774744b",
+            "function": "scriptVmPopFloat"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84",
+            "function": "scriptVmPopValue"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f",
+            "function": "scriptValueGetInteger"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "sha256": "94e6ff080eea82e2661ec2adbc45a33a6a2141b10ff8d1263f580c2c5433c6b1",
+            "function": "scriptValueGetFloat"
+          },
+          {
+            "kind": "file",
+            "file": "include/motion_playback_types.h",
+            "sha256": "a9f29997bc0cf851f840880bfd78d8ad974d902ad1bb88603d55e342ecf0e010"
+          },
+          {
+            "kind": "file",
+            "file": "include/action_definition_types.h",
+            "sha256": "08a9daa83089379deeaf2e3f31334cb0eee086c51b62f187471a831490c7719e"
+          },
+          {
+            "kind": "file",
+            "file": "include/actor_action_callbacks.h",
+            "sha256": "0129564234b245a4b8f0851ac476a00a1e7aae3260497f0731ef155618007465"
+          },
+          {
+            "kind": "file",
+            "file": "include/actor_action_cue.h",
+            "sha256": "146bb59d9ddd562e60abbbec79678091fb82e362bd441c19ce07d0787d81babe"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "actorUpdateScriptVm",
+            "sha256": "8f8aee40236f03cd3802e4944351029e97768892e9cff400831a09bda3a7632c"
+          }
+        ],
+        "preconditions": [
+          "Actor, actor state, VM and owned value storage remain live, separate and nonoverlapping with helper-written motion/sequencer/pool state and C stack. The same VM is selected throughout any helper chain; concurrent replacement/destruction and arbitrary world-update lifetime effects are excluded.",
+          "All consumed numeric operands lie above protected locals/frame metadata. Integer/code-reference values and finite signed32-representable float values are supported for integer conversion; float conversion of the search-range operand is valid. Appending a later result requires one free value slot above protected storage.",
+          "Whenever a branch starts a timed program, its ID selects a retained readable entry. ACTION_SCRIPT_NO_PROGRAM(-1) uses the authenticated original-target null predecessor backing; other invalid indices and portable host indexing are outside this review. No command executes during startup; only established sequencer fields reset, without stopping independent motion.",
+          "The normal actorUpdateScriptVm wrapper clears actionInitializing after dispatch. These handlers leave that flag unchanged; direct repeated initializing calls can consume operands repeatedly and are not an ordinary action trajectory. Phase footprints do not prove sequencing advancement, eventual completion or gameplay reachability.",
+          "Initializing always consumes the program. A zero raw heldItemHandle appends-1 and yields; any nonzero raw handle starts the selected program and waits, with no live-handle lookup. Program validity is required only on the startup branch.",
+          "Noninitial dispatch waits while commands remain; a stopped sequencer appends0 and yields regardless of held-item state. No synchronous item release, launch or throw occurs; the result does not prove a successful throw."
+        ],
+        "evidence": "OriginalGhidra801168A8/80116900/80116984/801188D4 and existingselector2 source review; static evidence only.",
+        "phase_gate": "action_initializing_then_sequence_stop",
+        "phases": [
+          {
+            "phase": "initialize_reject",
+            "consumed_arguments": 1,
+            "stack_delta": 0,
+            "scheduling": "yield",
+            "result": -1
+          },
+          {
+            "phase": "initialize_accept",
+            "consumed_arguments": 1,
+            "stack_delta": -1,
+            "scheduling": "wait_for_action"
+          },
+          {
+            "phase": "wait",
+            "consumed_arguments": 0,
+            "stack_delta": 0,
+            "scheduling": "wait_for_action"
+          },
+          {
+            "phase": "complete",
+            "consumed_arguments": 0,
+            "stack_delta": 1,
+            "scheduling": "yield",
+            "result": 0
+          }
+        ],
+        "result_tag": "integer"
+      }
     },
     {
       "function": "actorScriptStartItemAcquisition",
@@ -1402,8 +1972,284 @@
       ],
       "preconditions": [
         "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
-        "The request returns scheduling result two without reading or writing stack operands. Deferred handler operands, results, context replacement and write effects remain unreviewed; this contract must not clear that deferred frontier."
-      ]
+        "The request returns scheduling result two without reading or writing stack operands. Deferred handler phases are reviewed separately under their source-bound ownership and stack conditions."
+      ],
+      "deferred_review": {
+        "action_handler": 7,
+        "effect": "acquisition_settings_then_handle_gate_or_full_action_poll",
+        "arguments": 3,
+        "dependencies": [
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "function": "actorScriptDispatchActionHandler",
+            "sha256": "e3e6746d411e3a9075fb9416d4007315a55fb47a83b4723d618a0d9dc72dd575"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "function": "actorScriptPlayAction",
+            "sha256": "9fa803d8ad922b48b3e5d2b877821d6f88a1fa6ae8d23b44fe8d9f78314d077b"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "function": "actorScriptWaitForSequencerStop",
+            "sha256": "aaeba1f2743f6d29c4317b2c8889a67d97f470ee23b0beb37a5cebf0455f2505"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/action_script.c",
+            "function": "actionScriptStart",
+            "sha256": "e53fc9f311fb49da04c1e77dc1c40cf739dfee554f85e49a15aef4b26b0ca257"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/action_script.c",
+            "function": "actionScriptIsStopped",
+            "sha256": "952ba58dc54050194e25912a37f214d33fbdf2af29f91f48b9c2ca6dd76b3ba9"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "scriptVmPopInteger",
+            "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "scriptVmPopValue",
+            "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "scriptValueGetInteger",
+            "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "actorUpdateScriptVm",
+            "sha256": "8f8aee40236f03cd3802e4944351029e97768892e9cff400831a09bda3a7632c"
+          },
+          {
+            "kind": "file",
+            "file": "include/action_script_ids.h",
+            "sha256": "444367ac3e76e056f62a750dafbe871388cfb5b1e056f11248ba00605c1e4544"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "sha256": "6fb8b953367a6f90410096f9c5e211887a32d0074582e5607816bd260978f558",
+            "function": "actorScriptPlayInterruptibleAction"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "sha256": "134b0779a5442dcab97101c5281e38407670da069f8bdd68d616375beb351efe",
+            "function": "actorScriptWaitForActionOrMessage"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "sha256": "a4c1190400dc876045693ffaa36a24424fc874a24370e0b2b10aba4b0464c17a",
+            "function": "actorScriptThrowHeldItem"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "sha256": "d61a5d66210b9eb3c78e109ea7f53db3a749b94c46ea701fed95cb97d79df4e1",
+            "function": "actorScriptAcquireItem"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/action_script.c",
+            "sha256": "e2c86256e4a5b10a2ace25084d05300611fc38fdc250c8b448f8f5379427357e",
+            "function": "actionScriptStop"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/action_script.c",
+            "sha256": "ac5164a895ecc7ef9bfb322d33895fcb21c2b469f9c968a93552e5a0842096e5",
+            "function": "actionScriptIsStoppedAndLastActionEnded"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/action_script.c",
+            "sha256": "c40da46597a69e3d679851ee6e48569676731301a6929552fdd63fb8bcaa2d6f",
+            "function": "actionScriptHasLastActionEnded"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/motion_playback.c",
+            "sha256": "74257b62a02a4907a54956ef5b8443595935219026fe815c401cee0a1c64df8e",
+            "function": "actionGetStoredRequestId"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/motion_playback.c",
+            "sha256": "367a20435b8426a9db96d1b0ae7fc4403b23c73abf739ed3dcc5ad8d7cb4aeb7",
+            "function": "actionRequestLoopExit"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/motion_playback.c",
+            "sha256": "59819f75331275ef990b044fe5ba785e7c98162b1b4709070f4de2f5fa3e3a71",
+            "function": "actionCancelPendingRequest"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_queries.c",
+            "sha256": "b415508ec1d70376ed821b6ed6870432d928cde361e14d058742e6aa68506978",
+            "function": "actorGetHeldItemKind"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/object_hierarchy.c",
+            "sha256": "a04905a063945115cd20a841f611294f7784656739644dd48ba5230ee11881c9",
+            "function": "objectFindLiveByHandle"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/keyed_pool.c",
+            "sha256": "515ff415ac8762af39e40b6969a0d563591ab0252fcc95f660b808c06964541d",
+            "function": "keyedPoolGetValue"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/keyed_pool.c",
+            "sha256": "2c4d9787ed139519f2981eb227805c3b38046a0baf47287ae6ecc2156f5665c6",
+            "function": "keyedPoolFindEntry"
+          },
+          {
+            "kind": "file",
+            "file": "include/object_types.h",
+            "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+          },
+          {
+            "kind": "file",
+            "file": "include/actor_script.h",
+            "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+          },
+          {
+            "kind": "file",
+            "file": "include/script_vm.h",
+            "sha256": "f9f9e4509166d6c9aac4d4687f973da7c3b719df7413be4d4f738182850e5b08"
+          },
+          {
+            "kind": "file",
+            "file": "include/item_types.h",
+            "sha256": "a11ff3ec0e7d9256425797d27c1d7222f58360b5f27a4bf4128119f9a762f991"
+          },
+          {
+            "kind": "file",
+            "file": "include/keyed_pool_types.h",
+            "sha256": "4c5ce15833971e0a7b7a25588eb674597474dba8a6d71b51cf78cf098c63a611"
+          },
+          {
+            "kind": "file",
+            "file": "include/object_flags.h",
+            "sha256": "135a2ddab3b6c3e703f08bc85faa083742809cf81a1edc43bd05469d2faac637"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f",
+            "function": "scriptVmPopInteger"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "sha256": "6ab64e75a64605c75c85f685e506c90c9970819578d94a601eb7b1bae774744b",
+            "function": "scriptVmPopFloat"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84",
+            "function": "scriptVmPopValue"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f",
+            "function": "scriptValueGetInteger"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "sha256": "94e6ff080eea82e2661ec2adbc45a33a6a2141b10ff8d1263f580c2c5433c6b1",
+            "function": "scriptValueGetFloat"
+          },
+          {
+            "kind": "file",
+            "file": "include/motion_playback_types.h",
+            "sha256": "a9f29997bc0cf851f840880bfd78d8ad974d902ad1bb88603d55e342ecf0e010"
+          },
+          {
+            "kind": "file",
+            "file": "include/action_definition_types.h",
+            "sha256": "08a9daa83089379deeaf2e3f31334cb0eee086c51b62f187471a831490c7719e"
+          },
+          {
+            "kind": "file",
+            "file": "include/actor_action_callbacks.h",
+            "sha256": "0129564234b245a4b8f0851ac476a00a1e7aae3260497f0731ef155618007465"
+          },
+          {
+            "kind": "file",
+            "file": "include/actor_action_cue.h",
+            "sha256": "146bb59d9ddd562e60abbbec79678091fb82e362bd441c19ce07d0787d81babe"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "actorUpdateScriptVm",
+            "sha256": "8f8aee40236f03cd3802e4944351029e97768892e9cff400831a09bda3a7632c"
+          }
+        ],
+        "preconditions": [
+          "Actor, actor state, VM and owned value storage remain live, separate and nonoverlapping with helper-written motion/sequencer/pool state and C stack. The same VM is selected throughout any helper chain; concurrent replacement/destruction and arbitrary world-update lifetime effects are excluded.",
+          "All consumed numeric operands lie above protected locals/frame metadata. Integer/code-reference values and finite signed32-representable float values are supported for integer conversion; float conversion of the search-range operand is valid. Appending a later result requires one free value slot above protected storage.",
+          "Whenever a branch starts a timed program, its ID selects a retained readable entry. ACTION_SCRIPT_NO_PROGRAM(-1) uses the authenticated original-target null predecessor backing; other invalid indices and portable host indexing are outside this review. No command executes during startup; only established sequencer fields reset, without stopping independent motion.",
+          "The normal actorUpdateScriptVm wrapper clears actionInitializing after dispatch. These handlers leave that flag unchanged; direct repeated initializing calls can consume operands repeatedly and are not an ordinary action trajectory. Phase footprints do not prove sequencing advancement, eventual completion or gameplay reachability.",
+          "Operand push order is program, item-kind filter, search range. Initialization stores the popped range as f32 and filter as s32 before popping the program and checking the raw held handle. These settings are retained even on early completion; no search or acquisition executes synchronously.",
+          "A nonzero raw held handle bypasses startup and appends actorGetHeldItemKind, including0 for a stale or destruction-pending lookup, then yields. A zero raw held handle starts the program and waits. The original positive-capacity object pool, chains and live entries are valid; any resolved held object has valid ItemStatePrefix because the lookup does not validate its kind.",
+          "Later completion requires commandNULL AND nonzero lastRequestId AND(current active requestID0 OR unsigned lastRequestId<current active requestID). It appends the sign-extended s16 item kind, or0 when lookup is not live. Other polls wait without operand writes. Startup resets lastRequestId0, so a program that records no action request can keep waiting after commands stop."
+        ],
+        "evidence": "OriginalGhidra801168A8/80116900/80116984/801188D4 and existingselector2 source review; static evidence only.",
+        "phase_gate": "action_initializing_then_sequence_and_last_action_end",
+        "phases": [
+          {
+            "phase": "initialize_existing_handle",
+            "consumed_arguments": 3,
+            "stack_delta": -2,
+            "scheduling": "yield",
+            "result": "held_item_kind"
+          },
+          {
+            "phase": "initialize_start",
+            "consumed_arguments": 3,
+            "stack_delta": -3,
+            "scheduling": "wait_for_action"
+          },
+          {
+            "phase": "wait",
+            "consumed_arguments": 0,
+            "stack_delta": 0,
+            "scheduling": "wait_for_action"
+          },
+          {
+            "phase": "complete",
+            "consumed_arguments": 0,
+            "stack_delta": 1,
+            "scheduling": "yield",
+            "result": "held_item_kind"
+          }
+        ],
+        "result_tag": "integer"
+      }
     },
     {
       "function": "actorScriptStartEatingHeldItem",
@@ -3486,8 +4332,233 @@
       ],
       "preconditions": [
         "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
-        "The request returns scheduling result two without reading or writing stack operands. Deferred handler operands, results, context replacement and write effects remain unreviewed; this contract must not clear that deferred frontier."
-      ]
+        "The request returns scheduling result two without reading or writing stack operands. Deferred selectors11/12 have a separate source-bound elapsed-time, fade and handoff review."
+      ],
+      "deferred_review": {
+        "action_handler": 11,
+        "effect": "show_area_label_then_handoff_and_wait_secondary_overlay",
+        "arguments": 0,
+        "result_tag": "integer",
+        "phase_gate": "action_initializing_then_accumulated_time_then_secondary_overlay",
+        "followup_action_handler": 12,
+        "phases": [
+          {
+            "phase": "initialize_show_label",
+            "consumed_arguments": 0,
+            "stack_delta": 0,
+            "scheduling": "wait_for_action",
+            "writes": "labelVisible=1; wrapper clearsinit",
+            "condition": "handler11 and actionInitializing!=0"
+          },
+          {
+            "phase": "wait_accumulated_time",
+            "consumed_arguments": 0,
+            "stack_delta": 0,
+            "scheduling": "wait_for_action",
+            "condition": "handler11,init0 and !(totalElapsed>1.5)"
+          },
+          {
+            "phase": "fade_and_handoff",
+            "consumed_arguments": 0,
+            "stack_delta": 0,
+            "scheduling": "wait_for_action",
+            "next_action_handler": 12,
+            "condition": "handler11,init0,totalElapsed>1.5",
+            "writes": "RGBA0000,targetduration0.6f; handler12/init1 then wrapper init0"
+          },
+          {
+            "phase": "successor_initializing_wait",
+            "consumed_arguments": 0,
+            "stack_delta": 0,
+            "scheduling": "wait_for_action",
+            "condition": "handler12 and actionInitializing!=0"
+          },
+          {
+            "phase": "wait_secondary_fade",
+            "consumed_arguments": 0,
+            "stack_delta": 0,
+            "scheduling": "wait_for_action",
+            "condition": "handler12,init0,remainingSeconds>0"
+          },
+          {
+            "phase": "complete",
+            "consumed_arguments": 0,
+            "stack_delta": 1,
+            "scheduling": "yield",
+            "result": 0,
+            "condition": "handler12,init0,!(remainingSeconds>0)",
+            "writes": "labelVisible0,inhibitFlags0; appendinteger0"
+          }
+        ],
+        "dependencies": [
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "function": "actorScriptBeginAreaTransition",
+            "sha256": "ca668bd455e6a9ba8f67500fcdb029a0c40eadcb587e1f87704b1f908cee42b4"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "function": "actorScriptFinishAreaTransition",
+            "sha256": "2d36cf79bcf953fad0ad29070a05cb88a6ce68f43231279876b1c464c9896667"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "function": "actorBeginScriptActionHandler",
+            "sha256": "730df316779c26ec4f6a10011fadfc45fd9e8516e38f95767e1b3821e5d67938"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "function": "actorScriptDispatchActionHandler",
+            "sha256": "e3e6746d411e3a9075fb9416d4007315a55fb47a83b4723d618a0d9dc72dd575"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "actorUpdateScriptVm",
+            "sha256": "8f8aee40236f03cd3802e4944351029e97768892e9cff400831a09bda3a7632c"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "scriptVmPushInteger",
+            "sha256": "d9c7386b407cc9e5e1ebe3d7ab6c7db1b7e40acb8c64150bb9ed6499fc2ce695"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "scriptVmPushValue",
+            "sha256": "ee2857209fceeb6c5767a3a733019cdbea389851514e320a212eb8556d8c51fd"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "scriptValueSetInteger",
+            "sha256": "b83e2136925736f751b686cc364df9280a90f8564552393ee43778e69c593d4c"
+          },
+          {
+            "kind": "function",
+            "file": "src/main.c",
+            "function": "cameraFadePrimarySecondaryOverlay",
+            "sha256": "cb4365a268e9c466c79f11791512261b4adb11b88a8e6ec820d42c6d1b34b9ba"
+          },
+          {
+            "kind": "function",
+            "file": "src/main.c",
+            "function": "colorStoreClampedRgba",
+            "sha256": "2c05418fa103cefa08ad90bcfd1cd03c41be1b04b553a08bab19f96b4bc577d8"
+          },
+          {
+            "kind": "function",
+            "file": "src/main.c",
+            "function": "floatStoreWithZeroTolerance",
+            "sha256": "2dc7d43e11456629de0e7511b95fb9d1614a96e46f0f72aac07bdfcecfc3dfa8"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/hud.c",
+            "function": "hudSetAreaLabelVisible",
+            "sha256": "29ee014ee709f169959c9fcefc44a1bb94f0f4a2c393777756354802d68bdc23"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/player_companion.c",
+            "function": "audioSetMusicDuckingInhibitFlags",
+            "sha256": "2b61cdc9299aa6c3931fb2e644bc99e7c6c3a413dd0506aa085832622214ca44"
+          },
+          {
+            "kind": "file",
+            "file": "src/main.c",
+            "sha256": "d805db3a73122ad5110d83c1074277bf0439e28c4f8a81f529935196d2c832a6"
+          },
+          {
+            "kind": "file",
+            "file": "src/game/runtime.c",
+            "sha256": "6d1b27a3c0c2c0608d402fe3341029d42555b88ab1cecad855f8de1b45fdf520"
+          },
+          {
+            "kind": "file",
+            "file": "src/game/hud.c",
+            "sha256": "7ebce910250ed2e285457cc2efe99608aacccd222daca6da65d3eea6a2acfa40"
+          },
+          {
+            "kind": "file",
+            "file": "src/ovl/player_companion.c",
+            "sha256": "92a192d0c2d6c84ab3fbd7be87f976ba4c27e16410cb00f7e8aa5785ff119d94"
+          },
+          {
+            "kind": "file",
+            "file": "include/script_vm.h",
+            "sha256": "f9f9e4509166d6c9aac4d4687f973da7c3b719df7413be4d4f738182850e5b08"
+          },
+          {
+            "kind": "file",
+            "file": "include/script_value.h",
+            "sha256": "c1cb20c87f4e54325f445007e9d889e5a29769d6b7c71ff8f20386caa8fe8b93"
+          },
+          {
+            "kind": "file",
+            "file": "include/actor_script.h",
+            "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+          },
+          {
+            "kind": "file",
+            "file": "include/object_types.h",
+            "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+          },
+          {
+            "kind": "file",
+            "file": "include/actor_script_action.h",
+            "sha256": "37e7ff0a8d38d091300494231283e6a1d13fec521548e1576e4949ce87348f4c"
+          },
+          {
+            "kind": "file",
+            "file": "include/camera_types.h",
+            "sha256": "e0b41d0d08f7ce4a2d9e0f287073ec094cb820d2d02638d39712141325161fc1"
+          },
+          {
+            "kind": "file",
+            "file": "include/camera_storage.h",
+            "sha256": "856b99b7234d58282b91b3f86f412b202b07f85a71753c8a47662cd605d6409b"
+          },
+          {
+            "kind": "file",
+            "file": "include/camera_overlay.h",
+            "sha256": "0da2961a530c0ce494cbd969e4bfcb38bd49213f4961f48a7d2a3b8b559bdcb3"
+          },
+          {
+            "kind": "file",
+            "file": "include/hud.h",
+            "sha256": "9c1ea0143831cf8cfff75038a12b305df4dbde4c6fb1174a4784f7199668aeca"
+          },
+          {
+            "kind": "file",
+            "file": "include/player_interaction.h",
+            "sha256": "fbd8fb7542d417cd824e787054fdf106d7046637f281ab399771b6e115028911"
+          },
+          {
+            "kind": "file",
+            "file": "config/symbol_addrs.txt",
+            "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+          }
+        ],
+        "preconditions": [
+          "Actor RuntimeObjectPrefix,state.actor,retained vmAddress and ScriptVm remain valid throughout each dispatch and between phases. Saved wrapper VM and freshly read actor VM are the same live context; no replacement/destruction/concurrent VM mutator is admitted. VM,value buffer/protected locals/frame records,C stack, writable HUD/camera/music flag globals and camera record storage are nonoverlapping except explicitly aliased camera symbols.",
+          "No operands are consumed in any phase. Completion requires one free value slot above all protected frame data; append writes integer0 through source-bound push helpers. Immediate request selects handler11/init1 and returns wait2; this deferred contract doesnot reinterpret request as completion.",
+          "Each ordinary actorUpdateScriptVm call first adds current gRuntimeFrameSeconds to elapsed and totalElapsed, then dispatches only when captured executionState2. The wrapper saves its captured VM, stores returned scheduling code there and unconditionally clears actionInitializing after any dispatched action, including a helper that just set it. No secondary direct handler invocation is hidden inside the handoff.",
+          "Selector11 initialization(nonzero actionInitializing) writes labelVisible1 and returns2 without testing totalElapsed. Otherwise only strict totalElapsed>1.5 starts fade. TotalElapsed is NOT reset by request or handoff, so this is a threshold on accumulated VM time, not1.5seconds after request. Exact1.5 waits; unorderedNaN comparison waits. Finite nonnegative frame intervals and stable totalElapsed are the normal progression domain, but no eventual-time fairness is promised.",
+          "Fade helper only stores four targetbytes0 at800ABDC4..800ABDC7 and duration at800ABDCC. Original durationliteral80130EE8 is0x3F19999A(f32 approx0.600000024); original upper/lower tolerances8009FC94/98 are0x3A83126F/0xBA83126F. Strict lower<value<upper zeroing therefore preserves this duration. Aliased primarycamera fields are initialized writable storage; currentcolor/geometry/displaylist and actualcamera-update/render behavior are untouched by this call.",
+          "After fade request, actorBeginScriptActionHandler sets actionInitializing1/actionHandler12, returns2. Normal wrapper then clears init0 in the same captured VM before the next frame. Thus the successor initialization-wait branch is included for direct/explicitly initialized selector12 states, but normal11-to12 handoff doesnot spend an extra init-only frame.",
+          "Selector12 with nonzero initializing returns2; otherwise it waits only for remainingSeconds>0. Exactzero/negative completes; original unorderedNaN also completes because comparisonfalse (no claim thatNaN is a valid completed fade). Other camera update calls between dispatches may advance remainingSeconds but must preserve VM/context ownership. This review doesnot execute them or prove fade termination.",
+          "Completion stores gHudAreaLabelVisible800F0278=0 and gGameplayMusicDuckingInhibitFlags80133F18=0, appends integer0 and returns1/yield. Audio flag setter is a single global store: no immediate audio playback/fade/resource lookup/DMA/callback occurs. HUD label setter likewise only stores its visible flag, no image allocation/destruction/draw or borrowed label lifetime change.",
+          "Scheduling/writes cover synchronous selector11/12 dispatches and documented wrapper bookkeeping. Future camera/render/audio policy callbacks and gameplay reachability are outside this footprint. Static originalGhidra support only; runtime untested."
+        ],
+        "evidence": "Read-only original Ghidra80116D58..80116E5C validates all selector11/12 branches, targetliteral load and call order.801167A0..801167B8 writesinit1 thenhandler;80116658..80116704 updates timers beforedispatch and clearsinit after return, including handoff.80022F68..80022F70 and801129DC..801129E4 are single stores.80001678..800016AC onlycalls80001460..800014E4 fourbyteclamp stores and800014E8..8000152C strictfloat-tolerance store. Ghidra read_bytes authenticates durationliteral80130EE8=3F19999A,tolerance8009FC94..9B=3A83126FBA83126F. Current source/global/layout declarations fingerprinted; original instruction ranges reviewed locally, no runtime claim.",
+        "runtime_status": "untested"
+      }
     },
     {
       "function": "actorScriptStartKindTransformation",
@@ -11450,6 +12521,316 @@
         "Heap80038074/800380F4/800382BC/80038394/80038548: alloc marks flag/tag and moves heap.last; split writes a new16-byte free header and reciprocal links/sizes. Free clears tag, merges neighboring free regions, clears removed header.magic and may move heap.last. No allocation payload zero/copy occurs here; diagnostic chain80038000->80037FE0->80037FBC writes only caller-stack argument home and no global diagnostic state.",
         "QueuedDMA80037CC8..80037EF4: poll consumes all currently available messages decrementingpending; submit blocks/acknowledges one when full, invalidates destination, initializes persistent messages[cursor], submits, incrementspending/cursor with wrap. readQueued splits into<=0x4000 nonzero chunks, advances cursors; zero length submitsnone. Wait receives/acknowledges untilpending0. Queue cursor and requeststorage retained after completion.",
         "Cache wait8003FAE8..8003FB68: first waits entire queue, then tail-to-head clears requestedmask only whileeachentry hasatleastone maskbit. It stops at first nonmatching entry. fontCacheWaitForReads8003F6B8 passesmask2; doesnot releaseusebit1, freeglyphs or createimage.",
+        "Nonfull send: store message pointer at msg[(first+validCount)%msgCount], increment validCount. Payload bytes are not copied or acknowledged.",
+        "Full send: running thread state halfword+0x10=8; enqueue in &queue.fullqueue. On receiver wake: pop queue.mtqueue, set receiver state2 and enqueue ready queue. Higher priority receiver can preempt sender via ready-queue yield.",
+        "Priority insertion writes thread.next, predecessor.next/queue-head and thread.queue(+8). Pop writes only queue-head, leaving popped next/queue fields until subsequent insertion.",
+        "Yield saves thread Status+0x118 with EXL set, callee-saved s0..s7 at+0x98..D0, gp+E8,sp+F0,s8+F8,ra+100,returnPC+11C, RCPmask+128. If fp flag+18 nonzero, also F20/F22/F24/F26/F28/F30 at+180..1A8 and FCSR+12C.",
+        "Dispatch pops ready queue at8009F898, writes running-thread global8009F8A0 and state4; restores GPR/HI/LO/CP0Status/EPC/FPU state, writes MI interrupt mask atA430000C using the authenticated table800A7D40 and global mask8009DC80, then ERET. External runnable-thread execution is not attributed to caller helpers.",
+        "Own send stack frame56 bytes plus writable caller argument homes; osStartThread adds40 bytes on wake/preemption path. Other resumed threads have separate live stacks and contexts. Ready/wait sentinel at8009F890 has next0 and priority below real threads.",
+        "Original __osDisableInt mask-race branch also reads8009F9B8; its literal access must be preserved rather than assuming it dereferences runningThread. Fast mask-stable path does not take that branch."
+      ]
+    },
+    {
+      "function": "actorScriptSetHudOverlayMode",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "333f8088dab10164f471e18cf3483fa926348ad2fe5a9842dc671cf2d9b8725a",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Store raw s32 HUD overlay mode and replaceoperandwithinteger0; anynonzero value submits two microphone-disable requests then clears gameplay voice availability/permission; zero leaves those states untouched.",
+      "dependencies": [
+        {
+          "kind": "file",
+          "file": "src/game/microphone_requests.c",
+          "sha256": "94e81108d9edd99e10b0916b509eda7281e00e7e9c11e2f7db3dfe628832ef4b"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/microphone_session.c",
+          "sha256": "967de2d1101120114e376830c7eb622c7ce082abfad2dcad845d8ab20aa01375"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/controller_rumble.c",
+          "sha256": "9b5d2ebaa48525e499f17dccea1ab961db76811fdaa76ca5dce8a21116a327ab"
+        },
+        {
+          "kind": "file",
+          "file": "src/main_controller.c",
+          "sha256": "0c8203997ad177c615a84a5f832d7f3b1df02d283df647766f9fb63d526fcca0"
+        },
+        {
+          "kind": "file",
+          "file": "include/microphone_configuration.h",
+          "sha256": "0937734fb3d7b3972df758ffc84710cf5e233897902347b97544a22c51792ff8"
+        },
+        {
+          "kind": "file",
+          "file": "include/microphone_requests.h",
+          "sha256": "1f903d939567ed8d03a95ce834a3c7795b36be3bc14b309e41fb16273e9dd06c"
+        },
+        {
+          "kind": "file",
+          "file": "include/microphone_session_query.h",
+          "sha256": "3542f193b3e56006676421e9ef75e337dca92f1ef6a669154a485814d5597a3c"
+        },
+        {
+          "kind": "file",
+          "file": "include/controller_commands.h",
+          "sha256": "b025efc98ef4411b78547e5243c3b0a29f9e800ebf99576f4e35573622b46cc7"
+        },
+        {
+          "kind": "file",
+          "file": "include/controller_rumble.h",
+          "sha256": "9a6a9ba0a45cc8d2e8c30ab0a65d42ed82f989d82eb649f60f4f33282360413e"
+        },
+        {
+          "kind": "file",
+          "file": "include/game_message.h",
+          "sha256": "02909f6c14c187481d544f5e915d15bc5883da53867842605c5de1ddc7175303"
+        },
+        {
+          "kind": "file",
+          "file": "include/ultra64.h",
+          "sha256": "f20e88de98f687b2572e41a0a1b351f89e420c4d10c1ff9da381122a53898450"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/os.h",
+          "sha256": "510f8071814067e478263d966e6b14013c0040f7ce7020043d4eeb00b1a1db35"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/os_message.h",
+          "sha256": "40e7350399ac69591974b7f15eb8b0650958702f4943ebd288b77792196676fe"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/os_thread.h",
+          "sha256": "a1cd0aa5227e6c238c30c6e022a9de252e8a547a465b8d2f82905d446c3a9ebf"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/ultratypes.h",
+          "sha256": "94e5b09ca40c5e4d65da3b92bed7e206e610ee7f589e9eef417f6bc7a1742fe7"
+        },
+        {
+          "kind": "file",
+          "file": "include/PR/R4300.h",
+          "sha256": "cee95a00719507433940ffc0283e6637279a197fc02b9858379308f45533fb09"
+        },
+        {
+          "kind": "file",
+          "file": "docs/LOCAL_SDK_FILES.json",
+          "sha256": "76f91c2e6d465a60326a1a1c5367297c97438e12baa5749de26a53914b61fde3"
+        },
+        {
+          "kind": "file",
+          "file": "tools/materialize_ultralib.py",
+          "sha256": "b40bdd26d0444db7a0c853608d3c98b2aa5a0bf81cf3c488f62baee884d95664"
+        },
+        {
+          "kind": "file",
+          "file": "config/pikachu.yaml",
+          "sha256": "a56707cf81226745a3d0758e71a63285c21ff334fcc5eea8cba864ccf0cf39c6"
+        },
+        {
+          "kind": "file",
+          "file": "config/symbol_addrs.txt",
+          "sha256": "98f204705e1a3bf8fbfbb88b3051ef2385e73ac7182bdffe2dbe55ffbe758bd2"
+        },
+        {
+          "kind": "file",
+          "file": "Makefile",
+          "sha256": "93511fec0229601cad6789e0f5ab4571c5f8b085578713b31faf7226e1f9e4e5"
+        },
+        {
+          "kind": "file",
+          "file": "build/asm/os/sendmesg.s",
+          "sha256": "9fe5fa7f0b12cbaba366b3770e275cb33a781936e7996cdb5aa61c2f246c8d52"
+        },
+        {
+          "kind": "file",
+          "file": "build/asm/os/recvmesg.s",
+          "sha256": "3f97ce6ad0a96d367f0193e1ad267d331579fafada2bf35082db1e629794d0ac"
+        },
+        {
+          "kind": "file",
+          "file": "build/asm/os/startthread.s",
+          "sha256": "4ff78bbda57d1d9ad6ce1679e55daafd9bc72c90e6cc3cc41b7baa22de25f696"
+        },
+        {
+          "kind": "file",
+          "file": "build/asm/os/exceptasm.s",
+          "sha256": "5aea74af5436240f4f50a5891a8d477f30aaef5b92845f98fe0cd3532ede8b37"
+        },
+        {
+          "kind": "file",
+          "file": "build/asm/os/createmesgqueue.s",
+          "sha256": "1acd1a8aec8f85ea9eb060eb88355ca39bf4cb6cd2295161b0d6531733cbfe13"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopInteger",
+          "sha256": "04225000026e38e6253528e71866bb1eb3bdf64794b7c8a8ca1c2e3f94e2799f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPopValue",
+          "sha256": "2371022c64091d8b881a9426b7095735d847d30ef92eb9888928621472fb8a84"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueGetInteger",
+          "sha256": "b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPushInteger",
+          "sha256": "d9c7386b407cc9e5e1ebe3d7ab6c7db1b7e40acb8c64150bb9ed6499fc2ce695"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptVmPushValue",
+          "sha256": "ee2857209fceeb6c5767a3a733019cdbea389851514e320a212eb8556d8c51fd"
+        },
+        {
+          "kind": "function",
+          "file": "src/ovl/script_vm.c",
+          "function": "scriptValueSetInteger",
+          "sha256": "b83e2136925736f751b686cc364df9280a90f8564552393ee43778e69c593d4c"
+        },
+        {
+          "kind": "file",
+          "file": "include/script_vm.h",
+          "sha256": "f9f9e4509166d6c9aac4d4687f973da7c3b719df7413be4d4f738182850e5b08"
+        },
+        {
+          "kind": "file",
+          "file": "include/actor_script.h",
+          "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_types.h",
+          "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+        },
+        {
+          "kind": "file",
+          "file": "src/game/hud.c",
+          "sha256": "7ebce910250ed2e285457cc2efe99608aacccd222daca6da65d3eea6a2acfa40"
+        },
+        {
+          "kind": "file",
+          "file": "include/hud.h",
+          "sha256": "9c1ea0143831cf8cfff75038a12b305df4dbde4c6fb1174a4784f7199668aeca"
+        },
+        {
+          "kind": "file",
+          "file": "include/voice_commands.h",
+          "sha256": "15dc4f7ed05382bdc0541c0d2b6ddb2fa8f31fd5713b8baa3d4592771efa9b53"
+        }
+      ],
+      "preconditions": [
+        "OS_MESG_BLOCK is invoked from a valid ordinary libultra thread, not an interrupt/exception callback; CP0/MI access and initialized exception/dispatch machinery are available. Current running-thread record, ready queue and queue wait lists are valid, distinct, writable records with sentinel termination and priority ordering; caller stack/context satisfy original o32/64-bit-save/FPU alignment and context rules.",
+        "OSMesgQueue is initialized: positive msgCount, 0<=validCount<=msgCount, 0<=first<msgCount, writable four-byte pointer slots and valid sentinel-backed mtqueue/fullqueue lists. Queue, storage, live thread contexts, stacks, ring requests and caller actor/VM/value storage are nonoverlapping. The actual controller queue is 0x800AD088, capacity16, backing0x800AD0A0.",
+        "Full queue suspends the sender and may suspend repeatedly after rechecking space. Returning requires eventual dequeue, wakeup, priority scheduling and restoration of this same live thread with its still-valid stack/continuation. No finite completion time or successful scheduling fairness is guaranteed by osSendMesg.",
+        "A waiting receiver may be popped, made runnable and dispatched before send returns; full-queue blocking can also execute other threads. Those threads/interrupts have separately scoped effects: no concurrent mutation, replacement or destruction of the reviewed caller actor, VM, value stack, protected locals/frame records or borrowed inputs. This is a native-frame noninterference assumption, not proof of whole-game scheduling or arbitrary thread behavior.",
+        "Only serialized microphone producers may select/copy/enqueue/advance the microphone index; preserve the index across queue getter and blocked send. The selected microphone slot must no longer be retained by an earlier request before overwrite. Eight 0x14-byte slots are reused after eight submissions; capacity16 queue blocking does not prevent ring reuse. Payload lifetime continues through controller dispatch; enqueue completion alone does not imply pending==0. Dispatch clears pending in the retained ring copy, not the original caller packet.",
+        "Rumble producers likewise serialize index selection and writes and must not overwrite a slot before its prior consumer finishes reading. Eight 0x18-byte slots are indexed by preincrement-and-wrap, unlike microphone post-send advancement. Returned queue submission does not acknowledge dispatch or motor completion.",
+        "Unused microphone packet padding and command-unused argument words may contain arbitrary existing stack bytes; preserve the full20-byte target copy and constrain only command-required fields. Rumble type padding is preserved. Neither packet nor queue operation may be modeled as zero-initializing unused bytes.",
+        "Interrupt-disable returns the previous IE bit and restore ORs that bit into current Status; it does not restore the entire initial Status. Original CP0/MI masks, global mask and valid resumable contexts are required. Interrupt-mask changes and hardware events outside the atomic queue steps remain separately modeled interference, not silently excluded.",
+        "Caller actor/state/VM/value array are valid, stable and nonoverlapping with every request, queue, thread context and stack. 4 numeric operands lie above all protected caller-local/frame storage; float conversion is finite and fits s32. Cached VM and owned values remain intact throughout suspension and resumption.",
+        "Dictionary wrapper replaces its one operand with integer0. Configure wrapper pops topmost permission, availability, follows-trigger and override values; it queues raw override then follows-trigger values, normalizes the other two to Boolean globals800722D0/800722D4, and appends integer0. Only queue admission is synchronous; later device uploads and arbitrary consumer behavior are outside this native-frame contract.",
+        "Require original SDK bytes authenticated to the frozen ROM/strict object baseline. Local SDK assembly dependencies intentionally refer to ignored build/asm inputs; only their fingerprints, not their implementation contents, may be published.",
+        "Running-thread state is4 and the running thread is absent from ready/wait lists. Queued blocked senders/receivers have state8 and valid queue back-links; ready nodes have state2, descending signed priorities, and a tail sentinel (nextNULL, priority-1). Dispatch always has at least one real runnable thread (normally idle), never the sentinel as a resumable context. Resumed caller preserves its stack, cached operands/VM pointer and required callee-saved/FPU state.",
+        "One numeric operand lies aboveprotectedlocals/frame records. Integer/code-reference payload or finitefloat truncatingintos32 supported. Capturedactor/state/VM remainslive; savedVMpointerusedforfinalzero push mustnotchange duringblockingrequests. Inputstack andHUD/microphoneglobals/ring/queue/threadcontexts disjoint.",
+        "hudSetOverlayMode firststores rawenabledwordatgHudAlternateOverlayEnabled800F027C (notnormalized). enabled0 makesnofurtherhelper/globalwrites. ANYnonzero includingnegativevalues followsenabledbranch.",
+        "Enabledbranch submits micRequestRecognitionOverride(0) first(command4), then micRequestRecognitionFollowsTrigger(0)(command5); both usecomplete20byteMicConfigurationRequestcopy into8slotretainedring, eachmayblock/preempt before nextstatement. Preserveoriginalunusedpacketbytes; argument0 iszero; noimmediate microphone-session hardware/recognitionmodechanges areclaimed.",
+        "Only AFTERbothrequestsreturn, store gGameplayMicrophoneAvailable800722D0=0 andgGameplayVoiceCommandsAllowed800722D4=0. Thesequeueddisable requests arenotacknowledgements ofsessionprocessing; zerooverlaymode doesnotreenableflags orsendoppositecommands.",
+        "Nativepushesinteger0 andreturnscontinue0 onnormalresumption. Persistentblockedcallhasnotreachedlaterflagwrites/resultpush. NootherHUDfeature/style/auxiliaryvisibility orrenderobject mutation covered; noallocation/callback hook beyondclosedSDKqueue scheduling path."
+      ],
+      "evidence": "Read-only originalGhidra80022F74 shows rawstoreindelayslot, calls800047E4 then80004810 thenvoiceflagszero; sourcewrapper8011E3EC capturesVM, popinteger, helper, push0. SharedConfigureMicrophone SDKqueueclosure reused withoutalteringhashes.",
+      "sdk_instruction_ranges": [
+        {
+          "function": "osSendMesg",
+          "address": "0x80053190",
+          "size": 332,
+          "rom_offset": "0x53d90",
+          "sha256": "0422bf5ad85265fb9bab17eef54b9725e0df648fbe9e9a1366f3cb150d7dd5ad"
+        },
+        {
+          "function": "osRecvMesg",
+          "address": "0x80051550",
+          "size": 312,
+          "rom_offset": "0x52150",
+          "sha256": "43051c9d88c1cbb9a1210fa1dc6ef0f3edb22f4bacb296158d8cbd65cfcc5abb"
+        },
+        {
+          "function": "osCreateMesgQueue",
+          "address": "0x800516e0",
+          "size": 44,
+          "rom_offset": "0x522e0",
+          "sha256": "722e99b14443e8fc39d3fda597c0309818e51d128cb0952b7bf3558650e7a791"
+        },
+        {
+          "function": "osStartThread",
+          "address": "0x80050bf0",
+          "size": 336,
+          "rom_offset": "0x517f0",
+          "sha256": "bf001131da5edb35e7f4bea2eff6d51619d31a95b2424198c242daee20955bcb"
+        },
+        {
+          "function": "__osEnqueueAndYield",
+          "address": "0x80057c44",
+          "size": 256,
+          "rom_offset": "0x58844",
+          "sha256": "d5ef2d3f73d0cdca7cd679cfb616e73bcdd5695b71c303561e12b9faa1e76caf"
+        },
+        {
+          "function": "__osEnqueueThread",
+          "address": "0x80057d44",
+          "size": 72,
+          "rom_offset": "0x58944",
+          "sha256": "8091a95dae39c6b1fc1a33a413913174da32d2a1c61971b45d5170e8b51c54f6"
+        },
+        {
+          "function": "__osPopThread",
+          "address": "0x80057d8c",
+          "size": 16,
+          "rom_offset": "0x5898c",
+          "sha256": "9cfacc440af965d2989166dd711ef58ae5a92e68c6ef3cf399a0403e1fd36afe"
+        },
+        {
+          "function": "__osDispatchThread",
+          "address": "0x80057da4",
+          "size": 380,
+          "rom_offset": "0x589a4",
+          "sha256": "da4b95aa2be6f0aabea67c4314bac423c573b965aed913be6e216b98c8ac28e4"
+        },
+        {
+          "function": "__osDisableInt",
+          "address": "0x80057ff0",
+          "size": 112,
+          "rom_offset": "0x58bf0",
+          "sha256": "182263f540080608a1c5a341601192b55c811ebb017644a55bc8061a0bb2a8d2"
+        },
+        {
+          "function": "__osRestoreInt",
+          "address": "0x80058060",
+          "size": 32,
+          "rom_offset": "0x58c60",
+          "sha256": "760fabe684a57096a1f98fb972d27fc9ae0f5b227768fa227ed73c15b4ad1e09"
+        }
+      ],
+      "sdk_storage_effects": [
         "Nonfull send: store message pointer at msg[(first+validCount)%msgCount], increment validCount. Payload bytes are not copied or acknowledged.",
         "Full send: running thread state halfword+0x10=8; enqueue in &queue.fullqueue. On receiver wake: pop queue.mtqueue, set receiver state2 and enqueue ready queue. Higher priority receiver can preempt sender via ready-queue yield.",
         "Priority insertion writes thread.next, predecessor.next/queue-head and thread.queue(+8). Pop writes only queue-head, leaving popped next/queue fields until subsequent insertion.",
