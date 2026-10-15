@@ -377,7 +377,9 @@ void actorPartFollowRelativeRoll(u8 *object) {
     ActorOrientationCache *state;
     s32 parent;
     f32 matrix[12];
-    f32 x, y, z;
+    f32 x;
+    f32 y;
+    f32 z;
     parent = ((RuntimeObjectPrefix *)object)->root.address;
     state = (ActorOrientationCache *)((RuntimeObjectPrefix *)object)->state.pointer;
     actorEvaluateRelativePartOrientation(state, (Matrix34 *)matrix, parent, (s32)gActorRelativeRollPartSequence);
@@ -648,7 +650,6 @@ void actorStartPartShake(u8 *actor, s32 part) {
         (f32)((((f64)randomNext() * 2.3283064365386963e-10 * 0.5) + 0.5) * gActorPartShakeMaximumSeconds);
 }
 
-void actorUpdatePartShake(u8 *);
 /// Signed part-identifier sequence defining the actor primary tracked pose.
 /// \note Original identifier: \c D_800A2794 (0x800A2794).
 extern u8 gActorPrimaryPosePartSequence[];

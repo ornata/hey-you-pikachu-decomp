@@ -246,8 +246,6 @@ void textWindowDrawPageAt(Gfx **list, s32 x, s32 y, s32 alpha) {
     }
 }
 
-void textWindowDrawPageAt(Gfx **, s32, s32, s32);
-
 /// Draw the current text page with its page-transition appearance.
 /// \param gdl Display-list cursor to append drawing commands to and advance.
 /// \returns Nothing.
@@ -437,8 +435,6 @@ void textWindowAppendText(u8 *text) {
     }
 }
 
-void textWindowResetText(void);
-
 /// Open an inactive text window with the requested presentation settings.
 /// \param indicator Animated window indicator identifier, or zero to hide it.
 /// \param style Text style identifier for displayed pages.
@@ -456,9 +452,6 @@ s32 textWindowOpen(s32 indicator, s32 style, s32 viewMode) {
     gTextWindowTextStyle = style;
     return 1;
 }
-
-void textWindowDrawPage(Gfx **);
-void textWindowDrawPrompt(Gfx **);
 
 /// Draw the text window and its input prompt within the current screen.
 /// \returns Nothing.
@@ -494,7 +487,6 @@ void textWindowDeactivate(void) {
     gTextWindowState = TEXT_WINDOW_INACTIVE;
 }
 
-void textWindowDrawIndicator(Gfx **, s32);
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;
@@ -610,8 +602,6 @@ void textWindowUpdate(void) {
         objectUpdateGroup(0);
     }
 }
-
-u8 *textWindowShowPage(u8 *);
 
 /// Display the pending message and enter the text-window game mode.
 /// \returns Nothing.

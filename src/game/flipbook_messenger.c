@@ -583,8 +583,6 @@ void scrollBoardSetSpeed(u8 *object, f32 speed) {
     boardState->speed = speed;
 }
 
-s32 scrollBoardCreateObject(s32, s32, u8, u8, u8, u8, s32, s32); /* extern */
-
 /// Create and register a hierarchy containing a scrolling text board.
 /// \param columns Positive board width in twelve-pixel character columns.
 /// \param lines Positive number of sixteen-pixel text lines displayed at once.
@@ -955,9 +953,6 @@ void messengerUpdateRebound(u8 *object, s32 unused) {
         messengerBeginDissipation((f32 *)object);
     }
 }
-
-void messengerUpdateHoming(u8 *, s32);
-void messengerUpdateDissipation(u8 *, s32);
 
 /// Advance messenger lifetime, animation, motion, and delivery behavior.
 /// \param object Messenger projectile with initialized state.

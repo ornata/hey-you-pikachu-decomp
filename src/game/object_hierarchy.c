@@ -1100,9 +1100,12 @@ Gfx *objectApplySceneEnvironmentColorForDraw(u8 *);
 Gfx *objectApplyTextureMotionForDraw(u8 *obj) {
     TextureMotion *motion;
     Gfx *gdl;
-    s32 u, v;
-    f32 time, angle;
-    s32 sine, cosine;
+    s32 u;
+    s32 v;
+    f32 time;
+    f32 angle;
+    s32 sine;
+    s32 cosine;
 
     motion = (TextureMotion *)((RuntimeObjectPrefix *)obj)->state.pointer;
     time = (f32)(runtimeGetElapsedMilliseconds() & 0x7FFFF) * 0.001F;

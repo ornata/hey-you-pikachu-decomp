@@ -682,7 +682,8 @@ void textDrawGetDefaultArea(s32 *left, s32 *top, s32 *right, s32 *bottom) {
 void textDrawImageAtCursor(TextImage *image) {
     s32 width = image->width;
     s32 height = image->height;
-    s32 dx, dy;
+    s32 dx;
+    s32 dy;
     textImageLoadTexture(&gTextDrawDisplayListCursor, image);
     dx = (s32)((1024.0F / gTextDrawScaleX) + 0.5);
     dy = (s32)((1024.0F / gTextDrawScaleY) + 0.5);
@@ -893,7 +894,9 @@ void textImageCreateSystemFont(TextImage **out, u8 *text, s32 font) {
     consumed = 0;
     if (*text != 0) {
         do {
-            s32 width, height, baseline;
+            s32 width;
+            s32 height;
+            s32 baseline;
             s32 offset;
             s32 status;
             lead = *cursor;
@@ -975,7 +978,8 @@ s32 fontCacheReadGlyph(s32 offset, s32 *status) {
 /// \note Original decompilation identifier: \c func_8003E17C (0x8003E17C).
 void textDrawWideCharacter(s32 code) {
     s32 offset;
-    s32 dx, dy;
+    s32 dx;
+    s32 dy;
     offset = fontGetShiftJisBitmapOffset(code);
     gDPLoadTextureBlock_4b(gTextDrawDisplayListCursor++, fontCacheReadGlyph(offset, NULL), G_IM_FMT_I, 16, 16, 0,
                            G_TX_WRAP, G_TX_WRAP, 0, 0, 0, 0);
@@ -1603,7 +1607,7 @@ s32 textParseHexDigit(u8 character, s32 *value) {
     return 1;
 }
 
-s32 fontImageGetGlyphIndex(s32 arg0, s32 arg1);
+s32 fontImageGetGlyphIndex(s32 code, s32 arg1);
 /// Get the left boundary used to draw a character in a supplied font.
 /// \param code Encoded character to measure.
 /// \param font Font containing character metrics.

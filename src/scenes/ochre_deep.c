@@ -128,7 +128,6 @@ s32 ochreDeepTryCreateProgressEncounter(void) {
     return 0;
 }
 
-s32 ochreDeepTryCreateProgressEncounter(void);
 extern u8 D_801475C8_scene_ochre_deep;
 extern u8 D_80147AE0_scene_ochre_deep;
 

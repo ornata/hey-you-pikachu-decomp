@@ -19,7 +19,8 @@ extern f32 D_8014993C_scene_viridian_deep[];
 /// Remove the removable items held in the tracked scene-item slots.
 /// \returns Nothing.
 void viridianDeepRemoveTrackedItems(void) {
-    s32 i, j;
+    s32 i;
+    s32 j;
     u8 *object;
     for (i = 0; i != 2; i++) {
         for (j = 0; j != 10; j++) {
@@ -81,7 +82,6 @@ void viridianDeepSpawnResidentGroup(Position *position, s32 index) {
     }
 }
 
-void viridianDeepSpawnResidentGroup(Position *, s32);
 extern u8 D_80149888_scene_viridian_deep[];
 extern f32 D_8014B024_scene_viridian_deep, D_8014B028_scene_viridian_deep, D_8014B02C_scene_viridian_deep;
 /// Populate the deep forest with resident groups and progress-dependent items and landmarks.

@@ -226,10 +226,6 @@ extern u8 gDepthBufferPhysicalAddress[];
 /// \note Original identifier: \c D_100C960 (0x100C960).
 extern Gfx gCameraOverlayRectangleDisplayList[];
 
-/// Whether the primary-actor elapsed-script camera tint is enabled.
-/// \note Original identifier: \c D_800AC4B4 (0x800AC4B4).
-extern s32 gCameraElapsedTintEnabled;
-
 /// Upper bound of values stored as zero by the float tolerance helper.
 /// \note Original identifier: \c D_8009FC94 (0x8009FC94).
 extern f32 gFloatStoreZeroUpperTolerance;
@@ -245,9 +241,6 @@ extern f32 gCameraProjectionAspectScale;
 /// Primary-actor script-time origin used to calculate elapsed camera tint.
 /// \note Original identifier: \c D_800633E8 (0x800633E8).
 extern f32 gCameraElapsedTintOriginSeconds;
-/// Whether the elapsed-script tint needs its initial script-time origin.
-/// \note Original identifier: \c D_800AC4B0 (0x800AC4B0).
-extern s32 gCameraElapsedTintNeedsOrigin;
 
 extern Gfx D_100C7E0[];
 /// Current gameplay, menu or transition mode.

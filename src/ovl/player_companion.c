@@ -589,10 +589,6 @@ void playerPlayFootstepSound(u8 *player, s32 ground) {
     }
 }
 
-void playerPlayFootstepSound(u8 *, s32);
-/// Terrain query mode used for player movement and ground sampling.
-/// \note Original identifier: \c D_80133F10 (0x80133F10).
-extern s32 gPlayerCollisionQueryMode;
 /// Advance permitted player movement against the area terrain and nearby Pikachu, updating motion state and
 /// movement feedback.
 /// \param motion Player motion record to update; the active Pikachu actor must be available when movement is
@@ -880,8 +876,7 @@ s32 playerRequestAreaInteractionEvent(u8 *position) {
     return 0;
 }
 
-s32 playerThrowHeldItem(u8 *);                          /* extern */
-void playerBeginTargetFocus(u8 *arg0, s32 arg1, f32 arg2); /* extern */
+void playerBeginTargetFocus(u8 *player, s32 targetHandle, f32 duration); /* extern */
 /// Attempt to throw the held item and temporarily track it when the throw succeeds.
 /// \param player Player record containing the held item and receiving the focus request.
 /// \returns Zero if no item is held, or one if a throw was attempted, even if the held item could not be
@@ -1146,9 +1141,6 @@ s32 playerTryActivateInteraction(u8 *player, ControllerState *controller) {
 }
 
 s32 playerPrepareInteractionDescription(PlayerControlPrefix *);
-/// First word of the shared 256-byte player help text buffer; storage continues through adjacent symbols.
-/// \note Original identifier: \c D_80133F20 (0x80133F20).
-extern u8 gPlayerHelpTextBuffer[4];
 
 /// Handle a permitted inspection request by displaying help for the current interaction target.
 /// \param player Player record providing inspection permissions and target selection.
@@ -1295,8 +1287,7 @@ s32 playerUpdateCompanionControl(u8 *player, ControllerState *controller) {
     return 1;
 }
 
-void playerStepGroundMovement(u8 *, f32, f32);
-s32 playerUpdateAreaEvents(u8 *arg0);           /* extern */
+s32 playerUpdateAreaEvents(u8 *player); /* extern */
 /// Advance normal player movement, view control, interactions, and permitted menu requests.
 /// \param player Player record to update.
 /// \param controller Controller state address.
@@ -1378,7 +1369,7 @@ void playerFinishStun(u8 *player) {
     controllerRequestRumbleStop(0);
 }
 
-void playerToggleViewShake(u8 *arg0);          /* extern */
+void playerToggleViewShake(u8 *player); /* extern */
 
 /// Advance the timed player stun reaction, allowing menus and returning to the chapter-appropriate control
 /// mode when it ends.
@@ -1572,7 +1563,6 @@ void playerFinishHelpDisplay(u8 *unused) {
     cameraFadeOverlayToColor(0, 0, 0, 0, 0, 0.0F);
 }
 
-s32 playerShowNextHelpLine(void);                   /* extern */
 /// Advance prepared help text on confirmation input and resume normal control after the last line, while
 /// allowing menu requests.
 /// \param player Player record providing menu permissions.
@@ -1595,7 +1585,7 @@ void playerFinishTargetFocus(u8 *player) {
     playerRestoreCompanionControlMode(player);
 }
 
-void playerSaveCompanionControlMode(u8 *arg0); /* extern */
+void playerSaveCompanionControlMode(u8 *player); /* extern */
 /// Temporarily focus the player view on a target while preserving the previous companion-control selection.
 /// \param player Primary player record receiving the focus request.
 /// \param targetHandle Object handle to focus on.
@@ -1912,10 +1902,6 @@ s32 playerClassifyInteractionTarget(u8 *player, u8 *object, s32 flags) {
 void playerSetControllerPort(s32 port) {
     ((PlayerControlPrefix *)((u8 *)&gPlayerEyeHeight - 0x1C))->controllerPort = port;
 }
-
-/// Separate symbol view of the primary player record's controller port.
-/// \note Original identifier: \c D_800EF6CC (0x800EF6CC).
-extern s32 gPlayerControllerPort;
 
 /// Select the primary player control scheme and its controller assignment.
 /// \param scheme Control-scheme identifier from zero through twenty-seven.
@@ -2251,10 +2237,6 @@ void playerUpdateInput(s32 idx) {
     playerUpdateViewCamera(p);
 }
 
-/// Borrowed cursor into shared player help text while lines are consumed.
-/// \note Original identifier: \c D_80134020 (0x80134020).
-extern u8 *gPlayerHelpTextCursor;
-
 /// Prepare interaction help text for display, using the unknown-target message for empty text.
 /// \param text Readable null-terminated help text of at most 255 bytes, not overlapping the shared help
 /// buffer; copied during this call.
@@ -2508,8 +2490,6 @@ s32 playerCanEnterStationaryLook(void) {
     return 0;
 }
 
-void _bzero(void *, s32); /* extern */
-
 /// Initialize a descriptive interaction proxy with default interaction values and placeholder help text.
 /// \param object New interaction-proxy object without owned state, receiving its initial state.
 /// \returns Nothing.
@@ -2563,10 +2543,6 @@ u8 *interactionProxyCreate(f32 *position, s32 context, s32 interactionResult, s3
     objectRegisterActiveHierarchy(proxy);
     return proxy;
 }
-
-/// Flags inhibiting entry into or exit from gameplay music ducking.
-/// \note Original identifier: \c D_80133F18 (0x80133F18).
-extern s32 gGameplayMusicDuckingInhibitFlags;
 
 /// Control which automatic music-volume transitions are inhibited.
 /// \param flags Inhibit mask: value one prevents reducing music volume and value two prevents restoring it.

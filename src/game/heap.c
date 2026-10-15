@@ -274,8 +274,6 @@ HpBlk *heapCombineNextFree(u8 *heap, HpBlk *b) {
     return b;
 }
 
-HpBlk *heapCombineNextFree(u8 *, HpBlk *);
-
 /// Release excess storage from an existing heap allocation.
 /// \param heap Initialized heap to operate on.
 /// \param allocation Allocated payload to shrink, or NULL for no operation.
@@ -330,8 +328,6 @@ s32 heapGetAllocationSize(u8 *heap, s32 allocationAddress) {
     return *(s32 *)(block + 8);
 }
 
-HpBlk *heapCombinePreviousFree(u8 *, HpBlk *);
-
 /// Release an allocation back to its heap.
 /// \param heap Initialized heap to operate on.
 /// \param allocation Allocated payload to release, or NULL for no operation.
@@ -358,8 +354,6 @@ void heapFreeLocal(HpHdr *heap, void *allocation) {
         TRACE(("free: hp:%p prev:%p next:%p size:%d owner:%d\n", b, b->prev, b->next, b->size, b->tag));
     }
 }
-
-s32 heapValidateBlock(u8 *, char *, u8 *, s32); /* extern */
 
 /// Measure total free space and the largest available heap allocation.
 /// \param heap Initialized heap to operate on.

@@ -356,7 +356,9 @@ void vector3GetZAxisAnglesNearHeading(f32 *vector, f32 heading, f32 *pitch, f32 
 /// \returns One for a nondegenerate direction; zero for a near-zero or near-vertical direction, with fallback angles still supplied.
 /// \note Original decompilation identifier: \c func_8000D13C (0x8000D13C).
 s32 vector3GetZAxisPitchYawDegrees(f32 *v, f32 *pitch, f32 *yaw) {
-    f32 x, y, z;
+    f32 x;
+    f32 y;
+    f32 z;
     f32 s;
     f32 c;
     f32 qx;
@@ -652,8 +654,6 @@ f32 mathCubicHermite(f32 start, f32 end, f32 startSlope, f32 endSlope, f32 durat
     endWeight = quadratic - cubicPosition;
     return (startWeight * start) + (end * endWeight) + (startSlope * startSlopeWeight) + (endSlope * endSlopeWeight);
 }
-
-f32 mathCubicHermite(f32, f32, f32, f32, f32, f32);
 
 /// Interpolate smoothly between two positions with zero endpoint velocities.
 /// \param a Starting three-component position.

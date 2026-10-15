@@ -301,7 +301,6 @@ s32 voiceRecognitionStartRequestedRead(void) {
 /// Most recently completed recognition result, retained until replaced.
 /// \note Original identifier: \c D_800F8AD8 (0x800F8AD8).
 extern OSVoiceData gVoiceRecognitionResult;
-s32 voiceRecognitionStartRequestedRead(void);
 
 /// Advance recognition reading and retain a newly completed result.
 /// \returns Nothing.

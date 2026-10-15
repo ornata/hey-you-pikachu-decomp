@@ -394,10 +394,6 @@ s32 areaDispatchPositionEvent(f32 *position, s32 eventType) {
     return -1;
 }
 
-/// Octree child indices selected by comparisons with the node midpoint on each axis.
-/// \note Original identifier: \c D_80123A08 (0x80123A08).
-extern s32 gMazeOctantIndices[2][2][2];
-
 /// Find the most specific current-area region selected by a world position.
 /// \param x World X coordinate.
 /// \param y World Y coordinate.
@@ -552,11 +548,20 @@ f32 terrainSampleCellHeight(s32 x, s32 y, u8 *node) {
 /// \returns Maze terrain height relative to the node.
 /// \note Original decompilation identifier: \c func_8010B528 (0x8010B528).
 f32 terrainGetMazeHeight(f32 x, f32 z, u8 *node) {
-    s32 w, h;
-    f32 fx, fz;
-    f32 v00, v10, v01, v11;
-    s32 ix, iz, nx, nz;
-    f32 tx, tz;
+    s32 w;
+    s32 h;
+    f32 fx;
+    f32 fz;
+    f32 v00;
+    f32 v10;
+    f32 v01;
+    f32 v11;
+    s32 ix;
+    s32 iz;
+    s32 nx;
+    s32 nz;
+    f32 tx;
+    f32 tz;
     w = gTerrainMoundHeightGrid.w;
     fx = ((x - ((MazeNode *)node)->x) * (w - 1)) / ((MazeNode *)node)->w;
     h = gTerrainMoundHeightGrid.h - 1;
@@ -609,10 +614,23 @@ f32 fabsf(f32);
 /// \returns Height relative to the node of the first matching terrain triangle, or zero when none matches.
 /// \note Original decompilation identifier: \c func_8010B6D0 (0x8010B6D0).
 f32 terrainGetTriangleHeight(f32 x, f32 z, u8 *node) {
-    f32 ax, az, bx, bz, cx, cz, determinant, dx, dz, u, v;
-    f32 lengthB, lengthC;
+    f32 ax;
+    f32 az;
+    f32 bx;
+    f32 bz;
+    f32 cx;
+    f32 cz;
+    f32 determinant;
+    f32 dx;
+    f32 dz;
+    f32 u;
+    f32 v;
+    f32 lengthB;
+    f32 lengthC;
     s32 i;
-    f32 baseY, by, cy;
+    f32 baseY;
+    f32 by;
+    f32 cy;
 
     x -= ((MazeNode *)node)->x;
     z -= ((MazeNode *)node)->z;
@@ -712,9 +730,7 @@ f32 terrainGetHeightMapHeight(f32 x, f32 z, u8 *node) {
     return ((1.0F - tz) * (((1.0F - tx) * v00) + (tx * v10))) + (tz * (((1.0F - tx) * v01) + (tx * v11)));
 }
 
-f32 terrainGetMazeHeight(f32, f32, u8 *);               /* extern */
-f32 terrainGetTriangleHeight(f32, f32, u8 *);               /* extern */
-f32 terrainGetHeightMapHeight(f32 arg0, f32 arg1, u8 *arg2); /* extern */
+f32 terrainGetHeightMapHeight(f32 x, f32 z, u8 *node); /* extern */
 /// Evaluate terrain height within a supplied area node.
 /// \param x World X coordinate.
 /// \param z World Z coordinate.
@@ -738,7 +754,6 @@ f32 terrainGetNodeLocalHeight(f32 x, f32 z, u8 *node) {
     return terrainGetHeightMapHeight(x, z, node);
 }
 
-f32 terrainFindSurfaceLocalHeight(f32, f32, f32, u8 **);
 /// Query terrain world height at a supplied position.
 /// \param x World X coordinate.
 /// \param y World Y coordinate used to select the terrain region.
@@ -752,7 +767,8 @@ f32 terrainFindSurfaceLocalHeight(f32, f32, f32, u8 **);
 f32 terrainGetWorldHeight(f32 x, f32 y, f32 z, u8 **previous) {
     u8 *node;
     f32 height;
-    f32 px, pz;
+    f32 px;
+    f32 pz;
     if (previous != NULL) {
         node = *previous;
     } else {
@@ -960,10 +976,6 @@ s32 terrainGetSurfaceAttributes(f32 x, f32 y, f32 z, u8 **cachedNode) {
     }
 }
 
-/// Friction coefficients indexed by supported terrain material identifiers.
-/// \note Original identifier: \c D_80123A28 (0x80123A28).
-extern f32 gTerrainMaterialFriction[];
-
 /// Look up the friction coefficient for a terrain material.
 /// \param material Terrain material code whose low four bits identify a material from zero through seven.
 /// \returns The configured friction coefficient.
@@ -1068,9 +1080,6 @@ void terrainCreateContactEffect(f32 *position, s32 material) {
     }
 }
 
-/// Surface attribute masks that obstruct each horizontal collision policy.
-/// \note Original identifier: \c D_80123B48 (0x80123B48).
-extern s32 gTerrainCollisionPolicySurfaceMasks[];
 /// Check horizontal clearance at a candidate world position under the requested collision policy.
 /// \param type Collision policy from zero through nine; policy five also requires the active primary actor.
 /// \param x Candidate world X coordinate.
@@ -1139,7 +1148,6 @@ u16 terrainCheckHorizontalObstruction(s32 type, f32 x, f32 y, f32 z, f32 width, 
     return flags;
 }
 
-f32 sqrtf(f32);
 #pragma intrinsic(sqrtf)
 /// Constrain a requested world displacement to movement permitted by terrain and the selected collision
 /// policy.
@@ -1328,7 +1336,10 @@ extern u8 gRenderCameraMatrixEntries[];
 /// \note Requires an initialized current area and a valid active camera.
 /// \note Original decompilation identifier: \c func_8010CFF8 (0x8010CFF8).
 s32 areaTestCameraVisibility(f32 margin, f32 *position, f32 *out) {
-    f32 x, y, z, far;
+    f32 x;
+    f32 y;
+    f32 z;
+    f32 far;
     matrix34TransformPointVector((f32 *)(((u8 *)gRenderCameras) + (gRenderCameraIndex * 0xE0) + 0x58), position, out);
     far = gCurrentAreaConfiguration->farClip * 1.7F;
     z = -out[2];
@@ -1398,12 +1409,6 @@ void areaActivateNode(u8 *node) {
 }
 
 #include "scene_configuration.h"
-/// Squared far-distance threshold used by area node visibility tests.
-/// \note Original identifier: \c D_80133DF8 (0x80133DF8).
-extern f32 gAreaFarVisibilityDistanceSquared;
-/// Squared near-distance threshold used by area node visibility tests.
-/// \note Original identifier: \c D_80133DFC (0x80133DFC).
-extern f32 gAreaNearVisibilityDistanceSquared;
 
 /// Refresh visibility distance limits from the current area's configuration.
 /// \param unused Unused callback argument.
@@ -1493,9 +1498,9 @@ s32 areaIsNodeVisible(u8 *node) {
 }
 #undef D324_VISIBLE_IF
 
-void areaDeactivateNodeHierarchy(u8 *arg0); /* extern */
-void areaActivateNode(u8 *arg0); /* extern */
-s32 areaIsNodeVisible(u8 *arg0);  /* extern */
+void areaDeactivateNodeHierarchy(u8 *node); /* extern */
+void areaActivateNode(u8 *node);            /* extern */
+s32 areaIsNodeVisible(u8 *node);            /* extern */
 /// Activate an area node and update descendant participation according to camera visibility.
 /// \param node Initialized area hierarchy whose visibility is refreshed.
 /// \returns Nothing.
@@ -1688,7 +1693,9 @@ s32 mazeClassifyNode(MazeNode *node) {
                         continue;
                     }
                     {
-                        f32 px, py, pz;
+                        f32 px;
+                        f32 py;
+                        f32 pz;
                         width = ((SceneOccupancyView *)((u8 *)gCurrentAreaConfiguration))->width;
                         height = ((SceneOccupancyView *)((u8 *)gCurrentAreaConfiguration))->height;
                         depth = ((SceneOccupancyView *)((u8 *)gCurrentAreaConfiguration))->depth;
@@ -1747,7 +1754,7 @@ void mazeBuildNodeHierarchy(u8 *node, s32 depth, s32 forceSplit) {
     }
 }
 
-u8 *areaFindPositionNode(f32 arg0, f32 arg1, f32 arg2); /* extern */
+u8 *areaFindPositionNode(f32 x, f32 y, f32 z); /* extern */
 
 /// Create and register a block object in the maze region selected by a world position.
 /// \param position World position in X, Y, Z order selecting a region with no existing block object to
@@ -1787,7 +1794,6 @@ void mazeRemoveBlockObject(u8 *object) {
     objectRequestHierarchyDestruction(object);
 }
 
-void mazeBuildNodeHierarchy(u8 *, s32, s32);
 void mazePrepareNodeObjects(u8 *);
 
 /// Replace the model and terrain of a maze block at the requested subdivision level.
@@ -1941,8 +1947,6 @@ void mazeDestroyNode(u8 *node) {
     heapFreeLocal(&gGameHeap, node);
 }
 
-void mazeDestroyNode(u8 *); /* extern */
-
 /// Release a maze node hierarchy and all of its associated objects.
 /// \param node Owned maze hierarchy root to release; the root and descendants are invalid after this call.
 /// \returns Nothing.
@@ -1966,9 +1970,6 @@ void mazeDestroyNodeHierarchy(u8 *node) {
     } while (var_s0 != 0x20);
     mazeDestroyNode(node);
 }
-
-void mazeInitializeRoot(void);        /* extern */
-void mazeConfigureEventLinks(void); /* extern */
 
 /// Construct the current area's maze, its models, and configured event links.
 /// \returns Nothing; requires a loaded area configuration and no existing maze to replace.
@@ -2013,8 +2014,7 @@ void mazeSpawnConfiguredItems(void) {
     }
 }
 
-void areaRefreshVisibilityDistances(s32 arg0); /* extern */
-void areaUpdateNodeVisibility(u8 *arg0); /* extern */
+void areaUpdateNodeVisibility(u8 *node); /* extern */
 
 /// Refresh current-area maze visibility for the active camera.
 /// \param unused Unused callback argument.
@@ -2061,7 +2061,7 @@ void mazePrepareObjectHierarchy(s32 object) {
     mazeFreezeStaticObjects((u8 *)object);
 }
 
-void mazePrepareObjectHierarchy(s32 arg0); /* extern */
+void mazePrepareObjectHierarchy(s32 object); /* extern */
 /// Prepare the objects associated with a maze node and all descendants.
 /// \param node Maze hierarchy root to prepare, or null.
 /// \returns Nothing.
@@ -2084,13 +2084,7 @@ void mazePrepareNodeObjects(u8 *node) {
     }
 }
 
-void mazeBuild(void);        /* extern */
-void mazeSpawnConfiguredItems(void);        /* extern */
-void mazePrepareNodeObjects(u8 *arg0);    /* extern */
-extern f32 D_80133DE8;
-/// Retained block-count diagnostic word reset during maze initialization.
-/// \note Original identifier: \c D_80133DF4 (0x80133DF4).
-extern s32 gMazeDiagnosticBlockCount;
+void mazePrepareNodeObjects(u8 *node); /* extern */
 
 /// Initialize the current area's maze, prepare its objects, and spawn its configured items.
 /// \returns Nothing; requires a loaded area configuration and no existing maze to replace.
@@ -2130,7 +2124,7 @@ void areaRunSceneInitializer(void) {
     }
 }
 
-void mazeDestroyNodeHierarchy(u8 *arg0); /* extern */
+void mazeDestroyNodeHierarchy(u8 *node); /* extern */
 
 /// Release the current maze hierarchy and its associated objects.
 /// \returns Nothing; requires an initialized maze root.

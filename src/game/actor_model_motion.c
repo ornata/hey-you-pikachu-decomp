@@ -407,10 +407,6 @@ void actorDrawModelLightingSetup(u8 *actor) {
                        ->state.actor->modelDrawLists[(((RuntimeObjectPrefix *)actor)->flags & 0x8000) ? 1 : 0]);
 }
 
-void actorUpdateTrackedSoundSpatialization(f32 *, s32 *);
-void actorUpdateGroundSlopePitch(u8 *);
-
-
 /// Update actor behavior, animation, spatial state, and model drawing setup.
 /// \param actor Actor with initialized model, action, hierarchy, and collision state.
 /// \returns Nothing.
@@ -538,7 +534,9 @@ void actorUpdateTargetFacingChild(u8 *object) {
     f32 delta[3];
     f32 initial[3];
     Matrix34 matrix;
-    f32 roll, pitch, yaw;
+    f32 roll;
+    f32 pitch;
+    f32 yaw;
     f32 position[3];
     f32 previous[3];
     f32 *weight;

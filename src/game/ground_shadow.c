@@ -74,7 +74,6 @@ void groundShadowUpdateVertices(u8 *obj, s32 buffer) {
 /// Current gameplay, menu or transition mode.
 /// \note Original identifier: \c D_800AE504 (0x800AE504).
 extern s32 gRuntimeGameMode;
-void groundShadowUpdateVertices(u8 *, s32);
 
 /// Prepare the ground shadow for rendering when the current scene mode permits it.
 /// \param object Ground-shadow object to render.
@@ -184,7 +183,6 @@ void groundShadowBuildDisplayList(GroundShadowGrid *grid) {
 /// Object template used to create terrain-conforming ground shadows.
 /// \note Original identifier: \c D_8009B540 (0x8009B540).
 extern u8 gGroundShadowObjectTemplate[];
-void groundShadowBuildDisplayList(GroundShadowGrid *);
 
 /// Create a ground shadow with the requested grid resolution and spacing.
 /// \param count Number of vertices along each grid side; must exceed one and fit the renderer vertex limit.

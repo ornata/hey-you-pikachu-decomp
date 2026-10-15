@@ -159,10 +159,10 @@ void systemMenuUpdateVolumeSettings(MenuList *menu);
 void systemMenuCancelSelection(s32 arg0);
 void systemMenuGoHome(s32 arg0);
 void systemMenuOpenWorldMap(s32 arg0);
-void systemMenuSetAudioOutputMode(s32 arg0);
-void systemMenuSetVerticalLookMode(s32 arg0);
+void systemMenuSetAudioOutputMode(s32 mode);
+void systemMenuSetVerticalLookMode(s32 normal);
 void systemMenuAppendSaveStatusDetails(void);
-void systemMenuRequestSaveTransfer(s32 arg0);
+void systemMenuRequestSaveTransfer(s32 operation);
 void systemMenuSyncLookSettingSelection(s32 arg0);
 void systemMenuSyncSoundSettingSelection(s32 arg0);
 /// Linked secondary model template in the menu transition hierarchy.
@@ -429,10 +429,6 @@ void systemMenuRestoreAudio(void) {
     }
 }
 
-/// Owned menu navigation state with borrowed menu-tree links and retained live-model pointers.
-/// \note Original identifier: \c D_801340E8 (0x801340E8).
-extern MenuState gSystemMenuState;
-
 /// Begin a system-menu phase with a fresh elapsed-time origin.
 /// \param phase Menu phase: zero opens, one accepts input, two waits to close, and three closes.
 /// \returns Nothing.
@@ -452,9 +448,6 @@ void systemMenuPushHistory(void) {
     gSystemMenuState.depth = gSystemMenuState.depth + 1;
 }
 
-/// Persistent Root menu list and retained selection state.
-/// \note Original identifier: \c D_8012ACC0 (0x8012ACC0).
-extern MenuList gSystemMenuRootList;
 /// Return to the parent menu, or the root menu when no parent remains.
 /// Requires an initialized history with depth from zero through three.
 /// \returns Nothing.
@@ -573,14 +566,6 @@ void systemMenuPrepareDetailText(void) {
     }
 }
 
-void systemMenuPrepareDetailText(void); /* extern */
-/// Shared bounded text accumulator for selected-item details.
-/// \note Original identifier: \c D_801341B8 (0x801341B8).
-extern s8 gSystemMenuDetailText[0x60];
-/// Number of bytes currently stored in the selected-item detail accumulator.
-/// \note Original identifier: \c D_80134218 (0x80134218).
-extern s32 gSystemMenuDetailTextLength;
-
 /// Refresh the detail message for the selected menu item, including its dynamic information.
 /// \param state Initialized menu state with a live, selected item whose detail text is requested.
 /// \returns Nothing.
@@ -638,9 +623,6 @@ void systemMenuDrawDetails(Gfx **displayList) {
     textDrawGetDisplayListCursor(displayList);
 }
 
-/// Randomly selected text row used by the menu closing effect.
-/// \note Original identifier: \c D_8012A978 (0x8012A978).
-extern s32 gSystemMenuClosingEffectRow;
 /// Refresh the menu title, visible items, and current selection for display.
 /// \param state Initialized menu state with a live current list and a valid visible-row offset; updates the selected item when visible.
 /// The text buffers must be initialized, and every menu label must contain valid text characters and controls.
@@ -777,9 +759,6 @@ void systemMenuDrawClosingEffect(Gfx **displayList) {
     }
 }
 
-void systemMenuDrawDetails(Gfx **);            /* extern */
-void systemMenuDrawItemList(Gfx **);            /* extern */
-void systemMenuDrawClosingEffect(Gfx **);            /* extern */
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;
@@ -969,12 +948,6 @@ extern s32 gControllerPrimaryStickX;
 /// Separate view of the primary controller signed vertical stick input.
 /// \note Original identifier: \c D_800AD554 (0x800AD554).
 extern s32 gControllerPrimaryStickY;
-/// Separate symbol view of the primary player record's view yaw.
-/// \note Original identifier: \c D_800EF6AC (0x800EF6AC).
-extern f32 gPlayerYaw;
-/// Separate symbol view of the primary player record's horizontal view shake.
-/// \note Original identifier: \c D_800EF6B8 (0x800EF6B8).
-extern f32 gPlayerViewShake;
 
 /// Position the active menu model and adjust its tilt according to the control stick.
 /// Requires a live initialized menu model, player state, and a valid presentation transform.
@@ -1027,16 +1000,6 @@ void systemMenuUpdateAnimation(void) {
         return;
     }
 }
-
-/// Audio cue retained on menu entry for restoration.
-/// \note Original identifier: \c D_801340D0 (0x801340D0).
-extern s32 gSystemMenuSavedAudioCue;
-/// Audio playback rate retained on menu entry for restoration.
-/// \note Original identifier: \c D_801340D8 (0x801340D8).
-extern f64 gSystemMenuSavedAudioRate;
-/// Tracked sound-effect preview stopped when the preview changes or the menu exits.
-/// \note Original identifier: \c D_801340E0 (0x801340E0).
-extern s32 gSystemMenuSoundPreviewHandle;
 
 /// Enter the initialized system menu at its root and begin the opening animation.
 /// Requires live menu models and text buffers and initialized player, camera, and area state.
@@ -1790,10 +1753,6 @@ MenuItem *systemMenuBuildExtrasMenu(void) {
     return &item;
 }
 
-/// Persistent Control menu list and retained selection state.
-/// \note Original identifier: \c D_8012AB48 (0x8012AB48).
-extern MenuList gSystemMenuControlList;
-
 /// Select the vertical-look menu row corresponding to the saved control setting.
 /// \param unused Unused menu action value.
 /// \returns Nothing.
@@ -1805,10 +1764,6 @@ void systemMenuSyncLookSettingSelection(s32 unused) {
     gSystemMenuControlList.confirmedIndex = lookSetting;
     gSystemMenuControlList.selectedIndex = lookSetting;
 }
-
-/// Persistent Sound menu list and retained selection state.
-/// \note Original identifier: \c D_8012AAF0 (0x8012AAF0).
-extern MenuList gSystemMenuSoundList;
 
 /// Select the sound-output menu row corresponding to the saved mono or stereo setting.
 /// \param unused Unused menu action value.

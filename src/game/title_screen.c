@@ -110,9 +110,6 @@ void titleScreenResetLogoFade(void) {
     gTitleLogoFade.alpha = 0.0F;
 }
 
-/// Loaded title logo image used by logo drawing.
-/// \note Original identifier: \c D_8009B3EC (0x8009B3EC).
-extern s32 gTitleLogoImage;
 /// Smoothed frame duration in seconds used by gameplay and animation updates.
 /// \note Original identifier: \c D_800AE4E4 (0x800AE4E4).
 extern f32 gRuntimeFrameSeconds;
@@ -144,10 +141,6 @@ void titleScreenDrawLogo(Gfx **gdl) {
     gDPSetCombineLERP((*gdl)++, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0);
     textureDrawScaledRepeated(gdl, &tex, 0x1C, 0x19, 0, 0, 0, 0, 1.0F, 1.0F, 0, 0);
 }
-
-/// Loaded artwork image used by startup panel drawing.
-/// \note Original identifier: \c D_8009B3F0 (0x8009B3F0).
-extern s32 gTitleStartupPanelImage;
 
 /// Draw the startup artwork panel on its background.
 /// \pre Title-screen artwork must be initialized.
@@ -225,9 +218,6 @@ void titleScreenDrawStartPrompt(Gfx **gdl) {
     }
 }
 
-/// Current title-screen menu choice index.
-/// \note Original identifier: \c D_800F25A0 (0x800F25A0).
-extern s32 gTitleMenuSelection;
 /// Currently displayed text frame of the animated title-menu cursor.
 /// \note Original identifier: \c D_800F25A8 (0x800F25A8).
 extern s32 gTitleCursorFrame;
@@ -251,7 +241,8 @@ void titleScreenDrawMenu(Gfx **cursor, const s32 *items, s32 enabled, s32 unavai
         }
     }
     if (count != 0) {
-        s32 x, y;
+        s32 x;
+        s32 y;
         s32 i;
         s32 textX;
         s32 cursorY;
@@ -328,10 +319,6 @@ void titleScreenDrawMessage(Gfx **gdl) {
     }
 }
 
-/// Loaded artwork image used by startup silhouette drawing.
-/// \note Original identifier: \c D_8009B3F4 (0x8009B3F4).
-extern s32 gTitleSilhouetteImage;
-
 /// Draw the dark startup artwork silhouette.
 /// \pre Title-screen artwork must be initialized.
 /// \param gdl Display-list cursor to append drawing commands to and advance.
@@ -354,12 +341,6 @@ void titleScreenDrawStartupSilhouette(Gfx **gdl) {
     gDPSetCycleType((*gdl)++, G_CYC_1CYCLE);
 }
 
-void titleScreenDrawLogo(Gfx **);
-void titleScreenDrawStartupPanel(Gfx **);
-void titleScreenDrawStartPrompt(Gfx **);
-void titleScreenDrawMenu(Gfx **, const s32 *, s32, s32);
-void titleScreenClearScreen(Gfx **);
-void titleScreenDrawStartupSilhouette(Gfx **);
 /// Current startup, title-menu or demonstration-transition state.
 /// \note Original identifier: \c D_8009B3E4 (0x8009B3E4).
 extern s32 gTitleScreenState;
@@ -378,9 +359,7 @@ extern const s32 gTitleLoadGameFileMenuItems[4];
 /// Text-image indices for confirmation of overwriting an occupied file.
 /// \note Original identifier: \c D_8009B490 (0x8009B490).
 extern const s32 gTitleOverwriteMenuItems[3];
-/// Nonzero when the file-selection menu loads an existing game.
-/// \note Original identifier: \c D_800F25A4 (0x800F25A4).
-extern s32 gTitleLoadGameSelected;
+
 /// Bit mask of enabled file-selection choices.
 /// \note Original identifier: \c D_800F25B0 (0x800F25B0).
 extern s32 gTitleEnabledFileChoices;
@@ -740,11 +719,6 @@ extern u32 gTitleStartupPanelMilliseconds;
 extern u32 gTitleSilhouetteMilliseconds;
 #include "scene_configuration.h"
 #include "scene_types.h"
-void titleScreenInitialize(void);
-void titleScreenResetLogoFade(void);
-void titleScreenSetMessage(void **, s32, s32);
-s32 titleScreenHandleFileSelection(void);
-s32 titleScreenHandleOverwriteConfirmation(void);
 
 /// Advance startup checks, title presentation, save-file menus, and transitions into gameplay or a demonstration.
 /// \returns Nothing.

@@ -409,10 +409,6 @@ s32 actionInvokeInitializer(u8 *object) {
     return 0;
 }
 
-void motionStartTrackPlayback(u8 *);
-void motionStartTimedPlayback(u8 *);
-void motionStartPoseTransition(u8 *);
-
 /// Start playback and associated animation cues for the current action.
 /// \param object Object whose current action is started.
 /// \returns Nothing.
@@ -770,9 +766,6 @@ void actionUpdatePlayback(u8 *object) {
         }
     }
 }
-
-void motionEvaluateChildRotation(u8 *, ChildMotionState *, f32);
-void motionBlendPosePair(u8 *, f32 *, f32);
 
 /// Advance child motion playback using its parent action timing.
 /// \param object Animated child part with initialized playback state and a valid parent action state; pose blending requires a positive parent transition duration.

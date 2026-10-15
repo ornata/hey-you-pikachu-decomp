@@ -131,9 +131,6 @@ void itemApplyHorizontalFriction(f32 *x, f32 *z, f32 rate, f32 threshold, f32 sc
     *z -= dz;
 }
 
-
-s32 itemUpdateSpin(u8 *, s32, s32);
-void itemApplyHorizontalFriction(f32 *, f32 *, f32, f32, f32);
 /// Separate friction-coefficient view of the item catalog, with a 116-byte stride.
 /// \note Original identifier: \c D_80125A70 (0x80125A70).
 extern u8 gItemKindFrictionEntries[];
@@ -346,8 +343,6 @@ s32 itemDispatchCollisionResponse(u8 *object, s32 flags) {
     return 1;
 }
 
-s32 itemUpdateGroundVelocity(u8 *, u8 *, s32, s32 *);
-s32 itemDispatchCollisionResponse(u8 *, s32);
 #pragma intrinsic(fabsf)
 /// Advance item movement and its terrain interactions, including bouncing, settling, and disposal.
 /// \param object Moving item to update.
@@ -625,7 +620,6 @@ void pinataUpdateWriggle(u8 *item) {
     } while (index != 3);
 }
 
-void pinataUpdateWriggle(u8 *);
 /// Update an actor-held item attachment, or release it when its holder is absent.
 /// \param object Actor-held item to update.
 /// \returns Nothing.

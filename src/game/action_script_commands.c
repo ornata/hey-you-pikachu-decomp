@@ -340,16 +340,6 @@ const f32 gActionLaunchHeadingOffsets[8] = {0.0F, 0.0F, 240.0F, 0.0F, 0.0F, 0.0F
 /// \note Original identifier: \c D_800A4978 (0x800A4978).
 const s32 gActionLaunchThrowFlags[8] = {1, 1, 1, 1, 1, 1, 1, 0};
 
-/// Per-mode vertical launch factors, negated and multiplied by command speed.
-/// \note Original identifier: \c D_800A4938 (0x800A4938).
-extern const f32 gActionLaunchVerticalSpeedFactors[];
-/// Per-mode launch heading offsets in degrees.
-/// \note Original identifier: \c D_800A4958 (0x800A4958).
-extern const f32 gActionLaunchHeadingOffsets[];
-/// Per-mode flags passed to the held-item throw interface.
-/// \note Original identifier: \c D_800A4978 (0x800A4978).
-extern const s32 gActionLaunchThrowFlags[];
-
 typedef struct Launch {
     s32 kind;
     f32 speed;
@@ -713,8 +703,6 @@ void actionCommandCreateLinkedPartEffect(u8 *actor, ActorScriptState *state, Act
     convergingParticleEffectCreate(((RuntimeObjectPrefix *)effectOwner)->handle, effectArguments->lifetime,
                                    effectArguments->count, effectArguments->style);
 }
-
-s32 itemTryTransformToReplacement(s32); /* extern */
 
 /// Creates an effect at the selected target or at the actor; the actor variant also attempts to transform its held item.
 /// \param actor Actor supplying the effect position or target.

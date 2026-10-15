@@ -223,8 +223,6 @@ s32 searchTreeVisitAscendingAtDepth(TreeNode *node, s32 depth) {
     return 0;
 }
 
-s32 searchTreeVisitAscendingAtDepth(TreeNode *, s32);
-
 /// Visit entries in ascending order.
 /// \param root Tree root, or NULL.
 /// \param visitor Callback receiving each node and its depth from root; a nonzero result stops traversal. Traversals must not be nested.
@@ -255,8 +253,6 @@ s32 searchTreeVisitDescendingAtDepth(TreeNode *node, s32 depth) {
     }
     return 0;
 }
-
-s32 searchTreeVisitDescendingAtDepth(TreeNode *, s32);
 
 /// Visit entries in descending order.
 /// \param root Tree root, or NULL.
@@ -293,8 +289,6 @@ s32 searchTreeVisitRootRightLeftAtDepth(TreeNode *node, s32 depth) {
     }
     return 0;
 }
-
-s32 searchTreeVisitRootRightLeftAtDepth(TreeNode *, s32);
 
 /// Visit each root before its right and left subtrees.
 /// \param root Tree root, or NULL.

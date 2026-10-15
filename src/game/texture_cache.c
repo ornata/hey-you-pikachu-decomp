@@ -97,7 +97,8 @@ void textureDrawRectangles(s32 table, TextureRectangle *draw, Gfx **gdl) {
     s32 width;
     TextureDescriptor texture;
     s32 height;
-    s32 useMaskS, useMaskT;
+    s32 useMaskS;
+    s32 useMaskT;
     f32 ds;
     f32 dt;
     if (gdl == NULL) {

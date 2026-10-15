@@ -39,7 +39,6 @@
 #include "actor_parts.h"
 #include "audio_cue.h"
 #include "actor_target.h"
-#include "actor_script.h"
 
 /* Debug trace: compiled out in this build, but each format string is still
  * emitted to .rodata. */
@@ -242,8 +241,6 @@ void wholeMapDrawDestinations(Gfx **gdl) {
     }
 }
 
-s32 wholeMapIsDestinationAvailable(s32); /* extern */
-
 /// Check whether a map destination exists but remains locked at the current difficulty.
 /// \param destination Valid index in the map-destination table.
 /// \returns One if the destination exists but is unavailable, or zero otherwise.
@@ -269,7 +266,8 @@ extern s32 gWorldMapLockedMarkerAngle;
 void wholeMapDrawLockedDestinations(Gfx **gdl) {
     TextureRectangle rectangles[3];
     s32 i;
-    s32 x, y;
+    s32 x;
+    s32 y;
     s32 angle;
     WorldMapDestination *row;
     s32 *counter;
@@ -353,9 +351,6 @@ void wholeMapDrawDifficultyOverlay(Gfx **gdl) {
         7, (TextureRectangle *)(TextureRectangle *)((playerGetChaseStage() * 0x90) + gWorldMapDifficultyOverlays), gdl);
 }
 
-void wholeMapDrawDestinations(Gfx **);          /* extern */
-void wholeMapDrawLockedDestinations(Gfx **);          /* extern */
-void wholeMapDrawDifficultyOverlay(Gfx **);          /* extern */
 /// Camera slot selected for the current drawing context.
 /// \note Original identifier: \c D_800ABDD8 (0x800ABDD8).
 extern s32 gRenderCameraIndex;
@@ -425,13 +420,9 @@ void wholeMapUpdateActorPlacement(void) {
     gPikachuActor->worldPosition[2] = position.z;
 }
 
-/// Index of the currently selected world-map destination.
-/// \note Original identifier: \c D_800F1B74 (0x800F1B74).
-extern s32 gWorldMapSelectedDestination;
 /// Consecutive map input updates with directional buttons held, used to select the actor pose.
 /// \note Original identifier: \c D_800F1B70 (0x800F1B70).
 extern s32 gWorldMapDirectionHeldFrames;
-void wholeMapUpdateActorPlacement(void);
 
 /// Prepare the active actor to face the camera and track the selected map destination.
 /// \pre Requires an active actor, camera, and selected map destination.
@@ -472,9 +463,6 @@ void wholeMapPrepareActor(void) {
     actorSetBehaviorInhibitFlags((u8 *)((s32)gPikachuActor), animation);
 }
 
-/// Current world-map menu and transition state.
-/// \note Original identifier: \c D_8009A110 (0x8009A110).
-extern s32 gWorldMapState;
 /// Elapsed-millisecond checkpoint when the current map state began.
 /// \note Original identifier: \c D_800F1BA8 (0x800F1BA8).
 extern u32 gWorldMapStateStartMilliseconds;
@@ -555,13 +543,10 @@ void wholeMapEnsureAvailableSelection(s32 min, s32 max, s32 step) {
     }
 }
 
-void wholeMapEnsureAvailableSelection(s32, s32, s32);
 /// Primary controller new and auto-repeated button presses.
 /// \note Original identifier: \c D_800AD54C (0x800AD54C).
 extern s32 gControllerPrimaryRepeatedButtons;
-/// Consecutive map input updates with directional buttons held, used to select the actor pose.
-/// \note Original identifier: \c D_800F1B70 (0x800F1B70).
-extern s32 gWorldMapDirectionHeldFrames;
+
 /// Presentation focus target for the special destination selected by voice.
 /// \note Original identifier: \c D_8009A3A8 (0x8009A3A8).
 extern Vec3f gWorldMapSpecialDestinationFocus;
@@ -574,9 +559,7 @@ extern s32 gWorldMapPreviousDestination;
 /// Mapping from recognized destination values to map destination indices.
 /// \note Original identifier: \c D_8009A3C4 (0x8009A3C4).
 extern s32 gWorldMapVoiceDestinationIndices[];
-/// Opacity of the pulsing selected-destination highlight.
-/// \note Original identifier: \c D_8009A114 (0x8009A114).
-extern s32 gWorldMapSelectionAlpha;
+
 /// Handle destination selection, confirmation, and cancellation from controller and voice input.
 /// \pre Requires the whole-map menu and its active actor.
 /// \returns Nothing.
@@ -753,12 +736,6 @@ void wholeMapSelectBackdrop(void) {
     }
 }
 
-void wholeMapUpdateActorPlacement(void);
-void wholeMapPrepareActor(void);
-void wholeMapHandleInput(void);
-void wholeMapSelectInitialDestination(void);
-void wholeMapConfigureVoiceInput(void);
-void wholeMapSelectBackdrop(void);
 /// Remaining duration of the primary camera secondary overlay transition.
 /// \note Original identifier: \c D_800ABDCC (0x800ABDCC).
 extern f32 gPrimarySecondaryOverlayRemainingSeconds;

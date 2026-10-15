@@ -969,7 +969,7 @@ extern u8 ovl_DATA_START[];
 extern u8 ovl_RODATA_END[];
 extern u8 ovl_BSS_START[];
 extern u8 ovl_BSS_END[];
-void runtimeRunProgramEventLoop(void);
+
 /// Load a prelinked overlay from cartridge ROM and prepare it for execution.
 /// Blocks until the entire overlay has been read. All end addresses are exclusive.
 /// \param romStart Cartridge ROM address of the overlay's first byte.

@@ -387,9 +387,6 @@ s32 eyeCatchFinish(void) {
     return EYE_CATCH_COMPLETE;
 }
 
-void eyeCatchDrawLayers(Gfx **);
-void eyeCatchDrawFadingImage(Gfx **); /* extern */
-
 /// Draw the active eye-catch interlude during its visible stages.
 /// \param displayList Display-list cursor receiving drawing commands and advanced past them.
 /// \returns Nothing.

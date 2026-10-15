@@ -420,7 +420,7 @@ extern f32 gPresentationActorJointMidpointHeight;
 #include "player_interaction.h"
 #include "presentation_draw.h"
 #include "vector_operations.h"
-void presentationPlaceActiveActor(void *);
+
 /// Place the active actor for a camera-facing presentation and begin its presentation pose.
 /// \param point Three-component position in the current presentation coordinate system.
 /// \returns Nothing; requires an initialized active actor with both presentation camera joints and a valid presentation transform.
@@ -545,7 +545,6 @@ void presentationDrawCardScreen(Gfx **gdl) {
     }
 }
 
-void presentationPrepareActiveActor(void *);
 /// Primary controller new and auto-repeated button presses; aliases the repeated word of the processed sample.
 /// \note Original identifier: \c D_800AD54C (0x800AD54C).
 extern s32 gControllerPrimaryRepeatedButtons;
@@ -943,10 +942,6 @@ extern u8 gToolboxItemSlots[], gToolboxBonusSlot[];
 /// Owned toolbox display state, item rows, placeholders and special storage slots.
 /// \note Original identifier: \c D_800F1BE0 (0x800F1BE0).
 extern ToolboxState gToolboxState;
-/// Primary controller new and auto-repeated button presses; aliases the repeated word of the processed sample.
-/// \note Original identifier: \c D_800AD54C (0x800AD54C).
-extern s32 gControllerPrimaryRepeatedButtons;
-void presentationChooseActorResponseToItem(s32);
 
 /// Advance the presentation and scoring of collected items, removing each eligible item from its kept slot.
 /// Requires valid slot kinds, live item handles throughout the sequence, and a score total that fits in signed 32 bits.
@@ -1571,18 +1566,6 @@ s32 presentationSelectArea22Card(s32 *actorAction, s32 *audioCue) {
 /// Entrance index used to initialize the player and companion in the current area.
 /// \note Original identifier: \c D_800AE4F4 (0x800AE4F4).
 extern s32 gRuntimeCurrentEntrance;
-/// Identifier of the currently loaded area.
-/// \note Original identifier: \c D_800AE4F8 (0x800AE4F8).
-extern u32 gRuntimeCurrentArea;
-/// Whether the current entrance suppresses the area card presentation.
-/// \note Original identifier: \c D_800F0BA0 (0x800F0BA0).
-extern s32 gCardPresentationSuppressed;
-/// Audio cue selected for the current area card presentation.
-/// \note Original identifier: \c D_800F0BA4 (0x800F0BA4).
-extern s32 gCardPresentationAudioCue;
-/// Actor action script selected for the current area card presentation.
-/// \note Original identifier: \c D_800F1068 (0x800F1068).
-extern s32 gCardPresentationActionScript;
 
 /// Prepare the current area’s card presentation and owned collection result text.
 /// Requires a supported area, initialized area data, and no unreleased presentation text images.

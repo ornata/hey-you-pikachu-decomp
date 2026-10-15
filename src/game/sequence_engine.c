@@ -422,9 +422,6 @@ f64 sequenceEngineGetVoiceUpdateInterval(N_ALGlobals *synth) {
     return 0.00575;
 }
 
-ALSound *sequenceEngineFindSound(EngineSequence *, u8, u8, u8);
-s32 sequenceEngineGetVoiceVolume(VoicePlayer *, EngineSequence *, SequenceVoice *);
-f64 sequenceEngineGetVoicePitchRatio(EngineSequence *, SequenceVoice *);
 s32 n_alSynAllocVoice(struct N_ALVoice_s *, ALVoiceConfig *);
 void n_alSynStartVoiceParams(struct N_ALVoice_s *, ALWaveTable *, f32, s16, ALPan, u8, ALMicroTime);
 
@@ -693,7 +690,6 @@ void sequenceEngineHandleSystemEvent(VoicePlayer *driver, EngineSequence *seq, u
     }
 }
 
-void sequenceEngineNoteOn(VoicePlayer *, EngineSequence *, s32, s32, s32);
 /// Apply the current MIDI event to a sequence.
 /// \param driver Sequence driver owning the active voices.
 /// \param seq Sequence whose current event is a complete supported MIDI message with seven-bit data bytes, or an empty event.

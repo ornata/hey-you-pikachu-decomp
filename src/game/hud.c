@@ -192,7 +192,6 @@ typedef char HudGuideSpriteListSizeCheck[(sizeof(HudGuideSpriteList) == 0x6C) ? 
 /// Sprite descriptors drawn for HUD guide style one.
 /// \note Original identifier: \c D_80088F40 (0x80088F40).
 extern HudGuideSpriteList gHudGuideStyleOneSprites;
-void hudDrawDirectionIndicators(Gfx **);
 
 /// Draw HUD guide style 1 and directional guidance toward Pikachu.
 /// \param gdl Display-list cursor to append drawing commands to and advance.
@@ -546,7 +545,6 @@ s32 hudGetVerticalMotionAnimation(s32 position) {
 /// Remaining time during which the horizontal motion indicator is displayed.
 /// \note Original identifier: \c D_800F0264 (0x800F0264).
 extern f32 gHudHorizontalMotionRemaining;
-s32 hudGetVerticalMotionAnimation(s32); /* extern */
 /// Integer animation program used by the horizontal movement indicator.
 /// \note Original identifier: \c D_8006B448 (0x8006B448).
 extern s32 gHudHorizontalMotionAnimation;
@@ -591,13 +589,18 @@ extern DrawRecord gHudVerticalMotionSprites[], gHudHorizontalMotionSprites[], gH
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800228D8 (0x800228D8).
 void hudDrawMotionIndicators(Gfx **gdl) {
-    s32 frameY, frameX;
+    s32 frameY;
+    s32 frameX;
     ActorScriptState *motion;
-    s32 x, y;
+    s32 x;
+    s32 y;
     s32 showMotion;
     s32 showSelected;
     s32 selected;
-    f32 dx, dy, step, negativeStep;
+    f32 dx;
+    f32 dy;
+    f32 step;
+    f32 negativeStep;
 
     selected = gHudMotionIndicatorAnimation;
     motion = gPikachuActor->state.actor;
@@ -810,8 +813,6 @@ void hudDraw(Gfx **gdl) {
         hudDrawAuxiliaryIcon(gdl);
     }
 }
-
-void hudInitializeMotionIndicators(void);
 
 /// Initialize HUD animations and the area label and restore the default visibility settings.
 /// \returns Nothing.

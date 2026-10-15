@@ -80,7 +80,8 @@ void voiceCommandLaunchEffect(ScriptMessage message) {
     f32 cameraX;
     s32 special;
     s32 mode;
-    f32 cameraY, cameraZ;
+    f32 cameraY;
+    f32 cameraZ;
     f32 rotation[3];
     f32 targetDelta[3];
     f32 nearbyDelta[3];
@@ -299,7 +300,10 @@ extern f32 gTextPanelBackdropHorizontalScale;
 void textPanelDraw(TextPanel *panel, Gfx **gdl, s32 mode) {
     TextImage **image;
     u8 *color;
-    s32 x0, y0, x1, y1;
+    s32 x0;
+    s32 y0;
+    s32 x1;
+    s32 y1;
     s32 i;
 
     if (mode >= 3) {

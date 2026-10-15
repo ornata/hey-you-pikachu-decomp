@@ -94,7 +94,6 @@ void archiveReadHeaderWordDiscard(s32 archiveAddress) {
     romDmaReadWord(archiveAddress);
 }
 
-#include "heap_types.h"
 s32 archiveGetMemberDecodedSize(s32 memberIndex, s32 *archiveAddress);
 /// Load and decompress one archive member from ROM into a game-heap buffer.
 /// \param memberIndex Zero-based member index; not bounds-checked.
@@ -127,8 +126,6 @@ void *archiveLoadMember(s32 memberIndex, s32 archiveAddress, void *outputBuffer)
     return outputBuffer;
 }
 
-s32 romDmaReadWord(s32 romAddress);
-
 /// Read a member's decoded byte count from the ROM archive header.
 /// \param memberIndex Zero-based member index; not bounds-checked.
 /// \param archiveAddress Cartridge ROM address of the archive header;
@@ -158,7 +155,7 @@ extern u16 gArchiveLiteralLengthDecodeTable[];
 extern u16 *gArchiveNextDecodeSubtable;
 s32 archiveReadBits(s32 bitCount, u8 **source, s32 *bitWindow, s32 *availableBits);
 void archiveReadCodeLengthTable(s32 width, s32 special, u8 **source, s32 *bitWindow, s32 *availableBits);
-void archiveReadLiteralLengthTable(u8 **source, s32 *bitWindow, s32 *availableBits);
+void archiveReadLiteralLengthTable(u8 **source, s32 *bits, s32 *availableBits);
 /// Decode an archive member stored verbatim or compressed with LZ/Huffman codes.
 /// Callers must serialize decoding.
 /// \param input Complete encoded member, including its eight-byte header.
@@ -310,9 +307,7 @@ extern u16 gArchiveSymbolCodeLengths[];
 /// Code-space contribution indexed by Huffman code length.
 /// \note Original identifier: \c D_8009D960 (0x8009D960).
 extern u16 gArchiveCodeSpaceWeights[];
-/// Shared Huffman decode table for code-length symbols and match-distance widths.
-/// \note Original identifier: \c D_800FB570 (0x800FB570).
-extern u8 gArchiveAuxiliaryDecodeTable[];
+
 void archiveBuildDecodeTable(s32 symbols, s32 total, u16 *table);
 /// Load an auxiliary Huffman table from the archive bitstream.
 /// Callers must serialize access to the shared decoding workspace.
@@ -366,12 +361,7 @@ void archiveReadCodeLengthTable(s32 width, s32 special, u8 **source, s32 *bitWin
 }
 
 /* Expand zero runs and literal code lengths, then build their decode table. */
-/// Shared code lengths for the Huffman table currently being prepared.
-/// \note Original identifier: \c D_800FB170 (0x800FB170).
-extern u16 gArchiveSymbolCodeLengths[];
-/// Code-space contribution indexed by Huffman code length.
-/// \note Original identifier: \c D_8009D960 (0x8009D960).
-extern u16 gArchiveCodeSpaceWeights[];
+
 s32 archiveDecodeSymbol(u8 *table, u8 **source, s32 *bitWindow, s32 *availableBits);
 
 /// Load the archive's literal and match-length Huffman table.
@@ -426,9 +416,6 @@ void archiveReadLiteralLengthTable(u8 **source, s32 *bits, s32 *availableBits) {
     archiveBuildDecodeTable(symbolCount, tableSize, gArchiveLiteralLengthDecodeTable);
 }
 
-/// Shared storage for extended Huffman decoding tables.
-/// \note Original identifier: \c D_800FB970 (0x800FB970).
-extern u8 gArchiveDecodeSubtables[];
 /// Prepare Huffman decoding for the configured symbol lengths.
 /// Callers must serialize access to the shared decoding workspace.
 /// \param symbols Number of configured symbol lengths to use.

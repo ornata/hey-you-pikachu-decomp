@@ -187,9 +187,7 @@ extern ToolboxSlot gToolboxBonusSlot;
 /// Separate view of the stored bonus item handle.
 /// \note Original identifier: \c D_800F1CD4 (0x800F1CD4).
 extern s32 gToolboxBonusHandle;
-/// Owned toolbox display state, item rows, placeholders and special storage slots.
-/// \note Original identifier: \c D_800F1BE0 (0x800F1BE0).
-extern ToolboxState gToolboxState;
+
 /// Separate view of the two ten-entry toolbox item rows.
 /// \note Original identifier: \c D_800F1C08 (0x800F1C08).
 extern s32 gToolboxItemSlots;
@@ -426,8 +424,6 @@ s32 toolboxStoreObjectAt(s32 object, s32 row, s32 index) {
     return (s32)slot;
 }
 
-s32 toolboxStoreObjectAt(s32, s32, s32);
-
 /// Store an item in the first empty entry of a toolbox row.
 /// \param object Address of a live initialized item with a valid catalog kind; existing destination items are not destroyed.
 /// \param row Toolbox row index: zero for Collection or one for Item Storage.
@@ -535,8 +531,6 @@ u8 *toolboxTakeObject(s32 row, s32 col) {
     slot->id = 0;
     return obj;
 }
-
-void toolboxScaleCurrentRow(ToolboxState *);
 
 /// Transfer an eligible toolbox item into the player's held-item selection.
 /// \param player Player state receiving the item as its held object.
@@ -759,7 +753,6 @@ void toolboxRestoreStoredObjects(u8 *table) {
     toolboxNoOp((s32)table);
 }
 
-void toolboxRestoreStoredObjects(u8 *);
 /// Owned text images for the two toolbox row titles.
 /// \note Original identifier: \c D_800F1D28 (0x800F1D28).
 extern TextImage *gToolboxRowTitleImages[];
@@ -1074,20 +1067,33 @@ void toolboxDrawNavigation(s32 address) {
     u8 *object;
     s32 id;
     f32 scaleO;
-    s32 sizeO, halfO;
-    s32 xO, yO;
+    s32 sizeO;
+    s32 halfO;
+    s32 xO;
+    s32 yO;
     f32 elapsed;
     s32 *row = &gToolboxSelectedRow;
     u64 now;
     f32 scaleL;
-    s32 sizeL, xL, yL;
+    s32 sizeL;
+    s32 xL;
+    s32 yL;
     f32 scaleR;
-    s32 sizeR, xR, yR;
+    s32 sizeR;
+    s32 xR;
+    s32 yR;
     f32 scaleU;
-    s32 sizeU, halfU, xU, yU;
+    s32 sizeU;
+    s32 halfU;
+    s32 xU;
+    s32 yU;
     f32 scaleD;
-    s32 sizeD, halfD, xD, yD;
-    f64 phase, distance;
+    s32 sizeD;
+    s32 halfD;
+    s32 xD;
+    s32 yD;
+    f64 phase;
+    f64 distance;
 
     gDPPipeSync((*gdl)++);
     gDPSetCycleType(gRenderDisplayListCursor++, G_CYC_1CYCLE);
@@ -1196,8 +1202,6 @@ extern s32 gRenderCameraIndex;
 /// Initial draw count used to defer toolbox rendering until its display is ready.
 /// \note Original identifier: \c D_800F1CE0 (0x800F1CE0).
 extern s32 gToolboxOpeningDrawCount;
-void toolboxDrawRowTitle(s32);
-void toolboxDrawNavigation(s32);
 
 /// Draw the toolbox scene, displayed items, and the current interface or item description.
 /// \param address Address of the display-list cursor to append to and advance.
@@ -1246,9 +1250,6 @@ void toolboxDrawFrame(s32 address) {
     }
 }
 
-/// Row requested when reopening the toolbox after a transition.
-/// \note Original identifier: \c D_800F1D1C (0x800F1D1C).
-extern s32 gToolboxRequestedRow;
 /// Open the toolbox display and prepare its selected row and held item.
 /// \param row Row to open: zero for Collection, one for Item Storage, or minus one to retain the current row.
 /// \param useHeld Nonzero to choose the row from the held item when an item is present, overriding the requested row.
@@ -1298,7 +1299,6 @@ void toolboxOpen(s32 row, s32 useHeld) {
     gToolboxHelpMessageMilliseconds = now - 0xBB8;
 }
 
-void toolboxHideObjects(void);
 void systemMenuEnter(void);
 
 /// Finish closing the toolbox and continue the pending return, row change, or item-menu action.
@@ -1336,13 +1336,10 @@ void toolboxFinishClosing(void) {
     }
 }
 
-void toolboxConfirmItemTransfer(u8 *);
 /// Primary controller new and auto-repeated button presses; aliases the repeated word of the processed sample.
 /// \note Original identifier: \c D_800AD54C (0x800AD54C).
 extern s32 gControllerPrimaryRepeatedButtons;
-/// Separate view of the signed item-row rotation step.
-/// \note Original identifier: \c D_800F1BEC (0x800F1BEC).
-extern s32 gToolboxRotationStep;
+
 /// Separate view of the ten toolbox placeholder object handles.
 /// \note Original identifier: \c D_800F1CA8 (0x800F1CA8).
 extern s32 gToolboxPlaceholderHandles;
@@ -1465,9 +1462,6 @@ void toolboxRotateRowEntries(ToolboxState *t) {
     }
 }
 
-void toolboxLayoutCurrentRow(f32, f32, f32);
-void toolboxRotateRowEntries(ToolboxState *);
-
 /// Animate movement to the next toolbox item and finalize its selection.
 /// \returns Nothing; requires initialized toolbox display objects.
 /// \note Original decompilation identifier: \c func_800318A8 (0x800318A8).
@@ -1550,8 +1544,6 @@ void toolboxAnimateRowClosing(void) {
     toolboxPlaceBaseForRow(&gToolboxState, 0);
 }
 
-void toolboxFinishClosing(void);
-
 /// Animate the toolbox entering or leaving the display and advance the pending transition.
 /// \returns Nothing; requires initialized toolbox display objects.
 /// \note Original decompilation identifier: \c func_80031D10 (0x80031D10).
@@ -1586,11 +1578,6 @@ void toolboxAnimateBaseTransition(void) {
         }
     }
 }
-
-void toolboxUpdateCarousel(void);
-void toolboxAnimateRowOpening(void);
-void toolboxAnimateRowClosing(void);
-void toolboxAnimateBaseTransition(void);
 
 /// Update the toolbox presentation and its current display animation.
 /// \returns Nothing; requires initialized toolbox display objects.

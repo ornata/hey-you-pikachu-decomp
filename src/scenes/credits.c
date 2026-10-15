@@ -111,7 +111,9 @@ extern s32 *D_80144218_scene_credits[4];
 /// \returns The spatial-cell value, or zero when the position maps outside the grid or to an absent layer.
 s32 creditsGetSpatialCell(f32 x, f32 y, f32 z) {
     s32 *layer;
-    s32 iy, ix, iz;
+    s32 iy;
+    s32 ix;
+    s32 iz;
     iy = (s32)((f64)y / 20.0);
     if (iy < 0 || iy >= 4 || (ix = (s32)((f64)x / 20.0), ix < 0) || ix >= 4 || (iz = (s32)((f64)z / 20.0), iz < 0) ||
         iz >= 4) {

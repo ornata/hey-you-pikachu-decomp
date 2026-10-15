@@ -670,7 +670,6 @@ Gfx *ribbonEffectControllerPrepareDraw(u8 *controller) {
     return ((RuntimeObjectPrefix *)controller)->displayList;
 }
 
-Gfx *ribbonEffectCreateDisplayList(s32);
 /// Object template for the ribbon hierarchy anchor.
 /// \note Original identifier: \c D_80077F18 (0x80077F18).
 extern u8 gRibbonAnchorObjectTemplate[];
@@ -984,7 +983,6 @@ void effectEmitterEmitGrayParticles(u8 *emitter) {
 }
 
 void effectEmitterCreateWithCallback(f32 *, f32, s32, s32, f32, EffectEmissionCallback);
-void effectEmitterEmitAudibleBurst(u8 *);
 
 /// Create a target-following effect emitter with the selected visual style.
 /// \param kind Emission style from zero through seven; other values create no emitter.
@@ -1221,7 +1219,6 @@ extern u8 gParticleClusterElementTemplate[];
 /// Object template for the particle-cluster renderer.
 /// \note Original identifier: \c D_800780A0 (0x800780A0).
 extern u8 gParticleClusterRendererTemplate[];
-s32 particleClusterCreateDisplayList(s32);
 
 /// Create an animated particle cluster at a source object.
 /// \param count Positive number of particles; drawing and matrix allocation sizes must fit in 32 bits.
@@ -1942,9 +1939,7 @@ Gfx *animatedRadialEffectPrepareDraw(u8 *effect) {
 /// Integer texture-frame animation used by animated radial effects.
 /// \note Original identifier: \c D_8006B3A4 (0x8006B3A4).
 extern s32 gAnimatedRadialEffectFrameAnimation;
-/// Integer appearance animation used when messenger state is initialized.
-/// \note Original identifier: \c D_8006B4E0 (0x8006B4E0).
-extern s32 gMessengerFlightAnimation;
+
 /// Object template for animated radial particle effects.
 /// \note Original identifier: \c D_80077DC0 (0x80077DC0).
 extern u8 gAnimatedRadialEffectObjectTemplate[];

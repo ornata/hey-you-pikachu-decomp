@@ -190,12 +190,6 @@ s32 actorScriptStartCostedAction(u8 *actor) {
     return SCRIPT_COMMAND_WAIT_FOR_ACTION;
 }
 
-void stringPrependBounded(u8 *, s32, u8 *); /* extern */
-/// Shared 80-byte text used by actor-script text and message commands.
-/// \note NONPORTABLE: buffer accesses span separate declarations whose contiguous target layout is retained for matching.
-/// \note Original identifier: \c D_80134220 (0x80134220).
-extern s8 gActorScriptSharedTextBuffer;
-
 /// Build shared script text from string arguments.
 /// \param actor Actor whose script supplies a nonnegative string count as an instruction operand and that many stack strings; the combined text follows argument order, is limited to 79 characters, and its VM receives zero.
 /// \returns Zero, allowing script execution to continue.

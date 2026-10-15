@@ -616,10 +616,6 @@ void cameraDrawSecondaryOverlay(s32 index) {
     }
 }
 
-/// Whether the primary-actor elapsed-script camera tint is enabled.
-/// \note Original identifier: \c D_800AC4B4 (0x800AC4B4).
-extern s32 gCameraElapsedTintEnabled;
-
 /// Enable the camera tint that grows with the primary actor’s elapsed script time.
 /// \param initialElapsed Initial elapsed time in seconds used when the effect first starts; negative values are ignored.
 /// \returns Nothing.
@@ -844,9 +840,6 @@ void renderApplyAreaFog(s32 unused) {
 /// Primary-actor script-time origin used to calculate elapsed camera tint.
 /// \note Original identifier: \c D_800633E8 (0x800633E8).
 extern f32 gCameraElapsedTintOriginSeconds;
-/// Whether the elapsed-script tint needs its initial script-time origin.
-/// \note Original identifier: \c D_800AC4B0 (0x800AC4B0).
-extern s32 gCameraElapsedTintNeedsOrigin;
 
 /// Update the camera’s reddish tint according to elapsed primary-actor script time when the effect is enabled.
 /// \param cameraIndex Valid camera slot to tint; requires an active primary actor when the effect is enabled.
@@ -960,7 +953,6 @@ void renderDrawCurrentMode(void) {
 /// Number of startup frames whose full framebuffer has been cleared, capped at two.
 /// \note Original identifier: \c D_800633EC (0x800633EC).
 extern s32 gRenderInitialClearCount, gRuntimeCurrentProgram;
-void renderPrepareDisplayList(void);
 
 /// Begin a frame with the current background and camera, then invoke the active runtime drawing callback.
 /// \returns Nothing; requires initialized rendering resources and a valid active runtime mode.
@@ -1007,9 +999,7 @@ void renderBeginFrame(void) {
 /// Whether final frame submission invokes the optional rendering hook.
 /// \note Original identifier: \c D_80088F18 (0x80088F18).
 extern s32 gRenderOptionalFrameHookEnabled;
-/// Scheduler event queue consumed by the runtime thread.
-/// \note Original identifier: \c D_800AE4C0 (0x800AE4C0).
-extern OSMesgQueue gRuntimeEventQueue;
+
 /// Draw the frame’s right and bottom border and submit the finishing graphics task.
 /// \returns Nothing; requires an active display list and initialized rendering resources.
 void renderSubmitFrameBorder(void) {

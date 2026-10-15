@@ -166,8 +166,6 @@ f32 mathSecantRadians(f32 angle) {
     return 1.0F / __cosf(angle);
 }
 
-f32 mathTanRadians(f32);
-
 /// Compute the cotangent of an angle.
 /// \param angle Angle in radians.
 /// \returns Cotangent of the angle.
@@ -969,7 +967,7 @@ f32 mathLineXAtY(f32 x0, f32 y0, f32 x1, f32 y1, f32 y) {
     return (((x1 - x0) * (y - y0)) / (y1 - y0)) + x0;
 }
 
-f32 mathLineXAtY(f32, f32, f32, f32, f32); /* extern */
+/* extern */
 
 /// Map a value between ranges while clamping to the input endpoints.
 /// \param inputStart Lower input endpoint.

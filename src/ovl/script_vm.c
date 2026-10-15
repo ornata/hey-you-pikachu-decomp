@@ -414,9 +414,15 @@ void scriptVmApplyUnaryOperator(ScriptVm *vm, u8 op) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_801158D0 (0x801158D0).
 void scriptVmApplyArithmeticOperator(ScriptVm *vm, u8 op) {
-    ScriptValue right, left, result;
-    f32 fv, fr, fl;
-    s32 iv, ir, il;
+    ScriptValue right;
+    ScriptValue left;
+    ScriptValue result;
+    f32 fv;
+    f32 fr;
+    f32 fl;
+    s32 iv;
+    s32 ir;
+    s32 il;
     scriptVmPopValue(vm, &right);
     if ((right.data.tag == SCRIPT_VALUE_STRING_INDEX || right.data.tag == SCRIPT_VALUE_STRING_POINTER) ? 1 : 0) {
         scriptValueSetInteger(&right, scriptValueParseDecimal(vm, &right));
@@ -478,8 +484,12 @@ void scriptVmApplyArithmeticOperator(ScriptVm *vm, u8 op) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80115B38 (0x80115B38).
 void scriptVmApplyBitwiseOperator(ScriptVm *vm, u8 op) {
-    ScriptValue right, left, result;
-    s32 value, rhs, lhs;
+    ScriptValue right;
+    ScriptValue left;
+    ScriptValue result;
+    s32 value;
+    s32 rhs;
+    s32 lhs;
     scriptVmPopValue(vm, &right);
     if ((right.data.tag == SCRIPT_VALUE_STRING_INDEX || right.data.tag == SCRIPT_VALUE_STRING_POINTER) ? 1 : 0) {
         scriptValueSetInteger(&right, scriptValueParseDecimal(vm, &right));
@@ -521,10 +531,14 @@ f32 fabsf(f32);
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80115CBC (0x80115CBC).
 void scriptVmApplyComparisonOperator(ScriptVm *vm, u8 op) {
-    ScriptValue right, left, result;
+    ScriptValue right;
+    ScriptValue left;
+    ScriptValue result;
     s32 value;
-    f32 fr, fl;
-    s32 ir, il;
+    f32 fr;
+    f32 fl;
+    s32 ir;
+    s32 il;
     scriptVmPopValue(vm, &right);
     if ((right.data.tag == SCRIPT_VALUE_STRING_INDEX || right.data.tag == SCRIPT_VALUE_STRING_POINTER) ? 1 : 0) {
         scriptValueSetInteger(&right, scriptValueParseDecimal(vm, &right));

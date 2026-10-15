@@ -149,8 +149,6 @@ void backdropUpdateViewOffsets(u8 *view) {
     *(s32 *)(view + 0x98) = (s32)(*(f32 *)(view + 0xA0) + *(s32 *)(view + 0x98));
 }
 
-void backdropUpdateViewOffsets(u8 *);
-
 /// Draw the active scrolling backdrop and its upper and lower fill bands.
 /// \param list Display-list cursor, advanced by the appended drawing commands.
 /// \returns Nothing.
@@ -321,10 +319,6 @@ void backdropLoadRawImage(s32 viewIndex, s32 romStart, s32 romEnd) {
     romDmaReadBlocking(romStart, (u8 *)gRenderCameraBackdropImages[viewIndex][0], romEnd - romStart);
 }
 
-void backdropLoadAsset(s32, AssetDescriptor *);
-void backdropLoadAssetWithSharedScratch(s32, AssetDescriptor *);
-void backdropLoadRawImage(s32, s32, s32); /* extern */
-
 /// Raw backdrop data stored in an uncompressed ROM interval.
 typedef struct BackdropRomRange {
     s32 start;
@@ -420,8 +414,6 @@ s32 backdropGetActiveId(void) {
 /// Separate display-mode view of backdrop descriptors; one selects fixed-image drawing.
 /// \note Original identifier: \c D_8009B060 (0x8009B060).
 extern u8 gBackdropDisplayModeEntries[];
-
-void backdropDrawScrolling(Gfx **);
 
 /// Draw the active backdrop using its selected display mode.
 /// \param list Display-list cursor, advanced by the appended drawing commands.

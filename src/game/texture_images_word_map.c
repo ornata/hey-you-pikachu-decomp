@@ -241,16 +241,26 @@ void textureImageInitialize(TextureImage *descriptor, s32 image, s32 palette, s3
 void textureDrawScaledRepeated(Gfx **out, TextureImage *texture, u32 x, u32 y, s32 wrapS, s32 wrapT, u32 repeatX, u32 repeatY,
                    f32 scaleX, f32 scaleY, s32 flipX, s32 flipY) {
     Gfx *dl;
-    u32 maskS, maskT;
+    u32 maskS;
+    u32 maskT;
     s32 step;
-    s32 s, t, adjustedY;
-    s32 top, bottom;
-    f32 texelStepX, texelStepY;
-    s32 ds, dt;
+    s32 s;
+    s32 t;
+    s32 adjustedY;
+    s32 top;
+    s32 bottom;
+    f32 texelStepX;
+    f32 texelStepY;
+    s32 ds;
+    s32 dt;
     u32 dimension;
-    s32 image, palette;
-    s32 format, size;
-    u32 width, height, alignedWidth;
+    s32 image;
+    s32 palette;
+    s32 format;
+    s32 size;
+    u32 width;
+    u32 height;
+    u32 alignedWidth;
     s32 index;
     u32 remaining;
 
@@ -744,8 +754,6 @@ void texturePairUploadStrip(Gfx **displayList, s32 stripIndex, s32 image, s32 pa
     *displayList = g;
 }
 
-void texturePairGetMemoryLayout(s32 *, s32 *, u32, u32, u32, u32);
-void texturePairUploadStrip(Gfx **, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 /// Render two combined textures with scaling, repetition, and optional flipping.
 /// \param displayListOut Display-list cursor with sufficient capacity; receives drawing commands and advances past them.
 /// \param texture Borrowed, initialized paired-image descriptor.
@@ -775,7 +783,10 @@ void texturePairDrawScaledRepeated(Gfx **displayListOut, TexturePair *texture, u
     s32 sourceS;
     s32 sourceT;
     s32 flippedY;
-    s32 rectangleLeft, upperY, rectangleRight, lowerY;
+    s32 rectangleLeft;
+    s32 upperY;
+    s32 rectangleRight;
+    s32 lowerY;
     s32 dsdx;
     s32 dtdy;
     Gfx *displayList;

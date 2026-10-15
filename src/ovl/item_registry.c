@@ -2082,7 +2082,6 @@ void itemUpdate(u8 *object) {
 }
 
 void _bzero(void *destination, u32 size);                                         /* extern */
-void itemBuildLightingDisplayList(ItemState *, s32);                              /* extern */
 
 /// Allocate and initialize the state resources for a new item.
 /// \returns Newly allocated item state, owned by the item that receives it.
@@ -2189,10 +2188,6 @@ u8 *itemCreate(f32 x, f32 y, f32 z, f32 pitch, f32 yaw, s32 kind) {
     }
     return object;
 }
-
-/// Number of live registered items in the current area.
-/// \note Original identifier: \c D_80134040 (0x80134040).
-extern s32 gLiveItemCount;
 
 /// Remove an item from world participation and request its destruction.
 /// \param item Live, registered item to destroy; must not already be pending destruction.
