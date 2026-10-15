@@ -1,11 +1,12 @@
 {
   "schema_version": 1,
   "purpose": "Current reviewed scalar-append native write contracts; source changes revoke evidence until reviewed again.",
-  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases.",
+  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary.",
   "preconditions": [
     "Protected locals and frame metadata lie below the active stack depth.",
     "One value slot is available; pointers and borrowed actor/global state are valid.",
-    "The VM context and its owned value storage remain intact; concurrent writes and later lifecycle changes are outside this handler-footprint review."
+    "The VM context and its owned value storage remain intact; concurrent writes and later lifecycle changes are outside this handler-footprint review.",
+    "Helper lookups require the initialized pools, save metadata and borrowed records stated by each callback review."
   ],
   "dependencies": [
     {
@@ -37,18 +38,6 @@
       "file": "src/ovl/script_vm.c",
       "function": "scriptValueSetFloat",
       "sha256": "b9a37e6fc2429c753b45f7c984d87bd0b557cb040f09685c4a365409905c1ded"
-    },
-    {
-      "kind": "function",
-      "file": "src/game/microphone_requests.c",
-      "function": "micGetRequestedDictionary",
-      "sha256": "4df3b30adbb4339a970fe52b85e606dd22e876f8067d7bdd473362445de0141b"
-    },
-    {
-      "kind": "function",
-      "file": "src/game/microphone_session.c",
-      "function": "micSessionGetRequestedDictionary",
-      "sha256": "9cc8413e31ef776af2def0d971c7567b60dbd1df80660a7d9d2a386fedd608e1"
     },
     {
       "kind": "macro",
@@ -232,7 +221,261 @@
       "arguments": 0,
       "stack_delta": 1,
       "result_tag": "integer",
-      "scheduling": "continue"
+      "scheduling": "continue",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/game/microphone_requests.c",
+          "function": "micGetRequestedDictionary",
+          "sha256": "4df3b30adbb4339a970fe52b85e606dd22e876f8067d7bdd473362445de0141b"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/microphone_session.c",
+          "function": "micSessionGetRequestedDictionary",
+          "sha256": "9cc8413e31ef776af2def0d971c7567b60dbd1df80660a7d9d2a386fedd608e1"
+        }
+      ]
+    },
+    {
+      "function": "actorScriptPushCurrentChapter",
+      "file": "src/ovl/actor_script_collection_profile.c",
+      "sha256": "89f667bb70213f0fda48e5140009b4c5fe9036fa128ff1e77e7a4d3e543c80bf",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/game/collection_presentation.c",
+          "function": "progressGetCurrentChapter",
+          "sha256": "8275482a5290bf7dace28b914a978c4426789b60bdc33cf21aa2f7802f0024c6"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressGetValue",
+          "sha256": "fb8b1f81a82ac75b37f30ad1e87f9e0bdbf809cb5ca47a14554437957988c1e3"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressResolveFieldId",
+          "sha256": "bc9edb823ea95081219e7c5a011c4f2fc5b996c25adba7582a258d3f3edb561f"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/save_progress.c",
+          "function": "progressReadFieldValue",
+          "sha256": "f8f8bacd90eaa18363e2b0a17e2c6c1d38998f3dac28851f5744e5c07a38c998"
+        },
+        {
+          "kind": "file",
+          "file": "include/progress_field_ids.h",
+          "sha256": "becba3ef335829a348003831408c25e6739d0824127f3e3a566fb0198cf1bacb"
+        },
+        {
+          "kind": "file",
+          "file": "include/progress_field_types.h",
+          "sha256": "9c2c0450b682e4cb2278c1d3880bb74ec68701bada35773fa4cc33771924b7ea"
+        },
+        {
+          "kind": "macro",
+          "file": "src/game/save_progress.c",
+          "macro": "TRACE",
+          "sha256": "b56fef456bc9263cf61a7cb2b0741888ff1f6f9ee298754e88fb1285644778cf"
+        }
+      ],
+      "preconditions": [
+        "Initialized progress-field tables and a valid save record."
+      ]
+    },
+    {
+      "function": "actorScriptPushHeldItemKind",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "96848733fe8ba6ac1b232596f9cec597a3bd4092cc694fb185b8393c50ac40d9",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "actorGetHeldItemKind",
+          "sha256": "b415508ec1d70376ed821b6ed6870432d928cde361e14d058742e6aa68506978"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/object_hierarchy.c",
+          "function": "objectFindLiveByHandle",
+          "sha256": "a04905a063945115cd20a841f611294f7784656739644dd48ba5230ee11881c9"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/keyed_pool.c",
+          "function": "keyedPoolGetValue",
+          "sha256": "515ff415ac8762af39e40b6969a0d563591ab0252fcc95f660b808c06964541d"
+        },
+        {
+          "kind": "function",
+          "file": "src/game/keyed_pool.c",
+          "function": "keyedPoolFindEntry",
+          "sha256": "2c4d9787ed139519f2981eb227805c3b38046a0baf47287ae6ecc2156f5665c6"
+        },
+        {
+          "kind": "file",
+          "file": "include/keyed_pool_types.h",
+          "sha256": "4c5ce15833971e0a7b7a25588eb674597474dba8a6d71b51cf78cf098c63a611"
+        },
+        {
+          "kind": "file",
+          "file": "include/item_types.h",
+          "sha256": "a11ff3ec0e7d9256425797d27c1d7222f58360b5f27a4bf4128119f9a762f991"
+        },
+        {
+          "kind": "file",
+          "file": "include/object_flags.h",
+          "sha256": "135a2ddab3b6c3e703f08bc85faa083742809cf81a1edc43bd05469d2faac637"
+        }
+      ],
+      "preconditions": [
+        "Initialized nonzero-capacity handle pool with valid chains; a live held handle identifies an item. Lookup writes only a C-stack predecessor temporary."
+      ]
+    },
+    {
+      "function": "actorScriptPushMovementCollisionFlags",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "908c455a53c6c27f5cd988061a99d5296d35be186b6f1ace3d48949a137e26f6",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "actorGetMovementCollisionFlags",
+          "sha256": "87240bf69973e625afe723b2239084ed2c26c14ad5d666ff0e79166c48aeb0fd"
+        }
+      ],
+      "preconditions": [
+        "Actor state is valid; the collision result is read as an unsigned16-bit value."
+      ]
+    },
+    {
+      "function": "actorScriptPushTrackingMode",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "7019b7f82d722bebcb4770b217fd89be9c5d10f9b245cd60ab5c7fb9fb4d2839",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "actorGetTargetTrackingMode",
+          "sha256": "873c60f4e2a595e3229f0f81471fcfce7ce3ce61d0970c41470a0840f92b6f03"
+        }
+      ],
+      "preconditions": [
+        "Actor state is valid."
+      ]
+    },
+    {
+      "function": "actorScriptPushPlayerHeldItem",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "dd2d08d9b166f5c009c7ee9a0752a92d1c53c4b82faca3ee4fc5c884b4359d53",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/actor_script_queries.c",
+          "function": "playerGetHeldItemHandle",
+          "sha256": "62f1c07985f930eb127db53cbae350996bd2140b53efa05bf2f1af514568c8b8"
+        }
+      ],
+      "preconditions": [
+        "Primary player state is valid."
+      ]
+    },
+    {
+      "function": "actorScriptPushPlayerViewControlSelected",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "0e24ece65bc4670a73a42b0192c5735b70e186b42565226dc2285e91dea8e0e6",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/ovl/player_companion.c",
+          "function": "playerIsViewControlSelected",
+          "sha256": "d7e6d20c96a94530af6c111b46b865324545b413adbbf490371e2cbfce74850b"
+        },
+        {
+          "kind": "file",
+          "file": "include/player_types.h",
+          "sha256": "b72915c2e3322fcd4ef7e11f3eff2f2d7d53badd3f78603aaeb1731c2286e00c"
+        }
+      ],
+      "preconditions": [
+        "Player state is valid; VIEW_CONTROL selection does not establish VIEW_INPUT permission."
+      ]
+    },
+    {
+      "function": "actorScriptPushActionScriptStopped",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "291d22a5c91cf232599952cd53d42baedca32c7896c1e4726f68c51cb7fb1c74",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/game/action_script.c",
+          "function": "actionScriptIsStopped",
+          "sha256": "952ba58dc54050194e25912a37f214d33fbdf2af29f91f48b9c2ca6dd76b3ba9"
+        }
+      ],
+      "preconditions": [
+        "Actor state is valid; sequencing activity is separate from independent motion playback."
+      ]
+    },
+    {
+      "function": "actorScriptPushInteractionCandidate",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "41d88b5a772734b5859c587c5c58bf1288b747fc7a158d49af1676003c88e4dd",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "dependencies": [
+        {
+          "kind": "function",
+          "file": "src/game/interaction_marker.c",
+          "function": "interactionGetCandidateId",
+          "sha256": "1e2591f9905942aef5c7105d8080f5208a1d7c2f2db85af92c405001ad5b4e91"
+        }
+      ],
+      "preconditions": [
+        "Interaction state is valid; the returned handle does not prove object liveness."
+      ]
     }
   ]
 }

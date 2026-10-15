@@ -386,6 +386,7 @@ def experiments():
     from .name_dictionary_domains import experiments as name_dictionary_experiments
     from .dictionary_frame_domains import experiments as dictionary_frame_experiments
     from .native_scalar_frame_domains import experiments as scalar_frame_experiments
+    from .native_helper_frame_domains import experiments as helper_frame_experiments
 
     return (
         cases
@@ -413,6 +414,7 @@ def experiments():
         + name_dictionary_experiments()
         + dictionary_frame_experiments()
         + scalar_frame_experiments()
+        + helper_frame_experiments()
     )
 
 

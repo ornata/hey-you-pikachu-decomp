@@ -43,104 +43,8 @@ recognition requests, waits for the current read to become inactive, and registe
 words in batches of ten. Recognition polling resumes when uploading is complete.
 See `micSessionUpdate`, `micSessionUpdateDictionary`, and `voiceDictionaryUpload`.
 
-The decoder's `voice_vocabulary` catalog reads the separate vocabulary DMA bank,
-whose original loader copies ROM 0xA9800..0xB3C70 to 0x80100680. It records a
-neighbor-delimited view of 640 word definitions and a reviewed prefix of 43
-dictionary descriptors, containing 2,053 ordered entries. All 640 words have
-membership in that prefix. These bounds do not prove that arbitrary dictionary
-requests are valid. Display bytes and device vocabulary bytes remain separate;
-the latter are not interpreted as ordinary display text.
-
-Each word links its dictionary-local indices, global word ID, message category
-and command value. Multiple words can share a command value, and a value can
-have different vocabulary labels across dictionaries. The report retains those
-associations instead of treating a value as a universal word identity. Original
-vocabulary bytes remain in ignored local reports. Eight authored dictionary
-cases check the original metadata getters, including reordered word IDs, distinct
-categories and invalid-selection/index results; they do not exercise recognition.
-
-`VOICE_DICTIONARY_DEFAULT` (0) is requested at gameplay startup and supplies the
-session fallback when its requested ID is unset. `VOICE_DICTIONARY_WORLD_MAP` (31)
-is requested by `wholeMapConfigureVoiceInput`; its 24 entries include destination
-words carrying `SCRIPT_MESSAGE_WORLD_MAP_DESTINATION` (18). The map menu interprets
-argument 0 as a destination selector, including a special-training request. These
-selectors are distinct from map destination indices and scene area IDs.
-
-The catalog records all 255 decoded `actorScriptRequestMicDictionary` calls.
-Of these, 236 have literal integer-converted IDs resolving within the reviewed
-dictionary prefix; 19 retain symbolic expressions. Each request remains in its
-configuration's overlay and retains existing creation/scenario bindings. Reverse
-links on dictionary descriptors connect them to those request sites and to written
-C requests. These are possible resource uses, not scene ownership or executed paths.
-
-One symbolic request belongs to the bedroom Pokémon-name activity. Its native
-`actorScriptGetPokemonNameDictionaryGroup` reads the per-name group in
-`gBedroomPokemonNameDictionaryGroups`. The group is a voice vocabulary partition,
-not a Pokémon species, elemental type or message category. The 153 retained
-catalog entries use groups 2 through 12; the script requests dictionary
-`18 + group - 1`, giving IDs 19 through 29. It compares the group with a cached
-value before issuing the request. The catalog indices and the recent-selection
-history's 100 slots now have named extents in the source.
-
-The decoder's `bedroom_name_catalog` authenticates both scene tables and links
-each entry to command category 10, command value `catalog_index + 8`, and matching
-word membership in its computed dictionary. All 153 entries have that membership.
-Six catalog labels lack an exact vocabulary-label match because of case,
-punctuation or alternate recognition spellings; the report preserves both views.
-It does not merge catalog indices with global word IDs.
-
-The request analyzer recognizes the guarded group conversion and records a
-conditional dictionary domain. Its precondition is a valid catalog argument from
-0 through 152 with intact, nonoverlapping VM frames. It does not prove caller
-arguments, activity reachability or upload completion. Three authored-table cases
-exercise the original native at endpoint indices and check unsigned-byte conversion;
-the synthetic value 255 is not a retained retail group.
-
-The request native consumes one dictionary ID, pushes zero and yields. Configuration
-dispatch changes the requested ID and acknowledges dispatch; uploading and uploaded
-IDs remain independent. The native query reads requested state rather than either
-upload field. Six original-instruction cases check that distinction with three
-different requested IDs, including the unset value, while guarding the other fields.
-They do not exercise queue submission, microphone hardware or vocabulary upload.
-
-The other 18 symbolic requests read locals saved from the requested-dictionary
-query. `saved_local_analysis` checks that the save dominates the request and
-follows returning script calls with their frame bindings. A callee establishing
-the same frame number temporarily shadows the caller's local base; a callee
-using another frame can still write the caller's frame explicitly. The analyzer
-rejects direct overwrites, possible indexed writes, unresolved frame transitions
-and exhausted budgets. All 18 candidates pass its bytecode preservation check.
-
-That check assumes valid stack/array accesses and intact, nonoverlapping frames
-across yields. Native alias effects and context replacement remain separate
-review obligations, listed in `native_effect_frontier`; these candidates are not
-promoted to resolved runtime IDs or unconditional restoration claims. Two authored
-original-VM programs contrast same-frame shadowing with a deliberate caller-frame
-write, checking the full declared stack, VM state and query globals. They establish
-the frame distinction, without certifying arbitrary native effects or retail paths.
-
-Sixteen immediate scalar-append contracts are recorded in
-`tools/script_decoder/native_frame_reviews.json`: fifteen direct getters/yield
-callbacks and the previously checked requested-dictionary query. These callbacks
-consume no arguments and append one integer or float. They preserve existing
-locals only when those locals and frame metadata lie below the active stack depth,
-one value slot is available, borrowed state is valid and the context remains intact.
-Their return may continue or yield; this review does not cover later lifecycle or
-concurrent changes.
-
-The decoder validates explicit source fingerprints for each reviewed callback,
-its scalar-push helpers, stack macros and relevant value/command definitions.
-Source or dependency changes revoke the affected evidence rather than creating a
-new review. Tests require the checked-in reviews to remain current. The active
-reviews reduce the saved-dictionary native frontier from 102 to 87 callbacks;
-those remaining effects are still unproven.
-
-Sixteen authored original-instruction cases check the fifteen newly reviewed
-callbacks, including both blend-status branches, while guarding saved locals,
-frame metadata, VM state and globals. `actorScriptPushTotalElapsedTime` now names
-the clock accumulated across script resets, separately from the resettable timer
-read by `actorScriptPushTimer`. The cases use distinct clock values and establish
-handler footprints, without a scheduler, hardware or complete-lifetime proof.
+Decoded vocabulary and native storage contracts are described
+[below](#vocabulary-and-native-storage-contracts).
 
 ### 2. Consume a recognition result
 
@@ -500,6 +404,137 @@ Decoder report schema 2 calls tag 2 `code_reference` and records its uses in
 native-command slots; their payloads retain signed integer conversion behavior.
 The catalog preserves separate entries for overlays even when virtual addresses
 coincide, and fingerprints decoded code to expose repeated programs.
+
+## Vocabulary and native storage contracts
+
+The decoder's `voice_vocabulary` catalog reads the separate vocabulary DMA bank,
+whose original loader copies ROM 0xA9800..0xB3C70 to 0x80100680. It records a
+neighbor-delimited view of 640 word definitions and a reviewed prefix of 43
+dictionary descriptors, containing 2,053 ordered entries. All 640 words have
+membership in that prefix. These bounds do not prove that arbitrary dictionary
+requests are valid. Display bytes and device vocabulary bytes remain separate;
+the latter are not interpreted as ordinary display text.
+
+Each word links its dictionary-local indices, global word ID, message category
+and command value. Multiple words can share a command value, and a value can
+have different vocabulary labels across dictionaries. The report retains those
+associations instead of treating a value as a universal word identity. Original
+vocabulary bytes remain in ignored local reports. Eight authored dictionary
+cases check the original metadata getters, including reordered word IDs, distinct
+categories and invalid-selection/index results; they do not exercise recognition.
+
+`VOICE_DICTIONARY_DEFAULT` (0) is requested at gameplay startup and supplies the
+session fallback when its requested ID is unset. `VOICE_DICTIONARY_WORLD_MAP` (31)
+is requested by `wholeMapConfigureVoiceInput`; its 24 entries include destination
+words carrying `SCRIPT_MESSAGE_WORLD_MAP_DESTINATION` (18). The map menu interprets
+argument 0 as a destination selector, including a special-training request. These
+selectors are distinct from map destination indices and scene area IDs.
+
+The catalog records all 255 decoded `actorScriptRequestMicDictionary` calls.
+Of these, 236 have literal integer-converted IDs resolving within the reviewed
+dictionary prefix; 19 retain symbolic expressions. Each request remains in its
+configuration's overlay and retains existing creation/scenario bindings. Reverse
+links on dictionary descriptors connect them to those request sites and to written
+C requests. These are possible resource uses, not scene ownership or executed paths.
+
+### Bedroom name activity
+
+One symbolic request belongs to the bedroom Pokémon-name activity. Its native
+`actorScriptGetPokemonNameDictionaryGroup` reads the per-name group in
+`gBedroomPokemonNameDictionaryGroups`. The group is a voice vocabulary partition,
+not a Pokémon species, elemental type or message category. The 153 retained
+catalog entries use groups 2 through 12; the script requests dictionary
+`18 + group - 1`, giving IDs 19 through 29. It compares the group with a cached
+value before issuing the request. The catalog indices and the recent-selection
+history's 100 slots now have named extents in the source.
+
+The decoder's `bedroom_name_catalog` authenticates both scene tables and links
+each entry to command category 10, command value `catalog_index + 8`, and matching
+word membership in its computed dictionary. All 153 entries have that membership.
+Six catalog labels lack an exact vocabulary-label match because of case,
+punctuation or alternate recognition spellings; the report preserves both views.
+It does not merge catalog indices with global word IDs.
+
+The request analyzer recognizes the guarded group conversion and records a
+conditional dictionary domain. Its precondition is a valid catalog argument from
+0 through 152 with intact, nonoverlapping VM frames. It does not prove caller
+arguments, activity reachability or upload completion. Three authored-table cases
+exercise the original native at endpoint indices and check unsigned-byte conversion;
+the synthetic value 255 is not a retained retail group.
+
+### Requested state and saved locals
+
+The request native consumes one dictionary ID, pushes zero and yields. Configuration
+dispatch changes the requested ID and acknowledges dispatch; uploading and uploaded
+IDs remain independent. The native query reads requested state rather than either
+upload field. Six original-instruction cases check that distinction with three
+different requested IDs, including the unset value, while guarding the other fields.
+They do not exercise queue submission, microphone hardware or vocabulary upload.
+
+The other 18 symbolic requests read locals saved from the requested-dictionary
+query. `saved_local_analysis` checks that the save dominates the request and
+follows returning script calls with their frame bindings. A callee establishing
+the same frame number temporarily shadows the caller's local base; a callee
+using another frame can still write the caller's frame explicitly. The analyzer
+rejects direct overwrites, possible indexed writes, unresolved frame transitions
+and exhausted budgets. All 18 candidates pass its bytecode preservation check.
+
+That check assumes valid stack/array accesses and intact, nonoverlapping frames
+across yields. Native alias effects and context replacement remain separate
+review obligations, listed in `native_effect_frontier`; these candidates are not
+promoted to resolved runtime IDs or unconditional restoration claims. Two authored
+original-VM programs contrast same-frame shadowing with a deliberate caller-frame
+write, checking the full declared stack, VM state and query globals. They establish
+the frame distinction, without certifying arbitrary native effects or retail paths.
+
+### Native storage effects
+
+Sixteen immediate scalar-append contracts are recorded in
+`tools/script_decoder/native_frame_reviews.json`: fifteen direct getters/yield
+callbacks and the requested-dictionary query. These callbacks
+consume no arguments and append one integer or float. They preserve existing
+locals only when those locals and frame metadata lie below the active stack depth,
+one value slot is available, borrowed state is valid and the context remains intact.
+Their return may continue or yield; this review does not cover later lifecycle or
+concurrent changes.
+
+The decoder validates explicit source fingerprints for each reviewed callback,
+its scalar-push helpers, stack macros and relevant value/command definitions.
+Source or dependency changes revoke the affected evidence rather than creating a
+new review. Tests require the checked-in reviews to remain current. Unreviewed
+callbacks remain explicit in `native_effect_frontier`.
+
+Sixteen authored original-instruction cases check the fifteen direct
+callbacks, including both blend-status branches, while guarding saved locals,
+frame metadata, VM state and globals. `actorScriptPushTotalElapsedTime` now names
+the clock accumulated across script resets, separately from the resettable timer
+read by `actorScriptPushTimer`. The cases use distinct clock values and establish
+handler footprints, without a scheduler, hardware or complete-lifetime proof.
+
+Eight helper-backed getter contracts follow their read-only helper chains: chapter,
+held-item kind, movement collision flags, target mode, player held item, view-control
+selection, sequencer activity and interaction candidate. The held-item lookup
+writes a predecessor result to a C-stack temporary, without changing the handle
+pool or VM locals. Its contract requires an initialized nonzero-capacity pool with
+valid chains and a valid item state for a live held handle. Chapter lookup requires
+initialized progress metadata and save storage. These conditions remain explicit.
+
+Helper dependencies are attached to their individual callback reviews, so a helper
+change reopens the affected review without discarding unrelated evidence. Twenty-four
+native reviews are active; 79 effects remain in the saved-dictionary frontier.
+Fourteen authored original-instruction cases cover helper lookup branches, unsigned
+collision flags, independent view flags and guarded scalar appends. They establish
+immediate write footprints, without proving broader object lifetimes or scheduling.
+
+### Player view selection
+
+The view query is `playerIsViewControlSelected`, exposed to scripts by
+`actorScriptPushPlayerViewControlSelected`. `PLAYER_PERMISSION_VIEW_CONTROL`
+(0x8000) selects direct view-angle control, while `PLAYER_PERMISSION_VIEW_INPUT`
+(0x200) permits controller input to change the angles. Yaw input requires the input
+flag; pitch input requires both flags. The selection query can therefore return one
+while actual angle input remains disabled. Other permission encodings remain
+unchanged.
 
 ## Area scenario selection
 

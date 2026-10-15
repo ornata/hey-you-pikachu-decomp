@@ -19,6 +19,10 @@ def test_fingerprint_ignores_formatting_comments_but_distinguishes_operator_toke
     assert fingerprint("value['a']") != fingerprint("value['b']")
     definition = 's32 f(void) { const char *s = "}"; /* { */ return 0; }'
     assert function_source(definition, 'f') == definition
+    pointer = 'Entry *lookup(s32 key) { return NULL; }'
+    assert function_source(pointer, 'lookup') == pointer
+    legacy = 's16 field(index, unused)\ns32 index;\ns32 unused;\n{ return index; }'
+    assert function_source(legacy, 'field') == legacy
 
 
 def test_checked_in_reviews_have_current_source_and_dependency_bindings():
@@ -56,3 +60,23 @@ def test_changed_dependency_or_unsupported_contract_keeps_callback_unreviewed(tm
     manifest['callbacks'][0]['stack_delta'] = 2
     report = native_frame_reviews(tmp_path, manifest)
     assert not report['active'] and report['stale_callbacks'] == ['getter']
+
+
+def test_callback_specific_helper_changes_revoke_only_dependent_reviews(tmp_path):
+    code = ('void firstHelper(void) { writeFirst(); }\nvoid secondHelper(void) { writeSecond(); }\n'
+            's32 first(void) { firstHelper(); return 0; }\ns32 second(void) { secondHelper(); return 0; }')
+    path = tmp_path / 'unit.c'
+    path.write_text(code)
+    callbacks = []
+    for name in ('first', 'second'):
+        helper = name + 'Helper'
+        callbacks.append(dict(function=name, file='unit.c', sha256=fingerprint(function_source(code, name)),
+                              effect='append_scalar', arguments=0, stack_delta=1, result_tag='integer', scheduling='continue',
+                              dependencies=[dict(kind='function', file='unit.c', function=helper,
+                                                 sha256=fingerprint(function_source(code, helper)))]))
+    manifest = dict(preconditions=['Invented ownership conditions.'], dependencies=[], callbacks=callbacks)
+    path.write_text(code.replace('writeFirst()', 'writeChanged()'))
+    report = native_frame_reviews(tmp_path, manifest)
+    assert set(report['active']) == {'second'}
+    assert report['stale_callbacks'] == ['first']
+    assert set(report['stale_callback_dependencies']) == {'first'}

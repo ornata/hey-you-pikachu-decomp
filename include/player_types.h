@@ -14,6 +14,14 @@ typedef enum CompanionControlMode {
     COMPANION_CONTROL_FOLLOW = 2
 } CompanionControlMode;
 
+/// Recovered flags within the player's retained permission mask.
+/// Other permission bits retain their existing numeric encodings.
+typedef enum PlayerPermissionFlag {
+    PLAYER_PERMISSION_VIEW_INPUT = 0x200, ///< Permit controller input to change view angles.
+    PLAYER_PERMISSION_VIEW_CONTROL =
+        0x8000 ///< Select direct view-angle control; view-input permission still gates actual input.
+} PlayerPermissionFlag;
+
 /// Advance a player behavior mode for one input update.
 /// \param player Borrowed initialized player whose active mode is being serviced.
 /// Its mode state and control permissions must agree with the selected update callback.

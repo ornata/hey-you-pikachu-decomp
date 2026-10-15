@@ -26,10 +26,12 @@ void playerSetCompanionControlMode(u8 *player, s32 mode, s32 showMessage, s32 ta
 /// \returns Current CompanionControlMode value.
 s32 playerGetCompanionControlMode(u8 *player);
 
-/// Query whether player pitch changes are enabled.
+/// Query whether direct player view control is selected.
 /// \param player Borrowed initialized player record.
-/// \returns One when pitch changes are enabled, or zero otherwise.
-s32 playerIsPitchControlEnabled(u8 *player);
+/// \returns One when the view-control selection bit is set, or zero otherwise.
+/// \note View-input permission can further restrict yaw and pitch changes.
+/// \note Original decompilation identifier: \c func_80112320 (0x80112320).
+s32 playerIsViewControlSelected(u8 *player);
 
 /// Read the primary player's companion-control selection.
 /// \returns Current CompanionControlMode value for the primary player.

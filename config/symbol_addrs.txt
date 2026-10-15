@@ -559,7 +559,7 @@ playerRestoreState = 0x80111B08; // type:func segment:ovl
 playerPlayTrackedSoundEffect = 0x80111BE4; // type:func segment:ovl
 playerInitializeForArea = 0x80111F40; // type:func segment:ovl
 playerGetCompanionControlMode = 0x80112318; // type:func segment:ovl
-playerIsPitchControlEnabled = 0x80112320; // type:func segment:ovl
+playerIsViewControlSelected = 0x80112320; // type:func segment:ovl
 playerUpdateInput = 0x80112344; // type:func segment:ovl
 playerResetViewOrientation = 0x80112520; // type:func segment:ovl
 playerSetChaseStage = 0x801127DC; // type:func segment:ovl
@@ -2820,7 +2820,7 @@ actorScriptSetItemDrawMode = 0x8011F730;
 actorScriptConfigureMicrophone = 0x8011F030;
 
 actorScriptSetTargetFacingSuppressed = 0x8011FAA4;
-actorScriptPushPlayerPitchControlEnabled = 0x8011E3AC;
+actorScriptPushPlayerViewControlSelected = 0x8011E3AC;
 
 actorScriptDispatchRegisteredCommand = 0x8011BD50;
 stringPrependBounded = 0x8011BD9C;

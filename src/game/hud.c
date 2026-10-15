@@ -605,7 +605,7 @@ void hudDrawMotionIndicators(Gfx **gdl) {
 
     selected = gHudMotionIndicatorAnimation;
     motion = gPikachuActor->state.actor;
-    if (playerIsPitchControlEnabled((u8 *)&gPlayerState)) {
+    if (playerIsViewControlSelected((u8 *)&gPlayerState)) {
         selected = gHudStationaryLookActionAnimations[playerCanEnterStationaryLook()];
         showMotion = 1;
         showSelected = 1;

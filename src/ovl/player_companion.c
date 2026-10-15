@@ -230,11 +230,16 @@ typedef struct {
 typedef char PlayerControlSchemeSizeCheck[(sizeof(PlayerControlScheme) == 0xC) ? 1 : -1];
 
 PlayerControlScheme gPlayerControlSchemes[28] = {
-    {0, -1, 0},      {1, 0, 0xFFFF},  {6, -1, 0},      {7, -1, 0},      {8, 0, 0x1000},  {9, -1, 0},
-    {10, 0, 0},      {11, 0, 0},      {12, 0, 0x4000}, {13, 0, 0},      {14, 0, 0},      {15, 0, 0x80},
-    {16, 0, 0x4080}, {17, 0, 0x40},   {18, 0, 0x108},  {19, 0, 0x404},  {20, 0, 0x40C0}, {21, 0, 0x404},
-    {22, 0, 0xC0},   {23, 0, 0xC0C0}, {24, 0, 0x8000}, {25, 0, 0x4000}, {26, 0, 0x60E3}, {27, 0, 0x20E3},
-    {28, 0, 0xC000}, {29, 0, 0x5000}, {30, 0, 0x5000}, {31, 0, 0x41C8},
+    {0, -1, 0},      {1, 0, 0xFFFF},  {6, -1, 0},
+    {7, -1, 0},      {8, 0, 0x1000},  {9, -1, 0},
+    {10, 0, 0},      {11, 0, 0},      {12, 0, 0x4000},
+    {13, 0, 0},      {14, 0, 0},      {15, 0, 0x80},
+    {16, 0, 0x4080}, {17, 0, 0x40},   {18, 0, 0x108},
+    {19, 0, 0x404},  {20, 0, 0x40C0}, {21, 0, 0x404},
+    {22, 0, 0xC0},   {23, 0, 0xC0C0}, {24, 0, PLAYER_PERMISSION_VIEW_CONTROL},
+    {25, 0, 0x4000}, {26, 0, 0x60E3}, {27, 0, 0x20E3},
+    {28, 0, 0xC000}, {29, 0, 0x5000}, {30, 0, 0x5000},
+    {31, 0, 0x41C8},
 };
 
 #include "scene_configuration.h"
@@ -316,7 +321,7 @@ f32 playerCalculateYawInput(u8 *object, ControllerState *controller, s32 invert)
     f32 response;
     s32 stick;
 
-    if (!(((PlayerControlPrefix *)object)->permissions & 0x200) ||
+    if (!(((PlayerControlPrefix *)object)->permissions & PLAYER_PERMISSION_VIEW_INPUT) ||
         ((stick = controller->stickX), (stick >= 0 ? stick : -stick) < 11)) {
         return 0.0F;
     }
@@ -349,7 +354,7 @@ f32 playerCalculatePitchInput(u8 *player, ControllerState *controller, s32 inver
     s32 flags;
     s32 input;
     flags = ((PlayerControlPrefix *)player)->permissions;
-    if (!(flags & 0x200) || !(flags & 0x8000)) {
+    if (!(flags & PLAYER_PERMISSION_VIEW_INPUT) || !(flags & PLAYER_PERMISSION_VIEW_CONTROL)) {
         return 0.0F;
     }
     input = controller->stickY;
@@ -1681,7 +1686,7 @@ void playerUpdateRestrictedControl(u8 *player, ControllerState *controller) {
             return;
         }
         if (playerToggleCompanionControl(player, controller) == 0) {
-            if (((PlayerControlPrefix *)player)->permissions & 0x8000) {
+            if (((PlayerControlPrefix *)player)->permissions & PLAYER_PERMISSION_VIEW_CONTROL) {
                 dx = playerCalculateYawInput(player, controller, 0);
                 dz = playerCalculatePitchInput(player, controller, progressGetValue(PROGRESS_FIELD_LOOK_FORWARD_UP));
                 playerSetViewAngles(player, ((PlayerControlPrefix *)player)->yaw + dx,
@@ -2195,12 +2200,13 @@ s32 playerGetCompanionControlMode(u8 *player) {
     return ((PlayerControlPrefix *)player)->companionMode;
 }
 
-/// Check the player pitch-control permission.
+/// Check whether direct player view control is selected.
 /// \param player Player record to query.
-/// \returns One if pitch control is enabled, or zero otherwise.
+/// \returns One if direct view control is selected, or zero otherwise.
+/// \note View-input permission can further restrict yaw and pitch changes.
 /// \note Original decompilation identifier: \c func_80112320 (0x80112320).
-s32 playerIsPitchControlEnabled(u8 *player) {
-    if (((PlayerControlPrefix *)player)->permissions & 0x8000) {
+s32 playerIsViewControlSelected(u8 *player) {
+    if (((PlayerControlPrefix *)player)->permissions & PLAYER_PERMISSION_VIEW_CONTROL) {
         return 1;
     }
     return 0;

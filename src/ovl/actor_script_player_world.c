@@ -150,15 +150,15 @@ s32 actorScriptQueryPlayerInteractionMode(u8 *actor) {
 }
 
 
-/// Read whether the player permits pitch control.
-/// \param actor Actor whose script VM receives one when player pitch control is enabled, or zero otherwise.
+/// Read whether direct player view control is selected.
+/// \param actor Actor whose script VM receives one when the player view-control selection bit is set, or zero otherwise.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011E3AC (0x8011E3AC).
-s32 actorScriptPushPlayerPitchControlEnabled(u8 *actor) {
+s32 actorScriptPushPlayerViewControlSelected(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushInteger((ScriptVm *)(sp1C), playerIsPitchControlEnabled((u8 *)&gPlayerState));
+    scriptVmPushInteger((ScriptVm *)(sp1C), playerIsViewControlSelected((u8 *)&gPlayerState));
     return 0;
 }
 

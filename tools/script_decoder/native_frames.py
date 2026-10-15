@@ -28,7 +28,8 @@ def fingerprint(code):
 def function_source(code, name):
     """Use masked braces to extract a complete definition with literals retained."""
     masked = code_only(code)
-    match = re.search(r'\b(?:s32|void)\s+' + re.escape(name) + r'\([^{};]*\)\s*\{', masked)
+    match = re.search(r'^[ \t]*(?:(?:static|extern|inline)\s+)*(?:const\s+)?(?:struct\s+)?[A-Za-z_]\w*\s*\**\s*' +
+                      re.escape(name) + r'\([^{};]*\)\s*(?:[A-Za-z_]\w*\s+\**\s*[A-Za-z_]\w*\s*;\s*)*\{', masked, re.M)
     if match is None:
         raise ValueError('missing reviewed function definition')
     depth = 1
@@ -43,7 +44,7 @@ def native_frame_reviews(root=ROOT, manifest=None):
     """Activate only explicitly reviewed callbacks with unchanged dependencies."""
     if manifest is None:
         manifest = json.loads((root / 'tools/script_decoder/native_frame_reviews.json').read_text())
-    cache, stale_dependencies, stale_callbacks = {}, [], []
+    cache, stale_dependencies, stale_callbacks, stale_callback_dependencies = {}, [], [], {}
 
     def digest(row):
         path = row['file']
@@ -75,11 +76,22 @@ def native_frame_reviews(root=ROOT, manifest=None):
             agrees = digest(row) == review['sha256']
         except (OSError, ValueError):
             agrees = False
+        changed_helpers = []
+        for dependency in review.get('dependencies', []):
+            try:
+                unchanged = digest(dependency) == dependency['sha256']
+            except (OSError, ValueError):
+                unchanged = False
+            if not unchanged:
+                changed_helpers.append(dependency)
+        if changed_helpers:
+            stale_callback_dependencies[review['function']] = changed_helpers
         if (not agrees or review['effect'] != 'append_scalar' or review['arguments'] != 0 or review['stack_delta'] != 1 or
-                review['result_tag'] not in ('integer', 'float') or review['scheduling'] not in ('continue', 'yield')):
+                review['result_tag'] not in ('integer', 'float') or review['scheduling'] not in ('continue', 'yield') or changed_helpers):
             stale_callbacks.append(review['function'])
         elif not stale_dependencies:
             active[review['function']] = review
     return dict(active=active, stale_dependencies=stale_dependencies, stale_callbacks=stale_callbacks,
+                stale_callback_dependencies=stale_callback_dependencies,
                 preconditions=manifest['preconditions'],
                 scope='Reviewed immediate handler write footprints under stated stack/ownership preconditions; no scheduler, context-lifetime or concurrent-mutation proof.')
