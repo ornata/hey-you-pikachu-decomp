@@ -7,22 +7,19 @@
 #include "common.h"
 #include "string_bytes.h"
 #include "player_types.h"
+#include "script_vm_globals.h"
 
 void _bzero(void *, s32);                                     /* extern */
 /// Current gameplay, menu or transition mode.
 /// \note Original identifier: \c D_800AE504 (0x800AE504).
 extern s32 gRuntimeGameMode;
-/// Global script-variable storage containing 500 packed five-byte values.
-/// \note Original identifier: \c D_800EF7A0 (0x800EF7A0).
-extern u8 gScriptVmGlobalValues[];
-
 /// Reset the player profile and associated session state to their defaults.
 /// The default player name is "You".
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800214E0 (0x800214E0).
 void playerResetProfile(void) {
     _bzero(&gPlayerState, 0x100);
-    _bzero(&gScriptVmGlobalValues, 0x9C4);
+    _bzero(&gScriptVmGlobalValues, sizeof(gScriptVmGlobalValues));
     _bzero(&gProfilePackedCounters, sizeof(gProfilePackedCounters));
     progressInitializeSaveStorage();
     stringCopy(gPlayerProfileName, (const u8 *)"You");

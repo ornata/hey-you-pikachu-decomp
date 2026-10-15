@@ -1,10 +1,21 @@
 /// \file
-/// Resets and assigns the actor interpreter's shared script-variable bank.
+/// Defines the actor interpreter's shared value bank and its reset/assignment interface.
 
 #ifndef SCRIPT_VM_GLOBALS_H
 #define SCRIPT_VM_GLOBALS_H
 
-#include <ultra64.h>
+#include "script_vm.h"
+
+/// Number of shared packed values available to actor programs.
+enum { SCRIPT_VM_GLOBAL_VALUE_COUNT = 500 };
+
+/// Shared values addressed by scripts independently of their local frames.
+/// Profile initialization and scriptVmResetGlobals restore the zero state.
+/// Callers provide valid indices; referenced string storage retains its own lifetime.
+/// \note Original identifier: \c D_800EF7A0 (0x800EF7A0).
+extern ScriptValue gScriptVmGlobalValues[SCRIPT_VM_GLOBAL_VALUE_COUNT];
+
+typedef char ScriptVmGlobalBankSizeCheck[(sizeof(gScriptVmGlobalValues) == 0x9C4) ? 1 : -1];
 
 /// Restore all 500 shared script variables to their initial zero values.
 /// \returns Nothing.

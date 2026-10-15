@@ -36,6 +36,27 @@ def test_creation_bindings_do_not_treat_symbol_arithmetic_as_a_configuration():
                                           dict(script_symbol='otherConfig', actor_kind_expression='9', line=4)]
 
 
+def test_conditional_bindings_stay_within_function_and_reject_changed_pointer_values():
+    code = '''void factory(void) {
+ u8 *record;
+ if (flag) { record = &firstConfig; } else { record = secondConfig; }
+ actorCreateForKind(5, 0, 0, 0, 0, 0, 1, record, 0);
+}
+void unrelated(void) {
+ u8 *record;
+ record = &thirdConfig;
+}'''
+    sites = module.assigned_creation_sites(code)
+    assert {site['script_symbol'] for site in sites} == {'firstConfig', 'secondConfig'}
+    assert all(site['function'] == 'factory' and site['line'] == 4 for site in sites)
+    for changed in (code.replace('record = secondConfig;', 'record = secondConfig + 4;'),
+                    code.replace('if (flag)', 'escape(&record); if (flag)'),
+                    code.replace('actorCreateForKind(5', '++record; actorCreateForKind(5'),
+                    code.replace('if (flag)', '{ u8 *record; } if (flag)'),
+                    code.replace('actorCreateForKind(5', 'record += 4; actorCreateForKind(5')):
+        assert not module.assigned_creation_sites(changed)
+
+
 def test_companion_bindings_follow_explicit_overlay_and_reject_stale_scene_catalog(tmp_path, monkeypatch):
     (tmp_path / 'src/ovl').mkdir(parents=True)
     (tmp_path / 'include').mkdir()
@@ -44,6 +65,9 @@ def test_companion_bindings_follow_explicit_overlay_and_reject_stale_scene_catal
         'SceneConfigurationPrefix *gAreaConfigurations[SCENE_AREA_COUNT] = {' +
         ','.join(f'(SceneConfigurationPrefix *)(scene_test{i}_DATA_START + 0x0)' for i in range(23)) + '};')
     monkeypatch.setattr(module, 'ROOT', tmp_path)
+    monkeypatch.setattr(module, 'scenario_domains', lambda code, areas: {i: dict(indices=[0], selector=None) for i in range(23)})
+    (tmp_path / 'src/game').mkdir()
+    (tmp_path / 'src/game/collection_presentation.c').write_text('/* Scenario domains supplied by this fixture. */')
 
     class Image:
         stale = False

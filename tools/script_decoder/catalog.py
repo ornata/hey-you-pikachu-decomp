@@ -19,15 +19,18 @@ from .__main__ import OUTPUT, number
 from tools.source_quality import code_only
 from tools.scene_catalog import configuration_locations
 from .messages import message_posts
+from .scenarios import scenario_domains, function_body
 
 
 def companion_sites(image):
-    """Follow only scenario zero through all 23 authenticated scene configurations."""
+    """Follow explicit selector return indices through authenticated scene configurations."""
     locations = configuration_locations(code_only((ROOT / 'src/ovl/area_terrain_maze.c').read_text()),
                                         code_only((ROOT / 'include/area_catalog.h').read_text()))
     table = image.symbol('gAreaConfigurations')
     image.allowed = {'.boot', '.ovl'}
     pointers, _ = image.read_address(table[1], 23 * 4)
+    area_ids = {name: int(value) for name, value in re.findall(r'\b(AREA_\w+)\s*=\s*(\d+)\b', code_only((ROOT / 'include/area_catalog.h').read_text()))}
+    domains = scenario_domains(code_only((ROOT / 'src/game/collection_presentation.c').read_text()), area_ids)
     result = []
     for area_index, (base, offset) in enumerate(locations):
         section = '.' + base.removesuffix('_DATA_START')
@@ -38,11 +41,14 @@ def companion_sites(image):
         raw, _ = image.read_address(configuration, 0x7C)
         scripts = struct.unpack_from('>I', raw, 0x6C)[0]
         if scripts:
-            raw, _ = image.read_address(scripts, 4)
-            script = struct.unpack('>I', raw)[0]
-            result.append(dict(section=section, address=script, area_index=area_index,
-                               scene_configuration=configuration, scenario=0, actor_kind=0x25,
-                               source='src/ovl/player_companion.c:pikachuSpawnForArea'))
+            for scenario in domains[area_index]['indices']:
+                raw, _ = image.read_address(scripts + scenario * 4, 4)
+                script = struct.unpack('>I', raw)[0]
+                result.append(dict(section=section, address=script, area_index=area_index,
+                                   scene_configuration=configuration, scenario=scenario, actor_kind=0x25,
+                                   selector=domains[area_index]['selector'],
+                                   selection_basis='Literal selector return index; branch feasibility not established.',
+                                   source='src/ovl/player_companion.c:pikachuSpawnForArea'))
     return result
 
 
@@ -89,12 +95,39 @@ def creation_sites(code):
     return result
 
 
+def assigned_creation_sites(code):
+    """List conditional local assignments before a creation call, without asserting path feasibility."""
+    result = []
+    definitions = re.finditer(r'^\s*(?:void|s32)\s+(\w+)\([^;{}]*\)\s*\{', code, re.M)
+    for definition in definitions:
+        function = definition[1]
+        body = function_body(code, function)
+        for site in creation_sites(body):
+            variable = site['script_symbol']
+            if len(re.findall(r'\bu8\s*\*\s*' + re.escape(variable) + r'\s*;', body)) != 1:
+                continue
+            if re.search(r'&\s*' + re.escape(variable) + r'\b|\b' + re.escape(variable) + r'\s*(?:\+=|-=|\+\+|--)|(?:\+\+|--)\s*' + re.escape(variable) + r'\b', body):
+                continue
+            assignments = list(re.finditer(r'\b' + re.escape(variable) + r'\s*=\s*([^;]+);', body))
+            symbols = [re.fullmatch(r'&?\s*([A-Za-z_]\w*)', assignment[1].strip()) for assignment in assignments]
+            # Do not report a later assignment as a source for an earlier call.
+            if not assignments or not all(symbols) or any(body.count('\n', 0, assignment.start()) + 1 >= site['line'] for assignment in assignments):
+                continue
+            for symbol in sorted({match[1] for match in symbols}):
+                result.append(dict(script_symbol=symbol, actor_kind_expression=site['actor_kind_expression'],
+                                   line=code.count('\n', 0, definition.end()) + site['line'],
+                                   function=function, local_variable=variable,
+                                   basis='Possible local assignment before creation; branch feasibility not established.'))
+    return result
+
+
 def catalog(image, max_instructions=100000):
     """Decode candidates separately; equal virtual addresses do not merge overlays."""
     table_symbol = image.symbol('D_8012B400')
     natives = native_layouts(image, image.table('D_8012B400', 279))
     source = {str(path.relative_to(ROOT)): code_only(path.read_text()) for path in (ROOT / 'src').rglob('*.c')}
     sites = [(file, site) for file, text in source.items() for site in creation_sites(text)]
+    assigned = [(file, site) for file, text in source.items() for site in assigned_creation_sites(text)]
     companions = companion_sites(image)
     names = opcode_names('vm')
     rows, decodes = [], {}
@@ -139,7 +172,8 @@ def catalog(image, max_instructions=100000):
             rows.append(dict(**candidate, section=section_name, location=location,
                              candidate_basis='Aligned retained-table prefix with local program before header; not allocation/type proof.',
                              symbols=aliases, direct_creation_sites=bindings,
-                             companion_scenario_zero_sites=[site for site in companions if site['section'] == section_name and site['address'] == candidate['address']],
+                             assigned_creation_sites=[dict(file=file, **site) for file, site in assigned if site['script_symbol'] in aliases],
+                             companion_scenario_sites=[site for site in companions if site['section'] == section_name and site['address'] == candidate['address']],
                              instructions=len(decoded['instructions']), diagnostics=decoded['diagnostics'],
                              decoded_code_sha256=signature.hexdigest(), code_reference_roles=dict(roles),
                              code_reference_uses=references, global_indices=sorted(globals_used),
@@ -153,12 +187,16 @@ def catalog(image, max_instructions=100000):
     roles = Counter()
     for row in complete:
         roles.update(row['code_reference_roles'])
-    return dict(schema_version=1, rom_sha1=image.sha1,
+    return dict(schema_version=2, rom_sha1=image.sha1,
                 scope='Retained-table configuration candidates with local programs before their headers. No claim of exhaustive resource discovery or live execution.',
                 candidate_count=len(rows), diagnostic_free_candidates=len(complete),
                 directly_created_candidates=sum(bool(row['direct_creation_sites']) for row in rows),
-                companion_scenario_zero_candidates=sum(bool(row['companion_scenario_zero_sites']) for row in rows),
-                companion_scenario_zero_references=companions,
+                conditionally_assigned_candidates=sum(bool(row['assigned_creation_sites']) for row in rows),
+                companion_scenario_candidates=sum(bool(row['companion_scenario_sites']) for row in rows),
+                companion_scenario_references=companions,
+                unbound_configurations=[dict(section=row['section'], address=row['address'], program=row['program'],
+                                             next_evidence='Find an owning producer or live context; absence of recovered bindings does not prove disuse.')
+                                        for row in rows if not (row['direct_creation_sites'] or row['assigned_creation_sites'] or row['companion_scenario_sites'])],
                 distinct_decoded_code_hashes=len({row['decoded_code_sha256'] for row in rows}),
                 code_reference_roles=dict(roles), configurations=rows), decodes
 

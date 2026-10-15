@@ -101,6 +101,13 @@ The [actor VM](../src/ovl/script_vm.c) evaluates expressions, branches, accesses
 and global variables, calls script subroutines, and invokes native gameplay commands.
 An actor retains its instruction position and execution context across updates.
 
+Local frames belong to each VM. Frame -1 instead selects the shared bank of 500
+packed `ScriptValue` records declared in `script_vm_globals.h`. Profile
+initialization and `scriptVmResetGlobals` both clear the same 2,500-byte bank;
+returning from a completed visit also requests that reset through bedroom
+scenario selection. The bank is separate from each context's owned value stack.
+Its indices and any borrowed string lifetimes remain caller responsibilities.
+
 `actorRunScriptVm` runs until execution yields, transfers to an action handler,
 finishes, or encounters an invalid instruction or missing context. Ordinary
 instructions do not automatically yield once per frame. A program must reach a
@@ -375,20 +382,64 @@ decode; it is not an inferred allocation size. Each candidate retains diagnostic
 code fingerprints, frame operands, global-reference base indices, native calls and
 code-reference roles. Direct `actorCreateForKind` calls are linked only when the
 script argument is an exact configuration symbol or its address; 70 candidates
-have such bindings. The catalog also follows scenario zero through each of the
-23 explicit area configurations to Pikachu's script, retaining the overlay at
-every pointer read. It validates the source area's selection against the linked,
-ROM-authenticated catalog. These are configured references, not a claim that
+have such bindings. Nine more configurations have conditional local assignments
+before actor creation; the catalog records these separately as possible sources,
+without asserting branch feasibility. It also follows 47 explicit scenario
+selector return indices through the 23 area configurations to Pikachu's scripts,
+retaining the overlay at every pointer read. It validates the source area's
+selection against the linked, ROM-authenticated catalog. These are configured
+references, not a claim that
 every scene or script branch has executed. Other candidates remain explicitly
 unproven as live configurations. The results stay under
 `build/script-decoder/catalog/`; this scan does not discover every possible script
-layout or compressed resource.
+layout or compressed resource. Two of the 128 candidates currently have no
+recovered binding: resident configuration 0x8012B870 and front-yard configuration
+0x80158B7C. This is not evidence that they are unused.
 
 Decoder report schema 2 calls tag 2 `code_reference` and records its uses in
 `code_reference_uses`. These references select bytecode offsets or configured
 native-command slots; their payloads retain signed integer conversion behavior.
 The catalog preserves separate entries for overlays even when virtual addresses
 coincide, and fingerprints decoded code to expose repeated programs.
+
+## Area scenario selection
+
+`presentationInitializeForCurrentArea` selects `gAreaScenarioIndex` from story
+progress. That index selects companion behavior, card textures and collection
+titles together; it also affects scene population. The selector functions now
+use area names and the `Scenario` suffix to describe this shared role.
+
+The recovered literal-return domains are:
+
+| Area or group | Scenario indices |
+| --- | --- |
+| Bedroom | 0–9 |
+| Entryway | 0 |
+| Front yard | 0–6 |
+| Viridian entrance | 0–2 |
+| Viridian forest | 0 |
+| Viridian deep | 0, 1 |
+| Springleaf entrance, Oddish meadow, Springleaf field | 0, 1 |
+| Olivine lakeshore/lake, Ochre entrance/deep, Cobalt island/coast | 0 |
+| Abra shop | 0, 1 |
+| Wilderness camp and the three fishing areas | 0 |
+| Viridian edge | 0, 1 |
+| Playground | 0 |
+| Credits | 0, 1 |
+
+These domains bound the entries inspected by catalog schema 2; they do not prove
+every return path is reachable or infer the complete table allocation. The
+inventory rejects unresolved return expressions and unfamiliar area assignments.
+`companion_scenario_sites` records each reference's selector and index.
+
+For the forest edge, chapter 1 selects scenario 0 and chapter 7 selects scenario 1.
+Both request presentation action 0xF4 and audio cue 0x15. Credits selects scenario 1
+at chapter 0, setting audio to zero while preserving the caller's action; chapter
+9 selects scenario 0 with action 0x32 and audio 0x15. Unsupported chapters return
+zero while leaving those outputs unchanged. Six original-instruction experiments
+check these outputs, return indices and fallback preservation in three interpreter
+repetitions each. Unicorn remains unsupported for these cases. Other selector
+domains currently rely on matching source and authenticated scene-table evidence.
 
 ## Actor mailbox categories
 

@@ -376,6 +376,7 @@ def experiments():
     from .state_selector_domains import experiments as selector_experiments
     from .message_kind_domains import experiments as message_experiments
     from .message_handle_domains import experiments as handle_experiments
+    from .scenario_domains import experiments as scenario_experiments
 
     return (
         cases
@@ -393,6 +394,7 @@ def experiments():
         + selector_experiments()
         + message_experiments()
         + handle_experiments()
+        + scenario_experiments()
     )
 
 

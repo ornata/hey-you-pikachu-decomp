@@ -375,10 +375,6 @@ s32 scriptVmReadIntegerOperand(ScriptVm *vm) {
     return scriptValueGetInteger((ScriptValue *)(operandAddress));
 }
 
-/// Global script-variable storage containing 500 packed five-byte values.
-/// \note Original identifier: \c D_800EF7A0 (0x800EF7A0).
-extern ScriptValue gScriptVmGlobalValues[500];
-
 /// Read the next variable reference and resolve it to a writable script value.
 /// \param vm Context positioned at a valid variable reference, with frame -1 for globals or 0 through 31 for locals and an in-range variable index.
 /// \returns A borrowed writable value owned by the context or global variable storage.

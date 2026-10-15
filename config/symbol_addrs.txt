@@ -1936,24 +1936,24 @@ presentationUpdateCardMode = 0x80028B84;
 presentationShowChapterFriendshipResult = 0x80029BE4;
 presentationUpdateCollectionResultsMode = 0x80029CD4;
 
-presentationSelectArea9And10Card = 0x8002A6F8;
-presentationSelectArea11And12Card = 0x8002A738;
-presentationSelectArea13Card = 0x8002A778;
-presentationSelectArea14Card = 0x8002A7B8;
-presentationSelectArea16Card = 0x8002A864;
-presentationSelectArea17Through19Card = 0x8002A8A4;
-presentationSelectArea21Card = 0x8002A958;
+presentationSelectOlivineScenario = 0x8002A6F8;
+presentationSelectOchreScenario = 0x8002A738;
+presentationSelectCobaltIslandScenario = 0x8002A778;
+presentationSelectCobaltCoastScenario = 0x8002A7B8;
+presentationSelectWildernessCampScenario = 0x8002A864;
+presentationSelectFishingScenario = 0x8002A8A4;
+presentationSelectPlaygroundScenario = 0x8002A958;
 
-presentationSelectArea3Card = 0x8002A528;
-presentationSelectArea4Card = 0x8002A5B4;
-presentationSelectArea5Card = 0x8002A604;
-presentationSelectArea6Through8Card = 0x8002A68C;
-presentationSelectArea15Card = 0x8002A7F8;
-presentationSelectArea20Card = 0x8002A8E4;
-presentationSelectArea22Card = 0x8002A998;
+presentationSelectViridianEntranceScenario = 0x8002A528;
+presentationSelectViridianForestScenario = 0x8002A5B4;
+presentationSelectViridianDeepScenario = 0x8002A604;
+presentationSelectSpringleafScenario = 0x8002A68C;
+presentationSelectAbraShopScenario = 0x8002A7F8;
+presentationSelectViridianEdgeScenario = 0x8002A8E4;
+presentationSelectCreditsScenario = 0x8002A998;
 
-presentationSelectArea0Card = 0x8002A0E4;
-presentationSelectArea2Card = 0x8002A404;
+presentationSelectBedroomScenario = 0x8002A0E4;
+presentationSelectFrontYardScenario = 0x8002A404;
 presentationInitializeForCurrentArea = 0x8002AA08;
 
 progressSetChapterAndUnlockMilestones = 0x8002AD04;

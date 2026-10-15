@@ -1194,12 +1194,12 @@ extern s32 gEyeCatchSelectedGroup;
 /// \note Original identifier: \c D_800F0B74 (0x800F0B74).
 extern s32 gCompletedVisitCardPending;
 
-/// Selects the area 0 card presentation and updates related progress for a completed visit.
+/// Select the bedroom scenario and update progress for a completed visit.
 /// \param actorAction Unused; the caller’s presentation action remains unchanged.
 /// \param audioCue Receives the presentation audio cue ID for a supported result; otherwise unchanged.
-/// \returns The selected card index, or zero when the chapter has no supported selection.
+/// \returns The shared area scenario index, or zero when the chapter has no supported selection.
 /// \note Original decompilation identifier: \c func_8002A0E4 (0x8002A0E4).
-s32 presentationSelectArea0Card(s32 *actorAction, s32 *audioCue) {
+s32 presentationSelectBedroomScenario(s32 *actorAction, s32 *audioCue) {
     s32 sp1C;
     s32 sp18;
 
@@ -1284,12 +1284,12 @@ s32 presentationSelectArea0Card(s32 *actorAction, s32 *audioCue) {
     }
 }
 
-/// Selects the area 2 card presentation according to chapter progress.
+/// Select the front-yard scenario shared by companion scripts, cards and collection titles.
 /// \param actorAction Unused; the caller’s presentation action remains unchanged.
 /// \param audioCue Receives the presentation audio cue ID for a supported result; otherwise unchanged.
-/// \returns The selected card index, or zero when the chapter has no supported selection.
+/// \returns The shared area scenario index, or zero when the chapter has no supported selection.
 /// \note Original decompilation identifier: \c func_8002A404 (0x8002A404).
-s32 presentationSelectArea2Card(s32 *actorAction, s32 *audioCue) {
+s32 presentationSelectFrontYardScenario(s32 *actorAction, s32 *audioCue) {
     s32 currentChapter;
 
     currentChapter = progressGetCurrentChapter();
@@ -1329,12 +1329,12 @@ s32 presentationSelectArea2Card(s32 *actorAction, s32 *audioCue) {
     }
 }
 
-/// Selects the card presentation for area 3 according to game progress.
+/// Select the viridian entrance scenario shared by companion scripts, cards and collection titles.
 /// \param actorAction Receives the presentation action ID for chapters 2 and 4; otherwise unchanged.
 /// \param audioCue Receives the presentation audio cue ID, or minus one for silence, for a supported chapter; otherwise unchanged.
-/// \returns The selected card index, or zero for an unsupported chapter.
+/// \returns The shared area scenario index, or zero for an unsupported chapter.
 /// \note Original decompilation identifier: \c func_8002A528 (0x8002A528).
-s32 presentationSelectArea3Card(s32 *actorAction, s32 *audioCue) {
+s32 presentationSelectViridianEntranceScenario(s32 *actorAction, s32 *audioCue) {
     s32 currentChapter;
 
     currentChapter = progressGetCurrentChapter();
@@ -1356,12 +1356,12 @@ s32 presentationSelectArea3Card(s32 *actorAction, s32 *audioCue) {
     }
 }
 
-/// Selects the card presentation for area 4 according to game progress.
+/// Select the viridian forest scenario shared by companion scripts, cards and collection titles.
 /// \param actorAction Receives the presentation action ID for chapter 4; otherwise unchanged.
 /// \param audioCue Receives the presentation audio cue ID for a supported chapter; otherwise unchanged.
-/// \returns The selected card index, always zero.
+/// \returns The shared area scenario index, always zero.
 /// \note Original decompilation identifier: \c func_8002A5B4 (0x8002A5B4).
-s32 presentationSelectArea4Card(s32 *actorAction, s32 *audioCue) {
+s32 presentationSelectViridianForestScenario(s32 *actorAction, s32 *audioCue) {
     s32 chapter = progressGetCurrentChapter();
 
     if (chapter == 4) {
@@ -1373,12 +1373,12 @@ s32 presentationSelectArea4Card(s32 *actorAction, s32 *audioCue) {
     return 0;
 }
 
-/// Selects the card presentation for area 5 according to game progress.
+/// Select the deep-forest scenario shared by companion scripts, cards and collection titles.
 /// \param actorAction Receives the presentation action ID for a supported chapter; otherwise unchanged.
 /// \param audioCue Receives the presentation audio cue ID for a supported chapter; otherwise unchanged.
-/// \returns The selected card index, or zero for an unsupported chapter.
+/// \returns The shared area scenario index, or zero for an unsupported chapter.
 /// \note Original decompilation identifier: \c func_8002A604 (0x8002A604).
-s32 presentationSelectArea5Card(s32 *actorAction, s32 *audioCue) {
+s32 presentationSelectViridianDeepScenario(s32 *actorAction, s32 *audioCue) {
     s32 currentChapter;
 
     currentChapter = progressGetCurrentChapter();
@@ -1400,12 +1400,12 @@ s32 presentationSelectArea5Card(s32 *actorAction, s32 *audioCue) {
 }
 
 
-/// Selects the card presentation for areas 6 through 8 according to game progress.
+/// Select the springleaf-region scenario shared by companion scripts, cards and collection titles.
 /// \param actorAction Receives the active actor’s presentation action ID.
 /// \param audioCue Receives the presentation audio cue ID.
-/// \returns The selected card index.
+/// \returns The shared area scenario index.
 /// \note Original decompilation identifier: \c func_8002A68C (0x8002A68C).
-s32 presentationSelectArea6Through8Card(s32 *actorAction, s32 *audioCue) {
+s32 presentationSelectSpringleafScenario(s32 *actorAction, s32 *audioCue) {
     progressGetCurrentChapter();
     if (progressGetValue(0x12) != 0) {
         *actorAction = 0x3B;
@@ -1417,48 +1417,48 @@ s32 presentationSelectArea6Through8Card(s32 *actorAction, s32 *audioCue) {
     return 1;
 }
 
-/// Selects the card presentation for areas 9 and 10.
+/// Select the olivine-region scenario shared by companion scripts, cards and collection titles.
 /// \param actorAction Receives the active actor’s presentation action ID.
 /// \param audioCue Receives the presentation audio cue ID.
-/// \returns The selected card index, always zero.
+/// \returns The shared area scenario index, always zero.
 /// \note Original decompilation identifier: \c func_8002A6F8 (0x8002A6F8).
-s32 presentationSelectArea9And10Card(s32 *actorAction, s32 *audioCue) {
+s32 presentationSelectOlivineScenario(s32 *actorAction, s32 *audioCue) {
     progressGetCurrentChapter();
     *actorAction = 0xA8;
     *audioCue = 0x15;
     return 0;
 }
 
-/// Selects the card presentation for areas 11 and 12.
+/// Select the ochre-region scenario shared by companion scripts, cards and collection titles.
 /// \param actorAction Receives the active actor’s presentation action ID.
 /// \param audioCue Receives the presentation audio cue ID.
-/// \returns The selected card index, always zero.
+/// \returns The shared area scenario index, always zero.
 /// \note Original decompilation identifier: \c func_8002A738 (0x8002A738).
-s32 presentationSelectArea11And12Card(s32 *actorAction, s32 *audioCue) {
+s32 presentationSelectOchreScenario(s32 *actorAction, s32 *audioCue) {
     progressGetCurrentChapter();
     *actorAction = 0x87;
     *audioCue = 0x15;
     return 0;
 }
 
-/// Selects the card presentation for area 13.
+/// Select the cobalt island scenario shared by companion scripts, cards and collection titles.
 /// \param actorAction Receives the active actor’s presentation action ID.
 /// \param audioCue Receives the presentation audio cue ID.
-/// \returns The selected card index, always zero.
+/// \returns The shared area scenario index, always zero.
 /// \note Original decompilation identifier: \c func_8002A778 (0x8002A778).
-s32 presentationSelectArea13Card(s32 *actorAction, s32 *audioCue) {
+s32 presentationSelectCobaltIslandScenario(s32 *actorAction, s32 *audioCue) {
     progressGetCurrentChapter();
     *actorAction = 0xDD;
     *audioCue = 0x15;
     return 0;
 }
 
-/// Selects the card presentation for area 14.
+/// Select the cobalt coast scenario shared by companion scripts, cards and collection titles.
 /// \param actorAction Receives the active actor’s presentation action ID.
 /// \param audioCue Receives the presentation audio cue ID.
-/// \returns The selected card index, always zero.
+/// \returns The shared area scenario index, always zero.
 /// \note Original decompilation identifier: \c func_8002A7B8 (0x8002A7B8).
-s32 presentationSelectArea14Card(s32 *actorAction, s32 *audioCue) {
+s32 presentationSelectCobaltCoastScenario(s32 *actorAction, s32 *audioCue) {
     progressGetCurrentChapter();
     *actorAction = 0x33;
     *audioCue = 0x15;
@@ -1466,12 +1466,12 @@ s32 presentationSelectArea14Card(s32 *actorAction, s32 *audioCue) {
 }
 
 
-/// Selects the card presentation for area 15 according to game progress.
+/// Select the shop scenario shared by companion scripts, cards and collection titles.
 /// \param actorAction Receives the active actor’s presentation action ID.
 /// \param audioCue Receives the presentation audio cue ID.
-/// \returns The selected card index.
+/// \returns The shared area scenario index.
 /// \note Original decompilation identifier: \c func_8002A7F8 (0x8002A7F8).
-s32 presentationSelectArea15Card(s32 *actorAction, s32 *audioCue) {
+s32 presentationSelectAbraShopScenario(s32 *actorAction, s32 *audioCue) {
     progressGetCurrentChapter();
     if (progressGetValue(0x12) != 0) {
         *actorAction = 0xF4;
@@ -1483,36 +1483,36 @@ s32 presentationSelectArea15Card(s32 *actorAction, s32 *audioCue) {
     return 1;
 }
 
-/// Selects the card presentation for area 16.
+/// Select the camp scenario shared by companion scripts, cards and collection titles.
 /// \param actorAction Receives the active actor’s presentation action ID.
 /// \param audioCue Receives the presentation audio cue ID.
-/// \returns The selected card index, always zero.
+/// \returns The shared area scenario index, always zero.
 /// \note Original decompilation identifier: \c func_8002A864 (0x8002A864).
-s32 presentationSelectArea16Card(s32 *actorAction, s32 *audioCue) {
+s32 presentationSelectWildernessCampScenario(s32 *actorAction, s32 *audioCue) {
     progressGetCurrentChapter();
     *actorAction = 0xF4;
     *audioCue = 0x15;
     return 0;
 }
 
-/// Selects the card presentation for areas 17 through 19.
+/// Select the fishing-area scenario shared by companion scripts, cards and collection titles.
 /// \param actorAction Receives the active actor’s presentation action ID.
 /// \param audioCue Receives the presentation audio cue ID.
-/// \returns The selected card index, always zero.
+/// \returns The shared area scenario index, always zero.
 /// \note Original decompilation identifier: \c func_8002A8A4 (0x8002A8A4).
-s32 presentationSelectArea17Through19Card(s32 *actorAction, s32 *audioCue) {
+s32 presentationSelectFishingScenario(s32 *actorAction, s32 *audioCue) {
     progressGetCurrentChapter();
     *actorAction = 0x32;
     *audioCue = 0x15;
     return 0;
 }
 
-/// Selects the card presentation for area 20 according to game progress.
+/// Select the forest-edge scenario shared by companion scripts, cards and collection titles.
 /// \param actorAction Receives the presentation action ID for a supported chapter; otherwise unchanged.
 /// \param audioCue Receives the presentation audio cue ID for a supported chapter; otherwise unchanged.
-/// \returns The selected card index, or zero for an unsupported chapter.
+/// \returns The shared area scenario index, or zero for an unsupported chapter.
 /// \note Original decompilation identifier: \c func_8002A8E4 (0x8002A8E4).
-s32 presentationSelectArea20Card(s32 *actorAction, s32 *audioCue) {
+s32 presentationSelectViridianEdgeScenario(s32 *actorAction, s32 *audioCue) {
     s32 currentChapter;
 
     currentChapter = progressGetCurrentChapter();
@@ -1531,24 +1531,24 @@ s32 presentationSelectArea20Card(s32 *actorAction, s32 *audioCue) {
     }
 }
 
-/// Selects the card presentation for area 21.
+/// Select the playground scenario shared by companion scripts, cards and collection titles.
 /// \param actorAction Receives the active actor’s presentation action ID.
 /// \param audioCue Receives the presentation audio cue ID.
-/// \returns The selected card index, always zero.
+/// \returns The shared area scenario index, always zero.
 /// \note Original decompilation identifier: \c func_8002A958 (0x8002A958).
-s32 presentationSelectArea21Card(s32 *actorAction, s32 *audioCue) {
+s32 presentationSelectPlaygroundScenario(s32 *actorAction, s32 *audioCue) {
     progressGetCurrentChapter();
     *actorAction = 0x32;
     *audioCue = 0x15;
     return 0;
 }
 
-/// Selects the card presentation for area 22 according to game progress.
+/// Select the credits scenario shared by companion scripts, cards and collection titles.
 /// \param actorAction Receives the presentation action ID for chapter 9; otherwise unchanged.
 /// \param audioCue Receives the presentation audio cue ID for a supported chapter; otherwise unchanged.
-/// \returns The selected card index, or zero for an unsupported chapter.
+/// \returns The shared area scenario index, or zero for an unsupported chapter.
 /// \note Original decompilation identifier: \c func_8002A998 (0x8002A998).
-s32 presentationSelectArea22Card(s32 *actorAction, s32 *audioCue) {
+s32 presentationSelectCreditsScenario(s32 *actorAction, s32 *audioCue) {
     s32 currentChapter;
 
     progressGetCurrentChapter();
@@ -1590,79 +1590,79 @@ void presentationInitializeForCurrentArea(void) {
     }
     gCardPresentationActionScript = 0x57;
     switch (gRuntimeCurrentArea) {
-    case 0:
+    case AREA_BEDROOM:
         gAreaScenarioIndex =
-            presentationSelectArea0Card(&gCardPresentationActionScript, &gCardPresentationAudioCue);
+            presentationSelectBedroomScenario(&gCardPresentationActionScript, &gCardPresentationAudioCue);
         break;
-    case 1:
+    case AREA_ENTRYWAY:
         gCardPresentationAudioCue = 0x15;
         gAreaScenarioIndex = 0;
         break;
-    case 2:
+    case AREA_FRONT_YARD:
         gAreaScenarioIndex =
-            presentationSelectArea2Card(&gCardPresentationActionScript, &gCardPresentationAudioCue);
+            presentationSelectFrontYardScenario(&gCardPresentationActionScript, &gCardPresentationAudioCue);
         break;
-    case 3:
+    case AREA_VIRIDIAN_ENTRANCE:
         gAreaScenarioIndex =
-            presentationSelectArea3Card(&gCardPresentationActionScript, &gCardPresentationAudioCue);
+            presentationSelectViridianEntranceScenario(&gCardPresentationActionScript, &gCardPresentationAudioCue);
         break;
-    case 4:
+    case AREA_VIRIDIAN_FOREST:
         gAreaScenarioIndex =
-            presentationSelectArea4Card(&gCardPresentationActionScript, &gCardPresentationAudioCue);
+            presentationSelectViridianForestScenario(&gCardPresentationActionScript, &gCardPresentationAudioCue);
         break;
-    case 5:
+    case AREA_VIRIDIAN_DEEP:
         gAreaScenarioIndex =
-            presentationSelectArea5Card(&gCardPresentationActionScript, &gCardPresentationAudioCue);
+            presentationSelectViridianDeepScenario(&gCardPresentationActionScript, &gCardPresentationAudioCue);
         break;
-    case 6:
-    case 7:
-    case 8:
+    case AREA_SPRINGLEAF_ENTRANCE:
+    case AREA_ODDISH_MEADOW:
+    case AREA_SPRINGLEAF_FIELD:
         gAreaScenarioIndex =
-            presentationSelectArea6Through8Card(&gCardPresentationActionScript, &gCardPresentationAudioCue);
+            presentationSelectSpringleafScenario(&gCardPresentationActionScript, &gCardPresentationAudioCue);
         break;
-    case 9:
-    case 10:
+    case AREA_OLIVINE_LAKESHORE:
+    case AREA_OLIVINE_LAKE:
         gAreaScenarioIndex =
-            presentationSelectArea9And10Card(&gCardPresentationActionScript, &gCardPresentationAudioCue);
+            presentationSelectOlivineScenario(&gCardPresentationActionScript, &gCardPresentationAudioCue);
         break;
-    case 11:
-    case 12:
+    case AREA_OCHRE_ENTRANCE:
+    case AREA_OCHRE_DEEP:
         gAreaScenarioIndex =
-            presentationSelectArea11And12Card(&gCardPresentationActionScript, &gCardPresentationAudioCue);
+            presentationSelectOchreScenario(&gCardPresentationActionScript, &gCardPresentationAudioCue);
         break;
-    case 13:
+    case AREA_COBALT_ISLAND:
         gAreaScenarioIndex =
-            presentationSelectArea13Card(&gCardPresentationActionScript, &gCardPresentationAudioCue);
+            presentationSelectCobaltIslandScenario(&gCardPresentationActionScript, &gCardPresentationAudioCue);
         break;
-    case 14:
+    case AREA_COBALT_COAST:
         gAreaScenarioIndex =
-            presentationSelectArea14Card(&gCardPresentationActionScript, &gCardPresentationAudioCue);
+            presentationSelectCobaltCoastScenario(&gCardPresentationActionScript, &gCardPresentationAudioCue);
         break;
-    case 15:
+    case AREA_ABRA_SHOP:
         gAreaScenarioIndex =
-            presentationSelectArea15Card(&gCardPresentationActionScript, &gCardPresentationAudioCue);
+            presentationSelectAbraShopScenario(&gCardPresentationActionScript, &gCardPresentationAudioCue);
         break;
-    case 16:
+    case AREA_WILDERNESS_CAMP:
         gAreaScenarioIndex =
-            presentationSelectArea16Card(&gCardPresentationActionScript, &gCardPresentationAudioCue);
+            presentationSelectWildernessCampScenario(&gCardPresentationActionScript, &gCardPresentationAudioCue);
         break;
-    case 17:
-    case 18:
-    case 19:
+    case AREA_OCHRE_FISHING:
+    case AREA_OLIVINE_FISHING:
+    case AREA_COBALT_FISHING:
         gAreaScenarioIndex =
-            presentationSelectArea17Through19Card(&gCardPresentationActionScript, &gCardPresentationAudioCue);
+            presentationSelectFishingScenario(&gCardPresentationActionScript, &gCardPresentationAudioCue);
         break;
-    case 20:
+    case AREA_VIRIDIAN_EDGE:
         gAreaScenarioIndex =
-            presentationSelectArea20Card(&gCardPresentationActionScript, &gCardPresentationAudioCue);
+            presentationSelectViridianEdgeScenario(&gCardPresentationActionScript, &gCardPresentationAudioCue);
         break;
-    case 21:
+    case AREA_PLAYGROUND:
         gAreaScenarioIndex =
-            presentationSelectArea21Card(&gCardPresentationActionScript, &gCardPresentationAudioCue);
+            presentationSelectPlaygroundScenario(&gCardPresentationActionScript, &gCardPresentationAudioCue);
         break;
-    case 22:
+    case AREA_CREDITS:
         gAreaScenarioIndex =
-            presentationSelectArea22Card(&gCardPresentationActionScript, &gCardPresentationAudioCue);
+            presentationSelectCreditsScenario(&gCardPresentationActionScript, &gCardPresentationAudioCue);
         break;
     default:
         TRACE("ERROR : unknown area (%d) ?\n", gRuntimeCurrentArea);
