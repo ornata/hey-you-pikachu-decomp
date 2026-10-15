@@ -138,8 +138,7 @@ void flipbookInitialize(u8 *object, s32 columns, s32 lines, u8 red, u8 green, u8
     prefixSize = (branchSize * 8) + 0xA0;
     commandSize = (lines * 0x14 + 0x14) * sizeof(Gfx);
     ((Flipbook *)object)->outlineIndices[1] = trailingOutline;
-    cursor = (u8 *)heapAllocLocal((HpHdr *)&gGameHeap, (commandSize * 2) + prefixSize + (branchSize * 2) + (lines << 6),
-                                 0x8E);
+    cursor = (u8 *)heapAllocLocal((&gGameHeap), (commandSize * 2) + prefixSize + (branchSize * 2) + (lines << 6), 0x8E);
     ((Flipbook *)object)->displayList = (Gfx *)cursor;
     cursor += prefixSize;
     ((Flipbook *)object)->rowBranches[0] = (Gfx *)cursor;
@@ -330,7 +329,7 @@ void flipbookBuildImageDisplayLists(u8 *object) {
     bank = ((Flipbook *)object)->activeBank ^ 1;
     branches = ((Flipbook *)object)->rowBranches[bank];
     commands = ((Flipbook *)object)->commands[bank];
-    images = (TextImage **)((Flipbook *)object)->panels[bank].images + 1;
+    images = ((Flipbook *)object)->panels[bank].images + 1;
     for (index = 0; index < ((Flipbook *)object)->stripCount; index++) {
         gSPBranchList(branches++, commands);
         image = *images;
@@ -422,7 +421,7 @@ void scrollBoardInitializeObject(u8 *object) {
     s32 savedAllocationAddress;
     s32 allocationAddress;
 
-    allocationAddress = (s32)heapAllocLocal((HpHdr *)&gGameHeap, sizeof(ScrollBoardState), 0x1C5);
+    allocationAddress = (s32)heapAllocLocal((&gGameHeap), sizeof(ScrollBoardState), 0x1C5);
     savedAllocationAddress = allocationAddress;
     _bzero((void *)allocationAddress, sizeof(ScrollBoardState));
     ((RuntimeObjectPrefix *)object)->state.address = savedAllocationAddress;
@@ -459,7 +458,7 @@ void scrollBoardUpdate(u8 *object) {
         scrollSpeed = boardState->speed;
         if (zero != scrollSpeed) {
             topLine = boardState->topLine;
-            boardState->rowOffset = (f32)(boardState->rowOffset + (scrollSpeed * gRuntimeFrameSeconds));
+            boardState->rowOffset = (boardState->rowOffset + (scrollSpeed * gRuntimeFrameSeconds));
             if (scrollSpeed > 0.0F) {
                 if (boardState->rowOffset >= 16.0F) {
                     do {
@@ -494,7 +493,7 @@ void scrollBoardUpdate(u8 *object) {
                                 boardState->model.stripCount);
             }
         }
-        ((RuntimeObjectPrefix *)object)->position[1] = (f32)boardState->rowOffset;
+        ((RuntimeObjectPrefix *)object)->position[1] = boardState->rowOffset;
     }
 }
 
@@ -508,7 +507,7 @@ Gfx *scrollBoardPrepareDraw(u8 *object) {
 
     boardState = ((RuntimeObjectPrefix *)object)->state.pointer;
     if (boardState->text != NULL) {
-        return flipbookPrepareDraw((Flipbook *)((u8 *)(u8 *)&boardState->model));
+        return flipbookPrepareDraw((Flipbook *)(((u8 *)&boardState->model)));
     }
     return 0;
 }
@@ -663,15 +662,15 @@ void objectSetUniformTransform(u8 *object, f32 *position, f32 *rotation, f32 sca
             rotation[2] = (f32)(rotation[2] - 360.0F);
         } while (rotation[2] >= 360.0F);
     }
-    ((RuntimeObjectPrefix *)object)->position[0] = (f32)position[0];
-    ((RuntimeObjectPrefix *)object)->position[1] = (f32)position[1];
-    ((RuntimeObjectPrefix *)object)->position[2] = (f32)position[2];
-    ((RuntimeObjectPrefix *)object)->worldPosition[0] = (f32)position[0];
-    ((RuntimeObjectPrefix *)object)->worldPosition[1] = (f32)position[1];
-    ((RuntimeObjectPrefix *)object)->worldPosition[2] = (f32)position[2];
-    ((RuntimeObjectPrefix *)object)->rotation[0] = (f32)rotation[0];
-    ((RuntimeObjectPrefix *)object)->rotation[1] = (f32)rotation[1];
-    ((RuntimeObjectPrefix *)object)->rotation[2] = (f32)rotation[2];
+    ((RuntimeObjectPrefix *)object)->position[0] = position[0];
+    ((RuntimeObjectPrefix *)object)->position[1] = position[1];
+    ((RuntimeObjectPrefix *)object)->position[2] = position[2];
+    ((RuntimeObjectPrefix *)object)->worldPosition[0] = position[0];
+    ((RuntimeObjectPrefix *)object)->worldPosition[1] = position[1];
+    ((RuntimeObjectPrefix *)object)->worldPosition[2] = position[2];
+    ((RuntimeObjectPrefix *)object)->rotation[0] = rotation[0];
+    ((RuntimeObjectPrefix *)object)->rotation[1] = rotation[1];
+    ((RuntimeObjectPrefix *)object)->rotation[2] = rotation[2];
     ((RuntimeObjectPrefix *)object)->scale[2] = scale;
     ((RuntimeObjectPrefix *)object)->scale[1] = scale;
     ((RuntimeObjectPrefix *)object)->scale[0] = scale;
@@ -747,7 +746,7 @@ void messengerInitializeObject(u8 *object) {
     MessengerFlightState *projectileState;
     MessengerFlightState *allocation;
 
-    allocation = heapAllocLocal((HpHdr *)&gGameHeap, sizeof(MessengerFlightState), 0xCA);
+    allocation = heapAllocLocal((&gGameHeap), sizeof(MessengerFlightState), 0xCA);
     projectileState = allocation;
     _bzero(allocation, sizeof(MessengerFlightState));
     projectileState->remainingTime = 0.0F;

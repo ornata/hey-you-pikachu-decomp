@@ -371,7 +371,7 @@ void actionCommandLaunchHeldItem(u8 *actor, ActorScriptState *state, ActorAction
     f32 ang7;
     f32 dir[3];
 
-    obj = (u8 *)objectFindLiveByHandle(state->heldItemHandle);
+    obj = objectFindLiveByHandle(state->heldItemHandle);
     if (obj == NULL) {
         return;
     }
@@ -485,7 +485,7 @@ void actionCommandCreateRandomHeldItem(u8 *object, ActorScriptState *state, Acto
     u8 *spawned;
     SpawnChoice *choice;
     if (objectFindLiveByHandle(state->heldItemHandle) == 0) {
-        actorGetConfiguredAttachmentPosition((u8 *)object, 0.0F, &position.x);
+        actorGetConfiguredAttachmentPosition(object, 0.0F, &position.x);
         choice = (SpawnChoice *)(*source)->args;
         count = choice->kindCount;
         spawned = itemCreate(position.x, position.y, position.z, 0.0F, 0.0F, randomBelow(count) + choice->firstKind);
@@ -652,7 +652,7 @@ void actionCommandCreateScatteredParticleEffect(u8 *actor, ActorScriptState *sta
     u8 *object;
     GroundVector ground;
     if (*(s32 *)(((u8 *)command) + 8) == 2) {
-        resolved = (u8 *)actorGetTrackingTarget(actor);
+        resolved = actorGetTrackingTarget(actor);
         object = resolved;
         if (object == NULL) {
             return;
@@ -1000,7 +1000,7 @@ void actionCommandTransformTargetItem(u8 *actor, ActorScriptState *state, ActorA
 
     targetItem = actorResolveStoredTarget(actor);
     if ((targetItem == NULL) ||
-        (transformArguments = ((u8 *)command) + 8, ((u16)((RuntimeObjectPrefix *)targetItem)->kind != 0x86))) {
+        (transformArguments = ((u8 *)command) + 8, (((RuntimeObjectPrefix *)targetItem)->kind != 0x86))) {
         TRACE("Warning: Tried to change non_item_goal_obj\n");
         if (targetItem != NULL) {
             objectDebugReportNoOp(targetItem);

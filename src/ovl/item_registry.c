@@ -1896,7 +1896,7 @@ u8 *itemFindNearest(f32 *origin, f32 maxDistance, f32 pitch, f32 yaw, f32 cone, 
 /// \note Original decompilation identifier: \c func_801132F8 (0x801132F8).
 void itemPlayTrackedSound(u8 *item, ItemStatePrefix *state, s32 soundId) {
     TRACE("request-cling:%p type:%d\n", item, soundId);
-    ((ItemStatePrefix *)state)->soundHandle = objectPlaySpatialSound(item, soundId, 20.0F, 100.0F);
+    (state)->soundHandle = objectPlaySpatialSound(item, soundId, 20.0F, 100.0F);
 }
 
 /// Enable gradual shrinking of an item during subsequent updates.
@@ -2775,7 +2775,7 @@ s32 itemTransform(s32 id, s32 mode) {
         TRACE("ERROR: Strange.\n");
         break;
     }
-    replacementState->flags = (s32)(replacementState->flags | inheritedFlags);
+    replacementState->flags = (replacementState->flags | inheritedFlags);
     itemDestroy(object);
     if ((mode == 1) || (mode == 5)) {
         switch (replacementState->kind) {

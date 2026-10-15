@@ -52,15 +52,15 @@ s32 collisionRequestImpulse(u8 *source, u8 *target, f32 *direction, f32 distance
     }
     if (strength < 0.001F) {
         return 1;
-    } else {
-        vector3PackNormalBytes(direction, impulse.bytes);
-        if (strength < maximum) {
-            impulse.bytes[3] = (s8)(s32)strength;
-        } else {
-            impulse.bytes[3] = (s8)(s32)maximum;
-        }
-        objectResponseQueueImpulse(source, target, impulse);
     }
+    vector3PackNormalBytes(direction, impulse.bytes);
+    if (strength < maximum) {
+        impulse.bytes[3] = (s8)(s32)strength;
+    } else {
+        impulse.bytes[3] = (s8)(s32)maximum;
+    }
+        objectResponseQueueImpulse(source, target, impulse);
+
     return 1;
 }
 

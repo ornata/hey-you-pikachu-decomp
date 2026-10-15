@@ -45,10 +45,10 @@ void frontYardInitializeObjects(void) {
             state = ((RuntimeObjectPrefix *)actorCreateForKind(0x15, 0.0F, 0.0F, 0.0F, 0.0F, 45.0F,
                                                                gCurrentAreaConfiguration->objectScale, 0, 0))
                         ->state.bytes;
-            ((ActorScriptState *)state)->targetPosition[0] = (f32)((RuntimeObjectPrefix *)companion)->worldPosition[0];
-            ((ActorScriptState *)state)->targetPosition[1] = (f32)((RuntimeObjectPrefix *)companion)->worldPosition[1];
-            ((ActorScriptState *)state)->targetPosition[2] = (f32)((RuntimeObjectPrefix *)companion)->worldPosition[2];
-            ((ActorScriptState *)state)->targetHandle = (s32)((RuntimeObjectPrefix *)companion)->handle;
+            ((ActorScriptState *)state)->targetPosition[0] = ((RuntimeObjectPrefix *)companion)->worldPosition[0];
+            ((ActorScriptState *)state)->targetPosition[1] = ((RuntimeObjectPrefix *)companion)->worldPosition[1];
+            ((ActorScriptState *)state)->targetPosition[2] = ((RuntimeObjectPrefix *)companion)->worldPosition[2];
+            ((ActorScriptState *)state)->targetHandle = ((RuntimeObjectPrefix *)companion)->handle;
             ((ActorScriptState *)state)->targetMode = ACTOR_TARGET_FOLLOW;
         } else {
             frontYardInitializeRegularObjects();

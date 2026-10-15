@@ -164,15 +164,14 @@ void wispEffectUpdateFacingAlternate(u8 *effect) {
 /// \note Portability: integer factors preserve the original IDO floating-point code generation.
 /// \note Original decompilation identifier: \c func_800174F0 (0x800174F0).
 void wispEffectUpdateDriftingMotion(u8 *effect) {
-    ((RuntimeObjectPrefix *)effect)->position[0] += (1.0 - (u32)randomNext() * 2.3283064365386963e-10 * 2) * gRuntimeFrameSeconds;
-    ((RuntimeObjectPrefix *)effect)->position[1] += ((u32)randomNext() * 2.3283064365386963e-10 * 6) * gRuntimeFrameSeconds;
-    ((RuntimeObjectPrefix *)effect)->position[2] += (1.0 - (u32)randomNext() * 2.3283064365386963e-10 * 2) * gRuntimeFrameSeconds;
-    ((RuntimeObjectPrefix *)effect)->scale[0] +=
-        ((u32)randomNext() * 2.3283064365386963e-10 * 0.01F) * gRuntimeFrameSeconds;
-    ((RuntimeObjectPrefix *)effect)->scale[1] +=
-        ((u32)randomNext() * 2.3283064365386963e-10 * 0.01F) * gRuntimeFrameSeconds;
-    ((RuntimeObjectPrefix *)effect)->scale[2] +=
-        ((u32)randomNext() * 2.3283064365386963e-10 * 0.01F) * gRuntimeFrameSeconds;
+    ((RuntimeObjectPrefix *)effect)->position[0] +=
+        (1.0 - randomNext() * 2.3283064365386963e-10 * 2) * gRuntimeFrameSeconds;
+    ((RuntimeObjectPrefix *)effect)->position[1] += (randomNext() * 2.3283064365386963e-10 * 6) * gRuntimeFrameSeconds;
+    ((RuntimeObjectPrefix *)effect)->position[2] +=
+        (1.0 - randomNext() * 2.3283064365386963e-10 * 2) * gRuntimeFrameSeconds;
+    ((RuntimeObjectPrefix *)effect)->scale[0] += (randomNext() * 2.3283064365386963e-10 * 0.01F) * gRuntimeFrameSeconds;
+    ((RuntimeObjectPrefix *)effect)->scale[1] += (randomNext() * 2.3283064365386963e-10 * 0.01F) * gRuntimeFrameSeconds;
+    ((RuntimeObjectPrefix *)effect)->scale[2] += (randomNext() * 2.3283064365386963e-10 * 0.01F) * gRuntimeFrameSeconds;
     objectOrientAlongCameraView(effect);
     ((RuntimeObjectPrefix *)effect)->rotation[0] += 50.0F * ((RuntimeObjectPrefix *)effect)->scale[0];
 }
@@ -639,12 +638,12 @@ void ribbonEffectSegmentUpdate(u8 *segment) {
     u8 *nextSegment;
 
     nextSegment = ((RuntimeObjectPrefix *)segment)->sibling.bytes;
-    ((RuntimeObjectPrefix *)segment)->position[0] = (f32)((RuntimeObjectPrefix *)nextSegment)->position[0];
-    ((RuntimeObjectPrefix *)segment)->position[1] = (f32)((RuntimeObjectPrefix *)nextSegment)->position[1];
-    ((RuntimeObjectPrefix *)segment)->position[2] = (f32)((RuntimeObjectPrefix *)nextSegment)->position[2];
-    ((RuntimeObjectPrefix *)segment)->rotation[0] = (f32)((RuntimeObjectPrefix *)nextSegment)->rotation[0];
-    ((RuntimeObjectPrefix *)segment)->rotation[1] = (f32)((RuntimeObjectPrefix *)nextSegment)->rotation[1];
-    ((RuntimeObjectPrefix *)segment)->rotation[2] = (f32)((RuntimeObjectPrefix *)nextSegment)->rotation[2];
+    ((RuntimeObjectPrefix *)segment)->position[0] = ((RuntimeObjectPrefix *)nextSegment)->position[0];
+    ((RuntimeObjectPrefix *)segment)->position[1] = ((RuntimeObjectPrefix *)nextSegment)->position[1];
+    ((RuntimeObjectPrefix *)segment)->position[2] = ((RuntimeObjectPrefix *)nextSegment)->position[2];
+    ((RuntimeObjectPrefix *)segment)->rotation[0] = ((RuntimeObjectPrefix *)nextSegment)->rotation[0];
+    ((RuntimeObjectPrefix *)segment)->rotation[1] = ((RuntimeObjectPrefix *)nextSegment)->rotation[1];
+    ((RuntimeObjectPrefix *)segment)->rotation[2] = ((RuntimeObjectPrefix *)nextSegment)->rotation[2];
     objectAdjustPitchAlongCameraView(segment);
 }
 
@@ -665,7 +664,7 @@ Gfx *ribbonEffectControllerPrepareDraw(u8 *controller) {
     g = gRenderDisplayListCursor++;
     g->words.w0 = 0xDB06001C;
     idx = (((RuntimeObjectPrefix *)controller)->root.object->flags & 0x8000) ? 1 : 0;
-    g->words.w1 = (u32)osVirtualToPhysical(((RuntimeObjectPrefix *)controller)->root.object->matrixBuffers[idx]);
+    g->words.w1 = osVirtualToPhysical(((RuntimeObjectPrefix *)controller)->root.object->matrixBuffers[idx]);
     textureLoadForDraw(&gRenderDisplayListCursor, 5, state->animation.value);
     return ((RuntimeObjectPrefix *)controller)->displayList;
 }
@@ -1185,7 +1184,7 @@ Gfx *particleClusterRendererPrepareDraw(u8 *renderer) {
     g = gRenderDisplayListCursor++;
     g->words.w0 = 0xDB06001C;
     idx = (((RuntimeObjectPrefix *)renderer)->root.object->flags & 0x8000) ? 1 : 0;
-    g->words.w1 = (u32)osVirtualToPhysical(((RuntimeObjectPrefix *)renderer)->root.object->matrixBuffers[idx]);
+    g->words.w1 = osVirtualToPhysical(((RuntimeObjectPrefix *)renderer)->root.object->matrixBuffers[idx]);
     textureLoadForDraw(&gRenderDisplayListCursor, 5, track->value);
     return ((RuntimeObjectPrefix *)renderer)->displayList;
 }
@@ -1363,7 +1362,7 @@ void fallingParticleUpdate(u8 *particle) {
 
     state = ((RuntimeObjectPrefix *)particle)->state.pointer;
     if (state->lifetime > 0.0F) {
-        state->lifetime = (f32)(state->lifetime - gRuntimeFrameSeconds);
+        state->lifetime = (state->lifetime - gRuntimeFrameSeconds);
         if (state->lifetime <= 0.0F) {
             state->lifetime = 0.0F;
             animationIntegerTrackInitialize(&state->animation,
@@ -1551,7 +1550,7 @@ Gfx *convergingParticleEffectPrepareDraw(u8 *effect) {
     g = gRenderDisplayListCursor++;
     g->words.w0 = 0xDB06001C;
     idx = (((RuntimeObjectPrefix *)effect)->flags & 0x8000) ? 1 : 0;
-    g->words.w1 = (u32)osVirtualToPhysical(((RuntimeObjectPrefix *)effect)->matrixBuffers[idx]);
+    g->words.w1 = osVirtualToPhysical(((RuntimeObjectPrefix *)effect)->matrixBuffers[idx]);
     textureLoadForDraw(&gRenderDisplayListCursor, 5, state->textureAnimation.value);
     gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0xFF, 0xFF, 0x90, (u8)state->alphaAnimation.value);
     return state->displayList;
@@ -1760,7 +1759,7 @@ Gfx *flickeringEffectPrepareDraw(u8 *effect) {
     g = gRenderDisplayListCursor++;
     g->words.w0 = 0xDB06001C;
     idx = (((RuntimeObjectPrefix *)effect)->flags & 0x8000) ? 1 : 0;
-    g->words.w1 = (u32)osVirtualToPhysical(((RuntimeObjectPrefix *)effect)->matrixBuffers[idx]);
+    g->words.w1 = osVirtualToPhysical(((RuntimeObjectPrefix *)effect)->matrixBuffers[idx]);
     gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0x80, 0xFF, 0xFF, 0xFF);
     return state->displayList;
 }
@@ -1930,7 +1929,7 @@ Gfx *animatedRadialEffectPrepareDraw(u8 *effect) {
     g = gRenderDisplayListCursor++;
     g->words.w0 = 0xDB06001C;
     idx = (((RuntimeObjectPrefix *)effect)->flags & 0x8000) ? 1 : 0;
-    g->words.w1 = (u32)osVirtualToPhysical(((RuntimeObjectPrefix *)effect)->matrixBuffers[idx]);
+    g->words.w1 = osVirtualToPhysical(((RuntimeObjectPrefix *)effect)->matrixBuffers[idx]);
     textureLoadForDraw(&gRenderDisplayListCursor, 5, state->frameAnimation.value);
     gDPSetPrimColor(gRenderDisplayListCursor++, 0, 0, 0xFF, 0xFF, 0x90, (u8)state->alphaAnimation.value);
     return state->displayList;

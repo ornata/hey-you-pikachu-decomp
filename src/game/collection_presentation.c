@@ -480,7 +480,7 @@ void presentationDrawAreaLabel(Gfx **gdl) {
         textDrawSetCursor((s32)(0x66 - gPresentationAreaLabelImage->width) / 2,
                           (s32)(0x10 - gPresentationAreaLabelImage->height) / 2);
         textDrawSetColor(0, 0, 0, 0xFE);
-        textDrawImageAtCursor((TextImage *)gPresentationAreaLabelImage);
+        textDrawImageAtCursor(gPresentationAreaLabelImage);
         textDrawGetDisplayListCursor(gdl);
         textDrawReset();
         textDrawSetPalette(gDefaultTextPalette);
@@ -645,7 +645,7 @@ void presentationUpdateCardMode(void) {
         return;
     case 2:
         now = (u32)runtimeGetElapsedMilliseconds();
-        if ((gControllerPrimaryRepeatedButtons != 0) || ((u32)gCardPresentationDismissalDeadline < now)) {
+        if ((gControllerPrimaryRepeatedButtons != 0) || (gCardPresentationDismissalDeadline < now)) {
             audioChangeCurrentCue(-1, (f64)0.1F, (f64)0.1F);
             cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFE, 0.8F);
             gCardPresentationStage = 3;
@@ -766,11 +766,10 @@ void presentationRefreshCollectionScoreText(void) {
 
     sprintf(sp20, "@Y@Z%d", gCollectionPresentationScore);
     if (gCollectionPresentationScoreImage != 0) {
-        textImageDestroy((TextImage *)gCollectionPresentationScoreImage);
+        textImageDestroy(gCollectionPresentationScoreImage);
         gCollectionPresentationScoreImage = 0;
     }
-    textImageCreateFromText((TextImage **)(&gCollectionPresentationScoreImage), (u8 *)(sp20),
-                            gTextImageConfigurations);
+    textImageCreateFromText((&gCollectionPresentationScoreImage), (u8 *)(sp20), gTextImageConfigurations);
 }
 
 /// Draws the current collection score when its text is available.
@@ -784,10 +783,10 @@ void presentationDrawCollectionScore(Gfx **gdl) {
         textDrawReset();
         textDrawSetPalette(gDefaultTextPalette);
         textDrawSetArea(0x90, 0xC7, 0x110, 0xD7);
-        textDrawSetCursor(0, (s32)(0x10 - ((TextImage *)gCollectionPresentationScoreImage)->height) / 2);
+        textDrawSetCursor(0, (s32)(0x10 - (gCollectionPresentationScoreImage)->height) / 2);
         textDrawSetColor(0xFF, 0xFF, 0xFF, 0xFE);
         textDrawSetSpacingMode(1);
-        textDrawImageAtCursor((TextImage *)gCollectionPresentationScoreImage);
+        textDrawImageAtCursor(gCollectionPresentationScoreImage);
         textDrawGetDisplayListCursor(gdl);
         textDrawReset();
         textDrawSetPalette(gDefaultTextPalette);
@@ -1675,8 +1674,7 @@ void presentationInitializeForCurrentArea(void) {
     if (regionName == 0) {
         gPresentationAreaLabelImage = 0;
     } else {
-        textImageCreateFromText((TextImage **)(&gPresentationAreaLabelImage), (u8 *)(regionName),
-                                gTextImageConfigurations);
+        textImageCreateFromText((&gPresentationAreaLabelImage), (u8 *)(regionName), gTextImageConfigurations);
     }
     presentationCreateCollectionTitleText();
     gCollectionPresentationScore = 0;

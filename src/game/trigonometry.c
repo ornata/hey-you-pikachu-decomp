@@ -271,12 +271,21 @@ void matrix33Multiply(f32 *a, f32 *b, f32 *c) {
 /// \note Original decompilation identifier: \c func_800391FC (0x800391FC).
 void matrix34ComposeWith44(f32 *a, f32 *b, f32 *c) {
     f32 a00 = a[0], a10 = a[3], a20 = a[6], a30 = a[9];
-    f32 a01 = a[1], a11 = a[4], a21 = a[7], a31 = a[10];
-    f32 a02 = a[2], a12 = a[5], a22 = a[8], a32 = a[11];
+    f32 a01 = a[1];
+    f32 a11 = a[4];
+    f32 a21 = a[7];
+    f32 a31 = a[10];
+    f32 a02 = a[2];
+    f32 a12 = a[5];
+    f32 a22 = a[8];
+    f32 a32 = a[11];
     f32 b00 = b[0], b10 = b[4], b20 = b[8], b30 = b[12];
     f32 b01 = b[1], b11 = b[5], b21 = b[9], b31 = b[13];
     f32 b02 = b[2], b12 = b[6], b22 = b[10], b32 = b[14];
-    f32 b03 = b[3], b13 = b[7], b23 = b[11], b33 = b[15];
+    f32 b03 = b[3];
+    f32 b13 = b[7];
+    f32 b23 = b[11];
+    f32 b33 = b[15];
     c[0] = (b00 * a00) + (b10 * a01) + (b20 * a02);
     c[4] = (b00 * a10) + (b10 * a11) + (b20 * a12);
     c[8] = (b00 * a20) + (b10 * a21) + (b20 * a22);
@@ -402,15 +411,15 @@ void matrix33ApplyRotationZYXDegrees(f32 *matrixAddress, f32 xDegrees, f32 yDegr
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80039904 (0x80039904).
 void matrix33ScaleLocal(f32 *matrix, f32 xScale, f32 yScale, f32 zScale) {
-    matrix[0] = (f32)(matrix[0] * xScale);
-    matrix[3] = (f32)(matrix[3] * yScale);
-    matrix[6] = (f32)(matrix[6] * zScale);
-    matrix[1] = (f32)(matrix[1] * xScale);
-    matrix[4] = (f32)(matrix[4] * yScale);
-    matrix[7] = (f32)(matrix[7] * zScale);
-    matrix[2] = (f32)(matrix[2] * xScale);
-    matrix[5] = (f32)(matrix[5] * yScale);
-    matrix[8] = (f32)(matrix[8] * zScale);
+    matrix[0] = (matrix[0] * xScale);
+    matrix[3] = (matrix[3] * yScale);
+    matrix[6] = (matrix[6] * zScale);
+    matrix[1] = (matrix[1] * xScale);
+    matrix[4] = (matrix[4] * yScale);
+    matrix[7] = (matrix[7] * zScale);
+    matrix[2] = (matrix[2] * xScale);
+    matrix[5] = (matrix[5] * yScale);
+    matrix[8] = (matrix[8] * zScale);
 }
 
 
@@ -640,7 +649,9 @@ void matrix33KeepScaleOnly(f32 *m) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8003A158 (0x8003A158).
 void matrix33Transpose(f32 *p) {
-    f32 t0, t1, t2;
+    f32 t0;
+    f32 t1;
+    f32 t2;
 
     // clang-format off
     t0 = p[1]; p[1] = p[3]; p[3] = t0;
@@ -769,17 +780,17 @@ void vector3PackNormalBytes(f32 *source, u8 *destination) {
 }
 
 /// Convert signed-byte normal components to a floating-point direction.
-/// \param src Input three-component signed-byte normal.
-/// \param dst Output three-component floating-point direction.
+/// \param source Input three-component signed-byte normal.
+/// \param destination Output three-component floating-point direction.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8003A55C (0x8003A55C).
-void vector3UnpackNormalBytes(s8 *src, f32 *dst) {
+void vector3UnpackNormalBytes(s8 *source, f32 *destination) {
     f32 *d;
     s8 *s;
     s32 i;
 
-    d = dst;
-    s = src;
+    d = destination;
+    s = source;
     for (i = 0; i < 3; i++) {
         *d = *s * 0.007874016F;
         d++;
@@ -898,9 +909,9 @@ f32 vector3Normalize(f32 *vector) {
         return 0.0F;
     }
     inverseLength = 1.0F / length;
-    vector[0] = (f32)(vector[0] * inverseLength);
-    vector[1] = (f32)(vector[1] * inverseLength);
-    vector[2] = (f32)(vector[2] * inverseLength);
+    vector[0] = (vector[0] * inverseLength);
+    vector[1] = (vector[1] * inverseLength);
+    vector[2] = (vector[2] * inverseLength);
     return length;
 }
 
@@ -1521,12 +1532,12 @@ void vector3GetEulerDegrees(f32 *vector, f32 *roll, f32 *pitch, f32 *yaw) {
 }
 
 /// Get elevation and heading for a direction with Y as the vertical axis.
-/// \param vector Input three-component direction.
+/// \param direction Input three-component direction.
 /// \param pitch Receives elevation in degrees; zero for a near-zero vector.
 /// \param yaw Receives heading from negative Z toward negative X in degrees; zero for a near-zero vector.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8003BFA0 (0x8003BFA0).
-void vector3GetLookAnglesDegrees(f32 *vector, f32 *pitch, f32 *yaw) {
+void vector3GetLookAnglesDegrees(f32 *direction, f32 *pitch, f32 *yaw) {
     f32 xSquared;
     f32 ySquared;
     f32 zSquared;
@@ -1542,9 +1553,9 @@ void vector3GetLookAnglesDegrees(f32 *vector, f32 *pitch, f32 *yaw) {
     f32 inverseLength;
     f32 yawAngle;
 
-    x = vector[0];
-    y = vector[1];
-    z = vector[2];
+    x = direction[0];
+    y = direction[1];
+    z = direction[2];
     xSquared = x * x;
     ySquared = y * y;
     zSquared = z * z;
@@ -1567,14 +1578,14 @@ void vector3GetLookAnglesDegrees(f32 *vector, f32 *pitch, f32 *yaw) {
         }
         *yaw = 0.0F;
         return;
-    } else {
-        horizontalSquared = 1.0f - (y * y);
-        horizontal = sqrtf(horizontalSquared);
-        sinYaw = -x / horizontal;
-        cosYaw = -z / horizontal;
-        *pitch = mathUnitDirectionDegrees(horizontal, y);
-        yawAngle = mathUnitDirectionDegrees(cosYaw, sinYaw);
     }
+    horizontalSquared = 1.0F - (y * y);
+    horizontal = sqrtf(horizontalSquared);
+    sinYaw = -x / horizontal;
+    cosYaw = -z / horizontal;
+    *pitch = mathUnitDirectionDegrees(horizontal, y);
+    yawAngle = mathUnitDirectionDegrees(cosYaw, sinYaw);
+
     *yaw = yawAngle;
 }
 

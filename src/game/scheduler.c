@@ -248,8 +248,7 @@ loop_1:
     if (((SchedulerTask *)taskMessage)->flags & 0x40) {
         ((GameScheduler *)scheduler)->frameCount = (u32)(((GameScheduler *)scheduler)->frameCount + 1);
         osViSwapBuffer(((SchedulerTask *)taskMessage)->framebuffer);
-        if ((((GameScheduler *)scheduler)->startupBlack != 0) &&
-            ((u32)((GameScheduler *)scheduler)->frameCount >= 0x15U)) {
+        if ((((GameScheduler *)scheduler)->startupBlack != 0) && (((GameScheduler *)scheduler)->frameCount >= 0x15U)) {
             osViBlack(0U);
             ((GameScheduler *)scheduler)->startupBlack = 0;
         }

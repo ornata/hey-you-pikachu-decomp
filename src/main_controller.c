@@ -292,7 +292,7 @@ void controllerThreadMain(void *argument) {
     controllerInitializeRumbleState();
     frame.args->ready = 1;
     for (;;) {
-        osRecvMesg((OSMesgQueue *)controllerGetCommandQueue(), &frame.message, OS_MESG_BLOCK);
+        osRecvMesg(controllerGetCommandQueue(), &frame.message, OS_MESG_BLOCK);
         switch (*(s16 *)frame.message) {
         case GAME_MESSAGE_RETRACE:
             controllerQueryDevices();
@@ -453,7 +453,7 @@ s32 controllerInitializeRumblePak(s32 port) {
     s32 pad[2]; /* unused, sizes the frame */
     OSMesgQueue *sp24;
 
-    sp24 = (OSMesgQueue *)serialGetMessageQueue();
+    sp24 = serialGetMessageQueue();
     if (osMotorInit(sp24, controllerGetAccessoryStorage(port), port) == 0) {
         controllerSetAccessoryState(port, CONTROLLER_ACCESSORY_READY);
         return 1;

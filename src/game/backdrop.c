@@ -354,8 +354,8 @@ void backdropSelectForView(s32 viewIndex, s32 backdropId, s32 sharedScratch) {
 
     backdropDescriptor = (backdropId << 5) + gBackdropDescriptors;
     viewState = (viewIndex * 0xE0) + ((u8 *)gRenderCameras);
-    ((MatrixCamera *)viewState)->backdropWidth = (s32)((BackdropDescriptor *)backdropDescriptor)->width;
-    ((MatrixCamera *)viewState)->backdropHeight = (s32)((BackdropDescriptor *)backdropDescriptor)->height;
+    ((MatrixCamera *)viewState)->backdropWidth = ((BackdropDescriptor *)backdropDescriptor)->width;
+    ((MatrixCamera *)viewState)->backdropHeight = ((BackdropDescriptor *)backdropDescriptor)->height;
     ((MatrixCamera *)viewState)->backdropScroll = 0.0F;
     if (((BackdropDescriptor *)backdropDescriptor)->encoding == 0) {
         romRange = ((BackdropDescriptor *)backdropDescriptor)->source;

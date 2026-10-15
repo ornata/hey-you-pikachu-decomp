@@ -39,7 +39,7 @@ void _bzero(void *, s32);
 /// \returns The supplied region pointer.
 /// \note Original decompilation identifier: \c func_80037F00 (0x80037F00).
 void *heapInitializeRegion(HpHdr *heap, void *region, s32 regionSize) {
-    HpHdr *header = (HpHdr *)heap;
+    HpHdr *header = heap;
     HpBlk *firstBlock = region;
 
     _bzero(firstBlock, regionSize);

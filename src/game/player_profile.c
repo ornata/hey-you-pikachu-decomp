@@ -25,13 +25,13 @@ void playerResetProfile(void) {
     _bzero(&gProfilePackedCounters, sizeof(gProfilePackedCounters));
     progressInitializeSaveStorage();
     stringCopy(gPlayerProfileName, (const u8 *)"You");
-    ((PlayerControlPrefix *)&gPlayerState)->points = 0x12C;
-    ((PlayerControlPrefix *)&gPlayerState)->unknown0F4 = 6;
-    ((PlayerControlPrefix *)&gPlayerState)->unknown0F5 = 8;
-    ((PlayerControlPrefix *)&gPlayerState)->friendshipLevel = 0;
-    ((PlayerControlPrefix *)&gPlayerState)->deliveredVoiceMessageCount = 0;
-    ((PlayerControlPrefix *)&gPlayerState)->friendshipMilestone = -1;
-    ((PlayerControlPrefix *)&gPlayerState)->chaseStage = 0;
+    ((&gPlayerState))->points = 0x12C;
+    ((&gPlayerState))->unknown0F4 = 6;
+    ((&gPlayerState))->unknown0F5 = 8;
+    ((&gPlayerState))->friendshipLevel = 0;
+    ((&gPlayerState))->deliveredVoiceMessageCount = 0;
+    ((&gPlayerState))->friendshipMilestone = -1;
+    ((&gPlayerState))->chaseStage = 0;
     if (gRuntimeGameMode == 0x12) {
         progressSetChapterAndUnlockMilestones(0);
     }

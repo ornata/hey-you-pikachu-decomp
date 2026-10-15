@@ -194,7 +194,7 @@ s32 keyedPoolInsert(KeyedPool *tab, s32 val, u32 key) {
     if (e->value == 0) {
         keyedPoolAcquireEntry(tab, e);
     } else if (h == (((~(e->key >> 12) + (e->key >> 8)) ^ ~(e->key >> 4)) + e->key * 0x2E7) % tab->capacity) {
-        n = (KeyedPoolEntry *)keyedPoolAcquireEntry(tab, NULL);
+        n = keyedPoolAcquireEntry(tab, NULL);
         if (n == NULL) {
             return 0;
         }
@@ -202,7 +202,7 @@ s32 keyedPoolInsert(KeyedPool *tab, s32 val, u32 key) {
         e->chain = n;
         e = n;
     } else {
-        keyedPoolRelocateEntry(tab, e, (KeyedPoolEntry *)keyedPoolAcquireEntry(tab, NULL));
+        keyedPoolRelocateEntry(tab, e, keyedPoolAcquireEntry(tab, NULL));
     }
     e->key = key;
     e->value = val;
@@ -338,7 +338,7 @@ void keyedPoolRemoveAllForKey(KeyedPool *tab, s32 key) {
     KeyedPoolEntry *head;
     KeyedPoolEntry *next;
 
-    e = (KeyedPoolEntry *)keyedPoolFindEntry(tab, key, &prev);
+    e = keyedPoolFindEntry(tab, key, &prev);
     if (e == NULL) {
         return;
     }

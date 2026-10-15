@@ -233,8 +233,8 @@ s32 midiReaderOpen(MidiReader *reader, s32 address) {
 /// \returns 1.
 /// \note Original decompilation identifier: \c func_8000790C (0x8000790C).
 s32 midiReaderRestoreMark(MidiReader *reader, SequenceMark *mark) {
-    reader->position = (s32)mark->position;
-    reader->runningStatus = (u8)mark->runningStatus;
+    reader->position = mark->position;
+    reader->runningStatus = mark->runningStatus;
     return 1;
 }
 
@@ -245,7 +245,7 @@ s32 midiReaderRestoreMark(MidiReader *reader, SequenceMark *mark) {
 /// \note Original decompilation identifier: \c func_80007924 (0x80007924).
 s32 midiReaderSaveMark(MidiReader *reader, SequenceMark *mark) {
     mark->position = (s32)reader->position;
-    mark->runningStatus = (u8)reader->runningStatus;
+    mark->runningStatus = reader->runningStatus;
     return 1;
 }
 
@@ -598,9 +598,9 @@ void objectTransformStackDiscardTop(void) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80008060 (0x80008060).
 void objectGetPendingLocalMovement(f32 *movement) {
-    movement[0] = (f32)gObjectPendingLocalMovement.x;
-    movement[1] = (f32)gObjectPendingLocalMovement.y;
-    movement[2] = (f32)gObjectPendingLocalMovement.z;
+    movement[0] = gObjectPendingLocalMovement.x;
+    movement[1] = gObjectPendingLocalMovement.y;
+    movement[2] = gObjectPendingLocalMovement.z;
 }
 
 /// Replace the movement pending for the current object update.
@@ -608,9 +608,9 @@ void objectGetPendingLocalMovement(f32 *movement) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80008084 (0x80008084).
 void objectSetPendingLocalMovement(f32 *movement) {
-    gObjectPendingLocalMovement.x = (f32)movement[0];
-    gObjectPendingLocalMovement.y = (f32)movement[1];
-    gObjectPendingLocalMovement.z = (f32)movement[2];
+    gObjectPendingLocalMovement.x = movement[0];
+    gObjectPendingLocalMovement.y = movement[1];
+    gObjectPendingLocalMovement.z = movement[2];
 }
 
 /// Add movement to the current object update.
@@ -640,7 +640,7 @@ u8 *objectGetLastSibling(u8 *object) {
 /// \returns Inserted object.
 /// \note Original decompilation identifier: \c func_80008108 (0x80008108).
 u8 *objectInsertSiblingAfter(u8 *previous, u8 *object) {
-    ((RuntimeObjectPrefix *)object)->sibling.bytes = (u8 *)((RuntimeObjectPrefix *)previous)->sibling.bytes;
+    ((RuntimeObjectPrefix *)object)->sibling.bytes = ((RuntimeObjectPrefix *)previous)->sibling.bytes;
     ((RuntimeObjectPrefix *)previous)->sibling.bytes = object;
     return object;
 }
@@ -667,7 +667,7 @@ s32 objectDetachSiblingLink(u8 *previous, u8 *object) {
 /// \returns Inserted object.
 /// \note Original decompilation identifier: \c func_80008134 (0x80008134).
 u8 *objectInsertChildLinkAfter(u8 *previous, u8 *object) {
-    ((RuntimeObjectPrefix *)object)->child.bytes = (u8 *)((RuntimeObjectPrefix *)previous)->child.bytes;
+    ((RuntimeObjectPrefix *)object)->child.bytes = ((RuntimeObjectPrefix *)previous)->child.bytes;
     ((RuntimeObjectPrefix *)previous)->child.bytes = object;
     return object;
 }
@@ -761,44 +761,43 @@ void objectAllocateHierarchyMatrixBuffers(u8 *root) {
     s32 i;
     s32 n;
 
-    n = objectAccumulateHierarchyCount((u8 *)root, 0);
+    n = objectAccumulateHierarchyCount(root, 0);
     ((RuntimeObjectPrefix *)root)->matrixBuffers[0] = heapAllocLocal(&gGameHeap, n << 7, 0x2F4);
     for (i = 1; i < 2; i++) {
         ((RuntimeObjectPrefix *)root)->matrixBuffers[i] = ((RuntimeObjectPrefix *)root)->matrixBuffers[0] + ((n * i) << 6);
     }
-    objectAssignHierarchyMatrixSlots((u8 *)root, 0);
+    objectAssignHierarchyMatrixSlots(root, 0);
 }
 
 
 
 /// Create objects from a template hierarchy and associate them with a common root.
-/// \param src Non-null, acyclic template hierarchy with valid runtime kinds and resources.
+/// \param definition Non-null, acyclic template hierarchy with valid runtime kinds and resources.
 /// \param root Existing hierarchy root, or null to make the first new object the root.
 /// \returns Owned first object in the cloned hierarchy; release the new objects with objectDestroyHierarchy.
 /// \note Original decompilation identifier: \c func_800083C0 (0x800083C0).
-u8 *objectCloneTemplateHierarchy(ObjectTemplate *src, u8 *root) {
+u8 *objectCloneTemplateHierarchy(ObjectTemplate *definition, u8 *root) {
     u8 *head;
     u8 **link;
     u8 *n;
 
     link = &head;
     do {
-        n = objectCreateFromTemplate(src);
+        n = objectCreateFromTemplate(definition);
         *link = n;
         if (root == NULL) {
             root = n;
             ((RuntimeObjectPrefix *)root)->flags |= OBJECT_HIERARCHY_ROOT;
         }
         ((RuntimeObjectPrefix *)*link)->root.bytes = root;
-        if (src->child != NULL) {
-            ((RuntimeObjectPrefix *)*link)->child.bytes = objectCloneTemplateHierarchy(src->child, root);
+        if (definition->child != NULL) {
+            ((RuntimeObjectPrefix *)*link)->child.bytes = objectCloneTemplateHierarchy(definition->child, root);
         }
-        src = src->sibling;
+        definition = definition->sibling;
         link = &((RuntimeObjectPrefix *)*link)->sibling.bytes;
-    } while (src != NULL);
+    } while (definition != NULL);
     return head;
 }
-
 
 /// Create an initialized object hierarchy with transform buffers from a template.
 /// \param definition Non-null, acyclic object hierarchy template with valid runtime kinds and resources.
@@ -1233,10 +1232,13 @@ void objectUpdateHierarchyWorldPositions(u8 *object) {
                 }
                 firstChild = ((RuntimeObjectPrefix *)object)->child.bytes;
                 {
-                    ((RuntimeObjectPrefix *)object)->worldPosition[0] = (f32)(*((f32 *)(((s8 *)(&gObjectTraversalTransform)) + 0x24)));
+                    ((RuntimeObjectPrefix *)object)->worldPosition[0] =
+                        (*((f32 *)(((s8 *)(&gObjectTraversalTransform)) + 0x24)));
                 }
-                ((RuntimeObjectPrefix *)object)->worldPosition[1] = (f32)(*((f32 *)(((s8 *)(&gObjectTraversalTransform)) + 0x28)));
-                ((RuntimeObjectPrefix *)object)->worldPosition[2] = (f32)(*((f32 *)(((s8 *)(&gObjectTraversalTransform)) + 0x2C)));
+                ((RuntimeObjectPrefix *)object)->worldPosition[1] =
+                    (*((f32 *)(((s8 *)(&gObjectTraversalTransform)) + 0x28)));
+                ((RuntimeObjectPrefix *)object)->worldPosition[2] =
+                    (*((f32 *)(((s8 *)(&gObjectTraversalTransform)) + 0x2C)));
                 if (firstChild != 0) {
                     objectUpdateHierarchyWorldPositions(firstChild);
                 }
@@ -1281,7 +1283,7 @@ void objectUpdateHierarchyFromCurrentTransform(u8 *object) {
     f32 offset[3];
     while (object != NULL) {
         if (!(((RuntimeObjectPrefix *)object)->flags & 0xC0)) {
-            objectTransformStackPush((Matrix34 *)&gObjectTraversalTransform);
+            objectTransformStackPush((&gObjectTraversalTransform));
             if (((RuntimeObjectPrefix *)object)->flags & 0x800) {
                 objectResponsesDispatchAndClear(object);
             }
@@ -1343,7 +1345,7 @@ void objectUpdateHierarchyFromCurrentTransform(u8 *object) {
             if (((RuntimeObjectPrefix *)object)->child.bytes != NULL) {
                 objectUpdateHierarchyFromCurrentTransform(((RuntimeObjectPrefix *)object)->child.bytes);
             }
-            objectTransformStackPop((Matrix34 *)&gObjectTraversalTransform);
+            objectTransformStackPop((&gObjectTraversalTransform));
         }
         object = ((RuntimeObjectPrefix *)object)->sibling.bytes;
     }
@@ -1512,7 +1514,7 @@ void objectDrawHierarchyGroup(RuntimeObjectPrefix *object, s32 group) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800097D0 (0x800097D0).
 void objectResetTraversalTransformAndMovement(void) {
-    matrix34Identity((Matrix34 *)&gObjectTraversalTransform);
+    matrix34Identity((&gObjectTraversalTransform));
     gObjectPendingLocalMovement.x = 0.0F;
     gObjectPendingLocalMovement.y = 0.0F;
     gObjectPendingLocalMovement.z = 0.0F;
@@ -1543,13 +1545,13 @@ void objectSystemDestroy(void) {
     s32 sp2C;
 
     sp2C = 0;
-    nodePoolIterateFirst(&gActiveObjectHierarchies, (s32 *)&sp2C);
+    nodePoolIterateFirst(&gActiveObjectHierarchies, (&sp2C));
     if (sp2C != 0) {
         do {
             objectDestroyHierarchy((u8 *)sp2C);
             nodePoolRemoveCurrent(&gActiveObjectHierarchies);
             gActiveObjectHierarchyCount -= 1;
-            nodePoolIterateNext(&gActiveObjectHierarchies, (s32 *)&sp2C);
+            nodePoolIterateNext(&gActiveObjectHierarchies, (&sp2C));
         } while (sp2C != 0);
     }
     nodePoolDestroy(&gActiveObjectHierarchies);
@@ -1818,7 +1820,7 @@ u8 *objectFindNearestTargetInView(u8 *self, Vec3f *origin, f32 dist, f32 *rot, f
         matrix34MakeViewFromEulerDegrees((f32 *)origin, rot, (f32 *)&gObjectNearestTargetSearch.facing);
         gObjectNearestTargetSearch.cone = cone;
     } else {
-        matrix34Identity((Matrix34 *)&gObjectNearestTargetSearch.facing);
+        matrix34Identity((&gObjectNearestTargetSearch.facing));
         gObjectNearestTargetSearch.cone = 360.0F;
     }
     objectPrepareKindSearch(minKind);

@@ -78,8 +78,8 @@ void voiceCommandLaunchEffect(ScriptMessage message) {
     f32 position[3];
     f32 velocity[3];
     f32 cameraX;
-    s32 special;
-    s32 mode;
+    s32 messengerMode;
+    s32 messengerFlags;
     f32 cameraY;
     f32 cameraZ;
     f32 rotation[3];
@@ -91,18 +91,18 @@ void voiceCommandLaunchEffect(ScriptMessage message) {
     s32 kind;
     if (gGameplayMicrophoneAvailable != 0 && gGameplayVoiceCommandsAllowed != 0 && gRuntimeCurrentProgram == 0 &&
         (gRuntimeGameMode == 0 || gRuntimeGameMode == 8 || gRuntimeGameMode == 0x12)) {
-        special = 0;
+        messengerMode = 0;
         object = objectFindLiveByHandle(gPlayerHeldItemHandle);
         if (object != NULL &&
             ((state = ((RuntimeObjectPrefix *)object)->state.bytes, kind = ((ItemStatePrefix *)state)->kind) == 0x51 ||
              kind == 0x8A)) {
-            special = 1;
+            messengerMode = 1;
             message.arg0 |= message.type << 20;
             message.type = 1;
         }
         scale = mathMapRangeClamped((f32)gVoiceCommandMinimumVoiceLevel, gVoiceCommandMinimumEffectScale, 8000.0F, 0.2F,
                                     (f32)(u32)gVoiceCommandRecognitionResult.voice_level);
-        if (special != 0) {
+        if (messengerMode != 0) {
             scale *= 2.0F;
         }
         if (gVoiceCommandRecognitionResult.warning != 0) {
@@ -136,12 +136,13 @@ void voiceCommandLaunchEffect(ScriptMessage message) {
             }
         }
         if (gRuntimeGameMode == 8 || gRuntimeGameMode == 0x12) {
-            mode = 1;
+            messengerFlags = 1;
         } else {
-            mode = 0;
+            messengerFlags = 0;
         }
-        messengerGetCameraLaunch(position, velocity, special);
-        messengerCreate(((RuntimeObjectPrefix *)target)->handle, position, velocity, scale, message, special, mode);
+        messengerGetCameraLaunch(position, velocity, messengerMode);
+        messengerCreate(((RuntimeObjectPrefix *)target)->handle, position, velocity, scale, message, messengerMode,
+                        messengerFlags);
     }
 }
 
@@ -228,11 +229,11 @@ s32 voiceCommandTakeMessage(ScriptMessage *out) {
 /// \note Original decompilation identifier: \c func_800126B4 (0x800126B4).
 void voiceCommandUpdate(void) {
     s32 pad;
-    ScriptMessage s;
+    ScriptMessage command;
 
-    if (voiceCommandTakeMessage(&s) != 0) {
-        s.arg4 = interactionGetCandidateId();
-        voiceCommandLaunchEffect(s);
+    if (voiceCommandTakeMessage(&command) != 0) {
+        command.arg4 = interactionGetCandidateId();
+        voiceCommandLaunchEffect(command);
     }
 }
 
@@ -343,7 +344,7 @@ void textPanelDraw(TextPanel *panel, Gfx **gdl, s32 mode) {
             textDrawSetCursor(panel->x + x0, panel->y + y0 + (i * 16) - 16);
             color = panel->colors[i];
             textDrawSetColor(color[0], color[1], color[2], color[3]);
-            textDrawImageAtCursor((TextImage *)*image);
+            textDrawImageAtCursor((*image));
         }
         textDrawPrintf(gTextPanelLineBreakText);
     }
@@ -381,11 +382,11 @@ void textPanelSetColor(TextPanel *panel, s32 red, s32 green, s32 blue, s32 alpha
     s32 var_s0;
 
     var_s0 = 0;
-    if (((TextPanel *)panel)->capacity > 0) {
+    if ((panel)->capacity > 0) {
         do {
             textPanelSetLineColor(panel, var_s0, red, green, blue, alpha);
             var_s0 += 1;
-        } while (var_s0 < ((TextPanel *)panel)->capacity);
+        } while (var_s0 < (panel)->capacity);
     }
 }
 

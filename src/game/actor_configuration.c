@@ -217,14 +217,10 @@ void contactEffectUpdate(u8 *effect) {
     s32 result;
     f32 pull;
     if (state->triggered == 0) {
-        delta[0] = ((RuntimeObjectPrefix *)gPikachuActor)->worldPosition[0] -
-                   ((RuntimeObjectPrefix *)effect)->worldPosition[0];
-        delta[1] = ((RuntimeObjectPrefix *)gPikachuActor)->worldPosition[1] -
-                   ((RuntimeObjectPrefix *)effect)->worldPosition[1];
-        delta[2] = ((RuntimeObjectPrefix *)gPikachuActor)->worldPosition[2] -
-                   ((RuntimeObjectPrefix *)effect)->worldPosition[2];
-        if ((((RuntimeObjectPrefix *)effect)->radius + ((RuntimeObjectPrefix *)gPikachuActor)->radius) >
-            vector3Length(delta)) {
+        delta[0] = (gPikachuActor)->worldPosition[0] - ((RuntimeObjectPrefix *)effect)->worldPosition[0];
+        delta[1] = (gPikachuActor)->worldPosition[1] - ((RuntimeObjectPrefix *)effect)->worldPosition[1];
+        delta[2] = (gPikachuActor)->worldPosition[2] - ((RuntimeObjectPrefix *)effect)->worldPosition[2];
+        if ((((RuntimeObjectPrefix *)effect)->radius + (gPikachuActor)->radius) > vector3Length(delta)) {
             state->triggered = 1;
             animationIntegerTrackInitialize(&state->textureAnimation, (ValueKey *)(gContactEffectTriggeredAnimation));
         }
@@ -487,9 +483,9 @@ void actorUpdateChildMotionAndCopyOrientation(u8 *object) {
 
     actorUpdateChildMotion(object);
     firstChild = ((RuntimeObjectPrefix *)object)->child.bytes;
-    ((RuntimeObjectPrefix *)firstChild)->rotation[0] = (f32)((RuntimeObjectPrefix *)object)->rotation[0];
-    ((RuntimeObjectPrefix *)firstChild)->rotation[1] = (f32)((RuntimeObjectPrefix *)object)->rotation[1];
-    ((RuntimeObjectPrefix *)firstChild)->rotation[2] = (f32)((RuntimeObjectPrefix *)object)->rotation[2];
+    ((RuntimeObjectPrefix *)firstChild)->rotation[0] = ((RuntimeObjectPrefix *)object)->rotation[0];
+    ((RuntimeObjectPrefix *)firstChild)->rotation[1] = ((RuntimeObjectPrefix *)object)->rotation[1];
+    ((RuntimeObjectPrefix *)firstChild)->rotation[2] = ((RuntimeObjectPrefix *)object)->rotation[2];
 }
 
 /// Actor cache entry metadata; corrected-asset ranges borrow the resident resource table.
@@ -674,7 +670,7 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
     ((RuntimeObjectPrefix *)actor)->scale[0] = scale;
     actorAddRotationAxisDegrees(actor, pitch, 0);
     actorAddRotationAxisDegrees(actor, yaw, 1);
-    ((RuntimeObjectPrefix *)actor)->radius = (f32)kindConfig->visibilityRadius;
+    ((RuntimeObjectPrefix *)actor)->radius = kindConfig->visibilityRadius;
     if (kindConfig == (ActorKindConfig *)gPikachuKindConfiguration) {
         part = actorFindPart(actor, 0x2F);
         if (part != NULL) {
@@ -685,11 +681,11 @@ u8 *actorCreateForKind(s32 kind, f32 x, f32 y, f32 z, f32 pitch, f32 yaw, f32 sc
             ((RuntimeObjectPrefix *)part)->radius = 80.0F;
         }
     }
-    ((ActorScriptState *)actorState)->collisionDepth = (f32)(kindConfig->collisionDepth * scale);
-    ((ActorScriptState *)actorState)->clearanceHeight = (f32)(kindConfig->clearanceHeight * scale);
-    ((ActorScriptState *)actorState)->collisionWidth = (f32)(kindConfig->collisionWidth * scale);
-    ((ActorScriptState *)actorState)->unknown208 = (f32)(kindConfig->unknown34 * scale);
-    ((ActorScriptState *)actorState)->groundOffset = (f32)(kindConfig->groundOffset * scale);
+    ((ActorScriptState *)actorState)->collisionDepth = (kindConfig->collisionDepth * scale);
+    ((ActorScriptState *)actorState)->clearanceHeight = (kindConfig->clearanceHeight * scale);
+    ((ActorScriptState *)actorState)->collisionWidth = (kindConfig->collisionWidth * scale);
+    ((ActorScriptState *)actorState)->unknown208 = (kindConfig->unknown34 * scale);
+    ((ActorScriptState *)actorState)->groundOffset = (kindConfig->groundOffset * scale);
     objectScaleHierarchyBounds(actor, 1.0F);
     objectRefreshHierarchyWorldPositions(actor);
     if (kindConfig->animatedTextureParts != NULL) {

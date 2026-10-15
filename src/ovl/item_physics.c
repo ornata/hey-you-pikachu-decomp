@@ -164,9 +164,9 @@ s32 itemUpdateGroundVelocity(u8 *object, u8 *state, s32 cachedNode, s32 *spinnin
         f32 accelerationStep;
         accelerationStep = 900.0F * gRuntimeFrameSeconds;
         ((ItemStatePrefix *)state)->velocityX =
-            (f32)((slope[0] * accelerationStep) + (*(f32 *)((s8 *)state + (u32) & ((ItemStatePrefix *)0)->velocityX)));
+            ((slope[0] * accelerationStep) + (*(f32 *)((s8 *)state + (u32) & ((ItemStatePrefix *)0)->velocityX)));
         ((ItemStatePrefix *)state)->velocityZ =
-            (f32)((slope[2] * accelerationStep) + (*(f32 *)((s8 *)state + (u32) & ((ItemStatePrefix *)0)->velocityZ)));
+            ((slope[2] * accelerationStep) + (*(f32 *)((s8 *)state + (u32) & ((ItemStatePrefix *)0)->velocityZ)));
     }
     friction = terrainGetFriction(sp4C);
     friction = 60.0F * friction;
@@ -214,9 +214,9 @@ void itemUpdateRollingRotation(u8 *object, u8 *state) {
                       (*(f32 *)((s8 *)object + (u32) & ((RuntimeObjectPrefix *)0)->radius)));
             if (!(((ItemStatePrefix *)state)->flags & 0x01000000)) {
                 ((ItemStatePrefix *)state)->rotationVelocityY =
-                    (f32)(mathApproachAngleDegrees(((RuntimeObjectPrefix *)object)->rotation[1],
-                                                   mathUnitDirectionDegrees(sp34, sp38), 0.2F, 60.0F, 300.0F) -
-                          ((RuntimeObjectPrefix *)object)->rotation[1]);
+                    (mathApproachAngleDegrees(((RuntimeObjectPrefix *)object)->rotation[1],
+                                              mathUnitDirectionDegrees(sp34, sp38), 0.2F, 60.0F, 300.0F) -
+                     ((RuntimeObjectPrefix *)object)->rotation[1]);
             }
             ((RuntimeObjectPrefix *)object)->rotation[2] = 0.0F;
         } else {
@@ -306,13 +306,11 @@ void itemPlayImpactSounds(u8 *object, s32 contactFlags, s32 surface) {
             itemPlayTrackedSound(object, sp1C, surfaceSoundId);
         }
     }
-    if (((ItemStatePrefix *)sp1C)->bounceCount > 0) {
-        itemPlayTrackedSound(
-            object, sp1C, *((s16 *)((u8 *)&gItemKindPrimarySoundEntries + (((ItemStatePrefix *)sp1C)->kind * 0x74))));
+    if ((sp1C)->bounceCount > 0) {
+        itemPlayTrackedSound(object, sp1C, *((s16 *)((u8 *)&gItemKindPrimarySoundEntries + ((sp1C)->kind * 0x74))));
         return;
     }
-    itemPlayTrackedSound(object, sp1C,
-                         *((s16 *)((u8 *)&gItemKindSecondarySoundEntries + (((ItemStatePrefix *)sp1C)->kind * 0x74))));
+    itemPlayTrackedSound(object, sp1C, *((s16 *)((u8 *)&gItemKindSecondarySoundEntries + ((sp1C)->kind * 0x74))));
 }
 
 

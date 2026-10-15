@@ -79,7 +79,7 @@ void motionApplyRootOrientation(f32 *angles, u8 *object) {
     state = ((RuntimeObjectPrefix *)object)->state.actor;
     matrix34MakeRotationXYZDegrees((f32 *)&state->rootMotionTransform, angles[0], angles[1], angles[2]);
     motionExtractHeadingFromMatrix((f32 *)&state->rootMotionTransform, &y);
-    actorAddRotationAxisDegrees((u8 *)object, y - state->rootMotionHeading, 1);
+    actorAddRotationAxisDegrees(object, y - state->rootMotionHeading, 1);
     state->rootMotionHeading = y;
 }
 
@@ -286,7 +286,7 @@ void motionEvaluateChildRotation(u8 *obj, ChildMotionState *track, f32 step) {
         ((RuntimeObjectPrefix *)obj)->rotation[2] -= 360.0F;
     }
     if (r == 1) {
-        ((ChildMotionState *)track)->playbackMode = MOTION_PLAYBACK_DISABLED;
+        (track)->playbackMode = MOTION_PLAYBACK_DISABLED;
     }
 }
 
@@ -326,7 +326,7 @@ void motionStartPoseTransition(u8 *object) {
         if (entry->objectKind > 0 && entry->objectKind < rootKindLimit) {
             state->playbackMode = rotationMode;
             from = state->rootPlayback.posePair;
-            current = (Matrix34 *)&state->rootMotionTransform;
+            current = (&state->rootMotionTransform);
             animationTrack3Initialize(&track, (AnimationCurveDescriptor *)((u8 *)base + entry->curvesOffset), base);
             animationTrack3Evaluate(&track, rotation, 0, transformTime);
             *from = *current;
@@ -716,7 +716,7 @@ void actionUpdatePlayback(u8 *object) {
         actorUpdateActionScript(object, &state->primaryCueCommand, &state->primaryCueClock);
         actorUpdateActionScript(object, &state->secondaryCueCommand, &state->secondaryCueClock);
         step = state->movementScale * gRuntimeFrameSeconds;
-        state->motionRemaining = (f32)(state->motionRemaining - step);
+        state->motionRemaining = (state->motionRemaining - step);
         remaining = state->motionRemaining;
         if (remaining <= 0.0F) {
             step += remaining;
@@ -727,7 +727,7 @@ void actionUpdatePlayback(u8 *object) {
             break;
         case MOTION_PLAYBACK_TRACKS:
             motionCacheReadBlocking(&gMotionRomCache, state->motionId);
-            motionEvaluateRootTracks(object, (ActorScriptState *)state, step);
+            motionEvaluateRootTracks(object, state, step);
             break;
         case MOTION_PLAYBACK_POSE_BLEND:
             step = remaining / state->motionDuration;

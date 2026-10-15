@@ -86,14 +86,14 @@ void scriptVmReset(ScriptVm *vm) {
 /// \note Original decompilation identifier: \c func_80115114 (0x80115114).
 ScriptVm *scriptVmCreateWithCapacity(ScriptVmConfiguration *config, s32 capacity) {
     ScriptVm *vm;
-    vm = heapAllocLocal((HpHdr *)&gGameHeap, sizeof(ScriptVm), 0xB3);
+    vm = heapAllocLocal((&gGameHeap), sizeof(ScriptVm), 0xB3);
     _bzero(vm, sizeof(ScriptVm));
     vm->totalElapsed = 0.0F;
     vm->commands = config->commands;
     vm->program = config->program;
     vm->stringTable = config->stringTable;
     vm->stackCapacity = capacity;
-    vm->values = (ScriptValue *)heapAllocLocal((HpHdr *)&gGameHeap, capacity * sizeof(ScriptValue), 0xC6);
+    vm->values = (ScriptValue *)heapAllocLocal((&gGameHeap), capacity * sizeof(ScriptValue), 0xC6);
     scriptVmReset(vm);
     return vm;
 }
@@ -162,7 +162,7 @@ void scriptVmPopValue(ScriptVm *vm, ScriptValue *value) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8011538C (0x8011538C).
 void scriptVmSaveStackDepth(ScriptVm *vm) {
-    vm->savedDepths[vm->savedDepthCount] = (s32)vm->stackDepth;
+    vm->savedDepths[vm->savedDepthCount] = vm->stackDepth;
     vm->savedDepthCount = (s32)(vm->savedDepthCount + 1);
 }
 
@@ -180,7 +180,7 @@ void scriptVmRestoreStackDepth(ScriptVm *vm) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_801153D0 (0x801153D0).
 void scriptVmSaveReturnLocation(ScriptVm *vm) {
-    vm->returnOffsets[vm->returnCount] = (s32)vm->instructionOffset;
+    vm->returnOffsets[vm->returnCount] = vm->instructionOffset;
     vm->returnCount = (s32)(vm->returnCount + 1);
 }
 
@@ -913,13 +913,13 @@ loop_3:
         argumentCount = scriptVmReadIntegerOperand(vm);
         localCount = scriptVmReadIntegerOperand(vm);
         frameIndex = scriptVmReadIntegerOperand(vm);
-        vm->stackDepth = (s32)(vm->stackDepth - argumentCount);
+        vm->stackDepth = (vm->stackDepth - argumentCount);
         scriptVmSaveStackDepth(vm);
         _bzero(((u8 *)vm->values) + ((vm->stackDepth + argumentCount) * 5), (localCount - argumentCount) * 5);
         localSlot = &vm->localFrameBases[frameIndex];
         previousFrameBase = *localSlot;
         *localSlot = vm->stackDepth;
-        vm->stackDepth = (s32)(vm->stackDepth + localCount);
+        vm->stackDepth = (vm->stackDepth + localCount);
         scriptVmPushInteger(vm, previousFrameBase);
         scriptVmPushInteger(vm, frameIndex);
         goto loop_2;

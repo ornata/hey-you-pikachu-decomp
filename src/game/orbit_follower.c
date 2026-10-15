@@ -99,7 +99,7 @@ void orbitFollowerUpdate(u8 *obj) {
 
     owner = (RuntimeObjectPrefix *)objectFindLiveByHandle(state->ownerId);
     if (owner == NULL) {
-        objectRequestHierarchyDestruction((u8 *)obj);
+        objectRequestHierarchyDestruction(obj);
         return;
     }
     state->timer -= gRuntimeFrameSeconds;

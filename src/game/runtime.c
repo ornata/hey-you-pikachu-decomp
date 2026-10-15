@@ -956,7 +956,6 @@ void runtimeRunProgramEventLoop(void) {
         case GAME_MESSAGE_GRAPHICS_COMPLETE:
             continue;
         }
-        continue;
     }
 }
 

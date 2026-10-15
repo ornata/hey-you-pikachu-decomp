@@ -1037,8 +1037,7 @@ s32 caveGetLinkedLandmarkHandle(s32 handle) {
 /// \note Original decompilation identifier: \c func_801184C0 (0x801184C0).
 s32 itemFindHandleFromPlayerView(s32 minKind, s32 maxKind, f32 distance, f32 cone, s32 filter, s32 weighted) {
     u8 *item =
-        itemFindNearest((f32 *)&gPlayerState, distance, 0.0F,
-                        ((PlayerControlPrefix *)&gPlayerState)->yaw + ((PlayerControlPrefix *)&gPlayerState)->viewShake,
+        itemFindNearest((f32 *)&gPlayerState, distance, 0.0F, ((&gPlayerState))->yaw + ((&gPlayerState))->viewShake,
                         cone, minKind, maxKind, filter, weighted);
 
     if (item == NULL) {
@@ -1178,9 +1177,9 @@ void actorSetTargetToFallbackObject(u8 *actor) {
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.bytes;
     liveObject = objectFindLiveByHandle(((ActorScriptState *)sp1C)->fallbackObjectHandle);
-    ((ActorScriptState *)sp1C)->targetPosition[0] = (f32)((RuntimeObjectPrefix *)liveObject)->worldPosition[0];
-    ((ActorScriptState *)sp1C)->targetPosition[1] = (f32)((RuntimeObjectPrefix *)liveObject)->worldPosition[1];
-    ((ActorScriptState *)sp1C)->targetPosition[2] = (f32)((RuntimeObjectPrefix *)liveObject)->worldPosition[2];
+    ((ActorScriptState *)sp1C)->targetPosition[0] = ((RuntimeObjectPrefix *)liveObject)->worldPosition[0];
+    ((ActorScriptState *)sp1C)->targetPosition[1] = ((RuntimeObjectPrefix *)liveObject)->worldPosition[1];
+    ((ActorScriptState *)sp1C)->targetPosition[2] = ((RuntimeObjectPrefix *)liveObject)->worldPosition[2];
 }
 
 /// Query the kind of item held by an actor.
@@ -1308,12 +1307,12 @@ void actorMoveToTargetPosition(u8 *actor) {
     u8 *actorState;
 
     actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    ((RuntimeObjectPrefix *)actor)->position[0] = (f32)((ActorScriptState *)actorState)->targetPosition[0];
-    ((RuntimeObjectPrefix *)actor)->position[1] = (f32)((ActorScriptState *)actorState)->targetPosition[1];
-    ((RuntimeObjectPrefix *)actor)->position[2] = (f32)((ActorScriptState *)actorState)->targetPosition[2];
-    ((RuntimeObjectPrefix *)actor)->worldPosition[0] = (f32)((ActorScriptState *)actorState)->targetPosition[0];
-    ((RuntimeObjectPrefix *)actor)->worldPosition[1] = (f32)((ActorScriptState *)actorState)->targetPosition[1];
-    ((RuntimeObjectPrefix *)actor)->worldPosition[2] = (f32)((ActorScriptState *)actorState)->targetPosition[2];
+    ((RuntimeObjectPrefix *)actor)->position[0] = ((ActorScriptState *)actorState)->targetPosition[0];
+    ((RuntimeObjectPrefix *)actor)->position[1] = ((ActorScriptState *)actorState)->targetPosition[1];
+    ((RuntimeObjectPrefix *)actor)->position[2] = ((ActorScriptState *)actorState)->targetPosition[2];
+    ((RuntimeObjectPrefix *)actor)->worldPosition[0] = ((ActorScriptState *)actorState)->targetPosition[0];
+    ((RuntimeObjectPrefix *)actor)->worldPosition[1] = ((ActorScriptState *)actorState)->targetPosition[1];
+    ((RuntimeObjectPrefix *)actor)->worldPosition[2] = ((ActorScriptState *)actorState)->targetPosition[2];
 }
 
 /// Resolve a live object handle while excluding unavailable items.

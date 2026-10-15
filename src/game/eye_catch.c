@@ -125,18 +125,18 @@ void eyeCatchBegin(void) {
     gEyeCatchActiveGroup = (s32)&gEyeCatchGroups[gEyeCatchSelectedGroup];
     count = EYE_GROUP->animatedLayerCount;
     if (count != 0) {
-        gEyeCatchAnimationTracks = (s32)heapAllocLocal((HpHdr *)&gGameHeap, count * sizeof(EyeCatchLayerTracks), 0x508);
+        gEyeCatchAnimationTracks = (s32)heapAllocLocal((&gGameHeap), count * sizeof(EyeCatchLayerTracks), 0x508);
         for (group = 0; group < EYE_GROUP->animatedLayerCount; group++) {
-            animationIntegerTrackInitialize(&EYE_TRACKS(group)[0], (ValueKey *)EYE_GROUP->animationKeys[group][0]);
-            animationIntegerTrackInitialize(&EYE_TRACKS(group)[1], (ValueKey *)EYE_GROUP->animationKeys[group][1]);
-            animationIntegerTrackInitialize(&EYE_TRACKS(group)[2], (ValueKey *)EYE_GROUP->animationKeys[group][2]);
-            animationIntegerTrackInitialize(&EYE_TRACKS(group)[3], (ValueKey *)EYE_GROUP->animationKeys[group][3]);
-            animationIntegerTrackInitialize(&EYE_TRACKS(group)[4], (ValueKey *)EYE_GROUP->animationKeys[group][4]);
-            animationIntegerTrackInitialize(&EYE_TRACKS(group)[5], (ValueKey *)EYE_GROUP->animationKeys[group][5]);
+            animationIntegerTrackInitialize(&EYE_TRACKS(group)[0], EYE_GROUP->animationKeys[group][0]);
+            animationIntegerTrackInitialize(&EYE_TRACKS(group)[1], EYE_GROUP->animationKeys[group][1]);
+            animationIntegerTrackInitialize(&EYE_TRACKS(group)[2], EYE_GROUP->animationKeys[group][2]);
+            animationIntegerTrackInitialize(&EYE_TRACKS(group)[3], EYE_GROUP->animationKeys[group][3]);
+            animationIntegerTrackInitialize(&EYE_TRACKS(group)[4], EYE_GROUP->animationKeys[group][4]);
+            animationIntegerTrackInitialize(&EYE_TRACKS(group)[5], EYE_GROUP->animationKeys[group][5]);
         }
     }
     gEyeCatchForegroundImage = (s32)assetAllocateAndLoad(&gEyeCatchForegroundAssetDescriptor);
-    gEyeCatchBackdropVertices = (s32)heapAllocLocal((HpHdr *)&gGameHeap, 4 * sizeof(Vtx), 0x521);
+    gEyeCatchBackdropVertices = (s32)heapAllocLocal((&gGameHeap), 4 * sizeof(Vtx), 0x521);
     for (corner = 0; corner < 4; corner++) {
         ((Vtx *)gEyeCatchBackdropVertices)[corner].v.ob[0] = gEyeCatchBackdropCorners[corner][0];
         ((Vtx *)gEyeCatchBackdropVertices)[corner].v.ob[1] = gEyeCatchBackdropCorners[corner][1];
@@ -149,9 +149,9 @@ void eyeCatchBegin(void) {
         ((Vtx *)gEyeCatchBackdropVertices)[corner].v.cn[2] = EYE_GROUP->cornerColors[corner][2];
         ((Vtx *)gEyeCatchBackdropVertices)[corner].v.cn[3] = 0xFF;
     }
-    gEyeCatchProjectionMatrix = (s32)heapAllocLocal((HpHdr *)&gGameHeap, sizeof(Mtx), 0x530);
+    gEyeCatchProjectionMatrix = (s32)heapAllocLocal((&gGameHeap), sizeof(Mtx), 0x530);
     guOrtho((Mtx *)gEyeCatchProjectionMatrix, 0.0F, 320.0F, 0.0F, 240.0F, -1.0F, -1000.0F, 1.0F);
-    gEyeCatchModelViewMatrix = (s32)heapAllocLocal((HpHdr *)&gGameHeap, sizeof(Mtx), 0x537);
+    gEyeCatchModelViewMatrix = (s32)heapAllocLocal((&gGameHeap), sizeof(Mtx), 0x537);
     guRotate((Mtx *)gEyeCatchModelViewMatrix, 0.0F, 0.0F, 0.0F, 1.0F);
     cameraFadePrimarySecondaryOverlay(0, 0, 0, 0xFF, 0.0F);
     cameraUpdateOverlayColors(0, 0);

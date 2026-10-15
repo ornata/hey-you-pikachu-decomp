@@ -204,7 +204,7 @@ s32 actorScriptGetItemDisplayName(u8 *actor) {
     sp24 = vmAddress;
     sp1C = scriptVmPopInteger((ScriptVm *)(vmAddress));
     scriptVmPushStringPointer((ScriptVm *)(vmAddress),
-                              (char *)(itemGetDisplayName(scriptVmPopInteger((ScriptVm *)(vmAddress)), sp1C)));
+                              itemGetDisplayName(scriptVmPopInteger((ScriptVm *)(vmAddress)), sp1C));
     return 0;
 }
 
@@ -221,7 +221,7 @@ s32 actorScriptGetActorDisplayName(u8 *actor) {
     sp24 = vmAddress;
     sp1C = scriptVmPopInteger((ScriptVm *)(vmAddress));
     scriptVmPushStringPointer((ScriptVm *)(vmAddress),
-                              (char *)(actorConfigGetDisplayName(scriptVmPopInteger((ScriptVm *)(vmAddress)), sp1C)));
+                              actorConfigGetDisplayName(scriptVmPopInteger((ScriptVm *)(vmAddress)), sp1C));
     return 0;
 }
 
@@ -234,7 +234,7 @@ s32 actorScriptGetDictionaryWordName(u8 *actor) {
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     scriptVmPushStringPointer((ScriptVm *)(sp1C),
-                              (char *)(voiceDictionaryGetWordName((u16)scriptVmPopInteger((ScriptVm *)(sp1C)))));
+                              voiceDictionaryGetWordName((u16)scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
 
@@ -269,7 +269,7 @@ s32 actorScriptGetAreaName(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushStringPointer((ScriptVm *)(sp1C), (char *)(areaGetDisplayName(scriptVmPopInteger((ScriptVm *)(sp1C)))));
+    scriptVmPushStringPointer((ScriptVm *)(sp1C), areaGetDisplayName(scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
 
@@ -281,7 +281,7 @@ s32 actorScriptGetAreaShortName(u8 *actor) {
     s32 sp1C;
 
     sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushStringPointer((ScriptVm *)(sp1C), (char *)(areaGetRegionName(scriptVmPopInteger((ScriptVm *)(sp1C)))));
+    scriptVmPushStringPointer((ScriptVm *)(sp1C), areaGetRegionName(scriptVmPopInteger((ScriptVm *)(sp1C))));
     return 0;
 }
 
@@ -875,7 +875,7 @@ s32 actorScriptSetScrollBoardSpeed(u8 *actor) {
     sp24 = vmAddress;
     sp18 = scriptVmPopFloat((ScriptVm *)(vmAddress));
     sp_pop0 = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    scrollBoardSetHierarchySpeed((u8 *)objectFindLiveByHandle(sp_pop0), sp18);
+    scrollBoardSetHierarchySpeed(objectFindLiveByHandle(sp_pop0), sp18);
     scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 0;
 }
@@ -900,7 +900,7 @@ s32 actorScriptSetObjectTransform(u8 *actor) {
     position[1] = scriptVmPopFloat((ScriptVm *)(vmAddress));
     position[0] = scriptVmPopFloat((ScriptVm *)(vmAddress));
     targetHandle = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    target = (u8 *)objectFindLiveByHandle(targetHandle);
+    target = objectFindLiveByHandle(targetHandle);
     objectSetUniformTransform(target, position, rotation, gCurrentAreaConfiguration->objectScale * scale);
     scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 0;

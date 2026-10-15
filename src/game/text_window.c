@@ -236,10 +236,10 @@ void textWindowDrawPageAt(Gfx **list, s32 x, s32 y, s32 alpha) {
         gDPSetRenderMode((*list)++, 0, 0x00553048);
     }
     for (i = 0; i < 5; i++) {
-        image = (TextImage *)gTextWindowPageImages[i][gTextWindowPageImageBuffer];
+        image = gTextWindowPageImages[i][gTextWindowPageImageBuffer];
         if (image != NULL) {
             textImageDrawRectangle(list, image, x, y, image->width + x, image->height + y, 0, 0, 1.0F, 1.0F);
-            y += ((TextImage *)gTextWindowPageImages[i][gTextWindowPageImageBuffer])->height + 4;
+            y += (gTextWindowPageImages[i][gTextWindowPageImageBuffer])->height + 4;
         } else {
             y += 20;
         }
@@ -277,7 +277,7 @@ void textWindowDrawPrompt(Gfx **gdl) {
     textDrawSetPalette(gDefaultTextPalette);
     textDrawSetColor(0xFF, 0xFF, 0xFF, runtimeGetUiPulseAlpha());
     textDrawSetCursor(((0x140 - gTextWindowPromptImage->width) / 2) - 0x20, 0x9F);
-    textDrawImageAtCursor((TextImage *)gTextWindowPromptImage);
+    textDrawImageAtCursor(gTextWindowPromptImage);
     textDrawGetDisplayListCursor(gdl);
     textDrawReset();
     textDrawSetPalette(gDefaultTextPalette);
@@ -292,12 +292,12 @@ void textWindowDrawPrompt(Gfx **gdl) {
 /// \note Original decompilation identifier: \c func_8002BF48 (0x8002BF48).
 void textWindowSetLine(s32 row, u8 *text, s32 style) {
     if (gTextWindowPageImages[row][gTextWindowPageImageBuffer] != 0) {
-        textImageDestroy((TextImage *)gTextWindowPageImages[row][gTextWindowPageImageBuffer]);
+        textImageDestroy(gTextWindowPageImages[row][gTextWindowPageImageBuffer]);
         gTextWindowPageImages[row][gTextWindowPageImageBuffer] = 0;
     }
     if (text != NULL && *text != 0) {
-        textImageCreateFromText((TextImage **)(&gTextWindowPageImages[row][gTextWindowPageImageBuffer]),
-                                (u8 *)((s32)text), &gTextImageConfigurations[style]);
+        textImageCreateFromText((&gTextWindowPageImages[row][gTextWindowPageImageBuffer]), (u8 *)((s32)text),
+                                &gTextImageConfigurations[style]);
     }
 }
 
@@ -308,7 +308,7 @@ void textWindowSetLine(s32 row, u8 *text, s32 style) {
 /// \note Original decompilation identifier: \c func_8002BFE8 (0x8002BFE8).
 void textWindowSetPrompt(s32 textAddress) {
     if (gTextWindowPromptImage != 0) {
-        textImageDestroy((TextImage *)gTextWindowPromptImage);
+        textImageDestroy(gTextWindowPromptImage);
         gTextWindowPromptImage = 0;
     }
     textImageCreateFromText((TextImage **)((s32 *)&gTextWindowPromptImage), (u8 *)(textAddress),
@@ -323,7 +323,7 @@ void textWindowSetPrompt(s32 textAddress) {
 /// \note Original decompilation identifier: \c func_8002C03C (0x8002C03C).
 u8 *textWindowPreparePage(u8 *text, s32 style) {
     u8 line[50];
-    u8 *input = (u8 *)text;
+    u8 *input = text;
     s32 row;
     s32 i;
     u8 ch;
@@ -395,7 +395,7 @@ void textWindowFinish(void) {
     for (i = 0; i < 6; i++) {
         for (j = 0; j < 2; j++) {
             if (gTextWindowPageImages[i][j] != 0) {
-                textImageDestroy((TextImage *)gTextWindowPageImages[i][j]);
+                textImageDestroy(gTextWindowPageImages[i][j]);
             }
             gTextWindowPageImages[i][j] = 0;
         }
@@ -573,7 +573,7 @@ void textWindowUpdate(void) {
         break;
     case TEXT_WINDOW_CHANGING_PAGE:
         if (runtimeGetElapsedMilliseconds() - (u64)gTextWindowStateStartMilliseconds > 90) {
-            gTextWindowContinuation = textWindowShowPage((u8 *)gTextWindowContinuation);
+            gTextWindowContinuation = textWindowShowPage(gTextWindowContinuation);
             runtimeResetUiPulse();
             textWindowSetState(TEXT_WINDOW_AWAITING_INPUT);
         }

@@ -329,7 +329,7 @@ void renderLoadAreaAssets(void) {
     temporary = heapAllocTailLocal(&gGameHeap, scratchSize, 0x14C);
     assetLoadAndPatchFromRom(
         *(u32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.romAddress),
-        (u8 *)gAreaRenderAssets, temporary,
+        gAreaRenderAssets, temporary,
         *(u32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) & ((SceneConfigurationPrefix *)0)->renderAsset.encodedEnd) -
             *(u32 *)(((u8 *)gCurrentAreaConfiguration) + (u32) &
                      ((SceneConfigurationPrefix *)0)->renderAsset.rangeBase),
@@ -364,7 +364,7 @@ void cameraBuildInterfaceTransform(f32 *output) {
     sp1C = ((u8 *)gRenderCameras) + (gRenderCameraIndex * 0xE0);
     matrix34Identity((Matrix34 *)(MatrixBlock00800 *)output);
     matrix34TranslateLocal((f32 (*)[3])output, *(f32 *)(sp1C + 0), *(f32 *)(sp1C + 4), *(f32 *)(sp1C + 8));
-    matrix33ApplyRotationXYZDegrees((f32 *)output, -(gPlayerPitch + gPlayerPitchOffset),
+    matrix33ApplyRotationXYZDegrees(output, -(gPlayerPitch + gPlayerPitchOffset),
                                     gPlayerViewShake + gPlayerYaw + 180.0F, 0.0F);
 }
 

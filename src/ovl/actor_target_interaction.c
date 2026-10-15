@@ -68,22 +68,22 @@ extern f32 fabsf(f32);
 #include "player_interaction.h"
 #include "vector_operations.h"
 /// Turn an actor toward its stored target position while respecting facing constraints.
-/// \param object Actor whose horizontal facing is updated.
+/// \param actor Actor whose horizontal facing is updated.
 /// \param speed Angular turn-speed control in degrees per second.
 /// \returns One when the constrained target heading is reached within one degree; otherwise zero.
 /// \note Original decompilation identifier: \c func_80118B98 (0x80118B98).
-s32 actorTurnTowardTarget(u8 *object, f32 speed) {
+s32 actorTurnTowardTarget(u8 *actor, f32 speed) {
     u8 *state;
     f32 direction[3];
     f32 angle;
     f32 heading;
-    state = ((RuntimeObjectPrefix *)object)->state.bytes;
-    direction[0] = ((ActorScriptState *)state)->targetPosition[0] - ((RuntimeObjectPrefix *)object)->worldPosition[0];
+    state = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    direction[0] = ((ActorScriptState *)state)->targetPosition[0] - ((RuntimeObjectPrefix *)actor)->worldPosition[0];
     direction[1] = 0.0F;
-    direction[2] = ((ActorScriptState *)state)->targetPosition[2] - ((RuntimeObjectPrefix *)object)->worldPosition[2];
+    direction[2] = ((ActorScriptState *)state)->targetPosition[2] - ((RuntimeObjectPrefix *)actor)->worldPosition[2];
     heading = vector3GetYawDegrees(direction);
-    angle = actorConstrainFacingHeading(object, heading);
-    actorAddRotationAxisDegrees(object,
+    angle = actorConstrainFacingHeading(actor, heading);
+    actorAddRotationAxisDegrees(actor,
                                 mathApproachAngleDegrees(((ActorScriptState *)state)->orientation[1], angle, 1.0F,
                                                          90.0F, speed * gRuntimeFrameSeconds) -
                                     ((ActorScriptState *)state)->orientation[1],
@@ -95,11 +95,11 @@ s32 actorTurnTowardTarget(u8 *object, f32 speed) {
 }
 
 /// Turn an actor toward its target with a compensating movement around its turning pivot.
-/// \param object Actor whose facing and movement are updated.
+/// \param actor Actor whose facing and movement are updated.
 /// \param speed Angular turn-speed control in degrees per second.
 /// \returns One when the constrained target heading is reached within one degree; otherwise zero.
 /// \note Original decompilation identifier: \c func_80118C80 (0x80118C80).
-s32 actorPivotTowardTarget(u8 *object, f32 speed) {
+s32 actorPivotTowardTarget(u8 *actor, f32 speed) {
     u8 *state;
     f32 direction[3];
     f32 angle;
@@ -112,12 +112,12 @@ s32 actorPivotTowardTarget(u8 *object, f32 speed) {
     f32 error;
     f32 vector[3];
     f32 magnitude;
-    state = ((RuntimeObjectPrefix *)object)->state.bytes;
-    direction[0] = ((ActorScriptState *)state)->targetPosition[0] - ((RuntimeObjectPrefix *)object)->worldPosition[0];
+    state = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    direction[0] = ((ActorScriptState *)state)->targetPosition[0] - ((RuntimeObjectPrefix *)actor)->worldPosition[0];
     direction[1] = 0.0F;
-    direction[2] = ((ActorScriptState *)state)->targetPosition[2] - ((RuntimeObjectPrefix *)object)->worldPosition[2];
+    direction[2] = ((ActorScriptState *)state)->targetPosition[2] - ((RuntimeObjectPrefix *)actor)->worldPosition[2];
     heading = vector3GetYawDegrees(direction);
-    angle = actorConstrainFacingHeading(object, heading);
+    angle = actorConstrainFacingHeading(actor, heading);
     turn = mathApproachAngleDegrees(((ActorScriptState *)state)->orientation[1], angle, 1.0F, 90.0F,
                                     speed * gRuntimeFrameSeconds) -
            ((ActorScriptState *)state)->orientation[1];
@@ -129,7 +129,7 @@ s32 actorPivotTowardTarget(u8 *object, f32 speed) {
     vector[0] = (lateral * cosine) - (offset * sine);
     vector[2] = (lateral * sine) + (offset * cosine);
     objectSetPendingLocalMovement(vector);
-    actorAddRotationAxisDegrees(object, turn, 1);
+    actorAddRotationAxisDegrees(actor, turn, 1);
     error = mathWrapSignedDegrees(angle - ((ActorScriptState *)state)->orientation[1]);
     magnitude = fabsf(error);
     if (magnitude < 1.0F) {
@@ -137,7 +137,6 @@ s32 actorPivotTowardTarget(u8 *object, f32 speed) {
     }
     return 0;
 }
-
 
 /// Refresh the actor destination for pursuit or escape from its tracked target.
 /// \param actor Actor whose tracked target position is refreshed.
@@ -160,8 +159,8 @@ void actorRefreshTrackingTargetPosition(u8 *actor) {
 }
 
 /// Post a message to the actor script mailbox.
-/// \param obj Address of the actor receiving the message.
-/// \param msg Message value and arguments to deliver.
+/// \param actorAddress Address of the actor receiving the message.
+/// \param message Message value and arguments to deliver.
 /// \param force Nonzero to replace a message already pending.
 /// \returns One when the message is accepted; zero when a pending message prevents delivery.
 ///
@@ -171,17 +170,16 @@ void actorRefreshTrackingTargetPosition(u8 *actor) {
 /// its storage. Acknowledgement is separate from inspecting the stored fields.
 /// \see actorAcknowledgeScriptMessage
 /// \see actorScriptPushMessagePending
-s32 actorPostScriptMessage(s32 obj, ScriptMessage msg, s32 force) {
-    ActorScriptState *state = ((RuntimeObjectPrefix *)obj)->state.actor;
+s32 actorPostScriptMessage(s32 actorAddress, ScriptMessage message, s32 force) {
+    ActorScriptState *state = ((RuntimeObjectPrefix *)actorAddress)->state.actor;
 
     if ((force == 0) && (state->messagePending != 0)) {
         return 0;
     }
     state->messagePending = 1;
-    state->message = msg;
+    state->message = message;
     return 1;
 }
-
 
 /// Attempt to notify an actor script of an item impact and its speed.
 /// An already pending message prevents delivery.
@@ -220,7 +218,7 @@ void actorTryHoldItem(u8 *actor, s32 itemId, s32 forceRelease) {
     u8 *other;
     u8 *rec;
 
-    obj = (u8 *)objectResolveAvailableHandle(itemId);
+    obj = objectResolveAvailableHandle(itemId);
     if ((obj != NULL) && (itemCanBePickedUp(obj, 0) != 0) && (itemTryRelease(obj, forceRelease) != 0)) {
         other = objectFindLiveByHandle(((ActorScriptState *)state)->heldItemHandle);
         if (other != NULL) {
@@ -281,7 +279,7 @@ s32 itemSetImpactCount(s32 id, s32 count) {
 /// \returns The supplied on value when supported, or zero when unresolved or unsupported.
 /// \note Original decompilation identifier: \c func_80119134 (0x80119134).
 s32 objectSetOnState(s32 on, s32 id) {
-    u8 *obj = (u8 *)objectResolveAvailableHandle(id);
+    u8 *obj = objectResolveAvailableHandle(id);
     u8 *st;
     s32 flags;
 
@@ -382,8 +380,8 @@ f32 objectGetPlayerFacingError(u8 *object) {
     f32 sp24;
     f32 sp20;
 
-    sp24 = ((RuntimeObjectPrefix *)object)->worldPosition[0] - ((PlayerControlPrefix *)&gPlayerState)->position[0];
-    sp20 = ((RuntimeObjectPrefix *)object)->worldPosition[2] - ((PlayerControlPrefix *)&gPlayerState)->position[2];
+    sp24 = ((RuntimeObjectPrefix *)object)->worldPosition[0] - ((&gPlayerState))->position[0];
+    sp20 = ((RuntimeObjectPrefix *)object)->worldPosition[2] - ((&gPlayerState))->position[2];
     vector2NormalizeComponentsApprox(&sp24, &sp20);
     return mathWrapSignedDegrees((gPlayerYaw + gPlayerViewShake) - mathUnitDirectionDegrees(sp20, sp24));
 }
@@ -396,8 +394,8 @@ f32 objectGetFacingErrorToPlayer(u8 *object) {
     f32 dx;
     f32 dz;
 
-    dx = ((PlayerControlPrefix *)&gPlayerState)->position[0] - ((RuntimeObjectPrefix *)object)->worldPosition[0];
-    dz = ((PlayerControlPrefix *)&gPlayerState)->position[2] - ((RuntimeObjectPrefix *)object)->worldPosition[2];
+    dx = ((&gPlayerState))->position[0] - ((RuntimeObjectPrefix *)object)->worldPosition[0];
+    dz = ((&gPlayerState))->position[2] - ((RuntimeObjectPrefix *)object)->worldPosition[2];
     vector2NormalizeComponentsApprox(&dx, &dz);
     return mathWrapSignedDegrees(((RuntimeObjectPrefix *)object)->rotation[1] - mathUnitDirectionDegrees(dz, dx));
 }

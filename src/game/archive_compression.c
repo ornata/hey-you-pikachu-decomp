@@ -296,7 +296,7 @@ void archiveConsumeBits(s32 bitCount, u8 **source, s32 *bitWindow, s32 *availabl
 /// \note Original decompilation identifier: \c archiveReadBits (0x8004A4EC).
 s32 archiveReadBits(s32 bitCount, u8 **source, s32 *bitWindow, s32 *availableBits) {
     s32 sp1C;
-    sp1C = (((s32)*bitWindow >> *availableBits) & 0x1FF) >> (9 - bitCount);
+    sp1C = (((*bitWindow) >> *availableBits) & 0x1FF) >> (9 - bitCount);
     archiveConsumeBits(bitCount, source, bitWindow, availableBits);
     return sp1C;
 }

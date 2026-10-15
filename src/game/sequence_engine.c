@@ -278,9 +278,8 @@ s32 sequenceEngineResetControllers(VoicePlayer *driver, EngineSequence *seq) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80006068 (0x80006068).
 void sequenceEngineReadNextEvent(EngineSequence *sequence) {
-    sequence->eventLength =
-        ((EngineSequence *)sequence)
-            ->eventReader(sequence->readerContext, sequence->eventBuffer, sequence->eventLimit, &sequence->eventDelay);
+    sequence->eventLength = (sequence)->eventReader(sequence->readerContext, sequence->eventBuffer,
+                                                    sequence->eventLimit, &sequence->eventDelay);
 }
 
 /// Initialize a sequence and register it for playback by the driver.
@@ -336,7 +335,8 @@ ALSound *sequenceEngineFindSound(EngineSequence *seq, u8 channel, u8 key, u8 vel
         map = sounds[middle]->keyMap;
         if (key >= map->keyMin && key <= map->keyMax && velocity >= map->velocityMin && velocity <= map->velocityMax) {
             return sounds[middle];
-        } else if (key < map->keyMin || (velocity < map->velocityMin && key <= map->keyMax)) {
+        }
+        if (key < map->keyMin || (velocity < map->velocityMin && key <= map->keyMax)) {
             high = middle - 1;
         } else {
             low = middle + 1;

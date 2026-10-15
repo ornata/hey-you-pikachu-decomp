@@ -345,7 +345,7 @@ void hudDrawRecognitionIndicator(Gfx **gdl) {
             gHudRecognitionScale = gHudRecognitionPresentations[state].scale;
             animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudRecognitionTrack, (ValueKey *)gHudRecognitionPresentations[state].animation);
         }
-        animationIntegerTrackEvaluate((ValueTrack *)&gHudRecognitionTrack, &frame, gRuntimeFrameSeconds);
+        animationIntegerTrackEvaluate((&gHudRecognitionTrack), &frame, gRuntimeFrameSeconds);
         if (frame >= 0) {
             gp = *gdl;
             scale = gHudRecognitionScale;
@@ -444,7 +444,7 @@ void hudDrawMicrophoneIndicators(Gfx **gdl) {
             animationIntegerTrackInitialize((ValueTrack *)(f32 *)&gHudMicrophoneTrack, gTextureFrameAnimationPrograms[gHudMicrophoneAnimationIds[gHudMicrophoneIndicatorState]]);
         }
         previousFrame = gHudMicrophoneTrackFrame;
-        animationIntegerTrackEvaluate((ValueTrack *)&gHudMicrophoneTrack, &frame, gRuntimeFrameSeconds);
+        animationIntegerTrackEvaluate((&gHudMicrophoneTrack), &frame, gRuntimeFrameSeconds);
         gp = *gdl;
         gDPPipeSync(gp++);
         if (gHudMicrophoneIndicatorState == 6 && frame != 0x50) {
@@ -628,7 +628,7 @@ void hudDrawMotionIndicators(Gfx **gdl) {
         if (selected != gHudMotionIndicatorAnimation) {
             hudSetActionIndicatorAnimation(selected);
         }
-        animationIntegerTrackEvaluate((ValueTrack *)&gHudMotionIndicatorTrack, &gHudActionIndicatorSprites[0].texture,
+        animationIntegerTrackEvaluate((&gHudMotionIndicatorTrack), &gHudActionIndicatorSprites[0].texture,
                                       gRuntimeFrameSeconds);
         gDPPipeSync((*gdl)++);
         gSPSetOtherMode((*gdl)++, G_SETOTHERMODE_L, G_MDSFT_RENDERMODE, 29, 0x504240);

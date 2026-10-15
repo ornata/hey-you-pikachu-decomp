@@ -203,7 +203,7 @@ void wholeMapDrawDestinations(Gfx **gdl) {
     }
     selection.item.x = gWorldMapDestinations[gWorldMapSelectedDestination].icon.x;
     selection.item.y = gWorldMapDestinations[gWorldMapSelectedDestination].icon.y;
-    textureDrawRectangles(rendererTable, (TextureRectangle *)&selection.item, gdl);
+    textureDrawRectangles(rendererTable, (&selection.item), gdl);
     if (gWorldMapState == 3) {
         change = gWorldMapSelectionAlphaStep * 16;
     } else {
@@ -224,7 +224,7 @@ void wholeMapDrawDestinations(Gfx **gdl) {
     for (index = 0; index <= lastIndex; index++) {
         if (wholeMapIsDestinationAvailable(index)) {
             icon.item = gWorldMapDestinations[index].icon;
-            textureDrawRectangles(rendererTable, (TextureRectangle *)&icon.item, gdl);
+            textureDrawRectangles(rendererTable, (&icon.item), gdl);
             texture = gWorldMapDestinations[index].badgeTextures[playerGetChaseStage()];
             if (texture >= 0) {
                 if (index == 4) {
@@ -235,7 +235,7 @@ void wholeMapDrawDestinations(Gfx **gdl) {
                 alpha = runtimeGetUiPulseAlpha() & 255;
                 badge.item.y = (s32)((((index & 1) ? 0.01F : -0.01F) * (f32)(u32)alpha) + (f32)icon.item.y);
                 badge.item.texture = texture;
-                textureDrawRectangles(rendererTable, (TextureRectangle *)&badge.item, gdl);
+                textureDrawRectangles(rendererTable, (&badge.item), gdl);
             }
         }
     }
@@ -347,8 +347,7 @@ void wholeMapDrawDifficultyOverlay(Gfx **gdl) {
     gDPSetRenderMode((*gdl)++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
     gDPSetCombineLERP((*gdl)++, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0);
     gDPSetPrimColor((*gdl)++, 0, 0, 0, 0, 0, 0xC0);
-    textureDrawRectangles(
-        7, (TextureRectangle *)(TextureRectangle *)((playerGetChaseStage() * 0x90) + gWorldMapDifficultyOverlays), gdl);
+    textureDrawRectangles(7, ((TextureRectangle *)((playerGetChaseStage() * 0x90) + gWorldMapDifficultyOverlays)), gdl);
 }
 
 /// Camera slot selected for the current drawing context.

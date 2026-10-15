@@ -70,14 +70,14 @@ SchedulerTask *graphicsTaskInitialize(OSMesgQueue *schedulerQueue, void *firstFr
     gGraphicsSchedulerQueue = schedulerQueue;
     gGraphicsTaskCapacity = taskCount;
     gGraphicsNextTaskIndex = 0;
-    gGraphicsTaskPool = heapAllocLocal((HpHdr *)&gGameHeap, (u32)taskCount * sizeof(SchedulerTask), 0x4D);
+    gGraphicsTaskPool = heapAllocLocal((&gGameHeap), (u32)taskCount * sizeof(SchedulerTask), 0x4D);
     gGraphicsFramebufferIndex = 0;
     gGraphicsFramebuffers[0] = firstFramebuffer;
     gGraphicsFramebuffers[1] = secondFramebuffer;
-    gGraphicsMicrocodeStack = heapAllocLocal((HpHdr *)&gGameHeap, 0x400, 0x55);
-    gGraphicsYieldBuffer = heapAllocLocal((HpHdr *)&gGameHeap, 0xC00, 0x59);
+    gGraphicsMicrocodeStack = heapAllocLocal((&gGameHeap), 0x400, 0x55);
+    gGraphicsYieldBuffer = heapAllocLocal((&gGameHeap), 0xC00, 0x59);
     gGraphicsOutputCapacityWords = outputCapacity;
-    gGraphicsOutputBuffer = heapAllocLocal((HpHdr *)&gGameHeap, (u32)outputCapacity * 8U, 0x5E);
+    gGraphicsOutputBuffer = heapAllocLocal((&gGameHeap), (u32)outputCapacity * 8U, 0x5E);
     return gGraphicsTaskPool;
 }
 
@@ -125,15 +125,15 @@ void graphicsTaskSubmit(s32 microcode, s32 flags, Gfx **start, Gfx **end, OSMesg
     task->task.t.ucode = gGraphicsMicrocodeConfigurations[microcode].text;
     task->task.t.ucode_data = gGraphicsMicrocodeConfigurations[microcode].data;
     task->task.t.ucode_data_size = SP_UCODE_DATA_SIZE;
-    task->task.t.dram_stack = (u64 *)gGraphicsMicrocodeStack;
+    task->task.t.dram_stack = gGraphicsMicrocodeStack;
     task->task.t.dram_stack_size = SP_DRAM_STACK_SIZE8;
-    task->task.t.output_buff = (u64 *)gGraphicsOutputBuffer;
+    task->task.t.output_buff = gGraphicsOutputBuffer;
     if (gGraphicsMicrocodeConfigurations[microcode].fifo) {
         task->task.t.output_buff_size = gGraphicsOutputBuffer + gGraphicsOutputCapacityWords;
     } else {
         task->task.t.output_buff_size = (u64 *)gGraphicsOutputCapacityWords;
     }
-    task->task.t.yield_data_ptr = (u64 *)gGraphicsYieldBuffer;
+    task->task.t.yield_data_ptr = gGraphicsYieldBuffer;
     task->task.t.yield_data_size = OS_YIELD_DATA_SIZE;
     task->next = NULL;
     task->flags = flags;
@@ -885,9 +885,9 @@ void textImageCreateSystemFont(TextImage **out, u8 *text, s32 font) {
         return;
     }
     columns = clamped;
-    image = (TextImage *)heapAllocLocal((HpHdr *)&gGameHeap, sizeof(TextImage), 0x27F);
+    image = (TextImage *)heapAllocLocal((&gGameHeap), sizeof(TextImage), 0x27F);
     size = columns * 0x40;
-    pixels = (u8 *)heapAllocLocal((HpHdr *)&gGameHeap, size, 0x282);
+    pixels = (u8 *)heapAllocLocal((&gGameHeap), size, 0x282);
     _bzero(pixels, size);
     cursor = text;
     x = 0;
@@ -1083,7 +1083,7 @@ s32 textImageCreateCustomFont(TextImage **out, u8 *text, FontImage *font) {
     if (bytes > 0x1000) {
         TRACE("ERROR : Too large sprite!\n");
     }
-    pixels = (u8 *)heapAllocLocal((HpHdr *)&gGameHeap, bytes, 0x34D);
+    pixels = (u8 *)heapAllocLocal((&gGameHeap), bytes, 0x34D);
     _bzero(pixels, bytes);
     x = 0;
     cursor = text;
@@ -1095,7 +1095,7 @@ s32 textImageCreateCustomFont(TextImage **out, u8 *text, FontImage *font) {
             } else if (code == 0xA3A0) {
                 color = value;
             } else {
-                left = fontImageGetCharacterLeft(code, (FontImage *)font, gTextDrawSpacingMode);
+                left = fontImageGetCharacterLeft(code, font, gTextDrawSpacingMode);
                 rowBytes = glyphWidth * 4 / 8;
                 inkWidth = fontImageGetCharacterImageWidth(code, font, gTextDrawSpacingMode) * 4 / 8;
                 advance = fontImageGetCharacterAdvance(code, font, gTextDrawSpacingMode) * 4 / 8;
@@ -1107,7 +1107,7 @@ s32 textImageCreateCustomFont(TextImage **out, u8 *text, FontImage *font) {
                         s32 cropOffset = left * 4 / 8;
                         s32 destinationStride = width * 4 / 8;
                         do {
-                            scanline = (u8 *)heapAllocLocal((HpHdr *)&gGameHeap, rowBytes, 0x372);
+                            scanline = (u8 *)heapAllocLocal((&gGameHeap), rowBytes, 0x372);
                             bcopy(glyph, scanline, rowBytes);
                             if (color != 15) {
                                 for (i = 0; i < rowBytes; i++) {
@@ -1126,7 +1126,7 @@ s32 textImageCreateCustomFont(TextImage **out, u8 *text, FontImage *font) {
             }
         } while (*cursor != 0);
     }
-    bitmap = (TextImage *)heapAllocLocal((HpHdr *)&gGameHeap, sizeof(TextImage), 0x383);
+    bitmap = (TextImage *)heapAllocLocal((&gGameHeap), sizeof(TextImage), 0x383);
     bitmap->format = G_IM_FMT_CI;
     bitmap->width = width;
     bitmap->height = height;
@@ -1243,7 +1243,8 @@ s32 fontImageCharacterHasSideMargins(s32 code, FontImage *font) {
     if (code == 0xA1A0) {
         return 0;
     }
-    if ((fontImageGetCharacterLeft(code, (FontImage *)font, 1) == 0) && ((fontImageGetCharacterRight(code, (FontImage *)font, 1) + 1) == font->width)) {
+    if ((fontImageGetCharacterLeft(code, font, 1) == 0) &&
+        ((fontImageGetCharacterRight(code, font, 1) + 1) == font->width)) {
         return 0;
     }
     return 1;
@@ -1607,7 +1608,6 @@ s32 textParseHexDigit(u8 character, s32 *value) {
     return 1;
 }
 
-s32 fontImageGetGlyphIndex(s32 code, s32 arg1);
 /// Get the left boundary used to draw a character in a supplied font.
 /// \param code Encoded character to measure.
 /// \param font Font containing character metrics.

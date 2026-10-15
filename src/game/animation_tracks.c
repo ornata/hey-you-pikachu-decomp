@@ -284,7 +284,7 @@ void animationIntegerTrackInitialize(ValueTrack *track, ValueKey *keys) {
 /// \returns 0 for an active value, 1 for a held or absent track, or 2 for a one-shot value.
 /// \note Original decompilation identifier: \c func_8000A600 (0x8000A600).
 s32 animationIntegerTrackEvaluate(ValueTrack *state, s32 *out, f32 step) {
-    ValueTrack *track = (ValueTrack *)state;
+    ValueTrack *track = state;
     ValueKey *key = track->key;
     f32 duration;
     s32 lower;

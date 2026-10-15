@@ -390,7 +390,7 @@ void toolboxStoreObjectInSlot(ToolboxSlot *slot, u8 *object) {
     itemSetMode(object, ITEM_MODE_STORED);
     ((ItemStatePrefix *)objectState)->flags = (s32)(((ItemStatePrefix *)objectState)->flags & 0xBFFFFFFF);
     objectSetHierarchyFlags(object, 0x2000);
-    slot->id = (s32)((RuntimeObjectPrefix *)object)->handle;
+    slot->id = ((RuntimeObjectPrefix *)object)->handle;
     slot->kind = (s32)((ItemStatePrefix *)objectState)->kind;
     itemRemoveFromSearchAndCollision(((RuntimeObjectPrefix *)object)->handle);
 }
@@ -454,7 +454,7 @@ void toolboxStoreBonusObject(u8 *object) {
     }
     TRACE("putBonusItemIntoBox(%s)\n",
           itemGetDisplayName(*(s16 *)(((RuntimeObjectPrefix *)object)->state.bytes + 4), 1));
-    toolboxStoreObjectInSlot(&gToolboxBonusSlot, (u8 *)object);
+    toolboxStoreObjectInSlot(&gToolboxBonusSlot, object);
 }
 
 /// Replace the stored purchase item with a new item, destroying the previous item if present.
@@ -468,7 +468,7 @@ void toolboxStorePurchasedObject(u8 *object) {
     }
     TRACE("putPurchaseItemIntoBox(%s)\n",
           itemGetDisplayName(*(s16 *)(((RuntimeObjectPrefix *)object)->state.bytes + 4), 1));
-    toolboxStoreObjectInSlot(&gToolboxPurchaseSlot, (u8 *)object);
+    toolboxStoreObjectInSlot(&gToolboxPurchaseSlot, object);
 }
 
 
@@ -554,7 +554,7 @@ u8 *toolboxGiveObjectToPlayer(u8 *player, s32 row, s32 index) {
     ((ItemStatePrefix *)itemState)->owner = 0;
     itemSetMode(itemObject, ITEM_MODE_PLAYER_HELD);
     ((ItemStatePrefix *)itemState)->flags = (s32)(((ItemStatePrefix *)itemState)->flags | 0x40000000);
-    ((PlayerControlPrefix *)player)->heldItemHandle = (s32)((RuntimeObjectPrefix *)itemObject)->handle;
+    ((PlayerControlPrefix *)player)->heldItemHandle = ((RuntimeObjectPrefix *)itemObject)->handle;
     toolboxScaleCurrentRow(&gToolboxState);
     return itemObject;
 }
@@ -802,8 +802,7 @@ void toolboxCreateDisplayObjects(void) {
     }
     for (i = 0; i < 2; i++) {
         gToolboxRowTitleImages[i] = 0;
-        textImageCreateFromText((TextImage **)(&gToolboxRowTitleImages[i]), (u8 *)(gToolboxRowTitles[i]),
-                                gTextImageConfigurations);
+        textImageCreateFromText((&gToolboxRowTitleImages[i]), (u8 *)(gToolboxRowTitles[i]), gTextImageConfigurations);
     }
     toolboxRestoreStoredObjects((u8 *)&gToolboxState);
 }
@@ -964,7 +963,7 @@ void toolboxUpdateHelpMessage(void) {
     s32 *cur = &gToolboxNextHelpMessage;
     s32 v;
 
-    if ((u64)runtimeGetElapsedMilliseconds() - (u32)gToolboxHelpMessageMilliseconds >= 0xBB9) {
+    if (runtimeGetElapsedMilliseconds() - (u32)gToolboxHelpMessageMilliseconds >= 0xBB9) {
         v = *cur;
         messageBarEnqueue(0, 3.5F, (u8 *)gToolboxHelpMessages[v]);
         v = *cur + 1;
@@ -1004,7 +1003,7 @@ void toolboxDrawRowTitle(s32 address) {
     textDrawSetArea(0, 0, 319, 239);
     textDrawSetColor(255, 255, 255, 254);
     textDrawSetCursor(36, 190);
-    textDrawImageAtCursor((TextImage *)gToolboxRowTitleImages[row]);
+    textDrawImageAtCursor(gToolboxRowTitleImages[row]);
     textDrawGetDisplayListCursor(gdl);
 }
 
@@ -1163,7 +1162,7 @@ void toolboxDrawNavigation(s32 address) {
         }
     }
     if (gToolboxRotationStep == 0) {
-        object = (u8 *)objectFindLiveByHandle(gToolboxState.slots[gToolboxSelectedRow][0].id);
+        object = objectFindLiveByHandle(gToolboxState.slots[gToolboxSelectedRow][0].id);
         if (object != NULL) {
             if (*row == 0) {
                 scaleO = (f64) * (f32 *)(object + 0x24) * 4.0;
@@ -1265,7 +1264,7 @@ void toolboxOpen(s32 row, s32 useHeld) {
 
     controllerRequestRumbleReset(0);
     runtimeRequestGameModeChange(1);
-    held = (u8 *)objectFindLiveByHandle(gPlayerHeldItemHandle);
+    held = objectFindLiveByHandle(gPlayerHeldItemHandle);
     if (held != NULL) {
         state = ((RuntimeObjectPrefix *)held)->state.bytes;
         if (useHeld) {
@@ -1380,7 +1379,7 @@ void toolboxHandleInput(void) {
             TRACE("itembox help mode.\n");
             if (gToolboxState.slots[gToolboxSelectedRow][0].id != 0) {
                 selected.id = gToolboxState.slots[gToolboxSelectedRow][0].kind;
-                selected.text = (char *)itemGetHelpText(selected.id, 1);
+                selected.text = itemGetHelpText(selected.id, 1);
             } else {
                 selected.id = 0;
                 selected.text = "(There isn't anything there.)\nWhen you see an item,\npress @K@L to read a\n"

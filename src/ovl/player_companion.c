@@ -260,8 +260,8 @@ void playerUnusedControlHook(void) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8010E994 (0x8010E994).
 void playerSaveCompanionControlMode(u8 *player) {
-    ((PlayerControlPrefix *)player)->savedCompanionTarget = (s32)((PlayerControlPrefix *)player)->companionTarget;
-    ((PlayerControlPrefix *)player)->savedCompanionMode = (s32)((PlayerControlPrefix *)player)->companionMode;
+    ((PlayerControlPrefix *)player)->savedCompanionTarget = ((PlayerControlPrefix *)player)->companionTarget;
+    ((PlayerControlPrefix *)player)->savedCompanionMode = ((PlayerControlPrefix *)player)->companionMode;
 }
 
 /// Restore the saved companion-control selection without a status message, if the mode is currently
@@ -432,41 +432,40 @@ void playerCalculateMovementInput(ControllerState *pad, u8 *obj, f32 *dx, f32 *d
 
 /// Set a player view orientation when view-angle changes are enabled.
 /// \param player Player record to update.
-/// \param x Requested yaw in degrees, wrapped to a full turn.
-/// \param z Requested pitch in degrees, interpreted as a signed angle and limited to minus sixty through
+/// \param yaw Requested yaw in degrees, wrapped to a full turn.
+/// \param pitch Requested pitch in degrees, interpreted as a signed angle and limited to minus sixty through
 /// sixty degrees.
 /// \returns Nothing.
 ///
 /// \note Angles must be finite and small enough for full-turn adjustments to change their floating-point
 /// value.
 /// \note Original decompilation identifier: \c func_8010EF00 (0x8010EF00).
-void playerSetViewAngles(u8 *player, f32 x, f32 z) {
+void playerSetViewAngles(u8 *player, f32 yaw, f32 pitch) {
     if (((PlayerControlPrefix *)player)->permissions & 2) {
-        while (x < 0.0F) {
-            x += 360.0F;
+        while (yaw < 0.0F) {
+            yaw += 360.0F;
         }
-        while (x >= 360.0F) {
-            x -= 360.0F;
+        while (yaw >= 360.0F) {
+            yaw -= 360.0F;
         }
-        while (z < 0.0F) {
-            z += 360.0F;
+        while (pitch < 0.0F) {
+            pitch += 360.0F;
         }
-        while (z >= 360.0F) {
-            z -= 360.0F;
+        while (pitch >= 360.0F) {
+            pitch -= 360.0F;
         }
-        if (z >= 180.0F) {
-            z -= 360.0F;
+        if (pitch >= 180.0F) {
+            pitch -= 360.0F;
         }
-        if (z > 60.0F) {
-            z = 60.0F;
-        } else if (z < -60.0F) {
-            z = -60.0F;
+        if (pitch > 60.0F) {
+            pitch = 60.0F;
+        } else if (pitch < -60.0F) {
+            pitch = -60.0F;
         }
-        ((PlayerControlPrefix *)player)->yaw = x;
-        ((PlayerControlPrefix *)player)->pitch = z;
+        ((PlayerControlPrefix *)player)->yaw = yaw;
+        ((PlayerControlPrefix *)player)->pitch = pitch;
     }
 }
-
 
 /// Resolve the companion-control target used for player view tracking.
 /// \param player Player record containing the target selection.
@@ -519,7 +518,7 @@ void playerTrackCompanionViewTarget(u8 *player, ControllerState *controller, u8 
         vector3GetYawAndProjectedPitchDegrees(direction, &yaw, &pitch);
         result = mathApproachAngleDegrees(((PlayerControlPrefix *)player)->yaw, yaw, 0.2F, speed,
                                           60.0F * gRuntimeFrameSeconds);
-        playerSetViewAngles((u8 *)player, result,
+        playerSetViewAngles(player, result,
                             mathApproachAngleDegrees(((PlayerControlPrefix *)player)->pitch, pitch, 0.2F, speed,
                                                      60.0F * gRuntimeFrameSeconds));
     }
@@ -749,11 +748,11 @@ block_14:
     } else {
         ((PlayerControlPrefix *)motion)->movementClass = 0;
     }
-    ((PlayerControlPrefix *)motion)->position[0] = (f32)(((PlayerControlPrefix *)motion)->position[0] + dx);
-    ((PlayerControlPrefix *)motion)->position[1] = (f32)(((PlayerControlPrefix *)motion)->position[1] + dy);
-    ((PlayerControlPrefix *)motion)->position[2] = (f32)(((PlayerControlPrefix *)motion)->position[2] + dz);
+    ((PlayerControlPrefix *)motion)->position[0] = (((PlayerControlPrefix *)motion)->position[0] + dx);
+    ((PlayerControlPrefix *)motion)->position[1] = (((PlayerControlPrefix *)motion)->position[1] + dy);
+    ((PlayerControlPrefix *)motion)->position[2] = (((PlayerControlPrefix *)motion)->position[2] + dz);
     ((PlayerControlPrefix *)motion)->footstepDistance =
-        (f32)(((PlayerControlPrefix *)motion)->footstepDistance + (speed * gRuntimeFrameSeconds));
+        (((PlayerControlPrefix *)motion)->footstepDistance + (speed * gRuntimeFrameSeconds));
     rotatedX = dx;
     rotatedZ = dz;
     vector2RotateComponentsDegrees(((PlayerControlPrefix *)motion)->yaw, &rotatedX, &rotatedZ);
@@ -777,7 +776,7 @@ block_14:
     if (dy > 0.7F) {
         dy = 0.7F;
     }
-    ((PlayerControlPrefix *)motion)->downwardVelocity = (f32)-dy;
+    ((PlayerControlPrefix *)motion)->downwardVelocity = (-dy);
 }
 
 /// Interior motion-coefficient view of the item catalog, with a 116-byte stride.
@@ -1047,7 +1046,7 @@ void playerChangeMode(s32 mode) {
     PlayerMode *m;
     PlayerModeState *mc = &gPlayerModeState;
 
-    if (((PlayerControlPrefix *)&gPlayerState)->modeState.leave != 0) {
+    if (((&gPlayerState))->modeState.leave != 0) {
         gPlayerModeState.leave((u8 *)&gPlayerState);
     }
     if (mode == 9) {
@@ -1260,7 +1259,7 @@ s32 playerUpdateCompanionControl(u8 *player, ControllerState *controller) {
     switch (mode) {
     case 0:
         playerRecenterWalkingView(player);
-        playerSetViewAngles((u8 *)player,
+        playerSetViewAngles(player,
                             playerCalculateYawInput(player, controller, 0) +
                                 (*(f32 *)((s8 *)player + (u32) & ((PlayerControlPrefix *)0)->yaw)),
                             ((PlayerControlPrefix *)player)->pitch);
@@ -1287,7 +1286,6 @@ s32 playerUpdateCompanionControl(u8 *player, ControllerState *controller) {
     return 1;
 }
 
-s32 playerUpdateAreaEvents(u8 *player); /* extern */
 /// Advance normal player movement, view control, interactions, and permitted menu requests.
 /// \param player Player record to update.
 /// \param controller Controller state address.
@@ -1329,7 +1327,7 @@ void playerUpdateStationaryLook(u8 *player, ControllerState *controller) {
             return;
         }
         dx = playerCalculateYawInput(player, controller, 0);
-        playerSetViewAngles((u8 *)player, ((PlayerControlPrefix *)player)->yaw + dx,
+        playerSetViewAngles(player, ((PlayerControlPrefix *)player)->yaw + dx,
                             playerCalculatePitchInput(player, controller, progressGetValue(7)) +
                                 (*(f32 *)((s8 *)player + (u32) & ((PlayerControlPrefix *)0)->pitch)));
         playerStepGroundMovement(player, 0.0F, 0.0F);
@@ -1369,8 +1367,6 @@ void playerFinishStun(u8 *player) {
     controllerRequestRumbleStop(0);
 }
 
-void playerToggleViewShake(u8 *player); /* extern */
-
 /// Advance the timed player stun reaction, allowing menus and returning to the chapter-appropriate control
 /// mode when it ends.
 /// \param player Player record containing the remaining stun time.
@@ -1380,7 +1376,7 @@ void playerToggleViewShake(u8 *player); /* extern */
 void playerUpdateStun(u8 *player, ControllerState *controller) {
     if (playerTryOpenMenu(player, controller) == 0) {
         ((PlayerControlPrefix *)player)->stunRemaining =
-            (f32)(((PlayerControlPrefix *)player)->stunRemaining - gRuntimeFrameSeconds);
+            (((PlayerControlPrefix *)player)->stunRemaining - gRuntimeFrameSeconds);
         if (((PlayerControlPrefix *)player)->stunRemaining < 0.0F) {
             if (progressGetCurrentChapter() == 4) {
                 playerChangeMode(0x1B);
@@ -1413,20 +1409,20 @@ void playerUpdateBriefViewShake(u8 *player, ControllerState *unused) {
 s32 playerShowNextHelpLine(void) {
     u8 line[0x100];
     u8 *dst;
-    if (((u32) * (u8 *)gPlayerHelpTextCursor) == 0) {
+    if (((u32)*gPlayerHelpTextCursor) == 0) {
         return 0;
     }
     dst = line;
-    while (((u32) * (u8 *)gPlayerHelpTextCursor) != 0 && ((u32) * (u8 *)gPlayerHelpTextCursor) != '\n') {
-        *dst++ = ((u32) * (u8 *)gPlayerHelpTextCursor);
-        gPlayerHelpTextCursor = (u8 *)((u8 *)gPlayerHelpTextCursor + 1);
+    while (((u32)*gPlayerHelpTextCursor) != 0 && ((u32)*gPlayerHelpTextCursor) != '\n') {
+        *dst++ = ((u32)*gPlayerHelpTextCursor);
+        gPlayerHelpTextCursor = (u8 *)(gPlayerHelpTextCursor + 1);
     }
     *dst = 0;
-    if (((u32) * (u8 *)gPlayerHelpTextCursor) == '\n') {
-        gPlayerHelpTextCursor = (u8 *)((u8 *)gPlayerHelpTextCursor + 1);
+    if (((u32)*gPlayerHelpTextCursor) == '\n') {
+        gPlayerHelpTextCursor = (u8 *)(gPlayerHelpTextCursor + 1);
     }
     messageBarEnqueue(0, 2147483648.0F, line);
-    if (*(u8 *)gPlayerHelpTextCursor != 0) {
+    if (*gPlayerHelpTextCursor != 0) {
         return 1;
     }
     return 0;
@@ -1585,7 +1581,6 @@ void playerFinishTargetFocus(u8 *player) {
     playerRestoreCompanionControlMode(player);
 }
 
-void playerSaveCompanionControlMode(u8 *player); /* extern */
 /// Temporarily focus the player view on a target while preserving the previous companion-control selection.
 /// \param player Primary player record receiving the focus request.
 /// \param targetHandle Object handle to focus on.
@@ -1684,7 +1679,7 @@ void playerUpdateRestrictedControl(u8 *player, ControllerState *controller) {
             if (((PlayerControlPrefix *)player)->permissions & 0x8000) {
                 dx = playerCalculateYawInput(player, controller, 0);
                 dz = playerCalculatePitchInput(player, controller, progressGetValue(7));
-                playerSetViewAngles((u8 *)player, ((PlayerControlPrefix *)player)->yaw + dx,
+                playerSetViewAngles(player, ((PlayerControlPrefix *)player)->yaw + dx,
                                     dz + ((PlayerControlPrefix *)player)->pitch);
                 if (controller->pressed & 0x404) {
                     playerApplyControlScheme(0x14);
@@ -1722,7 +1717,7 @@ void playerUpdateViewOnlyControl(u8 *player, ControllerState *pad) {
         return;
     }
     dx = playerCalculateYawInput(player, pad, 0);
-    playerSetViewAngles((u8 *)player, ((PlayerControlPrefix *)player)->yaw + dx,
+    playerSetViewAngles(player, ((PlayerControlPrefix *)player)->yaw + dx,
                         playerCalculatePitchInput(player, pad, progressGetValue(7)) +
                             (*(f32 *)((s8 *)player + (u32) & ((PlayerControlPrefix *)0)->pitch)));
 }
@@ -1784,7 +1779,7 @@ void playerUpdateCameraTransition(u8 *player, ControllerState *unused) {
     f32 sp30[3];
 
     ((PlayerControlPrefix *)player)->modeState.cameraRemaining =
-        (f32)(((PlayerControlPrefix *)player)->modeState.cameraRemaining - gRuntimeFrameSeconds);
+        (((PlayerControlPrefix *)player)->modeState.cameraRemaining - gRuntimeFrameSeconds);
     if (((PlayerControlPrefix *)player)->modeState.cameraRemaining < 0.0F) {
         ((PlayerControlPrefix *)player)->modeState.cameraRemaining = 0.0F;
     }
@@ -2016,15 +2011,12 @@ void playerUpdateControlHierarchy(u8 *object) {
     u8 *surface;
     void *child;
 
-    origin = (PlayerControlPrefix *)&gPlayerState;
-    yaw = ((PlayerControlPrefix *)&gPlayerState)->yaw + ((PlayerControlPrefix *)&gPlayerState)->viewShake;
-    delta[0] = ((PlayerControlPrefix *)&gPlayerState)->position[0] -
-               ((RuntimeObjectPrefix *)((s32)gPikachuActor))->worldPosition[0];
-    delta[1] = ((PlayerControlPrefix *)&gPlayerState)->position[1] -
-               ((RuntimeObjectPrefix *)((s32)gPikachuActor))->worldPosition[1];
-    delta[2] = ((PlayerControlPrefix *)&gPlayerState)->position[2] -
-               ((RuntimeObjectPrefix *)((s32)gPikachuActor))->worldPosition[2];
-    distance = vector3LengthApprox((f32 *)&delta[0]);
+    origin = (&gPlayerState);
+    yaw = ((&gPlayerState))->yaw + ((&gPlayerState))->viewShake;
+    delta[0] = ((&gPlayerState))->position[0] - ((RuntimeObjectPrefix *)((s32)gPikachuActor))->worldPosition[0];
+    delta[1] = ((&gPlayerState))->position[1] - ((RuntimeObjectPrefix *)((s32)gPikachuActor))->worldPosition[1];
+    delta[2] = ((&gPlayerState))->position[2] - ((RuntimeObjectPrefix *)((s32)gPikachuActor))->worldPosition[2];
+    distance = vector3LengthApprox((&delta[0]));
     sine = mathSinDegrees(yaw);
     cosine = mathCosDegrees(yaw);
     reach = ((Vec3f *)((u8 *)gCurrentAreaConfiguration))->x;
@@ -2045,12 +2037,12 @@ void playerUpdateControlHierarchy(u8 *object) {
     ((RuntimeObjectPrefix *)object)->worldPosition[1] = projected[1];
     ((RuntimeObjectPrefix *)object)->worldPosition[2] = projected[2];
     grandchild = ((RuntimeObjectPrefix *)child)->sibling.pointer;
-    ((RuntimeObjectPrefix *)child)->position[0] = (f32)origin->position[0];
-    ((RuntimeObjectPrefix *)child)->position[1] = (f32)origin->position[1];
-    ((RuntimeObjectPrefix *)child)->position[2] = (f32)origin->position[2];
-    ((RuntimeObjectPrefix *)child)->worldPosition[0] = (f32)origin->position[0];
-    ((RuntimeObjectPrefix *)child)->worldPosition[1] = (f32)origin->position[1];
-    ((RuntimeObjectPrefix *)child)->worldPosition[2] = (f32)origin->position[2];
+    ((RuntimeObjectPrefix *)child)->position[0] = origin->position[0];
+    ((RuntimeObjectPrefix *)child)->position[1] = origin->position[1];
+    ((RuntimeObjectPrefix *)child)->position[2] = origin->position[2];
+    ((RuntimeObjectPrefix *)child)->worldPosition[0] = origin->position[0];
+    ((RuntimeObjectPrefix *)child)->worldPosition[1] = origin->position[1];
+    ((RuntimeObjectPrefix *)child)->worldPosition[2] = origin->position[2];
     surface = NULL;
     hitX = sine * 20.0F;
     hitY = 0.0F;
@@ -2131,37 +2123,37 @@ void playerInitializeForArea(void) {
 }
 
 /// Gradually return the player view toward its default walking orientation.
-/// \param state Player record whose view pitch and horizontal view offset are recentered.
+/// \param player Player record whose view pitch and horizontal view offset are recentered.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80112138 (0x80112138).
-void playerRecenterWalkingView(u8 *state) {
+void playerRecenterWalkingView(u8 *player) {
     f32 scale = 2.0F;
 
-    if (((PlayerControlPrefix *)state)->viewShake > 0.0F) {
-        ((PlayerControlPrefix *)state)->viewShake =
-            ((PlayerControlPrefix *)state)->viewShake - (60.0F * gRuntimeFrameSeconds * scale);
-        if (((PlayerControlPrefix *)state)->viewShake < 0.0F) {
-            ((PlayerControlPrefix *)state)->viewShake = 0.0F;
+    if (((PlayerControlPrefix *)player)->viewShake > 0.0F) {
+        ((PlayerControlPrefix *)player)->viewShake =
+            ((PlayerControlPrefix *)player)->viewShake - (60.0F * gRuntimeFrameSeconds * scale);
+        if (((PlayerControlPrefix *)player)->viewShake < 0.0F) {
+            ((PlayerControlPrefix *)player)->viewShake = 0.0F;
         }
-    } else if (((PlayerControlPrefix *)state)->viewShake < 0.0F) {
-        ((PlayerControlPrefix *)state)->viewShake =
-            ((PlayerControlPrefix *)state)->viewShake + (60.0F * gRuntimeFrameSeconds * scale);
-        if (((PlayerControlPrefix *)state)->viewShake > 0.0F) {
-            ((PlayerControlPrefix *)state)->viewShake = 0.0F;
+    } else if (((PlayerControlPrefix *)player)->viewShake < 0.0F) {
+        ((PlayerControlPrefix *)player)->viewShake =
+            ((PlayerControlPrefix *)player)->viewShake + (60.0F * gRuntimeFrameSeconds * scale);
+        if (((PlayerControlPrefix *)player)->viewShake > 0.0F) {
+            ((PlayerControlPrefix *)player)->viewShake = 0.0F;
         }
     }
 
-    if (((PlayerControlPrefix *)state)->pitch > 5.0F) {
-        ((PlayerControlPrefix *)state)->pitch =
-            ((PlayerControlPrefix *)state)->pitch - (60.0F * gRuntimeFrameSeconds * scale);
-        if (((PlayerControlPrefix *)state)->pitch < 5.0F) {
-            ((PlayerControlPrefix *)state)->pitch = 5.0F;
+    if (((PlayerControlPrefix *)player)->pitch > 5.0F) {
+        ((PlayerControlPrefix *)player)->pitch =
+            ((PlayerControlPrefix *)player)->pitch - (60.0F * gRuntimeFrameSeconds * scale);
+        if (((PlayerControlPrefix *)player)->pitch < 5.0F) {
+            ((PlayerControlPrefix *)player)->pitch = 5.0F;
         }
-    } else if (((PlayerControlPrefix *)state)->pitch < 5.0F) {
-        ((PlayerControlPrefix *)state)->pitch =
-            ((PlayerControlPrefix *)state)->pitch + (60.0F * gRuntimeFrameSeconds * scale);
-        if (((PlayerControlPrefix *)state)->pitch > 5.0F) {
-            ((PlayerControlPrefix *)state)->pitch = 5.0F;
+    } else if (((PlayerControlPrefix *)player)->pitch < 5.0F) {
+        ((PlayerControlPrefix *)player)->pitch =
+            ((PlayerControlPrefix *)player)->pitch + (60.0F * gRuntimeFrameSeconds * scale);
+        if (((PlayerControlPrefix *)player)->pitch > 5.0F) {
+            ((PlayerControlPrefix *)player)->pitch = 5.0F;
         }
     }
 }
@@ -2260,10 +2252,10 @@ void playerSetInteractionHelpText(u8 *text) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80112480 (0x80112480).
 void playerSetWorldPosition(const f32 *position) {
-    ((PlayerControlPrefix *)&gPlayerState)->downwardVelocity = 0.0F;
-    ((PlayerControlPrefix *)&gPlayerState)->position[0] = position[0];
-    ((PlayerControlPrefix *)&gPlayerState)->position[1] = position[1];
-    ((PlayerControlPrefix *)&gPlayerState)->position[2] = position[2];
+    ((&gPlayerState))->downwardVelocity = 0.0F;
+    ((&gPlayerState))->position[0] = position[0];
+    ((&gPlayerState))->position[1] = position[1];
+    ((&gPlayerState))->position[2] = position[2];
     playerUpdateViewCamera((u8 *)&gPlayerState);
     TRACE("playerPassCheckPoint(%d)\n", position);
 }
@@ -2277,7 +2269,7 @@ void playerSetWorldPosition(const f32 *position) {
 /// value.
 /// \note Original decompilation identifier: \c func_801124C8 (0x801124C8).
 void playerSetViewYaw(f32 yaw) {
-    playerSetViewAngles((u8 *)&gPlayerState, yaw, ((PlayerControlPrefix *)&gPlayerState)->pitch);
+    playerSetViewAngles((u8 *)&gPlayerState, yaw, ((&gPlayerState))->pitch);
 }
 
 /// Set the primary player view pitch when view-angle changes are enabled.
@@ -2289,7 +2281,7 @@ void playerSetViewYaw(f32 yaw) {
 /// value.
 /// \note Original decompilation identifier: \c func_801124F4 (0x801124F4).
 void playerSetViewPitch(f32 pitch) {
-    playerSetViewAngles((u8 *)&gPlayerState, ((PlayerControlPrefix *)&gPlayerState)->yaw, pitch);
+    playerSetViewAngles((u8 *)&gPlayerState, ((&gPlayerState))->yaw, pitch);
 }
 
 
@@ -2298,16 +2290,14 @@ void playerSetViewPitch(f32 pitch) {
 ///
 /// \note Original decompilation identifier: \c func_80112520 (0x80112520).
 void playerResetViewOrientation(void) {
-    ((PlayerControlPrefix *)&gPlayerState)->pitch = 0.0F;
-    ((PlayerControlPrefix *)&gPlayerState)->viewShake = 0.0F;
-    ((PlayerControlPrefix *)&gPlayerState)->yaw = 0.0F;
-    ((PlayerControlPrefix *)&gPlayerState)->pitchOffset = 0.0F;
+    ((&gPlayerState))->pitch = 0.0F;
+    ((&gPlayerState))->viewShake = 0.0F;
+    ((&gPlayerState))->yaw = 0.0F;
+    ((&gPlayerState))->pitchOffset = 0.0F;
     cameraSetPositionAndAngles(
-        0, ((PlayerControlPrefix *)&gPlayerState)->position[0],
-        ((PlayerControlPrefix *)&gPlayerState)->eyeHeight + ((PlayerControlPrefix *)&gPlayerState)->position[1],
-        ((PlayerControlPrefix *)&gPlayerState)->position[2],
-        ((PlayerControlPrefix *)&gPlayerState)->pitchOffset + ((PlayerControlPrefix *)&gPlayerState)->pitch,
-        ((PlayerControlPrefix *)&gPlayerState)->yaw + ((PlayerControlPrefix *)&gPlayerState)->viewShake, 0.0F);
+        0, ((&gPlayerState))->position[0], ((&gPlayerState))->eyeHeight + ((&gPlayerState))->position[1],
+        ((&gPlayerState))->position[2], ((&gPlayerState))->pitchOffset + ((&gPlayerState))->pitch,
+        ((&gPlayerState))->yaw + ((&gPlayerState))->viewShake, 0.0F);
 }
 
 /// Saved progress flag identifiers indexed by friendship milestone.
@@ -2386,27 +2376,20 @@ extern MatrixCamera gRenderCameras;
 ///
 /// \note Original decompilation identifier: \c func_80112698 (0x80112698).
 void playerPrepareCameraTransition(f32 *eye, f32 *target, f32 duration) {
-    ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraStartEye[0] =
-        (f32)gRenderCameras.eye[0];
-    ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraStartEye[1] =
-        (f32)gRenderCameras.eye[1];
-    ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraStartEye[2] =
-        (f32)gRenderCameras.eye[2];
-    ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraStartTarget[0] =
-        (f32)gRenderCameras.target[0];
-    ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraStartTarget[1] =
-        (f32)gRenderCameras.target[1];
-    ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraStartTarget[2] =
-        (f32)gRenderCameras.target[2];
-    ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraEndEye[0] = (f32)eye[0];
-    ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraEndEye[1] = (f32)eye[1];
-    ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraEndEye[2] = (f32)eye[2];
-    ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraEndTarget[0] = (f32)target[0];
-    ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraEndTarget[1] = (f32)target[1];
-    ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraEndTarget[2] = (f32)target[2];
-    ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraDuration = duration;
-    ((PlayerControlPrefix *)&gPlayerState)->modeState.cameraRemaining =
-        (f32)((PlayerControlPrefix *)&gPlayerState)->modeState.cameraDuration;
+    ((&gPlayerState))->modeState.cameraStartEye[0] = gRenderCameras.eye[0];
+    ((&gPlayerState))->modeState.cameraStartEye[1] = gRenderCameras.eye[1];
+    ((&gPlayerState))->modeState.cameraStartEye[2] = gRenderCameras.eye[2];
+    ((&gPlayerState))->modeState.cameraStartTarget[0] = gRenderCameras.target[0];
+    ((&gPlayerState))->modeState.cameraStartTarget[1] = gRenderCameras.target[1];
+    ((&gPlayerState))->modeState.cameraStartTarget[2] = gRenderCameras.target[2];
+    ((&gPlayerState))->modeState.cameraEndEye[0] = eye[0];
+    ((&gPlayerState))->modeState.cameraEndEye[1] = eye[1];
+    ((&gPlayerState))->modeState.cameraEndEye[2] = eye[2];
+    ((&gPlayerState))->modeState.cameraEndTarget[0] = target[0];
+    ((&gPlayerState))->modeState.cameraEndTarget[1] = target[1];
+    ((&gPlayerState))->modeState.cameraEndTarget[2] = target[2];
+    ((&gPlayerState))->modeState.cameraDuration = duration;
+    ((&gPlayerState))->modeState.cameraRemaining = ((&gPlayerState))->modeState.cameraDuration;
 }
 
 /// Separate symbol view of the primary player record's held item handle.
@@ -2429,7 +2412,7 @@ s32 playerPickUpItem(s32 id) {
         return 0;
     }
     heldId = gPlayerHeldItemHandle;
-    held = (u8 *)objectFindLiveByHandle(heldId);
+    held = objectFindLiveByHandle(heldId);
     if (held != NULL) {
         itemTryRelease(held, 1);
     }
@@ -2650,14 +2633,14 @@ void audioUpdateGameplayMusicDucking(void) {
 s32 playerAddPoints(s32 amount) {
     s32 result;
 
-    ((PlayerControlPrefix *)&gPlayerState)->points += amount;
-    result = ((PlayerControlPrefix *)&gPlayerState)->points;
+    ((&gPlayerState))->points += amount;
+    result = ((&gPlayerState))->points;
     if (result < 0) {
         result = 0;
-        ((PlayerControlPrefix *)&gPlayerState)->points = result;
+        ((&gPlayerState))->points = result;
     } else if (result >= 1000000) {
-        ((PlayerControlPrefix *)&gPlayerState)->points = 999999;
-        result = ((PlayerControlPrefix *)&gPlayerState)->points;
+        ((&gPlayerState))->points = 999999;
+        result = ((&gPlayerState))->points;
     }
     return result;
 }
@@ -2703,47 +2686,47 @@ f32 actorConstrainFacingHeading(u8 *object, f32 angle) {
     flags = (u16)((ActorScriptState *)state)->movementCollisionFlags;
     if (!(actionGetAttributes(object) & 0x10)) {
         return angle;
-    } else {
-        if (angle < 0.0f) {
-            do {
-                angle += 360.0f;
-            } while (angle < 0.0f);
+    }
+    if (angle < 0.0F) {
+        do {
+            angle += 360.0F;
+        } while (angle < 0.0F);
+    }
+    if (angle >= 360.0F) {
+        do {
+            angle -= 360.0F;
+        } while (angle >= 360.0F);
+    }
+    if ((angle >= 0) && (angle < 90.0F)) {
+        if (flags & 0x24) {
+            angle = 90.0F;
         }
-        if (angle >= 360.0f) {
-            do {
-                angle -= 360.0f;
-            } while (angle >= 360.0f);
+        if (flags & 9) {
+            angle = 0;
         }
-        if ((angle >= 0) && (angle < 90.0f)) {
-            if (flags & 0x24) {
-                angle = 90.0f;
-            }
-            if (flags & 9) {
-                angle = 0;
-            }
-        } else if ((angle >= 90.0f) && (angle < 180.0f)) {
-            if (flags & 0x24) {
-                angle = 90.0f;
-            }
-            if (flags & 9) {
-                angle = 180.0f;
-            }
-        } else if ((angle >= 180.0f) && (angle < 270.0f)) {
-            if (flags & 0x24) {
-                angle = 270.0f;
-            }
-            if (flags & 9) {
-                angle = 180.0f;
-            }
-        } else if ((angle >= 270.0f) && (angle <= 360.0f)) {
-            if (flags & 0x24) {
-                angle = 270.0f;
-            }
-            if (flags & 9) {
-                angle = 0;
-            }
+    } else if ((angle >= 90.0F) && (angle < 180.0F)) {
+        if (flags & 0x24) {
+            angle = 90.0F;
+        }
+        if (flags & 9) {
+            angle = 180.0F;
+        }
+    } else if ((angle >= 180.0F) && (angle < 270.0F)) {
+        if (flags & 0x24) {
+            angle = 270.0F;
+        }
+        if (flags & 9) {
+            angle = 180.0F;
+        }
+    } else if ((angle >= 270.0F) && (angle <= 360.0F)) {
+        if (flags & 0x24) {
+            angle = 270.0F;
+        }
+        if (flags & 9) {
+            angle = 0;
         }
     }
+
     return angle;
 }
 

@@ -836,7 +836,7 @@ void systemMenuHandleInput(void) {
             if ((*menu)->suppressConfirmSound == 0) {
                 audioPlaySoundEffect(0xC1);
             }
-            item = (MenuItem *)systemMenuGetSelectedItem(*menu);
+            item = systemMenuGetSelectedItem(*menu);
             if (item != NULL) {
                 if ((*menu)->confirmedIndex >= 0) {
                     (*menu)->confirmedIndex = (*menu)->selectedIndex;
@@ -867,7 +867,7 @@ void systemMenuHandleInput(void) {
         if ((*menu)->selectedIndex >= (*menu)->firstVisibleIndex + 4) {
             (*menu)->firstVisibleIndex = (*menu)->selectedIndex - 4;
         }
-        TRACE("current menu item = %s\n", ((MenuItem *)systemMenuGetSelectedItem(*menu))->label);
+        TRACE("current menu item = %s\n", (systemMenuGetSelectedItem(*menu))->label);
         TRACE("sel = %d, max = %d, from = %d\n", (*menu)->selectedIndex, (*menu)->count, (*menu)->firstVisibleIndex);
         systemMenuRefreshItemDisplay(state);
     }
@@ -1282,7 +1282,7 @@ void systemMenuOpenWorldMap(s32 unused) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8011B318 (0x8011B318).
 void systemMenuPreviewMusic(s32 cueId) {
-    TRACE("selectBGM : %d %s\n", cueId, ((MenuItem *)systemMenuGetSelectedItem(gSystemMenuState.menu))->label);
+    TRACE("selectBGM : %d %s\n", cueId, (systemMenuGetSelectedItem(gSystemMenuState.menu))->label);
     audioChangeCurrentCue(cueId, 0.0, 0.1);
     audioSetCurrentCueRate(1.0);
 }
@@ -1297,7 +1297,7 @@ void systemMenuPreviewSoundEffect(s32 soundId) {
         audioStopPlayback(gSystemMenuSoundPreviewHandle, 0.0);
     }
     gSystemMenuSoundPreviewHandle = audioPlaySoundEffect(soundId);
-    TRACE("selectSound : %d %s\n", soundId, ((MenuItem *)systemMenuGetSelectedItem(gSystemMenuState.menu))->label);
+    TRACE("selectSound : %d %s\n", soundId, (systemMenuGetSelectedItem(gSystemMenuState.menu))->label);
 }
 
 

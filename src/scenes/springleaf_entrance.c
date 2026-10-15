@@ -70,7 +70,7 @@ void springleafEntranceSpawnGrowthResident(f32 *position, s32 residentIndex) {
     }
     random = randomNext();
     actorCreateForKind(7, position[0], position[1], position[2], 0.0F,
-                       (f32)((f64)(u32)random * 2.3283064365386963e-10 * D_80158E50_scene_springleaf_entrance),
+                       (f32)((f64)random * 2.3283064365386963e-10 * D_80158E50_scene_springleaf_entrance),
                        gCurrentAreaConfiguration->objectScale, record, residentIndex);
 }
 

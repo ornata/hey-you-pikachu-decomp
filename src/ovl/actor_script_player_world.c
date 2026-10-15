@@ -999,7 +999,7 @@ s32 actorScriptReplaceItemKind(u8 *actor) {
 
     vm = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     kind = scriptVmPopInteger((ScriptVm *)(vm));
-    obj = (u8 *)objectResolveAvailableHandle(scriptVmPopInteger((ScriptVm *)(vm)));
+    obj = objectResolveAvailableHandle(scriptVmPopInteger((ScriptVm *)(vm)));
     if (obj == NULL) {
         scriptVmPushInteger((ScriptVm *)(vm), 0);
     } else {
@@ -1057,7 +1057,7 @@ s32 actorScriptGetItemState(u8 *actor) {
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     liveObject = objectFindLiveByHandle(scriptVmPopInteger((ScriptVm *)(vmAddress)));
     if (liveObject != NULL) {
-        if ((u16)((RuntimeObjectPrefix *)liveObject)->kind == 0x86) {
+        if (((RuntimeObjectPrefix *)liveObject)->kind == 0x86) {
             scriptVmPushInteger((ScriptVm *)(vmAddress),
                                 (s32)((ItemStatePrefix *)((RuntimeObjectPrefix *)liveObject)->state.bytes)->state);
         } else {

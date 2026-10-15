@@ -277,7 +277,7 @@ u8 *terrainDebugGridCreate(s32 size) {
     objectMakeHierarchyRoot(root);
     objectAllocateHierarchyMatrixBuffers(root);
     objectRegisterActiveHierarchy(root);
-    terrainDebugGridUpdatePosition((u8 *)root);
+    terrainDebugGridUpdatePosition(root);
     objectRefreshHierarchyWorldPositions(root);
     terrainDebugGridSetEnabled(root, 1);
     TRACE("meshNum:%d\n", index);

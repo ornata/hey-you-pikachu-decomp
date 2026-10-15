@@ -836,9 +836,9 @@ void actorCopyObjectRotationToState(u8 *actor) {
     ActorScriptState *state;
 
     state = ((RuntimeObjectPrefix *)actor)->state.actor;
-    state->orientation[0] = (f32)((RuntimeObjectPrefix *)actor)->rotation[0];
-    state->orientation[1] = (f32)((RuntimeObjectPrefix *)actor)->rotation[1];
-    state->orientation[2] = (f32)((RuntimeObjectPrefix *)actor)->rotation[2];
+    state->orientation[0] = ((RuntimeObjectPrefix *)actor)->rotation[0];
+    state->orientation[1] = ((RuntimeObjectPrefix *)actor)->rotation[1];
+    state->orientation[2] = ((RuntimeObjectPrefix *)actor)->rotation[2];
 }
 
 /// Owned lookup mapping packed actor-kind and part identifiers to part-table slots.
@@ -995,9 +995,9 @@ void actorGetConfiguredAttachmentPosition(u8 *actor, f32 heightOffset, f32 *posi
     case 0:
         actorGetPartWorldPosition(actor, actorConfigGetFirstAttachmentPartId(((RuntimeObjectPrefix *)actor)->kind), first);
         actorGetPartWorldPosition(actor, actorConfigGetSecondAttachmentPartId(((RuntimeObjectPrefix *)actor)->kind), second);
-        ((f32 *)position)[0] = (first[0] + second[0]) * 0.5F;
-        ((f32 *)position)[1] = (f32)((first[1] + second[1]) * 0.5F);
-        ((f32 *)position)[2] = (f32)((first[2] + second[2]) * 0.5F);
+        (position)[0] = (first[0] + second[0]) * 0.5F;
+        (position)[1] = (f32)((first[1] + second[1]) * 0.5F);
+        (position)[2] = (f32)((first[2] + second[2]) * 0.5F);
         return;
     case 1:
         actorGetPartWorldPosition(actor, actorConfigGetFirstAttachmentPartId(((RuntimeObjectPrefix *)actor)->kind), position);
@@ -1007,7 +1007,7 @@ void actorGetConfiguredAttachmentPosition(u8 *actor, f32 heightOffset, f32 *posi
         return;
     case 3:
         actorGetPartWorldPosition(actor, 0x76, position);
-        ((f32 *)position)[1] = (f32)(((f32 *)position)[1] + heightOffset);
+        (position)[1] = ((position)[1] + heightOffset);
         return;
     case 4:
         actorGetPartWorldPosition(actor, 0x77, position);
@@ -1241,9 +1241,9 @@ void actorUpdateMotionDisplacement(ActorScriptState *state, s32 status) {
 
     matrix33TransformVector((f32 *)&gObjectTraversalTransform, state->localMotion, state->worldMotion);
     movementScale = state->movementScale;
-    state->worldMotion[0] = (f32)(state->worldMotion[0] * movementScale);
-    state->worldMotion[1] = (f32)(state->worldMotion[1] * movementScale);
-    state->worldMotion[2] = (f32)(state->worldMotion[2] * movementScale);
+    state->worldMotion[0] = (state->worldMotion[0] * movementScale);
+    state->worldMotion[1] = (state->worldMotion[1] * movementScale);
+    state->worldMotion[2] = (state->worldMotion[2] * movementScale);
     if (status & 0x200) {
         upwardLimit = 30.0F;
         if (state->worldMotion[1] > 30.0F) {
@@ -1305,8 +1305,8 @@ void actorConstrainMovementToTerrain(u8 *object, f32 *displacement) {
     state = ((RuntimeObjectPrefix *)object)->state.actor;
     surface = 0;
     if (state->behaviorFlags & ACTOR_INHIBIT_HORIZONTAL_MOVEMENT) {
-        ((f32 *)displacement)[2] = 0.0F;
-        ((f32 *)displacement)[0] = 0.0F;
+        (displacement)[2] = 0.0F;
+        (displacement)[0] = 0.0F;
     }
     reference = actorGetDefaultPart(object);
     pose = state->groundReference;
@@ -1360,25 +1360,23 @@ void actorConstrainMovementToTerrain(u8 *object, f32 *displacement) {
             }
             state->gravityVelocity -= gravityDelta;
             if ((status & 0x01000000) != 0) {
-                ((f32 *)displacement)[0] = (f32)(state->worldMotion[0] * gRuntimeFrameSeconds);
-                ((f32 *)displacement)[1] =
-                    (f32)((state->gravityVelocity + state->worldMotion[1]) *
-                          gRuntimeFrameSeconds);
-                ((f32 *)displacement)[2] = (f32)(state->worldMotion[2] * gRuntimeFrameSeconds);
+                (displacement)[0] = (state->worldMotion[0] * gRuntimeFrameSeconds);
+                (displacement)[1] = ((state->gravityVelocity + state->worldMotion[1]) * gRuntimeFrameSeconds);
+                (displacement)[2] = (state->worldMotion[2] * gRuntimeFrameSeconds);
             } else {
-                ((f32 *)displacement)[1] += state->gravityVelocity * gRuntimeFrameSeconds;
+                (displacement)[1] += state->gravityVelocity * gRuntimeFrameSeconds;
             }
         } else {
             actorUpdateMotionDisplacement(state, status);
             state->gravityVelocity = 0.0F;
         }
-        if ((((f32 *)displacement)[1] + clearance) >= 0.05F) {
+        if (((displacement)[1] + clearance) >= 0.05F) {
             state->airborne = 1;
             return;
         }
         state->airborne = 0;
-        if ((((f32 *)displacement)[1] + clearance) < 0.0F) {
-            ((f32 *)displacement)[1] = (f32)(0.03F - clearance);
+        if (((displacement)[1] + clearance) < 0.0F) {
+            (displacement)[1] = (f32)(0.03F - clearance);
             if ((state->gravityVelocity + state->worldMotion[1]) < 0.0F) {
                 state->worldMotion[1] = 0.0F;
                 state->gravityVelocity = 0.0F;

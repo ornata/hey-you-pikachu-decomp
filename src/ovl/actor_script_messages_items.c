@@ -160,14 +160,15 @@ s32 actorScriptPushMessageArgument4(u8 *actor) {
 s32 actorScriptCreateAttachedEffect(u8 *actor) {
     s32 vm;
     s32 pad;
-    s32 kind;
-    s32 value;
+    s32 trackIndex;
+    s32 effectKind;
 
     vm = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    kind = scriptVmPopInteger((ScriptVm *)(vm));
-    value = scriptVmPopInteger((ScriptVm *)(vm));
-    attachedEffectCreate(actor, value, kind);
-    if ((actor == ((u8 *)gPikachuActor)) && ((kind == 0xA6) || (kind == 0xA7) || (kind == 0xAF) || (kind == 0xB3))) {
+    trackIndex = scriptVmPopInteger((ScriptVm *)(vm));
+    effectKind = scriptVmPopInteger((ScriptVm *)(vm));
+    attachedEffectCreate(actor, effectKind, trackIndex);
+    if ((actor == ((u8 *)gPikachuActor)) &&
+        ((trackIndex == 0xA6) || (trackIndex == 0xA7) || (trackIndex == 0xAF) || (trackIndex == 0xB3))) {
         if (0.5 < randomNext() * 2.3283064365386963e-10) {
             progressAddValue(0x1A, 1);
         }
@@ -254,9 +255,9 @@ s32 actorScriptGetObjectPlayerDistance(u8 *actor) {
         scriptVmPushFloat((ScriptVm *)(vm), -1.0F);
         return 0;
     }
-    d[2] = ((PlayerControlPrefix *)&gPlayerState)->position[0] - ((RuntimeObjectPrefix *)obj)->worldPosition[0];
-    d[1] = ((PlayerControlPrefix *)&gPlayerState)->position[1] - ((RuntimeObjectPrefix *)obj)->worldPosition[1];
-    d[0] = ((PlayerControlPrefix *)&gPlayerState)->position[2] - ((RuntimeObjectPrefix *)obj)->worldPosition[2];
+    d[2] = ((&gPlayerState))->position[0] - ((RuntimeObjectPrefix *)obj)->worldPosition[0];
+    d[1] = ((&gPlayerState))->position[1] - ((RuntimeObjectPrefix *)obj)->worldPosition[1];
+    d[0] = ((&gPlayerState))->position[2] - ((RuntimeObjectPrefix *)obj)->worldPosition[2];
     scriptVmPushFloat((ScriptVm *)(vm), vector3LengthApprox(d));
     return 0;
 }
@@ -421,7 +422,7 @@ s32 actorScriptSetPlayerYaw(u8 *actor) {
 /// \note Original decompilation identifier: \c func_8011CF24 (0x8011CF24).
 s32 actorScriptPushPlayerViewYaw(u8 *actor) {
     scriptVmPushFloat((ScriptVm *)(((RuntimeObjectPrefix *)actor)->state.actor->vmAddress),
-                      ((PlayerControlPrefix *)&gPlayerState)->viewShake + ((PlayerControlPrefix *)&gPlayerState)->yaw);
+                      ((&gPlayerState))->viewShake + ((&gPlayerState))->yaw);
     return 0;
 }
 
@@ -446,8 +447,7 @@ s32 actorScriptSetPlayerPitch(u8 *actor) {
 /// \note Original decompilation identifier: \c func_8011CFA4 (0x8011CFA4).
 s32 actorScriptPushPlayerViewPitch(u8 *actor) {
     scriptVmPushFloat((ScriptVm *)(((RuntimeObjectPrefix *)actor)->state.actor->vmAddress),
-                      ((PlayerControlPrefix *)&gPlayerState)->pitch +
-                          ((PlayerControlPrefix *)&gPlayerState)->pitchOffset);
+                      ((&gPlayerState))->pitch + ((&gPlayerState))->pitchOffset);
     return 0;
 }
 
@@ -1312,7 +1312,7 @@ s32 actorScriptSetPlayerPoints(u8 *actor) {
     s32 id = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     s32 h = scriptVmPopInteger((ScriptVm *)(id));
 
-    scriptVmPushInteger((ScriptVm *)(id), ((PlayerControlPrefix *)&gPlayerState)->points = h);
+    scriptVmPushInteger((ScriptVm *)(id), ((&gPlayerState))->points = h);
     return 0;
 }
 

@@ -79,7 +79,7 @@ void voiceReactiveSpinnerInitialize(u8 *object) {
     s32 sp1C;
     s32 allocationAddress;
 
-    allocationAddress = (s32)heapAllocLocal((HpHdr *)&gGameHeap, 4, 0x27);
+    allocationAddress = (s32)heapAllocLocal((&gGameHeap), 4, 0x27);
     sp1C = allocationAddress;
     _bzero((void *)allocationAddress, 4);
     ((RuntimeObjectPrefix *)object)->state.address = sp1C;
@@ -133,11 +133,10 @@ void messageBarPrepareImage(s32 index, QueuedMessage msg) {
     TextImage **slot = &gMessageBarState.handles[index].image;
 
     if (*slot != 0) {
-        textImageDestroy((TextImage *)*slot);
+        textImageDestroy((*slot));
     }
     TRACE("_setSprite:(%s) idx:%d\n", msg.text, index);
-    textImageCreateFromText((TextImage **)(slot), (u8 *)((s8 *)msg.text),
-                            &gTextImageConfigurations[msg.style]);
+    textImageCreateFromText(slot, (u8 *)((s8 *)msg.text), &gTextImageConfigurations[msg.style]);
 }
 
 /// Retained displayed message text used to coalesce repeated message requests.
@@ -236,7 +235,7 @@ void messageBarResetAndReleaseImages(void) {
 
     for (i = 0, p = gMessageBarImageHandles; i < 2; i++, p++) {
         if (*p != 0) {
-            textImageDestroy((TextImage *)*p);
+            textImageDestroy((*p));
         }
     }
     messageBarInitialize();

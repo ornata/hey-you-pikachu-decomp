@@ -277,21 +277,21 @@ s32 audioCountActive(s32 categories) {
 
 
 /// Count active playback slots associated with an audio identifier.
-/// \param id Playback identifier; zero selects no playback.
+/// \param handle Playback identifier; zero selects no playback.
 /// \returns One or zero for a sequence identifier, otherwise the number of matching sound-effect slots.
 /// \note Original decompilation identifier: \c func_8001FD2C (0x8001FD2C).
-s32 audioCountPlayback(s32 id) {
+s32 audioCountPlayback(s32 handle) {
     s32 i;
 
-    if (id == 0) {
+    if (handle == 0) {
         return 0;
     }
     for (i = 0; i < 4; i++) {
-        if (id == gAudioSequenceSlots[i].handle) {
+        if (handle == gAudioSequenceSlots[i].handle) {
             return (u64)(sequenceEngineIsStopped(&gAudioSequenceSlots[i].player.playback) == 0);
         }
     }
-    return soundEffectPlayerCountPlayback(gSoundEffectPlayer, id);
+    return soundEffectPlayerCountPlayback(gSoundEffectPlayer, handle);
 }
 
 #include <PR/libaudio.h>
@@ -475,16 +475,16 @@ s32 audioFadeOutSequence(s32 id, f64 fadeSeconds) {
 
 
 /// Stop sound effects or fade out a sequence associated with an audio identifier.
-/// \param id Playback identifier; zero selects no playback.
+/// \param handle Playback identifier; zero selects no playback.
 /// \param fadeSeconds Nonnegative sequence fade duration in seconds; sound effects stop immediately.
 /// \returns Zero.
 /// \note Original decompilation identifier: \c func_80020270 (0x80020270).
-s32 audioStopPlayback(s32 id, f64 fadeSeconds) {
-    if (id == 0) {
+s32 audioStopPlayback(s32 handle, f64 fadeSeconds) {
+    if (handle == 0) {
         return 0;
     }
-    soundEffectPlayerStop(gSoundEffectPlayer, id);
-    audioFadeOutSequence(id, fadeSeconds);
+    soundEffectPlayerStop(gSoundEffectPlayer, handle);
+    audioFadeOutSequence(handle, fadeSeconds);
     return 0;
 }
 

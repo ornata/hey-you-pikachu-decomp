@@ -81,13 +81,11 @@ void titleScreenInitialize(void) {
     gTitleStartupPanelImage = (s32)assetAllocateAndLoad(&gTitleStartupPanelAsset);
     gTitleSilhouetteImage = (s32)assetAllocateAndLoad(&gTitleSilhouetteAsset);
     for (source = four.words, dest = gTitleCursorImages; source < four.words + 4; source++, dest++) {
-        textImageCreateFromText((TextImage **)((u8 **)dest), (u8 *)(*source),
-                                gTextImageConfigurations);
+        textImageCreateFromText((TextImage **)((u8 **)dest), (*source), gTextImageConfigurations);
     }
     dest = gTitleMenuImages;
     for (source = eight.words, end = eight.words + 8; source != end; source++, dest++) {
-        textImageCreateFromText((TextImage **)((u8 **)dest), (u8 *)(*source),
-                                gTextImageConfigurations);
+        textImageCreateFromText((TextImage **)((u8 **)dest), (*source), gTextImageConfigurations);
     }
 }
 
@@ -194,7 +192,7 @@ void titleScreenDrawStartPrompt(Gfx **gdl) {
     TitlePromptLayout t = gTitleStartPromptSprites;
     s32 a;
 
-    if ((u64)runtimeGetElapsedMilliseconds() - (u32)gTitleIntroductionMilliseconds >= 0x2328) {
+    if (runtimeGetElapsedMilliseconds() - gTitleIntroductionMilliseconds >= 0x2328) {
         gTitleStartPromptPhase += 120.0F * gRuntimeFrameSeconds;
         while (gTitleStartPromptPhase < 0.0F) {
             gTitleStartPromptPhase += 360.0F;
@@ -277,13 +275,13 @@ void titleScreenDrawMenu(Gfx **cursor, const s32 *items, s32 enabled, s32 unavai
             } else {
                 textDrawSetColor(120, 120, 255, 160);
             }
-            textDrawImageAtCursor((TextImage *)gTitleMenuImages[items[i]]);
+            textDrawImageAtCursor(gTitleMenuImages[items[i]]);
         }
         gTitleCursorFrame = (s32)((f32)runtimeGetElapsedMilliseconds() * 0.003F) % 4;
         cursorY = (gTitleMenuSelection * 16) + y;
         textDrawSetCursor(x, cursorY);
         textDrawSetColor(255, 255, 0, 255);
-        textDrawImageAtCursor((TextImage *)gTitleCursorImages[gTitleCursorFrame]);
+        textDrawImageAtCursor(gTitleCursorImages[gTitleCursorFrame]);
         textDrawGetDisplayListCursor(gdl);
     }
 }
@@ -636,14 +634,13 @@ s32 titleScreenHandleFileSelection(void) {
         }
         gTitleScreenState = 0x11;
         return 1;
-    } else {
-        if (buttons & 0x4000) {
-            gTitleMenuSelection = (s32)gTitleSavedMainMenuSelection;
-            gTitleScreenState = 0xD;
-            return 0;
-        }
+    }
+    if (buttons & 0x4000) {
+        gTitleMenuSelection = (s32)gTitleSavedMainMenuSelection;
+        gTitleScreenState = 0xD;
         return 0;
     }
+        return 0;
 }
 
 /// Primary controller new and auto-repeated button presses; aliases the repeated word of the processed sample.

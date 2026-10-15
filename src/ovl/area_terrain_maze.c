@@ -381,7 +381,7 @@ s32 areaDispatchPositionEvent(f32 *position, s32 eventType) {
     u8 *node;
     MazePositionEvent callback;
     node = areaFindPositionNode(position[0], position[1], position[2]);
-    if (node == gAreaLastEventNode && (u64)runtimeGetElapsedMilliseconds() - gAreaLastEventMilliseconds < 1000) {
+    if (node == gAreaLastEventNode && runtimeGetElapsedMilliseconds() - gAreaLastEventMilliseconds < 1000) {
         return 0;
     }
     gAreaLastEventMilliseconds = runtimeGetElapsedMilliseconds();
@@ -730,7 +730,6 @@ f32 terrainGetHeightMapHeight(f32 x, f32 z, u8 *node) {
     return ((1.0F - tz) * (((1.0F - tx) * v00) + (tx * v10))) + (tz * (((1.0F - tx) * v01) + (tx * v11)));
 }
 
-f32 terrainGetHeightMapHeight(f32 x, f32 z, u8 *node); /* extern */
 /// Evaluate terrain height within a supplied area node.
 /// \param x World X coordinate.
 /// \param z World Z coordinate.
@@ -1498,9 +1497,6 @@ s32 areaIsNodeVisible(u8 *node) {
 }
 #undef D324_VISIBLE_IF
 
-void areaDeactivateNodeHierarchy(u8 *node); /* extern */
-void areaActivateNode(u8 *node);            /* extern */
-s32 areaIsNodeVisible(u8 *node);            /* extern */
 /// Activate an area node and update descendant participation according to camera visibility.
 /// \param node Initialized area hierarchy whose visibility is refreshed.
 /// \returns Nothing.
@@ -1560,12 +1556,12 @@ void mazeInitializeRoot(void) {
     f32 length;
     gAreaMazeRoot = (MazeNode *)areaAllocateNode();
     integerScale = integerPower(2, gCurrentAreaConfiguration->subdivisionPower);
-    ((MazeNode *)gAreaMazeRoot)->x = 0.0F;
-    ((MazeNode *)gAreaMazeRoot)->y = 0.0F;
-    ((MazeNode *)gAreaMazeRoot)->z = 0.0F;
-    ((MazeNode *)gAreaMazeRoot)->w = (f32)integerScale * ((Vec3f *)((u8 *)gCurrentAreaConfiguration))->x;
-    ((MazeNode *)gAreaMazeRoot)->h = (f32)integerScale * ((Vec3f *)((u8 *)gCurrentAreaConfiguration))->y;
-    ((MazeNode *)gAreaMazeRoot)->d = (f32)integerScale * ((Vec3f *)((u8 *)gCurrentAreaConfiguration))->z;
+    (gAreaMazeRoot)->x = 0.0F;
+    (gAreaMazeRoot)->y = 0.0F;
+    (gAreaMazeRoot)->z = 0.0F;
+    (gAreaMazeRoot)->w = (f32)integerScale * ((Vec3f *)((u8 *)gCurrentAreaConfiguration))->x;
+    (gAreaMazeRoot)->h = (f32)integerScale * ((Vec3f *)((u8 *)gCurrentAreaConfiguration))->y;
+    (gAreaMazeRoot)->d = (f32)integerScale * ((Vec3f *)((u8 *)gCurrentAreaConfiguration))->z;
     gAreaMazeRoot->depth = gCurrentAreaConfiguration->subdivisionPower;
     dims.x = ((Vec3f *)((u8 *)gCurrentAreaConfiguration))->x;
     dims.y = ((Vec3f *)((u8 *)gCurrentAreaConfiguration))->y;
@@ -1754,8 +1750,6 @@ void mazeBuildNodeHierarchy(u8 *node, s32 depth, s32 forceSplit) {
     }
 }
 
-u8 *areaFindPositionNode(f32 x, f32 y, f32 z); /* extern */
-
 /// Create and register a block object in the maze region selected by a world position.
 /// \param position World position in X, Y, Z order selecting a region with no existing block object to
 /// replace.
@@ -1773,9 +1767,9 @@ void mazePlaceBlockObject(u8 *position, u8 *objectTemplate) {
     blockHierarchy = objectCreateHierarchyFromTemplate((ObjectTemplate *)objectTemplate);
     ((RuntimeObjectPrefix *)blockHierarchy)->kind = 0x88;
     registeredHierarchy = objectRegisterActiveHierarchy(blockHierarchy);
-    ((RuntimeObjectPrefix *)registeredHierarchy)->position[0] = (f32)((MazeNode *)sp1C)->x;
-    ((RuntimeObjectPrefix *)registeredHierarchy)->position[1] = (f32)((MazeNode *)sp1C)->y;
-    ((RuntimeObjectPrefix *)registeredHierarchy)->position[2] = (f32)((MazeNode *)sp1C)->z;
+    ((RuntimeObjectPrefix *)registeredHierarchy)->position[0] = ((MazeNode *)sp1C)->x;
+    ((RuntimeObjectPrefix *)registeredHierarchy)->position[1] = ((MazeNode *)sp1C)->y;
+    ((RuntimeObjectPrefix *)registeredHierarchy)->position[2] = ((MazeNode *)sp1C)->z;
     ((RuntimeObjectPrefix *)registeredHierarchy)->scale[0] *= gCurrentAreaConfiguration->objectScale;
     ((RuntimeObjectPrefix *)registeredHierarchy)->scale[1] *= gCurrentAreaConfiguration->objectScale;
     ((RuntimeObjectPrefix *)registeredHierarchy)->scale[2] *= gCurrentAreaConfiguration->objectScale;
@@ -2014,8 +2008,6 @@ void mazeSpawnConfiguredItems(void) {
     }
 }
 
-void areaUpdateNodeVisibility(u8 *node); /* extern */
-
 /// Refresh current-area maze visibility for the active camera.
 /// \param unused Unused callback argument.
 /// \returns Nothing; requires an initialized maze and active camera.
@@ -2061,7 +2053,6 @@ void mazePrepareObjectHierarchy(s32 object) {
     mazeFreezeStaticObjects((u8 *)object);
 }
 
-void mazePrepareObjectHierarchy(s32 object); /* extern */
 /// Prepare the objects associated with a maze node and all descendants.
 /// \param node Maze hierarchy root to prepare, or null.
 /// \returns Nothing.
@@ -2084,8 +2075,6 @@ void mazePrepareNodeObjects(u8 *node) {
     }
 }
 
-void mazePrepareNodeObjects(u8 *node); /* extern */
-
 /// Initialize the current area's maze, prepare its objects, and spawn its configured items.
 /// \returns Nothing; requires a loaded area configuration and no existing maze to replace.
 /// \note Original decompilation identifier: \c func_8010E4C0 (0x8010E4C0).
@@ -2104,9 +2093,9 @@ void mazeInitialize(void) {
     TRACE("totalBlockNum = %d\n", gMazeDiagnosticBlockCount);
     TRACE("sizeof(mazeBlockT) = %d\n", 0x50);
     mazeSpawnConfiguredItems();
-    ((f32 *)&D_80133DE8)[0] = 0.0F;
-    ((f32 *)&D_80133DE8)[1] = 0.0F;
-    ((f32 *)&D_80133DE8)[2] = 0.0F;
+    ((&D_80133DE8))[0] = 0.0F;
+    ((&D_80133DE8))[1] = 0.0F;
+    ((&D_80133DE8))[2] = 0.0F;
 }
 
 /// Invoke the area's optional initializer after common gameplay setup.
@@ -2123,8 +2112,6 @@ void areaRunSceneInitializer(void) {
         initializer();
     }
 }
-
-void mazeDestroyNodeHierarchy(u8 *node); /* extern */
 
 /// Release the current maze hierarchy and its associated objects.
 /// \returns Nothing; requires an initialized maze root.

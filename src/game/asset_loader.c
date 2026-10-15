@@ -48,7 +48,7 @@ s32 assetDecompressAndPatch(u8 *destination, u8 *source, s32 size, s32 outputSiz
 void assetLoadAndPatchFromRom(s32 romAddress, u8 *destination, u8 *scratch, s32 encodedSize, s32 outputSize,
                               s32 patchOffset, s32 patchCount) {
     romDmaReadBlocking(romAddress, scratch, (patchCount * 8) + encodedSize);
-    assetDecompressAndPatch((u8 *)destination, (u8 *)scratch, encodedSize, outputSize, patchOffset, patchCount);
+    assetDecompressAndPatch(destination, scratch, encodedSize, outputSize, patchOffset, patchCount);
 }
 
 
@@ -81,7 +81,7 @@ void *assetAllocateAndLoad(AssetDescriptor *info) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002D214 (0x8002D214).
 void assetFree(void *asset) {
-    heapFreeLocal(&gGameHeap, (void *)asset);
+    heapFreeLocal(&gGameHeap, asset);
 }
 
 /// Provide an inactive asset operation.

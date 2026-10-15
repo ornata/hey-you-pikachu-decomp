@@ -190,7 +190,7 @@ void linkedEffectUpdate(u8 *object) {
     ((RuntimeObjectPrefix *)object)->rotation[0] =
         (f32)(mathSinDegrees(((LinkedEffectState *)state)->elapsed * 540.0F) * 45.0F);
     if (((RuntimeObjectPrefix *)object)->handle & 1) {
-        ((RuntimeObjectPrefix *)object)->rotation[0] = (f32)-((RuntimeObjectPrefix *)object)->rotation[0];
+        ((RuntimeObjectPrefix *)object)->rotation[0] = (-((RuntimeObjectPrefix *)object)->rotation[0]);
     }
     if (((RuntimeObjectPrefix *)object)->rotation[0] < 0.0F) {
         do {
@@ -206,7 +206,7 @@ void linkedEffectUpdate(u8 *object) {
     animationIntegerTrackEvaluate(&((LinkedEffectState *)state)->frameTrack, &channelValue, step);
     animationIntegerTrackEvaluate(&((LinkedEffectState *)state)->opacityTrack, &channelValue, step);
     ((LinkedEffectState *)state)->color[3] = (s8)channelValue;
-    ((LinkedEffectState *)state)->elapsed = (f32)(((LinkedEffectState *)state)->elapsed + gRuntimeFrameSeconds);
+    ((LinkedEffectState *)state)->elapsed = (((LinkedEffectState *)state)->elapsed + gRuntimeFrameSeconds);
 }
 
 typedef struct Rgba8 {
@@ -262,9 +262,9 @@ s32 linkedEffectComputeTargetVelocity(u8 *object, f32 *velocity) {
         velocity[1] = 10.0F;
         return 1;
     }
-    velocity[0] = (f32)(((RuntimeObjectPrefix *)target)->worldPosition[0] - ((RuntimeObjectPrefix *)object)->position[0]);
-    velocity[1] = (f32)(((RuntimeObjectPrefix *)target)->worldPosition[1] - ((RuntimeObjectPrefix *)object)->position[1]);
-    velocity[2] = (f32)(((RuntimeObjectPrefix *)target)->worldPosition[2] - ((RuntimeObjectPrefix *)object)->position[2]);
+    velocity[0] = (((RuntimeObjectPrefix *)target)->worldPosition[0] - ((RuntimeObjectPrefix *)object)->position[0]);
+    velocity[1] = (((RuntimeObjectPrefix *)target)->worldPosition[1] - ((RuntimeObjectPrefix *)object)->position[1]);
+    velocity[2] = (((RuntimeObjectPrefix *)target)->worldPosition[2] - ((RuntimeObjectPrefix *)object)->position[2]);
     distance = vector3Normalize(velocity);
     if ((((LinkedEffectState *)state)->contactPending != 0) && (distance < (((RuntimeObjectPrefix *)target)->radius + ((RuntimeObjectPrefix *)object)->radius))) {
         next = ((LinkedEffectState *)state)->next;
@@ -300,9 +300,9 @@ s32 linkedEffectComputeTargetVelocity(u8 *object, f32 *velocity) {
         step = distance;
     }
     distance = step / gRuntimeFrameSeconds;
-    velocity[0] = (f32)(velocity[0] * distance);
-    velocity[1] = (f32)(velocity[1] * distance);
-    velocity[2] = (f32)(velocity[2] * distance);
+    velocity[0] = (velocity[0] * distance);
+    velocity[1] = (velocity[1] * distance);
+    velocity[2] = (velocity[2] * distance);
     return 2;
 }
 
@@ -340,9 +340,11 @@ s32 linkedEffectComputeReboundVelocity(u8 *object, f32 *velocity) {
         ((LinkedEffectState *)objectState)->velocity[1] = -((LinkedEffectState *)objectState)->velocity[1];
     }
     turn = gLinkedReboundTurnCoefficient;
-    velocity[0] = (f32)(((LinkedEffectState *)objectState)->velocity[0] - (((LinkedEffectState *)objectState)->velocity[2] * turn));
+    velocity[0] =
+        (((LinkedEffectState *)objectState)->velocity[0] - (((LinkedEffectState *)objectState)->velocity[2] * turn));
     velocity[1] = (f32)(((LinkedEffectState *)objectState)->velocity[1] - (gRuntimeFrameSeconds * 70.0F));
-    velocity[2] = (f32)(((LinkedEffectState *)objectState)->velocity[2] + (((LinkedEffectState *)objectState)->velocity[0] * turn));
+    velocity[2] =
+        (((LinkedEffectState *)objectState)->velocity[2] + (((LinkedEffectState *)objectState)->velocity[0] * turn));
     return 1;
 }
 
@@ -374,9 +376,11 @@ s32 linkedEffectComputeFallingVelocity(u8 *object, f32 *velocity) {
         ((LinkedEffectState *)objectState)->callback = &linkedEffectComputeTargetVelocity;
     }
     turn = gLinkedFallingTurnCoefficient;
-    velocity[0] = (f32)(((LinkedEffectState *)objectState)->velocity[0] - (((LinkedEffectState *)objectState)->velocity[2] * turn));
+    velocity[0] =
+        (((LinkedEffectState *)objectState)->velocity[0] - (((LinkedEffectState *)objectState)->velocity[2] * turn));
     velocity[1] = (f32)(((LinkedEffectState *)objectState)->velocity[1] - (gRuntimeFrameSeconds * 30.0F));
-    velocity[2] = (f32)(((LinkedEffectState *)objectState)->velocity[2] + (((LinkedEffectState *)objectState)->velocity[0] * turn));
+    velocity[2] =
+        (((LinkedEffectState *)objectState)->velocity[2] + (((LinkedEffectState *)objectState)->velocity[0] * turn));
     return 1;
 }
 

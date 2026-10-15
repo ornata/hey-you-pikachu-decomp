@@ -391,7 +391,7 @@ s32 soundEffectPlayerSetOutputMode(SoundEffectPlayer *player, s32 mode) {
 /// \returns One.
 /// \note Original decompilation identifier: \c func_80021380 (0x80021380).
 s32 soundEffectPlayerSetMasterVolume(SoundEffectPlayer *player, s32 volume) {
-    ((SoundEffectPlayer *)player)->volume = volume;
+    (player)->volume = volume;
     return 1;
 }
 
