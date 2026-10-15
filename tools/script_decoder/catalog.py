@@ -201,7 +201,8 @@ def catalog(image, max_instructions=100000):
                              script_message_posts=message_posts(decoded['instructions']),
                              native_action_calls=actions,
                              action_producer_functions=action_producer_functions(decoded['instructions'], actions),
-                             voice_dictionary_requests=dictionary_requests(decoded['instructions'], vocabulary.get('dictionaries', []), name_catalog, frame_reviews['active']),
+                             voice_dictionary_requests=dictionary_requests(decoded['instructions'], vocabulary.get('dictionaries', []), name_catalog,
+                                                                           frame_reviews['active'], frame_reviews['active_deferred']),
                              listing=identity + '.json'))
             decodes[identity] = decoded
     if not rows:

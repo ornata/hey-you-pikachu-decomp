@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "purpose": "Explicit scalar and immediate action-request storage contracts; source changes revoke evidence until reviewed again. Deferred handlers remain separate.",
-  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases. Twelve action-request wrappers and their two-field scheduling helper reviewed against original Ghidra801167A0 and all twelve original wrapper addresses; twenty-four direct original-instruction request cases guard all VM fields and pending/protected values.",
+  "evidence": "Source bodies and scalar-push/set helpers reviewed alongside original Ghidra80115228/8011601C/8011604C and bounded original-instruction cases. Read-only helper chains reviewed separately; lookup predecessor writes target a C-stack temporary. Actor/object prefix definitions and vmAddress offset checks bind the shared context lookup; handle-domain branches checked against original Ghidra8011DD38/8011DD78/8011DDB8/80118ACC and twenty-four guarded replacement cases. Coordinate, packed-counter and actor creation-argument helper paths reviewed against original Ghidra80117480/801174B0/80114CC8/8012056C and thirty-five authored original-instruction cases. Twelve action-request wrappers and their two-field scheduling helper reviewed against original Ghidra801167A0 and all twelve original wrapper addresses; twenty-four direct original-instruction request cases guard all VM fields and pending/protected values. Selector-three deferred dispatch and helper chain reviewed against original Ghidra80117098/8000F4C4/801167BC/800120F0 and eight guarded direct-dispatch/scheduler cases.",
   "preconditions": [
     "Protected locals and frame metadata lie below the active stack depth.",
     "Append contracts require one free value slot; pointers and borrowed actor/global state are valid.",
@@ -1086,7 +1086,53 @@
       "preconditions": [
         "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
         "The request returns scheduling result two without reading or writing stack operands. Deferred handler operands, results, context replacement and write effects remain unreviewed; this contract must not clear that deferred frontier."
-      ]
+      ],
+      "deferred_review": {
+        "action_handler": 3,
+        "effect": "loop_exit_then_conditional_zero_append",
+        "arguments": 0,
+        "waiting_stack_delta": 0,
+        "completion_stack_delta": 1,
+        "waiting_scheduling": "wait_for_action",
+        "completion_scheduling": "yield",
+        "dependencies": [
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "function": "actorScriptDispatchActionHandler",
+            "sha256": "e3e6746d411e3a9075fb9416d4007315a55fb47a83b4723d618a0d9dc72dd575"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "function": "actorScriptWaitForSequencerStop",
+            "sha256": "aaeba1f2743f6d29c4317b2c8889a67d97f470ee23b0beb37a5cebf0455f2505"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/motion_playback.c",
+            "function": "actionRequestLoopExit",
+            "sha256": "367a20435b8426a9db96d1b0ae7fc4403b23c73abf739ed3dcc5ad8d7cb4aeb7"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/action_script.c",
+            "function": "actionScriptIsStopped",
+            "sha256": "952ba58dc54050194e25912a37f214d33fbdf2af29f91f48b9c2ca6dd76b3ba9"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "actorUpdateScriptVm",
+            "sha256": "8f8aee40236f03cd3802e4944351029e97768892e9cff400831a09bda3a7632c"
+          }
+        ],
+        "preconditions": [
+          "While waiting, the selected handler remains three; the actor and its VM stay intact with nonoverlapping actor state and owned value storage. Protected locals and frame metadata lie below active depth and one free result slot remains.",
+          "The loop-exit request writes only the actor halfword. A nonnull sequencer command leaves the stack unchanged; a null command appends integer zero and yields. The scheduler clears initialization and does not resume bytecode in that same update.",
+          "These footprints do not establish future command advancement, termination, rendered motion, retail feasibility or arbitrary concurrent changes."
+        ]
+      }
     },
     {
       "function": "actorScriptStartLoopExitAndWaitAlternate",
@@ -1115,7 +1161,53 @@
       "preconditions": [
         "Actor and its retained VM are valid, separate from value storage. The immediate request only selects actionHandler and sets actionInitializing to one.",
         "The request returns scheduling result two without reading or writing stack operands. Deferred handler operands, results, context replacement and write effects remain unreviewed; this contract must not clear that deferred frontier."
-      ]
+      ],
+      "deferred_review": {
+        "action_handler": 3,
+        "effect": "loop_exit_then_conditional_zero_append",
+        "arguments": 0,
+        "waiting_stack_delta": 0,
+        "completion_stack_delta": 1,
+        "waiting_scheduling": "wait_for_action",
+        "completion_scheduling": "yield",
+        "dependencies": [
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "function": "actorScriptDispatchActionHandler",
+            "sha256": "e3e6746d411e3a9075fb9416d4007315a55fb47a83b4723d618a0d9dc72dd575"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/actor_script_actions.c",
+            "function": "actorScriptWaitForSequencerStop",
+            "sha256": "aaeba1f2743f6d29c4317b2c8889a67d97f470ee23b0beb37a5cebf0455f2505"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/motion_playback.c",
+            "function": "actionRequestLoopExit",
+            "sha256": "367a20435b8426a9db96d1b0ae7fc4403b23c73abf739ed3dcc5ad8d7cb4aeb7"
+          },
+          {
+            "kind": "function",
+            "file": "src/game/action_script.c",
+            "function": "actionScriptIsStopped",
+            "sha256": "952ba58dc54050194e25912a37f214d33fbdf2af29f91f48b9c2ca6dd76b3ba9"
+          },
+          {
+            "kind": "function",
+            "file": "src/ovl/script_vm.c",
+            "function": "actorUpdateScriptVm",
+            "sha256": "8f8aee40236f03cd3802e4944351029e97768892e9cff400831a09bda3a7632c"
+          }
+        ],
+        "preconditions": [
+          "While waiting, the selected handler remains three; the actor and its VM stay intact with nonoverlapping actor state and owned value storage. Protected locals and frame metadata lie below active depth and one free result slot remains.",
+          "The loop-exit request writes only the actor halfword. A nonnull sequencer command leaves the stack unchanged; a null command appends integer zero and yields. The scheduler clears initialization and does not resume bytecode in that same update.",
+          "These footprints do not establish future command advancement, termination, rendered motion, retail feasibility or arbitrary concurrent changes."
+        ]
+      }
     },
     {
       "function": "actorScriptStartInterruptibleAction",

@@ -9,11 +9,12 @@ from .formats import integer_operand
 from .stack import incoming_edges
 
 
-def saved_dictionary_analysis(instructions, request_offset, expression, budget=50000, native_reviews=None):
+def saved_dictionary_analysis(instructions, request_offset, expression, budget=50000, native_reviews=None, deferred_reviews=None):
     """Trace a dominating requested-ID save and audit writes across script calls."""
     if expression.get('kind') != 'variable':
         return None
     native_reviews = native_reviews or {}
+    deferred_reviews = deferred_reviews or {}
     by = {row['offset']: row for row in instructions}
     indices = {row['offset']: i for i, row in enumerate(instructions)}
     entries = [offset for offset, row in by.items() if offset < request_offset and row['name'] == 'SCRIPT_OP_ENTER_FRAME']
@@ -136,7 +137,7 @@ def saved_dictionary_analysis(instructions, request_offset, expression, budget=5
 
     audit(entry, True, corridor)
     deferred = {name for name in natives & set(native_reviews)
-                if native_reviews[name].get('coverage') == 'immediate_request_only'}
+                if native_reviews[name].get('coverage') == 'immediate_request_only' and name not in deferred_reviews}
     reviewed = set(native_reviews) - deferred
     frontier = sorted(natives - reviewed)
     return dict(kind='saved_requested_dictionary_candidate', function_entry=entry, query_offset=query,
@@ -147,6 +148,7 @@ def saved_dictionary_analysis(instructions, request_offset, expression, budget=5
                 reviewed_native_effects=sorted(natives & reviewed),
                 reviewed_immediate_native_effects=sorted(natives & set(native_reviews)),
                 deferred_native_effect_frontier=sorted(deferred),
+                reviewed_deferred_effects=sorted(natives & set(native_reviews) & set(deferred_reviews)),
                 origin_effect_reviewed='actorScriptQueryRequestedMicDictionary' in native_reviews,
                 native_review_preconditions=['Reviewed native operands must lie above protected locals and frame metadata; numeric conversions and borrowed storage must satisfy each callback contract. This analysis does not prove the operand floor.'],
                 scope='Static bytecode preservation under valid stack/array accesses and intact nonoverlapping frames; native effects, context replacement, runtime restoration and numeric ID remain unproven.')

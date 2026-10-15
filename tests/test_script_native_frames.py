@@ -28,6 +28,8 @@ def test_fingerprint_ignores_formatting_comments_but_distinguishes_operator_toke
 def test_checked_in_reviews_have_current_source_and_dependency_bindings():
     report = native_frame_reviews()
     assert not report['stale_dependencies'] and not report['stale_callbacks']
+    assert not report['stale_deferred_reviews']
+    assert 'actorScriptStartLoopExitAndWait' in report['active_deferred']
     assert 'actorScriptQueryRequestedMicDictionary' in report['active']
     assert 'actorScriptPushTotalElapsedTime' in report['active']
 
@@ -72,6 +74,30 @@ def test_action_request_requires_explicit_phase_without_a_stack_result(tmp_path)
         row[field] = invalid
         assert not native_frame_reviews(tmp_path, manifest)['active']
         row[field] = previous
+
+
+def test_deferred_dependency_revokes_only_later_phase_and_selector_is_bound(tmp_path):
+    manifest = setup_review(tmp_path)
+    path = tmp_path / 'unit.c'
+    body = 'void deferredHelper(void) { return; }'
+    path.write_text(path.read_text() + '\n' + body)
+    row = manifest['callbacks'][0]
+    row.update(effect='select_action_handler', arguments=0, stack_delta=0, result_tag='none',
+               scheduling='wait_for_action', coverage='immediate_request_only', action_handler=3)
+    deferred = dict(action_handler=3, effect='loop_exit_then_conditional_zero_append', arguments=0,
+                    waiting_stack_delta=0, completion_stack_delta=1,
+                    waiting_scheduling='wait_for_action', completion_scheduling='yield',
+                    dependencies=[dict(kind='function', file='unit.c', function='deferredHelper', sha256=fingerprint(body))])
+    row['deferred_review'] = deferred
+    assert set(native_frame_reviews(tmp_path, manifest)['active_deferred']) == {'getter'}
+    deferred['action_handler'] = 4
+    assert not native_frame_reviews(tmp_path, manifest)['active_deferred']
+    deferred['action_handler'] = 3
+    path.write_text(path.read_text().replace(body, 'void deferredHelper(void) { changed(); }'))
+    report = native_frame_reviews(tmp_path, manifest)
+    assert set(report['active']) == {'getter'}
+    assert not report['active_deferred']
+    assert report['stale_deferred_reviews']['getter']['changed_dependencies']
 
 
 def test_changed_dependency_or_unsupported_contract_keeps_callback_unreviewed(tmp_path):

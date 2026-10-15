@@ -106,7 +106,33 @@ def native_frame_reviews(root=ROOT, manifest=None):
             stale_callbacks.append(review['function'])
         elif not stale_dependencies:
             active[review['function']] = review
-    return dict(active=active, stale_dependencies=stale_dependencies, stale_callbacks=stale_callbacks,
+    active_deferred, stale_deferred = {}, {}
+    for name, review in active.items():
+        deferred = review.get('deferred_review')
+        if deferred is None:
+            continue
+        changed = []
+        for dependency in deferred.get('dependencies', []):
+            try:
+                unchanged = digest(dependency) == dependency['sha256']
+            except (OSError, ValueError):
+                unchanged = False
+            if not unchanged:
+                changed.append(dependency)
+        valid = (review.get('coverage') == 'immediate_request_only' and review.get('action_handler') == 3 and
+                 type(deferred.get('action_handler')) is int and deferred['action_handler'] == 3 and
+                 deferred.get('effect') == 'loop_exit_then_conditional_zero_append' and
+                 type(deferred.get('arguments')) is int and deferred['arguments'] == 0 and
+                 deferred.get('waiting_stack_delta') == 0 and deferred.get('completion_stack_delta') == 1 and
+                 type(deferred.get('waiting_stack_delta')) is int and type(deferred.get('completion_stack_delta')) is int and
+                 deferred.get('waiting_scheduling') == 'wait_for_action' and deferred.get('completion_scheduling') == 'yield' and
+                 bool(deferred.get('dependencies')))
+        if valid and not changed:
+            active_deferred[name] = deferred
+        else:
+            stale_deferred[name] = dict(changed_dependencies=changed, supported_contract=valid)
+    return dict(active=active, active_deferred=active_deferred, stale_deferred_reviews=stale_deferred,
+                stale_dependencies=stale_dependencies, stale_callbacks=stale_callbacks,
                 stale_callback_dependencies=stale_callback_dependencies,
                 preconditions=manifest['preconditions'],
                 scope='Reviewed immediate handler write footprints under stated stack/ownership preconditions; no scheduler, context-lifetime or concurrent-mutation proof.')

@@ -94,3 +94,14 @@ def test_request_footprint_review_keeps_deferred_effects_unresolved():
     assert 'inventedMutator' not in result['reviewed_native_effects']
     assert 'inventedMutator' in result['native_effect_frontier']
     assert result['deferred_native_effect_frontier'] == ['inventedMutator']
+
+
+def test_both_request_and_deferred_review_are_needed_to_clear_later_effects():
+    rows, request = example(opaque=True)
+    reviews = {'inventedMutator': dict(effect='select_action_handler', coverage='immediate_request_only')}
+    result = analyze(rows, request, native_reviews=reviews, deferred_reviews={'inventedMutator': {}})
+    assert 'inventedMutator' in result['reviewed_deferred_effects']
+    assert 'inventedMutator' not in result['native_effect_frontier']
+    assert result['deferred_native_effect_frontier'] == []
+    result = analyze(rows, request, deferred_reviews={'inventedMutator': {}})
+    assert 'inventedMutator' in result['native_effect_frontier']

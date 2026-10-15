@@ -12,7 +12,7 @@ from .saved_dictionary import saved_dictionary_analysis
 import re
 
 
-def dictionary_requests(instructions, dictionaries, name_catalog=None, native_reviews=None):
+def dictionary_requests(instructions, dictionaries, name_catalog=None, native_reviews=None, deferred_reviews=None):
     """Keep request expressions and link only supported literal IDs to descriptors."""
     descriptors = {row['dictionary_id']: row for row in dictionaries}
     incoming = incoming_edges(instructions)
@@ -30,7 +30,8 @@ def dictionary_requests(instructions, dictionaries, name_catalog=None, native_re
                                            allow_float=True, allow_symbolic=True, frame_entries=frames)[0]
             row.update(status='recovered_arguments', dictionary_id_expression=expression)
             if expression['kind'] == 'variable':
-                saved = saved_dictionary_analysis(instructions, instruction['offset'], expression, native_reviews=native_reviews)
+                saved = saved_dictionary_analysis(instructions, instruction['offset'], expression,
+                                                  native_reviews=native_reviews, deferred_reviews=deferred_reviews)
                 if saved is not None:
                     row['saved_local_analysis'] = saved
             selection = name_dictionary_request(instructions, index, name_catalog)

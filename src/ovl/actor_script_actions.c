@@ -76,11 +76,11 @@ void actorBeginScriptActionHandler(u8 *actor, s32 handler) {
 /// \returns One when sequencing has stopped, or two while command execution continues.
 /// \note Original decompilation identifier: \c func_801167BC (0x801167BC).
 s32 actorScriptWaitForSequencerStop(u8 *actor) {
-    u8 *sp1C;
+    ActorScriptState *actorState;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    actorState = ((RuntimeObjectPrefix *)actor)->state.actor;
     if (actionScriptIsStopped(actor) != 0) {
-        scriptVmPushInteger((ScriptVm *)(((ActorScriptState *)sp1C)->vmAddress), 0);
+        scriptVmPushInteger((ScriptVm *)actorState->vmAddress, 0);
         return SCRIPT_VM_YIELDED;
     }
     return SCRIPT_VM_WAITING_FOR_ACTION;

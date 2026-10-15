@@ -390,6 +390,7 @@ def experiments():
     from .native_argument_frame_domains import experiments as argument_frame_experiments
     from .native_numeric_getter_domains import experiments as numeric_getter_experiments
     from .native_deferred_request_domains import experiments as deferred_request_experiments
+    from .deferred_loop_exit_domains import experiments as deferred_loop_exit_experiments
 
     return (
         cases
@@ -421,6 +422,7 @@ def experiments():
         + argument_frame_experiments()
         + numeric_getter_experiments()
         + deferred_request_experiments()
+        + deferred_loop_exit_experiments()
     )
 
 

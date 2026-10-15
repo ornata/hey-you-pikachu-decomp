@@ -591,11 +591,28 @@ branches, including both clocks and the initialization clear. They establish the
 bounded transitions, without certifying a complete multi-frame game trajectory.
 
 The decoder lists request-only evidence in `reviewed_immediate_native_effects` and
-keeps its later effects in `deferred_native_effect_frontier` and the overall
-`native_effect_frontier`. These twelve reviews therefore do not clear deferred
-alias, stack, context-lifetime or gameplay obligations. There are 33 scalar contracts
-and 12 request-only contracts; the saved-dictionary frontier still contains 71
-distinct callbacks, including partially reviewed requests.
+keeps unreviewed later effects in `deferred_native_effect_frontier` and the overall
+`native_effect_frontier`. Request-only evidence therefore does not clear deferred
+alias, stack, context-lifetime or gameplay obligations.
+
+The loop-exit requests, including the alternate native, additionally have a
+source-bound deferred review for selector three. Each dispatch requests loop exit
+on the actor and tests the sequencer command cursor. A nonnull cursor keeps waiting
+without touching VM values; a null cursor appends integer zero and yields. Motion
+playback activity is a separate state and does not determine this completion test.
+Protected locals and frame records must remain below the active depth, with a free
+result slot and intact, nonoverlapping actor/VM storage throughout the wait.
+
+Eight authored original-instruction cases cover stopped/running sequencing, both
+initialization states and direct versus scheduler dispatch, guarding the loop flag,
+saved values, VM state and clocks. They do not prove motion advancement or eventual
+completion. The decoder exposes validated later effects in `active_deferred` and
+`reviewed_deferred_effects`. Changes to the dispatch/helper chain revoke this later
+review independently of the immediate request review.
+
+There are 33 scalar contracts and 12 immediate request contracts, two of which also
+have a deferred loop-exit review. Other requests remain partially reviewed and keep
+their later effects explicit in the saved-dictionary frontier.
 
 ### Player view selection
 
