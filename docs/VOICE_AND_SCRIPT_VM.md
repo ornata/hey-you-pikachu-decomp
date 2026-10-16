@@ -2472,6 +2472,33 @@ mailbox posts can also use the same numeric payload. Acknowledgment clears the
 pending flag while retaining payload words, so stored fields alone do not prove
 a new voice result or current dictionary membership.
 
+Category 18 has a separate destination-request domain, named by
+[`VoiceMapDestinationValue`](../include/voice_map_destination.h). Its 18 retained
+word records use eleven selectors and belong to dictionary 31, which the map
+input configuration requests. These values are neither area IDs nor menu indices.
+The ordinary translation table is:
+
+| Voice value | Requested destination | Internal menu index |
+| --- | --- | --- |
+| 0 | Home | 9 |
+| 1 | Viridian Forest | 0 |
+| 2 | Ochre Woods | 1 |
+| 3 | Ochre Fishing Hole | 2 |
+| 4 | Springleaf Field | 3 |
+| 5 | Olivine Lake | 8 |
+| 6 | Olivine Fishing Hole | 7 |
+| 7 | Cobalt Island | 6 |
+| 8 | Cobalt Fishing Hole | 5 |
+| 9 | Cobalt Coast | 4 |
+
+Special-training value ten takes a separate path only at chase stage two and
+selects internal destination ten. Otherwise negative values clamp to voice value
+zero and values ten or above clamp to voice value nine before translation.
+Availability is checked after translation. Ordinary navigation then wraps menu
+indices nine or above to zero, so even an available home request does not preserve
+index nine through the rest of this function. The decoder's destination names
+identify requests rather than successful transitions, recognition or delivery.
+
 The bedroom response selector's guarded table connects them to timed programs:
 
 | Phrase selector | Timed program |

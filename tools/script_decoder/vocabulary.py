@@ -67,33 +67,57 @@ def phrase_names():
 GENERAL_COMMAND_MAPPING_SHA256 = 'a56b993efe2d8849a6fce460d44952dddb16c08f241dfa41991ec29a79cbaea1'
 
 
-def general_command_names():
-    """Read the exact reviewed general-command enum without accepting aliases."""
-    code = code_only((ROOT / 'include/voice_phrases.h').read_text())
-    categories = re.findall(r'\bVOICE_GENERAL_COMMAND_MESSAGE_TYPE\s*=\s*(0[xX][\da-fA-F]+|\d+)\s*(?=[,}])', code)
-    if len(categories) != 1 or int(categories[0], 0) != 2 or len(re.findall(r'\bVOICE_GENERAL_COMMAND_MESSAGE_TYPE\s*=', code)) != 1:
-        raise ValueError('general command category disagrees with reviewed category2')
-    enums = re.findall(r'\btypedef\s+enum\s+VoiceGeneralCommandValue\s*\{([^}]+)\}\s*VoiceGeneralCommandValue\s*;', code)
-    if len(enums) != 1 or len(re.findall(r'\benum\s+VoiceGeneralCommandValue\b', code)) != 1:
-        raise ValueError('missing or duplicate general command enum')
-    body = enums[0].strip()
-    declarations = body.split(',')
+MAP_DESTINATION_MAPPING_SHA256 = '2598c44c63321e1007d1040e74167f807d9d15bc300b32581ac8b19dd0be1c89'
+
+
+def _category_literal(code, identifier, expected):
+    """Require one explicitly numbered category declaration, excluding expressions."""
+    identifier = re.escape(identifier)
+    categories = re.findall(r'\b' + identifier + r'\s*=\s*(0[xX][\da-fA-F]+|\d+)\s*(?=[,}])', code)
+    if len(categories) != 1 or int(categories[0], 0) != expected or len(re.findall(r'\b' + identifier + r'\s*=', code)) != 1:
+        raise ValueError('message category disagrees with the reviewed numeric domain')
+
+
+def _reviewed_enum(code, enum_name, prefix, mapping_digest, *, excluded=()):
+    """Parse a complete explicit enum and require its independently reviewed mapping."""
+    enum = re.escape(enum_name)
+    enums = re.findall(r'\btypedef\s+enum\s+' + enum + r'\s*\{([^}]+)\}\s*' + enum + r'\s*;', code)
+    if len(enums) != 1 or len(re.findall(r'\benum\s+' + enum + r'\b', code)) != 1:
+        raise ValueError('missing or duplicate reviewed selector enum')
+    declarations = enums[0].strip().split(',')
     if declarations[-1].strip() == '':
         declarations.pop()
     names, identifiers = {}, set()
     for declaration in declarations:
-        match = re.fullmatch(r'\s*(VOICE_GENERAL_COMMAND_\w+)\s*=\s*(0[xX][\da-fA-F]+|\d+)\s*', declaration)
+        match = re.fullmatch(r'\s*(' + re.escape(prefix) + r'\w+)\s*=\s*(0[xX][\da-fA-F]+|\d+)\s*', declaration)
         if match is None:
-            raise ValueError('malformed general command declaration')
+            raise ValueError('malformed reviewed selector declaration')
         name, value = match[1], int(match[2], 0)
-        if name in identifiers or value in names or not 0 <= value <= 2147483647 or 23 <= value <= 32:
-            raise ValueError('duplicate or unsupported general command selector')
+        if name in identifiers or value in names or not 0 <= value <= 2147483647 or value in excluded:
+            raise ValueError('duplicate or unsupported reviewed selector')
         names[value] = name
         identifiers.add(name)
     digest = hashlib.sha256(json.dumps(names, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
-    if not names or GENERAL_COMMAND_MAPPING_SHA256 is None or digest != GENERAL_COMMAND_MAPPING_SHA256:
-        raise ValueError('general command mapping needs renewed selector review')
+    if not names or mapping_digest is None or digest != mapping_digest:
+        raise ValueError('selector mapping needs renewed review')
     return names
+
+
+def general_command_names():
+    """Read the exact reviewed general-command enum without accepting aliases."""
+    code = code_only((ROOT / 'include/voice_phrases.h').read_text())
+    _category_literal(code, 'VOICE_GENERAL_COMMAND_MESSAGE_TYPE', 2)
+    return _reviewed_enum(code, 'VoiceGeneralCommandValue', 'VOICE_GENERAL_COMMAND_',
+                          GENERAL_COMMAND_MAPPING_SHA256, excluded=range(23, 33))
+
+
+def map_destination_names():
+    """Read authored voice destination selectors, separate from internal map indices."""
+    code = code_only((ROOT / 'include/voice_map_destination.h').read_text())
+    message_code = code_only((ROOT / 'include/script_message.h').read_text())
+    _category_literal(message_code, 'SCRIPT_MESSAGE_WORLD_MAP_DESTINATION', 18)
+    return _reviewed_enum(code, 'VoiceMapDestinationValue', 'VOICE_MAP_DESTINATION_',
+                          MAP_DESTINATION_MAPPING_SHA256)
 
 
 def dictionary_names():
@@ -106,13 +130,14 @@ def dictionary_names():
     return names
 
 
-def vocabulary_catalog(image, dictionary_count=43, *, validate_phrases=True, validate_general_commands=True):
+def vocabulary_catalog(image, dictionary_count=43, *, validate_phrases=True, validate_general_commands=True, validate_map_destinations=True):
     """Link a reviewed descriptor prefix to bounded words and gameplay metadata."""
     if not 1 <= dictionary_count <= 256:
         raise ValueError('dictionary prefix bound must be between 1 and 256')
     bank = VocabularyBank(image)
     phrases = phrase_names() if validate_phrases else {}
     general_commands = general_command_names() if validate_general_commands else {}
+    map_destinations = map_destination_names() if validate_map_destinations else {}
     selections = dictionary_names()
     words_address = image.symbol('gVoiceWordDefinitions')[1]
     dictionaries_address = image.symbol('gVoiceDictionaries')[1]
@@ -136,6 +161,8 @@ def vocabulary_catalog(image, dictionary_count=43, *, validate_phrases=True, val
             row['recovered_phrase_name'] = recovered
         if command_type == 2 and command_value in general_commands:
             row['recovered_general_command_name'] = general_commands[command_value]
+        if command_type == 18 and command_value in map_destinations:
+            row['recovered_map_destination_name'] = map_destinations[command_value]
         words.append(row)
     raw, dictionary_location = bank.read(dictionaries_address, dictionary_count * 8)
     dictionaries = []
@@ -159,6 +186,9 @@ def vocabulary_catalog(image, dictionary_count=43, *, validate_phrases=True, val
     if general_commands and {word['command_value'] for word in words if 'recovered_general_command_name' in word
                              and any(member['dictionary_id'] < 43 for member in word['dictionary_memberships'])} != set(general_commands):
         raise ValueError('named general commands need membership in the reviewed43 dictionary prefix')
+    if map_destinations and {word['command_value'] for word in words if 'recovered_map_destination_name' in word
+                             and any(member['dictionary_id'] == 31 for member in word['dictionary_memberships'])} != set(map_destinations):
+        raise ValueError('named map destinations need membership in reviewed dictionary31')
     return dict(mapping=dict(rom_start=bank.start, rom_end=bank.end, ram_start=bank.base,
                              sha256=hashlib.sha256(image.read_rom(bank.start, bank.size)).hexdigest(),
                              original_loader=0x800404E8),

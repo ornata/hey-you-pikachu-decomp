@@ -2866,6 +2866,7 @@
         "vector3_types.h",
         "vector_interpolation.h",
         "vector_operations.h",
+        "voice_map_destination.h",
         "voice_recognition.h",
         "world_map.h"
       ],
@@ -2876,32 +2877,32 @@
       "locations": {
         "raw_offset_candidates": {
           "x - 27": [
-            "234:46"
+            "235:46"
           ],
           "x + 55": [
-            "236:46"
+            "237:46"
           ],
           "x - 16": [
-            "295:31",
-            "319:27"
-          ],
-          "y + 8": [
-            "296:31"
-          ],
-          "y - 8": [
+            "296:31",
             "320:27"
           ],
+          "y + 8": [
+            "297:31"
+          ],
+          "y - 8": [
+            "321:27"
+          ],
           "counter + 5U": [
-            "327:25"
+            "328:25"
           ],
           "camera + 0": [
-            "449:25"
+            "450:25"
           ],
           "camera + 4": [
-            "451:25"
+            "452:25"
           ],
           "camera + 8": [
-            "453:25"
+            "454:25"
           ]
         }
       }

@@ -19,6 +19,7 @@
 #include "microphone_requests.h"
 #include "voice_recognition.h"
 #include "script_message.h"
+#include "voice_map_destination.h"
 #include "audio_sound_effect.h"
 #include "attached_effect.h"
 #include "script_vm_globals.h"
@@ -485,11 +486,11 @@ void wholeMapSetState(s32 state) {
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002E050 (0x8002E050).
 void wholeMapPlayConfirmationAnimation(void) {
-    s32 form;
+    s32 areaId;
 
     actionScriptStop((u8 *)PLAYER);
-    form = gWorldMapDestinations[gWorldMapSelectedDestination].areaIds[playerGetChaseStage()];
-    if (form == 9 || form == 10) {
+    areaId = gWorldMapDestinations[gWorldMapSelectedDestination].areaIds[playerGetChaseStage()];
+    if (areaId == AREA_OLIVINE_LAKESHORE || areaId == AREA_OLIVINE_LAKE) {
         actionScriptStart((u8 *)PLAYER, ACTION_SCRIPT_SHIVER_CUE_12);
         return;
     }
@@ -563,6 +564,7 @@ extern s32 gWorldMapVoiceDestinationIndices[];
 
 /// Handle destination selection, confirmation, and cancellation from controller and voice input.
 /// \pre Requires the whole-map menu and its active actor.
+/// \note Voice labels describe requests; availability and navigation rules govern final selection.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002E200 (0x8002E200).
 void wholeMapHandleInput(void) {
@@ -598,7 +600,7 @@ void wholeMapHandleInput(void) {
     if (actorAcknowledgeScriptMessage((u8 *)((s32)gPikachuActor)) != 0) {
         input = &gPikachuActor->state.actor->message;
         if (input->type == SCRIPT_MESSAGE_WORLD_MAP_DESTINATION) {
-            if (input->arg0 == 10 && playerGetChaseStage() == 2) {
+            if (input->arg0 == VOICE_MAP_DESTINATION_SPECIAL_TRAINING && playerGetChaseStage() == 2) {
                 specialPosition = gWorldMapSpecialDestinationFocus;
                 gWorldMapSelectedDestination = 10;
                 presentationSetFocusTarget(&specialPosition);
@@ -608,9 +610,9 @@ void wholeMapHandleInput(void) {
                 return;
             }
             if (input->arg0 < 0) {
-                input->arg0 = 0;
-            } else if (input->arg0 >= 10) {
-                input->arg0 = 9;
+                input->arg0 = VOICE_MAP_DESTINATION_HOME;
+            } else if (input->arg0 >= VOICE_MAP_DESTINATION_SPECIAL_TRAINING) {
+                input->arg0 = VOICE_MAP_DESTINATION_COBALT_COAST;
             }
             selection = gWorldMapVoiceDestinationIndices[input->arg0];
             if (wholeMapIsDestinationAvailable(selection) != 0) {
