@@ -42,8 +42,18 @@ NATIVE_PRESERVATION_PINS = {'actorScriptSetMessengerContactMode': 'd4eaca70214bb
  'actorScriptStartActionWithMode': 'f394029c3988187cf97e019fe4d595025ef0dfc0bec7bf6de1acf6a54bc8d614',
  'actorScriptSetSoundEffectPan': '75cc7ce489489830735fb52daf3f1280f0b2702e4d12fcef6abdd53339dc4323',
  'actorScriptSetSoundEffectVolume': 'fc2c3a2fb242129474473071f8642cbb6a134db72844cd0289516e08a36b3b1f',
- 'actorScriptPlaySoundEffect': '2fe7df18adaa43193bb0eaaf1a30c1e337ebcda52c29fdd0550e466c955e41d4'}
+ 'actorScriptPlaySoundEffect': '2fe7df18adaa43193bb0eaaf1a30c1e337ebcda52c29fdd0550e466c955e41d4',
+ 'actorScriptPushInteractionCandidate': 'ecc2c4a2e028d78d5884071295b6d2294a276931481c369c1183024dcdeebf49',
+ 'actorScriptSetHudGuideStyle': 'b22055ece492a7e9596dcfab7073e65f6f371e3ca75a2d386825df802593fbb2',
+ 'actorScriptStartActionAndWait': 'f0176ef2bd0ba80b0e117e19cf60a187481f6697ff997ce943bcd8e3ea120a11',
+ 'actorScriptSetHorizontalMovementSuppressed': '6b40f43eb64fada65913ea90e68a7d25e53e1a382c5a045dfe3eab33fc349c46',
+ 'actorScriptSetDestination': 'b5d87400e9fdee392b1a9ff79c0a8f779e9ac60647d28de5881468b4e8762915',
+ 'actorScriptGetActorKind': '3aac60e3bdcdcb61153ac107a12540bff1511efd9bcdc1db6070a4e06b8c5d57',
+ 'actorScriptStopActionScript': '0a375212619f38a1c1871f8197b4508abefdfd643f9f4159d0c277ad37d107a3',
+ 'actorScriptGetItemKind': '3d9d842249982c2b8848170a8030dc70c208c513cf0fd8cd28bd6b9edac8f88a',
+ 'actorScriptGetObjectDistance': '16f67058c70921bd63c1950aa3415f2fdd74bda24cd4dec566cf3fd0ee55b161'}
 LOOP_EXIT_DEFERRED_PIN = '687dd86d8dd2376c3f9d03d05ac4e12b2177dcebb5f682a77634a603ef1c3957'
+ACTION_WAIT_DEFERRED_PIN = 'e8613a3379d10ed695e93d742c6cd8c0e22077a87dfed973fe7485e5ae7e4865'
 
 
 def local_preservation_contracts(reviews, root=ROOT):
@@ -67,11 +77,15 @@ def local_preservation_contracts(reviews, root=ROOT):
         if name == 'actorScriptStartLoopExitAndWait' and digest(reviews['active_deferred'].get(name)) != LOOP_EXIT_DEFERRED_PIN:
             stale.append(name)
             continue
+        if name == 'actorScriptStartActionAndWait' and digest(reviews['active_deferred'].get(name)) != ACTION_WAIT_DEFERRED_PIN:
+            stale.append(name)
+            continue
         names.append(name)
     return dict(preserved_native_functions=[] if stale_vm else names,
                 stale_vm_functions=stale_vm, stale_native_reviews=stale,
                 native_review_sha256=NATIVE_PRESERVATION_PINS,
                 deferred_loop_exit_review_sha256=LOOP_EXIT_DEFERRED_PIN,
+                deferred_action_wait_review_sha256=ACTION_WAIT_DEFERRED_PIN,
                 vm_source_pins=VM_PRESERVATION_PINS,
                 scope='Only these exact source-bound native footprints under their full per-row prerequisites; not a general active-native preservation claim or runtime frame-lifetime proof.')
 

@@ -443,5 +443,143 @@ class PairedSelectorFlowTests(unittest.TestCase):
         self.assertFalse(request['universal_policy_domain_established'])
 
 
+class FormalForwardingTests(unittest.TestCase):
+    def fixture(self):
+        instructions, request = PairedSelectorFlowTests.fixture(self)
+        instructions = [r for r in instructions if not 204 <= r['offset'] <= 208]
+        next(r for r in instructions if r['offset']==203)['successors'] = [dict(kind='fallthrough',offset=204)]
+        wrapper = frame(400,401,1)
+        wrapper['operands'][1] = operand(2)
+        instructions.extend([
+            row(204,'CALL',[operand(400,2)],[('return_continuation',205),('call',400)]),
+            row(205,'DISCARD',successors=[('fallthrough',206)]),
+            row(206,'PUSH_LITERAL',[operand(0)],[('fallthrough',207)]),row(207,'RETURN'),wrapper,
+            row(401,'LOAD_VARIABLE',[operand(1),operand(0)],[('fallthrough',402)]),
+            row(402,'LOAD_VARIABLE',[operand(0),operand(3)],[('fallthrough',403)]),
+            row(403,'CALL',[operand(300,2)],[('return_continuation',404),('call',300)]),
+            # An unreviewed post-inner-call writer must not contaminate the prefix proof.
+            row(404,'STORE_ELEMENT',[operand(1),operand(0)],[('fallthrough',405)]),
+            row(405,'PUSH_LITERAL',[operand(0)],[('fallthrough',406)]),row(406,'RETURN')])
+        return sorted(instructions,key=lambda r:r['offset']),request
+
+    def analyze(self,instructions,request,preserved=()):
+        from tools.script_decoder.paired_flow import annotate_costed_caller_relations
+        policies=cost_policy_records(b''.join(struct.pack('>iifi',300+i,400+i,1.0,1)for i in range(5)))
+        annotate_costed_caller_relations(instructions,[request],policies,preserved_natives=preserved)
+        return request['conditional_caller_policy_relations'][0]
+
+    def test_specific_actual_relation_survives_formal_rebinding(self):
+        instructions,request=self.fixture()
+        result=self.analyze(instructions,request)
+        self.assertEqual(result['status'],'conditional_formal_forwarding_relation')
+        forwarding=result['formal_forwarding']
+        self.assertTrue(forwarding['prefix_preservation_proven'])
+        self.assertNotIn(404,forwarding['prefix_instruction_offsets'])
+        upstream=forwarding['upstream_callers'][0]
+        self.assertEqual(upstream['caller_offset'],204)
+        self.assertEqual(upstream['conditional_cost_selectors'],[1])
+        self.assertIn(dict(mode=1,return_value=99,return_offset=113),upstream['producer_relations'][0]['mode_return_pairs'])
+        self.assertFalse(forwarding['universal_formal_domain_established'])
+        self.assertEqual(request['cost_policy_link']['status'],'unresolved_selector')
+
+    def test_unknown_prefix_effect_retains_tree_without_activating_it(self):
+        instructions,request=self.fixture()
+        next(r for r in instructions if r['offset']==400)['successors']=[dict(kind='fallthrough',offset=410)]
+        instructions.append(row(410,'CALL_NATIVE',successors=[('resume_or_fallthrough',401)],native=dict(functions=['unsafeCommand'])))
+        result=self.analyze(instructions,request)
+        self.assertEqual(result['status'],'unresolved_caller_relation')
+        self.assertFalse(result['formal_forwarding']['prefix_preservation_proven'])
+        self.assertEqual(result['formal_forwarding']['upstream_callers'][0]['status'],'conditional_paired_caller_relation')
+
+    def test_recursive_forwarding_and_ambiguous_actual_fail_closed(self):
+        instructions,request=self.fixture()
+        # Recursive incoming call creates a cycle with no separate producer store.
+        instructions=[r for r in instructions if not 200<=r['offset']<=207]
+        next(r for r in instructions if r['offset']==400)['successors']=[dict(kind='fallthrough',offset=410)]
+        instructions.extend([row(410,'LOAD_VARIABLE',[operand(1),operand(0)],[('fallthrough',411)]),
+            row(411,'CALL',[operand(400,2)],[('return_continuation',412),('call',400)]),
+            row(412,'DISCARD',successors=[('fallthrough',401)])])
+        result=self.analyze(sorted(instructions,key=lambda r:r['offset']),request)
+        self.assertEqual(result['status'],'unresolved_caller_relation')
+        self.assertIn('recursive',str(result))
+        instructions,request=self.fixture()
+        instructions.append(row(499,'JUMP',[operand(204,2)],[('branch',204)]))
+        result=self.analyze(instructions,request)
+        self.assertEqual(result['status'],'unresolved_caller_relation')
+        self.assertIn('control-flow',str(result))
+
+    def test_redefinitions_and_invalid_frame_bounds_do_not_forward(self):
+        instructions,request=self.fixture()
+        next(r for r in instructions if r['offset']==400)['successors']=[dict(kind='fallthrough',offset=410)]
+        instructions.extend([row(410,'PUSH_LITERAL',[operand(2)],[('fallthrough',411)]),
+            row(411,'STORE_VARIABLE',[operand(1),operand(0)],[('fallthrough',401)])])
+        result=self.analyze(sorted(instructions,key=lambda r:r['offset']),request)
+        self.assertEqual(result['status'],'unresolved_caller_relation')
+        self.assertNotIn('formal_forwarding',result)
+        instructions,request=self.fixture()
+        next(r for r in instructions if r['offset']==401)['operands'][1]=operand(2)
+        self.assertEqual(self.analyze(instructions,request)['status'],'unresolved_caller_relation')
+        instructions,request=self.fixture()
+        next(r for r in instructions if r['offset']==400)['operands'][1]=operand(0)
+        self.assertEqual(self.analyze(instructions,request)['status'],'unresolved_caller_relation')
+
+    def guarded_fixture(self):
+        instructions,request=self.fixture()
+        instructions=[r for r in instructions if not 401<=r['offset']<=406]
+        next(r for r in instructions if r['offset']==400)['successors']=[dict(kind='fallthrough',offset=410)]
+        instructions.extend([
+            row(410,'LOAD_VARIABLE',[operand(0),operand(3)],[('fallthrough',411)]),
+            row(411,'PUSH_LITERAL',[operand(6)],[('fallthrough',412)]),
+            row(412,'EQUAL',successors=[('fallthrough',413)]),
+            row(413,'JUMP_IF_ZERO',[operand(420,2)],[('fallthrough',414),('branch',420)]),
+            row(414,'LOAD_VARIABLE',[operand(1),operand(0)],[('fallthrough',415)]),
+            row(415,'LOAD_VARIABLE',[operand(0),operand(3)],[('fallthrough',416)]),
+            row(416,'CALL',[operand(300,2)],[('return_continuation',417),('call',300)]),
+            row(417,'DISCARD',successors=[('fallthrough',418)]),
+            row(418,'PUSH_LITERAL',[operand(0)],[('fallthrough',419)]),row(419,'RETURN'),
+            row(420,'PUSH_LITERAL',[operand(0)],[('fallthrough',421)]),row(421,'RETURN')])
+        return sorted(instructions,key=lambda r:r['offset']),request
+
+    def test_dominating_mode_guard_is_recorded_but_bypass_is_not(self):
+        instructions,request=self.guarded_fixture()
+        result=self.analyze(instructions,request)
+        guard=result['formal_forwarding']['mode_guards'][0]
+        self.assertEqual(guard['branch_offset'],413)
+        self.assertEqual(guard['literal_value'],6)
+        self.assertTrue(guard['required_comparison_truth'])
+        instructions,request=self.guarded_fixture()
+        next(r for r in instructions if r['offset']==400)['successors']=[dict(kind='fallthrough',offset=401)]
+        instructions.extend([row(401,'PUSH_LITERAL',[operand(1)],[('fallthrough',402)]),
+            row(402,'JUMP_IF_ZERO',[operand(414,2)],[('fallthrough',410),('branch',414)])])
+        result=self.analyze(sorted(instructions,key=lambda r:r['offset']),request)
+        self.assertEqual(result['formal_forwarding']['mode_guards'],[])
+
+    def test_mixed_entry_formal_and_producer_store_paths_are_ambiguous(self):
+        instructions,request=self.guarded_fixture()
+        instructions=[r for r in instructions if not 410<=r['offset']<=413]
+        next(r for r in instructions if r['offset']==400)['successors']=[dict(kind='fallthrough',offset=409)]
+        instructions.extend([
+            row(409,'PUSH_LITERAL',[operand(1)],[('fallthrough',410)]),
+            row(410,'JUMP_IF_ZERO',[operand(414,2)],[('fallthrough',411),('branch',414)]),
+            row(411,'CALL',[operand(100,2)],[('return_continuation',412),('call',100)]),
+            row(412,'STORE_VARIABLE',[operand(1),operand(0)],[('fallthrough',413)]),
+            row(413,'JUMP',[operand(414,2)],[('branch',414)])])
+        result=self.analyze(sorted(instructions,key=lambda r:r['offset']),request)
+        self.assertEqual(result['status'],'unresolved_caller_relation')
+        self.assertIn('mixes entry arguments',result['reason'])
+        self.assertNotIn('formal_forwarding',result)
+
+    def test_unsupported_literal_actual_is_retained_without_masking(self):
+        instructions,request=self.fixture()
+        node=next(r for r in instructions if r['offset']==203)
+        node['name']='SCRIPT_OP_PUSH_LITERAL'
+        node['operands']=[operand(65538)]
+        result=self.analyze(instructions,request)
+        upstream=result['formal_forwarding']['upstream_callers'][0]
+        self.assertEqual(upstream['status'],'unresolved_caller_relation')
+        self.assertEqual(upstream['arguments'][0]['value'],65538)
+        self.assertNotIn('conditional_cost_selectors',upstream)
+
+
 if __name__ == '__main__':
     unittest.main()

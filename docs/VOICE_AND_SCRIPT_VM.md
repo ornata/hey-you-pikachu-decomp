@@ -1089,6 +1089,24 @@ separation, stable program/VM bindings and the full listed native prerequisites
 remain conditions, including across waits. These pairs describe static returning
 paths; they do not prove a particular branch executes or a cost policy succeeds.
 
+A wrapper can forward an unchanged formal argument to that shared helper. The
+decoder keeps a separate `formal_forwarding` tree for its recovered upstream
+callers, carrying the same borrowed mode coordinate through each step. A wrapper
+with one argument uses its own slot zero for that argument; entering a nested
+function with the same logical frame index temporarily rebinds the index to a
+different physical interval, then restores the earlier binding on return.
+
+Only a preserved path from wrapper entry to the inner call supports a forwarded
+relation. A rewrite of the formal, a mixed entry/local-definition path, recursion,
+unbounded storage or an unreviewed effect prevents the corresponding claim.
+Unknown upstream callers remain visible, and the shared formal is never replaced
+with a universal policy domain. `mode_guards` records dominating comparisons
+without pruning policy alternatives or proving that a branch executes.
+Preservation for an action wait requires both the
+immediate native review and its deferred handler review, plus the stated absence
+of asynchronous mutation of protected storage. The decoder does not prove that
+those scheduling prerequisites hold during gameplay.
+
 Throw and acquisition requests also expose their timed-program operands in
 `native_action_calls`. Throw consumes one program operand when its deferred
 handler initializes. A zero held handle produces minus one; a nonzero handle

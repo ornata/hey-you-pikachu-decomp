@@ -201,18 +201,66 @@ def annotate_costed_caller_relations(instructions, requests, policies, *, preser
         producer_cache[key] = relation
         return relation
 
-    def caller_relation(call, formal_entry, formal_index, mode_index):
+    def forwarding_guards(entry, target, mode, prefix):
+        def reaches(start, blocked):
+            pending, seen = [start], set()
+            while pending:
+                off = pending.pop()
+                if off == target:
+                    return True
+                if off in seen or off == blocked:
+                    continue
+                charge()
+                seen.add(off)
+                pending.extend(successors(by[off]))
+            return False
+        guards = []
+        for index in range(len(instructions)-3):
+            load, literal, compare, jump = instructions[index:index+4]
+            if any(row['offset'] not in prefix for row in (load,literal,compare,jump)):
+                continue
+            if load['name'] != 'SCRIPT_OP_LOAD_VARIABLE' or coordinates(load) != mode:
+                continue
+            if literal['name'] != 'SCRIPT_OP_PUSH_LITERAL' or literal['operands'][0]['tag'] not in (0,2):
+                continue
+            if compare['name'] not in ('SCRIPT_OP_EQUAL','SCRIPT_OP_NOT_EQUAL') or jump['name'] != 'SCRIPT_OP_JUMP_IF_ZERO':
+                continue
+            if any(incoming.get(right['offset'],set()) != {left['offset']} or successors(left) != [right['offset']]
+                   for left,right in ((load,literal),(literal,compare),(compare,jump))):
+                continue
+            true = [e['offset'] for e in jump['successors'] if e['kind']=='fallthrough']
+            false = [e['offset'] for e in jump['successors'] if e['kind']=='branch']
+            if len(true)!=1 or len(false)!=1 or reaches(entry,jump['offset']):
+                continue
+            true_reaches, false_reaches = reaches(true[0],jump['offset']), reaches(false[0],jump['offset'])
+            if true_reaches == false_reaches:
+                continue
+            guards.append(dict(load_offset=load['offset'], comparison_offset=compare['offset'],
+                branch_offset=jump['offset'], comparison=compare['name'], literal_value=integer_operand(literal['operands'][0]),
+                required_comparison_truth=true_reaches,
+                scope='Dominating branch evidence about this mode coordinate; applies to the copied mode only under the separately validated unchanged-prefix conditions.'))
+        return guards
+
+    def caller_relation(call, formal_entry, formal_index, mode_index, *, mode_override=None, forwarding_stack=()):
         argc, _, _ = frame_contract(formal_entry)
         actual = arguments(call, argc)
-        result, mode_expr = actual[formal_index], actual[mode_index]
+        if not 0 <= formal_index < len(actual) or mode_index is not None and not 0 <= mode_index < len(actual):
+            raise ValueError('forwarded argument index exceeds the called frame contract')
+        result = actual[formal_index]
+        mode_expr = mode_override if mode_index is None else actual[mode_index]
         if result['kind'] != 'variable' or mode_expr['kind'] != 'variable':
             raise ValueError('caller does not pass a local result and borrowed mode variable')
         mode = mode_expr['frame'], mode_expr['slot']
         own_entry = owner(call['offset'])
-        _, own_count, own_frame = frame_contract(own_entry)
+        own_argc, own_count, own_frame = frame_contract(own_entry)
+        if own_entry in forwarding_stack:
+            raise ValueError('recursive formal-forwarding caller chain')
+        if len(forwarding_stack) >= 32:
+            raise ValueError('formal-forwarding depth budget exhausted')
         if result['frame'] != own_frame or not 0 <= result['slot'] < own_count:
             raise ValueError('caller result is not a bounded own-frame local')
         pending, seen, stores, helper_proofs, native_proofs = list(predecessors.get(call['offset'], [])), set(), [], [], set()
+        reached_formal, preservation_errors = False, []
         while pending:
             off = pending.pop()
             if off in seen:
@@ -221,6 +269,9 @@ def annotate_costed_caller_relations(instructions, requests, policies, *, preser
             seen.add(off)
             row = by[off]
             if off == own_entry:
+                if result['slot'] < own_argc:
+                    reached_formal = True
+                    continue
                 raise ValueError('caller path lacks a producer result store')
             if row['name'] not in KNOWN_OPERATIONS or row['name'] == 'SCRIPT_OP_ENTER_FRAME':
                 raise ValueError('caller has unknown effects or competing frame entry')
@@ -239,10 +290,58 @@ def annotate_costed_caller_relations(instructions, requests, policies, *, preser
                 if not (coords[0] == own_frame and 0 <= coords[1] < own_count or root_slot(coords)):
                     raise ValueError('caller has an unbounded borrowed writer')
             if row['name'] == 'SCRIPT_OP_CALL_NATIVE':
-                native_proofs.add(native_safe(row))
+                try:
+                    native_proofs.add(native_safe(row))
+                except ValueError as error:
+                    preservation_errors.append(str(error))
             if row['name'] == 'SCRIPT_OP_CALL':
-                helper_proofs.append(preserve_helper(integer_operand(row['operands'][0]), mode))
+                try:
+                    helper_proofs.append(preserve_helper(integer_operand(row['operands'][0]), mode))
+                except ValueError as error:
+                    preservation_errors.append(str(error))
             pending.extend(predecessors.get(off, []))
+        if reached_formal:
+            if stores:
+                raise ValueError('ambiguous formal forwarding mixes entry arguments and local redefinitions')
+            if not root_slot(mode):
+                raise ValueError('forwarded mode is not a bounded borrowed root slot')
+            upstream = []
+            for outer in instructions:
+                if outer['name'] != 'SCRIPT_OP_CALL' or integer_operand(outer['operands'][0]) != own_entry:
+                    continue
+                try:
+                    relation = caller_relation(outer, own_entry, result['slot'], None,
+                        mode_override=mode_expr, forwarding_stack=(*forwarding_stack, own_entry))
+                except (ValueError, KeyError, IndexError) as error:
+                    relation = dict(status='unresolved_caller_relation', caller_offset=outer['offset'], reason=str(error))
+                    try:
+                        relation['arguments'] = arguments(outer, own_argc)
+                    except ValueError as argument_error:
+                        relation['argument_recovery_reason'] = str(argument_error)
+                upstream.append(relation)
+            supported = any(relation['status'] in ('conditional_paired_caller_relation', 'conditional_formal_forwarding_relation')
+                            for relation in upstream)
+            prefix_valid = not preservation_errors
+            return dict(status='conditional_formal_forwarding_relation' if prefix_valid and supported else 'unresolved_caller_relation',
+                        caller_offset=call['offset'], caller_frame_entry=own_entry, arguments=actual,
+                        reason=(preservation_errors[0] if preservation_errors else
+                                'No supported concrete upstream caller.' if not supported else
+                                'Forwarded alternatives apply only through the individually supported upstream callsites.'),
+                        formal_forwarding=dict(wrapper_entry=own_entry, formal_index=result['slot'],
+                            argument_count=own_argc, local_count=own_count, frame_index=own_frame,
+                            mode_coordinate=dict(frame=mode[0], slot=mode[1]),
+                            prefix_instruction_offsets=sorted(seen),
+                            mode_guards=forwarding_guards(own_entry, call['offset'], mode, seen),
+                            prefix_preservation_proven=prefix_valid,
+                            prefix_preservation_diagnostics=preservation_errors,
+                            intervening_helpers=helper_proofs, intervening_native_functions=sorted(native_proofs),
+                            upstream_callers=upstream, all_recovered_upstream_callers_supported=bool(upstream) and all(
+                                relation['status'] in ('conditional_paired_caller_relation', 'conditional_formal_forwarding_relation') for relation in upstream),
+                            universal_formal_domain_established=False,
+                            scope='Only the unchanged entry argument is mapped to each separate actual caller expression. Upstream relations do not apply through an unproved wrapper prefix; unknown callers remain unresolved.'),
+                        scope='Conditional call-chain evidence under valid disjoint physical frames, stable program/VM/root mode and balanced nested rebinding. All per-native/deferred prerequisites and no asynchronous mutation through waits remain mandatory. No global substitution or scheduler/path-feasibility proof.')
+        if preservation_errors:
+            raise ValueError(preservation_errors[0])
         if not stores:
             raise ValueError('no reaching producer result stores')
         relations = [producer_relation(store['expression']['target_offset'], mode) for store in stores]
