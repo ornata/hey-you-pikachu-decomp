@@ -17,7 +17,7 @@ SOURCE_PINS = {
     'src/ovl/item_special_behaviors.c': '76f22ffeb515724a971b2929b66a8c5cf7a0220e63aaec43006169b2d60f6092',
     'include/item_types.h': '70cd1080b3fa819ba4e5997fe11582348f322c9d0c8e2055fc942325984111bc',
     'include/actor_script.h': 'b35b0c9ae80929cf2c8abafe678b8b52d3386be97c8c4fada69d9bdbe351640e',
-    'include/object_types.h': '444fa3082996623ad164481092e86fe4a217897b72116bd3ecc446bf6df03b48',
+    'include/object_types.h': '13c10c4ae96d2135792cf0064abd42d0d6fcbb119ab3c593ab56680155e43c0a',
     'include/actor_parts.h': 'e87f494367d64cbebb8896cc6388b35542e7ad2c6f2ff11453296de087ff95cc',
     'src/game/actor_configuration.c': 'f014e464cc9c086edc371f32b891da82d7a5b233050b7b3bf6f65dee8f84df9f',
     'src/game/actor_model_motion.c': '1cab149c269dce85748cbaf022cef9e014642f2eed8cd4dc6068c65c03a149af',

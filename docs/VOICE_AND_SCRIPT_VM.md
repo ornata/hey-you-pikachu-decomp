@@ -571,6 +571,26 @@ Ochre-deep's additional `0x01000000` bit, remain separate. Valid numeric values,
 nonoverlapping frames, current resources and preserved samples remain required;
 a matching template does not establish execution or subsequent state stability.
 
+The two unnamed counter predicates have different policies in Ochre-deep.
+Interaction branches reset root 40 or increment it by one, three, five, ten or
+twenty. Its above-fifty condition generally interrupts or exits
+an interaction. This supports a scoped description as weighted interaction
+interruption accumulation, without establishing an emotion, elapsed time or
+literal attempt count.
+
+Root 39 starts at 100 in this program and is reduced by several interaction and
+action branches. One branch restores five, capped at 100, after helper 9691(1)
+returns a result other than -1 and root 41 is not six. The direct subtraction
+paths have no lower clamp.
+Both script values are separate from the actor's native secondary meter.
+
+These observations cover direct writers, not indexed aliases or external writes.
+The 28 configurations that share the threshold template have different producer
+coverage: some mapped root-39 slots have only a direct initializer, while the
+playground program has no identified direct store to that mapped slot. The
+shared comparison therefore establishes neither universal initialization nor
+one gameplay meaning. The two masks retain their numeric counter descriptions.
+
 ### Ochre scene-region guidance
 
 The decoder's `scene_region_snapshot_roles` recognizes the complete 25-instruction,
@@ -580,7 +600,8 @@ they retain the original retail scene-region template and callback prerequisites
 
 Ochre-deep's configuration at `0x80146D7C` extends the status word in helper
 64325. It samples the player's three world coordinates, searches for the nearest
-other runtime-kind 175 (`0xAF`) object within an exclusive approximate distance
+other `RUNTIME_OBJECT_KIND_SCENE_REGION` (175, `0xAF`) object within an exclusive
+approximate distance
 of 10000, and saves the selected handle in root slot 185. The original scene-region
 template and lifecycle callbacks establish that this kind owns
 [`SceneRegionState`](../include/scene_types.h), including borrowed waypoints.

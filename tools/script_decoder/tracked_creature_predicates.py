@@ -13,7 +13,7 @@ from .scene_region_snapshots import _dependency_fingerprint
 NATIVE_BINDINGS = {'actorScriptGetActorKind': {'address': 2148654456,
                              'arguments': 1,
                              'file': 'src/ovl/actor_script_messages_items.c',
-                             'review_sha256': 'ee5d8dd13bb391df6e0cb37c4c2d85a0262aeaf9f6b231ad891be1ae60dfbddc',
+                             'review_sha256': '70813e1f2e4de9c0150fb070184dcefaac134e3970a0392f91c1e2cebce2e2ce',
                              'sha256': '35d723f6ed40ddc17bc9f8462b8ef9863ed4f5d544ef7a793f44997578b93d8b'},
  'actorScriptGetCreationScriptArgument': {'address': 2148664684,
                                           'arguments': 1,
@@ -23,7 +23,7 @@ NATIVE_BINDINGS = {'actorScriptGetActorKind': {'address': 2148654456,
  'actorScriptGetObjectWorldCoordinate': {'address': 2148657948,
                                          'arguments': 2,
                                          'file': 'src/ovl/actor_script_player_world.c',
-                                         'review_sha256': '52bec3721f0635bc521285fd57800809da7005aa88a0645884a55b1818eace91',
+                                         'review_sha256': 'ec8f0e3622efb4b21bf7c4874e314441823a051bfdcbaab53290bfc396d88a33',
                                          'sha256': 'c5b2d01ef2cfdc3631a53e6997f62dcea63bf49921987d593f8669e8790915d2'}}
 REQUIRED_NATIVE_NAMES = frozenset(('actorScriptGetActorKind', 'actorScriptGetCreationScriptArgument', 'actorScriptGetObjectWorldCoordinate'))
 GRAPH_SHA256 = '21ea1cccc2eee99e7373e818a0ec299c4225927fe99596c31792bbde89dad340'

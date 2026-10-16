@@ -13,9 +13,9 @@ from .stack import incoming_edges, recover_arguments
 
 NATIVE_BINDINGS = {
     'actorScriptPassThroughInteger': dict(arguments=1, review_sha256='7ce5019c6dafb96114d27892f09383b0f4af354c265b840c4a24c41823eb16d8'),
-    'actorScriptGetProgressValue': dict(arguments=1, review_sha256='e6eadc8d3c9e790d1e6c550a6894d9f230c4e6ca389547971f621fb779136383'),
+    'actorScriptGetProgressValue': dict(arguments=1, review_sha256='3d51ae69bf9ab291b45dfe4f839926f44f00eaa87325b8c5c55a0e8bf01c48df'),
     'actorScriptSetProgressValue': dict(arguments=2, review_sha256='0139883166d83c2855045ef88d951316e7006dc43eea5168cb8dd228b7d2d6ff'),
-    'actorScriptBuildSharedTextAlternate': dict(arguments='inline_count', review_sha256='4271b23473f8b6004f9069ebdc5e1ca90c80b02fda154a30af0b2eb6f405276d'),
+    'actorScriptBuildSharedTextAlternate': dict(arguments='inline_count', review_sha256='d755b5eed75d2724c91e8f8fa183d6671d7b87480c45271192cef886a8baa803'),
 }
 
 

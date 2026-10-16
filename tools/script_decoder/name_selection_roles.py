@@ -8,8 +8,8 @@ from .stack import incoming_edges
 REQUIRED_NATIVES = frozenset(('actorScriptChoosePokemonName', 'actorScriptGetPokemonNameDictionaryGroup', 'actorScriptRandomBelow'))
 
 NATIVE_BINDINGS = {
-    'actorScriptChoosePokemonName': dict(arguments=0, review_sha256='1cd50dc27b0537ab6949db067f585fb1d517711bf2ef74fb3b3270c814895f34'),
-    'actorScriptGetPokemonNameDictionaryGroup': dict(arguments=1, review_sha256='0f116e4f26833514127c51f75a4696c3106f50a7d3fc733436c2051bcf568199'),
+    'actorScriptChoosePokemonName': dict(arguments=0, review_sha256='b2c7dc39b6bbb5f7a70505acaec65ce60b373bbc764015b2220e2634ccfd83ae'),
+    'actorScriptGetPokemonNameDictionaryGroup': dict(arguments=1, review_sha256='d0e54bbc7ae9267d93bf3a98832fe62709eaee042ecc67ad08bcf64ec9283e8c'),
     'actorScriptRandomBelow': dict(arguments=1, review_sha256='45206f67a57091cbca5b17b2e640a6618c518b8c7461fc7899614bf7630e4a8f'),
 }
 

@@ -191,7 +191,9 @@ class ObjectQueryRoleTests(unittest.TestCase):
     def test_source_bindings_and_namespace(self):
         snapshot = self.snapshot()
         with patch.object(roles, 'NATIVE_REVIEW_SHA256', roles._digest(snapshot[0]['active'][roles.NATIVE_NAME])):
-            for value, expected in ((134, 'RUNTIME_OBJECT_KIND_ITEM'), (12, 'ACTOR_KIND_POLIWAG')):
+            for value, expected in ((134, 'RUNTIME_OBJECT_KIND_ITEM'),
+                                    (175, 'RUNTIME_OBJECT_KIND_SCENE_REGION'),
+                                    (12, 'ACTOR_KIND_POLIWAG')):
                 result = roles.object_query_roles(self.fixture(literal=value), snapshot=snapshot)
                 self.assertEqual(result['status'], 'conditional_roles')
                 self.assertEqual(result['comparisons'][0]['symbolic_names'][0]['name'], expected)

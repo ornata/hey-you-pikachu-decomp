@@ -892,7 +892,7 @@ f32 pathGetFirstPointCoordinateByHandle(s32 handle, s32 axis) {
     if (obj == NULL) {
         return 0.0F;
     }
-    if (((RuntimeObjectPrefix *)obj)->kind == 0xAF) {
+    if (((RuntimeObjectPrefix *)obj)->kind == RUNTIME_OBJECT_KIND_SCENE_REGION) {
         rec = ((RuntimeObjectPrefix *)obj)->state.bytes;
         if (axis < 3) {
             return ((SceneRegionState *)rec)->points[axis];
@@ -926,7 +926,7 @@ f32 actorGetFollowingPathPointCoordinate(u8 *object, s32 handle, s32 axis) {
     }
     index = 0;
     offset = 0;
-    if (((RuntimeObjectPrefix *)pathObject)->kind == 0xAF) {
+    if (((RuntimeObjectPrefix *)pathObject)->kind == RUNTIME_OBJECT_KIND_SCENE_REGION) {
         pathState = ((RuntimeObjectPrefix *)pathObject)->state.pointer;
         for (;;) {
             waypoint.v[0] = *(f32 *)((u8 *)pathState->points + offset);

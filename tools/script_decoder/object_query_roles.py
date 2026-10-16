@@ -13,14 +13,14 @@ from .effects import enum_names
 from .stack import incoming_edges
 
 NATIVE_NAME = 'actorScriptGetObjectType'
-NATIVE_REVIEW_SHA256 = '978e95b72d62f43ff396f93adb5f9a939d115351be5907b7d5302f4f4b56ddb8'
+NATIVE_REVIEW_SHA256 = '18540a9de22e7fb8c6748ba98310c2931628b7e4669e6bd4adcff7edc88edcd1'
 ITEM_STATE_NATIVE = 'actorScriptGetItemState'
-ITEM_STATE_REVIEW_SHA256 = '7a6a8743a060b8ed55be2ae35362eaa184279d180783c9dbbffd52d3c024e453'
+ITEM_STATE_REVIEW_SHA256 = '2b82e3bf0b97bc624ddee4b36f9d5838d388c29282969c92778c01213398f009'
 ITEM_TYPES_SHA256 = '6d67f534c838307b1ab917eae0793f2c17ff93eb5f0d0a2e01f9d46154221c58'
 
 REQUIRED_HEADERS = frozenset(('include/object_types.h', 'include/actor_kind.h'))
 HEADER_BINDINGS = {
-    'include/object_types.h': ('RUNTIME_OBJECT_KIND_', '932003acb7daf207ca52e3d8645431086f285daa4f7519ae75efaecff44fe64c'),
+    'include/object_types.h': ('RUNTIME_OBJECT_KIND_', '30ce7811d84b38295e33c68e500ce4e6d1c40c14a524d7edbc1859560a5c4f64'),
     'include/actor_kind.h': ('ACTOR_KIND_', 'f614803c6f8da926f786cff2ff5a0a57fee179562fa7af6e2854a5ca581b9d63'),
 }
 

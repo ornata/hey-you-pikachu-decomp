@@ -892,7 +892,7 @@
     "file:include/object_types.h": {
       "kind": "file",
       "file": "include/object_types.h",
-      "sha256": "444fa3082996623ad164481092e86fe4a217897b72116bd3ecc446bf6df03b48"
+      "sha256": "13c10c4ae96d2135792cf0064abd42d0d6fcbb119ab3c593ab56680155e43c0a"
     },
     "file:include/opacity_animation_programs.h": {
       "kind": "file",
@@ -1597,7 +1597,7 @@
     "file:src/ovl/actor_script_queries.c": {
       "kind": "file",
       "file": "src/ovl/actor_script_queries.c",
-      "sha256": "faa6ba04cc746804da198e6ca2f7597866af0a76960a4172a48e02b5bad01a85"
+      "sha256": "a00ecb169cce66c85213062a5651aae20c559577252d9d3ccaaa7110a7a5964d"
     },
     "file:src/ovl/actor_target_interaction.c": {
       "kind": "file",
@@ -3149,7 +3149,7 @@
       "kind": "function",
       "file": "src/ovl/actor_script_queries.c",
       "function": "actorGetFollowingPathPointCoordinate",
-      "sha256": "59b6bf230682f9d1db61ab7ba6622b57c267792a7076253c5d89984de8db1ba0"
+      "sha256": "732276e306ba626ba2a9c57ec770d7ffdd24891fc5c4935e1ed5fe8918ac0cda"
     },
     "function:src/ovl/actor_script_queries.c:actorGetGroundOffsetCoordinate": {
       "kind": "function",
@@ -3419,7 +3419,7 @@
       "kind": "function",
       "file": "src/ovl/actor_script_queries.c",
       "function": "pathGetFirstPointCoordinateByHandle",
-      "sha256": "669e13d1b6b37b14d0741d87fbe5768a88312ed7fa83f32548ea60b28d985943"
+      "sha256": "107fc1ab75d7e7f682470821e193c8140f0527dd21d35ac0ff8af6632451c22b"
     },
     "function:src/ovl/actor_script_queries.c:playerGetBlockedInput": {
       "kind": "function",
