@@ -17,9 +17,10 @@ typedef enum VoiceRecognitionDeviceState {
 /// Other nonnegative identifiers remain dictionary-defined. Selection and request
 /// fields do not establish whether device vocabulary has finished uploading.
 typedef enum VoiceDictionaryId {
-    VOICE_DICTIONARY_NONE = -1,     ///< No retained dictionary selection or upload.
-    VOICE_DICTIONARY_DEFAULT = 0,   ///< Default requested at gameplay startup or when session configuration is unset.
-    VOICE_DICTIONARY_WORLD_MAP = 31 ///< Vocabulary requested for whole-map destination selection.
+    VOICE_DICTIONARY_NONE = -1,   ///< No retained dictionary selection or upload.
+    VOICE_DICTIONARY_DEFAULT = 0, ///< Default requested at gameplay startup or when session configuration is unset.
+    VOICE_DICTIONARY_DRAWING_FEEDBACK = 13, ///< Vocabulary requested while showing a drawn notebook picture.
+    VOICE_DICTIONARY_WORLD_MAP = 31         ///< Vocabulary requested for whole-map destination selection.
 } VoiceDictionaryId;
 
 /// Result-index sentinel returned when no completed recognition result is pending.

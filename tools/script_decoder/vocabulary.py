@@ -78,7 +78,7 @@ def _category_literal(code, identifier, expected):
         raise ValueError('message category disagrees with the reviewed numeric domain')
 
 
-def _reviewed_enum(code, enum_name, prefix, mapping_digest, *, excluded=()):
+def _reviewed_enum(code, enum_name, prefix, mapping_digest, *, excluded=(), allow_negative=False):
     """Parse a complete explicit enum and require its independently reviewed mapping."""
     enum = re.escape(enum_name)
     enums = re.findall(r'\btypedef\s+enum\s+' + enum + r'\s*\{([^}]+)\}\s*' + enum + r'\s*;', code)
@@ -89,11 +89,12 @@ def _reviewed_enum(code, enum_name, prefix, mapping_digest, *, excluded=()):
         declarations.pop()
     names, identifiers = {}, set()
     for declaration in declarations:
-        match = re.fullmatch(r'\s*(' + re.escape(prefix) + r'\w+)\s*=\s*(0[xX][\da-fA-F]+|\d+)\s*', declaration)
+        number = r'-?(?:0[xX][\da-fA-F]+|\d+)' if allow_negative else r'(?:0[xX][\da-fA-F]+|\d+)'
+        match = re.fullmatch(r'\s*(' + re.escape(prefix) + r'\w+)\s*=\s*(' + number + r')\s*', declaration)
         if match is None:
             raise ValueError('malformed reviewed selector declaration')
         name, value = match[1], int(match[2], 0)
-        if name in identifiers or value in names or not 0 <= value <= 2147483647 or value in excluded:
+        if name in identifiers or value in names or not (-2147483648 if allow_negative else 0) <= value <= 2147483647 or value in excluded:
             raise ValueError('duplicate or unsupported reviewed selector')
         names[value] = name
         identifiers.add(name)
@@ -164,14 +165,14 @@ def feedback_question_names():
     return names
 
 
+DICTIONARY_MAPPING_SHA256 = '4ee45fb0620d325da950f8d12ea853e6c0e97d85444b080f91850f3d7dc84701'
+
+
 def dictionary_names():
-    """Read explicitly named selections while leaving other descriptors numeric."""
+    """Read scoped reviewed dictionary IDs, without accepting global aliases."""
     code = code_only((ROOT / 'include/voice_recognition.h').read_text())
-    pairs = re.findall(r'\b(VOICE_DICTIONARY_\w+)\s*=\s*(-?\d+)', code)
-    names = {int(value): name for name, value in pairs}
-    if names != {-1: 'VOICE_DICTIONARY_NONE', 0: 'VOICE_DICTIONARY_DEFAULT', 31: 'VOICE_DICTIONARY_WORLD_MAP'}:
-        raise ValueError('named dictionary selections need renewed caller/resource review')
-    return names
+    return _reviewed_enum(code, 'VoiceDictionaryId', 'VOICE_DICTIONARY_',
+                          DICTIONARY_MAPPING_SHA256, allow_negative=True)
 
 
 def vocabulary_catalog(image, dictionary_count=43, *, validate_phrases=True, validate_general_commands=True, validate_map_destinations=True, validate_item_noun_groups=True, validate_directives=True, validate_feedback_questions=True):

@@ -486,6 +486,35 @@ configuration's overlay and retains existing creation/scenario bindings. Reverse
 links on dictionary descriptors connect them to those request sites and to written
 C requests. These are possible resource uses, not scene ownership or executed paths.
 
+### Drawing feedback
+
+`VOICE_DICTIONARY_DRAWING_FEEDBACK` (13) is requested by seven retained
+companion configurations' drawing/notebook helpers. The shared message snapshot
+records the player-held item kind. The drawing helper copies that prior value,
+rejects zero, then requests this dictionary and starts the drawing action. It
+creates and presents notebook objects using a display-material frame from that
+item kind. The recorded item kind and the created notebook handles are separate
+values; the snapshot does not establish continued ownership.
+
+The feedback logic consumes stored message category and argument-zero fields.
+Under its message-ready gate, category four or category nine/value two selects
+the same stop/cleanup branch. After excluding that branch, it handles praise and
+a general-command response before separating category nine's other values:
+
+| Dictionary-13 selector | Authored label family | Reviewed branch distinction |
+| --- | --- | --- |
+| 0 | Cool / fine | Random selection among four candidate actions. |
+| 1 | Cute / give / throw | Alternative random selection among three candidate actions. |
+| 2 | Stupid | Shares the insulting-message stop/cleanup branch. |
+
+These are contextual feedback branches, not universal positive/negative values.
+The alternative branch also admits other message categories, and the first random
+branch's interpretation as value zero depends on the preceding guards and a
+dictionary-thirteen payload. Value one does not itself request an item transfer or
+throw operation. Dictionary selection, device upload, delivery, snapshot validity,
+branch reachability and later action effects remain separate conditions. The
+selector values remain numeric.
+
 ### Bedroom name activity
 
 One symbolic request belongs to the bedroom Pokémon-name activity. Its native
