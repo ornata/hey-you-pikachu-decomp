@@ -258,6 +258,11 @@
       "file": "include/actor_create.h",
       "sha256": "42684d1b1a08ea12760e0cf82e0457c52164a39f9ee4e0b2c93dbc0cf1d964af"
     },
+    "file:include/actor_ground.h": {
+      "kind": "file",
+      "file": "include/actor_ground.h",
+      "sha256": "de690cb8a6457454fbb3662f9616c71f7326e48f27d7660445097207e903159d"
+    },
     "file:include/actor_kind.h": {
       "kind": "file",
       "file": "include/actor_kind.h",
@@ -503,6 +508,11 @@
       "file": "include/item_mode.h",
       "sha256": "7f86b14c1492ce0dcd49b3faceff64a60607314df2cc3cfb1262dc381c46b5f1"
     },
+    "file:include/item_participation.h": {
+      "kind": "file",
+      "file": "include/item_participation.h",
+      "sha256": "d7a16323285f19cc3870e9a45ff3bd296612367e853313b8f9282ba05674efcc"
+    },
     "file:include/item_response.h": {
       "kind": "file",
       "file": "include/item_response.h",
@@ -731,7 +741,7 @@
     "file:include/progress_field_ids.h": {
       "kind": "file",
       "file": "include/progress_field_ids.h",
-      "sha256": "f7faf7135a2fd21b4eb5e0d1aca9a1b6759870776b582ff349b2dcb248d0e2bd"
+      "sha256": "e0739e7b44c50746b1cf2429f194751bbf3f2b648edcdc5078f1be72ba00b307"
     },
     "file:include/progress_field_types.h": {
       "kind": "file",
@@ -897,6 +907,11 @@
       "kind": "file",
       "file": "include/terrain_height.h",
       "sha256": "6245f7b45d6a15c71d15136df1a2bf7de608b77ac67e23077d1ab5704bfb5f59"
+    },
+    "file:include/terrain_surface.h": {
+      "kind": "file",
+      "file": "include/terrain_surface.h",
+      "sha256": "d32574dc05603061ac29954c5004c540624e6d966e351ef9b633ad1105014e2f"
     },
     "file:include/text_image.h": {
       "kind": "file",
@@ -1183,6 +1198,11 @@
       "file": "src/ovl/actor_script_actions.c",
       "sha256": "3af5d465618a3c3f9de31b1b157e8695dbf36bca77a507111b8807bdc8d36aec"
     },
+    "file:src/ovl/actor_script_collection_profile.c": {
+      "kind": "file",
+      "file": "src/ovl/actor_script_collection_profile.c",
+      "sha256": "498f40b50c8117b274ea315a4e4447fa837b33c54b04530a8b83051cdc21680f"
+    },
     "file:src/ovl/actor_script_messages_items.c": {
       "kind": "file",
       "file": "src/ovl/actor_script_messages_items.c",
@@ -1459,8 +1479,8 @@
     "function:src/game/collision_grid.c:collisionGridUnregisterObject": {
       "kind": "function",
       "file": "src/game/collision_grid.c",
-      "sha256": "63c768445b2ac4d395bb326e5e5b9fd6fa11f4fd83636053bf0428b2a4a637e2",
-      "function": "collisionGridUnregisterObject"
+      "function": "collisionGridUnregisterObject",
+      "sha256": "63c768445b2ac4d395bb326e5e5b9fd6fa11f4fd83636053bf0428b2a4a637e2"
     },
     "function:src/game/doors_object_responses.c:doorSetAccessState": {
       "kind": "function",
@@ -1615,8 +1635,8 @@
     "function:src/game/keyed_pool.c:keyedPoolFindEntryWithValue": {
       "kind": "function",
       "file": "src/game/keyed_pool.c",
-      "sha256": "76d94f86899a2254666baa984036c99aa9ffd3607775168f3dacfe1c051030a5",
-      "function": "keyedPoolFindEntryWithValue"
+      "function": "keyedPoolFindEntryWithValue",
+      "sha256": "76d94f86899a2254666baa984036c99aa9ffd3607775168f3dacfe1c051030a5"
     },
     "function:src/game/keyed_pool.c:keyedPoolGetValue": {
       "kind": "function",
@@ -1663,20 +1683,20 @@
     "function:src/game/keyed_pool.c:keyedPoolReleaseEntry": {
       "kind": "function",
       "file": "src/game/keyed_pool.c",
-      "sha256": "4b2d90664f0b8a4977f7a78f84d90e8185255df15b4fcfc532fa5c2e1be561f0",
-      "function": "keyedPoolReleaseEntry"
+      "function": "keyedPoolReleaseEntry",
+      "sha256": "4b2d90664f0b8a4977f7a78f84d90e8185255df15b4fcfc532fa5c2e1be561f0"
     },
     "function:src/game/keyed_pool.c:keyedPoolRelocateEntry": {
       "kind": "function",
       "file": "src/game/keyed_pool.c",
-      "sha256": "95288275465a939b583f388c9202cd518c46ca1cc594970fa8ceafbd9ea9f1ce",
-      "function": "keyedPoolRelocateEntry"
+      "function": "keyedPoolRelocateEntry",
+      "sha256": "95288275465a939b583f388c9202cd518c46ca1cc594970fa8ceafbd9ea9f1ce"
     },
     "function:src/game/keyed_pool.c:keyedPoolRemoveEntry": {
       "kind": "function",
       "file": "src/game/keyed_pool.c",
-      "sha256": "510160d054c0ed101623c12b1cc78e7d5123062871d1cbdf8c64e965635d86f0",
-      "function": "keyedPoolRemoveEntry"
+      "function": "keyedPoolRemoveEntry",
+      "sha256": "510160d054c0ed101623c12b1cc78e7d5123062871d1cbdf8c64e965635d86f0"
     },
     "function:src/game/keyed_pool.c:keyedPoolRemoveFirstForKey": {
       "kind": "function",
@@ -1687,14 +1707,14 @@
     "function:src/game/keyed_pool.c:keyedPoolRemoveKeyAndValue": {
       "kind": "function",
       "file": "src/game/keyed_pool.c",
-      "sha256": "dcf00d5f90e87cb30f7f11eaa28d47149166adaa28df84ba331061d7a84bf4b8",
-      "function": "keyedPoolRemoveKeyAndValue"
+      "function": "keyedPoolRemoveKeyAndValue",
+      "sha256": "dcf00d5f90e87cb30f7f11eaa28d47149166adaa28df84ba331061d7a84bf4b8"
     },
     "function:src/game/keyed_pool.c:keyedPoolUnlinkOrderedEntry": {
       "kind": "function",
       "file": "src/game/keyed_pool.c",
-      "sha256": "fb126a39e62e2e529e7530617b5318f55de6951d5fc95e11bbe691b084205351",
-      "function": "keyedPoolUnlinkOrderedEntry"
+      "function": "keyedPoolUnlinkOrderedEntry",
+      "sha256": "fb126a39e62e2e529e7530617b5318f55de6951d5fc95e11bbe691b084205351"
     },
     "function:src/game/microphone_requests.c:micGetRequestedDictionary": {
       "kind": "function",
@@ -1891,8 +1911,8 @@
     "function:src/game/object_hierarchy.c:objectSetHierarchyFlags": {
       "kind": "function",
       "file": "src/game/object_hierarchy.c",
-      "sha256": "bd6c60e677a410581966e6d8cf2fa9134e3ae3b43e8aff17e81421e0daf1487a",
-      "function": "objectSetHierarchyFlags"
+      "function": "objectSetHierarchyFlags",
+      "sha256": "bd6c60e677a410581966e6d8cf2fa9134e3ae3b43e8aff17e81421e0daf1487a"
     },
     "function:src/game/object_hierarchy.c:romByteReaderInitialize": {
       "kind": "function",
@@ -2398,6 +2418,12 @@
       "function": "actorGetFollowingPathPointCoordinate",
       "sha256": "59b6bf230682f9d1db61ab7ba6622b57c267792a7076253c5d89984de8db1ba0"
     },
+    "function:src/ovl/actor_script_queries.c:actorGetGroundOffsetCoordinate": {
+      "kind": "function",
+      "file": "src/ovl/actor_script_queries.c",
+      "function": "actorGetGroundOffsetCoordinate",
+      "sha256": "6cbdef3173689b25ada3da7cdb460699349e1350a375b76134d81f1d1cecc2b9"
+    },
     "function:src/ovl/actor_script_queries.c:actorGetHeldItemKind": {
       "kind": "function",
       "file": "src/ovl/actor_script_queries.c",
@@ -2439,6 +2465,18 @@
       "file": "src/ovl/actor_script_queries.c",
       "sha256": "8bfcfb7928e2ba3ef493b4c7b2829c87010c3571397615397551ec9460783500",
       "function": "actorMoveToTargetPosition"
+    },
+    "function:src/ovl/actor_script_queries.c:actorProbeGroundMaterialAhead": {
+      "kind": "function",
+      "file": "src/ovl/actor_script_queries.c",
+      "function": "actorProbeGroundMaterialAhead",
+      "sha256": "a808daeb38afe5118ceda2ce6ab2d83d2dd5f9fe775d5d2fba1ea4867d8877ff"
+    },
+    "function:src/ovl/actor_script_queries.c:actorReleaseHeldItem": {
+      "kind": "function",
+      "file": "src/ovl/actor_script_queries.c",
+      "function": "actorReleaseHeldItem",
+      "sha256": "2b39da3a579958144eabc1ec9dfc55793103b336112dbff248d67af121f8d39b"
     },
     "function:src/ovl/actor_script_queries.c:actorSetDefaultActionMode": {
       "kind": "function",
@@ -2602,11 +2640,23 @@
       "function": "pathGetFirstPointCoordinateByHandle",
       "sha256": "669e13d1b6b37b14d0741d87fbe5768a88312ed7fa83f32548ea60b28d985943"
     },
+    "function:src/ovl/actor_script_queries.c:playerGetBlockedInput": {
+      "kind": "function",
+      "file": "src/ovl/actor_script_queries.c",
+      "function": "playerGetBlockedInput",
+      "sha256": "672cb37cc2b0870a6b06f4057972f2a8c43aca1f824b98e0595654ea59f8686f"
+    },
     "function:src/ovl/actor_script_queries.c:playerGetHeldItemHandle": {
       "kind": "function",
       "file": "src/ovl/actor_script_queries.c",
       "function": "playerGetHeldItemHandle",
       "sha256": "62f1c07985f930eb127db53cbae350996bd2140b53efa05bf2f1af514568c8b8"
+    },
+    "function:src/ovl/actor_script_queries.c:playerQueryInteractionMode": {
+      "kind": "function",
+      "file": "src/ovl/actor_script_queries.c",
+      "function": "playerQueryInteractionMode",
+      "sha256": "1c167d81ab6a39c5496a6a294d4834865b8b3faa23cc542586cd26c8924591e6"
     },
     "function:src/ovl/actor_script_queries.c:playerSetActorInteractionMode": {
       "kind": "function",
@@ -2668,6 +2718,12 @@
       "function": "actorTryHoldItem",
       "sha256": "7c285ab5e764e9de365aee97c81ee7fac7789bc51618d1ebbbc69ec3c868cc40"
     },
+    "function:src/ovl/actor_target_interaction.c:itemGetImpactCount": {
+      "kind": "function",
+      "file": "src/ovl/actor_target_interaction.c",
+      "sha256": "d930760963735dc11f47701f727d5c978e7ddccc64af4c91056a7d614bc62978",
+      "function": "itemGetImpactCount"
+    },
     "function:src/ovl/actor_target_interaction.c:itemSetImpactCount": {
       "kind": "function",
       "file": "src/ovl/actor_target_interaction.c",
@@ -2709,6 +2765,12 @@
       "file": "src/ovl/area_terrain_maze.c",
       "function": "terrainGetNodeLocalHeight",
       "sha256": "3adeae6e3065a49624a8983b2098c6a331386b45e64dcbf7c7898c0a175318cf"
+    },
+    "function:src/ovl/area_terrain_maze.c:terrainGetSurfaceAttributes": {
+      "kind": "function",
+      "file": "src/ovl/area_terrain_maze.c",
+      "function": "terrainGetSurfaceAttributes",
+      "sha256": "caddf56365993fc8e64fc6c2f9bc79122795a9347a40736eab1ed0c7bf029a10"
     },
     "function:src/ovl/area_terrain_maze.c:terrainGetTriangleHeight": {
       "kind": "function",
@@ -2794,6 +2856,12 @@
       "sha256": "abd1805f80d122e7b3fdb520f584e0ec131ba774191aa90cab54b533276b6be2",
       "function": "itemGetResponse"
     },
+    "function:src/ovl/item_registry.c:itemHideAndSuspend": {
+      "kind": "function",
+      "file": "src/ovl/item_registry.c",
+      "function": "itemHideAndSuspend",
+      "sha256": "42bd7fed7f5e512bc3afff1e2d03b1531028d5cb368dad73243f52fdd7208855"
+    },
     "function:src/ovl/item_registry.c:itemInitializeState": {
       "kind": "function",
       "file": "src/ovl/item_registry.c",
@@ -2805,6 +2873,12 @@
       "file": "src/ovl/item_registry.c",
       "sha256": "1dcde112383b4bd741706c738c9bb40c1a30b8537e682c0cfeda0a50c4f4bd0c",
       "function": "itemKindIsInCategory"
+    },
+    "function:src/ovl/item_registry.c:itemRestoreToWorld": {
+      "kind": "function",
+      "file": "src/ovl/item_registry.c",
+      "function": "itemRestoreToWorld",
+      "sha256": "3ae3a159c770f503e27d711e1d11147afd6d7b67b3aef68901b5b347a3de4932"
     },
     "function:src/ovl/item_registry.c:itemSetDrawMode": {
       "kind": "function",
@@ -2890,6 +2964,12 @@
       "function": "playerGetChaseStage",
       "sha256": "d9fee8c9c50a48be31c0bbea822d33b6710da85045ad27eba292587296ef6c10"
     },
+    "function:src/ovl/player_companion.c:playerGetCompanionControlMode": {
+      "kind": "function",
+      "file": "src/ovl/player_companion.c",
+      "function": "playerGetCompanionControlMode",
+      "sha256": "0637e826a2da8f0f88c27b23628b64cda5fdfe48329ed32d4770bfdb3653c4f6"
+    },
     "function:src/ovl/player_companion.c:playerGetFriendshipMilestoneFlag": {
       "kind": "function",
       "file": "src/ovl/player_companion.c",
@@ -2901,6 +2981,12 @@
       "file": "src/ovl/player_companion.c",
       "function": "playerIsViewControlSelected",
       "sha256": "d7e6d20c96a94530af6c111b46b865324545b413adbbf490371e2cbfce74850b"
+    },
+    "function:src/ovl/player_companion.c:playerPickUpItem": {
+      "kind": "function",
+      "file": "src/ovl/player_companion.c",
+      "function": "playerPickUpItem",
+      "sha256": "08038df60e7ec4c6d564d9e213e5706e1097d4dd305c0d45f91ab68a22f3aab9"
     },
     "function:src/ovl/player_companion.c:playerPrepareCameraTransition": {
       "kind": "function",
@@ -3253,7 +3339,25 @@
     "actorScriptFindActorNearPosition",
     "actorScriptFindItemNearPosition",
     "actorScriptCreateEffectEmitter",
-    "actorScriptCreateWispEffect"
+    "actorScriptCreateWispEffect",
+    "actorScriptGetItemCatalogTag",
+    "actorScriptGetItemCollectionValue",
+    "actorScriptGetItemState",
+    "actorScriptGetItemImpactCount",
+    "actorScriptGetItemKindResponse",
+    "actorScriptGetGroundHeightAtPosition",
+    "actorScriptGetGroundMaterialAtPosition",
+    "actorScriptGetGroundOffsetCoordinate",
+    "actorScriptProbeGroundMaterialAhead",
+    "actorScriptProbeGroundMaterialAtHeightOffset",
+    "actorScriptPlayerTryHoldItem",
+    "actorScriptHideAndSuspendItem",
+    "actorScriptRestoreItemToWorld",
+    "actorScriptMoveObjectAndReleaseHeldItem",
+    "actorScriptPushVisibilityEnabled",
+    "actorScriptPushBlockedPlayerInput",
+    "actorScriptQueryPlayerInteractionMode",
+    "actorScriptTrackPlayerTertiaryObject"
   ],
   "callback_files": [
     {
@@ -3262,15 +3366,15 @@
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_collection_profile.json",
-      "sha256": "91446a370cf5a6f197521a3dccf38ea83f6ad5ffd9cbe952c765ec6052fbb946"
+      "sha256": "15c7da4aa316a70c78680c8b014429d097da6fcae63e591775d48215175ca16e"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_messages_items.json",
-      "sha256": "e00a4f7f187b19075b31a5158f7719b62d8f4bf24876e9f4c81ec161e5170a3f"
+      "sha256": "38be208aa23afb6ba7fc033fc98c9b63cdc7f6defaef67de4bec48efab3c326a"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_player_world.json",
-      "sha256": "59e589b8ded7eb8f7861d984672093bf85f77b888a9d82d6359e0e5eceb65034"
+      "sha256": "8eb37f056b258b282fcfaee72be06cc74e170fa78cdd88a447341721e734ea95"
     },
     {
       "file": "native_frame_reviews/src__ovl__script_demo_item_commands.json",

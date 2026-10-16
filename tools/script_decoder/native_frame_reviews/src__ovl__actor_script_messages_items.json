@@ -2583,6 +2583,50 @@
       ],
       "evidence": "Original Ghidra 0x8011CDDC,0x80118A1C and 0x80000AD4 establish six pops and nine direct camera stores. Source-bound immediate footprint review. Two authored original-instruction probes cover mixed numeric eye/target values and coincident endpoints, with the exact world-up vector and unchanged second camera/player. All preserve three lower values, frame metadata and guarded VM/actor/player/camera/area/pool storage. Sixteen native/helper fingerprints agree with ROM and six native bodies agree with Ghidra. Later rendering/interpolation, invalid conversion domains and concurrent lifetimes are untested.",
       "runtime_status": "bounded_original_instruction_probes_passed"
+    },
+    {
+      "function": "actorScriptTrackPlayerTertiaryObject",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "7c8f223b1a25fc0e68d19b8670587b434be7f304e679ee3ce46fb7872a3b3c92",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Track the available tertiary player object handle with zero distance allowance and fresh target position; append integer zero regardless of tracking-helper category.",
+      "dependencies": [
+        "function:src/ovl/actor_script_queries.c:actorTrackObjectPosition",
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/ovl/actor_script_queries.c:objectResolveAvailableHandle",
+        "function:src/game/object_hierarchy.c:objectFindLiveByHandle",
+        "function:src/game/keyed_pool.c:keyedPoolGetValue",
+        "function:src/game/keyed_pool.c:keyedPoolFindEntry",
+        "file:include/object_types.h",
+        "file:include/object_flags.h",
+        "file:include/item_types.h",
+        "file:include/keyed_pool_types.h",
+        "file:include/actor_kind.h",
+        "function:src/ovl/actor_script_queries.c:objectGetScriptCategory",
+        "file:include/object_script_query.h",
+        "function:src/ovl/actor_script_queries.c:actorSetTargetPosition",
+        "file:include/player_types.h",
+        "file:include/actor_script.h",
+        "file:include/script_vm.h",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger"
+      ],
+      "preconditions": [
+        "Caller actor, actor state, captured VM and writable value storage remain live, correctly aligned and disjoint from all observed global records. There is one free operand slot above protected locals and frame metadata; no concurrent mutation or VM replacement occurs.",
+        "Requires readable gPlayerModeState.objectHandles[2] at 0x800EF730 and initialized positive-capacity object-handle pool. Fixed-index tertiary selection is distinct from primary or secondary player targets.",
+        "Available target selects follow mode, records its raw handle, sets allowance positive zero and copies its world XYZ into actor target position. Missing, destroyed or toolbox item targets select fixed mode only, preserving stale target handle, allowance and position. Successful supported or unsupported-category targets are tracked equally; category return is ignored.",
+        "objectGetScriptCategory performs a second read-only available-handle lookup; pool entries and target state stay live between lookups. Query predecessor writes target a C-stack temporary only. Actor target fields and the appended zero are the only persistent writes. No allocation, queue, movement, future tracking update or ownership transfer occurs.",
+        "Original instruction semantics were reviewed statically for this wrapper; no runtime claim, retail reachability or lifetime guarantee is made."
+      ],
+      "runtime_status": "untested",
+      "evidence": "Original Ghidra 0x8011D58C..8011D5CC reads 0x800EF730 (gPlayerModeState.objectHandles[2]), passes +0.0 to 0x80117584, ignores its return category and appends integer zero through 0x8011601C. Unchanged full tracking, lookup and category dependency closure reviewed against original source and Ghidra; this tertiary wrapper has no runtime evidence and does not inherit secondary observations."
     }
   ]
 }

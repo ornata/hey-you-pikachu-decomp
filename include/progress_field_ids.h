@@ -120,7 +120,15 @@ enum {
         77, ///< Oddish-meadow legend and Diglett introduction processed.
     PROGRESS_FIELD_SPRINGLEAF_WATERING_INTRODUCTION_RECORDED =
         79, ///< First Springleaf-field watering introduction and demonstration processed.
+    PROGRESS_FIELD_OCHRE_PICNIC_INVITATION_RECORDED =
+        83, ///< Initial Bulbasaur picnic invitation sequence processed; does not require a successful voice response.
+    PROGRESS_FIELD_OCHRE_DEEP_DEPARTURE_RECORDED =
+        84, ///< First Ochre-deep departure sequence processed; later departures use the abbreviated path.
+    PROGRESS_FIELD_OCHRE_PICNIC_MEALS_COMPLETED =
+        85, ///< Food-producing Ochre picnic results, regardless of dish quality; excludes the no-ingredients result.
     PROGRESS_FIELD_OCHRE_ENTRANCE_RESIDENT_STAGE = 86, ///< Zero through three selects additional entrance residents.
+    PROGRESS_FIELD_COBALT_TREASURE_HUNTS_COMPLETED =
+        87, ///< Completed Cobalt-island treasure-hunt result sequences, including visits with no opened chests.
     PROGRESS_FIELD_PIKACHU_DISAPPEARANCE_EPISODES_COMPLETED =
         93, ///< Completed disappearance visits selecting first or repeat search narration.
     PROGRESS_FIELD_VILEPLUME_MEADOW_VISIT_PENDING =
