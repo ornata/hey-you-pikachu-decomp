@@ -1,7 +1,7 @@
 """Link item creation operands to the authenticated retained item-kind catalog.
 
-Names are borrowed display labels read from the local ROM, not invented enum
-identities. Catalog membership and a nonnull model do not prove creation safety,
+Display labels come from the local ROM; recovered domain names come from explicit
+source enums. Catalog membership and a nonnull model do not prove creation safety,
 resource readiness, ownership, placement or gameplay reachability.
 """
 
@@ -84,6 +84,32 @@ def interaction_response_categories():
             for selector in range(1, 6)]
 
 
+def reaction_code_names(root=None):
+    """Parse explicit recovered unsigned reaction-code names, preserving unknowns."""
+    root = ROOT if root is None else root
+    code = code_only((root / 'include/item_response.h').read_text())
+    matches = re.findall(r'\btypedef\s+enum\s+ItemReactionCode\s*\{([^}]+)\}\s*ItemReactionCode\s*;', code)
+    if len(matches) != 1:
+        raise ValueError('expected exactly one ItemReactionCode enum')
+    names, identifiers = {}, set()
+    entries = matches[0].split(',')
+    for index, entry in enumerate(entries):
+        if not entry.strip() and index == len(entries)-1:
+            continue
+        member = re.fullmatch(r'\s*(ITEM_REACTION_\w+)\s*=\s*(0[xX][0-9a-fA-F]+|\d+)\s*', entry)
+        if member is None:
+            raise ValueError('reaction codes require explicit numeric u8 values')
+        name, raw = member.groups()
+        value = int(raw, 0)
+        if not 0 <= value <= 255 or value in names or name in identifiers:
+            raise ValueError('invalid or duplicate unsigned reaction code')
+        names[value] = name
+        identifiers.add(name)
+    if not names:
+        raise ValueError('empty ItemReactionCode enum')
+    return names
+
+
 def item_kind_catalog(image, progress_fields=None):
     """Read the bounded 166-entry catalog and optional bounded display names.
 
@@ -123,6 +149,7 @@ def item_kind_catalog(image, progress_fields=None):
         names[address] = row
         return row
 
+    reaction_names = reaction_code_names()
     class_names = storage_class_names()
     flag_names = state_flag_names()
     known_flag_mask = sum(flag_names)
@@ -158,10 +185,13 @@ def item_kind_catalog(image, progress_fields=None):
                          availability_field=availability_field,
                          availability_field_name=field_names.get(availability_field),
                          interaction_responses=interaction_responses,
+                         interaction_response_names={category:reaction_names.get(code) for category,code in interaction_responses.items()},
                          has_model_template=bool(model),
                          display_names=dict(alternate=display_name(alternate), default=display_name(default))))
     return dict(count=_COUNT, stride=_STRIDE, entries=rows,
                 interaction_response_categories=interaction_response_categories(),
+                reaction_codes=[dict(response_code=code, enum_name=name) for code,name in sorted(reaction_names.items())],
+                reaction_code_scope='Recovered shared-dispatch reaction identities; categories and returned codes remain separate domains. Unknown codes retain null names. Scene-specific handling or overrides and whether an interaction executes are not established.',
                 table=dict(name='gItemKinds', size=len(data), sha256=_TABLE_SHA256, **location),
                 initial_state_flags_scope='Authored ItemKind stateFlags before creation adds runtime state bits; named single-bit ItemStateFlag members and an explicit unresolved mask. These are not RuntimeObjectFlags or an observed live item state.',
                 search_priority_scope='Initial maximum and per-second replenishment of item search-selection priority; these are not plant growth or physical dimensions. Runtime selection can reset priority, and this metadata does not establish a live value or selection eligibility.',
@@ -218,6 +248,7 @@ def item_response_requests(instructions, catalog):
     frames = {row['offset']: row for row in instructions if row['name'] == 'SCRIPT_OP_ENTER_FRAME'}
     known = {row['item_kind']: row for row in catalog['entries']}
     categories = {row['category_id']: row for row in catalog['interaction_response_categories']}
+    reaction_names = {row['response_code']:row['enum_name'] for row in catalog.get('reaction_codes', [])}
     natives = {'actorScriptGetLiveItemResponse': 'item_handle',
                'actorScriptGetItemKindResponse': 'item_kind'}
     rows = []
@@ -263,5 +294,6 @@ def item_response_requests(instructions, catalog):
                 if selector in categories and kind in known:
                     row['item_configuration'] = known[kind]
                     row['response_code'] = known[kind]['interaction_responses'][str(selector)]
+                    row['response_code_name'] = reaction_names.get(row['response_code'])
         rows.append(row)
     return rows

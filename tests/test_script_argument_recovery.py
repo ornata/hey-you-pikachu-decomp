@@ -49,6 +49,7 @@ class ItemCatalogMetadataTests(unittest.TestCase):
                 ITEM_RESPONSE_TASTE = 3, ITEM_RESPONSE_SMELL = 4,
                 ITEM_RESPONSE_PLAY_OR_USE = 5
             } ItemInteractionResponseCategory;
+            typedef enum ItemReactionCode { ITEM_REACTION_TEST = 240 } ItemReactionCode;
         ''')
         self.header = self.root / 'include/item_types.h'
         self.header.write_text('''
@@ -97,6 +98,9 @@ class ItemCatalogMetadataTests(unittest.TestCase):
                 self.assertEqual(last['configuration'], 0x80000000 + 165 * 0x74)
                 self.assertEqual(first['display_names']['default']['status'], 'null')
                 self.assertEqual(first['interaction_responses']['3'], 240)
+                self.assertEqual(first['interaction_response_names']['3'], 'ITEM_REACTION_TEST')
+                self.assertIsNone(first['interaction_response_names']['1'])
+                self.assertEqual(catalog['reaction_codes'], [dict(response_code=240,enum_name='ITEM_REACTION_TEST')])
                 self.assertIsNone(catalog['interaction_response_categories'][0]['enum_name'])
                 self.assertEqual(catalog['interaction_response_categories'][2]['enum_name'], 'ITEM_RESPONSE_TASTE')
                 data[4] ^= 1
@@ -609,6 +613,50 @@ class HeldItemKindStackTests(unittest.TestCase):
         self.assertEqual(argument['function'],'actorScriptPushHeldItemKind')
         self.assertEqual(argument['arguments'],[])
         self.assertNotIn('constant_item_kind',argument)
+
+
+class ReactionCodeNameTests(unittest.TestCase):
+    def test_explicit_unsigned_enum_excludes_other_domains_comments_and_strings(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);(root/'include').mkdir();path=root/'include/item_response.h'
+            path.write_text('''
+                typedef enum ItemInteractionResponseCategory { ITEM_RESPONSE_TASTE = 3 } ItemInteractionResponseCategory;
+                /* typedef enum ItemReactionCode { ITEM_REACTION_FAKE = 200 } ItemReactionCode; */
+                const char *label="ITEM_REACTION_FALSE = 201";
+                typedef enum ItemReactionCode {
+                    ITEM_REACTION_FIRST = 3, ITEM_REACTION_LAST = 0xFF,
+                } ItemReactionCode;
+            ''')
+            self.assertEqual(items.reaction_code_names(root),{3:'ITEM_REACTION_FIRST',255:'ITEM_REACTION_LAST'})
+
+    def test_invalid_duplicate_and_nonexplicit_reaction_members_fail_closed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);(root/'include').mkdir();path=root/'include/item_response.h'
+            for body in ('ITEM_REACTION_A = 1, ITEM_REACTION_B = 1',
+                         'ITEM_REACTION_A = 1, ITEM_REACTION_A = 2',
+                         'ITEM_REACTION_A = 256','ITEM_REACTION_A = -1',
+                         'ITEM_REACTION_A','ITEM_REACTION_A = 1 << 2',
+                         'ITEM_RESPONSE_A = 3','ITEM_REACTION_A = 1,,ITEM_REACTION_B = 2'):
+                path.write_text('typedef enum ItemReactionCode {'+body+'} ItemReactionCode;')
+                with self.subTest(body=body),self.assertRaises(ValueError):items.reaction_code_names(root)
+            declaration='typedef enum ItemReactionCode { ITEM_REACTION_A = 1 } ItemReactionCode;'
+            path.write_text(declaration+declaration)
+            with self.assertRaises(ValueError):items.reaction_code_names(root)
+
+    def test_constant_query_names_preserve_codes_and_never_label_handle_results(self):
+        catalog=dict(entries=[dict(item_kind=7,interaction_responses={'1':25,'2':24,'3':240,'4':255,'5':128})],
+            interaction_response_categories=[dict(category_id=i,enum_name='ITEM_RESPONSE_TASTE'if i==3 else None)for i in range(1,6)],
+            reaction_codes=[dict(response_code=240,enum_name='ITEM_REACTION_TEST')])
+        named=items.item_response_requests(listing(literal(3),literal(7),native(889)),catalog)[0]
+        self.assertEqual(named['response_code'],240)
+        self.assertEqual(named['response_code_name'],'ITEM_REACTION_TEST')
+        self.assertEqual(named['category_metadata']['enum_name'],'ITEM_RESPONSE_TASTE')
+        unknown=items.item_response_requests(listing(literal(4),literal(7),native(889)),catalog)[0]
+        self.assertEqual(unknown['response_code'],255);self.assertIsNone(unknown['response_code_name'])
+        live=items.item_response_requests(listing(literal(3),literal(7),native(890)),catalog)[0]
+        self.assertNotIn('response_code_name',live)
+        invalid=items.item_response_requests(listing(literal(8),literal(7),native(889)),catalog)[0]
+        self.assertNotIn('response_code_name',invalid)
 
 if __name__ == '__main__':
     unittest.main()

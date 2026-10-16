@@ -1072,7 +1072,7 @@ program's twenty ordinary response branches and 37 helper graphs. It records
 potential calls and their argument expressions, including conditional sound,
 message, profile and item requests. These are static possibilities; a listed call
 need not execute, return or complete its requested action. Response eighteen with
-profile key 76 has a separate route before ordinary dispatch. Codes twenty-four
+item-kind argument 76 (tissue) has a separate route before ordinary dispatch. Codes twenty-four
 and twenty-five remain unresolved.
 
 For 53 distinct literal-argument helper calls, the decoder also records a
@@ -1088,6 +1088,48 @@ program 113; default-action kinds remain a separate domain.
 Four original-VM prefix probes confirm representative argument forwarding through
 these helpers, including the intervening native calls. They stop before the target
 native bodies, so they do not establish target acceptance or gameplay reachability.
+
+The named `ItemReactionCode` values describe shared dispatcher plans. They are
+separate from query categories, item kinds, transformation causes, motion IDs and
+timed-program IDs. A plan can request several actions; its name does not establish
+successful consumption, launch, perception, sound or an emotional preference.
+
+| Code | Shared plan |
+| --- | --- |
+| 1 | Choose a nod or tilting gesture from the held item's storage class. |
+| 2 | Eating cue 2, program 230, then request +10 secondary meter. |
+| 3 | Eating cue 0 and profile feedback. |
+| 4 | Eat, choose one of two shivering cues, then request -5 secondary meter. |
+| 5 | Same ordinary plan as code 2; the distinct stored code is preserved. |
+| 6 | Eating cue 17, coughing, then request -5 secondary meter. |
+| 7 | Smell, tilt, put down, then request +10 secondary meter. |
+| 8 | Smell and throw; optionally request Thunderbolt, then -5 secondary meter. |
+| 9 | Smell, program 84, put down, then request +10 secondary meter. |
+| 10 | Smell and cough, then request -5 secondary meter. |
+| 11 | Smell and sneeze; optionally request Thunderbolt, then -5 secondary meter. |
+| 12 | Smell, wait, release the held item, then start the sleep helper. |
+| 13 | Smell, nod twice, eat and request program 84, then +10 secondary meter. |
+| 14 | Smell, request program 239, eat and request program 175, then +10 secondary meter. |
+| 15 | Throw with default cue 2 and profile feedback. |
+| 16 | Tilt and request profile feedback. |
+| 17 | Track the held item, throw gently, then request Thunderbolt. |
+| 18 | Ordinary code-17 plan, with a separate tissue-specific wrapper route. |
+| 19 | Select harmonica, trumpet or grass-whistle gesture by held kind, then program 150 and +10 secondary meter. |
+| 20 | Track and throw; optionally request Thunder, then -5 secondary meter. |
+
+Meter requests clamp to 0–100. Profile feedback remains conditional on the profile
+key and helper guards. Codes 1, 7, 9, 13 and 14 retain numeric identities rather than
+receiving broad names for their compound plans. Programs 84, 150, 175, 230 and 239
+also retain numeric identities where the gesture meaning is unresolved. Codes 24
+and 25 occur in the catalog but have no branch in this ordinary dispatcher;
+they still receive the dispatcher's common prefix, and scene-specific handling
+still needs evidence.
+
+The tissue helper's random choice is stored in frame 1, slot 0, while its costed
+action selector is read from frame 0, slot 0. These are distinct storage locations;
+the random stores do not establish a random Thunder/Thunderbolt selection. Likewise,
+the dispatcher's profile-key local is preserved across a same-frame nested helper:
+the discarded eating-handler result does not become that profile key.
 
 Eating requests reference timed programs 105, 106 and 107. Costed electric moves
 use the five retained [ActorCostedActionPolicy](../include/actor_script.h) selectors:
@@ -2357,6 +2399,14 @@ names:
 | 276 | 146 → 311 | Sitting | Inherit the configured default. |
 | 277 | 147 | Sitting ear scratch | Inherit the configured default. |
 
+The reaction helpers also use named eating, shivering, throwing, smelling,
+sneezing, coughing, tilting, instrument and sleep-start programs. Their recovered
+fixed cue selectors remain numeric in the names. Each newly named program is an
+authenticated two-command stream: a motion request followed by its end marker.
+Program IDs are not address ordered: sleep-start program 126 precedes program 125
+in memory, so physical neighbors, rather than consecutive IDs, bound the streams.
+The end marker's authored time is not a termination or wall-clock guarantee.
+
 Motion 311 transitions from sitting to the stance posture; that posture identity
 does not establish selection of the separate idle-stance action 74. Collection presentation's four `0x115` selections
 refer to program 277, rather than sit-down program 273. Shivering identifies the
@@ -2370,7 +2420,7 @@ sequencer times, not guarantees of wall-clock delivery, successful acquisition o
 successful launch. Missing items, interruption and later gameplay effects retain
 their own checks.
 
-`motion_action_ids.h` names 222 of the 330 authored definitions. The named
+`motion_action_ids.h` names 225 of the 330 authored definitions. The named
 families include foot tapping, drawing, jumping and falling, item gestures,
 fishing and pulling, head/posture changes, species locomotion and explicit pose
 bridges. A shared motion archive does not imply a shared looping contract: the

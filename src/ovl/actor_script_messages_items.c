@@ -1,3 +1,4 @@
+#include "item_response.h"
 #include "texture_animation_programs.h"
 #include "progress_field_ids.h"
 #include "random_scale.h"
@@ -462,13 +463,14 @@ extern u8 gItemKindTasteResponseEntries[];
 /// \note Original decompilation identifier: \c func_8011D01C (0x8011D01C).
 s32 actorScriptTestTasteResponse(u8 *actor) {
     s32 vm;
-    s32 kind;
+    s32 responseCode;
     s32 result;
 
     vm = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     result = 0;
-    kind = gItemKindTasteResponseEntries[scriptVmPopInteger((ScriptVm *)(vm)) * 0x74];
-    if ((kind == 2) || (kind == 4) || (kind == 5) || (kind == 6)) {
+    responseCode = gItemKindTasteResponseEntries[scriptVmPopInteger((ScriptVm *)(vm)) * 0x74];
+    if ((responseCode == ITEM_REACTION_EAT_CUE_2) || (responseCode == ITEM_REACTION_EAT_AND_SHIVER) ||
+        (responseCode == ITEM_REACTION_EAT_CUE_2_ALTERNATE_CODE) || (responseCode == ITEM_REACTION_EAT_AND_COUGH)) {
         result = 1;
     }
     scriptVmPushInteger((ScriptVm *)(vm), result);

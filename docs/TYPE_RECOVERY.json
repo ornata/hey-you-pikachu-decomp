@@ -3049,6 +3049,7 @@
         "attached_effect.h",
         "audio_cue.h",
         "audio_sound_effect.h",
+        "item_response.h",
         "item_search.h",
         "microphone_query.h",
         "microphone_requests.h",
@@ -3080,7 +3081,7 @@
       "locations": {
         "raw_offset_candidates": {
           "gPlayerCompanionTarget - 0x50": [
-            "1288:57"
+            "1290:57"
           ]
         }
       }

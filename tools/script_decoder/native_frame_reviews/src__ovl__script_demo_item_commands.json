@@ -61,7 +61,8 @@
         "file:include/script_vm.h",
         "function:src/ovl/item_registry.c:itemGetClass",
         "file:src/ovl/item_registry.c",
-        "file:include/item_kind.h"
+        "file:include/item_kind.h",
+        "file:include/item_response.h"
       ],
       "preconditions": [
         "Numeric operands lie above every protected local/frame record. Integer/code-reference payloads and finite floats whose truncation is s32-representable are supported. Captured actor, ActorScriptState, VM and owned value storage remain live.",
@@ -87,7 +88,8 @@
         "file:include/actor_script.h",
         "file:include/script_vm.h",
         "function:src/ovl/item_registry.c:itemKindIsInCategory",
-        "file:src/ovl/item_registry.c"
+        "file:src/ovl/item_registry.c",
+        "file:include/item_response.h"
       ],
       "preconditions": [
         "Numeric operands lie above every protected local/frame record. Integer/code-reference payloads and finite floats whose truncation is s32-representable are supported. Captured actor, ActorScriptState, VM and owned value storage remain live.",
@@ -156,7 +158,8 @@
         "file:src/ovl/script_demo_item_commands.c",
         "file:src/ovl/item_registry.c",
         "file:include/item_kind.h",
-        "file:config/symbol_addrs.txt"
+        "file:config/symbol_addrs.txt",
+        "file:include/item_response.h"
       ],
       "preconditions": [
         "The caller has initialized live RuntimeObjectPrefix and ActorScriptState storage with a live saved VM and writable value buffer. The declared operands and result lie above protected locals and frame metadata. Item/owner/action/audio/camera/global data and C-stack storage used by each helper are disjoint from VM contexts, values, protected frames and program storage. Concurrent destruction, mutation and context replacement are excluded; only declared pops/pushes change VM depth.",
@@ -195,7 +198,8 @@
         "file:src/ovl/item_registry.c",
         "file:include/item_kind.h",
         "file:include/item_queries.h",
-        "file:config/symbol_addrs.txt"
+        "file:config/symbol_addrs.txt",
+        "file:include/item_response.h"
       ],
       "preconditions": [
         "The caller has initialized live RuntimeObjectPrefix and ActorScriptState storage with a live saved VM and writable value buffer. The declared operands and result lie above protected locals and frame metadata. Item/owner/action/audio/camera/global data and C-stack storage used by each helper are disjoint from VM contexts, values, protected frames and program storage. Concurrent destruction, mutation and context replacement are excluded; only declared pops/pushes change VM depth.",
@@ -303,7 +307,8 @@
         "file:config/pikachu.yaml",
         "file:tools/materialize_ultralib.py",
         "file:config/symbol_addrs.txt",
-        "file:include/script_action_flags.h"
+        "file:include/script_action_flags.h",
+        "file:include/item_response.h"
       ],
       "preconditions": [
         "The caller has initialized live RuntimeObjectPrefix and ActorScriptState storage with a live saved VM and writable value buffer. The declared operands and result lie above protected locals and frame metadata. Item/owner/action/audio/camera/global data and C-stack storage used by each helper are disjoint from VM contexts, values, protected frames and program storage. Concurrent destruction, mutation and context replacement are excluded; only declared pops/pushes change VM depth.",

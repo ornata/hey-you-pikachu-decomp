@@ -16,6 +16,33 @@ typedef enum ItemInteractionResponseCategory {
     ITEM_RESPONSE_PLAY_OR_USE = 5 ///< Play, use, or sound request.
 } ItemInteractionResponseCategory;
 
+/// Recovered plan classes returned by item interaction-response lookup.
+/// These codes are distinct from response categories, item kinds and action IDs.
+/// Names describe the reviewed shared script plan, not guaranteed execution or
+/// outcomes. Deferred actions, conditional profile feedback, meter clamping and
+/// special item routes still apply. Catalog storage remains unsigned bytes and
+/// public interfaces retain their existing integer representations.
+typedef enum ItemReactionCode {
+    ITEM_REACTION_EAT_CUE_2 = 2,      ///< Eating cue 2 plan with a requested +10 secondary-meter change.
+    ITEM_REACTION_EAT_CUE_0 = 3,      ///< Eating cue 0 plan with profile feedback.
+    ITEM_REACTION_EAT_AND_SHIVER = 4, ///< Eating and shivering plan with a requested -5 secondary-meter change.
+    ITEM_REACTION_EAT_CUE_2_ALTERNATE_CODE = 5, ///< Alternate code for the same ordinary plan as EAT_CUE_2.
+    ITEM_REACTION_EAT_AND_COUGH = 6, ///< Eating and coughing plan with a requested -5 secondary-meter change.
+    ITEM_REACTION_SMELL_THROW_WITH_OPTIONAL_THUNDERBOLT =
+        8,                              ///< Smell and throw, with a conditional Thunderbolt request.
+    ITEM_REACTION_SMELL_AND_COUGH = 10, ///< Smelling and coughing plan.
+    ITEM_REACTION_SMELL_SNEEZE_WITH_OPTIONAL_THUNDERBOLT =
+        11,                                     ///< Smell and sneeze, with a conditional Thunderbolt request.
+    ITEM_REACTION_SMELL_RELEASE_AND_SLEEP = 12, ///< Smelling, held-item release and sleep plan.
+    ITEM_REACTION_THROW_ITEM = 15,              ///< Throwing plan with default cue 2.
+    ITEM_REACTION_TILT_GESTURE = 16,            ///< Tilting gesture with profile feedback.
+    ITEM_REACTION_THROW_THEN_THUNDERBOLT = 17,  ///< Throw then request Thunderbolt.
+    ITEM_REACTION_THROW_THEN_THUNDERBOLT_WITH_TISSUE_OVERRIDE =
+        18,                             ///< Ordinary throw/Thunderbolt plan with a tissue-specific wrapper override.
+    ITEM_REACTION_PLAY_INSTRUMENT = 19, ///< Select a harmonica, trumpet or grass-whistle gesture by held item kind.
+    ITEM_REACTION_THROW_WITH_OPTIONAL_THUNDER = 20 ///< Throwing plan with a conditional Thunder request.
+} ItemReactionCode;
+
 /// Look up an item kind's configured response to an interaction category.
 /// \param responseType Category from one through five; see ItemInteractionResponseCategory.
 /// \param kind Item kind identifier from zero through 165 for supported categories; ignored otherwise.

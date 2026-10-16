@@ -12,6 +12,7 @@ import struct
 
 from .actions import CONTRACTS, action_calls
 from .formats import integer_operand
+from .items import reaction_code_names
 from .functions import function_summary
 from .stack import incoming_edges, recover_arguments
 from .local_flow import local_integer_domain, local_preservation_contracts
@@ -489,6 +490,9 @@ def item_response_dispatch(image, configurations, decodes, arities=None):
     branches = dispatch_branches(instructions, 15183)
     if [b['response_code'] for b in branches] != list(range(1, 21)):
         raise ValueError('reviewed response dispatcher shape changed')
+    reaction_names = reaction_code_names()
+    for branch in branches:
+        branch['response_code_name'] = reaction_names.get(branch['response_code'])
     roots = {14168, 42203}
     roots.update(e['target_offset'] for b in branches for e in b['script_calls'] if e['target_offset'] is not None)
     closure = helper_closure(instructions, roots, arities=arities)

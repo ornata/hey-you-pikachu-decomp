@@ -1100,7 +1100,8 @@
         "file:include/search_tree_traversal.h",
         "file:include/search_tree_lookup.h",
         "file:include/managed_object_types.h",
-        "file:include/script_action_flags.h"
+        "file:include/script_action_flags.h",
+        "file:include/item_response.h"
       ],
       "preconditions": [
         "All operands are numeric and lie above protected locals/frame metadata. Integer conversions truncate finite floats representable as s32; float conversions accept integer/code-reference or float values. Query positions, rotations, distance and cone are finite; distances nonnegative. Restrict angles/coordinates to magnitudes permitting ordinary arithmetic and terminating angle-normalization loops.",
@@ -1150,7 +1151,8 @@
         "file:include/search_tree_traversal.h",
         "file:include/search_tree_lookup.h",
         "file:include/integer_animation_types.h",
-        "file:include/script_action_flags.h"
+        "file:include/script_action_flags.h",
+        "file:include/item_response.h"
       ],
       "preconditions": [
         "All operands are numeric and lie above protected locals/frame metadata. Integer conversions truncate finite floats representable as s32; float conversions accept integer/code-reference or float values. Query positions, rotations, distance and cone are finite; distances nonnegative. Restrict angles/coordinates to magnitudes permitting ordinary arithmetic and terminating angle-normalization loops.",
@@ -1652,7 +1654,8 @@
         "file:include/item_types.h",
         "file:include/object_types.h",
         "file:include/animation_tracks.h",
-        "file:include/script_action_flags.h"
+        "file:include/script_action_flags.h",
+        "file:include/item_response.h"
       ],
       "preconditions": [
         "Valid actor, VM and one free result slot; actor/object/item state, hierarchy nodes, pool records, globals, animation tracks and C stack are nonoverlapping with VM and owned value storage. Protected locals/frame metadata lie below active depth.",
@@ -2396,7 +2399,7 @@
     {
       "function": "actorScriptTestTasteResponse",
       "file": "src/ovl/actor_script_messages_items.c",
-      "sha256": "ddaadd3edb90d3e6498b84e050498fc98cd31fc39c6c4c351e9bcdf151add2bc",
+      "sha256": "51e0bfcd292c389ea9d2e5d5a77e094eefa3fb9d55b5c7e08cea83fe378cf5de",
       "effect": "replace_argument_with_scalar",
       "arguments": 1,
       "stack_delta": 0,
@@ -2415,7 +2418,8 @@
         "function:src/ovl/script_vm.c:scriptVmPushValue",
         "file:include/item_kind.h",
         "file:src/ovl/actor_script_messages_items.c",
-        "file:config/symbol_addrs.txt"
+        "file:config/symbol_addrs.txt",
+        "file:include/item_response.h"
       ],
       "preconditions": [
         "One numeric operand lies above protected locals and frame metadata. Integer and code-reference payloads are signed 32-bit; finite floating operands must truncate to a representable signed 32-bit value. Calling actor, saved ActorScriptState, captured VM and value allocation remain live and disjoint from all helper-written registry, hierarchy, item and owner storage. No concurrent mutation, traversal, destruction or context replacement occurs.",
@@ -2468,7 +2472,8 @@
         "function:src/game/runtime.c:runtimeGetElapsedMilliseconds",
         "file:src/game/runtime.c",
         "file:include/player_state.h",
-        "file:include/script_action_flags.h"
+        "file:include/script_action_flags.h",
+        "file:include/item_response.h"
       ],
       "preconditions": [
         "Two numeric operands lie above protected locals and frame metadata, in bottom-to-top order item kind then maximum distance. Kind converts from integer/code-reference or a finite signed-32-bit-representable float, truncating fractions. Distance converts to finite nonnegative f32. The caller actor, ActorScriptState, saved VM and value storage remain live throughout the synchronous call. Query globals, registry nodes, item states and native C-stack scratch do not overlap VM contexts, values, protected frames or program storage. Concurrent query, registry mutation, destruction and context replacement are excluded.",
@@ -2568,7 +2573,8 @@
         "file:include/PR/os_libc.h",
         "file:src/ovl/actor_script_messages_items.c",
         "file:include/square_root.h",
-        "file:Makefile"
+        "file:Makefile",
+        "file:include/item_response.h"
       ],
       "preconditions": [
         "The calling actor, live actor state, retained VM, owned value storage and helper C stack remain valid and nonoverlapping. One operand lies above every protected local and frame-metadata slot; its existing slot can receive the result. No concurrent writer, context replacement or destruction interleaves the call.",
@@ -2989,7 +2995,8 @@
         "function:src/ovl/script_vm.c:scriptVmPushInteger",
         "function:src/ovl/script_vm.c:scriptValueSetInteger",
         "file:src/ovl/actor_script_messages_items.c",
-        "file:config/symbol_addrs.txt"
+        "file:config/symbol_addrs.txt",
+        "file:include/item_response.h"
       ],
       "preconditions": [
         "The caller has initialized live RuntimeObjectPrefix and ActorScriptState storage and a live saved VM/value buffer. Operands and the resulting slot lie above protected locals and frame metadata. Source objects, sampled globals and C-stack storage are disjoint from VM contexts, values, frames and program storage. The VM is not replaced and objects are not destroyed or concurrently mutated during the call. The only VM changes are the declared operand pops, result tag/payload and stack depth.",
