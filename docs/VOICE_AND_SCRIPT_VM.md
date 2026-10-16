@@ -571,6 +571,66 @@ Ochre-deep's additional `0x01000000` bit, remain separate. Valid numeric values,
 nonoverlapping frames, current resources and preserved samples remain required;
 a matching template does not establish execution or subsequent state stability.
 
+### Ochre scene-region guidance
+
+The decoder's `scene_region_snapshot_roles` recognizes the complete 25-instruction,
+170-byte producer prefix and reports its actual handle and status-word slots.
+Its annotations require current native, VM, constructor and layout bindings;
+they retain the original retail scene-region template and callback prerequisites.
+
+Ochre-deep's configuration at `0x80146D7C` extends the status word in helper
+64325. It samples the player's three world coordinates, searches for the nearest
+other runtime-kind 175 (`0xAF`) object within an exclusive approximate distance
+of 10000, and saves the selected handle in root slot 185. The original scene-region
+template and lifecycle callbacks establish that this kind owns
+[`SceneRegionState`](../include/scene_types.h), including borrowed waypoints.
+When the handle is nonzero and its stored highlight byte is nonzero, the helper
+adds `0x01000000` to root slot 10.
+Interpreting this as one flag requires the fresh status word and a single
+extension invocation; repeated addition can carry into another bit.
+
+This means **the selected region is highlighted**, rather than any region being
+occupied. A nearer unhighlighted region can hide a farther highlighted one from
+this test. The query reads an existing byte; it does not recompute containment.
+A normal region update enables that byte when the player is strictly inside its
+X/Z half-extents and at or above the region's Y coordinate, unless Pikachu also
+meets those conditions. Boundary points on the horizontal edges are outside.
+Neither the snapshot nor the query extends the selected object's lifetime.
+
+The general workflow dispatcher uses this bit in two scoped paths. State 9's
+helper 69713 enters helper 70193 and switches to state 8 when the bit is set.
+State 8's helper 70998 invokes helper 1870 when it is clear; its other path uses
+the selected region's waypoint data. These observations identify a region-guidance
+condition, without assigning a universal meaning to workflow states 8 and 9.
+The same numeric bit has different producers in fishing, Springleaf and coastal
+scripts, so it has no shared `CompanionSnapshotFlag` name.
+
+For comparison, the three fishing configurations add that bit when sampled
+elapsed seconds exceed a saved deadline, then sample the timer again and move
+the deadline to that value plus ten. The Springleaf trio tests a tracked actor
+of kind five through seven: its creation-argument-indexed shared flag is nonzero,
+or the sum of absolute X/Y/Z changes from the cached position exceeds one. Cobalt-coast tests
+the selected object's approximate distance at most five. That last test also
+accepts an unavailable handle, because its distance query returns -1; a later
+consumer has a separate nearby kind-78 item search. None of these predicates
+establishes region occupancy.
+
+The state-8 guidance path requests the region's first point once, then asks for
+the point following a waypoint near the actor. The latter query scans from the
+start each time, using terrain-projected distance at most three; it returns raw
+coordinates and does not advance a stored cursor. The script sets that destination,
+requests `ACTION_SCRIPT_JUMP_TURN_TOWARD_TARGET` (18), then starts
+`ACTION_SCRIPT_RUN_ON_ALL_FOURS_TO_TARGET_START` (15). A negative X marker
+invokes the same exit helper as losing the highlight, so that exit is
+not evidence of successful arrival. The snapshot can select a different region
+on another iteration, and the three coordinate queries are separate calls.
+
+The recovered producer prefix ends at offset 64495, before door-access updates
+and further helper calls. Its result requires valid numeric values, root slots,
+nonoverlapping VM storage, live search resources and valid region state. It does
+not prove that the script executes, that the search result remains live, or that
+later movement and door requests complete.
+
 ### Drawing feedback
 
 `VOICE_DICTIONARY_DRAWING_FEEDBACK` (13) is requested by seven retained

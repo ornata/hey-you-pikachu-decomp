@@ -1,5 +1,5 @@
 /// \file
-/// Declares rectangular scene-region creation and player occupancy queries.
+/// Declares rectangular scene regions and their sampled occupancy highlights.
 #ifndef SCENE_REGION_H
 #define SCENE_REGION_H
 #include <ultra64.h>
@@ -13,8 +13,11 @@
 /// \returns Nothing; the object system owns the registered region.
 void sceneRegionCreate(f32 *position, f32 width, f32 depth, f32 *points);
 
-/// Query whether a region has its player highlight enabled.
+/// Read a scene region's stored player highlight.
 /// \param handle Handle of an initialized scene region; other kinds are unsupported.
-/// \returns Highlight flag, or zero when the handle is not live.
+/// \returns Stored unsigned highlight byte, or zero when the handle is not live.
+/// \note A normal region update enables highlighting when the player is strictly
+/// inside its horizontal bounds and at or above its height, unless Pikachu also
+/// qualifies. Reading the byte does not update occupancy or extend object lifetime.
 u8 sceneRegionIsHighlightedByHandle(s32 handle);
 #endif
