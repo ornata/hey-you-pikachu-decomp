@@ -12,10 +12,20 @@ from tests.vocabulary_fixture import authored_vocabulary
 
 
 class DictionaryNameTests(unittest.TestCase):
-    names = {-1: 'VOICE_DICTIONARY_NONE', 0: 'VOICE_DICTIONARY_DEFAULT',
-             13: 'VOICE_DICTIONARY_DRAWING_FEEDBACK', 31: 'VOICE_DICTIONARY_WORLD_MAP'}
-    body = ('VOICE_DICTIONARY_NONE=-1, VOICE_DICTIONARY_DEFAULT=0, '
-            'VOICE_DICTIONARY_DRAWING_FEEDBACK=13, VOICE_DICTIONARY_WORLD_MAP=31')
+    names = {
+        -1: 'VOICE_DICTIONARY_NONE',
+        0: 'VOICE_DICTIONARY_DEFAULT',
+        1: 'VOICE_DICTIONARY_ITEM_NOUNS',
+        3: 'VOICE_DICTIONARY_HELD_ITEM_COMMANDS',
+        4: 'VOICE_DICTIONARY_BEDROOM_HELD_ITEM_COMMANDS',
+        10: 'VOICE_DICTIONARY_CREATURE_SEARCH_AND_COUNT_QUESTIONS',
+        11: 'VOICE_DICTIONARY_DIRECTION_AND_STRIKE',
+        13: 'VOICE_DICTIONARY_DRAWING_FEEDBACK',
+        31: 'VOICE_DICTIONARY_WORLD_MAP',
+        34: 'VOICE_DICTIONARY_FISHING_COMMANDS',
+        42: 'VOICE_DICTIONARY_ROCK_PAPER_SCISSORS',
+    }
+    body = ', '.join(f'{name}={value}' for value, name in names.items())
 
     def header(self, body=None):
         return 'typedef enum VoiceDictionaryId { ' + (self.body if body is None else body) + ' } VoiceDictionaryId;'
@@ -73,6 +83,28 @@ class DictionaryNameTests(unittest.TestCase):
         self.assertEqual(report['dictionaries'][13]['word_ids'], [0, 1, 2])
         self.assertEqual(report['words'][1]['dictionary_memberships'][13], dict(dictionary_id=13, entry_index=1))
         self.assertTrue(all(not any(key.startswith('recovered_') for key in word) for word in report['words']))
+
+    def test_activity_descriptor_names_preserve_scoped_records_and_duplicate_entries(self):
+        records = ((6, 51), (3, 26), (2, 35), (11, 0), (9, 1))
+        dictionaries = [[(identifier + 1) % 5, identifier % 5, identifier % 5] for identifier in range(43)]
+        image, bank = authored_vocabulary(records, dictionaries)
+        with patch.object(vocabulary, 'VocabularyBank', bank):
+            report = vocabulary.vocabulary_catalog(image, validate_phrases=False, validate_general_commands=False,
+                validate_map_destinations=False, validate_item_noun_groups=False, validate_directives=False,
+                validate_feedback_questions=False)
+        for identifier in (1, 3, 4, 10, 11, 34, 42):
+            descriptor = report['dictionaries'][identifier]
+            self.assertEqual(descriptor['recovered_name'], self.names[identifier])
+            self.assertEqual(descriptor['word_ids'], dictionaries[identifier])
+            for entry_index, word_id in enumerate(dictionaries[identifier]):
+                self.assertIn(dict(dictionary_id=identifier, entry_index=entry_index), report['words'][word_id]['dictionary_memberships'])
+        for identifier in (2, 6, 12):
+            self.assertNotIn('recovered_name', report['dictionaries'][identifier])
+        self.assertEqual([word['word_id'] for word in report['words']], list(range(5)))
+        self.assertEqual([(word['command_type'], word['command_value']) for word in report['words']], list(records))
+        self.assertTrue(all(not any(key.startswith('recovered_') for key in word) for word in report['words']))
+        with self.assertRaises(ValueError):
+            self.parse(self.header('VOICE_DICTIONARY_NONE=-1,VOICE_DICTIONARY_DEFAULT=0,VOICE_DICTIONARY_DRAWING_FEEDBACK=13,VOICE_DICTIONARY_WORLD_MAP=31'))
 
 
 if __name__ == '__main__':

@@ -17,10 +17,18 @@ typedef enum VoiceRecognitionDeviceState {
 /// Other nonnegative identifiers remain dictionary-defined. Selection and request
 /// fields do not establish whether device vocabulary has finished uploading.
 typedef enum VoiceDictionaryId {
-    VOICE_DICTIONARY_NONE = -1,   ///< No retained dictionary selection or upload.
-    VOICE_DICTIONARY_DEFAULT = 0, ///< Default requested at gameplay startup or when session configuration is unset.
-    VOICE_DICTIONARY_DRAWING_FEEDBACK = 13, ///< Vocabulary requested while showing a drawn notebook picture.
-    VOICE_DICTIONARY_WORLD_MAP = 31         ///< Vocabulary requested for whole-map destination selection.
+    VOICE_DICTIONARY_NONE = -1,      ///< No retained dictionary selection or upload.
+    VOICE_DICTIONARY_DEFAULT = 0,    ///< Default requested at gameplay startup or when session configuration is unset.
+    VOICE_DICTIONARY_ITEM_NOUNS = 1, ///< Item names and noun groups requested by item-selection activities.
+    VOICE_DICTIONARY_HELD_ITEM_COMMANDS = 3,         ///< Commands requested by the shared held-item interaction.
+    VOICE_DICTIONARY_BEDROOM_HELD_ITEM_COMMANDS = 4, ///< Distinct bedroom held-item command set.
+    VOICE_DICTIONARY_CREATURE_SEARCH_AND_COUNT_QUESTIONS =
+        10,                                     ///< Creature-name search and counting-question vocabulary.
+    VOICE_DICTIONARY_DIRECTION_AND_STRIKE = 11, ///< Direction and strike commands requested on Cobalt Coast.
+    VOICE_DICTIONARY_DRAWING_FEEDBACK = 13,     ///< Vocabulary requested while showing a drawn notebook picture.
+    VOICE_DICTIONARY_WORLD_MAP = 31,            ///< Vocabulary requested for whole-map destination selection.
+    VOICE_DICTIONARY_FISHING_COMMANDS = 34,     ///< Commands requested during the retained fishing activities.
+    VOICE_DICTIONARY_ROCK_PAPER_SCISSORS = 42 ///< Three-choice vocabulary requested by rock-paper-scissors activities.
 } VoiceDictionaryId;
 
 /// Result-index sentinel returned when no completed recognition result is pending.

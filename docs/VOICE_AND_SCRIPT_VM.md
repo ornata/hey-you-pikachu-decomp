@@ -486,6 +486,37 @@ configuration's overlay and retains existing creation/scenario bindings. Reverse
 links on dictionary descriptors connect them to those request sites and to written
 C requests. These are possible resource uses, not scene ownership or executed paths.
 
+### Activity dictionary selections
+
+`VoiceDictionaryId` names additional requested activity vocabularies. These names
+come from request sites and their surrounding consumers, not from assuming that
+every word in a dictionary serves one purpose.
+
+| Dictionary | Requested role | Consumer evidence |
+| --- | --- | --- |
+| 1 | Item nouns | A category-six branch with selector below 165 calls item creation, then attempts to hold the returned handle. |
+| 3 | Shared held-item commands | Requested through the shared held-item interaction's helper chain. |
+| 4 | Bedroom held-item commands | A distinct request reached from the bedroom's held-item response flow. |
+| 10 | Creature search and count questions | Creature-name vocabulary and a counting-question category gate coexist. |
+| 11 | Direction and strike | Cobalt Coast consumers separate direction commands and strike finish/cancel requests. |
+| 34 | Fishing commands | Requested by all three retained fishing-session configurations. |
+| 42 | Rock-paper-scissors | Seven activity requests use three-choice vocabulary; the reviewed consumer compares the three selectors and selects result-table entries. |
+
+The two held-item dictionaries retain overlapping greetings, praise, insults and
+commands. They remain distinct selections; neither proves current possession.
+Dictionary ten is also requested in the wilderness camp. Its reviewed
+counting-question helper sets interaction/HUD state and returns its supplied
+routing value twelve; that value is not a computed count. Dictionary eleven's
+role comes from direction and strike consumers, without identifying the strike
+target from a vocabulary label alone.
+
+Requests do not establish that a path executed, that the device finished
+uploading, or that a later message came from the requested vocabulary. Other
+reviewed dictionaries remain numeric where their activity boundaries are still
+unclear. The decoder retains their category composition and request sites for
+further recovery; a missing literal request does not establish an invalid or
+unreachable dictionary.
+
 ### Drawing feedback
 
 `VOICE_DICTIONARY_DRAWING_FEEDBACK` (13) is requested by seven retained

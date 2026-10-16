@@ -165,7 +165,7 @@ def feedback_question_names():
     return names
 
 
-DICTIONARY_MAPPING_SHA256 = '4ee45fb0620d325da950f8d12ea853e6c0e97d85444b080f91850f3d7dc84701'
+DICTIONARY_MAPPING_SHA256 = '7f04b7ae9813f7478e006810f0640030b3a784200bdc2c69af6558448eeb5e7a'
 
 
 def dictionary_names():
