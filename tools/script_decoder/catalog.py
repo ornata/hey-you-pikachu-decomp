@@ -37,6 +37,7 @@ from .transitions import pose_transition_catalog
 from .responses import item_response_dispatch, cost_policy_catalog, costed_action_requests
 from .local_flow import local_preservation_contracts
 from .paired_flow import annotate_costed_caller_relations
+from .contacts import messenger_contact_policy_catalog, messenger_contact_requests
 
 
 def companion_sites(image):
@@ -150,6 +151,7 @@ def catalog(image, max_instructions=100000):
     progress_fields = progress_field_catalog(image)
     item_kinds = item_kind_catalog(image, progress_fields)
     cost_policies = cost_policy_catalog(image)
+    contact_policies = messenger_contact_policy_catalog()
     effect_programs = effect_program_catalog(image)
     pose_transitions = pose_transition_catalog(image)
     vocabulary = vocabulary_catalog(image)
@@ -217,6 +219,7 @@ def catalog(image, max_instructions=100000):
                              frame_operands=frames, native_calls=dict(native_calls),
                              script_message_posts=message_posts(decoded['instructions']),
                              native_action_calls=actions,
+                             messenger_contact_requests=messenger_contact_requests(decoded['instructions'], contact_policies),
                              costed_action_requests=costed_action_requests(decoded['instructions'], cost_policies['records'],
                                  preserved_natives=local_preservation['preserved_native_functions']),
                              action_producer_functions=action_producer_functions(decoded['instructions'], actions),
@@ -278,6 +281,7 @@ def catalog(image, max_instructions=100000):
                 item_kinds=item_kinds,
                 item_response_dispatch=response_dispatch,
                 costed_action_policies=cost_policies,
+                messenger_contact_policies=contact_policies,
                 cost_selector_local_preservation=local_preservation,
                 voice_vocabulary=vocabulary,
                 bedroom_name_catalog=name_catalog,
@@ -305,7 +309,7 @@ def main(argv=None):
         report['elf_sha256'] = hashlib.sha256(args.elf.read_bytes()).hexdigest()
         report['decoder_sha256'] = hashlib.sha256(Path(__file__).with_name('formats.py').read_bytes()).hexdigest()
         report['analysis_sha256'] = {name: hashlib.sha256(Path(__file__).with_name(name + '.py').read_bytes()).hexdigest()
-                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames', 'control_schemes', 'windows', 'caller_frames', 'progress_fields', 'items', 'effects', 'transitions', 'responses', 'local_flow', 'paired_flow')}
+                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames', 'control_schemes', 'windows', 'caller_frames', 'progress_fields', 'items', 'effects', 'transitions', 'responses', 'local_flow', 'paired_flow', 'contacts')}
         report['native_frame_review_sha256'] = review_manifest_fingerprint()
         files = {'catalog.json': report, **{name + '.json': row for name, row in decodes.items()}}
         # Validate every output before writing any content, including existing symlinks.

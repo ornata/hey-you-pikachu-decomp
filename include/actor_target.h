@@ -5,6 +5,7 @@
 #define ACTOR_TARGET_H
 
 #include <ultra64.h>
+#include "messenger_contact.h"
 
 /// Supported interpretations of an actor's retained target.
 /// Stored and script-supplied modes retain their signed 32-bit representation.
@@ -26,8 +27,9 @@ u8 *actorGetTrackingTarget(u8 *actor);
 
 /// Select the actor's response to messenger contact.
 /// \param actor Actor whose initialized script state receives the setting.
-/// \param mode Contact mode interpreted by messenger interactions.
+/// \param mode Recipient MessengerContactPolicy encoding or another signed mode word; stored without validation.
 /// \returns Nothing.
+/// \note Original decompilation identifier: \c func_80118B8C (0x80118B8C).
 void actorSetMessengerContactMode(u8 *actor, s32 mode);
 
 /// Turn toward the retained destination within facing constraints.

@@ -1,3 +1,4 @@
+#include "messenger_contact.h"
 #include "progress_field_ids.h"
 #include "area_catalog.h"
 #include "runtime_control.h"
@@ -702,7 +703,7 @@ extern s32 gGameplayVoiceCommandsAllowed;
 void wholeMapConfigureVoiceInput(void) {
     TRACE("restart skit.\n");
     micRequestDictionary(VOICE_DICTIONARY_WORLD_MAP);
-    actorSetMessengerContactMode((u8 *)((s32)gPikachuActor), 2);
+    actorSetMessengerContactMode((u8 *)((s32)gPikachuActor), MESSENGER_CONTACT_ACTION_ORBIT);
     hudSetFeatureMask(4);
     micRequestRecognitionOverride(1);
     micRequestRecognitionFollowsTrigger(1);

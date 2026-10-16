@@ -1,3 +1,4 @@
+#include "messenger_contact.h"
 #include "action_attributes.h"
 #include "random_scale.h"
 #include "text_image.h"
@@ -805,7 +806,7 @@ void messengerDeliver(u8 *object, u8 *source, u8 *target, s32 mode) {
         messengerBeginDissipation((f32 *)object);
         return;
     }
-    if (mode == 1) {
+    if (mode == MESSENGER_CONTACT_REBOUND) {
         ((MessengerFlightState *)state)->message.type = 0;
     }
     force = target == (u8 *)((s32)gPikachuActor) ? 1 : 0;
@@ -821,7 +822,7 @@ void messengerDeliver(u8 *object, u8 *source, u8 *target, s32 mode) {
         }
         actorStartPartShake((u8 *)((s32)gPikachuActor), animation);
     }
-    if (mode == 1) {
+    if (mode == MESSENGER_CONTACT_REBOUND) {
         messengerBeginRebound(object);
         return;
     }
@@ -864,9 +865,11 @@ void messengerUpdateHoming(u8 *object, s32 unused) {
     delta[2] = (((RuntimeObjectPrefix *)linked)->worldPosition[2]) - (((RuntimeObjectPrefix *)object)->position[2]);
     contactDistance = -1.0F;
     property = ((RuntimeObjectPrefix *)target)->kind;
-    if ((((property > 0) && (property < 0x26)) && ((mode == 3) || (mode == 2))) &&
+    if ((((property > 0) && (property < 0x26)) &&
+         ((mode == MESSENGER_CONTACT_PREFER_ORBIT) || (mode == MESSENGER_CONTACT_ACTION_ORBIT))) &&
         (((property = actionGetAttributes(target), property & ACTION_ATTRIBUTE_ENABLE_MESSENGER_ORBIT)) ||
-         ((mode == 3) && (!(property & ACTION_ATTRIBUTE_SUPPRESS_OPTIONAL_MESSENGER_ORBIT))))) {
+         ((mode == MESSENGER_CONTACT_PREFER_ORBIT) &&
+          (!(property & ACTION_ATTRIBUTE_SUPPRESS_OPTIONAL_MESSENGER_ORBIT))))) {
         contactDistance = vector3Length((f32 *)delta);
         delta[0] += 2.0F * mathCosDegrees(state->phase);
         delta[1] += ((2.0F * mathSinDegrees(2.0F * state->phase)) * 0.4F) + 2.0F;

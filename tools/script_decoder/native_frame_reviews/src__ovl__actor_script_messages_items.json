@@ -1183,7 +1183,8 @@
         "file:include/matrix_types.h",
         "file:include/direction_animation_types.h",
         "file:include/action_script_types.h",
-        "file:include/script_action_flags.h"
+        "file:include/script_action_flags.h",
+        "file:include/messenger_contact.h"
       ],
       "preconditions": [
         "Actor, actor state, captured VM and value storage remain valid and disjoint from helper-written gameplay/global storage. Helpers retain the captured VM; no concurrent mutation, context replacement or lifecycle change is covered.",
@@ -1931,7 +1932,8 @@
         "file:include/object_types.h",
         "file:include/script_vm.h",
         "file:include/script_vm_commands.h",
-        "file:include/script_action_flags.h"
+        "file:include/script_action_flags.h",
+        "file:include/messenger_contact.h"
       ],
       "preconditions": [
         "Valid actor/state, retained VM and owned value storage remain live and nonoverlapping with C stack and any traversed object hierarchy. No concurrent state/context replacement occurs. Numeric operands lie above all protected locals/frame records; appending the result does not overwrite protected storage.",
@@ -2951,7 +2953,8 @@
         "file:include/vector_metrics.h",
         "function:src/ovl/actor_script_queries.c:actorGetHorizontalTargetDistance",
         "file:include/actor_target.h",
-        "file:include/script_action_flags.h"
+        "file:include/script_action_flags.h",
+        "file:include/messenger_contact.h"
       ],
       "preconditions": [
         "The caller has initialized live RuntimeObjectPrefix and ActorScriptState storage and a live saved VM/value buffer. Operands and the resulting slot lie above protected locals and frame metadata. Source objects, sampled globals and C-stack storage are disjoint from VM contexts, values, frames and program storage. The VM is not replaced and objects are not destroyed or concurrently mutated during the call. The only VM changes are the declared operand pops, result tag/payload and stack depth.",
@@ -3164,7 +3167,8 @@
         "function:src/ovl/script_vm.c:scriptValueSetInteger",
         "function:src/ovl/script_vm.c:scriptVmPopFloat",
         "function:src/ovl/script_vm.c:scriptValueGetFloat",
-        "file:include/script_action_flags.h"
+        "file:include/script_action_flags.h",
+        "file:include/messenger_contact.h"
       ],
       "preconditions": [
         "The caller has initialized live RuntimeObjectPrefix and ActorScriptState storage and a live saved VM/value buffer. Operands and the resulting slot lie above protected locals and frame metadata. Source objects, sampled globals and C-stack storage are disjoint from VM contexts, values, frames and program storage. The VM is not replaced and objects are not destroyed or concurrently mutated during the call. The only VM changes are the declared operand pops, result tag/payload and stack depth.",

@@ -337,7 +337,7 @@
     "file:include/actor_target.h": {
       "kind": "file",
       "file": "include/actor_target.h",
-      "sha256": "fd3d5467b5edc16cd76afef9d5edbc7acd093aa5f5b9541ee30387ba32a78c87"
+      "sha256": "c15f73dccd4af49da0b19d35a37f7db6b74b52f63c93641baa8a5f688d11ef61"
     },
     "file:include/actor_text.h": {
       "kind": "file",
@@ -723,6 +723,11 @@
       "kind": "file",
       "file": "include/messenger.h",
       "sha256": "697fd877f89e004e09d66d7fb6ea32a3b1d7eced963339a397f4b43edc60cd31"
+    },
+    "file:include/messenger_contact.h": {
+      "kind": "file",
+      "file": "include/messenger_contact.h",
+      "sha256": "27b1f7fcecca967e20bd36cf78b158fcc1af6f846f3d619b62488f43a5f4b555"
     },
     "file:include/messenger_tracking.h": {
       "kind": "file",
@@ -1312,7 +1317,7 @@
     "file:src/game/actor_model_motion.c": {
       "kind": "file",
       "file": "src/game/actor_model_motion.c",
-      "sha256": "9e908de7bfa0f7b505b316d4f172cfa48601afd303e9a97805c083473fc06631"
+      "sha256": "b08e734080dc16c53a964e71b536a6d098c7b57163fe6f266d88693f67959f01"
     },
     "file:src/game/actor_model_parts.c": {
       "kind": "file",
@@ -1382,7 +1387,7 @@
     "file:src/game/flipbook_messenger.c": {
       "kind": "file",
       "file": "src/game/flipbook_messenger.c",
-      "sha256": "f4f527f09aaedfee490d55dae070034a6fc9b413b057666946d7affe5104e376"
+      "sha256": "05864625b302d3b58d50317741e59c9a5f88ed9dd0f84b34fc9bd18dc0890ce3"
     },
     "file:src/game/graphics_text.c": {
       "kind": "file",
@@ -4299,15 +4304,15 @@
   "callback_files": [
     {
       "file": "native_frame_reviews/src__ovl__actor_script_action_commands.json",
-      "sha256": "8ec1f3d93b09f32932c29a38e0aff5e104e4211d03e00b2be165c48316c7f988"
+      "sha256": "71a4afd88e6272f6e7302d2760d9f944c93006820db6215644f9af82ccb99cc9"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_collection_profile.json",
-      "sha256": "265e382bbac35a4797b01d5aa4943c3ed9b4ba4f69d51f5068c70562c2f91dfb"
+      "sha256": "6cea97203413dddd3a35bf6f0015ba87981dfb1a1b5ce6bd9c44844e071a1255"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_messages_items.json",
-      "sha256": "17a08df33f9c5e77f8302cd2fdb9a6d42878c89a4966eab7b27f5186e96b388d"
+      "sha256": "4495ddd945d228f7cb99c0d7d1f153e19b73a2525d26ee54a92fa8bb87a9607a"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_player_world.json",

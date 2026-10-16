@@ -368,6 +368,7 @@
         "matrix_orientation.h",
         "matrix_point.h",
         "matrix_types.h",
+        "messenger_contact.h",
         "motion_playback.h",
         "object_audio.h",
         "object_types.h",
@@ -393,19 +394,19 @@
       "locations": {
         "raw_offset_candidates": {
           "slot + 1": [
-            "116:33"
+            "117:33"
           ],
           "drawListStorage + 0x40": [
-            "247:40"
+            "248:40"
           ],
           "p + 1": [
-            "879:38"
+            "880:38"
           ],
           "return -1": [
-            "917:5"
+            "918:5"
           ],
           "displacement + 2": [
-            "1343:60"
+            "1344:60"
           ]
         }
       }
@@ -1023,6 +1024,7 @@
         "math_scalar.h",
         "matrix_basic.h",
         "messenger.h",
+        "messenger_contact.h",
         "messenger_tracking.h",
         "object_audio.h",
         "object_bounds.h",
@@ -1052,27 +1054,27 @@
       "locations": {
         "raw_offset_candidates": {
           "y - 16": [
-            "202:31",
-            "212:31"
+            "203:31",
+            "213:31"
           ],
           "vertexIndex + 1": [
-            "276:48"
+            "277:48"
           ],
           "vertexIndex + 2": [
-            "276:65",
-            "276:98"
+            "277:65",
+            "277:98"
           ],
           "vertexIndex + 3": [
-            "277:23"
+            "278:23"
           ],
           "images + 1": [
-            "335:49"
+            "336:49"
           ],
           "rowOffset - 16": [
-            "471:67"
+            "472:67"
           ],
           "rowOffset + 16": [
-            "484:67"
+            "485:67"
           ]
         }
       }
@@ -2840,6 +2842,7 @@
         "math_angles.h",
         "matrix_point.h",
         "matrix_types.h",
+        "messenger_contact.h",
         "microphone_requests.h",
         "object_flags.h",
         "object_groups.h",
@@ -2871,32 +2874,32 @@
       "locations": {
         "raw_offset_candidates": {
           "x - 27": [
-            "232:46"
+            "233:46"
           ],
           "x + 55": [
-            "234:46"
+            "235:46"
           ],
           "x - 16": [
-            "293:31",
-            "317:27"
-          ],
-          "y + 8": [
-            "294:31"
-          ],
-          "y - 8": [
+            "294:31",
             "318:27"
           ],
+          "y + 8": [
+            "295:31"
+          ],
+          "y - 8": [
+            "319:27"
+          ],
           "counter + 5U": [
-            "325:25"
+            "326:25"
           ],
           "camera + 0": [
-            "447:25"
+            "448:25"
           ],
           "camera + 4": [
-            "449:25"
+            "450:25"
           ],
           "camera + 8": [
-            "451:25"
+            "452:25"
           ]
         }
       }

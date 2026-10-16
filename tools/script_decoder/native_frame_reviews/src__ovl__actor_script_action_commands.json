@@ -2008,7 +2008,8 @@
         "file:include/object_types.h",
         "file:include/script_vm.h",
         "file:include/script_vm_commands.h",
-        "file:include/script_action_flags.h"
+        "file:include/script_action_flags.h",
+        "file:include/messenger_contact.h"
       ],
       "preconditions": [
         "Valid actor/state, retained VM and owned value storage remain live and nonoverlapping with C stack and any traversed object hierarchy. No concurrent state/context replacement occurs. Numeric operands lie above all protected locals/frame records; appending the result does not overwrite protected storage.",

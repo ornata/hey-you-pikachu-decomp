@@ -86,19 +86,26 @@ which calls `actorPostScriptMessage`. Loss of a target or an expired lifetime ca
 prevent delivery. Special recipient/contact modes can modify the prepared message;
 the table above describes it before those transformations.
 
-The recipient's messenger contact mode is a full signed word, separate from the
-projectile's flight mode. Mode one clears only the message type before attempting
+The recipient's [messenger contact policy](../include/messenger_contact.h) is a
+full signed word, separate from the projectile's flight mode.
+`MESSENGER_CONTACT_REBOUND` (one) clears only the message type before attempting
 posting, then rebounds; it does not clear the arguments or skip delivery. Other
-mode values use the ordinary delivery/removal path for supported recipients.
+values use the ordinary delivery/removal path for supported recipients.
 
-Recipient contact modes two and three can add an orbital steering offset during
-homing. Both use
-`ACTION_ATTRIBUTE_ENABLE_MESSENGER_ORBIT`; mode three also permits the offset
-unless `ACTION_ATTRIBUTE_SUPPRESS_OPTIONAL_MESSENGER_ORBIT` is set. The enabling
-bit takes precedence. These flags affect approach steering, not whether delivery
-is allowed: the contact-distance test uses the target distance before the offset.
+`MESSENGER_CONTACT_ACTION_ORBIT` (two) and `MESSENGER_CONTACT_PREFER_ORBIT`
+(three) can add an orbital steering offset during homing. Both use
+`ACTION_ATTRIBUTE_ENABLE_MESSENGER_ORBIT`; the prefer-orbit policy also permits
+the offset unless `ACTION_ATTRIBUTE_SUPPRESS_OPTIONAL_MESSENGER_ORBIT` is set.
+The enabling bit takes precedence. These flags affect approach steering, not
+whether delivery is allowed: the contact-distance test uses the target distance before the offset.
 The setter stores arbitrary signed mode words without validation or clamping;
 zero does not mean that a supported actor ignores the message.
+
+The decoder lists the known enum values in `messenger_contact_policies` and
+records setter arguments in each configuration's `messenger_contact_requests`.
+Only supported constant words receive policy names; dynamic expressions and
+other signed words remain explicit. A recovered request does not establish that
+contact, delivery or orbit execution occurs.
 
 ### 4. Inspect and acknowledge the mailbox
 

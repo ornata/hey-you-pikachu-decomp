@@ -1,3 +1,4 @@
+#include "messenger_contact.h"
 #include "render_state.h"
 #include "game_heap.h"
 #include "vector3_types.h"
@@ -227,7 +228,7 @@ void actorInitializeModelState(u8 *actor) {
     state->nextRequestId = 1;
     state->playbackMode = 0;
     state->pendingAction = -1;
-    state->messengerContactMode = 2;
+    state->messengerContactMode = MESSENGER_CONTACT_ACTION_ORBIT;
     state->motionDuration = 0.0F;
     state->motionRemaining = 0.0F;
     state->movementScale = 1.0F;
