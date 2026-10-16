@@ -174,6 +174,39 @@ enum {
         115, ///< Springleaf field resident slot 3: zero/one Oddish, two/three Gloom, four or above Vileplume.
     PROGRESS_FIELD_SPRINGLEAF_FIELD_GROWTH_STAGE_SLOT_4 =
         116, ///< Springleaf field resident slot 4: zero/one Oddish, two/three Gloom, four or above Vileplume.
+    PROGRESS_FIELD_BUTTERFREE_HATCH_COUNT = 118, ///< Recorded Viridian-deep Metapod-to-Butterfree transformations.
+    PROGRESS_FIELD_VIRIDIAN_CATERPIE_GROWTH_STAGE_SLOT_0 =
+        119, ///< Viridian-deep Caterpie slot 0 growth stage; cleared when its next evolution is recorded.
+    PROGRESS_FIELD_VIRIDIAN_CATERPIE_GROWTH_STAGE_SLOT_1 =
+        120, ///< Viridian-deep Caterpie slot 1 growth stage; cleared when its next evolution is recorded.
+    PROGRESS_FIELD_VIRIDIAN_CATERPIE_GROWTH_STAGE_SLOT_2 =
+        121, ///< Viridian-deep Caterpie slot 2 growth stage; cleared when its next evolution is recorded.
+    PROGRESS_FIELD_VIRIDIAN_CATERPIE_GROWTH_STAGE_SLOT_3 =
+        122, ///< Viridian-deep Caterpie slot 3 growth stage; cleared when its next evolution is recorded.
+    PROGRESS_FIELD_VIRIDIAN_CATERPIE_GROWTH_STAGE_SLOT_4 =
+        123, ///< Viridian-deep Caterpie slot 4 growth stage; cleared when its next evolution is recorded.
+    PROGRESS_FIELD_VIRIDIAN_METAPOD_GROWTH_STAGE_SLOT_0 =
+        124, ///< Viridian-deep Metapod slot 0 growth stage; cleared when its next evolution is recorded.
+    PROGRESS_FIELD_VIRIDIAN_METAPOD_GROWTH_STAGE_SLOT_1 =
+        125, ///< Viridian-deep Metapod slot 1 growth stage; cleared when its next evolution is recorded.
+    PROGRESS_FIELD_VIRIDIAN_METAPOD_GROWTH_STAGE_SLOT_2 =
+        126, ///< Viridian-deep Metapod slot 2 growth stage; cleared when its next evolution is recorded.
+    PROGRESS_FIELD_VIRIDIAN_METAPOD_GROWTH_STAGE_SLOT_3 =
+        127, ///< Viridian-deep Metapod slot 3 growth stage; cleared when its next evolution is recorded.
+    PROGRESS_FIELD_VIRIDIAN_METAPOD_GROWTH_STAGE_SLOT_4 =
+        128, ///< Viridian-deep Metapod slot 4 growth stage; cleared when its next evolution is recorded.
+    PROGRESS_FIELD_VIRIDIAN_METAPOD_GROWTH_STAGE_SLOT_5 =
+        129, ///< Viridian-deep Metapod slot 5 growth stage; cleared when its next evolution is recorded.
+    PROGRESS_FIELD_VIRIDIAN_METAPOD_GROWTH_STAGE_SLOT_6 =
+        130, ///< Viridian-deep Metapod slot 6 growth stage; cleared when its next evolution is recorded.
+    PROGRESS_FIELD_VIRIDIAN_METAPOD_GROWTH_STAGE_SLOT_7 =
+        131, ///< Viridian-deep Metapod slot 7 growth stage; cleared when its next evolution is recorded.
+    PROGRESS_FIELD_VIRIDIAN_METAPOD_GROWTH_STAGE_SLOT_8 =
+        132, ///< Viridian-deep Metapod slot 8 growth stage; cleared when its next evolution is recorded.
+    PROGRESS_FIELD_VIRIDIAN_METAPOD_GROWTH_STAGE_SLOT_9 =
+        133, ///< Viridian-deep Metapod slot 9 growth stage; cleared when its next evolution is recorded.
+    PROGRESS_FIELD_TREASURE_HUNT_BEST_CHEST_COUNT =
+        136, ///< Largest saved number of treasure chests opened during one Cobalt-island visit.
     PROGRESS_FIELD_FISHING_MAGIKARP_RECORD_LENGTH =
         138, ///< Largest saved caught Magikarp length, truncated to the integral record value.
     PROGRESS_FIELD_FISHING_GOLDEEN_RECORD_LENGTH =

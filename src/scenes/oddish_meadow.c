@@ -158,7 +158,7 @@ void oddishMeadowInitializeRegularObjects(void) {
     f32 *residentPosition;
 
     sp64 = D_80157F0C_scene_oddish_meadow;
-    if (progressGetValue(0x76) >= 5) {
+    if (progressGetValue(PROGRESS_FIELD_BUTTERFREE_HATCH_COUNT) >= 5) {
         actorCreateForKind(ACTOR_KIND_BUTTERFREE, 160.0F, 6.0F, 69.0F, 0.0F, 0.0F,
                            gCurrentAreaConfiguration->objectScale, &D_80157D40_scene_oddish_meadow, 0);
     }

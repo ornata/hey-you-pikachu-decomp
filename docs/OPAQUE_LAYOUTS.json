@@ -92,11 +92,11 @@
       "member": "unknown208",
       "line": 122,
       "declaration": "f32 unknown208;",
-      "known_facts": "Receives ActorKindConfig+0x34 multiplied by actor scale during creation at original0x8001E3F8..0x8001E400. It is adjacent to collision depth, clearance height, width and ground offset.",
-      "reason": "The producer establishes a scale-adjusted quantity, but adjacency does not establish collision, hearing, sight or interaction semantics.",
-      "next_evidence": "Find original and biased/interior loads of this word and a discriminating consumer before choosing a semantic name.",
+      "known_facts": "Four-byte float cleared with the 0x408-byte actor state, then assigned ActorKindConfig+0x34 times actor scale by original actorCreateForKind at 0x8001E3F8..0x8001E400. presentationSaveActiveActor (0x80028518) reads it in a whole-state snapshot; selected-field restoration does not restore it. Direct-offset and bounded biased-pointer inspection found no discriminating scalar consumer; this is not a whole-program absence proof.",
+      "reason": "The producer and opaque snapshot copy establish storage and scaling, but no observed consumer establishes units or gameplay purpose. Adjacent collision fields and invalid array-index aliases do not justify a semantic name.",
+      "next_evidence": "Trace original loads through biased/interior/computed actor-state pointers or a bounded runtime read trace, separating whole-state snapshots from behavioral scalar use, before assigning a semantic name.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "Authenticated37-record catalog at0x8008801C and actorCreateForKind0x8001E1C4 producer instructions."
+      "evidence": "Authenticated37-record catalog at0x8008801C and actorCreateForKind0x8001E1C4 producer instructions.; src/game/collection_presentation.c:presentationSaveActiveActor (whole-state snapshot); original Ghidra 0x80028518 and authenticated bounded instruction audit"
     },
     {
       "file": "include/font_image_types.h",
@@ -452,11 +452,11 @@
       "member": "unknown34",
       "line": 114,
       "declaration": "f32 unknown34;",
-      "known_facts": "The authenticated37-record catalog at0x8008801C stores positive floats100..700. Original actorCreateForKind loads this field at0x8001E3F8, scales it by actor size and stores actor-state+0x208 at0x8001E400.",
-      "reason": "An authored base quantity is established, but neither units nor gameplay purpose follow from the nearby collision fields.",
-      "next_evidence": "Trace original loads from actor-state+0x208, including biased/interior pointers, and compare scale-dependent behavior before assigning units or a subsystem name.",
+      "known_facts": "The authenticated 37-record catalog stores floats 100, 150, 200, 400, 500, 600 or 700 at offset 0x34. Original actorCreateForKind loads the quantity at 0x8001E3F8, multiplies it by actor scale and stores state+0x208 at 0x8001E400. That state word is copied into the presentation snapshot; no discriminating scalar consumer was established by the bounded audit.",
+      "reason": "An authored scale-adjusted quantity is established, but value patterns, neighboring collision dimensions and snapshot copying do not determine its units or gameplay meaning.",
+      "next_evidence": "Find and interpret an original scalar consumer of actor-state+0x208, including biased/interior aliases, and compare its use across catalog kinds before naming the base quantity.",
       "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "Authenticated catalog and original actorCreateForKind0x8001E1C4 instructions0x8001E3F8..0x8001E400; no decompiler boundary inference."
+      "evidence": "Authenticated catalog and original actorCreateForKind0x8001E1C4 instructions0x8001E3F8..0x8001E400; no decompiler boundary inference.; src/game/collection_presentation.c:presentationSaveActiveActor (whole-state snapshot); original Ghidra 0x80028518 and authenticated bounded instruction audit"
     },
     {
       "file": "src/game/actor_model_parts.c",

@@ -1,3 +1,4 @@
+#include "progress_field_ids.h"
 #include "actor_kind.h"
 /// Geometry of the viridian deep spatial lookup grid.
 enum { VIRIDIAN_DEEP_GRID_LAYERS = 32, VIRIDIAN_DEEP_GRID_SIDE = 32 };
@@ -60,10 +61,10 @@ void viridianDeepSpawnResidentGroup(Position *position, s32 index) {
     f32 scale;
     f32 cosine;
     f32 sine;
-    growth = progressGetValue(index + 0x77);
-    first = progressGetValue(index + 0x7C);
+    growth = progressGetValue(index + PROGRESS_FIELD_VIRIDIAN_CATERPIE_GROWTH_STAGE_SLOT_0);
+    first = progressGetValue(index + PROGRESS_FIELD_VIRIDIAN_METAPOD_GROWTH_STAGE_SLOT_0);
     secondIndex = index + 5;
-    second = progressGetValue(index + 0x81);
+    second = progressGetValue(index + PROGRESS_FIELD_VIRIDIAN_METAPOD_GROWTH_STAGE_SLOT_5);
     if (progressGetCurrentChapter() != 4) {
         record = D_80148ABC_scene_viridian_deep;
     } else {

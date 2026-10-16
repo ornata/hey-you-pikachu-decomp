@@ -1,3 +1,4 @@
+#include "progress_field_ids.h"
 #include "actor_kind.h"
 /// Geometry of the cobalt island spatial lookup grid.
 enum { COBALT_ISLAND_GRID_LAYERS = 16, COBALT_ISLAND_GRID_SIDE = 16 };
@@ -127,7 +128,7 @@ void cobaltIslandInitializeObjects(void) {
     for (i = 0; i < 10; i++) {
         cobaltIslandSpawnResidentType16(i);
     }
-    stage = progressGetValue(0x76U);
+    stage = progressGetValue(PROGRESS_FIELD_BUTTERFREE_HATCH_COUNT);
     if (stage >= 4) {
         actorCreateForKind(ACTOR_KIND_BUTTERFREE, 220.0F, 41.0F, 111.0F, 0.0F, 0.0F,
                            gCurrentAreaConfiguration->objectScale, D_8014E12C_scene_cobalt_island, 0);

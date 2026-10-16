@@ -648,6 +648,11 @@
       "file": "include/object_audio.h",
       "sha256": "58237ab564b64ecf6a41e02371dd2cd6644c5cb740ba30c8679c9952c4dc55d6"
     },
+    "file:include/object_distance.h": {
+      "kind": "file",
+      "file": "include/object_distance.h",
+      "sha256": "74950751957cbdc621e1df76776e84bc0b607e9cc5d40f4b7168b778972fe265"
+    },
     "file:include/object_flags.h": {
       "kind": "file",
       "file": "include/object_flags.h",
@@ -746,7 +751,7 @@
     "file:include/progress_field_ids.h": {
       "kind": "file",
       "file": "include/progress_field_ids.h",
-      "sha256": "7b09096f38f3940e13d94b090f14d0869ed6629409c6a9bda0905f322bc30ef1"
+      "sha256": "5d8fb53c9775b47c29b94ed52d12b6013051d35fbc7defef125b16dec1460f75"
     },
     "file:include/progress_field_types.h": {
       "kind": "file",
@@ -1216,7 +1221,7 @@
     "file:src/ovl/actor_script_messages_items.c": {
       "kind": "file",
       "file": "src/ovl/actor_script_messages_items.c",
-      "sha256": "d4fcbce969e37f7fae7940609b8bb02c66b146dc075d7b1abca52cd16d379544"
+      "sha256": "29a80194893b38c9d9fbb4ba8ffde90f3c08addffc233cfce862bc6eb5d1e5d8"
     },
     "file:src/ovl/actor_script_queries.c": {
       "kind": "file",
@@ -2446,6 +2451,12 @@
       "function": "actorGetHeldItemKind",
       "sha256": "b415508ec1d70376ed821b6ed6870432d928cde361e14d058742e6aa68506978"
     },
+    "function:src/ovl/actor_script_queries.c:actorGetHorizontalTargetDistance": {
+      "kind": "function",
+      "file": "src/ovl/actor_script_queries.c",
+      "function": "actorGetHorizontalTargetDistance",
+      "sha256": "2b26b2e9b89fd8610fe51d4141b112e37ff7f831d770f20460ac13e24384e274"
+    },
     "function:src/ovl/actor_script_queries.c:actorGetKindByHandle": {
       "kind": "function",
       "file": "src/ovl/actor_script_queries.c",
@@ -2589,6 +2600,12 @@
       "file": "src/ovl/actor_script_queries.c",
       "function": "objectGetHeightDifferenceToHandle",
       "sha256": "e4518f2e1441d419959bafb2294375fdfccb77792430e9a4909e2d7487063486"
+    },
+    "function:src/ovl/actor_script_queries.c:objectGetHorizontalDistanceToHandle": {
+      "kind": "function",
+      "file": "src/ovl/actor_script_queries.c",
+      "function": "objectGetHorizontalDistanceToHandle",
+      "sha256": "a563da861ba9d6d92c2cf398e740a831d0df0e9de3362877c4098e79374a022b"
     },
     "function:src/ovl/actor_script_queries.c:objectGetOriginDistance": {
       "kind": "function",
@@ -3404,7 +3421,12 @@
     "actorScriptPushFarClipDistance",
     "actorScriptPushFogStart",
     "actorScriptPushFogEnd",
-    "actorScriptPushTargetHeightDifference"
+    "actorScriptPushTargetHeightDifference",
+    "actorScriptGetPointDistance",
+    "actorScriptGetObjectHorizontalDistance",
+    "actorScriptPushHorizontalTargetDistance",
+    "actorScriptPushVoiceCommandStatus",
+    "actorScriptPushDeliveredVoiceCount"
   ],
   "callback_files": [
     {
@@ -3417,7 +3439,7 @@
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_messages_items.json",
-      "sha256": "a4303b644f20f9798a7265b2f43089870a0787976cd61ca3577c8d058bf44237"
+      "sha256": "bdafb21d85096ccfa0af069a48466000e0206e3f4ac675976a33f100e1ddf8a7"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_player_world.json",

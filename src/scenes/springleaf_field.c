@@ -157,7 +157,7 @@ void springleafFieldInitializeObjects(void) {
         actorCreateForKind(ACTOR_KIND_HAUNTER, 0, 0, 0, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                            D_80157B58_scene_springleaf_field, 0);
     }
-    if (progressGetValue(0x76) >= 3) {
+    if (progressGetValue(PROGRESS_FIELD_BUTTERFREE_HATCH_COUNT) >= 3) {
         actorCreateForKind(ACTOR_KIND_BUTTERFREE, 130.0F, 16.0F, 150.0F, 0.0F, 0.0F,
                            gCurrentAreaConfiguration->objectScale, D_80157C78_scene_springleaf_field, 0);
     }

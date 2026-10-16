@@ -169,7 +169,7 @@ void springleafEntranceInitializeObjects(void) {
     s32 var_s2;
 
     sp54 = D_80157938_scene_springleaf_entrance;
-    if (progressGetValue(0x76) > 0) {
+    if (progressGetValue(PROGRESS_FIELD_BUTTERFREE_HATCH_COUNT) > 0) {
         actorCreateForKind(ACTOR_KIND_BUTTERFREE, 125.0F, 16.2F, 267.0F, 0.0F, 0.0F,
                            gCurrentAreaConfiguration->objectScale, &D_801575EC_scene_springleaf_entrance, 0);
     }

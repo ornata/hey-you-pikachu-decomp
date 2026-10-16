@@ -158,7 +158,8 @@ void ochreDeepInitializeObjects(void) {
 
     actorCreateForKind(ACTOR_KIND_MAGNEMITE, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, gCurrentAreaConfiguration->objectScale,
                        &D_801475C8_scene_ochre_deep, 0);
-    if ((ochreDeepTryCreateProgressEncounter() == 0) && (progressGetValue(0x76) >= 2)) {
+    if ((ochreDeepTryCreateProgressEncounter() == 0) &&
+        (progressGetValue(PROGRESS_FIELD_BUTTERFREE_HATCH_COUNT) >= 2)) {
         actorCreateForKind(ACTOR_KIND_BUTTERFREE, 83.5F, 20.8F, 52.0F, 0, 0, gCurrentAreaConfiguration->objectScale,
                            &D_80147AE0_scene_ochre_deep, 0);
     }

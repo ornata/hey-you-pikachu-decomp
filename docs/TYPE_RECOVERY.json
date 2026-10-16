@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 824,
-      "unique_spellings": 456,
+      "occurrences": 821,
+      "unique_spellings": 453,
       "files": 65
     },
     "cast_offset_candidates": {
@@ -4226,6 +4226,7 @@
         "math_angles.h",
         "math_scalar.h",
         "maze_scatter.h",
+        "progress_field_ids.h",
         "scene_configuration.h",
         "scene_types.h",
         "story_chapter.h",
@@ -4234,20 +4235,11 @@
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
-          "index + 0x77": [
-            "63:31"
-          ],
-          "index + 0x7C": [
-            "64:30"
-          ],
           "index + 5": [
-            "65:19"
-          ],
-          "index + 0x81": [
-            "66:31"
+            "66:19"
           ],
           "angle + 180": [
-            "77:30"
+            "78:30"
           ]
         }
       }

@@ -222,13 +222,13 @@ s32 actorScriptPushPlayerDistance(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011CB70 (0x8011CB70).
 s32 actorScriptGetPointDistance(u8 *actor) {
-    s32 vm = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    f32 d[3];
+    s32 vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    f32 displacement[3];
 
-    d[2] = scriptVmPopFloat((ScriptVm *)(vm)) - ((RuntimeObjectPrefix *)actor)->worldPosition[2];
-    d[1] = scriptVmPopFloat((ScriptVm *)(vm)) - ((RuntimeObjectPrefix *)actor)->worldPosition[1];
-    d[0] = scriptVmPopFloat((ScriptVm *)(vm)) - ((RuntimeObjectPrefix *)actor)->worldPosition[0];
-    scriptVmPushFloat((ScriptVm *)(vm), vector3LengthApprox(d));
+    displacement[2] = scriptVmPopFloat((ScriptVm *)(vmAddress)) - ((RuntimeObjectPrefix *)actor)->worldPosition[2];
+    displacement[1] = scriptVmPopFloat((ScriptVm *)(vmAddress)) - ((RuntimeObjectPrefix *)actor)->worldPosition[1];
+    displacement[0] = scriptVmPopFloat((ScriptVm *)(vmAddress)) - ((RuntimeObjectPrefix *)actor)->worldPosition[0];
+    scriptVmPushFloat((ScriptVm *)(vmAddress), vector3LengthApprox(displacement));
     return 0;
 }
 
@@ -474,8 +474,8 @@ s32 actorScriptTestItemResponseTypeThree(u8 *actor) {
 /// \note Original identifier: \c D_800722DC (0x800722DC).
 extern s32 gVoiceCommandLastRecognitionStatus;
 
-/// Read the current voice-command recognition status.
-/// \param actor Actor whose script VM receives the voice-command status.
+/// Read the last sampled voice-command recognition status.
+/// \param actor Actor whose script VM receives the stored signed status without polling recognition.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011D0A4 (0x8011D0A4).
 s32 actorScriptPushVoiceCommandStatus(u8 *actor) {
@@ -580,27 +580,27 @@ s32 actorScriptPushTargetHeightDifference(u8 *actor) {
 }
 
 /// Replace a target handle on the script stack with its horizontal distance from the actor.
-/// \param actor Actor whose script VM supplies a target handle and receives the approximate horizontal distance, or zero for an unavailable target.
+/// \param actor Actor whose script VM supplies a target handle and receives the approximate horizontal distance; zero can indicate an unavailable target or coincident horizontal positions.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011D310 (0x8011D310).
 s32 actorScriptGetObjectHorizontalDistance(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushFloat((ScriptVm *)(sp1C),
-                      objectGetHorizontalDistanceToHandle(actor, scriptVmPopInteger((ScriptVm *)(sp1C))));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushFloat((ScriptVm *)(vmAddress),
+                      objectGetHorizontalDistanceToHandle(actor, scriptVmPopInteger((ScriptVm *)(vmAddress))));
     return 0;
 }
 
 /// Push the actor's approximate horizontal distance to its stored target position.
-/// \param actor Actor whose script VM receives the target distance.
+/// \param actor Actor whose script VM receives the horizontal distance to stored target coordinates, without refreshing the target.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011D358 (0x8011D358).
 s32 actorScriptPushHorizontalTargetDistance(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushFloat((ScriptVm *)(sp1C), actorGetHorizontalTargetDistance(actor));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushFloat((ScriptVm *)(vmAddress), actorGetHorizontalTargetDistance(actor));
     return 0;
 }
 
