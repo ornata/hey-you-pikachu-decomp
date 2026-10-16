@@ -612,7 +612,7 @@
     "file:include/item_kind_ids.h": {
       "kind": "file",
       "file": "include/item_kind_ids.h",
-      "sha256": "06f6b624f5c8dada3c1f387e6d60a223fee5b09608ed2a14a4763db2624d5e2c"
+      "sha256": "501aa9315352cf4e56bee5ee6862fa3ab2969ef905b919c8eda3a079a08da183"
     },
     "file:include/item_mode.h": {
       "kind": "file",
@@ -1612,7 +1612,7 @@
     "file:src/ovl/item_registry.c": {
       "kind": "file",
       "file": "src/ovl/item_registry.c",
-      "sha256": "adeed7e16a4ce3a0744544201cc3b1541074a4cb347e6ec916071a9924b586f3"
+      "sha256": "d00b8c1eb04936759811886aebbf1db9b9a51be8fbb5cd415bc43d3d244bde27"
     },
     "file:src/ovl/item_special_behaviors.c": {
       "kind": "file",
@@ -4329,23 +4329,23 @@
   "callback_files": [
     {
       "file": "native_frame_reviews/src__ovl__actor_script_action_commands.json",
-      "sha256": "927fc98f23a03b8011999e26f8a0fedc047c2eb68582c75a7b44c9e43fc21374"
+      "sha256": "2aa9e93830e3fe02c399833d761a67f2e983d741c0cfaf97801740cd30f30860"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_collection_profile.json",
-      "sha256": "2e9dfaa662e88888d3121d419e480ca09f1684ff17ed9ba73e8dafe69a02842f"
+      "sha256": "3835cad49c0996c27814e2932cc55b2136a5a36a114ac01bae6f2cd6ff01cc68"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_messages_items.json",
-      "sha256": "a0f6d031a43b09d567cbc9d5b11da83f16abe6a722e115bdbc1722517ed547b0"
+      "sha256": "1bff2e3b9d971ff112e9d3733da728969cc77f4354ab9535c7cb733d9e876ff7"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_player_world.json",
-      "sha256": "354e6bbd7585eaff1e28ecc9f589f98f6b46499a7aef70945211a8938d65033c"
+      "sha256": "bb5145dd7880e69f73e14491b25d434388c8a9e793bb7211e43f022060ffe87c"
     },
     {
       "file": "native_frame_reviews/src__ovl__script_demo_item_commands.json",
-      "sha256": "d66e8a192f4c8597933997222f09e431894ff1fb7fb49e90aa4f0d2437f84083"
+      "sha256": "3c0c76059d404778dfb26fb792bb6ffca12fdc3bfc7dc2402cab0f0c53eebf7b"
     }
   ]
 }

@@ -141,7 +141,7 @@ enum {
     PROGRESS_FIELD_OCHRE_DEEP_DEPARTURE_RECORDED =
         84, ///< First Ochre-deep departure sequence processed; later departures use the abbreviated path.
     PROGRESS_FIELD_OCHRE_PICNIC_MEALS_COMPLETED =
-        85, ///< Food-producing Ochre picnic results, regardless of dish quality; excludes the no-ingredients result.
+        85, ///< Food-producing Ochre picnic results, including mystery soup and incomplete ingredients.
     PROGRESS_FIELD_OCHRE_ENTRANCE_RESIDENT_STAGE = 86, ///< Zero through three selects additional entrance residents.
     PROGRESS_FIELD_COBALT_TREASURE_HUNTS_COMPLETED =
         87, ///< Completed Cobalt-island treasure-hunt result sequences, including visits with no opened chests.

@@ -12,6 +12,7 @@ import struct
 
 from .context import ROOT
 from .stack import incoming_edges, recover_arguments
+from .vocabulary import _reviewed_enum
 from tools.source_quality import code_only
 
 _COUNT = 166
@@ -19,6 +20,15 @@ _STRIDE = 0x74
 _TABLE_SHA256 = '9d0236268ce71a9aa43dd18458974d00f57995483ac75075270fed209557da14'
 _CREATE_NATIVES = {'actorScriptCreateItem', 'actorScriptCreateStationaryItem'}
 _ARGUMENT_NAMES = ('x', 'y', 'z', 'pitch_degrees', 'yaw_degrees', 'kind')
+
+
+_KIND_NAMES_SHA256 = '5194cadb089ec064b2d7f416ac8a378cd0137db5aaf5c98e5a9cc2b12df10037'
+
+
+def item_kind_names():
+    """Read reviewed item-kind identities without overriding retained display labels."""
+    code = code_only((ROOT / 'include/item_kind_ids.h').read_text())
+    return _reviewed_enum(code, 'ItemKindId', 'ITEM_KIND_', _KIND_NAMES_SHA256)
 
 
 def storage_class_names():
@@ -149,6 +159,7 @@ def item_kind_catalog(image, progress_fields=None):
         names[address] = row
         return row
 
+    recovered_kind_names = item_kind_names()
     reaction_names = reaction_code_names()
     class_names = storage_class_names()
     flag_names = state_flag_names()
@@ -188,6 +199,8 @@ def item_kind_catalog(image, progress_fields=None):
                          interaction_response_names={category:reaction_names.get(code) for category,code in interaction_responses.items()},
                          has_model_template=bool(model),
                          display_names=dict(alternate=display_name(alternate), default=display_name(default))))
+        if kind in recovered_kind_names:
+            rows[-1]['recovered_kind_name'] = recovered_kind_names[kind]
     return dict(count=_COUNT, stride=_STRIDE, entries=rows,
                 interaction_response_categories=interaction_response_categories(),
                 reaction_codes=[dict(response_code=code, enum_name=name) for code,name in sorted(reaction_names.items())],

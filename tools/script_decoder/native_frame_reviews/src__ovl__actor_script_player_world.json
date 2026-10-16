@@ -171,7 +171,8 @@
         "file:include/item_types.h",
         "file:include/item_kind.h",
         "file:include/item_response.h",
-        "file:include/item_category.h"
+        "file:include/item_category.h",
+        "file:include/item_kind_ids.h"
       ],
       "preconditions": [
         "Operands lie above every protected local/frame record; captured actor, ActorScriptState, VM and owned stack remain live. Replacement leaves earlier stack values and frame metadata intact.",
@@ -334,7 +335,8 @@
         "file:include/managed_object_types.h",
         "file:include/script_action_flags.h",
         "file:include/item_response.h",
-        "file:include/item_category.h"
+        "file:include/item_category.h",
+        "file:include/item_kind_ids.h"
       ],
       "preconditions": [
         "All operands are numeric and lie above protected locals/frame metadata. Integer conversions truncate finite floats representable as s32; float conversions accept integer/code-reference or float values. Query positions, rotations, distance and cone are finite; distances nonnegative. Restrict angles/coordinates to magnitudes permitting ordinary arithmetic and terminating angle-normalization loops.",
@@ -385,7 +387,8 @@
         "file:include/managed_object_types.h",
         "file:include/script_action_flags.h",
         "file:include/item_response.h",
-        "file:include/item_category.h"
+        "file:include/item_category.h",
+        "file:include/item_kind_ids.h"
       ],
       "preconditions": [
         "All operands are numeric and lie above protected locals/frame metadata. Integer conversions truncate finite floats representable as s32; float conversions accept integer/code-reference or float values. Query positions, rotations, distance and cone are finite; distances nonnegative. Restrict angles/coordinates to magnitudes permitting ordinary arithmetic and terminating angle-normalization loops.",
@@ -1682,7 +1685,8 @@
         "file:config/symbol_addrs.txt",
         "file:include/script_action_flags.h",
         "file:include/item_response.h",
-        "file:include/item_category.h"
+        "file:include/item_category.h",
+        "file:include/item_kind_ids.h"
       ],
       "preconditions": [
         "One numeric handle operand lies above protected locals and frame metadata. Integer and code-reference values are signed 32-bit values; finite floats must be representable as signed 32-bit integers and are truncated. The saved caller ActorScriptState, VM and value buffer remain live throughout release callbacks and the final held-kind query. All affected item state, owner actor state, player held-item global, hierarchy flags and bounds, material tracks and C stack are disjoint from VM contexts, values, protected frames and program storage. Concurrent ownership changes, destruction and context replacement are excluded.",
@@ -1804,7 +1808,8 @@
         "file:include/object_lifecycle.h",
         "file:include/script_action_flags.h",
         "file:include/item_response.h",
-        "file:include/item_category.h"
+        "file:include/item_category.h",
+        "file:include/item_kind_ids.h"
       ],
       "preconditions": [
         "One numeric operand lies above protected locals and frame metadata. Integer and code-reference payloads are signed 32-bit; finite floating operands must truncate to a representable signed 32-bit value. Calling actor, saved ActorScriptState, captured VM and value allocation remain live and disjoint from all helper-written registry, hierarchy, item and owner storage. No concurrent mutation, traversal, destruction or context replacement occurs.",
@@ -2265,7 +2270,8 @@
         "file:include/object_target_search.h",
         "file:include/script_action_flags.h",
         "file:include/item_response.h",
-        "file:include/item_category.h"
+        "file:include/item_category.h",
+        "file:include/item_kind_ids.h"
       ],
       "preconditions": [
         "All consumed operands lie above protected locals and frame metadata. Integer conversions accept signed-32-bit integer/code-reference values or finite floats representable as signed 32-bit, truncating fractions. Position and distance operands convert to finite f32; distance is nonnegative and all candidate-distance intermediates remain finite. The saved caller VM, actor/state, value buffer and native C-stack temporaries remain live throughout the query.",
@@ -2323,7 +2329,8 @@
         "function:src/ovl/actor_script_queries.c:itemFindHandleNearPosition",
         "file:include/script_action_flags.h",
         "file:include/item_response.h",
-        "file:include/item_category.h"
+        "file:include/item_category.h",
+        "file:include/item_kind_ids.h"
       ],
       "preconditions": [
         "All consumed operands lie above protected locals and frame metadata. Integer conversions accept signed-32-bit integer/code-reference values or finite floats representable as signed 32-bit, truncating fractions. Position and distance operands convert to finite f32; distance is nonnegative and all candidate-distance intermediates remain finite. The saved caller VM, actor/state, value buffer and native C-stack temporaries remain live throughout the query.",
@@ -2836,7 +2843,8 @@
         "function:src/ovl/script_vm.c:scriptValueGetFloat",
         "file:include/script_action_flags.h",
         "file:include/item_response.h",
-        "file:include/item_category.h"
+        "file:include/item_category.h",
+        "file:include/item_kind_ids.h"
       ],
       "preconditions": [
         "Numeric operands lie above protected locals and frame metadata. Integer operands use signed 32-bit conversion; finite float-to-integer operands must be representable and are truncated. The saved caller ActorScriptState, VM and value buffer remain live. All changed item state, owner actor state, player held-item global, hierarchy flags and bounds, material tracks, registry entries and C stack are disjoint from VM contexts, values, protected frames and program storage. Concurrent ownership changes, destruction and context replacement are excluded.",
@@ -3766,7 +3774,8 @@
         "file:include/action_attributes.h",
         "file:include/script_action_flags.h",
         "file:include/item_response.h",
-        "file:include/item_category.h"
+        "file:include/item_category.h",
+        "file:include/item_kind_ids.h"
       ],
       "preconditions": [
         "The caller RuntimeObjectPrefix, ActorScriptState, captured VM, program and owned value buffer remain live and stable. All consumed operands lie above protected locals and frame metadata, and the post-pop depth has room for one result. Integer conversion accepts signed integer/code-reference payloads or finite f32 values whose truncated result fits s32; float conversion accepts f32 or signed integer/code-reference operands. Writable helper state, native stack and result storage do not overlap protected VM/context/program storage. No unrelated concurrent actor, registry, resource or context mutation, destruction or reentry is covered; explicitly reviewed original SDK worker effects retain their separate prerequisites. Original SDK memory primitives and matching SDK inputs are required; VM value copies do not retain native-stack pointers. These are immediate source-bound contracts, without a gameplay-reachability or later-lifetime claim.",
@@ -3890,7 +3899,8 @@
         "file:include/action_attributes.h",
         "file:include/script_action_flags.h",
         "file:include/item_response.h",
-        "file:include/item_category.h"
+        "file:include/item_category.h",
+        "file:include/item_kind_ids.h"
       ],
       "preconditions": [
         "The caller RuntimeObjectPrefix, ActorScriptState, captured VM, program and owned value buffer remain live and stable. All consumed operands lie above protected locals and frame metadata, and the post-pop depth has room for one result. Integer conversion accepts signed integer/code-reference payloads or finite f32 values whose truncated result fits s32; float conversion accepts f32 or signed integer/code-reference operands. Writable helper state, native stack and result storage do not overlap protected VM/context/program storage. No unrelated concurrent actor, registry, resource or context mutation, destruction or reentry is covered; explicitly reviewed original SDK worker effects retain their separate prerequisites. Original SDK memory primitives and matching SDK inputs are required; VM value copies do not retain native-stack pointers. These are immediate source-bound contracts, without a gameplay-reachability or later-lifetime claim.",

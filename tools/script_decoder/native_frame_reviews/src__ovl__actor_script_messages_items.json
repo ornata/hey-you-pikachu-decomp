@@ -1102,7 +1102,8 @@
         "file:include/managed_object_types.h",
         "file:include/script_action_flags.h",
         "file:include/item_response.h",
-        "file:include/item_category.h"
+        "file:include/item_category.h",
+        "file:include/item_kind_ids.h"
       ],
       "preconditions": [
         "All operands are numeric and lie above protected locals/frame metadata. Integer conversions truncate finite floats representable as s32; float conversions accept integer/code-reference or float values. Query positions, rotations, distance and cone are finite; distances nonnegative. Restrict angles/coordinates to magnitudes permitting ordinary arithmetic and terminating angle-normalization loops.",
@@ -1154,7 +1155,8 @@
         "file:include/integer_animation_types.h",
         "file:include/script_action_flags.h",
         "file:include/item_response.h",
-        "file:include/item_category.h"
+        "file:include/item_category.h",
+        "file:include/item_kind_ids.h"
       ],
       "preconditions": [
         "All operands are numeric and lie above protected locals/frame metadata. Integer conversions truncate finite floats representable as s32; float conversions accept integer/code-reference or float values. Query positions, rotations, distance and cone are finite; distances nonnegative. Restrict angles/coordinates to magnitudes permitting ordinary arithmetic and terminating angle-normalization loops.",
@@ -1658,7 +1660,8 @@
         "file:include/animation_tracks.h",
         "file:include/script_action_flags.h",
         "file:include/item_response.h",
-        "file:include/item_category.h"
+        "file:include/item_category.h",
+        "file:include/item_kind_ids.h"
       ],
       "preconditions": [
         "Valid actor, VM and one free result slot; actor/object/item state, hierarchy nodes, pool records, globals, animation tracks and C stack are nonoverlapping with VM and owned value storage. Protected locals/frame metadata lie below active depth.",
@@ -2477,7 +2480,8 @@
         "file:include/player_state.h",
         "file:include/script_action_flags.h",
         "file:include/item_response.h",
-        "file:include/item_category.h"
+        "file:include/item_category.h",
+        "file:include/item_kind_ids.h"
       ],
       "preconditions": [
         "Two numeric operands lie above protected locals and frame metadata, in bottom-to-top order item kind then maximum distance. Kind converts from integer/code-reference or a finite signed-32-bit-representable float, truncating fractions. Distance converts to finite nonnegative f32. The caller actor, ActorScriptState, saved VM and value storage remain live throughout the synchronous call. Query globals, registry nodes, item states and native C-stack scratch do not overlap VM contexts, values, protected frames or program storage. Concurrent query, registry mutation, destruction and context replacement are excluded.",

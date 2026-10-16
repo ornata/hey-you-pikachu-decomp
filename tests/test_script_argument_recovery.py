@@ -42,6 +42,7 @@ class ItemCatalogMetadataTests(unittest.TestCase):
         self.addCleanup(self.directory.cleanup)
         self.root = Path(self.directory.name)
         (self.root / 'include').mkdir()
+        (self.root / 'include/item_kind_ids.h').write_text((items.ROOT / 'include/item_kind_ids.h').read_text())
         (self.root / 'include/item_kind.h').write_text('enum { ITEM_STORAGE_CLASS_TEST = 1 };')
         self.response_header = self.root / 'include/item_response.h'
         self.response_header.write_text('''

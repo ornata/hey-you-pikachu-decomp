@@ -11,8 +11,9 @@ from .context import ROOT, ROM_SHA1
 from .native_frames import fingerprint, function_source
 
 SOURCE_PINS = {
+    'include/item_kind_ids.h': '501aa9315352cf4e56bee5ee6862fa3ab2969ef905b919c8eda3a079a08da183',
     'include/item_kind.h': 'ff12c7e80c6dedfc7f2295f4f024aeff00dd88738f836fdbba9ffff3f77d34b5',
-    'src/ovl/item_registry.c': 'adeed7e16a4ce3a0744544201cc3b1541074a4cb347e6ec916071a9924b586f3',
+    'src/ovl/item_registry.c': 'd00b8c1eb04936759811886aebbf1db9b9a51be8fbb5cd415bc43d3d244bde27',
     'src/ovl/item_special_behaviors.c': '76f22ffeb515724a971b2929b66a8c5cf7a0220e63aaec43006169b2d60f6092',
     'include/item_types.h': '70cd1080b3fa819ba4e5997fe11582348f322c9d0c8e2055fc942325984111bc',
     'include/actor_script.h': 'b35b0c9ae80929cf2c8abafe678b8b52d3386be97c8c4fada69d9bdbe351640e',

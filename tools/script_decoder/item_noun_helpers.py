@@ -14,7 +14,7 @@ from .stack import incoming_edges
 from .vocabulary import item_noun_group_names, ITEM_NOUN_GROUP_MAPPING_SHA256
 
 NATIVE_NAME = 'actorScriptFindItemInFacingCone'
-NATIVE_REVIEW_SHA256 = '477c1e6fd43eca0066d0ba0762b77c83de24b9b796f0496904a8a75a5e73e21b'
+NATIVE_REVIEW_SHA256 = '4d72bd4ae15d2eeb5b33406a0df8f5afa8653f43d17df55589a55f145c520b2a'
 
 
 def _digest(value):

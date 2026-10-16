@@ -570,8 +570,9 @@ queues caption 38, which identifies the cooking-ingredient list. Its selection
 helper 54325 compares four candidates in shared slots fifteen through eighteen
 against the collected list beginning at shared slot nineteen, whose count is in
 shared slot fourteen. The producer supplies three preset recipe entries and one
-distinct random extra. The extra's role in the cooking result remains unresolved. The helper selects the first candidate absent from the collected
-list. If all four are present, it reuses the final candidate.
+distinct random extra. Final grading depends on the submitted kinds, recipe
+matches and taste-response codes, as described below. The helper selects the
+first candidate absent from the collected list. If all four are present, it reuses the final candidate.
 The candidate is stored in root slot 175 before its item display frame is read.
 The helper returns zero; consumers read the stored candidate. A producer appends
 a held-item kind to the collected list, then advances the count only after the
@@ -585,6 +586,58 @@ counts and valid item kinds. The analysis does not prove fresh message delivery,
 unchanged shared data across yields, device upload or successful presentation.
 Dictionary twelve remains numeric because its other request owners span
 additional states whose activity boundaries are not fully recovered.
+
+### Ochre cooking results
+
+The Ochre entrance configuration at `0x8013CC24` grades the four submitted item
+kinds in shared slots nineteen through twenty-two against the selected recipe's
+three preset kinds. The helper returns zero and stores the grade in shared slot
+24. Recipe index zero through four selects stew, soup, stir-fry, cookie or goulash
+respectively.
+The grader at 22916 uses two distinct membership rules:
+
+1. A preset kind is covered by either its exact kind or its catalog replacement.
+   Replacement matching uses one stored catalog replacement.
+   Missing some presets initially selects grade one; missing all three selects
+   grade three and skips the extra-item checks.
+2. For the remaining cases, each submitted kind must have a taste-response code
+   in `{2, 3, 5, 13, 14, 16}` or exactly match a preset kind. A rejected extra
+   selects grade two, overriding grades zero or one. Replacement coverage alone
+   does not exempt a submitted kind from this second check.
+
+| Grade | Condition after both passes | Food variant |
+| --- | --- | --- |
+| 0 | All three presets covered; no rejected extra. | Tasty. |
+| 1 | Some presets missing; no rejected extra. | Typical or average. |
+| 2 | At least one rejected extra; at least one preset covered. | Weird. |
+| 3 | No preset covered, or forced by the result driver when fewer than four items are recorded. | Mystery soup, kind 121. |
+
+The adjectives name distinct catalog items, now represented in
+[`ItemKindId`](../include/item_kind_ids.h). The three variant columns retain the
+script's recipe order, which differs from contiguous catalog order:
+
+| Recipe index | Dish | Grade 0 | Grade 1 | Grade 2 |
+| --- | --- | --- | --- | --- |
+| 0 | Stew | 106 | 107 | 108 |
+| 1 | Soup | 112 | 113 | 114 |
+| 2 | Stir-fry | 109 | 110 | 111 |
+| 3 | Cookie | 118 | 119 | 120 |
+| 4 | Goulash | 115 | 116 | 117 |
+
+The result driver at 29309 tests `(recorded_count == 4) || 1`. Under valid VM
+numeric evaluation, the literal one always selects the result-recording path.
+That path requests progress field 172 be set before grading. It uses the grader
+when the recorded count is at least four, otherwise it forces grade three.
+All four food-result branches converge on the request to increment progress
+field 85. Mystery soup and incomplete ingredients therefore reach this credit
+request too. The retained no-food branch is not selected by this guard.
+
+These are scoped script rules. They require a valid recipe index, initialized
+arrays and item kinds, preserved frames and coherent shared data. The four-item
+grader does not establish the collection producer's allocation bounds or repair
+its delayed count update. Food creation, presentation, eating and storage still
+have their own resource and ownership conditions; the grade alone proves none
+of those outcomes.
 
 ### Bedroom name activity
 
