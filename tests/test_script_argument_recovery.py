@@ -257,6 +257,35 @@ class MotionDefinitionMetadataTests(unittest.TestCase):
             motion_definition_metadata(raw, attributes | {24: 'INVALID_COMPOSITE'}, {})
 
 
+    def test_meter_policy_is_a_field_and_motion_identity_is_not_an_archive_id(self):
+        from tools.script_decoder.actions import motion_definition_metadata
+        attributes = {7: 'ACTION_ATTRIBUTE_PLAYBACK_MODE_MASK', 0xC0000000: 'ACTION_ATTRIBUTE_METER_POLICY_MASK'}
+        policies = {0: 'RECOVER', 0x40000000: 'DRAIN', 0x80000000: 'HOLD', 0xC0000000: 'RECOVER_FAST'}
+        raw = bytearray(44)
+        struct.pack_into('>i', raw, 0, 190)
+        struct.pack_into('>IhBBh', raw, 12, 0xC0000001, 36, 0, 0, 198)
+        result = motion_definition_metadata(raw, attributes, {1: 'TRACKS'}, policies,
+                                            identities={190: 'TURN', 198: 'WALK'})
+        self.assertEqual(result['attribute_names'], [])
+        self.assertEqual(result['action_meter_policy_name'], 'RECOVER_FAST')
+        self.assertEqual(result['unresolved_attribute_bits'], 0)
+        self.assertEqual(result['motion_action_name'], 'TURN')
+        self.assertEqual(result['continuation_action_name'], 'WALK')
+        self.assertEqual(result['motion_archive_id'], 36)
+
+    def test_projected_status_preserves_unrecovered_bits_and_action_scope(self):
+        from tools.script_decoder.actions import script_action_flag_projection
+        names = {16: 'SCRIPT_ACTION_HIGH_UPWARD_MOTION_LIMIT', 32: 'SCRIPT_ACTION_BYPASS_TERRAIN_AND_GRAVITY'}
+        result = script_action_flag_projection(0x20000200, names)
+        self.assertEqual(result['flags'], 0x30)
+        self.assertEqual(result['unresolved_flag_bits'], 0)
+        result = script_action_flag_projection(0x800, names)
+        self.assertEqual(result['flags'], 0x40)
+        self.assertEqual(result['known_names'], [])
+        self.assertEqual(result['unresolved_flag_bits'], 0x40)
+        self.assertEqual(script_action_flag_projection(0x810, names)['flags'], 0x42)
+
+
 class PoseTransitionMapTests(unittest.TestCase):
     def test_explicit_precedence_and_first_automatic_pair_win(self):
         from tools.script_decoder.transitions import reconstruct_pose_map

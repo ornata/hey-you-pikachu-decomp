@@ -1,3 +1,4 @@
+#include "motion_action_ids.h"
 #include "random_scale.h"
 #include "player_state.h"
 #include "matrix_basic.h"
@@ -156,7 +157,7 @@ s32 actorPrepareApproachCompletion(u8 *object, f32 speed) {
     ((ActorScriptState *)state)->unknown1A0 = roll - 15;
     if ((distance / speed) < 1.5F) {
         if (speed == gActorSpecialApproachSpeed) {
-            actionSetContinuation(object, 0xC6);
+            actionSetContinuation(object, MOTION_ACTION_WALK_TO_TARGET_START);
             return 1;
         }
         actorRefreshTrackingTargetPosition(object);
@@ -266,7 +267,9 @@ s32 actorChooseAlignedTargetContinuation(u8 *actor) {
     v[1] = 0.0F;
     v[2] = ((ActorScriptState *)obj)->targetPosition[2] - ((RuntimeObjectPrefix *)actor)->worldPosition[2];
     if (fabsf(mathWrapSignedDegrees(vector3GetYawDegrees(v) - ((ActorScriptState *)obj)->orientation[1])) < 10.0F) {
-        actionSetContinuation(actor, (0.5 < (f64)randomNext() * RANDOM_U32_UNIT_SCALE) ? 0xBF : 0xC0);
+        actionSetContinuation(actor, (0.5 < (f64)randomNext() * RANDOM_U32_UNIT_SCALE)
+                                         ? MOTION_ACTION_TURN_TOWARD_TARGET_SHOW_PICTURE
+                                         : MOTION_ACTION_TURN_TOWARD_TARGET_SIDEWAYS_READY);
         return 1;
     }
     return 0;
@@ -314,7 +317,7 @@ s32 actorSelectLeftTargetContinuation(u8 *actor) {
     v[1] = 0.0F;
     v[2] = ((ActorScriptState *)obj)->targetPosition[2] - ((RuntimeObjectPrefix *)actor)->worldPosition[2];
     if (mathWrapSignedDegrees(vector3GetYawDegrees(v) - ((ActorScriptState *)obj)->orientation[1]) < 0.0F) {
-        actionSetContinuation(actor, 0x22);
+        actionSetContinuation(actor, MOTION_ACTION_HEAD_LOOK_RIGHT);
         return 1;
     }
     return 0;
@@ -335,7 +338,7 @@ s32 actorSelectAlignedOrLeftTargetContinuation(u8 *actor) {
     v[2] = ((ActorScriptState *)obj)->targetPosition[2] - ((RuntimeObjectPrefix *)actor)->worldPosition[2];
     d = mathWrapSignedDegrees(vector3GetYawDegrees(v) - ((ActorScriptState *)obj)->orientation[1]);
     if (fabsf(d) < 20.0F) {
-        actionSetContinuation(actor, 0xBE);
+        actionSetContinuation(actor, MOTION_ACTION_TURN_TOWARD_TARGET);
         return 1;
     }
     if (d < 0.0F) {
@@ -377,7 +380,7 @@ s32 actorSelectAlternateAlignedOrLeftTargetContinuation(u8 *actor) {
     v[2] = ((ActorScriptState *)obj)->targetPosition[2] - ((RuntimeObjectPrefix *)actor)->worldPosition[2];
     d = mathWrapSignedDegrees(vector3GetYawDegrees(v) - ((ActorScriptState *)obj)->orientation[1]);
     if (fabsf(d) < 20.0F) {
-        actionSetContinuation(actor, 0xC1);
+        actionSetContinuation(actor, MOTION_ACTION_TURN_TOWARD_TARGET_POSITION_ADJUSTMENT);
         return 1;
     }
     if (d < 0.0F) {
@@ -450,7 +453,7 @@ s32 actorUpdateTurnAwayFromPlayer(u8 *actor) {
 s32 actorFinishOnLandingOrMovementConstraint(u8 *actor) {
     u8 *actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
     if (*(u16 *)(actorState + 0x1EA) != 0) {
-        actionSetContinuation(actor, 0x3D);
+        actionSetContinuation(actor, MOTION_ACTION_FORWARD_JUMP_COLLISION);
         return 1;
     }
     if (((ActorScriptState *)actorState)->airborne == 0) {

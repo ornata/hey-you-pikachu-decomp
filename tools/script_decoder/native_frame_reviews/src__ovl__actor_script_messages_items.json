@@ -110,7 +110,8 @@
         "function:src/game/keyed_pool.c:keyedPoolFindEntry",
         "file:include/keyed_pool_types.h",
         "file:include/item_types.h",
-        "file:include/object_flags.h"
+        "file:include/object_flags.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Initialized nonzero-capacity handle pool with valid chains; a live held handle identifies an item. Lookup writes only a C-stack predecessor temporary."
@@ -126,7 +127,8 @@
       "result_tag": "integer",
       "scheduling": "continue",
       "dependencies": [
-        "function:src/ovl/actor_script_queries.c:actorGetMovementCollisionFlags"
+        "function:src/ovl/actor_script_queries.c:actorGetMovementCollisionFlags",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Actor state is valid; the collision result is read as an unsigned16-bit value."
@@ -142,7 +144,8 @@
       "result_tag": "integer",
       "scheduling": "continue",
       "dependencies": [
-        "function:src/ovl/actor_script_queries.c:actorGetTargetTrackingMode"
+        "function:src/ovl/actor_script_queries.c:actorGetTargetTrackingMode",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Actor state is valid."
@@ -158,7 +161,8 @@
       "result_tag": "integer",
       "scheduling": "continue",
       "dependencies": [
-        "function:src/ovl/actor_script_queries.c:playerGetHeldItemHandle"
+        "function:src/ovl/actor_script_queries.c:playerGetHeldItemHandle",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Primary player state is valid."
@@ -186,7 +190,8 @@
         "file:include/item_types.h",
         "file:include/keyed_pool_types.h",
         "file:include/actor_kind.h",
-        "function:src/ovl/actor_script_queries.c:itemGetKindByHandle"
+        "function:src/ovl/actor_script_queries.c:itemGetKindByHandle",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "One operand lies above all protected locals and frame metadata. Integer/code-reference payloads or finite floats representable as s32 are supported; float handles truncate toward zero.",
@@ -216,7 +221,8 @@
         "file:include/item_types.h",
         "file:include/keyed_pool_types.h",
         "file:include/actor_kind.h",
-        "function:src/ovl/actor_script_queries.c:actorGetKindByHandle"
+        "function:src/ovl/actor_script_queries.c:actorGetKindByHandle",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "One operand lies above all protected locals and frame metadata. Integer/code-reference payloads or finite floats representable as s32 are supported; float handles truncate toward zero.",
@@ -246,7 +252,8 @@
         "file:include/item_types.h",
         "file:include/keyed_pool_types.h",
         "file:include/actor_kind.h",
-        "function:src/ovl/actor_script_queries.c:objectGetTypeByHandle"
+        "function:src/ovl/actor_script_queries.c:objectGetTypeByHandle",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "One operand lies above all protected locals and frame metadata. Integer/code-reference payloads or finite floats representable as s32 are supported; float handles truncate toward zero.",
@@ -267,7 +274,8 @@
         "function:src/ovl/script_vm.c:scriptVmPopInteger",
         "function:src/ovl/script_vm.c:scriptVmPopValue",
         "function:src/ovl/script_vm.c:scriptValueGetInteger",
-        "function:src/ovl/actor_script_queries.c:objectGetWorldCoordinate"
+        "function:src/ovl/actor_script_queries.c:objectGetWorldCoordinate",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "One operand lies above all protected locals/frame metadata. Integer/code-reference payloads or finite floats representable as s32 are supported; floats truncate toward zero.",
@@ -288,7 +296,8 @@
         "function:src/ovl/script_vm.c:scriptVmPopInteger",
         "function:src/ovl/script_vm.c:scriptVmPopValue",
         "function:src/ovl/script_vm.c:scriptValueGetInteger",
-        "function:src/ovl/actor_script_queries.c:actorGetTargetCoordinate"
+        "function:src/ovl/actor_script_queries.c:actorGetTargetCoordinate",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "One operand lies above all protected locals/frame metadata. Integer/code-reference payloads or finite floats representable as s32 are supported; floats truncate toward zero.",
@@ -674,7 +683,8 @@
       "dependencies": [
         "function:src/ovl/actor_script_queries.c:objectGetOriginDistance",
         "function:src/game/trigonometry.c:vector3LengthApprox",
-        "function:src/game/trigonometry.c:mathHypotApprox"
+        "function:src/game/trigonometry.c:mathHypotApprox",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Actor, actor state, VM and owned value storage are valid and nonoverlapping; one free result slot remains above protected locals/frame metadata.",
@@ -695,7 +705,8 @@
       "dependencies": [
         "function:src/ovl/actor_script_queries.c:objectGetPlayerDistance",
         "function:src/game/trigonometry.c:vector3LengthApprox",
-        "function:src/game/trigonometry.c:mathHypotApprox"
+        "function:src/game/trigonometry.c:mathHypotApprox",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Actor, actor state, VM and owned value storage are valid and nonoverlapping; one free result slot remains above protected locals/frame metadata.",
@@ -724,7 +735,8 @@
         "file:include/item_types.h",
         "file:include/keyed_pool_types.h",
         "file:include/actor_kind.h",
-        "function:src/ovl/actor_target_interaction.c:actorResolveStoredTarget"
+        "function:src/ovl/actor_target_interaction.c:actorResolveStoredTarget",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Actor, actor state, VM and owned value storage are valid and nonoverlapping; one free result slot remains above protected locals/frame metadata.",
@@ -757,7 +769,8 @@
         "file:include/actor_kind.h",
         "function:src/ovl/actor_script_queries.c:objectGetDistanceToHandle",
         "function:src/game/trigonometry.c:vector3LengthApprox",
-        "function:src/game/trigonometry.c:mathHypotApprox"
+        "function:src/game/trigonometry.c:mathHypotApprox",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "One numeric handle operand lies above all protected locals/frame metadata. Integer/code-reference payloads or finite s32-representable floats are supported; floats truncate toward zero.",
@@ -789,7 +802,8 @@
         "file:include/item_types.h",
         "file:include/keyed_pool_types.h",
         "file:include/actor_kind.h",
-        "function:src/ovl/actor_script_queries.c:objectGetHeightDifferenceToHandle"
+        "function:src/ovl/actor_script_queries.c:objectGetHeightDifferenceToHandle",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "One numeric handle operand lies above all protected locals/frame metadata. Integer/code-reference payloads or finite s32-representable floats are supported; floats truncate toward zero.",
@@ -822,7 +836,8 @@
         "file:include/keyed_pool_types.h",
         "file:include/actor_kind.h",
         "function:src/ovl/actor_script_queries.c:objectGetScriptCategory",
-        "file:include/object_script_query.h"
+        "file:include/object_script_query.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "One numeric handle operand lies above all protected locals/frame metadata. Integer/code-reference payloads or finite s32-representable floats are supported; floats truncate toward zero.",
@@ -856,7 +871,8 @@
         "file:include/actor_kind.h",
         "function:src/ovl/actor_script_queries.c:objectGetScriptKind",
         "function:src/ovl/actor_script_queries.c:itemGetKindByHandle",
-        "function:src/ovl/actor_script_queries.c:actorGetKindByHandle"
+        "function:src/ovl/actor_script_queries.c:actorGetKindByHandle",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "One numeric handle operand lies above all protected locals/frame metadata. Integer/code-reference payloads or finite s32-representable floats are supported; floats truncate toward zero.",
@@ -893,7 +909,8 @@
         "file:include/object_script_query.h",
         "function:src/ovl/actor_script_queries.c:actorSetTargetPosition",
         "function:src/ovl/script_vm.c:scriptVmPopFloat",
-        "function:src/ovl/script_vm.c:scriptValueGetFloat"
+        "function:src/ovl/script_vm.c:scriptValueGetFloat",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Actor state, captured VM and owned value storage stay live and nonoverlapping with target writes. Appends require one free slot; the two-operand contract requires both handle and allowance above protected locals/frame metadata.",
@@ -914,7 +931,8 @@
       "result_semantics": "Select raw primary handle and follow mode with zero allowance, without resolving or refreshing stored position.",
       "dependencies": [
         "function:src/ovl/actor_script_queries.c:actorTrackPlayerPrimaryObject",
-        "file:include/player_types.h"
+        "file:include/player_types.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Actor state, captured VM and owned value storage stay live and nonoverlapping with target writes. Appends require one free slot; the two-operand contract requires both handle and allowance above protected locals/frame metadata.",
@@ -950,7 +968,8 @@
         "function:src/ovl/actor_script_queries.c:objectGetScriptCategory",
         "file:include/object_script_query.h",
         "function:src/ovl/actor_script_queries.c:actorSetTargetPosition",
-        "file:include/player_types.h"
+        "file:include/player_types.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Actor state, captured VM and owned value storage stay live and nonoverlapping with target writes. Appends require one free slot; the two-operand contract requires both handle and allowance above protected locals/frame metadata.",
@@ -971,7 +990,8 @@
       "result_semantics": "Select raw secondary handle and escape mode, preserving stored position and allowance.",
       "dependencies": [
         "function:src/ovl/actor_script_queries.c:actorTrackEscapeFromPlayerSecondaryObject",
-        "file:include/player_types.h"
+        "file:include/player_types.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Actor state, captured VM and owned value storage stay live and nonoverlapping with target writes. Appends require one free slot; the two-operand contract requires both handle and allowance above protected locals/frame metadata.",
@@ -997,7 +1017,8 @@
         "file:include/object_types.h",
         "file:include/actor_script.h",
         "file:include/script_vm.h",
-        "function:src/ovl/actor_script_queries.c:actorSetDefaultActionMode"
+        "function:src/ovl/actor_script_queries.c:actorSetDefaultActionMode",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Arguments lie above all protected locals/frame metadata. Actor, captured VM and owned value storage remain live and do not overlap borrowed objects or helper-written fields. Numeric arguments are integer/code-reference values or finite floats whose truncation fits s32.",
@@ -1076,7 +1097,8 @@
         "function:src/ovl/script_vm.c:scriptValueGetFloat",
         "file:include/search_tree_traversal.h",
         "file:include/search_tree_lookup.h",
-        "file:include/managed_object_types.h"
+        "file:include/managed_object_types.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "All operands are numeric and lie above protected locals/frame metadata. Integer conversions truncate finite floats representable as s32; float conversions accept integer/code-reference or float values. Query positions, rotations, distance and cone are finite; distances nonnegative. Restrict angles/coordinates to magnitudes permitting ordinary arithmetic and terminating angle-normalization loops.",
@@ -1125,7 +1147,8 @@
         "file:include/math_scalar.h",
         "file:include/search_tree_traversal.h",
         "file:include/search_tree_lookup.h",
-        "file:include/integer_animation_types.h"
+        "file:include/integer_animation_types.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "All operands are numeric and lie above protected locals/frame metadata. Integer conversions truncate finite floats representable as s32; float conversions accept integer/code-reference or float values. Query positions, rotations, distance and cone are finite; distances nonnegative. Restrict angles/coordinates to magnitudes permitting ordinary arithmetic and terminating angle-normalization loops.",
@@ -1159,7 +1182,8 @@
         "file:include/object_types.h",
         "file:include/matrix_types.h",
         "file:include/direction_animation_types.h",
-        "file:include/action_script_types.h"
+        "file:include/action_script_types.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Actor, actor state, captured VM and value storage remain valid and disjoint from helper-written gameplay/global storage. Helpers retain the captured VM; no concurrent mutation, context replacement or lifecycle change is covered.",
@@ -1212,7 +1236,8 @@
         "file:include/direction_animation_types.h",
         "file:include/action_script_types.h",
         "file:include/script_message.h",
-        "file:src/game/object_hierarchy.c"
+        "file:src/game/object_hierarchy.c",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Actor, actor state, captured VM and value storage remain valid and disjoint from helper-written gameplay/global storage. Helpers retain the captured VM; no concurrent mutation, context replacement or lifecycle change is covered.",
@@ -1275,7 +1300,8 @@
         "function:src/ovl/script_vm.c:scriptVmPopValue",
         "function:src/ovl/script_vm.c:scriptValueGetInteger",
         "function:src/ovl/script_vm.c:scriptValueGetFloat",
-        "function:src/ovl/actor_script_queries.c:actionScriptStartWithDurationBits"
+        "function:src/ovl/actor_script_queries.c:actionScriptStartWithDurationBits",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Consumed numeric operands lie above all protected locals/frame metadata. Actor, captured VM, owned value stack and actor action state remain valid and nonoverlapping; no concurrent mutation, context replacement or lifecycle change is covered.",
@@ -1622,7 +1648,8 @@
         "file:include/item_state.h",
         "file:include/item_types.h",
         "file:include/object_types.h",
-        "file:include/animation_tracks.h"
+        "file:include/animation_tracks.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Valid actor, VM and one free result slot; actor/object/item state, hierarchy nodes, pool records, globals, animation tracks and C stack are nonoverlapping with VM and owned value storage. Protected locals/frame metadata lie below active depth.",
@@ -1874,7 +1901,8 @@
       ],
       "dependencies": [
         "function:src/ovl/actor_script_queries.c:actionScriptGetId",
-        "file:include/action_script_playback.h"
+        "file:include/action_script_playback.h",
+        "file:include/script_action_flags.h"
       ]
     },
     {
@@ -1902,7 +1930,8 @@
         "file:include/actor_target.h",
         "file:include/object_types.h",
         "file:include/script_vm.h",
-        "file:include/script_vm_commands.h"
+        "file:include/script_vm_commands.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Valid actor/state, retained VM and owned value storage remain live and nonoverlapping with C stack and any traversed object hierarchy. No concurrent state/context replacement occurs. Numeric operands lie above all protected locals/frame records; appending the result does not overwrite protected storage.",
@@ -1928,7 +1957,8 @@
         "function:src/ovl/script_vm.c:scriptVmPushValue",
         "file:include/object_types.h",
         "file:include/actor_script.h",
-        "file:include/script_vm.h"
+        "file:include/script_vm.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Actor, initialized script state, retained VM and owned value storage remain live, aligned and nonoverlapping with native-stack storage. One free slot lies above protected locals and frame metadata; no concurrent state/context replacement occurs.",
@@ -2109,7 +2139,8 @@
       "scheduling": "continue",
       "dependencies": [
         "function:src/ovl/actor_script_queries.c:actionScriptGetDuration",
-        "file:include/action_script_playback.h"
+        "file:include/action_script_playback.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Valid actor, initialized script state, stable captured VM and disjoint owned values with one free slot above protected locals/frame metadata; no concurrent replacement.",
@@ -2139,7 +2170,8 @@
         "file:include/item_types.h",
         "file:include/keyed_pool_types.h",
         "file:include/actor_kind.h",
-        "function:src/ovl/actor_script_queries.c:objectGetBoundingRadiusByHandle"
+        "function:src/ovl/actor_script_queries.c:objectGetBoundingRadiusByHandle",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "One numeric handle operand above protected locals and frame metadata; integer/code-reference or finite s32-representable float conversion, truncating fractions.",
@@ -2159,7 +2191,8 @@
       "scheduling": "continue",
       "dependencies": [
         "function:src/ovl/actor_script_queries.c:actionScriptGetElapsedTime",
-        "file:include/action_script_playback.h"
+        "file:include/action_script_playback.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Valid actor/state, stable VM and disjoint owned value storage with one free value slot above protected locals/frame metadata; no concurrent replacement.",
@@ -2430,7 +2463,8 @@
         "function:src/ovl/item_registry.c:itemCanBePickedUp",
         "function:src/game/runtime.c:runtimeGetElapsedMilliseconds",
         "file:src/game/runtime.c",
-        "file:include/player_state.h"
+        "file:include/player_state.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Two numeric operands lie above protected locals and frame metadata, in bottom-to-top order item kind then maximum distance. Kind converts from integer/code-reference or a finite signed-32-bit-representable float, truncating fractions. Distance converts to finite nonnegative f32. The caller actor, ActorScriptState, saved VM and value storage remain live throughout the synchronous call. Query globals, registry nodes, item states and native C-stack scratch do not overlap VM contexts, values, protected frames or program storage. Concurrent query, registry mutation, destruction and context replacement are excluded.",
@@ -2490,7 +2524,8 @@
         "file:include/player_state.h",
         "file:include/player_types.h",
         "file:include/script_vm.h",
-        "file:include/script_value.h"
+        "file:include/script_value.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "The caller actor, ActorScriptState, saved VM and value buffer remain live, with one free value slot above protected locals and frame metadata. Actor target fields and shared RNG state do not overlap VM contexts, values, protected frames, native C-stack scratch, player position storage or area configuration. Concurrent mutation, destruction and context replacement are excluded. No script operand is consumed.",
@@ -2572,7 +2607,8 @@
         "file:include/camera_types.h",
         "file:include/camera_storage.h",
         "function:src/ovl/actor_script_queries.c:scriptVmSetPrimaryCameraView",
-        "function:src/main.c:cameraSetEyeAndTarget"
+        "function:src/main.c:cameraSetEyeAndTarget",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "All consumed numeric operands lie above protected locals and frame metadata. Inputs are integer/code-reference or finite f32 numeric values, converted by scriptVmPopFloat with original f32 rounding. Captured caller VM, actor state, writable value storage and C stack remain live and disjoint from camera, primary-player and area fields written by the helper. No concurrent updates, area replacement or VM context replacement occur.",
@@ -2616,7 +2652,8 @@
         "file:include/script_vm.h",
         "function:src/ovl/script_vm.c:scriptVmPushInteger",
         "function:src/ovl/script_vm.c:scriptVmPushValue",
-        "function:src/ovl/script_vm.c:scriptValueSetInteger"
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Caller actor, actor state, captured VM and writable value storage remain live, correctly aligned and disjoint from all observed global records. There is one free operand slot above protected locals and frame metadata; no concurrent mutation or VM replacement occurs.",
@@ -2875,7 +2912,8 @@
         "file:include/item_types.h",
         "file:include/object_flags.h",
         "file:include/object_lookup.h",
-        "file:include/object_distance.h"
+        "file:include/object_distance.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "The caller has initialized live RuntimeObjectPrefix and ActorScriptState storage and a live saved VM/value buffer. Operands and the resulting slot lie above protected locals and frame metadata. Source objects, sampled globals and C-stack storage are disjoint from VM contexts, values, frames and program storage. The VM is not replaced and objects are not destroyed or concurrently mutated during the call. The only VM changes are the declared operand pops, result tag/payload and stack depth.",
@@ -2912,7 +2950,8 @@
         "function:src/game/trigonometry.c:mathHypotApprox",
         "file:include/vector_metrics.h",
         "function:src/ovl/actor_script_queries.c:actorGetHorizontalTargetDistance",
-        "file:include/actor_target.h"
+        "file:include/actor_target.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "The caller has initialized live RuntimeObjectPrefix and ActorScriptState storage and a live saved VM/value buffer. Operands and the resulting slot lie above protected locals and frame metadata. Source objects, sampled globals and C-stack storage are disjoint from VM contexts, values, frames and program storage. The VM is not replaced and objects are not destroyed or concurrently mutated during the call. The only VM changes are the declared operand pops, result tag/payload and stack depth.",
@@ -3026,7 +3065,8 @@
         "file:include/object_distance.h",
         "file:include/player_types.h",
         "file:include/player_state.h",
-        "file:config/symbol_addrs.txt"
+        "file:config/symbol_addrs.txt",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "The caller has initialized live RuntimeObjectPrefix and ActorScriptState storage and a live saved VM/value buffer. Operands and the resulting slot lie above protected locals and frame metadata. Source objects, sampled globals and C-stack storage are disjoint from VM contexts, values, frames and program storage. The VM is not replaced and objects are not destroyed or concurrently mutated during the call. The only VM changes are the declared operand pops, result tag/payload and stack depth.",
@@ -3123,7 +3163,8 @@
         "function:src/ovl/script_vm.c:scriptVmPushInteger",
         "function:src/ovl/script_vm.c:scriptValueSetInteger",
         "function:src/ovl/script_vm.c:scriptVmPopFloat",
-        "function:src/ovl/script_vm.c:scriptValueGetFloat"
+        "function:src/ovl/script_vm.c:scriptValueGetFloat",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "The caller has initialized live RuntimeObjectPrefix and ActorScriptState storage and a live saved VM/value buffer. Operands and the resulting slot lie above protected locals and frame metadata. Source objects, sampled globals and C-stack storage are disjoint from VM contexts, values, frames and program storage. The VM is not replaced and objects are not destroyed or concurrently mutated during the call. The only VM changes are the declared operand pops, result tag/payload and stack depth.",
@@ -3186,7 +3227,8 @@
         "file:include/player_state.h",
         "file:include/player_types.h",
         "file:src/ovl/player_companion.c",
-        "file:src/main.c"
+        "file:src/main.c",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Actor prefix/state, saved VM and value buffer remain live, one free result slot above protected metadata. VM/context/program/value/frame storage and native stack are disjoint from both player records and camera 0. No concurrent mutation/destruction or VM replacement during this call.",
@@ -3246,7 +3288,8 @@
         "file:include/player_state.h",
         "file:include/player_types.h",
         "file:src/ovl/player_companion.c",
-        "file:src/main.c"
+        "file:src/main.c",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Actor prefix/state, saved VM and value buffer remain live, one free result slot above protected metadata. VM/context/program/value/frame storage and native stack are disjoint from both player records and camera 0. No concurrent mutation/destruction or VM replacement during this call.",
@@ -3396,7 +3439,8 @@
         "file:include/script_vm.h",
         "file:include/script_value.h",
         "function:src/ovl/actor_script_queries.c:actorChooseEscapePositionFromHandle",
-        "function:src/ovl/actor_script_queries.c:objectGetScriptCategory"
+        "function:src/ovl/actor_script_queries.c:objectGetScriptCategory",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "The caller actor, ActorScriptState, saved VM and value buffer remain live, with one convertible handle operand and the resulting value slot above protected locals and frame metadata. Actor target fields and shared RNG state do not overlap VM contexts, values, protected frames, native C-stack scratch, player position storage or area configuration. Concurrent mutation, destruction and context replacement are excluded. One handle operand is consumed.",

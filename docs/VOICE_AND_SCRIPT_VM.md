@@ -645,6 +645,39 @@ applies to the existing continuation when a pending request competes with it.
 These are separate choices in the action state machine, not interchangeable
 forms of looping.
 
+Additional [action attributes](../include/action_attributes.h) identify terrain-facing
+restrictions, the higher upward-motion limit, target/camera-facing permissions,
+retained world motion while airborne and terrain/gravity bypass. Target/camera
+permissions remain subject to the actor's independent inhibition flags; they do
+not guarantee an orientation change. The higher upward limit is 30 rather than
+5 in scaled motion displacement. World motion applies when the terrain updater's
+ground-clearance conditions permit its airborne branch.
+
+The top two attribute bits select automatic action-resource change during gameplay
+model updates: recover one unit per second, spend ten, hold, or recover ten.
+Other explicit adjustments remain independent, and the resource stays clamped to
+zero through 100. The decoder exposes this field as `action_meter_policy_name`.
+
+Each linked motion definition also includes `script_action_flag_projection`.
+This describes the status for a live creature with active playback, rather than
+assuming that the definition is selected at runtime. Script bit `0x10` projects
+the higher upward limit and bit `0x20` projects action-requested terrain/gravity
+bypass. Other bits remain numeric. Actor behavior inhibition is excluded, and
+inactive playback supplies a separate default attribute word returning status
+`0x21`; zero status alone therefore does not prove that terrain constraints run.
+
+Nine [motion-action identities](../include/motion_action_ids.h) name head-turn,
+forward-jump collision, target-turn variants and the destination-walk chain.
+The decoder names matching definitions and their continuations while retaining
+motion archive IDs separately. These labels and consumers do not establish
+names for every pose or for ambiguous pivot variants.
+
+Twenty-four original full lookup-chain probes cover action-status projection,
+disabled playback and rejected handles/kinds. Four bounded original meter-dispatch
+slices verify the four rates, resource ownership and HUD effects; earlier gameplay
+callbacks are outside those slices. A 2,048-row status enumeration is a separate
+host check, not 2,048 emulator runs.
+
 The decoder's `pose_transitions` reconstructs the initialized pose map from
 sentinel-bounded explicit records and the 330 action definitions. Keys pair the
 current source pose with the requested initial pose. Explicit entries take

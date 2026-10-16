@@ -4113,7 +4113,8 @@
         "file:include/search_tree_traversal.h",
         "file:include/search_tree_lookup.h",
         "file:include/integer_animation_types.h",
-        "file:include/player_state.h"
+        "file:include/player_state.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "All operands are numeric and lie above protected locals/frame metadata. Integer conversions truncate finite floats representable as s32; float conversions accept integer/code-reference or float values. Query positions, rotations, distance and cone are finite; distances nonnegative. Restrict angles/coordinates to magnitudes permitting ordinary arithmetic and terminating angle-normalization loops.",
@@ -4902,7 +4903,8 @@
         "file:include/scene_types.h",
         "file:include/scene_configuration.h",
         "function:src/ovl/script_vm.c:scriptVmPopFloat",
-        "function:src/ovl/script_vm.c:scriptValueGetFloat"
+        "function:src/ovl/script_vm.c:scriptValueGetFloat",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Numeric operands lie above protected locals and frame metadata. Integer/code-reference values are signed 32-bit; floats converted to integers must be finite and signed-32-bit-representable, with fractions truncated. The caller actor, actor state, saved VM and owned value storage remain live throughout the call. Affected item state, object hierarchy and native C-stack scratch must not alias VM contexts, values, protected frames or program storage. Concurrent item mutation, destruction and context replacement are excluded.",
@@ -4991,7 +4993,8 @@
         "file:include/item_types.h",
         "file:include/effect_emitter.h",
         "function:src/game/object_hierarchy.c:objectMakeHierarchyRoot",
-        "function:src/game/object_hierarchy.c:objectAssignHierarchyRoot"
+        "function:src/game/object_hierarchy.c:objectAssignHierarchyRoot",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Numeric operands lie above all protected locals and frame metadata. Integer/code-reference values and finite f32 values are supported; integer conversions must truncate to representable s32. Calling actor, captured VM, owned value allocation, program storage and native stack remain live and disjoint from every new allocation, heap metadata, registry entry and RNG state written by creation. No concurrent allocation, registry traversal, callback execution or context replacement occurs.",
@@ -5225,7 +5228,8 @@
         "file:config/symbol_addrs.txt",
         "function:src/ovl/player_companion.c:playerPickUpItem",
         "file:src/ovl/player_companion.c",
-        "file:include/player_interaction.h"
+        "file:include/player_interaction.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Numeric operands lie above protected locals and frame metadata. Integer operands use signed 32-bit conversion; finite float-to-integer operands must be representable and are truncated. The saved caller ActorScriptState, VM and value buffer remain live. All changed item state, owner actor state, player held-item global, hierarchy flags and bounds, material tracks, registry entries and C stack are disjoint from VM contexts, values, protected frames and program storage. Concurrent ownership changes, destruction and context replacement are excluded.",
@@ -5311,7 +5315,8 @@
         "function:src/game/keyed_pool.c:keyedPoolRemoveEntry",
         "function:src/game/keyed_pool.c:keyedPoolUnlinkOrderedEntry",
         "function:src/game/keyed_pool.c:keyedPoolRelocateEntry",
-        "function:src/game/keyed_pool.c:keyedPoolReleaseEntry"
+        "function:src/game/keyed_pool.c:keyedPoolReleaseEntry",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Numeric operands lie above protected locals and frame metadata. Integer operands use signed 32-bit conversion; finite float-to-integer operands must be representable and are truncated. The saved caller ActorScriptState, VM and value buffer remain live. All changed item state, owner actor state, player held-item global, hierarchy flags and bounds, material tracks, registry entries and C stack are disjoint from VM contexts, values, protected frames and program storage. Concurrent ownership changes, destruction and context replacement are excluded.",
@@ -5802,7 +5807,8 @@
         "function:src/ovl/actor_target_interaction.c:objectGetFacingErrorToTarget",
         "function:src/ovl/script_vm.c:scriptVmPopInteger",
         "function:src/ovl/script_vm.c:scriptVmPopValue",
-        "function:src/ovl/script_vm.c:scriptValueGetInteger"
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "The caller has initialized live RuntimeObjectPrefix and ActorScriptState storage and a live saved VM/value buffer. Operands and the resulting slot lie above protected locals and frame metadata. Source objects, sampled globals and C-stack storage are disjoint from VM contexts, values, frames and program storage. The VM is not replaced and objects are not destroyed or concurrently mutated during the call. The only VM changes are the declared operand pops, result tag/payload and stack depth.",
@@ -6091,7 +6097,8 @@
         "function:src/game/object_hierarchy.c:objectGetApproxDistance",
         "function:src/game/trigonometry.c:vector3LengthApprox",
         "function:src/game/trigonometry.c:mathHypotApprox",
-        "file:include/vector_metrics.h"
+        "file:include/vector_metrics.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Consumed numeric operands are integer/code-reference payloads or finite f32 values whose truncation fits s32, and lie above protected locals/frame metadata. Caller actor/state, captured VM and owned writable values remain live. Append operations require one free five-byte value slot. Helper-written memory and borrowed records do not overlap VM/value/frame/native-stack storage. No concurrent mutation, overlay replacement or context replacement occurs.",
@@ -6141,7 +6148,8 @@
         "file:include/managed_object_types.h",
         "function:src/ovl/actor_script_queries.c:actorFindNearestFromPlayerView",
         "file:include/player_state.h",
-        "function:src/game/actor_search.c:actorFindNearestInRange"
+        "function:src/game/actor_search.c:actorFindNearestInRange",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Consumed numeric operands lie above protected locals and frame metadata. Integer/code-reference payloads and finite f32 values are supported; integer conversion must truncate to representable s32. Captured caller actor/state, VM, owned values, native stack and borrowed program remain live and disjoint from helper-written objects, registries, heap, audio and shared query storage. No concurrent mutation, traversal, destruction, overlay replacement or context replacement occurs.",
@@ -6193,7 +6201,8 @@
         "file:include/search_tree_lookup.h",
         "file:include/managed_object_types.h",
         "function:src/ovl/actor_script_queries.c:objectFindNearestFromPlayerView",
-        "file:include/player_state.h"
+        "file:include/player_state.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Consumed numeric operands lie above protected locals and frame metadata. Integer/code-reference payloads and finite f32 values are supported; integer conversion must truncate to representable s32. Captured caller actor/state, VM, owned values, native stack and borrowed program remain live and disjoint from helper-written objects, registries, heap, audio and shared query storage. No concurrent mutation, traversal, destruction, overlay replacement or context replacement occurs.",
@@ -6443,7 +6452,8 @@
         "file:include/random.h",
         "function:src/game/trigonometry.c:randomNext",
         "function:src/ovl/item_registry.c:itemTransform",
-        "function:src/ovl/item_registry.c:itemPlayTrackedSound"
+        "function:src/ovl/item_registry.c:itemPlayTrackedSound",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Consumed numeric operands lie above protected locals and frame metadata. Integer/code-reference payloads and finite f32 values are supported; integer conversion must truncate to representable s32. Captured caller actor/state, VM, owned values, native stack and borrowed program remain live and disjoint from helper-written objects, registries, heap, audio and shared query storage. No concurrent mutation, traversal, destruction, overlay replacement or context replacement occurs.",
@@ -6543,7 +6553,8 @@
         "file:src/game/flipbook_messenger.c",
         "file:include/scroll_board.h",
         "function:src/game/flipbook_messenger.c:scrollBoardSetHierarchySpeed",
-        "function:src/game/flipbook_messenger.c:scrollBoardSetSpeed"
+        "function:src/game/flipbook_messenger.c:scrollBoardSetSpeed",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "The caller actor, ActorScriptState, captured VM, two numeric operands and resulting slot remain live, above protected locals and frame metadata. Integer handle conversion accepts ordinary integer/code-reference or finite signed-32-representable float inputs; speed converts to target f32. No concurrent VM replacement or object destruction is covered.",
@@ -6648,7 +6659,8 @@
         "file:Makefile",
         "file:src/game/backdrop.c",
         "file:include/backdrop_view.h",
-        "file:include/camera_types.h"
+        "file:include/camera_types.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Actor, state, captured VM, one convertible integer operand and result slot remain live and disjoint from camera, heap, transfer/kernel state, decoder scratch and native stacks. Operands lie above protected frame metadata. No concurrent VM replacement, destruction, heap mutation, backdrop selection or decoder use occurs.",
@@ -6928,7 +6940,8 @@
         "file:include/script_vm_lifecycle.h",
         "file:include/script_vm_execution.h",
         "file:include/script_vm_globals.h",
-        "file:include/action_attributes.h"
+        "file:include/action_attributes.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "The actor prefix/state, captured VM and three numeric operands remain live above protected locals and frame metadata. The wrapper pops style, preset and hierarchy handle and appends integer zero only after the helper returns. Handle/preset/style conversions obey the signed-32 numeric contract. VM contexts, values, frames, program storage, source resources, heap/cache metadata and native stacks are disjoint. No concurrent VM mutation, context replacement or destruction is covered.",
@@ -7177,7 +7190,8 @@
         "function:src/game/texture_images_word_map.c:textureImageInitialize",
         "file:include/scene_configuration.h",
         "file:include/scene_types.h",
-        "file:include/action_attributes.h"
+        "file:include/action_attributes.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Eighteen numeric operands lie above protected locals and frame metadata, bottom-to-top: preset, style, columns, lines, position XYZ, rotation XYZ in degrees, red, green, blue, alpha, leading outline, trailing outline, relative scale and scroll speed. The wrapper pops in reverse order, converts integer parameters through scriptVmPopInteger and geometry/speed/scale through scriptVmPopFloat, then replaces all operands with a tag-zero root handle (stack delta -17) and returns zero to continue. Integer conversions truncate only finite s32-representable values. Caller actor/state, captured VM, values, native stack and program remain live and disjoint from all helper-written heap, objects, registries, image/cache/SDK and text globals. No concurrent mutation, context replacement, rendering or destruction is covered.",

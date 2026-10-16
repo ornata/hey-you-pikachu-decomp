@@ -2696,7 +2696,7 @@ f32 actorConstrainFacingHeading(u8 *object, f32 angle) {
 
     state = ((RuntimeObjectPrefix *)object)->state.bytes;
     flags = (u16)((ActorScriptState *)state)->movementCollisionFlags;
-    if (!(actionGetAttributes(object) & 0x10)) {
+    if (!(actionGetAttributes(object) & ACTION_ATTRIBUTE_CONSTRAIN_FACING_TO_TERRAIN)) {
         return angle;
     }
     if (angle < 0.0F) {

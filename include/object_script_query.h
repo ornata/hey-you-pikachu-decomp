@@ -1,9 +1,10 @@
 /// \file
-/// Declares handle-based object categories and kinds exposed to actor scripts.
+/// Declares handle-based object categories, kinds and creature action status exposed to actor scripts.
 
 #ifndef OBJECT_SCRIPT_QUERY_H
 #define OBJECT_SCRIPT_QUERY_H
 
+#include "script_action_flags.h"
 #include <ultra64.h>
 #include "actor_kind.h"
 
@@ -52,6 +53,7 @@ u16 objectGetTypeByHandle(s32 handle);
 /// Get the compact action status exposed to actor scripts for a creature.
 /// \param handle Handle of the creature whose current action is queried.
 /// \returns The script action status flags, or zero when the handle is not live or does not identify a creature.
+/// \note Returned action status excludes actor behavior inhibition flags.
 /// \note Original decompilation identifier: \c func_80117EE8 (0x80117EE8).
 u16 actorGetScriptActionFlagsByHandle(s32 handle);
 

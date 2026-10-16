@@ -695,16 +695,16 @@ void actorUpdateGameplayModel(u8 *object) {
                                   &((ActorScriptState *)state)->secondaryPoseAngles[1],
                                   &((ActorScriptState *)state)->secondaryPoseAngles[2]);
     actorUpdatePartShake(object);
-    switch (actionGetAttributes(object) & 0xC0000000) {
-    case 0:
+    switch (actionGetAttributes(object) & ACTION_ATTRIBUTE_METER_POLICY_MASK) {
+    case ACTION_METER_POLICY_RECOVER:
         actorAdjustActionMeter(object, gRuntimeFrameSeconds);
         return;
-    case 0x40000000:
+    case ACTION_METER_POLICY_DRAIN_FAST:
         actorAdjustActionMeter(object, gRuntimeFrameSeconds * -10.0F);
         return;
-    case 0xC0000000:
+    case ACTION_METER_POLICY_RECOVER_FAST:
         actorAdjustActionMeter(object, gRuntimeFrameSeconds * 10.0F);
-    case 0x80000000:
+    case ACTION_METER_POLICY_HOLD:
         return;
     }
 }

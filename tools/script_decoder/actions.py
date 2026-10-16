@@ -49,7 +49,21 @@ def action_calls(instructions):
     return result
 
 
-def motion_definition_metadata(raw, attributes, modes):
+def script_action_flag_projection(word, names):
+    """Project active action attributes, without including actor inhibition state."""
+    flags = (16 if word & 0x200 else 0) + (8 if word & 0x100 else 0)
+    if word & 0xF0:
+        flags += 2 if word & 0x800 else 4
+    flags += (32 if word & 0x20000000 else 0) + (1 if word & 0x400 else 0) + (64 if word & 0x800 else 0)
+    if names != {16: 'SCRIPT_ACTION_HIGH_UPWARD_MOTION_LIMIT',
+                 32: 'SCRIPT_ACTION_BYPASS_TERRAIN_AND_GRAVITY'}:
+        raise ValueError('script action flag meanings differ from the reviewed projection')
+    return dict(flags=flags, known_names=[name for bit, name in sorted(names.items()) if flags & bit],
+                unresolved_flag_bits=flags & ~0x30,
+                scope='Attribute projection for a live creature with active playback; excludes behavior inhibition and disabled-playback defaults.')
+
+
+def motion_definition_metadata(raw, attributes, modes, meter_policies=None, script_flags=None, identities=None):
     """Describe a fixed resource record, preserving bits without recovered meanings."""
     if len(raw) != 44:
         raise ValueError('action definition must contain exactly 44 bytes')
@@ -57,15 +71,21 @@ def motion_definition_metadata(raw, attributes, modes):
                  if name == 'ACTION_ATTRIBUTE_PLAYBACK_MODE_MASK'), None)
     if mask != 7:
         raise ValueError('action playback selector mask differs from reviewed source')
-    flags = {value: name for value, name in attributes.items() if value != mask}
+    meter_mask = next((value for value, name in attributes.items()
+                       if name == 'ACTION_ATTRIBUTE_METER_POLICY_MASK'), 0)
+    if meter_mask and (meter_mask != 0xC0000000 or meter_policies is None or
+                       set(meter_policies) != {0, 0x40000000, 0x80000000, 0xC0000000}):
+        raise ValueError('action meter policy differs from the reviewed source')
+    flags = {value: name for value, name in attributes.items()
+             if value != mask and name != 'ACTION_ATTRIBUTE_METER_POLICY_MASK'}
     if any(value <= 0 or value > 0xFFFFFFFF or value & (value - 1) for value in flags):
         raise ValueError('recovered action flags must be distinct single bits')
     word, = struct.unpack_from('>I', raw, 12)
-    known = mask
+    known = mask | meter_mask
     for bit in flags:
         known |= bit
     mode = word & mask
-    return dict(definition_sha256=hashlib.sha256(raw).hexdigest(),
+    result = dict(definition_sha256=hashlib.sha256(raw).hexdigest(),
                 attribute_word=word, playback_mode=mode,
                 playback_mode_name=modes.get(mode),
                 attribute_names=[name for bit, name in sorted(flags.items()) if word & bit],
@@ -74,6 +94,16 @@ def motion_definition_metadata(raw, attributes, modes):
                 initial_pose_id=raw[18], final_pose_id=raw[19],
                 continuation_action_id=struct.unpack_from('>h', raw, 20)[0],
                 scope='Original resource fields and recovered attribute meanings; unknown bits are retained. No playback, callback or transition completion is implied.')
+    if meter_mask:
+        policy = word & meter_mask
+        result.update(action_meter_policy=policy, action_meter_policy_name=meter_policies[policy])
+    if script_flags is not None:
+        result['script_action_flag_projection'] = script_action_flag_projection(word, script_flags)
+    if identities is not None:
+        result['motion_action_name'] = identities.get(struct.unpack_from('>i', raw)[0])
+        result['continuation_action_name'] = identities.get(result['continuation_action_id'])
+    return result
+
 
 
 def action_resources(image, identifiers, record_limit=4096):
@@ -88,6 +118,9 @@ def action_resources(image, identifiers, record_limit=4096):
     results = []
     attributes = enum_names(ROOT / 'include/action_attributes.h', 'ACTION_ATTRIBUTE_')
     modes = enum_names(ROOT / 'include/motion_playback_types.h', 'MOTION_PLAYBACK_')
+    meter_policies = enum_names(ROOT / 'include/action_attributes.h', 'ACTION_METER_POLICY_')
+    script_flags = enum_names(ROOT / 'include/script_action_flags.h', 'SCRIPT_ACTION_')
+    identities = enum_names(ROOT / 'include/motion_action_ids.h', 'MOTION_ACTION_')
     names = {int(value): name for name, value in re.findall(r'\b(ACTION_SCRIPT_\w+)\s*=\s*(-?\d+)\b', code_only((ROOT / 'include/action_script_ids.h').read_text()))}
     for identifier in sorted(identifiers):
         row = dict(script_id=identifier, table_view_bytes=table[2],
@@ -151,7 +184,7 @@ def action_resources(image, identifiers, record_limit=4096):
                 motions.append(dict(command_offset=command['offset'], motion_action_id=motion,
                                     debug_label=name.decode('euc_jp'), debug_label_bytes=name.hex(),
                                     definition_address=definitions[1] + motion * 44,
-                                    definition=motion_definition_metadata(definition, attributes, modes),
+                                    definition=motion_definition_metadata(definition, attributes, modes, meter_policies, script_flags, identities),
                                     requested_kind=command['arguments'][1],
                                     inherits_default_kind=command['arguments'][1] == 18))
             row.update(status='decoded' if not decoded['diagnostics'] else 'unresolved',

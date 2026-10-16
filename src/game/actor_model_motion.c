@@ -419,7 +419,8 @@ void actorUpdateModel(u8 *actor) {
     actionScriptUpdate(actor);
     actionUpdatePlayback(actor);
     actorUpdateTrackedSoundSpatialization(((RuntimeObjectPrefix *)actor)->worldPosition, state->soundHandles);
-    if (!(actionGetAttributes(actor) & 0x20000000) && !(state->behaviorFlags & ACTOR_INHIBIT_TERRAIN_AND_GRAVITY)) {
+    if (!(actionGetAttributes(actor) & ACTION_ATTRIBUTE_BYPASS_TERRAIN_AND_GRAVITY) &&
+        !(state->behaviorFlags & ACTOR_INHIBIT_TERRAIN_AND_GRAVITY)) {
         actorUpdateGroundSlopePitch(actor);
     }
     actorUpdateObjectRotationFromState(actor);
@@ -546,7 +547,8 @@ void actorUpdateTargetFacingChild(u8 *object) {
     parentState = ((RuntimeObjectPrefix *)parent)->state.actor;
     motionUpdateChildPlayback(object);
     weight = &follow->weight;
-    if ((actionGetAttributes(parent) & 0x400000) && !(parentState->behaviorFlags & ACTOR_INHIBIT_TARGET_FACING)) {
+    if ((actionGetAttributes(parent) & ACTION_ATTRIBUTE_ENABLE_TARGET_FACING) &&
+        !(parentState->behaviorFlags & ACTOR_INHIBIT_TARGET_FACING)) {
         *weight += 2.0F * gRuntimeFrameSeconds;
         if (*weight > 2.0F) {
             *weight = 2.0F;
@@ -636,7 +638,7 @@ void actorUpdateCameraFacingChild(u8 *object) {
     orientation = state->facingController.camera;
     motionUpdateChildPlayback(object);
     weight = &orientation->weight;
-    if ((actionGetAttributes(((RuntimeObjectPrefix *)object)->root.bytes) & 0x800000) &&
+    if ((actionGetAttributes(((RuntimeObjectPrefix *)object)->root.bytes) & ACTION_ATTRIBUTE_ENABLE_CAMERA_FACING) &&
         !(((RuntimeObjectPrefix *)object)->root.object->state.actor->behaviorFlags & ACTOR_INHIBIT_CAMERA_FACING)) {
         *weight += 2.0F * gRuntimeFrameSeconds;
         if (*weight > maxWeight) {
@@ -1240,7 +1242,7 @@ void actorUpdateMotionDisplacement(ActorScriptState *state, s32 status) {
     state->worldMotion[0] = (state->worldMotion[0] * movementScale);
     state->worldMotion[1] = (state->worldMotion[1] * movementScale);
     state->worldMotion[2] = (state->worldMotion[2] * movementScale);
-    if (status & 0x200) {
+    if (status & ACTION_ATTRIBUTE_HIGH_UPWARD_LIMIT) {
         upwardLimit = 30.0F;
         if (state->worldMotion[1] > 30.0F) {
             goto block_4;
@@ -1310,9 +1312,9 @@ void actorConstrainMovementToTerrain(u8 *object, f32 *displacement) {
     actorUpdateGroundReferencePose(object, reference, pose);
     status = actionGetAttributes(object);
     if (state->behaviorFlags & ACTOR_INHIBIT_TERRAIN_AND_GRAVITY) {
-        status |= 0x20000000;
+        status |= ACTION_ATTRIBUTE_BYPASS_TERRAIN_AND_GRAVITY;
     }
-    if (!(status & 0x20000000)) {
+    if (!(status & ACTION_ATTRIBUTE_BYPASS_TERRAIN_AND_GRAVITY)) {
         if (object == ((u8 *)gPikachuActor)) {
             collisionMode = 3;
         } else {
@@ -1346,7 +1348,7 @@ void actorConstrainMovementToTerrain(u8 *object, f32 *displacement) {
             clearance = 0.0F;
             floorDelta = 0.0F;
         }
-        if ((((status & 0x01000000) != 0) || (floorDelta > 0.0F)) && (clearance > 0.0F)) {
+        if ((((status & ACTION_ATTRIBUTE_WORLD_MOTION_AIRBORNE) != 0) || (floorDelta > 0.0F)) && (clearance > 0.0F)) {
             supported = 1;
         } else {
             supported = 0;
@@ -1358,7 +1360,7 @@ void actorConstrainMovementToTerrain(u8 *object, f32 *displacement) {
                 gravityDelta *= 5.0F;
             }
             state->gravityVelocity -= gravityDelta;
-            if ((status & 0x01000000) != 0) {
+            if ((status & ACTION_ATTRIBUTE_WORLD_MOTION_AIRBORNE) != 0) {
                 (displacement)[0] = (state->worldMotion[0] * gRuntimeFrameSeconds);
                 (displacement)[1] = ((state->gravityVelocity + state->worldMotion[1]) * gRuntimeFrameSeconds);
                 (displacement)[2] = (state->worldMotion[2] * gRuntimeFrameSeconds);

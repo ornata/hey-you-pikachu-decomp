@@ -10,6 +10,20 @@
 typedef enum ActionAttribute {
     ACTION_ATTRIBUTE_PLAYBACK_MODE_MASK = 7, ///< Low bits selecting the motion playback policy.
     ACTION_ATTRIBUTE_LOOP = 8,               ///< Permit another cycle unless exit, update or initialization rejects it.
+    ACTION_ATTRIBUTE_CONSTRAIN_FACING_TO_TERRAIN =
+        0x10, ///< Apply action-facing restrictions from movement collision flags.
+    ACTION_ATTRIBUTE_HIGH_UPWARD_LIMIT =
+        0x200, ///< Permit upward world motion up to 30 instead of 5 during motion displacement updates.
+    ACTION_ATTRIBUTE_ENABLE_TARGET_FACING =
+        0x400000, ///< Enable target-facing child blending unless actor behavior inhibits it.
+    ACTION_ATTRIBUTE_ENABLE_CAMERA_FACING =
+        0x800000, ///< Enable camera-facing child blending unless actor behavior inhibits it.
+    ACTION_ATTRIBUTE_WORLD_MOTION_AIRBORNE =
+        0x01000000, ///< Use retained world motion for airborne displacement when ground clearance permits.
+    ACTION_ATTRIBUTE_BYPASS_TERRAIN_AND_GRAVITY =
+        0x20000000, ///< Bypass terrain/gravity constraints and ground-slope updates.
+    ACTION_ATTRIBUTE_METER_POLICY_MASK =
+        0xC0000000, ///< Select the action-resource change applied during gameplay model updates.
     ACTION_ATTRIBUTE_SUPPRESS_TRANSITION_CUES =
         0x20000, ///< Suppress cues when a tracked action is loaded as an intermediary transition.
     ACTION_ATTRIBUTE_REGISTER_POSE_TRANSITION =
@@ -19,5 +33,15 @@ typedef enum ActionAttribute {
         0x02000000, ///< Try the requested record's continuation when its initial pose is incompatible.
     ACTION_ATTRIBUTE_PRIORITIZE_CONTINUATION = 0x04000000 ///< Prefer an existing continuation over a pending request.
 } ActionAttribute;
+
+/// Per-second action-resource policy selected by the action attribute word.
+/// The updater applies these signed rates before clamping the resource to 0..100;
+/// other explicit resource adjustments remain independent of this policy.
+typedef enum ActionMeterPolicy {
+    ACTION_METER_POLICY_RECOVER = 0,              ///< Recover one resource unit per second.
+    ACTION_METER_POLICY_DRAIN_FAST = 0x40000000,  ///< Spend ten resource units per second.
+    ACTION_METER_POLICY_HOLD = 0x80000000,        ///< Leave the resource unchanged by the automatic update.
+    ACTION_METER_POLICY_RECOVER_FAST = 0xC0000000 ///< Recover ten resource units per second.
+} ActionMeterPolicy;
 
 #endif

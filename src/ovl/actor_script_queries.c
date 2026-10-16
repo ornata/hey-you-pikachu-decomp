@@ -775,8 +775,8 @@ u16 actorGetScriptActionFlagsByHandle(s32 handle) {
     }
     if ((((RuntimeObjectPrefix *)object)->kind > 0) && (((RuntimeObjectPrefix *)object)->kind < 0x26)) {
         actionAttributes = actionGetAttributes(object);
-        if (actionAttributes & 0x200) {
-            scriptFlags = 0x10;
+        if (actionAttributes & ACTION_ATTRIBUTE_HIGH_UPWARD_LIMIT) {
+            scriptFlags = SCRIPT_ACTION_HIGH_UPWARD_MOTION_LIMIT;
         }
         if (actionAttributes & 0x100) {
             scriptFlags += 8;
@@ -788,8 +788,8 @@ u16 actorGetScriptActionFlagsByHandle(s32 handle) {
                 scriptFlags += 4;
             }
         }
-        if (actionAttributes & 0x20000000) {
-            scriptFlags += 0x20;
+        if (actionAttributes & ACTION_ATTRIBUTE_BYPASS_TERRAIN_AND_GRAVITY) {
+            scriptFlags += SCRIPT_ACTION_BYPASS_TERRAIN_AND_GRAVITY;
         }
         if (actionAttributes & 0x400) {
             scriptFlags += 1;

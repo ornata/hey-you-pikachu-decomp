@@ -97,7 +97,8 @@
         "file:include/keyed_pool_types.h",
         "file:include/actor_kind.h",
         "function:src/ovl/actor_script_queries.c:voiceReactiveSpinnerGetSpeedByHandle",
-        "file:include/voice_reactive_spinner_types.h"
+        "file:include/voice_reactive_spinner_types.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "One numeric handle operand lies above all protected locals/frame metadata. Integer/code-reference payloads or finite s32-representable floats are supported; floats truncate toward zero.",
@@ -130,7 +131,8 @@
         "file:include/object_flags.h",
         "function:src/ovl/actor_script_queries.c:sceneRegionIsHighlightedByHandle",
         "file:include/scene_types.h",
-        "file:include/scene_region.h"
+        "file:include/scene_region.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Operands lie above every protected local/frame record; captured actor, ActorScriptState, VM and owned stack remain live. Replacement leaves earlier stack values and frame metadata intact.",
@@ -231,7 +233,8 @@
         "file:include/keyed_pool_types.h",
         "file:include/object_flags.h",
         "file:include/item_types.h",
-        "file:include/actor_kind.h"
+        "file:include/actor_kind.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Arguments lie above all protected locals/frame metadata. Actor, captured VM and owned value storage remain live and do not overlap borrowed objects or helper-written fields. Numeric arguments are integer/code-reference values or finite floats whose truncation fits s32.",
@@ -327,7 +330,8 @@
         "function:src/ovl/script_vm.c:scriptValueGetFloat",
         "file:include/search_tree_traversal.h",
         "file:include/search_tree_lookup.h",
-        "file:include/managed_object_types.h"
+        "file:include/managed_object_types.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "All operands are numeric and lie above protected locals/frame metadata. Integer conversions truncate finite floats representable as s32; float conversions accept integer/code-reference or float values. Query positions, rotations, distance and cone are finite; distances nonnegative. Restrict angles/coordinates to magnitudes permitting ordinary arithmetic and terminating angle-normalization loops.",
@@ -375,7 +379,8 @@
         "function:src/ovl/script_vm.c:scriptValueGetFloat",
         "file:include/search_tree_traversal.h",
         "file:include/search_tree_lookup.h",
-        "file:include/managed_object_types.h"
+        "file:include/managed_object_types.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "All operands are numeric and lie above protected locals/frame metadata. Integer conversions truncate finite floats representable as s32; float conversions accept integer/code-reference or float values. Query positions, rotations, distance and cone are finite; distances nonnegative. Restrict angles/coordinates to magnitudes permitting ordinary arithmetic and terminating angle-normalization loops.",
@@ -456,7 +461,8 @@
         "file:include/matrix_types.h",
         "file:include/direction_animation_types.h",
         "file:include/action_script_types.h",
-        "file:include/camera_storage.h"
+        "file:include/camera_storage.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Actor, actor state, captured VM and value storage remain valid and disjoint from helper-written gameplay/global storage. Helpers retain the captured VM; no concurrent mutation, context replacement or lifecycle change is covered.",
@@ -942,7 +948,8 @@
         "file:include/actor_kind.h",
         "function:src/ovl/actor_script_queries.c:objectGetUniformScaleByHandle",
         "file:include/scene_types.h",
-        "file:include/scene_configuration.h"
+        "file:include/scene_configuration.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "One valid numeric handle operand lies above protected locals and frame metadata; integer/code-reference s32 or finite s32-representable float is converted by truncation.",
@@ -1017,7 +1024,8 @@
         "function:src/ovl/actor_script_queries.c:objectGetUniformScaleByHandle",
         "file:include/scene_types.h",
         "file:include/scene_configuration.h",
-        "function:src/ovl/actor_script_queries.c:objectSetUniformScaleByHandle"
+        "function:src/ovl/actor_script_queries.c:objectSetUniformScaleByHandle",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Two numeric operands lie aboveprotectedlocals/frame metadata; integer/code-reference payloads or finitef32 numericoperands supported. Integerconversion mustbe s32-representable. Actor/state,capturedVM,valueallocation,queriedobjects/native-stack disjoint wherewrites occur; no concurrentcontextreplacement. Targetobjectmaybe executingactor ifits transform fields do notaliasVM/value/state storage.",
@@ -1176,7 +1184,8 @@
         "file:include/player_types.h",
         "file:include/player_state.h",
         "function:src/ovl/actor_script_queries.c:playerSetActorInteractionMode",
-        "function:src/ovl/player_companion.c:playerSetCompanionControlMode"
+        "function:src/ovl/player_companion.c:playerSetCompanionControlMode",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Arguments lie above protected locals/frame metadata. Calling actor/state, captured VM and writable value allocation remain live; helper-written primary-player, Pikachu-state and camera storage are disjoint from VM/value/frame storage. No concurrent mutation/context replacement during this immediate call. Numeric inputs are integer/code-reference or finite f32 values; integer conversion truncates only s32-representable values.",
@@ -1587,7 +1596,8 @@
         "file:include/object_flags.h",
         "file:include/item_types.h",
         "file:include/actor_kind.h",
-        "function:src/ovl/actor_target_interaction.c:itemSetImpactCount"
+        "function:src/ovl/actor_target_interaction.c:itemSetImpactCount",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Consumed numeric operands lie above all protected locals/frame metadata; integer/code-reference values or finite f32 operands whose integer truncation fits s32. Caller actor/state, captured VM and value allocation remain live, with no concurrent replacement; helper-written player/Pikachu/item storage must not overlap VM/values/native frame storage.",
@@ -1657,7 +1667,8 @@
         "file:docs/LOCAL_SDK_FILES.json",
         "file:config/pikachu.yaml",
         "file:tools/materialize_ultralib.py",
-        "file:config/symbol_addrs.txt"
+        "file:config/symbol_addrs.txt",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "One numeric handle operand lies above protected locals and frame metadata. Integer and code-reference values are signed 32-bit values; finite floats must be representable as signed 32-bit integers and are truncated. The saved caller ActorScriptState, VM and value buffer remain live throughout release callbacks and the final held-kind query. All affected item state, owner actor state, player held-item global, hierarchy flags and bounds, material tracks and C stack are disjoint from VM contexts, values, protected frames and program storage. Concurrent ownership changes, destruction and context replacement are excluded.",
@@ -1776,7 +1787,8 @@
         "file:include/search_tree_types.h",
         "file:include/search_tree.h",
         "file:include/collision_registration.h",
-        "file:include/object_lifecycle.h"
+        "file:include/object_lifecycle.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "One numeric operand lies above protected locals and frame metadata. Integer and code-reference payloads are signed 32-bit; finite floating operands must truncate to a representable signed 32-bit value. Calling actor, saved ActorScriptState, captured VM and value allocation remain live and disjoint from all helper-written registry, hierarchy, item and owner storage. No concurrent mutation, traversal, destruction or context replacement occurs.",
@@ -1830,7 +1842,8 @@
         "file:config/pikachu.yaml",
         "file:tools/materialize_ultralib.py",
         "file:config/symbol_addrs.txt",
-        "function:src/ovl/item_registry.c:itemSetMaterialFrame"
+        "function:src/ovl/item_registry.c:itemSetMaterialFrame",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Numeric operands lie above protected locals and frame metadata. Integer/code-reference values are signed 32-bit; floats converted to integers must be finite and signed-32-bit-representable, with fractions truncated. The caller actor, actor state, saved VM and owned value storage remain live throughout the call. Affected item state, object hierarchy and native C-stack scratch must not alias VM contexts, values, protected frames or program storage. Concurrent item mutation, destruction and context replacement are excluded.",
@@ -1882,7 +1895,8 @@
         "function:src/game/animation_tracks.c:animationIntegerTrackEvaluate",
         "file:include/integer_animation_types.h",
         "file:include/integer_animation.h",
-        "file:include/texture_animation_programs.h"
+        "file:include/texture_animation_programs.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Numeric operands lie above protected locals and frame metadata. Integer/code-reference values are signed 32-bit; floats converted to integers must be finite and signed-32-bit-representable, with fractions truncated. The caller actor, actor state, saved VM and owned value storage remain live throughout the call. Affected item state, object hierarchy and native C-stack scratch must not alias VM contexts, values, protected frames or program storage. Concurrent item mutation, destruction and context replacement are excluded.",
@@ -2017,7 +2031,8 @@
         "file:config/symbol_addrs.txt",
         "file:tools/materialize_ultralib.py",
         "file:include/PR/os_libc.h",
-        "function:src/ovl/actor_script_queries.c:areaGetPathPointCount"
+        "function:src/ovl/actor_script_queries.c:areaGetPathPointCount",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "The calling actor, live actor state, retained VM, owned value storage and helper C stack remain valid and nonoverlapping with scene configurations, path/terrain resources, object pools and queried objects. Every consumed argument lies above protected locals and frame metadata; the lowest consumed slot can receive the result. No concurrent writer, context replacement, area teardown or destruction interleaves the call.",
@@ -2057,7 +2072,8 @@
         "file:config/symbol_addrs.txt",
         "file:tools/materialize_ultralib.py",
         "file:include/PR/os_libc.h",
-        "function:src/ovl/actor_script_queries.c:areaGetPathPointCoordinate"
+        "function:src/ovl/actor_script_queries.c:areaGetPathPointCoordinate",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "The calling actor, live actor state, retained VM, owned value storage and helper C stack remain valid and nonoverlapping with scene configurations, path/terrain resources, object pools and queried objects. Every consumed argument lies above protected locals and frame metadata; the lowest consumed slot can receive the result. No concurrent writer, context replacement, area teardown or destruction interleaves the call.",
@@ -2105,7 +2121,8 @@
         "file:include/keyed_pool.h",
         "file:include/keyed_pool_types.h",
         "file:include/object_lookup.h",
-        "file:linker/query_state_aliases.ld"
+        "file:linker/query_state_aliases.ld",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "The calling actor, live actor state, retained VM, owned value storage and helper C stack remain valid and nonoverlapping with scene configurations, path/terrain resources, object pools and queried objects. Every consumed argument lies above protected locals and frame metadata; the lowest consumed slot can receive the result. No concurrent writer, context replacement, area teardown or destruction interleaves the call.",
@@ -2170,7 +2187,8 @@
         "file:include/area_maze.h",
         "file:include/terrain_height.h",
         "file:include/vector_metrics.h",
-        "file:include/PR/gu.h"
+        "file:include/PR/gu.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "The calling actor, live actor state, retained VM, owned value storage and helper C stack remain valid and nonoverlapping with scene configurations, path/terrain resources, object pools and queried objects. Every consumed argument lies above protected locals and frame metadata; the lowest consumed slot can receive the result. No concurrent writer, context replacement, area teardown or destruction interleaves the call.",
@@ -2228,7 +2246,8 @@
         "function:src/ovl/script_vm.c:scriptValueSetInteger",
         "function:src/ovl/actor_script_queries.c:actorFindNearestHandleFromPosition",
         "function:src/game/actor_search.c:actorFindNearestInRange",
-        "file:include/object_target_search.h"
+        "file:include/object_target_search.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "All consumed operands lie above protected locals and frame metadata. Integer conversions accept signed-32-bit integer/code-reference values or finite floats representable as signed 32-bit, truncating fractions. Position and distance operands convert to finite f32; distance is nonnegative and all candidate-distance intermediates remain finite. The saved caller VM, actor/state, value buffer and native C-stack temporaries remain live throughout the query.",
@@ -2283,7 +2302,8 @@
         "function:src/ovl/script_vm.c:scriptVmPushInteger",
         "function:src/ovl/script_vm.c:scriptVmPushValue",
         "function:src/ovl/script_vm.c:scriptValueSetInteger",
-        "function:src/ovl/actor_script_queries.c:itemFindHandleNearPosition"
+        "function:src/ovl/actor_script_queries.c:itemFindHandleNearPosition",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "All consumed operands lie above protected locals and frame metadata. Integer conversions accept signed-32-bit integer/code-reference values or finite floats representable as signed 32-bit, truncating fractions. Position and distance operands convert to finite f32; distance is nonnegative and all candidate-distance intermediates remain finite. The saved caller VM, actor/state, value buffer and native C-stack temporaries remain live throughout the query.",
@@ -2363,7 +2383,8 @@
         "file:include/object_flags.h",
         "file:include/item_types.h",
         "function:src/ovl/actor_script_queries.c:objectResolveAvailableHandle",
-        "function:src/ovl/actor_target_interaction.c:itemGetImpactCount"
+        "function:src/ovl/actor_target_interaction.c:itemGetImpactCount",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Consumed numeric operands lie above protected locals and frame metadata. Integer and code-reference payloads are s32; finite floating operands must truncate to representable s32. Caller actor/state, captured VM and writable values remain live, with no concurrent context replacement. Read catalog/object/pool storage is stable and does not overlap writable VM/value/frame storage.",
@@ -2575,7 +2596,8 @@
         "function:src/game/trigonometry.c:mathCosDegrees",
         "file:src/game/trigonometry.c",
         "file:include/math_angles.h",
-        "function:src/ovl/actor_script_queries.c:actorGetGroundOffsetCoordinate"
+        "function:src/ovl/actor_script_queries.c:actorGetGroundOffsetCoordinate",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "The calling actor, live actor state, retained VM, owned value storage and helper C stack remain valid and nonoverlapping with current-area/terrain/trigonometric resources. All consumed operands lie above every protected local and frame-metadata slot; the lowest consumed slot can receive the result. No concurrent mutation, context replacement, area transition or teardown interleaves this immediate call.",
@@ -2641,7 +2663,8 @@
         "file:src/game/trigonometry.c",
         "file:include/math_angles.h",
         "function:src/ovl/area_terrain_maze.c:terrainGetSurfaceAttributes",
-        "function:src/ovl/actor_script_queries.c:actorProbeGroundMaterialAhead"
+        "function:src/ovl/actor_script_queries.c:actorProbeGroundMaterialAhead",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "The calling actor, live actor state, retained VM, owned value storage and helper C stack remain valid and nonoverlapping with current-area/terrain/trigonometric resources. All consumed operands lie above every protected local and frame-metadata slot; the lowest consumed slot can receive the result. No concurrent mutation, context replacement, area transition or teardown interleaves this immediate call.",
@@ -2710,7 +2733,8 @@
         "file:src/game/trigonometry.c",
         "file:include/math_angles.h",
         "function:src/ovl/area_terrain_maze.c:terrainGetSurfaceAttributes",
-        "function:src/ovl/actor_script_queries.c:actorProbeGroundMaterialAhead"
+        "function:src/ovl/actor_script_queries.c:actorProbeGroundMaterialAhead",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "The calling actor, live actor state, retained VM, owned value storage and helper C stack remain valid and nonoverlapping with current-area/terrain/trigonometric resources. All consumed operands lie above every protected local and frame-metadata slot; the lowest consumed slot can receive the result. No concurrent mutation, context replacement, area transition or teardown interleaves this immediate call.",
@@ -2789,7 +2813,8 @@
         "file:config/symbol_addrs.txt",
         "function:src/ovl/actor_script_queries.c:actorReleaseHeldItem",
         "function:src/ovl/script_vm.c:scriptVmPopFloat",
-        "function:src/ovl/script_vm.c:scriptValueGetFloat"
+        "function:src/ovl/script_vm.c:scriptValueGetFloat",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Numeric operands lie above protected locals and frame metadata. Integer operands use signed 32-bit conversion; finite float-to-integer operands must be representable and are truncated. The saved caller ActorScriptState, VM and value buffer remain live. All changed item state, owner actor state, player held-item global, hierarchy flags and bounds, material tracks, registry entries and C stack are disjoint from VM contexts, values, protected frames and program storage. Concurrent ownership changes, destruction and context replacement are excluded.",
@@ -2851,7 +2876,8 @@
         "function:src/ovl/script_vm.c:scriptVmPushValue",
         "function:src/ovl/script_vm.c:scriptValueSetInteger",
         "function:src/ovl/actor_script_queries.c:playerGetBlockedInput",
-        "file:include/runtime_mode.h"
+        "file:include/runtime_mode.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Caller actor, actor state, captured VM and writable value storage remain live, correctly aligned and disjoint from all observed global records. There is one free operand slot above protected locals and frame metadata; no concurrent mutation or VM replacement occurs.",
@@ -2879,7 +2905,8 @@
         "function:src/ovl/script_vm.c:scriptVmPushValue",
         "function:src/ovl/script_vm.c:scriptValueSetInteger",
         "function:src/ovl/actor_script_queries.c:playerQueryInteractionMode",
-        "function:src/ovl/player_companion.c:playerGetCompanionControlMode"
+        "function:src/ovl/player_companion.c:playerGetCompanionControlMode",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "Caller actor, actor state, captured VM and writable value storage remain live, correctly aligned and disjoint from all observed global records. There is one free operand slot above protected locals and frame metadata; no concurrent mutation or VM replacement occurs.",
@@ -3054,7 +3081,8 @@
         "file:include/object_lookup.h",
         "function:src/ovl/actor_script_queries.c:caveGetFirstAnchorCoordinate",
         "file:include/scene_types.h",
-        "file:include/cave.h"
+        "file:include/cave.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "The caller has initialized live RuntimeObjectPrefix and ActorScriptState storage with a live saved VM and initialized value buffer. Every declared operand and result slot lies above protected locals and frame metadata. Changed actor fields, sampled data, object/pool storage and C stack are disjoint from VM contexts, values, protected frames and program storage. Concurrent destruction, source mutation and context replacement are excluded. Only declared pops/pushes alter VM depth and value slots.",
@@ -3099,7 +3127,8 @@
         "file:include/object_lookup.h",
         "function:src/ovl/actor_script_queries.c:caveGetSecondAnchorCoordinate",
         "file:include/scene_types.h",
-        "file:include/cave.h"
+        "file:include/cave.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "The caller has initialized live RuntimeObjectPrefix and ActorScriptState storage with a live saved VM and initialized value buffer. Every declared operand and result slot lies above protected locals and frame metadata. Changed actor fields, sampled data, object/pool storage and C stack are disjoint from VM contexts, values, protected frames and program storage. Concurrent destruction, source mutation and context replacement are excluded. Only declared pops/pushes alter VM depth and value slots.",
@@ -3144,7 +3173,8 @@
         "file:include/object_lookup.h",
         "function:src/ovl/actor_script_queries.c:caveGetLinkedLandmarkHandle",
         "file:include/scene_types.h",
-        "file:include/cave.h"
+        "file:include/cave.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "The caller has initialized live RuntimeObjectPrefix and ActorScriptState storage with a live saved VM and initialized value buffer. Every declared operand and result slot lies above protected locals and frame metadata. Changed actor fields, sampled data, object/pool storage and C stack are disjoint from VM contexts, values, protected frames and program storage. Concurrent destruction, source mutation and context replacement are excluded. Only declared pops/pushes alter VM depth and value slots.",
@@ -3296,7 +3326,8 @@
         "file:include/action_query.h",
         "file:include/motion_playback_types.h",
         "file:include/action_attributes.h",
-        "file:include/motion_transitions.h"
+        "file:include/motion_transitions.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "The caller has initialized live RuntimeObjectPrefix and ActorScriptState storage with a live saved VM and initialized value buffer. Every declared operand and result slot lies above protected locals and frame metadata. Changed actor fields, sampled data, object/pool storage and C stack are disjoint from VM contexts, values, protected frames and program storage. Concurrent destruction, source mutation and context replacement are excluded. Only declared pops/pushes alter VM depth and value slots.",
@@ -3354,7 +3385,8 @@
         "file:include/player_control.h",
         "file:include/player_types.h",
         "file:include/player_state.h",
-        "file:include/action_attributes.h"
+        "file:include/action_attributes.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "The caller RuntimeObjectPrefix, ActorScriptState, captured VM, program and owned value buffer remain live and stable. All consumed operands lie above protected locals and frame metadata, and the post-pop depth has room for one result. Integer conversion accepts signed integer/code-reference payloads or finite f32 values whose truncated result fits s32; float conversion accepts f32 or signed integer/code-reference operands. Writable helper state, native stack and result storage do not overlap protected VM/context/program storage. No unrelated concurrent actor, registry, resource or context mutation, destruction or reentry is covered; explicitly reviewed original SDK worker effects retain their separate prerequisites. Original SDK memory primitives and matching SDK inputs are required; VM value copies do not retain native-stack pointers. These are immediate source-bound contracts, without a gameplay-reachability or later-lifetime claim.",
@@ -3584,7 +3616,8 @@
         "file:include/item_state.h",
         "file:include/item_types.h",
         "file:include/object_flags.h",
-        "file:include/action_attributes.h"
+        "file:include/action_attributes.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "The caller RuntimeObjectPrefix, ActorScriptState, captured VM, program and owned value buffer remain live and stable. All consumed operands lie above protected locals and frame metadata, and the post-pop depth has room for one result. Integer conversion accepts signed integer/code-reference payloads or finite f32 values whose truncated result fits s32; float conversion accepts f32 or signed integer/code-reference operands. Writable helper state, native stack and result storage do not overlap protected VM/context/program storage. No unrelated concurrent actor, registry, resource or context mutation, destruction or reentry is covered; explicitly reviewed original SDK worker effects retain their separate prerequisites. Original SDK memory primitives and matching SDK inputs are required; VM value copies do not retain native-stack pointers. These are immediate source-bound contracts, without a gameplay-reachability or later-lifetime claim.",
@@ -3707,7 +3740,8 @@
         "file:include/toolbox_types.h",
         "file:include/toolbox_items.h",
         "function:src/game/toolbox.c:toolboxStoreBonusObject",
-        "file:include/action_attributes.h"
+        "file:include/action_attributes.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "The caller RuntimeObjectPrefix, ActorScriptState, captured VM, program and owned value buffer remain live and stable. All consumed operands lie above protected locals and frame metadata, and the post-pop depth has room for one result. Integer conversion accepts signed integer/code-reference payloads or finite f32 values whose truncated result fits s32; float conversion accepts f32 or signed integer/code-reference operands. Writable helper state, native stack and result storage do not overlap protected VM/context/program storage. No unrelated concurrent actor, registry, resource or context mutation, destruction or reentry is covered; explicitly reviewed original SDK worker effects retain their separate prerequisites. Original SDK memory primitives and matching SDK inputs are required; VM value copies do not retain native-stack pointers. These are immediate source-bound contracts, without a gameplay-reachability or later-lifetime claim.",
@@ -3828,7 +3862,8 @@
         "file:include/toolbox_types.h",
         "file:include/toolbox_items.h",
         "function:src/game/toolbox.c:toolboxStorePurchasedObject",
-        "file:include/action_attributes.h"
+        "file:include/action_attributes.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "The caller RuntimeObjectPrefix, ActorScriptState, captured VM, program and owned value buffer remain live and stable. All consumed operands lie above protected locals and frame metadata, and the post-pop depth has room for one result. Integer conversion accepts signed integer/code-reference payloads or finite f32 values whose truncated result fits s32; float conversion accepts f32 or signed integer/code-reference operands. Writable helper state, native stack and result storage do not overlap protected VM/context/program storage. No unrelated concurrent actor, registry, resource or context mutation, destruction or reentry is covered; explicitly reviewed original SDK worker effects retain their separate prerequisites. Original SDK memory primitives and matching SDK inputs are required; VM value copies do not retain native-stack pointers. These are immediate source-bound contracts, without a gameplay-reachability or later-lifetime claim.",
@@ -3996,7 +4031,8 @@
         "file:include/terrain_height.h",
         "file:include/PR/mbi.h",
         "file:include/PR/ultratypes.h",
-        "file:include/action_attributes.h"
+        "file:include/action_attributes.h",
+        "file:include/script_action_flags.h"
       ],
       "preconditions": [
         "The caller RuntimeObjectPrefix, ActorScriptState, captured VM, program and owned value buffer remain live and stable. All consumed operands lie above protected locals and frame metadata, and the post-pop depth has room for one result. Integer conversion accepts signed integer/code-reference payloads or finite f32 values whose truncated result fits s32; float conversion accepts f32 or signed integer/code-reference operands. Writable helper state, native stack and result storage do not overlap protected VM/context/program storage. No unrelated concurrent actor, registry, resource or context mutation, destruction or reentry is covered; explicitly reviewed original SDK worker effects retain their separate prerequisites. Original SDK memory primitives and matching SDK inputs are required; VM value copies do not retain native-stack pointers. These are immediate source-bound contracts, without a gameplay-reachability or later-lifetime claim.",

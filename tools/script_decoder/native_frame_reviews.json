@@ -197,7 +197,7 @@
     "file:include/action_attributes.h": {
       "kind": "file",
       "file": "include/action_attributes.h",
-      "sha256": "70380cfc2aba250dd93ed090cf353770554c5c99b54cf5f6e4ad0e292b19eaa7"
+      "sha256": "32e9ac949bf8c47b99381b7517c8e337dd18f609bf38d9d38a9980d3a6a8ffe1"
     },
     "file:include/action_continuation.h": {
       "kind": "file",
@@ -857,7 +857,7 @@
     "file:include/object_script_query.h": {
       "kind": "file",
       "file": "include/object_script_query.h",
-      "sha256": "5041ea33e8fef3cc0ba7167db83f2afc942045fb792cc390359f35546560d8a6"
+      "sha256": "a3314b674ac763275f65012d666327909f1edcdfcbb0ed6cb270c365fb228ad3"
     },
     "file:include/object_target_search.h": {
       "kind": "file",
@@ -1028,6 +1028,11 @@
       "kind": "file",
       "file": "include/scheduler_types.h",
       "sha256": "b282430c119d0964e176853f713cfd5945f57b95d3e8d5c6abd540220fff4c3c"
+    },
+    "file:include/script_action_flags.h": {
+      "kind": "file",
+      "file": "include/script_action_flags.h",
+      "sha256": "8d1672c8ca75a8bf46cc087adcff617389a5bf6806e6bd75b001951715ab5996"
     },
     "file:include/script_message.h": {
       "kind": "file",
@@ -1307,12 +1312,12 @@
     "file:src/game/actor_model_motion.c": {
       "kind": "file",
       "file": "src/game/actor_model_motion.c",
-      "sha256": "c9745e3b0cb9ac3a2c9c6d822508a5048aea0f709855d3f05c83aceb1fbaabb4"
+      "sha256": "9e908de7bfa0f7b505b316d4f172cfa48601afd303e9a97805c083473fc06631"
     },
     "file:src/game/actor_model_parts.c": {
       "kind": "file",
       "file": "src/game/actor_model_parts.c",
-      "sha256": "3d4b997f428ebb819d28500d2deab5534d27fb330338174b42cb53cc0e92140e"
+      "sha256": "66beee4351956b133234e01ba3595dc4e68a09449d7316e15a4cdd9a695d9f60"
     },
     "file:src/game/actor_search.c": {
       "kind": "file",
@@ -1562,7 +1567,7 @@
     "file:src/ovl/actor_script_queries.c": {
       "kind": "file",
       "file": "src/ovl/actor_script_queries.c",
-      "sha256": "2bbee3dd2bfeb12d981084fb60abd03243fda8c5620777a56255cd2a370a796d"
+      "sha256": "cedc1425affb71a923339445d5cc53fa1920b76ebe1d221993e0e635d8754814"
     },
     "file:src/ovl/actor_target_interaction.c": {
       "kind": "file",
@@ -1587,7 +1592,7 @@
     "file:src/ovl/player_companion.c": {
       "kind": "file",
       "file": "src/ovl/player_companion.c",
-      "sha256": "2e221afc988a8301a3873e375b18705a1aaea7f27629f4a7dc344b12dfbac1a1"
+      "sha256": "97c526fa1249e70a88d6c6fd9d79a589f4ae4dc437e49c073b0f5df8aea2f187"
     },
     "file:src/ovl/script_demo_item_commands.c": {
       "kind": "file",
@@ -3150,7 +3155,7 @@
       "kind": "function",
       "file": "src/ovl/actor_script_queries.c",
       "function": "actorGetScriptActionFlagsByHandle",
-      "sha256": "ccff6c5c19e69b06d59ceb836877ec13684790fc1ba1361d46d1454f412979fd"
+      "sha256": "1ad28467256e8130dede917a99f7c6157cd9fcc07ad72ef372dd45b3e4b3dd1a"
     },
     "function:src/ovl/actor_script_queries.c:actorGetTargetCoordinate": {
       "kind": "function",
@@ -4294,23 +4299,23 @@
   "callback_files": [
     {
       "file": "native_frame_reviews/src__ovl__actor_script_action_commands.json",
-      "sha256": "9a469f480ffa59c9e19ba113ad261bb4671f7c6bc97335c16a2f8c68a104e160"
+      "sha256": "8ec1f3d93b09f32932c29a38e0aff5e104e4211d03e00b2be165c48316c7f988"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_collection_profile.json",
-      "sha256": "93489062d72d5da5156ddfebf21ef61433aa502743a70624c7f623580180106a"
+      "sha256": "265e382bbac35a4797b01d5aa4943c3ed9b4ba4f69d51f5068c70562c2f91dfb"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_messages_items.json",
-      "sha256": "b928c09c681a19313a00173fe4466fa5b8b1d18ba836c46192b0e8f80352208d"
+      "sha256": "17a08df33f9c5e77f8302cd2fdb9a6d42878c89a4966eab7b27f5186e96b388d"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_player_world.json",
-      "sha256": "b071cc6019a69569bf3c2813fb3f4cf50ce14b33741270f962220a3e8e8d2f2e"
+      "sha256": "ad7923b09c8374aa0a94513dde438395d0874e03bd154a68addbf5b15b17a70a"
     },
     {
       "file": "native_frame_reviews/src__ovl__script_demo_item_commands.json",
-      "sha256": "ac3f80df85ea3dcc940ca5690a052f04fe2d4c26b4e51695564ecc676a71c10d"
+      "sha256": "f0fde476c4472c933c5e8b381fd75ac126f12016a295db7888db91586c97d594"
     }
   ]
 }
