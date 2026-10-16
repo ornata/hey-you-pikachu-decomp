@@ -2052,7 +2052,7 @@
     {
       "function": "actorScriptGetAreaPathPointCoordinate",
       "file": "src/ovl/actor_script_player_world.c",
-      "sha256": "4296608fa9c5f5c3ef62669831e62f9e473948f8cac52d4e4db361e26af75f67",
+      "sha256": "9687ada500ecb868f4e5b76ae442c694d35a63ef355b86ad730c05a09b102233",
       "effect": "replace_arguments_with_scalar",
       "arguments": 3,
       "stack_delta": -2,

@@ -43,6 +43,7 @@ from .model_parts import pikachu_model_catalog
 from .callee_contexts import context_snapshot, literal_native_argument_contexts, forwarded_native_argument_contexts, contextual_timed_program_ids
 from .native_arguments import annotate_native_input_roles
 from .caller_sources import annotate_caller_source_provenance
+from .path_item_helpers import path_item_helper_roles
 
 
 def companion_sites(image):
@@ -229,6 +230,8 @@ def catalog(image, max_instructions=100000):
                                                                if not decoded['diagnostics'] else []),
                              forwarded_native_argument_contexts=(forwarded_native_argument_contexts(decoded['instructions'], configuration=candidate['address'], snapshot=literal_context_snapshot)
                                                                  if not decoded['diagnostics'] else []),
+                             path_item_helper_roles=(path_item_helper_roles(decoded['instructions'], snapshot=literal_context_snapshot)
+                                                     if not decoded['diagnostics'] else []),
                              messenger_contact_requests=messenger_contact_requests(decoded['instructions'], contact_policies),
                              costed_action_requests=costed_action_requests(decoded['instructions'], cost_policies['records'],
                                  preserved_natives=local_preservation['preserved_native_functions']),
@@ -331,7 +334,7 @@ def main(argv=None):
         report['elf_sha256'] = hashlib.sha256(args.elf.read_bytes()).hexdigest()
         report['decoder_sha256'] = hashlib.sha256(Path(__file__).with_name('formats.py').read_bytes()).hexdigest()
         report['analysis_sha256'] = {name: hashlib.sha256(Path(__file__).with_name(name + '.py').read_bytes()).hexdigest()
-                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames', 'control_schemes', 'windows', 'caller_frames', 'progress_fields', 'items', 'effects', 'transitions', 'responses', 'local_flow', 'paired_flow', 'contacts', 'motion_archives', 'model_parts', 'callee_contexts', 'native_arguments', 'caller_sources')}
+                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames', 'control_schemes', 'windows', 'caller_frames', 'progress_fields', 'items', 'effects', 'transitions', 'responses', 'local_flow', 'paired_flow', 'contacts', 'motion_archives', 'model_parts', 'callee_contexts', 'native_arguments', 'caller_sources', 'path_item_helpers')}
         report['native_frame_review_sha256'] = review_manifest_fingerprint()
         files = {'catalog.json': report, **{name + '.json': row for name, row in decodes.items()}}
         # Validate every output before writing any content, including existing symlinks.

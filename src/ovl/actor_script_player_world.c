@@ -322,16 +322,16 @@ s32 actorScriptGetAreaPathPointCount(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011E718 (0x8011E718).
 s32 actorScriptGetAreaPathPointCoordinate(u8 *actor) {
-    s32 sp_pop;
+    s32 pathIndex;
     s32 vmAddress;
-    s32 sp24;
-    s32 sp20;
+    s32 pointIndex;
+    s32 axis;
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    sp20 = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    sp24 = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    sp_pop = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    scriptVmPushFloat((ScriptVm *)(vmAddress), areaGetPathPointCoordinate(sp_pop, sp24, sp20));
+    axis = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    pointIndex = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    pathIndex = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    scriptVmPushFloat((ScriptVm *)(vmAddress), areaGetPathPointCoordinate(pathIndex, pointIndex, axis));
     return 0;
 }
 

@@ -11,6 +11,7 @@ import math
 from .callee_contexts import context_snapshot
 from .formats import integer_operand
 from .stack import incoming_edges, recover_arguments
+from .path_item_helpers import path_item_helper_roles
 
 # Exact expanded reviews, approved independently for their boxed integer results.
 PRODUCER_BINDINGS = {'actorScriptFindObjectInFacingCone': {'arguments': 4,
@@ -32,6 +33,11 @@ PRODUCER_BINDINGS = {'actorScriptFindObjectInFacingCone': {'arguments': 4,
                                      'require a separately established literal bound before '
                                      'publishing a numerical interval. No uniformity, seed, '
                                      'repeatability or actual result inference.'}}
+
+PRODUCER_BINDINGS['actorScriptPassThroughInteger'] = dict(
+    arguments=1, review_sha256='7ce5019c6dafb96114d27892f09383b0f4af354c265b840c4a24c41823eb16d8',
+    result_role='integer_converted_numeric_value',
+    scope='Numeric operand tags, finite signed32 conversion and defined producer arithmetic remain prerequisites; no actual converted value, division result, range or point validity is inferred.')
 
 
 def _digest(value):
@@ -60,6 +66,7 @@ def annotate_caller_source_provenance(instructions, contexts, *, snapshot=None, 
     indices = {row['offset']:i for i,row in enumerate(instructions)}
     incoming = incoming_edges(instructions)
     frames = {off:row for off,row in by.items() if row['name']=='SCRIPT_OP_ENTER_FRAME'}
+    helper_roles = {row['entry_offset']:row for row in path_item_helper_roles(instructions,snapshot=snapshot)}
 
     def coords(row):
         if len(row.get('operands', [])) != 2:
@@ -69,12 +76,18 @@ def annotate_caller_source_provenance(instructions, contexts, *, snapshot=None, 
             raise ValueError('source reference is outside the admitted coordinate domain')
         return frame, slot
 
-    def previous(offset):
+    def previous(offset, *, producer=False):
         predecessors = incoming.get(offset, set())
         if len(predecessors) != 1:
             raise ValueError('source path has competing or absent predecessors')
         row = by[next(iter(predecessors))]
-        if row['offset'] + row['size'] != offset or row.get('successors') != [dict(kind='fallthrough',offset=offset)]:
+        if row['name']=='SCRIPT_OP_CALL':
+            if not (producer and row['offset']+row['size']==offset and
+                    len(row.get('operands',[]))==1 and
+                    sorted((e['kind'],e['offset'])for e in row.get('successors',[]))==
+                    sorted([('call',integer_operand(row['operands'][0])),('return_continuation',offset)])):
+                raise ValueError('script producer lacks exact CALL/return-continuation edges')
+        elif row['offset'] + row['size'] != offset or row.get('successors') != [dict(kind='fallthrough',offset=offset)]:
             # A native may resume immediately before the STORE.
             if not (row['name']=='SCRIPT_OP_CALL_NATIVE' and row['offset']+row['size']==offset and
                     row.get('successors')==[dict(kind='resume_or_fallthrough',offset=offset)]):
@@ -116,7 +129,7 @@ def annotate_caller_source_provenance(instructions, contexts, *, snapshot=None, 
             else:raise ValueError('source path crosses an unreviewed effect or binding')
             current=row['offset']
         else:raise ValueError('source path work budget exhausted')
-        producer=previous(store['offset'])
+        producer=previous(store['offset'],producer=True)
         binding=None
         if producer['name']=='SCRIPT_OP_PUSH_LITERAL':
             if len(producer['operands'])!=1 or type(producer['operands'][0].get('tag')) is not int or producer['operands'][0]['tag'] not in (0,1,2):
@@ -142,7 +155,17 @@ def annotate_caller_source_provenance(instructions, contexts, *, snapshot=None, 
                         input_expression_epoch=dict(instruction_offset=producer['offset'],phase='before_producer_native'),
                         input_scope='Syntactic producer inputs in push order; variable/script-return expressions are not re-evaluated or assigned runtime values.',
                         result_scope=binding.get('scope','Original reviewed native result under all prerequisites.'))
-        else:raise ValueError('producer is neither a literal nor an admitted native result')
+        elif producer['name']=='SCRIPT_OP_CALL':
+            target=integer_operand(producer['operands'][0])
+            helper=helper_roles.get(target)
+            if helper is None:
+                raise ValueError('script producer has no freshly recognized role contract')
+            arguments=recover_arguments(instructions,indices[producer['offset']],1,incoming=incoming,allow_float=True,allow_symbolic=True,frame_entries=frames)
+            result=dict(kind='reviewed_script_helper_boxed_result',target_offset=target,output_tag=0,
+                        result_role=helper['result']['role'],helper_role_contract=helper,
+                        arguments=arguments,input_expression_epoch=dict(instruction_offset=producer['offset'],phase='before_producer_CALL'),
+                        input_scope='Caller expressions captured before helper frame rebinding; no point-index value, conversion validity or runtime coordinate is inferred.')
+        else:raise ValueError('producer is neither a literal nor an admitted native/script result')
         return dict(call_offset=call['offset'],load_offset=load['offset'],source_reference=capture['source_reference'],
                     caller_origin=origin,store_offset=store['offset'],producer_offset=producer['offset'],
                     producer_result=result,producer_instruction=dict(name=producer['name'],operands=producer['operands'],native=producer.get('native')),store_to_load_instruction_offsets=list(reversed(path))+[load['offset']],

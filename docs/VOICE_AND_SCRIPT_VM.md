@@ -2743,7 +2743,7 @@ unknown until supplied by a valid runtime state. Indexed loads, arithmetic and
 native-produced values are outside this analysis. Storage, frame binding and
 preservation conditions remain explicit obligations.
 
-Source-bound argument roles label original push order for 17 reviewed natives.
+Source-bound argument roles label original push order for 18 reviewed natives.
 Integer/float labels identify their numeric pop operations, without asserting a
 converted result or a successful effect. In particular, destination allowance is
 not speed, and `PostMessage` synthesizes argument1 rather than consuming it.
@@ -2788,12 +2788,12 @@ semantic variant name.
 Forwarded contexts can include `caller_source_provenance` for a source cell whose
 last write is proved along an exclusive adjacent path before the caller's
 `LOAD_VARIABLE`. Each row identifies the original producer, store, load and call,
-retains raw boxed literal operands or an exactly reviewed native result role, and
+retains raw boxed literals or exactly reviewed native/helper result roles, and
 preserves every existing capture and argument expression.
 
-The current catalog establishes nine such rows: two literal-one assignments,
-three facing-cone object-search results, three random integer results and one
-created-item handle. Search results may be zero. Creation requires successful
+The current catalog establishes twelve such rows: two literal-one assignments,
+three facing-cone object-search results, three random integer results, one
+created-item handle, two reviewed helper returns and one opaque integer conversion. Search results may be zero. Creation requires successful
 allocation and all original initializer/resource prerequisites; it does not have
 a recovered failure-safe zero result. Random results remain unknown, with range
 claims requiring a separately proved positive converted bound.
@@ -2802,5 +2802,28 @@ Producer input expressions belong to the epoch immediately before that producer
 native, not to the later capture or callee. Physical source/operand separation,
 valid frame bindings and complete allocated boxed cells remain prerequisites.
 The bounded proof stops at competing control flow, other stores, frame changes
-or unreviewed effects. Indexed values, script returns and conversion arithmetic
-remain unresolved here; no caller expression is globally substituted.
+or unreviewed effects. Other indexed values and script-return functions remain
+unresolved here. A conversion result role does not evaluate its preceding
+arithmetic or establish a valid point index; no caller expression is globally
+substituted.
+
+### Path-point item-query helpers
+
+`path_item_helper_roles` recognizes two retained helpers with the same complete
+interface. Each accepts a point index for path 0 in the current area, reads its
+X/Y/Z coordinates, and returns the nearest qualifying world-item handle within
+100 approximate distance units, or zero. The distance bound is inclusive and
+selection is unweighted. Item-kind selectors 165 mean the respective wildcard
+endpoints, giving kinds 1–164; they do not request catalog item 165.
+
+The helper frame has four cells including its incoming argument and three
+coordinate locals. Its boxed integer result is preserved by the VM's return
+operation. Two caller-source provenance rows link that returned box to a later
+tracking request, without asserting which item it identifies or that it remains
+available.
+
+The helper does not validate the point index or reject the coordinate reader's
+-65536 error result. Valid current-area/path/index storage remains a prerequisite.
+The search uses shared query/tree state, so recognition establishes neither
+purity nor safe concurrent calls. Native, frame, scratch-storage and borrowed
+handle lifetime conditions remain explicit in each source-bound contract.

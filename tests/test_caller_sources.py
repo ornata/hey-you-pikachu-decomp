@@ -44,7 +44,7 @@ class CallerSourceTests(unittest.TestCase):
         self.assertIn('scratch',proof['preconditions'][2])
 
     def test_exact_reviewed_native_role_and_arity_without_outcome_claim(self):
-        for native,arity in [('actorScriptFindObjectInFacingCone',4),('actorScriptCreateItem',6),('actorScriptRandomBelow',1)]:
+        for native,arity in [('actorScriptFindObjectInFacingCone',4),('actorScriptCreateItem',6),('actorScriptRandomBelow',1),('actorScriptPassThroughInteger',1)]:
             rows,contexts,snapshot,*_=self.fixture(native,arity)
             binding=dict(arguments=arity,review_sha256=sources._digest(snapshot[0]['active'][native]),result_role='opaque reviewed result')
             with patch.dict(sources.PRODUCER_BINDINGS,{native:binding},clear=True):
@@ -69,6 +69,37 @@ class CallerSourceTests(unittest.TestCase):
             if change=='origin':contexts[0]['caller_actuals'][0]['caller_origin']['call_offset']=999
             sources.annotate_caller_source_provenance(rows,contexts,snapshot=snapshot)
             self.assertNotIn('caller_source_provenance',contexts[0],change)
+
+    def test_immediate_script_producer_requires_fresh_full_helper_shape(self):
+        import test_path_item_helpers as fixture_helpers
+        from tools.script_decoder import path_item_helpers
+        rows,contexts,snapshot,producer,store,load,call=self.fixture(arity=1)
+        helper_rows,helper_snapshot,bindings=fixture_helpers.PathItemHelperTests().fixture()
+        for row in helper_rows:
+            row['offset']+=1000
+            for edge in row['successors']:edge['offset']+=1000
+        target=helper_rows[0]['offset']
+        rows[producer].update(name='SCRIPT_OP_CALL',operands=[dict(tag=2,value=target)],
+            successors=[dict(kind='call',offset=target),dict(kind='return_continuation',offset=store)])
+        rows+=helper_rows;snapshot[0]['active'].update(helper_snapshot[0]['active'])
+        contexts=forwarded_native_argument_contexts(rows,configuration=1,snapshot=snapshot)
+        with patch.dict(path_item_helpers.NATIVE_BINDINGS,bindings,clear=True):
+            sources.annotate_caller_source_provenance(rows,contexts,snapshot=snapshot)
+            result=contexts[0]['caller_source_provenance'][0]['producer_result']
+            self.assertEqual(result['kind'],'reviewed_script_helper_boxed_result')
+            self.assertEqual(result['target_offset'],target)
+            self.assertEqual(result['arguments'][0]['value'],1)
+            self.assertEqual(result['input_expression_epoch']['instruction_offset'],producer)
+            correct_edges=copy.deepcopy(rows[producer]['successors'])
+            rows[producer]['successors']=[dict(kind='fallthrough',offset=store)]
+            sources.annotate_caller_source_provenance(rows,contexts,snapshot=snapshot)
+            self.assertNotIn('caller_source_provenance',contexts[0])
+            rows[producer]['successors']=correct_edges
+            sources.annotate_caller_source_provenance(rows,contexts,snapshot=snapshot)
+            self.assertIn('caller_source_provenance',contexts[0])
+            helper_rows[1]['operands'][0]['value']=1
+            sources.annotate_caller_source_provenance(rows,contexts,snapshot=snapshot)
+            self.assertNotIn('caller_source_provenance',contexts[0])
 
     def test_effects_competing_paths_other_stores_and_unreviewed_producers_reject(self):
         for name in ('CALL_NATIVE','CALL','ENTER_FRAME','STORE_ELEMENT','JUMP_IF_ZERO','NEGATE','LOAD_ELEMENT'):
