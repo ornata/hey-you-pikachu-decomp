@@ -73,6 +73,9 @@ typedef char ObjectSiblingOffsetCheck[(OBJECT_OFFSET(sibling) == 0x28) ? 1 : -1]
 typedef char ObjectKindOffsetCheck[(OBJECT_OFFSET(kind) == 0x34) ? 1 : -1];
 typedef char ObjectWorldPositionOffsetCheck[(OBJECT_OFFSET(worldPosition) == 0x44) ? 1 : -1];
 typedef char ObjectPrivateStateOffsetCheck[(OBJECT_OFFSET(state) == 0x54) ? 1 : -1];
+typedef char ObjectRotationOffsetCheck[(OBJECT_OFFSET(rotation) == 0xC) ? 1 : -1];
+typedef char ObjectPositionOffsetCheck[(OBJECT_OFFSET(position) == 0x18) ? 1 : -1];
+typedef char ObjectRadiusOffsetCheck[(OBJECT_OFFSET(radius) == 0x24) ? 1 : -1];
 #undef OBJECT_OFFSET
 
 #endif

@@ -9,11 +9,38 @@
 #include "integer_animation_types.h"
 
 /// Proven item-state flags; other bits retain their numeric representation.
+/// Hierarchy and terrain-contact flags use separate domains.
 typedef enum ItemStateFlag {
-    ITEM_STATE_SPIN_ENABLED = 0x20,      ///< Enable the item's angular spin response.
-    ITEM_STATE_MATERIAL_ENABLED = 0x200, ///< Enable the item material draw path.
+    /// Skip the stationary-mode hierarchy mark; mode selection still applies.
+    ITEM_STATE_SKIP_STATIONARY_HIERARCHY_MARK = 0x2,
+    /// Permit ground bounce when speed and terrain conditions allow it.
+    ITEM_STATE_GROUND_BOUNCE_ENABLED = 0x4,
+    /// Derive grounded rolling from horizontal speed and radius unless component rotation is selected.
+    ITEM_STATE_ROLL_FROM_HORIZONTAL_SPEED = 0x8,
+    /// Derive grounded angular rates from velocity components; takes precedence over speed-based rolling.
+    ITEM_STATE_ROTATE_FROM_VELOCITY_COMPONENTS = 0x10,
+    /// Enable the item's angular spin response.
+    ITEM_STATE_SPIN_ENABLED = 0x20,
+    /// Block player pickup, including otherwise permitted holder transfers.
+    ITEM_STATE_BLOCK_PLAYER_PICKUP = 0x40,
+    /// Block actor pickup, including otherwise permitted holder transfers.
+    ITEM_STATE_BLOCK_ACTOR_PICKUP = 0x80,
+    /// Support the runtime cooperation on/off state; does not enable cooperation by itself.
+    ITEM_STATE_COOPERATION_SUPPORTED = 0x100,
+    /// Enable the item material draw path.
+    ITEM_STATE_MATERIAL_ENABLED = 0x200,
+    /// Skip default disposal after contact with exhausted bounces; other destruction paths still apply.
+    ITEM_STATE_SKIP_EXHAUSTED_BOUNCE_DISPOSAL = 0x400,
     /// Reset all rotation axes before applying either camera-facing rule.
     ITEM_STATE_RESET_ROTATION = 0x800,
+    /// Permit the configured replacement when consumed; otherwise consumption removes the item.
+    ITEM_STATE_CONSUMPTION_REPLACEMENT_ALLOWED = 0x1000,
+    /// Permit the configured replacement for transformation cause one instead of the fallback kind.
+    ITEM_STATE_CAUSE_1_REPLACEMENT_ALLOWED = 0x2000,
+    /// Permit the configured replacement for transformation cause two; otherwise retain the item.
+    ITEM_STATE_CAUSE_2_REPLACEMENT_ALLOWED = 0x4000,
+    /// Suppress timed visual direction motion; its idle postponement still applies.
+    ITEM_STATE_DIRECTION_MOTION_SUPPRESSED = 0x8000,
     /// Exclude world-owned items from collision-grid registration; physics still applies.
     ITEM_STATE_SKIP_COLLISION_GRID = 0x10000,
     /// Face the camera; takes precedence over horizontal camera facing.
@@ -22,13 +49,27 @@ typedef enum ItemStateFlag {
     ITEM_STATE_FACE_CAMERA_HORIZONTALLY = 0x80000,
     /// Let the material animation value govern child visibility while the parent is visible.
     ITEM_STATE_MATERIAL_CONTROLS_CHILD_VISIBILITY = 0x100000,
+    /// Current movement step has a significant impact eligible for collision-response handling.
+    ITEM_STATE_SIGNIFICANT_IMPACT = 0x200000,
+    /// Halve the kind motion coefficient used for gravity and friction.
+    ITEM_STATE_HALF_MOTION_COEFFICIENT = 0x400000,
+    /// Block interaction responses and consumption; pickup has separate restrictions.
+    ITEM_STATE_DISABLE_INTERACTION_RESPONSE_AND_CONSUMPTION = 0x800000,
     /// Airborne motion state, cleared on floor contact and set when no floor is contacted.
     ITEM_STATE_AIRBORNE = 0x1000000,
+    /// Player-origin throw flight; also blocks player pickup until floor contact.
+    ITEM_STATE_PLAYER_THROW_FLIGHT = 0x4000000,
+    /// Pikachu-origin throw flight, selecting its terrain constraint policy until floor contact.
+    ITEM_STATE_PIKACHU_THROW_FLIGHT = 0x8000000,
+    /// Area contact event was handled; suppress the next settled-contact notification.
+    ITEM_STATE_AREA_CONTACT_EVENT_HANDLED = 0x10000000,
     /// Shrink during each item update; other disposal conditions remain independent.
     ITEM_STATE_SHRINK_ON_UPDATE = 0x20000000,
     /// Bypass holder-specific restrictions on pickup and unforced release.
     /// Other item restrictions still apply; successful release clears this permission.
-    ITEM_STATE_HELD_TRANSFER_ALLOWED = 0x40000000
+    ITEM_STATE_HELD_TRANSFER_ALLOWED = 0x40000000,
+    /// Runtime cooperation on/off state; requires cooperation support for the query to succeed.
+    ITEM_STATE_COOPERATION_ENABLED = 0x80000000
 } ItemStateFlag;
 
 /// Item ownership and world-participation states, stored as a signed byte.

@@ -938,6 +938,36 @@ Grid exclusion does not disable terrain physics; material visibility governs the
 child hierarchy while its parent is visible. Full camera facing takes precedence
 over horizontal facing, and either can override rotation reset.
 
+Player and actor pickup have independent inhibition bits. Held-transfer permission
+bypasses holder restrictions but never those inhibition bits. Cooperation likewise
+has two independent requirements: kind capability (`COOPERATION_SUPPORTED`) and
+runtime on/off state (`COOPERATION_ENABLED`). Only capability-bearing items accept
+the on/off setter. The exhausted-bounce disposal exemption affects the default
+contact-disposal path; it does not make an item indestructible.
+
+Three flags permit using the kind's nonzero configured replacement:
+
+| Transformation cause | When its replacement permission is absent |
+| --- | --- |
+| 0: consumption | Remove the consumed item |
+| 1 | Use charcoal instead of the configured replacement |
+| 2 | Retain the original item |
+
+Cause two is also requested after collisions; its debug label mentioning thunder
+does not establish an electric-only contract. Consumption and interaction-response
+suppression share another flag, independently of pickup inhibition.
+
+Ground bounce, component-derived rotation and horizontal-speed rolling have
+separate flags. Component-derived rotation takes precedence over speed-based
+rolling; airborne state retains the existing angular rates. Balloon inflation can
+halve the kind's gravity/friction coefficient. Player- and Pikachu-origin throw
+flight are tracked separately until floor contact. Significant impact and handled
+area-contact notification are runtime state, not permanent kind classifications.
+
+The catalog retains bits `0x1` and `0x20000` explicitly because their purposes are
+unresolved. Bit `0x02000000` also remains unnamed; its presence in inherited masks
+alone establishes no behavioral meaning. Unknown bits are preserved by the decoder.
+
 `search_priority_maximum` and `search_priority_replenishment_per_second` describe
 selection priority, independently of model scale or physical growth. Creation
 starts priority at its maximum; weighted searches clear the selected item's

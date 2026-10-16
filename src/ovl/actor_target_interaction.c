@@ -1,3 +1,9 @@
+/// \file
+/// Actor targeting, interaction, and script-message delivery.
+/// \ingroup ActorScriptVm
+///
+/// See docs/VOICE_AND_SCRIPT_VM.md for the subsystem walkthrough.
+
 #include "actor_ground.h"
 #include "player_state.h"
 #include "pikachu_actor.h"
@@ -12,13 +18,6 @@
 #include "actor_appearance.h"
 #include "actor_rotation.h"
 #include "object_movement.h"
-/// \file
-/// Actor targeting, interaction, and script-message delivery.
-/// \ingroup ActorScriptVm
-///
-/// See docs/VOICE_AND_SCRIPT_VM.md for the subsystem walkthrough.
-
-/* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "actor_target.h"
 #include "object_lookup.h"
@@ -296,13 +295,13 @@ s32 objectSetOnState(s32 on, s32 id) {
     } else if (((RuntimeObjectPrefix *)obj)->kind == 0x86) {
         st = ((RuntimeObjectPrefix *)obj)->state.bytes;
         flags = ((ItemStatePrefix *)st)->flags;
-        if (!(flags & 0x100)) {
+        if (!(flags & ITEM_STATE_COOPERATION_SUPPORTED)) {
             return 0;
         }
         if (on) {
-            ((ItemStatePrefix *)st)->flags = flags | 0x80000000;
+            ((ItemStatePrefix *)st)->flags = flags | ITEM_STATE_COOPERATION_ENABLED;
         } else {
-            ((ItemStatePrefix *)st)->flags = flags & 0x7FFFFFFF;
+            ((ItemStatePrefix *)st)->flags = flags & ~ITEM_STATE_COOPERATION_ENABLED;
         }
     } else {
         return 0;

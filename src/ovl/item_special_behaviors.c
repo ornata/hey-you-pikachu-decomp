@@ -1,3 +1,6 @@
+/// \file
+/// Implements kind-specific item motion and orientation behavior.
+
 #include "math_scalar.h"
 #include "pikachu_actor.h"
 #include "terrain_surface.h"
@@ -7,7 +10,6 @@
 #include "object_billboard.h"
 #include "object_movement.h"
 #include "item_object.h"
-/* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "item_response.h"
 #include "scene_types.h"
@@ -78,9 +80,9 @@ void balloonUpdateHeldInflation(u8 *object) {
     if (((ItemStatePrefix *)rec)->state == ITEM_OWNERSHIP_PIKACHU) {
         scale = mathMapRangeClamped(0.0F, 1.0F, 6.0F, 10.0F, ((ItemStatePrefix *)rec)->modeTime);
         if (scale > 3.0F) {
-            ((ItemStatePrefix *)rec)->flags |= 0x400000;
+            ((ItemStatePrefix *)rec)->flags |= ITEM_STATE_HALF_MOTION_COEFFICIENT;
         } else {
-            ((ItemStatePrefix *)rec)->flags &= ~0x400000;
+            ((ItemStatePrefix *)rec)->flags &= ~ITEM_STATE_HALF_MOTION_COEFFICIENT;
         }
         itemSetScale(object, scale);
     }

@@ -652,7 +652,7 @@
     "file:include/item_types.h": {
       "kind": "file",
       "file": "include/item_types.h",
-      "sha256": "33c68ce9008694f64c913435c659a0ba17a2e43587e6e7aa84257c03ee950349"
+      "sha256": "937ff00fa2e4fc537816f798e448a205d547320710822d69f1035f95c16c8bfa"
     },
     "file:include/keyed_pool.h": {
       "kind": "file",
@@ -877,7 +877,7 @@
     "file:include/object_types.h": {
       "kind": "file",
       "file": "include/object_types.h",
-      "sha256": "3ed8d2eebffeba5447f434ffc21261ab4cf2b46aa4b46a1c09093d940d8648e9"
+      "sha256": "444fa3082996623ad164481092e86fe4a217897b72116bd3ecc446bf6df03b48"
     },
     "file:include/opacity_animation_programs.h": {
       "kind": "file",
@@ -1552,7 +1552,7 @@
     "file:src/ovl/actor_script_actions.c": {
       "kind": "file",
       "file": "src/ovl/actor_script_actions.c",
-      "sha256": "3af5d465618a3c3f9de31b1b157e8695dbf36bca77a507111b8807bdc8d36aec"
+      "sha256": "73fc0be86a871808d593c3540a5ee4fef2f10933fdcdd0114df68a4981a38352"
     },
     "file:src/ovl/actor_script_collection_profile.c": {
       "kind": "file",
@@ -1572,7 +1572,7 @@
     "file:src/ovl/actor_target_interaction.c": {
       "kind": "file",
       "file": "src/ovl/actor_target_interaction.c",
-      "sha256": "044dabbd5c62f5590aa6c836cbb90f9bcf84b27e84938b55aa510f77154c7fad"
+      "sha256": "87436e9ba628123f1af1dbd9d94323b9dd2e9a99a6e7634c817fd5329f512654"
     },
     "file:src/ovl/area_terrain_maze.c": {
       "kind": "file",
@@ -1582,12 +1582,12 @@
     "file:src/ovl/item_registry.c": {
       "kind": "file",
       "file": "src/ovl/item_registry.c",
-      "sha256": "d6473c14b47617c2e335f6e272d203a355376fd27be48dd263e52e9912a3568b"
+      "sha256": "94db1328a6cb73c8250740b85e10cfbb84a57533dc9bf7e7c993af787d65ed69"
     },
     "file:src/ovl/item_special_behaviors.c": {
       "kind": "file",
       "file": "src/ovl/item_special_behaviors.c",
-      "sha256": "a454f917278d8e9a576bd0d342d63f1b2cb85050e0ff8650be47da8ecbefe894"
+      "sha256": "76f22ffeb515724a971b2929b66a8c5cf7a0220e63aaec43006169b2d60f6092"
     },
     "file:src/ovl/player_companion.c": {
       "kind": "file",
@@ -3515,7 +3515,7 @@
       "kind": "function",
       "file": "src/ovl/actor_target_interaction.c",
       "function": "objectSetOnState",
-      "sha256": "2b70ab74e585c1a45c1ba4fcc8266074d716fff4e925bc5a986225a331f43f4c"
+      "sha256": "6420b4064d004a4063150b59c442c84c67a6846b25a90476c3b1ad92d06d19d2"
     },
     "function:src/ovl/area_terrain_maze.c:areaFindPositionNode": {
       "kind": "function",
@@ -3623,7 +3623,7 @@
       "kind": "function",
       "file": "src/ovl/item_registry.c",
       "function": "itemCanBePickedUp",
-      "sha256": "8136064176036457317289cf7cf97b92a3d78cf5e9afcbc942c6f887752f8608"
+      "sha256": "844b6fb9e1ea6f98dc19382996a41eff41f924526e26f856ab871697be01c841"
     },
     "function:src/ovl/item_registry.c:itemCompareSearchOrder": {
       "kind": "function",
@@ -3635,7 +3635,7 @@
       "kind": "function",
       "file": "src/ovl/item_registry.c",
       "function": "itemCreate",
-      "sha256": "9ab8320be5494087113ac9b0f8ac4e4356132d46380ce768dddcbe02b558a98e"
+      "sha256": "dad63c7129e0cfcb0d0deb264ee4b77e03071c09de27fe366463547c08a55bba"
     },
     "function:src/ovl/item_registry.c:itemDestroy": {
       "kind": "function",
@@ -3676,7 +3676,7 @@
     "function:src/ovl/item_registry.c:itemGetResponse": {
       "kind": "function",
       "file": "src/ovl/item_registry.c",
-      "sha256": "abd1805f80d122e7b3fdb520f584e0ec131ba774191aa90cab54b533276b6be2",
+      "sha256": "83771f92ea537e2091ac690e53716e6f74712a0ad29d8194fa2b7bcdbada7d68",
       "function": "itemGetResponse"
     },
     "function:src/ovl/item_registry.c:itemHideAndSuspend": {
@@ -3731,7 +3731,7 @@
       "kind": "function",
       "file": "src/ovl/item_registry.c",
       "function": "itemSetMode",
-      "sha256": "e010ccaaa06dc82006e7a52c7bd418cf8f980192d12acac295204e70f33154e4"
+      "sha256": "469bfac8256bbdaae48fb14aadadbd5e411cd78953cd48a17ab224fa197ba01f"
     },
     "function:src/ovl/item_registry.c:itemSetScale": {
       "kind": "function",
@@ -3749,7 +3749,7 @@
       "kind": "function",
       "file": "src/ovl/item_registry.c",
       "function": "itemStartDirectionMotion",
-      "sha256": "81b49d3fe2954803dd0b5b025e774ac266484fb2808e7ee2c938d896172bb112"
+      "sha256": "a1309069d5f2a57840fedd3e1f2c70c1403309904739cc8d15499caa718ce490"
     },
     "function:src/ovl/item_registry.c:itemStartMaterialAnimation": {
       "kind": "function",
@@ -3760,7 +3760,7 @@
     "function:src/ovl/item_registry.c:itemTransform": {
       "kind": "function",
       "file": "src/ovl/item_registry.c",
-      "sha256": "05d53958407bfed1432749d4edd2267e730f0ddfca152a79bd6d13c2266b337a",
+      "sha256": "db28a3edc3cce813dcf409c40a22a4d42f15651055ea04593dca8d4a04bdeeda",
       "function": "itemTransform"
     },
     "function:src/ovl/item_registry.c:itemTryRelease": {

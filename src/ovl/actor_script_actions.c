@@ -1,3 +1,6 @@
+/// \file
+/// Applies actor script actions to items, effects, controls, and presentation.
+
 #include "runtime_mode.h"
 #include "random_scale.h"
 #include "player_control.h"
@@ -16,7 +19,6 @@
 #include "actor_meters.h"
 #include "camera_overlay.h"
 #include "actor_color.h"
-/* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "item_response.h"
 #include "actor_create.h"
@@ -49,7 +51,7 @@ s32 actorConsumeHeldItem(u8 *actor) {
         return 0;
     }
     itemFlags = ((RuntimeObjectPrefix *)liveObject)->state.words;
-    if (*itemFlags & 0x800000) {
+    if (*itemFlags & ITEM_STATE_DISABLE_INTERACTION_RESPONSE_AND_CONSUMPTION) {
         return 0;
     }
     itemTransform(((RuntimeObjectPrefix *)liveObject)->handle, 0);

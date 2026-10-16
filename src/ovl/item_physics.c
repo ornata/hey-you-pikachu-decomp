@@ -1,3 +1,6 @@
+/// \file
+/// Advances item motion and handles terrain contact, bouncing, and collision responses.
+
 #include "random_scale.h"
 #include "math_scalar.h"
 #include "pikachu_actor.h"
@@ -14,7 +17,6 @@
 #include "item_queries.h"
 #include "camera_pose.h"
 #include "item_object.h"
-/* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "object_lookup.h"
 #include "actor_script.h"
@@ -199,12 +201,12 @@ void itemUpdateRollingRotation(u8 *object, u8 *state) {
 
     itemFlags = ((ItemStatePrefix *)state)->flags;
     if (!(itemFlags & ITEM_STATE_AIRBORNE)) {
-        if (itemFlags & 0x10) {
+        if (itemFlags & ITEM_STATE_ROTATE_FROM_VELOCITY_COMPONENTS) {
             ((ItemStatePrefix *)state)->rotationVelocityX =
                 (f32)((2.0F * ((ItemStatePrefix *)state)->velocityX) / gRuntimeFrameSeconds);
             ((ItemStatePrefix *)state)->rotationVelocityY =
                 (f32)((2.0F * ((ItemStatePrefix *)state)->velocityZ) / gRuntimeFrameSeconds);
-        } else if (itemFlags & 8) {
+        } else if (itemFlags & ITEM_STATE_ROLL_FROM_HORIZONTAL_SPEED) {
             sp38 = ((ItemStatePrefix *)state)->velocityX;
             sp34 = ((ItemStatePrefix *)state)->velocityZ;
             ((ItemStatePrefix *)state)->rotationVelocityX =
@@ -248,8 +250,6 @@ void itemUpdateRollingRotation(u8 *object, u8 *state) {
     }
 }
 
-/* Item motion prefix: vertical speed at 0x10, horizontal components at 0x14/0x18. */
-
 /// Adjust item velocity for a bounce or stop against the ground.
 /// \param object Item whose ground response is evaluated.
 /// \param state Item motion state whose velocity is updated.
@@ -263,7 +263,7 @@ void itemApplyGroundBounce(u8 *object, ItemStatePrefix *state, s32 cachedNode) {
         state->velocityX *= 0.2F;
         state->velocityZ *= 0.2F;
     }
-    if (state->downwardVelocity < 9.0F || !(state->flags & 4)) {
+    if (state->downwardVelocity < 9.0F || !(state->flags & ITEM_STATE_GROUND_BOUNCE_ENABLED)) {
         state->downwardVelocity = 0.0F;
     } else {
         itemGetTerrainResponseDirection(object, normal, (u8 **)cachedNode);
@@ -327,9 +327,9 @@ s32 itemDispatchCollisionResponse(u8 *object, s32 flags) {
     if (flags & 0x40) {
         actorPostItemImpactMessage(((u8 *)gPikachuActor), object);
     }
-    if (!(flags & 0x40) && !(((ItemStatePrefix *)state)->flags & 0x10000000)) {
+    if (!(flags & 0x40) && !(((ItemStatePrefix *)state)->flags & ITEM_STATE_AREA_CONTACT_EVENT_HANDLED)) {
         if (areaDispatchPositionEvent(((RuntimeObjectPrefix *)object)->worldPosition, 6) != 0) {
-            ((ItemStatePrefix *)state)->flags |= 0x10000000;
+            ((ItemStatePrefix *)state)->flags |= ITEM_STATE_AREA_CONTACT_EVENT_HANDLED;
         }
     }
     if (callback != NULL) {
@@ -363,7 +363,7 @@ void itemUpdateGroundAndAirMotion(u8 *object) {
         itemDestroy(object);
         return;
     }
-    ((ItemStatePrefix *)state)->flags &= 0xFFDFFFFF;
+    ((ItemStatePrefix *)state)->flags &= ~ITEM_STATE_SIGNIFICANT_IMPACT;
     if (!(((ItemStatePrefix *)state)->flags & ITEM_STATE_AIRBORNE)) {
         itemUpdateGroundVelocity(object, state, (s32)&node, &drag);
     } else {
@@ -375,7 +375,7 @@ void itemUpdateGroundAndAirMotion(u8 *object) {
     dx = ((ItemStatePrefix *)state)->velocityX * gRuntimeFrameSeconds;
     dy = -((ItemStatePrefix *)state)->downwardVelocity * gRuntimeFrameSeconds;
     dz = ((ItemStatePrefix *)state)->velocityZ * gRuntimeFrameSeconds;
-    if (((ItemStatePrefix *)state)->flags & 0x08000000) {
+    if (((ItemStatePrefix *)state)->flags & ITEM_STATE_PIKACHU_THROW_FLIGHT) {
         flags = terrainConstrainMovement(
             7, ((RuntimeObjectPrefix *)object)->position[0],
             ((RuntimeObjectPrefix *)object)->position[1] - ((RuntimeObjectPrefix *)object)->radius,
@@ -395,7 +395,7 @@ void itemUpdateGroundAndAirMotion(u8 *object) {
             ((fabsf(((ItemStatePrefix *)state)->velocityX) > 9.0F) ||
              (fabsf(((ItemStatePrefix *)state)->downwardVelocity) > 9.0F) ||
              (fabsf(((ItemStatePrefix *)state)->velocityZ) > 9.0F))) {
-            ((ItemStatePrefix *)state)->flags |= 0x200000;
+            ((ItemStatePrefix *)state)->flags |= ITEM_STATE_SIGNIFICANT_IMPACT;
         }
         if (flags & 0x10) {
             itemApplyGroundBounce(object, (ItemStatePrefix *)state, (s32)&node);
@@ -413,8 +413,9 @@ void itemUpdateGroundAndAirMotion(u8 *object) {
     ((RuntimeObjectPrefix *)object)->position[0] += dx;
     ((RuntimeObjectPrefix *)object)->position[1] += dy;
     ((RuntimeObjectPrefix *)object)->position[2] += dz;
-    if (!(((ItemStatePrefix *)state)->flags & 0x200000) || (itemDispatchCollisionResponse(object, collision) != 0)) {
-        if ((collision != 0) && !(((ItemStatePrefix *)state)->flags & 0x400) &&
+    if (!(((ItemStatePrefix *)state)->flags & ITEM_STATE_SIGNIFICANT_IMPACT) ||
+        (itemDispatchCollisionResponse(object, collision) != 0)) {
+        if ((collision != 0) && !(((ItemStatePrefix *)state)->flags & ITEM_STATE_SKIP_EXHAUSTED_BOUNCE_DISPOSAL) &&
             (((ItemStatePrefix *)state)->bounceCount <= 0)) {
             itemBeginShrinkingDisposal(object);
             return;
@@ -430,8 +431,8 @@ void itemUpdateGroundAndAirMotion(u8 *object) {
             ((ItemStatePrefix *)state)->velocityX = 0.0F;
             ((ItemStatePrefix *)state)->rotationVelocityY = 0.0F;
             ((ItemStatePrefix *)state)->rotationVelocityX = 0.0F;
-            if (((ItemStatePrefix *)state)->flags & 0x10000000) {
-                ((ItemStatePrefix *)state)->flags &= 0xEFFFFFFF;
+            if (((ItemStatePrefix *)state)->flags & ITEM_STATE_AREA_CONTACT_EVENT_HANDLED) {
+                ((ItemStatePrefix *)state)->flags &= ~ITEM_STATE_AREA_CONTACT_EVENT_HANDLED;
             } else {
                 areaDispatchPositionEvent(((RuntimeObjectPrefix *)object)->worldPosition, 5);
             }
@@ -466,7 +467,8 @@ void itemUpdateGroundAndAirMotion(u8 *object) {
             itemSetMode(object, ITEM_MODE_STATIONARY);
         }
         if (flags & 0x10) {
-            ((ItemStatePrefix *)state)->flags &= 0xF2FFFFFF;
+            ((ItemStatePrefix *)state)->flags &=
+                ~(ITEM_STATE_AIRBORNE | ITEM_STATE_PLAYER_THROW_FLIGHT | ITEM_STATE_PIKACHU_THROW_FLIGHT);
             return;
         }
         ((ItemStatePrefix *)state)->flags |= ITEM_STATE_AIRBORNE;
