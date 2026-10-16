@@ -679,6 +679,13 @@ priority for an existing continuation. Every other bit remains in
 `unresolved_attribute_bits`; a resource flag alone does not prove a successful
 transition or rendered motion.
 
+Attribute `0x400` projects to bit `0x1` in the creature-action query, but disabled
+playback also returns that bit. It cannot be treated as a universal playing or
+idle flag. Scene consumers combine it with other query bits for their own
+conditional stop and classification policies. Likewise, the resource sets for
+`0x800` and `0x100` include exceptions to simple running and turning descriptions;
+these bits retain their numeric identities until their shared contract is known.
+
 Loop permission is conditional: an exit request, a nonzero update result or a
 rejecting initializer prevents another cycle. Pose-map registration also requires
 differing endpoint poses and an unclaimed pair. Continuation fallback applies to
@@ -2270,7 +2277,7 @@ slots, including programs without a recovered caller. `action_script_resources`
 keeps the separate links derived from script requests and producer return values.
 `motion_definitions` inventories all 330 definition records, including callback-only
 resources and continuations without direct timed-program callers. The current
-headers name 282 definitions and 284 positive timed programs, plus the no-program
+headers name 320 definitions and 354 positive timed programs, plus the no-program
 sentinel; these are identity-coverage counts, not a percentage of full understanding.
 Neither membership nor a recovered name proves that a program is selected or safe
 for a particular actor.
@@ -2492,7 +2499,7 @@ sequencer times, not guarantees of wall-clock delivery, successful acquisition o
 successful launch. Missing items, interruption and later gameplay effects retain
 their own checks.
 
-`motion_action_ids.h` names 282 of the 330 authored definitions. The named
+`motion_action_ids.h` names 320 of the 330 authored definitions. The named
 families include foot tapping, drawing, jumping and falling, item gestures,
 fishing and pulling, head/posture changes, species locomotion and explicit pose
 bridges. A shared motion archive does not imply a shared looping contract: the
@@ -2745,3 +2752,33 @@ Model metadata now identifies five additional reference nodes and the held-cap
 carrier. Its actor-local held-item predicate and the cap item's global Pikachu
 visibility predicate are separate conditions, not a guarantee of coordinated
 rendering. Node identities do not establish anatomical names.
+
+### Authored response identities and composite programs
+
+Response names identify the author's resource intent: joy, refusal, caution and
+similar labels do not establish live emotion, input acceptance or gameplay
+outcomes. Variant letters M, S and L remain literal authored qualifiers. Held-item
+presentation start/end apply to creation, hide/suspend and restore/hold wrappers;
+these resources do not exclusively denote item creation.
+
+Three programs have reviewed sequences beyond an ordinary single-motion request:
+
+- `ACTION_SCRIPT_SLOW_TARGET_APPROACH_THEN_SLEEP` requests motion 173 with cue 7,
+  then sleep-start motion 141 with cue 0 at authored command time 5.
+- `ACTION_SCRIPT_HELD_ITEM_PRESENTATION_START_CUE_0` requests motion 42 with cue 0
+  and has terminal time `1.1f`. Ending sequencing does not itself stop independent
+  motion or audio playback.
+- `ACTION_SCRIPT_RUN_ON_ALL_FOURS_THEN_FORWARD_JUMP_COLLISION` requests motion 136,
+  then collision-response motion 61 at authored command time `0.1f`; both inherit
+  cue selection. This does not prove that a collision occurred.
+
+Command times belong to the sequencer's clock. Waiting, interruption, duration
+limits and early completion remain governed by the original handlers.
+
+Ten motion identities remain numeric because their labels and consumers do not
+distinguish the intended meaning. This includes the Haunter hit/hurt/defeated
+reaction, which does not establish a health or defeat-state transition. Eighteen
+timed-program slots remain unnamed: fourteen depend on these ambiguous motions;
+the other four form two pairs of indistinguishable resource identities (33/34 and
+295/300). Equal command bytes do not merge distinct table slots or establish a
+semantic variant name.

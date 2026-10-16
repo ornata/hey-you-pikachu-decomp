@@ -496,7 +496,7 @@ void wholeMapPlayConfirmationAnimation(void) {
     switch (randomBelow(3)) {
     case 0:
         ((RuntimeObjectPrefix *)PLAYER)->state.actor->defaultActionMode = 3;
-        actionScriptStart((u8 *)PLAYER, 0x39);
+        actionScriptStart((u8 *)PLAYER, ACTION_SCRIPT_JOY_RESPONSE_SMALL);
         break;
     case 1:
         actionScriptStart((u8 *)PLAYER, ACTION_SCRIPT_GREET_CUE_3);
