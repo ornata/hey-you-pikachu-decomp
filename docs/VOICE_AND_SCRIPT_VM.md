@@ -631,6 +631,89 @@ nonoverlapping VM storage, live search resources and valid region state. It does
 not prove that the script executes, that the search result remains live, or that
 later movement and door requests complete.
 
+### Fishing status deadlines
+
+The decoder's `private_status_snapshot_roles` recognizes complete 39-instruction,
+224-byte timer producers in the three fishing configurations. They use a retained
+VM elapsed-seconds value and a script-owned deadline, rather than the global
+elapsed-time limits in the common snapshot prefix.
+
+| Added value | Condition and local effect |
+| --- | --- |
+| `0x01000000` | Timer exceeds the saved deadline; a second timer read plus ten replaces the deadline. |
+| `0x02000000` | Timer exceeds `150 - 60`, or ninety seconds. |
+| `0x04000000` | Timer exceeds 150 seconds. |
+
+Equality does not qualify at any threshold. The helper reads the timer three
+times, or four when the deadline branch executes. Each native reads the retained
+VM timer, which normally stays unchanged during one uninterrupted invocation;
+the interpreter's frame update advances it separately. The helper returns boxed
+integer zero. These additions require the same fresh-word and representable
+arithmetic conditions as other snapshot extensions; they do not independently
+establish a timeout, dialogue outcome or later transition.
+
+### Cobalt-coast item distance conditions
+
+The same decoder field recognizes Cobalt-coast's complete 75-instruction,
+500-byte producer at offset 24252. Its first search requests catalog kind 78
+(piñata), inclusive distance 100, all directions, ownership filter 6 (`ANY`) and
+no priority weighting. It saves the selected handle in shared cell 33. This
+is not a world-ownership or pickup-eligibility test, and the search still changes
+shared query state.
+
+The script scans the handle ledger starting at shared cell 28, using the count
+in cell 27, and stores the first matching index in cell 34. No match leaves the
+previous index intact; a zero search result can match a zero ledger entry.
+The fourteen direct count writers in this configuration assign one, two, three
+or five. Valid execution still requires allocated, initialized, nonoverlapping
+ledger storage and no conflicting indexed writes or external mutation; that
+writer census does not prove arbitrary shared-array accesses safe.
+
+| Added value | Condition |
+| --- | --- |
+| `0x01000000` | Selected handle's approximate object distance is at most five. |
+| `0x02000000` | A separate distance query for that handle is at most two. |
+| `0x04000000` | A kind-77 banana-peel search within inclusive distance ten returns a nonzero handle whose approximate distance is at most two. |
+
+The first two comparisons have no availability guard. An unavailable handle's
+distance is -1 and therefore satisfies both; those bits alone do not prove a
+nearby item exists. The third path explicitly guards the search result. Later
+consumers of the first two bits perform an additional kind-78 search within ten
+and a ninety-degree cone before requesting their response or approach helper.
+That extra check is separate from this producer's distance predicates.
+
+### Springleaf tracked-creature predicate
+
+The decoder's `tracked_creature_predicate_roles` checks helper 58990 and its
+complete reachable five-function call graph in the Springleaf trio. Root cell
+132 holds the tracked integer handle; cells 133–135 hold cached world
+coordinates. Target setup samples those coordinates separately. The predicate
+returns integer one when the handle is nonzero, its actor kind is Oddish (5),
+Gloom (6) or Vileplume (7), and either:
+
+- The shared cell at base 23 indexed by the actor's creation argument converts
+  to a nonzero VM integer.
+- The sum of absolute differences between sampled world X/Y/Z and the cached
+  coordinates is strictly greater than 1.0.
+
+The first condition short-circuits the coordinate queries. The shared cell is
+returned as a boxed value before integer conversion: a floating value such as
+0.5 converts to zero and does not trigger that condition. Creation-argument
+bounds and the shared array's allocation and initialization remain caller
+obligations; actor kinds five through seven do not establish a three-cell array.
+The second condition is Manhattan coordinate change, with no time division or
+Euclidean distance calculation. Separate reads and handles require valid,
+stable actor and frame storage throughout the call.
+
+The surrounding extension adds `0x01000000` when this predicate succeeds.
+Its separate `0x02000000` condition requires a nonzero selected handle in root
+139 and approximate object distance above 45. It also adjusts a stored value
+when the spinner bit is clear, changes door access and calls timer-driven
+presentation and progress helpers. The predicate annotation covers its reachable
+call graph, including the actual absolute-value helper; it excludes an
+unreachable six-byte gap and does not describe the whole extension as pure or
+prove any later response completes.
+
 ### Drawing feedback
 
 `VOICE_DICTIONARY_DRAWING_FEEDBACK` (13) is requested by seven retained
