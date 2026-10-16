@@ -1323,26 +1323,27 @@ void systemMenuSetChaseProgress(s32 value) {
 /// \returns Nothing.
 /// \note The retained debug menu calls this selection difficulty.
 /// \note Original decompilation identifier: \c func_8011B3FC (0x8011B3FC).
-void systemMenuSetDifficulty(s32 arg0) {
+void systemMenuSetDisappearanceActive(s32 arg0) {
     TRACE("selDifficulty %d\n", arg0);
     progressSetValue(PROGRESS_FIELD_PIKACHU_DISAPPEARANCE_ACTIVE, arg0);
 }
 
-/// Apply a selected value to all disappearance progress flags.
-/// \param arg0 Requested disappearance flag value.
+/// Set the debug menu's group of recorded item-availability flags.
+/// \param arg0 Requested availability flag value.
 /// \returns Nothing.
+/// \note The retained debug menu calls these disappearance flags.
 /// \note Original decompilation identifier: \c func_8011B420 (0x8011B420).
-void systemMenuSetDisappearanceFlags(s32 arg0) {
+void systemMenuSetItemAvailabilityFlags(s32 arg0) {
     TRACE("selIedeFlag %d\n", arg0);
-    progressSetValue(0x1B, arg0);
-    progressSetValue(0x1C, arg0);
-    progressSetValue(0x1D, arg0);
-    progressSetValue(0x1E, arg0);
+    progressSetValue(PROGRESS_FIELD_CUPCAKE_ACQUIRED, arg0);
+    progressSetValue(PROGRESS_FIELD_BEACH_BALL_ACQUIRED, arg0);
+    progressSetValue(PROGRESS_FIELD_FLYING_ACORN_ACQUIRED, arg0);
+    progressSetValue(PROGRESS_FIELD_FISHING_HOOK_ACQUIRED, arg0);
     progressSetValue(PROGRESS_FIELD_LUCKY_HOOK_UNLOCKED, arg0);
-    progressSetValue(0x20, arg0);
-    progressSetValue(0x21, arg0);
-    progressSetValue(0x22, arg0);
-    progressSetValue(0x23, arg0);
+    progressSetValue(PROGRESS_FIELD_WATERING_CAN_ACQUIRED, arg0);
+    progressSetValue(PROGRESS_FIELD_WATERING_JUG_ACQUIRED, arg0);
+    progressSetValue(PROGRESS_FIELD_HARMONICA_ACQUIRED, arg0);
+    progressSetValue(PROGRESS_FIELD_MEGAPHONE_ACQUIRED, arg0);
 }
 
 /// Set the visit count used for early story progression.

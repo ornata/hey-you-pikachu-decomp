@@ -33,7 +33,19 @@ enum {
     PROGRESS_FIELD_TOGEPI_HATCHED = 22,   ///< Togepi egg has completed its transformation into Togepi.
     PROGRESS_FIELD_TOGEPI_EGG_GROWTH_STAGE = 23, ///< Egg growth advanced by qualifying Abra-shop item turn-ins.
     PROGRESS_FIELD_TOGEPI_HATCH_SIZE = 24, ///< Normalized Togepi size captured from voice-message progress at hatching.
-    PROGRESS_FIELD_LUCKY_HOOK_UNLOCKED = 31,           ///< Lucky hook and expanded fishing residents available.
+    PROGRESS_FIELD_CUPCAKE_ACQUIRED = 27,  ///< Cupcake acquisition recorded; does not imply current possession.
+    PROGRESS_FIELD_BEACH_BALL_ACQUIRED = 28, ///< Beach ball acquisition recorded; does not imply current possession.
+    PROGRESS_FIELD_FLYING_ACORN_ACQUIRED =
+        29, ///< Flying acorn acquisition recorded; does not imply current possession.
+    PROGRESS_FIELD_FISHING_HOOK_ACQUIRED =
+        30,                                  ///< Fishing hook acquisition recorded; does not imply current possession.
+    PROGRESS_FIELD_LUCKY_HOOK_UNLOCKED = 31, ///< Lucky hook and expanded fishing residents available.
+    PROGRESS_FIELD_WATERING_CAN_ACQUIRED =
+        32, ///< Watering can acquisition recorded; does not imply current possession.
+    PROGRESS_FIELD_WATERING_JUG_ACQUIRED =
+        33,                                 ///< Watering jug acquisition recorded; does not imply current possession.
+    PROGRESS_FIELD_HARMONICA_ACQUIRED = 34, ///< Harmonica acquisition recorded; does not imply current possession.
+    PROGRESS_FIELD_MEGAPHONE_ACQUIRED = 35, ///< Megaphone acquisition recorded; does not imply current possession.
     PROGRESS_FIELD_OCHRE_ENTRANCE_RESIDENT_STAGE = 86, ///< Zero through three selects additional entrance residents.
     PROGRESS_FIELD_PIKACHU_DISAPPEARANCE_EPISODES_COMPLETED =
         93, ///< Completed disappearance visits selecting first or repeat search narration.

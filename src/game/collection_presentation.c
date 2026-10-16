@@ -1731,8 +1731,8 @@ s32 progressUpdateChapterAfterVisit(void) {
         }
         break;
     case 5:
-        if ((progressGetValue(0x20) != 0) && (progressGetValue(0xB9) != 0) && (progressGetValue(0xBA) != 0) &&
-            (progressGetValue(0xAC) != 0)) {
+        if ((progressGetValue(PROGRESS_FIELD_WATERING_CAN_ACQUIRED) != 0) && (progressGetValue(0xB9) != 0) &&
+            (progressGetValue(0xBA) != 0) && (progressGetValue(0xAC) != 0)) {
             var_s0 += 1;
             playerSetChaseStage(2);
             progressSetValue(0x1A, 0);
@@ -1742,9 +1742,9 @@ s32 progressUpdateChapterAfterVisit(void) {
         break;
     case 7:
         if ((progressGetValue(PROGRESS_FIELD_GAME_CLEARED) == 0) &&
-            ((gItemKind8FCollectionValue + 0x64) < gPlayerProfilePoints) && (progressGetValue(0x23) != 0) &&
-            (progressGetValue(0xAD) != 0) && (progressGetValue(0xAF) != 0) && (progressGetValue(0xBD) != 0) &&
-            (progressGetValue(0xAE) != 0)) {
+            ((gItemKind8FCollectionValue + 0x64) < gPlayerProfilePoints) &&
+            (progressGetValue(PROGRESS_FIELD_MEGAPHONE_ACQUIRED) != 0) && (progressGetValue(0xAD) != 0) &&
+            (progressGetValue(0xAF) != 0) && (progressGetValue(0xBD) != 0) && (progressGetValue(0xAE) != 0)) {
             var_s0 += 1;
         }
         break;

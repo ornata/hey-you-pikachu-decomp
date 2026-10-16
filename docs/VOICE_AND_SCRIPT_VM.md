@@ -528,11 +528,32 @@ invokes only the two retail release hooks above, with no hold hook or allocation
 Valid item and owner layouts, stable handles and terminating hierarchy/animation
 traversal are prerequisites of this contract.
 
-Three setters have narrower effects than their names might suggest:
+`actorScriptFindInteractableItem` returns an item kind, not a handle. It searches
+world-owned items within the distance and a 45-degree viewing cone; kind 165
+selects ordinary kinds 1 through 164. Pickup eligibility is checked after choosing
+the nearest candidate, so rejection does not retry a farther item. Its 500-ms
+cooldown reads the retained interaction timestamp without updating it. Search can
+rearrange the search tree and overwrite shared query state, making it nonreentrant.
+
+`actorScriptDestroyItem` removes collision and item-search registrations, requests
+destruction of the item and its following siblings/descendants, and decrements the
+live-item count. Held items may run the two release hooks above first. The native
+does not free object/state allocations; a later sweep performs cleanup. It requires
+an initialized item even though the wrapper does not check the object's kind, and
+the marked hierarchy must not own the executing VM or its program storage.
+
+Choosing an escape destination switches to fixed targeting while preserving the
+stored target handle. Ordinary separation advances the RNG once and chooses a
+rotated destination away from the player. Near-coincident positions instead use
+the live fallback object's position without advancing the RNG. Neither path moves
+the actor immediately or proves that the destination is reachable.
+
+Four setters have narrower effects than their names might suggest:
 
 | Native | Immediate effect |
 | --- | --- |
 | `actorScriptSetPlayerYaw` | When permission allows it, normalizes yaw and also normalizes and clamps the existing player pitch. It does not refresh the camera. |
+| `actorScriptSetPlayerPitch` | When permitted, normalizes the retained yaw and wraps/clamps requested pitch. It does not refresh the camera. |
 | `actorScriptSetItemImpactCount` | Stores the full signed 32-bit bounce count unchanged on an available item; returns one on update, zero otherwise. |
 | `actorScriptSetPikachuAppearanceVariants` | Stores two signed variant selections on the active Pikachu and sets or clears their persistence flag; returns zero. |
 
@@ -544,6 +565,21 @@ original-instruction probes cover permitted and denied yaw updates, signed count
 missing or ineligible item targets, and both persistence branches. They preserve
 protected VM values and guarded surrounding storage; they do not establish later
 resource lifetimes or valid renderer indices.
+
+Fifteen additional original-instruction probes check pitch boundaries and wrapping,
+permission denial, negative-zero preservation, and view getters with signed offsets.
+The getters include yaw shake or pitch offset and do not normalize their sums.
+The probes preserve protected values, frame metadata and guarded actor/player
+storage; very large or nonfinite angles remain outside these observations.
+
+Numeric native contracts distinguish the game's operations from host math calls.
+Float pass-through converts integer-like payloads to binary32 and retains the float
+tag. Sine uses a 513-sample quarter-wave table; cosine first adds 90 degrees using
+the original floating-point operation. Their rounded table-index conversion must
+fit signed 32-bit storage. Square root converts the binary32 operand to double,
+executes the FPU square root and converts back to single; no SDK square-root call
+occurs. These immediate storage contracts require the target FPU environment and
+do not promise unchanged floating-point status flags.
 
 Three retained attached-effect definitions at `0x80074EB8` select templates of
 runtime kind `0xAC`, with no child or sibling templates. Their scales are
@@ -881,6 +917,7 @@ Recovered field names now distinguish these saved roles:
 | 19 / 20 | Visit-based disappearance / errand trigger counters. |
 | 22 / 23 | Togepi hatched / egg growth stage. Qualifying Abra-shop turn-ins advance growth up to five on the recovered path; storage permits fifteen. |
 | 24 | Saved normalized Togepi hatch-size parameter. |
+| 27–30 / 32–35 | Recorded acquisition of the cupcake, beach ball, flying acorn, fishing hook, watering can, watering jug, harmonica and megaphone, respectively. |
 | 86 | Additional Ochre entrance resident stage, zero through three; not a count including the unconditional Bulbasaur. |
 | 93 | Completed disappearance episodes, used for first/repeat search narration. |
 | 160 | Bedroom passage to the front yard enabled instead of its initial descriptive proxy. |
@@ -898,6 +935,12 @@ that normalized parameter to a scale between one-half and full area scale. It is
 separate from egg growth stage and does not establish an ongoing age counter.
 Fields 15 and 26 remain numeric: a debug abbreviation and an association with
 unidentified effects do not yet establish their meanings.
+
+Acquisition flags enable item availability; they do not track current possession
+or remaining consumable quantities. The catalog's `availabilityField`, inventory
+recording and toolbox supply recording establish their shared meaning. The debug
+setter formerly named for disappearance flags now describes item availability;
+its behavior and original function address are preserved.
 
 The bedroom script advances quiz stage zero to one after at least eight correct
 picture-quiz answers, and one to two after a perfect shadow round. Its selection

@@ -2998,8 +2998,8 @@ systemMenuVisitCountDebugNoOp = 0x8011B870;
 systemMenuClearFlagDebugNoOp = 0x8011B878;
 
 systemMenuSetChaseProgress = 0x8011B3DC;
-systemMenuSetDifficulty = 0x8011B3FC;
-systemMenuSetDisappearanceFlags = 0x8011B420;
+systemMenuSetDisappearanceActive = 0x8011B3FC;
+systemMenuSetItemAvailabilityFlags = 0x8011B420;
 systemMenuSetEarlyVisitCount = 0x8011B4B0;
 systemMenuSetGameClearProgress = 0x8011B4D4;
 

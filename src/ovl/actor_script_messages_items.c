@@ -402,7 +402,7 @@ s32 actorScriptSetPlayerYaw(u8 *actor) {
 }
 
 /// Push the player's current view yaw.
-/// \param actor Actor whose script VM receives the view yaw in degrees.
+/// \param actor Actor whose script VM receives the primary player's view yaw in degrees, including view shake.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011CF24 (0x8011CF24).
 s32 actorScriptPushPlayerViewYaw(u8 *actor) {
@@ -414,6 +414,7 @@ s32 actorScriptPushPlayerViewYaw(u8 *actor) {
 /// Request a player view pitch, subject to player view-control permissions.
 /// \param actor Actor whose script VM supplies a pitch angle in degrees, limited to -60 through 60 when applied, and receives zero.
 /// \returns Zero, allowing script execution to continue.
+/// \note Applying pitch can also normalize the retained yaw; it does not immediately refresh the camera.
 /// \note Original decompilation identifier: \c func_8011CF64 (0x8011CF64).
 s32 actorScriptSetPlayerPitch(u8 *actor) {
     s32 sp1C;
@@ -425,7 +426,7 @@ s32 actorScriptSetPlayerPitch(u8 *actor) {
 }
 
 /// Push the player's current view pitch.
-/// \param actor Actor whose script VM receives the view pitch in degrees.
+/// \param actor Actor whose script VM receives the primary player's view pitch in degrees, including its view offset.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011CFA4 (0x8011CFA4).
 s32 actorScriptPushPlayerViewPitch(u8 *actor) {
@@ -448,7 +449,7 @@ s32 actorScriptPushHeldItemKind(u8 *actor) {
 
 /// Separate transformation-cause-three response view of the item catalog, with a 116-byte stride.
 /// \note Original identifier: \c D_80125A5A (0x80125A5A).
-extern u8 gItemKindThirdResponseEntries[]; /* item records (0x74 bytes); type-three response */
+extern u8 gItemKindThirdResponseEntries[];
 
 /// Test whether an item kind has a qualifying type-three response.
 /// \param actor Actor whose script VM supplies a valid item kind and receives one for response codes 2, 4, 5, or 6, or zero otherwise.

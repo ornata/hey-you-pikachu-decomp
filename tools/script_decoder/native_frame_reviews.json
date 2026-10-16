@@ -10749,6 +10749,513 @@
         "The established target address-copy contract applies: only tag 4 and the four pointer bytes are copied into a five-byte ScriptValue. No pointed-to text bytes are read, copied or allocated. Consumers must handle null and satisfy borrowed-string lifetime and readability obligations. Protected lower values and frame metadata remain unchanged."
       ],
       "evidence": "Source and read-only original Ghidra 0x8011FE20 and 0x8001E680 agree: capture VM, pop selector then kind, select alternate/default pointer at stride 0x54, append tag-4 borrowed address and continue. Whole actor_configuration.c binds the private ActorKindConfig stride; actor_text.h and the symbol map bind the alternate/default interior table views. VM string push/set and numeric pop helpers retain the existing reviewed dependencies. No runtime observations are claimed."
+    },
+    {
+      "function": "actorScriptSetPlayerPitch",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "79cbc2c35e766753a8ab12af33ca8d57a04e89a89a813c526d6db4ff8e0500d8",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace requested pitch in degrees with integer zero; when permitted, normalize retained primary-player yaw and normalize/clamp the requested pitch.",
+      "dependencies": [
+        "file:include/object_types.h",
+        "file:include/actor_script.h",
+        "file:include/script_vm.h",
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopFloat",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/ovl/script_vm.c:scriptValueGetFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "file:include/player_types.h",
+        "file:include/player_state.h",
+        "function:src/ovl/player_companion.c:playerSetViewPitch",
+        "function:src/ovl/player_companion.c:playerSetViewAngles"
+      ],
+      "preconditions": [
+        "One numeric operand lies above every protected local and frame record. The caller actor, actor state, retained VM and owned values remain valid and disjoint from player storage and helper C-stack temporaries, with no concurrent mutation or context replacement.",
+        "Operand is an integer/code-reference payload or a finite f32 value in the supported numeric conversion domain. Recipient is the live primary gPlayerState record, not caller orientation. Permission bit 0x2 clear means neither player angle is changed and no wrapping loop runs.",
+        "With permission set, both requested pitch and retained yaw must be finite and their original repeated f32 full-turn adjustments must make progress and terminate; absolute values no greater than 1474560 provide a conservative supported domain. Finite alone is insufficient for huge f32 values.",
+        "Yaw is wrapped to [0,360). Pitch is wrapped to [0,360), mapped to a signed turn and clamped to [-60,60]. Only yaw at player+0xC and pitch at player+0x14 change. This pitch-only request can also change retained yaw; shake and pitch offset remain unchanged.",
+        "The wrapper replaces the operand with integer zero and returns zero to continue. No camera refresh, hierarchy traversal, callback, allocation, queue or actor action change occurs. Later camera/input behavior and player lifetime require independent checks."
+      ],
+      "evidence": "Read-only original Ghidra 0x8011CF64, 0x801124F4 and 0x8010EF00 agrees with source: captured VM, float pop, primary-player yaw plus requested pitch passed through permission-gated angle normalization, integer zero push and continue. Immediate conditional source-bound review; fifteen authored original-instruction interpreter probes collectively check these three commands. Ten permitted pitch cases include wrap/clamp boundaries, integer conversion and negative zero; each also normalizes retained yaw. One denied case preserves both angles. Four getter cases check distinct signed offsets without normalizing the sum. All preserve three lower values, frame metadata and full VM/caller/player/pool guards. Fourteen native/helper fingerprints agree with ROM and all three native bodies agree with Ghidra. An initial authored negative-zero oracle was corrected to preserve the original sign bit; all fifteen cases then passed. Nonfinite/huge angles, later camera behavior and concurrent lifetimes remain outside these observations.",
+      "runtime_status": "bounded_original_instruction_probes_passed"
+    },
+    {
+      "file": "src/ovl/actor_script_messages_items.c",
+      "function": "actorScriptPushPlayerViewYaw",
+      "sha256": "f98066f2100f4a23038ab78ed38fdd594f53da15bee208929e4a3b7cf0fc2ee9",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "float",
+      "scheduling": "continue",
+      "result_semantics": "Append primary-player viewShake plus yaw in degrees, without wrapping or clamping.",
+      "dependencies": [
+        "file:include/player_types.h",
+        "file:include/player_state.h"
+      ],
+      "preconditions": [
+        "The caller actor, live actor state, retained VM, owned value allocation and helper C stack remain valid and disjoint from primary-player storage. Active depth is above every protected local/frame record and one free value slot is available; no concurrent writer, destruction or context replacement interleaves the call.",
+        "Primary-player angle and offset words are readable and finite, and their original f32 sum is finite in the supported domain. The accessor reads the primary player independently of the caller, does not validate angle ranges and does not normalize the result.",
+        "Only appended five-byte float value and VM depth are written. Lower values, frame metadata and actor/player state remain unchanged. No camera refresh, callback, allocation or queue occurs; this immediate read does not prove later camera behavior or object lifetime."
+      ],
+      "evidence": "Source and read-only original Ghidra 0x8011CF24 agree: read the two primary-player f32 words, add them, append through the original float-value helpers and return zero to continue. This is a conditional source-bound footprint review; fifteen authored original-instruction interpreter probes collectively check these three commands. Ten permitted pitch cases include wrap/clamp boundaries, integer conversion and negative zero; each also normalizes retained yaw. One denied case preserves both angles. Four getter cases check distinct signed offsets without normalizing the sum. All preserve three lower values, frame metadata and full VM/caller/player/pool guards. Fourteen native/helper fingerprints agree with ROM and all three native bodies agree with Ghidra. An initial authored negative-zero oracle was corrected to preserve the original sign bit; all fifteen cases then passed. Nonfinite/huge angles, later camera behavior and concurrent lifetimes remain outside these observations.",
+      "runtime_status": "bounded_original_instruction_probes_passed"
+    },
+    {
+      "file": "src/ovl/actor_script_messages_items.c",
+      "function": "actorScriptPushPlayerViewPitch",
+      "sha256": "9f02ea1e58dcd5a13913935b4427a08ad22e3b4fb5631c369049bfdb3d3b4030",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "float",
+      "scheduling": "continue",
+      "result_semantics": "Append primary-player pitch plus pitchOffset in degrees, without wrapping or clamping.",
+      "dependencies": [
+        "file:include/player_types.h",
+        "file:include/player_state.h"
+      ],
+      "preconditions": [
+        "The caller actor, live actor state, retained VM, owned value allocation and helper C stack remain valid and disjoint from primary-player storage. Active depth is above every protected local/frame record and one free value slot is available; no concurrent writer, destruction or context replacement interleaves the call.",
+        "Primary-player angle and offset words are readable and finite, and their original f32 sum is finite in the supported domain. The accessor reads the primary player independently of the caller, does not validate angle ranges and does not normalize the result.",
+        "Only appended five-byte float value and VM depth are written. Lower values, frame metadata and actor/player state remain unchanged. No camera refresh, callback, allocation or queue occurs; this immediate read does not prove later camera behavior or object lifetime."
+      ],
+      "evidence": "Source and read-only original Ghidra 0x8011CFA4 agree: read the two primary-player f32 words, add them, append through the original float-value helpers and return zero to continue. This is a conditional source-bound footprint review; fifteen authored original-instruction interpreter probes collectively check these three commands. Ten permitted pitch cases include wrap/clamp boundaries, integer conversion and negative zero; each also normalizes retained yaw. One denied case preserves both angles. Four getter cases check distinct signed offsets without normalizing the sum. All preserve three lower values, frame metadata and full VM/caller/player/pool guards. Fourteen native/helper fingerprints agree with ROM and all three native bodies agree with Ghidra. An initial authored negative-zero oracle was corrected to preserve the original sign bit; all fifteen cases then passed. Nonfinite/huge angles, later camera behavior and concurrent lifetimes remain outside these observations.",
+      "runtime_status": "bounded_original_instruction_probes_passed"
+    },
+    {
+      "function": "actorScriptTestItemResponseTypeThree",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "4537f05eb72bed1ffeb9432e33028c65418f089f7e18f523be522cccbbfbe624",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace an item-kind index with integer one exactly when its third catalog response byte is 2, 4, 5 or 6; otherwise return integer zero.",
+      "dependencies": [
+        "file:include/object_types.h",
+        "file:include/actor_script.h",
+        "file:include/script_vm.h",
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "file:include/item_kind.h",
+        "file:src/ovl/actor_script_messages_items.c",
+        "file:config/symbol_addrs.txt"
+      ],
+      "preconditions": [
+        "One numeric operand lies above protected locals and frame metadata. Integer and code-reference payloads are signed 32-bit; finite floating operands must truncate to a representable signed 32-bit value. Calling actor, saved ActorScriptState, captured VM and value allocation remain live and disjoint from all helper-written registry, hierarchy, item and owner storage. No concurrent mutation, traversal, destruction or context replacement occurs.",
+        "Only immediate source-bound writes and normal return are reviewed. Both wrappers replace one operand with an integer and return zero to continue; this does not establish retail reachability or later object/resource lifetime.",
+        "Converted kind must be in 0 through 165. The wrapper performs no bounds check; negative and larger indices are unsupported. It reads the original catalog response[2] byte through gItemKindThirdResponseEntries at 0x80125A5A, stride 0x74. The original 166-entry catalog and its persistent storage remain readable.",
+        "This is a raw catalog-kind predicate, not a handle lookup or live-item query. No ownership, availability, response-permission flag or object-kind check occurs. Response values are unsigned bytes in current source; only equality against four low positive codes matters to this predicate. No catalog or global state is written, and no helper, callback, queue or resource operation occurs.",
+        "No established response-code enum exists in the current public item headers. Preserve numeric codes 2, 4, 5 and 6 until independent response consumers establish names; they are not interchangeable with ownership, item class, behavior mode or transformation-cause selectors."
+      ],
+      "evidence": "Original Ghidra 0x8011D01C confirms direct byte access at kind*0x74 and four equality tests; no live-object helper is called. Static review only."
+    },
+    {
+      "function": "actorScriptDestroyItem",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "aa215c8a19a4943d7119604ce1e36789be1437c94462c69c846642948dd5d93e",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace an item handle with integer zero after removing an available item from world registries and marking its sibling/descendant hierarchy for deferred destruction.",
+      "dependencies": [
+        "file:include/object_types.h",
+        "file:include/actor_script.h",
+        "file:include/script_vm.h",
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "function:src/ovl/actor_target_interaction.c:actorTryHoldItem",
+        "function:src/ovl/actor_script_queries.c:objectResolveAvailableHandle",
+        "function:src/ovl/actor_script_queries.c:actorGetHeldItemKind",
+        "function:src/ovl/item_registry.c:itemCanBePickedUp",
+        "function:src/ovl/item_registry.c:itemTryRelease",
+        "function:src/ovl/item_registry.c:itemSetMode",
+        "function:src/ovl/item_registry.c:itemSetScale",
+        "function:src/ovl/item_registry.c:itemStartMaterialAnimation",
+        "function:src/ovl/item_special_behaviors.c:baseballCapResetReleasedScale",
+        "function:src/ovl/item_special_behaviors.c:lightBulbResetReleasedGlow",
+        "function:src/game/object_hierarchy.c:objectFindLiveByHandle",
+        "function:src/game/object_hierarchy.c:objectClearHierarchyFlags",
+        "function:src/game/object_hierarchy.c:objectScaleHierarchyBounds",
+        "function:src/game/keyed_pool.c:keyedPoolGetValue",
+        "function:src/game/keyed_pool.c:keyedPoolFindEntry",
+        "function:src/game/animation_tracks.c:animationIntegerTrackInitialize",
+        "function:src/game/animation_tracks.c:animationIntegerTrackEvaluate",
+        "file:src/ovl/item_registry.c",
+        "file:src/game/object_hierarchy.c",
+        "file:include/item_kind.h",
+        "file:include/item_state.h",
+        "file:include/item_types.h",
+        "file:include/item_mode.h",
+        "file:include/item_special_behaviors.h",
+        "file:include/item_size.h",
+        "file:include/texture_animation_programs.h",
+        "file:include/integer_animation_types.h",
+        "file:include/integer_animation.h",
+        "file:include/pikachu_actor.h",
+        "file:include/player_types.h",
+        "file:include/player_state.h",
+        "file:include/object_flags.h",
+        "file:include/keyed_pool_types.h",
+        "file:include/scene_types.h",
+        "file:include/scene_configuration.h",
+        "file:include/script_value.h",
+        "file:docs/LOCAL_SDK_FILES.json",
+        "file:config/pikachu.yaml",
+        "file:tools/materialize_ultralib.py",
+        "file:config/symbol_addrs.txt",
+        "function:src/ovl/item_registry.c:itemDestroy",
+        "function:src/ovl/item_registry.c:itemCompareSearchOrder",
+        "function:src/game/collision_grid.c:collisionGridUnregisterObject",
+        "file:src/game/collision_grid.c",
+        "function:src/game/object_hierarchy.c:objectRequestHierarchyDestruction",
+        "function:src/game/object_hierarchy.c:objectSetHierarchyFlags",
+        "function:src/game/search_tree.c:searchTreeRemove",
+        "function:src/game/search_tree.c:searchTreeLocateRoot",
+        "function:src/game/keyed_pool.c:keyedPoolRemoveKeyAndValue",
+        "function:src/game/keyed_pool.c:keyedPoolFindEntryWithValue",
+        "function:src/game/keyed_pool.c:keyedPoolRemoveEntry",
+        "function:src/game/keyed_pool.c:keyedPoolUnlinkOrderedEntry",
+        "function:src/game/keyed_pool.c:keyedPoolRelocateEntry",
+        "function:src/game/keyed_pool.c:keyedPoolReleaseEntry",
+        "file:include/search_tree_types.h",
+        "file:include/search_tree.h",
+        "file:include/collision_registration.h",
+        "file:include/object_lifecycle.h"
+      ],
+      "preconditions": [
+        "One numeric operand lies above protected locals and frame metadata. Integer and code-reference payloads are signed 32-bit; finite floating operands must truncate to a representable signed 32-bit value. Calling actor, saved ActorScriptState, captured VM and value allocation remain live and disjoint from all helper-written registry, hierarchy, item and owner storage. No concurrent mutation, traversal, destruction or context replacement occurs.",
+        "Only immediate source-bound writes and normal return are reviewed. Both wrappers replace one operand with an integer and return zero to continue; this does not establish retail reachability or later object/resource lifetime.",
+        "The initialized positive-capacity object handle pool has valid acyclic lookup chains. Zero, missing and destruction-marked handles are unavailable; runtime item objects with toolbox ownership are unavailable. An unavailable handle causes no world-state writes. Every available nonzero result must actually be an initialized runtime item of kind 0x86: this wrapper does not verify kind before itemDestroy and arbitrary non-item objects are unsupported.",
+        "Target ItemState storage covers its complete live initialization and catalog kind is 0 through 165. Ownership is one of the established states 0 through 5, consistent with owner and primary-player/actor held handles. Live owner handles must resolve to valid ActorScriptState storage even though owner lookup itself does not kind-check. Target is not the executing actor and no marked hierarchy member owns the executing VM/context or its borrowed program storage.",
+        "itemDestroy calls force-release only when state.owner is nonzero or ownership is player (1). A world item with owner zero bypasses release entirely. Release refusal for suspended ownership (5) does not prevent collision removal, item-tree removal, destruction marking or count decrement; the release result is ignored. Toolbox ownership (4) is already filtered by availability.",
+        "itemTryRelease with force one rejects ownership states 4 and 5; valid states 0 through 3 proceed. Player ownership (1) clears gPlayerHeldItemHandle at 0x800EF724. Actor ownership (2 or 3) resolves the owner handle and clears the live owner ActorScriptState.heldItemHandle at offset 0x190, including when the owner is the caller. A missing owner does not prevent release. Every live owner has a valid, stable actor-layout held-item field. Owner lookup does not establish runtime kind, so that layout is an explicit prerequisite.",
+        "Use the original 166-entry ItemKind.release column at offset 0x48. Only kind 49 selects lightBulbResetReleasedGlow at 0x80123140, and kind 80 selects baseballCapResetReleasedScale at 0x80123060; all other release hooks are null. Arbitrary callback substitution is excluded. These hooks inspect ownership before release resets it: only Pikachu ownership (2) triggers the bulb material-animation reset to 0xF3 or the cap scale reset to one. Hold, launch, collision and update hooks are not invoked by this native.",
+        "The cap callback calls itemSetScale, which restores the root radius from state.baseRadius, sets uniform scale to area.objectScale multiplied by the catalog scale, then recursively scales and halves root and child bounds. Area and catalog scales and bounds must be initialized and finite, and the hierarchy must be acyclic. This describes the helper\u2019s writes; it does not promise that every child bound returns to its original value. The bulb callback initializes the material track from borrowed animation program 0xF3 and sets its active halfword to one. That program must be valid, its jumps must terminate, interpolation must be representable, and interpolation duration must be nonzero. Evaluation with step zero is deterministic and performs no RNG update, allocation or callback.",
+        "A release callback receives the item and former holder address by value. Both retail hooks ignore the holder argument and retain no C-stack pointer. After the hook, release writes world ownership (0), owner zero, modeTime zero and ground-and-air mode (0), then clears the transfer-permission bit. Mode zero recursively clears hierarchy flags 0x700 only when the root has at least one of those bits; otherwise child-only bits remain unchanged. Release performs no collision registration, unregister operation, search-tree mutation, item-count change or resource free.",
+        "Collision key at item state+0x50 is read. For a nonzero key, remove the first matching object-address/key entry from initialized gCollisionCandidateRegistry and clear that key even if no match is found. Removal may change hash-chain links, ordered head/tail/cursor, free list, entry value and active count, including relocating a chained entry into its bucket. All pool invariants and owned entry storage must be valid; no pool allocation or free of its backing storage occurs.",
+        "The initialized item search tree uses exactly itemCompareSearchOrder, comparing signed item-kind halfwords and unsigned object handles. Nodes and their item states are live, acyclic and correctly ordered; the target has its unique registered node. searchTreeRemove splays/relinks the tree, detaches the matching node and may splay the right subtree minimum before joining the left subtree. It can write root and links of other live nodes; detached node storage is not freed and its old links are not promised zero.",
+        "objectRequestHierarchyDestruction ORs 0x62 into unsigned object flags for the target, all following siblings and recursively all descendants, not merely the target subtree. The entire reachable sibling/child graph must be live and acyclic, with sufficient native recursion stack. Earlier release may first clear hierarchy bits 0x700 when root flags gate that operation; preserve this ordering.",
+        "Finally decrement gLiveItemCount once. Count is positive and consistent with the registered target so signed decrement is representable. No handle-pool removal, object free, itemDestroyState call, lighting free, object destruction callback, sound stop, OS queue operation, DMA or transport occurs synchronously. Object and state remain allocated until a later destruction sweep; that sweep and retained graphics/animation lifetimes are outside this immediate contract.",
+        "No existing semantic enum for response codes is assumed. Retail release hooks are the previously reviewed, frozen original catalog callbacks only; unrelated arbitrary callbacks are excluded. Original SDK memory-primitive semantics remain required for the search-tree local sentinel clear and cap/bulb helper operations."
+      ],
+      "evidence": "Original Ghidra 0x8011F3C0 and 0x80113B78 confirm available lookup, optional force release, collision removal, item-tree removal, hierarchy request and count decrement. 0x80114044 confirms release refusal and writes; 0x8002CCB4,0x8004131C,0x80113C04,0x800087BC confirm registry/comparator/deferred-marking chain. Existing active TryHoldItem review supplies frozen retail release-hook, scalar animation and scale closure. No runtime claim."
+    },
+    {
+      "function": "actorScriptFindInteractableItem",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "7da935a023baf09f0dc405251c543ca2bddb4651f2cb5c91a2dbdcc69fb453db",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 2,
+      "stack_delta": -1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace item kind and maximum distance with the nearest eligible candidate\u2019s item kind, or zero; a rejected nearest candidate does not cause a search for the next candidate.",
+      "dependencies": [
+        "file:src/game/search_tree.c",
+        "file:src/game/object_hierarchy.c",
+        "file:src/game/vector_math.c",
+        "file:src/game/trigonometry.c",
+        "file:src/ovl/item_registry.c",
+        "file:src/ovl/actor_script_queries.c",
+        "file:include/object_types.h",
+        "file:include/actor_script.h",
+        "file:include/script_vm.h",
+        "file:include/item_types.h",
+        "file:include/search_tree_types.h",
+        "file:include/player_types.h",
+        "file:include/actor_kind.h",
+        "file:include/matrix_types.h",
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopFloat",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/ovl/script_vm.c:scriptValueGetFloat",
+        "file:include/math_scalar.h",
+        "file:include/search_tree_traversal.h",
+        "file:include/search_tree_lookup.h",
+        "file:include/integer_animation_types.h",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "function:src/ovl/actor_script_queries.c:actorFindInteractableItemKind",
+        "function:src/ovl/item_registry.c:itemCanBePickedUp",
+        "function:src/game/runtime.c:runtimeGetElapsedMilliseconds",
+        "file:src/game/runtime.c",
+        "file:include/player_state.h"
+      ],
+      "preconditions": [
+        "Two numeric operands lie above protected locals and frame metadata, in bottom-to-top order item kind then maximum distance. Kind converts from integer/code-reference or a finite signed-32-bit-representable float, truncating fractions. Distance converts to finite nonnegative f32. The caller actor, ActorScriptState, saved VM and value storage remain live throughout the synchronous call. Query globals, registry nodes, item states and native C-stack scratch do not overlap VM contexts, values, protected frames or program storage. Concurrent query, registry mutation, destruction and context replacement are excluded.",
+        "Cooldown uses the exact unsigned 64-bit subtraction runtimeGetElapsedMilliseconds() minus ActorScriptState.lastInteractionMilliseconds. A difference below 500 returns zero before any item-query state or tree mutation. Underflow wraps and is not clamped; monotonic clocks are needed only for the ordinary cooldown interpretation. The function never updates the interaction timestamp, even on a successful result.",
+        "The full search uses actor worldPosition, actor orientation pitch/yaw, cone 45 degrees, the supplied kind as both endpoints, ownership filter zero and weighting zero. Supported kind values are 0 through 165; endpoint 165 maps the lower bound to 1 and upper bound to 164, so it searches all ordinary kinds. Other values are outside this reviewed catalog domain. Positions, rotations and intermediate transforms are finite and small enough for representable arithmetic, table indices and terminating angle-normalization loops.",
+        "The item search tree is initialized, finite and acyclic, with live valid item objects and states, detached temporary lookup keys and fixed itemCompareSearchOrder comparator. Two preparatory searchTreeFind calls can splay the tree and rewrite existing node links/root. Temporary object/state keys remain on the native stack and are not inserted or retained. Recursive ascending traversal requires sufficient stack and invokes only itemConsiderSearchCandidate.",
+        "Search overwrites the shared gItemNearestSearch record, copied origin and view transform, then selected best pointer and distance. It accepts only world ownership zero, inclusive approximate distance and inclusive absolute wrapped viewing yaw at most 45 degrees. Strict distance comparison preserves the first tie and the initial best-distance ceiling is 2147483648.0f. Weighting is zero, so no item searchPriority reset occurs. There is no separate live-handle or destruction-flag check on registry candidates; valid registry participation is required.",
+        "When ascending traversal is actually invoked, it stores the fixed visitor in gSearchTreeActiveVisitor and clears that global to zero on completion, rather than restoring a previous visitor. Early exits before traversal leave that global unchanged. Query operation is nonreentrant; arbitrary comparator or visitor substitution is unsupported.",
+        "After choosing the nearest candidate, itemCanBePickedUp(candidate, 0) is evaluated. A rejection returns zero without trying a farther candidate and without clearing the shared query best pointer. Because the query already filters world ownership, the relevant ordinary rejection is item flag 0x80. The function does not release, hold or mutate item ownership, invoke item callbacks, or update actor targeting.",
+        "The result is the selected signed-16-bit item kind, or zero during cooldown, when no candidate qualifies, or when the chosen candidate fails pickup eligibility. It is not a handle. The wrapper consumes both operands, pushes one integer and continues. Shared best-pointer storage retains a borrowed item pointer until the next query; no item lifetime is extended. No allocation, free, RNG update, OS queue, DMA, audio or rendering occurs. No runtime claim is made."
+      ],
+      "evidence": "Independent original Ghidra 0x8011D1B0\u20130x8011D204 confirms distance-then-kind pop order, saved VM, helper call, integer result and continuation. 0x80117210\u20130x801172D0 confirms unsigned 64-bit cooldown, fixed 45-degree cone, identical kind endpoints, filter/weight zero and post-selection eligibility. The full itemFindNearest, preparatory splay, fixed comparator/ascending visitor, matrix, angle and distance closure reuses unchanged source-bound FindItemInFacingCone dependencies; no earlier runtime evidence is claimed for this new native.",
+      "runtime_status": "untested"
+    },
+    {
+      "function": "actorScriptChooseEscapeFromPlayer",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "4fe3652ba71390cd29f1e48411f3b18cde1cd2211b9fabb548dc33d853a1ee10",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Append integer zero after choosing a fixed escape destination away from the player; preserve targetHandle, clear tracking mode and allowance, and advance the shared RNG only for nondegenerate separation.",
+      "dependencies": [
+        "function:src/ovl/actor_script_queries.c:actorChooseEscapePosition",
+        "function:src/ovl/actor_script_queries.c:actorSetTargetToFallbackObject",
+        "function:src/game/object_hierarchy.c:objectFindLiveByHandle",
+        "function:src/game/keyed_pool.c:keyedPoolGetValue",
+        "function:src/game/keyed_pool.c:keyedPoolFindEntry",
+        "function:src/game/trigonometry.c:vector3Length",
+        "function:src/game/trigonometry.c:vector3Normalize",
+        "function:src/game/trigonometry.c:randomBelow",
+        "function:src/game/trigonometry.c:randomNext",
+        "function:src/game/trigonometry.c:mathSinDegrees",
+        "function:src/game/trigonometry.c:mathCosDegrees",
+        "file:src/game/trigonometry.c",
+        "file:include/object_types.h",
+        "file:include/object_flags.h",
+        "file:include/keyed_pool_types.h",
+        "file:include/item_types.h",
+        "file:include/actor_kind.h",
+        "file:include/actor_script.h",
+        "file:include/scene_configuration.h",
+        "file:include/scene_types.h",
+        "file:include/random.h",
+        "file:include/object_script_query.h",
+        "file:include/matrix_types.h",
+        "file:include/direction_animation_types.h",
+        "file:include/action_script_types.h",
+        "file:include/script_message.h",
+        "file:src/game/object_hierarchy.c",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "function:src/ovl/actor_script_queries.c:actorChooseEscapePositionFromPlayer",
+        "file:include/player_state.h",
+        "file:include/player_types.h",
+        "file:include/script_vm.h",
+        "file:include/script_value.h"
+      ],
+      "preconditions": [
+        "The caller actor, ActorScriptState, saved VM and value buffer remain live, with one free value slot above protected locals and frame metadata. Actor target fields and shared RNG state do not overlap VM contexts, values, protected frames, native C-stack scratch, player position storage or area configuration. Concurrent mutation, destruction and context replacement are excluded. No script operand is consumed.",
+        "The primary player\u2019s three world-position floats at the start of gPlayerState are readable and stable during this call. The wrapper first writes targetMode zero (fixed target) and targetDistanceAllowance 0.0f, then computes an escape destination. It preserves targetHandle on both normal and fallback paths, along with all unrelated actor state.",
+        "Player and actor world positions, subtraction, squared length, square root, normalization and resulting coordinates are finite. vector3Normalize writes only the native-stack direction vector; separation length at most 0.001 returns zero and selects the fallback branch. In that branch fallbackObjectHandle must resolve to a live object through the initialized positive-capacity handle pool; there is no null guard before copying its world position. The fallback may be the caller itself when its world-position storage is valid and separate from targetPosition.",
+        "The fallback branch copies only the fallback object\u2019s three world-position components into actor targetPosition. It performs no RNG update and does not read the area cell width. Pool lookup traverses valid acyclic hash chains and writes only its local predecessor output; no LRU, splay or pool mutation occurs. Missing or destruction-marked fallback handles are unsupported on this branch.",
+        "For nondegenerate separation, the current area configuration is live and cellDimensions[0] multiplied by four is finite. A positive cell width is required for the stated away-from-player interpretation. Exactly one randomBelow(60) call advances the four-word shared RNG at 0x800F2970\u20130x800F297C and chooses the integer angle (random modulo 60) minus 15, hence -15 through 44 degrees. Original RNG words and sine-table entries 0 through 512 are valid; no random rejection loop or additional RNG update occurs.",
+        "The normalized player-minus-actor direction is rotated around Y by that angle, with its vertical component preserved, multiplied by four cell widths, then subtracted from actor worldPosition. The three resulting floats replace targetPosition at offsets 0x1EC, 0x1F0 and 0x1F4. Trigonometric helpers read lookup data and write only C-stack temporaries. No player position, object position, ownership, handle or resource is modified.",
+        "The player/threat pointer is borrowed only during this call and is not retained. Fixed targeting disables ongoing tracking; the stored destination remains ordinary actor state. The wrapper appends integer zero to the captured VM and continues. No item search, allocation, free, callback, OS queue, DMA, audio or rendering occurs. This review covers both normal and fallback paths under their prerequisites, not later movement, obstacle avoidance, gameplay reachability or lifetime extension. No runtime claim is made."
+      ],
+      "evidence": "Independent original Ghidra 0x8011CCCC\u20130x8011CD00 confirms saved VM, no pops, helper, zero append and continuation. 0x801177C8\u20130x801177F8 writes targetMode/allowance then passes gPlayerState to 0x8011866C. The complete original core through 0x801187E0 confirms normalization fallback before area/RNG access, one randomBelow(60) call, four trig calls and only targetPosition stores. Existing unchanged TrackEscapeFromObject dependencies close fallback lookup, normalization, four-word RNG and sine/cosine helpers; tracking-specific writes and runtime evidence are not inherited.",
+      "runtime_status": "untested"
+    },
+    {
+      "function": "actorScriptPassThroughFloat",
+      "file": "src/ovl/actor_script_action_commands.c",
+      "sha256": "aa2d7dd430233f3bf8fb0154f4fcddf60bdbeea19ee529d8e0f85d046fabcbe2",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "float",
+      "scheduling": "continue",
+      "result_semantics": "Replace one numeric operand with its binary32 conversion, tagged as a float; integer/code-reference arguments are not preserved as integer tags.",
+      "dependencies": [
+        "function:src/ovl/script_vm.c:scriptVmPopFloat",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "function:src/ovl/script_vm.c:scriptValueSetFloat",
+        "file:docs/LOCAL_SDK_FILES.json",
+        "file:config/pikachu.yaml",
+        "file:config/symbol_addrs.txt",
+        "file:tools/materialize_ultralib.py",
+        "file:include/ultra64.h",
+        "file:include/PR/os_libc.h"
+      ],
+      "preconditions": [
+        "The calling actor, live actor state, retained VM, owned value storage and helper C stack remain valid and nonoverlapping. One operand lies above every protected local and frame-metadata slot; its existing slot can receive the result. No concurrent writer, context replacement or destruction interleaves the call.",
+        "Accepted numeric inputs are tag-1 finite binary32 values, or tag-0 integer/tag-2 code-reference signed payloads converted to binary32 by the original target FPU. Integer conversion can round. Other tags, nonfinite float payloads and host-language reinterpretations are outside this reviewed domain.",
+        "The original target FPU environment remains valid, with relevant exceptions disabled and the intended rounding/flush behavior. Floating-point conversion, lookup arithmetic or square root may change FPU status flags; this storage contract does not promise unchanged processor/FCSR state.",
+        "Memory writes are limited to owned helper C-stack temporaries, the consumed five-byte value slot rewritten with float tag 1 and four payload bytes, and VM depth decrement/restoration. Final depth is unchanged; lower values, protected frame metadata and unrelated actor/global storage are preserved under the stated disjointness assumptions.",
+        "Original ROM SDK bcopy at 0x80052610 supplies the fixed four-byte copies inside numeric get/set helpers. Its authenticated small-copy path accesses only four source/destination bytes, performs no indirect callback or scheduler operation, and requires valid nonwrapping nonoverlapping ranges. Tracked SDK manifest/configuration/materializer provenance is bound; frame-source fingerprints alone do not authenticate generated SDK assembly. No SDK source is redistributed by this review."
+      ],
+      "evidence": "Source and original Ghidra 0x8011C2A8 show only capture of VM, float pop and float push, then continue. There is no additional mathematical helper. Read-only original Ghidra 0x8011549C/0x801160DC/0x8011550C/0x8011604C agrees with numeric pop, conversion and float push/set source. Local generated bcopy instruction words were checked against the authenticated normalized ROM; its small-copy control flow was inspected directly because the resident-function Ghidra artifact omits SDK instructions. No runtime observations are claimed.",
+      "sdk_instruction_ranges": [
+        {
+          "function": "bcopy",
+          "address": 2147821072,
+          "size": 772,
+          "sha256": "f398a13824f7307d1d66f05ca80f49e0ed734886d23c0d2a3bcdd4f11601b6b0"
+        }
+      ]
+    },
+    {
+      "function": "actorScriptSinDegrees",
+      "file": "src/ovl/actor_script_collection_profile.c",
+      "sha256": "5b131270582a70d388118e03f9e976ab2c18ebe1c57fbf795c762c71f4a9f21d",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "float",
+      "scheduling": "continue",
+      "result_semantics": "Replace the converted degree angle with the original 2048-units-per-turn quarter-table sine approximation.",
+      "dependencies": [
+        "function:src/ovl/script_vm.c:scriptVmPopFloat",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "function:src/ovl/script_vm.c:scriptValueSetFloat",
+        "file:docs/LOCAL_SDK_FILES.json",
+        "file:config/pikachu.yaml",
+        "file:config/symbol_addrs.txt",
+        "file:tools/materialize_ultralib.py",
+        "file:include/ultra64.h",
+        "file:include/PR/os_libc.h",
+        "function:src/game/trigonometry.c:mathSinDegrees",
+        "function:src/game/trigonometry.c:mathCosDegrees",
+        "file:src/game/trigonometry.c",
+        "file:include/math_angles.h"
+      ],
+      "preconditions": [
+        "The calling actor, live actor state, retained VM, owned value storage and helper C stack remain valid and nonoverlapping. One operand lies above every protected local and frame-metadata slot; its existing slot can receive the result. No concurrent writer, context replacement or destruction interleaves the call.",
+        "Accepted numeric inputs are tag-1 finite binary32 values, or tag-0 integer/tag-2 code-reference signed payloads converted to binary32 by the original target FPU. Integer conversion can round. Other tags, nonfinite float payloads and host-language reinterpretations are outside this reviewed domain.",
+        "The original target FPU environment remains valid, with relevant exceptions disabled and the intended rounding/flush behavior. Floating-point conversion, lookup arithmetic or square root may change FPU status flags; this storage contract does not promise unchanged processor/FCSR state.",
+        "Memory writes are limited to owned helper C-stack temporaries, the consumed five-byte value slot rewritten with float tag 1 and four payload bytes, and VM depth decrement/restoration. Final depth is unchanged; lower values, protected frame metadata and unrelated actor/global storage are preserved under the stated disjointness assumptions.",
+        "Original ROM SDK bcopy at 0x80052610 supplies the fixed four-byte copies inside numeric get/set helpers. Its authenticated small-copy path accesses only four source/destination bytes, performs no indirect callback or scheduler operation, and requires valid nonwrapping nonoverlapping ranges. Tracked SDK manifest/configuration/materializer provenance is bound; frame-source fingerprints alone do not authenticate generated SDK assembly. No SDK source is redistributed by this review.",
+        "After binary32 conversion, degree-to-index arithmetic must remain finite and its original binary32 rounded value r must satisfy -2147483648 <= r < 2147483648 before truncation to s32. The helper computes binary32 t=degrees*5.688889, then r=t+0.5 for nonnegative t or t-0.5 otherwise. Validity of the original conversion is required; arbitrary finite degrees alone are insufficient.",
+        "The original 513-float quarter-sine table at 0x8009CC04 remains readable and unchanged, disjoint from output and native-stack storage. Masking the valid converted index to 11 bits bounds reads to samples 0 through 512, followed by the appropriate sign/reflection. This is a table approximation, not a host libm sine or cosine call; no interpolation, allocation or callback occurs in these inspected game helpers."
+      ],
+      "evidence": "Source and original Ghidra 0x80120CF8/0x8003C3DC agree on float operand conversion and the rounded/masked quarter-table lookup. The authenticated 2052-byte sample span has SHA256 5da1173cc1691bacd3ffb4948bd82af627b84cdb81984b9b19f6bb6e17ef512f. Read-only original Ghidra 0x8011549C/0x801160DC/0x8011550C/0x8011604C agrees with numeric pop, conversion and float push/set source. Local generated bcopy instruction words were checked against the authenticated normalized ROM; its small-copy control flow was inspected directly because the resident-function Ghidra artifact omits SDK instructions. No runtime observations are claimed.",
+      "sdk_instruction_ranges": [
+        {
+          "function": "bcopy",
+          "address": 2147821072,
+          "size": 772,
+          "sha256": "f398a13824f7307d1d66f05ca80f49e0ed734886d23c0d2a3bcdd4f11601b6b0"
+        }
+      ]
+    },
+    {
+      "function": "actorScriptCosDegrees",
+      "file": "src/ovl/actor_script_collection_profile.c",
+      "sha256": "65e55d6c1a4bffb1efe0861493bde9f21ca86aaa001f465faad9b5bf0379caf4",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "float",
+      "scheduling": "continue",
+      "result_semantics": "Replace the converted degree angle with the sine-table approximation of the original binary32 angle plus 90 degrees.",
+      "dependencies": [
+        "function:src/ovl/script_vm.c:scriptVmPopFloat",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "function:src/ovl/script_vm.c:scriptValueSetFloat",
+        "file:docs/LOCAL_SDK_FILES.json",
+        "file:config/pikachu.yaml",
+        "file:config/symbol_addrs.txt",
+        "file:tools/materialize_ultralib.py",
+        "file:include/ultra64.h",
+        "file:include/PR/os_libc.h",
+        "function:src/game/trigonometry.c:mathSinDegrees",
+        "function:src/game/trigonometry.c:mathCosDegrees",
+        "file:src/game/trigonometry.c",
+        "file:include/math_angles.h"
+      ],
+      "preconditions": [
+        "The calling actor, live actor state, retained VM, owned value storage and helper C stack remain valid and nonoverlapping. One operand lies above every protected local and frame-metadata slot; its existing slot can receive the result. No concurrent writer, context replacement or destruction interleaves the call.",
+        "Accepted numeric inputs are tag-1 finite binary32 values, or tag-0 integer/tag-2 code-reference signed payloads converted to binary32 by the original target FPU. Integer conversion can round. Other tags, nonfinite float payloads and host-language reinterpretations are outside this reviewed domain.",
+        "The original target FPU environment remains valid, with relevant exceptions disabled and the intended rounding/flush behavior. Floating-point conversion, lookup arithmetic or square root may change FPU status flags; this storage contract does not promise unchanged processor/FCSR state.",
+        "Memory writes are limited to owned helper C-stack temporaries, the consumed five-byte value slot rewritten with float tag 1 and four payload bytes, and VM depth decrement/restoration. Final depth is unchanged; lower values, protected frame metadata and unrelated actor/global storage are preserved under the stated disjointness assumptions.",
+        "Original ROM SDK bcopy at 0x80052610 supplies the fixed four-byte copies inside numeric get/set helpers. Its authenticated small-copy path accesses only four source/destination bytes, performs no indirect callback or scheduler operation, and requires valid nonwrapping nonoverlapping ranges. Tracked SDK manifest/configuration/materializer provenance is bound; frame-source fingerprints alone do not authenticate generated SDK assembly. No SDK source is redistributed by this review.",
+        "The original binary32 addition of 90 degrees must be finite and produce an angle satisfying the following sine-domain obligation.",
+        "After binary32 conversion, degree-to-index arithmetic must remain finite and its original binary32 rounded value r must satisfy -2147483648 <= r < 2147483648 before truncation to s32. The helper computes binary32 t=degrees*5.688889, then r=t+0.5 for nonnegative t or t-0.5 otherwise. Validity of the original conversion is required; arbitrary finite degrees alone are insufficient.",
+        "The original 513-float quarter-sine table at 0x8009CC04 remains readable and unchanged, disjoint from output and native-stack storage. Masking the valid converted index to 11 bits bounds reads to samples 0 through 512, followed by the appropriate sign/reflection. This is a table approximation, not a host libm sine or cosine call; no interpolation, allocation or callback occurs in these inspected game helpers."
+      ],
+      "evidence": "Source and original Ghidra 0x80120D38/0x8003C4D0/0x8003C3DC agree on binary32 angle+90 followed by the same sine lookup. The authenticated 2052-byte sample span has SHA256 5da1173cc1691bacd3ffb4948bd82af627b84cdb81984b9b19f6bb6e17ef512f. Read-only original Ghidra 0x8011549C/0x801160DC/0x8011550C/0x8011604C agrees with numeric pop, conversion and float push/set source. Local generated bcopy instruction words were checked against the authenticated normalized ROM; its small-copy control flow was inspected directly because the resident-function Ghidra artifact omits SDK instructions. No runtime observations are claimed.",
+      "sdk_instruction_ranges": [
+        {
+          "function": "bcopy",
+          "address": 2147821072,
+          "size": 772,
+          "sha256": "f398a13824f7307d1d66f05ca80f49e0ed734886d23c0d2a3bcdd4f11601b6b0"
+        }
+      ]
+    },
+    {
+      "function": "actorScriptSquareRoot",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "56eee9041d28b2c980359fe2e7d2343caebbe7d67cf3c8926e8c44c0c9afb6bc",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "float",
+      "scheduling": "continue",
+      "result_semantics": "Replace the converted nonnegative binary32 operand with the binary32 rounding of its original double-precision square root. The matched wrapper uses FPU instructions rather than calling the SDK sqrt entry point.",
+      "dependencies": [
+        "function:src/ovl/script_vm.c:scriptVmPopFloat",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "function:src/ovl/script_vm.c:scriptValueSetFloat",
+        "file:docs/LOCAL_SDK_FILES.json",
+        "file:config/pikachu.yaml",
+        "file:config/symbol_addrs.txt",
+        "file:tools/materialize_ultralib.py",
+        "file:include/ultra64.h",
+        "file:include/PR/os_libc.h",
+        "file:src/ovl/actor_script_messages_items.c",
+        "file:include/square_root.h",
+        "file:Makefile"
+      ],
+      "preconditions": [
+        "The calling actor, live actor state, retained VM, owned value storage and helper C stack remain valid and nonoverlapping. One operand lies above every protected local and frame-metadata slot; its existing slot can receive the result. No concurrent writer, context replacement or destruction interleaves the call.",
+        "Accepted numeric inputs are tag-1 finite binary32 values, or tag-0 integer/tag-2 code-reference signed payloads converted to binary32 by the original target FPU. Integer conversion can round. Other tags, nonfinite float payloads and host-language reinterpretations are outside this reviewed domain.",
+        "The original target FPU environment remains valid, with relevant exceptions disabled and the intended rounding/flush behavior. Floating-point conversion, lookup arithmetic or square root may change FPU status flags; this storage contract does not promise unchanged processor/FCSR state.",
+        "Memory writes are limited to owned helper C-stack temporaries, the consumed five-byte value slot rewritten with float tag 1 and four payload bytes, and VM depth decrement/restoration. Final depth is unchanged; lower values, protected frame metadata and unrelated actor/global storage are preserved under the stated disjointness assumptions.",
+        "Original ROM SDK bcopy at 0x80052610 supplies the fixed four-byte copies inside numeric get/set helpers. Its authenticated small-copy path accesses only four source/destination bytes, performs no indirect callback or scheduler operation, and requires valid nonwrapping nonoverlapping ranges. Tracked SDK manifest/configuration/materializer provenance is bound; frame-source fingerprints alone do not authenticate generated SDK assembly. No SDK source is redistributed by this review.",
+        "The converted binary32 operand is finite and nonnegative (signed zero is permitted). The target FPU conversion to double, sqrt.D and conversion back to single complete under the stated FPU environment; negative/nonfinite inputs and enabled exception handlers are outside this review."
+      ],
+      "evidence": "Original Ghidra disassembly at 0x8011D928..0x8011D934 shows cvt.d.S, sqrt.D, cvt.s.D between the float pop and push. Whole wrapper source binds #pragma intrinsic(sqrt); square_root.h binds its double signature and Makefile binds the matching compiler configuration. The SDK sqrt body is not reached by this matched wrapper. Read-only original Ghidra 0x8011549C/0x801160DC/0x8011550C/0x8011604C agrees with numeric pop, conversion and float push/set source. Local generated bcopy instruction words were checked against the authenticated normalized ROM; its small-copy control flow was inspected directly because the resident-function Ghidra artifact omits SDK instructions. No runtime observations are claimed.",
+      "sdk_instruction_ranges": [
+        {
+          "function": "bcopy",
+          "address": 2147821072,
+          "size": 772,
+          "sha256": "f398a13824f7307d1d66f05ca80f49e0ed734886d23c0d2a3bcdd4f11601b6b0"
+        }
+      ]
     }
   ],
   "dependency_catalog": {
@@ -10835,7 +11342,7 @@
     "file:config/symbol_addrs.txt": {
       "kind": "file",
       "file": "config/symbol_addrs.txt",
-      "sha256": "961534034d13cb197798ec0942bd9efa85a50d51cd4c85b95020decbecc4f220"
+      "sha256": "4dbd383d89f75c3c9feb93671657ce9de3052a1ae74dcebc821edc8e3713431c"
     },
     "file:docs/LOCAL_SDK_FILES.json": {
       "kind": "file",
@@ -10876,6 +11383,11 @@
       "kind": "file",
       "file": "include/PR/os_internal.h",
       "sha256": "6e4de33297a86011b97fdbfa33ecc1c22e527000be56228b53a29e1bd6952354"
+    },
+    "file:include/PR/os_libc.h": {
+      "kind": "file",
+      "file": "include/PR/os_libc.h",
+      "sha256": "111fc96a544d9e0c4ae6fd3883237bc42c832987faf2c63e9dcf3d40dca6eda8"
     },
     "file:include/PR/os_message.h": {
       "kind": "file",
@@ -11091,6 +11603,11 @@
       "kind": "file",
       "file": "include/camera_visibility.h",
       "sha256": "f37dd47091248444407ea3dbc04bbf3915c923ca4f5040dd2723ab74d812892b"
+    },
+    "file:include/collision_registration.h": {
+      "kind": "file",
+      "file": "include/collision_registration.h",
+      "sha256": "6709e7e564251e96a5c0b343588fa5b4042f5d28de70d695b9875b0dad56b11b"
     },
     "file:include/color_transition.h": {
       "kind": "file",
@@ -11337,6 +11854,11 @@
       "file": "include/object_kind_callbacks.h",
       "sha256": "16b8c7d03046d15ff1cbeef889b8568337d7637b7039a7c6f9c0e2ab4d1eaa8f"
     },
+    "file:include/object_lifecycle.h": {
+      "kind": "file",
+      "file": "include/object_lifecycle.h",
+      "sha256": "90ccffed7559c87f923286d48280b6350bb773121006ac2b11e00de79c1354c4"
+    },
     "file:include/object_script_query.h": {
       "kind": "file",
       "file": "include/object_script_query.h",
@@ -11405,7 +11927,7 @@
     "file:include/progress_field_ids.h": {
       "kind": "file",
       "file": "include/progress_field_ids.h",
-      "sha256": "481d836bbca6c631cd58394d63ae58b4fa25608c6a934be563144aa8c3bab652"
+      "sha256": "97f1bb642972606a790ad05103a9720bcbfe1f0fb110b94e54d3ef855c049e65"
     },
     "file:include/progress_field_types.h": {
       "kind": "file",
@@ -11541,6 +12063,11 @@
       "kind": "file",
       "file": "include/sound_effect_player.h",
       "sha256": "6325b8f0ebf7e1bb0d362a8c34cd921ff88d2648ed6b1b4d06ddf39358b376e7"
+    },
+    "file:include/square_root.h": {
+      "kind": "file",
+      "file": "include/square_root.h",
+      "sha256": "0ae42e2a353d9f8d1abd34321eb0ac702d1f65fe249dc2efb1b9a2273a7171aa"
     },
     "file:include/story_chapter.h": {
       "kind": "file",
@@ -11685,7 +12212,7 @@
     "file:src/game/collection_presentation.c": {
       "kind": "file",
       "file": "src/game/collection_presentation.c",
-      "sha256": "f74c587a38def0e5d3988476953328cea7b2fef2109cb74854b7245d97e9f369"
+      "sha256": "6739882762446136bae4d5df93443c834d5d969ddb136adea9b5b9af76ea7929"
     },
     "file:src/game/collision_grid.c": {
       "kind": "file",
@@ -11841,6 +12368,11 @@
       "kind": "file",
       "file": "src/ovl/actor_script_actions.c",
       "sha256": "3af5d465618a3c3f9de31b1b157e8695dbf36bca77a507111b8807bdc8d36aec"
+    },
+    "file:src/ovl/actor_script_messages_items.c": {
+      "kind": "file",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "d4fcbce969e37f7fae7940609b8bb02c66b146dc075d7b1abca52cd16d379544"
     },
     "file:src/ovl/actor_script_queries.c": {
       "kind": "file",
@@ -12102,7 +12634,13 @@
       "kind": "function",
       "file": "src/game/collection_presentation.c",
       "function": "progressUpdateChapterAfterVisit",
-      "sha256": "f39759b17631616b1f9b111095ddcdd642690c9833d65b6af13b1a3e422141b3"
+      "sha256": "caf62aa4d16a81216d1de78e4de13a935530455dd7e45859dfde91aafd1783e7"
+    },
+    "function:src/game/collision_grid.c:collisionGridUnregisterObject": {
+      "kind": "function",
+      "file": "src/game/collision_grid.c",
+      "sha256": "63c768445b2ac4d395bb326e5e5b9fd6fa11f4fd83636053bf0428b2a4a637e2",
+      "function": "collisionGridUnregisterObject"
     },
     "function:src/game/doors_object_responses.c:doorSetAccessState": {
       "kind": "function",
@@ -12254,6 +12792,12 @@
       "function": "keyedPoolFindEntry",
       "sha256": "2c4d9787ed139519f2981eb227805c3b38046a0baf47287ae6ecc2156f5665c6"
     },
+    "function:src/game/keyed_pool.c:keyedPoolFindEntryWithValue": {
+      "kind": "function",
+      "file": "src/game/keyed_pool.c",
+      "sha256": "76d94f86899a2254666baa984036c99aa9ffd3607775168f3dacfe1c051030a5",
+      "function": "keyedPoolFindEntryWithValue"
+    },
     "function:src/game/keyed_pool.c:keyedPoolGetValue": {
       "kind": "function",
       "file": "src/game/keyed_pool.c",
@@ -12299,20 +12843,20 @@
     "function:src/game/keyed_pool.c:keyedPoolReleaseEntry": {
       "kind": "function",
       "file": "src/game/keyed_pool.c",
-      "function": "keyedPoolReleaseEntry",
-      "sha256": "4b2d90664f0b8a4977f7a78f84d90e8185255df15b4fcfc532fa5c2e1be561f0"
+      "sha256": "4b2d90664f0b8a4977f7a78f84d90e8185255df15b4fcfc532fa5c2e1be561f0",
+      "function": "keyedPoolReleaseEntry"
     },
     "function:src/game/keyed_pool.c:keyedPoolRelocateEntry": {
       "kind": "function",
       "file": "src/game/keyed_pool.c",
-      "function": "keyedPoolRelocateEntry",
-      "sha256": "95288275465a939b583f388c9202cd518c46ca1cc594970fa8ceafbd9ea9f1ce"
+      "sha256": "95288275465a939b583f388c9202cd518c46ca1cc594970fa8ceafbd9ea9f1ce",
+      "function": "keyedPoolRelocateEntry"
     },
     "function:src/game/keyed_pool.c:keyedPoolRemoveEntry": {
       "kind": "function",
       "file": "src/game/keyed_pool.c",
-      "function": "keyedPoolRemoveEntry",
-      "sha256": "510160d054c0ed101623c12b1cc78e7d5123062871d1cbdf8c64e965635d86f0"
+      "sha256": "510160d054c0ed101623c12b1cc78e7d5123062871d1cbdf8c64e965635d86f0",
+      "function": "keyedPoolRemoveEntry"
     },
     "function:src/game/keyed_pool.c:keyedPoolRemoveFirstForKey": {
       "kind": "function",
@@ -12320,11 +12864,17 @@
       "function": "keyedPoolRemoveFirstForKey",
       "sha256": "53de841560c4d7f61a5aebf106887374bbb256f0728d59513bffac9d1cab84e8"
     },
+    "function:src/game/keyed_pool.c:keyedPoolRemoveKeyAndValue": {
+      "kind": "function",
+      "file": "src/game/keyed_pool.c",
+      "sha256": "dcf00d5f90e87cb30f7f11eaa28d47149166adaa28df84ba331061d7a84bf4b8",
+      "function": "keyedPoolRemoveKeyAndValue"
+    },
     "function:src/game/keyed_pool.c:keyedPoolUnlinkOrderedEntry": {
       "kind": "function",
       "file": "src/game/keyed_pool.c",
-      "function": "keyedPoolUnlinkOrderedEntry",
-      "sha256": "fb126a39e62e2e529e7530617b5318f55de6951d5fc95e11bbe691b084205351"
+      "sha256": "fb126a39e62e2e529e7530617b5318f55de6951d5fc95e11bbe691b084205351",
+      "function": "keyedPoolUnlinkOrderedEntry"
     },
     "function:src/game/microphone_requests.c:micGetRequestedDictionary": {
       "kind": "function",
@@ -12494,6 +13044,12 @@
       "function": "objectRegisterHierarchyInSearchTree",
       "sha256": "e42735a96a6f9076aa076b707824bc6ff3c89e992f577bbadb01c2b5d6f96ce8"
     },
+    "function:src/game/object_hierarchy.c:objectRequestHierarchyDestruction": {
+      "kind": "function",
+      "file": "src/game/object_hierarchy.c",
+      "sha256": "aa05ee5b933bd6e9ab3e3ab21fbdf47afe5070db302d50e3fd64a699e631ab6a",
+      "function": "objectRequestHierarchyDestruction"
+    },
     "function:src/game/object_hierarchy.c:objectScaleHierarchyBounds": {
       "kind": "function",
       "file": "src/game/object_hierarchy.c",
@@ -12503,8 +13059,8 @@
     "function:src/game/object_hierarchy.c:objectSetHierarchyFlags": {
       "kind": "function",
       "file": "src/game/object_hierarchy.c",
-      "function": "objectSetHierarchyFlags",
-      "sha256": "bd6c60e677a410581966e6d8cf2fa9134e3ae3b43e8aff17e81421e0daf1487a"
+      "sha256": "bd6c60e677a410581966e6d8cf2fa9134e3ae3b43e8aff17e81421e0daf1487a",
+      "function": "objectSetHierarchyFlags"
     },
     "function:src/game/object_hierarchy.c:romByteReaderInitialize": {
       "kind": "function",
@@ -12583,6 +13139,12 @@
       "file": "src/game/rom_dma.c",
       "function": "romDmaWaitForQueue",
       "sha256": "95b26d8184a72e9ca84fe3be91599991a190904755871351032c2dcdcf697547"
+    },
+    "function:src/game/runtime.c:runtimeGetElapsedMilliseconds": {
+      "kind": "function",
+      "file": "src/game/runtime.c",
+      "function": "runtimeGetElapsedMilliseconds",
+      "sha256": "52340d0ed01fb5c56b2d76ffd6de37b0fe147a35309b6f7ab4b080f0e5202f93"
     },
     "function:src/game/save_progress.c:directionAnimationReset": {
       "kind": "function",
@@ -12665,8 +13227,14 @@
     "function:src/game/search_tree.c:searchTreeLocateRoot": {
       "kind": "function",
       "file": "src/game/search_tree.c",
-      "function": "searchTreeLocateRoot",
-      "sha256": "bfd40b6757510b2f9ea2642405bce41347b9763d4be6ae0b58c2c9915d8365f3"
+      "sha256": "bfd40b6757510b2f9ea2642405bce41347b9763d4be6ae0b58c2c9915d8365f3",
+      "function": "searchTreeLocateRoot"
+    },
+    "function:src/game/search_tree.c:searchTreeRemove": {
+      "kind": "function",
+      "file": "src/game/search_tree.c",
+      "sha256": "f72fa3349d20506b9db0cf71b77af86570981b652595fdefd3fd24105fc3d433",
+      "function": "searchTreeRemove"
     },
     "function:src/game/sequence_control.c:sequenceControlRequestVolume": {
       "kind": "function",
@@ -12961,6 +13529,18 @@
       "file": "src/ovl/actor_script_queries.c",
       "function": "actorChooseEscapePosition",
       "sha256": "f0b96d9d6ed92353f7257e92ef3aa41fc40801f6b365d6c11b132b786774b1b3"
+    },
+    "function:src/ovl/actor_script_queries.c:actorChooseEscapePositionFromPlayer": {
+      "kind": "function",
+      "file": "src/ovl/actor_script_queries.c",
+      "function": "actorChooseEscapePositionFromPlayer",
+      "sha256": "5a3b110b0274b44e20f0e262452cc742d8cd7c9061dc9eee811fb4a62ba3ebdd"
+    },
+    "function:src/ovl/actor_script_queries.c:actorFindInteractableItemKind": {
+      "kind": "function",
+      "file": "src/ovl/actor_script_queries.c",
+      "function": "actorFindInteractableItemKind",
+      "sha256": "cb6e1e15778ffe758f58add60e8e58b9b8ce992320ad0ebdd7eb8b9463771dd9"
     },
     "function:src/ovl/actor_script_queries.c:actorGetAvailableTargetHandle": {
       "kind": "function",
@@ -13295,14 +13875,20 @@
     "function:src/ovl/item_registry.c:itemCompareSearchOrder": {
       "kind": "function",
       "file": "src/ovl/item_registry.c",
-      "function": "itemCompareSearchOrder",
-      "sha256": "25a0c1b7e1b801a7e530ac4601639aac44b023315514b92c14661d78c0ae4006"
+      "sha256": "25a0c1b7e1b801a7e530ac4601639aac44b023315514b92c14661d78c0ae4006",
+      "function": "itemCompareSearchOrder"
     },
     "function:src/ovl/item_registry.c:itemCreate": {
       "kind": "function",
       "file": "src/ovl/item_registry.c",
       "function": "itemCreate",
       "sha256": "1630c9e0564af6ada93b260ead7f6222db84e35f305c9dad2b9f53174adec7c7"
+    },
+    "function:src/ovl/item_registry.c:itemDestroy": {
+      "kind": "function",
+      "file": "src/ovl/item_registry.c",
+      "sha256": "397e1c36d42586244dd35048356e5266b111f7342eb962ab8234d29ab3487d1c",
+      "function": "itemDestroy"
     },
     "function:src/ovl/item_registry.c:itemGetClass": {
       "kind": "function",
@@ -13442,6 +14028,12 @@
       "sha256": "358b022ab390e0e1ee0ef284813614b1487763f31c11cc4a42e6a9a16104ec51",
       "function": "playerSetViewAngles"
     },
+    "function:src/ovl/player_companion.c:playerSetViewPitch": {
+      "kind": "function",
+      "file": "src/ovl/player_companion.c",
+      "function": "playerSetViewPitch",
+      "sha256": "716279218120369689e1fbe1283802557c365ed8a4273eb643358303df90ebac"
+    },
     "function:src/ovl/player_companion.c:playerSetViewYaw": {
       "kind": "function",
       "file": "src/ovl/player_companion.c",
@@ -13469,8 +14061,8 @@
     "function:src/ovl/script_vm.c:scriptValueGetFloat": {
       "kind": "function",
       "file": "src/ovl/script_vm.c",
-      "sha256": "94e6ff080eea82e2661ec2adbc45a33a6a2141b10ff8d1263f580c2c5433c6b1",
-      "function": "scriptValueGetFloat"
+      "function": "scriptValueGetFloat",
+      "sha256": "94e6ff080eea82e2661ec2adbc45a33a6a2141b10ff8d1263f580c2c5433c6b1"
     },
     "function:src/ovl/script_vm.c:scriptValueGetInteger": {
       "kind": "function",
@@ -13481,8 +14073,8 @@
     "function:src/ovl/script_vm.c:scriptValueSetFloat": {
       "kind": "function",
       "file": "src/ovl/script_vm.c",
-      "sha256": "b9a37e6fc2429c753b45f7c984d87bd0b557cb040f09685c4a365409905c1ded",
-      "function": "scriptValueSetFloat"
+      "function": "scriptValueSetFloat",
+      "sha256": "b9a37e6fc2429c753b45f7c984d87bd0b557cb040f09685c4a365409905c1ded"
     },
     "function:src/ovl/script_vm.c:scriptValueSetInteger": {
       "kind": "function",
@@ -13505,8 +14097,8 @@
     "function:src/ovl/script_vm.c:scriptVmPopFloat": {
       "kind": "function",
       "file": "src/ovl/script_vm.c",
-      "sha256": "6ab64e75a64605c75c85f685e506c90c9970819578d94a601eb7b1bae774744b",
-      "function": "scriptVmPopFloat"
+      "function": "scriptVmPopFloat",
+      "sha256": "6ab64e75a64605c75c85f685e506c90c9970819578d94a601eb7b1bae774744b"
     },
     "function:src/ovl/script_vm.c:scriptVmPopInteger": {
       "kind": "function",
@@ -13529,8 +14121,8 @@
     "function:src/ovl/script_vm.c:scriptVmPushFloat": {
       "kind": "function",
       "file": "src/ovl/script_vm.c",
-      "sha256": "fd33174a7c7a21b74ad340f740d532243d6d094191cfa3e127c70b3b9191c10a",
-      "function": "scriptVmPushFloat"
+      "function": "scriptVmPushFloat",
+      "sha256": "fd33174a7c7a21b74ad340f740d532243d6d094191cfa3e127c70b3b9191c10a"
     },
     "function:src/ovl/script_vm.c:scriptVmPushInteger": {
       "kind": "function",
