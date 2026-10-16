@@ -1398,10 +1398,11 @@ The three general object queries are not interchangeable:
 The catalog's `object_query_roles` binds immediate captures and comparisons to
 this raw-kind query. Across retained configurations it records 65 capture
 observations and twelve equality observations: seven against runtime item kind
-134, four against Poliwag actor kind 12 and one against cave kind 176. Shared
-programs referenced by multiple configurations are counted more than once. These
-are operand meanings, not proven branch outcomes or persistent names for the
-destination variables. Intervening operations
+134, four against Poliwag actor kind 12 and one against cave kind 176. Identical
+bytecode in separate scene programs remains separate observations; a shared code
+hash does not establish shared resources, native tables or runtime ownership.
+These are operand meanings, not proven branch outcomes or persistent names for
+the destination variables. Intervening operations
 end this analysis; later reads require a separate reaching-definition proof.
 
 Actor configurations use runtime kinds 1–37, so their raw kind and actor ID
