@@ -389,7 +389,7 @@
     {
       "function": "scriptCommandRemoveMazeBlock",
       "file": "src/ovl/script_demo_item_commands.c",
-      "sha256": "18481beb42a8c85e78b90488f342694854dbc1c519fcccc1aa975379548ea761",
+      "sha256": "b79bd09cafb58ff52a4d6710abb72934de0469884a6d318eb3492dceb0ae5827",
       "effect": "replace_argument_with_scalar",
       "arguments": 1,
       "stack_delta": 0,

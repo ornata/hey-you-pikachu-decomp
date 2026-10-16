@@ -192,7 +192,10 @@ class ObjectQueryRoleTests(unittest.TestCase):
         snapshot = self.snapshot()
         with patch.object(roles, 'NATIVE_REVIEW_SHA256', roles._digest(snapshot[0]['active'][roles.NATIVE_NAME])):
             for value, expected in ((134, 'RUNTIME_OBJECT_KIND_ITEM'),
+                                    (131, 'RUNTIME_OBJECT_KIND_MAZE_ROOT'),
+                                    (136, 'RUNTIME_OBJECT_KIND_MAZE_BLOCK'),
                                     (175, 'RUNTIME_OBJECT_KIND_SCENE_REGION'),
+                                    (177, 'RUNTIME_OBJECT_KIND_SCROLL_BOARD'),
                                     (12, 'ACTOR_KIND_POLIWAG')):
                 result = roles.object_query_roles(self.fixture(literal=value), snapshot=snapshot)
                 self.assertEqual(result['status'], 'conditional_roles')

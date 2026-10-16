@@ -1764,7 +1764,7 @@ void mazePlaceBlockObject(u8 *position, u8 *objectTemplate) {
 
     sp1C = areaFindPositionNode(((f32 *)position)[0], ((f32 *)position)[1], ((f32 *)position)[2]);
     blockHierarchy = objectCreateHierarchyFromTemplate((ObjectTemplate *)objectTemplate);
-    ((RuntimeObjectPrefix *)blockHierarchy)->kind = 0x88;
+    ((RuntimeObjectPrefix *)blockHierarchy)->kind = RUNTIME_OBJECT_KIND_MAZE_BLOCK;
     registeredHierarchy = objectRegisterActiveHierarchy(blockHierarchy);
     ((RuntimeObjectPrefix *)registeredHierarchy)->position[0] = ((MazeNode *)sp1C)->x;
     ((RuntimeObjectPrefix *)registeredHierarchy)->position[1] = ((MazeNode *)sp1C)->y;
@@ -2081,7 +2081,7 @@ void mazeInitialize(void) {
 
     gMazeDiagnosticBlockCount = 0;
     mazeObject = objectCreateDefault();
-    ((RuntimeObjectPrefix *)mazeObject)->kind = 0x83;
+    ((RuntimeObjectPrefix *)mazeObject)->kind = RUNTIME_OBJECT_KIND_MAZE_ROOT;
     objectRegisterActiveHierarchy(objectMakeHierarchyRoot(mazeObject));
     mazeBuild();
     mazePrepareNodeObjects((u8 *)gAreaMazeRoot);

@@ -13,10 +13,10 @@ REQUIRED_NATIVES = frozenset((
 
 NATIVE_BINDINGS = {
     'actorScriptPushSelfHandle': (0, '3b9a4986214d4e50d7080f0ef63dc6b08a12bd0af3836ba1a19df10c3aef8d1f'),
-    'actorScriptGetBoundingRadius': (1, '8a96ed33b614bb27637153940c452e3c92ee7598c2ada535dccf53cbd206c1e1'),
-    'actorScriptGetActorKind': (1, '70813e1f2e4de9c0150fb070184dcefaac134e3970a0392f91c1e2cebce2e2ce'),
+    'actorScriptGetBoundingRadius': (1, '5211bba38fa632d926e6a47254ff87ffd96a71983ea4da16bed645982544d114'),
+    'actorScriptGetActorKind': (1, 'a323fc4923fabc3bdd512d8c163d9246dc964e826101538c1a1abc5951b56dab'),
     'actorScriptPassThroughInteger': (1, '7ce5019c6dafb96114d27892f09383b0f4af354c265b840c4a24c41823eb16d8'),
-    'actorScriptPostMessage': (6, '56d573988e3f8c6dec5e2ed2d69f84b1e936c5a6794a5b81d4acf154ba22ff3d'),
+    'actorScriptPostMessage': (6, '28d965324d5acfa44eab20003067e73397c8efccc0dffcb61a97cfb0b16b4c2e'),
 }
 
 OBLIGATIONS = [

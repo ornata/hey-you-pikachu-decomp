@@ -58,7 +58,7 @@ s32 scriptCommandRemoveMazeBlock(u8 *object) {
     vmAddress = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
     blockHandle = scriptVmPopInteger((ScriptVm *)(vmAddress));
     block = objectFindLiveByHandle(blockHandle);
-    if (block != NULL && ((RuntimeObjectPrefix *)block)->kind == 0x88) {
+    if (block != NULL && ((RuntimeObjectPrefix *)block)->kind == RUNTIME_OBJECT_KIND_MAZE_BLOCK) {
         center[0] = ((RuntimeObjectPrefix *)block)->worldPosition[0];
         center[1] = ((RuntimeObjectPrefix *)block)->worldPosition[1];
         center[2] = ((RuntimeObjectPrefix *)block)->worldPosition[2];

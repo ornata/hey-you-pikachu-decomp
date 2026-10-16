@@ -892,7 +892,7 @@
     "file:include/object_types.h": {
       "kind": "file",
       "file": "include/object_types.h",
-      "sha256": "13c10c4ae96d2135792cf0064abd42d0d6fcbb119ab3c593ab56680155e43c0a"
+      "sha256": "436c0ba6e50b14c3960254df19be1816bbc233e7b9a4f9aab3dddee437b15ea3"
     },
     "file:include/opacity_animation_programs.h": {
       "kind": "file",
@@ -1607,7 +1607,7 @@
     "file:src/ovl/area_terrain_maze.c": {
       "kind": "file",
       "file": "src/ovl/area_terrain_maze.c",
-      "sha256": "5404aa0e04d2fd1f47f042580e448d4414f10467d5b4ca016ae4799d6163d4eb"
+      "sha256": "cb33f0a4304b5667c2f89b88446448d2e2b53a43f96ebfb8d8574a45993862d5"
     },
     "file:src/ovl/item_registry.c": {
       "kind": "file",
@@ -1627,7 +1627,7 @@
     "file:src/ovl/script_demo_item_commands.c": {
       "kind": "file",
       "file": "src/ovl/script_demo_item_commands.c",
-      "sha256": "3c098ec0da1f2899da8c65e38f07ea76fbae7d6f107743295c23935c0bf31e1c"
+      "sha256": "284737fb8e33caeab572fd6bbebeeacc887da2232e83ec1f11b8146e4c3b8495"
     },
     "file:src/ovl/script_vm.c": {
       "kind": "file",
@@ -4345,7 +4345,7 @@
     },
     {
       "file": "native_frame_reviews/src__ovl__script_demo_item_commands.json",
-      "sha256": "3c0c76059d404778dfb26fb792bb6ffca12fdc3bfc7dc2402cab0f0c53eebf7b"
+      "sha256": "2fcec850d8819cb434e9f9bb615f1f8cccc74f6ee4ffa6c6a1f57b2b988b8858"
     }
   ]
 }

@@ -2178,6 +2178,15 @@ unresolved. The generic state destructor alone establishes no allocation for it.
 Runtime tags and item-catalog IDs are separate domains: item kind 0x8A is a
 cardboard box, while runtime kind 0x8A identifies the proxy.
 
+`RUNTIME_OBJECT_KIND_MAZE_ROOT` (0x83) identifies the scene-wide maze visibility
+controller. Its update callback refreshes visibility using the active camera;
+it is separate from the maze's individual block hierarchies.
+`RUNTIME_OBJECT_KIND_MAZE_BLOCK` (0x88) identifies a placed block's hierarchy root,
+not every child in that hierarchy. Placement requires an initialized maze and an
+unoccupied association in the selected node. The block-removal native accepts a
+live handle with this runtime kind, clears the node association and requests
+hierarchy destruction. That request does not establish immediate deallocation.
+
 The explicit object-tracking native consumes handle and allowance, then returns
 the target's script category. Zero is not a success predicate: an available object
 with an unsupported category still becomes the tracked destination. Both operands
@@ -2573,11 +2582,16 @@ meaningful result. Missing inputs or changed instruction spans revoke the review
 
 ### Scrolling text ownership and presets
 
-Scrolling boards retain a borrowed text-pointer view and own the images produced
-for the initially visible lines. Text selection replaces the inactive image bank
-and marks it pending; it preserves scrolling speed. A null text view hides the
-board while retaining its previous image allocations and offsets. Rendering can
-also change shared font, spacing and palette state and request glyph-cache DMA.
+`RUNTIME_OBJECT_KIND_SCROLL_BOARD` (0xB1) identifies the inner board object created
+from the scrolling-board template. Its outer hierarchy root retains its separate
+default kind. The inner object owns its 0x88-byte state and generated model and
+text-image resources. The assigned text-pointer array and its strings remain
+borrowed and must stay readable throughout their use, including later scrolling.
+
+Text selection replaces the inactive image bank and marks it pending; it
+preserves scrolling speed. A null text view hides the board while retaining its
+previous image allocations and offsets. Rendering can also change shared font,
+spacing and palette state and request glyph-cache DMA.
 
 Preset zero has 132 valid text entries. Preset one has one valid string followed
 by three words equal to the float encoding `0x3F800000`, then a zero word. The

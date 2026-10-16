@@ -22,7 +22,7 @@ RUNTIME_KIND = 175
 NATIVE_BINDINGS = {'actorScriptFindObjectNearPosition': {'address': 2148657504,
                                        'arguments': 6,
                                        'file': 'src/ovl/actor_script_player_world.c',
-                                       'review_sha256': 'bc5159f1be974d9e133ccd1eaa2878826a1b75b0c6102a220d25f42cb2081d7d',
+                                       'review_sha256': 'f58ee571d21e7b67639ad65232520fe30d4fa783ac88062d30c25090cc3f700a',
                                        'sha256': 'a909a8c16d552cdeeb9533e166b79df1d83489d2e82b28d1a1dcd4c577d5269d'},
  'actorScriptGetPlayerCoordinate': {'address': 2148655112,
                                     'arguments': 1,
@@ -32,7 +32,7 @@ NATIVE_BINDINGS = {'actorScriptFindObjectNearPosition': {'address': 2148657504,
  'actorScriptIsSceneRegionHighlighted': {'address': 2148658028,
                                          'arguments': 1,
                                          'file': 'src/ovl/actor_script_player_world.c',
-                                         'review_sha256': 'd7e41c3e82e18a2e9762cec15dda8d25d1985a0b43dc80258306205decd340a9',
+                                         'review_sha256': '71e55b37a017926eb7da56e73749d5b5f559526e9c56d506dcf13f07415f08f2',
                                          'sha256': '33ad826c146353894c97dd6ac2bad6e983dfeed1834068503b42c70690a7058a'}}
 REQUIRED_NATIVE_NAMES = frozenset(('actorScriptGetPlayerCoordinate', 'actorScriptFindObjectNearPosition', 'actorScriptIsSceneRegionHighlighted'))
 SUPPORT_BINDING = {'file': 'src/game/scene_region.c', 'function': 'sceneRegionUpdateHighlight', 'sha256': '40e0905d2ce74a1a986d577a7530b0152d22b4cf64abe7728801f201459c26ec'}
