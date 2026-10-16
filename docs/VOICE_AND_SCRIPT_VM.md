@@ -517,6 +517,60 @@ unclear. The decoder retains their category composition and request sites for
 further recovery; a missing literal request does not establish an invalid or
 unreachable dictionary.
 
+### Companion status snapshots
+
+The decoder's `companion_snapshot_roles` identifies a complete reviewed status
+producer prefix in 28 companion configurations. It maps each program's root
+slots to the same template and checks the native and VM source bindings before
+assigning meanings. Fifteen predicates have names in
+[`CompanionSnapshotFlag`](../include/companion_snapshot_flags.h); two retain
+numeric counter conditions. These are authored script snapshots, separate from
+runtime object flags and voice-command quality flags.
+
+| Mask | Captured predicate |
+| --- | --- |
+| 1 | Latest movement collision flags are nonzero. |
+| 2 | Acknowledged pending value is one and category is outside 13, 14 and 15. |
+| 4 | Collision/radius repetition check qualifies; see below. |
+| 8 | Remaining target approach distance is below five. |
+| 16 | Remaining target approach distance is below fifteen. |
+| 32 | Approximate player distance is below fifteen. |
+| 64 | Approximate player distance is below thirty. |
+| 128 | Sampled player-held kind is nonzero and sampled player distance is below thirty. |
+| 256 | Approximate player distance is at least sixty. |
+| 512 | Actor-origin world-item search succeeds and absolute actor-relative height difference is at most ten. |
+| 1024 | Nearby spinner query reports positive speed. |
+| 2048 | Reference-program root counter 40 is above fifty; gameplay purpose unresolved. |
+| 4096 | Reference-program root counter 39 is below ten; gameplay purpose unresolved. |
+| 8192 | Acknowledged pending value is one and category is 13, 14 or 15. |
+| 16384 | Player-view world-item search succeeds and absolute actor-relative height difference is at most ten. |
+| 32768 | First enabled elapsed limit is exceeded. |
+| 65536 | Second enabled elapsed limit is exceeded. |
+
+The counter references above use the Ochre-deep configuration's slots; recognized
+reports retain the corresponding slots for each program. The target approach
+queries subtract the configured distance allowance and clamp at zero. Distance
+samples use the native's approximate geometry, with no physical unit inferred.
+The two item searches use kind endpoints 165 and 75; the native expands the
+lower sentinel to one. The actor-origin search uses distance thirty, all
+directions and weighting. The player-view search uses distance fifty, a
+fifteen-degree cone and no weighting. Both request world ownership state zero.
+
+Mask four is a gated collision check, not a general immobility test. Its
+collision accumulator eventually triggers a comparison of sampled distances
+from the coordinate origin. Nearly unchanged radius advances a repetition
+counter; a larger difference clears that counter. Movement around the origin
+can preserve radius. The two message bits record one consumed mailbox result;
+they do not prove voice origin or a currently pending notification.
+
+The producer also acknowledges messages, can request an attached effect,
+performs a weighted search that can reset item priority, and updates timer
+feedback. It is not a read-only or atomic world snapshot. Recognition ends at
+the final store of this prefix; later program-specific extensions, including
+Ochre-deep's additional `0x01000000` bit, remain separate. Valid numeric values,
+nonoverlapping frames, current resources and preserved samples remain required;
+a matching template does not establish execution or subsequent state stability.
+
 ### Drawing feedback
 
 `VOICE_DICTIONARY_DRAWING_FEEDBACK` (13) is requested by seven retained
@@ -555,6 +609,24 @@ with value 139 calls helper 64015, which requests private workflow state seven
 in root slot 34. The state dispatcher at 72990 selects handler 61522, which
 requests dictionary twelve. These numbers belong to separate message, state and
 dictionary domains.
+
+The same general dispatcher also handles unrelated state families in the
+hundreds. Its initial gate is a constant true value, so it does not restrict
+states one through eleven to picnic behavior. Three locally established roles
+are useful when following the ingredient flow:
+
+| State | Handler | Requested dictionary | Scoped role |
+| --- | --- | --- | --- |
+| 5 | 62053 | 30 | Confirm calling Magnemite while an item is held. |
+| 6 | 60637 | 30 | Submit the held item and wait for its held handle to clear. |
+| 7 | 61522 | 12 | Request ingredient-list presentation. |
+
+State five's accepted category-three/value-sixteen path transitions to state
+six. The shared directive value remains numeric because its other vocabulary
+uses are mixed. State six writes the held item's kind before advancing the
+collection count. Its count-below-four check occurs after that write and
+increment; it chooses whether to request another item, without establishing a
+safe pre-write index or the list's allocation bounds.
 
 State seven does not guarantee that the list will be shown. Root slot 42 is a
 cached area identifier, not a message category. The snapshot builder resets its
