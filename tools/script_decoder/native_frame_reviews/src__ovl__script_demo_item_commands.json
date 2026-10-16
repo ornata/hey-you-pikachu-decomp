@@ -592,7 +592,8 @@
         "file:include/search_tree_types.h",
         "file:include/random.h",
         "file:include/math_angles.h",
-        "file:include/vector_direction.h"
+        "file:include/vector_direction.h",
+        "file:include/action_attributes.h"
       ],
       "runtime_status": "bounded_original_instruction_probes_passed",
       "preconditions": [

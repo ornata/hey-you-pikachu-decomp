@@ -5,6 +5,7 @@
 #define ACTION_DEFINITION_TYPES_H
 
 #include "ultra64.h"
+#include "action_attributes.h"
 #include "actor_action_callbacks.h"
 #include "actor_action_cue.h"
 

@@ -6927,7 +6927,8 @@
         "file:include/script_vm_stack.h",
         "file:include/script_vm_lifecycle.h",
         "file:include/script_vm_execution.h",
-        "file:include/script_vm_globals.h"
+        "file:include/script_vm_globals.h",
+        "file:include/action_attributes.h"
       ],
       "preconditions": [
         "The actor prefix/state, captured VM and three numeric operands remain live above protected locals and frame metadata. The wrapper pops style, preset and hierarchy handle and appends integer zero only after the helper returns. Handle/preset/style conversions obey the signed-32 numeric contract. VM contexts, values, frames, program storage, source resources, heap/cache metadata and native stacks are disjoint. No concurrent VM mutation, context replacement or destruction is covered.",
@@ -7175,7 +7176,8 @@
         "function:src/game/voice_commands_text_panel.c:textPanelSetLineColor",
         "function:src/game/texture_images_word_map.c:textureImageInitialize",
         "file:include/scene_configuration.h",
-        "file:include/scene_types.h"
+        "file:include/scene_types.h",
+        "file:include/action_attributes.h"
       ],
       "preconditions": [
         "Eighteen numeric operands lie above protected locals and frame metadata, bottom-to-top: preset, style, columns, lines, position XYZ, rotation XYZ in degrees, red, green, blue, alpha, leading outline, trailing outline, relative scale and scroll speed. The wrapper pops in reverse order, converts integer parameters through scriptVmPopInteger and geometry/speed/scale through scriptVmPopFloat, then replaces all operands with a tag-zero root handle (stack delta -17) and returns zero to continue. Integer conversions truncate only finite s32-representable values. Caller actor/state, captured VM, values, native stack and program remain live and disjoint from all helper-written heap, objects, registries, image/cache/SDK and text globals. No concurrent mutation, context replacement, rendering or destruction is covered.",

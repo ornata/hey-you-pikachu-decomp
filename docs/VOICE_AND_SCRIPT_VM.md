@@ -627,6 +627,24 @@ These source-bound creation contracts require valid resources, registry capacity
 and successful separate allocations. Later callbacks and resource lifetimes
 remain independent obligations.
 
+Motion resource links decode the [action attributes](../include/action_attributes.h)
+and include the authenticated action-definition hash, motion
+archive ID, endpoint poses, continuation ID and decoded attribute word. The low
+three bits select the established motion playback mode. Named flags distinguish
+loop permission, cue suppression during intermediary transitions, registration
+of pose pairs, turning permission, continuation fallback on a pose mismatch and
+priority for an existing continuation. Every other bit remains in
+`unresolved_attribute_bits`; a resource flag alone does not prove a successful
+transition or rendered motion.
+
+Loop permission is conditional: an exit request, a nonzero update result or a
+rejecting initializer prevents another cycle. Pose-map registration also requires
+differing endpoint poses and an unclaimed pair. Continuation fallback applies to
+a requested record whose initial pose is incompatible; continuation priority
+applies to the existing continuation when a pending request competes with it.
+These are separate choices in the action state machine, not interchangeable
+forms of looping.
+
 Three retained attached-effect definitions at `0x80074EB8` select templates of
 runtime kind `0xAC`, with no child or sibling templates. Their scales are
 `0.1`, `1`, `1`; opacity-program selectors are `0`, `0`, `1`.

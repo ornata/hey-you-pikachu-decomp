@@ -93,7 +93,7 @@ s32 actionRequestMotionData(s32 actionId) {
     } else {
         var_v0 = &gActionDefinitions[actionId];
     }
-    if ((var_v0 == NULL) || ((var_v0->attributes & 7) != 1)) {
+    if ((var_v0 == NULL) || ((var_v0->attributes & ACTION_ATTRIBUTE_PLAYBACK_MODE_MASK) != MOTION_PLAYBACK_TRACKS)) {
         return 0;
     }
     {
@@ -112,7 +112,8 @@ void motionRequestCurrentData(u8 *object) {
     s32 sp20;
 
     motionState = ((RuntimeObjectPrefix *)object)->state.actor;
-    if (((motionState->actionAttributes & 7) == 1) || ((motionState->actionAttributes & 7) == 3)) {
+    if (((motionState->actionAttributes & ACTION_ATTRIBUTE_PLAYBACK_MODE_MASK) == MOTION_PLAYBACK_TRACKS) ||
+        ((motionState->actionAttributes & ACTION_ATTRIBUTE_PLAYBACK_MODE_MASK) == MOTION_PLAYBACK_POSE_BLEND)) {
         TRACE("_requestCurMotion:%d\n", motionState->motionId);
         motionCacheRead(&gMotionRomCache, motionState->motionId, &sp20);
     }
@@ -418,7 +419,7 @@ void actionStartPlayback(u8 *object) {
     ActorActionCueCommand *anim;
 
     state = ((RuntimeObjectPrefix *)object)->state.actor;
-    mode = state->actionAttributes & 7;
+    mode = state->actionAttributes & ACTION_ATTRIBUTE_PLAYBACK_MODE_MASK;
     TRACE("_startAction: actionType:%d\n", mode);
     state->actionStartPending = 0;
     state->secondaryCueClock = 0.0F;
@@ -427,7 +428,7 @@ void actionStartPlayback(u8 *object) {
         state->loopCount = 1;
         anim = actorSelectActionScript(object, state->primaryCueProgram, 1);
         if (anim != 0 && (anim != state->lastPrimaryCueProgram ||
-                          (1.2F < state->primaryCueClock && !(state->actionAttributes & 8)))) {
+                          (1.2F < state->primaryCueClock && !(state->actionAttributes & ACTION_ATTRIBUTE_LOOP)))) {
             TRACE("lastAfcKey:%p\n    afcKey:%p\n", state->lastPrimaryCueProgram, anim);
             if (((RuntimeObjectPrefix *)object)->kind == 0x25) {
                 if (!(state->behaviorFlags & ACTOR_BEHAVIOR_PRESERVE_APPEARANCE)) {
@@ -459,12 +460,13 @@ void actionStartPlayback(u8 *object) {
 /// \returns One when the record is applied; zero when its motion state is incompatible.
 /// \note Original decompilation identifier: \c func_8000EA88 (0x8000EA88).
 s32 actionTryApplyCompatibleRecord(ActorScriptState *state, ActionDefinition *record) {
-    if ((record->attributes & 7) != 1 ||
+    if ((record->attributes & ACTION_ATTRIBUTE_PLAYBACK_MODE_MASK) != MOTION_PLAYBACK_TRACKS ||
         record->initialPoseId == ((u8 *)state)[(u32) & ((ActorScriptState *)0)->currentPoseId]) {
         *(ActionDefinition *)&state->actionId = *record;
         return 1;
     }
-    TRACE("error: _setAction(%p): unknown action_type(%d)\n", state, record->attributes & 7);
+    TRACE("error: _setAction(%p): unknown action_type(%d)\n", state,
+          record->attributes & ACTION_ATTRIBUTE_PLAYBACK_MODE_MASK);
     return 0;
 }
 
@@ -517,7 +519,8 @@ s32 actionLoadRecordByIndex(ActorScriptState *state, s32 actionId, s32 nextActio
     }
     *(ActionDefinition *)&state->actionId = *a;
     state->continuationAction = nextAction;
-    if ((state->actionAttributes & 7) == 1 && ((state->actionAttributes & 0x20000) || state->primaryCueProgram == 0)) {
+    if ((state->actionAttributes & ACTION_ATTRIBUTE_PLAYBACK_MODE_MASK) == MOTION_PLAYBACK_TRACKS &&
+        ((state->actionAttributes & ACTION_ATTRIBUTE_SUPPRESS_TRANSITION_CUES) || state->primaryCueProgram == 0)) {
         state->primaryCueProgram = 0;
         state->secondaryCueProgram = 0;
         state->actionMovementScale = 2.0F;
@@ -597,7 +600,7 @@ void actionResolveNextTransition(u8 *object) {
             actionStopPlayback(object);
             return;
         }
-        if (next == NULL || (previous != NULL && (previous->attributes & 0x04000000))) {
+        if (next == NULL || (previous != NULL && (previous->attributes & ACTION_ATTRIBUTE_PRIORITIZE_CONTINUATION))) {
             *(ActionDefinition *)&((ActorScriptState *)state)->actionId = *previous;
         } else {
             sequence = next->primaryCueProgram;
@@ -606,7 +609,8 @@ void actionResolveNextTransition(u8 *object) {
             }
             if (actionTryApplyCompatibleRecord((ActorScriptState *)state, next)) {
                 actionPrepareSelectedContext((ActorScriptState *)state, sequence);
-            } else if ((next->attributes & 0x02000000) && next->continuationAction != -1) {
+            } else if ((next->attributes & ACTION_ATTRIBUTE_TRY_CONTINUATION_ON_POSE_MISMATCH) &&
+                       next->continuationAction != -1) {
                 nextIndex = next->continuationAction;
                 if (nextIndex < 0 || nextIndex >= 0x14A) {
                     next = NULL;
@@ -668,7 +672,7 @@ void actionInitializeTransitionMap(void) {
     }
     TRACE("apply action_joint_pose from action\n");
     for (i = 0, e = gActionDefinitions; i < 0x14A; i++, e++) {
-        if (e->attributes & 0x40000) {
+        if (e->attributes & ACTION_ATTRIBUTE_REGISTER_POSE_TRANSITION) {
             key = e->finalPoseId;
             key = (e->initialPoseId << 8) + key;
             if (e->initialPoseId != e->finalPoseId && wordMapLookup(&gActionPoseTransitionMap, key) == 0) {
@@ -750,9 +754,9 @@ void actionUpdatePlayback(u8 *object) {
             remaining = state->motionRemaining;
         }
         if (!(remaining > 0.0F)) {
-            TRACE("IS_LOOP:%d  attr:%04x, stopFlag:%d\n", state->actionAttributes & 8, state->actionAttributes,
-                  state->loopExitRequested);
-            if ((state->actionAttributes & 8) && (state->loopExitRequested == 0) && (result == 0) &&
+            TRACE("IS_LOOP:%d  attr:%04x, stopFlag:%d\n", state->actionAttributes & ACTION_ATTRIBUTE_LOOP,
+                  state->actionAttributes, state->loopExitRequested);
+            if ((state->actionAttributes & ACTION_ATTRIBUTE_LOOP) && (state->loopExitRequested == 0) && (result == 0) &&
                 (actionInvokeInitializer(object) == 0)) {
                 state->loopCount = (s16)(state->loopCount + 1);
                 state->actionStartPending = 1;
@@ -1015,7 +1019,7 @@ loop_1:
     } else {
         continuationRecord = &gActionDefinitions[continuationId];
     }
-    if ((continuationRecord != NULL) && (continuationRecord->attributes & 8)) {
+    if ((continuationRecord != NULL) && (continuationRecord->attributes & ACTION_ATTRIBUTE_LOOP)) {
         ((ActorScriptState *)actionState)->continuationAction = continuationRecord->continuationAction;
         TRACE("next:%s\n", actionGetName(((ActorScriptState *)actionState)->continuationAction));
         goto loop_1;

@@ -30,7 +30,8 @@
     "file:include/motion_playback_types.h",
     "file:include/action_definition_types.h",
     "file:include/actor_action_callbacks.h",
-    "file:include/actor_action_cue.h"
+    "file:include/actor_action_cue.h",
+    "file:include/action_attributes.h"
   ],
   "dependency_catalog": {
     "file:Makefile": {
@@ -193,6 +194,11 @@
       "file": "include/PR/ultratypes.h",
       "sha256": "94e5b09ca40c5e4d65da3b92bed7e206e610ee7f589e9eef417f6bc7a1742fe7"
     },
+    "file:include/action_attributes.h": {
+      "kind": "file",
+      "file": "include/action_attributes.h",
+      "sha256": "70380cfc2aba250dd93ed090cf353770554c5c99b54cf5f6e4ad0e292b19eaa7"
+    },
     "file:include/action_continuation.h": {
       "kind": "file",
       "file": "include/action_continuation.h",
@@ -201,12 +207,12 @@
     "file:include/action_definition_types.h": {
       "kind": "file",
       "file": "include/action_definition_types.h",
-      "sha256": "08a9daa83089379deeaf2e3f31334cb0eee086c51b62f187471a831490c7719e"
+      "sha256": "ca11504cddaed5a08033ac22a9fdfdf62e8c3289dd28cd11609d17e3a29d5480"
     },
     "file:include/action_query.h": {
       "kind": "file",
       "file": "include/action_query.h",
-      "sha256": "5b621b7fc358d0ae73c27b06915c5928e1dea84cee70a1a785d34c880c88320b"
+      "sha256": "9468985bce79dcba746a1ad20889ac50e05bf7462dd53b969cca719fc6b85732"
     },
     "file:include/action_request.h": {
       "kind": "file",
@@ -1421,7 +1427,7 @@
     "file:src/game/motion_playback.c": {
       "kind": "file",
       "file": "src/game/motion_playback.c",
-      "sha256": "267f4ad1a87efa3ff9b6d9c26d492670064729db5e9c3b99e411626e8ce72b0e"
+      "sha256": "46c16b57af7c375013470961c22127514d4dfb97a89d45e06efb0565ffda63c6"
     },
     "file:src/game/node_pool.c": {
       "kind": "file",
@@ -2233,7 +2239,7 @@
       "kind": "function",
       "file": "src/game/motion_playback.c",
       "function": "motionRequestCurrentData",
-      "sha256": "ec0a5f5c96ad1e482642aa5dee0fa7dbee23238216f18a8ad869e49aa84566a8"
+      "sha256": "6c3274ef6eb16c536f8e7505ce4296e22e54168c16c0a133dc983538881cb8e4"
     },
     "function:src/game/motion_playback.c:motionResetPlayback": {
       "kind": "function",
@@ -4283,11 +4289,11 @@
   "callback_files": [
     {
       "file": "native_frame_reviews/src__ovl__actor_script_action_commands.json",
-      "sha256": "5d97249de22fd40825cb945dffe31eace074777583532502a4566d3698c90510"
+      "sha256": "6b7f2b33b049d9e80d9d964198ecf80fcfe63aa754d77137f54e24053f9d07f3"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_collection_profile.json",
-      "sha256": "d8de788a60380936507de5a3ceb9b115998965b32ecb04e31b719a62562f268d"
+      "sha256": "93489062d72d5da5156ddfebf21ef61433aa502743a70624c7f623580180106a"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_messages_items.json",
@@ -4295,11 +4301,11 @@
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_player_world.json",
-      "sha256": "d0802409e24ff0967215caac5f6e81edf371455455ceacb649a60829b6177596"
+      "sha256": "0aef81d76b2e338ed216f129d92d4cff97b761af84e6a9077e8b1b97a78c4d30"
     },
     {
       "file": "native_frame_reviews/src__ovl__script_demo_item_commands.json",
-      "sha256": "8b1713d56b7000d934189c9e58459bce84711bdfd45c4ebcb8c5e726ab9a88fc"
+      "sha256": "653ecd0cccf7fecb12ad6bb2904285c9ffcf5b2bc315286f277a8ffe1147c3b4"
     }
   ]
 }

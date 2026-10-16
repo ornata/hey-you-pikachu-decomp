@@ -226,5 +226,36 @@ class IntegerAnimationProgramDecodingTests(unittest.TestCase):
         self.assertNotIn('effect_program', result)
 
 
+class MotionDefinitionMetadataTests(unittest.TestCase):
+    def test_named_bits_leave_unrecovered_bits_explicit(self):
+        from tools.script_decoder.actions import motion_definition_metadata
+        attributes = {7: 'ACTION_ATTRIBUTE_PLAYBACK_MODE_MASK', 8: 'ACTION_ATTRIBUTE_LOOP',
+                      0x40000: 'ACTION_ATTRIBUTE_REGISTER_POSE_TRANSITION'}
+        raw = bytearray(44)
+        struct.pack_into('>IhBBh', raw, 12, 0x80040009, -1, 2, 3, -1)
+        result = motion_definition_metadata(raw, attributes, {1: 'MOTION_PLAYBACK_TRACKS'})
+        self.assertEqual(result['playback_mode_name'], 'MOTION_PLAYBACK_TRACKS')
+        self.assertEqual(result['attribute_names'],
+                         ['ACTION_ATTRIBUTE_LOOP', 'ACTION_ATTRIBUTE_REGISTER_POSE_TRANSITION'])
+        self.assertEqual(result['unresolved_attribute_bits'], 0x80000000)
+        self.assertEqual(result['motion_archive_id'], -1)
+        self.assertEqual(result['initial_pose_id'], 2)
+        self.assertEqual(result['final_pose_id'], 3)
+        self.assertEqual(result['continuation_action_id'], -1)
+
+    def test_unknown_modes_and_invalid_record_domains_are_not_guessed(self):
+        from tools.script_decoder.actions import motion_definition_metadata
+        attributes = {7: 'ACTION_ATTRIBUTE_PLAYBACK_MODE_MASK', 8: 'ACTION_ATTRIBUTE_LOOP'}
+        raw = bytearray(44)
+        struct.pack_into('>I', raw, 12, 7)
+        self.assertIsNone(motion_definition_metadata(raw, attributes, {1: 'TRACKS'})['playback_mode_name'])
+        with self.assertRaises(ValueError):
+            motion_definition_metadata(raw[:-1], attributes, {})
+        with self.assertRaises(ValueError):
+            motion_definition_metadata(raw, {3: 'ACTION_ATTRIBUTE_PLAYBACK_MODE_MASK'}, {})
+        with self.assertRaises(ValueError):
+            motion_definition_metadata(raw, attributes | {24: 'INVALID_COMPOSITE'}, {})
+
+
 if __name__ == '__main__':
     unittest.main()
