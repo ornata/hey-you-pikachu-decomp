@@ -116,12 +116,24 @@ enum {
         68, ///< Front yard world-map destination available when the chase stage supplies an area.
     PROGRESS_FIELD_CATERPIE_BABYSITTING_INTRODUCTION_RECORDED =
         72, ///< Initial Viridian-deep Caterpie babysitting instructions processed.
+    PROGRESS_FIELD_VIRIDIAN_DEEP_RESULT_SEQUENCE_COUNT =
+        74, ///< Credited result sequences, saturating at fifteen; excludes the introduction.
     PROGRESS_FIELD_SPRINGLEAF_ENTRANCE_INTRODUCTION_RECORDED =
         75, ///< Springleaf-entrance introduction processed; does not mark a completed visit.
+    PROGRESS_FIELD_SPRINGLEAF_ENTRANCE_RESULT_SEQUENCE_COUNT =
+        76, ///< Credited activity-result sequences, saturating at fifteen; does not imply success.
     PROGRESS_FIELD_ODDISH_MEADOW_INTRODUCTION_RECORDED =
         77, ///< Oddish-meadow legend and Diglett introduction processed.
+    PROGRESS_FIELD_ODDISH_MEADOW_RESULT_SEQUENCE_COUNT =
+        78, ///< Credited activity-result sequences, saturating at fifteen; does not imply success.
     PROGRESS_FIELD_SPRINGLEAF_WATERING_INTRODUCTION_RECORDED =
         79, ///< First Springleaf-field watering introduction and demonstration processed.
+    PROGRESS_FIELD_SPRINGLEAF_FIELD_RESULT_SEQUENCE_COUNT =
+        80, ///< Credited activity-result sequences, saturating at fifteen; does not imply success.
+    PROGRESS_FIELD_OLIVINE_LAKESHORE_RESULT_SEQUENCE_COUNT =
+        81, ///< Credited activity-result sequences, saturating at fifteen; does not imply success.
+    PROGRESS_FIELD_OLIVINE_LAKE_RESULT_SEQUENCE_COUNT =
+        82, ///< Credited activity-result sequences, saturating at fifteen; does not imply success.
     PROGRESS_FIELD_OCHRE_PICNIC_INVITATION_RECORDED =
         83, ///< Initial Bulbasaur picnic invitation sequence processed; does not require a successful voice response.
     PROGRESS_FIELD_OCHRE_DEEP_DEPARTURE_RECORDED =

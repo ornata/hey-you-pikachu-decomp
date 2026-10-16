@@ -1027,6 +1027,9 @@ Further decoded producer/consumer links recover these saved roles:
 | 21 | Forest Togepi-egg encounter recorded; enables the unhatched egg at Abra shop. |
 | 25 | Chapter-five together narration recorded; the front-yard sequence resets this gate. |
 | 31 | Lucky hook and expanded fishing residents unlocked. |
+| 74 | Viridian-deep babysitting result sequences credited, excluding the introductory branch. |
+| 76 / 78 / 80 | Springleaf entrance / Oddish Meadow / Springleaf field trip result sequences credited. |
+| 81 / 82 | Olivine lakeshore / lake activity result sequences credited. |
 | 100 | Next meadow visit uses five Vileplume; cleared on arrival. |
 | 111 | Special Oddish growth/scale progress; the recovered threshold phase resets at forty. |
 | 117 | Best shopping-errand elapsed seconds; zero denotes an unset record. |
@@ -1047,16 +1050,30 @@ not proof that the player saw the dialogue. The meadow flag is pending setup,
 rather than a permanent evolution ledger. Egg-found state does not identify an
 item owner or current holder. These names retain those narrower established roles.
 
+The six result-sequence counters saturate at fifteen and are separate from scene
+initialization counts. Their relative selector resolves the current area at each
+call. Original scene/scenario tables bind the reviewed programs to these areas;
+the containing script section alone would not establish that relationship. Credit
+follows the result helper and precedes collection-results dispatch, without a
+successful-objective requirement. Other fields in the same selector row remain
+unnamed; no universal completed-visit meaning is assigned to the row. The lake
+program also reads literal field 81 for lakeshore history, separately from its
+current-area result count.
+
 Both best-time fields use unsigned eight-bit storage: elapsed values are truncated
 to integers and clamped to zero through 255. Shopping time is captured after the
 requested-item closing sequence, and a zero record is reinitialized. The megaphone
 game excludes its timeout path from record improvements; setup while the completed
 disappearance count is zero requests five minutes, which clamps to 255. These are
 bounded script records, not unbounded timing minima or voice-recognition latency.
-The best-time writers include arithmetic and integer pass-through producers that
-the structural request inventory does not fully link; their selector/value chains
-were reviewed directly in the authenticated script instructions. An unlinked
-request in that inventory is not evidence that a field has no writer.
+The decoder now links these writers through explicit integer-conversion and
+arithmetic expressions. Runtime progress getters retain their authored selectors
+and integer result tags without assuming save contents. Constant integer products,
+quotients and remainders are folded only within the supported signed-32 domain;
+integer division truncates toward zero. Zero divisors and minimum-integer divided
+by minus one remain unsupported. Float arithmetic stays symbolic. Competing
+control-flow entries, unknown native calls and the producer-window limit still
+stop recovery; an unlinked request is not evidence that a field has no writer.
 
 The chapter-seven bedroom sequence requires its greeting flag to be clear and
 records it after the greeting helper returns. The helper can return after ten

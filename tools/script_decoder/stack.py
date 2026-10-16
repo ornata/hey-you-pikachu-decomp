@@ -4,6 +4,8 @@ Unknown effects, competing control-flow entries and unsupported conversions stop
 recovery. Variable coordinates do not imply persistent roles or actor identities.
 """
 
+import math
+
 from .formats import integer_operand
 
 # Original entries consume no VM arguments, push one integer handle and return
@@ -78,6 +80,23 @@ def recover_arguments(instructions, index, count, *, incoming=None, allow_float=
             if len(functions) == 1 and functions[0] in HANDLE_GETTERS:
                 return dict(kind='handle', role=HANDLE_GETTERS[functions[0]],
                             function=functions[0])
+            if functions == ['actorScriptPassThroughInteger']:
+                operand = argument()
+                expression = dict(operator='to_integer', function=functions[0], operand=operand)
+                if operand['kind'] in ('integer', 'float'):
+                    value = operand['value']
+                    if math.isfinite(value) and -2147483648 <= value < 2147483648:
+                        return dict(kind='integer', value=int(value), expression=expression)
+                    raise ValueError('Integer conversion is outside the supported signed-32 domain.')
+                if allow_symbolic:
+                    return dict(kind='integer_conversion', function=functions[0], operand=operand,
+                                scope='Original numeric conversion to signed32 with truncation; input type, finite representability and execution remain preconditions.')
+                raise ValueError('Integer conversion needs a known numeric operand.')
+            if allow_symbolic and len(functions) == 1 and functions[0] in (
+                    'actorScriptGetProgressValue', 'actorScriptGetProgressMinimum',
+                    'actorScriptGetProgressMaximum'):
+                return dict(kind='native_result', function=functions[0], arguments=[argument()], result_tag='integer',
+                            scope='Runtime progress read; selector conversion, initialized storage and current-area validity remain preconditions. No saved value is inferred.')
             if allow_symbolic and functions == ['actorScriptRandomBelow']:
                 bound = argument()
                 result = dict(kind='native_result', function=functions[0], arguments=[bound])
@@ -90,11 +109,24 @@ def recover_arguments(instructions, index, count, *, incoming=None, allow_float=
                 return dict(kind=operand['kind'], value=-operand['value'],
                             expression=dict(operator='negate', operand=operand))
             raise ValueError('Negation needs unresolved or overflowing arithmetic.')
-        if row['name'] in ('SCRIPT_OP_ADD', 'SCRIPT_OP_SUBTRACT'):
-            operator = 'add' if row['name'] == 'SCRIPT_OP_ADD' else 'subtract'
+        if row['name'] in ('SCRIPT_OP_ADD', 'SCRIPT_OP_SUBTRACT', 'SCRIPT_OP_MULTIPLY',
+                           'SCRIPT_OP_DIVIDE', 'SCRIPT_OP_REMAINDER'):
+            operator = {'SCRIPT_OP_ADD': 'add', 'SCRIPT_OP_SUBTRACT': 'subtract',
+                        'SCRIPT_OP_MULTIPLY': 'multiply', 'SCRIPT_OP_DIVIDE': 'divide',
+                        'SCRIPT_OP_REMAINDER': 'remainder'}[row['name']]
             right, left = argument(), argument()
             if left['kind'] == right['kind'] == 'integer':
-                value = left['value'] + right['value'] if operator == 'add' else left['value'] - right['value']
+                if operator in ('divide', 'remainder'):
+                    if right['value'] == 0 or (left['value'] == -2147483648 and right['value'] == -1):
+                        raise ValueError('Integer division or remainder is outside the supported signed-32 domain.')
+                    quotient = abs(left['value']) // abs(right['value'])
+                    if (left['value'] < 0) != (right['value'] < 0):
+                        quotient = -quotient
+                    value = quotient if operator == 'divide' else left['value'] - quotient * right['value']
+                elif operator == 'multiply':
+                    value = left['value'] * right['value']
+                else:
+                    value = left['value'] + right['value'] if operator == 'add' else left['value'] - right['value']
                 if -2147483648 <= value <= 2147483647:
                     return dict(kind='integer', value=value,
                                 expression=dict(operator='integer_' + operator, left=left, right=right))

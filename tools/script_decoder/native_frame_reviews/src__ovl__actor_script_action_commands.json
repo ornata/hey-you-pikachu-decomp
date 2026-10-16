@@ -1964,7 +1964,8 @@
         "function:src/ovl/script_vm.c:scriptVmPopInteger",
         "function:src/ovl/script_vm.c:scriptVmPopValue",
         "function:src/ovl/script_vm.c:scriptValueGetInteger"
-      ]
+      ],
+      "evidence": "Eighteen bounded original-instruction probes cover eleven integer pass-through cases (integer/code-reference signed32 boundaries and finite float truncation) and seven defined signed32 multiplications. Twelve separate original division/remainder cases confirm truncation toward zero and dividend-signed remainders. All full VM/value/protected-frame/record guards pass, and all complete executed function bodies and dispatch PCs match the immutable original-ROM baseline. These support the decoder arithmetic/conversion models without establishing overflow, zero-divisor, nonfinite/string conversion, arbitrary caller floors or host-C safety. Local evidence: build/semantic-review/agent-arithmetic-contracts/ and build/semantic-review/agent-divide-remainder-contracts/."
     },
     {
       "function": "actorScriptSetTargetPosition",

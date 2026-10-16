@@ -270,9 +270,10 @@ s32 actorScriptRandomBelowWithHistory(u8 *actor) {
     return SCRIPT_COMMAND_CONTINUE;
 }
 
-/// Provide the supplied integer as the script result.
-/// \param actor Actor whose script VM supplies an integer and receives that same value.
+/// Convert a numeric script value to an integer result.
+/// \param actor Actor whose script VM supplies the numeric value and receives its integer conversion.
 /// \returns Zero, allowing script execution to continue.
+/// \pre Floating-point input must be finite and representable as a signed 32-bit integer after truncation.
 /// \note Original decompilation identifier: \c func_8011C270 (0x8011C270).
 s32 actorScriptPassThroughInteger(u8 *actor) {
     s32 sp1C;
