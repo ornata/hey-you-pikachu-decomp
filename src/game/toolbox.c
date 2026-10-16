@@ -407,7 +407,7 @@ s32 toolboxStoreObjectAt(s32 object, s32 row, s32 index) {
     s8 kind = gItemKindClassEntries[objectKind][0];
     s32 i;
     ToolboxSlot *slot;
-    if (kind == 3 || kind == 2) {
+    if (kind == ITEM_STORAGE_CLASS_WITHDRAWABLE_SUPPLY || kind == ITEM_STORAGE_CLASS_NONWITHDRAWABLE_SUPPLY) {
         for (i = 0; i < 10; i++) {
             slot = &gToolboxState.slots[row][i];
             if ((objectKind = ((ItemStatePrefix *)data)->kind) == slot->kind) {
@@ -479,7 +479,8 @@ s32 toolboxRecordSupplyItem(s32 itemKind) {
 
     itemRecord = &gItemKinds[itemKind];
     supplyCategory = (s8)itemRecord->itemClass;
-    if ((supplyCategory != 3) && (supplyCategory != 2)) {
+    if ((supplyCategory != ITEM_STORAGE_CLASS_WITHDRAWABLE_SUPPLY) &&
+        (supplyCategory != ITEM_STORAGE_CLASS_NONWITHDRAWABLE_SUPPLY)) {
         return 0;
     }
     availabilityFlag = itemRecord->availabilityField;
@@ -508,10 +509,10 @@ u8 *toolboxTakeObject(s32 row, s32 col) {
         return NULL;
     }
     kind = ((s8)gItemKinds[slot->kind].itemClass);
-    if (kind == 5) {
+    if (kind == ITEM_STORAGE_CLASS_MENU_ENTRY) {
         return NULL;
     }
-    if (kind == 2) {
+    if (kind == ITEM_STORAGE_CLASS_NONWITHDRAWABLE_SUPPLY) {
         return NULL;
     }
     obj = objectFindLiveByHandle(slot->id);
@@ -583,13 +584,14 @@ s32 toolboxCanStoreObjectInRow(u8 *object, s32 row) {
     u8 *p = ((RuntimeObjectPrefix *)object)->state.bytes;
     s8 t = gItemKindClassEntries[((ItemStatePrefix *)p)->kind][0];
 
-    if (t == 1) {
+    if (t == ITEM_STORAGE_CLASS_COLLECTION_ITEM) {
         if (row == 0) {
             return 1;
         }
         return 0;
     }
-    if (t == 3 || t == 2 || t == 5) {
+    if (t == ITEM_STORAGE_CLASS_WITHDRAWABLE_SUPPLY || t == ITEM_STORAGE_CLASS_NONWITHDRAWABLE_SUPPLY ||
+        t == ITEM_STORAGE_CLASS_MENU_ENTRY) {
         if (row == 1) {
             return 1;
         }
@@ -634,13 +636,13 @@ void toolboxConfirmItemTransfer(u8 *player) {
     }
     kind = gItemKindClassEntries[slot->kind][0];
     switch (kind) {
-    case 5:
+    case ITEM_STORAGE_CLASS_MENU_ENTRY:
         playerPlayTrackedSoundEffect(player, 0xC5);
         gToolboxExitAction = 2;
         messageBarEnqueue(0, 0.1F, (u8 *)" ");
         toolboxSetMode((u8 *)&gToolboxState, 3);
         return;
-    case 2:
+    case ITEM_STORAGE_CLASS_NONWITHDRAWABLE_SUPPLY:
         playerPlayTrackedSoundEffect(player, 0x92);
         toolboxShowItemMessage(objectFindLiveByHandle(slot->id), "You can't take out the ^4%s^^.");
         return;
@@ -1168,7 +1170,8 @@ void toolboxDrawNavigation(s32 address) {
                 gDPSetPrimColor((*gdl)++, 0, 0, 255, 255, 255, 200);
             } else {
                 id = gToolboxState.slots[gToolboxSelectedRow][0].kind;
-                if (gItemKindClassEntries[id][0] == 2 || gItemKindClassEntries[id][0] == 5) {
+                if (gItemKindClassEntries[id][0] == ITEM_STORAGE_CLASS_NONWITHDRAWABLE_SUPPLY ||
+                    gItemKindClassEntries[id][0] == ITEM_STORAGE_CLASS_MENU_ENTRY) {
                     return;
                 }
                 scaleO = 2.0F;
@@ -1262,7 +1265,7 @@ void toolboxOpen(s32 row, s32 useHeld) {
     if (held != NULL) {
         state = ((RuntimeObjectPrefix *)held)->state.bytes;
         if (useHeld) {
-            if (gItemKindClassEntries[*(s16 *)(state + 4)][0] == 1) {
+            if (gItemKindClassEntries[*(s16 *)(state + 4)][0] == ITEM_STORAGE_CLASS_COLLECTION_ITEM) {
                 row = 0;
             } else {
                 row = 1;
@@ -1382,8 +1385,12 @@ void toolboxHandleInput(void) {
             if (textWindowOpen(0, 0, 0) != 0) {
                 if (selected.id != 0) {
                     kind = ((s8)gItemKinds[selected.id].itemClass);
-                    sprintf(line, "%s%-22s^^%s\n", ((kind == 2) || (kind == 5)) ? "^^" : "^4",
-                            itemGetDisplayName(selected.id, 1), itemGetClassLabelSuffix(selected.id));
+                    sprintf(
+                        line, "%s%-22s^^%s\n",
+                        ((kind == ITEM_STORAGE_CLASS_NONWITHDRAWABLE_SUPPLY) || (kind == ITEM_STORAGE_CLASS_MENU_ENTRY))
+                            ? "^^"
+                            : "^4",
+                        itemGetDisplayName(selected.id, 1), itemGetClassLabelSuffix(selected.id));
                     textWindowAppendText((u8 *)line);
                 }
                 textWindowAppendText((u8 *)selected.text);

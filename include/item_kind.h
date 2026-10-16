@@ -37,6 +37,17 @@ typedef s32 (*ItemCollisionCallback)(u8 *item, u16 contactFlags);
 /// Select model-derived size or extents instead of a catalog dimension override.
 #define ITEM_DIMENSION_FROM_MODEL (-100000.0F)
 
+/// Toolbox storage policy for an item catalog kind.
+/// Classifies row eligibility and supply/menu behavior; it does not establish live-object validity or possession.
+/// \note The catalog retains byte storage and queries retain their signed-byte result. Values zero, four and six
+/// remain unnamed; six is observed on cardboard box and tool box records, without a broader proven contract.
+typedef enum ItemStorageClass {
+    ITEM_STORAGE_CLASS_COLLECTION_ITEM = 1,        ///< Accepted by the Collection row and its collection presentation.
+    ITEM_STORAGE_CLASS_NONWITHDRAWABLE_SUPPLY = 2, ///< Supply accepted by Item Storage; withdrawal is disabled.
+    ITEM_STORAGE_CLASS_WITHDRAWABLE_SUPPLY = 3,    ///< Supply accepted by Item Storage and eligible for withdrawal.
+    ITEM_STORAGE_CLASS_MENU_ENTRY = 5,             ///< Item Storage entry whose confirmation requests the system menu.
+} ItemStorageClass;
+
 /// Per-kind motion, rendering, response and description configuration.
 typedef struct {
     /* 0x00 */ s32 id;                        ///< Item kind identifier.
@@ -66,7 +77,7 @@ typedef struct {
     /* 0x6C */ s32 collectionValue;           ///< Score contributed by this kind during the collection presentation.
     /* 0x70 */ u8
         collectionResponseCategory;   ///< Collection-presentation response group; distinct from interaction categories.
-    /* 0x71 */ u8 itemClass;          ///< Item classification used by registry queries.
+    /* 0x71 */ u8 itemClass;          ///< ItemStorageClass policy byte; unlisted values remain unresolved.
     /* 0x72 */ s16 availabilityField; ///< Saved progress-field selector controlling item availability.
 } ItemKind;                           /* size 0x74 */
 

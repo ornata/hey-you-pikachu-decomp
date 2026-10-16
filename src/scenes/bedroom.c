@@ -29,7 +29,7 @@ extern f32 D_801586DC_scene_bedroom;
 /// Set up bedroom scene objects and door access according to saved game state.
 /// \returns Nothing.
 void bedroomInitializeObjects(void) {
-    if (progressGetValue(0xF0) != 0) {
+    if (progressGetValue(PROGRESS_FIELD_TELESCOPE_COLLECTION_RECORDED) != 0) {
         actorCreateForKind(ACTOR_KIND_TELESCOPE, 93.75F, 31.93000030517578F, 52.189998626708984F, 0.0F,
                            D_801586DC_scene_bedroom, gCurrentAreaConfiguration->objectScale, 0, 0);
     }

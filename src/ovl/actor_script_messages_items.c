@@ -956,19 +956,20 @@ s32 actorScriptTrackObject(u8 *actor) {
 }
 
 /// Choose an object's current position as a fixed destination.
-/// \param actor Actor whose script VM supplies a target handle followed by a distance allowance, and receives the target script category or zero for an unavailable or unsupported target.
+/// \param actor Actor whose script VM supplies a target handle followed by a distance allowance, and receives the target script category or zero for an unavailable or unsupported target; an unsupported target can still update the destination.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011DAE4 (0x8011DAE4).
 s32 actorScriptSetDestinationFromObject(u8 *actor) {
     s32 vmAddress;
-    s32 sp24;
-    f32 sp1C;
+    s32 unusedVmAddress;
+    f32 distanceAllowance;
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    sp24 = vmAddress;
-    sp1C = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    scriptVmPushInteger((ScriptVm *)(vmAddress),
-                        actorSetDestinationFromObject(actor, scriptVmPopInteger((ScriptVm *)(vmAddress)), sp1C));
+    unusedVmAddress = vmAddress;
+    distanceAllowance = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    scriptVmPushInteger(
+        (ScriptVm *)(vmAddress),
+        actorSetDestinationFromObject(actor, scriptVmPopInteger((ScriptVm *)(vmAddress)), distanceAllowance));
     return 0;
 }
 
@@ -1224,14 +1225,14 @@ s32 actorScriptGetPlayerCoordinate(u8 *actor) {
 }
 
 /// Push the actor's facing error relative to the player.
-/// \param actor Actor whose script VM receives the signed facing error in degrees.
+/// \param actor Actor whose script VM receives its heading minus the direction toward the player in degrees greater than -180 and at most 180.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011E04C (0x8011E04C).
 s32 actorScriptPushFacingErrorToPlayer(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushFloat((ScriptVm *)(sp1C), objectGetFacingErrorToPlayer(actor));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushFloat((ScriptVm *)(vmAddress), objectGetFacingErrorToPlayer(actor));
     return 0;
 }
 

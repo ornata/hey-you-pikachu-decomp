@@ -7,9 +7,12 @@ resource readiness, ownership, placement or gameplay reachability.
 
 import hashlib
 import math
+import re
 import struct
 
+from .context import ROOT
 from .stack import incoming_edges, recover_arguments
+from tools.source_quality import code_only
 
 _COUNT = 166
 _STRIDE = 0x74
@@ -18,13 +21,24 @@ _CREATE_NATIVES = {'actorScriptCreateItem', 'actorScriptCreateStationaryItem'}
 _ARGUMENT_NAMES = ('x', 'y', 'z', 'pitch_degrees', 'yaw_degrees', 'kind')
 
 
-def item_kind_catalog(image):
+def storage_class_names():
+    """Read explicitly named toolbox policies without naming other raw classes."""
+    code = code_only((ROOT / 'include/item_kind.h').read_text())
+    entries = re.findall(r'\b(ITEM_STORAGE_CLASS_\w+)\s*=\s*(\d+)\s*(?=[,}])', code)
+    names = {int(value): name for name, value in entries}
+    if len(names) != len(entries):
+        raise ValueError('duplicate item storage class value')
+    return names
+
+
+def item_kind_catalog(image, progress_fields=None):
     """Read the bounded 166-entry catalog and optional bounded display names.
 
     ItemKind supplies the record stride, model and name pointers, collection
     score, notebook display-frame selector, collection-response group and five
     interaction-category response values. Names and query
-    values are independent of whether a model exists.
+    values are independent of whether a model exists. Optional progress metadata
+    labels availability selectors without asserting current item possession.
     """
     image.allowed = {'.boot', '.ovl'}
     base = image.symbol('gItemKinds')[1]
@@ -55,6 +69,9 @@ def item_kind_catalog(image):
         names[address] = row
         return row
 
+    class_names = storage_class_names()
+    field_names = {row['field_id']: row.get('enum_name')
+                   for row in (progress_fields or {}).get('fields', [])}
     rows = []
     for kind in range(_COUNT):
         offset = kind * _STRIDE
@@ -67,17 +84,21 @@ def item_kind_catalog(image):
         display_material_frame, = struct.unpack_from('>h', data, offset + 0x3E)
         collection_value, = struct.unpack_from('>i', data, offset + 0x6C)
         collection_response_category, = struct.unpack_from('>b', data, offset + 0x70)
+        item_class, availability_field = struct.unpack_from('>bh', data, offset + 0x71)
         interaction_responses = {str(category): data[offset + 0x17 + category]
                                  for category in range(1, 6)}
         rows.append(dict(item_kind=kind, configuration=base + offset, model_template=model,
                          collection_value=collection_value, display_material_frame=display_material_frame,
                          collection_response_category=collection_response_category,
+                         item_class=item_class, item_class_name=class_names.get(item_class),
+                         availability_field=availability_field,
+                         availability_field_name=field_names.get(availability_field),
                          interaction_responses=interaction_responses,
                          has_model_template=bool(model),
                          display_names=dict(alternate=display_name(alternate), default=display_name(default))))
     return dict(count=_COUNT, stride=_STRIDE, entries=rows,
                 table=dict(name='gItemKinds', size=len(data), sha256=_TABLE_SHA256, **location),
-                scope='Retained catalog identities, borrowed display labels, collection scores, signed notebook display-frame selectors, signed collection-presentation response groups and unsigned interaction-category response values. Response categories do not establish transformation causes. Kinds 0 and 165 have null model templates; membership alone is not a valid creation contract.')
+                scope='Retained catalog identities, borrowed display labels, collection scores, signed notebook display-frame selectors, signed collection-presentation response groups, signed storage classes and availability selectors, and unsigned interaction-category response values. Response categories do not establish transformation causes. Kinds 0 and 165 have null model templates; membership alone is not a valid creation contract.')
 
 
 def item_creation_requests(instructions, catalog):

@@ -1,3 +1,4 @@
+#include "progress_field_ids.h"
 #include "item_kind_ids.h"
 #include "runtime_lifecycle.h"
 #include "render_state.h"
@@ -374,7 +375,7 @@ ItemKind gItemKinds[166] = {
       { { "apple", NULL },
         { "apple",
           "A sweet, red fruit\n^d\"One of ^6PIKACHU^d's favorites.\n^dI wonder... ^4How's it taste^d?\"^^" } },
-      0xC8, 0x2, 0x1, -1 },
+      0xC8, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x02: green apple */
     { 0x02, 0x2008, 0x5, 0x3, 1.0F, 0.1F, { 0x11, 0x4, 0x4, 0x7, 0xF },
       1.0F, 180.0F, 1.0F, 1.0F, 0.6F, 75.0F, 114.0F, 0x108, 0x5, { 0x98, 0x98 },
@@ -382,7 +383,7 @@ ItemKind gItemKinds[166] = {
       { { "apple", NULL },
         { "green apple",
           "An ^4apple^^ that hasn't ripened\n^d\"I bet it's sour. Maybe a\n^4Thundershock^d will help.\"^^" } },
-      0x50, 0x0, 0x1, -1 },
+      0x50, 0x0, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x03: baked apple */
     { 0x03, 0x8, 0x5, 0x0, 1.0F, 0.1F, { 0x2, 0x12, 0x2, 0x8, 0x2 },
       1.0F, 180.0F, 1.0F, 1.0F, 0.6F, 75.0F, 114.0F, 0x108, 0x6, { 0x98, 0x98 },
@@ -390,7 +391,7 @@ ItemKind gItemKinds[166] = {
       { { "apple", NULL },
         { "baked apple",
           "An ^4apple^^ that's been baked\n^d\"I wonder... ^4How's it taste^d?\"^^\n" } },
-      0xFA, 0x1, 0x1, -1 },
+      0xFA, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x04: golden apple */
     { 0x04, 0x2008, 0x5, 0x3, 1.0F, 0.1F, { 0x10, 0x11, 0x2, 0x9, 0x2 },
       1.0F, 180.0F, 1.0F, 1.0F, 0.6F, 75.0F, 114.0F, 0x108, 0x4, { 0x98, 0x98 },
@@ -398,7 +399,7 @@ ItemKind gItemKinds[166] = {
       { { "apple", NULL },
         { "golden apple",
           "A shiny, gold-colored ^4apple^^\n^d\"It's a rare ^4apple^d - don't\n^dlet ^6PIKACHU^d throw it away.\"^^" } },
-      0x1F4, 0x2, 0x1, -1 },
+      0x1F4, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x05: peach */
     { 0x05, 0x2008, 0x4, 0x5, 1.0F, 0.1F, { 0xD, 0xF, 0x2, 0x7, 0xD },
       1.0F, 150.0F, 1.0F, 1.0F, 0.7F, 71.0F, 105.0F, 0x108, 0x29, { 0x98, 0x98 },
@@ -406,7 +407,7 @@ ItemKind gItemKinds[166] = {
       { { "peach", NULL },
         { "peach",
           "A sweet, juicy fruit\n^d\"^6PIKACHU^d loves this flavor,\n^dso tell it to ^4taste it^d.\"^^" } },
-      0xC8, 0x2, 0x1, -1 },
+      0xC8, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x06: strawberry */
     { 0x06, 0x10, 0x3, 0x0, 1.0F, 0.1F, { 0x10, 0x11, 0x2, 0x7, 0x10 },
       1.0F, 140.0F, 1.0F, 1.0F, 2.0F, 67.0F, 100.0F, 0x108, 0x24, { 0x98, 0x98 },
@@ -414,7 +415,7 @@ ItemKind gItemKinds[166] = {
       { { "strawberry", NULL },
         { "strawberry",
           "A tangy, sweet red fruit\n^d\"^6PIKACHU^d loves this fruit,\n^dso tell it to ^4taste it^d.\"^^" } },
-      0xDC, 0x2, 0x1, -1 },
+      0xDC, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x07: raspberry */
     { 0x07, 0x0, 0x3, 0x0, 1.0F, 0.1F, { 0x5, 0x5, 0x5, 0x7, 0x5 },
       1.0F, 60.0F, 1.0F, 1.0F, 3.0F, 70.0F, 90.0F, 0x108, 0x3B, { 0x98, 0x98 },
@@ -422,7 +423,7 @@ ItemKind gItemKinds[166] = {
       { { "raspberry", NULL },
         { "raspberry",
           "A deep red fruit\n^d\"It looks very sweet.\"^^\n" } },
-      0x96, 0x2, 0x1, -1 },
+      0x96, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x08: banana */
     { 0x08, 0x1000, 0x3, 0x4D, 1.0F, 0.1F, { 0x10, 0x2, 0x2, 0x7, 0x2 },
       1.0F, 210.0F, 1.0F, 1.0F, 2.0F, 55.0F, 100.0F, 0x108, 0x9, { 0x98, 0x98 },
@@ -430,7 +431,7 @@ ItemKind gItemKinds[166] = {
       { { "banana", NULL },
         { "banana",
           "A tropical fruit\n^d\"Be sure to throw the\n^dpeel away.\"^^" } },
-      0xDC, 0x2, 0x1, 0xCC },
+      0xDC, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_BANANA_COLLECTION_RECORDED },
     /* 0x09: cattail */
     { 0x09, 0x0, 0xA, 0x0, 1.0F, 0.1F, { 0x3, 0x3, 0x3, 0x1, 0x3 },
       1.0F, 310.0F, 1.0F, 1.0F, 2.0F, 65.0F, 152.0F, 0x108, 0x45, { 0x98, 0x98 },
@@ -438,7 +439,7 @@ ItemKind gItemKinds[166] = {
       { { "cattail", NULL },
         { "cattail",
           "A tall, grassy reed\n^d\"Watch where you ^4throw it^d -^^\n^dit can damage the ^4flower^ds.\"^^" } },
-      0x32, 0x1, 0x1, -1 },
+      0x32, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x0A: wild herb */
     { 0x0A, 0x0, 0x2, 0x0, 0.5F, 0.02F, { 0x7, 0x4, 0x1, 0x7, 0xF },
       1.5F, 40.0F, 0.2F, 0.5F, 3.0F, 50.0F, 68.0F, 0x108, 0x3C, { 0x98, 0x98 },
@@ -446,7 +447,7 @@ ItemKind gItemKinds[166] = {
       { { "wild herb", NULL },
         { "wild herb",
           "A sweet smelling ^4leaf^^\n^d\"Boil ^4carrot^ds and ^4onion^ds with\n^dit for a tasty dish.\"^^" } },
-      0x14, 0x1, 0x1, -1 },
+      0x14, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x0B: corn */
     { 0x0B, 0x2000, 0x3, 0xC, 1.0F, 0.1F, { 0x12, 0x8, 0x2, 0x8, 0x12 },
       1.0F, 180.0F, 1.0F, 1.0F, 1.0F, 84.0F, 120.0F, 0x108, 0x38, { 0x98, 0x98 },
@@ -454,7 +455,7 @@ ItemKind gItemKinds[166] = {
       { { "corn", NULL },
         { "corn",
           "A bright, yellow grain\n^d\"You'll get a tasty surprise\n^dif you roast it.\"^^" } },
-      0xB4, 0x2, 0x1, 0xE0 },
+      0xB4, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_CORN_COLLECTION_RECORDED },
     /* 0x0C: popcorn */
     { 0x0C, 0x0, 0x2, 0x0, 1.2F, 0.2F, { 0xD, 0x2, 0x2, 0x7, 0xD },
       0.9F, 180.0F, 1.0F, 1.0F, 1.0F, 99.0F, 118.0F, 0x108, 0x4A, { 0x98, 0x98 },
@@ -462,7 +463,7 @@ ItemKind gItemKinds[166] = {
       { { "popcorn", NULL },
         { "popcorn",
           "Popped corn\n^d\"It sure smells delicious.\n^6PIKACHU^d would love to ^4eat it^d!\"^^" } },
-      0xFA, 0x2, 0x1, -1 },
+      0xFA, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x0D: pumpkin */
     { 0x0D, 0x10, 0xA, 0x0, 1.0F, 0.1F, { 0x2, 0xF, 0x2, 0x1, 0xF },
       1.0F, 190.0F, 1.0F, 1.0F, 1.0F, 72.0F, 94.0F, 0x108, 0x25, { 0x98, 0x98 },
@@ -470,7 +471,7 @@ ItemKind gItemKinds[166] = {
       { { "pumpkin", NULL },
         { "pumpkin",
           "A hard, heavy vegetable\n^d\"You have them on Halloween,\n^dbut some people eat them!\"^^" } },
-      0xFA, 0x1, 0x1, 0xE1 },
+      0xFA, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_PUMPKIN_COLLECTION_RECORDED },
     /* 0x0E: turnip */
     { 0x0E, 0x0, 0x3, 0x0, 1.0F, 0.1F, { 0x3, 0x11, 0x3, 0x1, 0xF },
       1.0F, 210.0F, 1.0F, 1.0F, 1.0F, 61.0F, 128.0F, 0x108, 0x26, { 0x98, 0x98 },
@@ -478,7 +479,7 @@ ItemKind gItemKinds[166] = {
       { { "turnip", NULL },
         { "turnip",
           "A member of the radish family\n^d\"This is a cooking ingredient.\n^dIt tastes great when boiled.\"^^" } },
-      0xB4, 0x1, 0x1, 0xE2 },
+      0xB4, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_TURNIP_COLLECTION_RECORDED },
     /* 0x0F: cabbage */
     { 0x0F, 0x0, 0x3, 0x0, 1.0F, 0.1F, { 0x3, 0x11, 0x3, 0x1, 0xF },
       1.0F, 160.0F, 1.0F, 1.0F, 1.0F, 98.0F, 98.0F, 0x108, 0x28, { 0x98, 0x98 },
@@ -486,7 +487,7 @@ ItemKind gItemKinds[166] = {
       { { "cabbage", NULL },
         { "cabbage",
           "A green vegetable\n^d\"This is often cooked\n^dwith other vegetables.\"^^" } },
-      0xB4, 0x1, 0x1, 0xE3 },
+      0xB4, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_CABBAGE_COLLECTION_RECORDED },
     /* 0x10: carrot */
     { 0x10, 0x0, 0x3, 0x0, 1.0F, 0.1F, { 0x2, 0xF, 0x2, 0x1, 0xF },
       1.0F, 250.0F, 1.0F, 1.0F, 2.0F, 72.0F, 140.0F, 0x108, 0x39, { 0x98, 0x98 },
@@ -494,7 +495,7 @@ ItemKind gItemKinds[166] = {
       { { "carrot", NULL },
         { "carrot",
           "A long, orange vegetable\n^d\"^4Carrot^ds are full of vitamins.\n^6PIKACHU^d loves to eat them.\"^^" } },
-      0xB4, 0x2, 0x1, 0xE4 },
+      0xB4, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_CARROT_COLLECTION_RECORDED },
     /* 0x11: onion */
     { 0x11, 0x10, 0x3, 0x0, 1.0F, 0.1F, { 0xF, 0xB, 0x4, 0xB, 0xF },
       1.0F, 180.0F, 1.0F, 1.0F, 1.0F, 90.0F, 100.0F, 0x108, 0x42, { 0x98, 0x98 },
@@ -502,7 +503,7 @@ ItemKind gItemKinds[166] = {
       { { "onion", NULL },
         { "onion",
           "A strong-tasting vegetable\n^d\"It's often used in stews.\n^4How's it smell^d?\"^^" } },
-      0xB4, 0x0, 0x1, 0xE5 },
+      0xB4, 0x0, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_ONION_COLLECTION_RECORDED },
     /* 0x12: sweet potato */
     { 0x12, 0x2000, 0x3, 0x13, 1.0F, 0.1F, { 0x12, 0x3, 0x4, 0x1, 0x12 },
       1.0F, 250.0F, 1.0F, 1.0F, 2.0F, 75.0F, 134.0F, 0x108, 0x3D, { 0x98, 0x98 },
@@ -510,7 +511,7 @@ ItemKind gItemKinds[166] = {
       { { "sweet potato", NULL },
         { "sweet potato",
           "A sweet, purple potato\n^d\"It tastes best after being\n^dbaked with ^4Thunderbolt^d.\"^^" } },
-      0xB4, 0x1, 0x1, 0xE6 },
+      0xB4, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_SWEET_POTATO_COLLECTION_RECORDED },
     /* 0x13: hot sweet potato */
     { 0x13, 0x0, 0x2, 0x0, 1.2F, 0.2F, { 0xD, 0x7, 0x2, 0x7, 0xD },
       1.0F, 250.0F, 1.0F, 1.0F, 2.0F, 75.0F, 134.0F, 0x108, 0x49, { 0x98, 0x98 },
@@ -518,7 +519,7 @@ ItemKind gItemKinds[166] = {
       { { "sweet potato", NULL },
         { "hot sweet potato",
           "A cooked sweet potato\n^d\"Tell ^6PIKACHU^d to ^4taste it^d.\"^^\n" } },
-      0xFA, 0x2, 0x1, -1 },
+      0xFA, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x14: smelly fruit */
     { 0x14, 0x2010, 0x3, 0x15, 1.0F, 0.1F, { 0x14, 0x8, 0x14, 0x14, 0x14 },
       1.0F, 150.0F, 1.0F, 1.0F, 1.0F, 64.0F, 108.0F, 0x108, 0x18, { 0x98, 0x98 },
@@ -526,7 +527,7 @@ ItemKind gItemKinds[166] = {
       { { "smelly fruit", NULL },
         { "smelly fruit",
           "A strange, ^4smelly fruit^^\n^d\"I bet ^6PIKACHU^d would hate\n^dsomething this smelly.\"^^" } },
-      0x96, 0x0, 0x1, -1 },
+      0x96, 0x0, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x15: sticky fruit */
     { 0x15, 0x2010, 0x3, 0x16, 1.0F, 0.1F, { 0x14, 0x8, 0x14, 0x14, 0x14 },
       1.0F, 119.0F, 1.0F, 1.0F, 1.0F, 70.0F, 90.0F, 0x108, 0x17, { 0x98, 0x98 },
@@ -534,7 +535,7 @@ ItemKind gItemKinds[166] = {
       { { "sticky fruit", NULL },
         { "sticky fruit",
           "Cooked ^4smelly fruit^^\n^d\"It still smells, and it's sticky\n^dtoo. It needs more cooking.\"^^" } },
-      0xB4, 0x0, 0x1, -1 },
+      0xB4, 0x0, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x16: roasted fruit */
     { 0x16, 0x10, 0x3, 0x0, 1.2F, 0.2F, { 0xE, 0x8, 0xE, 0x8, 0xE },
       1.0F, 119.0F, 1.0F, 1.0F, 1.0F, 70.0F, 90.0F, 0x108, 0x19, { 0x98, 0x98 },
@@ -542,7 +543,7 @@ ItemKind gItemKinds[166] = {
       { { "roasted fruit", NULL },
         { "roasted fruit",
           "Cooked ^4sticky fruit^^\n^d\"It still smells bad, but it\n^dtastes great. How strange.\"^^" } },
-      0x104, 0x2, 0x1, -1 },
+      0x104, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x17: walnut */
     { 0x17, 0x6008, 0x5, 0x18, 1.0F, 0.2F, { 0x11, 0xF, 0x1, 0x7, 0xF },
       1.0F, 195.0F, 1.0F, 0.8F, 1.0F, 74.0F, 110.0F, 0x108, 0x27, { 0x97, 0xA7 },
@@ -550,7 +551,7 @@ ItemKind gItemKinds[166] = {
       { { "walnut", NULL },
         { "walnut",
           "A hard-shelled nut\n^d\"^4Throw it^d to crack its shell.\"^^\n" } },
-      0xC8, 0x0, 0x1, -1 },
+      0xC8, 0x0, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x18: cracked walnut */
     { 0x18, 0x0, 0x3, 0x0, 1.0F, 0.1F, { 0xD, 0x7, 0x2, 0x7, 0xD },
       1.0F, 184.0F, 1.0F, 1.0F, 1.0F, 70.0F, 110.0F, 0x108, 0x2A, { 0x98, 0x98 },
@@ -558,7 +559,7 @@ ItemKind gItemKinds[166] = {
       { { "walnut", NULL },
         { "cracked walnut",
           "A nutritious nut\n^d\"It's tasty, and it's\n^doften added to sweets.\"^^" } },
-      0x104, 0x2, 0x1, -1 },
+      0x104, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x19: spiky shell */
     { 0x19, 0x6008, 0x6, 0x1B, 1.0F, 0.1F, { 0x12, 0xF, 0x1, 0x1, 0xF },
       1.0F, 180.0F, 1.0F, 0.8F, 1.0F, 75.0F, 117.0F, 0x108, 0x23, { 0x97, 0xA7 },
@@ -566,7 +567,7 @@ ItemKind gItemKinds[166] = {
       { { "spiky shell", NULL },
         { "spiky shell",
           "The ^4spiky shell^^ of a nut\n^d\"Some people eat these after\n^dremoving the shell.\"^^" } },
-      0xC8, 0x0, 0x1, -1 },
+      0xC8, 0x0, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x1A: spiny shell */
     { 0x1A, 0x6008, 0x6, 0x1C, 1.0F, 0.1F, { 0xF, 0xF, 0x1, 0x8, 0xF },
       1.0F, 180.0F, 1.0F, 0.8F, 1.0F, 75.0F, 117.0F, 0x108, 0x23, { 0x97, 0xA7 },
@@ -574,7 +575,7 @@ ItemKind gItemKinds[166] = {
       { { "spiny shell", NULL },
         { "spiny shell",
           "A strange, ^4spiny shell^^\n^d\"For some reason, these are\n^dscattered along the beach.\"^^" } },
-      0xC8, 0x0, 0x1, -1 },
+      0xC8, 0x0, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x1B: chestnut */
     { 0x1B, 0x10, 0x2, 0x0, 1.0F, 0.1F, { 0x2, 0x12, 0x2, 0x7, 0x2 },
       1.0F, 110.0F, 0.8F, 1.2F, 1.0F, 72.0F, 72.0F, 0x108, 0x2, { 0x97, 0x97 },
@@ -582,7 +583,7 @@ ItemKind gItemKinds[166] = {
       { { "chestnut", NULL },
         { "chestnut",
           "A tasty, sweet nut\n^d\"Mix this with ^4roasted fruit^^\n^dfor a really tasty treat.\"^^" } },
-      0x104, 0x2, 0x1, -1 },
+      0x104, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x1C: beach nut */
     { 0x1C, 0x10, 0x3, 0x0, 1.2F, 0.2F, { 0x2, 0x12, 0x2, 0x7, 0x2 },
       1.0F, 119.0F, 1.0F, 1.0F, 1.0F, 80.0F, 80.0F, 0x108, 0x19, { 0x98, 0x98 },
@@ -590,7 +591,7 @@ ItemKind gItemKinds[166] = {
       { { "chestnut", NULL },
         { "beach nut",
           "A nut found on the beach\n^d\"A ^4beach nut^d?\n^dIs that right?\"^^" } },
-      0x168, 0x1, 0x1, -1 },
+      0x168, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x1D: coconut */
     { 0x1D, 0x2008, 0x14, 0x1D, 1.0F, 0.1F, { 0xF, 0x14, 0x1, 0x1, 0xF },
       1.0F, 180.0F, 1.0F, 1.0F, 0.4F, 74.0F, 110.0F, 0x108, 0x4B, { 0x97, 0x97 },
@@ -598,7 +599,7 @@ ItemKind gItemKinds[166] = {
       { { "coconut", NULL },
         { "coconut",
           "A large, hard-shelled fruit\n^d\"When I think of the tropics,\n^dI think ^4coconut^ds.\"^^" } },
-      0x12C, 0x1, 0x1, -1 },
+      0x12C, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x1E: acorn */
     { 0x1E, 0x2010, 0xA, 0x22, 1.0F, 0.1F, { 0x12, 0x3, 0x3, 0x1, 0x3 },
       1.0F, 150.0F, 1.0F, 1.0F, 1.0F, 75.0F, 96.0F, 0x108, 0x12, { 0x97, 0x97 },
@@ -606,7 +607,7 @@ ItemKind gItemKinds[166] = {
       { { "acorn", NULL },
         { "acorn",
           "The nut of an oak tree\n^d\"This looks like just a\n^dplain old ^4acorn^d.\"^^" } },
-      0x28, 0x1, 0x1, -1 },
+      0x28, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x1F: acorn */
     { 0x1F, 0x2010, 0xA, 0x22, 1.0F, 0.1F, { 0x11, 0x4, 0x4, 0x8, 0x11 },
       1.0F, 150.0F, 1.0F, 1.0F, 1.0F, 75.0F, 96.0F, 0x108, 0x13, { 0x97, 0x97 },
@@ -614,7 +615,7 @@ ItemKind gItemKinds[166] = {
       { { "acorn", NULL },
         { "acorn",
           "The nut of an oak tree\n^d\"It will taste good after\n^dbaking it with ^4Thunderbolt^d.\"^^" } },
-      0x23, 0x1, 0x1, -1 },
+      0x23, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x20: acorn */
     { 0x20, 0x2010, 0xA, 0x22, 1.0F, 0.1F, { 0x11, 0xC, 0x4, 0xC, 0xC },
       1.0F, 150.0F, 1.0F, 1.0F, 1.0F, 75.0F, 96.0F, 0x108, 0x14, { 0x97, 0x97 },
@@ -622,7 +623,7 @@ ItemKind gItemKinds[166] = {
       { { "acorn", NULL },
         { "acorn",
           "The nut of an oak tree\n^d\"It has sleeping powder on it.\n^dTell ^6PIKACHU^d to ^4drop it^d.\"^^" } },
-      0x1E, 0x1, 0x1, -1 },
+      0x1E, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x21: acorn */
     { 0x21, 0x2010, 0xA, 0x22, 1.0F, 0.1F, { 0x12, 0x4, 0x4, 0x1, 0x4 },
       1.0F, 150.0F, 1.0F, 1.0F, 1.0F, 75.0F, 96.0F, 0x108, 0x11, { 0x97, 0x97 },
@@ -630,7 +631,7 @@ ItemKind gItemKinds[166] = {
       { { "acorn", NULL },
         { "acorn",
           "The nut of an oak tree\n^d\"It will taste good after\n^dcooking it with ^4Thundershock^d.\"^^" } },
-      0x28, 0x1, 0x1, -1 },
+      0x28, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x22: toasted acorn */
     { 0x22, 0x10, 0xA, 0x0, 1.0F, 0.2F, { 0xE, 0x8, 0xE, 0x8, 0xE },
       1.0F, 150.0F, 1.0F, 1.0F, 1.0F, 75.0F, 96.0F, 0x108, 0x15, { 0x97, 0x97 },
@@ -638,7 +639,7 @@ ItemKind gItemKinds[166] = {
       { { "acorn", NULL },
         { "toasted acorn",
           "A cooked ^4acorn^^\n^d\"It smells bad but tastes\n^dgreat. Use it to make treats.\"^^" } },
-      0xA0, 0x2, 0x1, -1 },
+      0xA0, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x23: flying acorn */
     { 0x23, 0x0, 0xA, 0x0, 1.0F, 0.1F, { 0xF, 0x4, 0x4, 0x1, 0xF },
       1.0F, 70.0F, 0.2F, 0.8F, 4.0F, 69.0F, 172.0F, 0x108, 0xF, { 0x97, 0x97 },
@@ -646,7 +647,7 @@ ItemKind gItemKinds[166] = {
       { { "flying acorn", NULL },
         { "flying acorn",
           "An ^4acorn^^ with wings on it\n^d\"This flies very well. ^4Throw it\n^dat things hanging in trees.\"^^" } },
-      0x12C, 0x1, 0x3, 0x1D },
+      0x12C, 0x1, ITEM_STORAGE_CLASS_WITHDRAWABLE_SUPPLY, 0x1D },
     /* 0x24: acorn top */
     { 0x24, 0x30, 0x14, 0x0, 1.0F, 0.1F, { 0xF, 0xB, 0x2, 0xB, 0xF },
       1.0F, 120.0F, 1.0F, 1.0F, 1.0F, 64.0F, 106.0F, 0x108, 0x10, { 0x97, 0x97 },
@@ -654,7 +655,7 @@ ItemKind gItemKinds[166] = {
       { { "acorn top", NULL },
         { "acorn top",
           "A striped ^4acorn^^\n^d\"This ^4acorn^d spins just like\n^da top.\"^^" } },
-      0xFA, 0x2, 0x1, 0xD8 },
+      0xFA, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_ACORN_TOP_COLLECTION_RECORDED },
     /* 0x25: jumbo'shroom */
     { 0x25, 0x2010, 0xA, 0x26, 1.0F, 0.1F, { 0x12, 0x8, 0x4, 0x8, 0x12 },
       0.9F, 186.9F, 1.0F, 1.0F, 1.0F, 93.45F, 93.45F, 0x108, 0x2F, { 0x98, 0x98 },
@@ -662,7 +663,7 @@ ItemKind gItemKinds[166] = {
       { { "mushroom", NULL },
         { "jumbo'shroom",
           "An ^4acorn^^-like ^4mushroom^^\n^d\"It's delicious when cooked\n^dusing ^4Thunderbolt^d.\"^^" } },
-      0x2D, 0x1, 0x1, -1 },
+      0x2D, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x26: roasted jumbo */
     { 0x26, 0x10, 0x3, 0x0, 1.0F, 0.1F, { 0xD, 0x2, 0x2, 0x7, 0xD },
       1.0F, 186.0F, 1.0F, 1.0F, 1.0F, 63.0F, 93.0F, 0x108, 0x30, { 0x98, 0x98 },
@@ -670,7 +671,7 @@ ItemKind gItemKinds[166] = {
       { { "mushroom", NULL },
         { "roasted jumbo",
           "A cooked ^4jumbo'shroom^^\n^d\"^6PIKACHU^d should like this\n^ddelicious cooked ^4mushroom^d.\"^^" } },
-      0xF0, 0x2, 0x1, -1 },
+      0xF0, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x27: dreamy'shroom */
     { 0x27, 0x14, 0xA, 0x0, 1.0F, 0.1F, { 0xF, 0xC, 0x4, 0xC, 0xC },
       1.1F, 170.0F, 0.2F, 0.4F, 2.0F, 96.2F, 96.2F, 0x108, 0x31, { 0x98, 0x98 },
@@ -678,7 +679,7 @@ ItemKind gItemKinds[166] = {
       { { "mushroom", NULL },
         { "dreamy'shroom",
           "A light, airy ^4mushroom^^\n^d\"It's filled with sleeping gas.\n^dI wonder... ^4How's it smell^d?\"^^" } },
-      0x2D, 0x1, 0x1, -1 },
+      0x2D, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x28: truffle top */
     { 0x28, ITEM_STATE_SPIN_ENABLED | ITEM_STATE_MATERIAL_ENABLED, 0x14, 0x0, 1.0F, 0.1F, { 0xF, 0x14, 0x14, 0x8, 0x14 },
       0.7F, 170.0F, 1.0F, 1.0F, 1.0F, 96.2F, 96.2F, 0x108, 0x33, { 0x97, 0x97 },
@@ -686,7 +687,7 @@ ItemKind gItemKinds[166] = {
       { { "mushroom", NULL },
         { "truffle top",
           "A small, hard ^4mushroom^^\n^d\"This spins just like a top.\n^4Throw it^d to make it spin.\"^^" } },
-      0x78, 0x1, 0x1, 0xEE },
+      0x78, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_TRUFFLE_TOP_COLLECTION_RECORDED },
     /* 0x29: blue'shroom */
     { 0x29, 0x2010, 0x14, 0x2A, 0.5F, 0.05F, { 0xF, 0x4, 0x4, 0x8, 0xF },
       1.0F, 180.0F, 1.0F, 1.0F, 1.0F, 80.0F, 100.0F, 0x108, 0x32, { 0x98, 0x98 },
@@ -694,7 +695,7 @@ ItemKind gItemKinds[166] = {
       { { "mushroom", NULL },
         { "blue'shroom",
           "A blue-capped ^4mushroom^^\n^d\"This doesn't taste very good.\n^dCook to improve its flavor.\"^^" } },
-      0x78, 0x0, 0x1, -1 },
+      0x78, 0x0, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x2A: hot'shroom */
     { 0x2A, 0x10, 0x5, 0x0, 1.2F, 0.15F, { 0xE, 0x8, 0xE, 0x8, 0xE },
       1.1F, 180.0F, 1.0F, 1.0F, 1.0F, 80.0F, 100.0F, 0x108, 0x35, { 0x98, 0x98 },
@@ -702,7 +703,7 @@ ItemKind gItemKinds[166] = {
       { { "mushroom", NULL },
         { "hot'shroom",
           "A cooked ^4mushroom^^\n^d\"This tastes great when mixed\n^dwith other ingredients.\"^^" } },
-      0x118, 0x1, 0x1, -1 },
+      0x118, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x2B: red'shroom */
     { 0x2B, 0x2010, 0x14, 0x2A, 0.5F, 0.05F, { 0x14, 0x6, 0x6, 0xA, 0x14 },
       1.0F, 180.0F, 1.0F, 1.0F, 1.0F, 80.0F, 100.0F, 0x108, 0x34, { 0x98, 0x98 },
@@ -710,7 +711,7 @@ ItemKind gItemKinds[166] = {
       { { "mushroom", NULL },
         { "red'shroom",
           "A red-capped ^4mushroom^^\n^d\"This strange ^4mushroom^d\n^dexplodes if you try to ^4eat it^d.\"^^" } },
-      0x78, 0x0, 0x1, -1 },
+      0x78, 0x0, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x2C: sunny'shroom */
     { 0x2C, 0x2010, 0x14, 0x2A, 0.5F, 0.05F, { 0x10, 0x2, 0x2, 0x7, 0x2 },
       1.0F, 180.0F, 1.0F, 1.0F, 1.0F, 80.0F, 100.0F, 0x108, 0x37, { 0x98, 0x98 },
@@ -718,7 +719,7 @@ ItemKind gItemKinds[166] = {
       { { "mushroom", NULL },
         { "sunny'shroom",
           "A yellow-capped ^4mushroom^^\n^d\"It's yellow, like the sun.\n^6PIKACHU^d seems to like it.\"^^" } },
-      0x8C, 0x0, 0x1, -1 },
+      0x8C, 0x0, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x2D: mushroom */
     { 0x2D, 0x2010, 0x3, 0x30, 1.0F, 0.1F, { 0x12, 0x3, 0x3, 0x1, 0x12 },
       1.0F, 174.3F, 1.0F, 1.0F, 1.0F, 90.0F, 90.0F, 0x108, 0x2B, { 0x98, 0x98 },
@@ -726,7 +727,7 @@ ItemKind gItemKinds[166] = {
       { { "mushroom", NULL },
         { "mushroom",
           "A plain, white ^4mushroom^^\n^d\"This is just a plain old\n^4mushroom^d.\"^^" } },
-      0x2D, 0x2, 0x1, -1 },
+      0x2D, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x2E: mushroom */
     { 0x2E, 0x2010, 0x14, 0x30, 1.0F, 0.1F, { 0x12, 0x8, 0x1, 0x8, 0x12 },
       1.0F, 174.0F, 1.0F, 1.0F, 1.0F, 90.0F, 90.0F, 0x108, 0x2D, { 0x98, 0x98 },
@@ -734,7 +735,7 @@ ItemKind gItemKinds[166] = {
       { { "mushroom", NULL },
         { "mushroom",
           "A plain, white ^4mushroom^^\n^d\"This ^4mushroom^d smells.\"^^\n" } },
-      0x2D, 0x1, 0x1, -1 },
+      0x2D, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x2F: mushroom */
     { 0x2F, 0x2010, 0x14, 0x30, 1.0F, 0.1F, { 0x12, 0xB, 0x4, 0xB, 0xB },
       1.0F, 174.0F, 1.0F, 1.0F, 1.0F, 90.0F, 90.0F, 0x108, 0x2C, { 0x98, 0x98 },
@@ -742,7 +743,7 @@ ItemKind gItemKinds[166] = {
       { { "mushroom", NULL },
         { "mushroom",
           "A plain white ^4mushroom^^\n^d\"This ^4mushroom^d tends to\n^drelease spores.\"^^" } },
-      0x28, 0x0, 0x1, -1 },
+      0x28, 0x0, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x30: hot mushroom */
     { 0x30, 0x10, 0x3, 0x0, 1.2F, 0.2F, { 0xD, 0x2, 0x2, 0x7, 0xD },
       1.1F, 174.0F, 1.0F, 1.0F, 1.0F, 90.0F, 90.0F, 0x108, 0x2E, { 0x98, 0x98 },
@@ -750,7 +751,7 @@ ItemKind gItemKinds[166] = {
       { { "mushroom", NULL },
         { "hot mushroom",
           "A cooked ^4mushroom^^\n^d\"This ^4mushroom^d has a\n^ddelicious rich scent.\"^^" } },
-      0xBE, 0x1, 0x1, -1 },
+      0xBE, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x31: light bulb */
     { 0x31, ITEM_STATE_MATERIAL_ENABLED, 0x3, 0x0, 1.0F, 0.1F, { 0xF, 0x10, 0x1, 0x1, 0x1 },
       1.0F, 160.0F, 1.0F, 1.0F, 2.0F, 90.0F, 132.0F, 0xF3, 0xD, { 0x97, 0x97 },
@@ -758,7 +759,7 @@ ItemKind gItemKinds[166] = {
       { { "light bulb", NULL },
         { "light bulb",
           "A strange, electric ^4mushroom^^\n^d\"It lights up when ^6PIKACHU^d\n^dholds it. Illuminating!\"^^" } },
-      0xF0, 0x0, 0x1, 0xED },
+      0xF0, 0x0, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_LIGHT_BULB_COLLECTION_RECORDED },
     /* 0x32: cupcake */
     { 0x32, 0x0, 0x3, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
       1.0F, 115.0F, 1.0F, 0.2F, 2.0F, 89.0F, 86.0F, 0x108, 0x3A, { 0x98, 0x98 },
@@ -766,7 +767,7 @@ ItemKind gItemKinds[166] = {
       { { "cupcake", NULL },
         { "cupcake",
           "Mom's homemade treat\n^d\"Your mom made this snack\n^dfor you. It looks delicious.\"^^" } },
-      0x0, 0x2, 0x3, 0x1B },
+      0x0, 0x2, ITEM_STORAGE_CLASS_WITHDRAWABLE_SUPPLY, 0x1B },
     /* 0x33: daisy */
     { 0x33, 0x0, 0x2, 0x0, 1.0F, 0.1F, { 0x9, 0x4, 0x4, 0x9, 0x9 },
       1.0F, 180.0F, 0.5F, 0.5F, 4.0F, 70.0F, 125.0F, 0x108, 0x1C, { 0x98, 0x98 },
@@ -774,7 +775,7 @@ ItemKind gItemKinds[166] = {
       { { "flower", NULL },
         { "daisy",
           "A small, white ^4flower^^\n^d\"It doesn't stand out much,\n^dbut it's a cute flower.\"^^" } },
-      0x78, 0x2, 0x1, 0xC4 },
+      0x78, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_DAISY_COLLECTION_RECORDED },
     /* 0x34: petunia */
     { 0x34, 0x0, 0x2, 0x0, 1.0F, 0.1F, { 0x9, 0x4, 0x4, 0x9, 0x9 },
       1.0F, 274.1F, 0.5F, 0.5F, 4.0F, 60.0F, 137.05F, 0x108, 0x41, { 0x98, 0x98 },
@@ -782,7 +783,7 @@ ItemKind gItemKinds[166] = {
       { { "flower", NULL },
         { "petunia",
           "A white ^4flower^^\n^d\"What an elegant looking\n^4flower^d.\"^^" } },
-      0xC8, 0x2, 0x1, 0xDA },
+      0xC8, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_PETUNIA_COLLECTION_RECORDED },
     /* 0x35: tulip */
     { 0x35, 0x0, 0x2, 0x0, 1.0F, 0.1F, { 0x3, 0xB, 0x3, 0xB, 0xB },
       1.0F, 272.1F, 0.5F, 0.5F, 4.0F, 60.0F, 136.05F, 0x108, 0x47, { 0x98, 0x98 },
@@ -790,7 +791,7 @@ ItemKind gItemKinds[166] = {
       { { "flower", NULL },
         { "tulip",
           "A ^4flower^^ grown from a bulb\n^d\"This is a very lovely ^4flower^d.\"^^\n" } },
-      0x12C, 0x1, 0x1, 0xDB },
+      0x12C, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_TULIP_COLLECTION_RECORDED },
     /* 0x36: dandelion */
     { 0x36, 0x0, 0x3, 0x0, 1.0F, 0.1F, { 0x10, 0x2, 0x2, 0x7, 0x2 },
       1.0F, 150.0F, 0.5F, 0.5F, 4.0F, 80.0F, 100.0F, 0x108, 0x43, { 0x98, 0x98 },
@@ -798,7 +799,7 @@ ItemKind gItemKinds[166] = {
       { { "flower", NULL },
         { "dandelion",
           "A yellow spring blossom\n^d\"^6PIKACHU^d loves this, since\n^dit's yellow.\"^^" } },
-      0x64, 0x2, 0x1, 0xDC },
+      0x64, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_DANDELION_COLLECTION_RECORDED },
     /* 0x37: bluebell */
     { 0x37, 0x0, 0x3, 0x0, 1.0F, 0.1F, { 0x3, 0xB, 0x3, 0xB, 0xB },
       1.0F, 252.5F, 0.5F, 0.5F, 4.0F, 80.0F, 120.0F, 0x108, 0x7, { 0x98, 0x98 },
@@ -806,7 +807,7 @@ ItemKind gItemKinds[166] = {
       { { "flower", NULL },
         { "bluebell",
           "A bright blue ^4flower^^\n^d\"This is a popular ^4flower^d\n^dfor the garden.\"^^" } },
-      0x78, 0x2, 0x1, 0xDD },
+      0x78, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_BLUEBELL_COLLECTION_RECORDED },
     /* 0x38: skunk blossom */
     { 0x38, 0x0, 0x3, 0x0, 1.0F, 0.1F, { 0xE, 0x8, 0xE, 0x8, 0x8 },
       1.0F, 310.0F, 0.5F, 0.5F, 4.0F, 80.0F, 150.0F, 0x108, 0xE, { 0x98, 0x98 },
@@ -814,7 +815,7 @@ ItemKind gItemKinds[166] = {
       { { "flower", NULL },
         { "skunk blossom",
           "A plant with smelly leaves\n^d\"It smells bad, but you can\n^dactually ^4eat it^d.\"^^" } },
-      0xC8, 0x0, 0x1, 0xDE },
+      0xC8, 0x0, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_SKUNK_BLOSSOM_COLLECTION_RECORDED },
     /* 0x39: sunflower */
     { 0x39, 0x0, 0x3, 0x0, 1.0F, 0.1F, { 0x10, 0x2, 0x2, 0x7, 0x2 },
       1.0F, 360.0F, 0.5F, 0.5F, 4.0F, 80.0F, 160.0F, 0x108, 0x1B, { 0x98, 0x98 },
@@ -822,7 +823,7 @@ ItemKind gItemKinds[166] = {
       { { "flower", NULL },
         { "sunflower",
           "A large, yellow summer ^4flower^^\n^d\"It's the same color of\n^dyellow as ^6PIKACHU^d.\"^^" } },
-      0xF0, 0x2, 0x1, 0xDF },
+      0xF0, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_SUNFLOWER_COLLECTION_RECORDED },
     /* 0x3A: lily */
     { 0x3A, 0x0, 0x3, 0x0, 1.0F, 0.1F, { 0x9, 0x3, 0x3, 0x9, 0x9 },
       1.0F, 300.0F, 0.5F, 0.5F, 4.0F, 80.0F, 160.0F, 0x108, 0x4C, { 0x98, 0x98 },
@@ -830,7 +831,7 @@ ItemKind gItemKinds[166] = {
       { { "flower", NULL },
         { "lily",
           "A large, white ^4flower^^\n^d\"I think this one smells nice,\n^dbut I am not quite sure.\"^^" } },
-      0x15E, 0x2, 0x1, 0xC5 },
+      0x15E, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_LILY_COLLECTION_RECORDED },
     /* 0x3B: rosebud */
     { 0x3B, 0x6000, 0x1, 0x3C, 1.0F, 0.1F, { 0x12, 0x4, 0x4, 0x12, 0xF },
       1.0F, 100.0F, 0.4F, 0.6F, 4.0F, 70.0F, 110.0F, 0x108, 0xC, { 0x98, 0x98 },
@@ -838,7 +839,7 @@ ItemKind gItemKinds[166] = {
       { { "flower", NULL },
         { "rosebud",
           "A large red ^4flower^^ from a bush\n^d\"Feed it to a hungry\n^4CATERPIE^d.\"^^" } },
-      0x1E, 0x1, 0x1, -1 },
+      0x1E, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x3C: red rose */
     { 0x3C, 0x0, 0xA, 0x3C, 1.0F, 0.1F, { 0x9, 0x4, 0x4, 0x9, 0xF },
       1.0F, 100.0F, 0.4F, 0.5F, 6.0F, 70.0F, 110.0F, 0x108, 0xB, { 0x98, 0x98 },
@@ -846,7 +847,7 @@ ItemKind gItemKinds[166] = {
       { { "flower", NULL },
         { "red rose",
           "A large red ^4flower^^ from a bush\n^d\"Feed the ^4flower^ds to\n^4CATERPIE^d.\"^^" } },
-      0x64, 0x2, 0x1, -1 },
+      0x64, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x3D: balloon */
     { 0x3D, 0x40006, 0xA, 0x0, 1.0F, 0.1F, { 0xA, 0x6, 0x6, 0xA, 0xF },
       1.0F, 29.0F, 0.8F, 0.5F, 0.4F, 64.0F, 110.0F, 0x108, 0x1E, { 0x98, 0x98 },
@@ -854,7 +855,7 @@ ItemKind gItemKinds[166] = {
       { { "balloon", NULL },
         { "balloon",
           "A blue ^4balloon^^\n^d\"This strange ^4balloon^d inflates\n^dwhenever ^6PIKACHU^d holds it.\"^^" } },
-      0x12C, 0x2, 0x1, 0xE8 },
+      0x12C, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_BLUE_BALLOON_COLLECTION_RECORDED },
     /* 0x3E: balloon */
     { 0x3E, 0x40006, 0xA, 0x0, 1.0F, 0.1F, { 0xA, 0x6, 0x6, 0xA, 0xF },
       1.0F, 29.0F, 0.8F, 0.5F, 0.4F, 64.0F, 110.0F, 0x108, 0x20, { 0x98, 0x98 },
@@ -862,7 +863,7 @@ ItemKind gItemKinds[166] = {
       { { "balloon", NULL },
         { "balloon",
           "A green ^4balloon^^\n^d\"This strange ^4balloon^d inflates\n^dwhenever ^6PIKACHU^d holds it.\"^^" } },
-      0x12C, 0x2, 0x1, 0xE9 },
+      0x12C, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_GREEN_BALLOON_COLLECTION_RECORDED },
     /* 0x3F: balloon */
     { 0x3F, 0x40006, 0xA, 0x0, 1.0F, 0.1F, { 0xA, 0x6, 0x6, 0xA, 0xF },
       1.0F, 29.0F, 0.8F, 0.5F, 0.4F, 64.0F, 110.0F, 0x108, 0x21, { 0x98, 0x98 },
@@ -870,7 +871,7 @@ ItemKind gItemKinds[166] = {
       { { "balloon", NULL },
         { "balloon",
           "A purple ^4balloon^^\n^d\"This strange ^4balloon^d inflates\n^dwhenever ^6PIKACHU^d holds it.\"^^" } },
-      0x12C, 0x2, 0x1, 0xEA },
+      0x12C, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_PURPLE_BALLOON_COLLECTION_RECORDED },
     /* 0x40: balloon */
     { 0x40, 0x40006, 0xA, 0x0, 1.0F, 0.1F, { 0xA, 0x6, 0x6, 0xA, 0xF },
       1.0F, 29.0F, 0.8F, 0.5F, 0.4F, 64.0F, 110.0F, 0x108, 0x22, { 0x98, 0x98 },
@@ -878,7 +879,7 @@ ItemKind gItemKinds[166] = {
       { { "balloon", NULL },
         { "balloon",
           "A red ^4balloon^^\n^d\"This strange ^4balloon^d inflates\n^dwhenever ^6PIKACHU^d holds it.\"^^" } },
-      0x12C, 0x2, 0x1, 0xEB },
+      0x12C, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_RED_BALLOON_COLLECTION_RECORDED },
     /* 0x41: balloon */
     { 0x41, 0x40006, 0xA, 0x0, 1.0F, 0.1F, { 0xA, 0x6, 0x6, 0xA, 0xF },
       1.0F, 29.0F, 0.8F, 0.5F, 0.4F, 64.0F, 110.0F, 0x108, 0x1F, { 0x98, 0x98 },
@@ -886,7 +887,7 @@ ItemKind gItemKinds[166] = {
       { { "balloon", NULL },
         { "balloon",
           "A yellow ^4balloon^^\n^d\"This strange ^4balloon^d inflates\n^dwhenever ^6PIKACHU^d holds it.\"^^" } },
-      0x12C, 0x2, 0x1, 0xEC },
+      0x12C, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_YELLOW_BALLOON_COLLECTION_RECORDED },
     /* 0x42: ? */
     { 0x42, 0x400, 0x1E, 0x0, 1.0F, 0.1F, { 0xF, 0x14, 0x1, 0x1, 0xF },
       1.0F, 40.0F, 0.2F, 0.6F, 10.0F, 75.0F, 75.0F, 0x108, 0x1D, { 0xC3, 0xC3 },
@@ -894,7 +895,7 @@ ItemKind gItemKinds[166] = {
       { { "Pok\xA1\xAD" "disc", NULL },
         { "Pok\xA1\xAD" "disc",
           "A disc that's fun to throw\n^d\"It spins and spins as it\n^dflies through the air.\"^^" } },
-      0x1E0, 0x2, 0x1, 0xE7 },
+      0x1E0, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_POKE_DISC_COLLECTION_RECORDED },
     /* 0x43: beach ball */
     { 0x43, 0x40C, 0x1, 0x0, 1.0F, 0.1F, { 0xF, 0x12, 0x1, 0x1, 0xF },
       1.0F, 200.0F, 0.9F, 1.0F, 0.3F, 100.0F, 100.0F, 0x108, 0x4D, { 0x98, 0x98 },
@@ -902,7 +903,7 @@ ItemKind gItemKinds[166] = {
       { { "beach ball", NULL },
         { "beach ball",
           "A colorful, bouncy ball\n^d\"It's fun to ^4throw it^d around.\n^dTry playing catch with it!\"^^" } },
-      0x0, 0x1, 0x3, 0x1C },
+      0x0, 0x1, ITEM_STORAGE_CLASS_WITHDRAWABLE_SUPPLY, 0x1C },
     /* 0x44: watering can */
     { 0x44, 0x120400, 0x3, 0x0, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       0.6F, 150.0F, 1.0F, 0.1F, 10.0F, 100.0F, 150.0F, 0x2, 0x5D, { 0x9F, 0xC3 },
@@ -910,7 +911,7 @@ ItemKind gItemKinds[166] = {
       { { "watering can", NULL },
         { "watering can",
           "A can for watering plants\n^d\"Give this to ^6PIKACHU^d right\n^daway whenever it wants it.\"^^" } },
-      0x0, 0x1, 0x3, 0x20 },
+      0x0, 0x1, ITEM_STORAGE_CLASS_WITHDRAWABLE_SUPPLY, 0x20 },
     /* 0x45: watering jug */
     { 0x45, 0x120400, 0x1E, 0x0, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 130.0F, 1.0F, 0.1F, 10.0F, 100.0F, 150.0F, 0x2, 0x5D, { 0x9F, 0xC3 },
@@ -918,7 +919,7 @@ ItemKind gItemKinds[166] = {
       { { "watering can", NULL },
         { "watering jug",
           "A jug that holds a lot of water\n^d\"With this, your water should\n^dlast you longer.\"^^" } },
-      0x5DC, 0x1, 0x3, 0x21 },
+      0x5DC, 0x1, ITEM_STORAGE_CLASS_WITHDRAWABLE_SUPPLY, 0x21 },
     /* 0x46: yellow ball */
     { 0x46, 0x8, 0x3, 0x0, 0.2F, 0.01F, { 0x14, 0x8, 0x14, 0x8, 0x14 },
       1.0F, 84.0F, 1.0F, 1.0F, 1.0F, 60.0F, 88.0F, 0x108, 0x61, { 0x97, 0x97 },
@@ -926,7 +927,7 @@ ItemKind gItemKinds[166] = {
       { { "yellow ball", NULL },
         { "yellow ball",
           "A yellow ball of unknown origin\n^d\"What on earth is this?\"^^\n" } },
-      0x0, 0x0, 0x1, -1 },
+      0x0, 0x0, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x47: charcoal */
     { 0x47, 0x0, 0x3, 0x0, 0.3F, 0.05F, { 0xF, 0x4, 0x4, 0x1, 0xF },
       0.5F, 84.0F, 1.0F, 1.0F, 1.0F, 90.0F, 140.0F, 0x108, 0x5F, { 0x97, 0x97 },
@@ -934,7 +935,7 @@ ItemKind gItemKinds[166] = {
       { { "charcoal", NULL },
         { "charcoal",
           "Burnt ashes\n^d\"It's the burnt remains of\n^dsome item. It's just garbage.\"^^" } },
-      0x0, 0x0, 0x1, -1 },
+      0x0, 0x0, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x48: leaf */
     { 0x48, 0x100C0, 0x2, 0x0, 0.5F, 0.02F, { 0x7, 0x4, 0x1, 0x7, 0xF },
       1.5F, 40.0F, 0.2F, 0.5F, 3.0F, 50.0F, 68.0F, 0x108, 0x3C, { 0x98, 0x98 },
@@ -942,7 +943,7 @@ ItemKind gItemKinds[166] = {
       { { "leaf", NULL },
         { "leaf",
           "A fallen, wilted leaf\n^d\"It's just a plain, wilted leaf.\"^^\n" } },
-      0x5, 0x1, 0x1, -1 },
+      0x5, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x49: leaf whistle */
     { 0x49, 0x0, 0xA, 0x0, 1.0F, 0.1F, { 0x13, 0xF, 0x4, 0x1, 0x13 },
       1.0F, 40.0F, 0.2F, 0.5F, 4.0F, 70.0F, 70.0F, 0x108, 0x64, { 0x98, 0x98 },
@@ -950,7 +951,7 @@ ItemKind gItemKinds[166] = {
       { { "leaf", NULL },
         { "leaf whistle",
           "A whistle made from a ^4leaf^^\n^d\"I wonder how you ^4play it^d.\"^^\n" } },
-      0xA, 0x2, 0x1, -1 },
+      0xA, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x4A: harmonica */
     { 0x4A, 0x400, 0xA, 0x0, 1.0F, 0.1F, { 0x13, 0x8, 0x1, 0x8, 0x13 },
       1.0F, 10.0F, 1.0F, 0.5F, 4.0F, 45.0F, 120.0F, 0x108, 0x57, { 0xBE, 0xBE },
@@ -958,7 +959,7 @@ ItemKind gItemKinds[166] = {
       { { "harmonica", NULL },
         { "harmonica",
           "A musical instrument\n^d\"I wonder if ^6PIKACHU^d can\n^4play it^d for you.\"^^" } },
-      0x320, 0x2, 0x3, 0x22 },
+      0x320, 0x2, ITEM_STORAGE_CLASS_WITHDRAWABLE_SUPPLY, 0x22 },
     /* 0x4B: trumpet */
     { 0x4B, 0x400, 0xA, 0x0, 1.0F, 0.1F, { 0x13, 0x8, 0x1, 0x8, 0x13 },
       1.0F, 70.0F, 1.0F, 0.5F, 4.0F, 70.0F, 130.0F, 0x108, 0x69, { 0xBE, 0xBE },
@@ -966,7 +967,7 @@ ItemKind gItemKinds[166] = {
       { { "trumpet", NULL },
         { "trumpet",
           "A loud, brass instrument\n^d\"This makes a pretty loud\n^dnoise.\"^^" } },
-      0x4B0, 0x2, 0x1, 0xD9 },
+      0x4B0, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_TRUMPET_COLLECTION_RECORDED },
     /* 0x4C: tissue */
     { 0x4C, 0x0, 0x1, 0x0, 0.4F, 0.05F, { 0xF, 0x12, 0x3, 0x1, 0xF },
       1.0F, 5.0F, 0.1F, 0.3F, 10.0F, 53.0F, 100.0F, 0x108, 0x44, { 0x98, 0x98 },
@@ -974,7 +975,7 @@ ItemKind gItemKinds[166] = {
       { { "tissue", NULL },
         { "tissue",
           "Thin, light paper\n^d\"Be sure to ^4clean it up^d after\n^dscattering it about.\"^^" } },
-      0x0, 0x2, 0x1, -1 },
+      0x0, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x4D: banana peel */
     { 0x4D, 0x0, 0x2, 0x0, 0.5F, 0.02F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 60.0F, 0.8F, 0.4F, 4.0F, 90.0F, 111.0F, 0x108, 0xA, { 0x98, 0x98 },
@@ -982,7 +983,7 @@ ItemKind gItemKinds[166] = {
       { { "banana peel", NULL },
         { "banana peel",
           "The skin of a ^4banana^^\n^d\"^6PIKACHU^d can slip on this, so\n^dbe careful where you leave it.\"^^" } },
-      0x0, 0x1, 0x1, -1 },
+      0x0, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x4E: ? */
     { 0x4E, 0x404A, 0x3, 0x4F, 1.0F, 0.1F, { 0xF, 0x12, 0x1, 0x1, 0xF },
       1.0F, 1289.0F, 3.0F, 0.5F, 0.8F, 64.0F, 144.0F, 0x108, 0x40, { 0x98, 0xA7 },
@@ -990,7 +991,7 @@ ItemKind gItemKinds[166] = {
       { { "pi\xA1\xB1" "ata", NULL },
         { "pi\xA1\xB1" "ata",
           "A decorated container\n^d\"If you break it, ^6PIKACHU^d\n^dfinds ^4treasure^d inside.\"^^" } },
-      0x9B0, 0x2, 0x1, -1 },
+      0x9B0, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x4F: ? */
     { 0x4F, 0x40, 0x2, 0x0, 0.5F, 0.02F, { 0x2, 0xF, 0x2, 0x1, 0x1 },
       1.0F, 1289.5F, 2.0F, 0.6F, 4.0F, 100.0F, 75.0F, 0x108, 0x48, { 0x98, 0x98 },
@@ -998,7 +999,7 @@ ItemKind gItemKinds[166] = {
       { { "pi\xA1\xB1" "ata", NULL },
         { "cracked pi\xA1\xB1" "ata",
           "A ^4pi\xA1\xB1" "ata^^ that's been broken\n^d\"It looks like a lot of stuff\n^dcame out. Did you get any?\"^^" } },
-      0x1E0, 0x1, 0x1, -1 },
+      0x1E0, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x50: baseball cap */
     { 0x50, 0x10440, 0xA, 0x0, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 180.0F, 1.0F, 1.0F, 1.0F, 58.0F, 120.0F, 0x108, 0x6E, { 0x98, 0x98 },
@@ -1006,7 +1007,7 @@ ItemKind gItemKinds[166] = {
       { { "cap", NULL },
         { "baseball cap",
           "A replica of a trainer's cap\n^d\"This is the trademark of a\n^dtrainer. It's pretty stylish.\"^^" } },
-      0xF8C, 0x2, 0x1, -1 },
+      0xF8C, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x51: megaphone */
     { ITEM_KIND_MEGAPHONE, 0x400, 0x14, 0x0, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 160.0F, 1.0F, 0.1F, 10.0F, 60.0F, 113.0F, 0x108, 0x65, { 0xC3, 0xC3 },
@@ -1014,7 +1015,7 @@ ItemKind gItemKinds[166] = {
       { { "megaphone", NULL },
         { "megaphone",
           "The very first Pok\xA1\xADHelper\n^d\"I used this to talk to Pok\xA1\xADmon\n^dbefore I had the Pok\xA1\xADHelper.\"^^" } },
-      0x0, 0x1, 0x3, 0x23 },
+      0x0, 0x1, ITEM_STORAGE_CLASS_WITHDRAWABLE_SUPPLY, 0x23 },
     /* 0x52: fishing hook */
     { 0x52, 0x0, 0x5, 0x0, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0xF },
       1.0F, ITEM_DIMENSION_FROM_MODEL, 1.0F, 0.2F, 3.0F, ITEM_DIMENSION_FROM_MODEL, ITEM_DIMENSION_FROM_MODEL, 0x108, 0x6E, { 0x98, 0x98 },
@@ -1022,7 +1023,7 @@ ItemKind gItemKinds[166] = {
       { { "hook", NULL },
         { "fishing hook",
           "An item for catching Pok\xA1\xADmon\n^d\"This is a safety hook that\n^dwon't hurt Pok\xA1\xADmon.\"^^" } },
-      0x0, 0x1, 0x2, 0x1E },
+      0x0, 0x1, ITEM_STORAGE_CLASS_NONWITHDRAWABLE_SUPPLY, 0x1E },
     /* 0x53: lucky hook */
     { 0x53, 0x0, 0x5, 0x0, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0xF },
       1.0F, ITEM_DIMENSION_FROM_MODEL, 1.0F, 0.2F, 3.0F, ITEM_DIMENSION_FROM_MODEL, ITEM_DIMENSION_FROM_MODEL, 0x108, 0x6E, { 0x98, 0x98 },
@@ -1030,7 +1031,7 @@ ItemKind gItemKinds[166] = {
       { { "hook", NULL },
         { "lucky hook",
           "A better fishing hook\n^d\"You can catch a wider variety\n^dof Pok\xA1\xADmon with this hook.\"^^" } },
-      0x4B0, 0x1, 0x2, 0x1F },
+      0x4B0, 0x1, ITEM_STORAGE_CLASS_NONWITHDRAWABLE_SUPPLY, 0x1F },
     /* 0x54: fishing flag */
     { 0x54, 0x2C0, 0xA, 0x0, 1.0F, 0.1F, { 0xF, 0xF, 0x1, 0x1, 0xF },
       0.5F, 1.0F, 0.1F, 0.4F, 6.0F, 300.0F, 300.0F, 0xF7, 0x6E, { 0x98, 0x98 },
@@ -1038,7 +1039,7 @@ ItemKind gItemKinds[166] = {
       { { "flag", NULL },
         { "fishing flag",
           "A prize for catching Pok\xA1\xADmon\n^d\"That's from\n^dCobalt Fishing Hole.\"^^" } },
-      0x1388, 0x2, 0x1, 0xF3 },
+      0x1388, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_COBALT_FISHING_FLAG_COLLECTION_RECORDED },
     /* 0x55: fishing flag */
     { 0x55, 0x2C0, 0xA, 0x0, 1.0F, 0.1F, { 0xF, 0xF, 0x1, 0x1, 0xF },
       0.5F, 1.0F, 0.1F, 0.4F, 6.0F, 300.0F, 300.0F, 0xF5, 0x6E, { 0x98, 0x98 },
@@ -1046,7 +1047,7 @@ ItemKind gItemKinds[166] = {
       { { "flag", NULL },
         { "fishing flag",
           "A prize for catching Pok\xA1\xADmon\n^d\"That's from\n^dOchre Fishing Hole.\"^^" } },
-      0x1388, 0x2, 0x1, 0xF1 },
+      0x1388, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_OCHRE_FISHING_FLAG_COLLECTION_RECORDED },
     /* 0x56: fishing flag */
     { 0x56, 0x2C0, 0xA, 0x0, 1.0F, 0.1F, { 0xF, 0xF, 0x1, 0x1, 0xF },
       0.5F, 1.0F, 0.1F, 0.4F, 6.0F, 300.0F, 300.0F, 0xF6, 0x6E, { 0x98, 0x98 },
@@ -1054,7 +1055,7 @@ ItemKind gItemKinds[166] = {
       { { "flag", NULL },
         { "fishing flag",
           "A prize for catching Pok\xA1\xADmon\n^d\"That's from\n^dOlivine Fishing Hole.\"^^" } },
-      0x1388, 0x2, 0x1, 0xF2 },
+      0x1388, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_OLIVINE_FISHING_FLAG_COLLECTION_RECORDED },
     /* 0x57: pirate flag */
     { 0x57, 0x2C0, 0xA, 0x0, 1.0F, 0.1F, { 0xF, 0xF, 0x1, 0x8, 0xF },
       0.8F, 1.0F, 0.1F, 0.4F, 6.0F, 400.0F, 400.0F, 0xF8, 0x6E, { 0x98, 0x98 },
@@ -1062,7 +1063,7 @@ ItemKind gItemKinds[166] = {
       { { "flag", NULL },
         { "pirate flag",
           "Symbol of a pirate ship\n^d\"That's a prize from the\n^4pi\xA1\xB1" "ata^d party.\"^^" } },
-      0x2710, 0x2, 0x1, 0xEF },
+      0x2710, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_PIRATE_FLAG_COLLECTION_RECORDED },
     /* 0x58: gold coin */
     { 0x58, 0x20200, 0x8, 0x0, 1.0F, 0.1F, { 0x19, 0x19, 0x19, 0x19, 0x19 },
       1.0F, 40.0F, 1.0F, 1.0F, 1.0F, 56.0F, 80.0F, 0x100, 0x62, { 0x9B, 0x9B },
@@ -1070,7 +1071,7 @@ ItemKind gItemKinds[166] = {
       { { "coin", NULL },
         { "gold coin",
           "A coin made of gold\n^d\"Look at it glitter. It's\n^dbeautiful. I want one too!\"^^" } },
-      0x5DC, 0x0, 0x1, 0xC8 },
+      0x5DC, 0x0, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_GOLD_COIN_COLLECTION_RECORDED },
     /* 0x59: chocolate coin */
     { 0x59, ITEM_STATE_MATERIAL_ENABLED, 0x8, 0x0, 1.0F, 0.1F, { 0x19, 0x19, 0x19, 0x19, 0x19 },
       1.0F, 40.0F, 1.0F, 1.0F, 1.0F, 56.0F, 80.0F, 0x101, 0x62, { 0x97, 0x97 },
@@ -1078,7 +1079,7 @@ ItemKind gItemKinds[166] = {
       { { "coin", NULL },
         { "chocolate coin",
           "A coin made of chocolate\n^d\"Don't mistake it for a\n^4gold coin^d!\"^^" } },
-      0x50, 0x2, 0x1, 0xC9 },
+      0x50, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_CHOCOLATE_COIN_COLLECTION_RECORDED },
     /* 0x5A: silver coin */
     { 0x5A, 0x20200, 0x8, 0x0, 1.0F, 0.1F, { 0x19, 0x19, 0x19, 0x19, 0x19 },
       1.0F, 40.0F, 1.0F, 1.0F, 1.0F, 56.0F, 80.0F, 0x102, 0x0, { 0x9B, 0x9B },
@@ -1086,7 +1087,7 @@ ItemKind gItemKinds[166] = {
       { { "coin", NULL },
         { "silver coin",
           "A coin made of silver\n^d\"It's worth about @Y@Z100.\"^^\n" } },
-      0x64, 0x0, 0x1, 0xCA },
+      0x64, 0x0, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_SILVER_COIN_COLLECTION_RECORDED },
     /* 0x5B: copper coin */
     { 0x5B, 0x20200, 0x8, 0x0, 1.0F, 0.1F, { 0x19, 0x19, 0x19, 0x19, 0x19 },
       1.25F, 32.0F, 1.0F, 1.0F, 1.0F, 56.0F, 80.0F, 0x103, 0x1, { 0x9B, 0x9B },
@@ -1094,7 +1095,7 @@ ItemKind gItemKinds[166] = {
       { { "coin", NULL },
         { "copper coin",
           "A coin made of copper\n^d\"It's worth about @Y@Z10.\"^^\n" } },
-      0xA, 0x0, 0x1, 0xCB },
+      0xA, 0x0, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_COPPER_COIN_COLLECTION_RECORDED },
     /* 0x5C: ruby */
     { 0x5C, 0x0, 0x14, 0x0, 1.0F, 0.1F, { 0x19, 0x19, 0x19, 0x19, 0x19 },
       0.8F, 70.0F, 1.0F, 1.0F, 1.0F, 55.0F, 90.0F, 0x108, 0x59, { 0x97, 0x97 },
@@ -1102,7 +1103,7 @@ ItemKind gItemKinds[166] = {
       { { "jewel", NULL },
         { "ruby",
           "A hard red gem\n^d\"You can see through it.\n^dIsn't it beautiful?\"^^" } },
-      0x1388, 0x2, 0x1, 0xCD },
+      0x1388, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_RUBY_COLLECTION_RECORDED },
     /* 0x5D: sapphire */
     { 0x5D, 0x0, 0x14, 0x0, 1.0F, 0.1F, { 0x19, 0x19, 0x19, 0x19, 0x19 },
       0.9F, 70.0F, 1.0F, 1.0F, 1.0F, 55.0F, 90.0F, 0x108, 0x58, { 0x97, 0x97 },
@@ -1110,7 +1111,7 @@ ItemKind gItemKinds[166] = {
       { { "jewel", NULL },
         { "sapphire",
           "A hard, clear blue gem\n^d\"That's an amazing color\n^dof blue.\"^^" } },
-      0x2710, 0x2, 0x1, 0xCE },
+      0x2710, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_SAPPHIRE_COLLECTION_RECORDED },
     /* 0x5E: topaz */
     { 0x5E, 0x0, 0x5, 0x0, 1.0F, 0.1F, { 0x19, 0x19, 0x19, 0x19, 0x19 },
       1.0F, 70.0F, 1.0F, 1.0F, 1.0F, 55.0F, 90.0F, 0x108, 0x5A, { 0x97, 0x97 },
@@ -1118,7 +1119,7 @@ ItemKind gItemKinds[166] = {
       { { "jewel", NULL },
         { "topaz",
           "A delicate yellow gem\n^d\"It's a very valuable gem\n^dthat's really hard to come by.\"^^" } },
-      0x4E20, 0x2, 0x1, 0xCF },
+      0x4E20, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_TOPAZ_COLLECTION_RECORDED },
     /* 0x5F: red marble */
     { 0x5F, 0x40002, 0xA, 0x0, 1.0F, 0.1F, { 0x19, 0x19, 0x19, 0x19, 0x19 },
       2.0F, 78.8F, 1.0F, 1.0F, 1.0F, 25.0F, 60.0F, 0x108, 0x50, { 0x97, 0x97 },
@@ -1126,7 +1127,7 @@ ItemKind gItemKinds[166] = {
       { { "jewel", NULL },
         { "red marble",
           "A red ball of glass\n^d\"I used to play with ^4marble^ds,\n^dtoo, when I was a kid.\"^^" } },
-      0x64, 0x1, 0x1, 0xD0 },
+      0x64, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_RED_MARBLE_COLLECTION_RECORDED },
     /* 0x60: blue marble */
     { 0x60, 0x40002, 0xA, 0x0, 1.0F, 0.1F, { 0x19, 0x19, 0x19, 0x19, 0x19 },
       2.0F, 78.8F, 1.0F, 1.0F, 1.0F, 25.0F, 60.0F, 0x108, 0x4F, { 0x97, 0x97 },
@@ -1134,7 +1135,7 @@ ItemKind gItemKinds[166] = {
       { { "jewel", NULL },
         { "blue marble",
           "A blue ball of glass\n^d\"I used to play with ^4marble^ds,\n^dtoo, when I was a kid.\"^^" } },
-      0x64, 0x1, 0x1, 0xD1 },
+      0x64, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_BLUE_MARBLE_COLLECTION_RECORDED },
     /* 0x61: yellow marble */
     { 0x61, 0x40002, 0xA, 0x0, 1.0F, 0.1F, { 0x19, 0x19, 0x19, 0x19, 0x19 },
       2.0F, 78.8F, 1.0F, 1.0F, 1.0F, 25.0F, 60.0F, 0x108, 0x51, { 0x97, 0x97 },
@@ -1142,7 +1143,7 @@ ItemKind gItemKinds[166] = {
       { { "jewel", NULL },
         { "yellow marble",
           "A yellow ball of glass\n^d\"I used to play with ^4marble^ds,\n^dtoo, when I was a kid.\"^^" } },
-      0x64, 0x2, 0x1, 0xD2 },
+      0x64, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_YELLOW_MARBLE_COLLECTION_RECORDED },
     /* 0x62: ruby ring */
     { 0x62, 0x0, 0x14, 0x0, 1.0F, 0.1F, { 0x19, 0x19, 0x19, 0x19, 0x19 },
       1.0F, 112.0F, 1.0F, 1.0F, 1.0F, 56.0F, 101.0F, 0x108, 0x70, { 0x97, 0x97 },
@@ -1150,7 +1151,7 @@ ItemKind gItemKinds[166] = {
       { { "ring", NULL },
         { "ruby ring",
           "A ring with a gem on it\n^d\"A symbol of a couple's\n^deverlasting love.\"^^" } },
-      0x7530, 0x0, 0x1, 0xD4 },
+      0x7530, 0x0, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_RUBY_RING_COLLECTION_RECORDED },
     /* 0x63: bottle cap ring */
     { 0x63, 0x0, 0x5, 0x0, 1.0F, 0.1F, { 0x19, 0x19, 0x19, 0x19, 0x19 },
       1.0F, 60.0F, 1.0F, 1.0F, 1.0F, 70.0F, 100.0F, 0x108, 0x6A, { 0x97, 0x97 },
@@ -1158,7 +1159,7 @@ ItemKind gItemKinds[166] = {
       { { "ring", NULL },
         { "bottle cap ring",
           "The seal from a plastic bottle\n^d\"Don't litter.\"^^\n" } },
-      0x5, 0x0, 0x1, -1 },
+      0x5, 0x0, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x64: pirate sword */
     { 0x64, 0x0, 0x5, 0x0, 1.0F, 0.1F, { 0x18, 0x18, 0x18, 0x18, 0x18 },
       1.0F, 170.0F, 1.0F, 1.0F, 1.0F, 57.0F, 143.0F, 0x108, 0x5E, { 0x97, 0x97 },
@@ -1166,7 +1167,7 @@ ItemKind gItemKinds[166] = {
       { { "sword", NULL },
         { "pirate sword",
           "A sword once used by pirates\n^d\"That's from the pirates'\n^dplunder on Cobalt Island.\"^^" } },
-      0x16A8, 0x2, 0x1, 0xC7 },
+      0x16A8, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_PIRATE_SWORD_COLLECTION_RECORDED },
     /* 0x65: toy sword */
     { 0x65, 0x0, 0x5, 0x0, 1.0F, 0.1F, { 0x18, 0x18, 0x18, 0x18, 0x18 },
       1.0F, 170.0F, 1.0F, 1.0F, 1.0F, 57.0F, 140.0F, 0x108, 0x6B, { 0x97, 0x97 },
@@ -1174,7 +1175,7 @@ ItemKind gItemKinds[166] = {
       { { "sword", NULL },
         { "toy sword",
           "A ^4toy sword^^ made of wood\n^d\"En garde! I used to play with\n^d^4toy sword^ds when I was little.\"^^" } },
-      0x1F4, 0x2, 0x1, 0xC6 },
+      0x1F4, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_TOY_SWORD_COLLECTION_RECORDED },
     /* 0x66: bird feather */
     { 0x66, 0x0, 0xA, 0x0, 1.0F, 0.1F, { 0x18, 0x18, 0x18, 0x18, 0x18 },
       1.0F, 50.0F, 0.1F, 0.4F, 3.0F, 51.0F, 70.0F, 0x108, 0x6D, { 0x98, 0x98 },
@@ -1182,7 +1183,7 @@ ItemKind gItemKinds[166] = {
       { { "feather", NULL },
         { "bird feather",
           "A feather from a Pok\xA1\xADmon\n^d\"This light feather should fly\n^dpretty well.\"^^" } },
-      0x78, 0x2, 0x1, 0xD5 },
+      0x78, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_BIRD_FEATHER_COLLECTION_RECORDED },
     /* 0x67: bolt */
     { 0x67, 0x30, 0x14, 0x0, 1.0F, 0.1F, { 0x18, 0x18, 0x18, 0x18, 0x18 },
       1.0F, 75.1F, 1.0F, 1.0F, 1.0F, 80.0F, 120.0F, 0x108, 0x67, { 0x97, 0x97 },
@@ -1190,7 +1191,7 @@ ItemKind gItemKinds[166] = {
       { { "bolt", NULL },
         { "bolt",
           "An item used to fasten things\n^d\"That's just junk.\"^^\n" } },
-      0xA, 0x2, 0x1, 0xD7 },
+      0xA, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_BOLT_COLLECTION_RECORDED },
     /* 0x68: magnet */
     { 0x68, 0x0, 0x5, 0x0, 1.0F, 0.1F, { 0x18, 0x18, 0x18, 0x18, 0x18 },
       1.0F, 206.5F, 1.0F, 1.0F, 2.0F, 103.2F, 103.2F, 0x108, 0x5C, { 0x97, 0x97 },
@@ -1198,7 +1199,7 @@ ItemKind gItemKinds[166] = {
       { { "magnet", NULL },
         { "magnet",
           "A magnetic piece of metal\n^d\"It's a pretty cool shape, but\n^dit's just junk.\"^^" } },
-      0x64, 0x2, 0x1, 0xD6 },
+      0x64, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_MAGNET_COLLECTION_RECORDED },
     /* 0x69: marble */
     { 0x69, 0x40002, 0xA, 0x0, 1.0F, 0.1F, { 0x18, 0x18, 0x18, 0x18, 0x18 },
       1.0F, 78.8F, 1.0F, 1.0F, 0.8F, 27.0F, 60.0F, 0x108, 0x4E, { 0x97, 0x97 },
@@ -1206,7 +1207,7 @@ ItemKind gItemKinds[166] = {
       { { "marble", NULL },
         { "marble",
           "A ball made of glass\n^d\"I used to play with ^4marble^ds,\n^dtoo, when I was a kid.\"^^" } },
-      0x64, 0x1, 0x1, 0xD3 },
+      0x64, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_MARBLE_COLLECTION_RECORDED },
     /* 0x6A: stew */
     { 0x6A, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
       1.0F, 60.0F, 1.0F, 1.0F, 2.0F, 70.0F, 125.0F, 0xF9, 0x63, { 0x98, 0x98 },
@@ -1214,7 +1215,7 @@ ItemKind gItemKinds[166] = {
       { { "stew", NULL },
         { "stew",
           "Tasty stew\n" } },
-      0x3D4, 0x2, 0x1, -1 },
+      0x3D4, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x6B: stew */
     { 0x6B, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
       1.0F, 60.0F, 1.0F, 1.0F, 2.0F, 70.0F, 125.0F, 0xF9, 0x63, { 0x98, 0x98 },
@@ -1222,7 +1223,7 @@ ItemKind gItemKinds[166] = {
       { { "stew", NULL },
         { "stew",
           "A typical plate of stew\n" } },
-      0x30C, 0x2, 0x1, -1 },
+      0x30C, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x6C: weird stew */
     { 0x6C, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x4, 0x4, 0x4, 0x7, 0x4 },
       1.0F, 60.0F, 1.0F, 1.0F, 2.0F, 70.0F, 125.0F, 0xFA, 0x54, { 0x98, 0x98 },
@@ -1230,7 +1231,7 @@ ItemKind gItemKinds[166] = {
       { { "stew", NULL },
         { "weird stew",
           "Weird tasting stew\n" } },
-      0xC8, 0x1, 0x1, -1 },
+      0xC8, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x6D: stir-fry */
     { 0x6D, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
       1.0F, 60.0F, 1.0F, 1.0F, 2.0F, 70.0F, 125.0F, 0xFB, 0x6F, { 0x98, 0x98 },
@@ -1238,7 +1239,7 @@ ItemKind gItemKinds[166] = {
       { { "stir-fry", NULL },
         { "stir-fry",
           "Tasty fried vegetables\n" } },
-      0x2BC, 0x2, 0x1, -1 },
+      0x2BC, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x6E: stir-fry */
     { 0x6E, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
       1.0F, 60.0F, 1.0F, 1.0F, 2.0F, 70.0F, 125.0F, 0xFB, 0x6F, { 0x98, 0x98 },
@@ -1246,7 +1247,7 @@ ItemKind gItemKinds[166] = {
       { { "stir-fry", NULL },
         { "stir-fry",
           "A typical plate of stir-fry\n" } },
-      0x1F4, 0x2, 0x1, -1 },
+      0x1F4, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x6F: weird stir-fry */
     { 0x6F, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x4, 0x4, 0x4, 0x7, 0x4 },
       1.0F, 60.0F, 1.0F, 1.0F, 2.0F, 70.0F, 125.0F, 0xFC, 0x55, { 0x98, 0x98 },
@@ -1254,7 +1255,7 @@ ItemKind gItemKinds[166] = {
       { { "stir-fry", NULL },
         { "weird stir-fry",
           "Weird tasting stir-fry\n" } },
-      0x96, 0x1, 0x1, -1 },
+      0x96, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x70: soup */
     { 0x70, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
       1.0F, 60.0F, 1.0F, 1.0F, 2.0F, 70.0F, 125.0F, 0xFD, 0x5B, { 0x98, 0x98 },
@@ -1262,7 +1263,7 @@ ItemKind gItemKinds[166] = {
       { { "soup", NULL },
         { "soup",
           "Tasty soup\n" } },
-      0x30C, 0x2, 0x1, -1 },
+      0x30C, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x71: soup */
     { 0x71, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
       1.0F, 60.0F, 1.0F, 1.0F, 2.0F, 70.0F, 125.0F, 0xFD, 0x5B, { 0x98, 0x98 },
@@ -1270,7 +1271,7 @@ ItemKind gItemKinds[166] = {
       { { "soup", NULL },
         { "soup",
           "A typical bowl of soup\n" } },
-      0x244, 0x2, 0x1, -1 },
+      0x244, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x72: weird soup */
     { 0x72, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x4, 0x4, 0x4, 0x7, 0x4 },
       1.0F, 60.0F, 1.0F, 1.0F, 2.0F, 70.0F, 125.0F, 0xFE, 0x56, { 0x98, 0x98 },
@@ -1278,7 +1279,7 @@ ItemKind gItemKinds[166] = {
       { { "soup", NULL },
         { "weird soup",
           "Weird tasting soup\n" } },
-      0xB4, 0x1, 0x1, -1 },
+      0xB4, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x73: goulash */
     { 0x73, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
       1.0F, 60.0F, 1.0F, 1.0F, 2.0F, 70.0F, 125.0F, 0xFD, 0x5B, { 0x98, 0x98 },
@@ -1286,7 +1287,7 @@ ItemKind gItemKinds[166] = {
       { { "goulash", NULL },
         { "goulash",
           "Tasty goulash\n" } },
-      0x5DC, 0x2, 0x1, -1 },
+      0x5DC, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x74: goulash */
     { 0x74, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
       1.0F, 60.0F, 1.0F, 1.0F, 2.0F, 70.0F, 125.0F, 0xFD, 0x5B, { 0x98, 0x98 },
@@ -1294,7 +1295,7 @@ ItemKind gItemKinds[166] = {
       { { "goulash", NULL },
         { "goulash",
           "Average tasting goulash\n" } },
-      0x4B0, 0x2, 0x1, -1 },
+      0x4B0, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x75: weird goulash */
     { 0x75, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x4, 0x4, 0x4, 0x7, 0x4 },
       1.0F, 60.0F, 1.0F, 1.0F, 2.0F, 70.0F, 125.0F, 0xFE, 0x56, { 0x98, 0x98 },
@@ -1302,7 +1303,7 @@ ItemKind gItemKinds[166] = {
       { { "goulash", NULL },
         { "weird goulash",
           "Weird tasting goulash\n" } },
-      0x190, 0x1, 0x1, -1 },
+      0x190, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x76: cookie */
     { 0x76, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
       1.0F, 45.0F, 1.0F, 1.0F, 2.0F, 60.0F, 60.0F, 0x100, 0x5F, { 0x98, 0x98 },
@@ -1310,7 +1311,7 @@ ItemKind gItemKinds[166] = {
       { { "cookie", NULL },
         { "cookie",
           "A tasty cookie\n" } },
-      0x3E8, 0x2, 0x1, -1 },
+      0x3E8, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x77: cookie */
     { 0x77, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x2, 0x2, 0x2, 0x7, 0x2 },
       1.0F, 45.0F, 1.0F, 1.0F, 2.0F, 60.0F, 60.0F, 0x103, 0x5F, { 0x98, 0x98 },
@@ -1318,7 +1319,7 @@ ItemKind gItemKinds[166] = {
       { { "cookie", NULL },
         { "cookie",
           "An average tasting cookie\n" } },
-      0x258, 0x2, 0x1, -1 },
+      0x258, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x78: weird cookie */
     { 0x78, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x4, 0x4, 0x4, 0x7, 0x4 },
       1.0F, 45.0F, 1.0F, 1.0F, 2.0F, 60.0F, 60.0F, 0x103, 0x5F, { 0x98, 0x98 },
@@ -1326,7 +1327,7 @@ ItemKind gItemKinds[166] = {
       { { "cookie", NULL },
         { "weird cookie",
           "A weird tasting cookie\n" } },
-      0x12C, 0x1, 0x1, -1 },
+      0x12C, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x79: mystery soup */
     { 0x79, ITEM_STATE_MATERIAL_ENABLED, 0x2, 0x0, 1.0F, 0.2F, { 0x4, 0x4, 0x4, 0x7, 0x4 },
       1.0F, 60.0F, 1.0F, 1.0F, 2.0F, 70.0F, 125.0F, 0xFF, 0x56, { 0x98, 0x98 },
@@ -1334,7 +1335,7 @@ ItemKind gItemKinds[166] = {
       { { "mystery soup", NULL },
         { "mystery soup",
           "^4BULBASAUR^^'s special recipe\n" } },
-      0x64, 0x0, 0x1, -1 },
+      0x64, 0x0, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x7A: strange radish */
     { 0x7A, 0x141, 0x3, 0x0, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 60.0F, 1.0F, 1.0F, 100.0F, 150.0F, 200.0F, 0x108, 0x66, { 0x98, 0x98 },
@@ -1342,7 +1343,7 @@ ItemKind gItemKinds[166] = {
       { { "ODDISH", "May grow when\nsprinkled with water." },
         { "strange radish",
           "An odd radish\n^d\"It looks like ^4ODDISH^d, but it's\n^dactually a plant.\"^^" } },
-      0x0, 0x0, 0x1, -1 },
+      0x0, 0x0, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x7B: smelly radish */
     { 0x7B, 0x141, 0x3, 0x0, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 90.0F, 1.0F, 1.0F, 100.0F, 250.0F, 300.0F, 0x108, 0x66, { 0x98, 0x98 },
@@ -1350,7 +1351,7 @@ ItemKind gItemKinds[166] = {
       { { "GLOOM", "May grow when\nsprinkled with water." },
         { "smelly radish",
           "A radish that looks like ^4GLOOM^^\n^d\"It looks like ^4GLOOM^d, but it's\n^da completely different plant.\"^^" } },
-      0x0, 0x0, 0x1, -1 },
+      0x0, 0x0, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x7C: crate */
     { 0x7C, 0x2000, 0x5, 0x5B, 1.0F, 0.1F, { 0xF, 0xA, 0x6, 0xA, 0xF },
       0.5F, 250.0F, 1.0F, 1.0F, 2.0F, 150.0F, 150.0F, 0x108, 0x52, { 0x98, 0xA7 },
@@ -1358,7 +1359,7 @@ ItemKind gItemKinds[166] = {
       { { "crate", NULL },
         { "crate",
           "A wooden box\n^d\"An 'A' is carved on the lid.\n^dI wonder if anything is inside.\"^^" } },
-      0xA, 0x1, 0x1, -1 },
+      0xA, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x7D: crate */
     { 0x7D, 0x2000, 0x5, 0x5A, 1.0F, 0.1F, { 0xF, 0xA, 0x6, 0xA, 0xF },
       0.5F, 250.0F, 1.0F, 1.0F, 2.0F, 150.0F, 150.0F, 0x108, 0x52, { 0x98, 0xA7 },
@@ -1366,7 +1367,7 @@ ItemKind gItemKinds[166] = {
       { { "crate", NULL },
         { "crate",
           "A wooden box\n^d\"A 'B' is carved on the lid.\n^dI wonder if anything is inside.\"^^" } },
-      0xA, 0x1, 0x1, -1 },
+      0xA, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x7E: crate */
     { 0x7E, 0x2000, 0x5, 0x5F, 1.0F, 0.1F, { 0xF, 0xA, 0x6, 0xA, 0xF },
       0.5F, 250.0F, 1.0F, 1.0F, 2.0F, 150.0F, 150.0F, 0x108, 0x52, { 0x98, 0xA7 },
@@ -1374,7 +1375,7 @@ ItemKind gItemKinds[166] = {
       { { "crate", NULL },
         { "crate",
           "A wooden box\n^d\"A 'C' is carved on the lid.\n^dI wonder if anything is inside.\"^^" } },
-      0xA, 0x1, 0x1, -1 },
+      0xA, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x7F: crate */
     { 0x7F, 0x2000, 0x5, 0x60, 1.0F, 0.1F, { 0xF, 0xA, 0x6, 0xA, 0xF },
       0.5F, 250.0F, 1.0F, 1.01F, 2.0F, 150.0F, 150.0F, 0x108, 0x52, { 0x98, 0xA7 },
@@ -1382,7 +1383,7 @@ ItemKind gItemKinds[166] = {
       { { "crate", NULL },
         { "crate",
           "A wooden box\n^d\"A 'D' is carved on the lid.\n^dI wonder if anything is inside.\"^^" } },
-      0xA, 0x1, 0x1, -1 },
+      0xA, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x80: crate */
     { 0x80, 0x2000, 0x5, 0x61, 1.0F, 0.1F, { 0xF, 0xA, 0x6, 0xA, 0xF },
       0.5F, 250.0F, 1.0F, 1.0F, 2.0F, 150.0F, 150.0F, 0x108, 0x52, { 0x98, 0xA7 },
@@ -1390,7 +1391,7 @@ ItemKind gItemKinds[166] = {
       { { "crate", NULL },
         { "crate",
           "A wooden box\n^d\"An 'E' is carved on the lid.\n^dI wonder if anything is inside.\"^^" } },
-      0xA, 0x1, 0x1, -1 },
+      0xA, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x81: crate */
     { 0x81, 0x2000, 0x5, 0x24, 1.0F, 0.1F, { 0xF, 0xA, 0x6, 0xA, 0xF },
       0.5F, 250.0F, 1.0F, 1.0F, 2.0F, 150.0F, 150.0F, 0x108, 0x52, { 0x98, 0xA7 },
@@ -1398,7 +1399,7 @@ ItemKind gItemKinds[166] = {
       { { "crate", NULL },
         { "crate",
           "A wooden box\n^d\"An 'F' is carved on the lid.\n^dI wonder if anything is inside.\"^^" } },
-      0xA, 0x1, 0x1, -1 },
+      0xA, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x82: crate */
     { 0x82, 0x2000, 0x5, 0x31, 1.0F, 0.1F, { 0xF, 0xA, 0x6, 0xA, 0xF },
       0.5F, 250.0F, 1.0F, 1.0F, 2.0F, 150.0F, 150.0F, 0x108, 0x52, { 0x98, 0xA7 },
@@ -1406,7 +1407,7 @@ ItemKind gItemKinds[166] = {
       { { "crate", NULL },
         { "crate",
           "A wooden box\n^d\"A 'G' is carved on the lid.\n^dI wonder if anything is inside.\"^^" } },
-      0xA, 0x1, 0x1, -1 },
+      0xA, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x83: crate */
     { 0x83, 0x2000, 0x5, 0x3D, 1.0F, 0.1F, { 0xF, 0xA, 0x6, 0xA, 0xF },
       0.5F, 250.0F, 1.0F, 1.0F, 2.0F, 150.0F, 150.0F, 0x108, 0x52, { 0x98, 0xA7 },
@@ -1414,7 +1415,7 @@ ItemKind gItemKinds[166] = {
       { { "crate", NULL },
         { "crate",
           "A wooden box\n^d\"An 'H' is carved on the lid.\n^dI wonder if anything is inside.\"^^" } },
-      0xA, 0x1, 0x1, -1 },
+      0xA, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x84: crate */
     { 0x84, 0x2000, 0x5, 0x3E, 1.0F, 0.1F, { 0xF, 0xA, 0x6, 0xA, 0xF },
       0.5F, 250.0F, 1.0F, 1.0F, 2.0F, 150.0F, 150.0F, 0x108, 0x52, { 0x98, 0xA7 },
@@ -1422,7 +1423,7 @@ ItemKind gItemKinds[166] = {
       { { "crate", NULL },
         { "crate",
           "A wooden box\n^d\"An 'I' is carved on the lid.\n^dI wonder if anything is inside.\"^^" } },
-      0xA, 0x1, 0x1, -1 },
+      0xA, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x85: crate */
     { 0x85, 0x2000, 0x5, 0x3F, 1.0F, 0.1F, { 0xF, 0xA, 0x6, 0xA, 0xF },
       0.5F, 250.0F, 1.0F, 1.0F, 2.0F, 150.0F, 150.0F, 0x108, 0x52, { 0x98, 0xA7 },
@@ -1430,7 +1431,7 @@ ItemKind gItemKinds[166] = {
       { { "crate", NULL },
         { "crate",
           "A wooden box\n^d\"A 'J' is carved on the lid.\n^dI wonder if anything is inside.\"^^" } },
-      0xA, 0x1, 0x1, -1 },
+      0xA, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x86: crate */
     { 0x86, 0x2000, 0x5, 0x40, 1.0F, 0.1F, { 0xF, 0xA, 0x6, 0xA, 0xF },
       0.5F, 250.0F, 1.0F, 1.0F, 2.0F, 150.0F, 150.0F, 0x108, 0x52, { 0x98, 0xA7 },
@@ -1438,7 +1439,7 @@ ItemKind gItemKinds[166] = {
       { { "crate", NULL },
         { "crate",
           "A wooden box\n^d\"A 'K' is carved on the lid.\n^dI wonder if anything is inside.\"^^" } },
-      0xA, 0x1, 0x1, -1 },
+      0xA, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x87: crate */
     { 0x87, 0x2000, 0x5, 0x41, 1.0F, 0.1F, { 0xF, 0xA, 0x6, 0xA, 0xF },
       0.5F, 250.0F, 1.0F, 1.0F, 2.0F, 150.0F, 150.0F, 0x108, 0x52, { 0x98, 0xA7 },
@@ -1446,7 +1447,7 @@ ItemKind gItemKinds[166] = {
       { { "crate", NULL },
         { "crate",
           "A wooden box\n^d\"An 'L' is carved on the lid.\n^dI wonder if anything is inside.\"^^" } },
-      0xA, 0x1, 0x1, -1 },
+      0xA, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x88: crate */
     { 0x88, 0x2000, 0x5, 0x4, 1.0F, 0.1F, { 0xF, 0xA, 0x6, 0xA, 0xF },
       0.5F, 250.0F, 1.0F, 1.0F, 2.0F, 150.0F, 150.0F, 0x108, 0x52, { 0x98, 0xA7 },
@@ -1454,7 +1455,7 @@ ItemKind gItemKinds[166] = {
       { { "crate", NULL },
         { "crate",
           "A wooden box\n^d\"An 'M' is carved on the lid.\n^dI wonder if anything is inside.\"^^" } },
-      0xA, 0x1, 0x1, -1 },
+      0xA, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x89: crate */
     { 0x89, 0x2000, 0x5, 0x8, 1.0F, 0.1F, { 0xF, 0xA, 0x6, 0xA, 0xF },
       0.5F, 250.0F, 1.0F, 1.0F, 2.0F, 150.0F, 150.0F, 0x108, 0x52, { 0x98, 0xA7 },
@@ -1462,7 +1463,7 @@ ItemKind gItemKinds[166] = {
       { { "crate", NULL },
         { "crate",
           "A wooden box\n^d\"A 'Z' is carved on the lid.\n^dI wonder if anything is inside.\"^^" } },
-      0xA, 0x1, 0x1, -1 },
+      0xA, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x8A: cardboard box */
     { ITEM_KIND_CARDBOARD_BOX, 0x8480, 0x5, 0x0, 1.0F, 0.1F, { 0xF, 0x12, 0x4, 0x7, 0x12 },
       1.0F, 300.0F, 5.0F, 0.1F, 4.0F, 150.0F, 150.0F, 0x108, 0x6E, { 0x98, 0x98 },
@@ -1478,7 +1479,7 @@ ItemKind gItemKinds[166] = {
       { { "notebook", NULL },
         { "notebook",
           "A pad for drawing pictures\n^d\"^6PIKACHU^d draws pictures\n^din this.\"^^" } },
-      0x0, 0x1, 0x1, -1 },
+      0x0, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x8C: notebook */
     { 0x8C, 0x8240, 0x1, 0x0, 1.0F, 0.1F, { 0xF, 0xF, 0xF, 0xF, 0xF },
       1.0F, 190.0F, 1.0F, 1.0F, 1.0F, 103.2F, 103.2F, 0x104, 0x6C, { 0x98, 0x98 },
@@ -1486,7 +1487,7 @@ ItemKind gItemKinds[166] = {
       { { "notebook", NULL },
         { "notebook",
           "A pad for drawing pictures\n^d\"^6PIKACHU^d draws pictures\n^din this.\"^^" } },
-      0x0, 0x1, 0x1, -1 },
+      0x0, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x8D: N64 controller */
     { 0x8D, 0x400, 0xA, 0x0, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 70.0F, 1.0F, 0.5F, 1.0F, 60.0F, 110.0F, 0x108, 0x6E, { 0x98, 0x98 },
@@ -1494,7 +1495,7 @@ ItemKind gItemKinds[166] = {
       { { "controller", NULL },
         { "N64 controller",
           "The Controller for your N64\n^d\"That's what you use to play\n^dgames on your Nintendo 64.\"^^" } },
-      0x9C4, 0x1, 0x1, -1 },
+      0x9C4, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x8E: TV */
     { 0x8E, 0x86C0, 0xA, 0x0, 1.0F, 0.3F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 540.0F, 10.0F, 0.1F, 1.0F, 300.0F, 270.0F, 0x106, 0x6E, { 0x97, 0x97 },
@@ -1502,7 +1503,7 @@ ItemKind gItemKinds[166] = {
       { { "TV", NULL },
         { "TV",
           "A device that displays images\n^d\"^6PIKACHU^d turns it on for\n^4Quiz Time^d.\"^^" } },
-      0x110A8, 0x1, 0x1, -1 },
+      0x110A8, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x8F: telescope */
     { 0x8F, 0x18440, 0x5, 0x0, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, ITEM_DIMENSION_FROM_MODEL, 300.0F, 0.1F, 4.0F, ITEM_DIMENSION_FROM_MODEL, ITEM_DIMENSION_FROM_MODEL, 0x108, 0x6E, { 0x98, 0x98 },
@@ -1510,7 +1511,7 @@ ItemKind gItemKinds[166] = {
       { { "telescope", NULL },
         { "telescope",
           "A lens for viewing the stars\n^d\"That's the ^4telescope^d ^6PIKACHU^d\n^dbought for you.\"^^" } },
-      0x4E20, 0x1, 0x1, 0xF0 },
+      0x4E20, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, PROGRESS_FIELD_TELESCOPE_COLLECTION_RECORDED },
     /* 0x90: board */
     { 0x90, 0x86C0, 0xA, 0x0, 1.0F, 0.3F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, ITEM_DIMENSION_FROM_MODEL, 10.0F, 0.1F, 1.0F, ITEM_DIMENSION_FROM_MODEL, ITEM_DIMENSION_FROM_MODEL, 0x106, 0x6E, { 0x97, 0x97 },
@@ -1518,7 +1519,7 @@ ItemKind gItemKinds[166] = {
       { { "board", NULL },
         { "board",
           "A board for pasting textures\n" } },
-      0x12A, 0x1, 0x1, -1 },
+      0x12A, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x91: signpost */
     { 0x91, 0x88642, 0xA, 0x0, 1.0F, 0.3F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 1000.0F, 10.0F, 0.1F, 1.0F, 150.0F, 400.0F, 0x108, 0x82, { 0x97, 0x97 },
@@ -1526,7 +1527,7 @@ ItemKind gItemKinds[166] = {
       { { "signpost", NULL },
         { "signpost",
           "A board with words on it\n^d\"It seems to be designed to\n^dreact to special actions.\"^^" } },
-      0x2283, 0x1, 0x1, -1 },
+      0x2283, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x92: The Ending Book */
     { 0x92, 0x86C2, 0xA, 0x0, 1.0F, 0.3F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 1000.0F, 10.0F, 0.1F, 1.0F, 150.0F, 400.0F, 0x108, 0x82, { 0x97, 0x97 },
@@ -1534,7 +1535,7 @@ ItemKind gItemKinds[166] = {
       { { "book", NULL },
         { "The Ending Book",
           "The ending" } },
-      0x1E0, 0x1, 0x1, -1 },
+      0x1E0, 0x1, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x93: rosebush */
     { 0x93, 0x20C0, 0x1, 0x95, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 0.1F, 10.0F, 1.0F, 1.0F, 80.0F, 80.0F, 0x108, 0x6E, { 0x98, 0x98 },
@@ -1542,7 +1543,7 @@ ItemKind gItemKinds[166] = {
       { { "rosebush", NULL },
         { "rosebush",
           "A bush with many roses\n^d\"A ^4Thunderbolt^d should knock\n^ddown a ^4flower^d. It's a big bush!\"^^" } },
-      0x0, 0x2, 0x1, -1 },
+      0x0, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x94: rosebush */
     { 0x94, 0x20C0, 0x1, 0x96, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 0.1F, 10.0F, 1.0F, 1.0F, 80.0F, 80.0F, 0x108, 0x6E, { 0x98, 0x98 },
@@ -1550,7 +1551,7 @@ ItemKind gItemKinds[166] = {
       { { "rosebush", NULL },
         { "rosebush",
           "A bush with many roses\n^d\"A ^4Thunderbolt^d should knock\n^ddown a ^4flower^d. It's a big bush!\"^^" } },
-      0x0, 0x2, 0x1, -1 },
+      0x0, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x95: rosebush */
     { 0x95, 0xC0, 0x1, 0x0, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 2000.0F, 10.0F, 1.0F, 1.0F, 80.0F, 80.0F, 0x108, 0x6E, { 0x98, 0x98 },
@@ -1558,7 +1559,7 @@ ItemKind gItemKinds[166] = {
       { { "rosebush", NULL },
         { "rosebush",
           "A bush with many roses\n^d\"A ^4Thunderbolt^d should knock\n^ddown a ^4flower^d. It's a big bush!\"^^" } },
-      0x0, 0x2, 0x1, -1 },
+      0x0, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x96: rosebush */
     { 0x96, 0xC0, 0x1, 0x0, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 3500.0F, 10.0F, 1.0F, 1.0F, 80.0F, 80.0F, 0x108, 0x6E, { 0x98, 0x98 },
@@ -1566,7 +1567,7 @@ ItemKind gItemKinds[166] = {
       { { "rosebush", NULL },
         { "rosebush",
           "A bush with many roses\n^d\"A ^4Thunderbolt^d should knock\n^ddown a ^4flower^d. It's a big bush!\"^^" } },
-      0x0, 0x2, 0x1, -1 },
+      0x0, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x97: apple tree */
     { 0x97, 0x20C0, 0x1, 0x9D, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 0.1F, 10.0F, 1.0F, 1.0F, 80.0F, 80.0F, 0x108, 0x6E, { 0x98, 0x98 },
@@ -1574,7 +1575,7 @@ ItemKind gItemKinds[166] = {
       { { "apple tree", NULL },
         { "apple tree",
           "A tree with many ^4apple^^s on it\n^d\"A ^4Thunderbolt^d should knock\n^ddown an ^4apple^d.\"^^" } },
-      0x0, 0x2, 0x1, -1 },
+      0x0, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x98: peach tree */
     { 0x98, 0x20C0, 0x1, 0x9E, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 0.1F, 10.0F, 1.0F, 1.0F, 80.0F, 80.0F, 0x108, 0x6E, { 0x98, 0x98 },
@@ -1582,7 +1583,7 @@ ItemKind gItemKinds[166] = {
       { { "peach tree", NULL },
         { "peach tree",
           "A tree with many ^4peach^^es on it\n^d\"A ^4Thunderbolt^d should knock\n^ddown a ^4peach^d.\"^^" } },
-      0x0, 0x2, 0x1, -1 },
+      0x0, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x99: chestnut tree */
     { 0x99, 0x20C0, 0x1, 0x9F, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 0.1F, 10.0F, 1.0F, 1.0F, 80.0F, 80.0F, 0x108, 0x6E, { 0x98, 0x98 },
@@ -1590,7 +1591,7 @@ ItemKind gItemKinds[166] = {
       { { "chestnut tree", NULL },
         { "chestnut tree",
           "A tree with many ^4spiky shell^^s\n^d\"A ^4Thunderbolt^d should knock\n^ddown a ^4spiky shell^d.\"^^" } },
-      0x0, 0x2, 0x1, -1 },
+      0x0, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x9A: smelly fruit tree */
     { 0x9A, 0x20C0, 0x1, 0xA0, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 0.1F, 10.0F, 1.0F, 1.0F, 80.0F, 80.0F, 0x108, 0x6E, { 0x98, 0x98 },
@@ -1598,7 +1599,7 @@ ItemKind gItemKinds[166] = {
       { { "smelly fruit tree", NULL },
         { "smelly fruit tree",
           "A tree with lots of ^4smelly fruit^^\n^d\"A ^4Thunderbolt^d should knock\n^ddown a ^4smelly fruit^d.\"^^" } },
-      0x0, 0x2, 0x1, -1 },
+      0x0, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x9B: walnut tree */
     { 0x9B, 0x20C0, 0x1, 0xA1, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 0.1F, 10.0F, 1.0F, 1.0F, 80.0F, 80.0F, 0x108, 0x6E, { 0x98, 0x98 },
@@ -1606,7 +1607,7 @@ ItemKind gItemKinds[166] = {
       { { "walnut tree", NULL },
         { "walnut tree",
           "A tree with many ^4walnut^^s on it\n^d\"A ^4Thunderbolt^d should knock\n^ddown a ^4walnut^d.\"^^" } },
-      0x0, 0x2, 0x1, -1 },
+      0x0, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x9C: palm tree */
     { 0x9C, 0x20C0, 0x1, 0xA2, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 0.1F, 10.0F, 1.0F, 1.0F, 80.0F, 80.0F, 0x108, 0x6E, { 0x98, 0x98 },
@@ -1614,7 +1615,7 @@ ItemKind gItemKinds[166] = {
       { { "palm tree", NULL },
         { "palm tree",
           "A tree with lots of ^4coconut^^s\n^d\"A ^4Thunderbolt^d should knock\n^ddown a ^4coconut^d.\"^^" } },
-      0x0, 0x2, 0x1, -1 },
+      0x0, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x9D: apple tree */
     { 0x9D, 0x0, 0x1, 0x0, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 3000.0F, 10.0F, 1.0F, 1.0F, 80.0F, 80.0F, 0x108, 0x6E, { 0x98, 0x98 },
@@ -1622,7 +1623,7 @@ ItemKind gItemKinds[166] = {
       { { "apple tree", NULL },
         { "apple tree",
           "A tree with many ^4apple^^s on it\n^d\"A ^4Thunderbolt^d should knock\n^ddown an ^4apple^d.\"^^" } },
-      0x0, 0x2, 0x1, -1 },
+      0x0, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x9E: peach tree */
     { 0x9E, 0x0, 0x1, 0x0, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 3000.0F, 10.0F, 1.0F, 1.0F, 80.0F, 80.0F, 0x108, 0x6E, { 0x98, 0x98 },
@@ -1630,7 +1631,7 @@ ItemKind gItemKinds[166] = {
       { { "peach tree", NULL },
         { "peach tree",
           "A tree with many ^4peach^^es on it\n^d\"A ^4Thunderbolt^d should knock\n^ddown a ^4peach^d.\"^^" } },
-      0x0, 0x2, 0x1, -1 },
+      0x0, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0x9F: chestnut tree */
     { 0x9F, 0x0, 0x1, 0x0, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 3000.0F, 10.0F, 1.0F, 1.0F, 80.0F, 80.0F, 0x108, 0x6E, { 0x98, 0x98 },
@@ -1638,7 +1639,7 @@ ItemKind gItemKinds[166] = {
       { { "chestnut tree", NULL },
         { "chestnut tree",
           "A tree with many ^4spiky shell^^s\n^d\"A ^4Thunderbolt^d should knock\n^ddown a ^4spiky shell^d.\"^^" } },
-      0x0, 0x2, 0x1, -1 },
+      0x0, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0xA0: smelly fruit tree */
     { 0xA0, 0x0, 0x1, 0x0, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 3000.0F, 10.0F, 1.0F, 1.0F, 80.0F, 80.0F, 0x108, 0x6E, { 0x98, 0x98 },
@@ -1646,7 +1647,7 @@ ItemKind gItemKinds[166] = {
       { { "smelly fruit tree", NULL },
         { "smelly fruit tree",
           "A tree with lots of ^4smelly fruit^^\n^d\"A ^4Thunderbolt^d should knock\n^ddown a ^4smelly fruit^d.\"^^" } },
-      0x0, 0x2, 0x1, -1 },
+      0x0, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0xA1: walnut tree */
     { 0xA1, 0x0, 0x1, 0x0, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 3000.0F, 10.0F, 1.0F, 1.0F, 80.0F, 80.0F, 0x108, 0x6E, { 0x98, 0x98 },
@@ -1654,7 +1655,7 @@ ItemKind gItemKinds[166] = {
       { { "walnut tree", NULL },
         { "walnut tree",
           "A tree with many ^4walnut^^s on it\n^d\"A ^4Thunderbolt^d should knock\n^ddown a ^4walnut^d.\"^^" } },
-      0x0, 0x2, 0x1, -1 },
+      0x0, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0xA2: palm tree */
     { 0xA2, 0x0, 0x1, 0x0, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 3000.0F, 10.0F, 1.0F, 1.0F, 80.0F, 80.0F, 0x108, 0x6E, { 0x98, 0x98 },
@@ -1662,7 +1663,7 @@ ItemKind gItemKinds[166] = {
       { { "palm tree", NULL },
         { "palm tree",
           "A tree with lots of ^4coconut^^s\n^d\"A ^4Thunderbolt^d should knock\n^ddown a ^4coconut^d.\"^^" } },
-      0x0, 0x2, 0x1, -1 },
+      0x0, 0x2, ITEM_STORAGE_CLASS_COLLECTION_ITEM, -1 },
     /* 0xA3: tool box */
     { 0xA3, 0x400, 0xA, 0x0, 1.0F, 0.3F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       0.3F, ITEM_DIMENSION_FROM_MODEL, 10.0F, 0.1F, 1.0F, 0.0F, 0.0F, 0x108, 0x6E, { 0x97, 0x97 },
@@ -1678,7 +1679,7 @@ ItemKind gItemKinds[166] = {
       { { "Pok\xA1\xADHelper", NULL },
         { "Pok\xA1\xADHelper",
           "A computer with a microphone\n^d\"It's my pride and joy.\"^^\n" } },
-      0x0, 0x1, 0x5, -1 },
+      0x0, 0x1, ITEM_STORAGE_CLASS_MENU_ENTRY, -1 },
     /* 0xA5: ? */
     { 0xA5, 0x400, 0x0, 0x0, 1.0F, 0.1F, { 0x1, 0x1, 0x1, 0x1, 0x1 },
       1.0F, 0.0F, 1.0F, 1.0F, 1.0F, 0.0F, 0.0F, 0x108, 0x6E, { 0x97, 0x97 },
@@ -2948,13 +2949,13 @@ char *itemGetDisplayName(s32 kind, s32 nameType) {
 /// \note Original decompilation identifier: \c func_80114EE8 (0x80114EE8).
 u8 *itemGetClassLabelSuffix(s32 kind) {
     switch (gItemKinds[kind].itemClass) {
-    case 1:
+    case ITEM_STORAGE_CLASS_COLLECTION_ITEM:
     case 4:
     case 6:
         return (u8 *)"";
-    case 2:
-    case 3:
-    case 5:
+    case ITEM_STORAGE_CLASS_NONWITHDRAWABLE_SUPPLY:
+    case ITEM_STORAGE_CLASS_WITHDRAWABLE_SUPPLY:
+    case ITEM_STORAGE_CLASS_MENU_ENTRY:
         return (u8 *)"(Item)";
     default:
         TRACE("Error: Invalid contentType:%d\n", gItemKinds[kind].itemClass);

@@ -280,7 +280,56 @@ enum {
     PROGRESS_FIELD_FRIENDSHIP_MILESTONE_16_EARNED = 192, ///< Saved award flag for friendship milestone 16.
     PROGRESS_FIELD_FRIENDSHIP_MILESTONE_17_EARNED = 193, ///< Saved award flag for friendship milestone 17.
     PROGRESS_FIELD_FRIENDSHIP_MILESTONE_18_EARNED = 194, ///< Saved award flag for friendship milestone 18.
-    PROGRESS_FIELD_FRIENDSHIP_MILESTONE_19_EARNED = 195  ///< Saved award flag for friendship milestone 19.
+    PROGRESS_FIELD_FRIENDSHIP_MILESTONE_19_EARNED = 195, ///< Saved award flag for friendship milestone 19.
+    /// Persistent collection records do not describe current possession.
+    PROGRESS_FIELD_DAISY_COLLECTION_RECORDED = 196,          ///< Collection record for daisy.
+    PROGRESS_FIELD_LILY_COLLECTION_RECORDED = 197,           ///< Collection record for lily.
+    PROGRESS_FIELD_TOY_SWORD_COLLECTION_RECORDED = 198,      ///< Collection record for toy sword.
+    PROGRESS_FIELD_PIRATE_SWORD_COLLECTION_RECORDED = 199,   ///< Collection record for pirate sword.
+    PROGRESS_FIELD_GOLD_COIN_COLLECTION_RECORDED = 200,      ///< Collection record for gold coin.
+    PROGRESS_FIELD_CHOCOLATE_COIN_COLLECTION_RECORDED = 201, ///< Collection record for chocolate coin.
+    PROGRESS_FIELD_SILVER_COIN_COLLECTION_RECORDED = 202,    ///< Collection record for silver coin.
+    PROGRESS_FIELD_COPPER_COIN_COLLECTION_RECORDED = 203,    ///< Collection record for copper coin.
+    PROGRESS_FIELD_BANANA_COLLECTION_RECORDED = 204,         ///< Collection record for banana.
+    PROGRESS_FIELD_RUBY_COLLECTION_RECORDED = 205,           ///< Collection record for ruby.
+    PROGRESS_FIELD_SAPPHIRE_COLLECTION_RECORDED = 206,       ///< Collection record for sapphire.
+    PROGRESS_FIELD_TOPAZ_COLLECTION_RECORDED = 207,          ///< Collection record for topaz.
+    PROGRESS_FIELD_RED_MARBLE_COLLECTION_RECORDED = 208,     ///< Collection record for red marble.
+    PROGRESS_FIELD_BLUE_MARBLE_COLLECTION_RECORDED = 209,    ///< Collection record for blue marble.
+    PROGRESS_FIELD_YELLOW_MARBLE_COLLECTION_RECORDED = 210,  ///< Collection record for yellow marble.
+    PROGRESS_FIELD_MARBLE_COLLECTION_RECORDED = 211,         ///< Collection record for marble.
+    PROGRESS_FIELD_RUBY_RING_COLLECTION_RECORDED = 212,      ///< Collection record for ruby ring.
+    PROGRESS_FIELD_BIRD_FEATHER_COLLECTION_RECORDED = 213,   ///< Collection record for bird feather.
+    PROGRESS_FIELD_MAGNET_COLLECTION_RECORDED = 214,         ///< Collection record for magnet.
+    PROGRESS_FIELD_BOLT_COLLECTION_RECORDED = 215,           ///< Collection record for bolt.
+    PROGRESS_FIELD_ACORN_TOP_COLLECTION_RECORDED = 216,      ///< Collection record for acorn top.
+    PROGRESS_FIELD_TRUMPET_COLLECTION_RECORDED = 217,        ///< Collection record for trumpet.
+    PROGRESS_FIELD_PETUNIA_COLLECTION_RECORDED = 218,        ///< Collection record for petunia.
+    PROGRESS_FIELD_TULIP_COLLECTION_RECORDED = 219,          ///< Collection record for tulip.
+    PROGRESS_FIELD_DANDELION_COLLECTION_RECORDED = 220,      ///< Collection record for dandelion.
+    PROGRESS_FIELD_BLUEBELL_COLLECTION_RECORDED = 221,       ///< Collection record for bluebell.
+    PROGRESS_FIELD_SKUNK_BLOSSOM_COLLECTION_RECORDED = 222,  ///< Collection record for skunk blossom.
+    PROGRESS_FIELD_SUNFLOWER_COLLECTION_RECORDED = 223,      ///< Collection record for sunflower.
+    PROGRESS_FIELD_CORN_COLLECTION_RECORDED = 224,           ///< Collection record for corn.
+    PROGRESS_FIELD_PUMPKIN_COLLECTION_RECORDED = 225,        ///< Collection record for pumpkin.
+    PROGRESS_FIELD_TURNIP_COLLECTION_RECORDED = 226,         ///< Collection record for turnip.
+    PROGRESS_FIELD_CABBAGE_COLLECTION_RECORDED = 227,        ///< Collection record for cabbage.
+    PROGRESS_FIELD_CARROT_COLLECTION_RECORDED = 228,         ///< Collection record for carrot.
+    PROGRESS_FIELD_ONION_COLLECTION_RECORDED = 229,          ///< Collection record for onion.
+    PROGRESS_FIELD_SWEET_POTATO_COLLECTION_RECORDED = 230,   ///< Collection record for sweet potato.
+    PROGRESS_FIELD_POKE_DISC_COLLECTION_RECORDED = 231,      ///< Collection record for Poke disc.
+    PROGRESS_FIELD_BLUE_BALLOON_COLLECTION_RECORDED = 232,   ///< Collection record for blue balloon.
+    PROGRESS_FIELD_GREEN_BALLOON_COLLECTION_RECORDED = 233,  ///< Collection record for green balloon.
+    PROGRESS_FIELD_PURPLE_BALLOON_COLLECTION_RECORDED = 234, ///< Collection record for purple balloon.
+    PROGRESS_FIELD_RED_BALLOON_COLLECTION_RECORDED = 235,    ///< Collection record for red balloon.
+    PROGRESS_FIELD_YELLOW_BALLOON_COLLECTION_RECORDED = 236, ///< Collection record for yellow balloon.
+    PROGRESS_FIELD_LIGHT_BULB_COLLECTION_RECORDED = 237,     ///< Collection record for light bulb.
+    PROGRESS_FIELD_TRUFFLE_TOP_COLLECTION_RECORDED = 238,    ///< Collection record for truffle top.
+    PROGRESS_FIELD_PIRATE_FLAG_COLLECTION_RECORDED = 239,    ///< Collection record for pirate flag.
+    PROGRESS_FIELD_TELESCOPE_COLLECTION_RECORDED = 240,      ///< Telescope collection record and final story-gift flag.
+    PROGRESS_FIELD_OCHRE_FISHING_FLAG_COLLECTION_RECORDED = 241,   ///< Collection record for the Ochre fishing prize.
+    PROGRESS_FIELD_OLIVINE_FISHING_FLAG_COLLECTION_RECORDED = 242, ///< Collection record for the Olivine fishing prize.
+    PROGRESS_FIELD_COBALT_FISHING_FLAG_COLLECTION_RECORDED = 243   ///< Collection record for the Cobalt fishing prize.
 };
 
 /// Area-relative progress selectors resolved against the current gameplay area.

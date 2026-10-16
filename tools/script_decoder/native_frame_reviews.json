@@ -263,6 +263,11 @@
       "file": "include/actor_ground.h",
       "sha256": "de690cb8a6457454fbb3662f9616c71f7326e48f27d7660445097207e903159d"
     },
+    "file:include/actor_interaction.h": {
+      "kind": "file",
+      "file": "include/actor_interaction.h",
+      "sha256": "3f94d8878e0cd3bc4fdc0bd008e088038a691ed88056c5d1a86e48bef2ce3a7e"
+    },
     "file:include/actor_kind.h": {
       "kind": "file",
       "file": "include/actor_kind.h",
@@ -501,7 +506,7 @@
     "file:include/item_kind.h": {
       "kind": "file",
       "file": "include/item_kind.h",
-      "sha256": "44ce9b8b548f4634c5e06d4d9dfbbafe37e39e015ca3dc705826b77189aa5ac2"
+      "sha256": "df98b1cc7d1310c6b4f72422c514bcea432935d9c106ab9dbae98623f6230045"
     },
     "file:include/item_kind_ids.h": {
       "kind": "file",
@@ -756,7 +761,7 @@
     "file:include/progress_field_ids.h": {
       "kind": "file",
       "file": "include/progress_field_ids.h",
-      "sha256": "69c892868390351c69e4a56939cc6050df82a9672968cfdb065cabc230d9b67f"
+      "sha256": "eeb45b96f43eae7be2c37c28d80a6c71ad3930583cd67236138e65b99b83872a"
     },
     "file:include/progress_field_types.h": {
       "kind": "file",
@@ -983,6 +988,11 @@
       "file": "include/vector_metrics.h",
       "sha256": "e85e75801623ff8aa64b295a4a22fac27c258bb427d9533322072a2e7cff34a0"
     },
+    "file:include/vector_operations.h": {
+      "kind": "file",
+      "file": "include/vector_operations.h",
+      "sha256": "80497957db4cdbb64d6756c15f0a6244d2fd0d34126c99f1e830fae8e0569dac"
+    },
     "file:include/voice_commands.h": {
       "kind": "file",
       "file": "include/voice_commands.h",
@@ -1071,7 +1081,7 @@
     "file:src/game/collection_presentation.c": {
       "kind": "file",
       "file": "src/game/collection_presentation.c",
-      "sha256": "a26fd2fded6aa1a93862d718ec49205eb04416dad5673d5c3650e86bbe4deca0"
+      "sha256": "c7c1933e505f7a4d49ea504ff9ebde26a1fe63f5a7041520e617f70752e66924"
     },
     "file:src/game/collision_grid.c": {
       "kind": "file",
@@ -1236,12 +1246,12 @@
     "file:src/ovl/actor_script_collection_profile.c": {
       "kind": "file",
       "file": "src/ovl/actor_script_collection_profile.c",
-      "sha256": "60ef7e09bf4a9f2575ab31b911b27bccdae8ab4602cb8d3a22fafed4e9ffb67c"
+      "sha256": "9ec9bbdd6211779d8104b22896a3cde93548b49b2553f75fc1facab32a3f5f61"
     },
     "file:src/ovl/actor_script_messages_items.c": {
       "kind": "file",
       "file": "src/ovl/actor_script_messages_items.c",
-      "sha256": "23dbbdfc857fb7c5d6deae44d2e3300da7fe072748f0d5a4ac79172dfc8af4d8"
+      "sha256": "867b68c19457fbc1eed96dec162e684c800a0379354282f83c6f69f853ceb270"
     },
     "file:src/ovl/actor_script_queries.c": {
       "kind": "file",
@@ -1261,7 +1271,7 @@
     "file:src/ovl/item_registry.c": {
       "kind": "file",
       "file": "src/ovl/item_registry.c",
-      "sha256": "ab395f2740ebb39534f312f0bc1460d80f5a143daa6a7e0cae5fc5d9018a303d"
+      "sha256": "90976705813d1c076d029d6a7ff3429a808456bf0eabacaad64a0708712c34f5"
     },
     "file:src/ovl/item_special_behaviors.c": {
       "kind": "file",
@@ -1271,7 +1281,7 @@
     "file:src/ovl/player_companion.c": {
       "kind": "file",
       "file": "src/ovl/player_companion.c",
-      "sha256": "1924fe9aeacae7505b9ae0f634a6bba5c08fb033d6667a7ed6a0855b5640a35c"
+      "sha256": "2e221afc988a8301a3873e375b18705a1aaea7f27629f4a7dc344b12dfbac1a1"
     },
     "file:src/ovl/script_vm.c": {
       "kind": "file",
@@ -1515,7 +1525,7 @@
       "kind": "function",
       "file": "src/game/collection_presentation.c",
       "function": "progressUpdateChapterAfterVisit",
-      "sha256": "bae989be7ebc7e62b2cf92f316df8b903ae79ba52a11532dc72046f93a51140a"
+      "sha256": "47cb0bbae3a5da77f18903aa53421dfb10cb0b73a464e62ee9efc97e45e9149f"
     },
     "function:src/game/collision_grid.c:collisionGridUnregisterObject": {
       "kind": "function",
@@ -2231,6 +2241,18 @@
       "function": "mathSinDegrees",
       "sha256": "b3c16e890527166a4e71de97b24205157927252fd3d2355fdad7dd56b604ed00"
     },
+    "function:src/game/trigonometry.c:mathUnitDirectionDegrees": {
+      "kind": "function",
+      "file": "src/game/trigonometry.c",
+      "function": "mathUnitDirectionDegrees",
+      "sha256": "5e25610e75da83228850ccbec90e2472c0618a13d83f7a92d2d662cdd3c495d4"
+    },
+    "function:src/game/trigonometry.c:mathWrapSignedDegrees": {
+      "kind": "function",
+      "file": "src/game/trigonometry.c",
+      "function": "mathWrapSignedDegrees",
+      "sha256": "639bc41406b8139c8fd53d10aab55579dd53e1561923539117468a5d0f89c7ce"
+    },
     "function:src/game/trigonometry.c:matrixFixedTo34": {
       "kind": "function",
       "file": "src/game/trigonometry.c",
@@ -2272,6 +2294,12 @@
       "file": "src/game/vector_math.c",
       "function": "audioGetPositionVolumeAndPan",
       "sha256": "f0d0a7c60c786503d53573b54b6427efbeff5a116390fe0d431d0875b124221c"
+    },
+    "function:src/game/vector_math.c:vector2NormalizeComponentsApprox": {
+      "kind": "function",
+      "file": "src/game/vector_math.c",
+      "function": "vector2NormalizeComponentsApprox",
+      "sha256": "fd6ea4b2e8afc6140a1f1ad76e5ebe1bc08727bbfb934c3f64cce9808a6bf11f"
     },
     "function:src/main.c:cameraEnableElapsedTimeTint": {
       "kind": "function",
@@ -2543,6 +2571,12 @@
       "sha256": "4c19350b8e64838eeae0cf75936cc1001070b4e82d70c011d7a56528813b4348",
       "function": "actorSetDefaultActionMode"
     },
+    "function:src/ovl/actor_script_queries.c:actorSetDestinationFromObject": {
+      "kind": "function",
+      "file": "src/ovl/actor_script_queries.c",
+      "function": "actorSetDestinationFromObject",
+      "sha256": "265be541407539d55249fce7e76fdb21dc12444117d4cdd12c6325546f2a9676"
+    },
     "function:src/ovl/actor_script_queries.c:actorSetTargetPosition": {
       "kind": "function",
       "file": "src/ovl/actor_script_queries.c",
@@ -2800,6 +2834,24 @@
       "file": "src/ovl/actor_target_interaction.c",
       "sha256": "dbead4d12e5a47261833aacdfe671d58ccbcf30613e60043cfc43802092d5d3e",
       "function": "itemSetImpactCount"
+    },
+    "function:src/ovl/actor_target_interaction.c:objectGetFacingErrorToPlayer": {
+      "kind": "function",
+      "file": "src/ovl/actor_target_interaction.c",
+      "function": "objectGetFacingErrorToPlayer",
+      "sha256": "f97a6a4cd35e380b52f8f623c11f8ab8ee4984e4e5d618ab575c84acb9ce39ec"
+    },
+    "function:src/ovl/actor_target_interaction.c:objectGetFacingErrorToTarget": {
+      "kind": "function",
+      "file": "src/ovl/actor_target_interaction.c",
+      "function": "objectGetFacingErrorToTarget",
+      "sha256": "eef480f935bc1a3bf92471caf85bce9279cbb1a18da96e6c601b252fb06f12ce"
+    },
+    "function:src/ovl/actor_target_interaction.c:objectGetPlayerFacingError": {
+      "kind": "function",
+      "file": "src/ovl/actor_target_interaction.c",
+      "function": "objectGetPlayerFacingError",
+      "sha256": "fa0218c66256737ec033af8b5a878a7c43021708f2626dd0105c255fe097caef"
     },
     "function:src/ovl/area_terrain_maze.c:areaFindPositionNode": {
       "kind": "function",
@@ -3475,7 +3527,11 @@
     "actorScriptPushAvailableItemSlots",
     "actorScriptPushTitleScreenState",
     "actorScriptRequestTitleMenu",
-    "actorScriptResetGlobalVariables"
+    "actorScriptResetGlobalVariables",
+    "actorScriptPushFacingErrorToPlayer",
+    "actorScriptPushPlayerFacingError",
+    "actorScriptGetTargetFacingError",
+    "actorScriptSetDestinationFromObject"
   ],
   "callback_files": [
     {
@@ -3484,11 +3540,11 @@
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_collection_profile.json",
-      "sha256": "2baeeb6268fcdcccd77e632b347cfa3cf0915d5286bb8f3fce13aca4bcaf46f7"
+      "sha256": "69a4e31dbf32d5095bfd95877a76d3b89e0737b8c0aed6b1bfec0cb0100b2a38"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_messages_items.json",
-      "sha256": "369a80df31ed66f6ddac63d8484dd8a1921ade4dab1190f7b9084dd36d2aa26d"
+      "sha256": "d10980d9732333f0b9d91319238f0997f16d76566f8b898ba806374ac81e2aee"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_player_world.json",

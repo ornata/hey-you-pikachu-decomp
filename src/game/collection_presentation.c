@@ -972,7 +972,7 @@ s32 presentationUpdateItemCollectionSequence(void) {
             } else {
                 slot = &row[selectionIndex];
             }
-            if ((s8)gItemKinds[slot->kind].itemClass != 1 || slot->id == 0) {
+            if ((s8)gItemKinds[slot->kind].itemClass != ITEM_STORAGE_CLASS_COLLECTION_ITEM || slot->id == 0) {
                 selectionIndex++;
                 continue;
             }
@@ -1751,7 +1751,7 @@ s32 progressUpdateChapterAfterVisit(void) {
         }
         break;
     case 8:
-        if (progressGetValue(0xF0) != 0) {
+        if (progressGetValue(PROGRESS_FIELD_TELESCOPE_COLLECTION_RECORDED) != 0) {
             var_s0 += 1;
         } else {
             var_s0 = 7;

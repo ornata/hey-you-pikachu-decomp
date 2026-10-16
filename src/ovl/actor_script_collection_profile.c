@@ -1084,14 +1084,14 @@ s32 actorScriptFindObjectFromPlayerView(u8 *actor) {
 }
 
 /// Report the player heading relative to the direction toward the actor.
-/// \param actor Actor whose script VM receives the player heading minus the direction toward this actor, wrapped to signed degrees.
+/// \param actor Actor whose script VM receives the player heading, including horizontal view shake, minus the direction toward this actor in degrees greater than -180 and at most 180.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_801210D0 (0x801210D0).
 s32 actorScriptPushPlayerFacingError(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushFloat((ScriptVm *)(sp1C), objectGetPlayerFacingError(actor));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushFloat((ScriptVm *)(vmAddress), objectGetPlayerFacingError(actor));
     return 0;
 }
 
@@ -1100,10 +1100,11 @@ s32 actorScriptPushPlayerFacingError(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_80121108 (0x80121108).
 s32 actorScriptGetTargetFacingError(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushFloat((ScriptVm *)(sp1C), objectGetFacingErrorToTarget(actor, scriptVmPopInteger((ScriptVm *)(sp1C))));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushFloat((ScriptVm *)(vmAddress),
+                      objectGetFacingErrorToTarget(actor, scriptVmPopInteger((ScriptVm *)(vmAddress))));
     return 0;
 }
 

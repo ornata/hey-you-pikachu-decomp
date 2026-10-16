@@ -1,3 +1,4 @@
+#include "item_kind.h"
 #include "actor_kind.h"
 #include "runtime_mode.h"
 #include "progress_field_ids.h"
@@ -1478,8 +1479,8 @@ s32 playerPrepareInteractionDescription(PlayerControlPrefix *player) {
         state = item->state.bytes;
         if (player->interactionFlags & INTERACTION_PRIMARY_REGION) {
             sprintf(text, "%s%-22s^^%s\n%s%s",
-                    ((ITEM_CLASS(((ItemStatePrefix *)state)->kind) == 2) ||
-                     (ITEM_CLASS(((ItemStatePrefix *)state)->kind) == 5))
+                    ((ITEM_CLASS(((ItemStatePrefix *)state)->kind) == ITEM_STORAGE_CLASS_NONWITHDRAWABLE_SUPPLY) ||
+                     (ITEM_CLASS(((ItemStatePrefix *)state)->kind) == ITEM_STORAGE_CLASS_MENU_ENTRY))
                         ? "^^"
                         : "^4",
                     (s8 *)itemGetDisplayName(((ItemStatePrefix *)state)->kind, 1),
@@ -1488,8 +1489,8 @@ s32 playerPrepareInteractionDescription(PlayerControlPrefix *player) {
                     gPlayerInteractionPromptSuffixes[player->modeState.interactionAction]);
         } else {
             sprintf(text, "%s%s^^?\n%s%s",
-                    ((ITEM_CLASS(((ItemStatePrefix *)state)->kind) == 2) ||
-                     (ITEM_CLASS(((ItemStatePrefix *)state)->kind) == 5))
+                    ((ITEM_CLASS(((ItemStatePrefix *)state)->kind) == ITEM_STORAGE_CLASS_NONWITHDRAWABLE_SUPPLY) ||
+                     (ITEM_CLASS(((ItemStatePrefix *)state)->kind) == ITEM_STORAGE_CLASS_MENU_ENTRY))
                         ? "^^"
                         : "^4",
                     (s8 *)itemGetDisplayName(((ItemStatePrefix *)state)->kind, 0),
