@@ -546,6 +546,46 @@ throw operation. Dictionary selection, device upload, delivery, snapshot validit
 branch reachability and later action effects remain separate conditions. The
 selector values remain numeric.
 
+### Ochre ingredient-list requests
+
+The Ochre companion configuration at `0x80146D7C` contains a scoped
+ingredient-list request workflow. Its stored mailbox type and argument zero are
+root slots eleven and twelve. Under the surrounding message guards, category six
+with value 139 calls helper 64015, which requests private workflow state seven
+in root slot 34. The state dispatcher at 72990 selects handler 61522, which
+requests dictionary twelve. These numbers belong to separate message, state and
+dictionary domains.
+
+State seven does not guarantee that the list will be shown. Root slot 42 is a
+cached area identifier, not a message category. The snapshot builder resets its
+status word and adds mask 32 when its VM comparison finds the actor's approximate
+player distance below fifteen. This records a sampled distance test, with no
+physical unit established here. When the cached area is twelve and mask 32 is
+clear in the script's cached status word, the handler takes transition 61964: it stops the sequencer, requests state nine and advances root slot 35.
+That transition has no established success or failure meaning. Otherwise, a
+nonzero interaction-region result can reach presentation helper 54945.
+
+The presentation helper chooses a display-material frame for a notebook and
+queues caption 38, which identifies the cooking-ingredient list. Its selection
+helper 54325 compares four candidates in shared slots fifteen through eighteen
+against the collected list beginning at shared slot nineteen, whose count is in
+shared slot fourteen. The producer supplies three preset recipe entries and one
+distinct random extra. The extra's role in the cooking result remains unresolved. The helper selects the first candidate absent from the collected
+list. If all four are present, it reuses the final candidate.
+The candidate is stored in root slot 175 before its item display frame is read.
+The helper returns zero; consumers read the stored candidate. A producer appends
+a held-item kind to the collected list, then advances the count only after the
+held handle becomes zero. The count can therefore lag the appended entry.
+Item 139 is the presentation medium here; the drawing workflow also uses it.
+
+These roles are scoped to this configuration and its helper chain. Root slot 34
+is reused by other workflows, so seven is not a global recipe-state enum. The
+selection requires initialized, sufficiently sized shared storage, coherent list
+counts and valid item kinds. The analysis does not prove fresh message delivery,
+unchanged shared data across yields, device upload or successful presentation.
+Dictionary twelve remains numeric because its other request owners span
+additional states whose activity boundaries are not fully recovered.
+
 ### Bedroom name activity
 
 One symbolic request belongs to the bedroom Pokémon-name activity. Its native
