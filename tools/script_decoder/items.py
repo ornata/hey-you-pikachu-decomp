@@ -22,7 +22,8 @@ def item_kind_catalog(image):
     """Read the bounded 166-entry catalog and optional bounded display names.
 
     ItemKind supplies the record stride, model and name pointers, collection
-    score and five interaction-category response values. Names and query
+    score, notebook display-frame selector, collection-response group and five
+    interaction-category response values. Names and query
     values are independent of whether a model exists.
     """
     image.allowed = {'.boot', '.ovl'}
@@ -63,16 +64,20 @@ def item_kind_catalog(image):
         model, = struct.unpack_from('>I', data, offset + 0x54)
         alternate, = struct.unpack_from('>I', data, offset + 0x5C)
         default, = struct.unpack_from('>I', data, offset + 0x64)
+        display_material_frame, = struct.unpack_from('>h', data, offset + 0x3E)
         collection_value, = struct.unpack_from('>i', data, offset + 0x6C)
+        collection_response_category, = struct.unpack_from('>b', data, offset + 0x70)
         interaction_responses = {str(category): data[offset + 0x17 + category]
                                  for category in range(1, 6)}
         rows.append(dict(item_kind=kind, configuration=base + offset, model_template=model,
-                         collection_value=collection_value, interaction_responses=interaction_responses,
+                         collection_value=collection_value, display_material_frame=display_material_frame,
+                         collection_response_category=collection_response_category,
+                         interaction_responses=interaction_responses,
                          has_model_template=bool(model),
                          display_names=dict(alternate=display_name(alternate), default=display_name(default))))
     return dict(count=_COUNT, stride=_STRIDE, entries=rows,
                 table=dict(name='gItemKinds', size=len(data), sha256=_TABLE_SHA256, **location),
-                scope='Retained catalog identities, borrowed display labels, collection scores and unsigned interaction-category response values. Response categories do not establish transformation causes. Kinds 0 and 165 have null model templates; membership alone is not a valid creation contract.')
+                scope='Retained catalog identities, borrowed display labels, collection scores, signed notebook display-frame selectors, signed collection-presentation response groups and unsigned interaction-category response values. Response categories do not establish transformation causes. Kinds 0 and 165 have null model templates; membership alone is not a valid creation contract.')
 
 
 def item_creation_requests(instructions, catalog):

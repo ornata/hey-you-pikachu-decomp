@@ -116,7 +116,7 @@
     "file:config/symbol_addrs.txt": {
       "kind": "file",
       "file": "config/symbol_addrs.txt",
-      "sha256": "4dbd383d89f75c3c9feb93671657ce9de3052a1ae74dcebc821edc8e3713431c"
+      "sha256": "45cd0276fee2e52710f40b50779505d2c98bf5ce7b346b323c3f90e6b5203af1"
     },
     "file:docs/LOCAL_SDK_FILES.json": {
       "kind": "file",
@@ -373,6 +373,11 @@
       "file": "include/audio_spatial.h",
       "sha256": "020c93a17c06ec86b1cb5f389fcfb90d900909288d15c0de4cc4a14b53b21f12"
     },
+    "file:include/backdrop_view.h": {
+      "kind": "file",
+      "file": "include/backdrop_view.h",
+      "sha256": "86bed5478af71836d83d78a7bfcef3af96a719f1a8c82feb49c802ceadcbea4e"
+    },
     "file:include/camera_overlay.h": {
       "kind": "file",
       "file": "include/camera_overlay.h",
@@ -496,7 +501,7 @@
     "file:include/item_kind.h": {
       "kind": "file",
       "file": "include/item_kind.h",
-      "sha256": "dad9418da4384154a7dfd90103a0faf21bb2ee7255d57000b7b4ddde7d5c5f2d"
+      "sha256": "44ce9b8b548f4634c5e06d4d9dfbbafe37e39e015ca3dc705826b77189aa5ac2"
     },
     "file:include/item_kind_ids.h": {
       "kind": "file",
@@ -741,7 +746,7 @@
     "file:include/progress_field_ids.h": {
       "kind": "file",
       "file": "include/progress_field_ids.h",
-      "sha256": "d85158ed4da9a225909e1d299c5f7f87029605881534ac3e11a2881003e6b81d"
+      "sha256": "7b09096f38f3940e13d94b090f14d0869ed6629409c6a9bda0905f322bc30ef1"
     },
     "file:include/progress_field_types.h": {
       "kind": "file",
@@ -976,7 +981,7 @@
     "file:linker/query_state_aliases.ld": {
       "kind": "file",
       "file": "linker/query_state_aliases.ld",
-      "sha256": "8620c6d2a64ca751f5c66a485e27caad063754f4794cb99e5c3991ac1b948c23"
+      "sha256": "73404abf4ed7754f763f9ae9e6adb8924e72d509c87fb362339692e2f0b5bcda"
     },
     "file:src/game/action_script.c": {
       "kind": "file",
@@ -1037,6 +1042,11 @@
       "kind": "file",
       "file": "src/game/audio_worker_string_utils.c",
       "sha256": "6c36f31e400b63f5f9e02fc3ba616cf5fd9a853eaf492600ef4ddc486fb6433c"
+    },
+    "file:src/game/backdrop.c": {
+      "kind": "file",
+      "file": "src/game/backdrop.c",
+      "sha256": "a7c99870140733846a4bab7d2e4268abda34f14b84fbe9a4ac59d13629d8ff2c"
     },
     "file:src/game/collection_presentation.c": {
       "kind": "file",
@@ -1201,7 +1211,7 @@
     "file:src/ovl/actor_script_collection_profile.c": {
       "kind": "file",
       "file": "src/ovl/actor_script_collection_profile.c",
-      "sha256": "498f40b50c8117b274ea315a4e4447fa837b33c54b04530a8b83051cdc21680f"
+      "sha256": "dabd723700699a2a66f4f7c6af32a615c8408776b8975f9f24d28fae4bcf49d2"
     },
     "file:src/ovl/actor_script_messages_items.c": {
       "kind": "file",
@@ -1457,6 +1467,12 @@
       "file": "src/game/audio_playback.c",
       "function": "audioStopPlayback",
       "sha256": "e9e7f8f0ae024f1b397d9a51268e019745edf772bc6e092ef972f84003bf8814"
+    },
+    "function:src/game/backdrop.c:backdropGetActiveId": {
+      "kind": "function",
+      "file": "src/game/backdrop.c",
+      "function": "backdropGetActiveId",
+      "sha256": "e6d202cd011a29b36bc42822cf1a2d7666745636253f79a111d18424c75ab492"
     },
     "function:src/game/collection_presentation.c:progressGetCurrentChapter": {
       "kind": "function",
@@ -3358,7 +3374,7 @@
     "actorScriptFindItemNearPosition",
     "actorScriptCreateEffectEmitter",
     "actorScriptCreateWispEffect",
-    "actorScriptGetItemCatalogTag",
+    "actorScriptGetItemDisplayMaterialFrame",
     "actorScriptGetItemCollectionValue",
     "actorScriptGetItemState",
     "actorScriptGetItemImpactCount",
@@ -3382,7 +3398,13 @@
     "actorScriptPushMessengerHandle",
     "actorScriptPushPlayerPoints",
     "actorScriptSetPlayerPoints",
-    "actorScriptAdjustPlayerPoints"
+    "actorScriptAdjustPlayerPoints",
+    "actorScriptPushActiveBackdrop",
+    "actorScriptPushNearClipDistance",
+    "actorScriptPushFarClipDistance",
+    "actorScriptPushFogStart",
+    "actorScriptPushFogEnd",
+    "actorScriptPushTargetHeightDifference"
   ],
   "callback_files": [
     {
@@ -3391,11 +3413,11 @@
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_collection_profile.json",
-      "sha256": "b3e3ddec7cd1c8f9fff8b0a50cfdddd6df8e1f97becf50a886f490bde899195e"
+      "sha256": "d6d924a6636dab684ec5b864f047b80f3e1c2c30a956903e76d1b80182a679a4"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_messages_items.json",
-      "sha256": "827cdf35e6a1a9b9092f001f272a7baf106b0611ad1c25f14772393c3eca7d3a"
+      "sha256": "a4303b644f20f9798a7265b2f43089870a0787976cd61ca3577c8d058bf44237"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_player_world.json",

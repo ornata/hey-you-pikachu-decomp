@@ -123,30 +123,6 @@
       "evidence": "include/font_image_types.h (record declaration and neighboring layout checks)"
     },
     {
-      "file": "include/item_kind.h",
-      "record": "ItemKind",
-      "member": "unk3E",
-      "line": 54,
-      "declaration": "s16 unk3E;",
-      "known_facts": "A signed halfword at 0x3E follows the initial material animation and precedes two tracked sound identifiers.",
-      "reason": "No semantic interpretation is established by the named consumers; raw or interior-alias consumers still require review.",
-      "next_evidence": "Trace raw halfword reads in item initialization, material changes and kind-specific callbacks, and compare authored catalog values at 0x3E.",
-      "matching_constraint": "Preserve the 0x74-byte catalog stride, signedness, width, offsets, initializer values and original strict object symbols/relocations.",
-      "evidence": "include/item_kind.h (layout and size checks); src/ovl/item_registry.c (166 authored catalog rows and creation consumers)"
-    },
-    {
-      "file": "include/item_kind.h",
-      "record": "ItemKind",
-      "member": "unk70",
-      "line": 64,
-      "declaration": "u8 unk70;",
-      "known_facts": "A byte at 0x70 precedes itemClass and the availabilityField halfword in the 0x74-byte catalog record.",
-      "reason": "No semantic interpretation is established by the named consumers; raw or interior-alias consumers still require review.",
-      "next_evidence": "Trace byte-wide catalog-tail accesses in availability, classification and registry consumers; do not merge this byte with itemClass solely from adjacency.",
-      "matching_constraint": "Preserve the 0x74-byte catalog stride, signedness, width, offsets, initializer values and original strict object symbols/relocations.",
-      "evidence": "include/item_kind.h (layout and size checks); src/ovl/item_registry.c (166 authored catalog rows and creation consumers)"
-    },
-    {
       "file": "include/item_state.h",
       "record": "ItemState",
       "member": "unknown06C",

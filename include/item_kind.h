@@ -54,7 +54,7 @@ typedef struct {
     /* 0x34 */ f32 radiusX;                   ///< Horizontal collision extent along X, or ITEM_DIMENSION_FROM_MODEL.
     /* 0x38 */ f32 radiusZ;                   ///< Horizontal collision extent along Z, or ITEM_DIMENSION_FROM_MODEL.
     /* 0x3C */ s16 animation;                 ///< Initial material animation-track identifier.
-    /* 0x3E */ s16 unk3E;                     ///< Offset 0x3E; purpose remains unresolved.
+    /* 0x3E */ s16 displayMaterialFrame;      ///< Material frame used by notebook scripts to represent this kind.
     /* 0x40 */ s16 effect[2];                 ///< Tracked sound identifiers selected by bounce allowance.
     /* 0x44 */ ItemHeldCallback hold;         ///< Optional behavior while held.
     /* 0x48 */ ItemReleaseCallback release;   ///< Optional release response.
@@ -64,17 +64,22 @@ typedef struct {
     /* 0x58 */ u8 color[4];                   ///< Environment red, green, blue and alpha components.
     /* 0x5C */ ItemText text[2];              ///< Persistent alternate names and help descriptions.
     /* 0x6C */ s32 collectionValue;           ///< Score contributed by this kind during the collection presentation.
-    /* 0x70 */ u8 unk70;                      ///< Offset 0x70; purpose remains unresolved.
-    /* 0x71 */ u8 itemClass;                  ///< Item classification used by registry queries.
-    /* 0x72 */ s16 availabilityField;         ///< Saved progress-field selector controlling item availability.
-} ItemKind;                                   /* size 0x74 */
+    /* 0x70 */ u8
+        collectionResponseCategory;   ///< Collection-presentation response group; distinct from interaction categories.
+    /* 0x71 */ u8 itemClass;          ///< Item classification used by registry queries.
+    /* 0x72 */ s16 availabilityField; ///< Saved progress-field selector controlling item availability.
+} ItemKind;                           /* size 0x74 */
 
 typedef char ItemKindSizeCheck[(sizeof(ItemKind) == 0x74) ? 1 : -1];
 typedef char ItemKindBounceCountOffsetCheck[(((u32) & ((ItemKind *)0)->initialBounceCount) == 8) ? 1 : -1];
 typedef char ItemKindFrictionOffsetCheck[(((u32) & ((ItemKind *)0)->frictionCoefficient) == 0x30) ? 1 : -1];
 typedef char ItemKindEffectsOffsetCheck[(((u32) & ((ItemKind *)0)->effect) == 0x40) ? 1 : -1];
 typedef char ItemKindMotionCoefficientOffsetCheck[(((u32) & ((ItemKind *)0)->motionCoefficient) == 0x28) ? 1 : -1];
+typedef char
+    ItemKindDisplayMaterialFrameOffsetCheck[(((u32) & ((ItemKind *)0)->displayMaterialFrame) == 0x3E) ? 1 : -1];
 typedef char ItemKindCollectionValueOffsetCheck[(((u32) & ((ItemKind *)0)->collectionValue) == 0x6C) ? 1 : -1];
+typedef char
+    ItemKindCollectionResponseOffsetCheck[(((u32) & ((ItemKind *)0)->collectionResponseCategory) == 0x70) ? 1 : -1];
 typedef char ItemKindAvailabilityOffsetCheck[(((u32) & ((ItemKind *)0)->availabilityField) == 0x72) ? 1 : -1];
 
 /// Per-kind item motion, rendering, response and description configuration.

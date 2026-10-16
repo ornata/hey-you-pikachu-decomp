@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 828,
-      "unique_spellings": 458,
+      "occurrences": 824,
+      "unique_spellings": 456,
       "files": 65
     },
     "cast_offset_candidates": {
@@ -4211,16 +4211,8 @@
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
-          "residentIndex + 0x70": [
-            "54:30"
-          ],
           "state - 2": [
             "77:50"
-          ],
-          "i + 0x70": [
-            "118:30",
-            "124:30",
-            "189:30"
           ]
         }
       }

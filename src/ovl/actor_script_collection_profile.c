@@ -285,21 +285,22 @@ s32 actorScriptGetAreaShortName(u8 *actor) {
     return 0;
 }
 
-/// Interior opaque catalog-tag view of the item catalog, with a 116-byte stride.
+/// Interior notebook display-frame view of the item catalog, with a 116-byte stride.
 /// \note Original identifier: \c D_80125A7E (0x80125A7E).
-extern s16 gItemKindCatalogTagEntries;
+extern s16 gItemKindDisplayMaterialFrameEntries;
 
-/// Provide the catalog tag associated with an item kind.
-/// \param actor Actor whose script VM supplies an item kind from zero through 165 and receives its opaque catalog tag.
+/// Read the material-frame selector used to represent an item kind in a notebook.
+/// \param actor Actor whose script VM supplies an item kind from zero through 165 and receives its signed display-frame selector.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011FFA8 (0x8011FFA8).
-s32 actorScriptGetItemCatalogTag(u8 *actor) {
-    s32 sp1C;
-    s32 idx;
+s32 actorScriptGetItemDisplayMaterialFrame(u8 *actor) {
+    s32 vmAddress;
+    s32 itemKind;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    idx = scriptVmPopInteger((ScriptVm *)(sp1C));
-    scriptVmPushInteger((ScriptVm *)(sp1C), *(s16 *)((u8 *)&gItemKindCatalogTagEntries + (idx * 0x74)));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    itemKind = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    scriptVmPushInteger((ScriptVm *)(vmAddress),
+                        *(s16 *)((u8 *)&gItemKindDisplayMaterialFrameEntries + (itemKind * 0x74)));
     return 0;
 }
 
@@ -645,10 +646,10 @@ s32 actorScriptGetAvailableObjectDistance(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_80120718 (0x80120718).
 s32 actorScriptPushActiveBackdrop(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushInteger((ScriptVm *)(sp1C), backdropGetActiveId());
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushInteger((ScriptVm *)(vmAddress), backdropGetActiveId());
     return 0;
 }
 
@@ -672,9 +673,9 @@ s32 actorScriptSelectBackdrop(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_80120798 (0x80120798).
 s32 actorScriptPushNearClipDistance(u8 *actor) {
-    s32 handle = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    s32 vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
 
-    scriptVmPushFloat((ScriptVm *)(handle), gCurrentAreaConfiguration->nearClip);
+    scriptVmPushFloat((ScriptVm *)(vmAddress), gCurrentAreaConfiguration->nearClip);
     return 0;
 }
 
@@ -683,9 +684,9 @@ s32 actorScriptPushNearClipDistance(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_801207CC (0x801207CC).
 s32 actorScriptPushFarClipDistance(u8 *actor) {
-    s32 handle = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    s32 vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
 
-    scriptVmPushFloat((ScriptVm *)(handle), gCurrentAreaConfiguration->farClip);
+    scriptVmPushFloat((ScriptVm *)(vmAddress), gCurrentAreaConfiguration->farClip);
     return 0;
 }
 

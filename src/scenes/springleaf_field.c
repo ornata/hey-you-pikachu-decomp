@@ -51,7 +51,7 @@ void springleafFieldSpawnGrowthResident(f32 *position, s32 residentIndex) {
     u8 *record;
     u32 random;
 
-    state = progressGetValue(residentIndex + 0x70);
+    state = progressGetValue(residentIndex + PROGRESS_FIELD_SPRINGLEAF_FIELD_GROWTH_STAGE_SLOT_0);
     if (progressGetValue(PROGRESS_FIELD_SHOPPING_ERRAND_ACTIVE) == 0) {
         record = &D_8014DFD8_scene_springleaf_field;
     } else {
@@ -115,13 +115,13 @@ void springleafFieldResetCompletedGrowth(void) {
     s32 i;
     s32 count = 0;
     for (i = 0; i < 5; i++) {
-        if (progressGetValue(i + 0x70) >= 4) {
+        if (progressGetValue(i + PROGRESS_FIELD_SPRINGLEAF_FIELD_GROWTH_STAGE_SLOT_0) >= 4) {
             count++;
         }
     }
     if (gRuntimeCurrentEntrance != 2 && count == 5) {
         for (i = 0; i != 5; i++) {
-            progressSetValue(i + 0x70, 0);
+            progressSetValue(i + PROGRESS_FIELD_SPRINGLEAF_FIELD_GROWTH_STAGE_SLOT_0, 0);
         }
     }
 }
@@ -186,7 +186,7 @@ void springleafFieldInitializeObjects(void) {
     i = 0;
     count = 0;
     do {
-        if (progressGetValue(i + 0x70) >= 2) {
+        if (progressGetValue(i + PROGRESS_FIELD_SPRINGLEAF_FIELD_GROWTH_STAGE_SLOT_0) >= 2) {
             count++;
         }
         i++;

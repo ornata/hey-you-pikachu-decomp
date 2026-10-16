@@ -2770,6 +2770,36 @@
       ],
       "evidence": "Original Ghidra native 0x8011E0F8 through 0x8011E134 saves the VM, pops the adjustment, calls playerAddPoints at 0x80112C58 and pushes its result. Full helper disassembly 0x80112C58 through 0x80112C9C shows the points load, addu, initial store, signed negative and 1000000 comparisons and clamp stores. It is a leaf with no callback, RNG, allocation or progress write. No runtime claim is made.",
       "runtime_status": "untested"
+    },
+    {
+      "function": "actorScriptPushTargetHeightDifference",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "706ff03a1a6b3422d15e3a5dfe57f8c27638b525f2064d978763d48e7fbe23e8",
+      "effect": "append_scalar",
+      "arguments": 0,
+      "stack_delta": 1,
+      "result_tag": "float",
+      "scheduling": "continue",
+      "result_semantics": "Append stored target Y minus the actor world Y as a single-precision float.",
+      "dependencies": [
+        "file:include/object_types.h",
+        "file:include/actor_script.h",
+        "file:include/script_vm.h",
+        "file:include/script_value.h",
+        "file:docs/LOCAL_SDK_FILES.json",
+        "file:config/pikachu.yaml",
+        "file:tools/materialize_ultralib.py",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "function:src/ovl/script_vm.c:scriptVmPushFloat",
+        "function:src/ovl/script_vm.c:scriptValueSetFloat"
+      ],
+      "preconditions": [
+        "The caller has initialized, live RuntimeObjectPrefix and ActorScriptState storage, with a live VM and writable value buffer. One result slot is available above protected locals and frame metadata. The push writes only that result ScriptValue and increments the VM stack depth; it neither consumes operands nor changes scheduling. Sampled fields, source records and C stack are disjoint from VM context, values, protected frames and program storage. Concurrent destruction, source-record mutation and context replacement are excluded.",
+        "ActorScriptState.targetPosition[1] at offset 0x1F0 and RuntimeObjectPrefix.worldPosition[1] at offset 0x48 are initialized finite floats whose subtraction remains finite. The stored target need not correspond to a live object: there is no target-handle resolution or position refresh. The native reads and subtracts the stored values without changing target mode, target handle, actor position or cached target coordinates.",
+        "The original ROM-authenticated SDK bcopy copies the four-byte integer or float payload from a live C-stack scalar into a local ScriptValue. The synchronous push copies the local box into the VM slot and retains no pointer to it. Original SDK materialization and strict matching authentication remain prerequisites. There is no allocation, callback, resource load, queue operation, DMA or object mutation; this review claims no future borrowed-resource lifetime or gameplay reachability."
+      ],
+      "evidence": "Original Ghidra 0x8011D2D0 through 0x8011D30C loads actor world Y from 0x48 and target Y from state offset 0x1F0, performs sub.s target minus actor, and calls float push at 0x8011604C before returning zero. No lookup, helper callback or target update occurs.  Bounded original pure-interpreter observations cover 22 cases across these six queries: signed raw backdrop IDs; positive, negative and negative-zero clip bits; signed fog words including 16777217, INT_MIN and INT_MAX; and stored target-height differences with invalid retained target handles. Expected payloads, continuation and protected frame/VM/actor/area/global guards agree. No later gameplay/rendering claim. Frozen local evidence: build/semantic-review/agent-scene-query-contracts/.",
+      "runtime_status": "bounded_original_instruction_probes_passed"
     }
   ]
 }

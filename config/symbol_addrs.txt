@@ -614,7 +614,7 @@ gItemKinds = 0x80125A40; // segment:ovl
 D_80125A59 = 0x80125A59; // segment:ovl defined:True
 gItemKindThirdResponseEntries = 0x80125A5A; // segment:ovl defined:True
 D_80125A5B = 0x80125A5B; // segment:ovl defined:True
-gItemKindCatalogTagEntries = 0x80125A7E; // segment:ovl defined:True
+gItemKindDisplayMaterialFrameEntries = 0x80125A7E; // segment:ovl defined:True
 gItemKindSecondarySoundEntries = 0x80125A82; // segment:ovl defined:True
 gItemKindCollectionValueEntries = 0x80125AAC; // segment:ovl
 gItemKindResponseCategoryEntries = 0x80125AB0; // segment:ovl
@@ -3315,7 +3315,7 @@ sceneRegionIsHighlightedByHandle = 0x8011816C;
 
 actorScriptIsSceneRegionHighlighted = 0x8011EB6C;
 
-actorScriptGetItemCatalogTag = 0x8011FFA8;
+actorScriptGetItemDisplayMaterialFrame = 0x8011FFA8;
 
 // Preserved SDK labels used by the former C/assembly units.
 __osInitialize_autodetect = 0x80050948;

@@ -163,7 +163,47 @@ enum {
         109, ///< Oddish meadow resident slot 3: zero/one Oddish, two/three Gloom, four or above Vileplume.
     PROGRESS_FIELD_ODDISH_MEADOW_GROWTH_STAGE_SLOT_4 =
         110, ///< Oddish meadow resident slot 4: zero/one Oddish, two/three Gloom, four or above Vileplume.
-    PROGRESS_FIELD_ODDISH_GROWTH_PROGRESS = 111,          ///< Special meadow Oddish growth and scale progress.
+    PROGRESS_FIELD_ODDISH_GROWTH_PROGRESS = 111, ///< Special meadow Oddish growth and scale progress.
+    PROGRESS_FIELD_SPRINGLEAF_FIELD_GROWTH_STAGE_SLOT_0 =
+        112, ///< Springleaf field resident slot 0: zero/one Oddish, two/three Gloom, four or above Vileplume.
+    PROGRESS_FIELD_SPRINGLEAF_FIELD_GROWTH_STAGE_SLOT_1 =
+        113, ///< Springleaf field resident slot 1: zero/one Oddish, two/three Gloom, four or above Vileplume.
+    PROGRESS_FIELD_SPRINGLEAF_FIELD_GROWTH_STAGE_SLOT_2 =
+        114, ///< Springleaf field resident slot 2: zero/one Oddish, two/three Gloom, four or above Vileplume.
+    PROGRESS_FIELD_SPRINGLEAF_FIELD_GROWTH_STAGE_SLOT_3 =
+        115, ///< Springleaf field resident slot 3: zero/one Oddish, two/three Gloom, four or above Vileplume.
+    PROGRESS_FIELD_SPRINGLEAF_FIELD_GROWTH_STAGE_SLOT_4 =
+        116, ///< Springleaf field resident slot 4: zero/one Oddish, two/three Gloom, four or above Vileplume.
+    PROGRESS_FIELD_FISHING_MAGIKARP_RECORD_LENGTH =
+        138, ///< Largest saved caught Magikarp length, truncated to the integral record value.
+    PROGRESS_FIELD_FISHING_GOLDEEN_RECORD_LENGTH =
+        139, ///< Largest saved caught Goldeen length, truncated to the integral record value.
+    PROGRESS_FIELD_FISHING_SEAKING_RECORD_LENGTH =
+        140, ///< Largest saved caught Seaking length, truncated to the integral record value.
+    PROGRESS_FIELD_FISHING_TENTACOOL_RECORD_LENGTH =
+        141, ///< Largest saved caught Tentacool length, truncated to the integral record value.
+    PROGRESS_FIELD_FISHING_TENTACRUEL_RECORD_LENGTH =
+        142, ///< Largest saved caught Tentacruel length, truncated to the integral record value.
+    PROGRESS_FIELD_FISHING_STARYU_RECORD_LENGTH =
+        143, ///< Largest saved caught Staryu length, truncated to the integral record value.
+    PROGRESS_FIELD_FISHING_STARMIE_RECORD_LENGTH =
+        144, ///< Largest saved caught Starmie length, truncated to the integral record value.
+    PROGRESS_FIELD_FISHING_HORSEA_RECORD_LENGTH =
+        145, ///< Largest saved caught Horsea length, truncated to the integral record value.
+    PROGRESS_FIELD_FISHING_SEADRA_RECORD_LENGTH =
+        146, ///< Largest saved caught Seadra length, truncated to the integral record value.
+    PROGRESS_FIELD_FISHING_KRABBY_RECORD_LENGTH =
+        147, ///< Largest saved caught Krabby length, truncated to the integral record value.
+    PROGRESS_FIELD_FISHING_KINGLER_RECORD_LENGTH =
+        148, ///< Largest saved caught Kingler length, truncated to the integral record value.
+    PROGRESS_FIELD_FISHING_POLIWAG_RECORD_LENGTH =
+        149, ///< Largest saved caught Poliwag length, truncated to the integral record value.
+    PROGRESS_FIELD_FISHING_POLIWHIRL_RECORD_LENGTH =
+        150, ///< Largest saved caught Poliwhirl length, truncated to the integral record value.
+    PROGRESS_FIELD_FISHING_DRATINI_RECORD_LENGTH =
+        151, ///< Largest saved caught Dratini length, truncated to the integral record value.
+    PROGRESS_FIELD_FISHING_SQUIRTLE_RECORD_LENGTH =
+        152, ///< Largest saved caught Squirtle length, truncated to the integral record value.
     PROGRESS_FIELD_LUCKY_HOOK_EXPLANATION_RECORDED = 154, ///< Fishing script has processed the lucky-hook explanation.
     PROGRESS_FIELD_FISHING_PROFICIENCY = 155,             ///< Adaptive fishing score, zero through fifteen.
     PROGRESS_FIELD_FISHING_TOTAL_CATCH_COUNT = 156,       ///< Cumulative caught Pokemon across fishing visits.
