@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 759,
-      "unique_spellings": 425,
+      "occurrences": 754,
+      "unique_spellings": 424,
       "files": 65
     },
     "cast_offset_candidates": {
@@ -3578,7 +3578,7 @@
       "matching_exceptions": {
         "itemTryRelease": "Hold-state switch uses an unsigned-byte view of the named signed state member. Casting the signed member value to u8 changes IDO output; the explicit byte view matches. Other release fields and the actor held-item handle use shared members.",
         "itemThrow": "Object transform and item motion fields use shared members. Owner at 8, hold state at 6, flags at 0 and kind at 4 retain raw reads: isolated direct-member trials each change ROM bytes. Their layouts are checked by shared types; further recovery needs IDO allocation/load-scheduling evidence.",
-        "itemUpdate": "Search-priority arithmetic at state offset 0x38 retains a raw float view: a direct searchPriority member changes ROM bytes in an isolated forced-rebuild trial. Kind growth bounds and rate, object links/flags, hold state, material state, collision key and idle timer use named fields. Further conversion needs IDO floating scheduling evidence.",
+        "itemUpdate": "Search-priority arithmetic retains a float byte view at the named searchPriority member offset (0x38): a direct searchPriority member changes ROM bytes in an isolated forced-rebuild trial. Kind search-priority maximum and recovery rate, object links/flags, hold state, material state, collision key and idle timer use named fields. Further conversion needs IDO floating scheduling evidence.",
         "itemPrepareKindSearch": "TreeNode * return and SearchTree * parameter match through the pointer-key compatibility declaration. Adopting search_tree_lookup.h with an explicit s32 address cast fails the ROM gate; restoring the pointer-key view restores all strict objects. Retain typed object/state keys with their checked stack extents; investigate integer-address argument scheduling before canonical-header adoption.",
         "itemPrepareMaterial": "Tint storage uses the shared ItemStatePrefix.tint member at checked offset 0x4C. Direct u8-pointer and bounded-array component access both fail the ROM gate. Retain the private scalar ItemMaterialTintView, checked against the shared array size. Next evidence: isolate IDO byte-load and packing register scheduling before removing this matching representation."
       },
@@ -3593,82 +3593,75 @@
           "subject + 0x190": [
             "2030:56"
           ],
-          "state + 0x38": [
-            "2068:18",
-            "2069:18",
-            "2069:89",
-            "2070:42",
-            "2071:22"
-          ],
           "lightingStorage + 0x38": [
-            "2101:46"
+            "2103:46"
           ],
           "object + 0x24": [
-            "2160:18",
-            "2162:34",
-            "2164:45",
-            "2167:45",
-            "2175:23"
+            "2162:18",
+            "2164:34",
+            "2166:45",
+            "2169:45",
+            "2177:23"
           ],
           "object + 0xC": [
-            "2177:14"
-          ],
-          "object + 0x10": [
-            "2178:14"
-          ],
-          "object + 0x14": [
             "2179:14"
           ],
-          "object + 0x18": [
+          "object + 0x10": [
             "2180:14"
           ],
-          "object + 0x1C": [
+          "object + 0x14": [
             "2181:14"
           ],
-          "object + 0x20": [
+          "object + 0x18": [
             "2182:14"
           ],
-          "object + 0x44": [
-            "2183:14",
-            "2722:74",
-            "2746:70"
+          "object + 0x1C": [
+            "2183:14"
           ],
-          "object + 0x48": [
+          "object + 0x20": [
             "2184:14"
           ],
+          "object + 0x44": [
+            "2185:14",
+            "2724:74",
+            "2748:70"
+          ],
+          "object + 0x48": [
+            "2186:14"
+          ],
           "object + 0x4C": [
-            "2185:14"
+            "2187:14"
           ],
           "gLiveItemCount + 1U": [
-            "2186:33"
+            "2188:33"
           ],
           "gLiveItemCount - 1": [
-            "2202:45"
+            "2204:45"
           ],
           "return -1": [
-            "2234:9",
-            "2242:9"
+            "2236:9",
+            "2244:9"
           ],
           "itemState + 0x54": [
-            "2366:53"
+            "2368:53"
           ],
           "state + 8": [
-            "2448:75"
+            "2450:75"
           ],
           "state + 6": [
-            "2450:24"
+            "2452:24"
           ],
           "state + 4": [
-            "2466:79",
-            "2467:87",
             "2468:79",
-            "2476:36"
+            "2469:87",
+            "2470:79",
+            "2478:36"
           ],
           "replacement + 0x44": [
-            "2781:74",
-            "2786:77",
-            "2789:76",
-            "2793:77"
+            "2783:74",
+            "2788:77",
+            "2791:76",
+            "2795:77"
           ]
         }
       }

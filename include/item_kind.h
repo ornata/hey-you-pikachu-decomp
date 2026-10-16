@@ -50,12 +50,12 @@ typedef enum ItemStorageClass {
 
 /// Per-kind motion, rendering, response and description configuration.
 typedef struct {
-    /* 0x00 */ s32 id;                        ///< Item kind identifier.
-    /* 0x04 */ u32 stateFlags;                ///< Initial item behavior flags.
-    /* 0x08 */ s32 initialBounceCount;        ///< Initial automatic-bounce allowance copied into item state.
-    /* 0x0C */ s32 replacement;               ///< Replacement kind selected for transformation.
-    /* 0x10 */ f32 growthMax;                 ///< Maximum replenishing search priority.
-    /* 0x14 */ f32 growthRate;                ///< Search-priority replenishment rate.
+    /* 0x00 */ s32 id;                         ///< Item kind identifier.
+    /* 0x04 */ u32 stateFlags;                 ///< Initial item behavior flags.
+    /* 0x08 */ s32 initialBounceCount;         ///< Initial automatic-bounce allowance copied into item state.
+    /* 0x0C */ s32 replacement;                ///< Replacement kind selected for transformation.
+    /* 0x10 */ f32 searchPriorityMax;          ///< Maximum replenishing search priority.
+    /* 0x14 */ f32 searchPriorityRecoveryRate; ///< Search-priority replenishment rate.
     /* 0x18 */ u8 response[5];                ///< Unsigned response values for interaction categories one through five.
     /* 0x20 */ f32 scale;                     ///< Default scale relative to the scene scale.
     /* 0x24 */ f32 size;                      ///< Radius override, or ITEM_DIMENSION_FROM_MODEL for the model default.

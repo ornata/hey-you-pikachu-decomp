@@ -2065,10 +2065,12 @@ void itemUpdate(u8 *object) {
         }
     }
     record = &gItemKinds[((ItemStatePrefix *)state)->kind];
-    if (*(f32 *)(state + 0x38) < record->growthMax) {
-        *(f32 *)(state + 0x38) = (record->growthRate * gRuntimeFrameSeconds) + *(f32 *)(state + 0x38);
-        if (record->growthMax < *(f32 *)(state + 0x38)) {
-            *(f32 *)(state + 0x38) = record->growthMax;
+    if (*(f32 *)(state + (u32) & ((ItemStatePrefix *)0)->searchPriority) < record->searchPriorityMax) {
+        *(f32 *)(state + (u32) & ((ItemStatePrefix *)0)->searchPriority) =
+            (record->searchPriorityRecoveryRate * gRuntimeFrameSeconds) +
+            *(f32 *)(state + (u32) & ((ItemStatePrefix *)0)->searchPriority);
+        if (record->searchPriorityMax < *(f32 *)(state + (u32) & ((ItemStatePrefix *)0)->searchPriority)) {
+            *(f32 *)(state + (u32) & ((ItemStatePrefix *)0)->searchPriority) = record->searchPriorityMax;
         }
     }
     itemUpdateModeAndOrientation(object);
@@ -2151,7 +2153,7 @@ u8 *itemCreate(f32 x, f32 y, f32 z, f32 pitch, f32 yaw, s32 kind) {
     state->kind = kind;
     state->flags = gItemKinds[kind].stateFlags | 0x1000000;
     state->bounceCount = gItemKinds[kind].initialBounceCount;
-    state->searchPriority = gItemKinds[kind].growthMax;
+    state->searchPriority = gItemKinds[kind].searchPriorityMax;
     state->state = ITEM_OWNERSHIP_WORLD;
     state->owner = 0;
     state->mode = ITEM_MODE_GROUND_AND_AIR;
