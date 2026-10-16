@@ -1118,9 +1118,9 @@ successful consumption, launch, perception, sound or an emotional preference.
 | 20 | Track and throw; optionally request Thunder, then -5 secondary meter. |
 
 Meter requests clamp to 0–100. Profile feedback remains conditional on the profile
-key and helper guards. Codes 1, 7, 9, 13 and 14 retain numeric identities rather than
-receiving broad names for their compound plans. Programs 84, 150, 175, 230 and 239
-also retain numeric identities where the gesture meaning is unresolved. Codes 24
+key and helper guards. Codes 9, 13 and 14 retain numeric identities rather than receiving broad names
+for their compound plans. Programs 84, 175, 230 and 239 also retain numeric
+identities where the gesture meaning is unresolved. Codes 24
 and 25 occur in the catalog but have no branch in this ordinary dispatcher;
 they still receive the dispatcher's common prefix, and scene-specific handling
 still needs evidence.
@@ -2235,6 +2235,31 @@ domains currently rely on matching source and authenticated scene-table evidence
 
 ## From VM action requests to motion
 
+The catalog's `action_program_catalog` inventories all 372 retained timed-program
+slots, including programs without a recovered caller. `action_script_resources`
+keeps the separate links derived from script requests and producer return values.
+`motion_definitions` inventories all 330 definition records, including callback-only
+resources and continuations without direct timed-program callers. The current
+headers name 277 definitions and 278 positive timed programs, plus the no-program
+sentinel; these are identity-coverage counts, not a percentage of full understanding.
+Neither membership nor a recovered name proves that a program is selected or safe
+for a particular actor.
+
+`motion_archives` describes all 230 retained archives: ordered part entries,
+rotation and root-movement channels, constant values, interpolation kinds, key
+counts, nominal duration and curve fingerprints. Descriptor and key references
+stay within each archive's authenticated extent; unsupported kinds and malformed
+resources remain explicit. Changed format-consumer source invalidates the binding.
+The report contains metadata rather than animation key payloads.
+
+Archives 131 and 132 illustrate why structure can be recovered before gesture
+meaning. Archive 132 omits exactly part IDs 48–61 while every retained channel is
+byte-identical and in the same order. Starting playback disables child tracks
+without resetting their rotations, then initializes only listed tracks. Thus this
+playback does not drive the omitted child rotations; separate controllers may
+still change them. Part numbers alone do not identify arms, hands or a rendered
+pose.
+
 The native selector, timed-program ID and motion-action ID are separate domains:
 
 ```mermaid
@@ -2403,6 +2428,8 @@ The reaction helpers also use named eating, shivering, throwing, smelling,
 sneezing, coughing, tilting, instrument and sleep-start programs. Their recovered
 fixed cue selectors remain numeric in the names. Each newly named program is an
 authenticated two-command stream: a motion request followed by its end marker.
+The medium and small laugh variants retain their authored magnitude qualifiers;
+these names do not establish measured motion amplitude or mood.
 Program IDs are not address ordered: sleep-start program 126 precedes program 125
 in memory, so physical neighbors, rather than consecutive IDs, bound the streams.
 The end marker's authored time is not a termination or wall-clock guarantee.
@@ -2420,12 +2447,30 @@ sequencer times, not guarantees of wall-clock delivery, successful acquisition o
 successful launch. Missing items, interruption and later gameplay effects retain
 their own checks.
 
-`motion_action_ids.h` names 225 of the 330 authored definitions. The named
+`motion_action_ids.h` names 277 of the 330 authored definitions. The named
 families include foot tapping, drawing, jumping and falling, item gestures,
 fishing and pulling, head/posture changes, species locomotion and explicit pose
 bridges. A shared motion archive does not imply a shared looping contract: the
 treasure-chest pulling record reuses a pull-loop archive but has its own nonlooping
 attributes and continuation.
+
+The target-run families distinguish authored playback scales 1.0 and 1.5;
+“fast” describes that relative variant rather than guaranteed travel speed.
+Writhing variants likewise distinguish gravity multipliers zero and one, without
+claiming levitation, grounding or zero initial vertical velocity. The scale-pulse
+resources deform vertical scale rather than performing spatial jumps.
+
+Continuation data remains authoritative when names look related: biped run-start
+motion 228 continues to Oddish run-loop 232, rather than biped run-loop 229. The
+names preserve the individual authored identities without repairing that link or
+inferring a shared species. Adaptive target-turn motion 196 refreshes tracking;
+its pivot counterpart 197 uses the stored target instead. Their C continuation
+selectors now use the corresponding names.
+
+The treasure-chest target-effect resource requests an effect at the tracked or
+stored target position. Its visual style is unresolved, so its name does not
+promise smoke or actor-local placement. Fishing-rod bending identifies the
+attachment-chain deformation without implying a successful catch.
 
 Some clearly labelled physical resources have no recovered retained caller; their
 names identify the authored resource without asserting selection or reachability.

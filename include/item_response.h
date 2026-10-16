@@ -23,11 +23,15 @@ typedef enum ItemInteractionResponseCategory {
 /// special item routes still apply. Catalog storage remains unsigned bytes and
 /// public interfaces retain their existing integer representations.
 typedef enum ItemReactionCode {
+    ITEM_REACTION_CLASS_DEPENDENT_NOD_OR_QUESTION_TILT =
+        1, ///< Held-item classes 2, 3 and 4 request a nod; other classes request the question-labelled tilt.
     ITEM_REACTION_EAT_CUE_2 = 2,      ///< Eating cue 2 plan with a requested +10 secondary-meter change.
     ITEM_REACTION_EAT_CUE_0 = 3,      ///< Eating cue 0 plan with profile feedback.
     ITEM_REACTION_EAT_AND_SHIVER = 4, ///< Eating and shivering plan with a requested -5 secondary-meter change.
     ITEM_REACTION_EAT_CUE_2_ALTERNATE_CODE = 5, ///< Alternate code for the same ordinary plan as EAT_CUE_2.
     ITEM_REACTION_EAT_AND_COUGH = 6, ///< Eating and coughing plan with a requested -5 secondary-meter change.
+    ITEM_REACTION_SMELL_TILT_AND_PUT_DOWN =
+        7, ///< Smelling, tilting and putting-down plan with a requested +10 secondary-meter change.
     ITEM_REACTION_SMELL_THROW_WITH_OPTIONAL_THUNDERBOLT =
         8,                              ///< Smell and throw, with a conditional Thunderbolt request.
     ITEM_REACTION_SMELL_AND_COUGH = 10, ///< Smelling and coughing plan.

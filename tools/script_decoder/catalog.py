@@ -20,7 +20,7 @@ from tools.source_quality import code_only
 from tools.scene_catalog import configuration_locations
 from .messages import message_posts
 from .scenarios import scenario_domains, function_body
-from .actions import action_calls, action_resources
+from .actions import action_calls, action_resources, action_program_catalog, motion_definition_catalog
 from .actors import actor_kind_records, actor_transformation_requests
 from .functions import action_producer_functions
 from .vocabulary import vocabulary_catalog
@@ -38,6 +38,7 @@ from .responses import item_response_dispatch, cost_policy_catalog, costed_actio
 from .local_flow import local_preservation_contracts
 from .paired_flow import annotate_costed_caller_relations
 from .contacts import messenger_contact_policy_catalog, messenger_contact_requests
+from .motion_archives import motion_archive_catalog
 
 
 def companion_sites(image):
@@ -274,6 +275,9 @@ def catalog(image, max_instructions=100000):
                                         for row in rows if not (row['direct_creation_sites'] or row['assigned_creation_sites'] or row['companion_scenario_sites'])],
                 distinct_decoded_code_hashes=len({row['decoded_code_sha256'] for row in rows}),
                 action_script_resources=action_resources(image, resource_ids),
+                action_program_catalog=action_program_catalog(image),
+                motion_archives=motion_archive_catalog(image),
+                motion_definitions=motion_definition_catalog(image),
                 actor_kinds=actors,
                 progress_fields=progress_fields,
                 effect_programs=effect_programs,
@@ -309,7 +313,7 @@ def main(argv=None):
         report['elf_sha256'] = hashlib.sha256(args.elf.read_bytes()).hexdigest()
         report['decoder_sha256'] = hashlib.sha256(Path(__file__).with_name('formats.py').read_bytes()).hexdigest()
         report['analysis_sha256'] = {name: hashlib.sha256(Path(__file__).with_name(name + '.py').read_bytes()).hexdigest()
-                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames', 'control_schemes', 'windows', 'caller_frames', 'progress_fields', 'items', 'effects', 'transitions', 'responses', 'local_flow', 'paired_flow', 'contacts')}
+                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames', 'control_schemes', 'windows', 'caller_frames', 'progress_fields', 'items', 'effects', 'transitions', 'responses', 'local_flow', 'paired_flow', 'contacts', 'motion_archives')}
         report['native_frame_review_sha256'] = review_manifest_fingerprint()
         files = {'catalog.json': report, **{name + '.json': row for name, row in decodes.items()}}
         # Validate every output before writing any content, including existing symlinks.

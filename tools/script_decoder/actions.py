@@ -203,3 +203,78 @@ def action_resources(image, identifiers, record_limit=4096):
             row.update(status='unresolved', reason=str(error))
         results.append(row)
     return results
+
+
+
+def action_program_catalog(image):
+    """Inventory every retained timed-program pointer, independently of callers.
+
+    The authenticated linked table supplies a bounded view, not proof that each
+    resource is selected or safe for a particular actor. Request-derived resource
+    links remain a separate catalog field.
+    """
+    table = image.symbol('gActionScriptPrograms')
+    if table[2] != 372 * 4:
+        raise ValueError('retained timed-program table extent differs')
+    old_allowed = set(image.allowed)
+    try:
+        image.allowed = {'.boot', '.ovl'}
+        raw, location = image.read_address(table[1], table[2])
+        digest = hashlib.sha256(raw).hexdigest()
+        if digest != '538e90262dcae6f7cb4df48addb084d9f7757cffed9df96f418929ffb79a6ec1':
+            raise ValueError('retained timed-program table differs')
+        entries = action_resources(image, range(372))
+    finally:
+        image.allowed = old_allowed
+    return dict(count=372, named_count=sum('recovered_name' in row for row in entries), table=dict(address=table[1], size=table[2], sha256=digest, **{k:v for k,v in location.items() if k!='address'}),
+                entries=entries,
+                scope='All retained timed-program pointer slots, with bounded END-terminated decoding. This includes resources without a recovered caller; table membership establishes neither selection, resource validity, actor compatibility nor completion.')
+
+
+def motion_definition_catalog(image):
+    """Describe all retained definitions, including callback-only resources.
+
+    Definition membership and authored names do not establish caller reachability,
+    anatomical meaning, compatibility or successful execution.
+    """
+    definitions = image.symbol('gActionDefinitions')
+    old_allowed = set(image.allowed)
+    image.allowed = {'.boot', '.ovl'}
+    try:
+        raw, location = image.read_address(definitions[1], 330 * 44)
+        attributes = enum_names(ROOT / 'include/action_attributes.h', 'ACTION_ATTRIBUTE_')
+        modes = enum_names(ROOT / 'include/motion_playback_types.h', 'MOTION_PLAYBACK_')
+        meters = enum_names(ROOT / 'include/action_attributes.h', 'ACTION_METER_POLICY_')
+        flags = enum_names(ROOT / 'include/script_action_flags.h', 'SCRIPT_ACTION_')
+        identities = enum_names(ROOT / 'include/motion_action_ids.h', 'MOTION_ACTION_')
+        rows = []
+        for index in range(330):
+            record = raw[index * 44:(index + 1) * 44]
+            identifier, label_address = struct.unpack_from('>iI', record)
+            if identifier != index:
+                raise ValueError('motion definition ID disagrees with its table index')
+            metadata = motion_definition_metadata(record, attributes, modes, meters, flags, identities)
+            row = dict(motion_action_id=index, definition_address=definitions[1] + index * 44,
+                       definition=metadata)
+            try:
+                label = bytearray()
+                for offset in range(256):
+                    byte, _ = image.read_address(label_address + offset, 1)
+                    if byte == b'\0':
+                        break
+                    label.extend(byte)
+                else:
+                    raise ValueError('motion debug label exceeds its bounded read')
+                row.update(status='decoded', debug_label=label.decode('euc_jp'))
+            except (ValueError, UnicodeError) as error:
+                row.update(status='unresolved', reason=str(error))
+            for role in ('initializer', 'update'):
+                target = metadata[role + '_address']
+                metadata[role + '_functions'] = image.functions(target) if target else []
+            rows.append(row)
+    finally:
+        image.allowed = old_allowed
+    return dict(count=330, named_count=sum(r['definition']['motion_action_name'] is not None for r in rows),
+                table=dict(address=definitions[1], size=len(raw), sha256=hashlib.sha256(raw).hexdigest(),
+                           **{k:v for k,v in location.items() if k!='address'}),
+                entries=rows, scope='All retained definition records and bounded authored labels. Name coverage measures recovered identities, not complete semantic understanding or execution.')

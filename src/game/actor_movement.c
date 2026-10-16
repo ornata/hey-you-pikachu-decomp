@@ -344,7 +344,7 @@ s32 actorSelectAlignedOrLeftTargetContinuation(u8 *actor) {
         return 1;
     }
     if (d < 0.0F) {
-        actionSetContinuation(actor, 0xC4);
+        actionSetContinuation(actor, MOTION_ACTION_ADAPTIVE_TARGET_TURN);
         return 1;
     }
     return 0;
@@ -386,7 +386,7 @@ s32 actorSelectAlternateAlignedOrLeftTargetContinuation(u8 *actor) {
         return 1;
     }
     if (d < 0.0F) {
-        actionSetContinuation(actor, 0xC5);
+        actionSetContinuation(actor, MOTION_ACTION_ADAPTIVE_TARGET_PIVOT);
         return 1;
     }
     return 0;

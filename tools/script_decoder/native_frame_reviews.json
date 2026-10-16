@@ -222,7 +222,7 @@
     "file:include/action_script_ids.h": {
       "kind": "file",
       "file": "include/action_script_ids.h",
-      "sha256": "74056e32669fe6be9bfc17cbdc760d245f4c53ad8f0850dd2c0c547ac316d7c3"
+      "sha256": "d8808161ad1a44f5047aa728560510188c1386ae7c98ce50d4773054f554d303"
     },
     "file:include/action_script_playback.h": {
       "kind": "file",
@@ -632,7 +632,7 @@
     "file:include/item_response.h": {
       "kind": "file",
       "file": "include/item_response.h",
-      "sha256": "1b86bd2e53290adae0d936a46eecd3fdea1dde21de2b331c0e26d99ab7bb54d6"
+      "sha256": "eaf6f1ed3b67c4a3eb6fadd6a18127c6aa154febde0534d7362d431da6d74490"
     },
     "file:include/item_size.h": {
       "kind": "file",
@@ -777,7 +777,7 @@
     "file:include/motion_action_ids.h": {
       "kind": "file",
       "file": "include/motion_action_ids.h",
-      "sha256": "ff5917cfc76f384d6d74cb8dbbcfdc259c48d09806f92cdd94c83b7a8cf6fd0b"
+      "sha256": "b9ef77ca4c83fe6a1ac867b54f5812922422257f3dbb3ab6be9933020d759f90"
     },
     "file:include/motion_cache.h": {
       "kind": "file",
@@ -1592,7 +1592,7 @@
     "file:src/ovl/item_registry.c": {
       "kind": "file",
       "file": "src/ovl/item_registry.c",
-      "sha256": "0b055b93debe4225bc2bc8614e107bbe18d22f73826a3e9e0d4af9becb639b92"
+      "sha256": "45b5a50d6468bd258b571575448b80f860b8a454b863491dd95a08356bc2445e"
     },
     "file:src/ovl/item_special_behaviors.c": {
       "kind": "file",
