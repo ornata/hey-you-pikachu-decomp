@@ -517,6 +517,65 @@ unclear. The decoder retains their category composition and request sites for
 further recovery; a missing literal request does not establish an invalid or
 unreachable dictionary.
 
+### Rock-paper-scissors rounds
+
+The catalog's `rps_round_roles` identifies seven instances of the complete
+reachable round routine. Each has thirteen local cells, 322 decoded instructions
+and 1767 reachable bytes within a 1785-byte span. Three unparsed six-byte gaps
+remain uninterpreted. Recognition checks the native and VM contracts, the
+message-snapshot producer and the correspondence of its sampled type and
+argument-zero root fields. Other script helpers remain opaque invocations.
+
+The local phase and selected choice are separate values:
+
+| Phase | Scoped role |
+| --- | --- |
+| 0 | Wait for cached voice-command status 5. |
+| 1 | Status 5 has been observed; a later non-5 sample permits choice selection. |
+| 2 | A choice has been selected; presentation requests follow, then stored-message evaluation. |
+
+Phase 2 is stored before the presentation requests. It proves neither that a
+gesture played nor that recognition completed. A cached status-5 sample writes
+phase 1 regardless of its previous value, so these phases are not a one-way
+sequence. The voice-status getter reads the
+last gameplay sample without polling the device. Status 5 retains its numeric
+name because its precise device meaning has not been established.
+
+The routine requests `RandomBelow(6)` and partitions its integer result:
+zero selects choice 0, one or two selects choice 2, and three through five selects
+choice 1. These are partition sizes, not established probabilities. The tie
+mapping identifies choices 0, 1 and 2 conventionally as rock, scissors and paper.
+Programs 136, 137 and 138 are requested respectively; all three use the same
+peace-sign motion with different cue selectors. Their IDs do not prove three
+distinct physical hand gestures.
+
+Dictionary 42 contains the three category-two commands 35 (rock), 36 (scissors)
+and 37 (paper). The round itself does not require category two or check for 37.
+After its message guard, stored type 4 takes a separate exit; other accepted
+messages in phase 2 use argument zero to select this local table:
+
+| Stored argument zero | Choice 0 | Choice 1 | Choice 2 |
+| --- | --- | --- | --- |
+| 35 | 2 | 1 | 0 |
+| 36 | 0 | 2 | 1 |
+| Every other value, including 37 | 1 | 0 | 2 |
+
+For a known valid RPS command and unchanged choice zero through two, result 0
+means the chosen side wins, 1 means it loses, and 2 means a tie. Arbitrary fallback
+inputs produce the same numbers without establishing those game meanings.
+The tie branch requests program 174 and resets the phase. Result 0 requests
+effect definition 0 with animation track 174, program 142 and a secondary-meter
+adjustment of 20; result 1 requests definition 0 with track 165, program 220 and
+an adjustment of 10. Meter adjustments are clamped requests, not measured emotion
+or guaranteed net increases.
+
+Eighteen original-VM probes confirm the nine table writes and all three choices
+for inputs 35, 36, 37 and fallback 99, plus the six possible partition inputs.
+They use constructed valid frame storage and authenticate ten executed original
+function bodies. They do not execute the random generator, response effects or
+the entire live round. Deferred actions, helper effects, message provenance,
+resource lifetime and eventual completion remain separate obligations.
+
 ### Companion status snapshots
 
 The decoder's `companion_snapshot_roles` identifies a complete reviewed status
