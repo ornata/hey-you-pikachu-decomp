@@ -396,18 +396,19 @@ s32 actorScriptFindItemNearPosition(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011E8E0 (0x8011E8E0).
 s32 actorScriptFindObjectInFacingCone(u8 *actor) {
-    s32 sp_pop;
+    s32 minimumKind;
     s32 vmAddress;
-    s32 sp34;
-    f32 sp30;
-    f32 sp2C;
+    s32 maximumKind;
+    f32 distanceLimit;
+    f32 coneAngleDegrees;
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    sp2C = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    sp30 = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    sp34 = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    sp_pop = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    scriptVmPushInteger((ScriptVm *)(vmAddress), objectFindNearestHandleInFacingCone(actor, sp_pop, sp34, sp30, sp2C));
+    coneAngleDegrees = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    distanceLimit = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    maximumKind = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    minimumKind = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    scriptVmPushInteger((ScriptVm *)(vmAddress), objectFindNearestHandleInFacingCone(actor, minimumKind, maximumKind,
+                                                                                     distanceLimit, coneAngleDegrees));
     return 0;
 }
 

@@ -2743,7 +2743,7 @@ unknown until supplied by a valid runtime state. Indexed loads, arithmetic and
 native-produced values are outside this analysis. Storage, frame binding and
 preservation conditions remain explicit obligations.
 
-Source-bound argument roles label original push order for 16 reviewed natives.
+Source-bound argument roles label original push order for 17 reviewed natives.
 Integer/float labels identify their numeric pop operations, without asserting a
 converted result or a successful effect. In particular, destination allowance is
 not speed, and `PostMessage` synthesizes argument1 rather than consuming it.
@@ -2782,3 +2782,25 @@ timed-program slots remain unnamed: fourteen depend on these ambiguous motions;
 the other four form two pairs of indistinguishable resource identities (33/34 and
 295/300). Equal command bytes do not merge distinct table slots or establish a
 semantic variant name.
+
+### Caller source provenance
+
+Forwarded contexts can include `caller_source_provenance` for a source cell whose
+last write is proved along an exclusive adjacent path before the caller's
+`LOAD_VARIABLE`. Each row identifies the original producer, store, load and call,
+retains raw boxed literal operands or an exactly reviewed native result role, and
+preserves every existing capture and argument expression.
+
+The current catalog establishes nine such rows: two literal-one assignments,
+three facing-cone object-search results, three random integer results and one
+created-item handle. Search results may be zero. Creation requires successful
+allocation and all original initializer/resource prerequisites; it does not have
+a recovered failure-safe zero result. Random results remain unknown, with range
+claims requiring a separately proved positive converted bound.
+
+Producer input expressions belong to the epoch immediately before that producer
+native, not to the later capture or callee. Physical source/operand separation,
+valid frame bindings and complete allocated boxed cells remain prerequisites.
+The bounded proof stops at competing control flow, other stores, frame changes
+or unreviewed effects. Indexed values, script returns and conversion arithmetic
+remain unresolved here; no caller expression is globally substituted.

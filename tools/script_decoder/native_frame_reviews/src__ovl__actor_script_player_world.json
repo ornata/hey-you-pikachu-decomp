@@ -299,7 +299,7 @@
     {
       "function": "actorScriptFindObjectInFacingCone",
       "file": "src/ovl/actor_script_player_world.c",
-      "sha256": "b8891b397069e00ac4b43a1999d30b8ca2418c6b244fc1a0c464b14373deb7e5",
+      "sha256": "bc1ee2a91eea11ab2021598709aec5c37be9bccacf272c5a8ce9629196fc3f8c",
       "effect": "replace_arguments_with_scalar",
       "arguments": 4,
       "stack_delta": -3,
