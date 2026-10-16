@@ -632,7 +632,7 @@
     "file:include/item_response.h": {
       "kind": "file",
       "file": "include/item_response.h",
-      "sha256": "4c0ddcd8be97daf2bb1786a00c1ce3931183217db6b472f3347642e4e053bcfb"
+      "sha256": "6e8ff10a60346decb42bcc58d23874589ba7e66ca6a8bce0926484f1c41c543c"
     },
     "file:include/item_size.h": {
       "kind": "file",
@@ -1582,7 +1582,7 @@
     "file:src/ovl/item_registry.c": {
       "kind": "file",
       "file": "src/ovl/item_registry.c",
-      "sha256": "94db1328a6cb73c8250740b85e10cfbb84a57533dc9bf7e7c993af787d65ed69"
+      "sha256": "6fb27c740ba0c7562acd40742d0bb7744b57306dfc257061fe2e2764e2ec18dc"
     },
     "file:src/ovl/item_special_behaviors.c": {
       "kind": "file",
@@ -3670,7 +3670,7 @@
     "function:src/ovl/item_registry.c:itemGetKindResponse": {
       "kind": "function",
       "file": "src/ovl/item_registry.c",
-      "sha256": "69c129814fbce9f2577e1e25d41d70ecd28583b80f9637c178336da58e88652c",
+      "sha256": "a437fb836ebed2ac3456be35909d9db29b4095a33f38fbbda3bb6260929c5913",
       "function": "itemGetKindResponse"
     },
     "function:src/ovl/item_registry.c:itemGetResponse": {

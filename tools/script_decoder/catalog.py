@@ -31,7 +31,7 @@ from .control_schemes import control_scheme_catalog, control_scheme_requests
 from .windows import text_window_requests
 from .caller_frames import analyze_caller_frames
 from .progress_fields import progress_field_catalog, progress_field_requests
-from .items import item_kind_catalog, item_creation_requests
+from .items import item_kind_catalog, item_creation_requests, item_response_requests
 from .effects import effect_program_catalog, attached_effect_requests
 from .transitions import pose_transition_catalog
 
@@ -218,6 +218,7 @@ def catalog(image, max_instructions=100000):
                              actor_transformation_requests=actor_transformation_requests(decoded['instructions'], actors),
                              progress_field_requests=progress_field_requests(decoded['instructions'], progress_fields),
                              item_creation_requests=item_creation_requests(decoded['instructions'], item_kinds),
+                             item_response_requests=item_response_requests(decoded['instructions'], item_kinds),
                              attached_effect_requests=attached_effect_requests(decoded['instructions'], effect_programs),
                              caller_frame_analysis=(analyze_caller_frames(decoded['instructions'], frame_reviews['active'], frame_reviews['active_deferred'])
                                                     if not decoded['diagnostics'] else dict(scope='Not analyzed: incomplete decoded CFG.')),

@@ -2645,9 +2645,9 @@ void itemSetTint(s32 id, u8 r, u8 g, u8 b, u8 a) {
 }
 
 /// Look up an item kind's configured response to an interaction category.
-/// \param responseType Interaction response category from one through five.
-/// \param kind Item kind identifier from zero through 165.
-/// \returns The configured response code, or zero for an unsupported category.
+/// \param responseType Category from one through five; see ItemInteractionResponseCategory.
+/// \param kind Item kind identifier from zero through 165 for supported categories; ignored otherwise.
+/// \returns The configured unsigned reaction code, or zero for an unsupported category.
 /// \note Original decompilation identifier: \c func_801146A4 (0x801146A4).
 u8 itemGetKindResponse(s32 responseType, s32 kind) {
     switch (responseType) {
@@ -2655,12 +2655,12 @@ u8 itemGetKindResponse(s32 responseType, s32 kind) {
         return gItemKinds[kind].response[0];
     case 2:
         return gItemKinds[kind].response[1];
-    case 3:
-        return gItemKinds[kind].response[2];
-    case 4:
-        return gItemKinds[kind].response[3];
-    case 5:
-        return gItemKinds[kind].response[4];
+    case ITEM_RESPONSE_TASTE:
+        return gItemKinds[kind].response[ITEM_RESPONSE_TASTE - 1];
+    case ITEM_RESPONSE_SMELL:
+        return gItemKinds[kind].response[ITEM_RESPONSE_SMELL - 1];
+    case ITEM_RESPONSE_PLAY_OR_USE:
+        return gItemKinds[kind].response[ITEM_RESPONSE_PLAY_OR_USE - 1];
     default:
         TRACE("ERROR: unknown itemResponseType(%d)\n", responseType);
         return 0U;
@@ -2668,8 +2668,9 @@ u8 itemGetKindResponse(s32 responseType, s32 kind) {
 }
 
 /// Look up the interaction response of an item that permits responses.
-/// \param responseType Interaction response category from one through five.
-/// \param objectId Item object handle.
+/// \param responseType Category from one through five; see ItemInteractionResponseCategory.
+/// \param objectId Item handle, or a missing handle.
+/// \pre An available handle must refer to initialized item state.
 /// \returns The configured response code, or zero if the item is missing, cannot respond, or the category is
 /// unsupported.
 /// \note Original decompilation identifier: \c func_80114788 (0x80114788).

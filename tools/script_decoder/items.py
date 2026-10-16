@@ -57,6 +57,33 @@ def state_flag_names():
     return names
 
 
+def interaction_response_categories():
+    """Keep query selectors separate from their returned unsigned response codes."""
+    code = code_only((ROOT / 'include/item_response.h').read_text())
+    match = re.search(r'\btypedef\s+enum\s+ItemInteractionResponseCategory\s*\{([^}]+)\}\s*ItemInteractionResponseCategory\s*;', code)
+    if match is None:
+        raise ValueError('missing ItemInteractionResponseCategory enum')
+    names, identifiers = {}, set()
+    for entry in match[1].split(','):
+        if not entry.strip():
+            continue
+        member = re.fullmatch(r'\s*(ITEM_RESPONSE_\w+)\s*=\s*(0[xX][0-9a-fA-F]+|\d+)\s*', entry)
+        if member is None:
+            raise ValueError('item response categories require explicit numeric selectors')
+        name, raw = member.groups()
+        selector = int(raw, 0)
+        if not 1 <= selector <= 5 or selector in names or name in identifiers:
+            raise ValueError('invalid or duplicate item response category')
+        names[selector] = name
+        identifiers.add(name)
+    if not names:
+        raise ValueError('empty ItemInteractionResponseCategory enum')
+    return [dict(category_id=selector, enum_name=names.get(selector),
+                 naming_status='named' if selector in names else 'unresolved',
+                 record_byte_offset=0x17 + selector, result_domain='unsigned_u8_response_code')
+            for selector in range(1, 6)]
+
+
 def item_kind_catalog(image, progress_fields=None):
     """Read the bounded 166-entry catalog and optional bounded display names.
 
@@ -134,6 +161,7 @@ def item_kind_catalog(image, progress_fields=None):
                          has_model_template=bool(model),
                          display_names=dict(alternate=display_name(alternate), default=display_name(default))))
     return dict(count=_COUNT, stride=_STRIDE, entries=rows,
+                interaction_response_categories=interaction_response_categories(),
                 table=dict(name='gItemKinds', size=len(data), sha256=_TABLE_SHA256, **location),
                 initial_state_flags_scope='Authored ItemKind stateFlags before creation adds runtime state bits; named single-bit ItemStateFlag members and an explicit unresolved mask. These are not RuntimeObjectFlags or an observed live item state.',
                 search_priority_scope='Initial maximum and per-second replenishment of item search-selection priority; these are not plant growth or physical dimensions. Runtime selection can reset priority, and this metadata does not establish a live value or selection eligibility.',
@@ -180,5 +208,60 @@ def item_creation_requests(instructions, catalog):
                     row['has_model_template'] = known[kind]['has_model_template']
             else:
                 row['numeric_conversion'] = 'outside_supported_s32_conversion'
+        rows.append(row)
+    return rows
+
+
+def item_response_requests(instructions, catalog):
+    """Link constant kind queries without treating live handles as catalog IDs."""
+    incoming = incoming_edges(instructions)
+    frames = {row['offset']: row for row in instructions if row['name'] == 'SCRIPT_OP_ENTER_FRAME'}
+    known = {row['item_kind']: row for row in catalog['entries']}
+    categories = {row['category_id']: row for row in catalog['interaction_response_categories']}
+    natives = {'actorScriptGetLiveItemResponse': 'item_handle',
+               'actorScriptGetItemKindResponse': 'item_kind'}
+    rows = []
+
+    def constant(expression):
+        if expression.get('kind') in ('integer', 'float'):
+            number = expression['value']
+            if math.isfinite(number) and -2147483648 <= number < 2147483648:
+                return int(number)
+        return None
+
+    for index, instruction in enumerate(instructions):
+        functions = instruction.get('native', {}).get('functions', [])
+        if len(functions) != 1 or functions[0] not in natives:
+            continue
+        function = functions[0]
+        target = natives[function]
+        row = dict(instruction_offset=instruction['offset'], function=function,
+                   query_target=target,
+                   scope='Structural query argument/catalog link, not query safety, execution or a live response observation. Numeric conversions, operand floors, valid VM/actor state and live-item ownership remain separate obligations. Returned codes are not category selectors, booleans, collection groups or transformation causes.')
+        try:
+            category, item = recover_arguments(instructions, index, 2, incoming=incoming,
+                                               allow_float=True, allow_symbolic=True, frame_entries=frames)
+        except ValueError as error:
+            row.update(status='unresolved_arguments', reason=str(error))
+            rows.append(row)
+            continue
+        row.update(status='recovered_arguments', category_expression=category,
+                   **{target + '_expression': item})
+        selector = constant(category)
+        if selector is None and category.get('kind') in ('integer', 'float'):
+            row['category_numeric_conversion'] = 'outside_supported_s32_conversion'
+        if selector is not None:
+            row.update(constant_category=selector, category_supported=selector in categories)
+            if selector in categories:
+                row['category_metadata'] = categories[selector]
+        if target == 'item_kind':
+            kind = constant(item)
+            if kind is None and item.get('kind') in ('integer', 'float'):
+                row['item_kind_numeric_conversion'] = 'outside_supported_s32_conversion'
+            if kind is not None:
+                row.update(constant_item_kind=kind, within_retained_catalog=kind in known)
+                if selector in categories and kind in known:
+                    row['item_configuration'] = known[kind]
+                    row['response_code'] = known[kind]['interaction_responses'][str(selector)]
         rows.append(row)
     return rows

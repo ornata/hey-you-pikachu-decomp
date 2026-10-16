@@ -929,6 +929,37 @@ is necessary, with allocation, registry, animation, terrain and later borrowed-r
 obligations remaining explicit. A structural link
 alone does not establish creation safety or execution.
 
+Item interaction queries use selectors one through five, independently of the
+returned unsigned reaction code:
+
+| Selector | Recovered request meaning |
+| --- | --- |
+| 1, 2 | Unresolved alternatives selected by shared profile/friendship logic |
+| 3: `ITEM_RESPONSE_TASTE` | Taste or eat |
+| 4: `ITEM_RESPONSE_SMELL` | Smell |
+| 5: `ITEM_RESPONSE_PLAY_OR_USE` | Play, use, or sound |
+
+The voice-message flow and authenticated vocabulary connect selectors three through
+five to those requests. Querying does not itself perform the interaction. Shared
+scripts choose between selectors one and two probabilistically and can override
+that choice after a voice request; this does not establish liked/disliked meanings.
+
+`itemGetKindResponse` accepts all 166 retained kinds for supported selectors,
+including kinds with no model. An unsupported selector returns zero and ignores
+the kind. `itemGetResponse` also returns zero for a missing or response-suppressed
+item; an available handle must refer to initialized item state. These interfaces
+return reaction codes, rather than booleans or category selectors. The retained
+bytes contain codes one through twenty plus twenty-four and twenty-five. The
+ordinary shared reaction dispatcher handles one through twenty; the remaining
+codes still need scene-specific interpretation.
+
+The decoder's `item_response_requests` preserves category and kind/handle argument
+expressions for both VM query natives. A supported constant selector and bounded
+constant kind can be linked to its catalog response byte. A live handle is never
+interpreted as a kind identifier. Dynamic selectors, unsupported selectors and
+unresolved arguments remain explicit; these links establish neither execution
+nor live-item validity.
+
 Each catalog entry also exposes authored `initial_state_flags`, their recovered
 `ItemStateFlag` names and an explicit unresolved-bit mask. These defaults are
 separate from live item state and object-hierarchy flags. Recovered item flags

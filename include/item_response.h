@@ -6,16 +6,27 @@
 
 #include <ultra64.h>
 
+/// Recovered voice-request categories selecting an item interaction response.
+/// Categories one and two are supported numeric selectors with unresolved meanings.
+/// A category selects a response code; it does not itself perform the interaction.
+/// These selectors are distinct from transformation causes and collection groups.
+typedef enum ItemInteractionResponseCategory {
+    ITEM_RESPONSE_TASTE = 3,      ///< Taste or eat request.
+    ITEM_RESPONSE_SMELL = 4,      ///< Smell request.
+    ITEM_RESPONSE_PLAY_OR_USE = 5 ///< Play, use, or sound request.
+} ItemInteractionResponseCategory;
+
 /// Look up an item kind's configured response to an interaction category.
-/// \param responseType Interaction response category from one through five.
-/// \param kind Item kind identifier from zero through 165.
-/// \returns The configured response code, or zero for an unsupported category.
+/// \param responseType Category from one through five; see ItemInteractionResponseCategory.
+/// \param kind Item kind identifier from zero through 165 for supported categories; ignored otherwise.
+/// \returns The configured unsigned reaction code, or zero for an unsupported category.
 /// \note Original decompilation identifier: \c func_801146A4 (0x801146A4).
 u8 itemGetKindResponse(s32 responseType, s32 kind);
 
 /// Look up the interaction response of an item that permits responses.
-/// \param responseType Interaction response category from one through five.
-/// \param objectId Item object handle.
+/// \param responseType Category from one through five; see ItemInteractionResponseCategory.
+/// \param objectId Item handle, or a missing handle.
+/// \pre An available handle must refer to initialized item state.
 /// \returns The configured response code, or zero if the item is missing, cannot respond, or the category is
 /// unsupported.
 /// \note Original decompilation identifier: \c func_80114788 (0x80114788).

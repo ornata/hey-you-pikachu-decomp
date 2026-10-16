@@ -25,6 +25,8 @@ NATIVES = {
     238: dict(address=0x80120388, functions=['actorScriptGetProgressMaximum'], inline_operands=[]),
     239: dict(address=0x801203C8, functions=['actorScriptGetProgressMinimum'], inline_operands=[]),
     888: dict(address=0x8011C98C, functions=['actorScriptCreateAttachedEffect'], inline_operands=[]),
+    889: dict(address=0x8011FA54, functions=['actorScriptGetItemKindResponse'], inline_operands=[]),
+    890: dict(address=0x8011FA04, functions=['actorScriptGetLiveItemResponse'], inline_operands=[]),
     999: dict(address=0x80000000, functions=['unreviewedCommand'], inline_operands=[]),
 }
 
@@ -36,6 +38,13 @@ class ItemCatalogMetadataTests(unittest.TestCase):
         self.root = Path(self.directory.name)
         (self.root / 'include').mkdir()
         (self.root / 'include/item_kind.h').write_text('enum { ITEM_STORAGE_CLASS_TEST = 1 };')
+        self.response_header = self.root / 'include/item_response.h'
+        self.response_header.write_text('''
+            typedef enum ItemInteractionResponseCategory {
+                ITEM_RESPONSE_TASTE = 3, ITEM_RESPONSE_SMELL = 4,
+                ITEM_RESPONSE_PLAY_OR_USE = 5
+            } ItemInteractionResponseCategory;
+        ''')
         self.header = self.root / 'include/item_types.h'
         self.header.write_text('''
             enum RuntimeObjectFlags { ITEM_STATE_UNRELATED = 0x80000000 };
@@ -52,6 +61,7 @@ class ItemCatalogMetadataTests(unittest.TestCase):
         struct.pack_into('>I', data, 4, 0x80000020)
         struct.pack_into('>ff', data, 0x10, 3.5, -0.25)
         struct.pack_into('>I', data, 165 * 0x74 + 4, 0x200)
+        data[0x1A] = 240
 
         class Image:
             def symbol(self, name):
@@ -81,6 +91,9 @@ class ItemCatalogMetadataTests(unittest.TestCase):
                 self.assertEqual(last['initial_state_unresolved_flags'], 0)
                 self.assertEqual(last['configuration'], 0x80000000 + 165 * 0x74)
                 self.assertEqual(first['display_names']['default']['status'], 'null')
+                self.assertEqual(first['interaction_responses']['3'], 240)
+                self.assertIsNone(catalog['interaction_response_categories'][0]['enum_name'])
+                self.assertEqual(catalog['interaction_response_categories'][2]['enum_name'], 'ITEM_RESPONSE_TASTE')
                 data[4] ^= 1
                 with self.assertRaisesRegex(ValueError, 'table differs'):
                     items.item_kind_catalog(image)
@@ -95,6 +108,51 @@ class ItemCatalogMetadataTests(unittest.TestCase):
                 self.header.write_text('typedef enum ItemStateFlag {' + body + '} ItemStateFlag;')
                 with patch.object(items, 'ROOT', self.root), self.assertRaises(ValueError):
                     items.state_flag_names()
+
+    def test_response_categories_reject_wrong_domains_and_duplicate_names(self):
+        for body in ('ITEM_RESPONSE_A = 3, ITEM_RESPONSE_B = 3',
+                     'ITEM_RESPONSE_A = 3, ITEM_RESPONSE_A = 4',
+                     'ITEM_RESPONSE_A = 6', 'ITEM_RESPONSE_A = 0',
+                     'ITEM_RESPONSE_A = 1 << 3', 'ITEM_RESPONSE_A'):
+            with self.subTest(body=body):
+                self.response_header.write_text('typedef enum ItemInteractionResponseCategory {' + body + '} ItemInteractionResponseCategory;')
+                with patch.object(items, 'ROOT', self.root), self.assertRaises(ValueError):
+                    items.interaction_response_categories()
+
+    def test_response_queries_preserve_argument_order_and_handle_domain(self):
+        with patch.object(items, 'ROOT', self.root):
+            categories = items.interaction_response_categories()
+        catalog = dict(entries=[dict(item_kind=7, interaction_responses={'1': 25, '2': 24, '3': 240, '4': 255, '5': 128})],
+                       interaction_response_categories=categories)
+        queries = items.item_response_requests(listing(literal(3), literal(7), native(889),
+                                                       literal(4), literal(7), native(890)), catalog)
+        kind, live = queries
+        self.assertEqual(kind['constant_category'], 3)
+        self.assertEqual(kind['constant_item_kind'], 7)
+        self.assertEqual(kind['response_code'], 240)
+        self.assertEqual(kind['category_metadata']['enum_name'], 'ITEM_RESPONSE_TASTE')
+        self.assertEqual(live['item_handle_expression'], {'kind': 'integer', 'value': 7})
+        self.assertEqual(live['constant_category'], 4)
+        self.assertNotIn('item_configuration', live)
+        self.assertNotIn('constant_item_kind', live)
+        self.assertNotIn('response_code', live)
+
+        for parts, expected in [((literal(6), literal(999)), {'category_supported': False, 'within_retained_catalog': False}),
+                                ((literal(3), literal(166)), {'category_supported': True, 'within_retained_catalog': False}),
+                                ((variable(0, 5), literal(7)), {'within_retained_catalog': True})]:
+            row = items.item_response_requests(listing(*parts, native(889)), catalog)[0]
+            for key, value in expected.items():
+                self.assertEqual(row[key], value)
+            self.assertNotIn('response_code', row)
+        row = items.item_response_requests(listing(literal(1), literal(7), native(889)), catalog)[0]
+        self.assertEqual(row['response_code'], 25)
+        self.assertIsNone(row['category_metadata']['enum_name'])
+        for number in (float('nan'), float('inf'), 2147483648.0):
+            row = items.item_response_requests(listing(literal(number, 1), literal(7), native(889)), catalog)[0]
+            self.assertNotIn('constant_category', row)
+            self.assertNotIn('response_code', row)
+        row = items.item_response_requests(listing(literal(3.9, 1), literal(7), native(889)), catalog)[0]
+        self.assertEqual(row['response_code'], 240)
 
 
 def value(number, tag=0):
