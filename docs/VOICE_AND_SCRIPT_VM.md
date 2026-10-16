@@ -944,10 +944,16 @@ are outside the numeric contract.
 The item catalog links both creation natives' X/Y/Z/pitch/yaw/kind expressions
 to 166 retained configurations and their borrowed display labels. Kinds zero
 and 165 have no model template; the creation contract admits one through 164.
-A kind can be linked independently when earlier coordinate producers remain
-unresolved; those rows explicitly report kind-only recovery. A nonnull template
-is necessary, with allocation, registry, animation, terrain and later borrowed-resource
-obligations remaining explicit. A structural link
+All 134 retained item-creation requests now have complete six-operand expression
+lists. Runtime actor/player coordinates and current-area path-point coordinates
+remain opaque symbolic results. Path expressions retain path, point and axis in
+script push order; they do not establish valid paths, points or axes, finite
+positions, or placement safety. Coordinate validity remains a separate obligation
+from linking the kind. The decoder retains kind-only recovery for unsupported
+producers in other inputs rather than guessing their stack effects.
+
+A nonnull template is necessary, with allocation, registry, animation, terrain
+and later borrowed-resource obligations remaining explicit. A structural link
 alone does not establish creation safety or execution.
 
 Item interaction queries use selectors one through five, independently of the
@@ -2284,6 +2290,35 @@ remain separate even when their names describe the same gesture:
 | 173 | 169 | Voice too quiet | Fixed tag 11. |
 | 235 | 167 | Nod | Fixed tag 3. |
 | 236 | 168 | Voice too loud | Fixed tag 11. |
+
+Further item and sitting identities have separate motion and timed-program
+names:
+
+| Timed program | Motion definition(s) | Recovered name | Cue selection |
+| --- | --- | --- | --- |
+| 44 | 35 | Shiver | Fixed tag 12. |
+| 59 | 48 | Greet | Inherit the configured default. |
+| 63 | 48 | Greet | Fixed tag 3. |
+| 67 | 50 | Pick up item | Inherit the configured default. |
+| 79 | 53 | Discard held item, authored variant 2 | Fixed tag 0. |
+| 105 | 24 | Eat | Fixed tag 0. |
+| 221 | 4 | Salute | Fixed tag 0. |
+| 273 | 145 → 146 → 311 | Sit down | Inherit the configured default. |
+| 276 | 146 → 311 | Sitting | Inherit the configured default. |
+| 277 | 147 | Sitting ear scratch | Inherit the configured default. |
+
+Motion 311 transitions from sitting to the stance posture; that posture identity
+does not establish selection of the separate idle-stance action 74. Collection presentation's four `0x115` selections
+refer to program 277, rather than sit-down program 273. Shivering identifies the
+authored motion without attributing cold, fear or another cause.
+
+The eating handler starts discard program 79 only when a held object remains live
+after its consumption attempt. The selected cue includes a held-item launch;
+variant 2 is the authored motion variant, rather than an attempt counter. Pick-up
+motion 50 likewise has an item-acquisition cue. Cue thresholds are authored
+sequencer times, not guarantees of wall-clock delivery, successful acquisition or
+successful launch. Missing items, interruption and later gameplay effects retain
+their own checks.
 
 The arrows describe authored motion continuations. The middle walk, run and sleep
 definitions are loops; interruption, loop-exit requests and transition callbacks

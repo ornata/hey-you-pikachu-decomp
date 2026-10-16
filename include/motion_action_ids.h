@@ -10,14 +10,19 @@
 /// variants and global pose identities remain explicit numeric values.
 /// Failure names identify authored variants and do not guarantee gameplay outcomes.
 typedef enum MotionActionId {
+    MOTION_ACTION_SALUTE = 4,                ///< Saluting gesture.
     MOTION_ACTION_THUNDER = 18,              ///< Thunder motion.
     MOTION_ACTION_THUNDER_FAILURE = 19,      ///< Thunder motion failure variant.
     MOTION_ACTION_THUNDERBOLT = 20,          ///< Thunderbolt motion.
     MOTION_ACTION_THUNDERBOLT_FAILURE = 21,  ///< Thunderbolt motion failure variant.
     MOTION_ACTION_THUNDERSHOCK = 22,         ///< Thundershock motion.
     MOTION_ACTION_THUNDERSHOCK_FAILURE = 23, ///< Thundershock motion failure variant.
+    MOTION_ACTION_EAT = 24,                  ///< Eating motion.
     MOTION_ACTION_HEAD_LOOK_RIGHT = 34, ///< Turn the head to the actor's right; this does not describe world-space yaw.
+    MOTION_ACTION_SHIVER = 35,          ///< Authored shivering motion.
     MOTION_ACTION_GREET = 48,           ///< Greeting motion.
+    MOTION_ACTION_PICK_UP_ITEM = 50,    ///< Item pick-up motion.
+    MOTION_ACTION_DISCARD_HELD_ITEM_VARIANT_2 = 53, ///< Authored held-item discard variant two.
     MOTION_ACTION_FORWARD_JUMP_COLLISION =
         61, ///< Forward-jump collision continuation, distinct from subsequent falling and landing definitions.
     MOTION_ACTION_IDLE_STANCE = 74,                             ///< Idle stance motion.
@@ -28,6 +33,9 @@ typedef enum MotionActionId {
     MOTION_ACTION_SLEEP_START = 141,                            ///< Begin the sleep sequence.
     MOTION_ACTION_SLEEP_LOOP = 142,                             ///< Repeat the sleeping motion.
     MOTION_ACTION_WAKE_UP = 143,                                ///< Wake from the sleep sequence.
+    MOTION_ACTION_SIT_DOWN = 145,                               ///< Begin sitting down.
+    MOTION_ACTION_SITTING = 146,                                ///< Continue the sitting posture.
+    MOTION_ACTION_SITTING_SCRATCH_EAR = 147,                    ///< Ear-scratching motion from the sitting posture.
     MOTION_ACTION_SCRATCH_HEAD = 158,                           ///< Head-scratching gesture.
     MOTION_ACTION_PROUD_POSE = 159,                             ///< Authored proud-pose gesture.
     MOTION_ACTION_NOD = 167,                                    ///< Nodding gesture.
@@ -42,7 +50,8 @@ typedef enum MotionActionId {
     MOTION_ACTION_TURN_TOWARD_TARGET_POSITION_ADJUSTMENT = 193, ///< Separate position-adjusting target turn.
     MOTION_ACTION_WALK_TO_TARGET_START = 198,                   ///< Begin walking toward the destination.
     MOTION_ACTION_WALK_TO_TARGET_LOOP = 199,                    ///< Repeat destination walking.
-    MOTION_ACTION_WALK_TO_TARGET_END = 200                      ///< Finish destination walking.
+    MOTION_ACTION_WALK_TO_TARGET_END = 200,                     ///< Finish destination walking.
+    MOTION_ACTION_SITTING_TO_STANCE = 311                       ///< Transition from sitting to a stance.
 } MotionActionId;
 
 #endif

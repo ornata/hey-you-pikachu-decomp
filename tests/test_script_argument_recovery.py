@@ -541,5 +541,50 @@ class TargetCoordinateStackTests(unittest.TestCase):
         rows[2]['native']['functions'].append('ambiguousAlias')
         with self.assertRaises(ValueError):recover_arguments(rows,3,2,allow_symbolic=True)
 
+
+class CoordinateGetterStackTests(unittest.TestCase):
+    def rows(self,function,values):
+        rows=[]
+        for offset,value in enumerate(values):
+            rows.append(dict(offset=offset,size=1,name='SCRIPT_OP_PUSH_LITERAL',operands=[dict(tag=0,value=value)],successors=[dict(kind='fallthrough',offset=offset+1)]))
+        offset=len(rows)
+        rows.extend([dict(offset=offset,size=1,name='SCRIPT_OP_CALL_NATIVE',operands=[],native=dict(functions=[function]),successors=[dict(kind='resume_or_fallthrough',offset=offset+1)]),
+            dict(offset=offset+1,size=1,name='SCRIPT_OP_FINISH',operands=[],successors=[])])
+        return rows
+
+    def test_single_axis_getters_leave_lower_operand_and_opaque_float(self):
+        for function in ('actorScriptGetWorldCoordinate','actorScriptGetPlayerCoordinate'):
+            rows=self.rows(function,[123,2])
+            result=recover_arguments(rows,len(rows)-1,2,allow_symbolic=True)
+            self.assertEqual(result[0],dict(kind='integer',value=123))
+            self.assertEqual(result[1]['arguments'],[dict(kind='integer',value=2)])
+            self.assertEqual(result[1]['result_tag'],'float')
+            self.assertNotIn('value',result[1])
+            with self.assertRaises(ValueError):recover_arguments(rows,len(rows)-1,2)
+            rows[-2]['native']['functions'].append('alternateBinding')
+            with self.assertRaises(ValueError):recover_arguments(rows,len(rows)-1,2,allow_symbolic=True)
+            missing=self.rows(function,[])
+            with self.assertRaises(ValueError):recover_arguments(missing,len(missing)-1,1,allow_symbolic=True)
+
+    def test_path_point_axis_order_and_arity_are_preserved(self):
+        function='actorScriptGetAreaPathPointCoordinate'
+        rows=self.rows(function,[123,7,8,2])
+        result=recover_arguments(rows,len(rows)-1,2,allow_symbolic=True)
+        self.assertEqual(result[0]['value'],123)
+        self.assertEqual([v['value']for v in result[1]['arguments']],[7,8,2])
+        self.assertEqual(result[1]['result_tag'],'float')
+        for values in ([],[7],[7,8]):
+            rows=self.rows(function,values)
+            with self.assertRaises(ValueError):recover_arguments(rows,len(rows)-1,1,allow_symbolic=True)
+        rows=self.rows(function,[7,8,2])
+        rows[-2]['native']['functions'].append('ambiguousBinding')
+        with self.assertRaises(ValueError):recover_arguments(rows,len(rows)-1,1,allow_symbolic=True)
+
+    def test_invalid_axis_remains_expression_without_validation_claim(self):
+        rows=self.rows('actorScriptGetPlayerCoordinate',[-1])
+        result=recover_arguments(rows,len(rows)-1,1,allow_symbolic=True)[0]
+        self.assertEqual(result['arguments'][0]['value'],-1)
+        self.assertNotIn('valid_axis',result)
+
 if __name__ == '__main__':
     unittest.main()

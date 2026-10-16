@@ -103,6 +103,12 @@ def recover_arguments(instructions, index, count, *, incoming=None, allow_float=
             if allow_symbolic and functions == ['actorScriptGetTargetCoordinate']:
                 return dict(kind='native_result', function=functions[0], arguments=[argument()], result_tag='float',
                             scope='Runtime target coordinate selected by an integer-converted axis. Target state, axis validity and finite numeric conversion remain preconditions; no coordinate value or range is inferred.')
+            if allow_symbolic and functions in (['actorScriptGetWorldCoordinate'], ['actorScriptGetPlayerCoordinate']):
+                return dict(kind='native_result', function=functions[0], arguments=[argument()], result_tag='float',
+                            scope='Runtime coordinate selected by an integer-converted axis. Required live actor/player storage and axis validity remain preconditions; no coordinate value, finite range or placement safety is inferred.')
+            if allow_symbolic and functions == ['actorScriptGetAreaPathPointCoordinate']:
+                return dict(kind='native_result', function=functions[0], arguments=list(reversed([argument() for _ in range(3)])), result_tag='float',
+                            scope='Runtime current-area path-point coordinate; arguments retain push order path, point, axis. Numeric conversions, initialized path tables and valid path/nonnegative point/axis remain preconditions; no coordinate value or placement safety is inferred.')
             if allow_symbolic and functions == ['actorScriptPushTargetDistanceAllowance']:
                 return dict(kind='native_result', function=functions[0], arguments=[], result_tag='float',
                             scope='Runtime actor target-distance allowance; no numeric range or target identity is inferred.')

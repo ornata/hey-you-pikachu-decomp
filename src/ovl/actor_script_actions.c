@@ -238,7 +238,7 @@ s32 actorScriptEatHeldItem(u8 *actor) {
         TRACE("nerveEatItem - %d\n", ((ActorScriptState *)state)->heldItemHandle);
         actorConsumeHeldItem(actor);
         if (objectFindLiveByHandle(((ActorScriptState *)state)->heldItemHandle) != NULL) {
-            actionScriptStart(actor, 0x4F);
+            actionScriptStart(actor, ACTION_SCRIPT_DISCARD_HELD_ITEM_VARIANT_2_CUE_0);
             actorBeginScriptActionHandler(actor, ACTOR_SCRIPT_ACTION_POLL_ACTION_STOPPED);
             return SCRIPT_VM_WAITING_FOR_ACTION;
         }

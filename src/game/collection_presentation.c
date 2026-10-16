@@ -1332,11 +1332,11 @@ s32 presentationSelectViridianEntranceScenario(s32 *actorAction, s32 *audioCue) 
     currentChapter = progressGetCurrentChapter();
     switch (currentChapter) { /* irregular */
     case 2:
-        *actorAction = 0x115;
+        *actorAction = ACTION_SCRIPT_SITTING_SCRATCH_EAR;
         *audioCue = 0x14;
         return 0;
     case 4:
-        *actorAction = 0x115;
+        *actorAction = ACTION_SCRIPT_SITTING_SCRATCH_EAR;
         *audioCue = 0x14;
         return 1;
     case 9:
@@ -1357,7 +1357,7 @@ s32 presentationSelectViridianForestScenario(s32 *actorAction, s32 *audioCue) {
     s32 chapter = progressGetCurrentChapter();
 
     if (chapter == 4) {
-        *actorAction = 0x115;
+        *actorAction = ACTION_SCRIPT_SITTING_SCRATCH_EAR;
         *audioCue = 0x14;
         return 0;
     }
@@ -1376,7 +1376,7 @@ s32 presentationSelectViridianDeepScenario(s32 *actorAction, s32 *audioCue) {
     currentChapter = progressGetCurrentChapter();
     switch (currentChapter) { /* irregular */
     case 4:
-        *actorAction = 0x115;
+        *actorAction = ACTION_SCRIPT_SITTING_SCRATCH_EAR;
         *audioCue = 0x14;
         return 0;
     case 3:
@@ -1399,7 +1399,7 @@ s32 presentationSelectViridianDeepScenario(s32 *actorAction, s32 *audioCue) {
 s32 presentationSelectSpringleafScenario(s32 *actorAction, s32 *audioCue) {
     progressGetCurrentChapter();
     if (progressGetValue(PROGRESS_FIELD_SHOPPING_ERRAND_ACTIVE) != 0) {
-        *actorAction = 0x3B;
+        *actorAction = ACTION_SCRIPT_GREET;
         *audioCue = 0x15;
         return 0;
     }
@@ -1439,7 +1439,7 @@ s32 presentationSelectOchreScenario(s32 *actorAction, s32 *audioCue) {
 /// \note Original decompilation identifier: \c func_8002A778 (0x8002A778).
 s32 presentationSelectCobaltIslandScenario(s32 *actorAction, s32 *audioCue) {
     progressGetCurrentChapter();
-    *actorAction = 0xDD;
+    *actorAction = ACTION_SCRIPT_SALUTE_CUE_0;
     *audioCue = 0x15;
     return 0;
 }

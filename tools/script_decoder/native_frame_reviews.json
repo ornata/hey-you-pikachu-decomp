@@ -222,7 +222,7 @@
     "file:include/action_script_ids.h": {
       "kind": "file",
       "file": "include/action_script_ids.h",
-      "sha256": "18f4109e19b07322bdb415eb65c74923193639594383eb2bf5c550b2d04a9311"
+      "sha256": "9a2b1ba05f16dd912c68975fb1b3f73a4716919624fcbbc526cc8cca845efa67"
     },
     "file:include/action_script_playback.h": {
       "kind": "file",
@@ -777,7 +777,7 @@
     "file:include/motion_action_ids.h": {
       "kind": "file",
       "file": "include/motion_action_ids.h",
-      "sha256": "a6af3f61c1972172101a85e8f93fc61d4bfc60111463c383aa677da27b161d68"
+      "sha256": "dd5431157130c8629b553452812dff7c597d7017cec3dd3705744a805a7ffda7"
     },
     "file:include/motion_cache.h": {
       "kind": "file",
@@ -1372,7 +1372,7 @@
     "file:src/game/collection_presentation.c": {
       "kind": "file",
       "file": "src/game/collection_presentation.c",
-      "sha256": "6b1671251c9511bee32b84d9ca7d23368981f72ced3e7b9b533c14ebc54b8870"
+      "sha256": "854cc29da1c4e3155bc48c72f7022a6808675eb0223da9c3daa8f2c7fea402a5"
     },
     "file:src/game/collision_grid.c": {
       "kind": "file",
@@ -1562,7 +1562,7 @@
     "file:src/ovl/actor_script_actions.c": {
       "kind": "file",
       "file": "src/ovl/actor_script_actions.c",
-      "sha256": "4238580fc51d91f70c0f9be7fa814a9772e6112482a722b470eec45f0a388632"
+      "sha256": "9d1dc3b732d30659151ef85bbfeb909b0289ade67cd3d2673e29ac1b9d6f95a4"
     },
     "file:src/ovl/actor_script_collection_profile.c": {
       "kind": "file",

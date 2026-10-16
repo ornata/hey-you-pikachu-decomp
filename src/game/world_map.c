@@ -490,7 +490,7 @@ void wholeMapPlayConfirmationAnimation(void) {
     actionScriptStop((u8 *)PLAYER);
     form = gWorldMapDestinations[gWorldMapSelectedDestination].areaIds[playerGetChaseStage()];
     if (form == 9 || form == 10) {
-        actionScriptStart((u8 *)PLAYER, 0x2C);
+        actionScriptStart((u8 *)PLAYER, ACTION_SCRIPT_SHIVER_CUE_12);
         return;
     }
     switch (randomBelow(3)) {
@@ -499,7 +499,7 @@ void wholeMapPlayConfirmationAnimation(void) {
         actionScriptStart((u8 *)PLAYER, 0x39);
         break;
     case 1:
-        actionScriptStart((u8 *)PLAYER, 0x3F);
+        actionScriptStart((u8 *)PLAYER, ACTION_SCRIPT_GREET_CUE_3);
         break;
     case 2:
         actionScriptStart((u8 *)PLAYER, 0x54);
