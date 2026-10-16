@@ -92,3 +92,26 @@ Acceptance requires a clean build printing `OK: ROM matches`, direct ROM byte
 comparison, and strict comparison against the preserved 483-object baseline.
 The comparator and its relocation-addend checks are unchanged. New and changed
 interface headers are also checked independently with the target compiler.
+
+## Heap validation and cursor selection
+
+`HpHdr.first` anchors the circular block list; `HpHdr.last` is the allocation
+search cursor. Block payload sizes are unsigned 32-bit capacities, while
+`heapGetAllocationSize` preserves its signed return representation. The private
+block states and validity markers are named in `src/game/heap.c`; their byte-sized
+storage and the 16-byte header remain unchanged.
+
+`heapValidateBlock` rejects an odd address before reading metadata. Otherwise the
+caller must supply a readable header: validation checks the magic marker and,
+when the requested state is positive, the tag. Nonpositive state requests accept
+any tag. Validation does not establish heap membership or sixteen-byte alignment.
+
+`heapAdvanceAllocationCursor` selects the block following a validated allocation.
+`heapSelectAllocationRegion` searches from the cursor, stopping once its best free
+candidate meets the requested size; if none meets it, the largest free candidate
+wins. If there is no free candidate, the existing cursor remains. These helpers
+return prospective payload addresses without reserving storage or changing block
+ownership. Sixteen original full-helper probes cover validation, signed size
+reads, selection, fallback and failure preservation; block metadata and payloads
+remain unchanged by cursor selection. The legacy diagnostic-hook ABI exception
+above remains in force.

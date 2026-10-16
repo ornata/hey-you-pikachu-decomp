@@ -1397,7 +1397,7 @@
     "file:src/game/heap.c": {
       "kind": "file",
       "file": "src/game/heap.c",
-      "sha256": "280524bfad61c25044f571ae783e6655d09e7f56036ed110a62ed9966d89fcf0"
+      "sha256": "409e1770cd5742e66fd52276fb126a5b25ccbb7d39238bc5da051c793517ac30"
     },
     "file:src/game/hud.c": {
       "kind": "file",
@@ -1943,25 +1943,25 @@
       "kind": "function",
       "file": "src/game/heap.c",
       "function": "heapAllocLocal",
-      "sha256": "4e7500ecd81576c61ad32038a41f7eb5f5243b94f4ce1cc3ccc6538892c730a7"
+      "sha256": "e176afb1831c6042215b01589c956d597a45866c3ce2c97be52366e539ff1621"
     },
     "function:src/game/heap.c:heapAllocTailLocal": {
       "kind": "function",
       "file": "src/game/heap.c",
       "function": "heapAllocTailLocal",
-      "sha256": "c0822fad0da7aee1627ef4eadc256b03320e4bbfc639b0a9e28c89b17bc54078"
+      "sha256": "e9ed6f27f4352a24b4a95ff8d39b57ba36446311efb7deb1e299f076e345f641"
     },
     "function:src/game/heap.c:heapCombineNextFree": {
       "kind": "function",
       "file": "src/game/heap.c",
       "function": "heapCombineNextFree",
-      "sha256": "f0dbc7b8961e33656a02e2e378f93253b7710f91e5f4a27f4502c6d6a21d7713"
+      "sha256": "95e1fc3aca29ef7476963004050f15154071ea4f8599e89fde7a7f7453ad7904"
     },
     "function:src/game/heap.c:heapCombinePreviousFree": {
       "kind": "function",
       "file": "src/game/heap.c",
       "function": "heapCombinePreviousFree",
-      "sha256": "b9ecaeba89fad83eba4fbd2608cae32002a751a693bca5ef48c0af5b71e9d320"
+      "sha256": "3863a11ca571256f5af20ec6910c542c436ce392e40aca602505e81c8c8c8085"
     },
     "function:src/game/heap.c:heapDebugNoOp": {
       "kind": "function",
@@ -1985,25 +1985,25 @@
       "kind": "function",
       "file": "src/game/heap.c",
       "function": "heapFreeLocal",
-      "sha256": "db24b0842de4aa7abca37380715b8f9e50f2e50f4f17a6ff370820b851362e5e"
+      "sha256": "1f8b896a284a68d397f5cfaf5cc1b864935fdd7ee3e620365bc53ae533832a5a"
     },
     "function:src/game/heap.c:heapGetFreeSpace": {
       "kind": "function",
       "file": "src/game/heap.c",
       "function": "heapGetFreeSpace",
-      "sha256": "2de931fb9a97b20619640346d16b0c3ef81d78e1b0ce9c55848aa9bdfb2c9e24"
+      "sha256": "077a3214504a8add48de968f862ced280998817317e0c3f3cecb1f7f02049301"
     },
     "function:src/game/heap.c:heapSplitBlock": {
       "kind": "function",
       "file": "src/game/heap.c",
       "function": "heapSplitBlock",
-      "sha256": "d21ead182c0b8626851f7e0c72625ef9d17aac7041f71f9ca9701b1ba0ccc83c"
+      "sha256": "e421cb33ffd0446a447b62c53e933738493467f14296b70156efe4dc74b41c60"
     },
     "function:src/game/heap.c:heapValidateBlock": {
       "kind": "function",
       "file": "src/game/heap.c",
       "function": "heapValidateBlock",
-      "sha256": "eba874016262c7d143484585734ed65c0ea5a6bbe1fd81d17abfe3f6fd5b736f"
+      "sha256": "8fe70026a56e4cc69c2546d93be12adef62d7f98f46d08da93a77d81315ca794"
     },
     "function:src/game/hud.c:hudExtendHorizontalMotionDisplay": {
       "kind": "function",

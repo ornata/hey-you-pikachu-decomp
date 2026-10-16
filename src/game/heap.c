@@ -1,8 +1,10 @@
+/// \file
+/// Implements game-heap allocation, block validation and allocation-cursor queries.
+
 #include "heap_initialize.h"
 #include "game_heap.h"
 #include "heap_free.h"
 #include "heap_tail.h"
-/* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "heap_types.h"
 #include "heap_diagnostics.h"
@@ -15,6 +17,19 @@
             osSyncPrintf args;                                                                                         \
         }                                                                                                              \
     } while (0)
+
+/// Allocation state stored in each block's byte-sized tag.
+typedef enum HeapBlockState {
+    HEAP_BLOCK_FREE = 0,     ///< Free payload available for allocation or coalescing.
+    HEAP_BLOCK_ALLOCATED = 1 ///< Payload currently owned by an allocation.
+} HeapBlockState;
+
+/// Validity markers and the category used for newly created free blocks.
+typedef enum HeapBlockMetadataCode {
+    HEAP_BLOCK_VALID_MAGIC = 0xA5,          ///< Header accepted by block validation.
+    HEAP_BLOCK_INVALID_MAGIC = 0,           ///< Header retired by block coalescing.
+    HEAP_BLOCK_UNASSIGNED_CATEGORY = 0xFFFF ///< Fresh free block without a caller-supplied allocation category.
+} HeapBlockMetadataCode;
 
 /// Private metadata for one region in a heap's circular block list.
 typedef struct HpBlk {
@@ -46,9 +61,9 @@ void *heapInitializeRegion(HpHdr *heap, void *region, s32 regionSize) {
     firstBlock->next = firstBlock;
     firstBlock->prev = firstBlock;
     firstBlock->size = regionSize - 0x10;
-    firstBlock->flag = 0xFFFF;
-    firstBlock->magic = 0xA5;
-    firstBlock->tag = 0;
+    firstBlock->flag = HEAP_BLOCK_UNASSIGNED_CATEGORY;
+    firstBlock->magic = HEAP_BLOCK_VALID_MAGIC;
+    firstBlock->tag = HEAP_BLOCK_FREE;
     header->thread = osGetThreadId(NULL);
     header->size = regionSize;
     header->first = firstBlock;
@@ -83,12 +98,12 @@ void heapDebugNoOp(heapAddress) s32 heapAddress;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80037FC4 (0x80037FC4).
 void heapDebugInspectBlocks(u8 *heap) {
-    u8 *p = *(u8 **)(heap + 8);
+    u8 *p = (u8 *)((HpHdr *)heap)->first;
 
     do {
         TRACE(("un"));
-        p = *(u8 **)(p + 4);
-    } while (p != *(u8 **)(heap + 8));
+        p = (u8 *)((HpBlk *)p)->next;
+    } while (p != (u8 *)((HpHdr *)heap)->first);
 }
 
 /// Run the heap diagnostic hook for a block.
@@ -111,11 +126,11 @@ s32 heapValidateBlock(u8 *heap, char *label, u8 *block, s32 requiredState) {
     if ((s32)block & 1) {
         return 0;
     }
-    if (*(u8 *)(block + 0xE) != 0xA5) {
+    if (((HpBlk *)block)->magic != HEAP_BLOCK_VALID_MAGIC) {
         heapDebugReportBlock((s32)heap, (s32)block);
         return 0;
     }
-    if ((requiredState > 0) && (requiredState != *(u8 *)(block + 0xF))) {
+    if ((requiredState > 0) && (requiredState != ((HpBlk *)block)->tag)) {
         heapDebugReportBlock((s32)heap, (s32)block);
         return 0;
     }
@@ -142,9 +157,9 @@ HpBlk *heapSplitBlock(HpBlk *block, u32 size) {
     next->prev = block;
     next->next = block->next;
     next->size = block->size - ((u32)next - (u32)block);
-    next->flag = 0xFFFF;
-    next->magic = 0xA5;
-    next->tag = 0;
+    next->flag = HEAP_BLOCK_UNASSIGNED_CATEGORY;
+    next->magic = HEAP_BLOCK_VALID_MAGIC;
+    next->tag = HEAP_BLOCK_FREE;
     block->next = next;
     block->size = ((u32)next - (u32)block) - 0x10;
     TRACE(("hp:%p prev:%p next:%p size:%d\ndp:%p prev:%p next:%p size:%d\n\n", block, block->prev, block->next,
@@ -163,7 +178,7 @@ void *heapAllocLocal(HpHdr *heap, u32 size, u16 flag) {
     HpBlk *block = heap->last;
 
     TRACE(("heapAllocLocal(%p, %d, %d)\n", heap, size, flag));
-    while (block->tag != 0 || block->size < size) {
+    while (block->tag != HEAP_BLOCK_FREE || block->size < size) {
         if (!heapValidateBlock((u8 *)heap, name, (u8 *)block, 0)) {
             return NULL;
         }
@@ -175,7 +190,7 @@ void *heapAllocLocal(HpHdr *heap, u32 size, u16 flag) {
     }
     heapSplitBlock(block, size);
     block->flag = flag;
-    block->tag = 1;
+    block->tag = HEAP_BLOCK_ALLOCATED;
     heap->last = block->next;
     TRACE(("hp:%p owner:%d\n", block, block->tag));
     TRACE(("heapAllocLocal: %p\n", block + 1));
@@ -195,7 +210,7 @@ void *heapAllocTailLocal(HpHdr *heap, u32 size, u16 flag) {
 
     TRACE(("heapAllocTail(%d,%d)\n", size, flag));
     size = ((size + 15) & ~15) + 16;
-    while (block->tag != 0 || block->size < size) {
+    while (block->tag != HEAP_BLOCK_FREE || block->size < size) {
         if (!heapValidateBlock((u8 *)heap, name, (u8 *)block, 0)) {
             return NULL;
         }
@@ -211,7 +226,7 @@ void *heapAllocTailLocal(HpHdr *heap, u32 size, u16 flag) {
         block = tail;
     }
     block->flag = flag;
-    block->tag = 1;
+    block->tag = HEAP_BLOCK_ALLOCATED;
     TRACE(("hp:%p owner:%d\n", block, block->tag));
     return block + 1;
 }
@@ -225,7 +240,7 @@ HpBlk *heapCombinePreviousFree(u8 *heap, HpBlk *b) {
     static char *name = "heapPrevCombine";
     HpBlk *p = b->prev;
 
-    if (p >= b || p->tag != 0) {
+    if (p >= b || p->tag != HEAP_BLOCK_FREE) {
         return b;
     }
     if (heapValidateBlock(heap, name, (u8 *)p, 0) == 0) {
@@ -241,7 +256,7 @@ HpBlk *heapCombinePreviousFree(u8 *heap, HpBlk *b) {
     p->next = b->next;
     p->size = p->size + b->size + 0x10;
     b->next->prev = p;
-    b->magic = 0;
+    b->magic = HEAP_BLOCK_INVALID_MAGIC;
     return p;
 }
 
@@ -254,7 +269,7 @@ HpBlk *heapCombineNextFree(u8 *heap, HpBlk *b) {
     static char *name = "heapNextCombine";
     HpBlk *n = b->next;
 
-    if (b >= n || n->tag != 0) {
+    if (b >= n || n->tag != HEAP_BLOCK_FREE) {
         return b;
     }
     if (heapValidateBlock(heap, name, (u8 *)n, 0) == 0) {
@@ -270,7 +285,7 @@ HpBlk *heapCombineNextFree(u8 *heap, HpBlk *b) {
     b->next = n->next;
     b->size = b->size + n->size + 0x10;
     n->next->prev = b;
-    n->magic = 0;
+    n->magic = HEAP_BLOCK_INVALID_MAGIC;
     return b;
 }
 
@@ -290,7 +305,7 @@ void heapShrinkLocal(u8 *heap, void *allocation, s32 size) {
         return;
     }
     b = (HpBlk *)allocation - 1;
-    if (heapValidateBlock(heap, name, (u8 *)b, 1) == 0) {
+    if (heapValidateBlock(heap, name, (u8 *)b, HEAP_BLOCK_ALLOCATED) == 0) {
         return;
     }
     n = heapSplitBlock(b, size);
@@ -298,8 +313,8 @@ void heapShrinkLocal(u8 *heap, void *allocation, s32 size) {
         return;
     }
     heapCombineNextFree(heap, n);
-    if ((u32)b < *(u32 *)(heap + 0xC)) {
-        *(HpBlk **)(heap + 0xC) = b;
+    if ((u32)b < (u32)((HpHdr *)heap)->last) {
+        ((HpHdr *)heap)->last = b;
     }
 }
 
@@ -322,10 +337,10 @@ s32 heapGetAllocationSize(u8 *heap, s32 allocationAddress) {
     }
     allocationAddressPointer = &allocationAddress;
     savedBlock = (block = (u8 *)(blockAddress = (*allocationAddressPointer) - 0x10));
-    if (heapValidateBlock(heap, name, block, 1) == 0) {
+    if (heapValidateBlock(heap, name, block, HEAP_BLOCK_ALLOCATED) == 0) {
         return -1;
     }
-    return *(s32 *)(block + 8);
+    return (s32)((HpBlk *)block)->size;
 }
 
 /// Release an allocation back to its heap.
@@ -343,10 +358,10 @@ void heapFreeLocal(HpHdr *heap, void *allocation) {
         return;
     }
     b = (HpBlk *)allocation - 1;
-    if (heapValidateBlock((u8 *)heap, name, (u8 *)b, 1) == 0) {
+    if (heapValidateBlock((u8 *)heap, name, (u8 *)b, HEAP_BLOCK_ALLOCATED) == 0) {
         return;
     }
-    b->tag = 0;
+    b->tag = HEAP_BLOCK_FREE;
     b = heapCombinePreviousFree((u8 *)heap, b);
     heapCombineNextFree((u8 *)heap, b);
     if ((u32)b < (u32)heap->last) {
@@ -376,7 +391,7 @@ loop_1:
     if (heapValidateBlock((u8 *)heap, diagnosticName, block, -1) == 0) {
         return 0;
     }
-    if (((HpBlk *)block)->tag == 0) {
+    if (((HpBlk *)block)->tag == HEAP_BLOCK_FREE) {
         blockSize = ((HpBlk *)block)->size;
         largestSize = *largest;
         freeBytes += blockSize;
@@ -422,14 +437,14 @@ s32 heapAdvanceAllocationCursor(u8 *heap, void *allocation) {
 
     if (allocation == NULL) {
         TRACE(("%s: warning: tried to set entry to NULL\n", name));
-        return *(s32 *)(heap + 0xC) + 0x10;
+        return (s32)((HpHdr *)heap)->last + 0x10;
     }
     b = (HpBlk *)allocation - 1;
-    if (heapValidateBlock(heap, name, (u8 *)b, 1) == 0) {
-        return *(s32 *)(heap + 0xC) + 0x10;
+    if (heapValidateBlock(heap, name, (u8 *)b, HEAP_BLOCK_ALLOCATED) == 0) {
+        return (s32)((HpHdr *)heap)->last + 0x10;
     }
-    *(HpBlk **)(heap + 0xC) = b->next;
-    return *(s32 *)(heap + 0xC) + 0x10;
+    ((HpHdr *)heap)->last = b->next;
+    return (s32)((HpHdr *)heap)->last + 0x10;
 }
 
 /// Choose a free region meeting the requested size for subsequent heap allocations.
@@ -446,7 +461,7 @@ u8 *heapSelectAllocationRegion(u8 *heap, u32 desiredSize) {
     u32 largestSize;
     u8 *block;
     u8 *selectedBlock;
-    block = *(u8 **)(heap + 0xC);
+    block = (u8 *)((HpHdr *)heap)->last;
     largestSize = 0;
     selectedBlock = block;
     if (desiredSize != 0) {
@@ -455,17 +470,17 @@ u8 *heapSelectAllocationRegion(u8 *heap, u32 desiredSize) {
             if (heapValidateBlock(heap, diagnosticName, block, -1) == 0) {
                 return NULL;
             }
-            if (block[0xF] == 0) {
-                blockSize = *(u32 *)(block + 8);
+            if (((HpBlk *)block)->tag == HEAP_BLOCK_FREE) {
+                blockSize = ((HpBlk *)block)->size;
                 if (largestSize < blockSize) {
                     largestSize = blockSize;
                     selectedBlock = block;
                 }
             }
-            block = *(u8 **)(block + 4);
-        } while ((block != *(u8 **)(heap + 0xC)) && (largestSize < desiredSize));
+            block = (u8 *)((HpBlk *)block)->next;
+        } while ((block != (u8 *)((HpHdr *)heap)->last) && (largestSize < desiredSize));
     }
-    *(u8 **)(heap + 0xC) = selectedBlock;
+    ((HpHdr *)heap)->last = (HpBlk *)selectedBlock;
     return selectedBlock + 0x10;
 }
 
