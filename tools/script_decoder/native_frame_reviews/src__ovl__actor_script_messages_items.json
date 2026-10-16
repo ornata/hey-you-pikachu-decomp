@@ -2394,9 +2394,9 @@
       "runtime_status": "bounded_original_instruction_probes_passed"
     },
     {
-      "function": "actorScriptTestItemResponseTypeThree",
+      "function": "actorScriptTestTasteResponse",
       "file": "src/ovl/actor_script_messages_items.c",
-      "sha256": "4537f05eb72bed1ffeb9432e33028c65418f089f7e18f523be522cccbbfbe624",
+      "sha256": "ddaadd3edb90d3e6498b84e050498fc98cd31fc39c6c4c351e9bcdf151add2bc",
       "effect": "replace_argument_with_scalar",
       "arguments": 1,
       "stack_delta": 0,
@@ -2420,7 +2420,7 @@
       "preconditions": [
         "One numeric operand lies above protected locals and frame metadata. Integer and code-reference payloads are signed 32-bit; finite floating operands must truncate to a representable signed 32-bit value. Calling actor, saved ActorScriptState, captured VM and value allocation remain live and disjoint from all helper-written registry, hierarchy, item and owner storage. No concurrent mutation, traversal, destruction or context replacement occurs.",
         "Only immediate source-bound writes and normal return are reviewed. Both wrappers replace one operand with an integer and return zero to continue; this does not establish retail reachability or later object/resource lifetime.",
-        "Converted kind must be in 0 through 165. The wrapper performs no bounds check; negative and larger indices are unsupported. It reads the original catalog response[2] byte through gItemKindThirdResponseEntries at 0x80125A5A, stride 0x74. The original 166-entry catalog and its persistent storage remain readable.",
+        "Converted kind must be in 0 through 165. The wrapper performs no bounds check; negative and larger indices are unsupported. It reads the original catalog response[2] byte through gItemKindTasteResponseEntries at 0x80125A5A, stride 0x74. The original 166-entry catalog and its persistent storage remain readable.",
         "This is a raw catalog-kind predicate, not a handle lookup or live-item query. No ownership, availability, response-permission flag or object-kind check occurs. Response values are unsigned bytes in current source; only equality against four low positive codes matters to this predicate. No catalog or global state is written, and no helper, callback, queue or resource operation occurs.",
         "No established response-code enum exists in the current public item headers. Preserve numeric codes 2, 4, 5 and 6 until independent response consumers establish names; they are not interchangeable with ownership, item class, behavior mode or transformation-cause selectors."
       ],

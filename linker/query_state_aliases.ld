@@ -8,7 +8,7 @@ D_80134034 = gItemSearchTree + 4;
 /* Item-kind field bases (record 0 of the 0x74-byte D_80125A40 table)
  * still named by other units and their assembly. */
 gItemKindReplacementEntries = gItemKinds + 0x0C;
-gItemKindThirdResponseEntries = gItemKinds + 0x1A;
+gItemKindTasteResponseEntries = gItemKinds + 0x1A;
 gItemKindMotionCoefficientEntries = gItemKinds + 0x28;
 gItemKindFrictionEntries = gItemKinds + 0x30;
 gItemKindDisplayMaterialFrameEntries = gItemKinds + 0x3E;

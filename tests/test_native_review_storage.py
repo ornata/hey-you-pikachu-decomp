@@ -312,5 +312,51 @@ class NativeReviewStorageTests(unittest.TestCase):
             self.assertEqual(path.read_bytes(), before)
 
 
+class CallerFrameWorkBudgetTests(unittest.TestCase):
+    def large_cfg(self):
+        rows=[dict(offset=0,size=1,opcode=32,operands=[dict(tag=0,value=v)for v in (0,0,1)])]
+        rows.extend(dict(offset=i,size=1,opcode=0,successors=[dict(kind='fallthrough',offset=i+1)])for i in range(1,10002))
+        rows.extend([dict(offset=10002,size=1,opcode=24,successors=[dict(kind='fallthrough',offset=10003)]),
+                     dict(offset=10003,size=1,opcode=30)])
+        return rows
+
+    def test_large_valid_cfg_closes_with_default_but_explicit_small_budget_refuses(self):
+        from tools.script_decoder.caller_frames import analyze_caller_frames
+        rows=self.large_cfg()
+        result=analyze_caller_frames(rows,{})
+        self.assertEqual(result['instruction_budget'],100000)
+        self.assertTrue(result['roots'][0]['conditional_floor_proven'])
+        self.assertEqual(result['remaining_budget'],89997)
+        limited=analyze_caller_frames(rows,{},budget=10000)
+        self.assertFalse(limited['roots'][0]['conditional_floor_proven'])
+        self.assertIn('budget exhausted',limited['roots'][0]['diagnostics'][0])
+        self.assertEqual(limited['remaining_budget'],0)
+
+    def test_larger_default_does_not_admit_unknown_effect_or_frame_restart(self):
+        from tools.script_decoder.caller_frames import analyze_caller_frames
+        rows=self.large_cfg();rows[10001]['opcode']=255
+        result=analyze_caller_frames(rows,{})
+        self.assertFalse(result['roots'][0]['conditional_floor_proven'])
+        self.assertIn('unsupported opcode',result['roots'][0]['diagnostics'][0])
+        restart=[dict(offset=0,size=1,opcode=32,operands=[dict(tag=0,value=v)for v in (0,0,1)]),
+                 dict(offset=1,size=1,opcode=28,successors=[dict(kind='branch',offset=0)])]
+        result=analyze_caller_frames(restart,{})
+        self.assertFalse(result['roots'][0]['conditional_floor_proven'])
+        self.assertIn('competing frame entry',result['roots'][0]['diagnostics'][0])
+
+    def test_budget_is_shared_across_independent_entries_and_strictly_validated(self):
+        from tools.script_decoder.caller_frames import analyze_caller_frames
+        rows=[]
+        for entry in (0,10):
+            rows.extend([dict(offset=entry,size=1,opcode=32,operands=[dict(tag=0,value=v)for v in (0,0,1)]),
+                         dict(offset=entry+1,size=1,opcode=24,successors=[dict(kind='fallthrough',offset=entry+2)]),
+                         dict(offset=entry+2,size=1,opcode=30)])
+        result=analyze_caller_frames(rows,{},budget=3)
+        self.assertTrue(result['roots'][0]['conditional_floor_proven'])
+        self.assertFalse(result['roots'][1]['conditional_floor_proven'])
+        for invalid in (0,-1,True,1.5):
+            with self.assertRaises(ValueError):analyze_caller_frames(rows,{},budget=invalid)
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -612,7 +612,7 @@ systemMenuInitialize = 0x8011BAC8; // type:func segment:ovl
 gMazeChildOffsetX = 0x80123430; // segment:ovl
 gItemKinds = 0x80125A40; // segment:ovl
 D_80125A59 = 0x80125A59; // segment:ovl defined:True
-gItemKindThirdResponseEntries = 0x80125A5A; // segment:ovl defined:True
+gItemKindTasteResponseEntries = 0x80125A5A; // segment:ovl defined:True
 D_80125A5B = 0x80125A5B; // segment:ovl defined:True
 gItemKindDisplayMaterialFrameEntries = 0x80125A7E; // segment:ovl defined:True
 gItemKindSecondarySoundEntries = 0x80125A82; // segment:ovl defined:True
@@ -2732,7 +2732,7 @@ actorScriptAdjustPlayerPoints = 0x8011E0F8;
 
 actorScriptPushChaseStage = 0x8011E168;
 
-actorScriptTestItemResponseTypeThree = 0x8011D01C;
+actorScriptTestTasteResponse = 0x8011D01C;
 
 actorScriptSetMessengerContactMode = 0x8011E1A0;
 actorScriptPushMessengerContactMode = 0x8011E1E8;

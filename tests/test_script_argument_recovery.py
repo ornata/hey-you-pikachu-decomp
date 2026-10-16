@@ -586,5 +586,29 @@ class CoordinateGetterStackTests(unittest.TestCase):
         self.assertEqual(result['arguments'][0]['value'],-1)
         self.assertNotIn('valid_axis',result)
 
+
+class HeldItemKindStackTests(unittest.TestCase):
+    def test_zero_arg_signed_kind_is_opaque_and_preserves_lower_operand(self):
+        rows=[dict(offset=0,size=1,name='SCRIPT_OP_PUSH_LITERAL',operands=[dict(tag=0,value=-2147483648)],successors=[dict(kind='fallthrough',offset=1)]),
+              dict(offset=1,size=1,name='SCRIPT_OP_CALL_NATIVE',operands=[],native=dict(functions=['actorScriptPushHeldItemKind']),successors=[dict(kind='resume_or_fallthrough',offset=2)]),
+              dict(offset=2,size=1,name='SCRIPT_OP_FINISH',operands=[],successors=[])]
+        result=recover_arguments(rows,2,2,allow_symbolic=True)
+        self.assertEqual(result[0]['value'],-2147483648)
+        self.assertEqual(result[1]['arguments'],[])
+        self.assertEqual(result[1]['result_tag'],'integer')
+        self.assertNotIn('value',result[1]);self.assertNotIn('integer_range',result[1])
+        with self.assertRaises(ValueError):recover_arguments(rows,2,2)
+        rows[1]['native']['functions'].append('ambiguousAlias')
+        with self.assertRaises(ValueError):recover_arguments(rows,2,2,allow_symbolic=True)
+
+    def test_getter_result_is_a_class_query_argument_without_constant_kind(self):
+        rows=[dict(offset=0,size=1,name='SCRIPT_OP_ENTER_FRAME',operands=[dict(tag=0,value=v)for v in (0,1,1)],successors=[dict(kind='fallthrough',offset=1)]),
+              dict(offset=1,size=1,name='SCRIPT_OP_CALL_NATIVE',operands=[],native=dict(functions=['actorScriptPushHeldItemKind']),successors=[dict(kind='resume_or_fallthrough',offset=2)]),
+              dict(offset=2,size=1,name='SCRIPT_OP_CALL_NATIVE',operands=[],native=dict(functions=['scriptCommandGetItemClass']),successors=[])]
+        argument=recover_arguments(rows,2,1,allow_symbolic=True)[0]
+        self.assertEqual(argument['function'],'actorScriptPushHeldItemKind')
+        self.assertEqual(argument['arguments'],[])
+        self.assertNotIn('constant_item_kind',argument)
+
 if __name__ == '__main__':
     unittest.main()

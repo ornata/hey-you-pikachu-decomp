@@ -191,8 +191,9 @@ script getters beginning at `0x8011C884`, establish the shared layout.
 `ScriptValue` has byte alignment and a five-byte stride. Its named `data` view
 contains a tag and four payload bytes; its `bytes` view supports whole-value
 copies. Integer, float, string-index, and string-pointer tags are recovered.
-Tag 2 is handled as integer-like by the interpreter but remains unnamed because
-its distinct meaning has not been established. Do not replace the payload with
+Tag 2 is named `SCRIPT_VALUE_CODE_REFERENCE`: decoded uses select bytecode offsets
+or configured native-command slots while retaining signed integer conversion.
+The tag alone does not establish a particular reference role or a host pointer. Do not replace the payload with
 an aligned C word or numeric union: that changes the value stride.
 
 `ScriptVm` retains the original `0x2C8` extent. The value-stack depth and pointer
@@ -426,6 +427,26 @@ The front-yard program requests dictionary three, saved dictionary restoration
 and control scheme one. Those outgoing dependencies describe behavior, not a
 creation owner; six front-yard configurations share its metadata value of sixty.
 Equal virtual addresses in other overlays remain separate resources.
+
+`caller_frame_analysis` computes conditional relative evaluation-stack floors
+from the decoded control flow and active immediate/deferred native reviews. Its
+finite 100,000-step work budget is shared across roots and cached callee summaries;
+exhaustion leaves a proof incomplete. A larger budget permits more exploration,
+without changing operand, join, call or native-effect rules. Relative floors do
+not establish physical allocation, nonaliasing, operand types, resource lifetime
+or scheduling safety.
+
+Three fishing programs retain a different limitation: helper 122 jumps to root
+entry zero instead of returning. The original VM treats that as an ordinary
+jump followed by another frame entry. It does not reset the value stack, saved
+depths, return locations or previous frame bindings. In bounded original-VM
+probes of their six-local root and three-local helper pattern, each restart adds
+thirteen physical value slots, two saved depths and one return location.
+Historical locals and metadata remain in value storage. This requires enough value and
+saved-stack capacity for the actual number of restarts; an ordinary balanced-call
+summary would conceal that obligation. The catalog keeps those summaries
+unresolved. These authored probes establish the interpreter behavior, without
+proving how often the retail fishing paths restart.
 
 Decoder report schema 2 calls tag 2 `code_reference` and records its uses in
 `code_reference_uses`. These references select bytecode offsets or configured
@@ -970,6 +991,21 @@ The voice-message flow and authenticated vocabulary connect selectors three thro
 five to those requests. Querying does not itself perform the interaction. Shared
 scripts choose between selectors one and two probabilistically and can override
 that choice after a voice request; this does not establish liked/disliked meanings.
+
+In the reviewed shared selector, category two is chosen when a random integer
+below one hundred exceeds five times the item's profile counter; otherwise it
+chooses category one. Other state can invoke a separate selection window, where
+a voice command chooses three, four or five, a timeout randomly chooses among
+those same categories, and a zero result aborts. Category one is also queried
+directly by scene-specific reaction-code gates, so neither column has a universal
+“autonomous”, “liked” or “disliked” meaning. Different items can select eating or
+electric-action responses from either column.
+
+`actorScriptTestTasteResponse` reads the third interaction-response byte and
+recognizes codes two, four, five and six. Its catalog view is named
+`gItemKindTasteResponseEntries`; it is unrelated to transformation cause three.
+The predicate reports membership in that code set, without performing an item
+interaction or establishing a universal preference meaning.
 
 `itemGetKindResponse` accepts all 166 retained kinds for supported selectors,
 including kinds with no model. An unsupported selector returns zero and ignores
@@ -2319,6 +2355,19 @@ motion 50 likewise has an item-acquisition cue. Cue thresholds are authored
 sequencer times, not guarantees of wall-clock delivery, successful acquisition or
 successful launch. Missing items, interruption and later gameplay effects retain
 their own checks.
+
+`motion_action_ids.h` names 222 of the 330 authored definitions. The named
+families include foot tapping, drawing, jumping and falling, item gestures,
+fishing and pulling, head/posture changes, species locomotion and explicit pose
+bridges. A shared motion archive does not imply a shared looping contract: the
+treasure-chest pulling record reuses a pull-loop archive but has its own nonlooping
+attributes and continuation.
+
+Some clearly labelled physical resources have no recovered retained caller; their
+names identify the authored resource without asserting selection or reachability.
+Ambiguous callback variants, emotion/interjection labels and opaque abbreviations
+remain numeric. Species and nominal-distance labels likewise do not establish
+actor compatibility or measured displacement.
 
 The arrows describe authored motion continuations. The middle walk, run and sleep
 definitions are loops; interruption, loop-exit requests and transition callbacks

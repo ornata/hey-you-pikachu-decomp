@@ -82,9 +82,9 @@
       "declaration": "f32 unknown1A0;",
       "known_facts": "Actor state is allocated and cleared as 0x408 bytes. Original approach setup (0x8000F934) converts randomBelow(60) minus fifteen to f32, so the stored integral sample ranges from -15 through 44. It is written before the approach-completion choice; the recovered walk continuation does not consume it. Whole-state presentation snapshots copy this storage, but no behavioral scalar reader is established. The scalar view and offset check preserve its four-byte storage and neighboring offsets.",
       "reason": "The asymmetric random sample and whole-state transport do not establish an angle, timer, displacement or other persistent meaning.",
-      "next_evidence": "Find a later reader of actor-state 0x1A0, including biased and computed accesses, before naming the random value as an angle, timer or offset.",
+      "next_evidence": "Trace original scalar reads overlapping actor+0x1A0 from the reviewed approach initializer families through the next overwrite. Authenticated motion records 28, 152, 173, 198, 199, 201, 204, 205, 207 and 208 select those initializers; nine use update 0x8000FA84, while 28 uses 0x8000FC78. Record actor identity, PC, width and write epoch, excluding whole-state presentation snapshots. The escape helper's similar random distribution feeds sine/cosine, but no corresponding approach consumer establishes an angle meaning.",
       "matching_constraint": "Preserve the f32 store, four-byte extent, alignment and surrounding offsets; require unchanged ROM and strict original-object comparison for replacements.",
-      "evidence": "include/actor_script.h; src/game/actor_movement.c:actorPrepareApproachCompletion; original Ghidra func_8000F934 f32 conversion/store at actor state +0x1A0."
+      "evidence": "include/actor_script.h; src/game/actor_movement.c:actorPrepareApproachCompletion; original Ghidra func_8000F934 f32 conversion/store at actor state +0x1A0. Targeted decoder-assisted producer survey authenticated the ten listed ActionDefinition records and their initializer/update pointers against original Ghidra and ROM bytes; it narrowed a read-watch experiment without identifying a scalar consumer."
     },
     {
       "file": "include/actor_script.h",

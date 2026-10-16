@@ -452,22 +452,22 @@ s32 actorScriptPushHeldItemKind(u8 *actor) {
     return 0;
 }
 
-/// Separate transformation-cause-three response view of the item catalog, with a 116-byte stride.
+/// Taste-response view of the item catalog, with a 116-byte stride.
 /// \note Original identifier: \c D_80125A5A (0x80125A5A).
-extern u8 gItemKindThirdResponseEntries[];
+extern u8 gItemKindTasteResponseEntries[];
 
-/// Test whether an item kind has a qualifying type-three response.
+/// Test whether an item kind has a qualifying taste-response code.
 /// \param actor Actor whose script VM supplies a valid item kind and receives one for response codes 2, 4, 5, or 6, or zero otherwise.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011D01C (0x8011D01C).
-s32 actorScriptTestItemResponseTypeThree(u8 *actor) {
+s32 actorScriptTestTasteResponse(u8 *actor) {
     s32 vm;
     s32 kind;
     s32 result;
 
     vm = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     result = 0;
-    kind = gItemKindThirdResponseEntries[scriptVmPopInteger((ScriptVm *)(vm)) * 0x74];
+    kind = gItemKindTasteResponseEntries[scriptVmPopInteger((ScriptVm *)(vm)) * 0x74];
     if ((kind == 2) || (kind == 4) || (kind == 5) || (kind == 6)) {
         result = 1;
     }

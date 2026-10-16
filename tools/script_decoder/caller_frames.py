@@ -28,11 +28,13 @@ _DEFERRED = {
 }
 
 
-def analyze_caller_frames(instructions, native_reviews, deferred_reviews=None, *, entries=None, budget=10000):
+def analyze_caller_frames(instructions, native_reviews, deferred_reviews=None, *, entries=None, budget=100000):
     """Return conditional frame summaries and per-instruction depth obligations.
 
     Roots require ENTER_FRAME. An exact callee summary is used at CALL's return
     continuation; its separate navigation edge is not an ordinary CFG successor.
+    The finite instruction-work budget is shared across all roots and recursive
+    summaries in this invocation; exhausting it leaves affected proofs incomplete.
     Recursion, unequal joins and unsupported effects stop the enclosing proof.
     Callers must reject decode diagnostics, including unresolved branch targets.
     """

@@ -117,7 +117,7 @@
     "file:config/symbol_addrs.txt": {
       "kind": "file",
       "file": "config/symbol_addrs.txt",
-      "sha256": "45cd0276fee2e52710f40b50779505d2c98bf5ce7b346b323c3f90e6b5203af1"
+      "sha256": "ac586899b625c6413646e9ea002a9f7c0429de7eed61c33df69ceb2c704578b4"
     },
     "file:docs/LOCAL_SDK_FILES.json": {
       "kind": "file",
@@ -777,7 +777,7 @@
     "file:include/motion_action_ids.h": {
       "kind": "file",
       "file": "include/motion_action_ids.h",
-      "sha256": "dd5431157130c8629b553452812dff7c597d7017cec3dd3705744a805a7ffda7"
+      "sha256": "2fc01b785c2ccf22bdf5020b70c6f750b4604ca35b63388343bd7ff43d770330"
     },
     "file:include/motion_cache.h": {
       "kind": "file",
@@ -1302,7 +1302,7 @@
     "file:linker/query_state_aliases.ld": {
       "kind": "file",
       "file": "linker/query_state_aliases.ld",
-      "sha256": "73404abf4ed7754f763f9ae9e6adb8924e72d509c87fb362339692e2f0b5bcda"
+      "sha256": "14e59d8a0c45f5357a2aa6880fc26e94d680e5bf8c874889db3d34f687c61d51"
     },
     "file:src/game/action_script.c": {
       "kind": "file",
@@ -1572,7 +1572,7 @@
     "file:src/ovl/actor_script_messages_items.c": {
       "kind": "file",
       "file": "src/ovl/actor_script_messages_items.c",
-      "sha256": "aa3fa1e16fbd2842bb86d698716b57d26c0870d9e7fa7ba75cf7456d04f37921"
+      "sha256": "9664ec1c8997e72c9ccb0a3a072ded250a9da056bb368b244136453423ba49e6"
     },
     "file:src/ovl/actor_script_queries.c": {
       "kind": "file",
@@ -4182,7 +4182,7 @@
     "actorScriptSetPlayerPitch",
     "actorScriptPushPlayerViewYaw",
     "actorScriptPushPlayerViewPitch",
-    "actorScriptTestItemResponseTypeThree",
+    "actorScriptTestTasteResponse",
     "actorScriptDestroyItem",
     "actorScriptFindInteractableItem",
     "actorScriptChooseEscapeFromPlayer",
@@ -4317,7 +4317,7 @@
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_messages_items.json",
-      "sha256": "ce766c32d3662f9facf1d48b27c08ce03342f567f77e01775fd98bac7891dee5"
+      "sha256": "38d8494877f872927714967e8eb527c82c321a85556ee981176259b001188c8d"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_player_world.json",
