@@ -4182,7 +4182,7 @@
     {
       "function": "actorScriptFadePrimaryOverlayBlend",
       "file": "src/ovl/actor_script_collection_profile.c",
-      "sha256": "61fb1bc05565b386e6c83a7de3d2c5750694462a87d31cdade80b093c4e701df",
+      "sha256": "94a9f9f8bca4c52b6c45ad4fa0edb2dc0ec754497fef0fe7405478246bf874af",
       "effect": "replace_arguments_with_scalar",
       "arguments": 5,
       "stack_delta": -4,

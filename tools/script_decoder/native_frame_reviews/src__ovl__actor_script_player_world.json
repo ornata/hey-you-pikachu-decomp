@@ -1235,7 +1235,7 @@
     {
       "function": "actorScriptCreateItem",
       "file": "src/ovl/actor_script_player_world.c",
-      "sha256": "9195cfb24302f94c8378c05c1823748e6a6f5cf36d4d6e504973c7e06fe940b2",
+      "sha256": "ed9f9d9a36752375aaffa32aa6537ec6a6ac63c90d59630cb31c2de00dae2786",
       "effect": "replace_arguments_with_scalar",
       "arguments": 6,
       "stack_delta": -5,
@@ -1401,7 +1401,7 @@
     {
       "function": "actorScriptCreateStationaryItem",
       "file": "src/ovl/actor_script_player_world.c",
-      "sha256": "07ccf87a49f52838b2818237c1f98604790d372324c9d776003957957e247bd6",
+      "sha256": "8e99b5bb1f8d0c483932951661f3e243c788e2d299daa3e26a61f1f1db2f5573",
       "effect": "replace_arguments_with_scalar",
       "arguments": 6,
       "stack_delta": -5,

@@ -517,20 +517,20 @@ s32 actorScriptSetDoorAccessState(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_80120458 (0x80120458).
 s32 actorScriptFadePrimaryOverlayBlend(u8 *actor) {
-    s32 sp_pop0;
-    f32 sp38;
+    s32 red;
+    f32 durationSeconds;
     s32 vmAddress;
-    s32 sp30;
-    s32 sp2C;
-    s32 sp28;
+    s32 green;
+    s32 blue;
+    s32 alpha;
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    sp38 = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    sp28 = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    sp2C = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    sp30 = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    sp_pop0 = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    cameraFadePrimaryOverlayBlend(sp_pop0, sp30, sp2C, sp28, sp38);
+    durationSeconds = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    alpha = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    blue = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    green = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    red = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    cameraFadePrimaryOverlayBlend(red, green, blue, alpha, durationSeconds);
     scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 0;
 }

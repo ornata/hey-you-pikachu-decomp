@@ -40,7 +40,8 @@ from .paired_flow import annotate_costed_caller_relations
 from .contacts import messenger_contact_policy_catalog, messenger_contact_requests
 from .motion_archives import motion_archive_catalog
 from .model_parts import pikachu_model_catalog
-from .callee_contexts import context_snapshot, literal_native_argument_contexts, contextual_timed_program_ids
+from .callee_contexts import context_snapshot, literal_native_argument_contexts, forwarded_native_argument_contexts, contextual_timed_program_ids
+from .native_arguments import annotate_native_input_roles
 
 
 def companion_sites(image):
@@ -225,6 +226,8 @@ def catalog(image, max_instructions=100000):
                              native_action_calls=actions,
                              literal_native_argument_contexts=(literal_native_argument_contexts(decoded['instructions'], snapshot=literal_context_snapshot)
                                                                if not decoded['diagnostics'] else []),
+                             forwarded_native_argument_contexts=(forwarded_native_argument_contexts(decoded['instructions'], configuration=candidate['address'], snapshot=literal_context_snapshot)
+                                                                 if not decoded['diagnostics'] else []),
                              messenger_contact_requests=messenger_contact_requests(decoded['instructions'], contact_policies),
                              costed_action_requests=costed_action_requests(decoded['instructions'], cost_policies['records'],
                                  preserved_natives=local_preservation['preserved_native_functions']),
@@ -243,6 +246,8 @@ def catalog(image, max_instructions=100000):
                              listing=identity + '.json'))
             annotate_costed_caller_relations(decoded['instructions'], rows[-1]['costed_action_requests'],
                                              cost_policies['records'], preserved_natives=local_preservation['preserved_native_functions'])
+            for field in ('literal_native_argument_contexts', 'forwarded_native_argument_contexts'):
+                annotate_native_input_roles(rows[-1][field], frame_reviews)
             decodes[identity] = decoded
     if not rows:
         raise ValueError('no configuration candidates found; a script census was not established')
@@ -323,7 +328,7 @@ def main(argv=None):
         report['elf_sha256'] = hashlib.sha256(args.elf.read_bytes()).hexdigest()
         report['decoder_sha256'] = hashlib.sha256(Path(__file__).with_name('formats.py').read_bytes()).hexdigest()
         report['analysis_sha256'] = {name: hashlib.sha256(Path(__file__).with_name(name + '.py').read_bytes()).hexdigest()
-                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames', 'control_schemes', 'windows', 'caller_frames', 'progress_fields', 'items', 'effects', 'transitions', 'responses', 'local_flow', 'paired_flow', 'contacts', 'motion_archives', 'model_parts', 'callee_contexts')}
+                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames', 'control_schemes', 'windows', 'caller_frames', 'progress_fields', 'items', 'effects', 'transitions', 'responses', 'local_flow', 'paired_flow', 'contacts', 'motion_archives', 'model_parts', 'callee_contexts', 'native_arguments')}
         report['native_frame_review_sha256'] = review_manifest_fingerprint()
         files = {'catalog.json': report, **{name + '.json': row for name, row in decodes.items()}}
         # Validate every output before writing any content, including existing symlinks.

@@ -7,7 +7,7 @@ import unittest
 from unittest.mock import patch
 from pathlib import Path
 
-from tools.script_decoder.model_parts import SOURCE_PINS, decode_template_hierarchy, source_bindings, pikachu_model_catalog
+from tools.script_decoder.model_parts import SOURCE_PINS, decode_template_hierarchy, source_bindings, pikachu_model_catalog, reference_part_roles, cap_appearance_contract
 
 
 def template(kind=38, sibling=0, child=0, gfx=0x0A001234, x=1.):
@@ -79,6 +79,39 @@ class ModelPartTests(unittest.TestCase):
              patch('tools.script_decoder.model_parts.ROM_SHA1', Image.sha1):
             with self.assertRaisesRegex(ValueError, 'configuration role'):
                 pikachu_model_catalog(Image())
+
+    def test_reference_callbacks_and_topology_fail_closed(self):
+        hooks = {
+            63: (62, (0x80015110, 0x80014E54, 0x800155E0, 0, 0, 0)),
+            66: (63, (0x80015110, 0x80014E54, 0x800155E0, 0, 0, 0)),
+            118: (43, (0x800139A8, 0x800086E0, 0, 0x800148E0, 0, 0)),
+            119: (39, (0x800139B0, 0x800086E0, 0, 0, 0, 0)),
+            121: (43, (0x80013848, 0x80013968, 0x800140F0, 0x800146DC, 0, 0)),
+        }
+        nodes = {kind: [dict(address=kind * 56, parent_address=parent * 56)]
+                 for kind, (parent, _) in hooks.items()}
+        for kind in (62, 43, 39):
+            nodes[kind] = [dict(address=kind * 56, parent_address=None)]
+        data = {0x80078140 + kind * 24: struct.pack('>6I', *values)
+                for kind, (_, values) in hooks.items()}
+        self.assertEqual(len(reference_part_roles(reader(data), nodes)), 5)
+        original = data[0x80078140 + 118 * 24]
+        data[0x80078140 + 118 * 24] = b'\0' * 24
+        with self.assertRaisesRegex(ValueError, 'callback binding'):
+            reference_part_roles(reader(data), nodes)
+        data[0x80078140 + 118 * 24] = original
+        nodes[118][0]['parent_address'] = nodes[39][0]['address']
+        with self.assertRaisesRegex(ValueError, 'topology'):
+            reference_part_roles(reader(data), nodes)
+
+    def test_cap_predicates_preserve_distinct_actor_scopes(self):
+        contract = cap_appearance_contract()
+        self.assertEqual(contract['carrier']['actor_scope'], 'carrier_own_hierarchy_root')
+        self.assertEqual(contract['held_item_visibility']['actor_scope'], 'global_primary_pikachu')
+        self.assertIn('resolved_item_kind_equals80', contract['carrier']['all_conditions'])
+        self.assertEqual(contract['released_item_scale']['condition'], 'item_ownership_still_equals2')
+        self.assertEqual(contract['released_item_scale']['otherwise'], 'no_scale_request')
+        self.assertEqual(contract['carrier']['selected_display_list_word'], 0x01049F80)
 
     def test_source_stale_fails_closed(self):
         with tempfile.TemporaryDirectory() as tmp:

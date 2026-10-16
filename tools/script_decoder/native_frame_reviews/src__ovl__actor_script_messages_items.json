@@ -1068,7 +1068,7 @@
     {
       "function": "actorScriptFindNearestInFacingCone",
       "file": "src/ovl/actor_script_messages_items.c",
-      "sha256": "8660c6941471cc6a468bcb01d880d085cdb76b8d904c63ac2d1962b48f02ea2e",
+      "sha256": "8a3e1bdb41ccdef3b1a68107c543f7e747ca1ced8ec8b4f3cb2cca4bb78d1e3a",
       "effect": "replace_arguments_with_scalar",
       "arguments": 4,
       "stack_delta": -3,
@@ -1118,7 +1118,7 @@
     {
       "function": "actorScriptFindItemInFacingCone",
       "file": "src/ovl/actor_script_messages_items.c",
-      "sha256": "de330679e001086ddf6da8ad52ac31f22a5c243caff12b840f587937ceecf82a",
+      "sha256": "e75f34264337661a0958a0e3828027ec53ed841b49ee52ceda710a0463ecb7eb",
       "effect": "replace_arguments_with_scalar",
       "arguments": 6,
       "stack_delta": -5,
@@ -1169,7 +1169,7 @@
     {
       "function": "actorScriptSetDestination",
       "file": "src/ovl/actor_script_messages_items.c",
-      "sha256": "6828d9fd98d88de59bcf0cae1c1c9ab5a023feabb76aca257ede95d1f665499c",
+      "sha256": "49bdaf268c62e6b17fc0604fd37d5667be0c5e7cc99245b30c4324fffe910003",
       "effect": "replace_arguments_with_scalar",
       "arguments": 4,
       "stack_delta": -3,

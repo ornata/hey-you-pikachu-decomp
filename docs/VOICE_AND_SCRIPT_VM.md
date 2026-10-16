@@ -2723,3 +2723,25 @@ read-only window per observed program address after poll 2000. Captures remain
 under the local runtime output directory. The comparison authenticates the ROM,
 ELF mappings, runtime ROM digest and captured-file digest, and reports every
 same-address candidate separately. A shorter shared prefix can remain ambiguous.
+
+### Forwarded native inputs and model references
+
+The catalog also records conditional forwarded native arguments separately from
+literal arguments. A caller-box capture denotes the complete boxed value at its
+original `LOAD_VARIABLE`, before `CALL`. It retains the caller configuration,
+instruction and frame/slot coordinates; these coordinates must not be read again
+in the callee frame. The current census contains 153 contexts in 18 configurations;
+101 reuse the same logical caller and callee frame index. Tags and values remain
+unknown until supplied by a valid runtime state. Indexed loads, arithmetic and
+native-produced values are outside this analysis. Storage, frame binding and
+preservation conditions remain explicit obligations.
+
+Source-bound argument roles label original push order for 16 reviewed natives.
+Integer/float labels identify their numeric pop operations, without asserting a
+converted result or a successful effect. In particular, destination allowance is
+not speed, and `PostMessage` synthesizes argument1 rather than consuming it.
+
+Model metadata now identifies five additional reference nodes and the held-cap
+carrier. Its actor-local held-item predicate and the cap item's global Pikachu
+visibility predicate are separate conditions, not a guarantee of coordinated
+rendering. Node identities do not establish anatomical names.

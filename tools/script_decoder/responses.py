@@ -335,7 +335,7 @@ def dispatch_branches(instructions, entry, *, frame=1, variable=0):
     return sorted(branches, key=lambda b: b['response_code'])
 
 
-def annotate_literal_native_contexts(instructions, graphs, *, root=ROOT, limit=256, validated_snapshot=None):
+def annotate_literal_native_contexts(instructions, graphs, *, root=ROOT, limit=256, validated_snapshot=None, _forward_configuration=None):
     """Link concrete constant caller actuals to a callee's first formal consumer.
 
     Only an exclusive linear prefix is admitted. Source-bound native preservation
@@ -344,9 +344,11 @@ def annotate_literal_native_contexts(instructions, graphs, *, root=ROOT, limit=2
     """
     if type(limit) is not int or limit <= 0:
         raise ValueError('context prefix work budget must be a positive integer')
+    context_key = ('conditional_native_argument_context' if _forward_configuration is None
+                   else 'conditional_forwarded_native_argument_context')
     for graph in graphs:
         for edge in graph['script_calls']:
-            edge.pop('conditional_native_argument_context', None)
+            edge.pop(context_key, None)
     if validated_snapshot is None:
         reviews = native_frame_reviews(root)
         preservation = local_preservation_contracts(reviews, root)
@@ -408,12 +410,35 @@ def annotate_literal_native_contexts(instructions, graphs, *, root=ROOT, limit=2
         if any(type(v)is not int for v in(argc,count,frame)) or not 0<argc<=count<=2147483645 or not 1<=frame<32:
             raise ValueError('context has an unsupported callee frame contract')
         actual=arguments(call,argc)
-        if len(actual)!=argc or not all(constant(v)for v in actual):
-            raise ValueError('context actuals are not bounded numeric constants')
+        def load_actual(value):
+            return (value.get('kind')=='variable' and type(value.get('frame')) is int and
+                    -1<=value['frame']<32 and type(value.get('slot')) is int and
+                    0<=value['slot']<=2147483647)
+        forwarded = _forward_configuration is not None
+        if len(actual)!=argc or not all(constant(v) or (forwarded and load_actual(v)) for v in actual):
+            raise ValueError('context actuals are not admitted constants or direct loads')
+        if forwarded and not any(load_actual(v) for v in actual):
+            raise ValueError('forwarded context has no direct LOAD actual')
         # Retain exact literal boxing rather than retagging code references.
         cursor=indices[call['offset']]-1;boxed=[]
         for value in reversed(actual):
             chain=[];negated=False
+            if forwarded and load_actual(value):
+                if cursor < 0:
+                    raise ValueError('forwarded LOAD producer is missing')
+                producer=instructions[cursor]
+                if producer['name']!='SCRIPT_OP_LOAD_VARIABLE' or len(producer['operands'])!=2:
+                    raise ValueError('forwarded actual is not one direct LOAD')
+                coords=[integer_operand(v) for v in producer['operands']]
+                if coords != [value['frame'], value['slot']]:
+                    raise ValueError('forwarded LOAD source disagrees with recovered coordinates')
+                boxed.append(dict(output_tag=None,raw_load_operands=producer['operands'],
+                    caller_origin=dict(configuration=_forward_configuration,call_offset=call['offset'],
+                        epoch='caller_before_CALL',load_instruction_offset=producer['offset'],
+                        capture='Boxed bytes captured when this LOAD executes; never re-read under callee bindings.'),
+                    producer_instructions=[dict(instruction_offset=producer['offset'],name=producer['name'],operands=producer['operands'])]))
+                cursor-=1
+                continue
             if cursor < 0:
                 raise ValueError('context literal producer is missing')
             if instructions[cursor]['name']=='SCRIPT_OP_NEGATE':
@@ -433,6 +458,10 @@ def annotate_literal_native_contexts(instructions, graphs, *, root=ROOT, limit=2
                 output_tag=(1 if value['kind']=='float' else 0) if negated else raw_operand['tag'],
                 producer_instructions=[dict(instruction_offset=r['offset'],name=r['name'],operands=r['operands']) for r in reversed(chain)]))
         boxed.reverse()
+        if forwarded:
+            actual=[dict(kind='caller_box_capture',source_reference=value,
+                         caller_origin=proof['caller_origin'],output_tag=None)
+                    if load_actual(value) else value for value,proof in zip(actual,boxed)]
         prefix=[entry];native_pins={};previous=header
         for _ in range(limit):
             successors=previous.get('successors',[])
@@ -460,7 +489,7 @@ def annotate_literal_native_contexts(instructions, graphs, *, root=ROOT, limit=2
                     names=CONTRACTS.get(function,{}).get('arguments')
                     if names is not None and len(names) != arity:
                         raise ValueError('consumer argument names disagree with current source arity')
-                    return dict(status='conditional_literal_actual_context',caller_offset=call['offset'],callee_entry=entry,
+                    return dict(status='conditional_forwarded_actual_context' if forwarded else 'conditional_literal_actual_context',caller_offset=call['offset'],callee_entry=entry,
                         frame_index=frame,argument_count=argc,local_count=count,caller_actuals=actual,caller_actual_boxing=boxed,vm_implementation_binding=vm_contract,
                         call_operands=call['operands'],callee_header_operands=header['operands'],
                         caller_producer_window=[dict(instruction_offset=r['offset'],name=r['name'],operands=r['operands']) for r in instructions[max(0,indices[call['offset']]-32):indices[call['offset']]]],
@@ -476,7 +505,8 @@ def annotate_literal_native_contexts(instructions, graphs, *, root=ROOT, limit=2
                             'Program/VM/owner/frame bindings remain stable, with no asynchronous mutation; every intervening native and original SDK prerequisite applies.',
                             'The consumer review input-conversion, object/resource and operand prerequisites remain obligations; contextual values are boxed input expressions, not converted results or proof of validity.',
                             'This potentially reachable syntactic call context only; no enclosing predicate feasibility, native outcome, later helper execution, restoration, callbacks or scheduler safety is established.'],
-                        scope='Only this constant-actual callsite to the first unchanged-formal native consumer. Raw shared formal expressions are retained; no global substitution or runtime value inference.')
+                        scope=('Only this callsite captured direct-LOAD actuals and literal companions to the first unchanged-formal native consumer; no consumer-time re-read, global substitution, predicate feasibility or native outcome.' if forwarded else
+                               'Only this constant-actual callsite to the first unchanged-formal native consumer. Raw shared formal expressions are retained; no global substitution or runtime value inference.'))
                 if function not in admitted:
                     raise ValueError('context prefix native lacks exact preservation pin')
                 native_pins[function]=preservation['native_review_sha256'][function]
@@ -499,7 +529,11 @@ def annotate_literal_native_contexts(instructions, graphs, *, root=ROOT, limit=2
                 context=prove(edge)
             except (ValueError,KeyError,IndexError,TypeError,OverflowError):
                 continue
-            edge['conditional_native_argument_context']=context
+            if _forward_configuration is not None:
+                context['preconditions'] = context['preconditions'] + [
+                    'Each LOAD source cell is valid in its caller-time root/local/global binding and physically disjoint from the entire producer operand scratch, reused argument cells, additional locals and saved frame metadata; all absolute addresses and complete five-byte cells are allocated and nonwrapping.',
+                    'A caller_box_capture denotes the boxed bytes read at its exact LOAD instruction, before CALL and ENTER_FRAME rebinding; its unknown runtime tag/value and consumer conversion/handle/resource validity are not inferred.']
+            edge[context_key]=context
 
 
 def contextual_program_ids(graphs):
@@ -598,3 +632,13 @@ def item_response_dispatch(image, configurations, decodes, arities=None):
                                    scope='Wrapper tests this conjunction before ordinary dispatch; helper effects remain conditional.'),
                 unresolved_response_codes=[dict(response_code=code, reason='Authored item-table value; handling beyond the reviewed 1..20 dispatcher is unresolved.') for code in (24, 25)],
                 code_domain_note='Absence of 21..23 in this dispatcher is not a global invalidity claim.')
+
+
+def annotate_forwarded_native_contexts(instructions, graphs, *, configuration, root=ROOT,
+                                       limit=256, validated_snapshot=None):
+    """Attach conditional caller-time LOAD captures separately from literal rows."""
+    if type(configuration) is not int or not 0 <= configuration <= 0xFFFFFFFF:
+        raise ValueError('forwarded context requires a target configuration address')
+    annotate_literal_native_contexts(instructions, graphs, root=root, limit=limit,
+                                    validated_snapshot=validated_snapshot,
+                                    _forward_configuration=configuration)

@@ -1567,12 +1567,12 @@
     "file:src/ovl/actor_script_collection_profile.c": {
       "kind": "file",
       "file": "src/ovl/actor_script_collection_profile.c",
-      "sha256": "ee390d5cc863ddbbd7dbf32071adfae62d56179ee601fb52834a6f4eebaec495"
+      "sha256": "1aaabc5e2adde42bdb3bb064b4c4f67b0696fce1e3bcd65d75da3834b8c6d24a"
     },
     "file:src/ovl/actor_script_messages_items.c": {
       "kind": "file",
       "file": "src/ovl/actor_script_messages_items.c",
-      "sha256": "c0d8bfc539af353c04feb5965544c07ee81f48232cbebba5c63ebfdfc84197a9"
+      "sha256": "f145adc6dbabfb2aa62ef0458907241230d00851fce2e7ef6e0f7152cf8328bd"
     },
     "file:src/ovl/actor_script_queries.c": {
       "kind": "file",
@@ -4313,15 +4313,15 @@
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_collection_profile.json",
-      "sha256": "221d1374a3cb0ce9af750b26721050dc76d541e5a747e2a0821d715b89f2b47a"
+      "sha256": "189bfe5178bbaf5c1e2c704557f11ca0f75a82bd66d95522a6a2058ccadebc85"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_messages_items.json",
-      "sha256": "f71f74d29d9efdd244bd78ead06c8ee3d33adfc712025f0d94e2f6be4374e480"
+      "sha256": "0f1d716364f29a5636965f414abe45b756ca0f2144cae17527da9ec545b78ec8"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_player_world.json",
-      "sha256": "9002950d94bdea421505242e30226ecb6d44b98a9cc03efaf4fac13c50525dce"
+      "sha256": "331ab17fe11e709b17beaa4fe08ae2443941237e0501cd5b5a1483f84785f397"
     },
     {
       "file": "native_frame_reviews/src__ovl__script_demo_item_commands.json",

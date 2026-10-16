@@ -853,23 +853,23 @@ s32 actorScriptPushPikachuActionResource(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011F274 (0x8011F274).
 s32 actorScriptCreateItem(u8 *actor) {
-    f32 sp_pop;
+    f32 x;
     s32 vmAddress;
-    f32 sp3C;
-    f32 sp38;
-    f32 sp34;
-    f32 sp30;
-    s32 sp2C;
+    f32 y;
+    f32 z;
+    f32 pitchDegrees;
+    f32 yawDegrees;
+    s32 itemKind;
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    sp2C = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    sp30 = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    sp34 = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    sp38 = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    sp3C = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    sp_pop = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    itemKind = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    yawDegrees = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    pitchDegrees = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    z = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    y = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    x = scriptVmPopFloat((ScriptVm *)(vmAddress));
     scriptVmPushInteger((ScriptVm *)(vmAddress),
-                        ((RuntimeObjectPrefix *)itemCreate(sp_pop, sp3C, sp38, sp34, sp30, sp2C))->handle);
+                        ((RuntimeObjectPrefix *)itemCreate(x, y, z, pitchDegrees, yawDegrees, itemKind))->handle);
     return 0;
 }
 
@@ -878,27 +878,27 @@ s32 actorScriptCreateItem(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011F310 (0x8011F310).
 s32 actorScriptCreateStationaryItem(u8 *actor) {
-    f32 sp_pop;
+    f32 x;
     s32 vmAddress;
-    f32 sp3C;
-    f32 sp38;
-    f32 sp34;
-    f32 sp30;
-    s32 sp2C;
-    u8 *sp28;
+    f32 y;
+    f32 z;
+    f32 pitchDegrees;
+    f32 yawDegrees;
+    s32 itemKind;
+    u8 *resultItem;
     u8 *createdItem;
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    sp2C = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    sp30 = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    sp34 = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    sp38 = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    sp3C = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    sp_pop = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    createdItem = itemCreate(sp_pop, sp3C, sp38, sp34, sp30, sp2C);
-    sp28 = createdItem;
+    itemKind = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    yawDegrees = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    pitchDegrees = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    z = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    y = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    x = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    createdItem = itemCreate(x, y, z, pitchDegrees, yawDegrees, itemKind);
+    resultItem = createdItem;
     itemSetMode(createdItem, ITEM_MODE_STATIONARY);
-    scriptVmPushInteger((ScriptVm *)(vmAddress), ((RuntimeObjectPrefix *)sp28)->handle);
+    scriptVmPushInteger((ScriptVm *)(vmAddress), ((RuntimeObjectPrefix *)resultItem)->handle);
     return 0;
 }
 

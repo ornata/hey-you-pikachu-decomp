@@ -183,18 +183,19 @@ s32 actorScriptCreateAttachedEffect(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011CA80 (0x8011CA80).
 s32 actorScriptFindNearestInFacingCone(u8 *actor) {
-    s32 sp_pop;
+    s32 minimumKind;
     s32 vmAddress;
-    s32 sp34;
-    f32 sp30;
-    f32 sp2C;
+    s32 maximumKind;
+    f32 distanceLimit;
+    f32 coneAngleDegrees;
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    sp2C = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    sp30 = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    sp34 = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    sp_pop = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    scriptVmPushInteger((ScriptVm *)(vmAddress), actorFindNearestHandleInFacingCone(actor, sp_pop, sp34, sp30, sp2C));
+    coneAngleDegrees = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    distanceLimit = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    maximumKind = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    minimumKind = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    scriptVmPushInteger((ScriptVm *)(vmAddress), actorFindNearestHandleInFacingCone(actor, minimumKind, maximumKind,
+                                                                                    distanceLimit, coneAngleDegrees));
     return 0;
 }
 
@@ -901,23 +902,24 @@ s32 actorScriptSquareRoot(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011D958 (0x8011D958).
 s32 actorScriptFindItemInFacingCone(u8 *actor) {
-    s32 sp_pop;
+    s32 minimumKind;
     s32 vmAddress;
-    s32 sp44;
-    f32 sp40;
-    f32 sp3C;
-    s32 sp38;
-    s32 sp34;
+    s32 maximumKind;
+    f32 distanceLimit;
+    f32 coneAngleDegrees;
+    s32 itemStateFilter;
+    s32 weightedPreference;
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    sp34 = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    sp38 = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    sp3C = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    sp40 = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    sp44 = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    sp_pop = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    weightedPreference = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    itemStateFilter = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    coneAngleDegrees = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    distanceLimit = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    maximumKind = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    minimumKind = scriptVmPopInteger((ScriptVm *)(vmAddress));
     scriptVmPushInteger((ScriptVm *)(vmAddress),
-                        actorFindItemHandleInFacingCone(actor, sp40, sp3C, sp_pop, sp44, sp38, sp34));
+                        actorFindItemHandleInFacingCone(actor, distanceLimit, coneAngleDegrees, minimumKind,
+                                                        maximumKind, itemStateFilter, weightedPreference));
     return 0;
 }
 
@@ -926,19 +928,19 @@ s32 actorScriptFindItemInFacingCone(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011DA00 (0x8011DA00).
 s32 actorScriptSetDestination(u8 *actor) {
-    f32 pos[3];
-    f32 speed;
-    s32 vm;
+    f32 position[3];
+    f32 distanceAllowance;
+    s32 vmAddress;
 
-    vm = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    speed = scriptVmPopFloat((ScriptVm *)(vm));
-    pos[2] = scriptVmPopFloat((ScriptVm *)(vm));
-    pos[1] = scriptVmPopFloat((ScriptVm *)(vm));
-    pos[0] = scriptVmPopFloat((ScriptVm *)(vm));
-    actorSetTargetPosition(actor, pos);
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    distanceAllowance = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    position[2] = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    position[1] = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    position[0] = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    actorSetTargetPosition(actor, position);
     ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetMode = ACTOR_TARGET_FIXED;
-    ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetDistanceAllowance = speed;
-    scriptVmPushInteger((ScriptVm *)(vm), 0);
+    ((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->targetDistanceAllowance = distanceAllowance;
+    scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 0;
 }
 
