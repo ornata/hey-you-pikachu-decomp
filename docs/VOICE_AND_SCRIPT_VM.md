@@ -1051,6 +1051,23 @@ Unknown or indirect writers, unreviewed calls and incomplete assignment paths
 retain an unresolved local-domain result. This is not a whole-program frame or
 scheduler preservation proof.
 
+The shared two-argument action helper has its own dispatch mode, separate from a
+cue-selection tag. Its costed-action branch consumes the first argument as a cost
+selector only when the copied second argument equals six. Some callers obtain the
+first argument from a producer that also updates a borrowed mode variable. Its
+return value must therefore be interpreted together with that mode: mode six
+pairs only with selectors zero/one/two, while other modes can pair with timed
+program identifiers or the no-action sentinel.
+
+`conditional_caller_policy_relations` retains this relationship per caller,
+including producer returns, mode writes, the consumer guard and intervening
+preservation evidence. It does not replace the shared formal selector or declare
+all callers resolved. A missing mode write, an overwritten argument, an unknown
+call or incomplete producer return prevents that caller relation. Physical frame
+separation, stable program/VM bindings and the full listed native prerequisites
+remain conditions, including across waits. These pairs describe static returning
+paths; they do not prove a particular branch executes or a cost policy succeeds.
+
 Throw and acquisition requests also expose their timed-program operands in
 `native_action_calls`. Throw consumes one program operand when its deferred
 handler initializes. A zero held handle produces minus one; a nonzero handle
@@ -2007,12 +2024,15 @@ flowchart LR
 ```
 
 The catalog's `native_action_calls` records arguments and scheduling contracts
-for six reviewed commands. Arguments below are listed in script push order.
+for reviewed commands. Arguments below are listed in script push order.
 
 | Native command | Arguments | Consumption and result |
 | --- | --- | --- |
 | `actorScriptStartActionAndWait` | Timed-program ID | Deferred; wait for sequencing to stop, then receive zero. |
 | `actorScriptStartInterruptibleAction` | Timed-program ID | Deferred; wait for sequencing to stop or a message, then receive zero or the pending flag. |
+| `actorScriptStartHeldItemThrow` | Timed-program ID | Deferred; minus one for a zero held handle, otherwise zero when sequencing stops. |
+| `actorScriptStartItemAcquisition` | Timed-program ID, kind filter, range | Deferred; receive the held kind or zero; existing handles can complete before playback. |
+| `actorScriptStartEatingHeldItem` | Timed-program ID | Deferred; rejected/missing gives minus one, otherwise the pre-consumption player-pickup history. |
 | `actorScriptStartActionScript` | Timed-program ID | Immediate; receive zero and yield. |
 | `actorScriptStartActionWithMode` | Timed-program ID, default kind | Immediate; receive zero and yield. |
 | `actorScriptStartTimedAction` | Timed-program ID, duration in seconds | Immediate; receive zero and yield; negative duration disables the limit. |
@@ -2023,25 +2043,31 @@ initialization update. The mode-setting interface requires a value representable
 in the original signed 16-bit storage; its retained numeric conversions remain
 unchanged. A VM scheduling result is separate from the value returned on its stack.
 
-All 5,383 calls in the census (3,974 distinct code/offset sites) have bounded
-argument expressions. Recovery retains script-return expressions with arity from
-the target's frame-entry contract, indexed array reads, and random-choice results
-with known index ranges. These are structural expressions: callee behavior, array
-contents and returning-path feasibility remain unproven where not established.
-Variable references remain coordinates rather than inferred constants. Original
-VM arithmetic semantics remain explicit for symbolic additions. The 4,249
-constant-ID requests resolve to 287 distinct timed programs.
-`action_script_resources` contains their bounded END-terminated streams, hashes,
-motion requests and retained motion debug labels. All 287 decode without diagnostics.
-The program table's linked extent bounds reads; it does not establish a complete
-resource allocation or prove the requested paths execute.
+The requested/default/selected action kind is a cue-program selection tag. It is
+independent of the motion-action identifier, timed-program identifier and
+`MotionPlaybackMode` chosen from the action attributes. Zero is a valid cue tag;
+inactive request state is represented separately. Timed-command kind eighteen
+substitutes the current default once. If that default is itself eighteen, cue
+selection receives eighteen and treats its supplied resource as a direct program.
+Otherwise cue selection chooses the first matching tag or fallback eighteen in
+resource order, so an earlier fallback can shadow a later exact match. Ordinary
+tag values retain their numbers where their broader meanings remain unresolved.
+
+The census retains bounded argument expressions, including script-return values
+with arity from the target's frame-entry contract, indexed array reads and random
+choices. These are structural expressions: callee behavior, array contents and
+returning-path feasibility remain unproven where not established. Variable
+references retain their coordinates, and symbolic arithmetic retains the original
+VM semantics. Literal program requests and supported producer summaries contribute
+to `action_script_resources`, whose rows contain bounded streams, hashes, motion
+requests, motion debug labels and any decoding diagnostics. The program table's
+linked extent bounds reads; it does not establish a complete resource allocation
+or prove that requested paths execute.
 
 The catalog also summarizes functions whose return values select timed programs.
 It follows branches and returning call continuations without entering callees.
-All 18 producer summaries have complete static integer return domains. A complete
-domain bounds values on the
-decoded returning paths, without proving termination, path feasibility or native
-side effects. These domains supplement literal requests in the resource census.
+A complete static integer return domain bounds values on decoded returning
+paths, without proving termination, path feasibility or native side effects. These domains supplement literal requests in the resource census.
 
 One recovered result is `ACTION_SCRIPT_NO_PROGRAM` (-1). This selects no timed
 commands while preserving independent motion playback. It is distinct from

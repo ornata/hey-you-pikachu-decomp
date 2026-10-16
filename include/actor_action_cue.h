@@ -66,11 +66,11 @@ typedef char ActorActionCueArgumentsOffsetCheck[(((u32) & ((ActorActionCueComman
 /// \note Original decompilation identifier: \c func_80024DD0 (0x80024DD0).
 void actorUpdateActionScript(u8 *actor, ActorActionCueCommand **nextCommand, f32 *clock);
 
-/// Select an action script for the actor's current action state.
-/// \param actor Actor whose action state selects the script.
-/// \param list Borrowed script pointer for action state 18, otherwise a nullable tagged collection terminated by tag 49; it must remain valid during playback.
+/// Select the cue program for the actor's selected action kind.
+/// \param actor Actor whose selected cue tag chooses the program.
+/// \param list Borrowed direct program for cue kind eighteen, otherwise a nullable ordered tagged collection terminated by tag forty-nine; it must remain valid during playback.
 /// \param unusedFlag Legacy flag that does not affect the selection.
-/// \returns A borrowed selected script, the supplied list when no state selection is needed, or null if no script matches.
+/// \returns The first matching-tag or fallback program, the supplied direct program for kind eighteen, or null when no program matches.
 /// \note Original decompilation identifier: \c func_80024F9C (0x80024F9C).
 ActorActionCueCommand *actorSelectActionScript(u8 *actor, ActorActionCueCommand *list, s32 unusedFlag);
 

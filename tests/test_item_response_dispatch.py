@@ -301,5 +301,120 @@ class LocalSelectorFlowTests(unittest.TestCase):
                 self.assertEqual(local_preservation_contracts(reviews, root)['preserved_native_functions'], [])
 
 
+class PairedSelectorFlowTests(unittest.TestCase):
+    def fixture(self, extras=()):
+        root = frame(0, 1)
+        root['operands'][1:] = [operand(10), operand(0)]
+        producer = [frame(100, 101),
+            row(101, 'JUMP_IF_ZERO', [operand(110, 2)], [('fallthrough', 102), ('branch', 110)]),
+            row(102, 'PUSH_LITERAL', [operand(6)], [('fallthrough', 103)]),
+            row(103, 'STORE_VARIABLE', [operand(0), operand(3)], [('fallthrough', 104)]),
+            row(104, 'PUSH_LITERAL', [operand(1)], [('fallthrough', 105)]), row(105, 'RETURN'),
+            row(110, 'PUSH_LITERAL', [operand(1)], [('fallthrough', 111)]),
+            row(111, 'STORE_VARIABLE', [operand(0), operand(3)], [('fallthrough', 112)]),
+            row(112, 'PUSH_LITERAL', [operand(99)], [('fallthrough', 113)]), row(113, 'RETURN')]
+        specs = [('CALL', [operand(100, 2)]), ('STORE_VARIABLE', [operand(1), operand(0)]),
+                 *extras, ('LOAD_VARIABLE', [operand(1), operand(0)]),
+                 ('LOAD_VARIABLE', [operand(0), operand(3)]), ('CALL', [operand(300, 2)]),
+                 ('DISCARD', []), ('PUSH_LITERAL', [operand(0)]), ('RETURN', [])]
+        caller = [frame(200, 201)]
+        caller[0]['operands'][1] = operand(1)
+        for off, (name, operands) in enumerate(specs, 201):
+            successors = [] if name == 'RETURN' else [('fallthrough', off+1)]
+            if name == 'CALL':
+                successors = [('return_continuation', off+1), ('call', operands[0]['value'])]
+            caller.append(row(off, name, operands, successors))
+        consumer = [frame(300, 301, 2),
+            row(301, 'LOAD_VARIABLE', [operand(1), operand(1)], [('fallthrough', 302)]),
+            row(302, 'PUSH_LITERAL', [operand(6)], [('fallthrough', 303)]),
+            row(303, 'EQUAL', successors=[('fallthrough', 304)]),
+            row(304, 'JUMP_IF_ZERO', [operand(310, 2)], [('fallthrough', 305), ('branch', 310)]),
+            row(305, 'LOAD_VARIABLE', [operand(1), operand(0)], [('fallthrough', 306)]),
+            row(306, 'PUSH_LITERAL', [operand(1)], [('fallthrough', 307)]),
+            row(307, 'CALL_NATIVE', successors=[('resume_or_fallthrough', 308)], native=dict(functions=['actorScriptStartCostedAction'])),
+            row(308, 'DISCARD', successors=[('fallthrough', 309)]),
+            row(309, 'JUMP', [operand(310, 2)], [('branch', 310)]),
+            row(310, 'PUSH_LITERAL', [operand(0)], [('fallthrough', 311)]), row(311, 'RETURN')]
+        request = dict(instruction_offset=307, arguments=dict(cost_selector=dict(kind='variable', frame=1, slot=0),
+                       repetitions=dict(kind='integer', value=1)), cost_policy_link=dict(status='unresolved_selector'))
+        return [root, row(1, 'FINISH'), *producer, *caller, *consumer], request
+
+    def analyze(self, instructions, request):
+        from tools.script_decoder.paired_flow import annotate_costed_caller_relations
+        policies = cost_policy_records(b''.join(struct.pack('>iifi', 300+i, 400+i, 1.0, 1) for i in range(5)))
+        annotate_costed_caller_relations(instructions, [request], policies)
+        return request.get('conditional_caller_policy_relations', [])
+
+    def test_mode_return_pair_excludes_timed_ids_without_resolving_shared_formal(self):
+        instructions, request = self.fixture()
+        relations = self.analyze(instructions, request)
+        self.assertEqual(relations[0]['status'], 'conditional_paired_caller_relation')
+        self.assertEqual(relations[0]['conditional_cost_selectors'], [1])
+        pairs = relations[0]['producer_relations'][0]['mode_return_pairs']
+        self.assertIn(dict(mode=1, return_value=99, return_offset=113), pairs)
+        self.assertEqual(request['cost_policy_link']['status'], 'unresolved_selector')
+        self.assertFalse(request['universal_policy_domain_established'])
+        self.assertEqual(request['consumer_mode_guard']['required_mode'], 6)
+
+    def test_missing_mode_definition_and_ambiguous_dispatch_fail(self):
+        instructions, request = self.fixture()
+        next(r for r in instructions if r['offset']==111)['name'] = 'SCRIPT_OP_DISCARD'
+        self.assertEqual(self.analyze(instructions, request)[0]['status'], 'unresolved_caller_relation')
+        instructions, request = self.fixture()
+        next(r for r in instructions if r['offset']==302)['operands'] = [operand(5)]
+        self.assertEqual(self.analyze(instructions, request), [])
+        self.assertIn('mode6 guard', request['caller_relation_diagnostics'][0])
+
+    def test_unknown_consumer_or_producer_native_clobber_fails(self):
+        for entry, injected, following in ((300, 320, 301), (100, 120, 101)):
+            instructions, request = self.fixture()
+            next(r for r in instructions if r['offset']==entry)['successors'] = [dict(kind='fallthrough', offset=injected)]
+            instructions.append(row(injected, 'CALL_NATIVE', successors=[('resume_or_fallthrough', following)]))
+            relations = self.analyze(instructions, request)
+            if entry == 300:
+                self.assertEqual(relations, [])
+                self.assertIn('frozen preservation', request['caller_relation_diagnostics'][0])
+            else:
+                self.assertEqual(relations[0]['status'], 'unresolved_caller_relation')
+                self.assertIn('frozen preservation', relations[0]['reason'])
+
+    def test_consumer_formal_and_indirect_writes_are_rejected_even_after_guard(self):
+        for name, operands in [('STORE_VARIABLE', [operand(1), operand(0)]),
+                               ('STORE_VARIABLE', [operand(1), operand(1)]),
+                               ('STORE_ELEMENT', [operand(1), operand(0)]),
+                               ('UNMODELED_EFFECT', [])]:
+            instructions, request = self.fixture()
+            row_to_change = next(r for r in instructions if r['offset']==305)
+            row_to_change['name'] = 'SCRIPT_OP_' + name
+            row_to_change['operands'] = operands
+            self.assertEqual(self.analyze(instructions, request), [])
+            self.assertIn('caller_relation_diagnostics', request)
+
+    def test_intervening_mode_or_result_writer_fails(self):
+        for coords in ([0,3], [1,0]):
+            instructions, request = self.fixture([('PUSH_LITERAL', [operand(2)]),
+                                                  ('STORE_VARIABLE', [operand(v) for v in coords])])
+            self.assertEqual(self.analyze(instructions, request)[0]['status'], 'unresolved_caller_relation')
+
+    def test_script_clobber_and_other_caller_prevent_universal_claim(self):
+        instructions, request = self.fixture([('CALL', [operand(450, 2)])])
+        bad = frame(450, 451)
+        bad['operands'][1:] = [operand(1), operand(2)]
+        instructions.extend([bad, row(451, 'PUSH_LITERAL', [operand(2)], [('fallthrough', 452)]),
+            row(452, 'STORE_VARIABLE', [operand(1), operand(0)], [('fallthrough', 453)]),
+            row(453, 'PUSH_LITERAL', [operand(0)], [('fallthrough', 454)]), row(454, 'RETURN')])
+        self.assertEqual(self.analyze(instructions, request)[0]['status'], 'unresolved_caller_relation')
+        instructions, request = self.fixture()
+        other = frame(400, 401)
+        other['operands'][1] = operand(1)
+        instructions.extend([other, row(401, 'LOAD_VARIABLE', [operand(1), operand(0)], [('fallthrough', 402)]),
+            row(402, 'LOAD_VARIABLE', [operand(0), operand(3)], [('fallthrough', 403)]),
+            row(403, 'CALL', [operand(300, 2)], [('return_continuation', 404), ('call', 300)]),
+            row(404, 'PUSH_LITERAL', [operand(0)], [('fallthrough', 405)]), row(405, 'RETURN')])
+        relations = self.analyze(instructions, request)
+        self.assertEqual([r['status'] for r in relations], ['conditional_paired_caller_relation', 'unresolved_caller_relation'])
+        self.assertFalse(request['universal_policy_domain_established'])
+
+
 if __name__ == '__main__':
     unittest.main()

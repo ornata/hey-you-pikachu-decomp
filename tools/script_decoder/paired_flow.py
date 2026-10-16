@@ -1,0 +1,352 @@
+"""Conditional producer return/mode relations for specific bytecode callers.
+
+A shared formal argument remains unresolved. Relations preserve the pair of a
+borrowed mode value and returned integer; timed-program returns are never folded
+into cost selectors merely because they share a producer.
+"""
+
+from .formats import integer_operand
+from .functions import function_summary
+from .local_flow import KNOWN_OPERATIONS
+from .stack import incoming_edges, recover_arguments
+
+
+def annotate_costed_caller_relations(instructions, requests, policies, *, preserved_natives=(), limit=30000):
+    """Attach bounded caller-specific evidence without substituting shared formals."""
+    by = {r['offset']: r for r in instructions}
+    indices = {r['offset']: i for i, r in enumerate(instructions)}
+    frames = {off: r for off, r in by.items() if r['name'] == 'SCRIPT_OP_ENTER_FRAME'}
+    incoming = incoming_edges(instructions)
+    predecessors = {}
+    for row in instructions:
+        for edge in row.get('successors', []):
+            if edge['kind'] != 'call':
+                predecessors.setdefault(edge['offset'], set()).add(row['offset'])
+    preserved_natives = set(preserved_natives)
+    root_frames = [r for r in frames.values() if integer_operand(r['operands'][2]) == 0]
+    root_extent = None
+    if len(root_frames) == 1 and root_frames[0]['offset'] == 0 and integer_operand(root_frames[0]['operands'][0]) == 0:
+        root_extent = integer_operand(root_frames[0]['operands'][1])
+    work = 0
+
+    def charge():
+        nonlocal work
+        work += 1
+        if work > limit:
+            raise ValueError('paired-flow work budget exhausted')
+
+    def successors(row):
+        return [e['offset'] for e in row.get('successors', []) if e['kind'] != 'call']
+
+    def arguments(row, count):
+        return recover_arguments(instructions, indices[row['offset']], count,
+                                 incoming=incoming, allow_float=True, allow_symbolic=True, frame_entries=frames)
+
+    def owner(target):
+        pending, seen, owners = [target], set(), set()
+        while pending:
+            off = pending.pop()
+            if off in seen:
+                continue
+            charge()
+            seen.add(off)
+            row = by[off]
+            if row['name'] == 'SCRIPT_OP_ENTER_FRAME':
+                owners.add(off)
+            else:
+                if not predecessors.get(off):
+                    raise ValueError('unframed caller path')
+                pending.extend(predecessors[off])
+        if len(owners) != 1:
+            raise ValueError('ambiguous caller frame entry')
+        return owners.pop()
+
+    def frame_contract(entry):
+        row = frames.get(entry)
+        if row is None:
+            raise ValueError('missing called frame entry')
+        count, local_count, frame = map(integer_operand, row['operands'])
+        if count is None or local_count is None or frame is None or not 0 <= count <= local_count or not 1 <= frame < 32:
+            raise ValueError('invalid called frame contract')
+        return count, local_count, frame
+
+    def body(entry):
+        pending, seen = [entry], set()
+        while pending:
+            off = pending.pop()
+            if off in seen:
+                continue
+            charge()
+            seen.add(off)
+            row = by.get(off)
+            if row is None or row['name'] not in KNOWN_OPERATIONS:
+                raise ValueError('missing or unknown instruction effect')
+            if off != entry and row['name'] == 'SCRIPT_OP_ENTER_FRAME':
+                raise ValueError('flow enters a competing frame')
+            if row['name'] == 'SCRIPT_OP_RETURN':
+                continue
+            if row['name'] == 'SCRIPT_OP_FINISH':
+                raise ValueError('called function can finish without a balanced return')
+            if not successors(row):
+                raise ValueError('missing called-function continuation')
+            pending.extend(successors(row))
+        return seen
+
+    def native_safe(row):
+        names = row.get('native', {}).get('functions', [])
+        if len(names) != 1 or names[0] not in preserved_natives:
+            raise ValueError(f"{row['offset']}: native lacks a frozen preservation review")
+        return names[0]
+
+    def root_slot(coordinates):
+        return (coordinates[0] == 0 and root_extent is not None and
+                0 <= coordinates[1] < root_extent)
+
+    def coordinates(row):
+        values = tuple(integer_operand(v) for v in row['operands'])
+        if len(values) != 2 or None in values:
+            raise ValueError('unresolved variable coordinates')
+        return values
+
+    helper_cache = {}
+    def preserve_helper(entry, mode, active=()):
+        key = entry, mode
+        if key in helper_cache:
+            return helper_cache[key]
+        if entry in active:
+            raise ValueError('recursive intervening helper')
+        _, count, frame = frame_contract(entry)
+        offsets = body(entry)
+        writes, natives, callees = [], set(), set()
+        for off in sorted(offsets):
+            row = by[off]
+            if row['name'] == 'SCRIPT_OP_STORE_ELEMENT':
+                raise ValueError('intervening helper has an indirect writer')
+            if row['name'] == 'SCRIPT_OP_STORE_VARIABLE':
+                coords = coordinates(row)
+                if coords == mode:
+                    raise ValueError('intervening helper writes the paired mode')
+                if not (coords[0] == frame and 0 <= coords[1] < count or root_slot(coords)):
+                    raise ValueError('intervening helper has an unbounded borrowed writer')
+                writes.append(dict(instruction_offset=off, frame=coords[0], slot=coords[1]))
+            if row['name'] == 'SCRIPT_OP_CALL_NATIVE':
+                natives.add(native_safe(row))
+            if row['name'] == 'SCRIPT_OP_CALL':
+                target = integer_operand(row['operands'][0])
+                nested = preserve_helper(target, mode, (*active, entry))
+                callees.add(target)
+                callees.update(nested['script_callees'])
+                writes.extend(nested['writes'])
+                natives.update(nested['native_functions'])
+        result = dict(entry_offset=entry, writes=writes, native_functions=sorted(natives), script_callees=sorted(callees))
+        helper_cache[key] = result
+        return result
+
+    producer_cache = {}
+    def producer_relation(entry, mode):
+        key = entry, mode
+        if key in producer_cache:
+            return producer_cache[key]
+        _, count, frame = frame_contract(entry)
+        if not root_slot(mode):
+            raise ValueError('paired mode lacks a bounded root slot')
+        offsets = body(entry)
+        summary = function_summary(instructions, entry)
+        if not summary['static_return_domain_complete']:
+            raise ValueError('producer return expressions are incomplete')
+        returns = {r['instruction_offset']: r for r in summary['returns']}
+        natives, writes = set(), []
+        for off in sorted(offsets):
+            row = by[off]
+            if row['name'] == 'SCRIPT_OP_CALL':
+                raise ValueError('producer has an unmodeled script call')
+            if row['name'] == 'SCRIPT_OP_CALL_NATIVE':
+                natives.add(native_safe(row))
+            if row['name'] == 'SCRIPT_OP_STORE_VARIABLE':
+                coords = coordinates(row)
+                if not (coords == mode or coords[0] == frame and 0 <= coords[1] < count):
+                    raise ValueError('producer writes an unmodeled borrowed variable')
+            if row['name'] == 'SCRIPT_OP_STORE_ELEMENT':
+                coords = coordinates(row)
+                values = arguments(row, 2)
+                if coords[0] != frame or not 0 <= coords[1] < count or values[0]['kind'] != 'integer' or not 0 <= coords[1] + values[0]['value'] < count:
+                    raise ValueError('producer indexed writer is not bounded to its own locals')
+        pending, seen, pairs = [(entry, None)], set(), []
+        while pending:
+            off, value = pending.pop()
+            if (off, value) in seen:
+                continue
+            charge()
+            seen.add((off, value))
+            row = by[off]
+            if row['name'] == 'SCRIPT_OP_STORE_VARIABLE' and coordinates(row) == mode:
+                expression = arguments(row, 1)[0]
+                if expression['kind'] != 'integer':
+                    raise ValueError('paired mode writer is not an integer constant')
+                value = expression['value']
+                writes.append(dict(instruction_offset=off, value=value))
+            if row['name'] == 'SCRIPT_OP_RETURN':
+                if value is None:
+                    raise ValueError('producer can return without defining paired mode')
+                result = returns[off]
+                values = [result['integer_conversion']] if 'integer_conversion' in result else result['resolved_lookup']['integer_return_domain']
+                pairs.extend(dict(mode=value, return_value=v, return_offset=off) for v in values)
+                continue
+            pending.extend((next_off, value) for next_off in successors(row))
+        relation = dict(entry_offset=entry, mode_domain='shared_helper_dispatch_mode',
+                        first_argument_domain='cost_selector_only_when_dispatch_mode_is_six; other_modes_keep_their_own_domains', mode_coordinate=dict(frame=mode[0], slot=mode[1]),
+                        mode_writes=sorted({r['instruction_offset']: r for r in writes}.values(), key=lambda r:r['instruction_offset']),
+                        mode_return_pairs=sorted(pairs, key=lambda r:(r['mode'], r['return_value'], r['return_offset'])),
+                        native_functions=sorted(natives), root_frame_extent=root_extent)
+        producer_cache[key] = relation
+        return relation
+
+    def caller_relation(call, formal_entry, formal_index, mode_index):
+        argc, _, _ = frame_contract(formal_entry)
+        actual = arguments(call, argc)
+        result, mode_expr = actual[formal_index], actual[mode_index]
+        if result['kind'] != 'variable' or mode_expr['kind'] != 'variable':
+            raise ValueError('caller does not pass a local result and borrowed mode variable')
+        mode = mode_expr['frame'], mode_expr['slot']
+        own_entry = owner(call['offset'])
+        _, own_count, own_frame = frame_contract(own_entry)
+        if result['frame'] != own_frame or not 0 <= result['slot'] < own_count:
+            raise ValueError('caller result is not a bounded own-frame local')
+        pending, seen, stores, helper_proofs, native_proofs = list(predecessors.get(call['offset'], [])), set(), [], [], set()
+        while pending:
+            off = pending.pop()
+            if off in seen:
+                continue
+            charge()
+            seen.add(off)
+            row = by[off]
+            if off == own_entry:
+                raise ValueError('caller path lacks a producer result store')
+            if row['name'] not in KNOWN_OPERATIONS or row['name'] == 'SCRIPT_OP_ENTER_FRAME':
+                raise ValueError('caller has unknown effects or competing frame entry')
+            if row['name'] == 'SCRIPT_OP_STORE_ELEMENT':
+                raise ValueError('caller has an intervening indexed writer')
+            if row['name'] == 'SCRIPT_OP_STORE_VARIABLE':
+                coords = coordinates(row)
+                if coords == mode:
+                    raise ValueError('caller overwrites the paired mode')
+                if coords == (result['frame'], result['slot']):
+                    expression = arguments(row, 1)[0]
+                    if expression['kind'] != 'script_return':
+                        raise ValueError('caller result is not exclusively a script-return producer')
+                    stores.append(dict(instruction_offset=off, expression=expression))
+                    continue
+                if not (coords[0] == own_frame and 0 <= coords[1] < own_count or root_slot(coords)):
+                    raise ValueError('caller has an unbounded borrowed writer')
+            if row['name'] == 'SCRIPT_OP_CALL_NATIVE':
+                native_proofs.add(native_safe(row))
+            if row['name'] == 'SCRIPT_OP_CALL':
+                helper_proofs.append(preserve_helper(integer_operand(row['operands'][0]), mode))
+            pending.extend(predecessors.get(off, []))
+        if not stores:
+            raise ValueError('no reaching producer result stores')
+        relations = [producer_relation(store['expression']['target_offset'], mode) for store in stores]
+        selectors = sorted({pair['return_value'] for relation in relations for pair in relation['mode_return_pairs'] if pair['mode'] == 6})
+        if not selectors or any(not 0 <= value < len(policies) for value in selectors):
+            raise ValueError('mode6 has no complete bounded policy domain')
+        return dict(status='conditional_paired_caller_relation', caller_offset=call['offset'], caller_frame_entry=own_entry,
+                    arguments=actual, reaching_producer_stores=stores, producer_relations=relations,
+                    consumed_mode=6, conditional_cost_selectors=selectors,
+                    conditional_policies=[policies[value] for value in selectors],
+                    intervening_helpers=helper_proofs, intervening_native_functions=sorted(native_proofs),
+                    scope='This caller only, with preserved paired mode/result and valid physically nonaliasing active root/caller/callee frames. Stable decoded program, VM and frame bindings throughout, balanced calls and no asynchronous mutation are required. All frozen native/deferred/SDK review prerequisites apply. Static alternatives do not prove feasibility or selected runtime policy.')
+
+    def consumer_mode_guard(entry, target, frame):
+        def reaches(start, destination, excluded):
+            pending, seen = [start], set()
+            while pending:
+                off = pending.pop()
+                if off == destination:
+                    return True
+                if off in seen or off in excluded:
+                    continue
+                charge()
+                seen.add(off)
+                pending.extend(successors(by[off]))
+            return False
+        # The copied formal mode/result must survive the path to this native call.
+        pending, ancestors = [target], set()
+        while pending:
+            off = pending.pop()
+            if off in ancestors or off == entry:
+                continue
+            charge()
+            ancestors.add(off)
+            pending.extend(predecessors.get(off, []))
+        pending, seen, preservation = [entry], set(), set()
+        _, count, _ = frame_contract(entry)
+        while pending:
+            off = pending.pop()
+            if off == target or off in seen or off != entry and off not in ancestors:
+                continue
+            charge()
+            seen.add(off)
+            row = by[off]
+            if row['name'] not in KNOWN_OPERATIONS or row['name'] == 'SCRIPT_OP_STORE_ELEMENT' or off != entry and row['name'] == 'SCRIPT_OP_ENTER_FRAME':
+                raise ValueError('consumer path has unknown, indirect or competing-frame effects')
+            if row['name'] == 'SCRIPT_OP_CALL_NATIVE':
+                preservation.add(native_safe(row))
+            if row['name'] == 'SCRIPT_OP_CALL':
+                raise ValueError('consumer path contains an unmodeled script call')
+            if row['name'] == 'SCRIPT_OP_STORE_VARIABLE':
+                coords = coordinates(row)
+                if coords in ((frame, 0), (frame, 1)):
+                    raise ValueError('consumer path overwrites the copied selector or mode formal')
+                if not (coords[0] == frame and 0 <= coords[1] < count or root_slot(coords)):
+                    raise ValueError('consumer path contains an unbounded borrowed writer')
+            pending.extend(successors(row))
+        for index in range(len(instructions)-3):
+            load, literal, compare, jump = instructions[index:index+4]
+            if load['name'] != 'SCRIPT_OP_LOAD_VARIABLE' or coordinates(load) != (frame, 1):
+                continue
+            if [literal['name'], compare['name'], jump['name']] != ['SCRIPT_OP_PUSH_LITERAL', 'SCRIPT_OP_EQUAL', 'SCRIPT_OP_JUMP_IF_ZERO']:
+                continue
+            if literal['operands'][0]['tag'] not in (0,2) or integer_operand(literal['operands'][0]) != 6:
+                continue
+            if any(incoming.get(right['offset'], set()) != {left['offset']} or successors(left) != [right['offset']]
+                   for left,right in ((load,literal),(literal,compare),(compare,jump))):
+                continue
+            true = [e['offset'] for e in jump['successors'] if e['kind']=='fallthrough']
+            false = [e['offset'] for e in jump['successors'] if e['kind']=='branch']
+            if len(true)!=1 or len(false)!=1:
+                continue
+            if reaches(entry,target,{jump['offset']}) or reaches(false[0],target,{jump['offset']}):
+                continue
+            if reaches(true[0],target,{jump['offset']}):
+                return dict(load_offset=load['offset'], comparison_offset=compare['offset'], branch_offset=jump['offset'], required_mode=6, preserved_native_functions=sorted(preservation))
+        raise ValueError('consumer cost request lacks an unambiguous mode6 guard')
+
+    for request in requests:
+        expression = request.get('arguments', {}).get('cost_selector', {})
+        if expression.get('kind') != 'variable' or request.get('conditional_local_policy_alternatives'):
+            continue
+        work = 0
+        inventory = []
+        try:
+            entry = owner(request['instruction_offset'])
+            argc, count, frame = frame_contract(entry)
+            if expression['frame'] != frame or expression['slot'] >= argc or argc != 2 or expression['slot'] != 0:
+                continue
+            offsets = body(entry)
+            if any(by[off]['name'] in ('SCRIPT_OP_STORE_ELEMENT',) or by[off]['name'] == 'SCRIPT_OP_STORE_VARIABLE' and coordinates(by[off]) in ((frame, 0),(frame,1)) for off in offsets):
+                raise ValueError('shared function can overwrite the selector formal')
+            guard = consumer_mode_guard(entry, request['instruction_offset'], frame)
+            request['consumer_mode_guard'] = guard
+            for call in instructions:
+                if call['name'] != 'SCRIPT_OP_CALL' or integer_operand(call['operands'][0]) != entry:
+                    continue
+                try:
+                    result = caller_relation(call, entry, 0, 1)
+                except (ValueError, KeyError, IndexError) as error:
+                    result = dict(status='unresolved_caller_relation', caller_offset=call['offset'], reason=str(error))
+                inventory.append(result)
+            request['conditional_caller_policy_relations'] = inventory
+            request['universal_policy_domain_established'] = False
+            request['caller_relation_scope'] = 'Recovered direct callers are a static inventory, not an exhaustive runtime-entry proof. Unsupported callers and the raw shared formal remain unresolved.'
+        except (ValueError, KeyError, IndexError) as error:
+            request['caller_relation_diagnostics'] = [str(error)]

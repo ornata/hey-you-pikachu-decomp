@@ -28,7 +28,9 @@ VM_PRESERVATION_PINS = {'actorRunScriptVm': '530f60a11aa40eaf985ddaedf886236565d
  'scriptVmRestoreStackDepth': '331329708e1311d8c9a50d5219b71f580c6b6929c1f21c9dbd2727a29e4d7794',
  'scriptVmSaveReturnLocation': '30de7c1a3e2d94e03f05de97502aafc074ed973816f03a3799fcb80281bcfeb2',
  'scriptVmRestoreReturnLocation': 'acb1f757b44289cf068cf40f85c88f7515c54cac1f61e3b235528124b0333d41'}
-NATIVE_PRESERVATION_PINS = {'actorScriptPushDefaultActionMode': '904c7ebf3040ebbe3d82ceebdcf23d666d256c7c165ae8c056421834cd544974',
+NATIVE_PRESERVATION_PINS = {'actorScriptAdjustPikachuSecondaryMeter': '28152370080c8f5f6b4cc01831d3e1283448ae2c69a459fb4400e628a365e2a5',
+ 'actorScriptCreateAttachedEffect': 'c9ddac62038f577113d09ea8fa22ecd7867f1b2cf34e3bb7f4cddbda1d979f9c',
+ 'actorScriptPushDefaultActionMode': '904c7ebf3040ebbe3d82ceebdcf23d666d256c7c165ae8c056421834cd544974',
  'actorScriptYield': 'a32e41ad6f38946c8b93e4a70a50e6600499bea62a2a82c22900dc39e298d3dc',
  'actorScriptPushActionScriptStopped': '70c8afa259805820e65a4d63d8bb695ed5805e4efec59642dd201cc8ddd60e04',
  'actorScriptStartLoopExitAndWait': '0640615d314d7f1c6e5580040874db372aaf0318f2e39cccc3176f6c98ff7e17',

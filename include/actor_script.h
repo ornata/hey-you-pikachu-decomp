@@ -93,9 +93,9 @@ typedef struct ActorScriptState {
     f32 movementScale;      ///< Scale applied to motion displacement and gravity.
     f32 motionDuration;     ///< Total duration of current motion or pose blending.
     f32 motionRemaining;    ///< Remaining motion time, scaled by playback speed.
-    s16 defaultActionMode;  ///< Default action mode selected by scripts.
-    s16 selectedActionKind; ///< Kind of the selected action used to select its cue program.
-    s16 pendingActionKind;  ///< Kind supplied by the pending action request.
+    s16 defaultActionMode;  ///< Default cue-selection tag supplied by scripts; independent of motion playback mode.
+    s16 selectedActionKind; ///< Cue-selection tag of the selected motion action; eighteen accepts a direct cue program.
+    s16 pendingActionKind;  ///< Cue-selection tag carried by the pending motion-action request.
     u8 unknown142[2];
     f32 primaryCueClock;                          ///< Elapsed time of the retained primary action-cue program.
     f32 secondaryCueClock;                        ///< Elapsed time of the current secondary action-cue program.

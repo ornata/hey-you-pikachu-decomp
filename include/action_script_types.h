@@ -10,8 +10,8 @@
 /// Timed command selectors in the action sequencer resource format.
 /// These values are separate from actor VM bytecode opcodes.
 typedef enum ActionScriptOpcode {
-    ACTION_SCRIPT_START_ACTION = 0,          ///< Request the action and playback mode supplied by the command.
-    ACTION_SCRIPT_PLAY_SOUND = 1,            ///< Start the positive sound identifier supplied by the command.
+    ACTION_SCRIPT_START_ACTION = 0, ///< Request the motion action and cue-selection tag supplied by the command.
+    ACTION_SCRIPT_PLAY_SOUND = 1,   ///< Start the positive sound identifier supplied by the command.
     ACTION_SCRIPT_STOP_AFTER_ITERATIONS = 2, ///< Request loop exit once the iteration threshold is reached.
     ACTION_SCRIPT_WAIT_FOR_ITERATIONS = 3,   ///< Wait for the iteration threshold or the last action to end.
     ACTION_SCRIPT_END = 4                    ///< End command execution.

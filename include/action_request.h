@@ -9,7 +9,7 @@
 /// Request an action, starting immediately when playback is idle or replacing the pending request until current playback ends.
 /// \param object Actor receiving the action request.
 /// \param id Valid action identifier from zero through 329.
-/// \param kind Action kind supplied by the requesting script, representable as a signed 16-bit value.
+/// \param kind Cue-selection tag supplied by the requesting script, representable as a signed 16-bit value; independent of motion playback mode.
 /// \param out Receives the identifier assigned to this request.
 /// \returns One when idle playback accepts the request immediately; zero when it is queued.
 /// \note Original decompilation identifier: \c func_8000F404 (0x8000F404).

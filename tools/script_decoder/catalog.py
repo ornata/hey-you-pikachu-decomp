@@ -36,6 +36,7 @@ from .effects import effect_program_catalog, attached_effect_requests
 from .transitions import pose_transition_catalog
 from .responses import item_response_dispatch, cost_policy_catalog, costed_action_requests
 from .local_flow import local_preservation_contracts
+from .paired_flow import annotate_costed_caller_relations
 
 
 def companion_sites(image):
@@ -231,6 +232,8 @@ def catalog(image, max_instructions=100000):
                              voice_dictionary_requests=dictionary_requests(decoded['instructions'], vocabulary.get('dictionaries', []), name_catalog,
                                                                            frame_reviews['active'], frame_reviews['active_deferred']),
                              listing=identity + '.json'))
+            annotate_costed_caller_relations(decoded['instructions'], rows[-1]['costed_action_requests'],
+                                             cost_policies['records'], preserved_natives=local_preservation['preserved_native_functions'])
             decodes[identity] = decoded
     if not rows:
         raise ValueError('no configuration candidates found; a script census was not established')
@@ -250,6 +253,10 @@ def catalog(image, max_instructions=100000):
     resource_ids.update(value for row in rows for request in row['costed_action_requests']
                         for alternative in request.get('conditional_local_policy_alternatives', [])
                         for value in alternative.get('policy', {}).get('referenced_timed_program_ids', []))
+    resource_ids.update(value for row in rows for request in row['costed_action_requests']
+                        for relation in request.get('conditional_caller_policy_relations', [])
+                        for policy in relation.get('conditional_policies', [])
+                        for value in policy['referenced_timed_program_ids'])
     source_requests = source_dictionary_requests(source, vocabulary.get('dictionaries', []))
     attach_dictionary_usage(vocabulary, rows, source_requests)
     return dict(schema_version=2, rom_sha1=image.sha1,
@@ -298,7 +305,7 @@ def main(argv=None):
         report['elf_sha256'] = hashlib.sha256(args.elf.read_bytes()).hexdigest()
         report['decoder_sha256'] = hashlib.sha256(Path(__file__).with_name('formats.py').read_bytes()).hexdigest()
         report['analysis_sha256'] = {name: hashlib.sha256(Path(__file__).with_name(name + '.py').read_bytes()).hexdigest()
-                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames', 'control_schemes', 'windows', 'caller_frames', 'progress_fields', 'items', 'effects', 'transitions', 'responses', 'local_flow')}
+                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames', 'control_schemes', 'windows', 'caller_frames', 'progress_fields', 'items', 'effects', 'transitions', 'responses', 'local_flow', 'paired_flow')}
         report['native_frame_review_sha256'] = review_manifest_fingerprint()
         files = {'catalog.json': report, **{name + '.json': row for name, row in decodes.items()}}
         # Validate every output before writing any content, including existing symlinks.
