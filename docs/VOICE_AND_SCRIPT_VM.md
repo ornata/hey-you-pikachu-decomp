@@ -2580,6 +2580,57 @@ the supplied ROM and linked ELF before activating this exception. The
 relative VM storage can be reviewed without claiming defined C behavior or a
 meaningful result. Missing inputs or changed instruction spans revoke the review.
 
+### Passage access in scene scripts
+
+The catalog's `passage_access_requests` records the created-door index and access
+state in VM push order. These indices address the ten-entry door registry; they
+are separate from object handles and passage destination IDs. The native stores
+the full signed state word and returns integer zero. It checks neither the index
+nor the resulting live object. Every request therefore requires an initialized
+registry entry and writable passage state. Resetting the registry clears its
+handles and count without destroying the previously registered objects.
+
+The five named states describe allowed, locked, unavailable, requiring Pikachu,
+and blocked by Squirtle. They are descriptive policies supplied by scripts:
+the setter does not test Pikachu proximity or Squirtle presence. Passage entry
+rejects every nonzero state word. State zero permits the later entry checks; it
+does not itself request a transition or establish a valid destination.
+
+There are eighteen literal requests in four retained configurations. The three
+Springleaf configurations each have five; Ochre Deep has three. All address
+registry entry zero. Their common access helper first compares its stored target
+with zero. For a nonzero integer-boxed target handle and integer-boxed shared
+variable 11, its policy is:
+
+| Condition | Requested state |
+| --- | --- |
+| Target distance below 50 and shared variable 11 is zero | `PASSAGE_ACCESS_ALLOWED` |
+| Shared variable 11 is nonzero | `PASSAGE_ACCESS_LOCKED` |
+| Otherwise | `PASSAGE_ACCESS_REQUIRES_PIKACHU` |
+
+The comparison is strictly below 50. The distance query returns -1 for an
+unavailable target, which also satisfies it; a nonzero stored handle alone does
+not prove proximity. Float-boxed values require separate interpretation:
+logical `NOT` tests the raw float, while the later direct conditional branch
+truncates it to an integer. Shared variable 11 equal to float 0.5 therefore
+selects requiring Pikachu even when the distance is below 50.
+
+Each Springleaf configuration also has two requests in a separately guarded
+handler: locked or requiring Pikachu, with no allowed-state branch there. The
+local predicate guarding those requests remains only partly interpreted.
+The source's Springleaf door initializer is conditional on the shopping errand
+being inactive; the decoder does not infer registry validity from a request's
+presence. The nearby passage handle used by the script is also not proven to be
+the object in registry entry zero.
+
+Six original-instruction probes execute the complete Springleaf helper with
+separate query and registered-passage objects. They confirm the strict distance
+boundary, integer and float guard differences, unavailable-handle result, and
+preservation when the stored handle is zero. All 31 executed function bodies
+are authenticated against the supplied ROM, with complete expected VM, registry,
+object-state and memory-guard comparisons. These are constructed valid contexts;
+they establish neither retail reachability nor a later passage transition.
+
 ### Scrolling text ownership and presets
 
 `RUNTIME_OBJECT_KIND_SCROLL_BOARD` (0xB1) identifies the inner board object created
@@ -3348,7 +3399,7 @@ unknown until supplied by a valid runtime state. Indexed loads, arithmetic and
 native-produced values are outside this analysis. Storage, frame binding and
 preservation conditions remain explicit obligations.
 
-Source-bound argument roles label original push order for 23 reviewed natives.
+Source-bound argument roles label original push order for 24 reviewed natives.
 Integer/float labels identify their numeric pop operations, without asserting a
 converted result or a successful effect. In particular, destination allowance is
 not speed, and `PostMessage` synthesizes argument1 rather than consuming it.

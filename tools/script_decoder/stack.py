@@ -29,8 +29,12 @@ def incoming_edges(instructions):
     return incoming
 
 
-def recover_arguments(instructions, index, count, *, incoming=None, allow_float=False, allow_symbolic=False, frame_entries=None):
-    """Recover arguments in push order within 32 contiguous producer instructions."""
+def recover_arguments(instructions, index, count, *, incoming=None, allow_float=False, allow_symbolic=False, frame_entries=None, native_validator=None):
+    """Recover arguments in push order within 32 contiguous producer instructions.
+
+    Optional native_validator must return True for every reached native producer
+    before semantic recovery. None retains the existing structural behavior.
+    """
     if incoming is None:
         incoming = incoming_edges(instructions)
     cursor = index
@@ -76,6 +80,8 @@ def recover_arguments(instructions, index, count, *, incoming=None, allow_float=
                         arguments=list(reversed([argument() for _ in range(arity)])),
                         scope='Value on a returning path; callee behavior and path feasibility are not inferred.')
         if row['name'] == 'SCRIPT_OP_CALL_NATIVE':
+            if native_validator is not None and native_validator(row) is not True:
+                raise ValueError('Native argument producer lacks a current supported binding.')
             functions = row.get('native', {}).get('functions', [])
             if len(functions) == 1 and functions[0] in HANDLE_GETTERS:
                 return dict(kind='handle', role=HANDLE_GETTERS[functions[0]],
