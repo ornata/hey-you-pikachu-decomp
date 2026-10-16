@@ -275,9 +275,10 @@ extern ActorScriptActionCost gActorScriptCostedActions[];
 /// \param object Actor whose script supplies a valid cost selector followed by a repetition count.
 /// The actor and its owning root must have valid action-resource state.
 /// \returns One when complete, or two while waiting. The script result is zero after insufficient
-/// resource, three after an accepted start, or one when later response handling changes the outcome.
+/// resource, three after an accepted start, or one after an action cue produces a replacement item.
 /// \note Startup consumes both operands; polling consumes none. Completion supplies one integer result.
 /// A disabled resource check permits the request but still charges the clamped action resource.
+/// Eligibility uses the actor resource; an accepted request charges its owning root meter.
 /// \note Original decompilation identifier: \c func_80116BC4 (0x80116BC4).
 s32 actorScriptPerformCostedAction(u8 *object) {
     f32 cost;
@@ -292,12 +293,12 @@ s32 actorScriptPerformCostedAction(u8 *object) {
         costSelector = scriptVmPopInteger((ScriptVm *)state->vmAddress);
         cost = gActorScriptCostedActions[costSelector].repetitionCost * repetitions;
         if (gActorScriptCostedActions[costSelector].requiresSufficientResource != 0 && state->actionResource < cost) {
-            state->costedActionResult = 0;
+            state->costedActionResult = ACTOR_COSTED_ACTION_INSUFFICIENT_RESOURCE;
             state->targetedBurstAllowance = 0;
             actionScriptStart(object, gActorScriptCostedActions[costSelector].insufficientProgramId);
         } else {
             actorAdjustActionMeter(object, -cost);
-            state->costedActionResult = 3;
+            state->costedActionResult = ACTOR_COSTED_ACTION_STARTED;
             state->targetedBurstAllowance = repetitions;
             actionScriptStart(object, gActorScriptCostedActions[costSelector].programId);
         }

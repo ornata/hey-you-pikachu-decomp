@@ -69,6 +69,47 @@ def link_costed_request(native, policies):
                 scope='Potential resource-dependent selection on handler initialization, not an execution or affordability claim.')
 
 
+def cost_policy_catalog(image):
+    """Authenticate the retained cost-policy view against the supplied ROM/ELF."""
+    previous = set(image.allowed)
+    try:
+        image.allowed.add('.ovl')
+        raw, location = image.read_address(COST_POLICY_ADDRESS, COST_POLICY_BYTES)
+    finally:
+        image.allowed = previous
+    if hashlib.sha256(raw).hexdigest() != COST_POLICY_SHA256:
+        raise ValueError('reviewed cost policy table authentication failed')
+    return dict(address=COST_POLICY_ADDRESS, byte_count=COST_POLICY_BYTES,
+                sha256=COST_POLICY_SHA256, location=location, records=cost_policy_records(raw),
+                scope='Five neighbor-delimited records, not a complete allocation or runtime bounds check.')
+
+
+def costed_action_requests(instructions, policies):
+    """Inventory resource-dependent action requests separately from timed IDs."""
+    incoming = incoming_edges(instructions)
+    frames = {r['offset']: r for r in instructions if r['name'] == 'SCRIPT_OP_ENTER_FRAME'}
+    requests = []
+    for index, call in enumerate(instructions):
+        functions = call.get('native', {}).get('functions', [])
+        if 'actorScriptStartCostedAction' not in functions:
+            continue
+        request = dict(instruction_offset=call['offset'], function='actorScriptStartCostedAction',
+                       argument_domain='cost_selector_and_repetitions_not_timed_program_id',
+                       consumption='deferred', scope='Static request; resource sufficiency and execution are not inferred.')
+        try:
+            if functions != ['actorScriptStartCostedAction']:
+                raise ValueError('native costed-action binding is not unique')
+            values = recover_arguments(instructions, index, 2, incoming=incoming,
+                                       allow_float=True, allow_symbolic=True, frame_entries=frames)
+            request.update(status='recovered_arguments',
+                           arguments=dict(zip(('cost_selector', 'repetitions'), values)))
+        except ValueError as error:
+            request.update(status='unresolved_arguments', reason=str(error))
+        request['cost_policy_link'] = link_costed_request(request, policies)
+        requests.append(request)
+    return requests
+
+
 def bounded_graph(instructions, entry, *, stop=(), limit=10000, arities=None):
     """Retain call edges and arguments without following them as local CFG edges."""
     by = {row['offset']: row for row in instructions}

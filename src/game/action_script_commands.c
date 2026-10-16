@@ -604,7 +604,7 @@ void actionCommandEmitPairedTargetedBursts(u8 *object, ActorScriptState *state, 
         other = actorGetTrackingTarget(object);
         if (other != NULL && ((RuntimeObjectPrefix *)other)->kind == 0x86 &&
             itemTryTransformToReplacement(((RuntimeObjectPrefix *)other)->handle)) {
-            state->costedActionResult = 1;
+            state->costedActionResult = ACTOR_COSTED_ACTION_ITEM_REPLACED;
         }
     }
 }
@@ -734,7 +734,7 @@ void actionCommandCreateItemTransformationEffect(u8 *actor, ActorScriptState *st
                      ((RuntimeObjectPrefix *)actor)->worldPosition[1] + 2.0F,
                      ((RuntimeObjectPrefix *)actor)->worldPosition[2]);
     if (itemTryTransformToReplacement(state->heldItemHandle) != 0) {
-        state->costedActionResult = 1;
+        state->costedActionResult = ACTOR_COSTED_ACTION_ITEM_REPLACED;
     }
 }
 

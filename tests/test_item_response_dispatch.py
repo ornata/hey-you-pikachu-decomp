@@ -8,7 +8,7 @@ from unittest.mock import patch
 from tools.script_decoder.actions import CONTRACTS
 from tools.script_decoder.responses import (bounded_graph, helper_closure,
                                              dispatch_branches, item_response_dispatch,
-                                             cost_policy_records, link_costed_request)
+                                             cost_policy_records, link_costed_request, costed_action_requests)
 
 
 def operand(value, tag=0):
@@ -108,6 +108,36 @@ class ResponseDispatchTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             cost_policy_records(struct.pack('>iifi', 1, 2, float('nan'), 1) + raw[16:])
 
+
+    def test_global_costed_requests_keep_order_dynamic_and_unsupported_selectors(self):
+        policies = cost_policy_records(b''.join(struct.pack('>iifi', 300+i, 400+i, 2.5, 1) for i in range(5)))
+        instructions = [frame(0, 1),
+            row(1, 'PUSH_LITERAL', [operand(3)], [('fallthrough', 2)]),
+            row(2, 'PUSH_LITERAL', [operand(9)], [('fallthrough', 3)]),
+            row(3, 'CALL_NATIVE', successors=[('resume_or_fallthrough', 4)], native=dict(functions=['actorScriptStartCostedAction'])),
+            row(4, 'DISCARD', successors=[('fallthrough', 5)]),
+            row(5, 'LOAD_VARIABLE', [operand(1), operand(0)], [('fallthrough', 6)]),
+            row(6, 'PUSH_LITERAL', [operand(2)], [('fallthrough', 7)]),
+            row(7, 'CALL_NATIVE', successors=[('resume_or_fallthrough', 8)], native=dict(functions=['actorScriptStartCostedAction'])),
+            row(8, 'DISCARD', successors=[('fallthrough', 9)]),
+            row(9, 'PUSH_LITERAL', [operand(5)], [('fallthrough', 10)]),
+            row(10, 'PUSH_LITERAL', [operand(1)], [('fallthrough', 11)]),
+            row(11, 'CALL_NATIVE', successors=[('resume_or_fallthrough', 12)], native=dict(functions=['actorScriptStartCostedAction'])),
+            row(12, 'FINISH')]
+        requests = costed_action_requests(instructions, policies)
+        self.assertEqual(len(requests), 3)
+        self.assertEqual(requests[0]['arguments']['cost_selector']['value'], 3)
+        self.assertEqual(requests[0]['arguments']['repetitions']['value'], 9)
+        self.assertEqual(requests[0]['cost_policy_link']['policy']['referenced_timed_program_ids'], [303, 403])
+        self.assertEqual(requests[1]['status'], 'recovered_arguments')
+        self.assertEqual(requests[1]['cost_policy_link']['status'], 'unresolved_selector')
+        self.assertEqual(requests[2]['cost_policy_link']['status'], 'outside_reviewed_selector_view')
+        self.assertFalse(any('constant_script_id' in r for r in requests))
+        # A second entry into an operand prevents a guessed request.
+        instructions.append(row(20, 'JUMP', [operand(2, 2)], [('branch', 2)]))
+        self.assertEqual(costed_action_requests(instructions, policies)[0]['status'], 'unresolved_arguments')
+        instructions[3]['native']['functions'].append('otherCommand')
+        self.assertIn('not unique', costed_action_requests(instructions, policies)[0]['reason'])
 
     def test_cost_policy_authentication_rejects_changed_table(self):
         class Image:

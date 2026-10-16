@@ -34,7 +34,7 @@ from .progress_fields import progress_field_catalog, progress_field_requests
 from .items import item_kind_catalog, item_creation_requests, item_response_requests
 from .effects import effect_program_catalog, attached_effect_requests
 from .transitions import pose_transition_catalog
-from .responses import item_response_dispatch
+from .responses import item_response_dispatch, cost_policy_catalog, costed_action_requests
 
 
 def companion_sites(image):
@@ -147,6 +147,7 @@ def catalog(image, max_instructions=100000):
     actors = actor_kind_records(image)
     progress_fields = progress_field_catalog(image)
     item_kinds = item_kind_catalog(image, progress_fields)
+    cost_policies = cost_policy_catalog(image)
     effect_programs = effect_program_catalog(image)
     pose_transitions = pose_transition_catalog(image)
     vocabulary = vocabulary_catalog(image)
@@ -213,6 +214,7 @@ def catalog(image, max_instructions=100000):
                              frame_operands=frames, native_calls=dict(native_calls),
                              script_message_posts=message_posts(decoded['instructions']),
                              native_action_calls=actions,
+                             costed_action_requests=costed_action_requests(decoded['instructions'], cost_policies['records']),
                              action_producer_functions=action_producer_functions(decoded['instructions'], actions),
                              player_control_scheme_requests=control_scheme_requests(decoded['instructions'], controls['schemes']),
                              text_window_requests=text_window_requests(decoded['instructions']),
@@ -240,6 +242,8 @@ def catalog(image, max_instructions=100000):
         {name: review['arguments'] for name, review in frame_reviews['active'].items()
          if type(review.get('arguments')) is int})
     resource_ids.update(response_dispatch['timed_program_resource_ids'])
+    resource_ids.update(value for row in rows for request in row['costed_action_requests']
+                        for value in request['cost_policy_link'].get('policy', {}).get('referenced_timed_program_ids', []))
     source_requests = source_dictionary_requests(source, vocabulary.get('dictionaries', []))
     attach_dictionary_usage(vocabulary, rows, source_requests)
     return dict(schema_version=2, rom_sha1=image.sha1,
@@ -260,6 +264,7 @@ def catalog(image, max_instructions=100000):
                 pose_transitions=pose_transitions,
                 item_kinds=item_kinds,
                 item_response_dispatch=response_dispatch,
+                costed_action_policies=cost_policies,
                 voice_vocabulary=vocabulary,
                 bedroom_name_catalog=name_catalog,
                 native_frame_effect_reviews=frame_reviews,

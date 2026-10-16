@@ -1019,6 +1019,20 @@ check. Selectors zero and one can choose programs 212/213 and 214/215 respective
 Dynamic selectors remain unresolved. Timed program identifiers, motion identifiers
 and cost selectors belong to different domains.
 
+Each configuration's `costed_action_requests` lists the cost selector and repetition
+expressions separately from timed-program requests. The shared
+`costed_action_policies` view authenticates all five retained records. Bounded
+selectors link both referenced programs; a dynamic selector keeps its expression
+without inventing a policy. Resource eligibility uses the requesting actor's value,
+while an accepted request charges its owning root's clamped meter. Waiving the
+check does not waive that charge.
+
+`ActorCostedActionResult` distinguishes insufficient resource (zero), an accepted
+start (three), and a different live replacement item produced by an action cue
+(one). One can include the transformation's fallback replacement; destruction
+without a live replacement does not set it. These results do not establish that
+every effect completed or that the interaction succeeded overall.
+
 Throw and acquisition requests also expose their timed-program operands in
 `native_action_calls`. Throw consumes one program operand when its deferred
 handler initializes. A zero held handle produces minus one; a nonzero handle

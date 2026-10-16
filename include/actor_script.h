@@ -36,6 +36,15 @@ typedef union ActorMovementWorkspace {
 
 typedef char ActorMovementWorkspaceSizeCheck[(sizeof(ActorMovementWorkspace) == 4) ? 1 : -1];
 
+/// Outcomes retained for a costed action and returned when sequencing stops.
+/// These values do not establish that every requested effect has completed.
+typedef enum ActorCostedActionResult {
+    ACTOR_COSTED_ACTION_INSUFFICIENT_RESOURCE =
+        0,                                 ///< The enabled resource check rejected startup; also the cleared default.
+    ACTOR_COSTED_ACTION_ITEM_REPLACED = 1, ///< An action cue produced a different live replacement item.
+    ACTOR_COSTED_ACTION_STARTED = 3,       ///< Startup accepted the request and selected its timed program.
+} ActorCostedActionResult;
+
 /// Recovered prefix of actor state used by script-message consumers.
 /// \ingroup ActorScriptVm
 /// Unresolved storage and scalar roles retain explicit offset-based names. This view does not describe the
@@ -141,7 +150,7 @@ typedef struct ActorScriptState {
     f32 partShakeTimeRemaining;                   ///< Seconds remaining in the temporary part shake.
     f32 partShakeReferenceAngles[3];              ///< Part rotation captured when selected for shaking.
     s32 targetedBurstAllowance; ///< Remaining paired target bursts allowed by the current costed action.
-    s32 costedActionResult; ///< Script result: zero for insufficient resource, one for a response, three after starting.
+    s32 costedActionResult; ///< ActorCostedActionResult retained for completion; item-replacement cues can update it.
     f32 actionResource;     ///< Action resource clamped to zero through 100.
     f32 secondaryMeter;     ///< Secondary gameplay meter clamped to zero through 100.
     f32 actionResourceHudLevel; ///< Smoothed action-resource HUD level on a zero-to-32 scale.

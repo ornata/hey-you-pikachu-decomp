@@ -322,7 +322,7 @@
     "file:include/actor_script.h": {
       "kind": "file",
       "file": "include/actor_script.h",
-      "sha256": "f602451d41a9286b6b5635f5db96fa39d7a38c66487365bd9aed8498803df704"
+      "sha256": "08d5700e726edb89ab34b5ac41af403b2dfc4afbfb1ba68c3365059d5e735883"
     },
     "file:include/actor_script_action.h": {
       "kind": "file",
@@ -1302,7 +1302,7 @@
     "file:src/game/action_script_commands.c": {
       "kind": "file",
       "file": "src/game/action_script_commands.c",
-      "sha256": "e8868c27e38c551657c25cf656d6614a055d9358c9fff7357169b364ae923a68"
+      "sha256": "54eeae16a3021e6ac6536af4cd5b56591fd7a5c821aec6aa7f22fbe75af042a6"
     },
     "file:src/game/actor_configuration.c": {
       "kind": "file",
@@ -1552,7 +1552,7 @@
     "file:src/ovl/actor_script_actions.c": {
       "kind": "file",
       "file": "src/ovl/actor_script_actions.c",
-      "sha256": "f6c782d4834386f7ff5701c3100f4356c1907d45e13c5dd9f9cd25cc511fb218"
+      "sha256": "a15ddc2b78935cace138d6c9697aae472f3631f47b8d83ee98d29a043abee09a"
     },
     "file:src/ovl/actor_script_collection_profile.c": {
       "kind": "file",
@@ -3005,7 +3005,7 @@
       "kind": "function",
       "file": "src/ovl/actor_script_actions.c",
       "function": "actorScriptPerformCostedAction",
-      "sha256": "fe2f4ab9fc7fd81778e0c84d69e49cbee5d48ffb165049abaa8517f3b6dbcff6"
+      "sha256": "68a55825ac9de51a4a08231b8d90c746c12ca0d10aa8ab017bbe93c206cf4862"
     },
     "function:src/ovl/actor_script_actions.c:actorScriptPlayAction": {
       "kind": "function",
