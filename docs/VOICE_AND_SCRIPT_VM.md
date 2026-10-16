@@ -581,6 +581,32 @@ executes the FPU square root and converts back to single; no SDK square-root cal
 occurs. These immediate storage contracts require the target FPU environment and
 do not promise unchanged floating-point status flags.
 
+Camera view assignment stores eye and target coordinates and restores the world-up
+vector. Transition configuration instead captures the existing camera endpoints
+and stores destination endpoints plus duration; it does not start a transition or
+change player mode. Clip distances retain raw floats, while fog bounds convert
+through binary32 before truncating to integers. Seventeen original-instruction
+probes check these immediate writes, including coincident view endpoints, zero and
+negative durations, negative zero and integer rounding through binary32. They do
+not establish valid projection settings or safe later interpolation.
+
+Item material-frame assignment disables material animation and retains the low
+16 bits of the requested frame. Draw-mode assignment also retains a halfword but
+changes rendering, separately from the item's behavioral mode. Tint channels wrap
+to bytes rather than clamp. Animation assignment evaluates its borrowed program
+immediately, so terminating control flow and valid interpolation data are required.
+Scaling recursively changes existing hierarchy bounds; repeated scaling does not
+restore every child's original bounds. Tint and draw mode use live-object lookup
+and can affect toolbox items; frame, animation and scale use the availability filter.
+
+Path-coordinate queries have distinct failure contracts. Area paths reject axes
+above two before accessing path storage, but do not guard negative indices. A
+missing path-object handle returns zero; a wrong object kind returns -65536. The
+following-point query measures 3D proximity after projecting both positions onto
+terrain, then returns the next waypoint's raw coordinate, including its unadjusted
+Y. It traverses path and terrain data even when the requested axis exceeds two.
+Valid path storage and a complete end-marker triple remain prerequisites.
+
 Three retained attached-effect definitions at `0x80074EB8` select templates of
 runtime kind `0xAC`, with no child or sibling templates. Their scales are
 `0.1`, `1`, `1`; opacity-program selectors are `0`, `0`, `1`.
@@ -918,6 +944,8 @@ Recovered field names now distinguish these saved roles:
 | 22 / 23 | Togepi hatched / egg growth stage. Qualifying Abra-shop turn-ins advance growth up to five on the recovered path; storage permits fifteen. |
 | 24 | Saved normalized Togepi hatch-size parameter. |
 | 27–30 / 32–35 | Recorded acquisition of the cupcake, beach ball, flying acorn, fishing hook, watering can, watering jug, harmonica and megaphone, respectively. |
+| 36–58 | Per-area gameplay-scene initialization counts, saturating at fifteen. |
+| 59–68 | World-map destination unlock flags, still subject to chase-stage area availability. |
 | 86 | Additional Ochre entrance resident stage, zero through three; not a count including the unconditional Bulbasaur. |
 | 93 | Completed disappearance episodes, used for first/repeat search narration. |
 | 160 | Bedroom passage to the front yard enabled instead of its initial descriptive proxy. |
@@ -941,6 +969,15 @@ or remaining consumable quantities. The catalog's `availabilityField`, inventory
 recording and toolbox supply recording establish their shared meaning. The debug
 setter formerly named for disappearance flags now describes item availability;
 its behavior and original function address are preserved.
+
+`PROGRESS_SELECTOR_CURRENT_AREA_SCENE_ENTRY_COUNT` names area-relative selector
+zero. Scene initialization checks that this selector exists, then increments the
+current area's counter. These counters do not count completed visits. The decoder
+labels the selector and all 23 alternatives without assuming that a script's
+containing scene is the runtime current area. World-map unlock flags likewise do
+not prove prior visits: a destination must also have a valid area for the current
+chase stage. Springleaf and Olivine Lake destinations can select different areas
+as the stage changes.
 
 The bedroom script advances quiz stage zero to one after at least eight correct
 picture-quiz answers, and one to two after a perfect shadow round. Its selection

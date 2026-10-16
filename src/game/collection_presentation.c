@@ -1696,15 +1696,15 @@ void progressSetChapterAndUnlockMilestones(s32 chapter) {
     }
     progressSetValue(PROGRESS_FIELD_CHAPTER, chapter);
     if (chapter > 0) {
-        progressSetValue(0x44, 1);
+        progressSetValue(PROGRESS_FIELD_FRONT_YARD_MAP_DESTINATION_UNLOCKED, 1);
         if (chapter >= 3) {
-            progressSetValue(0x3B, 1);
-            progressSetValue(0x3E, 1);
-            progressSetValue(0x3C, 1);
+            progressSetValue(PROGRESS_FIELD_VIRIDIAN_DEEP_MAP_DESTINATION_UNLOCKED, 1);
+            progressSetValue(PROGRESS_FIELD_SPRINGLEAF_MAP_DESTINATION_UNLOCKED, 1);
+            progressSetValue(PROGRESS_FIELD_OCHRE_ENTRANCE_MAP_DESTINATION_UNLOCKED, 1);
             if (chapter >= 5) {
-                progressSetValue(0x3D, 1);
-                progressSetValue(0x3F, 1);
-                progressSetValue(0x43, 1);
+                progressSetValue(PROGRESS_FIELD_OCHRE_FISHING_MAP_DESTINATION_UNLOCKED, 1);
+                progressSetValue(PROGRESS_FIELD_OLIVINE_LAKE_MAP_DESTINATION_UNLOCKED, 1);
+                progressSetValue(PROGRESS_FIELD_COBALT_COAST_MAP_DESTINATION_UNLOCKED, 1);
             }
         }
     }

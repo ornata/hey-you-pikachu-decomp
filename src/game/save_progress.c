@@ -644,8 +644,8 @@ void _bzero(void *, s32); /* extern */
 /// \note Original decompilation identifier: \c func_80032EAC (0x80032EAC).
 void progressResetRecordToDefaults(void) {
     _bzero(&gProgressSaveRecord, PROGRESS_SAVE_RECORD_BYTES);
-    progressSetValue(0x44, 1);
-    progressSetValue(0x3B, 1);
+    progressSetValue(PROGRESS_FIELD_FRONT_YARD_MAP_DESTINATION_UNLOCKED, 1);
+    progressSetValue(PROGRESS_FIELD_VIRIDIAN_DEEP_MAP_DESTINATION_UNLOCKED, 1);
     progressSetValue(PROGRESS_FIELD_OCHRE_ENTRANCE_RESIDENT_STAGE, 1);
     progressSetValue(PROGRESS_FIELD_MUSIC_VOLUME, progressGetMaximum(PROGRESS_FIELD_MUSIC_VOLUME));
     progressSetValue(PROGRESS_FIELD_SOUND_EFFECT_VOLUME, progressGetMaximum(PROGRESS_FIELD_SOUND_EFFECT_VOLUME) / 2);

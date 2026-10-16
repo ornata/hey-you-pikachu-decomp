@@ -388,8 +388,8 @@ void runtimeInitializeSceneGameplay(void) {
         runtimeRequestGameModeChange(GAME_MODE_AREA_CARD);
     }
     presentationInitializeForCurrentArea();
-    if (progressHasFieldInCurrentArea(0x40000000) != 0) {
-        progressAddValue(0x40000000, 1);
+    if (progressHasFieldInCurrentArea(PROGRESS_SELECTOR_CURRENT_AREA_SCENE_ENTRY_COUNT) != 0) {
+        progressAddValue(PROGRESS_SELECTOR_CURRENT_AREA_SCENE_ENTRY_COUNT, 1);
     }
     backdropAllocateViewBuffer(0, 0x118, 0xC8);
     backdropSelectForView(0, gCurrentAreaConfiguration->backdrop, 1);

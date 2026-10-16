@@ -252,7 +252,8 @@ def native_frame_reviews(root=ROOT, manifest=None):
                              ('replace_arguments_with_scalar', 3, -2),
                              ('replace_arguments_with_scalar', 4, -3),
                              ('replace_arguments_with_scalar', 5, -4),
-                             ('replace_arguments_with_scalar', 6, -5)) and
+                             ('replace_arguments_with_scalar', 6, -5),
+                             ('replace_arguments_with_scalar', 7, -6)) and
                             type(review['arguments']) is int and type(review['stack_delta']) is int)
         action_request = (review['effect'] == 'select_action_handler' and
                           type(review['arguments']) is int and review['arguments'] == 0 and

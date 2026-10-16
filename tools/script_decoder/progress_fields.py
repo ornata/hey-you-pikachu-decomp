@@ -28,11 +28,11 @@ _NATIVES = {
 }
 
 
-def _names(path, prefix, upper):
+def _names(path, prefix, upper, *, allow_empty=False):
     code = code_only((ROOT / path).read_text())
     entries = re.findall(r'\b(' + prefix + r'\w+)\s*=\s*(0[xX][0-9a-fA-F]+|\d+)\b', code)
     names = {int(value, 0): name for name, value in entries if int(value, 0) < upper}
-    if not names or len(names) != sum(int(value, 0) < upper for _, value in entries):
+    if (not names and not allow_empty) or len(names) != sum(int(value, 0) < upper for _, value in entries):
         raise ValueError('recovered progress identifiers must have distinct numeric values')
     return names
 
@@ -52,6 +52,9 @@ def progress_field_catalog(image):
         tables[name] = data
         locations.append(dict(name=name, size=size, sha256=digest, **location))
     names = _names('include/progress_field_ids.h', 'PROGRESS_FIELD_', 244)
+    selector_names = _names('include/progress_field_ids.h', 'PROGRESS_SELECTOR_', 0x80000000, allow_empty=True)
+    if not set(selector_names) <= {0x40000000 | index for index in range(7)}:
+        raise ValueError('recovered area selectors must identify a retained selector row')
     encodings = _names('include/progress_field_types.h', 'PROGRESS_ENCODING_', 8)
     if set(encodings) != set(range(8)):
         raise ValueError('recovered progress encodings must cover 0..7')
@@ -80,7 +83,10 @@ def progress_field_catalog(image):
             if field != -1:
                 row['field'] = fields[field]
             areas.append(row)
-        selectors.append(dict(selector_index=selector, encoded_selector=0x40000000 | selector, areas=areas))
+        record = dict(selector_index=selector, encoded_selector=0x40000000 | selector, areas=areas)
+        if record['encoded_selector'] in selector_names:
+            record['enum_name'] = selector_names[record['encoded_selector']]
+        selectors.append(record)
     return dict(fields=fields, encodings=limits, area_selectors=selectors, tables=locations,
                 scope='Retained storage encodings and current-area alternatives; limits are encoding-wide, not semantic thresholds. Absence is not checked by value/minimum/maximum accessors. No live save values, layout validity or gameplay reachability are inferred.')
 
@@ -124,6 +130,8 @@ def progress_field_requests(instructions, catalog):
                                    within_retained_selector_domain=relative in selectors)
                         if relative in selectors:
                             row['current_area_alternatives'] = selectors[relative]['areas']
+                            if 'enum_name' in selectors[relative]:
+                                row['selector_enum_name'] = selectors[relative]['enum_name']
                     else:
                         row.update(selector_kind='direct', within_retained_field_domain=selector in fields)
                         if selector in fields:

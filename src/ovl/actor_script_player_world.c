@@ -536,8 +536,9 @@ s32 actorScriptGetFirstPathPointCoordinate(u8 *actor) {
 }
 
 /// Read a coordinate of the path destination following a waypoint near the actor.
-/// \param actor Actor whose script VM supplies a path handle with at least one waypoint and a complete three-coordinate end marker whose X is negative followed by a nonnegative axis (zero for X, one for Y, two for Z), and receives the coordinate following the first waypoint within three ground-distance units, or an end-marker coordinate when none qualifies; missing handles yield zero, and non-path objects or axes greater than two yield -65536.
+/// \param actor Actor whose script VM supplies a path handle with at least one waypoint and a complete three-coordinate end marker whose X is negative followed by a nonnegative axis (zero for X, one for Y, two for Z), and receives the next raw waypoint coordinate, including unadjusted Y, following the first waypoint within three units of terrain-projected 3D distance, or an end-marker coordinate when none qualifies; missing handles yield zero, and non-path objects or axes greater than two yield -65536.
 /// \returns Zero, allowing script execution to continue.
+/// \note Path and terrain storage must remain valid even when axis is greater than two.
 /// \note Original decompilation identifier: \c func_8011EBFC (0x8011EBFC).
 s32 actorScriptGetFollowingPathPointCoordinate(u8 *actor) {
     s32 sp24;

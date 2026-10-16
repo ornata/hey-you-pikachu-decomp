@@ -46,6 +46,72 @@ enum {
         33,                                 ///< Watering jug acquisition recorded; does not imply current possession.
     PROGRESS_FIELD_HARMONICA_ACQUIRED = 34, ///< Harmonica acquisition recorded; does not imply current possession.
     PROGRESS_FIELD_MEGAPHONE_ACQUIRED = 35, ///< Megaphone acquisition recorded; does not imply current possession.
+    PROGRESS_FIELD_BEDROOM_SCENE_ENTRY_COUNT =
+        36, ///< Bedroom gameplay-scene initializations, saturating at fifteen; not completed visits.
+    PROGRESS_FIELD_ENTRYWAY_SCENE_ENTRY_COUNT =
+        37, ///< Entryway gameplay-scene initializations, saturating at fifteen; not completed visits.
+    PROGRESS_FIELD_FRONT_YARD_SCENE_ENTRY_COUNT =
+        38, ///< Front yard gameplay-scene initializations, saturating at fifteen; not completed visits.
+    PROGRESS_FIELD_VIRIDIAN_ENTRANCE_SCENE_ENTRY_COUNT =
+        39, ///< Viridian entrance gameplay-scene initializations, saturating at fifteen; not completed visits.
+    PROGRESS_FIELD_VIRIDIAN_FOREST_SCENE_ENTRY_COUNT =
+        40, ///< Viridian forest gameplay-scene initializations, saturating at fifteen; not completed visits.
+    PROGRESS_FIELD_VIRIDIAN_DEEP_SCENE_ENTRY_COUNT =
+        41, ///< Viridian deep gameplay-scene initializations, saturating at fifteen; not completed visits.
+    PROGRESS_FIELD_SPRINGLEAF_ENTRANCE_SCENE_ENTRY_COUNT =
+        42, ///< Springleaf entrance gameplay-scene initializations, saturating at fifteen; not completed visits.
+    PROGRESS_FIELD_ODDISH_MEADOW_SCENE_ENTRY_COUNT =
+        43, ///< Oddish meadow gameplay-scene initializations, saturating at fifteen; not completed visits.
+    PROGRESS_FIELD_SPRINGLEAF_FIELD_SCENE_ENTRY_COUNT =
+        44, ///< Springleaf field gameplay-scene initializations, saturating at fifteen; not completed visits.
+    PROGRESS_FIELD_OLIVINE_LAKESHORE_SCENE_ENTRY_COUNT =
+        45, ///< Olivine lakeshore gameplay-scene initializations, saturating at fifteen; not completed visits.
+    PROGRESS_FIELD_OLIVINE_LAKE_SCENE_ENTRY_COUNT =
+        46, ///< Olivine lake gameplay-scene initializations, saturating at fifteen; not completed visits.
+    PROGRESS_FIELD_OCHRE_ENTRANCE_SCENE_ENTRY_COUNT =
+        47, ///< Ochre entrance gameplay-scene initializations, saturating at fifteen; not completed visits.
+    PROGRESS_FIELD_OCHRE_DEEP_SCENE_ENTRY_COUNT =
+        48, ///< Ochre deep gameplay-scene initializations, saturating at fifteen; not completed visits.
+    PROGRESS_FIELD_COBALT_ISLAND_SCENE_ENTRY_COUNT =
+        49, ///< Cobalt island gameplay-scene initializations, saturating at fifteen; not completed visits.
+    PROGRESS_FIELD_COBALT_COAST_SCENE_ENTRY_COUNT =
+        50, ///< Cobalt coast gameplay-scene initializations, saturating at fifteen; not completed visits.
+    PROGRESS_FIELD_ABRA_SHOP_SCENE_ENTRY_COUNT =
+        51, ///< Abra shop gameplay-scene initializations, saturating at fifteen; not completed visits.
+    PROGRESS_FIELD_WILDERNESS_CAMP_SCENE_ENTRY_COUNT =
+        52, ///< Wilderness camp gameplay-scene initializations, saturating at fifteen; not completed visits.
+    PROGRESS_FIELD_OCHRE_FISHING_SCENE_ENTRY_COUNT =
+        53, ///< Ochre fishing gameplay-scene initializations, saturating at fifteen; not completed visits.
+    PROGRESS_FIELD_OLIVINE_FISHING_SCENE_ENTRY_COUNT =
+        54, ///< Olivine fishing gameplay-scene initializations, saturating at fifteen; not completed visits.
+    PROGRESS_FIELD_COBALT_FISHING_SCENE_ENTRY_COUNT =
+        55, ///< Cobalt fishing gameplay-scene initializations, saturating at fifteen; not completed visits.
+    PROGRESS_FIELD_VIRIDIAN_EDGE_SCENE_ENTRY_COUNT =
+        56, ///< Viridian edge gameplay-scene initializations, saturating at fifteen; not completed visits.
+    PROGRESS_FIELD_PLAYGROUND_SCENE_ENTRY_COUNT =
+        57, ///< Playground gameplay-scene initializations, saturating at fifteen; not completed visits.
+    PROGRESS_FIELD_CREDITS_SCENE_ENTRY_COUNT =
+        58, ///< Credits gameplay-scene initializations, saturating at fifteen; not completed visits.
+    PROGRESS_FIELD_VIRIDIAN_DEEP_MAP_DESTINATION_UNLOCKED =
+        59, ///< Viridian deep world-map destination available when the chase stage supplies an area.
+    PROGRESS_FIELD_OCHRE_ENTRANCE_MAP_DESTINATION_UNLOCKED =
+        60, ///< Ochre entrance world-map destination available when the chase stage supplies an area.
+    PROGRESS_FIELD_OCHRE_FISHING_MAP_DESTINATION_UNLOCKED =
+        61, ///< Ochre fishing world-map destination available when the chase stage supplies an area.
+    PROGRESS_FIELD_SPRINGLEAF_MAP_DESTINATION_UNLOCKED =
+        62, ///< Springleaf world-map destination available when the chase stage supplies an area.
+    PROGRESS_FIELD_OLIVINE_LAKE_MAP_DESTINATION_UNLOCKED =
+        63, ///< Olivine lake world-map destination available when the chase stage supplies an area.
+    PROGRESS_FIELD_OLIVINE_FISHING_MAP_DESTINATION_UNLOCKED =
+        64, ///< Olivine fishing world-map destination available when the chase stage supplies an area.
+    PROGRESS_FIELD_COBALT_ISLAND_MAP_DESTINATION_UNLOCKED =
+        65, ///< Cobalt island world-map destination available when the chase stage supplies an area.
+    PROGRESS_FIELD_COBALT_FISHING_MAP_DESTINATION_UNLOCKED =
+        66, ///< Cobalt fishing world-map destination available when the chase stage supplies an area.
+    PROGRESS_FIELD_COBALT_COAST_MAP_DESTINATION_UNLOCKED =
+        67, ///< Cobalt coast world-map destination available when the chase stage supplies an area.
+    PROGRESS_FIELD_FRONT_YARD_MAP_DESTINATION_UNLOCKED =
+        68, ///< Front yard world-map destination available when the chase stage supplies an area.
     PROGRESS_FIELD_OCHRE_ENTRANCE_RESIDENT_STAGE = 86, ///< Zero through three selects additional entrance residents.
     PROGRESS_FIELD_PIKACHU_DISAPPEARANCE_EPISODES_COMPLETED =
         93, ///< Completed disappearance visits selecting first or repeat search narration.
@@ -62,6 +128,12 @@ enum {
     PROGRESS_FIELD_FRONT_YARD_DOOR_ENABLED = 160, ///< Bedroom passage to the front yard replaces its initial proxy.
     PROGRESS_FIELD_QUIZ_VARIANT_UNLOCK_STAGE =
         162 ///< Zero: picture quiz; one: shadow unlocked; two: strobe-shadow unlocked.
+};
+
+/// Area-relative progress selectors resolved against the current gameplay area.
+enum {
+    PROGRESS_SELECTOR_CURRENT_AREA_SCENE_ENTRY_COUNT =
+        0x40000000 ///< Scene-initialization count for the current area, saturating at fifteen.
 };
 
 #endif

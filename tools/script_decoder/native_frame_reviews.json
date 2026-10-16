@@ -11256,6 +11256,659 @@
           "sha256": "f398a13824f7307d1d66f05ca80f49e0ed734886d23c0d2a3bcdd4f11601b6b0"
         }
       ]
+    },
+    {
+      "function": "actorScriptSetCameraView",
+      "file": "src/ovl/actor_script_messages_items.c",
+      "sha256": "75cd6c7f94a192751001fca7faaf63500a8a40155dcefbb3478b305ad968c575",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 6,
+      "stack_delta": -5,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace eye X/Y/Z followed by target X/Y/Z with integer zero after copying both world-space points into camera zero and setting world-up orientation.",
+      "dependencies": [
+        "file:include/object_types.h",
+        "file:include/actor_script.h",
+        "file:include/script_vm.h",
+        "function:src/ovl/script_vm.c:scriptVmPopFloat",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "file:include/camera_types.h",
+        "file:include/camera_storage.h",
+        "function:src/ovl/actor_script_queries.c:scriptVmSetPrimaryCameraView",
+        "function:src/main.c:cameraSetEyeAndTarget"
+      ],
+      "preconditions": [
+        "All consumed numeric operands lie above protected locals and frame metadata. Inputs are integer/code-reference or finite f32 numeric values, converted by scriptVmPopFloat with original f32 rounding. Captured caller VM, actor state, writable value storage and C stack remain live and disjoint from camera, primary-player and area fields written by the helper. No concurrent updates, area replacement or VM context replacement occur.",
+        "This conditional contract covers immediate source-bound writes and normal return only. The result is integer zero and scheduling continues. It does not establish retail reachability, renderer validity, later interpolation, gameplay synchronization or borrowed-resource lifetime.",
+        "Push order eye X,Y,Z,target X,Y,Z; pop target Z,Y,X then eye Z,Y,X. Camera index is hardwired zero: no script-supplied index or sentinel is interpreted. Camera slot zero at gRenderCameras must be valid writable MatrixCamera storage.",
+        "Write exactly camera eye XYZ at offsets 0,4,8 and target XYZ at 0xC,0x10,0x14; overwrite up XYZ at 0x18,0x1C,0x20 with +0,1,+0. The helper copies local arrays synchronously and retains no native stack pointer. Other camera fields, primary player pose and control mode remain unchanged.",
+        "No angle calculation, normalization, matrix rebuild, callback, queue, allocation or transport occurs. Equal eye and target, zero or negative coordinates are stored without validation; downstream view-matrix validity is a separate requirement."
+      ],
+      "evidence": "Original Ghidra 0x8011CDDC,0x80118A1C and 0x80000AD4 establish six pops and nine direct camera stores. Source-bound immediate footprint review. Two authored original-instruction probes cover mixed numeric eye/target values and coincident endpoints, with the exact world-up vector and unchanged second camera/player. All preserve three lower values, frame metadata and guarded VM/actor/player/camera/area/pool storage. Sixteen native/helper fingerprints agree with ROM and six native bodies agree with Ghidra. Later rendering/interpolation, invalid conversion domains and concurrent lifetimes are untested.",
+      "runtime_status": "bounded_original_instruction_probes_passed"
+    },
+    {
+      "function": "actorScriptConfigureCameraTransition",
+      "file": "src/ovl/actor_script_collection_profile.c",
+      "sha256": "8ace800f25ebebdc740f9a8af1f49e3efb5996f4fefa6a409b3859cc90fce8c9",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 7,
+      "stack_delta": -6,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace destination eye X/Y/Z, destination target X/Y/Z and duration with integer zero after preparing retained primary-player transition endpoints and times.",
+      "dependencies": [
+        "file:include/object_types.h",
+        "file:include/actor_script.h",
+        "file:include/script_vm.h",
+        "function:src/ovl/script_vm.c:scriptVmPopFloat",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "file:include/camera_types.h",
+        "file:include/camera_storage.h",
+        "file:include/player_types.h",
+        "file:include/player_state.h",
+        "function:src/ovl/player_companion.c:playerPrepareCameraTransition",
+        "file:src/ovl/player_companion.c"
+      ],
+      "preconditions": [
+        "All consumed numeric operands lie above protected locals and frame metadata. Inputs are integer/code-reference or finite f32 numeric values, converted by scriptVmPopFloat with original f32 rounding. Captured caller VM, actor state, writable value storage and C stack remain live and disjoint from camera, primary-player and area fields written by the helper. No concurrent updates, area replacement or VM context replacement occur.",
+        "This conditional contract covers immediate source-bound writes and normal return only. The result is integer zero and scheduling continues. It does not establish retail reachability, renderer validity, later interpolation, gameplay synchronization or borrowed-resource lifetime.",
+        "Push order destination eye X,Y,Z,target X,Y,Z,duration; pop duration then target Z,Y,X then eye Z,Y,X. Valid readable camera zero and writable primary gPlayerState.modeState are required. The local scalar gRenderCameras declaration in player_companion.c is frozen by the whole-source binding, in addition to MatrixCamera layout.",
+        "Snapshot current camera eye into player offsets 0xA0,0xA4,0xA8 and current camera target into 0xB8,0xBC,0xC0. Copy destination eye into 0xAC,0xB0,0xB4 and destination target into 0xC4,0xC8,0xCC. Store converted duration at cameraDuration+0xD4 and copy it to cameraRemaining+0xD0. No native-stack array pointer is retained.",
+        "Immediate helper performs only copies: finite zero and negative duration are stored as supplied, without division or clamping. A positive duration is required by the intended later transition consumer, whose execution and termination are not established by this preparation contract. Snapshot endpoints and duration do not by themselves start a transition.",
+        "No change to primary mode, permissions, update/leave callbacks, elapsed mode clock, current camera or actor pose occurs. No callback invocation, queue, allocation, interpolation, rendering synchronization or transport occurs synchronously. Primary player is the destination record, not the calling actor."
+      ],
+      "evidence": "Original Ghidra 0x801205CC and 0x80112698 establish seven numeric pops, twelve endpoint copies and two timing stores with no mode-change/helper call. Source-bound review requires exact seven-argument/-6 scalar schema. Three authored original-instruction probes cover durations 1.5, zero and -2. Existing camera endpoints are captured; requested endpoints and both time fields are stored unchanged. Player mode and camera records remain unchanged. All preserve three lower values, frame metadata and guarded VM/actor/player/camera/area/pool storage. Sixteen native/helper fingerprints agree with ROM and six native bodies agree with Ghidra. Later rendering/interpolation, invalid conversion domains and concurrent lifetimes are untested.",
+      "runtime_status": "bounded_original_instruction_probes_passed"
+    },
+    {
+      "function": "actorScriptSetNearClipDistance",
+      "file": "src/ovl/actor_script_collection_profile.c",
+      "sha256": "ef5d17a2deb06b7d6f6b4e8ffd78e8953456ff51e90150a8faadcd378c0e8be4",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace the numeric operand with integer zero after storing f32 nearClip in the current area configuration.",
+      "dependencies": [
+        "file:include/object_types.h",
+        "file:include/actor_script.h",
+        "file:include/script_vm.h",
+        "function:src/ovl/script_vm.c:scriptVmPopFloat",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "file:include/scene_types.h",
+        "file:include/scene_configuration.h"
+      ],
+      "preconditions": [
+        "All consumed numeric operands lie above protected locals and frame metadata. Inputs are integer/code-reference or finite f32 numeric values, converted by scriptVmPopFloat with original f32 rounding. Captured caller VM, actor state, writable value storage and C stack remain live and disjoint from camera, primary-player and area fields written by the helper. No concurrent updates, area replacement or VM context replacement occur.",
+        "This conditional contract covers immediate source-bound writes and normal return only. The result is integer zero and scheduling continues. It does not establish retail reachability, renderer validity, later interpolation, gameplay synchronization or borrowed-resource lifetime.",
+        "The loaded gCurrentAreaConfiguration pointer must identify stable writable configuration storage covering nearClip at 0x28. No null, loaded-area or kind check occurs. The pointer and other configuration fields are unchanged.",
+        "Store the converted f32 exactly, including signed zero and finite negative values. No positive-distance requirement, near/far ordering validation, clamping or projection computation occurs in this native; legal later projection inputs are separate.",
+        "No camera or projection matrix, fog display-list command, color, callback, queue, allocation or transport is updated synchronously. Near/far and fog start/end may temporarily be inconsistent; this contract does not establish their validity for downstream consumers."
+      ],
+      "evidence": "Original Ghidra 0x80120800 confirms the direct current-area field store and integer-zero result; fog conversion uses truncation after scriptVmPopFloat. Source-bound immediate footprint review. Three authored original-instruction probes store 2.5, -4 and negative zero with exact raw f32 bits at the near field only. All preserve three lower values, frame metadata and guarded VM/actor/player/camera/area/pool storage. Sixteen native/helper fingerprints agree with ROM and six native bodies agree with Ghidra. Later rendering/interpolation, invalid conversion domains and concurrent lifetimes are untested.",
+      "runtime_status": "bounded_original_instruction_probes_passed"
+    },
+    {
+      "function": "actorScriptSetFarClipDistance",
+      "file": "src/ovl/actor_script_collection_profile.c",
+      "sha256": "b0d31a5efb8478e3d7817df57b69ff79098b198ca509be87f34f96731d06dad4",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace the numeric operand with integer zero after storing f32 farClip in the current area configuration.",
+      "dependencies": [
+        "file:include/object_types.h",
+        "file:include/actor_script.h",
+        "file:include/script_vm.h",
+        "function:src/ovl/script_vm.c:scriptVmPopFloat",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "file:include/scene_types.h",
+        "file:include/scene_configuration.h"
+      ],
+      "preconditions": [
+        "All consumed numeric operands lie above protected locals and frame metadata. Inputs are integer/code-reference or finite f32 numeric values, converted by scriptVmPopFloat with original f32 rounding. Captured caller VM, actor state, writable value storage and C stack remain live and disjoint from camera, primary-player and area fields written by the helper. No concurrent updates, area replacement or VM context replacement occur.",
+        "This conditional contract covers immediate source-bound writes and normal return only. The result is integer zero and scheduling continues. It does not establish retail reachability, renderer validity, later interpolation, gameplay synchronization or borrowed-resource lifetime.",
+        "The loaded gCurrentAreaConfiguration pointer must identify stable writable configuration storage covering farClip at 0x24. No null, loaded-area or kind check occurs. The pointer and other configuration fields are unchanged.",
+        "Store the converted f32 exactly, including signed zero and finite negative values. No positive-distance requirement, near/far ordering validation, clamping or projection computation occurs in this native; legal later projection inputs are separate.",
+        "No camera or projection matrix, fog display-list command, color, callback, queue, allocation or transport is updated synchronously. Near/far and fog start/end may temporarily be inconsistent; this contract does not establish their validity for downstream consumers."
+      ],
+      "evidence": "Original Ghidra 0x80120844 confirms the direct current-area field store and integer-zero result; fog conversion uses truncation after scriptVmPopFloat. Source-bound immediate footprint review. Three authored original-instruction probes store 2.5, -4 and negative zero with exact raw f32 bits at the far field only. All preserve three lower values, frame metadata and guarded VM/actor/player/camera/area/pool storage. Sixteen native/helper fingerprints agree with ROM and six native bodies agree with Ghidra. Later rendering/interpolation, invalid conversion domains and concurrent lifetimes are untested.",
+      "runtime_status": "bounded_original_instruction_probes_passed"
+    },
+    {
+      "function": "actorScriptSetFogStart",
+      "file": "src/ovl/actor_script_collection_profile.c",
+      "sha256": "a60b7b7da7f5cd205cf97ccebe5eda495a769700a777f6c4f993eaca2945a2fd",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace the numeric operand with integer zero after storing truncated signed32 fogStart in the current area configuration.",
+      "dependencies": [
+        "file:include/object_types.h",
+        "file:include/actor_script.h",
+        "file:include/script_vm.h",
+        "function:src/ovl/script_vm.c:scriptVmPopFloat",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "file:include/scene_types.h",
+        "file:include/scene_configuration.h"
+      ],
+      "preconditions": [
+        "All consumed numeric operands lie above protected locals and frame metadata. Inputs are integer/code-reference or finite f32 numeric values, converted by scriptVmPopFloat with original f32 rounding. Captured caller VM, actor state, writable value storage and C stack remain live and disjoint from camera, primary-player and area fields written by the helper. No concurrent updates, area replacement or VM context replacement occur.",
+        "This conditional contract covers immediate source-bound writes and normal return only. The result is integer zero and scheduling continues. It does not establish retail reachability, renderer validity, later interpolation, gameplay synchronization or borrowed-resource lifetime.",
+        "The loaded gCurrentAreaConfiguration pointer must identify stable writable configuration storage covering fogStart at 0x30. No null, loaded-area or kind check occurs. The pointer and other configuration fields are unchanged.",
+        "Pop converts even integer/code-reference input to f32 first, then truncates that f32 toward zero to signed32 for the configuration store. The converted f32 must be finite and its truncation fit s32; an original integer near INT_MAX can round to 2147483648 and is therefore unsupported. Negative values are stored without clamping; no halfword narrowing occurs.",
+        "No camera or projection matrix, fog display-list command, color, callback, queue, allocation or transport is updated synchronously. Near/far and fog start/end may temporarily be inconsistent; this contract does not establish their validity for downstream consumers."
+      ],
+      "evidence": "Original Ghidra 0x801208CC confirms the direct current-area field store and integer-zero result; fog conversion uses truncation after scriptVmPopFloat. Source-bound immediate footprint review. Three authored original-instruction probes confirm -7.75 to -7, +7.75 to 7, and integer 16777217 rounded through binary32 to 16777216 before integer truncation, writing only fog start. All preserve three lower values, frame metadata and guarded VM/actor/player/camera/area/pool storage. Sixteen native/helper fingerprints agree with ROM and six native bodies agree with Ghidra. Later rendering/interpolation, invalid conversion domains and concurrent lifetimes are untested.",
+      "runtime_status": "bounded_original_instruction_probes_passed"
+    },
+    {
+      "function": "actorScriptSetFogEnd",
+      "file": "src/ovl/actor_script_collection_profile.c",
+      "sha256": "0557f8b60c8cc1b7cc576ef734ae8b579b7b990ed51ab0ebc1ca9189a65f48c2",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace the numeric operand with integer zero after storing truncated signed32 fogEnd in the current area configuration.",
+      "dependencies": [
+        "file:include/object_types.h",
+        "file:include/actor_script.h",
+        "file:include/script_vm.h",
+        "function:src/ovl/script_vm.c:scriptVmPopFloat",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "file:include/scene_types.h",
+        "file:include/scene_configuration.h"
+      ],
+      "preconditions": [
+        "All consumed numeric operands lie above protected locals and frame metadata. Inputs are integer/code-reference or finite f32 numeric values, converted by scriptVmPopFloat with original f32 rounding. Captured caller VM, actor state, writable value storage and C stack remain live and disjoint from camera, primary-player and area fields written by the helper. No concurrent updates, area replacement or VM context replacement occur.",
+        "This conditional contract covers immediate source-bound writes and normal return only. The result is integer zero and scheduling continues. It does not establish retail reachability, renderer validity, later interpolation, gameplay synchronization or borrowed-resource lifetime.",
+        "The loaded gCurrentAreaConfiguration pointer must identify stable writable configuration storage covering fogEnd at 0x34. No null, loaded-area or kind check occurs. The pointer and other configuration fields are unchanged.",
+        "Pop converts even integer/code-reference input to f32 first, then truncates that f32 toward zero to signed32 for the configuration store. The converted f32 must be finite and its truncation fit s32; an original integer near INT_MAX can round to 2147483648 and is therefore unsupported. Negative values are stored without clamping; no halfword narrowing occurs.",
+        "No camera or projection matrix, fog display-list command, color, callback, queue, allocation or transport is updated synchronously. Near/far and fog start/end may temporarily be inconsistent; this contract does not establish their validity for downstream consumers."
+      ],
+      "evidence": "Original Ghidra 0x8012095C confirms the direct current-area field store and integer-zero result; fog conversion uses truncation after scriptVmPopFloat. Source-bound immediate footprint review. Three authored original-instruction probes confirm -7.75 to -7, +7.75 to 7, and integer 16777217 rounded through binary32 to 16777216 before integer truncation, writing only fog end. All preserve three lower values, frame metadata and guarded VM/actor/player/camera/area/pool storage. Sixteen native/helper fingerprints agree with ROM and six native bodies agree with Ghidra. Later rendering/interpolation, invalid conversion domains and concurrent lifetimes are untested.",
+      "runtime_status": "bounded_original_instruction_probes_passed"
+    },
+    {
+      "function": "actorScriptSetItemMaterialFrame",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "6ac16cbf4e3ebb0beb78b06bef668e0131bf5143c93855db5b230478d9378d52",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 2,
+      "stack_delta": -1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace handle and material frame with integer zero after storing the frame\u2019s low 16 bits and stopping material animation when the item is available.",
+      "dependencies": [
+        "function:src/ovl/actor_script_queries.c:objectResolveAvailableHandle",
+        "function:src/game/object_hierarchy.c:objectFindLiveByHandle",
+        "function:src/game/keyed_pool.c:keyedPoolGetValue",
+        "function:src/game/keyed_pool.c:keyedPoolFindEntry",
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "file:src/game/object_hierarchy.c",
+        "file:include/item_state.h",
+        "file:include/item_types.h",
+        "file:include/actor_script.h",
+        "file:include/object_types.h",
+        "file:include/object_flags.h",
+        "file:include/keyed_pool_types.h",
+        "file:include/script_vm.h",
+        "file:include/script_value.h",
+        "file:docs/LOCAL_SDK_FILES.json",
+        "file:config/pikachu.yaml",
+        "file:tools/materialize_ultralib.py",
+        "file:config/symbol_addrs.txt",
+        "function:src/ovl/item_registry.c:itemSetMaterialFrame"
+      ],
+      "preconditions": [
+        "Numeric operands lie above protected locals and frame metadata. Integer/code-reference values are signed 32-bit; floats converted to integers must be finite and signed-32-bit-representable, with fractions truncated. The caller actor, actor state, saved VM and owned value storage remain live throughout the call. Affected item state, object hierarchy and native C-stack scratch must not alias VM contexts, values, protected frames or program storage. Concurrent item mutation, destruction and context replacement are excluded.",
+        "Lookup uses a positive-capacity initialized object handle pool with valid acyclic hash chains. It reads registry entries and writes only local predecessor scratch, without changing LRU state, registry links or global cursors. Destruction-marked objects (flags 0x30) are unavailable. Every nonnull target used by a setter must have valid initialized ItemStatePrefix storage; these wrappers do not enforce the item runtime-kind check. Non-item and self-actor targets are outside the supported item domain.",
+        "All operands are consumed even when lookup fails, and one integer zero is pushed to the captured VM before returning continuation zero. The result is not an acknowledgement that a target existed. These setters retain no native-stack pointer and do not extend item, animation or model lifetimes. Only immediate storage effects are reviewed; later item updates and rendering require their own resource validity. No runtime claim is made.",
+        "The wrapper resolves an available handle: zero, missing, destruction-marked and toolbox-owned items are ignored. Other ownership states, including suspended items, are not excluded by this resolver.",
+        "Operands are bottom-to-top item handle then frame. Original 0x80114614 stores a halfword at state+0x48 (materialTrack.value) and zero at state+0x3C (materialAnimationActive). Frame values outside signed 16-bit range are truncated by the target halfword store; ordinary rendering interpretation requires a valid frame identifier. The material key pointer, track time and adjacent bytes are preserved.",
+        "No animation program is evaluated, resource is looked up, or drawing callback runs. Selecting a fixed frame disables future automatic material animation but does not synchronously render or validate that frame."
+      ],
+      "evidence": "Independent original Ghidra wrapper and itemSetMaterialFrame disassembly in /tmp/item-setters-original.json confirms operand order, captured VM, conditional helper writes and zero result. Full unchanged lookup/value helpers are source-bound; animation and recursive scale closures reuse reviewed TryHoldItem/CreateItem helpers where called. No runtime claim.",
+      "runtime_status": "untested"
+    },
+    {
+      "function": "actorScriptSetItemAnimation",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "b867bb6b4a948a4dafc5e9817396b31959209effc242c6fb413dc8a7225f06d1",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 2,
+      "stack_delta": -1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace handle and animation identifier with integer zero after restarting the selected material track and marking it active when the item is available.",
+      "dependencies": [
+        "function:src/ovl/actor_script_queries.c:objectResolveAvailableHandle",
+        "function:src/game/object_hierarchy.c:objectFindLiveByHandle",
+        "function:src/game/keyed_pool.c:keyedPoolGetValue",
+        "function:src/game/keyed_pool.c:keyedPoolFindEntry",
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "file:src/game/object_hierarchy.c",
+        "file:include/item_state.h",
+        "file:include/item_types.h",
+        "file:include/actor_script.h",
+        "file:include/object_types.h",
+        "file:include/object_flags.h",
+        "file:include/keyed_pool_types.h",
+        "file:include/script_vm.h",
+        "file:include/script_value.h",
+        "file:docs/LOCAL_SDK_FILES.json",
+        "file:config/pikachu.yaml",
+        "file:tools/materialize_ultralib.py",
+        "file:config/symbol_addrs.txt",
+        "function:src/ovl/item_registry.c:itemStartMaterialAnimation",
+        "function:src/game/animation_tracks.c:animationIntegerTrackInitialize",
+        "function:src/game/animation_tracks.c:animationIntegerTrackEvaluate",
+        "file:include/integer_animation_types.h",
+        "file:include/integer_animation.h",
+        "file:include/texture_animation_programs.h"
+      ],
+      "preconditions": [
+        "Numeric operands lie above protected locals and frame metadata. Integer/code-reference values are signed 32-bit; floats converted to integers must be finite and signed-32-bit-representable, with fractions truncated. The caller actor, actor state, saved VM and owned value storage remain live throughout the call. Affected item state, object hierarchy and native C-stack scratch must not alias VM contexts, values, protected frames or program storage. Concurrent item mutation, destruction and context replacement are excluded.",
+        "Lookup uses a positive-capacity initialized object handle pool with valid acyclic hash chains. It reads registry entries and writes only local predecessor scratch, without changing LRU state, registry links or global cursors. Destruction-marked objects (flags 0x30) are unavailable. Every nonnull target used by a setter must have valid initialized ItemStatePrefix storage; these wrappers do not enforce the item runtime-kind check. Non-item and self-actor targets are outside the supported item domain.",
+        "All operands are consumed even when lookup fails, and one integer zero is pushed to the captured VM before returning continuation zero. The result is not an acknowledgement that a target existed. These setters retain no native-stack pointer and do not extend item, animation or model lifetimes. Only immediate storage effects are reviewed; later item updates and rendering require their own resource validity. No runtime claim is made.",
+        "The wrapper resolves an available handle: zero, missing, destruction-marked and toolbox-owned items are ignored. Other ownership states, including suspended items, are not excluded by this resolver.",
+        "Operands are bottom-to-top item handle then animation-table index. On a live available target, the index is nonnegative and selects a readable gTextureFrameAnimationPrograms entry. The program is borrowed and remains valid for subsequent playback; a null program is supported as a held zero-value track. No animation resource is allocated or copied.",
+        "Initialization writes track.key, track.value zero and track.time zero, evaluates once with step zero, then stores materialAnimationActive=1 at state+0x3C. Evaluation may follow negative-duration mode-3 relative key jumps, hold a key, consume a mode-2 one-shot, or evaluate mode-0/1 output. The key stream and all relative targets must be readable and valid, jumps must terminate, integer span arithmetic and float-to-integer interpolation must be representable, and interpolation duration must be nonzero.",
+        "Track evaluation writes only the target track and native local output. It is deterministic and invokes no RNG, resource loader or callback. No texture cache lookup, DMA, allocation, rendering or ownership change occurs. The requested animation may already alter the retained frame during this immediate step-zero evaluation."
+      ],
+      "evidence": "Independent original Ghidra wrapper and itemStartMaterialAnimation disassembly in /tmp/item-setters-original.json confirms operand order, captured VM, conditional helper writes and zero result. Full unchanged lookup/value helpers are source-bound; animation and recursive scale closures reuse reviewed TryHoldItem/CreateItem helpers where called. No runtime claim.",
+      "runtime_status": "untested"
+    },
+    {
+      "function": "actorScriptSetItemScale",
+      "file": "src/ovl/actor_script_collection_profile.c",
+      "sha256": "89519412bd230aa692c51ae69c80a2fa1b9b5341d9e56f96daacc4baf9aecd52",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 2,
+      "stack_delta": -1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace handle and scale multiplier with integer zero after changing the available item\u2019s uniform scale and recursively updating hierarchy bounds.",
+      "dependencies": [
+        "function:src/ovl/actor_script_queries.c:objectResolveAvailableHandle",
+        "function:src/game/object_hierarchy.c:objectFindLiveByHandle",
+        "function:src/game/keyed_pool.c:keyedPoolGetValue",
+        "function:src/game/keyed_pool.c:keyedPoolFindEntry",
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "file:src/game/object_hierarchy.c",
+        "file:include/item_state.h",
+        "file:include/item_types.h",
+        "file:include/actor_script.h",
+        "file:include/object_types.h",
+        "file:include/object_flags.h",
+        "file:include/keyed_pool_types.h",
+        "file:include/script_vm.h",
+        "file:include/script_value.h",
+        "file:docs/LOCAL_SDK_FILES.json",
+        "file:config/pikachu.yaml",
+        "file:tools/materialize_ultralib.py",
+        "file:config/symbol_addrs.txt",
+        "function:src/ovl/item_registry.c:itemSetScale",
+        "function:src/game/object_hierarchy.c:objectScaleHierarchyBounds",
+        "file:src/ovl/item_registry.c",
+        "file:include/item_kind.h",
+        "file:include/item_size.h",
+        "file:include/scene_types.h",
+        "file:include/scene_configuration.h",
+        "function:src/ovl/script_vm.c:scriptVmPopFloat",
+        "function:src/ovl/script_vm.c:scriptValueGetFloat"
+      ],
+      "preconditions": [
+        "Numeric operands lie above protected locals and frame metadata. Integer/code-reference values are signed 32-bit; floats converted to integers must be finite and signed-32-bit-representable, with fractions truncated. The caller actor, actor state, saved VM and owned value storage remain live throughout the call. Affected item state, object hierarchy and native C-stack scratch must not alias VM contexts, values, protected frames or program storage. Concurrent item mutation, destruction and context replacement are excluded.",
+        "Lookup uses a positive-capacity initialized object handle pool with valid acyclic hash chains. It reads registry entries and writes only local predecessor scratch, without changing LRU state, registry links or global cursors. Destruction-marked objects (flags 0x30) are unavailable. Every nonnull target used by a setter must have valid initialized ItemStatePrefix storage; these wrappers do not enforce the item runtime-kind check. Non-item and self-actor targets are outside the supported item domain.",
+        "All operands are consumed even when lookup fails, and one integer zero is pushed to the captured VM before returning continuation zero. The result is not an acknowledgement that a target existed. These setters retain no native-stack pointer and do not extend item, animation or model lifetimes. Only immediate storage effects are reviewed; later item updates and rendering require their own resource validity. No runtime claim is made.",
+        "The wrapper resolves an available handle: zero, missing, destruction-marked and toolbox-owned items are ignored. Other ownership states, including suspended items, are not excluded by this resolver.",
+        "Operands are bottom-to-top item handle then finite nonnegative f32 scale multiplier. The target kind selects a valid catalog record, its baseRadius is initialized, and the current area configuration is live. Area objectScale, catalog scale, hierarchy scales, radii and all multiplied intermediates are finite; the hierarchy is acyclic with writable child/sibling objects and enough native stack for recursion.",
+        "The helper first restores the root radius from state.baseRadius, computes multiplier times area.objectScale times catalog scale, writes all three root scale components, then calls objectScaleHierarchyBounds with parent scale one. Each visited radius is multiplied by combined inherited X scale times 0.5; child traversal inherits that combined scale, while siblings retain the incoming parent scale. Repeated calls can rescale existing child radii again; this is not a promise to restore every child\u2019s original bounds.",
+        "Only root scales and visited radii change. State.baseRadius, positions, matrices, item catalog, ownership and registry links are preserved. No terrain query, allocation, callback, asset read, queue or DMA is performed."
+      ],
+      "evidence": "Independent original Ghidra wrapper and itemSetScale disassembly in /tmp/item-setters-original.json confirms operand order, captured VM, conditional helper writes and zero result. Full unchanged lookup/value helpers are source-bound; animation and recursive scale closures reuse reviewed TryHoldItem/CreateItem helpers where called. No runtime claim.",
+      "runtime_status": "untested"
+    },
+    {
+      "function": "actorScriptSetItemTint",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "a8757c9c8d0d4f3906385d31401f74fd60d4120e2450929f8d23c55377d93557",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 5,
+      "stack_delta": -4,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace item handle and RGBA channel operands with integer zero after storing their low eight bits in the live item\u2019s tint.",
+      "dependencies": [
+        "function:src/game/object_hierarchy.c:objectFindLiveByHandle",
+        "function:src/game/keyed_pool.c:keyedPoolGetValue",
+        "function:src/game/keyed_pool.c:keyedPoolFindEntry",
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "file:src/game/object_hierarchy.c",
+        "file:include/item_state.h",
+        "file:include/item_types.h",
+        "file:include/actor_script.h",
+        "file:include/object_types.h",
+        "file:include/object_flags.h",
+        "file:include/keyed_pool_types.h",
+        "file:include/script_vm.h",
+        "file:include/script_value.h",
+        "file:docs/LOCAL_SDK_FILES.json",
+        "file:config/pikachu.yaml",
+        "file:tools/materialize_ultralib.py",
+        "file:config/symbol_addrs.txt",
+        "function:src/ovl/item_registry.c:itemSetTint"
+      ],
+      "preconditions": [
+        "Numeric operands lie above protected locals and frame metadata. Integer/code-reference values are signed 32-bit; floats converted to integers must be finite and signed-32-bit-representable, with fractions truncated. The caller actor, actor state, saved VM and owned value storage remain live throughout the call. Affected item state, object hierarchy and native C-stack scratch must not alias VM contexts, values, protected frames or program storage. Concurrent item mutation, destruction and context replacement are excluded.",
+        "Lookup uses a positive-capacity initialized object handle pool with valid acyclic hash chains. It reads registry entries and writes only local predecessor scratch, without changing LRU state, registry links or global cursors. Destruction-marked objects (flags 0x30) are unavailable. Every nonnull target used by a setter must have valid initialized ItemStatePrefix storage; these wrappers do not enforce the item runtime-kind check. Non-item and self-actor targets are outside the supported item domain.",
+        "All operands are consumed even when lookup fails, and one integer zero is pushed to the captured VM before returning continuation zero. The result is not an acknowledgement that a target existed. These setters retain no native-stack pointer and do not extend item, animation or model lifetimes. Only immediate storage effects are reviewed; later item updates and rendering require their own resource validity. No runtime claim is made.",
+        "The helper uses direct live-handle lookup, so toolbox and suspended ownership do not suppress these writes. A missing or destruction-marked handle is ignored.",
+        "Operands are bottom-to-top handle, red, green, blue and alpha; the wrapper pops alpha first. Each converted signed-32-bit channel is narrowed to u8 before the helper call. Values are truncated modulo 256, not clamped; 0 through 255 is the ordinary color domain.",
+        "The helper writes exactly state+0x4C through state+0x4F, in RGBA order. It does not refresh lighting command buffers, evaluate a material track, change rendering mode, or invoke a GPU operation. No callbacks, allocation or transport occur."
+      ],
+      "evidence": "Independent original Ghidra wrapper and itemSetTint disassembly in /tmp/item-setters-original.json confirms operand order, captured VM, conditional helper writes and zero result. Full unchanged lookup/value helpers are source-bound; animation and recursive scale closures reuse reviewed TryHoldItem/CreateItem helpers where called. No runtime claim.",
+      "runtime_status": "untested"
+    },
+    {
+      "function": "actorScriptSetItemDrawMode",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "75e05a7f73ec3cb9c56c5d65386c29103cad6aea9ae50122ed0c32a4455aca37",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 2,
+      "stack_delta": -1,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace item handle and draw-mode operand with integer zero after storing the mode\u2019s low 16 bits in a live item.",
+      "dependencies": [
+        "function:src/game/object_hierarchy.c:objectFindLiveByHandle",
+        "function:src/game/keyed_pool.c:keyedPoolGetValue",
+        "function:src/game/keyed_pool.c:keyedPoolFindEntry",
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "file:src/game/object_hierarchy.c",
+        "file:include/item_state.h",
+        "file:include/item_types.h",
+        "file:include/actor_script.h",
+        "file:include/object_types.h",
+        "file:include/object_flags.h",
+        "file:include/keyed_pool_types.h",
+        "file:include/script_vm.h",
+        "file:include/script_value.h",
+        "file:docs/LOCAL_SDK_FILES.json",
+        "file:config/pikachu.yaml",
+        "file:tools/materialize_ultralib.py",
+        "file:config/symbol_addrs.txt",
+        "function:src/ovl/item_registry.c:itemSetDrawMode"
+      ],
+      "preconditions": [
+        "Numeric operands lie above protected locals and frame metadata. Integer/code-reference values are signed 32-bit; floats converted to integers must be finite and signed-32-bit-representable, with fractions truncated. The caller actor, actor state, saved VM and owned value storage remain live throughout the call. Affected item state, object hierarchy and native C-stack scratch must not alias VM contexts, values, protected frames or program storage. Concurrent item mutation, destruction and context replacement are excluded.",
+        "Lookup uses a positive-capacity initialized object handle pool with valid acyclic hash chains. It reads registry entries and writes only local predecessor scratch, without changing LRU state, registry links or global cursors. Destruction-marked objects (flags 0x30) are unavailable. Every nonnull target used by a setter must have valid initialized ItemStatePrefix storage; these wrappers do not enforce the item runtime-kind check. Non-item and self-actor targets are outside the supported item domain.",
+        "All operands are consumed even when lookup fails, and one integer zero is pushed to the captured VM before returning continuation zero. The result is not an acknowledgement that a target existed. These setters retain no native-stack pointer and do not extend item, animation or model lifetimes. Only immediate storage effects are reviewed; later item updates and rendering require their own resource validity. No runtime claim is made.",
+        "The helper uses direct live-handle lookup, so toolbox and suspended ownership do not suppress these writes. A missing or destruction-marked handle is ignored.",
+        "Operands are bottom-to-top item handle then mode. The helper stores a halfword at state+0x3E (renderMode); arbitrary signed-32-bit input is narrowed modulo 65536. Supported later rendering semantics use mode 0 through 6; no mode validation or rendering dispatch occurs in this call.",
+        "This is the material rendering mode, distinct from ItemMode behavioral state at offset+7. No ownership, participation flags, behavior mode, lighting buffer, callback, allocation or transport changes occur."
+      ],
+      "evidence": "Independent original Ghidra wrapper and itemSetDrawMode disassembly in /tmp/item-setters-original.json confirms operand order, captured VM, conditional helper writes and zero result. Full unchanged lookup/value helpers are source-bound; animation and recursive scale closures reuse reviewed TryHoldItem/CreateItem helpers where called. No runtime claim.",
+      "runtime_status": "untested"
+    },
+    {
+      "function": "actorScriptGetAreaPathPointCount",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "e37f541245dd9cf3f4fb5f95f18ccc2d2ac194654e680fbda7232b8ac966e4e5",
+      "effect": "replace_argument_with_scalar",
+      "arguments": 1,
+      "stack_delta": 0,
+      "result_tag": "integer",
+      "scheduling": "continue",
+      "result_semantics": "Replace the path index with the signed count word from its current-area ScenePathEntry; no count validation or clamping occurs.",
+      "dependencies": [
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "function:src/ovl/script_vm.c:scriptValueSetFloat",
+        "file:include/path_query.h",
+        "file:include/scene_types.h",
+        "file:include/scene_configuration.h",
+        "file:include/asset_loader.h",
+        "file:include/maze_types.h",
+        "file:docs/LOCAL_SDK_FILES.json",
+        "file:config/pikachu.yaml",
+        "file:config/symbol_addrs.txt",
+        "file:tools/materialize_ultralib.py",
+        "file:include/PR/os_libc.h",
+        "function:src/ovl/actor_script_queries.c:areaGetPathPointCount"
+      ],
+      "preconditions": [
+        "The calling actor, live actor state, retained VM, owned value storage and helper C stack remain valid and nonoverlapping with scene configurations, path/terrain resources, object pools and queried objects. Every consumed argument lies above protected locals and frame metadata; the lowest consumed slot can receive the result. No concurrent writer, context replacement, area teardown or destruction interleaves the call.",
+        "Arguments are integer/code-reference payloads or finite floats in the supported signed 32-bit conversion domain, truncated toward zero by the original VM. Negative axes are outside the reviewed domain: source tests only axis<3 or axis>=3 and does not reject negative indices.",
+        "Under the branch-specific prerequisites, writes are limited to helper C-stack temporaries, VM depth changes and the result value replacing the lowest consumed operand slot. Lower values, frame metadata, queried object/scene/terrain/pool storage and unrelated VM fields remain unchanged. FPU flags may change; enabled floating-point traps and concurrent mutation are excluded.",
+        "Original ROM SDK fixed-four-byte bcopy semantics are required by numeric get/set helpers; source-frame fingerprints do not authenticate SDK assembly. The tracked SDK manifest/configuration/materializer and matching original SDK objects remain verification obligations. No SDK source is included by these contracts.",
+        "The current-area configuration is initialized and remains loaded. The converted path index is nonnegative and selects a readable eight-byte ScenePathEntry in its paths table at configuration+0x70. No path-table bound is stored or checked by this accessor. The count word itself is returned as stored; points storage is not dereferenced."
+      ],
+      "evidence": "Source and original Ghidra 0x8011E6D8/0x80117B88 agree on one integer pop, table entry stride8/count at+0, integer replacement and continue. Source-bound immediate storage review only; no runtime observations or gameplay reachability are claimed."
+    },
+    {
+      "function": "actorScriptGetAreaPathPointCoordinate",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "4296608fa9c5f5c3ef62669831e62f9e473948f8cac52d4e4db361e26af75f67",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 3,
+      "stack_delta": -2,
+      "result_tag": "float",
+      "scheduling": "continue",
+      "result_semantics": "Consume path index, point index, axis; return the raw world-space coordinate, or float -65536 for axis>=3 or point>=count.",
+      "dependencies": [
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "function:src/ovl/script_vm.c:scriptValueSetFloat",
+        "file:include/path_query.h",
+        "file:include/scene_types.h",
+        "file:include/scene_configuration.h",
+        "file:include/asset_loader.h",
+        "file:include/maze_types.h",
+        "file:docs/LOCAL_SDK_FILES.json",
+        "file:config/pikachu.yaml",
+        "file:config/symbol_addrs.txt",
+        "file:tools/materialize_ultralib.py",
+        "file:include/PR/os_libc.h",
+        "function:src/ovl/actor_script_queries.c:areaGetPathPointCoordinate"
+      ],
+      "preconditions": [
+        "The calling actor, live actor state, retained VM, owned value storage and helper C stack remain valid and nonoverlapping with scene configurations, path/terrain resources, object pools and queried objects. Every consumed argument lies above protected locals and frame metadata; the lowest consumed slot can receive the result. No concurrent writer, context replacement, area teardown or destruction interleaves the call.",
+        "Arguments are integer/code-reference payloads or finite floats in the supported signed 32-bit conversion domain, truncated toward zero by the original VM. Negative axes are outside the reviewed domain: source tests only axis<3 or axis>=3 and does not reject negative indices.",
+        "Under the branch-specific prerequisites, writes are limited to helper C-stack temporaries, VM depth changes and the result value replacing the lowest consumed operand slot. Lower values, frame metadata, queried object/scene/terrain/pool storage and unrelated VM fields remain unchanged. FPU flags may change; enabled floating-point traps and concurrent mutation are excluded.",
+        "Original ROM SDK fixed-four-byte bcopy semantics are required by numeric get/set helpers; source-frame fingerprints do not authenticate SDK assembly. The tracked SDK manifest/configuration/materializer and matching original SDK objects remain verification obligations. No SDK source is included by these contracts.",
+        "Push order is path index, point index, then axis. Converted point and axis are nonnegative. Axis>=3 produces -65536 before any area/path-table access. For axis0..2, the loaded current-area configuration and nonnegative path index must select a readable ScenePathEntry; path bounds are not checked.",
+        "For axis0..2, the entry count is a valid nonnegative authored count. Point>=count returns -65536 without reading point data. Point<count requires live readable borrowed XYZ triples with no overflow in point*12 or address calculations. Negative point/axis values are not safely rejected; the sentinel is not a general invalid-index guard."
+      ],
+      "evidence": "Source and original Ghidra 0x8011E718/0x80117BA4 agree on three integer pops, axis-first guard, count upper-bound guard, points pointer at entry+4 and coordinate offset point*12+axis*4. Source-bound immediate storage review only; no runtime observations or gameplay reachability are claimed."
+    },
+    {
+      "function": "actorScriptGetFirstPathPointCoordinate",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "756f2666e881d8143f0c9126800491202611d4a6f6c1a22303a26a6b4dde7349",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 2,
+      "stack_delta": -1,
+      "result_tag": "float",
+      "scheduling": "continue",
+      "result_semantics": "Consume path handle followed by axis. Return zero for a missing/destruction-pending object, -65536 for a resolved non-path kind or axis>=3, otherwise the first raw point coordinate.",
+      "dependencies": [
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "function:src/ovl/script_vm.c:scriptValueSetFloat",
+        "file:include/path_query.h",
+        "file:include/scene_types.h",
+        "file:include/scene_configuration.h",
+        "file:include/asset_loader.h",
+        "file:include/maze_types.h",
+        "file:docs/LOCAL_SDK_FILES.json",
+        "file:config/pikachu.yaml",
+        "file:config/symbol_addrs.txt",
+        "file:tools/materialize_ultralib.py",
+        "file:include/PR/os_libc.h",
+        "function:src/ovl/actor_script_queries.c:pathGetFirstPointCoordinateByHandle",
+        "function:src/game/object_hierarchy.c:objectFindLiveByHandle",
+        "function:src/game/keyed_pool.c:keyedPoolGetValue",
+        "function:src/game/keyed_pool.c:keyedPoolFindEntry",
+        "file:include/keyed_pool.h",
+        "file:include/keyed_pool_types.h",
+        "file:include/object_lookup.h",
+        "file:linker/query_state_aliases.ld"
+      ],
+      "preconditions": [
+        "The calling actor, live actor state, retained VM, owned value storage and helper C stack remain valid and nonoverlapping with scene configurations, path/terrain resources, object pools and queried objects. Every consumed argument lies above protected locals and frame metadata; the lowest consumed slot can receive the result. No concurrent writer, context replacement, area teardown or destruction interleaves the call.",
+        "Arguments are integer/code-reference payloads or finite floats in the supported signed 32-bit conversion domain, truncated toward zero by the original VM. Negative axes are outside the reviewed domain: source tests only axis<3 or axis>=3 and does not reject negative indices.",
+        "Under the branch-specific prerequisites, writes are limited to helper C-stack temporaries, VM depth changes and the result value replacing the lowest consumed operand slot. Lower values, frame metadata, queried object/scene/terrain/pool storage and unrelated VM fields remain unchanged. FPU flags may change; enabled floating-point traps and concurrent mutation are excluded.",
+        "Original ROM SDK fixed-four-byte bcopy semantics are required by numeric get/set helpers; source-frame fingerprints do not authenticate SDK assembly. The tracked SDK manifest/configuration/materializer and matching original SDK objects remain verification obligations. No SDK source is included by these contracts.",
+        "Push order is object handle, then nonnegative axis.",
+        "The initialized object handle pool has positive capacity, valid readable bucket/chain storage, terminating chains and live nonzero object values. Lookup writes only a predecessor temporary on the helper C stack, not pool traversal state. Missing or destruction-pending objects (flags mask0x30) resolve to null; no fallback target or arbitrary callback is consulted. Any resolved object remains live for this call.",
+        "Only runtime kind0xAF denotes the supported path object. On that kind with axis0..2, object state and SceneRegionState.points at state+0xC must be live, aligned and readable through the first complete XYZ triple. No point count, empty-path, null-state or null-points check exists. Wrong kind or axis>=3 does not dereference the points."
+      ],
+      "evidence": "Source and original Ghidra 0x8011EBAC/0x801181A4/0x80007E8C/0x80041F7C/0x80041C14 agree on two integer pops, availability lookup, runtime tag0xAF and direct first-triple coordinate read. Source-bound immediate storage review only; no runtime observations or gameplay reachability are claimed."
+    },
+    {
+      "function": "actorScriptGetFollowingPathPointCoordinate",
+      "file": "src/ovl/actor_script_player_world.c",
+      "sha256": "352cc499ed7d12e35819cbc2e71e85f64e366dfc5b3e324d99fd448906776ea4",
+      "effect": "replace_arguments_with_scalar",
+      "arguments": 2,
+      "stack_delta": -1,
+      "result_tag": "float",
+      "scheduling": "continue",
+      "result_semantics": "Consume path handle followed by axis. For a supported live path, return the next raw waypoint triple coordinate after the first terrain-projected distance<=3, or the negative-X end-marker coordinate when no earlier waypoint qualifies; missing handles return0 and wrong kinds/axis>=3 return-65536.",
+      "dependencies": [
+        "function:src/ovl/script_vm.c:scriptVmPopInteger",
+        "function:src/ovl/script_vm.c:scriptVmPopValue",
+        "function:src/ovl/script_vm.c:scriptValueGetInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushInteger",
+        "function:src/ovl/script_vm.c:scriptVmPushFloat",
+        "function:src/ovl/script_vm.c:scriptVmPushValue",
+        "function:src/ovl/script_vm.c:scriptValueSetInteger",
+        "function:src/ovl/script_vm.c:scriptValueSetFloat",
+        "file:include/path_query.h",
+        "file:include/scene_types.h",
+        "file:include/scene_configuration.h",
+        "file:include/asset_loader.h",
+        "file:include/maze_types.h",
+        "file:docs/LOCAL_SDK_FILES.json",
+        "file:config/pikachu.yaml",
+        "file:config/symbol_addrs.txt",
+        "file:tools/materialize_ultralib.py",
+        "file:include/PR/os_libc.h",
+        "function:src/ovl/actor_script_queries.c:actorGetFollowingPathPointCoordinate",
+        "function:src/game/object_hierarchy.c:objectFindLiveByHandle",
+        "function:src/game/keyed_pool.c:keyedPoolGetValue",
+        "function:src/game/keyed_pool.c:keyedPoolFindEntry",
+        "file:include/keyed_pool.h",
+        "file:include/keyed_pool_types.h",
+        "file:include/object_lookup.h",
+        "file:linker/query_state_aliases.ld",
+        "function:src/ovl/area_terrain_maze.c:terrainGetWorldHeight",
+        "function:src/ovl/area_terrain_maze.c:terrainFindSurfaceLocalHeight",
+        "function:src/ovl/area_terrain_maze.c:areaFindPositionNode",
+        "function:src/ovl/area_terrain_maze.c:terrainGetNodeLocalHeight",
+        "function:src/ovl/area_terrain_maze.c:terrainGetMazeHeight",
+        "function:src/ovl/area_terrain_maze.c:terrainGetTriangleHeight",
+        "function:src/ovl/area_terrain_maze.c:terrainGetHeightMapHeight",
+        "function:src/ovl/area_terrain_maze.c:terrainSampleVertexHeight",
+        "function:src/ovl/area_terrain_maze.c:terrainSampleCellHeight",
+        "function:src/game/trigonometry.c:vector3Length",
+        "file:src/ovl/area_terrain_maze.c",
+        "file:src/game/trigonometry.c",
+        "file:include/area_maze.h",
+        "file:include/terrain_height.h",
+        "file:include/vector_metrics.h",
+        "file:include/PR/gu.h"
+      ],
+      "preconditions": [
+        "The calling actor, live actor state, retained VM, owned value storage and helper C stack remain valid and nonoverlapping with scene configurations, path/terrain resources, object pools and queried objects. Every consumed argument lies above protected locals and frame metadata; the lowest consumed slot can receive the result. No concurrent writer, context replacement, area teardown or destruction interleaves the call.",
+        "Arguments are integer/code-reference payloads or finite floats in the supported signed 32-bit conversion domain, truncated toward zero by the original VM. Negative axes are outside the reviewed domain: source tests only axis<3 or axis>=3 and does not reject negative indices.",
+        "Under the branch-specific prerequisites, writes are limited to helper C-stack temporaries, VM depth changes and the result value replacing the lowest consumed operand slot. Lower values, frame metadata, queried object/scene/terrain/pool storage and unrelated VM fields remain unchanged. FPU flags may change; enabled floating-point traps and concurrent mutation are excluded.",
+        "Original ROM SDK fixed-four-byte bcopy semantics are required by numeric get/set helpers; source-frame fingerprints do not authenticate SDK assembly. The tracked SDK manifest/configuration/materializer and matching original SDK objects remain verification obligations. No SDK source is included by these contracts.",
+        "Push order is object handle, then nonnegative axis.",
+        "The initialized object handle pool has positive capacity, valid readable bucket/chain storage, terminating chains and live nonzero object values. Lookup writes only a predecessor temporary on the helper C stack, not pool traversal state. Missing or destruction-pending objects (flags mask0x30) resolve to null; no fallback target or arbitrary callback is consulted. Any resolved object remains live for this call.",
+        "For a resolved runtime kind0xAF object, its state and borrowed XYZ triples remain live and aligned. There is at least one actual waypoint, followed by a complete readable end-marker triple whose X is finite and negative. All earlier next-waypoint X coordinates are nonnegative and finite. The traversal must encounter a marker or qualifying waypoint in a finite number of steps; index increments, byte offsets and multiplied addresses fit signed32 and do not wrap.",
+        "The first actual waypoint is always processed. Each iteration loads its full XYZ and the calling actor worldPosition at+0x44, projects BOTH Y coordinates through terrainGetWorldHeight with null external cache, then increments index/offset. The NEXT triple X<0 test precedes the <=3 distance test. A qualifying waypoint selects its NEXT raw triple, not the qualifying triple; the returned Y is the raw stored next Y, not the projected terrain height.",
+        "The distance test is full three-dimensional Euclidean length after terrain projection, not horizontal XZ-only distance. Actor/waypoint/terrain arithmetic remains finite; squared differences and their sum do not overflow. vector3Length uses original binary32 sqrt.S, not the approximate vector metric or an SDK callback. The FPU environment permits these operations without enabled traps.",
+        "Even axis>=3 does NOT bypass traversal for a live0xAF object: all path and terrain prerequisites remain necessary before the eventual -65536 return. Missing handles and wrong kinds return before terrain access.",
+        "Both terrain queries require an initialized live acyclic current-area octree, valid octant indices0..7, finite coordinates/extents and positive finite vertical search spacing. Every downward/upward binary32 step must make strict progress until a surface or finite root-height bound terminates the search. All visited node/grid data remain readable. No position-event, scene initializer, occupancy sampler or lifecycle callback is invoked by the inspected height-query chain.",
+        "Mapped terrain has positive horizontal dimensions and nonempty readable grids. Vertex/cell sampler row/column arithmetic and successors fit signed32; scaled float-to-int conversions are finite and representable. Samplers clamp indices but require positive sample dimensions. Shared mound-grid base ix/iz reads are not clamped, so those indices must already be in bounds. Triangle counts/0x28-byte records are bounded/readable; interpolation divisions and address products remain valid. Read-only terrain branches write only helper-local cached-node/output temporaries; the null external cache means no persistent node cache is written."
+      ],
+      "evidence": "Source and original Ghidra 0x8011EBFC/0x80118210 agree with waypoint advance and sentinel-before-distance ordering. Original 0x8010BC40/0x8010B20C/0x8010B124/0x8010BBC4 and terrain helpers 0x8010B528/0x8010B6D0/0x8010B9A4/0x8010B428/0x8010B4A8 were reviewed against source for read-only finite search/sampling paths. Original vector helper 0x8003A5D0 disassembly ends in sqrt.S; whole terrain/trigonometry units bind local layouts and intrinsic/disabled-TRACE declarations. Source-bound immediate storage review only; no runtime observations or gameplay reachability are claimed."
     }
   ],
   "dependency_catalog": {
@@ -11353,6 +12006,11 @@
       "kind": "file",
       "file": "include/PR/R4300.h",
       "sha256": "cee95a00719507433940ffc0283e6637279a197fc02b9858379308f45533fb09"
+    },
+    "file:include/PR/gu.h": {
+      "kind": "file",
+      "file": "include/PR/gu.h",
+      "sha256": "4af7a58438ddfa6cdffb126db7609dced0eed5b7a44e3996864901cbd7d1cf3a"
     },
     "file:include/PR/libaudio.h": {
       "kind": "file",
@@ -11533,6 +12191,11 @@
       "kind": "file",
       "file": "include/area_catalog.h",
       "sha256": "d9d88f53d1163d0d5b4845492bc8cb8baa336bcab294d7ec323d11f2521def6c"
+    },
+    "file:include/area_maze.h": {
+      "kind": "file",
+      "file": "include/area_maze.h",
+      "sha256": "5c818d297726c7558bd5fe39a5c74d5f6e1e932324a96067d4f97b92d19033d1"
     },
     "file:include/area_transition.h": {
       "kind": "file",
@@ -11859,6 +12522,11 @@
       "file": "include/object_lifecycle.h",
       "sha256": "90ccffed7559c87f923286d48280b6350bb773121006ac2b11e00de79c1354c4"
     },
+    "file:include/object_lookup.h": {
+      "kind": "file",
+      "file": "include/object_lookup.h",
+      "sha256": "73ebbf15e34d0f8a47bc0919bcbedbd65c997fb3793228f0aa86649c7a37036a"
+    },
     "file:include/object_script_query.h": {
       "kind": "file",
       "file": "include/object_script_query.h",
@@ -11883,6 +12551,11 @@
       "kind": "file",
       "file": "include/passage_types.h",
       "sha256": "c2b1361e681672b1a9290845f0b242b674504c00a5bac784404e5d553816bf24"
+    },
+    "file:include/path_query.h": {
+      "kind": "file",
+      "file": "include/path_query.h",
+      "sha256": "26a98adf6dd22550e73996ed8fd8471bb7c7662f92fbcb5e647cd0c5c06f1068"
     },
     "file:include/pikachu_actor.h": {
       "kind": "file",
@@ -11927,7 +12600,7 @@
     "file:include/progress_field_ids.h": {
       "kind": "file",
       "file": "include/progress_field_ids.h",
-      "sha256": "97f1bb642972606a790ad05103a9720bcbfe1f0fb110b94e54d3ef855c049e65"
+      "sha256": "be6265dedf39d8f26930a4bc813636549153796f2bf80181181a0c34e8d65f1e"
     },
     "file:include/progress_field_types.h": {
       "kind": "file",
@@ -12134,6 +12807,11 @@
       "file": "include/ultra64.h",
       "sha256": "f20e88de98f687b2572e41a0a1b351f89e420c4d10c1ff9da381122a53898450"
     },
+    "file:include/vector_metrics.h": {
+      "kind": "file",
+      "file": "include/vector_metrics.h",
+      "sha256": "e85e75801623ff8aa64b295a4a22fac27c258bb427d9533322072a2e7cff34a0"
+    },
     "file:include/voice_commands.h": {
       "kind": "file",
       "file": "include/voice_commands.h",
@@ -12212,7 +12890,7 @@
     "file:src/game/collection_presentation.c": {
       "kind": "file",
       "file": "src/game/collection_presentation.c",
-      "sha256": "6739882762446136bae4d5df93443c834d5d969ddb136adea9b5b9af76ea7929"
+      "sha256": "b01d776d06bfedd74914a34ad1d45bc0be5dcc6224b39409145bbb5eb0de3e6a"
     },
     "file:src/game/collision_grid.c": {
       "kind": "file",
@@ -12307,12 +12985,12 @@
     "file:src/game/runtime.c": {
       "kind": "file",
       "file": "src/game/runtime.c",
-      "sha256": "6d1b27a3c0c2c0608d402fe3341029d42555b88ab1cecad855f8de1b45fdf520"
+      "sha256": "132e7eac94d8a351d4cf9df685f2d41b2c1133c9e3f09f0d19a2c3393b23ca15"
     },
     "file:src/game/save_progress.c": {
       "kind": "file",
       "file": "src/game/save_progress.c",
-      "sha256": "a54afa34897a26e05a809c5de4ede56cd3f1f320bb08e2a5a0f6d409a13e1076"
+      "sha256": "35ec8f69fc10d2ebcbd9a180628a6ebd8e16ea28d7ce6bc04304a6e264820b34"
     },
     "file:src/game/search_tree.c": {
       "kind": "file",
@@ -12628,7 +13306,7 @@
       "kind": "function",
       "file": "src/game/collection_presentation.c",
       "function": "progressSetChapterAndUnlockMilestones",
-      "sha256": "016f6174a3c3458fc7f054d214af82ab283add19a4946dde09b8cfc9c650e349"
+      "sha256": "497ee702d57c10a3b90fcf921604a1667cf960edb99a5cf2c8ee2ba766191769"
     },
     "function:src/game/collection_presentation.c:progressUpdateChapterAfterVisit": {
       "kind": "function",
@@ -13380,6 +14058,12 @@
       "function": "cameraFadePrimarySecondaryOverlay",
       "sha256": "cb4365a268e9c466c79f11791512261b4adb11b88a8e6ec820d42c6d1b34b9ba"
     },
+    "function:src/main.c:cameraSetEyeAndTarget": {
+      "kind": "function",
+      "file": "src/main.c",
+      "sha256": "7daa140a5650b2d139686bd852166da6b1518a443df69457864af5e84a376872",
+      "function": "cameraSetEyeAndTarget"
+    },
     "function:src/main.c:cameraSetPositionAndAngles": {
       "kind": "function",
       "file": "src/main.c",
@@ -13548,6 +14232,12 @@
       "function": "actorGetAvailableTargetHandle",
       "sha256": "4b462fbe0296b830e1cb02b0782a1b8d7501f0d490becf0cc50913d40dca975d"
     },
+    "function:src/ovl/actor_script_queries.c:actorGetFollowingPathPointCoordinate": {
+      "kind": "function",
+      "file": "src/ovl/actor_script_queries.c",
+      "function": "actorGetFollowingPathPointCoordinate",
+      "sha256": "59b6bf230682f9d1db61ab7ba6622b57c267792a7076253c5d89984de8db1ba0"
+    },
     "function:src/ovl/actor_script_queries.c:actorGetHeldItemKind": {
       "kind": "function",
       "file": "src/ovl/actor_script_queries.c",
@@ -13637,6 +14327,18 @@
       "file": "src/ovl/actor_script_queries.c",
       "function": "actorTrackPlayerPrimaryObject",
       "sha256": "4fda1f5238e0bec718cf0b859a7b643eaf566967899d116317f99388ab6a69bc"
+    },
+    "function:src/ovl/actor_script_queries.c:areaGetPathPointCoordinate": {
+      "kind": "function",
+      "file": "src/ovl/actor_script_queries.c",
+      "function": "areaGetPathPointCoordinate",
+      "sha256": "66017dbceb1999634e6438d16acb36199e55889d0f35f578947416e3653384f9"
+    },
+    "function:src/ovl/actor_script_queries.c:areaGetPathPointCount": {
+      "kind": "function",
+      "file": "src/ovl/actor_script_queries.c",
+      "function": "areaGetPathPointCount",
+      "sha256": "d32c2e13d02474c04f6c87c0e6e45735d273436dab9d8388863874babd52b673"
     },
     "function:src/ovl/actor_script_queries.c:interactionConsiderObjectInRegion": {
       "kind": "function",
@@ -13728,6 +14430,12 @@
       "sha256": "0ceebdcb0dd33ca96b71730cb892b114cb2dd014be55d153f866db9e3932b294",
       "function": "objectSetUniformScaleByHandle"
     },
+    "function:src/ovl/actor_script_queries.c:pathGetFirstPointCoordinateByHandle": {
+      "kind": "function",
+      "file": "src/ovl/actor_script_queries.c",
+      "function": "pathGetFirstPointCoordinateByHandle",
+      "sha256": "669e13d1b6b37b14d0741d87fbe5768a88312ed7fa83f32548ea60b28d985943"
+    },
     "function:src/ovl/actor_script_queries.c:playerGetHeldItemHandle": {
       "kind": "function",
       "file": "src/ovl/actor_script_queries.c",
@@ -13745,6 +14453,12 @@
       "file": "src/ovl/actor_script_queries.c",
       "sha256": "cb9996b98596346ad09f73c36e3dbeeebd6bca1e863af33661ba30eb85711e78",
       "function": "sceneRegionIsHighlightedByHandle"
+    },
+    "function:src/ovl/actor_script_queries.c:scriptVmSetPrimaryCameraView": {
+      "kind": "function",
+      "file": "src/ovl/actor_script_queries.c",
+      "sha256": "909b0178d5e74a03a16f4108bb98eba6acefa4f1c945bcabc706be33b898c3e3",
+      "function": "scriptVmSetPrimaryCameraView"
     },
     "function:src/ovl/actor_script_queries.c:voiceReactiveSpinnerGetSpeedByHandle": {
       "kind": "function",
@@ -13926,6 +14640,18 @@
       "sha256": "1dcde112383b4bd741706c738c9bb40c1a30b8537e682c0cfeda0a50c4f4bd0c",
       "function": "itemKindIsInCategory"
     },
+    "function:src/ovl/item_registry.c:itemSetDrawMode": {
+      "kind": "function",
+      "file": "src/ovl/item_registry.c",
+      "function": "itemSetDrawMode",
+      "sha256": "8eea66b03e5c0a8fa076f39733f455249fd1179da15902d0e13c1625bd481cda"
+    },
+    "function:src/ovl/item_registry.c:itemSetMaterialFrame": {
+      "kind": "function",
+      "file": "src/ovl/item_registry.c",
+      "function": "itemSetMaterialFrame",
+      "sha256": "bdc3dca56ccd8b0772de6f4c43d37c753176c143e110057e25ac22bb783af4d3"
+    },
     "function:src/ovl/item_registry.c:itemSetMode": {
       "kind": "function",
       "file": "src/ovl/item_registry.c",
@@ -13937,6 +14663,12 @@
       "file": "src/ovl/item_registry.c",
       "function": "itemSetScale",
       "sha256": "0423e86b79cd2da83694a7d21cbb1649e5be94e2c0b4b7ab16b4651798709f83"
+    },
+    "function:src/ovl/item_registry.c:itemSetTint": {
+      "kind": "function",
+      "file": "src/ovl/item_registry.c",
+      "function": "itemSetTint",
+      "sha256": "5f0f4488674c1d5f8dc4159f2e500a9f63e9f006ae5cbb35f8e2bae471ddbfb6"
     },
     "function:src/ovl/item_registry.c:itemStartMaterialAnimation": {
       "kind": "function",
@@ -14003,6 +14735,12 @@
       "file": "src/ovl/player_companion.c",
       "function": "playerIsViewControlSelected",
       "sha256": "d7e6d20c96a94530af6c111b46b865324545b413adbbf490371e2cbfce74850b"
+    },
+    "function:src/ovl/player_companion.c:playerPrepareCameraTransition": {
+      "kind": "function",
+      "file": "src/ovl/player_companion.c",
+      "sha256": "1f279137853d0f78272411c309fd28c6275fe1e87d72ec67fb2ce425591932dc",
+      "function": "playerPrepareCameraTransition"
     },
     "function:src/ovl/player_companion.c:playerSetChaseStage": {
       "kind": "function",

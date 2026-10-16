@@ -899,11 +899,12 @@ f32 pathGetFirstPointCoordinateByHandle(s32 handle, s32 axis) {
 typedef struct PathVector {
     f32 v[3];
 } PathVector;
-/// Get a coordinate of the path destination following a waypoint near an actor.
+/// Get a raw coordinate of the path destination following a waypoint near an actor.
 /// \param object Actor whose world position determines the nearby waypoint.
 /// \param handle Handle of a path object with at least one waypoint and a complete three-coordinate end marker whose X coordinate is negative.
 /// \param axis Nonnegative coordinate axis: zero for X, one for Y, or two for Z.
-/// \returns The coordinate following the first waypoint within three ground-distance units, or an end-marker coordinate when none qualifies; zero for a missing handle, or -65536 for a non-path object or an axis greater than two.
+/// \returns The next raw waypoint coordinate, including unadjusted Y, following the first waypoint within three units of terrain-projected 3D distance, or an end-marker coordinate when none qualifies; zero for a missing handle, or -65536 for a non-path object or an axis greater than two.
+/// \note Path and terrain storage must remain valid even when axis is greater than two.
 /// \note Portability: The adjacent coordinate-difference statements preserve the IDO scheduling required by the ROM.
 /// \note Original decompilation identifier: \c func_80118210 (0x80118210).
 f32 actorGetFollowingPathPointCoordinate(u8 *object, s32 handle, s32 axis) {
