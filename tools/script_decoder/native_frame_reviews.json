@@ -1572,7 +1572,7 @@
     "file:src/ovl/actor_script_messages_items.c": {
       "kind": "file",
       "file": "src/ovl/actor_script_messages_items.c",
-      "sha256": "f145adc6dbabfb2aa62ef0458907241230d00851fce2e7ef6e0f7152cf8328bd"
+      "sha256": "770aaa3acac4ebe5fbbda2dfe3fa6572f44a6f26c71494fd64f69b935ae2a9b8"
     },
     "file:src/ovl/actor_script_queries.c": {
       "kind": "file",
@@ -4317,7 +4317,7 @@
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_messages_items.json",
-      "sha256": "0f1d716364f29a5636965f414abe45b756ca0f2144cae17527da9ec545b78ec8"
+      "sha256": "3dfaaa12fb24039e9d0ad84273a6a418a47e94b9552d7471ad3264f05979e65a"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_player_world.json",

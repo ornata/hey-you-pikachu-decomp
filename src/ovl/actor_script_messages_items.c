@@ -1087,10 +1087,10 @@ s32 actorScriptGetObjectKind(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011DD38 (0x8011DD38).
 s32 actorScriptGetItemKind(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushInteger((ScriptVm *)(sp1C), itemGetKindByHandle(scriptVmPopInteger((ScriptVm *)(sp1C))));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushInteger((ScriptVm *)(vmAddress), itemGetKindByHandle(scriptVmPopInteger((ScriptVm *)(vmAddress))));
     return 0;
 }
 
@@ -1099,10 +1099,10 @@ s32 actorScriptGetItemKind(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011DD78 (0x8011DD78).
 s32 actorScriptGetActorKind(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushInteger((ScriptVm *)(sp1C), actorGetKindByHandle(scriptVmPopInteger((ScriptVm *)(sp1C))));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushInteger((ScriptVm *)(vmAddress), actorGetKindByHandle(scriptVmPopInteger((ScriptVm *)(vmAddress))));
     return 0;
 }
 
@@ -1111,10 +1111,10 @@ s32 actorScriptGetActorKind(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011DDB8 (0x8011DDB8).
 s32 actorScriptGetObjectType(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushInteger((ScriptVm *)(sp1C), objectGetTypeByHandle(scriptVmPopInteger((ScriptVm *)(sp1C))));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushInteger((ScriptVm *)(vmAddress), objectGetTypeByHandle(scriptVmPopInteger((ScriptVm *)(vmAddress))));
     return 0;
 }
 
@@ -1123,10 +1123,11 @@ s32 actorScriptGetObjectType(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011DDF8 (0x8011DDF8).
 s32 actorScriptGetBoundingRadius(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushFloat((ScriptVm *)(sp1C), objectGetBoundingRadiusByHandle(scriptVmPopInteger((ScriptVm *)(sp1C))));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushFloat((ScriptVm *)(vmAddress),
+                      objectGetBoundingRadiusByHandle(scriptVmPopInteger((ScriptVm *)(vmAddress))));
     return 0;
 }
 

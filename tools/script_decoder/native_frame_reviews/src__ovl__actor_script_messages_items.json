@@ -171,7 +171,7 @@
     {
       "function": "actorScriptGetItemKind",
       "file": "src/ovl/actor_script_messages_items.c",
-      "sha256": "0dc4c4e148c7fb9b78e96c5059945af0e54bbb5825d57a1d8bb4baffd84b107f",
+      "sha256": "5aebe19cf210bd9db8b4d9abae32d37c65f13c4c79fe51a3b73d1a368908331d",
       "effect": "replace_argument_with_scalar",
       "arguments": 1,
       "stack_delta": 0,
@@ -202,7 +202,7 @@
     {
       "function": "actorScriptGetActorKind",
       "file": "src/ovl/actor_script_messages_items.c",
-      "sha256": "204f6757295b755c56dbc32cfa2513d0225b14b5d1a1e11ab5c33860a0d78cdb",
+      "sha256": "35d723f6ed40ddc17bc9f8462b8ef9863ed4f5d544ef7a793f44997578b93d8b",
       "effect": "replace_argument_with_scalar",
       "arguments": 1,
       "stack_delta": 0,
@@ -233,7 +233,7 @@
     {
       "function": "actorScriptGetObjectType",
       "file": "src/ovl/actor_script_messages_items.c",
-      "sha256": "633710ee3efb20e43ab0e56b652af63c7f2225029a37b95370f8143eca579eda",
+      "sha256": "165df538ce6c8e8b54243bd7461f89eaefc45d47b120b530eab7faa6c53adaf6",
       "effect": "replace_argument_with_scalar",
       "arguments": 1,
       "stack_delta": 0,
@@ -2158,7 +2158,7 @@
     {
       "file": "src/ovl/actor_script_messages_items.c",
       "function": "actorScriptGetBoundingRadius",
-      "sha256": "35aaff1f297910fc793b274ef1edc4c07af079fb43b0834d94c7778a1340c946",
+      "sha256": "2161c6c386377715ed95e7364545ec18455ee90e73a960389f3465e2d6b4f212",
       "effect": "replace_argument_with_scalar",
       "arguments": 1,
       "stack_delta": 0,

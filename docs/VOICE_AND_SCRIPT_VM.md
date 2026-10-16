@@ -2743,7 +2743,7 @@ unknown until supplied by a valid runtime state. Indexed loads, arithmetic and
 native-produced values are outside this analysis. Storage, frame binding and
 preservation conditions remain explicit obligations.
 
-Source-bound argument roles label original push order for 21 reviewed natives.
+Source-bound argument roles label original push order for 22 reviewed natives.
 Integer/float labels identify their numeric pop operations, without asserting a
 converted result or a successful effect. In particular, destination allowance is
 not speed, and `PostMessage` synthesizes argument1 rather than consuming it.
@@ -2865,9 +2865,20 @@ Three separate indexed-source observations link per-catch array reads to these
 helpers. They do not establish array capacity, initialization, index bounds or
 safety across the known root-restart behavior.
 
-The three message producers derive their submitted measurement from their own
-object's current bounding radius: a single-precision multiply by 50, then a
-single-precision divide by 3, followed by signed integer conversion. This is a
-scaled radius-derived measure; no independent centimeter unit or universal range
-has been established. The receiving argument getter boxes the message word as an
-integer. Saved record names do not supply an additional units proof.
+`fishing_measurement_roles` records five separately recognized phases in each of
+three fishing programs: self-handle storage, actor-kind capture, radius scaling,
+integer conversion and message submission. The arithmetic phases multiply the
+stored bounding radius by 50 in single precision, divide by 3 in single precision,
+and convert to a signed integer. The message phase reads the corresponding slots.
+
+These are conditional authored-phase correspondences. Recognition does not prove
+that the captured values reach the message unchanged: scalar and indexed writers,
+frame aliasing, root restarts and intervening native calls remain obligations.
+The report retains candidate writes and never labels the whole formula proven.
+Actual message delivery, recipient validity and a safe conversion domain also
+require separate evidence.
+
+This is a scaled radius-derived measure; no independent centimeter unit or
+universal range has been established. The receiving argument getter boxes the
+message word as an integer. Saved record names do not supply an additional units
+proof.
