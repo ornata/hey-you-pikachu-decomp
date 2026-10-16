@@ -207,6 +207,9 @@ enum {
         133, ///< Viridian-deep Metapod slot 9 growth stage; cleared when its next evolution is recorded.
     PROGRESS_FIELD_TREASURE_HUNT_BEST_CHEST_COUNT =
         136, ///< Largest saved number of treasure chests opened during one Cobalt-island visit.
+    PROGRESS_FIELD_TREASURE_CHEST_UNEARTHING_RECORDED =
+        135, ///< Cobalt-island treasure-chest unearthing sequence recorded; does not mean the chest was opened.
+    PROGRESS_FIELD_PINATA_BREAK_RECORDED = 137, ///< Cobalt-coast pinata-breaking sequence recorded.
     PROGRESS_FIELD_FISHING_MAGIKARP_RECORD_LENGTH =
         138, ///< Largest saved caught Magikarp length, truncated to the integral record value.
     PROGRESS_FIELD_FISHING_GOLDEEN_RECORD_LENGTH =

@@ -147,6 +147,51 @@ class NativeReviewStorageTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'escapes'):
                 write_review_manifest(manifest, root)
 
+    def test_borrowed_pointer_shapes_require_lifetime_and_current_source(self):
+        shapes = [('append_borrowed_string_pointer', 0, 1),
+                  ('replace_argument_with_borrowed_string_pointer', 1, 0),
+                  ('replace_arguments_with_borrowed_string_pointer', 2, -1)]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            _, manifest = fixture(root)
+            for row, (effect, arguments, delta) in zip(manifest['callbacks'], shapes):
+                row.update(effect=effect, arguments=arguments, stack_delta=delta,
+                           result_tag='string_pointer', result_ownership='borrowed',
+                           result_nullable=True, result_lifetime='Until the supplying record is replaced.')
+            self.assertEqual(len(native_frame_reviews(root, manifest)['active']), 3)
+            for key, value in [('arguments', True), ('stack_delta', 0),
+                               ('result_ownership', 'owned'), ('result_nullable', 'yes'),
+                               ('result_lifetime', ''), ('dependencies', [])]:
+                altered = copy.deepcopy(manifest)
+                altered['callbacks'][0][key] = value
+                with self.subTest(key=key):
+                    self.assertNotIn('alpha', native_frame_reviews(root, altered)['active'])
+            (root / 'include/layout.h').write_text('#define LAYOUT 2\n')
+            self.assertFalse(native_frame_reviews(root, manifest)['active'])
+
+    def test_borrowed_pointer_callers_cannot_consume_frame_metadata(self):
+        from tools.script_decoder.caller_frames import analyze_caller_frames
+
+        for effect, arguments in [('append_borrowed_string_pointer', 0),
+                                  ('replace_argument_with_borrowed_string_pointer', 1),
+                                  ('replace_arguments_with_borrowed_string_pointer', 2)]:
+            review = dict(effect=effect, arguments=arguments, stack_delta=1 - arguments)
+            for available in range(arguments + 1):
+                rows = [dict(offset=0, size=1, opcode=32,
+                             operands=[dict(tag=0, value=n) for n in (0, 0, 0)])]
+                for i in range(available):
+                    rows.append(dict(offset=i + 1, size=1, opcode=24,
+                                     successors=[dict(offset=i + 2, kind='fallthrough')]))
+                rows.extend([dict(offset=available + 1, size=1, opcode=27,
+                                  native=dict(functions=['query']),
+                                  successors=[dict(offset=available + 2, kind='fallthrough')]),
+                             dict(offset=available + 2, size=1, opcode=30)])
+                result = analyze_caller_frames(rows, {'query': review})['roots'][0]
+                with self.subTest(effect=effect, available=available):
+                    self.assertEqual(result['conditional_floor_proven'], available == arguments)
+                    if available < arguments:
+                        self.assertIn('protected locals/frame metadata', result['diagnostics'][0])
+
     def test_empty_callback_index_cannot_follow_an_outside_tools_directory(self):
         with tempfile.TemporaryDirectory() as directory:
             base = Path(directory)

@@ -152,13 +152,13 @@ s32 actorScriptStartItemAcquisition(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011BFB4 (0x8011BFB4).
 s32 actorScriptSetAttachmentMode(u8 *actor) {
-    u8 *sp1C;
-    s32 sp18;
+    u8 *actorState;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.bytes;
-    sp18 = ((ActorScriptState *)sp1C)->vmAddress;
-    ((ActorScriptState *)sp1C)->attachmentMode = scriptVmPopInteger((ScriptVm *)(sp18));
-    scriptVmPushInteger((ScriptVm *)(sp18), 0);
+    actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
+    vmAddress = ((ActorScriptState *)actorState)->vmAddress;
+    ((ActorScriptState *)actorState)->attachmentMode = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return SCRIPT_COMMAND_CONTINUE;
 }
 
@@ -186,17 +186,17 @@ s32 actorScriptStartCostedAction(u8 *actor) {
 /// \note Original decompilation identifier: \c func_8011C040 (0x8011C040).
 s32 actorScriptBuildSharedText(u8 *actor) {
     s32 vmAddress;
-    s32 var_s0;
+    s32 remainingStrings;
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     gActorScriptSharedTextBuffer = 0;
-    var_s0 = scriptVmReadIntegerOperand((ScriptVm *)(vmAddress)) - 1;
-    if (var_s0 >= 0) {
+    remainingStrings = scriptVmReadIntegerOperand((ScriptVm *)(vmAddress)) - 1;
+    if (remainingStrings >= 0) {
         do {
             stringPrependBounded((u8 *)&gActorScriptSharedTextBuffer, 0x50,
                                  (u8 *)scriptVmPopString((ScriptVm *)vmAddress));
-            var_s0 -= 1;
-        } while (var_s0 >= 0);
+            remainingStrings -= 1;
+        } while (remainingStrings >= 0);
     }
     scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return SCRIPT_COMMAND_CONTINUE;
@@ -263,10 +263,10 @@ s32 actorScriptRandomBelow(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011C230 (0x8011C230).
 s32 actorScriptRandomBelowWithHistory(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushInteger((ScriptVm *)(sp1C), randomBelowWithHistory(scriptVmPopInteger((ScriptVm *)(sp1C))));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushInteger((ScriptVm *)(vmAddress), randomBelowWithHistory(scriptVmPopInteger((ScriptVm *)(vmAddress))));
     return SCRIPT_COMMAND_CONTINUE;
 }
 
@@ -373,11 +373,11 @@ s32 actorScriptSetMessageStyle(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011C44C (0x8011C44C).
 s32 actorScriptSetMessageDuration(u8 *actor) {
-    u8 *sp1C;
+    u8 *vmBytes;
 
-    sp1C = (u8 *)((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->vmAddress;
-    ((ScriptVm *)sp1C)->messageDuration = scriptVmPopFloat((ScriptVm *)((s32)sp1C));
-    scriptVmPushInteger((ScriptVm *)((s32)sp1C), 0);
+    vmBytes = (u8 *)((ActorScriptState *)((RuntimeObjectPrefix *)actor)->state.bytes)->vmAddress;
+    ((ScriptVm *)vmBytes)->messageDuration = scriptVmPopFloat((ScriptVm *)((s32)vmBytes));
+    scriptVmPushInteger((ScriptVm *)((s32)vmBytes), 0);
     return SCRIPT_COMMAND_CONTINUE;
 }
 
@@ -520,27 +520,27 @@ s32 actorScriptPushActionScriptStopped(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011C764 (0x8011C764).
 s32 actorScriptPushLastScriptActionEnded(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushInteger((ScriptVm *)(sp1C), actionScriptHasLastActionEnded(actor));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushInteger((ScriptVm *)(vmAddress), actionScriptHasLastActionEnded(actor));
     return SCRIPT_COMMAND_CONTINUE;
 }
 
 /// Stop the action script and begin a transition to a requested action pose.
-/// \param actor Actor whose script VM supplies a valid action index followed by a nonnegative transition duration in seconds and receives zero.
+/// \param actor Actor whose script VM supplies an action index from zero through 329 followed by a positive transition duration in seconds and receives zero; the motion cache and actor animation resources must be initialized.
 /// \returns One, yielding script execution.
 /// \note Original decompilation identifier: \c func_8011C79C (0x8011C79C).
 s32 actorScriptBeginPoseTransition(u8 *actor) {
-    s32 sp24;
-    s32 sp20;
-    f32 sp1C;
+    s32 vmAddress;
+    s32 actionIndex;
+    f32 transitionSeconds;
 
-    sp24 = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    sp1C = scriptVmPopFloat((ScriptVm *)(sp24));
-    sp20 = scriptVmPopInteger((ScriptVm *)(sp24));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    transitionSeconds = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    actionIndex = scriptVmPopInteger((ScriptVm *)(vmAddress));
     actionScriptStop(actor);
-    actionBeginPoseTransition(actor, sp20, sp1C);
-    scriptVmPushInteger((ScriptVm *)(sp24), 0);
+    actionBeginPoseTransition(actor, actionIndex, transitionSeconds);
+    scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return SCRIPT_COMMAND_YIELD;
 }

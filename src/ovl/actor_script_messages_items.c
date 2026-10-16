@@ -347,28 +347,29 @@ s32 actorScriptSetCameraView(u8 *actor) {
 }
 
 /// Save the current player state for later restoration.
+/// The shared snapshot borrows the player state references and does not extend their lifetimes.
 /// \param actor Actor whose script VM receives zero after the shared player snapshot is replaced.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011CE14 (0x8011CE14).
 s32 actorScriptSavePlayerState(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     playerSaveState();
-    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
+    scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 0;
 }
 
 /// Restore the saved player state and refresh the player view.
-/// \param actor Actor whose script VM receives zero; a player snapshot must have been saved.
+/// \param actor Actor whose script VM receives zero; a player snapshot must have been saved and its borrowed references must remain valid.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011CE4C (0x8011CE4C).
 s32 actorScriptRestorePlayerState(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     playerRestoreState();
-    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
+    scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 0;
 }
 
@@ -756,24 +757,24 @@ s32 actorScriptQueryRequestedMicDictionary(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011D648 (0x8011D648).
 s32 actorScriptChangeCuePreservingRate(u8 *actor) {
-    s32 handle;
-    f64 a;
-    f64 b;
-    s32 cur;
-    s32 v;
-    f64 cur_t;
+    s32 vmAddress;
+    f64 fadeInSeconds;
+    f64 fadeOutSeconds;
+    s32 selectedCue;
+    s32 requestedCue;
+    f64 requestedRate;
 
-    handle = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    audioGetCurrentCueState(&cur, &cur_t);
-    a = scriptVmPopFloat((ScriptVm *)(handle));
-    b = scriptVmPopFloat((ScriptVm *)(handle));
-    v = scriptVmPopInteger((ScriptVm *)(handle));
-    if (v != cur) {
-        audioChangeCurrentCue(v, a, b);
-        audioSetCurrentCueRate(cur_t);
-        scriptVmPushInteger((ScriptVm *)(handle), 1);
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    audioGetCurrentCueState(&selectedCue, &requestedRate);
+    fadeInSeconds = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    fadeOutSeconds = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    requestedCue = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    if (requestedCue != selectedCue) {
+        audioChangeCurrentCue(requestedCue, fadeInSeconds, fadeOutSeconds);
+        audioSetCurrentCueRate(requestedRate);
+        scriptVmPushInteger((ScriptVm *)(vmAddress), 1);
     } else {
-        scriptVmPushInteger((ScriptVm *)(handle), 0);
+        scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     }
     return 0;
 }
@@ -986,15 +987,16 @@ s32 actorScriptTrackEscapeFromObject(u8 *actor) {
 }
 
 /// Choose a fixed escape destination away from an object.
+/// An unsupported category can return zero after changing the destination; an unavailable target still disables tracking.
 /// \param actor Actor whose script VM supplies a target handle and receives its script category, or zero for an unavailable or unsupported target.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011DB84 (0x8011DB84).
 s32 actorScriptChooseEscapeFromObject(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushInteger((ScriptVm *)(sp1C),
-                        actorChooseEscapePositionFromHandle(actor, scriptVmPopInteger((ScriptVm *)(sp1C))));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushInteger((ScriptVm *)(vmAddress),
+                        actorChooseEscapePositionFromHandle(actor, scriptVmPopInteger((ScriptVm *)(vmAddress))));
     return 0;
 }
 

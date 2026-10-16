@@ -406,9 +406,11 @@ def native_frame_reviews(root=ROOT, manifest=None):
                           review.get('coverage') == 'immediate_request_only' and
                           type(review.get('action_handler')) is int and 0 <= review['action_handler'] <= 14)
         borrowed_string_result = (
-            review['effect'] == 'replace_arguments_with_borrowed_string_pointer' and
-            type(review['arguments']) is int and review['arguments'] == 2 and
-            type(review['stack_delta']) is int and review['stack_delta'] == -1 and
+            (review['effect'], review['arguments'], review['stack_delta']) in
+            (('append_borrowed_string_pointer', 0, 1),
+             ('replace_argument_with_borrowed_string_pointer', 1, 0),
+             ('replace_arguments_with_borrowed_string_pointer', 2, -1)) and
+            type(review['arguments']) is int and type(review['stack_delta']) is int and
             review['result_tag'] == 'string_pointer' and review['scheduling'] == 'continue' and
             review.get('result_ownership') == 'borrowed' and
             type(review.get('result_nullable')) is bool and

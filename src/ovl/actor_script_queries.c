@@ -759,45 +759,46 @@ f32 voiceReactiveSpinnerGetSpeedByHandle(s32 handle) {
 }
 
 /// Get the compact action status exposed to actor scripts for a creature.
+/// Disabled action playback reports 0x21 for a live creature.
 /// \param handle Handle of the creature whose current action is queried.
 /// \returns The script action status flags, or zero when the handle is not live or does not identify a creature.
 /// \note Original decompilation identifier: \c func_80117EE8 (0x80117EE8).
 u16 actorGetScriptActionFlagsByHandle(s32 handle) {
-    u8 *obj;
-    s32 fl;
-    u16 bits;
+    u8 *object;
+    s32 actionAttributes;
+    u16 scriptFlags;
 
-    bits = 0;
-    obj = objectFindLiveByHandle(handle);
-    if (obj == NULL) {
+    scriptFlags = 0;
+    object = objectFindLiveByHandle(handle);
+    if (object == NULL) {
         return 0;
     }
-    if ((((RuntimeObjectPrefix *)obj)->kind > 0) && (((RuntimeObjectPrefix *)obj)->kind < 0x26)) {
-        fl = actionGetAttributes(obj);
-        if (fl & 0x200) {
-            bits = 0x10;
+    if ((((RuntimeObjectPrefix *)object)->kind > 0) && (((RuntimeObjectPrefix *)object)->kind < 0x26)) {
+        actionAttributes = actionGetAttributes(object);
+        if (actionAttributes & 0x200) {
+            scriptFlags = 0x10;
         }
-        if (fl & 0x100) {
-            bits += 8;
+        if (actionAttributes & 0x100) {
+            scriptFlags += 8;
         }
-        if (fl & 0xF0) {
-            if (fl & 0x800) {
-                bits += 2;
+        if (actionAttributes & 0xF0) {
+            if (actionAttributes & 0x800) {
+                scriptFlags += 2;
             } else {
-                bits += 4;
+                scriptFlags += 4;
             }
         }
-        if (fl & 0x20000000) {
-            bits += 0x20;
+        if (actionAttributes & 0x20000000) {
+            scriptFlags += 0x20;
         }
-        if (fl & 0x400) {
-            bits += 1;
+        if (actionAttributes & 0x400) {
+            scriptFlags += 1;
         }
-        if (fl & 0x800) {
-            bits += 0x40;
+        if (actionAttributes & 0x800) {
+            scriptFlags += 0x40;
         }
     }
-    return bits;
+    return scriptFlags;
 }
 
 /// Get one world-space coordinate of an available object.

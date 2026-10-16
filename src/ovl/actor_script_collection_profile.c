@@ -226,15 +226,15 @@ s32 actorScriptGetActorDisplayName(u8 *actor) {
 }
 
 /// Provide a word name from the selected voice dictionary.
-/// \param actor Actor whose script VM supplies a dictionary-local word index and receives a borrowed name string, or an empty string for an invalid index or dictionary; only the low 16 bits of the index are significant.
+/// \param actor Actor whose script VM supplies a dictionary-local word index and receives a borrowed name string, or an empty string when no dictionary is selected or the index is out of range; an active dictionary must have valid metadata. Only the low 16 bits of the index are significant.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011FE70 (0x8011FE70).
 s32 actorScriptGetDictionaryWordName(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushStringPointer((ScriptVm *)(sp1C),
-                              voiceDictionaryGetWordName((u16)scriptVmPopInteger((ScriptVm *)(sp1C))));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushStringPointer((ScriptVm *)(vmAddress),
+                              voiceDictionaryGetWordName((u16)scriptVmPopInteger((ScriptVm *)(vmAddress))));
     return 0;
 }
 
@@ -266,10 +266,10 @@ s32 actorScriptSetInteractionVisibilitySuppressed(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011FF28 (0x8011FF28).
 s32 actorScriptGetAreaName(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushStringPointer((ScriptVm *)(sp1C), areaGetDisplayName(scriptVmPopInteger((ScriptVm *)(sp1C))));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushStringPointer((ScriptVm *)(vmAddress), areaGetDisplayName(scriptVmPopInteger((ScriptVm *)(vmAddress))));
     return 0;
 }
 
@@ -278,10 +278,10 @@ s32 actorScriptGetAreaName(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011FF68 (0x8011FF68).
 s32 actorScriptGetAreaShortName(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushStringPointer((ScriptVm *)(sp1C), areaGetRegionName(scriptVmPopInteger((ScriptVm *)(sp1C))));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushStringPointer((ScriptVm *)(vmAddress), areaGetRegionName(scriptVmPopInteger((ScriptVm *)(vmAddress))));
     return 0;
 }
 
@@ -622,21 +622,21 @@ s32 actorScriptStartKindTransformation(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_80120688 (0x80120688).
 s32 actorScriptGetAvailableObjectDistance(u8 *actor) {
-    s32 vm;
-    u8 *objB;
-    u8 *objA;
-    s32 idB;
-    s32 idA;
+    s32 vmAddress;
+    u8 *firstObject;
+    u8 *secondObject;
+    s32 firstHandle;
+    s32 secondHandle;
 
-    vm = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    idA = scriptVmPopInteger((ScriptVm *)(vm));
-    idB = scriptVmPopInteger((ScriptVm *)(vm));
-    objB = objectResolveAvailableHandle(idB);
-    objA = objectResolveAvailableHandle(idA);
-    if ((objB == NULL) || (objA == NULL)) {
-        scriptVmPushFloat((ScriptVm *)(vm), -1.0F);
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    secondHandle = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    firstHandle = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    firstObject = objectResolveAvailableHandle(firstHandle);
+    secondObject = objectResolveAvailableHandle(secondHandle);
+    if ((firstObject == NULL) || (secondObject == NULL)) {
+        scriptVmPushFloat((ScriptVm *)(vmAddress), -1.0F);
     } else {
-        scriptVmPushFloat((ScriptVm *)(vm), objectGetApproxDistance(objB, objA));
+        scriptVmPushFloat((ScriptVm *)(vmAddress), objectGetApproxDistance(firstObject, secondObject));
     }
     return 0;
 }
@@ -945,7 +945,7 @@ s32 actorScriptGetPokemonNameDictionaryGroup(u8 *actor) {
 extern char *gBedroomPokemonNames[BEDROOM_POKEMON_NAME_COUNT];
 
 /// Provide a selected name from the bedroom Pokémon name catalog.
-/// \param actor Actor whose script VM supplies a catalog index from zero through 152 and receives a borrowed name string; requires the bedroom scene data.
+/// \param actor Actor whose script VM supplies a catalog index from zero through 152 and receives a borrowed name string valid while the bedroom scene data remains loaded.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_80120DB8 (0x80120DB8).
 s32 actorScriptGetPokemonName(u8 *actor) {
@@ -972,25 +972,25 @@ extern s32 gBedroomPokemonNameHistoryTail;
 /// \note Original identifier: \c D_801554D8 (0x801554D8).
 extern s32 gBedroomPokemonNameHistoryCount;
 /// Choose a random Pokémon name catalog index outside the retained history of up to 100 choices.
-/// \param actor Actor whose script VM receives the selected catalog index from zero through 152; requires initialized bedroom scene data and name-selection history.
+/// \param actor Actor whose script VM receives the selected catalog index from zero through 152; requires initialized bedroom scene data and name-selection history, and the generator must eventually select an index outside that history.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_80120DFC (0x80120DFC).
 s32 actorScriptChoosePokemonName(u8 *actor) {
-    s32 handle;
+    s32 vmAddress;
     s32 head;
     s32 tail;
     s32 count;
     s32 candidate;
     s32 index;
-    s32 i;
-    handle = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    s32 checkedHistoryCount;
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
     head = gBedroomPokemonNameHistoryHead;
     tail = gBedroomPokemonNameHistoryTail;
     count = gBedroomPokemonNameHistoryCount;
     do {
         candidate = randomBelow(BEDROOM_POKEMON_NAME_COUNT);
         index = tail;
-        for (i = 0; i < count; i++) {
+        for (checkedHistoryCount = 0; checkedHistoryCount < count; checkedHistoryCount++) {
             if (candidate == gBedroomPokemonNameHistory[index++]) {
                 candidate = -1;
                 break;
@@ -1015,7 +1015,7 @@ s32 actorScriptChoosePokemonName(u8 *actor) {
     gBedroomPokemonNameHistoryHead = head;
     gBedroomPokemonNameHistoryTail = tail;
     gBedroomPokemonNameHistoryCount = count;
-    scriptVmPushInteger((ScriptVm *)(handle), candidate);
+    scriptVmPushInteger((ScriptVm *)(vmAddress), candidate);
     return 0;
 }
 

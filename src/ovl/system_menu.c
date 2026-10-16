@@ -1055,7 +1055,7 @@ void systemMenuAppendProgressDetails(void) {
             progressGetValue(PROGRESS_FIELD_FRIENDSHIP_MILESTONE_9_EARNED) ? "Pw" : "Xx",
             progressGetValue(0xAC) ? "Ck" : "Xx",
             progressGetValue(PROGRESS_FIELD_FRIENDSHIP_MILESTONE_10_EARNED) ? "Tb" : "Xx",
-            progressGetValue(0x89) ? "Pn" : "Xx", progressGetValue(0xAD) ? "Sp" : "Xx",
+            progressGetValue(PROGRESS_FIELD_PINATA_BREAK_RECORDED) ? "Pn" : "Xx", progressGetValue(0xAD) ? "Sp" : "Xx",
             progressGetValue(0xAF) ? "Dg" : "Xx",
             progressGetValue(PROGRESS_FIELD_FRIENDSHIP_MILESTONE_13_EARNED) ? "Cy" : "Xx",
             progressGetValue(0xAE) ? "Hr" : "Xx", progressGetValue(PROGRESS_FIELD_GAME_CLEARED) ? "Gc" : "Xx",

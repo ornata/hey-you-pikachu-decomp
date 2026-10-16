@@ -87,6 +87,7 @@ def analyze_caller_frames(instructions, native_reviews, deferred_reviews=None, *
                     raise ValueError('unresolved or negative inline string count')
                 obligation.update(inline_count=args, instruction_offset_delta=5)
             elif effect in ('append_scalar', 'replace_argument_with_scalar', 'replace_arguments_with_scalar',
+                            'append_borrowed_string_pointer', 'replace_argument_with_borrowed_string_pointer',
                             'replace_arguments_with_borrowed_string_pointer'):
                 args = review.get('arguments')
                 if type(args) is not int or args < 0 or review.get('stack_delta') != 1 - args:

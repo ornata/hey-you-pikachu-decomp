@@ -273,14 +273,14 @@ s32 actorScriptPushInteractionCandidate(u8 *actor) {
 }
 
 /// Read the active interaction marker mode.
-/// \param actor Actor whose script VM receives the marker mode, or zero when inactive.
+/// \param actor Actor whose script VM receives the stored marker mode; this query does not refresh the interaction scan.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011E63C (0x8011E63C).
 s32 actorScriptPushInteractionMarkerMode(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushInteger((ScriptVm *)(sp1C), interactionGetMarkerMode());
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushInteger((ScriptVm *)(vmAddress), interactionGetMarkerMode());
     return 0;
 }
 
@@ -481,14 +481,16 @@ s32 actorScriptGetVoiceReactiveSpinnerSpeed(u8 *actor) {
 }
 
 /// Read the compact action status exposed to scripts for a creature.
+/// Disabled action playback reports 0x21 for a live creature.
 /// \param actor Actor whose script VM supplies a creature handle and receives its action status flags, or zero for a missing handle or a non-creature object.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011EADC (0x8011EADC).
 s32 actorScriptGetCreatureActionFlags(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushInteger((ScriptVm *)(sp1C), actorGetScriptActionFlagsByHandle(scriptVmPopInteger((ScriptVm *)(sp1C))));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushInteger((ScriptVm *)(vmAddress),
+                        actorGetScriptActionFlagsByHandle(scriptVmPopInteger((ScriptVm *)(vmAddress))));
     return 0;
 }
 
@@ -558,14 +560,14 @@ s32 actorScriptGetFollowingPathPointCoordinate(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011EC54 (0x8011EC54).
 s32 actorScriptGetCaveFirstAnchorCoordinate(u8 *actor) {
-    s32 vm;
-    s32 a;
-    s32 b;
+    s32 vmAddress;
+    s32 caveHandle;
+    s32 axis;
 
-    vm = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    b = scriptVmPopInteger((ScriptVm *)(vm));
-    a = scriptVmPopInteger((ScriptVm *)(vm));
-    scriptVmPushFloat((ScriptVm *)(vm), caveGetFirstAnchorCoordinate(a, b));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    axis = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    caveHandle = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    scriptVmPushFloat((ScriptVm *)(vmAddress), caveGetFirstAnchorCoordinate(caveHandle, axis));
     return 0;
 }
 
@@ -574,14 +576,14 @@ s32 actorScriptGetCaveFirstAnchorCoordinate(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011ECA4 (0x8011ECA4).
 s32 actorScriptGetCaveSecondAnchorCoordinate(u8 *actor) {
-    s32 vm;
-    s32 a;
-    s32 b;
+    s32 vmAddress;
+    s32 caveHandle;
+    s32 axis;
 
-    vm = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    b = scriptVmPopInteger((ScriptVm *)(vm));
-    a = scriptVmPopInteger((ScriptVm *)(vm));
-    scriptVmPushFloat((ScriptVm *)(vm), caveGetSecondAnchorCoordinate(a, b));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    axis = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    caveHandle = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    scriptVmPushFloat((ScriptVm *)(vmAddress), caveGetSecondAnchorCoordinate(caveHandle, axis));
     return 0;
 }
 
@@ -590,10 +592,11 @@ s32 actorScriptGetCaveSecondAnchorCoordinate(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011ECF4 (0x8011ECF4).
 s32 actorScriptGetCaveLandmarkHandle(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushInteger((ScriptVm *)(sp1C), caveGetLinkedLandmarkHandle(scriptVmPopInteger((ScriptVm *)(sp1C))));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushInteger((ScriptVm *)(vmAddress),
+                        caveGetLinkedLandmarkHandle(scriptVmPopInteger((ScriptVm *)(vmAddress))));
     return 0;
 }
 
@@ -701,7 +704,7 @@ s32 actorScriptPushGameMode(u8 *actor) {
 }
 
 /// Read held buttons from the first controller and yield script execution.
-/// \param actor Actor whose script VM receives the first controller held-button mask.
+/// \param actor Actor whose script VM receives the first controller stored held-button word without polling for a new sample.
 /// \returns One, yielding script execution.
 /// \note Original decompilation identifier: \c func_8011EF80 (0x8011EF80).
 s32 actorScriptPushHeldControllerButtons(u8 *actor) {
@@ -1255,12 +1258,12 @@ s32 actorScriptGetItemKindResponse(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011FAA4 (0x8011FAA4).
 s32 actorScriptSetTargetFacingSuppressed(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
     u8 *actorState;
     u8 *updatedActorState;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    if (scriptVmPopInteger((ScriptVm *)(sp1C)) != 0) {
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    if (scriptVmPopInteger((ScriptVm *)(vmAddress)) != 0) {
         actorState = ((RuntimeObjectPrefix *)actor)->state.bytes;
         ((ActorScriptState *)actorState)->behaviorFlags =
             (u16)(((ActorScriptState *)actorState)->behaviorFlags | ACTOR_INHIBIT_TARGET_FACING);
@@ -1269,6 +1272,6 @@ s32 actorScriptSetTargetFacingSuppressed(u8 *actor) {
         ((ActorScriptState *)updatedActorState)->behaviorFlags =
             (u16)(((ActorScriptState *)updatedActorState)->behaviorFlags & ~ACTOR_INHIBIT_TARGET_FACING);
     }
-    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
+    scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 0;
 }

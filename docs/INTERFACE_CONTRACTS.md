@@ -57,7 +57,7 @@ no SysEx events and require at most 18 bytes per write. This covers the selected
 bank, not alternate or constructed streams; the MIDI reader's SysEx contract
 still requires min(payload length, limit) + 1 bytes including the status byte.
 
-The 54 offset-named opaque members in 28 files retain individual reviews in
+Offset-named opaque members retain individual reviews in
 [OPAQUE_LAYOUTS.json](OPAQUE_LAYOUTS.json), with known facts, missing evidence and
 matching constraints. Partial views and unused storage are deliberately explicit;
 this does not assert that their unknown semantics have been recovered. Likewise,
