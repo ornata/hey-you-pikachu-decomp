@@ -119,7 +119,8 @@
           "function:src/game/motion_playback.c:actionRequestLoopExit",
           "function:src/game/action_script.c:actionScriptIsStopped",
           "function:src/ovl/script_vm.c:actorUpdateScriptVm",
-          "file:include/motion_transitions.h"
+          "file:include/motion_transitions.h",
+          "file:include/action_script_ids.h"
         ],
         "preconditions": [
           "While waiting, the selected handler remains three; the actor and its VM stay intact with nonoverlapping actor state and owned value storage. Protected locals and frame metadata lie below active depth and one free result slot remains.",
@@ -161,7 +162,8 @@
           "function:src/game/motion_playback.c:actionRequestLoopExit",
           "function:src/game/action_script.c:actionScriptIsStopped",
           "function:src/ovl/script_vm.c:actorUpdateScriptVm",
-          "file:include/motion_transitions.h"
+          "file:include/motion_transitions.h",
+          "file:include/action_script_ids.h"
         ],
         "preconditions": [
           "While waiting, the selected handler remains three; the actor and its VM stay intact with nonoverlapping actor state and owned value storage. Protected locals and frame metadata lie below active depth and one free result slot remains.",
@@ -1170,7 +1172,8 @@
           "file:Makefile",
           "function:src/ovl/actor_script_actions.c:actorScriptOpenTextWindow",
           "function:src/ovl/actor_script_actions.c:actorScriptDispatchActionHandler",
-          "function:src/ovl/actor_script_actions.c:actorBeginScriptActionHandler"
+          "function:src/ovl/actor_script_actions.c:actorBeginScriptActionHandler",
+          "file:include/action_script_ids.h"
         ],
         "preconditions": [
           "Initialized font RomCache800F2A60, owned16-aligned heap/storage, valid positive-capacity keyed pool and unique key-to-entry mapping. Cache metadata/index entries/heap/free lists/request records/completion backing are live and disjoint from VM/actor/value buffers, image output, source text/fonts and outstanding display-list references. No concurrent cache traversal/read/release/destruction or heap mutation.",

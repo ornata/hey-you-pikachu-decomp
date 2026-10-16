@@ -427,7 +427,8 @@
           "file:include/camera_storage.h",
           "file:include/camera_types.h",
           "file:include/camera_overlay.h",
-          "file:include/color_transition.h"
+          "file:include/color_transition.h",
+          "file:include/action_script_ids.h"
         ],
         "preconditions": [
           "Immediate request selects handler10, sets actionInitializing and returns WAIT_FOR_ACTION without consuming operands. Deferred dispatch tests game mode3 before actor/VM access; that branch waits without consumption, regardless of actionInitializing.",
@@ -635,7 +636,8 @@
           "file:include/camera_overlay.h",
           "file:include/hud.h",
           "file:include/player_interaction.h",
-          "file:config/symbol_addrs.txt"
+          "file:config/symbol_addrs.txt",
+          "file:include/action_script_ids.h"
         ],
         "preconditions": [
           "Actor RuntimeObjectPrefix,state.actor,retained vmAddress and ScriptVm remain valid throughout each dispatch and between phases. Saved wrapper VM and freshly read actor VM are the same live context; no replacement/destruction/concurrent VM mutator is admitted. VM,value buffer/protected locals/frame records,C stack, writable HUD/camera/music flag globals and camera record storage are nonoverlapping except explicitly aliased camera symbols.",

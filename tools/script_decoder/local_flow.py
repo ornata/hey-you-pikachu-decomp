@@ -34,18 +34,18 @@ NATIVE_PRESERVATION_PINS = {'actorScriptSetMessengerContactMode': '154619c961ec7
  'actorScriptPushDefaultActionMode': '904c7ebf3040ebbe3d82ceebdcf23d666d256c7c165ae8c056421834cd544974',
  'actorScriptYield': 'a32e41ad6f38946c8b93e4a70a50e6600499bea62a2a82c22900dc39e298d3dc',
  'actorScriptPushActionScriptStopped': '70c8afa259805820e65a4d63d8bb695ed5805e4efec59642dd201cc8ddd60e04',
- 'actorScriptStartLoopExitAndWait': '0640615d314d7f1c6e5580040874db372aaf0318f2e39cccc3176f6c98ff7e17',
+ 'actorScriptStartLoopExitAndWait': 'f312bb29ba63ea3061d6022f9fd8823187affddca2770aa8d62eac97930a3ab6',
  'actorScriptRandomBelow': '45206f67a57091cbca5b17b2e640a6618c518b8c7461fc7899614bf7630e4a8f',
  'actorScriptTrackObject': '19a800aa635ba4055d743c23261c202bc2c51ea2f359ac39cfe62916fed5cc91',
  'actorScriptSetDefaultActionMode': 'd85106b4014f3d3479b2b85e8d31df59ae2041eec102cecffabe969344413e7e',
- 'actorScriptStartActionScript': 'ca1bf9cc19f0b6e9ac92d440ad5f01a61c2931c778ac4b60037bf7df8f53e3cf',
- 'actorScriptStartActionWithMode': '16d2404b8d08d4d5cdf2dda73eeeee99b3ec661963c411af59b02e03b9b77e03',
+ 'actorScriptStartActionScript': '94629869f8f80a233831ed8ea65aa6c72df344e89975f1ec2fa8c87be9ed0c1f',
+ 'actorScriptStartActionWithMode': '4484c31cacbb02ab8efe8c18a08ea4dc581c9a2da5d1835ca3e603c638265859',
  'actorScriptSetSoundEffectPan': '75cc7ce489489830735fb52daf3f1280f0b2702e4d12fcef6abdd53339dc4323',
  'actorScriptSetSoundEffectVolume': 'fc2c3a2fb242129474473071f8642cbb6a134db72844cd0289516e08a36b3b1f',
  'actorScriptPlaySoundEffect': '2fe7df18adaa43193bb0eaaf1a30c1e337ebcda52c29fdd0550e466c955e41d4',
  'actorScriptPushInteractionCandidate': 'ecc2c4a2e028d78d5884071295b6d2294a276931481c369c1183024dcdeebf49',
  'actorScriptSetHudGuideStyle': 'c2df9a1154e8b680907605d060330c9aba08ccb766f31839414027e594ca3e23',
- 'actorScriptStartActionAndWait': 'd247a9fcc4bcfcb560c15a6f1120fcd4c98f0c37f1371d853460461d531397be',
+ 'actorScriptStartActionAndWait': '1f26b398e3918b50435da5ee928773dacf89cfb596407c9309e1943486b18a7b',
  'actorScriptSetHorizontalMovementSuppressed': '6b88050c5d9f1de249106804c039818c6044ae8ae223580666553aa4011f4754',
  'actorScriptSetDestination': '0efa9a6f31532e65c922655116ca39757cef83498e3e0601ae7fadc08ce002c9',
  'actorScriptGetActorKind': '3aac60e3bdcdcb61153ac107a12540bff1511efd9bcdc1db6070a4e06b8c5d57',
@@ -61,7 +61,7 @@ NATIVE_PRESERVATION_PINS = {'actorScriptSetMessengerContactMode': '154619c961ec7
  'actorScriptPushTotalElapsedTime': '554fe92f02256193649ee7f2e71141a68a5c3f4b5c39977d5afae6a7fbbd3e89',
  'actorScriptPushTargetApproachDistance': '117f9156e3e996b2e05ca2b2957f4bb7fb9cefdbbb67d9b10c13c66c665245b1',
  'actorScriptGetItemState': '4272fc02bf1ff19994c1e117422c9e4a41bd438d31b4196f7ec95d5277121c60',
- 'actorScriptStartTimedAction': 'cb8456013eba7ede23b80263b1ce282e5c0f5c8a875dd259cfb4cf73dd85ea7b',
+ 'actorScriptStartTimedAction': 'ab7996eadee3961a01b41ce9855e02e0895645350b53e788133fa491eacbbc1e',
  'actorScriptGetTargetCoordinate': '54ae646b94cbc82d1f6a23642bf31c1cb718f212f569a092f1afa64bbcf174c1',
  'actorScriptGetGroundHeightAtPosition': '5311b7e0f4e771685d0f0cfee76afe964bf4fc36a7c545a76fa9f171b732ffb9',
  'actorScriptPushTargetHandle': '92bd31f1f81922ec60513a87725a1a96f428d11a5dec1beb1b94ebcc62487806',
@@ -69,15 +69,18 @@ NATIVE_PRESERVATION_PINS = {'actorScriptSetMessengerContactMode': '154619c961ec7
  'actorScriptGetBoundingRadius': '904e0e80b802309de14fdac4c9d4cc31d3ec958ea5229c6fc238bbceca520dc3',
  'actorScriptEnqueueMessage': 'd91e1ee8e36b31072b79a75d379408f2bf869048a42ee41ccb7b639a7b552026',
  'actorScriptGetObjectPlayerDistance': '3de44ca0fdd37ea0c338ac4d326e779d12f58e16d21cf708f673f1e611feec2b',
- 'actorScriptStartInterruptibleAction': '16760ccb5f869e14d41080dfc894dc1e09fedcc8c5595f950689a5cb5d77bfa7',
+ 'actorScriptStartInterruptibleAction': 'c35939a924530140639f545f12e9bb6129a52044d9a988ea5b3416a014758b72',
  'actorScriptGetObjectCategory': '71edf0390b875c4d76e1c4565f347ac8f439b267fcc9447957feb3c8d0475f34',
  'actorScriptGetWorldCoordinate': 'c19b99d4917df49aa4d116f2cfe63306fa993158397b8da01d3d0b83efe9380d',
  'actorScriptPushTimedProgramId': '387097d7c9c494ab9e2aca7c40892c26186d53e3c4bff38dde0aee2f53be6f24',
  'actorScriptSetTargetToFallbackObject': '2a187118853afd5bc5c144fded50742fc6e8845a1d1b92ac350c619154f12207',
- 'actorScriptGetPlayerCoordinate': 'e35e10efdcabe31324333f82f911f78df26e38aa4727d5444f8342c4344033bc'}
-LOOP_EXIT_DEFERRED_PIN = '687dd86d8dd2376c3f9d03d05ac4e12b2177dcebb5f682a77634a603ef1c3957'
-ACTION_WAIT_DEFERRED_PIN = 'c8d17f8871c84d10b8bb2dc43ac472cd8b725bed62be229c52ba7b71936e0eda'
-INTERRUPTIBLE_DEFERRED_PIN = 'bd669454f7687914c813e2c773c4ea6006b043cd525b0dbda32a8d57ac776bb1'
+ 'actorScriptGetPlayerCoordinate': 'e35e10efdcabe31324333f82f911f78df26e38aa4727d5444f8342c4344033bc',
+ 'actorScriptPushActionDuration': 'b3ed6f2f895741fca73dd168bb8ba8c0ba6af5ed1ee78eed507b72e4ab7ccaf3',
+ 'actorScriptTrackEscapeFromPlayerSecondaryObject': '87f11b26546be4a8ca030c6fbc6e979435b9af1bb270ecf01aff911ec847ed10',
+ 'actorScriptGetTargetFacingError': 'f04db8365f4e73dea6b81ba0c4a113634e758a8521e5261d9cfd1f88ccec1707'}
+LOOP_EXIT_DEFERRED_PIN = 'c8a71ddd5a8d768c6963d0b726580ca7065c51380bb4aa0e4e78133bdb837e8d'
+ACTION_WAIT_DEFERRED_PIN = '4a92dd241eddd566bd81ea21fa3f9e9adaf29671f478109aaa43d763a0cad2d7'
+INTERRUPTIBLE_DEFERRED_PIN = 'b70db2a0e841c93a836ccbe68b30969436f184c216ee5523b0883a902770cbb9'
 
 
 

@@ -222,7 +222,7 @@
     "file:include/action_script_ids.h": {
       "kind": "file",
       "file": "include/action_script_ids.h",
-      "sha256": "e65509836f3618f2b9f67423b4a42cd3a661865db9b9ba0e963be2c92e65d330"
+      "sha256": "18f4109e19b07322bdb415eb65c74923193639594383eb2bf5c550b2d04a9311"
     },
     "file:include/action_script_playback.h": {
       "kind": "file",
@@ -773,6 +773,11 @@
       "kind": "file",
       "file": "include/midi_sequence_types.h",
       "sha256": "bf66ec7c2dd9449e1cfc6745a75ef8893f60200458f83f569f80e827f50a458d"
+    },
+    "file:include/motion_action_ids.h": {
+      "kind": "file",
+      "file": "include/motion_action_ids.h",
+      "sha256": "a6af3f61c1972172101a85e8f93fc61d4bfc60111463c383aa677da27b161d68"
     },
     "file:include/motion_cache.h": {
       "kind": "file",
@@ -1367,7 +1372,7 @@
     "file:src/game/collection_presentation.c": {
       "kind": "file",
       "file": "src/game/collection_presentation.c",
-      "sha256": "052eec468928063809f66b22cacb75bc7bf6f2f4ccf1627236926068039087cd"
+      "sha256": "6b1671251c9511bee32b84d9ca7d23368981f72ced3e7b9b533c14ebc54b8870"
     },
     "file:src/game/collision_grid.c": {
       "kind": "file",
@@ -1557,7 +1562,7 @@
     "file:src/ovl/actor_script_actions.c": {
       "kind": "file",
       "file": "src/ovl/actor_script_actions.c",
-      "sha256": "a15ddc2b78935cace138d6c9697aae472f3631f47b8d83ee98d29a043abee09a"
+      "sha256": "4238580fc51d91f70c0f9be7fa814a9772e6112482a722b470eec45f0a388632"
     },
     "file:src/ovl/actor_script_collection_profile.c": {
       "kind": "file",
@@ -2992,7 +2997,7 @@
       "kind": "function",
       "file": "src/ovl/actor_script_actions.c",
       "function": "actorScriptDispatchActionHandler",
-      "sha256": "e3e6746d411e3a9075fb9416d4007315a55fb47a83b4723d618a0d9dc72dd575"
+      "sha256": "a40a0cd51a34f84b034ead01ba5ccb3bb9e6511c560b60392d3477286233b9d3"
     },
     "function:src/ovl/actor_script_actions.c:actorScriptFinishAreaTransition": {
       "kind": "function",
@@ -4304,15 +4309,15 @@
   "callback_files": [
     {
       "file": "native_frame_reviews/src__ovl__actor_script_action_commands.json",
-      "sha256": "71a4afd88e6272f6e7302d2760d9f944c93006820db6215644f9af82ccb99cc9"
+      "sha256": "9ab71843f64a0696a7fd2a7a06cd8ce0b8356ffeeac1cd6d372f01b8ae0b70f0"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_collection_profile.json",
-      "sha256": "6cea97203413dddd3a35bf6f0015ba87981dfb1a1b5ce6bd9c44844e071a1255"
+      "sha256": "58bb818a9fa213ffda4bdc2d225be712837b29a9d9b271f896622243a08d99f6"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_messages_items.json",
-      "sha256": "8c37204f350db238493c46cda122674819ccb68110daf6aa1deb34339cdc8401"
+      "sha256": "ce766c32d3662f9facf1d48b27c08ce03342f567f77e01775fd98bac7891dee5"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_player_world.json",

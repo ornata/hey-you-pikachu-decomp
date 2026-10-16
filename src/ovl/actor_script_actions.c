@@ -14,6 +14,7 @@
 #include "action_request.h"
 #include "action_script_stop.h"
 #include "action_script_playback.h"
+#include "action_script_ids.h"
 #include "action_script_query.h"
 #include "actor_script_action.h"
 #include "actor_meters.h"
@@ -447,7 +448,7 @@ s32 actorScriptDispatchActionHandler(u8 *object) {
     switch (((ScriptVm *)((ActorScriptState *)state)->vmAddress)->actionHandler) {
     case ACTOR_SCRIPT_ACTION_DEFAULT_ACTION:
         if (actionScriptIsStopped(object) != 0) {
-            actionScriptStart(object, 0x57);
+            actionScriptStart(object, ACTION_SCRIPT_IDLE_STANCE);
         }
         scriptVmPushInteger((ScriptVm *)(((ActorScriptState *)state)->vmAddress), 0);
         return SCRIPT_VM_YIELDED;

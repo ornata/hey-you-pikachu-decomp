@@ -37,6 +37,7 @@
 #include "action_continuation.h"
 #include "action_script_playback.h"
 #include "action_script_ids.h"
+#include "motion_action_ids.h"
 #include "action_script_query.h"
 #include "camera_overlay.h"
 #include "camera_pose.h"
@@ -351,7 +352,7 @@ void presentationRestoreActiveActor(void) {
     ((ActorScriptState *)ext)->rootMotionHeading = gPresentationSavedActorState.rootMotionHeading;
     ((ActorScriptState *)ext)->behaviorFlags = gPresentationSavedActorState.behaviorFlags;
     actionScriptStop(((s32)gPikachuActor), &gPresentationSavedActorState);
-    actionBeginPoseTransition((u8 *)((s32)gPikachuActor), 0x4A, 0.1F);
+    actionBeginPoseTransition((u8 *)((s32)gPikachuActor), MOTION_ACTION_IDLE_STANCE, 0.1F);
     objectClearHierarchyFlags((u8 *)((s32)gPikachuActor), OBJECT_DRAW_GROUP_ALTERNATE);
     cameraSetPositionAndAngles(0, gPlayerState.position[0], gPlayerPositionY + gPlayerEyeHeight, gPlayerPositionZ,
                                gPlayerPitchOffset + gPlayerPitch, gPlayerYaw + gPlayerViewShake, 0.0F);
@@ -453,7 +454,7 @@ void presentationPrepareActiveActor(void *point) {
     matrix34TransformPointVector((f32 *)&gPresentationToWorldTransform, (f32 *)(&gPresentationActorFocusTargets[1]),
                                  ((ActorScriptState *)ext)->targetPosition);
     presentationResetFocusPoint(&gPresentationActorFocusTargets[1]);
-    actionScriptStartWithMode((u8 *)((s32)gPikachuActor), 0x57, 2);
+    actionScriptStartWithMode((u8 *)((s32)gPikachuActor), ACTION_SCRIPT_IDLE_STANCE, 2);
     firstJoint = actorFindPart((u8 *)((s32)gPikachuActor), firstJointId);
     h = ((RuntimeObjectPrefix *)firstJoint)->worldPosition[1];
     secondJoint = actorFindPart((u8 *)((s32)gPikachuActor), secondJointId);
@@ -587,7 +588,7 @@ void presentationUpdateCardMode(void) {
     }
     cameraBuildInterfaceTransform((f32 *)&gPresentationToWorldTransform);
     if (actionScriptIsStopped((u8 *)((s32)gPikachuActor)) != 0) {
-        actionScriptStart((u8 *)((s32)gPikachuActor), 0x57);
+        actionScriptStart((u8 *)((s32)gPikachuActor), ACTION_SCRIPT_IDLE_STANCE);
     }
     switch (gCardPresentationStage) {
     case 0:
@@ -923,7 +924,7 @@ void presentationChooseActorResponseToItem(s32 id) {
         action = gPresentationItemCategory1ResponseActions[index];
         break;
     default:
-        action = 0x57;
+        action = ACTION_SCRIPT_IDLE_STANCE;
         break;
     }
     actionScriptStart((u8 *)((s32)gPikachuActor), action);
@@ -1062,15 +1063,15 @@ void presentationShowChapterFriendshipResult(void) {
     value = level;
     TRACE("value = %d\n", value);
     if (value < 3) {
-        actionScriptStart((u8 *)((s32)gPikachuActor), 0x8E);
+        actionScriptStart((u8 *)((s32)gPikachuActor), ACTION_SCRIPT_PROUD_POSE_CUE_2);
     } else if (value < 6) {
-        actionScriptStart((u8 *)((s32)gPikachuActor), 0xEB);
+        actionScriptStart((u8 *)((s32)gPikachuActor), ACTION_SCRIPT_NOD_CUE_3);
     } else if (value < 9) {
-        actionScriptStart((u8 *)((s32)gPikachuActor), 0x3E);
+        actionScriptStart((u8 *)((s32)gPikachuActor), ACTION_SCRIPT_GREET_CUE_2);
     } else if (value < 0xC) {
-        actionScriptStart((u8 *)((s32)gPikachuActor), 0x8C);
+        actionScriptStart((u8 *)((s32)gPikachuActor), ACTION_SCRIPT_SCRATCH_HEAD_CUE_10);
     } else {
-        actionScriptStart((u8 *)((s32)gPikachuActor), 0x87);
+        actionScriptStart((u8 *)((s32)gPikachuActor), ACTION_SCRIPT_PEACE_SIGN_CUE_0);
     }
     gPlayerFriendshipMilestone = -1;
 }
@@ -1087,7 +1088,7 @@ void presentationUpdateCollectionResultsMode(void) {
     playerResetViewOrientation();
     cameraBuildInterfaceTransform((f32 *)&gPresentationToWorldTransform);
     if (actionScriptIsStopped((u8 *)((s32)gPikachuActor)) != 0) {
-        actionScriptStart((u8 *)((s32)gPikachuActor), 0x57);
+        actionScriptStart((u8 *)((s32)gPikachuActor), ACTION_SCRIPT_IDLE_STANCE);
     }
     switch (gCollectionPresentationStage) {
     case 0:
@@ -1125,7 +1126,7 @@ void presentationUpdateCollectionResultsMode(void) {
                 gCollectionResultsWaitStartMilliseconds = (u32)runtimeGetElapsedMilliseconds();
             } else {
                 if (gCollectionPresentationScore <= 0) {
-                    actionScriptStart((u8 *)((s32)gPikachuActor), 0x7D);
+                    actionScriptStart((u8 *)((s32)gPikachuActor), ACTION_SCRIPT_SLEEP_START_CUE_0);
                     audioPlayCue(0x22);
                 } else {
                     audioPlayCue(0x1C);
@@ -1381,7 +1382,7 @@ s32 presentationSelectViridianDeepScenario(s32 *actorAction, s32 *audioCue) {
     case 3:
     case 5:
     case 7:
-        *actorAction = 0x57;
+        *actorAction = ACTION_SCRIPT_IDLE_STANCE;
         *audioCue = 0x15;
         return 1;
     default:
@@ -1402,7 +1403,7 @@ s32 presentationSelectSpringleafScenario(s32 *actorAction, s32 *audioCue) {
         *audioCue = 0x15;
         return 0;
     }
-    *actorAction = 0x8C;
+    *actorAction = ACTION_SCRIPT_SCRATCH_HEAD_CUE_10;
     *audioCue = 0x15;
     return 1;
 }
@@ -1426,7 +1427,7 @@ s32 presentationSelectOlivineScenario(s32 *actorAction, s32 *audioCue) {
 /// \note Original decompilation identifier: \c func_8002A738 (0x8002A738).
 s32 presentationSelectOchreScenario(s32 *actorAction, s32 *audioCue) {
     progressGetCurrentChapter();
-    *actorAction = 0x87;
+    *actorAction = ACTION_SCRIPT_PEACE_SIGN_CUE_0;
     *audioCue = 0x15;
     return 0;
 }
@@ -1577,7 +1578,7 @@ void presentationInitializeForCurrentArea(void) {
     } else {
         gCardPresentationSuppressed = 0;
     }
-    gCardPresentationActionScript = 0x57;
+    gCardPresentationActionScript = ACTION_SCRIPT_IDLE_STANCE;
     switch (gRuntimeCurrentArea) {
     case AREA_BEDROOM:
         gAreaScenarioIndex =

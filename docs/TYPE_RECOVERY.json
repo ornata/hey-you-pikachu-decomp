@@ -818,6 +818,7 @@
         "managed_object_types.h",
         "matrix_point.h",
         "matrix_types.h",
+        "motion_action_ids.h",
         "object_group.h",
         "object_lookup.h",
         "object_types.h",
@@ -863,29 +864,29 @@
       "locations": {
         "raw_offset_candidates": {
           "slot + 4": [
-            "221:50",
-            "258:22"
+            "222:50",
+            "259:22"
           ],
           "gToolboxBonusSlot + 4": [
-            "264:18"
+            "265:18"
           ],
           "gToolboxPurchaseSlot + 4": [
-            "268:19"
+            "269:19"
           ],
           "tgt + 0": [
-            "446:21"
-          ],
-          "tgt + 4": [
             "447:21"
           ],
-          "tgt + 8": [
+          "tgt + 4": [
             "448:21"
           ],
+          "tgt + 8": [
+            "449:21"
+          ],
           "gItemKind8FCollectionValue + 0x64": [
-            "1747:15"
+            "1748:15"
           ],
           "currentChapter + 1": [
-            "1766:18"
+            "1767:18"
           ]
         }
       }
@@ -2817,6 +2818,7 @@
     "src/game/world_map.c": {
       "known_views": [
         "action_continuation.h",
+        "action_script_ids.h",
         "action_script_playback.h",
         "action_script_query.h",
         "action_script_stop.h",
@@ -2874,32 +2876,32 @@
       "locations": {
         "raw_offset_candidates": {
           "x - 27": [
-            "233:46"
+            "234:46"
           ],
           "x + 55": [
-            "235:46"
+            "236:46"
           ],
           "x - 16": [
-            "294:31",
-            "318:27"
-          ],
-          "y + 8": [
-            "295:31"
-          ],
-          "y - 8": [
+            "295:31",
             "319:27"
           ],
+          "y + 8": [
+            "296:31"
+          ],
+          "y - 8": [
+            "320:27"
+          ],
           "counter + 5U": [
-            "326:25"
+            "327:25"
           ],
           "camera + 0": [
-            "448:25"
+            "449:25"
           ],
           "camera + 4": [
-            "450:25"
+            "451:25"
           ],
           "camera + 8": [
-            "452:25"
+            "453:25"
           ]
         }
       }

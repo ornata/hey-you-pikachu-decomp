@@ -4162,7 +4162,9 @@
         "file:include/matrix_types.h",
         "file:include/direction_animation_types.h",
         "file:include/action_script_types.h",
-        "file:include/player_types.h"
+        "file:include/player_types.h",
+        "file:include/action_script_ids.h",
+        "file:include/motion_action_ids.h"
       ],
       "preconditions": [
         "Actor, actor state, captured VM and value storage remain valid and disjoint from helper-written gameplay/global storage. Helpers retain the captured VM; no concurrent mutation, context replacement or lifecycle change is covered.",

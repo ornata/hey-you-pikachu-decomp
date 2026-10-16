@@ -1106,6 +1106,21 @@ separation, stable program/VM bindings and the full listed native prerequisites
 remain conditions, including across waits. These pairs describe static returning
 paths; they do not prove a particular branch executes or a cost policy succeeds.
 
+For intervening helpers, a constant indexed write can preserve the paired mode
+when both its base slot and computed destination fit the admitted active root or
+callee frame and the destination is not the mode slot. The analysis records the
+index, exact destination and five-byte value width. Dynamic indices remain
+unresolved. Absolute frame bases, scaled offsets and target addresses must not
+wrap; the complete destination must lie in allocated value storage before frame
+metadata, and active physical frame ranges must remain disjoint. Logical frame
+counts alone do not establish these conditions.
+
+Two authenticated helpers snapshot target X/Y/Z into root slots 94–96 and 97–99.
+Their coordinate values remain symbolic. Original-VM probes confirm the packed
+writes and demonstrate that a write aimed at the paired mode destroys the
+relationship. This supports the bounded write rule without proving that every
+retail caller reaches those helpers with valid storage.
+
 A wrapper can forward an unchanged formal argument to that shared helper. The
 decoder keeps a separate `formal_forwarding` tree for its recovered upstream
 callers, carrying the same borrowed mode coordinate through each step. A wrapper
@@ -2234,6 +2249,37 @@ The motion labels support these names in `action_script_ids.h`:
 | 168 | 87 | Look around. |
 | 358 | 288 | Face the destination while underground. |
 | 365 | 293 | Move toward the destination. |
+
+Ordinary gesture, locomotion and sleep names are also recovered from retained
+motion labels, definition records and bounded timed streams. The two ID domains
+remain separate even when their names describe the same gesture:
+
+| Timed program | Motion definition(s) | Recovered name | Cue selection |
+| --- | --- | --- | --- |
+| 0 | 170 → 171 → 172 | Walk | Inherit the configured default. |
+| 13 | 136 → 137 → 138 | Run on all fours | Inherit the configured default. |
+| 62 | 48 | Greet | Fixed tag 2. |
+| 87 | 74 | Idle stance | Inherit the configured default. |
+| 125 | 141 → 142 → 143 | Sleep start | Fixed tag 0 on the starting request. |
+| 128 | 143 | Wake up | Inherit the configured default. |
+| 135 | 133 | Peace sign | Fixed tag 0. |
+| 140 | 158 | Scratch head | Fixed tag 10. |
+| 142 | 159 | Proud pose | Fixed tag 2. |
+| 173 | 169 | Voice too quiet | Fixed tag 11. |
+| 235 | 167 | Nod | Fixed tag 3. |
+| 236 | 168 | Voice too loud | Fixed tag 11. |
+
+The arrows describe authored motion continuations. The middle walk, run and sleep
+definitions are loops; interruption, loop-exit requests and transition callbacks
+still govern whether later phases run. Fixed-cue variants have numeric suffixes
+where other timed programs share their motion. Cue tags retain their numbers
+until their meanings are independently established.
+
+Collection presentation uses the idle stance as a fallback, and selects the
+proud-pose, nod, greeting, head-scratch and peace-sign variants for chapter-result
+bands. These names identify authored gestures; they do not define global emotions
+or guarantee a particular gameplay outcome. Voice-warning labels likewise do not
+establish the provenance of every script message that selects them.
 
 The observed opening voice flow starts timed program 168. Its debug-label-supported
 role is now named `ACTION_SCRIPT_LOOK_AROUND`; rendered motion and emotional

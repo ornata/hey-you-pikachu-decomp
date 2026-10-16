@@ -5,6 +5,7 @@
 #include "runtime_lifecycle.h"
 #include "controller_state.h"
 #include "actor_script.h"
+#include "action_script_ids.h"
 #include "player_chase.h"
 #include "texture_rectangles.h"
 #include "pikachu_actor.h"
@@ -430,7 +431,7 @@ extern s32 gWorldMapDirectionHeldFrames;
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_8002DE94 (0x8002DE94).
 void wholeMapPrepareActor(void) {
-    s32 action = 0x57;
+    s32 action = ACTION_SCRIPT_IDLE_STANCE;
     s32 actionMode = 2;
     s32 animation = 0xC;
     f32 delta[3];
@@ -753,16 +754,16 @@ void wholeMapUpdate(void) {
     playerResetViewOrientation();
     cameraBuildInterfaceTransform((f32 *)&gWorldMapToWorldTransform);
     if (actionScriptIsStopped((u8 *)((s32)gPikachuActor)) != 0) {
-        actionScriptStartWithMode((u8 *)((s32)gPikachuActor), 0x57, 2);
+        actionScriptStartWithMode((u8 *)((s32)gPikachuActor), ACTION_SCRIPT_IDLE_STANCE, 2);
     }
     if (gWorldMapDirectionHeldFrames >= 0x65) {
         if (((ActorScriptState *)sp24)->defaultActionMode != 0xE) {
             actionScriptStop((u8 *)((s32)gPikachuActor));
-            actionScriptStartWithMode((u8 *)((s32)gPikachuActor), 0x57, 0xE);
+            actionScriptStartWithMode((u8 *)((s32)gPikachuActor), ACTION_SCRIPT_IDLE_STANCE, 0xE);
         }
     } else if (((ActorScriptState *)sp24)->defaultActionMode != 2) {
         actionScriptStop((u8 *)((s32)gPikachuActor));
-        actionScriptStartWithMode((u8 *)((s32)gPikachuActor), 0x57, 2);
+        actionScriptStartWithMode((u8 *)((s32)gPikachuActor), ACTION_SCRIPT_IDLE_STANCE, 2);
     }
     switch (gWorldMapState) {
     case 0:
