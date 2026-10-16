@@ -1186,7 +1186,7 @@ s16 actorGetHeldItemKind(u8 *actor) {
 /// \note Original decompilation identifier: \c func_80118910 (0x80118910).
 s32 itemHasPlayerPickupHistory(u8 *item) {
     ItemStatePrefix *itemState = (ItemStatePrefix *)((RuntimeObjectPrefix *)item)->state.bytes;
-    if (itemState->flags & 0x02000000) {
+    if (itemState->flags & ITEM_STATE_PLAYER_PICKUP_RECORDED) {
         return 1;
     }
     return 0;

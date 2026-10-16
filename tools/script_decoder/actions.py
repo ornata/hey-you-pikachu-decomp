@@ -17,6 +17,7 @@ from tools.source_quality import code_only
 # Argument order is push order. Deferred commands leave the operands on the
 # stack until their selected action handler initializes on a later actor update.
 CONTRACTS = {
+    'actorScriptStartEatingHeldItem': dict(arguments=['script_id'], consumption='deferred', scheduling='wait_for_action', result='minus_one_if_missing_or_rejected_else_preconsumption_player_pickup_history_zero_or_one; possible_followup_wait_after_result'),
     'actorScriptStartActionAndWait': dict(arguments=['script_id'], consumption='deferred', scheduling='wait_for_action', result='zero_when_sequencer_stops'),
     'actorScriptStartInterruptibleAction': dict(arguments=['script_id'], consumption='deferred', scheduling='wait_for_action', result='pending_message_or_zero_when_sequencer_stops'),
     'actorScriptStartActionScript': dict(arguments=['script_id'], consumption='immediate', scheduling='yield', result='zero'),

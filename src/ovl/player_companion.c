@@ -2433,8 +2433,9 @@ s32 playerPickUpItem(s32 id) {
     rec = ((RuntimeObjectPrefix *)obj)->state.bytes;
     itemTryRelease(obj, 1);
     gPlayerHeldItemHandle = ((RuntimeObjectPrefix *)obj)->handle;
-    ((ItemStatePrefix *)rec)->flags |= 0x42000000;
-    ((ItemStatePrefix *)rec)->flags &= 0xE3FFFFFF;
+    ((ItemStatePrefix *)rec)->flags |= (ITEM_STATE_PLAYER_PICKUP_RECORDED | ITEM_STATE_HELD_TRANSFER_ALLOWED);
+    ((ItemStatePrefix *)rec)->flags &=
+        ~(ITEM_STATE_PLAYER_THROW_FLIGHT | ITEM_STATE_PIKACHU_THROW_FLIGHT | ITEM_STATE_AREA_CONTACT_EVENT_HANDLED);
     ((ItemStatePrefix *)rec)->state = ITEM_OWNERSHIP_PLAYER;
     ((ItemStatePrefix *)rec)->owner = 0;
     itemSetMode(obj, ITEM_MODE_PLAYER_HELD);

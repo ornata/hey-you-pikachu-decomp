@@ -2450,13 +2450,14 @@ void itemThrow(s32 id, f32 *origin, f32 *target, f32 *velocity, s32 effect) {
           id, origin[0], origin[1], origin[2], target[0], target[1], target[2], velocity[0], velocity[1], velocity[2]);
     object = objectFindLiveByHandle(id);
     state = ((RuntimeObjectPrefix *)object)->state.bytes;
-    if (((RuntimeObjectPrefix *)((s32)gPikachuActor))->handle == *(s32 *)(state + 8)) {
+    if (((RuntimeObjectPrefix *)((s32)gPikachuActor))->handle ==
+        *(s32 *)(state + (u32) & ((ItemStatePrefix *)0)->owner)) {
         *(s32 *)state |= ITEM_STATE_PIKACHU_THROW_FLIGHT;
-    } else if (*(s8 *)(state + 6) == 1) {
+    } else if (*(s8 *)(state + (u32) & ((ItemStatePrefix *)0)->state) == ITEM_OWNERSHIP_PLAYER) {
         *(s32 *)state |= ITEM_STATE_PLAYER_THROW_FLIGHT;
     }
     itemTryRelease(object, 1);
-    *(s32 *)state |= 0x01000000;
+    *(s32 *)state |= ITEM_STATE_AIRBORNE;
     ((RuntimeObjectPrefix *)object)->rotation[0] = 0.0F;
     ((RuntimeObjectPrefix *)object)->rotation[2] = 0.0F;
     delta[0] = target[0] - origin[0];
@@ -2468,17 +2469,20 @@ void itemThrow(s32 id, f32 *origin, f32 *target, f32 *velocity, s32 effect) {
     ((RuntimeObjectPrefix *)object)->position[0] = origin[0] + delta[0];
     ((RuntimeObjectPrefix *)object)->position[1] = origin[1] + delta[1];
     ((RuntimeObjectPrefix *)object)->position[2] = origin[2] + delta[2];
-    ((ItemStatePrefix *)state)->velocityX = velocity[0] * gItemKinds[*(s16 *)(state + 4)].speed;
-    ((ItemStatePrefix *)state)->downwardVelocity = -velocity[1] * gItemKinds[*(s16 *)(state + 4)].speed;
-    ((ItemStatePrefix *)state)->velocityZ = velocity[2] * gItemKinds[*(s16 *)(state + 4)].speed;
+    ((ItemStatePrefix *)state)->velocityX =
+        velocity[0] * gItemKinds[*(s16 *)(state + (u32) & ((ItemStatePrefix *)0)->kind)].speed;
+    ((ItemStatePrefix *)state)->downwardVelocity =
+        -velocity[1] * gItemKinds[*(s16 *)(state + (u32) & ((ItemStatePrefix *)0)->kind)].speed;
+    ((ItemStatePrefix *)state)->velocityZ =
+        velocity[2] * gItemKinds[*(s16 *)(state + (u32) & ((ItemStatePrefix *)0)->kind)].speed;
     ((ItemStatePrefix *)state)->rotationVelocityX = 0.0F;
     ((ItemStatePrefix *)state)->rotationVelocityY = 0.0F;
-    if (*(s32 *)state & 0x20) {
+    if (*(s32 *)state & ITEM_STATE_SPIN_ENABLED) {
         ((ItemStatePrefix *)state)->spinSpeed = 8.0F;
     } else {
         ((ItemStatePrefix *)state)->spinSpeed = 0.0F;
     }
-    callback = gItemKinds[*(s16 *)(state + 4)].launch;
+    callback = gItemKinds[*(s16 *)(state + (u32) & ((ItemStatePrefix *)0)->kind)].launch;
     if (callback != NULL) {
         callback(object);
     }

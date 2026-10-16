@@ -652,7 +652,7 @@
     "file:include/item_types.h": {
       "kind": "file",
       "file": "include/item_types.h",
-      "sha256": "937ff00fa2e4fc537816f798e448a205d547320710822d69f1035f95c16c8bfa"
+      "sha256": "70cd1080b3fa819ba4e5997fe11582348f322c9d0c8e2055fc942325984111bc"
     },
     "file:include/keyed_pool.h": {
       "kind": "file",
@@ -1552,7 +1552,7 @@
     "file:src/ovl/actor_script_actions.c": {
       "kind": "file",
       "file": "src/ovl/actor_script_actions.c",
-      "sha256": "73fc0be86a871808d593c3540a5ee4fef2f10933fdcdd0114df68a4981a38352"
+      "sha256": "f6c782d4834386f7ff5701c3100f4356c1907d45e13c5dd9f9cd25cc511fb218"
     },
     "file:src/ovl/actor_script_collection_profile.c": {
       "kind": "file",
@@ -1567,7 +1567,7 @@
     "file:src/ovl/actor_script_queries.c": {
       "kind": "file",
       "file": "src/ovl/actor_script_queries.c",
-      "sha256": "cedc1425affb71a923339445d5cc53fa1920b76ebe1d221993e0e635d8754814"
+      "sha256": "faa6ba04cc746804da198e6ca2f7597866af0a76960a4172a48e02b5bad01a85"
     },
     "file:src/ovl/actor_target_interaction.c": {
       "kind": "file",
@@ -1582,7 +1582,7 @@
     "file:src/ovl/item_registry.c": {
       "kind": "file",
       "file": "src/ovl/item_registry.c",
-      "sha256": "6fb27c740ba0c7562acd40742d0bb7744b57306dfc257061fe2e2764e2ec18dc"
+      "sha256": "59064df79a5ecfd4fdf7b321fdd58980761f906d5d0ad53c4f033183473659ad"
     },
     "file:src/ovl/item_special_behaviors.c": {
       "kind": "file",
@@ -1592,7 +1592,7 @@
     "file:src/ovl/player_companion.c": {
       "kind": "file",
       "file": "src/ovl/player_companion.c",
-      "sha256": "97c526fa1249e70a88d6c6fd9d79a589f4ae4dc437e49c073b0f5df8aea2f187"
+      "sha256": "603b94edd9dafaa023481514b98cb3b73438fe7f10d514d2689ed48405763f56"
     },
     "file:src/ovl/script_demo_item_commands.c": {
       "kind": "file",
@@ -3839,7 +3839,7 @@
       "kind": "function",
       "file": "src/ovl/player_companion.c",
       "function": "playerPickUpItem",
-      "sha256": "08038df60e7ec4c6d564d9e213e5706e1097d4dd305c0d45f91ab68a22f3aab9"
+      "sha256": "3bcbac6215451a69cc05eb4a76544c53375cf8eb697e6e7bd766eb95abe6c836"
     },
     "function:src/ovl/player_companion.c:playerPrepareCameraTransition": {
       "kind": "function",

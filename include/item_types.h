@@ -57,6 +57,9 @@ typedef enum ItemStateFlag {
     ITEM_STATE_DISABLE_INTERACTION_RESPONSE_AND_CONSUMPTION = 0x800000,
     /// Airborne motion state, cleared on floor contact and set when no floor is contacted.
     ITEM_STATE_AIRBORNE = 0x1000000,
+    /// Records direct player pickup across release and configured replacement.
+    /// Toolbox withdrawal alone does not set this item-local history.
+    ITEM_STATE_PLAYER_PICKUP_RECORDED = 0x02000000,
     /// Player-origin throw flight; also blocks player pickup until floor contact.
     ITEM_STATE_PLAYER_THROW_FLIGHT = 0x4000000,
     /// Pikachu-origin throw flight, selecting its terrain constraint policy until floor contact.

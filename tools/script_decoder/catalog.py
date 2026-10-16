@@ -34,6 +34,7 @@ from .progress_fields import progress_field_catalog, progress_field_requests
 from .items import item_kind_catalog, item_creation_requests, item_response_requests
 from .effects import effect_program_catalog, attached_effect_requests
 from .transitions import pose_transition_catalog
+from .responses import item_response_dispatch
 
 
 def companion_sites(image):
@@ -235,6 +236,10 @@ def catalog(image, max_instructions=100000):
     resource_ids = {call['constant_script_id'] for row in rows for call in row['native_action_calls'] if 'constant_script_id' in call}
     resource_ids.update(value for row in rows for function in row['action_producer_functions']
                         if function['static_return_domain_complete'] for value in function['integer_return_domain'])
+    response_dispatch = item_response_dispatch(image, rows, decodes,
+        {name: review['arguments'] for name, review in frame_reviews['active'].items()
+         if type(review.get('arguments')) is int})
+    resource_ids.update(response_dispatch['timed_program_resource_ids'])
     source_requests = source_dictionary_requests(source, vocabulary.get('dictionaries', []))
     attach_dictionary_usage(vocabulary, rows, source_requests)
     return dict(schema_version=2, rom_sha1=image.sha1,
@@ -254,6 +259,7 @@ def catalog(image, max_instructions=100000):
                 effect_programs=effect_programs,
                 pose_transitions=pose_transitions,
                 item_kinds=item_kinds,
+                item_response_dispatch=response_dispatch,
                 voice_vocabulary=vocabulary,
                 bedroom_name_catalog=name_catalog,
                 native_frame_effect_reviews=frame_reviews,
@@ -280,7 +286,7 @@ def main(argv=None):
         report['elf_sha256'] = hashlib.sha256(args.elf.read_bytes()).hexdigest()
         report['decoder_sha256'] = hashlib.sha256(Path(__file__).with_name('formats.py').read_bytes()).hexdigest()
         report['analysis_sha256'] = {name: hashlib.sha256(Path(__file__).with_name(name + '.py').read_bytes()).hexdigest()
-                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames', 'control_schemes', 'windows', 'caller_frames', 'progress_fields', 'items', 'effects', 'transitions')}
+                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames', 'control_schemes', 'windows', 'caller_frames', 'progress_fields', 'items', 'effects', 'transitions', 'responses')}
         report['native_frame_review_sha256'] = review_manifest_fingerprint()
         files = {'catalog.json': report, **{name + '.json': row for name, row in decodes.items()}}
         # Validate every output before writing any content, including existing symlinks.

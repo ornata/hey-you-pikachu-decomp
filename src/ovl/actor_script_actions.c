@@ -205,11 +205,11 @@ s32 actorScriptEatHeldItem(u8 *actor) {
     u8 *state;
     u8 *obj;
     u8 *rec;
-    s32 anim;
+    s32 programId;
 
     state = ((RuntimeObjectPrefix *)actor)->state.bytes;
     if (((ScriptVm *)((ActorScriptState *)state)->vmAddress)->actionInitializing != 0) {
-        anim = scriptVmPopInteger((ScriptVm *)(((ActorScriptState *)state)->vmAddress));
+        programId = scriptVmPopInteger((ScriptVm *)(((ActorScriptState *)state)->vmAddress));
         TRACE("nerveGrabItem - %d\n", ((ActorScriptState *)state)->heldItemHandle);
         obj = objectFindLiveByHandle(((ActorScriptState *)state)->heldItemHandle);
         if (obj == NULL) {
@@ -217,12 +217,12 @@ s32 actorScriptEatHeldItem(u8 *actor) {
             return SCRIPT_VM_YIELDED;
         }
         rec = ((RuntimeObjectPrefix *)obj)->state.bytes;
-        if (((ItemStatePrefix *)rec)->flags & 0x800000) {
+        if (((ItemStatePrefix *)rec)->flags & ITEM_STATE_DISABLE_INTERACTION_RESPONSE_AND_CONSUMPTION) {
             scriptVmPushInteger((ScriptVm *)(((ActorScriptState *)state)->vmAddress), -1);
             return SCRIPT_VM_YIELDED;
         }
         itemEnableShrinking(obj);
-        actionScriptStart(actor, anim);
+        actionScriptStart(actor, programId);
         return SCRIPT_VM_WAITING_FOR_ACTION;
     }
     if (actionScriptIsStopped(actor) != 0) {

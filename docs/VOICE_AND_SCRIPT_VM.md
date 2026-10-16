@@ -995,9 +995,29 @@ halve the kind's gravity/friction coefficient. Player- and Pikachu-origin throw
 flight are tracked separately until floor contact. Significant impact and handled
 area-contact notification are runtime state, not permanent kind classifications.
 
+`ITEM_STATE_PLAYER_PICKUP_RECORDED` records direct player pickup and survives
+release and configured replacement. Toolbox withdrawal alone does not set it.
+The eating handler returns this history before attempting consumption, so its
+zero/one result does not prove that consumption succeeded. Its result can already
+be available while the handler waits for a follow-up action.
+
 The catalog retains bits `0x1` and `0x20000` explicitly because their purposes are
-unresolved. Bit `0x02000000` also remains unnamed; its presence in inherited masks
-alone establishes no behavioral meaning. Unknown bits are preserved by the decoder.
+unresolved. Unknown bits are preserved by the decoder.
+
+The decoder's `item_response_dispatch` follows the authenticated shared bedroom
+program's twenty ordinary response branches and 37 helper graphs. It records
+potential calls and their argument expressions, including conditional sound,
+message, profile and item requests. These are static possibilities; a listed call
+need not execute, return or complete its requested action. Response eighteen with
+profile key 76 has a separate route before ordinary dispatch. Codes twenty-four
+and twenty-five remain unresolved.
+
+Eating requests reference timed programs 105, 106 and 107. Costed actions instead
+use a separate five-entry policy table: a constant cost selector links to both
+referenced timed programs, with the possible outcome depending on the resource
+check. Selectors zero and one can choose programs 212/213 and 214/215 respectively.
+Dynamic selectors remain unresolved. Timed program identifiers, motion identifiers
+and cost selectors belong to different domains.
 
 `search_priority_maximum` and `search_priority_replenishment_per_second` describe
 selection priority, independently of model scale or physical growth. Creation

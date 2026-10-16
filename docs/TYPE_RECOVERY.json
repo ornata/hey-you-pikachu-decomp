@@ -51,8 +51,8 @@
       "files": 0
     },
     "raw_offset_candidates": {
-      "occurrences": 743,
-      "unique_spellings": 422,
+      "occurrences": 737,
+      "unique_spellings": 420,
       "files": 65
     },
     "cast_offset_candidates": {
@@ -3577,7 +3577,7 @@
       ],
       "matching_exceptions": {
         "itemTryRelease": "Hold-state switch uses an unsigned-byte view of the named signed state member. Casting the signed member value to u8 changes IDO output; the explicit byte view matches. Other release fields and the actor held-item handle use shared members.",
-        "itemThrow": "Object transform and item motion fields use shared members. Owner at 8, hold state at 6, flags at 0 and kind at 4 retain raw reads: isolated direct-member trials each change ROM bytes. Their layouts are checked by shared types; further recovery needs IDO allocation/load-scheduling evidence.",
+        "itemThrow": "Object transform and item motion fields use shared members. Owner at 8, hold state at 6 and kind at 4 use checked ItemStatePrefix member-offset views with original signed access widths. Flags retain the first-word view. Isolated direct-member trials change ROM bytes; further conversion needs IDO allocation/load-scheduling evidence.",
         "itemUpdate": "Search-priority arithmetic retains a float byte view at the named searchPriority member offset (0x38): a direct searchPriority member changes ROM bytes in an isolated forced-rebuild trial. Kind search-priority maximum and recovery rate, object links/flags, hold state, material state, collision key and idle timer use named fields. Further conversion needs IDO floating scheduling evidence.",
         "itemPrepareKindSearch": "TreeNode * return and SearchTree * parameter match through the pointer-key compatibility declaration. Adopting search_tree_lookup.h with an explicit s32 address cast fails the ROM gate; restoring the pointer-key view restores all strict objects. Retain typed object/state keys with their checked stack extents; investigate integer-address argument scheduling before canonical-header adoption.",
         "itemPrepareMaterial": "Tint storage uses the shared ItemStatePrefix.tint member at checked offset 0x4C. Direct u8-pointer and bounded-array component access both fail the ROM gate. Retain the private scalar ItemMaterialTintView, checked against the shared array size. Next evidence: isolate IDO byte-load and packing register scheduling before removing this matching representation."
@@ -3609,36 +3609,24 @@
           "itemState + 0x54": [
             "2371:53"
           ],
-          "state + 8": [
-            "2453:75"
-          ],
-          "state + 6": [
-            "2455:24"
-          ],
-          "state + 4": [
-            "2471:79",
-            "2472:87",
-            "2473:79",
-            "2481:36"
-          ],
           "ITEM_RESPONSE_TASTE - 1": [
-            "2659:42"
-          ],
-          "ITEM_RESPONSE_SMELL - 1": [
-            "2661:42"
-          ],
-          "ITEM_RESPONSE_PLAY_OR_USE - 1": [
             "2663:42"
           ],
+          "ITEM_RESPONSE_SMELL - 1": [
+            "2665:42"
+          ],
+          "ITEM_RESPONSE_PLAY_OR_USE - 1": [
+            "2667:42"
+          ],
           "object + 0x44": [
-            "2730:74",
-            "2754:70"
+            "2734:74",
+            "2758:70"
           ],
           "replacement + 0x44": [
-            "2789:74",
-            "2794:77",
-            "2797:76",
-            "2801:77"
+            "2793:74",
+            "2798:77",
+            "2801:76",
+            "2805:77"
           ]
         }
       }
@@ -3766,8 +3754,8 @@
           ],
           "gPlayerEyeHeight - 0x1C": [
             "1910:37",
-            "2468:42",
-            "2479:42"
+            "2469:42",
+            "2480:42"
           ],
           "return -1": [
             "2344:9"
