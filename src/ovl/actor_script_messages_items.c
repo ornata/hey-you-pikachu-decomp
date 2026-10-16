@@ -1,3 +1,5 @@
+#include "texture_animation_programs.h"
+#include "progress_field_ids.h"
 #include "random_scale.h"
 #include "player_camera.h"
 #include "audio_sound_effect.h"
@@ -164,9 +166,11 @@ s32 actorScriptCreateAttachedEffect(u8 *actor) {
     effectKind = scriptVmPopInteger((ScriptVm *)(vm));
     attachedEffectCreate(actor, effectKind, trackIndex);
     if ((actor == ((u8 *)gPikachuActor)) &&
-        ((trackIndex == 0xA6) || (trackIndex == 0xA7) || (trackIndex == 0xAF) || (trackIndex == 0xB3))) {
+        ((trackIndex == TEXTURE_ANIMATION_REACTION_SKULL_AND_CROSSBONES) ||
+         (trackIndex == TEXTURE_ANIMATION_REACTION_SCRIBBLE) || (trackIndex == TEXTURE_ANIMATION_REACTION_ANGER_MARK) ||
+         (trackIndex == TEXTURE_ANIMATION_REACTION_STEAM_PUFF))) {
         if (0.5 < randomNext() * RANDOM_U32_UNIT_SCALE) {
-            progressAddValue(0x1A, 1);
+            progressAddValue(PROGRESS_FIELD_PIKACHU_NEGATIVE_REACTION_CREDIT, 1);
         }
     }
     scriptVmPushInteger((ScriptVm *)(vm), 0);

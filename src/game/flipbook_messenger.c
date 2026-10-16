@@ -928,7 +928,7 @@ void messengerUpdateCollisionFlight(u8 *object, s32 unused) {
 
 /// Advance messenger dissipation and request removal when it finishes.
 /// \param object Messenger projectile with initialized state.
-/// \param animationStatus Animation completion status; 1 requests removal immediately.
+/// \param animationStatus IntegerAnimationResult; held or absent animation requests removal immediately.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_800266DC (0x800266DC).
 void messengerUpdateDissipation(u8 *object, s32 animationStatus) {
@@ -938,7 +938,7 @@ void messengerUpdateDissipation(u8 *object, s32 animationStatus) {
     state->velocity[0] = state->velocity[0] * k;
     state->velocity[1] = state->velocity[1] + 0.1F;
     state->velocity[2] = state->velocity[2] * k;
-    if (animationStatus == 1 || state->remainingTime < 0.0F) {
+    if (animationStatus == INTEGER_ANIMATION_HELD || state->remainingTime < 0.0F) {
         objectRequestHierarchyDestruction(object);
     }
 }

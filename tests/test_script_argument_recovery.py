@@ -19,6 +19,7 @@ NATIVES = {
     237: dict(address=0x80120348, functions=['actorScriptGetProgressValue'], inline_operands=[]),
     238: dict(address=0x80120388, functions=['actorScriptGetProgressMaximum'], inline_operands=[]),
     239: dict(address=0x801203C8, functions=['actorScriptGetProgressMinimum'], inline_operands=[]),
+    888: dict(address=0x8011C98C, functions=['actorScriptCreateAttachedEffect'], inline_operands=[]),
     999: dict(address=0x80000000, functions=['unreviewedCommand'], inline_operands=[]),
 }
 
@@ -160,6 +161,69 @@ class ScriptArgumentRecoveryTests(unittest.TestCase):
         rows = listing(literal(117), literal(3), *[native(7) for _ in range(31)], native(236))
         with self.assertRaisesRegex(ValueError, 'bounded producer window'):
             arguments(rows)
+
+
+class IntegerAnimationProgramDecodingTests(unittest.TestCase):
+    modes = {0: 'CONSTANT', 1: 'RANGE', 2: 'EMIT', 3: 'JUMP'}
+
+    class Image:
+        def __init__(self, *keys):
+            self.keys = {0x2000 + 12 * i: struct.pack('>ifhh', *key)
+                         for i, key in enumerate(keys)}
+
+        def read_address(self, address, size):
+            if size != 12 or address not in self.keys:
+                raise ValueError('outside synthetic key window')
+            return self.keys[address], dict(address=address, rom_offset=address, section='.synthetic')
+
+    def test_negative_duration_overrides_one_shot_mode_with_hold(self):
+        from tools.script_decoder.effects import integer_key_program
+        result = integer_key_program(self.Image((2, -1, -9, 123)), 0x2000, self.modes)
+        self.assertEqual(result['status'], 'held')
+        self.assertEqual(result['keys'][0]['operation'], 'hold')
+        self.assertEqual(result['keys'][0]['start'], -9)
+
+    def test_signed_relative_jumps_retain_a_loop_at_the_read_budget(self):
+        from tools.script_decoder.effects import integer_key_program
+        image = self.Image((3, -1, 1, 0), (0, 1, 5, 0), (3, -1, -1, 0))
+        result = integer_key_program(image, 0x2000, self.modes, limit=3)
+        self.assertEqual(result['status'], 'loop')
+        self.assertEqual(result['loop_target'], 0x200C)
+        self.assertEqual(result['keys'][2]['target_address'], 0x200C)
+
+    def test_range_emission_and_hold_are_distinct_static_operations(self):
+        from tools.script_decoder.effects import integer_key_program
+        image = self.Image((1, 1, 0, 3), (2, 0, 99, 0), (0, -1, -9, 0))
+        result = integer_key_program(image, 0x2000, self.modes)
+        self.assertEqual(result['status'], 'held')
+        self.assertEqual([r['operation'] for r in result['keys']],
+                         ['inclusive_range', 'one_shot', 'hold'])
+        self.assertEqual(result['keys'][1]['next_address'], 0x2018)
+
+    def test_missing_keys_invalid_arithmetic_and_budget_stay_unresolved(self):
+        from tools.script_decoder.effects import integer_key_program
+        for image in [self.Image((3, -1, -1, 0)), self.Image((1, 0, 0, 3)),
+                      self.Image((0, float('nan'), 0, 0)), self.Image((3, 1, 0, 0))]:
+            self.assertEqual(integer_key_program(image, 0x2000, self.modes)['status'], 'unresolved')
+        result = integer_key_program(self.Image((0, 1, 7, 0)), 0x2000, self.modes, limit=1)
+        self.assertEqual(result['status'], 'unresolved')
+        with self.assertRaises(ValueError):
+            integer_key_program(self.Image(), 0x2000, self.modes, limit=0)
+
+    def test_effect_links_preserve_unknown_kind_and_unnamed_selectors(self):
+        from tools.script_decoder.effects import attached_effect_requests
+        catalog = dict(programs=[dict(selector=167, enum_name='SCRIBBLE')])
+        rows = listing(literal(0), literal(167), native(888))
+        result = attached_effect_requests(rows, catalog)[0]
+        self.assertEqual(result['status'], 'recovered_arguments')
+        self.assertEqual(result['constant_effect_kind'], 0)
+        self.assertEqual(result['effect_program']['enum_name'], 'SCRIBBLE')
+        result = attached_effect_requests(listing(literal(167), native(888)), catalog)[0]
+        self.assertEqual(result['status'], 'recovered_track_only')
+        self.assertNotIn('effect_kind_expression', result)
+        result = attached_effect_requests(listing(literal(0), literal(168), native(888)), catalog)[0]
+        self.assertEqual(result['constant_track_selector'], 168)
+        self.assertNotIn('effect_program', result)
 
 
 if __name__ == '__main__':

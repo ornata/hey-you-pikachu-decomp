@@ -709,7 +709,7 @@
       "locations": {
         "raw_offset_candidates": {
           "key + 1": [
-            "312:26"
+            "313:26"
           ]
         }
       }
@@ -964,10 +964,10 @@
             "448:21"
           ],
           "gItemKind8FCollectionValue + 0x64": [
-            "1746:15"
+            "1747:15"
           ],
           "currentChapter + 1": [
-            "1765:18"
+            "1766:18"
           ]
         }
       }
@@ -3178,19 +3178,21 @@
         "player_profile.h",
         "player_state.h",
         "player_types.h",
+        "progress_field_ids.h",
         "progress_fields.h",
         "random.h",
         "random_scale.h",
         "script_object_queries.h",
         "script_vm_stack.h",
         "square_root.h",
+        "texture_animation_programs.h",
         "vector_metrics.h"
       ],
       "matching_exceptions": {},
       "locations": {
         "raw_offset_candidates": {
           "gPlayerCompanionTarget - 0x50": [
-            "1284:57"
+            "1288:57"
           ]
         }
       }
@@ -4045,22 +4047,22 @@
             "966:46"
           ],
           "y + 3": [
-            "1125:14"
+            "1126:14"
           ],
           "x + 80": [
-            "1126:13"
+            "1127:13"
           ],
           "selected - 2": [
-            "1139:40"
+            "1140:40"
           ],
           "top - 3": [
-            "1139:54"
+            "1140:54"
           ],
           "selected + 2": [
-            "1139:63"
+            "1140:63"
           ],
           "bottom + 3": [
-            "1139:77"
+            "1140:77"
           ]
         }
       }

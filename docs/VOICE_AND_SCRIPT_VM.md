@@ -636,8 +636,25 @@ handle pool, active list, search tree and animation initialization. It requires
 successful separate allocations of `0x68` bytes for the object, `0x2C` for state
 and `0x80` for matrices, plus available registry capacity. Replacing
 the actor's old attachment only requests hierarchy destruction; freeing happens
-later. The four special companion tracks `0xA6`, `0xA7`, `0xAF`, `0xB3` also
-advance the RNG and can increment progress field `0x1A`.
+later. The four special companion tracks display skull-and-crossbones, scribble, anger-mark
+and steam-puff icons. They advance the RNG and add one to
+`PROGRESS_FIELD_PIKACHU_NEGATIVE_REACTION_CREDIT` (field 26) when the sample
+exceeds one-half. This saturating credit influences disappearance selection;
+it is neither current anger nor a count of every negative reaction.
+
+The decoder's `effect_programs` lists eleven named slots and their authenticated
+integer keys. Each configuration's `attached_effect_requests` links recovered
+kind and track expressions to these programs. The other identified icons are
+an exclamation mark, question mark, blinking light bulb, flower, cross,
+spiral-centered sun and zigzag. Physical symbols alone do not establish emotions.
+A static walk stops at a held key or records a repeated key as a loop; it does
+not establish allocation bounds, rendering or gameplay reachability.
+
+Integer keys distinguish constant values, inclusive ranges, one-shot emissions
+and signed relative jumps. Negative-duration keys hold unless their mode is
+relative jump. `INTEGER_ANIMATION_EMITTED` advances the key without replacing
+the retained value; initialization consumes an initial one-shot. A timed key
+advances only after its duration is exceeded, not at equality.
 
 Control-scheme action selector 10 waits in game mode 3 before accessing the VM.
 Otherwise it consumes one scheme, applies it, appends zero and yields. Unlike
@@ -969,6 +986,7 @@ Recovered field names now distinguish these saved roles:
 | 19 / 20 | Visit-based disappearance / errand trigger counters. |
 | 22 / 23 | Togepi hatched / egg growth stage. Qualifying Abra-shop turn-ins advance growth up to five on the recovered path; storage permits fifteen. |
 | 24 | Saved normalized Togepi hatch-size parameter. |
+| 26 | Probabilistic negative-reaction credit used by disappearance selection; saturates at fifteen. |
 | 27–30 / 32–35 | Recorded acquisition of the cupcake, beach ball, flying acorn, fishing hook, watering can, watering jug, harmonica and megaphone, respectively. |
 | 36–58 | Per-area gameplay-scene initialization counts, saturating at fifteen. |
 | 59–68 | World-map destination unlock flags, still subject to chase-stage area availability. |
@@ -989,8 +1007,7 @@ The egg script derives field 24 from delivered player voice messages, capped at
 the field maximum, and saves it before hatching. Later Togepi creation converts
 that normalized parameter to a scale between one-half and full area scale. It is
 separate from egg growth stage and does not establish an ongoing age counter.
-Fields 15 and 26 remain numeric: a debug abbreviation and an association with
-unidentified effects do not yet establish their meanings.
+Field 15 remains numeric: its debug abbreviation does not establish its meaning.
 
 Acquisition flags enable item availability; they do not track current possession
 or remaining consumable quantities. The catalog's `availabilityField`, inventory

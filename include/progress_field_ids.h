@@ -35,6 +35,8 @@ enum {
     PROGRESS_FIELD_TOGEPI_HATCH_SIZE = 24, ///< Normalized Togepi size captured from voice-message progress at hatching.
     PROGRESS_FIELD_CHAPTER_FIVE_TOGETHER_NARRATION_RECORDED =
         25, ///< Chapter-five together narration processed; the front-yard sequence resets this gate.
+    PROGRESS_FIELD_PIKACHU_NEGATIVE_REACTION_CREDIT =
+        26, ///< Probabilistic credit from selected Pikachu negative-reaction effects, used to trigger disappearance; not current anger or one credit per event.
     PROGRESS_FIELD_CUPCAKE_ACQUIRED = 27,    ///< Cupcake acquisition recorded; does not imply current possession.
     PROGRESS_FIELD_BEACH_BALL_ACQUIRED = 28, ///< Beach ball acquisition recorded; does not imply current possession.
     PROGRESS_FIELD_FLYING_ACORN_ACQUIRED =

@@ -32,6 +32,7 @@ from .windows import text_window_requests
 from .caller_frames import analyze_caller_frames
 from .progress_fields import progress_field_catalog, progress_field_requests
 from .items import item_kind_catalog, item_creation_requests
+from .effects import effect_program_catalog, attached_effect_requests
 
 
 def companion_sites(image):
@@ -144,6 +145,7 @@ def catalog(image, max_instructions=100000):
     actors = actor_kind_records(image)
     progress_fields = progress_field_catalog(image)
     item_kinds = item_kind_catalog(image, progress_fields)
+    effect_programs = effect_program_catalog(image)
     vocabulary = vocabulary_catalog(image)
     name_catalog = pokemon_name_catalog(image, vocabulary)
     frame_reviews = native_frame_reviews()
@@ -214,6 +216,7 @@ def catalog(image, max_instructions=100000):
                              actor_transformation_requests=actor_transformation_requests(decoded['instructions'], actors),
                              progress_field_requests=progress_field_requests(decoded['instructions'], progress_fields),
                              item_creation_requests=item_creation_requests(decoded['instructions'], item_kinds),
+                             attached_effect_requests=attached_effect_requests(decoded['instructions'], effect_programs),
                              caller_frame_analysis=(analyze_caller_frames(decoded['instructions'], frame_reviews['active'], frame_reviews['active_deferred'])
                                                     if not decoded['diagnostics'] else dict(scope='Not analyzed: incomplete decoded CFG.')),
                              voice_dictionary_requests=dictionary_requests(decoded['instructions'], vocabulary.get('dictionaries', []), name_catalog,
@@ -245,6 +248,7 @@ def catalog(image, max_instructions=100000):
                 action_script_resources=action_resources(image, resource_ids),
                 actor_kinds=actors,
                 progress_fields=progress_fields,
+                effect_programs=effect_programs,
                 item_kinds=item_kinds,
                 voice_vocabulary=vocabulary,
                 bedroom_name_catalog=name_catalog,
@@ -272,7 +276,7 @@ def main(argv=None):
         report['elf_sha256'] = hashlib.sha256(args.elf.read_bytes()).hexdigest()
         report['decoder_sha256'] = hashlib.sha256(Path(__file__).with_name('formats.py').read_bytes()).hexdigest()
         report['analysis_sha256'] = {name: hashlib.sha256(Path(__file__).with_name(name + '.py').read_bytes()).hexdigest()
-                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames', 'control_schemes', 'windows', 'caller_frames', 'progress_fields', 'items')}
+                                     for name in ('catalog', 'stack', 'messages', 'actions', 'scenarios', 'actors', 'functions', 'table_returns', 'vocabulary', 'dictionaries', 'name_catalog', 'saved_dictionary', 'native_frames', 'control_schemes', 'windows', 'caller_frames', 'progress_fields', 'items', 'effects')}
         report['native_frame_review_sha256'] = review_manifest_fingerprint()
         files = {'catalog.json': report, **{name + '.json': row for name, row in decodes.items()}}
         # Validate every output before writing any content, including existing symlinks.

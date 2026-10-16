@@ -1062,7 +1062,8 @@ void systemMenuAppendProgressDetails(void) {
             progressGetValue(PROGRESS_FIELD_HAUNTER_INTERACTION_RECORDED) ? "Hr" : "Xx",
             progressGetValue(PROGRESS_FIELD_GAME_CLEARED) ? "Gc" : "Xx", progressGetValue(0xF) ? "Cs" : "Xx",
             progressGetValue(PROGRESS_FIELD_ERRAND_BOX_INSTRUCTIONS_RECORDED) ? "Cb" : "Xx",
-            progressGetValue(PROGRESS_FIELD_DISAPPEARANCE_TRIGGER_COUNTER), progressGetValue(0x1A),
+            progressGetValue(PROGRESS_FIELD_DISAPPEARANCE_TRIGGER_COUNTER),
+            progressGetValue(PROGRESS_FIELD_PIKACHU_NEGATIVE_REACTION_CREDIT),
             progressGetValue(PROGRESS_FIELD_ERRAND_TRIGGER_COUNTER));
     systemMenuAppendDetailText((u8 *)buffer);
 }

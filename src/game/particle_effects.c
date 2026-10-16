@@ -115,7 +115,7 @@ s32 wispEffectUpdateDrawAnimation(u8 *effect, s32 buffer) {
 
     state = ((RuntimeObjectPrefix *)effect)->state.pointer;
     step = state->playbackRate * gRuntimeFrameSeconds;
-    if (animationIntegerTrackEvaluate(&state->opacity, &alpha, step) == 1) {
+    if (animationIntegerTrackEvaluate(&state->opacity, &alpha, step) == INTEGER_ANIMATION_HELD) {
         objectRequestHierarchyDestruction(effect);
         return 1;
     }

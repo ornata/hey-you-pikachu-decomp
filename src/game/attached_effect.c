@@ -184,7 +184,8 @@ void attachedEffectUpdate(u8 *obj) {
         }
     }
     animationIntegerTrackEvaluate(&((AttachedEffectState *)state)->frameTrack, &value, step);
-    if (animationIntegerTrackEvaluate(&((AttachedEffectState *)state)->opacityTrack, &value, step) == 1) {
+    if (animationIntegerTrackEvaluate(&((AttachedEffectState *)state)->opacityTrack, &value, step) ==
+        INTEGER_ANIMATION_HELD) {
         objectRequestHierarchyDestruction(obj);
         return;
     }

@@ -280,7 +280,8 @@ void animationIntegerTrackInitialize(ValueTrack *track, ValueKey *keys) {
 /// \param state Integer animation track state to update.
 /// \param out Receives the current or emitted integer value.
 /// \param step Time step in seconds, applied after evaluation.
-/// \returns 0 for an active value, 1 for a held or absent track, or 2 for a one-shot value.
+/// \returns INTEGER_ANIMATION_ACTIVE, INTEGER_ANIMATION_HELD, or INTEGER_ANIMATION_EMITTED.
+/// \pre Timed range keys have positive duration and representable arithmetic; relative jumps stay within live keys and reach an output or hold.
 /// \note Original decompilation identifier: \c func_8000A600 (0x8000A600).
 s32 animationIntegerTrackEvaluate(ValueTrack *state, s32 *out, f32 step) {
     ValueTrack *track = state;
@@ -292,12 +293,12 @@ s32 animationIntegerTrackEvaluate(ValueTrack *state, s32 *out, f32 step) {
 
     *out = track->value;
     if (key == NULL) {
-        return 1;
+        return INTEGER_ANIMATION_HELD;
     }
     for (;;) {
         duration = key->duration;
         if (duration < 0.0F) {
-            if (key->mode == 3) {
+            if (key->mode == INTEGER_ANIMATION_KEY_JUMP) {
                 key += key->start;
                 track->key = key;
                 continue;
@@ -305,13 +306,13 @@ s32 animationIntegerTrackEvaluate(ValueTrack *state, s32 *out, f32 step) {
             *out = key->start;
             track->value = *out;
             track->time = 0.0F;
-            return 1;
+            return INTEGER_ANIMATION_HELD;
         }
-        if (key->mode == 2) {
+        if (key->mode == INTEGER_ANIMATION_KEY_EMIT) {
             *out = key->start;
             track->key = key + 1;
             track->time += step;
-            return 2;
+            return INTEGER_ANIMATION_EMITTED;
         }
         if (track->time <= duration) {
             break;
@@ -321,10 +322,10 @@ s32 animationIntegerTrackEvaluate(ValueTrack *state, s32 *out, f32 step) {
         track->time -= duration;
     }
     switch (key->mode) {
-    case 0:
+    case INTEGER_ANIMATION_KEY_CONSTANT:
         *out = key->start;
         break;
-    case 1:
+    case INTEGER_ANIMATION_KEY_RANGE:
         span = key->end - key->start;
         if (key->start < key->end) {
             lower = key->start;
@@ -345,5 +346,5 @@ s32 animationIntegerTrackEvaluate(ValueTrack *state, s32 *out, f32 step) {
     }
     track->value = *out;
     track->time += step;
-    return 0;
+    return INTEGER_ANIMATION_ACTIVE;
 }

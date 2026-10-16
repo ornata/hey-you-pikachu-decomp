@@ -1193,7 +1193,8 @@ s32 presentationSelectBedroomScenario(s32 *actorAction, s32 *audioCue) {
     sp1C = progressGetCurrentChapter();
     TRACE("iedeTimer:%d otukaiTimer:%d\n", progressGetValue(PROGRESS_FIELD_DISAPPEARANCE_TRIGGER_COUNTER),
           progressGetValue(PROGRESS_FIELD_ERRAND_TRIGGER_COUNTER));
-    TRACE("gameClear:%d timer:%d r:%d\n", gCompletedVisitCardPending, progressGetValue(0x1A), sp1C);
+    TRACE("gameClear:%d timer:%d r:%d\n", gCompletedVisitCardPending,
+          progressGetValue(PROGRESS_FIELD_PIKACHU_NEGATIVE_REACTION_CREDIT), sp1C);
     if (gCompletedVisitCardPending != 0) {
         if ((gCollectionResultsBypassed != 0) && (progressGetCurrentChapter() >= 5)) {
             gEyeCatchSelectedGroup = eyeCatchChooseGroup();
@@ -1213,7 +1214,7 @@ s32 presentationSelectBedroomScenario(s32 *actorAction, s32 *audioCue) {
             progressSetValue(PROGRESS_FIELD_SHOPPING_ERRAND_ACTIVE, 1);
         } else if ((sp1C == 7) && (progressGetValue(PROGRESS_FIELD_PIKACHU_DISAPPEARANCE_ACTIVE) == 0) &&
                    (progressGetValue(PROGRESS_FIELD_SHOPPING_ERRAND_ACTIVE) == 0)) {
-            if ((progressGetValue(0x1A) >= 0xE) ||
+            if ((progressGetValue(PROGRESS_FIELD_PIKACHU_NEGATIVE_REACTION_CREDIT) >= 0xE) ||
                 ((s32)randomBelow(progressGetValue(PROGRESS_FIELD_DISAPPEARANCE_TRIGGER_COUNTER)) >= 8)) {
                 progressSetValue(PROGRESS_FIELD_PIKACHU_DISAPPEARANCE_ACTIVE, 1);
             } else {
@@ -1229,7 +1230,7 @@ s32 presentationSelectBedroomScenario(s32 *actorAction, s32 *audioCue) {
     }
     gCurrentAreaConfiguration->backdrop = 1;
     if (progressGetValue(PROGRESS_FIELD_PIKACHU_DISAPPEARANCE_ACTIVE) != 0) {
-        progressSetValue(0x1A, 0);
+        progressSetValue(PROGRESS_FIELD_PIKACHU_NEGATIVE_REACTION_CREDIT, 0);
         progressSetValue(PROGRESS_FIELD_DISAPPEARANCE_TRIGGER_COUNTER, 0);
         *audioCue = 0x15;
         return 6;
@@ -1736,7 +1737,7 @@ s32 progressUpdateChapterAfterVisit(void) {
             (progressGetValue(PROGRESS_FIELD_FRIENDSHIP_MILESTONE_10_EARNED) != 0) && (progressGetValue(0xAC) != 0)) {
             var_s0 += 1;
             playerSetChaseStage(2);
-            progressSetValue(0x1A, 0);
+            progressSetValue(PROGRESS_FIELD_PIKACHU_NEGATIVE_REACTION_CREDIT, 0);
             progressSetValue(PROGRESS_FIELD_DISAPPEARANCE_TRIGGER_COUNTER, 0);
             progressSetValue(PROGRESS_FIELD_ERRAND_TRIGGER_COUNTER, 0);
         }

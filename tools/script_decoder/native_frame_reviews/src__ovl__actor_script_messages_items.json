@@ -1778,7 +1778,7 @@
     {
       "function": "actorScriptCreateAttachedEffect",
       "file": "src/ovl/actor_script_messages_items.c",
-      "sha256": "e20caf2f3f177b41f9b447af6dda897f356fd2644feae3595ebaccf10665bf55",
+      "sha256": "05d75e3e0665b0db556ab7884ea58b5c229c049e2b54265bca2474b3a4c77358",
       "effect": "replace_arguments_with_scalar",
       "arguments": 2,
       "stack_delta": -1,

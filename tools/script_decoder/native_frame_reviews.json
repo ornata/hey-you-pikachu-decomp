@@ -586,7 +586,7 @@
     "file:include/integer_animation_types.h": {
       "kind": "file",
       "file": "include/integer_animation_types.h",
-      "sha256": "e906c93373726e061a836d764d62dc11d0dc32aa39607f9f695aa337c0c2a10e"
+      "sha256": "14158479061a8a10d5d4938e537b94a1bb8cb42d48f18093ed6f11ca3a37e019"
     },
     "file:include/interaction.h": {
       "kind": "file",
@@ -936,7 +936,7 @@
     "file:include/progress_field_ids.h": {
       "kind": "file",
       "file": "include/progress_field_ids.h",
-      "sha256": "e17b35a68457178a00f7ce47030937954aad1ea419338cd12f6c8a8c02013687"
+      "sha256": "37b1269162493386d1a6e5809dc30728583bb4972a388166585b577f019ec8c8"
     },
     "file:include/progress_field_types.h": {
       "kind": "file",
@@ -1181,7 +1181,7 @@
     "file:include/texture_animation_programs.h": {
       "kind": "file",
       "file": "include/texture_animation_programs.h",
-      "sha256": "b2ab8bac5ec76401f8103510c282e0c7b727aaca2ac5eae4bb5ae4bdc9354cd4"
+      "sha256": "e12a574a304934b2a5071b0a33ebf24be68cea968aada59dd3c70e35daff1c2c"
     },
     "file:include/texture_cache.h": {
       "kind": "file",
@@ -1291,7 +1291,7 @@
     "file:src/game/actor_configuration.c": {
       "kind": "file",
       "file": "src/game/actor_configuration.c",
-      "sha256": "2b3c501c3356377dc6a518d6af20183fffffc18dba7c007fcd5e21d9128a55cf"
+      "sha256": "f014e464cc9c086edc371f32b891da82d7a5b233050b7b3bf6f65dee8f84df9f"
     },
     "file:src/game/actor_model_motion.c": {
       "kind": "file",
@@ -1311,7 +1311,7 @@
     "file:src/game/animation_tracks.c": {
       "kind": "file",
       "file": "src/game/animation_tracks.c",
-      "sha256": "e2050b5bc9269e1a9db31ace2465f32a80a7308e59c7b6e41f9d28f3f7a15f2b"
+      "sha256": "eb7320f95a5cb2548c558a2904f0d77541e589cc6d5cec81ad80a68318fe92fc"
     },
     "file:src/game/archive_compression.c": {
       "kind": "file",
@@ -1326,7 +1326,7 @@
     "file:src/game/attached_effect.c": {
       "kind": "file",
       "file": "src/game/attached_effect.c",
-      "sha256": "e80bcfb4c134c04a03aebe0b2b539504a886adb83bb87cbd7eb0941c89a7dce2"
+      "sha256": "1e4b52b48d16dcd1e24634bce79c4e90b06dd4f16d26b1f3ab73b448108c24ae"
     },
     "file:src/game/audio_playback.c": {
       "kind": "file",
@@ -1346,7 +1346,7 @@
     "file:src/game/collection_presentation.c": {
       "kind": "file",
       "file": "src/game/collection_presentation.c",
-      "sha256": "c7c1933e505f7a4d49ea504ff9ebde26a1fe63f5a7041520e617f70752e66924"
+      "sha256": "052eec468928063809f66b22cacb75bc7bf6f2f4ccf1627236926068039087cd"
     },
     "file:src/game/collision_grid.c": {
       "kind": "file",
@@ -1366,7 +1366,7 @@
     "file:src/game/flipbook_messenger.c": {
       "kind": "file",
       "file": "src/game/flipbook_messenger.c",
-      "sha256": "4192fb385cc1dc9b11e44ae2c3448fc4237454d880869b7c66bd253df6c915be"
+      "sha256": "5ba8aea7e6b42928f7bbcf3571d015f5bb4c228d2f79a1a4f226dcf237f37cc0"
     },
     "file:src/game/graphics_text.c": {
       "kind": "file",
@@ -1441,7 +1441,7 @@
     "file:src/game/particle_effects.c": {
       "kind": "file",
       "file": "src/game/particle_effects.c",
-      "sha256": "9159f63a63d1f80172bc66ee73b2c660b14820cf5ecead35224225ea3fced8e5"
+      "sha256": "b124a256d572eb066fc04c970e09965c32397053fb35fb71693559a021d30d80"
     },
     "file:src/game/rom_cache.c": {
       "kind": "file",
@@ -1546,7 +1546,7 @@
     "file:src/ovl/actor_script_messages_items.c": {
       "kind": "file",
       "file": "src/ovl/actor_script_messages_items.c",
-      "sha256": "ee38ce1638b94aa49d028b17d397777ff92e97319b1fd06c69b4691f8b30bbe5"
+      "sha256": "aa3fa1e16fbd2842bb86d698716b57d26c0870d9e7fa7ba75cf7456d04f37921"
     },
     "file:src/ovl/actor_script_queries.c": {
       "kind": "file",
@@ -1735,7 +1735,7 @@
       "kind": "function",
       "file": "src/game/animation_tracks.c",
       "function": "animationIntegerTrackEvaluate",
-      "sha256": "ba022f62c0a3c07504d9915fd600e4a479201a3951fee1242f03e233673fb1df"
+      "sha256": "a1379690cdeca681123f9e518413ce963628605d77971ccb32ba9d7f3dbe5654"
     },
     "function:src/game/animation_tracks.c:animationIntegerTrackInitialize": {
       "kind": "function",
@@ -1831,7 +1831,7 @@
       "kind": "function",
       "file": "src/game/collection_presentation.c",
       "function": "progressUpdateChapterAfterVisit",
-      "sha256": "47cb0bbae3a5da77f18903aa53421dfb10cb0b73a464e62ee9efc97e45e9149f"
+      "sha256": "571efda7f5541a0c3ddfcaf16a131cddd7d3e4ff632ba6366cd98ea5b4a1df5c"
     },
     "function:src/game/collision_grid.c:collisionGridUnregisterObject": {
       "kind": "function",
@@ -4291,7 +4291,7 @@
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_messages_items.json",
-      "sha256": "ce1cec95570e10bf76be0b2a73350d811a2619b6701bc31ca9e344fe69c1f8ea"
+      "sha256": "b928c09c681a19313a00173fe4466fa5b8b1d18ba836c46192b0e8f80352208d"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_player_world.json",

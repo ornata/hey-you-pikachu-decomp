@@ -227,9 +227,9 @@ void contactEffectUpdate(u8 *effect) {
     }
     result = animationIntegerTrackEvaluate(&state->textureAnimation, &frame, gRuntimeFrameSeconds);
     if (state->triggered != 0) {
-        if (result == 1) {
+        if (result == INTEGER_ANIMATION_HELD) {
             objectRequestHierarchyDestruction(effect);
-        } else if (result == 2) {
+        } else if (result == INTEGER_ANIMATION_EMITTED) {
             objectPlaySpatialSound(effect, 0x97, 20.0F, 100.0F);
             result = actorGetPartObjectHandle((u8 *)((s32)gPikachuActor), 0x79);
             pull = gContactEffectChainPull;
