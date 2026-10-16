@@ -7,12 +7,13 @@ into cost selectors merely because they share a producer.
 
 from .formats import integer_operand
 from .functions import function_summary
-from .local_flow import KNOWN_OPERATIONS
+from .local_flow import KNOWN_OPERATIONS, vm_comparison_contract
 from .stack import incoming_edges, recover_arguments
 
 
 def annotate_costed_caller_relations(instructions, requests, policies, *, preserved_natives=(), limit=30000):
     """Attach bounded caller-specific evidence without substituting shared formals."""
+    comparison_contract = vm_comparison_contract()
     by = {r['offset']: r for r in instructions}
     indices = {r['offset']: i for i, r in enumerate(instructions)}
     frames = {off: r for off, r in by.items() if r['name'] == 'SCRIPT_OP_ENTER_FRAME'}
@@ -223,6 +224,9 @@ def annotate_costed_caller_relations(instructions, requests, policies, *, preser
                 continue
             if literal['name'] != 'SCRIPT_OP_PUSH_LITERAL' or literal['operands'][0]['tag'] not in (0,2):
                 continue
+            literal_value = integer_operand(literal['operands'][0])
+            if type(literal_value) is not int or not -2147483648 <= literal_value < 2147483648:
+                continue
             if compare['name'] not in ('SCRIPT_OP_EQUAL','SCRIPT_OP_NOT_EQUAL') or jump['name'] != 'SCRIPT_OP_JUMP_IF_ZERO':
                 continue
             if any(incoming.get(right['offset'],set()) != {left['offset']} or successors(left) != [right['offset']]
@@ -241,6 +245,77 @@ def annotate_costed_caller_relations(instructions, requests, policies, *, preser
                 scope='Dominating branch evidence about this mode coordinate; applies to the copied mode only under the separately validated unchanged-prefix conditions.'))
         return guards
 
+    def non_cost_guard_evidence(call, formal_entry):
+        if not comparison_contract['current']:
+            raise ValueError('stale VM comparison contract: ' + str(comparison_contract['stale']))
+        argc, _, _ = frame_contract(formal_entry)
+        actual = arguments(call, argc)
+        if len(actual) != 2 or actual[1]['kind'] != 'variable':
+            return None
+        mode_expr = actual[1]
+        mode = mode_expr['frame'], mode_expr['slot']
+        if not root_slot(mode):
+            return None
+        entry = owner(call['offset'])
+        _, own_count, own_frame = frame_contract(entry)
+        pending, prefix = [call['offset']], set()
+        while pending:
+            off = pending.pop()
+            if off in prefix:
+                continue
+            charge()
+            prefix.add(off)
+            if off != entry:
+                pending.extend(predecessors.get(off, []))
+        for guard in forwarding_guards(entry, call['offset'], mode, prefix):
+            equal = guard['comparison'] == 'SCRIPT_OP_EQUAL'
+            requires_equal = guard['required_comparison_truth'] == equal
+            literal = guard['literal_value']
+            if not (requires_equal and literal != 6 or not requires_equal and literal == 6):
+                continue
+            jump = by[guard['branch_offset']]
+            selected_kind = 'fallthrough' if guard['required_comparison_truth'] else 'branch'
+            selected = [e['offset'] for e in jump['successors'] if e['kind'] == selected_kind]
+            if len(selected) != 1:
+                continue
+            # Only suffix paths to this call are relevant; earlier producer effects
+            # and off-path/post-call effects are deliberately not audited here.
+            pending, ancestors = [call['offset']], set()
+            while pending:
+                off = pending.pop()
+                if off in ancestors or off == guard['branch_offset']:
+                    continue
+                charge()
+                ancestors.add(off)
+                pending.extend(predecessors.get(off, []))
+            pending, suffix, natives, helpers = selected[:], set(), set(), []
+            while pending:
+                off = pending.pop()
+                if off == call['offset'] or off in suffix or off not in ancestors or off == guard['branch_offset']:
+                    continue
+                charge()
+                suffix.add(off)
+                row = by[off]
+                if row['name'] not in KNOWN_OPERATIONS or row['name'] in ('SCRIPT_OP_ENTER_FRAME','SCRIPT_OP_STORE_ELEMENT'):
+                    raise ValueError('non-cost guard suffix has unknown, rebinding or indirect effects')
+                if row['name'] == 'SCRIPT_OP_STORE_VARIABLE':
+                    coords = coordinates(row)
+                    if coords == mode:
+                        raise ValueError('non-cost guard suffix overwrites copied mode')
+                    if not (coords[0] == own_frame and 0 <= coords[1] < own_count or root_slot(coords)):
+                        raise ValueError('non-cost guard suffix has an unbounded borrowed writer')
+                if row['name'] == 'SCRIPT_OP_CALL_NATIVE':
+                    natives.add(native_safe(row))
+                if row['name'] == 'SCRIPT_OP_CALL':
+                    helpers.append(preserve_helper(integer_operand(row['operands'][0]), mode))
+                pending.extend(successors(row))
+            return dict(status='conditional_non_cost_caller', comparison_contract=comparison_contract, mode_expression=mode_expr,
+                excluded_dispatch_mode=6, mode_domain='shared_helper_dispatch_mode', guard=guard,
+                guard_relation='equal' if requires_equal else 'not_equal', suffix_instruction_offsets=sorted(suffix),
+                intervening_native_functions=sorted(natives), intervening_helpers=helpers,
+                scope='Only this dominating guard-to-call suffix preserves the copied finite numeric mode under original comparison semantics and valid disjoint root/caller/callee storage, balanced frames and frozen native prerequisites. Program/VM/frame bindings remain stable through the suffix, with no asynchronous mutation. Earlier producer preservation, policy meaning and whole-call execution are not established.')
+        return None
+
     def caller_relation(call, formal_entry, formal_index, mode_index, *, mode_override=None, forwarding_stack=()):
         argc, _, _ = frame_contract(formal_entry)
         actual = arguments(call, argc)
@@ -248,7 +323,7 @@ def annotate_costed_caller_relations(instructions, requests, policies, *, preser
             raise ValueError('forwarded argument index exceeds the called frame contract')
         result = actual[formal_index]
         mode_expr = mode_override if mode_index is None else actual[mode_index]
-        if result['kind'] != 'variable' or mode_expr['kind'] != 'variable':
+        if mode_expr['kind'] != 'variable' or result['kind'] not in ('variable','script_return'):
             raise ValueError('caller does not pass a local result and borrowed mode variable')
         mode = mode_expr['frame'], mode_expr['slot']
         own_entry = owner(call['offset'])
@@ -257,6 +332,29 @@ def annotate_costed_caller_relations(instructions, requests, policies, *, preser
             raise ValueError('recursive formal-forwarding caller chain')
         if len(forwarding_stack) >= 32:
             raise ValueError('formal-forwarding depth budget exhausted')
+        if result['kind'] == 'script_return':
+            if mode_index is not None or argc != 1 or formal_index != 0 or not root_slot(mode):
+                raise ValueError('direct producer argument is outside the bounded one-argument forwarding form')
+            producer_index = indices[call['offset']] - 1
+            if producer_index < 0:
+                raise ValueError('direct producer argument lacks a preceding call')
+            producer = instructions[producer_index]
+            if (producer['name'] != 'SCRIPT_OP_CALL' or
+                integer_operand(producer['operands'][0]) != result['target_offset'] or
+                producer['offset'] + producer['size'] != call['offset'] or
+                incoming.get(call['offset'],set()) != {producer['offset']} or
+                [e['offset'] for e in producer.get('successors',[]) if e['kind']=='return_continuation'] != [call['offset']]):
+                raise ValueError('direct producer and wrapper calls are not adjacent exclusive continuations')
+            relation = producer_relation(result['target_offset'],mode)
+            selectors = sorted({pair['return_value'] for pair in relation['mode_return_pairs'] if pair['mode']==6})
+            if not selectors or any(not 0<=value<len(policies) for value in selectors):
+                raise ValueError('direct producer mode6 has no complete bounded policy domain')
+            return dict(status='conditional_paired_caller_relation',caller_offset=call['offset'],caller_frame_entry=own_entry,
+                arguments=actual,reaching_producer_stores=[],producer_relations=[relation],
+                actual_producer_call=dict(instruction_offset=producer['offset'],target_offset=result['target_offset'],argument_expression=result),
+                consumed_mode=6,conditional_cost_selectors=selectors,conditional_policies=[policies[value] for value in selectors],
+                intervening_helpers=[],intervening_native_functions=[],
+                scope='This adjacent exclusive producer-return to one-argument-wrapper call only. Valid disjoint frames/operand floors, stable program/VM/root binding and all frozen native prerequisites apply; no asynchronous mutation may change mode/result between the returning producer and wrapper. No fictitious local store or global formal substitution is inferred.')
         if result['frame'] != own_frame or not 0 <= result['slot'] < own_count:
             raise ValueError('caller result is not a bounded own-frame local')
         pending, seen, stores, helper_proofs, native_proofs = list(predecessors.get(call['offset'], [])), set(), [], [], set()
@@ -443,6 +541,16 @@ def annotate_costed_caller_relations(instructions, requests, policies, *, preser
                     result = caller_relation(call, entry, 0, 1)
                 except (ValueError, KeyError, IndexError) as error:
                     result = dict(status='unresolved_caller_relation', caller_offset=call['offset'], reason=str(error))
+                relation_work = work
+                work = 0
+                try:
+                    exclusion = non_cost_guard_evidence(call, entry)
+                    if exclusion is not None:
+                        result['conditional_non_cost_caller'] = exclusion
+                except (ValueError, KeyError, IndexError) as error:
+                    result['non_cost_guard_diagnostics'] = [str(error)]
+                finally:
+                    work = relation_work
                 inventory.append(result)
             request['conditional_caller_policy_relations'] = inventory
             request['universal_policy_domain_established'] = False

@@ -51,9 +51,62 @@ NATIVE_PRESERVATION_PINS = {'actorScriptSetMessengerContactMode': 'd4eaca70214bb
  'actorScriptGetActorKind': '3aac60e3bdcdcb61153ac107a12540bff1511efd9bcdc1db6070a4e06b8c5d57',
  'actorScriptStopActionScript': '0a375212619f38a1c1871f8197b4508abefdfd643f9f4159d0c277ad37d107a3',
  'actorScriptGetItemKind': '3d9d842249982c2b8848170a8030dc70c208c513cf0fd8cd28bd6b9edac8f88a',
- 'actorScriptGetObjectDistance': '16f67058c70921bd63c1950aa3415f2fdd74bda24cd4dec566cf3fd0ee55b161'}
+ 'actorScriptGetObjectDistance': '16f67058c70921bd63c1950aa3415f2fdd74bda24cd4dec566cf3fd0ee55b161',
+ 'actorScriptFindItemInFacingCone': 'd8e9f34a88ce190a7bee5839360fe498672c3eb62ec2df4b7eee49c3057578b1',
+ 'actorScriptTrackPlayerPrimaryObject': 'd00e68a3517f8f0631050f1d302ea605c983f4af330dcb7ad4ecdf73de6ea77d',
+ 'actorScriptPushTrackingMode': '0ad1b4b9fe05cfb50e2931e7301900cf03b1845696a24292b2d07b218587d902',
+ 'actorScriptTrackPlayerSecondaryObject': 'e145f1c77aed4a134191e5c384e04a81871d9f2267b3bf6b7ccfc5409f166fbe',
+ 'actorScriptAcknowledgeMessage': 'f1e0a7a9aa429c606db2b16cbed462886de689626eaa1d22937811c6ab194327',
+ 'actorScriptGetObjectType': '284eb9bfb1fd26c6ce238945ccba2f56be3b58b79c5a8d0fd4f69439380c937b',
+ 'actorScriptPushTotalElapsedTime': '554fe92f02256193649ee7f2e71141a68a5c3f4b5c39977d5afae6a7fbbd3e89',
+ 'actorScriptPushTargetApproachDistance': '117f9156e3e996b2e05ca2b2957f4bb7fb9cefdbbb67d9b10c13c66c665245b1',
+ 'actorScriptGetItemState': '43a248fe3a7b2fdca33942e0c1bf9a7f010d777c3d8bc3d5e5eeef2869138132',
+ 'actorScriptStartTimedAction': '3ef0e8c079957b0384aef5f3db35c025b9ad8481b0c02f90885e3cbd8bde37ef',
+ 'actorScriptGetTargetCoordinate': '54ae646b94cbc82d1f6a23642bf31c1cb718f212f569a092f1afa64bbcf174c1',
+ 'actorScriptGetGroundHeightAtPosition': '5311b7e0f4e771685d0f0cfee76afe964bf4fc36a7c545a76fa9f171b732ffb9',
+ 'actorScriptPushTargetHandle': '92bd31f1f81922ec60513a87725a1a96f428d11a5dec1beb1b94ebcc62487806'}
 LOOP_EXIT_DEFERRED_PIN = '687dd86d8dd2376c3f9d03d05ac4e12b2177dcebb5f682a77634a603ef1c3957'
 ACTION_WAIT_DEFERRED_PIN = 'e8613a3379d10ed695e93d742c6cd8c0e22077a87dfed973fe7485e5ae7e4865'
+
+
+
+VM_COMPARISON_UNIT_PIN = 'cded04462b1f2fbece0ee8d937f9d4fcfc8c659719094b92768715d9669fe8fb'
+VM_COMPARISON_PIN = '6406d5a820565f00b42c6a75d7cc68ca9834b1040ab1490e64f52d6299230920'
+VM_COMPARISON_VALUE_PINS = {
+    'scriptValueGetFloat': '94e6ff080eea82e2661ec2adbc45a33a6a2141b10ff8d1263f580c2c5433c6b1',
+    'scriptValueGetInteger': 'b3c74539dabcef92e573e0b7081b41eb33659fe2a4c502fdc3805cb16a5b267f'}
+VM_COMPARISON_HEADER_PIN = 'f9f9e4509166d6c9aac4d4687f973da7c3b719df7413be4d4f738182850e5b08'
+VM_COMPARISON_MACRO_PINS = {
+    'SCRIPT_VALUE_RELATIVE_EQUALITY_TOLERANCE': '26115bb364a1c80caad300dafce5ab6eec49bc04ef13fcf7397c6065170c2425',
+    'SCRIPT_VALUE_ABSOLUTE_EQUALITY_TOLERANCE': 'c536c9032711fbd37fac06012537ce3db9fb754f37b5fdb0ab8306efe42aa02a'}
+
+
+def vm_comparison_contract(root=ROOT):
+    """Bind the admitted integer/finite-float comparison model to current source."""
+    import re
+    try:
+        code = (root / 'src/ovl/script_vm.c').read_text()
+        stale = []
+        if fingerprint(code) != VM_COMPARISON_UNIT_PIN:
+            stale.append('src/ovl/script_vm.c')
+        if fingerprint(function_source(code, 'scriptVmApplyComparisonOperator')) != VM_COMPARISON_PIN:
+            stale.append('scriptVmApplyComparisonOperator')
+        for name, expected in VM_COMPARISON_VALUE_PINS.items():
+            if fingerprint(function_source(code, name)) != expected:
+                stale.append(name)
+        if fingerprint((root / 'include/script_vm.h').read_text()) != VM_COMPARISON_HEADER_PIN:
+            stale.append('include/script_vm.h')
+        for name, expected in VM_COMPARISON_MACRO_PINS.items():
+            definitions = re.findall(r'^\s*#define\s+' + name + r'\b[^\n]*', code, re.M)
+            if len(definitions) != 1 or fingerprint(definitions[0]) != expected:
+                stale.append(name)
+    except (OSError, ValueError):
+        stale = ['comparison_source_unavailable']
+    return dict(current=not stale, stale=stale, vm_unit_sha256=VM_COMPARISON_UNIT_PIN, function_sha256=VM_COMPARISON_PIN,
+                macro_sha256=dict(VM_COMPARISON_MACRO_PINS), value_helper_sha256=dict(VM_COMPARISON_VALUE_PINS),
+                value_header_sha256=VM_COMPARISON_HEADER_PIN, relative_tolerance=0.001,
+                absolute_tolerance=0.001,
+                model='Integer comparisons are exact. Finite floating operands use abs(right-left) <= 0.001*abs(left)+0.001; NOT_EQUAL is its complement. With unchanged copied numeric mode, the equality region around 6 is disjoint from every other admitted signed-integer literal equality region. No exact floating equality or nonnumeric/NaN semantics is inferred.')
 
 
 def local_preservation_contracts(reviews, root=ROOT):

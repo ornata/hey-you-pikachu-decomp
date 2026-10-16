@@ -1096,16 +1096,37 @@ with one argument uses its own slot zero for that argument; entering a nested
 function with the same logical frame index temporarily rebinds the index to a
 different physical interval, then restores the earlier binding on return.
 
+A producer result can also feed a one-argument wrapper directly. When the
+producer's return continuation is exclusively the immediately adjacent wrapper
+call, `actual_producer_call` links the return/mode pairs without inventing a local
+assignment. Both the producer relation and the wrapper's separate prefix proof
+are required. Other argument expressions and intervening effects remain explicit.
+
 Only a preserved path from wrapper entry to the inner call supports a forwarded
 relation. A rewrite of the formal, a mixed entry/local-definition path, recursion,
 unbounded storage or an unreviewed effect prevents the corresponding claim.
 Unknown upstream callers remain visible, and the shared formal is never replaced
 with a universal policy domain. `mode_guards` records dominating comparisons
 without pruning policy alternatives or proving that a branch executes.
-Preservation for an action wait requires both the
-immediate native review and its deferred handler review, plus the stated absence
-of asynchronous mutation of protected storage. The decoder does not prove that
+Preservation for an action wait requires both the immediate native review and its
+deferred handler review, plus the stated absence of asynchronous mutation of
+protected storage. The decoder does not prove that
 those scheduling prerequisites hold during gameplay.
+
+A caller may also exclude the helper's cost branch without establishing its
+producer's return domain. `conditional_non_cost_caller` records a dominating
+comparison that rules out dispatch mode six, together with preservation evidence
+from that guard to the call. Earlier producer effects remain outside this suffix
+proof. The original unresolved selector and producer reason remain visible; the
+annotation does not establish a policy or show that the caller executes. An
+intervening mode write, a bypass around the guard or an unreviewed suffix effect
+prevents this evidence.
+Its `comparison_contract` binds the VM implementation, packed value layout and
+comparison helpers to the original semantics. Floating equality uses a relative
+and absolute tolerance of 0.001; it is not exact equality. For unchanged finite
+numeric modes, the equality region around six remains separate from those around
+other integer literals. Stale comparison or layout evidence suppresses this guard
+annotation. Nonnumeric values and NaNs are outside the admitted model.
 
 Throw and acquisition requests also expose their timed-program operands in
 `native_action_calls`. Throw consumes one program operand when its deferred
@@ -1183,6 +1204,14 @@ destroy-pending objects are unavailable to these handle queries. Twenty-four
 authored original-instruction cases check these branches and argument replacement,
 guarding the VM, saved values, handle pool and borrowed records. Held-item fixtures
 also use the constructor-established tag and full item-state allocation.
+
+`actorScriptGetItemState` instead uses a live-handle lookup and retains toolbox
+and suspended ownership states. It returns minus one for a missing handle or a
+non-item object. The runtime item-kind discriminator is unsigned, while the
+ownership byte is signed and is returned without validation. Ordinary initialized
+states are zero through five; a corrupted negative ownership byte can therefore
+collide with the unavailable sentinel. This query does not change ownership or
+certify that the item is available for interaction.
 
 Six further one-argument contracts cover numeric getters:
 

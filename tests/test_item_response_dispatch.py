@@ -581,5 +581,113 @@ class FormalForwardingTests(unittest.TestCase):
         self.assertNotIn('conditional_cost_selectors',upstream)
 
 
+class NonCostCallerGuardTests(FormalForwardingTests):
+    def test_suffix_exclusion_is_independent_of_unreviewed_producer_prefix(self):
+        instructions,request=self.guarded_fixture()
+        next(r for r in instructions if r['offset']==411)['operands']=[operand(1)]
+        next(r for r in instructions if r['offset']==201)['native']=dict(functions=['unsafeProducer'])
+        next(r for r in instructions if r['offset']==201)['name']='SCRIPT_OP_CALL_NATIVE'
+        result=self.analyze(instructions,request)
+        self.assertEqual(result['status'],'unresolved_caller_relation')
+        exclusion=result['conditional_non_cost_caller']
+        self.assertEqual(exclusion['excluded_dispatch_mode'],6)
+        self.assertEqual(exclusion['guard']['literal_value'],1)
+        self.assertNotIn(201,exclusion['suffix_instruction_offsets'])
+        self.assertEqual(request['cost_policy_link']['status'],'unresolved_selector')
+
+    def test_not_equal_six_and_malformed_literals(self):
+        for value in (6,None,True,2147483648):
+            instructions,request=self.guarded_fixture()
+            next(r for r in instructions if r['offset']==411)['operands']=[operand(value)]
+            next(r for r in instructions if r['offset']==412)['name']='SCRIPT_OP_NOT_EQUAL'
+            result=self.analyze(instructions,request)
+            self.assertEqual('conditional_non_cost_caller' in result,type(value)is int and value==6)
+
+    def test_suffix_mode_write_and_unknown_effect_reject_exclusion(self):
+        for name,operands in [('STORE_VARIABLE',[operand(0),operand(3)]),('STORE_ELEMENT',[operand(1),operand(0)]),('MISSING_OPCODE',[])]:
+            instructions,request=self.guarded_fixture()
+            next(r for r in instructions if r['offset']==411)['operands']=[operand(1)]
+            next(r for r in instructions if r['offset']==414)['successors']=[dict(kind='fallthrough',offset=430)]
+            instructions.append(row(430,name,operands,[('fallthrough',415)]))
+            result=self.analyze(sorted(instructions,key=lambda r:r['offset']),request)
+            self.assertNotIn('conditional_non_cost_caller',result)
+
+    def test_exclusion_guard_bypass_rejects(self):
+        instructions,request=self.guarded_fixture()
+        next(r for r in instructions if r['offset']==411)['operands']=[operand(1)]
+        next(r for r in instructions if r['offset']==400)['successors']=[dict(kind='fallthrough',offset=401)]
+        instructions.extend([row(401,'PUSH_LITERAL',[operand(1)],[('fallthrough',402)]),row(402,'JUMP_IF_ZERO',[operand(414,2)],[('fallthrough',410),('branch',414)])])
+        self.assertNotIn('conditional_non_cost_caller',self.analyze(sorted(instructions,key=lambda r:r['offset']),request))
+
+    def test_adjacent_return_argument_preserves_pairs_without_fake_store(self):
+        instructions,request=self.fixture()
+        instructions=[r for r in instructions if r['offset'] not in (202,203)]
+        next(r for r in instructions if r['offset']==201)['successors']=[dict(kind='return_continuation',offset=204),dict(kind='call',offset=100)]
+        next(r for r in instructions if r['offset']==201)['size']=3
+        result=self.analyze(instructions,request)
+        upstream=result['formal_forwarding']['upstream_callers'][0]
+        self.assertEqual(upstream['conditional_cost_selectors'],[1])
+        self.assertEqual(upstream['reaching_producer_stores'],[])
+        self.assertEqual(upstream['actual_producer_call']['instruction_offset'],201)
+        next(r for r in instructions if r['offset']==201)['size']=1
+        result=self.analyze(instructions,request)
+        self.assertEqual(result['formal_forwarding']['upstream_callers'][0]['status'],'unresolved_caller_relation')
+
+
+class VmComparisonContractTests(unittest.TestCase):
+    def test_changed_helper_macro_and_duplicate_definition_fail_closed(self):
+        import tempfile
+        from pathlib import Path
+        from tools.script_decoder.context import ROOT
+        from tools.script_decoder.local_flow import vm_comparison_contract
+        source=(ROOT/'src/ovl/script_vm.c').read_text()
+        self.assertTrue(vm_comparison_contract()['current'])
+        for changed in (source.replace('fabsf(fr - fl)', 'fabsf(fr + fl)',1),
+                        source.replace('return integerValue;', 'return integerValue + 1;',1),
+                        source.replace('SCRIPT_VALUE_RELATIVE_EQUALITY_TOLERANCE 0.001F','SCRIPT_VALUE_RELATIVE_EQUALITY_TOLERANCE 0.002F'),
+                        source+'\n#define SCRIPT_VALUE_ABSOLUTE_EQUALITY_TOLERANCE 0.001F\n'):
+            with tempfile.TemporaryDirectory() as directory:
+                root=Path(directory);(root/'src/ovl').mkdir(parents=True)
+                (root/'src/ovl/script_vm.c').write_text(changed)
+                (root/'include').mkdir()
+                (root/'include/script_vm.h').write_text((ROOT/'include/script_vm.h').read_text())
+                self.assertFalse(vm_comparison_contract(root)['current'])
+
+    def test_changed_packed_value_layout_fails_closed(self):
+        import tempfile
+        from pathlib import Path
+        from tools.script_decoder.context import ROOT
+        from tools.script_decoder.local_flow import vm_comparison_contract
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);(root/'src/ovl').mkdir(parents=True);(root/'include').mkdir()
+            (root/'src/ovl/script_vm.c').write_text((ROOT/'src/ovl/script_vm.c').read_text())
+            header=(ROOT/'include/script_vm.h').read_text()
+            (root/'include/script_vm.h').write_text(header.replace('SCRIPT_VALUE_FLOAT = 1','SCRIPT_VALUE_FLOAT = 9'))
+            result=vm_comparison_contract(root)
+            self.assertFalse(result['current'])
+            self.assertIn('include/script_vm.h',result['stale'])
+
+    def test_stale_comparison_suppresses_only_independent_exclusion(self):
+        from unittest.mock import patch
+        helper=NonCostCallerGuardTests()
+        instructions,request=helper.guarded_fixture()
+        next(r for r in instructions if r['offset']==411)['operands']=[operand(1)]
+        with patch('tools.script_decoder.paired_flow.vm_comparison_contract',return_value=dict(current=False,stale=['macro'])):
+            result=helper.analyze(instructions,request)
+        self.assertEqual(result['status'],'conditional_formal_forwarding_relation')
+        self.assertNotIn('conditional_non_cost_caller',result)
+        self.assertIn('stale VM comparison',str(result['non_cost_guard_diagnostics']))
+
+    def test_finite_float_tolerance_near_six_is_not_exact_equality(self):
+        import struct
+        f32=lambda x:struct.unpack('>f',struct.pack('>f',x))[0]
+        equal=lambda left,right:abs(f32(right-left))<=f32(f32(abs(left)*f32(.001))+f32(.001))
+        self.assertTrue(equal(f32(6.006),6))
+        self.assertFalse(equal(f32(6.008),6))
+        for value in (f32(5.994),f32(6.0),f32(6.006)):
+            self.assertTrue(equal(value,6))
+            self.assertFalse(equal(value,1))
+
+
 if __name__ == '__main__':
     unittest.main()
