@@ -163,6 +163,8 @@ def saved_dictionary_analysis(instructions, request_offset, expression, budget=5
                 script_function_views=len(audited), write_hazards=hazards, diagnostics=diagnostics,
                 native_effect_frontier=frontier,
                 reviewed_native_effects=sorted(natives & reviewed),
+                original_target_only_native_effects=sorted(name for name in natives & reviewed
+                    if native_reviews[name].get('semantic_scope') == 'original_instructions_only'),
                 reviewed_immediate_native_effects=sorted(natives & set(native_reviews)),
                 deferred_native_effect_frontier=sorted(deferred),
                 reviewed_deferred_effects=sorted(natives & set(native_reviews) & set(deferred_reviews)),

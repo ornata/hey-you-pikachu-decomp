@@ -68,13 +68,14 @@ s32 actorScriptSetHorizontalMovementSuppressed(u8 *actor) {
 /// \note Original decompilation identifier: \c func_8011FB7C (0x8011FB7C).
 s32 actorScriptTransformItem(u8 *actor) {
     s32 vmAddress;
-    s32 sp24;
-    s32 sp1C;
+    s32 unusedVmAddress;
+    s32 transformationCause;
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    sp24 = vmAddress;
-    sp1C = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    scriptVmPushInteger((ScriptVm *)(vmAddress), itemTransform(scriptVmPopInteger((ScriptVm *)(vmAddress)), sp1C));
+    unusedVmAddress = vmAddress;
+    transformationCause = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    scriptVmPushInteger((ScriptVm *)(vmAddress),
+                        itemTransform(scriptVmPopInteger((ScriptVm *)(vmAddress)), transformationCause));
     return 0;
 }
 
@@ -116,16 +117,17 @@ s32 actorScriptRequestCollectionResults(u8 *actor) {
 extern s32 gRuntimeResetProfileAfterSave;
 
 /// Request the save-prompt transition and select the subsequent profile-reset behavior.
+/// The request does not immediately write EEPROM.
 /// \param actor Actor whose script VM supplies nonzero to reset the player profile when the post-save prompt is dismissed, or zero to retain it; the VM receives zero.
 /// \returns One, yielding script execution.
 /// \note Original decompilation identifier: \c func_8011FC48 (0x8011FC48).
 s32 actorScriptRequestSavePrompt(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    gRuntimeResetProfileAfterSave = scriptVmPopInteger((ScriptVm *)(sp1C));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    gRuntimeResetProfileAfterSave = scriptVmPopInteger((ScriptVm *)(vmAddress));
     runtimeRequestGameModeChange(GAME_MODE_FADE_TO_SAVE_PROMPT);
-    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
+    scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 1;
 }
 
@@ -654,15 +656,15 @@ s32 actorScriptPushActiveBackdrop(u8 *actor) {
 }
 
 /// Select and load a backdrop for the primary view.
-/// \param actor Actor whose script VM supplies a valid backdrop descriptor index and receives zero; the primary view must have an allocated backdrop buffer.
+/// \param actor Actor whose script VM supplies a retail backdrop descriptor index from one through 23 and receives zero; the primary view must have an allocated buffer of at least 112000 bytes. Descriptor zero has no loadable source.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_80120750 (0x80120750).
 s32 actorScriptSelectBackdrop(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    backdropSelectForView(0, scriptVmPopInteger((ScriptVm *)(sp1C)), 0);
-    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    backdropSelectForView(0, scriptVmPopInteger((ScriptVm *)(vmAddress)), 0);
+    scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 0;
 }
 
@@ -855,20 +857,21 @@ s32 actorScriptSelectScrollBoardText(u8 *actor) {
 /// \note Original decompilation identifier: \c func_80120BDC (0x80120BDC).
 s32 actorScriptSetScrollBoardSpeed(u8 *actor) {
     s32 vmAddress;
-    s32 sp_pop0;
-    s32 sp24;
-    f32 sp18;
+    s32 hierarchyHandle;
+    s32 unusedVmAddress;
+    f32 pixelsPerSecond;
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    sp24 = vmAddress;
-    sp18 = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    sp_pop0 = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    scrollBoardSetHierarchySpeed(objectFindLiveByHandle(sp_pop0), sp18);
+    unusedVmAddress = vmAddress;
+    pixelsPerSecond = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    hierarchyHandle = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    scrollBoardSetHierarchySpeed(objectFindLiveByHandle(hierarchyHandle), pixelsPerSecond);
     scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 0;
 }
 
 /// Set a live object position, orientation, and uniform scale.
+/// Dependent bounds and descendant transforms are not refreshed by this request.
 /// \param actor Actor whose script VM supplies a live object handle, position X/Y/Z, rotation X/Y/Z in degrees, and a uniform scale relative to the scene scale, in that order; the VM receives zero.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_80120C34 (0x80120C34).
@@ -1043,23 +1046,24 @@ s32 actorScriptFindItemFromPlayerView(u8 *actor) {
     return 0;
 }
 
-/// Find the nearest other actor within the player viewing cone.
-/// \param actor Actor excluded from the search whose script VM supplies inclusive minimum and maximum kinds, exclusive maximum approximate distance, and maximum horizontal angle in degrees; script kind aliases are honored and angles of at least 360 allow every direction. The VM receives the nearest qualifying handle or zero.
+/// Find the nearest other object within the player viewing cone using actor-kind aliases.
+/// \param actor Actor excluded from the search whose script VM supplies inclusive minimum and maximum kinds, exclusive maximum approximate distance, and maximum horizontal angle in degrees; kind 38 selects the corresponding actor-range endpoint, while other ranges can include nonactors; angles of at least 360 allow every direction. The VM receives the nearest qualifying handle or zero.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_80120FD0 (0x80120FD0).
 s32 actorScriptFindActorFromPlayerView(u8 *actor) {
-    s32 sp_pop;
+    s32 minimumKind;
     s32 vmAddress;
-    s32 sp34;
-    f32 sp30;
-    f32 sp2C;
+    s32 maximumKind;
+    f32 maximumDistance;
+    f32 maximumAngleDegrees;
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    sp2C = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    sp30 = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    sp34 = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    sp_pop = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    scriptVmPushInteger((ScriptVm *)(vmAddress), actorFindNearestFromPlayerView(actor, sp_pop, sp34, sp30, sp2C));
+    maximumAngleDegrees = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    maximumDistance = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    maximumKind = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    minimumKind = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    scriptVmPushInteger((ScriptVm *)(vmAddress), actorFindNearestFromPlayerView(actor, minimumKind, maximumKind,
+                                                                                maximumDistance, maximumAngleDegrees));
     return 0;
 }
 
@@ -1068,18 +1072,19 @@ s32 actorScriptFindActorFromPlayerView(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_80121050 (0x80121050).
 s32 actorScriptFindObjectFromPlayerView(u8 *actor) {
-    s32 sp_pop;
+    s32 minimumKind;
     s32 vmAddress;
-    s32 sp34;
-    f32 sp30;
-    f32 sp2C;
+    s32 maximumKind;
+    f32 maximumDistance;
+    f32 maximumAngleDegrees;
 
     vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    sp2C = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    sp30 = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    sp34 = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    sp_pop = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    scriptVmPushInteger((ScriptVm *)(vmAddress), objectFindNearestFromPlayerView(actor, sp_pop, sp34, sp30, sp2C));
+    maximumAngleDegrees = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    maximumDistance = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    maximumKind = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    minimumKind = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    scriptVmPushInteger((ScriptVm *)(vmAddress), objectFindNearestFromPlayerView(actor, minimumKind, maximumKind,
+                                                                                 maximumDistance, maximumAngleDegrees));
     return 0;
 }
 
@@ -1134,16 +1139,16 @@ extern s32 gVoiceCommandResultIndex;
 /// Provide the legacy script voice-result query supported by this build.
 /// \param actor Actor whose script VM receives zero when no recognition result is available, or an unspecified value otherwise.
 /// \returns Zero, allowing script execution to continue.
-/// \note Portability/UB: A nonnegative recognition-result index reads an uninitialized local value; this preserves the original build behavior.
+/// \note Portability/UB: A nonnegative recognition-result index uses an uninitialized local halfword. The matched ROM reads native-stack storage before testing the index, including on the zero-result branch. This preserves target code generation and does not define a portable C result.
 /// \note Original decompilation identifier: \c func_801211AC (0x801211AC).
 s32 actorScriptPushLegacyVoiceResult(u8 *actor) {
-    s32 id;
-    s32 mode;
-    u16 buf[16];
+    s32 vmAddress;
+    s32 recognitionResultIndex;
+    u16 uninitializedStackWords[16];
 
-    mode = gVoiceCommandResultIndex;
-    id = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushInteger((ScriptVm *)(id), (mode < 0) ? 0 : buf[0]);
+    recognitionResultIndex = gVoiceCommandResultIndex;
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushInteger((ScriptVm *)(vmAddress), (recognitionResultIndex < 0) ? 0 : uninitializedStackWords[0]);
     return 0;
 }
 

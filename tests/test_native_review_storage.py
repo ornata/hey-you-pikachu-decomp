@@ -192,6 +192,80 @@ class NativeReviewStorageTests(unittest.TestCase):
                     if available < arguments:
                         self.assertIn('protected locals/frame metadata', result['diagnostics'][0])
 
+    def test_original_target_exception_requires_the_complete_authenticated_closure(self):
+        from unittest.mock import Mock, patch
+        from tools.script_decoder.native_frames import original_target_integer_supported
+
+        spans = [('actorScriptPushLegacyVoiceResult', 0x801211AC, 68),
+                 ('scriptVmPushInteger', 0x8011601C, 48),
+                 ('scriptValueSetInteger', 0x80115544, 52),
+                 ('scriptVmPushValue', 0x80115228, 180), ('bcopy', 0x80052610, 772)]
+        data = {address: bytes([i]) * size for i, (_, address, size) in enumerate(spans)}
+        evidence = [dict(name=name, address=hex(address), size=size,
+                         sha256=hashlib.sha256(data[address]).hexdigest())
+                    for name, address, size in spans]
+        review = dict(function=spans[0][0], semantic_scope='original_instructions_only',
+                      c_result_definedness='indeterminate_on_nonnegative_index',
+                      caller_obligation='The original stack value has no established recognition meaning.',
+                      target_evidence=evidence)
+        image = Mock()
+        image.symbol.side_effect = lambda name: next((name, address, size) for n, address, size in spans if n == name)
+        image.read_address.side_effect = lambda address, size: (data[address], {})
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.assertFalse(original_target_integer_supported(root, review))
+            with patch('tools.script_decoder.native_frames.LocalImage', return_value=image):
+                self.assertTrue(original_target_integer_supported(root, review))
+                for change in ('scope', 'closure', 'hash', 'extent', 'entry', 'obligation'):
+                    invalid = copy.deepcopy(review)
+                    if change == 'scope':
+                        invalid['semantic_scope'] = 'defined_c'
+                    elif change == 'closure':
+                        invalid['target_evidence'].pop()
+                    elif change == 'hash':
+                        invalid['target_evidence'][-1]['sha256'] = '0' * 64
+                    elif change == 'extent':
+                        invalid['target_evidence'][0]['size'] -= 4
+                    elif change == 'entry':
+                        invalid['target_evidence'][0]['name'] = 'scriptVmPushInteger'
+                    else:
+                        invalid['caller_obligation'] = ''
+                    with self.subTest(change=change):
+                        self.assertFalse(original_target_integer_supported(root, invalid))
+                image.symbol.side_effect = lambda name: (name, 0, 0)
+                self.assertFalse(original_target_integer_supported(root, review))
+
+    def test_legacy_handler_cannot_be_reclassified_as_an_ordinary_scalar_review(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            _, manifest = fixture(root)
+            name = 'actorScriptPushLegacyVoiceResult'
+            source = f's32 {name}(u8 *actor) {{ return 0; }}'
+            (root / 'src/legacy.c').write_text(source)
+            manifest['callbacks'][0].update(function=name, file='src/legacy.c', sha256=fingerprint(source))
+            result = native_frame_reviews(root, manifest)
+            self.assertNotIn(name, result['active'])
+            self.assertEqual(set(result['active']), {'beta', 'gamma'})
+
+    def test_original_target_callers_retain_the_undefined_c_obligation(self):
+        from tools.script_decoder.caller_frames import analyze_caller_frames
+
+        rows = [dict(offset=0, size=1, opcode=32, operands=[dict(tag=0, value=0)] * 3),
+                dict(offset=1, size=1, opcode=27, native=dict(functions=['legacy']),
+                     successors=[dict(offset=2, kind='fallthrough')]),
+                dict(offset=2, size=1, opcode=30)]
+        review = dict(effect='append_original_target_integer', arguments=0, stack_delta=1,
+                      semantic_scope='original_instructions_only',
+                      c_result_definedness='indeterminate_on_nonnegative_index',
+                      caller_obligation='No recognition meaning is established.')
+        result = analyze_caller_frames(rows, {'legacy': review})
+        self.assertTrue(result['roots'][0]['conditional_floor_proven'])
+        obligation = result['summaries'][0]['instructions'][0]['native_obligations'][0]
+        self.assertEqual(obligation['semantic_scope'], 'original_instructions_only')
+        self.assertEqual(obligation['c_result_definedness'], review['c_result_definedness'])
+        review['semantic_scope'] = 'defined_c'
+        self.assertFalse(analyze_caller_frames(rows, {'legacy': review})['roots'][0]['conditional_floor_proven'])
+
     def test_empty_callback_index_cannot_follow_an_outside_tools_directory(self):
         with tempfile.TemporaryDirectory() as directory:
             base = Path(directory)

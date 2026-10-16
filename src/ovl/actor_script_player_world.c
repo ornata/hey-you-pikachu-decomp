@@ -87,15 +87,15 @@ s32 actorScriptPushVisibilityEnabled(u8 *actor) {
 }
 
 /// Select which player controls remain enabled and yield script execution.
-/// \param actor Actor whose script VM supplies the input bits to retain, with bits 64 and 128 enabling the horizontal and vertical analog axes, and receives zero.
+/// \param actor Actor whose script VM supplies the low 16 input bits to retain, with bits 64 and 128 enabling the horizontal and vertical analog axes, and receives zero.
 /// \returns One, yielding script execution.
 /// \note Original decompilation identifier: \c func_8011E290 (0x8011E290).
 s32 actorScriptSetPlayerInputKeepMask(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    playerSetInputKeepMask(scriptVmPopInteger((ScriptVm *)(sp1C)));
-    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    playerSetInputKeepMask(scriptVmPopInteger((ScriptVm *)(vmAddress)));
+    scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 1;
 }
 
@@ -242,21 +242,21 @@ s32 actorScriptSetHeldItemReleaseAndGuide(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011E598 (0x8011E598).
 s32 actorScriptSetObjectActivationAndGuide(u8 *actor) {
-    s32 sp24;
+    s32 vmAddress;
     s32 guideStyle;
-    s32 sp1C;
-    s32 sp18;
+    s32 objectHandle;
+    s32 activationResult;
 
-    sp24 = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    sp1C = scriptVmPopInteger((ScriptVm *)(sp24));
-    sp18 = objectSetOnState(scriptVmPopInteger((ScriptVm *)(sp24)), sp1C);
-    if (sp18 != 0) {
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    objectHandle = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    activationResult = objectSetOnState(scriptVmPopInteger((ScriptVm *)(vmAddress)), objectHandle);
+    if (activationResult != 0) {
         guideStyle = 2;
     } else {
         guideStyle = 0;
     }
     hudSetGuideStyle(guideStyle);
-    scriptVmPushInteger((ScriptVm *)(sp24), sp18);
+    scriptVmPushInteger((ScriptVm *)(vmAddress), activationResult);
     return 0;
 }
 
@@ -826,15 +826,15 @@ s32 actorScriptPushPikachuSecondaryMeter(u8 *actor) {
 }
 
 /// Adjust the active Pikachu action resource and request its HUD display when appropriate.
-/// \param actor Actor whose script VM supplies a signed adjustment and receives the updated action resource clamped to zero through 100; requires an active Pikachu actor.
+/// \param actor Actor whose script VM supplies a finite floating-point adjustment whose sum remains finite and receives the root-owned action resource clamped to zero through 100; requires an active Pikachu actor and its root.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011F1F4 (0x8011F1F4).
 s32 actorScriptAdjustPikachuActionResource(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushFloat((ScriptVm *)(sp1C),
-                      actorAdjustActionMeter(((u8 *)gPikachuActor), scriptVmPopFloat((ScriptVm *)(sp1C))));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushFloat((ScriptVm *)(vmAddress),
+                      actorAdjustActionMeter(((u8 *)gPikachuActor), scriptVmPopFloat((ScriptVm *)(vmAddress))));
     return 0;
 }
 
@@ -950,36 +950,37 @@ s32 actorScriptMoveObjectAndReleaseHeldItem(u8 *actor) {
     return 0;
 }
 
-/// Replace an available item with a fresh item of a requested kind at the same position and orientation.
-/// \param actor Actor whose script VM supplies an item handle followed by a valid replacement kind, and receives the new item handle or zero for an unavailable original; other object kinds are unsupported.
+/// Replace an available item with a fresh item of a requested kind.
+/// The replacement inherits position, pitch and yaw; a negative Y requests ground placement, and roll becomes zero.
+/// \param actor Actor whose script VM supplies an item handle followed by a replacement kind from one through 164 with valid model resources, and receives the new item handle or zero for an unavailable original; other object kinds are unsupported.
 /// \returns Zero, allowing script execution to continue.
 ///
 /// \note Original decompilation identifier: \c func_8011F4B8 (0x8011F4B8).
 s32 actorScriptReplaceItemKind(u8 *actor) {
-    s32 vm;
-    u8 *item;
-    s32 kind;
+    s32 vmAddress;
+    u8 *replacementItem;
+    s32 replacementKind;
     f32 x;
     f32 y;
     f32 z;
-    f32 dir;
-    f32 speed;
-    u8 *obj;
+    f32 pitchDegrees;
+    f32 yawDegrees;
+    u8 *originalItem;
 
-    vm = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    kind = scriptVmPopInteger((ScriptVm *)(vm));
-    obj = objectResolveAvailableHandle(scriptVmPopInteger((ScriptVm *)(vm)));
-    if (obj == NULL) {
-        scriptVmPushInteger((ScriptVm *)(vm), 0);
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    replacementKind = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    originalItem = objectResolveAvailableHandle(scriptVmPopInteger((ScriptVm *)(vmAddress)));
+    if (originalItem == NULL) {
+        scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     } else {
-        x = ((RuntimeObjectPrefix *)obj)->worldPosition[0];
-        y = ((RuntimeObjectPrefix *)obj)->worldPosition[1];
-        z = ((RuntimeObjectPrefix *)obj)->worldPosition[2];
-        dir = ((RuntimeObjectPrefix *)obj)->rotation[0];
-        speed = ((RuntimeObjectPrefix *)obj)->rotation[1];
-        itemDestroy(obj);
-        item = itemCreate(x, y, z, dir, speed, kind);
-        scriptVmPushInteger((ScriptVm *)(vm), ((RuntimeObjectPrefix *)item)->handle);
+        x = ((RuntimeObjectPrefix *)originalItem)->worldPosition[0];
+        y = ((RuntimeObjectPrefix *)originalItem)->worldPosition[1];
+        z = ((RuntimeObjectPrefix *)originalItem)->worldPosition[2];
+        pitchDegrees = ((RuntimeObjectPrefix *)originalItem)->rotation[0];
+        yawDegrees = ((RuntimeObjectPrefix *)originalItem)->rotation[1];
+        itemDestroy(originalItem);
+        replacementItem = itemCreate(x, y, z, pitchDegrees, yawDegrees, replacementKind);
+        scriptVmPushInteger((ScriptVm *)(vmAddress), ((RuntimeObjectPrefix *)replacementItem)->handle);
     }
     return 0;
 }
@@ -1118,33 +1119,35 @@ s32 actorScriptSetItemTint(u8 *actor) {
     return 0;
 }
 
-/// Replace the toolbox bonus item, removing any previously stored bonus item.
+/// Replace the toolbox bonus item and request destruction of any previous bonus item.
+/// The previous item destruction hierarchy must exclude the incoming item and the executing actor.
 /// \param actor Actor whose script VM supplies a valid available item handle distinct from the previously stored bonus item and receives zero.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011F808 (0x8011F808).
 s32 actorScriptStoreBonusItem(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    toolboxStoreBonusObject(objectResolveAvailableHandle(scriptVmPopInteger((ScriptVm *)(sp1C))));
-    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    toolboxStoreBonusObject(objectResolveAvailableHandle(scriptVmPopInteger((ScriptVm *)(vmAddress))));
+    scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 0;
 }
 
-/// Replace the toolbox purchase item, removing any previously stored purchase item; the replacement must be distinct from the previous item.
+/// Replace the toolbox purchase item and request destruction of any previous purchase item.
+/// The previous item destruction hierarchy must exclude the incoming item and the executing actor.
 /// \param actor Actor whose script VM supplies an item handle and receives zero; unavailable handles have no effect, and other object kinds are unsupported.
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011F850 (0x8011F850).
 s32 actorScriptStorePurchasedItem(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
     u8 *resolvedObject;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    resolvedObject = objectResolveAvailableHandle(scriptVmPopInteger((ScriptVm *)(sp1C)));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    resolvedObject = objectResolveAvailableHandle(scriptVmPopInteger((ScriptVm *)(vmAddress)));
     if (resolvedObject != 0) {
         toolboxStorePurchasedObject(resolvedObject);
     }
-    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
+    scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 0;
 }
 
@@ -1153,10 +1156,10 @@ s32 actorScriptStorePurchasedItem(u8 *actor) {
 /// \returns Zero, allowing script execution to continue.
 /// \note Original decompilation identifier: \c func_8011F8A0 (0x8011F8A0).
 s32 actorScriptRecordSupplyItem(u8 *actor) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
-    scriptVmPushInteger((ScriptVm *)(sp1C), toolboxRecordSupplyItem(scriptVmPopInteger((ScriptVm *)(sp1C))));
+    vmAddress = ((RuntimeObjectPrefix *)actor)->state.actor->vmAddress;
+    scriptVmPushInteger((ScriptVm *)(vmAddress), toolboxRecordSupplyItem(scriptVmPopInteger((ScriptVm *)(vmAddress))));
     return 0;
 }
 

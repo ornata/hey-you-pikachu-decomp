@@ -1520,6 +1520,19 @@ The source-bound manifest distinguishes scalar and borrowed string results, boun
 inline-text contracts, immediate request contracts and reviewed deferred phases. Other requests remain partially reviewed
 and keep their later effects explicit in the saved-dictionary frontier.
 
+The legacy voice-result query has a separate original-instruction contract.
+`actorScriptPushLegacyVoiceResult` returns an integer zero for a negative result
+index, but otherwise copies a halfword from prior native-stack contents. Its C
+source uses an uninitialized value; the payload has no established recognition
+meaning. Two retained Olivine callers compare it with 1000, so the recognition
+index alone cannot determine their subsequent branch.
+
+The decoder authenticates the complete five-function machine closure against both
+the supplied ROM and linked ELF before activating this exception. The
+`original_target_only` catalog and caller obligations keep its scope explicit:
+relative VM storage can be reviewed without claiming defined C behavior or a
+meaningful result. Missing inputs or changed instruction spans revoke the review.
+
 ### Player view selection
 
 The view query is `playerIsViewControlSelected`, exposed to scripts by

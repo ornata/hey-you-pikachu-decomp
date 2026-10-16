@@ -332,15 +332,17 @@ typedef struct BackdropDescriptor {
     u8 lowerColor[4];
     s32 width;
     s32 height;
-    u8 unknown18[4];
+    s32 displayMode; ///< One selects fixed-image drawing; other values select scrolling drawing.
     f32 scrollRate;
 } BackdropDescriptor;
 
 typedef char BackdropDescriptorSizeCheck[(sizeof(BackdropDescriptor) == 0x20) ? 1 : -1];
+typedef char
+    BackdropDescriptorDisplayModeOffsetCheck[(((u32) & ((BackdropDescriptor *)0)->displayMode) == 0x18) ? 1 : -1];
 
 /// Load a backdrop for a view and select its display settings.
 /// \param viewIndex Valid view index with an allocated backdrop buffer.
-/// \param backdropId Valid backdrop descriptor index.
+/// \param backdropId Retail descriptor index from one through 23; zero has no loadable source.
 /// \param sharedScratch Nonzero for shared-workspace asset loading, or zero for ordinary loading.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80033A70 (0x80033A70).

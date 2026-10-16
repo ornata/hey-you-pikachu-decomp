@@ -763,6 +763,11 @@
       "file": "include/player_chase.h",
       "sha256": "0ee751814616109ad3da22b25865a9c283c2d0a7469bbb3767f0621b2bc660ef"
     },
+    "file:include/player_control.h": {
+      "kind": "file",
+      "file": "include/player_control.h",
+      "sha256": "f38fa9a8460c2637c2f7c116680723ed63fa8b48eafed0f3103f5e4f38c366ad"
+    },
     "file:include/player_friendship.h": {
       "kind": "file",
       "file": "include/player_friendship.h",
@@ -893,6 +898,16 @@
       "file": "include/script_vm_globals.h",
       "sha256": "89d55d9da78ef168a84c7fb0fc7466651a09d95ed01ed617efc737b71f9ff1a8"
     },
+    "file:include/script_vm_stack.h": {
+      "kind": "file",
+      "file": "include/script_vm_stack.h",
+      "sha256": "d3cee99e47fe631a755dbe132b170d0f30ac2267b7587ef1011141da566740d7"
+    },
+    "file:include/scroll_board.h": {
+      "kind": "file",
+      "file": "include/scroll_board.h",
+      "sha256": "57cbdd9f55445327a2991325d3a5086e68ebf2f39050a2263bb3ab9128acc9fb"
+    },
     "file:include/search_tree.h": {
       "kind": "file",
       "file": "include/search_tree.h",
@@ -1008,10 +1023,25 @@
       "file": "include/texture_draw_types.h",
       "sha256": "b74cd0c0e1b580eca02a05d450985d198e43cf067ed35ce6318eb1ad2275ab8d"
     },
+    "file:include/title_screen.h": {
+      "kind": "file",
+      "file": "include/title_screen.h",
+      "sha256": "3ea119bb9e273d3e91b759070ae814d399393d9823f6ac8be60d061acbc9c236"
+    },
     "file:include/title_screen_state.h": {
       "kind": "file",
       "file": "include/title_screen_state.h",
       "sha256": "ab8bc3c77749c787ee773a53d889e27be5c04c346b3ca72c0e41c30d50ab58e8"
+    },
+    "file:include/toolbox_items.h": {
+      "kind": "file",
+      "file": "include/toolbox_items.h",
+      "sha256": "9423884534d6622567de1306b854520c8c0d780db9f88f3503f385e64804c6e5"
+    },
+    "file:include/toolbox_types.h": {
+      "kind": "file",
+      "file": "include/toolbox_types.h",
+      "sha256": "1456f4d236228a3cb29d1007fe50d13ae2b71d61d1ad2fc39145d0efde0d4e31"
     },
     "file:include/ultra64.h": {
       "kind": "file",
@@ -1116,7 +1146,7 @@
     "file:src/game/backdrop.c": {
       "kind": "file",
       "file": "src/game/backdrop.c",
-      "sha256": "a7c99870140733846a4bab7d2e4268abda34f14b84fbe9a4ac59d13629d8ff2c"
+      "sha256": "b4d51594fa7db16eb21910e8a0fb6090c6fd6d0ff04534f3f74fb7cadb64d425"
     },
     "file:src/game/collection_presentation.c": {
       "kind": "file",
@@ -1137,6 +1167,11 @@
       "kind": "file",
       "file": "src/game/doors_object_responses.c",
       "sha256": "79286d9f412089df0fd6c4a1c5e13c3e72f2d716fccdbcdecaf1fc3262387343"
+    },
+    "file:src/game/flipbook_messenger.c": {
+      "kind": "file",
+      "file": "src/game/flipbook_messenger.c",
+      "sha256": "50c8c716667721bb150071507a86f56212eac5dd8b514b87582357c30cd871e5"
     },
     "file:src/game/graphics_text.c": {
       "kind": "file",
@@ -1263,6 +1298,11 @@
       "file": "src/game/title_screen.c",
       "sha256": "b8bb4ecbf8fa52b634e72fe57afb5345c00fd56356128c7ef9f11ac6e0bc360b"
     },
+    "file:src/game/toolbox.c": {
+      "kind": "file",
+      "file": "src/game/toolbox.c",
+      "sha256": "048408cb1506beff95b2e47b44637d8840cacd1dbd2e6b8f157c9e0c90d244cd"
+    },
     "file:src/game/trigonometry.c": {
       "kind": "file",
       "file": "src/game/trigonometry.c",
@@ -1301,7 +1341,7 @@
     "file:src/ovl/actor_script_collection_profile.c": {
       "kind": "file",
       "file": "src/ovl/actor_script_collection_profile.c",
-      "sha256": "88d101a2a789678df07cb839285edd32dcd25670388e96f18cf9428acd731ee1"
+      "sha256": "38a50d2eebcb1641fd7c49ccefaa33a43e74ddcabba3cb8dd643b874b5bb34b2"
     },
     "file:src/ovl/actor_script_messages_items.c": {
       "kind": "file",
@@ -1337,6 +1377,11 @@
       "kind": "file",
       "file": "src/ovl/player_companion.c",
       "sha256": "2e221afc988a8301a3873e375b18705a1aaea7f27629f4a7dc344b12dfbac1a1"
+    },
+    "file:src/ovl/script_demo_item_commands.c": {
+      "kind": "file",
+      "file": "src/ovl/script_demo_item_commands.c",
+      "sha256": "3c098ec0da1f2899da8c65e38f07ea76fbae7d6f107743295c23935c0bf31e1c"
     },
     "file:src/ovl/script_vm.c": {
       "kind": "file",
@@ -1483,8 +1528,8 @@
     "function:src/game/actor_search.c:actorFindNearestInRange": {
       "kind": "function",
       "file": "src/game/actor_search.c",
-      "function": "actorFindNearestInRange",
-      "sha256": "fec2c2af32d292da4c5abea06c65870fe198cf282a54d72968d9d5f7062a9eaa"
+      "sha256": "fec2c2af32d292da4c5abea06c65870fe198cf282a54d72968d9d5f7062a9eaa",
+      "function": "actorFindNearestInRange"
     },
     "function:src/game/animation_tracks.c:animationIntegerTrackEvaluate": {
       "kind": "function",
@@ -1599,6 +1644,24 @@
       "file": "src/game/doors_object_responses.c",
       "sha256": "b1b460ee566cc53ded20ef82983f2adc9247a7452916d95850fcced2c3475b26",
       "function": "doorSetAccessState"
+    },
+    "function:src/game/flipbook_messenger.c:objectSetUniformTransform": {
+      "kind": "function",
+      "file": "src/game/flipbook_messenger.c",
+      "sha256": "3e19f045dce7716960cdfdb3866d75ec3f4c28587514800afac23bddc4c7ce93",
+      "function": "objectSetUniformTransform"
+    },
+    "function:src/game/flipbook_messenger.c:scrollBoardSetHierarchySpeed": {
+      "kind": "function",
+      "file": "src/game/flipbook_messenger.c",
+      "function": "scrollBoardSetHierarchySpeed",
+      "sha256": "d6c0540a38baf97c517f4d31337a25de5090ca6711a75d1910387290996a9bcd"
+    },
+    "function:src/game/flipbook_messenger.c:scrollBoardSetSpeed": {
+      "kind": "function",
+      "file": "src/game/flipbook_messenger.c",
+      "function": "scrollBoardSetSpeed",
+      "sha256": "9c82ad788473b7b039888176d971926e809b9dd3b264ae6f321b13ab5838d137"
     },
     "function:src/game/graphics_text.c:fontCacheReadGlyph": {
       "kind": "function",
@@ -2320,6 +2383,18 @@
       "function": "soundEffectPlayerStop",
       "sha256": "f940973ba7412cc3cfdd8b6d736fd8a9790e3cafc61a6cb095dadf86e840b983"
     },
+    "function:src/game/title_screen.c:titleScreenBeginDemoTransition": {
+      "kind": "function",
+      "file": "src/game/title_screen.c",
+      "function": "titleScreenBeginDemoTransition",
+      "sha256": "4f3ea19be66bd29712b3dad521840377f6915de58eaadb718cec4b7f95048e6f"
+    },
+    "function:src/game/title_screen.c:titleScreenGetDemoIndex": {
+      "kind": "function",
+      "file": "src/game/title_screen.c",
+      "function": "titleScreenGetDemoIndex",
+      "sha256": "95e7893f882a908be7e5e851c77ecb2134b7b904f32f6ec8911f9138b16312ab"
+    },
     "function:src/game/title_screen.c:titleScreenGetState": {
       "kind": "function",
       "file": "src/game/title_screen.c",
@@ -2331,6 +2406,30 @@
       "file": "src/game/title_screen.c",
       "function": "titleScreenRequestMenu",
       "sha256": "803bdcba9b033e14a64dd790535df49490833620cf742c4a4c88841c5a50361c"
+    },
+    "function:src/game/toolbox.c:toolboxRecordSupplyItem": {
+      "kind": "function",
+      "file": "src/game/toolbox.c",
+      "function": "toolboxRecordSupplyItem",
+      "sha256": "3b3669e0dcdb6d5b21dddb43db06b80e9df4544e27e0ed2182e69a1af74a1042"
+    },
+    "function:src/game/toolbox.c:toolboxStoreBonusObject": {
+      "kind": "function",
+      "file": "src/game/toolbox.c",
+      "function": "toolboxStoreBonusObject",
+      "sha256": "6726c334fecc3aa0c77078df477a19312f9b0e10b4e9ada11bde3c0c35fe7694"
+    },
+    "function:src/game/toolbox.c:toolboxStoreObjectInSlot": {
+      "kind": "function",
+      "file": "src/game/toolbox.c",
+      "function": "toolboxStoreObjectInSlot",
+      "sha256": "a5ebb4e2dd8fee58795e29335640425ebc6f08e0337b0e3b965a4e66eb3fd2bd"
+    },
+    "function:src/game/toolbox.c:toolboxStorePurchasedObject": {
+      "kind": "function",
+      "file": "src/game/toolbox.c",
+      "function": "toolboxStorePurchasedObject",
+      "sha256": "58eacaa06654dd39e4828246797d4a544531898d3837a8722ec3bfae1ffdb885"
     },
     "function:src/game/trigonometry.c:mathCosDegrees": {
       "kind": "function",
@@ -2626,6 +2725,12 @@
       "function": "actorFindInteractableItemKind",
       "sha256": "cb6e1e15778ffe758f58add60e8e58b9b8ce992320ad0ebdd7eb8b9463771dd9"
     },
+    "function:src/ovl/actor_script_queries.c:actorFindNearestFromPlayerView": {
+      "kind": "function",
+      "file": "src/ovl/actor_script_queries.c",
+      "sha256": "51be958d79ee9762b5796278b61db562493b94b9988e0ff13f4644e70fefd0d6",
+      "function": "actorFindNearestFromPlayerView"
+    },
     "function:src/ovl/actor_script_queries.c:actorFindNearestHandleFromPosition": {
       "kind": "function",
       "file": "src/ovl/actor_script_queries.c",
@@ -2818,6 +2923,12 @@
       "function": "itemGetKindByHandle",
       "sha256": "85446444eb54669af1fda4bf3caa8a74b310fb7861dba5de839ecbdc44a9cb90"
     },
+    "function:src/ovl/actor_script_queries.c:objectFindNearestFromPlayerView": {
+      "kind": "function",
+      "file": "src/ovl/actor_script_queries.c",
+      "sha256": "4aa5e0514a391e02bfa7d3f699fc11673c680b4c8775fa2a32e49b56aee1f436",
+      "function": "objectFindNearestFromPlayerView"
+    },
     "function:src/ovl/actor_script_queries.c:objectGetBoundingRadiusByHandle": {
       "kind": "function",
       "file": "src/ovl/actor_script_queries.c",
@@ -2932,6 +3043,12 @@
       "sha256": "0735d721e11f49499645fd2eb48879470efc183f4a41d2e74b6a50529a39dc99",
       "function": "playerSetActorInteractionMode"
     },
+    "function:src/ovl/actor_script_queries.c:playerSetInputKeepMask": {
+      "kind": "function",
+      "file": "src/ovl/actor_script_queries.c",
+      "function": "playerSetInputKeepMask",
+      "sha256": "49ded2ee824ce51a078c54c9d1ea634914bf1b9d13f3fd10d9cd0fa70ea5893c"
+    },
     "function:src/ovl/actor_script_queries.c:sceneRegionIsHighlightedByHandle": {
       "kind": "function",
       "file": "src/ovl/actor_script_queries.c",
@@ -3021,6 +3138,12 @@
       "file": "src/ovl/actor_target_interaction.c",
       "function": "objectGetPlayerFacingError",
       "sha256": "fa0218c66256737ec033af8b5a878a7c43021708f2626dd0105c255fe097caef"
+    },
+    "function:src/ovl/actor_target_interaction.c:objectSetOnState": {
+      "kind": "function",
+      "file": "src/ovl/actor_target_interaction.c",
+      "function": "objectSetOnState",
+      "sha256": "2b70ab74e585c1a45c1ba4fcc8266074d716fff4e925bc5a986225a331f43f4c"
     },
     "function:src/ovl/area_terrain_maze.c:areaFindPositionNode": {
       "kind": "function",
@@ -3142,6 +3265,12 @@
       "sha256": "397e1c36d42586244dd35048356e5266b111f7342eb962ab8234d29ab3487d1c",
       "function": "itemDestroy"
     },
+    "function:src/ovl/item_registry.c:itemGetAvailabilityFlag": {
+      "kind": "function",
+      "file": "src/ovl/item_registry.c",
+      "function": "itemGetAvailabilityFlag",
+      "sha256": "8e62e3051884120c0a1ca0ab32997157138c581545e6f7d068f2625453047007"
+    },
     "function:src/ovl/item_registry.c:itemGetAvailableSlots": {
       "kind": "function",
       "file": "src/ovl/item_registry.c",
@@ -3190,6 +3319,18 @@
       "sha256": "1dcde112383b4bd741706c738c9bb40c1a30b8537e682c0cfeda0a50c4f4bd0c",
       "function": "itemKindIsInCategory"
     },
+    "function:src/ovl/item_registry.c:itemPlayTrackedSound": {
+      "kind": "function",
+      "file": "src/ovl/item_registry.c",
+      "sha256": "4e2ba9bc4feb891df67618f36f794fc4b5823bc51edf93a267b0cb441e33300d",
+      "function": "itemPlayTrackedSound"
+    },
+    "function:src/ovl/item_registry.c:itemRemoveFromSearchAndCollision": {
+      "kind": "function",
+      "file": "src/ovl/item_registry.c",
+      "function": "itemRemoveFromSearchAndCollision",
+      "sha256": "0ea62ef887331809592fea8eea493de6826db03b86a6cb9e8ea5e0509ec72505"
+    },
     "function:src/ovl/item_registry.c:itemRestoreToWorld": {
       "kind": "function",
       "file": "src/ovl/item_registry.c",
@@ -3231,6 +3372,12 @@
       "file": "src/ovl/item_registry.c",
       "function": "itemStartMaterialAnimation",
       "sha256": "489ccc0a1ee1542fcee3894ab4f7513ae7035fbcc681192095312d806fc71e7d"
+    },
+    "function:src/ovl/item_registry.c:itemTransform": {
+      "kind": "function",
+      "file": "src/ovl/item_registry.c",
+      "sha256": "05d53958407bfed1432749d4edd2267e730f0ddfca152a79bd6d13c2266b337a",
+      "function": "itemTransform"
     },
     "function:src/ovl/item_registry.c:itemTryRelease": {
       "kind": "function",
@@ -3738,7 +3885,28 @@
     "actorScriptPushLastScriptActionEnded",
     "actorScriptRandomBelowWithHistory",
     "actorScriptBuildSharedText",
-    "actorScriptBeginPoseTransition"
+    "actorScriptBeginPoseTransition",
+    "scriptCommandGetDemoIndex",
+    "scriptCommandGetItemReplacement",
+    "scriptCommandGetItemAvailabilityFlag",
+    "scriptCommandStopAction",
+    "scriptCommandReleaseItem",
+    "scriptCommandBeginDemoTransition",
+    "actorScriptSetPlayerInputKeepMask",
+    "actorScriptAdjustPikachuActionResource",
+    "actorScriptRecordSupplyItem",
+    "actorScriptSetObjectActivationAndGuide",
+    "actorScriptStoreBonusItem",
+    "actorScriptStorePurchasedItem",
+    "actorScriptReplaceItemKind",
+    "actorScriptFindActorFromPlayerView",
+    "actorScriptFindObjectFromPlayerView",
+    "actorScriptSetObjectTransform",
+    "actorScriptTransformItem",
+    "actorScriptRequestSavePrompt",
+    "actorScriptSetScrollBoardSpeed",
+    "actorScriptSelectBackdrop",
+    "actorScriptPushLegacyVoiceResult"
   ],
   "callback_files": [
     {
@@ -3747,7 +3915,7 @@
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_collection_profile.json",
-      "sha256": "486ba147f95b1d188b8f4368b0364cc2b12228cea2f58a60c9f6ad0bcc27501c"
+      "sha256": "52ac74bc8f7a6c8cbbd0e1818792fbd2ce9b39135f4d512a3448ffd90d2d3207"
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_messages_items.json",
@@ -3755,11 +3923,11 @@
     },
     {
       "file": "native_frame_reviews/src__ovl__actor_script_player_world.json",
-      "sha256": "0a257380531a4e780cfe4b7b328b80a26a7584f1c5fb12d2550e3a99342f4151"
+      "sha256": "d0802409e24ff0967215caac5f6e81edf371455455ceacb649a60829b6177596"
     },
     {
       "file": "native_frame_reviews/src__ovl__script_demo_item_commands.json",
-      "sha256": "5d8e5dbde34a89f3b91736ed8a6536ce006c397f300a5a20540ee41a7e46630b"
+      "sha256": "3f897aa6e4a8ebefc88d729e76e7da7354e769cb293cae4f6d54b96298b592ec"
     }
   ]
 }

@@ -77,6 +77,14 @@ def analyze_caller_frames(instructions, native_reviews, deferred_reviews=None, *
                 obligation.update(deferred_effect=deferred['effect'],
                                   deferred_preconditions=deferred.get('preconditions', []),
                                   phase_scope='Conditional returning paths only; waits may not complete. Operands protected until actual consumption.')
+            elif effect == 'append_original_target_integer':
+                if (review.get('arguments') != 0 or review.get('stack_delta') != 1 or
+                        review.get('semantic_scope') != 'original_instructions_only'):
+                    raise ValueError('invalid original-target-only footprint')
+                args = 0
+                obligation.update(semantic_scope=review['semantic_scope'],
+                                  c_result_definedness=review['c_result_definedness'],
+                                  caller_obligation=review['caller_obligation'])
             elif effect == 'inline_count_strings_then_append_scalar':
                 operands = dict(zip(row.get('operand_roles', []), row.get('operands', [])))
                 count = operands.get('string_count') or operands.get('count')

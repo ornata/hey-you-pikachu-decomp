@@ -16,7 +16,7 @@ void backdropAllocateViewBuffer(s32 viewIndex, u32 width, u32 height);
 
 /// Load a backdrop for a view and select its display settings.
 /// \param viewIndex Valid view index with an allocated backdrop buffer.
-/// \param backdropId Valid backdrop descriptor index.
+/// \param backdropId Retail descriptor index from one through 23; zero has no loadable source.
 /// \param sharedScratch Nonzero for shared-workspace asset loading, or zero for ordinary loading.
 /// \returns Nothing.
 /// \note Original decompilation identifier: \c func_80033A70 (0x80033A70).

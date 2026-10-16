@@ -21,8 +21,50 @@ from pathlib import Path, PurePosixPath
 import re
 import tempfile
 
-from .context import ROOT
+from .context import ROOT, LocalImage
 from tools.source_quality import code_only
+
+
+_LEGACY_INTEGER_CLOSURE = (
+    ('actorScriptPushLegacyVoiceResult', 0x801211AC, 68),
+    ('scriptVmPushInteger', 0x8011601C, 48),
+    ('scriptValueSetInteger', 0x80115544, 52),
+    ('scriptVmPushValue', 0x80115228, 180),
+    ('bcopy', 0x80052610, 772),
+)
+
+
+def original_target_integer_supported(root, review):
+    """Authenticate the complete reviewed legacy machine closure, never its C definedness.
+
+    This is a deliberately specific exception. Matching arbitrary data spans or
+    a different function does not establish the original handler's footprint.
+    LocalImage checks the supplied ROM identity and corresponding linked bytes.
+    """
+    if (review.get('function') != _LEGACY_INTEGER_CLOSURE[0][0] or
+            review.get('semantic_scope') != 'original_instructions_only' or
+            review.get('c_result_definedness') != 'indeterminate_on_nonnegative_index' or
+            not isinstance(review.get('caller_obligation'), str) or not review['caller_obligation'].strip()):
+        return False
+    evidence = review.get('target_evidence')
+    if not isinstance(evidence, list) or len(evidence) != len(_LEGACY_INTEGER_CLOSURE):
+        return False
+    try:
+        for row, (name, address, size) in zip(evidence, _LEGACY_INTEGER_CLOSURE):
+            if (row['name'] != name or int(row['address'], 0) != address or
+                    type(row['size']) is not int or row['size'] != size or
+                    not re.fullmatch('[0-9a-f]{64}', row['sha256'])):
+                return False
+        image = LocalImage(root / 'rom/baserom.us.z64', root / 'build/pikachu.elf')
+        for row, (name, address, size) in zip(evidence, _LEGACY_INTEGER_CLOSURE):
+            if image.symbol(name)[1:3] != (address, size):
+                return False
+            data, _ = image.read_address(address, size)
+            if hashlib.sha256(data).hexdigest() != row['sha256']:
+                return False
+    except (OSError, ValueError, KeyError, TypeError, IndexError):
+        return False
+    return True
 
 
 def _review_directory(root):
@@ -416,6 +458,12 @@ def native_frame_reviews(root=ROOT, manifest=None):
             type(review.get('result_nullable')) is bool and
             isinstance(review.get('result_lifetime'), str) and bool(review['result_lifetime'].strip()) and
             bool(review.get('dependencies')))
+        original_target_integer = (
+            review['effect'] == 'append_original_target_integer' and
+            type(review['arguments']) is int and review['arguments'] == 0 and
+            type(review['stack_delta']) is int and review['stack_delta'] == 1 and
+            review['result_tag'] == 'integer' and review['scheduling'] == 'continue' and
+            bool(review.get('dependencies')) and original_target_integer_supported(root, review))
         count = review.get('inline_count')
         inline_strings = (
             review['effect'] == 'inline_count_strings_then_append_scalar' and
@@ -429,7 +477,9 @@ def native_frame_reviews(root=ROOT, manifest=None):
             bool(review.get('dependencies')))
         supported_effect = ((supported_effect and review['result_tag'] in ('integer', 'float') and
                              review['scheduling'] in ('continue', 'yield')) or action_request or
-                            borrowed_string_result or inline_strings)
+                            borrowed_string_result or inline_strings or original_target_integer)
+        if review['function'] == _LEGACY_INTEGER_CLOSURE[0][0] and not original_target_integer:
+            supported_effect = False
         if (not agrees or not supported_effect or
                 changed_helpers):
             stale_callbacks.append(review['function'])
@@ -481,8 +531,11 @@ def native_frame_reviews(root=ROOT, manifest=None):
             active_deferred[name] = deferred
         else:
             stale_deferred[name] = dict(changed_dependencies=changed, supported_contract=valid)
-    return dict(active=active, active_deferred=active_deferred, stale_deferred_reviews=stale_deferred,
+    return dict(active=active, active_deferred=active_deferred,
+                original_target_only={name: row for name, row in active.items()
+                                      if row.get('semantic_scope') == 'original_instructions_only'},
+                stale_deferred_reviews=stale_deferred,
                 stale_dependencies=stale_dependencies, stale_callbacks=stale_callbacks,
                 stale_callback_dependencies=stale_callback_dependencies,
                 preconditions=manifest['preconditions'],
-                scope='Reviewed immediate handler write footprints under stated stack/ownership preconditions; no scheduler, context-lifetime or concurrent-mutation proof.')
+                scope='Reviewed immediate handler write footprints under stated stack/ownership preconditions; no scheduler, context-lifetime or concurrent-mutation proof. Original-target-only entries do not establish defined C behavior or result meaning.')

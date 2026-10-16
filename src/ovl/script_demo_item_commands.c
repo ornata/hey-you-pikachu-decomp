@@ -7,7 +7,6 @@
 #include "item_queries.h"
 #include "action_continuation.h"
 #include "player_friendship.h"
-/* harvested: matched m2c drafts; pending style pass */
 #include "common.h"
 #include "object_lookup.h"
 #include "actor_script.h"
@@ -21,11 +20,11 @@
 /// \returns Zero after handling the script command.
 /// \note Original decompilation identifier: \c func_80121340 (0x80121340).
 s32 scriptCommandBeginDemoTransition(u8 *object) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
+    vmAddress = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
     titleScreenBeginDemoTransition();
-    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
+    scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 0;
 }
 
@@ -34,10 +33,10 @@ s32 scriptCommandBeginDemoTransition(u8 *object) {
 /// \returns Zero after handling the script command.
 /// \note Original decompilation identifier: \c func_80121378 (0x80121378).
 s32 scriptCommandGetDemoIndex(u8 *object) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
-    scriptVmPushInteger((ScriptVm *)(sp1C), titleScreenGetDemoIndex());
+    vmAddress = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
+    scriptVmPushInteger((ScriptVm *)(vmAddress), titleScreenGetDemoIndex());
     return 0;
 }
 
@@ -49,66 +48,67 @@ s32 scriptCommandGetDemoIndex(u8 *object) {
 /// \returns Zero after handling the script command.
 /// \note Original decompilation identifier: \c func_801213B0 (0x801213B0).
 s32 scriptCommandRemoveMazeBlock(u8 *object) {
-    s32 script;
-    s32 id;
-    f32 x;
-    f32 z;
+    s32 vmAddress;
+    s32 blockHandle;
+    f32 edgeX;
+    f32 edgeZ;
     f32 center[3];
     f32 edge[3];
-    u8 *target;
-    script = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
-    id = scriptVmPopInteger((ScriptVm *)(script));
-    target = objectFindLiveByHandle(id);
-    if (target != NULL && ((RuntimeObjectPrefix *)target)->kind == 0x88) {
-        center[0] = ((RuntimeObjectPrefix *)target)->worldPosition[0];
-        center[1] = ((RuntimeObjectPrefix *)target)->worldPosition[1];
-        center[2] = ((RuntimeObjectPrefix *)target)->worldPosition[2];
-        center[0] += ((RuntimeObjectPrefix *)target)->radius * gCurrentAreaConfiguration->objectScale * 0.5F;
-        center[2] += ((RuntimeObjectPrefix *)target)->radius * gCurrentAreaConfiguration->objectScale * 0.5F;
+    u8 *block;
+    vmAddress = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
+    blockHandle = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    block = objectFindLiveByHandle(blockHandle);
+    if (block != NULL && ((RuntimeObjectPrefix *)block)->kind == 0x88) {
+        center[0] = ((RuntimeObjectPrefix *)block)->worldPosition[0];
+        center[1] = ((RuntimeObjectPrefix *)block)->worldPosition[1];
+        center[2] = ((RuntimeObjectPrefix *)block)->worldPosition[2];
+        center[0] += ((RuntimeObjectPrefix *)block)->radius * gCurrentAreaConfiguration->objectScale * 0.5F;
+        center[2] += ((RuntimeObjectPrefix *)block)->radius * gCurrentAreaConfiguration->objectScale * 0.5F;
         edge[0] = center[0];
         edge[1] = center[1];
         edge[2] = center[2];
         edge[0] += 1.0F;
         edge[2] += 1.0F;
         effectEmitterCreateForStyle(EFFECT_EMIT_BLACK_WISPS, &edge[0], 3.0F, 0, 0, 0.0F);
-        mazeRemoveBlockObject(target);
-        x = center[0];
-        z = center[2];
-        x -= 1.0F;
-        z -= 1.0F;
-        edge[0] = x;
-        edge[2] = z;
+        mazeRemoveBlockObject(block);
+        edgeX = center[0];
+        edgeZ = center[2];
+        edgeX -= 1.0F;
+        edgeZ -= 1.0F;
+        edge[0] = edgeX;
+        edge[2] = edgeZ;
         edge[1] = center[1];
         effectEmitterCreateForStyle(EFFECT_EMIT_BLACK_WISPS, &center[0], 3.0F, 0, 0, 0.0F);
     }
-    scriptVmPushInteger((ScriptVm *)(script), 0);
+    scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 0;
 }
 
 /// Animate the item identified by the script arguments and create its requested particle cluster, then provide a zero script result.
 /// \param object Actor whose script supplies an item handle, particle count, lifetime
-/// in seconds, radial scale, and particle scale, and receives zero.
+/// in seconds, radial scale, and particle scale, and receives zero. A live target must
+/// be an item with complete direction-animation storage; count must be positive and allocations must succeed.
 /// \returns Zero after handling the script command.
 /// \note Original decompilation identifier: \c func_80121504 (0x80121504).
 s32 scriptCommandCreateItemParticles(u8 *object) {
-    s32 sp_pop;
+    s32 itemHandle;
     s32 vmAddress;
-    s32 sp3C;
-    f32 sp38;
-    f32 sp34;
-    f32 sp30;
-    u8 *sp2C;
+    s32 particleCount;
+    f32 lifetimeSeconds;
+    f32 radialScale;
+    f32 particleScale;
+    u8 *item;
 
     vmAddress = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
-    sp30 = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    sp34 = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    sp38 = scriptVmPopFloat((ScriptVm *)(vmAddress));
-    sp3C = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    sp_pop = scriptVmPopInteger((ScriptVm *)(vmAddress));
-    sp2C = objectResolveAvailableHandle(sp_pop);
-    if (sp2C != 0) {
-        itemStartDirectionMotion(sp2C, sp38, 100.0F, 1000.0F);
-        particleClusterCreate(sp3C, sp38, sp34, sp30, sp2C);
+    particleScale = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    radialScale = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    lifetimeSeconds = scriptVmPopFloat((ScriptVm *)(vmAddress));
+    particleCount = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    itemHandle = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    item = objectResolveAvailableHandle(itemHandle);
+    if (item != 0) {
+        itemStartDirectionMotion(item, lifetimeSeconds, 100.0F, 1000.0F);
+        particleClusterCreate(particleCount, lifetimeSeconds, radialScale, particleScale, item);
     }
     scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 0;
@@ -119,16 +119,16 @@ s32 scriptCommandCreateItemParticles(u8 *object) {
 extern s32 gItemKindReplacementEntries;
 
 /// Provide the replacement kind for the script item-kind argument as the script result.
-/// \param object Actor whose script supplies a valid item kind and receives its replacement kind.
+/// \param object Actor whose script supplies an item kind from zero through 165 and receives its stored replacement selector; this query does not replace an item.
 /// \returns Zero after handling the script command.
 /// \note Original decompilation identifier: \c func_801215B0 (0x801215B0).
 s32 scriptCommandGetItemReplacement(u8 *object) {
-    s32 sp1C;
-    s32 idx;
+    s32 vmAddress;
+    s32 itemKind;
 
-    sp1C = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
-    idx = scriptVmPopInteger((ScriptVm *)(sp1C));
-    scriptVmPushInteger((ScriptVm *)(sp1C), *(s32 *)((u8 *)&gItemKindReplacementEntries + (idx * 0x74)));
+    vmAddress = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
+    itemKind = scriptVmPopInteger((ScriptVm *)(vmAddress));
+    scriptVmPushInteger((ScriptVm *)(vmAddress), *(s32 *)((u8 *)&gItemKindReplacementEntries + (itemKind * 0x74)));
     return 0;
 }
 
@@ -163,14 +163,14 @@ s32 scriptCommandGetItemClass(u8 *object) {
 }
 
 /// Provide the availability progress-field selector for the script item-kind argument as the script result.
-/// \param object Actor whose script supplies the item kind and receives the result.
+/// \param object Actor whose script supplies an item kind from zero through 165 and receives its signed progress-field selector, or -1 when none is assigned; this is not the saved flag value.
 /// \returns Zero after handling the script command.
 /// \note Original decompilation identifier: \c func_80121694 (0x80121694).
 s32 scriptCommandGetItemAvailabilityFlag(u8 *object) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
-    scriptVmPushInteger((ScriptVm *)(sp1C), itemGetAvailabilityFlag(scriptVmPopInteger((ScriptVm *)(sp1C))));
+    vmAddress = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
+    scriptVmPushInteger((ScriptVm *)(vmAddress), itemGetAvailabilityFlag(scriptVmPopInteger((ScriptVm *)(vmAddress))));
     return 0;
 }
 
@@ -180,30 +180,31 @@ s32 scriptCommandGetItemAvailabilityFlag(u8 *object) {
 /// \returns Zero after handling the script command.
 /// \note Original decompilation identifier: \c func_801216D4 (0x801216D4).
 s32 scriptCommandReleaseItem(u8 *object) {
-    s32 sp1C;
+    s32 vmAddress;
     u8 *resolvedObject;
 
-    sp1C = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
-    resolvedObject = objectResolveAvailableHandle(scriptVmPopInteger((ScriptVm *)(sp1C)));
+    vmAddress = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
+    resolvedObject = objectResolveAvailableHandle(scriptVmPopInteger((ScriptVm *)(vmAddress)));
     if (resolvedObject != 0) {
-        scriptVmPushInteger((ScriptVm *)(sp1C), itemTryRelease(resolvedObject, 1));
+        scriptVmPushInteger((ScriptVm *)(vmAddress), itemTryRelease(resolvedObject, 1));
     } else {
-        scriptVmPushInteger((ScriptVm *)(sp1C), 0);
+        scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     }
     return 0;
 }
 
-/// Stop the calling actor action playback and provide a zero script result.
+/// Stop the calling actor action playback and pending requests, and provide a zero script result.
+/// Eligible animated child playback is also disabled; motion resources and audio are not released.
 /// \param object Actor whose action is stopped and whose script receives zero;
 /// no script arguments are required.
 /// \returns Zero after handling the script command.
 /// \note Original decompilation identifier: \c func_80121738 (0x80121738).
 s32 scriptCommandStopAction(u8 *object) {
-    s32 sp1C;
+    s32 vmAddress;
 
-    sp1C = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
+    vmAddress = ((RuntimeObjectPrefix *)object)->state.actor->vmAddress;
     actionStopPlayback(object);
-    scriptVmPushInteger((ScriptVm *)(sp1C), 0);
+    scriptVmPushInteger((ScriptVm *)(vmAddress), 0);
     return 0;
 }
 

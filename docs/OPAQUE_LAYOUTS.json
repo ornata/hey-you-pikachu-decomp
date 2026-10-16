@@ -507,18 +507,6 @@
       "evidence": "src/game/attached_effect.c (record declaration and neighboring layout checks)"
     },
     {
-      "file": "src/game/backdrop.c",
-      "record": "BackdropDescriptor",
-      "member": "unknown18",
-      "line": 341,
-      "declaration": "u8 unknown18[4];",
-      "known_facts": "The unresolved four bytes occur after image dimensions and before the scrolling rate.",
-      "reason": "The role of this exact byte range is not established by the current producer/consumer evidence; retaining its offset name avoids unsupported semantics.",
-      "next_evidence": "Compare backdrop resource rows and trace backdrop selection, camera setup and scrolling for consumers of offset 0x18.",
-      "matching_constraint": "Preserve declared width, signedness, extent and surrounding offsets; require the unchanged ROM and strict original-object baseline for any replacement.",
-      "evidence": "src/game/backdrop.c (record declaration and neighboring layout checks)"
-    },
-    {
       "file": "src/game/doors_object_responses.c",
       "record": "ObjectResponseRegistry",
       "member": "unknown20",
